@@ -1,11 +1,11 @@
 // Helpers for Foreldreportal — henter koblede barn for en innlogget forelder.
 
+import { hentEtterlevelse } from "@/lib/portal/etterlevelse-data";
 import { prisma } from "@/lib/prisma";
 import type { PaymentStatus, PyramidArea } from "@/generated/prisma/client";
 import { startOfWeek, endOfWeek, ukenummer } from "@/lib/uke-helpers";
 import { computeStreak, aktivStreak } from "@/lib/streak";
 import {
-  etterlevelse,
   etterlevelseTekst,
   NEVNER_TEKST,
 } from "@/lib/domain/etterlevelse";
@@ -378,7 +378,7 @@ export type ForelderUkerapport = {
      Samme tall og samme nevner som barnets egen digest. Foreldre ser aldri
      andre spilleres tall — spørringene er alltid scopet til eget barn. */
 
-  /** «3/4» — eller null når ingen økter er forfalt ennå. */
+  /** Prosent siste fire uker — eller null når ingen økter er forfalt ennå. */
   etterlevelseTekst: string | null;
   /** Nevneren i klartekst, vist ved siden av tallet. */
   nevnerTekst: string;
@@ -413,7 +413,7 @@ export async function hentForelderUkerapport(
   const for8uker = new Date(now);
   for8uker.setDate(for8uker.getDate() - 7 * 8);
 
-  const [child, ukeOkter, streakLogger, runder, coachVarsel, besteTest] =
+  const [child, ukeOkter, streakLogger, runder, coachVarsel, besteTest, etterlevelseUke] =
     await Promise.all([
     prisma.user.findUnique({
       where: { id: childId },
@@ -454,6 +454,7 @@ export async function hentForelderUkerapport(
       orderBy: { score: "desc" },
       select: { score: true, test: { select: { name: true } } },
     }),
+    hentEtterlevelse(childId, now),
   ]);
 
   // Alder fra fødselsdato (kun hvis kjent — aldri gjettet).
@@ -469,21 +470,6 @@ export async function hentForelderUkerapport(
   const oktFullfort = fullforte.length;
   const oppmotePct =
     oktPlanlagt > 0 ? Math.round((oktFullfort / oktPlanlagt) * 100) : null;
-
-  /* D3: samme etterlevelse som barnets egen digest og coachens ukesrapport.
-     Skiller seg fra oppmotePct over ved at fremtidige økter holdes utenfor
-     nevneren — ellers ser uka ut som et etterslep alt på mandag. */
-  const etterlevelseUke = etterlevelse(
-    ukeOkter.map((o) => ({
-      scheduledAt: o.startTime,
-      durationMin: Math.max(
-        0,
-        Math.round((o.endTime.getTime() - o.startTime.getTime()) / 60_000),
-      ),
-      status: o.status,
-    })),
-    now,
-  );
 
   // Timer trent denne uka (sum av fullførte øktvarigheter).
   const trentMs = fullforte.reduce(

@@ -1,48 +1,17 @@
+import { redirect } from "next/navigation";
+
 /**
- * AgencyOS — coach-view av en spillers tester (/admin/spillere/[id]/tester),
- * v2-design (retning C).
+ * `/admin/spillere/[id]/tester` → Spiller 360 (`?fane=test`), 29.09.2026.
  *
- * Auth + dataloader gjenbrukt 1:1 fra den forrige (legacy) siden:
- * requirePortalUser (ADMIN/COACH) + loadSpillerTesterData. Spiller-id kommer
- * fra ruten (params.id) — notFound() hvis ingen data finnes.
- *
- * Server component.
+ * Tester-fanen dekker alt testsiden viste: dekning per disiplin, testdager, tildelinger,
+ * resultater med øvelsesforslag og Team Norway-resultater.
+ * Tilgangssjekken skjer på Spiller 360 (requirePortalUser + coachScopedPlayerWhere).
  */
-
-import { prisma } from "@/lib/prisma";
-import { tnHistorikkRader } from "@/lib/portal-tester/tn-historikk";
-import { tnProtocol } from "@/lib/portal-tester/tn-catalog";
-import { tnFormat } from "@/lib/portal-tester/tn-scoring";
-import { notFound } from "next/navigation";
-
-import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { loadSpillerTesterData } from "@/lib/admin/spiller-tester-data";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { AdminSpillerTesterV2 } from "@/components/admin/v2/AdminSpillerTesterV2";
-
-export const dynamic = "force-dynamic";
-
-export default async function SpillerTesterPage({
+export default async function Spiller360TesterRedirect({
   params,
 }: {
   params: Promise<{ id: string }>;
-}) {
-  const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
+}): Promise<never> {
   const { id } = await params;
-
-  const data = await loadSpillerTesterData(id, user);
-  if (!data) notFound();
-  const results = await prisma.testResult.findMany({ where: { userId: id, testId: { startsWith: "tn-v3-" } }, select: { id: true, testId: true, score: true, details: true, takenAt: true }, orderBy: { takenAt: "desc" }, take: 100 });
-  const historikk = tnHistorikkRader(results);
-
-  return (
-    <V2Shell bredde="kolonne" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <AdminSpillerTesterV2 data={data} playerId={id} />
-      <section aria-label="Team Norway-resultater"><h2>Team Norway-resultater</h2>
-        {historikk.length === 0 ? <p>Ingen resultater fra den nye testutgaven.</p> : <ul>{historikk.map(row => {
-          return <li key={row.id}>{tnProtocol(row.protocolId)?.name} · {row.count} forsøk · {tnFormat({ value: row.score, unit: row.unit })} · {row.takenAt.toLocaleDateString("nb-NO", { timeZone: "Europe/Oslo" })}</li>;
-        })}</ul>}
-      </section>
-    </V2Shell>
-  );
+  redirect(`/admin/spillere/${id}?fane=test`);
 }

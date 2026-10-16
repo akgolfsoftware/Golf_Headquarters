@@ -1,0 +1,322 @@
+{
+  "id": "godkjent-putting-002",
+  "status": "GODKJENT",
+  "created": "2026-09-26",
+  "godkjentAv": "Anders Kristiansen",
+  "sourceBatch": "putting-batch-002",
+  "description": "Andre godkjente puttingbatch i AK Golf Masterbrain. Fokus: korte putter, break, hastighetskontroll og enkel pressprogresjon.",
+  "items": [
+    {
+      "id": "blindfold-1m-feel",
+      "type": "DRILL",
+      "navn": "blindfold-1m-feel",
+      "beskrivelse": "Sett opp til en 1m putt, les den, ta rutinen, lukk øynene og putt. Bruk 10 putter for å trene følelse, balanse og tillit til strøket.",
+      "kilde": "notion:brad-faxon-feel-putting",
+      "status": "GODKJENT",
+      "godkjentAv": "Anders Kristiansen",
+      "godkjentDato": "2026-09-26",
+      "minKategori": "K",
+      "maxKategori": "A",
+      "environment": ["RANGE", "BANE", "HJEM"],
+      "fasilitetKrav": ["PUTTING_GREEN_KORT"],
+      "treningstype": "BLOKK",
+      "akFormel": {
+        "pyramidArea": "TEK",
+        "omraade": "PUTT_3_5",
+        "dimensjon": "LENGDEKONTROLL",
+        "belastning": "TRENINGSOMRAADE",
+        "press": "ALENE",
+        "maaleutstyr": "UTEN"
+      },
+      "facilityRequirements": {
+        "longestShotM": 1,
+        "longestShotKind": "PUTT_ROLL",
+        "minimumFacilityLengthM": 2,
+        "minimumCeilingHeightM": null,
+        "surface": "PUTTING_GREEN"
+      },
+      "sourceBatch": "putting-batch-002",
+      "sourceFile": "ovelsesbank/kandidater/putting.json",
+      "sourceIndex": 8,
+      "kategoriNotat": "Gammel kandidat brukte L-A. L finnes ikke i AK-formel v2 og er normalisert til K.",
+      "godkjenningsnotat": "Godkjent av Anders via kommando: Kjør neste steg.",
+      "kontrollpunkterVurdert": [
+        "Blindfold er primært TEK fordi oppgaven trener følelse og strøk uten visuell feedback.",
+        "1m er lagt i PUTT_3_5 siden 1m er ca. 3,3 fot."
+      ]
+    },
+    {
+      "id": "kort-putt-uphill-rett-1m",
+      "type": "DRILL",
+      "navn": "kort-putt-uphill-rett-1m",
+      "beskrivelse": "Finn en rett 1m oppoverputt og slå 20 putter. Målet er høy treffprosent på den enkleste korte putten før spilleren går videre.",
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "status": "GODKJENT",
+      "godkjentAv": "Anders Kristiansen",
+      "godkjentDato": "2026-09-26",
+      "minKategori": "K",
+      "maxKategori": "A",
+      "environment": ["RANGE", "BANE"],
+      "fasilitetKrav": ["PUTTING_GREEN_KORT"],
+      "treningstype": "BLOKK",
+      "akFormel": {
+        "pyramidArea": "SLAG",
+        "omraade": "PUTT_3_5",
+        "dimensjon": "LENGDEKONTROLL",
+        "belastning": "TRENINGSOMRAADE",
+        "press": "ALENE",
+        "maaleutstyr": "UTEN"
+      },
+      "facilityRequirements": {
+        "longestShotM": 1,
+        "longestShotKind": "PUTT_ROLL",
+        "minimumFacilityLengthM": 2,
+        "minimumCeilingHeightM": null,
+        "surface": "PUTTING_GREEN"
+      },
+      "sourceBatch": "putting-batch-002",
+      "sourceFile": "ovelsesbank/kandidater/putting.json",
+      "sourceIndex": 9,
+      "kategoriNotat": "Gammel kandidat brukte L-A. L finnes ikke i AK-formel v2 og er normalisert til K.",
+      "godkjenningsnotat": "Godkjent av Anders via kommando: Kjør neste steg.",
+      "kontrollpunkterVurdert": [
+        "Rett oppoverputt er en grunnøvelse og beholdes bredt K-A.",
+        "Dimensjonen er LENGDEKONTROLL fordi oppgaven handler om fart inn i hull."
+      ]
+    },
+    {
+      "id": "kort-putt-downhill-rett-1m",
+      "type": "DRILL",
+      "navn": "kort-putt-downhill-rett-1m",
+      "beskrivelse": "Finn en rett 1m nedoverputt og slå 20 putter. Spilleren trener touch, start og trygg akselerasjon uten å dytte ballen.",
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "status": "GODKJENT",
+      "godkjentAv": "Anders Kristiansen",
+      "godkjentDato": "2026-09-26",
+      "minKategori": "K",
+      "maxKategori": "A",
+      "environment": ["BANE"],
+      "fasilitetKrav": ["PUTTING_GREEN_KORT"],
+      "treningstype": "VARIABEL",
+      "akFormel": {
+        "pyramidArea": "SLAG",
+        "omraade": "PUTT_3_5",
+        "dimensjon": "LENGDEKONTROLL",
+        "belastning": "TRENINGSOMRAADE",
+        "press": "ALENE",
+        "maaleutstyr": "UTEN"
+      },
+      "facilityRequirements": {
+        "longestShotM": 1,
+        "longestShotKind": "PUTT_ROLL",
+        "minimumFacilityLengthM": 2,
+        "minimumCeilingHeightM": null,
+        "surface": "PUTTING_GREEN"
+      },
+      "sourceBatch": "putting-batch-002",
+      "sourceFile": "ovelsesbank/kandidater/putting.json",
+      "sourceIndex": 10,
+      "kategoriNotat": "Gammel kandidat brukte L-A. L finnes ikke i AK-formel v2 og er normalisert til K.",
+      "godkjenningsnotat": "Godkjent av Anders via kommando: Kjør neste steg.",
+      "kontrollpunkterVurdert": [
+        "Nedoverputt beholdes BANE fordi kandidaten krever reell greenhelning.",
+        "Dimensjonen er LENGDEKONTROLL, ikke BALLSTART."
+      ]
+    },
+    {
+      "id": "kort-putt-venstre-break-1m",
+      "type": "DRILL",
+      "navn": "kort-putt-venstre-break-1m",
+      "beskrivelse": "Finn en 1m putt med tydelig venstre break. Slå 15 putter fra samme spot og tren å sikte utenfor hullet og la ballen falle inn.",
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "status": "GODKJENT",
+      "godkjentAv": "Anders Kristiansen",
+      "godkjentDato": "2026-09-26",
+      "minKategori": "K",
+      "maxKategori": "A",
+      "environment": ["BANE"],
+      "fasilitetKrav": ["PUTTING_GREEN_KORT"],
+      "treningstype": "VARIABEL",
+      "akFormel": {
+        "pyramidArea": "SLAG",
+        "omraade": "PUTT_3_5",
+        "dimensjon": "GREENLESING",
+        "belastning": "TRENINGSOMRAADE",
+        "press": "OBSERVERT",
+        "maaleutstyr": "UTEN"
+      },
+      "facilityRequirements": {
+        "longestShotM": 1,
+        "longestShotKind": "PUTT_ROLL",
+        "minimumFacilityLengthM": 2,
+        "minimumCeilingHeightM": null,
+        "surface": "PUTTING_GREEN"
+      },
+      "sourceBatch": "putting-batch-002",
+      "sourceFile": "ovelsesbank/kandidater/putting.json",
+      "sourceIndex": 11,
+      "kategoriNotat": "Gammel kandidat brukte L-A. L finnes ikke i AK-formel v2 og er normalisert til K.",
+      "godkjenningsnotat": "Godkjent av Anders via kommando: Kjør neste steg.",
+      "kontrollpunkterVurdert": [
+        "Break-oppgaven er klassifisert som GREENLESING.",
+        "BANE beholdes fordi spilleren trenger faktisk break/helning."
+      ]
+    },
+    {
+      "id": "kort-putt-hoyre-break-1m",
+      "type": "DRILL",
+      "navn": "kort-putt-hoyre-break-1m",
+      "beskrivelse": "Finn en 1m putt med tydelig høyre break. Slå 15 putter og sammenlign høyrebreak mot venstrebreak for å finne svak side.",
+      "kilde": "ak-second-brain:ak-golf-treningsfilosofi",
+      "status": "GODKJENT",
+      "godkjentAv": "Anders Kristiansen",
+      "godkjentDato": "2026-09-26",
+      "minKategori": "K",
+      "maxKategori": "A",
+      "environment": ["BANE"],
+      "fasilitetKrav": ["PUTTING_GREEN_KORT"],
+      "treningstype": "VARIABEL",
+      "akFormel": {
+        "pyramidArea": "SLAG",
+        "omraade": "PUTT_3_5",
+        "dimensjon": "GREENLESING",
+        "belastning": "TRENINGSOMRAADE",
+        "press": "OBSERVERT",
+        "maaleutstyr": "UTEN"
+      },
+      "facilityRequirements": {
+        "longestShotM": 1,
+        "longestShotKind": "PUTT_ROLL",
+        "minimumFacilityLengthM": 2,
+        "minimumCeilingHeightM": null,
+        "surface": "PUTTING_GREEN"
+      },
+      "sourceBatch": "putting-batch-002",
+      "sourceFile": "ovelsesbank/kandidater/putting.json",
+      "sourceIndex": 12,
+      "kategoriNotat": "Gammel kandidat brukte L-A. L finnes ikke i AK-formel v2 og er normalisert til K.",
+      "godkjenningsnotat": "Godkjent av Anders via kommando: Kjør neste steg.",
+      "kontrollpunkterVurdert": [
+        "Høyrebreak pares med venstrebreak for symmetrisk puttingdiagnose.",
+        "Dimensjonen er GREENLESING og ikke BALLSTART."
+      ]
+    },
+    {
+      "id": "speedgate-overspill-30cm",
+      "type": "DRILL",
+      "navn": "speedgate-overspill-30cm",
+      "beskrivelse": "Plasser en fartsport 30cm bak hullet. Putt fra 1,5m; ballen må enten gå i hull eller stoppe innen porten bak hullet.",
+      "kilde": "notion:phil-kenyon-kb",
+      "status": "GODKJENT",
+      "godkjentAv": "Anders Kristiansen",
+      "godkjentDato": "2026-09-26",
+      "minKategori": "K",
+      "maxKategori": "A",
+      "environment": ["BANE"],
+      "fasilitetKrav": ["PUTTING_GREEN_KORT"],
+      "treningstype": "BLOKK",
+      "akFormel": {
+        "pyramidArea": "TEK",
+        "omraade": "PUTT_3_5",
+        "dimensjon": "LENGDEKONTROLL",
+        "belastning": "TRENINGSOMRAADE",
+        "press": "ALENE",
+        "maaleutstyr": "UTEN"
+      },
+      "facilityRequirements": {
+        "longestShotM": 1.5,
+        "longestShotKind": "PUTT_ROLL",
+        "minimumFacilityLengthM": 2,
+        "minimumCeilingHeightM": null,
+        "surface": "PUTTING_GREEN"
+      },
+      "sourceBatch": "putting-batch-002",
+      "sourceFile": "ovelsesbank/kandidater/putting.json",
+      "sourceIndex": 13,
+      "kategoriNotat": "Gammel kandidat brukte L-A. L finnes ikke i AK-formel v2 og er normalisert til K.",
+      "godkjenningsnotat": "Godkjent av Anders via kommando: Kjør neste steg.",
+      "kontrollpunkterVurdert": [
+        "Dette er TEK fordi porten isolerer fartskontroll.",
+        "Minimumslengde inkluderer 30cm overspill bak hull."
+      ]
+    },
+    {
+      "id": "drawback-1m-knockout",
+      "type": "DRILL",
+      "navn": "drawback-1m-knockout",
+      "beskrivelse": "Start på 1m. Ved bom flyttes ballen 30cm bakover til neste forsøk. Fortsett til 5 strake hull fra 1m eller til ballen er ute på 3m.",
+      "kilde": "notion:phil-kenyon-kb",
+      "status": "GODKJENT",
+      "godkjentAv": "Anders Kristiansen",
+      "godkjentDato": "2026-09-26",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "environment": ["RANGE", "BANE"],
+      "fasilitetKrav": ["PUTTING_GREEN_KORT"],
+      "treningstype": "KONKURRANSE",
+      "akFormel": {
+        "pyramidArea": "SLAG",
+        "omraade": "PUTT_5_10",
+        "dimensjon": "BALLSTART",
+        "belastning": "TRENINGSOMRAADE",
+        "press": "KONKURRANSE",
+        "maaleutstyr": "UTEN"
+      },
+      "facilityRequirements": {
+        "longestShotM": 3,
+        "longestShotKind": "PUTT_ROLL",
+        "minimumFacilityLengthM": 4,
+        "minimumCeilingHeightM": null,
+        "surface": "PUTTING_GREEN"
+      },
+      "sourceBatch": "putting-batch-002",
+      "sourceFile": "ovelsesbank/kandidater/putting.json",
+      "sourceIndex": 14,
+      "kategoriNotat": "Pressøvelse foreslått snevret til A-G.",
+      "godkjenningsnotat": "Godkjent av Anders via kommando: Kjør neste steg.",
+      "kontrollpunkterVurdert": [
+        "Maks distanse 3m gir PUTT_5_10.",
+        "Knockout-formatet gir KONKURRANSE-press uten å kreve turnering."
+      ]
+    },
+    {
+      "id": "putting-clock-6-foot-12baller",
+      "type": "DRILL",
+      "navn": "putting-clock-6-foot-12baller",
+      "beskrivelse": "Plasser 12 baller i klokke 6 fot fra hullet. Spill rundt klokken og noter antall i hull av 12.",
+      "kilde": "notion:phil-kenyon-kb",
+      "status": "GODKJENT",
+      "godkjentAv": "Anders Kristiansen",
+      "godkjentDato": "2026-09-26",
+      "minKategori": "K",
+      "maxKategori": "A",
+      "environment": ["RANGE", "BANE"],
+      "fasilitetKrav": ["PUTTING_GREEN_KORT"],
+      "treningstype": "VARIABEL",
+      "akFormel": {
+        "pyramidArea": "SLAG",
+        "omraade": "PUTT_5_10",
+        "dimensjon": "GREENLESING",
+        "belastning": "TRENINGSOMRAADE",
+        "press": "OBSERVERT",
+        "maaleutstyr": "UTEN"
+      },
+      "facilityRequirements": {
+        "longestShotM": 1.83,
+        "longestShotKind": "PUTT_ROLL",
+        "minimumFacilityLengthM": 3,
+        "minimumCeilingHeightM": null,
+        "surface": "PUTTING_GREEN"
+      },
+      "sourceBatch": "putting-batch-002",
+      "sourceFile": "ovelsesbank/kandidater/putting.json",
+      "sourceIndex": 15,
+      "kategoriNotat": "Gammel kandidat brukte L-A. L finnes ikke i AK-formel v2 og er normalisert til K.",
+      "godkjenningsnotat": "Godkjent av Anders via kommando: Kjør neste steg.",
+      "kontrollpunkterVurdert": [
+        "6 fot er ca. 1,83m og ligger i PUTT_5_10.",
+        "Clock-formatet gjør greenlesing relevant fra ulike vinkler."
+      ]
+    }
+  ]
+}

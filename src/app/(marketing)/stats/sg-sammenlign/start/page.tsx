@@ -3,10 +3,9 @@
  * Pixel-perfect port av design 08 fra design-handoff-stats-2026-05-25.
  */
 
-import { redirect } from "next/navigation";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { krevDataGolfBruker } from "@/lib/auth/datagolf-tilgang";
 import { prisma } from "@/lib/prisma";
 import { startSammenligning } from "../actions";
 import { SgStartSkjema, type RefSpiller } from "./skjema";
@@ -20,10 +19,8 @@ type Props = {
 };
 
 export default async function SgStartPage({ searchParams }: Props) {
-  const user = await getCurrentUser();
-  if (!user) {
-    redirect("/auth/login?next=/stats/sg-sammenlign/start");
-  }
+  // PGA-sammenligningen bygger på Data Golf-tall: bare coach og admin (Anders 09.10.2026).
+  await krevDataGolfBruker("/stats/sg-sammenlign/start");
 
   const refSpillere = await prisma.pgaPlayerSeason.findMany({
     where: {

@@ -14,13 +14,35 @@ styrer alle skjermer. Gjennomføringen i kode og design styres av
 eller pyramidegren er et automatisk krav eller en sperre (Anders 18.08.2026). Workbench foreslår
 og viser bare relevante felt. Coachen og spilleren bestemmer.
 
+## MASTER-STATUS 14.10.2026
+
+Masteren dekker språk for hele AK Golf HQ, ikke bare trening. Kartleggingen av brukertekst
+ligger i [ordbok-avvik-2026-10-14.md](ordbok-avvik-2026-10-14.md).
+
+| Flate | Status | Hvor |
+|---|---|---|
+| Tone, roller, TrackMan, tall, produkt, navigasjon (PlayerHQ og AgencyOS) | Dekket | §2 |
+| Ord og forbudte ord, handlinger, meldinger, statusord | Dekket | §3–§4 |
+| Planlegging, perioder, økt, øvelse | Dekket | §5–§21 |
+| AgencyOS | Første versjon | §22 |
+| Forelder, innlogging, oppstart | Første versjon | §23 |
+| Booking, betaling, e-post | Første versjon | §24 |
+| WANG | Første versjon | §25 |
+| Team Norway | Første versjon, åpent valg (V13) | §26 |
+| Markedssider og GFGK Junior | Første versjon, publisert tekst venter på Anders | §27 |
+| Caddie og AI-tekster | Første versjon, åpent valg (V1) | §28 |
+
+**Gjenstår:** 18 valg og 4 mindre valg i avviksfila. E-postmalenes brødtekst, sidetitler og
+metadata, Stripe-portalen og push-varsler er ikke kartlagt. `hjelpetekster.ts` er ikke
+gjennomgått ord for ord mot §2.3. Avviksfila er ikke rettet i kode.
+
 ## Innhold
 
 1. Bruk av masteren
 2. Språk og skrivemåte
 3. Ord og uttrykk
 4. Handlinger, statuser og meldinger
-5. Planleggingsrekken og mål
+5. Planleggingsrekken og målsetninger
 6. Perioder
 7. Uke og kalender
 8. Økten
@@ -37,6 +59,13 @@ og viser bare relevante felt. Coachen og spilleren bestemmer.
 19. Låste verdier
 20. Kodenøkler og overgang
 21. Åpne punkter
+22. AgencyOS
+23. Forelder, innlogging og oppstart
+24. Booking, betaling og e-post
+25. WANG
+26. Team Norway
+27. Markedssider og GFGK Junior
+28. Caddie og AI-tekster
 
 ## 1. Bruk av masteren
 
@@ -47,7 +76,7 @@ og viser bare relevante felt. Coachen og spilleren bestemmer.
 | Verdier som er bekreftet og låst | Kapittel 19 |
 | Interne kodenøkler og enum-verdier | Kapittel 20 |
 | Produktnavn, abonnement, booking og tilgang | Kapittel 2.5 og gjeldende produktregler |
-| Visuelt design | Den Claude Design-versjonen Anders velger. Masteren fastsetter ingen farger, fonter eller navigasjon |
+| Visuelt design | Den Claude Design-versjonen Anders velger. Masteren fastsetter ingen farger eller fonter; bare menynavnene (2.6) |
 | Faktisk funksjon | Kode og prøvd brukerreise. Dokumenttekst alene er ikke bevis |
 
 **Instruks til Claude Design:** bruk ordene i denne masteren. Ikke hent språk fra eldre
@@ -82,8 +111,8 @@ språkarbeid.
 | AK Golf Academy | Offisielt publikumsnavn; skriv AK med store bokstaver |
 | AK Golf Junior Academy / Junior Academy | Ikke «Juniorakademiet» som merkenavn |
 | Økt / treningsøkt | Ikke «session» eller «workout» |
-| Mål, resultatmål, prosessmål | Ikke «goal» i UI |
-| Statistikk, snitt, trend | Ikke «stats»; bruk «snitt» |
+| Målsetning (resultatmål, prosessmål) | Det spilleren sikter mot. Ikke «goal», og ikke «mål» alene. «Mål» brukes bare om måltall: TrackMan-mål, rep-mål, resultatkrav |
+| Stats | Navnet på fanen i PlayerHQ (Anders 28.09.2026). I løpende tekst: statistikk, snitt, trend |
 | Plan / kalender | Ikke «schedule» |
 | Abonnement | Ikke «subscription» |
 | Nærspill | Slag innenfor 50 m: chip, pitch, lob og bunker. Ikke «kortspill», «kort spill» eller «rundt green» som etikett |
@@ -152,7 +181,7 @@ hentes alltid fra gjeldende tilbudskilde.
 
 | Begrep | Betydning og språklig grense |
 |---|---|
-| Gratis / Pro | Appens brukerrettede nivånavn i produktreglene; ikke Premium eller Plus |
+| Gratis / Full | Appens brukerrettede nivånavn (Anders 30.09.2026). Ikke Pro, Premium eller Plus; «Pro» forveksles med coaching-pakken Performance Pro |
 | FULL / TALENT / INGEN | Interne tilgangsutfall, ikke automatisk etiketter brukeren skal se |
 | Talentprofil | Gratis profil med avgrenset funksjonstilgang; ikke synonym for aktiv prøveperiode |
 | Performance / Performance Pro | Coaching-pakker, ikke appnivåer |
@@ -166,6 +195,47 @@ hentes alltid fra gjeldende tilbudskilde.
 | Booking | Bestilling av tid eller tjeneste; bekreftelse, betaling og gjennomføring er ulike forhold |
 | Oppmøte / deltakelse | Om en bestemt spiller deltok; ikke det samme som gruppens gjennomføringsstatus |
 | Privat / delt | Hvem innhold er tilgjengelig for; synlighet må følge faktisk tilgang |
+
+### 2.6 Navigasjon
+
+Menynavnene er ord brukeren ser, og står derfor her (Anders 28.09.2026).
+
+| Flate | Hovedpunkter |
+|---|---|
+| PlayerHQ | I dag · Plan · Stats · Meg |
+| Stats i PlayerHQ | Snittscore · Strokes Gained · Trening · Tester |
+| AgencyOS | Cockpit · Innboks · Stall · Kalender · Workbench · Mer. Cockpit er startskjerm; Caddie ligger under Mer og i hurtigknappen |
+
+«Hjem» brukes ikke om AgencyOS-startskjermen, og «Analyse» er ikke fane- eller menynavn.
+
+### 2.7 Spillerkategorier og golfdata
+
+Kategori settes på brutto snittscore. Trinnene er [min, max): snitt 74,2 gir D. Kilde:
+`src/lib/domain/ak-kategori.ts`.
+
+| Kategori | Navn | Brutto snitt |
+|---|---|---|
+| A | World Elite | under 68 |
+| B | National Elite | 68–72 |
+| C | National U21 | 72–74 |
+| D | Regional Elite | 74–76 |
+| E | Regional U18 | 76–78 |
+| F | Klubbspiller Senior | 78–80 |
+| G | Klubbspiller Junior | 80–85 |
+| H | Rekrutt Senior | 85–90 |
+| I | Rekrutt Junior | 90–95 |
+| J | Nybegynner Senior | 95–100 |
+| K | Nybegynner Junior | 100+ |
+
+**Strokes Gained-kategorier:** OTT · APP · ARG · PUTT. Fortegn og komma: +1,2 / −0,4.
+
+**Dagsform:** 1 Tung · 2 Slapp · 3 Ok · 4 God · 5 Topp.
+
+### 2.8 Standardplaner
+
+«Velg treningsplan» har fem standardplaner: Weekend Warrior · Klubbspilleren · Junior-aspirant ·
+Konkurransespilleren · Practice like the pros. De tilpasses kategori A–K. Alder begrenser aldri
+plan eller mengde.
 
 ## 3. Ord og uttrykk
 
@@ -197,16 +267,17 @@ hentes alltid fra gjeldende tilbudskilde.
 | Drill | Øvelse |
 | Logge / føre data | Registrere |
 | Session / workout | Økt |
-| Goal | Mål |
-| Stats | Statistikk |
+| Goal, eller «mål» om det spilleren sikter mot | Målsetning |
+| Stats i løpende tekst (fanenavnet i PlayerHQ er unntaket) | Statistikk |
 | Schedule | Plan eller kalender |
 | Subscription | Abonnement |
 | Kortspill / rundt green | Nærspill |
 | Motorikk som overskrift | Læringssteg |
 | Belastning om treningsstedet | Treningsmiljø |
 | Ferdig som universell status | Den presise statusen: lagret, publisert, gjennomført eller utført |
-| Premium / Plus | Gjeldende produktnivå |
+| Pro / Premium / Plus | Gratis eller Full |
 | Emoji i UI | Tekst eller et relevant ikon |
+| Opp og ned / opp-og-ned | Up and down (Anders 14.10.2026) |
 
 ## 4. Handlinger, statuser og meldinger
 
@@ -263,17 +334,17 @@ innholdet i økten, for eksempel «1 av 3 øvelser». En «treningsblokk» er et
 
 | Gjelder | Bruk |
 |---|---|
-| Plan | Utkast · Venter på spiller · Godtatt · Avvist · Aktiv · Arkivert |
+| Plan | Utkast · Venter på spiller · Venter på coach · Godtatt · Avvist · Aktiv · Arkivert. «Venter på coach» er en plan spilleren har sendt til coach (Anders 26.09.2026) |
 | Økt | Planlagt · Pågår · Gjennomført · Avlyst · Hoppet over |
 | Publisering | Ikke publisert · Publiserer · Publisert · Trukket tilbake |
 | Lagring | Ikke lagret · Lagrer · Lagret · Kunne ikke lagres |
 | AI-forslag | Forslag · Godkjent · Kjører · Utført · Feilet |
-| Mål | Ikke startet · På vei · Nådd |
+| Målsetning | Ikke startet · På vei · Nådd |
 
-## 5. Planleggingsrekken og mål
+## 5. Planleggingsrekken og målsetninger
 
 ```text
-Mål og analyse
+Målsetning og analyse
   → Årsplan
     → Periode
       → Måned
@@ -316,9 +387,9 @@ når spilleren vurderer om treningen fører mot resultatet. Prosessmål kan knyt
 pyramidegren, test eller treningsområde når det finnes et faktisk datagrunnlag. Systemet skal
 aldri fremstille sammenfall som bevist årsak.
 
-### 5.3 Mål på planleggingsnivå
+### 5.3 Målsetning på planleggingsnivå
 
-Et mål hører til ett nivå: år, periode, måned, uke eller økt. Valget lagres som `planNivaa` i
+En målsetning hører til ett nivå: år, periode, måned, uke eller økt. Valget lagres som `planNivaa` i
 målets `payload`. Uten valg foreslås nivået fra fristen (ingen frist: år; inntil 1 dag: økt;
 inntil 7 dager: uke; inntil 35: måned; inntil 120: periode; ellers år). Visningen skiller alltid
 mellom valgt og foreslått nivå. I Workbench viser hvert mål type, frist, nivå, fremdrift og
@@ -326,14 +397,18 @@ planlagt/gjennomført/uteblitt. Sporet regnes bare for mål koblet til et pyrami
 
 ## 6. Perioder
 
+Synlige navn (Anders 28.09.2026): Grunnperiode · Spesialperiode · Turneringsperiode · Evaluering ·
+Ferie · Restitusjon. «Spesialisering» og «Spesialiseringsperiode» brukes ikke.
+
 | Periodetype | Brukes til |
 |---|---|
 | Grunnperiode (`GRUNN`) | Bygge kapasitet, teknisk grunnlag og treningsvaner |
 | Spesialperiode (`SPESIAL`) | Spesifikk trening mot spillerens behov |
 | Turneringsperiode (`TURNERING`) | Forberedelse og gjennomføring rundt turneringer |
-| Evalueringsperiode (`EVALUERING`) | Oppsummering, analyse og justering |
+| Evaluering (`EVALUERING`) | Oppsummering, analyse og justering |
 | Testuke (`TESTUKE`) | Tester og målinger |
 | Ferie (`FERIE`) | Ferie, pause eller redusert plan |
+| Restitusjon (`RESTITUSJON`) | Hvile og gjenoppbygging |
 | Treningssamling (`TRENINGSSAMLING`) | Samling over flere økter eller dager |
 | Heldagssamling (`HELDAGSSAMLING`) | Samling med heldagsformat |
 
@@ -392,7 +467,7 @@ TEK → Innspill 100–150 m → Simulator → Med TrackMan → Lav hastighet (5
     → Lengdekontroll → Observert → 30 slag → Minst 20 innenfor valgt målområde
 ```
 
-**Pyramidegrenene er separate.** Felter som hører til Fysisk vises ikke i Teknikk. Et valg i én
+**Pyramidegrenene er separate.** Felter som hører til Fysisk vises ikke i Teknisk. Et valg i én
 gren overskriver ikke lagrede valg i en annen. Det er en regel om hva som vises og lagres, ikke
 en sperre: alle områder kan fortsatt velges under alle pyramidegrener.
 
@@ -411,7 +486,7 @@ Pyramiden beskriver **hensikten**. Den foreslår område og felt, men låser dem
 | Valgt pyramide | Første valg | Felter som vises | Felter som ikke vises |
 |---|---|---|---|
 | Fysisk | Styrke · Kondisjon · Bevegelighet | Fysiske parametere for valgt område | Læringssteg · teknisk fokus · TrackMan |
-| Teknikk | Utslag · Innspill · Nærspill · Putting | Læringssteg der det gjelder · teknisk fokus · sted · måleutstyr · mengde · mål | Serier, RIR og intensitetssoner |
+| Teknisk | Utslag · Innspill · Nærspill · Putting | Læringssteg der det gjelder · teknisk fokus · sted · måleutstyr · mengde · mål | Serier, RIR og intensitetssoner |
 | Golfslag | Utslag · Innspill · Nærspill · Putting | Slagtype · treningsmåte · sted · måleutstyr · press · mengde · resultatkrav | Fysiske parametere · læringssteg som standard |
 | Spill | Banespill og spilløvelse | Spilleformat · situasjon · sted · press · hull eller tid · resultat | Fysiske parametere · læringssteg |
 | Turnering | Konkret turnering eller turneringsøkt | Turnering · runde · forberedelse · press · mål · evaluering | Fysiske parametere · læringssteg |
@@ -427,6 +502,14 @@ press og hull, tid eller oppgaver.
 **TURN:** knytt økten til turneringen, velg runde og bane, forberedelse eller spilleplan, mål og
 fokus, og evaluer runden etterpå. Treningsmiljø settes vanligvis til Konkurranse og press til
 Turnering. «Vanligvis» betyr forslag, ikke tvang.
+
+**Turneringstyper (bare TURN):**
+
+| Type | Betyr |
+|---|---|
+| Treningsturnering | Lav innsats. Test av plan og rutiner |
+| Utviklingsturnering | Målsetning knyttet til periodens fokus |
+| Prestasjonsturnering | Resultatet teller. Full konkurranseprosess |
 
 ## 11. Trinn 2: treningsområde
 
@@ -510,7 +593,7 @@ og forhold (inne/ute, vær, vind, temperatur, greenhastighet, lie).
 | Pyramide | Foreslås først | Fortsatt mulig |
 |---|---|---|
 | Fysisk | Treningsrom · styrkerom · utendørs · hjemme | Treningshall · annet |
-| Teknikk | Range · nærspill · puttinggreen · studio · simulator | Bane · hjemme · annet |
+| Teknisk | Range · nærspill · puttinggreen · studio · simulator | Bane · hjemme · annet |
 | Golfslag | Range · nærspill · puttinggreen · simulator | Bane · studio · korthullsbane |
 | Spill | Bane · korthullsbane · simulator · treningsområde | Puttinggreen · nærspill · annet |
 | Turnering | Konkret bane · simulatorturnering | Korthullsbane · annet konkurransested |
@@ -583,6 +666,31 @@ kapittel 19. Feltet vises bare for Utslag og Innspill.
 
 **Sandtrinn (bare bunker):** Uten ball i sanden (`UTEN_BALL_I_SAND`) · Med ball (`MED_BALL`).
 
+**Ett fokus per øvelse, flere øvelser per økt** (bekreftet av Anders 30.09.2026). En økt kan ha
+flere øvelser, og spiller og coach kan velge dem fra spillerens individuelle tekniske plan. Hver
+øvelse har fortsatt maksimalt ett teknisk fokus.
+
+**TrackMan-parametere foreslås ut fra valgt fokus** (Anders 30.09.2026). Forslaget er veiledende;
+coachen kan alltid velge andre. Tabellen over hvilke parametere som foreslås per fokus er ikke
+fastsatt ennå (kapittel 21).
+
+### 14.4 Posisjoner i teknisk plan (P1.0–P10.0)
+
+Faste navn på skjerm (Anders 27.09.2026, `.claude/rules/beslutninger.md` §POSISJONSNAVN FØLGER ORDMASTEREN):
+
+| Posisjon | Navn |
+|---|---|
+| P1.0 | Adresse / Oppstilling |
+| P2.0 | Kølle parallell i baksving |
+| P3.0 | Venstre arm parallell i baksving |
+| P4.0 | Toppen av baksvingen |
+| P5.0 | Venstre arm parallell i nedsving |
+| P6.0 | Kølle parallell i nedsving |
+| P7.0 | Treffpunktet |
+| P8.0 | Kølle parallell i gjennomføring |
+| P9.0 | Høyre arm parallell i oppfølging |
+| P10.0 | Fullføring og balanse |
+
 ## 15. Trinn 6: press
 
 Feltet heter **Press** og svarer på hvem som ser på og hvilken situasjon som trenes.
@@ -605,8 +713,8 @@ krav). De kan brukes sammen eller hver for seg.
 | Utslag, innspill og nærspill | Antall slag |
 | Putting | Antall putter |
 | Banespill | Hull, tid eller antall oppgaver |
-| Styrke | Serier, repetisjoner, pause, RIR og vekt |
-| Kondisjon | Segmenter med tid og intensitetssone |
+| Styrke | Serier × repetisjoner @ vekt, pluss RIR 0–4 og pause. Skrives «4 × 6 @ 90 kg · RIR 2» |
+| Kondisjon | Segmenter med tid og pulssone S1–S5 (Anders 30.09.2026) |
 | Bevegelighet | Tid |
 
 ## 17. Trinn 8: mål
@@ -696,11 +804,114 @@ eller testen. Databasen beholder de finkornede enum-verdiene; `ak-formel-v2.ts` 
 
 | Punkt | Status |
 |---|---|
-| Kobling mellom fysisk økt og fysisk plan eller program | Ikke avklart |
-| Hvilke TrackMan-parametere som foreslås per teknisk fokus | Ikke avklart |
-| Om intensitet i Fysisk angis med sone, RPE, puls eller flere | Ikke avklart |
-| Om flere tekniske fokus per øvelse skal tillates | Nei i dag: maksimalt ett |
+| Kobling mellom fysisk økt og fysisk plan eller program | Besluttet 30.09.2026: et fysisk program legger økter i planen; hver økt kan endres. Ikke bygget |
+| Hvilke TrackMan-parametere som foreslås per teknisk fokus | Besluttet 30.09.2026 at de foreslås. Tabellen per fokus legges fram for Anders |
+| Om intensitet i Fysisk angis med sone, RPE, puls eller flere | Besluttet 30.09.2026: pulssone S1–S5 |
+| Om flere tekniske fokus per øvelse skal tillates | Nei: maksimalt ett per øvelse, flere øvelser per økt (bekreftet 30.09.2026) |
 | Øvelsesskjemaet for kapittel 9–17 | Bygget i Workbench Økt (`OvelseSkjema.tsx`): inspektør på desktop, bunnark på mobil under 1024 px. Sett i komponentprøve, ikke i innlogget app |
 | Redigering av eksisterende øvelse med de nye feltene | Ikke bygget: skjemaet legger til nye øvelser |
 | Flytt opp/ned og fjern øvelse på mobil | Bygget i «Valgt øvelse»-arket; fjerning krever bekreftelse. Sett i komponentprøve, ikke i innlogget app |
-| Kondisjon: intensitetssone og segmenter | Ikke bygget, venter på avklaring av sone, RPE eller puls |
+| Testuke, Treningssamling og Heldagssamling | Beholdes (Anders 28.09.2026). De er hendelser i årsplanen, ikke treningsperioder |
+| Kondisjon: intensitetssone og segmenter | Pulssone S1–S5 besluttet 30.09.2026. Ikke bygget |
+
+## 22. AgencyOS
+
+Kilde: beslutningene 22.09, 26.09, 27.09 og 28.09.2026. Menyen står i §2.6.
+
+| Bruk / betydning | Ikke bruk / bruk i stedet |
+|---|---|
+| Mer har fem punkter: Booking · Grupper · Tester · Økonomi · Oppsett | «Hjem» om startskjermen, «CoachHQ» |
+| **Innboks** er all kommunikasjon og alle godkjenninger. Risiko · Følg med · Sjekk · Løst er filter | «Kø», «Oppfølgingskø» og «Godkjenninger» som egne menypunkt. «Watch» |
+| **Assist Coach** (rolle ASSISTANT) | «Hjelpecoach», «Hjelpetrener» |
+| **Stall** i tre bånd: I dag · Trener nå · Hele stallen. «Trener nå» er spillere som trener nå | «Trener nå» om coachen |
+| **Spiller 360** er den ene spillerprofilen | |
+| **Etterlevelse** er gjennomført tid mot planlagt tid, siste fire uker. Mangler forfalte økter vises — | Etterlevelse som antall økter |
+| **Økonomi** vises bare for head coach | |
+| Hurtigknapp: Ny økt i Workbench · Ny melding til spiller · Registrer runde · Spør Jarvis · Ny booking | |
+| **Jarvis** forbereder og sender ingenting. Alt som forlater huset krever Anders' ja | «Jarvis» og «Caddie» om hverandre. Se V1 i avviksfila |
+| **Egen** merker en gruppeøkt spilleren har tilpasset | |
+
+## 23. Forelder, innlogging og oppstart
+
+Kilde: beslutningene 23.09, 06.10 og §2.2.
+
+| Bruk / betydning | Ikke bruk / bruk i stedet |
+|---|---|
+| **Forelder** i skjermtekst. «Foresatt» bare i juridiske samtykketekster | «Foresatt» som vanlig rolleord |
+| Forelderen godkjenner innen **sju dager** etter at kontoen er opprettet. Barnet bruker appen fullt ut de sju dagene. Deretter er kontoen låst til godkjenning foreligger | «30 dager» |
+| Deling og opptak er sperret til forelder har godkjent | |
+| Fødselsdato kreves for spillere og kan ikke endres av spilleren selv | |
+| **Logg inn**, **Logg ut** | «Logg» alene |
+| Forelderens innsyn fortsetter etter 16 år, til spilleren fjerner forelderen | |
+
+Forelderflaten bruker felles skall (FO-01 til FO-04). Valg som står åpne: V2, V3, V4, V5, V11.
+
+## 24. Booking, betaling og e-post
+
+Kilde: beslutningene 26.09 og 27.09.
+
+| Bruk / betydning | Ikke bruk / bruk i stedet |
+|---|---|
+| Hovedknappen heter **Book time** | «Book kartleggingsøkt». Kartleggingsøkt finnes ikke |
+| Offentlig booking **bekreftes automatisk** når tiden er ledig og betalingen er gjennomført | «Venter på bekreftelse fra coach» for offentlig booking og flexkunder |
+| **Flexkunde** er en kunde som booker én time på nett uten konto | |
+| **Klippekort** gjelder coaching-pakkene Performance og Performance Pro. Én coachet økt trekker ett klipp | «Klippekort» om privattime 60 min alene |
+| Priser leses fra `ServiceType.priceOre` | Hardkodet beløp i tekst |
+| Bookingepostene: Bekreftelse · Endret time · Påminnelse · Avbestilling · Takk etter coachingtime · Oppfølging | |
+| Takk-e-posten er utkast hos coachen innen 24 timer. Én oppfølging etter 14 dager, bare hvis kunden ikke har booket eller kjøpt | Flere oppfølginger |
+
+Valg som står åpne: V6, V7, V8, V9, V10.
+
+## 25. WANG
+
+Kilde: beslutningene 26.09, 27.09 og 28.09.
+
+| Bruk / betydning | Ikke bruk / bruk i stedet |
+|---|---|
+| `/team-wang` har to roller: **Sportssjef** og **Trener** | «Assist Coach», «Admin», «Rektor», «Toppidrettssjef» i `/team-wang` |
+| Menyen har seks hovedpunkter. Trener: I dag · Trening · Tester · Konkurranse · Meldinger · Elever. Sportssjef får i tillegg Administrasjon | 43 menypunkter |
+| Periodene heter Grunnperiode · Spesialperiode · Turneringsperiode · Evaluering · Ferie · Restitusjon (§6) | «Spesialisering», «Turnering» som periodenavn |
+| Kategori A–K | Kategori E–A+ |
+| **Fireukerssjekk** erstatter halvårsevalueringen | «Halvårsevaluering» |
+| WANG og Team Norway **foreslår**, spilleren bestemmer | «Endrer planen» om WANG-trener |
+
+Valg som står åpne: V14 og samlingsordene under «Mindre valg».
+
+## 26. Team Norway
+
+Kilde: beslutningene 22.09, 28.09 og 06.10.
+
+| Bruk / betydning | Ikke bruk / bruk i stedet |
+|---|---|
+| Nivå: Ung · Junior · Amatør · Profesjonell. I Norge er man junior til og med det året man fyller 19 | |
+| **Wedge Gate** teller treff | Poengfelt og sperre |
+| Poeng for Nærspill Gate og VISA Express føres for hånd per slag; appen summerer | Egen poengskala |
+| Mangler en skala, vises **—** og «Referanse ikke satt» | Antatte tall |
+| Trenere foreslår og leser bare det spilleren har delt | |
+
+Valg som står åpent: V13 (egne ord som Analyse og Protokoll).
+
+## 27. Markedssider og GFGK Junior
+
+Kilde: §Merke og tekst i beslutningene. **All publisert tekst her venter på Anders, og rettes ikke uten hans ja.**
+
+| Bruk / betydning | Ikke bruk / bruk i stedet |
+|---|---|
+| Vis målingen | Vitnesbyrd, sitater, stjerner |
+| P-posisjoner er internt fagspråk | MORAD og Mac O'Grady nevnes aldri offentlig |
+| AK-stigen har fire trinn (Mini → Basis → Utvikling → Elite). Knøtt har egen gruppe ved siden av | «Fem trinn» (publisert, venter) |
+| Mulligan er et eget merke | Mulligan som del av AK Golf-merket |
+| Hovedknappen heter **Book time** | «Book kartleggingsøkt» |
+| Periodene følger §6 | «Spesialisering» (GFGK-teksten er publisert, venter) |
+
+## 28. Caddie og AI-tekster
+
+Kilde: §2.2, §4.2, §4.3 og beslutningene 28.09.
+
+| Bruk / betydning | Ikke bruk / bruk i stedet |
+|---|---|
+| **Caddie** er navnet på AI-assistenten (§2.2). Se V1 for forholdet til Jarvis | «AI-coach», «AI Golf Coach», «Coach AI», «AI-Caddie» |
+| Forslag har status Forslag · Godkjent · Kjører · Utført · Feilet (§4.3) | «Fullført» og «Forkastet» på AI-forslag |
+| Navn tas ut før tekst sendes til AI | Spillernavn i prompt |
+| Alt appen sier om en spiller har måling, dato og kilde. Estimat merkes «Estimat» | Tall uten kilde |
+| Caddie bruker masterens ord. L-faser, CS-koder, M0–M5 og PR1–PR5 er utgått | «L-faser» i Caddies instruks (se F2) |

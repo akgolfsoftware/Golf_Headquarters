@@ -46,7 +46,7 @@ const RAW = {
   periodetype: {
     tittel: "Periodetype",
     forklaring:
-      "Hvilken fase treningsperioden er i: Grunn (bygg basis), Spesialisering (integrer ferdigheter), Turnering (automatiser og spiss form), Evaluering (test) eller Ferie (vedlikehold). Hver fase har sin anbefalte fordeling av trening — anbefalinger, aldri sperrer.",
+      "Hvilken fase treningsperioden er i: Grunn (bygg basis), Spesial (integrer ferdigheter), Turnering (automatiser og spiss form), Evaluering (test) eller Ferie (vedlikehold). Hver fase har sin anbefalte fordeling av trening — anbefalinger, aldri sperrer.",
   },
   ukevolum: {
     tittel: "Ukevolum",
@@ -66,7 +66,7 @@ const RAW = {
   planEtterlevelse: {
     tittel: "Plan-etterlevelse",
     forklaring:
-      "Hvor mye av planlagt trening som faktisk ble gjennomført, i prosent. Et lavt tall er ikke et forbud mot noe, bare et signal om at planen og virkeligheten har sklidd fra hverandre.",
+      "Gjennomførte minutter delt på planlagte minutter siste fire uker, i prosent. Bare synlige økter med passert sluttid teller. Uten forfalte minutter vises «—». Et lavt tall er ikke et forbud mot noe, bare et signal om at planen og virkeligheten har sklidd fra hverandre.",
   },
   gjentaOkt: {
     tittel: "Gjenta",
@@ -283,7 +283,7 @@ const RAW = {
   tigerFive: {
     tittel: "Tiger Five — bortkastede slag",
     forklaring:
-      "De fem feilene som koster flest slag: dobbeltbogey eller verre, tre putt, straffeslag, ikke opp-og-ned fra kort avstand, og par 5 uten birdiesjanse. Fjerner du disse, faller scoren raskt — uten at svingen må endres.",
+      "De fem feilene som koster flest slag: dobbeltbogey eller verre, tre putt, straffeslag, ikke up and down fra kort avstand, og par 5 uten birdiesjanse. Fjerner du disse, faller scoren raskt — uten at svingen må endres.",
   },
   ballhastighet: {
     tittel: "Ballhastighet",

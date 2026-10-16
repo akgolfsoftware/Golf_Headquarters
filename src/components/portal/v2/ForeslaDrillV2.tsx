@@ -21,6 +21,7 @@ export type DrillSuggestion = {
   meta: string[];
   matchPct: number;
   why: string;
+  href?: string;
 };
 
 export type ForeslaDrillV2Data = {
@@ -83,7 +84,7 @@ function ForslagKort({ drill }: { drill: DrillSuggestion }) {
       </div>
 
       <div style={{ marginTop: 12 }}>
-        <Link href={`/portal/drills/${drill.id}`} style={{ textDecoration: "none" }}>
+        <Link href={drill.href ?? `/portal/drills/${drill.id}`} style={{ textDecoration: "none" }}>
           <CTAPill icon="arrow-right" full>Åpne drill</CTAPill>
         </Link>
       </div>

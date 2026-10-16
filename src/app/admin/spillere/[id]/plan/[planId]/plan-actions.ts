@@ -8,8 +8,7 @@
  * brukers plan (coachen redigerer spillerens plan). Auth er derfor COACH/ADMIN-
  * sjekk, ikke eierskap.
  *
- * "Legg til drill" gjenbruker den eksisterende createTask-actionen direkte
- * (den eier sin egen COACH/ADMIN-authz) — se drills-panel.tsx.
+ * Oppgaver lagres av oppgave-actions.ts (AG-TP-01).
  */
 
 import { z } from "zod";

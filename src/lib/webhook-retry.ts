@@ -11,6 +11,8 @@
 
 import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+import { sanitizeMessage } from "@/lib/error-sanitize";
+import { logError } from "@/lib/error-tracking";
 
 export type WebhookSource = "stripe" | "google-cal" | "resend" | (string & {});
 
@@ -27,7 +29,7 @@ export type RecordFailureInput = {
  */
 export async function recordWebhookFailure(
   input: RecordFailureInput,
-): Promise<void> {
+): Promise<boolean> {
   const errorMessage =
     input.error instanceof Error
       ? input.error.message
@@ -42,21 +44,25 @@ export async function recordWebhookFailure(
         webhookSource: input.source,
         eventId: input.eventId,
         payload: input.payload as Prisma.InputJsonValue,
-        errorMessage,
+        errorMessage: sanitizeMessage(errorMessage),
         status: "PENDING",
         attemptCount: 1,
       },
       update: {
-        errorMessage,
+        errorMessage: sanitizeMessage(errorMessage),
         attemptCount: { increment: 1 },
         lastAttemptAt: new Date(),
         status: "PENDING",
       },
     });
+    return true;
   } catch (err) {
-    // Hvis selv logging av feilen feiler er det lite vi kan gjøre — vi vil ikke
-    // kaste videre, fordi det vil bli en 500 til Stripe og dermed retry-loop.
-    console.error("[webhook-retry] kunne ikke lagre webhook-feil", err);
+    // Kalleren må ikke kvittere for en køplass som ikke finnes. Stripe-ruten
+    // svarer 503 slik at leverandøren kan levere hendelsen på nytt.
+    await logError({ context: "webhook.retry.persist", error: err,
+      meta: { source: input.source, eventId: input.eventId },
+    }).catch(() => undefined);
+    return false;
   }
 }
 

@@ -2,10 +2,18 @@
 import { TEST_PROTOKOLLER, hentProtokoll } from "@/lib/domain/pei/protokoll-definisjoner";
 
 export const TN_VERSION = "tn-excel-v3-2026-09-10";
-export type TnField = { key: string; label: string; unit?: string; choices?: string[]; min?: number; integer?: boolean; optional?: boolean };
+export const TN_RULES_VERSION = "tn-excel-v3-2026-10-02";
+/** Anders 14.10.2026: 8-ball med carry og side og 5 poeng i hull; gate-testene føres som Godkjent eller Bom. */
+export const TN_GODKJENT_VERSION = "tn-excel-v3-2026-10-14";
+export const TN_VERSIONS = [TN_VERSION, TN_RULES_VERSION, TN_GODKJENT_VERSION] as const;
+export type TnVersion = typeof TN_VERSIONS[number];
+export const tnVersion = (p: TnProtocol): TnVersion => p.version ?? TN_VERSION;
+/** `requiredUnless`: feltet kreves bare når det andre feltet står tomt (8-ball: carry og side, eller «I hull»). */
+export type TnField = { key: string; label: string; unit?: string; choices?: string[]; min?: number; integer?: boolean; optional?: boolean; requiredUnless?: string };
 export type TnRow = { label: string; target?: number; fields: TnField[] };
 export type TnKind = "near" | "carry" | "putts" | "course" | "free-course" | "length-putt" | "points" | "gate" | "speed" | "technique";
 export type TnProtocol = {
+  version?: TnVersion;
   id: string; name: string; source: string; kind: TnKind; rows: TnRow[];
   blocked?: string; variableCount?: boolean; points8Ball?: boolean;
 };
@@ -34,7 +42,8 @@ function add(id: string, name: string, source: string, kind: TnKind, rs: TnRow[]
 }
 for (const id of ["8-ball-variation", "8-ball-blocked"]) {
   const p = from(id);
-  add(id, p.name, `Scorekort GolfslagTester!${id.endsWith("variation") ? "A4:I35" : "K4:S35"}`, "near",
+  // Lagrede resultater med den gamle skalaen merkes med regelversjonen i navnet (Anders 14.10.2026).
+  add(id, `${p.name} · skala før 14.10.2026`, `Scorekort GolfslagTester!${id.endsWith("variation") ? "A4:I35" : "K4:S35"}`, "near",
     p.rows.map(r => ({ label: r.slag!, target: r.lengde, fields: [result] })), { points8Ball: true });
 }
 for (const [id, name, source] of [
@@ -61,7 +70,7 @@ add("putt-1-3m", "Putt 1–3 m", "Scorekort GolfslagTester!CC4:CI36", "putts",
   rows(aims("putt-1-3m"), [{ ...number("strokes", "Antall slag til hull", "slag", 1), integer: true }]));
 add("9-hull-lengde", "9 hull lengde", "Scorekort GolfslagTester!CL4:CR15; Referens!E11:G15", "length-putt",
   rows(aims("9-hull-lengde"), [number("feet", "Restavstand", "fot", 0), choice("holed", "Ball i hull", ["Ja", "Nei"])]),
-  { blocked: "Måleenhet for målavstand og poeng ved senket putt versus svært liten restavstand må bekreftes." });
+  { blocked: "Måleenhet for målavstand må bekreftes. Poenggrensene er avklart." });
 for (const [id, name, source] of [
   ["naerspill-gate", "Nærspill Gate", "A4:F16"], ["visa-express", "VISA Express", "H4:L16"], ["wedge-gate", "Wedge Gate", "A26:F38"],
 ]) {
@@ -99,9 +108,63 @@ for (const [id, range] of [["a", "B1:N20"], ["b", "R1:AD20"], ["c", "AG1:AS20"]]
     ...rows(Array(10).fill(null), [carry, side, number("clubPath", "Club Path", "°"), number("faceAngle", "Face Angle", "°"), number("attackAngle", "Attack Angle", "°"), number("dynamicLoft", "Dynamic Loft", "°"), number("impactLocation", "Impact Location"), ...speedFields], "Måling B"),
   ], { blocked: "Målsetting fra del A, målemetode og enhet for Impact Location må bekreftes. Råmålinger kan lagres som utkast." });
 }
-export const TN_CATALOG: readonly TnProtocol[] = protocols;
-export function tnProtocol(id: string, count?: number): TnProtocol | null {
-  const p = TN_CATALOG.find(p => p.id === id);
+// Keep the original registry intact: an old draft never silently changes its fields or rules.
+const LEGACY_CATALOG: readonly TnProtocol[] = protocols;
+/** Regelutgaven fra 02.10.2026, som protokollregisteret samme dag beskriver. Eldre utkast og resultater regnes mot den. */
+export const TN_RULES_CATALOG: readonly TnProtocol[] = protocols.map(p => {
+  if (p.id === "teknikktest-c") {
+    return { ...p, version: TN_RULES_VERSION, rows: p.rows.slice(0, 10),
+      blocked: "Målemetode og enhet for Impact Location må bekreftes. Fem grunnmålinger og fem måleforsøk kan lagres som utkast." };
+  }
+  if (["naerspill-gate", "visa-express"].includes(p.id)) {
+    return { ...p, version: TN_RULES_VERSION, blocked: undefined };
+  }
+  if (p.id === "wedge-gate") {
+    return { ...p, version: TN_RULES_VERSION, blocked: undefined, kind: "gate",
+      rows: p.rows.map(r => ({ ...r, fields: [choice("ok", "Både utslagsvinkel og carry innenfor sonen", ["Ja", "Nei"])] })) };
+  }
+  if (p.id === "driver-gate") {
+    return { ...p, version: TN_RULES_VERSION, blocked: undefined,
+      rows: p.rows.map(r => ({ ...r, label: `${r.label} · bredde 24 cm` })) };
+  }
+  if (p.id === "putt-gate") {
+    return { ...p, version: TN_RULES_VERSION, blocked: undefined,
+      rows: p.rows.map(r => ({ ...r, label: `${r.label} · bredde 6 cm`, fields: [
+        choice("ok", "Rent gjennom gate", ["Ja", "Nei"]),
+        choice("speedZone", "Innenfor lengdesonen på 50 cm", ["Ja", "Nei"]),
+        { ...choice("miss", "Bomretning ved gate", ["Venstre", "Høyre"]), optional: true },
+      ] })) };
+  }
+  if (p.kind === "speed") {
+    return { ...p, version: TN_RULES_VERSION, blocked: undefined,
+      rows: p.rows.map(r => ({ ...r, fields: r.fields.map(f => f.key === "distance"
+        ? { ...f, label: "Restavstand til mållinjen", min: 0 } : f) })) };
+  }
+  return p;
+});
+const godkjentEllerBom = (key: string, label: string): TnField => choice(key, label, ["Godkjent", "Bom"]);
+const GATE_IDS = ["naerspill-gate", "visa-express", "wedge-gate", "driver-gate", "putt-gate"];
+/** Gjeldende katalog: 8-ball med carry og side, gate-testene med Godkjent eller Bom (Anders 14.10.2026). */
+export const TN_CATALOG: readonly TnProtocol[] = TN_RULES_CATALOG.map(p => {
+  if (p.points8Ball) {
+    return { ...p, version: TN_GODKJENT_VERSION, name: from(p.id).name, rows: p.rows.map(r => ({ ...r, fields: [
+      { ...carry, requiredUnless: "holed" }, { ...side, requiredUnless: "holed" },
+      { ...choice("holed", "Ballen gikk i hull på ett slag", ["I hull"]), optional: true },
+    ] })) };
+  }
+  if (!GATE_IDS.includes(p.id)) return p;
+  // Nærspill Gate og VISA Express var poeng for hånd; nå ett valg per slag.
+  const label = p.id === "naerspill-gate" ? "Både utslagsvinkel og carry innenfor sonen"
+    : p.id === "visa-express" ? "Godkjent eller bom" : undefined;
+  return { ...p, version: TN_GODKJENT_VERSION, blocked: undefined, kind: "gate",
+    rows: p.rows.map(r => ({ ...r, fields: label ? [godkjentEllerBom("ok", label)]
+      : r.fields.map(f => f.key === "ok" ? godkjentEllerBom("ok", f.label) : f) })) };
+});
+const CATALOGS = [LEGACY_CATALOG, TN_RULES_CATALOG, TN_CATALOG];
+export function tnProtocol(id: string, count?: number, version?: string): TnProtocol | null {
+  if (version !== undefined && !(TN_VERSIONS as readonly string[]).includes(version)) return null;
+  const p = version === undefined ? TN_CATALOG.find(p => p.id === id)
+    : CATALOGS.map(c => c.find(p => p.id === id && tnVersion(p) === version)).find(Boolean);
   if (!p) return null;
   if (count === undefined) return p;
   if (!p.variableCount || !Number.isInteger(count) || count < 1 || count > 200) return null;

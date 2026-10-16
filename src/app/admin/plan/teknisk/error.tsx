@@ -1,21 +1,23 @@
 "use client";
 
-/* Tynn error.tsx (fase 6, SPOR R2) — logger error.digest, rendrer V2Feil.
-   Endre visuelt uttrykk i src/components/v2/feil-laste.tsx, ikke her. */
+/* Teknisk plan · oversikt: feil-tilstand i Precision Athletics. Logger error.digest som før. */
 
 import { useEffect } from "react";
-import { V2Feil } from "@/components/v2/feil-laste";
+import { CircleAlert, RotateCw } from "lucide-react";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { FeilTilstand, Knapp } from "@/components/precision/pa";
 
-export default function Error({
-  error,
-  reset,
-}: {
-  error: Error & { digest?: string };
-  reset: () => void;
-}) {
+export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   useEffect(() => {
     console.error("[v2/error]", error.digest, error);
   }, [error]);
-
-  return <V2Feil reset={reset} tilbakeHref="/admin/agencyos" />;
+  return (
+    <AgencyOSSkall navn="">
+      <div className="pa-side">
+        <FeilTilstand icon={CircleAlert} title="Oversikten kunne ikke hentes" text="Ingen planer er endret. Prøv igjen."
+          code={error.digest ? `FEIL · ${error.digest}` : "FEIL · TEKNISK PLAN"}
+          retry={<Knapp variant="secondary" icon={RotateCw} iconName="rotate-cw" onClick={reset}>Prøv igjen</Knapp>} />
+      </div>
+    </AgencyOSSkall>
+  );
 }

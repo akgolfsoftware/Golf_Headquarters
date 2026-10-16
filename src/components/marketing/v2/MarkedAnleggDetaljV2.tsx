@@ -1,6 +1,8 @@
 /**
  * AK Golf HQ — markedsside ANLEGG-DETALJ (/anlegg/[slug]), Paper.
  * Fasit: designsystem/paper/fase2/marketing/marketing-katalog.html (§detalj).
+ * Avvik:
+ *   - fasiten er utgått; markedet følger Precision Athletics fra 04.10.2026 (src/styles/marked-precision.css).
  * Ekte copy speilet fra (mlegacy)/anlegg/[slug]/page.tsx.
  */
 import Image from "next/image";
@@ -110,7 +112,7 @@ export function MarkedAnleggDetaljV2({ data }: { data: AnleggData }) {
                       display: "block",
                       marginTop: 12,
                       fontFamily: "var(--tl-font-mono)",
-                      fontSize: 9.5,
+                      fontSize: 11,
                       fontWeight: 700,
                       letterSpacing: "0.1em",
                       textTransform: "uppercase",
@@ -134,7 +136,7 @@ export function MarkedAnleggDetaljV2({ data }: { data: AnleggData }) {
                 display: "block",
                 marginBottom: 10,
                 fontFamily: "var(--tl-font-mono)",
-                fontSize: 10,
+                fontSize: 11,
                 letterSpacing: "0.09em",
                 textTransform: "uppercase",
                 color: "var(--tl-mute)",
@@ -199,7 +201,7 @@ export function MarkedAnleggDetaljV2({ data }: { data: AnleggData }) {
             <span
               style={{
                 fontFamily: "var(--tl-font-mono)",
-                fontSize: 10.5,
+                fontSize: 11,
                 fontWeight: 700,
                 letterSpacing: "0.14em",
                 textTransform: "uppercase",

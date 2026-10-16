@@ -6,6 +6,7 @@
  * — stallen importerer `erOktGjennomfort` herfra så regelen bor ett sted.
  */
 
+import { etterlevelse } from "@/lib/domain/etterlevelse";
 import type { SessionStatus } from "@/generated/prisma/client";
 
 export type OktCompliance = "pa-plan" | "avvik" | "ikke-gjennomfort" | "fremtidig";
@@ -36,25 +37,18 @@ const AVVIK_STATUSER: ReadonlySet<SessionStatus> = new Set([
  * - `fremtidig`        — ikke forfalt ennå; skal IKKE compliance-vurderes
  */
 export function oktCompliance(okt: ComplianceOkt, now: Date): OktCompliance {
+  const sluttMs = okt.scheduledAt.getTime() + okt.durationMin * 60_000;
+  if (sluttMs > now.getTime()) return "fremtidig";
   if (erOktGjennomfort(okt.status)) return "pa-plan";
   if (AVVIK_STATUSER.has(okt.status)) return "avvik";
-  const sluttMs = okt.scheduledAt.getTime() + okt.durationMin * 60_000;
-  return sluttMs > now.getTime() ? "fremtidig" : "ikke-gjennomfort";
+  return "ikke-gjennomfort";
 }
 
 /**
  * Plan-adherence i prosent for et sett økter: gjennomførte minutter av
- * planlagte minutter, kun blant FORFALTE økter (fremtidige teller ikke —
+ * planlagte minutter siste fire uker, kun blant FORFALTE økter (fremtidige teller ikke —
  * de kan ennå gjennomføres på plan). `null` når ingen økter er forfalt.
  */
-export function adherencePct(okter: ComplianceOkt[], now: Date): number | null {
-  let planlagt = 0;
-  let gjennomfort = 0;
-  for (const okt of okter) {
-    if (oktCompliance(okt, now) === "fremtidig") continue;
-    planlagt += okt.durationMin;
-    if (erOktGjennomfort(okt.status)) gjennomfort += okt.durationMin;
-  }
-  if (planlagt === 0) return null;
-  return Math.round((gjennomfort / planlagt) * 100);
+export function adherencePct(okter: readonly ComplianceOkt[], now: Date): number | null {
+  return etterlevelse(okter, now).pct;
 }

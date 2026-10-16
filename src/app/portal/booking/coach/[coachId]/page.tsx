@@ -1,3 +1,4 @@
+// PH23CoachTid — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
 /**
  * PlayerHQ · Book direkte med coach (/portal/booking/coach/[coachId]) — v2.
  * v2-port 17. juli 2026 (Team G-B): `BookingCoachV2` erstatter legacy-siden,
@@ -13,7 +14,7 @@
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { TilbakeLenke } from "@/components/v2";
 import { BookingCoachV2 } from "@/components/portal/v2/BookingCoachV2";
 
@@ -66,9 +67,8 @@ export default async function BookingCoachPage({ params }: Props) {
   });
 
   return (
-    // Ingen eksplisitt aktiv-nøkkel: booking-hubben (/portal/booking) lar
-    // V2Shell auto-utlede fra pathname — samme her.
-    <V2Shell bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
       <TilbakeLenke href="/portal/booking">Booking</TilbakeLenke>
       <BookingCoachV2
         data={{
@@ -92,7 +92,8 @@ export default async function BookingCoachPage({ params }: Props) {
           visProKrav: user.tier === "GRATIS",
         }}
       />
-    </V2Shell>
+          </div>
+    </PlayerHQSkall>
   );
 }
 

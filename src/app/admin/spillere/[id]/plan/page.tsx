@@ -1,64 +1,17 @@
+import { redirect } from "next/navigation";
+
 /**
- * AgencyOS — Spiller-plan-indeks (/admin/spillere/[id]/plan), v2-design (retning C).
+ * `/admin/spillere/[id]/plan` → Spiller 360 (`?fane=tp`), 29.09.2026.
  *
- * Auth + datakontrakt gjenbrukt 1:1 fra den forrige (legacy) siden: samme
- * requirePortalUser-guard (ADMIN/COACH) og samme TechnicalPlan-spørring
- * (navn/status/datoer). Spiller-id kommer fra ruten (params.id) —
- * notFound() hvis spilleren ikke finnes.
- *
- * Server component.
+ * Teknisk plan-fanen lister alle tekniske planer med lenke til hver plan (AG-10), og
+ * Workbench-lenken når spilleren ikke har en plan.
+ * Tilgangssjekken skjer på Spiller 360 (requirePortalUser + coachScopedPlayerWhere).
  */
-
-import { notFound } from "next/navigation";
-
-import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { coachScopedPlayerWhere } from "@/lib/auth/coached";
-import { prisma } from "@/lib/prisma";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import {
-  AdminSpillerPlanV2,
-  type AdminSpillerPlanData,
-} from "@/components/admin/v2/AdminSpillerPlanV2";
-
-export const dynamic = "force-dynamic";
-
-export default async function SpillerPlanIndeksPage({
+export default async function Spiller360PlanRedirect({
   params,
 }: {
   params: Promise<{ id: string }>;
-}) {
-  const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
+}): Promise<never> {
   const { id } = await params;
-
-  // Samme select-kontrakt som den forrige /plan-indeksen.
-  const [spiller, planer] = await Promise.all([
-    prisma.user.findFirst({
-      where: { AND: [coachScopedPlayerWhere(user), { id }] },
-      select: { id: true, name: true },
-    }),
-    prisma.technicalPlan.findMany({
-      where: { userId: id },
-      select: {
-        id: true,
-        navn: true,
-        status: true,
-        startDato: true,
-        sluttDato: true,
-        updatedAt: true,
-      },
-    }),
-  ]);
-
-  if (!spiller) notFound();
-
-  const data: AdminSpillerPlanData = {
-    spiller: { id: spiller.id, navn: spiller.name },
-    planer,
-  };
-
-  return (
-    <V2Shell bredde="kolonne" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <AdminSpillerPlanV2 data={data} />
-    </V2Shell>
-  );
+  redirect(`/admin/spillere/${id}?fane=tp`);
 }

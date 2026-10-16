@@ -1,26 +1,34 @@
 /**
- * PlayerHQ Fysisk / Styrkeprogram — Precision Athletics standard.
- * 6-ukers bølgeperiodisering, baseløft, skivekalkulator og 1RM-estimat.
+ * PH26Fysisk — fysisk logging i PlayerHQSkall.
+ * Sett, intervaller og pulssone bruker fortsatt de eksisterende loggekomponentene.
  */
 
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { StyrkeProgramView } from "@/components/portal/toppidrett/StyrkeProgramView";
+import { getUnreadNotifications } from "@/app/portal/actions";
+import { getFysiskData } from "@/lib/portal-fysisk/fysisk-data";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { FysiskV2 } from "@/components/portal/v2/FysiskV2";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Fysisk trening · PlayerHQ" };
 
 export default async function V2FysiskPreviewPage() {
-  const user = await requirePortalUser({ kreverTilgang: "FULL" });
+  const user = await requirePortalUser();
   if (user.role === "PARENT") redirect("/forelder");
   if (user.role === "GUEST") redirect("/admin/kalender");
 
+  const [data, ulest] = await Promise.all([
+    getFysiskData(user.id),
+    getUnreadNotifications(user.id, 1),
+  ]);
+
   return (
-    <V2Shell bredde="full" aktiv="gjor" nav={PLAYERHQ_NAV} navn={user.name ?? "Spiller"} avatarUrl={user.avatarUrl}>
-      <div className="max-w-5xl mx-auto py-4">
-        <StyrkeProgramView />
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={ulest.count}>
+      <div className="pa-side">
+        <Link href="/portal/gjennomfore" className="ph-tilbake">Gjør</Link>
+        <FysiskV2 data={data} />
       </div>
-    </V2Shell>
+    </PlayerHQSkall>
   );
 }

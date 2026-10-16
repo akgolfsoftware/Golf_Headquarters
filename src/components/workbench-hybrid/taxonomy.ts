@@ -72,7 +72,7 @@ export const DIM_LABELS: Partial<Record<DimField, Record<string, string>>> = {
     SONE_3: "Sone 3 — Terskel", SONE_4: "Sone 4 — VO2max", SONE_5: "Sone 5 — Anaerob",
   },
   periode: {
-    GRUNN: "Grunnperiode", SPESIALISERING: "Spesialiseringsperiode",
+    GRUNN: "Grunnperiode", SPESIALISERING: "Spesialperiode",
     TURNERING: "Turneringsperiode", EVALUERING: "Evalueringsperiode", FERIE: "Ferieperiode",
   },
 };

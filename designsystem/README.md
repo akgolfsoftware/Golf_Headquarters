@@ -1,5 +1,11 @@
 # Designarbeid og referanser
 
+**Videreføring 11.10.2026:** Retning A er valgt. Precision og AK Golf HQ-skjermprosjektet
+er kontrollert på leveranse 3.1.0-l. Dette repoets eldre speil er ikke oppdatert som en
+hel pakke, og designprosjektets tester godkjenner ikke automatisk appen. Se
+[gjeldende valg og pakkeidentitet](../docs/design-system/design-autoritet.md#valgt-videreføring--11102026)
+og [faktisk integrasjonsstatus](../docs/design-audit/precision-appintegrasjon-2026-10-11.md).
+
 ## Gjeldende designautoritet — 26.09.2026
 
 [Claude Design-prosjektet «AK Golf Precision Athletics»](../docs/design-system/design-autoritet.md)

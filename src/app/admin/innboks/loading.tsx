@@ -1,7 +1,16 @@
-/* V2Laster-skeleton (fase 6, SPOR R2). Server Component. */
+"use client";
 
-import { V2Laster } from "@/components/v2/laster";
+/* AG-04 Innboks i Precision Athletics: laster-tilstanden i samme skall. */
+
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { LasterTilstand } from "@/components/precision/pa";
 
 export default function Loading() {
-  return <V2Laster variant="liste" />;
+  return (
+    <AgencyOSSkall navn="">
+      <div className="pa-side">
+        <LasterTilstand text="Henter innboksen …" />
+      </div>
+    </AgencyOSSkall>
+  );
 }

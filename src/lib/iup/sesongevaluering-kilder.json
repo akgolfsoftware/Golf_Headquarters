@@ -1,0 +1,180 @@
+{
+  "iup-2025": {
+    "filnavn": "team-norway-iup-2025.xlsx",
+    "sha256": "25d4e7466697fd231ebf6fb511c44174ad27f0f06fe9374bbe0fec21b04d886e",
+    "ark": "2. Evaluering spörsmål",
+    "skala": {
+      "min": 1,
+      "maks": 4
+    },
+    "sporsmal": [
+      {
+        "id": "iup-2025-sesong-b2",
+        "celle": "B2",
+        "type": "FRITEKST",
+        "tekst": "Hva har du gjort bra denne sesongen?"
+      },
+      {
+        "id": "iup-2025-sesong-b4",
+        "celle": "B4",
+        "type": "FRITEKST",
+        "tekst": "Hva kunne vært bedre?"
+      },
+      {
+        "id": "iup-2025-sesong-b6",
+        "celle": "B6",
+        "type": "FRITEKST",
+        "tekst": "Hvordan vil du vurdere innsatsen din (f.eks. hvor mye tid har du brukt på golf)?"
+      },
+      {
+        "id": "iup-2025-sesong-b11",
+        "celle": "B11",
+        "type": "SKALA",
+        "tekst": "Jeg har hatt (2023) en god plan som dekker alle delene (pyramiden) og forteller meg når jeg skal trene på forskjellige ting."
+      },
+      {
+        "id": "iup-2025-sesong-b12",
+        "celle": "B12",
+        "type": "SKALA",
+        "tekst": "Jeg gjennomfører planen jeg hadde"
+      },
+      {
+        "id": "iup-2025-sesong-b13",
+        "celle": "B13",
+        "type": "SKALA",
+        "tekst": "Jeg har god kunnskap om hva og hvor god jeg må være for å nå mine mål (neste år)"
+      },
+      {
+        "id": "iup-2025-sesong-b14",
+        "celle": "B14",
+        "type": "SKALA",
+        "tekst": "Jeg har god kunnskap om innsatsen jeg må gjøre for å nå mine mål"
+      },
+      {
+        "id": "iup-2025-sesong-b15",
+        "celle": "B15",
+        "type": "SKALA",
+        "tekst": "Jeg har god kunnskap om pyramiden"
+      },
+      {
+        "id": "iup-2025-sesong-b16",
+        "celle": "B16",
+        "type": "SKALA",
+        "tekst": "Jeg kan håndtere utfordringene som oppstår i turneringer"
+      },
+      {
+        "id": "iup-2025-sesong-b17",
+        "celle": "B17",
+        "type": "SKALA",
+        "tekst": "Jeg kan håndtere utfordringene som oppstår i forbindelse med min eliteinnsats (forsinkede flyreiser, dårlig vær under trening osv.)"
+      },
+      {
+        "id": "iup-2025-sesong-b18",
+        "celle": "B18",
+        "type": "SKALA",
+        "tekst": "Jeg er i stand til å følge planen min selv om jeg ikke oppnår resultater"
+      },
+      {
+        "id": "iup-2025-sesong-b19",
+        "celle": "B19",
+        "type": "SKALA",
+        "tekst": "Jeg kan ta personlig ansvar for min utvikling (f.eks. når treneren ikke er med på treningen)"
+      },
+      {
+        "id": "iup-2025-sesong-b20",
+        "celle": "B20",
+        "type": "SKALA",
+        "tekst": "Vurder ditt daglige treningsmiljø med fokus på bane, treningsområde, innendørsfasiliteter og teknisk utstyr."
+      }
+    ]
+  },
+  "iup-2027": {
+    "filnavn": "Team Norway IUP 2027.xlsx",
+    "sha256": "6786d70f166dc4d5602f792a165eef8372743597ac44904a9fa0a3dd2892f222",
+    "ark": "2. Evaluering spørsmål",
+    "skala": {
+      "min": 1,
+      "maks": 4
+    },
+    "sporsmal": [
+      {
+        "id": "iup-2027-sesong-b2",
+        "celle": "B2",
+        "type": "FRITEKST",
+        "tekst": "Hva har du gjort bra denne sesongen?"
+      },
+      {
+        "id": "iup-2027-sesong-b4",
+        "celle": "B4",
+        "type": "FRITEKST",
+        "tekst": "Hva kunne vært bedre?"
+      },
+      {
+        "id": "iup-2027-sesong-b6",
+        "celle": "B6",
+        "type": "FRITEKST",
+        "tekst": "Hvordan vil du vurdere innsatsen din (f.eks. hvor mye tid har du brukt på golf)?"
+      },
+      {
+        "id": "iup-2027-sesong-b11",
+        "celle": "B11",
+        "type": "SKALA",
+        "tekst": "Jeg har hatt (2026) en god plan som dekker alle delene (pyramiden) og forteller meg når jeg skal trene på forskjellige ting."
+      },
+      {
+        "id": "iup-2027-sesong-b12",
+        "celle": "B12",
+        "type": "SKALA",
+        "tekst": "Jeg gjennomfører planen jeg hadde"
+      },
+      {
+        "id": "iup-2027-sesong-b13",
+        "celle": "B13",
+        "type": "SKALA",
+        "tekst": "Jeg har god kunnskap om hva og hvor god jeg må være for å nå mine mål (neste år)"
+      },
+      {
+        "id": "iup-2027-sesong-b14",
+        "celle": "B14",
+        "type": "SKALA",
+        "tekst": "Jeg har god kunnskap om innsatsen jeg må gjøre for å nå mine mål"
+      },
+      {
+        "id": "iup-2027-sesong-b15",
+        "celle": "B15",
+        "type": "SKALA",
+        "tekst": "Jeg har god kunnskap om pyramiden"
+      },
+      {
+        "id": "iup-2027-sesong-b16",
+        "celle": "B16",
+        "type": "SKALA",
+        "tekst": "Jeg kan håndtere utfordringene som oppstår i turneringer"
+      },
+      {
+        "id": "iup-2027-sesong-b17",
+        "celle": "B17",
+        "type": "SKALA",
+        "tekst": "Jeg kan håndtere utfordringene som oppstår i forbindelse med min eliteinnsats (forsinkede flyreiser, dårlig vær under trening osv.)"
+      },
+      {
+        "id": "iup-2027-sesong-b18",
+        "celle": "B18",
+        "type": "SKALA",
+        "tekst": "Jeg er i stand til å følge planen min selv om jeg ikke oppnår resultater"
+      },
+      {
+        "id": "iup-2027-sesong-b19",
+        "celle": "B19",
+        "type": "SKALA",
+        "tekst": "Jeg kan ta personlig ansvar for min utvikling (f.eks. når treneren ikke er med på treningen)"
+      },
+      {
+        "id": "iup-2027-sesong-b20",
+        "celle": "B20",
+        "type": "SKALA",
+        "tekst": "Vurder ditt daglige treningsmiljø med fokus på bane, treningsområde, innendørsfasiliteter og teknisk utstyr."
+      }
+    ]
+  }
+}

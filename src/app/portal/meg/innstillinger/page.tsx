@@ -1,71 +1,48 @@
 /**
- * v2 — PlayerHQ Innstillinger (retning C). V2Shell leverer chrome-en
- * (IkonRail/BunnNav, aktiv «meg»), InnstillingerV2 rendrer innholds-stacken.
+ * PlayerHQ · Meg · Innstillinger (/portal/meg/innstillinger) — PH-25 i nytt design
+ * (docs/design-system/utkast-playerhq/meg.html, skjermen «Innstillinger»).
  *
- * Auth + dataloader gjenbruker de ekte kildene: requirePortalUser gir
- * bruker (e-post, notif-preferanser, samtykke-felt), getAbonnementData gir
- * FAKTISK abonnementstilstand. Foreldrenavnet slås opp via
- * guardianConsentByUserId. Ingen fabrikerte verdier.
+ * Bare ekte status: helse-samtykket, varselvalgene, delingen og om en sletteforespørsel
+ * allerede er sendt. Hver innstilling endres på sin egen underside.
  */
-
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { getAbonnementData } from "@/lib/portal-abonnement/abonnement-data";
-import { lesPreferences } from "@/lib/preferences";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { InnstillingerV2, type InnstillingerData } from "@/components/portal/v2/InnstillingerV2";
-import { pakkeNavn } from "@/lib/domain/abonnement";
+import { lesPreferences } from "@/lib/preferences";
+import { harManuellHelseSamtykke } from "@/lib/health/samtykke";
+import { grupperMedEksterneLesereForSpiller, hentDelingsStatus } from "@/lib/deling/samtykke";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { PH25Innstillinger, type PH25InnstillingerData } from "@/components/portal/precision/PH25Innstillinger";
 
 export const dynamic = "force-dynamic";
-
-function formatDato(d: Date | null): string | null {
-  if (!d) return null;
-  return d.toLocaleDateString("nb-NO", { day: "numeric", month: "long", year: "numeric" });
-}
+export const metadata = { title: "Innstillinger · PlayerHQ" };
 
 export default async function InnstillingerPage() {
   const user = await requirePortalUser({ kreverTilgang: "INGEN" });
   if (user.role === "PARENT") redirect("/forelder");
   if (user.role === "GUEST") redirect("/admin/kalender");
 
-  const prefs = lesPreferences(user);
-
-  // Foreldrenavn (kun oppslag når samtykke faktisk er godkjent av noen).
-  const [abo, forelder] = await Promise.all([
-    getAbonnementData(user.id),
-    user.guardianConsentByUserId
-      ? prisma.user.findUnique({ where: { id: user.guardianConsentByUserId }, select: { name: true } })
-      : Promise.resolve(null),
+  const [fullUser, helseLogg, grupper, aapenSletting] = await Promise.all([
+    prisma.user.findUnique({ where: { id: user.id }, select: { preferences: true } }),
+    harManuellHelseSamtykke(user.id),
+    grupperMedEksterneLesereForSpiller(user.id),
+    prisma.moderationCase.findFirst({ where: { type: "GDPR_SLETTING", userId: user.id, status: "OPEN" }, select: { id: true } }),
   ]);
+  const prefs = lesPreferences(fullUser ?? { preferences: null });
+  const valg = Object.values(prefs.notif);
+  const status = await hentDelingsStatus(user.id, grupper.map((g) => g.id)).catch(() => null);
 
-  // Abonnement-kanon: gratis via coaching-pakke (credits) / prøve / gruppe,
-  // ellers 299 kr/mnd. «betaler» = FAKTISK PRO uten coaching-pakke.
-  const harPakke = abo.monthlyCredits > 0;
-  const pakke = pakkeNavn(abo.monthlyCredits);
-  const gratis = harPakke || !abo.erPro;
-  const betaler = abo.erPro && !harPakke;
-
-  const data: InnstillingerData = {
-    epost: user.email,
-    notif: prefs.notif,
-    venneOktSynlig: prefs.venneOktSynlig,
-    samtykke: {
-      kreves: user.requiresGuardianConsent,
-      godkjentDato: formatDato(user.guardianConsentGivenAt),
-      godkjentAv: forelder?.name ?? null,
-    },
-    abonnement: {
-      gratis,
-      pakkeNavn: pakke,
-      betaler,
-      nesteTrekk: betaler ? formatDato(abo.nesteTrekk) : null,
-    },
+  const data: PH25InnstillingerData = {
+    helseLogg,
+    varsler: { paa: valg.filter(Boolean).length, av: valg.length },
+    deling: status ? status.filter((s) => s.testResultater || s.stats || s.komplettProfil).length : null,
+    spraak: prefs.spraak === "en" ? "English" : "Norsk",
+    slettingSendt: aapenSletting !== null,
   };
 
   return (
-    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <InnstillingerV2 data={data} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <PH25Innstillinger data={data} />
+    </PlayerHQSkall>
   );
 }

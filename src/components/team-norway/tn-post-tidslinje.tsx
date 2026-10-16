@@ -86,7 +86,7 @@ export function TnSeHvem({ postId }: { postId: string }) {
           style={{
             marginTop: 8,
             padding: 10,
-            borderRadius: TN.radius.md,
+            borderRadius: TN.radius.sm,
             background: TN.surfaceSunken,
             display: "flex",
             flexDirection: "column",
@@ -97,13 +97,13 @@ export function TnSeHvem({ postId }: { postId: string }) {
           {pending && <span style={{ fontFamily: TN.font.body, fontSize: TN.text.xs, color: TN.textSecondary }}>Henter …</span>}
           {data?.mangler.map((m) => (
             <div key={m.userId} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ width: 7, height: 7, borderRadius: TN.radius.full, background: TN.ink300, flexShrink: 0 }} />
+              <span style={{ width: 7, height: 7, borderRadius: TN.radius.xs, background: TN.ink300, flexShrink: 0 }} />
               <span style={{ fontFamily: TN.font.body, fontSize: TN.text.xs, color: TN.textSecondary }}>{m.navn} — ikke åpnet</span>
             </div>
           ))}
           {data?.apnet.map((a) => (
             <div key={a.userId} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ width: 7, height: 7, borderRadius: TN.radius.full, background: TN.status.green, flexShrink: 0 }} />
+              <span style={{ width: 7, height: 7, borderRadius: TN.radius.xs, background: TN.status.green, flexShrink: 0 }} />
               <span style={{ fontFamily: TN.font.body, fontSize: TN.text.xs, color: TN.textPrimary }}>{a.navn}</span>
             </div>
           ))}
@@ -137,8 +137,8 @@ function VedleggChip({
         display: "flex",
         alignItems: "center",
         gap: 10,
-        border: `1px solid ${TN.borderSubtle}`,
-        borderRadius: TN.radius.md,
+        border: `1px solid ${TN.ink200}`,
+        borderRadius: TN.radius.sm,
         padding: "8px 14px 8px 8px",
         minWidth: 210,
         background: TN.surfacePage,
@@ -219,8 +219,8 @@ export function TnPostTidslinje({
       <div
         style={{
           background: TN.surfaceCard,
-          borderRadius: TN.radius.lg,
-          border: `1px solid ${TN.borderSubtle}`,
+          borderRadius: TN.radius.sm,
+          border: `1px solid ${TN.ink200}`,
           padding: 20,
           display: "flex",
           flexDirection: "column",
@@ -261,8 +261,8 @@ export function TnPostTidslinje({
             key={p.id}
             style={{
               background: TN.surfaceCard,
-              borderRadius: TN.radius.lg,
-              border: `1px solid ${TN.borderSubtle}`,
+              borderRadius: TN.radius.sm,
+              border: `1px solid ${TN.ink200}`,
               padding: "14px 18px",
               display: "flex",
               flexDirection: "column",
@@ -308,12 +308,12 @@ export function TnPostTidslinje({
             )}
 
             {p.kvittering && (
-              <div style={{ display: "flex", alignItems: "center", gap: 10, borderTop: `1px solid ${TN.borderSubtle}`, paddingTop: 10 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, borderTop: `1px solid ${TN.ink200}`, paddingTop: 10 }}>
                 <span
                   style={{
                     width: 8,
                     height: 8,
-                    borderRadius: TN.radius.full,
+                    borderRadius: TN.radius.xs,
                     background:
                       p.kvittering.totalt === 0
                         ? TN.ink300

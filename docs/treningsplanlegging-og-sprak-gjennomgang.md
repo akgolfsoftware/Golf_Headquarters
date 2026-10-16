@@ -1,6 +1,8 @@
-# Språk og treningsplanlegging — gjennomgang (MASTER)
+# Språk og treningsplanlegging — historisk gjennomgang
 
-**Status 22.09.2026 (Anders):** Dette dokumentet er master for valgtreet fra årsplan til øvelse (åtte trinn) og for språkbeslutningene i tabellene. Der det spriker fra [Treningsplanlegging](treningsplanlegging.md) eller [ordboken](ordbok.md), gjelder dette dokumentet. Tomme «Ønsket endring»-felt betyr at dagens valg står inntil Anders fyller inn noe annet.
+> Historisk arbeidsgrunnlag fra 22.09.2026. **Ikke styrende.**
+> [Én gjeldende master for treningsplanlegging og språk](treningsplanlegging-og-sprak.md)
+> overtar valgtreet og språkbeslutningene. Tomme «Ønsket endring»-felt nedenfor er historikk, ikke nye vedtak.
 
 ---
 

@@ -29,6 +29,7 @@ const NAVN_TIL_TYPE: Record<string, PeriodeType> = {
   testuke: "TESTUKE",
   evaluering: "EVALUERING",
   ferie: "FERIE",
+  restitusjon: "RESTITUSJON",
 };
 
 /** Normalisert nøkkel for et periodenavn — samme normalisering brukes ved lagring i DB. */

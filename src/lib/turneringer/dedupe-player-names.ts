@@ -1,5 +1,6 @@
 /**
- * Navnevask for PublicPlayer. KUN trygg formaterings-tier.
+ * Navnevask for ukoblede PublicPlayer-profiler uten kilde-ID-konflikt.
+ * Kontokoblinger flyttes eller fjernes aldri av denne funksjonen.
  *
  * Kalles fra:
  * - scripts/dedupe-player-names.ts (CLI)
@@ -8,7 +9,7 @@
  * Middelnavn-varianter merges IKKE — de rapporteres for manuell gjennomgang.
  */
 
-import type { PrismaClient } from "@/generated/prisma/client";
+import type { Prisma, PrismaClient } from "@/generated/prisma/client";
 import { normalizePlayerName } from "@/lib/scrapers/player-resolve";
 
 /** Rent visningsnavn: fjern parentes-markører, kollaps mellomrom. */
@@ -32,6 +33,12 @@ export type DedupePlayerNamesResult = {
   skippedConflict: number;
   fuzzyLeft: number;
   skippedNames: string[];
+  skippedLinkedGroups: number;
+  skippedStableIdConflicts: number;
+  skippedGroups: {
+    playerIds: string[];
+    reason: "ACCOUNT_LINKED" | "SOURCE_ID_CONFLICT" | "BIRTH_YEAR_CONFLICT";
+  }[];
 };
 
 export async function runDedupePlayerNames(
@@ -39,6 +46,21 @@ export async function runDedupePlayerNames(
   opts: { apply?: boolean } = {},
 ): Promise<DedupePlayerNamesResult> {
   const APPLY = opts.apply === true;
+  // Hele gjennomføringen rulles tilbake ved en samtidig identitetsendring.
+  // Ingen halvferdig flytting skal kunne etterlate en konto uten kildeprofil.
+  if (APPLY) {
+    return prisma.$transaction(tx => dedupePlayerNames(tx, true), {
+      isolationLevel: "Serializable",
+      timeout: 60_000,
+    });
+  }
+  return dedupePlayerNames(prisma, false);
+}
+
+async function dedupePlayerNames(
+  prisma: Prisma.TransactionClient,
+  APPLY: boolean,
+): Promise<DedupePlayerNamesResult> {
 
   const players = await prisma.publicPlayer.findMany({
     select: {
@@ -48,6 +70,8 @@ export async function runDedupePlayerNames(
       birthYear: true,
       dataGolfId: true,
       ngfId: true,
+      wagrId: true,
+      linkedUser: { select: { id: true } },
       bio: true,
       photoUrl: true,
       instagramHandle: true,
@@ -68,10 +92,21 @@ export async function runDedupePlayerNames(
   let mergedProfiles = 0;
   let movedEntries = 0;
   let droppedEntries = 0;
-  const skipped: string[] = [];
+  const skipped: DedupePlayerNamesResult["skippedGroups"] = [];
+  const blockedIds = new Set<string>();
 
   for (const group of groups.values()) {
     if (group.length < 2) continue;
+
+    const skip = (reason: DedupePlayerNamesResult["skippedGroups"][number]["reason"]) => {
+      const playerIds = group.map(p => p.id);
+      playerIds.forEach(id => blockedIds.add(id));
+      skipped.push({ playerIds, reason });
+    };
+    if (group.some(p => p.linkedUser != null)) {
+      skip("ACCOUNT_LINKED");
+      continue;
+    }
 
     const years = new Set(
       group.map((p) => p.birthYear).filter((y): y is number => y != null),
@@ -79,8 +114,14 @@ export async function runDedupePlayerNames(
     const dgIds = new Set(
       group.map((p) => p.dataGolfId).filter((d): d is number => d != null),
     );
-    if (years.size > 1 || dgIds.size > 1) {
-      skipped.push(group[0].name);
+    const ngfIds = new Set(group.map(p => p.ngfId).filter((id): id is string => id != null));
+    const wagrIds = new Set(group.map(p => p.wagrId).filter((id): id is string => id != null));
+    if (dgIds.size > 1 || ngfIds.size > 1 || wagrIds.size > 1) {
+      skip("SOURCE_ID_CONFLICT");
+      continue;
+    }
+    if (years.size > 1) {
+      skip("BIRTH_YEAR_CONFLICT");
       continue;
     }
 
@@ -108,6 +149,7 @@ export async function runDedupePlayerNames(
         group.find((p) => p.dataGolfId != null)?.dataGolfId ??
         null,
       ngfId: target.ngfId ?? group.find((p) => p.ngfId)?.ngfId ?? null,
+      wagrId: target.wagrId ?? group.find((p) => p.wagrId)?.wagrId ?? null,
       bio: target.bio ?? group.find((p) => p.bio)?.bio ?? null,
       photoUrl:
         target.photoUrl ?? group.find((p) => p.photoUrl)?.photoUrl ?? null,
@@ -146,30 +188,7 @@ export async function runDedupePlayerNames(
             });
         }
       }
-      // Flytt User.publicPlayerId fra kilde til mål før sletting (unik constraint).
       if (APPLY) {
-        const srcUsers = await prisma.user.findMany({
-          where: { publicPlayerId: src.id },
-          select: { id: true },
-        });
-        const targetLinked = await prisma.user.findFirst({
-          where: { publicPlayerId: target.id },
-          select: { id: true },
-        });
-        for (const u of srcUsers) {
-          if (targetLinked) {
-            // Mål allerede koblet — løsne kilde-linken for å unngå unik-kollisjon
-            await prisma.user.update({
-              where: { id: u.id },
-              data: { publicPlayerId: null },
-            });
-          } else {
-            await prisma.user.update({
-              where: { id: u.id },
-              data: { publicPlayerId: target.id },
-            });
-          }
-        }
         await prisma.publicPlayer.delete({ where: { id: src.id } });
       }
       mergedProfiles++;
@@ -184,7 +203,11 @@ export async function runDedupePlayerNames(
   }
 
   const dirty = await prisma.publicPlayer.findMany({
-    where: { name: { contains: "(" } },
+    where: {
+      name: { contains: "(" },
+      linkedUser: null,
+      id: { notIn: [...blockedIds] },
+    },
     select: { id: true, name: true },
   });
   let renamed = 0;
@@ -221,6 +244,10 @@ export async function runDedupePlayerNames(
     renamed,
     skippedConflict: skipped.length,
     fuzzyLeft,
-    skippedNames: skipped.slice(0, 20),
+    // Bakoverkompatibelt felt; konkrete avvik rapporteres uten personnavn.
+    skippedNames: [],
+    skippedLinkedGroups: skipped.filter(g => g.reason === "ACCOUNT_LINKED").length,
+    skippedStableIdConflicts: skipped.filter(g => g.reason === "SOURCE_ID_CONFLICT").length,
+    skippedGroups: skipped,
   };
 }

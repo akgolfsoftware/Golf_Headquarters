@@ -1,6 +1,8 @@
 /**
  * AK Golf HQ — markedsside TURNERING-DETALJ (/turneringer/[slug]), Paper.
  * Fasit: designsystem/paper/fase2/marketing/marketing-katalog.html
+ * Avvik:
+ *   - fasiten er utgått; markedet følger Precision Athletics fra 04.10.2026 (src/styles/marked-precision.css).
  * (§detalj/§fakta) — retematchet med pk-tokens; KPI-strip og leaderboard er
  * egne mønstre (stats-tabell), ikke i katalog-malen, men følger samme
  * fargespråk/typografi. Ekte copy + datalogikk speilet fra
@@ -118,14 +120,14 @@ export function MarkedTurneringDetaljV2({ t }: { t: TurneringDetalj }) {
                   {erLive && e.position !== null && (
                     <>
                       <div>
-                        <span className="pk-eyebrow" style={{ fontSize: 9 }}>Posisjon</span>
+                        <span className="pk-eyebrow" style={{ fontSize: 11 }}>Posisjon</span>
                         <span style={{ fontFamily: "var(--tl-font-mono)", fontSize: 24, fontWeight: 700, color: "var(--tl-warm)", marginTop: 4, display: "block" }}>
                           {e.tied ? `T${e.position}` : e.position}
                         </span>
                       </div>
                       {e.scoreToPar !== null && (
                         <div>
-                          <span className="pk-eyebrow" style={{ fontSize: 9 }}>Score til par</span>
+                          <span className="pk-eyebrow" style={{ fontSize: 11 }}>Score til par</span>
                           <span style={{ fontFamily: "var(--tl-font-mono)", fontSize: 24, fontWeight: 700, marginTop: 4, display: "block", color: e.scoreToPar < 0 ? "var(--tl-ok)" : e.scoreToPar > 0 ? "var(--tl-danger)" : "var(--tl-text)" }}>
                             {formaterToPar(e.scoreToPar)}
                           </span>
@@ -134,7 +136,7 @@ export function MarkedTurneringDetaljV2({ t }: { t: TurneringDetalj }) {
                     </>
                   )}
                   <div>
-                    <span className="pk-eyebrow" style={{ fontSize: 9 }}>{formaterTier(e.player.tier)}</span>
+                    <span className="pk-eyebrow" style={{ fontSize: 11 }}>{formaterTier(e.player.tier)}</span>
                     {e.status === "CUT" && <span className="pk-tag" style={{ marginTop: 6, display: "inline-block" }}>Cut</span>}
                   </div>
                 </div>

@@ -12,40 +12,58 @@ import {
   AXIS_LABEL,
   loadWeaknessSignals,
 } from "@/lib/portal-ai/ai-data";
+import { foreslaGodkjenteOvelsesbankElementer } from "@/lib/masterbrain";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { TilbakeLenke } from "@/components/v2";
 import {
   ForeslaDrillV2,
   type DrillSuggestion,
 } from "@/components/portal/v2/ForeslaDrillV2";
+import type { PyramidArea } from "@/generated/prisma/client";
 
 export const dynamic = "force-dynamic";
 
 export default async function ForeslaDrillPage() {
   const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
 
-  const signals = await loadWeaknessSignals(user.id);
+  const [signals, dbUser] = await Promise.all([
+    loadWeaknessSignals(user.id),
+    prisma.user.findUnique({
+      where: { id: user.id },
+      select: {
+        tilgjengeligeFasiliteter: true,
+        playerFacilities: {
+          select: {
+            name: true,
+            capabilities: true,
+            rangeLengdeM: true,
+            maksPuttLengdeM: true,
+          },
+        },
+      },
+    }),
+  ]);
 
-  // Drills i de prioriterte områdene — system + spillerens egne.
+  // Godkjente Masterbrain-øvelser i prioriterte pyramideområder, filtrert på
+  // spillerens faktiske fasiliteter og lengdegrenser.
   const prioritizedAreas = signals.map((s) => s.area);
-  const drills = prioritizedAreas.length
-    ? await prisma.exerciseDefinition.findMany({
-        where: {
-          pyramidArea: { in: prioritizedAreas },
-          OR: [{ source: "SYSTEM" }, { createdBy: user.id }],
-        },
-        select: {
-          id: true,
-          name: true,
-          pyramidArea: true,
-          durationMin: true,
-          csMin: true,
-          csMax: true,
-          treningstype: true,
-        },
-        take: 24,
-      })
-    : [];
+  const drills =
+    prioritizedAreas.length === 0
+      ? []
+      : foreslaGodkjenteOvelsesbankElementer({
+          pyramidAreas: prioritizedAreas,
+          fasilitetProfil: {
+            tilgjengeligeFasiliteter: dbUser?.tilgjengeligeFasiliteter ?? [],
+            playerFacilities:
+              dbUser?.playerFacilities.map((f) => ({
+                name: f.name,
+                capabilities: f.capabilities,
+                rangeLengdeM: f.rangeLengdeM,
+                maksPuttLengdeM: f.maksPuttLengdeM,
+              })) ?? [],
+          },
+          limit: 24,
+        });
 
   const reasonByArea = new Map(signals.map((s) => [s.area, s.reason]));
 
@@ -55,23 +73,25 @@ export default async function ForeslaDrillPage() {
 
   const suggestions: DrillSuggestion[] = drills
     .map((d) => {
-      const areaIdx = prioritizedAreas.indexOf(d.pyramidArea);
+      const pyramidArea = d.akFormel?.pyramidArea as PyramidArea | undefined;
+      const areaIdx = pyramidArea ? prioritizedAreas.indexOf(pyramidArea) : -1;
       const meta: string[] = [];
-      if (d.durationMin) meta.push(`${d.durationMin} min`);
-      if (d.csMin != null && d.csMax != null) meta.push(`CS ${d.csMin}–${d.csMax}`);
-      else if (d.csMax != null) meta.push(`CS ${d.csMax}`);
+      if (d.akFormel?.omraade) meta.push(d.akFormel.omraade);
       if (d.treningstype) meta.push(d.treningstype.toLowerCase());
+      const longest = d.facilityRequirements?.longestShotM;
+      if (typeof longest === "number") meta.push(`maks ${longest.toLocaleString("nb-NO")} m`);
       return {
-        id: d.id,
+        id: d.id ?? "",
         rank: 0,
-        axis: axisKind(d.pyramidArea),
-        axisLabel: AXIS_LABEL[d.pyramidArea],
-        title: d.name,
+        axis: axisKind(pyramidArea ?? "SLAG"),
+        axisLabel: AXIS_LABEL[pyramidArea ?? "SLAG"],
+        title: d.navn ?? d.id ?? "Godkjent øvelse",
         meta,
         matchPct: matchForAreaIndex(areaIdx < 0 ? prioritizedAreas.length : areaIdx),
         why:
-          reasonByArea.get(d.pyramidArea) ??
-          `Trener ${AXIS_LABEL[d.pyramidArea].toLowerCase()}-området ditt.`,
+          (pyramidArea ? reasonByArea.get(pyramidArea) : null) ??
+          `Godkjent i Masterbrain og mulig på dine registrerte fasiliteter.`,
+        href: "/portal/drills",
         _areaIdx: areaIdx,
       };
     })

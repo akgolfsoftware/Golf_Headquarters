@@ -27,23 +27,25 @@
  *
  * Design: canvas godkjent 30.08.2026 —
  * designsystem/canvas/agencyos-ia/Kommunikasjon.dc.html.
+ *
+ * 29.09.2026 (AG-04, «Én innboks»): fanene Innboks, Utkast og Sendt er slått
+ * inn i /admin/innboks og sendes dit, med søkeparametrene. Innboks › Alle og
+ * Varsler har sakene, Innboks › E-post har utkastene (bare ADMIN, som før) og
+ * «Sendt og arkivert». Bare fanen Maler står igjen her — den har ingen
+ * tegning i Innboks.
  */
 
 import { redirect } from "next/navigation";
-import { Suspense } from "react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { KommunikasjonHode } from "@/components/admin/v2/kommunikasjon/KommunikasjonHode";
-import { InnboksSakerTrainLock } from "@/components/admin/v2/innboks/InnboksSakerTrainLock";
-import { InnboksEpostV2 } from "@/components/admin/v2/InnboksEpostV2";
 import { AdminEmailV2 } from "@/components/admin/v2/AdminEmailV2";
-import { KOMMUNIKASJON_FANER, KOMMUNIKASJON_STANDARDFANE, kommunikasjonHref, velgKommunikasjonFane } from "@/lib/admin/kommunikasjon/faner";
+import { KOMMUNIKASJON_FANER, velgKommunikasjonFane } from "@/lib/admin/kommunikasjon/faner";
+import { innboksHref, lesInnboksFilter } from "@/lib/admin/innboks/filter";
 import {
   kommunikasjonFaneTellinger,
   lastKommunikasjonInnboks,
   lastKommunikasjonMaler,
-  lastKommunikasjonSendt,
-  lastKommunikasjonUtkast,
 } from "@/lib/admin/kommunikasjon/lastere";
 
 export const dynamic = "force-dynamic";
@@ -52,45 +54,24 @@ export const metadata = { title: "Kommunikasjon · AgencyOS" };
 export default async function KommunikasjonPage({
   searchParams,
 }: {
-  searchParams: Promise<{ fane?: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
-  const { fane: onsket } = await searchParams;
-  const aktiv = velgKommunikasjonFane(onsket);
+  const { fane, ...ovrige } = await searchParams;
+  const aktiv = velgKommunikasjonFane(Array.isArray(fane) ? fane[0] : fane);
 
-  // ADMIN-ALENE-fanene (arvet fra /admin/innboks-epost) — en COACH som ber om
-  // "utkast"/"sendt" faller tilbake til standardfanen. Ingen utvidelse av
-  // tilgang, se filhodet.
-  if ((aktiv === "utkast" || aktiv === "sendt") && user.role !== "ADMIN") {
-    redirect(kommunikasjonHref(KOMMUNIKASJON_STANDARDFANE));
-  }
+  // Innboks, Utkast og Sendt bor i /admin/innboks. E-postfanen der er fortsatt
+  // bare for ADMIN — en COACH ser en tom fane med forklaring. Ingen utvidelse
+  // av tilgang.
+  if (aktiv === "innboks") redirect(innboksHref(lesInnboksFilter(Array.isArray(ovrige.filter) ? ovrige.filter[0] : ovrige.filter), ovrige));
+  if (aktiv === "utkast") redirect(innboksHref("epost", ovrige));
+  if (aktiv === "sendt") redirect(innboksHref("epost", { ...ovrige, vis: "sendt" }));
 
   const innboksData = await lastKommunikasjonInnboks({ id: user.id, role: user.role, name: user.name });
   const antall = await kommunikasjonFaneTellinger(innboksData.apne);
   const hode = <KommunikasjonHode faner={KOMMUNIKASJON_FANER} aktiv={aktiv} antall={antall} />;
 
-  const innhold = await (async () => {
-    switch (aktiv) {
-      case "innboks":
-        return (
-          <Suspense fallback={null}>
-            <InnboksSakerTrainLock data={innboksData} somFane />
-          </Suspense>
-        );
-      case "utkast": {
-        const epost = await lastKommunikasjonUtkast();
-        return <InnboksEpostV2 epost={epost} somFane eyebrow="Venter på deg" />;
-      }
-      case "sendt": {
-        const epost = await lastKommunikasjonSendt();
-        return <InnboksEpostV2 epost={epost} somFane eyebrow="Sendt eller arkivert" />;
-      }
-      case "maler": {
-        const data = await lastKommunikasjonMaler();
-        return <AdminEmailV2 data={data} somFane />;
-      }
-    }
-  })();
+  const innhold = <AdminEmailV2 data={await lastKommunikasjonMaler()} somFane />;
 
   return (
     <V2Shell bredde="full" aktiv="innboks" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} avatarUrl={user.avatarUrl}>

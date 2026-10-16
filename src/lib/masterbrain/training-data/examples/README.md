@@ -24,7 +24,7 @@ This directory contains JSONL training examples for the `AiPlanGeneration` coach
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `player.category` | A–K | Skill tier (A = beginner ~54 hcp, K = elite ~+4 hcp) |
+| `player.category` | A–K | AK Golf v2 skill tier (A = verdensklasse, K = nybegynner), målt på brutto score |
 | `player.handicap` | number | Current handicap index |
 | `player.l_fase` | string | Learning phase: L-KROPP, L-ARM, L-KØLLE, L-BALL, L-AUTO |
 | `player.period` | string | Training period: GRUNN, SPESIALISERING, TURNERING |
@@ -100,6 +100,7 @@ Target pyramid allocation summing to 100. Keys: `fys`, `tek`, `slag`, `spill`, `
 | GRUNN | FYS ↑, TEK ↑, SPILL ↓, TURN ↓ |
 | SPESIALISERING | SLAG ↑, TEK maintained, moderate SPILL |
 | TURNERING | SPILL ↑, TURN ↑, FYS ↓, TEK ↓ |
+| EVALUERING | Test, analyse, effektmåling, justering før neste plan |
 
 ### Readiness Rules
 
@@ -136,19 +137,19 @@ Target pyramid allocation summing to 100. Keys: `fys`, `tek`, `slag`, `spill`, `
 
 ### Category → CS Mapping
 
-| Category | Handicap | Default CS |
+| Category | Brutto snittscore | Default CS |
 |----------|---------|-----------|
-| A | 54+ | 20 |
-| B | 45–54 | 20–30 |
-| C | 36–44 | 30–40 |
-| D | 28–35 | 40–50 |
-| E | 22–27 | 50–60 |
-| F | 17–21 | 55–65 |
-| G | 12–16 | 65–75 |
-| H | 8–11 | 70–80 |
-| I | 4–7 | 75–85 |
-| J | 0–3 | 80–90 |
-| K | +4+ | 90–100 |
+| A | under 68 | 90–100 |
+| B | 68–72 | 80–90 |
+| C | 72–74 | 75–85 |
+| D | 74–76 | 70–80 |
+| E | 76–78 | 65–75 |
+| F | 78–80 | 55–65 |
+| G | 80–85 | 50–60 |
+| H | 85–90 | 40–50 |
+| I | 90–95 | 30–40 |
+| J | 95–100 | 20–30 |
+| K | 100+ | 20 |
 
 ---
 
@@ -182,13 +183,9 @@ Negativ-case output inkluderer `negative_case: true`, tom `recommendations[]`, o
 | GRUNN period | ≥3 | 11 |
 | SPESIALISERING period | ≥3 | 10 |
 | TURNERING period | ≥3 | 6 |
-| Nybegynner (historisk merket A–C i treningsdata) | ≥2 | 5 (ex-002, 003, 004, 018, 023) |
-| Elite (historisk merket H–K i treningsdata) | ≥3 | 11 (ex-007, 009–013, 017, 019, 020, 022, 024) |
+| Beginner categories I–K | ≥2 | 5 (ex-002, 003, 004, 018, 023) |
+| Elite categories A–D | ≥3 | 11 (ex-007, 009–013, 017, 019, 020, 022, 024) |
 | All 10 MORAD faults covered | ✓ | All 10 appear as primary or secondary fault |
-
-> **VIKTIG OM A–K-SKALAEN (PENSJONERT RETNING I EKSEMPLENE):**
-> Eksempelfilene i denne mappen ble generert under en eldre, nå **pensjonert** definisjon hvor A var nybegynner og K var tour-elite.
-> **Gjeldende og eneste autoritative fasit er `src/lib/domain/ak-kategori.ts`**, hvor **Kategori A er World Elite (< 68 slag)** og **Kategori K er Nybegynner (100+ slag)**. Eksemplene her beholdes kun som syntaktisk referanse for chain-of-thought formater.
 
 ---
 

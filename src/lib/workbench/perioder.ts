@@ -37,10 +37,33 @@ export function budsjettSum(b: SessionBudget | null): number {
   return Object.values(b).reduce((a, v) => a + (v ?? 0), 0);
 }
 
+const minutter = z.number().int().min(0).max(3000).multipleOf(15);
+
+/** Minutter per akse for én uke (vanlig eller lett). Hele 15-minutterssteg. */
+export const AxisMinutesSchema = z
+  .object({ FYS: minutter, TEK: minutter, SLAG: minutter, SPILL: minutter, TURN: minutter })
+  .partial();
+
+export type AxisMinutes = z.infer<typeof AxisMinutesSchema>;
+
+/** Trygg lesing av axisMinutes-JSON — null ved ugyldig/absent/tom. */
+export function parseAxisMinutes(json: unknown): AxisMinutes | null {
+  if (json == null) return null;
+  const res = AxisMinutesSchema.safeParse(json);
+  if (!res.success) return null;
+  return Object.keys(res.data).length > 0 ? res.data : null;
+}
+
+/** Sum minutter per uke over aksene. */
+export function axisMinutesSum(m: AxisMinutes | null): number {
+  if (!m) return 0;
+  return Object.values(m).reduce((a, v) => a + (v ?? 0), 0);
+}
+
 /** 8c.2 — input-kontrakt for opprett/oppdater periode (delt server/klient). */
 export const PeriodeInputSchema = z
   .object({
-    lPhase: z.enum(["GRUNN", "SPESIAL", "TURNERING", "EVALUERING", "TESTUKE", "FERIE", "TRENINGSSAMLING", "HELDAGSSAMLING"]),
+    lPhase: z.enum(["GRUNN", "SPESIAL", "TURNERING", "EVALUERING", "TESTUKE", "FERIE", "TRENINGSSAMLING", "HELDAGSSAMLING", "RESTITUSJON"]),
     /** YYYY-MM-DD (lokal dag). */
     startDato: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
     sluttDato: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
@@ -48,6 +71,12 @@ export const PeriodeInputSchema = z
     ukevolumMin: z.number().int().min(0).max(3000).nullish(),
     ukevolumMax: z.number().int().min(0).max(3000).nullish(),
     budsjett: SessionBudgetSchema.nullish(),
+    /** Minutter per akse, vanlig uke. undefined = ikke rør; null = nullstill. */
+    axisMinutes: AxisMinutesSchema.nullish(),
+    /** Minutter per akse, lett uke. undefined = ikke rør; null = nullstill. */
+    axisMinutesLight: AxisMinutesSchema.nullish(),
+    /** Fritekst for perioden. undefined = ikke rør; null/tomt = nullstill. */
+    notat: z.string().trim().max(1000).nullish(),
   })
   .refine((v) => v.sluttDato >= v.startDato, { message: "Sluttdato må være etter startdato" });
 

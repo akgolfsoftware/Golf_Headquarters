@@ -5,7 +5,7 @@
 import { PeriodeTypeSchema } from "@/lib/portal/training/ak-taxonomy";
 import type { PeriodBlock, PeriodeType, LPhase } from "@/generated/prisma/client";
 
-// OW-2 (15.09.2026): LPhase og PeriodeType har nå samme åtte verdier
+// OW-2 (15.09.2026): LPhase og PeriodeType har nå samme ni verdier
 // (ordbok-masteren §4.1) — dette er en ren identitet, ikke en lossy mapping.
 export const TIL_LPHASE: Record<PeriodeType, LPhase> = {
   GRUNN: "GRUNN",
@@ -16,6 +16,7 @@ export const TIL_LPHASE: Record<PeriodeType, LPhase> = {
   FERIE: "FERIE",
   TRENINGSSAMLING: "TRENINGSSAMLING",
   HELDAGSSAMLING: "HELDAGSSAMLING",
+  RESTITUSJON: "RESTITUSJON",
 };
 
 export const FRA_NOTES_PREFIKS = /^\[periode:([A-Z]+)\]\s*/;

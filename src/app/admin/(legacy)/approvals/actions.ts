@@ -8,6 +8,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { acceptAndApplyPlanAction } from "@/lib/agents/accept-plan-action";
 import { LOW_RISK_ACTION_TYPES } from "@/lib/training/skills";
 
@@ -44,7 +45,7 @@ export async function approveRequestDetailed(
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
   const action = await prisma.planAction.findUnique({
-    where: { id: actionId, ...coachScopeWhere(user.id) },
+    where: { id: actionId, ...coachScopeWhere(user) },
   });
   if (!action) throw new Error("not-found");
   if (action.status !== "PENDING") {
@@ -71,9 +72,12 @@ export async function approveRequestDetailed(
   redirect("/admin/godkjenninger");
 }
 
-function coachScopeWhere(coachId: string) {
+function coachScopeWhere(viewer: { id: string; role: string }) {
   return {
-    OR: [{ coachId }, { coachId: null }],
+    actionType: { not: "WORKBENCH_GATHERING_INVITE" },
+    OR: [{ coachId: viewer.id }, { coachId: null }],
+    // coachId = null er ikke nok: spilleren må også være i coachens stall.
+    user: coachScopedPlayerWhere(viewer),
   };
 }
 
@@ -87,7 +91,7 @@ export async function batchApproveSelected(ids: string[]) {
     where: {
       id: { in: ids },
       status: "PENDING",
-      ...coachScopeWhere(user.id),
+      ...coachScopeWhere(user),
     },
     orderBy: { createdAt: "asc" },
   });
@@ -111,7 +115,7 @@ export async function batchApproveLowRisk() {
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
   const pending = await prisma.planAction.findMany({
-    where: { status: "PENDING", ...coachScopeWhere(user.id) },
+    where: { status: "PENDING", ...coachScopeWhere(user) },
     orderBy: { createdAt: "asc" },
   });
 
@@ -137,7 +141,7 @@ export async function declineRequestDetailed(actionId: string, reason: string) {
   }
 
   const action = await prisma.planAction.findUnique({
-    where: { id: actionId, ...coachScopeWhere(user.id) },
+    where: { id: actionId, ...coachScopeWhere(user) },
   });
   if (!action) throw new Error("not-found");
 
@@ -168,7 +172,7 @@ export async function requestMoreInfo(actionId: string, question: string) {
   }
 
   const action = await prisma.planAction.findUnique({
-    where: { id: actionId, ...coachScopeWhere(user.id) },
+    where: { id: actionId, ...coachScopeWhere(user) },
   });
   if (!action) throw new Error("not-found");
 

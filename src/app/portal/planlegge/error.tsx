@@ -1,12 +1,10 @@
 "use client";
 
-/* Fanger uventede feil i /portal/planlegge (Plan-fanen, B1 «Plan feil»).
-   Manglet egen error.tsx før PX-7 — falt tilbake på generisk /portal/error.tsx-
-   tekst («Fikk ikke lastet dagen din»), feil for denne fanen. */
-
 import { useEffect } from "react";
-import { V2Feil } from "@/components/v2/feil-laste";
+import { RotateCw } from "lucide-react";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { reportClientError } from "@/lib/report-client-error";
+import "@/styles/playerhq-ny.css";
 
 export default function PlanleggeError({
   error,
@@ -27,11 +25,15 @@ export default function PlanleggeError({
   }, [error]);
 
   return (
-    <V2Feil
-      reset={reset}
-      tilbakeHref="/portal"
-      tittel="Fikk ikke lastet uken"
-      melding="Sjekk nettet og prøv igjen."
-    />
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="phn">
+        <section className="phn-kort" role="alert">
+          <h1 className="phn-tittel" style={{ fontSize: 22 }}>Fikk ikke lastet uka</h1>
+          <p className="phn-forklar">Sjekk nettet og prøv igjen. Ingenting er endret i planen.</p>
+          {error.digest && <p className="phn-kilde">Feilkode {error.digest}</p>}
+          <div className="phn-knapper"><button type="button" className="phn-knapp sek" onClick={reset}><RotateCw className="phn-ikon" aria-hidden />Prøv igjen</button></div>
+        </section>
+      </div>
+    </PlayerHQSkall>
   );
 }

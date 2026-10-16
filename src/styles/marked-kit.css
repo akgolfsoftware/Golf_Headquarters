@@ -238,7 +238,7 @@ p.pk-ing {
 .pk-kort.pk-kort-pad { padding: var(--mkit-s5); }
 .pk-kort-body { padding: var(--mkit-s5); }
 .pk-navn { display: block; margin-top: var(--mkit-s3); font-family: var(--mkit-disp); font-size: 19px; font-weight: 600; }
-.pk-meta { display: block; margin-top: var(--mkit-s1); font-family: var(--mkit-mono); font-size: 11.5px; color: var(--mkit-muted); letter-spacing: 0.04em; text-transform: uppercase; }
+.pk-meta { display: block; margin-top: var(--mkit-s1); font-family: var(--mkit-mono); font-size: 11px; color: var(--mkit-muted); letter-spacing: 0.04em; text-transform: uppercase; }
 .pk-kat p { margin: var(--mkit-s2) 0 0; font-family: var(--mkit-body); font-size: 15px; color: var(--mkit-muted); max-width: 40ch; }
 .pk-lesmer { display: inline-flex; align-items: center; gap: 6px; font-family: var(--mkit-ui); font-size: 13.5px; font-weight: 600; color: var(--mkit-accent-fg); margin-top: var(--mkit-s4); }
 
@@ -320,9 +320,9 @@ p.pk-ing {
 /* ── KPI-strip (turneringer) ── */
 .pk-kpirad { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: var(--mkit-s2); }
 .pk-kpi { padding: var(--mkit-s4); background: var(--mkit-surface); border: 1px solid var(--mkit-border); border-radius: var(--mkit-r); }
-.pk-kpi .pk-k { display: block; font-family: var(--mkit-mono); font-size: 9.5px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--mkit-muted); }
+.pk-kpi .pk-k { display: block; font-family: var(--mkit-mono); font-size: 11px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--mkit-muted); }
 .pk-kpi .pk-v { display: block; font-family: var(--mkit-mono); font-size: 26px; font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1.25; margin-top: var(--mkit-s2); }
-.pk-kpi .pk-w { display: block; font-family: var(--mkit-mono); font-size: 10.5px; color: var(--mkit-muted); margin-top: 2px; }
+.pk-kpi .pk-w { display: block; font-family: var(--mkit-mono); font-size: 11px; color: var(--mkit-muted); margin-top: 2px; }
 
 .pk-tag {
   display: inline-flex;
@@ -330,7 +330,7 @@ p.pk-ing {
   padding: 3px var(--mkit-s2);
   border-radius: var(--mkit-r-pill);
   font-family: var(--mkit-mono);
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -342,7 +342,7 @@ p.pk-ing {
 
 /* ── Leaderboard-tabell (turneringer) ── */
 .pk-tabell { width: 100%; border-collapse: collapse; font-family: var(--mkit-mono); font-size: 12.5px; }
-.pk-tabell th { padding: 10px 16px 10px 0; text-align: left; font-weight: 500; font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mkit-muted); border-bottom: 2px solid var(--mkit-hairline); }
+.pk-tabell th { padding: 10px 16px 10px 0; text-align: left; font-weight: 500; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mkit-muted); border-bottom: 2px solid var(--mkit-hairline); }
 .pk-tabell th.pk-th-right { text-align: right; padding: 10px 0; }
 .pk-tabell td { padding: 12px 16px 12px 0; border-bottom: 1px solid var(--mkit-hairline); }
 .pk-tabell td.pk-td-right { text-align: right; padding: 12px 0; }
@@ -555,7 +555,7 @@ p.pk-ing.pk-ing-fot { font-size: 15px; margin-top: var(--mkit-s5); max-width: 62
 }
 .pk-mkort .pk-fakta-liste .pk-linje > span:first-child {
   font-family: var(--mkit-mono);
-  font-size: 9.5px;
+  font-size: 11px;
   letter-spacing: 0.07em;
   text-transform: uppercase;
   color: var(--mkit-muted);
@@ -796,7 +796,7 @@ p.pks-tekst {
 .pks-virker .pks-flab {
   display: block;
   font-family: var(--mkit-mono);
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.09em;
   text-transform: uppercase;
   color: var(--mkit-muted);

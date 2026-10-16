@@ -1,4 +1,9 @@
-import { LoginPrecisionView } from "@/components/auth/LoginPrecisionView";
+/**
+ * AU01Innlogging — innlogging i Precision Athletics.
+ * Kilde: ui_kits/konto/screens/AU-01-03.jsx, funksjonen AU01.
+ * Magisk lenke, kode, passord og Google er beholdt.
+ */
+import { LoginView } from "@/components/auth/LoginView";
 
 export const metadata = {
   title: "Logg inn · AK Golf HQ",
@@ -7,5 +12,5 @@ export const metadata = {
 };
 
 export default function LoginPage() {
-  return <LoginPrecisionView />;
+  return <LoginView />;
 }

@@ -51,9 +51,10 @@ describe("bygLiveCoachSystemPrompt", () => {
     );
   });
 
-  it("bruker spillerens fornavn, ikke fullt navn", () => {
+  it("tiltaler spilleren med du, aldri med navn", () => {
     const prompt = bygLiveCoachSystemPrompt(BASE, LIVE);
-    assert.ok(prompt.includes("Øyvind"), "Prompten mangler fornavnet");
+    assert.ok(prompt.includes("Bruk aldri navn"), "Prompten mangler navneregelen");
+    assert.ok(!prompt.includes("Bruk fornavnet"), "Prompten ber fortsatt om fornavnet");
   });
 
   it("markerer at spilleren er i en AKTIV treningsøkt", () => {

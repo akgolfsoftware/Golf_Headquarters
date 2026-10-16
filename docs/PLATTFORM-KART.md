@@ -70,7 +70,7 @@ Dette er pengesiden. Den er den største åpne sprekken i det kundene ser.
 
 | | |
 |---|---|
-| **Planlagt** | Fire faner: I dag · Plan · Analyse · Meg. Live-økt, tester, runder, TrackMan, booking. Mørk default. |
+| **Planlagt** | Fire faner: I dag · Plan · Stats · Meg (28.09). Live-økt, tester, runder, TrackMan, booking. Lyst tema standard (Precision Athletics). |
 | **Kodet** | Ja — 169 sider. Mange er gamle dører som fortsatt bygges. |
 | **Ferdig** | Delvis. I dag / skall er portet til Train-lock. Live-økt og scorekort finnes. |
 | **Mangler design** | Rest-port 1:1 mot fasit + skjermbilde-gate (P-bølgen). iPad-topp-tab (B2) ikke bygget. |

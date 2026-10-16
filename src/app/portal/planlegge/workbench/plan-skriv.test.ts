@@ -1,27 +1,34 @@
+/**
+ * OW-3 fase 3 (2026-09-17): actions.ts skriver nå mot WorkbenchSession, ikke
+ * TrainingPlanSession — mocken her er flyttet tilsvarende. Testene selv
+ * (kontrakten: spilleren kan opprette/flytte/redigere sin egen økt,
+ * uvedkommende avvises, ugyldig endring skriver ikke) er uendret.
+ */
 import assert from "node:assert/strict";
 import { before, beforeEach, mock, test } from "node:test";
-import { dateForDayIndex, weekRefDate } from "@/lib/workbench/session-move-math";
+import { computeMoveTarget, dateForDayIndex, weekRefDate } from "@/lib/workbench/session-move-math";
+import { lokalDatoTilKolonne } from "@/lib/workbench/wb-map";
 
 let me = { id: "spiller", role: "PLAYER" as const };
-let planEier = "spiller";
 let okt: {
   id: string;
-  scheduledAt: Date;
+  playerId: string;
+  date: Date;
+  startMinute: number;
+  durationMinutes: number;
   title: string;
-  durationMin: number;
-  pyramidArea: "TEK";
-  miljo: "M2";
+  pyramid: "TEK";
   location: string | null;
   maalsetning: string | null;
+  groupId: string | null;
 };
 let writes = 0;
 let v2Kall = 0;
-let opprettet: { planId: string; title: string; scheduledAt: Date } | null = null;
+let opprettet: { title: string; date: Date; startMinute: number } | null = null;
 
 function snapshot() {
   return {
-    planEier,
-    okt: { ...okt, scheduledAt: new Date(okt.scheduledAt) },
+    okt: { ...okt, date: new Date(okt.date) },
     writes,
     v2Kall,
     opprettet,
@@ -32,36 +39,30 @@ let tilbake: ReturnType<typeof snapshot> | null = null;
 
 const sessionApi = {
   findUnique: async ({ where }: { where: { id: string } }) =>
-    where.id === okt.id
-      ? {
-          id: okt.id,
-          scheduledAt: okt.scheduledAt,
-          title: okt.title,
-          durationMin: okt.durationMin,
-          pyramidArea: okt.pyramidArea,
-          miljo: okt.miljo,
-          location: okt.location,
-          maalsetning: okt.maalsetning,
-          plan: { userId: planEier },
-        }
-      : null,
-  update: async ({ data }: { data: { title?: string; scheduledAt?: Date } }) => {
+    where.id === okt.id ? { ...okt } : null,
+  update: async ({ data }: { data: { title?: string; date?: Date; startMinute?: number; location?: string | null; maalsetning?: string | null } }) => {
     writes += 1;
     if (data.title != null) okt.title = data.title;
-    if (data.scheduledAt) okt.scheduledAt = data.scheduledAt;
-    return { ...okt, plan: { userId: planEier } };
+    if (data.date) okt.date = data.date;
+    if (data.startMinute != null) okt.startMinute = data.startMinute;
+    if (data.location !== undefined) okt.location = data.location;
+    if (data.maalsetning !== undefined) okt.maalsetning = data.maalsetning;
+    return { ...okt };
   },
-  create: async ({ data }: { data: { planId: string; title: string; scheduledAt: Date } }) => {
+  create: async ({ data }: { data: { title: string; date: Date; startMinute: number; durationMinutes: number; pyramid: string; location: string | null; maalsetning: string | null; playerId: string } }) => {
     writes += 1;
-    opprettet = { planId: data.planId, title: data.title, scheduledAt: data.scheduledAt };
+    opprettet = { title: data.title, date: data.date, startMinute: data.startMinute };
     return {
       id: "ny-okt",
+      playerId: data.playerId,
+      date: data.date,
+      startMinute: data.startMinute,
+      durationMinutes: data.durationMinutes,
+      pyramid: data.pyramid,
       title: data.title,
-      scheduledAt: data.scheduledAt,
-      durationMin: 60,
-      pyramidArea: "TEK",
-      location: null,
-      maalsetning: null,
+      location: data.location ?? null,
+      maalsetning: data.maalsetning ?? null,
+      groupId: null,
     };
   },
   delete: async () => {
@@ -85,22 +86,18 @@ mock.module("@/lib/workbench/v2-sync", {
       v2Kall += 1;
     },
     deleteV2ForPlanSession: async () => undefined,
+    resolveCoachIdForPlayer: async () => "coach-1",
   },
 });
 mock.module("@/lib/prisma", {
   namedExports: {
     prisma: {
-      trainingPlan: {
-        findFirst: async () => ({ id: "plan-1" }),
-        create: async () => ({ id: "plan-1" }),
-      },
-      trainingPlanSession: sessionApi,
-      $transaction: async (fn: (tx: { trainingPlanSession: typeof sessionApi }) => Promise<unknown>) => {
+      workbenchSession: sessionApi,
+      $transaction: async (fn: (tx: { workbenchSession: typeof sessionApi }) => Promise<unknown>) => {
         tilbake = snapshot();
         try {
-          return await fn({ trainingPlanSession: sessionApi });
+          return await fn({ workbenchSession: sessionApi });
         } catch (feil) {
-          planEier = tilbake.planEier;
           okt = tilbake.okt;
           writes = tilbake.writes;
           v2Kall = tilbake.v2Kall;
@@ -120,19 +117,20 @@ before(async () => {
 
 beforeEach(() => {
   me = { id: "spiller", role: "PLAYER" };
-  planEier = "spiller";
   writes = 0;
   v2Kall = 0;
   opprettet = null;
   okt = {
     id: "okt-1",
-    scheduledAt: new Date("2026-06-22T09:00:00.000Z"),
+    playerId: "spiller",
+    date: lokalDatoTilKolonne(dateForDayIndex(0, 0, 0, weekRefDate(0))), // mandag inneværende uke
+    startMinute: 540, // 09:00
+    durationMinutes: 60,
     title: "Driver",
-    durationMin: 60,
-    pyramidArea: "TEK",
-    miljo: "M2",
+    pyramid: "TEK",
     location: "Range",
     maalsetning: "Treff",
+    groupId: null,
   };
 });
 
@@ -151,14 +149,9 @@ test("spilleren kan opprette, flytte og redigere egen økt", async () => {
 
   const flytt = await actions.moveWorkbenchSession("okt-1", 2, 1);
   assert.equal(flytt.ok, true);
-  const original = new Date("2026-06-22T09:00:00.000Z");
-  const forventet = dateForDayIndex(
-    2,
-    original.getHours(),
-    original.getMinutes(),
-    weekRefDate(1),
-  );
-  assert.equal(okt.scheduledAt.getTime(), forventet.getTime());
+  const forventetDato = computeMoveTarget(dateForDayIndex(0, 9, 0), 2, weekRefDate(1));
+  assert.equal(okt.date.getTime(), lokalDatoTilKolonne(forventetDato).getTime());
+  assert.equal(okt.startMinute, 540); // klokkeslett uendret — kun dag flyttet
   assert.ok(v2Kall >= 1);
 
   const rediger = await actions.updateWorkbenchSession("okt-1", { title: "Ny tittel" });

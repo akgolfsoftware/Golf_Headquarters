@@ -14,9 +14,9 @@
 import { requireCapability } from "@/lib/auth/requireCapability";
 import { Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { GrupperV2, type GrupperData, type GruppeV2, type FastTid } from "@/components/admin/v2/GrupperV2";
-import { TlTilbake } from "@/components/admin/v2/oppsett/tl-kit";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { AG16Grupper } from "@/components/admin/precision/AG16Grupper";
+import type { GrupperData, GruppeV2, FastTid } from "@/components/admin/v2/GrupperV2";
 import { GfgkBootstrapButton, NyGruppeButton } from "./grupper-actions";
 import { GFGK_BOOTSTRAP_GRUPPER } from "@/lib/gfgk-junior/bootstrap";
 
@@ -127,14 +127,13 @@ export default async function V2GrupperPage() {
     groups.filter((g) => gfgkNavn.has(g.name)).length < gfgkNavn.size;
 
   return (
-    <V2Shell bredde="kolonne" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <TlTilbake href="/admin/spillere">Stall</TlTilbake>
-      {manglerGfgk ? (
-        <div style={{ marginBottom: 14 }}>
-          <GfgkBootstrapButton />
-        </div>
-      ) : null}
-      <GrupperV2 data={data} actions={{ NyGruppeButton }} coaches={coaches} />
-    </V2Shell>
+    <AgencyOSSkall navn={user.name ?? "Coach"}>
+      <AG16Grupper
+        tilstand={grupper.length === 0 ? "tom" : "data"}
+        data={data}
+        nyGruppeKnapp={<NyGruppeButton coaches={coaches} />}
+        gfgkBootstrapKnapp={manglerGfgk ? <GfgkBootstrapButton /> : null}
+      />
+    </AgencyOSSkall>
   );
 }

@@ -1,15 +1,10 @@
-import { WangToppidrettPrecisionView } from "../WangToppidrettPrecisionView";
+/**
+ * /team-wang/toppidrett — viste demotester uten innlogging (26.09.2026). Trenerflaten
+ * ligger bak innlogging under /team-wang/coach.
+ */
 
-export const metadata = {
-  title: "WANG Toppidrett · Treningsplan & Fysiske Tester",
-  description: "Morgentreninger, fraværsregistrering og nasjonale benchmark-tester for golfere.",
-  robots: { index: false, follow: false },
-};
+import { redirect } from "next/navigation";
 
-export default function WangToppidrettPage() {
-  return (
-    <div className="min-h-screen bg-[#FAF8F3] text-[#141413]">
-      <WangToppidrettPrecisionView />
-    </div>
-  );
+export default function WangToppidrettRedirect() {
+  redirect("/team-wang/coach");
 }

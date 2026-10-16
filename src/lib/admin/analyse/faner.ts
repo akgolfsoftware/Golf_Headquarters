@@ -35,7 +35,7 @@
  * ikke tilgang for noen av fanene.
  */
 
-export type AnalyseFaneId = "spiller" | "stall" | "etterlevelse";
+export type AnalyseFaneId = "spiller" | "stall" | "treningsdata" | "etterlevelse";
 
 export type AnalyseFane = {
   id: AnalyseFaneId;
@@ -44,10 +44,11 @@ export type AnalyseFane = {
   gammelHref: string | null;
 };
 
-/** Rekkefølgen er canvas-rekkefølgen (Spiller · Stall · Etterlevelse), minus Tester — se filhodet. */
+/** Rekkefølgen er canvas-rekkefølgen, med Workbench treningsdata lagt inn før etterlevelse. */
 export const ANALYSE_FANER: AnalyseFane[] = [
   { id: "spiller", label: "Spiller", gammelHref: null },
   { id: "stall", label: "Stall", gammelHref: "/admin/analyse" },
+  { id: "treningsdata", label: "Treningsdata", gammelHref: null },
   { id: "etterlevelse", label: "Etterlevelse", gammelHref: "/admin/analysere/compliance" },
 ];
 

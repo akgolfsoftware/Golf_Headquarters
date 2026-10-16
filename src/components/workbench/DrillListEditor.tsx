@@ -40,6 +40,7 @@ import {
 } from "@/lib/domain/workbench/labels";
 import type {
   Belastning,
+  AKFormel,
   Motorikk,
   Press,
   PyramidArea,
@@ -75,14 +76,7 @@ export type DrillListItem = {
   id: string;
   title: string;
   durationMinutes: number;
-  akFormel: {
-    pyramid: PyramidArea;
-    area: TrainingArea;
-    motorikk?: Motorikk;
-    belastning?: Belastning;
-    press?: Press;
-    label: string;
-  };
+  akFormel: AKFormel;
   description?: string;
   techniqueFocus?: string;
 };
@@ -223,7 +217,8 @@ export function DrillListEditor({
                       }}
                     >
                       {d.akFormel.label}
-                      {d.techniqueFocus ? ` · ${d.techniqueFocus}` : ""}
+                      {d.akFormel.detaljer?.mal?.malsetning ? ` · Målsetning: ${d.akFormel.detaljer.mal.malsetning}` : ""}
+                      {d.techniqueFocus ? ` · Historisk fokus / kildeposisjon: ${d.techniqueFocus}` : ""}
                     </span>
                   ) : null}
                   {d.description ? (

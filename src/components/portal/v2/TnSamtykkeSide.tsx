@@ -51,11 +51,13 @@ export function TnSamtykkeSide({
   organisasjoner,
   settSamtykke,
   krevesForesatt = false,
+  modus = "spiller",
 }: {
   organisasjoner: TnOrganisasjon[];
   settSamtykke: SettSamtykke;
   /** Spiller under 16 kan trekke, men ikke slå PÅ selv — samme regel som DelingSamtykkeKort. */
   krevesForesatt?: boolean;
+  modus?: "spiller" | "foresatt";
 }) {
   const [status, setStatus] = useState(organisasjoner);
   const [pending, startTransition] = useTransition();
@@ -67,7 +69,7 @@ export function TnSamtykkeSide({
 
   function endre(gruppeId: string, felt: "testerOgResultater" | "komplettProfil", nyVerdi: boolean) {
     if (pending) return;
-    if (krevesForesatt && nyVerdi) return; // mindreårig kan ikke slå PÅ selv
+    if (modus === "spiller" && krevesForesatt && nyVerdi) return; // mindreårig kan ikke slå PÅ selv
     setFeil(null);
 
     const forrige = status;

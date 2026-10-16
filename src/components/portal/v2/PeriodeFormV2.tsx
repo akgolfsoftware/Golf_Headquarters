@@ -15,13 +15,14 @@ import { HjelpTips } from "@/components/v2/hjelp";
 import { opprettPeriode, oppdaterPeriode, slettPeriode } from "@/app/portal/(legacy)/tren/aarsplan/periode/actions";
 const LPHASE_META: Record<LPhase, string> = {
   GRUNN: "Grunnperiode",
-  SPESIAL: "Spesialisering",
+  SPESIAL: "Spesialperiode",
   TURNERING: "Turneringsperiode",
   EVALUERING: "Evaluering",
   TESTUKE: "Testuke",
   FERIE: "Ferie",
   TRENINGSSAMLING: "Treningssamling",
   HELDAGSSAMLING: "Heldagssamling",
+  RESTITUSJON: "Restitusjon",
 };
 const LPHASE_ORDER: LPhase[] = [
   "GRUNN",
@@ -32,6 +33,7 @@ const LPHASE_ORDER: LPhase[] = [
   "FERIE",
   "TRENINGSSAMLING",
   "HELDAGSSAMLING",
+  "RESTITUSJON",
 ];
 
 export type PeriodeFormV2Initial = {

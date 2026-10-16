@@ -6,16 +6,18 @@
  * PlanAction og endrer ingen plan — den teller det som allerede ligger der.
  *
  * Etterlevelsen regnes med samme funksjon som spillerens digest
- * (src/lib/domain/etterlevelse.ts), så coachens «14/16» og spillerens «4/5»
+ * (src/lib/domain/etterlevelse.ts), så coachens og spillerens prosent
  * aldri kan bygge på ulike definisjoner av gjennomført.
  */
 
 import type { Prisma } from "@/generated/prisma/client";
 
+import { hentStallEtterlevelse } from "@/lib/portal/etterlevelse-data";
 import { prisma } from "@/lib/prisma";
-import { startOfWeek, endOfWeek, ukenummer } from "@/lib/uke-helpers";
+import { startOfWeek, ukenummer } from "@/lib/uke-helpers";
 import {
-  etterlevelse,
+  etterlevelseTekst,
+  summerEtterlevelse,
   NEVNER_TEKST,
   type Etterlevelse,
 } from "@/lib/domain/etterlevelse";
@@ -43,9 +45,6 @@ export async function hentUkesrapport(
   now = new Date(),
 ): Promise<AdminUkesrapportKort | null> {
   const ukeStart = startOfWeek(now);
-  /* endOfWeek gir mandag neste uke kl. 00:00 — eksklusiv grense, brukes med
-     `lt`. Med `lte` ville mandagens økter blitt talt i to uker. */
-  const ukeSlutt = endOfWeek(now);
   const om14dager = new Date(now.getTime() + 14 * 86_400_000);
 
   const spillere = await prisma.user.findMany({
@@ -57,10 +56,7 @@ export async function hentUkesrapport(
   const ider = spillere.map((s) => s.id);
 
   const [okter, forfall] = await Promise.all([
-    prisma.trainingSessionV2.findMany({
-      where: { studentId: { in: ider }, startTime: { gte: ukeStart, lt: ukeSlutt } },
-      select: { startTime: true, endTime: true, status: true },
-    }),
+    hentStallEtterlevelse(ider, now),
     prisma.testAssignment.findMany({
       where: {
         playerId: { in: ider },
@@ -72,17 +68,7 @@ export async function hentUkesrapport(
     }),
   ]);
 
-  const e = etterlevelse(
-    okter.map((o) => ({
-      scheduledAt: o.startTime,
-      durationMin: Math.max(
-        0,
-        Math.round((o.endTime.getTime() - o.startTime.getTime()) / 60_000),
-      ),
-      status: o.status,
-    })),
-    now,
-  );
+  const e = summerEtterlevelse([...okter.values()]);
 
   return byggUkesrapport({
     etterlevelse: e,
@@ -113,10 +99,10 @@ export function byggUkesrapport(input: {
 
   const tall: AdminUkesrapportKort["tall"] = [];
 
-  if (e.nevner > 0) {
+  if (e.pct !== null) {
     tall.push({
       key: "etterlevelse",
-      verdi: `${e.teller}/${e.nevner}`,
+      verdi: etterlevelseTekst(e)!,
       nevner: NEVNER_TEKST,
     });
   }
@@ -148,8 +134,8 @@ export function byggUkesrapport(input: {
     tall,
     hvorfor: [
       `Agent: Rapportagent · lest ${TID_FMT.format(now)} · leser, skriver aldri`,
-      `Data: publiserte økter i uke ${ukenummer(ukeStart)} for ${antallSpillere} spillere · åpne testtildelinger med frist`,
-      `Nevner: etterlevelse = gjennomførte av ${NEVNER_TEKST}`,
+      `Data: synlige økter siste fire uker for ${antallSpillere} spillere · åpne testtildelinger med frist`,
+      `Nevner: etterlevelse = ${NEVNER_TEKST}`,
     ],
   };
 }

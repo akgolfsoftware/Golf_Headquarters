@@ -24,9 +24,8 @@ import {
   type CSSProperties,
   type DragEvent,
   type ReactNode,
-  useEffect,
   useMemo,
-  useState,
+  useSyncExternalStore,
 } from "react";
 import {
   GRID_END_HOUR,
@@ -37,6 +36,16 @@ import {
 } from "@/lib/calendar/notion-grid";
 import { TL } from "@/lib/v2/train-lock";
 
+function subscribeClock(update: () => void) {
+  const timer = setInterval(update, 60_000);
+  return () => clearInterval(timer);
+}
+const noClock = () => () => {};
+const serverClock = () => null;
+function clockMinute() {
+  const now = new Date();
+  return now.getHours() * 60 + now.getMinutes();
+}
 
 export type TimeGridDay = {
   id: string;
@@ -134,18 +143,11 @@ export function TimeGrid({
   const timer = useMemo(() => Array.from({ length: endHour - startHour + 1 }, (_, i) => startHour + i), [startHour, endHour]);
   const bodyH = (endHour - startHour) * hourPx;
 
-  const [tikk, setTikk] = useState(0);
-  useEffect(() => {
-    if (!showNowLine) return;
-    const i = setInterval(() => setTikk((t) => t + 1), 60_000);
-    return () => clearInterval(i);
-  }, [showNowLine]);
-
-  const now = new Date();
-  void tikk;
-  const nowMin = now.getHours() * 60 + now.getMinutes();
-  const nowInGrid = nowMin >= startHour * 60 && nowMin <= endHour * 60;
-  const nowTop = ((nowMin - startHour * 60) / 60) * hourPx;
+  // Server and first browser render share an empty clock. React then reads
+  // browser time, avoiding mismatched positions at minute/time-zone boundaries.
+  const nowMin = useSyncExternalStore<number | null>(showNowLine ? subscribeClock : noClock, clockMinute, serverClock);
+  const nowInGrid = nowMin !== null && nowMin >= startHour * 60 && nowMin <= endHour * 60;
+  const nowTop = (((nowMin ?? 0) - startHour * 60) / 60) * hourPx;
   const todayIndex = days.findIndex((d) => d.today);
 
   const shell: CSSProperties = {

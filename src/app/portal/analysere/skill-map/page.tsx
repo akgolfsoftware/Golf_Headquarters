@@ -1,59 +1,41 @@
+/**
+ * PH16bSkillMap — Precision Athletics. Data og handlinger er beholdt.
+ * Skill Map skjematisk hullskisse med Strokes Gained per område.
+ * Kilde: ui_kits/playerhq/screens/PH-16b-skill-map.jsx (Runde 22, 28.09.2026).
+ */
+
 import { redirect } from "next/navigation";
-import { SkillMapView } from "@/components/portal/skill-map/SkillMapView";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { buildSkillMapData } from "@/lib/domain/skill-map";
-import { prisma } from "@/lib/prisma";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { PH16bSkillMap } from "@/components/portal/precision/PH16bSkillMap";
+import { loadPH16Stats } from "@/lib/portal-analyse/load-ph16-stats";
+import { getUnreadNotifications } from "@/app/portal/actions";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Skill Map · PlayerHQ" };
+export const metadata = { title: "Skill map · PlayerHQ" };
 
-export default async function SkillMapPage() {
+interface SkillMapPageProps {
+  searchParams?: Promise<{
+    pga?: string;
+  }>;
+}
+
+export default async function SkillMapPage({ searchParams }: SkillMapPageProps) {
   const user = await requirePortalUser({ kreverTilgang: "TALENT" });
   if (user.role === "GUEST") redirect("/admin/kalender");
   if (user.role === "PARENT") redirect("/forelder");
 
-  const tretti = new Date();
-  tretti.setDate(tretti.getDate() - 30);
+  const resolvedParams = searchParams ? await searchParams : {};
+  const pgaTour = resolvedParams.pga === "true" || resolvedParams.pga === "1";
 
-  const [rounds, training] = await Promise.all([
-    prisma.round.findMany({
-      where: { userId: user.id },
-      orderBy: { playedAt: "desc" },
-      take: 20,
-      select: {
-        playedAt: true,
-        sgTee: true,
-        sgApp200: true,
-        sgApp150: true,
-        sgApp100: true,
-        sgApp50: true,
-        sgChip: true,
-        sgPitch: true,
-        sgLob: true,
-        sgBunker: true,
-        sgPutt0_3: true,
-        sgPutt3_5: true,
-        sgPutt5_10: true,
-        sgPutt10_15: true,
-        sgPutt15_25: true,
-        sgPutt25_40: true,
-        sgPutt40plus: true,
-      },
-    }),
-    prisma.trainingPlanSession.findMany({
-      where: { plan: { userId: user.id }, scheduledAt: { gte: tretti } },
-      select: { skillArea: true, durationMin: true },
-    }),
+  const [data, uleste] = await Promise.all([
+    loadPH16Stats(user.id, user.name),
+    getUnreadNotifications(user.id, 1),
   ]);
 
-  const data = buildSkillMapData(rounds, training);
-
   return (
-    <V2Shell bredde="full" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/analysere">Analyse</TilbakeLenke>
-      <SkillMapView data={data} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste.count}>
+      <PH16bSkillMap data={data} pgaTour={pgaTour} />
+    </PlayerHQSkall>
   );
 }

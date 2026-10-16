@@ -1,13 +1,33 @@
-/** Valgt ZIP (4): PH-04 Okt-ark og B2 PH-04 Okt-ark iPad Mac.
+"use client";
+
+/**
+ * PH-04 Live-brief i nytt design (pakke 2 Treningsøkten). Alltid lyst tema (Anders 14.10).
+ * Fasit: docs/design-system/utkast-playerhq/treningsokt.html, skjerm «brief». Stil: src/styles/playerhq-ny-okt.css.
+ * Handlinger og data-od-id beholdes hos kalleren.
+ *
  * Avvik:
- *   - Direkte rute bruker egen side; bevart bakgrunn og Mac-overlegg gjenstår.
- *   - Geist, tema og hjørner følger valgt v3. Ingen syntetiske øvelser/verdier.
+ *   - Dra for å endre rekkefølge og øvelsesdetalj med planlagte tellere er ikke med: briefen får bare
+ *     navn, metadata og notat per øvelse, og rekkefølgen lagres ikke fra briefen.
+ *   - Manglende mål, fokus, tid eller sted vises som «—». Tidligere reservetekster er fjernet.
+ *   - Ingen riggrad i tests/visual/skjerm-mapping.ts; målt med tests/visual/precision/maal.mjs PH-04.
  */
+
 import type { ReactNode } from "react";
 import Link from "next/link";
-import styles from "./session-brief.module.css";
+import { ChevronLeft } from "lucide-react";
+import { Ikon } from "@/components/precision/pa";
+import "@/styles/precision-athletics.css";
+import "@/styles/playerhq-ny.css";
+import "@/styles/playerhq-ny-okt.css";
 
-export type BriefDrill = { id: string; name: string; meta: string[]; notes?: string | null; target?: string | null };
+export type BriefDrill = {
+  id: string;
+  name: string;
+  meta: string[];
+  notes?: string | null;
+  target?: string | null;
+};
+
 export type SessionBriefProps = {
   title: string;
   durationMin: number;
@@ -21,40 +41,57 @@ export type SessionBriefProps = {
   provenance?: string | null;
   odId: string;
 };
-const day = new Intl.DateTimeFormat("nb-NO", { weekday: "long", day: "numeric", month: "long", timeZone: "Europe/Oslo" });
-const clock = new Intl.DateTimeFormat("nb-NO", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Oslo" });
 
-/** Felles innhold for V2-, plan- og Workbench-økter. Modellenes handlinger
- * beholdes hos kalleren; bare presentasjonen deles. */
+const clock = new Intl.DateTimeFormat("nb-NO", { hour: "2-digit", minute: "2-digit", hourCycle: "h23", timeZone: "Europe/Oslo" });
+const kl = (d: Date) => clock.format(d).replace(".", ":");
+
 export function SessionBrief({ title, durationMin, scheduledAtISO, location, context, drills, sections, action, message, provenance, odId }: SessionBriefProps) {
   const start = new Date(scheduledAtISO);
-  const validDate = Number.isFinite(start.getTime());
-  const end = new Date(start.getTime() + Math.max(0, durationMin) * 60_000);
-  const clockText = validDate ? `${clock.format(start)}${durationMin > 0 ? `–${clock.format(end)}` : ""}` : null;
-  return <div className={styles.page} data-od-id={odId} data-train-lock-brief>
-    <header className={styles.top}><Link href="/portal/planlegge" aria-label="Tilbake til Plan" className={styles.back}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="m15 6-6 6 6 6" /></svg>Plan</Link><span>Før økta</span></header>
-    <main className={styles.stage}>
-      <article className={styles.sheet} aria-labelledby="brief-title">
-        <div className={styles.handle} aria-hidden="true" />
-        <div className={styles.body}>
-          <p className={styles.eyebrow}>Økt{durationMin > 0 ? ` · ${durationMin} min planlagt` : ""}</p>
-          <h1 id="brief-title">{title}</h1>
-          {validDate && <p className={styles.date}><time dateTime={scheduledAtISO}>{day.format(start)}</time></p>}
-          <p className={styles.meta}>{[location, clockText].filter(Boolean).join(" · ")}</p>
-          <p className={styles.context}>{context}</p>
-          <ol className={styles.drills} aria-label="Øvelser i økta">
-            {drills.map((drill, i) => <li key={drill.id} className={styles.drill}><span className={styles.number} aria-hidden="true">{i + 1}</span><div><h2>{drill.name}</h2>{drill.meta.length > 0 && <p className={styles.meta}>{drill.meta.join(" · ")}</p>}{drill.notes && <p className={styles.note}>{drill.notes}</p>}{drill.target && <p className={styles.meta}>{drill.target}</p>}</div></li>)}
-          </ol>
-          {drills.length === 0 && <p className={styles.empty}>Ingen øvelser er lagt til i denne økta.</p>}
-          {sections.map((section) => <section className={styles.section} key={section.label}><h2>{section.label}</h2><p>{section.text}</p></section>)}
-          {provenance && <p className={styles.provenance}>{provenance}</p>}
-        </div>
-        <footer className={styles.footer}>
-          {message && <p className={styles.message}>{message}</p>}
-          {action}
-          <Link href="/portal/planlegge" className={styles.cancel}>Tilbake til Plan</Link>
-        </footer>
-      </article>
-    </main>
+  const gyldig = Number.isFinite(start.getTime());
+  const slutt = new Date(start.getTime() + Math.max(0, durationMin) * 60_000);
+  const tid = gyldig ? `${kl(start)}${durationMin > 0 ? `–${kl(slutt)}` : ""}` : "—";
+  const t = Math.floor(Math.max(0, durationMin) / 60), m = Math.max(0, durationMin) % 60;
+
+  return <div className="pa-root phn phn-okt" data-theme="light" data-od-id={odId} style={{ minHeight: "100dvh" }}>
+    <div className="smal">
+      <Link href="/portal/planlegge" className="phn-knapp sek" style={{ justifySelf: "start" }} aria-label="Lukk briefen og gå til Plan"><Ikon icon={ChevronLeft} size={20} name="chevron-left" />Plan</Link>
+      <div className="hode-okt">
+        <span className="phn-dato">Live · Før start · {tid} · {location || "—"}</span>
+        <h1>{title}</h1>
+        <span className="sub">{context}</span>
+      </div>
+
+      <section className="phn-kort" aria-label="Lengde">
+        <span className="phn-dato">Økten varer</span>
+        <div className="phn-hoved"><strong>{durationMin > 0 ? (t > 0 ? t : m) : "—"}{durationMin > 0 && <small>{t > 0 ? (m > 0 ? `t ${m} min` : "t") : "min"}</small>}</strong></div>
+        <span className="sub">{drills.length === 0 ? "Ingen øvelser" : `${drills.length} ${drills.length === 1 ? "øvelse" : "øvelser"}`}</span>
+      </section>
+
+      {sections.length > 0 ? <section className="phn-kort" aria-label="Mål for økten">
+        {sections.map((s) => <div key={s.label} style={{ display: "grid", gap: 4 }}><span className="phn-dato">{s.label}</span><b className="undertittel" style={{ fontSize: 17 }}>{s.text}</b></div>)}
+        {provenance && <span className="phn-kilde">{provenance}</span>}
+      </section> : <section className="phn-kort dempet" aria-label="Mål for økten"><span className="phn-dato">Mål for økten</span><p className="phn-forklar">—</p></section>}
+
+      <section className="phn-seksjon" aria-label="Øvelser">
+        <div className="phn-sek-topp"><h2>Øvelser</h2><span className="phn-kilde">I rekkefølge</span></div>
+        {drills.length === 0
+          ? <div className="phn-kort dempet"><b className="undertittel">Ingen øvelser i økten</b><p className="phn-forklar">Coachen har ikke lagt inn øvelser. Start ikke før økten er klar.</p></div>
+          : <ol className="ovelser">{drills.map((d, i) => <li key={d.id || i} className="ovelse">
+            <span className="nr">{i + 1}</span>
+            <div>
+              <b>{d.name}</b>
+              {d.meta.length > 0 && <div className="formel">{d.meta.map((x, j) => <span key={`${x}-${j}`}>{x}</span>)}</div>}
+              {d.target && <p className="sub" style={{ marginTop: 6 }}>{d.target}</p>}
+              {d.notes && <p className="phn-forklar" style={{ marginTop: 6 }}>{d.notes}</p>}
+            </div>
+            <span className="min" />
+          </li>)}</ol>}
+      </section>
+
+      <div className="startbar">
+        {message && <p className="phn-forklar" role="status">{message}</p>}
+        {action}
+      </div>
+    </div>
   </div>;
 }

@@ -72,6 +72,8 @@ export interface AdminGodkjenningV2Row {
   /** Punkt 5: lesbar forklaring fra PlanAction.provenance. Skjules når null
    *  (eldre saker uten strukturert kilde-sporing). */
   hvorfor?: string | null;
+  /** Når saken kom inn (ISO). Innboks sorterer nyeste først på den. */
+  opprettetIso?: string;
 }
 export interface AdminGodkjenningerV2Data {
   rows: AdminGodkjenningV2Row[];

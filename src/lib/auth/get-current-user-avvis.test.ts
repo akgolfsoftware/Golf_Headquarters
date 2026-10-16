@@ -38,6 +38,7 @@ let coachingRad: unknown = null;
 let playerHqRad: unknown = null;
 let gruppeAntall: unknown = 0;
 let tilgangsfeil: unknown = null;
+let godkjentForelder = false;
 
 mock.module("@/lib/supabase/server", {
   namedExports: {
@@ -59,6 +60,9 @@ mock.module("@/lib/prisma", {
           if (tilgangsfeil) throw tilgangsfeil;
           return args.where.userId_kind.kind === "COACHING" ? coachingRad : playerHqRad;
         },
+      },
+      parentRelation: {
+        findFirst: async () => (godkjentForelder ? { id: "rel-1" } : null),
       },
       groupMember: {
         count: async () => {
@@ -177,6 +181,44 @@ test("getCurrentUser: mindreårig uten samtykke redirectes til venterom (GDPR ar
   } catch (e) {
     assert.ok(e instanceof RedirectSignal, `uventet feil: ${String(e)}`);
     assert.equal(e.to, "/auth/samtykke-venter");
+  }
+});
+
+// D-63: full bruk de sju første dagene, deretter låst til forelder godkjenner.
+test("getCurrentUser: mindreårig uten samtykke slipper gjennom de sju første dagene", async () => {
+  const { getCurrentUser } = await mod();
+  authBruker = { id: "auth-1" };
+  settTilgangsgrunnlag();
+  godkjentForelder = false;
+  dbBruker = dbRad({
+    id: "junior-ny",
+    requiresGuardianConsent: true,
+    guardianConsentGivenAt: null,
+    createdAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000),
+  });
+
+  const u = await getCurrentUser();
+  assert.equal(u?.id, "junior-ny");
+  assert.equal(u?.harGodkjentForelder, false);
+});
+
+test("getCurrentUser: godkjent forelderkobling låser opp etter fristen", async () => {
+  const { getCurrentUser } = await mod();
+  authBruker = { id: "auth-1" };
+  settTilgangsgrunnlag();
+  godkjentForelder = true;
+  dbBruker = dbRad({
+    id: "junior-koblet",
+    requiresGuardianConsent: true,
+    guardianConsentGivenAt: null,
+  });
+
+  try {
+    const u = await getCurrentUser();
+    assert.equal(u?.id, "junior-koblet");
+    assert.equal(u?.harGodkjentForelder, true);
+  } finally {
+    godkjentForelder = false;
   }
 });
 

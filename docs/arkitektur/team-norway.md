@@ -67,7 +67,6 @@ Team Norway oppretter ikke parallelle tabeller for data som allerede finnes i pl
 
 ## 5. Hva som er stubs eller uferdig
 
-- **Rot-siden (`/team-norway`) er en frittstående mock:** `/team-norway/page.tsx` rendrer `TeamNorwayAppView.tsx` med hardkodede mock-tilstander (knebøy 140 kg, ball speed 176 mph, pakkeliste med avkrysningsbokser). Den er ikke koblet til databasen.
 - **Kun ÉN Team Norway-gruppe i databasen:** `src/lib/domain/tn-tilgang.ts` linje 8–15 bekrefter:
   > *«Datamodellen har per 08.09.2026 kun ÉN kanonisk Team Norway-gruppe (`KANONISKE_GRUPPER` i grupper.ts, slug "team-norway", kind "ekstern") — det finnes ingen `Group.parentId` eller annen kobling som samler flere underliggende TN-lag (Junior/Elite/Collegegruppen) under én paraply.»*
 - **Uttakskriterium 3 mangler modell:** I `src/components/team-norway/tn-registrerte-skjermer.tsx` linje 90–93 er Kriterium 3 («Prosess og adferd») tomt:

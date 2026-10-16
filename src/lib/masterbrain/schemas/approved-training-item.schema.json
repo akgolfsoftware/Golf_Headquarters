@@ -1,0 +1,288 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://akgolf.no/schemas/approved-training-item.schema.json",
+  "title": "AK Golf approved training item",
+  "description": "Skjema for drill, øvelse eller test som er godkjent av Anders og kan brukes som fasit.",
+  "type": "object",
+  "required": [
+    "id",
+    "type",
+    "navn",
+    "beskrivelse",
+    "kilde",
+    "status",
+    "godkjentAv",
+    "godkjentDato",
+    "minKategori",
+    "maxKategori",
+    "environment",
+    "fasilitetKrav",
+    "treningstype",
+    "akFormel",
+    "facilityRequirements"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
+    "type": {
+      "enum": [
+        "DRILL",
+        "OVELSE",
+        "TEST"
+      ]
+    },
+    "navn": {
+      "type": "string",
+      "minLength": 3
+    },
+    "beskrivelse": {
+      "type": "string",
+      "minLength": 20
+    },
+    "kilde": {
+      "type": "string",
+      "minLength": 3
+    },
+    "status": {
+      "const": "GODKJENT"
+    },
+    "godkjentAv": {
+      "const": "Anders Kristiansen"
+    },
+    "godkjentDato": {
+      "type": "string",
+      "pattern": "^20[0-9]{2}-[0-9]{2}-[0-9]{2}$"
+    },
+    "minKategori": {
+      "enum": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "I",
+        "J",
+        "K"
+      ]
+    },
+    "maxKategori": {
+      "enum": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "I",
+        "J",
+        "K"
+      ]
+    },
+    "akFormel": {
+      "type": "object",
+      "required": [
+        "pyramidArea",
+        "omraade",
+        "maaleutstyr",
+        "belastning",
+        "press"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "pyramidArea": {
+          "enum": [
+            "FYS",
+            "TEK",
+            "SLAG",
+            "SPILL",
+            "TURN"
+          ]
+        },
+        "omraade": {
+          "enum": [
+            "TEE_TOTAL",
+            "INNSPILL_200",
+            "INNSPILL_150",
+            "INNSPILL_100",
+            "INNSPILL_50",
+            "CHIP",
+            "PITCH",
+            "LOB",
+            "BUNKER",
+            "PUTT_0_3",
+            "PUTT_3_5",
+            "PUTT_5_10",
+            "PUTT_10_25",
+            "PUTT_25_40",
+            "PUTT_40_PLUSS",
+            "STYRKE",
+            "KONDISJON",
+            "BEVEGELIGHET",
+            "BANE"
+          ]
+        },
+        "motorikk": {
+          "enum": [
+            "UTEN_BALL",
+            "LAV_HAST",
+            "AUTO"
+          ]
+        },
+        "dimensjon": {
+          "enum": [
+            "SIKTE",
+            "STARTRETNING",
+            "KURVE",
+            "HOYDE",
+            "TREFFPUNKT",
+            "LENGDEKONTROLL",
+            "SPINN",
+            "LANDINGSPUNKT",
+            "UTRULLING",
+            "KOLLEVALG",
+            "BOUNCE_BRUK",
+            "SANDINNGANG",
+            "LIE_VARIASJON",
+            "GREENLESING",
+            "BALLSTART",
+            "SPILLEFORMAT",
+            "STRATEGIOPPGAVE"
+          ]
+        },
+        "belastning": {
+          "enum": [
+            "INNENDORS",
+            "TRENINGSOMRAADE",
+            "BANE",
+            "KONKURRANSE"
+          ]
+        },
+        "press": {
+          "enum": [
+            "ALENE",
+            "OBSERVERT",
+            "KONKURRANSE",
+            "TURNERING"
+          ]
+        },
+        "maaleutstyr": {
+          "enum": [
+            "TRACKMAN",
+            "FLIGHTSCOPE",
+            "GARMIN_R10",
+            "MEVO_PLUS",
+            "ANNET",
+            "UTEN"
+          ]
+        },
+        "sandTrinn": {
+          "enum": [
+            "UTEN_BALL_I_SAND",
+            "MED_BALL"
+          ]
+        }
+      }
+    },
+    "environment": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "enum": [
+          "RANGE",
+          "BANE",
+          "STUDIO",
+          "HJEM",
+          "SIMULATOR",
+          "GYM"
+        ]
+      }
+    },
+    "fasilitetKrav": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "RADAR",
+          "MAT_NET",
+          "BUNKER",
+          "KAMERA",
+          "PUTTING_GREEN_KORT",
+          "PUTTING_GREEN_LANG",
+          "SHORT_GAME_AREA",
+          "DRIVING_RANGE",
+          "BANE",
+          "SIMULATOR",
+          "VEKTSTANG",
+          "TRAPBAR",
+          "LOPEBANE",
+          "MED_BALL"
+        ]
+      }
+    },
+    "treningstype": {
+      "enum": [
+        "BLOKK",
+        "VARIABEL",
+        "KONKURRANSE",
+        "SPILL_TEST"
+      ]
+    },
+    "facilityRequirements": {
+      "type": "object",
+      "required": [
+        "longestShotM",
+        "longestShotKind",
+        "minimumFacilityLengthM"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "longestShotM": {
+          "type": "number",
+          "minimum": 0
+        },
+        "longestShotKind": {
+          "enum": [
+            "NONE",
+            "CARRY",
+            "TOTAL",
+            "PUTT_ROLL",
+            "CHIP_ROLL",
+            "THROW",
+            "RUN",
+            "OTHER"
+          ]
+        },
+        "minimumFacilityLengthM": {
+          "type": "number",
+          "minimum": 0
+        },
+        "minimumCeilingHeightM": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "surface": {
+          "enum": [
+            "ANY",
+            "PUTTING_GREEN",
+            "GRASS",
+            "BUNKER",
+            "RANGE",
+            "COURSE",
+            "GYM_FLOOR",
+            "INDOOR_MAT"
+          ]
+        }
+      }
+    }
+  }
+}

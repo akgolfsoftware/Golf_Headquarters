@@ -1,3 +1,5 @@
+// PH21SporsmalTraad — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 /**
  * PlayerHQ Coach · Spørsmål-tråd (/portal/coach/sporsmal/[id]) — v2.
  * Erstatter legacy /portal/(legacy)/coach/sporsmal/[id] som tråd-detaljen
@@ -11,7 +13,6 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { kanSeSporsmal } from "@/lib/portal-okt/coach-sporsmal-tilgang";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { TilbakeLenke } from "@/components/v2";
 import {
   CoachSporsmalTraadV2,
@@ -75,9 +76,11 @@ export default async function CoachSporsmalTraadPage({ params }: RouteProps) {
   };
 
   return (
-    <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name}>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
       <TilbakeLenke href="/portal/coach/sporsmal">Spørsmål</TilbakeLenke>
       <CoachSporsmalTraadV2 data={data} svarAction={svarPaSporsmal} />
-    </V2Shell>
+    </div>
+    </PlayerHQSkall>
   );
 }

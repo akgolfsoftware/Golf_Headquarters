@@ -13,6 +13,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+import { UTEN_DATAGOLF_TURNERING } from "@/lib/auth/datagolf-regel";
+import { kanVisesOffentlig, offentligSpillerFilter } from "@/lib/stats/offentlig-spiller";
 import { StatsEyebrow } from "@/components/stats/eyebrow";
 import { Reveal } from "@/components/stats/reveal";
 import { SammenlignResultat } from "./resultat";
@@ -46,12 +48,14 @@ export default async function SammenlignSpillerePage({ searchParams }: Props) {
   const beggeValgt = Boolean(slugA && slugB);
 
   // Hent spillerne hvis begge er valgt
-  const [spillerA, spillerB] = await Promise.all([
+  const [funnetA, funnetB] = await Promise.all([
     slugA
       ? prisma.publicPlayer.findUnique({
           where: { slug: slugA },
           include: {
             entries: {
+              // Resultater fra Data Golf-turneringer vises aldri offentlig (Anders 09.10.2026).
+              where: { tournament: UTEN_DATAGOLF_TURNERING },
               include: { tournament: true },
               orderBy: { createdAt: "desc" },
               take: 20,
@@ -64,6 +68,8 @@ export default async function SammenlignSpillerePage({ searchParams }: Props) {
           where: { slug: slugB },
           include: {
             entries: {
+              // Resultater fra Data Golf-turneringer vises aldri offentlig (Anders 09.10.2026).
+              where: { tournament: UTEN_DATAGOLF_TURNERING },
               include: { tournament: true },
               orderBy: { createdAt: "desc" },
               take: 20,
@@ -73,8 +79,13 @@ export default async function SammenlignSpillerePage({ searchParams }: Props) {
       : null,
   ]);
 
+  // Barnevern: spillere født 2008 eller senere vises aldri åpent (beslutning 30.08.2026).
+  const spillerA = funnetA && kanVisesOffentlig(funnetA) ? funnetA : null;
+  const spillerB = funnetB && kanVisesOffentlig(funnetB) ? funnetB : null;
+
   // Hent søke-forslag (top 20 spillere for quick-picks)
   const topSpillere = await prisma.publicPlayer.findMany({
+    where: offentligSpillerFilter(),
     orderBy: [{ tier: "asc" }, { name: "asc" }],
     take: 20,
     select: { slug: true, name: true, tier: true, birthYear: true },

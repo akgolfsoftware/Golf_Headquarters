@@ -56,7 +56,7 @@ export async function hentPeriodeNavnOversikt(): Promise<PeriodeNavnOversikt> {
 
 const lagreSchema = z.object({
   navn: z.string().trim().min(1).max(100),
-  periodeType: z.enum(["GRUNN", "SPESIAL", "TURNERING", "EVALUERING", "TESTUKE", "FERIE", "TRENINGSSAMLING", "HELDAGSSAMLING"]),
+  periodeType: z.enum(["GRUNN", "SPESIAL", "TURNERING", "EVALUERING", "TESTUKE", "FERIE", "TRENINGSSAMLING", "HELDAGSSAMLING", "RESTITUSJON"]),
 });
 
 export type LagrePeriodeNavnInput = z.input<typeof lagreSchema>;

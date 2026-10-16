@@ -1,8 +1,12 @@
-/* Skjerm-speilet skeleton (P4): samme layout som StallV2 —
-   hode m/CTA · 3 filterrader · (spillerliste 3fr | spillersammendrag 2fr). */
-
+"use client";
+/* AG-07 Stall har Precision-laster; underrutene uten egen loading.tsx beholder V2Laster. */
+import { usePathname } from "next/navigation";
 import { V2Laster } from "@/components/v2/laster";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { LasterTilstand } from "@/components/precision/pa";
 
 export default function Loading() {
-  return <V2Laster variant="stall" />;
+  return usePathname() === "/admin/spillere"
+    ? <AgencyOSSkall navn="Coach"><div className="pa-side"><LasterTilstand text="Henter stallen …" /></div></AgencyOSSkall>
+    : <V2Laster variant="stall" />;
 }

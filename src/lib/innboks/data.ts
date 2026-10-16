@@ -14,6 +14,7 @@ export type InnboksEpostVm = {
   emne: string;
   brodtekst: string;
   mottattAt: string; // «10. jul 09:14»
+  mottattIso: string;
   status: string;
   utkastSvar: string | null;
   harUtkast: boolean;
@@ -32,6 +33,7 @@ function tilVm(e: InnboksEpost): InnboksEpostVm {
       hour: "2-digit",
       minute: "2-digit",
     }),
+    mottattIso: e.mottattAt.toISOString(),
     status: e.status,
     utkastSvar: e.utkastSvar,
     harUtkast: e.utkastGenerertAt !== null,

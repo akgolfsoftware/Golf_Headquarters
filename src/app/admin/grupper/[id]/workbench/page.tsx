@@ -1,19 +1,21 @@
 /**
- * AgencyOS — GRUPPE-WORKBENCH (8c.3): gruppens EGEN årsplan på samme
+ * AgencyOS — GRUPPE-WORKBENCH (8c.3), AG-11-GRUPPE i Precision Athletics.
+ * Skallet og rammen er portert (AG11Gruppe); gruppas årsplan er uendret.
+ * Opprinnelig (8c.3): gruppens EGEN årsplan på samme
  * canvas som spillerens (WorkbenchAarsplan gjenbrukt 1:1 — Anders:
  * gruppen har egen periodisering, spillerne beholder individuelle planer).
  * Perioder-paletten står i venstre kolonne; gruppens faste tider vises
  * under canvaset (lesevisning — timeplanen redigeres på gruppe-detalj).
  */
 
+import { editableGroupWhere } from "@/lib/workbench/group-scope";
 import { notFound } from "next/navigation";
-import Link from "next/link";
 import { requireCapability } from "@/lib/auth/requireCapability";
 import { Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TlKort, TlTilbake } from "@/components/admin/v2/oppsett/tl-kit";
-import { GruppeFaner } from "@/components/admin/v2/GruppeFaner";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { AG11Gruppe } from "@/components/admin/precision/AG11Gruppe";
+import { TL_SCOPE } from "@/components/workbench/wb-tl-scope";
 import { GruppeAarsplanKlient } from "./gruppe-aarsplan-klient";
 import { coachLagreGruppePeriode, coachSlettGruppePeriode, coachRullUtGruppeAarsplan } from "@/lib/workbench/gruppe-periode-actions";
 import { parseSessionBudget } from "@/lib/workbench/perioder";
@@ -33,8 +35,8 @@ export default async function GruppeWorkbenchPage({ params }: { params: Promise<
   const user = await requireCapability(Capability.EDIT_GROUP_PLANS);
   const { id } = await params;
 
-  const gruppe = await prisma.group.findUnique({
-    where: { id },
+  const gruppe = await prisma.group.findFirst({
+    where: { id, ...editableGroupWhere(user) },
     select: {
       id: true,
       name: true,
@@ -70,52 +72,37 @@ export default async function GruppeWorkbenchPage({ params }: { params: Promise<
     budsjett: parseSessionBudget(b.weeklySessionBudget),
   }));
 
+  // Samme eierskap som /admin/grupper: en coach ser gruppene hun eier, admin alle.
+  const grupper = await prisma.group.findMany({
+    where: user.role === "COACH" ? { coachId: user.id } : {},
+    select: { id: true, name: true },
+    orderBy: { name: "asc" },
+  });
+
   return (
-    <V2Shell bredde="full" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <div>
-        <TlTilbake href={`/admin/grupper/${gruppe.id}`}>{gruppe.name}</TlTilbake>
-      </div>
-      <GruppeFaner groupId={gruppe.id} aktiv="workbench" />
-      <GruppeAarsplanKlient
-        gruppeNavn={gruppe.name}
-        medlemmer={gruppe._count.members}
-        seasonBlocks={seasonBlocks}
-        onLagre={coachLagreGruppePeriode.bind(null, gruppe.id)}
-        onSlett={coachSlettGruppePeriode.bind(null, gruppe.id)}
-        onRullUt={coachRullUtGruppeAarsplan.bind(null, gruppe.id)}
-      />
-      <TlKort
-        eyebrow="Faste gruppetider"
-        action={
-          <Link href={`/admin/grupper/${gruppe.id}/timeplan`} style={{ fontSize: 13, color: "var(--tl-mute)", textDecoration: "none" }}>
-            Rediger timeplan
-          </Link>
-        }
-      >
-        {gruppe.schedules.length > 0 ? (
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-            {gruppe.schedules.map((s, i) => (
-              <span
-                key={i}
-                style={{
-                  fontSize: 12,
-                  color: "var(--tl-mute)",
-                  background: "var(--tl-dock)",
-                  boxShadow: "inset 0 0 0 1px var(--tl-hair)",
-                  borderRadius: 9,
-                  padding: "6px 10px",
-                  fontVariantNumeric: "tabular-nums",
-                }}
-              >
-                {dagNavnKort(s.startAt)} {OSLO_TID.format(s.startAt)}–{OSLO_TID.format(s.endAt)}
-                {s.location ? ` · ${s.location}` : ""}
-              </span>
-            ))}
+    <AgencyOSSkall navn={user.name ?? "Coach"}>
+      <AG11Gruppe
+        gruppe={{ id: gruppe.id, navn: gruppe.name, medlemmer: gruppe._count.members }}
+        grupper={grupper.map((g) => ({ id: g.id, navn: g.name }))}
+        faste={gruppe.schedules.map((s, i) => ({
+          id: String(i),
+          dag: dagNavnKort(s.startAt),
+          tid: `${OSLO_TID.format(s.startAt)}–${OSLO_TID.format(s.endAt)}`,
+          sted: s.location,
+        }))}
+        aarsplan={
+          <div style={TL_SCOPE}>
+            <GruppeAarsplanKlient
+              gruppeNavn={gruppe.name}
+              medlemmer={gruppe._count.members}
+              seasonBlocks={seasonBlocks}
+              onLagre={coachLagreGruppePeriode.bind(null, gruppe.id)}
+              onSlett={coachSlettGruppePeriode.bind(null, gruppe.id)}
+              onRullUt={coachRullUtGruppeAarsplan.bind(null, gruppe.id)}
+            />
           </div>
-        ) : (
-          <span style={{ fontSize: 13, color: "var(--tl-mute)" }}>Ingen faste tider registrert.</span>
-        )}
-      </TlKort>
-    </V2Shell>
+        }
+      />
+    </AgencyOSSkall>
   );
 }

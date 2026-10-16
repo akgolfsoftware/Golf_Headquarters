@@ -1,3 +1,4 @@
+// PH23NyBekreft — Precision Athletics PH-23.
 /**
  * Bekreft credit-booking (/portal/booking/ny/bekreft) — v2 (retning C),
  * Team G-A 17. juli 2026.
@@ -11,7 +12,7 @@
 import { notFound, redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { byggBookingBekreftData } from "@/lib/portal-booking/bekreft-data";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { TilbakeLenke } from "@/components/v2";
 import { BookingNyBekreftV2 } from "@/components/portal/v2/BookingNyBekreftV2";
 
@@ -42,9 +43,11 @@ export default async function BekreftCreditBookingPage({
   if (resultat.status === "ikke_funnet") notFound();
 
   return (
-    <V2Shell bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href={resultat.data.backHref}>Velg annen tid</TilbakeLenke>
-      <BookingNyBekreftV2 data={resultat.data} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
+        <TilbakeLenke href={resultat.data.backHref}>Velg annen tid</TilbakeLenke>
+        <BookingNyBekreftV2 data={resultat.data} />
+      </div>
+    </PlayerHQSkall>
   );
 }

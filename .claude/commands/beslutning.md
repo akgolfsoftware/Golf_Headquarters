@@ -1,14 +1,15 @@
 ---
-description: Registrer en beslutning fra Anders — skriver den til beslutninger.md OG inn i MASTERPLAN som nummerert arbeid, i samme økt. Bruk ALLTID når Anders har bestemt noe.
+description: Registrer en beslutning fra Anders — skriver den til beslutninger.md med «Arbeidet dette utløser» som nummererte oppgaver, i samme økt. Bruk ALLTID når Anders har bestemt noe.
 ---
 
 Anders har tatt en beslutning. Jobben din er å sørge for at den **blir til arbeid**, ikke bare
 til en notis.
 
-Bakgrunn (målt 30.08.2026): ni store beslutninger tatt 26.–30. august sto kun i
-`.claude/rules/beslutninger.md`. Sju av dem fantes ikke i planen i det hele tatt. Beslutningene
-døde der de ble skrevet. Denne kommandoen finnes for å lukke det hullet. **Begge stegene under
-er obligatoriske — én av dem alene er en ikke-utført jobb.**
+Bakgrunn (målt 30.08.2026): ni store beslutninger tatt 26.–30. august sto kun som regler.
+Sju av dem fantes ikke som oppgaver noe sted. Beslutningene døde der de ble skrevet. Denne
+kommandoen finnes for å lukke det hullet. `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i
+b700ce008, så arbeidet står nå **inne i beslutningsblokken selv**, som en egen liste
+«Arbeidet dette utløser». **Blokk uten den lista er en ikke-utført jobb.**
 
 ## 1. Få beslutningen presis
 
@@ -22,32 +23,50 @@ hans egne ord der de er tydelige), og **hva det overstyrer** hvis noe. Mangler e
 Verifiser mot koden før du skriver. Sier beslutningen noe om en fil, en rute eller et tall, sjekk
 at det stemmer. Aldri skriv en påstand du ikke har sett.
 
-## 2. Skriv til `.claude/rules/beslutninger.md`
+## 2. Skriv blokken i `.claude/rules/beslutninger.md`
 
-Øverst i «Beslutningene»-seksjonen (nyeste først), som en `- **TITTEL (Anders DD.MM.ÅÅÅÅ, i økt):**`-blokk.
+Øverst, rett under innledningen (nyeste først). Formatet er det fila allerede bruker:
 
-- Store bokstaver i tittelen når beslutningen overstyrer noe eksisterende.
-- Sier den noe annet enn et eldre punkt: flytt den gamle teksten til beslutningsarkivet med dato og peker til den nye. Bevar historikken uten to konkurrerende oppskrifter.
-- **Kun det som gjelder nå.** Historikk og supersederte blokker hører i
-  `docs/arkiv/beslutninger-historikk.md`. Fila lastes i hver eneste økt — hvert ord koster.
+```markdown
+## TITTEL I STORE BOKSTAVER (Anders DD.MM.ÅÅÅÅ, bindende)
 
-## 3. Skriv arbeidet inn i `docs/MASTERPLAN-GJENSTAAENDE.md` — dette steget hoppes ALDRI over
+Én–to setninger: hva Anders sa, og hva det svarer på.
+
+- Regel 1, som den gjelder nå.
+- Regel 2.
+
+**Overstyrer:** §TITTEL på det gamle punktet, eller «ingenting».
+
+**Arbeidet dette utløser:**
+
+1. **Oppgave:** hva, hvor i koden (fil/rute), og hva som gjør den ferdig.
+2. ...
+```
+
+- Store bokstaver i tittelen alltid; «bindende» når Anders har bestemt, «bestilt» når det er en
+  bestilling uten produktvalg.
+- Overstyrer den et eldre punkt: skriv `**Overstyrer:**` i den nye blokken, og rett eller stryk
+  (`~~tekst~~` med «Overstyrt DD.MM») setningen i den gamle. Ingen to konkurrerende oppskrifter.
+  Det finnes ingen egen arkivfil; historikken ligger i Git.
+- **Kun det som gjelder nå.** Fila lastes i hver eneste økt — hvert ord koster.
+
+## 3. «Arbeidet dette utløser» — dette steget hoppes ALDRI over
 
 Oversett beslutningen til oppgaver noen kan utføre. Konkret:
 
-- **Krever den bygging?** → nummererte rader i den gjeldende arbeidslisten. Hver rad: hva, hvor i koden, og hva som gjør den ferdig.
-- **Haster den (sikkerhet, PII, lisens, penger)?** → før risiko og foreslå prioritet i arbeidslisten.
-- **Åpner den et nytt spørsmål du ikke kan svare på?** → et konkret åpent punkt i arbeidslisten.
+- **Krever den bygging?** → nummererte punkter. Hvert punkt: hva, hvor i koden, og hva som gjør
+  det ferdig («Ferdig når …», gjerne «låst med test»).
+- **Haster den (sikkerhet, PII, lisens, penger)?** → merk «(haster)» og sett den først.
+- **Åpner den et nytt spørsmål du ikke kan svare på?** → eget punkt som starter med «Uavklart:».
 - **Krever den ingenting?** (ren avklaring, bekrefter dagens tilstand) → skriv det eksplisitt i
-  beslutningsblokken: «Krever ingen kodeendring — bekrefter dagens tilstand.» Da er det et
-  bevisst valg, ikke en glipp.
-
-Pek alltid tilbake til kilden i planen: `.claude/rules/beslutninger.md` §TITTEL.
+  blokken: «Krever ingen kodeendring — bekrefter dagens tilstand.» Da er det et bevisst valg,
+  ikke en glipp.
 
 ## 4. Er noe nå utdatert?
 
-Sjekk om beslutningen gjør noe eksisterende feil: rader i MASTERPLAN, punkter i beslutningskøen,
-`CLAUDE.md`-invarianter, `.claude/rules/gotchas.md`. Rett dem i samme PR. Et dokument som sier noe
+Sjekk om beslutningen gjør noe eksisterende feil: andre blokker i beslutninger.md,
+`docs/platform/BUSINESS-RULES.md`, `.claude/rules/gotchas.md`, skills under `.claude/skills/`
+og `docs/design-system/design-autoritet.md`. Rett dem i samme PR. Et dokument som sier noe
 annet enn en fersk beslutning er verre enn ingen dokumentasjon.
 
 ## 5. Lagre
@@ -60,8 +79,8 @@ dokumenter): full `npm run verify` først.
 Fire linjer, hverdagsspråk:
 
 1. Hva som ble registrert.
-2. **Hvilke oppgaver det ble til i planen** (nummer og hvor) — eller «krever ingen bygging».
+2. **Hvilke oppgaver det ble til** (nummer i blokken) — eller «krever ingen bygging».
 3. Hva som ble utdatert og rettet.
 4. PR-lenken.
 
-Sier du ikke hva beslutningen ble til i planen, har du ikke fullført kommandoen.
+Sier du ikke hva beslutningen ble til av arbeid, har du ikke fullført kommandoen.

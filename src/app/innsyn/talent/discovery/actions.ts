@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 import { prisma } from "@/lib/prisma";
+import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 
 const NIVAA = ["U10", "U12", "U14", "U16", "U18", "Senior"] as const;
@@ -31,7 +32,7 @@ export async function leggTilITalent(
   _prev: LeggTilState,
   formData: FormData,
 ): Promise<LeggTilState> {
-  await requirePortalUser({ allow: ["ADMIN", "COACH"] });
+  const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
 
   const parsed = Input.safeParse({
     userId: formData.get("userId"),
@@ -45,6 +46,11 @@ export async function leggTilITalent(
   }
 
   const { userId, niva, klubb, region } = parsed.data;
+
+  // Coach-scope: bare spillere i coachens stall kan legges i talent-tracking.
+  if (!(await harCoachTilgangTilSpiller(user, userId))) {
+    return { ok: false, error: "Du har ikke tilgang til denne spilleren." };
+  }
 
   const eksisterer = await prisma.talentTracking.findUnique({
     where: { userId },

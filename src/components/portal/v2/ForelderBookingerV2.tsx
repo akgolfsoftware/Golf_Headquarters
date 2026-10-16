@@ -21,7 +21,6 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { TL } from "@/lib/v2/train-lock";
 import {
   FoSkjerm,
   FoHode,
@@ -29,7 +28,7 @@ import {
   FoChevron,
   FoFotnote,
   FoTom,
-} from "@/components/forelder/fo-kit";
+} from "@/components/forelder/fo-presisjon";
 
 /* ── Datakontrakt (serialisert fra loader) ─────────────────────────── */
 
@@ -112,62 +111,13 @@ function varighet(min: number): string {
 
 function BookingKort({ b }: { b: ForelderBookingRad }) {
   return (
-    <div
-      style={{
-        marginTop: 10,
-        background: TL.elev,
-        borderRadius: 20,
-        padding: "14px 16px",
-        display: "flex",
-        alignItems: "center",
-        gap: 14,
-      }}
-    >
-      <span
-        style={{
-          fontFamily: TL.font.sans,
-          fontSize: 15,
-          fontWeight: 700,
-          fontVariantNumeric: "tabular-nums",
-          width: 46,
-          flexShrink: 0,
-          color: TL.text,
-        }}
-      >
-        {tid(b.startAt)}
-      </span>
-      <div style={{ width: 1, alignSelf: "stretch", background: TL.hair }} />
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
-          {b.serviceName} · {b.childName}
-        </div>
-        <div
-          style={{
-            marginTop: 2,
-            fontFamily: TL.font.sans,
-            fontSize: 13,
-            color: TL.mute,
-            fontVariantNumeric: "tabular-nums",
-          }}
-        >
-          {b.locationName} · {varighet(b.durationMin)}
-        </div>
+    <div className="fo-kort fo-agenda">
+      <span className="fo-tid">{tid(b.startAt)}</span>
+      <div>
+        <p className="fo-navn">{b.serviceName} · {b.childName}</p>
+        <p className="fo-meta">{b.locationName} · {varighet(b.durationMin)}</p>
       </div>
-      {b.status === "PENDING" && (
-        <span
-          style={{
-            fontFamily: TL.font.sans,
-            fontSize: 11,
-            fontWeight: 600,
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
-            color: TL.text,
-            flexShrink: 0,
-          }}
-        >
-          Venter
-        </span>
-      )}
+      {b.status === "PENDING" && <span className="fo-kicker">Venter</span>}
       <FoChevron />
     </div>
   );
@@ -216,69 +166,18 @@ export function ForelderBookingerV2({ data }: { data: ForelderBookingerData }) {
           bookingsvei inn, kun lesevisning). FoCtaPrimar-stilen (samme som
           FO-04/06/08/10 allerede bruker), ikke en ny visuell komponent. */}
       {antallBarn > 0 && (
-        <Link href="/forelder/bookinger/ny" style={{ textDecoration: "none", display: "block", marginTop: 14 }}>
-          <span
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              height: 48,
-              borderRadius: 999,
-              background: TL.fill,
-              color: TL.onFill,
-              fontFamily: TL.font.sans,
-              fontSize: 16,
-              fontWeight: 700,
-            }}
-          >
-            Book ny time
-          </span>
+        <Link href="/forelder/bookinger/ny" className="pa-btn pa-btn--primary pa-btn--full">
+          Book ny time
         </Link>
       )}
 
-      {/* Sticky filterlag — translucent per FO-03 (fasit-tegnet unntak) */}
       {barnNavn.length > 1 && (
-        <div
-          style={{
-            position: "sticky",
-            top: 0,
-            zIndex: 3,
-            margin: "12px -20px 0",
-            padding: "10px 20px 12px",
-            background: "color-mix(in srgb, var(--tl-scene) 72%, transparent)",
-            backdropFilter: "blur(20px) saturate(180%)",
-            WebkitBackdropFilter: "blur(20px) saturate(180%)",
-            display: "flex",
-            gap: 8,
-          }}
-        >
-          {["Alle", ...barnNavn].map((navn) => {
-            const aktiv = filter === navn;
-            return (
-              <button
-                key={navn}
-                type="button"
-                onClick={() => setFilter(navn)}
-                style={{
-                  appearance: "none",
-                  border: "none",
-                  height: 34,
-                  padding: "0 14px",
-                  borderRadius: 999,
-                  background: aktiv ? TL.fill : TL.dock,
-                  color: aktiv ? TL.onFill : TL.mute,
-                  display: "flex",
-                  alignItems: "center",
-                  fontFamily: TL.font.sans,
-                  fontSize: 13,
-                  fontWeight: 600,
-                  cursor: "pointer",
-                }}
-              >
-                {navn}
-              </button>
-            );
-          })}
+        <div className="fo-filter" role="group" aria-label="Filtrer på barn">
+          {["Alle", ...barnNavn].map((navn) => (
+            <button key={navn} type="button" aria-pressed={filter === navn} onClick={() => setFilter(navn)}>
+              {navn}
+            </button>
+          ))}
         </div>
       )}
 
@@ -310,47 +209,13 @@ export function ForelderBookingerV2({ data }: { data: ForelderBookingerData }) {
               <div style={{ marginTop: 28 }}>
                 <FoCaps>Tidligere</FoCaps>
               </div>
-              <div
-                style={{
-                  marginTop: 10,
-                  background: TL.elev,
-                  borderRadius: 20,
-                  padding: "4px 16px",
-                }}
-              >
+              <div className="fo-kort fo-tidligere">
                 {tidligereVis.map((b, i) => (
-                  <div
-                    key={b.id}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 14,
-                      padding: "12px 0",
-                      borderBottom:
-                        i === tidligereVis.length - 1 ? "none" : `1px solid ${TL.hair}`,
-                      opacity: 0.5,
-                    }}
-                  >
-                    <span
-                      style={{
-                        width: 76,
-                        flexShrink: 0,
-                        fontFamily: TL.font.sans,
-                        fontSize: 13,
-                        fontWeight: 600,
-                        color: TL.mute,
-                        fontVariantNumeric: "tabular-nums",
-                      }}
-                    >
-                      {dato(b.startAt)}
-                    </span>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
-                        {b.serviceName} · {b.childName}
-                      </div>
-                      <div style={{ marginTop: 2, fontFamily: TL.font.sans, fontSize: 13, color: TL.mute }}>
-                        {b.status === "CANCELLED" ? "Avlyst av coach" : "Gjennomført"}
-                      </div>
+                  <div key={b.id} className="fo-rad" data-last={i === tidligereVis.length - 1 ? "true" : undefined}>
+                    <span className="fo-dato">{dato(b.startAt)}</span>
+                    <div>
+                      <strong>{b.serviceName} · {b.childName}</strong>
+                      <small>{b.status === "CANCELLED" ? "Avlyst av coach" : "Gjennomført"}</small>
                     </div>
                     <FoChevron />
                   </div>

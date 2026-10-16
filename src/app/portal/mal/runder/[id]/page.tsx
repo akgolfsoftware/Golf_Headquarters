@@ -1,18 +1,26 @@
 /**
- * PlayerHQ Runde-detalj — v2. Auth-guard + Prisma-loader utvidet fra
- * legacy-skjermen (holeScores er nå sannheten for hull-for-hull, fra
- * SG slag-for-slag-pakken 10. juli — se main). V2Shell eier chrome-en.
+ * PlayerHQ Runde ferdig (PH-RD-08) — Precision Athletics. Auth-guard og Prisma-loader
+ * beholdt (holeScores er sannheten for hull-for-hull); visningen er PHRD08RundeFerdig.
  */
 
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
+import { harCoachLesetilgangTilSpiller } from "@/lib/auth/coached";
 import { SG_ALLE_FELT, type ManuellSgVerdier } from "@/lib/portal-runder/manuell-sg";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { RundeDetaljV2, type RundeDetaljData } from "@/components/portal/v2/RundeDetaljV2";
+import {
+  RUNDE_SG_KILDE,
+  avledRundeRegistrering,
+  lesRundeDataQuality,
+  lesRundeKilde,
+  lesRundeStatus,
+} from "@/lib/runde-logg/kontrakt";
+import { tiger5ForRunde } from "@/lib/portal-runder/tiger5-runde";
+import { PHRD08RundeFerdig, type PHRD08Data } from "@/components/portal/precision/PHRD08RundeFerdig";
 
 export const dynamic = "force-dynamic";
+
+const DATO_KORT = new Intl.DateTimeFormat("nb-NO", { timeZone: "Europe/Oslo", day: "2-digit", month: "2-digit", year: "numeric" });
 
 export default async function RundeDetaljPage({
   params,
@@ -37,30 +45,29 @@ export default async function RundeDetaljPage({
 
   if (!runde) notFound();
   if (runde.userId !== user.id &&
-    (!(user.role === "ADMIN" || user.role === "COACH") || !(await harCoachTilgangTilSpiller(user, runde.userId)))) notFound();
+    (!(user.role === "ADMIN" || user.role === "COACH") || !(await harCoachLesetilgangTilSpiller(user, runde.userId)))) notFound();
 
   const erEier = runde.userId === user.id;
 
   // Hull-for-hull: HoleScore er sannheten (skrives av slag-føring OG import);
   // fall tilbake til slag-avledet score for eldre runder uten HoleScore-rader.
-  const hullMap = new Map<number, { par: number; score: number }>();
+  const hullMap = new Map<number, { par: number; score: number; putter: number | null }>();
   for (const h of runde.holeScores) {
-    hullMap.set(h.holeNumber, { par: h.par, score: h.strokes });
+    hullMap.set(h.holeNumber, { par: h.par, score: h.strokes, putter: h.putts });
   }
   if (hullMap.size === 0) {
     for (const s of runde.shots) {
       const e = hullMap.get(s.holeNumber);
       if (e) e.score += 1;
-      else hullMap.set(s.holeNumber, { par: s.holePar, score: 1 });
+      else hullMap.set(s.holeNumber, { par: s.holePar, score: 1, putter: null });
     }
   }
   const hull = [...hullMap.entries()]
     .sort(([a], [b]) => a - b)
-    .map(([nr, h]) => ({ nr, par: h.par, score: h.score, sg: null }));
+    .map(([nr, h]) => ({ nr, par: h.par, score: h.score, putter: h.putter }));
 
   // Delvis runde (færre hull på scorekortet): mål mot par for de SPILTE
   // hullene — «8 slag mot par 72» ville vært løgn for en 2-hulls runde.
-  const antallSpilteHull = runde.holeScores.length > 0 ? runde.holeScores.length : 18;
   const par =
     runde.holeScores.length > 0
       ? runde.holeScores.reduce((sum, h) => sum + h.par, 0)
@@ -81,8 +88,20 @@ export default async function RundeDetaljPage({
   const visKjedeStatus =
     erEier &&
     runde.holeScores.length > 0 &&
-    runde.sgSource !== "beregnet" &&
-    runde.sgSource !== "manual";
+    runde.sgSource !== RUNDE_SG_KILDE.BEREGNET &&
+    runde.sgSource !== RUNDE_SG_KILDE.MANUAL;
+  const avledetRegistrering = avledRundeRegistrering({
+    sgSource: runde.sgSource,
+    holeScores: runde.holeScores,
+    shots: runde.shots,
+    kilde: lesRundeKilde(runde.source),
+  });
+  const registrering = {
+    ...avledetRegistrering,
+    status: lesRundeStatus(runde.status) ?? avledetRegistrering.status,
+    dataQuality: lesRundeDataQuality(runde.dataQuality) ?? avledetRegistrering.dataQuality,
+    kilde: lesRundeKilde(runde.source) ?? avledetRegistrering.kilde,
+  };
 
   // Scorekort-statistikk (D6a): UT/INN/TOTALT + putter/fairway/GIR-aggregater
   // — kun fra ekte HoleScore-rader (aldri fra shot-fallback), og kun for
@@ -131,51 +150,42 @@ export default async function RundeDetaljPage({
     ] as const
   ).flatMap((k) => (k.sg == null ? [] : [{ akse: k.akse, sg: k.sg }]));
 
-  const data: RundeDetaljData = {
+  const manuellSg = Object.fromEntries(SG_ALLE_FELT.map(({ key }) => [key, runde[key]])) as ManuellSgVerdier;
+  const uleste = await prisma.notification.count({ where: { userId: user.id, readAt: null } });
+  // Straff finnes bare når slag er ført; uten slag er det ingen kilde (vises som «—»).
+  const straff = runde.shots.length > 0 ? runde.shots.filter((s) => s.isPenalty).length : null;
+
+  const data: PHRD08Data = {
     id: runde.id,
     nettoppLagret,
     baneNavn: runde.course.name,
-    datoTekst: runde.playedAt.toLocaleDateString("nb-NO", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    }),
+    datoKort: DATO_KORT.format(runde.playedAt),
     score: runde.score,
     par,
-    antallSpilteHull,
     sgTotal: runde.sgTotal,
     sgKategorier,
     sgSource: runde.sgSource,
-    manuellSg: Object.fromEntries(SG_ALLE_FELT.map(({ key }) => [key, runde[key]])) as ManuellSgVerdier,
+    registrering,
+    manuellSg,
+    granulaerSg: manuellSg,
     hull,
     erEier,
     visKjedeStatus,
     antallKomplette,
     antallHullMedScore: runde.holeScores.length,
-    hullStat,
-    granulaerSg: {
-      tee: runde.sgTee,
-      app200: runde.sgApp200,
-      app150: runde.sgApp150,
-      app100: runde.sgApp100,
-      app50: runde.sgApp50,
-      chip: runde.sgChip,
-      pitch: runde.sgPitch,
-      lob: runde.sgLob,
-      bunker: runde.sgBunker,
-      putt0_3: runde.sgPutt0_3,
-      putt3_5: runde.sgPutt3_5,
-      putt5_10: runde.sgPutt5_10,
-      putt10_15: runde.sgPutt10_15,
-      putt15_25: runde.sgPutt15_25,
-      putt25_40: runde.sgPutt25_40,
-      putt40plus: runde.sgPutt40plus,
-    },
+    putter: hullStat?.putter ?? null,
+    fairway: hullStat?.fairway ?? null,
+    gir: hullStat?.gir ?? null,
+    straff,
+    ut: hullStat ? { score: hullStat.ut.score, par: hullStat.ut.par } : null,
+    inn: hullStat && hullStat.inn.antall > 0 ? { score: hullStat.inn.score, par: hullStat.inn.par } : null,
+    art: runde.roundType === "turnering" || runde.roundType === "trening" ? runde.roundType : null,
+    notat: runde.notes,
+    tiger5: tiger5ForRunde(
+      runde.holeScores.map((h) => ({ holeNumber: h.holeNumber, par: h.par, strokes: h.strokes, putts: h.putts })),
+      runde.shots.map((s) => ({ holeNumber: s.holeNumber, shotNumber: s.shotNumber, lie: s.lie, distanceToPin: s.distanceToPin, isPenalty: s.isPenalty })),
+    ),
   };
 
-  return (
-    <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <RundeDetaljV2 data={data} />
-    </V2Shell>
-  );
+  return <PHRD08RundeFerdig data={data} uleste={uleste} />;
 }

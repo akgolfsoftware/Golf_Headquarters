@@ -6,7 +6,7 @@
 
 import { z } from "zod";
 import type { AKFormel } from "./types";
-import { OvelseDetaljerSchema } from "./ovelse-detaljer";
+import { OvelseDetaljerLeseSchema, OvelseDetaljerSchema } from "./ovelse-detaljer";
 
 export const PyramidAreaSchema = z.enum(["FYS", "TEK", "SLAG", "SPILL", "TURN"]);
 
@@ -63,6 +63,7 @@ export const AkFormelSchema = z.object({
   label: z.string(),
   detaljer: OvelseDetaljerSchema.optional(),
 });
+export const AkFormelLeseSchema = AkFormelSchema.extend({ detaljer: OvelseDetaljerLeseSchema.optional() });
 
 /**
  * Trygg lesing av et lagret AKFormel-felt. Ugyldig JSON gir en nøytral
@@ -70,7 +71,7 @@ export const AkFormelSchema = z.object({
  * merkelapper, aldri regler (invariant 1).
  */
 export function parseAkFormel(value: unknown, fallbackLabel: string): AKFormel {
-  const parsed = AkFormelSchema.safeParse(value);
+  const parsed = AkFormelLeseSchema.safeParse(value);
   if (parsed.success) return parsed.data;
   return { pyramid: "TEK", area: "TEE_TOTAL", label: fallbackLabel };
 }
@@ -83,6 +84,7 @@ export const SessionStatusSchema = z.enum([
   "COMPLETED",
   "CANCELLED",
   "SKIPPED",
+  "ABANDONED",
 ]);
 
 export const BlockTypeSchema = z.enum([
@@ -148,13 +150,17 @@ export const SeriesContentPatchSchema = z
     pyramid: PyramidAreaSchema.optional(),
     blockType: BlockTypeSchema.optional(),
     environment: EnvironmentSchema.optional(),
-    notes: z.string().optional(),
-  })
+    notes: z.string().max(5000).nullable().optional(),
+    rationale: z.string().trim().max(1000).nullable().optional(),
+    location: z.string().trim().max(160).nullable().optional(),
+    maalsetning: z.string().trim().max(500).nullable().optional(),
+  }).strict()
   .refine((p) => Object.keys(p).length > 0, "Ingen endringer å lagre.");
 
 export const UpdateSeriesSessionInputSchema = z.object({
   sessionId: z.string().min(1, "Mangler økt-id"),
   patch: SeriesContentPatchSchema,
+  expectedUpdatedAt: z.string().datetime().optional(),
   policy: RecurrencePolicySchema,
 });
 

@@ -135,7 +135,7 @@ export async function genererPlan(
   let forrigeForslag: PlanForslag | undefined;
   if (iterationOf) {
     const forrige = await prisma.aiPlanGeneration.findUnique({
-      where: { id: iterationOf },
+      where: { id: iterationOf, userId },
       select: { responseJson: true },
     });
     if (forrige && forrige.responseJson) {

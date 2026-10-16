@@ -39,6 +39,10 @@ export const SHORT_GAME_TARGETS = [
 ] as const;
 
 export const PUTTING_TARGETS = [
+  { baseId: "putt-greenlesing", name: "Greenlesing", category: "GREENLESING" },
+  { baseId: "putt-sikte", name: "Sikte", category: "SIKTE" },
+  { baseId: "putt-ballstart", name: "Ballstart", category: "BALLSTART" },
+  { baseId: "putt-lengdekontroll", name: "Lengdekontroll", category: "LENGDEKONTROLL" },
   { baseId: "putt-kort", name: "Kortputt (<3m)", category: "KORT" },
   { baseId: "putt-mellom", name: "Mellomputt (3–10m)", category: "MELLOM" },
   { baseId: "putt-lang", name: "Lengdeputt (>10m)", category: "LANG" },

@@ -1,0 +1,49 @@
+/* Offentlig booking (BK-01) i Precision Athletics. Fasit: 7d7c2994 ui_kits/booking/screens/BK.jsx.
+   Bare layout; farger og skrift kommer fra tokens i .pa-root. */
+.bk{min-height:100vh;display:flex;flex-direction:column;background:var(--surface-page,var(--sand-100));color:var(--text-primary);font-family:var(--font-sans)}
+.bk__topp{border-bottom:1px solid var(--border-hairline);background:var(--surface-flat)}
+.bk__toppin{margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:12px;box-sizing:border-box}
+.bk__logo{height:22px;width:auto;display:block}
+.bk__innhold{width:100%;margin:0 auto;padding:20px 16px 40px;box-sizing:border-box;display:flex;flex-direction:column;gap:20px;flex:1}
+.bk__steg{list-style:none;margin:0;padding:0;display:flex;gap:8px;flex-wrap:wrap}
+.bk__steg li{display:inline-flex;gap:6px;align-items:center;font:var(--type-meta);letter-spacing:.04em;color:var(--text-muted)}
+.bk__steg li[data-naa],.bk__steg li[data-ferdig]{color:var(--text-primary)}
+.bk__steg li span{width:22px;height:22px;border-radius:999px;display:grid;place-items:center;border:1px solid var(--border-ink);font:600 11px/1 var(--font-mono)}
+.bk__steg li[data-ferdig] span{background:var(--primary);color:var(--text-on-primary)}
+.bk__h1{margin:0;font:600 clamp(22px,1.2vw + 16px,28px)/1.2 var(--font-sans)}
+.bk__kolonner{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;align-items:start;min-width:0}
+.bk__stabel{display:flex;flex-direction:column;gap:16px;min-width:0}
+.bk__tjenester{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr));gap:8px}
+.bk__valg{text-align:left;padding:14px;min-height:96px;border-radius:8px;border:1px solid var(--border-hairline);background:var(--surface-card);color:var(--text-primary);cursor:pointer;display:flex;flex-direction:column;gap:6px;min-width:0;font:inherit}
+.bk__valg[aria-checked="true"]{border-color:var(--border-ink);box-shadow:inset 0 0 0 1px var(--border-ink)}
+.bk__valg:focus-visible,.bk__tid:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.bk__valg-rad{display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap}
+.bk__valg-navn{font:600 15px/1.3 var(--font-sans);overflow-wrap:anywhere;min-width:0}
+.bk__valg-pris{font:var(--type-num);white-space:nowrap}
+.bk__valg-tekst{font:var(--type-body-s);color:var(--text-secondary);overflow-wrap:anywhere}
+.bk__uke{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}
+.bk__dag{display:flex;flex-direction:row;flex-wrap:wrap;gap:6px;padding:8px;border-radius:8px;border:1px solid var(--border-hairline);background:var(--surface-card);min-width:0;align-items:center}
+.bk__dag-navn{font:600 12px/1 var(--font-mono);width:64px}
+.bk__tid{min-height:44px;min-width:64px;border-radius:6px;border:1px solid var(--border-strong);background:var(--surface-card);color:var(--text-primary);font:500 13px/1 var(--font-mono);cursor:pointer}
+.bk__tid[aria-pressed="true"]{border-color:var(--border-ink);background:var(--primary);color:var(--text-on-primary)}
+.bk__dagliste{display:flex;flex-direction:column;gap:6px}
+.bk__tidrad{min-height:52px;text-align:left;padding:0 14px;border-radius:8px;border:1px solid var(--border-hairline);background:var(--surface-card);color:var(--text-primary);display:flex;gap:12px;align-items:center;cursor:pointer;min-width:0}
+.bk__tidrad[aria-pressed="true"]{border-color:var(--border-ink);box-shadow:inset 0 0 0 1px var(--border-ink)}
+.bk__pills{display:flex;gap:6px;flex-wrap:wrap}
+.bk__skjema{display:flex;flex-direction:column;gap:14px;max-width:520px;min-width:0}
+.bk__input{width:100%;box-sizing:border-box}
+.bk__knapper{display:flex;gap:8px;flex-wrap:wrap}
+.bk__rad{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.bk__sammendrag{padding:16px;gap:10px;min-width:0;box-sizing:border-box}
+.bk__abo{display:flex;flex-direction:column;gap:8px;padding:16px;border-radius:8px;border:1px solid var(--border-hairline);background:var(--surface-flat)}
+@media (min-width:640px){
+  .bk__toppin{padding:14px 24px}
+  .bk__innhold{padding:32px 24px 48px}
+  .bk__uke{grid-template-columns:repeat(7,minmax(0,1fr))}
+  .bk__dag{flex-direction:column;align-items:stretch}
+  .bk__dag-navn{width:auto}
+}
+@media (min-width:1024px){
+  .bk__kolonner{grid-template-columns:minmax(0,1fr) 300px}
+  .bk__sammendrag{position:sticky;top:16px}
+}

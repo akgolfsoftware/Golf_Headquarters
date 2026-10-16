@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { PaperTilstand, PaperIkon } from "@/components/system/side-tilstand";
+import { PrecisionTilstand } from "@/components/system/precision-tilstand";
 
 export const metadata: Metadata = {
   title: "Du er offline",
@@ -7,29 +7,23 @@ export const metadata: Metadata = {
 };
 
 /**
- * /offline — Paper. Fasit: designsystem/paper/fase2/system/
- * system-tilstander.html (§offline). Serwist ruter hit ved manglende
- * nettverk (se serwist.config.mjs). Ren presentasjon — ingen live
- * synk-status her ennå, kun de generiske «virker fortsatt»-linjene fra
- * fasiten.
+ * /offline — SY01Offline. Serwist ruter hit ved manglende nettverk.
+ * Produktteksten om lokal lagring er beholdt. Tegningens «3 endringer
+ * venter» og «sist synket» er demodata og er ikke innført.
  */
 export default function OfflinePage() {
   return (
-    <PaperTilstand
-      dataSlug="system-offline"
-      ikon={PaperIkon.offline}
+    <PrecisionTilstand
+      kicker="Offline"
       tittel="Du er uten nett"
       tekst="Vi mistet forbindelsen. Alt du har registrert på denne enheten er lagret lokalt, og sendes inn automatisk når nettet er tilbake."
-      virkerLabel="Virker fortsatt"
-      virkerLinjer={[
+      linjer={[
         { label: "Dagens økt", verdi: "lagret lokalt" },
         { label: "Slagregistrering", verdi: "virker" },
         { label: "Plan og analyse", verdi: "krever nett" },
       ]}
-      knapper={[
-        { label: "Prøv igjen", href: "/offline", primary: true },
-        { label: "Fortsett økta", href: "/portal" },
-      ]}
+      primar={{ label: "Prøv igjen", href: "/offline" }}
+      sekundar={{ label: "Fortsett økta", href: "/portal" }}
     />
   );
 }

@@ -1,25 +1,21 @@
+// PH19Enkeltmal — Precision Athletics. Data og handlinger er beholdt.
 /**
- * PlayerHQ · Mål-detalj (/portal/mal/goal/[id]) — v2.
- * v2-port 17. juli 2026: `MalDetaljV2` erstatter hybrid-designet
- * (page + goal-client), ruten flyttet ut av (legacy). Auth/eierskaps-sjekk,
- * Prisma-queries, fremdrifts-/ETA-utregningen og A–K-stigen (buildLadder)
- * beskriver den tidligere porten. Tilgang og eierens HCP er rettet 10.09.2026. Handlinger (endre/oppnådd/
- * avbryt) går fortsatt via goals-actions.ts, nå fra MalDetaljV2s modaler.
- * Not-found-fallback beholdt (ærlig melding, aldri demo-mål).
+ * PlayerHQ · Mål-detalj (/portal/mal/goal/[id]) i Precision Athletics.
+ * Kilde: Claude Design arkiv/2026-09-30/playerhq/screens/PH-19.jsx
+ *
+ * Auth/eierskaps-sjekk, Prisma-queries, fremdrifts-/ETA-utregningen og A–K-stigen
+ * er uendret. Handlinger (endre/oppnådd/avbryt) går via goals-actions.ts.
  */
 
 import Link from "next/link";
-
+import { ArrowLeft, Target } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { loadGoalForViewer } from "@/lib/portal/goals/detail-data";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TilbakeLenke, TomTilstand, CTAPill, Kort } from "@/components/v2";
-import {
-  MalDetaljV2,
-  type MalDetaljV2Data,
-  type MalStigeTrinn,
-} from "@/components/portal/v2/MalDetaljV2";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { Ikon, TomTilstand } from "@/components/precision/pa";
+import { PH19Enkeltmal } from "@/components/portal/precision/PH19Enkeltmal";
+import type { MalDetaljV2Data, MalStigeTrinn } from "@/components/portal/v2/MalDetaljV2";
 import { beregnGoalProgress } from "@/lib/portal/goals/progress";
 import { PYR_LABEL } from "@/lib/pyramide";
 import { lesSgMaal } from "@/lib/domain/maal-fremdrift";
@@ -27,7 +23,6 @@ import { lesPlanNivaa } from "@/lib/domain/maal-plannivaa";
 
 type GoalStatus = "ACTIVE" | "ACHIEVED" | "ABANDONED";
 
-// Modulnivå-helper: Date.now() kan ikke kalles i render-body (react-hooks/purity).
 function nowMs(): number {
   return Date.now();
 }
@@ -67,7 +62,6 @@ function formatAchievedDato(d: Date): string {
 function buildLadder(currentHcp: number, goalType: string): MalStigeTrinn[] {
   if (goalType !== "HCP_TARGET") return [];
 
-  // A-K score bands (NGF category approximation via HCP)
   const bands: { code: string; label: string; hcpMax: number }[] = [
     { code: "A", label: "Scratch", hcpMax: 0 },
     { code: "B", label: "0–2 · Tour", hcpMax: 2 },
@@ -81,7 +75,6 @@ function buildLadder(currentHcp: number, goalType: string): MalStigeTrinn[] {
   const currentBandIdx = bands.findIndex((b) => currentHcp <= b.hcpMax);
   const currentIdx = currentBandIdx === -1 ? bands.length - 1 : currentBandIdx;
 
-  // Show relevant window (current ± 2)
   const start = Math.max(0, currentIdx - 2);
   const end = Math.min(bands.length - 1, currentIdx + 1);
 
@@ -103,27 +96,34 @@ export default async function GoalDetailPage({
   const user = await requirePortalUser();
   const { id } = await params;
 
-  const detail = await loadGoalForViewer(id, user);
+  const [detail, uleste] = await Promise.all([
+    loadGoalForViewer(id, user),
+    prisma.notification.count({ where: { userId: user.id, readAt: null } }),
+  ]);
   const goal = detail?.goal;
 
-  // Ingen ekte mål — eller ikke tilgang. Vis ærlig "ikke funnet", aldri demo-mål.
   if (!goal || !detail) {
     return (
-      <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-        <TilbakeLenke href="/portal/mal">Mine mål</TilbakeLenke>
-        <Kort>
-          <TomTilstand
-            icon="target"
-            title="Mål ikke funnet"
-            sub="Vi fant ingen mål med denne ID-en på kontoen din."
-          />
-          <div style={{ display: "flex", justifyContent: "center" }}>
-            <Link href="/portal/mal" style={{ textDecoration: "none" }}>
-              <CTAPill icon="arrow-right">Tilbake til mine mål</CTAPill>
-            </Link>
+      <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
+        <div className="pa-side" style={{ maxWidth: 720, margin: "0 auto" }}>
+          <Link href="/portal/mal" className="pa-btn pa-btn--secondary" style={{ display: "inline-flex", alignItems: "center", gap: 6, marginBottom: 16 }}>
+            <Ikon icon={ArrowLeft} size={15} name="arrow-left" />
+            <span>Målsetninger</span>
+          </Link>
+          <div className="pa-card" style={{ padding: 32 }}>
+            <TomTilstand
+              icon={Target}
+              title="Mål ikke funnet"
+              text="Vi fant ingen mål med denne ID-en på kontoen din."
+              actions={
+                <Link href="/portal/mal" className="pa-btn pa-btn--primary">
+                  Tilbake til målsetninger
+                </Link>
+              }
+            />
           </div>
-        </Kort>
-      </V2Shell>
+        </div>
+      </PlayerHQSkall>
     );
   }
 
@@ -145,7 +145,6 @@ export default async function GoalDetailPage({
 
   const targetValue = goal.targetValue ?? 0;
 
-  // Simple ETA estimate: weeks until deadline
   let etaWeeks: number | null = null;
   if (goal.targetDate) {
     const ms = goal.targetDate.getTime() - nowMs();
@@ -199,9 +198,8 @@ export default async function GoalDetailPage({
   };
 
   return (
-    <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/mal">Mine mål</TilbakeLenke>
-      <MalDetaljV2 data={data} testOptions={testOptions} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
+      <PH19Enkeltmal data={data} testOptions={testOptions} />
+    </PlayerHQSkall>
   );
 }

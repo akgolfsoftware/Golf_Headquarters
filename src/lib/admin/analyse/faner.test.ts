@@ -16,16 +16,16 @@ import {
  * adresse fra før).
  */
 
-test("tre faner, i canvas-rekkefølgen (Spiller · Stall · Etterlevelse)", () => {
+test("analysefaner i riktig rekkefølge", () => {
   assert.deepEqual(
     ANALYSE_FANER.map((f) => f.id),
-    ["spiller", "stall", "etterlevelse"],
+    ["spiller", "stall", "treningsdata", "etterlevelse"],
   );
 });
 
 test("hver fane med en gammel adresse peker på den den erstattet", () => {
   const gamle = ANALYSE_FANER.map((f) => f.gammelHref);
-  assert.deepEqual(gamle, [null, "/admin/analyse", "/admin/analysere/compliance"]);
+  assert.deepEqual(gamle, [null, "/admin/analyse", null, "/admin/analysere/compliance"]);
   const ikkeNull = gamle.filter((g): g is string => g !== null);
   assert.equal(new Set(ikkeNull).size, ikkeNull.length, "ingen adresse to ganger");
 });
@@ -45,12 +45,14 @@ test("velgAnalyseFane faller tilbake til standardfanen ved ukjent/manglende verd
   assert.equal(velgAnalyseFane(undefined), "stall");
   assert.equal(velgAnalyseFane("noe-ukjent"), "stall");
   assert.equal(velgAnalyseFane("spiller"), "spiller");
+  assert.equal(velgAnalyseFane("treningsdata"), "treningsdata");
   assert.equal(velgAnalyseFane("etterlevelse"), "etterlevelse");
 });
 
 test("erAnalyseFaneId skiller gyldige fra ugyldige verdier", () => {
   assert.equal(erAnalyseFaneId("stall"), true);
   assert.equal(erAnalyseFaneId("spiller"), true);
+  assert.equal(erAnalyseFaneId("treningsdata"), true);
   assert.equal(erAnalyseFaneId("etterlevelse"), true);
   assert.equal(erAnalyseFaneId("tester"), false);
   assert.equal(erAnalyseFaneId(undefined), false);
@@ -59,6 +61,7 @@ test("erAnalyseFaneId skiller gyldige fra ugyldige verdier", () => {
 test("analyseHref: standardfanen får ren adresse, andre får ?fane=", () => {
   assert.equal(analyseHref("stall"), "/admin/analyse");
   assert.equal(analyseHref("spiller"), "/admin/analyse?fane=spiller");
+  assert.equal(analyseHref("treningsdata"), "/admin/analyse?fane=treningsdata");
   assert.equal(analyseHref("etterlevelse"), "/admin/analyse?fane=etterlevelse");
 });
 

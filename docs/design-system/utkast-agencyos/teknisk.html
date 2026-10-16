@@ -1,0 +1,373 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AgencyOS Teknisk plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="felles/felles.css">
+<link rel="stylesheet" href="felles/agencyos.css">
+<style>
+/* ---------- Pakke 6: AG-10, AG-TP-01, AG-TP-02, AG-RD-01, AG-RD-02 ---------- */
+.skjermvalg button{font-size:13px;min-height:36px;padding:0 10px}
+.posisjoner{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}
+.posisjoner button{display:grid;gap:2px;justify-items:center;min-height:56px;padding:6px 2px;border:1px solid var(--sand-300);border-radius:8px;background:var(--white);font:inherit;cursor:pointer;color:var(--graphite-900)}
+.posisjoner button b{font:600 14px/1 var(--mono)}
+.posisjoner button span{font:500 10.5px/1 var(--sans);color:var(--graphite-600)}
+.posisjoner button.har{background:var(--tek-ink);border-color:var(--tek-ink);color:#fff}
+.posisjoner button.har span{color:#fff;opacity:.85}
+.posisjoner button[aria-pressed="true"]{outline:3px solid var(--graphite-900);outline-offset:2px}
+.oppg{display:grid;gap:var(--r3);padding:14px 16px;border-radius:12px;background:var(--tek-ink);color:#fff}
+.oppg .rad{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;align-items:center}
+.oppg b.n{font:600 18px/1.25 var(--sans)}
+.oppg .meta{font-size:13.5px;opacity:.92}
+.rep-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.rep-grid div{display:grid;gap:4px;padding:10px;border-radius:8px;background:rgba(255,255,255,.14)}
+.rep-grid b{font:600 18px/1 var(--mono)}
+.rep-grid span{font-size:11.5px;opacity:.9}
+.rep-grid .stolpe{height:6px;background:rgba(255,255,255,.25)} .rep-grid .stolpe span{background:#fff}
+.skala-tm{display:grid;gap:6px}
+.skala-tm .spor{position:relative;height:28px;border-radius:6px;background:var(--sand-150)}
+.skala-tm .mal{position:absolute;top:0;bottom:0;border-radius:6px;background:var(--green-50);border:2px solid var(--green-700)}
+.skala-tm .naa{position:absolute;top:-4px;bottom:-4px;width:4px;margin-left:-2px;border-radius:2px;background:var(--graphite-900)}
+.skala-tm .tall-rad{display:flex;justify-content:space-between;font:500 11.5px/1 var(--mono);color:var(--graphite-600)}
+.protokoll{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:4px}
+.protokoll i{aspect-ratio:1;border-radius:4px;background:var(--sand-150)}
+.protokoll i.t{background:var(--green-700)} .protokoll i.b{background:var(--sand-300)}
+.reg{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--r3);align-items:center;padding:10px 0;border-bottom:1px solid var(--sand-300);font-size:14px}
+.reg:last-child{border-bottom:0}
+.reg b{display:block;font:600 14.5px/1.3 var(--sans)}
+
+/* Oppgaveskjema */
+.formel{display:grid;gap:6px;padding:12px 14px;border-radius:10px;background:var(--graphite-900);color:#fff;position:sticky;top:57px;z-index:4}
+.formel span{font:500 12px/1.3 var(--sans);opacity:.8}
+.formel code{font:600 14px/1.4 var(--mono);overflow-wrap:anywhere}
+.lagret{display:inline-flex;align-items:center;gap:6px;font:500 13px/1.3 var(--sans);color:var(--graphite-600)}
+.skjema{display:grid;gap:var(--r4)}
+.skjema .chips button{min-height:40px}
+.to-felt{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--r2)}
+.inspektor{display:grid;gap:var(--r3);padding:14px 16px;border:1px solid var(--sand-300);border-radius:12px;background:var(--sand-100);align-content:start}
+
+/* Før og nå */
+.sammenlign{position:relative;aspect-ratio:3/4;max-height:560px;border-radius:12px;overflow:hidden;background:var(--sand-150);justify-self:center;width:100%;max-width:420px}
+.sammenlign img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.sammenlign .etter{clip-path:inset(0 0 0 var(--del,50%))}
+.sammenlign .linje{position:absolute;top:0;bottom:0;left:var(--del,50%);width:3px;margin-left:-1.5px;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.2)}
+.sammenlign .linje::after{content:"";position:absolute;top:50%;left:50%;width:36px;height:36px;margin:-18px 0 0 -18px;border-radius:50%;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.sammenlign .dato-merke{position:absolute;top:10px;padding:4px 8px;border-radius:6px;background:rgba(20,20,19,.8);color:#fff;font:600 12px/1.3 var(--mono)}
+.sammenlign .dato-merke.v{left:10px} .sammenlign .dato-merke.h{right:10px}
+.del-styring{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--r2);align-items:center;max-width:420px;width:100%;justify-self:center}
+.del-styring input{width:100%;accent-color:var(--graphite-900)}
+.tom-ramme{display:grid;place-items:center;align-content:center;gap:8px;aspect-ratio:3/4;max-width:200px;border:2px dashed var(--graphite-500);border-radius:12px;font:500 14px/1.3 var(--sans);color:var(--graphite-800);background:var(--white);cursor:pointer}
+
+/* Runder */
+.runde{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--r3);align-items:center;padding:12px 14px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white)}
+.runde b.s{font:600 22px/1 var(--mono)}
+.runde b.n{display:block;font:600 15px/1.3 var(--sans)}
+.kvalitet{display:inline-flex;align-items:center;gap:6px;height:22px;padding:0 8px;border-radius:5px;font:600 11.5px/1 var(--sans)}
+.kvalitet.full{background:var(--green-50);color:var(--green-700)}
+.kvalitet.delvis{background:var(--amber-50);color:var(--amber-700)}
+.kvalitet.score{background:var(--sand-150);color:var(--graphite-800)}
+.mangler-sak{display:grid;gap:var(--r3);padding:14px 16px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white)}
+.mangler-sak b.n{font:600 16px/1.3 var(--sans)}
+.forslag-utkast{display:grid;gap:var(--r2);padding:14px 16px;border-radius:12px;border:2px solid var(--graphite-900)}
+.okt.mini{grid-template-columns:80px 1fr}
+.okt.mini .okt-tid{font-size:20px;white-space:normal}
+
+@container (min-width:900px){
+  .posisjoner{grid-template-columns:repeat(10,minmax(0,1fr))}
+  .formel{top:16px}
+}
+</style>
+
+<div class="ytre">
+  <div class="hode">
+    <span class="meta-s">AgencyOS · pakke 6 · AG-10, AG-TP-01, AG-TP-02, AG-RD-01, AG-RD-02 · utkast 1 · 15.10.2026</span>
+    <h1>Teknisk plan og runder</h1>
+    <p>Fem skjermer i én fil: teknisk plan for Sander Moe med posisjonene P1.0–P10.0, oppgaveskjemaet med AK-formelen, før og nå per posisjon, rundeanalysen og runder uten SG-grunnlag. Coach Anders Kristiansen. Mandag 5. oktober, uke 41.</p>
+  </div>
+  <div class="kontroller">
+    <div class="velger skjermvalg" role="group" aria-label="Skjerm">
+      <button type="button" aria-pressed="true" data-skjerm="plan">AG-10 Teknisk plan</button>
+      <button type="button" aria-pressed="false" data-skjerm="oppgave">AG-TP-01 Oppgave</button>
+      <button type="button" aria-pressed="false" data-skjerm="forna">AG-TP-02 Før og nå</button>
+      <button type="button" aria-pressed="false" data-skjerm="runder">AG-RD-01 Runder</button>
+      <button type="button" aria-pressed="false" data-skjerm="mangler">AG-RD-02 Manglende SG</button>
+    </div>
+  </div>
+  <div class="kontroller">
+    <div class="velger" role="group" aria-label="Bredde"><button type="button" aria-pressed="true" data-bredde="mob">Mobil</button><button type="button" aria-pressed="false" data-bredde="pc">PC</button></div>
+    <div class="velger" role="group" aria-label="Tilstand"><button type="button" aria-pressed="true" data-tilstand="data">Med data</button><button type="button" aria-pressed="false" data-tilstand="tom">Tom</button><button type="button" aria-pressed="false" data-tilstand="laster">Laster</button><button type="button" aria-pressed="false" data-tilstand="feil">Feil</button></div>
+  </div>
+  <div class="scene"><div class="ramme mob" id="ramme"></div></div>
+  <div class="notater">
+    <div class="endringer">
+      <span class="meta-s">Hva som er nytt</span>
+      <ul>
+        <li><b>Teknisk plan</b> viser de ti posisjonene P1.0–P10.0. Posisjoner med oppgave er fylt i TEK-farge. Én posisjon om gangen.</li>
+        <li><b>Oppgaven</b> viser repetisjoner per læringssteg, TrackMan-mål på en skala med målområde, treffprotokoll og kvalitetssjekk. «Legg i økt» sender oppgaven til en konkret økt i Workbench.</li>
+        <li><b>Oppgaveskjemaet</b> har AK-formelen øverst, som oppdateres mens du velger. «Lagret 08:41 · ikke publisert» viser at spilleren ikke ser endringen ennå.</li>
+        <li><b>Før og nå:</b> to daterte bilder med delelinje. Dra, bruk piltastene, eller knappene.</li>
+        <li><b>Runder</b> per spiller med datakvalitet og kilde. Forslag fra rundene blir utkast i Workbench.</li>
+        <li><b>Manglende SG-grunnlag</b> i vanlig språk: be om slagdata, importer, godta scorekort eller ignorer.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Reglene som er fulgt</span>
+      <ul>
+        <li>Bare P1.0–P10.0, med navn fra masteren §14.4. Ingen mellomposisjoner.</li>
+        <li>Kvalitetssjekken og rep-målet viser bare status. De sperrer aldri neste læringssteg (vedtak 27.09).</li>
+        <li>Hastighet i læringssteg er prosent av Club Speed. TrackMan-parametere på engelsk med stor forbokstav.</li>
+        <li>Kun brutto score. Manglende verdi «—». Ingen rust på disse skjermene. Ingen sidelengs rulling i 390 og 360 px.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Åpent hos Anders</span>
+      <ul>
+        <li><b>To daterte bilder per oppgave</b> krever et tillegg i datamodellen. I dag finnes ett bilde og én video (vedtak 27.09, punkt 2).</li>
+        <li><b>Coachens svar på en registrering</b> og <b>logg for kvalitetssjekk</b> krever også tillegg. Utkastet viser dem.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ================= AG-10 Teknisk plan ================= -->
+<template id="plan">
+<div class="app" data-fane="stall" data-tilbake="Sander Moe">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div class="topp-rad"><div><div class="dato">Sander Moe · teknisk plan</div><h1 class="tittel">Teknisk plan</h1></div><span class="pille ok"><i></i>Publisert 30. sep</span></div>
+    </div>
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Posisjoner</h2><span class="kilde">2 med oppgave</span></div>
+      <div class="posisjoner" data-pos></div>
+      <p class="forklar" data-pos-navn>P7.0 Treffpunktet</p>
+    </section>
+    <div class="to-del">
+      <div>
+        <div class="oppg" data-oppg>
+          <div class="rad"><span class="akse-merke"><i></i>TEK</span><span class="meta">Utslag og innspill · 7-jern</span></div>
+          <b class="n">Face to Path mot 0 til +1°</b>
+          <span class="meta">Teknisk fokus: Treffpunkt · Stang ved høyre fot</span>
+          <div class="rep-grid">
+            <div><b>200</b><span>Uten ball · av 200</span><div class="stolpe"><span style="width:100%"></span></div></div>
+            <div><b>240</b><span>Lav hast. 50 % · av 400</span><div class="stolpe"><span data-til="60%" style="width:60%"></span></div></div>
+            <div><b>0</b><span>Automatikk · av 300</span><div class="stolpe"><span style="width:0%"></span></div></div>
+          </div>
+          <div class="knapper"><button type="button" class="knapp" style="background:#fff;color:var(--graphite-900)" data-gaa="oppgave">Rediger oppgaven</button><button type="button" class="knapp" style="background:transparent;color:#fff;border:1px solid rgba(255,255,255,.5)" data-legg-i-okt>Legg i økt</button></div>
+        </div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>TrackMan-mål</h2><span class="kilde">Face to Path</span></div>
+          <div class="skala-tm"><div class="spor"><span class="mal" style="left:50%;width:12.5%"></span><span class="naa" style="left:63.75%"></span></div><div class="tall-rad"><span>−4°</span><span>0°</span><span>+4°</span></div></div>
+          <p class="forklar">Siste snitt <b>+1,1°</b>, 60 slag 5. okt. Målområdet er 0 til +1°.</p>
+        </section>
+      </div>
+      <div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Treffprotokoll</h2><span class="kilde">7 av 10 innenfor målet</span></div>
+          <div class="protokoll"><i class="t"></i><i class="t"></i><i class="b"></i><i class="t"></i><i class="t"></i><i class="t"></i><i class="b"></i><i class="t"></i><i class="b"></i><i class="t"></i></div>
+        </section>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Kvalitetssjekk</h2><span class="pille ok"><i></i>Bestått 2 av 3</span></div>
+          <p class="forklar">Vises bare. Sander kan gå videre til Automatikk uansett.</p>
+        </section>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Siste registreringer</h2></div>
+          <div class="kort" style="gap:0;padding-top:4px;padding-bottom:4px">
+            <div class="reg"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span><span><b>40 rep · Lav hastighet</b><span class="kilde">Søn 4. okt · egen økt</span></span><button type="button" class="knapp sek">Svar</button></div>
+            <div class="reg"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></span><span><b>Video · 14 sek</b><span class="kilde">Fre 2. okt · live-økt</span></span><span class="pille ok"><i></i>Svart</span></div>
+          </div>
+        </section>
+        <a class="lenke" href="#" data-gaa="forna">Før og nå for P7.0</a>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= AG-TP-01 Oppgaveskjema ================= -->
+<template id="oppgave">
+<div class="app" data-fane="stall" data-tilbake="Teknisk plan" data-tilbake-gaa="plan">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div class="topp-rad"><div><div class="dato">Sander Moe · P7.0 Treffpunktet</div><h1 class="tittel">Oppgave</h1></div><span class="lagret" data-lagret>Lagret 08:41 · ikke publisert</span></div>
+    </div>
+    <div class="formel"><span>AK-formel v2</span><code data-formel>TEK_INNSPILL_150_LAV_HAST_INNENDORS_ALENE</code></div>
+    <div class="to-del bred-v">
+      <div class="skjema" data-skjema>
+        <div class="felt"><span class="etikett">Posisjon</span><div class="chips" role="group" data-k="pos"><button type="button" aria-pressed="false">P4.0</button><button type="button" aria-pressed="false">P6.0</button><button type="button" aria-pressed="true">P7.0</button><button type="button" aria-pressed="false">P8.0</button></div></div>
+        <div class="to-felt">
+          <div class="felt"><label for="o-omr">Område</label><select id="o-omr" data-v="omr"><option value="TEE_TOTAL">Utslag</option><option value="INNSPILL_150" selected>Innspill 150–200 m</option><option value="INNSPILL_100">Innspill 100–150 m</option></select></div>
+          <div class="felt"><label for="o-kolle">Kølle</label><select id="o-kolle"><option>7-jern</option><option>6-jern</option><option>Driver</option></select></div>
+        </div>
+        <div class="felt"><span class="etikett">Læringssteg</span><div class="chips" role="group" data-k="ls"><button type="button" aria-pressed="false" data-v="UTEN_BALL">Uten ball</button><button type="button" aria-pressed="true" data-v="LAV_HAST">Lav hastighet</button><button type="button" aria-pressed="false" data-v="AUTO">Automatikk</button></div><span class="hjelp" data-hast>Hastighet: 50 % av Club Speed</span></div>
+        <div class="felt"><span class="etikett">Teknisk fokus</span><div class="chips" role="group" data-k="fokus"><button type="button" aria-pressed="true">Treffpunkt</button><button type="button" aria-pressed="false">Startretning</button><button type="button" aria-pressed="false">Kurve</button><button type="button" aria-pressed="false">Høyde</button></div></div>
+        <div class="to-felt">
+          <div class="felt"><label for="o-miljo">Treningsmiljø</label><select id="o-miljo" data-v="miljo"><option value="INNENDORS" selected>Innendørs</option><option value="TRENINGSOMRAADE">Treningsområde</option><option value="BANE">Bane</option><option value="KONKURRANSE">Konkurranse</option></select></div>
+          <div class="felt"><label for="o-press">Press</label><select id="o-press" data-v="press"><option value="ALENE" selected>Alene</option><option value="OBSERVERT">Observert</option><option value="KONKURRANSE">Konkurranse</option><option value="TURNERING">Turnering</option></select></div>
+        </div>
+        <div class="to-felt">
+          <div class="felt"><label for="o-mal">Måleutstyr</label><select id="o-mal"><option>TrackMan</option><option>Annen radar</option><option>Uten måleutstyr</option></select></div>
+          <div class="felt"><label for="o-param">TrackMan-mål</label><select id="o-param"><option>Face to Path</option><option>Club Path</option><option>Attack Angle</option></select></div>
+        </div>
+        <div class="to-felt">
+          <div class="felt"><label for="o-fra">Mål fra</label><input id="o-fra" value="0°"></div>
+          <div class="felt"><label for="o-til">Mål til</label><input id="o-til" value="+1°"></div>
+        </div>
+        <div class="to-felt">
+          <div class="felt"><label for="o-rep">Rep-mål for steget</label><input id="o-rep" value="400"></div>
+          <div class="felt"><label for="o-treff">Treffprotokoll</label><input id="o-treff" value="7 av 10 innenfor målet"></div>
+        </div>
+        <div class="knapper"><button type="button" class="knapp pri" data-publiser>Publiser til Sander</button><button type="button" class="knapp sek" data-lagre>Lagre</button></div>
+      </div>
+      <aside class="inspektor">
+        <b class="undertittel">Slik ser Sander oppgaven</b>
+        <div class="oppg" style="gap:6px"><span class="akse-merke" style="justify-self:start"><i></i>TEK</span><b class="n" style="font-size:16px">P7.0 Treffpunktet</b><span class="meta" data-preview>Lav hastighet 50 % · Innendørs · Alene</span></div>
+        <p class="kildetekst">Kvalitetssjekken vises bare. Den sperrer ikke neste steg.</p>
+      </aside>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= AG-TP-02 Før og nå ================= -->
+<template id="forna">
+<div class="app" data-fane="stall" data-tilbake="Teknisk plan" data-tilbake-gaa="plan">
+  <main class="innhold smal">
+    <div class="topp" data-behold><div><div class="dato">Sander Moe · P7.0 Treffpunktet</div><h1 class="tittel">Før og nå</h1></div></div>
+    <div class="valg" role="group" aria-label="Visning" data-gruppe><button type="button" aria-pressed="true">Delelinje</button><button type="button" aria-pressed="false">Side om side</button></div>
+    <div class="sammenlign" data-sammenlign style="--del:50%">
+      <img src="bilder/tek-video.jpg" alt="Før, 7. september">
+      <img class="etter" src="bilder/slag-utslag.jpg" alt="Nå, 5. oktober">
+      <span class="linje"></span>
+      <span class="dato-merke v">7. sep</span><span class="dato-merke h">5. okt</span>
+    </div>
+    <div class="del-styring"><button type="button" class="knapp sek" data-flytt="-10" aria-label="Mer av før">Før</button><input type="range" min="0" max="100" value="50" aria-label="Delelinje" data-del><button type="button" class="knapp sek" data-flytt="10" aria-label="Mer av nå">Nå</button></div>
+    <div class="felt"><label for="fn-notat">Coachnotat</label><textarea id="fn-notat" rows="3">Høyre albue er nærmere kroppen i treffet. Hoftene er mer åpne enn i september.</textarea></div>
+    <div class="kort dempet" style="gap:var(--r2)">
+      <b class="undertittel">P4.0 Toppen av baksvingen</b>
+      <div class="tom-ramme" role="button" tabindex="0">+ Legg til bilde<br><span class="kilde">Ingen før-bilde ennå</span></div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= AG-RD-01 Rundeanalyse ================= -->
+<template id="runder">
+<div class="app" data-fane="stall" data-tilbake="Stall">
+  <main class="innhold">
+    <div class="topp" data-behold><div><div class="dato">Stall · runder</div><h1 class="tittel">Runder</h1></div></div>
+    <div class="chips" role="group" aria-label="Spiller" data-gruppe><button type="button" aria-pressed="true">Hele stallen</button><button type="button" aria-pressed="false">Øyvind Rohjan</button><button type="button" aria-pressed="false">Sander Moe</button></div>
+    <div class="chips" role="group" aria-label="Datakvalitet" data-kvalfilter><button type="button" aria-pressed="true" data-k="alle">Alle <b>9</b></button><button type="button" aria-pressed="false" data-k="full">Slag for slag <b>5</b></button><button type="button" aria-pressed="false" data-k="delvis">Delvis <b>2</b></button><button type="button" aria-pressed="false" data-k="score">Bare score <b>2</b></button></div>
+    <div class="to-del bred-v">
+      <div class="seksjon" data-runder>
+        <div class="runde" data-k="full"><span class="avatar liten">SM</span><span><b class="n">Sander Moe · Fredrikstad GK</b><span class="kilde">3. okt · PlayerHQ · SG +0,9</span><span class="kvalitet full">Slag for slag</span></span><b class="s">70</b></div>
+        <div class="runde" data-k="full"><span class="avatar liten">ØR</span><span><b class="n">Øyvind Rohjan · Srixon Tour 5</b><span class="kilde">27. sep · GolfBox og PlayerHQ · SG −0,4</span><span class="kvalitet full">Slag for slag</span></span><b class="s">74</b></div>
+        <div class="runde" data-k="delvis"><span class="avatar liten">MS</span><span><b class="n">Mia Strand · Borregaard GK</b><span class="kilde">26. sep · PlayerHQ · 12 av 18 hull</span><span class="kvalitet delvis">Delvis</span></span><b class="s">—</b></div>
+        <div class="runde" data-k="score"><span class="avatar liten">FA</span><span><b class="n">Filip Aas · Regionstour 3</b><span class="kilde">20. sep · GolfBox</span><span class="kvalitet score">Bare score</span></span><b class="s">78</b></div>
+        <div class="runde" data-k="full"><span class="avatar liten">SR</span><span><b class="n">Selma Ruud · Srixon Tour 5</b><span class="kilde">27. sep · GolfBox og PlayerHQ · SG +0,2</span><span class="kvalitet full">Slag for slag</span></span><b class="s">72</b></div>
+      </div>
+      <div>
+        <div class="kort">
+          <div class="hoved"><strong>5 av 9</strong><span class="forklar">runder siste 14 dager har slag for slag</span></div>
+          <p class="kildetekst">Bare runder med slag for slag gir Strokes Gained.</p>
+        </div>
+        <div class="forslag-utkast">
+          <b class="undertittel">Forslag fra rundene: Øyvind</b>
+          <p class="forklar">Fire av fem tapte slag kom fra 100–150 m. To innspillsøkter i uke 42.</p>
+          <div class="okt mini slag"><img src="bilder/slag-simulator.jpg" alt=""><div class="okt-tekst"><span class="okt-tid">Tir 17:00</span><span class="navn">Innspill 100–150 m</span></div></div>
+          <div class="knapper"><button type="button" class="knapp pri" data-utkast>Legg som utkast i Workbench</button></div>
+        </div>
+        <a class="lenke" href="#" data-gaa="mangler">4 runder mangler SG-grunnlag</a>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= AG-RD-02 Manglende SG-grunnlag ================= -->
+<template id="mangler">
+<div class="app" data-fane="stall" data-tilbake="Runder" data-tilbake-gaa="runder">
+  <main class="innhold smal">
+    <div class="topp" data-behold><div><div class="dato">Runder · datakvalitet</div><h1 class="tittel">Mangler SG-grunnlag</h1></div></div>
+    <div class="hoved"><strong data-igjen>4</strong><span class="forklar">runder kan ikke gi Strokes Gained ennå</span></div>
+    <div class="seksjon" data-saker>
+      <article class="mangler-sak"><div class="topp-rad"><span><b class="n">Filip Aas · Regionstour 3</b><span class="kilde" style="display:block">20. sep · bare score fra GolfBox</span></span><span class="kvalitet score">Bare score</span></div><p class="forklar">Vi vet at han brukte 78 slag, men ikke hvor de ble brukt. Filip kan registrere slagene i PlayerHQ.</p><div class="knapper"><button type="button" class="knapp pri" data-h="Filip er bedt om slagdata">Be om slagdata</button><button type="button" class="knapp sek" data-h="Runden står som bare score">Godta scorekort</button><button type="button" class="knapp sek" data-h="Runden er ignorert">Ignorer</button></div></article>
+      <article class="mangler-sak"><div class="topp-rad"><span><b class="n">Mia Strand · Borregaard GK</b><span class="kilde" style="display:block">26. sep · 12 av 18 hull registrert</span></span><span class="kvalitet delvis">Delvis</span></div><p class="forklar">Seks hull mangler. SG regnes bare når alle hull er med.</p><div class="knapper"><button type="button" class="knapp pri" data-h="Mia er bedt om de seks hullene">Be om resten</button><button type="button" class="knapp sek" data-h="Runden er ignorert">Ignorer</button></div></article>
+      <article class="mangler-sak"><div class="topp-rad"><span><b class="n">Emma Haug · TrackMan-runde</b><span class="kilde" style="display:block">24. sep · simulatorfil, ikke importert</span></span><span class="kvalitet delvis">Fil</span></div><p class="forklar">Runden fra simulatoren ligger som fil. Importer den, så får den slag for slag.</p><div class="knapper"><button type="button" class="knapp pri" data-h="Runden er importert med 71 slag">Importer</button><button type="button" class="knapp sek" data-h="Runden er ignorert">Ignorer</button></div></article>
+      <article class="mangler-sak"><div class="topp-rad"><span><b class="n">Henrik Vik · klubbrunde</b><span class="kilde" style="display:block">22. sep · bare score, registrert av forelder</span></span><span class="kvalitet score">Bare score</span></div><p class="forklar">Scoren er registrert av forelderen. Godta den som scorekort, eller be Henrik registrere slagene.</p><div class="knapper"><button type="button" class="knapp pri" data-h="Henrik er bedt om slagdata">Be om slagdata</button><button type="button" class="knapp sek" data-h="Runden står som bare score">Godta scorekort</button></div></article>
+    </div>
+  </main>
+</div>
+</template>
+
+<script src="felles/demo.js"></script>
+<script src="felles/agencyos.js"></script>
+<script>
+(function () {
+  var A = window.AKAgency;
+  var POS = [['P1.0', 'Adresse / Oppstilling'], ['P2.0', 'Kølle parallell i baksving'], ['P3.0', 'Venstre arm parallell i baksving'], ['P4.0', 'Toppen av baksvingen'], ['P5.0', 'Venstre arm parallell i nedsving'], ['P6.0', 'Kølle parallell i nedsving'], ['P7.0', 'Treffpunktet'], ['P8.0', 'Kølle parallell i gjennomføring'], ['P9.0', 'Høyre arm parallell i oppfølging'], ['P10.0', 'Fullføring og balanse']];
+  var HAR = { 'P4.0': 1, 'P7.0': 1 };
+  function plan(app) {
+    var el = app.querySelector('[data-pos]');
+    el.innerHTML = POS.map(function (p) { return '<button type="button" class="' + (HAR[p[0]] ? 'har' : '') + '" aria-pressed="' + (p[0] === 'P7.0') + '" data-p="' + p[0] + '"><b>' + p[0].replace('.0', '') + '</b><span>' + (HAR[p[0]] ? '1 oppgave' : '—') + '</span></button>'; }).join('');
+    el.addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (!b) return;
+      el.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      var p = POS.filter(function (x) { return x[0] === b.dataset.p; })[0];
+      app.querySelector('[data-pos-navn]').textContent = p[0] + ' ' + p[1] + (HAR[p[0]] ? '' : ' · ingen oppgave. Legg til en oppgave for posisjonen.');
+      app.querySelector('[data-oppg]').style.opacity = HAR[p[0]] ? '' : '.35';
+    });
+    app.querySelector('[data-legg-i-okt]').addEventListener('click', function () { A.toast(app, 'Velg økt: fredag 9. okt kl. 16:00 med Anders. Oppgaven legges inn som øvelse.'); });
+  }
+  function oppgave(app) {
+    var st = { ls: 'LAV_HAST' };
+    function oppdater() {
+      var omr = app.querySelector('[data-v="omr"]').value, m = app.querySelector('[data-v="miljo"]'), p = app.querySelector('[data-v="press"]');
+      app.querySelector('[data-formel]').textContent = ['TEK', omr, st.ls, m.value, p.value].join('_');
+      var hast = { UTEN_BALL: 'Uten ball', LAV_HAST: 'Hastighet: 50 % av Club Speed', AUTO: 'Hastighet: 100 % av Club Speed' }[st.ls];
+      app.querySelector('[data-hast]').textContent = hast;
+      app.querySelector('[data-preview]').textContent = { UTEN_BALL: 'Uten ball', LAV_HAST: 'Lav hastighet 50 %', AUTO: 'Automatikk 100 %' }[st.ls] + ' · ' + m.options[m.selectedIndex].text + ' · ' + p.options[p.selectedIndex].text;
+      app.querySelector('[data-lagret]').textContent = 'Lagrer …';
+      clearTimeout(oppdater.t); oppdater.t = setTimeout(function () { app.querySelector('[data-lagret]').textContent = 'Lagret 08:42 · ikke publisert'; }, 500);
+    }
+    app.querySelector('[data-skjema]').addEventListener('click', function (e) {
+      var b = e.target.closest('.chips button'); if (!b) return;
+      b.parentNode.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      if (b.parentNode.dataset.k === 'ls') st.ls = b.dataset.v;
+      oppdater();
+    });
+    app.querySelector('[data-skjema]').addEventListener('change', oppdater);
+    app.querySelector('[data-lagre]').addEventListener('click', function () { A.toast(app, 'Lagret. Ikke publisert ennå.'); });
+    app.querySelector('[data-publiser]').addEventListener('click', function () { app.querySelector('[data-lagret]').textContent = 'Publisert 08:43'; A.toast(app, 'Publisert til Sander.'); });
+  }
+  function forna(app) {
+    var s = app.querySelector('[data-sammenlign]'), r = app.querySelector('[data-del]');
+    function sett(v) { v = Math.max(0, Math.min(100, v)); r.value = v; s.style.setProperty('--del', v + '%'); }
+    r.addEventListener('input', function () { sett(+r.value); });
+    app.querySelectorAll('[data-flytt]').forEach(function (b) { b.addEventListener('click', function () { sett(+r.value + +b.dataset.flytt); }); });
+  }
+  function runder(app) {
+    app.querySelector('[data-kvalfilter]').addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (!b) return;
+      app.querySelectorAll('[data-kvalfilter] button').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      app.querySelectorAll('[data-runder] .runde').forEach(function (x) { x.hidden = !(b.dataset.k === 'alle' || x.dataset.k === b.dataset.k); });
+    });
+    app.querySelector('[data-utkast]').addEventListener('click', function (e) { e.target.outerHTML = '<span class="pille ok"><i></i>Utkast i Øyvinds Workbench, uke 42</span>'; });
+  }
+  function mangler(app) {
+    var igjen = app.querySelector('[data-igjen]');
+    app.querySelector('[data-saker]').addEventListener('click', function (e) {
+      var b = e.target.closest('[data-h]'); if (!b) return;
+      var sak = b.closest('.mangler-sak'); sak.querySelector('.knapper').innerHTML = '<span class="pille ok"><i></i>' + b.dataset.h + '</span>';
+      igjen.textContent = Math.max(0, +igjen.textContent - 1);
+    });
+  }
+  A.start({
+    start: 'plan',
+    skjermer: {
+      plan: { etter: plan, tom: { tittel: 'Ingen teknisk plan', tekst: 'Lag en teknisk plan med oppgaver per posisjon, P1.0–P10.0.', knapp: 'Ny teknisk plan' }, laster: 'Henter den tekniske planen …', feil: 'Den tekniske planen kunne ikke hentes' },
+      oppgave: { etter: oppgave, tom: null },
+      forna: { etter: forna, tom: { tittel: 'Ingen bilder ennå', tekst: 'Legg til et før-bilde. Nå-bildet kan tas i live-økta.', knapp: 'Legg til bilde' }, laster: 'Henter bildene …', feil: 'Bildene kunne ikke hentes' },
+      runder: { etter: runder, tom: { tittel: 'Ingen runder', tekst: 'Runder fra PlayerHQ og GolfBox kommer hit.', knapp: null }, laster: 'Henter rundene …', feil: 'Rundene kunne ikke hentes' },
+      mangler: { etter: mangler, tom: { tittel: 'Alle runder har SG-grunnlag', tekst: 'Ingen runder mangler slagdata.', knapp: null }, laster: 'Henter rundene …', feil: 'Rundene kunne ikke hentes' }
+    }
+  });
+})();
+</script>

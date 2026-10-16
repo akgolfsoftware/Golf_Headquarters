@@ -1,0 +1,13 @@
+:root{
+/* 4/8-rutenett */
+--space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:20px;--space-6:24px;--space-8:32px;--space-10:40px;--space-12:48px;--space-16:64px;--space-20:80px;
+/* Radius: 8 kort/knapp/felt · 12 modal · 999 badge/status · 0 datamerker · 4 indre flate i tett nesting (konsentrisk: ytre 8 − 4 px luft) */
+--radius:8px;--radius-modal:12px;--radius-pill:999px;--radius-mark:0;--radius-inner:4px;
+/* Skygger — nesten fraværende */
+--shadow-card:none;/* 27.09: kort er struktur, ikke elevation — bare hairline */
+--shadow-raised:0 1px 2px rgba(20,20,19,.08);
+--shadow-pop:0 8px 24px rgba(20,20,19,.12),0 1px 2px rgba(20,20,19,.08);
+--shadow-modal:0 24px 64px rgba(20,20,19,.24);
+--border-w:1px;
+}
+[data-theme="night"]{--shadow-card:none;--shadow-raised:none;--shadow-pop:0 8px 24px rgba(0,0,0,.5);--shadow-modal:0 24px 64px rgba(0,0,0,.6)}

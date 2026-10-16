@@ -1,101 +1,42 @@
 /**
- * AgencyOS Teknisk-plan (oversikt), flyttet fra /admin/teknisk-plan
- * (MASTERPLAN 15.9). `/admin/teknisk-plan` er nå en redirect hit.
- *
- * Auth + datakontrakt uendret: samme requirePortalUser-guard (COACH/ADMIN)
- * og samme to Prisma-spørringer (PLAYER-brukere med aktiv plan + TEK-økter,
- * og godkjente PlanTemplate-maler). Aggregatene per spiller regnes ut her
- * (server) så komponenten forblir ren visning. Ærlig tomt når ingen data.
- *
- * Server component.
+ * Teknisk plan · oversikt i Precision Athletics. Leste før TEK-økter fra
+ * TrainingPlan; nå spillerens TechnicalPlan (samme data som AG-10 og PH-TP-01).
+ * Tilgang som før: COACH/ADMIN, bare spillere i coachens stall.
  */
 
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
-import {
-  AdminTekniskPlanV2,
-  type AdminTekniskPlanData,
-} from "@/components/admin/v2/AdminTekniskPlanV2";
+import { oversiktRad } from "@/lib/teknisk-plan/tp-oversikt";
+import { AG10Oversikt } from "@/components/admin/precision/AG10Oversikt";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Teknisk plan · AgencyOS" };
 
 export default async function AdminTekniskPlanPage() {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
-
-  // Samme loader-kontrakt som den ekte /admin/teknisk-plan-oversikten + ærlig TM-status.
-  const [spillere, maler, tmCounts] = await Promise.all([
-    prisma.user.findMany({
-      where: coachScopedPlayerWhere(user),
-      select: {
-        id: true,
-        name: true,
-        hcp: true,
-        homeClub: true,
-        avatarUrl: true,
-        trainingPlans: {
-          where: { isActive: true },
-          select: {
-            id: true,
-            name: true,
-            status: true,
-            startDate: true,
-            sessions: {
-              where: { pyramidArea: "TEK" },
-              select: { id: true, status: true, durationMin: true },
+  const spillere = await prisma.user.findMany({
+    where: coachScopedPlayerWhere(user),
+    orderBy: { name: "asc" },
+    select: {
+      id: true,
+      name: true,
+      technicalPlans: {
+        select: {
+          id: true, navn: true, status: true, startDato: true,
+          positions: {
+            select: {
+              tasks: {
+                select: {
+                  status: true, repsMaalDry: true, repsMaalLav: true, repsMaalFull: true,
+                  repsGjortDry: true, repsGjortLav: true, repsGjortFull: true, lastRepLoggedAt: true,
+                },
+              },
             },
           },
-          take: 1,
-          orderBy: { startDate: "desc" },
         },
       },
-      orderBy: { name: "asc" },
-    }),
-    prisma.planTemplate.findMany({
-      where: { approved: true },
-      orderBy: { createdAt: "desc" },
-      select: { id: true, name: true, description: true, varighetUker: true },
-    }),
-    prisma.trackManSession.groupBy({
-      by: ["userId"],
-      _count: { _all: true },
-    }),
-  ]);
-
-  const tmByUser = new Map(tmCounts.map((r) => [r.userId, r._count._all]));
-
-  const data: AdminTekniskPlanData = {
-    spillere: spillere.map((s) => {
-      const aktivPlan = s.trainingPlans[0] ?? null;
-      const tekOkter = aktivPlan?.sessions ?? [];
-      return {
-        id: s.id,
-        navn: s.name,
-        hcp: s.hcp,
-        homeClub: s.homeClub,
-        avatarUrl: s.avatarUrl,
-        planNavn: aktivPlan?.name ?? null,
-        tekTotalt: tekOkter.length,
-        tekFullfort: tekOkter.filter((o) => o.status === "COMPLETED").length,
-        tekTidMin: tekOkter.reduce((sum, o) => sum + o.durationMin, 0),
-        tmSesjoner: tmByUser.get(s.id) ?? 0,
-      };
-    }),
-    maler: maler.map((m) => ({
-      id: m.id,
-      navn: m.name,
-      beskrivelse: m.description,
-      varighetUker: m.varighetUker,
-    })),
-  };
-
-  return (
-    <V2Shell bredde="kolonne" aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <TilbakeLenke href="/admin/plan">Plan</TilbakeLenke>
-      <AdminTekniskPlanV2 data={data} />
-    </V2Shell>
-  );
+    },
+  });
+  return <AG10Oversikt coachNavn={user.name ?? "Coach"} rader={spillere.map((s) => oversiktRad(s, s.technicalPlans))} />;
 }

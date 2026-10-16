@@ -4,7 +4,7 @@ Les dette før du endrer filer. [START-HER.md](../../START-HER.md) er inngangen.
 
 ## Produkt og nåsituasjon
 
-Gjeldende visuell autoritet er [AK Golf Design System og «App design»](../design-system/design-autoritet.md).
+Gjeldende visuell autoritet er [«AK Golf Precision Athletics»](../design-system/design-autoritet.md).
 Train-lock og Paper er utgående. Eldre navn i kode beskriver overgangstilstand, ikke ny designretning.
 
 Aktiv Workbench-bestilling 20.09.2026: [overlevering og kildepakke](../workbench-handover.md).
@@ -23,7 +23,8 @@ AK Golf HQ samler offentlig nettsted, coachingbooking, PlayerHQ og AgencyOS i é
 | Hvilket språk og hvilke begreper gjelder? Hvordan planlegges trening? | [Språk og treningsplanlegging](../treningsplanlegging.md) — eneste master |
 | Hvordan skal skjermen se ut? | [Gjeldende designautoritet](../design-system/design-autoritet.md), deretter [designarbeid og referanser](../../designsystem/README.md) |
 | Hva gjør funksjonen faktisk? | Koden, testene og en målt kundereise |
-| Hva gjenstår? | [Arbeidslisten · historisk Git-versjon](https://github.com/akgolfsoftware/Golf_Headquarters/blob/a235444b0f7287b0ce7270c28b32d34517711a2f/docs/MASTERPLAN-GJENSTAAENDE.md) |
+| Hva gjenstår? | [Aktiv hovedplan](../plan-ferdigstilling.md), med bevarte historiske detaljplaner |
+| Hvor er arbeid som ikke er i main? | [Gren- og PR-register](../vedlikehold/repo-opprydding-2026-10-11.md); lokale Mac-rapporter må avstemmes separat |
 | Hvor ligger en fil? | [Prosjektkart](../vedlikehold/prosjektkart.md) og det genererte filregisteret |
 
 ## Teknisk grunnlag
@@ -47,6 +48,7 @@ Les den installerte Next.js-dokumentasjonen i `node_modules/next/dist/docs/` fø
 | Design i appen | `src/styles/`, `src/lib/v2/`, `src/app/globals.css` |
 | Generert databaseklient | `src/generated/` — regenereres, ikke håndredigeres |
 | Personlig ME-database | `supabase-meg/` — separat skjema, ikke del av appens Prisma-migrasjoner |
+| WANG-database | `supabase-wang/` og `src/lib/wang-supabase/` — separat Supabase-prosjekt, ikke del av AK Golf HQs Prisma-database |
 | Tester | tester ved koden i `src/`, samt `tests/` |
 | Verktøy | [scripts/README.md](../../scripts/README.md) |
 

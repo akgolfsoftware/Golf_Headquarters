@@ -7,7 +7,7 @@
  *   3) drill-fullføring: planlagte drills i siste loggede økt
  *
  * Ekte Prisma-data:
- *   - trainingPlanSession (PLANNED/ACTIVE/COMPLETED/SKIPPED) → compliance% = COMPLETED / planlagt
+ *   - V2, Workbench og eldre synlige planøkter → minutter gjennomført / planlagt, siste fire uker
  *   - trainingPlanSessionLog (startedAt/completedAt) → sist-logget + uke-strip
  *   - user (role=PLAYER) → per-spiller-rad
  *   - sessionDrill (planlagte reps/sett) → drill-fullføring i siste loggede økt
@@ -15,6 +15,11 @@
  * Mangler ekte tall → tom/utledet state. ALDRI falske tall.
  */
 
+import { etterlevelse, erForfaltEtterlevelseOkt, etterlevelseFra } from "@/lib/domain/etterlevelse";
+import { loadVisibleSessionRange } from "@/lib/portal/visible-session-range";
+import { somEtterlevelseOkt } from "@/lib/portal/etterlevelse-data";
+import { startOfWeek, ukenummer } from "@/lib/uke-helpers";
+import type { TodaySession } from "@/app/portal/actions";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import type { PyramidArea } from "@/generated/prisma/client";
@@ -43,7 +48,8 @@ const AXIS_LABEL: Record<ComplianceAxis, string> = {
 /** Rekkefølge topp→bunn i barometeret (turnering øverst, fysisk nederst). */
 const AXIS_ORDER: ComplianceAxis[] = ["turn", "spill", "slag", "tek", "fys"];
 
-function bandFor(pct: number): ComplianceBand {
+function bandFor(pct: number | null): ComplianceBand {
+  if (pct === null) return "warn";
   if (pct >= 100) return "over";
   if (pct >= 75) return "ok";
   if (pct >= 60) return "warn";
@@ -95,7 +101,7 @@ export type AxisBar = {
   planned: number;
   pct: number;
   band: ComplianceBand;
-  /** delta = done − planlagt antall økter (negativ = bak plan). */
+  /** delta = gjennomførte − planlagte minutter (negativ = bak plan). */
   delta: number;
 };
 
@@ -115,7 +121,7 @@ export type PlayerPanel = {
   initials: string;
   totalPlanned: number;
   totalDone: number;
-  pct: number;
+  pct: number | null;
   band: ComplianceBand;
   axes: AxisBar[];
   weeks: WeekBar[];
@@ -132,7 +138,7 @@ export type StallRow = {
   homeClub: string | null;
   planned: number;
   done: number;
-  pct: number;
+  pct: number | null;
   band: ComplianceBand;
   lastLog: string;
   lastLogBand: "ok" | "warn" | "bad";
@@ -180,80 +186,32 @@ export type ComplianceData = {
   drillSession: DrillSession;
 };
 
-type Session = {
-  pyramidArea: PyramidArea;
-  status: string;
-  scheduledAt: Date;
-};
+type Session = TodaySession;
 
 /** Compliance% per akse for et sett økter. */
-function axesFromSessions(sessions: Session[]): AxisBar[] {
-  const acc = new Map<ComplianceAxis, { done: number; planned: number }>();
-  for (const s of sessions) {
-    const axis = PYR_TO_AXIS[s.pyramidArea];
-    const cur = acc.get(axis) ?? { done: 0, planned: 0 };
-    cur.planned += 1;
-    if (s.status === "COMPLETED") cur.done += 1;
-    acc.set(axis, cur);
-  }
-  return AXIS_ORDER.filter((a) => acc.has(a)).map((axis) => {
-    const { done, planned } = acc.get(axis)!;
-    const p = pct(done, planned);
-    return {
-      axis,
-      label: AXIS_LABEL[axis],
-      done,
-      planned,
-      pct: p,
-      band: bandFor(p),
-      delta: done - planned,
-    };
+function axesFromSessions(sessions: Session[], now: Date): AxisBar[] {
+  return AXIS_ORDER.flatMap(axis => {
+    const e = etterlevelse(sessions.filter(s => PYR_TO_AXIS[s.pyramidArea] === axis).map(somEtterlevelseOkt), now);
+    if (e.pct === null) return [];
+    return [{ axis, label: AXIS_LABEL[axis], done: e.gjennomfortMinutter,
+      planned: e.planlagtMinutter, pct: e.pct, band: bandFor(e.pct),
+      delta: e.gjennomfortMinutter - e.planlagtMinutter }];
   });
 }
 
 /** Uke-for-uke fullføring (siste 8 uker, mandag-start) for én spillers økter. */
 function weeksFromSessions(sessions: Session[], now: Date, weekCount: number): WeekBar[] {
-  // Mandag denne uka kl 00:00
-  const monday = new Date(now);
-  monday.setHours(0, 0, 0, 0);
-  monday.setDate(monday.getDate() - ((monday.getDay() + 6) % 7));
-
-  const starts: Date[] = [];
-  for (let i = weekCount - 1; i >= 0; i--) {
-    const d = new Date(monday);
-    d.setDate(d.getDate() - i * 7);
-    starts.push(d);
-  }
-
-  // ISO-uke-nummer for label
-  const isoWeek = (d: Date): number => {
-    const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-    const day = (t.getUTCDay() + 6) % 7;
-    t.setUTCDate(t.getUTCDate() - day + 3);
-    const firstThursday = new Date(Date.UTC(t.getUTCFullYear(), 0, 4));
-    const week =
-      1 +
-      Math.round(
-        ((t.getTime() - firstThursday.getTime()) / DAY_MS - 3 + ((firstThursday.getUTCDay() + 6) % 7)) / 7,
-      );
-    return week;
-  };
-
-  return starts.map((start, idx) => {
-    const end = new Date(start);
-    end.setDate(end.getDate() + 7);
-    const inWeek = sessions.filter((s) => s.scheduledAt >= start && s.scheduledAt < end);
-    const planned = inWeek.length;
-    const done = inWeek.filter((s) => s.status === "COMPLETED").length;
-    const p = pct(done, planned);
-    return {
-      label: `U${isoWeek(start)}`,
-      done,
-      planned,
-      fill: planned === 0 ? 0 : Math.min(1, done / planned),
-      band: bandFor(p),
-      isNow: idx === starts.length - 1,
-    };
+  const monday = startOfWeek(now);
+  return Array.from({ length: weekCount }, (_, idx) => {
+    // Søk mandag i Oslo via felles uke-hjelper, også over sommertidsskift.
+    const start = startOfWeek(new Date(monday.getTime() - (weekCount - 1 - idx) * 7 * DAY_MS + 12 * 3_600_000));
+    const end = startOfWeek(new Date(start.getTime() + 7 * DAY_MS + 12 * 3_600_000));
+    const inWeek = sessions.filter(s => s.startTime >= start && s.startTime < end && s.endTime <= now);
+    const planned = inWeek.reduce((sum, s) => sum + s.durationMin, 0);
+    const done = inWeek.filter(s => s.status === "COMPLETED").reduce((sum, s) => sum + s.durationMin, 0);
+    return { label: `U${ukenummer(start)}`, done, planned,
+      fill: planned === 0 ? 0 : Math.min(1, done / planned), band: bandFor(pct(done, planned)),
+      isNow: idx === weekCount - 1 };
   });
 }
 
@@ -267,7 +225,7 @@ function diagnose(axes: AxisBar[]): string | null {
       : "Hele planen er på sporet.";
   }
   const worst = behind[0];
-  const base = `${worst.label}-økter er ${Math.abs(worst.delta)} bak plan (${worst.pct}% fullført).`;
+  const base = `${worst.label} er ${Math.abs(worst.delta)} minutter bak plan (${worst.pct}% fullført).`;
   if (over.length > 0) {
     return `${base} ${over[0].label} er over plan — vurder å flytte volum dit det trengs.`;
   }
@@ -277,19 +235,17 @@ function diagnose(axes: AxisBar[]): string | null {
 export async function loadComplianceData(opts: {
   windowDays: number;
   periodLabel: string;
+  now?: Date;
   selectedPlayerId?: string;
   viewer: { id: string; role: string };
 }): Promise<ComplianceData> {
-  const { windowDays, periodLabel, viewer } = opts;
-  const now = new Date();
-  const from = new Date(now);
-  from.setDate(from.getDate() - windowDays);
-
-  // Bredere vindu for uke-strip (8 uker) uavhengig av valgt periode.
+  const { viewer } = opts;
+  const windowDays = 28;
+  const periodLabel = "Siste fire uker";
+  const now = opts.now ?? new Date();
+  const from = etterlevelseFra(now);
   const weekCount = 8;
-  const weekWindowStart = new Date(now);
-  weekWindowStart.setHours(0, 0, 0, 0);
-  weekWindowStart.setDate(weekWindowStart.getDate() - ((weekWindowStart.getDay() + 6) % 7) - (weekCount - 1) * 7);
+  const weekWindowStart = startOfWeek(new Date(startOfWeek(now).getTime() - 49 * DAY_MS + 12 * 3_600_000));
   const dataFrom = from < weekWindowStart ? from : weekWindowStart;
 
   // Alle PLAYER-spillere
@@ -316,47 +272,37 @@ export async function loadComplianceData(opts: {
 
   const playerIds = players.map((p) => p.id);
 
-  // Alle økter i datavinduet for alle spillere (via plan → user).
-  const sessions = await prisma.trainingPlanSession.findMany({
-    where: {
-      scheduledAt: { gte: dataFrom, lte: now },
-      plan: { userId: { in: playerIds } },
-    },
-    select: {
-      id: true,
-      scheduledAt: true,
-      status: true,
-      pyramidArea: true,
-      plan: { select: { userId: true } },
-      log: { select: { startedAt: true, completedAt: true } },
-    },
-    orderBy: { scheduledAt: "asc" },
-  });
-
-  // Grupper per spiller. Skill mellom "i valgt periode" og "uke-strip-vindu".
-  const byPlayer = new Map<
-    string,
-    { periodSessions: Session[]; weekSessions: Session[]; lastLog: Date | null }
-  >();
-  for (const id of playerIds) {
-    byPlayer.set(id, { periodSessions: [], weekSessions: [], lastLog: null });
-  }
-  for (const s of sessions) {
-    const bucket = byPlayer.get(s.plan.userId);
-    if (!bucket) continue;
-    const lite: Session = { pyramidArea: s.pyramidArea, status: s.status, scheduledAt: s.scheduledAt };
-    if (s.scheduledAt >= weekWindowStart) bucket.weekSessions.push(lite);
-    if (s.scheduledAt >= from) bucket.periodSessions.push(lite);
-    const logged = s.log?.completedAt ?? s.log?.startedAt ?? null;
-    if (logged && (!bucket.lastLog || logged > bucket.lastLog)) bucket.lastLog = logged;
+  // Samme synlige økter som spilleren; bare ID-er fra coach-scope ovenfor.
+  const byPlayer = new Map<string, { periodSessions: Session[]; weekSessions: Session[]; lastLog: Date | null }>();
+  for (let i = 0; i < playerIds.length; i += 8) {
+    await Promise.all(playerIds.slice(i, i + 8).map(async id => {
+      const sessions = await loadVisibleSessionRange(id, dataFrom.toISOString(), now.toISOString());
+      const due = sessions.filter(s => erForfaltEtterlevelseOkt(somEtterlevelseOkt(s), now));
+      // Bruk registrerte loggtider, aldri planlagt slutt som loggtid.
+      const planIds = sessions.flatMap(s => s.model === "plan" ? [s.id] : s.planSessionId ? [s.planSessionId] : []);
+      const v2Ids = sessions.filter(s => s.model === "v2").map(s => s.id);
+      const [planLogs, v2Log] = await Promise.all([
+        planIds.length === 0 ? [] : prisma.trainingPlanSessionLog.findMany({
+          where: { sessionId: { in: planIds } }, select: { startedAt: true, completedAt: true },
+        }),
+        v2Ids.length === 0 ? null : prisma.drillLogV2.findFirst({
+          where: { loggedBy: id, drill: { sessionId: { in: v2Ids } }, loggedAt: { lte: now } },
+          orderBy: { loggedAt: "desc" }, select: { loggedAt: true },
+        }),
+      ]);
+      const lastLog = [...planLogs.map(l => l.completedAt ?? l.startedAt), ...(v2Log ? [v2Log.loggedAt] : [])]
+        .filter(d => d <= now).reduce<Date | null>((latest, d) => !latest || d > latest ? d : latest, null);
+      byPlayer.set(id, { periodSessions: due, weekSessions: sessions, lastLog });
+    }));
   }
 
   // ── Section 2: stall-tabell ──────────────────────────────────
   const stall: StallRow[] = players.map((p) => {
     const b = byPlayer.get(p.id)!;
-    const planned = b.periodSessions.length;
-    const done = b.periodSessions.filter((s) => s.status === "COMPLETED").length;
-    const p100 = pct(done, planned);
+    const e = etterlevelse(b.periodSessions.map(somEtterlevelseOkt), now);
+    const planned = e.planlagtMinutter;
+    const done = e.gjennomfortMinutter;
+    const p100 = e.pct;
     const weeks = weeksFromSessions(b.weekSessions, now, weekCount);
     const stale = b.lastLog ? daysSince(b.lastLog, now) : null;
     const lastLogBand: StallRow["lastLogBand"] =
@@ -383,15 +329,15 @@ export async function loadComplianceData(opts: {
     if (a.planned === 0 && b.planned === 0) return a.playerName.localeCompare(b.playerName, "nb");
     if (a.planned === 0) return 1;
     if (b.planned === 0) return -1;
-    return a.pct - b.pct;
+    return (a.pct ?? 0) - (b.pct ?? 0);
   });
 
   const withPlan = stall.filter((s) => s.planned > 0);
   const cohortAvg =
     withPlan.length > 0
-      ? Math.round(withPlan.reduce((sum, s) => sum + s.pct, 0) / withPlan.length)
+      ? Math.round(withPlan.reduce((sum, s) => sum + (s.pct ?? 0), 0) / withPlan.length)
       : null;
-  const sortedPct = withPlan.map((s) => s.pct).sort((a, b) => a - b);
+  const sortedPct = withPlan.flatMap((s) => s.pct === null ? [] : [s.pct]).sort((a, b) => a - b);
   const cohortMedian =
     sortedPct.length > 0
       ? sortedPct.length % 2 === 1
@@ -413,10 +359,11 @@ export async function loadComplianceData(opts: {
 
   const selectedPlayer = players.find((p) => p.id === selectedId)!;
   const selBucket = byPlayer.get(selectedId)!;
-  const panelAxes = axesFromSessions(selBucket.periodSessions);
-  const panelPlanned = selBucket.periodSessions.length;
-  const panelDone = selBucket.periodSessions.filter((s) => s.status === "COMPLETED").length;
-  const panelPct = pct(panelDone, panelPlanned);
+  const panelAxes = axesFromSessions(selBucket.periodSessions, now);
+  const panelE = etterlevelse(selBucket.periodSessions.map(somEtterlevelseOkt), now);
+  const panelPlanned = panelE.planlagtMinutter;
+  const panelDone = panelE.gjennomfortMinutter;
+  const panelPct = panelE.pct;
 
   const panel: PlayerPanel = {
     playerId: selectedPlayer.id,
@@ -435,7 +382,8 @@ export async function loadComplianceData(opts: {
   // Siste økt for valgt spiller som har en logg (startet eller fullført).
   const latestLogged = await prisma.trainingPlanSession.findFirst({
     where: {
-      plan: { userId: selectedId },
+      plan: { userId: selectedId, isActive: true, status: { in: ["ACCEPTED", "ACTIVE", "PAUSED"] } },
+      scheduledAt: { lt: now },
       log: { isNot: null },
     },
     orderBy: { scheduledAt: "desc" },

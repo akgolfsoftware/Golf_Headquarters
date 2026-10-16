@@ -2,6 +2,8 @@
 
 Start med [inventaret](../assets/ruteinventar.json) eller [CSV](../assets/ruteinventar.csv). Tellingen ved kontroll 11.09.2026 var 480 sidefiler, 703 komponentfiler og 230 filer for layout, lasting, feil og andre rammenivåer. Dette er kodeinventar, ikke ferdig design eller automatisk oppdeling i like mange tegninger. Kontroller på nytt dersom repoet har endret seg.
 
+Fersk kobling fra 02.10.2026, tatt på `345617a4`: [skjermregisteret](../../../../docs/design-system/skjermregister.md) har én rad per sidefil. 520 i porteringsplanen var tellingen da planen ble skrevet. Etter nye sider: `node scripts/bygg-skjermregister.mjs --write`.
+
 ## Flater som ikke må forsvinne
 
 | Flate i inventaret | Sidefiler ved opprettelse | Familier som skal undersøkes |

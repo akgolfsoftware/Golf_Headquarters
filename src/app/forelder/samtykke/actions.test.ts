@@ -187,3 +187,15 @@ test("beOmDataSletting avviser andres barn uten rad", async () => {
   await assert.rejects(() => beOmDataSletting("barn-fremmed"), /godkjent foresatt/);
   assert.equal(eksportSkrevet.length, 0);
 });
+
+test("administrator kan ikke samtykke på vegne av forelderen, og ingenting skrives", async () => {
+  bruker = { id: "admin-1", role: "ADMIN" };
+  relasjon = null;
+  const { lagreSamtykker, settHelseSamtykkeForBarn, settDelingsSamtykkeForBarn } = await actions();
+  await assert.rejects(() => lagreSamtykker("barn-a", { markedsforing: true }), /REDIRECT/);
+  await assert.rejects(() => settHelseSamtykkeForBarn("barn-a", "WEARABLE_HELSE", true), /REDIRECT/);
+  await assert.rejects(() => settDelingsSamtykkeForBarn("barn-a", "TEST_RESULTATER", "gruppe-1", true), /REDIRECT/);
+  assert.equal(preferencesSkrevet, null);
+  assert.equal(helseRegistrert.length, 0);
+  assert.equal(delingRegistrert.length, 0);
+});

@@ -16,6 +16,8 @@
  * `sgLob` settes bevisst aldri her — den krever kølledata kjeden ikke bærer.
  */
 
+import { RUNDE_SG_KILDE } from "@/lib/runde-logg/kontrakt";
+
 /** SG-hovedtall fra `beregnSgFraShots`. */
 export type SgHovedtall = {
   total: number;
@@ -113,7 +115,7 @@ export function avgjorSgSkriving(
   gran: SgGranulaer | null,
 ): SgSkriving {
   // 1. Håndtastede tall er fasit — beregningen rører dem aldri.
-  if (sgSource === "manual") return { handling: "ingen", grunn: "manuell" };
+  if (sgSource === RUNDE_SG_KILDE.MANUAL) return { handling: "ingen", grunn: "manuell" };
 
   // 2. Komplett kjede → skriv alt.
   if (sg) {
@@ -127,7 +129,7 @@ export function avgjorSgSkriving(
         sgApp: sg.app,
         sgArg: sg.arg,
         sgPutt: sg.putt,
-        sgSource: "beregnet",
+        sgSource: RUNDE_SG_KILDE.BEREGNET,
         sgTee: gran?.sgTee ?? null,
         sgApp200: gran?.sgApp200 ?? null,
         sgApp150: gran?.sgApp150 ?? null,
@@ -148,7 +150,7 @@ export function avgjorSgSkriving(
   }
 
   // 3. Ufullstendig kjede: nullstill kun det som faktisk var beregnet.
-  if (sgSource === "beregnet") {
+  if (sgSource === RUNDE_SG_KILDE.BEREGNET) {
     return { handling: "skriv", grunn: "nullstill", felter: { ...TOMME_SG_FELTER } };
   }
 

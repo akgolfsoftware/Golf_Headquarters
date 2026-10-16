@@ -26,6 +26,7 @@ import type { PlanStatus } from "@/generated/prisma/client";
 import { fmtVarighet, toKl } from "@/lib/workbench/v2-format";
 import { resolvePlanSessionLiveHref } from "@/lib/workbench/session-actions";
 import { sokOvelser, hentOktKomponist } from "@/lib/workbench/ovelse-sok";
+import { hentOktInspektor } from "@/lib/workbench/inspektor-data";
 import { useEffect } from "react";
 import { planSessionStartHref, v2SessionStartHref, type V2OktUiStatus } from "@/lib/portal/session-hrefs";
 import type { LFase } from "@/generated/prisma/client";
@@ -123,6 +124,55 @@ export interface WorkbenchV2Actions {
   duplicateWeek?: (weekOffset?: number) => Promise<{ ok: boolean; count?: number; error?: string }>;
   /** Turneringsfanen: bekreft tentativ påmelding (kun coach — utelatt → knappen skjules). */
   bekreftTurnering?: (entryId: string) => Promise<{ ok: boolean; error?: string }>;
+  opprettFysiskBlokk?: (input: {
+    playerId: string;
+    title: string;
+    startDate: string;
+    endDate: string;
+    focus?: string | null;
+  }) => Promise<{ ok: boolean; blockId?: string; error?: string }>;
+  publiserFysiskBlokk?: (input: { id: string }) => Promise<{ ok: boolean; error?: string }>;
+  opprettFysiskOkt?: (input: {
+    blockId: string;
+    weekId: string;
+    date: string;
+    title: string;
+    type?: "STYRKE" | "KONDISJON" | "MOBILITET" | "TEST";
+    durationMinutes?: number | null;
+    exerciseTitle?: string | null;
+  }) => Promise<{ ok: boolean; sessionId?: string; error?: string }>;
+  flyttFysiskOkt?: (input: { sessionId: string; date: string }) => Promise<{ ok: boolean; error?: string }>;
+  loggFysiskSett?: (input: {
+    exerciseId: string;
+    setNumber: number;
+    reps?: number | null;
+    weightKg?: number | null;
+    rir?: number | null;
+    note?: string | null;
+  }) => Promise<{ ok: boolean; logId?: string; error?: string }>;
+  opprettTurneringsplan?: (input: {
+    playerId: string;
+    tournamentEntryId?: string | null;
+    title: string;
+    startDate: string;
+    endDate: string;
+    travelStartDate?: string | null;
+    travelEndDate?: string | null;
+    focus?: "TRENING" | "UTVIKLING" | "PRESTASJON";
+  }) => Promise<{ ok: boolean; planId?: string; error?: string }>;
+  publiserTurneringsplan?: (input: { id: string }) => Promise<{ ok: boolean; error?: string }>;
+  lagreTurneringsrunde?: (input: {
+    planId: string;
+    roundId?: string | null;
+    roundNumber: number;
+    date: string;
+    teeTimeMinutes?: number | null;
+    grossScore?: number | null;
+    strokesGained?: number | null;
+    source?: string | null;
+    sourceDate?: string | null;
+    notes?: string | null;
+  }) => Promise<{ ok: boolean; roundId?: string; error?: string }>;
   /** G7/fasit: legg inn mal-uke 1 fra en godkjent planmal (coldstart + bibliotek). */
   /**
    * B40 §4 (fasilitetskonsekvens): `justeringer` er myke avviks-meldinger for
@@ -1298,15 +1348,21 @@ export function ValgtOktSeksjon({
       });
       return () => { aktiv = false; };
     }
-    hentOktKomponist(okt.id).then((res) => {
+    hentOktInspektor(okt.id).then((res) => {
       if (!aktiv) return;
       if (res.ok) {
         setOktDrills(res.drills ?? []);
         setOktFormel({ lFase: res.lFase ?? null, miljo: res.miljo ?? null });
       } else {
-        setOktDrills(null);
+        setOktDrills([]);
         setOktFormel(null);
+        setFeil("Kunne ikke hente øktinnhold.");
       }
+    }).catch(() => {
+      if (!aktiv) return;
+      setOktDrills([]);
+      setOktFormel(null);
+      setFeil("Kunne ikke hente øktinnhold.");
     });
     return () => { aktiv = false; };
     // dep på hele okt-objektet: refetch etter router.refresh (nye objekter),

@@ -1,0 +1,24 @@
+<!-- @dsCard group="Components" viewport="1180x460" name="Navigation" subtitle="TopBar, Tabs, TabBar, SideNav, NavRail · MenuBar · NavDrawer (responsiv hamburgermeny)" -->
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Navigation</title>
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>body{background:var(--surface-flat);padding:20px}.row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}.col{display:flex;flex-direction:column;gap:14px}.lbl{font:var(--type-meta);color:var(--text-faint);letter-spacing:.04em;text-transform:uppercase;width:84px;flex:none}</style>
+</head><body><div id="root"></div><script type="text/babel">
+const NS = window.AKGolfPrecisionAthletics_7d7c29;
+
+const { TopBar, Tabs, TabBar, SideNav, IconButton, NavRail, MenuBar, NavDrawer } = NS;
+const GROUPS=[{id:"idag",label:"I dag",icon:"sun",items:[{id:"mal",label:"Mål og dagens økt",icon:"target"}]},{id:"plan",label:"Planlegging",icon:"calendar-range",items:[{id:"kal",label:"Kalender",icon:"calendar-range"},{id:"gp",label:"Gameplan",icon:"map"}]},{id:"an",label:"Analyse & Banekart",icon:"chart-spline",items:[{id:"bk",label:"Banekart",icon:"flag"},{id:"sg",label:"Strokes Gained",icon:"chart-column"}]},{id:"test",label:"Tester",icon:"clipboard-check",items:[{id:"t",label:"Ferdighetstest",icon:"clipboard-check"}]},{id:"pr",label:"Profil",icon:"user-round",items:[{id:"me",label:"Profil",icon:"user-round"}]}];
+function Mobile(){const [o,setO]=React.useState(true);const [a,setA]=React.useState("bk");return <div style={{width:300,height:420,position:"relative",border:"1px solid var(--border-hairline)",borderRadius:8,overflow:"hidden",background:"var(--surface-page)",display:"flex",gap:0,flexDirection:"column"}}><MenuBar brand={<img src="../../assets/logo-ak-golf-hq.svg" style={{height:20}}/>} onMenu={()=>setO(true)} open={o}/><div style={{flex:1}}/><NavDrawer open={o} onClose={()=>setO(false)} brand={<img src="../../assets/logo-ak-golf-hq.svg" style={{height:20}}/>} groups={GROUPS} active={a} onSelect={setA}/></div>}
+function Rail(){const [a,setA]=React.useState("bk");return <div style={{height:420,border:"1px solid var(--border-hairline)",borderRadius:8,overflow:"hidden"}}><NavRail brand={<img src="../../assets/ak-golf-logo-ink.svg" style={{width:28,height:28}}/>} groups={GROUPS} active={a} onSelect={setA}/></div>}
+function App(){const [t,setT]=React.useState("idag");const [s,setS]=React.useState("stall");return <div style={{display:"flex",gap:16}}><Rail/><Mobile/><div style={{display:"grid",gridTemplateColumns:"236px 1fr",gap:16,height:360,flex:1,minWidth:0}}>
+<div style={{border:"1px solid var(--border-hairline)",borderRadius:8,overflow:"hidden"}}><SideNav active={s} onSelect={setS} brand={<img src="../../assets/logo-ak-golf-hq.svg" style={{height:24}}/>} items={[{id:"hjem",label:"Hjem",icon:"house"},{id:"stall",label:"Stall",icon:"users",count:18},{id:"kal",label:"Kalender",icon:"calendar-days"},{group:"Arbeid"},{id:"godk",label:"Godkjenninger",icon:"badge-check",count:3,signal:true}]}/></div>
+<div className="col" style={{gap:16}}>
+<div style={{border:"1px solid var(--border-hairline)",borderRadius:8,overflow:"hidden"}}><TopBar title="Innspill ca. 100 m" sub="TIR 24.09 · 14:30" onBack={()=>{}} actions={<IconButton icon="more-horizontal" label="Flere valg"/>}/></div>
+<Tabs tabs={[{value:"o",label:"Oversikt"},{value:"p",label:"Plan"},{value:"t",label:"Tester",count:3}]}/>
+<span style={{flex:1}}/>
+<div style={{border:"1px solid var(--border-hairline)",borderRadius:8,overflow:"hidden"}}><TabBar active={t} onSelect={setT}/></div>
+</div></div></div>}
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);</script></body></html>

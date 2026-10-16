@@ -9,7 +9,8 @@
  * (AP1) når kart-modusen bygges — denne spec-en er ankeret den utvides fra.
  */
 
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./_test";
+import { loginAsPlayer } from "./_auth-helpers";
 
 const TEST_PLAYER_EMAIL = process.env.E2E_TEST_USER_EMAIL ?? "";
 const TEST_PLAYER_PASSWORD = process.env.E2E_TEST_USER_PASSWORD ?? "";
@@ -30,11 +31,7 @@ test.describe("Runde-føring", () => {
       "Krever seedet PLAYER-bruker (E2E_TEST_USER_EMAIL/PASSWORD)",
     );
 
-    await page.goto("/auth/login");
-    await page.locator('input[type="email"]').fill(TEST_PLAYER_EMAIL);
-    await page.locator('input[type="password"]').fill(TEST_PLAYER_PASSWORD);
-    await page.locator('button[type="submit"]').click();
-    await page.waitForURL(/\/portal/, { timeout: 15_000 });
+    await loginAsPlayer(page);
 
     // Etterregistrering: dato-felt + banevelger er skjermens kjerne.
     await page.goto("/portal/runde/logg");
@@ -48,11 +45,7 @@ test.describe("Runde-føring", () => {
       "Krever seedet PLAYER-bruker (E2E_TEST_USER_EMAIL/PASSWORD)",
     );
 
-    await page.goto("/auth/login");
-    await page.locator('input[type="email"]').fill(TEST_PLAYER_EMAIL);
-    await page.locator('input[type="password"]').fill(TEST_PLAYER_PASSWORD);
-    await page.locator('button[type="submit"]').click();
-    await page.waitForURL(/\/portal/, { timeout: 15_000 });
+    await loginAsPlayer(page);
 
     await page.goto("/portal/runde/live");
     await expect(page).toHaveURL(/\/portal\/runde\/live/);

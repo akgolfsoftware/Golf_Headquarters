@@ -1,7 +1,7 @@
 #!/usr/bin/env tsx
 /**
- * Sync-masterbrain — kopierer fasit, RAG-tekster og treningsdata fra den lokale
- * masterbrain-klonen inn i src/lib/masterbrain/ i denne appen.
+ * Sync-masterbrain — kopierer fasit, RAG-tekster, treningsdata og øvelsesbank
+ * fra den lokale masterbrain-klonen inn i src/lib/masterbrain/ i denne appen.
  *
  * Masterbrain (akgolfsoftware/masterbrain) er kunnskapskilden Anders
  * videreutvikler i; agentene her leser en lokal, versjonert kopi (raskt,
@@ -25,6 +25,7 @@
 
 import { copyFileSync, existsSync, mkdirSync, readdirSync, rmSync, statSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
+import { execFileSync } from "node:child_process";
 
 type Kilde = {
   /** Sti i masterbrain-repoet */
@@ -71,6 +72,27 @@ const KILDER: readonly Kilde[] = [
     rekursivt: true,
     hensikt: "Resonnementseksempler og eval-sett med rubrikk",
   },
+  {
+    fra: "ovelsesbank",
+    til: "ovelsesbank",
+    endelser: [".json", ".md"],
+    rekursivt: true,
+    hensikt: "Drill-, øvelse- og testbank — kandidater, godkjent fasit og batcher til Anders",
+  },
+  {
+    fra: "schemas",
+    til: "schemas",
+    endelser: [".json"],
+    rekursivt: true,
+    hensikt: "Maskinskjema for godkjente driller, øvelser og tester",
+  },
+  {
+    fra: "scripts",
+    til: "scripts",
+    endelser: [".py"],
+    rekursivt: false,
+    hensikt: "Masterbrain-validering — holdout og øvelsesbank",
+  },
 ] as const;
 
 /** MANIFEST er kartet agentene skal lese først — synkes alltid. */
@@ -90,6 +112,16 @@ function samleFiler(mappe: string, endelser: readonly string[], rekursivt: boole
   return treff;
 }
 
+function validerOvelsesbank(rot: string, label: string) {
+  const validator = join(rot, "scripts", "validate-ovelsesbank.py");
+  if (!existsSync(validator)) {
+    console.error(`Fant ikke øvelsesbank-validator i ${label}: ${validator}`);
+    process.exit(1);
+  }
+  console.log(`Validerer øvelsesbank (${label})`);
+  execFileSync("python3", [validator], { cwd: rot, stdio: "inherit" });
+}
+
 function main() {
   if (!existsSync(MASTERBRAIN_PATH)) {
     console.error(`Fant ikke masterbrain-klonen: ${MASTERBRAIN_PATH}`);
@@ -103,6 +135,8 @@ function main() {
     console.error("Peker MASTERBRAIN_PATH på riktig repo?");
     process.exit(1);
   }
+
+  validerOvelsesbank(MASTERBRAIN_PATH, "masterbrain-kilde");
 
   let totalt = 0;
   const manglende: string[] = [];
@@ -143,6 +177,8 @@ function main() {
 
   console.log(`\nSynket ${totalt} filer fra ${MASTERBRAIN_PATH}`);
   console.log("Husk: rag-corpus må embeddes til knowledge_chunks for at søk skal se endringene.");
+
+  validerOvelsesbank(MAAL_ROOT, "app-kopi");
 }
 
 main();

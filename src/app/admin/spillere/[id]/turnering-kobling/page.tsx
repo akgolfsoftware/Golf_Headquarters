@@ -4,15 +4,20 @@
  *
  * Manuell kobling User.publicPlayerId ↔ PublicPlayer når auto-navnematch
  * ikke treffer. Etter kobling speiles eksisterende resultater til profilen.
+ *
+ * Precision Athletics (29.09.2026): samme tilgang (requirePortalUser +
+ * coachScopedPlayerWhere) og samme handlinger; bare visningen er byttet.
  */
 
 import { notFound } from "next/navigation";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TilbakeLenke, Tittel, Caps } from "@/components/v2";
-import { TL } from "@/lib/v2/train-lock";
+import { ArrowLeft } from "lucide-react";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { KnappLenke } from "@/components/precision/pa";
+import { SideHode } from "@/components/precision/pa-a4";
+import "@/styles/precision-a8.css";
 
 import { foreslaPublicPlayers } from "./actions";
 import { TurneringKoblingKlient } from "./kobling-klient";
@@ -63,48 +68,21 @@ export default async function TurneringKoblingPage({
     : null;
 
   return (
-    <V2Shell
-      bredde="kolonne"
-      aktiv="spillere"
-      nav={AGENCYOS_NAV}
-      navn={user.name ?? "Coach"}
-      avatarUrl={user.avatarUrl}
-    >
-      <div style={{ maxWidth: 720, margin: "0 auto", padding: "20px 16px 48px" }}>
-        <TilbakeLenke href={`/admin/spillere/${player.id}`}>
-          Tilbake til spiller
-        </TilbakeLenke>
-        <div style={{ marginTop: 16, marginBottom: 6 }}>
-          <Caps size={10} style={{ color: TL.mute }}>
-            Turnering · kobling
-          </Caps>
-        </div>
-        <div style={{ marginBottom: 8 }}>
-          <Tittel em="kobling">{player.name}</Tittel>
-        </div>
-        <p
-          style={{
-            margin: "0 0 24px",
-            fontFamily: TL.font.sans,
-            fontSize: 13.5,
-            color: TL.mute,
-            lineHeight: 1.5,
-            maxWidth: 520,
-          }}
-        >
-          Koble denne PlayerHQ-kontoen til en person i turneringsbasen. Da
-          speiles GolfBox-resultater automatisk til spillerens profil.
-        </p>
-
+    <AgencyOSSkall navn={user.name ?? "Coach"}>
+      <div className="a8-side" style={{ maxWidth: 820 }}>
+        <SideHode
+          kicker="Stall · Spiller 360 · Turneringsprofil"
+          title={player.name}
+          sub="Koble denne PlayerHQ-kontoen til en person i turneringsbasen. Da speiles GolfBox-resultater automatisk til spillerens profil."
+          actions={<KnappLenke variant="secondary" icon={ArrowLeft} iconName="arrow-left" href={`/admin/spillere/${player.id}`}>Spiller 360</KnappLenke>}
+        />
         <TurneringKoblingKlient
           spillerId={player.id}
           spillerNavn={player.name}
           current={current}
-          initialForslag={forslag.filter(
-            (f) => !current || f.id !== current.id,
-          )}
+          initialForslag={forslag.filter((f) => !current || f.id !== current.id)}
         />
       </div>
-    </V2Shell>
+    </AgencyOSSkall>
   );
 }

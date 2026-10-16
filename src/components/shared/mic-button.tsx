@@ -223,13 +223,13 @@ export function MicButton({
                 ? "cursor-not-allowed bg-secondary text-muted-foreground opacity-50"
                 : "bg-secondary text-muted-foreground hover:bg-card hover:text-foreground"
         }`}
-        style={
-          state === "recording"
-            ? {
-                animation: "mic-pulse 1.4s ease-in-out infinite",
-              }
-            : undefined
-        }
+        style={{
+          // Treffmål minst 44×44 (også der bare pa-*-stiler er lastet, uten
+          // Tailwind) — h-9/w-9 alene ga 36 px, under 44 px-kravet.
+          minWidth: 44,
+          minHeight: 44,
+          ...(state === "recording" ? { animation: "mic-pulse 1.4s ease-in-out infinite" } : null),
+        }}
       >
         {state === "done" ? (
           <Check className="h-4 w-4" />

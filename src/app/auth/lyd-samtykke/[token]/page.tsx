@@ -1,5 +1,5 @@
 /**
- * /auth/lyd-samtykke/[token]
+ * /auth/lyd-samtykke/[token] — AU05Lyd.
  *
  * Foresatt mottar e-post med magisk lenke hit. Ingen innlogging.
  * Ordlyden vises i fulltekst; bekreftelse lagrer GITT + FORESATT.
@@ -11,6 +11,7 @@ import {
   erLydSamtykkeTokenGyldig,
   hashLydSamtykkeToken,
 } from "@/lib/recording/lyd-samtykke-token";
+import { PrecisionTilstand } from "@/components/system/precision-tilstand";
 import { LydSamtykkeForm } from "./lyd-samtykke-form";
 
 type Props = {
@@ -18,23 +19,6 @@ type Props = {
 };
 
 export const dynamic = "force-dynamic";
-
-function StatusBoks({
-  tittel,
-  tekst,
-}: {
-  tittel: string;
-  tekst: string;
-}) {
-  return (
-    <div className="mx-auto max-w-lg px-4 py-12">
-      <h1 className="text-xl font-semibold text-foreground">{tittel}</h1>
-      <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground">
-        {tekst}
-      </p>
-    </div>
-  );
-}
 
 async function finnRad(rawToken: string) {
   const tokenHash = hashLydSamtykkeToken(rawToken);
@@ -55,9 +39,11 @@ export default async function LydSamtykkeTokenPage({ params }: Props) {
 
   if (!rad) {
     return (
-      <StatusBoks
+      <PrecisionTilstand
+        kicker="Lydopptak"
         tittel="Lenken virker ikke"
         tekst="Lenken er ugyldig eller allerede brukt. Be treneren sende ny e-post hvis du fortsatt skal gi samtykke."
+        primar={{ label: "Til forsiden", href: "/" }}
       />
     );
   }
@@ -70,9 +56,11 @@ export default async function LydSamtykkeTokenPage({ params }: Props) {
 
   if (rad.status === "GITT") {
     return (
-      <StatusBoks
+      <PrecisionTilstand
+        kicker="Lydopptak"
         tittel="Allerede registrert"
         tekst={`Samtykke for ${spillerNavn} er allerede gitt. Du trenger ikke gjøre noe mer.`}
+        primar={{ label: "Til forsiden", href: "/" }}
       />
     );
   }
@@ -86,9 +74,11 @@ export default async function LydSamtykkeTokenPage({ params }: Props) {
     })
   ) {
     return (
-      <StatusBoks
+      <PrecisionTilstand
+        kicker="Lydopptak"
         tittel="Lenken er utløpt"
         tekst="Be treneren sende en ny e-post med fersk lenke."
+        primar={{ label: "Til forsiden", href: "/" }}
       />
     );
   }

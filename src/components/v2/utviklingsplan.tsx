@@ -18,8 +18,16 @@ import { HjelpTips } from "@/components/v2/hjelp";
 
 /* P1.0–P10.0 (MORAD-kanon, src/lib/taxonomy.ts P_POSISJONER) */
 const P_NAVN: Record<string, string> = {
-  P1: "Adresse", P2: "Takeaway", P3: "Halvveis tilbake", P4: "Topp-posisjon", P5: "Transisjon",
-  P6: "Halvveis ned", P7: "Impact", P8: "Tidlig oppfølging", P9: "Kølle parallell", P10: "Finish",
+  P1: "Adresse / Oppstilling",
+  P2: "Kølle parallell i baksving",
+  P3: "Venstre arm parallell i baksving",
+  P4: "Toppen av baksvingen",
+  P5: "Venstre arm parallell i nedsving",
+  P6: "Kølle parallell i nedsving",
+  P7: "Treffpunktet",
+  P8: "Kølle parallell i gjennomføring",
+  P9: "Høyre arm parallell i oppfølging",
+  P10: "Fullføring og balanse",
 };
 
 /* TrackStatus i klarspråk — informasjon, aldri sperre */
@@ -274,7 +282,7 @@ export interface UtviklingsplanOversiktProps {
   cta?: string;
 }
 export function UtviklingsplanOversikt({
-  planNavn = "Teknisk utviklingsplan — sommer 2026", periode = "Spesialisering · uke 24–31",
+  planNavn = "Teknisk utviklingsplan — sommer 2026", periode = "Spesialperiode · uke 24–31",
   posisjoner = DEMO_RAIL, aktivP = "P4", aktivNavn,
   nesteKrav = { tittel: "Venstre arm parallell med skulderlinjen i P4", repsGjort: 240, repsMaal: 300, lFase: "L-Ball", cs: "CS60", spor: "PAA_VEI", status: "active", tmMaal: "Spredning 7-jern < 9,0 m" },
   coachNote = "Hold CS60 ut uken — vi tester CS80 mandag.", cta = "Start økt på dette",

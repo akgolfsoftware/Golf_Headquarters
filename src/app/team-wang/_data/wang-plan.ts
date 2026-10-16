@@ -181,7 +181,7 @@ export const PERIODS: Periode[] = [
   },
   {
     key: "spes",
-    name: "Spesialiseringsperiode",
+    name: "Spesialperiode",
     color: "var(--cat-blue)",
     start: "2026-12-01",
     end: "2027-03-31",

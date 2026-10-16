@@ -1,0 +1,346 @@
+{
+  "id": "treningsomrader-ak-formel-v2",
+  "version": "1.0.0",
+  "created": "2026-09-26",
+  "source": [
+    "akgolf-hq src/lib/domain/ak-formel-v2.ts",
+    "akgolf-hq docs/ordbok.json",
+    "akgolf-hq docs/treningsplanlegging.md"
+  ],
+  "description": "AK Golf HQ sitt kanoniske AK-formel-vokabular for driller, øvelser og tester. Kalles historisk 17-listen, men gjeldende AK-formel v2 har 19 områdekoder.",
+  "rules": [
+    "Formelen er en merkelapp, aldri et krav.",
+    "Formelen bæres av hver enkelt drill, øvelse eller test, ikke av økten.",
+    "Pyramide og område er uavhengige akser.",
+    "Putting måles i fot.",
+    "Innspill og nærspill måles i meter.",
+    "FYS og BANE har ingen avstandsenhet."
+  ],
+  "formula_format": "PYRAMIDE_OMRAADE_MOTORIKK_ELLER_DIMENSJON_BELASTNING_PRESS",
+  "axes": {
+    "pyramid_codes": [
+      "FYS",
+      "TEK",
+      "SLAG",
+      "SPILL",
+      "TURN"
+    ],
+    "category_codes": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J",
+      "K"
+    ],
+    "motorikk_codes": [
+      "UTEN_BALL",
+      "LAV_HAST",
+      "AUTO"
+    ],
+    "belastning_codes": [
+      "INNENDORS",
+      "TRENINGSOMRAADE",
+      "BANE",
+      "KONKURRANSE"
+    ],
+    "press_codes": [
+      "ALENE",
+      "OBSERVERT",
+      "KONKURRANSE",
+      "TURNERING"
+    ],
+    "dimensjon_codes": [
+      "SIKTE",
+      "STARTRETNING",
+      "KURVE",
+      "HOYDE",
+      "TREFFPUNKT",
+      "LENGDEKONTROLL",
+      "SPINN",
+      "LANDINGSPUNKT",
+      "UTRULLING",
+      "KOLLEVALG",
+      "BOUNCE_BRUK",
+      "SANDINNGANG",
+      "LIE_VARIASJON",
+      "GREENLESING",
+      "BALLSTART",
+      "SPILLEFORMAT",
+      "STRATEGIOPPGAVE"
+    ],
+    "maaleutstyr_codes": [
+      "TRACKMAN",
+      "FLIGHTSCOPE",
+      "GARMIN_R10",
+      "MEVO_PLUS",
+      "ANNET",
+      "UTEN"
+    ],
+    "treningstype_codes": [
+      "BLOKK",
+      "VARIABEL",
+      "KONKURRANSE",
+      "SPILL_TEST"
+    ],
+    "environment_codes": [
+      "RANGE",
+      "BANE",
+      "STUDIO",
+      "HJEM",
+      "SIMULATOR",
+      "GYM"
+    ],
+    "facility_requirement_codes": [
+      "RADAR",
+      "MAT_NET",
+      "BUNKER",
+      "KAMERA",
+      "PUTTING_GREEN_KORT",
+      "PUTTING_GREEN_LANG",
+      "SHORT_GAME_AREA",
+      "DRIVING_RANGE",
+      "BANE",
+      "SIMULATOR",
+      "VEKTSTANG",
+      "TRAPBAR",
+      "LOPEBANE",
+      "MED_BALL"
+    ],
+    "sand_trinn_codes": [
+      "UTEN_BALL_I_SAND",
+      "MED_BALL"
+    ]
+  },
+  "relevance_matrix": {
+    "FULLSVING": {
+      "motorikk": true,
+      "belastning": true,
+      "press": true,
+      "dimensjon": true,
+      "sandTrinn": false,
+      "fysParametere": false
+    },
+    "NAERSPILL": {
+      "motorikk": false,
+      "belastning": true,
+      "press": true,
+      "dimensjon": true,
+      "sandTrinn": false,
+      "fysParametere": false
+    },
+    "BUNKER": {
+      "motorikk": false,
+      "belastning": true,
+      "press": true,
+      "dimensjon": true,
+      "sandTrinn": true,
+      "fysParametere": false
+    },
+    "PUTT": {
+      "motorikk": false,
+      "belastning": true,
+      "press": true,
+      "dimensjon": true,
+      "sandTrinn": false,
+      "fysParametere": false
+    },
+    "FYS": {
+      "motorikk": false,
+      "belastning": false,
+      "press": false,
+      "dimensjon": false,
+      "sandTrinn": false,
+      "fysParametere": true,
+      "defaultBelastning": "INNENDORS",
+      "defaultPress": "ALENE"
+    },
+    "BANE": {
+      "motorikk": false,
+      "belastning": true,
+      "press": true,
+      "dimensjon": true,
+      "sandTrinn": false,
+      "fysParametere": false
+    }
+  },
+  "facility_rules": [
+    "Alle godkjente driller, øvelser og tester skal ha facilityRequirements.longestShotM.",
+    "longestShotM er lengste ballflukt/rull/kast som kreves for å gjennomføre trygt.",
+    "minimumFacilityLengthM skal være minst longestShotM når øvelsen krever fysisk plass.",
+    "Agenten skal aldri anbefale et element hvis spillerens fasilitet er kortere enn minimumFacilityLengthM.",
+    "fasilitetKrav bruker samme DrillFasilitet-koder som AK Golf HQ.",
+    "Tom fasilitetKrav betyr bare ingen spesialutstyrskrav, ikke at lengdekrav kan utelates."
+  ],
+  "areas": [
+    {
+      "code": "TEE_TOTAL",
+      "name_no": "Utslag",
+      "family": "FULLSVING",
+      "unit": "m",
+      "reps_unit": "SLAG"
+    },
+    {
+      "code": "INNSPILL_200",
+      "name_no": "Innspill ~200 m",
+      "family": "FULLSVING",
+      "unit": "m",
+      "reps_unit": "SLAG"
+    },
+    {
+      "code": "INNSPILL_150",
+      "name_no": "Innspill ~150 m",
+      "family": "FULLSVING",
+      "unit": "m",
+      "reps_unit": "SLAG"
+    },
+    {
+      "code": "INNSPILL_100",
+      "name_no": "Innspill ~100 m",
+      "family": "FULLSVING",
+      "unit": "m",
+      "reps_unit": "SLAG"
+    },
+    {
+      "code": "INNSPILL_50",
+      "name_no": "Innspill ~50 m",
+      "family": "FULLSVING",
+      "unit": "m",
+      "reps_unit": "SLAG"
+    },
+    {
+      "code": "CHIP",
+      "name_no": "Chip",
+      "family": "NAERSPILL",
+      "unit": "m",
+      "reps_unit": "SLAG"
+    },
+    {
+      "code": "PITCH",
+      "name_no": "Pitch",
+      "family": "NAERSPILL",
+      "unit": "m",
+      "reps_unit": "SLAG"
+    },
+    {
+      "code": "LOB",
+      "name_no": "Lob",
+      "family": "NAERSPILL",
+      "unit": "m",
+      "reps_unit": "SLAG"
+    },
+    {
+      "code": "BUNKER",
+      "name_no": "Bunker",
+      "family": "NAERSPILL",
+      "unit": "m",
+      "reps_unit": "SLAG"
+    },
+    {
+      "code": "PUTT_0_3",
+      "name_no": "Putt 0-3 fot",
+      "family": "PUTT",
+      "unit": "ft",
+      "reps_unit": "PUTTER"
+    },
+    {
+      "code": "PUTT_3_5",
+      "name_no": "Putt 3-5 fot",
+      "family": "PUTT",
+      "unit": "ft",
+      "reps_unit": "PUTTER"
+    },
+    {
+      "code": "PUTT_5_10",
+      "name_no": "Putt 5-10 fot",
+      "family": "PUTT",
+      "unit": "ft",
+      "reps_unit": "PUTTER"
+    },
+    {
+      "code": "PUTT_10_25",
+      "name_no": "Putt 10-25 fot",
+      "family": "PUTT",
+      "unit": "ft",
+      "reps_unit": "PUTTER"
+    },
+    {
+      "code": "PUTT_25_40",
+      "name_no": "Putt 25-40 fot",
+      "family": "PUTT",
+      "unit": "ft",
+      "reps_unit": "PUTTER"
+    },
+    {
+      "code": "PUTT_40_PLUSS",
+      "name_no": "Putt 40+ fot",
+      "family": "PUTT",
+      "unit": "ft",
+      "reps_unit": "PUTTER"
+    },
+    {
+      "code": "STYRKE",
+      "name_no": "Styrke",
+      "family": "FYS",
+      "unit": null,
+      "reps_unit": "SERIER_REPS"
+    },
+    {
+      "code": "KONDISJON",
+      "name_no": "Kondisjon",
+      "family": "FYS",
+      "unit": null,
+      "reps_unit": "SEGMENTER"
+    },
+    {
+      "code": "BEVEGELIGHET",
+      "name_no": "Bevegelighet",
+      "family": "FYS",
+      "unit": null,
+      "reps_unit": "MINUTTER"
+    },
+    {
+      "code": "BANE",
+      "name_no": "Banespill",
+      "family": "BANE",
+      "unit": null,
+      "reps_unit": "HULL"
+    }
+  ],
+  "legacy_aliases": {
+    "TEE": "TEE_TOTAL",
+    "TEE_SLAG": "TEE_TOTAL",
+    "DRIVER": "TEE_TOTAL",
+    "INNSPILL_0_50": "INNSPILL_50",
+    "PUTT_10_15": "PUTT_10_25",
+    "PUTT_15_25": "PUTT_10_25",
+    "PUTT_40": "PUTT_40_PLUSS"
+  },
+  "invariants": [
+    {
+      "id": "area_count_19",
+      "rule": "Fasiten skal ha nøyaktig 19 områdekoder.",
+      "severity": "blocking"
+    },
+    {
+      "id": "putting_unit_ft",
+      "rule": "Alle putting-områder skal bruke fot (ft), ikke meter.",
+      "severity": "blocking"
+    },
+    {
+      "id": "golf_unit_m",
+      "rule": "Alle fullsving- og nærspillområder skal bruke meter (m), ikke yards.",
+      "severity": "blocking"
+    },
+    {
+      "id": "fys_bane_no_distance_unit",
+      "rule": "FYS- og BANE-områder skal ikke ha avstandsenhet.",
+      "severity": "blocking"
+    }
+  ]
+}

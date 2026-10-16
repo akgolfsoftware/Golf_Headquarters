@@ -17,6 +17,8 @@ import {
   sjekkpunktFraSuggestion,
 } from "./fangst-suggestion";
 
+const VOKSEN = { kreverForesatt: false, forelderGodkjent: false };
+
 describe("lyd-samtykke (hard gate)", () => {
   it("kanStarteFangst bare ved GITT", () => {
     assert.equal(kanStarteFangst("GITT"), true);
@@ -28,14 +30,14 @@ describe("lyd-samtykke (hard gate)", () => {
   });
 
   it("byggLydSamtykkeSjekk: mangler rad = MANGLER", () => {
-    const s = byggLydSamtykkeSjekk(null);
+    const s = byggLydSamtykkeSjekk(null, VOKSEN);
     assert.equal(s.tillatt, false);
     if (!s.tillatt) assert.equal(s.status, "MANGLER");
   });
 
   it("byggLydSamtykkeSjekk: GITT tillater", () => {
     const gittAt = new Date("2026-07-31T10:00:00Z");
-    const s = byggLydSamtykkeSjekk({ status: "GITT", gittAt });
+    const s = byggLydSamtykkeSjekk({ status: "GITT", gittAt }, VOKSEN);
     assert.equal(s.tillatt, true);
     if (s.tillatt) {
       assert.equal(s.status, "GITT");
@@ -44,16 +46,47 @@ describe("lyd-samtykke (hard gate)", () => {
   });
 
   it("byggLydSamtykkeSjekk: VENTER og TRUKKET sperrer", () => {
-    const v = byggLydSamtykkeSjekk({ status: "VENTER", gittAt: null });
+    const v = byggLydSamtykkeSjekk({ status: "VENTER", gittAt: null }, VOKSEN);
     assert.equal(v.tillatt, false);
     if (!v.tillatt) assert.equal(v.status, "VENTER");
 
-    const t = byggLydSamtykkeSjekk({
-      status: "TRUKKET",
-      gittAt: new Date(),
-    });
+    const t = byggLydSamtykkeSjekk(
+      { status: "TRUKKET", gittAt: new Date() },
+      VOKSEN,
+    );
     assert.equal(t.tillatt, false);
     if (!t.tillatt) assert.equal(t.status, "TRUKKET");
+  });
+
+  // D-63/TA-04: under 16 sperres opptak til forelder har godkjent kontoen,
+  // og bare samtykke fra FORESATT teller.
+  it("byggLydSamtykkeSjekk: barn med SELV-samtykke får aldri opptak", () => {
+    const s = byggLydSamtykkeSjekk(
+      { status: "GITT", gittAt: new Date(), gittAv: "SELV" },
+      { kreverForesatt: true, forelderGodkjent: true },
+    );
+    assert.equal(s.tillatt, false);
+    if (!s.tillatt) assert.equal(s.status, "VENTER");
+  });
+
+  it("byggLydSamtykkeSjekk: barn med FORESATT-samtykke sperres til forelder har godkjent", () => {
+    const rad = { status: "GITT", gittAt: new Date(), gittAv: "FORESATT" };
+    assert.equal(
+      byggLydSamtykkeSjekk(rad, { kreverForesatt: true, forelderGodkjent: false }).tillatt,
+      false,
+    );
+    assert.equal(
+      byggLydSamtykkeSjekk(rad, { kreverForesatt: true, forelderGodkjent: true }).tillatt,
+      true,
+    );
+  });
+
+  it("byggLydSamtykkeSjekk: myndig med SELV-samtykke får opptak", () => {
+    const s = byggLydSamtykkeSjekk(
+      { status: "GITT", gittAt: new Date(), gittAv: "SELV" },
+      VOKSEN,
+    );
+    assert.equal(s.tillatt, true);
   });
 
   it("lydSamtykkeMelding er norsk og handlingsklar", () => {

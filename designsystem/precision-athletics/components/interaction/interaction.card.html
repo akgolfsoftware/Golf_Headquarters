@@ -1,0 +1,23 @@
+<!-- @dsCard group="Components" viewport="1100x700" name="Navigasjon og dra-og-slipp" subtitle="BackBar, ActionBar, SortableList, DropZone, UndoToast, MoveSheet, ConflictSheet, ConfirmDialog" -->
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Navigasjon og dra-og-slipp</title>
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>body{margin:0;background:var(--surface-flat);padding:20px;font:var(--type-body)}.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px}.c{background:var(--surface-card);border:1px solid var(--border-hairline);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:10px;min-width:0}.k{font:var(--type-meta);letter-spacing:.04em;color:var(--text-muted);text-transform:uppercase}</style>
+</head><body><div id="root"></div><script type="text/babel">
+const NS = window.AKGolfPrecisionAthletics_7d7c29;
+const { BackBar, ActionBar, SortableList, DropZone, UndoToast, Button, Icon } = NS;
+function App(){
+  const [items,setItems]=React.useState([{id:"a",label:"Oppvarming · 10 min"},{id:"b",label:"Innspill 50–100 m · 40 min"},{id:"c",label:"Putting 3–10 fot · 20 min"}]);
+  const byId=Object.fromEntries(items.map(i=>[i.id,i]));
+  return <div className="g">
+    <div className="c"><span className="k">BackBar · tilbake til forrige kontekst</span><BackBar to="Runder" onBack={()=>{}} trail={[{label:"Analyse",onClick:()=>{}},{label:"Runder",onClick:()=>{}},{label:"20.09 Fredrikstad GK"}]} /></div>
+    <div className="c"><span className="k">ActionBar · lagrestatus</span><ActionBar status="saved" statusMeta="14:02" destructive={<Button variant="ghost" icon="trash-2">Slett</Button>} secondary={<><Button variant="ghost">Avbryt</Button><Button variant="secondary">Lagre delvis</Button></>} primary={<Button icon="send">Lagre og publiser</Button>} /><ActionBar status="error" primary={<Button>Prøv igjen</Button>} /></div>
+    <div className="c"><span className="k">SortableList · dra, piltaster eller Flytt</span><SortableList label="Øvelser" items={items} locked={["a"]} onReorder={(ids)=>setItems(ids.map(i=>byId[i]))} onMove={()=>{}} renderItem={(it,c)=><div style={{display:"flex",alignItems:"center",gap:4,minHeight:52,borderTop:c.index?"1px solid var(--border-hairline)":"none"}}>{c.handle}<span style={{flex:1}}>{it.label}</span>{c.moveButton}</div>} /></div>
+    <div className="c"><span className="k">DropZone · tom · ugyldig</span><DropZone label="Hoveddel" empty="DRA ØVELSER HIT · ELLER + I BANKEN" /><DropZone label="Lørdag" valid={false} reason="TURNERINGSDAG · KAN IKKE SLIPPES HER" /></div>
+    <div className="c"><span className="k">UndoToast</span><UndoToast inline open message="Økta er flyttet" meta="INNSPILL → TOR 01.10 · KAN ANGRES" onUndo={()=>{}} /></div>
+  </div>;}
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script></body></html>

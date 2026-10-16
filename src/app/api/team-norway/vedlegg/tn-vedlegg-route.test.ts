@@ -9,8 +9,9 @@
 import assert from "node:assert/strict";
 import { mock, test } from "node:test";
 
-let innlogget: { id: string; requiresGuardianConsent: boolean; guardianConsentGivenAt: Date | null } | null = {
+let innlogget: { id: string; role?: string; requiresGuardianConsent: boolean; guardianConsentGivenAt: Date | null } | null = {
   id: "coach-1",
+  role: "COACH",
   requiresGuardianConsent: false,
   guardianConsentGivenAt: null,
 };
@@ -47,7 +48,7 @@ mock.module("@/lib/supabase/admin", {
 });
 
 function reset() {
-  innlogget = { id: "coach-1", requiresGuardianConsent: false, guardianConsentGivenAt: null };
+  innlogget = { id: "coach-1", role: "COACH", requiresGuardianConsent: false, guardianConsentGivenAt: null };
   vedlegg = { id: "vedlegg-1", path: "gruppe-tn/ekte-privat-uuid", fileName: "øvingsplan uke 3.pdf", fileType: "application/pdf", fileSize: 12345 };
   downloadKall = [];
   getPublicUrlKall = 0;

@@ -15,7 +15,7 @@
  * hører til, slik at bucket-summene stemmer med kategoritotalene.
  */
 
-import { beregnSgPerSlag } from "@/lib/domain/sg";
+import { beregnSgPerSlag, type SgBaselinePoint } from "@/lib/domain/sg";
 import { meterTilFot } from "@/lib/min-golf/format";
 import type { SgShotMedMeta } from "./til-sg-shots";
 import type { GranulaerSg, LoggetHull } from "./types";
@@ -51,12 +51,12 @@ function velgBucket(shot: SgShotMedMeta, bunkerStart: boolean): BucketKey | null
       // OTT utenom tee (svært lange posisjoner) — ingen egen bucket.
       return null;
     case "APP":
-      return appBucket(shot.distance);
+      return appBucket(shot.startDistanceM);
     case "ARG":
       if (bunkerStart) return "sgBunker";
-      return shot.distance <= 12 ? "sgChip" : "sgPitch";
+      return shot.startDistanceM <= 12 ? "sgChip" : "sgPitch";
     case "PUTT":
-      return puttBucket(meterTilFot(shot.distance));
+      return puttBucket(meterTilFot(shot.startDistanceM));
   }
 }
 
@@ -68,13 +68,18 @@ export type GranulaerInput = SgShotMedMeta & { bunkerStart: boolean };
  * avrunder til slutt. Brukes av både beregnGranulaerSg (logg-representasjon)
  * og beregnGranulaerSgFraShots (lagrede Shot-rader, shots-til-sg.ts).
  */
-export function akkumulerGranulaerSg(shots: ReadonlyArray<GranulaerInput>): GranulaerSg {
+export function akkumulerGranulaerSg(
+  shots: ReadonlyArray<GranulaerInput>,
+  punkter: ReadonlyArray<SgBaselinePoint>,
+): GranulaerSg | null {
   const sum = new Map<BucketKey, number>();
 
   for (const shot of shots) {
     const bucket = velgBucket(shot, shot.bunkerStart);
     if (!bucket) continue;
-    sum.set(bucket, (sum.get(bucket) ?? 0) + beregnSgPerSlag(shot));
+    const sg = beregnSgPerSlag(shot, punkter);
+    if (sg == null) return null;
+    sum.set(bucket, (sum.get(bucket) ?? 0) + sg);
   }
 
   const rund = (n: number): number => Math.round(n * 100) / 100;
@@ -109,7 +114,8 @@ export function akkumulerGranulaerSg(shots: ReadonlyArray<GranulaerInput>): Gran
 export function beregnGranulaerSg(
   hull: ReadonlyArray<LoggetHull>,
   shots: ReadonlyArray<SgShotMedMeta>,
-): GranulaerSg {
+  punkter: ReadonlyArray<SgBaselinePoint>,
+): GranulaerSg | null {
   const input: GranulaerInput[] = shots.map((shot) => {
     // Startunderlag for slaget = resultat-lie fra forrige slag på hullet
     // (slagIndex 0 starter på tee → aldri bunker).
@@ -121,5 +127,5 @@ export function beregnGranulaerSg(
     }
     return { ...shot, bunkerStart };
   });
-  return akkumulerGranulaerSg(input);
+  return akkumulerGranulaerSg(input, punkter);
 }

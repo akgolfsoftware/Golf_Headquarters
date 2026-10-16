@@ -1,0 +1,474 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AgencyOS Stall</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="felles/felles.css">
+<link rel="stylesheet" href="felles/agencyos.css">
+<style>
+/* ---------- Pakke 2: AG-07 Stall, AG-08 Spiller 360, AG-A02, AG-A04, AG-A06 ---------- */
+.skjermvalg button{font-size:13px;min-height:36px;padding:0 10px}
+
+/* Stall */
+.baand{display:grid;gap:var(--r3)}
+.idag-rad{display:flex;flex-wrap:wrap;gap:var(--r2)}
+.idag-kort{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:center;padding:10px 12px;border-radius:10px;color:#fff;min-width:0;flex:1 1 220px;border:0;font:inherit;text-align:left;cursor:pointer}
+.idag-kort.tek{background:var(--tek-ink)} .idag-kort.slag{background:var(--slag)} .idag-kort.spill{background:var(--spill-ink)} .idag-kort.fys{background:var(--fys-ink)}
+.idag-kort .kl{font:600 18px/1 var(--mono)}
+.idag-kort b{display:block;font:600 15px/1.25 var(--sans)}
+.idag-kort span.i{font-size:12.5px;opacity:.9}
+.naa-kort{display:grid;gap:var(--r3);padding:14px 16px;border-radius:12px;background:var(--slag);color:#fff}
+.naa-kort .topp-rad{align-items:center}
+.naa-kort b.n{font:600 17px/1.25 var(--sans)}
+.naa-kort .pulse{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:999px;background:rgba(255,255,255,.2);font:600 12px/1 var(--sans)}
+.naa-kort .pulse i{width:8px;height:8px;border-radius:50%;background:#fff;animation:puls 1.6s infinite}
+@keyframes puls{50%{opacity:.3}}
+.tellere{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.tellere div{display:grid;gap:2px;padding:8px;border-radius:8px;background:rgba(255,255,255,.14)}
+.tellere b{font:600 18px/1 var(--mono)}
+.tellere span{font-size:11.5px;opacity:.9}
+.naa-kort .stolpe{background:rgba(255,255,255,.25)} .naa-kort .stolpe span{background:#fff}
+.hurtigsvar{display:flex;flex-wrap:wrap;gap:6px}
+.hurtigsvar button{min-height:40px;padding:0 14px;border-radius:8px;border:1px solid rgba(255,255,255,.5);background:transparent;color:#fff;font:600 14px/1 var(--sans);cursor:pointer}
+.hurtigsvar button.pri{background:#fff;color:var(--graphite-900);border-color:#fff}
+.matrise{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.matrise button{display:grid;gap:2px;justify-items:start;padding:12px;border-radius:12px;border:1px solid var(--sand-300);background:var(--white);font:inherit;color:inherit;cursor:pointer;text-align:left}
+.matrise button b{font:600 26px/1 var(--mono)}
+.matrise button span{font-size:13px;color:var(--graphite-800)}
+.matrise button.trenger{border-left:6px solid #8a2a1c}
+.matrise button.folger{border-left:6px solid var(--green-700)}
+.matrise button.hviler{border-left:6px solid var(--graphite-500)}
+.matrise button[aria-pressed="true"]{border-color:var(--graphite-900);box-shadow:inset 0 0 0 1px var(--graphite-900)}
+.sp-rad{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--r3);align-items:center;padding:12px 14px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white);cursor:pointer;text-align:left;font:inherit;color:inherit;width:100%}
+.sp-rad.trenger{box-shadow:inset 4px 0 0 #8a2a1c}
+.sp-rad.folger{box-shadow:inset 4px 0 0 var(--green-700)}
+.sp-rad.hviler{box-shadow:inset 4px 0 0 var(--graphite-500)}
+.sp-rad b.n{display:block;font:600 15.5px/1.3 var(--sans)}
+.sp-fakta{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:13px;color:var(--graphite-800);margin-top:4px}
+.sp-fakta span{white-space:nowrap}
+.sp-grunn{display:block;font-size:13px;color:#8a2a1c;font-weight:500;margin-top:4px}
+.sp-etl{display:grid;justify-items:end;gap:2px}
+.sp-etl b{font:600 20px/1 var(--mono)}
+.sp-etl b.lav{color:#8a2a1c}
+.sp-etl span{font-size:11.5px;color:var(--graphite-600)}
+.sok{display:flex;gap:var(--r2);flex-wrap:wrap}
+.sok input{flex:1 1 200px;min-width:0;min-height:44px;padding:8px 12px;border:1px solid var(--graphite-500);border-radius:8px;font:400 15px/1.3 var(--sans)}
+
+/* Spiller 360 */
+.s360-topp{display:grid;border-radius:14px;overflow:hidden;border:1px solid var(--sand-300)}
+.s360-topp img{display:block;width:100%;height:140px;object-fit:cover;object-position:50% 40%}
+.s360-topp .st{padding:var(--r4) 18px 18px;display:grid;gap:var(--r3)}
+.s360-topp .navn-rad{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--r3);align-items:center}
+.s360-topp b.navn{display:block;font:700 24px/1.15 var(--sans);letter-spacing:-.02em}
+.kat{display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:999px;background:var(--graphite-900);color:var(--white);font:600 12px/1 var(--sans)}
+.fakta-rad{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--r2)}
+.fakta-rad div{display:grid;gap:2px;padding:10px 12px;border-radius:10px;background:var(--sand-100)}
+.fakta-rad b{font:600 22px/1.1 var(--mono)}
+.fakta-rad span{font-size:12.5px;color:var(--graphite-600)}
+.krever{display:grid;gap:8px;padding:14px 16px;border-radius:12px;border:2px solid var(--graphite-900);background:var(--white)}
+.krever b{font:600 16px/1.3 var(--sans)}
+.krever ul{margin:0;padding-left:18px;display:grid;gap:4px;font-size:14.5px}
+.panel{display:grid;gap:var(--r5)}
+.akse-sammen{display:grid;gap:10px}
+.akse-sammen .rad{display:grid;grid-template-columns:52px minmax(0,1fr) 112px;gap:10px;align-items:center;font-size:13.5px}
+.akse-sammen .rad b{font:600 13px/1 var(--sans);letter-spacing:.04em}
+.dobbel{position:relative;height:20px;border-radius:5px;background:var(--sand-150)}
+.dobbel .p{position:absolute;inset:0 auto 0 0;border-radius:5px;border:2px dashed var(--graphite-500);background:transparent}
+.dobbel .g{position:absolute;top:4px;bottom:4px;left:4px;border-radius:3px}
+.akse-sammen .v{font:600 13px/1.2 var(--mono);text-align:right}
+.akse-sammen .v small{display:block;font:500 11.5px/1.2 var(--mono);color:var(--graphite-600)}
+.sg-liste{display:grid;gap:10px}
+.sg-rad{display:grid;grid-template-columns:84px minmax(0,1fr) 52px;gap:10px;align-items:center;font-size:14px}
+.sg-rad .v{font:600 14px/1 var(--mono);text-align:right}
+.sg-spor{position:relative;height:16px;background:var(--sand-100);border-radius:4px}
+.sg-spor::before{content:"";position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:var(--graphite-500)}
+.sg-spor i{position:absolute;top:2px;bottom:2px;border-radius:3px}
+.tidslinje{display:grid;gap:0;margin:0;padding:0;list-style:none;border-left:2px solid var(--sand-300);margin-left:8px}
+.tidslinje li{position:relative;padding:0 0 14px 18px;font-size:14px}
+.tidslinje li::before{content:"";position:absolute;left:-7px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--white);border:2px solid var(--graphite-900)}
+.tidslinje li b{display:block;font:600 14.5px/1.3 var(--sans)}
+.radar{display:block;width:100%;max-width:320px;height:auto;justify-self:center}
+.radar text{font:600 11px/1 var(--sans);fill:var(--graphite-800)}
+.test-rad{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--sand-300);font-size:14px}
+.test-rad b{font-weight:600}
+.test-rad .v{font:600 14px/1 var(--mono)}
+
+/* Tiltaksverksted */
+.tiltak-steg{display:flex;flex-wrap:wrap;gap:6px}
+.tiltak-steg span{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:999px;background:var(--sand-150);font:600 13px/1 var(--sans);color:var(--graphite-600)}
+.tiltak-steg span.aktiv{background:var(--graphite-900);color:var(--white)}
+.tiltak-steg span.ferdig{background:var(--green-50);color:var(--green-700)}
+.forslag-kort{display:grid;gap:var(--r3);padding:14px 16px;border-radius:12px;border:2px solid var(--graphite-900);background:var(--white)}
+.okt-par{display:grid;gap:var(--r2)}
+.okt.mini{grid-template-columns:80px 1fr}
+.okt.mini .okt-tid{font-size:20px;white-space:normal}
+.okt.mini .okt-info{font-size:13px}
+
+@container (min-width:900px){
+  .s360-topp{grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr)}
+  .s360-topp img{height:100%;min-height:200px}
+  .stall-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:var(--r6);align-items:start}
+}
+.stall-grid{display:grid;gap:var(--r5)}
+.stall-grid > div{display:grid;gap:var(--r5);align-content:start}
+</style>
+
+<div class="ytre">
+  <div class="hode">
+    <span class="meta-s">AgencyOS · pakke 2 · AG-07, AG-08, AG-A02, AG-A04, AG-A06 · utkast 1 · 15.10.2026</span>
+    <h1>Stall og Spiller 360</h1>
+    <p>Seks skjermer i én fil: Stallen i tre bånd, Spiller 360 for Øyvind Rohjan med fanene Plan, Stats, Teknisk plan, Tester, Samtaler og Talent, plan mot faktisk, spilleranalysen samlet og tiltaksverkstedet. Coach Anders Kristiansen. Mandag 5. oktober kl. 08:20, uke 41.</p>
+  </div>
+  <div class="kontroller">
+    <div class="velger skjermvalg" role="group" aria-label="Skjerm">
+      <button type="button" aria-pressed="true" data-skjerm="stall">AG-07 Stall</button>
+      <button type="button" aria-pressed="false" data-skjerm="s360">AG-08 Spiller 360</button>
+      <button type="button" aria-pressed="false" data-skjerm="planfaktisk">AG-A04 Plan mot faktisk</button>
+      <button type="button" aria-pressed="false" data-skjerm="analyse">AG-A02 Stats</button>
+      <button type="button" aria-pressed="false" data-skjerm="talent">AG-08-TALENT</button>
+      <button type="button" aria-pressed="false" data-skjerm="tiltak">AG-A06 Tiltak</button>
+    </div>
+  </div>
+  <div class="kontroller">
+    <div class="velger" role="group" aria-label="Bredde"><button type="button" aria-pressed="true" data-bredde="mob">Mobil</button><button type="button" aria-pressed="false" data-bredde="pc">PC</button></div>
+    <div class="velger" role="group" aria-label="Tilstand"><button type="button" aria-pressed="true" data-tilstand="data">Med data</button><button type="button" aria-pressed="false" data-tilstand="tom">Tom</button><button type="button" aria-pressed="false" data-tilstand="laster">Laster</button><button type="button" aria-pressed="false" data-tilstand="feil">Feil</button></div>
+  </div>
+  <div class="scene"><div class="ramme mob" id="ramme"></div></div>
+  <div class="notater">
+    <div class="endringer">
+      <span class="meta-s">Hva som er nytt</span>
+      <ul>
+        <li><b>Stallen i tre bånd:</b> I dag (hvem du coacher, med klokkeslett), Trener nå (økta pågår, øvelse og repetisjoner, hurtigmelding) og Hele stallen.</li>
+        <li><b>Stall-matrisen Trenger deg · Følger planen · Hviler</b> med farget kant: rødt, grønt, grått. Hvem som trenger deg står først, med grunnen i klartekst.</li>
+        <li><b>Raden</b> viser kategori, etterlevelse 4 uker, SG-trend 30 dager, siste økt, neste turnering, når planen slutter, avtalen og ACWR («—» til tallet regnes ut).</li>
+        <li><b>Spiller 360</b> med golfbilde øverst, spillerkort og «Dette krever deg nå». Knappene Send melding · Åpne Workbench · Start live · IUP-samtale.</li>
+        <li><b>Plan mot faktisk</b> per akse, stiplet plan og fylt gjennomført i aksefargen. <b>Stats</b> som spilleren ser, med PGA Tour alltid på. <b>Talent</b> med radar 1–10 og stiplet Kategori C, bare for coach.</li>
+        <li><b>Tiltaksverkstedet:</b> analyse, forslag, rediger, publiser. Publiserte tiltak kan trekkes tilbake.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Reglene som er fulgt</span>
+      <ul>
+        <li>Farge betyr akse i økter, plan og radar. Status i stallen bruker grønt og rødt, aldri rust. Ingen rust på disse skjermene.</li>
+        <li>Etterlevelse er gjennomført tid mot planlagt, uke 37–40. Øyvind: 48 t 10 min av 52 t 20 min, samme som i PlayerHQ.</li>
+        <li>Spillerens egne tall har kilde og dato. Broadie-tall er merket estimat. Data Golf vises bare for coach, merket «Powered by Data Golf».</li>
+        <li>Rapportbyggeren (AG-A07) finnes ikke. Talentradaren vises aldri for spilleren.</li>
+        <li>Manglende verdi vises som «—». Ingen sidelengs rulling i 390 og 360 px.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Åpent hos Anders</span>
+      <ul>
+        <li><b>Aksene i talentradaren:</b> koden har fem akser 1–10, men navnene er ikke skrevet ned. Utkastet bruker pyramiden FYS · TEK · SLAG · SPILL · TURN.</li>
+        <li><b>IUP-samtale for alle spillere</b> (vedtak 28.09) åpner samme samtale som for WANG og Team Norway. Om den skal ha andre spørsmål for spillere utenfor gruppene, er ikke avgjort.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ================= AG-07 Stall ================= -->
+<template id="stall">
+<div class="app" data-fane="stall">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div class="topp-rad"><div><div class="dato">14 aktive spillere</div><h1 class="tittel">Stall</h1></div><button type="button" class="knapp sek">Ny spiller</button></div>
+    </div>
+    <div class="stall-grid">
+      <div>
+        <section class="baand">
+          <div class="sek-topp"><h2>I dag</h2><span class="kilde">3 timer og 3 grupper</span></div>
+          <div class="idag-rad">
+            <button type="button" class="idag-kort tek" data-gaa="s360"><span class="kl">10:00</span><span><b>Sander Moe</b><span class="i">Performance Pro · Simulator 2</span></span></button>
+            <button type="button" class="idag-kort slag"><span class="kl">14:00</span><span><b>Nora Bakke</b><span class="i">Performance · nærspill</span></span></button>
+            <button type="button" class="idag-kort tek"><span class="kl">17:30</span><span><b>Mia Strand</b><span class="i">Performance · utslag</span></span></button>
+          </div>
+        </section>
+        <section class="baand">
+          <div class="sek-topp"><h2>Trener nå</h2><span class="kilde">1 spiller</span></div>
+          <div class="naa-kort">
+            <div class="topp-rad"><span><b class="n">Øyvind Rohjan</b><span style="display:block;font-size:13.5px;opacity:.9">Innspill 50–100 m · Fredrikstad GK, range</span></span><span class="pulse"><i></i>Pågår 34 min</span></div>
+            <div style="display:grid;gap:6px"><span style="font-size:13.5px">Øvelse 2 av 4 · Lengdekontroll 75 m</span><div class="stolpe"><span data-til="57%" style="width:57%"></span></div></div>
+            <div class="tellere"><div><b>0</b><span>Uten ball</span></div><div><b>12</b><span>Lav hast.</span></div><div><b>8</b><span>Automatikk</span></div><div><b>14</b><span>Slag av 30</span></div></div>
+            <div class="hurtigsvar" data-hurtigmelding><button type="button" class="pri" data-m="Bra jobba, hold tempoet">Send melding</button><button type="button" data-m="Ring meg når du er ferdig">Ring meg etterpå</button></div>
+            <span style="font-size:12.5px;opacity:.85">Du følger repetisjonene, men endrer ikke økta. Øyvind svarer OK · Spørsmål · Ikke nå med ett trykk.</span>
+          </div>
+        </section>
+      </div>
+      <div>
+        <section class="baand">
+          <div class="sek-topp"><h2>Hele stallen</h2><span class="kilde">Sortert etter hvem som trenger deg</span></div>
+          <div class="matrise" data-matrise>
+            <button type="button" class="trenger" aria-pressed="false" data-s="trenger"><b data-ant="trenger">4</b><span>Trenger deg</span></button>
+            <button type="button" class="folger" aria-pressed="false" data-s="folger"><b data-ant="folger">8</b><span>Følger planen</span></button>
+            <button type="button" class="hviler" aria-pressed="false" data-s="hviler"><b data-ant="hviler">2</b><span>Hviler</span></button>
+          </div>
+          <div class="sok"><input id="stall-sok" type="search" placeholder="Søk spiller eller gruppe" aria-label="Søk spiller eller gruppe"></div>
+          <div class="baand" data-rader></div>
+          <p class="kildetekst" data-ingen hidden>Ingen spillere passer søket.</p>
+          <p class="kildetekst">Etterlevelse: gjennomført tid mot planlagt, uke 37–40. ACWR vises når tallet regnes ut.</p>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= AG-08 Spiller 360 ================= -->
+<template id="s360">
+<div class="app" data-fane="stall" data-tilbake="Stall" data-tilbake-gaa="stall">
+  <main class="innhold">
+    <div class="s360-topp" data-behold>
+      <img src="bilder/slag-utslag.jpg" alt="">
+      <div class="st">
+        <div class="navn-rad"><span class="avatar stor">ØR</span><span><b class="navn">Øyvind Rohjan</b><span style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px"><span class="kat">Kategori C</span><span class="pille noy"><i></i>WANG Toppidrett</span><span class="pille noy"><i></i>17 år</span></span></span></div>
+        <div class="fakta-rad"><div><b>73,1</b><span>snittscore, 18 runder</span></div><div><b>92 %</b><span>etterlevelse 4 uker</span></div><div><b>3,6</b><span>HCP</span></div></div>
+        <div class="knapper"><button type="button" class="knapp pri">Send melding</button><button type="button" class="knapp sek">Åpne Workbench</button><button type="button" class="knapp sek">Start live</button><button type="button" class="knapp sek">IUP-samtale</button></div>
+      </div>
+    </div>
+    <div class="krever" data-behold>
+      <b>Dette krever deg nå</b>
+      <ul><li>Innspill koster mest: −0,9 slag per runde mot Kategori B.</li><li>Srixon Tour finale lørdag. Turneringsuka er ikke lagt inn.</li><li>Video fra i går venter på svar.</li></ul>
+    </div>
+    <div class="faner" data-faner role="group" aria-label="Faner">
+      <button type="button" aria-pressed="true" data-p="plan">Plan</button>
+      <button type="button" aria-pressed="false" data-p="stats">Stats</button>
+      <button type="button" aria-pressed="false" data-p="teknisk">Teknisk plan</button>
+      <button type="button" aria-pressed="false" data-p="tester">Tester</button>
+      <button type="button" aria-pressed="false" data-p="samtaler">Samtaler</button>
+      <button type="button" aria-pressed="false" data-p="talent">Talent</button>
+    </div>
+
+    <div class="panel" data-panel="plan">
+      <div class="to-del">
+        <div>
+          <section class="seksjon">
+            <div class="sek-topp"><h2>Plan mot faktisk</h2><span class="kilde">Uke 37–40</span></div>
+            <div class="hoved"><strong>48 t 10 min</strong><span class="forklar">av 52 t 20 min</span></div>
+            <div class="akse-sammen" data-akse-sammen></div>
+            <div class="lg-rad"><span class="lg"><i style="border:2px dashed var(--graphite-500);background:transparent"></i>Planlagt</span><span class="lg"><i style="background:var(--slag)"></i>Gjennomført, i aksefargen</span></div>
+          </section>
+        </div>
+        <div>
+          <section class="seksjon">
+            <div class="sek-topp"><h2>Denne uka</h2><span class="kilde">Uke 41 · 0 av 14 t 5 min</span></div>
+            <div class="okt-par">
+              <div class="okt mini slag"><img src="bilder/naerspill-wedge.jpg" alt=""><div class="okt-tekst"><span class="okt-tid">Man 15:30</span><span class="navn">Innspill og nærspill</span><span class="okt-info"><span>75 min</span></span></div></div>
+              <div class="okt mini fys"><img src="bilder/fys-styrke.jpg" alt=""><div class="okt-tekst"><span class="okt-tid">Tir 07:00</span><span class="navn">Styrke · WANG</span><span class="okt-info"><span>60 min</span></span></div></div>
+              <div class="okt mini tek"><img src="bilder/tek-video.jpg" alt=""><div class="okt-tekst"><span class="okt-tid">Fre 16:00</span><span class="navn">P7.0 med Anders</span><span class="okt-info"><span>90 min</span></span></div></div>
+            </div>
+          </section>
+          <section class="seksjon">
+            <div class="sek-topp"><h2>Turneringer</h2></div>
+            <div class="okt mini turn"><img src="bilder/turn-tee.jpg" alt=""><div class="okt-tekst"><span class="okt-tid">Lør 10. okt</span><span class="navn">Srixon Tour finale</span><span class="okt-info"><span>Påmeldt · fra turneringsdataene</span></span></div></div>
+          </section>
+          <div class="kort dempet"><b class="undertittel">Hvilken standardplan virker</b><p class="forklar">Konkurransespilleren, tilpasset Kategori C. Spillere med samme plan har senket snittet 0,8 slag på 12 uker. <span class="estimat">Estimat</span></p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" data-panel="stats" hidden>
+      <div class="to-del">
+        <div>
+          <section class="seksjon">
+            <div class="sek-topp"><h2>Strokes Gained</h2><span class="kilde">Siste 12 runder</span></div>
+            <div class="valg" role="group" aria-label="Sammenlign med"><button type="button" aria-pressed="true">Kategori B</button><button type="button" aria-pressed="false">PGA Tour</button><button type="button" aria-pressed="false">Stallen</button></div>
+            <div class="hoved"><strong>−0,3</strong><span class="trend opp"><svg class="ikon" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg>+0,4 siste 30 d</span></div>
+            <div class="sg-liste">
+              <div class="sg-rad"><span>Utslag</span><div class="sg-spor"><i style="left:50%;width:9%;background:var(--slag)"></i></div><span class="v">+0,3</span></div>
+              <div class="sg-rad"><span>Innspill</span><div class="sg-spor"><i style="right:50%;width:27%;background:var(--slag)"></i></div><span class="v">−0,9</span></div>
+              <div class="sg-rad"><span>Nærspill</span><div class="sg-spor"><i style="left:50%;width:6%;background:var(--slag)"></i></div><span class="v">+0,2</span></div>
+              <div class="sg-rad"><span>Putting</span><div class="sg-spor"><i style="left:50%;width:3%;background:var(--slag)"></i></div><span class="v">+0,1</span></div>
+            </div>
+            <p class="kildetekst">Kilde: 12 runder slag for slag, 14. juni–27. sep. Mot Kategori B etter Broadie. <span class="estimat">Estimat</span></p>
+          </section>
+        </div>
+        <div>
+          <section class="seksjon">
+            <div class="sek-topp"><h2>Mot PGA Tour</h2><span class="kilde">Powered by Data Golf</span></div>
+            <div class="hoved"><strong style="font-size:40px">−6,1</strong><span class="forklar">slag per runde mot snittet på PGA Tour</span></div>
+            <p class="kildetekst">Bare for coach. Spilleren kan slå på PGA Tour selv i Stats.</p>
+          </section>
+          <section class="seksjon">
+            <div class="sek-topp"><h2>Snittscore</h2></div>
+            <div class="hoved"><strong style="font-size:40px">73,1</strong><span class="trend opp"><svg class="ikon" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg>−0,7</span></div>
+            <p class="kildetekst">Brutto, 18 runder siden april. Turneringer fra GolfBox.</p>
+          </section>
+          <a class="lenke" href="#" data-gaa="analyse">Hele analysen</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" data-panel="teknisk" hidden>
+      <section class="seksjon">
+        <div class="sek-topp"><h2>Teknisk plan</h2><span class="pille ok"><i></i>Publisert 30. sep</span></div>
+        <div class="okt mini tek"><img src="bilder/tek-video.jpg" alt=""><div class="okt-tekst"><span class="okt-tid">P7.0</span><span class="navn">Treffpunktet · Face to Path</span><span class="okt-info"><span>Lav hastighet 50 % · 240 av 400 rep</span></span></div></div>
+        <div class="okt mini tek"><img src="bilder/tek-video.jpg" alt=""><div class="okt-tekst"><span class="okt-tid">P4.0</span><span class="navn">Toppen av baksvingen</span><span class="okt-info"><span>Automatikk · 120 av 200 rep</span></span></div></div>
+        <div class="kort dempet"><b class="undertittel">TrackMan-baseline</b><p class="forklar">Face to Path +2,4° i snitt, 7-jern, 28. sep. Mål: 0 til +1°.</p><div class="knapper"><button type="button" class="knapp sek">Bruk som startverdi</button></div></div>
+      </section>
+    </div>
+
+    <div class="panel" data-panel="tester" hidden>
+      <section class="seksjon">
+        <div class="sek-topp"><h2>Tester</h2><span class="kilde">Siste resultat</span></div>
+        <div>
+          <div class="test-rad"><b>8-ball</b><span class="v">27 p</span><span class="pille ok"><i></i>Kontrollert</span></div>
+          <div class="test-rad"><b>Wedge Gate</b><span class="v">6 / 9</span><span class="pille noy"><i></i>Egenført</span></div>
+          <div class="test-rad"><b>Club Speed driver</b><span class="v">106,9 mph</span><span class="pille ok"><i></i>Kontrollert</span></div>
+          <div class="test-rad"><b>Benkpress</b><span class="v">—</span><span class="kilde">Ikke tatt</span></div>
+        </div>
+        <div class="knapper"><button type="button" class="knapp sek">Tildel test</button></div>
+      </section>
+    </div>
+
+    <div class="panel" data-panel="samtaler" hidden>
+      <section class="seksjon">
+        <div class="sek-topp"><h2>Samtaler</h2></div>
+        <ul class="tidslinje">
+          <li><b>Live-økt med opptak · 2. okt</b>Sammendrag godkjent og sendt. P7.0 ballstart.</li>
+          <li><b>IUP-samtale · 21. sep</b>Prosessmål satt: tre nærspilløkter per uke.</li>
+          <li><b>Video · 18. sep</b>Driver fra simulatoren, svar sendt.</li>
+          <li><b>Caddie husker · 3 punkter</b>Foretrekker korte økter før skolen. <a class="lenke" href="#">Se og slett</a></li>
+        </ul>
+      </section>
+    </div>
+
+    <div class="panel" data-panel="talent" hidden>
+      <section class="seksjon">
+        <div class="sek-topp"><h2>Talentradar</h2><span class="pille noy"><i></i>Bare coach</span></div>
+        <div class="to-del">
+          <div>
+            <svg class="radar" viewBox="0 0 320 300" role="img" aria-label="Talentradar, fem akser 1 til 10" data-radar></svg>
+            <div class="lg-rad"><span class="lg"><i style="background:var(--graphite-900)"></i>Øyvind</span><span class="lg"><i style="border:2px dashed var(--graphite-500);background:transparent"></i>Kategori C, snitt</span></div>
+          </div>
+          <div>
+            <div class="hoved"><strong>37<small>/50</small></strong><span class="forklar">sum av fem akser</span></div>
+            <p class="forklar">Over Kategori C-snittet på TEK, SLAG og TURN. Under på FYS.</p>
+            <p class="kildetekst">Din vurdering 30. sep. Vises aldri for spilleren.</p>
+            <button type="button" class="knapp sek" style="justify-self:start">Endre vurderingen</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= AG-A06 Tiltaksverksted ================= -->
+<template id="tiltak">
+<div class="app" data-fane="stall" data-tilbake="Øyvind Rohjan" data-tilbake-gaa="s360">
+  <main class="innhold smal">
+    <div class="topp" data-behold><div><div class="dato">Spiller 360 · tiltak</div><h1 class="tittel">Tiltaksverksted</h1></div></div>
+    <div class="tiltak-steg" data-steg><span class="ferdig">Analyse</span><span class="aktiv">Forslag</span><span>Rediger</span><span>Publiser</span></div>
+    <div class="kort">
+      <b class="undertittel">Analysen</b>
+      <div class="hoved"><strong style="font-size:40px">−0,9</strong><span class="forklar">slag per runde på innspill mot Kategori B</span></div>
+      <p class="kildetekst">Kilde: 12 runder slag for slag. Størst tap fra 100–150 m. <span class="estimat">Estimat</span></p>
+    </div>
+    <div class="forslag-kort" data-forslag>
+      <div class="topp-rad"><b class="undertittel">Forslag: to innspillsøkter i uke 42 og 43</b><span class="pille noy" data-status><i></i>Forslag</span></div>
+      <div class="okt-par">
+        <div class="okt mini slag"><img src="bilder/slag-simulator.jpg" alt=""><div class="okt-tekst"><span class="okt-tid">Tir 17:00</span><span class="navn">Innspill 100–150 m · TrackMan</span><span class="okt-info"><span>60 min · erstatter utslag</span></span></div></div>
+        <div class="okt mini slag"><img src="bilder/naerspill-wedge.jpg" alt=""><div class="okt-tekst"><span class="okt-tid">Tor 15:30</span><span class="navn">Innspill 50–100 m · range</span><span class="okt-info"><span>60 min</span></span></div></div>
+      </div>
+      <p class="forklar">Publiseres i Øyvinds plan med en gang, fordi du er AK-coachen hans. Han kan angre. Uka, oktober og årsplanen oppdateres.</p>
+      <div class="knapper" data-handling><button type="button" class="knapp pri" data-publiser>Publiser</button><button type="button" class="knapp sek" data-rediger>Rediger</button></div>
+    </div>
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Tidligere tiltak</h2></div>
+      <ul class="tidslinje">
+        <li><b>Putting 3–5 fot · publisert 7. sep</b>SG Putting fra −0,3 til +0,1 på 8 runder.</li>
+        <li><b>Utslag startretning · trukket tilbake 20. aug</b>Erstattet av teknisk plan P7.0.</li>
+      </ul>
+    </section>
+  </main>
+</div>
+</template>
+
+<script src="felles/demo.js"></script>
+<script src="felles/agencyos.js"></script>
+<script>
+(function () {
+  var D = window.AKDemo, A = window.AKAgency;
+  var REKKE = { trenger: 0, folger: 1, hviler: 2 };
+  function komma(x) { return (x > 0 ? '+' : '') + x.toFixed(1).replace('.', ',').replace('-', '−'); }
+
+  function stall(app) {
+    var filt = null, sok = app.querySelector('#stall-sok');
+    function tegn() {
+      var q = sok.value.trim().toLowerCase(), liste = D.stall.slice().sort(function (a, b) { return REKKE[a.status] - REKKE[b.status] || (a.etl === null) - (b.etl === null) || (a.etl || 0) - (b.etl || 0); })
+        .filter(function (s) { return (!filt || s.status === filt) && (!q || (s.navn + ' ' + s.gruppe).toLowerCase().indexOf(q) >= 0); });
+      app.querySelector('[data-rader]').innerHTML = liste.map(function (s) {
+        var lav = s.etl !== null && s.etl < 70;
+        return '<button type="button" class="sp-rad ' + s.status + '"' + (s.id === 'oyvind' ? ' data-gaa="s360"' : '') + '><span class="avatar liten">' + s.i + '</span><span><b class="n">' + s.navn + '</b>' +
+          '<span class="sp-fakta"><span>Kat. ' + s.kat + '</span><span>' + s.gruppe + '</span><span>SG 30 d ' + (s.sg === null ? '—' : komma(s.sg)) + '</span><span>Siste økt ' + s.siste + '</span>' + (s.turn ? '<span>' + s.turn + '</span>' : '') + '<span>' + s.avtale + '</span><span>Plan slutter ' + (s.planSlutt === null ? '—' : 'om ' + s.planSlutt + ' d') + '</span><span>ACWR —</span></span>' +
+          (s.grunn ? '<span class="sp-grunn">' + s.grunn + '</span>' : '') + '</span>' +
+          '<span class="sp-etl"><b' + (lav ? ' class="lav"' : '') + '>' + (s.etl === null ? '—' : s.etl + ' %') + '</b><span>4 uker</span></span></button>';
+      }).join('');
+      app.querySelector('[data-ingen]').hidden = liste.length > 0;
+    }
+    ['trenger', 'folger', 'hviler'].forEach(function (k) { app.querySelector('[data-ant="' + k + '"]').textContent = D.stall.filter(function (s) { return s.status === k; }).length; });
+    app.querySelector('[data-matrise]').addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (!b) return;
+      filt = filt === b.dataset.s ? null : b.dataset.s;
+      app.querySelectorAll('[data-matrise] button').forEach(function (x) { x.setAttribute('aria-pressed', x.dataset.s === filt ? 'true' : 'false'); });
+      tegn();
+    });
+    sok.addEventListener('input', tegn);
+    app.querySelector('[data-hurtigmelding]').addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) A.toast(app, 'Sendt til Øyvind: «' + b.dataset.m + '».'); });
+    tegn();
+  }
+
+  /* Plan mot faktisk, uke 37–40 (minutter). Summer: 52 t 20 min planlagt, 48 t 10 min gjennomført. */
+  var PF = [['fys', 'FYS', 540, 510], ['tek', 'TEK', 660, 600], ['slag', 'SLAG', 1100, 1060], ['spill', 'SPILL', 600, 540], ['turn', 'TURN', 240, 180]];
+  function tid(m) { return Math.floor(m / 60) + ' t' + (m % 60 ? ' ' + (m % 60) + ' min' : ''); }
+  var RADAR = [['FYS', 5, 6], ['TEK', 8, 7], ['SLAG', 8, 6], ['SPILL', 7, 7], ['TURN', 9, 6]];
+  function radar(svg) {
+    var cx = 160, cy = 155, R = 110, h = '';
+    function pkt(i, v) { var a = -Math.PI / 2 + i * 2 * Math.PI / 5; return [cx + Math.cos(a) * R * v / 10, cy + Math.sin(a) * R * v / 10]; }
+    [2, 4, 6, 8, 10].forEach(function (r) { h += '<polygon points="' + RADAR.map(function (x, i) { return pkt(i, r).join(','); }).join(' ') + '" fill="none" stroke="var(--sand-300)"/>'; });
+    RADAR.forEach(function (x, i) { var p = pkt(i, 10), l = pkt(i, 11.8); h += '<line x1="' + cx + '" y1="' + cy + '" x2="' + p[0] + '" y2="' + p[1] + '" stroke="var(--sand-300)"/><text x="' + l[0] + '" y="' + (l[1] + 4) + '" text-anchor="middle">' + x[0] + ' ' + x[1] + '</text>'; });
+    h += '<polygon points="' + RADAR.map(function (x, i) { return pkt(i, x[2]).join(','); }).join(' ') + '" fill="none" stroke="var(--graphite-500)" stroke-width="2" stroke-dasharray="5 4"/>';
+    h += '<polygon class="tegn" points="' + RADAR.map(function (x, i) { return pkt(i, x[1]).join(','); }).join(' ') + '" fill="rgba(20,20,19,.12)" stroke="var(--graphite-900)" stroke-width="2.5"/>';
+    svg.innerHTML = h;
+  }
+  function s360(panel) {
+    return function (app) {
+      var maks = Math.max.apply(null, PF.map(function (p) { return p[2]; }));
+      app.querySelector('[data-akse-sammen]').innerHTML = PF.map(function (p) {
+        return '<div class="rad"><b>' + p[1] + '</b><div class="dobbel"><span class="p" style="width:' + (p[2] / maks * 100) + '%"></span><span class="g a-' + p[0] + '" data-til="calc(' + (p[3] / maks * 100) + '% - 8px)" style="width:calc(' + (p[3] / maks * 100) + '% - 8px)"></span></div><span class="v">' + tid(p[3]) + '<small>av ' + tid(p[2]) + '</small></span></div>';
+      }).join('');
+      radar(app.querySelector('[data-radar]'));
+      function vis(p) {
+        app.querySelectorAll('[data-faner] button').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.p === p ? 'true' : 'false'); });
+        app.querySelectorAll('[data-panel]').forEach(function (x) { x.hidden = x.dataset.panel !== p; });
+      }
+      app.querySelector('[data-faner]').addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) vis(b.dataset.p); });
+      vis(panel);
+    };
+  }
+
+  function tiltak(app) {
+    var steg = app.querySelectorAll('[data-steg] span');
+    function sett(n) { steg.forEach(function (s, i) { s.className = i < n ? 'ferdig' : i === n ? 'aktiv' : ''; }); }
+    app.querySelector('[data-rediger]').addEventListener('click', function () { sett(2); A.toast(app, 'Økta åpnes i Workbench for redigering.'); });
+    app.querySelector('[data-publiser]').addEventListener('click', function () {
+      sett(4); steg[3].className = 'ferdig';
+      var s = app.querySelector('[data-status]'); s.className = 'pille ok'; s.innerHTML = '<i></i>Publisert';
+      app.querySelector('[data-handling]').innerHTML = '<button type="button" class="knapp sek" data-trekk>Trekk tilbake</button>';
+      app.querySelector('[data-trekk]').addEventListener('click', function () { s.className = 'pille noy'; s.innerHTML = '<i></i>Trukket tilbake'; A.toast(app, 'Trukket tilbake. Øktene er fjernet fra planen.'); });
+      A.toast(app, 'Publisert i Øyvinds plan. Uke 42, uke 43, oktober og årsplanen er oppdatert.');
+    });
+  }
+
+  var TOM360 = { tittel: 'Ingen data om spilleren ennå', tekst: 'Når spilleren har registrert økter, runder eller tester, kommer de her. Start med å lage en plan.', knapp: 'Åpne Workbench' };
+  A.start({
+    start: 'stall',
+    skjermer: {
+      stall: { etter: stall, tom: { tittel: 'Ingen spillere i stallen', tekst: 'Legg til en spiller, eller inviter fra en gruppe. Spilleren må ha PlayerHQ.', knapp: 'Ny spiller' }, laster: 'Henter stallen …', feil: 'Stallen kunne ikke hentes' },
+      s360: { mal: 's360', etter: s360('plan'), tom: TOM360, laster: 'Henter Øyvind Rohjan …', feil: 'Spilleren kunne ikke hentes' },
+      planfaktisk: { mal: 's360', etter: s360('plan'), tom: TOM360, laster: 'Henter planen …', feil: 'Planen kunne ikke hentes' },
+      analyse: { mal: 's360', etter: s360('stats'), tom: TOM360, laster: 'Henter analysen …', feil: 'Analysen kunne ikke hentes' },
+      talent: { mal: 's360', etter: s360('talent'), tom: TOM360, laster: 'Henter talentprofilen …', feil: 'Talentprofilen kunne ikke hentes' },
+      tiltak: { etter: tiltak, tom: { tittel: 'Ingen tiltak foreslått', tekst: 'Når analysen finner et tydelig avvik, kommer forslaget her.', knapp: null }, laster: 'Henter analysen …', feil: 'Tiltakene kunne ikke hentes' }
+    }
+  });
+})();
+</script>

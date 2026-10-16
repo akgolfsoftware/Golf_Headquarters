@@ -7,6 +7,7 @@ import { AK } from "@/lib/v2/ak-palett";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { UTEN_DATAGOLF_TURNERING } from "@/lib/auth/datagolf-regel";
 import "@/app/(marketing)/(mlegacy)/stats/stats.css";
 import "./sesong.css";
 import { StatsEyebrow } from "@/components/stats/eyebrow";
@@ -60,7 +61,8 @@ async function getSesongData() {
       }),
       prisma.publicPlayerEntry.findMany({
         where: {
-          tournament: { startDate: { gte: startDato, lte: sluttDato } },
+          // Resultater fra Data Golf-turneringer vises aldri offentlig (Anders 09.10.2026).
+          tournament: { startDate: { gte: startDato, lte: sluttDato }, AND: [UTEN_DATAGOLF_TURNERING] },
           status: "FINISHED",
         },
         include: {

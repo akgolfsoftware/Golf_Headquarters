@@ -20,6 +20,7 @@ type RequestBody = {
 };
 
 export async function POST(req: Request) {
+  // tilgang: eier sjekkes mot coachingSession.findFirst({ userId: user.id, kind: "AI" }) (TA-01)
   const user = await getCurrentUser();
   if (!user) {
     return NextResponse.json({ error: "unauthenticated" }, { status: 401 });
@@ -100,7 +101,19 @@ export async function POST(req: Request) {
 
   // Finn eller opprett session
   let sessionId = body.sessionId;
-  if (!sessionId) {
+  if (sessionId) {
+    // Eiersjekk (TA-01): tråden må være brukerens egen AI-samtale.
+    const eid =
+      typeof sessionId === "string"
+        ? await prisma.coachingSession.findFirst({
+            where: { id: sessionId, userId: user.id, kind: "AI" },
+            select: { id: true },
+          })
+        : null;
+    if (!eid) {
+      return NextResponse.json({ error: "session-not-found" }, { status: 404 });
+    }
+  } else {
     // Bruk første tilgjengelige COACH som "coachId" for AI-sesjoner.
     // Hvis ingen finnes, faller tilbake på user.id selv (AI-sesjoner uten coach).
     const coach = await prisma.user.findFirst({
@@ -147,8 +160,8 @@ export async function POST(req: Request) {
         ...body.messages,
         { role: "assistant", content: fullSvar },
       ];
-      await prisma.coachingSession.update({
-        where: { id: sessionId! },
+      await prisma.coachingSession.updateMany({
+        where: { id: sessionId!, userId: user.id, kind: "AI" },
         data: { messages: oppdatertHistorikk },
       });
     },

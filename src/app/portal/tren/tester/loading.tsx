@@ -1,9 +1,10 @@
-/* Laster-tilstand for /portal/tren/tester (Paper-port W1, fase2).
-   Fasit: playerhq-tester-hub.html — enkle skjelettlinjer i avtagende bredde.
-   Ligger på tester-nivået (ikke tren/) så fys-plan ikke arver den. */
-
-import { V2Laster } from "@/components/v2/laster";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { TmLaster } from "@/components/portal/precision/PH17TmFelles";
 
 export default function Loading() {
-  return <V2Laster variant="liste" />;
+  return (
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <TmLaster tekst="Henter testene" />
+    </PlayerHQSkall>
+  );
 }

@@ -19,7 +19,6 @@
     ".vercel",
     ".vercelignore",
     ".vscode",
-
     ".worktrees",
     "AGENTS.md",
     "CLAUDE.md",
@@ -55,6 +54,7 @@
     "serwist.config.mjs",
     "src",
     "supabase-meg",
+    "supabase-wang",
     "test-results",
     "tests",
     "tmp",
@@ -109,7 +109,6 @@
     "docs/juridisk"
   ],
   "eksterneDokumenter": [
-    ".claude/skills/react-best-practices",
     ".claude/skills/security-and-hardening",
     ".claude/skills/api-and-interface-design",
     ".claude/skills/nextjs-security",
@@ -121,6 +120,7 @@
     ".claude/skills/security-review",
     ".claude/skills/supabase-postgres-best-practices",
     ".claude/skills/stripe-docs",
-    ".claude/skills/web-security-review"
+    ".claude/skills/web-security-review",
+    "docs/design-handoff"
   ]
 }

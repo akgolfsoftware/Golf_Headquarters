@@ -1,7 +1,8 @@
-/* v2-skjelett for /portal/meg (B1 «Meg laster»): avatar + navn + kort. */
+/* Lastetilstand for /portal/meg og undersidene i nytt design (PH-24, pakke 8 Meg).
+   PH24MegLaster har ingen "use client" (CSP-nonce, se gotchas §Bygg og drift). */
 
-import { V2Laster } from "@/components/v2/laster";
+import { PH24MegLaster } from "@/components/portal/precision/PH24MegTilstand";
 
 export default function Loading() {
-  return <V2Laster variant="meg" />;
+  return <PH24MegLaster />;
 }

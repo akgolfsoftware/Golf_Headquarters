@@ -15,6 +15,7 @@ import type {
   ShotType,
 } from "@/generated/prisma/client";
 import { assertCanViewPlayerData } from "@/lib/auth/assert-own-or-coached";
+import { loadVisibleSessionRange } from "@/lib/portal/visible-session-range";
 import { hentTreningsanalyse } from "@/lib/portal-analyse/treningsanalyse-data";
 import {
   hentTreningsHistorikk,
@@ -198,22 +199,9 @@ export async function getTrainingStats(
   // og skal aldri telle i volum eller «Siste økter».
   const naa = new Date();
 
+  const rangeStart = from ?? new Date(0);
   const [sessions, drills] = await Promise.all([
-    prisma.trainingSessionV2.findMany({
-      where: {
-        studentId: userId,
-        startTime: { ...(from ? { gte: from } : {}), lte: naa },
-      },
-      select: {
-        id: true,
-        title: true,
-        startTime: true,
-        endTime: true,
-        miljo: true,
-        practiceType: true,
-      },
-      orderBy: { startTime: "desc" },
-    }),
+    loadVisibleSessionRange(userId, rangeStart.toISOString(), naa.toISOString()),
     prisma.drillLogV2.findMany({
       where: {
         loggedBy: userId,
@@ -229,27 +217,25 @@ export async function getTrainingStats(
       },
     }),
   ]);
+  const ballCounts = sessions.length === 0 ? [] : await prisma.sessionBallLog.groupBy({
+    by: ["planSessionId"],
+    where: { planSessionId: { in: sessions.map(session => session.id) } },
+    _sum: { count: true },
+  });
+  const ballsBySession = new Map(ballCounts.map(row => [row.planSessionId, row._sum.count ?? 0]));
 
-  const minutes = sessions.reduce(
-    (sum, s) => sum + Math.max(0, (s.endTime.getTime() - s.startTime.getTime()) / 60000),
-    0,
-  );
+  const minutes = sessions.reduce((sum, session) => sum + session.durationMin, 0);
 
-  const reps = drills.reduce((sum, d) => sum + (d.repsTotal ?? 0), 0);
-
-  // Fordel økt-varighet per drill/akse i økten.
-  const sessionMinutes = new Map<string, number>();
-  for (const s of sessions) {
-    sessionMinutes.set(s.id, Math.max(0, (s.endTime.getTime() - s.startTime.getTime()) / 60000));
-  }
+  const v2Reps = drills.reduce((sum, drill) => sum + (drill.repsTotal ?? 0), 0);
+  const wbReps = ballCounts.reduce((sum, row) => sum + (row._sum.count ?? 0), 0);
+  const reps = v2Reps + wbReps;
 
   const byAxisAgg = new Map<PyramidArea, { minutes: number; sessions: Set<string> }>();
-  for (const d of drills) {
-    const axis = d.drill?.pyramide ?? "SPILL";
+  for (const session of sessions) {
+    const axis = session.pyramidArea;
     const entry = byAxisAgg.get(axis) ?? { minutes: 0, sessions: new Set<string>() };
-    const min = d.drill?.sessionId ? (sessionMinutes.get(d.drill.sessionId) ?? 0) * 0.2 : 0;
-    entry.minutes += min;
-    if (d.drill?.sessionId) entry.sessions.add(d.drill.sessionId);
+    entry.minutes += session.durationMin;
+    entry.sessions.add(session.id);
     byAxisAgg.set(axis, entry);
   }
 
@@ -259,13 +245,14 @@ export async function getTrainingStats(
     sessions: v.sessions.size,
   }));
 
-  const recentSessions = sessions.slice(0, 8).map((s) => ({
-    id: s.id,
-    title: s.title,
-    date: s.startTime,
-    durationMin: Math.round((s.endTime.getTime() - s.startTime.getTime()) / 60000),
-    pyramidArea: ("SPILL" as PyramidArea), // TrainingSessionV2 har ikke pyramidArea; bruk generisk
-    reps: drills.filter((d) => d.drill?.sessionId === s.id).reduce((sum, d) => sum + (d.repsTotal ?? 0), 0),
+  const recentSessions = [...sessions].reverse().slice(0, 8).map((session) => ({
+    id: session.id,
+    title: session.title,
+    date: session.startTime,
+    durationMin: session.durationMin,
+    pyramidArea: session.pyramidArea,
+    reps: drills.filter(drill => drill.drill?.sessionId === session.id)
+      .reduce((sum, drill) => sum + (drill.repsTotal ?? 0), ballsBySession.get(session.id) ?? 0),
   }));
 
   const analyseFra = from ?? new Date(naa.getTime() - 30 * 24 * 60 * 60 * 1000);

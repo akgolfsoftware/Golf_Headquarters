@@ -80,16 +80,20 @@ test("/admin/kommunikasjon gater på ADMIN/COACH, bruker fanelogikken, og låser
     "siden må ha ADMIN/COACH som basisgate",
   );
   assert.match(uten, /velgKommunikasjonFane\(/, "siden må velge fane via fanelogikken");
-  assert.match(
-    uten,
-    /\(aktiv === "utkast" \|\| aktiv === "sendt"\) && user\.role !== "ADMIN"/,
-    "utkast/sendt må sjekke ADMIN eksplisitt — de var ADMIN-alene på /admin/innboks-epost",
-  );
+  // 29.09.2026: utkast/sendt sendes til Innboks › E-post. ADMIN-låsen bor nå
+  // der: e-posten lastes bare for ADMIN, også «Sendt og arkivert».
+  assert.match(uten, /aktiv === "utkast"\) redirect\(innboksHref\("epost"/, "utkast må sendes til Innboks › E-post");
+  assert.match(uten, /aktiv === "sendt"\) redirect\(innboksHref\("epost"/, "sendt må sendes til Innboks › E-post");
+  const innboks = readFileSync(join(process.cwd(), "src/app/admin/innboks/page.tsx"), "utf8")
+    .replace(/\/\*[\s\S]*?\*\//g, "").replace(/(^|[^:])\/\/.*$/gm, "$1");
+  assert.match(innboks, /const erAdmin = user\.role === "ADMIN"/);
+  assert.match(innboks, /erAdmin \? loadEpostVedStatus\(UTKAST_STATUSER\)/, "utkastene må bare lastes for ADMIN");
+  assert.match(innboks, /const visSendt = erAdmin &&/, "sendt og arkivert må bare lastes for ADMIN");
 });
 
-/** De to kilde-loaderne for utkast/sendt skal filtrere status i databasen, ikke i klient. */
-test("lastKommunikasjonUtkast/-Sendt filtrerer på gyldige, ikke-overlappende statuser", () => {
-  const src = readFileSync(join(process.cwd(), "src/lib/admin/kommunikasjon/lastere.ts"), "utf8");
+/** Utkast/sendt filtreres på status i databasen, ikke i klient (nå i Innboks, 29.09.2026). */
+test("Innboks › E-post filtrerer utkast og sendt på gyldige, ikke-overlappende statuser", () => {
+  const src = readFileSync(join(process.cwd(), "src/app/admin/innboks/page.tsx"), "utf8");
   assert.match(src, /UTKAST_STATUSER = \["NY", "UTKAST_KLART"\]/);
   assert.match(src, /SENDT_STATUSER = \["SENDT", "ARKIVERT"\]/);
 });

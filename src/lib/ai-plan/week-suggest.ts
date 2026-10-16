@@ -15,6 +15,7 @@ import { hentPlayerSignals } from "@/lib/plan-engine/load-signals";
 import {
   STANDARD_PYRAMIDE,
   STANDARD_OKT_ANTALL,
+  type FaseMedOktAntall,
 } from "@/lib/plan-engine/standard-fordeling";
 import { SG_FOKUS_LABEL } from "@/lib/workbench/fokus";
 import { logError } from "@/lib/error-tracking";
@@ -47,8 +48,8 @@ const SuggestionsSchema = z.object({
 
 export type WeekSuggestion = z.infer<typeof VariantSchema>;
 
+// Ingen navn: spillerens navn sendes aldri til Anthropic (beslutninger.md §SKJERMENE … RUNDE 8, punkt 3).
 type PlayerContext = {
-  name: string;
   currentPeriod?: string;
   nextTournament?: { name: string; daysUntil: number } | null;
   sgWeaknesses?: string[];
@@ -100,11 +101,6 @@ function fallbackSuggestions(): WeekSuggestion[] {
 }
 
 async function loadPlayerContext(userId: string, weekStart: Date): Promise<PlayerContext> {
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: { name: true },
-  });
-
   // Neste turnering etter weekStart.
   const nextEntry = await prisma.tournamentEntry.findFirst({
     where: {
@@ -161,7 +157,6 @@ async function loadPlayerContext(userId: string, weekStart: Date): Promise<Playe
   });
 
   return {
-    name: user?.name ?? "Spiller",
     nextTournament,
     sgWeaknesses,
     recentLoadDays,
@@ -179,19 +174,25 @@ async function standardAnker(userId: string, aktivFase: string | null): Promise<
   const kategori = kategoriFraHcp(user?.hcp ?? null);
   if (!kategori) return [];
   const pyr = STANDARD_PYRAMIDE[kategori];
-  const fase = (aktivFase ?? "GRUNN") as keyof (typeof STANDARD_OKT_ANTALL)[typeof kategori];
-  const okter = STANDARD_OKT_ANTALL[kategori][fase] ?? STANDARD_OKT_ANTALL[kategori].GRUNN;
+  // Restitusjon har ikke standardtall: spiller og coach setter antall økter selv.
+  const okter =
+    aktivFase === "RESTITUSJON"
+      ? null
+      : (STANDARD_OKT_ANTALL[kategori][(aktivFase ?? "GRUNN") as FaseMedOktAntall] ??
+        STANDARD_OKT_ANTALL[kategori].GRUNN);
   return [
     `Standardplan-anker for spillerens nivå (kategori ${kategori}): ` +
       `FYS ${pyr.FYS} % · TEK ${pyr.TEK} % · SLAG ${pyr.SLAG} % · SPILL ${pyr.SPILL} % · TURN ${pyr.TURN} %, ` +
-      `normalt ${okter} økter/uke. «standard»-varianten skal ligge nær dette; ` +
+      (okter === null
+        ? "antall økter per uke er satt av spiller og coach, ikke av standarden. "
+        : `normalt ${okter} økter/uke. `) +
+      `«standard»-varianten skal ligge nær dette; ` +
       `«konservativ» litt under, «aggressiv» litt over.`,
   ];
 }
 
 function buildPrompt(ctx: PlayerContext, weekStart: Date, ekstra: string[]): string {
   const lines: string[] = [];
-  lines.push(`Spiller: ${ctx.name}`);
   lines.push(`Uke som starter: ${weekStart.toISOString().slice(0, 10)} (mandag)`);
   if (ctx.nextTournament) {
     lines.push(

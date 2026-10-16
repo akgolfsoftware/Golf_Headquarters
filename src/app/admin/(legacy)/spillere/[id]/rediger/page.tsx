@@ -1,9 +1,10 @@
 /**
- * AgencyOS — Rediger spiller (`/admin/spillere/[id]/rediger`). Train-lock-
- * port 27.08.2026 (T4) — se TrainLockSpillerRediger.tsx for detaljer.
- *
- * 2-kol form med sticky lagre-bar topp + bunn. Endrings-historikk høyre.
- * Bruker Server Action `lagreSpiller`.
+ * AgencyOS — Rediger spiller (`/admin/spillere/[id]/rediger`) i Precision
+ * Athletics (29.09.2026, AG-08 › «Rediger profil»). Samme tilgang
+ * (COACH/ADMIN + coachScopedPlayerWhere), samme lastere og samme handlinger
+ * (lagreSpiller, settValgtCoach, slettSpiller) som Train-lock-skjemaet; i
+ * tillegg «Legg til forelder» (inviterForelderForSpiller) fra den gamle
+ * profilsiden. Sida har AgencyOSSkall selv (src/lib/agencyos/precision-portert/a2.ts).
  */
 
 import { notFound } from "next/navigation";
@@ -11,10 +12,8 @@ import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
-import {
-  TrainLockSpillerRediger,
-  type TrainLockSpillerRedigerData,
-} from "@/components/admin/v2/TrainLockSpillerRediger";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { AG08Rediger, type AG08RedigerData } from "@/components/admin/precision/AG08Rediger";
 
 function formatHcpInput(v: number | null | undefined): string {
   if (v == null) return "";
@@ -59,7 +58,7 @@ export default async function RedigerSpiller({ params }: { params: Promise<{ id:
   const fornavn = player.name.split(" ")[0] ?? "";
   const etternavn = player.name.split(" ").slice(1).join(" ");
 
-  const data: TrainLockSpillerRedigerData = {
+  const data: AG08RedigerData = {
     spillerId: player.id,
     spillerNavn: player.name,
     fornavn,
@@ -83,5 +82,9 @@ export default async function RedigerSpiller({ params }: { params: Promise<{ id:
     })),
   };
 
-  return <TrainLockSpillerRediger data={data} />;
+  return (
+    <AgencyOSSkall navn={viewer.name ?? "Coach"}>
+      <AG08Rediger data={data} />
+    </AgencyOSSkall>
+  );
 }

@@ -1,3 +1,4 @@
+// FO03NyBarnTid — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
 /**
  * Foreldreportal · Book ny time for barnet (STEG 9.8). Samme wizard-
  * komponent (BookingNyV2) og datalogikk (byggBookingNyData) som
@@ -10,7 +11,7 @@ import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentBarnHvisTilhoerer } from "@/lib/forelder";
 import { byggBookingNyData } from "@/lib/portal-booking/ny-wizard-data";
-import { V2Shell, FORELDER_NAV, FORELDER_MER } from "@/components/v2/shell";
+import { ForelderSkall } from "@/components/precision/ForelderSkall";
 import { TilbakeLenke, Kort, TomTilstand } from "@/components/v2";
 import { BookingNyV2 } from "@/components/portal/v2/BookingNyV2";
 
@@ -39,7 +40,8 @@ export default async function ForelderNyBookingPage({ params, searchParams }: Pr
 
   if (resultat.ingenTjenester) {
     return (
-      <V2Shell bredde="kolonne" aktiv="oversikt" nav={FORELDER_NAV} mer={FORELDER_MER} navn={user.name} avatarUrl={user.avatarUrl}>
+            <ForelderSkall>
+        <div className="pa-side">
         <TilbakeLenke href="/forelder/bookinger">Bookinger</TilbakeLenke>
         <Kort>
           <TomTilstand
@@ -48,14 +50,17 @@ export default async function ForelderNyBookingPage({ params, searchParams }: Pr
             sub="Ingen coaching-tjenester er aktive i øyeblikket. Kontakt support@akgolf.no."
           />
         </Kort>
-      </V2Shell>
+              </div>
+      </ForelderSkall>
     );
   }
 
   return (
-    <V2Shell bredde="kolonne" aktiv="oversikt" nav={FORELDER_NAV} mer={FORELDER_MER} navn={user.name} avatarUrl={user.avatarUrl}>
+        <ForelderSkall>
+      <div className="pa-side">
       <TilbakeLenke href="/forelder/bookinger">Bookinger</TilbakeLenke>
       <BookingNyV2 data={{ ...resultat.data, merkelapp: "Foreldreportal" }} />
-    </V2Shell>
+          </div>
+    </ForelderSkall>
   );
 }

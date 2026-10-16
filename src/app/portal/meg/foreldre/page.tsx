@@ -1,19 +1,21 @@
 /**
- * v2 — PlayerHQ Meg · Foresatte (retning C). V2Shell leverer chrome-en
- * (IkonRail/BunnNav), MegForeldreV2 rendrer innholds-stacken.
- *
- * Auth + dataloader gjenbruker den ekte /portal/meg/foreldre-siden: samme
- * requirePortalUser-guard og samme parentRelation-spørring/mapping (ekte data).
+ * PlayerHQ · Meg · Foreldre (/portal/meg/foreldre) — PH-24 i nytt design
+ * (docs/design-system/utkast-playerhq/meg.html, skjermen «Foreldre»).
+ * Viser foreldre koblet til spillerens konto, og om forelderen må godkjenne (under 16, D-63).
  */
 
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { getUnreadNotifications } from "@/app/portal/actions";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { MegForeldreV2, type MegForeldreData } from "@/components/portal/v2/MegForeldreV2";
-import { TilbakeLenke } from "@/components/v2";
+import { maaHaForesattSamtykke, venterPaaForelder } from "@/lib/auth/minor";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { PH24Foreldre, type PH24ForeldreData } from "@/components/portal/precision/PH24Foreldre";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Foreldre · PlayerHQ" };
+
+const DATO = new Intl.DateTimeFormat("nb-NO", { day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Oslo" });
 
 function relasjonLabel(r: string): string {
   const lower = r.toLowerCase();
@@ -23,33 +25,36 @@ function relasjonLabel(r: string): string {
   return r;
 }
 
-export default async function ForeldrePage() {
+export default async function PH24ForeldrePage() {
   const user = await requirePortalUser({ kreverTilgang: "INGEN" });
   if (user.role === "PARENT") redirect("/forelder");
   if (user.role === "GUEST") redirect("/admin/kalender");
 
-  const parentLinks = await prisma.parentRelation.findMany({
-    where: { childId: user.id },
-    include: {
-      parent: { select: { id: true, name: true, email: true } },
-    },
-    orderBy: { createdAt: "desc" },
-  });
+  const [parentLinks, ulest] = await Promise.all([
+    prisma.parentRelation.findMany({
+      where: { childId: user.id },
+      include: { parent: { select: { id: true, name: true, email: true } } },
+      orderBy: { createdAt: "desc" },
+    }),
+    getUnreadNotifications(user.id, 1),
+  ]);
 
-  const data: MegForeldreData = {
-    foresatte: parentLinks.map((rel) => ({
+  const data: PH24ForeldreData = {
+    foreldre: parentLinks.map((rel) => ({
       id: rel.id,
       navn: rel.parent.name ?? rel.parent.email,
       relasjon: relasjonLabel(rel.relationship),
-      kontekst: rel.parent.email,
-      href: "/portal/meg/foreldre",
+      epost: rel.parent.email,
+      godkjent: rel.approved,
+      siden: DATO.format(rel.updatedAt),
     })),
+    under16: maaHaForesattSamtykke(user),
+    venterPaaForelder: venterPaaForelder(user),
   };
 
   return (
-    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name ?? "Øyvind Rohjan"} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
-      <MegForeldreV2 data={data} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={ulest.count}>
+      <PH24Foreldre data={data} />
+    </PlayerHQSkall>
   );
 }

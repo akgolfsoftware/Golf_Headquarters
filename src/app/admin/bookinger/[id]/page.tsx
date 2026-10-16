@@ -13,6 +13,7 @@
 import { notFound } from "next/navigation";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { coachBookingScope } from "@/lib/auth/booking-scope";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import {
@@ -47,8 +48,8 @@ export default async function AdminBookingDetaljPage({ params }: Props) {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
   const { id } = await params;
 
-  const booking = await prisma.booking.findUnique({
-    where: { id },
+  const booking = await prisma.booking.findFirst({
+    where: { id, ...coachBookingScope(user) },
     include: {
       user: { select: { id: true, name: true } },
       coach: { select: { name: true } },

@@ -12,7 +12,7 @@ export interface PersonvernPrecisionProps {
 }
 
 export function PersonvernPrecisionView({
-  brukerNavn = "Magnus Kristiansen",
+  brukerNavn = "Magnus Aasheim",
   brukerEpost = "magnus@akgolf.no",
   tilbakeHref = "/portal/meg",
 }: PersonvernPrecisionProps) {

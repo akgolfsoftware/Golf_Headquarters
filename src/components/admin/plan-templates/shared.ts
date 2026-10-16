@@ -46,7 +46,7 @@ export const KATEGORI_ALLE: NgfKategori[] = [
 // grid-oppsettet skal ha en 4. eller 5. rad før dette låses videre.
 export const KATEGORI_PRIMARY: NgfKategori[] = ["B", "E", "H", "K"];
 
-export const FASE_ALLE: LPhase[] = ["GRUNN", "SPESIAL", "TURNERING", "EVALUERING", "TESTUKE", "FERIE", "TRENINGSSAMLING", "HELDAGSSAMLING"];
+export const FASE_ALLE: LPhase[] = ["GRUNN", "SPESIAL", "TURNERING", "EVALUERING", "TESTUKE", "FERIE", "TRENINGSSAMLING", "HELDAGSSAMLING", "RESTITUSJON"];
 
 export const FASE_LABEL: Record<LPhase, string> = {
   GRUNN: "Grunn",
@@ -57,6 +57,7 @@ export const FASE_LABEL: Record<LPhase, string> = {
   FERIE: "Ferie",
   TRENINGSSAMLING: "Samling",
   HELDAGSSAMLING: "Heldagssamling",
+  RESTITUSJON: "Restitusjon",
 };
 
 export const KATEGORI_LABEL: Record<NgfKategori, string> = {

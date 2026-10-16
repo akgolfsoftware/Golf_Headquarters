@@ -32,7 +32,7 @@ const FORHOLD: Record<LogoVariant, number> = {
 };
 
 export function Logo({
-  variant = "primaer-lys",
+  variant = "sort-mono",
   hoyde = 40,
   klaring = false,
   prioritet = false,

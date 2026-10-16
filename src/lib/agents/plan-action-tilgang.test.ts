@@ -28,7 +28,7 @@ test("spiller, tildelt coach med tilgang og admin kan behandle forslaget", () =>
       viewerId: "admin",
       viewerRole: "ADMIN",
       ...action,
-      harSpillerTilgang: false,
+      harSpillerTilgang: true,
     }),
     true,
   );
@@ -60,6 +60,13 @@ test("uvedkommende coach, annen tildelt coach og annen spiller avvises", () => {
       ...action,
       harSpillerTilgang: false,
     }),
+    false,
+  );
+});
+
+test("admin avvises for selvbetjent spiller (uten stall-tilgang)", () => {
+  assert.equal(
+    kanBehandlePlanAction({ viewerId: "admin", viewerRole: "ADMIN", ...action, harSpillerTilgang: false }),
     false,
   );
 });

@@ -1,0 +1,36 @@
+<!DOCTYPE html><html lang="no"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Portaler · skjerm</title>
+<link rel="stylesheet" href="../../styles.css">
+<style>html,body{margin:0;background:var(--surface-page)}@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<script src="../../assets/ak-vocabulary.js"></script>
+<script src="../forelder/data-fo.js"></script>
+<script src="data-pub.js"></script>
+<script src="../statistikk/data-st.js"></script>
+<script src="data-fas.js"></script>
+<script src="../_shared/ia.js"></script>
+<script>window.CAT_CFG = { reg: "FO_SCREENS", fab: false, who: { name: "Hanne Lindvik", role: "FORELDER" }, nav: [["FO-01", "I dag", "sun"], ["FO-02", "Barn", "users"], ["FO-03", "Booking", "calendar-plus"], ["FO-04", "Økonomi", "credit-card"], ["FO-05", "Samtykke", "shield-check"], ["FO-06", "Coach", "message-square"]].map(([id, label, icon]) => ({ id, label, icon, items: [{ id, label, icon }] })) };</script>
+</head><body><div id="root"></div>
+<script type="text/babel" src="../_shared/ds-next.jsx"></script>
+<script type="text/babel" src="KitShell.jsx"></script>
+<script type="text/babel" src="../agencyos/ag-parts.jsx"></script>
+<script type="text/babel" src="../forelder/screens/FO-01-03.jsx"></script>
+<script type="text/babel" src="../forelder/screens/FO-04-06.jsx"></script>
+<script type="text/babel" src="../konto/screens/AU-01-03.jsx"></script>
+<script type="text/babel" src="fasiliteter.jsx"></script>
+<script type="text/babel" src="../konto/screens/AU-04-06.jsx"></script>
+<script type="text/babel" src="../konto/screens/AU-04-spiller.jsx"></script>
+<script type="text/babel" src="../booking/screens/BK.jsx"></script>
+<script type="text/babel" src="../gfgk/screens/GJ.jsx"></script>
+<script type="text/babel" src="../system/screens/SY-01.jsx"></script>
+<script type="text/babel" src="../statistikk/screens/ST-01-03.jsx"></script>
+<script type="text/babel" src="../statistikk/screens/ST-04-06.jsx"></script>
+<script type="text/babel">
+const q = new URLSearchParams(location.search);
+const init = { id: q.get("id") || "FO-01", state: q.get("state") || "data" };
+ReactDOM.createRoot(document.getElementById("root")).render(<window.AGQ.Host init={init} />);
+window.__agReady = true;
+</script>
+</body></html>

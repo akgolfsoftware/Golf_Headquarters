@@ -1,0 +1,13 @@
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0}
+body{font:var(--type-body);color:var(--text-body);background:var(--surface-page);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+h1,h2,h3,h4,p{margin:0}
+a{color:var(--link);text-underline-offset:2px}
+a:hover{color:var(--text-primary)}
+:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.num,.mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums;letter-spacing:var(--tracking-mono)}
+.kicker{font:var(--type-kicker);letter-spacing:var(--tracking-kicker);text-transform:uppercase;color:var(--text-muted)}
+
+/* Revisjon 09.2026: alle tall tabulære, SVG/bilder aldri bredere enn beholderen */
+html{font-variant-numeric:tabular-nums}
+img,svg,video,canvas{max-width:100%}

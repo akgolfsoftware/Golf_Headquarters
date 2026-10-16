@@ -1,3 +1,5 @@
+// PH21Meldingsliste — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 /**
  * v2-forhåndsvisning — PlayerHQ Coach Meldinger (retning C). Egen top-level
  * route-group (v2preview) som IKKE arver PortalShell — kun root-layout. V2Shell
@@ -11,7 +13,6 @@
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { CoachMeldingerV2, type CoachMeldingerData } from "@/components/portal/v2/CoachMeldingerV2";
 import type { Melding } from "@/components/v2";
 import { TilbakeLenke } from "@/components/v2";
@@ -34,10 +35,12 @@ export default async function V2CoachMeldingPreviewPage() {
   if (user.tier === "GRATIS") {
     const data: CoachMeldingerData = { gratis: true, hovedcoach: null, traader: [], valgt: null };
     return (
-      <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name}>
+      <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
         <TilbakeLenke href="/portal/coach">Coach</TilbakeLenke>
         <CoachMeldingerV2 data={data} />
-      </V2Shell>
+      </div>
+    </PlayerHQSkall>
     );
   }
 
@@ -114,9 +117,11 @@ export default async function V2CoachMeldingPreviewPage() {
   };
 
   return (
-    <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name}>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
       <TilbakeLenke href="/portal/coach">Coach</TilbakeLenke>
       <CoachMeldingerV2 data={data} />
-    </V2Shell>
+    </div>
+    </PlayerHQSkall>
   );
 }

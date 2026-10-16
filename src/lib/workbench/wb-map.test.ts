@@ -6,6 +6,7 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import {
   SPILLER_SYNLIGE_STATUSER,
+  flyttAar,
   fraDatoKolonne,
   mapSession,
   tilDatoKolonne,
@@ -84,7 +85,17 @@ describe("mapSession", () => {
             akFormel: { pyramid: "SLAG", area: "PUTT_3_5", label: "SLAG · Putt 3–5" },
             techniqueFocus: null,
             sourceId: null,
+            exerciseId: null,
             sortOrder: 1,
+            repType: null,
+            repAntall: null,
+            repMinutter: null,
+            repSett: null,
+            repReps: null,
+            planRepsUtenBall: null,
+            planRepsLavFart: null,
+            planRepsAuto: null,
+            positionTaskId: null,
           },
           {
             id: "d1",
@@ -95,7 +106,17 @@ describe("mapSession", () => {
             akFormel: { ugyldig: true },
             techniqueFocus: null,
             sourceId: null,
+            exerciseId: null,
             sortOrder: 0,
+            repType: null,
+            repAntall: null,
+            repMinutter: null,
+            repSett: null,
+            repReps: null,
+            planRepsUtenBall: null,
+            planRepsLavFart: null,
+            planRepsAuto: null,
+            positionTaskId: null,
           },
         ],
       } as Partial<WbRow>),
@@ -113,6 +134,18 @@ describe("spiller-synlighet", () => {
     const statuser: readonly string[] = SPILLER_SYNLIGE_STATUSER;
     assert.equal(statuser.includes("DRAFT"), false);
     assert.equal(statuser.includes("SCHEDULED"), false);
-    assert.deepEqual([...statuser], ["PUBLISHED", "IN_PROGRESS", "COMPLETED"]);
+    assert.deepEqual([...statuser], ["PUBLISHED", "IN_PROGRESS", "COMPLETED", "SKIPPED", "ABANDONED"]);
+  });
+});
+
+describe("flyttAar", () => {
+  it("flytter samme dag ett år frem", () => {
+    assert.equal(fraDatoKolonne(flyttAar(tilDatoKolonne("2026-08-03"), 1)), "2027-08-03");
+  });
+  it("29. februar blir 28. februar i år uten skuddår", () => {
+    assert.equal(fraDatoKolonne(flyttAar(tilDatoKolonne("2028-02-29"), 1)), "2029-02-28");
+  });
+  it("28. februar blir værende 28. februar i skuddår", () => {
+    assert.equal(fraDatoKolonne(flyttAar(tilDatoKolonne("2027-02-28"), 1)), "2028-02-28");
   });
 });

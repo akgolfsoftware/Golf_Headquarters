@@ -34,7 +34,7 @@ export interface ForelderPrecisionProps {
 }
 
 export function ForelderPrecisionView({
-  spillerNavn = "Magnus Kristiansen",
+  spillerNavn = "Magnus Aasheim",
   spillerAlder = 15,
   dagensOkt = {
     tittel: "Nærspill & Wedge-kontroll",

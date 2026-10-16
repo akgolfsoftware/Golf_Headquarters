@@ -1,0 +1,5510 @@
+{
+  "version": "1.0",
+  "generatedAt": "2026-05-22",
+  "fokusOmrade": "NAERSPILL",
+  "totalDrills": 124,
+  "sources": [
+    "ak-second-brain:wiki/concepts/morad-drill-bibliotek.md",
+    "ak-second-brain:wiki/concepts/short-game-wet-conditions.md",
+    "ak-second-brain:wiki/sources/2026-05-11-morad-kb-drills.md",
+    "Dave Pelz - Short Game Bible (offentlig metodikk)",
+    "Seve Ballesteros - Natural Golf (offentlig metodikk)",
+    "Mac O'Grady - MORAD Short Game",
+    "Phil Mickelson - Short Game Secrets (offentlig metodikk)",
+    "Stan Utley - Art of the Short Game (offentlig metodikk)",
+    "AK Golf Academy - intern coaching-praksis"
+  ],
+  "drills": [
+    {
+      "navn": "chip-clock-12-distanser",
+      "beskrivelse": "Plasser 12 ball-posisjoner i klokke rundt grønnen, 2-15m fra flagget. Spill 3 chips fra hver posisjon. Bruk samme klubb (PW) hele veien. Mål: alle innenfor 2m fra hullet. Loggfør antall under 1m.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 54,
+      "environment": [
+        "BANE",
+        "BANE"
+      ],
+      "utstyr": [
+        "wedge",
+        "12-baller"
+      ],
+      "varighetMin": 45,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 36,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 85,
+        "C": 80,
+        "D": 75,
+        "G": 65,
+        "J": 45,
+        "L": 30
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "chip",
+        "distance-control",
+        "kombinert"
+      ],
+      "coachNotater": "Spilleren utvikler føling for distance-control. Hvis flere enn 3 chips kommer kort på rad, sjekk grep-pres — for hard grip dreper distance-control. Bruk samme klubb, ikke bytt mellom slag."
+    },
+    {
+      "navn": "chip-3-kluber-samme-distanse",
+      "beskrivelse": "Fra 8m fra flagg, chip 5 baller med PW, 5 med 9-jern, 5 med 7-jern. Samme swinglengde hver gang. Observer hvor langt ballen ruller med hver klubb. Lærer klubbvalg-logikk i nærspill.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "K",
+      "maxKategori": "B",
+      "minHcp": 0,
+      "maxHcp": 36,
+      "environment": [
+        "BANE",
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "9-jern",
+        "7-jern",
+        "15-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 4,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 90,
+        "C": 85,
+        "E": 75,
+        "H": 60,
+        "K": 40
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "chip",
+        "klubbvalg",
+        "carry-vs-roll"
+      ],
+      "coachNotater": "Mange spillere chips kun med wedge fordi de er vant til det. Denne drill'en åpner øynene — 7-jern gir ofte mer kontroll fordi du kan bruke mindre swing. Be spilleren notere prosent ball-flight vs roll for hver klubb."
+    },
+    {
+      "navn": "chip-en-fot-balanse",
+      "beskrivelse": "Chip 10 baller fra 8m mens du står kun på fremre fot. Bakre fot lett borte fra bakken. Tvinger vekten frem og eliminerer scooping. Bruk PW eller GW.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "L",
+      "maxKategori": "C",
+      "minHcp": 0,
+      "maxHcp": 54,
+      "environment": [
+        "BANE",
+        "BANE"
+      ],
+      "utstyr": [
+        "wedge",
+        "10-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 4,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "C": 75,
+        "F": 60,
+        "I": 45,
+        "L": 25
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "chip",
+        "vektoverforing",
+        "scooping-fix"
+      ],
+      "coachNotater": "Klassisk fix for scooping. Spilleren føler at vekten MÅ være foran for å treffe ballen først. Ikke la spillere fuske ved å sette bakre fot ned — da forsvinner hele poenget."
+    },
+    {
+      "navn": "chip-landing-zone-tau",
+      "beskrivelse": "Legg et tau eller alignment stick på green 2m foran ballen som landing zone. Chip 10 baller som MÅ lande før tauet. Trener carry-distansen, ikke total avstand. Bruk PW fra 10m.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "L",
+      "maxKategori": "B",
+      "minHcp": 0,
+      "maxHcp": 54,
+      "environment": [
+        "BANE",
+        "BANE"
+      ],
+      "utstyr": [
+        "wedge",
+        "tau",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 3,
+      "lPhase": [
+        "SPESIAL",
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 90,
+        "C": 80,
+        "E": 70,
+        "H": 55,
+        "L": 35
+      },
+      "videoUrl": null,
+      "kilde": "Dave Pelz Short Game Bible",
+      "tags": [
+        "chip",
+        "landing-spot",
+        "carry-control"
+      ],
+      "coachNotater": "Spillere som tenker 'totalt avstand' chips dårlig. De som tenker 'landing spot + roll' chips godt. Denne drill'en bytter mental modell. Be dem si høyt 'jeg lander her' før hvert slag."
+    },
+    {
+      "navn": "chip-hands-forward-shaft-lean",
+      "beskrivelse": "Setup med hendene tydelig foran ballen (shaft lean fremover). Hold den posisjonen gjennom impact. Chip 10 baller fra tight lie 6m unna. Bruk PW. Føler at clubface kommer ned-og-frem, ikke opp.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "L",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 54,
+      "environment": [
+        "BANE",
+        "BANE"
+      ],
+      "utstyr": [
+        "wedge",
+        "10-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 90,
+        "C": 80,
+        "F": 65,
+        "I": 50,
+        "L": 35
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "chip",
+        "shaft-lean",
+        "fundament"
+      ],
+      "coachNotater": "Hvis spilleren tynner eller fetter, sjekk shaft-lean. De fleste mister hands forward ned i impact. Hold posisjonen — det er ingen 'release' i en standard chip."
+    },
+    {
+      "navn": "chip-tight-lie-pw-vs-sw",
+      "beskrivelse": "Fra hardpacket lie (eller kort gress) 8m unna: chip 10 baller med PW, 10 med SW. PW: lavere bounce, kommer rent fra tight lie. SW: høyere bounce, vanskeligere fra tight. Spilleren lærer hva som skjer ved feil klubb.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "K",
+      "maxKategori": "B",
+      "minHcp": 0,
+      "maxHcp": 36,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "sw",
+        "20-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 4,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 20,
+      "csTargetByKategori": {
+        "A": 88,
+        "C": 78,
+        "E": 68,
+        "H": 55,
+        "K": 40
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "chip",
+        "from-bare-lie",
+        "klubbvalg",
+        "bounce"
+      ],
+      "coachNotater": "SW med 14° bounce er kjent for å bli avvist fra harde lies — clubhead spretter opp. PW eller GW har mindre bounce og kommer renere. Denne drill'en er en aha-opplevelse for mange."
+    },
+    {
+      "navn": "chip-pump-handle-mac-ogrady",
+      "beskrivelse": "MORAD-stil: chip uten kropps-rotasjon. Hold skuldrene stille, kun armer pumper opp og ned. Som å pumpe en sykkelpumpe. 10 chips med PW fra 6m. Lærer minimal moving parts.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "K",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "wedge",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": true,
+      "prerequisites": [
+        "chip-hands-forward-shaft-lean"
+      ],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 90,
+        "C": 80,
+        "E": 70,
+        "H": 60,
+        "K": 45
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "tags": [
+        "chip",
+        "MORAD",
+        "minimal-motion",
+        "fundament"
+      ],
+      "coachNotater": "Mac O'Grady-prinsipp: jo færre bevegelige deler, jo mer konsistens. Spilleren oppdager fort at de ikke trenger kroppen i en standard chip. Kombineres godt med elbow-flexion-chip-only."
+    },
+    {
+      "navn": "chip-ladder-3m-til-15m",
+      "beskrivelse": "Plasser stick eller hatt på green på 3m, 6m, 9m, 12m, 15m fra ballen. Chip 2 baller til hver markør. Må stoppe nær markøren. Trener feel for ulike distanser. Bruk PW.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "K",
+      "maxKategori": "B",
+      "minHcp": 0,
+      "maxHcp": 36,
+      "environment": [
+        "BANE",
+        "BANE"
+      ],
+      "utstyr": [
+        "wedge",
+        "10-baller",
+        "5-markorer"
+      ],
+      "varighetMin": 25,
+      "intensitet": 4,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "chip-clock-12-distanser"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "C": 78,
+        "E": 68,
+        "H": 55,
+        "K": 40
+      },
+      "videoUrl": null,
+      "kilde": "Dave Pelz Short Game Bible",
+      "tags": [
+        "chip",
+        "distance-control",
+        "ladder",
+        "feel"
+      ],
+      "coachNotater": "Klassisk Pelz-stigedrill. Be spilleren bruke samme klubb og kun variere swinglengden. Hvis de bruker hender og hopper i tempo, mister de all kalibrering."
+    },
+    {
+      "navn": "chip-ovre-haand-grip",
+      "beskrivelse": "Chip 10 baller med kun den øvre hånden på køllen (venstre for høyrehendt). Tvinger spilleren til å bruke skuldre og armens lengde, ikke håndledd. PW fra 5m. Etter 10 baller, gå tilbake til normal grip og kjenn forskjell.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "K",
+      "maxKategori": "B",
+      "minHcp": 0,
+      "maxHcp": 36,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "wedge",
+        "10-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "C": 75,
+        "E": 65,
+        "H": 55,
+        "K": 40
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "chip",
+        "wrist-elimination",
+        "fundament"
+      ],
+      "coachNotater": "Hvis venstre håndledd 'bryter' i impact, vil ballen tynnes. Denne drill'en isolerer venstre arm og lærer kroppen hva ren chip-bevegelse er. Brukes 5 min som warm-up før øktens chipping."
+    },
+    {
+      "navn": "chip-nedre-haand-grip",
+      "beskrivelse": "Chip 10 baller med kun den nedre hånden på køllen (høyre for høyrehendt). Føler clubface-control og kontakt-presisjon. PW fra 5m. Sammenlign med øvre-haand-drill — viser hvilke roller hver hånd har.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "K",
+      "maxKategori": "B",
+      "minHcp": 0,
+      "maxHcp": 36,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "wedge",
+        "10-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "C": 75,
+        "E": 65,
+        "H": 55,
+        "K": 40
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "chip",
+        "clubface-control",
+        "fundament"
+      ],
+      "coachNotater": "Mange tenker at nedre hånd skal 'hjelpe ballen opp'. Galt — den skal kontrollere clubface og holde shaft lean. Når spilleren føler dette i isolasjon, skjønner de hva hånden faktisk gjør."
+    },
+    {
+      "navn": "chip-pendel-uten-handledd",
+      "beskrivelse": "Sett underarmene fast mot hverandre med en bandage eller alignment stick under begge armer. Chip 10 baller — håndleddene KAN ikke knekke. Lærer pendel-bevegelsen som er fundamentet i alle chips.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "L",
+      "maxKategori": "C",
+      "minHcp": 5,
+      "maxHcp": 54,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "wedge",
+        "10-baller",
+        "stick-eller-bandage"
+      ],
+      "varighetMin": 15,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "C": 75,
+        "F": 60,
+        "I": 45,
+        "L": 30
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "chip",
+        "pendel",
+        "wrist-elimination",
+        "fundament"
+      ],
+      "coachNotater": "Spillere som flipper håndleddet i impact tynner eller fetter ofte. Denne drill'en gjør det fysisk umulig. Etter 10 baller, fjern stick og prøv 5 normale chips — bevegelsen bør være innprentet."
+    },
+    {
+      "navn": "chip-feet-together",
+      "beskrivelse": "Stå med føttene helt sammen mens du chips. Tvinger balanse og kompakt sving. 10 chips med PW fra 7m. Avslører om spilleren bruker kropp eller overswing — feet together gjør begge umulig.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "L",
+      "maxKategori": "B",
+      "minHcp": 0,
+      "maxHcp": 54,
+      "environment": [
+        "BANE",
+        "BANE"
+      ],
+      "utstyr": [
+        "wedge",
+        "10-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "C": 75,
+        "E": 65,
+        "H": 55,
+        "L": 35
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "chip",
+        "balanse",
+        "kompakt-sving"
+      ],
+      "coachNotater": "Hvis spilleren faller forover eller bakover i denne, bekrefter det at de bruker kropp i normal chip. Mål: stå rolig før, under og etter slag."
+    },
+    {
+      "navn": "chip-til-flagg-3-klubber-progression",
+      "beskrivelse": "Velg ett flagg 15m unna. Chip 3 baller hver med 7-jern (low runner), PW (medium), SW (lob). Notér total distanse og roll for hver. Lærer hvordan klubbvalg endrer skuddets natur.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 45,
+      "environment": [
+        "BANE",
+        "BANE"
+      ],
+      "utstyr": [
+        "7-jern",
+        "pw",
+        "sw",
+        "9-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 3,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "chip-3-kluber-samme-distanse"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 9,
+      "csTargetByKategori": {
+        "A": 90,
+        "C": 80,
+        "E": 70,
+        "H": 55,
+        "J": 40
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "chip",
+        "klubbvalg",
+        "trajectory",
+        "bump-and-run"
+      ],
+      "coachNotater": "Klubbvalg er undervurdert i nærspill. Når spilleren ser at samme swing gir helt ulik landing+roll, blir de mer bevisste i kamp. Be dem velge klubb basert på landing zone — ikke totalavstand."
+    },
+    {
+      "navn": "chip-toe-only-precision",
+      "beskrivelse": "Sett tubing eller alignment stick langs heel-siden av klubben i setup. Chip 10 baller — må treffe ballen med toe-halvdelen for å unngå stick. Trener clubface-presisjon og solid kontakt.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 30,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "wedge",
+        "10-baller",
+        "stick"
+      ],
+      "varighetMin": 20,
+      "intensitet": 4,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "chip-pendel-uten-handledd"
+      ],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 80,
+        "C": 75,
+        "D": 70,
+        "E": 65,
+        "H": 50
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "chip",
+        "kontakt-presisjon",
+        "elite",
+        "wedge-finesse"
+      ],
+      "coachNotater": "Krevende drill — kun for spillere som har god kontakt fra før. Lærer at sentrum av clubface ikke er midten, men toe-side hos de fleste wedges. Tour-spillere bruker denne for trygghet på tight lies."
+    },
+    {
+      "navn": "chip-target-trekant",
+      "beskrivelse": "Plasser tre flagg eller markører i trekant 6m, 10m og 14m fra ballen. Chip 3 baller til hvert flagg i tilfeldig rekkefølge (kalt ut av coach). 9 chips totalt. Trener focus og adaptiv distance-control.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 45,
+      "environment": [
+        "BANE",
+        "BANE"
+      ],
+      "utstyr": [
+        "wedge",
+        "9-baller",
+        "3-flagg"
+      ],
+      "varighetMin": 20,
+      "intensitet": 4,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "chip-ladder-3m-til-15m"
+      ],
+      "defaultSets": 2,
+      "defaultReps": 9,
+      "csTargetByKategori": {
+        "A": 88,
+        "C": 78,
+        "E": 68,
+        "H": 55,
+        "J": 40
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "chip",
+        "distance-control",
+        "scenario",
+        "focus"
+      ],
+      "coachNotater": "Forskjell på blocked og random training. Random (denne) er hva som skjer på banen. Spillere som er gode på ladder men dårlige her, mangler banespill-ferdighet. Kjør 2-3 sett."
+    },
+    {
+      "navn": "chip-grass-til-bunker-protokoll",
+      "beskrivelse": "På greensiden av bunker: chip fra gress 5 baller, gå til bunker og slå 5 baller, tilbake til gress. Trener overgangen mellom to teknikker uten å lure hjernen. Bruk SW.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 30,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "10-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 4,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "bunker-grunnposisjon-line-drill"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 80,
+        "C": 75,
+        "D": 70,
+        "E": 65,
+        "H": 50
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "chip",
+        "bunker",
+        "kombinert",
+        "scenario"
+      ],
+      "coachNotater": "I kamp veksler du mellom chip og bunker rundt samme green. Hvis du kun trener én av gangen, blir overgangen vanskelig. Denne simulerer reality."
+    },
+    {
+      "navn": "chip-belly-of-wedge",
+      "beskrivelse": "Fra grov rough (10cm gress): putt med wedge — bruk underkanten (belly) av wedgen som en putter. Bevegelse 100% pendel. 10 baller fra 4m utenfor green. Alternativ til chip når lien er treig.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "K",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "10-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 3,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "C": 75,
+        "E": 65,
+        "H": 50,
+        "K": 35
+      },
+      "videoUrl": null,
+      "kilde": "Phil Mickelson, AK Golf Academy",
+      "tags": [
+        "chip",
+        "from-rough",
+        "specialty",
+        "scenario"
+      ],
+      "coachNotater": "Når gresset er for treigt for putter men for tett til ren chip, redder belly-of-wedge dagen. Wedgen flyter over toppen av gresset. Krever pendel-stroke, ingen wrist."
+    },
+    {
+      "navn": "chip-paraply-rundt-flagg",
+      "beskrivelse": "Plasser 8 ball-posisjoner i 1m-radius rundt et flagg (som paraply). Spilleren chips fra 8m unna og må stoppe ballen innenfor paraplyen. 8 chips. Mål: 6/8 innenfor radius.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 45,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "wedge",
+        "8-baller",
+        "8-markorer"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 90,
+        "C": 80,
+        "E": 70,
+        "H": 55,
+        "J": 40
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "chip",
+        "presisjon",
+        "scenario",
+        "elite"
+      ],
+      "coachNotater": "Visuell drill. Når spilleren ser hvor liten 1m faktisk er, kalibreres ambisjonsnivået. Vinner: høyest antall innenfor av 2 sett. Brukes som avslutning av nærspill-økt."
+    },
+    {
+      "navn": "chip-til-putter-gate",
+      "beskrivelse": "Sett to tees 30cm fra hverandre 4m foran ballen som 'putter gate'. Chip 10 baller — målet er at ballen lander før gate og ruller gjennom. Trener landing-spot + roll-prediksjon.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "K",
+      "maxKategori": "B",
+      "minHcp": 0,
+      "maxHcp": 36,
+      "environment": [
+        "BANE",
+        "BANE"
+      ],
+      "utstyr": [
+        "wedge",
+        "10-baller",
+        "2-tees"
+      ],
+      "varighetMin": 20,
+      "intensitet": 3,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "chip-landing-zone-tau"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "C": 78,
+        "E": 68,
+        "H": 55,
+        "K": 40
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "chip",
+        "landing-spot",
+        "roll-prediction"
+      ],
+      "coachNotater": "Når spilleren må gjennom en gate, ser de hvor mye en chip ruller. De fleste underestimater roll med wedge. Lær dem at 1/3 carry + 2/3 roll er standard PW-chip."
+    },
+    {
+      "navn": "chip-eye-on-landing-spot",
+      "beskrivelse": "Chip 10 baller fra 8m, men: hold øynene fiksert på landing-spot (ikke flagg, ikke ball). Føler at hjernen automatisk justerer kraft. Bruk PW. Etter 10 baller, prøv 5 med øynene på ball — sammenlign.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 45,
+      "environment": [
+        "BANE",
+        "BANE"
+      ],
+      "utstyr": [
+        "wedge",
+        "15-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 3,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 88,
+        "C": 78,
+        "E": 68,
+        "H": 55,
+        "J": 40
+      },
+      "videoUrl": null,
+      "kilde": "Stan Utley, AK Golf Academy",
+      "tags": [
+        "chip",
+        "visualisering",
+        "mental",
+        "touch-shot"
+      ],
+      "coachNotater": "Utleys metode. Hjernen kalibrerer ned-i-fokus mot målet, ikke ballen. Funker ekstra bra på spillere som mister kontakt under press — øynene tar over når teknikken vakler."
+    },
+    {
+      "navn": "chip-en-arm-hoyre-strekk",
+      "beskrivelse": "Chip 5 baller med kun høyre arm (for høyrehendt) — vinkler 90° i albuen, ingen wrist. Bygger føling for clubhead-kontroll. PW fra 5m. Krever fokus, og avslører umiddelbart hvis spilleren bruker for mye hender.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "K",
+      "maxKategori": "B",
+      "minHcp": 0,
+      "maxHcp": 36,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "wedge",
+        "5-baller"
+      ],
+      "varighetMin": 10,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 3,
+      "defaultReps": 5,
+      "csTargetByKategori": {
+        "A": 85,
+        "C": 75,
+        "E": 65,
+        "H": 55,
+        "K": 40
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "chip",
+        "en-arm",
+        "isolasjon",
+        "fundament"
+      ],
+      "coachNotater": "5 baller per sett er nok — armen blir sliten fort, og når den blir sliten, ser du dårlige vaner. Brukes i kombinasjon med en-arm-venstre for å bygge balanse mellom hendene."
+    },
+    {
+      "navn": "chip-stoppoint-kontroll",
+      "beskrivelse": "Sett en stick 3m foran flagget. Chip 10 baller fra 8m som MÅ stoppe før sticken (ikke rulle gjennom). Trener bremset roll med høyere ball-flight. Bruk SW 56° eller LW.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 30,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "10-baller",
+        "stick"
+      ],
+      "varighetMin": 20,
+      "intensitet": 4,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 80,
+        "C": 75,
+        "D": 70,
+        "E": 65,
+        "H": 50
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "chip",
+        "spin-control",
+        "tucked-pin",
+        "elite"
+      ],
+      "coachNotater": "Når flagget står bakerst på green og du må stoppe ballen tidlig, trenger du denne kontrollen. Krever ren kontakt for spin. Hvis spilleren ikke får ball til å stoppe, mangler de typisk ren impact eller bruker for lite loft."
+    },
+    {
+      "navn": "chip-tilbakespinn-isolert",
+      "beskrivelse": "Fra 10m unna green: SW eller LW, åpen face. Mål: chip med så mye spin at ballen lander, hopper én gang, og spinner tilbake mot deg. 8 baller. Krever ren impact og fresh wedge-grooves.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 20,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "lw",
+        "8-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "chip-stoppoint-kontroll"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 80,
+        "C": 75,
+        "D": 70,
+        "E": 65,
+        "F": 55
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "chip",
+        "spin",
+        "wedge-finesse",
+        "elite"
+      ],
+      "coachNotater": "Eliteferdighet. Krever 1) ren kontakt på bunnen av face, 2) tilstrekkelig hastighet, 3) friske grooves, 4) tørr ball. Ikke kjør denne med slitne wedges — spinnen kommer ikke. Brukes som motivasjon for spillere som vil ha 'tour-spinn'."
+    },
+    {
+      "navn": "chip-bare-en-tee-frem",
+      "beskrivelse": "Sett en tee i bakken 5cm foran ballen. Chip 10 baller — clubhead må gå frem og over tee, ikke under. Hindrer scooping og lærer descending blow.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "L",
+      "maxKategori": "C",
+      "minHcp": 0,
+      "maxHcp": 54,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "wedge",
+        "10-baller",
+        "1-tee"
+      ],
+      "varighetMin": 15,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "C": 75,
+        "F": 60,
+        "I": 45,
+        "L": 30
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "chip",
+        "scooping-fix",
+        "fundament",
+        "descending-blow"
+      ],
+      "coachNotater": "Hvis spilleren slår tee'n bakover, scooper de. Hvis de slår tee'n fremover, har de descending blow. Visuell feedback på 1 sekund — perfekt for nybegynnere."
+    },
+    {
+      "navn": "chip-hatt-pa-ball-trick",
+      "beskrivelse": "Legg en cap over ballen slik at toppen dekker ballen. Chip — clubhead må ned-og-frem under cap'en. Funker som mental cue mot scooping. 10 baller, PW.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "L",
+      "maxKategori": "D",
+      "minHcp": 10,
+      "maxHcp": 54,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "wedge",
+        "10-baller",
+        "caps"
+      ],
+      "varighetMin": 10,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 80,
+        "C": 70,
+        "F": 55,
+        "I": 40,
+        "L": 25
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "chip",
+        "scooping-fix",
+        "junior",
+        "fundament"
+      ],
+      "coachNotater": "Funker spesielt godt på junior og nybegynnere som scooper. Hatten er fjernet etter første contact — visuell, morsom og effektiv. Ikke mer enn 2-3 sett, da blir det kjedelig."
+    },
+    {
+      "navn": "chip-15m-pw-vs-7jern",
+      "beskrivelse": "Fra 15m off green. Chip 5 med PW (mer carry, lite roll) og 5 med 7-jern (lite carry, mye roll). Lik landing-spot på begge. Lærer at 7-jern noen ganger er bedre fra lengre off-green.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 45,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "7-jern",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 3,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "chip-3-kluber-samme-distanse"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "C": 78,
+        "E": 68,
+        "H": 55,
+        "J": 40
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "chip",
+        "bump-and-run",
+        "klubbvalg",
+        "lengde"
+      ],
+      "coachNotater": "Bump-and-run med 7-jern er undervurdert i Norge. Når greenen er flat og du har mye green å jobbe med, gir 7-jern mer forutsigbart resultat. Spilleren bør telle 'opp og ned' med begge."
+    },
+    {
+      "navn": "chip-driver-fra-fringe",
+      "beskrivelse": "Fra fringe rundt green: chip med DRIVER. Sett ballen midt i stance, hender foran, putter-stroke. Ballen ruller som en putt over fringe. 10 baller fra 6m utenfor green.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 45,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "driver",
+        "10-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 3,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "C": 75,
+        "E": 65,
+        "H": 50,
+        "J": 35
+      },
+      "videoUrl": null,
+      "kilde": "Tiger Woods, AK Golf Academy",
+      "tags": [
+        "chip",
+        "specialty",
+        "scenario",
+        "bump-and-run"
+      ],
+      "coachNotater": "Tigers favoritt-trick fra fringe. Driver-face er nesten flat, så ballen ruller perfekt som putt. Når putter ikke når over fringe, men chip er for risikabelt — bruk driver. Krever roligpendelstroke."
+    },
+    {
+      "navn": "chip-uphill-til-green",
+      "beskrivelse": "Fra 10m unna med oppoverbakke til green: chip 10 baller. Velg klubb med mer loft (LW) for å holde ball trajectory høy nok. Ball-posisjon litt frem av midten. Trener hvordan hangen påvirker klubbvalg.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 45,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "lw",
+        "sw",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 4,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "C": 78,
+        "E": 68,
+        "H": 55,
+        "J": 40
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "chip",
+        "uphill",
+        "lieforhold",
+        "klubbvalg"
+      ],
+      "coachNotater": "Spillere undervurderer hvor mye en oppoverbakke reduserer roll. Trenger mer carry. Hvis spilleren chips kort, sjekk om de tar høyde for hangen. Mer loft = løsning."
+    },
+    {
+      "navn": "chip-downhill-til-green",
+      "beskrivelse": "Fra 10m unna med nedoverbakke til green: chip 10 baller. Ball-posisjon bakerst i stance, hender godt foran. Mindre loft, mer rull. Trener kontroll på vanskeligste lie i nærspill.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 30,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "sw",
+        "10-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 80,
+        "C": 75,
+        "D": 70,
+        "E": 65,
+        "H": 50
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "chip",
+        "downhill",
+        "lieforhold",
+        "elite"
+      ],
+      "coachNotater": "Vanskeligste lie i nærspill. Spilleren må akseptere mer roll og sikte lengre kort. Hvis de prøver å løfte ballen, tynner de. Hold descending blow gjennom impact."
+    },
+    {
+      "navn": "chip-sidehill-ball-over-fotter",
+      "beskrivelse": "Ball over føttene (oppoverhang sidelengs). Chip 8 baller. Stå mer oppreist, sving flatere, sikt litt høyre (ballen drar venstre). PW eller SW.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 30,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "wedge",
+        "8-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 4,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 80,
+        "C": 75,
+        "D": 70,
+        "E": 65,
+        "H": 50
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "chip",
+        "sidehill",
+        "lieforhold",
+        "elite"
+      ],
+      "coachNotater": "Ball over føttene = ball drar venstre. Spilleren må sikte høyre for å kompensere. Mange glemmer dette og missser konsistent venstre. Krever 8-10 reps før følelse setter seg."
+    },
+    {
+      "navn": "chip-sidehill-ball-under-fotter",
+      "beskrivelse": "Ball under føttene (nedoverhang sidelengs). Chip 8 baller. Bøy mer i knærne, hold balanse, sikt litt venstre (ballen drar høyre). PW eller SW.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 30,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "wedge",
+        "8-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 4,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 80,
+        "C": 75,
+        "D": 70,
+        "E": 65,
+        "H": 50
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "chip",
+        "sidehill",
+        "lieforhold",
+        "elite"
+      ],
+      "coachNotater": "Ball under føttene = ball drar høyre. Vanskeligere balanse enn ball-over. Hvis spilleren strekker armene for å nå ballen, mister de wrist-vinkler. Bøy knærne i stedet."
+    },
+    {
+      "navn": "chip-fra-divot-tight",
+      "beskrivelse": "Plasser ballen i en divot eller på et sandet område. Chip 8 baller. Ball-posisjon bakerst, hender foran, descending blow. PW. Lærer ren impact når lien er ugjestmild.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 25,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "8-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 4,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "chip-tight-lie-pw-vs-sw"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 82,
+        "B": 77,
+        "C": 72,
+        "D": 67,
+        "E": 62,
+        "G": 50
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "chip",
+        "from-bare-lie",
+        "scenario",
+        "elite"
+      ],
+      "coachNotater": "Ekte banespill-scenario. Spillere mister ofte kontroll når lien ser dårlig ut. Denne drill'en bygger trygghet. Akseptér lavere flight og mer roll — det er prisen."
+    },
+    {
+      "navn": "chip-fra-rough-light",
+      "beskrivelse": "Fra lett rough (4-6cm) 8m unna green: chip 10 baller. Bruk SW for mer loft og hold clubface litt åpen — gresset fanger heel-siden. Lærer hvordan rough endrer kontakt.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 45,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 3,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "C": 78,
+        "E": 68,
+        "H": 55,
+        "J": 40
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "chip",
+        "from-rough",
+        "scenario"
+      ],
+      "coachNotater": "Gress lukker face — så åpne den i setup. Ellers blir kontakten 'fett' og ballen kommer kort. Be spilleren føle clubface peke mot himmelen ved address."
+    },
+    {
+      "navn": "chip-fra-rough-tykk",
+      "beskrivelse": "Fra tykk rough (10-15cm) 6m unna green: chip 8 baller. Bruk LW eller SW, åpen face, sving aggressivt — gresset stopper clubhead. Spill mer som mini-bunker-slag. Akseptér variabilitet.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 30,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "lw",
+        "sw",
+        "8-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "chip-fra-rough-light"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 80,
+        "B": 75,
+        "C": 70,
+        "D": 65,
+        "E": 60,
+        "H": 45
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "chip",
+        "from-rough",
+        "scenario",
+        "elite"
+      ],
+      "coachNotater": "Fra tykk rough kan du ikke regne med stop på green. Aksepter at ballen flyr lavere og ruller mer. Spillere som prøver å treffe rent fra tykk rough, fetter eller skanker — du MÅ akseptere at gresset er mellom face og ball."
+    },
+    {
+      "navn": "chip-fra-pinestrand-eller-tre",
+      "beskrivelse": "Plasser ball under et tre eller bak hindring. Chip 8 baller med PW eller 9-jern — lav trajectory, mye roll. Mål: ballen MÅ holde seg under maks 1m høyde. Trener punch-chip.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 30,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "9-jern",
+        "8-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 4,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 80,
+        "C": 75,
+        "D": 70,
+        "E": 65,
+        "H": 50
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "chip",
+        "punch",
+        "bump-and-run",
+        "scenario"
+      ],
+      "coachNotater": "Punch-chip krever ball bak i stance, hands forward, kort follow-through (stop midt-vei). Spilleren oppdager at de ofte kan bruke 7-jern eller 8-jern i stedet for wedge når trajectory må være lav."
+    },
+    {
+      "navn": "chip-50-baller-til-ulike-flagg",
+      "beskrivelse": "Marathon-økt: chip 50 baller fra ulike posisjoner til 5 forskjellige flagg (10 per flagg) på 30 minutter. Bytt lie, klubb, distanse hele tiden. Trener volum og mental utholdenhet i nærspillet.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 25,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "wedge-sett",
+        "50-baller"
+      ],
+      "varighetMin": 45,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "chip-clock-12-distanser"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 50,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 80,
+        "C": 75,
+        "D": 70,
+        "E": 65,
+        "G": 50
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "chip",
+        "volum",
+        "scenario",
+        "elite",
+        "kombinert"
+      ],
+      "coachNotater": "Elite-volumøkt. Jeg bruker dette siste uken før turnering. Spillere som klarer denne med god kvalitet, har trygt nærspill. Hvis trøttheten gir dårligere kontakt etter 30, vet vi at fysikken er svak."
+    },
+    {
+      "navn": "chip-en-kontinuerlig-bevegelse",
+      "beskrivelse": "Chip 10 baller hvor backswing og forswing er én flytende bevegelse uten pause på toppen. Trener tempo og fjerner deceleration. PW fra 8m. Tempo som en pendel — 1-2 telling.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "K",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "BANE",
+        "BANE"
+      ],
+      "utstyr": [
+        "wedge",
+        "10-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "C": 78,
+        "E": 68,
+        "H": 55,
+        "K": 40
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "chip",
+        "tempo",
+        "fundament"
+      ],
+      "coachNotater": "Deceleration er årsak nr 1 til dårlige chips. Når spilleren tar pause på toppen, slutter de å akselerere. Pendel-tempo løser dette. Tell høyt '1-2' hvis spilleren er tempo-utfordret."
+    },
+    {
+      "navn": "chip-kortere-finish-enn-backswing",
+      "beskrivelse": "Chip 10 baller hvor follow-through er KORTERE enn backswing. Pisker ballen forover med konsentrasjon. Lærer skarpere ball-flight og bedre kontakt på tight lies. PW fra 7m.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 30,
+      "environment": [
+        "BANE",
+        "BANE"
+      ],
+      "utstyr": [
+        "wedge",
+        "10-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 4,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "chip-hands-forward-shaft-lean"
+      ],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 80,
+        "C": 75,
+        "D": 70,
+        "E": 65,
+        "H": 50
+      },
+      "videoUrl": null,
+      "kilde": "Seve Ballesteros - Natural Golf",
+      "tags": [
+        "chip",
+        "punch",
+        "tucked-pin",
+        "elite"
+      ],
+      "coachNotater": "Seve-stil — kort follow-through gir lav, kontrollert ball. Brukt når flagg er tæt og du må stoppe ballen. Krever akselerasjon gjennom ball — ikke deceleration. Forskjellen er nyansert."
+    },
+    {
+      "navn": "chip-tucked-pin-frontale",
+      "beskrivelse": "Flagg står 3m inne på green (tucked) fra din side. Chip 10 baller fra 10m. Må stoppe ballen tidlig. Bruk LW eller åpen SW. Sett landing-spot på fringe-kanten for å kjøpe spinn.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 20,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "lw",
+        "sw",
+        "10-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "chip-stoppoint-kontroll"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 80,
+        "C": 75,
+        "D": 70,
+        "E": 65,
+        "F": 55
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "chip",
+        "tucked-pin",
+        "scenario",
+        "elite"
+      ],
+      "coachNotater": "Klassisk pressure-situasjon. Spilleren må velge: høy ball (LW) eller lav ball med mye spinn (SW). Begge funker, men ulike risikoprofiler. La spilleren prøve begge og velge sin foretrukne."
+    },
+    {
+      "navn": "chip-blind-flagg-bak-bunker",
+      "beskrivelse": "Flagg ligger 5m bak bunker, ute av syne. Chip 10 baller fra 12m unna over bunker. Bruk visualisering — bestem landing-spot på den synlige delen av green og 'føl' resten. SW eller LW.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 25,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "lw",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 4,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 80,
+        "C": 75,
+        "D": 70,
+        "E": 65,
+        "G": 50
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "chip",
+        "scenario",
+        "visualisering",
+        "elite"
+      ],
+      "coachNotater": "Blind shots krever full commit. Spilleren må gå og titte på flagget før slag, og tegne en mental bilde av hvor ballen skal lande. Hvis de slår uten visualisering, blir det glipp."
+    },
+    {
+      "navn": "pitch-klokke-9-til-3",
+      "beskrivelse": "Pitch 12 baller fra 25m unna med 9-til-3-sving (backswing til klokken 9, follow-through til klokken 3). Standard pitch-bevegelse. Bruk SW. Mål: 9 av 12 innenfor 3m fra flagg.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 45,
+      "environment": [
+        "BANE",
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "12-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 4,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 12,
+      "csTargetByKategori": {
+        "A": 88,
+        "C": 78,
+        "E": 68,
+        "H": 55,
+        "J": 40
+      },
+      "videoUrl": null,
+      "kilde": "Dave Pelz Short Game Bible",
+      "tags": [
+        "pitch",
+        "fundament",
+        "distance-control"
+      ],
+      "coachNotater": "Klokke-systemet er grunnlaget for distance-control. 9-til-3 = ca 25m. 10-til-2 = ca 40m. 11-til-1 = full pitch. Spilleren må fysisk føle de tre lengdene før kalibrering."
+    },
+    {
+      "navn": "pitch-klokke-10-til-2",
+      "beskrivelse": "Pitch 12 baller fra 40m med 10-til-2-sving. Backswing til klokken 10, follow-through speilende. Bruk SW. Trener mellomlangs pitch-distanse.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 45,
+      "environment": [
+        "BANE",
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "12-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 4,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "pitch-klokke-9-til-3"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 12,
+      "csTargetByKategori": {
+        "A": 88,
+        "C": 78,
+        "E": 68,
+        "H": 55,
+        "J": 40
+      },
+      "videoUrl": null,
+      "kilde": "Dave Pelz Short Game Bible",
+      "tags": [
+        "pitch",
+        "distance-control",
+        "fundament"
+      ],
+      "coachNotater": "Mid-distance pitch. Spilleren skal IKKE øke svinghastighet for å få mer lengde — bare lengre sving. Hastighet skal være konstant pendel-tempo. Hvis spilleren akselerer, mister de kontroll."
+    },
+    {
+      "navn": "pitch-klokke-11-til-1",
+      "beskrivelse": "Pitch 10 baller fra 55m med 11-til-1-sving (nesten full sving). SW. Lærer maks pitch-distanse uten å gå inn i 'full swing'. Mål: 7 av 10 innenfor 5m fra flagg.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 30,
+      "environment": [
+        "BANE",
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "10-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 4,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "pitch-klokke-10-til-2"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 83,
+        "C": 78,
+        "D": 73,
+        "E": 68,
+        "H": 55
+      },
+      "videoUrl": null,
+      "kilde": "Dave Pelz Short Game Bible",
+      "tags": [
+        "pitch",
+        "distance-control",
+        "lengde"
+      ],
+      "coachNotater": "Mange spillere kjenner kun 'full' og 'halv'. 11-til-1 fyller hullet. På kamp er dette nyttig på 45-60m, hvor du ikke vil ha full SW. Loggfør distanse per spiller."
+    },
+    {
+      "navn": "pitch-3-distanser-3-klubber-matrise",
+      "beskrivelse": "Pitch-matrise: 3 distanser (25m, 40m, 60m) × 3 klubber (GW, SW, LW) = 9 kombinasjoner. Slå 5 baller per kombinasjon (45 baller totalt). Loggfør gjennomsnittlig carry per kombo. Bygger personlig pitch-tabell.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 25,
+      "environment": [
+        "BANE",
+        "BANE"
+      ],
+      "utstyr": [
+        "gw",
+        "sw",
+        "lw",
+        "45-baller"
+      ],
+      "varighetMin": 60,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "pitch-klokke-11-til-1"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 45,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 83,
+        "C": 78,
+        "D": 73,
+        "E": 68,
+        "G": 55
+      },
+      "videoUrl": null,
+      "kilde": "Dave Pelz Short Game Bible, AK Golf Academy",
+      "tags": [
+        "pitch",
+        "distance-control",
+        "yardage-book",
+        "elite"
+      ],
+      "coachNotater": "Output: spilleren har 9 personlige carry-tall. Limes i yardage-book. På kamp velger de klubb + swinglengde ut fra tallene, ikke følelse. Kategori A-spillere SKAL ha denne tabellen oppdatert."
+    },
+    {
+      "navn": "pitch-30m-til-fairway-zone",
+      "beskrivelse": "Marker en 5m × 5m zone på fairway 30m fra spillerposisjon. Pitch 10 baller — alle MÅ lande innenfor zone. SW. Trener vertikal kontroll uten green som distraksjon.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 45,
+      "environment": [
+        "BANE",
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "10-baller",
+        "4-markorer"
+      ],
+      "varighetMin": 15,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "C": 75,
+        "E": 65,
+        "H": 55,
+        "J": 40
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "pitch",
+        "zone-trening",
+        "presisjon"
+      ],
+      "coachNotater": "Når spilleren ikke har flagg å sikte mot, må de stole på distance-kalibrering. Hvis flere baller missser kort, er svingen for myk. Lang = for hardt grep / for mye kropp."
+    },
+    {
+      "navn": "pitch-30m-stoppe-paa-5-skritt",
+      "beskrivelse": "Pitch 8 baller fra 30m. Etter hver ball: gå frem og tell skritt fra landing-spot til stop. Mål: alle stopper innenfor 5 skritt. Trener spinn og prediktiv roll. SW med åpen face.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 30,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "8-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 4,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "pitch-klokke-9-til-3"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 80,
+        "C": 75,
+        "D": 70,
+        "E": 65,
+        "H": 50
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "pitch",
+        "spin-control",
+        "wedge-finesse",
+        "elite"
+      ],
+      "coachNotater": "Spinn = ren kontakt + face-speed + grooves. Hvis ballen ruller mer enn 5 skritt, mangler det én av disse. Spilleren går og måler selv — feedback-loop er kort og effektiv."
+    },
+    {
+      "navn": "pitch-aapen-face-hoeyt-mac-ogrady",
+      "beskrivelse": "MORAD-stil pitch: åpne clubface til 45° før grip. Sving aggressivt med høy ball-flight. SW eller LW. 10 baller fra 25m. Lærer Mac O'Grady høy-trajectory pitch.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 25,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "lw",
+        "10-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 80,
+        "C": 75,
+        "D": 70,
+        "E": 65,
+        "G": 50
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:short-game-wet-conditions",
+      "tags": [
+        "pitch",
+        "MORAD",
+        "lob",
+        "wedge-finesse"
+      ],
+      "coachNotater": "MORAD-prinsipp: face opens P1.0, stays open through impact. Skummelt for nybegynnere — ballen 'føles' som den vil skanke. Men når åpen face + ren swing kombineres, kommer ballen høyt og stopper raskt."
+    },
+    {
+      "navn": "pitch-wet-conditions-hoy-trajectory",
+      "beskrivelse": "Vått short game-scenario: hev hender og butt-of-club 2-3 tommer ved address. Klubbface åpen P1-P7. Ball-posisjon N-0, stå lengre fra ball. Pitch 8 baller med 56°. Trekker ballen som fra fairway-bunker.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 25,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "8-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 4,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 80,
+        "C": 75,
+        "D": 70,
+        "E": 65,
+        "G": 50
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:short-game-wet-conditions",
+      "tags": [
+        "pitch",
+        "wet",
+        "MORAD",
+        "specialty"
+      ],
+      "coachNotater": "Seve Fix for wet conditions. Vann under ballen lager flyer — ballen hopper og ruller over green. Løsning: høy trajectory + minimal divot. Be spilleren plukke ballen som fra en fairway bunker."
+    },
+    {
+      "navn": "pitch-flop-hoeyt-stoppe-raskt",
+      "beskrivelse": "Flop-pitch fra 15m: stå åpen, ball foran i stance, face fullt åpen (peker mot himmel), sving aggressivt med høy hånd-action. 8 baller med LW. Mål: ball stopper innen 2m fra landing.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "E",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "lw",
+        "8-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "pitch-aapen-face-hoeyt-mac-ogrady"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 82,
+        "B": 77,
+        "C": 72,
+        "D": 64,
+        "E": 55
+      },
+      "videoUrl": null,
+      "kilde": "Phil Mickelson, AK Golf Academy",
+      "tags": [
+        "pitch",
+        "lob",
+        "flop",
+        "elite",
+        "tucked-pin"
+      ],
+      "coachNotater": "Eliteferdighet. Krever 60° wedge, ren lie, og full commit. Hvis spilleren stopper sving på bunnen, fetter de eller skanker. SVING gjennom, lat clubhead jobbe. Brukes når flagg er tæt og du må stoppe ballen umiddelbart."
+    },
+    {
+      "navn": "pitch-flop-fra-rough",
+      "beskrivelse": "Flop fra lett rough 10m unna green: LW åpen face, ball frem i stance, sving aggressivt. Bonus: rough hjelper å løfte ballen. 8 baller. Lærer modifisert flop med gress-assistanse.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "E",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "lw",
+        "8-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "pitch-flop-hoeyt-stoppe-raskt"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 82,
+        "B": 76,
+        "C": 70,
+        "D": 63,
+        "E": 55
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "pitch",
+        "lob",
+        "flop",
+        "from-rough",
+        "elite"
+      ],
+      "coachNotater": "Litt enklere enn flop fra tight lie — rough'en gir noe luft under ballen. Men variabel kontroll fordi gresset endrer hvor mye spin du får. Ikke prøv denne i kamp uten å ha gjort 50+ reps i trening."
+    },
+    {
+      "navn": "pitch-30-40-50m-stiger",
+      "beskrivelse": "Stiger fra 30m, 40m, 50m mot tre flagg. 3 baller per stasjon, totalt 9 baller. Roter mellom stasjonene. SW. Trener kalibrert distance-control på pitch-zone.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 30,
+      "environment": [
+        "BANE",
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "9-baller"
+      ],
+      "varighetMin": 30,
+      "intensitet": 4,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "pitch-klokke-9-til-3"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 9,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 83,
+        "C": 78,
+        "D": 73,
+        "E": 68,
+        "H": 55
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "pitch",
+        "ladder",
+        "distance-control",
+        "test"
+      ],
+      "coachNotater": "Klassisk distance-test. Mål: 3/3 ladder med under 3m feil per ball. Hvis ballene clusteres rundt én distanse uavhengig av target, har spilleren én favoritt-swinglengde og må jobbe med variasjon."
+    },
+    {
+      "navn": "pitch-mot-vinden",
+      "beskrivelse": "Pitch 8 baller i sterk motvind 30m. Bruk én mer klubb (GW i stedet for SW), ball litt bak i stance, hold ball lavere. Lærer vind-tilpasning i nærspill. Sammenlign med pitch uten vind.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 30,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "gw",
+        "sw",
+        "8-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 4,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "pitch-30-40-50m-stiger"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 80,
+        "C": 75,
+        "D": 70,
+        "E": 65,
+        "H": 50
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "pitch",
+        "scenario",
+        "wind",
+        "elite"
+      ],
+      "coachNotater": "Vind dreper ballen i lufta — spesielt med høyt lofted klubber. Lavere ball + mer klubb = mer kontroll. Spilleren oppdager at SW i sterk motvind blir uforutsigbar. Trene tilpasningen før kampdag i vind."
+    },
+    {
+      "navn": "pitch-medvind-trajectory",
+      "beskrivelse": "Pitch 8 baller i medvind 35m. Vind hjelper ballen — bruk én klubb mindre (LW i stedet for SW). Ball litt frem i stance, høyere ball flight. Lærer å utnytte vind i nærspill.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 30,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "lw",
+        "sw",
+        "8-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 3,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 80,
+        "C": 75,
+        "D": 70,
+        "E": 65,
+        "H": 50
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "pitch",
+        "scenario",
+        "wind"
+      ],
+      "coachNotater": "Mange undervurderer hvor mye medvind øker carry på pitch. Spilleren ender ofte lang. Vis at de skal bruke mindre klubb, ikke kortere sving. Bevarer tempo og kontroll."
+    },
+    {
+      "navn": "pitch-tucked-pin-bak-bunker",
+      "beskrivelse": "Flagg står 4m bak bunker, tucked side. Pitch 8 baller fra 25m unna over bunker. Krever høy trajectory + stoppe på kort plass. LW. Trener pressure-pitch.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 25,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "lw",
+        "sw",
+        "8-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "pitch-flop-hoeyt-stoppe-raskt"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 80,
+        "C": 75,
+        "D": 70,
+        "E": 65,
+        "G": 50
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "pitch",
+        "tucked-pin",
+        "scenario",
+        "elite"
+      ],
+      "coachNotater": "Klassisk turneringsscenario. Spilleren må velge: high-risk LW direkte til flagg, eller safe SW til midten av green. Ofte best å sikte 5m forbi flagg for å unngå bunker. Diskuter strategi før hvert slag."
+    },
+    {
+      "navn": "pitch-30m-uphill-green",
+      "beskrivelse": "Pitch til en green som ligger 3-5m høyere. 30m horisontalt + høydeforskjell. Bruk én klubb mer (GW i stedet for SW). Spilleren oppdager at uphill spiser ekstra carry. 8 baller.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 25,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "gw",
+        "sw",
+        "8-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 4,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 80,
+        "C": 75,
+        "D": 70,
+        "E": 65,
+        "G": 50
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "pitch",
+        "uphill",
+        "lieforhold",
+        "elite"
+      ],
+      "coachNotater": "Regelen: hver meter høydeforskjell = +1-1.5m horisontal carry. På 5m uphill: pitch som om green var 35m unna. Spillere som ikke kompenserer, kommer kort konsekvent."
+    },
+    {
+      "navn": "pitch-30m-downhill-green",
+      "beskrivelse": "Pitch til en green som ligger 3-5m lavere. Spilleren ser ned på flagg. Krever mindre klubb (LW i stedet for SW) og høyere ball flight for å lande mykt. 8 baller. Trener trajectory-kontroll.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 25,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "lw",
+        "sw",
+        "8-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 4,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 80,
+        "C": 75,
+        "D": 70,
+        "E": 65,
+        "G": 50
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "pitch",
+        "downhill",
+        "lieforhold",
+        "elite"
+      ],
+      "coachNotater": "Downhill pitch er vanskelig fordi ballen flyr lengre OG ruller mer. Bruk høyere loft + sikt kortere. Spillere som behandler dette som flat pitch flyr konsekvent green."
+    },
+    {
+      "navn": "pitch-foot-pressure-fremre",
+      "beskrivelse": "Pitch 10 baller fra 25m med 70% vekt på fremre fot gjennom hele svingen. Tvinger ned-og-frem impact. SW. Etter 10 baller, prøv normal vekt og kjenn forskjellen.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "K",
+      "maxKategori": "B",
+      "minHcp": 0,
+      "maxHcp": 36,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "10-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "C": 78,
+        "E": 68,
+        "H": 55,
+        "K": 40
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "pitch",
+        "vektoverforing",
+        "fundament"
+      ],
+      "coachNotater": "Pitch krever fremre vekt — ulik full sving der vekten dynamisk skifter. Hvis spilleren faller bakover gjennom impact, ser du tynne eller fete kontakter. Føle = 'foten fremre er skikkelig 'plantet'."
+    },
+    {
+      "navn": "pitch-belt-buckle-target",
+      "beskrivelse": "Pitch 10 baller. På finish skal beltespennen peke mot målet (rotert 45°+ fra start). Hvis spilleren stopper med beltet pekende mot ballen, mangler det kroppsrotasjon. SW fra 30m.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "K",
+      "maxKategori": "B",
+      "minHcp": 0,
+      "maxHcp": 36,
+      "environment": [
+        "BANE",
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "C": 78,
+        "E": 68,
+        "H": 55,
+        "K": 40
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "pitch",
+        "kroppsrotasjon",
+        "fundament"
+      ],
+      "coachNotater": "Pitch er IKKE en armsving — kroppen må rotere gjennom. Beltespennen er enkel visuell sjekk. Hvis den ikke kommer rundt, blir det kun arms og du mister konsistens på lengre pitches."
+    },
+    {
+      "navn": "pitch-en-arm-venstre-90grader",
+      "beskrivelse": "Pitch 5 baller med kun venstre arm (90° i albuen, ingen wrist). Bygger føling for arms-kropp-koordinasjon. SW fra 20m. Krever god setup — ellers blir det skanker.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 30,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "5-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 4,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 3,
+      "defaultReps": 5,
+      "csTargetByKategori": {
+        "A": 80,
+        "B": 75,
+        "C": 70,
+        "D": 65,
+        "E": 60,
+        "H": 45
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "pitch",
+        "en-arm",
+        "isolasjon",
+        "elite"
+      ],
+      "coachNotater": "Avansert isolasjons-drill. Venstre arm må jobbe sammen med kroppsrotasjon. Hvis armen henger igjen, slår spilleren skanker. Brukes 5 min som fundament-check, ikke som hovedøkt."
+    },
+    {
+      "navn": "pitch-tre-baller-samme-loft",
+      "beskrivelse": "Pitch 3 baller fra samme lie, samme klubb, samme swinglengde. Alle SKAL lande innenfor 2m fra hverandre. Trener konsistens og repeterbarhet. 5 sett av 3 baller = 15 totalt. SW fra 30m.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 30,
+      "environment": [
+        "BANE",
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "15-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 4,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "pitch-klokke-9-til-3"
+      ],
+      "defaultSets": 5,
+      "defaultReps": 3,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 83,
+        "C": 78,
+        "D": 73,
+        "E": 68,
+        "H": 55
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "pitch",
+        "konsistens",
+        "test"
+      ],
+      "coachNotater": "Konsistens-test. Hvis spillerens tre baller spres mer enn 5m, mangler de repeterbar bevegelse. Sett med kun 1 vellykket ut av 3 = må gå tilbake til klokke-systemet og bygge opp tempo igjen."
+    },
+    {
+      "navn": "pitch-from-fairway-divot",
+      "beskrivelse": "Plasser ballen i en fairway-divot 30m fra green. Pitch 8 baller. Krever ball-først kontakt med descending blow. Ball bak i stance, hands forward. PW eller GW (mindre bounce).",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 25,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "gw",
+        "8-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 4,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 82,
+        "B": 77,
+        "C": 72,
+        "D": 67,
+        "E": 62,
+        "G": 48
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "pitch",
+        "from-bare-lie",
+        "scenario",
+        "elite"
+      ],
+      "coachNotater": "Vanlig kamp-scenario. Spilleren må slå NED på ballen — ikke prøve å løfte. Akseptér lavere flight. SW med 14° bounce er feil her — bruk PW eller GW med mindre bounce."
+    },
+    {
+      "navn": "pitch-from-thick-rough-25m",
+      "beskrivelse": "Pitch fra tykk rough 25m unna green. SW med åpen face, sving aggressivt — gresset reduserer clubhead-speed. Akseptér 'flyer' (mindre spinn, mer roll). 8 baller. Lærer å lese rough.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 25,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "lw",
+        "8-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 82,
+        "B": 77,
+        "C": 72,
+        "D": 67,
+        "E": 62,
+        "G": 48
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "pitch",
+        "from-rough",
+        "scenario",
+        "elite"
+      ],
+      "coachNotater": "Tykk rough = uforutsigbar. Spillere må mentalt forberede 'flyer' og sikte tilsvarende kortere. Aggressiv sving — ikke decel når du ser problemet."
+    },
+    {
+      "navn": "pitch-spin-back-on-green",
+      "beskrivelse": "Pitch 8 baller fra 35m. Mål: ballen lander, hopper, og spinner tilbake 1-3m. Krever ren wedge-face, tørr ball, åpen swing-path. SW med åpen face. Eliteferdighet.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "E",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "lw",
+        "8-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "pitch-30m-stoppe-paa-5-skritt"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 82,
+        "B": 77,
+        "C": 72,
+        "D": 64,
+        "E": 55
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "pitch",
+        "spin",
+        "wedge-finesse",
+        "elite"
+      ],
+      "coachNotater": "Krevende, men spektakulær når det funker. Krever: 1) ren impact lower face, 2) face hastighet 25+ m/s, 3) friske grooves (under 50 timer brukt), 4) tørr ball. Kategori A-spillere bør kunne dette."
+    },
+    {
+      "navn": "pitch-check-spin-3m-roll",
+      "beskrivelse": "Pitch 10 baller fra 30m. Mål: ballen lander, ruller MAKS 3m forover etter første hopp. Mer realistisk enn spin-back. Trener 'check-spin' som er kjernen i pitch-kontroll. SW.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 25,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "10-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 4,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "pitch-30m-til-fairway-zone"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 80,
+        "C": 75,
+        "D": 70,
+        "E": 65,
+        "G": 50
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "pitch",
+        "spin-control",
+        "wedge-finesse",
+        "elite"
+      ],
+      "coachNotater": "Mer realistisk mål enn 'spin back'. Check-spin = ballen ruller litt, men stopper raskt. Spilleren lærer at det er nok. Ikke alle pitches MÅ spinne tilbake."
+    },
+    {
+      "navn": "pitch-belt-pivot-90grader",
+      "beskrivelse": "Pitch 10 baller. På backswing: belte roterer 45° venstre. På finish: belte roterer 45° høyre. Totalt 90° rotasjon over kroppen. SW fra 30m. Trener pivot uten arm-bias.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 45,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 4,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "C": 78,
+        "E": 68,
+        "H": 55,
+        "J": 40
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "pitch",
+        "kroppsrotasjon",
+        "fundament"
+      ],
+      "coachNotater": "Body pivot er undervurdert i pitch. Mange spillere er kun arms. Når kroppen leder, kommer impact stabilt. Be spilleren VENTE med armene til pivotet starter — det er vanskelig men funker."
+    },
+    {
+      "navn": "pitch-pre-shot-rutine-3-step",
+      "beskrivelse": "Før hver pitch, 3-step rutine: 1) bestem landing-spot, 2) gjør 1 øvingsving føl klubbhastighet, 3) gå frem og slå uten å tenke. 10 baller fra 30m. Trener mental rutine.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 30,
+      "environment": [
+        "BANE",
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 3,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 85,
+        "C": 80,
+        "D": 75,
+        "E": 70,
+        "H": 55
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "pitch",
+        "pre-shot-rutine",
+        "mental"
+      ],
+      "coachNotater": "Konsistens i nærspill = konsistens i pre-shot rutine. Spillere som hopper rett til slag, mister kalibrering. 3-step rutine tar 8 sekunder. Lær spilleren å bruke den HVERT slag i trening."
+    },
+    {
+      "navn": "pitch-feel-shot-30m-eyes-closed",
+      "beskrivelse": "Pitch 5 baller fra 30m. Etter setup: lukk øynene og slå. Trener kroppens kalibrering uten visuell distraksjon. SW. Føl tempo og kontakt, ikke resultat. Etterpå sammenlign med 5 normale slag.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 25,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "10-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 3,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 5,
+      "csTargetByKategori": {
+        "A": 80,
+        "B": 75,
+        "C": 70,
+        "D": 65,
+        "E": 60,
+        "G": 45
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "pitch",
+        "feel",
+        "touch-shot",
+        "mental"
+      ],
+      "coachNotater": "Avansert føling-drill. De fleste blir overrasket over hvor godt de slår med lukkede øyne — beviser at hjernen kalibrerer. Lærer å stole på føling i pressure-situasjoner."
+    },
+    {
+      "navn": "pitch-2-ball-progression-test",
+      "beskrivelse": "Pitch 2 baller per posisjon fra 5 ulike avstander (20, 30, 40, 50, 60m). Mål: begge ballene innenfor 4m fra flagg på alle 5 stasjoner. 10 baller totalt. Eliteferdighet.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 20,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "lw",
+        "10-baller"
+      ],
+      "varighetMin": 30,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "pitch-3-distanser-3-klubber-matrise"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 80,
+        "C": 75,
+        "D": 68,
+        "E": 60,
+        "F": 50
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "pitch",
+        "test",
+        "distance-control",
+        "elite"
+      ],
+      "coachNotater": "Hard test. 10/10 innenfor 4m = elite-nivå. 7-8/10 = solid. Under 5 = må jobbe med konsistens. Bruk denne månedlig som status-check for eliteSpillere."
+    },
+    {
+      "navn": "pitch-cover-flag-distance-test",
+      "beskrivelse": "Pitch 8 baller fra 35m. Mål: 6 av 8 dekker flagget på hopp 1 (ikke kommer kort). Forutsetter at spilleren kalibrerer fly-distance, ikke total-distance. SW.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 25,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "8-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 4,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "pitch-klokke-9-til-3"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 83,
+        "C": 78,
+        "D": 73,
+        "E": 68,
+        "G": 50
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "pitch",
+        "carry-control",
+        "test",
+        "elite"
+      ],
+      "coachNotater": "Pitches som kommer kort er årsak nr 1 til bogeys på par 4-er. Spillere må kalibrere carry-distance, ikke 'total'. Denne testen avslører om de gjør det."
+    },
+    {
+      "navn": "pitch-spin-vs-roll-3-klubber",
+      "beskrivelse": "Pitch 3 baller hver med PW, SW, LW fra 30m. Loggfør: carry, hopp 1, total stop. Ser hvor mye spinn-control hver klubb gir. 9 baller. Bygger personlig pitch-kart.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 30,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "sw",
+        "lw",
+        "9-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 4,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 9,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 83,
+        "C": 78,
+        "D": 73,
+        "E": 68,
+        "H": 55
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "pitch",
+        "klubbvalg",
+        "spin-control",
+        "test"
+      ],
+      "coachNotater": "Output: spilleren vet at LW spinner mest men ruller lite, PW spinner lite men har mer carry-roll ratio. Bruker dette i kamp ved klubbvalg basert på flagg-posisjon."
+    },
+    {
+      "navn": "pitch-knock-down-low-trajectory",
+      "beskrivelse": "Knock-down pitch: ball bak i stance, hender godt foran, kort follow-through. Lav ball-flight. 8 baller med PW eller 9-jern fra 40m. Brukt i vind eller under hindringer.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 25,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "9-jern",
+        "8-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 4,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 80,
+        "C": 75,
+        "D": 70,
+        "E": 65,
+        "G": 50
+      },
+      "videoUrl": null,
+      "kilde": "Seve Ballesteros, MORAD",
+      "tags": [
+        "pitch",
+        "knock-down",
+        "MORAD",
+        "scenario"
+      ],
+      "coachNotater": "Seve's knock-down. Brukes for å holde ball under vind eller trær. Kort follow-through er nøkkelen — ikke følg gjennom høyt. Krever god kompresjon."
+    },
+    {
+      "navn": "pitch-tre-balls-progression-elite",
+      "beskrivelse": "Elite-test: 3 baller hver fra 20m, 30m, 40m, 50m. Stryk dårligste resultat per stasjon. Mål: gjennomsnitt under 3m fra flagg på beste 2 baller per stasjon. 12 baller totalt.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "E",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "lw",
+        "12-baller"
+      ],
+      "varighetMin": 30,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "pitch-2-ball-progression-test"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 12,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 79,
+        "C": 72,
+        "D": 64,
+        "E": 55
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "pitch",
+        "test",
+        "elite",
+        "distance-control"
+      ],
+      "coachNotater": "Tour-nivå test. Brukes kvartalsvis på Kategori A-spillere. Resultat tracker over måneder — vis spilleren hvordan presisjonen utvikler seg."
+    },
+    {
+      "navn": "pitch-aim-stick-target-line",
+      "beskrivelse": "Plasser alignment stick på bakken pekende mot target. Pitch 10 baller fra 30m. Stickens linje må samsvare med ballens initial flight. SW. Sjekker face-alignment.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 45,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "alignment-stick",
+        "10-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "C": 78,
+        "E": 68,
+        "H": 55,
+        "J": 40
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "pitch",
+        "alignment",
+        "fundament"
+      ],
+      "coachNotater": "Mange pitcher 5-10m off-target uten å vite det fordi alignment er feil. Stick gjør det visuelt åpenbart. Bruk denne som start på hver pitch-økt — 5 min check."
+    },
+    {
+      "navn": "pitch-paaslag-til-3-flag-random",
+      "beskrivelse": "Coach roper ut ett av 3 flagg (25m, 35m, 45m). Spilleren pitcher umiddelbart til riktig flagg. Trener rask kalibrering og adaptiv distance-control. 12 baller, random rekkefølge.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 25,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "lw",
+        "12-baller",
+        "3-flagg"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "pitch-3-distanser-3-klubber-matrise"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 12,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 83,
+        "C": 78,
+        "D": 73,
+        "E": 68,
+        "G": 50
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "pitch",
+        "scenario",
+        "random-training",
+        "elite"
+      ],
+      "coachNotater": "Random > blocked for transfer til kamp. Spilleren har ikke tid til å innstille seg — må stole på rutine. Hvis kvaliteten synker betydelig vs blocked, er teknikken ennå ikke automatisert."
+    },
+    {
+      "navn": "pitch-2-min-game-30m",
+      "beskrivelse": "På 2 minutter: pitch så mange baller du kan fra 30m. Hver ball innenfor 3m fra flagg = 1 poeng. Trener kvalitet under tidspress. Mål: 8+ poeng på 2 min.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 25,
+      "environment": [
+        "BANE",
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "30-baller",
+        "stoppeklokke"
+      ],
+      "varighetMin": 10,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 20,
+      "csTargetByKategori": {
+        "A": 80,
+        "B": 75,
+        "C": 70,
+        "D": 65,
+        "E": 60,
+        "G": 45
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "pitch",
+        "scenario",
+        "tidspress",
+        "test"
+      ],
+      "coachNotater": "Spillere som er gode 'isolert' men dårlige 'under press' avsløres her. Konkurranse-element. Brukes mellom intervaller i lengre økter — 2 min er ikke utmattende men krever fokus."
+    },
+    {
+      "navn": "bunker-splash-2-tommer-bak-ball",
+      "beskrivelse": "I bunker: tegn linje 2 tommer (5cm) bak ball. SW med åpen face. Sving og slå linja først — sand mellom clubhead og ball løfter ut. 10 baller. Fundament for greenside-bunker.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "K",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 4,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 90,
+        "C": 80,
+        "E": 70,
+        "H": 55,
+        "K": 40
+      },
+      "videoUrl": null,
+      "kilde": "Dave Pelz Short Game Bible",
+      "tags": [
+        "bunker",
+        "splash",
+        "fundament"
+      ],
+      "coachNotater": "Splash-teknikk er grunnleggende greenside-bunker. Spilleren MÅ ta sand før ball. Hvis de prøver å treffe ballen rent, skanker eller fetter de. Synger 'sand-først, sand-først' i hodet ved hvert slag."
+    },
+    {
+      "navn": "bunker-aapen-stance-aapen-face",
+      "beskrivelse": "Setup i greenside-bunker: stance åpen 30° venstre, clubface åpen 30° høyre. Mål: face peker mot målet selv om stance ikke gjør det. 8 baller med SW. Lærer fundamental bunker-setup.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "K",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "8-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 4,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 88,
+        "C": 78,
+        "E": 68,
+        "H": 55,
+        "K": 40
+      },
+      "videoUrl": null,
+      "kilde": "Dave Pelz Short Game Bible",
+      "tags": [
+        "bunker",
+        "setup",
+        "fundament"
+      ],
+      "coachNotater": "Setup er 70% av bunker-suksess. Hvis stance og face ikke er åpen, kan ikke spilleren bruke bounce. Sjekk alltid setup før første sving — mange justerer kun stance og glemmer face."
+    },
+    {
+      "navn": "bunker-circle-rundt-ball",
+      "beskrivelse": "Tegn en sirkel 20cm i diameter rundt ballen i sanden. SW. Mål: clubhead må INN i sirkelen, ikke direkte på ball. 10 baller. Visualiserer hvor mye sand som tas.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "L",
+      "maxKategori": "B",
+      "minHcp": 0,
+      "maxHcp": 54,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "C": 78,
+        "E": 68,
+        "H": 55,
+        "L": 35
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "bunker",
+        "fundament",
+        "junior"
+      ],
+      "coachNotater": "Visuell drill for spillere som er redde for bunker. Sirkelen viser at de IKKE skal treffe ballen — de skal treffe sanden. Beroligende for juniors og nybegynnere. Brukes som første bunker-drill noensinne."
+    },
+    {
+      "navn": "bunker-paaslag-fra-flat-lie",
+      "beskrivelse": "Standard greenside-bunker fra flat lie, 6m til flagg. SW, åpen stance, åpen face. Mål: 8 av 10 baller på green innenfor 3m. Trener kjernekompetanse.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "K",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 4,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "bunker-splash-2-tommer-bak-ball"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "C": 78,
+        "E": 68,
+        "H": 55,
+        "K": 40
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "bunker",
+        "fundament",
+        "test"
+      ],
+      "coachNotater": "Standard bunker-test. Tracker prosent på green. Spillere på 80%+ er trygge i bunker. Under 50% har grunnleggende problem — mest sannsynlig setup eller ikke nok sand før ball."
+    },
+    {
+      "navn": "bunker-15m-lang-distanse",
+      "beskrivelse": "Lang bunker-paaslag fra 15m. Krever lengre sving + samme akselerasjon. Bruk PW eller GW (mindre loft enn standard SW). 8 baller. Lærer kontroll på fairway/greenside-overgang.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 25,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "gw",
+        "sw",
+        "8-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 4,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "bunker-paaslag-fra-flat-lie"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 82,
+        "B": 77,
+        "C": 72,
+        "D": 67,
+        "E": 62,
+        "G": 48
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "bunker",
+        "lengde",
+        "klubbvalg",
+        "elite"
+      ],
+      "coachNotater": "Vanskelig — krever mer sving, mindre loft, men samme splash-teknikk. Mange bruker SW og kommer kort. Skift til PW/GW for 15m+. Akseptér variabilitet."
+    },
+    {
+      "navn": "bunker-uphill-mot-laeppe",
+      "beskrivelse": "Bunker med høy lippe foran ball. Setup tilpasses hangen: skuldre parallelt med slope, ball frem i stance, ekstra åpen face. 8 baller med SW. Trener bunker med dårlig stand.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 30,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "lw",
+        "8-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "bunker-paaslag-fra-flat-lie"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 82,
+        "B": 77,
+        "C": 72,
+        "D": 67,
+        "E": 62,
+        "H": 48
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "bunker",
+        "uphill",
+        "lieforhold",
+        "elite"
+      ],
+      "coachNotater": "Skuldre parallelt med slope er nøkkelen — ellers slår spilleren ned i lippe. Hangen kompenserer for det manglende loft. Krever mer sving fordi sanden 'fanger' clubhead."
+    },
+    {
+      "navn": "bunker-downhill-fra-bakkant",
+      "beskrivelse": "Bunker med nedoverhang (ballen ligger bak en haug). Skuldre parallelt med slope, ball bak i stance, hender foran. Krevende — clubhead vil 'gå i sand før ball'. 8 baller, SW.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 20,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "lw",
+        "8-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "bunker-uphill-mot-laeppe"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 78,
+        "B": 73,
+        "C": 68,
+        "D": 62,
+        "E": 55,
+        "F": 45
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "bunker",
+        "downhill",
+        "lieforhold",
+        "elite"
+      ],
+      "coachNotater": "Vanskeligste bunker-lie. Spilleren MÅ akseptere lav ball-flight og mer roll. Hvis de prøver å løfte, skanker. Trene dette tid før kamp — du vil ikke møte det første gang i turnering."
+    },
+    {
+      "navn": "bunker-bakhang-ball-foran-hoeyt",
+      "beskrivelse": "Bunker med bakhang — ballen er høyere enn føttene. Bruk mer åpen face, sett mer vekt på bakre fot. 8 baller med SW. Lærer balanse på krevende lie.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 25,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "8-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 4,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 82,
+        "B": 77,
+        "C": 72,
+        "D": 67,
+        "E": 62,
+        "G": 48
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "bunker",
+        "uphill",
+        "sidehill",
+        "lieforhold"
+      ],
+      "coachNotater": "Balanse er kritisk. Hvis spilleren faller frem under sving, skanker. Bredere stance + lavere center of gravity. Akseptér at ball kommer ut høy men kort."
+    },
+    {
+      "navn": "bunker-buried-fried-egg",
+      "beskrivelse": "Ball delvis nedi sand (buried/fried egg). Setup: ball forrest i stance, clubface STENGT (ikke åpen). Sving hardt rett ned. Akseptér lav, springende ball. 5 baller, SW.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 25,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "5-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "bunker-paaslag-fra-flat-lie"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 5,
+      "csTargetByKategori": {
+        "A": 75,
+        "B": 70,
+        "C": 65,
+        "D": 60,
+        "E": 55,
+        "G": 40
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "bunker",
+        "buried",
+        "scenario",
+        "elite"
+      ],
+      "coachNotater": "Unntaket fra alle andre regler. Closed face + ned-i-sand-aggressivt. Ballen ruller mye. Spillerne MÅ vite at de IKKE kan stoppe ballen — den ruller. Strategisk valg: sikt 5-8m kort av flagg."
+    },
+    {
+      "navn": "bunker-plug-bak-laeppe",
+      "beskrivelse": "Ball plugget bak høy lippe. Krever closed face og full kraft i nedslag for å lirke ballen ut. 5 baller, SW. Brukt som siste utvei — ofte må man bare 'få ballen ut av bunkeren'.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 20,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "5-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "bunker-buried-fried-egg"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 5,
+      "csTargetByKategori": {
+        "A": 70,
+        "B": 65,
+        "C": 60,
+        "D": 55,
+        "E": 50,
+        "F": 40
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "bunker",
+        "buried",
+        "scenario",
+        "elite"
+      ],
+      "coachNotater": "Pressure-situasjon. Spilleren må fokusere på 'ut av bunker' før 'nær flagg'. Akseptér double-bogey-risiko. Diskuter dette mentalt — ofte er det riktig å sikte sideveis ut, ikke direkte mot flagg."
+    },
+    {
+      "navn": "bunker-2-distanser-samme-sving",
+      "beskrivelse": "Slå 5 baller fra 5m og 5 baller fra 15m bunker-shot. Samme svinglengde — endre kun avstand til sand bak ball (mer sand = kortere, mindre sand = lengre). Lærer alternativ distance-control.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 25,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "10-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 4,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "bunker-paaslag-fra-flat-lie"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 80,
+        "C": 75,
+        "D": 70,
+        "E": 65,
+        "G": 48
+      },
+      "videoUrl": null,
+      "kilde": "Pelz Short Game Bible",
+      "tags": [
+        "bunker",
+        "distance-control",
+        "elite"
+      ],
+      "coachNotater": "Pelz' kjernemetodikk: variér sand-foran-ball, ikke svinglengde. Vanskeligere men gir mer konsistens. Spillere som mestrer dette får mer presise bunker-shots."
+    },
+    {
+      "navn": "bunker-svingstoerrelse-3-distanser",
+      "beskrivelse": "Alternativ metode til distance-control: 3 svinglengder (1/2, 3/4, full) fra samme posisjon i bunker. 3 baller per lengde, total 9. Loggfør carry per lengde. SW. Personalisert tabell.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 25,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "9-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 4,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "bunker-paaslag-fra-flat-lie"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 9,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 83,
+        "C": 78,
+        "D": 73,
+        "E": 68,
+        "G": 50
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "bunker",
+        "distance-control",
+        "yardage-book"
+      ],
+      "coachNotater": "Alternativ til 'mer/mindre sand'-metoden. Mange spillere foretrekker å variere svinglengde. Velg én metode, ikke begge. Resultater fra denne testen legges i yardage-book."
+    },
+    {
+      "navn": "bunker-thump-the-sand-mac",
+      "beskrivelse": "MORAD-stil: 'thump' sanden hardt 2 tommer bak ballen. Føl at clubhead bunner ut UNDER ballen, ikke gjennom. SW, 8 baller. Bygger trygghet i bunker via aggressiv kontakt med sand.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 30,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "8-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 4,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": true,
+      "prerequisites": [
+        "bunker-splash-2-tommer-bak-ball"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 83,
+        "C": 78,
+        "D": 73,
+        "E": 68,
+        "H": 50
+      },
+      "videoUrl": null,
+      "kilde": "MORAD",
+      "tags": [
+        "bunker",
+        "MORAD",
+        "splash",
+        "elite"
+      ],
+      "coachNotater": "MORAD-prinsipp: aggressive sand-kontakt. Spillere som deccel i bunker fetter eller skanker. Thump-følelsen tvinger akselerasjon. Føl bouncen jobbe."
+    },
+    {
+      "navn": "bunker-foot-pressure-bakre",
+      "beskrivelse": "Bunker-shot med 60% vekt på bakre fot (uvanlig i nærspill). Tillater clubhead å skli under ball. SW åpen face. 8 baller. Føler unik i forhold til chip/pitch — i bunker er bakre vekt OK.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "K",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "8-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 85,
+        "C": 75,
+        "E": 65,
+        "H": 55,
+        "K": 40
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "bunker",
+        "fundament",
+        "vektoverforing"
+      ],
+      "coachNotater": "I bunker SKAL vekten være bakre — motsatt av chip/pitch. Hvis spilleren overfører forover i bunker, slår de ned i bakre kant av ball og skanker. Be dem føle 'sitting back'."
+    },
+    {
+      "navn": "bunker-finishing-position-hoeyt",
+      "beskrivelse": "Etter bunker-shot: spilleren MÅ ende i høy finish med klubben pekende over skulder, ikke kort follow-through. 10 baller, SW. Tvinger full akselerasjon gjennom sand.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "K",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "10-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 4,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "bunker-paaslag-fra-flat-lie"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "C": 78,
+        "E": 68,
+        "H": 55,
+        "K": 40
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "bunker",
+        "akselerasjon",
+        "fundament"
+      ],
+      "coachNotater": "Decel er bunker-død. Høy finish tvinger fortsettelse av sving. Hvis spilleren stopper tidlig, lærer kroppen aldri akselerasjon. Sjekk finish-posisjon på alle slag."
+    },
+    {
+      "navn": "bunker-line-drawing-progression",
+      "beskrivelse": "Tegn 3 parallelle linjer i sanden, 5cm fra hverandre. Slå over hver linje uten ball først — føler clubhead går gjennom sand. Deretter legg ball over midtre linje og slå. 15 slag totalt.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "L",
+      "maxKategori": "C",
+      "minHcp": 0,
+      "maxHcp": 54,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "5-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 80,
+        "C": 70,
+        "F": 55,
+        "I": 45,
+        "L": 30
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "bunker",
+        "fundament",
+        "junior",
+        "progression"
+      ],
+      "coachNotater": "Bygger bunker-trygghet fra grunnen. Først føl sanden uten ball. Deretter legg ball til. Etter 10 slag UTEN ball lærer kroppen mekanikken. Brukes på nybegynnere som er redde for bunker."
+    },
+    {
+      "navn": "bunker-mot-stuck-pin-tucked",
+      "beskrivelse": "Bunker-shot mot tucked flagg (3m inne på green på din side). Krever maks åpen face + aggressiv sving. 6 baller med SW eller LW. Mål: 4/6 på green innenfor 4m.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "E",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "lw",
+        "6-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "bunker-paaslag-fra-flat-lie"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 6,
+      "csTargetByKategori": {
+        "A": 78,
+        "B": 73,
+        "C": 68,
+        "D": 59,
+        "E": 50
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "bunker",
+        "tucked-pin",
+        "scenario",
+        "elite"
+      ],
+      "coachNotater": "Klassisk turneringsscenario. LW med 60° loft gir mest kontroll. Akseptér at noen baller missser kort — det er bedre enn å fly green på tucked pin."
+    },
+    {
+      "navn": "bunker-vaat-sand",
+      "beskrivelse": "I våt/hard sand: bruk PW eller GW (mindre bounce), closed face, ball litt bak i stance. Sving brattere. Våt sand 'fanger' ikke clubhead som tørr sand. 6 baller. Lærer adaptasjon.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 25,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "gw",
+        "sw",
+        "6-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 4,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 6,
+      "csTargetByKategori": {
+        "A": 82,
+        "B": 77,
+        "C": 72,
+        "D": 67,
+        "E": 62,
+        "G": 48
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "bunker",
+        "wet",
+        "scenario",
+        "specialty"
+      ],
+      "coachNotater": "Våt sand er ofte hardpacket og 'avviser' SW med høy bounce. PW/GW kommer renere. Hvis SW spretter opp og skanker, bekrefter det at sand er for hard. Trene før kamp i regn."
+    },
+    {
+      "navn": "bunker-toer-loose-sand",
+      "beskrivelse": "I tørr, løs sand: SW med full bounce, åpen face, sving aggressivt — sanden er 'fluffy' og fanger clubhead. 8 baller. Sammenlign med våt-sand-drill. Bygger sand-leseegenskaper.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 25,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "8-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 4,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 80,
+        "C": 75,
+        "D": 70,
+        "E": 65,
+        "G": 50
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "bunker",
+        "scenario",
+        "sand-type"
+      ],
+      "coachNotater": "Tørr sand krever mer aggressive sving fordi sanden absorberer mer energi. Hvis spilleren slår mykt, kommer ballen kort. Mer akselerasjon, samme teknikk."
+    },
+    {
+      "navn": "bunker-fairway-50m-mid-iron",
+      "beskrivelse": "Fairway-bunker fra 50m: mid-iron (7-jern eller 8-jern), ball midt i stance, ren ball-først kontakt (ikke splash). Trener ren impact fra sand uten loft. 8 baller.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 25,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "7-jern",
+        "8-jern",
+        "8-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "bunker-paaslag-fra-flat-lie"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 80,
+        "C": 75,
+        "D": 70,
+        "E": 65,
+        "G": 48
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "bunker",
+        "fairway-bunker",
+        "lengde",
+        "elite"
+      ],
+      "coachNotater": "Fairway-bunker krever motsatt teknikk fra greenside: ball-først, ikke sand-først. Spilleren MÅ pikke ballen ren. Hvis de tar sand, taper de 20-30m carry. Krevende — kun for spillere med god kontakt."
+    },
+    {
+      "navn": "bunker-fairway-90m-lengde",
+      "beskrivelse": "Fairway-bunker fra 90m: mid-iron, åpen stance for fairway-bunker, ren ball-først. Krever sentrert kontakt og minimal sand-engasjement. 6 baller. Elite-ferdighet.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "E",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "6-jern",
+        "7-jern",
+        "6-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "bunker-fairway-50m-mid-iron"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 6,
+      "csTargetByKategori": {
+        "A": 80,
+        "B": 75,
+        "C": 70,
+        "D": 63,
+        "E": 55
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "bunker",
+        "fairway-bunker",
+        "lengde",
+        "elite"
+      ],
+      "coachNotater": "Avansert. Trygt valg er ofte å sikte ekstra kort og spille til 100m. Men kategori A-spillere skal kunne nå green fra fairway-bunker hvis lien er bra. Test fysisk om de klarer det."
+    },
+    {
+      "navn": "bunker-mind-trigger-confidence",
+      "beskrivelse": "Mental drill: før hvert bunker-shot, si høyt 'sand før ball, høy finish'. 10 baller med SW. Trener mental rutine for å motvirke bunker-frykt. Spesielt for spillere som har tapt selvtillit i bunker.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "J",
+      "maxKategori": "C",
+      "minHcp": 5,
+      "maxHcp": 45,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "10-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "C": 78,
+        "E": 68,
+        "H": 55,
+        "J": 40
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "bunker",
+        "mental",
+        "confidence",
+        "junior"
+      ],
+      "coachNotater": "Bunker-frykt er mental, ikke teknisk. Den verbale cue erstatter dårlig self-talk. Bruker spilleren denne mantra-rutinen i 2 uker, ser jeg ofte 40% forbedring uten å ha endret teknikken."
+    },
+    {
+      "navn": "bunker-multi-bunker-circuit",
+      "beskrivelse": "3 ulike bunkers (eller 3 ulike lies i samme bunker): flat, uphill, downhill. 3 baller per stasjon, total 9. Roter raskt mellom. Trener tilpasning og raske beslutninger.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 25,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "9-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "bunker-uphill-mot-laeppe",
+        "bunker-downhill-fra-bakkant"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 9,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 80,
+        "C": 75,
+        "D": 70,
+        "E": 65,
+        "G": 48
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "bunker",
+        "scenario",
+        "elite",
+        "kombinert"
+      ],
+      "coachNotater": "Random > blocked for transfer. Spilleren må adaptere setup raskt. Hvis kvaliteten faller mye sammenlignet med blocked, vet vi at adapasjons-ferdigheten mangler."
+    },
+    {
+      "navn": "bunker-up-and-down-test",
+      "beskrivelse": "10 baller fra bunker + putt. Mål: 'up and down' (bunker + 1 putt) på minst 6 av 10. Loggfør prosent. SW + putter. Realistisk bunker-test som inkluderer puttingen.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 30,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "putter",
+        "10-baller"
+      ],
+      "varighetMin": 30,
+      "intensitet": 4,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "bunker-paaslag-fra-flat-lie"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 70,
+        "B": 65,
+        "C": 60,
+        "D": 53,
+        "E": 45,
+        "H": 30
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "bunker",
+        "kombinert",
+        "test",
+        "putting"
+      ],
+      "coachNotater": "Tour-snitt er ca 55% up-and-down fra bunker. Kategori A bør ligge på 50%+. Sjekk om bunker-shot OR putting trekker prosent ned — gir spesifikk treningsbehov."
+    },
+    {
+      "navn": "bunker-explosion-velocity-test",
+      "beskrivelse": "Slå 5 baller fra bunker med 50% sving, 5 med 100% sving (samme posisjon). Sammenlign carry. Spilleren lærer at full akselerasjon er bedre enn å være forsiktig. SW.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 30,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "10-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 4,
+      "lPhase": [
+        "GRUNN",
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 83,
+        "C": 78,
+        "D": 73,
+        "E": 68,
+        "H": 55
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "bunker",
+        "akselerasjon",
+        "fundament"
+      ],
+      "coachNotater": "Læring: 50% sving = ofte ball kommer ikke ut. 100% = ballen kommer ut, men kanskje lang. Konklusjon: bedre å være lang enn å la ball ligge igjen. Bunker krever akselerasjon."
+    },
+    {
+      "navn": "bunker-no-target-pure-mechanics",
+      "beskrivelse": "Slå 15 bunker-shots UTEN mål — bare føl mekanikken (åpen face, splash 2 tommer bak, høy finish). Ingen press på resultat. SW. Trener rytme og fundament.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "K",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "15-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 15,
+      "csTargetByKategori": {
+        "A": 90,
+        "C": 80,
+        "E": 70,
+        "H": 60,
+        "K": 45
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "bunker",
+        "fundament",
+        "rytme"
+      ],
+      "coachNotater": "Ofte gir 'no target'-trening bedre kontakt fordi spilleren slutter å steer. Brukes i starten av bunker-økt for å bygge rytme. Etter 15 shots, bytt til target-trening."
+    },
+    {
+      "navn": "bunker-stoppe-paa-1-hopp",
+      "beskrivelse": "Bunker-shot til 8m unna flagg. Mål: ballen lander på green, hopper 1 gang, og stopper. SW med åpen face, ren impact. 8 baller. Trener spinn fra sand.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 20,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "8-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "bunker-thump-the-sand-mac"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 80,
+        "B": 75,
+        "C": 70,
+        "D": 63,
+        "E": 55,
+        "F": 45
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "bunker",
+        "spin-control",
+        "elite",
+        "tucked-pin"
+      ],
+      "coachNotater": "Eliteferdighet. Krever ren ball-kontakt etter sand-impact. De fleste bunker-shots glir 2-3 ganger fordi spinn er begrenset. Stop på 1 hopp = ren kontakt + bra wedge."
+    },
+    {
+      "navn": "bunker-aim-shaft-perpendikulaert",
+      "beskrivelse": "Plasser alignment stick i sanden parallelt med stance (90° til target-line). Visuelt verktøy som hindrer spilleren i å lukke face under sving. 10 baller, SW.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "K",
+      "maxKategori": "B",
+      "minHcp": 0,
+      "maxHcp": 36,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "alignment-stick",
+        "10-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 3,
+      "lPhase": [
+        "GRUNN"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "bunker-aapen-stance-aapen-face"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "B": 83,
+        "C": 78,
+        "D": 73,
+        "E": 68,
+        "K": 40
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "bunker",
+        "alignment",
+        "fundament"
+      ],
+      "coachNotater": "Spillere som lukker face mid-swing mister loft. Sticken viser feilen umiddelbart. Brukes når spilleren chronically slår ballen lavere enn forventet."
+    },
+    {
+      "navn": "bunker-3-meter-til-flag-presisjon",
+      "beskrivelse": "Bunker-shot til flagg KUN 3m unna fra bunker-kanten. Krever maksimal høyde + kort carry. SW eller LW med super-åpen face. 6 baller. Test av elite bunker-kontroll.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "E",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "lw",
+        "6-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "bunker-stoppe-paa-1-hopp"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 6,
+      "csTargetByKategori": {
+        "A": 75,
+        "B": 70,
+        "C": 65,
+        "D": 58,
+        "E": 50
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "bunker",
+        "tucked-pin",
+        "elite",
+        "scenario"
+      ],
+      "coachNotater": "Vanskeligste bunker-shot — flag rett ved bunker-kant. LW med 60° loft, super åpen face, full aksellerasjon. Akseptér at noen baller blir kort. Krevende men nødvendig ferdighet for elite."
+    },
+    {
+      "navn": "lob-shot-fundament-aapen-face",
+      "beskrivelse": "Lob-shot fra 12m unna green. LW 60° med fullt åpen face (peker mot himmel). Sving aggressivt, ball flyr høyt og stopper raskt. 8 baller. Fundament for lob.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 20,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "lw",
+        "8-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 82,
+        "B": 77,
+        "C": 72,
+        "D": 64,
+        "E": 55,
+        "F": 45
+      },
+      "videoUrl": null,
+      "kilde": "Phil Mickelson, AK Golf Academy",
+      "tags": [
+        "lob",
+        "elite",
+        "wedge-finesse"
+      ],
+      "coachNotater": "Eliteferdighet. Krever ren lie og full commit. Spillere som decellererer skanker. Sving som om du slår 30m, men ballen flyr 12m fordi loft tar nesten all energi opp."
+    },
+    {
+      "navn": "lob-over-bunker-til-tucked-pin",
+      "beskrivelse": "Lob over bunker (5m bunker-bredde) til flagg 3m bak bunker. 8 baller med LW. Mål: 5/8 på green innenfor 4m. Trener pressure-lob over hindring.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "E",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "lw",
+        "8-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "lob-shot-fundament-aapen-face"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 80,
+        "B": 75,
+        "C": 70,
+        "D": 60,
+        "E": 50
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "lob",
+        "tucked-pin",
+        "scenario",
+        "elite"
+      ],
+      "coachNotater": "Pressure-shot. Spilleren må commit'e fullt. Alternativ er å sikte 5m forbi flagg = safer men gir lengre putt. Diskuter risk/reward før hvert slag."
+    },
+    {
+      "navn": "lob-fra-tight-lie-elite",
+      "beskrivelse": "Lob fra tight lie (hardpacket eller kort gress) 10m unna. LW åpen face, ball midt i stance, hands forward MEN clubface må gli under ball. 6 baller. Vanskeligste lob-shot.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "D",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 14,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "lw",
+        "6-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "lob-shot-fundament-aapen-face"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 6,
+      "csTargetByKategori": {
+        "A": 75,
+        "B": 68,
+        "C": 60,
+        "D": 50,
+        "E": 40
+      },
+      "videoUrl": null,
+      "kilde": "Phil Mickelson, AK Golf Academy",
+      "tags": [
+        "lob",
+        "from-bare-lie",
+        "elite",
+        "wedge-finesse"
+      ],
+      "coachNotater": "Vanskeligste shot i nærspill. Lob fra tight lie krever perfekt tekning. Hvis spilleren er usikker, anbefal annen klubb-løsning (chip + lengre putt). Test om de virkelig har ferdigheten."
+    },
+    {
+      "navn": "lob-fra-rough-buff-up",
+      "beskrivelse": "Lob fra lett rough — gresset 'puffer' ballen opp. LW åpen face, sving aggressivt. Egentlig enklere enn fra tight lie. 8 baller fra 10m. Lærer å utnytte rough.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "E",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "lw",
+        "8-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "lob-shot-fundament-aapen-face"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 80,
+        "B": 75,
+        "C": 70,
+        "D": 60,
+        "E": 50
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "lob",
+        "from-rough",
+        "elite"
+      ],
+      "coachNotater": "Lob fra rough er paradoksalt enklere — gresset puffer ballen opp. Men variabel kontroll. Spilleren MÅ ha ren lie i rough, ikke buried."
+    },
+    {
+      "navn": "lob-fra-busk-eller-skog-kreativ",
+      "beskrivelse": "Plasser ball under busker eller bak hindring der eneste utvei er høyt over. Kreativ lob med LW eller SW. 5 baller. Trener problem-løsning, ikke standard teknikk.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 20,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "lw",
+        "sw",
+        "5-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "lob-shot-fundament-aapen-face"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 5,
+      "csTargetByKategori": {
+        "A": 75,
+        "B": 70,
+        "C": 65,
+        "D": 58,
+        "E": 50,
+        "F": 40
+      },
+      "videoUrl": null,
+      "kilde": "Seve Ballesteros, AK Golf Academy",
+      "tags": [
+        "lob",
+        "scenario",
+        "kreativ",
+        "elite"
+      ],
+      "coachNotater": "Seve var mester på dette. Krever fantasi og commit. Spillere som behandler dette som standard lob, lykkes. De som tenker 'jeg får ikke til dette', misser. Mental like mye som teknisk."
+    },
+    {
+      "navn": "bump-and-run-7-jern-fra-fringe",
+      "beskrivelse": "Bump-and-run fra fringe med 7-jern eller 8-jern. Putter-grip, putter-stroke. Ball ruller mest, flyr lite. 10 baller fra 8m utenfor green til flagg 15m bort.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "K",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 36,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "7-jern",
+        "8-jern",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 3,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 88,
+        "C": 78,
+        "E": 68,
+        "H": 55,
+        "K": 40
+      },
+      "videoUrl": null,
+      "kilde": "Scottish-style links golf, AK Golf Academy",
+      "tags": [
+        "bump-and-run",
+        "chip",
+        "klubbvalg",
+        "links"
+      ],
+      "coachNotater": "Underutilisert ferdighet i Norge. På links eller flate greener er bump-and-run sikrere enn lob. Spilleren bør ha 3-4 bump-and-run klubber i taskenen: 7, 8, 9-jern, PW."
+    },
+    {
+      "navn": "bump-and-run-hybrid-fra-fringe",
+      "beskrivelse": "Bump-and-run med hybrid (eller 5-jern). Putter-stroke. Veldig lite carry, mye roll. Brukt på vanskelige fringe-lies. 8 baller fra 6m utenfor green.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "J",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 45,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "hybrid",
+        "5-jern",
+        "8-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 3,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 85,
+        "C": 75,
+        "E": 65,
+        "H": 55,
+        "J": 40
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "bump-and-run",
+        "specialty",
+        "klubbvalg"
+      ],
+      "coachNotater": "Hybrid fra fringe glir over gresset bedre enn jern. Sole-design hjelper. Sterkt valg når gresset er treigt og putter ikke når. Underbrukt på amatørnivå."
+    },
+    {
+      "navn": "from-bare-lie-pw-precision",
+      "beskrivelse": "Fra bare/hardpacket lie 8m unna green: PW (ikke SW). Ball-først kontakt, hands forward, kort follow-through. 10 baller. Trener ren impact fra utfordrende lie.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 30,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "10-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 4,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "chip-tight-lie-pw-vs-sw"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 10,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 80,
+        "C": 75,
+        "D": 70,
+        "E": 65,
+        "H": 50
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "from-bare-lie",
+        "chip",
+        "klubbvalg",
+        "elite"
+      ],
+      "coachNotater": "Tight lie er der wedge-bounce blir farligst. PW har 6-8° bounce vs SW 14°. PW gir renere kontakt. Spilleren MÅ stole på PW her — instinktet sier 'mer loft', men det er feil."
+    },
+    {
+      "navn": "from-bare-lie-3-klubber-test",
+      "beskrivelse": "Fra hardpacket lie 12m unna: chip 3 med PW, 3 med 9-jern, 3 med 8-jern. Loggfør beste klubb. Output: personlig 'go-to'-klubb for tight lies. 9 baller.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 25,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "9-jern",
+        "8-jern",
+        "9-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 4,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 9,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 80,
+        "C": 75,
+        "D": 70,
+        "E": 65,
+        "G": 50
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "from-bare-lie",
+        "klubbvalg",
+        "test",
+        "elite"
+      ],
+      "coachNotater": "Personlig preferanse. Noen spillere foretrekker 9-jern, andre PW. Output: 'go-to'-klubben blir første-valg i pressure-situasjoner. Tester en gang per sesong."
+    },
+    {
+      "navn": "wet-conditions-pw-pickoff",
+      "beskrivelse": "Vått short game-scenario: bruk PW i stedet for SW. Pick ballen ren (som fra fairway-bunker). Hev hender 2-3 tommer ved address. 8 baller fra 25m. Trener wet-conditions adaptasjon.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 25,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "pw",
+        "8-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 4,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": true,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 80,
+        "C": 75,
+        "D": 70,
+        "E": 65,
+        "G": 50
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:short-game-wet-conditions",
+      "tags": [
+        "wet",
+        "MORAD",
+        "klubbvalg",
+        "scenario"
+      ],
+      "coachNotater": "MORAD wet-protokoll: PW i stedet for SW. Wedge med høyt bounce 'fanges' av vått gress. PW glir bedre. Spilleren oppdager at SW i vått short game er upålitelig — fast PW vinner."
+    },
+    {
+      "navn": "wet-conditions-6-spoersmaal-rutine",
+      "beskrivelse": "Før hver wedge i våte forhold: 6 vurderingsspørsmål (gresslengde, tetthet, vann i gress, overflate-fukt, vann-dybde, hastighets-reduksjon). Slå 8 baller etter rutinen. Trener mental disiplin.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 20,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "pw",
+        "8-baller"
+      ],
+      "varighetMin": 25,
+      "intensitet": 4,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": true,
+      "prerequisites": [
+        "wet-conditions-pw-pickoff"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 85,
+        "B": 80,
+        "C": 75,
+        "D": 68,
+        "E": 60,
+        "F": 45
+      },
+      "videoUrl": null,
+      "kilde": "ak-second-brain:short-game-wet-conditions",
+      "tags": [
+        "wet",
+        "MORAD",
+        "pre-shot-rutine",
+        "mental"
+      ],
+      "coachNotater": "MORAD-rutinen tar 30 sekunder per slag, men avgjør klubbvalg + setup. I trening: si svarene høyt. I kamp: tenk dem stille. Lær spilleren å se forskjellen mellom 'feel wet' og 'actually wet'."
+    },
+    {
+      "navn": "kombo-chip-bunker-putt-circuit",
+      "beskrivelse": "Circuit: 1) chip fra 8m + putt. 2) bunker + putt. 3) pitch fra 30m + putt. Repeter 3 ganger. Trener overgang mellom alle nærspill-elementer. 27 slag totalt.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 30,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "wedge-sett",
+        "putter",
+        "27-baller"
+      ],
+      "varighetMin": 45,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 3,
+      "defaultReps": 9,
+      "csTargetByKategori": {
+        "A": 80,
+        "B": 75,
+        "C": 70,
+        "D": 65,
+        "E": 60,
+        "H": 45
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "kombinert",
+        "chip",
+        "bunker",
+        "pitch",
+        "scenario",
+        "elite"
+      ],
+      "coachNotater": "Mest realistisk øving. På kamp veksler du hele tiden mellom slag-typer. Spillere som klarer denne med kvalitet, har banespill-trygghet. Brukes 1 ganger per uke for elite."
+    },
+    {
+      "navn": "kombo-3-baller-3-shots-tre-flagg",
+      "beskrivelse": "3 baller per posisjon: chip til nært flagg, pitch til mellomdistanse flagg, lob over hindring til langt flagg. 9 baller totalt. Tester samtlige nærspill-ferdigheter.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 20,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "wedge-sett",
+        "9-baller"
+      ],
+      "varighetMin": 30,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "kombo-chip-bunker-putt-circuit"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 9,
+      "csTargetByKategori": {
+        "A": 82,
+        "B": 76,
+        "C": 70,
+        "D": 63,
+        "E": 55,
+        "F": 45
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "kombinert",
+        "test",
+        "scenario",
+        "elite"
+      ],
+      "coachNotater": "Helhetlig test. Notér prosent innenfor 3m for hver shot-type. Avslører hvilken shot-type spilleren er svakest på — trene mer på den. Repeter månedlig."
+    },
+    {
+      "navn": "kombo-worst-ball-nedslag",
+      "beskrivelse": "Spiller pitch 2 baller fra 30m og PUTTE den verste videre. Trener kvalitet og mental robust. 10 sett av 2 baller = 20 baller totalt. Verste-ball-format.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 20,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "putter",
+        "20-baller"
+      ],
+      "varighetMin": 35,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 10,
+      "defaultReps": 2,
+      "csTargetByKategori": {
+        "A": 70,
+        "B": 65,
+        "C": 60,
+        "D": 53,
+        "E": 45,
+        "F": 35
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "kombinert",
+        "scenario",
+        "mental",
+        "elite"
+      ],
+      "coachNotater": "Worst-ball-format krever 100% av begge slag. Brukt av PGA Tour-spillere. Mental utholdenhet — du må re-fokusere etter hver dårlige ball. Build resilient nervesystem."
+    },
+    {
+      "navn": "kombo-9-hull-around-green",
+      "beskrivelse": "9 ulike posisjoner rundt én green (3 chip, 3 pitch, 3 bunker). Spill hvert som hull: kort fra angitt posisjon + putt(s). Mål: 5 av 9 'up and down'. Trener komplett nærspill-runde.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 25,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "wedge-sett",
+        "putter",
+        "9-baller"
+      ],
+      "varighetMin": 45,
+      "intensitet": 5,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "kombo-chip-bunker-putt-circuit"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 9,
+      "csTargetByKategori": {
+        "A": 75,
+        "B": 70,
+        "C": 65,
+        "D": 58,
+        "E": 50,
+        "G": 40
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "kombinert",
+        "scenario",
+        "test",
+        "up-and-down"
+      ],
+      "coachNotater": "Mest realistisk nærspill-test. Spilleren føler 'kamp-energi' fordi hver short game er konsekvens. Hvis prosent 'up and down' er under 40%, identifiser svakhet og trene spesifikt."
+    },
+    {
+      "navn": "kombo-pre-comp-warm-up-nærspill",
+      "beskrivelse": "20-min nærspill-warmup før kamp: 5 chips, 5 pitch, 5 bunker, 3 putts 1m, 2 putts 3m. Standardisert protokoll for spilleren. Slag totalt: 20.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "H",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 30,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "wedge-sett",
+        "putter",
+        "20-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 3,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 20,
+      "csTargetByKategori": {
+        "A": 90,
+        "B": 85,
+        "C": 80,
+        "D": 75,
+        "E": 70,
+        "H": 55
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "kombinert",
+        "warmup",
+        "pre-shot-rutine",
+        "scenario"
+      ],
+      "coachNotater": "Standardisert warmup-protokoll. Spilleren skal gjøre samme rutine før HVER kamp — kalibrerer føling. Brukes ikke som teknisk trening, kun som rutine-bygging."
+    },
+    {
+      "navn": "kombo-feel-shot-30m-zero-thought",
+      "beskrivelse": "8 baller fra 30m: spilleren har 5 sekunder per slag — ingen pre-shot, ingen tanke. Slå på instinkt. SW. Trener trust og rask kalibrering.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "G",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 25,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "8-baller"
+      ],
+      "varighetMin": 15,
+      "intensitet": 4,
+      "lPhase": [
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 1,
+      "defaultReps": 8,
+      "csTargetByKategori": {
+        "A": 80,
+        "B": 75,
+        "C": 70,
+        "D": 65,
+        "E": 60,
+        "G": 45
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "touch-shot",
+        "feel",
+        "mental",
+        "scenario"
+      ],
+      "coachNotater": "Avansert mental drill. Spilleren oppdager at hjernen klarer kalibrere uten lange pre-shot rutiner. Brukt for å bekjempe 'paralysis by analysis' i kamp."
+    },
+    {
+      "navn": "kombo-pitch-i-mork-vakkenetn",
+      "beskrivelse": "Pitch 5 baller fra 30m mot et lett-opplyst flagg eller med øynene lukket. Trener ren føling uten visuell distraksjon. SW. Brukes som touch-shot drill.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 20,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "sw",
+        "5-baller"
+      ],
+      "varighetMin": 10,
+      "intensitet": 3,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [],
+      "defaultSets": 2,
+      "defaultReps": 5,
+      "csTargetByKategori": {
+        "A": 75,
+        "B": 70,
+        "C": 65,
+        "D": 60,
+        "E": 55,
+        "F": 40
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "touch-shot",
+        "feel",
+        "mental",
+        "elite"
+      ],
+      "coachNotater": "Når visuelle stimuli fjernes, må kroppen kalibrere. Mange blir overrasket over hvor godt de slår uten å se. Lærer å stole på kroppen i lange pitches under press."
+    },
+    {
+      "navn": "kombo-3-shots-test-stress",
+      "beskrivelse": "Stress-test: spilleren har 1 sjanse per shot. 1 chip fra 10m, 1 pitch fra 30m, 1 bunker. ALLE må være 'up and down' (på green pluss 1-putt) for å passere. Repeter til 3/3.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "F",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 20,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "wedge-sett",
+        "putter",
+        "3-baller"
+      ],
+      "varighetMin": 20,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL",
+        "TURNERING"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "kombo-9-hull-around-green"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 3,
+      "csTargetByKategori": {
+        "A": 70,
+        "B": 63,
+        "C": 55,
+        "D": 48,
+        "E": 40,
+        "F": 30
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "test",
+        "scenario",
+        "stress",
+        "elite",
+        "up-and-down"
+      ],
+      "coachNotater": "Pressure-test. Spillere som klarer denne første gang har mental robust nervesystem. Hvis det tar 5+ forsøk, identifiser hvilken shot som svikter. Brukt på elite siste uka før turnering."
+    },
+    {
+      "navn": "kombo-50-shots-different-distance-test",
+      "beskrivelse": "Master-test: 50 short game shots fra random posisjoner (5-60m). Loggfør prosent innenfor 3m fra flagg. Tour-snitt: 65%+. Mål for kategori A: 60%+.",
+      "disciplin": "SLAG",
+      "skillArea": "AROUND_GREEN",
+      "minKategori": "E",
+      "maxKategori": "A",
+      "minHcp": -5,
+      "maxHcp": 18,
+      "environment": [
+        "BANE"
+      ],
+      "utstyr": [
+        "wedge-sett",
+        "50-baller"
+      ],
+      "varighetMin": 60,
+      "intensitet": 5,
+      "lPhase": [
+        "SPESIAL"
+      ],
+      "morad": false,
+      "prerequisites": [
+        "pitch-3-distanser-3-klubber-matrise"
+      ],
+      "defaultSets": 1,
+      "defaultReps": 50,
+      "csTargetByKategori": {
+        "A": 65,
+        "B": 60,
+        "C": 55,
+        "D": 48,
+        "E": 40
+      },
+      "videoUrl": null,
+      "kilde": "AK Golf Academy",
+      "tags": [
+        "test",
+        "kombinert",
+        "elite",
+        "stats"
+      ],
+      "coachNotater": "Definitiv master-test. Brukes kvartalsvis. Spore prosent over måneder — vis spilleren progresjon eller stagnasjon. Tour-spillere ligger på 65-75%. Akademi-mål for elite: 55%+."
+    }
+  ]
+}

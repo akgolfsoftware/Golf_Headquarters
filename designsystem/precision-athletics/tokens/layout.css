@@ -1,0 +1,6 @@
+:root{
+--topbar-h:56px;--tabbar-h:64px;--sidenav-w:236px;--inspector-w:340px;--content-max:1200px;
+--hit-min:44px;--hit-outdoor:56px;
+--toast-offset:calc(var(--tabbar-h) + 16px);--toast-offset-sticky:calc(var(--tabbar-h) + 96px);
+--control-h-sm:32px;--control-h:40px;--control-h-lg:48px;--control-h-xl:56px;
+}

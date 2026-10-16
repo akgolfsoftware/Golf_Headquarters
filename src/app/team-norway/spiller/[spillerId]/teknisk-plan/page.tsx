@@ -1,9 +1,10 @@
+import { medTnSpillerData } from "@/lib/domain/tn-arbeidsflate";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentTnWorkbenchKontekst } from "@/lib/domain/tn-workbench";
-import { harTnTekniskPlanLesetilgang, hentTnTekniskPlaner, krevFullForEgenTekniskPlan } from "@/lib/domain/tn-teknisk-plan";
+import { hentTnTekniskPlaner, krevFullForEgenTekniskPlan } from "@/lib/domain/tn-teknisk-plan";
 import { TN } from "@/lib/v2/team-norway";
 import { TnShell, TnSidehode, TnSeksjon, TnSpillerFaner } from "@/components/team-norway/tn-shell";
 import { TnKort, TnPille } from "@/components/team-norway/core";
@@ -29,8 +30,9 @@ export default async function TeamNorwaySpillerTekniskPlanPage({ params }: { par
   if (!spillerNavn) notFound();
   krevFullForEgenTekniskPlan(bruker, spillerId);
 
-  const harTilgang = await harTnTekniskPlanLesetilgang(bruker, kontekst, spillerId);
-  const planer = harTilgang ? await hentTnTekniskPlaner(spillerId) : [];
+  const planer = await medTnSpillerData(bruker, spillerId, () => hentTnTekniskPlaner(spillerId));
+  if (!planer) notFound();
+  const harTilgang = true;
 
   return (
     <TnShell
@@ -40,23 +42,24 @@ export default async function TeamNorwaySpillerTekniskPlanPage({ params }: { par
       groupId={kontekst.gruppeId}
       visTrenerflater={kontekst.erTrener}
       kanAdministrere={kontekst.kanAdministrere}
+      tilbake={{ href: "/team-norway/spillere", label: "Spillere" }}
     >
-      <TnSpillerFaner spillerId={spillerId} spillerNavn={spillerNavn} aktiv="teknisk-plan" kanAdministrere={!kontekst.erSpiller} />
       <TnSidehode
-        overlinje="TN-23 · Teknisk plan"
-        tittel={spillerNavn}
-        ingress="P-posisjoner, arbeidsoppgaver og rep-mål."
+        overlinje={`IUP · ${spillerNavn}`}
+        tittel="Teknisk plan"
+        ingress="P-posisjoner, arbeidsoppgaver og rep-mål. Kvalitetssjekken vises bare; den sperrer aldri neste læringssteg."
       />
+      <TnSpillerFaner spillerId={spillerId} spillerNavn={spillerNavn} aktiv="teknisk-plan" kanAdministrere={!kontekst.erSpiller} kompakt />
 
       {!harTilgang ? (
         <TnKort>
-          <p style={{ margin: 0, color: TN.textSecondary }}>
+          <p style={{ margin: 0, color: TN.ink700 }}>
             Du er trener i Team Norway, men ikke {spillerNavn}s personlige coach — TN-rollen alene gir
             ikke tilgang til den individuelle tekniske planen.
           </p>
         </TnKort>
       ) : planer.length === 0 ? (
-        <TnKort><p style={{ margin: 0, color: TN.textSecondary }}>Ingen teknisk plan opprettet for {spillerNavn} ennå.</p></TnKort>
+        <TnKort><p style={{ margin: 0, color: TN.ink700 }}>Ingen teknisk plan opprettet for {spillerNavn} ennå.</p></TnKort>
       ) : (
         <TnSeksjon tittel="Planer">
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -64,9 +67,10 @@ export default async function TeamNorwaySpillerTekniskPlanPage({ params }: { par
               <Link key={p.id} href={`/team-norway/spiller/${spillerId}/teknisk-plan/${p.id}`} style={{ textDecoration: "none" }}>
                 <TnKort>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-                    <div>
-                      <p style={{ margin: 0, fontWeight: TN.weight.semibold }}>{p.navn}</p>
-                      <p style={{ margin: "4px 0 0", color: TN.textSecondary, fontSize: TN.text.sm, fontFamily: TN.font.mono }}>
+                    <div style={{ minWidth: 0, flex: "1 1 220px" }}>
+                      <p style={{ margin: 0, fontWeight: 700, fontSize: 15, color: TN.ink900 }}>{p.navn}</p>
+                      <div aria-hidden="true" style={{ height: 10, background: TN.ink100, marginTop: 8 }}><span style={{ display: "block", height: "100%", width: `${p.antallOppgaver ? (p.antallFullfort / p.antallOppgaver) * 100 : 0}%`, background: TN.akse.TEK.fyll }} /></div>
+                      <p style={{ margin: "6px 0 0", color: TN.ink500, fontSize: 12.5, fontFamily: TN.font.mono }}>
                         {p.startDato.toISOString().slice(0, 10)}{p.sluttDato ? ` – ${p.sluttDato.toISOString().slice(0, 10)}` : ""} · {p.antallFullfort} av {p.antallOppgaver} oppgaver fullført
                       </p>
                     </div>

@@ -4,12 +4,13 @@ import { notFound } from "next/navigation";
 import { hentTnArbeidskontekst, hentTnProtokollbibliotek, hentTnProtokolldetalj } from "@/lib/domain/tn-arbeidsflate";
 import type { TnField, TnKind } from "@/lib/portal-tester/tn-catalog";
 import { TN } from "@/lib/v2/team-norway";
-import { TnEtikett, TnFilterknapper, TnFlate, TnFlatehode, TnFotnote, TnKorttittel, TnMangler, TnSkjermhode, TnStatusmerke } from "../tn-flate";
+import { TnPille } from "../core";
+import { TnEtikett, TnFilterknapper, TnFlate, TnFlatehode, TnFotnote, TnKorttittel, TnMangler, TnSkjermhode } from "../tn-flate";
 import { SkjermRamme, hentSkjermbruker } from "./felles";
 
 /**
  * TN-15 Testprotokoller, liste og detalj på samme skjerm.
- * Fasit: Claude Design «Team Norway App delivery» (bc3e41fc), skjerm TN-15.
+ * Fasit: docs/design-system/utkast-tn/plan-fag.html, skjermene Testprotokoller og Én protokoll (pakke 5).
  *
  * Avvik:
  *   - Katalogen har én versjon for hele batteriet, ikke én per protokoll.
@@ -64,7 +65,7 @@ export async function TnTestprotokollerSkjerm({ sokeparametre, valgtId }: { soke
 
   return (
     <SkjermRamme aktiv="protokoller" brukerNavn={bruker.name} kontekst={kontekst}>
-      <TnSkjermhode rute={valgtId ? `/team-norway/protokoller/${valgtId}` : "/team-norway/protokoller"} tittel="Testprotokoller" ingress="De nasjonale testene slik de skal gjennomføres. Bare protokoller med status Klar kan brukes i fellestesting." />
+      <TnSkjermhode overlinje={`Versjon ${bibliotek.versjon}`} tittel="Testprotokoller" ingress="De nasjonale testene slik de skal gjennomføres. Bare protokoller med status Klar kan brukes i fellestesting." />
 
       <TnFilterknapper
         etikett="Filtrer på status"
@@ -76,7 +77,7 @@ export async function TnTestprotokollerSkjerm({ sokeparametre, valgtId }: { soke
       />
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 380px), 1fr))", gap: 20, alignItems: "start" }}>
-        <section aria-label="Protokoller" style={{ background: TN.white, border: `1px solid ${TN.navy100}`, minWidth: 0 }}>
+        <section aria-label="Protokoller" style={{ background: TN.white, border: `1px solid ${TN.ink200}`, borderRadius: TN.radius.sm, minWidth: 0 }}>
           {liste.map((p) => {
             const aktiv = p.id === detalj?.id;
             return (
@@ -85,13 +86,13 @@ export async function TnTestprotokollerSkjerm({ sokeparametre, valgtId }: { soke
                 href={adresse({ valgt: p.id })}
                 scroll={false}
                 aria-current={aktiv ? "true" : undefined}
-                style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center", minHeight: 56, padding: "10px 16px", borderBottom: `1px solid ${TN.navy100}`, borderLeft: `3px solid ${aktiv ? TN.navy900 : "transparent"}`, background: aktiv ? TN.navy50 : TN.white, textDecoration: "none", color: TN.textPrimary }}
+                style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center", minHeight: 56, padding: "10px 16px", borderBottom: `1px solid ${TN.ink200}`, borderLeft: `3px solid ${aktiv ? TN.red600 : "transparent"}`, background: aktiv ? TN.navy50 : TN.white, textDecoration: "none", color: TN.textPrimary }}
               >
                 <span style={{ minWidth: 0 }}>
                   <span style={{ display: "block", fontSize: 15, fontWeight: 700, overflowWrap: "anywhere" }}>{p.navn}</span>
-                  <span style={{ display: "block", fontFamily: TN.font.mono, fontSize: 12, color: TN.textSecondary, marginTop: 2 }}>{p.forsok} forsøk · {TYPENAVN[p.omrade]}</span>
+                  <span style={{ display: "block", fontSize: 12.5, color: TN.ink500, marginTop: 2 }}>{p.forsok} forsøk · {TYPENAVN[p.omrade]}</span>
                 </span>
-                <TnStatusmerke farge={p.status === "KLAR" ? TN.navy900 : TN.textSecondary}>{p.status}</TnStatusmerke>
+                <TnPille tone={p.status === "KLAR" ? "green" : "amber"}>{p.status === "KLAR" ? "Klar" : "Utkast"}</TnPille>
               </Link>
             );
           })}
@@ -103,38 +104,38 @@ export async function TnTestprotokollerSkjerm({ sokeparametre, valgtId }: { soke
             <>
               <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "flex-start", flexWrap: "wrap" }}>
                 <TnKorttittel overlinje={`${TYPENAVN[detalj.kind]} · ${bibliotek.versjon}`} tittel={detalj.name} />
-                <TnStatusmerke farge={detalj.blocked ? TN.textSecondary : TN.navy900}>{detalj.blocked ? "Utkast" : "Klar"}</TnStatusmerke>
+                <TnPille tone={detalj.blocked ? "amber" : "green"}>{detalj.blocked ? "Utkast" : "Klar"}</TnPille>
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 140px), 1fr))", gap: 1, background: TN.navy100, border: `1px solid ${TN.navy100}`, marginTop: 18 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 140px), 1fr))", gap: 1, background: TN.ink200, border: `1px solid ${TN.ink200}`, marginTop: 18 }}>
                 {[
                   ["Forsøk", String(detalj.rows.length)],
                   ["Type", TYPENAVN[detalj.kind]],
                   ["Målavstander", maal.length ? String(maal.length) : "—"],
                 ].map(([etikett, verdi]) => (
                   <div key={etikett} style={{ background: TN.white, padding: "12px 14px", minWidth: 0 }}>
-                    <div style={{ fontFamily: TN.font.mono, fontSize: 20, fontVariantNumeric: "tabular-nums", overflowWrap: "anywhere" }}>{verdi}</div>
+                    <div style={{ fontFamily: TN.font.mono, fontWeight: 500, fontSize: 22, color: TN.navy900, fontVariantNumeric: "tabular-nums", overflowWrap: "anywhere" }}>{verdi}</div>
                     <TnEtikett style={{ marginTop: 4 }}>{etikett}</TnEtikett>
                   </div>
                 ))}
               </div>
 
-              <TnEtikett style={{ marginTop: 24, paddingBottom: 6, borderBottom: `1px solid ${TN.navy100}` }}>Dette registreres</TnEtikett>
+              <TnEtikett style={{ marginTop: 24, paddingBottom: 6, borderBottom: `1px solid ${TN.ink200}` }}>Dette registreres</TnEtikett>
               <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.4fr) minmax(0, 1fr)", gap: "0 16px" }}>
                 {["Felt", "Format"].map((k) => <TnEtikett key={k} style={{ padding: "10px 0 6px", fontSize: 10.5 }}>{k}</TnEtikett>)}
                 {feltene.map((f) => (
                   <div key={f.key} style={{ display: "contents" }}>
-                    <span style={{ fontSize: 14, padding: "8px 0", borderTop: `1px solid ${TN.navy100}`, overflowWrap: "anywhere" }}>{f.label}{f.optional ? " (valgfritt)" : ""}</span>
-                    <span style={{ fontFamily: TN.font.mono, fontSize: 12.5, color: TN.textSecondary, padding: "8px 0", borderTop: `1px solid ${TN.navy100}`, overflowWrap: "anywhere" }}>{format(f)}</span>
+                    <span style={{ fontSize: 14, padding: "8px 0", borderTop: `1px solid ${TN.ink200}`, overflowWrap: "anywhere" }}>{f.label}{f.optional ? " (valgfritt)" : ""}</span>
+                    <span style={{ fontFamily: TN.font.mono, fontSize: 12.5, color: TN.ink500, padding: "8px 0", borderTop: `1px solid ${TN.ink200}`, overflowWrap: "anywhere" }}>{format(f)}</span>
                   </div>
                 ))}
               </div>
 
               {maal.length > 0 ? (
                 <>
-                  <TnEtikett style={{ marginTop: 24, paddingBottom: 6, borderBottom: `1px solid ${TN.navy100}` }}>Forsøk og mål</TnEtikett>
+                  <TnEtikett style={{ marginTop: 24, paddingBottom: 6, borderBottom: `1px solid ${TN.ink200}` }}>Forsøk og mål</TnEtikett>
                   {maal.slice(0, 12).map((r, i) => (
-                    <div key={`${i}-${r.label}`} style={{ display: "flex", justifyContent: "space-between", gap: 12, padding: "8px 0", borderBottom: `1px solid ${TN.navy100}`, fontSize: 14 }}>
+                    <div key={`${i}-${r.label}`} style={{ display: "flex", justifyContent: "space-between", gap: 12, padding: "8px 0", borderBottom: `1px solid ${TN.ink200}`, fontSize: 14 }}>
                       <span style={{ minWidth: 0, overflowWrap: "anywhere" }}>{r.label.split(" · ")[0]}</span>
                       <span style={{ fontFamily: TN.font.mono, whiteSpace: "nowrap" }}>{String(r.target).replace(".", ",")} m</span>
                     </div>
@@ -146,11 +147,11 @@ export async function TnTestprotokollerSkjerm({ sokeparametre, valgtId }: { soke
               <TnFotnote>Kilde: {detalj.source}.</TnFotnote>
 
               {detalj.blocked ? (
-                <p style={{ margin: "18px 0 0", padding: "12px 14px", border: `1px solid ${TN.navy100}`, borderLeft: `3px solid ${TN.navy900}`, fontSize: 14, lineHeight: 1.6 }}>
+                <p style={{ margin: "18px 0 0", padding: "12px 14px", border: `1px solid ${TN.ink200}`, borderLeft: `3px solid ${TN.navy900}`, fontSize: 14, lineHeight: 1.6 }}>
                   Utkast kan ikke brukes i fellestesting ennå. {detalj.blocked}
                 </p>
               ) : (
-                <Link href={`/portal/tren/tester/team-norway?test=${encodeURIComponent(detalj.id)}`} style={{ marginTop: 18, minHeight: 44, display: "inline-flex", alignItems: "center", padding: "0 20px", background: TN.navy900, color: TN.white, borderRadius: TN.radius.sm, fontFamily: TN.font.display, fontSize: 12, letterSpacing: "0.16em", textTransform: "uppercase", textDecoration: "none" }}>
+                <Link href={`/portal/tren/tester/team-norway?test=${encodeURIComponent(detalj.id)}`} style={{ marginTop: 18, minHeight: 44, display: "inline-flex", alignItems: "center", padding: "0 18px", background: TN.navy900, color: TN.white, borderRadius: TN.radius.sm, fontFamily: TN.font.body, fontSize: 14, fontWeight: 700, textDecoration: "none" }}>
                   Bruk i fellestesting
                 </Link>
               )}
@@ -158,7 +159,7 @@ export async function TnTestprotokollerSkjerm({ sokeparametre, valgtId }: { soke
           ) : (
             <>
               <TnFlatehode tittel="Protokoll" />
-              <TnMangler>Ingen testprotokoller er publisert. <Link href="/team-norway/fellestesting" style={{ color: TN.navy700 }}>Se fellestesting</Link></TnMangler>
+              <TnMangler>Ingen testprotokoller er publisert. <Link href="/team-norway/fellestesting" style={{ color: TN.navy600, fontWeight: 700 }}>Se fellestesting</Link></TnMangler>
             </>
           )}
         </TnFlate>

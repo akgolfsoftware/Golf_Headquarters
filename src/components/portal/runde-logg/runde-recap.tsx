@@ -31,7 +31,7 @@ import { Icon } from "@/components/v2/icon";
 import { lagreLoggetRunde } from "@/app/portal/(legacy)/mal/runder/logg/actions";
 import { slettKladd } from "@/lib/runde-logg/draft";
 import type { LoggetHull } from "@/lib/runde-logg/types";
-import { beregnSg } from "@/lib/domain/sg";
+import { beregnSg, type SgBaselinePoint } from "@/lib/domain/sg";
 import { rundeTilSgShots, hullTilSgShots } from "@/lib/runde-logg/til-sg-shots";
 import { deriverRundeScore } from "@/lib/runde-logg/deriver-hullscore";
 import { useLokalDataEier } from "@/lib/offline-queue/eier-context";
@@ -48,6 +48,8 @@ function diffTekst(diff: number): string {
 }
 
 type RundeRecapProps = {
+  sgBaselines: ReadonlyArray<SgBaselinePoint>;
+  sgReferenceLabel: string | null;
   courseId: string;
   courseNavn: string;
   playedAt: string;
@@ -56,7 +58,7 @@ type RundeRecapProps = {
   onTilbake: () => void;
 };
 
-export function RundeRecap({ courseId, courseNavn, playedAt, roundType, hullData, onTilbake }: RundeRecapProps) {
+export function RundeRecap({ courseId, courseNavn, playedAt, roundType, hullData, onTilbake, sgBaselines, sgReferenceLabel }: RundeRecapProps) {
   const router = useRouter();
   const eierId = useLokalDataEier();
   const [lagrer, setLagrer] = useState(false);
@@ -74,7 +76,9 @@ export function RundeRecap({ courseId, courseNavn, playedAt, roundType, hullData
     hullScores = derivert.hullScores;
     score = derivert.totalScore;
     putter = hullScores.reduce((sum, h) => sum + h.putts, 0);
-    sgTotal = beregnSg(rundeTilSgShots(ferdige)).total;
+    sgTotal = ferdige.every((h) => h.syntetisk !== true)
+      ? beregnSg(rundeTilSgShots(ferdige), sgBaselines)?.total ?? null
+      : null;
   } catch {
     sgTotal = null;
   }
@@ -87,8 +91,10 @@ export function RundeRecap({ courseId, courseNavn, playedAt, roundType, hullData
   // Per-hull SG — samme motor kalt ett hull av gangen (ingen ny beregning).
   const sgPerHull = new Map<number, number>();
   for (const h of ferdige) {
+    if (h.syntetisk) continue;
     try {
-      sgPerHull.set(h.holeNumber, beregnSg(hullTilSgShots(h)).total);
+      const hullSg = beregnSg(hullTilSgShots(h), sgBaselines)?.total;
+      if (hullSg != null) sgPerHull.set(h.holeNumber, hullSg);
     } catch {
       // Ufullstendig kjede for dette hullet — vises uten SG (em-dash).
     }
@@ -254,6 +260,9 @@ export function RundeRecap({ courseId, courseNavn, playedAt, roundType, hullData
                   {sgTotal == null ? "—" : fmtSg(sgTotal)}
                 </span>
               </div>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.mute }}>
+                {sgTotal == null ? "SG: ikke nok registrerte slag eller referansedata" : `SG-referanse: ${sgReferenceLabel ?? "ukjent"}`}
+              </p>
             </div>
           </section>
         )}

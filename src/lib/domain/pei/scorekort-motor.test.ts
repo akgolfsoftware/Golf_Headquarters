@@ -22,7 +22,7 @@ import {
   PEI_LAVERE_ER_BEDRE,
 } from "./pei-beregning";
 import { sgFraLengde, forventedePutter, gronnePutter } from "./broadie-sg-tabeller";
-import { poeng8Ball, poengLengdePutt } from "./poeng-tabeller";
+import { poeng8Ball, poeng8BallExcelV3, poengLengdePutt } from "./poeng-tabeller";
 import { hovlandPei } from "./pei-tabeller";
 import {
   beregnCelle,
@@ -78,12 +78,21 @@ describe("Referansetabeller — paritet mot talenthq sg-reference.js", () => {
     assert.equal(gronnePutter(2), 1.4);
   });
 
-  it("poeng8Ball matcher talenthq", () => {
-    assert.equal(poeng8Ball(0), 4);
-    assert.equal(poeng8Ball(0.1), 3);
+  it("poeng8Ball følger skalaen fra 14.10.2026: 5 i hull, 3 / 2 / 1 / 0", () => {
+    assert.equal(poeng8Ball(0, true), 5);
+    assert.equal(poeng8Ball(0), 3);
+    assert.equal(poeng8Ball(0.999), 3);
     assert.equal(poeng8Ball(1), 2);
     assert.equal(poeng8Ball(2), 1);
     assert.equal(poeng8Ball(3), 0);
+  });
+
+  it("poeng8BallExcelV3 beholder den gamle skalaen for lagrede resultater", () => {
+    assert.equal(poeng8BallExcelV3(0), 4);
+    assert.equal(poeng8BallExcelV3(0.1), 3);
+    assert.equal(poeng8BallExcelV3(1), 2);
+    assert.equal(poeng8BallExcelV3(2), 1);
+    assert.equal(poeng8BallExcelV3(3), 0);
   });
 
   it("poengLengdePutt matcher talenthq", () => {
@@ -103,11 +112,11 @@ describe("Referansetabeller — paritet mot talenthq sg-reference.js", () => {
 });
 
 describe("scorekort-motor — paritet mot talenthq computeCell", () => {
-  it("8-ball-variation rad 0 (Chip10, lengde 10, resultat 2 m)", () => {
+  it("8-ball-variation rad 0 (Chip10, lengde 10, carry 8, side 0 = 2 m fra hull)", () => {
     const proto = hentProtokoll("8-ball-variation")!;
     const row = proto.rows[0];
-    assert.deepEqual(row, { slag: "Chip10", lengde: 10 });
-    const vals = { resultat: "2" };
+    assert.deepEqual(row, { slag: "Chip10", lengde: 10, maal: 10 });
+    const vals = { carry: "8", side: "0" };
     const peiCol = proto.columns.find(c => c.key === "pei")!;
     const pgaCol = proto.columns.find(c => c.key === "pgaPutts")!;
     const poengCol = proto.columns.find(c => c.key === "poeng")!;
@@ -117,7 +126,22 @@ describe("scorekort-motor — paritet mot talenthq computeCell", () => {
     // familiefunksjonene isolert skal gi samme svar som dispatcheren
     assert.equal(beregnPeiCelle(peiCol, row, vals), 0.2);
     assert.equal(beregnSgCelle(proto, pgaCol, row, vals), 1.4);
-    assert.equal(beregnPoengCelle(poengCol, vals), 1);
+    assert.equal(beregnPoengCelle(poengCol, vals, row), 1);
+  });
+
+  it("8-ball: riktig lengde og 5 m til siden er 5 m fra hullet; i hull gir 5 poeng", () => {
+    const proto = hentProtokoll("8-ball-blocked")!;
+    const row = proto.rows.find(r => r.slag === "Wedge40")!;
+    const col = (key: string) => proto.columns.find(c => c.key === key)!;
+    const vals = { carry: "40", side: "5" };
+    assert.equal(beregnCelle(proto, col("tilMaal"), row, vals), 5);
+    assert.equal(beregnCelle(proto, col("pei"), row, vals), 0.125);
+    assert.equal(beregnCelle(proto, col("poeng"), row, vals), 0);
+    const iHull = { iHull: "✓" };
+    assert.equal(beregnCelle(proto, col("tilMaal"), row, iHull), 0);
+    assert.equal(beregnCelle(proto, col("pei"), row, iHull), 0);
+    assert.equal(beregnCelle(proto, col("pgaPutts"), row, iHull), 0);
+    assert.equal(beregnCelle(proto, col("poeng"), row, iHull), 5);
   });
 
   it("driver-basic rad 0 (mål 270 m, carry 265, side 3)", () => {
@@ -174,7 +198,7 @@ describe("scorekort-motor — paritet mot talenthq computeCell", () => {
   it("8-ball-variation total 'Chip PEI' (rad 0+1 fylt ut) matcher talenthq computeTotal", () => {
     const proto = hentProtokoll("8-ball-variation")!;
     const rows = proto.rows;
-    const allVals = { 0: { resultat: "2" }, 1: { resultat: "3" } };
+    const allVals = { 0: { carry: "8", side: "0" }, 1: { carry: "27", side: "0" } };
     const chipTotal = proto.totals.find(t => t.label === "Chip PEI")!;
     const totalPoeng = proto.totals.find(t => t.label === "Total poeng")!;
     assert.equal(beregnTotal(proto, chipTotal, allVals, rows), 0.15000000000000002);

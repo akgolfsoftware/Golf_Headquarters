@@ -10,6 +10,7 @@ import { notFound } from "next/navigation";
 import { requireCapability } from "@/lib/auth/requireCapability";
 import { Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
+import { gruppeInnsynWhere } from "@/lib/workbench/group-scope";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { TlTilbake } from "@/components/admin/v2/oppsett/tl-kit";
 import { GruppeFaner } from "@/components/admin/v2/GruppeFaner";
@@ -33,7 +34,7 @@ export default async function GruppeArsplanPage({
   const { id } = await params;
   const { trinn } = await searchParams;
 
-  const gruppe = await prisma.group.findUnique({ where: { id }, select: { id: true, name: true } });
+  const gruppe = await prisma.group.findFirst({ where: { id, ...gruppeInnsynWhere(user) }, select: { id: true, name: true } });
   if (!gruppe) notFound();
 
   const data = await hentGruppeKalenderData(gruppe.name);

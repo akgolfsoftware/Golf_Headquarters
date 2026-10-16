@@ -1,7 +1,8 @@
+// FO03VelgBarn — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
 /**
  * Foreldreportal · Book ny time — barnevalg (STEG 9.8). Har forelderen kun
  * ett barn, hopper vi rett til `/forelder/bookinger/ny/[barnId]` (vanligste
- * tilfelle). Flere barn: enkel liste bygget av eksisterende fo-kit-
+ * tilfelle). Flere barn: enkel liste bygget av fo-presisjon-
  * primitiver (FoKort/FoRad/FoChevron) — INGEN ny visuell komponent, kun
  * gjenbruk av mønsteret FO-01/03/05/10 allerede bruker for lister.
  *
@@ -13,8 +14,8 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentBarnForForelder } from "@/lib/forelder";
-import { V2Shell, FORELDER_NAV, FORELDER_MER } from "@/components/v2/shell";
-import { FoSkjerm, FoHode, FoKort, FoRad, FoChevron, FoTom } from "@/components/forelder/fo-kit";
+import { ForelderSkall } from "@/components/precision/ForelderSkall";
+import { FoSkjerm, FoHode, FoKort, FoRad, FoChevron, FoTom } from "@/components/forelder/fo-presisjon";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Book ny time · Foreldreportal" };
@@ -28,7 +29,8 @@ export default async function ForelderBookNyPage() {
   }
 
   return (
-    <V2Shell bredde="kolonne" aktiv="oversikt" nav={FORELDER_NAV} mer={FORELDER_MER} navn={user.name} avatarUrl={user.avatarUrl}>
+        <ForelderSkall>
+      <div className="pa-side">
       <FoSkjerm>
         <FoHode caps="Forelder" tittel="Book ny time" under={barn.length > 0 ? "Hvem gjelder timen?" : undefined} />
         {barn.length === 0 ? (
@@ -52,6 +54,7 @@ export default async function ForelderBookNyPage() {
           </div>
         )}
       </FoSkjerm>
-    </V2Shell>
+          </div>
+    </ForelderSkall>
   );
 }

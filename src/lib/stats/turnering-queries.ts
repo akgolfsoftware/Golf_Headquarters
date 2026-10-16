@@ -6,6 +6,7 @@
  */
 
 import { prisma } from "@/lib/prisma";
+import { UTEN_DATAGOLF_TURNERING } from "@/lib/auth/datagolf-regel";
 
 // ---------------------------------------------------------------------------
 // Typer
@@ -272,6 +273,8 @@ export async function hentTurneringBySlug(
         },
       },
       publicEntries: {
+        // Resultater fra Data Golf-turneringer vises aldri offentlig (Anders 09.10.2026).
+        where: { tournament: UTEN_DATAGOLF_TURNERING },
         select: {
           id: true,
           status: true,
@@ -390,6 +393,8 @@ export async function hentNorskeDenneUka(): Promise<
       publicEntries: {
         some: { player: { country: "NO" } },
       },
+      // Resultater fra Data Golf-turneringer vises aldri offentlig (Anders 09.10.2026).
+      AND: [UTEN_DATAGOLF_TURNERING],
     },
     select: {
       id: true,

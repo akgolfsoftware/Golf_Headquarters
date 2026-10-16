@@ -8,7 +8,8 @@ export function kanBehandlePlanAction(input: {
   harSpillerTilgang: boolean;
 }): boolean {
   if (input.actionUserId === input.viewerId) return true;
-  if (input.viewerRole === "ADMIN") return true;
+  // Head coach (ADMIN) ser alle coachede spillere, men ikke selvbetjente: tilgang avgjøres av stallen.
+  if (input.viewerRole === "ADMIN") return input.harSpillerTilgang;
   if (input.viewerRole !== "COACH") return false;
   if (input.actionCoachId && input.actionCoachId !== input.viewerId) return false;
   return input.harSpillerTilgang;

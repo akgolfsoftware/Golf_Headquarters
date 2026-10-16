@@ -97,12 +97,39 @@ export function aktivtSpillerMedlemskapWhere(): Prisma.GroupMemberWhereInput {
 
 /**
  * Aktivt TRENER-medlemskap (COACH eller ASSISTANT) for en gitt bruker —
- * innsynsporten i G5: en coach som selv er trener/hjelpetrener i en gruppe
- * ser gruppens spillere (coachScopedPlayerWhere, tredje gren). Gir IKKE
- * redigering alene — den porten (eierGruppen) krever role COACH.
+ * innsynsporten i G5: en coach som selv er trener/hjelpetrener i en AK-gruppe
+ * ser gruppens spillere (coachScopedPlayerWhere, tredje gren). Gjelder ikke
+ * organisasjonsgrupper (WANG/TN), og gir aldri skriverett i spillerens egen
+ * plan (D-25).
  */
 export function aktivtTrenerMedlemskapWhere(userId: string): Prisma.GroupMemberWhereInput {
   return { userId, role: { in: ["COACH", "ASSISTANT"] }, endedAt: null };
+}
+
+/** Programmene som gjør en gruppe til en WANG-gruppe (organisasjonsgruppe). */
+export const WANG_PROGRAMMER = ["WANG_UNG", "WANG_TOPPIDRETT"] as const satisfies readonly PlayerProgram[];
+
+/**
+ * Organisasjonsgruppe = WANG-skolegruppe eller Team Norway (D-04, D-49).
+ * Trenere der eier gruppeplanen, men får ingen innsyn i eller skriverett til
+ * spillerens egen profil via medlemskapet. Innsyn krever uttrykkelig deling.
+ */
+export function orgGruppeWhere(): Prisma.GroupWhereInput {
+  return { OR: [{ program: { in: [...WANG_PROGRAMMER] } }, { slug: TEAM_NORWAY_SLUG }] };
+}
+
+/**
+ * Motsatt av `orgGruppeWhere`, skrevet positivt fordi `NOT` over nullbare
+ * kolonner (program/slug er null for adhoc-grupper) gir NULL i SQL og ville
+ * stengt ute alle adhoc-grupper.
+ */
+export function ikkeOrgGruppeWhere(): Prisma.GroupWhereInput {
+  return {
+    AND: [
+      { OR: [{ program: null }, { program: { notIn: [...WANG_PROGRAMMER] } }] },
+      { OR: [{ slug: null }, { slug: { not: TEAM_NORWAY_SLUG } }] },
+    ],
+  };
 }
 
 /**

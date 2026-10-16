@@ -1,6 +1,8 @@
 # Start her — AK Golf HQ
 
-**Designautoritet:** [AK Golf Design System og «App design»](docs/design-system/design-autoritet.md) · **Fasit:** [docs/FASIT.md](docs/FASIT.md) · **Språk og planlegging:** [docs/treningsplanlegging.md](docs/treningsplanlegging.md)
+**Aktiv arbeidskø:** [Ferdigstilling](docs/plan-ferdigstilling.md) · [Grener og PR-er](docs/vedlikehold/repo-opprydding-2026-10-11.md) · [Git på begge Mac-er](docs/vedlikehold/git-arbeidsflyt.md).
+
+**Designautoritet:** [«AK Golf Precision Athletics»](docs/design-system/design-autoritet.md) · **Fasit:** [docs/FASIT.md](docs/FASIT.md) · **Språk og planlegging:** [docs/treningsplanlegging.md](docs/treningsplanlegging.md)
 
 1. [Designautoritet](docs/design-system/design-autoritet.md) — gjeldende system og utgående design.
 2. [Fasit](docs/FASIT.md) — chrome, Workbench-pills, formel, port.

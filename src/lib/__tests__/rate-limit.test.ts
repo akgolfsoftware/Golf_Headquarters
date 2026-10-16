@@ -12,6 +12,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 // Mock env FØR vi importerer rate-limit
+delete process.env.REDIS_URL;
 delete process.env.UPSTASH_REDIS_REST_URL;
 delete process.env.UPSTASH_REDIS_REST_TOKEN;
 

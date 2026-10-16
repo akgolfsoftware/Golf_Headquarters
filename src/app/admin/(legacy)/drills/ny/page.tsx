@@ -4,10 +4,13 @@
  * overlapper Loop 2S sin drill-editor i Workbench
  * (src/components/workbench/DrillListEditor.tsx). Redirecter til
  * Planlegge-hub'en.
+ *
+ * Fra 29.09.2026 sender den til Øvelser-fanen i Plan-hub (AG-14), der coach
+ * oppretter og endrer øvelser i øvelsesbanken.
  */
 
 import { permanentRedirect } from "next/navigation";
 
 export default function NyDrillRedirect() {
-  permanentRedirect("/admin/planlegge");
+  permanentRedirect("/admin/plan?fane=ovelser");
 }

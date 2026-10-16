@@ -14,7 +14,7 @@ import "server-only";
 
 import { prisma } from "@/lib/prisma";
 import { loadInnboksSaker, type InnboksData } from "@/lib/admin/innboks-saker";
-import { loadEpostVedStatus, tellEpostVedStatus, type InnboksEpostVm } from "@/lib/innboks/data";
+import { tellEpostVedStatus } from "@/lib/innboks/data";
 import type { AdminEmailV2Data, AdminEmailV2Template } from "@/components/admin/v2/AdminEmailV2";
 import type { KommunikasjonFaneId } from "./faner";
 
@@ -38,16 +38,6 @@ export async function lastKommunikasjonInnboks(user: {
   name?: string | null;
 }): Promise<InnboksData> {
   return loadInnboksSaker(user);
-}
-
-/** Fane «Utkast» — venter på deg (ikke sendt ennå). ADMIN-only, se page.tsx. */
-export async function lastKommunikasjonUtkast(): Promise<InnboksEpostVm[]> {
-  return loadEpostVedStatus(UTKAST_STATUSER);
-}
-
-/** Fane «Sendt» — ferdigbehandlet (sendt eller arkivert). ADMIN-only, se page.tsx. */
-export async function lastKommunikasjonSendt(): Promise<InnboksEpostVm[]> {
-  return loadEpostVedStatus(SENDT_STATUSER);
 }
 
 function fmtDato(d: Date): string {

@@ -9,6 +9,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { coachBookingScope } from "@/lib/auth/booking-scope";
 import { sjekkKollisjon, erKollisjonsfeil, kollisjonsmelding } from "@/lib/booking/kollisjonsvern";
 import { pushBooking } from "@/lib/google-calendar-kilder";
 import { logError } from "@/lib/error-tracking";
@@ -26,10 +27,10 @@ export async function flyttBookingTilDag(
 ): Promise<{ ok: boolean; error?: string }> {
   const parsed = FlyttSchema.safeParse({ bookingId, targetDayISO });
   if (!parsed.success) return { ok: false, error: "Ugyldig flytting." };
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const aktor = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
-  const booking = await prisma.booking.findUnique({
-    where: { id: bookingId },
+  const booking = await prisma.booking.findFirst({
+    where: { id: bookingId, ...coachBookingScope(aktor) },
     select: { id: true, startAt: true, endAt: true, status: true, coachId: true, facilityId: true, serviceTypeId: true },
   });
   if (!booking) return { ok: false, error: "Booking ikke funnet." };
@@ -103,10 +104,10 @@ export async function flyttBookingTilTid(
 ): Promise<{ ok: boolean; error?: string }> {
   const parsed = FlyttTidSchema.safeParse({ bookingId, nyStartKl });
   if (!parsed.success) return { ok: false, error: "Ugyldig klokkeslett." };
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const aktor = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
-  const booking = await prisma.booking.findUnique({
-    where: { id: bookingId },
+  const booking = await prisma.booking.findFirst({
+    where: { id: bookingId, ...coachBookingScope(aktor) },
     select: { id: true, startAt: true, endAt: true, status: true, coachId: true, facilityId: true, serviceTypeId: true },
   });
   if (!booking) return { ok: false, error: "Booking ikke funnet." };

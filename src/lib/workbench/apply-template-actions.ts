@@ -5,6 +5,7 @@
  * for mal-uke 1 (standard «Bruk»-flyt) i inneværende kalenderuke.
  */
 
+import { canEditGroup } from "@/lib/workbench/group-scope";
 import { revalidatePath } from "next/cache";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { assertCapability } from "@/lib/auth/effective-capabilities";
@@ -286,6 +287,7 @@ export async function coachApplyTemplateToGroup(
   const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   // G6: utrulling av mal til gruppe endrer gruppeplanen → EDIT_GROUP_PLANS.
   await assertCapability(coach, Capability.EDIT_GROUP_PLANS);
+  if (!(await canEditGroup(coach, groupId))) return { ok: false, error: "Gruppe ikke funnet" };
   const startWeekOffset = Math.max(0, Math.min(12, Math.trunc(opts.startWeekOffset ?? 0)));
 
   const [gruppe, mal] = await Promise.all([
@@ -297,7 +299,7 @@ export async function coachApplyTemplateToGroup(
         // Kun aktive SPILLERE — utrulling til trenere/utmeldte ville gitt dem
         // spillerplaner (plan G1/G3).
         members: {
-          where: { endedAt: null, role: "PLAYER" },
+          where: { endedAt: null, role: "PLAYER", user: { role: "PLAYER", deletedAt: null } },
           select: { user: { select: { id: true, name: true } } },
         },
       },

@@ -15,6 +15,7 @@ import "@/app/(marketing)/(mlegacy)/stats/stats.css";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { kanVisesOffentlig } from "@/lib/stats/offentlig-spiller";
+import { parseRunder, ryddProfilResultater } from "@/lib/stats/profil-resultater";
 import Link from "next/link";
 import { ArrowRight, Mail, ChevronLeft } from "lucide-react";
 import { prisma } from "@/lib/prisma";
@@ -28,12 +29,6 @@ export const revalidate = 3600;
 // ---------------------------------------------------------------------------
 // Typer
 // ---------------------------------------------------------------------------
-
-type RundeBlogg = {
-  n: number;
-  score: number;
-  par?: string | number;
-};
 
 type SpillerData = NonNullable<Awaited<ReturnType<typeof hentSpiller>>>;
 type Entry = SpillerData["entries"][number];
@@ -63,6 +58,7 @@ async function hentSpiller(slug: string) {
           position: true,
           scoreToPar: true,
           totalScore: true,
+          klasseNavn: true,
           rounds: true,
           tournament: {
             select: {
@@ -73,6 +69,7 @@ async function hentSpiller(slug: string) {
               startDate: true,
               tour: true,
               location: true,
+              sourceOrigin: true,
             },
           },
         },
@@ -150,14 +147,6 @@ function formaterTour(tour: string | null): string {
     wagr: "WAGR",
   };
   return map[tour] ?? tour;
-}
-
-function parseRunder(rounds: unknown): { n: number; score: number }[] {
-  if (!rounds || !Array.isArray(rounds)) return [];
-  return (rounds as RundeBlogg[])
-    .filter((r) => typeof r.score === "number")
-    .sort((a, b) => a.n - b.n)
-    .map((r) => ({ n: r.n, score: r.score }));
 }
 
 function formaterPosisjon(position: number | null, status: string): string {
@@ -338,7 +327,9 @@ export default async function SpillerProfilPage({
   const spillerData = spiller as NonNullable<typeof spiller>;
   const klubb       = parseKlubb(spillerData.bio);
   const university  = parseUniversity(spillerData.bio);
-  const entries     = spillerData.entries;
+  const entries     = ryddProfilResultater(spillerData.entries);
+  // Rene DataGolf-proffer har ingenting igjen å vise etter ryddingen.
+  if (entries.length === 0 && spillerData.entries.length > 0) notFound();
   const perAar      = beregnePerAar(entries);
   const antallTurneringer = entries.length;
   const antallRunder = entries.reduce(

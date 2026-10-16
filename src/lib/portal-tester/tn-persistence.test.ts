@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { before, beforeEach, mock, test } from "node:test";
-import { tnProtocol } from "./tn-catalog";
+import { tnProtocol, TN_RULES_VERSION, TN_VERSION } from "./tn-catalog";
 
 type Row = { id: string; userId: string; testId: string; status: string; scoringData: object; testResultId?: string };
 let sessions: Record<string, Row> = {};
@@ -13,11 +13,12 @@ let completions = 0;
 let notices = 0;
 /** Simulerer at økten er koblet til en trenerført testdag (TestDayParticipant.sessionId) — egenføring skal da avvises, jf. src/app/portal/tren/tester/team-norway/actions.ts. */
 let koblesTilTestdag = false;
+let aktivTestdagDeltaker: { id: string; playerId: string; status: string; sessionId: string | null; resultId?: string; testDay: { status: string; groupId: string; testDefinitionId: string; testDefinition: { scoringRule: string } } } | null = null;
 mock.module("@/lib/auth/requirePortalUser", { namedExports: { requirePortalUser: async () => ({ id: viewer }) } });
 mock.module("@/lib/talent/test-sync", { namedExports: { syncTalentEtterTest: async () => {} } });
 mock.module("next/cache", { namedExports: { revalidatePath: () => {} } });
 mock.module("@/lib/prisma", { namedExports: { prisma: { $transaction: async (run: (tx: object) => Promise<unknown>) => {
-  const next = structuredClone(sessions); const records = [...results];
+  const next = structuredClone(sessions); const records = [...results]; const nextParticipant = structuredClone(aktivTestdagDeltaker);
   const out = await run({
     testAssignment: { findFirst: async () => assignmentOpen ? { id: "assignment-a", coachId: "coach-a" } : null, updateMany: async () => { assignmentOpen = false; completions++; return { count: 1 }; } },
     notification: { create: async () => { notices++; } },
@@ -29,13 +30,21 @@ mock.module("@/lib/prisma", { namedExports: { prisma: { $transaction: async (run
       update: async ({ where, data }: { where: { id: string }; data: object }) => Object.assign(next[where.id], data),
     },
     testResult: { create: async ({ data }: { data: object }) => { if (failResult) throw new Error("database failure"); records.push(data); return { id: `result-${records.length}` }; } },
-    testDayParticipant: { findFirst: async () => (koblesTilTestdag ? { id: "deltaker-a" } : null) },
+    testDayParticipant: {
+      findFirst: async () => (koblesTilTestdag ? { id: "deltaker-a" } : null),
+      findUnique: async ({ where }: { where: { id: string } }) => nextParticipant?.id === where.id ? nextParticipant : null,
+      updateMany: async ({ where, data }: { where: { id: string; playerId?: string; status?: string; sessionId?: string | null }; data: { sessionId?: string | null; status?: string; resultId?: string } }) => {
+        if (!nextParticipant || where.id !== nextParticipant.id || where.playerId && where.playerId !== nextParticipant.playerId || where.status && where.status !== nextParticipant.status || Object.hasOwn(where, "sessionId") && where.sessionId !== nextParticipant.sessionId) return { count: 0 };
+        Object.assign(nextParticipant, data); return { count: 1 };
+      },
+    },
+    groupMember: { findFirst: async () => ({ id: "membership-a" }) },
   });
-  sessions = next; results = records; return out;
+  sessions = next; results = records; aktivTestdagDeltaker = nextParticipant; return out;
 } } } });
 let save: typeof import("@/app/portal/tren/tester/team-norway/actions").saveTnTest;
 before(async () => { save = (await import("@/app/portal/tren/tester/team-norway/actions")).saveTnTest; });
-beforeEach(() => { sessions = {}; results = []; viewer = "player-a"; failResult = false; loseRace = false; assignmentOpen = false; completions = 0; notices = 0; koblesTilTestdag = false; });
+beforeEach(() => { sessions = {}; results = []; viewer = "player-a"; failResult = false; loseRace = false; assignmentOpen = false; completions = 0; notices = 0; koblesTilTestdag = false; aktivTestdagDeltaker = null; });
 const sessionId = "b7f0d4a8-70d6-4d7a-8a73-682ed75ac000";
 const input = () => ({ sessionId, protocolId: "putt-1-3m", count: 25, revision: 0, intent: "complete", values: Object.fromEntries(tnProtocol("putt-1-3m")!.rows.map((_, i) => [String(i + 1), { strokes: 1 }])) });
 test("serveren beregner og lagrer fullføring én gang ved retry", async () => {
@@ -92,4 +101,81 @@ test("fullføring kobler én tildeling og ett internt varsel; retry dobler ikke"
   assert.equal((await save(input())).ok, true);
   assert.equal((await save(input())).ok, true);
   assert.equal(completions, 1); assert.equal(notices, 1);
+});
+
+
+test("ny poengregel lagres med versjon, rådata og desimaler; retry gir ett resultat", async () => {
+  const values = Object.fromEntries([4,4,1,1,1,1,0.5,0,0].map((points, i) => [String(i + 1), { points }]));
+  const data = { sessionId, version: TN_RULES_VERSION, protocolId: "naerspill-gate", count: 9, revision: 0, values, intent: "complete" };
+  assert.equal((await save(data)).ok, true);
+  assert.equal((await save(data)).ok, true);
+  assert.equal(results.length, 1);
+  const result = results[0] as { score: number; testId: string; details: { version: string; values: unknown } };
+  assert.equal(result.score, 12.5);
+  assert.equal(result.testId, "tn-v3-20261002-naerspill-gate");
+  assert.equal(result.details.version, TN_RULES_VERSION);
+  assert.deepEqual(result.details.values, values);
+});
+
+test("gammelt utkast beholdes med gammel regel og kan ikke bytte versjon ved lagring", async () => {
+  const data = { sessionId, version: TN_VERSION, protocolId: "wedge-gate", count: 9, revision: 0, values: { "1": { points: 2.5 } }, intent: "draft" };
+  assert.equal((await save(data)).ok, true);
+  assert.equal((await save({ ...data, revision: 1 })).ok, true);
+  assert.equal((await save({ ...data, revision: 2, version: TN_RULES_VERSION, values: { "1": { ok: "Ja" } } })).ok, false);
+  assert.equal(sessions[sessionId].testId, "tn-v3-wedge-gate");
+  assert.deepEqual((sessions[sessionId].scoringData as { values: unknown }).values, data.values);
+  assert.equal(results.length, 0);
+});
+
+test("tapt svarkvittering kan sende samme utkast og avbrudd på nytt uten ny revisjon", async () => {
+  const mutationId = "d480d84d-6cfb-453d-acb9-2c67a90fcad1";
+  const draft = { ...input(), ownerId: viewer, mutationId, intent: "draft" };
+  assert.deepEqual(await save(draft), { ok: true, revision: 1 });
+  assert.deepEqual(await save(draft), { ok: true, revision: 1, resultId: undefined });
+  assert.equal((sessions[sessionId].scoringData as { revision: number }).revision, 1);
+  assert.equal((await save({ ...draft, notes: "changed payload" })).ok, false);
+  assert.equal((await save({ ...draft, intent: "abort" })).ok, false);
+  const abort = { ...draft, revision: 1, intent: "abort", mutationId: "7e65cc03-a253-4482-9c8d-9980f59c5caa" };
+  assert.equal((await save(abort)).ok, true);
+  assert.equal((await save(abort)).ok, true);
+  assert.equal((sessions[sessionId].scoringData as { revision: number }).revision, 2);
+  assert.equal(results.length, 0);
+});
+test("gammel kvittering kan ikke overskrive en nyere registrering", async () => {
+  const first = { ...input(), mutationId: "d480d84d-6cfb-453d-acb9-2c67a90fcad1", intent: "draft" };
+  await save(first);
+  await save({ ...first, revision: 1, mutationId: "7e65cc03-a253-4482-9c8d-9980f59c5caa", notes: "newer" });
+  const retry = await save(first);
+  assert.equal(retry.ok, false);
+  if (!retry.ok) assert.equal(retry.retryable, false);
+  assert.equal((sessions[sessionId].scoringData as { notes: string }).notes, "newer");
+});
+test("kø fra gammel konto oppretter ikke data etter brukerbytte", async () => {
+  const draft = { ...input(), ownerId: "player-a", intent: "draft", mutationId: "d480d84d-6cfb-453d-acb9-2c67a90fcad1" };
+  viewer = "player-b";
+  assert.equal((await save(draft)).ok, false);
+  assert.equal(Object.keys(sessions).length, 0);
+});
+test("kvittering gir aldri tilgang til en annen spiller eller trenerført testdag", async () => {
+  const draft = { ...input(), mutationId: "d480d84d-6cfb-453d-acb9-2c67a90fcad1", intent: "draft" };
+  await save(draft);
+  viewer = "player-b";
+  assert.equal((await save(draft)).ok, false);
+  viewer = "player-a"; koblesTilTestdag = true;
+  assert.equal((await save(draft)).ok, false);
+});
+
+test("spilleren kan føre egen testdagstildeling og fullføre samme resultat én gang", async () => {
+  aktivTestdagDeltaker = { id: "participant-a", playerId: "player-a", status: "PENDING", sessionId: null,
+    testDay: { status: "ACTIVE", groupId: "group-a", testDefinitionId: "tn-v3-putt-1-3m", testDefinition: { scoringRule: TN_VERSION } } };
+  const assigned = { ...input(), intent: "draft", testDayParticipantId: "participant-a" };
+  assert.deepEqual(await save(assigned), { ok: true, revision: 1 });
+  assert.equal(aktivTestdagDeltaker.sessionId, sessionId);
+  assert.equal(aktivTestdagDeltaker.status, "PENDING");
+  const completed = { ...input(), revision: 1, testDayParticipantId: "participant-a" };
+  assert.equal((await save(completed)).ok, true);
+  assert.equal(aktivTestdagDeltaker.status, "DONE");
+  assert.equal(aktivTestdagDeltaker.resultId, "result-1");
+  assert.equal(results.length, 1);
+  assert.equal(sessions[sessionId].status, "COMPLETED");
 });

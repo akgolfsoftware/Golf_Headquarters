@@ -2,16 +2,27 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { createHash } from "node:crypto";
 import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
 import { notifyMany } from "@/lib/notifications";
 import { beregnSgFraShots, beregnGranulaerSgFraShots } from "@/lib/runde-logg/shots-til-sg";
+import { hentSgReferanseForRunde, SG_ENGINE_VERSION } from "@/lib/domain/sg-reference";
+import { beregnShotSg } from "@/lib/domain/sg";
+import { shotsTilSgShotsMedMeta } from "@/lib/runde-logg/shots-til-sg";
 import { avgjorSgSkriving } from "@/lib/domain/sg-skriving";
 import { hullSchema } from "@/lib/runde-logg/schema";
+import { beskrivTapteSlag, planSlagSletting } from "@/lib/portal-runder/scorekort-slag";
 import { byggShotRader, splitShotRader } from "@/lib/runde-logg/bygg-shot-rader";
 import { deriverRundeScore } from "@/lib/runde-logg/deriver-hullscore";
 import { synkroniserSgFraRunder } from "@/lib/portal-stats/sg-bro";
-import { ShotLie, ShotType, WindDir } from "@/generated/prisma/client";
+import {
+  RUNDE_SG_KILDE,
+  avledRundeRegistrering,
+  lesRundeKilde,
+  rundeRegistreringFelter,
+} from "@/lib/runde-logg/kontrakt";
+import { Prisma, ShotLie, ShotType, WindDir } from "@/generated/prisma/client";
 import { logError } from "@/lib/error-tracking";
 
 export type ShareVisibility = "privat" | "coach" | "offentlig";
@@ -116,21 +127,26 @@ async function recomputeRoundSg(roundId: string): Promise<void> {
   try {
     const round = await prisma.round.findUnique({
       where: { id: roundId },
-      select: { sgSource: true, userId: true },
+      select: { sgSource: true, source: true, userId: true, sgReferenceSetId: true },
     });
     if (!round) return;
     // Kortslutning: manuelle tall trenger ingen slag-spørring i det hele tatt.
-    if (round.sgSource === "manual") return;
+    if (round.sgSource === RUNDE_SG_KILDE.MANUAL) return;
 
     const [shots, holeScores] = await Promise.all([
       prisma.shot.findMany({
         where: { roundId },
         select: {
           holeNumber: true,
+          id: true,
           holePar: true,
           shotNumber: true,
           lie: true,
           distanceToPin: true,
+          endLie: true,
+          endDistanceToPinM: true,
+          holed: true,
+          penaltyStrokes: true,
           isPenalty: true,
         },
       }),
@@ -140,21 +156,46 @@ async function recomputeRoundSg(roundId: string): Promise<void> {
       }),
     ]);
 
-    const sg = beregnSgFraShots(shots, holeScores);
-    const gran = sg ? beregnGranulaerSgFraShots(shots, holeScores) : null;
+    const reference = await hentSgReferanseForRunde(round.sgReferenceSetId);
+    const sg = reference ? beregnSgFraShots(shots, holeScores, reference.points) : null;
+    const gran = sg && reference ? beregnGranulaerSgFraShots(shots, holeScores, reference.points) : null;
     const beslutning = avgjorSgSkriving(round.sgSource, sg, gran);
+    const nesteSgSource = beslutning.handling === "skriv" ? beslutning.felter.sgSource : round.sgSource;
+    const registrering = avledRundeRegistrering({
+      sgSource: nesteSgSource,
+      holeScores,
+      shots,
+      kilde: lesRundeKilde(round.source),
+    });
+    const metadata = rundeRegistreringFelter(registrering);
 
-    if (beslutning.handling === "skriv") {
-      await prisma.round.update({
+    const medMeta = sg ? shotsTilSgShotsMedMeta(shots, holeScores) : null;
+    const results = medMeta && reference ? medMeta.map((shot) => {
+      const dbShot = shots.find((s) => s.holeNumber === shot.holeNumber && s.shotNumber === shot.slagIndex + 1);
+      const value = beregnShotSg(shot, reference.points);
+      if (!dbShot || !value) throw new Error("SG-slag mangler ved omberegning");
+      return { shotId: dbShot.id, referenceSetId: reference.id, engineVersion: SG_ENGINE_VERSION,
+        phase: value.phase, expectedStart: value.expectedStart, expectedEnd: value.expectedEnd,
+        penaltyStrokes: value.penaltyStrokes, sgValue: value.sgValue, inputQuality: "MANUAL_CHAIN" };
+    }) : [];
+    await prisma.$transaction(async (tx) => {
+      await tx.round.update({
         where: { id: roundId },
-        data: beslutning.felter,
+        data: beslutning.handling === "skriv"
+          ? { ...beslutning.felter, ...metadata,
+              sgReferenceSetId: sg ? reference?.id : null,
+              benchmarkLevelSnapshot: sg ? reference?.levelCode : null,
+              sgEngineVersion: sg ? SG_ENGINE_VERSION : null }
+          : metadata,
       });
-    }
+      await tx.shotSgResult.deleteMany({ where: { shot: { roundId } } });
+      if (results.length > 0) await tx.shotSgResult.createMany({ data: results });
+    });
 
     // SG-broen (T6): rundens SG kan ha endret seg (skrevet eller nullstilt) —
     // synk DataGolf-grunnlaget (BrukerSgInput, kilde PLAYERHQ). Best-effort,
     // kaster aldri. Skipper når ingen skriving skjedde.
-    if (sg || round.sgSource === "beregnet") {
+    if (sg || round.sgSource === RUNDE_SG_KILDE.BEREGNET) {
       await synkroniserSgFraRunder(round.userId);
     }
   } catch (error) {
@@ -221,7 +262,9 @@ export async function deleteShot(roundId: string, shotId: string) {
   const user = await requireConsentingUser();
   await assertRoundOwner(roundId, user.id);
 
-  await prisma.shot.delete({ where: { id: shotId } });
+  // Slaget må tilhøre runden som eiersjekken gjelder (TP-05).
+  const slettet = await prisma.shot.deleteMany({ where: { id: shotId, roundId } });
+  if (slettet.count === 0) throw new Error("forbidden");
   await recomputeRoundSg(roundId);
   revalidatePath(`/portal/mal/runder/${roundId}`);
 }
@@ -292,10 +335,28 @@ export async function importUpGameHoleScores(
       where: { roundId, holeNumber: { in: parsed.data.map((h) => h.holeNumber) } },
     });
     // Rundens totalscore = summen av alle hullscorene som nå finnes.
-    const alle = await tx.holeScore.findMany({ where: { roundId }, select: { strokes: true } });
+    const alle = await tx.holeScore.findMany({
+      where: { roundId },
+      select: { holeNumber: true, par: true, strokes: true, putts: true, fairway: true, gir: true },
+    });
+    const registrering = avledRundeRegistrering({
+      sgSource: null,
+      holeScores: alle,
+      shots: [],
+      kilde: "upgame_csv",
+    });
     await tx.round.update({
       where: { id: roundId },
-      data: { score: alle.reduce((sum, x) => sum + x.strokes, 0) },
+      data: {
+        score: alle.reduce((sum, x) => sum + x.strokes, 0),
+        ...rundeRegistreringFelter(registrering, {
+          importMetadata: {
+            format: "upgame_hole_scores",
+            antallHull: parsed.data.length,
+            importedAt: new Date().toISOString(),
+          },
+        }),
+      },
     });
   });
 
@@ -310,10 +371,10 @@ export async function importUpGameHoleScores(
   let sgStatus: "full" | "delvis" | "mangler" = "mangler";
   let sgMelding =
     "Hull-score er lagret. Full Strokes Gained krever slag for slag — legg til detalj om du vil.";
-  if (runde?.sgSource === "beregnet" && runde.sgTotal != null) {
+  if (runde?.sgSource === RUNDE_SG_KILDE.BEREGNET && runde.sgTotal != null) {
     sgStatus = "full";
     sgMelding = "SG er beregnet fra komplett slag-kjede.";
-  } else if (runde?.sgTotal != null || runde?.sgSource === "manual") {
+  } else if (runde?.sgTotal != null || runde?.sgSource === RUNDE_SG_KILDE.MANUAL) {
     sgStatus = "delvis";
     sgMelding =
       "Score er oppdatert. SG er begrenset uten slag for slag (UpGame gir hull-tall).";
@@ -362,7 +423,9 @@ const manuellHullListe = z
 export async function lagreHullScorer(
   roundId: string,
   hull: unknown,
-): Promise<{ ok: boolean; error?: string }> {
+  /** Bekreftelsen gjelder nøyaktig innholdet vist i forrige svar. */
+  bekreftSlettSlag?: string,
+): Promise<{ ok: boolean; error?: string; krevBekreftelse?: boolean; bekreftelse?: string }> {
   const user = await requireConsentingUser();
   await assertRoundOwner(roundId, user.id);
 
@@ -376,12 +439,34 @@ export async function lagreHullScorer(
     fairway: h.par === 3 ? null : h.fairway,
   }));
 
-  await prisma.$transaction(async (tx) => {
-    const eksisterende = await tx.holeScore.findMany({
-      where: { roundId },
-      select: { holeNumber: true, strokes: true },
-    });
-    const eksStrokes = new Map(eksisterende.map((e) => [e.holeNumber, e.strokes]));
+  const resultat = await prisma.$transaction(async (tx) => {
+    // Les og skriv samme konsistente grunnlag. Endring underveis skal ikke
+    // kunne slette nye slag som brukeren aldri fikk beskjed om.
+    const [eksisterende, slag] = await Promise.all([
+      tx.holeScore.findMany({
+        where: { roundId },
+        select: { holeNumber: true, strokes: true },
+      }),
+      tx.shot.findMany({
+        where: { roundId },
+        select: { id: true, holeNumber: true },
+        orderBy: { id: "asc" },
+      }),
+    ]);
+    const antall = new Map<number, number>();
+    for (const s of slag) antall.set(s.holeNumber, (antall.get(s.holeNumber) ?? 0) + 1);
+    const plan = planSlagSletting(
+      eksisterende,
+      data,
+      [...antall].map(([holeNumber, antall]) => ({ holeNumber, antall })),
+    );
+    const slettes = new Set(plan.slettSlagFor);
+    const bekreftelse = createHash("sha256").update(JSON.stringify({
+      roundId, data, plan, slag: slag.filter(s => slettes.has(s.holeNumber)),
+    })).digest("hex");
+    if (plan.tapteSlag.length > 0 && bekreftSlettSlag !== bekreftelse) {
+      return { ok: false, krevBekreftelse: true, bekreftelse, error: beskrivTapteSlag(plan.tapteSlag) };
+    }
 
     for (const h of data) {
       await tx.holeScore.upsert({
@@ -400,24 +485,16 @@ export async function lagreHullScorer(
     }
 
     // Hull som ble fjernet fra scorekortet (f.eks. 18 → 9 hull).
-    const beholdt = new Set(data.map((h) => h.holeNumber));
-    const fjernet = eksisterende
-      .filter((e) => !beholdt.has(e.holeNumber))
-      .map((e) => e.holeNumber);
-    if (fjernet.length > 0) {
-      await tx.holeScore.deleteMany({ where: { roundId, holeNumber: { in: fjernet } } });
+    if (plan.fjernedeHull.length > 0) {
+      await tx.holeScore.deleteMany({
+        where: { roundId, holeNumber: { in: plan.fjernedeHull } },
+      });
     }
 
-    // Slag-kjeder som nå motsier scorekortet: endret slag-tall eller fjernet hull.
-    const endretStrokes = data
-      .filter((h) => {
-        const gamle = eksStrokes.get(h.holeNumber);
-        return gamle != null && gamle !== h.strokes;
-      })
-      .map((h) => h.holeNumber);
-    const slettSlagFor = [...endretStrokes, ...fjernet];
-    if (slettSlagFor.length > 0) {
-      await tx.shot.deleteMany({ where: { roundId, holeNumber: { in: slettSlagFor } } });
+    // Slag-kjeder som nå motsier scorekortet (endret slag-tall eller fjernet
+    // hull). Hull med uendret slag-tall beholder kjeden sin.
+    if (plan.slettSlagFor.length > 0) {
+      await tx.shot.deleteMany({ where: { roundId, holeNumber: { in: plan.slettSlagFor } } });
     }
 
     // Brutto totalscore = summen av scorekortet.
@@ -425,7 +502,10 @@ export async function lagreHullScorer(
       where: { id: roundId },
       data: { score: data.reduce((sum, h) => sum + h.strokes, 0) },
     });
-  });
+    return { ok: true };
+  }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+
+  if (!resultat.ok) return resultat;
 
   await recomputeRoundSg(roundId);
   revalidatePath(`/portal/mal/runder/${roundId}`);

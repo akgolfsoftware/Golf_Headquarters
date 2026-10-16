@@ -1,6 +1,6 @@
 # AK HQ Design — start arbeidet her
 
-**Opprettet 10.09.2026 og oppdatert 21.09.2026.** Én prosjektspesifikk arbeidsmåte for hele appens design. [AK Golf Design System og «App design»](design-autoritet.md) er valgt designautoritet. Arbeidet viderefører dagens system og siste faktiske prosjektversjon. Train-lock og Paper er utgående og skal ikke brukes som visuell kilde eller tas opp som et nytt valg. Målet om komplett app før åpen lansering med booking og betaling står ved lag.
+**Opprettet 10.09.2026 og oppdatert 02.10.2026.** Én prosjektspesifikk arbeidsmåte for hele appens design. [«AK Golf Precision Athletics»](design-autoritet.md) er valgt designautoritet for AK Golf HQ. [Treningsplanlegging og språk](../treningsplanlegging.md) er eneste master for synlig språk i alle designleveranser. Team Norway og WANG har egne visuelle systemer, men bruker samme felles golf- og treningsbegreper. Train-lock og Paper er utgående og skal ikke brukes som visuell kilde eller tas opp som et nytt valg. Målet om komplett app før åpen lansering med booking og betaling står ved lag.
 
 ## Bruk i prosjektet
 
@@ -10,12 +10,12 @@ Skillen støtter full plattformdesign, en enkelt brukerreise, komponentarbeid og
 
 ## Bruk i Claude Design
 
-Last inn ferdighetspakken, Anders' visuelle smaksreferanser og [hovedprompten](../../.claude/skills/ak-hq-design/assets/hovedprompt.md). Den er skrevet for hele appen med gjennomførbare etapper og ber Claude skape både Design System v0.1 og representative skjermer. Dersom Claude Design ikke har en egen skill-funksjon, fungerer innholdet som vedlagte prosjektinstrukser og referanser. Pakken er ikke installert inne i Claude Design av denne oppgaven.
+Last inn ferdighetspakken, [språk-masteren](../treningsplanlegging.md) og [hovedprompten](../../.claude/skills/ak-hq-design/assets/hovedprompt.md). Viderefør den faktiske Precision Athletics-versjonen. Dersom Claude Design ikke har en egen skill-funksjon, fungerer innholdet som vedlagte prosjektinstrukser og referanser. Oppgi om språk-masteren faktisk er tilgjengelig i designprosjektet; en filsti alene gir ikke tilgang.
 
 Kort inngang når pakken er lagt ved:
 
 ```text
-Bruk den vedlagte AK HQ Design-pakken og AK Golf Design System i prosjektet «App design». Les SKILL.md, docs/design-system/design-autoritet.md og relevant oppgave. Viderefør siste faktiske prosjektversjon. Train-lock og Paper er bare historisk funksjonsunderlag. Dokumenter skjermdekning, tilstander og formater. Ikke spør på nytt hvilket designsystem som gjelder.
+Bruk den vedlagte AK HQ Design-pakken i prosjektet «AK Golf Precision Athletics». Les SKILL.md, docs/design-system/design-autoritet.md og docs/treningsplanlegging.md eller en kontrollert kopi i designprosjektet. Ordboken er master for all synlig tekst. Viderefør siste faktiske prosjektversjon. Train-lock og Paper er bare historisk funksjonsunderlag. Dokumenter skjermdekning, tilstander og formater. Ikke spør på nytt hvilket designsystem som gjelder.
 ```
 
 ## Dette følger med

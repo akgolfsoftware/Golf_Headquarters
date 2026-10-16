@@ -77,7 +77,8 @@ export type PeriodLabel =
   | "TESTUKE"
   | "FERIE"
   | "TRENINGSSAMLING"
-  | "HELDAGSSAMLING";
+  | "HELDAGSSAMLING"
+  | "RESTITUSJON";
 
 export type BlockType =
   | "OEKT" // training session
@@ -97,7 +98,8 @@ export type SessionStatus =
   | "IN_PROGRESS"
   | "COMPLETED"
   | "CANCELLED"
-  | "SKIPPED";
+  | "SKIPPED"
+  | "ABANDONED";
 
 export type PracticeType = "BLOKK" | "VARIABEL" | "KONKURRANSE" | "SPILL_TEST";
 
@@ -131,9 +133,20 @@ export interface Drill {
   description?: string;
   durationMinutes: number;
   akFormel: AKFormel;
-  /** Optional technique focus (one only) */
+  /** Historisk fokus/kildeposisjon. Ny målsetning ligger i detaljer.mal.malsetning. */
   techniqueFocus?: string;
   sourceId?: string; // if dragged from bank
+  exerciseId?: string;
+  positionTaskId?: string;
+  /** Historisk scalar-dose følger kopier; frie nye skjemaer skriver ikke L-trappen. */
+  repType?: string;
+  repAntall?: number;
+  repMinutter?: number;
+  repSett?: number;
+  repReps?: number;
+  planRepsUtenBall?: number;
+  planRepsLavFart?: number;
+  planRepsAuto?: number;
   order: number;
 }
 
@@ -401,6 +414,9 @@ export interface CreateSessionCommand {
   drills?: Omit<Drill, "id" | "order">[];
   environment?: Environment;
   notes?: string;
+  rationale?: string;
+  location?: string;
+  maalsetning?: string;
   createdBy: "COACH" | "PLAYER";
   /** When planning in GROUP mode — triggers materialisation to all active members */
   groupId?: string;
@@ -420,6 +436,9 @@ export interface CreateGroupSessionCommand {
   drills?: Omit<Drill, "id" | "order">[];
   environment?: Environment;
   notes?: string;
+  rationale?: string;
+  location?: string;
+  maalsetning?: string;
   /** Active member playerIds at time of create (caller resolves membership) */
   memberPlayerIds: string[];
 }
@@ -451,8 +470,8 @@ export interface ResolvePlayerApprovalCommand {
 
 /** Innholdsfelter en serie-endring kan røre. Dato/tid propagerer aldri. */
 export type SeriesContentPatch = Partial<
-  Pick<WorkbenchSession, "title" | "pyramid" | "blockType" | "environment" | "notes">
->;
+  Pick<WorkbenchSession, "title" | "pyramid" | "blockType" | "environment">
+> & { notes?: string | null; rationale?: string | null; location?: string | null; maalsetning?: string | null };
 
 export interface UpdateSeriesSessionCommand {
   sessionId: string;
@@ -520,6 +539,7 @@ export type WeekNote =
 
 export interface WeekPlanData {
   id?: string;
+  updatedAt?: string;
   playerId: string;
   seasonPlanId?: string | null;
   isoYear: number;
@@ -539,6 +559,7 @@ export interface WeekPlanData {
   repetitionTargets?: Record<string, unknown> | null;
   loadCeiling?: number | null;
   customNotes?: string | null;
+  planningDetails?: import("@/lib/workbench/ukeplan-schema").WeekPlanningDetails | null;
 }
 
 export interface WeekViewModel {
@@ -547,6 +568,14 @@ export interface WeekViewModel {
   budget: WeekBudget;
   mode: WorkbenchMode;
   weekPlan?: WeekPlanData | null;
+  /** Original historisk nøkkel. Kandidaten er ikke koblet til den viste uka. */
+  legacyWeekPlanCandidate?: {
+    id: string;
+    isoYear: number;
+    weekNumber: number;
+    seasonPlanId: string | null;
+    warning: string;
+  };
 }
 
 /** Én synlig linje i en månedscelle (maks tre + «+N mer»). */
@@ -589,6 +618,16 @@ export interface MonthViewModel {
   completedByPyramid: Record<PyramidArea, number>;
   empty: boolean;
   mode: WorkbenchMode;
+  /** Månedsplanen (fokus, notat og uker måneden har tilpasset). Satt av loadMonth. */
+  maanedsplan?: MaanedsplanVisning | null;
+}
+
+/** Lagret månedsplan. `uker`: «ÅÅÅÅ-Uxx» → minutter per akse; en uke her er «Endret i måneden». */
+export interface MaanedsplanVisning {
+  fokus: string | null;
+  notat: string | null;
+  evaluering: string | null;
+  uker: Record<string, Partial<Record<PyramidArea, number>>>;
 }
 
 export interface YearMonthRow {
@@ -602,7 +641,7 @@ export interface YearMonthRow {
   eventLabels: string[];
 }
 
-// Samme åtte verdier som Prisma-enumen LPhase — literal union her for å
+// Samme ni verdier som Prisma-enumen LPhase — literal union her for å
 // holde domenelaget Prisma-fritt (mønster fra PyramidArea over).
 export type PeriodType =
   | "GRUNN"
@@ -612,7 +651,8 @@ export type PeriodType =
   | "TESTUKE"
   | "FERIE"
   | "TRENINGSSAMLING"
-  | "HELDAGSSAMLING";
+  | "HELDAGSSAMLING"
+  | "RESTITUSJON";
 
 export interface YearPeriodBand {
   id: string;
@@ -620,6 +660,12 @@ export interface YearPeriodBand {
   startDate: string; // YYYY-MM-DD
   endDate: string; // YYYY-MM-DD
   focus: string | null;
+  weeklyVolMin?: number | null;
+  weeklyVolMax?: number | null;
+  sessionBudget?: Partial<Record<PyramidArea, number>> | null;
+  /** Minutter per akse, vanlig og lett uke. */
+  axisMinutes?: Partial<Record<PyramidArea, number>> | null;
+  axisMinutesLight?: Partial<Record<PyramidArea, number>> | null;
   /** 0–100, andel av årets dager — WB-06 periodebånd-segmentbredde. */
   widthPct: number;
   /** Var perioden aktiv på «i dag» ved bygging. */
@@ -630,6 +676,18 @@ export interface YearPeriodBand {
   plannedToDateMinutes: number;
   completedMinutes: number;
   turneringer: { navn: string; dato: string }[];
+  /** Rullet ut fra en gruppes årsplan (PeriodBlock.sourceGroupId satt). */
+  fraGruppe?: boolean;
+  /** PeriodBlock.notes. */
+  notat?: string | null;
+}
+
+/** Én ISO-uke i årsgrafen (PH-11-AR): lagt inn per akse og gjennomført. */
+export interface YearWeekRow {
+  weekStart: string; // mandag, YYYY-MM-DD
+  weekNumber: number;
+  plannedByPyramid: Record<PyramidArea, number>;
+  completedMinutes: number;
 }
 
 export interface YearViewModel {
@@ -640,6 +698,8 @@ export interface YearViewModel {
   plannedToDateMinutes: number;
   completedMinutes: number;
   completedByPyramid: Record<PyramidArea, number>;
+  /** ISO-ukene der torsdagen ligger i året. */
+  weeks?: YearWeekRow[];
   mode: WorkbenchMode;
 }
 
@@ -650,6 +710,8 @@ export interface PeriodWeekRow {
   completedMinutes: number;
   sessionCount: number;
   dominantPyramid: PyramidArea | null;
+  /** Lagt inn per akse i uka (PH-11-PER). */
+  byPyramid?: Record<PyramidArea, number>;
 }
 
 export interface PeriodPyramidRow {

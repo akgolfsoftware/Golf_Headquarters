@@ -15,12 +15,18 @@ import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
 import { triggerRoundAgent } from "@/lib/agents/triggers";
 import { sikreBaneBro } from "@/lib/portal/bane-bro";
-import { beregnSg } from "@/lib/domain/sg";
+import { beregnSg, beregnShotSg } from "@/lib/domain/sg";
+import { hentPublisertSgReferanse, SG_ENGINE_VERSION } from "@/lib/domain/sg-reference";
 import { rundeTilSgShots } from "@/lib/runde-logg/til-sg-shots";
 import { deriverRundeScore } from "@/lib/runde-logg/deriver-hullscore";
 import { beregnGranulaerSg } from "@/lib/runde-logg/granulaer-sg";
 import { hullSchema } from "@/lib/runde-logg/schema";
 import { byggShotRader, splitShotRader } from "@/lib/runde-logg/bygg-shot-rader";
+import {
+  RUNDE_SG_KILDE,
+  avledRundeRegistrering,
+  rundeRegistreringFelter,
+} from "@/lib/runde-logg/kontrakt";
 
 // ---------------------------------------------------------------------------
 // Validering (JSON-blob-regelen: alt fra klienten zod-valideres).
@@ -59,7 +65,7 @@ export type LagreLoggetRundeInput = z.input<typeof rundeSchema>;
 
 export async function lagreLoggetRunde(
   input: LagreLoggetRundeInput,
-): Promise<{ roundId: string; sgTotal: number; score: number }> {
+): Promise<{ roundId: string; sgTotal: number | null; score: number }> {
   const user = await requireConsentingUser();
 
   const parsed = rundeSchema.safeParse(input);
@@ -70,9 +76,19 @@ export async function lagreLoggetRunde(
 
   // Domene-beregninger — kaster ved inkonsistent kjede (slag etter hole-out osv.)
   const sgShots = rundeTilSgShots(runde.hull);
-  const sg = beregnSg(sgShots);
-  const granulaer = beregnGranulaerSg(runde.hull, sgShots);
+  const reference = await hentPublisertSgReferanse();
+  const harSyntetiskeHull = runde.hull.some((h) => h.syntetisk === true);
+  const sg = reference && !harSyntetiskeHull ? beregnSg(sgShots, reference.points) : null;
+  const granulaer = sg && reference ? beregnGranulaerSg(runde.hull, sgShots, reference.points) : null;
   const { hullScores, totalScore } = deriverRundeScore(runde.hull);
+  const sgSource = sg ? (runde.estimert ? RUNDE_SG_KILDE.ESTIMERT : RUNDE_SG_KILDE.BEREGNET) : null;
+  const alleRader = runde.hull.filter((h) => h.syntetisk !== true).flatMap((h) => byggShotRader(h));
+  const registrering = avledRundeRegistrering({
+    sgSource,
+    holeScores: hullScores,
+    shots: alleRader,
+    kilde: runde.estimert ? "etterregistrering" : "live",
+  });
 
   const round = await prisma.$transaction(async (tx) => {
     const opprettet = await tx.round.create({
@@ -81,38 +97,59 @@ export async function lagreLoggetRunde(
         courseId: runde.courseId,
         playedAt: new Date(runde.playedAt),
         score: totalScore,
-        sgTotal: sg.total,
-        sgOtt: sg.ott,
-        sgApp: sg.app,
-        sgArg: sg.arg,
-        sgPutt: sg.putt,
-        sgTee: granulaer.sgTee,
-        sgApp200: granulaer.sgApp200,
-        sgApp150: granulaer.sgApp150,
-        sgApp100: granulaer.sgApp100,
-        sgApp50: granulaer.sgApp50,
-        sgChip: granulaer.sgChip,
-        sgPitch: granulaer.sgPitch,
-        sgBunker: granulaer.sgBunker,
-        sgPutt0_3: granulaer.sgPutt0_3,
-        sgPutt3_5: granulaer.sgPutt3_5,
-        sgPutt5_10: granulaer.sgPutt5_10,
-        sgPutt10_15: granulaer.sgPutt10_15,
-        sgPutt15_25: granulaer.sgPutt15_25,
-        sgPutt25_40: granulaer.sgPutt25_40,
-        sgPutt40plus: granulaer.sgPutt40plus,
-        sgSource: runde.estimert ? "estimert" : "beregnet",
+        sgTotal: sg?.total ?? null,
+        sgOtt: sg?.ott ?? null,
+        sgApp: sg?.app ?? null,
+        sgArg: sg?.arg ?? null,
+        sgPutt: sg?.putt ?? null,
+        sgTee: granulaer?.sgTee ?? null,
+        sgApp200: granulaer?.sgApp200 ?? null,
+        sgApp150: granulaer?.sgApp150 ?? null,
+        sgApp100: granulaer?.sgApp100 ?? null,
+        sgApp50: granulaer?.sgApp50 ?? null,
+        sgChip: granulaer?.sgChip ?? null,
+        sgPitch: granulaer?.sgPitch ?? null,
+        sgBunker: granulaer?.sgBunker ?? null,
+        sgPutt0_3: granulaer?.sgPutt0_3 ?? null,
+        sgPutt3_5: granulaer?.sgPutt3_5 ?? null,
+        sgPutt5_10: granulaer?.sgPutt5_10 ?? null,
+        sgPutt10_15: granulaer?.sgPutt10_15 ?? null,
+        sgPutt15_25: granulaer?.sgPutt15_25 ?? null,
+        sgPutt25_40: granulaer?.sgPutt25_40 ?? null,
+        sgPutt40plus: granulaer?.sgPutt40plus ?? null,
+        sgReferenceSetId: sg ? reference?.id : null,
+        benchmarkLevelSnapshot: sg ? reference?.levelCode : null,
+        sgEngineVersion: sg ? SG_ENGINE_VERSION : null,
+        sgSource,
+        ...rundeRegistreringFelter(registrering),
         roundType: runde.roundType ?? null,
         notes: runde.notes ?? null,
       },
       select: { id: true },
     });
 
-    const alleRader = runde.hull.flatMap((h) => byggShotRader(h));
     const { shots, putts } = splitShotRader(alleRader);
     await tx.shot.createMany({
       data: shots.map((rad) => ({ ...rad, roundId: opprettet.id })),
     });
+    if (sg && reference) {
+      const resultater = sgShots.map((shot, index) => {
+        const result = beregnShotSg(shot, reference.points);
+        if (!result) throw new Error("SG-grunnlaget endret seg under lagring");
+        return {
+          shotId: shots[index].id,
+          referenceSetId: reference.id,
+          engineVersion: SG_ENGINE_VERSION,
+          phase: result.phase,
+          expectedStart: result.expectedStart,
+          expectedEnd: result.expectedEnd,
+          penaltyStrokes: result.penaltyStrokes,
+          sgValue: result.sgValue,
+          inputQuality: runde.estimert ? "ESTIMATED" : "MANUAL_CHAIN",
+        };
+      });
+      await tx.shotSgResult.createMany({ data: resultater });
+    }
     if (putts.length > 0) {
       await tx.puttDetail.createMany({ data: putts });
     }
@@ -141,7 +178,7 @@ export async function lagreLoggetRunde(
   revalidatePath("/portal/mal");
   revalidatePath("/portal/mal/runder");
 
-  return { roundId: round.id, sgTotal: sg.total, score: totalScore };
+  return { roundId: round.id, sgTotal: sg?.total ?? null, score: totalScore };
 }
 
 /**

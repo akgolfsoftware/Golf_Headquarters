@@ -117,21 +117,21 @@ export const M_LEVELS = ["M0", "M1", "M2", "M3", "M4", "M5"] as const;
 export const PR_LEVELS = ["PR1", "PR2", "PR3", "PR4", "PR5"] as const;
 
 /**
- * MORAD-posisjonene P1.0–P10.0. Navn etter fasit i ak-second-brain
- * (wiki/concepts/morad-posisjonssystem.md). Rettet 22.09.2026: P5, P6, P8 og P9
- * hadde feil navn i appen.
+ * Posisjonene P1.0–P10.0. Navn etter ordmasteren i Claude Design «AK Golf Precision
+ * Athletics» (guidelines/ordmaster.md §5) — beslutninger.md §POSISJONSNAVN FØLGER
+ * ORDMASTEREN (Anders 27.09.2026). P9.0 er høyre arm, jf. kildene i ak-second-brain.
  */
 export const P_POSITIONS = [
-  { num: "P1.0", name: "Adresse" },
-  { num: "P2.0", name: "Takeaway (kølle parallell)" },
-  { num: "P3.0", name: "Halvveis tilbake (venstre arm parallell)" },
-  { num: "P4.0", name: "Topp-posisjon" },
-  { num: "P5.0", name: "Halvveis ned (venstre arm parallell, maks lag)" },
-  { num: "P6.0", name: "Kølle parallell ned (lag-release starter)" },
-  { num: "P7.0", name: "Impact" },
-  { num: "P8.0", name: "Kølle parallell på utgang" },
-  { num: "P9.0", name: "Venstre arm parallell på follow-through" },
-  { num: "P10.0", name: "Finish" },
+  { num: "P1.0", name: "Adresse / Oppstilling" },
+  { num: "P2.0", name: "Kølle parallell i baksving" },
+  { num: "P3.0", name: "Venstre arm parallell i baksving" },
+  { num: "P4.0", name: "Toppen av baksvingen" },
+  { num: "P5.0", name: "Venstre arm parallell i nedsving" },
+  { num: "P6.0", name: "Kølle parallell i nedsving" },
+  { num: "P7.0", name: "Treffpunktet" },
+  { num: "P8.0", name: "Kølle parallell i gjennomføring" },
+  { num: "P9.0", name: "Høyre arm parallell i oppfølging" },
+  { num: "P10.0", name: "Fullføring og balanse" },
 ] as const;
 
 /**

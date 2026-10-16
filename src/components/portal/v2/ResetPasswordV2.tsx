@@ -1,33 +1,17 @@
 "use client";
 
 /**
- * Sett nytt passord — v2 (retning C «Presis», mørk-først). Komponert 1:1 med
- * LoginV2 sitt auth-idiom (AuthRamme/BrandPanel/Felt/Knapp/Lenke). Montert på
- * /auth/reset-password (bytter ut gamle ResetForm 2026-07-10) — brukeren
- * lander her via tilbakestillingslenken i e-posten.
- *
- * Ekte reset-logikk (Supabase auth.updateUser + redirect til /portal,
- * feiloversettelse) er portert 1:1 fra src/app/auth/reset-password/reset-form.tsx
- * — samme auth-semantikk, ny visuell innpakning. Klient-valideringen (min. 8
- * tegn + passordene like) er bevart EKSAKT. Gammel reset-form.tsx står urørt
- * som fallback.
- *
- * Kun v2-primitiver fra "@/components/v2" (LogoAK, Caps, Icon) + T-tokens.
- * Auth-idiomene (BrandPanel/Felt/Knapp/Lenke) er lokale her, 1:1 med LoginV2 —
- * meldt som gap for opprykk til src/components/v2/auth.tsx. Ingen rå hex
- * (kun T.* + rgba). Norsk æøå. Fluid: full viewport, md-breakpoint for split.
+ * AU-03 sett nytt passord. Kilde: ui_kits/konto/screens/AU-01-03.jsx, funksjonen AU03.
+ * updateUser, minst 8 tegn og likhetssjekk er beholdt. Tegningen ber om 10 tegn og ett tall.
+ * Den regelen er ikke innført, så eksisterende kontoer ikke møter en ny sperre.
  */
 
-import { useState, type ReactNode, type CSSProperties } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { TL } from "@/lib/v2/train-lock";
-import { AK } from "@/lib/v2/ak-palett";
-
-import { LogoAK, Caps, Icon } from "@/components/v2";
 import { createClient } from "@/lib/supabase/client";
+import "@/styles/precision-athletics.css";
 
-/** Samme feiloversettelse som gamle reset-form.tsx — én kilde til auth-tekst. */
 function oversettPassordFeil(msg: string): string {
   if (msg.includes("should be different from the old password"))
     return "Velg et annet passord enn det du hadde fra før.";
@@ -36,251 +20,9 @@ function oversettPassordFeil(msg: string): string {
   return msg;
 }
 
-/* ── Lokale auth-byggeklosser (1:1 med LoginV2) ────────────────────── */
-
-/** Redigerbart felt i Felt-idiomet. */
-function Felt({
-  label,
-  type = "text",
-  value,
-  onChange,
-  placeholder,
-  autoComplete,
-  trailing,
-  mono,
-}: {
-  label: string;
-  type?: string;
-  value: string;
-  onChange: (v: string) => void;
-  placeholder?: string;
-  autoComplete?: string;
-  trailing?: ReactNode;
-  mono?: boolean;
-}) {
-  const id = `v2reset-${label.toLowerCase().replace(/[^a-z]/g, "")}`;
-  return (
-    <div>
-      <label htmlFor={id}>
-        <Caps size={9} style={{ marginBottom: 7 }}>
-          {label}
-        </Caps>
-      </label>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 10,
-          height: 44,
-          padding: "0 14px",
-          borderRadius: 12,
-          background: TL.dock,
-          border: `1px solid ${TL.hair}`,
-        }}
-      >
-        <input
-          id={id}
-          type={type}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder={placeholder}
-          autoComplete={autoComplete}
-          style={{
-            flex: 1,
-            minWidth: 0,
-            appearance: "none",
-            background: "transparent",
-            border: "none",
-            outline: "none",
-            fontFamily: mono ? TL.font.mono : TL.font.sans,
-            fontSize: 13.5,
-            fontWeight: 500,
-            color: TL.text,
-          }}
-        />
-        {trailing}
-      </div>
-    </div>
-  );
-}
-
-/** Øye-veksling for passordfelt (1:1 med LoginV2). */
-function VisVeksling({
-  vis,
-  onToggle,
-}: {
-  vis: boolean;
-  onToggle: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onToggle}
-      aria-label={vis ? "Skjul passord" : "Vis passord"}
-      aria-pressed={vis}
-      className="v2-focus"
-      style={{
-        appearance: "none",
-        background: "transparent",
-        border: "none",
-        padding: 0,
-        cursor: "pointer",
-        display: "inline-flex",
-      }}
-    >
-      <Icon name="eye" size={14} style={{ color: TL.mute }} />
-    </button>
-  );
-}
-
-/** primary=lime CTA. */
-function Knapp({
-  children,
-  variant = "primary",
-  type = "button",
-  disabled,
-  onClick,
-}: {
-  children: ReactNode;
-  variant?: "primary" | "ghost";
-  type?: "button" | "submit";
-  disabled?: boolean;
-  onClick?: () => void;
-}) {
-  const v: CSSProperties =
-    variant === "primary"
-      ? { background: TL.fill, color: TL.onFill, border: "none" }
-      : { background: TL.dim, color: TL.text, border: `1px solid ${TL.hair}` };
-  return (
-    <button
-      type={type}
-      onClick={onClick}
-      disabled={disabled}
-      className="v2-press v2-focus"
-      style={{
-        appearance: "none",
-        cursor: disabled ? "default" : "pointer",
-        opacity: disabled ? 0.6 : 1,
-        width: "100%",
-        height: 44,
-        borderRadius: 12,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 9,
-        fontFamily: TL.font.sans,
-        fontSize: 13.5,
-        fontWeight: 600,
-        ...v,
-      }}
-    >
-      {children}
-    </button>
-  );
-}
-
-/** Ekte lenke i Lenke-idiomet. */
-function Lenke({ href, children }: { href: string; children: ReactNode }) {
-  return (
-    <Link
-      href={href}
-      style={{
-        fontFamily: TL.font.sans,
-        fontSize: 12,
-        fontWeight: 600,
-        color: TL.mute,
-        cursor: "pointer",
-        textDecoration: "underline",
-        textDecorationColor: TL.hair,
-        textUnderlineOffset: 3,
-      }}
-    >
-      {children}
-    </Link>
-  );
-}
-
-/** Venstre brand-panel (Neon/Cosmos-idiomet). Skjult under md (stablet mobil). */
-function BrandPanel() {
-  return (
-    <div
- data-paper-slug="auth-reset"       className="hidden lg:flex"
-      style={{
-        // Deler plassen proporsjonalt. Fast 520px ga skjemaet kun 204px
-        // brukbar bredde på iPad stående (målt på prod 2026-08-15).
-        flex: "1 1 0",
-        maxWidth: 720,
-        minWidth: 420,
-        position: "relative",
-        overflow: "hidden",
-        borderRight: `1px solid ${TL.hair}`,
-        background: `radial-gradient(560px 460px at 28% 24%, ${TL.dim}, transparent 68%), radial-gradient(420px 380px at 82% 88%, color-mix(in srgb, var(--tl-fill) 10%, transparent), transparent 60%), ${TL.scene}`,
-        flexDirection: "column",
-        padding: "34px 40px 44px",
-      }}
-    >
-      {/* subtilt motiv (Cosmos): svake konsentriske treffsirkler */}
-      <svg
-        viewBox="0 0 520 720"
-        style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
-        aria-hidden
-      >
-        {[70, 130, 190, 250].map((r) => (
-          <circle
-            key={r}
-            cx="260"
-            cy="330"
-            r={r}
-            fill="none"
-            stroke="rgba(238,240,236,0.05)"
-            strokeWidth="1"
-          />
-        ))}
-        <circle cx="260" cy="330" r="3.5" fill="color-mix(in srgb, var(--tl-fill) 45%, transparent)" />
-      </svg>
-      <div style={{ position: "relative" }}>
-        <LogoAK size={30} />
-      </div>
-      <div style={{ flex: 1 }} />
-      <div style={{ position: "relative" }}>
-        <LogoAK size={64} style={{ marginBottom: 22 }} />
-        <h2
-          style={{
-            fontFamily: TL.font.sans,
-            fontWeight: 700,
-            fontSize: 30,
-            letterSpacing: "-0.03em",
-            lineHeight: 1.12,
-            color: TL.text,
-            margin: 0,
-          }}
-        >
-          Nesten inne igjen.{" "}
-          <em style={{ fontStyle: "italic", color: TL.fill }}>Velg et nytt passord.</em>
-        </h2>
-        <p
-          style={{
-            fontFamily: TL.font.sans,
-            fontSize: 13.5,
-            color: TL.mute,
-            lineHeight: 1.6,
-            margin: "14px 0 0",
-            maxWidth: 360,
-          }}
-        >
-          Sett et sikkert passord, så tar vi deg rett tilbake til treningen.
-        </p>
-      </div>
-    </div>
-  );
-}
-
-/* ── Reset-kortet ──────────────────────────────────────────────────── */
-
-function ResetKort() {
+export function ResetPasswordV2() {
   const router = useRouter();
   const supabase = createClient();
-  // Klient-validering bevart EKSAKT fra reset-form.tsx (lengde + likhet).
   const [passord, setPassord] = useState("");
   const [bekreft, setBekreft] = useState("");
   const [visPassord, setVisPassord] = useState(false);
@@ -311,143 +53,59 @@ function ResetKort() {
   }
 
   return (
-    <div style={{ width: "100%", maxWidth: 400, display: "flex", flexDirection: "column", gap: 14 }}>
-      {/* Mobil-logo (BrandPanel er skjult under md) */}
-      <div
-        className="md:hidden"
-        style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 18, padding: "6px 0 6px" }}
-      >
-        <LogoAK size={46} />
-      </div>
-
-      <div style={{ marginBottom: 4 }}>
-        <h1
-          style={{
-            fontFamily: TL.font.sans,
-            fontWeight: 700,
-            fontSize: 28,
-            letterSpacing: "-0.03em",
-            color: TL.text,
-            margin: 0,
-          }}
-        >
-          Sett nytt passord
-        </h1>
-        <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: "8px 0 0" }}>
-          Velg et passord på minst 8 tegn.
-        </p>
-      </div>
-
-      <form
-        onSubmit={lagre}
-        style={{
-          background: TL.elev,
-          border: `1px solid ${TL.hair}`,
-          borderRadius: TL.radius.card,
-          padding: 20,
-          display: "flex",
-          flexDirection: "column",
-          gap: 14,
-          boxShadow: `inset 0 1px 0 ${AK.farge.hvitA5}, 0 12px 32px ${TL.scrim}`,
-        }}
-      >
-        <Felt
-          label="Nytt passord"
-          type={visPassord ? "text" : "password"}
-          value={passord}
-          onChange={setPassord}
-          placeholder="Minst 8 tegn"
-          autoComplete="new-password"
-          mono
-          trailing={<VisVeksling vis={visPassord} onToggle={() => setVisPassord((v) => !v)} />}
-        />
-        <Felt
-          label="Bekreft passord"
-          type={visBekreft ? "text" : "password"}
-          value={bekreft}
-          onChange={setBekreft}
-          placeholder="Gjenta passordet"
-          autoComplete="new-password"
-          mono
-          trailing={<VisVeksling vis={visBekreft} onToggle={() => setVisBekreft((v) => !v)} />}
-        />
-
-        {feil && (
-          <div
-            role="alert"
-            style={{
-              display: "flex",
-              alignItems: "flex-start",
-              gap: 9,
-              padding: "11px 13px",
-              borderRadius: 12,
-              background: TL.dock,
-              border: `1px solid ${TL.hair}`,
-            }}
-          >
-            <Icon name="triangle-alert" size={14} style={{ color: TL.danger, marginTop: 1, flex: "none" }} />
-            <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 500, color: TL.text }}>
-              {feil}
+    <div className="pa-root au-ramme" data-design="precision-athletics">
+      <div className="au-boks">
+        <Link href="/" className="au-logo">AK Golf HQ</Link>
+        <header>
+          <p className="au-kicker">Passord</p>
+          <h1>Sett nytt passord</h1>
+          <p>Velg et passord på minst 8 tegn.</p>
+        </header>
+        <form className="au-skjema" onSubmit={lagre}>
+          <label>
+            Nytt passord
+            <span className="au-passord">
+              <input
+                type={visPassord ? "text" : "password"}
+                required
+                autoComplete="new-password"
+                value={passord}
+                placeholder="Minst 8 tegn"
+                onChange={(ev) => setPassord(ev.target.value)}
+              />
+              <button type="button" onClick={() => setVisPassord((v) => !v)}>
+                {visPassord ? "Skjul" : "Vis"}
+              </button>
             </span>
-          </div>
-        )}
-
-        <Knapp variant="primary" type="submit" disabled={pending}>
-          {pending ? "Lagrer…" : "Lagre nytt passord"}
-        </Knapp>
-      </form>
-
-      <div style={{ textAlign: "center" }}>
-        <Lenke href="/auth/login">Tilbake til innlogging</Lenke>
+          </label>
+          <label>
+            Bekreft passord
+            <span className="au-passord">
+              <input
+                type={visBekreft ? "text" : "password"}
+                required
+                autoComplete="new-password"
+                value={bekreft}
+                placeholder="Gjenta passordet"
+                onChange={(ev) => setBekreft(ev.target.value)}
+              />
+              <button type="button" onClick={() => setVisBekreft((v) => !v)}>
+                {visBekreft ? "Skjul" : "Vis"}
+              </button>
+            </span>
+          </label>
+          {feil && (
+            <p className="au-melding" data-tone="feil" role="alert">{feil}</p>
+          )}
+          <button type="submit" className="pa-btn pa-btn--primary pa-btn--full" disabled={pending || !passord || !bekreft}>
+            {pending ? "Lagrer …" : "Lagre nytt passord"}
+          </button>
+        </form>
+        <div className="au-lenker">
+          <Link href="/auth/forgot-password">Be om ny lenke</Link>
+          <Link href="/auth/login">Tilbake til innlogging</Link>
+        </div>
       </div>
-
-      {/* Fot — synlig på mobil (1:1 med LoginV2 sin mobil-fot) */}
-      <p
-        className="md:hidden"
-        style={{
-          fontFamily: TL.font.sans,
-          fontSize: 10.5,
-          color: TL.mute,
-          textAlign: "center",
-          margin: "6px 0 0",
-        }}
-      >
-        AK Golf Group · Vilkår · Personvern
-      </p>
-    </div>
-  );
-}
-
-/* ── Offentlig reset-flate (dark-scope, fluid AuthRamme) ───────────── */
-
-export function ResetPasswordV2() {
-  return (
-    <div
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        // Flaten er Paper LYS — "dark" fikk nettleseren til å tegne autofyll,
-        // passordikon og rullefelt mørkt oppå en lys side.
-        colorScheme: "light",
-        color: TL.text,
-        fontFamily: TL.font.sans,
-        background: TL.scene,
-      }}
-    >
-      <BrandPanel />
-      <main
-        style={{
-          flex: 1,
-          minWidth: 0,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: "48px 22px",
-          background: `radial-gradient(700px 420px at 60% -12%, ${TL.dim}, transparent 62%), ${TL.scene}`,
-        }}
-      >
-        <ResetKort />
-      </main>
     </div>
   );
 }

@@ -27,7 +27,7 @@ På hjemskjermen (`/admin/agencyos`) se **hva som haster** og **hvilken AI-flate
 
 ## UI-kontrakt
 
-Bruk gjeldende designstatus via `designsystem/README.md` og les [Atletisk intelligens](../ak-hq-design/references/atletisk-intelligens.md). Tidligere designkontrakter og dagens komponentutseende er ikke visuell fasit for Design System v0.1. Verifiser filstiene og importene i tabellen over mot dagens kode før endring; cockpit har siden blitt omorganisert.
+Designfasit er Claude Design «AK Golf Precision Athletics» (`7d7c2994`), jf. `docs/design-system/design-autoritet.md`; bruk `ak-hq-design`. Dagens komponentutseende er ikke visuell fasit. Verifiser filstiene og importene i tabellen over mot dagens kode før endring; `CockpitV2.tsx` og `AiDispatchPanelV2.tsx` ligger ikke lenger på stiene over (kontrollert 15.10.2026), `src/lib/agencyos/ai-dispatch-build.ts` og `-data.ts` gjør det.
 
 Hold køen forståelig: hva haster, hva krever handling, og hvor skal coachen gå videre. Ingen fabrikkerte tellinger. Én tydelig primærhandling. Følg godkjent meny fra beslutningen 09.09.2026.
 
@@ -67,6 +67,5 @@ AgenticOS skal se ut som en integrert del av AgencyOS, ikke en separat neon- ell
 
 ## Relatert
 
-- `agencyos-arkitektur` — admin-shell  
+- `agencyos-arkitektur` — admin-shell og køens regler (§AI-laget)  
 - `agenticos` — multi-AI språk  
-- `hq-godkjenning` — hva som skjer i køen  

@@ -51,9 +51,11 @@ export type PlanV2Props = {
   ukeOffset?: number;
   depthMode?: "simple" | "deep";
   periode?: UkePeriode | null;
+  /** Spilleren har minst én teknisk plan; lenken vises bare da (PH-TP-01). */
+  harTekniskPlan?: boolean;
 };
 
-export function PlanV2({ data, kalender = [], forslag = [], ukeOffset = 0, depthMode = "simple", periode = null }: PlanV2Props) {
+export function PlanV2({ data, kalender = [], forslag = [], ukeOffset = 0, depthMode = "simple", periode = null, harTekniskPlan = false }: PlanV2Props) {
   const router = useRouter();
   const [endringer, setEndringer] = useState<Record<string, TodaySession | null>>({});
   const [besvart, setBesvart] = useState<string[]>([]);
@@ -181,6 +183,7 @@ export function PlanV2({ data, kalender = [], forslag = [], ukeOffset = 0, depth
       </div>
       {depthMode === "deep" && periode && <div className={styles.periode}><span className={styles.caps}>{periode.navn}</span>{periode.fokus && <p>{periode.fokus}</p>}</div>}
       <Link className={styles.planlegger} href={`/portal/planlegge/workbench?uke=${ukeOffset}`}>Åpne planleggeren <ChevronRight size={16} aria-hidden /></Link>
+      {harTekniskPlan && <Link className={styles.planlegger} href="/portal/tren/teknisk-plan">Teknisk plan <ChevronRight size={16} aria-hidden /></Link>}
     </main>
     <aside className={styles.inspektor} aria-label="Detaljer om valgt avtale">{detaljer(valgt)}</aside>
     <dialog ref={ark} className={styles.ark} aria-label="Detaljer om avtalen" onClose={() => setFlytting(false)} onKeyDown={(e) => {

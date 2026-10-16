@@ -1,7 +1,16 @@
-/* V2Laster-skeleton (fase 6, SPOR R2). Server Component. */
-
-import { V2Laster } from "@/components/v2/laster";
+/* Teknisk plan · oversikt: laster-tilstand i Precision Athletics. Ren serverkomponent
+   (loading.tsx importerer aldri en "use client"-modul — gotchas §Bygg og drift). */
+import "@/styles/precision-komponenter.css";
+import "@/styles/precision-athletics.css";
 
 export default function Loading() {
-  return <V2Laster variant="dashboard" />;
+  return (
+    <div className="pa-root" data-design="precision-athletics">
+      <div className="pa-side">
+        <div className="pa-state pa-state--loading" role="status" aria-live="polite">
+          <span className="pa-state__mono">Henter tekniske planer …</span>
+        </div>
+      </div>
+    </div>
+  );
 }

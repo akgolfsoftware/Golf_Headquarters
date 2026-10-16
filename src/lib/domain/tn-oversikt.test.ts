@@ -21,6 +21,7 @@ test("TN-oversikt krever ADMIN eller aktivt medlemskap i den kanoniske gruppen",
   t.mock.module("@/lib/prisma", {
     namedExports: {
       prisma: {
+        user: { findUnique: async () => ({ email: "trener@akgolf.no" }) },
         group: {
           findUnique: async () => {
             if (gruppefeil) throw gruppefeil;

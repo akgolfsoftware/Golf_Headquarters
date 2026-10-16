@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WANG Administrasjon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Quattrocento+Sans:wght@400;700&display=swap">
+<link rel="stylesheet" href="felles/wang.css">
+<style>
+  .person{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 12px;align-items:center;padding:16px 0}
+  .person + .person{border-top:1px solid var(--linje)}
+  .person b{font:800 16px/1.2 var(--brand);color:var(--navy-dyp)}
+  .person .sma{display:block;font-size:13px;color:var(--tekst-2)}
+  .person .detaljer{grid-column:1 / -1;display:grid;gap:6px}
+  .person .rad{display:flex;flex-wrap:wrap;gap:6px}
+  .naar{font-size:14px;color:var(--tekst-2)}
+  .naar b{font:700 13px/1.3 var(--brand);color:var(--navy-dyp)}
+  .dekning{display:grid;gap:10px}
+  .dekning .band{height:34px}
+  .elevsamt{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:4px 12px;align-items:center;padding:10px 0}
+  .elevsamt + .elevsamt{border-top:1px solid var(--linje)}
+  .elevsamt b{font:700 15px/1.2 var(--brand);color:var(--navy-dyp)}
+  .elevsamt .sma{grid-column:2 / -1;font-size:13px;color:var(--tekst-2)}
+  .ukemal{display:grid;gap:8px}
+  .ukemal .dag{display:grid;grid-template-columns:52px minmax(0,1fr);gap:10px;align-items:start}
+  .ukemal .dag > span{font:800 13px/1 var(--brand);color:var(--tekst-2);padding-top:12px}
+  .blokker{display:grid;gap:6px}
+  .blokk{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:10px 12px;border-radius:14px;font:700 13px/1.3 var(--brand)}
+  .blokk.trening{background:var(--tint-navy);color:var(--navy-dyp)}
+  .blokk.skole{background:var(--tint-graa);color:var(--tekst-2)}
+  .blokk.konflikt{background:var(--tint-rosa);color:var(--rosa-tekst)}
+  .plasser{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+  .plasser div{padding:14px;border-radius:var(--r-felt);background:var(--tint-navy);display:grid;gap:4px}
+  .plasser strong{font:800 26px/1 var(--brand);color:var(--navy-dyp)}
+  .plasser span{font:700 12px/1.3 var(--brand);color:var(--tekst-2)}
+  .kand{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:4px 12px;align-items:center;padding:12px 0}
+  .kand + .kand{border-top:1px solid var(--linje)}
+  .kand b{font:800 15px/1.2 var(--brand);color:var(--navy-dyp)}
+  .kand .sma{grid-column:2 / -1;font-size:13px;color:var(--tekst-2)}
+  .kand .poeng{font:800 18px/1 var(--brand);color:var(--navy-dyp);text-align:right}
+  .kand .poeng span{display:block;font:700 11px/1.2 var(--brand);color:var(--tekst-2)}
+  .stjerne{width:20px;height:20px;fill:var(--gul);stroke:var(--gul-tekst);stroke-width:1.5}
+  .logg{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;padding:10px 0}
+  .logg + .logg{border-top:1px solid var(--linje)}
+  .logg time{font:700 12px/1.3 var(--brand);color:var(--tekst-2);white-space:nowrap;padding-top:2px}
+  .logg p{font-size:14px;color:var(--navy-dyp)}
+  .varsel{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:var(--r-felt);background:var(--tint-gul);color:var(--gul-tekst);font:700 13px/1.4 var(--brand)}
+  .stengt{display:grid;gap:12px;justify-items:start;padding:24px;border-radius:var(--r-kort);background:#fff;box-shadow:var(--skygge);max-width:560px}
+  .stengt .ikon{width:36px;height:36px;color:var(--navy)}
+  @container (min-width:900px){
+    .person{grid-template-columns:auto minmax(0,1fr) minmax(0,1.3fr)}
+    .person .detaljer{grid-column:auto}
+  }
+</style>
+</head>
+<body>
+<div class="ytre">
+  <header class="hode">
+    <p class="meta-s">WANG Toppidrett · trenerflaten · pakke 8 Administrasjon · utkast 1 · 14.10.2026</p>
+    <h1>Administrasjon</h1>
+    <p>Bare for sportssjef. Trenere og roller (WANG-19), samtykkeoversikt (WANG-34), timeplanføring (WANG-26), opptak med plasser og kandidater (WANG-31, WANG-32) og koordinering mellom skolene (WANG-33). Velg rollen Trener for å se den stengte siden. Alle navn og tall er syntetiske.</p>
+  </header>
+  <div class="kontroller">
+    <div class="velger" aria-label="Skjerm"><button type="button" data-skjerm="trenere" aria-pressed="true">Trenere og roller</button><button type="button" data-skjerm="samtykke" aria-pressed="false">Samtykke</button><button type="button" data-skjerm="timeplan" aria-pressed="false">Timeplan</button><button type="button" data-skjerm="opptak" aria-pressed="false">Opptak</button><button type="button" data-skjerm="koordinering" aria-pressed="false">Koordinering</button></div>
+    <div class="velger" aria-label="Bredde"><button type="button" data-bredde="mob" aria-pressed="true">Mobil 390</button><button type="button" data-bredde="pc" aria-pressed="false">PC 1280</button></div>
+    <div class="velger" aria-label="Rolle"><button type="button" data-rolle="trener" aria-pressed="false">Trener</button><button type="button" data-rolle="sportssjef" aria-pressed="true">Sportssjef</button></div>
+    <div class="velger" aria-label="Tilstand"><button type="button" data-tilstand="data" aria-pressed="true">Med data</button><button type="button" data-tilstand="tom" aria-pressed="false">Tom</button><button type="button" data-tilstand="laster" aria-pressed="false">Laster</button><button type="button" data-tilstand="feil" aria-pressed="false">Feil</button></div>
+  </div>
+  <div class="scene"><div id="ramme" class="ramme mob"></div></div>
+  <div class="notater">
+    <section class="endringer">
+      <h2>Hva skjermene gjør</h2>
+      <ul>
+        <li><b>Trenere og roller:</b> to roller, Sportssjef og Trener. Hver person viser hva de når og hva de ikke når.</li>
+        <li><b>Samtykke:</b> hvor mange elever som har delt, hvem som venter på forelder (under 16) og hvem som ikke har delt.</li>
+        <li><b>Timeplan:</b> ukemal for morgentreningene mot skolens timeplan, med kollisjoner.</li>
+        <li><b>Opptak:</b> plasser og kandidater for neste skoleår. Det mest følsomme i flaten: bare sportssjef ved egen skole. Totalpoengen sorterer, den er aldri et vedtak.</li>
+        <li><b>Koordinering:</b> den felles siden for WANG-skolene. Stjernemerker og hvem som har snakket med kandidaten, og når. Aldri innholdet, aldri tall.</li>
+      </ul>
+    </section>
+    <section class="endringer">
+      <h2>Åpne spørsmål</h2>
+      <ul>
+        <li>Hvilke vurderingspunkter skal opptaket bruke (D1)? Utkastet viser fire plassholdere.</li>
+        <li>Skal sportssjef kunne legge til trenere selv, eller går det via AK Golf? Utkastet lar sportssjef invitere.</li>
+      </ul>
+    </section>
+  </div>
+</div>
+
+<!-- ================= Trenere og roller ================= -->
+<template id="s-trenere">
+<div class="app" data-fane="admin">
+<main class="innhold">
+  <section data-behold style="display:grid;gap:14px">
+    <div><p class="dato">WANG Fredrikstad · golf</p><h1 class="tittel">Administrasjon</h1></div>
+    <nav class="faner" aria-label="Administrasjon"><a href="#" class="aktiv">Trenere</a><a href="#" data-gaa="samtykke">Samtykke</a><a href="#" data-gaa="timeplan">Timeplan</a><a href="#" data-gaa="opptak">Opptak</a><a href="#" data-gaa="koordinering">Koordinering</a></nav>
+  </section>
+  <div class="sek-topp"><h2 style="margin:0;font:800 19px/1.25 var(--brand);color:var(--navy-dyp)">Trenere og roller</h2><button type="button" class="knapp pri">Inviter trener</button></div>
+  <div class="kort" data-trenere></div>
+  <p class="kilde">Rollen gjelder bare ved WANG Fredrikstad. Ingen trener her ser elever ved andre WANG-skoler.</p>
+</main>
+</div>
+</template>
+
+<!-- ================= Samtykke ================= -->
+<template id="s-samtykke">
+<div class="app" data-fane="admin">
+<main class="innhold">
+  <section data-behold style="display:grid;gap:14px">
+    <div><p class="dato">WANG Fredrikstad · golf · 11 elever</p><h1 class="tittel">Samtykke og deling</h1></div>
+    <nav class="faner" aria-label="Administrasjon"><a href="#" data-gaa="trenere">Trenere</a><a href="#" class="aktiv">Samtykke</a><a href="#" data-gaa="timeplan">Timeplan</a><a href="#" data-gaa="opptak">Opptak</a><a href="#" data-gaa="koordinering">Koordinering</a></nav>
+  </section>
+  <div class="to-kol">
+    <div class="kort dekning">
+      <div class="hoved"><strong>9 <small>av 11</small></strong></div>
+      <p class="forklar">har delt data med trenerne</p>
+      <div class="band" role="img" aria-label="9 delt, 1 venter på forelder, 1 ikke delt"><span style="flex:9;background:var(--mint);color:var(--navy-dyp)">Delt</span><span style="flex:1;background:var(--gul)"></span><span style="flex:1;background:var(--n300)"></span></div>
+      <div class="lg-rad"><span class="lg"><i style="background:var(--mint)"></i>Delt 9</span><span class="lg"><i style="background:var(--gul)"></i>Venter på forelder 1</span><span class="lg"><i style="background:var(--n300)"></i>Ikke delt 1</span></div>
+      <p class="kilde">Delingen gjelder alt, også helse og meldinger. Eleven kan trekke den tilbake når som helst; da forsvinner tilgangen med en gang.</p>
+    </div>
+    <div class="kort">
+      <b class="undertittel">Per elev</b>
+      <div data-samt></div>
+    </div>
+  </div>
+  <div class="kort dempet"><b class="undertittel">Team Norway</b><p class="forklar">Testresultatene til alle WANG-elever deles automatisk med Team Norway, med navn (opptaksavtalen). Det står i opptaksavtalen eleven og foresatte har skrevet under.</p></div>
+</main>
+</div>
+</template>
+
+<!-- ================= Timeplan ================= -->
+<template id="s-timeplan">
+<div class="app" data-fane="admin">
+<main class="innhold">
+  <section data-behold style="display:grid;gap:14px">
+    <div><p class="dato">WANG Fredrikstad · skoleåret 2026/27</p><h1 class="tittel">Timeplan</h1></div>
+    <nav class="faner" aria-label="Administrasjon"><a href="#" data-gaa="trenere">Trenere</a><a href="#" data-gaa="samtykke">Samtykke</a><a href="#" class="aktiv">Timeplan</a><a href="#" data-gaa="opptak">Opptak</a><a href="#" data-gaa="koordinering">Koordinering</a></nav>
+  </section>
+  <div class="varsel"><span>1 kollisjon i uke 43: heldagsprøve i norsk for VG2 torsdag. Morgentreningen bør flyttes eller tilpasses for VG2.</span></div>
+  <div class="to-kol">
+    <div class="kort">
+      <div class="sek-topp"><b class="undertittel">Ukemal</b><div class="valg" role="group" aria-label="Klasse"><button type="button" aria-pressed="true">VG2</button><button type="button" aria-pressed="false">VG1</button><button type="button" aria-pressed="false">VG3</button></div></div>
+      <div class="ukemal" data-ukemal></div>
+    </div>
+    <div class="kort">
+      <b class="undertittel">Unntak</b>
+      <div class="logg"><time>Uke 43</time><p>Torsdag: heldagsprøve norsk VG2. <b>Kolliderer med morgentrening 08:00.</b></p></div>
+      <div class="logg"><time>Uke 43</time><p>Høstferie man–fre. Restitusjon i årsplanen.</p></div>
+      <div class="logg"><time>Uke 47</time><p>Testuke. Morgentreningene blir tester.</p></div>
+      <div class="knapper"><button type="button" class="knapp pri">Nytt unntak</button><button type="button" class="knapp sek">Flytt morgentreningen</button></div>
+    </div>
+  </div>
+</main>
+</div>
+</template>
+
+<!-- ================= Opptak ================= -->
+<template id="s-opptak">
+<div class="app" data-fane="admin">
+<main class="innhold">
+  <section data-behold style="display:grid;gap:14px">
+    <div><p class="dato">WANG Fredrikstad · opptak 2027/28</p><h1 class="tittel">Opptak</h1></div>
+    <nav class="faner" aria-label="Administrasjon"><a href="#" data-gaa="trenere">Trenere</a><a href="#" data-gaa="samtykke">Samtykke</a><a href="#" data-gaa="timeplan">Timeplan</a><a href="#" class="aktiv">Opptak</a><a href="#" data-gaa="koordinering">Koordinering</a></nav>
+  </section>
+  <div class="plasser"><div><strong>4</strong><span>Plasser i VG1</span></div><div><strong>9</strong><span>Kandidater</span></div><div><strong>2</strong><span>På venteliste</span></div></div>
+  <div class="varsel"><span>Bare du ser denne siden. Vurderingene er om navngitte mindreårige: ikke skriv dem andre steder, og del dem aldri.</span></div>
+  <div class="to-kol">
+    <div class="kort">
+      <div class="sek-topp"><b class="undertittel">Kandidater</b><span class="kilde">Sortert etter samlet poeng</span></div>
+      <div data-kand></div>
+      <p class="kilde">Samlet poeng er underlag, ikke vedtak. Vedtaket tar skolen.</p>
+    </div>
+    <div class="kort">
+      <b class="undertittel">Kandidat A</b>
+      <p class="forklar">Moss &amp; Rygge GK · HCP 4,2 · født 2011</p>
+      <div data-punkter></div>
+      <div class="felt"><label for="o-notat">Notat</label><textarea id="o-notat" rows="3">Prøvespill 7.10. God rutine, sterk på nærspill.</textarea><span class="hjelp">Notatet logges ikke og sendes ikke videre.</span></div>
+      <div class="knapper"><button type="button" class="knapp pri">Lagre vurdering</button><button type="button" class="knapp sek" data-gaa="koordinering">Se koordinering</button></div>
+    </div>
+  </div>
+</main>
+</div>
+</template>
+
+<!-- ================= Koordinering ================= -->
+<template id="s-koordinering">
+<div class="app" data-fane="admin">
+<main class="innhold">
+  <section data-behold style="display:grid;gap:14px">
+    <div><p class="dato">Felles for WANG-skolene · opptak 2027/28</p><h1 class="tittel">Koordinering</h1><p class="ingress">Hvem som har stjernemerket en kandidat, og hvem som har snakket med kandidaten eller foresatte, og når. Aldri innhold, aldri vurderingstall.</p></div>
+    <nav class="faner" aria-label="Administrasjon"><a href="#" data-gaa="trenere">Trenere</a><a href="#" data-gaa="samtykke">Samtykke</a><a href="#" data-gaa="timeplan">Timeplan</a><a href="#" data-gaa="opptak">Opptak</a><a href="#" class="aktiv">Koordinering</a></nav>
+  </section>
+  <div class="to-kol">
+    <div class="kort">
+      <b class="undertittel">Kandidat A</b>
+      <div class="naar"><b>Stjernemerket av:</b> WANG Fredrikstad, WANG Oslo</div>
+      <div data-logg></div>
+      <div class="knapper"><button type="button" class="knapp pri">Logg kontakt</button></div>
+    </div>
+    <div class="kort">
+      <b class="undertittel">Kandidat D</b>
+      <div class="naar"><b>Stjernemerket av:</b> WANG Fredrikstad</div>
+      <div class="logg"><time>2.10</time><p>WANG Fredrikstad, sportssjef, snakket med kandidaten.</p></div>
+      <p class="kilde">Kandidaten og foresatte ser aldri denne siden.</p>
+    </div>
+  </div>
+</main>
+</div>
+</template>
+
+<script src="felles/wang.js"></script>
+<script>
+(function () {
+  var STENGT = '<div class="stengt"><svg class="ikon" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><b class="undertittel">Denne siden er lukket</b><p class="forklar">Administrasjon er bare for sportssjef ved WANG Fredrikstad. Trenger du tilgang, kontakt sportssjefen.</p></div>';
+  function vakt(app) {
+    if (app.classList.contains('rolle-sportssjef')) return true;
+    var m = app.querySelector('.innhold'); m.innerHTML = STENGT; return false;
+  }
+  function trenere(app) {
+    if (!vakt(app)) return;
+    var P = [['SS', 'Sportssjef', 'Sportssjef', 'Alle golfgruppene ved WANG Fredrikstad. Administrasjon og opptak.', 'Andre WANG-skolers elever og vurderinger.'], ['T1', 'Trener 1', 'Trener', 'Toppidrett VG2–3 (7 elever). Det elevene har delt.', 'Administrasjon og opptak. VG1. Andre skoler.'], ['T2', 'Trener 2', 'Trener', 'Toppidrett VG1 (4 elever), WANG Ung. Det elevene har delt.', 'Administrasjon og opptak. VG2–3. Andre skoler.'], ['T3', 'Trener 3', 'Invitert', 'Ikke tatt i bruk ennå. Invitasjon sendt 10.10.', 'Alt til kontoen er laget.']];
+    app.querySelector('[data-trenere]').innerHTML = P.map(function (p) {
+      return '<div class="person"><span class="avatar">' + p[0] + '</span><div><b>' + p[1] + '</b><span class="sma">' + (p[2] === 'Invitert' ? '<span class="pille vent"><i></i>Invitert</span>' : '<span class="pille noy"><i></i>' + p[2] + '</span>') + '</span></div><div class="detaljer"><p class="naar"><b>Når:</b> ' + p[3] + '</p><p class="naar"><b>Når ikke:</b> ' + p[4] + '</p><div class="rad"><button type="button" class="knapp flat">Endre rolle</button>' + (p[0] === 'SS' ? '' : '<button type="button" class="knapp flat" style="color:var(--rosa-tekst)">Fjern tilgang</button>') + '</div></div></div>';
+    }).join('');
+  }
+  function samtykke(app) {
+    if (!vakt(app)) return;
+    var S = [['01', 'ok', 'Delt', 'Delt 1.9 med Trener 2'], ['02', 'noy', 'Ikke delt', 'Lenke sendt 8.10, gjelder til 15.10'], ['03', 'vent', 'Venter på forelder', '15 år. Eleven har sendt; forelder har ikke godkjent.'], ['04', 'ok', 'Delt', 'Delt 1.9 med Trener 1'], ['05', 'ok', 'Delt', 'Delt 3.9 med Trener 1'], ['06', 'ok', 'Delt', 'Delt 1.9 med Trener 1']];
+    app.querySelector('[data-samt]').innerHTML = S.map(function (s) { return '<div class="elevsamt"><span class="avatar">' + s[0] + '</span><b>Elev ' + s[0] + '</b><span class="pille ' + s[1] + '"><i></i>' + s[2] + '</span><span class="sma">' + s[3] + '</span></div>'; }).join('') + '<a class="lenke" href="#">Alle 11 elever</a>';
+  }
+  function timeplan(app) {
+    if (!vakt(app)) return;
+    var D = [['Man', [['trening', 'Morgentrening', '08:00–10:00'], ['skole', 'Undervisning', '10:15–15:00']]], ['Tir', [['trening', 'Morgentrening', '08:00–10:00'], ['skole', 'Undervisning', '10:15–14:30']]], ['Ons', [['trening', 'Morgentrening', '08:00–10:00'], ['skole', 'Undervisning', '10:15–15:00']]], ['Tor', [['konflikt', 'Morgentrening · uke 43: heldagsprøve', '08:00–10:00'], ['skole', 'Undervisning', '10:15–15:00']]], ['Fre', [['skole', 'Undervisning', '08:15–12:00'], ['trening', 'Fellessamling', '13:00–13:30']]]];
+    app.querySelector('[data-ukemal]').innerHTML = D.map(function (d) { return '<div class="dag"><span>' + d[0] + '</span><div class="blokker">' + d[1].map(function (b) { return '<div class="blokk ' + b[0] + '"><span>' + b[1] + '</span><span>' + b[2] + '</span></div>'; }).join('') + '</div></div>'; }).join('');
+  }
+  function opptak(app) {
+    if (!vakt(app)) return;
+    var K = [['A', 'Moss & Rygge GK · HCP 4,2', 34, 'Prøvespill 7.10', 1], ['B', 'Halden GK · HCP 6,8', 29, 'Søkt', 0], ['C', 'Sarpsborg GK · HCP 5,1', 27, 'Prøvespill 14.10', 0], ['D', 'Gamle Fredrikstad GK · HCP 7,9', 25, 'Søkt', 1]];
+    var STJ = '<svg class="stjerne" viewBox="0 0 24 24" aria-label="Stjernemerket"><path d="M12 2l3 7h7l-5.5 4.5 2 7.5-6.5-4.5-6.5 4.5 2-7.5L2 9h7z"/></svg>';
+    app.querySelector('[data-kand]').innerHTML = K.map(function (k) { return '<div class="kand"><span class="avatar">' + k[0] + '</span><b>Kandidat ' + k[0] + ' ' + (k[4] ? STJ : '') + '</b><span class="poeng">' + k[2] + '<span>av 40</span></span><span class="sma">' + k[1] + ' · ' + k[3] + '</span></div>'; }).join('');
+    var P = [['Spill', 9], ['Teknikk', 8], ['Fysisk', 8], ['Holdning og skole', 9]];
+    app.querySelector('[data-punkter]').innerHTML = P.map(function (p) { return '<div class="felt"><label>' + p[0] + ' <span class="estimat">Plassholder</span></label><input value="' + p[1] + '" inputmode="numeric" aria-label="' + p[0] + ', 1 til 10"></div>'; }).join('');
+  }
+  function koordinering(app) {
+    if (!vakt(app)) return;
+    var L = [['12.10', 'WANG Oslo, sportssjef, snakket med foresatte.'], ['7.10', 'WANG Fredrikstad, Trener 1, hadde prøvespill med kandidaten.'], ['3.10', 'WANG Fredrikstad, sportssjef, snakket med kandidaten.']];
+    app.querySelector('[data-logg]').innerHTML = L.map(function (l) { return '<div class="logg"><time>' + l[0] + '</time><p>' + l[1] + '</p></div>'; }).join('');
+  }
+  WANGUtkast.start({
+    start: 'trenere',
+    rolle: 'sportssjef',
+    skjermer: {
+      trenere: { mal: 's-trenere', etter: trenere, tom: { tittel: 'Ingen trenere ennå', tekst: 'Inviter trenerne for golfgruppene ved WANG Fredrikstad.', knapp: 'Inviter trener' }, laster: 'Henter trenere og roller …', feil: 'Rollene kunne ikke hentes' },
+      samtykke: { mal: 's-samtykke', etter: samtykke, tom: { tittel: 'Ingen elever i golfgruppene', tekst: 'Samtykkeoversikten fylles når elevene er lagt inn.', knapp: 'Gå til Elever' }, laster: 'Henter samtykker …', feil: 'Samtykkene kunne ikke hentes' },
+      timeplan: { mal: 's-timeplan', etter: timeplan, tom: { tittel: 'Ingen timeplan lagt inn', tekst: 'Legg inn ukemalen for morgentreningene og skolens timeplan.', knapp: 'Ny ukemal' }, laster: 'Henter timeplanen …', feil: 'Timeplanen kunne ikke lagres. Ingenting er endret.' },
+      opptak: { mal: 's-opptak', etter: opptak, tom: { tittel: 'Ingen kandidater ennå', tekst: 'Opptaket for 2027/28 åpner 1. desember.', knapp: 'Ny kandidat' }, laster: 'Henter kandidater …', feil: 'Vurderingen kunne ikke lagres. Ingenting er sendt.' },
+      koordinering: { mal: 's-koordinering', etter: koordinering, tom: { tittel: 'Ingen felles kandidater', tekst: 'Når flere WANG-skoler stjernemerker samme kandidat, kommer den hit.', knapp: 'Tilbake til opptak' }, laster: 'Henter koordineringen …', feil: 'Koordineringen kunne ikke hentes' }
+    }
+  });
+})();
+</script>
+</body>
+</html>

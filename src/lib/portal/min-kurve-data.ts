@@ -2,6 +2,7 @@ import "server-only";
 
 import { prisma } from "@/lib/prisma";
 import { lesTurneringsresultat } from "@/lib/domain/turneringsresultat";
+import { UTEN_DATAGOLF_TURNERING } from "@/lib/auth/datagolf-regel";
 import {
   byggMinKurve,
   TOPAR_MAKS,
@@ -29,7 +30,12 @@ export type MinKurveData = MinKurve & {
  * Offentlige resultater spilleren selv har spilt — ingen ny personopplysning
  * oppstår ved å vise dem tilbake til eieren.
  */
-export async function hentMinKurve(userId: string, onsketSesong?: string): Promise<MinKurveData> {
+export async function hentMinKurve(
+  userId: string,
+  onsketSesong?: string,
+  /** Data Golf-turneringer bare for coach/admin (kanSeDataGolf). Standard nei. */
+  { medDataGolf = false }: { medDataGolf?: boolean } = {},
+): Promise<MinKurveData> {
   const bruker = await prisma.user.findUnique({
     where: { id: userId },
     select: { publicPlayerId: true },
@@ -44,7 +50,7 @@ export async function hentMinKurve(userId: string, onsketSesong?: string): Promi
       playerId: bruker.publicPlayerId,
       scoreToPar: { not: null, gte: TOPAR_MIN, lte: TOPAR_MAKS },
       // Sammenslåtte dubletter skal ikke dukke opp to ganger.
-      tournament: { mergedIntoId: null },
+      tournament: { mergedIntoId: null, ...(medDataGolf ? {} : UTEN_DATAGOLF_TURNERING) },
     },
     orderBy: { tournament: { startDate: "asc" } },
     select: {

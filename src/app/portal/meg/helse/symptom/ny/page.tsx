@@ -1,3 +1,5 @@
+// PH24NyttSymptom — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 /**
  * PlayerHQ · Meg · Helse · Legg til symptom (/portal/meg/helse/symptom/ny) — v2.
  * v2-port 17. juli 2026 (Team D4a): MegSymptomNyV2 erstatter wizard.tsx.
@@ -5,16 +7,17 @@
  * actions.ts, som er urørt).
  */
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { TilbakeLenke } from "@/components/v2";
 import { MegSymptomNyV2 } from "@/components/portal/v2/MegSymptomNyV2";
 
 export default async function NyttSymptomPage() {
-  const user = await requirePortalUser({ kreverTilgang: "INGEN" });
+  await requirePortalUser({ kreverTilgang: "INGEN" });
   return (
-    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
       <TilbakeLenke href="/portal/meg/helse">Helse</TilbakeLenke>
       <MegSymptomNyV2 />
-    </V2Shell>
+    </div>
+    </PlayerHQSkall>
   );
 }

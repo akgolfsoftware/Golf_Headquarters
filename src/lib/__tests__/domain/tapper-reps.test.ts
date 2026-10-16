@@ -45,6 +45,10 @@ test("domenedefinisjoner inneholder alle påkrevde kategorier og områder", () =
   assert.ok(shortGameIds.includes("bunker"));
 
   const puttIds = PUTTING_TARGETS.map((p) => p.baseId);
+  assert.ok(puttIds.includes("putt-greenlesing"));
+  assert.ok(puttIds.includes("putt-sikte"));
+  assert.ok(puttIds.includes("putt-ballstart"));
+  assert.ok(puttIds.includes("putt-lengdekontroll"));
   assert.ok(puttIds.includes("putt-kort"));
   assert.ok(puttIds.includes("putt-mellom"));
   assert.ok(puttIds.includes("putt-lang"));

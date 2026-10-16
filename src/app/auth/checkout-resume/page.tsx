@@ -4,8 +4,8 @@ import { CheckoutResumeClient } from "./checkout-resume-client";
 export const dynamic = "force-dynamic";
 
 /**
- * /auth/checkout-resume — gjenopptar Stripe Checkout etter signup + onboarding
- * for en besøkende som valgte en coaching-pakke før innlogging.
+ * /auth/checkout-resume — AU02Betaling.
+ * Gjenopptar Stripe Checkout etter signup + onboarding.
  */
 export default async function CheckoutResumePage({
   searchParams,

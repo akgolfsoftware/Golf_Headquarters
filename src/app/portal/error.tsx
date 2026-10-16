@@ -6,7 +6,9 @@
 
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { PH01Error } from "@/components/portal/v2/idag/IDagSelected";
+import { RotateCw, CircleAlert } from "lucide-react";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { FeilTilstand, Knapp } from "@/components/precision/pa";
 import { V2Feil } from "@/components/v2/feil-laste";
 import { reportClientError } from "@/lib/report-client-error";
 
@@ -29,7 +31,10 @@ export default function PortalError({
     });
   }, [error]);
 
-  if (pathname === "/portal") return <PH01Error reset={reset} />;
+  if (pathname === "/portal") return <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}><div className="pa-side">
+    <FeilTilstand icon={CircleAlert} title="Kunne ikke hente dagens plan" text="Tilkoblingen ble brutt. Ingenting er endret i planen din."
+      retry={<Knapp variant="secondary" icon={RotateCw} iconName="rotate-cw" onClick={reset}>Prøv igjen</Knapp>} />
+  </div></PlayerHQSkall>;
   return (
     <V2Feil
       reset={reset}
