@@ -6,7 +6,7 @@
 <title>WANG Trening</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Quattrocento+Sans:wght@400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Quattrocento:wght@400;700&family=Quattrocento+Sans:wght@400;700&display=swap">
 <link rel="stylesheet" href="felles/wang.css">
 <style>
   .nokkel{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
@@ -19,7 +19,7 @@
   .akserad .stolpe.plan span{background:var(--n300)}
   .akserad .tall{font:800 13px/1.2 var(--brand);color:var(--navy-dyp);text-align:right;white-space:nowrap}
   .akserad .tall span{display:block;font:700 11px/1.2 var(--brand);color:var(--tekst-2)}
-  .periodebaand{display:flex;height:44px;border-radius:12px;overflow:hidden;gap:2px}
+  .periodebaand{display:flex;height:44px;border-radius:0;overflow:hidden;gap:2px}
   .periodebaand span{display:flex;align-items:center;justify-content:center;font:800 10px/1 var(--brand);letter-spacing:.04em;overflow:hidden;white-space:nowrap}
   /* Periodene er ikke akser: nøytrale toner, aldri aksefargene (farge betyr akse) */
   .p-grunn{background:var(--n300);color:var(--navy-dyp)} .p-spesial{background:var(--n200);color:var(--navy-dyp)} .p-turn{background:var(--tint-navy);color:var(--navy-dyp)}
@@ -37,7 +37,7 @@
   .dagkol.i-dag h3{color:var(--navy)}
   .leggtil{min-height:44px;border:2px dashed var(--n300);border-radius:var(--r-kort-s);background:transparent;font:700 13px/1 var(--brand);color:var(--tekst-2);cursor:pointer}
   .aksevalg{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
-  .aksevalg button{min-height:52px;border-radius:14px;border:0;font:800 12px/1 var(--brand);letter-spacing:.04em;cursor:pointer;color:var(--navy-dyp)}
+  .aksevalg button{min-height:52px;border-radius:0;border:0;font:800 12px/1 var(--brand);letter-spacing:.04em;cursor:pointer;color:var(--navy-dyp)}
   .aksevalg .a-fys{background:var(--fys-tint)} .aksevalg .a-tek{background:var(--tek-tint)} .aksevalg .a-slag{background:var(--slag-tint)} .aksevalg .a-spill{background:var(--spill-tint)} .aksevalg .a-turn{background:var(--turn-tint)}
   .aksevalg .a-fys[aria-pressed=true]{background:var(--fys-fyll);color:var(--fys-paa)} .aksevalg .a-tek[aria-pressed=true]{background:var(--tek-fyll);color:var(--tek-paa)} .aksevalg .a-slag[aria-pressed=true]{background:var(--slag-fyll);color:var(--slag-paa)} .aksevalg .a-spill[aria-pressed=true]{background:var(--spill-fyll);color:var(--spill-paa)} .aksevalg .a-turn[aria-pressed=true]{background:var(--turn-fyll);color:var(--turn-paa)}
   .aksevalg button[aria-pressed=true]{box-shadow:0 0 0 3px #fff,0 0 0 5px var(--navy-dyp)}
@@ -45,7 +45,7 @@
   .timetabell{display:grid;gap:8px}
   .timetabell .t{display:grid;grid-template-columns:56px 1fr 1fr;gap:8px;align-items:center}
   .timetabell .t.hode span{font:700 11px/1.2 var(--brand);letter-spacing:.06em;text-transform:uppercase;color:var(--tekst-2)}
-  .timetabell input{min-height:44px;padding:8px 10px;border:1.5px solid var(--n300);border-radius:12px;font:700 15px/1 var(--brand);color:var(--navy-dyp);width:100%;background:#fff}
+  .timetabell input{min-height:44px;padding:8px 10px;border:1.5px solid var(--n300);border-radius:0;font:700 15px/1 var(--brand);color:var(--navy-dyp);width:100%;background:#fff}
   .kvittering{display:grid;gap:6px;padding:14px 16px;border-radius:var(--r-felt);background:var(--tint-mint);color:var(--navy-dyp-tekst)}
   .kvittering b{font:800 15px/1.3 var(--brand)}
   .ovl{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:10px 0}

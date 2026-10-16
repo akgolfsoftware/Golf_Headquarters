@@ -6,7 +6,7 @@
 <title>WANG Konkurranse</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Quattrocento+Sans:wght@400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Quattrocento:wght@400;700&family=Quattrocento+Sans:wght@400;700&display=swap">
 <link rel="stylesheet" href="felles/wang.css">
 <style>
   .turn-kort{display:grid;grid-template-columns:64px minmax(0,1fr);gap:4px 14px;padding:0 16px 16px;border-radius:var(--r-kort-s);background:#fff;border:1px solid var(--n200);text-align:left;font:inherit;cursor:pointer;width:100%;overflow:hidden;align-content:start}
@@ -15,7 +15,7 @@
   .resultat{grid-column:1 / -1;display:flex;align-items:baseline;gap:4px 12px;flex-wrap:wrap;margin-top:10px;padding-top:12px;border-top:1px solid var(--linje)}
   .resultat strong{font:800 34px/1 var(--brand);letter-spacing:-.02em;color:var(--navy-dyp)}
   .resultat span{font:700 14px/1.35 var(--brand);color:var(--tekst-2)}
-  .dato-blokk{grid-row:span 3;display:grid;place-items:center;align-content:center;gap:2px;border-radius:16px;background:var(--turn-fyll);color:var(--turn-paa);min-height:64px}
+  .dato-blokk{grid-row:span 3;display:grid;place-items:center;align-content:center;gap:2px;border-radius:0;background:var(--turn-fyll);color:var(--turn-paa);min-height:64px}
   .dato-blokk strong{font:800 22px/1 var(--brand)}
   .dato-blokk span{font:700 11px/1 var(--brand);letter-spacing:.06em;text-transform:uppercase}
   .dato-blokk.ferdig{background:var(--n100);color:var(--navy-dyp)}
@@ -35,9 +35,9 @@
   .nok strong{font:800 26px/1 var(--brand);color:var(--navy-dyp)}
   .sg{display:grid;grid-template-columns:minmax(0,130px) minmax(0,1fr) 52px;gap:10px;align-items:center;padding:8px 0}
   .sg span.n{font:700 13px/1.25 var(--brand);color:var(--navy-dyp)}
-  .sg .akse-spor{position:relative;height:16px;border-radius:8px;background:var(--n100)}
+  .sg .akse-spor{position:relative;height:16px;border-radius:0;background:var(--n100)}
   .sg .akse-spor::before{content:"";position:absolute;left:50%;top:-3px;bottom:-3px;width:2px;background:var(--n400)}
-  .sg .akse-spor i{position:absolute;top:2px;bottom:2px;border-radius:6px}
+  .sg .akse-spor i{position:absolute;top:2px;bottom:2px;border-radius:0}
   .sg .v{font:800 14px/1 var(--brand);color:var(--navy-dyp);text-align:right}
   .uttak{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px 12px;align-items:center;padding:10px 0}
   .uttak + .uttak{border-top:1px solid var(--linje)}

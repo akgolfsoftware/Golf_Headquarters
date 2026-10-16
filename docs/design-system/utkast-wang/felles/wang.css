@@ -329,3 +329,34 @@ body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.
   .tre-kol{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;align-items:start}
   .tittel{font-size:34px}
 }
+
+/* ---------- Nærmere wang.no (Anders 16.10: «WANG må litt nærmere stilen som er på www.wang.no») ----------
+   Målt på wang.no 16.10: firkantede hjørner overalt, vinrød hovedknapp #AE0034 med store bokstaver i Montserrat,
+   brødtekst i Quattrocento (serif), varm off-white bakgrunn #FCFAFA og tekst #222/#444,
+   store flater med gradient navy → teal (#17446F → #2E857D) og store, tynne tall, rosa «Les mer →».
+   Aksefargene og statusfargene er uendret. Rosa lenketekst bruker --rosa-tekst, fordi #D12A5C gir under 4,5:1. */
+.app{
+  --vinrod:#AE0034; --vinrod-mork:#8A0029;
+  --bg:#FCFAFA; --tekst:#222222; --tekst-2:#444444;
+  --r-kort:0; --r-kort-s:0; --r-felt:0; --r-knapp:0; --r-ikon:0; --r-chip:2px;
+  --grad-wang:linear-gradient(132deg,#17446F 46%,#2E857D 102%);
+  --body:"Quattrocento",Georgia,"Times New Roman",serif;
+}
+.app .tittel{color:var(--vinrod)}
+.app .sek-topp h2,.app .baand-hode h3,.app .undertittel{color:var(--tekst)}
+.app .helt{background:var(--grad-wang)}
+.app .helt-hoved strong{font-weight:500;letter-spacing:-.02em}
+.app .helt-hoved > span{font-weight:600}
+.app .hoved strong,.app .smaa-tall strong,.app .helt-tall strong{font-weight:600}
+.app .knapp{font:700 14px/1 var(--brand);text-transform:uppercase;letter-spacing:.03em;padding:0 22px}
+.app .knapp.pri,.app .knapp.mint{background:var(--vinrod);color:#fff}
+.app .knapp.pri:hover,.app .knapp.mint:hover{background:var(--vinrod-mork)}
+.app .knapp.sek{background:#fff;color:var(--vinrod);border-color:var(--vinrod)}
+.app .knapp.lys{background:#fff;color:var(--vinrod)}
+.app .knapp.fare{background:#fff;color:var(--rosa-tekst);border-color:var(--rosa)}
+.app .knapp.flat{text-transform:none;letter-spacing:0;color:var(--navy)}
+.app .hurtig{background:var(--vinrod);border-radius:0}
+.app .lenke{color:var(--rosa-tekst);font-weight:600;text-decoration:none}
+.app .lenke::after{content:"→";margin-left:4px}
+.app .stolpe,.app .stolpe span,.app .band,.app .lg i,.app .akse,.app .kategori,.app .estimat,.app .antall,.app .helt-merke,.app .velger,.app .valg,.app .valg button,.app .okt-merke,.app .skjelett{border-radius:0}
+.app .meny a.aktiv,.app .skuff a.aktiv{border-radius:0}

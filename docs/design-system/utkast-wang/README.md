@@ -63,6 +63,21 @@ designbrevet 13.10. WANGs farger, skrifter og de godkjente aksefargene er uendre
 - Gammel toppramme heter `.topp` (dato, tittel, `.helt-tall`). `.helt` er fra utkast 2 helteflaten.
 - Meldinger og Administrasjon har lett hånd: oppsettet fra utkast 1, bare grunnmuren justert. Ro er riktig der.
 
+## Nærmere wang.no (Anders 16.10.2026)
+
+Anders 16.10, etter utkast 2: «WANG må litt nærmere stilen som er på www.wang.no». Målt på wang.no samme dag og lagt inn
+som eget lag nederst i `felles/wang.css` (gjelder alle pakkene). Aksefargene og statusfargene er uendret.
+
+- **Firkantede hjørner overalt**, som wang.no. Bare avatarer og statusprikker er runde.
+- **Hovedknappen er vinrød `#AE0034`** med store bokstaver i Montserrat, som «Søk Ung» på wang.no. Sekundærknapp har vinrød kant.
+  I lister med flere saker har bare den mest akutte fylt knapp. Erstatter «navy er handling» fra 15.10.
+- **Brødtekst i Quattrocento (serif)**, som wang.no. Overskrifter fortsatt Montserrat; sidetittelen er vinrød.
+- **Varm off-white bakgrunn `#FCFAFA`**, tekst `#222` og `#444`.
+- **Helteflaten har wang.nos gradient** navy → teal (`#17446F` → `#2E857D`) og store tall i lettere vekt, som «WANG i tall».
+- **«Les mer →»-lenker** i rosa (`--rosa-tekst`, fordi wang.nos `#D12A5C` gir under 4,5:1 på hvitt).
+
+`wang-tokens.css` i appen har i dag runde hjørner (26 px) og ingen vinrød. Det må endres når utkastene porteres, etter port 7.
+
 ## Aksefargene (godkjent av Anders 14.10.2026)
 
 | Akse | Farge | Søyle og prikk | Flate med tekst | Tekst på flaten |
