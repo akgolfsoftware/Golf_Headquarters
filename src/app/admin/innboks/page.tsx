@@ -33,6 +33,8 @@ import { lastDatakvalitet } from "@/lib/admin/innboks/last-datakvalitet";
 import { loadEpostVedStatus } from "@/lib/innboks/data";
 import { apneSaker, byggInnboks, innboksHaster } from "@/lib/admin/innboks/bygg-innboks";
 import { lesInnboksFilter, lesOppfStatus } from "@/lib/admin/innboks/filter";
+import { prisma } from "@/lib/prisma";
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Innboks · AgencyOS" };
@@ -73,6 +75,24 @@ export default async function InnboksPage({
     lastDatakvalitet(user),
   ]);
 
+  // Spiller 360 åpner bare PLAYER-kontoer i stallen (lastSpiller360Hode).
+  // Lenker til andre kontoer (coach, forelder) ga «Denne siden finnes ikke».
+  const kandidater = [
+    ...godkjenn.rows.map((r) => r.playerId),
+    ...oppfolging.kort.map((o) => o.id),
+    ...sporsmal.map((q) => q.spillerId),
+    ...datakvalitet.runder.map((r) => r.spillerId),
+    ...saker.saker.flatMap((s) => /^\/admin\/spillere\/([^/?#]+)/.exec(s.href ?? "")?.[1] ?? []),
+  ].filter((id): id is string => !!id);
+  const spillere = new Set(
+    kandidater.length === 0
+      ? []
+      : (await prisma.user.findMany({
+          where: { AND: [coachScopedPlayerWhere(user), { id: { in: [...new Set(kandidater)] }, role: "PLAYER" }] },
+          select: { id: true },
+        })).map((u) => u.id),
+  );
+
   const poster = byggInnboks({
     saker: saker.saker,
     godkjenn: godkjenn.rows,
@@ -80,6 +100,7 @@ export default async function InnboksPage({
     sporsmal,
     epost,
     epostSendt,
+    spillere,
     now: new Date(),
   });
 
@@ -111,7 +132,10 @@ export default async function InnboksPage({
           andreKoer,
         }}
         oppfolgingSpillere={oppfolging.spillereTotalt}
-        datakvalitet={datakvalitet}
+        datakvalitet={{
+          ...datakvalitet,
+          runder: datakvalitet.runder.map((r) => ({ ...r, spillerId: r.spillerId && spillere.has(r.spillerId) ? r.spillerId : null })),
+        }}
         sok={sok}
       />
     </AgencyOSSkall>

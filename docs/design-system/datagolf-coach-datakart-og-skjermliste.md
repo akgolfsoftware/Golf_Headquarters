@@ -30,8 +30,8 @@ Det vi **ikke** har lagret, og derfor ikke tegner som ekte skjerm: banestatistik
 uansett ikke vises), hull-for-hull-data, spesialistregister, «trend og utvalgsbygger» på tvers av endepunkter. Klienten kan hente
 `getTournamentField` og `getDgRankings`, men ingen skjerm leser dem.
 
-**Lisens:** kundedistribusjon av Data Golf-tall er ikke dokumentert (kontroll 02.10, krav 1). Skjermene kan tegnes og bygges for
-Anders' egen bruk i AgencyOS. WANG- og TN-trenere får dem først når bruksretten er avklart.
+**Lisens (Anders 16.10):** Data Golf-tall vises aldri til kunder. Coacher i AgencyOS og trenerne i WANG Toppidrett og
+Team Norway får skjermene. Se `.claude/rules/beslutninger.md` §DATA GOLF VISES ALDRI TIL KUNDER.
 
 ## 2. Hva coachen skal få ut av dataene
 
@@ -66,7 +66,7 @@ Grunn: ingen lagring, og odds/modell skal ikke vises. Tas opp igjen bare med ny 
 
 | Flate | Inngang | Skall |
 |---|---|---|
-| AgencyOS | Mer › Data Golf (sjette punkt, se Åpent) · Spiller 360 › Stats «Mot PGA Tour» → DG-05 for spilleren · Workbench-øvelse «Fra Data Golf» → DG-06 | `utkast-agencyos/felles` |
+| AgencyOS | Mer › Data Golf (sjette punkt, avgjort 16.10) · Spiller 360 › Stats «Mot PGA Tour» → DG-05 for spilleren · Workbench-øvelse «Fra Data Golf» → DG-06 | `utkast-agencyos/felles` |
 | WANG | Konkurranse › DataGolf (WANG-50 i `wang-data.ts`, underpunktene kuttes til DG-01–09) | WANG-tokens |
 | Team Norway | Analyse › Data Golf (lenken ble fjernet 09.10; kommer tilbake bare for trenere med COACH-rolle) | TN-tokens |
 
@@ -86,6 +86,6 @@ spiller uten egne runder) · ingen tilgang (ikke coach: siden finnes ikke) · fo
 
 ## Åpent hos Anders
 
-1. **Mer får et sjette punkt «Data Golf».** Beslutningen 28.09 sier fem punkter. Alternativet er bare inngang via Spiller 360 › Stats.
-2. **Lisens** for WANG og TN. Uten den tegnes WANG/TN-utkastene, men bygges ikke.
+1. ~~**Mer får et sjette punkt «Data Golf».**~~ Avgjort 16.10: ja, Mer har seks punkter.
+2. ~~**Lisens** for WANG og TN.~~ Avgjort 16.10: bare coacher, aldri kunder. WANG og TN kan bygges etter AgencyOS.
 3. **Tour-snitt innspill** (`PgaApproachDistance`) er ikke per proff. DG-06 bruker proffens egne band; tour-snittet vises som referanse.

@@ -52,7 +52,7 @@ export default async function WangCoachPage({ searchParams }: WangCoachPageProps
   const gruppeId = await hentWangCoachGruppeId(bruker);
   if (!gruppeId) notFound();
 
-  const live = await hentWangGruppe({ medElevnavn: true });
+  const live = await hentWangGruppe({ gruppeId, medElevnavn: true });
   if (!live || live.gruppeId !== gruppeId) notFound();
 
   // Hvis eksplisitt bestilt gammel årsplanvisning:

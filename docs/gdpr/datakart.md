@@ -176,3 +176,9 @@ Invitasjoner som gjelder brukeren, følger dataeksport uten token-hash. Anonymis
 Navngitt deling har nå egen beskyttet spiller-/foresattflate. Rå invitasjonslenke vises bare ved første oppretting og holdes i komponentminnet, uten lokal nettleserlagring. Lenken bruker URL-fragment som fjernes etter innlasting; fragmentet inngår ikke i HTTP-adressen til akseptsiden. Offentlig akseptside viser ingen spilleropplysninger og sender ingen e-post. Aksepten krever innlogging, bekreftet mottakeradresse og aktiv trenertilknytning. Trenerens beskyttede IUP-leser kontrollerer samtykket ved hvert nytt oppslag og viser bare leverte, kildevaliderte revisjoner. Utkast forblir private. Dette er ikke en påstand om at alle eldre WANG/TN-lesere er samordnet med det nye fullprofilomfanget.
 
 Trenerens delingsoversikt viser bare navn og miljø for aksepterte, fortsatt gyldige navngitte delinger. Kandidat-ID-er fra invitasjonsregisteret kontrolleres under spillerlås før navn leses. Listeinndeling begrenser arbeidet til 20 kandidater per side; tilbakekalte, avsluttede og ubekreftede rettigheter gir ikke spilleropplysninger. Ingen ny lagring.
+
+### Bookingforslag og avvisningsutkast (PR #1010)
+
+Booking lagrer betalingsmåte og foreslått start/slutt med coach-ID. Feltene følger eksisterende bookingeksport. Avvisning oppretter et knyttet InnboksEpost-utkast med kontaktopplysninger og begrunnelse; ingenting sendes av avvisningshandlingen. Avvisning og utkast lagres i samme transaksjon. Tilgangen til selve bookingen avgrenses til riktig coach/admin.
+
+Knyttede innboksutkast følger nå spillerens bookingeksport. Anonymisering vasker kontakt, emne, fritekst og utkast før den eksterne ryddekjeden kobler booking fra brukeren; booking- og betalingshistorikken beholdes. Gjestenes eksisterende retention-/slettespørsmål gjelder fortsatt som beskrevet over. Dette arbeidet legger ikke til noen automatisk utsending ved avvisning.

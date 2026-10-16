@@ -12,6 +12,7 @@ Generert med `npm run prosjekt:register`. Kategoriene er veivisere basert på na
 | Data / integrasjon — kan skrive eller sende | [scripts/add-drift-rutiner-2026-08-30.ts](<add-drift-rutiner-2026-08-30.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/add-exercise-definition-v2-akser-2026-09-23.ts](<add-exercise-definition-v2-akser-2026-09-23.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/add-follow-up-case-2026-09-23.ts](<add-follow-up-case-2026-09-23.ts>) |
+| Data / integrasjon — kan skrive eller sende | [scripts/add-booking-betaling-flytting-utkast-2026-09-29.ts](<add-booking-betaling-flytting-utkast-2026-09-29.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/add-player-daily-form-2026-09-28.ts](<add-player-daily-form-2026-09-28.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/add-restitusjon-periode-2026-09-28.ts](<add-restitusjon-periode-2026-09-28.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/add-round-registration-metadata-2026-09-27.ts](<add-round-registration-metadata-2026-09-27.ts>) |

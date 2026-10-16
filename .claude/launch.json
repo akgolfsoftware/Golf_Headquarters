@@ -12,6 +12,16 @@
       "autoPort": true
     },
     {
+      "name": "skjermkontroll-dev",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": [
+        "-c",
+        "VEDLIKEHOLD=0 DOTENV_CONFIG_PATH=/Users/anderskristiansen/Developer/akgolf-hq/.env.local NODE_OPTIONS='--require dotenv/config --max-old-space-size=8192' npx next dev -p 3123"
+      ],
+      "port": 3123,
+      "autoPort": false
+    },
+    {
       "name": "utkast-static",
       "runtimeExecutable": "python3",
       "runtimeArgs": [

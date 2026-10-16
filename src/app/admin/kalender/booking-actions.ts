@@ -87,6 +87,8 @@ export async function bookIKalender(input: {
   /** «YYYY-MM-DDTHH:mm» — lokal veggklokke fra kalenderluka. */
   start: string;
   notater?: string;
+  /** Utelatt = pris fra tjenesten, som før. */
+  betaling?: "KLIPP" | "FAKTURA" | "GRATIS";
 }): Promise<BookResultat> {
   // Auth gjøres også i opprettOktPaaTid; her for tidlig og tydelig avvisning.
   await requireCoachActionUser();
@@ -117,6 +119,7 @@ export async function bookIKalender(input: {
       startAt,
       varighetMin: tjeneste.durationMin,
       notater: input.notater,
+      betaling: input.betaling,
     });
     return { ok: true, bookingId: res.bookingId };
   } catch (err) {

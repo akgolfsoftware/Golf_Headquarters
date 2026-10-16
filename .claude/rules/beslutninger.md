@@ -4,6 +4,56 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## WANG-TRENERFLATEN FØLGER STILEN PÅ WANG.NO (Anders 16.10.2026, bindende)
+
+Anders 16.10 etter utkast 2: «WANG må litt nærmere stilen som er på www.wang.no», og etter justeringen: «Ja, WANG-stilen er riktig nå.» Gjelder trenerflaten i `/team-wang` (Trener og Sportssjef); fellessiden `/team-wang` er uendret.
+
+- **Firkantede hjørner overalt.** Bare avatarer og statusprikker er runde.
+- **Hovedknappen er vinrød `#AE0034`** med store bokstaver i Montserrat. Sekundærknapp har vinrød kant. I lister med flere saker har bare den mest akutte fylt knapp.
+- **Brødtekst i Quattrocento (serif)**, overskrifter i Montserrat, sidetittel vinrød. Bakgrunn `#FCFAFA`, tekst `#222` og `#444`.
+- **Helteflaten har wang.nos gradient** `#17446F` → `#2E857D` med store tall i lettere vekt. «Les mer →»-lenker i rosa tekstfarge `#A81F49`.
+- Aksefargene (14.10) og statusfargene (mint, gul, rosa, grå) er uendret. Fasit: `docs/design-system/utkast-wang/felles/wang.css` §Nærmere wang.no og README samme sted.
+
+**Overstyrer:** «navy er handling» og 14 px kort / 10 px knapper i §Nærmere AgencyOS (15.10) i `docs/design-system/utkast-wang/README.md` (rettet i samme PR).
+
+**Arbeidet dette utløser:**
+
+1. **Port 7 per pakke:** stilen er godkjent, men hver pakke (2–8 og 10) i utkast 2 venter fortsatt på Anders' ja. Ferdig når README-tabellen har «Godkjent» per pakke.
+2. **Tokens i koden når pakkene porteres:** `src/styles/wang-app.css` har `--wg-r-kort: 14px`, `--wg-r-knapp: 10px` og `.wg-btn-primary` i navy; `src/styles/wang-tokens.css` har `--radius-card: 26px` og ingen vinrød. Hjørner til 0, `--wang-vinrod: #AE0034` som primærknapp, bakgrunn `#FCFAFA`. Ferdig når trenerflaten i 390 og 1280 ser ut som utkastet, og fellessiden `/team-wang` er urørt.
+3. **Brødtekst i Quattrocento:** `src/app/team-wang/layout.tsx` laster `Quattrocento_Sans`. Legg til `Quattrocento` (serif) for brødtekst i trenerflaten. Ferdig når skjermkontrollen viser Quattrocento i `/team-wang/coach`.
+
+## MER I AGENCYOS FÅR ET SJETTE PUNKT: DATA GOLF (Anders 16.10.2026, bindende)
+
+Svar på punkt 1 i `docs/design-system/datagolf-coach-datakart-og-skjermliste.md` §Åpent hos Anders: «mer meny skal ha et punkt til».
+
+- **Mer har seks punkter:** Booking · Grupper · Tester · Økonomi · Oppsett · Data Golf.
+- Data Golf (DG-01 Oversikt) vises bare for dem `kanSeDataGolf` slipper inn (§DATA GOLF VISES ALDRI TIL KUNDER).
+- Inngangene fra Spiller 360 › Stats og Workbench-øvelsen «Fra Data Golf» beholdes i tillegg.
+
+**Overstyrer:** «Mer har fem punkter» i §SKJERMENE I PLAYERHQ OG AGENCYOS ETTER GRILLINGEN RUNDE 8 (28.09).
+
+**Arbeidet dette utløser:**
+
+1. **Datakartet** sier at punktet er avgjort. Gjort i samme PR.
+2. **Mer-menyen i koden** får «Data Golf» som sjette punkt når AgencyOS pakke 10 porteres. Ferdig når punktet står i Mer,
+   åpner DG-01, og ikke vises for en bruker uten coach-rolle, låst med test.
+
+## DATA GOLF VISES ALDRI TIL KUNDER, BARE TIL COACHER I AK GOLF, WANG TOPPIDRETT OG TEAM NORWAY (Anders 16.10.2026, bindende)
+
+Svar på punkt 2 (lisens) i `docs/design-system/datagolf-coach-datakart-og-skjermliste.md` §Åpent hos Anders:
+«nei ikke til kunder, men kun coacher i team norway og wang toppidrett».
+
+- **Data Golf-tall vises aldri til kunder:** ikke spillere, foreldre, uinnloggede eller markedssidene.
+- **Coacher ser dem:** AK Golf-coacher i AgencyOS, og trenerne i WANG Toppidrett og Team Norway.
+- Bekrefter §KODEGJENNOMGANGEN 06.10 (Data Golf bare for coacher, `kanSeDataGolf`) og avgjør at WANG- og TN-trenere
+  kan få Data Golf-skjermene. Uendret: «Powered by Data Golf» der tallene vises, og ingen eksport (DG-09).
+
+**Arbeidet dette utløser:**
+
+1. **Datakartet** sier at lisensen er avklart for coacher. Gjort i samme PR.
+2. **WANG- og TN-utkastene for Data Golf (DG-01–09) kan bygges** etter AgencyOS, når Anders har sett dem (port 7).
+   Ferdig når skjermene ligger under `/team-wang` og `/team-norway` bak `kanSeDataGolf`, og en spiller avvises, låst med test.
+
 ## COACH SOM AVLYSER GIR ALLTID FULL REFUSJON ELLER KLIPPET TILBAKE (Anders 15.10.2026, bindende)
 
 Svar på utkast-PR #1010 (kalender og booking), som Anders sa ja til 15.10.
@@ -102,6 +152,43 @@ Coachen beholder de fire flatene.»
 5. **Mer-registeret** (`samletMerRegister`, 18 innganger) og «Trenerbord»/«Stats» for spilleren: hver inngang
    får et sted i nivåene eller i Plan, Stats eller Meg før steg 6 legges inn. Ferdig når lista er gått
    gjennom og ingen inngang mangler.
+
+## AKGOLF.NO FLYTTES IKKE FØR HELE NETTSIDEN ER GODKJENT (Anders 15.10.2026, bindende)
+
+Anders 15.10, etter revisjonen av markedssidene: «ikke flytt domene før siden er godkjent.» Svar på
+planen for akgolf.no som animert reise, der domeneflytting sto som steg 1.
+
+- **akgolf.no peker i dag til Acuity** (`akgolfgroup.as.me`) og er ikke koblet til Vercel-prosjektet
+  `akgolf-hq`. Det forblir slik til hele nettsiden er godkjent.
+- **Godkjent betyr:** Anders har sett alle markedssidene på `akgolf-hq.vercel.app` i mobil og
+  desktop (port 7) og sagt ja til helheten, og bookingen er røyktestet med én ekte betaling.
+- **Alt arbeid med den nye markedssiden bygges og vises på `akgolf-hq.vercel.app`.** Ingen
+  omdirigering, DNS- eller domeneendring underveis.
+
+**Overstyrer:** steg 1 i første utkast av `docs/planer/akgolf-no-nettsted-reise-plan-2026-10-15.md`
+(rettet i samme PR; domenet er nå steg 10).
+
+**Arbeidet dette utløser:**
+
+1. **Planen følges i rekkefølgen 1–10** i `docs/planer/akgolf-no-nettsted-reise-plan-2026-10-15.md`:
+   utkast 2 med reisen → bevegelsesgrunnmur → forsiden → undersidene → innhold → kontroll →
+   godkjenning → røyktest → domene. Ferdig når hvert steg har Anders' ja der planen krever det.
+2. **Bookingsystemet er komplett i AgencyOS før lansering** (Anders 15.10: «komplett booking system
+   og alle funksjoner … må være fungerende i AgencyOS før vi lanserer. Lag en kopi av Acuity
+   funksjoner om vi enda ikke har dette»). Gap mot Acuity og ti steg står i
+   `docs/planer/booking-komplett-agencyos-plan-2026-10-15.md`. Ferdig når coachen gjør alt uten gamle
+   sider eller Acuity, gjesten kan endre og avbestille fra e-postlenke, duo og gavekort kan bookes,
+   og én ekte betaling av hver type er røyktestet. **Planen er godkjent 15.10** med disse valgene:
+   duo betales av én person (som i Acuity: 1 700 og 2 700 kr) · gavekort gjelder alle tjenester og
+   alle coacher, verdi i kroner · no-show belastes etter 24-timersregelen, coach kan overstyre og
+   refundere · SMS utsettes til etter lansering. Steg 1 bygges i `claude/booking-avlys-flytt`;
+   steg 2 (tjenester i AgencyOS) starter 15.10.
+3. **Domeneflytting (steg 10)** gjøres først når punkt 2 og nettstedsplanens steg 8 er dokumentert. Ferdig når
+   `curl -I https://akgolf.no` gir 200 fra appen, ikke 307 til Acuity, og Acuity-lenkene er
+   borte fra nettsiden.
+4. **Uavklart:** hvor omdirigeringen fra akgolf.no til Acuity faktisk ligger (ikke i `vercel.json`,
+   `next.config.ts` eller `proxy.ts`; svaret kommer fra Vercel, men domenet står ikke på
+   `akgolf-hq`). Må finnes før steg 10.
 
 ## SPILLEREN FLYTTER TIMEN SELV, INNENFOR COACHENS TILGJENGELIGHET (Anders 14.10.2026, bindende)
 
@@ -691,7 +778,7 @@ reglene.
 - **Workbench:** gruppeplanen er grunnmuren og arves av medlemmene; tilpasning merkes «Egen».
   «Gjenta» ved slipp. **Pyramiden velges først og styrer kategoriseringen og øvelsesbanken.**
   Coach kan lage egne øvelser.
-- **Mer** har fem punkter: Booking · Grupper · Tester · Økonomi · Oppsett. Økonomi leses fra
+- **Mer** har fem punkter: Booking · Grupper · Tester · Økonomi · Oppsett (sjette punkt Data Golf fra 16.10, §MER I AGENCYOS). Økonomi leses fra
   budsjett, Tripletex-eksport og Stripe, aldri anslått. Turneringspåmeldinger bekreftes ikke.
 
 **Mulighetskartet:** A1–A8, A10–A12 og B1–B8 tegnes inn. A9 (skadevarsel på køllehastighet)
@@ -1338,6 +1425,8 @@ og ikke kan dras ut av syne.
 - Hastighet i læringssteg er 25, 50, 75 og 100 prosent av Club Speed (Lav hastighet 25/50/75 %, Automatikk 100 %, Uten ball ingen). Bekreftet av Anders 21.09.2026. Ikke den utgåtte CS-skalaen.
 - Én master for språk og treningsplanlegging: `docs/treningsplanlegging.md` (21.09.2026). `docs/ordbok.md` er bare en peker; `docs/ordbok.json` genereres.
 - Øvelsen planlegges i åtte trinn (pyramide, område, sted, måleutstyr, gjennomføring, press, mengde, mål). Pyramiden velges først og styrer kategoriseringen og øvelsesbanken (28.09, §SKJERMENE … RUNDE 8); området styrer feltene. Valgene lagres som `detaljer` i `akFormel`, uten databaseendring.
+- **STANDARD ÅRSPLAN JUNIOR 16, TURNERINGSUKER 50/50 (Anders 22.09.2026, i økt):** Uke 17–42 fordeles fast 50/50 mellom langsiktig spor (neste steg i teknisk utviklingsplan) og kortsiktig spor (området med mest slag tapt). Hvorfor: «Begge sporene må få tid hele sesongen.» Valgt mot Claudes anbefaling (kortsiktig i selve turneringsuka). Uavklart: A-turneringer beholder nedtrapping og ingen ny teknikk siste 2–4 uker, så langsiktig halvdel må da bety vedlikehold. Krever ingen kodeendring ennå — ingenting bygges før hele dokumentet er godkjent. Arbeid: `docs/treningsplanlegger/junior-16/arsplan-standard.md` §7 og §13 punkt 1.
+- **PERIODEGRENSER I ÅRSPLAN ER INDIVIDUELLE PER SPILLER (Anders 22.09.2026, i økt):** GRUNN/SPES/TURN-grenser settes per spiller; WANG-årshjulet og Team Norways grenser er utgangspunkt, ikke fasit. Krever ingen kodeendring ennå — ingenting bygges før årsplandokumentet er godkjent; datamodellen må senere la periode variere per spiller. Kilde: `docs/treningsplanlegger/junior-16/arsplan-standard.md` §3.
 - TrackMan-parametere på engelsk med stor forbokstav (Attack Angle, Club Path, Smash Factor).
 - Valgtreet fra årsplan til øvelse (åtte trinn) eies av `docs/treningsplanlegging-og-sprak-gjennomgang.md` (22.09). Puttingavstand i fot, meter kan vises i parentes. Måleutstyr er en fast liste (TrackMan og annen radar). Teknisk fokus per område er eget felt på oppgaven i teknisk plan.
 - Tester planlegges i Workbench; resultat synkes til talentprofilen.

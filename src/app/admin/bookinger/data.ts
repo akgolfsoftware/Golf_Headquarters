@@ -1,7 +1,7 @@
 /**
  * Data-loader for AG-06 Booking (Precision Athletics). Leser samme Booking- og
- * ServiceType-tabeller som resten av appen bruker — ingen nye felt, ingen
- * skjemaendring. Coach ser eget scope (`coachBookingScope`), admin ser alt.
+ * ServiceType-tabeller som resten av appen bruker. Betalingsmåte og coachens
+ * forslag om ny tid kom 15.10.2026 (beslutninger.md §COACH SOM AVLYSER). Coach ser eget scope (`coachBookingScope`), admin ser alt.
  * Pris er bookingens `priceOre` (satt fra `ServiceType.priceOre` da den ble
  * laget) — aldri hardkodet, og «timepris»-fallbacket i tegningen er demodata.
  */
@@ -21,20 +21,27 @@ export type AG06Booking = {
   where: string;
   date: string;
   t: string;
-  /** Betalingsspor på bookingen. «Ikke betalt» = pris over 0 uten Stripe eller klipp. */
-  pay: "Betalt" | "Klipp" | "Gratis" | "Ikke betalt";
+  /** Betalingsspor på bookingen. «Ikke betalt» = pris over 0 uten Stripe, klipp eller faktura. */
+  pay: "Betalt" | "Klipp" | "Faktura" | "Gratis" | "Ikke betalt";
   src: string | null;
   note: string | null;
   at: string;
   st: "Venter" | "Bekreftet" | "Avvist";
+  /** Bekreftet og ikke startet: kan avlyses eller få forslag om ny tid. */
+  kommende: boolean;
+  /** Spillerkonto finnes; gjester kan ikke godta et forslag i PlayerHQ. */
+  harKonto: boolean;
+  /** Coachens forslag om ny tid som spilleren ikke har svart på. */
+  forslag: string | null;
 };
 
 const DATO_FMT = new Intl.DateTimeFormat("nb-NO", { day: "2-digit", month: "2-digit", timeZone: "Europe/Oslo" });
 const KL_FMT = new Intl.DateTimeFormat("nb-NO", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Oslo" });
 
-function betaling(b: { priceOre: number; stripePaymentIntentId: string | null; subscriptionId: string | null }): AG06Booking["pay"] {
+function betaling(b: { priceOre: number; stripePaymentIntentId: string | null; subscriptionId: string | null; paymentMethod: string | null }): AG06Booking["pay"] {
   if (b.stripePaymentIntentId) return "Betalt";
   if (b.subscriptionId) return "Klipp";
+  if (b.paymentMethod === "FAKTURA") return "Faktura";
   if (b.priceOre <= 0) return "Gratis";
   return "Ikke betalt";
 }
@@ -61,6 +68,7 @@ export async function hentAG06Bookinger(user: User): Promise<AG06Booking[]> {
     take: 300,
   });
 
+  const naa = Date.now();
   return rader.map((r) => ({
     id: r.id,
     who: r.user?.name ?? r.guestName ?? "Gjest",
@@ -77,6 +85,9 @@ export async function hentAG06Bookinger(user: User): Promise<AG06Booking[]> {
     note: r.notes,
     at: DATO_FMT.format(r.createdAt),
     st: status(r.status),
+    kommende: r.status === "CONFIRMED" && r.startAt.getTime() > naa,
+    harKonto: r.userId != null,
+    forslag: r.proposedStartAt ? `${DATO_FMT.format(r.proposedStartAt)} ${KL_FMT.format(r.proposedStartAt)}` : null,
   }));
 }
 

@@ -1,6 +1,8 @@
 import { PortalProviders } from "@/components/portal/portal-providers";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { registrerDagligAktivitet } from "@/lib/analytics/daglig-aktivitet";
+import { maaFylleInnFodselsdato } from "@/lib/auth/minor";
+import { redirect } from "next/navigation";
 
 // TOPP-layout for /portal — auth-guard (Phase 0 security) + providers.
 // INGEN visuell chrome (sidebar/topbar/BottomNav).
@@ -26,6 +28,9 @@ export default async function PortalLayout({
   children: React.ReactNode;
 }) {
   const user = await requirePortalUser({ kreverTilgang: "INGEN" });
+  // Punkt 8 i §KODEGJENNOMGANGEN 06.10: spiller uten fødselsdato fyller den inn
+  // før PlayerHQ åpnes. Siden ligger under /auth, så den sender ikke i ring.
+  if (maaFylleInnFodselsdato(user)) redirect("/auth/fodselsdato");
   // STEG 16.3 (bruksmåling): én rad per bruker per Oslo-dag, skrevet ved hver
   // innlasting av /portal. Idempotent (upsert), feiler aldri sidevisningen.
   await registrerDagligAktivitet(user.id);

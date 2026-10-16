@@ -8,15 +8,18 @@ let trenergruppe: string | null = "wang-top-id";
 let forelderGodkjent = true;
 const kall: Array<Record<string, unknown>> = [];
 const medlemskapskall: Array<Record<string, unknown>> = [];
+const epostFor: Record<string, string> = { "demo-wang": "demo@wang.no", "demo-tn": "Demo@Golfforbundet.no" };
 
 mock.module("@/lib/prisma", {
   namedExports: {
     prisma: {
       $transaction: async (fn: (tx: unknown) => Promise<unknown>) => fn((await import("@/lib/prisma")).prisma),
+      user: { findUnique: async ({ where }: { where: { id: string } }) => ({ email: epostFor[where.id] ?? `${where.id}@akgolf.no` }) },
       group: {
         findUnique: async (args: Record<string, unknown>) => {
           kall.push(args);
           if (gruppeFeil) throw gruppeFeil;
+          if ((args.where as { slug?: string }).slug === "wang-toppidrett-demo") return { id: "wang-demo-id" };
           return gruppeFinnes ? { id: "wang-top-id" } : null;
         },
       },
@@ -132,4 +135,21 @@ test("personlig WANG-IUP krever navngitt deling også for ADMIN og etter tilbake
   assert.equal(await hentWangElevGruppeId({ id: "coach", role: "COACH" }, "elev-1"), null);
   assert.equal(await hentWangElevGruppeId({ id: "admin", role: "ADMIN" }, "elev-1"), null);
   assert.equal(await hentWangElevGruppeId({ id: "elev-1", role: "PLAYER" }, "elev-1"), "wang-top-id");
+});
+
+test("demokontoen demo@wang.no får bare demogruppa, aldri den ekte Toppidrett-gruppa", async () => {
+  const { hentWangCoachGruppeId } = await tilgang();
+  // Medlem av den ekte gruppa ved en feil: slår likevel bare opp demogruppa.
+  trenergruppe = "wang-top-id";
+  assert.equal(await hentWangCoachGruppeId({ id: "demo-wang", role: "COACH" }), null);
+  assert.ok(kall.every((k) => (k.where as { slug?: string }).slug === "wang-toppidrett-demo"));
+  trenergruppe = "wang-demo-id";
+  assert.equal(await hentWangCoachGruppeId({ id: "demo-wang", role: "COACH" }), "wang-demo-id");
+});
+
+test("Team Norway-demokontoen når ingen WANG-gruppe", async () => {
+  const { hentWangCoachGruppeId, hentWangElevGruppeId } = await tilgang();
+  assert.equal(await hentWangCoachGruppeId({ id: "demo-tn", role: "COACH" }), null);
+  assert.equal(await hentWangElevGruppeId({ id: "demo-tn", role: "COACH" }, "elev-1"), null);
+  assert.equal(kall.length, 0);
 });

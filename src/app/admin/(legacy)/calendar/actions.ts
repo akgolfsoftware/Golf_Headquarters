@@ -1,5 +1,6 @@
 "use server";
 
+import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { sjekkKollisjon, erKollisjonsfeil, kollisjonsmelding } from "@/lib/booking/kollisjonsvern";
 import { pushBooking } from "@/lib/google-calendar-kilder";
@@ -10,6 +11,8 @@ import { coachBookingScope } from "@/lib/auth/booking-scope";
 import { erCoachetSpiller, harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { audit } from "@/lib/audit";
 import { logError } from "@/lib/error-tracking";
+import { kanBrukeCredits } from "@/lib/booking/credits-tilgang";
+import { bookingBetaling } from "@/lib/booking/betalingsvalg";
 
 
 export type OpprettOktInput = {
@@ -20,6 +23,15 @@ export type OpprettOktInput = {
   startAt: Date | string;
   varighetMin: number;
   notater?: string;
+  /**
+   * Betalingsvalg fra coachens bookingveiviser (Anders 29.09.2026). Utelatt =
+   * som før (pris fra tjenesten, ingen betalingsmåte satt).
+   * - KLIPP: trekker ett klipp fra spillerens coaching-pakke (samme atomiske
+   *   trekk som createCreditBooking), pris 0, subscriptionId settes.
+   * - FAKTURA: tjenestens pris, merket «skal faktureres» (fakturaen lages i Tripletex).
+   * - GRATIS: pris 0.
+   */
+  betaling?: "KLIPP" | "FAKTURA" | "GRATIS";
 };
 
 export type OpprettOktResult = {
@@ -39,8 +51,22 @@ export async function opprettOktPaaTid(
     throw new Error("varighetMin må være > 0");
   }
 
-  const startAt = data.startAt instanceof Date ? data.startAt : new Date(data.startAt);
+  const parsed = z.object({
+    spillerId: z.string().min(1).max(200), serviceTypeId: z.string().min(1).max(200), locationId: z.string().min(1).max(200),
+    facilityId: z.string().min(1).max(200).optional(), startAt: z.union([z.date(), z.string().min(1).max(40)]),
+    varighetMin: z.number().int().min(1).max(1440), notater: z.string().max(2000).optional(),
+    betaling: z.enum(["KLIPP", "FAKTURA", "GRATIS"]).optional(),
+  }).safeParse(data);
+  if (!parsed.success) throw new Error("Kontroller bookingfeltene, varighet og betalingsmåte.");
+  // Datetime-local sender Oslo-veggklokke. Bevar sifrene i databasens naive
+  // tidsformat også når utviklingsmaskinen kjører i en annen tidssone enn UTC.
+  const rawStart = typeof data.startAt === "string" && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2})?$/.test(data.startAt)
+    ? `${data.startAt}Z` : data.startAt;
+  const startAt = rawStart instanceof Date ? rawStart : new Date(rawStart);
   if (Number.isNaN(startAt.getTime())) throw new Error("Ugyldig startAt");
+  if (typeof data.startAt === "string" && rawStart !== data.startAt && startAt.toISOString().slice(0, 10) !== data.startAt.slice(0, 10)) {
+    throw new Error("Ugyldig startAt");
+  }
   const endAt = new Date(startAt.getTime() + data.varighetMin * 60_000);
 
   // Verifiser at relaterte poster finnes — gir klarere feilmeldinger enn FK-feil.
@@ -84,6 +110,22 @@ export async function opprettOktPaaTid(
     facilityId = facility.id;
   }
 
+  // Klipp: spillerens coaching-pakke må ha klipp igjen. Selve trekket skjer
+  // atomisk i transaksjonen under (updateMany med creditsRemaining > 0).
+  let klippAbonnementId: string | null = null;
+  if (data.betaling === "KLIPP") {
+    const pakke = await prisma.subscription.findUnique({
+      where: { userId_kind: { userId: spiller.id, kind: "COACHING" } },
+      select: { id: true, status: true, currentPeriodEnd: true, monthlyCredits: true, creditsRemaining: true },
+    });
+    if (!pakke || !kanBrukeCredits(pakke) || pakke.monthlyCredits === 0) {
+      throw new Error("Spilleren har ingen aktiv coaching-pakke med klipp.");
+    }
+    if (pakke.creditsRemaining <= 0) throw new Error("Spilleren har ingen klipp igjen denne måneden.");
+    klippAbonnementId = pakke.id;
+  }
+  const betaling = bookingBetaling(data.betaling, serviceType.priceOre, klippAbonnementId);
+
   let booking: { id: string };
   try {
     // Kollisjonsvern (A-pakken): coach- og fasilitets-sjekk i samme
@@ -96,6 +138,17 @@ export async function opprettOktPaaTid(
         startAt,
         endAt,
       });
+      if (klippAbonnementId) {
+        const trukket = await tx.subscription.updateMany({
+          where: {
+            id: klippAbonnementId, userId: spiller.id, kind: "COACHING",
+            creditsRemaining: { gt: 0 }, monthlyCredits: { gt: 0 },
+            OR: [{ status: "ACTIVE" }, { status: "CANCELLED", currentPeriodEnd: { gt: new Date() } }],
+          },
+          data: { creditsRemaining: { decrement: 1 } },
+        });
+        if (trukket.count === 0) throw new Error("Spilleren har ingen klipp igjen denne måneden.");
+      }
       return tx.booking.create({
         data: {
           plassNr: vern.plassNr,
@@ -106,7 +159,9 @@ export async function opprettOktPaaTid(
           startAt,
           endAt,
           status: "CONFIRMED",
-          priceOre: serviceType.priceOre,
+          priceOre: betaling.priceOre,
+          ...(betaling.paymentMethod ? { paymentMethod: betaling.paymentMethod } : {}),
+          ...(betaling.subscriptionId ? { subscriptionId: betaling.subscriptionId } : {}),
           coachId: serviceType.coachUserId ?? null,
           notes: data.notater?.trim() || null,
         },
@@ -142,6 +197,7 @@ export async function opprettOktPaaTid(
       locationId: location.id,
       startAt: startAt.toISOString(),
       varighetMin: data.varighetMin,
+      betaling: data.betaling ?? null,
     },
   });
 

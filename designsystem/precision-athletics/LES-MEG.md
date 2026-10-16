@@ -1,5 +1,10 @@
 # Precision Athletics — speil av designprosjektet
 
+**Historisk speil:** Innholdet nedenfor er fra 28.09, og er ikke hele leveranse 3.1.0-l.
+Gjeldende retning og sist kontrollerte designpakke står i
+[designautoriteten](../../docs/design-system/design-autoritet.md#valgt-videreføring--11102026).
+Ikke erstatt nyere komponentrettinger med dette speilet.
+
 Kopi av Claude Design-prosjektet «AK Golf Precision Athletics»
 (`7d7c2994-cf63-4c5f-9bdc-fdaf67655a70`), hentet 28.09.2026 kl. 23. Visuell fasit er
 fortsatt prosjektet i Claude Design; denne kopien er byggeunderlag for porteringen, så

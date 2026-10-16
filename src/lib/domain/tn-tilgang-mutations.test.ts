@@ -41,6 +41,7 @@ mock.module("@/lib/prisma", {
     prisma: {
       group,
       groupMember,
+      user: { findUnique: async () => ({ email: "trener@akgolf.no" }) },
       $transaction: async (
         arbeid: (tx: { group: typeof group; groupMember: typeof groupMember }) => Promise<unknown>,
         options: { isolationLevel?: string },

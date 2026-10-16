@@ -1,11 +1,11 @@
 {
   "metode": "git ls-files -co --exclude-standard; eksisterende filer; genererte registerfiler utelatt. Kun metadata, ikke kundedata eller miljøverdier.",
   "telling": {
-    "prosjektfiler": 6861,
-    "sidefiler": 532,
-    "prismamodeller": 227,
-    "enhetstestfiler": 650,
-    "nettlesertestfiler": 41,
+    "prosjektfiler": 7250,
+    "sidefiler": 547,
+    "prismamodeller": 229,
+    "enhetstestfiler": 711,
+    "nettlesertestfiler": 43,
     "trainLockTegninger": 219
   },
   "filer": [
@@ -18,7 +18,7 @@
     {
       "sti": ".claude/commands/beslutning.md",
       "omrade": "prosjektoppsett",
-      "byte": 3351
+      "byte": 3823
     },
     {
       "sti": ".claude/commands/db-check.md",
@@ -73,7 +73,7 @@
     {
       "sti": ".claude/launch.json",
       "omrade": "prosjektoppsett",
-      "byte": 233
+      "byte": 828
     },
     {
       "sti": ".claude/rules/admin-tripletex.md",
@@ -88,7 +88,7 @@
     {
       "sti": ".claude/rules/beslutninger.md",
       "omrade": "prosjektoppsett",
-      "byte": 80040
+      "byte": 110088
     },
     {
       "sti": ".claude/rules/gfgk-junior.md",
@@ -113,7 +113,7 @@
     {
       "sti": ".claude/settings.json",
       "omrade": "prosjektoppsett",
-      "byte": 3813
+      "byte": 4388
     },
     {
       "sti": ".claude/skills-install/akgolf-hq-design-skills.zip",
@@ -128,17 +128,17 @@
     {
       "sti": ".claude/skills/agencyos-arkitektur/SKILL.md",
       "omrade": "prosjektoppsett",
-      "byte": 4163
+      "byte": 5074
     },
     {
       "sti": ".claude/skills/agenticos-cockpit/SKILL.md",
       "omrade": "prosjektoppsett",
-      "byte": 3024
+      "byte": 3087
     },
     {
       "sti": ".claude/skills/agenticos/SKILL.md",
       "omrade": "prosjektoppsett",
-      "byte": 6404
+      "byte": 6720
     },
     {
       "sti": ".claude/skills/ak-hq-design/agents/openai.yaml",
@@ -168,7 +168,7 @@
     {
       "sti": ".claude/skills/ak-hq-design/references/atletisk-intelligens.md",
       "omrade": "prosjektoppsett",
-      "byte": 5698
+      "byte": 5950
     },
     {
       "sti": ".claude/skills/ak-hq-design/references/flyter-og-wireframes.md",
@@ -193,7 +193,7 @@
     {
       "sti": ".claude/skills/ak-hq-design/references/produkt-og-retning.md",
       "omrade": "prosjektoppsett",
-      "byte": 5336
+      "byte": 5344
     },
     {
       "sti": ".claude/skills/ak-hq-design/references/skjermomfang.md",
@@ -228,7 +228,7 @@
     {
       "sti": ".claude/skills/ak-merkevare/SKILL.md",
       "omrade": "prosjektoppsett",
-      "byte": 9627
+      "byte": 10109
     },
     {
       "sti": ".claude/skills/ak-personvern/SKILL.md",
@@ -238,22 +238,12 @@
     {
       "sti": ".claude/skills/ak-prompt-master/SKILL.md",
       "omrade": "prosjektoppsett",
-      "byte": 3935
+      "byte": 4049
     },
     {
       "sti": ".claude/skills/ak-sikkerhet/SKILL.md",
       "omrade": "prosjektoppsett",
       "byte": 4264
-    },
-    {
-      "sti": ".claude/skills/animate/RECIPES.md",
-      "omrade": "prosjektoppsett",
-      "byte": 7957
-    },
-    {
-      "sti": ".claude/skills/animate/SKILL.md",
-      "omrade": "prosjektoppsett",
-      "byte": 11575
     },
     {
       "sti": ".claude/skills/api-and-interface-design/KILDE.md",
@@ -271,21 +261,6 @@
       "byte": 15138
     },
     {
-      "sti": ".claude/skills/design-system/SKILL.md",
-      "omrade": "prosjektoppsett",
-      "byte": 3424
-    },
-    {
-      "sti": ".claude/skills/design-taste-frontend/SKILL.md",
-      "omrade": "prosjektoppsett",
-      "byte": 87253
-    },
-    {
-      "sti": ".claude/skills/emil-design-eng/SKILL.md",
-      "omrade": "prosjektoppsett",
-      "byte": 27226
-    },
-    {
       "sti": ".claude/skills/file-upload-security/KILDE.md",
       "omrade": "prosjektoppsett",
       "byte": 200
@@ -299,21 +274,6 @@
       "sti": ".claude/skills/file-upload-security/SKILL.md",
       "omrade": "prosjektoppsett",
       "byte": 15884
-    },
-    {
-      "sti": ".claude/skills/find-animation-opportunities/SKILL.md",
-      "omrade": "prosjektoppsett",
-      "byte": 9491
-    },
-    {
-      "sti": ".claude/skills/frontend-design/LICENSE.txt",
-      "omrade": "prosjektoppsett",
-      "byte": 10174
-    },
-    {
-      "sti": ".claude/skills/frontend-design/SKILL.md",
-      "omrade": "prosjektoppsett",
-      "byte": 8825
     },
     {
       "sti": ".claude/skills/impeccable/reference/adapt.md",
@@ -571,21 +531,6 @@
       "byte": 11896
     },
     {
-      "sti": ".claude/skills/improve-animations/AUDIT.md",
-      "omrade": "prosjektoppsett",
-      "byte": 7387
-    },
-    {
-      "sti": ".claude/skills/improve-animations/PLAN-TEMPLATE.md",
-      "omrade": "prosjektoppsett",
-      "byte": 3100
-    },
-    {
-      "sti": ".claude/skills/improve-animations/SKILL.md",
-      "omrade": "prosjektoppsett",
-      "byte": 7915
-    },
-    {
       "sti": ".claude/skills/llm-app-security/KILDE.md",
       "omrade": "prosjektoppsett",
       "byte": 200
@@ -603,7 +548,7 @@
     {
       "sti": ".claude/skills/mobbin-inspo/SKILL.md",
       "omrade": "prosjektoppsett",
-      "byte": 2145
+      "byte": 1985
     },
     {
       "sti": ".claude/skills/nextjs-security/KILDE.md",
@@ -621,14 +566,19 @@
       "byte": 11000
     },
     {
+      "sti": ".claude/skills/playerhq-agents/SKILL.md",
+      "omrade": "prosjektoppsett",
+      "byte": 5338
+    },
+    {
       "sti": ".claude/skills/playerhq-arkitektur/SKILL.md",
       "omrade": "prosjektoppsett",
-      "byte": 6695
+      "byte": 6725
     },
     {
       "sti": ".claude/skills/prompt-engineer/SKILL.md",
       "omrade": "prosjektoppsett",
-      "byte": 4322
+      "byte": 4486
     },
     {
       "sti": ".claude/skills/prompt-injection-defense/KILDE.md",
@@ -646,399 +596,9 @@
       "byte": 8886
     },
     {
-      "sti": ".claude/skills/react-best-practices/AGENTS.md",
-      "omrade": "prosjektoppsett",
-      "byte": 108261
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/metadata.json",
-      "omrade": "prosjektoppsett",
-      "byte": 921
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/README.md",
-      "omrade": "prosjektoppsett",
-      "byte": 3360
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/_sections.md",
-      "omrade": "prosjektoppsett",
-      "byte": 1554
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/_template.md",
-      "omrade": "prosjektoppsett",
-      "byte": 631
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/advanced-effect-event-deps.md",
-      "omrade": "prosjektoppsett",
-      "byte": 1802
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/advanced-event-handler-refs.md",
-      "omrade": "prosjektoppsett",
-      "byte": 1483
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/advanced-init-once.md",
-      "omrade": "prosjektoppsett",
-      "byte": 958
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/advanced-use-latest.md",
-      "omrade": "prosjektoppsett",
-      "byte": 1072
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/async-api-routes.md",
-      "omrade": "prosjektoppsett",
-      "byte": 1125
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/async-cheap-condition-before-await.md",
-      "omrade": "prosjektoppsett",
-      "byte": 1220
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/async-defer-await.md",
-      "omrade": "prosjektoppsett",
-      "byte": 2208
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/async-dependencies.md",
-      "omrade": "prosjektoppsett",
-      "byte": 1293
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/async-parallel.md",
-      "omrade": "prosjektoppsett",
-      "byte": 654
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/async-suspense-boundaries.md",
-      "omrade": "prosjektoppsett",
-      "byte": 2510
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/bundle-analyzable-paths.md",
-      "omrade": "prosjektoppsett",
-      "byte": 2382
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/bundle-barrel-imports.md",
-      "omrade": "prosjektoppsett",
-      "byte": 2795
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/bundle-conditional.md",
-      "omrade": "prosjektoppsett",
-      "byte": 949
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/bundle-defer-third-party.md",
-      "omrade": "prosjektoppsett",
-      "byte": 920
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/bundle-dynamic-imports.md",
-      "omrade": "prosjektoppsett",
-      "byte": 791
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/bundle-preload.md",
-      "omrade": "prosjektoppsett",
-      "byte": 1149
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/client-event-listeners.md",
-      "omrade": "prosjektoppsett",
-      "byte": 1969
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/client-localstorage-schema.md",
-      "omrade": "prosjektoppsett",
-      "byte": 1950
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/client-passive-event-listeners.md",
-      "omrade": "prosjektoppsett",
-      "byte": 1644
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/client-swr-dedup.md",
-      "omrade": "prosjektoppsett",
-      "byte": 1159
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/js-batch-dom-css.md",
-      "omrade": "prosjektoppsett",
-      "byte": 3266
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/js-cache-function-results.md",
-      "omrade": "prosjektoppsett",
-      "byte": 1949
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/js-cache-property-access.md",
-      "omrade": "prosjektoppsett",
-      "byte": 532
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/js-cache-storage.md",
-      "omrade": "prosjektoppsett",
-      "byte": 1651
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/js-combine-iterations.md",
-      "omrade": "prosjektoppsett",
-      "byte": 753
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/js-early-exit.md",
-      "omrade": "prosjektoppsett",
-      "byte": 1133
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/js-flatmap-filter.md",
-      "omrade": "prosjektoppsett",
-      "byte": 1411
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/js-hoist-regexp.md",
-      "omrade": "prosjektoppsett",
-      "byte": 1028
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/js-index-maps.md",
-      "omrade": "prosjektoppsett",
-      "byte": 837
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/js-length-check-first.md",
-      "omrade": "prosjektoppsett",
-      "byte": 1747
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/js-min-max-loop.md",
-      "omrade": "prosjektoppsett",
-      "byte": 2290
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/js-request-idle-callback.md",
-      "omrade": "prosjektoppsett",
-      "byte": 2647
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/js-set-map-lookups.md",
-      "omrade": "prosjektoppsett",
-      "byte": 532
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/js-tosorted-immutable.md",
-      "omrade": "prosjektoppsett",
-      "byte": 1782
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/rendering-activity.md",
-      "omrade": "prosjektoppsett",
-      "byte": 564
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/rendering-animate-svg-wrapper.md",
-      "omrade": "prosjektoppsett",
-      "byte": 1185
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/rendering-conditional-render.md",
-      "omrade": "prosjektoppsett",
-      "byte": 980
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/rendering-content-visibility.md",
-      "omrade": "prosjektoppsett",
-      "byte": 815
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/rendering-hoist-jsx.md",
-      "omrade": "prosjektoppsett",
-      "byte": 1039
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/rendering-hydration-no-flicker.md",
-      "omrade": "prosjektoppsett",
-      "byte": 2308
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/rendering-hydration-suppress-warning.md",
-      "omrade": "prosjektoppsett",
-      "byte": 872
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/rendering-resource-hints.md",
-      "omrade": "prosjektoppsett",
-      "byte": 2549
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/rendering-script-defer-async.md",
-      "omrade": "prosjektoppsett",
-      "byte": 1868
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/rendering-svg-precision.md",
-      "omrade": "prosjektoppsett",
-      "byte": 588
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/rendering-usetransition-loading.md",
-      "omrade": "prosjektoppsett",
-      "byte": 2074
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/rerender-defer-reads.md",
-      "omrade": "prosjektoppsett",
-      "byte": 973
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/rerender-dependencies.md",
-      "omrade": "prosjektoppsett",
-      "byte": 824
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/rerender-derived-state-no-effect.md",
-      "omrade": "prosjektoppsett",
-      "byte": 1201
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/rerender-derived-state.md",
-      "omrade": "prosjektoppsett",
-      "byte": 728
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/rerender-functional-setstate.md",
-      "omrade": "prosjektoppsett",
-      "byte": 2968
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/rerender-lazy-state-init.md",
-      "omrade": "prosjektoppsett",
-      "byte": 2016
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/rerender-memo-with-default-value.md",
-      "omrade": "prosjektoppsett",
-      "byte": 1173
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/rerender-memo.md",
-      "omrade": "prosjektoppsett",
-      "byte": 1148
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/rerender-move-effect-to-event.md",
-      "omrade": "prosjektoppsett",
-      "byte": 1268
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/rerender-no-inline-components.md",
-      "omrade": "prosjektoppsett",
-      "byte": 2135
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/rerender-simple-expression-in-memo.md",
-      "omrade": "prosjektoppsett",
-      "byte": 1018
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/rerender-split-combined-hooks.md",
-      "omrade": "prosjektoppsett",
-      "byte": 1844
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/rerender-transitions.md",
-      "omrade": "prosjektoppsett",
-      "byte": 1055
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/rerender-use-deferred-value.md",
-      "omrade": "prosjektoppsett",
-      "byte": 1846
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/rerender-use-ref-transient-values.md",
-      "omrade": "prosjektoppsett",
-      "byte": 1742
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/server-after-nonblocking.md",
-      "omrade": "prosjektoppsett",
-      "byte": 2012
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/server-auth-actions.md",
-      "omrade": "prosjektoppsett",
-      "byte": 2649
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/server-cache-lru.md",
-      "omrade": "prosjektoppsett",
-      "byte": 1353
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/server-cache-react.md",
-      "omrade": "prosjektoppsett",
-      "byte": 2228
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/server-dedup-props.md",
-      "omrade": "prosjektoppsett",
-      "byte": 2060
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/server-hoist-static-io.md",
-      "omrade": "prosjektoppsett",
-      "byte": 4423
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/server-no-shared-module-state.md",
-      "omrade": "prosjektoppsett",
-      "byte": 1766
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/server-parallel-fetching.md",
-      "omrade": "prosjektoppsett",
-      "byte": 1554
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/server-parallel-nested-fetching.md",
-      "omrade": "prosjektoppsett",
-      "byte": 992
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/rules/server-serialization.md",
-      "omrade": "prosjektoppsett",
-      "byte": 996
-    },
-    {
-      "sti": ".claude/skills/react-best-practices/SKILL.md",
-      "omrade": "prosjektoppsett",
-      "byte": 7251
-    },
-    {
       "sti": ".claude/skills/README-AK-HQ.md",
       "omrade": "prosjektoppsett",
-      "byte": 286
-    },
-    {
-      "sti": ".claude/skills/review-animations/SKILL.md",
-      "omrade": "prosjektoppsett",
-      "byte": 8108
-    },
-    {
-      "sti": ".claude/skills/review-animations/STANDARDS.md",
-      "omrade": "prosjektoppsett",
-      "byte": 9801
+      "byte": 500
     },
     {
       "sti": ".claude/skills/secret-hygiene/KILDE.md",
@@ -1184,16 +744,6 @@
       "sti": ".claude/skills/security-review/SKILL.md",
       "omrade": "prosjektoppsett",
       "byte": 12029
-    },
-    {
-      "sti": ".claude/skills/source-command-db-check/SKILL.md",
-      "omrade": "prosjektoppsett",
-      "byte": 524
-    },
-    {
-      "sti": ".claude/skills/source-command-pr/SKILL.md",
-      "omrade": "prosjektoppsett",
-      "byte": 503
     },
     {
       "sti": ".claude/skills/stripe-docs/KILDE.md",
@@ -1418,12 +968,7 @@
     {
       "sti": ".claude/skills/verify-og-commit/SKILL.md",
       "omrade": "prosjektoppsett",
-      "byte": 4238
-    },
-    {
-      "sti": ".claude/skills/web-design-guidelines/SKILL.md",
-      "omrade": "prosjektoppsett",
-      "byte": 1692
+      "byte": 4252
     },
     {
       "sti": ".claude/skills/web-security-review/KILDE.md",
@@ -2134,7 +1679,7 @@
     {
       "sti": ".env.example",
       "omrade": "prosjektoppsett",
-      "byte": 5595
+      "byte": 5964
     },
     {
       "sti": ".github/workflows/ci.yml",
@@ -2214,12 +1759,12 @@
     {
       "sti": "AGENTS.md",
       "omrade": "prosjektoppsett",
-      "byte": 8911
+      "byte": 9445
     },
     {
       "sti": "CLAUDE.md",
       "omrade": "prosjektoppsett",
-      "byte": 1465
+      "byte": 1803
     },
     {
       "sti": "content/blogg/banedata-baerum-gk.mdx",
@@ -4554,7 +4099,7 @@
     {
       "sti": "designsystem/precision-athletics/LES-MEG.md",
       "omrade": "designkilde",
-      "byte": 992
+      "byte": 1295
     },
     {
       "sti": "designsystem/precision-athletics/MANIFEST.txt",
@@ -5114,7 +4659,7 @@
     {
       "sti": "designsystem/README.md",
       "omrade": "designkilde",
-      "byte": 10126
+      "byte": 10585
     },
     {
       "sti": "designsystem/team-norway-app/LES-MEG.md",
@@ -7909,7 +7454,7 @@
     {
       "sti": "designsystem/wang/SKJERMREGISTER.md",
       "omrade": "designkilde",
-      "byte": 9105
+      "byte": 12856
     },
     {
       "sti": "designsystem/wang/styles.css",
@@ -8034,7 +7579,7 @@
     {
       "sti": "docs/arkitektur/wang.md",
       "omrade": "dokumentasjon",
-      "byte": 4684
+      "byte": 5061
     },
     {
       "sti": "docs/beslutningsgrunnlag/claude-design-datagolf-h2-04-review-2026-09-10.md",
@@ -8262,6 +7807,11 @@
       "byte": 22529
     },
     {
+      "sti": "docs/design-audit/precision-appintegrasjon-2026-10-11.md",
+      "omrade": "dokumentasjon",
+      "byte": 7327
+    },
+    {
       "sti": "docs/design-audit/redis-gjenoppretting-2026-10-01.md",
       "omrade": "dokumentasjon",
       "byte": 2804
@@ -8325,6 +7875,11 @@
       "sti": "docs/design-audit/testbatteri-testlogikk-fra-vedlegg-2026-10-02.md",
       "omrade": "dokumentasjon",
       "byte": 18257
+    },
+    {
+      "sti": "docs/design-audit/tilgang-admin-2026-10-05.md",
+      "omrade": "dokumentasjon",
+      "byte": 7977
     },
     {
       "sti": "docs/design-audit/workbench-okt-og-syklus-kontroll-2026-10-02.md",
@@ -8449,7 +8004,7 @@
     {
       "sti": "docs/design-handoff/regler/skjermliste.md",
       "omrade": "dokumentasjon",
-      "byte": 44572
+      "byte": 44615
     },
     {
       "sti": "docs/design-handoff/regler/spesifikasjon-workbench-og-datakontrakt.md",
@@ -8470,6 +8025,11 @@
       "sti": "docs/design-system/ak-hq-designarbeid.md",
       "omrade": "dokumentasjon",
       "byte": 4856
+    },
+    {
+      "sti": "docs/design-system/bildeplan-2026-10-14.md",
+      "omrade": "dokumentasjon",
+      "byte": 7435
     },
     {
       "sti": "docs/design-system/claude-design-d03-d05-beslutning-2026-09-13.md",
@@ -8497,9 +8057,19 @@
       "byte": 16223
     },
     {
+      "sti": "docs/design-system/datagolf-coach-datakart-og-skjermliste.md",
+      "omrade": "dokumentasjon",
+      "byte": 8752
+    },
+    {
       "sti": "docs/design-system/design-autoritet.md",
       "omrade": "dokumentasjon",
-      "byte": 3584
+      "byte": 5182
+    },
+    {
+      "sti": "docs/design-system/designbrev-2026-10-13.md",
+      "omrade": "dokumentasjon",
+      "byte": 4351
     },
     {
       "sti": "docs/design-system/lanseringslop-2026-09-10.md",
@@ -8524,17 +8094,17 @@
     {
       "sti": "docs/design-system/skjermregister.csv",
       "omrade": "dokumentasjon",
-      "byte": 253018
+      "byte": 260685
     },
     {
       "sti": "docs/design-system/skjermregister.json",
       "omrade": "dokumentasjon",
-      "byte": 847185
+      "byte": 869956
     },
     {
       "sti": "docs/design-system/skjermregister.md",
       "omrade": "dokumentasjon",
-      "byte": 12719
+      "byte": 13492
     },
     {
       "sti": "docs/design-system/team-norway-claw-valgt-2026-09-13.md",
@@ -8545,6 +8115,555 @@
       "sti": "docs/design-system/TEMA-LYS-MORK.md",
       "omrade": "dokumentasjon",
       "byte": 1380
+    },
+    {
+      "sti": "docs/design-system/utkast-agencyos/bilder",
+      "omrade": "dokumentasjon",
+      "byte": 25,
+      "peker": "../utkast-playerhq/bilder"
+    },
+    {
+      "sti": "docs/design-system/utkast-agencyos/cockpit.html",
+      "omrade": "dokumentasjon",
+      "byte": 38899
+    },
+    {
+      "sti": "docs/design-system/utkast-agencyos/datagolf.html",
+      "omrade": "dokumentasjon",
+      "byte": 62440
+    },
+    {
+      "sti": "docs/design-system/utkast-agencyos/felles/agencyos.css",
+      "omrade": "dokumentasjon",
+      "byte": 10088
+    },
+    {
+      "sti": "docs/design-system/utkast-agencyos/felles/agencyos.js",
+      "omrade": "dokumentasjon",
+      "byte": 14665
+    },
+    {
+      "sti": "docs/design-system/utkast-agencyos/felles/demo.js",
+      "omrade": "dokumentasjon",
+      "byte": 5325
+    },
+    {
+      "sti": "docs/design-system/utkast-agencyos/felles/felles.css",
+      "omrade": "dokumentasjon",
+      "byte": 39,
+      "peker": "../../utkast-playerhq/felles/felles.css"
+    },
+    {
+      "sti": "docs/design-system/utkast-agencyos/jarvis.html",
+      "omrade": "dokumentasjon",
+      "byte": 23045
+    },
+    {
+      "sti": "docs/design-system/utkast-agencyos/kalender.html",
+      "omrade": "dokumentasjon",
+      "byte": 39514
+    },
+    {
+      "sti": "docs/design-system/utkast-agencyos/live.html",
+      "omrade": "dokumentasjon",
+      "byte": 23262
+    },
+    {
+      "sti": "docs/design-system/utkast-agencyos/mer.html",
+      "omrade": "dokumentasjon",
+      "byte": 37769
+    },
+    {
+      "sti": "docs/design-system/utkast-agencyos/README.md",
+      "omrade": "dokumentasjon",
+      "byte": 5385
+    },
+    {
+      "sti": "docs/design-system/utkast-agencyos/samleside.html",
+      "omrade": "dokumentasjon",
+      "byte": 8161
+    },
+    {
+      "sti": "docs/design-system/utkast-agencyos/stall.html",
+      "omrade": "dokumentasjon",
+      "byte": 36879
+    },
+    {
+      "sti": "docs/design-system/utkast-agencyos/teknisk.html",
+      "omrade": "dokumentasjon",
+      "byte": 32426
+    },
+    {
+      "sti": "docs/design-system/utkast-agencyos/workbench.html",
+      "omrade": "dokumentasjon",
+      "byte": 55495
+    },
+    {
+      "sti": "docs/design-system/utkast-flater/bilder",
+      "omrade": "dokumentasjon",
+      "byte": 25,
+      "peker": "../utkast-playerhq/bilder"
+    },
+    {
+      "sti": "docs/design-system/utkast-flater/booking.html",
+      "omrade": "dokumentasjon",
+      "byte": 24362
+    },
+    {
+      "sti": "docs/design-system/utkast-flater/epost.html",
+      "omrade": "dokumentasjon",
+      "byte": 16629
+    },
+    {
+      "sti": "docs/design-system/utkast-flater/felles/felles.css",
+      "omrade": "dokumentasjon",
+      "byte": 39,
+      "peker": "../../utkast-playerhq/felles/felles.css"
+    },
+    {
+      "sti": "docs/design-system/utkast-flater/felles/flater.css",
+      "omrade": "dokumentasjon",
+      "byte": 12505
+    },
+    {
+      "sti": "docs/design-system/utkast-flater/felles/flater.js",
+      "omrade": "dokumentasjon",
+      "byte": 18216
+    },
+    {
+      "sti": "docs/design-system/utkast-flater/forelder.html",
+      "omrade": "dokumentasjon",
+      "byte": 46690
+    },
+    {
+      "sti": "docs/design-system/utkast-flater/gfgk-system.html",
+      "omrade": "dokumentasjon",
+      "byte": 32747
+    },
+    {
+      "sti": "docs/design-system/utkast-flater/innlogging.html",
+      "omrade": "dokumentasjon",
+      "byte": 48826
+    },
+    {
+      "sti": "docs/design-system/utkast-flater/kilder/sjekk-alle.js",
+      "omrade": "dokumentasjon",
+      "byte": 2275
+    },
+    {
+      "sti": "docs/design-system/utkast-flater/marked.html",
+      "omrade": "dokumentasjon",
+      "byte": 54230
+    },
+    {
+      "sti": "docs/design-system/utkast-flater/README.md",
+      "omrade": "dokumentasjon",
+      "byte": 7245
+    },
+    {
+      "sti": "docs/design-system/utkast-flater/samleside.html",
+      "omrade": "dokumentasjon",
+      "byte": 7594
+    },
+    {
+      "sti": "docs/design-system/utkast-flater/statistikk.html",
+      "omrade": "dokumentasjon",
+      "byte": 43199
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/bilder/fys-styrke.jpg",
+      "omrade": "dokumentasjon",
+      "byte": 280485
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/bilder/green-25m.jpg",
+      "omrade": "dokumentasjon",
+      "byte": 58295
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/bilder/logo-ak-golf-hq.svg",
+      "omrade": "dokumentasjon",
+      "byte": 12179
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/bilder/naerspill-wedge.jpg",
+      "omrade": "dokumentasjon",
+      "byte": 181467
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/bilder/slag-bunker.jpg",
+      "omrade": "dokumentasjon",
+      "byte": 153917
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/bilder/slag-putting.jpg",
+      "omrade": "dokumentasjon",
+      "byte": 224998
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/bilder/slag-simulator.jpg",
+      "omrade": "dokumentasjon",
+      "byte": 67198
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/bilder/slag-utslag.jpg",
+      "omrade": "dokumentasjon",
+      "byte": 279632
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/bilder/spill-bane.jpg",
+      "omrade": "dokumentasjon",
+      "byte": 133570
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/bilder/stats-topp.jpg",
+      "omrade": "dokumentasjon",
+      "byte": 345928
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/bilder/tek-video.jpg",
+      "omrade": "dokumentasjon",
+      "byte": 95477
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/bilder/turn-tee.jpg",
+      "omrade": "dokumentasjon",
+      "byte": 127948
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/felles/felles.css",
+      "omrade": "dokumentasjon",
+      "byte": 14860
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/felles/felles.js",
+      "omrade": "dokumentasjon",
+      "byte": 9854
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/idag.html",
+      "omrade": "dokumentasjon",
+      "byte": 51051
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/iup.html",
+      "omrade": "dokumentasjon",
+      "byte": 48222
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/kilder/dagens-register/PH-01.jsx",
+      "omrade": "dokumentasjon",
+      "byte": 18805
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/kilder/dagens-register/PH-03.jsx",
+      "omrade": "dokumentasjon",
+      "byte": 7346
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/kilder/dagens-register/PH-08.jsx",
+      "omrade": "dokumentasjon",
+      "byte": 3160
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/kilder/dagens-register/PH-11-skjema.jsx",
+      "omrade": "dokumentasjon",
+      "byte": 5519
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/kilder/dagens-register/PH-11.jsx",
+      "omrade": "dokumentasjon",
+      "byte": 22603
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/kilder/dagens-register/PH-13.jsx",
+      "omrade": "dokumentasjon",
+      "byte": 5789
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/kilder/dagens-register/PH-15.jsx",
+      "omrade": "dokumentasjon",
+      "byte": 2712
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/kilder/dagens-register/PH-16.jsx",
+      "omrade": "dokumentasjon",
+      "byte": 4715
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/kilder/dagens-register/PH-17.jsx",
+      "omrade": "dokumentasjon",
+      "byte": 1966
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/kilder/dagens-register/PH-18.jsx",
+      "omrade": "dokumentasjon",
+      "byte": 4477
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/kilder/dagens-register/PH-21.jsx",
+      "omrade": "dokumentasjon",
+      "byte": 4412
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/kilder/dagens-register/PH-24.jsx",
+      "omrade": "dokumentasjon",
+      "byte": 2341
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/kilder/dagens-register/PH-IUP.jsx",
+      "omrade": "dokumentasjon",
+      "byte": 16459
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/kilder/dagens-register/PH-live.jsx",
+      "omrade": "dokumentasjon",
+      "byte": 7211
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/kilder/dagens-register/PH-meg.jsx",
+      "omrade": "dokumentasjon",
+      "byte": 8390
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/kilder/dagens-register/PH-runde.jsx",
+      "omrade": "dokumentasjon",
+      "byte": 7909
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/kilder/dagens-register/PH-TP-01.jsx",
+      "omrade": "dokumentasjon",
+      "byte": 1740
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/kilder/lag-stats.py",
+      "omrade": "dokumentasjon",
+      "byte": 16025
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/kilder/sjekk.js",
+      "omrade": "dokumentasjon",
+      "byte": 1277
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/kommunikasjon.html",
+      "omrade": "dokumentasjon",
+      "byte": 70963
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/meg.html",
+      "omrade": "dokumentasjon",
+      "byte": 76330
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/ovelser.html",
+      "omrade": "dokumentasjon",
+      "byte": 66166
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/plan.html",
+      "omrade": "dokumentasjon",
+      "byte": 128606
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/README.md",
+      "omrade": "dokumentasjon",
+      "byte": 6791
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/runder.html",
+      "omrade": "dokumentasjon",
+      "byte": 91422
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/samleside.html",
+      "omrade": "dokumentasjon",
+      "byte": 8243
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/stats-dybde.html",
+      "omrade": "dokumentasjon",
+      "byte": 121815
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/stats.html",
+      "omrade": "dokumentasjon",
+      "byte": 17109
+    },
+    {
+      "sti": "docs/design-system/utkast-playerhq/treningsokt.html",
+      "omrade": "dokumentasjon",
+      "byte": 61293
+    },
+    {
+      "sti": "docs/design-system/utkast-tn/admin.html",
+      "omrade": "dokumentasjon",
+      "byte": 17133
+    },
+    {
+      "sti": "docs/design-system/utkast-tn/daglig.html",
+      "omrade": "dokumentasjon",
+      "byte": 32313
+    },
+    {
+      "sti": "docs/design-system/utkast-tn/datagolf.html",
+      "omrade": "dokumentasjon",
+      "byte": 69429
+    },
+    {
+      "sti": "docs/design-system/utkast-tn/felles/logo-tn-hvit.png",
+      "omrade": "dokumentasjon",
+      "byte": 62363
+    },
+    {
+      "sti": "docs/design-system/utkast-tn/felles/tn.css",
+      "omrade": "dokumentasjon",
+      "byte": 16650
+    },
+    {
+      "sti": "docs/design-system/utkast-tn/felles/tn.js",
+      "omrade": "dokumentasjon",
+      "byte": 10302
+    },
+    {
+      "sti": "docs/design-system/utkast-tn/grunnmur.html",
+      "omrade": "dokumentasjon",
+      "byte": 17749
+    },
+    {
+      "sti": "docs/design-system/utkast-tn/gruppe.html",
+      "omrade": "dokumentasjon",
+      "byte": 13638
+    },
+    {
+      "sti": "docs/design-system/utkast-tn/index.html",
+      "omrade": "dokumentasjon",
+      "byte": 7790
+    },
+    {
+      "sti": "docs/design-system/utkast-tn/plan-fag.html",
+      "omrade": "dokumentasjon",
+      "byte": 30539
+    },
+    {
+      "sti": "docs/design-system/utkast-tn/README.md",
+      "omrade": "dokumentasjon",
+      "byte": 12305
+    },
+    {
+      "sti": "docs/design-system/utkast-tn/spillere.html",
+      "omrade": "dokumentasjon",
+      "byte": 45290
+    },
+    {
+      "sti": "docs/design-system/utkast-tn/uttak.html",
+      "omrade": "dokumentasjon",
+      "byte": 15222
+    },
+    {
+      "sti": "docs/design-system/utkast-wang/administrasjon.html",
+      "omrade": "dokumentasjon",
+      "byte": 21294
+    },
+    {
+      "sti": "docs/design-system/utkast-wang/bilder/fys-styrke.jpg",
+      "omrade": "dokumentasjon",
+      "byte": 280485
+    },
+    {
+      "sti": "docs/design-system/utkast-wang/bilder/slag-utslag.jpg",
+      "omrade": "dokumentasjon",
+      "byte": 279632
+    },
+    {
+      "sti": "docs/design-system/utkast-wang/bilder/spill-bane.jpg",
+      "omrade": "dokumentasjon",
+      "byte": 133570
+    },
+    {
+      "sti": "docs/design-system/utkast-wang/bilder/tek-video.jpg",
+      "omrade": "dokumentasjon",
+      "byte": 95477
+    },
+    {
+      "sti": "docs/design-system/utkast-wang/bilder/turn-tee.jpg",
+      "omrade": "dokumentasjon",
+      "byte": 127948
+    },
+    {
+      "sti": "docs/design-system/utkast-wang/bilder/wang-crest.svg",
+      "omrade": "dokumentasjon",
+      "byte": 4311
+    },
+    {
+      "sti": "docs/design-system/utkast-wang/bilder/wang-logo-horizontal.svg",
+      "omrade": "dokumentasjon",
+      "byte": 5751
+    },
+    {
+      "sti": "docs/design-system/utkast-wang/datagolf.html",
+      "omrade": "dokumentasjon",
+      "byte": 68759
+    },
+    {
+      "sti": "docs/design-system/utkast-wang/elever.html",
+      "omrade": "dokumentasjon",
+      "byte": 23544
+    },
+    {
+      "sti": "docs/design-system/utkast-wang/felles/wang.css",
+      "omrade": "dokumentasjon",
+      "byte": 21545
+    },
+    {
+      "sti": "docs/design-system/utkast-wang/felles/wang.js",
+      "omrade": "dokumentasjon",
+      "byte": 13237
+    },
+    {
+      "sti": "docs/design-system/utkast-wang/grunnmur.html",
+      "omrade": "dokumentasjon",
+      "byte": 18669
+    },
+    {
+      "sti": "docs/design-system/utkast-wang/idag.html",
+      "omrade": "dokumentasjon",
+      "byte": 27490
+    },
+    {
+      "sti": "docs/design-system/utkast-wang/index.html",
+      "omrade": "dokumentasjon",
+      "byte": 7887
+    },
+    {
+      "sti": "docs/design-system/utkast-wang/kilder/sjekk.js",
+      "omrade": "dokumentasjon",
+      "byte": 5733
+    },
+    {
+      "sti": "docs/design-system/utkast-wang/konkurranse.html",
+      "omrade": "dokumentasjon",
+      "byte": 20079
+    },
+    {
+      "sti": "docs/design-system/utkast-wang/meldinger.html",
+      "omrade": "dokumentasjon",
+      "byte": 18629
+    },
+    {
+      "sti": "docs/design-system/utkast-wang/README.md",
+      "omrade": "dokumentasjon",
+      "byte": 15463
+    },
+    {
+      "sti": "docs/design-system/utkast-wang/tester.html",
+      "omrade": "dokumentasjon",
+      "byte": 22289
+    },
+    {
+      "sti": "docs/design-system/utkast-wang/trening.html",
+      "omrade": "dokumentasjon",
+      "byte": 30525
     },
     {
       "sti": "docs/design/workbench-handover/assets/logo-ak-golf-hq-negative.svg",
@@ -8724,7 +8843,7 @@
     {
       "sti": "docs/gdpr/datakart.md",
       "omrade": "dokumentasjon",
-      "byte": 26425
+      "byte": 29463
     },
     {
       "sti": "docs/gdpr/personvernerklaering-utkast.md",
@@ -8734,7 +8853,7 @@
     {
       "sti": "docs/gdpr/rettigheter-status.md",
       "omrade": "dokumentasjon",
-      "byte": 11195
+      "byte": 11914
     },
     {
       "sti": "docs/integrasjoner/whoop-garmin-oppsett.md",
@@ -8787,6 +8906,16 @@
       "byte": 12355
     },
     {
+      "sti": "docs/ordbok-avvik-2026-10-14.md",
+      "omrade": "dokumentasjon",
+      "byte": 17241
+    },
+    {
+      "sti": "docs/ordbok-trening-planlegging-gjennomforing.md",
+      "omrade": "dokumentasjon",
+      "byte": 100914
+    },
+    {
       "sti": "docs/ordbok.json",
       "omrade": "dokumentasjon",
       "byte": 15285
@@ -8800,6 +8929,11 @@
       "sti": "docs/patches/wb-v2-lov.patch",
       "omrade": "dokumentasjon",
       "byte": 211
+    },
+    {
+      "sti": "docs/plan-ferdigstilling.md",
+      "omrade": "dokumentasjon",
+      "byte": 6547
     },
     {
       "sti": "docs/plan-styrkeprogram-fys.md",
@@ -8817,9 +8951,19 @@
       "byte": 10752
     },
     {
+      "sti": "docs/planer/akgolf-no-nettsted-reise-plan-2026-10-15.md",
+      "omrade": "datert-plan",
+      "byte": 13245
+    },
+    {
       "sti": "docs/planer/arbeidsliste-restoppgaver-2026-10-02.md",
       "omrade": "datert-plan",
       "byte": 14620
+    },
+    {
+      "sti": "docs/planer/booking-komplett-agencyos-plan-2026-10-15.md",
+      "omrade": "datert-plan",
+      "byte": 10715
     },
     {
       "sti": "docs/planer/claude-design-claw-team-norway-komplett-prompt-2026-09-14.md",
@@ -8877,6 +9021,11 @@
       "byte": 11819
     },
     {
+      "sti": "docs/planer/portering-godkjente-skjermer-2026-10-14.md",
+      "omrade": "datert-plan",
+      "byte": 2309
+    },
+    {
       "sti": "docs/planer/portering-skjermer-2026-09-27.md",
       "omrade": "datert-plan",
       "byte": 21687
@@ -8905,6 +9054,16 @@
       "sti": "docs/planer/treningsplanlegging-og-sprak-en-master-2026-09-26.md",
       "omrade": "datert-plan",
       "byte": 10723
+    },
+    {
+      "sti": "docs/planer/wang-fredrikstad-demoreise-og-produksjonsplan-2026-10-14.md",
+      "omrade": "datert-plan",
+      "byte": 7204
+    },
+    {
+      "sti": "docs/planer/wang-fredrikstad-roller-og-datagrunnlag-2026-10-13.md",
+      "omrade": "datert-plan",
+      "byte": 17897
     },
     {
       "sti": "docs/planer/wang-team-norway-playerhq-komplett-plan-2026-10-02.md",
@@ -8959,7 +9118,7 @@
     {
       "sti": "docs/platform/AGENT-BRIEF.md",
       "omrade": "dokumentasjon",
-      "byte": 5742
+      "byte": 5942
     },
     {
       "sti": "docs/platform/BOOKING-POLICY.md",
@@ -8974,7 +9133,7 @@
     {
       "sti": "docs/platform/BUSINESS-RULES.md",
       "omrade": "dokumentasjon",
-      "byte": 18176
+      "byte": 18283
     },
     {
       "sti": "docs/platform/DATA-MODEL.md",
@@ -9109,12 +9268,182 @@
     {
       "sti": "docs/runbook.md",
       "omrade": "dokumentasjon",
-      "byte": 2479
+      "byte": 2497
     },
     {
       "sti": "docs/sikkerhet/action-audit.md",
       "omrade": "dokumentasjon",
       "byte": 2325
+    },
+    {
+      "sti": "docs/skjermbilder/au-04/kode-1-om-deg-1280.png",
+      "omrade": "dokumentasjon",
+      "byte": 37748
+    },
+    {
+      "sti": "docs/skjermbilder/au-04/kode-1-om-deg-390.png",
+      "omrade": "dokumentasjon",
+      "byte": 33185
+    },
+    {
+      "sti": "docs/skjermbilder/au-04/kode-2-fasiliteter-1280.png",
+      "omrade": "dokumentasjon",
+      "byte": 37055
+    },
+    {
+      "sti": "docs/skjermbilder/au-04/kode-2-fasiliteter-390.png",
+      "omrade": "dokumentasjon",
+      "byte": 32653
+    },
+    {
+      "sti": "docs/skjermbilder/au-04/kode-3-resultater-1280.png",
+      "omrade": "dokumentasjon",
+      "byte": 48445
+    },
+    {
+      "sti": "docs/skjermbilder/au-04/kode-3-resultater-390.png",
+      "omrade": "dokumentasjon",
+      "byte": 42034
+    },
+    {
+      "sti": "docs/skjermbilder/au-04/kode-4-teknikktest-1280.png",
+      "omrade": "dokumentasjon",
+      "byte": 114059
+    },
+    {
+      "sti": "docs/skjermbilder/au-04/kode-4-teknikktest-390.png",
+      "omrade": "dokumentasjon",
+      "byte": 104610
+    },
+    {
+      "sti": "docs/skjermbilder/au-04/kode-5-samtykker-1280.png",
+      "omrade": "dokumentasjon",
+      "byte": 30471
+    },
+    {
+      "sti": "docs/skjermbilder/au-04/kode-5-samtykker-390.png",
+      "omrade": "dokumentasjon",
+      "byte": 26512
+    },
+    {
+      "sti": "docs/skjermbilder/au-04/kode-6-treningsplan-1280.png",
+      "omrade": "dokumentasjon",
+      "byte": 46670
+    },
+    {
+      "sti": "docs/skjermbilder/au-04/kode-6-treningsplan-390.png",
+      "omrade": "dokumentasjon",
+      "byte": 40348
+    },
+    {
+      "sti": "docs/skjermbilder/au-04/kode-7-klar-1280.png",
+      "omrade": "dokumentasjon",
+      "byte": 18558
+    },
+    {
+      "sti": "docs/skjermbilder/au-04/kode-7-klar-390.png",
+      "omrade": "dokumentasjon",
+      "byte": 15376
+    },
+    {
+      "sti": "docs/skjermbilder/au-04/kode-feil-1280.png",
+      "omrade": "dokumentasjon",
+      "byte": 20920
+    },
+    {
+      "sti": "docs/skjermbilder/au-04/kode-feil-390.png",
+      "omrade": "dokumentasjon",
+      "byte": 17500
+    },
+    {
+      "sti": "docs/skjermbilder/au-04/kode-laster-1280.png",
+      "omrade": "dokumentasjon",
+      "byte": 10815
+    },
+    {
+      "sti": "docs/skjermbilder/au-04/kode-laster-390.png",
+      "omrade": "dokumentasjon",
+      "byte": 8017
+    },
+    {
+      "sti": "docs/skjermbilder/au-04/kode-natt-6-treningsplan-1280.png",
+      "omrade": "dokumentasjon",
+      "byte": 46390
+    },
+    {
+      "sti": "docs/skjermbilder/au-04/kode-natt-6-treningsplan-390.png",
+      "omrade": "dokumentasjon",
+      "byte": 39939
+    },
+    {
+      "sti": "docs/skjermbilder/au-04/tegning-1-om-deg-1280.png",
+      "omrade": "dokumentasjon",
+      "byte": 39133
+    },
+    {
+      "sti": "docs/skjermbilder/au-04/tegning-1-om-deg-390.png",
+      "omrade": "dokumentasjon",
+      "byte": 35389
+    },
+    {
+      "sti": "docs/skjermbilder/au-04/tegning-2-fasiliteter-1280.png",
+      "omrade": "dokumentasjon",
+      "byte": 57426
+    },
+    {
+      "sti": "docs/skjermbilder/au-04/tegning-2-fasiliteter-390.png",
+      "omrade": "dokumentasjon",
+      "byte": 54783
+    },
+    {
+      "sti": "docs/skjermbilder/au-04/tegning-3-resultater-1280.png",
+      "omrade": "dokumentasjon",
+      "byte": 39207
+    },
+    {
+      "sti": "docs/skjermbilder/au-04/tegning-3-resultater-390.png",
+      "omrade": "dokumentasjon",
+      "byte": 34345
+    },
+    {
+      "sti": "docs/skjermbilder/au-04/tegning-4-teknikktest-1280.png",
+      "omrade": "dokumentasjon",
+      "byte": 54016
+    },
+    {
+      "sti": "docs/skjermbilder/au-04/tegning-4-teknikktest-390.png",
+      "omrade": "dokumentasjon",
+      "byte": 45989
+    },
+    {
+      "sti": "docs/skjermbilder/au-04/tegning-5-samtykker-1280.png",
+      "omrade": "dokumentasjon",
+      "byte": 30187
+    },
+    {
+      "sti": "docs/skjermbilder/au-04/tegning-5-samtykker-390.png",
+      "omrade": "dokumentasjon",
+      "byte": 26350
+    },
+    {
+      "sti": "docs/skjermbilder/au-04/tegning-6-treningsplan-1280.png",
+      "omrade": "dokumentasjon",
+      "byte": 45975
+    },
+    {
+      "sti": "docs/skjermbilder/au-04/tegning-6-treningsplan-390.png",
+      "omrade": "dokumentasjon",
+      "byte": 39878
+    },
+    {
+      "sti": "docs/skjermbilder/au-04/tegning-7-klar-1280.png",
+      "omrade": "dokumentasjon",
+      "byte": 18466
+    },
+    {
+      "sti": "docs/skjermbilder/au-04/tegning-7-klar-390.png",
+      "omrade": "dokumentasjon",
+      "byte": 15947
     },
     {
       "sti": "docs/skjermbilder/bk-01/kode-betal-1280.png",
@@ -9407,6 +9736,31 @@
       "byte": 100031
     },
     {
+      "sti": "docs/skjermer/bk-03/kode-1280.png",
+      "omrade": "dokumentasjon",
+      "byte": 67834
+    },
+    {
+      "sti": "docs/skjermer/bk-03/kode-390.png",
+      "omrade": "dokumentasjon",
+      "byte": 60794
+    },
+    {
+      "sti": "docs/skjermer/bk-03/kode-natt-390.png",
+      "omrade": "dokumentasjon",
+      "byte": 60940
+    },
+    {
+      "sti": "docs/skjermer/bk-03/tegning-1280.png",
+      "omrade": "dokumentasjon",
+      "byte": 67077
+    },
+    {
+      "sti": "docs/skjermer/bk-03/tegning-390.png",
+      "omrade": "dokumentasjon",
+      "byte": 59386
+    },
+    {
       "sti": "docs/skjermtekst/skjerm-tekst-hovedskjermer.md",
       "omrade": "dokumentasjon",
       "byte": 11467
@@ -9420,6 +9774,11 @@
       "sti": "docs/testing.md",
       "omrade": "dokumentasjon",
       "byte": 14144
+    },
+    {
+      "sti": "docs/treningsplanlegger/junior-16/arsplan-standard.md",
+      "omrade": "dokumentasjon",
+      "byte": 15702
     },
     {
       "sti": "docs/treningsplanlegger/wang-toppidrett/arshjul-2026-2027.md",
@@ -9514,7 +9873,7 @@
     {
       "sti": "docs/treningsplanlegging.md",
       "omrade": "dokumentasjon",
-      "byte": 39726
+      "byte": 47030
     },
     {
       "sti": "docs/turnering-datakilder.md",
@@ -9542,6 +9901,11 @@
       "byte": 12949
     },
     {
+      "sti": "docs/vedlikehold/git-arbeidsflyt.md",
+      "omrade": "dokumentasjon",
+      "byte": 4714
+    },
+    {
       "sti": "docs/vedlikehold/grengjennomgang-2026-09-12.md",
       "omrade": "dokumentasjon",
       "byte": 3504
@@ -9559,12 +9923,22 @@
     {
       "sti": "docs/vedlikehold/prosjektkart.md",
       "omrade": "dokumentasjon",
-      "byte": 8103
+      "byte": 8228
     },
     {
       "sti": "docs/vedlikehold/prosjektstruktur.json",
       "omrade": "dokumentasjon",
-      "byte": 2859
+      "byte": 2837
+    },
+    {
+      "sti": "docs/vedlikehold/repo-opprydding-2026-10-11.json",
+      "omrade": "dokumentasjon",
+      "byte": 273188
+    },
+    {
+      "sti": "docs/vedlikehold/repo-opprydding-2026-10-11.md",
+      "omrade": "dokumentasjon",
+      "byte": 30523
     },
     {
       "sti": "docs/vedlikehold/samling-og-opprydding-2026-09-11.md",
@@ -9609,7 +9983,7 @@
     {
       "sti": "package.json",
       "omrade": "prosjektoppsett",
-      "byte": 6523
+      "byte": 6962
     },
     {
       "sti": "playwright.config.ts",
@@ -10137,6 +10511,11 @@
       "byte": 309
     },
     {
+      "sti": "prisma/migrations/20261009120000_workbench_drill_log/migration.sql",
+      "omrade": "databasekilde",
+      "byte": 1412
+    },
+    {
       "sti": "prisma/migrations/migration_lock.toml",
       "omrade": "databasekilde",
       "byte": 128
@@ -10149,7 +10528,7 @@
     {
       "sti": "prisma/schema.prisma",
       "omrade": "databasekilde",
-      "byte": 250261
+      "byte": 254066
     },
     {
       "sti": "prisma/scripts/map-fasilitet-krav.ts",
@@ -11105,6 +11484,61 @@
       "sti": "public/images/logos/wang.svg",
       "omrade": "offentlig-innhold",
       "byte": 4368
+    },
+    {
+      "sti": "public/images/playerhq/fys-styrke.jpg",
+      "omrade": "offentlig-innhold",
+      "byte": 280485
+    },
+    {
+      "sti": "public/images/playerhq/green-25m.jpg",
+      "omrade": "offentlig-innhold",
+      "byte": 58295
+    },
+    {
+      "sti": "public/images/playerhq/naerspill-wedge.jpg",
+      "omrade": "offentlig-innhold",
+      "byte": 181467
+    },
+    {
+      "sti": "public/images/playerhq/slag-bunker.jpg",
+      "omrade": "offentlig-innhold",
+      "byte": 153917
+    },
+    {
+      "sti": "public/images/playerhq/slag-putting.jpg",
+      "omrade": "offentlig-innhold",
+      "byte": 224998
+    },
+    {
+      "sti": "public/images/playerhq/slag-simulator.jpg",
+      "omrade": "offentlig-innhold",
+      "byte": 67198
+    },
+    {
+      "sti": "public/images/playerhq/slag-utslag.jpg",
+      "omrade": "offentlig-innhold",
+      "byte": 279632
+    },
+    {
+      "sti": "public/images/playerhq/spill-bane.jpg",
+      "omrade": "offentlig-innhold",
+      "byte": 133570
+    },
+    {
+      "sti": "public/images/playerhq/stats-topp.jpg",
+      "omrade": "offentlig-innhold",
+      "byte": 345928
+    },
+    {
+      "sti": "public/images/playerhq/tek-video.jpg",
+      "omrade": "offentlig-innhold",
+      "byte": 95477
+    },
+    {
+      "sti": "public/images/playerhq/turn-tee.jpg",
+      "omrade": "offentlig-innhold",
+      "byte": 127948
     },
     {
       "sti": "public/images/skill-map/skill-map-overview-v3.png",
@@ -12629,7 +13063,7 @@
     {
       "sti": "public/team-wang/wang-logo-horizontal.svg",
       "omrade": "offentlig-innhold",
-      "byte": 5758
+      "byte": 5751
     },
     {
       "sti": "public/team-wang/wang-logo-vertical.svg",
@@ -12662,6 +13096,11 @@
       "byte": 357
     },
     {
+      "sti": "scripts/add-booking-betaling-flytting-utkast-2026-09-29.ts",
+      "omrade": "verktoy",
+      "byte": 2710
+    },
+    {
       "sti": "scripts/add-club-klasse-2026-08-31.ts",
       "omrade": "verktoy",
       "byte": 1899
@@ -12690,6 +13129,21 @@
       "sti": "scripts/add-follow-up-case-2026-09-23.ts",
       "omrade": "verktoy",
       "byte": 2046
+    },
+    {
+      "sti": "scripts/add-group-period-axis-minutes-2026-10-14.ts",
+      "omrade": "verktoy",
+      "byte": 2402
+    },
+    {
+      "sti": "scripts/add-month-plans-2026-10-14.ts",
+      "omrade": "verktoy",
+      "byte": 2842
+    },
+    {
+      "sti": "scripts/add-period-axis-minutes-2026-10-14.ts",
+      "omrade": "verktoy",
+      "byte": 2256
     },
     {
       "sti": "scripts/add-player-daily-form-2026-09-28.ts",
@@ -12750,6 +13204,11 @@
       "sti": "scripts/add-utfordring-retning-2026-09-22.ts",
       "omrade": "verktoy",
       "byte": 2079
+    },
+    {
+      "sti": "scripts/add-workbench-drill-log-2026-10-09.ts",
+      "omrade": "verktoy",
+      "byte": 3544
     },
     {
       "sti": "scripts/add-workbench-fys-turnering-2026-09-27.ts",
@@ -12829,17 +13288,17 @@
     {
       "sti": "scripts/bygg-skjermregister.mjs",
       "omrade": "verktoy",
-      "byte": 55661
+      "byte": 56759
     },
     {
       "sti": "scripts/bygg-skjermregister.test.mjs",
       "omrade": "verktoy",
-      "byte": 28500
+      "byte": 28735
     },
     {
       "sti": "scripts/check-action-auth.mjs",
       "omrade": "verktoy",
-      "byte": 5070
+      "byte": 5401
     },
     {
       "sti": "scripts/check-ak-golf-kits.mjs",
@@ -12892,6 +13351,16 @@
       "byte": 6149
     },
     {
+      "sti": "scripts/check-tilgang-vakt.mjs",
+      "omrade": "verktoy",
+      "byte": 12415
+    },
+    {
+      "sti": "scripts/check-tilgang-vakt.test.mjs",
+      "omrade": "verktoy",
+      "byte": 5061
+    },
+    {
       "sti": "scripts/check-tl-kontrast.mjs",
       "omrade": "verktoy",
       "byte": 6006
@@ -12940,6 +13409,11 @@
       "sti": "scripts/create-tn-test-photos-bucket.ts",
       "omrade": "verktoy",
       "byte": 1564
+    },
+    {
+      "sti": "scripts/db-retting-2026-10-07.sql",
+      "omrade": "verktoy",
+      "byte": 6629
     },
     {
       "sti": "scripts/dedupe-player-names.ts",
@@ -13359,7 +13833,7 @@
     {
       "sti": "scripts/prosjekt-register.mjs",
       "omrade": "verktoy",
-      "byte": 4804
+      "byte": 4838
     },
     {
       "sti": "scripts/public-shot.mjs",
@@ -13374,12 +13848,22 @@
     {
       "sti": "scripts/README.md",
       "omrade": "verktoy",
-      "byte": 3348
+      "byte": 3855
     },
     {
       "sti": "scripts/reimport-stripe.ts",
       "omrade": "verktoy",
       "byte": 3763
+    },
+    {
+      "sti": "scripts/repo-status.mjs",
+      "omrade": "verktoy",
+      "byte": 5209
+    },
+    {
+      "sti": "scripts/repo-status.test.mjs",
+      "omrade": "verktoy",
+      "byte": 3174
     },
     {
       "sti": "scripts/report-tournament-completeness.ts",
@@ -13532,6 +14016,11 @@
       "byte": 6011
     },
     {
+      "sti": "scripts/seed-demo-wang-tn-2026-10-15.ts",
+      "omrade": "verktoy",
+      "byte": 10333
+    },
+    {
       "sti": "scripts/seed-fys-testdata.ts",
       "omrade": "verktoy",
       "byte": 4293
@@ -13674,7 +14163,7 @@
     {
       "sti": "scripts/skjermregister-typer.mjs",
       "omrade": "verktoy",
-      "byte": 17502
+      "byte": 17533
     },
     {
       "sti": "scripts/smoke-test.sh",
@@ -13857,6 +14346,11 @@
       "byte": 8657
     },
     {
+      "sti": "scripts/wang-koble-testprofiler.ts",
+      "omrade": "verktoy",
+      "byte": 6843
+    },
+    {
       "sti": "scripts/wipe-testdata.ts",
       "omrade": "verktoy",
       "byte": 9191
@@ -13992,9 +14486,14 @@
       "byte": 3711
     },
     {
+      "sti": "src/app/(marketing)/booking/kvittering/[bookingId]/loading.tsx",
+      "omrade": "appkode",
+      "byte": 275
+    },
+    {
       "sti": "src/app/(marketing)/booking/kvittering/[bookingId]/page.tsx",
       "omrade": "appkode",
-      "byte": 2476
+      "byte": 3683
     },
     {
       "sti": "src/app/(marketing)/booking/ledige-tider.ts",
@@ -14099,7 +14598,7 @@
     {
       "sti": "src/app/(marketing)/stats/2026/page.tsx",
       "omrade": "appkode",
-      "byte": 21263
+      "byte": 21457
     },
     {
       "sti": "src/app/(marketing)/stats/2026/sesong-sticky-nav.tsx",
@@ -14114,7 +14613,7 @@
     {
       "sti": "src/app/(marketing)/stats/aargang/[aar]/page.tsx",
       "omrade": "appkode",
-      "byte": 29814
+      "byte": 30013
     },
     {
       "sti": "src/app/(marketing)/stats/aargang/page.tsx",
@@ -14159,17 +14658,17 @@
     {
       "sti": "src/app/(marketing)/stats/leaderboards/page.tsx",
       "omrade": "appkode",
-      "byte": 28168
+      "byte": 28525
     },
     {
       "sti": "src/app/(marketing)/stats/min-progresjon/page.tsx",
       "omrade": "appkode",
-      "byte": 1518
+      "byte": 1868
     },
     {
       "sti": "src/app/(marketing)/stats/norske/page.tsx",
       "omrade": "appkode",
-      "byte": 3690
+      "byte": 3894
     },
     {
       "sti": "src/app/(marketing)/stats/page.tsx",
@@ -14189,7 +14688,7 @@
     {
       "sti": "src/app/(marketing)/stats/pga/drive-distance/page.tsx",
       "omrade": "appkode",
-      "byte": 3535
+      "byte": 3824
     },
     {
       "sti": "src/app/(marketing)/stats/pga/fairway-pct/explorer.tsx",
@@ -14199,7 +14698,7 @@
     {
       "sti": "src/app/(marketing)/stats/pga/fairway-pct/page.tsx",
       "omrade": "appkode",
-      "byte": 3326
+      "byte": 3612
     },
     {
       "sti": "src/app/(marketing)/stats/pga/gir-pct/explorer.tsx",
@@ -14209,12 +14708,12 @@
     {
       "sti": "src/app/(marketing)/stats/pga/gir-pct/page.tsx",
       "omrade": "appkode",
-      "byte": 3340
+      "byte": 3622
     },
     {
       "sti": "src/app/(marketing)/stats/pga/page.tsx",
       "omrade": "appkode",
-      "byte": 32472
+      "byte": 32746
     },
     {
       "sti": "src/app/(marketing)/stats/pga/pga.css",
@@ -14229,7 +14728,7 @@
     {
       "sti": "src/app/(marketing)/stats/pga/putt-explorer/page.tsx",
       "omrade": "appkode",
-      "byte": 10445
+      "byte": 10733
     },
     {
       "sti": "src/app/(marketing)/stats/pga/putt-explorer/putt.css",
@@ -14244,7 +14743,7 @@
     {
       "sti": "src/app/(marketing)/stats/pga/putts-per-round/page.tsx",
       "omrade": "appkode",
-      "byte": 3355
+      "byte": 3645
     },
     {
       "sti": "src/app/(marketing)/stats/pga/scoring-avg/explorer.tsx",
@@ -14254,7 +14753,7 @@
     {
       "sti": "src/app/(marketing)/stats/pga/scoring-avg/page.tsx",
       "omrade": "appkode",
-      "byte": 3341
+      "byte": 3627
     },
     {
       "sti": "src/app/(marketing)/stats/pga/sg-total/explorer.tsx",
@@ -14264,17 +14763,17 @@
     {
       "sti": "src/app/(marketing)/stats/pga/sg-total/page.tsx",
       "omrade": "appkode",
-      "byte": 3494
+      "byte": 3777
     },
     {
       "sti": "src/app/(marketing)/stats/pga/spillere/[dg_id]/page.tsx",
       "omrade": "appkode",
-      "byte": 16826
+      "byte": 16816
     },
     {
       "sti": "src/app/(marketing)/stats/pga/spillere/page.tsx",
       "omrade": "appkode",
-      "byte": 8958
+      "byte": 9241
     },
     {
       "sti": "src/app/(marketing)/stats/pga/spillere/spiller-tabell.tsx",
@@ -14324,7 +14823,7 @@
     {
       "sti": "src/app/(marketing)/stats/sammenlign-spillere/page.tsx",
       "omrade": "appkode",
-      "byte": 15370
+      "byte": 16127
     },
     {
       "sti": "src/app/(marketing)/stats/sammenlign-spillere/resultat.tsx",
@@ -14339,22 +14838,22 @@
     {
       "sti": "src/app/(marketing)/stats/sg-sammenlign/actions.ts",
       "omrade": "appkode",
-      "byte": 3996
+      "byte": 4047
     },
     {
       "sti": "src/app/(marketing)/stats/sg-sammenlign/page.tsx",
       "omrade": "appkode",
-      "byte": 22557
+      "byte": 22704
     },
     {
       "sti": "src/app/(marketing)/stats/sg-sammenlign/resultat/[id]/page.tsx",
       "omrade": "appkode",
-      "byte": 31420
+      "byte": 31461
     },
     {
       "sti": "src/app/(marketing)/stats/sg-sammenlign/start/page.tsx",
       "omrade": "appkode",
-      "byte": 3420
+      "byte": 3414
     },
     {
       "sti": "src/app/(marketing)/stats/sg-sammenlign/start/skjema.tsx",
@@ -14364,12 +14863,12 @@
     {
       "sti": "src/app/(marketing)/stats/sok/page.tsx",
       "omrade": "appkode",
-      "byte": 2339
+      "byte": 2665
     },
     {
       "sti": "src/app/(marketing)/stats/spillere/[slug]/page.tsx",
       "omrade": "appkode",
-      "byte": 33082
+      "byte": 33029
     },
     {
       "sti": "src/app/(marketing)/stats/spillere/[slug]/profil.css",
@@ -14394,12 +14893,12 @@
     {
       "sti": "src/app/(marketing)/stats/turneringer/[slug]/page.tsx",
       "omrade": "appkode",
-      "byte": 44386
+      "byte": 44602
     },
     {
       "sti": "src/app/(marketing)/stats/turneringer/[slug]/statistikk/page.tsx",
       "omrade": "appkode",
-      "byte": 9033
+      "byte": 9249
     },
     {
       "sti": "src/app/(marketing)/stats/turneringer/page.tsx",
@@ -14409,7 +14908,7 @@
     {
       "sti": "src/app/(marketing)/stats/uka/page.tsx",
       "omrade": "appkode",
-      "byte": 6493
+      "byte": 6693
     },
     {
       "sti": "src/app/(marketing)/stats/verktoy/avstand/page.tsx",
@@ -14444,7 +14943,7 @@
     {
       "sti": "src/app/(marketing)/stats/wrapped/[slug]/page.tsx",
       "omrade": "appkode",
-      "byte": 6804
+      "byte": 7125
     },
     {
       "sti": "src/app/(marketing)/suksess/page.tsx",
@@ -14459,12 +14958,12 @@
     {
       "sti": "src/app/(marketing)/turneringer/[slug]/page.tsx",
       "omrade": "appkode",
-      "byte": 4769
+      "byte": 4985
     },
     {
       "sti": "src/app/(marketing)/turneringer/page.tsx",
       "omrade": "appkode",
-      "byte": 4347
+      "byte": 4547
     },
     {
       "sti": "src/app/(marketing)/vilkar/page.tsx",
@@ -14524,7 +15023,7 @@
     {
       "sti": "src/app/admin/(legacy)/approvals/actions.ts",
       "omrade": "appkode",
-      "byte": 5521
+      "byte": 5720
     },
     {
       "sti": "src/app/admin/(legacy)/approvals/approval-actions.tsx",
@@ -14574,12 +15073,12 @@
     {
       "sti": "src/app/admin/(legacy)/calendar/actions.test.ts",
       "omrade": "test",
-      "byte": 11138
+      "byte": 16126
     },
     {
       "sti": "src/app/admin/(legacy)/calendar/actions.ts",
       "omrade": "appkode",
-      "byte": 8198
+      "byte": 12035
     },
     {
       "sti": "src/app/admin/(legacy)/coach-workbench/page.tsx",
@@ -14899,7 +15398,7 @@
     {
       "sti": "src/app/admin/(legacy)/stats/moderering/actions.test.ts",
       "omrade": "test",
-      "byte": 8869
+      "byte": 9342
     },
     {
       "sti": "src/app/admin/(legacy)/stats/moderering/actions.ts",
@@ -14944,32 +15443,32 @@
     {
       "sti": "src/app/admin/(legacy)/tester/benchmarks/actions.test.ts",
       "omrade": "test",
-      "byte": 7338
+      "byte": 7451
     },
     {
       "sti": "src/app/admin/(legacy)/tester/benchmarks/actions.ts",
       "omrade": "appkode",
-      "byte": 3805
+      "byte": 4137
     },
     {
       "sti": "src/app/admin/(legacy)/tester/benchmarks/page.tsx",
       "omrade": "appkode",
-      "byte": 3449
+      "byte": 3470
     },
     {
       "sti": "src/app/admin/(legacy)/tester/tildel/[spillerId]/actions.test.ts",
       "omrade": "test",
-      "byte": 8729
+      "byte": 8842
     },
     {
       "sti": "src/app/admin/(legacy)/tester/tildel/[spillerId]/actions.ts",
       "omrade": "appkode",
-      "byte": 3465
+      "byte": 3639
     },
     {
       "sti": "src/app/admin/(legacy)/tester/tildel/[spillerId]/page.tsx",
       "omrade": "appkode",
-      "byte": 2538
+      "byte": 2578
     },
     {
       "sti": "src/app/admin/(legacy)/tester/tildel/page.tsx",
@@ -15059,17 +15558,17 @@
     {
       "sti": "src/app/admin/agencyos/live/[sessionId]/error.tsx",
       "omrade": "appkode",
-      "byte": 891
+      "byte": 886
     },
     {
       "sti": "src/app/admin/agencyos/live/[sessionId]/loading.tsx",
       "omrade": "appkode",
-      "byte": 622
+      "byte": 603
     },
     {
       "sti": "src/app/admin/agencyos/live/[sessionId]/page.tsx",
       "omrade": "appkode",
-      "byte": 1254
+      "byte": 1176
     },
     {
       "sti": "src/app/admin/agencyos/live/error.tsx",
@@ -15119,12 +15618,12 @@
     {
       "sti": "src/app/admin/agencyos/uka/actions.test.ts",
       "omrade": "test",
-      "byte": 7961
+      "byte": 8645
     },
     {
       "sti": "src/app/admin/agencyos/uka/actions.ts",
       "omrade": "appkode",
-      "byte": 6351
+      "byte": 6497
     },
     {
       "sti": "src/app/admin/agencyos/uka/error.tsx",
@@ -15304,7 +15803,7 @@
     {
       "sti": "src/app/admin/audit-log/page.tsx",
       "omrade": "appkode",
-      "byte": 730
+      "byte": 989
     },
     {
       "sti": "src/app/admin/bookinger/[id]/error.tsx",
@@ -15322,9 +15821,19 @@
       "byte": 3016
     },
     {
+      "sti": "src/app/admin/bookinger/actions.test.ts",
+      "omrade": "test",
+      "byte": 9259
+    },
+    {
+      "sti": "src/app/admin/bookinger/actions.ts",
+      "omrade": "appkode",
+      "byte": 9895
+    },
+    {
       "sti": "src/app/admin/bookinger/data.ts",
       "omrade": "appkode",
-      "byte": 2824
+      "byte": 3524
     },
     {
       "sti": "src/app/admin/bookinger/error.tsx",
@@ -15367,9 +15876,14 @@
       "byte": 240
     },
     {
+      "sti": "src/app/admin/drift/actions.ts",
+      "omrade": "appkode",
+      "byte": 1213
+    },
+    {
       "sti": "src/app/admin/drift/page.tsx",
       "omrade": "appkode",
-      "byte": 847
+      "byte": 1106
     },
     {
       "sti": "src/app/admin/drills/[id]/rediger/page.tsx",
@@ -15414,7 +15928,7 @@
     {
       "sti": "src/app/admin/feillogg/page.tsx",
       "omrade": "appkode",
-      "byte": 722
+      "byte": 981
     },
     {
       "sti": "src/app/admin/finance/page.tsx",
@@ -15434,7 +15948,7 @@
     {
       "sti": "src/app/admin/gdpr/page.tsx",
       "omrade": "appkode",
-      "byte": 762
+      "byte": 1021
     },
     {
       "sti": "src/app/admin/gjennomfore/error.tsx",
@@ -15469,7 +15983,7 @@
     {
       "sti": "src/app/admin/gjennomfore/okter/[id]/page.tsx",
       "omrade": "appkode",
-      "byte": 4003
+      "byte": 4177
     },
     {
       "sti": "src/app/admin/gjennomfore/page.tsx",
@@ -15514,22 +16028,22 @@
     {
       "sti": "src/app/admin/grupper/[id]/arsplan/page.tsx",
       "omrade": "appkode",
-      "byte": 3166
+      "byte": 3258
     },
     {
       "sti": "src/app/admin/grupper/[id]/arsplan/skoledata/actions.test.ts",
       "omrade": "test",
-      "byte": 5656
+      "byte": 6197
     },
     {
       "sti": "src/app/admin/grupper/[id]/arsplan/skoledata/actions.ts",
       "omrade": "appkode",
-      "byte": 3443
+      "byte": 3715
     },
     {
       "sti": "src/app/admin/grupper/[id]/arsplan/skoledata/page.tsx",
       "omrade": "appkode",
-      "byte": 1735
+      "byte": 1829
     },
     {
       "sti": "src/app/admin/grupper/[id]/arsplan/skoledata/skoledata-form.tsx",
@@ -15554,7 +16068,7 @@
     {
       "sti": "src/app/admin/grupper/[id]/timeplan/page.tsx",
       "omrade": "appkode",
-      "byte": 4215
+      "byte": 4502
     },
     {
       "sti": "src/app/admin/grupper/[id]/workbench/error.tsx",
@@ -15679,7 +16193,7 @@
     {
       "sti": "src/app/admin/innsikt/page.tsx",
       "omrade": "appkode",
-      "byte": 864
+      "byte": 879
     },
     {
       "sti": "src/app/admin/integrasjoner/page.tsx",
@@ -15689,7 +16203,7 @@
     {
       "sti": "src/app/admin/jarvis/page.tsx",
       "omrade": "appkode",
-      "byte": 1270
+      "byte": 2492
     },
     {
       "sti": "src/app/admin/kalender/booking-actions.test.ts",
@@ -15699,7 +16213,7 @@
     {
       "sti": "src/app/admin/kalender/booking-actions.ts",
       "omrade": "appkode",
-      "byte": 3673
+      "byte": 4047
     },
     {
       "sti": "src/app/admin/kalender/data.ts",
@@ -15709,17 +16223,27 @@
     {
       "sti": "src/app/admin/kalender/drill-actions.test.ts",
       "omrade": "test",
-      "byte": 3556
+      "byte": 4080
     },
     {
       "sti": "src/app/admin/kalender/drill-actions.ts",
       "omrade": "appkode",
-      "byte": 1787
+      "byte": 2214
     },
     {
       "sti": "src/app/admin/kalender/error.tsx",
       "omrade": "appkode",
       "byte": 1305
+    },
+    {
+      "sti": "src/app/admin/kalender/flytt-actions.test.ts",
+      "omrade": "test",
+      "byte": 6375
+    },
+    {
+      "sti": "src/app/admin/kalender/flytt-actions.ts",
+      "omrade": "appkode",
+      "byte": 6014
     },
     {
       "sti": "src/app/admin/kalender/google-actions.test.ts",
@@ -15769,7 +16293,7 @@
     {
       "sti": "src/app/admin/kalender/page.tsx",
       "omrade": "appkode",
-      "byte": 3977
+      "byte": 3993
     },
     {
       "sti": "src/app/admin/kalender/tilg-actions.ts",
@@ -15817,6 +16341,11 @@
       "byte": 2358
     },
     {
+      "sti": "src/app/admin/mer/page.tsx",
+      "omrade": "appkode",
+      "byte": 490
+    },
+    {
       "sti": "src/app/admin/messages/page.tsx",
       "omrade": "appkode",
       "byte": 244
@@ -15849,12 +16378,12 @@
     {
       "sti": "src/app/admin/oppgaver/page.tsx",
       "omrade": "appkode",
-      "byte": 1280
+      "byte": 1295
     },
     {
       "sti": "src/app/admin/oppsett/page.tsx",
       "omrade": "appkode",
-      "byte": 1680
+      "byte": 1788
     },
     {
       "sti": "src/app/admin/organisasjon/error.tsx",
@@ -15974,7 +16503,7 @@
     {
       "sti": "src/app/admin/plans/[planId]/page.tsx",
       "omrade": "appkode",
-      "byte": 720
+      "byte": 1097
     },
     {
       "sti": "src/app/admin/plans/error.tsx",
@@ -16014,7 +16543,7 @@
     {
       "sti": "src/app/admin/profile/page.tsx",
       "omrade": "appkode",
-      "byte": 745
+      "byte": 853
     },
     {
       "sti": "src/app/admin/queue/actions.test.ts",
@@ -16074,7 +16603,7 @@
     {
       "sti": "src/app/admin/runder/page.tsx",
       "omrade": "appkode",
-      "byte": 3324
+      "byte": 3642
     },
     {
       "sti": "src/app/admin/settings/api/page.tsx",
@@ -16444,7 +16973,7 @@
     {
       "sti": "src/app/admin/tournaments/actions.ts",
       "omrade": "appkode",
-      "byte": 18644
+      "byte": 19535
     },
     {
       "sti": "src/app/admin/tournaments/dubletter/merge-liste.tsx",
@@ -16494,12 +17023,12 @@
     {
       "sti": "src/app/admin/trackman/[sessionId]/page.tsx",
       "omrade": "appkode",
-      "byte": 5220
+      "byte": 5625
     },
     {
       "sti": "src/app/admin/trackman/page.tsx",
       "omrade": "appkode",
-      "byte": 3138
+      "byte": 3481
     },
     {
       "sti": "src/app/admin/turnering-kart/page.tsx",
@@ -16509,7 +17038,7 @@
     {
       "sti": "src/app/admin/turnering/page.tsx",
       "omrade": "appkode",
-      "byte": 3538
+      "byte": 2841
     },
     {
       "sti": "src/app/admin/uka/page.tsx",
@@ -16614,7 +17143,7 @@
     {
       "sti": "src/app/api/admin/plans/[planId]/pdf/route.tsx",
       "omrade": "appkode",
-      "byte": 2983
+      "byte": 3124
     },
     {
       "sti": "src/app/api/admin/reports/[type]/route.ts",
@@ -16624,7 +17153,7 @@
     {
       "sti": "src/app/api/admin/search/route.ts",
       "omrade": "appkode",
-      "byte": 6835
+      "byte": 7244
     },
     {
       "sti": "src/app/api/ai-plan/generate/route.ts",
@@ -16662,9 +17191,14 @@
       "byte": 2854
     },
     {
+      "sti": "src/app/api/coach/ai-chat/route.test.ts",
+      "omrade": "test",
+      "byte": 3185
+    },
+    {
       "sti": "src/app/api/coach/ai-chat/route.ts",
       "omrade": "appkode",
-      "byte": 4743
+      "byte": 5291
     },
     {
       "sti": "src/app/api/cron/[agent]/route.ts",
@@ -16769,7 +17303,7 @@
     {
       "sti": "src/app/api/live/coach-chat/route.ts",
       "omrade": "appkode",
-      "byte": 9370
+      "byte": 9469
     },
     {
       "sti": "src/app/api/mcp/akgolf/route.ts",
@@ -16832,19 +17366,24 @@
       "byte": 6859
     },
     {
+      "sti": "src/app/api/portal/swing-video/upload/route.test.ts",
+      "omrade": "test",
+      "byte": 2561
+    },
+    {
       "sti": "src/app/api/portal/swing-video/upload/route.ts",
       "omrade": "appkode",
-      "byte": 2161
+      "byte": 2385
     },
     {
       "sti": "src/app/api/portal/tester/test-photo/route.test.ts",
       "omrade": "test",
-      "byte": 10618
+      "byte": 10830
     },
     {
       "sti": "src/app/api/portal/tester/test-photo/route.ts",
       "omrade": "appkode",
-      "byte": 9717
+      "byte": 9827
     },
     {
       "sti": "src/app/api/portal/trening/logg/route.ts",
@@ -16884,7 +17423,7 @@
     {
       "sti": "src/app/api/recording/start/route.ts",
       "omrade": "appkode",
-      "byte": 7550
+      "byte": 7930
     },
     {
       "sti": "src/app/api/recording/status/route.ts",
@@ -16902,9 +17441,14 @@
       "byte": 4709
     },
     {
+      "sti": "src/app/api/stats/search/route.test.ts",
+      "omrade": "test",
+      "byte": 2563
+    },
+    {
       "sti": "src/app/api/stats/search/route.ts",
       "omrade": "appkode",
-      "byte": 2255
+      "byte": 2676
     },
     {
       "sti": "src/app/api/stripe/checkout/route.ts",
@@ -16919,7 +17463,7 @@
     {
       "sti": "src/app/api/stripe/setup-intent/bekreft/route.ts",
       "omrade": "appkode",
-      "byte": 3015
+      "byte": 3112
     },
     {
       "sti": "src/app/api/stripe/setup-intent/route.ts",
@@ -16949,12 +17493,12 @@
     {
       "sti": "src/app/api/team-norway/vedlegg/[attachmentId]/route.ts",
       "omrade": "appkode",
-      "byte": 1796
+      "byte": 1780
     },
     {
       "sti": "src/app/api/team-norway/vedlegg/tn-vedlegg-route.test.ts",
       "omrade": "test",
-      "byte": 4353
+      "byte": 4400
     },
     {
       "sti": "src/app/api/upload/route.ts",
@@ -17059,27 +17603,32 @@
     {
       "sti": "src/app/auth/onboarding/actions.ts",
       "omrade": "appkode",
-      "byte": 24505
+      "byte": 27372
+    },
+    {
+      "sti": "src/app/auth/onboarding/fodselsdato.test.ts",
+      "omrade": "test",
+      "byte": 3973
     },
     {
       "sti": "src/app/auth/onboarding/forelder/forelder-wizard.tsx",
       "omrade": "appkode",
-      "byte": 19221
+      "byte": 12599
     },
     {
       "sti": "src/app/auth/onboarding/forelder/page.tsx",
       "omrade": "appkode",
-      "byte": 590
+      "byte": 396
     },
     {
       "sti": "src/app/auth/onboarding/onboarding-wizard.tsx",
       "omrade": "appkode",
-      "byte": 37211
+      "byte": 7768
     },
     {
       "sti": "src/app/auth/onboarding/page.tsx",
       "omrade": "appkode",
-      "byte": 1360
+      "byte": 2013
     },
     {
       "sti": "src/app/auth/reset-password/page.tsx",
@@ -17279,17 +17828,17 @@
     {
       "sti": "src/app/forelder/samtykke/actions.test.ts",
       "omrade": "test",
-      "byte": 6168
+      "byte": 6878
     },
     {
       "sti": "src/app/forelder/samtykke/actions.ts",
       "omrade": "appkode",
-      "byte": 7403
+      "byte": 8767
     },
     {
       "sti": "src/app/forelder/samtykke/deling/[childId]/page.tsx",
       "omrade": "appkode",
-      "byte": 3179
+      "byte": 3205
     },
     {
       "sti": "src/app/forelder/samtykke/eksport/route.ts",
@@ -17309,7 +17858,7 @@
     {
       "sti": "src/app/forelder/samtykke/page.tsx",
       "omrade": "appkode",
-      "byte": 5839
+      "byte": 6047
     },
     {
       "sti": "src/app/forelder/ukerapport/error.tsx",
@@ -17459,7 +18008,7 @@
     {
       "sti": "src/app/innsyn/talent/discovery/actions.ts",
       "omrade": "appkode",
-      "byte": 1603
+      "byte": 1899
     },
     {
       "sti": "src/app/innsyn/talent/discovery/error.tsx",
@@ -17509,7 +18058,7 @@
     {
       "sti": "src/app/innsyn/talent/radar/page.tsx",
       "omrade": "appkode",
-      "byte": 983
+      "byte": 998
     },
     {
       "sti": "src/app/innsyn/talent/region/page.tsx",
@@ -17649,7 +18198,7 @@
     {
       "sti": "src/app/portal/(fullscreen)/live/[sessionId]/active/page.tsx",
       "omrade": "appkode",
-      "byte": 1762
+      "byte": 2402
     },
     {
       "sti": "src/app/portal/(fullscreen)/live/[sessionId]/brief/page.tsx",
@@ -17684,7 +18233,7 @@
     {
       "sti": "src/app/portal/(fullscreen)/live/[sessionId]/summary/page.tsx",
       "omrade": "appkode",
-      "byte": 2142
+      "byte": 2228
     },
     {
       "sti": "src/app/portal/(fullscreen)/live/[sessionId]/tapper/actions.ts",
@@ -17699,27 +18248,37 @@
     {
       "sti": "src/app/portal/(fullscreen)/live/[sessionId]/tapper/tapper-shell.tsx",
       "omrade": "appkode",
-      "byte": 25770
+      "byte": 25913
     },
     {
       "sti": "src/app/portal/(fullscreen)/runde/live/error.tsx",
       "omrade": "appkode",
-      "byte": 2405
+      "byte": 419
     },
     {
       "sti": "src/app/portal/(fullscreen)/runde/live/loading.tsx",
       "omrade": "appkode",
-      "byte": 961
+      "byte": 389
     },
     {
       "sti": "src/app/portal/(fullscreen)/runde/live/page.tsx",
       "omrade": "appkode",
-      "byte": 720
+      "byte": 920
+    },
+    {
+      "sti": "src/app/portal/(fullscreen)/runde/logg/error.tsx",
+      "omrade": "appkode",
+      "byte": 407
+    },
+    {
+      "sti": "src/app/portal/(fullscreen)/runde/logg/loading.tsx",
+      "omrade": "appkode",
+      "byte": 389
     },
     {
       "sti": "src/app/portal/(fullscreen)/runde/logg/page.tsx",
       "omrade": "appkode",
-      "byte": 872
+      "byte": 933
     },
     {
       "sti": "src/app/portal/(fullscreen)/tren/page.tsx",
@@ -18079,7 +18638,7 @@
     {
       "sti": "src/app/portal/actions.ts",
       "omrade": "appkode",
-      "byte": 24440
+      "byte": 24766
     },
     {
       "sti": "src/app/portal/ai/foresla-drill/page.tsx",
@@ -18114,7 +18673,7 @@
     {
       "sti": "src/app/portal/analysere/datagolf/actions.ts",
       "omrade": "appkode",
-      "byte": 653
+      "byte": 855
     },
     {
       "sti": "src/app/portal/analysere/datagolf/error.tsx",
@@ -18129,12 +18688,12 @@
     {
       "sti": "src/app/portal/analysere/datagolf/page.tsx",
       "omrade": "appkode",
-      "byte": 2069
+      "byte": 1979
     },
     {
       "sti": "src/app/portal/analysere/datagolf/stasjon/page.tsx",
       "omrade": "appkode",
-      "byte": 1250
+      "byte": 1180
     },
     {
       "sti": "src/app/portal/analysere/error.tsx",
@@ -18164,7 +18723,22 @@
     {
       "sti": "src/app/portal/analysere/page.tsx",
       "omrade": "appkode",
-      "byte": 1937
+      "byte": 4835
+    },
+    {
+      "sti": "src/app/portal/analysere/resultater/error.tsx",
+      "omrade": "appkode",
+      "byte": 854
+    },
+    {
+      "sti": "src/app/portal/analysere/resultater/loading.tsx",
+      "omrade": "appkode",
+      "byte": 324
+    },
+    {
+      "sti": "src/app/portal/analysere/resultater/page.tsx",
+      "omrade": "appkode",
+      "byte": 2251
     },
     {
       "sti": "src/app/portal/analysere/skill-map/page.tsx",
@@ -18174,12 +18748,27 @@
     {
       "sti": "src/app/portal/analysere/trackman/[id]/page.tsx",
       "omrade": "appkode",
-      "byte": 6717
+      "byte": 1786
+    },
+    {
+      "sti": "src/app/portal/analysere/trackman/error.tsx",
+      "omrade": "appkode",
+      "byte": 1267
+    },
+    {
+      "sti": "src/app/portal/analysere/trackman/koller/page.tsx",
+      "omrade": "appkode",
+      "byte": 2124
+    },
+    {
+      "sti": "src/app/portal/analysere/trackman/loading.tsx",
+      "omrade": "appkode",
+      "byte": 321
     },
     {
       "sti": "src/app/portal/analysere/trackman/page.tsx",
       "omrade": "appkode",
-      "byte": 1781
+      "byte": 3033
     },
     {
       "sti": "src/app/portal/analysere/turneringer/page.tsx",
@@ -18202,9 +18791,14 @@
       "byte": 568
     },
     {
+      "sti": "src/app/portal/booking/[bookingId]/actions.ts",
+      "omrade": "appkode",
+      "byte": 6646
+    },
+    {
       "sti": "src/app/portal/booking/[bookingId]/page.tsx",
       "omrade": "appkode",
-      "byte": 3581
+      "byte": 4104
     },
     {
       "sti": "src/app/portal/booking/actions.ts",
@@ -18219,7 +18813,7 @@
     {
       "sti": "src/app/portal/booking/bekreftet/page.tsx",
       "omrade": "appkode",
-      "byte": 3322
+      "byte": 3424
     },
     {
       "sti": "src/app/portal/booking/coach/[coachId]/page.tsx",
@@ -18229,12 +18823,12 @@
     {
       "sti": "src/app/portal/booking/error.tsx",
       "omrade": "appkode",
-      "byte": 579
+      "byte": 423
     },
     {
       "sti": "src/app/portal/booking/loading.tsx",
       "omrade": "appkode",
-      "byte": 195
+      "byte": 428
     },
     {
       "sti": "src/app/portal/booking/ny/bekreft/page.tsx",
@@ -18249,7 +18843,7 @@
     {
       "sti": "src/app/portal/booking/page.tsx",
       "omrade": "appkode",
-      "byte": 2122
+      "byte": 2141
     },
     {
       "sti": "src/app/portal/booking/ph23-actions.ts",
@@ -18262,9 +18856,14 @@
       "byte": 317
     },
     {
+      "sti": "src/app/portal/coach/ai/loading.tsx",
+      "omrade": "appkode",
+      "byte": 349
+    },
+    {
       "sti": "src/app/portal/coach/ai/page.tsx",
       "omrade": "appkode",
-      "byte": 2271
+      "byte": 2273
     },
     {
       "sti": "src/app/portal/coach/error.tsx",
@@ -18304,7 +18903,7 @@
     {
       "sti": "src/app/portal/coach/plans/page.tsx",
       "omrade": "appkode",
-      "byte": 880
+      "byte": 833
     },
     {
       "sti": "src/app/portal/coach/sg-hub/page.tsx",
@@ -18329,7 +18928,7 @@
     {
       "sti": "src/app/portal/coach/sporsmal/page.tsx",
       "omrade": "appkode",
-      "byte": 3105
+      "byte": 3058
     },
     {
       "sti": "src/app/portal/coach/tilbakemelding/[oktId]/actions.ts",
@@ -18344,12 +18943,12 @@
     {
       "sti": "src/app/portal/coach/tilbakemelding/page.tsx",
       "omrade": "appkode",
-      "byte": 884
+      "byte": 837
     },
     {
       "sti": "src/app/portal/coach/videoer/page.tsx",
       "omrade": "appkode",
-      "byte": 879
+      "byte": 832
     },
     {
       "sti": "src/app/portal/dagsform-actions.ts",
@@ -18364,7 +18963,17 @@
     {
       "sti": "src/app/portal/drills/[id]/page.tsx",
       "omrade": "appkode",
-      "byte": 5499
+      "byte": 2257
+    },
+    {
+      "sti": "src/app/portal/drills/actions.ts",
+      "omrade": "appkode",
+      "byte": 2224
+    },
+    {
+      "sti": "src/app/portal/drills/break-tabell/page.tsx",
+      "omrade": "appkode",
+      "byte": 1344
     },
     {
       "sti": "src/app/portal/drills/drills-liste.tsx",
@@ -18374,17 +18983,17 @@
     {
       "sti": "src/app/portal/drills/error.tsx",
       "omrade": "appkode",
-      "byte": 1900
+      "byte": 513
     },
     {
       "sti": "src/app/portal/drills/loading.tsx",
       "omrade": "appkode",
-      "byte": 184
+      "byte": 290
     },
     {
       "sti": "src/app/portal/drills/page.tsx",
       "omrade": "appkode",
-      "byte": 3219
+      "byte": 2162
     },
     {
       "sti": "src/app/portal/error.tsx",
@@ -18427,6 +19036,16 @@
       "byte": 5797
     },
     {
+      "sti": "src/app/portal/gameplan/error.tsx",
+      "omrade": "appkode",
+      "byte": 295
+    },
+    {
+      "sti": "src/app/portal/gameplan/loading.tsx",
+      "omrade": "appkode",
+      "byte": 172
+    },
+    {
       "sti": "src/app/portal/gameplan/page.tsx",
       "omrade": "appkode",
       "byte": 1333
@@ -18454,12 +19073,12 @@
     {
       "sti": "src/app/portal/iup/fireukerssjekk/error.tsx",
       "omrade": "appkode",
-      "byte": 822
+      "byte": 576
     },
     {
       "sti": "src/app/portal/iup/fireukerssjekk/loading.tsx",
       "omrade": "appkode",
-      "byte": 258
+      "byte": 189
     },
     {
       "sti": "src/app/portal/iup/fireukerssjekk/page.tsx",
@@ -18512,14 +19131,19 @@
       "byte": 435
     },
     {
+      "sti": "src/app/portal/live/voice-actions.test.ts",
+      "omrade": "test",
+      "byte": 5524
+    },
+    {
       "sti": "src/app/portal/live/voice-actions.ts",
       "omrade": "appkode",
-      "byte": 3308
+      "byte": 4802
     },
     {
       "sti": "src/app/portal/loading.tsx",
       "omrade": "appkode",
-      "byte": 508
+      "byte": 468
     },
     {
       "sti": "src/app/portal/mal/bygger/actions.ts",
@@ -18544,12 +19168,12 @@
     {
       "sti": "src/app/portal/mal/evaluering/error.tsx",
       "omrade": "appkode",
-      "byte": 535
+      "byte": 362
     },
     {
       "sti": "src/app/portal/mal/evaluering/loading.tsx",
       "omrade": "appkode",
-      "byte": 336
+      "byte": 186
     },
     {
       "sti": "src/app/portal/mal/evaluering/page.tsx",
@@ -18574,7 +19198,12 @@
     {
       "sti": "src/app/portal/mal/runder/[id]/actions.ts",
       "omrade": "appkode",
-      "byte": 19912
+      "byte": 21094
+    },
+    {
+      "sti": "src/app/portal/mal/runder/[id]/error.tsx",
+      "omrade": "appkode",
+      "byte": 384
     },
     {
       "sti": "src/app/portal/mal/runder/[id]/hull/page.tsx",
@@ -18582,9 +19211,14 @@
       "byte": 2870
     },
     {
+      "sti": "src/app/portal/mal/runder/[id]/loading.tsx",
+      "omrade": "appkode",
+      "byte": 389
+    },
+    {
       "sti": "src/app/portal/mal/runder/[id]/page.tsx",
       "omrade": "appkode",
-      "byte": 6853
+      "byte": 7420
     },
     {
       "sti": "src/app/portal/mal/runder/[id]/sg-actions.ts",
@@ -18607,6 +19241,21 @@
       "byte": 11353
     },
     {
+      "sti": "src/app/portal/mal/runder/delete-shot.test.ts",
+      "omrade": "test",
+      "byte": 2151
+    },
+    {
+      "sti": "src/app/portal/mal/runder/error.tsx",
+      "omrade": "appkode",
+      "byte": 388
+    },
+    {
+      "sti": "src/app/portal/mal/runder/loading.tsx",
+      "omrade": "appkode",
+      "byte": 390
+    },
+    {
       "sti": "src/app/portal/mal/runder/ny/actions.ts",
       "omrade": "appkode",
       "byte": 8014
@@ -18614,17 +19263,22 @@
     {
       "sti": "src/app/portal/mal/runder/ny/loading.tsx",
       "omrade": "appkode",
-      "byte": 599
+      "byte": 389
     },
     {
       "sti": "src/app/portal/mal/runder/ny/page.tsx",
       "omrade": "appkode",
-      "byte": 9199
+      "byte": 9383
     },
     {
       "sti": "src/app/portal/mal/runder/page.tsx",
       "omrade": "appkode",
       "byte": 2300
+    },
+    {
+      "sti": "src/app/portal/mal/runder/scorekort-bekreftelse.test.ts",
+      "omrade": "test",
+      "byte": 4231
     },
     {
       "sti": "src/app/portal/mal/sg-hub/coach/[spillerId]/[club]/page.tsx",
@@ -18664,7 +19318,7 @@
     {
       "sti": "src/app/portal/mal/trackman/gapping/page.tsx",
       "omrade": "appkode",
-      "byte": 1219
+      "byte": 468
     },
     {
       "sti": "src/app/portal/mal/trackman/page.tsx",
@@ -18749,12 +19403,12 @@
     {
       "sti": "src/app/portal/meg/abonnement/page.tsx",
       "omrade": "appkode",
-      "byte": 3481
+      "byte": 2678
     },
     {
       "sti": "src/app/portal/meg/actions.ts",
       "omrade": "appkode",
-      "byte": 5570
+      "byte": 6399
     },
     {
       "sti": "src/app/portal/meg/bookinger/actions.test.ts",
@@ -18779,12 +19433,12 @@
     {
       "sti": "src/app/portal/meg/bookinger/error.tsx",
       "omrade": "appkode",
-      "byte": 376
+      "byte": 431
     },
     {
       "sti": "src/app/portal/meg/bookinger/loading.tsx",
       "omrade": "appkode",
-      "byte": 200
+      "byte": 420
     },
     {
       "sti": "src/app/portal/meg/bookinger/page.tsx",
@@ -18839,7 +19493,7 @@
     {
       "sti": "src/app/portal/meg/error.tsx",
       "omrade": "appkode",
-      "byte": 693
+      "byte": 766
     },
     {
       "sti": "src/app/portal/meg/feedback/actions.ts",
@@ -18854,7 +19508,7 @@
     {
       "sti": "src/app/portal/meg/foreldre/page.tsx",
       "omrade": "appkode",
-      "byte": 2121
+      "byte": 2284
     },
     {
       "sti": "src/app/portal/meg/help/artikkel/[slug]/page.tsx",
@@ -18904,7 +19558,7 @@
     {
       "sti": "src/app/portal/meg/helse/page.tsx",
       "omrade": "appkode",
-      "byte": 6051
+      "byte": 4869
     },
     {
       "sti": "src/app/portal/meg/helse/symptom/ny/actions.ts",
@@ -18919,7 +19573,7 @@
     {
       "sti": "src/app/portal/meg/innstillinger/actions.ts",
       "omrade": "appkode",
-      "byte": 16298
+      "byte": 16503
     },
     {
       "sti": "src/app/portal/meg/innstillinger/ai-coach/page.tsx",
@@ -18929,7 +19583,7 @@
     {
       "sti": "src/app/portal/meg/innstillinger/anlegg/page.tsx",
       "omrade": "appkode",
-      "byte": 1687
+      "byte": 1631
     },
     {
       "sti": "src/app/portal/meg/innstillinger/eksport/page.tsx",
@@ -18939,7 +19593,7 @@
     {
       "sti": "src/app/portal/meg/innstillinger/export-user-data.test.ts",
       "omrade": "test",
-      "byte": 10984
+      "byte": 11247
     },
     {
       "sti": "src/app/portal/meg/innstillinger/integrasjoner/page.tsx",
@@ -18949,7 +19603,7 @@
     {
       "sti": "src/app/portal/meg/innstillinger/page.tsx",
       "omrade": "appkode",
-      "byte": 3044
+      "byte": 2286
     },
     {
       "sti": "src/app/portal/meg/innstillinger/personvern/deling-samtykke-actions.test.ts",
@@ -18964,7 +19618,7 @@
     {
       "sti": "src/app/portal/meg/innstillinger/personvern/deling/page.tsx",
       "omrade": "appkode",
-      "byte": 2925
+      "byte": 4013
     },
     {
       "sti": "src/app/portal/meg/innstillinger/personvern/helse-samtykke-actions.test.ts",
@@ -18979,12 +19633,17 @@
     {
       "sti": "src/app/portal/meg/innstillinger/personvern/page.tsx",
       "omrade": "appkode",
-      "byte": 8413
+      "byte": 8294
     },
     {
       "sti": "src/app/portal/meg/innstillinger/personvern/personvern-actions.tsx",
       "omrade": "appkode",
       "byte": 6830
+    },
+    {
+      "sti": "src/app/portal/meg/innstillinger/personvern/wang-testdeling-actions.ts",
+      "omrade": "appkode",
+      "byte": 1387
     },
     {
       "sti": "src/app/portal/meg/innstillinger/sikkerhet/page.tsx",
@@ -19009,12 +19668,12 @@
     {
       "sti": "src/app/portal/meg/loading.tsx",
       "omrade": "appkode",
-      "byte": 205
+      "byte": 315
     },
     {
       "sti": "src/app/portal/meg/page.tsx",
       "omrade": "appkode",
-      "byte": 9347
+      "byte": 6358
     },
     {
       "sti": "src/app/portal/meg/profil-form.tsx",
@@ -19024,17 +19683,17 @@
     {
       "sti": "src/app/portal/meg/profil/actions.test.ts",
       "omrade": "test",
-      "byte": 1364
+      "byte": 2336
     },
     {
       "sti": "src/app/portal/meg/profil/actions.ts",
       "omrade": "appkode",
-      "byte": 2132
+      "byte": 2448
     },
     {
       "sti": "src/app/portal/meg/profil/page.tsx",
       "omrade": "appkode",
-      "byte": 2306
+      "byte": 3383
     },
     {
       "sti": "src/app/portal/meg/resultater/actions.ts",
@@ -19124,7 +19783,7 @@
     {
       "sti": "src/app/portal/onskeligokt/page.tsx",
       "omrade": "appkode",
-      "byte": 882
+      "byte": 835
     },
     {
       "sti": "src/app/portal/oppgrader/page.tsx",
@@ -19134,7 +19793,7 @@
     {
       "sti": "src/app/portal/page.tsx",
       "omrade": "appkode",
-      "byte": 9417
+      "byte": 11522
     },
     {
       "sti": "src/app/portal/periodeplan/page.tsx",
@@ -19149,37 +19808,37 @@
     {
       "sti": "src/app/portal/planlegge/bygger/error.tsx",
       "omrade": "appkode",
-      "byte": 1044
+      "byte": 501
     },
     {
       "sti": "src/app/portal/planlegge/bygger/loading.tsx",
       "omrade": "appkode",
-      "byte": 606
+      "byte": 301
     },
     {
       "sti": "src/app/portal/planlegge/bygger/page.tsx",
       "omrade": "appkode",
-      "byte": 1748
+      "byte": 2366
     },
     {
       "sti": "src/app/portal/planlegge/error.tsx",
       "omrade": "appkode",
-      "byte": 1199
+      "byte": 1309
     },
     {
       "sti": "src/app/portal/planlegge/loading.tsx",
       "omrade": "appkode",
-      "byte": 362
+      "byte": 311
     },
     {
       "sti": "src/app/portal/planlegge/page.tsx",
       "omrade": "appkode",
-      "byte": 2581
+      "byte": 2913
     },
     {
       "sti": "src/app/portal/planlegge/workbench/actions.ts",
       "omrade": "appkode",
-      "byte": 20412
+      "byte": 20466
     },
     {
       "sti": "src/app/portal/planlegge/workbench/error.tsx",
@@ -19199,7 +19858,7 @@
     {
       "sti": "src/app/portal/planlegge/workbench/page.tsx",
       "omrade": "appkode",
-      "byte": 8728
+      "byte": 8670
     },
     {
       "sti": "src/app/portal/planlegge/workbench/plan-skriv.test.ts",
@@ -19219,7 +19878,7 @@
     {
       "sti": "src/app/portal/spiller/[spillerId]/page.tsx",
       "omrade": "appkode",
-      "byte": 6141
+      "byte": 6149
     },
     {
       "sti": "src/app/portal/statistikk/[metric]/page.tsx",
@@ -19344,12 +20003,12 @@
     {
       "sti": "src/app/portal/tren/teknisk-plan/[planId]/error.tsx",
       "omrade": "appkode",
-      "byte": 1097
+      "byte": 498
     },
     {
       "sti": "src/app/portal/tren/teknisk-plan/[planId]/loading.tsx",
       "omrade": "appkode",
-      "byte": 605
+      "byte": 290
     },
     {
       "sti": "src/app/portal/tren/teknisk-plan/[planId]/page.tsx",
@@ -19389,17 +20048,17 @@
     {
       "sti": "src/app/portal/tren/tester/[testId]/page.tsx",
       "omrade": "appkode",
-      "byte": 12867
+      "byte": 9331
     },
     {
       "sti": "src/app/portal/tren/tester/error.tsx",
       "omrade": "appkode",
-      "byte": 981
+      "byte": 622
     },
     {
       "sti": "src/app/portal/tren/tester/loading.tsx",
       "omrade": "appkode",
-      "byte": 365
+      "byte": 320
     },
     {
       "sti": "src/app/portal/tren/tester/ny/actions.ts",
@@ -19424,7 +20083,7 @@
     {
       "sti": "src/app/portal/tren/tester/page.tsx",
       "omrade": "appkode",
-      "byte": 4587
+      "byte": 1480
     },
     {
       "sti": "src/app/portal/tren/tester/team-norway/actions.ts",
@@ -19439,7 +20098,7 @@
     {
       "sti": "src/app/portal/tren/tester/team-norway/page.tsx",
       "omrade": "appkode",
-      "byte": 11717
+      "byte": 13974
     },
     {
       "sti": "src/app/portal/tren/tester/team-norway/scorecard.css",
@@ -19449,7 +20108,7 @@
     {
       "sti": "src/app/portal/tren/tester/team-norway/scorecard.tsx",
       "omrade": "appkode",
-      "byte": 12509
+      "byte": 13041
     },
     {
       "sti": "src/app/portal/tren/turneringer/[id]/actions.ts",
@@ -19517,9 +20176,19 @@
       "byte": 9012
     },
     {
+      "sti": "src/app/portal/varsler/error.tsx",
+      "omrade": "appkode",
+      "byte": 420
+    },
+    {
+      "sti": "src/app/portal/varsler/loading.tsx",
+      "omrade": "appkode",
+      "byte": 350
+    },
+    {
       "sti": "src/app/portal/varsler/page.tsx",
       "omrade": "appkode",
-      "byte": 3280
+      "byte": 2753
     },
     {
       "sti": "src/app/portal/venner/[spillerId]/FjernVennKnapp.tsx",
@@ -19564,7 +20233,7 @@
     {
       "sti": "src/app/skjermer/SkjermKatalog.tsx",
       "omrade": "appkode",
-      "byte": 25355
+      "byte": 25353
     },
     {
       "sti": "src/app/sw.ts",
@@ -19629,7 +20298,7 @@
     {
       "sti": "src/app/team-norway/[groupId]/loading.tsx",
       "omrade": "appkode",
-      "byte": 2417
+      "byte": 342
     },
     {
       "sti": "src/app/team-norway/[groupId]/page.tsx",
@@ -19639,7 +20308,7 @@
     {
       "sti": "src/app/team-norway/analyse/page.tsx",
       "omrade": "appkode",
-      "byte": 6324
+      "byte": 8569
     },
     {
       "sti": "src/app/team-norway/apparatet/page.tsx",
@@ -19654,7 +20323,7 @@
     {
       "sti": "src/app/team-norway/error.tsx",
       "omrade": "appkode",
-      "byte": 1435
+      "byte": 559
     },
     {
       "sti": "src/app/team-norway/fagapparat/page.tsx",
@@ -19664,7 +20333,7 @@
     {
       "sti": "src/app/team-norway/fellestesting/[deltakerId]/page.tsx",
       "omrade": "appkode",
-      "byte": 1479
+      "byte": 1487
     },
     {
       "sti": "src/app/team-norway/fellestesting/page.tsx",
@@ -19694,7 +20363,7 @@
     {
       "sti": "src/app/team-norway/loading.tsx",
       "omrade": "appkode",
-      "byte": 1465
+      "byte": 322
     },
     {
       "sti": "src/app/team-norway/manedsplan/page.tsx",
@@ -19744,12 +20413,12 @@
     {
       "sti": "src/app/team-norway/spiller/[spillerId]/analyse/page.tsx",
       "omrade": "appkode",
-      "byte": 5239
+      "byte": 5263
     },
     {
       "sti": "src/app/team-norway/spiller/[spillerId]/evaluering/page.tsx",
       "omrade": "appkode",
-      "byte": 4996
+      "byte": 5587
     },
     {
       "sti": "src/app/team-norway/spiller/[spillerId]/oversikt/page.tsx",
@@ -19759,32 +20428,32 @@
     {
       "sti": "src/app/team-norway/spiller/[spillerId]/page.tsx",
       "omrade": "appkode",
-      "byte": 7417
+      "byte": 5587
     },
     {
       "sti": "src/app/team-norway/spiller/[spillerId]/teknisk-plan/[planId]/page.tsx",
       "omrade": "appkode",
-      "byte": 17022
+      "byte": 17964
     },
     {
       "sti": "src/app/team-norway/spiller/[spillerId]/teknisk-plan/page.tsx",
       "omrade": "appkode",
-      "byte": 4088
+      "byte": 4545
     },
     {
       "sti": "src/app/team-norway/spiller/[spillerId]/tester/[testId]/page.tsx",
       "omrade": "appkode",
-      "byte": 1370
+      "byte": 1444
     },
     {
       "sti": "src/app/team-norway/spiller/[spillerId]/tester/[testId]/visning.tsx",
       "omrade": "appkode",
-      "byte": 8040
+      "byte": 8189
     },
     {
       "sti": "src/app/team-norway/spiller/[spillerId]/tester/page.tsx",
       "omrade": "appkode",
-      "byte": 5638
+      "byte": 5589
     },
     {
       "sti": "src/app/team-norway/spillere/page.tsx",
@@ -19794,22 +20463,22 @@
     {
       "sti": "src/app/team-norway/tilgang/error.tsx",
       "omrade": "appkode",
-      "byte": 1994
+      "byte": 576
     },
     {
       "sti": "src/app/team-norway/tilgang/loading.tsx",
       "omrade": "appkode",
-      "byte": 1837
+      "byte": 321
     },
     {
       "sti": "src/app/team-norway/tilgang/page.tsx",
       "omrade": "appkode",
-      "byte": 2333
+      "byte": 2350
     },
     {
       "sti": "src/app/team-norway/tilgang/tn-tilgang-actions.ts",
       "omrade": "appkode",
-      "byte": 1965
+      "byte": 2129
     },
     {
       "sti": "src/app/team-norway/tn-post-actions.test.ts",
@@ -19824,7 +20493,7 @@
     {
       "sti": "src/app/team-norway/tn-redigering-actions.ts",
       "omrade": "appkode",
-      "byte": 4037
+      "byte": 4235
     },
     {
       "sti": "src/app/team-norway/tn-testdag-actions.ts",
@@ -19844,7 +20513,7 @@
     {
       "sti": "src/app/team-norway/tn-testforing-actions.ts",
       "omrade": "appkode",
-      "byte": 13578
+      "byte": 13565
     },
     {
       "sti": "src/app/team-norway/turneringer/[id]/page.tsx",
@@ -19869,17 +20538,17 @@
     {
       "sti": "src/app/team-norway/wang-resultater/page.tsx",
       "omrade": "appkode",
-      "byte": 5731
+      "byte": 6277
     },
     {
       "sti": "src/app/team-norway/workbench/page.tsx",
       "omrade": "appkode",
-      "byte": 46083
+      "byte": 46434
     },
     {
       "sti": "src/app/team-wang/_components/ak-primitiver.tsx",
       "omrade": "appkode",
-      "byte": 6975
+      "byte": 7076
     },
     {
       "sti": "src/app/team-wang/_components/arshjul.tsx",
@@ -20004,7 +20673,7 @@
     {
       "sti": "src/app/team-wang/_data/hent-wang-gruppe.ts",
       "omrade": "appkode",
-      "byte": 10858
+      "byte": 11006
     },
     {
       "sti": "src/app/team-wang/_data/live-sesong.ts",
@@ -20037,14 +20706,129 @@
       "byte": 783
     },
     {
+      "sti": "src/app/team-wang/_data/wang-rolle.ts",
+      "omrade": "appkode",
+      "byte": 568
+    },
+    {
       "sti": "src/app/team-wang/_data/wang-tilgang.test.ts",
       "omrade": "test",
-      "byte": 5306
+      "byte": 6608
     },
     {
       "sti": "src/app/team-wang/_data/wang-tilgang.ts",
       "omrade": "appkode",
-      "byte": 3285
+      "byte": 3649
+    },
+    {
+      "sti": "src/app/team-wang/app/app.module.css",
+      "omrade": "appkode",
+      "byte": 12315
+    },
+    {
+      "sti": "src/app/team-wang/app/error.tsx",
+      "omrade": "appkode",
+      "byte": 750
+    },
+    {
+      "sti": "src/app/team-wang/app/kalender/kalender.module.css",
+      "omrade": "appkode",
+      "byte": 6289
+    },
+    {
+      "sti": "src/app/team-wang/app/kalender/page.tsx",
+      "omrade": "appkode",
+      "byte": 10615
+    },
+    {
+      "sti": "src/app/team-wang/app/loading.tsx",
+      "omrade": "appkode",
+      "byte": 506
+    },
+    {
+      "sti": "src/app/team-wang/app/logg-inn/page.tsx",
+      "omrade": "appkode",
+      "byte": 621
+    },
+    {
+      "sti": "src/app/team-wang/app/logg-inn/wang-app-login.tsx",
+      "omrade": "appkode",
+      "byte": 916
+    },
+    {
+      "sti": "src/app/team-wang/app/meldinger/[threadId]/not-found.tsx",
+      "omrade": "appkode",
+      "byte": 827
+    },
+    {
+      "sti": "src/app/team-wang/app/meldinger/[threadId]/page.tsx",
+      "omrade": "appkode",
+      "byte": 5188
+    },
+    {
+      "sti": "src/app/team-wang/app/meldinger/meldinger.module.css",
+      "omrade": "appkode",
+      "byte": 6286
+    },
+    {
+      "sti": "src/app/team-wang/app/meldinger/page.tsx",
+      "omrade": "appkode",
+      "byte": 5742
+    },
+    {
+      "sti": "src/app/team-wang/app/page.tsx",
+      "omrade": "appkode",
+      "byte": 1711
+    },
+    {
+      "sti": "src/app/team-wang/app/testprofiler/page.tsx",
+      "omrade": "appkode",
+      "byte": 4144
+    },
+    {
+      "sti": "src/app/team-wang/app/testprofiler/testprofiler.module.css",
+      "omrade": "appkode",
+      "byte": 3672
+    },
+    {
+      "sti": "src/app/team-wang/app/utovere/[elevId]/page.tsx",
+      "omrade": "appkode",
+      "byte": 8263
+    },
+    {
+      "sti": "src/app/team-wang/app/utovere/[elevId]/profil.module.css",
+      "omrade": "appkode",
+      "byte": 4841
+    },
+    {
+      "sti": "src/app/team-wang/app/utovere/page.tsx",
+      "omrade": "appkode",
+      "byte": 10062
+    },
+    {
+      "sti": "src/app/team-wang/app/utovere/utovere.module.css",
+      "omrade": "appkode",
+      "byte": 7959
+    },
+    {
+      "sti": "src/app/team-wang/app/WangLoggUtKnapp.tsx",
+      "omrade": "appkode",
+      "byte": 594
+    },
+    {
+      "sti": "src/app/team-wang/app/WangRoleStart.tsx",
+      "omrade": "appkode",
+      "byte": 6516
+    },
+    {
+      "sti": "src/app/team-wang/app/workbench/page.tsx",
+      "omrade": "appkode",
+      "byte": 8455
+    },
+    {
+      "sti": "src/app/team-wang/app/workbench/workbench.module.css",
+      "omrade": "appkode",
+      "byte": 5866
     },
     {
       "sti": "src/app/team-wang/coach/coach-arsplan.tsx",
@@ -20069,12 +20853,12 @@
     {
       "sti": "src/app/team-wang/coach/page.tsx",
       "omrade": "appkode",
-      "byte": 2313
+      "byte": 2914
     },
     {
       "sti": "src/app/team-wang/coach/tester/page.tsx",
       "omrade": "appkode",
-      "byte": 5770
+      "byte": 5844
     },
     {
       "sti": "src/app/team-wang/coach/tester/tester.module.css",
@@ -20084,17 +20868,47 @@
     {
       "sti": "src/app/team-wang/coach/turneringer/[elevId]/page.tsx",
       "omrade": "appkode",
-      "byte": 8135
+      "byte": 8234
     },
     {
       "sti": "src/app/team-wang/coach/wang-ruter-actions.test.ts",
       "omrade": "test",
-      "byte": 7835
+      "byte": 10820
     },
     {
       "sti": "src/app/team-wang/coach/WangCoachKlient.tsx",
       "omrade": "appkode",
-      "byte": 3169
+      "byte": 3735
+    },
+    {
+      "sti": "src/app/team-wang/demo/demo.module.css",
+      "omrade": "appkode",
+      "byte": 21533
+    },
+    {
+      "sti": "src/app/team-wang/demo/error.tsx",
+      "omrade": "appkode",
+      "byte": 665
+    },
+    {
+      "sti": "src/app/team-wang/demo/loading.tsx",
+      "omrade": "appkode",
+      "byte": 430
+    },
+    {
+      "sti": "src/app/team-wang/demo/page.tsx",
+      "omrade": "appkode",
+      "byte": 565
+    },
+    {
+      "sti": "src/app/team-wang/demo/roller/page.tsx",
+      "omrade": "appkode",
+      "byte": 1106
+    },
+    {
+      "sti": "src/app/team-wang/demo/WangGolfDemo.tsx",
+      "omrade": "appkode",
+      "byte": 27904
     },
     {
       "sti": "src/app/team-wang/error.tsx",
@@ -20109,17 +20923,17 @@
     {
       "sti": "src/app/team-wang/logg-inn/page.tsx",
       "omrade": "appkode",
-      "byte": 809
+      "byte": 812
     },
     {
       "sti": "src/app/team-wang/logg-inn/wang-innloggings-skjema.tsx",
       "omrade": "appkode",
-      "byte": 4907
+      "byte": 6321
     },
     {
       "sti": "src/app/team-wang/logg-inn/wang-login.module.css",
       "omrade": "appkode",
-      "byte": 3757
+      "byte": 3898
     },
     {
       "sti": "src/app/team-wang/logg-inn/wang-login.tsx",
@@ -20139,7 +20953,7 @@
     {
       "sti": "src/app/team-wang/skjermer/page.tsx",
       "omrade": "appkode",
-      "byte": 534
+      "byte": 1339
     },
     {
       "sti": "src/app/team-wang/toppidrett/page.tsx",
@@ -20165,6 +20979,16 @@
       "sti": "src/components/admin/admin-toaster.tsx",
       "omrade": "appkode",
       "byte": 567
+    },
+    {
+      "sti": "src/components/admin/agencyos-ny/MerSide.tsx",
+      "omrade": "appkode",
+      "byte": 1734
+    },
+    {
+      "sti": "src/components/admin/agencyos-ny/ny.tsx",
+      "omrade": "appkode",
+      "byte": 5074
     },
     {
       "sti": "src/components/admin/agencyos/daily-brief.tsx",
@@ -20259,7 +21083,7 @@
     {
       "sti": "src/components/admin/global-search-modal.tsx",
       "omrade": "appkode",
-      "byte": 39616
+      "byte": 39971
     },
     {
       "sti": "src/components/admin/kalender/week-calendar.tsx",
@@ -20284,7 +21108,7 @@
     {
       "sti": "src/components/admin/precision/AG01Cockpit.tsx",
       "omrade": "appkode",
-      "byte": 9945
+      "byte": 11727
     },
     {
       "sti": "src/components/admin/precision/ag02-handlinger.ts",
@@ -20299,7 +21123,7 @@
     {
       "sti": "src/components/admin/precision/AG04Innboks.tsx",
       "omrade": "appkode",
-      "byte": 29480
+      "byte": 28595
     },
     {
       "sti": "src/components/admin/precision/AG04MalRediger.tsx",
@@ -20309,7 +21133,7 @@
     {
       "sti": "src/components/admin/precision/AG05Kalender.tsx",
       "omrade": "appkode",
-      "byte": 11393
+      "byte": 9188
     },
     {
       "sti": "src/components/admin/precision/AG05Tilg.tsx",
@@ -20319,12 +21143,12 @@
     {
       "sti": "src/components/admin/precision/AG06Booking.tsx",
       "omrade": "appkode",
-      "byte": 11603
+      "byte": 16927
     },
     {
       "sti": "src/components/admin/precision/AG07Stall.tsx",
       "omrade": "appkode",
-      "byte": 15769
+      "byte": 12097
     },
     {
       "sti": "src/components/admin/precision/AG08Faner.tsx",
@@ -20339,12 +21163,12 @@
     {
       "sti": "src/components/admin/precision/AG08Spiller360.tsx",
       "omrade": "appkode",
-      "byte": 9104
+      "byte": 8971
     },
     {
       "sti": "src/components/admin/precision/AG08Stats.tsx",
       "omrade": "appkode",
-      "byte": 17935
+      "byte": 17958
     },
     {
       "sti": "src/components/admin/precision/AG08Tester.tsx",
@@ -20389,7 +21213,7 @@
     {
       "sti": "src/components/admin/precision/AG13LiveOkt.tsx",
       "omrade": "appkode",
-      "byte": 13772
+      "byte": 14400
     },
     {
       "sti": "src/components/admin/precision/AG13LiveTavle.tsx",
@@ -20439,17 +21263,17 @@
     {
       "sti": "src/components/admin/precision/AG17Turneringer.tsx",
       "omrade": "appkode",
-      "byte": 21844
+      "byte": 13356
     },
     {
       "sti": "src/components/admin/precision/AG18TrackManVideo.tsx",
       "omrade": "appkode",
-      "byte": 17889
+      "byte": 13050
     },
     {
       "sti": "src/components/admin/precision/AG19CaddieHub.tsx",
       "omrade": "appkode",
-      "byte": 19182
+      "byte": 8972
     },
     {
       "sti": "src/components/admin/precision/AG20Okonomi.tsx",
@@ -20459,22 +21283,22 @@
     {
       "sti": "src/components/admin/precision/AG21Oppgaver.tsx",
       "omrade": "appkode",
-      "byte": 13658
+      "byte": 6825
     },
     {
       "sti": "src/components/admin/precision/AG22InnsiktTalent.tsx",
       "omrade": "appkode",
-      "byte": 16111
+      "byte": 13419
     },
     {
       "sti": "src/components/admin/precision/AG23Oppsett.tsx",
       "omrade": "appkode",
-      "byte": 16807
+      "byte": 7314
     },
     {
       "sti": "src/components/admin/precision/AG24Drift.tsx",
       "omrade": "appkode",
-      "byte": 14459
+      "byte": 13728
     },
     {
       "sti": "src/components/admin/precision/AGRD01Runder.tsx",
@@ -21069,7 +21893,7 @@
     {
       "sti": "src/components/admin/v2/GruppeTimeplanV2.tsx",
       "omrade": "appkode",
-      "byte": 8203
+      "byte": 8227
     },
     {
       "sti": "src/components/admin/v2/innboks/InnboksSaker.tsx",
@@ -21507,6 +22331,16 @@
       "byte": 27411
     },
     {
+      "sti": "src/components/auth/precision/oppstart.tsx",
+      "omrade": "appkode",
+      "byte": 19812
+    },
+    {
+      "sti": "src/components/auth/precision/SpillerOppstart.tsx",
+      "omrade": "appkode",
+      "byte": 25332
+    },
+    {
       "sti": "src/components/auth/reauth-modal.tsx",
       "omrade": "appkode",
       "byte": 7097
@@ -21772,6 +22606,16 @@
       "byte": 832
     },
     {
+      "sti": "src/components/marketing/precision/BK03Kvittering.tsx",
+      "omrade": "appkode",
+      "byte": 7215
+    },
+    {
+      "sti": "src/components/marketing/precision/BK03Ramme.tsx",
+      "omrade": "appkode",
+      "byte": 1400
+    },
+    {
       "sti": "src/components/marketing/v2/booking-tl-ramme.tsx",
       "omrade": "appkode",
       "byte": 3844
@@ -21854,7 +22698,7 @@
     {
       "sti": "src/components/marketing/v2/MarkedFaqV2.tsx",
       "omrade": "appkode",
-      "byte": 5538
+      "byte": 5494
     },
     {
       "sti": "src/components/marketing/v2/MarkedJobbV2.tsx",
@@ -21879,7 +22723,7 @@
     {
       "sti": "src/components/marketing/v2/MarkedPriserV2.tsx",
       "omrade": "appkode",
-      "byte": 5215
+      "byte": 5076
     },
     {
       "sti": "src/components/marketing/v2/MarkedStatsBloggV2.tsx",
@@ -22134,7 +22978,7 @@
     {
       "sti": "src/components/portal/live/LiveActive.tsx",
       "omrade": "appkode",
-      "byte": 21122
+      "byte": 21269
     },
     {
       "sti": "src/components/portal/live/LiveBrief.tsx",
@@ -22144,7 +22988,7 @@
     {
       "sti": "src/components/portal/live/LiveCoachPanel.tsx",
       "omrade": "appkode",
-      "byte": 10221
+      "byte": 10396
     },
     {
       "sti": "src/components/portal/live/LiveLoopNav.tsx",
@@ -22174,7 +23018,7 @@
     {
       "sti": "src/components/portal/live/SessionBrief.tsx",
       "omrade": "appkode",
-      "byte": 10430
+      "byte": 4861
     },
     {
       "sti": "src/components/portal/live/SessionSummary.tsx",
@@ -22204,7 +23048,7 @@
     {
       "sti": "src/components/portal/live/useLiveCoachVideoUpload.ts",
       "omrade": "appkode",
-      "byte": 2093
+      "byte": 2275
     },
     {
       "sti": "src/components/portal/live/WhyDetails.tsx",
@@ -22224,7 +23068,7 @@
     {
       "sti": "src/components/portal/precision/iup-evaluering.tsx",
       "omrade": "appkode",
-      "byte": 19548
+      "byte": 28618
     },
     {
       "sti": "src/components/portal/precision/navngitt-deling.tsx",
@@ -22234,7 +23078,12 @@
     {
       "sti": "src/components/portal/precision/PH01IDag.tsx",
       "omrade": "appkode",
-      "byte": 22307
+      "byte": 28745
+    },
+    {
+      "sti": "src/components/portal/precision/PH01IDagLaster.tsx",
+      "omrade": "appkode",
+      "byte": 788
     },
     {
       "sti": "src/components/portal/precision/PH02Gjor.tsx",
@@ -22244,7 +23093,7 @@
     {
       "sti": "src/components/portal/precision/PH03Oktark.tsx",
       "omrade": "appkode",
-      "byte": 6975
+      "byte": 9006
     },
     {
       "sti": "src/components/portal/precision/PH04LiveBrief.tsx",
@@ -22254,32 +23103,47 @@
     {
       "sti": "src/components/portal/precision/PH05LiveAktiv.tsx",
       "omrade": "appkode",
-      "byte": 16569
+      "byte": 12534
     },
     {
       "sti": "src/components/portal/precision/PH06Slagteller.tsx",
       "omrade": "appkode",
-      "byte": 16524
+      "byte": 16586
     },
     {
       "sti": "src/components/portal/precision/PH07Oktoppsummering.tsx",
       "omrade": "appkode",
-      "byte": 18347
+      "byte": 6323
     },
     {
       "sti": "src/components/portal/precision/PH08RundeLive.tsx",
       "omrade": "appkode",
-      "byte": 19717
+      "byte": 31895
     },
     {
       "sti": "src/components/portal/precision/PH09RegistrerRunde.tsx",
       "omrade": "appkode",
-      "byte": 25961
+      "byte": 16607
     },
     {
       "sti": "src/components/portal/precision/PH10Plan.tsx",
       "omrade": "appkode",
-      "byte": 20395
+      "byte": 20648
+    },
+    {
+      "sti": "src/components/portal/precision/PH10PlanLaster.tsx",
+      "omrade": "appkode",
+      "byte": 776
+    },
+    {
+      "sti": "src/components/portal/precision/PH11Aarsplan.tsx",
+      "omrade": "appkode",
+      "byte": 13807
+    },
+    {
+      "sti": "src/components/portal/precision/PH11Periode.tsx",
+      "omrade": "appkode",
+      "byte": 21292
     },
     {
       "sti": "src/components/portal/precision/PH11Workbench.tsx",
@@ -22289,22 +23153,52 @@
     {
       "sti": "src/components/portal/precision/PH12VelgPlan.tsx",
       "omrade": "appkode",
-      "byte": 12224
+      "byte": 13522
+    },
+    {
+      "sti": "src/components/portal/precision/PH13BreakTabell.tsx",
+      "omrade": "appkode",
+      "byte": 3180
     },
     {
       "sti": "src/components/portal/precision/PH13DrillBank.tsx",
       "omrade": "appkode",
-      "byte": 28707
+      "byte": 12856
     },
     {
       "sti": "src/components/portal/precision/PH13DrillDetalj.tsx",
       "omrade": "appkode",
-      "byte": 6869
+      "byte": 7323
+    },
+    {
+      "sti": "src/components/portal/precision/PH13Feil.tsx",
+      "omrade": "appkode",
+      "byte": 1600
+    },
+    {
+      "sti": "src/components/portal/precision/PH13Felles.tsx",
+      "omrade": "appkode",
+      "byte": 1614
+    },
+    {
+      "sti": "src/components/portal/precision/PH14Test.tsx",
+      "omrade": "appkode",
+      "byte": 11479
+    },
+    {
+      "sti": "src/components/portal/precision/PH14Tester.tsx",
+      "omrade": "appkode",
+      "byte": 8723
     },
     {
       "sti": "src/components/portal/precision/PH15TestGjennomfor.tsx",
       "omrade": "appkode",
-      "byte": 24424
+      "byte": 24457
+    },
+    {
+      "sti": "src/components/portal/precision/PH15TnTest.tsx",
+      "omrade": "appkode",
+      "byte": 27503
     },
     {
       "sti": "src/components/portal/precision/PH16bSkillMap.tsx",
@@ -22312,19 +23206,64 @@
       "byte": 12839
     },
     {
+      "sti": "src/components/portal/precision/PH16Resultater.tsx",
+      "omrade": "appkode",
+      "byte": 7686
+    },
+    {
       "sti": "src/components/portal/precision/PH16Stats.tsx",
       "omrade": "appkode",
-      "byte": 37987
+      "byte": 38119
+    },
+    {
+      "sti": "src/components/portal/precision/PH16StatsOversikt.tsx",
+      "omrade": "appkode",
+      "byte": 9728
+    },
+    {
+      "sti": "src/components/portal/precision/PH17TmFelles.tsx",
+      "omrade": "appkode",
+      "byte": 3078
+    },
+    {
+      "sti": "src/components/portal/precision/PH17TmFilter.tsx",
+      "omrade": "appkode",
+      "byte": 5533
+    },
+    {
+      "sti": "src/components/portal/precision/PH17TmKoller.tsx",
+      "omrade": "appkode",
+      "byte": 6174
+    },
+    {
+      "sti": "src/components/portal/precision/PH17TmOkt.tsx",
+      "omrade": "appkode",
+      "byte": 14880
+    },
+    {
+      "sti": "src/components/portal/precision/PH17TmOkter.tsx",
+      "omrade": "appkode",
+      "byte": 9301
     },
     {
       "sti": "src/components/portal/precision/PH17TrackMan.tsx",
       "omrade": "appkode",
-      "byte": 32863
+      "byte": 33268
+    },
+    {
+      "sti": "src/components/portal/precision/PH17Trening.tsx",
+      "omrade": "appkode",
+      "byte": 10408
     },
     {
       "sti": "src/components/portal/precision/PH18Runder.tsx",
       "omrade": "appkode",
-      "byte": 21303
+      "byte": 10756
+    },
+    {
+      "sti": "src/components/portal/precision/PH18RunderMer.tsx",
+      "omrade": "appkode",
+      "byte": 12636
     },
     {
       "sti": "src/components/portal/precision/PH19Enkeltmal.tsx",
@@ -22354,22 +23293,32 @@
     {
       "sti": "src/components/portal/precision/PH20Gameplan.tsx",
       "omrade": "appkode",
-      "byte": 21336
+      "byte": 12205
     },
     {
       "sti": "src/components/portal/precision/PH21Innboks.tsx",
       "omrade": "appkode",
-      "byte": 31632
+      "byte": 21992
+    },
+    {
+      "sti": "src/components/portal/precision/PH21InnboksOversikt.tsx",
+      "omrade": "appkode",
+      "byte": 12522
     },
     {
       "sti": "src/components/portal/precision/PH22CaddieChat.tsx",
       "omrade": "appkode",
-      "byte": 30747
+      "byte": 14118
+    },
+    {
+      "sti": "src/components/portal/precision/PH23Bekreftet.tsx",
+      "omrade": "appkode",
+      "byte": 2617
     },
     {
       "sti": "src/components/portal/precision/PH23Booking.tsx",
       "omrade": "appkode",
-      "byte": 54076
+      "byte": 30114
     },
     {
       "sti": "src/components/portal/precision/PH24dUtfordringer.tsx",
@@ -22377,44 +23326,104 @@
       "byte": 22990
     },
     {
+      "sti": "src/components/portal/precision/PH24Fasiliteter.tsx",
+      "omrade": "appkode",
+      "byte": 5684
+    },
+    {
+      "sti": "src/components/portal/precision/PH24Foreldre.tsx",
+      "omrade": "appkode",
+      "byte": 3793
+    },
+    {
+      "sti": "src/components/portal/precision/PH24Helse.tsx",
+      "omrade": "appkode",
+      "byte": 9867
+    },
+    {
       "sti": "src/components/portal/precision/PH24Meg.tsx",
       "omrade": "appkode",
-      "byte": 11480
+      "byte": 9585
+    },
+    {
+      "sti": "src/components/portal/precision/PH24MegTilstand.tsx",
+      "omrade": "appkode",
+      "byte": 2008
     },
     {
       "sti": "src/components/portal/precision/PH24Profil.tsx",
       "omrade": "appkode",
-      "byte": 18183
+      "byte": 8771
     },
     {
       "sti": "src/components/portal/precision/PH24Utstyr.tsx",
       "omrade": "appkode",
-      "byte": 20194
+      "byte": 7402
     },
     {
       "sti": "src/components/portal/precision/PH25Abonnement.tsx",
       "omrade": "appkode",
-      "byte": 32178
+      "byte": 9371
+    },
+    {
+      "sti": "src/components/portal/precision/PH25Innstillinger.tsx",
+      "omrade": "appkode",
+      "byte": 8584
+    },
+    {
+      "sti": "src/components/portal/precision/PH27Deling.tsx",
+      "omrade": "appkode",
+      "byte": 11428
     },
     {
       "sti": "src/components/portal/precision/PHIUP01Fireukerssjekk.tsx",
       "omrade": "appkode",
-      "byte": 18493
+      "byte": 20049
+    },
+    {
+      "sti": "src/components/portal/precision/PHIupTilstand.tsx",
+      "omrade": "appkode",
+      "byte": 1854
+    },
+    {
+      "sti": "src/components/portal/precision/PHKommunikasjonFeil.tsx",
+      "omrade": "appkode",
+      "byte": 1427
+    },
+    {
+      "sti": "src/components/portal/precision/PHKommunikasjonLaster.tsx",
+      "omrade": "appkode",
+      "byte": 1592
     },
     {
       "sti": "src/components/portal/precision/PHRD01VelgNiva.tsx",
       "omrade": "appkode",
-      "byte": 9379
+      "byte": 7559
     },
     {
       "sti": "src/components/portal/precision/PHRD08RundeFerdig.tsx",
       "omrade": "appkode",
-      "byte": 13499
+      "byte": 11718
+    },
+    {
+      "sti": "src/components/portal/precision/PHRunderFeilside.tsx",
+      "omrade": "appkode",
+      "byte": 1814
+    },
+    {
+      "sti": "src/components/portal/precision/PHRunderFelles.tsx",
+      "omrade": "appkode",
+      "byte": 6170
+    },
+    {
+      "sti": "src/components/portal/precision/PHStatsDybdeFelles.tsx",
+      "omrade": "appkode",
+      "byte": 2212
     },
     {
       "sti": "src/components/portal/precision/PHTP01TekniskPlan.tsx",
       "omrade": "appkode",
-      "byte": 9584
+      "byte": 19449
     },
     {
       "sti": "src/components/portal/precision/trener-iup-svar.tsx",
@@ -22425,6 +23434,11 @@
       "sti": "src/components/portal/precision/trenerdeling-aksept.tsx",
       "omrade": "appkode",
       "byte": 3093
+    },
+    {
+      "sti": "src/components/portal/precision/WangTestforesporsel.tsx",
+      "omrade": "appkode",
+      "byte": 4589
     },
     {
       "sti": "src/components/portal/profil/PersonvernPrecisionView.tsx",
@@ -22569,7 +23583,7 @@
     {
       "sti": "src/components/portal/runde-ny/hull-rediger-form.tsx",
       "omrade": "appkode",
-      "byte": 7119
+      "byte": 7870
     },
     {
       "sti": "src/components/portal/runde-ny/manuell-sg-felt.tsx",
@@ -22624,7 +23638,7 @@
     {
       "sti": "src/components/portal/toppidrett/BanekartSpatialView.tsx",
       "omrade": "appkode",
-      "byte": 14714
+      "byte": 14716
     },
     {
       "sti": "src/components/portal/toppidrett/HierarkiskMaalTracker.tsx",
@@ -22649,7 +23663,7 @@
     {
       "sti": "src/components/portal/toppidrett/StrokesGainedDeepDive.tsx",
       "omrade": "appkode",
-      "byte": 9889
+      "byte": 9891
     },
     {
       "sti": "src/components/portal/toppidrett/StyrkeProgramView.tsx",
@@ -22719,7 +23733,12 @@
     {
       "sti": "src/components/portal/v2/BookingDetaljV2.tsx",
       "omrade": "appkode",
-      "byte": 4941
+      "byte": 5370
+    },
+    {
+      "sti": "src/components/portal/v2/BookingFlytteforslag.tsx",
+      "omrade": "appkode",
+      "byte": 2234
     },
     {
       "sti": "src/components/portal/v2/BookingHubV2.tsx",
@@ -22859,7 +23878,7 @@
     {
       "sti": "src/components/portal/v2/DelingSamtykkeKort.tsx",
       "omrade": "appkode",
-      "byte": 8889
+      "byte": 7398
     },
     {
       "sti": "src/components/portal/v2/DelRundeV2.tsx",
@@ -23244,7 +24263,7 @@
     {
       "sti": "src/components/portal/v2/SamtykkeVenterV2.tsx",
       "omrade": "appkode",
-      "byte": 3410
+      "byte": 3530
     },
     {
       "sti": "src/components/portal/v2/SideChrome.tsx",
@@ -23304,7 +24323,7 @@
     {
       "sti": "src/components/portal/v2/TnSamtykkeSide.tsx",
       "omrade": "appkode",
-      "byte": 14478
+      "byte": 9961
     },
     {
       "sti": "src/components/portal/v2/TrackManListeTrainLock.tsx",
@@ -23399,7 +24418,7 @@
     {
       "sti": "src/components/portal/workbench/invite-actions.ts",
       "omrade": "appkode",
-      "byte": 5695
+      "byte": 6277
     },
     {
       "sti": "src/components/portal/workbench/invite-friend-modal.tsx",
@@ -23424,7 +24443,7 @@
     {
       "sti": "src/components/precision/AgencyOSSkall.tsx",
       "omrade": "appkode",
-      "byte": 9360
+      "byte": 7549
     },
     {
       "sti": "src/components/precision/ForelderSkall.tsx",
@@ -23439,7 +24458,7 @@
     {
       "sti": "src/components/precision/pa-a2.tsx",
       "omrade": "appkode",
-      "byte": 2313
+      "byte": 3150
     },
     {
       "sti": "src/components/precision/pa-a3.tsx",
@@ -23489,12 +24508,12 @@
     {
       "sti": "src/components/precision/pa.tsx",
       "omrade": "appkode",
-      "byte": 6261
+      "byte": 6580
     },
     {
       "sti": "src/components/precision/PlayerHQSkall.tsx",
       "omrade": "appkode",
-      "byte": 5015
+      "byte": 5284
     },
     {
       "sti": "src/components/precision/teknisk-plan/tp-deler.tsx",
@@ -23729,7 +24748,7 @@
     {
       "sti": "src/components/shared/VoiceRangeRecorder.tsx",
       "omrade": "appkode",
-      "byte": 10185
+      "byte": 10200
     },
     {
       "sti": "src/components/shared/vri-telefonen.tsx",
@@ -23879,117 +24898,142 @@
     {
       "sti": "src/components/team-norway/core.tsx",
       "omrade": "appkode",
-      "byte": 13874
+      "byte": 8625
     },
     {
       "sti": "src/components/team-norway/rail-mobil.tsx",
       "omrade": "appkode",
-      "byte": 4588
+      "byte": 3467
     },
     {
       "sti": "src/components/team-norway/skjermer/felles.tsx",
       "omrade": "appkode",
-      "byte": 2957
+      "byte": 3027
     },
     {
       "sti": "src/components/team-norway/skjermer/tn-college-skjerm.tsx",
       "omrade": "appkode",
-      "byte": 6332
+      "byte": 6442
+    },
+    {
+      "sti": "src/components/team-norway/skjermer/tn-daglig.module.css",
+      "omrade": "appkode",
+      "byte": 3371
     },
     {
       "sti": "src/components/team-norway/skjermer/tn-dokumenter-skjerm.tsx",
       "omrade": "appkode",
-      "byte": 6488
+      "byte": 6378
     },
     {
       "sti": "src/components/team-norway/skjermer/tn-fagapparat-skjerm.tsx",
       "omrade": "appkode",
-      "byte": 3630
+      "byte": 2911
     },
     {
       "sti": "src/components/team-norway/skjermer/tn-fellestesting-skjerm.tsx",
       "omrade": "appkode",
-      "byte": 12900
+      "byte": 12584
     },
     {
       "sti": "src/components/team-norway/skjermer/tn-gruppeposter-skjerm.tsx",
       "omrade": "appkode",
-      "byte": 4766
+      "byte": 4695
     },
     {
       "sti": "src/components/team-norway/skjermer/tn-lisens-skjerm.tsx",
       "omrade": "appkode",
-      "byte": 6085
+      "byte": 6210
     },
     {
       "sti": "src/components/team-norway/skjermer/tn-live-watch-skjerm.tsx",
       "omrade": "appkode",
-      "byte": 2911
+      "byte": 4498
     },
     {
       "sti": "src/components/team-norway/skjermer/tn-manedsplan-skjerm.tsx",
       "omrade": "appkode",
-      "byte": 16626
+      "byte": 16753
     },
     {
       "sti": "src/components/team-norway/skjermer/tn-oversikt-skjerm.tsx",
       "omrade": "appkode",
-      "byte": 13180
+      "byte": 11605
+    },
+    {
+      "sti": "src/components/team-norway/skjermer/tn-plan.module.css",
+      "omrade": "appkode",
+      "byte": 360
     },
     {
       "sti": "src/components/team-norway/skjermer/tn-rangliste-skjerm.tsx",
       "omrade": "appkode",
-      "byte": 5198
+      "byte": 3966
     },
     {
       "sti": "src/components/team-norway/skjermer/tn-referansenivaer-skjerm.tsx",
       "omrade": "appkode",
-      "byte": 3941
+      "byte": 3923
     },
     {
       "sti": "src/components/team-norway/skjermer/tn-samlinger-skjerm.tsx",
       "omrade": "appkode",
-      "byte": 11545
+      "byte": 11193
     },
     {
       "sti": "src/components/team-norway/skjermer/tn-skoler-skjerm.tsx",
       "omrade": "appkode",
-      "byte": 4543
+      "byte": 5577
+    },
+    {
+      "sti": "src/components/team-norway/skjermer/tn-spillere.module.css",
+      "omrade": "appkode",
+      "byte": 1406
     },
     {
       "sti": "src/components/team-norway/skjermer/tn-spillerprofil-skjerm.tsx",
       "omrade": "appkode",
-      "byte": 14979
+      "byte": 11386
     },
     {
       "sti": "src/components/team-norway/skjermer/tn-spillerutvikling-skjerm.tsx",
       "omrade": "appkode",
-      "byte": 9983
+      "byte": 6126
     },
     {
       "sti": "src/components/team-norway/skjermer/tn-testprotokoller-skjerm.tsx",
       "omrade": "appkode",
-      "byte": 10097
+      "byte": 10079
     },
     {
       "sti": "src/components/team-norway/skjermer/tn-turnering-skjerm.tsx",
       "omrade": "appkode",
-      "byte": 4844
+      "byte": 3858
     },
     {
       "sti": "src/components/team-norway/skjermer/tn-turneringer-skjerm.tsx",
       "omrade": "appkode",
-      "byte": 6215
+      "byte": 4571
     },
     {
       "sti": "src/components/team-norway/skjermer/tn-uttak-skjerm.tsx",
       "omrade": "appkode",
-      "byte": 8361
+      "byte": 5638
+    },
+    {
+      "sti": "src/components/team-norway/skjermer/tn-uttak.module.css",
+      "omrade": "appkode",
+      "byte": 2323
+    },
+    {
+      "sti": "src/components/team-norway/tn-data-table.module.css",
+      "omrade": "appkode",
+      "byte": 1829
     },
     {
       "sti": "src/components/team-norway/tn-data-table.tsx",
       "omrade": "appkode",
-      "byte": 4680
+      "byte": 3640
     },
     {
       "sti": "src/components/team-norway/tn-felles-testdag-opprett.tsx",
@@ -23999,17 +25043,32 @@
     {
       "sti": "src/components/team-norway/tn-flate.tsx",
       "omrade": "appkode",
-      "byte": 8685
+      "byte": 10597
+    },
+    {
+      "sti": "src/components/team-norway/tn-grunnmur.module.css",
+      "omrade": "appkode",
+      "byte": 3317
+    },
+    {
+      "sti": "src/components/team-norway/tn-grunnmur.tsx",
+      "omrade": "appkode",
+      "byte": 5317
     },
     {
       "sti": "src/components/team-norway/tn-gruppe-klient.tsx",
       "omrade": "appkode",
-      "byte": 19087
+      "byte": 18191
     },
     {
       "sti": "src/components/team-norway/tn-handlinger.tsx",
       "omrade": "appkode",
-      "byte": 9745
+      "byte": 9620
+    },
+    {
+      "sti": "src/components/team-norway/tn-ikon.tsx",
+      "omrade": "appkode",
+      "byte": 1264
     },
     {
       "sti": "src/components/team-norway/tn-inviter-spiller.tsx",
@@ -24019,22 +25078,22 @@
     {
       "sti": "src/components/team-norway/tn-kontroller.module.css",
       "omrade": "appkode",
-      "byte": 3983
+      "byte": 3872
     },
     {
       "sti": "src/components/team-norway/tn-manuell-turnering.tsx",
       "omrade": "appkode",
-      "byte": 2148
+      "byte": 2372
     },
     {
       "sti": "src/components/team-norway/tn-post-komponer.tsx",
       "omrade": "appkode",
-      "byte": 4472
+      "byte": 4464
     },
     {
       "sti": "src/components/team-norway/tn-post-tidslinje.tsx",
       "omrade": "appkode",
-      "byte": 11615
+      "byte": 11585
     },
     {
       "sti": "src/components/team-norway/tn-redigering-skjema.tsx",
@@ -24044,17 +25103,22 @@
     {
       "sti": "src/components/team-norway/tn-registrerte-skjermer.tsx",
       "omrade": "appkode",
-      "byte": 3015
+      "byte": 3194
     },
     {
       "sti": "src/components/team-norway/tn-shell.tsx",
       "omrade": "appkode",
-      "byte": 13809
+      "byte": 16045
+    },
+    {
+      "sti": "src/components/team-norway/tn-skall.module.css",
+      "omrade": "appkode",
+      "byte": 5713
     },
     {
       "sti": "src/components/team-norway/tn-skjerm.module.css",
       "omrade": "appkode",
-      "byte": 6700
+      "byte": 7120
     },
     {
       "sti": "src/components/team-norway/tn-skjerm.tsx",
@@ -24074,7 +25138,7 @@
     {
       "sti": "src/components/team-norway/tn-testdag-scorecard.tsx",
       "omrade": "appkode",
-      "byte": 15111
+      "byte": 19498
     },
     {
       "sti": "src/components/team-norway/tn-tilgang-handlinger.tsx",
@@ -24084,12 +25148,22 @@
     {
       "sti": "src/components/team-norway/tn-tilgang-skjema.tsx",
       "omrade": "appkode",
-      "byte": 8072
+      "byte": 8066
     },
     {
       "sti": "src/components/team-norway/tn-tilgang-visning.tsx",
       "omrade": "appkode",
-      "byte": 7022
+      "byte": 7109
+    },
+    {
+      "sti": "src/components/team-norway/tn-tilstand.module.css",
+      "omrade": "appkode",
+      "byte": 1728
+    },
+    {
+      "sti": "src/components/team-norway/tn-tilstand.tsx",
+      "omrade": "appkode",
+      "byte": 2051
     },
     {
       "sti": "src/components/teknisk-plan/constants.test.ts",
@@ -24409,7 +25483,7 @@
     {
       "sti": "src/components/v2/shell.tsx",
       "omrade": "appkode",
-      "byte": 62044
+      "byte": 62780
     },
     {
       "sti": "src/components/v2/skjema.tsx",
@@ -24469,37 +25543,47 @@
     {
       "sti": "src/components/wang/wang-data.ts",
       "omrade": "appkode",
-      "byte": 38603
+      "byte": 35699
     },
     {
       "sti": "src/components/wang/WangAdmin.tsx",
       "omrade": "appkode",
-      "byte": 22311
+      "byte": 11899
     },
     {
       "sti": "src/components/wang/WangAppSkall.tsx",
       "omrade": "appkode",
-      "byte": 20989
+      "byte": 8391
     },
     {
       "sti": "src/components/wang/WangElever.tsx",
       "omrade": "appkode",
-      "byte": 33702
+      "byte": 19957
     },
     {
       "sti": "src/components/wang/WangIdag.tsx",
       "omrade": "appkode",
-      "byte": 16465
+      "byte": 9222
+    },
+    {
+      "sti": "src/components/wang/WangIkkeKoblet.tsx",
+      "omrade": "appkode",
+      "byte": 712
+    },
+    {
+      "sti": "src/components/wang/WangKobledeVisninger.tsx",
+      "omrade": "appkode",
+      "byte": 2194
     },
     {
       "sti": "src/components/wang/WangKonkurranse.tsx",
       "omrade": "appkode",
-      "byte": 29906
+      "byte": 15331
     },
     {
       "sti": "src/components/wang/WangMeldinger.tsx",
       "omrade": "appkode",
-      "byte": 14637
+      "byte": 8669
     },
     {
       "sti": "src/components/wang/WangRekrutteringView.tsx",
@@ -24514,12 +25598,12 @@
     {
       "sti": "src/components/wang/WangTester.tsx",
       "omrade": "appkode",
-      "byte": 18311
+      "byte": 10382
     },
     {
       "sti": "src/components/wang/WangTrening.tsx",
       "omrade": "appkode",
-      "byte": 16469
+      "byte": 9452
     },
     {
       "sti": "src/components/widgets/DagensOkterWidget.tsx",
@@ -24599,7 +25683,7 @@
     {
       "sti": "src/components/workbench/SamlingsprogramKontroll.tsx",
       "omrade": "appkode",
-      "byte": 6774
+      "byte": 7187
     },
     {
       "sti": "src/components/workbench/SessionExecutionPanel.tsx",
@@ -24624,7 +25708,7 @@
     {
       "sti": "src/components/workbench/Trenerforslag.tsx",
       "omrade": "appkode",
-      "byte": 11758
+      "byte": 12353
     },
     {
       "sti": "src/components/workbench/Ukeforslag.tsx",
@@ -24679,7 +25763,7 @@
     {
       "sti": "src/components/workbench/WorkbenchAar.tsx",
       "omrade": "appkode",
-      "byte": 12598
+      "byte": 12605
     },
     {
       "sti": "src/components/workbench/WorkbenchAnalyse.tsx",
@@ -24714,7 +25798,7 @@
     {
       "sti": "src/components/workbench/WorkbenchManed.tsx",
       "omrade": "appkode",
-      "byte": 7222
+      "byte": 12188
     },
     {
       "sti": "src/components/workbench/WorkbenchMinKalender.tsx",
@@ -24729,7 +25813,7 @@
     {
       "sti": "src/components/workbench/WorkbenchPeriode.tsx",
       "omrade": "appkode",
-      "byte": 15896
+      "byte": 17547
     },
     {
       "sti": "src/components/workbench/WorkbenchPlanHandlinger.tsx",
@@ -24744,7 +25828,7 @@
     {
       "sti": "src/components/workbench/WorkbenchSesongkart.tsx",
       "omrade": "appkode",
-      "byte": 17492
+      "byte": 17773
     },
     {
       "sti": "src/components/workbench/WorkbenchShell.tsx",
@@ -24919,7 +26003,7 @@
     {
       "sti": "src/lib/__tests__/auth/coached.test.ts",
       "omrade": "test",
-      "byte": 5520
+      "byte": 8084
     },
     {
       "sti": "src/lib/__tests__/auth/ensure-user.test.ts",
@@ -25044,7 +26128,7 @@
     {
       "sti": "src/lib/__tests__/domain/workbench-load.test.ts",
       "omrade": "test",
-      "byte": 2125
+      "byte": 2199
     },
     {
       "sti": "src/lib/__tests__/domain/workbench-week-plan.test.ts",
@@ -25084,7 +26168,7 @@
     {
       "sti": "src/lib/__tests__/ingen-demovisning-i-ruter.test.ts",
       "omrade": "test",
-      "byte": 2309
+      "byte": 6037
     },
     {
       "sti": "src/lib/__tests__/leave-innsyn.test.ts",
@@ -25239,7 +26323,7 @@
     {
       "sti": "src/lib/__tests__/samtykke-regler.test.ts",
       "omrade": "test",
-      "byte": 9977
+      "byte": 10782
     },
     {
       "sti": "src/lib/__tests__/scripts/check-fasitdekning-baseline.test.ts",
@@ -25289,7 +26373,7 @@
     {
       "sti": "src/lib/__tests__/tema-default.test.ts",
       "omrade": "test",
-      "byte": 2367
+      "byte": 2139
     },
     {
       "sti": "src/lib/__tests__/test-scoring.test.ts",
@@ -25305,6 +26389,11 @@
       "sti": "src/lib/__tests__/tilgang/admin-capability-kontrakt.test.ts",
       "omrade": "test",
       "byte": 8432
+    },
+    {
+      "sti": "src/lib/__tests__/tilgang/datagolf-sider-kontrakt.test.ts",
+      "omrade": "test",
+      "byte": 2615
     },
     {
       "sti": "src/lib/__tests__/tilgang/portal-tilgang-kontrakt.test.ts",
@@ -25360,6 +26449,11 @@
       "sti": "src/lib/__tests__/visual/train-lock-maal.test.ts",
       "omrade": "test",
       "byte": 2755
+    },
+    {
+      "sti": "src/lib/__tests__/wang-sikkerhet.test.ts",
+      "omrade": "test",
+      "byte": 5337
     },
     {
       "sti": "src/lib/__tests__/workbench/apply-template-actions.test.ts",
@@ -25422,9 +26516,14 @@
       "byte": 6122
     },
     {
+      "sti": "src/lib/actions/test-shot-actions.test.ts",
+      "omrade": "test",
+      "byte": 10067
+    },
+    {
       "sti": "src/lib/actions/test-shot-actions.ts",
       "omrade": "appkode",
-      "byte": 4660
+      "byte": 5100
     },
     {
       "sti": "src/lib/admin-brief.ts",
@@ -25504,7 +26603,7 @@
     {
       "sti": "src/lib/admin-spiller/spiller360-data.ts",
       "omrade": "appkode",
-      "byte": 33333
+      "byte": 33367
     },
     {
       "sti": "src/lib/admin-spiller/spiller360-typer.ts",
@@ -25545,6 +26644,26 @@
       "sti": "src/lib/admin/benchmark-sync.ts",
       "omrade": "appkode",
       "byte": 12409
+    },
+    {
+      "sti": "src/lib/admin/drift/last-drift-data.test.ts",
+      "omrade": "test",
+      "byte": 1010
+    },
+    {
+      "sti": "src/lib/admin/drift/last-drift-data.ts",
+      "omrade": "appkode",
+      "byte": 4320
+    },
+    {
+      "sti": "src/lib/admin/gruppe-tid.test.ts",
+      "omrade": "test",
+      "byte": 1087
+    },
+    {
+      "sti": "src/lib/admin/gruppe-tid.ts",
+      "omrade": "appkode",
+      "byte": 1960
     },
     {
       "sti": "src/lib/admin/innboks-saker.ts",
@@ -25722,6 +26841,16 @@
       "byte": 3224
     },
     {
+      "sti": "src/lib/admin/oppsett/last-oppsett-data.test.ts",
+      "omrade": "test",
+      "byte": 777
+    },
+    {
+      "sti": "src/lib/admin/oppsett/last-oppsett-data.ts",
+      "omrade": "appkode",
+      "byte": 1386
+    },
+    {
       "sti": "src/lib/admin/oppsett/lastere.ts",
       "omrade": "appkode",
       "byte": 17464
@@ -25730,6 +26859,16 @@
       "sti": "src/lib/admin/plan-action-diff.ts",
       "omrade": "appkode",
       "byte": 5119
+    },
+    {
+      "sti": "src/lib/admin/runder-scope.test.ts",
+      "omrade": "test",
+      "byte": 898
+    },
+    {
+      "sti": "src/lib/admin/runder-scope.ts",
+      "omrade": "appkode",
+      "byte": 431
     },
     {
       "sti": "src/lib/admin/spiller-tester-access.test.ts",
@@ -25799,7 +26938,17 @@
     {
       "sti": "src/lib/admin/turnering/lastere.ts",
       "omrade": "appkode",
-      "byte": 10926
+      "byte": 11140
+    },
+    {
+      "sti": "src/lib/admin/turnering/rader.test.ts",
+      "omrade": "test",
+      "byte": 1382
+    },
+    {
+      "sti": "src/lib/admin/turnering/rader.ts",
+      "omrade": "appkode",
+      "byte": 1655
     },
     {
       "sti": "src/lib/admin/ukesrapport-deling.test.ts",
@@ -25824,7 +26973,7 @@
     {
       "sti": "src/lib/admin/vekstrate-data.ts",
       "omrade": "appkode",
-      "byte": 2721
+      "byte": 2744
     },
     {
       "sti": "src/lib/agencyos/agent-registry.test.ts",
@@ -25894,12 +27043,12 @@
     {
       "sti": "src/lib/agencyos/cockpit-precision.test.ts",
       "omrade": "test",
-      "byte": 2264
+      "byte": 2517
     },
     {
       "sti": "src/lib/agencyos/cockpit-precision.ts",
       "omrade": "appkode",
-      "byte": 4460
+      "byte": 5422
     },
     {
       "sti": "src/lib/agencyos/cockpit-tillegg-regler.test.ts",
@@ -25959,7 +27108,12 @@
     {
       "sti": "src/lib/agencyos/live-okt-data.ts",
       "omrade": "appkode",
-      "byte": 4611
+      "byte": 8769
+    },
+    {
+      "sti": "src/lib/agencyos/live-okt-tilgang.test.ts",
+      "omrade": "test",
+      "byte": 2463
     },
     {
       "sti": "src/lib/agencyos/live-summary-update.ts",
@@ -25969,17 +27123,17 @@
     {
       "sti": "src/lib/agencyos/live-tavle-data.ts",
       "omrade": "appkode",
-      "byte": 3450
+      "byte": 4278
     },
     {
       "sti": "src/lib/agencyos/okonomi-tilgang.test.ts",
       "omrade": "test",
-      "byte": 396
+      "byte": 770
     },
     {
       "sti": "src/lib/agencyos/okonomi-tilgang.ts",
       "omrade": "appkode",
-      "byte": 476
+      "byte": 896
     },
     {
       "sti": "src/lib/agencyos/planhub-data.ts",
@@ -26004,12 +27158,12 @@
     {
       "sti": "src/lib/agencyos/precision-ia.test.ts",
       "omrade": "test",
-      "byte": 1860
+      "byte": 1948
     },
     {
       "sti": "src/lib/agencyos/precision-ia.ts",
       "omrade": "appkode",
-      "byte": 3547
+      "byte": 3682
     },
     {
       "sti": "src/lib/agencyos/precision-portert.test.ts",
@@ -26079,7 +27233,7 @@
     {
       "sti": "src/lib/agents/actions.ts",
       "omrade": "appkode",
-      "byte": 3172
+      "byte": 3197
     },
     {
       "sti": "src/lib/agents/agent-notify.ts",
@@ -26264,12 +27418,12 @@
     {
       "sti": "src/lib/agents/plan-action-tilgang.test.ts",
       "omrade": "test",
-      "byte": 1432
+      "byte": 1651
     },
     {
       "sti": "src/lib/agents/plan-action-tilgang.ts",
       "omrade": "appkode",
-      "byte": 548
+      "byte": 672
     },
     {
       "sti": "src/lib/agents/plan-effectiveness-agent.ts",
@@ -26459,7 +27613,7 @@
     {
       "sti": "src/lib/ai-plan/generate.ts",
       "omrade": "appkode",
-      "byte": 7920
+      "byte": 7928
     },
     {
       "sti": "src/lib/ai-plan/schema.ts",
@@ -26629,7 +27783,7 @@
     {
       "sti": "src/lib/auth/assert-own-or-coached.ts",
       "omrade": "appkode",
-      "byte": 1052
+      "byte": 1060
     },
     {
       "sti": "src/lib/auth/booking-scope.ts",
@@ -26662,9 +27816,34 @@
       "byte": 3917
     },
     {
+      "sti": "src/lib/auth/coach-tilgang-org.test.ts",
+      "omrade": "test",
+      "byte": 6013
+    },
+    {
       "sti": "src/lib/auth/coached.ts",
       "omrade": "appkode",
-      "byte": 4904
+      "byte": 8038
+    },
+    {
+      "sti": "src/lib/auth/datagolf-regel.test.ts",
+      "omrade": "test",
+      "byte": 1490
+    },
+    {
+      "sti": "src/lib/auth/datagolf-regel.ts",
+      "omrade": "appkode",
+      "byte": 1635
+    },
+    {
+      "sti": "src/lib/auth/datagolf-tilgang.test.ts",
+      "omrade": "test",
+      "byte": 2797
+    },
+    {
+      "sti": "src/lib/auth/datagolf-tilgang.ts",
+      "omrade": "appkode",
+      "byte": 1730
     },
     {
       "sti": "src/lib/auth/effective-capabilities-core.test.ts",
@@ -26684,12 +27863,12 @@
     {
       "sti": "src/lib/auth/ekstern-leser-scope.test.ts",
       "omrade": "test",
-      "byte": 5256
+      "byte": 5358
     },
     {
       "sti": "src/lib/auth/ekstern-leser-scope.ts",
       "omrade": "appkode",
-      "byte": 5246
+      "byte": 5380
     },
     {
       "sti": "src/lib/auth/ekstern-leser-trukket.test.ts",
@@ -26704,17 +27883,17 @@
     {
       "sti": "src/lib/auth/get-current-user-avvis.test.ts",
       "omrade": "test",
-      "byte": 8883
+      "byte": 10167
     },
     {
       "sti": "src/lib/auth/getCurrentUser.ts",
       "omrade": "appkode",
-      "byte": 7403
+      "byte": 8360
     },
     {
       "sti": "src/lib/auth/guards-avvis.test.ts",
       "omrade": "test",
-      "byte": 11433
+      "byte": 11497
     },
     {
       "sti": "src/lib/auth/logout.ts",
@@ -26724,12 +27903,12 @@
     {
       "sti": "src/lib/auth/minor.test.ts",
       "omrade": "test",
-      "byte": 3251
+      "byte": 10320
     },
     {
       "sti": "src/lib/auth/minor.ts",
       "omrade": "appkode",
-      "byte": 2422
+      "byte": 6054
     },
     {
       "sti": "src/lib/auth/onboarding-state.ts",
@@ -26784,7 +27963,12 @@
     {
       "sti": "src/lib/auth/talent-allowlist.ts",
       "omrade": "appkode",
-      "byte": 2210
+      "byte": 2413
+    },
+    {
+      "sti": "src/lib/auth/team-wang-sperre.ts",
+      "omrade": "appkode",
+      "byte": 485
     },
     {
       "sti": "src/lib/avatar-colors.ts",
@@ -26802,6 +27986,11 @@
       "byte": 8128
     },
     {
+      "sti": "src/lib/booking/betalingsvalg.ts",
+      "omrade": "appkode",
+      "byte": 1367
+    },
+    {
       "sti": "src/lib/booking/calendar-result.ts",
       "omrade": "appkode",
       "byte": 1328
@@ -26810,6 +27999,11 @@
       "sti": "src/lib/booking/checkout-coach.test.ts",
       "omrade": "test",
       "byte": 2944
+    },
+    {
+      "sti": "src/lib/booking/coach-avlysning.ts",
+      "omrade": "appkode",
+      "byte": 811
     },
     {
       "sti": "src/lib/booking/coach-colors.test.ts",
@@ -27139,7 +28333,7 @@
     {
       "sti": "src/lib/datagolf/challenge-data.test.ts",
       "omrade": "test",
-      "byte": 3612
+      "byte": 4087
     },
     {
       "sti": "src/lib/datagolf/challenge-data.ts",
@@ -27169,7 +28363,7 @@
     {
       "sti": "src/lib/datagolf/player-tool-data.ts",
       "omrade": "appkode",
-      "byte": 7016
+      "byte": 7050
     },
     {
       "sti": "src/lib/datagolf/player-tool.test.ts",
@@ -27239,7 +28433,7 @@
     {
       "sti": "src/lib/deling/navngitt.ts",
       "omrade": "appkode",
-      "byte": 14832
+      "byte": 15170
     },
     {
       "sti": "src/lib/deling/profil-lesing.test.ts",
@@ -27254,12 +28448,12 @@
     {
       "sti": "src/lib/deling/samtykke-regler.test.ts",
       "omrade": "test",
-      "byte": 11605
+      "byte": 16742
     },
     {
       "sti": "src/lib/deling/samtykke-regler.ts",
       "omrade": "appkode",
-      "byte": 6861
+      "byte": 10229
     },
     {
       "sti": "src/lib/deling/samtykke.test.ts",
@@ -27269,7 +28463,7 @@
     {
       "sti": "src/lib/deling/samtykke.ts",
       "omrade": "appkode",
-      "byte": 5414
+      "byte": 5694
     },
     {
       "sti": "src/lib/deling/treneroversikt.ts",
@@ -27367,6 +28561,16 @@
       "byte": 1926
     },
     {
+      "sti": "src/lib/domain/demo-grupper.test.ts",
+      "omrade": "test",
+      "byte": 1685
+    },
+    {
+      "sti": "src/lib/domain/demo-grupper.ts",
+      "omrade": "appkode",
+      "byte": 1877
+    },
+    {
       "sti": "src/lib/domain/drill-estimat.test.ts",
       "omrade": "test",
       "byte": 2243
@@ -27449,7 +28653,7 @@
     {
       "sti": "src/lib/domain/grupper.ts",
       "omrade": "appkode",
-      "byte": 5907
+      "byte": 6964
     },
     {
       "sti": "src/lib/domain/gruppesynk.test.ts",
@@ -27624,12 +28828,12 @@
     {
       "sti": "src/lib/domain/pei/poeng-tabeller.ts",
       "omrade": "appkode",
-      "byte": 1103
+      "byte": 1953
     },
     {
       "sti": "src/lib/domain/pei/protokoll-definisjoner.ts",
       "omrade": "appkode",
-      "byte": 18121
+      "byte": 18570
     },
     {
       "sti": "src/lib/domain/pei/protokoll-typer.ts",
@@ -27639,12 +28843,12 @@
     {
       "sti": "src/lib/domain/pei/scorekort-motor.test.ts",
       "omrade": "test",
-      "byte": 9882
+      "byte": 11191
     },
     {
       "sti": "src/lib/domain/pei/scorekort-motor.ts",
       "omrade": "appkode",
-      "byte": 13082
+      "byte": 13887
     },
     {
       "sti": "src/lib/domain/pei/vlookup.ts",
@@ -27857,9 +29061,19 @@
       "byte": 8856
     },
     {
+      "sti": "src/lib/domain/tn-aksefordeling.test.ts",
+      "omrade": "test",
+      "byte": 987
+    },
+    {
+      "sti": "src/lib/domain/tn-aksefordeling.ts",
+      "omrade": "appkode",
+      "byte": 1532
+    },
+    {
       "sti": "src/lib/domain/tn-arbeidsflate.ts",
       "omrade": "appkode",
-      "byte": 67031
+      "byte": 68838
     },
     {
       "sti": "src/lib/domain/tn-dokument-lagring.test.ts",
@@ -27889,7 +29103,7 @@
     {
       "sti": "src/lib/domain/tn-oversikt.test.ts",
       "omrade": "test",
-      "byte": 3230
+      "byte": 3305
     },
     {
       "sti": "src/lib/domain/tn-post-regler.test.ts",
@@ -27904,7 +29118,7 @@
     {
       "sti": "src/lib/domain/tn-post.ts",
       "omrade": "appkode",
-      "byte": 21780
+      "byte": 21827
     },
     {
       "sti": "src/lib/domain/tn-rangliste.test.ts",
@@ -27919,12 +29133,12 @@
     {
       "sti": "src/lib/domain/tn-redigering.test.ts",
       "omrade": "test",
-      "byte": 4229
+      "byte": 5543
     },
     {
       "sti": "src/lib/domain/tn-redigering.ts",
       "omrade": "appkode",
-      "byte": 16512
+      "byte": 17656
     },
     {
       "sti": "src/lib/domain/tn-skall.ts",
@@ -27934,17 +29148,17 @@
     {
       "sti": "src/lib/domain/tn-spiller-oversikt.test.ts",
       "omrade": "test",
-      "byte": 40050
+      "byte": 40119
     },
     {
       "sti": "src/lib/domain/tn-teknisk-plan.test.ts",
       "omrade": "test",
-      "byte": 11286
+      "byte": 11365
     },
     {
       "sti": "src/lib/domain/tn-teknisk-plan.ts",
       "omrade": "appkode",
-      "byte": 12991
+      "byte": 13098
     },
     {
       "sti": "src/lib/domain/tn-testdag-lock.ts",
@@ -27952,29 +29166,34 @@
       "byte": 1370
     },
     {
+      "sti": "src/lib/domain/tn-tilgang-demo.test.ts",
+      "omrade": "test",
+      "byte": 2803
+    },
+    {
       "sti": "src/lib/domain/tn-tilgang-mutations.test.ts",
       "omrade": "test",
-      "byte": 5871
+      "byte": 5944
     },
     {
       "sti": "src/lib/domain/tn-tilgang.ts",
       "omrade": "appkode",
-      "byte": 13213
+      "byte": 14600
     },
     {
       "sti": "src/lib/domain/tn-vedlegg.test.ts",
       "omrade": "test",
-      "byte": 4382
+      "byte": 4458
     },
     {
       "sti": "src/lib/domain/tn-workbench.test.ts",
       "omrade": "test",
-      "byte": 32538
+      "byte": 32617
     },
     {
       "sti": "src/lib/domain/tn-workbench.ts",
       "omrade": "appkode",
-      "byte": 31331
+      "byte": 31227
     },
     {
       "sti": "src/lib/domain/turneringshistorikk.ts",
@@ -28029,22 +29248,22 @@
     {
       "sti": "src/lib/domain/workbench/load.test.ts",
       "omrade": "test",
-      "byte": 973
+      "byte": 1059
     },
     {
       "sti": "src/lib/domain/workbench/load.ts",
       "omrade": "appkode",
-      "byte": 3036
+      "byte": 3009
     },
     {
       "sti": "src/lib/domain/workbench/operations.test.ts",
       "omrade": "test",
-      "byte": 22397
+      "byte": 23802
     },
     {
       "sti": "src/lib/domain/workbench/operations.ts",
       "omrade": "appkode",
-      "byte": 25506
+      "byte": 26350
     },
     {
       "sti": "src/lib/domain/workbench/ovelse-detaljer.test.ts",
@@ -28102,9 +29321,19 @@
       "byte": 2339
     },
     {
+      "sti": "src/lib/domain/workbench/tid-sum.test.ts",
+      "omrade": "test",
+      "byte": 1900
+    },
+    {
+      "sti": "src/lib/domain/workbench/tid-sum.ts",
+      "omrade": "appkode",
+      "byte": 1062
+    },
+    {
       "sti": "src/lib/domain/workbench/types.ts",
       "omrade": "appkode",
-      "byte": 19851
+      "byte": 21021
     },
     {
       "sti": "src/lib/domain/workbench/warnings.ts",
@@ -28134,7 +29363,7 @@
     {
       "sti": "src/lib/email/booking-emails.ts",
       "omrade": "appkode",
-      "byte": 12248
+      "byte": 14144
     },
     {
       "sti": "src/lib/email/booking-endret-time.test.ts",
@@ -28309,12 +29538,12 @@
     {
       "sti": "src/lib/gdpr/anonymiser-bruker.behavior.test.ts",
       "omrade": "test",
-      "byte": 9046
+      "byte": 9546
     },
     {
       "sti": "src/lib/gdpr/anonymiser-bruker.ts",
       "omrade": "appkode",
-      "byte": 10630
+      "byte": 10997
     },
     {
       "sti": "src/lib/gdpr/anonymiser-felter.test.ts",
@@ -28484,7 +29713,7 @@
     {
       "sti": "src/lib/health/samtykke-regler.ts",
       "omrade": "appkode",
-      "byte": 9406
+      "byte": 9576
     },
     {
       "sti": "src/lib/health/samtykke.ts",
@@ -29649,7 +30878,7 @@
     {
       "sti": "src/lib/moderering/actions.ts",
       "omrade": "appkode",
-      "byte": 4654
+      "byte": 4727
     },
     {
       "sti": "src/lib/mulligan/ledige-tider.test.ts",
@@ -29694,7 +30923,7 @@
     {
       "sti": "src/lib/notion/bootstrap.ts",
       "omrade": "appkode",
-      "byte": 3159
+      "byte": 2067
     },
     {
       "sti": "src/lib/notion/client.ts",
@@ -29802,6 +31031,16 @@
       "byte": 4671
     },
     {
+      "sti": "src/lib/onboarding/oppstart.test.ts",
+      "omrade": "test",
+      "byte": 3969
+    },
+    {
+      "sti": "src/lib/onboarding/oppstart.ts",
+      "omrade": "appkode",
+      "byte": 9411
+    },
+    {
       "sti": "src/lib/onboarding/sg-baseline.test.ts",
       "omrade": "test",
       "byte": 1801
@@ -29904,7 +31143,7 @@
     {
       "sti": "src/lib/portal-abonnement/ph25-abonnement-data.ts",
       "omrade": "appkode",
-      "byte": 4500
+      "byte": 4468
     },
     {
       "sti": "src/lib/portal-ai/ai-data.ts",
@@ -29920,6 +31159,11 @@
       "sti": "src/lib/portal-analyse/load-ph17-trackman.ts",
       "omrade": "appkode",
       "byte": 6768
+    },
+    {
+      "sti": "src/lib/portal-analyse/load-trackman-stats.ts",
+      "omrade": "appkode",
+      "byte": 3843
     },
     {
       "sti": "src/lib/portal-analyse/periode-vindu.test.ts",
@@ -29952,9 +31196,34 @@
       "byte": 10927
     },
     {
+      "sti": "src/lib/portal-analyse/resultater-data.ts",
+      "omrade": "appkode",
+      "byte": 5453
+    },
+    {
+      "sti": "src/lib/portal-analyse/stats-dybde.test.ts",
+      "omrade": "test",
+      "byte": 5541
+    },
+    {
       "sti": "src/lib/portal-analyse/tm-hub-data.ts",
       "omrade": "appkode",
-      "byte": 8772
+      "byte": 8613
+    },
+    {
+      "sti": "src/lib/portal-analyse/trackman-stats.test.ts",
+      "omrade": "test",
+      "byte": 6087
+    },
+    {
+      "sti": "src/lib/portal-analyse/trackman-stats.ts",
+      "omrade": "appkode",
+      "byte": 15130
+    },
+    {
+      "sti": "src/lib/portal-analyse/trening-stats.ts",
+      "omrade": "appkode",
+      "byte": 2847
     },
     {
       "sti": "src/lib/portal-analyse/trenings-historikk.test.ts",
@@ -29974,7 +31243,7 @@
     {
       "sti": "src/lib/portal-analyse/treningsanalyse-data.ts",
       "omrade": "appkode",
-      "byte": 6889
+      "byte": 8192
     },
     {
       "sti": "src/lib/portal-booking/bekreft-data.ts",
@@ -30074,12 +31343,27 @@
     {
       "sti": "src/lib/portal-drills/drills-data.ts",
       "omrade": "appkode",
-      "byte": 10498
+      "byte": 10512
     },
     {
       "sti": "src/lib/portal-drills/duplicate-drill.ts",
       "omrade": "appkode",
       "byte": 3232
+    },
+    {
+      "sti": "src/lib/portal-drills/ovelser-data.ts",
+      "omrade": "appkode",
+      "byte": 2599
+    },
+    {
+      "sti": "src/lib/portal-drills/ovelser-visning.test.ts",
+      "omrade": "test",
+      "byte": 3621
+    },
+    {
+      "sti": "src/lib/portal-drills/ovelser-visning.ts",
+      "omrade": "appkode",
+      "byte": 9281
     },
     {
       "sti": "src/lib/portal-drills/ph13-drills-data.test.ts",
@@ -30189,12 +31473,12 @@
     {
       "sti": "src/lib/portal-live/live-route.test.ts",
       "omrade": "test",
-      "byte": 2104
+      "byte": 2126
     },
     {
       "sti": "src/lib/portal-live/live-route.ts",
       "omrade": "appkode",
-      "byte": 2245
+      "byte": 2454
     },
     {
       "sti": "src/lib/portal-live/live-state.test.ts",
@@ -30219,7 +31503,7 @@
     {
       "sti": "src/lib/portal-live/load-ph04-07.ts",
       "omrade": "appkode",
-      "byte": 8848
+      "byte": 11463
     },
     {
       "sti": "src/lib/portal-live/ph04-07-data.test.ts",
@@ -30229,7 +31513,7 @@
     {
       "sti": "src/lib/portal-live/ph04-07-data.ts",
       "omrade": "appkode",
-      "byte": 3749
+      "byte": 4111
     },
     {
       "sti": "src/lib/portal-live/resolve-live-session.ts",
@@ -30267,6 +31551,11 @@
       "byte": 3764
     },
     {
+      "sti": "src/lib/portal-live/wb-live-actions.ts",
+      "omrade": "appkode",
+      "byte": 8987
+    },
+    {
       "sti": "src/lib/portal-live/wb-live-map.test.ts",
       "omrade": "test",
       "byte": 2667
@@ -30275,6 +31564,16 @@
       "sti": "src/lib/portal-live/wb-live-map.ts",
       "omrade": "appkode",
       "byte": 4487
+    },
+    {
+      "sti": "src/lib/portal-live/wb-ovelse-logg.test.ts",
+      "omrade": "test",
+      "byte": 2000
+    },
+    {
+      "sti": "src/lib/portal-live/wb-ovelse-logg.ts",
+      "omrade": "appkode",
+      "byte": 2914
     },
     {
       "sti": "src/lib/portal-mal/ph19-mal-data.test.ts",
@@ -30327,6 +31626,16 @@
       "byte": 9999
     },
     {
+      "sti": "src/lib/portal-okt/formel-ord.test.ts",
+      "omrade": "test",
+      "byte": 568
+    },
+    {
+      "sti": "src/lib/portal-okt/formel-ord.ts",
+      "omrade": "appkode",
+      "byte": 1161
+    },
+    {
       "sti": "src/lib/portal-okt/okt-detalj-data.test.ts",
       "omrade": "test",
       "byte": 1613
@@ -30352,14 +31661,29 @@
       "byte": 2728
     },
     {
+      "sti": "src/lib/portal-plan/uke-periode.test.ts",
+      "omrade": "test",
+      "byte": 888
+    },
+    {
       "sti": "src/lib/portal-plan/uke-periode.ts",
       "omrade": "appkode",
-      "byte": 1661
+      "byte": 2718
+    },
+    {
+      "sti": "src/lib/portal-runder/live-slag.test.ts",
+      "omrade": "test",
+      "byte": 1610
+    },
+    {
+      "sti": "src/lib/portal-runder/live-slag.ts",
+      "omrade": "appkode",
+      "byte": 2913
     },
     {
       "sti": "src/lib/portal-runder/load-ph08-09.ts",
       "omrade": "appkode",
-      "byte": 3365
+      "byte": 2296
     },
     {
       "sti": "src/lib/portal-runder/manuell-sg-lagring.test.ts",
@@ -30369,7 +31693,7 @@
     {
       "sti": "src/lib/portal-runder/manuell-sg-lesing.test.ts",
       "omrade": "test",
-      "byte": 2836
+      "byte": 2840
     },
     {
       "sti": "src/lib/portal-runder/manuell-sg.test.ts",
@@ -30404,12 +31728,42 @@
     {
       "sti": "src/lib/portal-runder/ph18-data.test.ts",
       "omrade": "test",
-      "byte": 4673
+      "byte": 6020
     },
     {
       "sti": "src/lib/portal-runder/ph18-data.ts",
       "omrade": "appkode",
-      "byte": 8639
+      "byte": 11217
+    },
+    {
+      "sti": "src/lib/portal-runder/rask-score.test.ts",
+      "omrade": "test",
+      "byte": 1659
+    },
+    {
+      "sti": "src/lib/portal-runder/rask-score.ts",
+      "omrade": "appkode",
+      "byte": 2209
+    },
+    {
+      "sti": "src/lib/portal-runder/scorekort-slag.test.ts",
+      "omrade": "test",
+      "byte": 1951
+    },
+    {
+      "sti": "src/lib/portal-runder/scorekort-slag.ts",
+      "omrade": "appkode",
+      "byte": 2059
+    },
+    {
+      "sti": "src/lib/portal-runder/tiger5-runde.test.ts",
+      "omrade": "test",
+      "byte": 1394
+    },
+    {
+      "sti": "src/lib/portal-runder/tiger5-runde.ts",
+      "omrade": "appkode",
+      "byte": 2466
     },
     {
       "sti": "src/lib/portal-stats/datagolf-data.ts",
@@ -30477,14 +31831,19 @@
       "byte": 3306
     },
     {
+      "sti": "src/lib/portal-tester/ph14-tester-data.ts",
+      "omrade": "appkode",
+      "byte": 3904
+    },
+    {
       "sti": "src/lib/portal-tester/ph15-data.test.ts",
       "omrade": "test",
-      "byte": 2768
+      "byte": 2771
     },
     {
       "sti": "src/lib/portal-tester/ph15-data.ts",
       "omrade": "appkode",
-      "byte": 3902
+      "byte": 3954
     },
     {
       "sti": "src/lib/portal-tester/protocol.test.ts",
@@ -30537,6 +31896,11 @@
       "byte": 3420
     },
     {
+      "sti": "src/lib/portal-tester/test-resultat-tilgang.ts",
+      "omrade": "appkode",
+      "byte": 2940
+    },
+    {
       "sti": "src/lib/portal-tester/test-scoring.ts",
       "omrade": "appkode",
       "byte": 13818
@@ -30549,7 +31913,7 @@
     {
       "sti": "src/lib/portal-tester/tester-data.tsx",
       "omrade": "appkode",
-      "byte": 11445
+      "byte": 12031
     },
     {
       "sti": "src/lib/portal-tester/tester-live-kort.ts",
@@ -30559,7 +31923,7 @@
     {
       "sti": "src/lib/portal-tester/tn-catalog.ts",
       "omrade": "appkode",
-      "byte": 11463
+      "byte": 13423
     },
     {
       "sti": "src/lib/portal-tester/tn-draft.test.ts",
@@ -30589,7 +31953,7 @@
     {
       "sti": "src/lib/portal-tester/tn-integration.ts",
       "omrade": "appkode",
-      "byte": 2436
+      "byte": 2678
     },
     {
       "sti": "src/lib/portal-tester/tn-j05-reise.test.ts",
@@ -30599,7 +31963,7 @@
     {
       "sti": "src/lib/portal-tester/tn-kildefasit.test.ts",
       "omrade": "test",
-      "byte": 4183
+      "byte": 4337
     },
     {
       "sti": "src/lib/portal-tester/tn-persistence.test.ts",
@@ -30629,22 +31993,22 @@
     {
       "sti": "src/lib/portal-tester/tn-scoring.test.ts",
       "omrade": "test",
-      "byte": 5532
+      "byte": 10348
     },
     {
       "sti": "src/lib/portal-tester/tn-scoring.ts",
       "omrade": "appkode",
-      "byte": 8587
+      "byte": 11150
     },
     {
       "sti": "src/lib/portal-tester/tn-session.ts",
       "omrade": "appkode",
-      "byte": 1322
+      "byte": 1279
     },
     {
       "sti": "src/lib/portal-tester/tn-verified-rules.test.ts",
       "omrade": "test",
-      "byte": 4818
+      "byte": 4868
     },
     {
       "sti": "src/lib/portal-tester/use-tn-draft.ts",
@@ -30659,12 +32023,12 @@
     {
       "sti": "src/lib/portal-tester/wang-resultat-tilgang.test.ts",
       "omrade": "test",
-      "byte": 4703
+      "byte": 9897
     },
     {
       "sti": "src/lib/portal-tester/wang-resultat-tilgang.ts",
       "omrade": "appkode",
-      "byte": 3508
+      "byte": 9332
     },
     {
       "sti": "src/lib/portal-turnering/planlegger-bekreftelse.test.ts",
@@ -30717,6 +32081,11 @@
       "byte": 7937
     },
     {
+      "sti": "src/lib/portal/fasilitet-katalog.ts",
+      "omrade": "appkode",
+      "byte": 1772
+    },
+    {
       "sti": "src/lib/portal/gapping-data.ts",
       "omrade": "appkode",
       "byte": 1741
@@ -30724,7 +32093,7 @@
     {
       "sti": "src/lib/portal/goals/detail-data.ts",
       "omrade": "appkode",
-      "byte": 706
+      "byte": 714
     },
     {
       "sti": "src/lib/portal/goals/frekvens-okter.test.ts",
@@ -30777,6 +32146,11 @@
       "byte": 5969
     },
     {
+      "sti": "src/lib/portal/initialer.ts",
+      "omrade": "appkode",
+      "byte": 325
+    },
+    {
       "sti": "src/lib/portal/legacy-plan-week-data.ts",
       "omrade": "appkode",
       "byte": 1677
@@ -30789,7 +32163,7 @@
     {
       "sti": "src/lib/portal/min-kurve-data.ts",
       "omrade": "appkode",
-      "byte": 3274
+      "byte": 3541
     },
     {
       "sti": "src/lib/portal/neste-beste-handling.test.ts",
@@ -30812,6 +32186,16 @@
       "byte": 1470
     },
     {
+      "sti": "src/lib/portal/okt-bilde.test.ts",
+      "omrade": "test",
+      "byte": 860
+    },
+    {
+      "sti": "src/lib/portal/okt-bilde.ts",
+      "omrade": "appkode",
+      "byte": 1595
+    },
+    {
       "sti": "src/lib/portal/optimal-session.ts",
       "omrade": "appkode",
       "byte": 2256
@@ -30819,7 +32203,17 @@
     {
       "sti": "src/lib/portal/ph01-data.ts",
       "omrade": "appkode",
-      "byte": 3220
+      "byte": 3664
+    },
+    {
+      "sti": "src/lib/portal/ph01-forbedring.test.ts",
+      "omrade": "test",
+      "byte": 1230
+    },
+    {
+      "sti": "src/lib/portal/ph01-forbedring.ts",
+      "omrade": "appkode",
+      "byte": 1919
     },
     {
       "sti": "src/lib/portal/ph01-fullfort.test.ts",
@@ -30830,6 +32224,16 @@
       "sti": "src/lib/portal/ph01-fullfort.ts",
       "omrade": "appkode",
       "byte": 2953
+    },
+    {
+      "sti": "src/lib/portal/ph21-innboks.test.ts",
+      "omrade": "test",
+      "byte": 2909
+    },
+    {
+      "sti": "src/lib/portal/ph21-innboks.ts",
+      "omrade": "appkode",
+      "byte": 7210
     },
     {
       "sti": "src/lib/portal/ph24-data.test.ts",
@@ -30854,12 +32258,12 @@
     {
       "sti": "src/lib/portal/plan-visning.test.ts",
       "omrade": "test",
-      "byte": 3984
+      "byte": 4683
     },
     {
       "sti": "src/lib/portal/plan-visning.ts",
       "omrade": "appkode",
-      "byte": 5876
+      "byte": 6541
     },
     {
       "sti": "src/lib/portal/plan-week.test.ts",
@@ -30959,7 +32363,7 @@
     {
       "sti": "src/lib/portal/turneringshistorikk-data.ts",
       "omrade": "appkode",
-      "byte": 3354
+      "byte": 3731
     },
     {
       "sti": "src/lib/portal/ukesdigest.ts",
@@ -31117,9 +32521,14 @@
       "byte": 1462
     },
     {
+      "sti": "src/lib/recording/lyd-samtykke-actions.test.ts",
+      "omrade": "test",
+      "byte": 3226
+    },
+    {
       "sti": "src/lib/recording/lyd-samtykke-actions.ts",
       "omrade": "appkode",
-      "byte": 9859
+      "byte": 10593
     },
     {
       "sti": "src/lib/recording/lyd-samtykke-email.ts",
@@ -31139,12 +32548,12 @@
     {
       "sti": "src/lib/recording/lyd-samtykke.test.ts",
       "omrade": "test",
-      "byte": 5118
+      "byte": 6352
     },
     {
       "sti": "src/lib/recording/lyd-samtykke.ts",
       "omrade": "appkode",
-      "byte": 3125
+      "byte": 5272
     },
     {
       "sti": "src/lib/recording/okt-tilgang.test.ts",
@@ -31534,17 +32943,27 @@
     {
       "sti": "src/lib/stats/offentlig-spiller.test.ts",
       "omrade": "test",
-      "byte": 1753
+      "byte": 1850
     },
     {
       "sti": "src/lib/stats/offentlig-spiller.ts",
       "omrade": "appkode",
-      "byte": 3228
+      "byte": 3422
     },
     {
       "sti": "src/lib/stats/pga-sync.ts",
       "omrade": "appkode",
       "byte": 8639
+    },
+    {
+      "sti": "src/lib/stats/profil-resultater.test.ts",
+      "omrade": "test",
+      "byte": 4092
+    },
+    {
+      "sti": "src/lib/stats/profil-resultater.ts",
+      "omrade": "appkode",
+      "byte": 4862
     },
     {
       "sti": "src/lib/stats/sg-estimator.ts",
@@ -31554,7 +32973,7 @@
     {
       "sti": "src/lib/stats/turnering-queries.ts",
       "omrade": "appkode",
-      "byte": 10489
+      "byte": 10832
     },
     {
       "sti": "src/lib/storage/avatar.ts",
@@ -31577,9 +32996,14 @@
       "byte": 2973
     },
     {
+      "sti": "src/lib/storage/video.test.ts",
+      "omrade": "test",
+      "byte": 4442
+    },
+    {
       "sti": "src/lib/storage/video.ts",
       "omrade": "appkode",
-      "byte": 5406
+      "byte": 6285
     },
     {
       "sti": "src/lib/streak.ts",
@@ -31655,6 +33079,16 @@
       "sti": "src/lib/supabase/server.ts",
       "omrade": "appkode",
       "byte": 860
+    },
+    {
+      "sti": "src/lib/talent/personvern-filter.test.ts",
+      "omrade": "test",
+      "byte": 940
+    },
+    {
+      "sti": "src/lib/talent/personvern-filter.ts",
+      "omrade": "appkode",
+      "byte": 862
     },
     {
       "sti": "src/lib/talent/test-sync.ts",
@@ -31764,12 +33198,12 @@
     {
       "sti": "src/lib/teknisk-plan/tp-visning.test.ts",
       "omrade": "test",
-      "byte": 9060
+      "byte": 9094
     },
     {
       "sti": "src/lib/teknisk-plan/tp-visning.ts",
       "omrade": "appkode",
-      "byte": 20361
+      "byte": 21010
     },
     {
       "sti": "src/lib/teknisk-plan/types.ts",
@@ -31830,6 +33264,16 @@
       "sti": "src/lib/trackman/manglende-data.test.ts",
       "omrade": "test",
       "byte": 1648
+    },
+    {
+      "sti": "src/lib/trackman/okt-oppsummering.test.ts",
+      "omrade": "test",
+      "byte": 1680
+    },
+    {
+      "sti": "src/lib/trackman/okt-oppsummering.ts",
+      "omrade": "appkode",
+      "byte": 2757
     },
     {
       "sti": "src/lib/trackman/parse-csv.ts",
@@ -32089,7 +33533,7 @@
     {
       "sti": "src/lib/v2/hjelpetekster.ts",
       "omrade": "appkode",
-      "byte": 17878
+      "byte": 17879
     },
     {
       "sti": "src/lib/v2/hooks.ts",
@@ -32099,12 +33543,12 @@
     {
       "sti": "src/lib/v2/team-norway.ts",
       "omrade": "appkode",
-      "byte": 6801
+      "byte": 7419
     },
     {
       "sti": "src/lib/v2/tema-default.ts",
       "omrade": "appkode",
-      "byte": 1071
+      "byte": 982
     },
     {
       "sti": "src/lib/v2/train-lock.ts",
@@ -32170,6 +33614,121 @@
       "sti": "src/lib/wagr/wagr-client.ts",
       "omrade": "appkode",
       "byte": 7170
+    },
+    {
+      "sti": "src/lib/wang-supabase/athletes.test.ts",
+      "omrade": "test",
+      "byte": 4521
+    },
+    {
+      "sti": "src/lib/wang-supabase/auth.ts",
+      "omrade": "appkode",
+      "byte": 6691
+    },
+    {
+      "sti": "src/lib/wang-supabase/calendar.test.ts",
+      "omrade": "test",
+      "byte": 6276
+    },
+    {
+      "sti": "src/lib/wang-supabase/calendar.ts",
+      "omrade": "appkode",
+      "byte": 19258
+    },
+    {
+      "sti": "src/lib/wang-supabase/client.ts",
+      "omrade": "appkode",
+      "byte": 422
+    },
+    {
+      "sti": "src/lib/wang-supabase/data.ts",
+      "omrade": "appkode",
+      "byte": 19258
+    },
+    {
+      "sti": "src/lib/wang-supabase/messages.test.ts",
+      "omrade": "test",
+      "byte": 4462
+    },
+    {
+      "sti": "src/lib/wang-supabase/messages.ts",
+      "omrade": "appkode",
+      "byte": 10068
+    },
+    {
+      "sti": "src/lib/wang-supabase/proxy.ts",
+      "omrade": "appkode",
+      "byte": 1399
+    },
+    {
+      "sti": "src/lib/wang-supabase/roles.test.ts",
+      "omrade": "test",
+      "byte": 3477
+    },
+    {
+      "sti": "src/lib/wang-supabase/roles.ts",
+      "omrade": "appkode",
+      "byte": 7028
+    },
+    {
+      "sti": "src/lib/wang-supabase/routes.test.ts",
+      "omrade": "test",
+      "byte": 1392
+    },
+    {
+      "sti": "src/lib/wang-supabase/routes.ts",
+      "omrade": "appkode",
+      "byte": 1074
+    },
+    {
+      "sti": "src/lib/wang-supabase/security-contract.test.ts",
+      "omrade": "test",
+      "byte": 6204
+    },
+    {
+      "sti": "src/lib/wang-supabase/server.ts",
+      "omrade": "appkode",
+      "byte": 976
+    },
+    {
+      "sti": "src/lib/wang-supabase/synthetic-profiles.test.ts",
+      "omrade": "test",
+      "byte": 2111
+    },
+    {
+      "sti": "src/lib/wang-supabase/synthetic-profiles.ts",
+      "omrade": "appkode",
+      "byte": 5287
+    },
+    {
+      "sti": "src/lib/wang-supabase/test-account-linking.test.ts",
+      "omrade": "test",
+      "byte": 3615
+    },
+    {
+      "sti": "src/lib/wang-supabase/test-account-linking.ts",
+      "omrade": "appkode",
+      "byte": 6004
+    },
+    {
+      "sti": "src/lib/wang-supabase/types.ts",
+      "omrade": "appkode",
+      "byte": 4898
+    },
+    {
+      "sti": "src/lib/wang-supabase/wellbeing.test.ts",
+      "omrade": "test",
+      "byte": 3910
+    },
+    {
+      "sti": "src/lib/wang-supabase/wellbeing.ts",
+      "omrade": "appkode",
+      "byte": 5053
+    },
+    {
+      "sti": "src/lib/wang-supabase/workbench.test.ts",
+      "omrade": "test",
+      "byte": 1642
     },
     {
       "sti": "src/lib/webhook-retry.ts",
@@ -32279,7 +33838,7 @@
     {
       "sti": "src/lib/workbench/fys-turnering-actions.ts",
       "omrade": "appkode",
-      "byte": 15165
+      "byte": 15911
     },
     {
       "sti": "src/lib/workbench/fys-turnering-data.ts",
@@ -32299,7 +33858,7 @@
     {
       "sti": "src/lib/workbench/group-scope.ts",
       "omrade": "appkode",
-      "byte": 1480
+      "byte": 3042
     },
     {
       "sti": "src/lib/workbench/group-session-actions.ts",
@@ -32307,14 +33866,34 @@
       "byte": 17245
     },
     {
+      "sti": "src/lib/workbench/gruppe-arv-regler.test.ts",
+      "omrade": "test",
+      "byte": 1482
+    },
+    {
+      "sti": "src/lib/workbench/gruppe-arv-regler.ts",
+      "omrade": "appkode",
+      "byte": 1961
+    },
+    {
+      "sti": "src/lib/workbench/gruppe-arv.ts",
+      "omrade": "appkode",
+      "byte": 1963
+    },
+    {
+      "sti": "src/lib/workbench/gruppe-innsyn.test.ts",
+      "omrade": "test",
+      "byte": 1022
+    },
+    {
       "sti": "src/lib/workbench/gruppe-periode-actions.ts",
       "omrade": "appkode",
-      "byte": 7905
+      "byte": 9505
     },
     {
       "sti": "src/lib/workbench/hendelser-actions.ts",
       "omrade": "appkode",
-      "byte": 4216
+      "byte": 4264
     },
     {
       "sti": "src/lib/workbench/hendelser-kontrakt.ts",
@@ -32334,7 +33913,7 @@
     {
       "sti": "src/lib/workbench/inspektor-data.ts",
       "omrade": "appkode",
-      "byte": 1172
+      "byte": 1232
     },
     {
       "sti": "src/lib/workbench/live-switch.test.ts",
@@ -32359,7 +33938,7 @@
     {
       "sti": "src/lib/workbench/load-tilgang.test.ts",
       "omrade": "test",
-      "byte": 6033
+      "byte": 6096
     },
     {
       "sti": "src/lib/workbench/load-workbench.ts",
@@ -32387,6 +33966,26 @@
       "byte": 4081
     },
     {
+      "sti": "src/lib/workbench/maanedsplan-core.test.ts",
+      "omrade": "test",
+      "byte": 3669
+    },
+    {
+      "sti": "src/lib/workbench/maanedsplan-core.ts",
+      "omrade": "appkode",
+      "byte": 4748
+    },
+    {
+      "sti": "src/lib/workbench/maanedsplan-regler.test.ts",
+      "omrade": "test",
+      "byte": 2065
+    },
+    {
+      "sti": "src/lib/workbench/maanedsplan-regler.ts",
+      "omrade": "appkode",
+      "byte": 4198
+    },
+    {
       "sti": "src/lib/workbench/map-template-week.ts",
       "omrade": "appkode",
       "byte": 3550
@@ -32409,7 +34008,7 @@
     {
       "sti": "src/lib/workbench/ovelse-sok.ts",
       "omrade": "appkode",
-      "byte": 6476
+      "byte": 6906
     },
     {
       "sti": "src/lib/workbench/period-lookup.ts",
@@ -32419,12 +34018,37 @@
     {
       "sti": "src/lib/workbench/periode-core.ts",
       "omrade": "appkode",
-      "byte": 5740
+      "byte": 7237
     },
     {
       "sti": "src/lib/workbench/periode-core.valgt-sesong.test.ts",
       "omrade": "test",
-      "byte": 8741
+      "byte": 10792
+    },
+    {
+      "sti": "src/lib/workbench/periode-ukefordeling-regler.test.ts",
+      "omrade": "test",
+      "byte": 2351
+    },
+    {
+      "sti": "src/lib/workbench/periode-ukefordeling-regler.ts",
+      "omrade": "appkode",
+      "byte": 3353
+    },
+    {
+      "sti": "src/lib/workbench/periode-ukefordeling.test.ts",
+      "omrade": "test",
+      "byte": 3921
+    },
+    {
+      "sti": "src/lib/workbench/periode-ukefordeling.ts",
+      "omrade": "appkode",
+      "byte": 3480
+    },
+    {
+      "sti": "src/lib/workbench/perioder.axis-minutes.test.ts",
+      "omrade": "test",
+      "byte": 2096
     },
     {
       "sti": "src/lib/workbench/perioder.restitusjon.test.ts",
@@ -32434,7 +34058,7 @@
     {
       "sti": "src/lib/workbench/perioder.ts",
       "omrade": "appkode",
-      "byte": 2037
+      "byte": 3293
     },
     {
       "sti": "src/lib/workbench/plan-angre-token.ts",
@@ -32459,12 +34083,12 @@
     {
       "sti": "src/lib/workbench/plan-kalender-data.test.ts",
       "omrade": "test",
-      "byte": 2261
+      "byte": 2310
     },
     {
       "sti": "src/lib/workbench/plan-kalender-data.ts",
       "omrade": "appkode",
-      "byte": 3281
+      "byte": 3288
     },
     {
       "sti": "src/lib/workbench/plan-kontekst.test.ts",
@@ -32479,7 +34103,7 @@
     {
       "sti": "src/lib/workbench/plan-tilgang.ts",
       "omrade": "appkode",
-      "byte": 810
+      "byte": 1013
     },
     {
       "sti": "src/lib/workbench/planlegging-rest-kontrakt.test.ts",
@@ -32549,7 +34173,7 @@
     {
       "sti": "src/lib/workbench/session-actions.ts",
       "omrade": "appkode",
-      "byte": 12368
+      "byte": 12422
     },
     {
       "sti": "src/lib/workbench/session-move-math.ts",
@@ -32664,7 +34288,7 @@
     {
       "sti": "src/lib/workbench/treukerssyklus-actions.ts",
       "omrade": "appkode",
-      "byte": 4869
+      "byte": 5142
     },
     {
       "sti": "src/lib/workbench/treukerssyklus-core.ts",
@@ -32709,12 +34333,12 @@
     {
       "sti": "src/lib/workbench/ukeplan-actions.test.ts",
       "omrade": "test",
-      "byte": 12760
+      "byte": 12813
     },
     {
       "sti": "src/lib/workbench/ukeplan-legacy-kandidat.test.ts",
       "omrade": "test",
-      "byte": 4965
+      "byte": 5018
     },
     {
       "sti": "src/lib/workbench/ukeplan-personvern.test.ts",
@@ -32769,7 +34393,7 @@
     {
       "sti": "src/lib/workbench/wb-actions.ts",
       "omrade": "appkode",
-      "byte": 95870
+      "byte": 98669
     },
     {
       "sti": "src/lib/workbench/wb-drill-write.ts",
@@ -32779,12 +34403,12 @@
     {
       "sti": "src/lib/workbench/wb-map.test.ts",
       "omrade": "test",
-      "byte": 4076
+      "byte": 4590
     },
     {
       "sti": "src/lib/workbench/wb-map.ts",
       "omrade": "appkode",
-      "byte": 5321
+      "byte": 5695
     },
     {
       "sti": "src/lib/workbench/wb-mode-action.ts",
@@ -32864,12 +34488,32 @@
     {
       "sti": "src/proxy.ts",
       "omrade": "appkode",
-      "byte": 11670
+      "byte": 12372
     },
     {
       "sti": "src/static-images.d.ts",
       "omrade": "appkode",
       "byte": 104
+    },
+    {
+      "sti": "src/styles/agencyos-ny-cockpit.css",
+      "omrade": "appkode",
+      "byte": 10669
+    },
+    {
+      "sti": "src/styles/agencyos-ny-kalender.css",
+      "omrade": "appkode",
+      "byte": 5130
+    },
+    {
+      "sti": "src/styles/agencyos-ny-stall.css",
+      "omrade": "appkode",
+      "byte": 9666
+    },
+    {
+      "sti": "src/styles/agencyos-ny.css",
+      "omrade": "appkode",
+      "byte": 26126
     },
     {
       "sti": "src/styles/ak-golf-ds-grunnlag.css",
@@ -32930,6 +34574,66 @@
       "sti": "src/styles/navngitt-deling.css",
       "omrade": "appkode",
       "byte": 2440
+    },
+    {
+      "sti": "src/styles/playerhq-ny-idag.css",
+      "omrade": "appkode",
+      "byte": 16941
+    },
+    {
+      "sti": "src/styles/playerhq-ny-iup.css",
+      "omrade": "appkode",
+      "byte": 16505
+    },
+    {
+      "sti": "src/styles/playerhq-ny-kommunikasjon.css",
+      "omrade": "appkode",
+      "byte": 24047
+    },
+    {
+      "sti": "src/styles/playerhq-ny-meg.css",
+      "omrade": "appkode",
+      "byte": 16389
+    },
+    {
+      "sti": "src/styles/playerhq-ny-okt.css",
+      "omrade": "appkode",
+      "byte": 8953
+    },
+    {
+      "sti": "src/styles/playerhq-ny-ovelser.css",
+      "omrade": "appkode",
+      "byte": 17357
+    },
+    {
+      "sti": "src/styles/playerhq-ny-runder.css",
+      "omrade": "appkode",
+      "byte": 23049
+    },
+    {
+      "sti": "src/styles/playerhq-ny-skall.css",
+      "omrade": "appkode",
+      "byte": 1357
+    },
+    {
+      "sti": "src/styles/playerhq-ny-stats.css",
+      "omrade": "appkode",
+      "byte": 8880
+    },
+    {
+      "sti": "src/styles/playerhq-ny-statsdybde.css",
+      "omrade": "appkode",
+      "byte": 17606
+    },
+    {
+      "sti": "src/styles/playerhq-ny-statshub.css",
+      "omrade": "appkode",
+      "byte": 4179
+    },
+    {
+      "sti": "src/styles/playerhq-ny.css",
+      "omrade": "appkode",
+      "byte": 20312
     },
     {
       "sti": "src/styles/precision-a10.css",
@@ -33014,7 +34718,7 @@
     {
       "sti": "src/styles/precision-athletics.css",
       "omrade": "appkode",
-      "byte": 95830
+      "byte": 96204
     },
     {
       "sti": "src/styles/precision-bk.css",
@@ -33022,14 +34726,9 @@
       "byte": 4322
     },
     {
-      "sti": "src/styles/precision-iup.css",
-      "omrade": "appkode",
-      "byte": 4410
-    },
-    {
       "sti": "src/styles/precision-komponenter.css",
       "omrade": "appkode",
-      "byte": 43711
+      "byte": 44971
     },
     {
       "sti": "src/styles/precision-tp.css",
@@ -33039,7 +34738,7 @@
     {
       "sti": "src/styles/team-norway-tokens.css",
       "omrade": "appkode",
-      "byte": 8819
+      "byte": 9672
     },
     {
       "sti": "src/styles/train-lock-tokens.css",
@@ -33064,7 +34763,7 @@
     {
       "sti": "src/styles/wang-app.css",
       "omrade": "appkode",
-      "byte": 9871
+      "byte": 22783
     },
     {
       "sti": "src/styles/wang-tokens.css",
@@ -33084,7 +34783,7 @@
     {
       "sti": "START-HER.md",
       "omrade": "prosjektoppsett",
-      "byte": 956
+      "byte": 1158
     },
     {
       "sti": "supabase-meg/migrations/0001_init.sql",
@@ -33120,6 +34819,56 @@
       "sti": "supabase-meg/migrations/0007_health_uniq_index.sql",
       "omrade": "databasekilde",
       "byte": 1795
+    },
+    {
+      "sti": "supabase-wang/migrations/20261013063000_wang_role_enum_expansion.sql",
+      "omrade": "databasekilde",
+      "byte": 201
+    },
+    {
+      "sti": "supabase-wang/migrations/20261013064000_wang_role_access_contract.sql",
+      "omrade": "databasekilde",
+      "byte": 13297
+    },
+    {
+      "sti": "supabase-wang/migrations/20261013065000_wang_external_access_hardening.sql",
+      "omrade": "databasekilde",
+      "byte": 3749
+    },
+    {
+      "sti": "supabase-wang/migrations/20261013066000_wang_event_policy_consolidation.sql",
+      "omrade": "databasekilde",
+      "byte": 2418
+    },
+    {
+      "sti": "supabase-wang/migrations/20261013160000_wang_foundation.sql",
+      "omrade": "databasekilde",
+      "byte": 21649
+    },
+    {
+      "sti": "supabase-wang/migrations/20261013163000_wang_security_hardening.sql",
+      "omrade": "databasekilde",
+      "byte": 8122
+    },
+    {
+      "sti": "supabase-wang/migrations/20261013170000_wang_golf_demo_plan.sql",
+      "omrade": "databasekilde",
+      "byte": 6165
+    },
+    {
+      "sti": "supabase-wang/migrations/20261014024517_wang_calendar_scope_guard.sql",
+      "omrade": "databasekilde",
+      "byte": 6725
+    },
+    {
+      "sti": "supabase-wang/migrations/20261014140000_wang_message_foundation_readonly.sql",
+      "omrade": "databasekilde",
+      "byte": 9280
+    },
+    {
+      "sti": "supabase-wang/migrations/20261014142000_wang_message_created_by_index.sql",
+      "omrade": "databasekilde",
+      "byte": 96
     },
     {
       "sti": "tests/e2e/_auth-helpers.ts",
@@ -33159,7 +34908,7 @@
     {
       "sti": "tests/e2e/agencyos-toppbar-overlapp.spec.ts",
       "omrade": "test",
-      "byte": 4462
+      "byte": 4444
     },
     {
       "sti": "tests/e2e/api-health.spec.ts",
@@ -33294,7 +35043,7 @@
     {
       "sti": "tests/e2e/README.md",
       "omrade": "test",
-      "byte": 4479
+      "byte": 4605
     },
     {
       "sti": "tests/e2e/robots-sitemap.spec.ts",
@@ -33340,6 +35089,16 @@
       "sti": "tests/e2e/viewport-mobile.spec.ts",
       "omrade": "test",
       "byte": 756
+    },
+    {
+      "sti": "tests/e2e/wang-role-preview-accessibility.spec.ts",
+      "omrade": "test",
+      "byte": 3753
+    },
+    {
+      "sti": "tests/e2e/wang-role-preview.spec.ts",
+      "omrade": "test",
+      "byte": 3106
     },
     {
       "sti": "tests/e2e/workbench-suggest.spec.ts",
@@ -33392,6 +35151,11 @@
       "byte": 26671
     },
     {
+      "sti": "tests/komponenter/action-auth-datagolf.test.ts",
+      "omrade": "test",
+      "byte": 1818
+    },
+    {
       "sti": "tests/komponenter/ag02-ko.test.ts",
       "omrade": "test",
       "byte": 8323
@@ -33399,37 +35163,37 @@
     {
       "sti": "tests/komponenter/ag17-turneringer.test.ts",
       "omrade": "test",
-      "byte": 2977
+      "byte": 2947
     },
     {
       "sti": "tests/komponenter/ag18-trackman-video.test.ts",
       "omrade": "test",
-      "byte": 3123
+      "byte": 2751
     },
     {
       "sti": "tests/komponenter/ag19-caddie-hub.test.ts",
       "omrade": "test",
-      "byte": 3649
+      "byte": 2729
     },
     {
       "sti": "tests/komponenter/ag21-oppgaver.test.ts",
       "omrade": "test",
-      "byte": 3831
+      "byte": 2463
     },
     {
       "sti": "tests/komponenter/ag22-innsikt-talent.test.ts",
       "omrade": "test",
-      "byte": 3919
+      "byte": 3264
     },
     {
       "sti": "tests/komponenter/ag23-oppsett.test.ts",
       "omrade": "test",
-      "byte": 4536
+      "byte": 3027
     },
     {
       "sti": "tests/komponenter/ag24-drift.test.ts",
       "omrade": "test",
-      "byte": 3639
+      "byte": 3264
     },
     {
       "sti": "tests/komponenter/au02-registrering.test.ts",
@@ -33454,7 +35218,7 @@
     {
       "sti": "tests/komponenter/iup-evaluering.test.ts",
       "omrade": "test",
-      "byte": 4645
+      "byte": 4745
     },
     {
       "sti": "tests/komponenter/login-passord-navigasjon.test.ts",
@@ -33480,6 +35244,11 @@
       "sti": "tests/komponenter/ph16-stats.test.ts",
       "omrade": "test",
       "byte": 3197
+    },
+    {
+      "sti": "tests/komponenter/precision-kontroller.test.ts",
+      "omrade": "test",
+      "byte": 3753
     },
     {
       "sti": "tests/komponenter/precision-workbench-integrasjon.test.ts",
@@ -33509,17 +35278,17 @@
     {
       "sti": "tests/komponenter/tn-testdetalj.test.ts",
       "omrade": "test",
-      "byte": 6044
+      "byte": 6503
     },
     {
       "sti": "tests/komponenter/wang-app.test.ts",
       "omrade": "test",
-      "byte": 7483
+      "byte": 7636
     },
     {
-      "sti": "tests/komponenter/wang-testdeling-notice.test.ts",
+      "sti": "tests/komponenter/wang-testforesporsel.test.ts",
       "omrade": "test",
-      "byte": 3180
+      "byte": 4396
     },
     {
       "sti": "tests/komponenter/workbench-execution-life.test.ts",
@@ -33560,6 +35329,11 @@
       "sti": "tests/komponenter/workbench-treukerssyklus.test.ts",
       "omrade": "test",
       "byte": 7077
+    },
+    {
+      "sti": "tests/live-okt-local/live-okt-lagring.test.ts",
+      "omrade": "test",
+      "byte": 14403
     },
     {
       "sti": "tests/local-users/booking-cancellation-journey.test.ts",
@@ -33809,7 +35583,7 @@
     {
       "sti": "tests/visual/fasitdekning-baseline.json",
       "omrade": "test",
-      "byte": 256
+      "byte": 347
     },
     {
       "sti": "tests/visual/lys-morkt-royk.spec.ts",
@@ -33964,7 +35738,7 @@
     {
       "sti": "tests/visual/precision/maal.mjs",
       "omrade": "test",
-      "byte": 10827
+      "byte": 11298
     },
     {
       "sti": "tests/visual/precision/skjermer/_innboks-data.tsx",
@@ -33999,7 +35773,7 @@
     {
       "sti": "tests/visual/precision/skjermer/AG-01.tsx",
       "omrade": "test",
-      "byte": 3497
+      "byte": 3583
     },
     {
       "sti": "tests/visual/precision/skjermer/AG-02.tsx",
@@ -34029,12 +35803,12 @@
     {
       "sti": "tests/visual/precision/skjermer/AG-05.tsx",
       "omrade": "test",
-      "byte": 4788
+      "byte": 4760
     },
     {
       "sti": "tests/visual/precision/skjermer/AG-06.tsx",
       "omrade": "test",
-      "byte": 2521
+      "byte": 2665
     },
     {
       "sti": "tests/visual/precision/skjermer/AG-07.tsx",
@@ -34124,7 +35898,7 @@
     {
       "sti": "tests/visual/precision/skjermer/AG-13-U.tsx",
       "omrade": "test",
-      "byte": 1579
+      "byte": 1540
     },
     {
       "sti": "tests/visual/precision/skjermer/AG-14-MAL.tsx",
@@ -34207,6 +35981,11 @@
       "byte": 377
     },
     {
+      "sti": "tests/visual/precision/skjermer/AG-MER.tsx",
+      "omrade": "test",
+      "byte": 613
+    },
+    {
       "sti": "tests/visual/precision/skjermer/AG-RD-01.tsx",
       "omrade": "test",
       "byte": 2057
@@ -34242,9 +36021,19 @@
       "byte": 1023
     },
     {
+      "sti": "tests/visual/precision/skjermer/AU-04.tsx",
+      "omrade": "test",
+      "byte": 4230
+    },
+    {
       "sti": "tests/visual/precision/skjermer/BK-01.tsx",
       "omrade": "test",
       "byte": 2358
+    },
+    {
+      "sti": "tests/visual/precision/skjermer/BK-03.tsx",
+      "omrade": "test",
+      "byte": 1648
     },
     {
       "sti": "tests/visual/precision/skjermer/EP-03.tsx",
@@ -34257,9 +36046,54 @@
       "byte": 1986
     },
     {
+      "sti": "tests/visual/precision/skjermer/KONTROLLER.tsx",
+      "omrade": "test",
+      "byte": 1800
+    },
+    {
       "sti": "tests/visual/precision/skjermer/PH-01.tsx",
       "omrade": "test",
-      "byte": 1426
+      "byte": 3949
+    },
+    {
+      "sti": "tests/visual/precision/skjermer/PH-03.tsx",
+      "omrade": "test",
+      "byte": 2386
+    },
+    {
+      "sti": "tests/visual/precision/skjermer/PH-04.tsx",
+      "omrade": "test",
+      "byte": 1645
+    },
+    {
+      "sti": "tests/visual/precision/skjermer/PH-05.tsx",
+      "omrade": "test",
+      "byte": 1304
+    },
+    {
+      "sti": "tests/visual/precision/skjermer/PH-06.tsx",
+      "omrade": "test",
+      "byte": 973
+    },
+    {
+      "sti": "tests/visual/precision/skjermer/PH-07.tsx",
+      "omrade": "test",
+      "byte": 1363
+    },
+    {
+      "sti": "tests/visual/precision/skjermer/PH-10.tsx",
+      "omrade": "test",
+      "byte": 4543
+    },
+    {
+      "sti": "tests/visual/precision/skjermer/PH-11-AR.tsx",
+      "omrade": "test",
+      "byte": 3524
+    },
+    {
+      "sti": "tests/visual/precision/skjermer/PH-11-PER.tsx",
+      "omrade": "test",
+      "byte": 3616
     },
     {
       "sti": "tests/visual/precision/skjermer/PH-11.tsx",
@@ -34269,22 +36103,107 @@
     {
       "sti": "tests/visual/precision/skjermer/PH-12.tsx",
       "omrade": "test",
-      "byte": 1972
+      "byte": 1955
+    },
+    {
+      "sti": "tests/visual/precision/skjermer/PH-13.tsx",
+      "omrade": "test",
+      "byte": 4041
+    },
+    {
+      "sti": "tests/visual/precision/skjermer/PH-14.tsx",
+      "omrade": "test",
+      "byte": 5374
+    },
+    {
+      "sti": "tests/visual/precision/skjermer/PH-15.tsx",
+      "omrade": "test",
+      "byte": 2220
+    },
+    {
+      "sti": "tests/visual/precision/skjermer/PH-16-RES.tsx",
+      "omrade": "test",
+      "byte": 2498
+    },
+    {
+      "sti": "tests/visual/precision/skjermer/PH-16.tsx",
+      "omrade": "test",
+      "byte": 2323
+    },
+    {
+      "sti": "tests/visual/precision/skjermer/PH-17-TM.tsx",
+      "omrade": "test",
+      "byte": 4530
+    },
+    {
+      "sti": "tests/visual/precision/skjermer/PH-17-TR.tsx",
+      "omrade": "test",
+      "byte": 1858
+    },
+    {
+      "sti": "tests/visual/precision/skjermer/PH-18.tsx",
+      "omrade": "test",
+      "byte": 2116
+    },
+    {
+      "sti": "tests/visual/precision/skjermer/PH-20.tsx",
+      "omrade": "test",
+      "byte": 1477
+    },
+    {
+      "sti": "tests/visual/precision/skjermer/PH-21-MELDINGER.tsx",
+      "omrade": "test",
+      "byte": 3292
+    },
+    {
+      "sti": "tests/visual/precision/skjermer/PH-21.tsx",
+      "omrade": "test",
+      "byte": 2552
+    },
+    {
+      "sti": "tests/visual/precision/skjermer/PH-22.tsx",
+      "omrade": "test",
+      "byte": 1780
+    },
+    {
+      "sti": "tests/visual/precision/skjermer/PH-23-BEKREFTET.tsx",
+      "omrade": "test",
+      "byte": 1029
+    },
+    {
+      "sti": "tests/visual/precision/skjermer/PH-23.tsx",
+      "omrade": "test",
+      "byte": 4779
+    },
+    {
+      "sti": "tests/visual/precision/skjermer/PH-24-FASILITETER.tsx",
+      "omrade": "test",
+      "byte": 1156
+    },
+    {
+      "sti": "tests/visual/precision/skjermer/PH-24-FORELDRE.tsx",
+      "omrade": "test",
+      "byte": 1246
+    },
+    {
+      "sti": "tests/visual/precision/skjermer/PH-24-HELSE.tsx",
+      "omrade": "test",
+      "byte": 1689
     },
     {
       "sti": "tests/visual/precision/skjermer/PH-24-PROFIL.tsx",
       "omrade": "test",
-      "byte": 1525
+      "byte": 2095
     },
     {
       "sti": "tests/visual/precision/skjermer/PH-24-UTSTYR.tsx",
       "omrade": "test",
-      "byte": 2436
+      "byte": 2489
     },
     {
       "sti": "tests/visual/precision/skjermer/PH-24.tsx",
       "omrade": "test",
-      "byte": 2874
+      "byte": 2022
     },
     {
       "sti": "tests/visual/precision/skjermer/PH-24D.tsx",
@@ -34292,24 +36211,59 @@
       "byte": 3710
     },
     {
+      "sti": "tests/visual/precision/skjermer/PH-25-INNSTILLINGER.tsx",
+      "omrade": "test",
+      "byte": 1044
+    },
+    {
+      "sti": "tests/visual/precision/skjermer/PH-25.tsx",
+      "omrade": "test",
+      "byte": 1807
+    },
+    {
+      "sti": "tests/visual/precision/skjermer/PH-27-U16.tsx",
+      "omrade": "test",
+      "byte": 1407
+    },
+    {
+      "sti": "tests/visual/precision/skjermer/PH-27.tsx",
+      "omrade": "test",
+      "byte": 1654
+    },
+    {
       "sti": "tests/visual/precision/skjermer/PH-IUP-01.tsx",
       "omrade": "test",
-      "byte": 4156
+      "byte": 3991
+    },
+    {
+      "sti": "tests/visual/precision/skjermer/PH-IUP-02.tsx",
+      "omrade": "test",
+      "byte": 3797
     },
     {
       "sti": "tests/visual/precision/skjermer/PH-RD-01.tsx",
       "omrade": "test",
-      "byte": 784
+      "byte": 623
+    },
+    {
+      "sti": "tests/visual/precision/skjermer/PH-RD-03.tsx",
+      "omrade": "test",
+      "byte": 1144
+    },
+    {
+      "sti": "tests/visual/precision/skjermer/PH-RD-06.tsx",
+      "omrade": "test",
+      "byte": 933
     },
     {
       "sti": "tests/visual/precision/skjermer/PH-RD-08.tsx",
       "omrade": "test",
-      "byte": 1962
+      "byte": 2295
     },
     {
       "sti": "tests/visual/precision/skjermer/PH-TP-01.tsx",
       "omrade": "test",
-      "byte": 1361
+      "byte": 1391
     },
     {
       "sti": "tests/visual/produkt-ruter.ts",

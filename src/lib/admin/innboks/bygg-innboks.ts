@@ -75,6 +75,8 @@ export type InnboksKilder = {
   epost: InnboksEpostVm[];
   /** Sendt eller arkivert e-post — lastes bare når fanen ber om det. */
   epostSendt: InnboksEpostVm[];
+  /** Kontoer Spiller 360 åpner for denne coachen (PLAYER i stallen). Andre får ingen profillenke. */
+  spillere: ReadonlySet<string>;
   now: Date;
 };
 
@@ -121,6 +123,17 @@ function kontraktDetaljer(sak: InnboksSak | undefined): { label: string; tekst: 
 
 const OPPF_KIND = "Oppfølging";
 
+/** «Spiller 360»-lenke bare når kontoen er en spiller coachen når — ellers «Denne siden finnes ikke». */
+function spiller360(id: string | null | undefined, spillere: ReadonlySet<string>): { label: string; href: string }[] {
+  return id && spillere.has(id) ? [{ label: "Spiller 360", href: `/admin/spillere/${id}` }] : [];
+}
+
+/** Varsel-lenker til /admin/spillere/<id> slippes når id-en ikke er en spiller i stallen. */
+export function tillattLenke(href: string, spillere: ReadonlySet<string>): boolean {
+  const m = /^\/admin\/spillere\/([^/?#]+)/.exec(href);
+  return !m || spillere.has(decodeURIComponent(m[1]));
+}
+
 export function byggInnboks(k: InnboksKilder): InnboksPost[] {
   const { now } = k;
   const sakPerId = new Map(k.saker.map((s) => [s.id, s] as const));
@@ -163,7 +176,7 @@ export function byggInnboks(k: InnboksKilder): InnboksPost[] {
         merker: r.lowRisk ? ["Lav risiko"] : [],
         utkast: null,
         handling: { t: "plan", id: r.id, lavRisiko: r.lowRisk },
-        lenker: r.playerId ? [{ label: "Spiller 360", href: `/admin/spillere/${r.playerId}` }] : [],
+        lenker: spiller360(r.playerId, k.spillere),
       });
     } else if (kilde === "caddie") {
       const sak = sakPerId.get(`caddieDraft:${r.id}`);
@@ -199,7 +212,7 @@ export function byggInnboks(k: InnboksKilder): InnboksPost[] {
         handling: { t: "foresporsel", id: r.id },
         lenker: [
           { label: "Foreslå annen tid", href: r.eksternHref ?? "/admin/foresporsler" },
-          ...(r.playerId ? [{ label: "Spiller 360", href: `/admin/spillere/${r.playerId}` }] : []),
+          ...spiller360(r.playerId, k.spillere),
         ],
       });
     }
@@ -253,7 +266,7 @@ export function byggInnboks(k: InnboksKilder): InnboksPost[] {
       lost: s.lost,
       lostTekst: s.lostTekst,
       kanSvare: false,
-      lenker: s.href && s.kilde === "notification" ? [{ label: s.hrefTekst ?? "Åpne", href: s.href }] : [],
+      lenker: s.href && s.kilde === "notification" && tillattLenke(s.href, k.spillere) ? [{ label: s.hrefTekst ?? "Åpne", href: s.href }] : [],
     };
     const handling: InnboksPostHandling = s.lost
       ? { t: "ingen" }
@@ -327,7 +340,7 @@ export function byggInnboks(k: InnboksKilder): InnboksPost[] {
       utkast: null,
       kanSvare: true,
       handling: { t: "sporsmal", id: q.id },
-      lenker: [{ label: "Spiller 360", href: `/admin/spillere/${q.spillerId}` }],
+      lenker: spiller360(q.spillerId, k.spillere),
     });
   }
 
@@ -354,7 +367,7 @@ export function byggInnboks(k: InnboksKilder): InnboksPost[] {
       kanSvare: false,
       handling: { t: "oppf", spillerId: o.id, status: o.status },
       lenker: [
-        { label: "Spiller 360", href: `/admin/spillere/${o.id}` },
+        ...spiller360(o.id, k.spillere),
         { label: "Book økt", href: "/admin/bookinger/ny" },
       ],
     });

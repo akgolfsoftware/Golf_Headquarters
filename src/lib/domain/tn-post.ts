@@ -16,7 +16,6 @@ import { notify } from "@/lib/notifications";
 import {
   aktivtMedlemskapWhere,
   aktivtSpillerMedlemskapWhere,
-  TEAM_NORWAY_SLUG,
 } from "@/lib/domain/grupper";
 import {
   beregnLesekvittering,
@@ -28,13 +27,15 @@ import {
   type TnDokumentKategori,
   type TnPostKind,
 } from "@/lib/domain/tn-post-regler";
+import { erTnGruppeSlug } from "@/lib/domain/demo-grupper";
+import { hentTnGruppeForBruker } from "@/lib/domain/tn-tilgang";
 
 async function erTeamNorwayGruppe(groupId: string): Promise<boolean> {
   const gruppe = await prisma.group.findUnique({
     where: { id: groupId },
     select: { slug: true },
   });
-  return gruppe?.slug === TEAM_NORWAY_SLUG;
+  return erTnGruppeSlug(gruppe?.slug);
 }
 
 async function erAktivtMedlem(groupId: string, userId: string): Promise<boolean> {
@@ -73,7 +74,7 @@ export async function hentViewerRolleIGruppe(groupId: string, viewerId: string):
 }
 
 async function medNavngittTnPost<T>(trenerId: string, spillerId: string, les: (tx: Prisma.TransactionClient) => Promise<T>): Promise<T | null> {
-  const gruppe = await prisma.group.findUnique({ where: { slug: TEAM_NORWAY_SLUG }, select: { id: true } });
+  const gruppe = await hentTnGruppeForBruker(trenerId);
   if (!gruppe) return null;
   const { medNavngittProfil } = await import("@/lib/deling/profil-lesing");
   return medNavngittProfil(trenerId, spillerId, gruppe.id, les);

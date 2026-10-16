@@ -227,8 +227,16 @@ export async function anonymiserBruker(
   const publicPlayerAnonymisert = Boolean(bruker.publicPlayerId);
 
   await prisma.$transaction([
-    // IUP kan inneholde personlig refleksjon og helseopplysninger. Beholdes ikke
-    // som koblet historikk på den anonymiserte brukerraden. Revisjoner kaskadeslettes.
+    // Bookingens innboksutkast er en separat kopi av kontakt og fritekst.
+    // Vask før den eksterne ryddekjeden eventuelt kobler bookingen fra brukeren.
+    prisma.innboksEpost.updateMany({
+      where: { booking: { userId } },
+      data: {
+        fraEpost: `slettet-${userId}@gdpr.akgolf.invalid`, fraNavn: null,
+        emne: "Booking for slettet bruker", brodtekst: "Personopplysninger fjernet.", utkastSvar: null,
+      },
+    }),
+    // IUP-refleksjoner beholdes ikke koblet til anonymisert bruker; revisjoner kaskadeslettes.
     prisma.iupBesvarelse.deleteMany({ where: { userId } }),
     // Trenerforslag inneholder spillerens øktdetaljer og trenerens fritekstgrunn.
     // Fjern både mottatte og forfattede forslag når en av partene anonymiseres.

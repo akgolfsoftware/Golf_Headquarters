@@ -8,6 +8,7 @@ import { assertCoachRole, assertParentRole, assertSpillerRole } from "@/lib/auth
 import { createClient } from "@/lib/supabase/server";
 import { maaHaForesattSamtykke } from "@/lib/auth/minor";
 import { TEAM_NORWAY_SLUG, aktivtSpillerMedlemskapWhere, aktivtTrenerMedlemskapWhere } from "@/lib/domain/grupper";
+import { erTnGruppeSlug, TN_DEMO_SLUG, WANG_DEMO_SLUG } from "@/lib/domain/demo-grupper";
 import { rateLimit } from "@/lib/rate-limit";
 import {
   NAVNGITT_PROFIL_SCOPE, NAVNGITT_PROFIL_TEKST_VERSJON, trenerEpostDomene,
@@ -59,12 +60,15 @@ async function delingsMiljo(tx: Tx, spillerId: string, gruppeId: string, epost: 
   const domene = trenerEpostDomene(epost);
   const gruppe = await tx.group.findFirst({ where: { id: gruppeId, arkivertAt: null }, select: { id: true, slug: true, program: true } });
   if (!gruppe || !domene) return false;
-  const wang = gruppe.program === "WANG_UNG" || gruppe.program === "WANG_TOPPIDRETT";
+  const wang = gruppe.program === "WANG_UNG" || gruppe.program === "WANG_TOPPIDRETT" || gruppe.slug === WANG_DEMO_SLUG;
   if (domene === "WANG" && !wang) return false;
-  if (domene === "TEAM_NORWAY" && gruppe.slug !== TEAM_NORWAY_SLUG) return false;
+  if (domene === "TEAM_NORWAY" && !erTnGruppeSlug(gruppe.slug)) return false;
   const medlem = await tx.groupMember.findFirst({ where: {
     userId: spillerId, user: aktiv, ...aktivtSpillerMedlemskapWhere(),
-    ...(domene === "WANG" ? { groupId: gruppe.id } : {
+    ...(domene === "WANG" ? { groupId: gruppe.id } : gruppe.slug === TN_DEMO_SLUG ? {
+      // Demogruppa deler bare med fiktive spillere i demogruppene, aldri med ekte WANG-elever.
+      group: { arkivertAt: null, slug: { in: [TN_DEMO_SLUG, WANG_DEMO_SLUG] } },
+    } : {
       group: { arkivertAt: null, OR: [{ program: { in: ["WANG_UNG", "WANG_TOPPIDRETT"] } }, { slug: TEAM_NORWAY_SLUG }] },
     }),
   }, select: { id: true } });

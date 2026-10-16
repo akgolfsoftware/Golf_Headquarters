@@ -147,16 +147,9 @@ export function SlotFormV2({ locations, initial, defaultWeekday, triggerLabel, t
           {triggerLabel}
         </button>
       ) : (
-        <button
-          type="button"
-          onClick={() => setOpen(true)}
-          style={{ all: "unset", cursor: "pointer", display: "block", width: "100%" }}
-          aria-label={triggerLabel}
-        >
-          <CTAPill icon="plus" full>
-            {triggerLabel}
-          </CTAPill>
-        </button>
+        <CTAPill icon="plus" full onClick={() => setOpen(true)}>
+          {triggerLabel}
+        </CTAPill>
       )}
 
       <dialog

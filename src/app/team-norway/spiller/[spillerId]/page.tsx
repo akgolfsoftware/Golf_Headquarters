@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { hentSpillerpostTidslinje, medTnSpillerpostData } from "@/lib/domain/tn-post";
+import { hentTnGruppeForBruker } from "@/lib/domain/tn-tilgang";
 import { TN } from "@/lib/v2/team-norway";
 import { TnAvatarInitialer, TnPille } from "@/components/team-norway/core";
 import { TnShell, TnSidehode, TnSpillerFaner } from "@/components/team-norway/tn-shell";
@@ -34,7 +35,7 @@ export default async function SpillerpostPage({ params }: { params: Promise<{ sp
     const [spiller, foresatte, gruppe] = await Promise.all([
       prisma.user.findUnique({ where: { id: spillerId, role: "PLAYER", deletedAt: null, anonymisertAt: null }, select: { id: true, name: true, dateOfBirth: true, requiresGuardianConsent: true } }),
       prisma.parentRelation.findMany({ where: { childId: spillerId, approved: true }, select: { parent: { select: { id: true, name: true } } } }),
-      prisma.group.findUnique({ where: { slug: "team-norway" }, select: { id: true } }),
+      hentTnGruppeForBruker(bruker.id),
     ]);
     return spiller && gruppe ? { spiller, foresatte, gruppe } : null;
   });
