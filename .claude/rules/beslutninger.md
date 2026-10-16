@@ -79,6 +79,29 @@ Anders 16.10, etter pakke 11 og 12: «Det skal være et sted i workbenchen hvor 
 5. **Lenke «Hele øvelsesbanken»** i spillerens og coachens Workbench. Coachen får samme bank-side som spilleren, i AgencyOS-skallet. Ferdig når begge lenkene åpner banken med filtrene.
 6. **PR med skjermbilder** i 390 og 1280 px og full `npm run verify`. Ikke merge før Anders skriver «merge».
 
+## PRØVEUKE FØR FØRSTE TREKK, CLAUDE SKRIVER HJELPEARTIKLENE, ANBEFALINGENE I PAKKE 14–17 OG AGENCYOS-RESTEN GJELDER (Anders 16.10.2026, bindende)
+
+Svar på «Åpent hos Anders» i `meg-resten.html`, `hjelp.html`, `utfordringer.html`, `plan-hjelpere.html` (PlayerHQ pakke 14–17, PR #1370) og `utkast-agencyos/resten.html` (AgencyOS pakke 11, #1372): «dine anbefalinger», «Hjelpeartiklene … skal du lage», «Nei, prøveuke».
+
+- **Prøveuke:** første gang en spiller velger Full, får hen én uke Full før første trekk (kort kreves, som i BUSINESS-RULES §Abonnement). Ingen «30 dagers angrerett» i skjermtekst.
+- **Claude skriver hjelpeartiklene.** Utkast: `docs/design-system/utkast-playerhq/hjelpeartikler.md` (16 artikler). «Slik bytter du coach» og «Be om videoanalyse» tas ut, fordi funksjonene ikke finnes.
+- **Anbefalingene gjelder:**
+  - Hjelp: «Send anonymt» fjernes · kontakt og tilbakemelding blir ett skjema, «Skriv til oss» · avkrysningen «Tillat at support ser profilen min» fjernes · én adresse, post@akgolf.no · ingen svartid lovet.
+  - Meg: tofaktor-reservekodene fjernes til de lagres · dokumenter sendes til Stripe-portalen (kvitteringer) og Hjelp (vilkår) · ordet er «kvittering», ikke «faktura».
+  - Utfordringer: «Opprett utfordring» er grafitt; rust bare i «Avslutt utfordringen» · coach velger deltakere fra gruppene og stallen, spiller bare fra gruppene.
+  - Plan: «Neste turnering» er Norgescup 1 (neste offisielle), og Klubbmesterskap innendørs er en økt, ikke en turnering · spilleren foreslår prioritet A/B/C, coachen kan endre · «Perioden er ferdig» vises for alle perioder · fri fysisk økt lages med hurtigknappen «Ny økt».
+  - AgencyOS: normer fra Data Golf venter til A–K-nivåtallene er vedtatt (siden sendes til AG-15 › Normer) · eksterne lesere ser bare det spilleren har delt · bare head coach inviterer coach.
+- **Uavklart:** markedsføringssiden i AgencyOS (`/admin/marketing`, innholdskalender for sosiale medier). Anders spurte hva den er; svaret er gitt, beslutningen gjenstår.
+
+**Overstyrer:** «30 dagers angrerett» i `oppgrader-flyt-wizard.tsx`, og «Klubbmesterskap innendørs» som neste turnering i `plan.html` (pakke 3, godkjent 14.10).
+
+**Arbeidet dette utløser:**
+
+1. **Hjelpeartiklene inn i appen** når pakke 15 bygges: `src/app/portal/meg/help/data.ts` får de 16 artiklene. Hver artikkel publiseres først når det den beskriver, virker (lista øverst i `hjelpeartikler.md`). Ferdig når ingen artikkel viser «ikke skrevet ferdig».
+2. **Prøveuke i teksten:** Velg Full (pakke 14) og Gratis og Full-artikkelen sier én uke. Ferdig når et søk etter «angrerett» i `src/` gir 0 treff i skjermtekst.
+3. **Plan rettes ved portering av pakke 3:** neste turnering fra `Tournament` (offisielle), ikke interne konkurranser.
+4. **Resten** bygges med pakkene, etter fila for hver pakke.
+
 ## VENNER SKJULES TIL NESTE VERSJON, UTFORDRINGER SENDES BARE TIL GRUPPA (Anders 16.10.2026, bindende)
 
 Svar på punkt 3 i §DEL RUNDE FINNES VED LANSERING, stilt før pakke 16 Utfordringer ble tegnet: «Skjul venner, bare gruppa».

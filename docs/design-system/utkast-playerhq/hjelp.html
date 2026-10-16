@@ -140,7 +140,7 @@
     <div class="endringer">
       <span class="meta-s">Åpent hos Anders</span>
       <ul>
-        <li><b>Bare 1 av 18 artikler er skrevet.</b> Anbefaling: vis bare skrevne artikler, og la vanlige spørsmål bære resten ved lansering. Hvem skriver de 17 andre?</li>
+        <li><b>Artiklene, avgjort 16.10:</b> Claude skriver dem. 16 artikler ligger i <code>hjelpeartikler.md</code> og venter på din gjennomlesning. «Bytt coach» og «Be om videoanalyse» er tatt ut fordi funksjonene ikke finnes.</li>
         <li><b>«Send anonymt» fjernes.</b> Dagens bryter lover at svaret ikke kobles til kontoen, men kontoen lagres alltid. Anbefaling: fjern bryteren. Alternativet er å gjøre den ekte.</li>
         <li><b>Kontakt og tilbakemelding blir ett skjema.</b> Anbefaling: ja. Gamle adresser sender til «Skriv til oss» med riktig type valgt.</li>
         <li><b>«Tillat at AK Golf ser profilen min»</b> lagres ikke i dag og er ikke koblet til noe. Anbefaling: fjern den. Coachen ser allerede det spilleren har delt.</li>
@@ -165,11 +165,11 @@
           <div class="liste" data-treff></div>
         </section>
         <section class="seksjon" data-kategorier>
-          <div class="sek-topp"><h2>Kategorier</h2><span class="kilde">6 kategorier · 9 artikler skrevet</span></div>
+          <div class="sek-topp"><h2>Kategorier</h2><span class="kilde">6 kategorier · 16 artikler</span></div>
           <div class="kat-grid">
             <button type="button" class="kat" data-gaa="kategori"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span><b>Komme i gang</b><span class="kilde">Første runde, TrackMan, første målsetning</span></button>
             <button type="button" class="kat" data-gaa="kategori"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><path d="M12 3l9 16H3z"/></svg></span><b>Trening</b><span class="kilde">Pyramiden, uka, øvelser</span></button>
-            <button type="button" class="kat" data-gaa="kategori"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span><b>Coaching</b><span class="kilde">Meldinger, video, før timen</span></button>
+            <button type="button" class="kat" data-gaa="kategori"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span><b>Coaching</b><span class="kilde">Meldinger, før timen, flytte timen</span></button>
             <button type="button" class="kat" data-gaa="kategori"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></span><b>Booking og betaling</b><span class="kilde">Klipp, Gratis og Full, avbestilling</span></button>
             <button type="button" class="kat" data-gaa="kategori"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span><b>Konto</b><span class="kilde">Passord, tofaktor, dataene dine</span></button>
             <button type="button" class="kat" data-gaa="kategori"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><path d="M12 20V10M18 20V4M6 20v-4"/></svg></span><b>Stats</b><span class="kilde">Strokes Gained, rundene</span></button>
@@ -343,7 +343,7 @@
   var ARTIKLER = [
     ['Registrer din første runde', 'Komme i gang'], ['Koble til TrackMan', 'Komme i gang'], ['Sett din første målsetning', 'Komme i gang'],
     ['Pyramiden: FYS, TEK, SLAG, SPILL og TURN', 'Trening'], ['Bygg treningsuka i Workbench', 'Trening'], ['Les TrackMan-tallene', 'Trening'],
-    ['Klipp forklart', 'Booking og betaling'], ['Gratis og Full', 'Booking og betaling'], ['Hva betyr Strokes Gained?', 'Stats']
+    ['Skriv til coachen', 'Coaching'], ['Forbered en coachingtime', 'Coaching'], ['Flytt eller avbestill en time', 'Coaching'], ['Book en time', 'Booking og betaling'], ['Klipp forklart', 'Booking og betaling'], ['Gratis og Full', 'Booking og betaling'], ['Endre passord', 'Konto'], ['Slå på tofaktor', 'Konto'], ['Last ned dataene dine', 'Konto'], ['Hva betyr Strokes Gained?', 'Stats'], ['Les rundesammendraget', 'Stats']
   ];
   var FAQ = ['Hvordan registrerer jeg en runde?', 'Hvor planlegger jeg treningen?', 'Hva koster appen?', 'Hvordan når jeg coachen?'];
   function hjelp(app) {
