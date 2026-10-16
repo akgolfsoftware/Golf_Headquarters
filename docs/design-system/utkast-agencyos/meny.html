@@ -1,0 +1,435 @@
+<title>AgencyOS-meny</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Tre menyforslag for AgencyOS. Siden rundt (.ytre) følger leserens tema; skjermene er alltid lyse (Precision Athletics).
+   Layout: velger A/B/C øverst, PC-ramme (1280 skalert) over mobilramme (390) og notater. */
+:root{
+  --side-bg:#F3F1EC;--side-tekst:#141413;--side-dempet:#5E5D58;--side-linje:#DDD9D1;--side-kort:#FFFFFF;--side-valgt:#141413;--side-paa-valgt:#FFFFFF;
+  --sand-100:#faf8f3;--sand-150:#f1eee8;--sand-200:#e6e3dd;--sand-300:#ddd9d1;--white:#ffffff;
+  --graphite-900:#141413;--graphite-800:#2a2926;--graphite-700:#3a3935;--graphite-600:#46443f;--graphite-500:#686560;--graphite-400:#8a8680;
+  --rust:#9B2415;--rust-50:#fbe9e7;--green-700:#2f6b3a;--green-50:#eaf3e9;--amber-700:#7e6110;--amber-50:#fbf4e4;
+  --fys-ink:#556740;--tek-ink:#825d15;--slag:#2563eb;--spill-ink:#954661;--turn:#a32d2d;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,sans-serif;--mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --r1:4px;--r2:8px;--r3:12px;--r4:16px;--r5:24px;--r6:32px;
+  --ut:cubic-bezier(.23,1,.32,1);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--side-bg:#161614;--side-tekst:#F1EFE8;--side-dempet:#A9A69C;--side-linje:#34332E;--side-kort:#1F1F1C;--side-valgt:#F1EFE8;--side-paa-valgt:#141413;color-scheme:dark}}
+:root[data-theme="dark"]{--side-bg:#161614;--side-tekst:#F1EFE8;--side-dempet:#A9A69C;--side-linje:#34332E;--side-kort:#1F1F1C;--side-valgt:#F1EFE8;--side-paa-valgt:#141413;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.5 var(--sans)}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* ---------- Siden rundt ---------- */
+.ytre{max-width:1320px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 64px;display:grid;gap:24px}
+.ytre>*,.nedre>*{min-width:0}
+.hode{display:grid;gap:8px;max-width:72ch}
+.meta-s{font:500 12px/1.4 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--side-dempet)}
+.hode h1{margin:0;font:600 clamp(1.6rem,4.5vw,2.3rem)/1.15 var(--sans);letter-spacing:-.02em;text-wrap:balance}
+.hode p{margin:0;color:var(--side-dempet)}
+.kontroller{display:flex;flex-wrap:wrap;gap:10px}
+.velger{display:inline-flex;flex-wrap:wrap;border:1px solid var(--side-linje);border-radius:8px;padding:3px;gap:3px;background:var(--side-kort)}
+.velger button{font:500 14px/1 var(--sans);min-height:40px;padding:0 14px;border:0;border-radius:6px;background:transparent;color:var(--side-tekst);cursor:pointer}
+.velger button[aria-pressed="true"]{background:var(--side-valgt);color:var(--side-paa-valgt)}
+.velger button:focus-visible,.sidelenke:focus-visible{outline:3px solid #1d3557;outline-offset:2px}
+.etikett{font:500 12px/1.4 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--side-dempet);margin:0 0 8px}
+.ramme{border:1px solid var(--side-linje);border-radius:14px;overflow:hidden;background:var(--white);box-shadow:0 8px 30px rgba(0,0,0,.08);position:relative}
+.pc-boks{width:100%;overflow:hidden}
+.pc-boks .skjerm{width:1280px;height:760px;transform-origin:top left}
+.nedre{display:grid;gap:24px;grid-template-columns:minmax(0,390px) minmax(0,1fr);align-items:start}
+@media (max-width:820px){.nedre{grid-template-columns:minmax(0,1fr)}}
+.mob-boks{width:390px;max-width:100%}
+.mob-boks .skjerm{width:100%;height:780px}
+.notat{display:grid;gap:14px;align-content:start}
+.notat section{background:var(--side-kort);border:1px solid var(--side-linje);border-radius:8px;padding:16px 18px;display:grid;gap:8px;min-width:0}
+.notat h2{margin:0;font:600 17px/1.3 var(--sans)}
+.notat ul{margin:0;padding-left:18px;display:grid;gap:6px}
+.notat p{margin:0}
+.anbef{border-left:3px solid var(--side-tekst)!important}
+
+/* ---------- Skjermen (felles) ---------- */
+.skjerm{position:relative;overflow:hidden;background:var(--white);color:var(--graphite-900);font:400 15px/1.5 var(--sans);-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums;display:flex}
+.skjerm *{min-width:0}
+.skjerm p{margin:0}
+.ikon{width:20px;height:20px;flex:none;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.logo{display:block;height:20px;width:auto}
+.knapp-i{width:44px;height:44px;display:grid;place-items:center;border:0;border-radius:8px;background:transparent;color:var(--graphite-900);cursor:pointer;position:relative;flex:none}
+.knapp-i:focus-visible,.nav-p:focus-visible,.skjerm button:focus-visible{outline:3px solid var(--graphite-900);outline-offset:2px}
+.prikk{position:absolute;top:6px;right:5px;min-width:18px;height:18px;border-radius:9px;background:var(--graphite-900);color:var(--white);font:600 11px/18px var(--mono);text-align:center;padding:0 4px}
+.tall{margin-left:auto;font:600 12px/1 var(--mono);min-width:22px;height:22px;border-radius:11px;display:inline-grid;place-items:center;padding:0 6px;background:var(--sand-150);color:var(--graphite-900)}
+.tall.haster{background:var(--rust);color:#fff}
+.av{width:36px;height:36px;border-radius:50%;background:var(--graphite-900);color:var(--white);display:grid;place-items:center;font:600 13px/1 var(--sans);flex:none}
+.hoved{flex:1;display:flex;flex-direction:column;min-height:0}
+.rull{flex:1;overflow:hidden}
+
+/* Innhold (Cockpit) */
+.innhold{padding:var(--r5) var(--r4);display:grid;gap:var(--r5);align-content:start}
+.pc .innhold{padding:28px 36px;gap:28px;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr)}
+.pc .innhold .topp{grid-column:1/-1}
+.dato{font:500 12px/1.3 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--graphite-600)}
+.tittel{margin:4px 0 0;font:700 28px/1.1 var(--sans);letter-spacing:-.025em}
+.stort{display:flex;align-items:baseline;gap:10px;margin-top:10px}
+.stort b{font:600 44px/1 var(--mono);letter-spacing:-.03em}
+.stort span{font-size:15px;color:var(--graphite-800)}
+.blokk{display:grid;gap:10px}
+.blokk h2{margin:0;font:600 17px/1.25 var(--sans)}
+.rad{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--sand-300)}
+.rad:last-child{border-bottom:0}
+.rad b{display:block;font:600 15px/1.3 var(--sans)}
+.rad small{font-size:13px;color:var(--graphite-600)}
+.status{font:600 12px/1 var(--sans);padding:6px 8px;border-radius:6px;white-space:nowrap}
+.status.risiko{background:var(--rust-50);color:var(--rust)}
+.status.sjekk{background:var(--amber-50);color:var(--amber-700)}
+.status.ok{background:var(--green-50);color:var(--green-700)}
+.spav{width:36px;height:36px;border-radius:50%;background:var(--sand-150);display:grid;place-items:center;font:600 13px/1 var(--sans)}
+.okter{display:grid;gap:8px}
+.okt{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:center;padding:12px 14px;border-radius:12px;color:#fff}
+.okt.tek{background:var(--tek-ink)}.okt.slag{background:var(--slag)}.okt.fys{background:var(--fys-ink)}.okt.spill{background:var(--spill-ink)}.okt.turn{background:var(--turn)}
+.okt .t{font:600 20px/1 var(--mono);letter-spacing:-.02em}
+.okt b{display:block;font:600 15px/1.25 var(--sans)}
+.okt small{font-size:13px;opacity:.92}
+
+/* Hurtigknappen */
+.hurtig{position:absolute;right:16px;bottom:16px;width:56px;height:56px;border-radius:8px;border:0;background:var(--graphite-900);color:#fff;display:grid;place-items:center;box-shadow:0 8px 24px rgba(0,0,0,.25);z-index:6}
+.hurtig .ikon{width:24px;height:24px;stroke-width:2.2}
+
+/* Ark og lag */
+.lag{position:absolute;inset:0;background:rgba(20,20,19,.44);z-index:20;display:none}
+.vis-apen .lag{display:block;animation:fade 200ms var(--ut)}
+@keyframes fade{from{opacity:0}}
+@keyframes opp{from{transform:translateY(24px);opacity:0}}
+@keyframes ned{from{transform:translateY(-8px);opacity:0}}
+.grepp{width:40px;height:4px;border-radius:2px;background:var(--sand-300);margin:0 auto 6px}
+
+/* =========== A · Toppmeny ===========
+   PC: topplinje med seks faner, søk og bjelle; Mer åpner et panel under linjen.
+   Mobil: bunnmeny med alle seks; Mer åpner et ark. */
+.A{flex-direction:column}
+.A .topp-pc{display:flex;align-items:center;gap:28px;height:64px;padding:0 28px;border-bottom:1px solid var(--sand-300);background:var(--white);position:relative;z-index:21}
+.A .faner{display:flex;align-items:stretch;gap:4px;height:100%}
+.A .fane{display:flex;align-items:center;gap:8px;padding:0 12px;border:0;background:none;font:500 15px/1 var(--sans);color:var(--graphite-600);cursor:pointer;position:relative}
+.A .fane .ikon{width:18px;height:18px}
+.A .fane.aktiv{color:var(--graphite-900);font-weight:600}
+.A .fane.aktiv::after{content:"";position:absolute;left:12px;right:12px;bottom:-1px;height:2px;background:var(--graphite-900)}
+.A .fane .tall{margin-left:2px}
+.A .sok{margin-left:auto;display:flex;align-items:center;gap:8px;height:40px;width:260px;padding:0 12px;border:1px solid var(--sand-300);border-radius:8px;background:var(--sand-100);color:var(--graphite-600);font-size:14px;white-space:nowrap}
+.A .sok kbd{margin-left:auto;font:500 12px/1 var(--mono);padding:4px 6px;border:1px solid var(--sand-300);border-radius:4px;background:var(--white)}
+.A .merpanel{position:absolute;top:64px;left:0;right:0;z-index:21;background:var(--white);border-bottom:1px solid var(--sand-300);box-shadow:0 16px 32px rgba(0,0,0,.12);padding:20px 28px 24px;display:none}
+.vis-apen.A .merpanel{display:block;animation:ned 220ms var(--ut)}
+.flis-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.flis{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:center;padding:12px 14px;border:1px solid var(--sand-300);border-radius:10px;background:var(--white);text-align:left;font:inherit;color:inherit}
+.flis .boks{width:40px;height:40px;border-radius:10px;background:var(--sand-150);display:grid;place-items:center}
+.flis b{display:block;font:600 15px/1.25 var(--sans)}
+.flis small{font-size:13px;color:var(--graphite-600)}
+.A .topp-mob{display:flex;align-items:center;justify-content:space-between;padding:6px 8px 6px 16px;border-bottom:1px solid var(--sand-300)}
+.A .bunn{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));border-top:1px solid var(--sand-300);background:var(--white);position:relative;z-index:22}
+.A .bunn button{display:grid;justify-items:center;gap:4px;padding:9px 0 11px;border:0;background:none;font:500 11px/1 var(--sans);color:var(--graphite-500);cursor:pointer;position:relative}
+.A .bunn button.aktiv{color:var(--graphite-900);font-weight:600}
+.A .bunn button.aktiv::before{content:"";position:absolute;top:-1px;left:22%;right:22%;height:2px;background:var(--graphite-900)}
+.A .bunn .prikk{top:3px;right:calc(50% - 22px);min-width:16px;height:16px;font-size:10px;line-height:16px}
+.A .bunn .prikk.haster{background:var(--rust)}
+.A.mob .hurtig{bottom:76px}
+.A .ark{position:absolute;left:0;right:0;bottom:61px;z-index:21;background:var(--white);border-radius:16px 16px 0 0;padding:10px 16px 16px;display:none;gap:10px}
+.vis-apen.A .ark{display:grid;animation:opp 260ms var(--ut)}
+.A .ark .flis-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.A .ark .flis{grid-template-columns:minmax(0,1fr);gap:8px;min-height:92px;align-content:start}
+
+/* =========== B · Skinne og arbeidspanel ===========
+   PC: grafitt skinne 80 px + lyst panel med snarveier for valgt punkt.
+   Mobil: fire faste i bunnen + «Meny» som åpner et ark med resten. */
+.B .skinne{width:80px;flex:none;background:var(--graphite-900);color:#fff;display:flex;flex-direction:column;align-items:center;padding:14px 0;gap:4px}
+.B .skinne .merke{width:40px;height:40px;border-radius:8px;background:#fff;color:var(--graphite-900);display:grid;place-items:center;font:700 13px/1 var(--sans);letter-spacing:-.02em;margin-bottom:14px}
+.B .sk{width:68px;display:grid;justify-items:center;gap:5px;padding:9px 0;border:0;border-radius:8px;background:none;color:rgba(255,255,255,.72);font:500 11px/1 var(--sans);cursor:pointer;position:relative}
+.B .sk.aktiv{background:rgba(255,255,255,.12);color:#fff;font-weight:600}
+.B .sk .prikk{top:2px;right:10px;min-width:16px;height:16px;font-size:10px;line-height:16px;background:#fff;color:var(--graphite-900)}
+.B .sk .prikk.haster{background:var(--rust);color:#fff}
+.B .skinne .ned{margin-top:auto;display:grid;gap:10px;justify-items:center}
+.B .skinne .av{background:#fff;color:var(--graphite-900)}
+.B .panel{width:260px;flex:none;background:var(--sand-100);border-right:1px solid var(--sand-300);padding:22px 16px;display:grid;gap:18px;align-content:start}
+.B .panel h3{margin:0;font:600 20px/1.2 var(--sans);letter-spacing:-.01em}
+.B .gruppe{display:grid;gap:2px}
+.B .gruppe .etk{font:500 11.5px/1.4 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--graphite-600);padding:0 10px 4px}
+.nav-p{display:flex;align-items:center;gap:10px;min-height:40px;padding:0 10px;border-radius:8px;color:var(--graphite-800);text-decoration:none;font:500 14.5px/1.2 var(--sans);border:0;background:none;width:100%;text-align:left;cursor:pointer}
+.nav-p .ikon{width:18px;height:18px;color:var(--graphite-600)}
+.nav-p.aktiv{background:var(--white);color:var(--graphite-900);font-weight:600;box-shadow:0 0 0 1px var(--sand-300)}
+.B .topp-pc{display:flex;align-items:center;gap:12px;height:60px;padding:0 28px;border-bottom:1px solid var(--sand-300)}
+.B .topp-pc .sti{font:500 14px/1 var(--sans);color:var(--graphite-600)}
+.B .topp-pc .sti b{color:var(--graphite-900)}
+.B .topp-pc .h{margin-left:auto;display:flex;gap:4px}
+.B.mob{flex-direction:column}
+.B .topp-mob{display:flex;align-items:center;justify-content:space-between;padding:6px 8px 6px 16px;border-bottom:1px solid var(--sand-300)}
+.B .bunn{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));background:var(--graphite-900);position:relative;z-index:22}
+.B .bunn button{display:grid;justify-items:center;gap:4px;padding:10px 0 12px;border:0;background:none;font:500 11.5px/1 var(--sans);color:rgba(255,255,255,.68);cursor:pointer;position:relative}
+.B .bunn button.aktiv{color:#fff;font-weight:600}
+.B .bunn button.aktiv .ikon{stroke-width:2.4}
+.B .bunn .prikk{top:4px;right:calc(50% - 22px);min-width:16px;height:16px;font-size:10px;line-height:16px;background:#fff;color:var(--graphite-900)}
+.B .bunn .prikk.haster{background:var(--rust);color:#fff}
+.B.mob .hurtig{bottom:80px}
+.B .ark{position:absolute;left:0;right:0;bottom:62px;z-index:21;background:var(--white);border-radius:16px 16px 0 0;padding:10px 16px 16px;display:none;gap:14px}
+.vis-apen.B .ark{display:grid;animation:opp 260ms var(--ut)}
+.B .ark .stor-lenke{display:flex;align-items:center;gap:12px;min-height:56px;padding:0 14px;border-radius:10px;background:var(--graphite-900);color:#fff;font:600 16px/1 var(--sans)}
+.B .ark .stor-lenke small{margin-left:auto;font:500 13px/1 var(--sans);opacity:.8}
+.B .ark .flis-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.B .ark .flis{grid-template-columns:minmax(0,1fr);justify-items:center;text-align:center;gap:6px;padding:12px 6px}
+.B .ark .flis b{font-size:13.5px}
+.B .ark .coach{display:flex;align-items:center;gap:10px;padding-top:12px;border-top:1px solid var(--sand-300)}
+.B .ark .coach b{display:block;font:600 14px/1.2 var(--sans)}
+.B .ark .coach span{font-size:12.5px;color:var(--graphite-600)}
+
+/* =========== C · Søk først, gruppert meny ===========
+   PC: lys sidemeny med søk øverst, neste økt, og punktene i tre grupper (Mer er brettet ut).
+   Mobil: søkefelt i topplinja; menyen åpner som hel flate med søk, siste og gruppene. */
+.C .side{width:264px;flex:none;background:var(--sand-100);border-right:1px solid var(--sand-300);padding:18px 14px;display:flex;flex-direction:column;gap:16px}
+.C .side .logo{margin:4px 10px 2px}
+.sokefelt{display:flex;align-items:center;gap:8px;height:42px;white-space:nowrap;overflow:hidden;padding:0 12px;border:1px solid var(--sand-300);border-radius:8px;background:var(--white);color:var(--graphite-600);font-size:14px}
+.sokefelt kbd{margin-left:auto;font:500 12px/1 var(--mono);padding:4px 6px;border:1px solid var(--sand-300);border-radius:4px;background:var(--sand-100)}
+.C .neste{display:grid;gap:4px;padding:12px;border-radius:10px;background:var(--tek-ink);color:#fff}
+.C .neste .dato{color:rgba(255,255,255,.85)}
+.C .neste b{font:600 15px/1.25 var(--sans)}
+.C .neste small{font-size:13px;opacity:.92}
+.C .gruppe{display:grid;gap:1px}
+.C .gruppe .etk{font:500 11.5px/1.4 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--graphite-600);padding:0 10px 4px}
+.C .nav-p.aktiv{background:var(--graphite-900);color:#fff;box-shadow:none}
+.C .nav-p.aktiv .ikon{color:#fff}
+.C .nav-p.aktiv .tall{background:#fff}
+.C .lite{font:500 11px/1 var(--sans);color:var(--graphite-600);margin-left:auto}
+.C .side .coach{margin-top:auto;display:flex;align-items:center;gap:10px;padding:12px 10px 0;border-top:1px solid var(--sand-300)}
+.C .side .coach b{display:block;font:600 14px/1.2 var(--sans)}
+.C .side .coach span{font-size:12.5px;color:var(--graphite-600)}
+.C .topp-pc{display:flex;align-items:center;justify-content:flex-end;gap:4px;height:60px;padding:0 24px;border-bottom:1px solid var(--sand-300)}
+.C .palett{position:absolute;left:50%;top:96px;transform:translateX(-50%);width:600px;z-index:21;background:var(--white);border:1px solid var(--sand-300);border-radius:14px;box-shadow:0 24px 60px rgba(0,0,0,.22);padding:14px;display:none;gap:12px}
+.vis-apen.C .palett{display:grid;animation:ned 220ms var(--ut)}
+.palett .sokefelt{height:48px;font-size:16px;color:var(--graphite-900);border-color:var(--graphite-900)}
+.palett .tr{display:flex;align-items:center;gap:12px;min-height:44px;padding:0 10px;border-radius:8px;font-size:15px}
+.palett .tr.valgt{background:var(--sand-150)}
+.palett .tr small{margin-left:auto;font-size:12.5px;color:var(--graphite-600)}
+.C.mob{flex-direction:column}
+.C .topp-mob{display:flex;align-items:center;gap:6px;padding:8px 8px 8px 8px;border-bottom:1px solid var(--sand-300)}
+.C .topp-mob .sokefelt{flex:1;height:40px}
+.C .flate{position:absolute;inset:0;z-index:21;background:var(--white);display:none;flex-direction:column}
+.vis-apen.C .flate{display:flex;animation:fade 200ms var(--ut)}
+.C .flate .hd{display:flex;align-items:center;gap:6px;padding:8px;border-bottom:1px solid var(--sand-300)}
+.C .flate .hd .sokefelt{flex:1;border-color:var(--graphite-900);color:var(--graphite-900)}
+.C .flate .kropp{padding:14px 12px;display:grid;gap:16px;align-content:start;overflow:hidden}
+.siste{display:flex;flex-wrap:wrap;gap:6px;padding:0 4px}
+.siste span{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 12px;border:1px solid var(--sand-300);border-radius:999px;font:500 13.5px/1 var(--sans)}
+.C .flate .nav-p{min-height:44px;font-size:15.5px}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-cockpit" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></symbol>
+  <symbol id="i-innboks" viewBox="0 0 24 24"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></symbol>
+  <symbol id="i-stall" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="i-kalender" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+  <symbol id="i-workbench" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></symbol>
+  <symbol id="i-mer" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></symbol>
+  <symbol id="i-meny" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+  <symbol id="i-booking" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></symbol>
+  <symbol id="i-grupper" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><circle cx="5" cy="10" r="2"/><circle cx="19" cy="10" r="2"/><path d="M7 20a5 5 0 0 1 10 0M1.5 19a3.5 3.5 0 0 1 4.5-3.3M22.5 19a3.5 3.5 0 0 0-4.5-3.3"/></symbol>
+  <symbol id="i-tester" viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></symbol>
+  <symbol id="i-okonomi" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></symbol>
+  <symbol id="i-oppsett" viewBox="0 0 24 24"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></symbol>
+  <symbol id="i-datagolf" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-bjelle" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+  <symbol id="i-sok" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></symbol>
+  <symbol id="i-pluss" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-lukk" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+  <symbol id="i-pil" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+</svg>
+
+<div class="ytre">
+  <header class="hode">
+    <span class="meta-s">AgencyOS · menyutkast 1 · 16.10.2026</span>
+    <h1>Tre nye menyer for AgencyOS</h1>
+    <p>Samme Cockpit, tre måter å komme seg rundt på. Hver variant vises på PC og mobil. Trykk «Vis åpen meny» for å se Mer-delen, og trykk i menyene for å flytte valgt punkt.</p>
+  </header>
+
+  <div class="kontroller">
+    <div class="velger" role="group" aria-label="Variant">
+      <button type="button" data-variant="A" aria-pressed="true">A · Toppmeny</button>
+      <button type="button" data-variant="B" aria-pressed="false">B · Skinne og panel</button>
+      <button type="button" data-variant="C" aria-pressed="false">C · Søk først</button>
+    </div>
+    <div class="velger" role="group" aria-label="Tilstand">
+      <button type="button" data-apen="0" aria-pressed="true">Lukket meny</button>
+      <button type="button" data-apen="1" aria-pressed="false">Vis åpen meny</button>
+    </div>
+  </div>
+
+  <div>
+    <p class="etikett">PC · 1280 px</p>
+    <div class="ramme pc-boks" id="pc"></div>
+  </div>
+
+  <div class="nedre">
+    <div>
+      <p class="etikett">Mobil · 390 px</p>
+      <div class="ramme mob-boks" id="mob"></div>
+    </div>
+    <div class="notat" id="notat"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var LOGO = 'bilder/logo-ak-golf-hq.svg';
+  var HOVED = [
+    {id:'cockpit',n:'Cockpit'},{id:'innboks',n:'Innboks',tall:5,haster:2},{id:'stall',n:'Stall'},
+    {id:'kalender',n:'Kalender'},{id:'workbench',n:'Workbench'},{id:'mer',n:'Mer'}
+  ];
+  var MER = [
+    {id:'booking',n:'Booking',b:'Tjenester, timer og avbestilling'},
+    {id:'grupper',n:'Grupper',b:'GFGK, Academy og Junior Academy'},
+    {id:'tester',n:'Tester',b:'Testbatteri og resultater'},
+    {id:'okonomi',n:'Økonomi',b:'Bare head coach'},
+    {id:'oppsett',n:'Oppsett',b:'Profil, varsler og tilgang'},
+    {id:'datagolf',n:'Data Golf',b:'Proffkatalog og sammenligning'}
+  ];
+  var state = {variant:'A', apen:false, aktiv:'cockpit'};
+
+  function i(id){ return '<svg class="ikon" aria-hidden="true"><use href="#i-'+id+'"/></svg>'; }
+  function tall(p){ return p.tall ? '<span class="tall'+(p.haster?' haster':'')+'">'+(p.haster||p.tall)+'</span>' : ''; }
+  function prikk(p){ return p.tall ? '<b class="prikk'+(p.haster?' haster':'')+'">'+(p.haster||p.tall)+'</b>' : ''; }
+  function ak(id){ return state.aktiv===id ? ' aktiv' : ''; }
+  function bjelle(){ return '<button type="button" class="knapp-i" aria-label="Varsler, 4 nye">'+i('bjelle')+'<b class="prikk">4</b></button>'; }
+  var hurtig = '<button type="button" class="hurtig" aria-label="Hurtighandlinger">'+i('pluss')+'</button>';
+
+  var SPILLERE = [
+    ['ØR','Øyvind Rohjan','Ingen økt logget på 9 dager','risiko','Risiko'],
+    ['MA','Magnus Aasheim','Tid mot plan 58 % siste 2 uker','sjekk','Sjekk'],
+    ['IL','Ida Lunde','Turnering lørdag, plan ikke bekreftet','sjekk','Sjekk']
+  ];
+  var OKTER = [
+    ['tek','09:00','Øyvind Rohjan · Teknikk P6.0','60 min · Studio 1'],
+    ['slag','11:00','Gruppe Junior Academy · Innspill','90 min · Driving range'],
+    ['spill','14:30','Magnus Aasheim · 9 hull','2 t · Gamle Fredrikstad GK']
+  ];
+  function innhold(){
+    var rader = SPILLERE.map(function(s){return '<div class="rad"><span class="spav">'+s[0]+'</span><div><b>'+s[1]+'</b><small>'+s[2]+'</small></div><span class="status '+s[3]+'">'+s[4]+'</span></div>';}).join('');
+    var okter = OKTER.map(function(o){return '<div class="okt '+o[0]+'"><span class="t">'+o[1]+'</span><div><b>'+o[2]+'</b><small>'+o[3]+'</small></div></div>';}).join('');
+    return '<div class="innhold"><div class="topp"><p class="dato">Mandag 5. oktober · uke 41</p><h1 class="tittel">God morgen, Anders</h1>'+
+      '<div class="stort"><b>3</b><span>spillere trenger deg i dag</span></div></div>'+
+      '<section class="blokk"><h2>Trenger deg</h2><div>'+rader+'</div></section>'+
+      '<section class="blokk"><h2>Dagens økter</h2><div class="okter">'+okter+'</div></section></div>';
+  }
+  function flis(m){ return '<button type="button" class="flis" data-gaa="'+m.id+'"><span class="boks">'+i(m.id)+'</span><span><b>'+m.n+'</b><small>'+m.b+'</small></span></button>'; }
+
+  /* ---------- A ---------- */
+  function A_pc(){
+    var faner = HOVED.map(function(p){return '<button type="button" class="fane'+ak(p.id)+'" data-gaa="'+p.id+'">'+i(p.id)+p.n+tall(p)+'</button>';}).join('');
+    return '<div class="skjerm pc A"><div class="topp-pc"><img class="logo" src="'+LOGO+'" alt="AK Golf HQ" width="91" height="20"><nav class="faner" aria-label="Hovedmeny">'+faner+'</nav>'+
+      '<div class="sok">'+i('sok')+'Søk spiller, økt eller gruppe<kbd>⌘K</kbd></div>'+bjelle()+'<span class="av">AK</span></div>'+
+      '<div class="merpanel"><p class="dato" style="margin-bottom:12px">Mer</p><div class="flis-grid">'+MER.map(flis).join('')+'</div></div>'+
+      '<div class="lag"></div><div class="rull">'+innhold()+'</div>'+hurtig+'</div>';
+  }
+  function A_mob(){
+    var bunn = HOVED.map(function(p){return '<button type="button" class="'+ak(p.id).trim()+'" data-gaa="'+p.id+'">'+i(p.id)+p.n+prikk(p)+'</button>';}).join('');
+    return '<div class="skjerm mob A"><div class="topp-mob"><img class="logo" src="'+LOGO+'" alt="AK Golf HQ" width="91" height="20"><div style="display:flex">'+'<button type="button" class="knapp-i" aria-label="Søk">'+i('sok')+'</button>'+bjelle()+'</div></div>'+
+      '<div class="rull">'+innhold()+'</div><div class="lag"></div>'+
+      '<div class="ark"><div class="grepp"></div><p class="dato">Mer</p><div class="flis-grid">'+MER.map(flis).join('')+'</div></div>'+
+      '<nav class="bunn" aria-label="Hovedmeny">'+bunn+'</nav>'+hurtig+'</div>';
+  }
+
+  /* ---------- B ---------- */
+  var B_PANEL = {
+    cockpit:{t:'Cockpit',g:[['I dag',[['cockpit','Oversikt',''],['stall','Trenger deg','3'],['workbench','Følger ikke planen','2']]],['Snarveier',[['kalender','Neste økt 09:00',''],['innboks','Spørsmål over 24 t','2']]]]},
+    innboks:{t:'Innboks',g:[['Filter',[['innboks','Alle','5'],['innboks','Risiko','2'],['innboks','Følg med','1'],['innboks','Sjekk','2'],['innboks','Løst','']]],['Kontoer',[['innboks','post@akgolf.no',''],['innboks','akgolfgroup@gmail.com','']]]]},
+    stall:{t:'Stall',g:[['Bånd',[['stall','I dag','4'],['stall','Trener nå','1'],['stall','Hele stallen','14']]],['Grupper',[['grupper','GFGK Junior',''],['grupper','Academy','']]]]},
+    kalender:{t:'Kalender',g:[['Visning',[['kalender','Dag',''],['kalender','Uke',''],['kalender','Måned','']]],['Coacher',[['kalender','Alle coacher',''],['kalender','Bare meg','']]]]},
+    workbench:{t:'Workbench',g:[['Flater',[['workbench','Sesongkart',''],['workbench','Ukeverksted',''],['workbench','Trenerbord',''],['workbench','Stats','']]]]},
+    mer:{t:'Mer',g:[['Mer',MER.map(function(m){return [m.id,m.n,''];})]]}
+  };
+  function B_pc(){
+    var sk = HOVED.map(function(p){return '<button type="button" class="sk'+ak(p.id)+'" data-gaa="'+p.id+'">'+i(p.id)+p.n+prikk(p)+'</button>';}).join('');
+    var nokkel = B_PANEL[state.aktiv] ? state.aktiv : 'mer';
+    var pan = B_PANEL[nokkel];
+    var grupper = pan.g.map(function(g,gi){return '<div class="gruppe"><span class="etk">'+g[0]+'</span>'+g[1].map(function(l,li){return '<button type="button" class="nav-p'+(gi===0&&li===0?' aktiv':'')+'">'+i(l[0])+l[1]+(l[2]?'<span class="tall">'+l[2]+'</span>':'')+'</button>';}).join('')+'</div>';}).join('');
+    var sti = HOVED.filter(function(p){return p.id===nokkel;})[0];
+    return '<div class="skjerm pc B"><nav class="skinne" aria-label="Hovedmeny"><span class="merke">AK</span>'+sk+'<div class="ned"><span class="av">AK</span></div></nav>'+
+      '<aside class="panel"><h3>'+pan.t+'</h3>'+grupper+'</aside>'+
+      '<div class="hoved"><div class="topp-pc"><span class="sti">'+(sti?sti.n:'Mer')+' / <b>Oversikt</b></span><div class="h"><button type="button" class="knapp-i" aria-label="Søk">'+i('sok')+'</button>'+bjelle()+'</div></div><div class="rull">'+innhold()+'</div></div>'+hurtig+'</div>';
+  }
+  function B_mob(){
+    var fire = HOVED.slice(0,4).map(function(p){return '<button type="button" class="'+ak(p.id).trim()+'" data-gaa="'+p.id+'">'+i(p.id)+p.n+prikk(p)+'</button>';}).join('');
+    var menyAktiv = (state.aktiv==='workbench'||state.aktiv==='mer') ? 'aktiv' : '';
+    return '<div class="skjerm mob B"><div class="topp-mob"><img class="logo" src="'+LOGO+'" alt="AK Golf HQ" width="91" height="20">'+bjelle()+'</div>'+
+      '<div class="rull">'+innhold()+'</div><div class="lag"></div>'+
+      '<div class="ark"><div class="grepp"></div><a class="stor-lenke" data-gaa="workbench">'+i('workbench')+'Workbench<small>Sesongkart · uke · økt</small></a>'+
+      '<div class="flis-grid">'+MER.map(function(m){return '<button type="button" class="flis" data-gaa="'+m.id+'"><span class="boks">'+i(m.id)+'</span><b>'+m.n+'</b></button>';}).join('')+'</div>'+
+      '<div class="coach"><span class="av">AK</span><span><b>Anders Kristiansen</b><span>Head coach</span></span></div></div>'+
+      '<nav class="bunn" aria-label="Hovedmeny">'+fire+'<button type="button" class="'+menyAktiv+'" data-meny>'+i('meny')+'Meny</button></nav>'+hurtig+'</div>';
+  }
+
+  /* ---------- C ---------- */
+  var C_GRUPPER = [
+    ['Daglig',[{id:'cockpit',n:'Cockpit'},{id:'innboks',n:'Innboks',tall:5,haster:2},{id:'kalender',n:'Kalender'}]],
+    ['Spillere',[{id:'stall',n:'Stall'},{id:'workbench',n:'Workbench'},{id:'grupper',n:'Grupper'},{id:'tester',n:'Tester'}]],
+    ['Drift',[{id:'booking',n:'Booking'},{id:'okonomi',n:'Økonomi',lite:'Head coach'},{id:'datagolf',n:'Data Golf'},{id:'oppsett',n:'Oppsett'}]]
+  ];
+  function C_liste(){
+    return C_GRUPPER.map(function(g){return '<div class="gruppe"><span class="etk">'+g[0]+'</span>'+g[1].map(function(p){return '<button type="button" class="nav-p'+ak(p.id)+'" data-gaa="'+p.id+'">'+i(p.id)+p.n+(p.lite?'<span class="lite">'+p.lite+'</span>':'')+tall(p)+'</button>';}).join('')+'</div>';}).join('');
+  }
+  function C_pc(){
+    var treff = [['stall','Øyvind Rohjan','Spiller 360'],['workbench','Øyvind Rohjan · ukeplan uke 41','Workbench'],['kalender','Ny booking for Øyvind','Handling']];
+    return '<div class="skjerm pc C"><nav class="side" aria-label="Hovedmeny"><img class="logo" src="'+LOGO+'" alt="AK Golf HQ" width="100" height="22">'+
+      '<div class="sokefelt">'+i('sok')+'Hopp til …<kbd>⌘K</kbd></div>'+
+      '<div class="neste"><span class="dato">Neste økt · om 40 min</span><b>09:00 Øyvind Rohjan</b><small>TEK · Teknikk P6.0 · Studio 1</small></div>'+
+      C_liste()+'<div class="coach"><span class="av">AK</span><span><b>Anders Kristiansen</b><span>Head coach</span></span></div></nav>'+
+      '<div class="hoved"><div class="topp-pc">'+bjelle()+'</div><div class="rull">'+innhold()+'</div></div>'+
+      '<div class="lag"></div><div class="palett" role="dialog" aria-label="Hopp til"><div class="sokefelt">'+i('sok')+'øyv</div>'+
+      treff.map(function(t,n){return '<div class="tr'+(n===0?' valgt':'')+'">'+i(t[0])+t[1]+'<small>'+t[2]+'</small></div>';}).join('')+'</div>'+hurtig+'</div>';
+  }
+  function C_mob(){
+    return '<div class="skjerm mob C"><div class="topp-mob"><button type="button" class="knapp-i" aria-label="Meny" data-meny>'+i('meny')+'</button><div class="sokefelt">'+i('sok')+'Hopp til spiller eller side</div>'+bjelle()+'</div>'+
+      '<div class="rull">'+innhold()+'</div>'+
+      '<div class="flate"><div class="hd"><div class="sokefelt">'+i('sok')+'Hopp til spiller eller side</div><button type="button" class="knapp-i" aria-label="Lukk" data-meny>'+i('lukk')+'</button></div>'+
+      '<div class="kropp"><div><p class="dato" style="padding:0 4px 8px">Siste</p><div class="siste"><span>Øyvind Rohjan</span><span>Uke 41</span><span>GFGK Junior</span></div></div>'+C_liste()+'</div></div>'+hurtig+'</div>';
+  }
+
+  var NOTAT = {
+    A:'<section class="anbef"><h2>A · Toppmeny</h2><p>Alt på én linje øverst. Innholdet får hele bredden, som passer Kalender og Workbench.</p></section>'+
+      '<section><h2>Slik virker den</h2><ul><li>PC: seks faner, søk med ⌘K og bjelle i topplinja. Mer åpner et panel med de seks punktene og en linje om hva hvert punkt er.</li><li>Mobil: alle seks punktene i bunnen, så ingenting gjemmer seg bak en hamburger. Mer åpner et ark.</li><li>Rust bare på Innboks-telleren når noe haster.</li></ul></section>'+
+      '<section><h2>Pris</h2><ul><li>Seks punkter på 390 px gir 65 px per knapp. «Workbench» får plass, men det er trangt.</li><li>Faner i topplinja tåler ikke mange flere punkter.</li></ul></section>',
+    B:'<section class="anbef"><h2>B · Skinne og panel</h2><p>Smal grafitt skinne for de seks punktene, og et lyst panel ved siden av med snarveier for punktet du står i.</p></section>'+
+      '<section><h2>Slik virker den</h2><ul><li>PC: panelet viser filtre og snarveier, for eksempel båndene i Stall eller filtrene i Innboks. Trykk et punkt i skinna for å se panelet bytte.</li><li>Mobil: fire faste i bunnen (Cockpit, Innboks, Stall, Kalender). «Meny» åpner et ark med Workbench øverst, de seks Mer-punktene og coachen.</li></ul></section>'+
+      '<section><h2>Pris</h2><ul><li>Panelet tar 260 px fra innholdet. Bør kunne lukkes på smale PC-skjermer.</li><li>Workbench er ett trykk lenger unna på mobil.</li></ul></section>',
+    C:'<section class="anbef"><h2>C · Søk først</h2><p>Sidemeny med søk øverst og neste økt som fylt kort. Punktene står i tre grupper: Daglig, Spillere og Drift.</p></section>'+
+      '<section><h2>Slik virker den</h2><ul><li>PC: ⌘K åpner «Hopp til» midt på skjermen. Skriv tre bokstaver og trykk Enter for å havne hos spilleren.</li><li>Mobil: søkefeltet står alltid i topplinja. Menyen åpner som hel flate med siste besøkte og gruppene.</li></ul></section>'+
+      '<section><h2>Krever ditt ja</h2><ul><li>Mer er brettet ut i gruppene. Det bryter vedtaket om seks hovedpunkter med Mer (28.09 og 16.10). Velger du C, blir det en ny beslutning.</li></ul></section>'
+  };
+
+  var pc = document.getElementById('pc'), mob = document.getElementById('mob'), notat = document.getElementById('notat');
+  function skaler(){
+    var s = pc.querySelector('.skjerm'); if(!s) return;
+    var f = Math.min(1, pc.clientWidth/1280);
+    s.style.transform = 'scale('+f+')';
+    pc.style.height = Math.round(760*f)+'px';
+  }
+  function tegn(){
+    var v = state.variant;
+    pc.innerHTML = ({A:A_pc,B:B_pc,C:C_pc})[v]();
+    mob.innerHTML = ({A:A_mob,B:B_mob,C:C_mob})[v]();
+    notat.innerHTML = NOTAT[v];
+    [pc,mob].forEach(function(r){ r.querySelector('.skjerm').classList.toggle('vis-apen', state.apen); });
+    document.querySelectorAll('[data-variant]').forEach(function(b){ b.setAttribute('aria-pressed', b.dataset.variant===v); });
+    document.querySelectorAll('[data-apen]').forEach(function(b){ b.setAttribute('aria-pressed', (b.dataset.apen==='1')===state.apen); });
+    skaler();
+  }
+  document.addEventListener('click', function(e){
+    var t = e.target.closest('[data-variant],[data-apen],[data-gaa],[data-meny],.lag');
+    if(!t) return;
+    if(t.dataset.variant){ state.variant=t.dataset.variant; state.apen=false; state.aktiv='cockpit'; }
+    else if(t.dataset.apen){ state.apen = t.dataset.apen==='1'; }
+    else if(t.hasAttribute('data-meny')){ state.apen = !state.apen; }
+    else if(t.classList.contains('lag')){ state.apen = false; }
+    else if(t.dataset.gaa){
+      if(t.dataset.gaa==='mer' && state.variant==='A'){ state.apen = !state.apen; state.aktiv='mer'; }
+      else { state.aktiv=t.dataset.gaa; state.apen=false; }
+    }
+    tegn();
+  });
+  window.addEventListener('resize', skaler);
+  tegn();
+})();
+</script>
