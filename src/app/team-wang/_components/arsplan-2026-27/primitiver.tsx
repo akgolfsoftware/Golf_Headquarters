@@ -246,7 +246,7 @@ function klientNaa(): string {
 
 /**
  * Oslo-korrekt "i dag", hydreringstrygt (server viser `fallbackIso` inntil
- * klienten har montert — se wang-fellesside.tsx for opphavsmønsteret).
+ * klienten har montert).
  */
 export function useOsloIdagIso(fallbackIso: string): string {
   return useSyncExternalStore(tomAbonnement, klientNaa, () => fallbackIso);

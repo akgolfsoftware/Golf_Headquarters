@@ -9,8 +9,8 @@ import type { TreningSide } from "./_components/arsplan-2026-27/fane-trening";
 //
 // Bygget etter Årsplan 2026/27-fasiten (levert 25.08.2026, se
 // designsystem/wang/fasit/arsplan-2026-27/) — erstatter den forrige
-// Oversikt/Plan/Skole/Foreldre-strukturen (wang-fellesside.tsx, fortsatt i
-// repoet men ikke lenger koblet til denne ruten) med fire nye faner:
+// Oversikt/Plan/Skole/Foreldre-strukturen (slettet 16.10.2026, den
+// viste demoøkter) med fire nye faner:
 // Trening/Skole/Kalender/Foreldre.
 // Fortsatt noindex (layout) — delbar via lenke, ikke via Google.
 export const dynamic = "force-dynamic";
