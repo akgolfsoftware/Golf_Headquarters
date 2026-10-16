@@ -29,7 +29,7 @@ Kanon: `docs/platform/AGENT-BRIEF.md`. Design og meny følger `designsystem/READ
 
 ## Navigasjon (praktisk)
 
-Menyen har seks punkter (beslutninger.md §SKJERMENE … RUNDE 8, 28.09): **Cockpit · Innboks · Stall · Kalender · Workbench · Mer**. Mer har fem punkter: Booking · Grupper · Tester · Økonomi · Oppsett.
+Menyen er variant C (beslutninger.md §AGENCYOS-MENYEN BLIR VARIANT C, 16.10): søk først, neste økt, og tre grupper — **Daglig** Cockpit · Innboks · Kalender · **Spillere** Stall · Workbench · Grupper · Tester · **Drift** Booking · Økonomi (head coach) · Data Golf (`kanSeDataGolf`, når DG-01 finnes) · Oppsett. Kan legges sammen til ikonskinne 72 px.
 
 | Menypunkt | Rute |
 |-----------|------|
@@ -38,7 +38,7 @@ Menyen har seks punkter (beslutninger.md §SKJERMENE … RUNDE 8, 28.09): **Cock
 | Stall | `/admin/stall` (spillerliste også på `/admin/spillere`) |
 | Kalender | `/admin/kalender`, bookinger `/admin/bookinger` |
 | Workbench | `/admin/workbench`, planlegging `/admin/planlegge` |
-| Mer | Booking · Grupper (`/admin/grupper`) · Tester (`/admin/tester`) · Økonomi (`/admin/agencyos/okonomi`) · Oppsett |
+| Spillere / Drift | Grupper (`/admin/grupper`) · Tester (`/admin/tester`) · Booking (`/admin/bookinger`) · Økonomi (`/admin/agencyos/okonomi`) · Oppsett (`/admin/oppsett`); `/admin/mer` virker fortsatt |
 
 Utenfor menyen: Godkjenninger `/admin/godkjenninger`, Caddie `/admin/agencyos/caddie`, Agenter `/admin/agents`, Agent-team `/admin/agent-team`.
 
@@ -56,7 +56,7 @@ Låst plassering (PR #122, 2026-07-24):
 |--------------------|-----|
 | **Hjem** `/admin/agencyos` | AI-dispatch-panel («AgenticOS · AI-dispatch»), «én ting NÅ» |
 | **Kø** `/admin/godkjenninger` | Godkjenn AI-forslag (PlanAction, CaddieDraft) — merket AgenticOS |
-| **Mer** | AI-inngangene Caddie (`/admin/agencyos/caddie`), AI-agenter, Agent-team og Daglig brief ligger under Mer (fem faste punkter, 28.09) |
+| **Mer** (`/admin/mer`) | AI-inngangene Caddie (`/admin/agencyos/caddie`), AI-agenter, Agent-team og Daglig brief |
 | Cockpit-eyebrow | `AgencyOS · AgenticOS` |
 
 ```

@@ -4,6 +4,25 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## AGENCYOS-MENYEN BLIR VARIANT C: SØK FØRST, TRE GRUPPER OG IKONSKINNE (Anders 16.10.2026, bindende)
+
+Anders valgte variant C av tre menyforslag (`docs/design-system/utkast-agencyos/meny.html`, PR #1368): «C skal bygges». Underveis bestemte han at menyen skal kunne legges sammen til ikoner som glir ut ved trykk, at et ikon går rett til siden, og at klokkeslettet i ikonvisning skal være stort.
+
+- **PC:** sidemeny med søk øverst (⌘K), neste økt som fylt kort i aksefargen, og punktene i tre grupper: **Daglig** Cockpit · Innboks · Kalender · **Spillere** Stall · Workbench · Grupper · Tester · **Drift** Booking · Økonomi · Data Golf · Oppsett. Coachen nederst.
+- **Ikonskinne:** menyen kan legges sammen til 72 px. Trykk på et ikon går rett til siden. Trykk på merket, søk, neste økt eller tomt sted glir hele menyen ut over innholdet; valg av punkt går dit og legger den inn igjen. Klokkeslettet for neste økt står stort.
+- **Mobil:** søkefelt i topplinja; menyen åpner som hel flate med søk og de tre gruppene.
+- Økonomi vises bare for head coach. Data Golf vises bare for `kanSeDataGolf`, og først når coach-siden DG-01 finnes i AgencyOS.
+
+**Overstyrer:** seks hovedpunkter med Mer i §SKJERMENE I PLAYERHQ OG AGENCYOS ETTER GRILLINGEN RUNDE 8 (28.09) og §MER I AGENCYOS FÅR ET SJETTE PUNKT (16.10). Data Golf står i Drift, ikke i Mer.
+
+**Arbeidet dette utløser:**
+
+1. **Menylista** i `src/lib/agencyos/precision-ia.ts` blir tre grupper; `/admin/mer` fortsetter å virke. Ferdig når `precision-ia.test.ts` låser gruppene, rekkefølgen og at Økonomi bare vises for head coach.
+2. **Skallet** `src/components/precision/AgencyOSSkall.tsx` får bred meny, ikonskinne og mobilflate etter utkastet. Ferdig når et ikon-trykk går rett til siden, menyen glir ut ved trykk på merket, og 390 og 1280 px er uten sidelengs rulling.
+3. **Neste økt i menyen:** lett henting av coachens neste økt i dag; «—» når ingen finnes. Ferdig når kortet viser ekte økt eller «—», aldri demodata.
+4. **Data Golf i Drift** når DG-01 er bygget under `/admin` (pakke 10). Ferdig når punktet åpner DG-01 og ikke vises uten coach-rolle, låst med test.
+5. **Port 7:** Anders ser menyen i appen i 390 og desktop.
+
 ## STATS-RESTEN: TURNERINGER BLIR DEL AV RESULTATER, OG ØKT LOGGET I ETTERKANT TELLER BARE I TOTALEN (Anders 16.10.2026, bindende)
 
 Svar på punkt 1, 3 og 4 i utkastet til PlayerHQ pakke 13 (PR #1367). Punkt 1 og 3: «Ja». Punkt 4: «Logg i etterkant går på totalen men ikke inforhold til plan».
@@ -82,7 +101,7 @@ Anders 16.10 etter utkast 2: «WANG må litt nærmere stilen som er på www.wang
 
 Svar på punkt 1 i `docs/design-system/datagolf-coach-datakart-og-skjermliste.md` §Åpent hos Anders: «mer meny skal ha et punkt til».
 
-- **Mer har seks punkter:** Booking · Grupper · Tester · Økonomi · Oppsett · Data Golf.
+- ~~**Mer har seks punkter:** Booking · Grupper · Tester · Økonomi · Oppsett · Data Golf.~~ Overstyrt 16.10: Data Golf står i Drift (§AGENCYOS-MENYEN BLIR VARIANT C).
 - Data Golf (DG-01 Oversikt) vises bare for dem `kanSeDataGolf` slipper inn (§DATA GOLF VISES ALDRI TIL KUNDER).
 - Inngangene fra Spiller 360 › Stats og Workbench-øvelsen «Fra Data Golf» beholdes i tillegg.
 
@@ -91,7 +110,7 @@ Svar på punkt 1 i `docs/design-system/datagolf-coach-datakart-og-skjermliste.md
 **Arbeidet dette utløser:**
 
 1. **Datakartet** sier at punktet er avgjort. Gjort i samme PR.
-2. **Mer-menyen i koden** får «Data Golf» som sjette punkt når AgencyOS pakke 10 porteres. Ferdig når punktet står i Mer,
+2. ~~**Mer-menyen i koden** får «Data Golf» som sjette punkt~~ Erstattet av punkt 4 i §AGENCYOS-MENYEN BLIR VARIANT C; når AgencyOS pakke 10 porteres. Ferdig når punktet står i Mer,
    åpner DG-01, og ikke vises for en bruker uten coach-rolle, låst med test.
 
 ## DATA GOLF VISES ALDRI TIL KUNDER, BARE TIL COACHER I AK GOLF, WANG TOPPIDRETT OG TEAM NORWAY (Anders 16.10.2026, bindende)
@@ -812,7 +831,7 @@ reglene.
 - **Hurtigknappen gjelder også PlayerHQ:** Spør Caddie · Ny økt · Registrer runde · Start økt.
 
 **AgencyOS**
-- Menyen: Cockpit · Innboks · Stall · Kalender · Workbench · Mer. Cockpit er startskjerm, med
+- ~~Menyen: Cockpit · Innboks · Stall · Kalender · Workbench · Mer.~~ Overstyrt 16.10 (§AGENCYOS-MENYEN BLIR VARIANT C). Cockpit er startskjerm, med
   dagens kalender 05–22. Hurtigknappen får også «Ny booking».
 - **Oppgaver kommer bare fra Notion** (Tasks og Prosjekter); oppgavelista i appen utgår.
 - **Live coachingøkt** med opptak, teknisk plan og sammendrag. Opptak krever samtykke fra
@@ -834,7 +853,7 @@ reglene.
 - **Workbench:** gruppeplanen er grunnmuren og arves av medlemmene; tilpasning merkes «Egen».
   «Gjenta» ved slipp. **Pyramiden velges først og styrer kategoriseringen og øvelsesbanken.**
   Coach kan lage egne øvelser.
-- **Mer** har fem punkter: Booking · Grupper · Tester · Økonomi · Oppsett (sjette punkt Data Golf fra 16.10, §MER I AGENCYOS). Økonomi leses fra
+- ~~**Mer** har fem punkter~~ Overstyrt 16.10: punktene står i gruppene Daglig · Spillere · Drift (§AGENCYOS-MENYEN BLIR VARIANT C). Økonomi leses fra
   budsjett, Tripletex-eksport og Stripe, aldri anslått. Turneringspåmeldinger bekreftes ikke.
 
 **Mulighetskartet:** A1–A8, A10–A12 og B1–B8 tegnes inn. A9 (skadevarsel på køllehastighet)
@@ -1497,7 +1516,7 @@ og ikke kan dras ut av syne.
 ## Produkt og tilgang
 
 - Nivåer FULL / TALENT / INGEN, avgjort av `resolveTilgang` i `src/lib/feature-flags.ts`. FULL: 299 kr/mnd eller 2 690 kr/år for alle spillere (ingen 199 kr juniorpris, Anders 24.09.2026). ELITE finnes ikke. Detaljer: BUSINESS-RULES §Abonnement.
-- PlayerHQ har fire faner: I dag · Plan · Stats · Meg (28.09). Coach-menyen følger prototypen fra 02.09 (Cockpit, Innboks, Stall, Kalender, Workbench + Mer).
+- PlayerHQ har fire faner: I dag · Plan · Stats · Meg (28.09). Coach-menyen er variant C med tre grupper (§AGENCYOS-MENYEN BLIR VARIANT C, 16.10).
 - Én inngang per funksjon: én adresse, gamle adresser blir redirects, ingenting fjernes.
 - Coachflaten kalles AgencyOS (`/admin`), aldri CoachHQ. Demo: spiller Øyvind Rohjan, coach Anders Kristiansen.
 - Jarvis forbereder alt og sender ingenting. Alt som forlater huset eller endrer noe for et menneske krever Anders' ja.
