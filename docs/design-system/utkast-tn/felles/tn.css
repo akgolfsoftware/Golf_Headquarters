@@ -104,6 +104,7 @@ body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.
 .kort.dempet{background:var(--ink-50)}
 .kort.navy{background:var(--navy-900);border-color:var(--navy-900);color:var(--hvit)}
 .skille{height:1px;background:var(--ink-200)}
+.to-kol{display:grid;gap:var(--r6)}
 .rutenett{display:grid;gap:var(--r3);grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
 
 /* Flaggstreken: det eneste motivet. Navy, hvit, rød, hvit, navy — tynn, alltid horisontal. */
@@ -113,7 +114,8 @@ body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.
 .hoved{display:flex;align-items:baseline;gap:var(--r3);flex-wrap:wrap}
 .hoved strong{font:500 48px/1 var(--mono);letter-spacing:-.03em;color:var(--navy-900)}
 .hoved strong small{font:500 17px/1 var(--mono);letter-spacing:0;margin-left:4px;color:var(--ink-500)}
-.kort.navy .hoved strong{color:var(--hvit)}
+.kort.navy .hoved strong,.bildekort.navy .hoved strong{color:var(--hvit)}
+.kort.navy .hoved strong small,.bildekort.navy .hoved strong small{color:var(--rail-tekst)}
 
 /* Merker: kantete, aldri piller med runde ender */
 .merke{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 8px;border-radius:2px;font:700 12px/1 var(--tekst);white-space:nowrap;flex:none}
