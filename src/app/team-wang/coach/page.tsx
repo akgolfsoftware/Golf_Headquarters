@@ -13,6 +13,7 @@ import { canUser } from "@/lib/auth/effective-capabilities";
 import { Capability } from "@/lib/auth/cbac";
 import { WangCoachKlient } from "@/app/team-wang/coach/WangCoachKlient";
 import type { WangOmraade } from "@/components/wang/WangAppSkall";
+import { byggWangTrenerData, osloIdagIso } from "@/app/team-wang/_data/wang-trener-data";
 
 export const dynamic = "force-dynamic";
 
@@ -85,7 +86,7 @@ export default async function WangCoachPage({ searchParams }: WangCoachPageProps
       rolle={rolle}
       brukerNavn={bruker.name ?? undefined}
       elever={elever}
-      campus="Fredrikstad"
+      data={byggWangTrenerData(live, osloIdagIso())}
     />
   );
 }

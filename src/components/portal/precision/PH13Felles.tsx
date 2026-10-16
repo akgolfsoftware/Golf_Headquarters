@@ -12,6 +12,7 @@ import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-ovelser.css";
+export { OvLaster } from "./PH13OvLaster";
 
 export function OvTilbake({ href, tekst }: { href: string; tekst: string }) {
   return (
@@ -22,18 +23,3 @@ export function OvTilbake({ href, tekst }: { href: string; tekst: string }) {
   );
 }
 
-/** Lastetilstand: skjelett i samme rekkefølge som skjermen, og teksten fra tegningen. */
-export function OvLaster({ tekst, dato }: { tekst: string; dato: string }) {
-  return (
-    <div className="phn" aria-busy="true" style={{ boxSizing: "border-box" }}>
-      <div className="phn-ov-topp">
-        <span className="phn-dato">{dato}</span>
-        <span className="phn-skjelett" style={{ width: 220, height: 32 }} />
-      </div>
-      <span className="phn-skjelett" style={{ height: 150 }} />
-      <span className="phn-skjelett" style={{ height: 96 }} />
-      <span className="phn-skjelett" style={{ height: 96 }} />
-      <p className="phn-kilde" role="status">{tekst}</p>
-    </div>
-  );
-}

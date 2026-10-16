@@ -3,6 +3,7 @@
  * Tilgang, «nå»-overstyring og lastere beholdes; visningen er PH01IDag.
  */
 
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getDashboardData, type TodaySession } from "@/app/portal/actions";
@@ -22,6 +23,8 @@ import { etterlevelseFra } from "@/lib/domain/etterlevelse";
 import { hentUkePeriode } from "@/lib/portal-plan/uke-periode";
 import { tellUke } from "@/lib/portal/ph01-fullfort";
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { PlayerHQSkallLaster } from "@/components/precision/PlayerHQSkallLaster";
+import { PH01IDagLaster } from "@/components/portal/precision/PH01IDagLaster";
 import { PH01IDag, type PH01Okt, type PH01Props } from "@/components/portal/precision/PH01IDag";
 import { harEgenIupInngang } from "@/lib/iup/oversikt";
 import type { Akse, TidslinjePunkt } from "@/components/precision/pa";
@@ -69,7 +72,17 @@ function tilOkt(s: TodaySession, naa: Date): PH01Okt | null {
   };
 }
 
-export default async function PortalHjemPage() {
+/* I dag-skjelettet ligger her, ikke i portal/loading.tsx: den lastesiden gjelder alle undersider uten
+   egen loading.tsx og kan ikke se adressen uten klientkode, som CSP stopper (gotchas §Bygg og drift). */
+export default function PortalHjemPage() {
+  return (
+    <Suspense fallback={<PlayerHQSkallLaster sti="/portal"><PH01IDagLaster /></PlayerHQSkallLaster>}>
+      <PortalHjemInnhold />
+    </Suspense>
+  );
+}
+
+async function PortalHjemInnhold() {
   const user = await requirePortalUser({ kreverTilgang: "TALENT" });
   if (user.role === "PARENT") redirect("/forelder");
   if (user.role === "GUEST") redirect("/admin/kalender");

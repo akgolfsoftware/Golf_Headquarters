@@ -6,7 +6,7 @@
  * Data og handlinger er de samme som før: `hentLedigeDager` og `createBookingCheckout`.
  *
  * Avvik:
- *   - Betaling går til Stripe Checkout (omdirigering). Kortfelt og Vipps-valg finnes ikke i koden.
+ *   - Betaling går til Stripe Checkout (omdirigering). Kortfelt finnes ikke i koden; kort og Apple Pay vises i Checkout (beslutning 15.10).
  *   - Telefon er påkrevd, som før: bookingen trenger den for å varsle ved kollisjon.
  *   - «Neste uke» finnes ikke: `hentLedigeDager` henter tjenestens maks dager fram (standard sju).
  */

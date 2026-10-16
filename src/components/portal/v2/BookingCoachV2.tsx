@@ -148,7 +148,7 @@ export function BookingCoachV2({ data }: { data: BookingCoachV2Data }) {
               <div style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
                 <Icon name="lock" size={15} style={{ color: TL.fill, flex: "none", marginTop: 2 }} />
                 <div style={{ minWidth: 0 }}>
-                  <div style={{ fontFamily: TL.font.sans, fontSize: 14, fontWeight: 700, color: TL.text }}>Booking krever Pro</div>
+                  <div style={{ fontFamily: TL.font.sans, fontSize: 14, fontWeight: 700, color: TL.text }}>Booking krever Full</div>
                   <p style={{ fontFamily: TL.font.sans, fontSize: 12, lineHeight: 1.5, color: TL.mute, margin: "4px 0 0" }}>
                     Oppgrader for å bruke forhåndsbetalte timer mot coach.
                   </p>

@@ -457,7 +457,7 @@ export function BookingPrecisionFlow({
                 Bekreft og betal
               </h1>
               <p className="font-sans text-xs text-black/60 mt-1">
-                Sikker betaling med Stripe eller Vipps
+                Sikker betaling med kort eller Apple Pay gjennom Stripe
               </p>
             </div>
             <button

@@ -43,6 +43,7 @@
   .teller .e{font:500 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-500)}
   .teller .t{font:500 30px/1 var(--mono);color:var(--navy-900)}
   .teller.tint .t{color:var(--navy-900)}
+  .teller.tint .e{color:var(--ink-700)}
   .teller .s{font-size:13px;line-height:1.4;color:var(--ink-700)}
   .puls{display:inline-flex;align-items:center;gap:6px;font:700 12px/1 var(--tekst);color:var(--navy-900);white-space:nowrap}
   .puls i{width:8px;height:8px;background:var(--navy-900);animation:puls 1.6s ease-in-out infinite}
@@ -205,7 +206,7 @@
   <header class="hode">
     <span class="meta-s">Team Norway · trenerskjermer · Data Golf · DG-01–DG-09 · utkast 1 · 15.10.2026</span>
     <h1>Data Golf for trener: ni skjermer under Analyse</h1>
-    <p>Samme ni skjermer som i AgencyOS, tegnet i Team Norways eget språk. Bare for trenere med coach-rollen. Trener Ida Hovland, spiller Emil Berg (syntetisk). Onsdag 14. oktober, uke 42. Proffnavn er ekte, tallene er eksempeltall.</p>
+    <p>Samme ni skjermer som i AgencyOS, tegnet i Team Norways eget språk. Bare for trenere med coach-rollen. Trener: Sportssjef. Spiller Spiller 04 (syntetisk). Onsdag 14. oktober, uke 42. Proffnavn er ekte, tallene er eksempeltall.</p>
   </header>
   <div class="kontroller">
     <div class="velger skjermvalg" role="group" aria-label="Skjerm">
@@ -237,7 +238,7 @@
     <section class="endringer">
       <h2>Hva som er nytt</h2>
       <ul>
-        <li><b>Avklart 16.10 (Anders: «Utkast 2 står»):</b> hoveddata i Data Golf-skjermene bruker Team Norways navy, hvit og rÃ¸d flaggstrek, ikke SLAG-indigo. Data Golf er ikke en akse.</li>
+        <li><b>Avklart 16.10 (Anders: «Utkast 2 står»):</b> hoveddata i Data Golf-skjermene bruker Team Norways navy, hvit og rød flaggstrek, ikke SLAG-indigo. Data Golf er ikke en akse.</li>
         <li><b>Ni skjermer i stedet for sytten.</b> Bare det basen faktisk har: ferdighetsprofil, innspill per avstand, sesongtall, norske proffers resultater og live, kalender og synkstatus. Bane og felt, modellanalyse, trend og spesialistregister er tatt ut (ingen lagring).</li>
         <li><b>Samme innhold som AgencyOS-utkastet</b>, i Team Norways skall: navy sidemeny, Jost, Lato og IBM Plex Mono, hjørner 0 · 2 · 4, ingen skygger, ingen sirkler. Aksen SLAG bruker TN-indigo.</li>
         <li><b>Spiller mot proff</b> (DG-05) gir gap per område i slag, med spillerens tall som estimat og proffens som modell. Snittscore sammenlignes aldri som justert nivågap.</li>
@@ -259,7 +260,7 @@
     <section class="endringer">
       <h2>Åpent hos Anders</h2>
       <ul>
-        <li><b>Lisens for Team Norway er ikke avklart.</b> Kundedistribusjon av Data Golf-tall er ikke dokumentert (kontroll 02.10). Utkastet er tegnet, men bygges ikke før bruksretten er avklart. Gjelder også WANG.</li>
+        <li><b>Lisensen er avklart (Anders 16.10).</b> Data Golf vises bare for coacher i AK Golf, WANG og Team Norway, aldri for kunder. Utkastet venter bare på port 7.</li>
         <li><b>Data Golf tilbake i Analyse-menyen</b> bare for trenere med coach-rollen. Andre TN-trenere skal ikke se lenken. Riktig?</li>
         <li><b>Innspill-tak som øvelse:</b> målet er proffens nærhet rett av. Vil du ha et trinn (for eksempel proffens tall + 30 %) for spillere under kategori C?</li>
       </ul>
@@ -412,7 +413,7 @@
     <div style="display:grid;gap:var(--r5)">
       <div class="kort">
         <div class="sammen-hode">
-          <div class="hvem"><span class="avatar">EB</span><b>Emil Berg</b><span class="kilde">Kategori C · Junior gutter</span></div>
+          <div class="hvem"><span class="avatar">04</span><b>Spiller 04</b><span class="kilde">Kategori C · Junior gutter</span></div>
           <span class="mot">MOT</span>
           <div class="hvem"><span class="avatar navy">VH</span><b>Viktor Hovland</b><span class="kilde">PGA Tour · rang 9</span></div>
         </div>
@@ -425,21 +426,21 @@
           <p class="forklar">Størst gap i innspill. Nærspill og putting er på høyde.</p>
         </div>
         <div class="kort" style="gap:8px">
-          <div class="gap-rad hode"><span>Område</span><span>Emil</span><span></span><span>Viktor</span><span>Gap</span></div>
+          <div class="gap-rad hode"><span>Område</span><span>Spiller 04</span><span></span><span>Viktor</span><span>Gap</span></div>
           <div class="gap-rad"><span>Utslag</span><span class="v">+0,3</span><div class="gap-spor"><i style="right:50%;width:9%"></i></div><span class="v">+0,6</span><span class="v gap">−0,3</span></div>
           <div class="gap-rad"><span>Innspill</span><span class="v">−0,9</span><div class="gap-spor"><i style="right:50%;width:48%"></i></div><span class="v">+0,9</span><span class="v gap">−1,8</span></div>
           <div class="gap-rad"><span>Nærspill</span><span class="v">+0,2</span><div class="gap-spor"><i style="right:50%;width:1%"></i></div><span class="v">+0,2</span><span class="v gap">0,0</span></div>
           <div class="gap-rad"><span>Putting</span><span class="v">+0,1</span><div class="gap-spor"><i style="right:50%;width:3%"></i></div><span class="v">+0,2</span><span class="v gap">−0,1</span></div>
           <div class="gap-rad"><span><b>Samlet</b></span><span class="v">−0,3</span><div class="gap-spor"><i style="right:50%;width:50%"></i></div><span class="v">+1,9</span><span class="v gap"><b>−3,1</b></span></div>
         </div>
-        <p class="kilde">Emil: 12 runder slag for slag, 14. juni–27. sep, SG etter Broadie mot Kategori B <span class="merke kontur">Estimat</span>. Viktor: Data Golfs ferdighetsmodell 12. okt mot PGA-feltet <span class="merke kontur">Modell</span>. To ulike referanser; gapet er en pekepinn, ikke et målt tall.</p>
+        <p class="kilde">Spiller 04: 12 runder slag for slag, 14. juni–27. sep, SG etter Broadie mot Kategori B <span class="merke kontur">Estimat</span>. Viktor: Data Golfs ferdighetsmodell 12. okt mot PGA-feltet <span class="merke kontur">Modell</span>. To ulike referanser; gapet er en pekepinn, ikke et målt tall.</p>
       </section>
     </div>
     <div style="display:grid;gap:var(--r5)">
       <section class="seksjon">
         <div class="sek-topp"><h2>Målinger</h2><div class="valg" role="group" aria-label="Runder"><button type="button" aria-pressed="true">12</button><button type="button" aria-pressed="false">24</button><button type="button" aria-pressed="false">50</button></div></div>
         <div class="kort" style="gap:0;padding-top:4px;padding-bottom:4px">
-          <div class="maal-rad hode"><span>Måling</span><span>Emil</span><span>Viktor</span><span>Diff</span></div>
+          <div class="maal-rad hode"><span>Måling</span><span>Spiller 04</span><span>Viktor</span><span>Diff</span></div>
           <div class="maal-rad"><span>Snittscore, brutto</span><span class="v">73,1<small>12 r · GolfBox</small></span><span class="v">69,8<small>62 r · Data Golf</small></span><span class="v">—</span></div>
           <div class="maal-rad"><span>Fairwaytreff</span><span class="v">58 %<small>12 r</small></span><span class="v">58 %<small>62 r</small></span><span class="v">0</span></div>
           <div class="maal-rad"><span>GIR</span><span class="v">61 %<small>12 r</small></span><span class="v">69 %<small>62 r</small></span><span class="v">−8</span></div>
@@ -450,7 +451,7 @@
       </section>
       <section class="seksjon">
         <div class="sek-topp"><h2>Neste steg</h2></div>
-        <div class="knapper"><button type="button" class="knapp pri" data-gaa="innspill">Se innspill per avstand</button><button type="button" class="knapp sek" data-gaa="forslag">Lag forslag til Emil</button></div>
+        <div class="knapper"><button type="button" class="knapp pri" data-gaa="innspill">Se innspill per avstand</button><button type="button" class="knapp sek" data-gaa="forslag">Lag forslag til Spiller 04</button></div>
       </section>
     </div>
   </div>
@@ -470,17 +471,17 @@
 <div class="app" data-aktiv="analyse" data-skall="tilbake" data-tilbake="Spiller mot proff">
 <main class="innhold">
   <header data-behold>
-    <span class="overlinje">Analyse · Data Golf · Emil mot Viktor</span>
+    <span class="overlinje">Analyse · Data Golf · Spiller 04 mot Viktor</span>
     <div class="hode-rad"><h1 class="tittel">Innspill-tak</h1><span class="dg-kilde"><i></i>Nærhet i meter</span></div>
   </header>
   <div class="to-kol">
     <div style="display:grid;gap:var(--r3)">
       <div class="sek-topp"><h2 style="margin:0;font:500 19px/1.25 var(--display);letter-spacing:.06em;text-transform:uppercase;color:var(--navy-900)">Per avstand</h2><div class="valg" role="group" aria-label="Leie" data-leie><button type="button" aria-pressed="true" data-l="fw">Fairway</button><button type="button" aria-pressed="false" data-l="ro">Rough</button></div></div>
       <div class="kort" style="gap:0;padding-top:4px;padding-bottom:4px">
-        <div class="band-rad hode"><span>Avstand</span><span>Viktor</span><span>Emil</span><span class="gap-spor" style="height:auto;background:none">Gap</span><span></span></div>
+        <div class="band-rad hode"><span>Avstand</span><span>Viktor</span><span>Spiller 04</span><span class="gap-spor" style="height:auto;background:none">Gap</span><span></span></div>
         <div data-band style="display:contents"></div>
       </div>
-      <p class="kilde">Viktor: justert nærhet, Data Golf 12. okt <span class="merke kontur">Modell</span>. Emil: snitt av registrerte innspill fra samme avstand, 12 runder, ikke justert for vanskelighet. «—» når Emil har under 10 slag fra avstanden.</p>
+      <p class="kilde">Viktor: justert nærhet, Data Golf 12. okt <span class="merke kontur">Modell</span>. Spiller 04: snitt av registrerte innspill fra samme avstand, 12 runder, ikke justert for vanskelighet. «—» når Spiller 04 har under 10 slag fra avstanden.</p>
     </div>
     <div>
       <section class="seksjon">
@@ -502,7 +503,7 @@
       <div class="maalflate"><b data-maal>7,0</b><span>meter fra hullet</span></div>
       <div class="kvitt"><b data-ovelse-navn>Innspill 91–137 m, fairway</b><span class="forklar">SLAG · Innspill · 20 slag · innenfor målet teller. Målet er Viktors justerte nærhet. Måles med TrackMan eller for hånd.</span></div>
       <div class="felt"><label for="ov-slag">Antall slag</label><select id="ov-slag"><option>20</option><option>30</option><option>40</option></select></div>
-      <div class="felt"><label for="ov-uke">Send som forslag til</label><select id="ov-uke"><option>Emils Workbench, uke 43</option><option>Gruppas øvelsesbank</option></select></div>
+      <div class="felt"><label for="ov-uke">Send som forslag til</label><select id="ov-uke"><option>Workbench for Spiller 04, uke 43</option><option>Gruppas øvelsesbank</option></select></div>
       <button type="button" class="knapp pri stor" data-ov-ok>Send forslag</button>
     </div>
   </div>
@@ -515,7 +516,7 @@
 <div class="app" data-aktiv="analyse" data-skall="tilbake" data-tilbake="Spiller mot proff">
 <main class="innhold">
   <header data-behold>
-    <span class="overlinje">Analyse · Data Golf · Emil Berg</span>
+    <span class="overlinje">Analyse · Data Golf · Spiller 04</span>
     <h1 class="tittel">Fra funn til forslag</h1>
   </header>
   <div class="to-kol">
@@ -533,13 +534,13 @@
       </div></div>
     </div>
     <div style="display:grid;gap:var(--r4)">
-      <div class="kvitt"><b data-kvitt>12 økter · uke 43–48 · 45 min</b><span class="forklar">Sendes til Emils Workbench som forslag. Han godtar eller avviser selv. Godtatt forslag legges inn én gang; har planen endret seg siden, får du beskjed om konflikt.</span></div>
-      <div class="knapper"><button type="button" class="knapp pri stor" data-send>Send forslag til Emil</button></div>
+      <div class="kvitt"><b data-kvitt>12 økter · uke 43–48 · 45 min</b><span class="forklar">Sendes til Workbench for Spiller 04 som forslag. Han godtar eller avviser selv. Godtatt forslag legges inn én gang; har planen endret seg siden, får du beskjed om konflikt.</span></div>
+      <div class="knapper"><button type="button" class="knapp pri stor" data-send>Send forslag til Spiller 04</button></div>
       <section class="seksjon">
         <div class="sek-topp"><h2>Forslag som venter</h2></div>
         <div class="kort" style="gap:0;padding-top:4px;padding-bottom:4px">
-          <div class="vent-rad"><span class="avatar">IS</span><span><b>Ingrid Sæther · Utslag</b><span class="kilde">Sendt 2. okt · 8 økter</span></span><span class="merke vent"><i></i>Venter på spiller</span></div>
-          <div class="vent-rad"><span class="avatar">JH</span><span><b>Jonas Haug · Nærspill</b><span class="kilde">Sendt 30. sep · godtatt 1. okt</span></span><span class="merke ok"><i></i>Lagt inn</span></div>
+          <div class="vent-rad"><span class="avatar">05</span><span><b>Spiller 05 · Utslag</b><span class="kilde">Sendt 2. okt · 8 økter</span></span><span class="merke vent"><i></i>Venter på spiller</span></div>
+          <div class="vent-rad"><span class="avatar">06</span><span><b>Spiller 06 · Nærspill</b><span class="kilde">Sendt 30. sep · godtatt 1. okt</span></span><span class="merke ok"><i></i>Lagt inn</span></div>
         </div>
       </section>
     </div>
@@ -628,7 +629,7 @@
         <div class="sek-topp"><h2>Hvem ser dette</h2></div>
         <div class="kort" style="gap:0;padding-top:4px;padding-bottom:4px">
           <div class="vent-rad"><span class="avatar">AK</span><span><b>Coach og ADMIN i AgencyOS</b><span class="kilde">Alle ni skjermene</span></span><span class="merke ok"><i></i>Ja</span></div>
-          <div class="vent-rad"><span class="avatar">TN</span><span><b>Team Norway-trenere med coach-rollen</b><span class="kilde">Bruksretten er ikke avklart</span></span><span class="merke vent"><i></i>Venter</span></div>
+          <div class="vent-rad"><span class="avatar">TN</span><span><b>Team Norway-trenere med coach-rollen</b><span class="kilde">Avklart 16.10, bare coach-rollen</span></span><span class="merke ok"><i></i>Klar</span></div>
           <div class="vent-rad"><span class="avatar lys">S</span><span><b>Spiller i PlayerHQ</b><span class="kilde">Ingen Data Golf, ingen sammenligning</span></span><span class="merke noy"><i></i>Nei</span></div>
         </div>
         <p class="kilde">Ingen eksport av Data Golf-tall. Kildehenvisning «Powered by Data Golf» på alle skjermene.</p>
@@ -663,11 +664,11 @@
   ];
   /* Gruppas spillere (syntetiske). sg null = ingen SG ennå. */
   var GRUPPE = [
-    { n: 'Emil Berg', i: 'EB', kat: 'C', sg: -0.3 },
-    { n: 'Ingrid Sæther', i: 'IS', kat: 'B', sg: 0.4 },
-    { n: 'Jonas Haug', i: 'JH', kat: 'C', sg: -0.8 },
-    { n: 'Sander Vik', i: 'SV', kat: 'D', sg: null },
-    { n: 'Henrik Brekke', i: 'HB', kat: 'C', sg: -1.1 }
+    { n: 'Spiller 04', i: '04', kat: 'C', sg: -0.3 },
+    { n: 'Spiller 05', i: '05', kat: 'B', sg: 0.4 },
+    { n: 'Spiller 06', i: '06', kat: 'C', sg: -0.8 },
+    { n: 'Spiller 02', i: '02', kat: 'D', sg: null },
+    { n: 'Spiller 12', i: '12', kat: 'C', sg: -1.1 }
   ];
   /* Innspill per avstand: proffens justerte nærhet (modell) og spillerens snitt (12 runder). null = «—». */
   var BAND = {
@@ -774,7 +775,7 @@
       vis(app, '[data-ark]', true);
     });
     app.querySelector('[data-ark] [data-lukk]').addEventListener('click', function () { vis(app, '[data-ark]', false); });
-    app.querySelector('[data-ov-ok]').addEventListener('click', function () { vis(app, '[data-ark]', false); toast(app, 'Forslaget er sendt til Emils Workbench, uke 43. Han godtar selv. Kilde: Data Golf 12. okt.', function () { toast(app, 'Forslaget er trukket tilbake.'); }); });
+    app.querySelector('[data-ov-ok]').addEventListener('click', function () { vis(app, '[data-ark]', false); toast(app, 'Forslaget er sendt til Workbench for Spiller 04, uke 43. Han godtar selv. Kilde: Data Golf 12. okt.', function () { toast(app, 'Forslaget er trukket tilbake.'); }); });
   }
 
   function forslag(app) {
@@ -784,8 +785,8 @@
     app.querySelector('[data-okter]').addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) { okter = +b.textContent; kvitt(); } });
     app.querySelector('[data-uker]').addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) { uker = +b.textContent; kvitt(); } });
     app.querySelector('[data-send]').addEventListener('click', function () {
-      var b = app.querySelector('[data-send]'); b.disabled = true; b.textContent = 'Sendt · venter på Emil';
-      toast(app, 'Forslaget er sendt. Emil får beskjed i PlayerHQ og godtar selv.', function () { b.disabled = false; b.textContent = 'Send forslag til Emil'; });
+      var b = app.querySelector('[data-send]'); b.disabled = true; b.textContent = 'Sendt · venter på Spiller 04';
+      toast(app, 'Forslaget er sendt. Spiller 04 får beskjed i PlayerHQ og godtar selv.', function () { b.disabled = false; b.textContent = 'Send forslag til Spiller 04'; });
     });
   }
 
@@ -805,7 +806,7 @@
       katalog: { mal: 'katalog', etter: katalog, tom: { tittel: 'Ingen proffer', tekst: 'Ferdighetsprofilene er ikke synket ennå.', knapp: 'Se kilde og dekning' }, laster: 'Henter proffene …', feil: 'Proffene kunne ikke hentes' },
       profil: { mal: 'profil', etter: profil, tom: { tittel: 'Ingen profil', tekst: 'Proffen er ikke i Data Golfs ferdighetsmodell. Resultater kan likevel finnes under Norske proffer.', knapp: 'Tilbake til katalogen' }, laster: 'Henter profilen …', feil: 'Profilen kunne ikke hentes' },
       topp: { mal: 'topp', etter: topp, tom: { tittel: 'Ingen sesongtall', tekst: 'Sesongen har ingen spillere med minst 20 runder ennå.', knapp: 'Velg 2025' }, laster: 'Henter topplistene …', feil: 'Topplistene kunne ikke hentes' },
-      sammen: { mal: 'sammen', etter: sammen, tom: { tittel: 'Emil har ingen SG ennå', tekst: 'Sammenligningen krever minst 4 runder slag for slag. Proffens tall vises likevel.', knapp: 'Velg annen spiller' }, laster: 'Henter tallene …', feil: 'Tallene kunne ikke hentes' },
+      sammen: { mal: 'sammen', etter: sammen, tom: { tittel: 'Spiller 04 har ingen SG ennå', tekst: 'Sammenligningen krever minst 4 runder slag for slag. Proffens tall vises likevel.', knapp: 'Velg annen spiller' }, laster: 'Henter tallene …', feil: 'Tallene kunne ikke hentes' },
       innspill: { mal: 'innspill', etter: innspill, tom: { tittel: 'Ingen innspillsdata', tekst: 'Viktor mangler innspill per avstand i Data Golf. Bruk tour-referansen, eller velg en annen proff.', knapp: 'Bytt proff' }, laster: 'Henter innspillene …', feil: 'Innspillene kunne ikke hentes' },
       forslag: { mal: 'forslag', etter: forslag, tom: { tittel: 'Ingen funn å foreslå fra', tekst: 'Gå via Spiller mot proff. Funnet følger med hit.', knapp: 'Spiller mot proff' }, laster: 'Henter funnet …', feil: 'Funnet kunne ikke hentes' },
       norske: { mal: 'norske', etter: norske, tom: { tittel: 'Ingen norske i spill', tekst: 'Ingen av de seks spiller denne uka. Resultater og kommende ligger i fanene.', knapp: 'Se resultater' }, laster: 'Henter stillingen …', feil: 'Stillingen kunne ikke hentes. Viser forrige fra 07:59' },

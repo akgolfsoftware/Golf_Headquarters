@@ -91,10 +91,14 @@ mock.module("@/app/team-wang/_data/hent-wang-gruppe", {
       liveKall += 1;
       return {
         gruppeId: "wang-top-id",
+        gruppeNavn: "WANG Toppidrett",
         elever: [
           { id: "elev-1", navn: "Test Elev", rolle: "PLAYER" },
           { id: "trener-1", navn: "Test Trener", rolle: "COACH" },
         ],
+        perioder: [],
+        hendelser: [],
+        fasteOkter: [],
       };
     },
   },

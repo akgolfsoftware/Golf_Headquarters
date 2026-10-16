@@ -71,7 +71,7 @@ export const PRECISION_TYPER = [
   { id: "FO-05", navn: "Samtykke", natt: false, maVise: "Under 16 år, deling, revisjonshistorikk", monster: ["/forelder/samtykke", "/forelder/samtykke/deling/[childId]"] },
   { id: "FO-06", navn: "Coach og innstillinger", natt: false, maVise: "Coach, siste melding, egen kontakt", monster: ["/forelder/coach", "/forelder/innstillinger"] },
 
-  { id: "AU-01", navn: "Logg inn", natt: false, maVise: "E-post/passord, Google, BankID-plassholder", monster: ["/auth/login", "/auth/bankid", "/auth/logget-ut"] },
+  { id: "AU-01", navn: "Logg inn", natt: false, maVise: "E-post/passord og Google (ingen BankID, beslutning 15.10)", monster: ["/auth/login", "/auth/logget-ut"] },
   { id: "AU-02", navn: "Registrer", natt: false, maVise: "Pakke, samtykke, sjekk e-post", monster: ["/auth/signup", "/auth/check-email", "/auth/checkout-resume"] },
   { id: "AU-03", navn: "Passord", natt: false, maVise: "Be om lenke, nytt passord", monster: ["/auth/forgot-password", "/auth/reset-password"] },
   { id: "AU-04", navn: "Onboarding", natt: false, maVise: "Stegviser for spiller/coach og forelder", monster: ["/auth/onboarding", "/auth/onboarding/forelder"] },

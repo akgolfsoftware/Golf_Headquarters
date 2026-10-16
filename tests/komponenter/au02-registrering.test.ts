@@ -56,7 +56,6 @@ beforeEach(() => {
 describe("AU-02 registrering beholder eksisterende Auth-regler", async () => {
   const { SignupV2 } = await import("@/components/portal/v2/SignupV2");
   const { CheckEmailV2 } = await import("@/components/portal/v2/CheckEmailV2");
-  const { BankIDV2 } = await import("@/components/portal/v2/BankIDV2");
   const render = (props?: { subscribe?: string; kilde?: "talenthq" }) => {
     cursor = 0;
     return SignupV2(props);
@@ -138,14 +137,11 @@ describe("AU-02 registrering beholder eksisterende Auth-regler", async () => {
     assert.deepEqual(pushet, ["/auth/check-email"]);
   });
 
-  test("sjekk-e-post og BankID beholder ærlige handlinger", () => {
+  test("sjekk-e-post beholder ærlige handlinger", () => {
     const sjekk = CheckEmailV2();
     assert.match(text(sjekk), /Sjekk e-posten din/);
     assert.equal(nodes(sjekk).some(node => node.props.href === "/auth/signup"), true);
     assert.equal(nodes(sjekk).some(node => node.props.href === "/auth/login"), true);
     assert.doesNotMatch(text(sjekk), /24 timer/);
-    const bank = BankIDV2();
-    assert.match(text(bank), /ikke tilgjengelig|etter beta/i);
-    assert.equal(nodes(bank).some(node => node.props.href === "/auth/login"), true);
   });
 });

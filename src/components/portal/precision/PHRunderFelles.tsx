@@ -12,6 +12,7 @@ import { ChevronLeft } from "lucide-react";
 import { formaterFortegn } from "@/lib/format-tall";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-runder.css";
+export { RunderLaster } from "./PHRunderLaster";
 
 /** «+2», «−1», «E». */
 export function tilParTekst(d: number): string {
@@ -109,25 +110,6 @@ export const SG_NAVN: Record<"OTT" | "APP" | "ARG" | "PUTT", string> = {
   OTT: "Utslag", APP: "Innspill", ARG: "Nærspill", PUTT: "Putting",
 };
 
-/** Lastetilstand for runde-skjermene. */
-export function RunderLaster({ tekst }: { tekst: string }) {
-  return (
-    <div className="phn" aria-busy="true" aria-label={tekst}>
-      <div className="phr-topp">
-        <span className="phn-skjelett" style={{ width: 180, height: 14 }} />
-        <span className="phn-skjelett" style={{ width: 200, height: 32 }} />
-      </div>
-      <div className="phr-grid phr-to">
-        <div>
-          <span className="phn-skjelett" style={{ height: 200 }} />
-          <span className="phn-skjelett" style={{ height: 96 }} />
-        </div>
-        <div>{[0, 1, 2, 3].map((i) => <span key={i} className="phn-skjelett" style={{ height: 56 }} />)}</div>
-      </div>
-      <p className="phn-kilde" role="status">{tekst} …</p>
-    </div>
-  );
-}
 
 /** Feilflate i nytt design. Knappen er en lenke, så komponenten virker uten klientkode. */
 export function RunderFeil({ tittel, tekst, href, kode }: { tittel: string; tekst: string; href: string; kode?: string }) {

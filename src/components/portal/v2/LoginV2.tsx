@@ -542,11 +542,6 @@ function LoginKort() {
         <Knapp variant="ghost" icon={<GoogleG />} onClick={loggInnGoogle} disabled={laster} ariaBusy={laster}>
           Fortsett med Google
         </Knapp>
-        <Link href="/auth/bankid" style={{ textDecoration: "none" }}>
-          <Knapp variant="ghost" icon={<Icon name="fingerprint" size={16} style={{ color: TL.mute }} />}>
-            Fortsett med BankID
-          </Knapp>
-        </Link>
       </form>
 
       <div style={{ textAlign: "center" }}>

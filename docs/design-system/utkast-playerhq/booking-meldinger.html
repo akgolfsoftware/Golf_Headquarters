@@ -1,0 +1,532 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Booking og meldinger, resten</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="felles/felles.css">
+<style>
+/* ---------- Pakke 11 og 12, resten: Coach, Anlegg, Tilbakemelding, Øvelser fra coach, Ønsket økt sendt, Én målsetning ---------- */
+.skjermvalg button{font-size:13px;min-height:36px;padding:0 10px}
+.app [hidden]{display:none!important}
+.topp{display:grid;gap:var(--r3)}
+.kildetekst{font-size:13px;line-height:1.5;color:var(--graphite-600);margin:0}
+.toast{position:sticky;bottom:16px;z-index:5;display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;background:var(--graphite-900);color:var(--white);font:500 14px/1.4 var(--sans);animation:inn 240ms var(--ut);box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.ark-lag{position:sticky;bottom:0;z-index:6;display:grid;margin:0 calc(-1 * var(--r4)) calc(-1 * var(--r6))}
+.ark-lag .ark{animation:opp 300ms var(--ut)}
+.ark h2{margin:0;font:600 19px/1.25 var(--sans)}
+.ark-topp{display:flex;justify-content:space-between;align-items:center;gap:var(--r3)}
+.lukk{width:44px;height:44px;border:0;border-radius:8px;background:var(--sand-150);display:grid;place-items:center;cursor:pointer;color:var(--graphite-900);flex:none}
+.dialog-lag{position:sticky;bottom:0;z-index:7;display:grid;margin:0 calc(-1 * var(--r4)) calc(-1 * var(--r6));padding:var(--r4);background:rgba(20,20,19,.35)}
+.dialog{border-radius:16px;background:var(--white);padding:var(--r5) var(--r4) var(--r4);display:grid;gap:var(--r4);box-shadow:0 12px 40px rgba(0,0,0,.25);animation:inn 240ms var(--ut)}
+.dialog h2{margin:0;font:600 20px/1.25 var(--sans)}
+.dialog .knapper{display:grid;gap:var(--r2)}
+.avatar{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font:600 14px/1 var(--sans);flex:none;background:var(--graphite-900);color:var(--white)}
+.avatar.stor{width:64px;height:64px;font-size:20px}
+.avatar.lys{background:var(--sand-150);color:var(--graphite-900)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{min-height:40px;padding:0 12px;border:1px solid var(--sand-300);border-radius:999px;background:var(--white);font:500 14px/1 var(--sans);color:var(--graphite-800);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.chips button i{width:10px;height:10px;border-radius:50%}
+.chips button b{font:600 12px/1 var(--mono)}
+.chips button[aria-pressed="true"]{background:var(--graphite-900);border-color:var(--graphite-900);color:var(--white)}
+.vilkaar{display:grid;gap:6px;padding:12px 14px;border-radius:10px;background:var(--sand-100);font-size:14px}
+.vilkaar b{font-weight:600}
+.oppsummering{display:grid;gap:0;margin:0;padding:0;list-style:none;border-top:1px solid var(--sand-300)}
+.oppsummering li{display:grid;grid-template-columns:110px minmax(0,1fr);gap:var(--r3);padding:10px 0;border-bottom:1px solid var(--sand-300);font-size:14.5px}
+.oppsummering li span{color:var(--graphite-600)}
+.oppsummering li b{font-weight:600}
+.hake{width:64px;height:64px;border-radius:50%;background:var(--green-700);color:#fff;display:grid;place-items:center}
+.hake .ikon{width:32px;height:32px;stroke-width:2.5}
+.helt{border-radius:12px;width:100%;height:190px;object-fit:cover;display:block}
+.to-kol,.coach-grid,.tb-grid,.maal-grid{display:grid;gap:var(--r5);align-content:start}
+.to-kol > div,.coach-grid > div,.tb-grid > div,.maal-grid > div{display:grid;gap:var(--r5);align-content:start}
+
+/* Coach */
+.coach-hode{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--r4);align-items:center}
+.coach-hode .tittel{margin:0}
+.tjenester{display:grid;gap:var(--r2)}
+.tjeneste{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px var(--r3);align-items:center;padding:14px 16px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white);text-align:left;font:inherit;color:inherit;cursor:pointer;width:100%}
+.tjeneste b{font:600 16px/1.3 var(--sans)}
+.tjeneste .pris{font:600 15px/1.2 var(--mono);text-align:right;white-space:nowrap}
+.tjeneste .kilde{grid-column:1 / -1}
+.tjeneste[aria-pressed="true"]{border:2px solid var(--graphite-900);box-shadow:0 0 0 3px var(--sand-150)}
+.tre-tall{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--r2)}
+.tre-tall span{display:grid;gap:2px;font-size:13px;color:var(--graphite-600);background:var(--sand-100);border-radius:10px;padding:10px 12px}
+.tre-tall b{font:600 22px/1.1 var(--mono);color:var(--graphite-900)}
+.festet{position:sticky;bottom:0;z-index:4;padding:var(--r3) 0 var(--r2);background:linear-gradient(transparent,var(--white) 30%)}
+
+/* Anlegg */
+.fasiliteter{display:grid;gap:var(--r2)}
+.fasilitet{display:grid;grid-template-columns:72px minmax(0,1fr) auto;gap:var(--r3);align-items:center;padding:8px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white)}
+.fasilitet img{width:72px;height:56px;border-radius:8px;object-fit:cover}
+.fasilitet b{display:block;font:600 15px/1.3 var(--sans)}
+.fasilitet .kilde{display:block}
+
+/* Tilbakemelding */
+.tre-ting{display:grid;gap:var(--r3);margin:0;padding:0;list-style:none;counter-reset:t}
+.tre-ting li{display:grid;grid-template-columns:32px minmax(0,1fr);gap:var(--r3);align-items:start;font-size:15px;line-height:1.5;counter-increment:t}
+.tre-ting li::before{content:counter(t);width:32px;height:32px;border-radius:8px;display:grid;place-items:center;background:var(--tek-ink);color:#fff;font:600 14px/1 var(--mono)}
+.tre-ting li b{display:block;font:600 15px/1.35 var(--sans)}
+.video{position:relative;display:block;border-radius:12px;overflow:hidden;border:0;padding:0;cursor:pointer;width:100%;background:var(--graphite-900)}
+.video img{display:block;width:100%;height:190px;object-fit:cover;opacity:.9}
+.video .spill-knapp{position:absolute;left:14px;bottom:14px;display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 14px;border-radius:999px;background:var(--white);color:var(--graphite-900);font:600 14px/1 var(--sans)}
+.video .lengde{position:absolute;right:12px;bottom:14px;font:600 13px/1 var(--mono);color:#fff;background:rgba(20,20,19,.7);padding:6px 8px;border-radius:6px}
+.mini-okter{display:grid;gap:var(--r2)}
+.okt.mini{grid-template-columns:84px 1fr}
+.okt.mini img{height:100%;min-height:84px}
+.okt.mini .okt-tekst{gap:4px;padding:10px 14px}
+.okt.mini .okt-tid{font-size:20px;white-space:normal}
+.okt.mini .navn{font:600 15px/1.3 var(--sans)}
+.okt.mini .okt-info{font-size:13px;gap:2px 12px}
+.opplevd{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.opplevd button{min-height:48px;border:1px solid var(--sand-300);border-radius:10px;background:var(--white);font:600 16px/1 var(--mono);color:var(--graphite-900);cursor:pointer}
+.opplevd button[aria-pressed="true"]{background:var(--graphite-900);border-color:var(--graphite-900);color:var(--white)}
+.opplevd-tekst{display:flex;justify-content:space-between;font-size:12.5px;color:var(--graphite-600)}
+.felt textarea,.felt input,.felt select{min-height:48px;padding:12px;border:1px solid var(--graphite-500);border-radius:10px;font:400 16px/1.4 var(--sans);width:100%;color:var(--graphite-900);background:var(--white)}
+.felt textarea{resize:vertical}
+.kvittert{display:flex;gap:10px;align-items:center;padding:12px 14px;border-radius:10px;background:var(--green-50);color:var(--green-700);font:600 14px/1.4 var(--sans)}
+
+/* Øvelser fra coach */
+.ov-liste{display:grid;gap:var(--r3)}
+.ov{display:grid;gap:0;border-radius:12px;overflow:hidden;color:#fff;border:0;padding:0;text-align:left;font:inherit;width:100%;cursor:pointer;grid-template-columns:96px minmax(0,1fr)}
+.ov.tek{background:var(--tek-ink)} .ov.slag{background:var(--slag)} .ov.spill{background:var(--spill-ink)} .ov.fys{background:var(--fys-ink)} .ov.turn{background:var(--turn)}
+.ov img{width:100%;height:100%;min-height:104px;object-fit:cover}
+.ov .t{padding:12px 14px;display:grid;gap:6px;align-content:start}
+.ov .t b{font:600 16px/1.3 var(--sans)}
+.ov .t .info{display:flex;flex-wrap:wrap;gap:2px 12px;font-size:13.5px;opacity:.92}
+.ov .t .fra{font-size:13px;opacity:.85}
+.ov .akse-merke{color:#fff;justify-self:start}
+
+/* Ønsket økt sendt */
+.bekreftet-topp{display:grid;justify-items:start;gap:var(--r3)}
+.steg{display:grid;gap:var(--r3);margin:0;padding:0;list-style:none}
+.steg li{display:grid;grid-template-columns:28px minmax(0,1fr);gap:var(--r3);font-size:15px;line-height:1.5}
+.steg li i{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--sand-150);font:600 13px/1 var(--mono);font-style:normal}
+.steg li.gjort i{background:var(--green-700);color:#fff}
+
+/* Én målsetning */
+.maal-merker{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;font-size:14px;color:var(--graphite-800)}
+.maal-merker .akse-tekst{display:inline-flex;align-items:center;gap:6px}
+.maal-merker .akse-tekst i{width:10px;height:10px;border-radius:50%;background:var(--slag)}
+.framdrift{display:grid;gap:6px}
+.framdrift .spor{position:relative;height:12px;border-radius:6px;background:var(--sand-150)}
+.framdrift .spor span{position:absolute;inset:0 auto 0 0;border-radius:6px;background:var(--slag)}
+.framdrift .spor em{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--graphite-900)}
+.framdrift .tall{display:flex;justify-content:space-between;gap:var(--r2);font:500 12.5px/1.3 var(--sans);color:var(--graphite-800)}
+.framdrift .tall b{font:600 15px/1 var(--mono);color:var(--graphite-900);display:block;margin-top:2px}
+.kurve{width:100%;max-width:440px;height:auto;display:block;overflow:visible}
+.kurve text{font:500 11px var(--mono);fill:var(--graphite-600)}
+.kurve .rute{stroke:var(--sand-300);stroke-width:1}
+.kurve .null{stroke:var(--graphite-900);stroke-width:1;stroke-dasharray:4 4}
+.kurve .linje{fill:none;stroke:var(--slag);stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}
+.kurve .flate{fill:var(--slag);opacity:.1}
+.kurve circle{fill:var(--slag)}
+.kurve circle.sist{fill:var(--white);stroke:var(--slag);stroke-width:3}
+.malinger{display:grid;gap:0;margin:0;padding:0;list-style:none;border-top:1px solid var(--sand-300)}
+.malinger li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px var(--r3);padding:10px 0;border-bottom:1px solid var(--sand-300);font-size:14px}
+.malinger li b{font:600 15px/1.2 var(--mono);text-align:right}
+.malinger li span.kilde{grid-column:1 / -1}
+.typevalg{display:grid;grid-template-columns:1fr 1fr;gap:var(--r2)}
+.typevalg button{display:grid;gap:4px;justify-items:start;text-align:left;padding:12px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white);font:inherit;color:inherit;cursor:pointer}
+.typevalg button b{font:600 15px/1.25 var(--sans)}
+.typevalg button span{font-size:13px;color:var(--graphite-600);line-height:1.35}
+.typevalg button[aria-pressed="true"]{border:2px solid var(--graphite-900)}
+.to-felt{display:grid;grid-template-columns:1fr 1fr;gap:var(--r2)}
+.grunner{display:grid;gap:6px}
+.grunner button{min-height:48px;padding:0 14px;border:1px solid var(--sand-300);border-radius:10px;background:var(--white);font:500 15px/1.2 var(--sans);text-align:left;color:var(--graphite-900);cursor:pointer}
+.grunner button[aria-pressed="true"]{border:2px solid var(--graphite-900)}
+
+@container (min-width:900px){
+  .ark-lag,.dialog-lag{position:sticky;bottom:24px;margin:0;justify-items:center;background:transparent;padding:0}
+  .ark-lag .ark,.dialog{width:100%;max-width:520px;border-radius:16px}
+  .coach-grid,.tb-grid,.maal-grid{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:var(--r6);align-items:start}
+  .coach-grid > aside,.tb-grid > aside,.maal-grid > aside{position:sticky;top:24px;display:grid;gap:var(--r4)}
+  .to-kol{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--r6);align-items:start}
+  .ov-liste{grid-template-columns:1fr 1fr}
+  .helt{height:280px}
+  .smal{max-width:760px}
+}
+</style>
+</head><body>
+<div class="ytre">
+  <div class="hode">
+    <span class="meta-s">PlayerHQ · pakke 11 og 12, resten · utkast 1 · 16.10.2026</span>
+    <h1>Booking og meldinger, resten</h1>
+    <p>De seks sidene i pakke 11 og 12 som manglet tegning. Resten av sidene i de to pakkene bygges rett fra utkastene som er godkjent (Kommunikasjon, Plan, Runder, IUP og gameplan). Demodata for Øyvind Rohjan, Kategori C, med coaching-pakken Performance Pro. I dag er mandag 5. oktober kl. 14:20, uke 41.</p>
+  </div>
+  <div class="kontroller">
+    <div class="velger skjermvalg" role="group" aria-label="Skjerm">
+      <button type="button" aria-pressed="true" data-skjerm="coach">Coach</button>
+      <button type="button" aria-pressed="false" data-skjerm="anlegg">Anlegg</button>
+      <button type="button" aria-pressed="false" data-skjerm="tilbakemelding">Tilbakemelding</button>
+      <button type="button" aria-pressed="false" data-skjerm="ovelser">Øvelser fra coach</button>
+      <button type="button" aria-pressed="false" data-skjerm="onsket">Ønsket økt sendt</button>
+      <button type="button" aria-pressed="false" data-skjerm="maal">Én målsetning</button>
+    </div>
+  </div>
+  <div class="kontroller">
+    <div class="velger" role="group" aria-label="Versjon"><button type="button" aria-pressed="true" data-versjon="etter">Utkast</button><button type="button" aria-pressed="false" data-versjon="for">Dagens design</button></div>
+    <div class="velger" role="group" aria-label="Bredde"><button type="button" aria-pressed="true" data-bredde="mob">Mobil</button><button type="button" aria-pressed="false" data-bredde="pc">PC</button></div>
+    <div class="velger" role="group" aria-label="Tilstand"><button type="button" aria-pressed="true" data-tilstand="data">Med data</button><button type="button" aria-pressed="false" data-tilstand="tom">Tom</button><button type="button" aria-pressed="false" data-tilstand="laster">Laster</button><button type="button" aria-pressed="false" data-tilstand="feil">Feil</button></div>
+  </div>
+  <div class="scene"><div class="ramme mob" id="ramme"></div></div>
+  <div class="notater">
+    <div class="endringer">
+      <span class="meta-s">Hva som er nytt</span>
+      <ul>
+        <li><b>Coach</b> viser hvem coachen er, hva dere har gjort sammen, og tjenestene med pris eller klipp. Én knapp: «Velg tid». Den åpner «Book time» fra Kommunikasjon med coachen valgt.</li>
+        <li><b>Anlegg</b> viser stedet med bilde og fasilitetene, merket inne eller ute. «Book her» åpner «Book time» med stedet valgt.</li>
+        <li><b>Tilbakemelding</b> på én økt: tre ting å ta med, videoklipp, øktene coachen la i planen, og din side av det. «Forstått» kvitterer, og coachen ser at du har lest.</li>
+        <li><b>Øvelser fra coach</b> er fylte kort i aksefargen, med filter per akse. «Legg i plan» virker som i Øvelsesbanken.</li>
+        <li><b>Ønsket økt sendt</b> sier hva som skjer nå: coachen svarer i Meldinger, og en tid kommer som forslag i Innboks. Ingen klipp trekkes før timen er booket.</li>
+        <li><b>Én målsetning</b> åpnes fra Målsetninger: ett stort tall, fremdrift mot frist med «burde vært her»-strek, kurve over målingene, øktene som jobber mot målet, Endre og Avslutt.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Reglene som er fulgt</span>
+      <ul>
+        <li>Farge betyr akse. Coach, anlegg og booking er grafitt, fordi de ikke er én akse.</li>
+        <li>Rust bare én gang: bekreftknappen i «Avslutt målsetning», som er en dialog.</li>
+        <li>«Ny melding» og «Nytt spørsmål» får ingen egen tegning: de bruker arket «Ny melding» i Meldinger (godkjent 14.10).</li>
+        <li>Booking krever nivået Full, ikke «Pro» (vedtak 30.09). Priser er merket «Eksempel».</li>
+        <li>Tall har kilde og dato. Manglende verdi vises som «—». Ingen sidelengs rulling i 390 og 360 px.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Åpent hos Anders</span>
+      <ul>
+        <li>Skal spilleren kunne lage egen øvelse fra «Øvelser fra coach»? Dagens side har knappen. Utkastet sender til Øvelsesbanken i stedet.</li>
+        <li>«Avslutt målsetning» spør etter grunn (Nådd · Skade eller helse · Endret prioritet · Urealistisk frist · Annet), som i dag. Skal coachen få beskjed?</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ================= Coach ================= -->
+<template id="coach">
+<div class="app" data-fane="meg" data-skall="tilbake" data-tilbake="Bookinger">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div class="coach-hode">
+        <span class="avatar stor">AK</span>
+        <div><div class="dato">Coach · AK Golf Academy</div><h1 class="tittel">Anders Kristiansen</h1></div>
+      </div>
+    </div>
+    <div class="coach-grid">
+      <div>
+        <section class="kort" aria-label="Dere sammen">
+          <div class="hoved"><strong>14</strong><span class="forklar">økter sammen siden januar</span></div>
+          <div class="tre-tall"><span><b>2</b>i oktober</span><span><b>1</b>klipp igjen</span><span><b>07.10</b>neste time</span></div>
+          <p class="kildetekst">Fra bookingene dine · oppdatert i dag 14:20</p>
+        </section>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Velg type økt</h2></div>
+          <div class="tjenester" data-gruppe>
+            <button type="button" class="tjeneste" aria-pressed="true"><b>Performance Pro</b><span class="pris">1 klipp</span><span class="kilde">90 min · TrackMan, video og skriftlig plan</span></button>
+            <button type="button" class="tjeneste" aria-pressed="false"><b>Flex 50 min</b><span class="pris">1 500 kr <span class="estimat">Eksempel</span></span><span class="kilde">50 min · ett tema. Betales ved booking</span></button>
+            <button type="button" class="tjeneste" aria-pressed="false"><b>Flex 20 min</b><span class="pris">600 kr <span class="estimat">Eksempel</span></span><span class="kilde">20 min · kort fokusøkt</span></button>
+          </div>
+        </section>
+      </div>
+      <aside>
+        <div class="vilkaar"><b>Gratis avbestilling inntil 24 timer før</b><span>Du kan flytte timen selv til en ledig tid innenfor Anders' tilgjengelighet.</span></div>
+        <div class="festet knapper" style="display:grid"><button type="button" class="knapp pri stor" data-velg-tid>Velg tid</button><button type="button" class="knapp sek" data-melding>Send melding i stedet</button></div>
+      </aside>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= Anlegg ================= -->
+<template id="anlegg">
+<div class="app" data-fane="meg" data-skall="tilbake" data-tilbake="Book time">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div><div class="dato">Anlegg · Fredrikstad</div><h1 class="tittel">Fredrikstad Golfklubb</h1></div>
+    </div>
+    <div class="to-kol">
+      <div>
+        <img class="helt" src="bilder/spill-bane.jpg" alt="">
+        <p class="ingress" style="margin:0">Treningsanlegget der de fleste øktene dine ligger. Simulatoren brukes når det er mørkt eller vått.</p>
+      </div>
+      <section class="seksjon">
+        <div class="sek-topp"><h2>Fasiliteter</h2><span class="kilde">4 registrert</span></div>
+        <div class="fasiliteter">
+          <div class="fasilitet"><img src="bilder/slag-utslag.jpg" alt=""><span><b>Range 3</b><span class="kilde">Ute · 20 utslagsplasser</span></span><span class="pille noy">Ute</span></div>
+          <div class="fasilitet"><img src="bilder/slag-simulator.jpg" alt=""><span><b>Simulator 2</b><span class="kilde">Inne · TrackMan</span></span><span class="pille noy">Inne</span></div>
+          <div class="fasilitet"><img src="bilder/naerspill-wedge.jpg" alt=""><span><b>Chippinggreen</b><span class="kilde">Ute · med bunker</span></span><span class="pille noy">Ute</span></div>
+          <div class="fasilitet"><img src="bilder/slag-putting.jpg" alt=""><span><b>Puttegreen</b><span class="kilde">Ute</span></span><span class="pille noy">Ute</span></div>
+        </div>
+        <div class="knapper"><button type="button" class="knapp pri stor" data-book-her>Book på dette anlegget</button></div>
+      </section>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= Tilbakemelding på én økt ================= -->
+<template id="tilbakemelding">
+<div class="app" data-fane="idag" data-skall="tilbake" data-tilbake="Innboks">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div><div class="dato">Tilbakemelding · fra Anders · fredag 2. okt.</div><h1 class="tittel">Svingtrening P6–P7</h1></div>
+    </div>
+    <div class="tb-grid">
+      <div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Tre ting å ta med</h2></div>
+          <ol class="tre-ting">
+            <li><span><b>Hold køllen parallell lenger i P6.0</b>Du slipper vinkelen for tidlig på 80 %. Bruk øvelsen med pinne langs skaftet.</span></li>
+            <li><span><b>Ballstarten er bedre</b>Club Path gikk fra −4,1 til −1,8 grader i løpet av økta.</span></li>
+            <li><span><b>Ikke opp i fart før uke 43</b>Bli på 75 % av Club Speed til bevegelsen sitter.</span></li>
+          </ol>
+        </section>
+        <button type="button" class="video" aria-label="Spill av videoklippet, 0:42"><img src="bilder/tek-video.jpg" alt=""><span class="spill-knapp"><svg class="ikon" viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></svg>Videoklipp</span><span class="lengde">0:42</span></button>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Lagt i planen din</h2><span class="kilde">Uke 41 og 42</span></div>
+          <div class="mini-okter">
+            <div class="okt mini tek"><img src="bilder/tek-video.jpg" alt=""><span class="okt-tekst"><span class="okt-tid">Ons 7. okt · 16:00</span><span class="navn">P6.0 med pinne, 75 %</span><span class="okt-info"><span>45 min</span><span>Simulator 2</span></span></span></div>
+            <div class="okt mini tek"><img src="bilder/slag-simulator.jpg" alt=""><span class="okt-tekst"><span class="okt-tid">Man 12. okt · 16:00</span><span class="navn">P6.0 til P7.0, 75 %</span><span class="okt-info"><span>45 min</span><span>Simulator 2</span></span></span></div>
+          </div>
+          <p class="kildetekst">Øktene teller i uka, oktober og årsplanen.</p>
+        </section>
+      </div>
+      <aside>
+        <section class="kort" data-din-side>
+          <b class="undertittel">Din side av det</b>
+          <div class="felt"><span class="etikett">Hvordan opplevde du økta?</span>
+            <div class="opplevd" data-gruppe><button type="button" aria-pressed="false">1</button><button type="button" aria-pressed="false">2</button><button type="button" aria-pressed="false">3</button><button type="button" aria-pressed="true">4</button><button type="button" aria-pressed="false">5</button></div>
+            <div class="opplevd-tekst"><span>Tungt</span><span>Veldig bra</span></div>
+          </div>
+          <div class="felt"><label for="tb-tekst">Kommentar til Anders</label><textarea id="tb-tekst" rows="3">Kjente at 75 % var uvant, men traff bedre.</textarea></div>
+          <div class="knapper" style="display:grid"><button type="button" class="knapp pri stor" data-forstatt>Forstått</button><button type="button" class="knapp sek" data-traad>Åpne tråden med Anders</button></div>
+        </section>
+      </aside>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= Øvelser fra coach ================= -->
+<template id="ovelser">
+<div class="app" data-fane="plan" data-skall="tilbake" data-tilbake="Øvelsesbank">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div><div class="dato">Øvelsesbank · fra coach</div><h1 class="tittel">Øvelser fra Anders</h1></div>
+    </div>
+    <section class="kort" aria-label="Øvelsene i tall">
+      <div class="hoved"><strong data-ov-antall>5</strong><span class="forklar">øvelser sendt til deg · 3 ligger i planen</span></div>
+    </section>
+    <div class="chips" data-ov-filter role="group" aria-label="Akse">
+      <button type="button" aria-pressed="true" data-a="alle">Alle <b>5</b></button>
+      <button type="button" aria-pressed="false" data-a="tek"><i style="background:var(--tek)"></i>TEK <b>2</b></button>
+      <button type="button" aria-pressed="false" data-a="slag"><i style="background:var(--slag)"></i>SLAG <b>2</b></button>
+      <button type="button" aria-pressed="false" data-a="spill"><i style="background:var(--spill)"></i>SPILL <b>1</b></button>
+    </div>
+    <div class="ov-liste" data-ov></div>
+    <a class="knapp sek" href="#" style="justify-self:start">Til Øvelsesbanken</a>
+  </main>
+</div>
+</template>
+
+<!-- ================= Ønsket økt sendt ================= -->
+<template id="onsket">
+<div class="app" data-fane="idag" data-skall="tilbake" data-tilbake="Meldinger">
+  <main class="innhold smal">
+    <div class="bekreftet-topp">
+      <span class="hake"><svg class="ikon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span>
+      <div><div class="dato">Ønsket økt · sendt i dag 14:20</div><h1 class="tittel">Anders har fått ønsket ditt</h1></div>
+    </div>
+    <div class="kort">
+      <ul class="oppsummering">
+        <li><span>Til</span><b>Anders Kristiansen</b></li>
+        <li><span>Når</span><b>Uke 42 · tirsdag eller torsdag etter kl. 15</b></li>
+        <li><span>Tema</span><b>Innspill 100–150 m</b></li>
+        <li><span>Hvorfor</span><span style="color:var(--graphite-900)">«Bommer mye kort på 9-jern etter at vi la om i P6.»</span></li>
+      </ul>
+    </div>
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Hva skjer nå?</h2></div>
+      <ol class="steg">
+        <li class="gjort"><i><svg class="ikon" viewBox="0 0 24 24" style="width:16px;height:16px"><path d="M20 6L9 17l-5-5"/></svg></i><span>Ønsket er sendt til Anders.</span></li>
+        <li><i>2</i><span>Anders svarer i Meldinger, vanligvis samme dag.</span></li>
+        <li><i>3</i><span>Passer en tid, kommer den som forslag i Innboks. Godtar du, er timen booket.</span></li>
+        <li><i>4</i><span>Klippet trekkes først når timen er booket.</span></li>
+      </ol>
+    </section>
+    <div class="knapper"><button type="button" class="knapp pri">Til meldingene</button><button type="button" class="knapp sek">Til I dag</button></div>
+  </main>
+</div>
+</template>
+
+<!-- ================= Én målsetning ================= -->
+<template id="maal">
+<div class="app" data-fane="plan" data-skall="tilbake" data-tilbake="Målsetninger">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div>
+        <div class="dato">Målsetning · År · frist 31. mai 2027</div>
+        <h1 class="tittel" data-m-navn>SG Innspill til 0,0</h1>
+      </div>
+      <div class="maal-merker"><span class="pille noy">Resultatmål</span><span class="akse-tekst"><i></i>SLAG · Innspill</span></div>
+    </div>
+    <div class="maal-grid">
+      <div>
+        <section class="kort" aria-label="Hvor du er nå">
+          <div class="hoved"><strong>−0,9</strong><span class="trend ned">Bak tidsplanen</span></div>
+          <div class="framdrift">
+            <div class="spor" role="img" aria-label="25 prosent av veien. Etter tidsplanen burde du vært på 42 prosent."><span style="width:25%"></span><em style="left:42%"></em></div>
+            <div class="tall"><span>Start<b>−1,2</b></span><span style="text-align:center">Burde vært<b>−0,7</b></span><span style="text-align:right">Målsetning<b>0,0</b></span></div>
+          </div>
+          <p class="forklar" style="margin:0">I dette tempoet når du −0,5 innen fristen. Innspill er området der du taper mest mot Kategori B.</p>
+          <p class="kildetekst">12 runder slag for slag · 2. juni–4. okt.</p>
+        </section>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Utviklingen</h2><span class="kilde">SG Innspill per runde, snitt av fire</span></div>
+          <svg class="kurve" viewBox="0 0 360 170" role="img" aria-label="SG Innspill har gått fra −1,2 i juni til −0,9 i oktober">
+            <line class="rute" x1="36" y1="20" x2="352" y2="20"/><line class="rute" x1="36" y1="70" x2="352" y2="70"/><line class="rute" x1="36" y1="120" x2="352" y2="120"/>
+            <line class="null" x1="36" y1="20" x2="352" y2="20"/>
+            <text x="0" y="24">0,0</text><text x="0" y="74">−0,5</text><text x="0" y="124">−1,0</text>
+            <path class="flate" d="M40 140 L84 132 L128 136 L172 126 L216 122 L260 118 L304 112 L348 110 L348 150 L40 150 Z"/>
+            <path class="tegn linje" d="M40 140 L84 132 L128 136 L172 126 L216 122 L260 118 L304 112 L348 110"/>
+            <circle cx="40" cy="140" r="3.5"/><circle cx="128" cy="136" r="3.5"/><circle cx="216" cy="122" r="3.5"/><circle class="sist" cx="348" cy="110" r="5"/>
+            <text x="34" y="166">jun</text><text x="122" y="166">jul</text><text x="210" y="166">aug</text><text x="296" y="166">sep</text><text x="330" y="166">okt</text>
+          </svg>
+        </section>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Siste målinger</h2></div>
+          <ul class="malinger">
+            <li><span>Runde, Fredrikstad GK</span><b>−0,6</b><span class="kilde">4. okt. · slag for slag</span></li>
+            <li><span>Runde, Gamle Fredrikstad</span><b>−1,1</b><span class="kilde">27. sep. · slag for slag</span></li>
+            <li><span>Runde, Fredrikstad GK</span><b>—</b><span class="kilde">20. sep. · bare score, ikke slag for slag</span></li>
+          </ul>
+        </section>
+      </div>
+      <aside>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Øktene som jobber mot målet</h2></div>
+          <div class="mini-okter">
+            <div class="okt mini slag"><img src="bilder/naerspill-wedge.jpg" alt=""><span class="okt-tekst"><span class="okt-tid">I dag · 15:30</span><span class="navn">Innspill og nærspill</span><span class="okt-info"><span>75 min</span><span>Range 3</span></span></span></div>
+            <div class="okt mini slag"><img src="bilder/slag-simulator.jpg" alt=""><span class="okt-tekst"><span class="okt-tid">Tor 8. okt · 16:00</span><span class="navn">Innspill 100–150 m</span><span class="okt-info"><span>60 min</span><span>Simulator 2</span></span></span></div>
+          </div>
+          <p class="kildetekst">3 av 3 nærspilløkter er lagt inn i uke 41.</p>
+        </section>
+        <div class="knapper"><button type="button" class="knapp pri" data-endre>Endre målsetning</button><button type="button" class="knapp sek" data-avslutt>Avslutt</button></div>
+      </aside>
+    </div>
+
+    <div class="ark-lag" data-endre-ark hidden>
+      <div class="ark" role="dialog" aria-label="Endre målsetning">
+        <div class="ark-topp"><h2>Endre målsetning</h2><button type="button" class="lukk" aria-label="Lukk" data-lukk><svg class="ikon" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+        <div class="felt"><label for="m-tittel">Navn</label><input id="m-tittel" value="SG Innspill til 0,0"></div>
+        <div class="typevalg" data-gruppe><button type="button" aria-pressed="true"><b>Resultatmål</b><span>Et tall du vil nå</span></button><button type="button" aria-pressed="false"><b>Prosessmål</b><span>Noe du vil gjøre jevnlig</span></button></div>
+        <div class="to-felt"><div class="felt"><label for="m-verdi">Målverdi</label><input id="m-verdi" inputmode="decimal" value="0,0"></div><div class="felt"><label for="m-frist">Frist</label><input id="m-frist" type="date" value="2027-05-31"></div></div>
+        <div class="felt"><label for="m-niva">Nivå</label><select id="m-niva"><option>År</option><option>Periode</option><option>Måned</option><option>Uke</option><option>Økt</option></select></div>
+        <button type="button" class="knapp pri stor" data-lagre>Lagre</button>
+      </div>
+    </div>
+    <div class="dialog-lag" data-dialog hidden>
+      <div class="dialog" role="alertdialog" aria-labelledby="avs-tittel">
+        <h2 id="avs-tittel">Avslutte målsetningen?</h2>
+        <div class="grunner" data-gruppe><button type="button" aria-pressed="false">Nådd</button><button type="button" aria-pressed="false">Skade eller helse</button><button type="button" aria-pressed="true">Endret prioritet</button><button type="button" aria-pressed="false">Urealistisk frist</button><button type="button" aria-pressed="false">Annet</button></div>
+        <p class="kildetekst">Målingene beholdes. Du finner målsetningen under Avsluttet.</p>
+        <div class="knapper"><button type="button" class="knapp rust stor" data-avs-ok>Avslutt målsetningen</button><button type="button" class="knapp sek" data-avs-nei>Behold</button></div>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<script src="felles/felles.js"></script>
+<script>
+(function () {
+  function toast(app, tekst) {
+    var gml = app.querySelector('.toast'); if (gml) gml.remove();
+    var t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role', 'status'); t.textContent = tekst;
+    app.querySelector('.innhold').appendChild(t);
+    setTimeout(function () { t.remove(); }, 3600);
+  }
+  function vis(app, sel, aapen) {
+    var a = app.querySelector(sel); a.hidden = !aapen;
+    if (aapen) { var f = a.querySelector('button, textarea, input'); if (f) f.focus({ preventScroll: true }); }
+  }
+  function grupper(app) {
+    app.querySelectorAll('[data-gruppe]').forEach(function (g) {
+      g.addEventListener('click', function (e) {
+        var b = e.target.closest('button'); if (!b || !g.contains(b)) return;
+        g.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      });
+    });
+  }
+
+  function coach(app) {
+    grupper(app);
+    app.querySelector('[data-velg-tid]').addEventListener('click', function () { toast(app, 'Åpner «Book time» med Anders og Performance Pro valgt.'); });
+    app.querySelector('[data-melding]').addEventListener('click', function () { toast(app, 'Åpner meldingstråden med Anders.'); });
+  }
+  function anlegg(app) {
+    app.querySelector('[data-book-her]').addEventListener('click', function () { toast(app, 'Åpner «Book time» med Fredrikstad Golfklubb valgt.'); });
+  }
+  function tilbakemelding(app) {
+    grupper(app);
+    app.querySelector('[data-forstatt]').addEventListener('click', function () {
+      var k = app.querySelector('[data-din-side]');
+      k.innerHTML = '<b class="undertittel">Din side av det</b><div class="kvittert"><svg class="ikon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Kvittert i dag 14:20. Anders ser at du har lest.</div><p class="kildetekst">Opplevelse 4 av 5 · «Kjente at 75 % var uvant, men traff bedre.»</p><button type="button" class="knapp sek">Åpne tråden med Anders</button>';
+      toast(app, 'Kvittert. Anders får beskjed.');
+    });
+    app.querySelector('[data-traad]').addEventListener('click', function () { toast(app, 'Åpner meldingstråden med Anders.'); });
+  }
+  var OV = [
+    { a: 'tek', akse: 'TEK', navn: 'P6.0 med pinne langs skaftet', info: ['30 reps', '20 min', 'Uten ball'], fra: 'Fra Anders 2. okt. · ligger i planen', bilde: 'tek-video.jpg' },
+    { a: 'tek', akse: 'TEK', navn: 'P6.0 til P7.0 på 75 %', info: ['3 × 10 slag', '25 min', 'Lav hastighet'], fra: 'Fra Anders 2. okt. · ligger i planen', bilde: 'slag-simulator.jpg' },
+    { a: 'slag', akse: 'SLAG', navn: 'Innspill 100–150 m, stigen', info: ['24 slag', '30 min', 'TrackMan'], fra: 'Fra Anders 28. sep. · ligger i planen', bilde: 'slag-utslag.jpg' },
+    { a: 'slag', akse: 'SLAG', navn: 'Wedge til tre lengder', info: ['30 slag', '25 min'], fra: 'Fra Anders 21. sep.', bilde: 'naerspill-wedge.jpg' },
+    { a: 'spill', akse: 'SPILL', navn: 'Ni hull med én ball, to køller', info: ['9 hull', '75 min', 'Konkurranse'], fra: 'Fra Anders 14. sep.', bilde: 'spill-bane.jpg' }
+  ];
+  function ovelser(app) {
+    var el = app.querySelector('[data-ov]');
+    function tegn(f) {
+      el.innerHTML = OV.filter(function (o) { return f === 'alle' || o.a === f; }).map(function (o) {
+        return '<button type="button" class="ov ' + o.a + '"><img src="bilder/' + o.bilde + '" alt=""><span class="t"><span class="akse-merke"><i></i>' + o.akse + '</span><b>' + o.navn + '</b><span class="info">' + o.info.map(function (i) { return '<span>' + i + '</span>'; }).join('') + '</span><span class="fra">' + o.fra + '</span></span></button>';
+      }).join('');
+    }
+    tegn('alle');
+    var g = app.querySelector('[data-ov-filter]');
+    g.addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (!b) return;
+      g.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      tegn(b.dataset.a);
+    });
+    el.addEventListener('click', function (e) { if (e.target.closest('.ov')) toast(app, 'Åpner øvelsen med «Legg i plan».'); });
+  }
+  function maal(app) {
+    grupper(app);
+    app.querySelector('[data-endre]').addEventListener('click', function () { vis(app, '[data-endre-ark]', true); });
+    app.querySelector('[data-endre-ark] [data-lukk]').addEventListener('click', function () { vis(app, '[data-endre-ark]', false); });
+    app.querySelector('[data-lagre]').addEventListener('click', function () {
+      app.querySelector('[data-m-navn]').textContent = app.querySelector('#m-tittel').value || 'Målsetning';
+      vis(app, '[data-endre-ark]', false);
+      toast(app, 'Lagret. Målsetninger og årsplanen er oppdatert.');
+    });
+    app.querySelector('[data-avslutt]').addEventListener('click', function () { vis(app, '[data-dialog]', true); });
+    app.querySelector('[data-avs-nei]').addEventListener('click', function () { vis(app, '[data-dialog]', false); });
+    app.querySelector('[data-avs-ok]').addEventListener('click', function () {
+      vis(app, '[data-dialog]', false);
+      app.querySelector('.trend').className = 'trend'; app.querySelector('.trend').textContent = 'Avsluttet';
+      toast(app, 'Målsetningen er avsluttet. Målingene er beholdt.');
+    });
+  }
+
+  function m(id, mal, etter, tom, laster, feil) { return { mal: mal, for: { mob: 'screenshots/' + id + '-390.jpg', pc: 'screenshots/' + id + '-1440.jpg' }, etter: etter, tom: tom, laster: laster, feil: feil }; }
+  /* Dagens skjermbilder finnes ikke for disse sidene i registeret. Nærmeste skjerm vises: PH-23 Booking, PH-21 Innboks, PH-13 Øvelsesbank og PH-11-MAL Målsetninger. */
+  AKUtkast.start({
+    start: 'coach',
+    skjermer: {
+      coach: m('PH-23', 'coach', coach, { tittel: 'Anders har ingen bookbare tjenester nå', tekst: 'Skriv til Anders for å avtale en time.', knapp: 'Send melding' }, 'Henter coachen …', 'Coachen kunne ikke hentes'),
+      anlegg: m('PH-23', 'anlegg', anlegg, { tittel: 'Ingen fasiliteter ennå', tekst: 'Ingen fasiliteter er registrert på dette anlegget ennå.', knapp: 'Til Book time' }, 'Henter anlegget …', 'Anlegget kunne ikke hentes'),
+      tilbakemelding: m('PH-21', 'tilbakemelding', tilbakemelding, { tittel: 'Tilbakemeldingen er ikke skrevet ennå', tekst: 'Anders skriver den vanligvis samme dag som økta. Du får beskjed i Innboks.', knapp: 'Se hva økta inneholdt' }, 'Henter tilbakemeldingen …', 'Tilbakemeldingen kunne ikke hentes'),
+      ovelser: m('PH-13', 'ovelser', ovelser, { tittel: 'Ingen øvelser fra coach ennå', tekst: 'Når Anders sender deg en øvelse, kommer den her. Du finner flere i Øvelsesbanken.', knapp: 'Til Øvelsesbanken' }, 'Henter øvelsene …', 'Øvelsene kunne ikke hentes'),
+      onsket: m('PH-21', 'onsket', null, null, 'Sender ønsket …', 'Ønsket kunne ikke sendes. Prøv igjen.'),
+      maal: m('PH-11-MAL', 'maal', maal, { tittel: 'Ingen målinger ennå', tekst: 'Fremdriften regnes ut når du har registrert en runde slag for slag.', knapp: 'Registrer runde' }, 'Henter målsetningen …', 'Målsetningen kunne ikke hentes')
+    }
+  });
+})();
+</script>
+</body></html>
