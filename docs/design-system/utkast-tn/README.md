@@ -1,7 +1,7 @@
 # Team Norway i nytt design — utkast
 
 Status: **utkast 2 (16.10, retning B «Stall og helteflate») for pakke 1–8. Utkast 1 var 14.10.2026. Aksefargene er godkjent av Anders 14.10 («Ja til aksefargene»). Resten venter på port 7.**
-Samleside: `index.html` (utkast 2, publiseres). Utkast 1: https://claude.ai/artifact/RvAJbY7rCZvBvf4mfBTftF.
+Samleside: `index.html` (utkast 2, https://claude.ai/artifact/1uWNZDymdmiHLkouBfZuui). Utkast 1: https://claude.ai/artifact/RvAJbY7rCZvBvf4mfBTftF.
 Gjelder trenerskjermene under `/team-norway/*`. Spilleren bruker PlayerHQ (§ÉN IUP OG ETT TESTBATTERI).
 
 Bakgrunn: Claude Design stenger 14.12 og prosjektet «Team Norway App» ble aldri laget. Anders godkjente 14.10 at
@@ -92,14 +92,14 @@ Lenkene til utkast 2 settes inn når Anders har publisert dem. Utkast 1-lenkene 
 
 | Pakke | Skjermer (rute) | Fil | Status | Lenke |
 |---|---|---|---|---|
-| 1 Grunnmur | skall 390 og PC, aksefarger, pyramide, øktkort, ukefordeling, graf, knapper, status, og fra utkast 2 helteflate, tre bånd, spillerrad, fylte søyler, fylt graf, bildekort | `grunnmur.html` | **Utkast 2** (16.10, retning B), aksefarger godkjent 14.10 | publiseres |
-| 2 Daglig | Oversikt (`/team-norway`), Samlinger (`/samlinger`, `/samlinger/[id]`), Turneringer og reise (`/turneringer`, `/turneringer/[id]`, `/turneringer/ny`), Live Watch (`/live-watch`) | `daglig.html` | **Utkast 2** (16.10, retning B), venter på port 7 | publiseres |
-| 3 Spillere | Spillerutvikling (`/spillere`), spillerprofil (`/spiller/[id]` med oversikt, analyse, evaluering, teknisk plan, tester og én test), Fellestesting (`/fellestesting`, `/fellestesting/[deltakerId]`), College og USA (`/college`), Skoleoversikt (`/skoler`), WANG-resultater (`/wang-resultater`) | `spillere.html` | **Utkast 2** (16.10, retning B), venter på port 7 | publiseres |
-| 4 Uttak | Uttak og kriterier (`/uttak`), Rangliste (`/rangliste`) | `uttak.html` | **Utkast 2** (16.10, retning B), venter på port 7 | publiseres |
-| 5 Plan og fag | Månedsplan (`/manedsplan`), Workbench (`/workbench`), Testprotokoller (`/protokoller`, `/protokoller/[id]`), Referansenivåer (`/referansenivaer`), Fagapparat (`/fagapparat`), Analyse (`/analyse`), Trenerkatalog (`/apparatet`) | `plan-fag.html` | **Utkast 2** (16.10, retning B), venter på port 7 | publiseres |
-| 6 Gruppe | Gruppeposter (`/[groupId]`), Dokumenter (`/[groupId]/dokumenter`) | `gruppe.html` | **Utkast 2** (16.10, retning B, lett hånd), venter på port 7 | publiseres |
-| 7 Meg og admin | Lisens og økonomi (`/lisens-okonomi`), Trenere og tilgang (`/tilgang`), Inviter spiller (`/inviter`) | `admin.html` | **Utkast 2** (16.10, retning B, lett hånd), venter på port 7 | publiseres |
-| 8 Samleside | Alle lenker på én side | `index.html` | **Utkast 2** (16.10) | publiseres |
+| 1 Grunnmur | skall 390 og PC, aksefarger, pyramide, øktkort, ukefordeling, graf, knapper, status, og fra utkast 2 helteflate, tre bånd, spillerrad, fylte søyler, fylt graf, bildekort | `grunnmur.html` | **Utkast 2** (16.10, retning B), aksefarger godkjent 14.10 | https://claude.ai/artifact/1uWNZDymdmiHLkouBfZuui (samlesiden) |
+| 2 Daglig | Oversikt (`/team-norway`), Samlinger (`/samlinger`, `/samlinger/[id]`), Turneringer og reise (`/turneringer`, `/turneringer/[id]`, `/turneringer/ny`), Live Watch (`/live-watch`) | `daglig.html` | **Utkast 2** (16.10, retning B), venter på port 7 | https://claude.ai/artifact/1uWNZDymdmiHLkouBfZuui (samlesiden) |
+| 3 Spillere | Spillerutvikling (`/spillere`), spillerprofil (`/spiller/[id]` med oversikt, analyse, evaluering, teknisk plan, tester og én test), Fellestesting (`/fellestesting`, `/fellestesting/[deltakerId]`), College og USA (`/college`), Skoleoversikt (`/skoler`), WANG-resultater (`/wang-resultater`) | `spillere.html` | **Utkast 2** (16.10, retning B), venter på port 7 | https://claude.ai/artifact/1uWNZDymdmiHLkouBfZuui (samlesiden) |
+| 4 Uttak | Uttak og kriterier (`/uttak`), Rangliste (`/rangliste`) | `uttak.html` | **Utkast 2** (16.10, retning B), venter på port 7 | https://claude.ai/artifact/1uWNZDymdmiHLkouBfZuui (samlesiden) |
+| 5 Plan og fag | Månedsplan (`/manedsplan`), Workbench (`/workbench`), Testprotokoller (`/protokoller`, `/protokoller/[id]`), Referansenivåer (`/referansenivaer`), Fagapparat (`/fagapparat`), Analyse (`/analyse`), Trenerkatalog (`/apparatet`) | `plan-fag.html` | **Utkast 2** (16.10, retning B), venter på port 7 | https://claude.ai/artifact/1uWNZDymdmiHLkouBfZuui (samlesiden) |
+| 6 Gruppe | Gruppeposter (`/[groupId]`), Dokumenter (`/[groupId]/dokumenter`) | `gruppe.html` | **Utkast 2** (16.10, retning B, lett hånd), venter på port 7 | https://claude.ai/artifact/1uWNZDymdmiHLkouBfZuui (samlesiden) |
+| 7 Meg og admin | Lisens og økonomi (`/lisens-okonomi`), Trenere og tilgang (`/tilgang`), Inviter spiller (`/inviter`) | `admin.html` | **Utkast 2** (16.10, retning B, lett hånd), venter på port 7 | https://claude.ai/artifact/1uWNZDymdmiHLkouBfZuui (samlesiden) |
+| 8 Samleside | Alle lenker på én side | `index.html` | **Utkast 2** (16.10) | https://claude.ai/artifact/1uWNZDymdmiHLkouBfZuui (samlesiden) |
 | 9 Data Golf | Analyse › Data Golf, bare for trenere med coach-rollen: DG-01 Oversikt, DG-02 Proffkatalog, DG-03 Proffprofil, DG-04 Topplister, DG-05 Spiller mot proff, DG-06 Innspill-tak, DG-07 Fra funn til forslag, DG-08 Norske proffer, DG-09 Kilde og dekning. Innholdsfasit: `../utkast-agencyos/datagolf.html` og `../datagolf-coach-datakart-og-skjermliste.md` (PR #1340). Lisensen er avklart av Anders 16.10: Data Golf bare for coacher i AK Golf, WANG og Team Norway, aldri kunder (§DATA GOLF VISES ALDRI TIL KUNDER). | `datagolf.html` | **Utkast 2** (16.10, hoveddata i rød, hvit og navy, godkjent av Anders 16.10), venter bare på port 7 | https://claude.ai/artifact/JYRbsvoVNqrEStsoEfFgFx |
 
 ### De 16 rutene uten tegning
