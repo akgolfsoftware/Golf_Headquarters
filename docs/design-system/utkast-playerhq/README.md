@@ -19,7 +19,7 @@ Hver skjerm publiseres som privat Artifact til Anders, med «Dagens design»-kna
 | 8 Meg | PH-24 (+ profil, fasiliteter, utstyr, helse, foreldre), PH-25 (+ innstillinger), PH-27 (+ under 16), `meg.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/3LLqsVrsgjq5KxwysoGxg3 |
 | 9 IUP og gameplan | PH-IUP-01 (+ levert), PH-IUP-02 (+ levert), PH-20 (+ hull), `iup.html` | **Godkjent 15.10** (port 7, Anders), utkast 1 | https://claude.ai/artifact/6ALZka6wvTpvKvnboZXb5E |
 | 11–12 Booking, meldinger og målsetning, resten | Coach, Anlegg, Tilbakemelding, Øvelser fra coach, Ønsket økt sendt, Én målsetning, `booking-meldinger.html` | **Godkjent 16.10** (port 7, Anders), utkast 1 | https://claude.ai/artifact/1VqTieHpgVPDYSS9qGL2Xh |
-| Workbench, øvelser | Legg til øvelse (søk i alle, mest brukt først), Ny øvelse i åtte trinn, lenke til hele Øvelsesbanken, `workbench-ovelser.html` | Utkast 1 · venter på Anders (port 7) | https://claude.ai/artifact/PhkYgbDWGS9G4jgU68L4q7 |
+| Workbench, øvelser | Legg til øvelse (søk i alle, mest brukt først), Ny øvelse i åtte trinn, lenke til hele Øvelsesbanken, `workbench-ovelser.html` | **Godkjent 16.10** (port 7, Anders), utkast 1 | https://claude.ai/artifact/PhkYgbDWGS9G4jgU68L4q7 |
 | 10 Samleside | Alle lenker på én side med status, `samleside.html`; designbrevet peker hit | **Ferdig** (14.10) | https://claude.ai/artifact/PkWg8LfsczoCwWaRsUpnus |
 
 Rekkefølgen er 3 først (Anders minst fornøyd med Workbench). Én fersk økt per pakke.
