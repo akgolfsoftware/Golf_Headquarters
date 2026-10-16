@@ -24,8 +24,6 @@ Pulje 1 setter stilen. Ingen andre bilder lages før Anders har godkjent den, el
 
 Alle bilder lages i Gemini, ett og samme verktøy, så lys og farger holder seg like.
 Lim inn én bestilling om gangen i en ny samtale, slik at ett bilde ikke farger det neste.
-Legg ved `slag-utslag.jpg` fra `bilder/` som stilreferanse og skriv «Match the light and colors of the attached image»,
-så lys og farger blir som i resten av appen. Ikke for FYS (innendørs).
 Gemini kan sette et lite merke i et hjørne av bildet. Det skal ikke være med i ferdig bilde:
 beskjær det bort, eller lag bildet på nytt.
 
@@ -132,7 +130,7 @@ gjør kortene tydeligere:
 Pulje 1 bruker bestillingene i bildeplanen §1. Alle under slutter med samme hale, slik at stilen
 holder seg lik:
 
-> `, bright clear summer day with soft warm sunlight, lush green well-kept grass, clean and crisp premium sports photography, natural colors, shallow depth of field, photorealistic, face not visible, no logos, no text, subject centered, landscape 3:2`
+> `, calm minimal editorial sports photography, soft diffused natural light, warm muted desaturated palette of sand, stone, graphite and soft sage green, lots of negative space, one clear subject, uncluttered background, subtle film grain, no saturated colors, face not visible, no logos, no text, landscape 3:2 aspect ratio`
 
 | Fil | Bestilling (før halen) |
 |---|---|

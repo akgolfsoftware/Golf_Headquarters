@@ -11,10 +11,11 @@ Rekkefølge, antall og ferdigkrav: [arbeidsplanen 16.10](bildeplan-arbeidsplan-2
 - **Ingen lesbar tekst i bildet**: ingen navn på resultattavler, ingen merkelogoer (TrackMan, Titleist, Nike osv.),
   ingen reklameskilt. Tekst som må finnes (resultattavle), er uskarp.
 - **Ingen gjenkjennelige ansikter.** Spilleren sees bakfra, fra siden eller på avstand. Ingen ekte personer.
-- **Lyst og klart, som bildene i appen i dag** (Anders 16.10: «Bilde må matche resten av appen»): sol eller lett dis,
-  blå himmel, frodig grønt og velholdt gress, rent og skarpt. Skog og natur som på Østlandet. Ikke grått, vått,
-  løv på bakken eller vinter. Ikke palmer, ikke ørken.
-- **Fotografisk, ikke illustrasjon.** Naturlige farger, litt dempet, så aksefargen på kortet bestemmer.
+- **Rolig og dempet** (Anders 16.10, etter to Gemini-forsøk): varme, nedtonede farger i sand, stein, grafitt og
+  dempet salviegrønt, som appens flater. Mykt, spredt lys, mye luft og ett tydelig motiv. Bildet holder seg i
+  bakgrunnen; aksefargen på kortet bestemmer. Ikke mettet grønt, ikke blå himmel med gjenskinn, ikke grått og vått.
+  Bildene som ligger i appen i dag er ikke stilfasit.
+- **Fotografisk, ikke illustrasjon.**
 - **Format:** lages i 3:2 (1800 × 1200). Motivet midt i bildet, så det tåler utsnitt til 4:5 (mobil) og 16:9 (topp).
 - **Filnavn:** `<akse>-<motiv>.jpg`, kebab-case, under 300 kB etter komprimering. Legges i
   `docs/design-system/utkast-playerhq/bilder/` og senere `public/images/okter/`.
@@ -31,11 +32,11 @@ Rekkefølge, antall og ferdigkrav: [arbeidsplanen 16.10](bildeplan-arbeidsplan-2
 
 Bestillinger (lim inn i bildeverktøyet, én om gangen):
 
-- **FYS:** `Photorealistic, dim moody strength gym, a loaded olympic barbell with iron plates resting on a rubber floor, low side light, dark background, shallow depth of field, no people, no logos, no text, muted colors, 3:2`
-- **TEK:** `Photorealistic, high overhead angle looking down at a golfer on a driving range mat, a large pile of practice balls beside them, mid backswing, repetition and focus, premium grass tee line on a well-kept range, a neat pyramid of clean white balls, bright clear summer morning with low warm sun, lush green grass, golfer seen from above and behind, face not visible, no logos, no text, 3:2`
-- **SLAG:** `Photorealistic, elevated side view of a golfer just after impact on a fairway, a bright thin shot-tracer line drawn in the sky following the ball flight toward a distant green with a flag, the result is the focus, bright clear day with blue sky, lush green fairway, Scandinavian forest, face not visible, no logos, no text, 3:2`
-- **SPILL:** `Photorealistic, a golfer crouching to read a putt on a quiet green during an ordinary round, bright early morning sun, lush green well-kept green, trees around, calm, seen from behind, no spectators, no logos, no text, 3:2`
-- **TURN:** `Photorealistic, 18th green of a tournament, a golfer standing over a putt, spectators lining the green, a large tournament leaderboard in the background out of focus and unreadable, tension and pressure, warm late afternoon sun, lush green, golfer seen from behind, no logos, no readable text, 3:2`
+- **FYS:** `A loaded olympic barbell with iron plates resting on a concrete gym floor, soft window light from the side, no people, calm minimal editorial sports photography, soft diffused natural light, warm muted desaturated palette of sand, stone, graphite and soft sage green, lots of negative space, one clear subject, uncluttered background, subtle film grain, no saturated colors, face not visible, no logos, no text, landscape 3:2 aspect ratio`
+- **TEK:** `High overhead view of a golfer on a grass practice tee, a neat row of white practice balls beside them, mid backswing, repetition and focus, seen from above and behind, calm minimal editorial sports photography, soft diffused natural light, warm muted desaturated palette of sand, stone, graphite and soft sage green, lots of negative space, one clear subject, uncluttered background, subtle film grain, no saturated colors, face not visible, no logos, no text, landscape 3:2 aspect ratio`
+- **SLAG:** `Elevated side view of a golfer just after impact on a fairway, a thin pale shot-tracer line in the sky following the ball toward a distant green with a flag, soft hazy morning, calm minimal editorial sports photography, soft diffused natural light, warm muted desaturated palette of sand, stone, graphite and soft sage green, lots of negative space, one clear subject, uncluttered background, subtle film grain, no saturated colors, face not visible, no logos, no text, landscape 3:2 aspect ratio`
+- **SPILL:** `A golfer crouching to read a putt on a quiet green during an ordinary round, early morning mist, birch trees in the background, seen from behind, no spectators, calm minimal editorial sports photography, soft diffused natural light, warm muted desaturated palette of sand, stone, graphite and soft sage green, lots of negative space, one clear subject, uncluttered background, subtle film grain, no saturated colors, face not visible, no logos, no text, landscape 3:2 aspect ratio`
+- **TURN:** `18th green of a tournament, a golfer standing over a putt, spectators softly out of focus around the green, a large leaderboard far in the background blurred and unreadable, quiet tension, seen from behind, calm minimal editorial sports photography, soft diffused natural light, warm muted desaturated palette of sand, stone, graphite and soft sage green, lots of negative space, one clear subject, uncluttered background, subtle film grain, no saturated colors, face not visible, no logos, no text, landscape 3:2 aspect ratio`
 
 ## 2. Treningsområdene — bilde per område
 
