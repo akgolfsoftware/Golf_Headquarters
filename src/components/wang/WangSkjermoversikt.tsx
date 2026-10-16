@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { WANG_SKJERMER_KATALOG } from './wang-data';
+import { WANG_SKJERMER_KATALOG } from './wang-skjermkatalog';
 
 interface WangSkjermoversiktProps {
   onNaviger?: (omraade: string, fane?: string) => void;

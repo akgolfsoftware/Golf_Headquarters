@@ -5,7 +5,7 @@
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, readdirSync, statSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import path from "node:path";
 
 const APP_ROOT = path.join(process.cwd(), "src/app");
@@ -25,27 +25,25 @@ const DEMOVISNINGER: string[] = [
   "@/components/portal/toppidrett",
   "@/components/wang/WangRekrutteringView",
   "WangToppidrettPrecisionView",
-  // Wang*-områdene tegner faste demodata (src/components/wang/wang-data.ts).
-  // Bare skjermklienten under coach/ (bak innlogging) får importere dem.
-  "@/components/wang/WangIdag",
-  "@/components/wang/WangTrening",
-  "@/components/wang/WangTester",
-  "@/components/wang/WangKonkurranse",
-  "@/components/wang/WangMeldinger",
-  "@/components/wang/WangElever",
-  "@/components/wang/WangAdmin",
-  "@/components/wang/WangSkjermoversikt",
-  "@/components/wang/wang-data",
 ];
 
 /** Filer som bevisst får importere demovisninger (bak requirePortalUser). */
-const TILLATT_I: string[] = ["src/app/team-wang/coach/WangCoachKlient.tsx"];
+const TILLATT_I: string[] = [];
 
 function* walkKilder(dir: string): Generator<string> {
   for (const name of readdirSync(dir)) {
     const p = path.join(dir, name);
     if (p === KATALOG) continue;
     if (statSync(p).isDirectory()) yield* walkKilder(p);
+    else if (/\.tsx?$/.test(name)) yield p;
+  }
+}
+
+function* walkAlle(dir: string): Generator<string> {
+  for (const name of readdirSync(dir)) {
+    const p = path.join(dir, name);
+    if (name === "generated" || name === "node_modules") continue;
+    if (statSync(p).isDirectory()) yield* walkAlle(p);
     else if (/\.tsx?$/.test(name)) yield p;
   }
 }
@@ -86,6 +84,50 @@ test("sider som rendrer WangCoachKlient krever innlogging som coach eller admin"
     }
   }
   assert.deepEqual(treff, []);
+});
+
+// ---------------------------------------------------------------------------
+// WANG-trenerflaten (/team-wang/coach): bare ekte gruppedata (skjermkontroll
+// 15.10.2026, funn 4). wang-data.ts med oppdiktede elever er slettet.
+// ---------------------------------------------------------------------------
+
+const WANG_TRENERSKJERMER = [
+  "WangIdag",
+  "WangTrening",
+  "WangTester",
+  "WangKonkurranse",
+  "WangMeldinger",
+  "WangElever",
+  "WangAdmin",
+];
+
+test("eksempeldatafila for WANG finnes ikke, og ingen fil importerer den", () => {
+  assert.equal(existsSync(path.join(process.cwd(), "src/components/wang/wang-data.ts")), false);
+  const treff: string[] = [];
+  for (const fil of walkAlle(path.join(process.cwd(), "src"))) {
+    const kilde = readFileSync(fil, "utf8");
+    if (/from\s+["'][^"']*wang-data["']/.test(kilde)) treff.push(path.relative(process.cwd(), fil));
+  }
+  assert.deepEqual(treff, []);
+});
+
+test("WANG-trenerskjermene får gruppedata fra serveren og har ingen egne elevlister", () => {
+  const treff: string[] = [];
+  for (const navn of WANG_TRENERSKJERMER) {
+    const fil = `src/components/wang/${navn}.tsx`;
+    const kilde = readFileSync(path.join(process.cwd(), fil), "utf8");
+    if (!/data:\s*WangTrenerData/.test(kilde)) treff.push(`${fil}: mangler data-prop`);
+    if (/WANG_[A-Z_]+/.test(kilde)) treff.push(`${fil}: faste WANG_-data`);
+  }
+  assert.deepEqual(treff, []);
+});
+
+test("trenersiden bygger skjermdataene av ekte gruppedata", () => {
+  for (const fil of ["src/app/team-wang/coach/page.tsx", "src/app/team-wang/skjermer/page.tsx"]) {
+    const kilde = readFileSync(path.join(process.cwd(), fil), "utf8");
+    assert.match(kilde, /hentWangGruppe\(/, fil);
+    assert.match(kilde, /byggWangTrenerData\(live/, fil);
+  }
 });
 
 // ---------------------------------------------------------------------------
