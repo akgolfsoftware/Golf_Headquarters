@@ -10,7 +10,7 @@ Rader: [JSON](skjermregister.json) og [CSV](skjermregister.csv). Regenerer med `
 
 ## Inventar
 
-Sidefiler med rute: **547**. Unike rutemønstre i skanningen: 547. Komponentfiler: 924. Ramme- og tilstandsfiler: 274.
+Sidefiler med rute: **548**. Unike rutemønstre i skanningen: 548. Komponentfiler: 924. Ramme- og tilstandsfiler: 274.
 
 Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kodeversjonen over og kan være høyere. Interne eksempler inngår. Ingen rute er slettet.
 
@@ -19,7 +19,7 @@ Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kode
 | agencyos | 167 |
 | delt-innsyn | 11 |
 | forelder | 16 |
-| inngang-og-konto | 19 |
+| inngang-og-konto | 20 |
 | interne-eksempler | 6 |
 | lag-og-skole | 63 |
 | marked-og-offentlig | 70 |
@@ -35,11 +35,11 @@ Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kode
 | tegnet-skjermtype | 285 |
 | videresending | 165 |
 | byggeunderlag | 37 |
-| teknisk-forklaring | 31 |
+| teknisk-forklaring | 32 |
 | felles-monster | 22 |
 | intern-flate | 7 |
 
-250 rader treffer en av de 77 Precision-typene og er derfor merket valgt for bygging som design. 14 rader har ingen eksakt type. 166 rader har et registrert avvik. 138 rader har en Precision-visning i koden. 0 er kontrollert i appen.
+250 rader treffer en av de 77 Precision-typene og er derfor merket valgt for bygging som design. 15 rader har ingen eksakt type. 166 rader har et registrert avvik. 138 rader har en Precision-visning i koden. 0 er kontrollert i appen.
 
 ## Uten eksakt type
 
@@ -51,6 +51,7 @@ Tabellen er Precision-ruter uten treff i 74-listen, pluss WANG- og Team Norway-r
 | `/admin/innboks` | UTEN-TEGNET-TYPE | — |
 | `/admin/mer` | UTEN-TEGNET-TYPE | — |
 | `/admin/spillere/[id]/plan/[planId]/for-og-na` | UTEN-TEGNET-TYPE | AG-10 Teknisk plan |
+| `/auth/fodselsdato` | UTEN-TEGNET-TYPE | — |
 | `/auth/trenerdeling` | UTEN-TEGNET-TYPE | — |
 | `/portal/analysere/resultater` | UTEN-TEGNET-TYPE | PH-16 Stats |
 | `/portal/analysere/trackman/koller` | UTEN-TEGNET-TYPE | PH-17 TrackMan |

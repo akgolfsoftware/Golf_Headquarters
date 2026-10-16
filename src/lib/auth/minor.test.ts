@@ -311,3 +311,11 @@ describe("D-63/TP-02: spilleren kan ikke endre fødselsdatoen", () => {
     assert.equal(vurderEgenFodselsdato(satt, new Date("2012-03-05T00:00:00Z")), "avvist");
   });
 });
+
+it("maaFylleInnFodselsdato gjelder bare spillere uten dato", async () => {
+  const { maaFylleInnFodselsdato } = await import("./minor");
+  assert.equal(maaFylleInnFodselsdato({ role: "PLAYER", dateOfBirth: null }), true);
+  assert.equal(maaFylleInnFodselsdato({ role: "PLAYER", dateOfBirth: new Date("1990-01-01T00:00:00Z") }), false);
+  assert.equal(maaFylleInnFodselsdato({ role: "COACH", dateOfBirth: null }), false);
+  assert.equal(maaFylleInnFodselsdato({ role: "PARENT", dateOfBirth: null }), false);
+});
