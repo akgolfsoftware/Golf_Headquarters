@@ -279,8 +279,8 @@
       <ul>
         <li>Sende «Sammenlign med coach» videre til Stats? (anbefalt)</li>
         <li><s>Del runde: offentlig og delingslenke?</s> Avgjort 16.10: Del runde er med ved lansering som i utkastet. Venner med invitasjon, følging og feed kommer i neste versjon.</li>
-        <li>Turneringer: skal siden bli en del av Resultater (pakke 6), med kurven øverst? Det gir én side mindre.</li>
-        <li>Logg økt lagres i dag i en egen tabell som ikke teller i Plan. Skal økter ført i etterkant telle i uka og årsplanen, som andre gjennomførte økter? (anbefalt)</li>
+        <li><s>Turneringer som egen side?</s> Avgjort 16.10: blir en del av Resultater, med kurven øverst.</li>
+        <li><s>Skal Logg økt telle i Plan?</s> Avgjort 16.10: den teller i total treningstid, men ikke i «lagt inn mot fordelt» eller etterlevelsen.</li>
       </ul>
     </div>
   </div>
@@ -478,7 +478,7 @@
   <main class="innhold smal">
     <div class="topp" data-behold>
       <div><div class="dato">Økt ført i etterkant</div><h1 class="tittel">Logg økt</h1></div>
-      <p class="ingress">For trening som ikke lå i planen. Den teller som gjennomført i uka, måneden og årsplanen.</p>
+      <p class="ingress">For trening som ikke lå i planen. Den teller i total treningstid, men ikke mot planen.</p>
     </div>
     <div class="felt"><span class="etikett">Pyramide</span>
       <div class="aksevalg" data-l-akse>
@@ -1042,7 +1042,7 @@
     var g = app.querySelector('[data-l-akse]');
     g.addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; g.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); }); akse = b.dataset.a; omr(); });
     app.querySelectorAll('[data-l-min]').forEach(function (b) { b.addEventListener('click', function () { min = Math.max(5, Math.min(240, min + Number(b.dataset.lMin))); var t = Math.floor(min / 60), m = min % 60; app.querySelector('[data-l-tid]').textContent = t ? t + ' t' + (m ? ' ' + m + ' min' : '') : m + ' min'; }); });
-    app.querySelector('[data-l-lagre]').addEventListener('click', function () { toast(app, 'Lagret som gjennomført lørdag 4. okt. Uke 40, september og årsplanen er oppdatert.'); });
+    app.querySelector('[data-l-lagre]').addEventListener('click', function () { toast(app, 'Lagret lørdag 4. okt. Den teller i total treningstid, ikke mot planen.'); });
   }
 
   /* ---------- Puttelaboratoriet ---------- */
