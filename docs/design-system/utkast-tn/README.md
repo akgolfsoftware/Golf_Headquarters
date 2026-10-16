@@ -1,7 +1,7 @@
 # Team Norway i nytt design — utkast
 
-Status: **alle sju pakker er tegnet (utkast 1, 14.10.2026), 41 skjermer. Aksefargene er godkjent av Anders 14.10 («Ja til aksefargene»). Resten venter på port 7.**
-Samleside: https://claude.ai/artifact/RvAJbY7rCZvBvf4mfBTftF (`index.html`).
+Status: **utkast 2 (16.10, retning B «Stall og helteflate») for pakke 1–8. Utkast 1 var 14.10.2026. Aksefargene er godkjent av Anders 14.10 («Ja til aksefargene»). Resten venter på port 7.**
+Samleside: `index.html` (utkast 2, publiseres). Utkast 1: https://claude.ai/artifact/RvAJbY7rCZvBvf4mfBTftF.
 Gjelder trenerskjermene under `/team-norway/*`. Spilleren bruker PlayerHQ (§ÉN IUP OG ETT TESTBATTERI).
 
 Bakgrunn: Claude Design stenger 14.12 og prosjektet «Team Norway App» ble aldri laget. Anders godkjente 14.10 at
@@ -49,32 +49,58 @@ fargen, så fargen er aldri eneste bærer. TURN blir i mørk rød (Anders 14.10)
 
 ## Faste regler i byggeklossene
 
-- Ett stort tall per flate (`.hoved strong`, IBM Plex Mono).
-- Farge betyr akse. Grønt, gult og rødt er bare status (`.merke.ok/.vent/.feil`). Info er navy (`.merke.info`).
-- Primærknapp navy (`.knapp.pri`), sekundær navy kontur, sletting mørk statusrød (`.knapp.slett`). Aldri logorød på knapper.
+- Ett stort tall per hovedskjerm (`.helt .tall strong` eller `.hoved strong`, IBM Plex Mono). Toppen (hovedtall, det som haster, én knapp) får plass i én skjermhøyde på 390 px.
+- Farge betyr akse. Grønt, gult og rødt er bare status (`.merke.ok/.vent/.feil`, `.markor`), alltid med ord ved siden. Info er navy (`.merke.info`).
+- Primærknapp navy (`.knapp.pri`), på navy hvit (`.knapp.hvit`), sekundær navy kontur, sletting mørk statusrød (`.knapp.slett`). Aldri logorød på knapper. Én primærknapp per flate; resten i «Ny»/«Mer» (`.flere`).
 - Fylte øktkort i aksefargen (`.okt.fys` osv.), kantete, uten bilder.
-- Merker er kantete (2 px), aldri piller med runde ender. Avatar er kvadratisk.
-- Flaggstreken (`.flaggstrek`) er det eneste motivet, og brukes sparsomt.
+- Merker er kantete (2 px), aldri piller med runde ender. Avatar er kvadratisk. Kategori A–K er et navy merke (`.kat`), ikke en akse.
+- Flaggstreken er kanten nederst på helteflaten (`.helt`) og brukes ellers sparsomt (`.flaggstrek`).
+- Golfbilder (`bilder/`) bare i bildekort og helteflater, aldri med tekst oppå (`.bildekort`, tekst i `.bk-tekst`).
+- Datolinja (`.overlinje`) høyst én gang per skjerm, i Lato. IBM Plex Mono bare på tall.
 - Kilde og dato der appen påstår noe om en spiller. Estimat merkes (`.merke.kontur`).
 - Aldri sidelengs rulling. Ord fra `docs/treningsplanlegging.md`.
+- Spillere heter «Spiller 01» … «Spiller 14» og trenere «Sportssjef», «Trener 1», «Trener 2». Ingen realistiske navn (spillerne er mindreårige).
 - Fagregler som skjermene må følge: Wedge Gate og gate-testene føres som Godkjent eller Bom; 8-ball føres med
-  meter fra hullet og «I hull» (5 / 3 / 2 / 1 / 0 poeng), andre PEI-tester med carry og side (vedtak 14.10); Data Golf vises bare for coacher, og TN-menyen har ingen Data Golf-lenke (§KODEGJENNOMGANGEN 06.10).
+  meter fra hullet og «I hull» (5 / 3 / 2 / 1 / 0 poeng), andre PEI-tester med carry og side (vedtak 14.10); Data Golf
+  vises bare for coacher, og Data Golf-lenken i Analyse vises bare for trenere med coach-rollen
+  (§DATA GOLF VISES ALDRI TIL KUNDER, 16.10).
+
+## Utkast 2: retning B (16.10.2026)
+
+Anders valgte retning B «Stall og helteflate» fra `../../planer/tn-wang-designloft-2026-10-16.md` §4. Rammene er
+uendret (Jost, Lato, Mono bare på tall, hjørner 0 · 2 · 4, ingen skygger eller sirkler, navy, logorød bare identitet,
+TN-aksefargene). Nytt:
+
+- **Grunnmuren** (`felles/tn.css`, `felles/tn.js`) har nye byggeklosser: `.helt` (navy helteflate med hovedtall, én
+  knapp, aksefordeling i de lyse aksefargene og flaggstreken som kant), `.baand` (tre bånd med teller), `.sprad`
+  (spillerrad med `.planstolpe` og statusmarkør), `.akse-soyler` (fylte søyler), `.graf .areal` (fylt graf),
+  `.bildekort`, `.flere` (meny for resten av handlingene), `.nedtelling` og `.markor`. De gamle klassene er beholdt.
+- **Sidemenyen** har seks grupper som kan lukkes. Bare gruppa du er i står åpen. Ingen menypunkter er fjernet.
+- **Mindre grå mono**: datolinja, akse-merker, menygrupper og metadata i lister står i Lato.
+- **Oversikt**: «N spillere trenger deg» som hovedtall, Trenger deg-bånd, neste samling med golfbilde, fellestesten som stolpe.
+- **Spillerutvikling** i tre bånd (Trenger deg · Følger planen · Ikke delt). **IUP-hodet** med hovedtall (plan siste
+  fire uker) og pyramiden som fylte søyler. Fellestesting, College, Skoler og WANG-resultater i samme språk.
+- **Uttak**: dager til frist som hovedtall, kandidater rangert på kriterium 1 med én stolpe per kriterium.
+- **Månedsplan**: ukene som fylte, stablede søyler. **Workbench**: lagt inn mot fordelt som hovedtall og per akse.
+- **Gruppe og Meg og admin**: lett hånd, bare grunnmuren.
+- **Navn**: alle spillere er «Spiller 01–14», trenerne «Sportssjef», «Trener 1», «Trener 2».
 
 ## Pakkeplan (fase 2, etter ja til aksefargene)
 
 Én fil og én PR per pakke, alle tilstander (tom, laster, feil). Rekkefølgen følger TN-menyen.
+Lenkene til utkast 2 settes inn når Anders har publisert dem. Utkast 1-lenkene står i Git-historikken for denne fila.
 
 | Pakke | Skjermer (rute) | Fil | Status | Lenke |
 |---|---|---|---|---|
-| 1 Grunnmur | skall 390 og PC, aksefarger, pyramide, øktkort, ukefordeling, graf, knapper, status | `grunnmur.html` | **Utkast 1**, aksefarger godkjent 14.10 | https://claude.ai/artifact/EjcY2cu91S4ydhCCjGWYSE |
-| 2 Daglig | Oversikt (`/team-norway`), Samlinger (`/samlinger`, `/samlinger/[id]`), Turneringer og reise (`/turneringer`, `/turneringer/[id]`, `/turneringer/ny`), Live Watch (`/live-watch`) | `daglig.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/8wDaGLGc1mu8awyhGyDVr8 |
-| 3 Spillere | Spillerutvikling (`/spillere`), spillerprofil (`/spiller/[id]` med oversikt, analyse, evaluering, teknisk plan, tester og én test), Fellestesting (`/fellestesting`, `/fellestesting/[deltakerId]`), College og USA (`/college`), Skoleoversikt (`/skoler`), WANG-resultater (`/wang-resultater`) | `spillere.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/Gf7q9rdUHQmQZ8cZvfm4MY |
-| 4 Uttak | Uttak og kriterier (`/uttak`), Rangliste (`/rangliste`) | `uttak.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/BG1Pn6RHrg9XU3C8FDnGYX |
-| 5 Plan og fag | Månedsplan (`/manedsplan`), Workbench (`/workbench`), Testprotokoller (`/protokoller`, `/protokoller/[id]`), Referansenivåer (`/referansenivaer`), Fagapparat (`/fagapparat`), Analyse (`/analyse`), Trenerkatalog (`/apparatet`) | `plan-fag.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/UyH7hFkJVAtUo5Ds68eJFN |
-| 6 Gruppe | Gruppeposter (`/[groupId]`), Dokumenter (`/[groupId]/dokumenter`) | `gruppe.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/9yQPdj6UaCUK7fDHfK66wC |
-| 7 Meg og admin | Lisens og økonomi (`/lisens-okonomi`), Trenere og tilgang (`/tilgang`), Inviter spiller (`/inviter`) | `admin.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/FVETdiC9sYtCcxBdc2ZmPZ |
-| 8 Samleside | Alle lenker på én side | `index.html` | **Utkast 1** (14.10) | https://claude.ai/artifact/RvAJbY7rCZvBvf4mfBTftF |
-| 9 Data Golf | Analyse âº Data Golf, bare for trenere med coach-rollen: DG-01 Oversikt, DG-02 Proffkatalog, DG-03 Proffprofil, DG-04 Topplister, DG-05 Spiller mot proff, DG-06 Innspill-tak, DG-07 Fra funn til forslag, DG-08 Norske proffer, DG-09 Kilde og dekning. Innholdsfasit: `../utkast-agencyos/datagolf.html` og `../datagolf-coach-datakart-og-skjermliste.md` (PR #1340). **Bygges ikke fÃ¸r lisensen er avklart.** | `datagolf.html` | **Utkast 2** (16.10, hoveddata i rÃ¸d, hvit og navy, godkjent av Anders 16.10), venter pÃ¥ port 7 og lisens | https://claude.ai/artifact/JYRbsvoVNqrEStsoEfFgFx |
+| 1 Grunnmur | skall 390 og PC, aksefarger, pyramide, øktkort, ukefordeling, graf, knapper, status, og fra utkast 2 helteflate, tre bånd, spillerrad, fylte søyler, fylt graf, bildekort | `grunnmur.html` | **Utkast 2** (16.10, retning B), aksefarger godkjent 14.10 | publiseres |
+| 2 Daglig | Oversikt (`/team-norway`), Samlinger (`/samlinger`, `/samlinger/[id]`), Turneringer og reise (`/turneringer`, `/turneringer/[id]`, `/turneringer/ny`), Live Watch (`/live-watch`) | `daglig.html` | **Utkast 2** (16.10, retning B), venter på port 7 | publiseres |
+| 3 Spillere | Spillerutvikling (`/spillere`), spillerprofil (`/spiller/[id]` med oversikt, analyse, evaluering, teknisk plan, tester og én test), Fellestesting (`/fellestesting`, `/fellestesting/[deltakerId]`), College og USA (`/college`), Skoleoversikt (`/skoler`), WANG-resultater (`/wang-resultater`) | `spillere.html` | **Utkast 2** (16.10, retning B), venter på port 7 | publiseres |
+| 4 Uttak | Uttak og kriterier (`/uttak`), Rangliste (`/rangliste`) | `uttak.html` | **Utkast 2** (16.10, retning B), venter på port 7 | publiseres |
+| 5 Plan og fag | Månedsplan (`/manedsplan`), Workbench (`/workbench`), Testprotokoller (`/protokoller`, `/protokoller/[id]`), Referansenivåer (`/referansenivaer`), Fagapparat (`/fagapparat`), Analyse (`/analyse`), Trenerkatalog (`/apparatet`) | `plan-fag.html` | **Utkast 2** (16.10, retning B), venter på port 7 | publiseres |
+| 6 Gruppe | Gruppeposter (`/[groupId]`), Dokumenter (`/[groupId]/dokumenter`) | `gruppe.html` | **Utkast 2** (16.10, retning B, lett hånd), venter på port 7 | publiseres |
+| 7 Meg og admin | Lisens og økonomi (`/lisens-okonomi`), Trenere og tilgang (`/tilgang`), Inviter spiller (`/inviter`) | `admin.html` | **Utkast 2** (16.10, retning B, lett hånd), venter på port 7 | publiseres |
+| 8 Samleside | Alle lenker på én side | `index.html` | **Utkast 2** (16.10) | publiseres |
+| 9 Data Golf | Analyse › Data Golf, bare for trenere med coach-rollen: DG-01 Oversikt, DG-02 Proffkatalog, DG-03 Proffprofil, DG-04 Topplister, DG-05 Spiller mot proff, DG-06 Innspill-tak, DG-07 Fra funn til forslag, DG-08 Norske proffer, DG-09 Kilde og dekning. Innholdsfasit: `../utkast-agencyos/datagolf.html` og `../datagolf-coach-datakart-og-skjermliste.md` (PR #1340). Lisensen er avklart av Anders 16.10: Data Golf bare for coacher i AK Golf, WANG og Team Norway, aldri kunder (§DATA GOLF VISES ALDRI TIL KUNDER). | `datagolf.html` | **Utkast 2** (16.10, hoveddata i rød, hvit og navy, godkjent av Anders 16.10), venter bare på port 7 | https://claude.ai/artifact/JYRbsvoVNqrEStsoEfFgFx |
 
 ### De 16 rutene uten tegning
 
@@ -119,8 +145,9 @@ Avklart 15.10: spillerprofilen heter IUP i Team Norway (Anders: «For Team Norwa
 8. Sperren uten foresatt på poster: under 18 eller under 16? (pakke 6)
 9. Stipend og budsjett: hvor kommer tallene fra, og skal treneren se dem? (pakke 7)
 10. Kan en trener legge til Assist Coach i egen gruppe, eller bare sportssjefen? (pakke 7, B2)
-11. Lisens for Data Golf til Team Norway-trenere er ikke avklart. Kundedistribusjon av Data Golf-tall er ikke dokumentert (kontroll 02.10). Pakke 9 er tegnet, men bygges ikke fÃ¸r bruksretten er avklart. (pakke 9)
-12. Data Golf-lenken tilbake i Analyse-menyen bare for trenere med coach-rollen; andre TN-trenere ser den ikke. Riktig? (pakke 9)
+11. ~~Lisens for Data Golf til Team Norway-trenere.~~ **Avklart av Anders 16.10:** Data Golf bare for coacher i AK Golf, WANG og Team Norway, aldri kunder (§DATA GOLF VISES ALDRI TIL KUNDER). «Bygges ikke før lisensen er avklart» gjelder ikke lenger; pakke 9 venter bare på port 7. (pakke 9)
+12. ~~Data Golf-lenken i Analyse-menyen bare for trenere med coach-rollen?~~ **Avklart 16.10:** ja, samme vedtak; lenken vises bare for trenere med coach-rollen. (pakke 9)
+13. Nytt i utkast 2: «Trenger deg» bruker AgencyOS-regelen (under 70 % av planen to uker på rad, eller manglende fellestest). Riktig for Team Norway? (pakke 2 og 3)
 
 ## Avvik i koden (målt 14.10.2026, ikke rettet)
 
