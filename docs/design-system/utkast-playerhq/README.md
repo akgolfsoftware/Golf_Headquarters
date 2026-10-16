@@ -11,7 +11,7 @@ Hver skjerm publiseres som privat Artifact til Anders, med «Dagens design»-kna
 | — | PH-01 I dag (utkast 4) | Utkast | https://claude.ai/artifact/8qmhVSf3pQ5L5xUpKuKTmP |
 | — | PH-16 Stats (utkast 1) | Utkast | https://claude.ai/artifact/4EfjmFK426xVYoPy5SzbBC |
 | 3 Plan og Workbench | PH-10, PH-11, PH-11-AR, -NY, -PER, -PERSKJEMA, -MND, -MNDSKJEMA, -MAL (+IUP), -GJENTA | **Godkjent 14.10** (port 7, Anders), utkast 2 i `plan.html` | https://claude.ai/artifact/BqJqEsLH34JGA8reJaWDWi |
-| 2 Treningsøkta | PH-03, PH-04, PH-05, PH-06, PH-07 (lyst tema også i Live, Anders 14.10), `treningsokt.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/Aa2FmsQCfzVb9KDeS5gxUQ |
+| 2 Treningsøkta | PH-03, PH-04, PH-05, PH-06, PH-07 (lyst tema også i Live, Anders 14.10), `treningsokt.html` | **Bygget (natt 17.10)**, utkast 1; port 7 på Anders' vegne (nattfullmakt) | https://claude.ai/artifact/Aa2FmsQCfzVb9KDeS5gxUQ |
 | 4 Øvelser og teknikk | PH-12, PH-13 (+ øvelse, break-tabell), PH-TP-01 (+ utkast fra coach), `ovelser.html` | **Godkjent 14.10** (port 7, Anders), utkast 1 | https://claude.ai/artifact/8uJAzvbeaaSTCp9jsNZKTR |
 | 5 Runder | PH-RD-01–09, PH-18 (PH-08/09 dekkes av RD), `runder.html`, lyst også ute på banen | **Godkjent 14.10** (port 7, Anders), utkast 2 med farge | https://claude.ai/artifact/WubERezBPiponAixBHRoem |
 | 6 Stats i dybden | PH-14 (+ én test), PH-15 (Wedge Gate), PH-15-TN (8-ball med poeng og PEI, Nærspill Gate), PH-17 (Trening, TrackMan: økter, én økt, alle køller), Resultater, `stats-dybde.html` | **Godkjent 14.10** (port 7, Anders), utkast 6 med spredning på green | https://claude.ai/artifact/TCAjvtfCSbP55GXGq2UNcL |

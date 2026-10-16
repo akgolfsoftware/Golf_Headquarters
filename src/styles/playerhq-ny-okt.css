@@ -96,3 +96,15 @@
 .phn-okt .phn-stolpe-lys span.akse-fys { background: var(--phn-fys); } .phn-okt .phn-stolpe-lys span.akse-tek { background: var(--phn-tek); }
 .phn-okt .phn-stolpe-lys span.akse-slag { background: var(--phn-slag); } .phn-okt .phn-stolpe-lys span.akse-spill { background: var(--phn-spill); }
 .phn-okt .phn-stolpe-lys span.akse-turn { background: var(--phn-turn); }
+
+/* Etter økta (PH-07): Belastning, Fokus og «Hvor tungt» 1–10 */
+.phn-okt .phn-vurdering-kort { display: grid; gap: 20px; }
+.phn-okt .vurdering { display: grid; gap: 8px; }
+.phn-okt .vurdering label { font: 600 15px/1.3 var(--phn-sans); }
+.phn-okt .vurdering .topp-rad { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.phn-okt .vurdering .verdi { font: 600 34px/1 var(--phn-mono); letter-spacing: -.03em; white-space: nowrap; }
+.phn-okt .vurdering .verdi small { font: 500 15px/1 var(--phn-mono); color: var(--phn-g600); margin-left: 4px; letter-spacing: 0; }
+.phn-okt .vurdering input[type=range] { width: 100%; height: 44px; accent-color: var(--phn-g900); margin: 0; }
+.phn-okt .vurdering input[type=range][data-uvalgt] { opacity: .5; }
+.phn-okt .vurdering .skala-rad { display: flex; justify-content: space-between; gap: 12px; font: 400 12.5px/1.3 var(--phn-sans); color: var(--phn-g600); }
+.phn-okt .phn-feil { margin: 0; font: 500 14px/1.4 var(--phn-sans); color: var(--phn-g900); border-left: 3px solid var(--phn-rust); padding-left: 10px; }

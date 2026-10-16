@@ -86,9 +86,8 @@ test("every current page file gets an explanation and an owner", () => {
   assert.match(byRoute.get("/portal/analysere").kontrollbevis, /PH16Stats/);
   assert.equal(byRoute.get("/portal/analysere/historikk").status.implementert, "precision-visning");
   assert.match(byRoute.get("/portal/analysere/historikk").kontrollbevis, /PH16Historikk/);
-  assert.equal(byRoute.get("/portal/tren/wb").screenId, "PH-02");
-  assert.equal(byRoute.get("/portal/tren/wb").status.implementert, "precision-visning");
-  assert.match(byRoute.get("/portal/tren/wb").kontrollbevis, /PH02WbDag/);
+  assert.equal(byRoute.get("/portal/tren/wb").kobling, "videresending");
+  assert.equal(byRoute.get("/portal/tren/wb").videresendingMal, "/portal");
   assert.equal(byRoute.get("/portal/tren/wb/[sessionId]").screenId, "PH-03");
   assert.equal(byRoute.get("/portal/tren/wb/[sessionId]").status.implementert, "precision-visning");
   assert.match(byRoute.get("/portal/tren/wb/[sessionId]").kontrollbevis, /PH03WbArk/);
