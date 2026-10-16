@@ -32,9 +32,9 @@ WANG beholder egne farger og skrifter; oppsettet er hentet fra AgencyOS:
   Ny økt · Før oppmøte · Ny melding · Før test.
 - **Toppen av skjermen:** dato over tittel, ingen farget flate. Nøkkeltallene står i tellere med tynn kant;
   det som krever handling får rosa kant (som rust-signalet i AgencyOS).
-- **Flater:** hvit bakgrunn, kort med tynn grå kant og 14 px hjørner, knapper med 10 px hjørner, understrekte faner, navy avatarer.
+- **Flater:** ~~hvit bakgrunn, kort med tynn grå kant og 14 px hjørner, knapper med 10 px hjørner~~ (overstyrt 16.10: off-white bakgrunn og firkantede hjørner, §Nærmere wang.no), understrekte faner, navy avatarer.
 - **I dag** har fått dagen som tidslinje, som Cockpit: én rad per time, øktene som fylte blokker i aksefargen, skoletimer i grått og rød nå-strek.
-- **Farger:** navy er handling, rosa haster. (Utkast 1 brukte mint for det viktigste valget; fra utkast 2 er mint bare status «ok».) Aksefargene er uendret. Perioder, grupper og
+- **Farger:** ~~navy er handling~~ (overstyrt 16.10: vinrød hovedknapp, §Nærmere wang.no), rosa haster. Fra utkast 2 er mint bare status «ok». Aksefargene er uendret. Perioder, grupper og
   elevens prikker bruker ikke aksefarger.
 
 ## Utkast 2: retning B «Stall og helteflate» (16.10.2026)
