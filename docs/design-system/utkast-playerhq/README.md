@@ -23,6 +23,7 @@ Hver skjerm publiseres som privat Artifact til Anders, med «Dagens design»-kna
 | Workbench, øvelser | Legg til øvelse (søk i alle, mest brukt først), Ny øvelse i åtte trinn, lenke til hele Øvelsesbanken, `workbench-ovelser.html` | **Godkjent 16.10** (port 7, Anders), utkast 1 | https://claude.ai/artifact/PhkYgbDWGS9G4jgU68L4q7 |
 | 14 Meg, resten | Velg Full, Behold PlayerHQ, Sikkerhet, Tofaktor, Dataene dine, `meg-resten.html`. Elleve sider sendes videre til pakke 8 og 15 (liste i fila) | **Utkast 1** (16.10), venter på port 7 | https://claude.ai/artifact/L2zH9ob6zNowDFwaFzoeSb |
 | 15 Hjelp og tilbakemelding | Hjelp, Én kategori, Én artikkel, Skriv til oss (kontakt og tilbakemelding slått sammen), Sendt, `hjelp.html` | **Utkast 1** (16.10), venter på port 7 | https://claude.ai/artifact/4uTb5TnX2SVpAcR2QcGotH |
+| 17 Caddie og plan-hjelpere | Turneringer, Én turnering, Fysisk program, Opptatt tid, Perioden er ferdig, `plan-hjelpere.html`. Seks sider sendes videre (liste i fila) | **Utkast 1** (16.10), venter på port 7 | https://claude.ai/artifact/8bNwZMydeUYc1Ar9HHj9k5 |
 | 10 Samleside | Alle lenker på én side med status, `samleside.html`; designbrevet peker hit | **Ferdig** (14.10) | https://claude.ai/artifact/PkWg8LfsczoCwWaRsUpnus |
 
 Rekkefølgen er 3 først (Anders minst fornøyd med Workbench). Én fersk økt per pakke.
