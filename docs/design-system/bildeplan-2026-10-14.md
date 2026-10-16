@@ -3,6 +3,7 @@
 Status: **plan, godkjent retning 14.10.2026 (Anders).** Ingen bilder er laget ennå.
 Bakgrunn: designbrevet 13.10, punkt «Bilder (åpent)». Denne planen svarer på *hva* bildene skal vise.
 *Hvem* som lager dem (bildeverktøy, egne foto eller lisens) er fortsatt Anders' valg.
+Rekkefølge, antall og ferdigkrav: [arbeidsplanen 16.10](bildeplan-arbeidsplan-2026-10-16.md).
 
 ## Faste regler for alle bilder
 

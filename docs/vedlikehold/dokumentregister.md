@@ -81,6 +81,7 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | dokumentasjon | [docs/design-handoff/regler/treningsplanlegging-master.md](<../design-handoff/regler/treningsplanlegging-master.md>) |
 | dokumentasjon | [docs/design-system/ak-hq-designarbeid.md](<../design-system/ak-hq-designarbeid.md>) |
 | dokumentasjon | [docs/design-system/bildeplan-2026-10-14.md](<../design-system/bildeplan-2026-10-14.md>) |
+| dokumentasjon | [docs/design-system/bildeplan-arbeidsplan-2026-10-16.md](<../design-system/bildeplan-arbeidsplan-2026-10-16.md>) |
 | dokumentasjon | [docs/design-system/claude-design-d03-d05-beslutning-2026-09-13.md](<../design-system/claude-design-d03-d05-beslutning-2026-09-13.md>) |
 | dokumentasjon | [docs/design-system/claude-design-datagolf-h2-04-tilbakemelding.md](<../design-system/claude-design-datagolf-h2-04-tilbakemelding.md>) |
 | dokumentasjon | [docs/design-system/claude-design-komplett-overlevering.md](<../design-system/claude-design-komplett-overlevering.md>) |
@@ -141,12 +142,14 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | datert-plan | [docs/planer/lanseringsplan-2026-10-01.md](<../planer/lanseringsplan-2026-10-01.md>) |
 | datert-plan | [docs/planer/plan-portering-claude-design-til-kode-2026-09-25.md](<../planer/plan-portering-claude-design-til-kode-2026-09-25.md>) |
 | datert-plan | [docs/planer/planlegging-trening-og-analyse-design-og-kode-2026-09-21.md](<../planer/planlegging-trening-og-analyse-design-og-kode-2026-09-21.md>) |
+| datert-plan | [docs/planer/playerhq-alle-sider-nytt-design-2026-10-16.md](<../planer/playerhq-alle-sider-nytt-design-2026-10-16.md>) |
 | datert-plan | [docs/planer/portering-alle-skjermer-2026-10-02.md](<../planer/portering-alle-skjermer-2026-10-02.md>) |
 | datert-plan | [docs/planer/portering-godkjente-skjermer-2026-10-14.md](<../planer/portering-godkjente-skjermer-2026-10-14.md>) |
 | datert-plan | [docs/planer/portering-skjermer-2026-09-27.md](<../planer/portering-skjermer-2026-09-27.md>) |
 | datert-plan | [docs/planer/prosjektplan-og-lanseringsplan-2026-09-24.md](<../planer/prosjektplan-og-lanseringsplan-2026-09-24.md>) |
 | datert-plan | [docs/planer/team-norway-demodag-2026-09-14.md](<../planer/team-norway-demodag-2026-09-14.md>) |
 | datert-plan | [docs/planer/testbatteri-felles-testdag-og-livescoring-2026-10-02.md](<../planer/testbatteri-felles-testdag-og-livescoring-2026-10-02.md>) |
+| datert-plan | [docs/planer/tn-wang-designloft-2026-10-16.md](<../planer/tn-wang-designloft-2026-10-16.md>) |
 | datert-plan | [docs/planer/treningsplanlegging-og-sprak-en-master-2026-09-26.md](<../planer/treningsplanlegging-og-sprak-en-master-2026-09-26.md>) |
 | datert-plan | [docs/planer/wang-fredrikstad-demoreise-og-produksjonsplan-2026-10-14.md](<../planer/wang-fredrikstad-demoreise-og-produksjonsplan-2026-10-14.md>) |
 | datert-plan | [docs/planer/wang-fredrikstad-roller-og-datagrunnlag-2026-10-13.md](<../planer/wang-fredrikstad-roller-og-datagrunnlag-2026-10-13.md>) |
@@ -186,6 +189,7 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | referanse | [docs/referanse/masterbrain-rebuild/10-AUDIO-INVENTORY-HOWTO.md](<../referanse/masterbrain-rebuild/10-AUDIO-INVENTORY-HOWTO.md>) |
 | referanse | [docs/referanse/masterbrain-rebuild/audio-inventory-summary-snapshot.md](<../referanse/masterbrain-rebuild/audio-inventory-summary-snapshot.md>) |
 | referanse | [docs/referanse/masterbrain-rebuild/scripts/README.md](<../referanse/masterbrain-rebuild/scripts/README.md>) |
+| dokumentasjon | [docs/review/skjermkontroll-2026-10-15.md](<../review/skjermkontroll-2026-10-15.md>) |
 | dokumentasjon | [docs/runbook.md](<../runbook.md>) |
 | dokumentasjon | [docs/sikkerhet/action-audit.md](<../sikkerhet/action-audit.md>) |
 | dokumentasjon | [docs/skjermtekst/skjerm-tekst-hovedskjermer.md](<../skjermtekst/skjerm-tekst-hovedskjermer.md>) |
