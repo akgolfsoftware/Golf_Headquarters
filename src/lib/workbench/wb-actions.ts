@@ -106,7 +106,7 @@ import { bankOvelseWhere, hentBankReferanser, lastBankOvelse, lastBankOppgave } 
 import { hentTekniskPanel } from "@/lib/workbench/teknisk-plan-panel";
 import { opprettPeriodeCore, oppdaterPeriodeCore, slettPeriodeCore, type FordeltPeriodeResultat } from "@/lib/workbench/periode-core";
 import { parseAxisMinutes, parseSessionBudget } from "@/lib/workbench/perioder";
-import { hentMaaned, hentMaanedDetaljer, lagreMaanedCore } from "@/lib/workbench/maanedsplan-core";
+import { hentFordeltPerUke, hentMaaned, hentMaanedDetaljer, lagreMaanedCore } from "@/lib/workbench/maanedsplan-core";
 import type { MaanedKvittering } from "@/lib/workbench/maanedsplan-regler";
 import {
   isoUkeIdentitet,
@@ -1024,18 +1024,20 @@ export async function loadYear(params: {
     dato: fraDatoKolonne(t.takenAt),
   }));
 
+  const aar = buildYearViewModel(
+    params.year,
+    sessions,
+    params.mode,
+    params.targetMinutes ?? 0,
+    periodInput,
+    tournamentEvents,
+    testEvents,
+    idagIso,
+  );
+  const fordelt = await hentFordeltPerUke(params.playerId, (aar.weeks ?? []).map((u) => u.weekStart));
   return {
     ok: true,
-    data: buildYearViewModel(
-      params.year,
-      sessions,
-      params.mode,
-      params.targetMinutes ?? 0,
-      periodInput,
-      tournamentEvents,
-      testEvents,
-      idagIso,
-    ),
+    data: { ...aar, weeks: aar.weeks?.map((u) => ({ ...u, fordelt: fordelt.get(u.weekStart) ?? null })) },
   };
 }
 
@@ -1110,16 +1112,18 @@ export async function loadPeriod(params: {
     idagIso,
   );
 
+  const periode = buildPeriodViewModel(
+    params.year,
+    year.periods,
+    params.periodId ?? null,
+    sessions,
+    params.mode,
+    idagIso,
+  );
+  const fordelt = await hentFordeltPerUke(params.playerId, periode.weeks.map((u) => u.weekStart));
   return {
     ok: true,
-    data: buildPeriodViewModel(
-      params.year,
-      year.periods,
-      params.periodId ?? null,
-      sessions,
-      params.mode,
-      idagIso,
-    ),
+    data: { ...periode, weeks: periode.weeks.map((u) => ({ ...u, fordelt: fordelt.get(u.weekStart) ?? null })) },
   };
 }
 

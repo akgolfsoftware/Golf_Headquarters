@@ -633,6 +633,8 @@ export interface MaanedDetaljer {
     fordelt: Partial<Record<PyramidArea, number>> | null;
     lagtInn: Record<PyramidArea, number>;
     gjennomfort: number;
+    /** Gjennomført per akse (samme økter som `gjennomfort`). */
+    gjennomfortPerAkse: Record<PyramidArea, number>;
     endret: boolean;
   }>;
   /** Treningsperioder som overlapper måneden (uten testuker og samlinger). */
@@ -707,6 +709,10 @@ export interface YearWeekRow {
   weekNumber: number;
   plannedByPyramid: Record<PyramidArea, number>;
   completedMinutes: number;
+  /** Gjennomført per akse i uka. */
+  completedByPyramid?: Record<PyramidArea, number>;
+  /** Ukeplanens fordelte minutter per akse (WeekPlan.plannedHours*). Null = ikke fordelt. */
+  fordelt?: Partial<Record<PyramidArea, number>> | null;
 }
 
 export interface YearViewModel {
@@ -731,6 +737,10 @@ export interface PeriodWeekRow {
   dominantPyramid: PyramidArea | null;
   /** Lagt inn per akse i uka (PH-11-PER). */
   byPyramid?: Record<PyramidArea, number>;
+  /** Gjennomført per akse i uka. */
+  completedByPyramid?: Record<PyramidArea, number>;
+  /** Ukeplanens fordelte minutter per akse (WeekPlan.plannedHours*). Null = ikke fordelt. */
+  fordelt?: Partial<Record<PyramidArea, number>> | null;
 }
 
 export interface PeriodPyramidRow {

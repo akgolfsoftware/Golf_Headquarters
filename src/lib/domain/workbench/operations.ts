@@ -641,8 +641,12 @@ export function buildYearViewModel(
     const end = addDays(cursor, 6);
     const list = aktive.filter((s) => s.date >= cursor && s.date <= end);
     const plannedByPyramid = { ...TOM_BALANSE };
-    for (const s of list) plannedByPyramid[s.pyramid] += planlagtMinutter([s]);
-    weeks.push({ weekStart: cursor, weekNumber: isoWeekNumber(cursor), plannedByPyramid, completedMinutes: gjennomfortMinutter(list) });
+    const completedByPyramid = { ...TOM_BALANSE };
+    for (const s of list) {
+      plannedByPyramid[s.pyramid] += planlagtMinutter([s]);
+      completedByPyramid[s.pyramid] += gjennomfortMinutter([s]);
+    }
+    weeks.push({ weekStart: cursor, weekNumber: isoWeekNumber(cursor), plannedByPyramid, completedMinutes: gjennomfortMinutter(list), completedByPyramid });
   }
 
   return { year, months, periods, budget, plannedToDateMinutes, completedMinutes, completedByPyramid, weeks, mode };
@@ -678,7 +682,11 @@ export function buildPeriodViewModel(
     const end = addDays(cursor, 6);
     const list = active.filter((s) => s.date >= cursor && s.date <= end);
     const byPyramid = { ...TOM_BALANSE };
-    for (const s of list) byPyramid[s.pyramid] += planlagtMinutter([s]);
+    const completedByPyramid = { ...TOM_BALANSE };
+    for (const s of list) {
+      byPyramid[s.pyramid] += planlagtMinutter([s]);
+      completedByPyramid[s.pyramid] += gjennomfortMinutter([s]);
+    }
     weeks.push({
       weekStart: cursor,
       weekNumber: isoWeekNumber(cursor),
@@ -687,6 +695,7 @@ export function buildPeriodViewModel(
       sessionCount: list.length,
       dominantPyramid: dominantPyramid(list),
       byPyramid,
+      completedByPyramid,
     });
   }
 
