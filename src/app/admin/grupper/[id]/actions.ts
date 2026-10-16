@@ -21,7 +21,7 @@ type ActionResult = { ok: true } | { ok: false; feil: string };
 
 async function krevCoach() {
   try {
-    const user = await requireCoachActionUser();
+    const user = await requireCoachActionUser({ tillatDemo: true });
     // G6: alle actions her endrer grupper/medlemmer → MANAGE_GROUPS
     // (i COACH-defaulten; kan trekkes per trener via REVOKE).
     await assertCapability(user, Capability.MANAGE_GROUPS);

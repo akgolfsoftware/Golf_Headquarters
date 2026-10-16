@@ -43,7 +43,7 @@ const snitt = new Intl.NumberFormat("nb-NO", { minimumFractionDigits: 2, maximum
 type Statusrad = { tittel: string; tekst: string; merke: string; tone: "ok" | "varsel" | "ukjent" };
 
 export async function TnSpillerprofilSkjerm({ spillerId }: { spillerId: string }) {
-  const bruker = await requirePortalUser({ kreverTilgang: "TALENT" });
+  const bruker = await requirePortalUser({ tillatDemo: true, kreverTilgang: "TALENT" });
   const tilgang = await hentTnSpillerTilgang(bruker, spillerId);
   if (!tilgang) notFound();
   const { kontekst } = tilgang;

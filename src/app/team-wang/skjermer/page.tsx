@@ -23,6 +23,7 @@ export const metadata: Metadata = {
  */
 export default async function WangSkjermerPage() {
   const bruker = await requirePortalUser({
+    tillatDemo: true,
     allow: ["ADMIN", "COACH"],
     redirectTo: "/team-wang/logg-inn?next=%2Fteam-wang%2Fskjermer",
   });

@@ -64,7 +64,7 @@ const TnCoachSaveSchema = z.object({
 
 /** Trenerførte testdag-økter — playerId/protokoll kommer ALLTID fra den autoriserte deltakerraden, aldri fra klienten. */
 export async function saveTnTestSomCoach(input: unknown): Promise<TnSaveResult> {
-  const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const coach = await requirePortalUser({ tillatDemo: true, allow: ["COACH", "ADMIN"] });
   const parsed = TnCoachSaveSchema.safeParse(input);
   if (!parsed.success) return { ok: false, error: "Ugyldige registreringer." };
   const data = parsed.data;

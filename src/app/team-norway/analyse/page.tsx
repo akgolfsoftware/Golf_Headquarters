@@ -37,7 +37,7 @@ const komma = (n: number) => (Math.round(n * 10) / 10).toString().replace(".", "
  */
 export default async function GruppeanalysePage({ searchParams }: { searchParams: Promise<{ protokoll?: string; dag?: string }> }) {
   const sp = await searchParams;
-  const bruker = await requirePortalUser({ kreverTilgang: "INGEN" });
+  const bruker = await requirePortalUser({ tillatDemo: true, kreverTilgang: "INGEN" });
   const valg = await hentTnGruppeanalyseValg(bruker);
   if (!valg) notFound();
 

@@ -50,7 +50,7 @@ export async function opprettFellesTestdag(input: unknown): Promise<
   | { ok: true; eventId: string; stationIds: string[] }
   | { ok: false; error: string }
 > {
-  const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const coach = await requirePortalUser({ tillatDemo: true, allow: ["COACH", "ADMIN"] });
   const parsed = OpprettFellesTestdagSchema.safeParse(input);
   if (!parsed.success) return { ok: false, error: "Ugyldige felt for felles testdag." };
   const data = parsed.data;
@@ -169,7 +169,7 @@ export async function opprettFellesTestdag(input: unknown): Promise<
 }
 
 export async function opprettTestdag(input: unknown): Promise<{ ok: true; testDayId: string } | { ok: false; error: string }> {
-  const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const coach = await requirePortalUser({ tillatDemo: true, allow: ["COACH", "ADMIN"] });
   const parsed = OpprettTestdagSchema.safeParse(input);
   if (!parsed.success) return { ok: false, error: "Ugyldige felt for testdag." };
   const data = parsed.data;
@@ -230,7 +230,7 @@ const SettStatusSchema = z.object({
 
 /** Hopp over / ikke møtt / tilbake til køen — endrer ALDRI en allerede DONE-rad, og aldri på en avsluttet/kansellert dag. */
 export async function settTestdagDeltakerStatus(input: unknown): Promise<{ ok: true } | { ok: false; error: string }> {
-  const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const coach = await requirePortalUser({ tillatDemo: true, allow: ["COACH", "ADMIN"] });
   const parsed = SettStatusSchema.safeParse(input);
   if (!parsed.success) return { ok: false, error: "Ugyldig status." };
 
@@ -268,7 +268,7 @@ export async function settTestdagDeltakerStatus(input: unknown): Promise<{ ok: t
 
 /** Avslutter testdagen atomisk — krever at ingen deltaker fortsatt er PENDING, kontrollert i samme transaksjon som statusendringen. */
 export async function avsluttTestdag(testDayId: string): Promise<{ ok: true } | { ok: false; error: string }> {
-  const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const coach = await requirePortalUser({ tillatDemo: true, allow: ["COACH", "ADMIN"] });
   try {
     await medSerialisertTestdagTransaksjon(async (tx) => {
       const dag = await tx.testDay.findUnique({ where: { id: testDayId }, include: { group: true, event: { include: { organizer: true, stations: { select: { id: true, status: true, participants: { select: { status: true } } } } } }, participants: { select: { status: true, playerId: true } } } });
