@@ -19,7 +19,7 @@ import { z } from "zod";
 
 import { prisma } from "@/lib/prisma";
 import { aktivtMedlemskapWhere, TEAM_NORWAY_SLUG } from "@/lib/domain/grupper";
-import { gruppeSlugForEpost } from "@/lib/domain/demo-grupper";
+import { erDemokonto, gruppeSlugForEpost } from "@/lib/domain/demo-grupper";
 import type { Prisma, UserRole } from "@/generated/prisma/client";
 
 export { TEAM_NORWAY_SLUG };
@@ -53,6 +53,15 @@ export async function hentTnGruppeForBruker(brukerId: string): Promise<{ id: str
   if (!slug) return null;
   const gruppe = await prisma.group.findUnique({ where: { slug }, select: { id: true, name: true } });
   return gruppe ? { ...gruppe, slug } : null;
+}
+
+/**
+ * Demokontoen kan se tilgangssiden, men aldri endre den. Ellers kunne den
+ * legge til hvilken som helst konto og slik avsløre hvem som har konto.
+ */
+async function krevIkkeDemokonto(brukerId: string): Promise<void> {
+  const bruker = await prisma.user.findUnique({ where: { id: brukerId }, select: { email: true } });
+  if (erDemokonto(bruker?.email)) throw new Error("Demokontoen kan ikke endre tilganger");
 }
 
 async function hentTeamNorwayGruppe(brukerId: string): Promise<{ id: string; name: string } | null> {
@@ -202,6 +211,7 @@ export async function avsluttTilgang(input: {
   targetUserId: string;
 }): Promise<TnAvsluttResultat> {
   z.object({ groupId: z.string().min(1).max(200), targetUserId: z.string().min(1).max(200) }).parse(input);
+  await krevIkkeDemokonto(input.caller.id);
   const gruppe = await hentTeamNorwayGruppe(input.caller.id);
   if (!gruppe || gruppe.id !== input.groupId) throw new Error("Ugyldig Team Norway-gruppe");
   const lovlig = await erSportssjef(input.caller);
@@ -252,6 +262,7 @@ export async function settTilgang(input: {
   tilIso: string | null;
 }): Promise<TnSettRolleResultat> {
   z.object({ groupId: z.string().min(1).max(200), targetUserId: z.string().min(1).max(200) }).parse(input);
+  await krevIkkeDemokonto(input.caller.id);
   const gruppe = await hentTeamNorwayGruppe(input.caller.id);
   if (!gruppe || gruppe.id !== input.groupId) throw new Error("Ugyldig Team Norway-gruppe");
   const lovlig = await erSportssjef(input.caller);
@@ -316,6 +327,7 @@ export async function leggTilTrener(input: {
   epost: string;
   rolle: TnTrenerRolle;
 }): Promise<TnLeggTilResultat> {
+  await krevIkkeDemokonto(input.caller.id);
   const lovlig = await erSportssjef(input.caller);
   if (!lovlig) throw new Error("Du er ikke sportssjef");
   const gruppe = await hentTeamNorwayGruppe(input.caller.id);

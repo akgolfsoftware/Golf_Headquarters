@@ -46,3 +46,11 @@ test("vanlig trener får den ekte gruppa", async () => {
   const { hentTnGruppeForBruker } = await import("./tn-tilgang");
   assert.equal((await hentTnGruppeForBruker("trener"))?.slug, "team-norway");
 });
+
+test("demokontoen kan ikke legge til, endre eller avslutte trenere", async () => {
+  const { leggTilTrener, settTilgang, avsluttTilgang } = await import("./tn-tilgang");
+  const caller = { id: "demo-tn", role: "COACH" as const };
+  await assert.rejects(leggTilTrener({ caller, epost: "noen@golfforbundet.no", rolle: "COACH" }), /Demokontoen/);
+  await assert.rejects(settTilgang({ caller, groupId: "team-norway-demo-id", targetUserId: "x", rolle: "COACH", fraIso: "2026-10-01", tilIso: null }), /Demokontoen/);
+  await assert.rejects(avsluttTilgang({ caller, groupId: "team-norway-demo-id", targetUserId: "x" }), /Demokontoen/);
+});
