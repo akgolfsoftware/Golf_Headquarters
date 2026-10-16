@@ -1,6 +1,6 @@
 # WANG Toppidrett i nytt design: trenerskjermene
 
-Status: **pakke 1 Grunnmur er godkjent 14.10.2026 (Anders: ja til aksefargene). Pakkene 2–8 og samlesiden er utkast 1 (14.–15.10) og venter på port 7. Åpne spørsmål står samlet nederst.**
+Status: **pakke 1 Grunnmur er godkjent 14.10.2026 (Anders: ja til aksefargene) og utvidet i utkast 2. Pakkene 2–8 er utkast 2 (16.10, retning B) og venter på port 7. Pakke 10 Data Golf er utkast 1 og venter bare på port 7. Åpne spørsmål står samlet nederst.**
 
 Samleside: https://claude.ai/artifact/HW8QwEKadH369Bv4FszDSB (oppdatert 15.10 med pakke 10)
 
@@ -34,8 +34,34 @@ WANG beholder egne farger og skrifter; oppsettet er hentet fra AgencyOS:
   det som krever handling får rosa kant (som rust-signalet i AgencyOS).
 - **Flater:** hvit bakgrunn, kort med tynn grå kant og 14 px hjørner, knapper med 10 px hjørner, understrekte faner, navy avatarer.
 - **I dag** har fått dagen som tidslinje, som Cockpit: én rad per time, øktene som fylte blokker i aksefargen, skoletimer i grått og rød nå-strek.
-- **Farger:** navy er handling, mint det viktigste valget, rosa haster. Aksefargene er uendret. Perioder, grupper og
+- **Farger:** navy er handling, rosa haster. (Utkast 1 brukte mint for det viktigste valget; fra utkast 2 er mint bare status «ok».) Aksefargene er uendret. Perioder, grupper og
   elevens prikker bruker ikke aksefarger.
+
+## Utkast 2: retning B «Stall og helteflate» (16.10.2026)
+
+Grunnlag: kartleggingen i `docs/planer/tn-wang-designloft-2026-10-16.md` (grenen `claude/tn-wang-designloft`) og
+designbrevet 13.10. WANGs farger, skrifter og de godkjente aksefargene er uendret; grunnmuren er utvidet, ikke byttet ut.
+
+- **Ett hovedtall per hovedskjerm** på en navy helteflate (`.helt`): stort tall, kort forklaring, én hvit knapp
+  (`.knapp.lys`) og valgfritt golfbilde ved siden av (`.helt-bilde`, over på mobil), aldri tekst oppå bildet. De andre
+  tallene står som små tellere (`.smaa-tall`). Toppen får plass i én skjermhøyde på 390 px.
+  I dag: «5 saker krever deg, 2 før 07:50». Trening: «92 % av planen gjennomført». Elever: «2 elever trenger deg».
+  Tester: «4 resultater venter på kontroll». Konkurranse: «10 dager til Juniortour Øst, finale».
+- **Tre bånd** (`.baand`, `.baand-del`): Trenger deg · Følger planen · Ikke delt, med teller i båndhodet. Side om side på
+  PC med `.baand.kol`. Brukt i Trening › Per elev og Elevlista.
+- **Elevrad** (`.elevrad`): statusmarkør til venstre (rosa trenger deg, mint følger planen, grå ikke delt), avatar,
+  navn og grunn, plan-stolpe (gjennomført mot planlagt tid siste fire uker) med strek ved 80 % (`i.strek`).
+- **Fylt graf** (`WANGUtkast.fyltGraf`): arealet under linja fylt, stiplet mållinje. Trening › Uke for uke.
+- **Én handlingsfarge: navy.** «Før oppmøte» og «Start testdag» var mint; mint er nå bare status «ok». `.knapp.mint`
+  finnes fortsatt, men vises som navy så eldre utkast ikke brekker.
+- **Krever handling** i I dag er gruppert etter frist (før 07:50 · i dag · denne uka), med én primærknapp per sak.
+- **Turneringer med bilde** øverst i kortet og beste resultat stort på spilte turneringer.
+- **IUP-hodet** har hovedtall (plan siste fire uker) og pyramiden som fylt bånd.
+- Mindre grå småtekst med store bokstaver: høyst én slik linje per kort (datolinja over tittelen).
+- «3 poeng»-merket i Trening er fjernet. Det betydde 3 prosentpoeng lavere enn de fire ukene før, og står nå som en setning.
+- Samme elevtall i I dag, Trening og Elever: Elev 06 og 10 har ikke delt, Elev 02 og 09 trenger deg.
+- Gammel toppramme heter `.topp` (dato, tittel, `.helt-tall`). `.helt` er fra utkast 2 helteflaten.
+- Meldinger og Administrasjon har lett hånd: oppsettet fra utkast 1, bare grunnmuren justert. Ro er riktig der.
 
 ## Aksefargene (godkjent av Anders 14.10.2026)
 
@@ -57,16 +83,16 @@ alltid SLAG og teal alltid TEK. Koden gjør det ikke i dag (se avvik 3).
 
 | Pakke | Skjermer | Fil | Status | Lenke |
 |---|---|---|---|---|
-| 1 Grunnmur | Skall og meny (390 og 1280, trener og sportssjef), aksefarger, pyramide, øktkort, ukefordeling, graf, knapper, status, felt | `grunnmur.html` | **Godkjent 14.10** (aksefargene, Anders) | https://claude.ai/artifact/BdfLCP5DzVrK15vEXKYeUt |
-| 2 I dag | I dag (dagens fokus, økter, krever handling, oppfølging, uka), Oppmøte morgentrening, Økta (med avlys), Meld fravær | `idag.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/SnvRTBqBURfaAwGeB8Fd4k |
-| 3 Trening | Oversikt WANG-42 (etterlevelse, morgentrening, per akse, uke for uke, per elev), Årsplan skoleåret 2026/27, Periodeskjema (timer per akse, kvittering), Uka (lagt inn mot fordelt), Ny økt (pyramiden først) | `trening.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/TwDR654TtsNY2reVdzuynX |
-| 4 Tester | Testbatteriet (golf og fysisk), Til kontroll (egenført og kontrollert, WANG-37), Før test (8-ball slag for slag, WANG-48B), Én test (gruppa, nivå «—»), Én elev (testprofil) | `tester.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/VNK9zkWkgwc7TnvPSeXYzA |
-| 5 Konkurranse | Kalender (WANG-10), Én turnering med evaluering per elev (WANG-11), Sesongen med SG og Data Golf (WANG-09, WANG-50), Samling og uttak (WANG-27, C2) | `konkurranse.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/Cpp3vn3XuJXeYmbSzLU15x |
-| 6 Meldinger | Innboks, Én elev (foresatte leser under 18, WANG-14), Gruppepost med lesekvittering (WANG-13), Foreldremøte (WANG-15), Dokumenter med rekkevidde (WANG-21) | `meldinger.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/8Y6rzYYoHj7czvmD5BtiX6 |
-| 7 Elever | Elevlista (WANG-07), Én elev (WANG-44), IUP i arkets rekkefølge, Fireukerssjekk (WANG-45), Foreslå endring, Ikke delt | `elever.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/7QC4YH8zeeLSFHXGULBf4q |
-| 8 Administrasjon | Trenere og roller (WANG-19), Samtykke og deling (WANG-34), Timeplan med kollisjoner (WANG-26), Opptak med plasser og kandidater (WANG-31, -32), Koordinering mellom skolene (WANG-33). Trener får «Denne siden er lukket» | `administrasjon.html` | **Utkast 1** (14.10), venter på port 7 | https://claude.ai/artifact/G36K5CamEitxYEiQBGENPB |
-| 9 Samleside | Alle åtte pakker, det viktigste å ta stilling til, feil i dagens kode | `index.html` | **Ferdig** (15.10) | https://claude.ai/artifact/HW8QwEKadH369Bv4FszDSB |
-| 10 Data Golf | DG-01 Oversikt, DG-02 Proffkatalog, DG-03 Proffprofil, DG-04 Topplister, DG-05 Elev mot proff, DG-06 Innspill-tak, DG-07 Fra funn til forslag, DG-08 Norske proffer, DG-09 Kilde og dekning. Under Konkurranse › Data Golf (WANG-50). Samme skjermer og regler som AgencyOS pakke 10 | `datagolf.html` | **Utkast 1** (15.10), venter på port 7 og lisens | https://claude.ai/artifact/9Wj9yJqkEXBKomyCQ1D97Q |
+| 1 Grunnmur | Skall og meny (390 og 1280, trener og sportssjef), aksefarger, pyramide, øktkort, ukefordeling, graf, knapper, status, felt. Utkast 2: helteflate, tre bånd, elevrad, fylt graf | `grunnmur.html` | **Godkjent 14.10** (aksefargene, Anders), utvidet i utkast 2 (16.10) | publiseres |
+| 2 I dag | I dag (dagens fokus, økter, krever handling, oppfølging, uka), Oppmøte morgentrening, Økta (med avlys), Meld fravær | `idag.html` | **Utkast 2** (16.10, retning B), venter på port 7 | publiseres |
+| 3 Trening | Oversikt WANG-42 (etterlevelse, morgentrening, per akse, uke for uke, per elev), Årsplan skoleåret 2026/27, Periodeskjema (timer per akse, kvittering), Uka (lagt inn mot fordelt), Ny økt (pyramiden først) | `trening.html` | **Utkast 2** (16.10, retning B), venter på port 7 | publiseres |
+| 4 Tester | Testbatteriet (golf og fysisk), Til kontroll (egenført og kontrollert, WANG-37), Før test (8-ball slag for slag, WANG-48B), Én test (gruppa, nivå «—»), Én elev (testprofil) | `tester.html` | **Utkast 2** (16.10, retning B), venter på port 7 | publiseres |
+| 5 Konkurranse | Kalender (WANG-10), Én turnering med evaluering per elev (WANG-11), Sesongen med SG og Data Golf (WANG-09, WANG-50), Samling og uttak (WANG-27, C2) | `konkurranse.html` | **Utkast 2** (16.10, retning B), venter på port 7 | publiseres |
+| 6 Meldinger | Innboks, Én elev (foresatte leser under 18, WANG-14), Gruppepost med lesekvittering (WANG-13), Foreldremøte (WANG-15), Dokumenter med rekkevidde (WANG-21) | `meldinger.html` | **Utkast 2** (16.10, retning B), venter på port 7 | publiseres |
+| 7 Elever | Elevlista (WANG-07), Én elev (WANG-44), IUP i arkets rekkefølge, Fireukerssjekk (WANG-45), Foreslå endring, Ikke delt | `elever.html` | **Utkast 2** (16.10, retning B), venter på port 7 | publiseres |
+| 8 Administrasjon | Trenere og roller (WANG-19), Samtykke og deling (WANG-34), Timeplan med kollisjoner (WANG-26), Opptak med plasser og kandidater (WANG-31, -32), Koordinering mellom skolene (WANG-33). Trener får «Denne siden er lukket» | `administrasjon.html` | **Utkast 2** (16.10, retning B), venter på port 7 | publiseres |
+| 9 Samleside | Alle åtte pakker, det viktigste å ta stilling til, feil i dagens kode | `index.html` | **Utkast 2** (16.10) | publiseres |
+| 10 Data Golf | DG-01 Oversikt, DG-02 Proffkatalog, DG-03 Proffprofil, DG-04 Topplister, DG-05 Elev mot proff, DG-06 Innspill-tak, DG-07 Fra funn til forslag, DG-08 Norske proffer, DG-09 Kilde og dekning. Under Konkurranse › Data Golf (WANG-50). Samme skjermer og regler som AgencyOS pakke 10 | `datagolf.html` | **Utkast 1** (15.10), venter bare på port 7 (bruksretten er avklart 16.10) | https://claude.ai/artifact/9Wj9yJqkEXBKomyCQ1D97Q |
 
 Én fil og én PR per pakke. Hver skjerm i 390 og 1280, med tom, laster og feil.
 Kilder for innhold: `designsystem/wang/SKJERMREGISTER.md`, `designsystem/wang/TILGANGSMATRISE.md` og vedtakene i
@@ -131,13 +157,13 @@ Skrevet her i stedet for å vente (bestilling 14.10: alt ferdig til morgenen). I
 4. WANG-39 «nasjonal rangering og persentiler» er ikke tegnet: posisjon er aldri persentil, og en trener ser ikke andre skolers elever. Rangering i egen gruppe ligger i «Én test». Skal en nasjonal rangering finnes, må tallene komme fra Team Norway.
 
 ### Pakke 10 Data Golf
-1. **Lisensen er ikke avklart.** Data Golfs bruksrett dekker Anders' egen bruk i AgencyOS; kundedistribusjon til WANG-trenere er ikke dokumentert (kontroll 02.10, krav 1). Utkastet er tegnet, men bygges ikke før bruksretten er avklart. DG-09 viser status, og `docs/design-system/datagolf-coach-datakart-og-skjermliste.md` er felles grunnlag.
-2. Skal WANG-trenere se Data Golf i det hele tatt? Vedtaket 06.10 sier alle med coach-rollen. Alternativet er bare sportssjef, eller bare «Mot PGA Tour» i Sesongen (pakke 5).
+1. **Avklart 16.10:** Data Golf vises bare for coacher i AK Golf, WANG og Team Norway, aldri for kunder (beslutninger.md §DATA GOLF VISES ALDRI TIL KUNDER). Bruksretten for WANG-trenere er dermed avklart. Utkastet venter bare på port 7. DG-09 i `datagolf.html` viser fortsatt «Ikke avklart» og rettes når pakken får utkast 2. `docs/design-system/datagolf-coach-datakart-og-skjermliste.md` er felles grunnlag.
+2. **Avklart 16.10:** WANG-trenere ser Data Golf (alle med coach-rollen, også WANG-trenere). Ingen begrensning til sportssjef.
 3. Innspill-tak som øvelse: sirkelen er proffens nærhet rett av. Skal elever under kategori C få et trinn (for eksempel proffens tall + 30 %)?
 4. Underpunktene WANG-50.10–50.17 (live, modellanalyse, bane og felt, trend, datautforsker, kilde, tiltak, spesialistdata) er kuttet i `src/components/wang/wang-data.ts`; de ni som står igjen har navnene fra skjermlista. `WangKonkurranse.tsx` viser fortsatt den gamle WANG-50-fanen og er ikke endret.
 
 ### Pakke 5 Konkurranse
-1. Skal WANG-trenere se Data Golf-sammenligningen (WANG-50)? Vedtaket 06.10 sier alle med coach-rollen, også WANG-trenere. Utkastet viser den, merket «Powered by Data Golf» og «Bare for trenere».
+1. **Avklart 16.10:** WANG-trenere ser Data Golf-sammenligningen (WANG-50), som coacher i AK Golf og Team Norway. Aldri kunder. Utkastet viser den, merket «Powered by Data Golf» og «Bare for trenere».
 2. Hvem publiserer uttaket til samlinger? Utkastet lar trener lagre kladd og bare sportssjef publisere.
 3. Dagens kode viser «College D1 snitt» som referanse i turneringsanalysen (`WangKonkurranse.tsx`). Kilden er ukjent. Utkastet bruker neste kategori (Broadie, estimat) og Data Golf.
 
