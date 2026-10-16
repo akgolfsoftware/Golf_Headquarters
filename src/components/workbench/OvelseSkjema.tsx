@@ -51,6 +51,18 @@ type Props = {
    * som aksepiller. Standard er Workbench-utseendet fra før.
    */
   utseende?: "wb" | "precision";
+  /** Navnet som står ferdig utfylt (f.eks. søkeordet fra øvelsesvelgeren). */
+  startTittel?: string;
+  /**
+   * «Ny øvelse» i Øvelsesbanken (beslutning 16.10.2026): videofelt og to knapper,
+   * «Lagre og legg i økta» og «Bare lagre i Øvelsesbanken». Erstatter den ene knappen.
+   */
+  bank?: {
+    kanLeggeIOkt: boolean;
+    /** Hvem som ser øvelsen, vist over knappene. */
+    synlighet: string;
+    onLagre: (ovelse: OvelseInput, ekstra: { videoUrl: string; iOkta: boolean }, ferdig: () => void) => void;
+  };
 };
 
 /**
@@ -58,12 +70,13 @@ type Props = {
  * vises, og pyramiden filtrerer bort felt som ikke hører hjemme i grenen. Hver gren har
  * sitt eget utkast, så et valg i én gren aldri overskriver en annen.
  */
-export function OvelseSkjema({ standardPyramide, drill, disabled, onSubmit, modus = "panel", apen = false, onLukk, utseende = "wb" }: Props) {
+export function OvelseSkjema({ standardPyramide, drill, disabled, onSubmit, modus = "panel", apen = false, onLukk, utseende = "wb", startTittel, bank }: Props) {
   const precision = utseende === "precision";
   const kicker = precision ? "a9-ovelse__steg" : "wb-kicker";
   const [pyramide, setPyramide] = useState<PyramidArea>(drill?.akFormel.pyramid ?? standardPyramide);
   const [utkast, setUtkast] = useState(() => drill ? utkastFraOvelse(drill) : tommeUtkast());
-  const [title, setTitle] = useState(drill?.title ?? "");
+  const [title, setTitle] = useState(drill?.title ?? startTittel ?? "");
+  const [videoUrl, setVideoUrl] = useState("");
   const [durationMinutes, setDurationMinutes] = useState(drill?.durationMinutes ?? 15);
   const [description, setDescription] = useState(drill?.description ?? "");
   const handling = drill ? "Lagre øvelse" : UI.addDrill;
@@ -80,13 +93,17 @@ export function OvelseSkjema({ standardPyramide, drill, disabled, onSubmit, modu
     setUtkast((forrige) => ({ ...forrige, [pyramide]: { ...forrige[pyramide], [nokkel]: verdi } }));
   }
 
-  function send() {
+  function send(iOkta?: boolean) {
     const res = byggOvelse(pyramide, u, { title, durationMinutes, description }, drill);
     if (!res.ok) {
       setFeil(res.feil);
       return;
     }
     setFeil(null);
+    if (bank) {
+      bank.onLagre(res.ovelse, { videoUrl: videoUrl.trim(), iOkta: !!iOkta }, () => setVideoUrl(""));
+      return;
+    }
     onSubmit(res.ovelse, () => {
       if (drill) return;
       setTitle("");
@@ -296,11 +313,19 @@ export function OvelseSkjema({ standardPyramide, drill, disabled, onSubmit, modu
       <label>Notat<input value={u.notat} onChange={(e) => sett("notat", e.target.value)} /></label>
       <label>{UI.formelMate}<input value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Hvordan øvelsen gjennomføres" /></label>
 
+      {bank ? <label>Video (lenke, valgfritt)<input type="url" inputMode="url" maxLength={500} value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)} placeholder="https://" /></label> : null}
+
       {feil ? <p role="alert" className={precision ? "a9-ovelse__feil" : "wb-ovelse-feil"}>{feil}</p> : null}
-      {ark ? null : precision ? (
-        <button type="button" className="pa-btn pa-btn--primary pa-btn--full" disabled={disabled || !title.trim()} onClick={send}>{handling}</button>
+      {bank ? <p className="wbo-synlig">{bank.synlighet}</p> : null}
+      {bank ? (
+        <div className="wbo-ark-fot">
+          {bank.kanLeggeIOkt ? <button type="button" className="pa-btn pa-btn--primary pa-btn--full" disabled={disabled || !title.trim()} onClick={() => send(true)}>Lagre og legg i økta</button> : null}
+          <button type="button" className={`pa-btn ${bank.kanLeggeIOkt ? "pa-btn--secondary" : "pa-btn--primary"} pa-btn--full`} disabled={disabled || !title.trim()} onClick={() => send(false)}>Bare lagre i Øvelsesbanken</button>
+        </div>
+      ) : ark ? null : precision ? (
+        <button type="button" className="pa-btn pa-btn--primary pa-btn--full" disabled={disabled || !title.trim()} onClick={() => send()}>{handling}</button>
       ) : (
-        <button type="button" className="wb-quiet" disabled={disabled || !title.trim()} onClick={send}>{UI.addDrill}</button>
+        <button type="button" className="wb-quiet" disabled={disabled || !title.trim()} onClick={() => send()}>{UI.addDrill}</button>
       )}
     </>
   );
@@ -324,7 +349,7 @@ export function OvelseSkjema({ standardPyramide, drill, disabled, onSubmit, modu
       </div>
       <div className="wb-ark-innhold wb-session-edit wb-ovelse">{felter}</div>
       <div className="wb-ark-fot">
-        <button type="button" className="wb-publish" disabled={disabled || !title.trim()} onClick={send}>{handling}</button>
+        <button type="button" className="wb-publish" disabled={disabled || !title.trim()} onClick={() => send()}>{handling}</button>
       </div>
     </div>
   );

@@ -4,6 +4,7 @@
  * coachens delte og private øvelser, og spillerens egne. Ingen syntetiske øvelser.
  */
 import { prisma } from "@/lib/prisma";
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { drillAccessWhere, getMyCoachIds } from "./drills-data";
 import { ovelseVisning, type OvelseVisning } from "./ovelser-visning";
 
@@ -55,4 +56,20 @@ export async function hentOvelse(userId: string, id: string): Promise<OvelseVisn
   if (!rad) return null;
   const brukt = await bruktSiste30(userId, [rad.id]);
   return ovelseVisning(rad, brukt.get(rad.id) ?? 0);
+}
+
+/**
+ * Coachens bank i AgencyOS (/admin/ovelser, beslutning 16.10.2026): AK Golf-banken, coachens egne
+ * øvelser og spillernes egne øvelser for spillerne coachen har tilgang til. Samme visning som PH-13.
+ * Bruk-tallet er spillerens og gjelder ikke her; det står 0. «Egen» merker coachens egne øvelser.
+ */
+export async function hentOvelserForCoach(viewer: { id: string; role: string }): Promise<OvelseVisning[]> {
+  const spillere = await prisma.user.findMany({ where: coachScopedPlayerWhere(viewer), select: { id: true } });
+  const rader = await prisma.exerciseDefinition.findMany({
+    where: { OR: [{ source: "SYSTEM" }, { createdBy: viewer.id }, { source: "PLAYER", createdBy: { in: spillere.map((s) => s.id) } }] },
+    orderBy: [{ pyramidArea: "asc" }, { name: "asc" }],
+    select: { ...FELT, createdBy: true },
+  });
+  // «Egen» betyr her coachens egne øvelser.
+  return rader.map((r) => ({ ...ovelseVisning(r), egen: r.createdBy === viewer.id }));
 }

@@ -45,7 +45,7 @@ const PREFIKS: ReadonlyArray<[string, AosPunktId | AosMerId]> = [
   ["/admin/spillere", "stall"], ["/admin/stall", "stall"],
   ["/admin/kalender", "kalender"], ["/admin/availability", "kalender"],
   ["/admin/planlegge", "workbench"], ["/admin/workbench", "workbench"], ["/admin/coach-workbench", "workbench"],
-  ["/admin/plan", "workbench"], ["/admin/plan-templates", "workbench"],
+  ["/admin/plan", "workbench"], ["/admin/plan-templates", "workbench"], ["/admin/ovelser", "workbench"],
   ["/admin/bookinger", "booking"], ["/admin/services", "booking"],
   ["/admin/grupper", "grupper"],
   ["/admin/tester", "tester"],
