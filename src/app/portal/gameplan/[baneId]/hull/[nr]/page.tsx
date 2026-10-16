@@ -1,38 +1,31 @@
-// PH20HullPlan — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
 /**
- * PlayerHQ Hull-detalj — Gameplan (B30, omdøpt fra "Baneguide"). Signaturskjerm:
- * satellitt + din spredning + KPI fra dispersion-motoren + innsikt, PLUSS en
- * fjerde "Planlegg"-fane (C7, interaktiv hull-for-hull-modus) — dra sikte,
- * mal bra/aldri-soner, se carry/igjen regnet live fra ekte GPS, og hvor stor
- * andel av din faktiske spredning som havner i rød sone. Segment via ?type=
- * (server-side lenke-pills). CourseMap (mapbox) gjenbrukes som den er.
- * «?»-regelen: σ forklares via spredningSigma, bias via skjevhetBias.
+ * PlayerHQ Hull-detalj — Gameplan (/portal/gameplan/[baneId]/hull/[nr]) i nytt design (PH20Hull, pakke 11).
+ * Fasit: docs/design-system/utkast-playerhq/iup.html, malen «hull». Avvikene står i PH20Hull.
+ *
+ * Satellitt + din spredning fra dispersion-motoren, pluss «Planlegg» (C7, interaktiv hull-for-hull-modus:
+ * dra sikte, mal bra/aldri-soner, carry/igjen fra ekte GPS). Segment via ?type= (server-side lenker).
+ * CourseMap (mapbox) og GameplanPlanlegger gjenbrukes som de er.
  */
 
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { prisma } from "@/lib/prisma";
 import { getHoleDetail } from "@/lib/gameplan/queries";
 import { hentGameplanForHull } from "@/lib/gameplan/actions";
 import { CourseMap } from "@/components/gameplan/course-map";
 import { GameplanPlanlegger } from "@/components/gameplan/GameplanPlanlegger";
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
-import { TL } from "@/lib/v2/train-lock";
-
-import { Caps, Tittel, Kort, KpiFlis, MikroMeta, TomTilstand } from "@/components/v2";
+import { PH20Hull, PH20_SEGMENTER } from "@/components/portal/precision/PH20Hull";
 import type { ShotType } from "@/generated/prisma/client";
 
 export const dynamic = "force-dynamic";
 
-const SEGMENTS: { key: string; label: string; type?: ShotType }[] = [
-  { key: "utslag", label: "Utslag", type: "DRIVE" },
-  { key: "innspill", label: "Innspill", type: "APPROACH" },
-  { key: "putt", label: "Putt", type: "PUTT" },
-  { key: "planlegg", label: "Planlegg" },
-];
-
-const fmt = (n: number, d = 1) => n.toFixed(d).replace(".", ",");
-const signed = (n: number) => (n >= 0 ? "+" : "") + n.toFixed(1).replace(".", ",");
+const SHOT_TYPE: Record<string, ShotType | undefined> = {
+  utslag: "DRIVE",
+  innspill: "APPROACH",
+  putt: "PUTT",
+  planlegg: undefined,
+};
 
 export default async function HoleDetailPage({
   params,
@@ -44,15 +37,25 @@ export default async function HoleDetailPage({
   const { baneId, nr } = await params;
   const { type } = await searchParams;
   const holeNumber = parseInt(nr, 10);
-  const segment = SEGMENTS.find((s) => s.key === type) ?? SEGMENTS[0];
-  const erPlanlegg = segment.key === "planlegg";
+  const segment = PH20_SEGMENTER.find((s) => s.key === type)?.key ?? "utslag";
+  const erPlanlegg = segment === "planlegg";
 
   const user = await requirePortalUser();
-  const data = await getHoleDetail(baneId, holeNumber, user.id, segment.type);
+  const [data, uleste] = await Promise.all([
+    getHoleDetail(baneId, holeNumber, user.id, SHOT_TYPE[segment]),
+    prisma.notification.count({ where: { userId: user.id, readAt: null } }),
+  ]);
   if (!data) notFound();
   const { bane, hole, tee, green, landings, stats } = data;
 
-  const gameplanData = erPlanlegg ? await hentGameplanForHull(hole.id) : null;
+  const [gameplanData, neste] = await Promise.all([
+    erPlanlegg ? hentGameplanForHull(hole.id) : Promise.resolve(null),
+    prisma.courseHole.findFirst({
+      where: { baneId: bane.id, holeNumber: { gt: hole.holeNumber } },
+      orderBy: { holeNumber: "asc" },
+      select: { holeNumber: true },
+    }),
+  ]);
 
   const center =
     tee && green
@@ -60,142 +63,48 @@ export default async function HoleDetailPage({
       : bane.latitude != null && bane.longitude != null
         ? { lat: bane.latitude, lng: bane.longitude }
         : null;
+  const geojson = bane.geojson as unknown as GeoJSON.FeatureCollection;
 
   return (
-        <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
-      <div className="pa-side">
-      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-        <Link
-          href={`/portal/gameplan/${bane.id}`}
-          style={{ textDecoration: "none", alignSelf: "flex-start" }}
-        >
-          <MikroMeta icon="arrow-left">Banekart</MikroMeta>
-        </Link>
-
-        <div>
-          <Caps>Gameplan · {bane.navn}</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel em={`hull ${hole.holeNumber}`} />
-          </div>
-          <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: "10px 0 0" }}>
-            {hole.par ? `Par ${hole.par}` : "Par –"}
-            {hole.lengthMeter ? ` · ${hole.lengthMeter} m` : ""}
-          </p>
-        </div>
-
-        {!erPlanlegg && center && (
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
+      <PH20Hull
+        baneId={bane.id}
+        baneNavn={bane.navn}
+        nr={hole.holeNumber}
+        par={hole.par}
+        lengde={hole.lengthMeter}
+        segment={segment}
+        stats={stats}
+        nesteNr={neste?.holeNumber ?? null}
+        kart={!erPlanlegg && center ? (
           <CourseMap
             center={center}
             zoom={16.5}
-            geojson={bane.geojson as unknown as GeoJSON.FeatureCollection}
-            holes={
-              tee
-                ? [
-                    {
-                      holeNumber: hole.holeNumber,
-                      par: hole.par,
-                      teeLat: hole.teeLat,
-                      teeLng: hole.teeLng,
-                      greenLat: hole.greenLat,
-                      greenLng: hole.greenLng,
-                    },
-                  ]
-                : []
-            }
+            geojson={geojson}
+            holes={tee ? [{
+              holeNumber: hole.holeNumber,
+              par: hole.par,
+              teeLat: hole.teeLat,
+              teeLng: hole.teeLng,
+              greenLat: hole.greenLat,
+              greenLng: hole.greenLng,
+            }] : []}
             shotPoints={landings}
             aimLine={tee && green ? { tee, green } : null}
-            className="h-[320px] w-full overflow-hidden rounded-xl border border-border"
           />
-        )}
-
-        {/* Segment-pills (server-side lenker, speiler PillVelger-idiomet) */}
-        <div style={{ display: "flex", gap: 6 }}>
-          {SEGMENTS.map((s) => {
-            const active = s.key === segment.key;
-            return (
-              <Link
-                key={s.key}
-                href={`/portal/gameplan/${bane.id}/hull/${hole.holeNumber}?type=${s.key}`}
-                style={{
-                  flex: 1,
-                  textAlign: "center",
-                  textDecoration: "none",
-                  fontFamily: TL.font.mono,
-                  fontSize: 10.5,
-                  fontWeight: 700,
-                  letterSpacing: "0.06em",
-                  textTransform: "uppercase",
-                  padding: "9px 0",
-                  borderRadius: 9999,
-                  color: active ? TL.onFill : TL.mute,
-                  background: active ? TL.fill : TL.dock,
-                  border: `1px solid ${active ? "transparent" : TL.hair}`,
-                }}
-              >
-                {s.label}
-              </Link>
-            );
-          })}
-        </div>
-
-        {erPlanlegg ? (
-          center && tee && green && gameplanData ? (
-            <GameplanPlanlegger
-              holeId={hole.id}
-              tee={tee}
-              green={green}
-              center={center}
-              geojson={bane.geojson as unknown as GeoJSON.FeatureCollection}
-              initial={gameplanData}
-              ellipse={stats?.ellipse ?? null}
-            />
-          ) : (
-            <Kort>
-              <TomTilstand
-                icon="crosshair"
-                title="Mangler tee/green-GPS"
-                sub="Dette hullet har ikke nok kartlagt geometri til interaktiv planlegging ennå."
-              />
-            </Kort>
-          )
-        ) : stats ? (
-          <>
-            <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: 16 }}>
-              <KpiFlis label="σ side" value={`${fmt(stats.std.lateral)} m`} hjelp="spredningSigma" />
-              <KpiFlis label="σ lengde" value={`${fmt(stats.std.distance)} m`} hjelp="spredningSigma" />
-              <KpiFlis
-                label="Bias"
-                value={`${signed(stats.bias.lateral)} m${stats.bias.side === "høyre" ? " H" : stats.bias.side === "venstre" ? " V" : ""}`}
-                hjelp="skjevhetBias"
-              />
-              <KpiFlis label="Antall slag" value={String(stats.n)} />
-            </div>
-
-            {stats.bias.side !== "rett" && (
-              <Kort tint>
-                <MikroMeta icon="lightbulb">Innsikt</MikroMeta>
-                <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.6, margin: "10px 0 0" }}>
-                  Du misser{" "}
-                  <em style={{ fontFamily: TL.font.sans, fontStyle: "italic", color: TL.fill }}>
-                    {fmt(Math.abs(stats.bias.lateral))} m {stats.bias.side}
-                  </em>{" "}
-                  i snitt på dette hullet. Sikt mot{" "}
-                  {stats.bias.side === "høyre" ? "venstre" : "høyre"} halvdel av fairwayen.
-                </p>
-              </Kort>
-            )}
-          </>
-        ) : (
-          <Kort>
-            <TomTilstand
-              icon="crosshair"
-              title={`Ingen ${segment.label.toLowerCase()} plottet ennå`}
-              sub="Plott slag på dette hullet for å se spredningen din."
-            />
-          </Kort>
-        )}
-      </div>
-          </div>
+        ) : undefined}
+        planlegger={erPlanlegg && center && tee && green && gameplanData ? (
+          <GameplanPlanlegger
+            holeId={hole.id}
+            tee={tee}
+            green={green}
+            center={center}
+            geojson={geojson}
+            initial={gameplanData}
+            ellipse={stats?.ellipse ?? null}
+          />
+        ) : undefined}
+      />
     </PlayerHQSkall>
   );
 }
