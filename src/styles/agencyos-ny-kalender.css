@@ -54,3 +54,10 @@
 .agn-s .to-felt { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--r2); }
 .agn-s .faner .antall { margin-left: 6px; }
 .agn-s .ikonboks { font: 600 12px/1 var(--mono); }
+
+/* AG-06 Tjenester og pris: tjeneste-arket (bookingplanen steg 2). Felt i par
+   strekker seg ikke når naboen har hjelpetekst; avkrysningen har 44 px treffmål. */
+.agn-s .to-felt .felt { align-content: start; }
+.agn-s .felt.avkryss { grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 10px; }
+.agn-s .felt.avkryss input { appearance: none; -webkit-appearance: none; width: 44px; height: 44px; min-height: 44px; padding: 0; margin: 0; border: 1px solid var(--graphite-500); border-radius: 8px; background: var(--white) center / 24px no-repeat; cursor: pointer; }
+.agn-s .felt.avkryss input:checked { background-color: var(--graphite-900); border-color: var(--graphite-900); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7'/%3E%3C/svg%3E"); }

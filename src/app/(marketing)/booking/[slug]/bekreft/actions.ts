@@ -8,6 +8,7 @@ import { startBookingPayment } from "@/lib/booking/payment-start";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { kanBrukeInnebygdBooking } from "@/lib/booking/offentlig-booking";
 import { isSlotStillAvailable } from "@/lib/booking/availability";
+import { finnStedForTjeneste } from "@/lib/booking/tjeneste-sted";
 import { acquireHold, releaseHold, DEFAULT_HOLD_TTL_MS } from "@/lib/booking/slot-hold";
 import { recordBookingMetric } from "@/lib/booking/metrics";
 import { audit } from "@/lib/audit";
@@ -110,20 +111,9 @@ export async function createBookingCheckout(
 
     const endAt = new Date(startAt.getTime() + service.durationMin * 60_000);
 
-    // Finn lokasjon — prøv med kjente navn-varianter, fall tilbake til første tilgjengelige.
-    const wantMulligan = service.slug.includes("trackman");
-    const lokasjon = await prisma.location.findFirst({
-      where: wantMulligan
-        ? { OR: [{ name: { contains: "Mulligan" } }, { name: { contains: "mulligan" } }] }
-        : {
-            OR: [
-              { name: { contains: "Fredrikstad" } },
-              { name: { contains: "GFGK" } },
-              { name: { contains: "Bossum" } },
-              { name: { contains: "Golfklubb" } },
-            ],
-          },
-    }) ?? (await prisma.location.findFirst());
+    // Stedet leses fra tjenesten (locationId); navnegjetning bare som fallback
+    // når det ikke er satt (src/lib/booking/tjeneste-sted.ts).
+    const lokasjon = await finnStedForTjeneste(service);
 
     if (!lokasjon) {
       return {

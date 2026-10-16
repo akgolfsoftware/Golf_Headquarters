@@ -90,3 +90,81 @@ export async function hentAG06Bookinger(user: User): Promise<AG06Booking[]> {
     forslag: r.proposedStartAt ? `${DATO_FMT.format(r.proposedStartAt)} ${KL_FMT.format(r.proposedStartAt)}` : null,
   }));
 }
+
+/** Én tjeneste slik fanen «Tjenester og pris» i AG-06 viser og redigerer den. */
+export type AG06Tjeneste = {
+  id: string;
+  slug: string;
+  navn: string;
+  beskrivelse: string | null;
+  prisOre: number;
+  varighetMin: number;
+  maxDeltakere: number;
+  coachUserId: string | null;
+  coachNavn: string | null;
+  locationId: string | null;
+  stedNavn: string | null;
+  kategori: string | null;
+  bufferForMin: number;
+  bufferEtterMin: number;
+  minVarselTimer: number;
+  maksDagerFram: number;
+  aktiv: boolean;
+  /** Antall bookinger som peker på tjenesten. 0 = kan slettes, ellers bare slås av. */
+  antallBookinger: number;
+};
+
+export type AG06TjenesteValg = {
+  coacher: Array<{ id: string; navn: string }>;
+  steder: Array<{ id: string; navn: string }>;
+};
+
+/**
+ * Alle tjenester, også avslåtte, med coach, sted og bookingreglene. Tjenester
+ * er en delt admin-ressurs: coach og admin ser det samme (som /admin/services gjorde).
+ */
+export async function hentAG06Tjenester(): Promise<{ tjenester: AG06Tjeneste[]; valg: AG06TjenesteValg }> {
+  const [rader, coacher, steder] = await Promise.all([
+    prisma.serviceType.findMany({
+      orderBy: [{ active: "desc" }, { name: "asc" }],
+      include: {
+        coach: { select: { name: true } },
+        location: { select: { name: true } },
+        _count: { select: { bookings: true } },
+      },
+    }),
+    prisma.user.findMany({
+      where: { role: { in: ["COACH", "ADMIN"] }, deletedAt: null },
+      select: { id: true, name: true, email: true },
+      orderBy: { name: "asc" },
+    }),
+    prisma.location.findMany({ where: { active: true }, select: { id: true, name: true }, orderBy: { name: "asc" } }),
+  ]);
+
+  return {
+    tjenester: rader.map((r) => ({
+      id: r.id,
+      slug: r.slug,
+      navn: r.name,
+      beskrivelse: r.description,
+      prisOre: r.priceOre,
+      varighetMin: r.durationMin,
+      maxDeltakere: r.maxDeltakere,
+      coachUserId: r.coachUserId,
+      coachNavn: r.coach?.name ?? null,
+      locationId: r.locationId,
+      stedNavn: r.location?.name ?? null,
+      kategori: r.kategori,
+      bufferForMin: r.bufferForMin,
+      bufferEtterMin: r.bufferEtterMin,
+      minVarselTimer: r.minVarselTimer,
+      maksDagerFram: r.maksDagerFram,
+      aktiv: r.active,
+      antallBookinger: r._count.bookings,
+    })),
+    valg: {
+      coacher: coacher.map((c) => ({ id: c.id, navn: c.name ?? c.email ?? "Uten navn" })),
+      steder: steder.map((s) => ({ id: s.id, navn: s.name })),
+    },
+  };
+}

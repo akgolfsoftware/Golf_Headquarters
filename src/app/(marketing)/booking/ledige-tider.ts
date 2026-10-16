@@ -2,7 +2,7 @@
 
 /**
  * Ledige tider for den offentlige bookingsiden (PP-1.7, Paper-fasit
- * `fase1/booking.html`). Fasiten viser sju dager i en vannrett strimmel med
+ * `fase1/booking.html`). Fasiten viser dagene (tjenestens maks dager fram, standard sju) i en vannrett strimmel med
  * antall ledige luker per dag — én tidsliste, ikke én per rom, fordi ressursen
  * er coachens tid. Derfor hentes alle dagene i ett kall når tjenesten velges,
  * i stedet for en sidelasting per dag slik `/booking/[slug]` gjorde.
@@ -15,8 +15,6 @@ import { prisma } from "@/lib/prisma";
 import { getAvailableSlots } from "@/lib/booking/availability";
 import { kanBrukeInnebygdBooking } from "@/lib/booking/offentlig-booking";
 import { publicAction } from "@/lib/auth/action-guards";
-
-const DAGER_FRAM = 7;
 
 const ukedag = new Intl.DateTimeFormat("nb-NO", { weekday: "short" });
 const datokort = new Intl.DateTimeFormat("nb-NO", { day: "numeric", month: "numeric" });
@@ -62,7 +60,9 @@ export async function finnNesteLedige(
   const idag = tilNaivVeggklokke(new Date());
   idag.setHours(0, 0, 0, 0);
 
-  for (let i = 0; i < DAGER_FRAM; i++) {
+  // Antall dager leses fra tjenesten (bookingplanen steg 2): maksDagerFram
+  // dager fra og med i dag, samme vindu som getAvailableSlots håndhever.
+  for (let i = 0; i < service.maksDagerFram; i++) {
     const d = new Date(idag);
     d.setDate(d.getDate() + i);
     const alle = await getAvailableSlots(service.id, d);
@@ -91,7 +91,7 @@ export async function hentLedigeDager(slug: string): Promise<LedigDag[]> {
   idag.setHours(0, 0, 0, 0);
 
   const dager: LedigDag[] = [];
-  for (let i = 0; i < DAGER_FRAM; i++) {
+  for (let i = 0; i < service.maksDagerFram; i++) {
     const d = new Date(idag);
     d.setDate(d.getDate() + i);
 
