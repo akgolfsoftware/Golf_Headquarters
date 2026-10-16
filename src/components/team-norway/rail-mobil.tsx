@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { TnLogo, type TnBunnValg, type TnMenyGruppe } from "./core";
+import { initialer } from "./initialer";
 import { TnIkon } from "./tn-ikon";
 import s from "./tn-skall.module.css";
 
@@ -76,8 +77,4 @@ export function TnRailMobil({ grupper, bunn, brukerNavn, rolle, orgNavn, orgUnde
       </nav>
     </>
   );
-}
-
-export function initialer(navn: string) {
-  return navn.split(/\s+/).filter(Boolean).slice(0, 2).map((d) => d[0]?.toUpperCase() ?? "").join("") || "?";
 }
