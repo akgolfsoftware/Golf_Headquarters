@@ -29,7 +29,13 @@ export interface WangTrenerUkeOkt {
   dag: string;
   tittel: string;
   tid: string;
+  /** «HH:mm» (Oslo). */
+  startTid: string;
+  /** «HH:mm» (Oslo). Null når økta slutter en annen dag. */
+  sluttTid: string | null;
   sted: string | null;
+  /** Trenerens egen beskrivelse fra kalenderen. Kan inneholde elevnavn: bare for trenerflaten. */
+  beskrivelse: string | null;
   passert: boolean;
 }
 
@@ -61,6 +67,8 @@ export interface WangTrenerFastOkt {
 export interface WangTrenerData {
   gruppeNavn: string;
   idagIso: string;
+  /** Klokka i Oslo da siden ble laget («HH:mm»), eller null når den ikke er kjent. */
+  naaTid: string | null;
   ukeTekst: string;
   elever: WangTrenerPerson[];
   trenere: (WangTrenerPerson & { rolle: "Trener" | "Assistent" })[];
@@ -70,6 +78,16 @@ export interface WangTrenerData {
   turneringer: WangTrenerHendelse[];
   samlinger: WangTrenerHendelse[];
   testdager: WangTrenerHendelse[];
+}
+
+/** Klokka i Oslo som «HH:mm». */
+export function osloNaaTid(naa: Date = new Date()): string {
+  return new Intl.DateTimeFormat("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+    timeZone: "Europe/Oslo",
+  }).format(naa);
 }
 
 /** Dagens dato i Oslo som «YYYY-MM-DD». */
@@ -104,7 +122,11 @@ export function erTurnering(tittel: string): boolean {
   return tittel.startsWith("Turnering:") || tittel.startsWith("Klubbmesterskap");
 }
 
-export function byggWangTrenerData(live: WangLiveData, idagIso: string): WangTrenerData {
+export function byggWangTrenerData(
+  live: WangLiveData,
+  idagIso: string,
+  naaTid: string | null = null,
+): WangTrenerData {
   const mandag = leggTilDager(idagIso, -ukedag(idagIso));
   const sondag = leggTilDager(mandag, 6);
   const ukeDager = Array.from({ length: 7 }, (_, i) => leggTilDager(mandag, i));
@@ -120,7 +142,10 @@ export function byggWangTrenerData(live: WangLiveData, idagIso: string): WangTre
           dag: UKEDAG_KORT[i],
           tittel: o.tittel,
           tid: `${o.startTid}–${o.sluttTid}`,
+          startTid: o.startTid,
+          sluttTid: o.sluttTid,
           sted: o.sted,
+          beskrivelse: null,
           passert: datoIso < idagIso,
         }),
       );
@@ -132,8 +157,11 @@ export function byggWangTrenerData(live: WangLiveData, idagIso: string): WangTre
           datoIso,
           dag: UKEDAG_KORT[i],
           tittel: h.tittel,
-          tid: h.startTid,
+          tid: h.sluttIso === h.startIso ? `${h.startTid}–${h.sluttTid}` : h.startTid,
+          startTid: h.startTid,
+          sluttTid: h.sluttIso === h.startIso ? h.sluttTid : null,
           sted: h.sted,
+          beskrivelse: h.beskrivelse,
           passert: datoIso < idagIso,
         }),
       );
@@ -154,6 +182,7 @@ export function byggWangTrenerData(live: WangLiveData, idagIso: string): WangTre
   return {
     gruppeNavn: live.gruppeNavn,
     idagIso,
+    naaTid,
     ukeTekst: `Uke ${ukenummer(idagIso)} · ${kortDato(mandag)}–${kortDato(sondag)}.${sondag.slice(0, 4)}`,
     elever: live.elever
       .filter((e) => e.rolle === "PLAYER")

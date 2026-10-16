@@ -72,6 +72,7 @@ export interface WangHendelseDb {
   startIso: string; // yyyy-mm-dd (Oslo)
   startTid: string; // HH:mm (Oslo)
   sluttIso: string;
+  sluttTid: string; // HH:mm (Oslo)
   kind: string | null; // SAMLING | HELDAGSSAMLING | null
   recurring: string | null; // WEEKLY | NONE | null
   sted: string | null;
@@ -258,6 +259,7 @@ export async function hentWangGruppe(
         startIso: osloDato(s.startAt),
         startTid: osloTid(s.startAt),
         sluttIso: osloDato(s.endAt),
+        sluttTid: osloTid(s.endAt),
         kind: s.kind,
         recurring: s.recurring,
         sted: s.location,
