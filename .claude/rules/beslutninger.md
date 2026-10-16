@@ -4,6 +4,22 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## MER I AGENCYOS FÅR ET SJETTE PUNKT: DATA GOLF (Anders 16.10.2026, bindende)
+
+Svar på punkt 1 i `docs/design-system/datagolf-coach-datakart-og-skjermliste.md` §Åpent hos Anders: «mer meny skal ha et punkt til».
+
+- **Mer har seks punkter:** Booking · Grupper · Tester · Økonomi · Oppsett · Data Golf.
+- Data Golf (DG-01 Oversikt) vises bare for dem `kanSeDataGolf` slipper inn (§DATA GOLF VISES ALDRI TIL KUNDER).
+- Inngangene fra Spiller 360 › Stats og Workbench-øvelsen «Fra Data Golf» beholdes i tillegg.
+
+**Overstyrer:** «Mer har fem punkter» i §SKJERMENE I PLAYERHQ OG AGENCYOS ETTER GRILLINGEN RUNDE 8 (28.09).
+
+**Arbeidet dette utløser:**
+
+1. **Datakartet** sier at punktet er avgjort. Gjort i samme PR.
+2. **Mer-menyen i koden** får «Data Golf» som sjette punkt når AgencyOS pakke 10 porteres. Ferdig når punktet står i Mer,
+   åpner DG-01, og ikke vises for en bruker uten coach-rolle, låst med test.
+
 ## DATA GOLF VISES ALDRI TIL KUNDER, BARE TIL COACHER I AK GOLF, WANG TOPPIDRETT OG TEAM NORWAY (Anders 16.10.2026, bindende)
 
 Svar på punkt 2 (lisens) i `docs/design-system/datagolf-coach-datakart-og-skjermliste.md` §Åpent hos Anders:
@@ -744,7 +760,7 @@ reglene.
 - **Workbench:** gruppeplanen er grunnmuren og arves av medlemmene; tilpasning merkes «Egen».
   «Gjenta» ved slipp. **Pyramiden velges først og styrer kategoriseringen og øvelsesbanken.**
   Coach kan lage egne øvelser.
-- **Mer** har fem punkter: Booking · Grupper · Tester · Økonomi · Oppsett. Økonomi leses fra
+- **Mer** har fem punkter: Booking · Grupper · Tester · Økonomi · Oppsett (sjette punkt Data Golf fra 16.10, §MER I AGENCYOS). Økonomi leses fra
   budsjett, Tripletex-eksport og Stripe, aldri anslått. Turneringspåmeldinger bekreftes ikke.
 
 **Mulighetskartet:** A1–A8, A10–A12 og B1–B8 tegnes inn. A9 (skadevarsel på køllehastighet)
