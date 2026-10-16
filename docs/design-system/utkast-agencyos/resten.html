@@ -1,0 +1,568 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AgencyOS, resten</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="felles/felles.css">
+<link rel="stylesheet" href="felles/agencyos.css">
+<style>
+/* ---------- Pakke 11: sidene i gammelt design uten tegning ---------- */
+.skjermvalg button{font-size:13px;min-height:36px;padding:0 10px}
+.felt textarea{resize:vertical}
+.to-felt{display:grid;grid-template-columns:1fr 1fr;gap:var(--r2)}
+.vilkaar{display:grid;gap:6px;padding:12px 14px;border-radius:10px;background:var(--sand-100);font-size:14px}
+.vilkaar b{font-weight:600}
+.avkryss{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:start;font-size:15px;line-height:1.45;cursor:pointer}
+.avkryss input{width:24px;height:24px;margin:0;accent-color:var(--graphite-900)}
+.typevalg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--r2)}
+.typevalg button{display:grid;gap:4px;justify-items:start;text-align:left;padding:12px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white);font:inherit;color:inherit;cursor:pointer;min-height:72px}
+.typevalg button b{font:600 15px/1.25 var(--sans)}
+.typevalg button span{font-size:12.5px;color:var(--graphite-600);line-height:1.35}
+.typevalg button[aria-pressed="true"]{border:2px solid var(--graphite-900);background:var(--sand-100)}
+.akse-valg{display:flex;flex-wrap:wrap;gap:6px}
+.akse-valg button{min-height:40px;padding:0 12px;border-radius:999px;border:1px solid var(--sand-300);background:var(--white);font:600 13px/1 var(--sans);letter-spacing:.04em;color:var(--graphite-800);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.akse-valg button i{width:10px;height:10px;border-radius:50%}
+.akse-valg button[aria-pressed="true"]{color:#fff;border-color:transparent}
+.akse-valg button[aria-pressed="true"][data-a="slag"]{background:var(--slag)} .akse-valg button[aria-pressed="true"][data-a="tek"]{background:var(--tek-ink)} .akse-valg button[aria-pressed="true"][data-a="spill"]{background:var(--spill-ink)} .akse-valg button[aria-pressed="true"][data-a="fys"]{background:var(--fys-ink)} .akse-valg button[aria-pressed="true"][data-a="turn"]{background:var(--turn)}
+.akse-valg button[aria-pressed="true"] i{background:#fff!important}
+
+/* Tilgjengelighet */
+.uke-mal{display:grid;gap:0;border-top:1px solid var(--sand-300)}
+.dag-rad{display:grid;grid-template-columns:52px minmax(0,1fr) auto;gap:var(--r3);align-items:center;padding:10px 0;border-bottom:1px solid var(--sand-300)}
+.dag-rad > b{font:600 13px/1 var(--mono);color:var(--graphite-800)}
+.vinduer{display:flex;flex-wrap:wrap;gap:6px}
+.vindu{display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:0 10px;border-radius:8px;background:var(--sand-150);font:500 13px/1.2 var(--sans);color:var(--graphite-900)}
+.vindu b{font:600 13px/1 var(--mono)}
+.vindu.av{background:transparent;border:1px dashed var(--graphite-500);color:var(--graphite-600)}
+.legg-til{width:44px;height:44px;border:1px solid var(--sand-300);border-radius:10px;background:var(--white);display:grid;place-items:center;cursor:pointer;color:var(--graphite-900)}
+.tidslinje{display:grid;gap:6px}
+.tidslinje .rad{display:grid;grid-template-columns:40px minmax(0,1fr);gap:8px;align-items:center;font:500 12px/1 var(--mono);color:var(--graphite-600)}
+.tidslinje .spor{position:relative;height:22px;border-radius:6px;background:var(--sand-100)}
+.tidslinje .spor span{position:absolute;top:0;bottom:0;border-radius:6px;background:var(--graphite-900)}
+.tidslinje .spor span.booket{background:repeating-linear-gradient(45deg,var(--graphite-600) 0 4px,var(--graphite-500) 4px 8px)}
+.akse-tid{display:flex;justify-content:space-between;padding-left:48px;font:500 11px/1 var(--mono);color:var(--graphite-600)}
+
+/* Hendelse */
+.hend-liste{display:grid;gap:var(--r2)}
+.hend{display:grid;grid-template-columns:4px minmax(0,1fr) auto;gap:var(--r3);align-items:center;padding:12px 14px 12px 0;border:1px solid var(--sand-300);border-radius:12px;background:var(--white);text-align:left;font:inherit;color:inherit;cursor:pointer;width:100%;overflow:hidden}
+.hend > i{align-self:stretch;background:var(--graphite-600);margin:-12px 0}
+.hend > i.ferie{background:repeating-linear-gradient(180deg,var(--graphite-600) 0 6px,transparent 6px 10px)}
+.hend b{display:block;font:600 15px/1.3 var(--sans)}
+
+/* Ny spiller */
+.stegrad{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.stegrad span{display:grid;gap:6px;font:500 12px/1.2 var(--sans);color:var(--graphite-600)}
+.stegrad span i{display:block;height:6px;border-radius:3px;background:var(--sand-150)}
+.stegrad span.paa{color:var(--graphite-900)}
+.stegrad span.paa i{background:var(--graphite-900)}
+.kat-valg{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px}
+.kat-valg button{min-height:44px;border:1px solid var(--sand-300);border-radius:8px;background:var(--white);font:600 15px/1 var(--mono);color:var(--graphite-900);cursor:pointer;padding:0}
+.kat-valg button[aria-pressed="true"]{background:var(--graphite-900);border-color:var(--graphite-900);color:#fff}
+.oppsummering{display:grid;margin:0;padding:0;list-style:none;border-top:1px solid var(--sand-300)}
+.oppsummering li{display:grid;grid-template-columns:120px minmax(0,1fr);gap:var(--r3);padding:10px 0;border-bottom:1px solid var(--sand-300);font-size:14.5px}
+.oppsummering li span{color:var(--graphite-600)}
+.oppsummering li b{font-weight:600;overflow-wrap:anywhere}
+.epost{padding:14px;border-radius:12px;border:1px solid var(--sand-300);background:var(--sand-100);display:grid;gap:8px;font-size:14.5px;line-height:1.5}
+.epost .kilde{display:block}
+.u16{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--r3);align-items:start;padding:14px 16px;border-radius:12px;border:2px solid var(--amber-700);background:var(--amber-50)}
+.u16 .ikon{color:var(--amber-700);margin-top:2px}
+.u16 b{display:block;font:600 15px/1.3 var(--sans)}
+
+/* Skoledata */
+.skole-liste{display:grid;margin:0;padding:0;list-style:none;border-top:1px solid var(--sand-300)}
+.skole-liste li{display:grid;grid-template-columns:68px minmax(0,1fr) auto;gap:var(--r3);align-items:center;padding:10px 0;border-bottom:1px solid var(--sand-300);font-size:14.5px}
+.skole-liste li time{font:600 13px/1.2 var(--mono)}
+.skole-liste li b{display:block;font-weight:600}
+.forhånd{display:grid;gap:0;border:1px solid var(--sand-300);border-radius:12px;overflow:hidden}
+.forhånd > div{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--r3);align-items:start;padding:10px 14px;border-bottom:1px solid var(--sand-300);font-size:14px}
+.forhånd > div:last-child{border-bottom:0}
+.forhånd .ikon{width:18px;height:18px;margin-top:1px}
+.forhånd .ok{color:var(--green-700)} .forhånd .feil{color:#8a2a1c}
+.forhånd b{display:block;font-weight:600}
+
+/* Team */
+.team-rad{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--r3);align-items:center;padding:10px 0;border-bottom:1px solid var(--sand-300)}
+.team-rad:last-child{border-bottom:0}
+.team-rad b{display:block;font:600 15px/1.3 var(--sans)}
+.team-rad .kilde{display:block}
+.rolle-valg{display:grid;grid-template-columns:1fr 1fr;gap:var(--r2)}
+.rolle-valg button{display:grid;gap:4px;justify-items:start;text-align:left;padding:12px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white);font:inherit;color:inherit;cursor:pointer}
+.rolle-valg button b{font:600 15px/1.25 var(--sans)}
+.rolle-valg button span{font-size:13px;color:var(--graphite-600);line-height:1.35}
+.rolle-valg button[aria-pressed="true"]{border:2px solid var(--graphite-900);background:var(--sand-100)}
+
+/* Notion og maler */
+.db-rad{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--r3);align-items:center;padding:12px 0;border-bottom:1px solid var(--sand-300)}
+.db-rad:last-child{border-bottom:0}
+.db-rad b{display:block;font:600 15px/1.3 var(--sans)}
+.db-rad .kilde{display:block}
+.notion-logo{width:36px;height:36px;border-radius:8px;border:1.5px solid var(--graphite-900);display:grid;place-items:center;font:700 17px/1 var(--sans)}
+.mal-flette{display:flex;flex-wrap:wrap;gap:6px}
+.mal-flette code{display:inline-flex;align-items:center;height:28px;padding:0 8px;border-radius:6px;background:var(--sand-150);font:500 12.5px/1 var(--mono);color:var(--graphite-800)}
+
+@container (min-width:900px){
+  .to-del.bred-v{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr)}
+}
+</style>
+</head><body>
+<div class="ytre">
+  <div class="hode">
+    <span class="meta-s">AgencyOS · pakke 11 · sidene i gammelt design · utkast 1 · 16.10.2026</span>
+    <h1>AgencyOS, resten</h1>
+    <p>De 24 AgencyOS-sidene som fortsatt står i gammelt design er gått gjennom. Åtte trenger egen tegning og er tegnet her: Tilgjengelighet og Kalenderhendelse (under Kalender), Ny spiller (Stall), Ny gruppetrening og Skoledata (Gruppa), og Team, Notion og E-postmaler (Oppsett). De andre bygges fra skjermer som allerede er tegnet, eller sendes videre (se under). Coach Anders Kristiansen (head coach). Mandag 5. oktober kl. 08:20, uke 41.</p>
+  </div>
+  <div class="kontroller">
+    <div class="velger skjermvalg" role="group" aria-label="Skjerm">
+      <button type="button" aria-pressed="true" data-skjerm="tilg">Tilgjengelighet</button>
+      <button type="button" aria-pressed="false" data-skjerm="hendelse">Kalenderhendelse</button>
+      <button type="button" aria-pressed="false" data-skjerm="nyspiller">Ny spiller</button>
+      <button type="button" aria-pressed="false" data-skjerm="gruppetrening">Ny gruppetrening</button>
+      <button type="button" aria-pressed="false" data-skjerm="skoledata">Skoledata</button>
+      <button type="button" aria-pressed="false" data-skjerm="team">Team og tilgang</button>
+      <button type="button" aria-pressed="false" data-skjerm="notion">Notion</button>
+      <button type="button" aria-pressed="false" data-skjerm="maler">E-postmaler</button>
+    </div>
+  </div>
+  <div class="kontroller">
+    <div class="velger" role="group" aria-label="Bredde"><button type="button" aria-pressed="true" data-bredde="mob">Mobil</button><button type="button" aria-pressed="false" data-bredde="pc">PC</button></div>
+    <div class="velger" role="group" aria-label="Tilstand"><button type="button" aria-pressed="true" data-tilstand="data">Med data</button><button type="button" aria-pressed="false" data-tilstand="tom">Tom</button><button type="button" aria-pressed="false" data-tilstand="laster">Laster</button><button type="button" aria-pressed="false" data-tilstand="feil">Feil</button></div>
+  </div>
+  <div class="scene"><div class="ramme mob" id="ramme"></div></div>
+  <div class="notater">
+    <div class="endringer">
+      <span class="meta-s">Hva som er nytt</span>
+      <ul>
+        <li><b>Tilgjengelighet</b> er en fane i Kalender: fast uke med vinduer per sted, unntak som ferie, og en dagslinje som viser ledig og booket. Spillerne kan bare booke og flytte innenfor vinduene (vedtak 14.10).</li>
+        <li><b>Kalenderhendelse</b> er blokkert tid som ikke er en økt: møte, ferie, reise. Ny og endre er samme ark. Sletting har rust bekreft.</li>
+        <li><b>Ny spiller</b> i fire steg: personen, golf, avtale og forelder, invitasjon. Jarvis skriver invitasjonen, coachen sender den.</li>
+        <li><b>Ny gruppetrening</b> legger en fast økt på gruppa, med akse, sted og plasser. Medlemmene får den i planen.</li>
+        <li><b>Skoledata</b> er fanen som sto tom i Gruppa: skolens datoer per trinn, lagt inn én om gangen eller limt inn fra skolens liste, med forhåndsvisning før lagring.</li>
+        <li><b>Team og tilgang</b>, <b>Notion</b> og <b>E-postmaler</b> er tre deler av Oppsett. Notion viser bare ekte databaser og siste synk, ingen eksempelhistorikk.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Bygges fra skjermer som er tegnet</span>
+      <ul>
+        <li><b>bookinger/ny</b> og <b>bookinger/[id]</b> → AG-06-NY og «Bookingen» i <code>kalender.html</code>. Sted blir eget steg i ny booking, som i koden i dag.</li>
+        <li><b>grupper/[id]</b> → «Gruppa» i <code>mer.html</code>. <b>grupper/[id]/arsplan</b> → AG-11-GRUPPE-AR i <code>workbench.html</code>. <b>timeplan</b> → fanen «Faste tider» i Gruppa og «Ny gruppetrening» (over).</li>
+        <li><b>tester/tildel/[spillerId]</b> → arket «Tildel test» i AG-15. <b>tournaments/ny</b> → AG-WB-TURN.</li>
+        <li><b>spillere/[id]/turnering-kobling</b> er allerede i nytt skall. Blir et ark i Spiller 360.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Sendes videre</span>
+      <ul>
+        <li><b>availability</b> → Kalender › Tilgjengelighet. <b>analyse</b> og <b>analysere/compliance</b> → Spiller 360 › Stats (AG-A02), Gruppeanalyse (AG-A03) og Stall.</li>
+        <li><b>kommunikasjon</b> → Innboks. Malene flyttes til Oppsett › E-postmaler.</li>
+        <li><b>trackman/[sessionId]</b> → Spiller 360 › Stats. Ingen liste lenker hit i dag.</li>
+        <li><b>agent-team</b> og <b>plans/[planId]</b> sender allerede videre og beholdes.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Åpent hos Anders</span>
+      <ul>
+        <li><b>Markedsføring</b> (innholdskalender og poster) er ikke i Mer-menyen. Anbefaling: fjern siden. Den tegnes ikke før du sier om den skal leve.</li>
+        <li><b>Normer fra Data Golf</b> (tester/benchmarks): automatisk synk med godkjenning av justeringer. AG-15 viser «Referanse ikke satt» til A–K-nivåtallene er vedtatt. Anbefaling: vent med synken til nivåtallene er vedtatt, og send siden til AG-15 › Normer.</li>
+        <li><b>Eksterne lesere</b> gir i dag innsyn i en hel gruppe. Vedtaket 06.10 sier at gruppemedlemskap alene ikke gir innsyn. Utkastet viser derfor bare det spillerne har delt. Skal funksjonen leve videre?</li>
+        <li><b>Hvem kan invitere coach?</b> Utkastet: bare head coach. Assist Coach ser ikke knappen.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ================= Tilgjengelighet ================= -->
+<template id="tilg">
+<div class="app" data-fane="kalender" data-tilbake="Kalender">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div><div class="dato">Kalender · tilgjengelighet</div><h1 class="tittel">Når kan spillerne booke deg?</h1></div>
+    </div>
+    <div class="to-del bred-v">
+      <div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Fast uke</h2><span class="kilde">Gjelder fra 1. september</span></div>
+          <div class="uke-mal" data-uke></div>
+        </section>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>I dag, mandag</h2><span class="kilde">4 t 30 min ledig · 3 t booket</span></div>
+          <div class="tidslinje" role="img" aria-label="Ledig 10 til 12 og 14 til 19.30. Booket 10 til 11.30, 14 til 15 og 17.30 til 18.30">
+            <div class="rad"><span>Alle</span><span class="spor"><span style="left:21.4%;width:14.3%"></span><span style="left:50%;width:39.3%"></span><span class="booket" style="left:21.4%;width:10.7%"></span><span class="booket" style="left:50%;width:7.1%"></span><span class="booket" style="left:75%;width:7.1%"></span></span></div>
+          </div>
+          <div class="akse-tid"><span>07</span><span>10</span><span>13</span><span>16</span><span>19</span><span>21</span></div>
+          <div class="lg-rad"><span class="lg"><i style="background:var(--graphite-900)"></i>Ledig</span><span class="lg"><i style="background:var(--graphite-600)"></i>Booket</span></div>
+        </section>
+      </div>
+      <div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Unntak</h2></div>
+          <div class="liste">
+            <button type="button"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14"/></svg></span><span><b>Høstferie</b><span class="kilde">12.–16. okt. · ingen booking</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+            <button type="button"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18"/></svg></span><span><b>Lørdag 10. okt.</b><span class="kilde">Treningssamling Larvik GK · ingen booking</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+          </div>
+          <button type="button" class="knapp sek" data-unntak style="justify-self:start">Legg til unntak</button>
+        </section>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Google-kalender</h2></div>
+          <div class="liste">
+            <div><span class="ikonboks" style="font:700 16px/1 var(--sans)">G</span><span><b>Koblet</b><span class="kilde">post@akgolf.no · synket i dag 08:12. Avtaler der blir ikke bookbare.</span></span><span class="pille ok"><i></i>På</span></div>
+          </div>
+        </section>
+        <div class="vilkaar"><b>Spillerne ser bare ledige tider</b><span>De booker og flytter selv innenfor vinduene, minst 24 timer før.</span></div>
+      </div>
+    </div>
+    <div class="ark-lag" data-ark hidden>
+      <div class="ark" role="dialog" aria-label="Vindu">
+        <div class="ark-topp"><h2 data-ark-t>Nytt vindu, mandag</h2><button type="button" class="lukk" aria-label="Lukk" data-lukk><svg class="ikon" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+        <div class="to-felt"><div class="felt"><label for="v-fra">Fra</label><input id="v-fra" type="time" value="14:00"></div><div class="felt"><label for="v-til">Til</label><input id="v-til" type="time" value="19:30"></div></div>
+        <div class="felt"><label for="v-sted">Sted</label><select id="v-sted"><option>Fredrikstad GK, range</option><option>Simulator 2</option><option>Gamle Fredrikstad GK</option></select></div>
+        <button type="button" class="knapp pri stor" data-lagre>Lagre vinduet</button>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= Kalenderhendelse ================= -->
+<template id="hendelse">
+<div class="app" data-fane="kalender" data-tilbake="Kalender">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div class="topp-rad"><div><div class="dato">Kalender · hendelser</div><h1 class="tittel">Blokkert tid</h1></div><button type="button" class="knapp pri" data-ny>Ny hendelse</button></div>
+      <p class="forklar">Tid som ikke er en økt eller booking: møter, reiser, ferie. Spillerne kan ikke booke deg da.</p>
+    </div>
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Kommende</h2><span class="kilde">4</span></div>
+      <div class="hend-liste">
+        <button type="button" class="hend" data-endre><i></i><span><b>Sportssjefsmøte WANG</b><span class="kilde">Onsdag 7. okt. · 11:00–13:00 · Wang Fredrikstad</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        <button type="button" class="hend" data-endre><i></i><span><b>Treningssamling Larvik GK</b><span class="kilde">Lørdag 10.–søndag 11. okt. · hele dagen</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        <button type="button" class="hend" data-endre><i class="ferie"></i><span><b>Høstferie</b><span class="kilde">12.–16. okt. · hele dagen</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        <button type="button" class="hend" data-endre><i></i><span><b>Møte med GFGK-styret</b><span class="kilde">Torsdag 22. okt. · 18:00–19:30</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+      </div>
+    </section>
+    <div class="ark-lag" data-ark hidden>
+      <div class="ark" role="dialog" aria-label="Hendelse">
+        <div class="ark-topp"><h2 data-ark-t>Ny hendelse</h2><button type="button" class="lukk" aria-label="Lukk" data-lukk><svg class="ikon" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+        <div class="typevalg" data-gruppe><button type="button" aria-pressed="true"><b>Møte</b><span>Opptatt</span></button><button type="button" aria-pressed="false"><b>Reise</b><span>Opptatt</span></button><button type="button" aria-pressed="false"><b>Ferie</b><span>Hele dager</span></button></div>
+        <div class="felt"><label for="h-tittel">Tittel</label><input id="h-tittel" value="Sportssjefsmøte WANG"></div>
+        <div class="to-felt"><div class="felt"><label for="h-fra">Fra</label><input id="h-fra" type="datetime-local" value="2026-10-07T11:00"></div><div class="felt"><label for="h-til">Til</label><input id="h-til" type="datetime-local" value="2026-10-07T13:00"></div></div>
+        <div class="felt"><label for="h-notat">Notat <span class="kilde">bare du ser det</span></label><textarea id="h-notat" rows="2">Agenda lages tirsdag kveld.</textarea></div>
+        <button type="button" class="knapp pri stor" data-lagre>Lagre</button>
+        <button type="button" class="knapp sek" data-slett hidden>Slett hendelsen</button>
+      </div>
+    </div>
+    <div class="dialog-lag" data-dialog hidden>
+      <div class="dialog" role="alertdialog" aria-labelledby="hs-t">
+        <h2 id="hs-t">Slette «Sportssjefsmøte WANG»?</h2>
+        <p class="forklar">Tiden blir bookbar igjen innenfor tilgjengeligheten din.</p>
+        <div class="knapper"><button type="button" class="knapp rust stor" data-hs-ok>Slett hendelsen</button><button type="button" class="knapp sek stor" data-hs-nei>Behold</button></div>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= Ny spiller ================= -->
+<template id="nyspiller">
+<div class="app" data-fane="stall" data-tilbake="Stall">
+  <main class="innhold smal">
+    <div class="topp" data-behold>
+      <div><div class="dato" data-steg-t>Stall · ny spiller · steg 1 av 4</div><h1 class="tittel">Ny spiller</h1></div>
+      <div class="stegrad" data-stegrad><span class="paa"><i></i>Personen</span><span><i></i>Golf</span><span><i></i>Avtale</span><span><i></i>Invitasjon</span></div>
+    </div>
+    <section class="seksjon" data-steg="1">
+      <div class="to-felt"><div class="felt"><label for="n-fornavn">Fornavn</label><input id="n-fornavn" value="Lea"></div><div class="felt"><label for="n-etternavn">Etternavn</label><input id="n-etternavn" value="Holm"></div></div>
+      <div class="felt"><label for="n-epost">E-post</label><input id="n-epost" type="email" value="lea.holm@eksempel.no"></div>
+      <div class="felt"><label for="n-fodt">Fødselsdato</label><input id="n-fodt" type="date" value="2012-03-14"><span class="hjelp">Påkrevd for spillere. Spilleren kan ikke endre den selv.</span></div>
+      <div class="u16"><svg class="ikon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg><span><b>Lea er 14 år</b>Forelder må godkjenne innen sju dager. Deling og opptak er sperret til da.</span></div>
+      <button type="button" class="knapp pri stor" data-neste="2">Neste</button>
+    </section>
+    <section class="seksjon" data-steg="2" hidden>
+      <div class="to-felt"><div class="felt"><label for="n-hcp">HCP</label><input id="n-hcp" inputmode="decimal" value="18,4"></div><div class="felt"><label for="n-klubb">Klubb</label><input id="n-klubb" value="Gamle Fredrikstad GK"></div></div>
+      <div class="felt"><span class="etikett">Kategori</span>
+        <div class="kat-valg" data-gruppe><button type="button" aria-pressed="false">A</button><button type="button" aria-pressed="false">B</button><button type="button" aria-pressed="false">C</button><button type="button" aria-pressed="false">D</button><button type="button" aria-pressed="false">E</button><button type="button" aria-pressed="false">F</button><button type="button" aria-pressed="true">G</button><button type="button" aria-pressed="false">H</button><button type="button" aria-pressed="false">I</button><button type="button" aria-pressed="false">J</button><button type="button" aria-pressed="false">K</button></div>
+        <span class="hjelp">Settes ut fra brutto snittscore. Kan endres senere.</span>
+      </div>
+      <div class="felt"><label for="n-gruppe">Gruppe</label><select id="n-gruppe"><option>GFGK Junior Utvikling</option><option>GFGK Junior Basis</option><option>AK Golf Academy</option><option>Ingen gruppe</option></select></div>
+      <div class="knapper"><button type="button" class="knapp pri" data-neste="3">Neste</button><button type="button" class="knapp sek" data-neste="1">Tilbake</button></div>
+    </section>
+    <section class="seksjon" data-steg="3" hidden>
+      <div class="felt"><span class="etikett">Avtale</span>
+        <div class="typevalg" data-gruppe style="grid-template-columns:1fr 1fr"><button type="button" aria-pressed="false"><b>Performance Pro</b><span>4 klipp i måneden · Full inkludert</span></button><button type="button" aria-pressed="false"><b>Performance</b><span>2 klipp i måneden · Full inkludert</span></button><button type="button" aria-pressed="true"><b>Gruppe</b><span>Gruppetrening</span></button><button type="button" aria-pressed="false"><b>Ingen avtale</b><span>Spilleren velger Gratis eller Full selv</span></button></div>
+      </div>
+      <div class="felt"><label for="n-forelder">Forelders e-post</label><input id="n-forelder" type="email" value="kari.holm@eksempel.no"><span class="hjelp">Forelderen får egen invitasjon og godkjenner for Lea.</span></div>
+      <div class="knapper"><button type="button" class="knapp pri" data-neste="4">Neste</button><button type="button" class="knapp sek" data-neste="2">Tilbake</button></div>
+    </section>
+    <section class="seksjon" data-steg="4" hidden>
+      <ul class="oppsummering">
+        <li><span>Spiller</span><b>Lea Holm, 14 år</b></li>
+        <li><span>Golf</span><b>HCP 18,4 · Kategori G · GFGK Junior Utvikling</b></li>
+        <li><span>Avtale</span><b>Gruppe</b></li>
+        <li><span>Forelder</span><b>kari.holm@eksempel.no</b></li>
+      </ul>
+      <div class="epost"><span class="kilde">Utkast fra Jarvis · til lea.holm@eksempel.no og kari.holm@eksempel.no</span><span>Hei Lea og Kari. Lea er lagt inn i GFGK Junior Utvikling i AK Golf HQ. Lenken under lager kontoen og gjelder i sju dager. Kari må godkjenne for Lea, fordi hun er under 16.</span></div>
+      <div class="knapper"><button type="button" class="knapp pri" data-send>Opprett og send invitasjon</button><button type="button" class="knapp sek" data-neste="3">Tilbake</button></div>
+      <p class="kildetekst">Ingenting sendes før du trykker. Spilleren havner i Stall med en gang.</p>
+    </section>
+  </main>
+</div>
+</template>
+
+<!-- ================= Ny gruppetrening ================= -->
+<template id="gruppetrening">
+<div class="app" data-fane="mer" data-tilbake="Gruppa">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div><div class="dato">Grupper · WANG Toppidrett · faste tider</div><h1 class="tittel">Ny gruppetrening</h1></div>
+    </div>
+    <div class="to-del">
+      <div>
+        <div class="felt"><label for="g-tittel">Tittel</label><input id="g-tittel" value="Morgenøkt innspill"></div>
+        <div class="felt"><span class="etikett">Akse</span>
+          <div class="akse-valg" data-gruppe><button type="button" aria-pressed="false" data-a="fys"><i style="background:var(--fys)"></i>FYS</button><button type="button" aria-pressed="false" data-a="tek"><i style="background:var(--tek)"></i>TEK</button><button type="button" aria-pressed="true" data-a="slag"><i style="background:var(--slag)"></i>SLAG</button><button type="button" aria-pressed="false" data-a="spill"><i style="background:var(--spill)"></i>SPILL</button><button type="button" aria-pressed="false" data-a="turn"><i style="background:var(--turn)"></i>TURN</button></div>
+        </div>
+        <div class="to-felt"><div class="felt"><label for="g-dag">Dag</label><select id="g-dag"><option>Mandag</option><option>Tirsdag</option><option>Onsdag</option><option>Torsdag</option><option>Fredag</option></select></div><div class="felt"><label for="g-tid">Tid</label><input id="g-tid" value="07:00–08:30"></div></div>
+        <div class="to-felt"><div class="felt"><label for="g-sted">Sted</label><select id="g-sted"><option>Fredrikstad GK, range</option><option>Simulator 2</option><option>Treningsrommet</option></select></div><div class="felt"><label for="g-plasser">Plasser</label><input id="g-plasser" inputmode="numeric" value="12"></div></div>
+        <div class="felt"><span class="etikett">Gjentas</span><div class="valg" role="group"><button type="button" aria-pressed="true">Hver uke</button><button type="button" aria-pressed="false">Annenhver uke</button><button type="button" aria-pressed="false">Én gang</button></div></div>
+        <div class="to-felt"><div class="felt"><label for="g-fra">Fra</label><input id="g-fra" type="date" value="2026-10-05"></div><div class="felt"><label for="g-til">Til</label><input id="g-til" type="date" value="2026-12-18"></div></div>
+      </div>
+      <div>
+        <div class="okt slag" style="grid-template-columns:1fr">
+          <span class="okt-tekst"><span class="okt-rad"><span class="okt-tid">07:00</span><span class="akse-merke"><i></i>SLAG</span></span><span class="navn" data-forhand>Morgenøkt innspill</span><span class="okt-info"><span>90 min</span><span>Fredrikstad GK, range</span><span>12 plasser</span></span></span>
+        </div>
+        <div class="vilkaar"><b>11 mandager · 10 økter</b><span>Mandager fra 5. oktober til 14. desember. Høstferien 12.–16. oktober hoppes over: 10 økter.</span></div>
+        <p class="forklar">Medlemmene får økta i planen sin. En spiller som har tilpasset en uke, beholder den, merket «Egen».</p>
+        <button type="button" class="knapp pri stor" data-lagre>Legg inn 10 økter</button>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= Skoledata ================= -->
+<template id="skoledata">
+<div class="app" data-fane="mer" data-tilbake="Gruppa">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div><div class="dato">Grupper · WANG Toppidrett · skoledata</div><h1 class="tittel">Skolens datoer</h1></div>
+      <p class="forklar">Prøver, turer og fridager som påvirker treningen. De vises i gruppas årsplan og i elevenes plan.</p>
+    </div>
+    <div class="faner" role="group" aria-label="Del" data-faner><button type="button" aria-pressed="true" data-p="liste">Datoene</button><button type="button" aria-pressed="false" data-p="lim">Lim inn fra skolen</button></div>
+    <div data-panel="liste" style="display:grid;gap:var(--r4)">
+      <div class="chips" data-gruppe role="group" aria-label="Trinn"><button type="button" aria-pressed="true">Alle <b>9</b></button><button type="button" aria-pressed="false">VG1 <b>3</b></button><button type="button" aria-pressed="false">VG2 <b>3</b></button><button type="button" aria-pressed="false">VG3 <b>3</b></button></div>
+      <ul class="skole-liste">
+        <li><time>12.–16. okt.</time><span><b>Høstferie</b><span class="kilde">Alle trinn · fridager</span></span><span class="pille noy">Fri</span></li>
+        <li><time>21. okt.</time><span><b>Heldagsprøve norsk</b><span class="kilde">VG3 · ingen morgenøkt</span></span><span class="pille vent"><i></i>Prøve</span></li>
+        <li><time>28. okt.</time><span><b>Heldagsprøve matematikk</b><span class="kilde">VG2</span></span><span class="pille vent"><i></i>Prøve</span></li>
+        <li><time>4.–6. nov.</time><span><b>Ekskursjon Oslo</b><span class="kilde">VG1</span></span><span class="pille noy">Tur</span></li>
+      </ul>
+      <button type="button" class="knapp sek" style="justify-self:start" data-en>Legg til én dato</button>
+    </div>
+    <div data-panel="lim" hidden style="display:grid;gap:var(--r4)">
+      <div class="felt"><label for="s-lim">Lim inn fra skolens liste</label><textarea id="s-lim" rows="5">18.11.2026 VG2 Heldagsprøve engelsk
+25.11.2026 VG3 Tentamen
+23.12.2026 Alle Juleferie starter
+31.13.2026 VG1 Fagdag</textarea><span class="hjelp">Én dato per linje: dato, trinn og hva. Kopier rett fra skolens kalender.</span></div>
+      <div class="forhånd">
+        <div><svg class="ikon ok" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span><b>18. nov. · VG2 · Heldagsprøve engelsk</b></span></div>
+        <div><svg class="ikon ok" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span><b>25. nov. · VG3 · Tentamen</b></span></div>
+        <div><svg class="ikon ok" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span><b>23. des. · Alle trinn · Juleferie starter</b></span></div>
+        <div><svg class="ikon feil" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg><span><b>Linje 4: datoen 31.13.2026 finnes ikke</b><span class="kilde">Rett datoen, eller lagre de tre andre.</span></span></div>
+      </div>
+      <button type="button" class="knapp pri" style="justify-self:start" data-lagre-lim>Lagre 3 datoer</button>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= Team og tilgang ================= -->
+<template id="team">
+<div class="app" data-fane="mer" data-tilbake="Oppsett">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div><div class="dato">Oppsett · team</div><h1 class="tittel">Team og tilgang</h1></div>
+    </div>
+    <div class="to-del">
+      <section class="seksjon">
+        <div class="sek-topp"><h2>Coacher</h2><span class="kilde">2 aktive · 1 invitert</span></div>
+        <div class="kort" style="gap:0;padding-top:4px;padding-bottom:4px">
+          <div class="team-rad"><span class="avatar liten">AK</span><span><b>Anders Kristiansen</b><span class="kilde">Head coach · ser alt, også Økonomi</span></span><span class="pille ok"><i></i>Aktiv</span></div>
+          <div class="team-rad"><span class="avatar liten">MA</span><span><b>Markus</b><span class="kilde">Assist Coach · egne økter og gruppeøkter</span></span><span class="pille ok"><i></i>Aktiv</span></div>
+          <div class="team-rad"><span class="avatar liten lys">?</span><span><b>ny.coach@akgolf.no</b><span class="kilde">Assist Coach · invitasjonen gjelder til 12. okt.</span></span><span class="pille vent"><i></i>Venter</span></div>
+        </div>
+        <button type="button" class="knapp pri" style="justify-self:start" data-inviter>Inviter coach</button>
+      </section>
+      <section class="seksjon">
+        <div class="sek-topp"><h2>Eksterne lesere</h2><span class="kilde">1</span></div>
+        <div class="kort" style="gap:0;padding-top:4px;padding-bottom:4px">
+          <div class="team-rad"><span class="avatar liten" style="background:#012B5D">TN</span><span><b>Trener, Team Norway</b><span class="kilde">trener@golfforbundet.no · ser det 3 spillere har delt</span></span><button type="button" class="knapp sek" style="min-height:40px" data-trekk>Trekk</button></div>
+        </div>
+        <p class="kildetekst">Eksterne lesere ser bare det spilleren selv har delt fra Meg › Deling. Gruppemedlemskap alene gir ikke innsyn.</p>
+      </section>
+    </div>
+    <div class="ark-lag" data-ark hidden>
+      <div class="ark" role="dialog" aria-label="Inviter coach">
+        <div class="ark-topp"><h2>Inviter coach</h2><button type="button" class="lukk" aria-label="Lukk" data-lukk><svg class="ikon" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+        <div class="felt"><label for="t-epost">E-post</label><input id="t-epost" type="email" value="ny.coach@akgolf.no"></div>
+        <div class="rolle-valg" data-gruppe><button type="button" aria-pressed="false"><b>Head coach</b><span>Ser alt, også Økonomi</span></button><button type="button" aria-pressed="true"><b>Assist Coach</b><span>Egne økter og gruppeøkter</span></button></div>
+        <p class="kildetekst">Invitasjonen gjelder i sju dager. Den sendes når du trykker.</p>
+        <button type="button" class="knapp pri stor" data-send-inv>Send invitasjon</button>
+      </div>
+    </div>
+    <div class="dialog-lag" data-dialog hidden>
+      <div class="dialog" role="alertdialog" aria-labelledby="tr-t">
+        <h2 id="tr-t">Trekke tilgangen?</h2>
+        <p class="forklar">Treneren mister innsynet med en gang. Spillernes delinger blir liggende hos dem.</p>
+        <div class="knapper"><button type="button" class="knapp rust stor" data-tr-ok>Trekk tilgangen</button><button type="button" class="knapp sek stor" data-tr-nei>Avbryt</button></div>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= Notion ================= -->
+<template id="notion">
+<div class="app" data-fane="mer" data-tilbake="Oppsett">
+  <main class="innhold smal">
+    <div class="topp" data-behold>
+      <div><div class="dato">Oppsett · integrasjoner</div><h1 class="tittel">Notion</h1></div>
+      <p class="forklar">Oppgavene i Cockpit kommer bare fra Notion: Tasks og Prosjekter. AgencyOS leser, og skriver bare når du huker av en oppgave.</p>
+    </div>
+    <section class="kort" aria-label="Tilkoblingen">
+      <div class="db-rad" style="border:0;padding:0"><span class="notion-logo" aria-hidden="true">N</span><span><b>AK Golf Group</b><span class="kilde">Koblet 2. sep. av Anders Kristiansen</span></span><span class="pille ok"><i></i>Koblet</span></div>
+    </section>
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Databaser</h2></div>
+      <div class="kort" style="gap:0;padding-top:4px;padding-bottom:4px">
+        <div class="db-rad"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span><span><b>Tasks</b><span class="kilde">24 åpne · synket i dag 08:15</span></span><span class="pille ok"><i></i>I bruk</span></div>
+        <div class="db-rad"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span><span><b>Prosjekter</b><span class="kilde">9 aktive · synket i dag 08:15</span></span><span class="pille ok"><i></i>I bruk</span></div>
+      </div>
+      <p class="kildetekst">Synkes hvert 15. minutt.</p>
+    </section>
+    <div class="knapper"><button type="button" class="knapp sek" data-synk>Synk nå</button><button type="button" class="knapp sek" data-koble>Koble fra</button></div>
+  </main>
+</div>
+</template>
+
+<!-- ================= E-postmaler ================= -->
+<template id="maler">
+<div class="app" data-fane="mer" data-tilbake="Oppsett">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div><div class="dato">Oppsett · e-postmaler</div><h1 class="tittel">E-postmaler</h1></div>
+      <p class="forklar">Malene Jarvis bruker når den lager utkast i Innboks. Ingen e-post sendes uten at du trykker Send.</p>
+    </div>
+    <div class="to-del">
+      <section class="seksjon">
+        <div class="liste" data-maler>
+          <button type="button" aria-pressed="true"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg></span><span><b>Velkommen til AK Golf HQ</b><span class="kilde">Ny spiller · brukt 6 ganger</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+          <button type="button"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg></span><span><b>Takk for timen</b><span class="kilde">Etter coachingtime, gjest · brukt 11 ganger</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+          <button type="button"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg></span><span><b>Oppfølging etter 14 dager</b><span class="kilde">Gjest uten ny time · brukt 3 ganger</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+          <button type="button"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg></span><span><b>Avvist forespørsel</b><span class="kilde">Booking som ikke passer · brukt 2 ganger</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div>
+        <button type="button" class="knapp sek" style="justify-self:start" data-ny-mal>Ny mal</button>
+      </section>
+      <section class="kort">
+        <div class="felt"><label for="m-navn">Navn</label><input id="m-navn" value="Velkommen til AK Golf HQ"></div>
+        <div class="felt"><label for="m-emne">Emne</label><input id="m-emne" value="Velkommen, {fornavn}"></div>
+        <div class="felt"><label for="m-tekst">Tekst</label><textarea id="m-tekst" rows="6">Hei {fornavn}.
+
+Du er lagt inn i {gruppe} i AK Golf HQ. Lenken under lager kontoen og gjelder i sju dager.
+
+Hilsen {coach}</textarea></div>
+        <div class="felt"><span class="etikett">Flettefelt</span><div class="mal-flette"><code>{fornavn}</code><code>{gruppe}</code><code>{coach}</code><code>{tid}</code><code>{sted}</code></div></div>
+        <div class="knapper"><button type="button" class="knapp pri" data-lagre-mal>Lagre malen</button><button type="button" class="knapp sek" data-slett-mal>Slett</button></div>
+      </section>
+    </div>
+    <div class="dialog-lag" data-dialog hidden>
+      <div class="dialog" role="alertdialog" aria-labelledby="ms-t">
+        <h2 id="ms-t">Slette malen?</h2>
+        <p class="forklar">Utkast som allerede er laget fra malen, blir liggende i Innboks.</p>
+        <div class="knapper"><button type="button" class="knapp rust stor" data-ms-ok>Slett malen</button><button type="button" class="knapp sek stor" data-ms-nei>Avbryt</button></div>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<script src="felles/demo.js"></script>
+<script src="felles/agencyos.js"></script>
+<script>
+(function () {
+  var A = window.AKAgency;
+  var UKE = [['MAN', [['10:00–12:00', 'Simulator'], ['14:00–19:30', 'Ute og simulator']]], ['TIR', [['14:00–20:00', 'Sim 2']]], ['ONS', [['10:00–11:00', 'Range']]], ['TOR', [['14:00–20:00', 'Sim 2']]], ['FRE', [['09:00–14:00', 'Range']]], ['LØR', []], ['SØN', []]];
+  function tilg(app) {
+    app.querySelector('[data-uke]').innerHTML = UKE.map(function (d) {
+      return '<div class="dag-rad"><b>' + d[0] + '</b><span class="vinduer">' + (d[1].length ? d[1].map(function (v) { return '<span class="vindu"><b>' + v[0] + '</b>' + v[1] + '</span>'; }).join('') : '<span class="vindu av">Ikke bookbar</span>') + '</span><button type="button" class="legg-til" aria-label="Nytt vindu ' + d[0].toLowerCase() + '" data-vindu="' + d[0] + '"><svg class="ikon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>';
+    }).join('');
+    var ark = app.querySelector('[data-ark]');
+    app.querySelectorAll('[data-vindu]').forEach(function (b) { b.addEventListener('click', function () { app.querySelector('[data-ark-t]').textContent = 'Nytt vindu, ' + b.dataset.vindu.toLowerCase(); A.vis(app, '[data-ark]', true); }); });
+    app.querySelector('[data-lukk]').addEventListener('click', function () { ark.hidden = true; });
+    app.querySelector('[data-lagre]').addEventListener('click', function () { ark.hidden = true; A.toast(app, 'Lagret. Ledige tider er oppdatert for spillerne.'); });
+    app.querySelector('[data-unntak]').addEventListener('click', function () { A.toast(app, 'Unntak legges inn som en kalenderhendelse.'); });
+  }
+  function hendelse(app) {
+    var ark = app.querySelector('[data-ark]');
+    app.querySelector('[data-ny]').addEventListener('click', function () { app.querySelector('[data-ark-t]').textContent = 'Ny hendelse'; app.querySelector('[data-slett]').hidden = true; A.vis(app, '[data-ark]', true); });
+    app.querySelectorAll('[data-endre]').forEach(function (b) { b.addEventListener('click', function () { app.querySelector('[data-ark-t]').textContent = 'Endre hendelse'; app.querySelector('[data-slett]').hidden = false; A.vis(app, '[data-ark]', true); }); });
+    app.querySelector('[data-lukk]').addEventListener('click', function () { ark.hidden = true; });
+    app.querySelector('[data-lagre]').addEventListener('click', function () { ark.hidden = true; A.toast(app, 'Lagret. Tiden er blokkert i kalenderen.'); });
+    app.querySelector('[data-slett]').addEventListener('click', function () { ark.hidden = true; A.vis(app, '[data-dialog]', true); });
+    app.querySelector('[data-hs-nei]').addEventListener('click', function () { A.vis(app, '[data-dialog]', false); });
+    app.querySelector('[data-hs-ok]').addEventListener('click', function () { A.vis(app, '[data-dialog]', false); A.toast(app, 'Hendelsen er slettet.', function () { A.toast(app, 'Hendelsen er tilbake.'); }); });
+  }
+  function nyspiller(app) {
+    function steg(n) {
+      app.querySelectorAll('[data-steg]').forEach(function (s) { s.hidden = s.dataset.steg !== String(n); });
+      app.querySelectorAll('[data-stegrad] span').forEach(function (s, i) { s.className = i < n ? 'paa' : ''; });
+      app.querySelector('[data-steg-t]').textContent = 'Stall · ny spiller · steg ' + n + ' av 4';
+    }
+    app.querySelectorAll('[data-neste]').forEach(function (b) { b.addEventListener('click', function () { steg(+b.dataset.neste); }); });
+    app.querySelector('[data-send]').addEventListener('click', function () { A.toast(app, 'Lea Holm er lagt i Stall. Invitasjonen er sendt til Lea og Kari.'); });
+  }
+  function gruppetrening(app) {
+    app.querySelector('#g-tittel').addEventListener('input', function (e) { app.querySelector('[data-forhand]').textContent = e.target.value || 'Gruppetrening'; });
+    var kort = app.querySelector('.okt'), merke = kort.querySelector('.akse-merke');
+    app.querySelector('.akse-valg').addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; kort.className = 'okt ' + b.dataset.a; merke.innerHTML = '<i></i>' + b.textContent; });
+    app.querySelector('[data-lagre]').addEventListener('click', function () { A.toast(app, '10 økter lagt inn. 11 medlemmer har fått dem i planen.'); });
+  }
+  function skoledata(app) {
+    app.querySelector('[data-faner]').addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; app.querySelectorAll('[data-panel]').forEach(function (p) { p.hidden = p.dataset.panel !== b.dataset.p; }); });
+    app.querySelector('[data-en]').addEventListener('click', function () { A.toast(app, 'Åpner skjema for én dato.'); });
+    app.querySelector('[data-lagre-lim]').addEventListener('click', function () { A.toast(app, '3 datoer lagret. Linje 4 ligger igjen i feltet.'); });
+  }
+  function team(app) {
+    var ark = app.querySelector('[data-ark]');
+    app.querySelector('[data-inviter]').addEventListener('click', function () { A.vis(app, '[data-ark]', true); });
+    app.querySelector('[data-lukk]').addEventListener('click', function () { ark.hidden = true; });
+    app.querySelector('[data-send-inv]').addEventListener('click', function () { ark.hidden = true; A.toast(app, 'Invitasjonen er sendt. Den gjelder i sju dager.'); });
+    app.querySelector('[data-trekk]').addEventListener('click', function () { A.vis(app, '[data-dialog]', true); });
+    app.querySelector('[data-tr-nei]').addEventListener('click', function () { A.vis(app, '[data-dialog]', false); });
+    app.querySelector('[data-tr-ok]').addEventListener('click', function () { A.vis(app, '[data-dialog]', false); A.toast(app, 'Tilgangen er trukket.'); });
+  }
+  function notion(app) {
+    app.querySelector('[data-synk]').addEventListener('click', function () { A.toast(app, 'Synket. 24 åpne oppgaver og 9 prosjekter.'); });
+    app.querySelector('[data-koble]').addEventListener('click', function () { A.toast(app, 'Cockpit viser ingen oppgaver mens Notion er frakoblet.'); });
+  }
+  function maler(app) {
+    var l = app.querySelector('[data-maler]');
+    l.addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; app.querySelector('#m-navn').value = b.querySelector('b').textContent; });
+    app.querySelector('[data-lagre-mal]').addEventListener('click', function () { A.toast(app, 'Malen er lagret.'); });
+    app.querySelector('[data-ny-mal]').addEventListener('click', function () { app.querySelector('#m-navn').value = ''; app.querySelector('#m-navn').focus({ preventScroll: true }); });
+    app.querySelector('[data-slett-mal]').addEventListener('click', function () { A.vis(app, '[data-dialog]', true); });
+    app.querySelector('[data-ms-nei]').addEventListener('click', function () { A.vis(app, '[data-dialog]', false); });
+    app.querySelector('[data-ms-ok]').addEventListener('click', function () { A.vis(app, '[data-dialog]', false); A.toast(app, 'Malen er slettet.'); });
+  }
+  A.start({
+    start: 'tilg',
+    skjermer: {
+      tilg: { etter: tilg, tom: { tittel: 'Ingen tider er åpne for booking', tekst: 'Legg inn når spillerne kan booke deg. Uten vinduer kan ingen booke.', knapp: 'Legg inn første vindu' }, laster: 'Henter tilgjengeligheten …', feil: 'Tilgjengeligheten kunne ikke hentes' },
+      hendelse: { etter: hendelse, tom: { tittel: 'Ingen blokkert tid', tekst: 'Møter, reiser og ferie du legger inn her, gjør tiden ubookbar.', knapp: 'Ny hendelse' }, laster: 'Henter hendelsene …', feil: 'Hendelsene kunne ikke hentes' },
+      nyspiller: { etter: nyspiller, tom: null, laster: 'Oppretter spilleren …', feil: 'Spilleren kunne ikke opprettes. Ingenting er sendt.' },
+      gruppetrening: { etter: gruppetrening, tom: null, laster: 'Legger inn øktene …', feil: 'Øktene kunne ikke legges inn. Ingenting er endret.' },
+      skoledata: { etter: skoledata, tom: { tittel: 'Ingen skoledatoer ennå', tekst: 'Lim inn skolens liste med prøver, turer og fridager.', knapp: 'Lim inn fra skolen' }, laster: 'Henter datoene …', feil: 'Datoene kunne ikke hentes' },
+      team: { etter: team, tom: { tittel: 'Bare deg i teamet', tekst: 'Inviter en coach for å dele kalender og grupper.', knapp: 'Inviter coach' }, laster: 'Henter teamet …', feil: 'Teamet kunne ikke hentes' },
+      notion: { etter: notion, tom: { tittel: 'Notion er ikke koblet', tekst: 'Koble til Notion for å se oppgavene og prosjektene i Cockpit.', knapp: 'Koble til Notion' }, laster: 'Henter tilkoblingen …', feil: 'Notion svarte ikke. Oppgavene fra siste synk vises fortsatt i Cockpit.' },
+      maler: { etter: maler, tom: { tittel: 'Ingen maler ennå', tekst: 'Lag en mal, så kan Jarvis bruke den i utkastene.', knapp: 'Ny mal' }, laster: 'Henter malene …', feil: 'Malene kunne ikke hentes' }
+    }
+  });
+})();
+</script>
+</body></html>
