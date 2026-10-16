@@ -18,7 +18,7 @@ import { AG11Fysisk, AG11Turnering } from "@/components/admin/precision/AG11Modu
 import { PH11Aarsplan } from "@/components/portal/precision/PH11Aarsplan";
 import { OSLO_YMD_FMT } from "@/lib/jarvis/dagen";
 import { PH11Periode } from "@/components/portal/precision/PH11Periode";
-import { WorkbenchManed } from "@/components/workbench/WorkbenchManed";
+import { PH11Maned } from "@/components/portal/precision/PH11Maned";
 import {
   loadMonth,
   loadPeriod,
@@ -86,8 +86,8 @@ export default async function PlayerWorkbenchPage({ searchParams }: Props) {
       : <AG11Turnering playerId={playerId} spillerNavn={spillerNavn} data={fys} actions={actions} routeSurface="player" />}</Ramme>;
   }
 
-  // Spilleren får nivåene (§SPILLERENS WORKBENCH FÅR NIVÅENE, 14.10): År og Periode er portert.
-  const nyttNiva = ["aar", "periode"].includes(parseVisning(queryVerdi(sp, "niva") ?? queryVerdi(sp, "vis"))) && !queryVerdi(sp, "flate");
+  // Spilleren får nivåene (§SPILLERENS WORKBENCH FÅR NIVÅENE, 14.10): År, Periode og Måned er portert.
+  const nyttNiva = ["aar", "periode", "maned"].includes(parseVisning(queryVerdi(sp, "niva") ?? queryVerdi(sp, "vis"))) && !queryVerdi(sp, "flate");
   if (!nyttNiva && brukSamletWorkbench(sp)) {
     const data = await loadWorkbenchSamletData({
       playerId, routeSurface: "player", query: sp,
@@ -117,12 +117,9 @@ export default async function PlayerWorkbenchPage({ searchParams }: Props) {
 
   if (visning === "maned") {
     const monthStart = kontekst.monthStart;
-    const [monthRes, kilderRes] = await Promise.all([
-      loadMonth({ monthStart, mode, playerId }),
-      loadSources({ playerId, weekStart }),
-    ]);
+    const monthRes = await loadMonth({ monthStart, mode, playerId });
     if (!monthRes.ok) return <Feil uleste={uleste} melding={monthRes.error} />;
-    return <Ramme uleste={uleste}><Arv><WorkbenchManed planKontekst={kontekst.referanse} playerId={playerId} spillerNavn={spillerNavn} maned={monthRes.data} kilder={kilderRes.ok ? kilderRes.data : []} goals={goals} routeSurface="player" /></Arv></Ramme>;
+    return <Ramme uleste={uleste}><PH11Maned key={`${playerId}:${monthStart}`} playerId={playerId} maned={monthRes.data} goals={goals} referanse={kontekst.referanse} idag={OSLO_YMD_FMT.format(now)} /></Ramme>;
   }
 
   if (visning === "periode") {

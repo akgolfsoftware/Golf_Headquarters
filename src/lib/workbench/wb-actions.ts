@@ -106,7 +106,7 @@ import { bankOvelseWhere, hentBankReferanser, lastBankOvelse, lastBankOppgave } 
 import { hentTekniskPanel } from "@/lib/workbench/teknisk-plan-panel";
 import { opprettPeriodeCore, oppdaterPeriodeCore, slettPeriodeCore, type FordeltPeriodeResultat } from "@/lib/workbench/periode-core";
 import { parseAxisMinutes, parseSessionBudget } from "@/lib/workbench/perioder";
-import { hentMaaned, lagreMaanedCore } from "@/lib/workbench/maanedsplan-core";
+import { hentMaaned, hentMaanedDetaljer, lagreMaanedCore } from "@/lib/workbench/maanedsplan-core";
 import type { MaanedKvittering } from "@/lib/workbench/maanedsplan-regler";
 import {
   isoUkeIdentitet,
@@ -917,6 +917,7 @@ export async function loadMonth(params: {
   const label = `${UI.monthNames[m - 1]} ${y}`;
   const idagIso = new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Oslo" }).format(new Date());
   const maanedsplan = await hentMaaned(params.playerId, y, m);
+  const detaljer = await hentMaanedDetaljer(params.playerId, y, m, sessions, maanedsplan?.uker ?? {});
   return {
     ok: true,
     data: {
@@ -929,6 +930,7 @@ export async function loadMonth(params: {
         idagIso,
       ),
       maanedsplan,
+      detaljer,
     },
   };
 }
