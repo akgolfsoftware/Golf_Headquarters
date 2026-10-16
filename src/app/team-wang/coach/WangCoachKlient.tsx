@@ -13,6 +13,7 @@ import { WangAdmin } from '@/components/wang/WangAdmin';
 import { WangSkjermoversikt } from '@/components/wang/WangSkjermoversikt';
 import { WangKobledeVisninger, type WangKobletElev } from '@/components/wang/WangKobledeVisninger';
 import type { WangRolle } from '@/app/team-wang/_data/wang-rolle';
+import type { WangTrenerData } from '@/app/team-wang/_data/wang-trener-data';
 
 interface WangCoachKlientProps {
   /** Området er avgjort av serveren (rolle og gyldighet er sjekket der). */
@@ -22,7 +23,8 @@ interface WangCoachKlientProps {
   brukerNavn?: string;
   /** PLAYER-medlemmer i WANG-gruppa, til lenkene mot ekte data. */
   elever?: WangKobletElev[];
-  campus?: string;
+  /** Ekte gruppedata, bygget på serveren (byggWangTrenerData). */
+  data: WangTrenerData;
 }
 
 export function WangCoachKlient({
@@ -31,7 +33,7 @@ export function WangCoachKlient({
   rolle,
   brukerNavn,
   elever = [],
-  campus = 'Fredrikstad',
+  data,
 }: WangCoachKlientProps) {
   const router = useRouter();
 
@@ -56,7 +58,7 @@ export function WangCoachKlient({
         <WangIdag
           aktivFane={fane}
           onFaneEndret={(nyFane) => navigerTil('idag', nyFane)}
-          campus={campus}
+          data={data}
         />
       )}
 
@@ -64,7 +66,7 @@ export function WangCoachKlient({
         <WangTrening
           aktivFane={fane}
           onFaneEndret={(nyFane) => navigerTil('trening', nyFane)}
-          campus={campus}
+          data={data}
         />
       )}
 
@@ -75,7 +77,7 @@ export function WangCoachKlient({
         <WangTester
           aktivFane={fane}
           onFaneEndret={(nyFane) => navigerTil('tester', nyFane)}
-          campus={campus}
+          data={data}
         />
       )}
 
@@ -86,7 +88,7 @@ export function WangCoachKlient({
         <WangKonkurranse
           aktivFane={fane}
           onFaneEndret={(nyFane) => navigerTil('konkurranse', nyFane)}
-          campus={campus}
+          data={data}
         />
       )}
 
@@ -94,7 +96,7 @@ export function WangCoachKlient({
         <WangMeldinger
           aktivFane={fane}
           onFaneEndret={(nyFane) => navigerTil('meldinger', nyFane)}
-          campus={campus}
+          data={data}
         />
       )}
 
@@ -105,7 +107,7 @@ export function WangCoachKlient({
         <WangElever
           aktivFane={fane}
           onFaneEndret={(nyFane) => navigerTil('elever', nyFane)}
-          campus={campus}
+          data={data}
         />
       )}
 
@@ -113,7 +115,7 @@ export function WangCoachKlient({
         <WangAdmin
           aktivFane={fane}
           onFaneEndret={(nyFane) => navigerTil('admin', nyFane)}
-          campus={campus}
+          data={data}
         />
       )}
 
