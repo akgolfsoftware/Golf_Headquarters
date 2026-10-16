@@ -1,68 +1,54 @@
-// PH23NyBooking — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
-import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+// PH23Booking «Book time» — Precision Athletics PH-23 (pakke 11).
 /**
- * Booking-wizard (/portal/booking/ny) — v2 (retning C), Team G-A 17. juli 2026.
+ * PlayerHQ · Book time (/portal/booking/ny).
+ * Fasit: docs/design-system/utkast-playerhq/kommunikasjon.html, mal «ny» (godkjent 14.10.2026).
  *
- * RESTYLING ONLY av legacy-wizarden: samme query-drevne steg-modell
- * (service → dato → tid → /portal/booking/ny/bekreft via slot-lenkene) og
- * NØYAKTIG samme server-logikk — guards, redirects, queries, getAvailableSlots
- * og lokasjonsoppløsning er kopiert uendret. Kun presentasjonen er ny
- * (V2Shell + BookingNyV2). URL-kontrakten ?service=&dato= er uendret.
- *
- * Utvidet 2026-08-28 (Anders: spilleren skal ALDRI sendes ut av appen for å
- * booke): to moduser. «credits» = som før (forhåndsbetalte timer). «betaling»
- * = betal per time med kort (opprettBookingMedKort → Stripe Checkout →
- * webhook bekrefter). Betaling brukes når spilleren ikke har brukbare
- * credits (ingen pakke, eller brukt opp), eller når ?betaling=1 er satt
- * (drop-in-lenken fra booking-huben). Redirecten til /coaching er fjernet —
- * TALENT-nivået har rett til å booke enkelttimer (BUSINESS-RULES).
+ * Samme flyt som /portal/booking: «Bekreft booking» går til klipp-flyten eller Stripe Checkout (kort).
+ * Spilleren sendes aldri ut av appen for å booke. Lenkene inn beholdes:
+ *   ?service=<id eller slug> forhåndsvelger tjenesten (Coach-siden og eldre lenker),
+ *   ?coachId=<id> velger coachens første tjeneste, ?betaling=1 (drop-in) åpner med kort.
+ * ?dato= fra den gamle veiviseren brukes ikke: Book time viser de neste 14 dagene.
  */
 
+import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { byggBookingNyData } from "@/lib/portal-booking/ny-wizard-data";
-import { TilbakeLenke, Kort, TomTilstand } from "@/components/v2";
-import { BookingNyV2 } from "@/components/portal/v2/BookingNyV2";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { PH23Booking } from "@/components/portal/precision/PH23Booking";
+import { hentPH23Data } from "@/lib/portal-booking/ph23-side-data";
+import { cancelBooking } from "@/app/portal/meg/bookinger/actions";
+import { bekreftPH23BookingAction, flyttPH23Booking, hentPH23Slots } from "../ph23-actions";
+
+export const dynamic = "force-dynamic";
+export const metadata = { title: "Book time · AK Golf" };
 
 type Props = {
-  searchParams: Promise<{ dato?: string; service?: string; betaling?: string }>;
+  searchParams: Promise<{ service?: string; coachId?: string; betaling?: string }>;
 };
 
 export default async function NyBookingPage({ searchParams }: Props) {
-  const { dato, service, betaling } = await searchParams;
+  const { service, coachId, betaling } = await searchParams;
   const user = await requirePortalUser({ kreverTilgang: "TALENT", allow: ["PLAYER", "COACH", "ADMIN"] });
+  if (user.role === "PARENT") redirect("/forelder");
 
-  const resultat = await byggBookingNyData({
-    eierId: user.id,
-    eierTier: user.tier,
-    wizardBase: "/portal/booking/ny",
-    dato,
-    service,
-    betaling,
-  });
+  const bookingData = await hentPH23Data(user, { service, coachId });
 
-  if (resultat.ingenTjenester) {
-    return (
-      <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
-      <div className="pa-side">
-        <TilbakeLenke href="/portal/booking">Booking</TilbakeLenke>
-        <Kort>
-          <TomTilstand
-            icon="target"
-            title="Ingen tjenester tilgjengelig"
-            sub="Ingen coaching-tjenester er aktive i øyeblikket. Kontakt support@akgolf.no."
-          />
-        </Kort>
-      </div>
-    </PlayerHQSkall>
-    );
+  async function handleCancel(bookingId: string) {
+    "use server";
+    await cancelBooking(bookingId);
+    return true;
   }
 
   return (
     <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
-      <div className="pa-side">
-      <TilbakeLenke href="/portal/booking">Booking</TilbakeLenke>
-      <BookingNyV2 data={resultat.data} />
-    </div>
+      <PH23Booking
+        initialData={bookingData}
+        start="ny"
+        startBetaling={betaling === "1" ? "Kort" : "Klipp"}
+        onConfirmBooking={bekreftPH23BookingAction}
+        onHentSlots={hentPH23Slots}
+        onRescheduleBooking={flyttPH23Booking}
+        onCancelBooking={handleCancel}
+      />
     </PlayerHQSkall>
   );
 }

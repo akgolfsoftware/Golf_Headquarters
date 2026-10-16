@@ -3,6 +3,7 @@
  * `/portal/booking/ny/bekreft/page.tsx` (STEG 9.8) — se ny-wizard-data.ts for
  * hvorfor. `eierId`/`eierTier` er PERSONEN bookingen gjelder for.
  */
+import { formatKr } from "@/lib/portal-booking/ph23-booking-data";
 import { fraNaivVeggklokke } from "@/lib/google-calendar-tid";
 import { kanBrukeCredits } from "@/lib/booking/credits-tilgang";
 import { isSlotStillAvailable } from "@/lib/booking/availability";
@@ -89,13 +90,13 @@ export async function byggBookingBekreftData(params: BekreftParams): Promise<Bek
     backHref,
     ledig,
     rader: [
-      { label: "Økt-type", verdi: service.name },
-      { label: "Coach", verdi: coachUser.name ?? "Coach" },
-      { label: "Dato/tid", verdi: datoTid },
+      { label: "Tjeneste", verdi: service.name },
+      { label: "Coach", verdi: coachUser.name ?? "—" },
+      { label: "Tid", verdi: datoTid },
       { label: "Varighet", verdi: `${service.durationMin} min` },
       {
-        label: erBetaling ? "Pris" : "Kostnad",
-        verdi: erBetaling ? `${service.priceOre / 100} kr` : "1 av månedens timer",
+        label: "Betaling",
+        verdi: erBetaling ? `Kort · ${formatKr(service.priceOre / 100)}` : "1 klipp",
       },
     ],
     creditsRemaining,
