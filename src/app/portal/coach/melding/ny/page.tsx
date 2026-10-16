@@ -1,19 +1,14 @@
-// PH21NyMelding — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
-import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+// PH21Innboks «Ny melding» — Precision Athletics, nytt design (pakke 11). Data og handlinger er beholdt.
 /**
- * PlayerHQ Coach · Ny melding (/portal/coach/melding/ny) — v2.
- * Hovedcoach er den aktive PlayerEnrollment-coachen, samme datakilde
- * som hub-siden. Uten tildelt coach vises tom tilstand — ingen tilfeldig coach.
- * (src/app/portal/coach/melding/page.tsx → CoachMeldingerV2). Erstatter
- * legacy /portal/(legacy)/coach/melding/ny som spillerens inngang.
+ * PlayerHQ · Ny melding (/portal/coach/melding/ny).
+ * Fasit: docs/design-system/utkast-playerhq/kommunikasjon.html, arket «Ny melding» i Meldinger.
+ * Åpner Meldinger med arket «Ny melding» og typen Melding valgt. Meldingen går til spillerens coach.
  */
-
 import { redirect } from "next/navigation";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { prisma } from "@/lib/prisma";
-import { TilbakeLenke } from "@/components/v2";
-import { CoachMeldingNyV2 } from "@/components/portal/v2/CoachMeldingNyV2";
-import { sendMeldingNyV2 } from "./actions";
+import { getPH21Data } from "@/lib/portal-coach/ph21-queries";
+import { PH21Innboks } from "@/components/portal/precision/PH21Innboks";
 
 export const dynamic = "force-dynamic";
 
@@ -22,31 +17,11 @@ export default async function NyMeldingPage() {
   if (user.role === "PARENT") redirect("/forelder");
   if (user.role === "GUEST") redirect("/admin/kalender");
 
-  if (user.tier === "GRATIS") {
-    return (
-      <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
-      <div className="pa-side">
-        <TilbakeLenke href="/portal/coach/melding">Meldinger</TilbakeLenke>
-        <CoachMeldingNyV2 data={{ gratis: true, coach: null }} sendAction={sendMeldingNyV2} />
-      </div>
-    </PlayerHQSkall>
-    );
-  }
-
-  const aktivEnrollering = await prisma.playerEnrollment.findFirst({
-    where: { userId: user.id, endedAt: null, coachId: { not: null } },
-    include: { coach: { select: { id: true, name: true } } },
-    orderBy: { enrolledAt: "desc" },
-  });
-
-  const coach = aktivEnrollering?.coach ?? null;
+  const data = await getPH21Data(user.id);
 
   return (
     <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
-      <div className="pa-side">
-      <TilbakeLenke href="/portal/coach/melding">Meldinger</TilbakeLenke>
-      <CoachMeldingNyV2 data={{ gratis: false, coach }} sendAction={sendMeldingNyV2} />
-    </div>
+      <PH21Innboks data={data} initialTab="msg" apneNy nyStartType="melding" />
     </PlayerHQSkall>
   );
 }
