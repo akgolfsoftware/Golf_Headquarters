@@ -66,7 +66,7 @@ Grunn: ingen lagring, og odds/modell skal ikke vises. Tas opp igjen bare med ny 
 
 | Flate | Inngang | Skall |
 |---|---|---|
-| AgencyOS | Mer › Data Golf (sjette punkt, se Åpent) · Spiller 360 › Stats «Mot PGA Tour» → DG-05 for spilleren · Workbench-øvelse «Fra Data Golf» → DG-06 | `utkast-agencyos/felles` |
+| AgencyOS | Mer › Data Golf (sjette punkt, avgjort 16.10) · Spiller 360 › Stats «Mot PGA Tour» → DG-05 for spilleren · Workbench-øvelse «Fra Data Golf» → DG-06 | `utkast-agencyos/felles` |
 | WANG | Konkurranse › DataGolf (WANG-50 i `wang-data.ts`, underpunktene kuttes til DG-01–09) | WANG-tokens |
 | Team Norway | Analyse › Data Golf (lenken ble fjernet 09.10; kommer tilbake bare for trenere med COACH-rolle) | TN-tokens |
 
@@ -86,6 +86,6 @@ spiller uten egne runder) · ingen tilgang (ikke coach: siden finnes ikke) · fo
 
 ## Åpent hos Anders
 
-1. **Mer får et sjette punkt «Data Golf».** Beslutningen 28.09 sier fem punkter. Alternativet er bare inngang via Spiller 360 › Stats.
+1. ~~**Mer får et sjette punkt «Data Golf».**~~ Avgjort 16.10: ja, Mer har seks punkter.
 2. ~~**Lisens** for WANG og TN.~~ Avgjort 16.10: bare coacher, aldri kunder. WANG og TN kan bygges etter AgencyOS.
 3. **Tour-snitt innspill** (`PgaApproachDistance`) er ikke per proff. DG-06 bruker proffens egne band; tour-snittet vises som referanse.
