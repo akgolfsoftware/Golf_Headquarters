@@ -296,7 +296,7 @@ export function MegV2({ data }: { data: MegData }) {
   ];
 
   const programStart = program ? formatDato(program.enrolledAt) : null;
-  const aboPlan = abo.planNavn ?? (abo.erPro ? "PlayerHQ Pro" : "PlayerHQ Gratis");
+  const aboPlan = abo.planNavn ?? (abo.erPro ? "PlayerHQ Full" : "PlayerHQ Gratis");
   const aboStatus = abo.status ? ABO_STATUS_LABEL[abo.status] ?? abo.status : null;
   const aboNesteTrekk = formatDato(abo.nesteTrekk);
 

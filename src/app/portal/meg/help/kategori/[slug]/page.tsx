@@ -156,7 +156,7 @@ const KATEGORIER: Record<string, KategoriDef> = {
   booking: {
     slug: "booking",
     tittel: "Booking + betaling",
-    beskrivelse: "Reservere fasiliteter, kjøpe credits, betale med Vipps eller kort, og forstå abonnement-detaljer.",
+    beskrivelse: "Reservere fasiliteter, kjøpe credits, betale med kort eller Apple Pay, og forstå abonnement-detaljer.",
     ikon: "calendar",
     artikler: [
       {

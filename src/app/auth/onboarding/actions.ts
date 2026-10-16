@@ -161,9 +161,23 @@ export type ForelderOnboardingData = {
   acceptedTermsParent?: boolean;
   acceptedPrivacyParent?: boolean;
   acceptedPaymentParent?: boolean;
-  // Steg 4 — Betaling
-  paymentMethod?: string;
+  // Steg 4 — Betaling. Bare kort gjennom Stripe (beslutning 15.10.2026: ingen Vipps, ingen faktura).
+  paymentMethod?: "KORT";
 };
+
+/** Bare kjente felt, og bare kort som betalingsmåte, lagres i forelderens preferences. */
+const ForelderOnboardingSchema = z
+  .object({
+    parentName: z.string().max(200).optional(),
+    parentPhone: z.string().max(40).optional(),
+    parentEmail: z.string().max(320).optional(),
+    parentRelation: z.string().max(40).optional(),
+    acceptedTermsParent: z.boolean().optional(),
+    acceptedPrivacyParent: z.boolean().optional(),
+    acceptedPaymentParent: z.boolean().optional(),
+    paymentMethod: z.literal("KORT").optional(),
+  })
+  .strict();
 
 // ──────────────────────────────────────────────────────────────────────────────
 // Lagre spiller-onboarding steg
@@ -503,8 +517,9 @@ export async function completeOnboarding(
 // ──────────────────────────────────────────────────────────────────────────────
 
 export async function saveForelderOnboardingStep(
-  data: ForelderOnboardingData
+  input: ForelderOnboardingData
 ): Promise<void> {
+  const data = ForelderOnboardingSchema.parse(input);
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
 

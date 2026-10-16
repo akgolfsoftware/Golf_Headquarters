@@ -101,7 +101,7 @@ function IntegrasjonKort({ integrasjon }: { integrasjon: Integrasjon }) {
           <div style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>{navn}</div>
           <Caps size={9} style={{ marginTop: 3 }}>{kategori}</Caps>
         </div>
-        {proBadge && <StatusPill tone="lime">Pro</StatusPill>}
+        {proBadge && <StatusPill tone="lime">Full</StatusPill>}
       </div>
 
       <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.6, margin: "10px 0 0" }}>

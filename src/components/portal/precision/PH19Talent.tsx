@@ -31,19 +31,6 @@ export type PH19TalentProps = {
     antallTester: number;
     trend?: string | null;
   }>;
-  milepaeler?: Array<{
-    tittel: string;
-    dato?: string | null;
-    beskrivelse?: string | null;
-    fullfort?: boolean;
-  }>;
-  perioder?: Array<{
-    id: string;
-    navn: string;
-    startDato: string;
-    sluttDato: string;
-    aktiv: boolean;
-  }>;
 };
 
 export function PH19Talent({
@@ -53,8 +40,6 @@ export function PH19Talent({
   klubb,
   region,
   testNivaaer = [],
-  milepaeler = [],
-  perioder = [],
 }: PH19TalentProps) {
   if (ikkeIProgrammet) {
     return (
@@ -96,13 +81,7 @@ export function PH19Talent({
             <StatusPille tone="ok">Nivå {niva}</StatusPille>
           </div>
           <h1 style={{ font: "var(--type-title-m)", color: "var(--text-primary)", margin: 0 }}>
-            {fane === "mitt-niva"
-              ? "Mitt nivå"
-              : fane === "min-plan"
-                ? "Min plan"
-                : fane === "roadmap"
-                  ? "Roadmap"
-                  : "Sammenligning"}
+            {fane === "mitt-niva" ? "Mitt nivå" : "Sammenligning"}
           </h1>
           <p style={{ font: "var(--type-body-s)", color: "var(--text-secondary)", margin: 0 }}>
             {klubb ? `${klubb}` : "AK Golf"} {region ? `· ${region}` : ""}
@@ -187,80 +166,6 @@ export function PH19Talent({
                     </div>
                   ))}
                 </div>
-              </div>
-            )}
-          </section>
-        </div>
-      )}
-
-      {fane === "min-plan" && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          <section className="pa-card" style={{ padding: 20 }}>
-            <span style={{ font: "var(--type-kicker)", color: "var(--text-muted)" }}>Milepæler i planen</span>
-            {milepaeler.length === 0 ? (
-              <p style={{ font: "var(--type-body)", color: "var(--text-secondary)", margin: "12px 0 0" }}>
-                Ingen milepæler opprettet i talentplanen ennå.
-              </p>
-            ) : (
-              <div role="list" style={{ marginTop: 12 }}>
-                {milepaeler.map((m, i) => (
-                  <div
-                    key={i}
-                    role="listitem"
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      gap: 12,
-                      padding: "10px 0",
-                      borderTop: i > 0 ? "1px solid var(--border-hairline)" : "none",
-                    }}
-                  >
-                    <div>
-                      <strong style={{ font: "var(--type-body)", color: "var(--text-primary)", display: "block" }}>{m.tittel}</strong>
-                      {m.beskrivelse && <small style={{ font: "var(--type-meta)", color: "var(--text-secondary)" }}>{m.beskrivelse}</small>}
-                    </div>
-                    {m.dato && <span style={{ font: "var(--type-meta)", color: "var(--text-muted)" }}>{m.dato}</span>}
-                  </div>
-                ))}
-              </div>
-            )}
-          </section>
-        </div>
-      )}
-
-      {fane === "roadmap" && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          <section className="pa-card" style={{ padding: 20 }}>
-            <span style={{ font: "var(--type-kicker)", color: "var(--text-muted)" }}>Sesongplan og perioder</span>
-            {perioder.length === 0 ? (
-              <p style={{ font: "var(--type-body)", color: "var(--text-secondary)", margin: "12px 0 0" }}>
-                Ingen perioder definert i sesongplanen ennå.
-              </p>
-            ) : (
-              <div role="list" style={{ marginTop: 12 }}>
-                {perioder.map((p, i) => (
-                  <div
-                    key={p.id}
-                    role="listitem"
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      gap: 12,
-                      padding: "10px 0",
-                      borderTop: i > 0 ? "1px solid var(--border-hairline)" : "none",
-                    }}
-                  >
-                    <div>
-                      <strong style={{ font: "var(--type-body)", color: "var(--text-primary)" }}>{p.navn}</strong>
-                      {p.aktiv && <span style={{ marginLeft: 8 }}><StatusPille tone="ok">Aktiv</StatusPille></span>}
-                    </div>
-                    <span style={{ font: "var(--type-meta)", color: "var(--text-muted)" }}>
-                      {p.startDato} → {p.sluttDato}
-                    </span>
-                  </div>
-                ))}
               </div>
             )}
           </section>

@@ -19,9 +19,9 @@ export type MegAvbestillKonsekvens = {
 };
 
 export type MegAvbestillData = {
-  /** Ukedag for siste Pro-dag, f.eks. «onsdag». */
+  /** Ukedag for siste Full-dag, f.eks. «onsdag». */
   ukedag: string;
-  /** Dato for siste Pro-dag, f.eks. «12. august 2026». */
+  /** Dato for siste Full-dag, f.eks. «12. august 2026». */
   dato: string;
   dagerIgjen: number;
   /** Konsekvensene bygges SERVER-SIDE fra faktisk abonnement (A4) —
@@ -35,7 +35,7 @@ export function MegAvbestillV2({ data }: { data: MegAvbestillData }) {
   const [feil, setFeil] = useState<string | null>(null);
 
   function avbestill() {
-    if (!confirm("Er du helt sikker på at du vil avbestille Pro?")) return;
+    if (!confirm("Er du helt sikker på at du vil avbestille Full?")) return;
     setFeil(null);
     startTransition(async () => {
       // Ved suksess redirecter actionen (resultatet blir da undefined);
@@ -68,7 +68,7 @@ export function MegAvbestillV2({ data }: { data: MegAvbestillData }) {
         </span>
         <Caps>Siste bekreftelse · Steg 2 av 2</Caps>
         <h1 style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 28, letterSpacing: "-0.02em", color: TL.text, margin: 0, lineHeight: 1.1 }}>
-          Avbestille <em style={{ fontStyle: "italic", color: TL.danger }}>Pro</em>?
+          Avbestille Full?
         </h1>
         <p style={{ fontFamily: TL.font.sans, fontSize: 13.5, lineHeight: 1.6, color: TL.mute, margin: 0, maxWidth: 380 }}>
           Du mister disse fordelene når perioden løper ut.{" "}
@@ -77,11 +77,11 @@ export function MegAvbestillV2({ data }: { data: MegAvbestillData }) {
         </p>
       </div>
 
-      {/* Pro aktiv til */}
+      {/* Full aktiv til */}
       <Kort>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
           <div style={{ minWidth: 0 }}>
-            <Caps size={9}>Pro aktiv til</Caps>
+            <Caps size={9}>Full aktiv til</Caps>
             <div style={{ fontFamily: TL.font.sans, fontSize: 16, fontWeight: 700, color: TL.text, marginTop: 6 }}>
               <em style={{ fontStyle: "italic", fontWeight: 400, color: TL.fill, textTransform: "capitalize" }}>{data.ukedag}</em>{" "}
               {data.dato}
@@ -135,7 +135,7 @@ export function MegAvbestillV2({ data }: { data: MegAvbestillData }) {
 
       {/* B: én grønn primær (behold) + farlig sekundær under */}
       <Knapp icon="heart" full onClick={() => router.push("/portal/meg/abonnement")} style={{ minHeight: 44 }}>
-        Behold Pro
+        Behold Full
       </Knapp>
       <Knapp
         ghost
