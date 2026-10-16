@@ -4,6 +4,22 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## DATA GOLF VISES ALDRI TIL KUNDER, BARE TIL COACHER I AK GOLF, WANG TOPPIDRETT OG TEAM NORWAY (Anders 16.10.2026, bindende)
+
+Svar på punkt 2 (lisens) i `docs/design-system/datagolf-coach-datakart-og-skjermliste.md` §Åpent hos Anders:
+«nei ikke til kunder, men kun coacher i team norway og wang toppidrett».
+
+- **Data Golf-tall vises aldri til kunder:** ikke spillere, foreldre, uinnloggede eller markedssidene.
+- **Coacher ser dem:** AK Golf-coacher i AgencyOS, og trenerne i WANG Toppidrett og Team Norway.
+- Bekrefter §KODEGJENNOMGANGEN 06.10 (Data Golf bare for coacher, `kanSeDataGolf`) og avgjør at WANG- og TN-trenere
+  kan få Data Golf-skjermene. Uendret: «Powered by Data Golf» der tallene vises, og ingen eksport (DG-09).
+
+**Arbeidet dette utløser:**
+
+1. **Datakartet** sier at lisensen er avklart for coacher. Gjort i samme PR.
+2. **WANG- og TN-utkastene for Data Golf (DG-01–09) kan bygges** etter AgencyOS, når Anders har sett dem (port 7).
+   Ferdig når skjermene ligger under `/team-wang` og `/team-norway` bak `kanSeDataGolf`, og en spiller avvises, låst med test.
+
 ## COACH SOM AVLYSER GIR ALLTID FULL REFUSJON ELLER KLIPPET TILBAKE (Anders 15.10.2026, bindende)
 
 Svar på utkast-PR #1010 (kalender og booking), som Anders sa ja til 15.10.
