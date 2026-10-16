@@ -19,6 +19,7 @@ import { z } from "zod";
 
 import { prisma } from "@/lib/prisma";
 import { aktivtMedlemskapWhere, TEAM_NORWAY_SLUG } from "@/lib/domain/grupper";
+import { erDemokonto, gruppeSlugForEpost } from "@/lib/domain/demo-grupper";
 import type { Prisma, UserRole } from "@/generated/prisma/client";
 
 export { TEAM_NORWAY_SLUG };
@@ -42,8 +43,30 @@ export function tnTilgangStatus(rad: Pick<TnTilgangRad, "endedAt">): TnTilgangSt
   return rad.endedAt.getTime() <= Date.now() ? "UTLØPT" : "AKTIV";
 }
 
-async function hentTeamNorwayGruppe(): Promise<{ id: string; name: string } | null> {
-  return prisma.group.findUnique({ where: { slug: TEAM_NORWAY_SLUG }, select: { id: true, name: true } });
+/**
+ * Team Norway-gruppa for denne brukeren: den ekte gruppa, eller demogruppa for
+ * demokontoen (`gruppeSlugForEpost`). En demokonto når aldri den ekte gruppa.
+ */
+export async function hentTnGruppeForBruker(brukerId: string): Promise<{ id: string; name: string; slug: string } | null> {
+  const bruker = await prisma.user.findUnique({ where: { id: brukerId }, select: { email: true } });
+  const slug = gruppeSlugForEpost(bruker?.email, "TEAM_NORWAY");
+  if (!slug) return null;
+  const gruppe = await prisma.group.findUnique({ where: { slug }, select: { id: true, name: true } });
+  return gruppe ? { ...gruppe, slug } : null;
+}
+
+/**
+ * Demokontoen kan se tilgangssiden, men aldri endre den. Ellers kunne den
+ * legge til hvilken som helst konto og slik avsløre hvem som har konto.
+ */
+async function krevIkkeDemokonto(brukerId: string): Promise<void> {
+  const bruker = await prisma.user.findUnique({ where: { id: brukerId }, select: { email: true } });
+  if (erDemokonto(bruker?.email)) throw new Error("Demokontoen kan ikke endre tilganger");
+}
+
+async function hentTeamNorwayGruppe(brukerId: string): Promise<{ id: string; name: string } | null> {
+  const gruppe = await hentTnGruppeForBruker(brukerId);
+  return gruppe ? { id: gruppe.id, name: gruppe.name } : null;
 }
 
 /**
@@ -54,7 +77,7 @@ async function hentTeamNorwayGruppe(): Promise<{ id: string; name: string } | nu
  */
 export async function erSportssjef(bruker: { id: string; role: UserRole }): Promise<boolean> {
   if (bruker.role === "ADMIN") return true;
-  const gruppe = await hentTeamNorwayGruppe();
+  const gruppe = await hentTeamNorwayGruppe(bruker.id);
   if (!gruppe) return false;
   const rad = await prisma.groupMember.findFirst({
     where: { groupId: gruppe.id, userId: bruker.id, role: "COACH", endedAt: null },
@@ -74,8 +97,8 @@ export type TnTilgangData = {
  * trenerkatalog-eksemplet i designfilen) — det datagrunnlaget (TN-20
  * Trenerkatalog) er ikke portert ennå, se filhodet i page.tsx.
  */
-export async function hentTeamNorwayTilganger(): Promise<TnTilgangData | null> {
-  const gruppe = await hentTeamNorwayGruppe();
+export async function hentTeamNorwayTilganger(bruker: { id: string }): Promise<TnTilgangData | null> {
+  const gruppe = await hentTeamNorwayGruppe(bruker.id);
   if (!gruppe) return null;
 
   const rader = await prisma.groupMember.findMany({
@@ -120,7 +143,7 @@ export async function hentTnOversiktForBruker(bruker: {
   id: string;
   role: UserRole;
 }): Promise<TnOversikt | null> {
-  const gruppe = await hentTeamNorwayGruppe();
+  const gruppe = await hentTeamNorwayGruppe(bruker.id);
   if (!gruppe) return null;
 
   const medlemskap = await prisma.groupMember.findFirst({
@@ -188,7 +211,8 @@ export async function avsluttTilgang(input: {
   targetUserId: string;
 }): Promise<TnAvsluttResultat> {
   z.object({ groupId: z.string().min(1).max(200), targetUserId: z.string().min(1).max(200) }).parse(input);
-  const gruppe = await hentTeamNorwayGruppe();
+  await krevIkkeDemokonto(input.caller.id);
+  const gruppe = await hentTeamNorwayGruppe(input.caller.id);
   if (!gruppe || gruppe.id !== input.groupId) throw new Error("Ugyldig Team Norway-gruppe");
   const lovlig = await erSportssjef(input.caller);
   if (!lovlig) throw new Error("Du er ikke sportssjef");
@@ -238,7 +262,8 @@ export async function settTilgang(input: {
   tilIso: string | null;
 }): Promise<TnSettRolleResultat> {
   z.object({ groupId: z.string().min(1).max(200), targetUserId: z.string().min(1).max(200) }).parse(input);
-  const gruppe = await hentTeamNorwayGruppe();
+  await krevIkkeDemokonto(input.caller.id);
+  const gruppe = await hentTeamNorwayGruppe(input.caller.id);
   if (!gruppe || gruppe.id !== input.groupId) throw new Error("Ugyldig Team Norway-gruppe");
   const lovlig = await erSportssjef(input.caller);
   if (!lovlig) throw new Error("Du er ikke sportssjef");
@@ -302,9 +327,10 @@ export async function leggTilTrener(input: {
   epost: string;
   rolle: TnTrenerRolle;
 }): Promise<TnLeggTilResultat> {
+  await krevIkkeDemokonto(input.caller.id);
   const lovlig = await erSportssjef(input.caller);
   if (!lovlig) throw new Error("Du er ikke sportssjef");
-  const gruppe = await hentTeamNorwayGruppe();
+  const gruppe = await hentTeamNorwayGruppe(input.caller.id);
   if (!gruppe) throw new Error("Team Norway-gruppen finnes ikke");
 
   const person = await prisma.user.findFirst({

@@ -16,6 +16,7 @@ mock.module("@/lib/prisma", { namedExports: { prisma: {
     post: { id: "post-1", groupId: mottaker ? null : "gruppe-tn", mottakerUserId: mottaker },
   } : null },
   group: { findUnique: async () => ({ slug, id: "gruppe-tn" }) },
+  user: { findUnique: async () => ({ email: "trener@golfforbundet.no" }) },
   groupMember: {
     // To ulike kallformer skilles på where-formen: hentViewerRolleIGruppe
     // spør etter { groupId, userId, endedAt: null } uten nestet `group`,

@@ -5,6 +5,7 @@ import {
   aktivtSpillerMedlemskapWhere,
   aktivtTrenerMedlemskapWhere,
 } from "@/lib/domain/grupper";
+import { gruppeSlugForEpost } from "@/lib/domain/demo-grupper";
 import { prisma } from "@/lib/prisma";
 
 export const WANG_TOPPIDRETT_SLUG = "wang-toppidrett";
@@ -20,9 +21,13 @@ export class WangDataUtilgjengeligError extends Error {
   }
 }
 
-async function hentGruppeId(): Promise<string | null> {
+/** Toppidrett-gruppa for denne brukeren. En demokonto får bare demogruppa (`gruppeSlugForEpost`). */
+async function hentGruppeId(brukerId: string): Promise<string | null> {
+  const bruker = await prisma.user.findUnique({ where: { id: brukerId }, select: { email: true } });
+  const slug = gruppeSlugForEpost(bruker?.email, "WANG");
+  if (!slug) return null;
   const gruppe = await prisma.group.findUnique({
-    where: { slug: WANG_TOPPIDRETT_SLUG },
+    where: { slug },
     select: { id: true },
   });
   return gruppe?.id ?? null;
@@ -33,7 +38,7 @@ export async function hentWangCoachGruppeId(
   bruker: WangBruker,
 ): Promise<string | null> {
   try {
-    const gruppeId = await hentGruppeId();
+    const gruppeId = await hentGruppeId(bruker.id);
     if (!gruppeId) return null;
     if (bruker.role === "ADMIN") return gruppeId;
     if (bruker.role !== "COACH") return null;
@@ -61,7 +66,7 @@ export async function medWangElevData<T>(
   les: (tx: Prisma.TransactionClient, gruppeId: string) => Promise<T>,
 ): Promise<T | null> {
   try {
-    const gruppeId = await hentGruppeId();
+    const gruppeId = await hentGruppeId(bruker.id);
     if (!gruppeId) return null;
     if ((bruker.role === "COACH" || bruker.role === "ADMIN") && bruker.id !== elevId) {
       const { medNavngittProfil } = await import("@/lib/deling/profil-lesing");
