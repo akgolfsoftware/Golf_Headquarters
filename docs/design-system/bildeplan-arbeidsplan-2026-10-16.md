@@ -2,7 +2,7 @@
 
 Status: **plan, verktøy valgt 16.10.2026 (Gemini).** Ingen nye bilder er laget.
 Bygger på [bildeplanen 14.10](bildeplan-2026-10-14.md), som sier *hva* bildene viser og har reglene
-(ingen tekst, ingen ansikter, ingen logoer, nordisk lys, foto, 3:2 i 1800 × 1200, under 300 kB).
+(ingen tekst, ingen ansikter, ingen logoer, rolig og dempet, foto, 3:2 i 1800 × 1200, under 300 kB).
 Denne planen sier *i hvilken rekkefølge*, *hvor mange* og *når et bilde er ferdig*.
 
 ## Omfang
