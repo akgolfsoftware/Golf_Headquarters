@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "e431446bf8327fb761bf5a8c1293d89fff361674",
+  "kodeversjon": "d018062899414fd69dab5883ad90c7a7a2154a86",
   "inventar": {
     "pageFiles": 547,
     "uniqueRoutePatterns": 547,
-    "componentFiles": 923,
+    "componentFiles": 929,
     "surfaceFiles": 273,
     "byArea": {
       "interne-eksempler": 6,
@@ -20023,20 +20023,19 @@
       "kodekommentar": null
     },
     {
-      "screenId": "PH-19",
+      "screenId": "VIDERESENDING",
       "rute": "/portal/talent/min-plan",
       "kildefil": "src/app/portal/talent/min-plan/page.tsx",
       "omrade": "playerhq",
       "rolle": "spiller",
-      "designkilde": "AK Golf Precision Athletics (7d7c2994-cf63-4c5f-9bdc-fdaf67655a70)",
-      "designversjon": "precision-athletics-2026-09-28",
-      "komponentmonster": "/portal/talent*",
-      "handlinger": "Mål med fremdrift, talentradar, P1–P10-plan",
+      "designkilde": "kode",
+      "designversjon": "ikke-en-skjerm",
+      "komponentmonster": null,
+      "handlinger": "Send videre til /portal/mal",
       "dataApi": "ikke-avlest-i-D01",
       "tilstander": [
-        "tom",
-        "laster",
-        "feil"
+        "videresending",
+        "manglende-mal"
       ],
       "formater": {
         "mobil": "ikke-kontrollert",
@@ -20047,25 +20046,23 @@
       "status": {
         "kartlagt": true,
         "wireframe": false,
-        "uiUtkast": true,
+        "uiUtkast": false,
         "prototype": false,
         "vurdert": false,
-        "valgtForBygging": true,
-        "implementert": "precision-visning",
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Min plan merker PH19TalentMinPlan i PlayerHQSkall. Milepæler og treningsmål er beholdt.",
-      "avvik": [
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
-      "kobling": "tegnet-skjermtype",
-      "forklaring": "PH-19 Workbench › Målsetninger er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "videresending",
+      "forklaring": "Filen har ingen egen visning. Den sender til /portal/mal. At målet finnes, og hva brukeren ser hvis lenken er ugyldig, er ikke prøvd i denne bolken.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
-      "videresendingMal": null,
-      "kodekommentar": "PH-19"
+      "videresendingMal": "/portal/mal",
+      "kodekommentar": null
     },
     {
       "screenId": "PH-19",
@@ -20155,20 +20152,19 @@
       "kodekommentar": null
     },
     {
-      "screenId": "PH-19",
+      "screenId": "VIDERESENDING",
       "rute": "/portal/talent/roadmap",
       "kildefil": "src/app/portal/talent/roadmap/page.tsx",
       "omrade": "playerhq",
       "rolle": "spiller",
-      "designkilde": "AK Golf Precision Athletics (7d7c2994-cf63-4c5f-9bdc-fdaf67655a70)",
-      "designversjon": "precision-athletics-2026-09-28",
-      "komponentmonster": "/portal/talent*",
-      "handlinger": "Mål med fremdrift, talentradar, P1–P10-plan",
+      "designkilde": "kode",
+      "designversjon": "ikke-en-skjerm",
+      "komponentmonster": null,
+      "handlinger": "Send videre til /portal/planlegge",
       "dataApi": "ikke-avlest-i-D01",
       "tilstander": [
-        "tom",
-        "laster",
-        "feil"
+        "videresending",
+        "manglende-mal"
       ],
       "formater": {
         "mobil": "ikke-kontrollert",
@@ -20179,25 +20175,23 @@
       "status": {
         "kartlagt": true,
         "wireframe": false,
-        "uiUtkast": true,
+        "uiUtkast": false,
         "prototype": false,
         "vurdert": false,
-        "valgtForBygging": true,
-        "implementert": "precision-visning",
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Roadmap merker PH19TalentRoadmap i PlayerHQSkall. Sesongplan og periodeblokker er beholdt.",
-      "avvik": [
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
-      "kobling": "tegnet-skjermtype",
-      "forklaring": "PH-19 Workbench › Målsetninger er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "videresending",
+      "forklaring": "Filen har ingen egen visning. Den sender til /portal/planlegge. At målet finnes, og hva brukeren ser hvis lenken er ugyldig, er ikke prøvd i denne bolken.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
-      "videresendingMal": null,
-      "kodekommentar": "PH-19"
+      "videresendingMal": "/portal/planlegge",
+      "kodekommentar": null
     },
     {
       "screenId": "PH-19",
@@ -24098,16 +24092,16 @@
   ],
   "tellinger": {
     "sidefiler": 547,
-    "medAvvik": 165,
-    "valgtForBygging": 249,
+    "medAvvik": 163,
+    "valgtForBygging": 247,
     "utenEksaktType": 14,
-    "implementert": 137,
+    "implementert": 135,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,
       "felles-monster": 22,
-      "tegnet-skjermtype": 284,
-      "videresending": 166,
+      "tegnet-skjermtype": 282,
+      "videresending": 168,
       "teknisk-forklaring": 31,
       "byggeunderlag": 37
     },
@@ -24129,7 +24123,7 @@
       "ST-06": 8,
       "ST-04": 3,
       "MK-BEKREFT": 1,
-      "VIDERESENDING": 166,
+      "VIDERESENDING": 168,
       "AG-05": 4,
       "AG-06": 3,
       "AG-08": 3,
@@ -24190,7 +24184,7 @@
       "PH-20": 3,
       "PH-IUP-01": 1,
       "PH-10": 3,
-      "PH-19": 9,
+      "PH-19": 7,
       "PH-25": 22,
       "PH-27": 1,
       "PH-24": 11,
