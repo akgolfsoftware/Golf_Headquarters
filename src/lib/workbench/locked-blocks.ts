@@ -56,6 +56,17 @@ export function weekLockedBlocks(weekStart: string, busy: BusyRow[], school: Sch
   return days.map(day => day.sort((a, b) => a.startMinute - b.startMinute || a.id.localeCompare(b.id)));
 }
 
+/**
+ * Slår sammen dagens låste blokker fra to kilder. Spillerens egne opptattblokker kommer fra
+ * begge (Workbench-uka og plankalenderen); uten dette vises hver blokk to ganger og React får
+ * to barn med samme nøkkel (skjermkontrollen 15.10 funn 12). Plankalenderens versjon vinner,
+ * fordi den vet om det er eieren som ser (private titler).
+ */
+export function slaSammenLaasteBlokker(dag: LockedBlock[], plan: LockedBlock[]): LockedBlock[] {
+  const iPlan = new Set(plan.map(b => b.id));
+  return [...dag.filter(b => !iPlan.has(b.id)), ...plan];
+}
+
 /** Kollisjonstest mot låste kalenderblokker med samme uke-/DST-regler som kalenderen. */
 export function lockedBlockOverlap(date: string, startMinute: number, durationMinutes: number, busy: BusyRow[]): number {
   const dayDate = new Date(`${date}T00:00:00Z`);
