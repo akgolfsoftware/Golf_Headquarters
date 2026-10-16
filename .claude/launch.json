@@ -20,7 +20,8 @@
       ],
       "port": 3123,
       "autoPort": false
-=======
+    },
+    {
       "name": "utkast-static",
       "runtimeExecutable": "python3",
       "runtimeArgs": [
