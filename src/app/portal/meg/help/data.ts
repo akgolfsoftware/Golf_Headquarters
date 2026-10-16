@@ -80,7 +80,7 @@ export const HJELP_KATEGORIER: HjelpKategori[] = [
     slug: "booking",
     tittel: "Booking + betaling",
     beskrivelse:
-      "Reservere fasiliteter, kjøpe credits, betale med Vipps eller kort, og forstå abonnement-detaljer.",
+      "Reservere fasiliteter, kjøpe credits, betale med kort eller Apple Pay, og forstå abonnement-detaljer.",
     ikon: "calendar",
     antall: 3,
   },

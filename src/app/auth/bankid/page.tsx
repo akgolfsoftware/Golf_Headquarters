@@ -1,17 +1,9 @@
 /**
- * Auth · BankID (/auth/bankid) — AU01BankId.
- * Ærlig placeholder: BankID finnes ikke ennå. CTA går til /auth/login.
+ * /auth/bankid finnes ikke lenger: innlogging er bare Google og e-post med passord
+ * (beslutning 15.10.2026, §INNLOGGING BARE MED GOOGLE OG PASSORD). Gamle lenker sendes til innloggingen.
  */
-
-import type { Metadata } from "next";
-import { BankIDV2 } from "@/components/portal/v2/BankIDV2";
-
-export const metadata: Metadata = {
-  title: "BankID-pålogging · AK Golf",
-  description:
-    "BankID-pålogging kommer post-BETA. Bruk e-post/passord eller Google for nå.",
-};
+import { redirect } from "next/navigation";
 
 export default function BankIDPage() {
-  return <BankIDV2 />;
+  redirect("/auth/login");
 }

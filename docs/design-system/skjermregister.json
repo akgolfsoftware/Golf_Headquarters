@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "b06afaa4249c995d8c5738fe17e8a3dfa5c01539",
+  "kodeversjon": "e431446bf8327fb761bf5a8c1293d89fff361674",
   "inventar": {
     "pageFiles": 547,
     "uniqueRoutePatterns": 547,
-    "componentFiles": 924,
+    "componentFiles": 923,
     "surfaceFiles": 273,
     "byArea": {
       "interne-eksempler": 6,
@@ -10906,20 +10906,19 @@
       "kodekommentar": null
     },
     {
-      "screenId": "AU-01",
+      "screenId": "VIDERESENDING",
       "rute": "/auth/bankid",
       "kildefil": "src/app/auth/bankid/page.tsx",
       "omrade": "inngang-og-konto",
       "rolle": "åpen",
-      "designkilde": "AK Golf Precision Athletics (7d7c2994-cf63-4c5f-9bdc-fdaf67655a70)",
-      "designversjon": "precision-athletics-2026-09-28",
-      "komponentmonster": "/auth/bankid",
-      "handlinger": "E-post/passord, Google, BankID-plassholder",
+      "designkilde": "kode",
+      "designversjon": "ikke-en-skjerm",
+      "komponentmonster": null,
+      "handlinger": "Send videre til /auth/login",
       "dataApi": "ikke-avlest-i-D01",
       "tilstander": [
-        "tom",
-        "laster",
-        "feil"
+        "videresending",
+        "manglende-mal"
       ],
       "formater": {
         "mobil": "ikke-kontrollert",
@@ -10930,24 +10929,22 @@
       "status": {
         "kartlagt": true,
         "wireframe": false,
-        "uiUtkast": true,
+        "uiUtkast": false,
         "prototype": false,
         "vurdert": false,
-        "valgtForBygging": true,
-        "implementert": "precision-visning",
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "BankID merker AU01BankId i Precision. Ingen BankID-kall. Knappen går til vanlig innlogging. Målt lokalt 03.10.2026 i kjørende app på 390×844 og 1440×880. Ikke satt kontrollert-i-app.",
-      "avvik": [
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
-      "kobling": "tegnet-skjermtype",
-      "forklaring": "AU-01 Logg inn er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "videresending",
+      "forklaring": "Filen har ingen egen visning. Den sender til /auth/login. At målet finnes, og hva brukeren ser hvis lenken er ugyldig, er ikke prøvd i denne bolken.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
-      "videresendingMal": null,
+      "videresendingMal": "/auth/login",
       "kodekommentar": null
     },
     {
@@ -11224,7 +11221,7 @@
       "designkilde": "AK Golf Precision Athletics (7d7c2994-cf63-4c5f-9bdc-fdaf67655a70)",
       "designversjon": "precision-athletics-2026-09-28",
       "komponentmonster": "/auth/logget-ut",
-      "handlinger": "E-post/passord, Google, BankID-plassholder",
+      "handlinger": "E-post/passord og Google (ingen BankID, beslutning 15.10)",
       "dataApi": "ikke-avlest-i-D01",
       "tilstander": [
         "tom",
@@ -11269,7 +11266,7 @@
       "designkilde": "AK Golf Precision Athletics (7d7c2994-cf63-4c5f-9bdc-fdaf67655a70)",
       "designversjon": "precision-athletics-2026-09-28",
       "komponentmonster": "/auth/login",
-      "handlinger": "E-post/passord, Google, BankID-plassholder",
+      "handlinger": "E-post/passord og Google (ingen BankID, beslutning 15.10)",
       "dataApi": "ikke-avlest-i-D01",
       "tilstander": [
         "tom",
@@ -24101,16 +24098,16 @@
   ],
   "tellinger": {
     "sidefiler": 547,
-    "medAvvik": 166,
-    "valgtForBygging": 250,
+    "medAvvik": 165,
+    "valgtForBygging": 249,
     "utenEksaktType": 14,
-    "implementert": 138,
+    "implementert": 137,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,
       "felles-monster": 22,
-      "tegnet-skjermtype": 285,
-      "videresending": 165,
+      "tegnet-skjermtype": 284,
+      "videresending": 166,
       "teknisk-forklaring": 31,
       "byggeunderlag": 37
     },
@@ -24132,7 +24129,7 @@
       "ST-06": 8,
       "ST-04": 3,
       "MK-BEKREFT": 1,
-      "VIDERESENDING": 165,
+      "VIDERESENDING": 166,
       "AG-05": 4,
       "AG-06": 3,
       "AG-08": 3,
@@ -24157,10 +24154,10 @@
       "AG-18": 4,
       "AG-07": 2,
       "AG-17": 3,
-      "AU-01": 3,
       "AU-02": 3,
       "AU-03": 2,
       "AU-05": 4,
+      "AU-01": 2,
       "AU-04": 2,
       "FO-02": 2,
       "FO-03": 5,

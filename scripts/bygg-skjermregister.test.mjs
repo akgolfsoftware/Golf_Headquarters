@@ -128,8 +128,6 @@ test("every current page file gets an explanation and an owner", () => {
   assert.match(byRoute.get("/auth/check-email").kontrollbevis, /AU02SjekkEpost/);
   assert.equal(byRoute.get("/auth/checkout-resume").status.implementert, "precision-visning");
   assert.match(byRoute.get("/auth/checkout-resume").kontrollbevis, /AU02Betaling/);
-  assert.equal(byRoute.get("/auth/bankid").status.implementert, "precision-visning");
-  assert.match(byRoute.get("/auth/bankid").kontrollbevis, /AU01BankId/);
   assert.equal(byRoute.get("/auth/guardian-consent/[token]").status.implementert, "precision-visning");
   assert.match(byRoute.get("/auth/guardian-consent/[token]").kontrollbevis, /AU05Verge/);
   assert.equal(byRoute.get("/auth/lyd-samtykke/[token]").status.implementert, "precision-visning");
