@@ -2,6 +2,8 @@
 /**
  * PlayerHQ · Book time (/portal/booking/ny).
  * Fasit: docs/design-system/utkast-playerhq/kommunikasjon.html, mal «ny» (godkjent 14.10.2026).
+ * Avvik:
+ *   - Avvikene fra utkastet står øverst i komponenten siden bruker.
  *
  * Samme flyt som /portal/booking: «Bekreft booking» går til klipp-flyten eller Stripe Checkout (kort).
  * Spilleren sendes aldri ut av appen for å booke. Lenkene inn beholdes:

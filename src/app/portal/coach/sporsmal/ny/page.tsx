@@ -2,6 +2,8 @@
 /**
  * PlayerHQ · Nytt spørsmål (/portal/coach/sporsmal/ny).
  * Fasit: docs/design-system/utkast-playerhq/kommunikasjon.html, arket «Ny melding» med typen Spørsmål.
+ * Avvik:
+ *   - Avvikene fra utkastet står øverst i komponenten siden bruker.
  * Åpner Spørsmål-fanen med arket og typen Spørsmål valgt. «Dine spørsmål» står på fanen.
  * Forelder sendes til foreldreportalen, som på de andre coach-sidene.
  */

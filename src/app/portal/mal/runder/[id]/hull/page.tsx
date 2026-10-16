@@ -1,6 +1,8 @@
 /**
  * PlayerHQ Rediger hull for hull (/portal/mal/runder/[id]/hull) i nytt design (PHRD09RedigerHull, pakke 11).
  * Fasit: docs/design-system/utkast-playerhq/runder.html, malen «rediger». Avvikene står i komponenten.
+ * Avvik:
+ *   - Avvikene fra utkastet står øverst i komponenten siden bruker.
  * Kun rundens eier (actions håndhever det samme ved skriving via assertRoundOwner).
  * Strokes Gained røres ikke her — SG beregnes fortsatt kun fra slag-for-slag-kjeden.
  */

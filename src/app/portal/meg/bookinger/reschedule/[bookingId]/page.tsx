@@ -2,6 +2,8 @@
 /**
  * PlayerHQ · Flytt time (/portal/meg/bookinger/reschedule/[bookingId]).
  * Fasit: docs/design-system/utkast-playerhq/kommunikasjon.html, arket «Flytt time».
+ * Avvik:
+ *   - Avvikene fra utkastet står øverst i komponenten siden bruker.
  * Tilgang og regler som før: eier eller coach/admin, spilleren kan ikke flytte under 24 timer før,
  * avbestilte bookinger kan ikke flyttes. Ledige tider fra availability-motoren, bare hos timens coach.
  */

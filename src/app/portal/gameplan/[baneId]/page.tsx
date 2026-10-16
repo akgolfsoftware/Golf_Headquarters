@@ -1,6 +1,8 @@
 /**
  * PlayerHQ · Gameplan-banekart (/portal/gameplan/[baneId]) i nytt design (PH20Bane, pakke 11).
  * Fasit: docs/design-system/utkast-playerhq/iup.html, malen «gameplan». Avvikene står i PH20Bane.
+ * Avvik:
+ *   - Avvikene fra utkastet står øverst i komponenten siden bruker.
  * Alle tall fra databasen (getBaneOverview). CourseMap (Mapbox) gjenbrukes som den er.
  */
 

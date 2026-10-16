@@ -2,6 +2,8 @@
 /**
  * PlayerHQ · Meldinger (/portal/coach/melding).
  * Fasit: docs/design-system/utkast-playerhq/kommunikasjon.html, mal «traad» (godkjent 14.10.2026).
+ * Avvik:
+ *   - Avvikene fra utkastet står øverst i komponenten siden bruker.
  * Samme skjerm som /portal/coach på fanen Meldinger: samtalen med coachen og «Ny melding».
  */
 import { redirect } from "next/navigation";

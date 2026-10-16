@@ -2,6 +2,8 @@
 /**
  * PlayerHQ · Bookingen (/portal/booking/[bookingId]).
  * Fasit: docs/design-system/utkast-playerhq/kommunikasjon.html, mal «detalj».
+ * Avvik:
+ *   - Avvikene fra utkastet står øverst i komponenten siden bruker.
  * Eierskapssjekk og spørring som før (bare spillerens egen booking). Bare ekte felter vises.
  */
 

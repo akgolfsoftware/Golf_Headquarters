@@ -1,6 +1,8 @@
 /**
  * PlayerHQ Hull-detalj — Gameplan (/portal/gameplan/[baneId]/hull/[nr]) i nytt design (PH20Hull, pakke 11).
  * Fasit: docs/design-system/utkast-playerhq/iup.html, malen «hull». Avvikene står i PH20Hull.
+ * Avvik:
+ *   - Avvikene fra utkastet står øverst i komponenten siden bruker.
  *
  * Satellitt + din spredning fra dispersion-motoren, pluss «Planlegg» (C7, interaktiv hull-for-hull-modus:
  * dra sikte, mal bra/aldri-soner, carry/igjen fra ekte GPS). Segment via ?type= (server-side lenker).

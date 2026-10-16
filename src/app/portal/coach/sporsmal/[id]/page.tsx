@@ -3,6 +3,8 @@ import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 /**
  * PlayerHQ Coach · Spørsmål-tråd (/portal/coach/sporsmal/[id]).
  * Fasit: docs/design-system/utkast-playerhq/kommunikasjon.html, mal «traad».
+ * Avvik:
+ *   - Avvikene fra utkastet står øverst i komponenten siden bruker.
  * Tråden vises bare for den som spurte, tildelt coach, admin, eller coach
  * med tilgang når spørsmålet ligger i åpen kø.
  */

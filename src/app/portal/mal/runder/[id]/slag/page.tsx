@@ -1,6 +1,8 @@
 /**
  * PlayerHQ Rediger slag (/portal/mal/runder/[id]/slag) i nytt design (PHRD03RedigerSlag, pakke 11).
  * Fasit: docs/design-system/utkast-playerhq/runder.html, malene «slag» og «import». Avvikene står i komponenten.
+ * Avvik:
+ *   - Avvikene fra utkastet står øverst i komponenten siden bruker.
  * Skrive-tilgang håndheves i actions (assertRoundOwner) — kun rundens eier.
  */
 

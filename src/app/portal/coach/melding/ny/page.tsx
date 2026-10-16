@@ -2,6 +2,8 @@
 /**
  * PlayerHQ · Ny melding (/portal/coach/melding/ny).
  * Fasit: docs/design-system/utkast-playerhq/kommunikasjon.html, arket «Ny melding» i Meldinger.
+ * Avvik:
+ *   - Avvikene fra utkastet står øverst i komponenten siden bruker.
  * Åpner Meldinger med arket «Ny melding» og typen Melding valgt. Meldingen går til spillerens coach.
  */
 import { redirect } from "next/navigation";
