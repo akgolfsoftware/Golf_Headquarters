@@ -47,9 +47,9 @@
 <body>
 <div class="ytre">
   <header class="hode">
-    <span class="meta-s">Team Norway · trenerskjermer · pakke 1 grunnmur · utkast 1 · 14.10.2026</span>
+    <span class="meta-s">Team Norway · trenerskjermer · pakke 1 grunnmur · utkast 2 · 16.10.2026</span>
     <h1>Grunnmur for Team Norway-skjermene</h1>
-    <p>Skallet med navy sidemeny, fem aksefarger laget fra Team Norway-paletten, og byggeklossene skjermene skal settes sammen av. Bare syntetiske data. Aksefargene er et forslag og venter på ditt ja.</p>
+    <p>Skallet med navy sidemeny, fem aksefarger laget fra Team Norway-paletten, og byggeklossene skjermene skal settes sammen av. Bare syntetiske data. Aksefargene er godkjent av Anders 14.10. Utkast 2 legger til byggeklossene for retning B: helteflate, tre bånd, spillerrad med plan-stolpe, fylte søyler, fylt graf og bildekort.</p>
   </header>
   <div class="kontroller">
     <div class="velger" role="group" aria-label="Bredde">
@@ -66,7 +66,17 @@
   <div class="scene"><div id="ramme" class="ramme mob"></div></div>
   <div class="notater">
     <section class="endringer">
-      <h2>Aksefargene (forslag)</h2>
+      <h2>Nytt i utkast 2 (16.10, retning B)</h2>
+      <ul>
+        <li><b>.helt</b>: navy helteflate med ett hovedtall i hvitt, kort forklaring, én knapp, valgfri aksefordeling i de lyse aksefargene og flaggstreken som kant.</li>
+        <li><b>.baand</b> og <b>.sprad</b>: tre bånd (Trenger deg · Følger planen · Ikke delt) med teller, spillerrad med plan-stolpe og statusmarkør på venstre kant, alltid med ord.</li>
+        <li><b>.akse-soyler</b>, <b>.graf .areal</b> og <b>.bildekort</b>: fylte søyler, fylt graf under linja, og bilde med tekst i eget felt.</li>
+        <li><b>Menyen</b> har seks grupper som kan lukkes. Bare gruppa du er i står åpen. Ingen punkter er fjernet.</li>
+        <li><b>Mindre mono</b>: datolinja og akse-merker står i Lato. IBM Plex Mono bare på tall.</li>
+      </ul>
+    </section>
+    <section class="endringer">
+      <h2>Aksefargene (godkjent 14.10)</h2>
       <ul>
         <li>Ingen AK Golf-farger og ikke bare flaggets rød, hvit og blå. Fargene er laget av Team Norways egen navy og røde, med tre toner lagt mellom og utenfor dem i samme dybde.</li>
         <li>FYS fjord <b>#0D6E6A</b> · TEK blå <b>#0A5199</b> (Team Norways navy-600) · SLAG indigo <b>#4B3F9E</b> · SPILL plomme <b>#8A2A72</b> (navy blandet med rød) · TURN mørk rød <b>#A80126</b> (Team Norways red-700).</li>
@@ -102,8 +112,92 @@
     <p class="ingress">Eksempelinnhold for å vise byggeklossene. Alle navn og tall er laget for utkastet.</p>
   </header>
 
+  <!-- ===== Utkast 2: nye byggeklosser for retning B ===== -->
   <section class="seksjon">
-    <div class="sek-topp"><h2>Aksefarger</h2><span class="merke kontur">Forslag, venter på ja</span></div>
+    <div class="sek-topp"><h2>Helteflate</h2><span class="kilde">.helt · én per hovedskjerm</span></div>
+    <section class="helt">
+      <div class="helt-venstre">
+        <span class="sporsmaal">Hvem trenger deg nå?</span>
+        <div class="tall"><strong>3</strong><span>spillere trenger deg</span></div>
+        <p>Ett spørsmål, ett hovedtall, én kort forklaring og én knapp. Resten av handlingene ligger i «Ny».</p>
+        <div class="knapper">
+          <button type="button" class="knapp hvit">Se de tre</button>
+          <div class="flere"><button type="button" class="knapp kontur-hvit" aria-expanded="false" aria-haspopup="true">Ny<svg class="ikon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9l7 7 7-7"/></svg></button>
+            <div class="flere-liste" hidden><button type="button">Ny samling</button><button type="button">Ny økt</button><button type="button">Ny testdag</button></div></div>
+        </div>
+      </div>
+      <div class="helt-hoyre">
+        <div class="helt-akser">
+          <span class="sporsmaal">Aksefordeling i de lyse aksefargene på navy</span>
+          <div class="fordeling-lys" role="img" aria-label="FYS 22 %, TEK 24 %, SLAG 30 %, SPILL 16 %, TURN 8 %"><span class="lys-fys" style="width:22%"></span><span class="lys-tek" style="width:24%"></span><span class="lys-slag" style="width:30%"></span><span class="lys-spill" style="width:16%"></span><span class="lys-turn" style="width:8%"></span></div>
+          <div class="lg-rad"><span class="lg"><i class="lys-fys"></i>FYS <b>91</b></span><span class="lg"><i class="lys-tek"></i>TEK <b>99</b></span><span class="lg"><i class="lys-slag"></i>SLAG <b>124</b></span><span class="lg"><i class="lys-spill"></i>SPILL <b>66</b></span><span class="lg"><i class="lys-turn"></i>TURN <b>32</b></span></div>
+        </div>
+        <div class="nedtelling" style="--n:4"><i class="gaatt"></i><i></i><i></i><i></i><span>Uke 42, nå</span><span>Uke 43</span><span>Uke 44</span><span>Frist</span></div>
+        <div class="helt-tellere"><div><b>9/12</b><span>små tellere</span></div><div><b>11/14</b><span>under</span></div><div><b>2</b><span>hovedtallet</span></div></div>
+      </div>
+    </section>
+    <p class="kilde">Flaggstreken er kanten nederst. Logorøden er bare identitet her, aldri status eller knapp.</p>
+  </section>
+
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Tre bånd og spillerrad</h2><span class="kilde">.baand · .sprad · .planstolpe · .markor</span></div>
+    <div class="baandene">
+      <section class="baand trenger">
+        <div class="baand-hode"><h3>Trenger deg</h3><span class="teller">1</span><span class="kilde">Mest akutt først</span></div>
+        <div class="baand-liste"><a class="sprad trenger" href="#"><span class="avatar">03</span><span class="hvem"><b>Spiller 03</b><span class="fakta"><span class="kat">C</span>Moss GK</span></span><span class="verdi"><b class="lav">58 %</b><span>av planen</span></span><span class="planstolpe"><span class="spor" role="img" aria-label="58 prosent av planen"><span class="slag" style="width:58%"></span></span><span class="tekst"><span>Mest SLAG</span><span><b>21</b> av <b>36</b> t</span></span></span><span class="grunn">Under 70 % av planen to uker på rad</span></a></div>
+      </section>
+      <section class="baand folger">
+        <div class="baand-hode"><h3>Følger planen</h3><span class="teller">1</span></div>
+        <div class="baand-liste"><a class="sprad folger" href="#"><span class="avatar">01</span><span class="hvem"><b>Spiller 01</b><span class="fakta"><span class="kat">B</span>Bossum GK</span></span><span class="verdi"><b>94 %</b><span>av planen</span></span><span class="planstolpe"><span class="spor" role="img" aria-label="94 prosent av planen"><span class="tek" style="width:94%"></span></span><span class="tekst"><span>Mest TEK</span><span><b>38</b> av <b>40</b> t</span></span></span></a></div>
+      </section>
+      <section class="baand ikkedelt">
+        <div class="baand-hode"><h3>Ikke delt</h3><span class="teller">1</span></div>
+        <div class="baand-liste"><div class="sprad ikkedelt"><span class="avatar">14</span><span class="hvem"><b>Spiller 14</b><span class="fakta"><span class="kat uten">—</span>Kristiansand GK</span></span><span class="verdi"><b>—</b><span>ikke delt</span></span></div></div>
+      </section>
+    </div>
+    <div class="knapper"><span class="markor trenger"><i></i>Trenger deg</span><span class="markor folgmed"><i></i>Følg med</span><span class="markor folger"><i></i>Følger planen</span><span class="markor ikkedelt"><i></i>Ikke delt</span></div>
+    <p class="kilde">Venstre kant og ordet bærer statusen sammen. Stolpen er gjennomført mot planlagt, i aksefargen spilleren trener mest. Kategori A–K er et navy merke, ikke en akse.</p>
+  </section>
+
+  <div class="to-kol">
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Fylte søyler</h2><span class="kilde">.akse-soyler</span></div>
+      <div class="kort">
+        <div class="akse-soyler" role="img" aria-label="FYS 8 timer, TEK 9, SLAG 12, SPILL 6, TURN 3">
+          <div class="akse-soyle"><b>8</b><div class="felt-s"><i class="s fys vokse" style="height:67%"></i></div><span>FYS</span></div>
+          <div class="akse-soyle"><b>9</b><div class="felt-s"><i class="s tek vokse" style="height:75%"></i></div><span>TEK</span></div>
+          <div class="akse-soyle"><b>12</b><div class="felt-s"><i class="s slag vokse" style="height:100%"></i></div><span>SLAG</span></div>
+          <div class="akse-soyle"><b>6</b><div class="felt-s"><i class="s spill vokse" style="height:50%"></i></div><span>SPILL</span></div>
+          <div class="akse-soyle"><b>3</b><div class="felt-s"><i class="s turn vokse" style="height:25%"></i></div><span>TURN</span></div>
+        </div>
+        <p class="kilde">Pyramiden som søyler: timer siste fire uker. Aksenavnet står alltid under fargen.</p>
+      </div>
+    </section>
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Fylt graf</h2><span class="kilde">.graf .areal + .linje</span></div>
+      <div class="kort">
+        <div class="hoved"><strong>9,5<small>t</small></strong><span class="forklar">TEK denne uka</span></div>
+        <svg class="graf" viewBox="0 0 340 130" role="img" aria-label="TEK-timer per uke: 6, 7, 6,5, 8, 9, 9,5">
+          <line x1="0" x2="340" y1="120" y2="120" stroke="var(--ink-200)"/>
+          <path class="areal tek" d="M10 66 L74 54 L138 60 L202 36 L266 24 L330 18 L330 120 L10 120 Z"/>
+          <path class="linje tek tegn" d="M10 66 L74 54 L138 60 L202 36 L266 24 L330 18"/>
+          <text class="gt" x="10" y="130">uke 37</text><text class="gt" x="330" y="130" text-anchor="end">uke 42</text>
+        </svg>
+        <p class="kilde">Arealet under linja er fylt i aksefargen. Kilde: PlayerHQ, 14.10.2026.</p>
+      </div>
+    </section>
+  </div>
+
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Bildekort</h2><span class="kilde">.bildekort · tekst aldri oppå bildet</span></div>
+    <div class="rutenett">
+      <div class="bildekort navy"><img src="bilder/spill-bane.jpg" alt="Golfbane med fairway og green" width="800" height="300" loading="lazy"><div class="bk-tekst"><span class="kilde">Neste samling</span><b class="undertittel" style="color:var(--hvit)">Høstsamling Bossum</b><div class="hoved"><strong>12</strong><span class="forklar">dager igjen</span></div></div></div>
+      <div class="bildekort"><img src="bilder/turn-tee.jpg" alt="Spiller på teestedet" width="800" height="300" loading="lazy"><div class="bk-tekst"><span class="kilde">Turnering</span><b class="undertittel">Junior Open Halmstad</b><div class="hoved"><strong>4</strong><span class="forklar">plass etter runde 2</span></div></div></div>
+    </div>
+  </section>
+
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Aksefarger</h2><span class="merke ok"><i></i>Godkjent 14.10</span></div>
     <div class="akser" id="akser"></div>
     <p class="kilde">Kontrast målt etter WCAG 2.1. Venstre: fyll med hvit tekst. Midten: tint med fargen som tekst. Høyre: lys variant på navy.</p>
   </section>
@@ -162,9 +256,9 @@
     <div class="sek-topp"><h2>Liste som blir kortrader</h2><span class="kilde">3 av 14</span></div>
     <div class="kort">
       <div class="rader">
-        <div class="rad"><span class="spiller"><span class="avatar">ML</span><span><span class="navn">Mathea Lund</span><br><span class="kilde">Kategori B · 8-ball 31 poeng</span></span></span><span class="merke ok"><i></i>Kontrollert</span></div>
-        <div class="rad"><span class="spiller"><span class="avatar">SV</span><span><span class="navn">Sander Vik</span><br><span class="kilde">Kategori C · 8-ball 24 poeng</span></span></span><span class="merke info"><i></i>Egenført</span></div>
-        <div class="rad"><span class="spiller"><span class="avatar">EB</span><span><span class="navn">Emil Berg</span><br><span class="kilde">Kategori B · ikke testet</span></span></span><span class="merke vent"><i></i>Mangler</span></div>
+        <div class="rad"><span class="spiller"><span class="avatar">01</span><span><span class="navn">Spiller 01</span><br><span class="kilde">Kategori B · 8-ball 31 poeng</span></span></span><span class="merke ok"><i></i>Kontrollert</span></div>
+        <div class="rad"><span class="spiller"><span class="avatar">02</span><span><span class="navn">Spiller 02</span><br><span class="kilde">Kategori C · 8-ball 24 poeng</span></span></span><span class="merke info"><i></i>Egenført</span></div>
+        <div class="rad"><span class="spiller"><span class="avatar">04</span><span><span class="navn">Spiller 04</span><br><span class="kilde">Kategori B · ikke testet</span></span></span><span class="merke vent"><i></i>Mangler</span></div>
       </div>
     </div>
   </section>
@@ -183,7 +277,7 @@
       <div class="sek-topp"><h2>Skjema og skrift</h2></div>
       <div class="kort">
         <div class="felt"><label for="g-navn">Navn på samling</label><input id="g-navn" value="Høstsamling Bossum"><span class="hjelp">Vises for spillerne når den publiseres.</span></div>
-        <div class="felt feil"><label for="g-epost">Trenerens e-post</label><input id="g-epost" value="ida.hovland@gmail.com"><span class="feiltekst">Bare adresser som slutter på @golfforbundet.no kan få tilgang.</span></div>
+        <div class="felt feil"><label for="g-epost">Trenerens e-post</label><input id="g-epost" value="trener1@gmail.com"><span class="feiltekst">Bare adresser som slutter på @golfforbundet.no kan få tilgang.</span></div>
         <div class="skille"></div>
         <div class="typo"><span class="d">Team Norway</span><span class="b">Lato bærer teksten uten å konkurrere med overskriftene.</span><span class="m">72,4 · 8,51 m · 31</span></div>
       </div>
