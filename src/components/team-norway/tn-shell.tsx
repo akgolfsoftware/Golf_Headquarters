@@ -2,7 +2,8 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { TnKort, TnLogo, TnPille, type TnBunnValg, type TnMenyGruppe, type TnMenyLenke, type TnPilleTone } from "./core";
-import { TnRailMobil, initialer } from "./rail-mobil";
+import { initialer } from "./initialer";
+import { TnRailMobil } from "./rail-mobil";
 import { TnIkon } from "./tn-ikon";
 import s from "./tn-skall.module.css";
 import { TnSeksjonDS, TnSidehodeDS } from "./tn-skjerm";
