@@ -16,6 +16,7 @@ import { byggBekreftelse, googleKalenderUrl, datoTekst, klokkeTekst } from "./bo
 
 import { byggAvbestilling, formaterKr as avbestillingKr, osloDagOgTid, refusjonTekst, type Refusjon } from "./templates/avbestilling-mal";
 import { bookingTemplateContent } from "./booking-template-content";
+import { avsnitt, epostSkall, esc, faktaRader } from "./precision-epost";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://akgolf.no";
 
@@ -249,6 +250,47 @@ export async function sendBookingRescheduled(bookingId: string, oldStartAt: Date
       error,
       meta: { bookingId },
     });
+    throw error;
+  }
+}
+
+/**
+ * Coach foreslår ny tid på en booking (Anders 15.10.2026). Bookingen er ikke
+ * flyttet ennå: e-posten ber spilleren godta eller avslå i PlayerHQ. Teksten
+ * ligger i koden (ingen ny EmailTemplate-rad), så ingen databaseendring trengs.
+ */
+export async function sendBookingFlytteforslag(bookingId: string) {
+  const booking = await prisma.booking.findUnique({
+    where: { id: bookingId },
+    include: { user: { select: { name: true, email: true } }, serviceType: { select: { name: true } }, location: { select: { name: true } } },
+  });
+  if (!booking || !booking.proposedStartAt) return;
+  const epost = booking.user?.email ?? booking.guestEmail;
+  if (!epost) return;
+  const fornavn = booking.user?.name?.trim().split(/\s+/)[0] ?? booking.guestName ?? null;
+  const lenke = `${APP_URL}/portal/booking/${booking.id}`;
+  const html = epostSkall({
+    pre: `Coachen foreslår ny tid for ${booking.serviceType.name}.`,
+    title: "Forslag om ny tid",
+    body: [
+      avsnitt(`Hei${fornavn ? ` ${esc(fornavn)}` : ""}. Coachen din foreslår å flytte <b>${esc(booking.serviceType.name)}</b> på ${esc(booking.location.name)}.`),
+      faktaRader([
+        ["Nå", `${esc(datoTekst(booking.startAt))} kl. ${esc(klokkeTekst(booking.startAt))}`],
+        ["Forslag", `${esc(datoTekst(booking.proposedStartAt))} kl. ${esc(klokkeTekst(booking.proposedStartAt))}`],
+      ]),
+      avsnitt("Timen står på den gamle tiden til du har svart."),
+    ].join(""),
+    button: ["Godta eller avslå", lenke],
+  });
+  try {
+    await resendKlient().emails.send({
+      from: FRA_EPOST,
+      to: epost,
+      subject: `Forslag om ny tid: ${booking.serviceType.name}`,
+      html,
+    });
+  } catch (error) {
+    await logError({ context: "email.booking.flytteforslag", error, meta: { bookingId } });
     throw error;
   }
 }
