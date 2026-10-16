@@ -12,7 +12,7 @@ import { TreningsvolumVisning } from "@/components/admin/precision/Treningsvolum
 import { useUkeMotor } from "./useUkeMotor";
 import { STATUS_LABEL } from "@/lib/domain/workbench/labels";
 import { isoWeekNumber } from "@/lib/domain/workbench/operations";
-import type { Drill, SourceItem, WorkbenchSession } from "@/lib/domain/workbench/types";
+import type { Drill, PyramidArea, SourceItem, WorkbenchSession } from "@/lib/domain/workbench/types";
 import type { WorkbenchSamletData } from "@/lib/workbench/workbench-samlet-typer";
 import { flyttPlanUke, osloPlanDato } from "@/lib/workbench/plan-kontekst";
 import { klassiskWorkbenchUrl, samletWorkbenchUrl } from "@/lib/workbench/samlet-url";
@@ -20,8 +20,8 @@ import { WorkbenchHendelserArk } from "./WorkbenchHendelserArk";
 import { WorkbenchPlanHandlinger } from "./WorkbenchPlanHandlinger";
 import { WorkbenchTreukerssyklus } from "./WorkbenchTreukerssyklus";
 import { UKEPLAN_TYPER } from "@/lib/workbench/ukeplan-schema";
+import { NyOvelseArk, OktOvelser, OvelseVelger } from "./OvelseVelger";
 
-const AKSER = ["FYS", "TEK", "SLAG", "SPILL", "TURN"] as const;
 const KILDER: Record<SourceItem["kind"], string> = { DRILL: "Øvelser", TEMPLATE: "Øktmaler", PROGRAM: "Program", PREVIOUS_WEEK: "Tidligere uker", TEK: "Teknisk plan" };
 
 export function WorkbenchUkeverksted({ data }: { data: WorkbenchSamletData }) {
@@ -37,11 +37,15 @@ export function WorkbenchUkeverksted({ data }: { data: WorkbenchSamletData }) {
   if (valg.propId !== propValgtId) setValg({ propId: propValgtId, id: propValgtId });
   const [dag, setDag] = useState(week.days.find(d => d.date === osloPlanDato())?.date ?? week.weekStart);
   const [q, setQ] = useState("");
-  const [akse, setAkse] = useState<string>("ALLE");
+  const [akse, setAkse] = useState<PyramidArea | null>(null);
   const [kilde, setKilde] = useState<SourceItem | null>(null);
   const [ny, setNy] = useState<NyOktUtkast | null>(null);
   const [rediger, setRediger] = useState(false);
   const [ovelse, setOvelse] = useState<{ session: WorkbenchSession; drill?: Drill } | null>(null);
+  // Øvelsesvelgeren og «Ny øvelse» (beslutning 16.10.2026).
+  const [velgerFor, setVelgerFor] = useState<WorkbenchSession | null>(null);
+  const [nyOvelse, setNyOvelse] = useState<{ navn: string; okt: WorkbenchSession | null } | null>(null);
+  const [velgerVersjon, setVelgerVersjon] = useState(0);
   const [publiser, setPubliser] = useState(false);
   const [ukeplan, setUkeplan] = useState(false);
   const [syklus, setSyklus] = useState(false);
@@ -51,7 +55,8 @@ export function WorkbenchUkeverksted({ data }: { data: WorkbenchSamletData }) {
   const [plassertid, setPlassertid] = useState("16:00");
   const valgt = motor.alleOkter.find(s => s.id === valgtId) ?? null;
   const synlige = motor.alleOkter.filter(s => s.status !== "CANCELLED");
-  const treff = data.kilder.filter(k => (!q || `${k.title} ${k.subtitle ?? ""}`.toLocaleLowerCase("nb-NO").includes(q.toLocaleLowerCase("nb-NO"))) && (akse === "ALLE" || k.pyramid === akse));
+  // Øvelsene søkes serverside i OvelseVelger; her står bare teknisk plan, maler og tidligere uker.
+  const treff = data.kilder.filter(k => k.kind !== "DRILL" && (!q || `${k.title} ${k.subtitle ?? ""}`.toLocaleLowerCase("nb-NO").includes(q.trim().toLocaleLowerCase("nb-NO"))) && (!akse || k.pyramid === akse));
   const referanse = { ...data.planKontekst.referanse, uke: week.weekStart };
   const alleStart = [...synlige.map(s => s.startMinute), ...week.days.flatMap(d => d.lockedBlocks.map(b => b.startMinute))];
   const forste = Math.max(0, Math.min(7, ...alleStart.map(m => Math.floor(m / 60))));
@@ -72,7 +77,7 @@ export function WorkbenchUkeverksted({ data }: { data: WorkbenchSamletData }) {
   const plasser = (dato: string, startMinute: number) => {
     if (kilde) {
       motor.fraKilde(dato, startMinute, kilde.id, id => { velgOkt(id); setKilde(null); });
-    } else setNy({ dato, startMinutt: startMinute, pyramide: akse === "ALLE" ? null : AKSER.find(a => a === akse) ?? null });
+    } else setNy({ dato, startMinutt: startMinute, pyramide: akse });
   };
   const kort = (s: WorkbenchSession, mobil = false) => <button type="button" key={s.id} className="ws-session" data-status={s.status} aria-pressed={s.id === valgtId}
     style={{ "--ws-axis": `var(--axis-${s.pyramid.toLowerCase()})`, "--ws-axis-soft": `var(--axis-${s.pyramid.toLowerCase()}-bg)` } as CSSProperties}
@@ -83,17 +88,21 @@ export function WorkbenchUkeverksted({ data }: { data: WorkbenchSamletData }) {
     <small>Registrert {s.actualMinutes == null ? "—" : `${s.actualMinutes} min`}</small></>}
   </button>;
   const bibliotek = <>
-        <section className="ws-section"><h2 className="ws-library-title">Bibliotek</h2><label className="ws-field">Søk i biblioteket<input type="search" value={q} onChange={e => setQ(e.target.value)} /></label>
-          <label className="ws-field">Pyramide<select value={akse} onChange={e => setAkse(e.target.value)}><option value="ALLE">Alle områder</option>{AKSER.map(a => <option key={a}>{a}</option>)}</select></label>
+        <section className="ws-section"><h2 className="ws-library-title">Bibliotek</h2>
           {kilde && <InlineVarsel tone="info">Velg en dag og et klokkeslett for «{kilde.title}». <button type="button" className="pa-btn pa-btn--ghost" onClick={() => setKilde(null)}>Avbryt plassering</button></InlineVarsel>}
-          {!treff.length && <p className="ws-muted">Ingen kilder med dette filteret.</p>}
+          <OvelseVelger playerId={data.player.id} rolle={data.role} q={q} onQ={setQ} akse={akse} onAkse={setAkse} okt={valgt} travel={travel} oppdatert={velgerVersjon}
+            onLeggIOkt={(sourceId, ferdig) => { if (valgt) motor.drillFraKilde(valgt.id, sourceId, ferdig); }}
+            onPlasser={k => { setKilde(k); setMobilPanel(null); }}
+            onNy={navn => { setMobilPanel(null); setNyOvelse({ navn, okt: valgt }); }} />
+        </section>
+        {treff.length > 0 && <section className="ws-section"><h3>Teknisk plan, maler og tidligere uker</h3>
           <ul className="ws-library-list">{treff.map(k => <li key={k.id} className="ws-library-item" data-selected={kilde?.id === k.id} style={k.pyramid ? { "--ws-axis": `var(--axis-${k.pyramid.toLowerCase()})` } as CSSProperties : undefined}>
             <span className="ws-muted">{KILDER[k.kind]}{k.pyramid ? ` · ${k.pyramid}` : ""}</span><strong>{k.title}</strong>{k.subtitle && <span className="ws-muted">{k.subtitle}</span>}
             {k.durationMinutes != null && <span className="ws-num ws-muted">{k.durationMinutes} min</span>}
             <Knapp variant="secondary" size="sm" disabled={travel} onClick={() => { setKilde(k); setMobilPanel(null); }}>Plasser i uka</Knapp>
             {valgt && (k.kind === "DRILL" || k.kind === "TEK") && <Knapp variant="ghost" size="sm" disabled={travel} onClick={() => motor.drillFraKilde(valgt.id, k.id)}>Legg til valgt økt</Knapp>}
           </li>)}</ul>
-        </section>
+        </section>}
         <section className="ws-section"><h3>Innganger</h3>{[["fys", "Fysisk program"], ["turn", "Turneringer"], ["maler", "Øktmaler"], ["tp", "Teknisk plan"], ["mal", "Målsetninger"]].map(([side, navn]) => <Link key={side} href={`${klassiskWorkbenchUrl(data.player.id, side === "mal" ? "mal" : "uke", referanse, data.routeSurface)}&${side === "fys" || side === "turn" ? "pille" : "side"}=${side}`}>{navn}</Link>)}
           <Knapp variant="ghost" onClick={() => { setMobilPanel(null); setNotat(true); }}>Notat til uka</Knapp>
         </section>
@@ -111,7 +120,7 @@ export function WorkbenchUkeverksted({ data }: { data: WorkbenchSamletData }) {
             <Knapp size="sm" variant="ghost" aria-label={`Flytt ${d.title} opp`} disabled={travel || i === 0} icon={ArrowUp} onClick={() => motor.flyttDrill(valgt, d.id, -1)}>Opp</Knapp>
             <Knapp size="sm" variant="ghost" aria-label={`Flytt ${d.title} ned`} disabled={travel || i === valgt.drills.length - 1} icon={ArrowDown} onClick={() => motor.flyttDrill(valgt, d.id, 1)}>Ned</Knapp>
             <Knapp size="sm" variant="ghost" disabled={travel} onClick={() => motor.fjernDrill(valgt.id, d.id)}>Fjern</Knapp>
-          </div></li>)}</ol>{!valgt.drills.length && <p className="ws-muted">Ingen øvelser ennå.</p>}<Knapp variant="secondary" icon={Plus} disabled={travel} onClick={() => { setMobilPanel(null); setOvelse({ session: valgt }); }}>Legg til øvelse</Knapp></section>
+          </div></li>)}</ol>{!valgt.drills.length && <p className="ws-muted">Ingen øvelser ennå.</p>}<Knapp variant="secondary" icon={Plus} disabled={travel} onClick={() => { setMobilPanel(null); setVelgerFor(valgt); }}>Legg til øvelse</Knapp></section>
           <section className="ws-section"><h3>Økta</h3><dl className="ws-kv"><div><dt>Formål</dt><dd>{valgt.rationale ?? "—"}</dd></div><div><dt>Sted</dt><dd>{valgt.location ?? "—"}</dd></div><div><dt>Målsetning</dt><dd>{valgt.maalsetning ?? "—"}</dd></div></dl>{valgt.notes && <p className="ws-muted">{valgt.notes}</p>}</section>
         </>}
       </>;
@@ -153,11 +162,23 @@ export function WorkbenchUkeverksted({ data }: { data: WorkbenchSamletData }) {
     {mobilPanel && <Ark open title={mobilPanel === "bibliotek" ? "Bibliotek" : "Økt og ukesum"} onClose={() => setMobilPanel(null)} footer={<Knapp variant="ghost" onClick={() => setMobilPanel(null)}>Til kalenderen</Knapp>}><div className="ws-panel-ark">{mobilPanel === "bibliotek" ? bibliotek : <>{inspektor}{ukeVolum}</>}</div></Ark>}
     {hendelser && <WorkbenchHendelserArk playerId={data.player.id} dato={week.weekStart} editable={data.role === "player"} onLukk={() => setHendelser(false)} onLagret={() => { void motor.lastPaaNytt(); }} />}
     {ny && <NyOktArk utkast={ny} travel={travel} onLukk={() => setNy(null)} onOpprett={v => motor.opprett(v, id => { setNy(null); velgOkt(id); }, true)} />}
-    {rediger && valgt && <OktArk key={valgt.id} session={valgt} spillerNavn={data.player.navn} motor={motor} onLukk={() => setRediger(false)} onApneOkt={id => { velgOkt(id); setRediger(false); }} onNyOvelse={session => { setRediger(false); setOvelse({ session }); }} onRedigerOvelse={(session, drill) => { setRediger(false); setOvelse({ session, drill }); }} />}
+    {rediger && valgt && <OktArk key={valgt.id} session={valgt} spillerNavn={data.player.navn} motor={motor} onLukk={() => setRediger(false)} onApneOkt={id => { velgOkt(id); setRediger(false); }} onNyOvelse={session => { setRediger(false); setVelgerFor(session); }} onRedigerOvelse={(session, drill) => { setRediger(false); setOvelse({ session, drill }); }} />}
     {ovelse && <OvelseArk key={ovelse.drill?.id ?? ovelse.session.id} session={ovelse.session} drill={ovelse.drill} pyramide={ovelse.drill?.akFormel.pyramid ?? ovelse.session.pyramid} travel={travel} onLukk={() => setOvelse(null)} onSubmit={(o, ferdig) => {
       const klar = () => { ferdig(); setOvelse(null); };
       if (ovelse.drill) motor.oppdaterOvelse(ovelse.session.id, ovelse.drill.id, o, klar); else motor.leggTilOvelse(ovelse.session.id, o, klar);
     }} />}
+    {velgerFor && (() => {
+      const okt = motor.alleOkter.find(s => s.id === velgerFor.id) ?? velgerFor;
+      return <Ark open title="Legg til øvelse" kicker={`Workbench · ${dagOgDato(okt.date)}`} onClose={() => setVelgerFor(null)} footer={<Knapp variant="ghost" onClick={() => setVelgerFor(null)}>Ferdig</Knapp>}>
+        <OktOvelser okt={okt} />
+        <OvelseVelger playerId={data.player.id} rolle={data.role} q={q} onQ={setQ} akse={akse} onAkse={setAkse} okt={okt} travel={travel} oppdatert={velgerVersjon}
+          onLeggIOkt={(sourceId, ferdig) => motor.drillFraKilde(okt.id, sourceId, ferdig)}
+          onNy={navn => { setVelgerFor(null); setNyOvelse({ navn, okt }); }} />
+      </Ark>;
+    })()}
+    {nyOvelse && <NyOvelseArk key={nyOvelse.okt?.id ?? "bank"} playerId={data.player.id} rolle={data.role} okt={nyOvelse.okt} startNavn={nyOvelse.navn}
+      standardPyramide={akse ?? nyOvelse.okt?.pyramid ?? "SLAG"} onLukk={() => setNyOvelse(null)}
+      onLagret={() => { setNyOvelse(null); setQ(""); setVelgerVersjon(v => v + 1); void motor.lastPaaNytt(); }} />}
     {publiser && <PubliserArk motor={motor} spillerNavn={data.player.navn} idag={osloPlanDato()} onLukk={() => setPubliser(false)} />}
     {syklus && <WorkbenchTreukerssyklus playerId={data.player.id} anchorWeek={week.weekStart} onLukk={() => setSyklus(false)} onLagret={() => { void motor.lastPaaNytt(); }} />}
     {ukeplan && <UkeplanArk weekPlan={week.weekPlan} ukeNr={isoWeekNumber(week.weekStart)} travel={travel} onLukk={() => setUkeplan(false)} onLagre={v => motor.lagreUkeplan(v, () => setUkeplan(false))} />}

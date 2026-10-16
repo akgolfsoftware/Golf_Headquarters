@@ -1,17 +1,17 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "ab84c9499f89c3f2599b6c772a1ed731f83c0938",
+  "kodeversjon": "1ac7a3f06093fd83f2c8c342fdec8fc9c9ef3cd8",
   "inventar": {
-    "pageFiles": 548,
-    "uniqueRoutePatterns": 548,
-    "componentFiles": 943,
-    "surfaceFiles": 284,
+    "pageFiles": 549,
+    "uniqueRoutePatterns": 549,
+    "componentFiles": 944,
+    "surfaceFiles": 286,
     "byArea": {
       "interne-eksempler": 6,
       "marked-og-offentlig": 70,
       "offentlig-booking": 4,
-      "agencyos": 167,
+      "agencyos": 168,
       "inngang-og-konto": 20,
       "forelder": 16,
       "lag-og-skole": 63,
@@ -7968,6 +7968,51 @@
       "sammeSidefil": [],
       "videresendingMal": "/admin/oppsett",
       "kodekommentar": null
+    },
+    {
+      "screenId": "UTEN-TEGNET-TYPE",
+      "rute": "/admin/ovelser",
+      "kildefil": "src/app/admin/ovelser/page.tsx",
+      "omrade": "agencyos",
+      "rolle": "trener",
+      "designkilde": "docs/design-system/skjermliste-precision-athletics.md",
+      "designversjon": "precision-athletics-2026-09-28",
+      "komponentmonster": null,
+      "handlinger": "ikke-avlest-i-D01",
+      "dataApi": "ikke-avlest-i-D01",
+      "tilstander": [
+        "tom",
+        "laster",
+        "feil"
+      ],
+      "formater": {
+        "mobil": "ikke-kontrollert",
+        "nettbrett": "ikke-kontrollert",
+        "desktop": "ikke-kontrollert",
+        "natt": "ikke-relevant"
+      },
+      "status": {
+        "kartlagt": true,
+        "wireframe": false,
+        "uiUtkast": false,
+        "prototype": false,
+        "vurdert": false,
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
+        "kontrollertIApp": false
+      },
+      "eier": "D01-skjermregister",
+      "kontrollbevis": null,
+      "avvik": [
+        "Kodekommentaren sier PH-13, men skjermlisten har ingen treff. Kommentaren er opphav, ikke godkjenning."
+      ],
+      "kobling": "teknisk-forklaring",
+      "forklaring": "Ingen tegnet skjermtype ligger i nærheten av ruten. Ruten beholdes og må forklares før den porteres eller skjules.",
+      "legacyGruppe": false,
+      "naermesteSkjermtype": null,
+      "sammeSidefil": [],
+      "videresendingMal": null,
+      "kodekommentar": "PH-13"
     },
     {
       "screenId": "VIDERESENDING",
@@ -24118,10 +24163,10 @@
     }
   ],
   "tellinger": {
-    "sidefiler": 548,
-    "medAvvik": 155,
+    "sidefiler": 549,
+    "medAvvik": 156,
     "valgtForBygging": 246,
-    "utenEksaktType": 15,
+    "utenEksaktType": 16,
     "implementert": 127,
     "kontrollertIApp": 0,
     "kobling": {
@@ -24129,7 +24174,7 @@
       "felles-monster": 22,
       "tegnet-skjermtype": 281,
       "videresending": 169,
-      "teknisk-forklaring": 32,
+      "teknisk-forklaring": 33,
       "byggeunderlag": 37
     },
     "screenId": {
@@ -24162,7 +24207,7 @@
       "AG-09": 2,
       "AG-24": 5,
       "AG-06": 2,
-      "UTEN-TEGNET-TYPE": 15,
+      "UTEN-TEGNET-TYPE": 16,
       "AG-04": 2,
       "AG-12": 1,
       "AG-11": 2,

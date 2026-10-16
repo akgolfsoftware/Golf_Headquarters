@@ -22,13 +22,17 @@ export async function bankOvelseWhere(viewer: Viewer, playerId: string): Promise
     allowed.push(...checked.filter((id): id is string => id !== null));
   }
   return { OR: [{ source: "SYSTEM" }, { createdBy: viewer.id }, { source: "COACH", visibility: "COACH_PLAYERS", createdBy: { in: allowed } },
-    { source: "COACH", visibility: "PRIVATE", createdBy: { in: enrollmentCoaches } }] };
+    { source: "COACH", visibility: "PRIVATE", createdBy: { in: enrollmentCoaches } },
+    // Spillerens egne øvelser ser også coachen som planlegger for spilleren (beslutning 16.10.2026).
+    ...(viewer.id !== playerId ? [{ source: "PLAYER" as const, createdBy: playerId }] : [])] };
 }
 
 export async function lastBankOvelse(id: string, viewer: Viewer, playerId: string, db: Db = prisma): Promise<ExerciseDefinition | null> {
   const row = await db.exerciseDefinition.findUnique({ where: { id } });
   if (!row) return null;
   if (row.source === "SYSTEM" || row.createdBy === viewer.id) return row;
+  // Kalleren har allerede tilgang til spilleren; spillerens egne øvelser følger med (16.10.2026).
+  if (row.source === "PLAYER" && row.createdBy === playerId) return row;
   if (row.source === "COACH" && row.visibility === "PRIVATE" && row.createdBy &&
     await prisma.playerEnrollment.findFirst({ where: { userId: playerId, endedAt: null, coachId: row.createdBy }, select: { id: true } })) return row;
   if (row.source === "COACH" && row.visibility === "COACH_PLAYERS" && row.createdBy &&
