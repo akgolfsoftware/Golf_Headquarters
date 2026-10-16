@@ -1,15 +1,8 @@
-// PH21TbOkt — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
-import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+// PH-21 Tilbakemelding — Precision Athletics, pakke 11 og 12 (utkast booking-meldinger.html, godkjent 16.10.2026).
 /**
- * PlayerHQ · Coach-tilbakemelding etter økt (Paper W3, konsolidert flate).
- * Fasit: designsystem/paper/fase2/playerhq/playerhq-coach-tilbakemelding.html
- *
- * Erstatter på sikt notat/video/oppsummering-spredningen (manifest-w3
- * §Konsolidering) — video er en modul i flaten. Eksisterende ruter står
- * urørt; redirect-konsolideringen er en egen C4-beslutning.
- *
- * Avvik:
- *   - Flaten er montert i PlayerHQSkall. Innholdet er fortsatt CoachTilbakemeldingV2. Ikke målt i appen.
+ * PlayerHQ · Coach-tilbakemelding etter økt (/portal/coach/tilbakemelding/[oktId]).
+ * Data og handlinger er uendret: getCoachTilbakemeldingData, kvitterTilbakemelding og
+ * sendTilbakemeldingSvar (actions.ts). Video er en modul i flaten, ikke egen rute.
  */
 
 import { redirect } from "next/navigation";
@@ -17,7 +10,9 @@ import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { erCoachetSpiller } from "@/lib/auth/coached";
 import { getCoachTilbakemeldingData } from "@/lib/portal-okt/coach-tilbakemelding-data";
-import { CoachTilbakemeldingV2 } from "@/components/portal/v2/CoachTilbakemeldingV2";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { PH21Tilbakemelding } from "@/components/portal/precision/PH21Tilbakemelding";
+import { getUnreadNotifications } from "@/app/portal/actions";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Tilbakemelding · PlayerHQ" };
@@ -38,13 +33,14 @@ export default async function CoachTilbakemeldingPage({
   }
 
   const { oktId } = await params;
-  const data = await getCoachTilbakemeldingData({ id: user.id, role: user.role }, oktId);
+  const [data, uleste] = await Promise.all([
+    getCoachTilbakemeldingData({ id: user.id, role: user.role }, oktId),
+    getUnreadNotifications(user.id, 1),
+  ]);
 
   return (
-    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
-      <div className="pa-side">
-      <CoachTilbakemeldingV2 data={data} />
-    </div>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste.count}>
+      <PH21Tilbakemelding data={data} />
     </PlayerHQSkall>
   );
 }

@@ -1,0 +1,68 @@
+/*
+ * Målsetninger (PH-11-MAL) og Én målsetning i nytt design.
+ * Fasit: docs/design-system/utkast-playerhq/plan.html (mal «mal») og
+ * docs/design-system/utkast-playerhq/booking-meldinger.html (mal «maal»).
+ * Avgrenset til .phn .phn-m-*. PC fra 900 px containerbredde.
+ */
+
+.phn.phn-m .phn-trend.opp { background: var(--phn-green-50); color: var(--phn-green-700); }
+.phn.phn-m .phn-trend.ned { background: var(--phn-amber-50); color: var(--phn-amber-700); }
+
+/* Lista */
+.phn .phn-m-liste { display: grid; gap: 12px; }
+.phn .phn-m-kort { border: 1px solid var(--phn-sand-300); border-radius: 12px; padding: 16px; display: grid; gap: 12px; align-content: start; background: var(--phn-hvit); color: inherit; text-decoration: none; }
+.phn .phn-m-kort:focus-visible, .phn .phn-m-iup:focus-visible, .phn .phn-m-grunner button:focus-visible { outline: 3px solid var(--phn-g900); outline-offset: 2px; }
+.phn .phn-m-topp { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.phn .phn-m-topp b { display: block; font: 600 16px/1.3 var(--phn-sans); overflow-wrap: anywhere; }
+.phn .phn-m-topp small { display: block; font-size: 13px; line-height: 1.4; color: var(--phn-g600); margin-top: 2px; }
+.phn .phn-m-akse { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; line-height: 1.4; color: var(--phn-g800); }
+.phn .phn-m-akse i { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+.phn .phn-m-tomt { display: grid; gap: 8px; justify-items: start; }
+
+/* Fremdrift: start, nå/burde vært, målsetning */
+.phn .phn-m-framdrift { display: grid; gap: 6px; }
+.phn .phn-m-spor { position: relative; height: 12px; border-radius: 6px; background: var(--phn-sand-150); }
+.phn .phn-m-spor > span { position: absolute; inset: 0 auto 0 0; border-radius: 6px; background: var(--phn-g900); }
+.phn .phn-m-spor > em { position: absolute; top: -4px; bottom: -4px; width: 2px; margin-left: -1px; background: var(--phn-g900); }
+.phn .phn-m-tall { display: flex; justify-content: space-between; gap: 8px; font: 500 12.5px/1.3 var(--phn-sans); color: var(--phn-g800); }
+.phn .phn-m-tall > span:nth-child(2) { text-align: center; }
+.phn .phn-m-tall > span:last-child { text-align: right; }
+.phn .phn-m-tall b { display: block; margin-top: 2px; font: 600 15px/1 var(--phn-mono); color: var(--phn-g900); }
+
+/* IUP-raden */
+.phn .phn-m-iup { display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 56px; padding: 14px; border-radius: 12px; background: var(--phn-g900); color: var(--phn-hvit); text-decoration: none; }
+.phn .phn-m-iup b { display: block; font: 600 15px/1.3 var(--phn-sans); }
+.phn .phn-m-iup small { font-size: 13px; opacity: .85; }
+
+/* Én målsetning */
+.phn .phn-m-grid { display: grid; gap: 24px; align-content: start; }
+.phn .phn-m-grid > div, .phn .phn-m-grid > aside { display: grid; gap: 24px; align-content: start; }
+.phn .phn-m-merker { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; font-size: 14px; color: var(--phn-g800); }
+.phn .phn-m-kurve { width: 100%; max-width: 440px; height: auto; display: block; overflow: visible; --m-farge: var(--phn-g900); }
+.phn .phn-m-kurve text { font: 500 11px var(--phn-mono); fill: var(--phn-g600); }
+.phn .phn-m-kurve .rute { stroke: var(--phn-sand-300); stroke-width: 1; }
+.phn .phn-m-kurve .maal { stroke: var(--phn-g900); stroke-width: 1; stroke-dasharray: 4 4; }
+.phn .phn-m-kurve .linje { fill: none; stroke: var(--m-farge); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+.phn .phn-m-kurve .flate { fill: var(--m-farge); opacity: .1; }
+.phn .phn-m-kurve circle { fill: var(--m-farge); }
+.phn .phn-m-kurve circle.sist { fill: var(--phn-hvit); stroke: var(--m-farge); stroke-width: 3; }
+.phn .phn-m-malinger { display: grid; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--phn-sand-300); }
+.phn .phn-m-malinger li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; padding: 10px 0; border-bottom: 1px solid var(--phn-sand-300); font-size: 14px; }
+.phn .phn-m-malinger li b { font: 600 15px/1.2 var(--phn-mono); text-align: right; }
+.phn .phn-m-malinger li .phn-kilde { grid-column: 1 / -1; }
+.phn .phn-m-okter { display: grid; gap: 8px; }
+.phn .phn-m-okter .phn-okt { cursor: default; }
+.phn .phn-m-info { display: flex; flex-wrap: wrap; gap: 2px 12px; font-size: 13px; line-height: 1.45; opacity: .92; }
+.phn .phn-m-to-felt { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; }
+.phn .phn-m-grunner { display: grid; gap: 6px; }
+.phn .phn-m-grunner button { min-height: 48px; padding: 0 14px; border: 1px solid var(--phn-sand-300); border-radius: 10px; background: var(--phn-hvit); font: 500 15px/1.2 var(--phn-sans); text-align: left; color: var(--phn-g900); cursor: pointer; }
+.phn .phn-m-grunner button[aria-pressed="true"] { border: 2px solid var(--phn-g900); padding: 0 13px; }
+
+@container (min-width: 900px) {
+  .phn .phn-m-liste { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .phn .phn-m-grid { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 40px; align-items: start; }
+  .phn .phn-m-grid > aside { position: sticky; top: 24px; gap: 16px; }
+}
+@container (max-width: 380px) {
+  .phn .phn-m-to-felt { grid-template-columns: minmax(0, 1fr); }
+}

@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "bb102ead80333d8610f7aef9d2638b3ff380581a",
+  "kodeversjon": "ab84c9499f89c3f2599b6c772a1ed731f83c0938",
   "inventar": {
     "pageFiles": 548,
     "uniqueRoutePatterns": 548,
-    "componentFiles": 927,
-    "surfaceFiles": 274,
+    "componentFiles": 943,
+    "surfaceFiles": 284,
     "byArea": {
       "interne-eksempler": 6,
       "marked-og-offentlig": 70,
@@ -15643,14 +15643,12 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "precision-visning",
+        "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Øktdetalj merker PH23OktDetalj i PlayerHQSkall. Tjeneste, lokasjon, avbestillingsstatus og notater er beholdt.",
-      "avvik": [
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
+      "kontrollbevis": null,
+      "avvik": [],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-23 Booking (spiller) er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -15688,14 +15686,12 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "precision-visning",
+        "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Anleggsdetalj merker PH23AnleggDetalj i PlayerHQSkall. Lokasjon, adresse og fasiliteter er beholdt.",
-      "avvik": [
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
+      "kontrollbevis": null,
+      "avvik": [],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-23 Booking (spiller) er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -15778,21 +15774,19 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "precision-visning",
+        "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Book med coach merker PH23CoachTid i PlayerHQSkall. Tjenester og lenke til booking-veiviseren er beholdt. I dag lyser, som da aktiv ble utledet. Indre kort er fortsatt v2. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
-      "avvik": [
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
+      "kontrollbevis": null,
+      "avvik": [],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-23 Booking (spiller) er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "PH-23"
     },
     {
       "screenId": "PH-23",
@@ -15868,21 +15862,19 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "precision-visning",
+        "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Ny booking merker PH23NyBooking i PlayerHQSkall. Steg, ledige tider og betalingsmodus er beholdt. Bekreftelsen er ikke med. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
-      "avvik": [
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
+      "kontrollbevis": null,
+      "avvik": [],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-23 Booking (spiller) er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "PH-23"
     },
     {
       "screenId": "PH-23",
@@ -16049,7 +16041,7 @@
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Ny melding merker PH21NyMelding i PlayerHQSkall. Sendingen er beholdt. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "kontrollbevis": "Innboks og coach-kontakt merker PH21Innboks i PlayerHQSkall. Meldinger, spørsmål, tilbakemelding, videoer, planer og ønsket økt er beholdt.",
       "avvik": [
         "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
@@ -16094,7 +16086,7 @@
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Meldingslisten merker PH21Meldingsliste i PlayerHQSkall. Tråden er beholdt. Indre kort er fortsatt v2. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "kontrollbevis": "Innboks og coach-kontakt merker PH21Innboks i PlayerHQSkall. Meldinger, spørsmål, tilbakemelding, videoer, planer og ønsket økt er beholdt.",
       "avvik": [
         "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
@@ -16135,21 +16127,19 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "precision-visning",
+        "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Coachens øvelser merker PH13OvelserCoach i PlayerHQSkall. Listen er beholdt. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
-      "avvik": [
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
+      "kontrollbevis": null,
+      "avvik": [],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-13 Øvelsesbank er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "PH-13"
     },
     {
       "screenId": "PH-21",
@@ -16364,7 +16354,7 @@
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Nytt spørsmål merker PH21NyttSporsmal i PlayerHQSkall. Skjemaet er beholdt. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "kontrollbevis": "Innboks og coach-kontakt merker PH21Innboks i PlayerHQSkall. Meldinger, spørsmål, tilbakemelding, videoer, planer og ønsket økt er beholdt.",
       "avvik": [
         "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
@@ -16450,21 +16440,19 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "precision-visning",
+        "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Tilbakemelding etter økt merker PH21TbOkt i PlayerHQSkall. CoachTilbakemeldingV2 og dataene er beholdt. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
-      "avvik": [
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
+      "kontrollbevis": null,
+      "avvik": [],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-21 Innboks er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "PH-21"
     },
     {
       "screenId": "PH-21",
@@ -16807,14 +16795,12 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "precision-visning",
+        "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Hullplan merker PH20HullPlan i PlayerHQSkall. Planen for hullet er beholdt. Stats lyser. Indre kort er fortsatt v2. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
-      "avvik": [
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
+      "kontrollbevis": null,
+      "avvik": [],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-20 Gameplan og banekart er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -17290,21 +17276,19 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "precision-visning",
+        "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Enkeltmål merker PH19Enkeltmal i PlayerHQSkall. Målet og handlingene er beholdt. Meg lyser. Indre kort er fortsatt v2. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
-      "avvik": [
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
+      "kontrollbevis": null,
+      "avvik": [],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-19 Workbench › Målsetninger er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": "PH-19"
+      "kodekommentar": null
     },
     {
       "screenId": "PH-19",
@@ -17386,6 +17370,7 @@
       "eier": "D01-skjermregister",
       "kontrollbevis": "Mål-huben merker PH19Mal i PlayerHQSkall. Aktive mål, fremdrift og siste milepæl er beholdt. Enkeltmål er egen rute. 390×844 og 1440×880 er ikke målt mot tegningen.",
       "avvik": [
+        "Kodekommentaren sier PH-11. Skjermlisten sier PH-19. Kommentaren er opphav, ikke en ny godkjenning.",
         "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
       "kobling": "tegnet-skjermtype",
@@ -17394,7 +17379,7 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": "PH-19"
+      "kodekommentar": "PH-11"
     },
     {
       "screenId": "PH-09",
@@ -18264,7 +18249,7 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "PH-23"
     },
     {
       "screenId": "UTEN-TEGNET-TYPE",
@@ -19541,7 +19526,7 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "PH-21"
     },
     {
       "screenId": "PH-21",
@@ -24134,10 +24119,10 @@
   ],
   "tellinger": {
     "sidefiler": 548,
-    "medAvvik": 163,
+    "medAvvik": 155,
     "valgtForBygging": 246,
     "utenEksaktType": 15,
-    "implementert": 135,
+    "implementert": 127,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,

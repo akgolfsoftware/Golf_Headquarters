@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import { V2Feil } from "@/components/v2/feil-laste";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { PHIupFeil } from "@/components/portal/precision/PHIupTilstand";
 
 export default function Error({
   error,
@@ -11,8 +12,12 @@ export default function Error({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error("[v2/error]", error.digest, error);
+    console.error("[gameplan/error]", error.digest, error);
   }, [error]);
 
-  return <V2Feil reset={reset} tilbakeHref="/portal/gameplan" />;
+  return (
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <PHIupFeil tittel="Banekartet kunne ikke hentes" tekst="Slagene og gameplanene dine er ikke endret. Prøv igjen." onProvIgjen={reset} />
+    </PlayerHQSkall>
+  );
 }

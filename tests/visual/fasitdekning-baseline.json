@@ -1,6 +1,6 @@
 {
-  "sitert": 132,
+  "sitert": 131,
   "av": 219,
-  "sistEndret": "2026-10-05",
-  "grunn": "Oppstart (AU-04) portert til Precision Athletics (7d7c2994): onboarding-wizard.tsx siterte «designsystem/train-lock/PH-19 Onboarding.dc.html» og er erstattet av SpillerOppstart.tsx. Én Train-lock-sitering faller bort, 133→132 (målt etter fletting med main 05.10)."
+  "sistEndret": "2026-10-16",
+  "grunn": "PlayerHQ pakke 11 og 12 portert til nytt design: Gameplan-banekartet (/portal/gameplan/[baneId]) siterte «designsystem/train-lock/GP-02 Gameplan Onsoy.dc.html» og siterer nå utkastet docs/design-system/utkast-playerhq/iup.html (godkjent). Én Train-lock-sitering faller bort, 132→131."
 }

@@ -49,6 +49,8 @@ export type PH23BookingProps = {
   betaling?: "betalt" | "avbrutt";
   /** Hvilken visning siden åpner med: oversikten (Bookinger) eller Book time. */
   start?: "oversikt" | "ny";
+  /** Betalingsvalget Book time åpner med (?betaling=1 fra drop-in-lenken gir Kort). */
+  startBetaling?: "Klipp" | "Kort";
   /** Ekte bookingflyt. Mangler den, kan ingenting bookes. */
   onConfirmBooking?: (valg: PH23BekreftValg) => Promise<PH23BekreftResultat>;
   /** Henter ekte ledige tider for en tjeneste. */
@@ -93,6 +95,7 @@ export function PH23Booking({
   state = "data",
   betaling,
   start = "oversikt",
+  startBetaling = "Klipp",
   onConfirmBooking,
   onHentSlots,
   onCancelBooking,
@@ -104,12 +107,12 @@ export function PH23Booking({
 
   const [visning, setVisning] = useState<Visning>(betaling ? "oversikt" : start);
   const [detaljId, setDetaljId] = useState<string | null>(null);
-  const [svcId, setSvcId] = useState<string | null>(defaultData.services[0]?.id ?? null);
+  const [svcId, setSvcId] = useState<string | null>(defaultData.startServiceId ?? defaultData.services[0]?.id ?? null);
   const [slotData, setSlotData] = useState<PH23SlotData>(defaultData);
   const [henterSlots, setHenterSlots] = useState(false);
   const [dayIndex, setDayIndex] = useState(() => forsteLedig(defaultData));
   const [slot, setSlot] = useState<string | null>(null);
-  const [payMethod, setPayMethod] = useState<"Klipp" | "Kort">("Klipp");
+  const [payMethod, setPayMethod] = useState<"Klipp" | "Kort">(startBetaling);
   const [isConfirming, setIsConfirming] = useState(false);
   const [confirmError, setConfirmError] = useState<string | null>(null);
 

@@ -10,7 +10,7 @@ Rader: [JSON](skjermregister.json) og [CSV](skjermregister.csv). Regenerer med `
 
 ## Inventar
 
-Sidefiler med rute: **548**. Unike rutemønstre i skanningen: 548. Komponentfiler: 927. Ramme- og tilstandsfiler: 274.
+Sidefiler med rute: **548**. Unike rutemønstre i skanningen: 548. Komponentfiler: 943. Ramme- og tilstandsfiler: 284.
 
 Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kodeversjonen over og kan være høyere. Interne eksempler inngår. Ingen rute er slettet.
 
@@ -39,7 +39,7 @@ Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kode
 | felles-monster | 22 |
 | intern-flate | 7 |
 
-246 rader treffer en av de 77 Precision-typene og er derfor merket valgt for bygging som design. 15 rader har ingen eksakt type. 163 rader har et registrert avvik. 135 rader har en Precision-visning i koden. 0 er kontrollert i appen.
+246 rader treffer en av de 77 Precision-typene og er derfor merket valgt for bygging som design. 15 rader har ingen eksakt type. 155 rader har et registrert avvik. 127 rader har en Precision-visning i koden. 0 er kontrollert i appen.
 
 ## Uten eksakt type
 
@@ -95,6 +95,7 @@ Tabellen er Precision-ruter uten treff i 74-listen, pluss WANG- og Team Norway-r
 | `/forelder/varsler` | FO-01 | Kodekommentaren sier FO-10. Skjermlisten sier FO-01. Kommentaren er opphav, ikke en ny godkjenning. |
 | `/portal/analysere/trackman/koller` | UTEN-TEGNET-TYPE | Kodekommentaren sier PH-17, men skjermlisten har ingen treff. Kommentaren er opphav, ikke godkjenning. |
 | `/portal/analysere/turneringer` | PH-18 | Kodekommentaren sier PH-21. Skjermlisten sier PH-18. Kommentaren er opphav, ikke en ny godkjenning. |
+| `/portal/mal` | PH-19 | Kodekommentaren sier PH-11. Skjermlisten sier PH-19. Kommentaren er opphav, ikke en ny godkjenning. |
 | `/portal/meg/innstillinger/anlegg` | PH-25 | Kodekommentaren sier PH-24. Skjermlisten sier PH-25. Kommentaren er opphav, ikke en ny godkjenning. |
 | `/portal/meg/innstillinger/personvern/deling` | PH-25 | Kodekommentaren sier PH-27. Skjermlisten sier PH-25. Kommentaren er opphav, ikke en ny godkjenning. |
 | `/portal/meg/innstillinger/personvern` | PH-25 | Kodekommentaren sier PH-18. Skjermlisten sier PH-25. Kommentaren er opphav, ikke en ny godkjenning. |

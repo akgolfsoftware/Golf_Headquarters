@@ -16,37 +16,13 @@ import Link from "next/link";
 import { Caps, Tittel, Kort, Knapp, TekstOmraade, Icon } from "@/components/v2";
 import { createCreditBooking } from "@/lib/booking/credit-booking";
 import { opprettBookingMedKort } from "@/app/portal/booking/actions";
+import type { BookingBekreftData } from "@/lib/portal-booking/bekreft-typer";
 import { PolicyBanner } from "@/components/booking/PolicyBanner";
 
 /* ── Datakontrakt (alt serialiserbart — server-pagen eier queries/format) ── */
 
-export type BekreftRad = { label: string; verdi: string };
-
-export type BookingNyBekreftV2Data = {
-  /** Barnet bookingen gjelder for (STEG 9.8, forelder booker for barnet) — sendes
-   *  videre til createCreditBooking/opprettBookingMedKort som verifiserer
-   *  forelder→barn-koblingen på nytt server-side. Undefined = spilleren booker for seg selv. */
-  barnId?: string;
-  /** Base-rute til kvitteringssiden etter fullført booking. Default («/portal/booking/bekreftet») bevarer dagens oppførsel. */
-  bekreftetBase?: string;
-  /** Caps-etikett øverst — «PlayerHQ» (spiller) eller «Foreldreportal» (STEG 9.8). */
-  merkelapp?: string;
-  /** «credits» = trekk fra forhåndsbetalte timer. «betaling» = kort via Stripe Checkout. */
-  modus: "credits" | "betaling";
-  /** Pris i øre — vises kun i betaling-modus. */
-  prisOre: number;
-  serviceTypeId: string;
-  coachId: string;
-  /** startAt.toISOString() — sendes UENDRET til createCreditBooking. */
-  startIso: string;
-  /** Tilbake til wizarden med samme service/dato (samme href som legacy). */
-  backHref: string;
-  /** Slot fortsatt ledig (isSlotStillAvailable — sjekket på serveren). */
-  ledig: boolean;
-  rader: BekreftRad[];
-  creditsRemaining: number;
-  saldoEtter: number;
-};
+export type { BekreftRad } from "@/lib/portal-booking/bekreft-typer";
+export type BookingNyBekreftV2Data = BookingBekreftData;
 
 function FeilBoks({ children }: { children: React.ReactNode }) {
   return (

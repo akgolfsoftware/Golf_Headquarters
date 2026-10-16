@@ -3,11 +3,12 @@
  * `/portal/booking/ny/bekreft/page.tsx` (STEG 9.8) — se ny-wizard-data.ts for
  * hvorfor. `eierId`/`eierTier` er PERSONEN bookingen gjelder for.
  */
+import { formatKr } from "@/lib/portal-booking/ph23-booking-data";
 import { fraNaivVeggklokke } from "@/lib/google-calendar-tid";
 import { kanBrukeCredits } from "@/lib/booking/credits-tilgang";
 import { isSlotStillAvailable } from "@/lib/booking/availability";
 import { prisma } from "@/lib/prisma";
-import type { BookingNyBekreftV2Data } from "@/components/portal/v2/BookingNyBekreftV2";
+import type { BookingBekreftData } from "@/lib/portal-booking/bekreft-typer";
 
 export type BekreftParams = {
   eierId: string;
@@ -26,7 +27,7 @@ export type BekreftParams = {
 export type BekreftResult =
   | { status: "ikke_funnet" }
   | { status: "krever_credits_redirect" }
-  | { status: "ok"; data: BookingNyBekreftV2Data };
+  | { status: "ok"; data: BookingBekreftData };
 
 export async function byggBookingBekreftData(params: BekreftParams): Promise<BekreftResult> {
   const { eierId, wizardBase, bekreftetBase, barnId, serviceSlug, start, coachId, betaling } = params;
@@ -78,7 +79,7 @@ export async function byggBookingBekreftData(params: BekreftParams): Promise<Bek
     fraNaivVeggklokke(startAt).split("T")[0]
   }${erBetaling ? "&betaling=1" : ""}`;
 
-  const data: BookingNyBekreftV2Data = {
+  const data: BookingBekreftData = {
     barnId,
     bekreftetBase,
     modus: erBetaling ? "betaling" : "credits",
@@ -89,13 +90,13 @@ export async function byggBookingBekreftData(params: BekreftParams): Promise<Bek
     backHref,
     ledig,
     rader: [
-      { label: "Økt-type", verdi: service.name },
-      { label: "Coach", verdi: coachUser.name ?? "Coach" },
-      { label: "Dato/tid", verdi: datoTid },
+      { label: "Tjeneste", verdi: service.name },
+      { label: "Coach", verdi: coachUser.name ?? "—" },
+      { label: "Tid", verdi: datoTid },
       { label: "Varighet", verdi: `${service.durationMin} min` },
       {
-        label: erBetaling ? "Pris" : "Kostnad",
-        verdi: erBetaling ? `${service.priceOre / 100} kr` : "1 av månedens timer",
+        label: "Betaling",
+        verdi: erBetaling ? `Kort · ${formatKr(service.priceOre / 100)}` : "1 klipp",
       },
     ],
     creditsRemaining,

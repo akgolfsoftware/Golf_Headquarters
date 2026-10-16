@@ -10,7 +10,13 @@ import { beregnSlotVindu, type SlotVindu } from "@/lib/portal-booking/slot-vindu
 import { mapHubDataToPH23, type PH23BookingData, type PH23Service } from "@/lib/portal-booking/ph23-booking-data";
 import { logError } from "@/lib/error-tracking";
 
-export async function hentPH23Data(user: { id: string; email: string | null }): Promise<PH23BookingData> {
+/** Forhåndsvalg fra lenker inn til Book time (Coach-siden og eldre lenker med ?service=slug). */
+export type PH23StartValg = { service?: string; coachId?: string };
+
+export async function hentPH23Data(
+  user: { id: string; email: string | null },
+  valg: PH23StartValg = {},
+): Promise<PH23BookingData> {
   const [hub, dbServices] = await Promise.all([
     getBookingHubData(user.id),
     prisma.serviceType.findMany({
@@ -31,14 +37,20 @@ export async function hentPH23Data(user: { id: string; email: string | null }): 
     note: s.description ?? undefined,
   }));
 
+  // Tjenesten ?service= peker på (id eller slug), ellers coachens første, ellers den første.
+  const valgt =
+    dbServices.find((s) => valg.service && (s.id === valg.service || s.slug === valg.service)) ??
+    dbServices.find((s) => valg.coachId && s.coachUserId === valg.coachId) ??
+    dbServices[0];
+
   let slotVindu: SlotVindu | null = null;
-  if (services[0]) {
+  if (valgt) {
     try {
-      slotVindu = await beregnSlotVindu(services[0].id, 14);
+      slotVindu = await beregnSlotVindu(valgt.id, 14);
     } catch (error) {
       await logError({ context: "portal.booking.ph23.slots", error, meta: { userId: user.id }, severity: "warn" });
     }
   }
 
-  return mapHubDataToPH23(hub, user.email ?? "", services, slotVindu);
+  return { ...mapHubDataToPH23(hub, user.email ?? "", services, slotVindu), startServiceId: valgt?.id };
 }

@@ -1,127 +1,29 @@
-// PH21Meldingsliste — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
-import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+// PH21Innboks «Meldinger» — Precision Athletics, nytt design (pakke 11). Data og handlinger er beholdt.
 /**
- * v2-forhåndsvisning — PlayerHQ Coach Meldinger (retning C). Egen top-level
- * route-group (v2preview) som IKKE arver PortalShell — kun root-layout. V2Shell
- * leverer chrome-en (IkonRail/BunnNav), CoachMeldingerV2 rendrer stacken.
- *
- * Auth + dataloading gjenskaper den ekte /portal/coach/melding-siden 1:1:
- * tier-gate + coach-liste + CoachingSession-innboks (kind DIRECT). I tillegg
- * hentes én ekte tråd (nyeste med innhold) til forhåndsvisning av bobler.
+ * PlayerHQ · Meldinger (/portal/coach/melding).
+ * Fasit: docs/design-system/utkast-playerhq/kommunikasjon.html, mal «traad» (godkjent 14.10.2026).
+ * Avvik:
+ *   - Avvikene fra utkastet står øverst i komponenten siden bruker.
+ * Samme skjerm som /portal/coach på fanen Meldinger: samtalen med coachen og «Ny melding».
  */
-
 import { redirect } from "next/navigation";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { prisma } from "@/lib/prisma";
-import { CoachMeldingerV2, type CoachMeldingerData } from "@/components/portal/v2/CoachMeldingerV2";
-import type { Melding } from "@/components/v2";
-import { TilbakeLenke } from "@/components/v2";
+import { getPH21Data } from "@/lib/portal-coach/ph21-queries";
+import { PH21Innboks } from "@/components/portal/precision/PH21Innboks";
 
 export const dynamic = "force-dynamic";
 
-type ChatMelding = { role?: string; content?: string; ts?: string };
-
-function tidFra(ts: string | undefined, fallback: Date): string {
-  const d = ts ? new Date(ts) : fallback;
-  if (Number.isNaN(d.getTime())) return "";
-  return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
-}
-
-export default async function V2CoachMeldingPreviewPage() {
+export default async function CoachMeldingPage() {
   const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN", "PARENT"] });
   if (user.role === "PARENT") redirect("/forelder");
   if (user.role === "GUEST") redirect("/admin/kalender");
 
-  if (user.tier === "GRATIS") {
-    const data: CoachMeldingerData = { gratis: true, hovedcoach: null, traader: [], valgt: null };
-    return (
-      <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
-      <div className="pa-side">
-        <TilbakeLenke href="/portal/coach">Coach</TilbakeLenke>
-        <CoachMeldingerV2 data={data} />
-      </div>
-    </PlayerHQSkall>
-    );
-  }
-
-  const [coacher, sesjoner, aktivEnrollering] = await Promise.all([
-    prisma.user.findMany({
-      where: { role: "COACH" },
-      select: { id: true, name: true },
-      orderBy: { name: "asc" },
-    }),
-    prisma.coachingSession.findMany({
-      where: { userId: user.id, kind: "DIRECT" },
-      include: { coach: { select: { name: true } } },
-      orderBy: { updatedAt: "desc" },
-      take: 20,
-    }),
-    prisma.playerEnrollment.findFirst({
-      where: { userId: user.id, endedAt: null, coachId: { not: null } },
-      include: { coach: { select: { name: true } } },
-      orderBy: { enrolledAt: "desc" },
-    }),
-  ]);
-
-  const parsed = sesjoner.map((s) => {
-    const meldinger = Array.isArray(s.messages) ? (s.messages as ChatMelding[]) : [];
-    const siste = meldinger.at(-1);
-    const snippet =
-      typeof siste?.content === "string"
-        ? siste.content.slice(0, 80) + (siste.content.length > 80 ? "…" : "")
-        : "Ingen meldinger";
-    return {
-      id: s.id,
-      coachNavn: s.coach.name,
-      antall: meldinger.length,
-      snippet,
-      datoKort: s.updatedAt.toLocaleDateString("nb-NO", { day: "2-digit", month: "2-digit" }),
-      raw: meldinger,
-      createdAt: s.createdAt,
-    };
-  });
-
-  const traader = parsed.map((p) => ({
-    id: p.id,
-    coachNavn: p.coachNavn,
-    antall: p.antall,
-    snippet: p.snippet,
-    datoKort: p.datoKort,
-  }));
-
-  // Én ekte tråd for boble-forhåndsvisning: nyeste med faktisk innhold.
-  const kilde = parsed.find((p) => p.raw.length > 0) ?? parsed[0] ?? null;
-  const valgt = kilde
-    ? {
-        id: kilde.id,
-        coachNavn: kilde.coachNavn,
-        meldinger: kilde.raw.map<Melding>((m) => ({
-          meg: m.role === "user",
-          fra: m.role === "user" ? undefined : kilde.coachNavn,
-          tekst: m.content ?? "",
-          tid: tidFra(m.ts, kilde.createdAt),
-        })),
-      }
-    : null;
-
-  // Hovedcoach: aktiv enrollering vinner (spillerens faktiske coach) — deretter
-  // nyeste eksisterende DIRECT-tråd (sesjoner er sortert nyeste først) — kun som
-  // siste utvei brukes første coach i den globale coach-lista.
-  const hovedcoachNavn = aktivEnrollering?.coach?.name ?? sesjoner[0]?.coach.name ?? coacher[0]?.name ?? null;
-
-  const data: CoachMeldingerData = {
-    gratis: false,
-    hovedcoach: hovedcoachNavn ? { navn: hovedcoachNavn } : null,
-    traader,
-    valgt,
-  };
+  const data = await getPH21Data(user.id);
 
   return (
     <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
-      <div className="pa-side">
-      <TilbakeLenke href="/portal/coach">Coach</TilbakeLenke>
-      <CoachMeldingerV2 data={data} />
-    </div>
+      <PH21Innboks data={data} initialTab="msg" />
     </PlayerHQSkall>
   );
 }
