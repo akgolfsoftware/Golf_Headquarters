@@ -164,7 +164,7 @@ export function PH11Periode({ playerId, periode, referanse, idag }: PH11PeriodeP
     <div className="phn-to-kol">
       <div className="phn-kol">
         <HeltKort label="Perioden i tall" className={`phn-periode-topp type-${p.type}`} tittel={tittel} gj={gj} grunnlag={grunnlag} kilde={kilde} under="av perioden"
-          tempo={{ status: tempoTekst.status, tekst: <>{tempoTekst.tekst}{nesteTest && fase !== "for" ? ` Neste test er testuka ${dato(nesteTest.startDate)}.` : ""}</> }}
+          tempo={{ status: tempoTekst.status, tekst: <>{tempoTekst.tekst}{nesteTest && fase !== "for" ? ` Neste test er testuka ${dato(nesteTest.startDate).replace(/\.$/, "")}.` : ""}</> }}
           fase={uker.length > 0 ? <div className="phn-fase" role="img" aria-label={fase === "na" ? `Uke ${naIndeks + 1} av ${uker.length}` : tittel}>
             {uker.map((u) => <span key={u.weekStart} className={ukeErGatt(u.weekStart, idag) ? "ferdig" : ukeErNa(u.weekStart, idag) ? "na" : undefined} />)}
           </div> : undefined} />

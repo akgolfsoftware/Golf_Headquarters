@@ -23,6 +23,12 @@ export const AKSE_INK: Record<PyramidArea, string> = {
 /** Varighet; 0 blir «0», manglende tall blir «—». */
 export const varighet = (min: number | null | undefined) => (min == null ? "—" : min > 0 ? formaterVarighet(min) : "0");
 
+/** Kort varighet under ukesøylene: «14 t 5», «3 t», «45 min». */
+export const kortVarighet = (min: number) => {
+  const t = Math.floor(min / 60), m = Math.round(min % 60);
+  return t ? `${t} t${m ? ` ${m}` : ""}` : `${m} min`;
+};
+
 /** Segmentert ring: gjennomført mørkt, resten av grunnlaget lyst i samme aksefarge. */
 export function AkseRing({ gj, grunnlag, under, storrelse = 150 }: { gj: DelAkser; grunnlag: Akser; under: string; storrelse?: number }) {
   const r = 62, o = 2 * Math.PI * r, tot = sum(grunnlag);
@@ -145,11 +151,11 @@ export function UkeSoyler({ uker, hoyde = 130 }: { uker: SoyleUke[]; hoyde?: num
       return <Link key={u.nokkel} href={u.href} className={`phn-uke${u.na ? " na" : ""}`} aria-label={label}>
         <div className="phn-soyle" style={{ height: hoyde }}>
           {deler}
-          {u.fordelt ? <u style={{ bottom: (u.fordelt / maks) * hoyde }} /> : null}
+          {u.fordelt ? <u style={{ bottom: Math.min((u.fordelt / maks) * hoyde, hoyde - 2) }} /> : null}
         </div>
         <b><span className="phn-uo">Uke </span>{u.weekNumber}</b>
-        {u.na ? <span className="phn-merke">Nå</span> : u.merke ? <span className={`phn-merke ${u.merke === "Endret" ? "endret" : "test"}`}>{u.merke}</span> : <small>{u.dato}</small>}
-        <small>{u.gatt ? (pst !== null ? `${pst} %` : gj > 0 ? varighet(gj) : "—") : <>{varighet(lagt)}<br />av {u.fordelt ? varighet(u.fordelt) : "—"}</>}</small>
+        {u.na ? <span className="phn-merke">Nå</span> : u.merke === "Endret" ? <span className="phn-merke endret">Endret</span> : u.merke ? <span className="phn-merke test">Test<span className="phn-uo">uke</span></span> : <small>{u.dato}</small>}
+        <small>{u.gatt ? (pst !== null ? `${pst} %` : gj > 0 ? kortVarighet(gj) : "—") : <>{kortVarighet(lagt)}<br />av {u.fordelt ? kortVarighet(u.fordelt) : "—"}</>}</small>
       </Link>;
     })}
   </div>;

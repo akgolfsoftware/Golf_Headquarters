@@ -265,7 +265,7 @@
 .phn .phn-tempo b { font-weight: 600; }
 
 /* Ukesøyler: mørk = gjennomført, lys = lagt inn, stiplet = fordelt */
-.phn .phn-uker { display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 8px; align-items: end; }
+.phn .phn-uker { display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 8px; align-items: start; }
 .phn .phn-uke { display: grid; gap: 6px; justify-items: center; text-decoration: none; color: inherit; border-radius: 10px; padding: 8px 4px 6px; min-width: 0; }
 .phn .phn-uke.na { background: var(--phn-sand-150); }
 .phn .phn-soyle { position: relative; width: min(44px, 100%); display: flex; flex-direction: column-reverse; border-radius: 6px; overflow: hidden; background: var(--phn-sand-150); }
@@ -360,6 +360,8 @@
 /* Periode: fylt toppflate i periodens farge */
 .phn .phn-periode-topp { border: 0; background: var(--type-bg, var(--phn-g800)); color: #fff; --phn-g600: rgba(255,255,255,.85); --phn-sand-150: rgba(255,255,255,.18); }
 .phn .phn-periode-topp .phn-akse b { color: #fff !important; }
+.phn .phn-periode-topp .phn-ring circle[stroke-opacity] { stroke-opacity: .55; }
+.phn .phn-periode-topp .phn-stolpe em { opacity: .5; }
 .phn .phn-periode-topp .phn-forklar { color: rgba(255,255,255,.9); }
 .phn .phn-periode-topp .phn-tempo { background: rgba(255,255,255,.16); color: #fff; }
 .phn .phn-fase { display: flex; gap: 4px; }
