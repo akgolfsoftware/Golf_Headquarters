@@ -5,6 +5,10 @@
  * Ring i aksefargene, aksestolper, ukesøyler, «I rute»-setning og hendelsesliste. Brukes av
  * Måned, År og Periode, og kan brukes av andre PlayerHQ-skjermer i samme stil.
  * Farge betyr akse; grønt og gult er bare status.
+ *
+ * Avvik:
+ *   - Ringen og stolpene måles mot lagt inn når ingenting er fordelt, og ringen sier det.
+ *   - Kort varighet under ukesøylene («14 t 5») som i utkastet; ellers formaterVarighet.
  */
 import Link from "next/link";
 import type { ReactNode } from "react";
