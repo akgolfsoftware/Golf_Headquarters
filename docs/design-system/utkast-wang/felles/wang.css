@@ -183,7 +183,7 @@ body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.
 .er-plan b{font:800 17px/1 var(--brand);color:var(--navy-dyp);white-space:nowrap}
 .er-plan b small{font:700 12px/1 var(--brand);color:var(--tekst-2);margin-left:3px}
 .er-plan .stolpe{width:100%;height:8px}
-.stolpe i.mal{position:absolute;top:0;bottom:0;width:2px;background:var(--navy-dyp);z-index:1}
+.stolpe i.strek{position:absolute;top:0;bottom:0;width:2px;background:var(--navy-dyp);z-index:1}
 .elevrad:focus-visible,.smaa-tall > *:focus-visible{outline:3px solid var(--mint);outline-offset:2px}
 
 /* Fylt graf: arealet under linja (WANGUtkast.fyltGraf). Navy linje, lys navy flate, stiplet mål. */

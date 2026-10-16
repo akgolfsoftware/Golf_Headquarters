@@ -278,7 +278,7 @@
     var E = [['02', 61, 88, 'VG1', 'Under 70 % av planen'], ['09', 74, 64, 'VG2', 'Borte tre morgener på rad'], ['07', 86, 94, 'VG2'], ['11', 89, 91, 'VG3'], ['05', 92, 94, 'VG2'], ['01', 94, 97, 'VG1'], ['04', 95, 94, 'VG2'], ['03', 98, 100, 'VG1'], ['08', 101, 100, 'VG3']];
     var IKKE = [['06', 'VG2'], ['10', 'VG3']];
     function rad(e, kl) {
-      return '<a class="elevrad ' + kl + '" href="#"><span class="avatar">' + e[0] + '</span><span class="er-hvem"><b>Elev ' + e[0] + '</b><span>' + e[3] + ' · morgentrening ' + e[2] + ' %</span>' + (e[4] ? '<span class="er-grunn">' + e[4] + '</span>' : '') + '</span><span class="er-plan"><b>' + e[1] + ' %</b><span class="stolpe"><span style="width:' + Math.min(100, e[1]) + '%" data-til="' + Math.min(100, e[1]) + '%"></span><i class="mal" style="left:80%"></i></span></span></a>';
+      return '<a class="elevrad ' + kl + '" href="#"><span class="avatar">' + e[0] + '</span><span class="er-hvem"><b>Elev ' + e[0] + '</b><span>' + e[3] + ' · morgentrening ' + e[2] + ' %</span>' + (e[4] ? '<span class="er-grunn">' + e[4] + '</span>' : '') + '</span><span class="er-plan"><b>' + e[1] + ' %</b><span class="stolpe"><span style="width:' + Math.min(100, e[1]) + '%" data-til="' + Math.min(100, e[1]) + '%"></span><i class="strek" style="left:80%"></i></span></span></a>';
     }
     var trenger = E.filter(function (e) { return e[4]; }), folger = E.filter(function (e) { return !e[4]; });
     app.querySelector('[data-elever]').innerHTML =
