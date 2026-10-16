@@ -11,6 +11,7 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { BOOKING_ACUITY_URL, kanBrukeInnebygdBooking } from "@/lib/booking/offentlig-booking";
+import { erAbonnementTjeneste } from "@/lib/booking/tjeneste-kategori";
 import { MarkedBookingPauset } from "@/components/marketing/landing/MarkedBookingPauset";
 import {
   BK01Booking,
@@ -23,10 +24,6 @@ export const metadata: Metadata = {
   description:
     "Personlig coaching med Anders Kristiansen. Velg tjeneste og ledig tid, og book online.",
 };
-
-function erAbonnement(name: string): boolean {
-  return name.toLowerCase().includes("performance");
-}
 
 /** «Anders Kristiansen» → «Anders». Fasiten viser fornavn på tjenestekortene. */
 function fornavn(navn: string | null | undefined): string | null {
@@ -59,9 +56,10 @@ function sorterSomFasit<T extends { sorterPaa: string | null; pris: number }>(a:
   return a.pris - b.pris;
 }
 
-// Fasiten låser flaten til én lokasjon ved lansering. Navnet leses fra samme
-// rad som checkout faktisk bruker, slik at skjermen ikke lover et annet sted
-// enn bookingen havner på.
+// Standardstedet når tjenesten ikke har eget sted satt. Navnet leses fra samme
+// rad som checkout-fallbacket bruker (tjeneste-sted.ts), slik at skjermen ikke
+// lover et annet sted enn bookingen havner på. Tjenester med `locationId`
+// viser sitt eget sted.
 const LOKASJON_FALLBACK = "Gamle Fredrikstad GK";
 
 export default async function BookingLanding() {
@@ -75,7 +73,7 @@ export default async function BookingLanding() {
     prisma.serviceType.findMany({
       where: { active: true, priceOre: { gt: 0 } },
       orderBy: { priceOre: "asc" },
-      include: { coach: { select: { name: true } } },
+      include: { coach: { select: { name: true } }, location: { select: { name: true } } },
     }),
     prisma.location.findFirst({
       where: {
@@ -90,7 +88,7 @@ export default async function BookingLanding() {
   ]);
 
   const tjenester: BookingTjeneste[] = services
-    .filter((s) => !erAbonnement(s.name))
+    .filter((s) => !erAbonnementTjeneste(s))
     .map((s) => ({
       slug: s.slug,
       navn: s.name,
@@ -99,12 +97,13 @@ export default async function BookingLanding() {
       pris: Math.round(s.priceOre / 100),
       varighetMin: s.durationMin,
       beskrivelse: s.description,
+      sted: s.location?.name ?? null,
     }))
     .sort(sorterSomFasit)
     .map(({ sorterPaa: _sorterPaa, ...t }) => t);
 
   const abonnement: BookingAbonnement[] = services
-    .filter((s) => erAbonnement(s.name))
+    .filter((s) => erAbonnementTjeneste(s))
     .map((s) => ({
       slug: s.slug,
       navn: s.name,

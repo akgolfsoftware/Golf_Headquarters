@@ -13,7 +13,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import * as skriv from "@/lib/domain/tn-redigering";
 
 async function bruker() {
-  return requirePortalUser({ kreverTilgang: "INGEN" });
+  return requirePortalUser({ tillatDemo: true, kreverTilgang: "INGEN" });
 }
 
 function oppdater(...stier: string[]) {

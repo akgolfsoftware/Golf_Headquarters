@@ -30,7 +30,7 @@ export default async function WangTestresultaterForTnPage({
 }: {
   searchParams: Promise<{ side?: string }>;
 }) {
-  const bruker = await requirePortalUser({ kreverTilgang: "INGEN" });
+  const bruker = await requirePortalUser({ tillatDemo: true, kreverTilgang: "INGEN" });
   const valg = await hentTnGruppeanalyseValg(bruker);
   // Gamle lenker uten tilgang viser «Ingen tilgang», aldri data.
   if (!valg || valg.kontekst.erSpiller) return <IngenTilgang />;

@@ -62,7 +62,7 @@ export default async function TeamNorwaySpillerTekniskPlanDetaljPage({
 }) {
   const { spillerId, planId } = await params;
   const { feil } = await searchParams;
-  const bruker = await requirePortalUser({ kreverTilgang: "INGEN" });
+  const bruker = await requirePortalUser({ tillatDemo: true, kreverTilgang: "INGEN" });
   const kontekst = await hentTnWorkbenchKontekst(bruker);
   if (!kontekst) notFound();
   if (bruker.role === "PLAYER" && bruker.id !== spillerId) notFound();
@@ -78,7 +78,7 @@ export default async function TeamNorwaySpillerTekniskPlanDetaljPage({
 
   async function loggRep(form: FormData) {
     "use server";
-    const ferskBruker = await requirePortalUser({ kreverTilgang: "INGEN" });
+    const ferskBruker = await requirePortalUser({ tillatDemo: true, kreverTilgang: "INGEN" });
     const ferskKontekst = await hentTnWorkbenchKontekst(ferskBruker);
     if (!ferskKontekst) return;
     const taskId = String(form.get("taskId") ?? "");
@@ -91,7 +91,7 @@ export default async function TeamNorwaySpillerTekniskPlanDetaljPage({
 
   async function opprettOppgave(form: FormData) {
     "use server";
-    const ferskBruker = await requirePortalUser({ kreverTilgang: "INGEN" });
+    const ferskBruker = await requirePortalUser({ tillatDemo: true, kreverTilgang: "INGEN" });
     const ferskKontekst = await hentTnWorkbenchKontekst(ferskBruker);
     if (!ferskKontekst) return;
     const pNummer = String(form.get("pNummer") ?? "");
@@ -115,7 +115,7 @@ export default async function TeamNorwaySpillerTekniskPlanDetaljPage({
 
   async function oppdaterOppgave(form: FormData) {
     "use server";
-    const ferskBruker = await requirePortalUser({ kreverTilgang: "INGEN" });
+    const ferskBruker = await requirePortalUser({ tillatDemo: true, kreverTilgang: "INGEN" });
     const ferskKontekst = await hentTnWorkbenchKontekst(ferskBruker);
     if (!ferskKontekst) return;
     const taskId = String(form.get("taskId") ?? "");
@@ -135,7 +135,7 @@ export default async function TeamNorwaySpillerTekniskPlanDetaljPage({
 
   async function slettOppgave(form: FormData) {
     "use server";
-    const ferskBruker = await requirePortalUser({ kreverTilgang: "INGEN" });
+    const ferskBruker = await requirePortalUser({ tillatDemo: true, kreverTilgang: "INGEN" });
     const ferskKontekst = await hentTnWorkbenchKontekst(ferskBruker);
     if (!ferskKontekst) return;
     const taskId = String(form.get("taskId") ?? "");

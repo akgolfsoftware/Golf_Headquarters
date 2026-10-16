@@ -11,7 +11,7 @@ import { avsluttTilgang, leggTilTrener, settTilgang, type TnAvsluttResultat, typ
  */
 // tilgang: sportssjef i TN-gruppen sjekkes i domenelaget (lib/domain/tn-tilgang)
 export async function avsluttTilgangAction(groupId: string, targetUserId: string): Promise<TnAvsluttResultat> {
-  const bruker = await requirePortalUser({ kreverTilgang: "INGEN" });
+  const bruker = await requirePortalUser({ tillatDemo: true, kreverTilgang: "INGEN" });
   const resultat = await avsluttTilgang({ caller: { id: bruker.id, role: bruker.role }, groupId, targetUserId });
   if (resultat.ok) revalidatePath("/team-norway/tilgang");
   return resultat;
@@ -25,7 +25,7 @@ export async function settTilgangAction(input: {
   fraIso: string;
   tilIso: string | null;
 }): Promise<TnSettRolleResultat> {
-  const bruker = await requirePortalUser({ kreverTilgang: "INGEN" });
+  const bruker = await requirePortalUser({ tillatDemo: true, kreverTilgang: "INGEN" });
   const resultat = await settTilgang({ caller: { id: bruker.id, role: bruker.role }, ...input });
   if (resultat.ok) revalidatePath("/team-norway/tilgang");
   return resultat;
@@ -33,7 +33,7 @@ export async function settTilgangAction(input: {
 
 /** TN-19 «Legg til trener». Rollen valideres her; gruppen settes i domenelaget. */
 export async function leggTilTrenerAction(epost: string, rolle: TnTrenerRolle): Promise<TnLeggTilResultat> {
-  const bruker = await requirePortalUser({ kreverTilgang: "INGEN" });
+  const bruker = await requirePortalUser({ tillatDemo: true, kreverTilgang: "INGEN" });
   if (rolle !== "COACH" && rolle !== "ASSISTANT") throw new Error("Ugyldig rolle");
   if (typeof epost !== "string" || epost.length > 320) throw new Error("Ugyldig e-post");
   const resultat = await leggTilTrener({ caller: { id: bruker.id, role: bruker.role }, epost, rolle });

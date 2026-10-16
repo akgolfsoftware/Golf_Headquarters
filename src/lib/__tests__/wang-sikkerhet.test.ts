@@ -60,7 +60,7 @@ test("fellessiden /team-wang er åpen: ingen innloggingskrav i selve siden", () 
 
 test("skjermoversikten har eget innloggingskrav for ADMIN/COACH", () => {
   const side = lesKilde("src/app/team-wang/skjermer/page.tsx");
-  assert.match(side, /requirePortalUser\(\{\s*allow:\s*\["ADMIN",\s*"COACH"\]/);
+  assert.match(side, /requirePortalUser\(\{\s*(?:tillatDemo:\s*true,\s*)?allow:\s*\["ADMIN",\s*"COACH"\]/);
   assert.match(side, /hentWangCoachGruppeId/);
 });
 

@@ -40,7 +40,7 @@ function osloIdag() { return new Intl.DateTimeFormat("en-CA", { timeZone: "Europ
 
 /** Treneren lagrer et separat, versjonsfestet forslag. Spillerens aktive plan røres ikke. */
 export async function lagTrenerforslag(input: unknown) {
-  const trener = await requireCoachActionUser();
+  const trener = await requireCoachActionUser({ tillatDemo: true });
   const parsed = LagForslagSchema.safeParse(input);
   if (!parsed.success) return { ok: false as const, feil: "Kontroller økt og begrunnelse." };
   if (!(await rateLimit({ key: `trenerforslag:${trener.id}`, max: 20, windowMs: 60_000 })).ok)

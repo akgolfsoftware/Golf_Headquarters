@@ -29,7 +29,7 @@ function alder(dateOfBirth: Date | null): string | null {
  */
 export default async function SpillerpostPage({ params }: { params: Promise<{ spillerId: string }> }) {
   const { spillerId } = await params;
-  const bruker = await requirePortalUser({ allow: ["COACH", "ADMIN", "PLAYER", "PARENT"] });
+  const bruker = await requirePortalUser({ tillatDemo: true, allow: ["COACH", "ADMIN", "PLAYER", "PARENT"] });
 
   const metadata = await medTnSpillerpostData(bruker.id, spillerId, async () => {
     const [spiller, foresatte, gruppe] = await Promise.all([

@@ -176,7 +176,7 @@ async function kreverTilgangTilSpiller(
   playerId: string,
   modus: "les" | "skriv" = "skriv",
 ): Promise<Viewer | null> {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ tillatDemo: true });
   if (user.id === playerId) return { id: user.id, role: user.role };
   if (user.role !== "COACH" && user.role !== "ADMIN") return null;
   const viewer = { id: user.id, role: user.role };
@@ -760,7 +760,7 @@ export async function loadMinCalendar(params: {
 
   const access = await kreverTilgangTilSpiller(params.playerId, "les");
   if (!access) return { ok: false, error: INGEN_TILGANG };
-  const viewer = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
+  const viewer = await requirePortalUser({ tillatDemo: true, allow: ["ADMIN", "COACH"] });
   const weekStart = mondayOf(parsed.data);
   const weekEnd = addDays(weekStart, 7);
   const [year, month, day] = weekStart.split("-").map(Number);
@@ -1148,7 +1148,7 @@ export async function loadStallDag(params: {
   const dato = IsoDateSchema.safeParse(params.dato);
   if (!dato.success) return { ok: false, error: "Ugyldig dato." };
 
-  const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
+  const user = await requirePortalUser({ tillatDemo: true, allow: ["ADMIN", "COACH"] });
   const stall = await loadStallen({ id: user.id, role: user.role }, {});
 
   const dag = tilDatoKolonne(dato.data);
@@ -1314,7 +1314,7 @@ export async function loadPlayerDay(params: {
 export async function loadPlayerSession(
   sessionId: string,
 ): Promise<WbResultat<WorkbenchSession | null>> {
-  const user = await requirePortalUser({ allow: ["PLAYER"] });
+  const user = await requirePortalUser({ tillatDemo: true, allow: ["PLAYER"] });
 
   const row = await prisma.workbenchSession.findUnique({
     where: { id: sessionId },

@@ -5,7 +5,7 @@ import type { TnArbeidskontekst } from "@/lib/domain/tn-arbeidsflate";
 import { TnShell, tnRolleNavn, type TnAktivSide } from "../tn-shell";
 
 export async function hentSkjermbruker() {
-  return requirePortalUser({ kreverTilgang: "INGEN" });
+  return requirePortalUser({ tillatDemo: true, kreverTilgang: "INGEN" });
 }
 
 export function SkjermRamme({ aktiv, brukerNavn, kontekst, tilbake, children }: { aktiv: TnAktivSide; brukerNavn: string | null; kontekst: TnArbeidskontekst; tilbake?: { href: string; label: string }; children: ReactNode }) {

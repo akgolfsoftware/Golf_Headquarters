@@ -17,7 +17,7 @@ const PLAN_STATUS_LABEL: Record<string, string> = { DRAFT: "Utkast", ACTIVE: "Ak
 
 export default async function TeamNorwaySpillerEvalueringPage({ params }: { params: Promise<{ spillerId: string }> }) {
   const { spillerId } = await params;
-  const bruker = await requirePortalUser({ kreverTilgang: "INGEN" });
+  const bruker = await requirePortalUser({ tillatDemo: true, kreverTilgang: "INGEN" });
   const kontekst = await hentTnWorkbenchKontekst(bruker);
   if (!kontekst) notFound();
   if (bruker.role === "PLAYER" && bruker.id !== spillerId) notFound();

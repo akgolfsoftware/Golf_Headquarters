@@ -14,7 +14,7 @@ import { type SessionExecution, ExecutionCommandSchema, jsonObject, readSessionE
 // Samme eierskap, faktisk trenerrelasjon, samtykke- og gruppegrenser som wb-actions.
 // Vakt er intern; aldri en eksponert serverhandling som returnerer rå databaserader.
 async function hentMedTilgang(sessionId:string):Promise<{row:WbRow;viewer:{id:string;role:string}}|{feil:string}> {
-  const viewer=await requirePortalUser();
+  const viewer=await requirePortalUser({ tillatDemo: true });
   const row=await prisma.workbenchSession.findUnique({where:{id:sessionId},include:{drills:true}});
   if(!row)return {feil:"Fant ikke økten."};
   if(viewer.id!==row.playerId && (!(viewer.role==="COACH"||viewer.role==="ADMIN")||!(await harCoachTilgangTilSpiller(viewer,row.playerId)))) return {feil:"Ingen tilgang til denne spilleren."};
