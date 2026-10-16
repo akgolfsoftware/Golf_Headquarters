@@ -16,7 +16,7 @@
   .status-hode{display:none}
   @container (min-width:900px){
     .status-hode,.status-rad{grid-template-columns:minmax(0,1.4fr) repeat(3,minmax(0,1fr)) 90px}
-    .status-hode{display:grid;gap:12px;padding:8px 0;font:500 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-500)}
+    .status-hode{display:grid;gap:12px;padding:8px 0;font:700 12.5px/1.35 var(--tekst);letter-spacing:.01em;color:var(--ink-500)}
     .status-rad .tre{display:contents}
     .status-rad > .merke{order:9;justify-self:end}
   }
@@ -24,7 +24,7 @@
   .belop:last-child{border-bottom:0}
   .belop b{font:700 15px/1.3 var(--tekst)}
   .belop .tall{font:500 17px/1 var(--mono);text-align:right;color:var(--navy-900)}
-  .belop .tall small{display:block;font:500 11.5px/1.4 var(--mono);color:var(--ink-500)}
+  .belop .tall small{display:block;font:400 12.5px/1.35 var(--tekst);color:var(--ink-700)}
   .tilgang{display:grid;grid-template-columns:36px minmax(0,1fr) auto;gap:4px 12px;padding:12px 0;border-bottom:1px solid var(--ink-200);align-items:center}
   .tilgang:last-child{border-bottom:0}
   .tilgang b{font:700 15px/1.3 var(--tekst)}
@@ -40,14 +40,14 @@
   .inv:last-child{border-bottom:0}
   .inv b{font:700 15px/1.3 var(--tekst)}
   .steg{display:flex;flex-wrap:wrap;gap:4px;grid-column:1/-1}
-  .steg span{display:inline-flex;align-items:center;height:24px;padding:0 8px;font:500 11.5px/1 var(--mono);background:var(--ink-100);color:var(--ink-500)}
+  .steg span{display:inline-flex;align-items:center;height:24px;padding:0 8px;font:700 12.5px/1 var(--tekst);background:var(--ink-100);color:var(--ink-500)}
   .steg span.ja{background:var(--navy-900);color:var(--hvit)}
 </style>
 </head>
 <body>
 <div class="ytre">
   <header class="hode">
-    <span class="meta-s">Team Norway · trenerskjermer · pakke 7 Meg og admin · utkast 1 · 14.10.2026</span>
+    <span class="meta-s">Team Norway · trenerskjermer · pakke 7 Meg og admin · utkast 2 · 16.10.2026</span>
     <h1>Meg og admin: lisens, tilgang og invitasjoner</h1>
     <p>Fem skjermer fra menygruppen Meg og admin. Trenere og tilgang og Inviter spiller vises bare for sportssjefen. Bare syntetiske data.</p>
   </header>
@@ -76,6 +76,7 @@
   <div class="notater">
     <section class="endringer">
       <h2>Hva som er nytt</h2>
+      <p><b>Utkast 2 (16.10):</b> bare grunnmuren er byttet. Ro er riktig her. Mindre mono i metadata, menyen kan lukkes, og alle navn er syntetiske.</p>
       <ul>
         <li><b>Lisens og økonomi</b> for treneren: status på lisens, helseattest og antidoping for hver spiller, og trenerens egen kjøregodtgjørelse og refusjon.</li>
         <li><b>Trenere og tilgang</b>: hvem som har tilgang, fra og til dato, og hva hver rolle ser. Tilgang gis bare til @golfforbundet.no.</li>
@@ -106,15 +107,15 @@
     <div class="kort">
       <div class="status">
         <div class="status-hode"><span>Spiller</span><span>Lisens</span><span>Helseattest</span><span>Antidoping</span><span></span></div>
-        <div class="status-rad"><span class="navn">Mathea Lund</span><span class="merke ok"><i></i>I orden</span><span class="tre"><span class="merke ok"><i></i>Lisens</span><span class="merke ok"><i></i>Helseattest</span><span class="merke ok"><i></i>Antidoping</span></span></div>
-        <div class="status-rad"><span class="navn">Emil Berg</span><span class="merke vent"><i></i>Mangler 1</span><span class="tre"><span class="merke ok"><i></i>Lisens</span><span class="merke vent"><i></i>Helseattest utløper 1. nov</span><span class="merke ok"><i></i>Antidoping</span></span></div>
-        <div class="status-rad"><span class="navn">Jonas Haug</span><span class="merke feil"><i></i>Mangler 1</span><span class="tre"><span class="merke ok"><i></i>Lisens</span><span class="merke ok"><i></i>Helseattest</span><span class="merke feil"><i></i>Antidoping ikke tatt</span></span></div>
+        <div class="status-rad"><span class="navn">Spiller 01</span><span class="merke ok"><i></i>I orden</span><span class="tre"><span class="merke ok"><i></i>Lisens</span><span class="merke ok"><i></i>Helseattest</span><span class="merke ok"><i></i>Antidoping</span></span></div>
+        <div class="status-rad"><span class="navn">Spiller 04</span><span class="merke vent"><i></i>Mangler 1</span><span class="tre"><span class="merke ok"><i></i>Lisens</span><span class="merke vent"><i></i>Helseattest utløper 1. nov</span><span class="merke ok"><i></i>Antidoping</span></span></div>
+        <div class="status-rad"><span class="navn">Spiller 06</span><span class="merke feil"><i></i>Mangler 1</span><span class="tre"><span class="merke ok"><i></i>Lisens</span><span class="merke ok"><i></i>Helseattest</span><span class="merke feil"><i></i>Antidoping ikke tatt</span></span></div>
       </div>
       <p class="kilde">Viser 3 av 14. Spillere som ikke har levert, får påminnelse i PlayerHQ.</p>
     </div>
   </section>
   <section class="seksjon">
-    <div class="sek-topp"><h2>Kjøregodtgjørelse og refusjon</h2><span class="kilde">Ida Hovland</span></div>
+    <div class="sek-topp"><h2>Kjøregodtgjørelse og refusjon</h2><span class="kilde">Sportssjef</span></div>
     <div class="kort">
       <div class="belop"><span><b>Kjøring til Bossum, 7. okt</b><br><span class="kilde">186 km · sendt 8. okt</span></span><span class="tall">—<small>Venter på Team Norway</small></span></div>
       <div class="belop"><span><b>Hotell Halmstad</b><br><span class="kilde">3 netter · kvittering lagt ved</span></span><span class="tall">—<small>Venter på Team Norway</small></span></div>
@@ -142,10 +143,10 @@
   <section class="seksjon">
     <div class="sek-topp"><h2>Aktiv tilgang</h2><span class="kilde">4 personer</span></div>
     <div class="kort">
-      <div class="tilgang"><span class="avatar">IH</span><span><b>Ida Hovland</b><br><span class="kilde">Sportssjef · fra 1. jan 2026 · til åpen</span></span><span class="merke info"><i></i>Sportssjef</span></div>
-      <div class="tilgang"><span class="avatar">TA</span><span><b>Tor Aune</b><br><span class="kilde">Trener · fra 1. jan 2026 · til 31. des 2026</span></span><span class="merke noy"><i></i>Trener</span><span class="knapper"><button type="button" class="knapp stille">Endre</button><a class="knapp stille" href="#" data-gaa="avslutt">Avslutt</a></span></div>
-      <div class="tilgang"><span class="avatar">KS</span><span><b>Kari Solberg</b><br><span class="kilde">Trener · fra 15. mar 2026 · til åpen</span></span><span class="merke noy"><i></i>Trener</span><span class="knapper"><button type="button" class="knapp stille">Endre</button><button type="button" class="knapp stille">Avslutt</button></span></div>
-      <div class="tilgang"><span class="avatar">PR</span><span><b>Petter Ruud</b><br><span class="kilde">Assist Coach · samlinger · til 31. des 2026</span></span><span class="merke noy"><i></i>Assist Coach</span><span class="knapper"><button type="button" class="knapp stille">Endre</button><button type="button" class="knapp stille">Avslutt</button></span></div>
+      <div class="tilgang"><span class="avatar">SS</span><span><b>Sportssjef</b><br><span class="kilde">Sportssjef · fra 1. jan 2026 · til åpen</span></span><span class="merke info"><i></i>Sportssjef</span></div>
+      <div class="tilgang"><span class="avatar">T1</span><span><b>Trener 1</b><br><span class="kilde">Trener · fra 1. jan 2026 · til 31. des 2026</span></span><span class="merke noy"><i></i>Trener</span><span class="knapper"><button type="button" class="knapp stille">Endre</button><a class="knapp stille" href="#" data-gaa="avslutt">Avslutt</a></span></div>
+      <div class="tilgang"><span class="avatar">T2</span><span><b>Trener 2</b><br><span class="kilde">Trener · fra 15. mar 2026 · til åpen</span></span><span class="merke noy"><i></i>Trener</span><span class="knapper"><button type="button" class="knapp stille">Endre</button><button type="button" class="knapp stille">Avslutt</button></span></div>
+      <div class="tilgang"><span class="avatar">07</span><span><b>Spiller 07</b><br><span class="kilde">Assist Coach · samlinger · til 31. des 2026</span></span><span class="merke noy"><i></i>Assist Coach</span><span class="knapper"><button type="button" class="knapp stille">Endre</button><button type="button" class="knapp stille">Avslutt</button></span></div>
     </div>
   </section>
   <section class="seksjon">
@@ -157,7 +158,7 @@
   </section>
   <section class="seksjon">
     <div class="sek-topp"><h2>Avsluttet tilgang</h2></div>
-    <div class="kort"><div class="tilgang"><span class="avatar">LM</span><span><b>Lars Moen</b><br><span class="kilde">Trener · avsluttet 30. juni 2026</span></span><span class="merke noy"><i></i>Avsluttet</span></div></div>
+    <div class="kort"><div class="tilgang"><span class="avatar">09</span><span><b>Spiller 09</b><br><span class="kilde">Trener · avsluttet 30. juni 2026</span></span><span class="merke noy"><i></i>Avsluttet</span></div></div>
   </section>
 </main>
 </div>
@@ -190,8 +191,8 @@
   <div class="dialog-bak">
     <div class="dialog" role="dialog" aria-labelledby="d-tittel">
       <span class="merke feil" style="justify-self:start"><i></i>Avslutt tilgang</span>
-      <h2 id="d-tittel">Avslutte tilgangen til Tor Aune?</h2>
-      <p class="forklar">Tor mister tilgang til gruppa og alle 14 spillere med en gang. Tester og poster han har ført, blir stående. Du kan gi tilgang igjen senere.</p>
+      <h2 id="d-tittel">Avslutte tilgangen til Trener 1?</h2>
+      <p class="forklar">Trener 1 mister tilgang til gruppa og alle 14 spillere med en gang. Tester og poster han har ført, blir stående. Du kan gi tilgang igjen senere.</p>
       <div class="knapper"><button type="button" class="knapp slett">Avslutt tilgang</button><a class="knapp sek" href="#" data-gaa="tilgang">Avbryt</a></div>
     </div>
   </div>
@@ -215,11 +216,11 @@
   <section class="seksjon">
     <div class="sek-topp"><h2>Invitasjoner</h2><span class="kilde">Lenken gjelder i 7 dager</span></div>
     <div class="kort">
-      <div class="inv"><span><b>Hedda Nilsen</b><br><span class="kilde">17 år · sendt 10. okt</span></span><span class="merke ok"><i></i>Delt</span><span class="steg"><span class="ja">Sendt</span><span class="ja">Godtatt</span><span class="ja">Delt</span></span></div>
-      <div class="inv"><span><b>Ola Strand</b><br><span class="kilde">15 år · sendt 12. okt</span></span><span class="merke vent"><i></i>Venter på forelder</span><span class="steg"><span class="ja">Sendt</span><span class="ja">Godtatt</span><span>Forelder godkjent</span><span>Delt</span></span></div>
-      <div class="inv"><span><b>Nora Eide</b><br><span class="kilde">16 år · sendt 6. okt</span></span><span class="merke feil"><i></i>Utløpt</span><span class="steg"><span class="ja">Sendt</span><span>Godtatt</span><span>Delt</span></span></div>
+      <div class="inv"><span><b>Spiller 13</b><br><span class="kilde">17 år · sendt 10. okt</span></span><span class="merke ok"><i></i>Delt</span><span class="steg"><span class="ja">Sendt</span><span class="ja">Godtatt</span><span class="ja">Delt</span></span></div>
+      <div class="inv"><span><b>Spiller 08</b><br><span class="kilde">15 år · sendt 12. okt</span></span><span class="merke vent"><i></i>Venter på forelder</span><span class="steg"><span class="ja">Sendt</span><span class="ja">Godtatt</span><span>Forelder godkjent</span><span>Delt</span></span></div>
+      <div class="inv"><span><b>Spiller 11</b><br><span class="kilde">16 år · sendt 6. okt</span></span><span class="merke feil"><i></i>Utløpt</span><span class="steg"><span class="ja">Sendt</span><span>Godtatt</span><span>Delt</span></span></div>
     </div>
-    <div class="knapper"><button type="button" class="knapp sek">Send på nytt til Nora</button></div>
+    <div class="knapper"><button type="button" class="knapp sek">Send på nytt til Spiller 11</button></div>
   </section>
 </main>
 </div>
