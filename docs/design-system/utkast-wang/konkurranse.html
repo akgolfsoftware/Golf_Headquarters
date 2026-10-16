@@ -9,7 +9,12 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Quattrocento+Sans:wght@400;700&display=swap">
 <link rel="stylesheet" href="felles/wang.css">
 <style>
-  .turn-kort{display:grid;grid-template-columns:64px minmax(0,1fr);gap:4px 14px;padding:16px;border-radius:var(--r-kort-s);background:#fff;box-shadow:var(--skygge-s);border:0;text-align:left;font:inherit;cursor:pointer;width:100%}
+  .turn-kort{display:grid;grid-template-columns:64px minmax(0,1fr);gap:4px 14px;padding:0 16px 16px;border-radius:var(--r-kort-s);background:#fff;border:1px solid var(--n200);text-align:left;font:inherit;cursor:pointer;width:100%;overflow:hidden;align-content:start}
+  /* Utkast 2: bilde øverst i kortet, aldri tekst oppå bildet; tydelig resultat på spilte turneringer */
+  .turn-bilde{grid-column:1 / -1;display:block;width:calc(100% + 32px);margin:0 -16px 10px;height:104px;object-fit:cover;object-position:50% 50%}
+  .resultat{grid-column:1 / -1;display:flex;align-items:baseline;gap:4px 12px;flex-wrap:wrap;margin-top:10px;padding-top:12px;border-top:1px solid var(--linje)}
+  .resultat strong{font:800 34px/1 var(--brand);letter-spacing:-.02em;color:var(--navy-dyp)}
+  .resultat span{font:700 14px/1.35 var(--brand);color:var(--tekst-2)}
   .dato-blokk{grid-row:span 3;display:grid;place-items:center;align-content:center;gap:2px;border-radius:16px;background:var(--turn-fyll);color:var(--turn-paa);min-height:64px}
   .dato-blokk strong{font:800 22px/1 var(--brand)}
   .dato-blokk span{font:700 11px/1 var(--brand);letter-spacing:.06em;text-transform:uppercase}
@@ -54,7 +59,7 @@
 <body>
 <div class="ytre">
   <header class="hode">
-    <p class="meta-s">WANG Toppidrett · trenerflaten · pakke 5 Konkurranse · utkast 1 · 14.10.2026</p>
+    <p class="meta-s">WANG Toppidrett · trenerflaten · pakke 5 Konkurranse · utkast 2 (retning B) · 16.10.2026</p>
     <h1>Konkurranse</h1>
     <p>Turneringskalenderen (WANG-10), én turnering med resultater og evaluering per elev (WANG-11), sesonganalysen (WANG-09, WANG-50) og samlinger med uttak (WANG-27, C2). Alle navn og tall er syntetiske.</p>
   </header>
@@ -76,9 +81,16 @@
       </ul>
     </section>
     <section class="endringer">
+      <h2>Nytt i utkast 2</h2>
+      <ul>
+        <li><b>Kalender:</b> ett hovedtall, «10 dager til Juniortour Øst, finale», med fristen i morgen. Turneringene har bilde øverst, og spilte turneringer viser beste resultat stort.</li>
+        <li><b>Én turnering:</b> beste resultat (+2) som hovedtall, snitt og evaluering som små tellere.</li>
+        <li>Data Golf for WANG-trenere er avklart 16.10: coacher i AK Golf, WANG og Team Norway ser Data Golf, aldri kunder.</li>
+      </ul>
+    </section>
+    <section class="endringer">
       <h2>Åpne spørsmål</h2>
       <ul>
-        <li>Skal WANG-trenere se Data Golf-sammenligningen (WANG-50)? Vedtaket 06.10 sier alle med coach-rollen, også WANG-trenere. Utkastet viser den.</li>
         <li>Hvem i WANG eier uttaket til samlinger: trener eller sportssjef? Utkastet lar begge sette uttak, og bare sportssjef publisere.</li>
       </ul>
     </section>
@@ -93,6 +105,20 @@
     <div><p class="dato">WANG Golf · høsten 2026</p><h1 class="tittel">Konkurranse</h1></div>
     <nav class="faner" aria-label="Konkurranse"><a href="#" class="aktiv">Kalender</a><a href="#" data-gaa="analyse">Sesongen</a><a href="#" data-gaa="samling">Samlinger</a></nav>
   </section>
+  <section class="helt med-bilde inn" aria-label="Neste turnering">
+    <div class="helt-tekst">
+      <span class="helt-merke haster"><i></i>Påmeldingsfrist i morgen</span>
+      <p class="helt-hoved"><strong data-tell="10">10</strong><span>dager til Juniortour Øst, finale</span></p>
+      <p class="helt-forklar">4 elever er påmeldt. Påmeldingen skjer hos arrangøren og stenger torsdag 15.10.</p>
+      <button type="button" class="knapp lys" data-gaa="turnering">Se påmeldte</button>
+    </div>
+    <img class="helt-bilde" src="bilder/turn-tee.jpg" alt="" width="480" height="230">
+  </section>
+  <div class="smaa-tall">
+    <a href="#"><strong>3</strong><span>Kommende turneringer</span></a>
+    <a href="#"><strong>13</strong><span>Påmeldinger totalt</span></a>
+    <a href="#" data-gaa="turnering"><strong>3</strong><span>Evalueringer igjen</span></a>
+  </div>
   <section class="seksjon">
     <div class="sek-topp"><h2>Kommende</h2><span class="kilde">Kilde: GolfBox, hentet mandag 12.10</span></div>
     <div class="liste to" data-kommende></div>
@@ -114,11 +140,19 @@
     <h1 class="tittel">Juniortour Øst, runde 6</h1>
     <p class="ingress">5 WANG-elever spilte. Alle tall er brutto.</p>
   </section>
-  <div class="nok">
-    <div class="kort"><span class="etikett">Beste</span><strong>146</strong><span class="kilde">Elev 08, +2, delt 3.</span></div>
-    <div class="kort"><span class="etikett">Snitt per runde</span><strong>75,6</strong><span class="kilde">10 runder</span></div>
-    <div class="kort"><span class="etikett">Feltet snitt</span><strong>77,9</strong><span class="kilde">64 spillere</span></div>
-    <div class="kort"><span class="etikett">Evaluert</span><strong>2 av 5</strong><span class="kilde">Frist fredag</span></div>
+  <section class="helt med-bilde inn" aria-label="Beste resultat">
+    <div class="helt-tekst">
+      <span class="helt-merke"><i></i>Beste WANG-elev</span>
+      <p class="helt-hoved"><strong>+2</strong><span>Elev 08, 146 slag, delt 3. av 64</span></p>
+      <p class="helt-forklar">73 og 73. WANG-elevene var 2,3 slag bedre enn feltet per runde.</p>
+      <button type="button" class="knapp lys">Fortsett evalueringen</button>
+    </div>
+    <img class="helt-bilde" src="bilder/spill-bane.jpg" alt="" width="480" height="230">
+  </section>
+  <div class="smaa-tall">
+    <div><strong>75,6</strong><span>WANG snitt per runde</span></div>
+    <div><strong>77,9</strong><span>Feltet snitt</span></div>
+    <div><strong>2<small>av 5</small></strong><span>Evaluert, frist fredag</span></div>
   </div>
   <section class="seksjon">
     <div class="sek-topp"><h2>Resultater og evaluering</h2><span class="kilde">Kilde: GolfBox, resultatliste 11.10</span></div>
@@ -201,16 +235,16 @@
 (function () {
   function kalender(app) {
     var K = [
-      ['24', 'okt', 'Juniortour Øst, finale', 'Larvik GK · 24.–25. oktober', 'Frist i morgen', 'haster', '4 påmeldt', 'Trener 1'],
-      ['07', 'nov', 'Høstturneringen', 'Gamle Fredrikstad GK · 7. november', 'Frist 30.10', 'vent', '9 påmeldt', 'Trener 2'],
-      ['22', 'mar', 'Spring Open', 'Spania · under samlingen uke 13', 'Påmelding åpner 1.12', 'noy', '0 påmeldt', 'Sportssjef']
+      ['24', 'okt', 'Juniortour Øst, finale', 'Larvik GK · 24.–25. oktober', 'Frist i morgen', 'haster', '4 påmeldt', 'Trener 1', 'spill-bane'],
+      ['07', 'nov', 'Høstturneringen', 'Gamle Fredrikstad GK · 7. november', 'Frist 30.10', 'vent', '9 påmeldt', 'Trener 2', 'slag-utslag'],
+      ['22', 'mar', 'Spring Open', 'Spania · under samlingen uke 13', 'Påmelding åpner 1.12', 'noy', '0 påmeldt', 'Sportssjef', 'turn-tee']
     ];
     app.querySelector('[data-kommende]').innerHTML = K.map(function (k) {
-      return '<button type="button" class="turn-kort" data-gaa="turnering"><span class="dato-blokk"><strong>' + k[0] + '</strong><span>' + k[1] + '</span></span><b>' + k[2] + '</b><span class="sma">' + k[3] + '</span><div class="hendelser"><span class="pille ' + k[5] + '"><i></i>' + k[4] + '</span><span class="pille noy"><i></i>' + k[6] + '</span><span class="pille noy"><i></i>Ansvarlig: ' + k[7] + '</span></div></button>';
+      return '<button type="button" class="turn-kort" data-gaa="turnering"><img class="turn-bilde" src="bilder/' + k[8] + '.jpg" alt="" width="390" height="104"><span class="dato-blokk"><strong>' + k[0] + '</strong><span>' + k[1] + '</span></span><b>' + k[2] + '</b><span class="sma">' + k[3] + '</span><div class="hendelser"><span class="pille ' + k[5] + '"><i></i>' + k[4] + '</span><span class="pille noy"><i></i>' + k[6] + '</span><span class="pille noy"><i></i>Ansvarlig: ' + k[7] + '</span></div></button>';
     }).join('');
-    var S = [['11', 'okt', 'Juniortour Øst, runde 6', 'Moss & Rygge GK · 5 elever · beste +2', '2 av 5 evaluert', 'vent'], ['27', 'sep', 'Regionsmesterskap', 'Borre GK · 7 elever · beste −1', 'Evaluert', 'ok']];
+    var S = [['11', 'okt', 'Juniortour Øst, runde 6', 'Moss & Rygge GK · 5 elever', '2 av 5 evaluert', 'vent', '+2', 'beste: Elev 08, 146 slag, delt 3.', 'spill-bane'], ['27', 'sep', 'Regionsmesterskap', 'Borre GK · 7 elever', 'Evaluert', 'ok', '−1', 'beste: Elev 10, 143 slag, 2. plass', 'turn-tee']];
     app.querySelector('[data-spilt]').innerHTML = S.map(function (k) {
-      return '<button type="button" class="turn-kort" data-gaa="turnering"><span class="dato-blokk ferdig"><strong>' + k[0] + '</strong><span>' + k[1] + '</span></span><b>' + k[2] + '</b><span class="sma">' + k[3] + '</span><div class="hendelser"><span class="pille ' + k[5] + '"><i></i>' + k[4] + '</span></div></button>';
+      return '<button type="button" class="turn-kort" data-gaa="turnering"><img class="turn-bilde" src="bilder/' + k[8] + '.jpg" alt="" width="390" height="104"><span class="dato-blokk ferdig"><strong>' + k[0] + '</strong><span>' + k[1] + '</span></span><b>' + k[2] + '</b><span class="sma">' + k[3] + '</span><div class="hendelser"><span class="pille ' + k[5] + '"><i></i>' + k[4] + '</span></div><div class="resultat"><strong>' + k[6] + '</strong><span>' + k[7] + '</span></div></button>';
     }).join('');
   }
 
