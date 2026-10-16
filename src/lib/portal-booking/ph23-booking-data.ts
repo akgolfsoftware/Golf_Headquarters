@@ -78,6 +78,8 @@ export type PH23BookingData = {
   mine: PH23MyBooking[];
   past: PH23PastBooking[];
   playerEmail: string;
+  /** Tjenesten Book time åpner med (ledige tider er hentet for den). Mangler: den første. */
+  startServiceId?: string;
 };
 
 /** Formaterer beløp i norske kroner med tusenskilletegn. */

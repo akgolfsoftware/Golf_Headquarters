@@ -1,11 +1,10 @@
-// PH23NyBekreft — Precision Athletics PH-23.
+// PH23NyBekreft — Precision Athletics PH-23, nytt design (pakke 11).
 /**
  * Bekreft credit-booking (/portal/booking/ny/bekreft) — v2 (retning C),
  * Team G-A 17. juli 2026.
  *
- * RESTYLING ONLY av legacy-siden: samme guards, queries og ledig-sjekk
- * (isSlotStillAvailable) — kopiert uendret. Kun presentasjonen er ny
- * (V2Shell + BookingNyBekreftV2, som kaller createCreditBooking som før).
+ * Samme guards, spørringer og ledig-sjekk (isSlotStillAvailable) som før.
+ * Presentasjonen er PH23NyBekreft, som kaller createCreditBooking eller Stripe Checkout som før.
  * URL-kontrakten ?service=&start=&coach= er uendret.
  */
 
@@ -13,8 +12,8 @@ import { notFound, redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { byggBookingBekreftData } from "@/lib/portal-booking/bekreft-data";
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
-import { TilbakeLenke } from "@/components/v2";
-import { BookingNyBekreftV2 } from "@/components/portal/v2/BookingNyBekreftV2";
+import { PH23NyBekreft } from "@/components/portal/precision/PH23NyBekreft";
+import { AVBESTILLING_FRIST_TIMER } from "@/lib/booking/policy";
 
 type Props = {
   searchParams: Promise<{ service?: string; start?: string; coach?: string; betaling?: string }>;
@@ -44,10 +43,7 @@ export default async function BekreftCreditBookingPage({
 
   return (
     <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
-      <div className="pa-side">
-        <TilbakeLenke href={resultat.data.backHref}>Velg annen tid</TilbakeLenke>
-        <BookingNyBekreftV2 data={resultat.data} />
-      </div>
+      <PH23NyBekreft data={resultat.data} avbestillingTimer={AVBESTILLING_FRIST_TIMER} />
     </PlayerHQSkall>
   );
 }

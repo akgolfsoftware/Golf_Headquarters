@@ -39,15 +39,16 @@ function Klikk({ velgere, children }: { velgere: string[]; children: ReactNode }
   return <>{children}</>;
 }
 
-const Vis = ({ data = DATA, tab = "msg" as const, tilstand = "data" as const, ny = false }: {
-  data?: PH21Data; tab?: "msg" | "q" | "fb" | "vid" | "plan" | "ønske"; tilstand?: "data" | "tom" | "laster" | "feil"; ny?: boolean;
+const Vis = ({ data = DATA, tab = "msg" as const, tilstand = "data" as const, ny = false, type = "melding" as const }: {
+  data?: PH21Data; tab?: "msg" | "q" | "fb" | "vid" | "plan" | "ønske"; tilstand?: "data" | "tom" | "laster" | "feil"; ny?: boolean; type?: "melding" | "sporsmal";
 }) => (
-  <PlayerHQSkall innboksHref="/portal/varsler" uleste={1}><PH21Innboks data={data} initialTab={tab} tilstand={tilstand} apneNy={ny} /></PlayerHQSkall>
+  <PlayerHQSkall innboksHref="/portal/varsler" uleste={1}><PH21Innboks data={data} initialTab={tab} tilstand={tilstand} apneNy={ny} nyStartType={type} /></PlayerHQSkall>
 );
 
 export const tilstander = {
   meldinger: <Vis />,
   nyMelding: <Vis ny />,
+  nySporsmal: <Vis tab="q" ny type="sporsmal" />,
   sporsmal: <Vis tab="q" />,
   tilbakemelding: <Vis tab="fb" />,
   videoer: <Vis tab="vid" />,

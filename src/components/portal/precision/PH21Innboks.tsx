@@ -44,8 +44,10 @@ export type PH21InnboksProps = {
   initialTab?: PH21Tab;
   tilstand?: "data" | "tom" | "laster" | "feil";
   feilTekst?: string;
-  /** Åpner «Ny melding» med en gang (lenken fra Innboks). */
+  /** Åpner «Ny melding» med en gang (lenken fra Innboks, /coach/melding/ny og /coach/sporsmal/ny). */
   apneNy?: boolean;
+  /** Typen arket åpner med. */
+  nyStartType?: "melding" | "sporsmal";
 };
 
 const DAGSFORM = [
@@ -72,7 +74,7 @@ function nesteDager(fra: Date): string[] {
 }
 const initialer = (navn: string) => navn.split(" ").map((d) => d[0]).filter(Boolean).slice(0, 2).join("").toUpperCase();
 
-export function PH21Innboks({ data, initialTab = "msg", tilstand = "data", feilTekst, apneNy = false }: PH21InnboksProps) {
+export function PH21Innboks({ data, initialTab = "msg", tilstand = "data", feilTekst, apneNy = false, nyStartType = "melding" }: PH21InnboksProps) {
   const router = useRouter();
   const [tab, setTab] = useState<PH21Tab>(parsePH21Tab(initialTab));
   const [isPending, startTransition] = useTransition();
@@ -97,7 +99,7 @@ export function PH21Innboks({ data, initialTab = "msg", tilstand = "data", feilT
   const [wArea, setWArea] = useState("Innspill");
   const [wTxt, setWTxt] = useState("");
   const [wSent, setWSent] = useState(false);
-  const [nyType, setNyType] = useState<NyType>("melding");
+  const [nyType, setNyType] = useState<NyType>(nyStartType);
   const [nyTxt, setNyTxt] = useState("");
 
   const counts = computePH21TabCounts({ plans, videos });

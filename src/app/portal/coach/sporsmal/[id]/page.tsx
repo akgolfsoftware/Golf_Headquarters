@@ -1,9 +1,10 @@
-// PH21SporsmalTraad — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
+// PH21SporsmalTraad — Precision Athletics, nytt design (pakke 11). Data og handlinger er beholdt.
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 /**
- * PlayerHQ Coach · Spørsmål-tråd (/portal/coach/sporsmal/[id]) — v2.
- * Erstatter legacy /portal/(legacy)/coach/sporsmal/[id] som tråd-detaljen
- * lista (/portal/coach/sporsmal, allerede v2) lenker til. Auth + datahenting
+ * PlayerHQ Coach · Spørsmål-tråd (/portal/coach/sporsmal/[id]).
+ * Fasit: docs/design-system/utkast-playerhq/kommunikasjon.html, mal «traad».
+ * Avvik:
+ *   - Avvikene fra utkastet står øverst i komponenten siden bruker.
  * Tråden vises bare for den som spurte, tildelt coach, admin, eller coach
  * med tilgang når spørsmålet ligger i åpen kø.
  */
@@ -11,13 +12,9 @@ import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
-import { kanSeSporsmal } from "@/lib/portal-okt/coach-sporsmal-tilgang";
+import { kanSeSporsmal, kanSvarePaSporsmal } from "@/lib/portal-okt/coach-sporsmal-tilgang";
 import { prisma } from "@/lib/prisma";
-import { TilbakeLenke } from "@/components/v2";
-import {
-  CoachSporsmalTraadV2,
-  type CoachSporsmalTraad,
-} from "@/components/portal/v2/CoachSporsmalTraadV2";
+import { PH21SporsmalTraad, type PH21SporsmalTraadData } from "@/components/portal/precision/PH21SporsmalTraad";
 import { svarPaSporsmal } from "@/app/portal/(legacy)/coach/sporsmal/actions";
 
 export const dynamic = "force-dynamic";
@@ -64,7 +61,7 @@ export default async function CoachSporsmalTraadPage({ params }: RouteProps) {
   const askerNavn = asker?.name ?? "Ukjent spiller";
   const besvart = question.status === "ANSWERED" && Boolean(question.answer);
 
-  const data: CoachSporsmalTraad = {
+  const data: PH21SporsmalTraadData = {
     id: question.id,
     askerNavn,
     tittel: question.title,
@@ -73,14 +70,18 @@ export default async function CoachSporsmalTraadPage({ params }: RouteProps) {
     svar: besvart ? question.answer : null,
     stiltTid: formatDatoTid(question.createdAt),
     besvartTid: question.answeredAt ? formatDatoTid(question.answeredAt) : null,
+    erMeg: question.askerUserId === user.id,
+    kanSvare: kanSvarePaSporsmal({
+      viewerId: user.id,
+      viewerRole: user.role,
+      coachUserId: question.coachUserId,
+      harSpillerTilgang,
+    }),
   };
 
   return (
     <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
-      <div className="pa-side">
-      <TilbakeLenke href="/portal/coach/sporsmal">Spørsmål</TilbakeLenke>
-      <CoachSporsmalTraadV2 data={data} svarAction={svarPaSporsmal} />
-    </div>
+      <PH21SporsmalTraad data={data} svarAction={svarPaSporsmal} tilbakeHref="/portal/coach/sporsmal" />
     </PlayerHQSkall>
   );
 }

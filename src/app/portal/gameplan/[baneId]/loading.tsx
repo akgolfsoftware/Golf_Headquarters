@@ -1,7 +1,12 @@
-/* v2-skjelett for /portal/gameplan/[baneId] (banekart — Paper-port W2). */
-
-import { V2Laster } from "@/components/v2/laster";
+/* Lastetilstand for /portal/gameplan/[baneId] i nytt design. Ren serverkomponent: loading.tsx importerer aldri en
+   "use client"-modul (gotchas §Bygg og drift). */
+import { PlayerHQSkallLaster } from "@/components/precision/PlayerHQSkallLaster";
+import { PHIupLaster } from "@/components/portal/precision/PHIupTilstand";
 
 export default function Loading() {
-  return <V2Laster variant="liste" />;
+  return (
+    <PlayerHQSkallLaster sti="/portal/gameplan">
+      <PHIupLaster tekst="Henter banen …" />
+    </PlayerHQSkallLaster>
+  );
 }

@@ -243,3 +243,32 @@
   .phn .phr-helt img { height: 100%; min-height: 220px; }
   .phn .phr-nivaa { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
+
+/* ---------- Pakke 11: PH-RD-03 Rediger slag og PH-RD-09 Rediger hull for hull (nye klasser, 16.10.2026) ---------- */
+.phn .phrd-hullvalg { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 4px; }
+@container (min-width: 560px) { .phn .phrd-hullvalg { grid-template-columns: repeat(9, minmax(0, 1fr)); } }
+.phn .phrd-hullvalg button { min-height: 56px; border: 1px solid var(--phr-spill-100); border-radius: 8px; background: var(--phn-hvit); display: grid; place-items: center; align-content: center; gap: 4px; padding: 4px 0; font: inherit; color: var(--phn-g900); cursor: pointer; }
+.phn .phrd-hullvalg i { font: 500 11px/1 var(--phn-sans); font-style: normal; color: var(--phn-g600); }
+.phn .phrd-hullvalg b { font: 600 15px/1 var(--phn-mono); }
+.phn .phrd-hullvalg .phr-sk { min-width: 22px; height: 22px; font-size: 13px; }
+.phn .phrd-hullvalg [aria-pressed="true"] { border: 2px solid var(--phn-spill-ink); background: var(--phr-spill-50); }
+.phn .phrd-hullvalg .endret i::after { content: ""; display: inline-block; width: 6px; height: 6px; margin-left: 3px; border-radius: 50%; background: var(--phn-spill-ink); vertical-align: 1px; }
+.phn .phrd-sum { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; font-size: 14px; }
+.phn .phrd-sum b { font: 600 15px/1 var(--phn-mono); }
+.phn .phrd-to-trinn { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.phn .phrd-to-trinn .phr-trinn { justify-self: start; }
+.phn .phrd-felt-rad { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.phn .phrd-kart { border: 1px solid var(--phn-sand-300); border-radius: 12px; overflow: hidden; }
+.phn .phrd-kart > div { display: block; width: 100%; height: 300px; }
+.phn .phrd-kart-tom { padding: 16px; border: 1px dashed var(--phn-g500); border-radius: 12px; background: var(--phn-sand-100); font-size: 14px; color: var(--phn-g800); text-align: center; }
+.phn .phrd-punkt { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; font: 500 13px/1.3 var(--phn-mono); color: var(--phn-g600); }
+.phn .phrd-kobling { display: grid; border-top: 1px solid var(--phn-sand-300); }
+.phn .phrd-kobling label { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 10px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--phn-sand-300); font: 500 14px/1.3 var(--phn-sans); }
+.phn .phrd-kobling select { min-height: 44px; width: 100%; border: 1px solid var(--phn-g500); border-radius: 8px; background: var(--phn-hvit); font: 500 14px/1 var(--phn-sans); padding: 0 8px; color: var(--phn-g900); }
+.phn .phrd-csv { display: grid; gap: 4px; font: 400 12.5px/1.45 var(--phn-mono); color: var(--phn-g800); overflow-wrap: anywhere; padding: 10px 12px; border-radius: 10px; background: var(--phn-sand-100); }
+.phn .phrd-slipp { display: grid; justify-items: center; gap: 8px; padding: 24px 16px; border: 1px dashed var(--phn-g500); border-radius: 12px; background: var(--phn-sand-100); text-align: center; }
+.phn :is(.phrd-hullvalg button):focus-visible { outline: 3px solid var(--phn-g900); outline-offset: 2px; }
+.phn .phr-hullhode h2 { margin: 0; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; font: 700 26px/1.1 var(--phn-sans); letter-spacing: -.02em; }
+.phn .phr-hullhode h2 small { font: 500 16px/1.3 var(--phn-sans); letter-spacing: 0; opacity: .92; }
+.phn .phr-slagliste [aria-pressed="true"] { background: var(--phr-spill-50); }
+.phn .phr-ingress a { color: var(--phn-g900); font-weight: 600; text-underline-offset: 3px; }
