@@ -19,13 +19,6 @@
   .akserad .stolpe.plan span{background:var(--n300)}
   .akserad .tall{font:800 13px/1.2 var(--brand);color:var(--navy-dyp);text-align:right;white-space:nowrap}
   .akserad .tall span{display:block;font:700 11px/1.2 var(--brand);color:var(--tekst-2)}
-  .elevtab{display:grid}
-  .elevtab .r{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px 12px;align-items:center;padding:10px 0}
-  .elevtab .r + .r{border-top:1px solid var(--linje)}
-  .elevtab b{font:700 15px/1.2 var(--brand);color:var(--navy-dyp)}
-  .elevtab .sma{display:block;font-size:13px;color:var(--tekst-2)}
-  .elevtab .pst{font:800 16px/1 var(--brand);color:var(--navy-dyp);text-align:right}
-  .elevtab .stolpe{grid-column:2 / -1;height:6px}
   .periodebaand{display:flex;height:44px;border-radius:12px;overflow:hidden;gap:2px}
   .periodebaand span{display:flex;align-items:center;justify-content:center;font:800 10px/1 var(--brand);letter-spacing:.04em;overflow:hidden;white-space:nowrap}
   /* Periodene er ikke akser: nøytrale toner, aldri aksefargene (farge betyr akse) */
@@ -71,7 +64,7 @@
 <body>
 <div class="ytre">
   <header class="hode">
-    <p class="meta-s">WANG Toppidrett · trenerflaten · pakke 3 Trening · utkast 1 · 14.10.2026</p>
+    <p class="meta-s">WANG Toppidrett · trenerflaten · pakke 3 Trening · utkast 2 (retning B) · 16.10.2026</p>
     <h1>Trening</h1>
     <p>Oversikten over gruppas trening (WANG-42), årsplanen for skoleåret, periodeskjemaet, uka og ny økt. Onsdag 14. oktober, uke 42. Alle navn og tall er syntetiske.</p>
   </header>
@@ -83,6 +76,15 @@
   </div>
   <div class="scene"><div id="ramme" class="ramme mob"></div></div>
   <div class="notater">
+    <section class="endringer">
+      <h2>Nytt i utkast 2</h2>
+      <ul>
+        <li><b>Ett hovedtall:</b> «92 % av planen gjennomført siste fire uker» på navy helteflate, med stolpe og én knapp. De tre andre tallene er små tellere.</li>
+        <li><b>Per elev i tre bånd:</b> Trenger deg · Følger planen · Ikke delt, i stedet for tolv like rader. Hver rad har plan-stolpe med strek ved 80 % og statusmarkør.</li>
+        <li><b>Uke for uke</b> er en fylt graf med mållinje ved 80 %.</li>
+        <li>Det rosa «3 poeng»-merket er fjernet. Det betydde 3 prosentpoeng lavere enn de fire ukene før, og står nå som en setning under hovedtallet.</li>
+      </ul>
+    </section>
     <section class="endringer">
       <h2>Hva skjermene gjør</h2>
       <ul>
@@ -114,11 +116,20 @@
     </div>
     <nav class="faner" aria-label="Trening"><a href="#" class="aktiv">Oversikt</a><a href="#" data-gaa="arsplan">Årsplan</a><a href="#" data-gaa="uke">Uka</a></nav>
   </section>
-  <div class="nokkel">
-    <div class="kort"><span class="etikett">Etterlevelse</span><strong>92<small>%</small></strong><span class="trend ned" style="justify-self:start">3 poeng</span></div>
-    <div class="kort"><span class="etikett">Gjennomført</span><strong>35<small>t</small></strong><span class="kilde">av 38 t planlagt per elev</span></div>
-    <div class="kort"><span class="etikett">Morgentrening</span><strong>91<small>%</small></strong><span class="kilde">160 av 176 oppmøter</span></div>
-    <div class="kort"><span class="etikett">Fravær meldt</span><strong>12</strong><span class="kilde">4 ikke meldt</span></div>
+  <section class="helt med-bilde inn" aria-label="Etterlevelse">
+    <div class="helt-tekst">
+      <span class="helt-merke"><i></i>Over målet på 80 %</span>
+      <p class="helt-hoved"><strong><span data-tell="92">92</span><small>%</small></strong><span>av planen gjennomført siste fire uker</span></p>
+      <p class="helt-forklar">3 prosentpoeng lavere enn uke 34–37. Elev 02 og Elev 09 trekker ned.</p>
+      <div class="stolpe" role="img" aria-label="92 % av planen"><span style="width:92%" data-til="92%"></span></div>
+      <button type="button" class="knapp lys" data-gaa="uke">Se uka</button>
+    </div>
+    <img class="helt-bilde" src="bilder/spill-bane.jpg" alt="" width="480" height="230">
+  </section>
+  <div class="smaa-tall">
+    <a href="#"><strong>35<small>av 38 t</small></strong><span>Gjennomført per elev</span></a>
+    <a href="#"><strong>91<small>%</small></strong><span>Morgentrening</span></a>
+    <a href="#"><strong>12</strong><span>Fravær meldt</span></a>
   </div>
   <div class="to-kol">
     <section class="seksjon">
@@ -126,16 +137,17 @@
       <div class="kort"><div data-akser></div><div class="lg-rad"><span class="lg"><i style="background:var(--navy)"></i>Gjennomført</span><span class="lg"><i style="background:var(--n300)"></i>Planlagt</span></div></div>
     </section>
     <section class="seksjon">
-      <div class="sek-topp"><h2>Uke for uke</h2></div>
+      <div class="sek-topp"><h2>Uke for uke</h2><span class="kilde">Uke 34–41</span></div>
       <div class="kort">
-        <svg class="graf" viewBox="0 0 340 170" role="img" aria-label="Gjennomført tid per uke, uke 34 til 41" data-graf></svg>
-        <p class="kilde">Gjennomført tid delt på planlagt tid. Bare økter med passert sluttid teller.</p>
+        <svg class="graf" viewBox="0 0 340 180" role="img" aria-label="Gjennomført mot planlagt per uke, uke 34 til 41: 95, 97, 88, 100, 90, 84, 96 og 98 prosent" data-graf></svg>
+        <div class="lg-rad"><span class="lg"><i style="background:var(--navy)"></i>Gjennomført mot plan</span><span class="lg"><i style="background:var(--n500)"></i>Mål 80 %</span></div>
+        <p class="kilde">Fylte punkter er de fire ukene i hovedtallet. Bare økter med passert sluttid teller.</p>
       </div>
     </section>
   </div>
   <section class="seksjon">
-    <div class="sek-topp"><h2>Per elev</h2><div class="valg" role="group" aria-label="Sorter"><button type="button" aria-pressed="true">Lavest først</button><button type="button" aria-pressed="false">Elevnummer</button></div></div>
-    <div class="kort elevtab" data-elever></div>
+    <div class="sek-topp"><h2>Per elev</h2><span class="kilde">Gjennomført mot plan siste fire uker · streken er 80 %</span></div>
+    <div class="baand kol" data-elever></div>
   </section>
 </main>
 </div>
@@ -262,17 +274,18 @@
     app.querySelector('[data-akser]').innerHTML = AKSER.map(function (a) {
       return '<div class="akserad"><span class="akse ' + a + '">' + NAVN[a] + '</span><div class="dobbel"><div class="stolpe"><span class="bg-' + a + '" data-til="' + (GJ[a] / 720 * 100) + '%" style="width:' + (GJ[a] / 720 * 100) + '%"></span></div><div class="stolpe plan"><span style="width:' + (PLAN[a] / 720 * 100) + '%"></span></div></div><span class="tall">' + tid(GJ[a]) + '<span>av ' + tid(PLAN[a]) + '</span></span></div>';
     }).join('');
-    var E = [['02', 61, 88, 'VG1'], ['09', 74, 64, 'VG2'], ['07', 86, 94, 'VG2'], ['11', 89, 91, 'VG3'], ['05', 92, 94, 'VG2'], ['01', 94, 97, 'VG1'], ['04', 95, 94, 'VG2'], ['06', 96, 88, 'VG2'], ['03', 98, 100, 'VG1'], ['10', 99, 94, 'VG3'], ['08', 101, 100, 'VG3']];
-    app.querySelector('[data-elever]').innerHTML = E.map(function (e) {
-      var lav = e[1] < 80;
-      return '<div class="r"><span class="avatar">' + e[0] + '</span><div><b>Elev ' + e[0] + '</b><span class="sma">' + e[3] + ' · morgentrening ' + e[2] + ' %</span></div><span class="pst">' + e[1] + ' %' + (lav ? ' <span class="pille haster" style="margin-left:6px"><i></i>Lav</span>' : '') + '</span><div class="stolpe"><span style="width:' + Math.min(100, e[1]) + '%;background:' + (lav ? 'var(--rosa)' : 'var(--navy)') + '" data-til="' + Math.min(100, e[1]) + '%"></span></div></div>';
-    }).join('');
-    var gr = app.querySelector('[data-graf]'), U = [34, 35, 36, 37, 38, 39, 40, 41], G = [540, 555, 500, 570, 515, 480, 545, 560];
-    var X = function (i) { return 34 + i * 40; }, Y = function (m) { return 140 - (m - 420) / 180 * 120; };
-    [420, 480, 540, 600].forEach(function (m) { gr.appendChild(el('line', { x1: 30, x2: 330, y1: Y(m), y2: Y(m), stroke: 'var(--n200)' })); gr.appendChild(el('text', { x: 0, y: Y(m) + 3, class: 'gt' }, (m / 60) + ' t')); });
-    gr.appendChild(el('line', { x1: 30, x2: 330, y1: Y(570), y2: Y(570), stroke: 'var(--n400)', 'stroke-width': 2, 'stroke-dasharray': '5 5' }));
-    gr.appendChild(el('path', { class: 'tegn', d: G.map(function (m, i) { return (i ? 'L' : 'M') + X(i) + ' ' + Y(m).toFixed(1); }).join(' '), fill: 'none', stroke: 'var(--navy)', 'stroke-width': 3, 'stroke-linejoin': 'round' }));
-    G.forEach(function (m, i) { gr.appendChild(el('circle', { cx: X(i), cy: Y(m), r: 4.5, fill: i >= 4 ? 'var(--mint)' : '#fff', stroke: 'var(--navy)', 'stroke-width': 2 })); gr.appendChild(el('text', { x: X(i), y: 162, 'text-anchor': 'middle', class: 'gt' }, 'U' + U[i])); });
+    /* [elev, etterlevelse %, morgentrening %, klasse, grunn]. Elev 06 og 10 har ikke delt planen sin med WANG. */
+    var E = [['02', 61, 88, 'VG1', 'Under 70 % av planen'], ['09', 74, 64, 'VG2', 'Borte tre morgener på rad'], ['07', 86, 94, 'VG2'], ['11', 89, 91, 'VG3'], ['05', 92, 94, 'VG2'], ['01', 94, 97, 'VG1'], ['04', 95, 94, 'VG2'], ['03', 98, 100, 'VG1'], ['08', 101, 100, 'VG3']];
+    var IKKE = [['06', 'VG2'], ['10', 'VG3']];
+    function rad(e, kl) {
+      return '<a class="elevrad ' + kl + '" href="#"><span class="avatar">' + e[0] + '</span><span class="er-hvem"><b>Elev ' + e[0] + '</b><span>' + e[3] + ' · morgentrening ' + e[2] + ' %</span>' + (e[4] ? '<span class="er-grunn">' + e[4] + '</span>' : '') + '</span><span class="er-plan"><b>' + e[1] + ' %</b><span class="stolpe"><span style="width:' + Math.min(100, e[1]) + '%" data-til="' + Math.min(100, e[1]) + '%"></span><i class="mal" style="left:80%"></i></span></span></a>';
+    }
+    var trenger = E.filter(function (e) { return e[4]; }), folger = E.filter(function (e) { return !e[4]; });
+    app.querySelector('[data-elever]').innerHTML =
+      '<section class="baand-del trenger"><div class="baand-hode"><h3>Trenger deg</h3><span class="antall">' + trenger.length + '</span><p>Under 80 % av planen, eller borte fra morgentreningen.</p></div><div class="baand-liste">' + trenger.map(function (e) { return rad(e, 'trenger'); }).join('') + '</div></section>' +
+      '<section class="baand-del folger"><div class="baand-hode"><h3>Følger planen</h3><span class="antall">' + folger.length + '</span><p>80 % eller mer. Lavest først.</p></div><div class="baand-liste">' + folger.map(function (e) { return rad(e, 'folger'); }).join('') + '</div></section>' +
+      '<section class="baand-del ikke-delt"><div class="baand-hode"><h3>Ikke delt</h3><span class="antall">' + IKKE.length + '</span><p>Eleven har ikke delt planen sin. Du ser bare oppmøtet du har ført selv.</p></div><div class="baand-liste">' + IKKE.map(function (e) { return '<a class="elevrad ikke-delt" href="#"><span class="avatar">' + e[0] + '</span><span class="er-hvem"><b>Elev ' + e[0] + '</b><span>' + e[1] + ' · plan ikke delt</span></span><span class="er-plan"><b>—</b><span class="kilde">Minn eleven på det</span></span></a>'; }).join('') + '</div></section>';
+    WANGUtkast.fyltGraf(app.querySelector('[data-graf]'), { verdier: [95, 97, 88, 100, 90, 84, 96, 98], etiketter: ['U34', 'U35', 'U36', 'U37', 'U38', 'U39', 'U40', 'U41'], min: 70, maks: 100, linjer: [70, 80, 90, 100], mal: 80, malTekst: 'Mål 80 %', enhet: ' %', marker: 4 });
   }
 
   /* Skoleåret 2026/27, uke 33 til uke 32. */

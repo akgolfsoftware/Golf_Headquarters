@@ -140,7 +140,7 @@ body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.
 .helt-hoved{display:flex;align-items:baseline;gap:6px 14px;flex-wrap:wrap}
 .helt-hoved strong{font:800 64px/.95 var(--brand);letter-spacing:-.03em;color:#fff}
 .helt-hoved strong small{font:800 26px/1 var(--brand);letter-spacing:0;margin-left:2px}
-.helt-hoved span{font:800 19px/1.25 var(--brand);color:#fff;max-width:20ch}
+.helt-hoved > span{font:800 19px/1.25 var(--brand);color:#fff;max-width:20ch}
 .helt-forklar{font-size:15px;line-height:1.5;color:var(--n100);max-width:46ch}
 .helt .knapp{justify-self:start;margin-top:4px}
 .helt-bilde{display:block;width:100%;height:96px;object-fit:cover;object-position:50% 45%;order:-1}
@@ -322,7 +322,7 @@ body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.
   .helt-tekst{padding:26px 30px 28px}
   .helt-bilde{order:0;height:100%;min-height:230px}
   .helt-hoved strong{font-size:84px}
-  .helt-hoved span{font-size:22px}
+  .helt-hoved > span{font-size:22px}
   .smaa-tall.fire{grid-template-columns:repeat(4,minmax(0,1fr))}
   .baand.kol{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
   .to-kol{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:start}
