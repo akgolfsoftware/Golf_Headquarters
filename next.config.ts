@@ -10,6 +10,9 @@ const withMDX = createMDX({
 
 const nextConfig: NextConfig = {
   pageExtensions: ["ts", "tsx", "md", "mdx"],
+  // Next logger ellers argumentene til serverhandlinger i utvikling.
+  // IUP-fritekst og andre personopplysninger skal ikke havne i terminalen.
+  logging: { serverFunctions: false },
   experimental: {
     serverActions: {
       // Avatar-opplasting går som server action med fil i FormData — Nexts

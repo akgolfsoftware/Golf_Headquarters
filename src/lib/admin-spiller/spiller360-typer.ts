@@ -5,6 +5,7 @@
  */
 import type { Datagrunnlag, S360Fane, Snittscore, AkseKode } from "./spiller360-visning";
 import type { SpillerTesterData } from "@/lib/admin/spiller-tester-data";
+import type { Treningsvolum } from "@/lib/workbench/treningsvolum";
 import type { TpPlan } from "@/lib/teknisk-plan/tp-visning";
 
 export type { S360Fane };
@@ -89,7 +90,10 @@ export type S360Stats = {
     volumTotal: number;
     volumUker: { uke: string; minutter: number }[];
     korrelasjon: { navn: string; r: number | null; datapunkter: number; tolkning: string }[];
+    /** Bare akser med registrert faktisk tid; 0 bevares. */
     planMotFaktisk: { akse: AkseKode; plan: number; faktisk: number }[];
+    /** Alle fem akser, inklusive plan, ukjent, legacyanslag, framtid og øktantall. */
+    volumMetadata?: Treningsvolum;
     planKilde: string;
   };
   trackman: {
@@ -135,7 +139,7 @@ export type S360Iup = {
   perioder: { navn: string; uker: string; timer: string }[];
   turneringer: { navn: string; dato: string; resultat: string }[];
   uke: { dag: string; tittel: string; meta: string }[];
-  trening: { gjennomfort: number; planlagt: number; timer: { akse: AkseKode; timer: number }[]; kilde: string } | null;
+  trening: { gjennomfort: number; planlagt: number; timer: { akse: AkseKode; timer: number }[]; kilde: string; volumMetadata?: Treningsvolum } | null;
   tester: { navn: string; verdi: string; kilde: string }[];
   teknikk: { p: string; tittel: string; status: string }[];
   teknikkKilde: string | null;

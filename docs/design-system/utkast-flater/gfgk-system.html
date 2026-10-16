@@ -1,0 +1,385 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>GFGK Junior og systemsider</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="felles/felles.css">
+<link rel="stylesheet" href="felles/flater.css">
+<style>
+/* ---------- Gruppe 5: GFGK Junior og system · GJ-01, GJ-02, SY-01 ---------- */
+.skjermvalg button{font-size:13px;min-height:36px;padding:0 10px}
+.hero{display:grid;gap:var(--r4)}
+.hero img{display:block;width:100%;height:200px;object-fit:cover;border-radius:12px}
+.hero h1{margin:0;font:700 34px/1.08 var(--sans);letter-spacing:-.025em;text-wrap:balance}
+.partnere{display:flex;flex-wrap:wrap;gap:6px 16px;font:600 13px/1.4 var(--sans);color:var(--graphite-800)}
+.partnere span:first-child{color:var(--graphite-600);font-weight:500}
+.stige{display:grid;gap:var(--r2)}
+.trinn{display:grid;grid-template-columns:56px minmax(0,1fr);gap:var(--r3);align-items:stretch;border:1px solid var(--sand-300);border-radius:12px;overflow:hidden;background:var(--white);text-align:left;font:inherit;color:inherit;cursor:pointer;padding:0}
+.trinn .nr{display:grid;place-items:center;font:600 22px/1 var(--mono);color:#fff}
+.trinn .t1{background:var(--fys-ink)} .trinn .t2{background:var(--tek-ink)} .trinn .t3{background:var(--slag)} .trinn .t4{background:var(--turn)}
+.trinn .tekst{display:grid;gap:4px;padding:12px 14px 12px 0}
+.trinn b{font:600 17px/1.25 var(--sans)}
+.trinn .fakta{display:flex;flex-wrap:wrap;gap:2px 12px;font-size:13.5px;color:var(--graphite-800)}
+.ved-siden{display:grid;gap:var(--r2);padding:14px 16px;border:1px dashed var(--graphite-500);border-radius:12px}
+.ved-siden b{font:600 15px/1.3 var(--sans)}
+.pyramide{display:grid;gap:4px;justify-items:center}
+.pyramide div{display:flex;justify-content:space-between;align-items:center;height:40px;padding:0 14px;border-radius:6px;color:#fff;font:600 14px/1 var(--sans)}
+.pyramide div b{font:600 15px/1 var(--mono)}
+.uke{display:grid;gap:var(--r2)}
+.uke-okt{display:grid;grid-template-columns:72px minmax(0,1fr);gap:var(--r3);padding:14px 16px;border-radius:12px;color:#fff}
+.uke-okt .dag{display:grid;gap:4px;align-content:start}
+.uke-okt .dag b{font:600 15px/1.2 var(--sans)}
+.uke-okt .dag span{font:500 13px/1.2 var(--mono);opacity:.9}
+.uke-okt p{font-size:14.5px;line-height:1.45}
+.uke-okt .sted{font-size:13px;opacity:.85}
+.uke-okt.teknikk{background:var(--tek-ink)} .uke-okt.u-spill{background:var(--spill-ink)} .uke-okt.lek{background:var(--fys-ink)}
+.steg4{display:grid;gap:0;border-top:1px solid var(--sand-300)}
+.steg4 div{display:grid;grid-template-columns:44px minmax(0,1fr);gap:var(--r3);padding:14px 0;border-bottom:1px solid var(--sand-300)}
+.steg4 .nr{font:600 18px/1 var(--mono);color:var(--graphite-600)}
+.steg4 b{display:block;font:600 16px/1.3 var(--sans);margin-bottom:2px}
+.hendelse{display:grid;grid-template-columns:56px minmax(0,1fr);gap:var(--r3);align-items:center;padding:10px 0;border-bottom:1px solid var(--sand-300)}
+.hendelse:last-child{border-bottom:0}
+.hendelse .d{display:grid;justify-items:center;padding:6px 0;border-radius:8px;background:var(--sand-150)}
+.hendelse .d b{font:600 20px/1 var(--mono)}
+.hendelse .d span{font:600 11px/1.2 var(--sans);text-transform:uppercase;letter-spacing:.06em}
+.hendelse b.t{display:block;font-weight:600}
+.arshjul{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:2px}
+.arshjul div{display:grid;gap:4px;justify-items:center;font:500 10.5px/1 var(--sans);color:var(--graphite-600)}
+.arshjul i{display:block;width:100%;height:28px;border-radius:3px}
+.f-grunn{background:var(--tek-ink)} .f-spes{background:var(--slag)} .f-turn{background:var(--turn)} .f-eval{background:var(--graphite-500)}
+.fase-kort{display:grid;gap:8px;padding:14px 16px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white)}
+.fase-kort .rad{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.fase-kort b{font:600 16px/1.3 var(--sans)}
+.fase-kort .timer{font:600 15px/1 var(--mono)}
+.fase-merke{display:inline-flex;align-items:center;gap:6px;font:600 12.5px/1 var(--sans)}
+.fase-merke i{width:10px;height:10px;border-radius:3px}
+.gruppevalg{display:flex;flex-wrap:wrap;gap:6px}
+.art-kort{display:grid;gap:6px;padding:14px 16px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white);text-decoration:none;color:inherit}
+.art-kort b{font:600 16px/1.3 var(--sans)}
+.kat-topp{display:grid;gap:2px}
+.kat-topp b{font:600 18px/1.25 var(--sans)}
+.artikkel{display:grid;gap:var(--r4);max-width:66ch}
+.artikkel h2{margin:var(--r3) 0 0;font:600 20px/1.3 var(--sans)}
+.artikkel p{font-size:16px;line-height:1.65}
+.artikkel table{border-collapse:collapse;width:100%;font-size:14px;table-layout:fixed}
+.artikkel th:first-child,.artikkel td:first-child{width:76px}
+.artikkel td,.artikkel th{overflow-wrap:anywhere}
+.artikkel th,.artikkel td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--sand-300)}
+.artikkel th{font-weight:600;color:var(--graphite-600);font-size:13px}
+.tabell-boks{overflow-x:auto}
+.sys{display:grid;gap:var(--r4);justify-items:start;padding-top:var(--r5)}
+.sys .kode{font:600 72px/1 var(--mono);letter-spacing:-.04em}
+.sys .kode.rolig{color:var(--graphite-600);font-size:40px}
+.sys h1{margin:0;font:700 28px/1.15 var(--sans);letter-spacing:-.02em}
+.sys .hjelp-liste{display:grid;gap:6px;margin:0;padding-left:18px;font-size:15px}
+.sys .ref{font:500 13px/1.4 var(--mono);color:var(--graphite-600)}
+@container (min-width:900px){
+  .hero{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:var(--r6)}
+  .hero img{height:340px}
+  .hero h1{font-size:44px}
+  .stige{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .trinn{grid-template-columns:1fr;grid-template-rows:56px auto}
+  .trinn .tekst{padding:12px 16px 16px}
+  .uke{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .steg4{grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--r4);border:0}
+  .steg4 div{grid-template-columns:1fr;border:0;border-top:2px solid var(--graphite-900)}
+  .fase-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--r3)}
+  .art-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--r3)}
+  .sys{padding-top:64px}
+  .sys .kode{font-size:120px}
+  .sys .kode.rolig{font-size:72px}
+}
+</style>
+
+<div class="ytre">
+  <div class="hode">
+    <span class="meta-s">GFGK Junior og system · gruppe 5 · GJ-01, GJ-02, SY-01 · utkast 1 · 15.10.2026</span>
+    <h1>GFGK Junior og systemsider</h1>
+    <p>GFGK Junior: forside, en gruppe med treningsuke og årsplan, treningsplaner, kalender, kunnskapsbasen og én artikkel. Systemsider: ikke funnet (404), feil (500), vedlikehold, ikke tilgang og frakoblet. Den publiserte teksten er beholdt ordrett. Bare utseendet er nytt.</p>
+  </div>
+  <div class="kontroller">
+    <div class="velger skjermvalg" role="group" aria-label="Skjerm">
+      <button type="button" aria-pressed="true" data-skjerm="forside">GJ-01 Forside</button>
+      <button type="button" aria-pressed="false" data-skjerm="gruppe">GJ-01 Gruppe</button>
+      <button type="button" aria-pressed="false" data-skjerm="planer">GJ-01 Treningsplaner</button>
+      <button type="button" aria-pressed="false" data-skjerm="kalender">GJ-01 Kalender</button>
+      <button type="button" aria-pressed="false" data-skjerm="veileder">GJ-02 Kunnskapsbase</button>
+      <button type="button" aria-pressed="false" data-skjerm="artikkel">GJ-02 Artikkel</button>
+      <button type="button" aria-pressed="false" data-skjerm="s404">SY-01 404</button>
+      <button type="button" aria-pressed="false" data-skjerm="s500">SY-01 500</button>
+      <button type="button" aria-pressed="false" data-skjerm="vedlikehold">SY-01 Vedlikehold</button>
+      <button type="button" aria-pressed="false" data-skjerm="tilgang">SY-01 Ikke tilgang</button>
+      <button type="button" aria-pressed="false" data-skjerm="offline">SY-01 Frakoblet</button>
+    </div>
+  </div>
+  <div class="kontroller">
+    <div class="velger" role="group" aria-label="Bredde"><button type="button" aria-pressed="true" data-bredde="mob">Mobil</button><button type="button" aria-pressed="false" data-bredde="pc">PC</button></div>
+    <div class="velger" role="group" aria-label="Tilstand"><button type="button" aria-pressed="true" data-tilstand="data">Med data</button><button type="button" aria-pressed="false" data-tilstand="tom">Tom</button><button type="button" aria-pressed="false" data-tilstand="laster">Laster</button><button type="button" aria-pressed="false" data-tilstand="feil">Feil</button></div>
+  </div>
+  <div class="scene"><div class="ramme mob" id="ramme"></div></div>
+  <div class="notater">
+    <div class="endringer">
+      <span class="meta-s">Hva som er nytt</span>
+      <ul>
+        <li><b>Precision i stedet for GFGK-fargene:</b> gruppene, pyramiden og øktene bruker aksefargene (FYS · TEK · SLAG · SPILL · TURN). Gull, turkis og rødt fra GFGK er tatt ut.</li>
+        <li><b>Gruppene som stige</b> med fire trinn i rekkefølge, og det som står ved siden av stigen i stiplet ramme.</li>
+        <li><b>Treningsuka som fylte kort</b> per økt, og årsplanen som et årshjul med fire faser.</li>
+        <li><b>Systemsidene</b> har feilkoden i stor mono, én forklaring og ett tydelig neste steg.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Reglene som er fulgt</span>
+      <ul>
+        <li>Publisert tekst er beholdt ordrett, også «Spesialisering», «fire aldersgrupper» og «Vi svarer innen 48 timer». De venter på Anders (masteren §27).</li>
+        <li>AK-stigen har fire trinn: Mini → Basis → Utvikling → Elite.</li>
+        <li>Ingen vitnesbyrd, sitater eller stjerner. Ingen bilder med tekst oppå.</li>
+        <li>Systemsidene lover ikke svar eller tid. 500 viser referanse i mono, så feilen kan finnes igjen.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Åpent hos Anders</span>
+      <ul>
+        <li><b>Knøtt ved siden av stigen:</b> den stiplede boksen er ny tekst. Gruppa finnes ikke i basen ennå. Publiseres ikke uten Anders' ja.</li>
+        <li><b>«Vi svarer innen 48 timer»</b> står i publisert tekst. Regelen sier ingen svarløfte før Jarvis er i drift.</li>
+        <li><b>Kategorispennet</b> i gruppene (L–K, J–I osv.) og i artikkelen (J–I, I–H, H–F) sier ikke det samme. Begge er beholdt som publisert.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ================= GJ-01 Forside ================= -->
+<template id="forside">
+<div class="app" data-skall="gfgk" data-aktiv="forside"><main class="innhold">
+  <section class="hero" data-behold>
+    <img src="bilder/spill-bane.jpg" alt="Golfbanen på Gamle Fredrikstad Golfklubb">
+    <div style="display:grid;gap:var(--r3)">
+      <span class="dato">GFGK Junior &amp; Elite</span>
+      <h1>Fra 6 til 19 år – fire aldersgrupper</h1>
+      <p class="ingress">Hver gruppe er tilpasset alder og utviklingsnivå. Alle velkomne – uansett erfaring.</p>
+      <div class="knapper"><a href="#" class="knapp pri">Starte med golf</a><a href="#" class="knapp sek" data-gaa="gruppe">Gruppene</a></div>
+      <div class="partnere"><span>I samarbeid med</span><span>Gamle Fredrikstad Golfklubb</span><span>AK Golf Academy</span><span>WANG Toppidrett Fredrikstad</span></div>
+    </div>
+  </section>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Gruppene</h2></div>
+    <div class="stige">
+      <button type="button" class="trinn" data-gaa="gruppe"><span class="nr t1">1</span><span class="tekst"><b>Junior Mini</b><span class="fakta"><span>6–10 år</span><span>1 økt/uke</span></span><span class="forklar">Lek, bevegelse og mestringsfølelse</span></span></button>
+      <button type="button" class="trinn" data-gaa="gruppe"><span class="nr t2">2</span><span class="tekst"><b>Junior Basis</b><span class="fakta"><span>11–13 år</span><span>2 økter/uke</span></span><span class="forklar">Bred motorisk utvikling og spilleglede</span></span></button>
+      <button type="button" class="trinn" data-gaa="gruppe"><span class="nr t3">3</span><span class="tekst"><b>Junior Utvikling</b><span class="fakta"><span>13–15 år</span><span>2 økter/uke</span></span><span class="forklar">Spesialisering, konkurranse og gode vaner</span></span></button>
+      <button type="button" class="trinn" data-gaa="gruppe"><span class="nr t4">4</span><span class="tekst"><b>Junior Elite</b><span class="fakta"><span>16–19 år</span><span>2 økter/uke</span></span><span class="forklar">Helhetlig satsing mot elite- og collegegolf</span></span></button>
+    </div>
+    <div class="ved-siden"><b>Ved siden av stigen</b><span class="forklar">Knøtt (11–12 år) har egen gruppe. WANG Toppidrett Fredrikstad følger egen skoleplan.</span><span class="eksempel">Ny tekst, venter på Anders</span></div>
+  </section>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Slik foregår en treningsuke</h2><a href="#" class="lenke" data-gaa="planer">Treningsplaner</a></div>
+    <p class="forklar">Oversikt over faste treningsøkter per aldersgruppe.</p>
+    <div class="uke">
+      <div class="uke-okt teknikk"><span class="dag"><b>Tirsdag</b><span>16:00–18:00</span></span><span><p>Teknisk trening – fullt sving, nærspill</p><span class="sted">Driving Range · Junior Basis</span></span></div>
+      <div class="uke-okt u-spill"><span class="dag"><b>Torsdag</b><span>16:00–18:00</span></span><span><p>Spill på banen – kursmanagement, regler</p><span class="sted">Golfbanen · Junior Basis</span></span></div>
+    </div>
+  </section>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Fra første kontakt til første trening</h2></div>
+    <p class="forklar">Fire steg – uten bindinger før du har prøvd. Både nybegynnere og erfarne spillere er velkomne.</p>
+    <div class="steg4">
+      <div><span class="nr">01</span><span><b>Ta kontakt</b><span class="forklar">Send en e-post for en uforpliktende prat. Vi svarer innen 48 timer og hjelper deg videre.</span></span></div>
+      <div><span class="nr">02</span><span><b>Prøvetime</b><span class="forklar">Kom på en prøvetime i den gruppen som passer alderen. Du trenger ikke eget utstyr – vi låner ut det du trenger.</span></span></div>
+      <div><span class="nr">03</span><span><b>Plasseres i gruppe</b><span class="forklar">Treneren plasserer deg i gruppen der snittscore og nivå passer treningsplanen. Utvikler du deg, flyttes du opp underveis.</span></span></div>
+      <div><span class="nr">04</span><span><b>Meld på</b><span class="forklar">Fyll ut påmelding og få bekreftelse med startdato. Deretter er du i gang.</span></span></div>
+    </div>
+  </section>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Kommende hendelser</h2><a href="#" class="lenke" data-gaa="kalender">Full treningskalender</a></div>
+    <div class="kort">
+      <div class="hendelse"><span class="d"><b>20</b><span>okt</span></span><span><b class="t">Testuke starter</b><span class="kilde">Alle grupper</span></span></div>
+      <div class="hendelse"><span class="d"><b>3</b><span>nov</span></span><span><b class="t">Grunnperioden starter innendørs</b><span class="kilde">Junior Basis, Utvikling og Elite</span></span></div>
+    </div>
+  </section>
+</main></div>
+</template>
+
+<!-- ================= GJ-01 Gruppe ================= -->
+<template id="gruppe">
+<div class="app" data-skall="gfgk" data-aktiv="grupper" data-tilbake="Gruppene" data-tilbake-gaa="forside"><main class="innhold">
+  <div class="topp" data-behold><span class="dato">13–15 år · kategori H–G</span><h1 class="tittel">Junior Utvikling</h1><p class="ingress">Målrettet trening med vekt på spesialisering, konkurranseerfaring og mental styrke. Spillerne utvikler sin egen spillestil og bygger gode treningsvaner.</p></div>
+  <div class="gruppevalg chips" data-gruppe data-behold><button type="button" aria-pressed="false">Mini</button><button type="button" aria-pressed="false">Basis</button><button type="button" aria-pressed="true">Utvikling</button><button type="button" aria-pressed="false">Elite</button></div>
+  <div class="teller-rad">
+    <div class="teller"><span class="e">Økter</span><b class="t">2</b><span class="s">i uka</span></div>
+    <div class="teller"><span class="e">Timer</span><b class="t">2–5</b><span class="s">i uka</span></div>
+  </div>
+  <div class="to-del">
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Treningsuka</h2></div>
+      <div class="uke" style="grid-template-columns:1fr">
+        <div class="uke-okt teknikk"><span class="dag"><b>Tirsdag</b><span>16:00–18:00</span></span><span><p>Teknisk trening med video – sving og nærspill</p><span class="sted">Driving Range</span></span></div>
+        <div class="uke-okt u-spill"><span class="dag"><b>Torsdag</b><span>16:00–18:00</span></span><span><p>Banespill – scoring, strategi og mental trening</p><span class="sted">Golfbanen</span></span></div>
+      </div>
+      <p class="forklar">Egentrening etter individuell plan: 2–3 økter/uke. Turneringshelger kan erstatte torsdagsøkten.</p>
+    </section>
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Treningspyramiden</h2></div>
+      <div class="kort pyramide">
+        <div class="a-turn" style="width:50%"><span>Turnering</span><b>10 %</b></div>
+        <div class="a-spill" style="width:62%"><span>Spill</span><b>20 %</b></div>
+        <div class="a-slag" style="width:74%"><span>Golfslag</span><b>25 %</b></div>
+        <div class="a-tek" style="width:87%"><span>Teknikk</span><b>30 %</b></div>
+        <div class="a-fys" style="width:100%"><span>Fysisk</span><b>15 %</b></div>
+      </div>
+    </section>
+  </div>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Året</h2></div>
+    <div class="kort">
+      <div class="arshjul" aria-label="Årshjul januar til desember">
+        <div><i class="f-grunn"></i>J</div><div><i class="f-grunn"></i>F</div><div><i class="f-grunn"></i>M</div><div><i class="f-spes"></i>A</div><div><i class="f-spes"></i>M</div><div><i class="f-turn"></i>J</div><div><i class="f-turn"></i>J</div><div><i class="f-turn"></i>A</div><div><i class="f-turn"></i>S</div><div><i class="f-eval"></i>O</div><div><i class="f-eval"></i>N</div><div><i class="f-grunn"></i>D</div>
+      </div>
+      <div class="fase-grid" style="display:grid;gap:var(--r2)">
+        <div class="fase-kort"><span class="rad"><span class="fase-merke"><i class="f-eval"></i>Evaluering · Okt–Nov</span><span class="timer">3 t/uke</span></span><span class="forklar">Fullt testbatteri (slag, nærspill, fysikk), individuell utviklingsplan settes.</span></div>
+        <div class="fase-kort"><span class="rad"><span class="fase-merke"><i class="f-grunn"></i>Grunnperiode · Nov–Mar</span><span class="timer">4 t/uke</span></span><span class="forklar">Teknisk ombygging med video (BUILD/STAB), styrke og mobilitet to økter/uke.</span></div>
+        <div class="fase-kort"><span class="rad"><span class="fase-merke"><i class="f-spes"></i>Spesialisering · Apr–Jun</span><span class="timer">5 t/uke</span></span><span class="forklar">TEST→TRANSFER: ferdigheter ut på banen med økende konkurranseintensitet.</span></div>
+        <div class="fase-kort"><span class="rad"><span class="fase-merke"><i class="f-turn"></i>Turnering · Jun–Okt</span><span class="timer">5 t/uke</span></span><span class="forklar">Narvesen Tour og lagmatcher – taktikk, restitusjon og prestasjonsrutiner.</span></div>
+      </div>
+    </div>
+  </section>
+</main></div>
+</template>
+
+<!-- ================= GJ-01 Treningsplaner ================= -->
+<template id="planer">
+<div class="app" data-skall="gfgk" data-aktiv="planer"><main class="innhold">
+  <div class="topp" data-behold><h1 class="tittel">Treningsplaner</h1><p class="ingress">Faste treningsøkter per aldersgruppe, tirsdag og torsdag.</p></div>
+  <div class="gruppevalg chips" data-gruppe data-behold><button type="button" aria-pressed="true">Alle</button><button type="button" aria-pressed="false">Mini</button><button type="button" aria-pressed="false">Basis</button><button type="button" aria-pressed="false">Utvikling</button><button type="button" aria-pressed="false">Elite</button></div>
+  <section class="seksjon"><div class="sek-topp"><h2>Junior Mini</h2><span class="kilde">6–10 år</span></div>
+    <div class="uke"><div class="uke-okt lek"><span class="dag"><b>Tirsdag</b><span>17:00–18:00</span></span><span><p>Lekbasert trening – motorikk, putting og korte slag</p><span class="sted">Treningsområdet</span></span></div><div class="uke-okt u-spill"><span class="dag"><b>Torsdag</b><span>17:00–18:00</span></span><span><p>Spill og aktiviteter med foreldre velkommen</p><span class="sted">Korthullsbanen</span></span></div></div>
+  </section>
+  <section class="seksjon"><div class="sek-topp"><h2>Junior Elite</h2><span class="kilde">16–19 år</span></div>
+    <div class="uke"><div class="uke-okt teknikk"><span class="dag"><b>Tirsdag</b><span>16:00–18:30</span></span><span><p>Individualisert teknisk trening etter utviklingsplan</p><span class="sted">Driving Range</span></span></div><div class="uke-okt u-spill"><span class="dag"><b>Torsdag</b><span>16:00–18:30</span></span><span><p>Banespill, turneringsforberedelse og fysisk avslutning</p><span class="sted">Golfbanen</span></span></div></div>
+    <p class="forklar">I tillegg egentrening 3–4 økter/uke etter årsplan, og individuelle timer med trener. WANG-elever følger egen skoleplan.</p>
+  </section>
+  <div class="lg-rad"><span class="lg"><i class="a-tek"></i>Teknikk</span><span class="lg"><i class="a-spill"></i>Spill</span><span class="lg"><i class="a-fys"></i>Lek</span></div>
+</main></div>
+</template>
+
+<!-- ================= GJ-01 Kalender ================= -->
+<template id="kalender">
+<div class="app" data-skall="gfgk" data-aktiv="kalender"><main class="innhold smal">
+  <div class="topp" data-behold><h1 class="tittel">Full treningskalender</h1></div>
+  <div class="faner" data-gruppe data-behold><button type="button" aria-pressed="true">Oktober</button><button type="button" aria-pressed="false">November</button><button type="button" aria-pressed="false">Desember</button></div>
+  <div class="kort">
+    <div class="hendelse"><span class="d"><b>6</b><span>tir</span></span><span><b class="t">Ordinær trening</b><span class="kilde">Alle grupper · se treningsplanen</span></span></div>
+    <div class="hendelse"><span class="d"><b>8</b><span>tor</span></span><span><b class="t">Ordinær trening</b><span class="kilde">Alle grupper</span></span></div>
+    <div class="hendelse"><span class="d"><b>20</b><span>tir</span></span><span><b class="t">Testuke starter</b><span class="kilde">Alle grupper</span></span></div>
+    <div class="hendelse"><span class="d"><b>29</b><span>tor</span></span><span><b class="t">Utviklingssamtaler</b><span class="kilde">Junior Utvikling og Elite</span></span></div>
+  </div>
+  <p class="kilde">Kalenderen hentes fra klubbens oversikt. Tider i norsk tid.</p>
+</main></div>
+</template>
+
+<!-- ================= GJ-02 Kunnskapsbase ================= -->
+<template id="veileder">
+<div class="app" data-skall="gfgk" data-aktiv="veileder"><main class="innhold">
+  <div class="topp" data-behold><h1 class="tittel">Kunnskapsbase</h1><p class="ingress" style="max-width:62ch">Artikler og veiledning for spillere, foreldre og trenere i GFGK Junior &amp; Elite — fra Impact Program og foreldrerollen til mental trening, periodisering og testuke.</p></div>
+  <section class="seksjon"><div class="kat-topp"><span class="dato">Vår filosofi</span><b>Verdier som gjennomsyrer alt vi gjør</b></div>
+    <div class="art-grid" style="display:grid;gap:var(--r2)"><a href="#" class="art-kort"><b>Impact Program – Livsmestring gjennom golf</b><span class="kilde">Filosofi</span></a></div></section>
+  <section class="seksjon"><div class="kat-topp"><span class="dato">For foreldre og foresatte</span><b>Hvordan du best kan støtte barnet ditt</b></div>
+    <div class="art-grid" style="display:grid;gap:var(--r2)">
+      <a href="#" class="art-kort"><b>Slik støtter du barnet ditt i golfen</b><span class="forklar">Praktiske råd for foreldre som vil være en positiv støttespiller – uten å ta over.</span></a>
+      <a href="#" class="art-kort"><b>Forventninger og roller</b><span class="forklar">Tydelige forventninger til spiller, forelder og trener skaper trygghet og utvikling.</span></a>
+      <a href="#" class="art-kort"><b>Ernæring for unge idrettsutøvere</b><span class="forklar">Hva bør unge golfspillere spise og drikke – før, under og etter trening?</span></a>
+    </div></section>
+  <section class="seksjon"><div class="kat-topp"><span class="dato">For spillere</span><b>Kunnskap som gjør deg til en bedre golfer</b></div>
+    <div class="art-grid" style="display:grid;gap:var(--r2)">
+      <a href="#" class="art-kort"><b>Mental trening og fokus</b><span class="forklar">Enkle mentale teknikker som hjelper deg å prestere bedre på banen.</span></a>
+      <a href="#" class="art-kort"><b>Slik får du mest ut av treningen</b><span class="forklar">Tips og strategier for å gjøre hver treningsøkt så effektiv som mulig.</span></a>
+      <a href="#" class="art-kort"><b>Konkurranseforberedelse</b><span class="forklar">Slik forbereder du deg til turnering – fra uken før til første teeslag.</span></a>
+    </div></section>
+  <section class="seksjon"><div class="kat-topp"><span class="dato">Treningsfaglig</span><b>Slik planlegger og gjennomfører vi trening</b></div>
+    <div class="art-grid" style="display:grid;gap:var(--r2)">
+      <a href="#" class="art-kort"><b>Periodisering forklart</b><span class="forklar">Hvorfor deler vi sesongen i perioder, og hva betyr det for treningen din?</span></a>
+      <a href="#" class="art-kort" data-gaa="artikkel"><b>Treningsplanlegging og progresjon</b><span class="forklar">Hvordan vi planlegger trening for langsiktig utvikling og progresjon.</span></a>
+      <a href="#" class="art-kort"><b>Testuke – hva og hvorfor</b><span class="forklar">Hva vi tester, hvordan, og hvordan resultatene brukes til å forme treningen.</span></a>
+    </div></section>
+</main></div>
+</template>
+
+<!-- ================= GJ-02 Artikkel ================= -->
+<template id="artikkel">
+<div class="app" data-skall="gfgk" data-aktiv="veileder" data-tilbake="Kunnskapsbase" data-tilbake-gaa="veileder"><main class="innhold">
+  <article class="artikkel">
+    <span class="dato">Treningsfaglig · 3 min lesing</span>
+    <h1 class="tittel" style="margin:0">Treningsplanlegging og progresjon</h1>
+    <p class="ingress">Hvordan vi planlegger trening for langsiktig utvikling og progresjon.</p>
+    <h2>Systematisk utvikling</h2>
+    <p>God treningsplanlegging handler om å sikre at hver spiller utvikler seg i riktig retning og i riktig tempo. Vi jobber systematisk med individuelle utviklingsplaner, kategorisering av ferdighetsnivå og jevnlige evalueringer.</p>
+    <h2>A–K-kategorisystemet</h2>
+    <p>Hver spiller plasseres i en kategori fra A til K basert på prestasjon på tvers av de fem pyramidenivåene:</p>
+    <div class="tabell-boks"><table><thead><tr><th>Kategori</th><th>Nivå</th><th>Typisk</th></tr></thead><tbody>
+      <tr><td class="mono">A–C</td><td>Elite</td><td>Landslagskandidater, collegespillere</td></tr>
+      <tr><td class="mono">D–F</td><td>Avansert</td><td>Erfarne konkurransespillere</td></tr>
+      <tr><td class="mono">G–H</td><td>Viderekommen</td><td>Aktive turneringsspillere</td></tr>
+      <tr><td class="mono">I–J</td><td>Grunnlag</td><td>Spillere under utvikling</td></tr>
+      <tr><td class="mono">K</td><td>Nybegynner</td><td>Nye spillere</td></tr>
+    </tbody></table></div>
+    <h2>Progresjonskriterier</h2>
+    <p>Spillere rykker <i>opp</i> basert på testing og vurdering — aldri automatisk basert på alder. Opprykk krever dokumentert fremgang i minst <b>5 av 7</b> vurderte områder: teknikk, putting, nærspill, fysisk kapasitet, banespill, mentale ferdigheter og turneringsresultater.</p>
+  </article>
+</main></div>
+</template>
+
+<!-- ================= SY-01 ================= -->
+<template id="s404">
+<div class="app" data-skall="system" data-topp-lenke="Logg inn"><main class="innhold">
+  <div class="sys"><span class="kode">404</span><h1>Siden finnes ikke</h1><p class="ingress">Adressen kan være skrevet feil, eller siden er flyttet.</p>
+    <ul class="hjelp-liste"><li>Sjekk adressen</li><li>Gå til forsiden og finn veien derfra</li></ul>
+    <div class="knapper"><a href="#" class="knapp pri">Til forsiden</a><a href="#" class="knapp sek">Til PlayerHQ</a></div></div>
+</main></div>
+</template>
+
+<template id="s500">
+<div class="app" data-skall="system"><main class="innhold">
+  <div class="sys"><span class="kode">500</span><h1>Noe gikk galt hos oss</h1><p class="ingress">Siden kunne ikke vises. Det du lagret før, er ikke borte.</p>
+    <div class="knapper"><button type="button" class="knapp pri" data-prov>Prøv igjen</button><a href="#" class="knapp sek">Til forsiden</a></div>
+    <span class="ref">Referanse: 7F3A-21C9 · 15.10 14:22</span><p class="kilde">Oppgi referansen hvis du kontakter post@akgolf.no.</p></div>
+</main></div>
+</template>
+
+<template id="vedlikehold">
+<div class="app" data-skall="system"><main class="innhold">
+  <div class="sys"><span class="kode rolig">Vedlikehold</span><h1>AK Golf HQ oppdateres</h1><p class="ingress">Vi gjør en planlagt oppdatering. Ingenting du har lagret, blir borte.</p>
+    <dl class="dl" style="width:100%;max-width:420px"><div><dt>Startet</dt><dd class="mono">22:00</dd></div><div><dt>Ventet ferdig</dt><dd class="mono">23:00</dd></div></dl>
+    <div class="knapper"><button type="button" class="knapp sek" data-prov>Sjekk på nytt</button></div></div>
+</main></div>
+</template>
+
+<template id="tilgang">
+<div class="app" data-skall="system" data-topp-lenke="Logg ut"><main class="innhold">
+  <div class="sys"><span class="kode rolig">403</span><h1>Du har ikke tilgang til denne siden</h1><p class="ingress">Du er logget inn som spiller. Siden er for coacher.</p>
+    <div class="knapper"><a href="#" class="knapp pri">Til PlayerHQ</a><a href="#" class="knapp sek">Logg inn med en annen konto</a></div></div>
+</main></div>
+</template>
+
+<template id="offline">
+<div class="app" data-skall="system"><main class="innhold">
+  <div class="sys"><span class="ikonboks" style="width:64px;height:64px;border-radius:16px"><svg class="ikon" viewBox="0 0 24 24" style="width:30px;height:30px"><path d="M2 2l20 20M8.5 16.4a5 5 0 0 1 7 0M5 12.9a10 10 0 0 1 5.2-2.8M19 12.9a10 10 0 0 0-2.3-1.6M2 8.8a15 15 0 0 1 4.2-2.6M22 8.8A15 15 0 0 0 10.7 5M12 20h.01"/></svg></span><h1>Du er uten nett</h1><p class="ingress">Slag og økter du registrerer nå, lagres på telefonen og sendes når nettet er tilbake.</p>
+    <dl class="dl" style="width:100%;max-width:420px"><div><dt>Venter på å sendes</dt><dd class="mono">3 slag</dd></div></dl>
+    <div class="knapper"><button type="button" class="knapp pri" data-prov>Prøv igjen</button></div></div>
+</main></div>
+</template>
+
+<script src="felles/flater.js"></script>
+<script>
+AKFlate.menyMaal = { forside: 'forside', grupper: 'gruppe', planer: 'planer', kalender: 'kalender', veileder: 'veileder', starte: 'forside' };
+function prov(app) { app.querySelectorAll('[data-prov]').forEach(function (b) { b.addEventListener('click', function () { AKFlate.toast(app, 'Prøver igjen …'); }); }); }
+var std = { laster: 'Henter …', feil: 'Siden kunne ikke hentes' };
+function m(o) { var r = {}; for (var k in std) r[k] = std[k]; for (var j in o) r[j] = o[j]; return r; }
+AKFlate.start({
+  start: 'forside',
+  skjermer: {
+    forside: m({ tom: { tittel: 'Ingen kommende hendelser', tekst: 'Se treningsplanene for faste økter.' } }),
+    gruppe: m({ tom: { tittel: 'Gruppeplanen er ikke klar', tekst: 'Treningsuka for gruppa legges ut før sesongstart.' } }),
+    planer: m({ tom: { tittel: 'Ingen treningsplaner ennå', tekst: 'Planene legges ut før sesongstart.' } }),
+    kalender: m({ tom: { tittel: 'Ingen hendelser i oktober', tekst: 'Se neste måned.' } }),
+    veileder: m({ tom: { tittel: 'Ingen artikler', tekst: 'Kunnskapsbasen fylles på.' } }),
+    artikkel: m({ tom: { tittel: 'Artikkelen finnes ikke', tekst: 'Den kan være flyttet. Gå til kunnskapsbasen.', knapp: 'Til kunnskapsbasen' } }),
+    s404: m({}), s500: m({ etter: prov }), vedlikehold: m({ etter: prov }), tilgang: m({}), offline: m({ etter: prov })
+  }
+});
+</script>

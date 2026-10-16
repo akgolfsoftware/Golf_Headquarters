@@ -9,9 +9,9 @@ import type { BookingValg } from "@/app/admin/kalender/booking-actions";
 export const sti = "/admin/bookinger";
 
 const bookinger: Booking[] = [
-  { id: "b1", who: "Ola Testesen", guardian: null, svcId: "s1", svcNavn: "Privattime 60 min", min: 60, priceOre: 80000, where: "Studio 1", date: "29.09", t: "17:00", pay: "Ikke betalt", src: "PlayerHQ", note: "Vil jobbe med wedge.", at: "26.09", st: "Venter" },
-  { id: "b2", who: "Kari Gjest", guardian: "kari@eksempel.no", svcId: "s2", svcNavn: "Drop-in range", min: 30, priceOre: 25000, where: "Range", date: "30.09", t: "10:00", pay: "Betalt", src: "Gjest", note: null, at: "25.09", st: "Bekreftet" },
-  { id: "b3", who: "Per Avvist", guardian: null, svcId: "s1", svcNavn: "Privattime 60 min", min: 60, priceOre: 80000, where: "Studio 1", date: "27.09", t: "09:00", pay: "Klipp", src: "PlayerHQ", note: null, at: "20.09", st: "Avvist" },
+  { id: "b1", who: "Ola Testesen", guardian: null, svcId: "s1", svcNavn: "Privattime 60 min", min: 60, priceOre: 80000, where: "Studio 1", date: "29.09", t: "17:00", pay: "Ikke betalt", src: "PlayerHQ", note: "Vil jobbe med wedge.", at: "26.09", st: "Venter", kommende: false, harKonto: true, forslag: null },
+  { id: "b2", who: "Kari Gjest", guardian: "kari@eksempel.no", svcId: "s2", svcNavn: "Drop-in range", min: 30, priceOre: 25000, where: "Range", date: "30.09", t: "10:00", pay: "Betalt", src: "Gjest", note: null, at: "25.09", st: "Bekreftet", kommende: true, harKonto: false, forslag: null },
+  { id: "b3", who: "Per Avvist", guardian: null, svcId: "s1", svcNavn: "Privattime 60 min", min: 60, priceOre: 80000, where: "Studio 1", date: "27.09", t: "09:00", pay: "Klipp", src: "PlayerHQ", note: null, at: "20.09", st: "Avvist", kommende: false, harKonto: true, forslag: null },
 ];
 
 const valg: BookingValg = {

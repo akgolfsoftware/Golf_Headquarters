@@ -23,7 +23,7 @@ import { logError } from "@/lib/error-tracking";
 export const MAKS_PINN = 3;
 /** Maks antall AI-forslag (brief: «maks 3»). */
 export const MAKS_FORSLAG = 3;
-/** Plan-etterlevelse under dette (%) denne uka flagges som avvik. */
+/** Plan-etterlevelse under dette (%) siste fire uker flagges som avvik. */
 const PLAN_TERSKEL_PCT = 50;
 /** SG-trend som har falt minst så mye (nyeste − eldste av siste 8 målinger). */
 const SG_TERSKEL = -0.3;
@@ -76,7 +76,7 @@ type ScoredKandidat = {
 
 /** Velg den STERKESTE ene grunnen for én spiller (eller null om ingen avvik). */
 function scoreKandidat(r: StallenRow): ScoredKandidat | null {
-  // Plan-etterlevelse: lav prosent denne uka. Normalisert 0..1 (lavere = verre).
+  // Plan-etterlevelse: lav prosent siste fire uker. Normalisert 0..1 (lavere = verre).
   const plan =
     r.adhPct != null && r.adhPct < PLAN_TERSKEL_PCT
       ? (PLAN_TERSKEL_PCT - r.adhPct) / PLAN_TERSKEL_PCT
@@ -95,7 +95,7 @@ function scoreKandidat(r: StallenRow): ScoredKandidat | null {
       row: r,
       kind: "plan",
       score: plan,
-      grunn: `Plan-etterlevelse ${r.adhPct} % denne uka`,
+      grunn: `Plan-etterlevelse ${r.adhPct} % siste fire uker`,
       hjelp: "planEtterlevelse",
     };
   }

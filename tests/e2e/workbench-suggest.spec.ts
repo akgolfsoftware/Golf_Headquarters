@@ -9,7 +9,8 @@
  * Krever seedet testbruker (PRO-tier). Skip-er uten credentials.
  */
 
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./_test";
+import { loginAsPlayer, dismissCookieBanner } from "./_auth-helpers";
 
 const TEST_USER_EMAIL = process.env.E2E_TEST_USER_EMAIL ?? "";
 const TEST_USER_PASSWORD = process.env.E2E_TEST_USER_PASSWORD ?? "";
@@ -22,14 +23,12 @@ test.describe("Workbench ukeforslag", () => {
 
   test("Foreslå uke viser 3 varianter og kan tas i bruk", async ({ page }) => {
     // Login
-    await page.goto("/auth/login");
-    await page.locator('input[type="email"]').fill(TEST_USER_EMAIL);
-    await page.locator('input[type="password"]').fill(TEST_USER_PASSWORD);
-    await page.locator('button[type="submit"]').click();
-    await page.waitForURL(/\/portal/, { timeout: 15_000 });
+    await loginAsPlayer(page);
 
     await page.goto("/portal/planlegge/workbench");
     await expect(page).toHaveURL(/\/portal\/planlegge\/workbench/);
+
+    await dismissCookieBanner(page);
 
     // Åpne forslag-arket
     await page.getByRole("button", { name: /foreslå uke/i }).click();

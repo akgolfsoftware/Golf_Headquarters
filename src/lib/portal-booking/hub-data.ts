@@ -33,6 +33,7 @@ export type HubCredits = {
 
 export type HubBooking = {
   id: string;
+  serviceTypeId: string;
   serviceName: string;
   locationName: string;
   coachName: string | null;
@@ -152,6 +153,7 @@ export async function getBookingHubData(userId: string): Promise<BookingHubData>
 
   const upcoming: HubBooking[] = upcomingRows.map((b) => ({
     id: b.id,
+    serviceTypeId: b.serviceTypeId,
     serviceName: b.serviceType.name,
     locationName: b.location.name,
     coachName: b.coach?.name ?? null,
@@ -163,6 +165,7 @@ export async function getBookingHubData(userId: string): Promise<BookingHubData>
 
   const past: HubBooking[] = pastRows.map((b) => ({
     id: b.id,
+    serviceTypeId: b.serviceTypeId,
     serviceName: b.serviceType.name,
     locationName: b.location.name,
     coachName: b.coach?.name ?? null,

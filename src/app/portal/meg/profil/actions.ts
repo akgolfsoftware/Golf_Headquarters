@@ -12,6 +12,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireSpillerActionUser } from "@/lib/auth/action-guards";
 import { oppdaterProfil } from "@/app/portal/meg/actions";
+import { FODSELSDATO_LAAST_MELDING, vurderEgenFodselsdato } from "@/lib/auth/minor";
 
 const LagreProfilSchema = z.object({
   navn: z.string().trim().min(2, "Navn må ha minst 2 tegn").max(120),
@@ -31,7 +32,7 @@ export async function lagreProfil(
   input: LagreProfilInput,
 ): Promise<{ ok: true } | { ok: false; feil: string }> {
   // Auth-gate på grensen (defense in depth — oppdaterProfil sjekker også selv).
-  await requireSpillerActionUser();
+  const user = await requireSpillerActionUser();
 
   const parsed = LagreProfilSchema.safeParse(input);
   if (!parsed.success) {
@@ -47,6 +48,11 @@ export async function lagreProfil(
   if (p.fodselsdato) {
     const [aar, mnd, dag] = p.fodselsdato.split("-").map(Number);
     fodselsdato = new Date(Date.UTC(aar, mnd - 1, dag));
+  }
+
+  // D-63/TP-02: fødselsdatoen kan settes én gang, ikke endres av spilleren.
+  if (vurderEgenFodselsdato(user.dateOfBirth, fodselsdato) === "avvist") {
+    return { ok: false, feil: FODSELSDATO_LAAST_MELDING };
   }
 
   // oppdaterProfil (delt action) eier auth + skriving: "" → null for

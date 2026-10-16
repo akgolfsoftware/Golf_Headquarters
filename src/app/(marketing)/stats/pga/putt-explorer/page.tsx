@@ -25,8 +25,11 @@ import { Reveal } from "@/components/stats/reveal";
 import { StatsHeatmap } from "@/components/stats/stats-heatmap";
 import { PuttExplorer } from "./explorer";
 import { StatsLegacyShell } from "@/components/marketing/v2/stats-ramme";
+import { krevDataGolfBruker } from "@/lib/auth/datagolf-tilgang";
 
-export const revalidate = 3600;
+// Data Golf-tall: bare for innlogget coach og admin (Anders 09.10.2026).
+// Dynamisk per forespørsel — ingen felles hurtigbuffer som kan nå uinnloggede.
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Putt Explorer: PGA Tour synkeprosent per avstand | AK Golf Stats",
@@ -71,6 +74,7 @@ async function hentPuttData() {
 }
 
 export default async function PuttExplorerPage() {
+  await krevDataGolfBruker("/stats/pga/putt-explorer");
   const puttData = await hentPuttData();
 
   // Fall back to Broadie estimates if no DB data yet

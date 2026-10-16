@@ -1,122 +1,315 @@
 /**
- * Caddie-innstillinger — /portal/meg/innstillinger/ai-coach — B-pakke.
- * Oversikt først, én grønn CTA (disabled til V2), vei videre til hjelp.
+ * Caddie-innstillinger — /portal/meg/innstillinger/ai-coach — Precision Athletics.
  */
 
 import Link from "next/link";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { TL } from "@/lib/v2/train-lock";
-
-import { Caps, Kort, StatusPill, CTAPill, Icon } from "@/components/v2";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { InnstillingerHode } from "@/components/portal/v2/InnstillingerHode";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { StatusPille } from "@/components/precision/pa";
+import { Sparkles, Check, ArrowLeft, ArrowUpRight, ShieldCheck } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
 const FAQ = [
-  { q: "Hva kan Caddie ikke gjøre?", a: "Den erstatter ikke coach. Den foreslår basert på dine tall — du bestemmer." },
-  { q: "Er AI-data privat?", a: "Ja. Dataene dine brukes bare til din egen assistent, ikke til å trene andres modell." },
-  { q: "Erstatter Caddie Anders?", a: "Nei. Den er et ekstra lag mellom øktene — coach-beslutninger står fast." },
+  {
+    q: "Hva kan Caddie ikke gjøre?",
+    a: "Caddie erstatter ikke coach. Caddie foreslår basert på dine tall — du og coach bestemmer.",
+  },
+  {
+    q: "Er AI-data privat?",
+    a: "Ja. Dataene dine brukes bare til din egen assistent og anonymiseres før forespørsel. De brukes aldri til å trene andre modeller.",
+  },
+  {
+    q: "Erstatter Caddie treneren min?",
+    a: "Nei. Caddie er en forberedelse og støtte mellom øktene — trenerens beslutninger og godkjenninger står alltid fast.",
+  },
 ] as const;
 
 const FEATURES = [
-  "Analyserer SG-data og foreslår øvelser",
-  "Ukentlig AI-rapport til deg og coach",
-  "Svarer på golfspørsmål basert på dine data",
+  "Analyserer runder og foreslår relevante øvelser",
+  "Samler spørsmål og utkast klart til neste økt med coach",
+  "Svarer på golfspørsmål basert på dine egne treningsdata",
 ] as const;
 
 export default async function AiCoachPage() {
-  const user = await requirePortalUser({ kreverTilgang: "INGEN" });
+  await requirePortalUser({ kreverTilgang: "INGEN" });
 
   return (
-    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-    <div
-      data-paper-slug="playerhq-innstillinger"
-      data-paper-portal-innstillinger-ai-coach
-      style={{
-        maxWidth: 520,
-        margin: "0 auto",
-        display: "flex",
-        flexDirection: "column",
-        gap: 16,
-      }}
-    >
-      <InnstillingerHode
-        tittel="Caddie"
-        undertekst="Innstillinger"
-        tilbakeHref="/portal/meg/innstillinger"
-        action={<StatusPill tone="info">Kommer snart</StatusPill>}
-      />
-      <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: 0, lineHeight: 1.45, maxWidth: "36ch" }}>
-        Personlig assistent som leser dataene dine og foreslår neste steg.
-      </p>
-
-      <Kort>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <span
+    <PlayerHQSkall innboksHref="/portal/coach" uleste={0}>
+      <div className="pa-side" style={{ maxWidth: 600, margin: "0 auto", width: "100%" }}>
+        {/* Tilbake og hode */}
+        <div style={{ marginBottom: 20 }}>
+          <Link
+            href="/portal/meg/innstillinger"
             style={{
-              width: 40,
-              height: 40,
-              borderRadius: 9999,
-              background: TL.fill,
               display: "inline-flex",
               alignItems: "center",
-              justifyContent: "center",
-              flex: "none",
+              gap: 6,
+              fontSize: 13,
+              fontWeight: 500,
+              color: "var(--text-muted)",
+              textDecoration: "none",
+              marginBottom: 12,
             }}
           >
-            <Icon name="sparkles" size={18} style={{ color: TL.onFill }} />
-          </span>
-          <div>
-            <div style={{ fontFamily: TL.font.sans, fontSize: 15, fontWeight: 700, color: TL.text }}>
-              Hva Caddie gjør
-            </div>
-            <div style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, marginTop: 2 }}>
-              Personlig · datadrevet · coach-assistent
-            </div>
-          </div>
-        </div>
-        <ul style={{ margin: "14px 0 0", padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 8 }}>
-          {FEATURES.map((f) => (
-            <li key={f} style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
-              <Icon name="check" size={14} style={{ color: TL.text, marginTop: 2, flex: "none" }} />
-              <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text, lineHeight: 1.45 }}>{f}</span>
-            </li>
-          ))}
-        </ul>
-      </Kort>
+            <ArrowLeft size={14} />
+            <span>Innstillinger</span>
+          </Link>
 
-      <Kort pad="0">
-        <div style={{ padding: "12px 18px", borderBottom: `1px solid ${TL.hair}` }}>
-          <Caps>Ofte stilte spørsmål</Caps>
-        </div>
-        {FAQ.map((item, i) => (
           <div
-            key={item.q}
             style={{
-              padding: "14px 18px",
-              borderBottom: i < FAQ.length - 1 ? `1px solid ${TL.hair}` : "none",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 12,
+              flexWrap: "wrap",
             }}
           >
-            <div style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>{item.q}</div>
-            <div style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, marginTop: 4, lineHeight: 1.5 }}>{item.a}</div>
-          </div>
-        ))}
-      </Kort>
+            <div>
+              <span
+                style={{
+                  fontFamily: "var(--font-mono)",
+                  fontSize: 11,
+                  letterSpacing: "0.06em",
+                  textTransform: "uppercase",
+                  color: "var(--text-muted)",
+                  display: "block",
+                  marginBottom: 2,
+                }}
+              >
+                Innstillinger
+              </span>
+              <h1
+                style={{
+                  margin: 0,
+                  fontSize: 24,
+                  fontWeight: 700,
+                  letterSpacing: "-0.02em",
+                  color: "var(--text-primary)",
+                }}
+              >
+                Caddie
+              </h1>
+            </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        <div style={{ opacity: 0.45, pointerEvents: "none" }} aria-disabled="true">
-          <CTAPill icon="sparkles" full>
-            Aktiver Caddie (kommer)
-          </CTAPill>
+            <StatusPille tone="ok">Aktiv i PlayerHQ</StatusPille>
+          </div>
+          <p
+            style={{
+              margin: "8px 0 0",
+              fontSize: 13.5,
+              color: "var(--text-muted)",
+              lineHeight: 1.45,
+            }}
+          >
+            Personlig assistent som leser treningsdataene dine og foreslår neste steg for deg og coachen.
+          </p>
         </div>
-        <Link href="/portal/meg/help" style={{ textDecoration: "none", textAlign: "center" }}>
-          <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 600, color: TL.fill }}>
-            Les mer i hjelpesenteret →
-          </span>
-        </Link>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          {/* Hva Caddie gjør */}
+          <div
+            className="pa-card"
+            style={{
+              padding: 20,
+              background: "var(--surface-flat)",
+              border: "1px solid var(--border-hairline)",
+              borderRadius: "var(--radius)",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+              <span
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: "var(--radius)",
+                  background: "var(--surface-sunken)",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "var(--text-primary)",
+                  flexShrink: 0,
+                }}
+              >
+                <Sparkles size={18} />
+              </span>
+              <div>
+                <div
+                  style={{
+                    fontSize: 15,
+                    fontWeight: 600,
+                    color: "var(--text-primary)",
+                  }}
+                >
+                  Hva Caddie gjør
+                </div>
+                <div
+                  style={{
+                    fontFamily: "var(--font-mono)",
+                    fontSize: 11,
+                    color: "var(--text-muted)",
+                    marginTop: 2,
+                  }}
+                >
+                  PERSONLIG · DATADREVET · COACH-ASSISTENT
+                </div>
+              </div>
+            </div>
+
+            <ul
+              style={{
+                margin: 0,
+                padding: 0,
+                listStyle: "none",
+                display: "flex",
+                flexDirection: "column",
+                gap: 10,
+              }}
+            >
+              {FEATURES.map((f) => (
+                <li key={f} style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
+                  <Check
+                    size={14}
+                    style={{
+                      color: "var(--signal)",
+                      marginTop: 3,
+                      flexShrink: 0,
+                    }}
+                  />
+                  <span
+                    style={{
+                      fontSize: 13,
+                      color: "var(--text-primary)",
+                      lineHeight: 1.45,
+                    }}
+                  >
+                    {f}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Personvern og sikkerhet */}
+          <div
+            className="pa-card"
+            style={{
+              padding: 16,
+              background: "var(--surface-sunken)",
+              border: "1px solid var(--border-hairline)",
+              borderRadius: "var(--radius)",
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+            }}
+          >
+            <ShieldCheck size={20} style={{ color: "var(--text-muted)", flexShrink: 0 }} />
+            <div style={{ fontSize: 12.5, color: "var(--text-muted)", lineHeight: 1.4 }}>
+              Alle data pseudonymiseres i tråd med AK Golfs personverngarantier. Ingen personopplysninger deles eller lagres eksternt.
+            </div>
+          </div>
+
+          {/* Ofte stilte spørsmål */}
+          <div
+            className="pa-card"
+            style={{
+              padding: 0,
+              overflow: "hidden",
+              background: "var(--surface-flat)",
+              border: "1px solid var(--border-hairline)",
+              borderRadius: "var(--radius)",
+            }}
+          >
+            <div
+              style={{
+                padding: "12px 16px",
+                borderBottom: "1px solid var(--border-hairline)",
+                fontFamily: "var(--font-mono)",
+                fontSize: 11,
+                letterSpacing: "0.06em",
+                textTransform: "uppercase",
+                color: "var(--text-muted)",
+              }}
+            >
+              Ofte stilte spørsmål
+            </div>
+            {FAQ.map((item, i) => (
+              <div
+                key={item.q}
+                style={{
+                  padding: "14px 16px",
+                  borderBottom:
+                    i < FAQ.length - 1
+                      ? "1px solid var(--border-hairline)"
+                      : "none",
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: 13.5,
+                    fontWeight: 600,
+                    color: "var(--text-primary)",
+                  }}
+                >
+                  {item.q}
+                </div>
+                <div
+                  style={{
+                    fontSize: 12.5,
+                    color: "var(--text-muted)",
+                    marginTop: 4,
+                    lineHeight: 1.45,
+                  }}
+                >
+                  {item.a}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Handling videre */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 8 }}>
+            <Link
+              href="/portal/coach/ai"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 8,
+                height: 42,
+                borderRadius: "var(--radius)",
+                background: "var(--primary)",
+                color: "var(--text-on-primary)",
+                fontSize: 13,
+                fontWeight: 600,
+                textDecoration: "none",
+              }}
+            >
+              <Sparkles size={16} />
+              <span>Åpne Caddie</span>
+            </Link>
+
+            <Link
+              href="/portal/meg/hjelp"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 6,
+                fontSize: 12.5,
+                fontWeight: 500,
+                color: "var(--text-muted)",
+                textDecoration: "none",
+                textAlign: "center",
+                padding: "4px 0",
+              }}
+            >
+              <span>Les mer i hjelpesenteret</span>
+              <ArrowUpRight size={13} />
+            </Link>
+          </div>
+        </div>
       </div>
-    </div>
-    </V2Shell>
+    </PlayerHQSkall>
   );
 }

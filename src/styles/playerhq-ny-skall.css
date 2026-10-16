@@ -1,0 +1,17 @@
+/*
+ * PlayerHQ-skallet i nytt design (designbrevet 13.10.2026, utkast-playerhq/felles/felles.css).
+ * Mobil er uendret: topplinje med logo og bjelle, fanelinje nederst.
+ * PC fra 1024 px: sidemeny 232 px med logo, fanene med navn og Innboks med teller.
+ * Avgrenset til .pa-skall--ny, slik at forelderskallet ikke endres.
+ */
+@media (min-width:1024px){
+.pa-skall--ny .pa-skall__skinne{width:232px;gap:4px;padding:22px 12px;background:#faf8f3;border-right:1px solid #ddd9d1}
+.pa-skall--ny .pa-skall__main{margin-left:232px}
+.pa-skall--ny .phs-logo{display:flex;align-items:center;min-height:44px;margin:0 12px 20px}
+.pa-skall--ny .phs-lenke{position:relative;display:flex;align-items:center;gap:12px;min-height:44px;padding:0 12px;border-radius:8px;color:#2a2926;text-decoration:none;font:500 15px/1 var(--font-sans,"IBM Plex Sans",system-ui,sans-serif)}
+.pa-skall--ny .phs-lenke:hover{background:#f1eee8}
+.pa-skall--ny .phs-lenke[aria-current="page"]{background:#141413;color:#fff}
+.pa-skall--ny .phs-lenke:focus-visible{outline:3px solid #141413;outline-offset:2px}
+.pa-skall--ny .phs-skille{height:1px;margin:12px 12px;background:#ddd9d1}
+.pa-skall--ny .phs-teller{margin-left:auto;min-width:22px;height:22px;padding:0 7px;border-radius:11px;background:#141413;color:#fff;font:600 12px/22px var(--font-mono,"IBM Plex Mono",monospace);text-align:center}
+}

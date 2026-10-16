@@ -43,7 +43,10 @@ test("filteret slipper gjennom DataGolf ELLER troverdig myndig fødselsår", () 
   const filter = offentligSpillerFilter(I_2026);
   assert.deepEqual(filter, {
     OR: [
-      { dataGolfId: { not: null } },
+      {
+        dataGolfId: { not: null },
+        entries: { some: { tournament: { sourceOrigin: { not: "DATAGOLF" } } } },
+      },
       { birthYear: { gte: 1900, lte: 2007 } },
     ],
   });

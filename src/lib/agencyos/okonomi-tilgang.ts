@@ -10,3 +10,15 @@ import type { UserRole } from "@/generated/prisma/client";
 export function harTilgangTilOkonomi(role: UserRole): boolean {
   return role === "ADMIN";
 }
+
+/**
+ * Fjerner elementer merket `bareHeadCoach` for alle andre enn head coach.
+ * Brukes av globalt søk (API-ruta) så Økonomi og Rapporter ikke vises som treff
+ * for assistant coach.
+ */
+export function filtrerHeadCoachBare<T extends { bareHeadCoach?: true }>(
+  elementer: readonly T[],
+  role: UserRole,
+): T[] {
+  return harTilgangTilOkonomi(role) ? [...elementer] : elementer.filter((e) => !e.bareHeadCoach);
+}

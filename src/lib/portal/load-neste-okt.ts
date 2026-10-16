@@ -2,8 +2,7 @@ import "server-only";
 
 /**
  * Summary-kjeding (flytpakke 2, punkt 2.7): finner spillerens neste
- * planlagte økt på tvers av begge øktspor (TrainingSessionV2 og
- * TrainingPlanSession — Spor A/B, se v2-format.ts og session-hrefs.ts).
+ * planlagte økt på tvers av Workbench, V2 og eldre planøkter.
  * Ren datahenting; tekstformattering skjer i neste-okt-tekst.ts.
  *
  * Spiller ser ikke økter knyttet til DRAFT/REJECTED-planer (matcher workbench).
@@ -12,6 +11,10 @@ import "server-only";
 import { prisma } from "@/lib/prisma";
 import { planSessionStartHref, v2DbSessionHref } from "@/lib/portal/session-hrefs";
 import type { NesteOktInput } from "@/lib/portal/neste-okt-tekst";
+import { osloDatoOgMinutt } from "@/lib/workbench/min-calendar";
+import { tilDatoKolonne } from "@/lib/workbench/wb-map";
+import { wbScheduledAtISO } from "@/lib/portal-live/wb-live-map";
+import { liveHrefForStatus } from "@/lib/portal-live/live-route";
 
 const PLAYER_VISIBLE_PLAN = ["PENDING_PLAYER", "ACCEPTED", "ACTIVE", "PAUSED"] as const;
 
@@ -19,7 +22,9 @@ export async function loadNesteOkt(
   userId: string,
   etter: Date,
 ): Promise<{ okt: NesteOktInput; href: string }> {
-  const [v2Candidates, v1] = await Promise.all([
+  const oslo = osloDatoOgMinutt(etter);
+  const date = tilDatoKolonne(oslo.date);
+  const [v2Candidates, v1, wb] = await Promise.all([
     prisma.trainingSessionV2.findMany({
       where: { studentId: userId, startTime: { gt: etter }, status: "PLANNED" },
       orderBy: { startTime: "asc" },
@@ -44,6 +49,17 @@ export async function loadNesteOkt(
       orderBy: { scheduledAt: "asc" },
       select: { id: true, title: true, scheduledAt: true, status: true },
     }),
+    prisma.workbenchSession.findFirst({
+      where: {
+        playerId: userId, status: "PUBLISHED", hiddenByPlayer: false, needsPlayerApproval: false,
+        AND: [
+          { OR: [{ approvalStatus: null }, { approvalStatus: { not: "REJECTED" } }] },
+          { OR: [{ date: { gt: date } }, { date, startMinute: { gt: oslo.minute } }] },
+        ],
+      },
+      orderBy: [{ date: "asc" }, { startMinute: "asc" }],
+      select: { id: true, title: true, date: true, startMinute: true, status: true },
+    }),
   ]);
 
   // Skjul V2 som speiler utkast-planer (DRAFT/REJECTED).
@@ -66,6 +82,11 @@ export async function loadNesteOkt(
   );
 
   const kandidater = [
+    wb && {
+      tittel: wb.title,
+      startTime: new Date(wbScheduledAtISO(wb.date, wb.startMinute)),
+      href: liveHrefForStatus("wb", wb.status, wb.id),
+    },
     v2 && {
       tittel: v2.title,
       startTime: v2.startTime,

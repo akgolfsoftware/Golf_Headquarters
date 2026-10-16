@@ -1,0 +1,140 @@
+(() => {
+const ns = () => window.AKGolfPrecisionAthletics_7d7c29;
+const dec = (n, d = 1) => n == null ? "—" : (n < 0 ? "−" : "") + Math.abs(n).toFixed(d).replace(".", ",");
+const sg = (n) => n == null ? "—" : (n > 0.04 ? "+" : n < -0.04 ? "−" : "±") + Math.abs(n).toFixed(1).replace(".", ",");
+const hm = (m) => m == null ? "—" : m < 60 ? m + " min" : Math.floor(m / 60) + " t" + (m % 60 ? " " + (m % 60) + " min" : "");
+const toPar = (d) => d > 0 ? "+" + d : d < 0 ? "−" + Math.abs(d) : "±0";
+const brutto = (s, p) => s == null ? "—" : s + " slag (" + toPar(s - p) + ")";
+const WCtx = React.createContext({ w: 1280, cw: 1280, mob: false, pad: false, desk: true, night: false });
+const useW = () => React.useContext(WCtx);
+const toast = (t, m) => window.dispatchEvent(new CustomEvent("phq-toast", { detail: { t, m } }));
+/* Faner 28.09.2026: I dag · Plan · Stats · Meg (kilde: _shared/ia.js). Fane-id «analyse» beholdes internt; synlig navn er Stats. */
+const TABS = ((window.AK_IA || {}).phq || {}).tabs ? window.AK_IA.phq.tabs.map(({ id, label, icon, to }) => ({ id, label, icon, to })) : [{ id: "idag", label: "I dag", icon: "sun", to: "PH-01" }, { id: "plan", label: "Plan", icon: "calendar-days", to: "PH-10" }, { id: "analyse", label: "Stats", icon: "chart-no-axes-column", to: "PH-16" }, { id: "meg", label: "Meg", icon: "user", to: "PH-24" }];
+const tabOf = (m) => { const p = ((window.AK_IA || {}).plassering || {})[m && m.id]; return p ? p[0] : m && m.tab; };
+
+function Page({ children, max = 1200 }) {
+  const { mob, pad } = useW();
+  return <div style={{ padding: mob ? "20px 16px 96px" : pad ? "28px 24px 104px" : "32px 32px 104px", display: "flex", flexDirection: "column", gap: mob ? 16 : 24, maxWidth: max, width: "100%", boxSizing: "border-box", margin: "0 auto", minWidth: 0 }}>{children}</div>;
+}
+const Cols = ({ children, tpl, gap = 16, style }) => <div style={{ display: "grid", gridTemplateColumns: tpl, gap, alignItems: "start", minWidth: 0, ...style }}>{children}</div>;
+const Stack = ({ children, gap = 16, style }) => <div style={{ display: "flex", flexDirection: "column", gap, minWidth: 0, ...style }}>{children}</div>;
+const Meta = ({ children, s }) => <span style={{ font: "var(--type-meta)", letterSpacing: ".04em", color: "var(--text-muted)", fontVariantNumeric: "tabular-nums", ...s }}>{children}</span>;
+const Num = ({ children, s }) => <span style={{ font: "var(--type-num)", fontVariantNumeric: "tabular-nums", color: "var(--text-primary)", ...s }}>{children}</span>;
+
+/* Lokal reload/retry: beholder PHQ_SEL (valgt sesjon/publisering). window.PHQ_LOADFAIL[id] = vedvarende feil (fixture); ellers lastes skjermen på nytt i data-tilstand. */
+if (!document.getElementById("wb-retry-css")) { const s = document.createElement("style"); s.id = "wb-retry-css"; s.textContent = '[data-control-id$="-prov-igjen"]{min-height:44px}'; document.head.appendChild(s); }
+const retryLoad = () => { const id = document.documentElement.getAttribute("data-render-id"), R = (window.PHQ_RETRY = window.PHQ_RETRY || {}), f = window.PHQ_LOADFAIL || {}; if (f[id]) { R[id] = (R[id] || 0) + 1; window.__phqShow && window.__phqShow(id, "feil"); return false } R[id] = 0; window.__phqShow && window.__phqShow(id, "data"); return true };
+function Gate({ state, loading, error, children, onRetry, retryId }) {
+  const { LoadingState, ErrorState } = ns();
+  if (state === "laster") return <LoadingState text={loading || "Henter …"} />;
+  if (state === "feil") { const id = document.documentElement.getAttribute("data-render-id"), n = ((window.PHQ_RETRY || {})[id]) || 0; return <ErrorState {...error} text={(error && error.text || "") + (onRetry && n ? " Forsøk " + n + " feilet fortsatt. Ingenting er endret." : "")} retryControlId={retryId} onRetry={onRetry || (() => toast("Prøver igjen", "HENTER PÅ NYTT"))} />; }
+  return children;
+}
+
+/* Nattflate: én kolonne, ingen fanelinje, én fullbredde primærhandling nederst */
+function Focus({ top, children, action, max = 600 }) {
+  const { mob } = useW();
+  return <div style={{ minHeight: "100%", display: "flex", flexDirection: "column" }}>
+    <div style={{ flex: 1, width: "100%", maxWidth: max, margin: "0 auto", boxSizing: "border-box", padding: mob ? "12px 16px 16px" : "24px 24px 24px", display: "flex", flexDirection: "column", gap: 16, minWidth: 0 }}>
+      {top && <div style={{ display: "flex", alignItems: "center", gap: 8, minHeight: 56, flexWrap: "wrap" }}>{top}</div>}
+      {children}
+    </div>
+    {action && <div style={{ position: "sticky", bottom: 0, background: "var(--surface-page)", borderTop: "1px solid var(--border-hairline)", zIndex: 5 }}><div style={{ maxWidth: max, margin: "0 auto", padding: mob ? "12px 16px 16px" : "16px 24px 24px", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: 8 }}>{action}</div></div>}
+  </div>;
+}
+
+/* Navigasjonsgrammatikk: BackBar til forrige kontekst (historikk), ellers til meta.parent. Ulagrede endringer stopper navigering. */
+function Back({ meta }) {
+  const { BackBar } = ns(), { mob, pad, nav } = useW();
+  if (!nav || meta.night || (!nav.prev && !meta.parent)) return null;
+  const reg = window.PHQ_SCREENS || {}, to = reg[nav.prev || meta.parent];
+  return <div style={{ maxWidth: meta.max || 1200, margin: "0 auto", padding: mob ? "8px 12px 0" : pad ? "12px 20px 0" : "16px 28px 0", boxSizing: "border-box" }}><BackBar to={to ? to.name : "Tilbake"} onBack={nav.back} /></div>;
+}
+/* Innboks bak bjella (runde 20): én felles liste — forslag fra motoren (Godta · Avvis, spilleren godkjenner selv), meldinger fra coach, varsler. */
+const KIND = [["forslag", "Forslag"], ["endring", "Endret av coach"], ["coach", "Fra coach"], ["varsel", "Varsler"]];
+function Innboks({ open, items, setItems, onClose, go }) {
+  const { Sheet, Button } = ns();
+  const drop = (id, t, m) => { setItems((l) => l.filter((x) => x.id !== id)); toast(t, m); };
+  return <Sheet open={open} onClose={onClose} kicker={items.filter((x) => x.unread).length + " ULESTE"} title="Innboks" footer={<Button variant="secondary" fullWidth icon="arrow-right" onClick={() => { onClose(); go("PH-21"); }}>Åpne alle meldinger</Button>}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      {!items.length && <p style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-secondary)" }}>Ingenting nytt.</p>}
+      {KIND.map(([k, label]) => { const l = items.filter((x) => x.kind === k); if (!l.length) return null; return <section key={k} aria-label={label} style={{ display: "flex", flexDirection: "column" }}>
+        <Meta s={{ paddingBottom: 4 }}>{label.toUpperCase()}</Meta>
+        {l.map((x) => <div key={x.id} style={{ display: "flex", flexDirection: "column", gap: 6, padding: "12px 0", borderTop: "1px solid var(--border-hairline)", minWidth: 0 }}>
+          {x.from && <Meta s={{ color: "var(--text-primary)" }}>{x.from.toUpperCase()}</Meta>}
+          <span style={{ font: (x.unread ? "600" : "500") + " 15px/1.3 var(--font-sans)", color: "var(--text-primary)", textWrap: "pretty" }}>{x.title}</span>
+          <span style={{ font: "var(--type-body-s)", color: "var(--text-secondary)", textWrap: "pretty" }}>{x.text}</span>
+          <Meta>{x.meta}</Meta>
+          {k === "forslag" && <div style={{ display: "flex", gap: 8, flexWrap: "wrap", paddingTop: 4 }}><Button variant="secondary" icon="check" onClick={() => drop(x.id, "Forslaget er godtatt", x.from && x.from.indexOf("·") > 0 ? "LAGT INN I PLAN · " + x.from.toUpperCase() + " FÅR BESKJED" : "LAGT INN I DAGENS ØKT · KAN ANGRES I ØKTARKET")}>Godta</Button><Button variant="ghost" onClick={() => drop(x.id, "Forslaget er avvist", "FORESLÅS IKKE IGJEN DENNE UKA")}>Avvis</Button></div>}
+          {k === "endring" && <div style={{ paddingTop: 4 }}><Button variant="secondary" icon="undo-2" onClick={() => drop(x.id, "Endringen er angret", "PLANEN ER TILBAKE · ANDERS FÅR BESKJED")}>Angre</Button></div>}
+          {k === "coach" && <div style={{ paddingTop: 4 }}><Button variant="ghost" iconRight="arrow-right" onClick={() => { onClose(); go("PH-21"); }}>Les</Button></div>}
+        </div>)}
+      </section>; })}
+    </div>
+  </Sheet>;
+}
+function Shell({ meta, go, children }) {
+  const { NavRail, TabBar } = ns();
+  const { w, state } = useW();
+  const tab = tabOf(meta), focus = meta && meta.night;
+  const rail = w >= 1024 && !focus, bar = w < 1024 && !focus;
+  const onTab = (id) => { const t = TABS.find((x) => x.id === id); t && go(t.to); };
+  const groups = TABS.map((t) => ({ id: t.id, label: t.label, icon: t.icon, items: [{ id: t.id, label: t.label, icon: t.icon }] }));
+  const IA = (window.AK_IA || {}).phq || {}, FAB = window.AK_FAB || {}, F = FAB.Hurtigknapp, Bell = FAB.Bjelle;
+  const [inbox, setInbox] = React.useState(false), [items, setItems] = React.useState(() => ((window.PHQ_DATA || {}).inbox || []).slice());
+  const unread = state === "tom" ? [] : items.filter((x) => x.unread);
+  const bell = !focus && Bell && IA.bell ? <Bell count={unread.length || null} urgent={false} label={IA.bell.label} onOpen={() => setInbox(true)} /> : null;
+  const railEl = <NavRail brand={<img src="../../assets/ak-golf-logo-ink.svg" alt="AK Golf HQ" style={{ width: 28, height: 28, objectFit: "contain" }} />} groups={groups} active={tab} onSelect={onTab} footer={<ns.Avatar />} />;
+  return <div style={{ display: "flex", flexDirection: rail ? "row" : "column", height: "100vh", width: "100%", overflow: "hidden", background: "var(--surface-page)" }}>
+    {rail && <div style={{ width: 56, flex: "none", height: "100%", display: "flex", flexDirection: "column" }}><div style={{ height: 52, flex: "none", display: "grid", placeItems: "center", background: "var(--surface-flat)", borderRight: "1px solid var(--border-hairline)" }}>{bell}</div><div style={{ flex: 1, minHeight: 0, display: "flex" }}>{railEl}</div></div>}
+    {bar && <header style={{ height: 56, flex: "none", display: "flex", alignItems: "center", gap: 8, padding: "0 8px 0 16px", background: "var(--surface-flat)", borderBottom: "1px solid var(--border-hairline)", minWidth: 0 }}><img src="../../assets/logo-ak-golf-hq.svg" alt="AK Golf HQ" style={{ height: 20, display: "block", minWidth: 0 }} /><span style={{ flex: 1 }}></span>{bell}</header>}
+    <main style={{ flex: 1, minWidth: 0, minHeight: 0, overflowY: "auto", overflowX: "hidden" }}><Back meta={meta} />{children}</main>
+    {bar && <TabBar tabs={TABS} active={tab} onSelect={onTab} />}
+    {!focus && F && <F app="phq" inset={bar ? 64 : 0} onAction={(id, a) => a && a.to && go(a.to)} />}
+    {!focus && <Innboks open={inbox} items={state === "tom" ? [] : items} setItems={setItems} onClose={() => setInbox(false)} go={go} />}
+  </div>;
+}
+
+function Toaster() {
+  const { Toast } = ns();
+  const [x, setX] = React.useState(null);
+  React.useEffect(() => { const h = (e) => setX({ ...e.detail, k: Date.now() }); window.addEventListener("phq-toast", h); return () => window.removeEventListener("phq-toast", h); }, []);
+  React.useEffect(() => { if (!x) return; const t = setTimeout(() => setX(null), 2600); return () => clearTimeout(t); }, [x]);
+  if (!x) return null;
+  return <div style={{ position: "fixed", top: 16, left: 16, right: 16, display: "flex", justifyContent: "center", zIndex: 200, pointerEvents: "none" }}><div key={x.k} style={{ pointerEvents: "auto", maxWidth: "100%" }}><Toast meta={x.m}>{x.t}</Toast></div></div>;
+}
+
+function NavLayer({ pend, setPend, setDirty, undo, setUndo }) {
+  const { ConfirmDialog, UndoToast } = ns();
+  return <>
+    <ConfirmDialog open={!!pend} kind="unsaved" consequences={["Endringene er ikke lagret.", "Lagre og gå videre, forkast, eller fortsett å redigere."]} onCancel={() => setPend(null)} onSecondary={() => { window.__wbSaveHandler = null; setDirty(false); const f = pend; setPend(null); setTimeout(f, 0); }} onConfirm={async () => { const h = window.__wbSaveHandler, f = pend; if (h) { const r = await h(); if (!r || !r.ok) { setPend(null); toast("Lagringen feilet", String((r && r.error) || "").slice(0, 60).toUpperCase()); return; } window.__wbSaveHandler = null; } setDirty(false); setPend(null); if (!h) toast("Endringene er lagret", "LAGRET"); setTimeout(f, 0); }} />
+    <UndoToast open={!!undo} message={undo ? undo.message : ""} meta={undo ? undo.meta : ""} onUndo={undo && undo.fn ? () => { undo.fn(); setUndo(null); toast("Angret", "TILBAKE SOM FØR"); } : undefined} onClose={() => setUndo(null)} />
+  </>;
+}
+function Host({ init }) {
+  const [s, setS] = React.useState(init);
+  const ref = React.useRef(null), [w, setW] = React.useState(window.innerWidth);
+  React.useLayoutEffect(() => { setW(ref.current.getBoundingClientRect().width); const ro = new ResizeObserver(([e]) => setW(e.contentRect.width)); ro.observe(ref.current); return () => ro.disconnect(); }, []);
+  const [hist, setHist] = React.useState([]), [dirty, setDirty] = React.useState(false), [pend, setPend] = React.useState(null), [undo, setUndo] = React.useState(null);
+  React.useEffect(() => { const de = document.documentElement; de.setAttribute("data-render-id", s.id); de.setAttribute("data-render-state", s.state); de.setAttribute("data-render-theme", s.theme || (de.getAttribute("data-theme") || "lyst")); de.setAttribute("data-render-seq", String((Number(de.getAttribute("data-render-seq")) || 0) + 1)); });
+  React.useEffect(() => { window.__phqReady = true; window.__phqShow = (id, state, theme) => { setHist([]); setDirty(false); setUndo(null); setS((o) => ({ id: id || o.id, state: state || o.state, theme: theme || o.theme })); }; }, []);
+  React.useLayoutEffect(() => { const de = document.documentElement; de.classList.add("pa-theme-switching"); requestAnimationFrame(() => requestAnimationFrame(() => de.classList.remove("pa-theme-switching"))); document.documentElement.setAttribute("data-theme", s.theme === "natt" ? "night" : "light"); if (s.theme !== "natt") document.documentElement.removeAttribute("data-theme"); document.querySelector("main")?.scrollTo(0, 0); }, [s]);
+  const reg = window.PHQ_SCREENS || {}, meta = reg[s.id] || reg["PH-01"];
+  const nav0 = (id, push) => { if (!reg[id]) { toast(id + " er ikke tegnet ennå", "SE OVERSIKT.HTML"); return; } if (push) setHist((h) => [...h, s.id]); setS((o) => ({ ...o, id })); window.parent !== window && window.parent.postMessage({ phq: "go", id }, "*"); };
+  const guard = (fn) => dirty ? setPend(() => fn) : fn();
+  const go = (id) => guard(() => { const root = TABS.some((t) => t.to === id); if (root) setHist([]); nav0(id, !root); });
+  const back = () => guard(() => { if (hist.length) { const prev = hist[hist.length - 1]; setHist((h) => h.slice(0, -1)); nav0(prev, false); } else if (meta.parent) nav0(meta.parent, false); });
+  const nav = { prev: hist[hist.length - 1] || null, back, dirty, setDirty, undo: (message, m, fn) => setUndo({ message, meta: m, fn }) };
+  const rail = w >= 1024 && !meta.night, cw = rail ? w - 56 : w;
+  const ctx = { w, cw, mob: cw < 600, pad: cw >= 600 && cw < 1024, desk: cw >= 1024, night: s.theme === "natt", state: s.state, go, nav };
+  const C = meta.Component;
+  return <div ref={ref} style={{ width: "100%" }} data-screen-label={meta.id + " " + meta.name}>
+    <WCtx.Provider value={ctx}><Shell meta={meta} go={go}><C key={meta.id + s.state} state={s.state} go={go} nav={nav} /></Shell><Toaster /><NavLayer pend={pend} setPend={setPend} setDirty={setDirty} undo={undo} setUndo={setUndo} /></WCtx.Provider>
+  </div>;
+}
+ns.Ico = function Ico({ name, size = 14 }) { const { Icon } = ns(); return <Icon name={name} size={size} />; };
+ns.Avatar = function AvatarFoot() { const { Avatar } = ns(); return <Avatar name={window.PHQ_DATA.player.name} size={32} />; };
+
+window.PHQ = { retryLoad, dec, sg, hm, toPar, brutto, useW, WCtx, toast, TABS, Page, Cols, Stack, Meta, Num, Gate, Focus, Shell, Host, Toaster, ns };
+window.PHQ_SCREENS = window.PHQ_SCREENS || {};
+})();

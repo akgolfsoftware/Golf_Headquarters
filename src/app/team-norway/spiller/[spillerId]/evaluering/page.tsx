@@ -1,13 +1,15 @@
+import { hentTnSpillerIup, medTnSpillerData } from "@/lib/domain/tn-arbeidsflate";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentTnWorkbenchKontekst } from "@/lib/domain/tn-workbench";
-import { harTnTekniskPlanLesetilgang, krevFullForEgenTekniskPlan } from "@/lib/domain/tn-teknisk-plan";
+import { krevFullForEgenTekniskPlan } from "@/lib/domain/tn-teknisk-plan";
 import { hentTnEvalueringGrunnlag } from "@/lib/domain/tn-evaluering";
 import { TN } from "@/lib/v2/team-norway";
 import { TnShell, TnSidehode, TnSeksjon, TnSpillerFaner } from "@/components/team-norway/tn-shell";
 import { TnKort, TnPille } from "@/components/team-norway/core";
+import { LeverteIupProfil } from "@/components/iup/LeverteIupProfil";
 
 export const dynamic = "force-dynamic";
 
@@ -24,8 +26,12 @@ export default async function TeamNorwaySpillerEvalueringPage({ params }: { para
   if (!spillerNavn) notFound();
   krevFullForEgenTekniskPlan(bruker, spillerId);
 
-  const harTilgang = await harTnTekniskPlanLesetilgang(bruker, kontekst, spillerId);
-  const grunnlag = harTilgang ? await hentTnEvalueringGrunnlag(spillerId) : null;
+  const [grunnlag, iup] = await Promise.all([
+    medTnSpillerData(bruker, spillerId, () => hentTnEvalueringGrunnlag(spillerId)),
+    hentTnSpillerIup(bruker, spillerId),
+  ]);
+  if (!grunnlag) notFound();
+  const harTilgang = true;
 
   return (
     <TnShell
@@ -35,16 +41,21 @@ export default async function TeamNorwaySpillerEvalueringPage({ params }: { para
       groupId={kontekst.gruppeId}
       visTrenerflater={kontekst.erTrener}
       kanAdministrere={kontekst.kanAdministrere}
+      tilbake={{ href: "/team-norway/spillere", label: "Spillere" }}
     >
-      <TnSpillerFaner spillerId={spillerId} spillerNavn={spillerNavn} aktiv="evaluering" kanAdministrere={!kontekst.erSpiller} />
       <TnSidehode
-        overlinje="TN-24 · Evaluering"
-        tittel={spillerNavn}
-        ingress="Grunnlaget for en evaluering: nyeste tester og status på den tekniske planen."
+        overlinje={`IUP · ${spillerNavn}`}
+        tittel="Fireukerssjekk"
+        ingress="Det spilleren har levert fra PlayerHQ, og grunnlaget for neste tiltak: nyeste tester og status på den tekniske planen."
       />
+      <TnSpillerFaner spillerId={spillerId} spillerNavn={spillerNavn} aktiv="evaluering" kanAdministrere={!kontekst.erSpiller} kompakt />
+
+      <TnKort>
+        <LeverteIupProfil rader={iup ?? []} tittel="Levert fra PlayerHQ" />
+      </TnKort>
 
       {!harTilgang ? (
-        <TnKort><p style={{ margin: 0, color: TN.textSecondary }}>Du er trener i Team Norway, men ikke {spillerNavn}s personlige coach — TN-rollen alene gir ikke tilgang her.</p></TnKort>
+        <TnKort><p style={{ margin: 0, color: TN.ink700 }}>Du er trener i Team Norway, men ikke {spillerNavn}s personlige coach — TN-rollen alene gir ikke tilgang her.</p></TnKort>
       ) : (
         <>
           <TnSeksjon tittel="Nyeste tester">
@@ -52,14 +63,15 @@ export default async function TeamNorwaySpillerEvalueringPage({ params }: { para
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 {grunnlag.tester.map((t) => (
                   <TnKort key={t.id}>
-                    <p style={{ margin: 0, fontSize: TN.text.sm }}>
-                      <strong>{t.name}</strong> · {t.latestDate} · <span style={{ fontFamily: TN.font.mono }}>{t.latest}</span>
-                    </p>
+                    <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap", alignItems: "baseline" }}>
+                      <span><strong style={{ fontSize: 15 }}>{t.name}</strong><br /><span style={{ fontSize: 12.5, color: TN.ink500 }}>{t.latestDate}</span></span>
+                      <span style={{ fontFamily: TN.font.mono, fontWeight: 500, fontSize: 18, color: TN.navy900 }}>{t.latest}</span>
+                    </div>
                   </TnKort>
                 ))}
               </div>
             ) : (
-              <TnKort><p style={{ margin: 0, color: TN.textSecondary }}>Ingen registrerte testresultater ennå.</p></TnKort>
+              <TnKort><p style={{ margin: 0, color: TN.ink700 }}>Ingen registrerte testresultater ennå.</p></TnKort>
             )}
           </TnSeksjon>
 
@@ -68,27 +80,27 @@ export default async function TeamNorwaySpillerEvalueringPage({ params }: { para
               <TnKort>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
                   <div>
-                    <p style={{ margin: 0, fontWeight: TN.weight.semibold }}>{grunnlag.aktivPlan.navn}</p>
-                    <p style={{ margin: "4px 0 0", color: TN.textSecondary, fontSize: TN.text.sm }}>{grunnlag.aktivPlan.antallFullfort} av {grunnlag.aktivPlan.antallOppgaver} oppgaver fullført</p>
+                    <p style={{ margin: 0, fontWeight: 700 }}>{grunnlag.aktivPlan.navn}</p>
+                    <p style={{ margin: "4px 0 0", color: TN.ink700, fontSize: TN.text.sm }}>{grunnlag.aktivPlan.antallFullfort} av {grunnlag.aktivPlan.antallOppgaver} oppgaver fullført</p>
                   </div>
                   <TnPille tone={grunnlag.aktivPlan.status === "ACTIVE" ? "green" : "nøytral"}>{PLAN_STATUS_LABEL[grunnlag.aktivPlan.status] ?? grunnlag.aktivPlan.status}</TnPille>
                 </div>
               </TnKort>
             ) : (
-              <TnKort><p style={{ margin: 0, color: TN.textSecondary }}>Ingen teknisk plan opprettet ennå.</p></TnKort>
+              <TnKort><p style={{ margin: 0, color: TN.ink700 }}>Ingen teknisk plan opprettet ennå.</p></TnKort>
             )}
           </TnSeksjon>
 
-          <TnSeksjon tittel="Neste tiltak" forklaring="Se grunnlaget over og velg neste oppgave i den tekniske planen.">
+          <TnSeksjon tittel="Neste tiltak" forklaring="Spilleren bestemmer planen. Du kan foreslå en endring, og spilleren godtar eller avviser den.">
             {grunnlag?.nesteTiltak ? (
               <Link href={`/team-norway/spiller/${spillerId}/teknisk-plan/${grunnlag.nesteTiltak.planId}`} style={{ textDecoration: "none" }}>
                 <TnKort>
-                  <p style={{ margin: 0, fontWeight: TN.weight.semibold }}>{grunnlag.nesteTiltak.tittel}</p>
-                  <p style={{ margin: "4px 0 0", color: TN.textSecondary, fontSize: TN.text.sm }}>{grunnlag.nesteTiltak.posisjon} → Åpne i teknisk plan</p>
+                  <p style={{ margin: 0, fontWeight: 700 }}>{grunnlag.nesteTiltak.tittel}</p>
+                  <p style={{ margin: "4px 0 0", color: TN.ink700, fontSize: TN.text.sm }}>{grunnlag.nesteTiltak.posisjon} → Åpne i teknisk plan</p>
                 </TnKort>
               </Link>
             ) : (
-              <TnKort><p style={{ margin: 0, color: TN.textSecondary }}>Ingen åpne oppgaver funnet i en aktiv plan.</p></TnKort>
+              <TnKort><p style={{ margin: 0, color: TN.ink700 }}>Ingen åpne oppgaver funnet i en aktiv plan.</p></TnKort>
             )}
           </TnSeksjon>
         </>

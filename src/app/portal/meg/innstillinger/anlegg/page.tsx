@@ -1,38 +1,33 @@
 /**
- * v2 — PlayerHQ Innstillinger · Mitt treningsanlegg (retning C).
- * /portal/meg/innstillinger/anlegg
+ * PlayerHQ · Meg · Fasiliteter (/portal/meg/innstillinger/anlegg) — PH-24 i nytt design
+ * (docs/design-system/utkast-playerhq/meg.html, skjermen «Fasiliteter»).
  *
- * Spiller registrerer tilgjengelige fasiliteter og utstyr. Brukes for å
- * filtrere drill-biblioteket slik at spilleren kun ser øvelser som kan gjøres
- * med det utstyret/anlegget de faktisk har tilgang til.
- * Eksempel: Spiller med 12×12m puttinggree får aldri foreslått lag-putts på 25m.
- *
- * v2-port 17. juli 2026: auth-guard (samme allow-liste) og Prisma-oppslaget er
- * uendret — kun presentasjonslaget er byttet (InnstillingerAnleggV2 erstatter
- * FasilitetProfilForm; lagring går fortsatt via lagreFasilitetProfil).
+ * Spilleren krysser av anlegg og utstyr hen har tilgang til. Brukes for å filtrere
+ * øvelsesbanken og planforslagene. Auth-guard (samme allow-liste), oppslaget og
+ * lagringen (lagreFasilitetProfil) er uendret; bare visningen er ny (PH24Fasiliteter).
  */
-
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import type { DrillFasilitet } from "@/generated/prisma/client";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { InnstillingerAnleggV2 } from "@/components/portal/v2/InnstillingerAnleggV2";
+import { PH24Fasiliteter } from "@/components/portal/precision/PH24Fasiliteter";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Fasiliteter · PlayerHQ" };
 
 export default async function AnleggPage() {
   const user = await requirePortalUser({ kreverTilgang: "INGEN", allow: ["PLAYER", "PARENT", "COACH", "ADMIN"] });
 
-  const dbUser = await prisma.user.findUnique({
-    where: { id: user.id },
-    select: { tilgjengeligeFasiliteter: true },
-  });
+  const [dbUser, steder] = await Promise.all([
+    prisma.user.findUnique({ where: { id: user.id }, select: { tilgjengeligeFasiliteter: true } }),
+    prisma.playerFacility.findMany({ where: { userId: user.id }, select: { id: true, name: true, isIndoor: true }, orderBy: { sortOrder: "asc" } }),
+  ]);
 
   const tilgjengelig: DrillFasilitet[] = dbUser?.tilgjengeligeFasiliteter ?? [];
 
   return (
-    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <InnstillingerAnleggV2 data={{ tilgjengelig }} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <PH24Fasiliteter data={{ tilgjengelig, steder: steder.map((s) => ({ id: s.id, navn: s.name, inne: s.isIndoor })) }} />
+    </PlayerHQSkall>
   );
 }

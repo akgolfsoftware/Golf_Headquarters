@@ -1,81 +1,59 @@
 /**
- * v2 — PlayerHQ Meg · Abonnement (retning C). V2Shell leverer chrome-en
- * (IkonRail/BunnNav, aktiv «meg»), MegAbonnementV2 rendrer innholds-stacken.
+ * PlayerHQ · Meg · Abonnement (/portal/meg/abonnement) — PH-25 i nytt design
+ * (docs/design-system/utkast-playerhq/meg.html, skjermen «PH-25 Abonnement»).
  *
- * Auth + dataloader gjenbruker den ekte /portal/meg/abonnement-siden:
- * requirePortalUser + getAbonnementData (FAKTISK tier + subscription +
- * faktura-historikk). Alle avledninger (hero-tilstand, kan-oppgradere/
- * endre-kort/avbestille, gratis via pakke) er 1:1 med den ekte siden.
- * Ingen fabrikerte verdier.
+ * Bare ekte data: nivå og pakke fra getAbonnementData, betalinger fra Payment, og om det finnes
+ * et Stripe-abonnement som kan avsluttes. Avslutt går via cancelPro (Stripe før database).
  */
-
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { prisma } from "@/lib/prisma";
 import { getAbonnementData } from "@/lib/portal-abonnement/abonnement-data";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { MegAbonnementV2, type MegAbonnementData } from "@/components/portal/v2/MegAbonnementV2";
-import { TilbakeLenke } from "@/components/v2";
 import { pakkeNavn } from "@/lib/domain/abonnement";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { PH25Abonnement, type PH25Data } from "@/components/portal/precision/PH25Abonnement";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Abonnement · PlayerHQ" };
 
-function formatDato(d: Date | null): string | null {
-  if (!d) return null;
-  return d.toLocaleDateString("nb-NO", { day: "numeric", month: "long", year: "numeric" });
-}
+const OSLO = { timeZone: "Europe/Oslo" } as const;
+const LANG = new Intl.DateTimeFormat("nb-NO", { ...OSLO, day: "numeric", month: "long" });
+const DMA = new Intl.DateTimeFormat("nb-NO", { ...OSLO, day: "2-digit", month: "2-digit", year: "numeric" });
 
 export default async function AbonnementPage({
   searchParams,
 }: {
-  searchParams: Promise<{ ok?: string; cancelled?: string; avbestilt?: string }>;
+  searchParams: Promise<{ ok?: string; cancelled?: string; avbestilt?: string; fra?: string; state?: string }>;
 }) {
   const sp = await searchParams;
   const user = await requirePortalUser({ kreverTilgang: "INGEN" });
   if (user.role === "PARENT") redirect("/forelder");
   if (user.role === "GUEST") redirect("/admin/kalender");
 
-  const abo = await getAbonnementData(user.id);
+  const [abo, stripeAbo] = await Promise.all([
+    getAbonnementData(user.id),
+    prisma.subscription.findFirst({ where: { userId: user.id, stripeSubscriptionId: { not: null } }, select: { id: true } }),
+  ]);
+  const pakke = pakkeNavn(abo.monthlyCredits);
 
-  // Avledninger — 1:1 med den tidligere src/app/portal/meg/abonnement/page.tsx.
-  const harPakke = abo.monthlyCredits > 0;
-  const planNavn = pakkeNavn(abo.monthlyCredits);
-  const gratis = harPakke || !abo.erPro;
-  const betalingFeilet = abo.status === "PAST_DUE";
-  const kanOppgradere = !abo.erPro && !betalingFeilet;
-  const kanEndreKort = abo.status === "ACTIVE" || abo.status === "PAST_DUE" || abo.status === "TRIALING";
-  const kanAvbestille = abo.erPro && abo.status !== "CANCELLED";
-
-  const hero: MegAbonnementData["hero"] = kanOppgradere ? "oppgrader" : abo.erPro && !harPakke ? "status" : "gratis";
-
-  const data: MegAbonnementData = {
-    hero,
-    gratis,
-    pakkeNavn: planNavn,
-    fornyes: formatDato(abo.nesteTrekk),
-    betalingFeilet,
-    kanOppgradere,
-    kanEndreKort,
-    kanAvbestille,
-    fakturaer: abo.fakturaer.slice(0, 5).map((f) => ({
+  const data: PH25Data = {
+    niva: abo.erPro ? "Full" : "Gratis",
+    pakke: pakke ? { navn: pakke, igjen: abo.creditsRemaining, totalt: abo.monthlyCredits } : null,
+    avsluttes: abo.status === "CANCELLED" || sp.avbestilt === "1",
+    periodeSlutt: abo.nesteTrekk ? LANG.format(abo.nesteTrekk) : null,
+    kanAvsluttes: stripeAbo !== null,
+    fakturaer: abo.fakturaer.map((f) => ({
       id: f.id,
-      tittel: f.description ?? "Betaling",
-      meta: (() => {
-        const belop = `${(f.amountOre / 100).toLocaleString("nb-NO")} kr`;
-        const dato = formatDato(f.paidAt);
-        return dato ? `${dato} · ${belop}` : belop;
-      })(),
+      dato: f.paidAt ? DMA.format(f.paidAt).replaceAll("/", ".") : "—",
+      gjelder: f.description ?? (f.type === "SUBSCRIPTION" ? "Abonnement" : f.type === "BOOKING" ? "Booking" : "Betaling"),
+      belop: Math.round(f.amountOre / 100),
     })),
-    flagg: {
-      ok: sp.ok === "1",
-      avbrutt: sp.cancelled === "1",
-      avbestilt: sp.avbestilt === "1",
-    },
+    fraLaast: sp.fra === "laast" || sp.fra === "gameplan",
   };
 
   return (
-    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
-      <MegAbonnementV2 data={data} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <PH25Abonnement data={data} />
+    </PlayerHQSkall>
   );
 }

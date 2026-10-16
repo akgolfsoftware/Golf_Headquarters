@@ -1,10 +1,10 @@
 # Hovedprompt til Claude Design — hele AK Golf HQ
 
-Bruk teksten i blokken sammen med `SKILL.md`, referansene og inventaret fra denne pakken. Oppdatert 13.09.2026 for både ny utforsking og videreføring. Behold samme samtale og sammenhengende kandidat gjennom etappene. Dette er en bestillingsmal; faktisk omfang og arbeidsfase bestemmes av Anders' gjeldende beskjed.
+Bruk teksten i blokken sammen med `SKILL.md`, språk-masteren og relevant inventar. Oppdatert 02.10.2026. Behold samme samtale og sammenhengende kandidat gjennom etappene. Dette er en bestillingsmal; Anders' gjeldende beskjed, [gjeldende designautoritet](../../../../docs/design-system/design-autoritet.md) og [språk-masteren](../../../../docs/treningsplanlegging.md) styrer over eldre formuleringer i malen.
 
 ```xml
 <oppgave>
-Bruk den vedlagte ferdigheten ak-hq-design til å fullføre det bestilte designomfanget for AK Golf HQ som én sammenhengende brukeropplevelse. Ved ny start: skap Design System v0.1 fra bunnen av. Ved videreføring: les siste faktiske kandidat, bevar nyere rettinger og bruk neste ledige versjon. Lever produkt- og reisekart, designsystem, wireframes, detaljert UI, klikkbare brukerreiser og komplett overlevering for relevante roller og skjermformater.
+Bruk den vedlagte ferdigheten ak-hq-design til å fullføre det bestilte designomfanget for AK Golf HQ som én sammenhengende brukeropplevelse innen gjeldende «AK Golf Precision Athletics». Les siste faktiske kandidat, bevar nyere rettinger og bruk neste ledige versjon. Lever produkt- og reisekart, designsystem, wireframes, detaljert UI, klikkbare brukerreiser og komplett overlevering for relevante roller og skjermformater.
 
 Arbeid som en senior produktdesigner som også forstår implementering. Gjør konkrete valg som hjelper brukeren, forklar vesentlige avveininger kort, og arbeid videre gjennom hele det avklarte omfanget. En pen pilot er første etappe, ikke hele leveransen.
 </oppgave>
@@ -12,15 +12,16 @@ Arbeid som en senior produktdesigner som også forstår implementering. Gjør ko
 <kontekst>
 AK Golf HQ er en plattform for coaching og spillerutvikling i golf. Den inneholder PlayerHQ, AgencyOS, offentlig nettsted, booking og betaling, forelderflater, WANG, Team Norway, GFGK/junior, delt talent-/spillerinnsyn og personlige arbeidsflater. AgenticOS/Jarvis/AI og integrasjonsdrift finnes innenfor prosjektets større arbeidsflater.
 
-Anders ønsker en komplett app før åpen lansering med booking og betaling. Utforskede kandidater er ikke automatisk valgt. Team Norway Claw er uttrykkelig valgt for egne /team-norway/*-skjermer 13.09.2026 og skal beholde hele sin profil; les den vedlagte beslutningen eller gjeldende prosjektkilde. Tidligere designpakker er historiske arbeidsunderlag. Gamle «fasit», «må» eller «slett»-formuleringer i eksportfiler er ikke nye bestillinger.
+Anders ønsker en komplett app før åpen lansering med booking og betaling. «AK Golf Precision Athletics» er valgt designsystem for AK Golf HQ. Team Norway og WANG har egne visuelle systemer. Konkrete skjermvarianter kan velges innen disse systemene. Tidligere designpakker er historiske arbeidsunderlag. Gamle «fasit», «må» eller «slett»-formuleringer i eksportfiler er ikke nye bestillinger.
 
 Ved kontroll 11.09.2026 ble 480 sidefiler, 703 komponentfiler og 230 filer for rammer og systemtilstander registrert fra prosjektet. Bruk det vedlagte ruteinventaret som detaljert liste og kontroller det på nytt dersom repoet har endret seg. Det er ikke 480 bekreftet unike skjermdesign eller bevis på ferdig funksjon. Beslektede sider kan bruke ett felles mønster med presist dokumenterte felt og unntak.
 
-Den aktive retningen heter «Atletisk intelligens». PlayerHQ skal kunne være sportslig, oppslukende og fotografisk i riktige øyeblikk. AgencyOS skal være en rolig, presis arbeidsflate. Tid og neste handling er strukturell ryggrad. Mørk fokusmodus brukes i Live, fordypning og synlig AI-arbeid når oppgaven trenger konsentrasjon, ikke som automatisk standard overalt. Dette skal være ulike modi i ett designsystem, ikke separate stiler.
+Den aktive retningen er «AK Golf Precision Athletics». Følg prosjektets faktiske verdier, komponenter og skjermversjoner. Lyst tema er standard; nattema brukes i avtalte Live- og slagregistreringsflater. Team Norway og WANG videreføres i sine egne systemer.
 </kontekst>
 
 <underlag>
 Les SKILL.md og deretter de relevante filene:
+- `docs/treningsplanlegging.md` (eller en kontrollert kopi som `guidelines/treningsplanlegging-master.md`): eneste master for all synlig ordlyd, begreper, menyer, statuser, meldinger, tall og enheter. Eldre designtekst og avledede ordlister kan ikke overstyre den. Oppgi hvis masteren ikke er tilgjengelig i designmiljøet; gjett ikke ved språkkonflikt.
 - references/atletisk-intelligens.md: Anders' aktive smaksretning, systemprinsipper og første prøver.
 - references/produkt-og-retning.md: roller, retning og kontekst.
 - references/skjermomfang.md og assets/ruteinventar.json eller .csv: hele inventaret og hvordan dekning dokumenteres.
@@ -49,8 +50,8 @@ Ikke legg til funksjoner fordi denne listen nevner et mønster som ikke finnes i
 
 <arbeidsmate>
 1. Lag et kort kilde- og omfangskart. Knytt ruter og overlegg til roller, brukerreiser og skjermfamilier. Marker ukjent tilgang eller faglig innhold som uavklart.
-2. Lag wireframes med oppgave, hovedhandling, rekkefølge, tilbakevei og relevante tilstander. Begynn med AgencyOS Hjem og spillerreisen I dag → økt → Live → oppsummering. Forklar konkrete svakheter i eksisterende materiale uten å arve utseendet.
-3. Ved ny start etableres retning og v0.1 gjennom Hjem, spillerreisen og Analyse. Ved videreføring forbedres den eksisterende kandidaten: prioriter sammenhengende Workbench, analyse → teknisk oppgave → neste tiltak og coaching før–under–etter. Bevar valgte delomfang. Lag bare alternativer når en viktig strukturell avveining trenger sammenligning.
+2. Lag wireframes med oppgave, hovedhandling, rekkefølge, tilbakevei og relevante tilstander. Begynn med AgencyOS Cockpit og spillerreisen I dag → økt → Live → oppsummering når oppgaven gjelder hele systemet. Forklar konkrete svakheter i eksisterende materiale uten å arve utseendet.
+3. Viderefør den eksisterende Precision Athletics-kandidaten: prioriter sammenhengende Workbench, Stats → teknisk oppgave → neste tiltak og coaching før–under–etter. Bevar valgte delomfang. Lag bare alternativer når en viktig strukturell avveining trenger sammenligning.
 4. Dokumenter designverdier i tre nivåer: grunnverdi → betydning → komponent. La komponenteksempler, wireframes, UI og prototype vise samme verdier og tilstander. Bygg bare komponenter som har et ekte brukseksempel i pilotene eller nærmeste planlagte familie.
    Les faktiske tokennavn før bruk. Kontroller aktive filer, uløste referanser, hardkodede kopier og temaer. Mål faktiske egenskaper med getComputedStyle og kontroller i en isolert prøve at kildeendring slår gjennom. Ingen fallback skal skjule et oppdiktet tokennavn. Rapporter ikke en annens måling som egen kontroll.
 5. Fortsett gjennom de øvrige familiene med samme retning. Registrer mønstergjenbruk og særtilfeller. Ikke start en egen font-/fargerunde på hver side. Ikke avslutt hele bestillingen etter pilot eller komponentbrett.
@@ -62,7 +63,7 @@ Rutinevalg innenfor retningen tas selvstendig. Presenter milepæler for vurderin
 <designkrav>
 Én tydelig neste handling i konteksten. Rene leseskjermer trenger ikke en kunstig primærknapp. Ingen kvote på kort eller moduler; innholdsmengden bestemmes av oppgaven. Del komponenter, men tilpass tetthet til spiller, coach, forelder og offentlig nettsted.
 
-Følg «Atletisk intelligens»: sportslig energi og meningsbærende fotografi på utvalgte spillerøyeblikk, operativ ro og presis tetthet i coacharbeid, tid som ryggrad og mørk fokusmodus bare ved reelt fokusbehov. AgenticOS arver AgencyOS og får ikke en separat neon- eller robotidentitet. Unngå generiske SaaS-rutenett av like kort, presentasjonsmockup-geometri, overdreven glød og liten tekst som bare fungerer i et stillbilde.
+Følg den faktiske Precision Athletics-versjonen og gjeldende designautoritet. AgenticOS arver AgencyOS og får ikke en separat neon- eller robotidentitet. Unngå generiske SaaS-rutenett av like kort, presentasjonsmockup-geometri, overdreven glød og liten tekst som bare fungerer i et stillbilde.
 
 Samme objekt og data skal være konsistente gjennom reisen. Før øktstart vises planlagt varighet, ikke falsk fremdrift. Underveis vises faktisk registrering. Tidlig avslutning må ikke hevde at alle steg er fullført. Skille fullført/avbrutt fra lagret/synker/feilet.
 
@@ -72,7 +73,7 @@ Grafer bruker samme målestokk for sammenlignbare verdier. +0,20 og −0,20 skal
 
 Booking skal gjøre coach/tjeneste, varighet, sted, totalpris og neste steg forståelig. Tegn opptatt tid, avbrutt/ventende/feilet betaling, bekreftelse og retur. En simulert prototypebetaling skal aldri presenteres som en testet integrasjon.
 
-Norsk bokmål, konkrete navn på handlinger og forståelige forklaringer. Bruk syntetiske personer og treningsdata. Ingen reelle kundedata, helseopplysninger, nøkler eller betalingsdata skal inn i designunderlaget.
+Norsk bokmål etter språk-masteren i underlaget, også i knapper, tomme og feiltilstander, komponenteksempler og overlevering. Kontroller all synlig tekst mot relevant kapittel før levering og før uavklarte ord i en egen liste. Bruk syntetiske personer og treningsdata. Ingen reelle kundedata, helseopplysninger, nøkler eller betalingsdata skal inn i designunderlaget.
 </designkrav>
 
 <formater>
@@ -100,6 +101,6 @@ Skill kartlagt, wireframe, UI-utkast, prototype, vurdert, valgt for bygging, imp
 </leveranse>
 
 <start_na>
-Start med kilde-/omfangskartet og riktig arbeidsfase. Ved ny start brukes Hjem, spillerreisen og Analyse. Ved videreføring kontrolleres siste rettinger og tokenkobling før de gjenstående sammenhengende reisene fullføres. Vis faktisk arbeid og vesentlige beslutninger. Fortsett gjennom avklart omfang. Ved øktgrense: lagre ferdignivå, uferdige familier, åpne spørsmål og eksakt neste inngang, slik at samme kandidat videreføres uten ny blind start.
+Start med kilde-/omfangskartet og riktig arbeidsfase. Ved arbeid med hele systemet brukes Cockpit, spillerreisen og Stats som første prøver. Ved videreføring kontrolleres siste rettinger og tokenkobling før de gjenstående sammenhengende reisene fullføres. Vis faktisk arbeid og vesentlige beslutninger. Fortsett gjennom avklart omfang. Ved øktgrense: lagre ferdignivå, uferdige familier, åpne spørsmål og eksakt neste inngang, slik at samme kandidat videreføres uten ny blind start.
 </start_na>
 ```

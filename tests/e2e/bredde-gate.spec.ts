@@ -18,9 +18,14 @@
  *   CI=1 PLAYWRIGHT_BASE_URL=https://akgolf-hq.vercel.app
  */
 
-import { test, expect, type Page } from "@playwright/test";
+import { test, expect, type Page } from "./_test";
 import { config as loadEnv } from "dotenv";
-import { coachCredentials, playerCredentials, dismissCookieBanner } from "./_auth-helpers";
+import {
+  coachCredentials,
+  playerCredentials,
+  dismissCookieBanner,
+  loginWith as loggInn,
+} from "./_auth-helpers";
 
 loadEnv({ path: ".env.local" });
 
@@ -50,7 +55,7 @@ const AGENCYOS = [
   { navn: "Cockpit", url: "/admin/agencyos" },
   { navn: "Innboks", url: "/admin/innboks" },
   { navn: "Spillere (alle)", url: "/admin/spillere" },
-  { navn: "Turneringer", url: "/admin/tournaments" },
+  { navn: "Turneringer", url: "/admin/turnering" },
   { navn: "Bookinger", url: "/admin/bookinger" },
 ] as const;
 
@@ -78,15 +83,6 @@ const TEAM_NORWAY = [
   { navn: "TN Trenerkatalog", url: "/team-norway/apparatet" },
 ] as const;
 
-async function loggInn(page: Page, email: string, password: string): Promise<void> {
-  await page.goto("/auth/login");
-  await dismissCookieBanner(page);
-  await page.locator('input[type="email"]').fill(email);
-  await page.locator('input[type="password"]').fill(password);
-  await page.locator('button[type="submit"]').click();
-  await page.waitForURL(/\/(portal|admin|auth\/etter-innlogging)/, { timeout: 30_000 });
-  await dismissCookieBanner(page);
-}
 
 async function målBredde(
   page: Page,
@@ -95,6 +91,14 @@ async function målBredde(
   for (const skjerm of skjermer) {
     if (KJENT_OVERFLYT.includes(skjerm.url)) continue;
     await page.goto(skjerm.url, { waitUntil: "load" });
+    if (skjerm.url === "/auth/login") {
+      await expect(page.getByRole("heading", { name: "Logg inn", exact: true, level: 1 })).toBeVisible();
+      await expect(page).toHaveURL(/\/auth\/login(?:[/?].*)?$/);
+    } else {
+      await expect(page.getByRole("heading", { level: 1 }).first()).toBeVisible();
+      await expect(page).not.toHaveURL(/\/auth\/login/);
+    }
+    await expect(page.getByText("Denne siden finnes ikke", { exact: true })).toHaveCount(0);
     // La layouten sette seg (fonter, hydrering) før måling — to rAF-runder.
     await page.evaluate(
       () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))),

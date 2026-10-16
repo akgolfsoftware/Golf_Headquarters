@@ -98,3 +98,29 @@ export function planTidsrom(dager: readonly PlanDag[]) {
 export function nyPlanOktHref(dato: string, uke: number) {
   return `/portal/planlegge/workbench?${new URLSearchParams({ uke: String(uke), start: `${dato}T09:00` })}`;
 }
+
+/** Økt som ligger oppå en annen tidsatt avtale (skole, booking, turnering, test).
+ *  Heldag og overlapp mellom to økter er ikke «opptatt tid». */
+export function oktOverlapperOpptattTid(blokk: PlanBlokk, dagen: readonly PlanBlokk[]): boolean {
+  if (blokk.forslag || blokk.lag !== "OEKTER" || blokk.heldag || blokk.startMin == null) return false;
+  const slutt = blokk.sluttMin ?? blokk.startMin;
+  return dagen.some((annen) => {
+    if (annen.id === blokk.id || annen.heldag || annen.startMin == null || annen.lag === "OEKTER") return false;
+    const annenSlutt = annen.sluttMin ?? annen.startMin;
+    return blokk.startMin! < annenSlutt && annen.startMin < slutt;
+  });
+}
+
+/** Spillerens egne avtaler (Opptatt tid) som rader i Plan-uka. Privat avtale viser bare tiden. */
+export type PlanOpptatt = { id: string; dato: string; startMin: number; sluttMin: number; tittel: string };
+
+export function egneAvtalerIPlan(blokker: readonly { tittel: string | null; start: Date; slutt: Date }[]): PlanOpptatt[] {
+  return blokker.map((b, i) => {
+    const dato = OSLO_YMD_FMT.format(b.start);
+    return {
+      id: `opptatt-${i}-${b.start.getTime()}`, dato, tittel: b.tittel ?? "Privat avtale",
+      startMin: osloMinuttAvDogen(b.start),
+      sluttMin: OSLO_YMD_FMT.format(b.slutt) === dato ? osloMinuttAvDogen(b.slutt) : 1440,
+    };
+  });
+}

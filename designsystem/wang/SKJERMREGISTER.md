@@ -1,4 +1,4 @@
-# SKJERMREGISTER — alle 35 skjermer i `/team-wang`
+# SKJERMREGISTER — 35 grunnskjermer, én Golf-demo og 13 faktiske app-ruter i `/team-wang`
 
 > **Gjeldende interaktiv prototype ligger i Claude Design, ikke her.**
 > Prosjektet «WANG Toppidrett Designsystem», mappa `templates/wang-coach-demo/`.
@@ -9,7 +9,13 @@
 > Registeret under er fortsatt gyldig som **byggeunderlag** for `/team-wang`: ruter, roller,
 > tilgang og datamodell. De 35 radene er elev- og foresattflaten. Trenerflaten —
 > arbeidsbenk, oppmøte, testdag, testkø, rangering, samtykke, organisasjon og
-> helsepersonellvisning — finnes bare i prototypen.
+> helsepersonellvisning — finnes bare i prototypen. A7 kobler den implementerte Golf-demoen
+> til Claude Design-filen «Golf v1 - start og demo-reise.dc.html». Koblingen dokumenterer
+> opphav og rute, ikke faglig eller visuell godkjenning.
+>
+> APP-01–APP-13 er en teknisk kobling til rutene som faktisk finnes 14. oktober 2026. De
+> bekrefter at ruten er bygget og gir riktig rolleavgrensning i registeret. De er ikke nye
+> design-ID-er og betyr ikke at ruten er visuelt godkjent mot den 59-skjermers prototypen.
 
 Én rad per skjerm. Sortert etter status: **bygget** → **kan bygges nå** → **venter på datamodell**
 → **venter på beslutning**. Innenfor hver gruppe i skjerm-ID-rekkefølge.
@@ -29,6 +35,25 @@ Alle skjermer er tegnet i **mobil 390 og desktop 1280**.
 | A3 | Årsplan | `skjermer/a3-arsplan.html` | `/team-wang?fane=trening` | Åpen, Elev, Foresatt, Trener | Suksess, laster, tom, feil | 390 · 1280 | Bygget |
 | A4 | Periode | `skjermer/a4-periode.html` | `/team-wang?fane=trening` | Åpen, Elev, Foresatt, Trener | Suksess, laster, tom, feil | 390 · 1280 | Bygget |
 | A6 | Uke | `skjermer/a6-uke.html` | `/team-wang?fane=kalender` | Åpen, Elev, Foresatt, Trener | Suksess, laster, tom, feil | 390 · 1280 | Bygget · «i dag» er hardkodet |
+| A7 | Golf-demo · sportssjef | Claude Design: `Golf v1 - start og demo-reise.dc.html` | `/team-wang/demo` | Åpen demo | Suksess, laster, tom, feil, økt-preview | 390 · 1280 | Bygget · syntetiske data · ikke faglig godkjent |
+
+## Faktiske app-ruter — teknisk koblet 14. oktober 2026
+
+| ID | Navn | Designfil | Foreslått rute | Roller | Tilstander kontrollert | Bredder | Status |
+|---|---|---|---|---|---|---|---|
+| APP-01 | Rollebasert startside | App-rute · visuell kobling gjenstår | `/team-wang/app` | Alle innloggede WANG-roller | Uinnlogget, uten profil, rolleinnhold | 390 · 1280 | Bygget · innlogget ende-til-ende-test gjenstår |
+| APP-02 | Separat WANG-innlogging | App-rute · visuell kobling gjenstår | `/team-wang/app/logg-inn` | Åpen | Skjema, feil, returadresse | 390 · 1280 | Bygget |
+| APP-03 | Fiktive testprofiler | App-rute · visuell kobling gjenstår | `/team-wang/app/testprofiler` | Sentral admin | Ingen tilgang, profiloversikt | 390 · 1280 | Bygget · oppretter ingen konto |
+| APP-04 | Rolleavgrenset Workbench | App-rute · visuell kobling gjenstår | `/team-wang/app/workbench` | Sportssjef, Trener | Ingen tilgang, tom, planstruktur | 390 · 1280 | Bygget · skriveflyt ikke åpnet |
+| APP-05 | Skoleledelsens kalender | App-rute · visuell kobling gjenstår | `/team-wang/app/kalender` | Skoleleder, Rektor, Toppidrettssjef | Ingen tilgang, tom, hendelser | 390 · 1280 | Bygget · elevspesifikke hendelser utelatt |
+| APP-06 | Rolleavgrenset utøverliste | App-rute · visuell kobling gjenstår | `/team-wang/app/utovere` | Skoleledelse, Sportssjef, Trener | Ingen tilgang, tom, liste, helsevarsel | 390 · 1280 | Bygget · minste nødvendige data |
+| APP-07 | Rolleavgrenset utøverprofil | App-rute · visuell kobling gjenstår | `/team-wang/app/utovere/[elevId]` | Skoleledelse, Sportssjef, Trener | Ikke funnet, uten tilgang, tom, uke | 390 · 1280 | Bygget · kalender og konkurranser leses |
+| APP-08 | Skrivebeskyttet meldingsoversikt | App-rute · visuell kobling gjenstår | `/team-wang/app/meldinger` | Godkjente samtaledeltakere | Ingen tilgang, tom, liste | 390 · 1280 | Bygget · ingen sending eller e-post |
+| APP-09 | Skrivebeskyttet samtaledetalj | App-rute · visuell kobling gjenstår | `/team-wang/app/meldinger/[threadId]` | Godkjente samtaledeltakere | Ikke funnet, uten tilgang, tom, meldinger | 390 · 1280 | Bygget · ingen svar eller sletting |
+| APP-10 | Trenerens testoversikt | App-rute · visuell kobling gjenstår | `/team-wang/coach/tester` | Trener | Rollevern, oversikt | 390 · 1280 | Bygget eldre WANG-flate · samordning gjenstår |
+| APP-11 | Trenerens turneringsdetalj | App-rute · visuell kobling gjenstår | `/team-wang/coach/turneringer/[elevId]` | Trener | Rollevern, detalj | 390 · 1280 | Bygget eldre WANG-flate · samordning gjenstår |
+| APP-12 | Fiktiv rolleforhåndsvisning | App-rute · kontrollert i produksjon | `/team-wang/demo/roller` | Åpen demo | Alle ti roller, fokus, kontrast, konsoll | 390 · 1280 | Bygget · produksjonskontroll bestått |
+| APP-13 | Intern skjermoversikt | App-rute · ikke brukerflate | `/team-wang/skjermer` | Intern | Register | Desktop | Bygget · intern arbeidsflate |
 
 ## Kan bygges nå — modellen finnes
 
@@ -81,11 +106,12 @@ Alle skjermer er tegnet i **mobil 390 og desktop 1280**.
 
 | Status | Antall |
 |---|---|
-| Bygget | 5 |
+| Bygget | 6 |
+| Faktiske app-ruter | 13 |
 | Kan bygges nå | 9 |
 | Venter på datamodell | 19 |
 | Venter på beslutning | 2 |
-| **Sum** | **35** |
+| **Sum registerrader** | **49** |
 
 De ni «kan bygges nå» er den første porteringsbølgen. `B3` og `C5` henger sammen: bygg
 kildelinje-komponenten én gang (`PORTING.md` §3), så treffer den fem skjermer.

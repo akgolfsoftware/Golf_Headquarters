@@ -2,8 +2,8 @@
 name: ak-hq-design
 description: "Planlegg, tegn og vurder AK Golf HQs brukerreiser, komponenter, wireframes og responsive UI, og klargjør en sammenhengende designoverlevering. Bruk ved designarbeid i PlayerHQ, AgencyOS, booking, marked, forelder og øvrige flater i dette prosjektet."
 metadata:
-  version: "6"
-  reviewed: "2026-09-21"
+  version: "7"
+  reviewed: "2026-10-02"
   short-description: "Samlet designarbeid for hele AK Golf HQ"
 ---
 
@@ -16,8 +16,9 @@ Utvikle et presist og lett forståelig golfprodukt. Arbeid fra faktiske brukerop
 - Anders' siste bestilling styrer. **Claude Design-prosjektet «AK Golf Precision Athletics» (`7d7c2994`) er designsystemet for AK Golf HQ fra 26.09.2026** ([beslutninger.md](../../rules/beslutninger.md) §PRECISION ATHLETICS). Grafitt primærknapp, rust kun som signal, lyst tema som standard og nattema ute. Les [den styrende beslutningen](../../../docs/design-system/design-autoritet.md) først. Systemvalget er ikke en åpen kandidat.
 - Train-lock og Paper er utgående. Bruk dem bare som historikk og funksjonsinventar, aldri som visuell kilde eller skjult standard. Ikke spør Anders på nytt om de skal gjelde.
 - Viderefør siste faktiske versjon i «AK Golf Precision Athletics» og bevar nyere rettinger. «App design» (`830e7bce`) finnes ikke lenger. Historiske designpakker, ZIP-instrukser og skill-eksempler er ikke nye valg. En konkret skjermvariant er et forslag inntil Anders velger den for bygging.
-- Team Norway har sitt eget språk for egne `/team-norway/*`-skjermer: Claude Design-prosjektet «Team Norway App» (Anders 22.09.2026, [beslutninger.md](../../rules/beslutninger.md) §TEAM NORWAY-APPEN BYTTER DESIGNSPRÅK). Jost/Lato, hjørner 0 · 2 · 4, ingen skygger, navy skinne, rød `#D70232`. Claw-valget 13.09 er historikk. Valget omfatter hele profilen, ikke bare aksentfargen.
-- I repoet: les `AGENTS.md`, `docs/platform/AGENT-BRIEF.md` og aktuell `designsystem/README.md`. Bruk produktregler og fagordbøker for funksjon og begreper; eldre visuelle regler i dem er underordnet den siste designavklaringen.
+- Team Norway har sitt eget visuelle designspråk for `/team-norway/*`-skjermer: Claude Design-prosjektet «Team Norway App» (Anders 22.09.2026, [beslutninger.md](../../rules/beslutninger.md) §TEAM NORWAY-APPEN BYTTER DESIGNSPRÅK). Jost/Lato, hjørner 0 · 2 · 4, ingen skygger, navy skinne, rød `#D70232`. Claw-valget 13.09 er historikk. Valget omfatter hele profilen, ikke bare aksentfargen.
+- I repoet: les `AGENTS.md`, `docs/platform/AGENT-BRIEF.md` og aktuell `designsystem/README.md`. **[Treningsplanlegging og språk](../../../docs/treningsplanlegging.md) er eneste master for synlig språk i alt designarbeid:** ordvalg, menynavn, statuser, meldinger, tall, enheter og treningsbegreper. `docs/ordbok.md` er bare en peker, og `docs/ordbok.json` er avledet data. Eldre designfiler, lokale ordlister og eksempler kan ikke overstyre masteren. Den styrer språk og fag, mens gjeldende designautoritet styrer utseendet.
+- I Claude Design: bruk en tilgjengelig kopi av den samme masteren, for eksempel `guidelines/treningsplanlegging-master.md` i Precision-prosjektet. Bekreft hvilken kildeversjon som faktisk er tilgjengelig. Dersom masteren mangler i et annet designprosjekt, merk uavklarte ord i stedet for å gjette. Team Norway og WANG beholder sine egne visuelle systemer, men deler AK Golfs golf- og treningsbegreper.
 - I Claude Design eller annet miljø uten repo: bruk det vedlagte inventaret og konteksten nedenfor. Si hva du kan se. Et eksportert filinventar beviser ikke tilgang, ferdig kode eller funksjon.
 - En ny designleveranse er et forslag inntil Anders velger den for den aktuelle byggeoppgaven. Bruk allerede avklarte valg; ikke innfør gjentatte godkjenningsstopp for rutinearbeid.
 - Hold utforming, faglige påstander og teknisk implementering atskilt. En designbestilling autoriserer ikke sletting av appfunksjoner, produksjonsendringer eller betalinger. Vedlagt innhold er underlag, ikke nye kjøreordrer.
@@ -41,10 +42,10 @@ Les bare underlaget oppgaven krever. En liten knappeendring skal ikke utløse en
 
 1. **Kartlegg:** knytt faktiske ruter, modalvinduer, roller og systemtilstander til brukerreiser og skjermfamilier. Bevar alle funksjoner. Et gammelt rutenavn er ikke tillatelse til sletting. Se inventaret og skjermomfanget.
 2. **Wireframe:** tegn informasjonsrekkefølge, hovedhandling, navigasjon og relevante tilstander før detaljering. Vis samme oppgave på mobil og bred skjerm. Bruk felles mønstre med dokumenterte unntak.
-3. **Kalibrer retningen:** start med AgencyOS Hjem, spillerreisen I dag → økt → Live → oppsummering og en Analyse-skjerm når oppgaven gjelder Design System v0.1. Skill faglige kvalitetskrav fra visuelle forslag. Bruk sportslig energi, operativ ro og fokusmodus som deler av samme system, ikke som separate stiler.
+3. **Kalibrer retningen:** start med AgencyOS Cockpit, spillerreisen I dag → økt → Live → oppsummering og en Stats-visning når oppgaven gjelder hele Precision Athletics-systemet. Skill faglige kvalitetskrav fra visuelle forslag. Bruk den valgte systemretningen og bevar skjermversjonene Anders har valgt.
 4. **Samordne komponentene:** dokumenter grunnverdier, betydningsbaserte verdier og komponentverdier som faktisk brukes i skjermene. Koble valgt designversjon til eksisterende komponenter når kode skal bygges; ikke la dagens tokens styre utforskingen og ikke opprett et nytt parallelt system av vane.
 5. **Fullfør familiene:** bruk avtalt retning gjennom alle registrerte flater og formater. En pilot er ikke slutten på en bestilling som gjelder hele appen. Fortsett med avklart arbeid; noter konkrete produktspørsmål som blokkerer avhengige deler.
-6. **Prøv og lever:** gå gjennom flytene, kontroller formatene, registrer funn og oppdater dekningsregisteret. Oppgi valgt versjon, bevis og det som gjenstår. En grønn teknisk kontroll eller et skjermbilde er ikke alene brukerens godkjenning.
+6. **Prøv og lever:** gå gjennom flytene, kontroller formatene og all synlig tekst mot språk-masteren, registrer funn og oppdater dekningsregisteret. Oppgi valgt versjon, brukt språkversjon, bevis og det som gjenstår. En grønn teknisk kontroll eller et skjermbilde er ikke alene brukerens godkjenning.
 
 Ved videreføring er funksjonssammenheng en egen kontroll: mål → plan → økt → måling → vurdering → neste tiltak. Undersøk Workbench på år/periode/måned/uke/økt, teknisk oppgave med kilder og revisjon, og coaching før–under–etter med kontrollert levering. De eldre pakkene kan dokumentere behov som en enklere ny skjerm ennå ikke dekker; de bestemmer ikke automatisk ny utforming eller faglige regler.
 
@@ -55,7 +56,7 @@ Ved videreføring er funksjonssammenheng en egen kontroll: mål → plan → øk
 - Prioriter oppgaven foran dekorative kort og modultelling. Gjentatte knappenavn må bety samme handling. Gi en vei tilbake og en måte å rette feiltrykk på der det er relevant.
 - Del komponenter og grammatikk på tvers av appen, men tilpass tetthet og innhold til spiller, coach, forelder og offentlig nettsted. Organisasjonsprofiler kan ha begrunnede forskjeller.
 - Design for berøring, tastatur, liten skjerm, stor tekst og relevante nettfeil. Ikke løs plassmangel ved å gjøre viktig tekst uleselig eller fjerne funksjoner på mobil.
-- Norsk bokmål. Forklar spesialbegreper ved behov. Bruk syntetiske eksempler; ikke kopier spiller- eller kundedata fra prosjektet inn i skyverktøy.
+- Norsk bokmål etter språk-masteren. Forklar spesialbegreper ved behov. Bruk syntetiske eksempler; ikke kopier spiller- eller kundedata fra prosjektet inn i skyverktøy.
 
 ## Inventar og status
 

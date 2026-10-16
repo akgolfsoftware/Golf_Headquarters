@@ -42,7 +42,7 @@ test("norge-mandag-sync — herdet stegkjøring", async (t) => {
   });
   t.mock.module("@/lib/turneringer/link-public-players", {
     namedExports: {
-      linkPublicPlayersByExactName: async () => ({ linked: 1, scannedUsers: 30 }),
+      linkPublicPlayersByExactName: async () => ({ linked: 0, scannedUsers: 30, skippedUnverifiedIdentity: 1 }),
       backfillTournamentResultsForLinkedUsers: async () => ({ mirrored: 3 }),
     },
   });
@@ -81,7 +81,7 @@ test("norge-mandag-sync — herdet stegkjøring", async (t) => {
     assert.equal(r.feil.length, 1);
     assert.match(r.feil[0], /GolfBox timeout/);
     // Steget etter det feilende kjørte likevel.
-    assert.deepEqual(r.steg.link, { ok: true, resultat: { linked: 1, scannedUsers: 30 } });
+    assert.deepEqual(r.steg.link, { ok: true, resultat: { linked: 0, scannedUsers: 30, unverifiedNameCandidates: 1 } });
     assert.deepEqual(r.steg.backfill, { ok: true, resultat: { mirrored: 3 } });
     assert.deepEqual(r.steg.dedupe, { ok: true, resultat: { mergedGroups: 0, fuzzyLeft: 2 } });
     assert.equal(r.steg.golfbox.ok, false);

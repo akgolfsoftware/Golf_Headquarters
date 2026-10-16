@@ -1,3 +1,4 @@
+// FO02BarnDetalj — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
 // Read-only barn-profil for forelder — v2-port 16. juli 2026.
 // V2Shell (FORELDER_NAV) + ForelderBarnDetaljV2 erstatter den rå
 // Tailwind-presentasjonen; auth (kun PARENT), assertBarnTilhorerForelder,
@@ -10,7 +11,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { assertBarnTilhorerForelder, alderFraFodselsdato } from "@/lib/forelder";
 import { prisma } from "@/lib/prisma";
 import { startOfWeek, endOfWeek } from "@/lib/uke-helpers";
-import { V2Shell, FORELDER_NAV, FORELDER_MER } from "@/components/v2/shell";
+import { ForelderSkall } from "@/components/precision/ForelderSkall";
 import {
   ForelderBarnDetaljV2,
   type BarnDetaljTab,
@@ -295,14 +296,10 @@ export default async function BarnProfil({
   };
 
   return (
-    <V2Shell
-      bredde="kolonne"
-      aktiv="barn"
-      nav={FORELDER_NAV} mer={FORELDER_MER}
-      navn={user.name}
-      avatarUrl={user.avatarUrl}
-    >
+        <ForelderSkall>
+      <div className="pa-side">
       <ForelderBarnDetaljV2 data={data} />
-    </V2Shell>
+          </div>
+    </ForelderSkall>
   );
 }

@@ -19,6 +19,11 @@ describe("workbenchRedirectForTrenPath", () => {
     assert.equal(workbenchRedirectForTrenPath("/portal/tren/teknisk-plan/abc"), null);
   });
 
+  it("keeps fys-plan (PH-26) — dedicated Precision screen", () => {
+    assert.equal(workbenchRedirectForTrenPath("/portal/tren/fys-plan"), null);
+    assert.equal(workbenchRedirectForTrenPath("/portal/tren/fys-plan/abc"), null);
+  });
+
   it("keeps the v2 base routes for tester and turneringer (ferdigbygde skjermer)", () => {
     assert.equal(workbenchRedirectForTrenPath("/portal/tren/tester"), null);
     assert.equal(workbenchRedirectForTrenPath("/portal/tren/tester/"), null);

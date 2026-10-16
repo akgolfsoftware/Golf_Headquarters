@@ -1,0 +1,284 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AgencyOS Jarvis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="felles/felles.css">
+<link rel="stylesheet" href="felles/agencyos.css">
+<style>
+/* ---------- Pakke 8: AG-19 Jarvis, AG-A08 forslag, AG-A05 datakvalitet ---------- */
+.skjermvalg button{font-size:13px;min-height:36px;padding:0 10px}
+.jarvis-hode{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--r3);align-items:center}
+.jarvis-ikon{width:48px;height:48px;border-radius:12px;background:var(--graphite-900);color:#fff;display:grid;place-items:center}
+.jarvis-ikon .ikon{width:24px;height:24px}
+.forslag-chips{display:flex;flex-wrap:wrap;gap:8px}
+.forslag-chips button{min-height:44px;padding:8px 14px;border:1px solid var(--sand-300);border-radius:12px;background:var(--sand-100);font:500 14px/1.3 var(--sans);color:var(--graphite-900);cursor:pointer;text-align:left}
+.samtale{display:grid;gap:var(--r3)}
+.boble-meg{justify-self:end;max-width:84%;padding:10px 14px;border-radius:16px 16px 4px 16px;background:var(--graphite-900);color:#fff;font-size:15px;line-height:1.5}
+.svar{display:grid;gap:var(--r3);padding:14px 16px;border-radius:16px 16px 16px 4px;background:var(--sand-100);border:1px solid var(--sand-300);font-size:15px;line-height:1.55}
+.svar-topp{display:flex;align-items:center;gap:8px;font:600 14px/1 var(--sans)}
+.svar-topp .jarvis-ikon{width:28px;height:28px;border-radius:8px}
+.svar-topp .jarvis-ikon .ikon{width:16px;height:16px}
+.ring-rad{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--r3);align-items:center;padding:10px 12px;border-radius:10px;background:var(--white);border:1px solid var(--sand-300)}
+.ring-rad b{display:block;font:600 15px/1.3 var(--sans)}
+.kilder{display:grid;gap:4px;margin:0;padding:10px 0 0;border-top:1px solid var(--sand-300);list-style:none;font-size:13px;color:var(--graphite-600)}
+.utkast-kort{display:grid;gap:8px;padding:12px 14px;border-radius:10px;background:var(--white);border:1px dashed var(--graphite-500)}
+.utkast-kort .hode{font:600 13px/1.3 var(--sans);color:var(--graphite-800)}
+.skrivefelt{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--r2);align-items:end;padding-top:var(--r3);border-top:1px solid var(--sand-300)}
+.skrivefelt textarea{min-height:48px;max-height:140px;resize:none;padding:12px;border:1px solid var(--graphite-500);border-radius:12px;font:400 16px/1.4 var(--sans);width:100%;color:var(--graphite-900);background:var(--white)}
+.ikonknapp{width:48px;height:48px;border-radius:12px;border:0;background:var(--graphite-900);display:grid;place-items:center;cursor:pointer;color:#fff}
+.skriver{display:inline-flex;gap:5px;padding:14px 16px;border-radius:16px;background:var(--sand-100);justify-self:start}
+.skriver i{width:7px;height:7px;border-radius:50%;background:var(--graphite-600);animation:prikk 1.2s infinite}
+.skriver i:nth-child(2){animation-delay:.15s} .skriver i:nth-child(3){animation-delay:.3s}
+@keyframes prikk{0%,60%,100%{opacity:.25}30%{opacity:1}}
+.personvern{display:flex;gap:8px;align-items:flex-start;font-size:13px;color:var(--graphite-600)}
+.personvern .ikon{width:16px;height:16px;margin-top:1px;flex:none}
+
+/* Forslag */
+.fs{display:grid;gap:var(--r3);padding:14px 16px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white)}
+.fs.ny{border:2px solid var(--graphite-900)}
+.fs-topp{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--r3);align-items:start}
+.fs-topp b{display:block;font:600 16px/1.3 var(--sans)}
+.konsekvens{display:flex;gap:8px;align-items:flex-start;font-size:14px;color:var(--graphite-800)}
+.konsekvens .ikon{width:18px;height:18px;margin-top:2px;color:var(--graphite-600);flex:none}
+.okt-endring{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;align-items:center}
+.okt-endring .okt.mini{grid-template-columns:1fr}
+.okt-endring .okt.mini img{display:none}
+.okt-endring .okt.mini .okt-tekst{padding:8px 10px;gap:2px}
+.okt-endring .okt-tid{font-size:17px}
+.okt-endring .navn{font-size:13.5px!important}
+.okt-endring .gml{opacity:.55}
+.okt-endring .gml .okt-tid{text-decoration:line-through}
+.status-ord{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:999px;font:600 12px/1 var(--sans);background:var(--sand-150);color:var(--graphite-800)}
+
+/* Datakvalitet */
+.import{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--r3);align-items:center;padding:10px 0;border-bottom:1px solid var(--sand-300)}
+.import:last-child{border-bottom:0}
+.import b{display:block;font:600 15px/1.3 var(--sans)}
+.prikk{width:10px;height:10px;border-radius:50%}
+.prikk.ok{background:var(--green-700)} .prikk.vent{background:var(--amber-700)} .prikk.feil{background:#8a2a1c}
+.dq-sak{display:grid;gap:var(--r3);padding:14px 16px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white)}
+.dq-sak b.n{font:600 16px/1.3 var(--sans)}
+.dublett{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--r2)}
+.dublett div{display:grid;gap:2px;padding:10px 12px;border-radius:10px;background:var(--sand-100);font-size:13.5px}
+.dublett b{font:600 14px/1.3 var(--sans)}
+
+.jarvis-grid{display:grid;gap:var(--r5)}
+@container (min-width:900px){
+  .jarvis-grid{grid-template-columns:minmax(0,1fr) 300px;gap:var(--r6);align-items:start}
+  .jarvis-grid > aside{position:sticky;top:24px;display:grid;gap:var(--r4)}
+}
+</style>
+
+<div class="ytre">
+  <div class="hode">
+    <span class="meta-s">AgencyOS · pakke 8 · AG-19, AG-A08, AG-A05 · utkast 1 · 15.10.2026</span>
+    <h1>Jarvis og forslag</h1>
+    <p>Tre skjermer i én fil: Jarvis-samtalen fra hurtigknappen, forslagene fra Caddie og motoren med kilde og konsekvens, og datakvaliteten med import, kontroll, dubletter og manglende kilder. Coach Anders Kristiansen. Mandag 5. oktober kl. 08:20.</p>
+  </div>
+  <div class="kontroller">
+    <div class="velger skjermvalg" role="group" aria-label="Skjerm">
+      <button type="button" aria-pressed="true" data-skjerm="jarvis">AG-19 Jarvis</button>
+      <button type="button" aria-pressed="false" data-skjerm="forslag">AG-A08 Forslag</button>
+      <button type="button" aria-pressed="false" data-skjerm="data">AG-A05 Datakvalitet</button>
+    </div>
+  </div>
+  <div class="kontroller">
+    <div class="velger" role="group" aria-label="Bredde"><button type="button" aria-pressed="true" data-bredde="mob">Mobil</button><button type="button" aria-pressed="false" data-bredde="pc">PC</button></div>
+    <div class="velger" role="group" aria-label="Tilstand"><button type="button" aria-pressed="true" data-tilstand="data">Med data</button><button type="button" aria-pressed="false" data-tilstand="tom">Tom</button><button type="button" aria-pressed="false" data-tilstand="laster">Laster</button><button type="button" aria-pressed="false" data-tilstand="feil">Feil</button></div>
+  </div>
+  <div class="scene"><div class="ramme mob" id="ramme"></div></div>
+  <div class="notater">
+    <div class="endringer">
+      <span class="meta-s">Hva som er nytt</span>
+      <ul>
+        <li><b>Jarvis er en egen side</b> fra hurtigknappen «Spør Jarvis». Den står ikke i Mer.</li>
+        <li><b>Svarene har kilder</b> og ender i noe du kan gjøre: et utkast til melding, en økt i Workbench. Jarvis sender aldri. Du trykker Send.</li>
+        <li><b>Forslag</b> fra Caddie og fra motoren står med avsender, kilde og hva som endres. Godkjenn · Rediger · Avvis, og Angre etterpå.</li>
+        <li><b>Datakvalitet:</b> importene med siste kjøring, data som må kontrolleres, dubletter som kan slås sammen, og det som mangler kilde.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Reglene som er fulgt</span>
+      <ul>
+        <li>Jarvis forbereder og sender ingenting. Alt som forlater huset krever coachens trykk.</li>
+        <li>Statusord for forslag: Forslag · Godkjent · Kjører · Utført · Feilet (masteren §4.3).</li>
+        <li>Alt Jarvis påstår om en spiller har måling, dato og kilde. Estimat er merket.</li>
+        <li>Ingen rust på disse skjermene. Manglende verdi «—». Ingen sidelengs rulling i 390 og 360 px.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Åpent hos Anders</span>
+      <ul>
+        <li><b>V1:</b> utkastet kaller coachens assistent Jarvis og spillerens Caddie. Ikke avgjort.</li>
+        <li><b>Navn i Jarvis:</b> Jarvis bruker navn fra din egen e-post, kalender og stall. Det er dine egne data, men om navn skal tas ut også her, er ikke avgjort.</li>
+        <li><b>«Slå sammen» og «Merge»</b> brukes om samme handling. Utkastet bruker «Slå sammen».</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ================= AG-19 Jarvis ================= -->
+<template id="jarvis">
+<div class="app" data-fane="cockpit">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div class="jarvis-hode"><span class="jarvis-ikon"><svg class="ikon" viewBox="0 0 24 24"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/></svg></span><div><div class="dato">Fra hurtigknappen</div><h1 class="tittel" style="margin:0">Jarvis</h1></div></div>
+    </div>
+    <div class="jarvis-grid">
+      <div class="samtale" data-samtale>
+        <div class="forslag-chips" data-chips><button type="button">Hvem bør jeg snakke med i dag?</button><button type="button">Oppsummer uka til WANG Toppidrett</button><button type="button">Hvilke e-poster venter på svar?</button></div>
+        <div class="boble-meg">Hvem bør jeg snakke med i dag?</div>
+        <div class="svar">
+          <div class="svar-topp"><span class="jarvis-ikon"><svg class="ikon" viewBox="0 0 24 24"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/></svg></span>Jarvis</div>
+          <p>Tre spillere, i denne rekkefølgen:</p>
+          <div class="ring-rad"><span class="avatar liten">IL</span><span><b>Ida Lie</b><span class="kilde">Spørsmål ubesvart i 26 t · 54 % etterlevelse</span></span><button type="button" class="knapp sek" data-utkast="ida">Utkast</button></div>
+          <div class="ring-rad"><span class="avatar liten">MS</span><span><b>Mia Strand</b><span class="kilde">Ingen økt siden torsdag · time 17:30 i dag</span></span><button type="button" class="knapp sek">Ta det i timen</button></div>
+          <div class="ring-rad"><span class="avatar liten">SM</span><span><b>Sander Moe</b><span class="kilde">Over 130 % to uker · forslag om lettere uke venter</span></span><button type="button" class="knapp sek">Se forslaget</button></div>
+          <div class="utkast-kort" data-utkast-kort hidden>
+            <span class="hode">Utkast til Ida · ikke sendt</span>
+            <p>Hei Ida! Ta nærspill og putting under tak i morgen: simulatoren er ledig 16:00–17:00. Samme øvelser som i planen. Si fra om det ikke passer.</p>
+            <div class="knapper"><button type="button" class="knapp pri" data-send>Send til Ida</button><button type="button" class="knapp sek">Rediger</button></div>
+          </div>
+          <ul class="kilder"><li>Innboks, oppdatert 08:18</li><li>Etterlevelse uke 37–40</li><li>Kalender i dag</li></ul>
+        </div>
+        <div class="skrivefelt"><textarea id="j-felt" rows="1" placeholder="Spør Jarvis" aria-label="Spør Jarvis"></textarea><button type="button" class="ikonknapp" aria-label="Send" data-spor><svg class="ikon" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></svg></button></div>
+      </div>
+      <aside>
+        <div class="kort dempet">
+          <b class="undertittel">Jarvis sender aldri</b>
+          <p class="forklar">Jarvis leser innboksen, kalenderen, stallen og Notion, og lager utkast. Ingenting går ut før du trykker Send.</p>
+        </div>
+        <div class="kort dempet">
+          <b class="undertittel">Jarvis kan</b>
+          <p class="forklar">Lage utkast til meldinger og e-post, foreslå økter i Workbench, oppsummere en spiller eller en gruppe, og finne saker i Innboks.</p>
+        </div>
+      </aside>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= AG-A08 Forslag ================= -->
+<template id="forslag">
+<div class="app" data-fane="innboks">
+  <main class="innhold smal">
+    <div class="topp" data-behold><div><div class="dato">Innboks · godkjenn</div><h1 class="tittel">Forslag</h1></div></div>
+    <div class="hoved"><strong data-ant>3</strong><span class="forklar">forslag venter på deg</span></div>
+    <div class="seksjon" data-liste>
+      <article class="fs ny">
+        <div class="fs-topp"><span class="avatar liten">SM</span><span><b>Lettere uke for Sander Moe</b><span class="kilde">Motoren · 06:00</span></span><span class="status-ord" data-status>Forslag</span></div>
+        <p class="forklar">Gjennomført tid er over 130 % av planen to uker på rad (134 % og 138 %).</p>
+        <p class="konsekvens"><svg class="ikon" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg><span>Uke 42 går fra 12 t til 9 t. FYS og SLAG kortes ned. Oktober og Grunnperiode 1 oppdateres.</span></p>
+        <p class="kildetekst">Kilde: gjennomførte økter uke 39–40.</p>
+        <div class="knapper" data-svar><button type="button" class="knapp pri" data-g>Godkjenn</button><button type="button" class="knapp sek">Rediger</button><button type="button" class="knapp sek" data-a>Avvis</button></div>
+      </article>
+      <article class="fs">
+        <div class="fs-topp"><span class="avatar liten">ØR</span><span><b>Caddie foreslo to innspillsøkter for Øyvind</b><span class="kilde">Caddie · i samtale med Øyvind kl. 14:12 i går</span></span><span class="status-ord" data-status>Forslag</span></div>
+        <div class="okt-endring">
+          <div class="okt mini slag gml"><div class="okt-tekst"><span class="okt-tid">Ons 16:00</span><span class="navn">Utslag</span></div></div>
+          <svg class="ikon" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          <div class="okt mini slag"><div class="okt-tekst"><span class="okt-tid">Tir og tor</span><span class="navn">Innspill 50–150 m</span></div></div>
+        </div>
+        <p class="konsekvens"><svg class="ikon" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg><span>Øyvind kan godkjenne selv. Du ser det fordi du er AK-coachen hans.</span></p>
+        <p class="kildetekst">Kilde: Stats, Strokes Gained siste 12 runder. <span class="estimat">Estimat</span></p>
+        <div class="knapper" data-svar><button type="button" class="knapp pri" data-g>Godkjenn for Øyvind</button><button type="button" class="knapp sek" data-a>Avvis</button></div>
+      </article>
+      <article class="fs">
+        <div class="fs-topp"><span class="avatar liten wang">W</span><span><b>Ny gruppeøkt: nærspill tirsdag 18:00</b><span class="kilde">Motoren · i går</span></span><span class="status-ord" data-status>Forslag</span></div>
+        <p class="konsekvens"><svg class="ikon" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg><span>Gruppeøkta legges i kalenderen og åpnes for booking. 6 spillere får invitasjon.</span></p>
+        <div class="knapper" data-svar><button type="button" class="knapp pri" data-g>Godkjenn</button><button type="button" class="knapp sek" data-a>Avvis</button></div>
+      </article>
+    </div>
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Siste 7 dager</h2></div>
+      <div class="kort" style="gap:0;padding-top:4px;padding-bottom:4px">
+        <div class="import"><span class="avatar liten">TL</span><span><b>Putting 3–5 fot for Thea</b><span class="kilde">Godkjent 30. sep</span></span><span class="status-ord" style="background:var(--green-50);color:var(--green-700)">Utført</span></div>
+        <div class="import"><span class="avatar liten">FA</span><span><b>Turneringsuke for Filip</b><span class="kilde">Avvist 29. sep</span></span><span class="status-ord">Avvist</span></div>
+      </div>
+    </section>
+  </main>
+</div>
+</template>
+
+<!-- ================= AG-A05 Datakvalitet ================= -->
+<template id="data">
+<div class="app" data-fane="mer" data-tilbake="Mer">
+  <main class="innhold">
+    <div class="topp" data-behold><div><div class="dato">Stall · data</div><h1 class="tittel">Datakvalitet</h1></div></div>
+    <div class="to-del">
+      <div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Import</h2></div>
+          <div class="kort" style="gap:0;padding-top:4px;padding-bottom:4px">
+            <div class="import"><span class="prikk ok"></span><span><b>Turneringsresultater</b><span class="kilde">Mandagskjøringen 06:12 · 41 nye runder</span></span><span class="pille ok"><i></i>OK</span></div>
+            <div class="import"><span class="prikk ok"></span><span><b>Google-kalender</b><span class="kilde">Synket 08:18</span></span><span class="pille ok"><i></i>OK</span></div>
+            <div class="import"><span class="prikk vent"></span><span><b>TrackMan</b><span class="kilde">Siste fil 3. okt · 1 fil venter</span></span><span class="pille vent"><i></i>Venter</span></div>
+            <div class="import"><span class="prikk ok"></span><span><b>Stripe</b><span class="kilde">Lest 08:00</span></span><span class="pille ok"><i></i>OK</span></div>
+          </div>
+        </section>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Til kontroll</h2></div>
+          <article class="dq-sak"><b class="n">Runde registrert av forelder</b><p class="forklar">Henrik Vik, 22. sep, 88 slag. Bare score. Godta som scorekort, eller be Henrik registrere slagene.</p><div class="knapper" data-h><button type="button" class="knapp pri">Godta</button><button type="button" class="knapp sek">Be om slagdata</button></div></article>
+        </section>
+      </div>
+      <div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Dubletter</h2></div>
+          <article class="dq-sak"><b class="n">Samme turnering to ganger</b><div class="dublett"><div><b>Srixon Tour 5</b><span>Kongsberg · 27. sep · GolfBox</span></div><div><b>Srixon Tour #5</b><span>Kongsberg · 27. sep · registrert av Øyvind</span></div></div><p class="forklar">Samme dag, bane og score. Slår du sammen, beholdes slagene fra Øyvind og resultatet fra GolfBox.</p><div class="knapper" data-h><button type="button" class="knapp pri">Slå sammen</button><button type="button" class="knapp sek">Ikke samme</button></div></article>
+        </section>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Mangler kilde</h2></div>
+          <div class="kort" style="gap:0;padding-top:4px;padding-bottom:4px">
+            <div class="import"><span class="prikk feil"></span><span><b>2 spillere uten fødselsdato</b><span class="kilde">Vises ikke åpent før datoen er lagt inn</span></span><button type="button" class="knapp sek">Se</button></div>
+            <div class="import"><span class="prikk vent"></span><span><b>3 runder uten bane</b><span class="kilde">Runden kan ikke knyttes til en bane. Score vises, SG ikke</span></span><button type="button" class="knapp sek">Se</button></div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<script src="felles/demo.js"></script>
+<script src="felles/agencyos.js"></script>
+<script>
+(function () {
+  var A = window.AKAgency;
+  function jarvis(app) {
+    app.querySelector('[data-utkast="ida"]').addEventListener('click', function () { app.querySelector('[data-utkast-kort]').hidden = false; });
+    app.querySelector('[data-send]').addEventListener('click', function (e) { e.target.closest('.knapper').innerHTML = '<span class="pille ok"><i></i>Sendt av deg 08:21</span>'; A.toast(app, 'Sendt til Ida.'); });
+    var felt = app.querySelector('#j-felt');
+    function spor(t) {
+      if (!t) return; var s = app.querySelector('[data-samtale]'), sk = s.querySelector('.skrivefelt');
+      var m = document.createElement('div'); m.className = 'boble-meg'; m.textContent = t; s.insertBefore(m, sk);
+      var v = document.createElement('div'); v.className = 'skriver'; v.innerHTML = '<i></i><i></i><i></i>'; s.insertBefore(v, sk);
+      setTimeout(function () { v.outerHTML = '<div class="svar"><div class="svar-topp">Jarvis</div><p>WANG Toppidrett uke 40: 88 % gjennomført, 11 av 12 på morgenøktene. Selma og Øyvind spiller Srixon Tour finale lørdag.</p><ul class="kilder"><li>Gruppeplanen og registrerte økter uke 40</li></ul></div>'; }, 900);
+      felt.value = '';
+    }
+    app.querySelector('[data-spor]').addEventListener('click', function () { spor(felt.value.trim()); });
+    app.querySelector('[data-chips]').addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) spor(b.textContent); });
+  }
+  function forslag(app) {
+    var ant = app.querySelector('[data-ant]');
+    app.querySelectorAll('[data-svar]').forEach(function (s) {
+      s.addEventListener('click', function (e) {
+        var b = e.target.closest('[data-g],[data-a]'); if (!b) return;
+        var fs = s.closest('.fs'), st = fs.querySelector('[data-status]'), ok = b.hasAttribute('data-g'), gml = s.innerHTML;
+        st.textContent = ok ? 'Godkjent' : 'Avvist'; if (ok) { st.style.background = 'var(--green-50)'; st.style.color = 'var(--green-700)'; }
+        s.innerHTML = ''; fs.classList.remove('ny'); ant.textContent = Math.max(0, +ant.textContent - 1);
+        A.toast(app, ok ? 'Godkjent. Planen er oppdatert.' : 'Avvist.', function () { s.innerHTML = gml; st.textContent = 'Forslag'; st.style.background = ''; st.style.color = ''; ant.textContent = +ant.textContent + 1; });
+      });
+    });
+  }
+  function data(app) {
+    app.querySelectorAll('[data-h]').forEach(function (k) { k.addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) k.innerHTML = '<span class="pille ok"><i></i>' + b.textContent + ': gjort</span>'; }); });
+  }
+  A.start({
+    start: 'jarvis',
+    skjermer: {
+      jarvis: { etter: jarvis, tom: { tittel: 'Hva vil du vite?', tekst: 'Jarvis svarer ut fra innboksen, kalenderen, stallen og Notion, og lager utkast du kan sende. Prøv «Hvem bør jeg snakke med i dag?».', knapp: 'Spør Jarvis' }, laster: 'Jarvis skriver …', feil: 'Jarvis svarer ikke akkurat nå' },
+      forslag: { etter: forslag, tom: { tittel: 'Ingen forslag venter', tekst: 'Forslag fra Caddie og motoren kommer hit og i Innboks.', knapp: null }, laster: 'Henter forslagene …', feil: 'Forslagene kunne ikke hentes' },
+      data: { etter: data, tom: { tittel: 'Alt ser riktig ut', tekst: 'Ingen import feiler, og ingenting venter på kontroll.', knapp: null }, laster: 'Sjekker dataene …', feil: 'Datakvaliteten kunne ikke hentes' }
+    }
+  });
+})();
+</script>

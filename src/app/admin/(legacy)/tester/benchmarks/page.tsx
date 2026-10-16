@@ -6,11 +6,12 @@
  * (drift over 3 %-grensen fra mandags-cronen). Manuell "Kjør synk nå"-knapp
  * bruker samme motor som cronen.
  *
- * Server Component. Auth via requirePortalUser (COACH/ADMIN), som /admin/tester.
+ * Server Component. Auth via requireCapability(MANAGE_TESTS).
  */
 
 import { prisma } from "@/lib/prisma";
-import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { requireCapability } from "@/lib/auth/requireCapability";
+import { Capability } from "@/lib/auth/cbac";
 import { readSyncState, type ProtocolSyncState } from "@/lib/admin/benchmark-sync-schema";
 import { syncModeFor } from "@/lib/admin/benchmark-sync";
 import {
@@ -40,7 +41,7 @@ function fmtDate(iso: string | undefined): string {
 }
 
 export default async function BenchmarksAdminPage() {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  await requireCapability(Capability.MANAGE_TESTS);
 
   const defs = await prisma.testDefinition.findMany({
     select: { id: true, name: true, protocol: true },

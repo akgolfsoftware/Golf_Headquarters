@@ -84,7 +84,12 @@ const prismaMock: Record<string, unknown> = {};
 mock.module("@/lib/prisma", { namedExports: { prisma: prismaMock } });
 Object.assign(prismaMock, {
   booking: {
-    findUnique: async ({ where }: { where: { id: string } }) => bookings[where.id] ?? null,
+    // Speiler coachBookingScope: assistant coach (COACH) ser bare egne bookinger.
+    findFirst: async ({ where }: { where: { id: string; OR?: unknown } }) => {
+      const b = bookings[where.id] ?? null;
+      if (b && where.OR && bruker?.role === "COACH" && b.coachId !== bruker.id) return null;
+      return b;
+    },
     update: async ({ where, data }: { where: { id: string }; data: { startAt: Date; endAt: Date } }) => {
       bookingUpdates.push({ id: where.id, data });
       return { id: where.id };
@@ -213,4 +218,14 @@ test("flyttBookingTilTid flytter klokkeslett og beholder dagen", async () => {
   assert.equal(ny.getHours(), 14);
   assert.equal(ny.getMinutes(), 30);
   assert.deepEqual(pushBookingKall, ["booking-1"]);
+});
+
+test("flyttBookingTilDag og flyttBookingTilTid: assistant coach får ikke flytte en annen coachs booking", async () => {
+  bruker = { id: "coach-b", role: "COACH", name: "Coach B" };
+  const a = await actions();
+  const dag = await a.flyttBookingTilDag("booking-1", "2026-09-25");
+  const tid = await a.flyttBookingTilTid("booking-1", "12:00");
+  assert.equal(dag.ok, false);
+  assert.equal(tid.ok, false);
+  assert.equal(bookingUpdates.length, 0);
 });

@@ -33,6 +33,17 @@ export function tilDatoKolonne(iso: string): Date {
   return new Date(Date.UTC(y, m - 1, d));
 }
 
+/**
+ * Samme kalenderdag flyttet et antall år (kopi av fjorårets årsplan). 29. februar
+ * blir 28. februar i år uten skuddår, ikke 1. mars.
+ */
+export function flyttAar(d: Date, aar: number): Date {
+  const neste = new Date(d);
+  neste.setUTCFullYear(neste.getUTCFullYear() + aar);
+  if (neste.getUTCMonth() !== d.getUTCMonth()) neste.setUTCDate(0);
+  return neste;
+}
+
 /** Date (@db.Date, UTC-midnatt) → «YYYY-MM-DD». */
 export function fraDatoKolonne(d: Date): string {
   return d.toISOString().slice(0, 10);
@@ -55,6 +66,16 @@ function mapDrill(row: WorkbenchDrillRow): Drill {
     akFormel: parseAkFormel(row.akFormel, row.title),
     techniqueFocus: row.techniqueFocus ?? undefined,
     sourceId: row.sourceId ?? undefined,
+    exerciseId: row.exerciseId ?? undefined,
+    positionTaskId: row.positionTaskId ?? undefined,
+    repType: row.repType ?? undefined,
+    repAntall: row.repAntall ?? undefined,
+    repMinutter: row.repMinutter ?? undefined,
+    repSett: row.repSett ?? undefined,
+    repReps: row.repReps ?? undefined,
+    planRepsUtenBall: row.planRepsUtenBall ?? undefined,
+    planRepsLavFart: row.planRepsLavFart ?? undefined,
+    planRepsAuto: row.planRepsAuto ?? undefined,
     order: row.sortOrder,
   };
 }
@@ -128,4 +149,6 @@ export const SPILLER_SYNLIGE_STATUSER = [
   "PUBLISHED",
   "IN_PROGRESS",
   "COMPLETED",
+  "SKIPPED",
+  "ABANDONED",
 ] as const;

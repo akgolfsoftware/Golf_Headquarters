@@ -21,7 +21,7 @@ function wallTime(date: Date): number {
 }
 
 /** Ren visningsmapping. Kalleren må kontrollere spillertilgang før lesing. */
-export function weekLockedBlocks(weekStart: string, busy: BusyRow[], school: SchoolRow[]): LockedBlock[][] {
+export function weekLockedBlocks(weekStart: string, busy: BusyRow[], school: SchoolRow[], revealPrivate = false): LockedBlock[][] {
   const start = Date.parse(`${weekStart}T00:00:00Z`);
   const end = start + WEEK;
   const days: LockedBlock[][] = Array.from({ length: 7 }, () => []);
@@ -38,9 +38,9 @@ export function weekLockedBlocks(weekStart: string, busy: BusyRow[], school: Sch
         const to = Math.min(day + DAY, occurrence + length);
         if (to <= from) continue;
         days[i].push({
-          id: `busy-${row.id}-${occurrence}-${i}`, title: row.isPrivate ? "Opptatt" : row.title,
-          // Ikke røp kategori (f.eks. helse) fra en privat avtale.
-          kind: row.isPrivate ? "OPPTATT" : row.kind === "SKOLE" ? "SKOLE" : row.kind === "REISE" ? "REISE" : "OPPTATT",
+          id: `busy-${row.id}-${occurrence}-${i}`, title: row.isPrivate && !revealPrivate ? "Opptatt" : row.title,
+          // Private titler og kategorier er skjult for trenere, men synlige for eieren.
+          kind: row.isPrivate && !revealPrivate ? "OPPTATT" : row.kind === "SKOLE" ? "SKOLE" : row.kind === "REISE" ? "REISE" : "OPPTATT",
           startMinute: (from - day) / 60_000, durationMinutes: (to - from) / 60_000, dimmed: true,
         });
       }
@@ -54,4 +54,17 @@ export function weekLockedBlocks(weekStart: string, busy: BusyRow[], school: Sch
     if (i >= 0 && i < 7) days[i].push({ id: `school-${row.id}`, title: row.title, kind: "SKOLE", startMinute: 0, durationMinutes: 1440, dimmed: true });
   }
   return days.map(day => day.sort((a, b) => a.startMinute - b.startMinute || a.id.localeCompare(b.id)));
+}
+
+/** Kollisjonstest mot låste kalenderblokker med samme uke-/DST-regler som kalenderen. */
+export function lockedBlockOverlap(date: string, startMinute: number, durationMinutes: number, busy: BusyRow[]): number {
+  const dayDate = new Date(`${date}T00:00:00Z`);
+  if (!Number.isFinite(dayDate.getTime())) return 0;
+  const weekday = dayDate.getUTCDay();
+  const offset = (weekday + 6) % 7;
+  const monday = new Date(dayDate.getTime() - offset * DAY).toISOString().slice(0, 10);
+  const dayIndex = (weekday + 6) % 7;
+  const end = startMinute + durationMinutes;
+  return weekLockedBlocks(monday, busy, [], true)[dayIndex]
+    .filter(row => row.startMinute < end && startMinute < row.startMinute + row.durationMinutes).length;
 }

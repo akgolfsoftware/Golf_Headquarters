@@ -10,6 +10,8 @@
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { assertCapability } from "@/lib/auth/effective-capabilities";
+import { Capability } from "@/lib/auth/cbac";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { tnFromDefinitionId, tnDefinitionData } from "@/lib/portal-tester/tn-integration";
 import { isTnTestName } from "@/lib/portal-tester/tn-catalog";
@@ -27,6 +29,7 @@ export async function tildelTest(
   input: z.infer<typeof Schema>,
 ): Promise<{ ok: boolean; error?: string }> {
   const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  await assertCapability(coach, Capability.MANAGE_TESTS);
 
   const parsed = Schema.safeParse(input);
   if (!parsed.success) return { ok: false, error: "Ugyldig tildeling — sjekk valgene." };

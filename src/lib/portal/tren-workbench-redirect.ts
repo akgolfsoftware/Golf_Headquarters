@@ -9,7 +9,6 @@ const TAB_BY_PREFIX: [string, string][] = [
   ["/portal/tren/aarsplan", "gantt"],
   ["/portal/tren/turneringer", "seson"],
   ["/portal/tren/kalender", "uke"],
-  ["/portal/tren/fys-plan", "std"],
   ["/portal/tren/ovelser", "std"],
 ];
 

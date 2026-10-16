@@ -1,0 +1,43 @@
+/* Precision IUP-komplett, 02.10.2026. Felles farger/typografi fra pa-root. */
+.pa-root .iup-side{max-width:1100px;display:flex;flex-direction:column;gap:16px}
+.pa-root .iup-panel,.pa-root .iup-kategori{padding:16px}
+.pa-root .iup-panel,.pa-root .iup-skjema{display:flex;flex-direction:column;gap:16px}
+.pa-root .iup-panel h2{font:var(--type-title-s);margin:0}
+.pa-root .iup-panel p{font:var(--type-body);color:var(--text-secondary);margin:0;overflow-wrap:anywhere}
+.pa-root .iup-panel [role=alert]{color:var(--text-primary);border-left:3px solid var(--signal);padding:8px 12px;background:var(--signal-tint)}
+.pa-root .iup-tilbake{display:flex;align-items:center;min-height:44px;color:var(--link)}
+.pa-root .iup-valg{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;border:0;padding:0;margin:0 0 16px;min-width:0}
+.pa-root .iup-felt{display:flex;flex-direction:column;gap:8px;font:var(--type-body);min-width:0}
+.pa-root .iup-felt input,.pa-root .iup-felt select,.pa-root .iup-felt textarea{width:100%;min-width:0;min-height:44px;padding:8px 12px;border:1px solid var(--border-control);border-radius:var(--radius);background:var(--surface-card);color:var(--text-primary);font:var(--type-body);box-sizing:border-box}
+.pa-root .iup-felt textarea{resize:vertical}
+.pa-root .iup-felt input:focus-visible,.pa-root .iup-felt select:focus-visible,.pa-root .iup-felt textarea:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.pa-root .iup-felt :disabled{opacity:1;background:var(--surface-flat)}
+.pa-root .iup-handlinger{display:flex;flex-wrap:wrap;gap:12px}
+.pa-root .iup-liste{list-style:none;margin:0;padding:0}
+.pa-root .iup-liste li+li{border-top:1px solid var(--border-hairline)}
+.pa-root .iup-liste a{display:flex;flex-direction:column;gap:6px;padding:16px 0;color:var(--text-primary);text-decoration:none;overflow-wrap:anywhere}
+.pa-root .iup-liste a:hover strong{text-decoration:underline}
+.pa-root .iup-liste span{font:var(--type-body-s);color:var(--text-secondary)}
+.pa-root .iup-kategori summary,.pa-root .iup-historikk summary{display:flex;flex-wrap:wrap;gap:12px;align-items:center;min-height:44px;cursor:pointer;font:var(--type-body)}
+.pa-root .iup-kategori summary{justify-content:space-between}
+.pa-root .iup-kategori summary:focus-visible,.pa-root .iup-historikk summary:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.pa-root .iup-sporsmal{min-width:0;padding:16px 0;border:0;border-top:1px solid var(--border-hairline);margin:12px 0 0}
+.pa-root .iup-sporsmal legend{font:var(--type-body);overflow-wrap:anywhere;padding:0 0 8px}
+.pa-root .iup-sporsmal small{color:var(--text-secondary);font-size:12px;white-space:nowrap}
+.pa-root .iup-skala{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.pa-root .iup-radio{position:relative;display:inline-flex;min-width:44px;min-height:44px;cursor:pointer}
+.pa-root .iup-radio input{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:inherit}
+.pa-root .iup-radio span{display:grid;place-items:center;min-width:44px;min-height:44px;border:1px solid var(--border-control);border-radius:var(--radius);font:var(--type-num-s);color:var(--text-primary);background:var(--surface-card)}
+.pa-root .iup-radio input:checked+span{background:var(--primary);color:var(--text-on-primary);border-color:var(--primary)}
+.pa-root .iup-radio input:focus-visible+span{outline:2px solid var(--focus-ring);outline-offset:2px}
+.pa-root .iup-radio input:disabled{cursor:default}
+.pa-root .iup-nullstill{min-height:44px;border:0;background:none;color:var(--link);font:var(--type-body-s);padding:0 8px;cursor:pointer;text-decoration:underline}
+.pa-root .iup-fordeling{min-width:0;border:0;margin:0;padding:8px 0}
+.pa-root .iup-fordeling legend{font:var(--type-title-s);padding:0 0 12px}
+.pa-root .iup-historikk{border-top:1px solid var(--border-hairline);padding:8px 0}
+.pa-root .iup-historikk>section,.pa-root .iup-historikk>.iup-kategori{margin-top:12px}
+@media(max-width:480px){.pa-root .iup-valg{grid-template-columns:1fr}.pa-root .iup-handlinger>*{flex:1 1 100%}.pa-root .iup-side{gap:12px}}
+.pa-root .iup-kategori>summary>span{margin-left:auto}
+.pa-root .iup-kategori>summary::after{content:"+";font-size:20px;line-height:1;min-width:20px;text-align:center}
+.pa-root .iup-kategori[open]>summary::after{content:"−"}
+.pa-root[data-theme=night]:has(.iup-side) .pa-skall__topp img,.pa-root[data-theme=night]:has(.iup-side) .pa-skall__skinne img{filter:brightness(0) invert(1)}

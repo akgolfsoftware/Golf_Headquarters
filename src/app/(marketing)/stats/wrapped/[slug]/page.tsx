@@ -7,11 +7,13 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { UTEN_DATAGOLF_TURNERING } from "@/lib/auth/datagolf-regel";
 import "@/app/(marketing)/(mlegacy)/stats/stats.css";
 import { StatsWrappedPlayer } from "@/components/stats/stats-wrapped-player";
 import type { WrappedSlideData } from "@/components/stats/stats-wrapped-slide";
 import { StatsLegacyShell } from "@/components/marketing/v2/stats-ramme";
 import { kanVisesOffentlig } from "@/lib/stats/offentlig-spiller";
+import { ryddProfilResultater } from "@/lib/stats/profil-resultater";
 
 export const revalidate = 86400;
 
@@ -45,7 +47,7 @@ async function getPlayer(slug: string) {
 
 async function getEntries(playerId: string, aar: number) {
   try {
-    return await prisma.publicPlayerEntry.findMany({
+    const rader = await prisma.publicPlayerEntry.findMany({
       where: {
         playerId,
         tournament: {
@@ -53,11 +55,14 @@ async function getEntries(playerId: string, aar: number) {
             gte: new Date(`${aar}-01-01`),
             lt: new Date(`${aar + 1}-01-01`),
           },
+          // Resultater fra Data Golf-turneringer vises aldri offentlig (Anders 09.10.2026).
+          AND: [UTEN_DATAGOLF_TURNERING],
         },
       },
       include: { tournament: true },
       orderBy: { tournament: { startDate: "asc" } },
     });
+    return ryddProfilResultater(rader);
   } catch {
     return [];
   }

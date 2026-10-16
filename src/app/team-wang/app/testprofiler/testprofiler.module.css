@@ -1,0 +1,205 @@
+.page {
+  min-height: 100dvh;
+  padding: 32px;
+  background: var(--wang-blue-tint);
+  color: var(--wang-blue);
+}
+
+.header,
+.grid {
+  width: min(100%, 1180px);
+  margin-inline: auto;
+}
+
+.backLink,
+.previewLink {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 8px;
+  font-family: var(--font-wang-brand, Montserrat, sans-serif);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none !important;
+}
+
+.backLink {
+  color: var(--wang-blue) !important;
+}
+
+.headingRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 28px;
+}
+
+.headingIcon {
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  flex: none;
+  border-radius: 12px;
+  background: var(--wang-blue);
+  color: var(--wang-white);
+}
+
+.eyebrow,
+.cardHeading span:first-child,
+.scopeList dt {
+  color: var(--wang-text-muted);
+  font-family: var(--font-wang-brand, Montserrat, sans-serif);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.headingRow h1 {
+  margin: 5px 0 0;
+  font-family: var(--font-wang-brand, Montserrat, sans-serif);
+  font-size: clamp(30px, 4vw, 46px);
+  line-height: 1.05;
+}
+
+.intro {
+  max-width: 760px;
+  margin: 18px 0 0;
+  color: var(--wang-text-muted);
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.securityNote {
+  max-width: 760px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 16px;
+  padding: 14px;
+  border: 1px solid color-mix(in srgb, var(--wang-green) 28%, var(--wang-grey-line));
+  border-radius: 10px;
+  background: var(--tint-teal);
+}
+
+.securityNote svg {
+  flex: none;
+  color: var(--wang-green);
+}
+
+.securityNote p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 30px;
+}
+
+.card {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 22px;
+  border: 1px solid var(--wang-grey-line);
+  border-radius: 12px;
+  background: var(--wang-white);
+}
+
+.cardHeading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.cardHeading h2 {
+  margin: 5px 0 0;
+  overflow-wrap: anywhere;
+  font-family: var(--font-wang-brand, Montserrat, sans-serif);
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+.syntheticBadge {
+  min-height: 28px;
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: var(--tint-teal);
+  color: var(--wang-teal-text) !important;
+  font-family: var(--font-wang-brand, Montserrat, sans-serif);
+  font-size: 11px !important;
+  font-weight: 700;
+  letter-spacing: normal !important;
+  text-transform: none !important;
+}
+
+.scopeList {
+  display: grid;
+  gap: 11px;
+  margin: 22px 0;
+}
+
+.scopeList div {
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr);
+  gap: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--wang-grey-line);
+}
+
+.scopeList dd {
+  min-width: 0;
+  margin: 0;
+  color: var(--wang-blue);
+  font-size: 14px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.previewLink {
+  align-self: flex-start;
+  margin-top: auto;
+  padding: 0 14px;
+  background: var(--wang-blue);
+  color: var(--wang-white) !important;
+}
+
+.page :is(a, button):focus-visible {
+  outline: 3px solid var(--wang-mint);
+  outline-offset: 3px;
+}
+
+@media (max-width: 760px) {
+  .page {
+    padding: 24px 20px 56px;
+  }
+
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .card {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 420px) {
+  .scopeList div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+  }
+
+  .previewLink {
+    width: 100%;
+  }
+}

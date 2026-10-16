@@ -1,5 +1,10 @@
 # Plan: Portering fra Claude Design (Precision Athletics) til produksjonskode
 
+> Oppdatert 30.09.2026: Byggerekkefølge og arbeidsdeling er erstattet av
+> [fullføringsplanen for Claude Design og Codex](codex-fullforing-claude-design-2026-09-30.md).
+> Rutetall, filforslag og ferdigpåstander under må kontrolleres på nytt. Nyere
+> produkt- og designbeslutninger styrer; eldre forslag er ingen selvstendig byggeordre.
+
 **Dato:** 25.09.2026
 **Status:** Godkjent planlegging
 **Kilde / Autoritet:** Claude Design-prosjekt `7d7c2994-cf63-4c5f-9bdc-fdaf67655a70` og [design-autoritet.md](../design-system/design-autoritet.md).

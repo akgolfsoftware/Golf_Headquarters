@@ -5,9 +5,7 @@
  * (Claude Design 7d7c2994, ui_kits/agencyos/screens/AG-cockpit.jsx, AG13
  * med noConsent, «Live coachingøkt · uten samtykke til opptak»).
  *
- * Nattema via AgencyOSSkall natt (skallets egen regel: «Nattema (Live
- * coachingøkt). Hurtigknappen vises ikke på nattflater»; beslutninger.md
- * §PRECISION ATHLETICS: nattema i Live-økt) — satt av page.tsx.
+ * Lys flate (beslutninger.md §LIVE-ØKTENE ER ALLTID LYSE, 14.10).
  *
  * Bevisst avvik fra tegningen:
  *   - Samtykke til opptak finnes ikke som eget felt i datamodellen ennå
@@ -89,6 +87,7 @@ function LiveMeldingSeksjon({ sessionId }: { sessionId: string }) {
             }}
             disabled={isPending}
             placeholder="Skriv en rask melding …"
+            style={{ minHeight: 44 }}
           />
           <span style={{ position: "absolute", right: 6 }}>
             <MicButton variant="suffix" onResult={(t) => setTekst((prev) => (prev ? prev + " " + t : t))} disabled={isPending} />
@@ -254,26 +253,37 @@ export function AG13LiveOkt({ data }: { data: LiveOktData }) {
             {data.malsetning && <p style={{ margin: "4px 0 0", font: "var(--type-body-s)", color: "var(--text-secondary)" }}>{data.malsetning}</p>}
           </Kort>
 
-          <LiveMeldingSeksjon sessionId={data.id} />
-          <BriefSeksjon sessionId={data.id} initialMelding={data.coachBrief} />
+          {data.kilde === "v2" && <LiveMeldingSeksjon sessionId={data.id} />}
+          {data.kilde === "v2" && <BriefSeksjon sessionId={data.id} initialMelding={data.coachBrief} />}
 
           <Kort eyebrow="Løpet">
             {data.driller.length === 0 ? (
               <p style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-secondary)" }}>Ingen driller på denne økta ennå.</p>
             ) : (
               data.driller.map((d) => (
-                <div key={d.id} className="pa-row" style={{ minHeight: 40, padding: "8px 0" }}>
-                  <span style={{ flex: 1, display: "inline-flex", alignItems: "center", gap: 8, font: "var(--type-body-s)", color: "var(--text-primary)" }}>
-                    {d.logget && <Ikon icon={Check} size={14} />}
-                    {d.navn}
-                  </span>
-                  <Meta>{d.pyramide} · {d.varighetMin} min</Meta>
+                <div key={d.id} style={{ padding: "8px 0", display: "flex", flexDirection: "column", gap: 4, minWidth: 0 }}>
+                  <div className="pa-row" style={{ minHeight: 40, padding: 0, minWidth: 0 }}>
+                    <span style={{ flex: 1, minWidth: 0, display: "inline-flex", alignItems: "center", gap: 8, font: "var(--type-body-s)", color: "var(--text-primary)" }}>
+                      {d.logget && <Ikon icon={Check} size={14} />}
+                      {d.navn}
+                    </span>
+                    <Meta>
+                      {[d.pyramide || null, `${d.varighetMin} min`, d.reps !== undefined ? `${d.reps ?? "—"} reps` : null, d.videoer ? `${d.videoer} video` : null]
+                        .filter(Boolean)
+                        .join(" · ")}
+                    </Meta>
+                  </div>
+                  {d.kommentar && (
+                    <p style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-secondary)", overflowWrap: "anywhere" }}>
+                      Spilleren: {d.kommentar}
+                    </p>
+                  )}
                 </div>
               ))
             )}
           </Kort>
 
-          <VurderingSeksjon sessionId={data.id} initialRating={data.coachRating} />
+          {data.kilde === "v2" && <VurderingSeksjon sessionId={data.id} initialRating={data.coachRating} />}
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>

@@ -10,6 +10,7 @@
 
 import { requireCoachActionUser } from "@/lib/auth/action-guards";
 import { prisma } from "@/lib/prisma";
+import { coachScopedPlayerWhere, coachedPlayerWhere } from "@/lib/auth/coached";
 import { opprettOktPaaTid } from "@/app/admin/(legacy)/calendar/actions";
 
 export interface BookingValg {
@@ -51,7 +52,8 @@ export async function hentBookingValg(): Promise<BookingValg> {
       orderBy: { name: "asc" },
     }),
     prisma.user.findMany({
-      where: { role: "PLAYER" },
+      // Ikke-coachede (leads) kan bookes av alle; coachede bare av egen coach (head coach: alle).
+      where: { role: "PLAYER", OR: [{ NOT: coachedPlayerWhere() }, coachScopedPlayerWhere(aktor)] },
       select: { id: true, name: true, email: true },
       orderBy: { name: "asc" },
       take: 500,
@@ -85,6 +87,8 @@ export async function bookIKalender(input: {
   /** «YYYY-MM-DDTHH:mm» — lokal veggklokke fra kalenderluka. */
   start: string;
   notater?: string;
+  /** Utelatt = pris fra tjenesten, som før. */
+  betaling?: "KLIPP" | "FAKTURA" | "GRATIS";
 }): Promise<BookResultat> {
   // Auth gjøres også i opprettOktPaaTid; her for tidlig og tydelig avvisning.
   await requireCoachActionUser();
@@ -115,6 +119,7 @@ export async function bookIKalender(input: {
       startAt,
       varighetMin: tjeneste.durationMin,
       notater: input.notater,
+      betaling: input.betaling,
     });
     return { ok: true, bookingId: res.bookingId };
   } catch (err) {

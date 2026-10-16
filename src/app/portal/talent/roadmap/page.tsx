@@ -1,72 +1,20 @@
+// PH19TalentRoadmap — Precision Athletics.
 /**
- * PlayerHQ · Talent · Roadmap (/portal/talent/roadmap) — v2.
- * v2-port 17. juli 2026 (Team D5): `TalentRoadmapV2` erstatter athletic-
- * skjermen, ruten flyttet ut av (legacy). Feature-gate og «ikke i
- * programmet»-sjekken fra den slettede (legacy)-layouten håndheves nå her.
- * Auth, Prisma-queries (SeasonPlan.periodBlocks + tournamentEntries +
- * TalentTracking.milepaeler), L-fase-navnene og de ekte tellingene er
- * uendret — kun presentasjonslaget er nytt. Pre-beta-stripen beholdt.
+ * PlayerHQ · Talent · Roadmap (/portal/talent/roadmap) i Precision Athletics.
+ * Kilde: Claude Design arkiv/2026-09-30/playerhq/screens/PH-19.jsx
  */
 
 import { notFound } from "next/navigation";
-
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { FEATURES } from "@/lib/features";
 import { prisma } from "@/lib/prisma";
-import type { LPhase } from "@/generated/prisma/client";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
-import { TalentFaner } from "@/components/portal/v2/TalentFaner";
-import {
-  TalentRoadmapV2,
-  type TalentRoadmapData,
-} from "@/components/portal/v2/TalentRoadmapV2";
-import { TalentIkkeIProgrammet } from "@/components/portal/v2/TalentFellesV2";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { PH19Talent } from "@/components/portal/precision/PH19Talent";
 
 export const dynamic = "force-dynamic";
 
-type Milepael = {
-  tittel: string;
-  dato: string;
-  beskrivelse?: string;
-  oppnadd?: boolean;
-};
-
-function parseMilepaeler(json: unknown): Milepael[] {
-  if (!Array.isArray(json)) return [];
-  return json.filter(
-    (m): m is Milepael =>
-      typeof m === "object" &&
-      m !== null &&
-      typeof (m as Milepael).tittel === "string",
-  );
-}
-
-const LPHASE_NAVN: Record<LPhase, string> = {
-  GRUNN: "Grunnperiode",
-  SPESIAL: "Spesialperiode",
-  TURNERING: "Turneringsperiode",
-  EVALUERING: "Evaluering",
-  TESTUKE: "Testuke",
-  FERIE: "Ferie",
-  TRENINGSSAMLING: "Treningssamling",
-  HELDAGSSAMLING: "Heldagssamling",
-  RESTITUSJON: "Restitusjon",
-};
-
-const MND_KORT = [
-  "jan", "feb", "mar", "apr", "mai", "jun",
-  "jul", "aug", "sep", "okt", "nov", "des",
-];
-
-function periodeTekst(start: Date, end: Date): string {
-  const a = MND_KORT[start.getMonth()];
-  const b = MND_KORT[end.getMonth()];
-  return a === b ? a : `${a} – ${b}`;
-}
-
-function datoTekst(d: Date): string {
-  return `${d.getDate()}. ${MND_KORT[d.getMonth()]}`;
+function fmtKortDato(d: Date): string {
+  return d.toLocaleDateString("nb-NO", { day: "2-digit", month: "2-digit", year: "numeric" });
 }
 
 export default async function RoadmapPage() {
@@ -74,74 +22,46 @@ export default async function RoadmapPage() {
 
   const user = await requirePortalUser({ kreverTilgang: "TALENT", allow: ["PLAYER"] });
 
-  const ar = new Date().getFullYear();
-
-  const [tracking, sesongplan] = await Promise.all([
-    prisma.talentTracking.findUnique({
-      where: { userId: user.id },
-      select: { niva: true, milepaeler: true },
-    }),
+  const [tracking, plan, uleste] = await Promise.all([
+    prisma.talentTracking.findUnique({ where: { userId: user.id } }),
     prisma.seasonPlan.findFirst({
-      where: { userId: user.id, year: ar },
+      where: { userId: user.id },
+      orderBy: { createdAt: "desc" },
       include: {
-        periodBlocks: { orderBy: { startDate: "asc" } },
-        tournamentEntries: {
-          where: { entryStatus: { not: "WITHDRAWN" } },
-          include: { tournament: { select: { name: true, startDate: true } } },
+        periodBlocks: {
+          orderBy: { startDate: "asc" },
         },
       },
     }),
+    prisma.notification.count({ where: { userId: user.id, readAt: null } }),
   ]);
 
   if (!tracking) {
     return (
-      <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-        <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
-        <TalentIkkeIProgrammet />
-      </V2Shell>
+      <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
+        <PH19Talent fane="roadmap" ikkeIProgrammet />
+      </PlayerHQSkall>
     );
   }
 
-  const milepaeler = parseMilepaeler(tracking.milepaeler);
-
-  const faser = (sesongplan?.periodBlocks ?? []).map((b) => ({
+  const now = new Date();
+  const perioder = (plan?.periodBlocks ?? []).map((b) => ({
     id: b.id,
-    navn: LPHASE_NAVN[b.lPhase],
-    periode: periodeTekst(b.startDate, b.endDate),
-    fokus: b.focus ?? null,
+    navn: b.focus || b.lPhase || "Periode",
+    startDato: fmtKortDato(b.startDate),
+    sluttDato: fmtKortDato(b.endDate),
+    aktiv: b.startDate <= now && b.endDate >= now,
   }));
 
-  const turneringer = (sesongplan?.tournamentEntries ?? [])
-    .map((e) => {
-      const navn = e.tournament?.name ?? e.manualName ?? null;
-      const dato = e.tournament?.startDate ?? e.manualDate ?? null;
-      return navn ? { id: e.id, navn, dato } : null;
-    })
-    .filter((t): t is { id: string; navn: string; dato: Date | null } => t !== null)
-    .sort((a, b) => (a.dato?.getTime() ?? 0) - (b.dato?.getTime() ?? 0));
-
-  const data: TalentRoadmapData = {
-    niva: tracking.niva,
-    ar,
-    faser,
-    turneringer: turneringer.map((t) => ({
-      id: t.id,
-      navn: t.navn,
-      datoTekst: t.dato ? datoTekst(t.dato) : null,
-    })),
-    milepaeler: milepaeler.map((m) => ({
-      tittel: m.tittel,
-      datoTekst: m.dato ?? null,
-      beskrivelse: m.beskrivelse ?? null,
-      oppnadd: m.oppnadd ?? false,
-    })),
-  };
-
   return (
-    <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
-      <TalentFaner aktiv="roadmap" />
-      <TalentRoadmapV2 data={data} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
+      <PH19Talent
+        fane="roadmap"
+        niva={tracking.niva}
+        klubb={tracking.klubb}
+        region={tracking.region}
+        perioder={perioder}
+      />
+    </PlayerHQSkall>
   );
 }

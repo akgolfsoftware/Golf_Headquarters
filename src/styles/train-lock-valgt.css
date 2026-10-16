@@ -8,7 +8,6 @@ html[data-train-lock="4"] {
   --font-mono: var(--tl-font-mono);
   --v2-font-mono: var(--tl-font-mono);
   --font-poppins: var(--font-ibm-plex-sans);
-  --font-ibm-plex-mono: var(--font-ibm-plex-mono);
   --tl-text-caps-sm: 11px;
   --tl-r-card: 8px;
   --tl-r-sheet: 12px 12px 0 0;

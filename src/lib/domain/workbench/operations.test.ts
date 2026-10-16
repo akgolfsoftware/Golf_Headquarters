@@ -286,8 +286,15 @@ describe("måned og år", () => {
     assert.equal(addMonths("2026-01-01", -1), "2025-12-01");
   });
 
-  it("isoWeekNumber følger ISO (mandag-start)", () => {
-    assert.equal(isoWeekNumber("2026-08-24"), 35);
+  it("isoWeekNumber følger ISO ved årsskifte og hele dager (UTC/Oslo)", () => {
+    const datoer = [
+      ["2027-01-04", 1], ["2027-01-11", 2], ["2021-01-01", 53],
+      ["2024-12-30", 1], ["2026-09-28", 40], ["2026-10-05", 41],
+      ["2026-08-24", 35],
+    ] as const;
+    for (const [dato, forventetUke] of datoer) {
+      assert.equal(isoWeekNumber(dato), forventetUke, `${dato} i ${process.env.TZ ?? "lokal tid"}`);
+    }
   });
 
   it("buildMonthViewModel: maks tre linjer og +N mer", () => {
@@ -418,6 +425,23 @@ describe("måned og år", () => {
     assert.deepEqual(year.months[1].eventLabels, []);
   });
 
+  it("buildYearViewModel: årsgrafens uker følger ISO-året, med akse og gjennomført", () => {
+    const tek = { ...createSession({ ...baseCmd, date: "2026-03-10", pyramid: "TEK", durationMinutes: 120 }), status: "COMPLETED" as const };
+    const fys = createSession({ ...baseCmd, date: "2026-03-11", pyramid: "FYS", durationMinutes: 45 });
+    const avlyst = { ...createSession({ ...baseCmd, date: "2026-03-12", pyramid: "SLAG", durationMinutes: 90 }), status: "CANCELLED" as const };
+    const year = buildYearViewModel(2026, [tek, fys, avlyst], mode, 0, [{ id: "g", type: "GRUNN", startDate: "2026-01-01", endDate: "2026-06-30", focus: null, fraGruppe: true }]);
+    const uker = year.weeks ?? [];
+    assert.equal(uker.length, 53); // 2026 har 53 ISO-uker
+    assert.equal(uker[0].weekStart, "2025-12-29"); // uke 1 starter i desember
+    assert.equal(uker[0].weekNumber, 1);
+    const uke11 = uker.find((u) => u.weekNumber === 11)!;
+    assert.equal(uke11.plannedByPyramid.TEK, 120);
+    assert.equal(uke11.plannedByPyramid.FYS, 45);
+    assert.equal(uke11.plannedByPyramid.SLAG, 0); // avlyst teller ikke
+    assert.equal(uke11.completedMinutes, 120);
+    assert.equal(year.periods[0].fraGruppe, true);
+  });
+
   it("buildPeriodViewModel: velger aktiv periode og summerer plan mot gjennomført", () => {
     const completed = {
       ...createSession({ ...baseCmd, date: "2026-08-25", durationMinutes: 90, pyramid: "TEK" }),
@@ -464,6 +488,9 @@ describe("måned og år", () => {
     assert.equal(periode.weeks[0].weekNumber, 35);
     assert.equal(periode.weeks[0].minutes, 90);
     assert.equal(periode.weeks[1].minutes, 60);
+    assert.equal(periode.weeks[0].byPyramid?.TEK, 90);
+    assert.equal(periode.weeks[1].byPyramid?.FYS, 60);
+    assert.equal(periode.weeks[0].byPyramid?.SLAG, 0); // avlyst teller ikke
     assert.equal(periode.distribution.find((row) => row.pyramid === "TEK")?.sharePct, 60);
     assert.equal(periode.distribution.find((row) => row.pyramid === "FYS")?.sharePct, 40);
     assert.equal(periode.distribution.find((row) => row.pyramid === "SLAG")?.plannedMinutes, 0);

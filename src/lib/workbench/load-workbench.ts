@@ -24,7 +24,8 @@
 import { prisma } from "@/lib/prisma";
 import type { LPhase, Prisma, PyramidArea, SessionStatus, SkillArea } from "@/generated/prisma/client";
 import { PYR_REKKEFOLGE } from "@/lib/pyramide";
-import { adherencePct, oktCompliance } from "@/lib/workbench/compliance";
+import { hentEtterlevelse } from "@/lib/portal/etterlevelse-data";
+import { oktCompliance } from "@/lib/workbench/compliance";
 import { kategoriFraFritekst, SG_FOKUS_LABEL, type WorkbenchFokus } from "@/lib/workbench/fokus";
 import { parseSessionBudget } from "@/lib/workbench/perioder";
 import { beregnSgGap } from "@/lib/workbench/sg-gap";
@@ -97,7 +98,7 @@ export type WorkbenchData = {
   pyramid?: { lbl: string; ax: Axis; hours: number; pct: number }[];
   /** Topp-tall: uke-nummer, antall økter, planlagte timer. */
   summary?: { weekNumber: number; sessionCount: number; plannedHours: number };
-  /** Plan-adherence for uka (% gjennomførte minutter av forfalte). Null = ingen forfalte økter. */
+  /** Etterlevelse siste fire uker (% gjennomførte minutter av forfalte). Null = ingen forfalte økter. */
   adherencePct?: number | null;
   /** Aktivt fokus: coachens PeriodBlock.focus, ellers beregnet SG-gap. Null = ingen kilde. */
   fokus?: WorkbenchFokus | null;
@@ -630,6 +631,8 @@ export async function loadWorkbenchData(
     ),
   ).map(({ groupId: _groupId, ...slot }) => slot);
 
+  const weekAdherencePct = (await hentEtterlevelse(userId, now)).pct;
+
   // Tom uke → eksplisitt tom tilstand, men behold maler/gruppetider.
   // KUN for inneværende uke: når brukeren har navigert til en annen uke skal
   // grid-en alltid rendres (med tomme dager) så hen kan dra inn økter / navigere
@@ -694,6 +697,7 @@ export async function loadWorkbenchData(
         : null,
       fysTurnering,
       groupSlots: groupSlotsEarly.length > 0 ? groupSlotsEarly : undefined,
+      adherencePct: weekAdherencePct,
       usesV2Sessions: false,
       weekOffset: offset,
       weekStartISO,
@@ -894,8 +898,6 @@ export async function loadWorkbenchData(
     sessionCount: mergedSessions.length,
     plannedHours: Math.round((plannedMin / 60) * 10) / 10,
   };
-  const weekAdherencePct = adherencePct(mergedSessions, now);
-
   // Fokus: coachens eksplisitte periode-fokus vinner; ellers beregnet SG-gap.
   let fokus: WorkbenchFokus | null = null;
   if (activePeriodBlock?.focus) {

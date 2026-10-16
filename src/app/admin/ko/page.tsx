@@ -1,53 +1,31 @@
 /**
- * Kø — ÉN adresse (MASTERPLAN 15.1, beslutning 6.9 «én inngang per funksjon»).
+ * Kø — AG-02 i Precision Athletics (/admin/ko).
  *
- * Slår sammen fem adresser som alle var «noe som venter på Anders»:
- *   /admin/godkjenninger · /admin/agenticos/ko · /admin/agenticos/godkjenn
- *   /admin/tester/foreslatte · /admin/tournaments/dubletter
- * Alle fem er nå redirects hit. Ingen funksjonalitet er fjernet.
+ * Én samlet adresse for alt som venter på beslutning fra trener/admin:
+ * godkjenninger, agentforslag (AgenticOS), tester, dubletter, moderering og e-post.
  *
- * MASTERPLAN 15.13 (31.08.2026): en sjette fane, «Moderering», flyttet inn —
- * /admin/stats/moderering hadde ingen vei inn (arkitektur-kartlegging 30.08).
- * Den er også «noe som venter på Anders», så den hører hjemme her. Loaderen
- * er flyttet ORDRETT til src/lib/admin/ko/last-moderering.ts; komponent og
- * actions bor fortsatt i den gamle mappen.
+ * Erstatter Train-lock-skallet (V2Shell/TL) med Precision Athletics (AgencyOSSkall og AG02Ko).
  *
- * IKKE her: /admin/queue (oppfølging av spillere). Den er ikke Kø — Kø er det
- * som krever deg i dag; oppfølging hører i Stall (beslutning 6.6).
- *
- * TILGANG — det viktigste i denne fila: sammenslåing skal ALDRI utvide
- * tilgang. Siden har ADMIN/COACH som basisgate (samme som godkjenninger- og
- * dubletter-sidene hadde), og hver fane som krevde mer, krever det fortsatt:
- * agent-fanene USE_AGENTS, testfanen MANAGE_TESTS. Mangler du capability,
- * finnes fanen ikke — verken som pille eller som innhold, og `?fane=` kan
- * ikke åpne den. Låst av src/lib/admin/ko/faner.test.ts.
- *
- * Design: canvas godkjent av Anders 30.08.2026 —
- * designsystem/canvas/ko/ (artboards) og
- * https://claude.ai/code/artifact/4df52812-fa4f-4654-8564-c46353fe430b
+ * Knappene kaller de samme server actionene som de gamle kø-komponentene
+ * (se src/components/admin/precision/ag02-handlinger.ts). Tom kø gir ekte tom
+ * tilstand — aldri demodata. Fanene følger capability-reglene i faner.ts:
+ * mangler du capability, finnes fanen ikke.
  */
 
-import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { innboksHref } from "@/lib/admin/innboks/filter";
 import { canUser } from "@/lib/auth/effective-capabilities";
 import { Capability } from "@/lib/auth/cbac";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TL } from "@/lib/v2/train-lock";
-import { Icon } from "@/components/v2/icon";
-import { KoHode } from "@/components/admin/v2/ko/KoHode";
-import { synligeFaner, velgFane } from "@/lib/admin/ko/faner";
-import { koFaneTellinger } from "@/lib/admin/ko/tellinger";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { AG02Ko, type AG02Data } from "@/components/admin/precision/AG02Ko";
+import type { KoFaneId } from "@/lib/admin/ko/faner";
+import { lastGodkjenninger } from "@/lib/admin/ko/last-godkjenninger";
+import { lastAgenticosKo } from "@/lib/agencyos/last-agenticos";
 import { lastForeslatteTester } from "@/lib/admin/ko/last-foreslatte-tester";
 import { lastDubletter } from "@/lib/admin/ko/last-dubletter";
 import { lastModerering } from "@/lib/admin/ko/last-moderering";
-import { lastAgenticosKo, lastAgenticosGodkjenn } from "@/lib/agencyos/last-agenticos";
-import { AdminAgenticosKo } from "@/components/admin/v2/agenticos/AdminAgenticosKo";
-import { AdminAgenticosGodkjenn } from "@/components/admin/v2/agenticos/AdminAgenticosGodkjenn";
-import { AdminForeslatteTesterV2 } from "@/components/admin/v2/AdminForeslatteTesterV2";
-import { MergeDubletterListe } from "@/app/admin/tournaments/dubletter/merge-liste";
-import { ModeringClientV2 } from "@/components/admin/v2/AdminStatsModereringV2";
-import { TlRadGruppe, TlTomTilstand } from "@/components/admin/v2/oppsett/tl-kit";
+import { synligeFaner, velgFane } from "@/lib/admin/ko/faner";
+import { ukenummer } from "@/lib/uke-helpers";
+import type { AdminGodkjenningV2Row } from "@/components/admin/v2/AdminGodkjenningerV2";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Kø · AgencyOS" };
@@ -58,11 +36,10 @@ export default async function KoPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
+  const coach = { id: user.id, role: user.role };
   const sp = await searchParams;
   const onsket = Array.isArray(sp.fane) ? sp.fane[0] : sp.fane;
 
-  // Effektive capabilities (rolle-default ± per-bruker-overrides), samme kilde
-  // som requireCapability bruker — ikke rå rolle.
   const [kanAgenter, kanTester] = await Promise.all([
     canUser(user, Capability.USE_AGENTS),
     canUser(user, Capability.MANAGE_TESTS),
@@ -73,101 +50,129 @@ export default async function KoPage({
   const faner = synligeFaner(harCapability);
   const aktiv = velgFane(onsket, faner);
 
-  if (aktiv === null) {
-    // Skal ikke kunne skje (godkjenninger og dubletter krever ingen capability),
-    // men en tom fane-liste skal si ifra, ikke krasje.
-    return (
-      <V2Shell bredde="full" aktiv="innboks" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} avatarUrl={user.avatarUrl}>
-        <TlRadGruppe>
-          <TlTomTilstand
-            icon="lock"
-            title="Ingen kø-visninger tilgjengelig"
-            sub="Kontoen din har ikke tilgang til noen av kø-fanene. Ta kontakt med en administrator."
-          />
-        </TlRadGruppe>
-      </V2Shell>
-    );
-  }
+  // Agent-kø og agent-godkjenning viser de samme PlanAction-sakene og er én fane i AG-02.
+  const tilAg02Fane = (id: KoFaneId): keyof AG02Data => (id === "agentgodkjenn" ? "agentko" : id);
+  const ag02Faner = [...new Set(faner.map((f) => tilAg02Fane(f.id)))];
 
-  // Godkjenninger er slått inn i Innboks › Godkjenn (AG-04, «Én innboks»,
-  // 28.09.2026): samme laster, samme handlinger, lav risiko samlet,
-  // ukesrapport og løste sjekkpunkter. De andre Kø-fanene har ingen tegning i
-  // Innboks og står her uendret; Innboks lenker til dem under «Andre køer».
-  if (aktiv === "godkjenninger") {
-    const { fane: _fane, ...ovrige } = sp;
-    void _fane;
-    redirect(innboksHref("godkjenn", ovrige));
-  }
+  const datoFmt = new Intl.DateTimeFormat("nb-NO", {
+    timeZone: "Europe/Oslo",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
 
-  const antall = await koFaneTellinger(user, faner);
-  const hode = <KoHode faner={faner} aktiv={aktiv} antall={antall} />;
+  const [godkjennRes, agentkoRes, testerRes, dubletterRes, modereringRes] = await Promise.all([
+    lastGodkjenninger(coach).catch(() => ({ rows: [] })),
+    kanAgenter ? lastAgenticosKo(user).catch(() => null) : Promise.resolve(null),
+    kanTester ? lastForeslatteTester().catch(() => ({ forslag: [] })) : Promise.resolve({ forslag: [] }),
+    lastDubletter().catch(() => []),
+    lastModerering().catch(() => ({ saker: [] })),
+  ]);
 
-  // Kun den aktive fanen lastes — aldri alle fem.
+  const naa = new Date();
+  const dag = new Intl.DateTimeFormat("nb-NO", {
+    timeZone: "Europe/Oslo",
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  }).format(naa);
+  const dagLabel = `${dag.charAt(0).toUpperCase()}${dag.slice(1)} · uke ${ukenummer(naa)}`;
 
-  const innhold = await (async () => {
-    switch (aktiv) {
-      case "agentko": {
-        const data = await lastAgenticosKo(user);
-        return <AdminAgenticosKo data={data} />;
-      }
-      case "agentgodkjenn": {
-        const data = await lastAgenticosGodkjenn(user);
-        return <AdminAgenticosGodkjenn data={data} />;
-      }
-      case "tester": {
-        const data = await lastForeslatteTester();
-        return <AdminForeslatteTesterV2 data={data} />;
-      }
-      case "dubletter": {
-        const liste = await lastDubletter();
-        if (liste.length === 0) {
-          return (
-            <TlRadGruppe>
-              <TlTomTilstand
-                icon="check-circle"
-                title="Ingen ventende dubletter"
-                sub="Når spillere legger til manuelle turneringer som matcher en kjent kilde, vises de her for vurdering."
-              />
-            </TlRadGruppe>
-          );
-        }
-        return (
-          <>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "flex-start",
-                gap: 10,
-                borderRadius: TL.radius.card,
-                background: TL.elev,
-                padding: "14px 18px",
-              }}
-            >
-              <Icon name="info" size={16} style={{ color: TL.mute, marginTop: 1, flex: "none" }} />
-              <p style={{ fontSize: 12.5, color: TL.mute, margin: 0, lineHeight: 1.6 }}>
-                <strong style={{ color: TL.text, fontWeight: 600 }}>Slik fungerer sammenslåing: </strong>
-                Når du slår sammen en manuell turnering inn i en kanonisk turnering, flyttes alle påmeldinger,
-                resultater og deltakerlister automatisk. Manuell-raden markeres som dublett og forsvinner fra
-                hovedlista.
-              </p>
-            </div>
-            <MergeDubletterListe liste={liste} />
-          </>
-        );
-      }
-      case "moderering": {
-        const { saker, historikk, stats, lasteFeil } = await lastModerering();
-        return <ModeringClientV2 saker={saker} historikk={historikk} stats={stats} lasteFeil={lasteFeil} />;
-      }
-    }
-  })();
+  const rows: AdminGodkjenningV2Row[] = (godkjennRes as { rows?: AdminGodkjenningV2Row[] })?.rows || [];
+
+  const data: AG02Data = {
+    godkjenninger: rows.map((r: AdminGodkjenningV2Row) => ({
+      id: r.id,
+      who: r.who,
+      title: r.title,
+      kind: r.actionType,
+      from: r.kilde ?? "Kø",
+      at: r.when,
+      status: r.urgent ? "Haster" : r.lowRisk ? "Lav risiko" : "Venter",
+      due: r.when,
+      sum: r.detail,
+      lines: r.diffPreview ? [["Endring", r.diffPreview, ""]] : undefined,
+      kilde: r.kilde ?? "agent",
+    })),
+    agentko: (agentkoRes?.venter || []).map((it) => ({
+      id: it.id,
+      who: "AgenticOS",
+      title: it.tittel,
+      agent: it.meta ?? "Agent",
+      t: "I dag",
+      body: it.tittel,
+      facts: [
+        ["Kategori", it.filterTekst],
+        ["Lenke", it.lenkeLabel],
+      ],
+      out: it.tittel,
+      axis: "tek",
+    })),
+    tester: (testerRes.forslag || []).map((t) => ({
+      id: t.id,
+      who: t.forfatter || "Spiller",
+      test: t.navn || "Test",
+      src: "Spiller",
+      at: t.opprettet || "—",
+      beskrivelse: t.beskrivelse ?? undefined,
+      scoring: t.scoring || undefined,
+    })),
+    dubletter: dubletterRes.map((d) => {
+      const topp = d.forslag[0] ?? null;
+      return {
+        id: d.manual.id,
+        match: topp ? `Mulig dublett av «${topp.name}»` : "Ingen automatisk match",
+        kildeId: d.manual.id,
+        malId: topp?.id ?? null,
+        a: {
+          name: d.manual.name,
+          dato: datoFmt.format(new Date(d.manual.startDate)),
+          bane: d.manual.location ?? "—",
+          pamelding: String(d.manual.antallEntries),
+          resultater: String(d.manual.antallResults),
+          src: "Manuell",
+        },
+        b: (topp
+          ? {
+              name: topp.name,
+              dato: datoFmt.format(new Date(topp.startDate)),
+              bane: topp.location ?? "—",
+              pamelding: String(topp.antallEntries),
+              resultater: String(topp.antallResults),
+              src: topp.sourceOrigin ?? "—",
+            }
+          : { src: "—" }) as Record<string, string>,
+      };
+    }),
+    moderering: (modereringRes.saker || []).map((m) => ({
+      id: m.id,
+      where: m.mal ?? "—",
+      who: m.spillerNavn,
+      reason: m.begrunnelse ?? "—",
+      at: m.mottatt,
+      text: "",
+      type: m.type,
+      status: m.status === "APPROVED" ? ("APPROVED" as const) : ("OPEN" as const),
+    })),
+    epost: [],
+  };
+
+  const totaltVenter =
+    data.godkjenninger.length +
+    data.agentko.length +
+    data.tester.length +
+    data.dubletter.length +
+    data.moderering.length;
 
   return (
-    <V2Shell bredde="full" aktiv="innboks" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} avatarUrl={user.avatarUrl}>
-      <div style={{ display: "flex", flexDirection: "column", gap: 18, minWidth: 0 }}>
-        {hode}
-        {innhold}
-      </div>
-    </V2Shell>
+    <AgencyOSSkall navn={user.name ?? "Coach"} uleste={totaltVenter}>
+      <AG02Ko
+        tilstand="data"
+        dagLabel={dagLabel}
+        startFane={aktiv ?? "godkjenninger"}
+        faner={ag02Faner}
+        data={data}
+      />
+    </AgencyOSSkall>
   );
 }

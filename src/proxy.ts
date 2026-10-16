@@ -7,6 +7,9 @@ import { createServerClient } from "@supabase/ssr";
 import { updateSession } from "@/lib/supabase/proxy";
 import { workbenchRedirectForTrenPath } from "@/lib/portal/tren-workbench-redirect";
 import { erUnntattVedlikehold, vedlikeholdAktivt } from "@/lib/vedlikehold";
+import { erSperretTeamWangSti } from "@/lib/auth/team-wang-sperre";
+import { oppdaterWangProxySesjon } from "@/lib/wang-supabase/proxy";
+import { erBeskyttetWangAppSti } from "@/lib/wang-supabase/routes";
 
 // Stats-sider som fortsatt har hardkodede design-/prototypedata (fabrikkerte
 // spillere). Skjules i PRODUKSJON (redirect → /stats) til de er wired til ekte
@@ -178,6 +181,17 @@ export async function proxy(request: NextRequest) {
   const csp = buildCsp(nonce);
   const response = await updateSession(request, nonce, csp);
 
+  if (erBeskyttetWangAppSti(path)) {
+    const wangSession = await oppdaterWangProxySesjon(request, response);
+    if (wangSession.status === "unauthenticated") {
+      const url = request.nextUrl.clone();
+      url.pathname = "/team-wang/app/logg-inn";
+      url.search = "";
+      url.searchParams.set("next", `${path}${request.nextUrl.search}`);
+      return NextResponse.redirect(url);
+    }
+  }
+
   // /team-wang: fellessiden er ÅPEN uten innlogging — den skal kunne deles med
   // elever og foreldre. Det er trygt fordi siden ikke viser navn:
   // `hentWangGruppe()` utelater elevlista som standard, og fellessiden ber
@@ -190,7 +204,10 @@ export async function proxy(request: NextRequest) {
   // lenken — ikke gjenta det. Skal noe på fellessiden vise en person (navn,
   // e-post, bilde, initialer koblet til én elev), skal sperren utvides tilbake
   // til hele `/team-wang` i SAMME endring.
-  const erTeamWangCoach = path === "/team-wang/coach" || path.startsWith("/team-wang/coach/");
+  //
+  // /team-wang/skjermer (skjermregisteret) rendrer hele demokatalogen med navn
+  // og er likeledes bare for trener og sportssjef.
+  const erTeamWangCoach = erSperretTeamWangSti(path);
   // /stats/aargang: kohort-utforskeren er bygget for fødselsårene 2000–2012 og
   // teller dermed nettopp de kullene barnevern-regelen forbyr åpent (Anders
   // 30.08.2026, datakartleggingens svar 1). Siden slettes ikke og tømmes ikke —

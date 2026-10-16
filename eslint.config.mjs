@@ -171,7 +171,6 @@ const eslintConfig = defineConfig([
       "src/components/portal/v2/AnalysereV2.tsx",
       "src/components/portal/v2/CoachHubV2.tsx",
       "src/components/portal/v2/CoachSgHubV2.tsx",
-      "src/components/portal/v2/FeiringV2.tsx",
       "src/components/portal/v2/ForelderBarnDetaljV2.tsx",
       "src/components/portal/v2/GjorV2.tsx",
       "src/components/portal/v2/MalByggerV2.tsx",

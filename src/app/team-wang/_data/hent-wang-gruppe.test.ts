@@ -43,6 +43,7 @@ const gruppe = {
   schedules: [
     {
       // Enkelthendelse (recurring !== WEEKLY) → havner i `hendelser`.
+      id: "schedule-single-synthetic",
       title: "Fredagsdeling (test 1/2): banecoaching + egentrening",
       // Forgiftet med vilje: dette er nøyaktig formen lekkasjen hadde 16.08.
       description: `Gruppe A (banecoaching m/ Anders): ${ELEV_A}. Gruppe B: ${ELEV_B}.`,
@@ -54,6 +55,7 @@ const gruppe = {
     },
     {
       // Fast ukentlig økt → havner i `fasteOkter` (egen mapping, egen risiko).
+      id: "schedule-weekly-synthetic",
       title: "WANG Toppidrett Fredrikstad — fast trening (Man)",
       description: `Oppmøte: ${ELEV_C_EPOST} har eget opplegg.`,
       startAt: new Date("2026-08-31T08:00:00Z"),

@@ -1,0 +1,311 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AgencyOS Live-økt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="felles/felles.css">
+<link rel="stylesheet" href="felles/agencyos.css">
+<style>
+/* ---------- Pakke 5: AG-13 Live coachingøkt og AG-12 Øktark etter live. Alltid lyst tema (vedtak 14.10). ---------- */
+.skjermvalg button{font-size:13px;min-height:36px;padding:0 10px}
+.live-topp{display:grid;gap:var(--r3);padding:14px 16px;border-radius:14px;background:var(--graphite-900);color:#fff}
+.live-topp .rad{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:var(--r2)}
+.live-pille{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 12px;border-radius:999px;background:var(--rust);color:#fff;font:600 13px/1 var(--sans)}
+.live-pille i{width:8px;height:8px;border-radius:50%;background:#fff;animation:puls 1.4s infinite}
+@keyframes puls{50%{opacity:.25}}
+.klokke{font:600 44px/1 var(--mono);letter-spacing:-.03em}
+.klokke small{font:500 15px/1 var(--mono);opacity:.75;margin-left:6px;letter-spacing:0}
+.live-topp .navn{font:600 18px/1.25 var(--sans)}
+.live-topp .knapp.sek{background:transparent;color:#fff;border-color:rgba(255,255,255,.5)}
+.live-topp .knapp.hvit{background:#fff;color:var(--graphite-900);border:1px solid #fff}
+.spillerkort{display:grid;gap:var(--r3)}
+.fakta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--r2)}
+.fakta div{display:grid;gap:2px;padding:10px 12px;border-radius:10px;background:var(--sand-100)}
+.fakta b{font:600 20px/1.1 var(--mono)}
+.fakta span{font-size:12.5px;color:var(--graphite-600)}
+.malsetning{display:flex;justify-content:space-between;gap:var(--r2);font-size:14px;padding:6px 0;border-bottom:1px solid var(--sand-300)}
+.malsetning:last-child{border-bottom:0}
+.oppgave-kort{display:grid;grid-template-columns:96px minmax(0,1fr);border-radius:12px;overflow:hidden;background:var(--tek-ink);color:#fff}
+.oppgave-kort img{width:100%;height:100%;min-height:110px;object-fit:cover}
+.oppgave-kort div{padding:12px 14px;display:grid;gap:4px}
+.oppgave-kort b{font:600 17px/1.25 var(--sans)}
+.oppgave-kort span{font-size:13.5px;opacity:.92}
+.oppgave-kort .tall{font:600 22px/1 var(--mono)}
+.media{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.media .bilde{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--sand-150)}
+.media .bilde img{width:100%;height:100%;object-fit:cover;display:block}
+.media .bilde span{position:absolute;left:6px;bottom:6px;padding:2px 6px;border-radius:4px;background:rgba(20,20,19,.75);color:#fff;font:600 11px/1.3 var(--mono)}
+.media button.ny{aspect-ratio:1;border:2px dashed var(--graphite-500);border-radius:10px;background:transparent;display:grid;place-items:center;align-content:center;gap:4px;font:500 13px/1.2 var(--sans);color:var(--graphite-800);cursor:pointer}
+.opptak{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--r3);align-items:center;padding:12px 14px;border-radius:12px;border:1px solid var(--sand-300)}
+.opptak .boelge{display:flex;align-items:center;gap:2px;height:28px}
+.opptak .boelge i{width:3px;border-radius:2px;background:var(--graphite-900);animation:boelge 1s infinite ease-in-out}
+@keyframes boelge{50%{transform:scaleY(.4)}}
+.opptak.sperret{background:var(--sand-100)}
+.notater-liste{display:grid;gap:6px;margin:0;padding:0;list-style:none}
+.notater-liste li{display:grid;grid-template-columns:52px minmax(0,1fr);gap:8px;font-size:14.5px;line-height:1.45}
+.notater-liste time{font:600 12.5px/1.6 var(--mono);color:var(--graphite-600)}
+.notat-felt{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--r2)}
+.notat-felt input{min-height:48px;padding:10px 12px;border:1px solid var(--graphite-500);border-radius:8px;font:400 16px/1.3 var(--sans);min-width:0}
+.lekse{display:grid;gap:var(--r2)}
+.okt.mini{grid-template-columns:80px 1fr}
+.okt.mini .okt-tid{font-size:20px;white-space:normal}
+.okt.mini .okt-info{font-size:13px}
+.sperre{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--r3);align-items:start;padding:14px 16px;border-radius:12px;border:2px solid var(--amber-700);background:var(--amber-50)}
+.sperre .ikon{color:var(--amber-700);margin-top:2px}
+.sperre b{display:block;font:600 16px/1.3 var(--sans)}
+
+/* Øktark */
+.utkast{display:grid;gap:8px;padding:12px 14px;border-radius:10px;background:var(--sand-100);border:1px dashed var(--graphite-500)}
+.utkast .hode{display:flex;align-items:center;gap:8px;font:600 13px/1 var(--sans);color:var(--graphite-800)}
+.utkast .hode .ikon{width:16px;height:16px}
+.utkast textarea{min-height:200px;padding:10px 12px;border:1px solid var(--graphite-500);border-radius:8px;font:400 15px/1.55 var(--sans);width:100%;resize:vertical;background:var(--white)}
+.personvern{display:flex;gap:8px;align-items:flex-start;font-size:13px;color:var(--graphite-600)}
+.personvern .ikon{width:16px;height:16px;margin-top:1px;flex:none}
+.tm-tabell{display:grid;gap:0;border-top:1px solid var(--sand-300)}
+.tm-rad{display:grid;grid-template-columns:minmax(0,1fr) 72px 72px;gap:var(--r2);align-items:center;padding:9px 0;border-bottom:1px solid var(--sand-300);font-size:14px}
+.tm-rad.hode{font:600 12.5px/1.2 var(--sans);color:var(--graphite-600)}
+.tm-rad .v{font:600 14px/1 var(--mono);text-align:right}
+.filer{display:grid;gap:6px}
+.fil{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--r3);align-items:center;padding:8px 12px;border:1px solid var(--sand-300);border-radius:10px;font-size:14px}
+.fil b{display:block;font:600 14px/1.3 var(--sans)}
+
+@container (min-width:900px){
+  .live-topp{grid-template-columns:minmax(0,1fr) auto;align-items:center}
+  .media{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+</style>
+
+<div class="ytre">
+  <div class="hode">
+    <span class="meta-s">AgencyOS · pakke 5 · AG-13 og AG-12 · utkast 1 · 15.10.2026</span>
+    <h1>Live coachingøkt</h1>
+    <p>Tre skjermer i én fil: live-økta med Sander Moe, samme økt for en spiller uten samtykke til opptak, og øktarket etter live med sammendrag til godkjenning. Lyst tema, også i live (vedtak 14.10). Coach Anders Kristiansen. Mandag 5. oktober kl. 10:34.</p>
+  </div>
+  <div class="kontroller">
+    <div class="velger skjermvalg" role="group" aria-label="Skjerm">
+      <button type="button" aria-pressed="true" data-skjerm="live">AG-13 Live</button>
+      <button type="button" aria-pressed="false" data-skjerm="liveu">AG-13-U Uten samtykke</button>
+      <button type="button" aria-pressed="false" data-skjerm="oktark">AG-12 Øktark</button>
+    </div>
+  </div>
+  <div class="kontroller">
+    <div class="velger" role="group" aria-label="Bredde"><button type="button" aria-pressed="true" data-bredde="mob">Mobil</button><button type="button" aria-pressed="false" data-bredde="pc">PC</button></div>
+    <div class="velger" role="group" aria-label="Tilstand"><button type="button" aria-pressed="true" data-tilstand="data">Med data</button><button type="button" aria-pressed="false" data-tilstand="tom">Tom</button><button type="button" aria-pressed="false" data-tilstand="laster">Laster</button><button type="button" aria-pressed="false" data-tilstand="feil">Feil</button></div>
+  </div>
+  <div class="scene"><div class="ramme mob" id="ramme"></div></div>
+  <div class="notater">
+    <div class="endringer">
+      <span class="meta-s">Hva som er nytt</span>
+      <ul>
+        <li><b>Live-økta</b> åpnes fra «Start live» i Cockpit, Kalender og Spiller 360. Klokka og «Live» øverst, avslutt med ett trykk.</li>
+        <li><b>Spillerkortet:</b> kategori, HCP, siste runde med SG og aktive målsetninger.</li>
+        <li><b>Teknisk plan</b> med oppgaven økta handler om, med bilde og repetisjoner. Video, bilde og målbilde fra iPhone legges rett i økta.</li>
+        <li><b>Opptak og notater:</b> opptaket går mens du coacher. Notater får klokkeslett. Spilleren ser «Opptak pågår» i appen.</li>
+        <li><b>Hjemmelekse</b> legges i spillerens plan med ett trykk, som en fylt økt i aksefargen.</li>
+        <li><b>Øktarket</b> er sammendraget som utkast til deg. Godkjent går det rett til spilleren. TrackMan-tallene fra økta kan bli startverdi i teknisk plan.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Reglene som er fulgt</span>
+      <ul>
+        <li>Opptak krever samtykke fra oppstarten. Uten samtykke er opptak sperret med forklaring, og notater virker som vanlig.</li>
+        <li>Navn tas ut før teksten sendes til AI. Det står på skjermen.</li>
+        <li>Rust bare på «Live»-pillen. Lyst tema i hele live-økta.</li>
+        <li>Manglende verdi vises som «—». Ingen sidelengs rulling i 390 og 360 px.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Åpent hos Anders</span>
+      <ul>
+        <li><b>Hvor lenge opptaket lagres</b> etter at sammendraget er godkjent, er ikke avgjort. Utkastet sier ingenting om sletting.</li>
+        <li><b>Under 16:</b> opptak krever forelderens samtykke. Variant AG-13-U viser den samme sperren.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ================= AG-13 Live ================= -->
+<template id="live">
+<div class="app" data-fane="kalender">
+  <main class="innhold">
+    <div class="live-topp" data-behold>
+      <div style="display:grid;gap:6px">
+        <div class="rad"><span class="live-pille"><i></i>Live</span><span style="font-size:13.5px;opacity:.85">Simulator 2 · Performance Pro</span></div>
+        <span class="navn" data-navn>Sander Moe</span>
+        <span class="klokke" data-klokke>34:12<small>av 90 min</small></span>
+      </div>
+      <div class="knapper"><button type="button" class="knapp hvit" data-gaa="oktark">Avslutt økta</button><button type="button" class="knapp sek">Pause</button></div>
+    </div>
+    <div class="to-del">
+      <div>
+        <section class="seksjon spillerkort">
+          <div class="sek-topp"><h2>Spilleren</h2><span class="kat" style="display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:999px;background:var(--graphite-900);color:#fff;font:600 12px/1 var(--sans)">Kategori B</span></div>
+          <div class="fakta"><div><b>1,2</b><span>HCP</span></div><div><b>70</b><span>siste runde, 3. okt</span></div><div><b>+0,9</b><span>SG den runden</span></div></div>
+          <div class="kort" style="gap:0;padding-top:6px;padding-bottom:6px">
+            <div class="malsetning"><span>SG Utslag over +0,5</span><span class="pille vent"><i></i>På vei</span></div>
+            <div class="malsetning"><span>Face to Path under +1°</span><span class="pille vent"><i></i>På vei</span></div>
+          </div>
+        </section>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Teknisk plan</h2><a class="lenke" href="#">Hele planen</a></div>
+          <div class="oppgave-kort"><img src="bilder/tek-video.jpg" alt=""><div><span class="akse-merke" style="justify-self:start"><i></i>TEK</span><b>P7.0 Treffpunktet</b><span>Face to Path · Lav hastighet 50 %</span><span class="tall">240 / 400 rep</span></div></div>
+        </section>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Video og bilder</h2><span class="kilde" data-ant-media>3 fra økta</span></div>
+          <div class="media" data-media>
+            <div class="bilde"><img src="bilder/slag-simulator.jpg" alt="Video, driver"><span>10:12 · video</span></div>
+            <div class="bilde"><img src="bilder/slag-utslag.jpg" alt="Bilde, P7.0"><span>10:20 · P7.0</span></div>
+            <div class="bilde"><img src="bilder/tek-video.jpg" alt="Målbilde"><span>Målbilde</span></div>
+            <button type="button" class="ny" data-ny-media><svg class="ikon" viewBox="0 0 24 24"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>Ta video</button>
+          </div>
+        </section>
+      </div>
+      <div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Opptak og notater</h2></div>
+          <div class="opptak" data-opptak><span class="boelge" aria-hidden="true"><i style="height:12px"></i><i style="height:22px;animation-delay:.1s"></i><i style="height:16px;animation-delay:.2s"></i><i style="height:26px;animation-delay:.3s"></i><i style="height:10px;animation-delay:.4s"></i></span><span><b style="font:600 15px/1.3 var(--sans)">Opptak pågår · 34 min</b><span class="kilde" style="display:block">Sander ser «Opptak pågår» i appen</span></span><button type="button" class="knapp sek" data-stopp>Stopp</button></div>
+          <ul class="notater-liste" data-notater>
+            <li><time>10:08</time><span>Face to Path +2,4° i de første 10 slagene med 7-jern.</span></li>
+            <li><time>10:21</time><span>Stang ved høyre fot hjelper. Ballstarten rettere.</span></li>
+          </ul>
+          <div class="notat-felt"><input id="notat" aria-label="Nytt notat" placeholder="Skriv et notat"><button type="button" class="knapp sek" data-legg-notat>Legg til</button></div>
+        </section>
+        <section class="seksjon lekse">
+          <div class="sek-topp"><h2>Hjemmelekse</h2></div>
+          <div class="okt mini tek"><img src="bilder/tek-video.jpg" alt=""><div class="okt-tekst"><span class="okt-tid">3 × 20 slag</span><span class="navn">P7.0 med stang · Lav hastighet</span><span class="okt-info"><span>30 min · før neste time</span></span></div></div>
+          <button type="button" class="knapp pri" data-lekse>Legg i planen</button>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= AG-13-U Uten samtykke ================= -->
+<template id="liveu">
+<div class="app" data-fane="kalender">
+  <main class="innhold">
+    <div class="live-topp" data-behold>
+      <div style="display:grid;gap:6px">
+        <div class="rad"><span class="live-pille"><i></i>Live</span><span style="font-size:13.5px;opacity:.85">Chippinggreen · Performance</span></div>
+        <span class="navn">Nora Bakke</span>
+        <span class="klokke">12:40<small>av 60 min</small></span>
+      </div>
+      <div class="knapper"><button type="button" class="knapp hvit" data-gaa="oktark">Avslutt økta</button></div>
+    </div>
+    <div class="sperre">
+      <svg class="ikon" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+      <span><b>Opptak er sperret</b><span class="forklar">Nora har ikke gitt samtykke til opptak i coachingøkt. Hun kan slå det på i Innstillinger i PlayerHQ. Notater, video og bilder virker som vanlig.</span></span>
+    </div>
+    <div class="to-del">
+      <div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Notater</h2></div>
+          <ul class="notater-liste"><li><time>14:06</time><span>Pitch 30 m: lander for kort. Mer loft, samme sving.</span></li></ul>
+          <div class="notat-felt"><input id="notat-u" aria-label="Nytt notat" placeholder="Skriv et notat"><button type="button" class="knapp sek">Legg til</button></div>
+        </section>
+      </div>
+      <div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Video og bilder</h2></div>
+          <div class="media"><div class="bilde"><img src="bilder/naerspill-wedge.jpg" alt="Video, pitch"><span>14:04 · video</span></div><button type="button" class="ny"><svg class="ikon" viewBox="0 0 24 24"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>Ta video</button></div>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= AG-12 Øktark etter live ================= -->
+<template id="oktark">
+<div class="app" data-fane="kalender" data-tilbake="Kalender">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div class="topp-rad"><div><div class="dato">Sander Moe · mandag 5. oktober · 10:00–11:30</div><h1 class="tittel">Øktark</h1></div><span class="pille vent" data-status><i></i>Utkast · ikke sendt</span></div>
+    </div>
+    <div class="to-del">
+      <div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Sammendrag</h2></div>
+          <div class="utkast">
+            <span class="hode"><svg class="ikon" viewBox="0 0 24 24"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/></svg>Utkast fra opptaket og notatene dine</span>
+            <textarea id="sammendrag" aria-label="Sammendrag" readonly>Hva vi jobbet med: P7.0 treffpunktet, med Face to Path som mål.
+
+Hva vi så: Face to Path gikk fra +2,4° til +1,1° i snitt etter øvelsen med stang ved høyre fot. Ballstarten ble rettere.
+
+Til neste gang: 3 × 20 slag med lav hastighet og stang, før timen fredag. Det ligger i planen din.</textarea>
+            <p class="personvern"><svg class="ikon" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Navn tas ut før teksten sendes til AI. Teksten er skrevet fra opptaket (90 min) og 4 notater.</p>
+          </div>
+          <div class="knapper" data-handlinger><button type="button" class="knapp pri" data-godkjenn>Godkjenn og send til Sander</button><button type="button" class="knapp sek" data-rediger>Rediger</button></div>
+        </section>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Hjemmelekse</h2><span class="pille ok"><i></i>Lagt i planen</span></div>
+          <div class="okt mini tek"><img src="bilder/tek-video.jpg" alt=""><div class="okt-tekst"><span class="okt-tid">Ons 15:30</span><span class="navn">P7.0 med stang · 3 × 20 slag</span><span class="okt-info"><span>30 min · Lav hastighet</span></span></div></div>
+        </section>
+      </div>
+      <div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>TrackMan fra økta</h2><span class="kilde">7-jern · 60 slag</span></div>
+          <div class="tm-tabell">
+            <div class="tm-rad hode"><span>Parameter</span><span style="text-align:right">Start</span><span style="text-align:right">Slutt</span></div>
+            <div class="tm-rad"><span>Face to Path</span><span class="v">+2,4°</span><span class="v">+1,1°</span></div>
+            <div class="tm-rad"><span>Club Path</span><span class="v">+1,8°</span><span class="v">+1,5°</span></div>
+            <div class="tm-rad"><span>Launch Direction</span><span class="v">+1,9°</span><span class="v">+0,8°</span></div>
+            <div class="tm-rad"><span>Carry</span><span class="v">164 m</span><span class="v">166 m</span></div>
+          </div>
+          <button type="button" class="knapp sek" data-baseline style="justify-self:start">Bruk som startverdi</button>
+          <p class="kildetekst">Startverdien settes på oppgaven P7.0 i teknisk plan.</p>
+        </section>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Filer fra økta</h2><span class="kilde">3</span></div>
+          <div class="filer">
+            <div class="fil"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></span><span><b>Driver, 10:12</b><span class="kilde">Video · 14 sek</span></span><span class="pille ok"><i></i>Deles</span></div>
+            <div class="fil"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></span><span><b>P7.0, 10:20</b><span class="kilde">Bilde</span></span><span class="pille ok"><i></i>Deles</span></div>
+            <div class="fil"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg></span><span><b>Opptak</b><span class="kilde">90 min · bare for deg</span></span><span class="pille noy"><i></i>Deles ikke</span></div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<script src="felles/demo.js"></script>
+<script src="felles/agencyos.js"></script>
+<script>
+(function () {
+  var A = window.AKAgency;
+  function live(app) {
+    var s = 34 * 60 + 12, k = app.querySelector('[data-klokke]'), t = setInterval(function () {
+      if (!document.body.contains(k)) { clearInterval(t); return; }
+      s++; k.firstChild.textContent = Math.floor(s / 60) + ':' + ('0' + s % 60).slice(-2);
+    }, 1000);
+    app.querySelector('[data-legg-notat]').addEventListener('click', function () {
+      var f = app.querySelector('#notat'); if (!f.value.trim()) { f.focus(); return; }
+      var li = document.createElement('li'); li.innerHTML = '<time>10:' + ('0' + Math.floor(s / 60 - 0)).slice(-2) + '</time><span></span>'; li.lastChild.textContent = f.value;
+      app.querySelector('[data-notater]').appendChild(li); f.value = '';
+    });
+    app.querySelector('[data-stopp]').addEventListener('click', function (e) {
+      var o = app.querySelector('[data-opptak]'); o.querySelector('.boelge').style.opacity = '.3'; o.querySelector('b').textContent = 'Opptak stoppet · 34 min lagret'; e.target.textContent = 'Fortsett';
+    });
+    app.querySelector('[data-ny-media]').addEventListener('click', function () { A.toast(app, 'Kameraet på iPhone åpnes. Videoen legges i økta.'); });
+    app.querySelector('[data-lekse]').addEventListener('click', function (e) { e.target.outerHTML = '<span class="pille ok"><i></i>Lagt i planen onsdag 15:30</span>'; A.toast(app, 'Lagt i Sanders plan. Uke 41 og oktober er oppdatert.', function () { A.gaa('live'); }); });
+  }
+  function oktark(app) {
+    var t = app.querySelector('#sammendrag');
+    app.querySelector('[data-rediger]').addEventListener('click', function () { t.readOnly = false; t.focus(); });
+    app.querySelector('[data-godkjenn]').addEventListener('click', function () {
+      var s = app.querySelector('[data-status]'); s.className = 'pille ok'; s.innerHTML = '<i></i>Sendt til Sander 11:42';
+      t.readOnly = true; app.querySelector('[data-handlinger]').innerHTML = '<span class="kilde">Sander har fått sammendraget i Innboks.</span>';
+      A.toast(app, 'Godkjent og sendt til Sander.');
+    });
+    app.querySelector('[data-baseline]').addEventListener('click', function (e) { e.target.outerHTML = '<span class="pille ok" style="justify-self:start"><i></i>Startverdi satt: Face to Path +1,1°</span>'; });
+  }
+  A.start({
+    start: 'live',
+    skjermer: {
+      live: { etter: live, tom: { tittel: 'Ingen økt pågår', tekst: 'Start live fra en økt i Cockpit, Kalender eller Spiller 360.', knapp: 'Til Cockpit' }, laster: 'Starter live-økta …', feil: 'Live-økta kunne ikke startes' },
+      liveu: { etter: null, tom: null },
+      oktark: { etter: oktark, tom: { tittel: 'Sammendraget lages', tekst: 'Opptaket og notatene blir til et utkast. Det tar vanligvis noen minutter etter at økta er avsluttet.', knapp: null }, laster: 'Henter øktarket …', feil: 'Øktarket kunne ikke hentes' }
+    }
+  });
+})();
+</script>

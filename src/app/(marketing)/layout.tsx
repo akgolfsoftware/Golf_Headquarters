@@ -1,12 +1,9 @@
 import { headers } from "next/headers";
-import {
-  IBM_Plex_Mono,
-  IBM_Plex_Sans,
-  IBM_Plex_Sans_Condensed,
-} from "next/font/google";
-import type { CSSProperties, ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import "@/styles/ak-golf.css";
+import "@/styles/precision-athletics.css";
+import "@/styles/marked-precision.css";
 import { PlausibleScript } from "@/components/marketing/plausible";
 import { MarkedFot } from "@/components/marketing/landing/MarkedFot";
 import { MarkedNav } from "@/components/marketing/landing/MarkedNav";
@@ -15,62 +12,21 @@ import { kanBrukeInnebygdBooking } from "@/lib/booking/offentlig-booking";
 /**
  * TOPP-layout for markedssidene.
  *
- * Siden 04.09.2026 er fasiten AK Golf-masteren (`designsystem/ak-golf/`,
- * speil av Claude Design-prosjektet 3e5c851c). Layouten laster merkets
- * tokens (`ak-golf.css`) og fonter (IBM Plex-familien) og legger `.ak-marked`
- * rundt innholdet — alt under er merket, ingenting utenfor er det.
- * Spec: docs/referanse/design/2026-09-04-marked-ak-golf-port-design.md.
+ * Siden 04.10.2026 er fasiten «AK Golf Precision Athletics» (samme system som
+ * PlayerHQ og AgencyOS), ikke lenger «verksted»-merket. Layouten legger
+ * `.pa-root` (Precision-tokens) sammen med `.ak-marked`; `marked-precision.css`
+ * peker de arvede --ak-*-navnene til Precision-verdiene. Skriftene
+ * (IBM Plex Sans og Mono) kommer fra rot-layouten.
  *
- * Skallet (MarkedNav + MarkedFot) eies fortsatt her — ett skall for alle
- * landingssider (siden 20.08.2026, da fire ulike menyer ble målt på samme
- * nettsted).
+ * Skallet (MarkedNav + MarkedFot) eies her — ett skall for alle landingssider.
  *
  * UNNTAK — flater som tegner sitt eget skall og ville fått DOBBELT her:
  *  - `/stats/*` (~45 ruter): eget produkt, egen mørk MRamme, egen bølge (W7).
- *  - `/` forsiden (Anders 22.09.2026): den mørke, filmatiske tegningen har
- *    sin egen bunn og laster sine egne fonter — ikke det eldre merkesystemets.
- *    Den står i tillegg helt utenfor tokenlaget og bærer ingen `.ak-ds`.
- *  - `/booking` KUN når den innebygde bookingen er åpen: Train-lock-flate
- *    (Anders 28.08.2026) med egen topplinje. Pauset booking er en vanlig
- *    landingsside og får skallet.
+ *  - `/booking` KUN når den innebygde bookingen er åpen (egen topplinje,
+ *    håndteres separat). Pauset booking er en vanlig landingsside og får skallet.
  */
 
-const plexCondensed = IBM_Plex_Sans_Condensed({
-  variable: "--font-ak-display",
-  weight: ["600", "700"],
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const plexSans = IBM_Plex_Sans({
-  variable: "--font-ak-sans",
-  weight: ["400", "500", "600"],
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const plexMono = IBM_Plex_Mono({
-  variable: "--font-ak-mono",
-  weight: ["400", "500"],
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const FONT_KLASSER = `${plexCondensed.variable} ${plexSans.variable} ${plexMono.variable}`;
-
-/* Masterens type.css setter --ak-display m.fl. med rene fontnavn. Her pekes de
- * til next/font-variablene, så fontene lastes selvhostet og uten layout-hopp. */
-const FONT_VARS = {
-  "--ak-display":
-    "var(--font-ak-display), 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif",
-  "--ak-sans":
-    "var(--font-ak-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif",
-  "--ak-mono": "var(--font-ak-mono), ui-monospace, SFMono-Regular, Menlo, monospace",
-} as CSSProperties;
-
-/* «/» matcher trygt her: sjekken under er `path === p` eller `path` som
-   starter med `${p}/`, og «//» finnes ikke. */
-const EGET_SKALL = ["/", "/stats"];
+const EGET_SKALL = ["/stats"];
 
 export default async function MarketingLayout({
   children,
@@ -85,15 +41,11 @@ export default async function MarketingLayout({
     (erBookingFlate && (await kanBrukeInnebygdBooking()));
 
   if (harEgetSkall) {
-    // Eget skall, men merkets fonter må finnes også her: broen i marked-kit.css
-    // og --font-mk-serif peker på --ak-sans, og next/font laster bare der
-    // klassen står. Ingen .ak-marked — flaten tegner sitt eget skall.
+    // Eget skall: ingen .ak-marked. Skriftene kommer fra rot-layouten.
     return (
       <>
         <PlausibleScript />
-        <div className={FONT_KLASSER} style={FONT_VARS}>
-          {children}
-        </div>
+        {children}
       </>
     );
   }
@@ -101,10 +53,7 @@ export default async function MarketingLayout({
   return (
     <>
       <PlausibleScript />
-      <div
-        className={`ak-marked ${FONT_KLASSER} flex min-h-screen flex-col`}
-        style={FONT_VARS}
-      >
+      <div className="pa-root ak-marked flex min-h-screen flex-col">
         <MarkedNav />
         <main className="flex-1">{children}</main>
         <MarkedFot />

@@ -56,6 +56,7 @@ export const STATUS_LABEL: Record<SessionStatus, string> = {
   COMPLETED: "Fullført",
   CANCELLED: "Avlyst",
   SKIPPED: "Hoppet over",
+  ABANDONED: "Avbrutt",
 };
 
 export const BLOCK_LABEL: Record<BlockType, string> = {

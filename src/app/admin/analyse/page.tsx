@@ -47,19 +47,6 @@ import { lastGruppeAnalyse, TOM_GRUPPE_ANALYSE } from "@/lib/admin/analyse/grupp
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Innsikt · AgencyOS" };
 
-function windowDaysFra(periode: string | undefined): { days: number; label: string } {
-  switch (periode) {
-    case "7d":
-      return { days: 7, label: "Siste 7 dager" };
-    case "90d":
-      return { days: 90, label: "Siste 90 dager" };
-    case "365d":
-      return { days: 365, label: "Siste 365 dager" };
-    default:
-      return { days: 30, label: "Siste 30 dager" };
-  }
-}
-
 type SearchParams = Promise<{ fane?: string; visning?: string; periode?: string; studentId?: string }>;
 
 export default async function V2AdminAnalysePage({ searchParams }: { searchParams: SearchParams }) {
@@ -86,8 +73,7 @@ export default async function V2AdminAnalysePage({ searchParams }: { searchParam
       break;
     case "etterlevelse":
       if (params.visning === "detalj") {
-        const { days, label } = windowDaysFra(params.periode);
-        const data = await loadComplianceData({ windowDays: days, periodLabel: label, selectedPlayerId: params.studentId, viewer: user });
+        const data = await loadComplianceData({ windowDays: 28, periodLabel: "Siste fire uker", selectedPlayerId: params.studentId, viewer: user });
         eldre = <AdminComplianceV2 data={data} somFane />;
       }
       break;

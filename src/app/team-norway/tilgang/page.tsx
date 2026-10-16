@@ -23,7 +23,7 @@ export default async function TilgangPage({ searchParams }: { searchParams: Prom
   const bruker = await requirePortalUser({ kreverTilgang: "INGEN" });
   if (!await erSportssjef({ id: bruker.id, role: bruker.role })) notFound();
 
-  const data = await hentTeamNorwayTilganger();
+  const data = await hentTeamNorwayTilganger({ id: bruker.id });
   if (!data) notFound();
   const { gruppe, rader } = data;
   const valgtRad = rader.find((rad) => rad.userId === valgt);

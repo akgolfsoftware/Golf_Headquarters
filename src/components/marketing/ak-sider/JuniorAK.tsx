@@ -38,12 +38,12 @@ const FOTO = "/brand/foto/";
 
 function JuniorHero() {
   return (
-    <section style={{ background: "var(--ak-v-junior)", color: "#FFFFFF" }}>
+    <section style={{ background: "var(--ak-grunn-senk)", color: "var(--ak-tekst)" }}>
       <div
         className="mx-auto px-ak-4 pt-ak-8 pb-ak-9 md:px-ak-6 md:pt-ak-9 md:pb-ak-10"
         style={{ maxWidth: "var(--ak-sidebredde)" }}
       >
-        <span className="ak-etikett" style={{ color: "rgba(255,255,255,.78)" }}>
+        <span className="ak-etikett" style={{ color: "var(--ak-dempet)" }}>
           AK Golf Junior Academy
         </span>
         <h1
@@ -51,13 +51,13 @@ function JuniorHero() {
           style={{
             lineHeight: "var(--ak-lh-display)",
             letterSpacing: "var(--ak-sp-display)",
-            color: "#FFFFFF",
+            color: "var(--ak-tekst)",
             maxWidth: "18ch",
           }}
         >
           Barnet ditt skal vite hva det jobber med.
         </h1>
-        <p className="mt-ak-5 text-ak-21" style={{ color: "rgba(255,255,255,.92)", maxWidth: "52ch" }}>
+        <p className="mt-ak-5 text-ak-21" style={{ color: "var(--ak-dempet)", maxWidth: "52ch" }}>
           AK Golf Junior Academy tar spilleren fra første golfskole til turneringsspill, i trinn med
           navn. Du ser hvilket trinn barnet står på, og hva som skal til for det neste.
         </p>
@@ -66,7 +66,6 @@ function JuniorHero() {
             storrelse="lg"
             href="/kontakt"
             className="w-full sm:w-auto"
-            style={{ background: "#FFFFFF", color: "var(--ak-v-junior)" }}
           >
             Meld interesse
           </Knapp>
@@ -213,7 +212,7 @@ function JuniorSporsmal() {
 
 function JuniorAvslutning() {
   return (
-    <section style={{ background: "var(--ak-tekst)", color: "var(--ak-grunn)" }}>
+    <section style={{ background: "var(--ak-grunn-senk)", color: "var(--ak-tekst)" }}>
       <div
         className="mx-auto grid grid-cols-1 items-center gap-ak-8 px-ak-4 py-ak-9 md:grid-cols-2 md:px-ak-6 md:py-ak-10"
         style={{ maxWidth: "var(--ak-sidebredde)" }}
@@ -224,14 +223,14 @@ function JuniorAvslutning() {
             style={{
               letterSpacing: "var(--ak-sp-display)",
               lineHeight: "var(--ak-lh-display)",
-              color: "var(--ak-grunn)",
+              color: "var(--ak-tekst)",
               maxWidth: "20ch",
             }}
           >
             Lurer du på hvilken gruppe som passer?
           </h2>
           {/* Uten «innen én virkedag» — se filhodet, punkt 1. */}
-          <p className="mt-ak-4 text-ak-21" style={{ color: "var(--ak-grunn)", opacity: 0.9 }}>
+          <p className="mt-ak-4 text-ak-21" style={{ color: "var(--ak-dempet)" }}>
             Send oss alder og litt om erfaringen, så tar vi kontakt.
           </p>
           <div className="mt-ak-6">

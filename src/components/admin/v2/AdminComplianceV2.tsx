@@ -52,12 +52,7 @@ const LOGG_FARGE: Record<StallRow["lastLogBand"], string> = {
   bad: TL.danger,
 };
 
-const PERIODER = [
-  { v: "7d", l: "7 d", days: 7 },
-  { v: "30d", l: "30 d", days: 30 },
-  { v: "90d", l: "90 d", days: 90 },
-  { v: "365d", l: "1 år", days: 365 },
-] as const;
+const PERIODER = [{ v: "28d", l: "Siste fire uker", days: 28 }] as const;
 
 const pl = (n: number, en: string, flere: string) => `${n} ${n === 1 ? en : flere}`;
 
@@ -72,10 +67,11 @@ export function AdminComplianceV2({ data, somFane }: { data: ComplianceData; som
   const router = useRouter();
   const pathname = usePathname();
 
-  const curKode = PERIODER.find((p) => p.days === data.windowDays)?.v ?? "30d";
+  const curKode = PERIODER.find((p) => p.days === data.windowDays)?.v ?? "28d";
   const gaaTil = (periode: string, studentId: string | null) => {
     const q = new URLSearchParams();
     q.set("periode", periode);
+    q.set("fane", "etterlevelse");
     if (studentId) q.set("studentId", studentId);
     router.push(`${pathname}?${q.toString()}`);
   };
@@ -98,8 +94,8 @@ export function AdminComplianceV2({ data, somFane }: { data: ComplianceData; som
     setMeldingTekst(
       s.staleDays != null && s.staleDays >= 7
         ? `Hei ${s.playerName.split(" ")[0]}, jeg ser du ikke har logget økt på ${s.staleDays} dager — alt i orden?`
-        : s.planned > 0 && s.pct < 60
-          ? `Hei ${s.playerName.split(" ")[0]}, jeg ser du ligger litt bak planen (${s.done}/${s.planned} økter) — trenger du en hånd?`
+        : s.planned > 0 && s.pct !== null && s.pct < 60
+          ? `Hei ${s.playerName.split(" ")[0]}, jeg ser du ligger litt bak planen (${s.done}/${s.planned} minutter siste fire uker) — trenger du en hånd?`
           : `Hei ${s.playerName.split(" ")[0]}, `,
     );
   }
@@ -181,7 +177,7 @@ export function AdminComplianceV2({ data, somFane }: { data: ComplianceData; som
               {panelMeta && <div style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 2 }}>{panelMeta}</div>}
             </div>
           </div>
-          <TomTilstand icon="calendar" title="Ingen planlagte økter" sub="Ingen plan i denne perioden å måle etterlevelse mot." />
+          <TomTilstand icon="calendar" title="Ingen planlagte økter" sub="Ingen synlige økter med passert sluttid siste fire uker." />
         </>
       ) : (
         <>
@@ -189,7 +185,7 @@ export function AdminComplianceV2({ data, somFane }: { data: ComplianceData; som
           <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
             <RingMaaler
               label="Gjennomført"
-              value={panel.pct}
+              value={panel.pct ?? 0}
               min={0}
               max={100}
               unit="%"
@@ -205,7 +201,7 @@ export function AdminComplianceV2({ data, somFane }: { data: ComplianceData; som
                 </div>
               </div>
               <div style={{ marginTop: 12, fontFamily: TL.font.mono, fontSize: 12.5, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
-                {panel.totalDone} av {panel.totalPlanned} økter fullført
+                {panel.totalDone} av {panel.totalPlanned} minutter gjennomført · siste fire uker
               </div>
             </div>
           </div>
@@ -293,7 +289,7 @@ export function AdminComplianceV2({ data, somFane }: { data: ComplianceData; som
     const meta = [
       s.hcp != null ? `Hcp ${s.hcp}` : null,
       s.homeClub,
-      s.planned > 0 ? `${s.done}/${s.planned} økter` : "Ingen plan",
+      s.planned > 0 ? `${s.done}/${s.planned} min` : "Ingen plan",
     ]
       .filter(Boolean)
       .join(" · ");
@@ -419,7 +415,7 @@ export function AdminComplianceV2({ data, somFane }: { data: ComplianceData; som
             onClick={velg}
             leading={<AvatarInit navn={s.playerName} size={32} />}
             title={s.playerName}
-            sub={`${s.planned > 0 ? `${s.done}/${s.planned} økter` : "Ingen plan"} · ${s.lastLog}`}
+            sub={`${s.planned > 0 ? `${s.done}/${s.planned} min` : "Ingen plan"} · ${s.lastLog}`}
             meta={
               <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
                 <span style={{ fontFamily: TL.font.mono, fontSize: 15, fontWeight: 700, color: s.planned > 0 ? pctFarge : TL.mute, fontVariantNumeric: "tabular-nums" }}>

@@ -11,7 +11,8 @@ import { getCurrentUserRaw as getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { lesRaaPreferences } from "@/lib/preferences";
 import { prisma } from "@/lib/prisma";
 import { DrillFasilitet } from "@/generated/prisma/enums";
-import { isMinor } from "@/lib/auth/minor";
+import { FODSELSDATO_LAAST_MELDING, isMinor, vurderEgenFodselsdato } from "@/lib/auth/minor";
+import { SPILLER_TOTAL_STEPS } from "@/lib/auth/onboarding-state";
 import { resendKlient, FRA_EPOST } from "@/lib/email";
 import { emailLayout, primaryButton } from "@/lib/email/templates/shared";
 import { logError } from "@/lib/error-tracking";
@@ -19,6 +20,7 @@ import { phone, email, optStr } from "@/lib/validation/schemas";
 import { byggTreningPreferanser, fasiliteterTilFacilityPrefs, sesongmaalTilTittel } from "@/lib/onboarding/trening-preferanser";
 import { APP_URL } from "@/lib/app-url";
 import { linkAndSyncUserTournamentResults } from "@/lib/turneringer/link-public-players";
+import type { FasSvar } from "@/lib/onboarding/oppstart";
 
 const SaveOnboardingProfileSchema = z.object({
   phone: phone.nullable().optional(),
@@ -33,6 +35,8 @@ const SetDateOfBirthSchema = z.object({
   guardianEmail: email.optional(),
   guardianRelation: z.enum(["GUARDIAN", "MOTHER", "FATHER"]).optional(),
 });
+
+const FODSELSDATO_MANGLER = "Fødselsdato mangler. Fyll den inn i første steg før du fullfører.";
 
 const ResendInvitationSchema = z.object({
   guardianEmail: email,
@@ -121,6 +125,30 @@ export type SpillerOnboardingData = {
   acceptedPrivacy?: boolean;
   /** Samtykke: egne drills kan deles med plattformen. */
   drillDelingGodtatt?: boolean;
+
+  // Runde 23 (AU-04, 28.09.2026): nye oppstartssteg. Alt under lagres bare i
+  // preferences.onboarding (JSON), ingen nye kolonner. Forslag til egne felt står i PR-en.
+  /** Fødselsdato «ÅÅÅÅ-MM-DD». For under 16 lagres den i kolonnen først når forelderens e-post er oppgitt (Samtykker). */
+  fodselsdato?: string;
+  /** Snittscore siste 10 runder, brutto. Grunnlag for A–K-estimatet i oppstart. */
+  snittScoreSiste10?: number;
+  /** Svarene fra fasilitetsskjemaet (ja/nei og lengder), én rad per sted. */
+  fasiliteterSvar?: OppstartFasSvar[];
+  /** Teknikktest (Inspill Basic): verktøy, avstander og fem slag per kølle. Setter ikke nivå. */
+  teknikktest?: OppstartTeknikktest;
+  /** Ytelsesbilde (søvn, mat, energi) lagres og deles med coach. */
+  samtykkeYtelsesbilde?: boolean;
+  /** Opptak i coachingøkt (video og lyd). Gjelder bare myndige; under 16 gir forelder samtykket. */
+  samtykkeOpptak?: boolean;
+  /** Valgt standardplan: én av de fem navnene i TRENINGSPLANER. */
+  treningsplan?: string;
+};
+
+export type OppstartFasSvar = FasSvar;
+export type OppstartTeknikktest = {
+  verktoy: string;
+  avstand: Record<string, number>;
+  slag: Record<string, Array<[number | null, number | null]>>;
 };
 
 export type ForelderOnboardingData = {
@@ -222,6 +250,9 @@ export async function saveSpillerOnboardingStep(
 export async function markStepComplete(stepNumber: number): Promise<void> {
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
+  if (user.role === "PLAYER" && stepNumber >= SPILLER_TOTAL_STEPS && !user.dateOfBirth) {
+    throw new Error(FODSELSDATO_MANGLER);
+  }
 
   const prefs = lesRaaPreferences(user);
   const existing =
@@ -388,6 +419,20 @@ async function fullforOnboardingSideEffekter(
     await logError({ context: "onboarding.complete.goals", error, userId });
   }
 
+  // 2b) Opptak i coachingøkt: samme handling som Meg › Personvern. Gjelder bare myndige;
+  // under 16 gir forelder samtykket via lenke, og handlingen avviser mindreårige selv.
+  try {
+    if (onboarding.samtykkeOpptak === true) {
+      const { settEgetLydSamtykke } = await import("@/app/portal/meg/actions");
+      const lyd = await settEgetLydSamtykke();
+      if (!lyd.ok) {
+        await logError({ context: "onboarding.complete.lyd-samtykke", error: new Error(lyd.feil), userId });
+      }
+    }
+  } catch (error) {
+    await logError({ context: "onboarding.complete.lyd-samtykke", error, userId });
+  }
+
   // 3) Auto-koble til PublicPlayer og hente inn historiske turneringsresultater
   try {
     await linkAndSyncUserTournamentResults(prisma, userId);
@@ -396,9 +441,15 @@ async function fullforOnboardingSideEffekter(
   }
 }
 
-export async function completeOnboarding(subscribe?: string): Promise<void> {
+export async function completeOnboarding(
+  subscribe?: string,
+): Promise<{ ok: false; feil: string } | void> {
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
+  // D-63: oppstarten kan ikke fullføres uten fødselsdato.
+  if (user.role === "PLAYER" && !user.dateOfBirth) {
+    return { ok: false, feil: FODSELSDATO_MANGLER };
+  }
 
   const prefs = lesRaaPreferences(user);
   const existing =
@@ -546,6 +597,12 @@ export async function setDateOfBirthAndCheckMinor(input: {
       return { ok: false, error: "Ugyldig fødselsdato.", isMinor: false };
     }
 
+    // D-63/TP-02: spilleren setter fødselsdatoen én gang. Samme dato igjen er
+    // lov (ny invitasjon til forelder), en annen dato avvises.
+    if (vurderEgenFodselsdato(user.dateOfBirth, dob) === "avvist") {
+      return { ok: false, error: FODSELSDATO_LAAST_MELDING, isMinor: isMinor(user.dateOfBirth) };
+    }
+
     const minor = isMinor(dob);
 
     // Hvis mindreårig: krever guardian-email
@@ -563,7 +620,8 @@ export async function setDateOfBirthAndCheckMinor(input: {
       where: { id: user.id },
       data: {
         dateOfBirth: dob,
-        requiresGuardianConsent: minor,
+        // Flagget nullstilles aldri automatisk (TP-02).
+        requiresGuardianConsent: user.requiresGuardianConsent || minor,
       },
     });
 

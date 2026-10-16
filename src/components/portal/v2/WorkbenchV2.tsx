@@ -37,7 +37,7 @@ import {
  * V2Shell (montert i (v2preview)/v2-workbench/page.tsx) eier chrome-en.
  */
 
-import { useEffect, useMemo, useRef, useState, useTransition, type CSSProperties } from "react";
+import { useEffect, useId, useMemo, useRef, useState, useTransition, type CSSProperties } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import {
   DndContext,
@@ -1123,7 +1123,7 @@ export function WBBalanse({ data, valgtOkt, valgtDag, weekNumber, actions, weekO
                   <span style={{ fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, color: TL.text }}>{adherDisp} %</span>
                   <HjelpTips k="planEtterlevelse" size={11} />
                 </div>
-                <div style={{ fontFamily: TL.font.sans, fontSize: 10.5, color: TL.mute, marginTop: 1 }}>Plan-etterlevelse denne uka</div>
+                <div style={{ fontFamily: TL.font.sans, fontSize: 10.5, color: TL.mute, marginTop: 1 }}>Plan-etterlevelse · siste fire uker</div>
               </div>
               <div style={{ width: 52, height: 5, borderRadius: 9999, background: TL.hair, overflow: "hidden", flex: "none" }}>
                 <div style={{ width: `${Math.min(100, data.adherencePct)}%`, height: "100%", borderRadius: 9999, background: data.adherencePct >= 70 ? TL.ok : data.adherencePct >= 40 ? TL.warn : TL.danger }} />
@@ -1519,6 +1519,12 @@ export function OktDrillTidslinje({
         setDrills([]);
         setFeil(true);
       }
+    }).catch(() => {
+      // A failed or navigation-aborted request must not become an unhandled
+      // rejection. Keep the existing error state while this panel is mounted.
+      if (!aktiv) return;
+      setDrills([]);
+      setFeil(true);
     });
     return () => {
       aktiv = false;
@@ -2365,6 +2371,8 @@ function WBPeriodeBand({ data, onTilAarsplan }: { data: WorkbenchData; onTilAars
 }
 
 export function WorkbenchV2({ data, insights, playerName, planStatus, actions, wbMode, role, steder }: WorkbenchV2Props) {
+  // Keep drag accessibility references identical in server and browser HTML.
+  const dragContextId = useId();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -3042,6 +3050,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
 
   return (
     <DndContext
+      id={dragContextId}
       sensors={wbSensors}
       collisionDetection={pointerWithin}
       onDragStart={handleWbDragStart}
@@ -3299,7 +3308,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
                     <span style={{ fontFamily: TL.font.mono, fontSize: 18, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums", flex: "none" }}>{adher != null ? `${adherDisp}%` : "—"}</span>
                     <div style={{ minWidth: 0 }}>
                       <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-                        <span style={{ fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute, whiteSpace: "nowrap" }}>Plan-etterlevelse</span>
+                        <span style={{ fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute, whiteSpace: "nowrap" }}>Plan-etterlevelse · siste fire uker</span>
                         <HjelpTips k="planEtterlevelse" size={11} />
                       </span>
                       <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, color: harAvvik ? TL.warn : TL.ok, display: "block", marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{avvikTekst}</span>

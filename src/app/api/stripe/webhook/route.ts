@@ -16,6 +16,7 @@ import {
   angreBehandlet,
 } from "@/lib/stripe/handle-event";
 import { recordWebhookFailure } from "@/lib/webhook-retry";
+import { logError } from "@/lib/error-tracking";
 
 export const runtime = "nodejs";
 // Gi webhook nok hode-rom mot cold starts + DB-writes.
@@ -48,9 +49,8 @@ export async function POST(req: Request) {
   let event: Stripe.Event;
   try {
     event = stripe.webhooks.constructEvent(body, sig, secret);
-  } catch (err) {
-    const melding = err instanceof Error ? err.message : "bad-signature";
-    return NextResponse.json({ error: melding }, { status: 400 });
+  } catch {
+    return NextResponse.json({ error: "bad-signature" }, { status: 400 });
   }
 
   try {
@@ -65,17 +65,22 @@ export async function POST(req: Request) {
 
     await handleStripeEvent(event, { stripe });
   } catch (err) {
-    console.error("[stripe-webhook] handler-feil", err);
+    await logError({ context: "stripe.webhook.handler", error: err,
+      meta: { eventId: event.id },
+    }).catch(() => undefined);
     // Slipp kvitteringen slik at reprosessering får prøve på nytt.
     await angreBehandlet(event.id);
-    // Lagre i retry-kø og returner 200 til Stripe så de ikke retry-er evig.
-    // /api/cron/webhook-retry plukker den opp.
-    await recordWebhookFailure({
+    // Bare en faktisk lagret køplass kan kvitteres med 200.
+    // /api/cron/webhook-retry plukker den opp; ellers må Stripe prøve igjen.
+    const lagret = await recordWebhookFailure({
       source: "stripe",
       eventId: event.id,
       payload: event as unknown,
       error: err,
     });
+    if (!lagret) {
+      return NextResponse.json({ error: "retry-storage-unavailable" }, { status: 503 });
+    }
     return NextResponse.json({ received: true, queued: true });
   }
 

@@ -66,7 +66,7 @@ export function MarkedCasesV2({ tournaments }: { tournaments: CasesTournament[] 
                   }}
                 >
                   <span style={{ fontFamily: "var(--tl-font-mono)", fontSize: 14, fontWeight: 700, color: "var(--tl-warm)", lineHeight: 1 }}>{t.day}</span>
-                  <span style={{ fontFamily: "var(--tl-font-mono)", fontSize: 8, color: "var(--tl-mute)", marginTop: 2 }}>{t.mon}</span>
+                  <span style={{ fontFamily: "var(--tl-font-mono)", fontSize: 11, color: "var(--tl-mute)", marginTop: 2 }}>{t.mon}</span>
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontFamily: "var(--tl-font-sans)", fontSize: 14, fontWeight: 700, color: "var(--tl-text)" }}>{t.name}</div>

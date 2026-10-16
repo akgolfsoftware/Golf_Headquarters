@@ -12,6 +12,7 @@ import { Dempet, Etikett, Liste, Rad, Seksjon, Stolpe, Talentradar, Verdi } from
 import { AKSE_NAVN } from "@/components/precision/pa";
 import { oktStatus } from "@/lib/admin-spiller/spiller360-visning";
 import type { S360Iup, S360Plan, S360Samtaler, S360Talent, S360Tp } from "@/lib/admin-spiller/spiller360-typer";
+import { TreningsvolumVisning } from "./TreningsvolumVisning";
 
 /* ───────────────────────────── Plan ───────────────────────────── */
 
@@ -154,7 +155,7 @@ export function AG08Iup({ d, tom }: { d: S360Iup; tom: boolean }) {
       {tom || !d.uke.length ? E : <Liste>{d.uke.map((u, i) => <Rad key={i} variant="dag"><Meta>{u.dag.toUpperCase()}</Meta><Etikett a={u.tittel} /><Verdi>{u.meta}</Verdi></Rad>)}</Liste>}
     </Seksjon>,
     <Seksjon key={7} nr={8} k={T(7)} meta={d.trening?.kilde ?? "WORKBENCH · 4 UKER"}>
-      {tom || !d.trening ? E : <>
+      {tom || !d.trening ? E : d.trening.volumMetadata ? <TreningsvolumVisning volum={d.trening.volumMetadata} enhet="t" /> : <>
         <div style={{ display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" }}>
           <span className="a8-tall__v">{d.trening.gjennomfort} av {d.trening.planlagt}</span>
           <Meta>ØKTER GJENNOMFØRT · {String(Math.round(totalt * 10) / 10).replace(".", ",")} T</Meta>

@@ -8,6 +8,12 @@
  *
  * Ingen clay her. Digesten er noe man leser, ikke en handling som skal utføres,
  * så «Én ting nå»-monopolet røres ikke.
+ * Kontroll: syntetiske modulprøver for digestens data 01.10.2026.
+ * Avvik:
+ *   - Etterlevelse følger minuttregelen fra 26.09, med fireukersperiode.
+ *   - Ingen visuell riggrad; datakobling prøvd, konkret Precision-kontroll gjenstår.
+ * Historisk fasit over beskriver eksisterende komponent; Precision-eksporten
+ * er gjeldende designautoritet. Ingen ny visuell godkjenning i denne rettingen.
  */
 
 import type { ReactNode } from "react";
@@ -228,7 +234,7 @@ export function UkesdigestV2({ data }: { data: UkesdigestData }) {
                   <Tall verdi={data.etterlevelseTekst} under={data.nevnerTekst} />
                   <Tall
                     verdi={tid(data.loggetMinutter)}
-                    under={`logget tid · planlagt ${tid(data.planlagtMinutter)}`}
+                    under={`gjennomført tid siste fire uker · planlagt ${tid(data.planlagtMinutter)}`}
                   />
                 </div>
               ) : (

@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { TnShell, TnSidehode, TnSpillerFaner, TnSeksjon, TnMetrikk, TnMetrikkRutenett, TnTomtilstand } from "@/components/team-norway/tn-shell";
+import { TnShell, TnSidehode, TnSpillerFaner, TnSeksjon, TnMetrikk, TnMetrikkRutenett, TnTomtilstand, tnRolleNavn } from "@/components/team-norway/tn-shell";
 import { TnDataTable } from "@/components/team-norway/tn-data-table";
 import { TnKort, TnPille } from "@/components/team-norway/core";
 import { TN } from "@/lib/v2/team-norway";
@@ -16,25 +16,18 @@ import { formaterTall } from "@/lib/format-tall";
 
 const datoTid = new Intl.DateTimeFormat("nb-NO", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Oslo" });
 
-function rolleNavn(rolle: string) {
-  if (rolle === "COACH") return "Trener";
-  if (rolle === "ASSISTANT") return "Hjelpetrener";
-  if (rolle === "PLAYER") return "Spiller";
-  return rolle;
-}
-
 /** `null` betyr «retningen er ikke kjent» — ALDRI tolket som «høyere er bedre». */
 function retningIngress(lowerIsBetter: boolean | null, emne: string): string {
   if (lowerIsBetter === null) return `Retningen (lavere/høyere er bedre) er ikke kjent for ${emne} — vises uten sammenligning.`;
   return lowerIsBetter ? `Lavere tall er bedre for ${emne}.` : `Høyere tall er bedre for ${emne}.`;
 }
 
-export function TnVisning({ spillerId, data }: { spillerId: string; data: TnSpillerTestDetalj }) {
+export function TnVisning({ spillerId, data, brukerNavn }: { spillerId: string; data: TnSpillerTestDetalj; brukerNavn: string }) {
   const harGyldigeResultater = data.historikk.length > 0;
   return (
-    <TnShell aktiv="spillere" brukerNavn={data.tilgang.spillerNavn} rolle={rolleNavn(data.tilgang.kontekst.rolle)} groupId={data.tilgang.kontekst.gruppe.id} visTrenerflater={!data.tilgang.kontekst.erSpiller} kanAdministrere={data.tilgang.kontekst.kanAdministrere}>
-      <TnSpillerFaner spillerId={spillerId} spillerNavn={data.tilgang.spillerNavn} aktiv="tester" kanAdministrere={!data.tilgang.kontekst.erSpiller} />
-      <TnSidehode overlinje="Testdetalj" tittel={data.protokollNavn} ingress={retningIngress(data.lowerIsBetter, "denne protokollen")} />
+    <TnShell aktiv="spillere" brukerNavn={brukerNavn} rolle={tnRolleNavn(data.tilgang.kontekst.rolle)} groupId={data.tilgang.kontekst.gruppe.id} visTrenerflater={!data.tilgang.kontekst.erSpiller} kanAdministrere={data.tilgang.kontekst.kanAdministrere} tilbake={{ href: `/team-norway/spiller/${spillerId}/tester`, label: "Tester" }}>
+      <TnSidehode overlinje={`IUP · ${data.tilgang.spillerNavn}`} tittel={data.protokollNavn} ingress={retningIngress(data.lowerIsBetter, "denne protokollen")} />
+      <TnSpillerFaner spillerId={spillerId} spillerNavn={data.tilgang.spillerNavn} aktiv="tester" kanAdministrere={!data.tilgang.kontekst.erSpiller} kompakt />
 
       {data.antallUtelatt > 0 && (
         <TnTomtilstand
@@ -76,8 +69,8 @@ export function TnVisning({ spillerId, data }: { spillerId: string; data: TnSpil
               rader={data.historikk.map((rad) => ({
                 dato: datoTid.format(rad.takenAt),
                 score: rad.formatert,
-                kilde: rad.recordedByCoach ? "Trener" : "Egenregistrert",
-                testdag: rad.testdagDeltakerId ? <Link href={`/team-norway/fellestesting/${rad.testdagDeltakerId}`} style={{ color: TN.navy700, fontWeight: TN.weight.semibold }}>Se testdag</Link> : "—",
+                kilde: rad.recordedByCoach ? <TnPille tone="green">Kontrollert</TnPille> : <TnPille tone="info">Egenført</TnPille>,
+                testdag: rad.testdagDeltakerId ? <Link href={`/team-norway/fellestesting/${rad.testdagDeltakerId}`} style={{ color: TN.navy600, fontWeight: 700, textUnderlineOffset: 4 }}>Se testdag</Link> : "—",
               }))}
               empty="Ingen historikk."
             />
@@ -88,13 +81,13 @@ export function TnVisning({ spillerId, data }: { spillerId: string; data: TnSpil
   );
 }
 
-export function TnOvrigVisning({ spillerId, data }: { spillerId: string; data: TnSpillerOvrigTestDetalj }) {
+export function TnOvrigVisning({ spillerId, data, brukerNavn }: { spillerId: string; data: TnSpillerOvrigTestDetalj; brukerNavn: string }) {
   const harResultater = data.historikk.length > 0;
   const sisteMedForsok = data.sisteForsok.length > 0;
   return (
-    <TnShell aktiv="spillere" brukerNavn={data.tilgang.spillerNavn} rolle={rolleNavn(data.tilgang.kontekst.rolle)} groupId={data.tilgang.kontekst.gruppe.id} visTrenerflater={!data.tilgang.kontekst.erSpiller} kanAdministrere={data.tilgang.kontekst.kanAdministrere}>
-      <TnSpillerFaner spillerId={spillerId} spillerNavn={data.tilgang.spillerNavn} aktiv="tester" kanAdministrere={!data.tilgang.kontekst.erSpiller} />
-      <TnSidehode overlinje="Testdetalj · øvrig PlayerHQ-test" tittel={data.navn} ingress={retningIngress(data.lowerIsBetter, "denne testen")} />
+    <TnShell aktiv="spillere" brukerNavn={brukerNavn} rolle={tnRolleNavn(data.tilgang.kontekst.rolle)} groupId={data.tilgang.kontekst.gruppe.id} visTrenerflater={!data.tilgang.kontekst.erSpiller} kanAdministrere={data.tilgang.kontekst.kanAdministrere} tilbake={{ href: `/team-norway/spiller/${spillerId}/tester`, label: "Tester" }}>
+      <TnSidehode overlinje={`IUP · ${data.tilgang.spillerNavn} · PlayerHQ-test`} tittel={data.navn} ingress={retningIngress(data.lowerIsBetter, "denne testen")} />
+      <TnSpillerFaner spillerId={spillerId} spillerNavn={data.tilgang.spillerNavn} aktiv="tester" kanAdministrere={!data.tilgang.kontekst.erSpiller} kompakt />
 
       <TnSeksjon tittel="Protokoll" forklaring={data.regel}>
         {data.steg.length === 0 ? (

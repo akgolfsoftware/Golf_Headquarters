@@ -182,6 +182,7 @@ export async function loadInnboksSaker(user: {
       prisma.planAction.findMany({
         where: {
           status: "PENDING",
+          actionType: { not: "WORKBENCH_GATHERING_INVITE" },
           OR: [{ coachId: user.id }, { coachId: null }],
           user: spillerScope,
         },
@@ -234,6 +235,7 @@ export async function loadInnboksSaker(user: {
       prisma.planAction.findMany({
         where: {
           status: { in: ["ACCEPTED", "REJECTED"] },
+          actionType: { not: "WORKBENCH_GATHERING_INVITE" },
           user: spillerScope,
           updatedAt: { gte: lostGrense },
         },

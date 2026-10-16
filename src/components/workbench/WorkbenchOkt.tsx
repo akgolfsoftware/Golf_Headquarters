@@ -25,12 +25,15 @@ import {
   hastighetTekst,
   MAALEUTSTYR_LABEL,
   mengdeTekst,
+  kondisjonssegmentTekst,
+  utstyrTekst,
   stedTekst,
   TRENINGSMAATE_LABEL,
 } from "@/lib/domain/workbench/ovelse-detaljer";
 import { OvelseSkjema } from "./OvelseSkjema";
 import { SourcesPanel } from "./SourcesPanel";
 import { VisningPiller } from "./VisningPiller";
+import { SessionExecutionPanel } from "./SessionExecutionPanel";
 
 type Props = {
   playerId: string;
@@ -98,6 +101,8 @@ function detaljRader(drill: Drill | undefined) {
     { label: "Sandtrinn", hint: "Bare bunker", value: d.sandTrinn ? SAND_TRINN_LABEL[d.sandTrinn] : undefined },
     { label: "Treningsmåte", hint: "Hvordan spilleren skal trene", value: d.treningsmaate ? TRENINGSMAATE_LABEL[d.treningsmaate] : undefined },
     { label: "Mengde", hint: "Hvor mye som skal gjøres", value: mengdeTekst(d.mengde) },
+    { label: "Kondisjonssegmenter", hint: "Tid og pulssone", value: kondisjonssegmentTekst(d.kondisjonssegmenter) },
+    { label: "Utstyr", hint: "Utstyr og registrert antall", value: utstyrTekst(d.utstyr) },
     { label: "Målemetode", hint: "Hvordan målet måles", value: d.mal?.malemetode },
     { label: "Resultatkrav", hint: "Hva som må til for å nå målet", value: d.mal?.resultatkrav },
     { label: "Notat", hint: "Fritekst", value: d.mal?.notat },
@@ -117,9 +122,12 @@ function formelGrunn(session: WorkbenchSession, drill: Drill | undefined, f: Dri
     { label: UI.formelMotorikk, hint: UI.formelHintMotorikk, value: f?.motorikk ? MOTORIKK[f.motorikk] : "—" },
     { label: UI.formelBelastning, hint: UI.formelHintBelastning, value: f?.belastning ? BELASTNING[f.belastning] : session.environment ? BELASTNING[session.environment] ?? session.environment : "—" },
     { label: UI.formelPress, hint: UI.formelHintPress, value: f?.press ? PRESS[f.press] : session.pressureLevel ?? "—" },
-    { label: UI.formelHensikt, hint: UI.formelHintHensikt, value: session.pyramid === "FYS" ? session.rationale ?? "—" : "—" },
+    { label: UI.formelHensikt, hint: UI.formelHintHensikt, value: session.rationale ?? "—" },
     { label: UI.formelMate, hint: UI.formelHintMate, value: drill?.description ?? (session.practiceType ? PRAKSIS[session.practiceType] : "—") },
-    { label: UI.formelMal, hint: UI.formelHintMal, value: drill?.techniqueFocus ?? session.maalsetning ?? "—" },
+    { label: UI.formelMal, hint: UI.formelHintMal, value: drill?.akFormel.detaljer?.mal?.malsetning ?? "—" },
+    { label: "Øktens målsetning", hint: "Øktens innhold", value: session.maalsetning ?? "—" },
+    { label: "Sted for økten", hint: "Øktens innhold", value: session.location ?? "—" },
+    ...(drill?.techniqueFocus ? [{ label: "Historisk fokus / kildeposisjon", hint: "Øktens innhold", value: drill.techniqueFocus }] : []),
   ];
 }
 
@@ -248,6 +256,7 @@ export function WorkbenchOkt({ playerId, spillerNavn, uke, selectedSessionId, ki
                 )}
               </header>
 
+              <SessionExecutionPanel key={`${session.id}-${session.updatedAt}`} session={session} onSaved={() => { void refresh(); }} />
               {sessions.length > 1 ? (
                 <label className="wb-session-picker"><span>Økt i uken</span><select value={session.id} onChange={(event) => selectSession(event.target.value)}>{sessions.map((item) => <option key={item.id} value={item.id}>{datoLabel(item.date)} · {formatTime(item.startMinute)} · {item.title}</option>)}</select></label>
               ) : null}

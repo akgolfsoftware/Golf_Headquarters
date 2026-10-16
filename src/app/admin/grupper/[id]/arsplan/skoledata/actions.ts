@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { canEditGroup } from "@/lib/workbench/group-scope";
 import { revalidatePath } from "next/cache";
 import { requireCoachActionUser } from "@/lib/auth/action-guards";
 import { assertCapability } from "@/lib/auth/effective-capabilities";
@@ -78,6 +79,10 @@ export async function importerSkoledata(
   const aktor = await requireCoachActionUser();
   // G6: skoledata er årsplan-grunnlag → EDIT_GROUP_PLANS.
   await assertCapability(aktor, Capability.EDIT_GROUP_PLANS);
+  // Gruppen må være en coachen kan redigere (groupId ble tidligere ikke sjekket).
+  if (!(await canEditGroup(aktor, groupId))) {
+    return { ok: false, feil: ["Du har ikke tilgang til denne gruppen."] };
+  }
   const schoolYear = (formData.get("schoolYear") as string) ?? "";
   const raatekst = (formData.get("data") as string) ?? "";
 

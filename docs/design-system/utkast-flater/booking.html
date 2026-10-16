@@ -1,0 +1,301 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Offentlig booking</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="felles/felles.css">
+<link rel="stylesheet" href="felles/flater.css">
+<style>
+/* ---------- Gruppe 3: Offentlig booking · BK-01 til BK-03 ---------- */
+.skjermvalg button{font-size:13px;min-height:36px;padding:0 10px}
+.bk-hode{display:grid;gap:var(--r3)}
+.bk-steg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.bk-steg div{display:grid;gap:6px;font:500 12.5px/1.3 var(--sans);color:var(--graphite-600)}
+.bk-steg div i{height:4px;border-radius:2px;background:var(--sand-300)}
+.bk-steg div.ja{color:var(--graphite-900);font-weight:600}
+.bk-steg div.ja i{background:var(--graphite-900)}
+.tjenester{display:grid;gap:var(--r3)}
+.tjeneste{display:grid;border:1px solid var(--sand-300);border-radius:12px;overflow:hidden;background:var(--white);text-align:left;font:inherit;color:inherit;cursor:pointer;padding:0}
+.tjeneste img{display:block;width:100%;height:120px;object-fit:cover}
+.tjeneste .tekst{display:grid;gap:8px;padding:var(--r4) 18px 18px}
+.tjeneste .rad{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.tjeneste b.n{font:600 19px/1.25 var(--sans)}
+.tjeneste .pris{font:600 22px/1 var(--mono)}
+.tjeneste .pris small{font:500 13px/1 var(--sans);color:var(--graphite-600);margin-left:4px}
+.tjeneste[aria-pressed="true"]{border:2px solid var(--graphite-900)}
+.tjeneste .fakta{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:14px;color:var(--graphite-800)}
+.neste-ledig{display:inline-flex;align-items:center;gap:6px;font:600 13px/1 var(--sans);color:var(--green-700)}
+.neste-ledig i{width:8px;height:8px;border-radius:50%;background:var(--green-700)}
+.pakke-rad{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--r3);align-items:center;padding:14px 16px;border:1px solid var(--sand-300);border-radius:12px;background:var(--sand-100)}
+.pakke-rad b{display:block;font:600 16px/1.3 var(--sans)}
+.uke-nav{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.uke-nav b{font:600 15px/1.2 var(--sans)}
+.dager{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.dager button{display:grid;justify-items:center;gap:3px;padding:8px 0;border:1px solid var(--sand-300);border-radius:10px;background:var(--white);cursor:pointer;font:inherit;color:inherit}
+.dager button b{font:600 17px/1 var(--mono)}
+.dager button span{font:500 11px/1 var(--sans);color:var(--graphite-600)}
+.dager button[aria-pressed="true"]{background:var(--graphite-900);color:#fff;border-color:var(--graphite-900)}
+.dager button[aria-pressed="true"] span{color:#fff}
+.dager button:disabled{background:var(--sand-150);color:var(--graphite-500);cursor:not-allowed;border-color:var(--sand-150)}
+.tider{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.tider button{min-height:52px;border:1px solid var(--sand-300);border-radius:8px;background:var(--white);font:600 16px/1 var(--mono);cursor:pointer;color:var(--graphite-900)}
+.tider button[aria-pressed="true"]{background:var(--graphite-900);color:#fff;border-color:var(--graphite-900)}
+.sammendrag{display:grid;gap:var(--r3);padding:var(--r4) 18px;border-radius:12px;background:var(--sand-100)}
+.sammendrag .sum{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding-top:var(--r2);border-top:1px solid var(--sand-300)}
+.sammendrag .sum b{font:600 26px/1 var(--mono)}
+.betal{display:grid;gap:var(--r2)}
+.betal button{display:flex;align-items:center;gap:12px;min-height:56px;padding:0 16px;border:1px solid var(--sand-300);border-radius:10px;background:var(--white);font:600 15px/1 var(--sans);color:var(--graphite-900);cursor:pointer;text-align:left}
+.betal button[aria-pressed="true"]{border:2px solid var(--graphite-900);padding:0 15px}
+.betal .merke{width:44px;height:28px;border-radius:6px;display:grid;place-items:center;font:700 11px/1 var(--sans);background:var(--sand-150)}
+.kvittering{display:grid;gap:var(--r4);padding:var(--r5) 18px;border-radius:16px;background:var(--graphite-900);color:#fff}
+.kvittering .dato-stor{font:600 40px/1 var(--mono);letter-spacing:-.03em}
+.kvittering p{opacity:.9}
+.kvittering .ref{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;padding-top:var(--r3);border-top:1px solid rgba(255,255,255,.2)}
+.kvittering .ref span{font-size:13px;opacity:.8}
+.kvittering .knapp.sek{background:transparent;color:#fff;border-color:rgba(255,255,255,.5)}
+.tilbud{display:grid;gap:var(--r3);padding:var(--r4) 18px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white)}
+.tilbud ul{margin:0;padding-left:18px;display:grid;gap:4px;font-size:14.5px}
+.pause-steg{display:grid;gap:0;border-top:1px solid var(--sand-300)}
+.pause-steg div{display:grid;grid-template-columns:36px minmax(0,1fr);gap:var(--r3);padding:12px 0;border-bottom:1px solid var(--sand-300)}
+.pause-steg b.nr{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--sand-150);font:600 14px/1 var(--mono)}
+.pause-steg b.t{display:block;font:600 15px/1.3 var(--sans)}
+@container (min-width:900px){
+  .tjenester{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tider{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .bk-to{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:var(--r6);align-items:start}
+  .bk-to > aside{position:sticky;top:88px}
+}
+</style>
+
+<div class="ytre">
+  <div class="hode">
+    <span class="meta-s">Booking · gruppe 3 · BK-01 til BK-03 · utkast 1 · 15.10.2026</span>
+    <h1>Offentlig booking</h1>
+    <p>Sju skjermer: velg tjeneste, mellomtilstanden mens bookingen er pauset, velg tid, dine opplysninger og betaling med kort eller Apple Pay, og kvitteringen for gjest og for appbruker. Kunden er flexkunden Jon Berg uten konto. Priser er eksempler.</p>
+  </div>
+  <div class="kontroller">
+    <div class="velger skjermvalg" role="group" aria-label="Skjerm">
+      <button type="button" aria-pressed="true" data-skjerm="tjeneste">BK-01 Velg tjeneste</button>
+      <button type="button" aria-pressed="false" data-skjerm="pauset">BK-01 Pauset</button>
+      <button type="button" aria-pressed="false" data-skjerm="tid">BK-02 Velg tid</button>
+      <button type="button" aria-pressed="false" data-skjerm="bekreft">BK-02 Opplysninger og betal</button>
+      <button type="button" aria-pressed="false" data-skjerm="betaling">BK-02 Betaling</button>
+      <button type="button" aria-pressed="false" data-skjerm="kvittering">BK-03 Kvittering gjest</button>
+      <button type="button" aria-pressed="false" data-skjerm="kvitteringapp">BK-03 Kvittering appbruker</button>
+    </div>
+  </div>
+  <div class="kontroller">
+    <div class="velger" role="group" aria-label="Bredde"><button type="button" aria-pressed="true" data-bredde="mob">Mobil</button><button type="button" aria-pressed="false" data-bredde="pc">PC</button></div>
+    <div class="velger" role="group" aria-label="Tilstand"><button type="button" aria-pressed="true" data-tilstand="data">Med data</button><button type="button" aria-pressed="false" data-tilstand="tom">Tom</button><button type="button" aria-pressed="false" data-tilstand="laster">Laster</button><button type="button" aria-pressed="false" data-tilstand="feil">Feil</button></div>
+  </div>
+  <div class="scene"><div class="ramme mob" id="ramme"></div></div>
+  <div class="notater">
+    <div class="endringer">
+      <span class="meta-s">Hva som er nytt</span>
+      <ul>
+        <li><b>Fire steg i én flyt</b> med steglinje: Tjeneste · Tid · Dine opplysninger · Betal. Sammendraget følger med på PC.</li>
+        <li><b>Tjenestene som fylte kort</b> med bilde, pris i stort tall og neste ledige tid.</li>
+        <li><b>Kvitteringen</b> viser dag og klokkeslett stort, referanse i mono og «Legg i kalender».</li>
+        <li><b>Gjesten får tilbud om PlayerHQ</b> på kvitteringen. Appbrukeren får lenke til bookingen i appen.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Reglene som er fulgt</span>
+      <ul>
+        <li>Booking bekreftes automatisk når tiden er ledig og betalingen er gjennomført. Ingen «Venter på bekreftelse fra coach» (vedtak 27.09).</li>
+        <li>Betaling med kort eller Apple Pay, ingen andre betalingsmåter (Anders 15.10).</li>
+        <li>Hovedknappen heter «Book time». Kartleggingsøkt finnes ikke.</li>
+        <li>Priser leses fra tjenestelista i appen. Beløpene i utkastet er merket «Eksempel».</li>
+        <li>Lenken til å opprette konto har ikke e-posten i adressen. E-posten fylles ut på registreringssiden fra bookingen.</li>
+        <li>Tidligere bookinger med samme e-post hentes inn på kontoen når gjesten registrerer seg (vedtak 27.09).</li>
+        <li>Publisert tekst fra dagens booking er beholdt («Fire felt. Resten tar vi på timen.», «Ingenting er betalt før du trykker nederst.»).</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Åpent hos Anders</span>
+      <ul>
+        <li><b>Aldersgrensen for samtykke i booking:</b> dagens tekst sier «Under 18 krever samtykke fra foresatt». PlayerHQ bruker 16 år. Beholdt som publisert til Anders avgjør.</li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ================= BK-01 Velg tjeneste ================= -->
+<template id="tjeneste">
+<div class="app" data-skall="offentlig"><main class="innhold">
+  <div class="bk-hode" data-behold>
+    <span class="dato">AK Golf Academy · Fredrikstad</span>
+    <h1 class="tittel">Book en time med Anders Kristiansen</h1>
+    <div class="bk-steg" aria-label="Steg 1 av 4"><div class="ja"><i></i>Tjeneste</div><div><i></i>Tid</div><div><i></i>Dine opplysninger</div><div><i></i>Betal</div></div>
+  </div>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Hva vil du booke?</h2></div>
+    <div class="tjenester">
+      <button type="button" class="tjeneste" data-gaa="tid"><img src="bilder/slag-simulator.jpg" alt=""><span class="tekst"><span class="rad"><b class="n">Coaching 60 min</b><span class="pris">1 200<small>kr</small></span></span><span class="fakta"><span>60 min</span><span>Simulator eller range</span><span>Måling med TrackMan</span></span><span class="rad"><span class="neste-ledig"><i></i>Neste ledige: tor 8. okt 17:00</span><span class="eksempel">Eksempel</span></span></span></button>
+      <button type="button" class="tjeneste"><img src="bilder/naerspill-wedge.jpg" alt=""><span class="tekst"><span class="rad"><b class="n">Coaching 30 min</b><span class="pris">650<small>kr</small></span></span><span class="fakta"><span>30 min</span><span>Ett tema</span></span><span class="rad"><span class="neste-ledig"><i></i>Neste ledige: ons 7. okt 15:30</span><span class="eksempel">Eksempel</span></span></span></button>
+      <button type="button" class="tjeneste"><img src="bilder/spill-bane.jpg" alt=""><span class="tekst"><span class="rad"><b class="n">Banerunde 9 hull</b><span class="pris">1 600<small>kr</small></span></span><span class="fakta"><span>Ca. 2 t</span><span>Gamle Fredrikstad Golfklubb</span></span><span class="rad"><span class="neste-ledig"><i></i>Neste ledige: lør 10. okt 10:00</span><span class="eksempel">Eksempel</span></span></span></button>
+      <button type="button" class="tjeneste"><img src="bilder/slag-utslag.jpg" alt=""><span class="tekst"><span class="rad"><b class="n">Gruppetime</b><span class="pris">350<small>kr</small></span></span><span class="fakta"><span>90 min</span><span>Opptil 6 spillere</span></span><span class="rad"><span class="neste-ledig"><i></i>3 plasser igjen tir 13. okt</span><span class="eksempel">Eksempel</span></span></span></button>
+    </div>
+  </section>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Eller fast oppfølging hver måned</h2></div>
+    <div class="pakke-rad"><span><b>Performance og Performance Pro</b><span class="kilde">2 eller 4 coachede økter i måneden, med plan i PlayerHQ</span></span><a href="#" class="knapp sek">Se priser</a></div>
+  </section>
+  <p class="kilde">Bekreftelsen kommer på e-post når betalingen er gjennomført.</p>
+</main></div>
+</template>
+
+<!-- ================= BK-01 Pauset ================= -->
+<template id="pauset">
+<div class="app" data-skall="offentlig"><main class="innhold smal">
+  <div class="bk-hode" data-behold>
+    <span class="dato">AK Golf Academy · Fredrikstad</span>
+    <h1 class="tittel">Book en time med Anders Kristiansen</h1>
+    <p class="ingress">Bookingen skjer foreløpig hos en egen bookingtjeneste. Du sendes dit når du trykker på knappen.</p>
+  </div>
+  <div class="kort">
+    <div class="pause-steg">
+      <div><b class="nr">1</b><span><b class="t">Velg økt</b><span class="forklar">Flex, Performance, Pro eller gruppe — ett trykk.</span></span></div>
+      <div><b class="nr">2</b><span><b class="t">Velg tid</b><span class="forklar">Ledige tider uke for uke, i norsk tid, hos bookingtjenesten.</span></span></div>
+      <div><b class="nr">3</b><span><b class="t">Betal hos bookingtjenesten</b><span class="forklar">Pris og avbestillingsregler vises der før du betaler med kort.</span></span></div>
+      <div><b class="nr">4</b><span><b class="t">Bekreftelse</b><span class="forklar">Bookingtjenesten sender bekreftelse og kalenderinvitasjon.</span></span></div>
+    </div>
+  </div>
+  <a href="#" class="knapp pri stor">Book time</a>
+  <p class="kilde">Åpnes på en ny side hos bookingtjenesten.</p>
+</main></div>
+</template>
+
+<!-- ================= BK-02 Velg tid ================= -->
+<template id="tid">
+<div class="app" data-skall="offentlig"><main class="innhold">
+  <a href="#" class="fl-tilbake" data-gaa="tjeneste" data-behold><svg class="ikon" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>Alle tjenester</a>
+  <div class="bk-hode" data-behold>
+    <h1 class="tittel">Velg tid</h1>
+    <div class="bk-steg"><div class="ja"><i></i>Tjeneste</div><div class="ja"><i></i>Tid</div><div><i></i>Dine opplysninger</div><div><i></i>Betal</div></div>
+  </div>
+  <div class="bk-to">
+    <div style="display:grid;gap:var(--r5)">
+      <section class="seksjon">
+        <div class="uke-nav"><button type="button" class="knapp sek" aria-label="Forrige uke" disabled><svg class="ikon" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button><b>Uke 41 · 5.–11. oktober</b><button type="button" class="knapp sek" aria-label="Neste uke"><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button></div>
+        <div class="dager" data-gruppe>
+          <button type="button" disabled><span>Man</span><b>5</b></button><button type="button" aria-pressed="false"><span>Tir</span><b>6</b></button><button type="button" aria-pressed="false"><span>Ons</span><b>7</b></button><button type="button" aria-pressed="true"><span>Tor</span><b>8</b></button><button type="button" aria-pressed="false"><span>Fre</span><b>9</b></button><button type="button" disabled><span>Lør</span><b>10</b></button><button type="button" disabled><span>Søn</span><b>11</b></button>
+        </div>
+        <p class="kilde">Velg en dag over. Grå dager er fullbooket.</p>
+      </section>
+      <section class="seksjon">
+        <div class="sek-topp"><h2>Torsdag 8. oktober</h2><span class="kilde">norsk tid</span></div>
+        <div class="tider" data-gruppe><button type="button" aria-pressed="false">14:00</button><button type="button" aria-pressed="true">17:00</button><button type="button" aria-pressed="false">18:00</button><button type="button" aria-pressed="false">19:00</button></div>
+      </section>
+    </div>
+    <aside class="sammendrag">
+      <b class="undertittel">Coaching 60 min</b>
+      <dl class="dl"><div><dt>Coach</dt><dd>Anders Kristiansen</dd></div><div><dt>Tid</dt><dd>Tor 8. okt kl. 17:00</dd></div><div><dt>Sted</dt><dd>Simulator, Fredrikstad</dd></div></dl>
+      <div class="sum"><span>Å betale</span><b>1 200 kr</b></div>
+      <button type="button" class="knapp pri stor" data-gaa="bekreft">Videre til dine opplysninger</button>
+    </aside>
+  </div>
+</main></div>
+</template>
+
+<!-- ================= BK-02 Opplysninger ================= -->
+<template id="bekreft">
+<div class="app" data-skall="offentlig"><main class="innhold">
+  <a href="#" class="fl-tilbake" data-gaa="tid" data-behold><svg class="ikon" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>Velg annen tid</a>
+  <div class="bk-hode" data-behold>
+    <h1 class="tittel">Se over før du betaler</h1>
+    <div class="bk-steg"><div class="ja"><i></i>Tjeneste</div><div class="ja"><i></i>Tid</div><div class="ja"><i></i>Dine opplysninger</div><div><i></i>Betal</div></div>
+  </div>
+  <div class="bk-to">
+    <form class="seksjon" data-skjema>
+      <div class="sek-topp"><h2>Dine opplysninger</h2><span class="kilde">Fire felt. Resten tar vi på timen.</span></div>
+      <div class="felt"><label for="bn">Ditt navn</label><input id="bn" value="Jon Berg" autocomplete="name"></div>
+      <div class="felt"><label for="be">E-post</label><input id="be" type="email" value="jon.berg@eksempel.no" autocomplete="email"><span class="hjelp">Kvitteringen kommer hit.</span></div>
+      <div class="felt"><label for="bt">Telefon</label><input id="bt" value="+47 400 00 000" autocomplete="tel"><span class="hjelp">Kun ved endringer samme dag.</span></div>
+      <div class="felt"><label for="bh">Hva vil du jobbe med?</label><textarea id="bh" rows="3">Jevnere jernslag og bedre lengdekontroll med wedgene.</textarea><span class="hjelp">Vet du det ikke, la det stå tomt.</span></div>
+      <label class="avkrysning"><input type="checkbox" id="bf"><span><b>Spilleren er under 18</b>Under 18 krever samtykke fra foresatt.</span></label>
+      <label class="avkrysning"><input type="checkbox" id="bv" checked><span>Jeg godtar <a href="#">vilkårene</a>. Gratis avbestilling til 24 timer før.</span></label>
+      <span class="forklar">Ingenting er betalt før du trykker nederst.</span>
+    </form>
+    <aside class="sammendrag">
+      <b class="undertittel">Coaching 60 min</b>
+      <dl class="dl"><div><dt>Coach</dt><dd>Anders Kristiansen</dd></div><div><dt>Tid</dt><dd>Tor 8. okt kl. 17:00</dd></div><div><dt>Sted</dt><dd>Simulator, Fredrikstad</dd></div></dl>
+      <div class="sum"><span>Å betale <span class="eksempel">Eksempel</span></span><b>1 200 kr</b></div>
+      <button type="button" class="knapp pri stor" data-gaa="betaling">Gå til betaling</button>
+    </aside>
+  </div>
+</main></div>
+</template>
+
+<!-- ================= BK-02 Betaling ================= -->
+<template id="betaling">
+<div class="app" data-skall="offentlig"><main class="innhold smal">
+  <div class="bk-hode" data-behold>
+    <h1 class="tittel">Betal</h1>
+    <div class="bk-steg"><div class="ja"><i></i>Tjeneste</div><div class="ja"><i></i>Tid</div><div class="ja"><i></i>Dine opplysninger</div><div class="ja"><i></i>Betal</div></div>
+  </div>
+  <div class="sammendrag">
+    <dl class="dl"><div><dt>Coaching 60 min</dt><dd>Tor 8. okt 17:00</dd></div></dl>
+    <div class="sum"><span>Å betale</span><b>1 200 kr</b></div>
+  </div>
+  <section class="seksjon">
+    <span class="undertittel">Betal med</span>
+    <div class="betal" data-gruppe><button type="button" aria-pressed="true"><span class="merke">KORT</span>Kort</button><button type="button" aria-pressed="false"><span class="merke">PAY</span>Apple Pay</button></div>
+    <p class="kilde">Kort og Apple Pay betales i en sikker betalingsside. Vi lagrer ikke kortnummeret.</p>
+  </section>
+  <button type="button" class="knapp pri stor" data-gaa="kvittering">Betal 1 200 kr</button>
+  <p class="kilde">Timen holdes av for deg i 10 minutter mens du betaler.</p>
+</main></div>
+</template>
+
+<!-- ================= BK-03 Kvittering gjest ================= -->
+<template id="kvittering">
+<div class="app" data-skall="offentlig"><main class="innhold smal">
+  <div class="topp" data-behold><span class="pille ok"><i></i>Bekreftet</span><h1 class="tittel">Timen er booket, Jon</h1><p class="ingress">Bekreftelsen er sendt til jon.berg@eksempel.no.</p></div>
+  <div class="kvittering inn">
+    <span class="dato-stor">Tor 8. okt · 17:00</span>
+    <p>Coaching 60 min med Anders Kristiansen · Simulator, Fredrikstad</p>
+    <div class="ref"><span>Referanse</span><b class="referanse">AK-4822-JB</b></div>
+    <div class="ref"><span>Betalt med kort</span><b class="mono">1 200 kr</b></div>
+    <div class="knapper"><button type="button" class="knapp sek" data-ics>Legg i kalender (.ics)</button></div>
+  </div>
+  <dl class="dl"><div><dt>Gratis avbestilling til</dt><dd>Ons 7. okt kl. 17:00</dd></div><div><dt>Endre eller avbestill</dt><dd><a href="#">Lenke i e-posten</a></dd></div></dl>
+  <div class="tilbud">
+    <b class="undertittel">Fortsett i PlayerHQ</b>
+    <ul><li>Se notatene fra timen og planen videre</li><li>Registrer runder og følg snittscore</li><li>Book neste time uten å fylle inn på nytt</li></ul>
+    <p class="forklar">Gratis å starte. Denne bookingen blir med inn på kontoen.</p>
+    <div class="knapper"><a href="#" class="knapp pri">Opprett konto</a></div>
+  </div>
+</main></div>
+</template>
+
+<!-- ================= BK-03 Kvittering appbruker ================= -->
+<template id="kvitteringapp">
+<div class="app" data-skall="offentlig"><main class="innhold smal">
+  <div class="topp" data-behold><span class="pille ok"><i></i>Bekreftet</span><h1 class="tittel">Timen er booket, Øyvind</h1><p class="ingress">Timen står i Plan, og Anders har fått beskjed.</p></div>
+  <div class="kvittering inn">
+    <span class="dato-stor">Tor 8. okt · 17:00</span>
+    <p>Coaching 60 min med Anders Kristiansen</p>
+    <div class="ref"><span>Referanse</span><b class="referanse">AK-4823-ØR</b></div>
+    <div class="ref"><span>Betalt med</span><b class="mono">1 klipp · 2 av 4 igjen</b></div>
+    <div class="knapper"><button type="button" class="knapp sek" data-ics>Legg i kalender (.ics)</button></div>
+  </div>
+  <div class="knapper"><a href="#" class="knapp pri">Se bookingen i PlayerHQ</a><a href="#" class="knapp sek">Book en til</a></div>
+</main></div>
+</template>
+
+<script src="felles/flater.js"></script>
+<script>
+function ics(app) { app.querySelectorAll('[data-ics]').forEach(function (b) { b.addEventListener('click', function () { AKFlate.toast(app, 'Kalenderfila lastes ned.'); }); }); }
+AKFlate.start({
+  start: 'tjeneste',
+  skjermer: {
+    tjeneste: { tom: { tittel: 'Ingen tjenester kan bookes akkurat nå', tekst: 'Ta kontakt på post@akgolf.no, så finner vi noe.' }, laster: 'Henter tjenester …', feil: 'Tjenestene kunne ikke hentes', feilTekst: 'Prøv igjen, eller ta kontakt på post@akgolf.no.' },
+    pauset: { tom: { tittel: 'Bookingen er stengt', tekst: 'Ta kontakt på post@akgolf.no.' } },
+    tid: { tom: { tittel: 'Ingen ledige tider de neste sju dagene', tekst: 'Ta kontakt på post@akgolf.no, så finner vi noe.', knapp: 'Neste uke' }, laster: 'Henter ledige tider …', feil: 'Klarte ikke hente ledige tider', feilTekst: 'Prøv igjen, eller ta kontakt på post@akgolf.no.' },
+    bekreft: { tom: { tittel: 'Tiden er ikke lenger ledig', tekst: 'En annen booket den like før. Velg en ny tid.', knapp: 'Velg annen tid' }, laster: 'Sender deg til betaling …', feil: 'Ett felt mangler', feilTekst: 'Se over før du betaler.' },
+    betaling: { tom: { tittel: 'Tiden gikk ut', tekst: 'Timen var holdt av i 10 minutter. Velg tid på nytt.', knapp: 'Velg tid' }, laster: 'Venter på betalingen …', feil: 'Betalingen gikk ikke gjennom', feilTekst: 'Ingenting er trukket, og timen er ikke booket. Prøv igjen, eller betal med Apple Pay.' },
+    kvittering: { etter: ics, tom: { tittel: 'Fant ikke bookingen', tekst: 'Sjekk lenken i e-posten. Referansen står der.' }, laster: 'Bekrefter betalingen …', feil: 'Kvitteringen kunne ikke vises', feilTekst: 'Betalingen er registrert. Bekreftelsen kommer på e-post.' },
+    kvitteringapp: { etter: ics, tom: { tittel: 'Fant ikke bookingen', tekst: 'Se under Plan i PlayerHQ.' }, laster: 'Bekrefter …', feil: 'Kvitteringen kunne ikke vises', feilTekst: 'Bookingen er lagret. Se Plan i PlayerHQ.' }
+  }
+});
+</script>

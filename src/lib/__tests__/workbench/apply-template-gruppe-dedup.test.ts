@@ -96,6 +96,7 @@ test("gruppeutrulling — dedup uten bortfall av spillerens egne økter (O02)", 
     namedExports: {
       prisma: {
         group: {
+          findFirst: async () => ({ id: GRUPPE_ID }),
           findUnique: async () => ({
             id: GRUPPE_ID,
             name: "P0 Gruppe",

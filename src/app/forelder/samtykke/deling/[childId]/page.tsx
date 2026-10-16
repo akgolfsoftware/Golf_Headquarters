@@ -1,3 +1,4 @@
+// FO05Deling — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
 /**
  * TN-12 Samtykke og deling (foreldrevisning) — designfasit
  * designsystem/team-norway/templates/tn-samtykke/ er tegnet nettopp i denne
@@ -5,13 +6,16 @@
  */
 
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { grupperMedEksterneLesereForSpiller, hentDelingsStatus } from "@/lib/deling/samtykke";
-import { V2Shell, FORELDER_NAV, FORELDER_MER } from "@/components/v2/shell";
+import { ForelderSkall } from "@/components/precision/ForelderSkall";
 import { InnstillingerHode } from "@/components/portal/v2/InnstillingerHode";
 import { TnSamtykkeSide, type TnOrganisasjon } from "@/components/portal/v2/TnSamtykkeSide";
 import { settDelingsSamtykkeForBarn } from "@/app/forelder/samtykke/actions";
+import { hentWangTestdeling } from "@/lib/portal-tester/wang-resultat-tilgang";
+import { WangTestforesporsel } from "@/components/portal/precision/WangTestforesporsel";
 
 export const dynamic = "force-dynamic";
 
@@ -27,6 +31,7 @@ export default async function ForelderDelingPage({ params }: { params: Promise<{
   const barn = relasjon.child;
 
   const grupper = await grupperMedEksterneLesereForSpiller(childId);
+  const wangTestdeling = await hentWangTestdeling(childId);
   const status = await hentDelingsStatus(childId, grupper.map((g) => g.id));
   const kart = new Map(status.map((s) => [s.gruppeId, s]));
 
@@ -43,11 +48,15 @@ export default async function ForelderDelingPage({ params }: { params: Promise<{
   }
 
   return (
-    <V2Shell bredde="kolonne" aktiv="oversikt" nav={FORELDER_NAV} mer={FORELDER_MER} navn={user.name} avatarUrl={user.avatarUrl}>
+        <ForelderSkall>
+      <div className="pa-side">
       <div style={{ maxWidth: 720, margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
         <InnstillingerHode tittel={`Hvem ser ${barn.name.split(" ")[0]}s data`} undertekst="Samtykke og deling" tilbakeHref="/forelder/samtykke" />
-        <TnSamtykkeSide organisasjoner={organisasjoner} settSamtykke={settSamtykke} krevesForesatt={barn.requiresGuardianConsent} />
+        <Link href={`/portal/meg/deling?barn=${encodeURIComponent(childId)}`} style={{ minHeight: 44, display: "inline-flex", alignItems: "center" }}>Navngitt trenerdeling for {barn.name.split(" ")[0]}</Link>
+        <TnSamtykkeSide organisasjoner={organisasjoner} settSamtykke={settSamtykke} krevesForesatt={barn.requiresGuardianConsent} modus="foresatt" />
+        {wangTestdeling.map((d) => <WangTestforesporsel key={d.gruppeId} {...d} modus={{ type: "foresatt", childId, barnNavn: barn.name }} />)}
       </div>
-    </V2Shell>
+          </div>
+    </ForelderSkall>
   );
 }

@@ -30,6 +30,7 @@ Hele prosjektmappen er kartlagt på filnivå, inkludert ignorerte filer og gener
 | `src/generated/` | Prisma-generert klient. Lokal, regenererbar, beholdt for utvikling. |
 | `prisma/` | Skjema, migrasjoner, SQL og seed-kilder. Beholdt. Ingen databasekommando kjørt mot tjenesten. |
 | `supabase-meg/` | Separat personlig databaseskjema. Beholdt på stabil sti. |
+| `supabase-wang/` | Separat WANG-databaseskjema og migrasjonshistorikk. Holdes adskilt fra AK Golf HQ og `supabase-meg/`. |
 | `designsystem/` | Train-lock, AK Golf, WANG, Team Norway og canvas. Alle leverte filer er bevart byte for byte; nytt kart ligger på rotnivå. |
 | `docs/` | Samordnet dokumentinngang, aktiv arbeidsliste, daterte underlag og tydelig arkiv. Hele registeret lenker til hvert dokument. |
 | `scripts/` | Kontroller, dataimport, bildeverktøy og lokale driftsjobber. Aktive stier beholdt; komplett katalog; utgått designverktøy flyttet. |

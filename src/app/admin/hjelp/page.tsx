@@ -1,30 +1,22 @@
 /**
- * v2: AgencyOS Hjelp. Egen top-level route (v2preview-mønster) som IKKE
- * arver AdminShell — kun root-layout — så V2Shell leverer all chrome
- * (IkonRail/BunnNav) i mørk v2-scope.
+ * Hjelp — AG-24 i Precision Athletics (/admin/hjelp).
  *
- * Statisk innhold (samme fasit som /admin/(legacy)/hjelp) — ingen
- * Prisma-spørringer. Auth via requirePortalUser (COACH/ADMIN), samme som
- * legacy-siden.
- *
- * Server component. "Hjelp" nås via Cmd+K-søket (Mer = fem rom fra
- * 2026-07-26) — ikke i
- * toppnavet — så aktiv-nøkkelen følger presedensen fra /admin/team og
- * /admin/email-templates (andre Drift-siter): "cockpit".
+ * Erstatter Train-lock-skallet med Precision Athletics (AgencyOSSkall og AG24Drift startFane="hjelp").
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TlTilbake } from "@/components/admin/v2/oppsett/tl-kit";
-import { AdminHjelpTrainLock } from "@/components/admin/v2/oppsett/AdminHjelpTrainLock";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { AG24Drift } from "@/components/admin/precision/AG24Drift";
 
-export default async function V2AdminHjelpPage() {
+export const dynamic = "force-dynamic";
+export const metadata = { title: "Hjelp · AgencyOS" };
+
+export default async function AdminHjelpPage() {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
 
   return (
-    <V2Shell bredde="kolonne" aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <TlTilbake href="/admin/agencyos">Cockpit</TlTilbake>
-      <AdminHjelpTrainLock />
-    </V2Shell>
+    <AgencyOSSkall navn={user.name ?? "Coach"}>
+      <AG24Drift startFane="hjelp" />
+    </AgencyOSSkall>
   );
 }

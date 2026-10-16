@@ -3,11 +3,10 @@
 import type { DragEvent } from "react";
 import Link from "next/link";
 import { Icon } from "@/components/v2/icon";
-import { TL } from "@/lib/v2/train-lock";
 import { UI } from "@/lib/domain/workbench/labels";
 import type { PlanningGoalSummary, SourceItem } from "@/lib/domain/workbench/types";
 import { PLAN_NIVAA_LABEL } from "@/lib/domain/maal-plannivaa";
-import { workbenchUrl } from "@/lib/workbench/visning-url";
+import { workbenchUrl, type WorkbenchSurface } from "@/lib/workbench/visning-url";
 import { settKildeDataTransfer } from "./wb-drag";
 
 type Props = {
@@ -17,7 +16,16 @@ type Props = {
   maned?: string;
   aar?: string;
   goals?: PlanningGoalSummary[];
+  routeSurface?: WorkbenchSurface;
 };
+
+const PA = {
+  font: { sans: "var(--font-sans)", mono: "var(--font-mono)" },
+  text: "var(--wb-ink)",
+  mute: "var(--wb-muted)",
+  hair: "var(--wb-border)",
+  draftBorder: "var(--wb-strong)",
+} as const;
 
 const GRUPPER: { kind: SourceItem["kind"]; tittel: string; ikon: string }[] = [
   { kind: "TEK", tittel: "Teknisk plan (P1–P10)", ikon: "crosshair" },
@@ -26,7 +34,7 @@ const GRUPPER: { kind: SourceItem["kind"]; tittel: string; ikon: string }[] = [
   { kind: "PREVIOUS_WEEK", tittel: UI.sourcesPrevious, ikon: "history" },
 ];
 
-export function SourcesPanel({ kilder, playerId, uke, maned, aar, goals = [] }: Props) {
+export function SourcesPanel({ kilder, playerId, uke, maned, aar, goals = [], routeSurface = "agency" }: Props) {
   const nivaa = playerId
     ? [
         { id: "aar" as const, label: UI.visAar },
@@ -37,13 +45,13 @@ export function SourcesPanel({ kilder, playerId, uke, maned, aar, goals = [] }: 
     : [];
   return (
     <aside aria-label={UI.sourcesTitle} style={{ minWidth: 0 }}>
-      <div style={{ fontFamily: TL.font.sans, fontSize: 11, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute }}>
+      <div style={{ fontFamily: PA.font.sans, fontSize: 11, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: PA.mute }}>
         {playerId ? UI.timeLevels : UI.sourcesTitle}
       </div>
       {nivaa.length > 0 ? (
         <div style={{ marginTop: 10, display: "grid", gap: 2 }}>
           {nivaa.map((n) => (
-            <Link key={n.id} href={workbenchUrl(playerId!, n.id, { uke, maned, aar })} style={{ minHeight: 44, display: "flex", alignItems: "center", borderRadius: 2, padding: "0 8px", fontFamily: TL.font.sans, fontSize: 13, color: TL.text, textDecoration: "none" }}>
+            <Link key={n.id} href={workbenchUrl(playerId!, n.id, { uke, maned, aar }, routeSurface)} style={{ minHeight: 44, display: "flex", alignItems: "center", borderRadius: 2, padding: "0 8px", fontFamily: PA.font.sans, fontSize: 13, color: PA.text, textDecoration: "none" }}>
               {n.label}
             </Link>
           ))}
@@ -52,10 +60,10 @@ export function SourcesPanel({ kilder, playerId, uke, maned, aar, goals = [] }: 
       {goals.length > 0 ? <MaalSpor goals={goals} /> : null}
       {kilder.length === 0 ? (
         <div style={{ display: "flex", gap: 8, alignItems: "flex-start", marginTop: 10 }}>
-          <Icon name="layers" size={14} style={{ color: TL.mute, marginTop: 2 }} />
+          <Icon name="layers" size={14} style={{ color: PA.mute, marginTop: 2 }} />
           <div>
-            <div style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.mute }}>{UI.emptySourcesTitle}</div>
-            <div style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.mute, marginTop: 3 }}>{UI.emptySourcesBody}</div>
+            <div style={{ fontFamily: PA.font.sans, fontSize: 13, fontWeight: 600, color: PA.mute }}>{UI.emptySourcesTitle}</div>
+            <div style={{ fontFamily: PA.font.sans, fontSize: 11, color: PA.mute, marginTop: 3 }}>{UI.emptySourcesBody}</div>
           </div>
         </div>
       ) : (
@@ -65,9 +73,9 @@ export function SourcesPanel({ kilder, playerId, uke, maned, aar, goals = [] }: 
             if (elementer.length === 0) return null;
             return (
               <div key={gruppe.kind} style={{ minWidth: 0 }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 6, padding: "9px 2px", borderTop: `1px solid ${TL.hair}` }}>
-                  <span style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text }}>{gruppe.tittel}</span>
-                  <span style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.mute }}>{elementer.length}</span>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 6, padding: "9px 2px", borderTop: `1px solid ${PA.hair}` }}>
+                  <span style={{ fontFamily: PA.font.sans, fontSize: 13, fontWeight: 600, color: PA.text }}>{gruppe.tittel}</span>
+                  <span style={{ fontFamily: PA.font.sans, fontSize: 11, color: PA.mute }}>{elementer.length}</span>
                 </div>
                 <ul style={{ listStyle: "none", margin: 0, padding: "0 0 6px" }}>
                   {elementer.map((k) => (
@@ -89,8 +97,8 @@ function MaalSpor({ goals }: { goals: PlanningGoalSummary[] }) {
     { category: "PROCESS" as const, label: "Prosessmål" },
   ];
   return (
-    <section aria-label="Aktive mål" style={{ marginTop: 14, paddingTop: 12, borderTop: `1px solid ${TL.hair}` }}>
-      <div style={{ fontFamily: TL.font.sans, fontSize: 11, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute }}>
+    <section aria-label="Aktive mål" style={{ marginTop: 14, paddingTop: 12, borderTop: `1px solid ${PA.hair}` }}>
+      <div style={{ fontFamily: PA.font.sans, fontSize: 11, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: PA.mute }}>
         Målsetninger
       </div>
       {grupper.map((gruppe) => {
@@ -98,27 +106,27 @@ function MaalSpor({ goals }: { goals: PlanningGoalSummary[] }) {
         if (rader.length === 0) return null;
         return (
           <div key={gruppe.category} style={{ marginTop: 10 }}>
-            <div style={{ fontFamily: TL.font.sans, fontSize: 11, fontWeight: 600, color: TL.mute }}>{gruppe.label}</div>
+            <div style={{ fontFamily: PA.font.sans, fontSize: 11, fontWeight: 600, color: PA.mute }}>{gruppe.label}</div>
             {rader.map((goal) => (
-              <div key={goal.id} style={{ padding: "7px 0", borderBottom: `1px solid ${TL.hair}` }}>
-                <div style={{ fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 600, color: TL.text, lineHeight: 1.35 }}>{goal.title}</div>
-                <div style={{ marginTop: 2, fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>
+              <div key={goal.id} style={{ padding: "7px 0", borderBottom: `1px solid ${PA.hair}` }}>
+                <div style={{ fontFamily: PA.font.sans, fontSize: 12.5, fontWeight: 600, color: PA.text, lineHeight: 1.35 }}>{goal.title}</div>
+                <div style={{ marginTop: 2, fontFamily: PA.font.mono, fontSize: 10, color: PA.mute }}>
                   {goal.typeLabel}
                   {goal.targetDate ? ` · Frist ${goal.targetDate.slice(8, 10)}.${goal.targetDate.slice(5, 7)}.${goal.targetDate.slice(0, 4)}` : " · Ingen frist"}
                 </div>
-                <div style={{ marginTop: 2, fontFamily: TL.font.sans, fontSize: 11, color: TL.mute }}>
+                <div style={{ marginTop: 2, fontFamily: PA.font.sans, fontSize: 11, color: PA.mute }}>
                   Nivå: {PLAN_NIVAA_LABEL[goal.planNivaa]}
                   {goal.planNivaaKilde === "foreslatt" ? " (foreslått fra frist)" : ""}
                 </div>
-                <div style={{ marginTop: 2, fontFamily: TL.font.sans, fontSize: 11, color: TL.text }}>
+                <div style={{ marginTop: 2, fontFamily: PA.font.sans, fontSize: 11, color: PA.text }}>
                   {goal.fremdrift.hasData ? `${goal.fremdrift.pct} % · ${goal.fremdrift.detail}` : `Fremdrift: ${goal.fremdrift.detail}`}
                 </div>
                 {goal.spor ? (
-                  <div style={{ marginTop: 2, fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>
+                  <div style={{ marginTop: 2, fontFamily: PA.font.mono, fontSize: 10, color: PA.mute }}>
                     Planlagt {goal.spor.planlagt} · Gjennomført {goal.spor.gjennomfort} · Uteblitt {goal.spor.uteblitt}
                   </div>
                 ) : null}
-                <div style={{ marginTop: 2, fontFamily: TL.font.sans, fontSize: 11, color: TL.mute, lineHeight: 1.4 }}>
+                <div style={{ marginTop: 2, fontFamily: PA.font.sans, fontSize: 11, color: PA.mute, lineHeight: 1.4 }}>
                   Neste: {goal.nesteTiltak}
                 </div>
               </div>
@@ -138,16 +146,16 @@ function KildeKort({ kilde }: { kilde: SourceItem }) {
       title={UI.dragHint}
       onDragStart={(e: DragEvent<HTMLLIElement>) => {
         settKildeDataTransfer(e, kilde.id);
-        e.currentTarget.style.boxShadow = `inset 0 0 0 1px ${TL.draftBorder}`;
+        e.currentTarget.style.boxShadow = `inset 0 0 0 1px ${PA.draftBorder}`;
       }}
       onDragEnd={(e: DragEvent<HTMLLIElement>) => {
         e.currentTarget.style.boxShadow = "none";
       }}
       style={{
-        fontFamily: TL.font.sans,
+        fontFamily: PA.font.sans,
         fontSize: 13,
         fontWeight: 600,
-        color: TL.text,
+        color: PA.text,
         padding: "6px 4px 6px 10px",
         borderRadius: 2,
         cursor: "grab",
@@ -160,7 +168,7 @@ function KildeKort({ kilde }: { kilde: SourceItem }) {
           <span
             style={{
               fontSize: 9,
-              fontFamily: TL.font.mono,
+              fontFamily: PA.font.mono,
               fontWeight: 700,
               letterSpacing: "0.06em",
               color: "var(--ak-grunn-farge-rust-600)",
@@ -173,7 +181,7 @@ function KildeKort({ kilde }: { kilde: SourceItem }) {
         )}
       </div>
       {kilde.subtitle && (
-        <div style={{ fontSize: 11, fontWeight: 400, color: TL.mute, marginTop: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+        <div style={{ fontSize: 11, fontWeight: 400, color: PA.mute, marginTop: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
           {kilde.subtitle}
         </div>
       )}

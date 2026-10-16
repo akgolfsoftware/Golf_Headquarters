@@ -17,6 +17,7 @@ import {
   type GenerertForslag,
   type LagrePlanInput,
 } from "@/lib/plan-builder";
+import { sendPlanTilCoachCore, type SendPlanInput } from "@/lib/plan-builder/velg-plan-lagre";
 
 export async function anbefalMalV2(input: {
   maltype: ByggerMaltype;
@@ -59,5 +60,21 @@ export async function lagrePlanV2(
     return { ok: true, planId: res.planId };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Kunne ikke lagre planen." };
+  }
+}
+
+/** PH-12: sender valgt mal, SMART-mål og fordeling til coach (plan uten økter, «Venter på coach»). */
+export async function sendPlanTilCoachV2(
+  input: SendPlanInput,
+): Promise<{ ok: true; planId: string } | { ok: false; error: string }> {
+  const user = await requirePortalUser({ allow: ["PLAYER", "PARENT"] });
+  try {
+    const res = await sendPlanTilCoachCore(user, input);
+    revalidatePath("/portal/planlegge");
+    revalidatePath("/portal/mal");
+    return { ok: true, planId: res.planId };
+  } catch (error) {
+    await logError({ context: "bygger.sendPlanTilCoach", error, meta: { userId: user.id } });
+    return { ok: false, error: "Planen ble ikke sendt. Ingenting er lagret. Prøv igjen." };
   }
 }

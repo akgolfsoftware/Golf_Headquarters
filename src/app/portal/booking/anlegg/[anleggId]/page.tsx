@@ -1,3 +1,4 @@
+// PH23AnleggDetalj — Precision Athletics PH-23.
 /**
  * PlayerHQ · Anlegg/lokasjon-detalj (/portal/booking/anlegg/[anleggId]) — v2.
  * v2-port 17. juli 2026 (Team G-B): `BookingAnleggV2` erstatter legacy-siden,
@@ -14,7 +15,7 @@ import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import type { FacilityType } from "@/generated/prisma/client";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { TilbakeLenke } from "@/components/v2";
 import { BookingAnleggV2 } from "@/components/portal/v2/BookingAnleggV2";
 
@@ -39,7 +40,7 @@ const FASILITET_TYPE_LABEL: Record<FacilityType, string> = {
 };
 
 export default async function AnleggDetaljPage({ params }: Props) {
-  const user = await requirePortalUser({ kreverTilgang: "TALENT", allow: ["PLAYER", "COACH", "ADMIN"] });
+  await requirePortalUser({ kreverTilgang: "TALENT", allow: ["PLAYER", "COACH", "ADMIN"] });
   const { anleggId } = await params;
 
   const anlegg = await prisma.location.findUnique({
@@ -65,23 +66,23 @@ export default async function AnleggDetaljPage({ params }: Props) {
   if (!anlegg) notFound();
 
   return (
-    // Ingen eksplisitt aktiv-nøkkel: booking-hubben (/portal/booking) lar
-    // V2Shell auto-utlede fra pathname — samme her.
-    <V2Shell bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/booking">Booking</TilbakeLenke>
-      <BookingAnleggV2
-        data={{
-          navn: anlegg.name,
-          adresse: anlegg.address,
-          fasiliteter: anlegg.facilities.map((f) => ({
-            id: f.id,
-            navn: f.name,
-            typeLabel: FASILITET_TYPE_LABEL[f.type],
-            inne: f.isIndoor,
-            beskrivelse: f.description,
-          })),
-        }}
-      />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <div className="pa-side">
+        <TilbakeLenke href="/portal/booking">Booking</TilbakeLenke>
+        <BookingAnleggV2
+          data={{
+            navn: anlegg.name,
+            adresse: anlegg.address,
+            fasiliteter: anlegg.facilities.map((f) => ({
+              id: f.id,
+              navn: f.name,
+              typeLabel: FASILITET_TYPE_LABEL[f.type],
+              inne: f.isIndoor,
+              beskrivelse: f.description,
+            })),
+          }}
+        />
+      </div>
+    </PlayerHQSkall>
   );
 }

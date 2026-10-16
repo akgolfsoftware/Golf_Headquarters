@@ -15,7 +15,7 @@ test("coachforslag krever tilgang og leses som publiserte, synlige økter i valg
   assert.equal(Boolean(query), false);
   tillatt = true;
   const result = await hentPlanForslag("syntetisk-spiller", "2026-03-23");
-  assert.deepEqual(query?.where, { playerId: "syntetisk-spiller", date: { gte: new Date("2026-03-23"), lt: new Date("2026-03-30") }, status: { in: ["PUBLISHED", "IN_PROGRESS", "COMPLETED"] }, hiddenByPlayer: false, needsPlayerApproval: true, OR: [{ approvalStatus: null }, { approvalStatus: { not: "REJECTED" } }] });
+  assert.deepEqual(query?.where, { playerId: "syntetisk-spiller", date: { gte: new Date("2026-03-23"), lt: new Date("2026-03-30") }, status: { in: ["PUBLISHED", "IN_PROGRESS", "COMPLETED", "SKIPPED", "ABANDONED"] }, hiddenByPlayer: false, needsPlayerApproval: true, OR: [{ approvalStatus: null }, { approvalStatus: { not: "REJECTED" } }] });
   assert.equal(result[0].coachName, "Test Coach");
   assert.equal(result[0].session.model, "wb");
   assert.equal(result[0].session.startTime.toISOString(), "2026-03-29T06:00:00.000Z");

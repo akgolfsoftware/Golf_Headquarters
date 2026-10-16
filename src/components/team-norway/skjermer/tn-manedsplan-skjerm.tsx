@@ -8,10 +8,11 @@ import { TnEtikett, TnFilterknapper, type TnFilterValg, TnFlate, TnFotnote, TnMa
 import { TnKnapperekke } from "../tn-handlinger";
 import { TnOktSkjema, TnSlettOkt, type TnOktVerdier } from "../tn-redigering-skjema";
 import { MANEDER_LANG, SkjermRamme, heltallParam, hentSkjermbruker, osloDag, medDato } from "./felles";
+import pl from "./tn-plan.module.css";
 
 /**
  * TN-11 Månedsplan.
- * Fasit: Claude Design «Team Norway App delivery» (bc3e41fc), skjerm TN-11.
+ * Fasit: docs/design-system/utkast-tn/plan-fag.html, skjerm Månedsplan (pakke 5).
  *
  * Avvik:
  *   - Frister har ingen datamodell. Tallet og forklaringen sier det, i stedet
@@ -35,7 +36,7 @@ const DAGER_LANG = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag
 
 const hendelseStil: Record<TnHendelse["type"], { bg: string; fg: string; bd: string }> = {
   okt: { bg: TN.navy50, fg: TN.navy900, bd: TN.navy100 },
-  turnering: { bg: TN.navy100, fg: TN.navy900, bd: TN.navy300 },
+  turnering: { bg: TN.akse.TURN.fyll, fg: TN.white, bd: TN.akse.TURN.fyll },
   samling: { bg: TN.navy900, fg: TN.white, bd: TN.navy900 },
 };
 const TYPENAVN: Record<TnHendelse["type"], string> = { okt: "Økt", turnering: "Turnering", samling: "Samling" };
@@ -80,7 +81,7 @@ function periodeFarge(navn: string | undefined) {
 function Periodebaand({ navn, hoyre }: { navn?: string; hoyre: string }) {
   const farge = periodeFarge(navn);
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: "4px 12px", padding: "7px 10px", background: farge.bg, color: farge.fg, border: navn ? "none" : `1px dashed ${TN.navy100}`, fontFamily: TN.font.display, fontSize: 11.5, letterSpacing: "0.16em", textTransform: "uppercase" }}>
+    <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: "4px 12px", padding: "7px 10px", background: farge.bg, color: farge.fg, border: navn ? "none" : `1px dashed ${TN.ink200}`, fontFamily: TN.font.mono, fontWeight: 500, fontSize: 12, letterSpacing: "0.12em", textTransform: "uppercase" }}>
       <span>{navn ?? "Periode ikke satt"}</span>
       <span style={{ fontFamily: TN.font.mono, letterSpacing: "0.04em" }}>{hoyre}</span>
     </div>
@@ -90,7 +91,7 @@ function Periodebaand({ navn, hoyre }: { navn?: string; hoyre: string }) {
 function Hendelsesrad({ h, okt }: { h: TnHendelse; okt?: TnOktVerdier }) {
   const href = h.type === "samling" ? `/team-norway/samlinger/${h.id}` : h.type === "turnering" ? `/team-norway/turneringer/${h.id}` : null;
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "56px minmax(0, 1fr)", gap: 12, padding: "10px 0", borderTop: `1px solid ${TN.navy100}` }}>
+    <div style={{ display: "grid", gridTemplateColumns: "56px minmax(0, 1fr)", gap: 12, padding: "10px 0", borderTop: `1px solid ${TN.ink200}` }}>
       <span style={{ fontFamily: TN.font.mono, fontSize: 13, color: TN.navy900, fontVariantNumeric: "tabular-nums" }}>{h.tid ?? "Hele"}</span>
       <div style={{ minWidth: 0 }}>
         <div style={{ fontSize: 14.5, fontWeight: 700, overflowWrap: "anywhere" }}>
@@ -164,7 +165,7 @@ export async function TnManedsplanSkjerm({ sokeparametre }: { sokeparametre: Rec
         scroll={false}
         aria-current={valgt ? "date" : undefined}
         aria-label={`${DAGER_LANG[ukedag(d.nokkel)]} ${dm(d.nokkel)}, ${d.hendelser.length} aktiviteter`}
-        style={{ minWidth: 0, minHeight: 96, padding: "8px 8px 10px", background: valgt ? TN.navy50 : TN.white, borderRight: `1px solid ${TN.navy100}`, borderTop: valgt ? `2px solid ${TN.navy900}` : "2px solid transparent", textDecoration: "none", color: TN.textPrimary, display: "flex", flexDirection: "column", gap: 4 }}
+        style={{ minWidth: 0, minHeight: 96, padding: "8px 8px 10px", background: valgt ? TN.navy50 : TN.white, borderRight: `1px solid ${TN.ink200}`, borderTop: valgt ? `2px solid ${TN.navy900}` : "2px solid transparent", textDecoration: "none", color: TN.textPrimary, display: "flex", flexDirection: "column", gap: 4 }}
       >
         <span style={{ fontFamily: TN.font.mono, fontSize: 13, color: d.iManed ? TN.navy900 : TN.textSecondary }}>{d.dag}</span>
         {d.hendelser.slice(0, 2).map((h, i) => (
@@ -179,14 +180,14 @@ export async function TnManedsplanSkjerm({ sokeparametre }: { sokeparametre: Rec
   };
 
   const Kalender = (
-    <div className={visning === "kalender" ? "hidden lg:grid" : "hidden"} style={{ gridTemplateColumns: "minmax(0, 1fr) 300px", gap: 20, alignItems: "start" }}>
-      <div style={{ border: `1px solid ${TN.navy100}`, background: TN.white, minWidth: 0 }}>
-        <div style={{ display: "grid", gridTemplateColumns: "48px repeat(7, minmax(0, 1fr))", borderBottom: `1px solid ${TN.navy100}` }}>
+    <div className={pl.kalender} data-vis={visning === "kalender" ? "" : undefined}>
+      <div style={{ border: `1px solid ${TN.ink200}`, background: TN.white, minWidth: 0 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "48px repeat(7, minmax(0, 1fr))", borderBottom: `1px solid ${TN.ink200}` }}>
           {["Uke", ...DAGER].map((d) => <TnEtikett key={d} style={{ padding: "10px 8px" }}>{d}</TnEtikett>)}
         </div>
         {uker.map((u) => (
-          <div key={u.fra} style={{ display: "grid", gridTemplateColumns: "48px minmax(0, 1fr)", borderBottom: `1px solid ${TN.navy100}` }}>
-            <span style={{ fontFamily: TN.font.mono, fontSize: 15, color: TN.navy900, padding: "10px 8px", borderRight: `1px solid ${TN.navy100}` }}>{u.nr}</span>
+          <div key={u.fra} style={{ display: "grid", gridTemplateColumns: "48px minmax(0, 1fr)", borderBottom: `1px solid ${TN.ink200}` }}>
+            <span style={{ fontFamily: TN.font.mono, fontSize: 15, color: TN.navy900, padding: "10px 8px", borderRight: `1px solid ${TN.ink200}` }}>{u.nr}</span>
             <div style={{ minWidth: 0 }}>
               <Periodebaand navn={u.periode?.navn} hoyre={u.periode ? `Uke ${u.periode.indeks} av ${u.periode.antall}` : ""} />
               <div style={{ display: "grid", gridTemplateColumns: "repeat(7, minmax(0, 1fr))" }}>{u.dager.map((d) => <Dagcelle key={d.nokkel} d={d} />)}</div>
@@ -194,7 +195,7 @@ export async function TnManedsplanSkjerm({ sokeparametre }: { sokeparametre: Rec
           </div>
         ))}
       </div>
-      <aside style={{ background: TN.white, border: `1px solid ${TN.navy100}`, padding: 20, minWidth: 0 }}>
+      <aside style={{ background: TN.white, border: `1px solid ${TN.ink200}`, padding: 20, minWidth: 0 }}>
         <TnEtikett>{`Uke ${valgtUke.nr} · ${valgtUke.periode?.navn ?? "Periode ikke satt"}`}</TnEtikett>
         <div style={{ fontFamily: TN.font.display, fontWeight: 300, fontSize: 24, letterSpacing: "0.1em", textTransform: "uppercase", color: TN.navy900, marginTop: 8 }}>{DAGER_LANG[ukedag(valgtNokkel)]}</div>
         <div style={{ fontFamily: TN.font.mono, fontSize: 13, color: TN.textSecondary, marginTop: 4 }}>{`${dm(valgtNokkel)}.${valgtNokkel.slice(0, 4)}`}</div>
@@ -207,14 +208,14 @@ export async function TnManedsplanSkjerm({ sokeparametre }: { sokeparametre: Rec
   );
 
   const Liste = (
-    <div className={visning === "kalender" ? "lg:hidden" : undefined}>
+    <div className={pl.liste} data-kun-mobil={visning === "kalender" ? "" : undefined}>
       <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         {uker.map((u) => {
           const dager = u.dager.filter((d) => d.iManed && d.hendelser.length > 0);
           return (
-            <div key={u.fra} style={{ background: TN.white, border: `1px solid ${TN.navy100}`, minWidth: 0 }}>
+            <div key={u.fra} style={{ background: TN.white, border: `1px solid ${TN.ink200}`, minWidth: 0 }}>
               <Periodebaand navn={u.periode?.navn} hoyre={`${dm(u.fra)}–${dm(u.til)}`} />
-              <div style={{ fontFamily: TN.font.display, fontSize: 12, letterSpacing: "0.16em", textTransform: "uppercase", color: TN.navy900, padding: "10px 14px 0" }}>Uke {u.nr}</div>
+              <div style={{ fontFamily: TN.font.mono, fontWeight: 500, fontSize: 13, letterSpacing: "0.12em", textTransform: "uppercase", color: TN.ink700, padding: "10px 14px 0" }}>Uke {u.nr}</div>
               <div style={{ padding: "0 14px 6px" }}>
                 {dager.map((d) => (
                   <div key={d.nokkel} style={{ display: "grid", gridTemplateColumns: "52px minmax(0, 1fr)", gap: 10, alignItems: "start" }}>
@@ -236,20 +237,20 @@ export async function TnManedsplanSkjerm({ sokeparametre }: { sokeparametre: Rec
 
   return (
     <SkjermRamme aktiv="manedsplan" brukerNavn={bruker.name} kontekst={data.kontekst}>
-      <TnSkjermhode rute="/team-norway/manedsplan" tittel="Månedsplan" ingress={`Gruppens økter for ${MANEDER_LANG[idag.maned - 1]!.toLowerCase()} og ${MANEDER_LANG[neste.maned - 1]!.toLowerCase()}. Båndene viser hvilken periode hver uke tilhører.`}
+      <TnSkjermhode overlinje={`${data.kontekst.gruppe.name} · ${MANEDER_LANG[maned - 1]!.toLowerCase()} ${aar}`} tittel="Månedsplan" ingress={`Gruppens økter for ${MANEDER_LANG[idag.maned - 1]!.toLowerCase()} og ${MANEDER_LANG[neste.maned - 1]!.toLowerCase()}. Båndene viser hvilken periode hver uke tilhører.`}
         handling={data.kontekst.kanAdministrere ? <TnOktSkjema knapp="Ny økt" standardDato={valgtNokkel} /> : undefined}
       />
 
       <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: 12 }}>
         <TnFilterknapper etikett="Velg måned" valg={manedsvalg} />
-        <div className="hidden lg:block">
+        <div className={pl.visningsvalg}>
           <TnFilterknapper etikett="Velg visning" valg={[{ href: adresse({ visning: "kalender" }), label: "Kalender", aktiv: visning === "kalender" }, { href: adresse({ visning: "liste" }), label: "Liste", aktiv: visning === "liste" }]} />
         </div>
       </div>
 
       <Tegnforklaring />
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 150px), 1fr))", gap: 1, background: TN.navy100, border: `1px solid ${TN.navy100}` }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 150px), 1fr))", gap: 1, background: TN.ink200, border: `1px solid ${TN.ink200}` }}>
         {[
           ["Økter", String(tall.okter)],
           ["Turneringsdager", String(tall.turneringsdager)],
@@ -257,7 +258,7 @@ export async function TnManedsplanSkjerm({ sokeparametre }: { sokeparametre: Rec
           ["Frister", "—"],
         ].map(([etikett, verdi]) => (
           <div key={etikett} style={{ background: TN.white, padding: "14px 16px", minWidth: 0 }}>
-            <div style={{ fontFamily: TN.font.mono, fontSize: 26, color: TN.navy900, fontVariantNumeric: "tabular-nums" }}>{verdi}</div>
+            <div style={{ fontFamily: TN.font.mono, fontWeight: 500, fontSize: 30, lineHeight: 1.05, color: TN.navy900, fontVariantNumeric: "tabular-nums" }}>{verdi}</div>
             <TnEtikett style={{ marginTop: 4 }}>{etikett}</TnEtikett>
           </div>
         ))}
@@ -267,7 +268,7 @@ export async function TnManedsplanSkjerm({ sokeparametre }: { sokeparametre: Rec
         <TnFlate>
           <TnMangler>
             Ingen økter lagt inn for {MANEDER_LANG[maned - 1]!.toLowerCase()} {aar}. Planen vises her så snart trenerteamet har lagt inn første økt.{" "}
-            <Link href="/team-norway/samlinger" style={{ color: TN.navy700, minHeight: 44, display: "inline-flex", alignItems: "center" }}>Se samlinger</Link>
+            <Link href="/team-norway/samlinger" style={{ color: TN.navy600, fontWeight: 700, minHeight: 44, display: "inline-flex", alignItems: "center" }}>Se samlinger</Link>
           </TnMangler>
           {data.kontekst.kanAdministrere ? <div style={{ marginTop: 16 }}><TnOktSkjema knapp="Legg inn første økt" variant="sekundar" standardDato={valgtNokkel} /></div> : null}
         </TnFlate>

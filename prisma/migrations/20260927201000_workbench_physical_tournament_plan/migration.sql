@@ -284,7 +284,7 @@ CREATE POLICY "workbench_physical_blocks_read" ON "workbench_physical_blocks"
   FOR SELECT USING (
     EXISTS (
       SELECT 1 FROM "users" u
-      WHERE u."authId" = (auth.uid())::text
+      WHERE u."authId" = (select auth.uid())::text
         AND (
           u."role" = 'ADMIN'
           OR (
@@ -307,7 +307,7 @@ CREATE POLICY "workbench_physical_blocks_insert" ON "workbench_physical_blocks"
   FOR INSERT WITH CHECK (
     EXISTS (
       SELECT 1 FROM "users" u
-      WHERE u."authId" = (auth.uid())::text
+      WHERE u."authId" = (select auth.uid())::text
         AND (
           u."role" = 'ADMIN'
           OR u."id" = "workbench_physical_blocks"."playerId"
@@ -327,7 +327,7 @@ CREATE POLICY "workbench_physical_blocks_update" ON "workbench_physical_blocks"
   FOR UPDATE USING (
     EXISTS (
       SELECT 1 FROM "users" u
-      WHERE u."authId" = (auth.uid())::text
+      WHERE u."authId" = (select auth.uid())::text
         AND (
           u."role" = 'ADMIN'
           OR u."id" = "workbench_physical_blocks"."playerId"
@@ -344,7 +344,7 @@ CREATE POLICY "workbench_physical_blocks_update" ON "workbench_physical_blocks"
   WITH CHECK (
     EXISTS (
       SELECT 1 FROM "users" u
-      WHERE u."authId" = (auth.uid())::text
+      WHERE u."authId" = (select auth.uid())::text
         AND (
           u."role" = 'ADMIN'
           OR u."id" = "workbench_physical_blocks"."playerId"
@@ -364,7 +364,7 @@ CREATE POLICY "workbench_physical_blocks_delete" ON "workbench_physical_blocks"
   FOR DELETE USING (
     EXISTS (
       SELECT 1 FROM "users" u
-      WHERE u."authId" = (auth.uid())::text
+      WHERE u."authId" = (select auth.uid())::text
         AND (
           u."role" = 'ADMIN'
           OR u."id" = "workbench_physical_blocks"."playerId"
@@ -384,7 +384,7 @@ CREATE POLICY "workbench_tournament_plans_read" ON "workbench_tournament_plans"
   FOR SELECT USING (
     EXISTS (
       SELECT 1 FROM "users" u
-      WHERE u."authId" = (auth.uid())::text
+      WHERE u."authId" = (select auth.uid())::text
         AND (
           u."role" = 'ADMIN'
           OR (
@@ -407,7 +407,7 @@ CREATE POLICY "workbench_tournament_plans_insert" ON "workbench_tournament_plans
   FOR INSERT WITH CHECK (
     EXISTS (
       SELECT 1 FROM "users" u
-      WHERE u."authId" = (auth.uid())::text
+      WHERE u."authId" = (select auth.uid())::text
         AND (
           u."role" = 'ADMIN'
           OR u."id" = "workbench_tournament_plans"."playerId"
@@ -427,7 +427,7 @@ CREATE POLICY "workbench_tournament_plans_update" ON "workbench_tournament_plans
   FOR UPDATE USING (
     EXISTS (
       SELECT 1 FROM "users" u
-      WHERE u."authId" = (auth.uid())::text
+      WHERE u."authId" = (select auth.uid())::text
         AND (
           u."role" = 'ADMIN'
           OR u."id" = "workbench_tournament_plans"."playerId"
@@ -444,7 +444,7 @@ CREATE POLICY "workbench_tournament_plans_update" ON "workbench_tournament_plans
   WITH CHECK (
     EXISTS (
       SELECT 1 FROM "users" u
-      WHERE u."authId" = (auth.uid())::text
+      WHERE u."authId" = (select auth.uid())::text
         AND (
           u."role" = 'ADMIN'
           OR u."id" = "workbench_tournament_plans"."playerId"
@@ -464,7 +464,7 @@ CREATE POLICY "workbench_tournament_plans_delete" ON "workbench_tournament_plans
   FOR DELETE USING (
     EXISTS (
       SELECT 1 FROM "users" u
-      WHERE u."authId" = (auth.uid())::text
+      WHERE u."authId" = (select auth.uid())::text
         AND (
           u."role" = 'ADMIN'
           OR u."id" = "workbench_tournament_plans"."playerId"
@@ -566,7 +566,7 @@ CREATE POLICY "workbench_plan_conflicts_read_write" ON "workbench_plan_conflicts
   FOR ALL USING (
     EXISTS (
       SELECT 1 FROM "users" u
-      WHERE u."authId" = (auth.uid())::text
+      WHERE u."authId" = (select auth.uid())::text
         AND (
           u."role" = 'ADMIN'
           OR u."id" = "workbench_plan_conflicts"."playerId"
@@ -577,7 +577,7 @@ CREATE POLICY "workbench_plan_conflicts_read_write" ON "workbench_plan_conflicts
   WITH CHECK (
     EXISTS (
       SELECT 1 FROM "users" u
-      WHERE u."authId" = (auth.uid())::text
+      WHERE u."authId" = (select auth.uid())::text
         AND (
           u."role" = 'ADMIN'
           OR u."id" = "workbench_plan_conflicts"."playerId"

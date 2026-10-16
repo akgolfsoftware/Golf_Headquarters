@@ -3,12 +3,13 @@ import { notFound } from "next/navigation";
 
 import { hentTnArbeidskontekst, hentTnProtokollbibliotek } from "@/lib/domain/tn-arbeidsflate";
 import { TN } from "@/lib/v2/team-norway";
-import { TnEtikett, TnFlate, TnFlatehode, TnFotnote, TnMangler, TnSkjermhode } from "../tn-flate";
+import { TnPille } from "../core";
+import { TnEtikett, TnFlate, TnFlatehode, TnFotnote, TnSkjermhode } from "../tn-flate";
 import { SkjermRamme, hentSkjermbruker } from "./felles";
 
 /**
  * TN-18 Referansenivåer.
- * Fasit: Claude Design «Team Norway App delivery» (bc3e41fc), skjerm TN-18.
+ * Fasit: docs/design-system/utkast-tn/plan-fag.html, skjerm Referansenivåer (pakke 5).
  *
  * Avvik:
  *   - Minstekrav, landslagsmål og internasjonalt nivå finnes ikke i
@@ -31,32 +32,31 @@ export async function TnReferansenivaerSkjerm() {
 
   return (
     <SkjermRamme aktiv="referansenivaer" brukerNavn={bruker.name} kontekst={kontekst}>
-      <TnSkjermhode rute="/team-norway/referansenivaer" tittel="Referansenivåer" ingress="Målverdiene per test og klasse, hentet fra den versjonerte protokollkilden. De endres bare når protokollen får ny versjon." />
+      <TnSkjermhode overlinje={`Fra protokollkilden · ${versjon}`} tittel="Referansenivåer" ingress="Målverdiene per test og klasse, hentet fra den versjonerte protokollkilden. De endres bare når protokollen får ny versjon." />
 
+      <TnFlatehode tittel="Nivåer per test"><TnPille>Tall fra Team Norway mangler</TnPille></TnFlatehode>
       <TnFlate>
-        <TnFlatehode tittel="Nivåer per test" merknad={versjon} />
-        <TnMangler>Ingen referansenivåer er lagt inn ennå. Minstekrav, landslagsmål og internasjonalt nivå må registreres per test og klasse før de kan vises her.</TnMangler>
-        <div role="table" aria-label="Referansenivåer" style={{ marginTop: 16 }}>
-          <div role="row" style={{ display: "grid", gridTemplateColumns: KOLONNER, gap: 10, padding: "10px 0", borderBottom: `1px solid ${TN.navy100}` }}>
+        <div role="table" aria-label="Referansenivåer">
+          <div role="row" style={{ display: "grid", gridTemplateColumns: KOLONNER, gap: 10, padding: "10px 0", borderBottom: `1px solid ${TN.ink200}` }}>
             {["Test · protokoll", "Minstekrav", "Landslagsmål", "Internasjonalt"].map((k, i) => (
               <TnEtikett key={k} style={{ fontSize: 10.5, textAlign: i > 0 ? "right" : undefined, overflowWrap: "anywhere" }}><span role="columnheader">{k}</span></TnEtikett>
             ))}
           </div>
           {klare.map((r) => (
-            <div role="row" key={r.id} style={{ display: "grid", gridTemplateColumns: KOLONNER, gap: 10, padding: "4px 0", borderBottom: `1px solid ${TN.navy100}`, alignItems: "center" }}>
-              <Link role="cell" href={`/team-norway/protokoller/${r.id}`} style={{ minHeight: 44, display: "flex", alignItems: "center", fontSize: 14.5, fontWeight: 700, color: TN.textPrimary, overflowWrap: "anywhere", minWidth: 0 }}>{r.navn}</Link>
-              {[0, 1, 2].map((i) => <span role="cell" key={i} style={{ textAlign: "right", fontFamily: TN.font.mono, fontSize: 14, color: TN.textSecondary }}>—</span>)}
+            <div role="row" key={r.id} style={{ display: "grid", gridTemplateColumns: KOLONNER, gap: 10, padding: "4px 0", borderBottom: `1px solid ${TN.ink200}`, alignItems: "center" }}>
+              <Link role="cell" href={`/team-norway/protokoller/${r.id}`} style={{ minHeight: 44, display: "flex", alignItems: "center", fontSize: 14.5, fontWeight: 700, color: TN.ink900, overflowWrap: "anywhere", minWidth: 0 }}>{r.navn}</Link>
+              {[0, 1, 2].map((i) => <span role="cell" key={i} style={{ textAlign: "right", fontFamily: TN.font.mono, fontSize: 14, color: TN.ink500 }}>—</span>)}
             </div>
           ))}
         </div>
-        <TnFotnote>Minstekrav gjelder uttak. Landslagsmål er nivået trenerteamet planlegger mot. Internasjonalt er sammenligningsnivået ute. Trykk på en test for å se protokollen.</TnFotnote>
+        <TnFotnote>A–K-nivåtallene er ikke vedtatt, og landslagsnivået må komme fra Team Norway. Ingen tall lages på antakelse. Minstekrav gjelder uttak, landslagsmål er nivået trenerteamet planlegger mot.</TnFotnote>
       </TnFlate>
 
       {utkast.length > 0 ? (
         <TnFlate>
           <TnFlatehode tittel="Uten referanse · protokoll i utkast" merknad={String(utkast.length)} />
           {utkast.map((r) => (
-            <Link key={r.id} href={`/team-norway/protokoller/${r.id}`} style={{ minHeight: 44, display: "flex", alignItems: "center", borderBottom: `1px solid ${TN.navy100}`, fontSize: 14.5, color: TN.textPrimary, overflowWrap: "anywhere" }}>{r.navn}</Link>
+            <Link key={r.id} href={`/team-norway/protokoller/${r.id}`} style={{ minHeight: 44, display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center", borderBottom: `1px solid ${TN.ink200}`, fontSize: 15, fontWeight: 700, color: TN.ink900, overflowWrap: "anywhere" }}>{r.navn}<TnPille tone="amber">Utkast</TnPille></Link>
           ))}
         </TnFlate>
       ) : null}

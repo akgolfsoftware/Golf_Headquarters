@@ -26,6 +26,7 @@ import type { PlanStatus } from "@/generated/prisma/client";
 import { fmtVarighet, toKl } from "@/lib/workbench/v2-format";
 import { resolvePlanSessionLiveHref } from "@/lib/workbench/session-actions";
 import { sokOvelser, hentOktKomponist } from "@/lib/workbench/ovelse-sok";
+import { hentOktInspektor } from "@/lib/workbench/inspektor-data";
 import { useEffect } from "react";
 import { planSessionStartHref, v2SessionStartHref, type V2OktUiStatus } from "@/lib/portal/session-hrefs";
 import type { LFase } from "@/generated/prisma/client";
@@ -1347,15 +1348,21 @@ export function ValgtOktSeksjon({
       });
       return () => { aktiv = false; };
     }
-    hentOktKomponist(okt.id).then((res) => {
+    hentOktInspektor(okt.id).then((res) => {
       if (!aktiv) return;
       if (res.ok) {
         setOktDrills(res.drills ?? []);
         setOktFormel({ lFase: res.lFase ?? null, miljo: res.miljo ?? null });
       } else {
-        setOktDrills(null);
+        setOktDrills([]);
         setOktFormel(null);
+        setFeil("Kunne ikke hente øktinnhold.");
       }
+    }).catch(() => {
+      if (!aktiv) return;
+      setOktDrills([]);
+      setOktFormel(null);
+      setFeil("Kunne ikke hente øktinnhold.");
     });
     return () => { aktiv = false; };
     // dep på hele okt-objektet: refetch etter router.refresh (nye objekter),

@@ -9,6 +9,7 @@
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { hentDrillEstimater, drillNoekkel } from "@/lib/portal-drills/drill-estimat-data";
 
 export async function sokOvelser(
@@ -122,6 +123,15 @@ export async function hentOktKomponist(sessionId: string): Promise<{
     },
   });
   if (!okt) return { ok: false };
+  // Coach-scope: bare coach/admin med tilgang til plan-eieren (ikke forelder, ikke andre coacher).
+  if (user.role !== "PLAYER") {
+    const eierId = okt.plan?.userId;
+    const kanSe =
+      (user.role === "COACH" || user.role === "ADMIN") &&
+      eierId != null &&
+      (await harCoachTilgangTilSpiller(user, eierId));
+    if (!kanSe) return { ok: false };
+  }
   // Estimatene gjelder spillerens egen historikk. Ser en coach på økta, er det
   // fortsatt spilleren som eier tallene — derfor plan-eieren, ikke innlogget bruker.
   const estimater = await hentDrillEstimater(

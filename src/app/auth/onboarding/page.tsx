@@ -1,10 +1,21 @@
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getOnboardingState, getResumeStep } from "@/lib/auth/onboarding-state";
-import { VeiviserFlate } from "@/components/auth/onboarding/wizard-chrome";
+import { lesRaaPreferences } from "@/lib/preferences";
 import { OnboardingWizard } from "./onboarding-wizard";
 
 export const dynamic = "force-dynamic";
+
+const DATO = /^\d{4}-\d{2}-\d{2}$/;
+
+/** Fødselsdato til gjenopptak: kolonnen først, ellers det som ble skrevet før forelder hadde svart. */
+function startFodt(user: Parameters<typeof lesRaaPreferences>[0] & { dateOfBirth: Date | null }): string {
+  if (user.dateOfBirth) return user.dateOfBirth.toISOString().slice(0, 10);
+  const prefs = lesRaaPreferences(user) as Record<string, unknown>;
+  const onboarding = typeof prefs.onboarding === "object" && prefs.onboarding !== null ? (prefs.onboarding as Record<string, unknown>) : {};
+  const lagret = onboarding.fodselsdato;
+  return typeof lagret === "string" && DATO.test(lagret) ? lagret : "";
+}
 
 export default async function OnboardingPage({
   searchParams,
@@ -31,11 +42,7 @@ export default async function OnboardingPage({
 
   const resumeStep = getResumeStep(user);
 
-  // v2-port 16. juli 2026: wizard på v2-flaten (VeiviserFlate, lys — B28).
-  // Auth/resume/steg-logikk over er uendret.
-  return (
-    <VeiviserFlate>
-      <OnboardingWizard initialStep={resumeStep} subscribe={subscribe} />
-    </VeiviserFlate>
-  );
+  // Precision Athletics (AU-04): wizarden bygger selv flaten (VeiviserFlate),
+  // fordi bredden følger steget. Auth/resume/steg-logikk over er uendret.
+  return <OnboardingWizard initialStep={resumeStep} subscribe={subscribe} navn={user.name} startFodt={startFodt(user)} />;
 }

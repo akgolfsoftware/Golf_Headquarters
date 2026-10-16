@@ -1,22 +1,14 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { erMorkFlate, erLysFlate, onsketTema } from "@/lib/v2/tema-default";
+import { erLysFlate, onsketTema } from "@/lib/v2/tema-default";
 
 // Regelen lå tidligere duplisert i layout.tsx og shell.tsx og drev fra
 // hverandre. Disse testene låser den ene kilden.
 
-test("valgt Train-lock: AgencyOS starter mørkt uten cookie", () => {
-  for (const p of ["/admin", "/admin/agencyos/okonomi"]) {
-    assert.equal(onsketTema(p, undefined, false), "dark", p);
-    assert.equal(erMorkFlate(p), true, p);
-  }
-});
-
-test("PlayerHQ, innlogging og forelder starter lyst uten cookie", () => {
-  for (const p of ["/portal", "/portal/analysere", "/auth", "/auth/logg-inn", "/forelder", "/forelder/bookinger"]) {
+test("PlayerHQ, AgencyOS, innlogging og forelder starter lyst uten cookie", () => {
+  for (const p of ["/portal", "/portal/analysere", "/admin", "/admin/agencyos/okonomi", "/admin/agencyos/live/x", "/auth", "/auth/logg-inn", "/forelder", "/forelder/bookinger"]) {
     assert.equal(onsketTema(p, undefined, false), "light", p);
     assert.equal(erLysFlate(p), true, p);
-    assert.equal(erMorkFlate(p), false, p);
   }
 });
 
@@ -48,7 +40,7 @@ test("ukjent cookieverdi behandles som ikke satt", () => {
 
 test("prefiks-treff krysser ikke rutegrenser feil vei", () => {
   // /administrasjon finnes ikke i dag, men regelen skal ikke overraske om den kommer.
-  assert.equal(erMorkFlate("/administrasjon"), false);
+  assert.equal(erLysFlate("/administrasjon"), false);
   assert.equal(erLysFlate("/portalen-min"), false);
   assert.equal(erLysFlate("/portal"), true);
 });
