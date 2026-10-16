@@ -6,6 +6,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { updateSession } from "@/lib/supabase/proxy";
 import { workbenchRedirectForTrenPath } from "@/lib/portal/tren-workbench-redirect";
+import { demoSperre, erDemoSperretSti } from "@/lib/domain/demo-sperre";
 import { erUnntattVedlikehold, vedlikeholdAktivt } from "@/lib/vedlikehold";
 import { erSperretTeamWangSti } from "@/lib/auth/team-wang-sperre";
 import { oppdaterWangProxySesjon } from "@/lib/wang-supabase/proxy";
@@ -227,7 +228,7 @@ export async function proxy(request: NextRequest) {
     erTeamWangCoach ||
     erAargangHub;
 
-  if (erBeskyttet) {
+  if (erBeskyttet || erDemoSperretSti(path)) {
     // Sjekk auth-status via samme cookies som updateSession nettopp refresjet.
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -245,7 +246,12 @@ export async function proxy(request: NextRequest) {
       data: { user },
     } = await supabase.auth.getUser();
 
-    if (!user) {
+    // Demokontoene (coach-rollen) skal aldri nå AgencyOS eller coach-API-ene.
+    const sperre = demoSperre(user?.email, path);
+    if (sperre?.type === "send-til") return NextResponse.redirect(new URL(sperre.sti, request.url));
+    if (sperre?.type === "avvis") return NextResponse.json({ error: "forbidden" }, { status: 403 });
+
+    if (!user && erBeskyttet) {
       const url = request.nextUrl.clone();
       url.pathname = path.startsWith("/team-wang") ? "/team-wang/logg-inn" : "/auth/login";
       url.searchParams.set("next", path);
