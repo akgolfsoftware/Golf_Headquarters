@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="felles/tn.css">
 <style>
   .perioder{display:flex;flex-wrap:wrap;border:1px solid var(--ink-200)}
-  .perioder span{display:flex;align-items:center;min-height:30px;flex-basis:max-content;padding:0 8px;font:500 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;overflow:hidden;border-right:1px solid var(--ink-200);background:var(--hvit);color:var(--ink-700)}
+  .perioder span{display:flex;align-items:center;min-height:30px;flex-basis:max-content;padding:0 8px;font:700 12.5px/1.35 var(--tekst);letter-spacing:.01em;white-space:nowrap;overflow:hidden;border-right:1px solid var(--ink-200);background:var(--hvit);color:var(--ink-700)}
   .perioder span.naa{background:var(--navy-900);color:var(--hvit)}
   .uker{display:grid;gap:var(--r2)}
   .uke{display:grid;gap:8px;padding:14px;border:1px solid var(--ink-200);background:var(--hvit)}
@@ -22,7 +22,7 @@
   .lg i.fys{background:var(--fys)} .lg i.tek{background:var(--tek)} .lg i.slag{background:var(--slag)} .lg i.spill{background:var(--spill)} .lg i.turn{background:var(--turn)}
   .ukedager{display:grid;gap:var(--r2)}
   .dag{display:grid;gap:6px}
-  .dag h3{margin:0;font:500 12px/1.3 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-700)}
+  .dag h3{margin:0;font:700 12.5px/1.35 var(--tekst);letter-spacing:.01em;color:var(--ink-700)}
   .dag .tom{padding:10px 12px;border:1px dashed var(--ink-300);font-size:13.5px;color:var(--ink-500)}
   @container (min-width:900px){.ukedager{grid-template-columns:repeat(7,minmax(0,1fr));align-items:start}}
   .okt.mini{padding:10px 12px;gap:3px}
@@ -32,10 +32,22 @@
   .forslag-kort{display:grid;gap:var(--r3);border:2px solid var(--navy-900)}
   .foer-etter{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center}
   .foer-etter > div{display:grid;gap:4px;padding:10px;border:1px solid var(--ink-200)}
-  .foer-etter small{font:500 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-500)}
+  .foer-etter small{font:700 12.5px/1.35 var(--tekst);letter-spacing:.01em;color:var(--ink-500)}
   .foer-etter b{font:700 14.5px/1.3 var(--tekst)}
   .foer-etter .pil{font:500 18px/1 var(--mono);color:var(--navy-900)}
+  /* Utkast 2: ukene som fylte, stablede søyler */
+  .ukesoyler{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:var(--r2);align-items:end}
+  .ukesoyle{display:grid;gap:4px;text-align:center}
+  .ukesoyle > b{font:500 15px/1 var(--mono);color:var(--ink-900)}
+  .ukesoyle .stabel{height:180px;display:flex;align-items:flex-end;background:var(--ink-50);border-bottom:2px solid var(--ink-300)}
+  .ukesoyle .fyll{width:100%;display:flex;flex-direction:column-reverse;gap:2px;transform-origin:bottom}
+  .ukesoyle .fyll i{display:block;min-height:4px}
+  .ukesoyle.lett .stabel{background:repeating-linear-gradient(135deg,var(--ink-50) 0 6px,var(--ink-100) 6px 8px)}
+  .ukesoyle .uke-navn{font:700 13px/1.2 var(--tekst);color:var(--ink-900)}
+  .ukesoyle .kilde{font-size:12px}
+  @container (min-width:900px){.ukesoyle .stabel{height:240px}}
   .lagt{display:grid;gap:8px}
+  .lagt-rad .stolpe{height:14px}
   .lagt-rad{display:grid;grid-template-columns:56px minmax(0,1fr) 84px;gap:10px;align-items:center}
   .lagt-rad .tall{font:500 13px/1 var(--mono);text-align:right;white-space:nowrap}
   .stolpe.ramme-s{background:var(--ink-100)}
@@ -48,12 +60,12 @@
   .felt-liste span{font:500 13px/1.3 var(--mono);color:var(--ink-700)}
   .forsok-liste{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
   .forsok-liste span{display:grid;gap:2px;padding:8px;border:1px solid var(--ink-200);font:500 15px/1 var(--mono);color:var(--navy-900)}
-  .forsok-liste small{font:500 10.5px/1 var(--mono);color:var(--ink-500)}
+  .forsok-liste small{font:400 12.5px/1.35 var(--tekst);color:var(--ink-700)}
   @container (min-width:900px){.forsok-liste{grid-template-columns:repeat(8,minmax(0,1fr))}}
   .ref{display:grid;border-top:1px solid var(--ink-200)}
   .ref-rad{display:grid;grid-template-columns:minmax(0,1.5fr) repeat(3,minmax(0,1fr));gap:8px;padding:10px 0;border-bottom:1px solid var(--ink-200);font:500 14px/1.25 var(--mono);align-items:center}
   .ref-rad span:first-child{font:700 14px/1.3 var(--tekst)}
-  .ref-rad.hode{font:500 10.5px/1.2 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-500)}
+  .ref-rad.hode{font:700 12.5px/1.35 var(--tekst);letter-spacing:.01em;color:var(--ink-500)}
   .ref-rad.hode span:first-child{font:inherit}
   .ref-rad span:not(:first-child){text-align:right}
   .person{display:grid;grid-template-columns:36px minmax(0,1fr) auto;gap:4px 12px;padding:12px 0;border-bottom:1px solid var(--ink-200);align-items:center}
@@ -68,7 +80,7 @@
 <body>
 <div class="ytre">
   <header class="hode">
-    <span class="meta-s">Team Norway · trenerskjermer · pakke 5 Plan og fag · utkast 1 · 14.10.2026</span>
+    <span class="meta-s">Team Norway · trenerskjermer · pakke 5 Plan og fag · utkast 2 · 16.10.2026</span>
     <h1>Plan og fag: månedsplan, Workbench, protokoller og fagapparat</h1>
     <p>Åtte skjermer fra menygruppen Plan og fag. Team Norway-trenere foreslår endringer, spilleren bestemmer. Bare syntetiske data.</p>
   </header>
@@ -99,8 +111,10 @@
   <div class="scene"><div id="ramme" class="ramme mob"></div></div>
   <div class="notater">
     <section class="endringer">
-      <h2>Hva som er nytt</h2>
+      <h2>Hva som er nytt i utkast 2</h2>
       <ul>
+        <li><b>Månedsplan</b>: hovedtallet er timene som er fordelt per spiller, med aksene i de lyse fargene på navy. Ukene er fylte, stablede søyler i aksefargene; lett uke er skravert.</li>
+        <li><b>Workbench</b>: hovedtallet er lagt inn mot fordelt for uka. Øktkortene er fylte i aksefargen, og avviket per akse står som stolpe med strek for det som er fordelt.</li>
         <li><b>Månedsplan</b> viser periodene som et tynt bånd og timer per akse per uke, arvet fra perioden. Lette uker er merket.</li>
         <li><b>Workbench</b> for Team Norway-treneren: uka med øktkort i aksefargen. Endringer blir forslag med før og etter, som spilleren godtar eller avviser. «Lagt inn mot fordelt» per akse.</li>
         <li><b>Protokoller og referansenivåer</b> viser versjon og kilde. Mangler Team Norways tall, står det en strek og «Uten referanse».</li>
@@ -125,8 +139,22 @@
   <header data-behold>
     <span class="overlinje">Team Norway Junior · oktober 2026</span>
     <h1 class="tittel">Månedsplan</h1>
-    <p class="ingress">Gruppas plan, arvet fra årsplanen. Spillerne tilpasser sin egen plan i PlayerHQ.</p>
   </header>
+  <section class="helt">
+    <div class="helt-venstre">
+      <span class="sporsmaal">Hvor mye er fordelt i oktober?</span>
+      <div class="tall"><strong>49<small>t</small></strong><span>per spiller, uke 40–44</span></div>
+      <p>Arvet fra gruppas årsplan. Spillerne tilpasser sin egen plan i PlayerHQ. Uke 41 er lett uke.</p>
+      <div class="knapper"><button type="button" class="knapp hvit">Ny økt</button><button type="button" class="knapp kontur-hvit">Endre perioder</button></div>
+    </div>
+    <div class="helt-hoyre">
+      <div class="helt-akser">
+        <span class="sporsmaal">Fordelt på aksene</span>
+        <div class="fordeling-lys" role="img" aria-label="FYS 12 t, TEK 12 t, SLAG 13 t, SPILL 7 t, TURN 5 t"><span class="lys-fys" style="width:24.5%"></span><span class="lys-tek" style="width:24.5%"></span><span class="lys-slag" style="width:26.5%"></span><span class="lys-spill" style="width:14.3%"></span><span class="lys-turn" style="width:10.2%"></span></div>
+        <div class="lg-rad"><span class="lg"><i class="lys-fys"></i>FYS <b>12</b></span><span class="lg"><i class="lys-tek"></i>TEK <b>12</b></span><span class="lg"><i class="lys-slag"></i>SLAG <b>13</b></span><span class="lg"><i class="lys-spill"></i>SPILL <b>7</b></span><span class="lg"><i class="lys-turn"></i>TURN <b>5</b></span></div>
+      </div>
+    </div>
+  </section>
   <div class="knapper" data-behold>
     <div class="valg" role="group" aria-label="Velg måned"><button type="button" aria-pressed="false">September</button><button type="button" aria-pressed="true">Oktober</button><button type="button" aria-pressed="false">November</button></div>
     <div class="valg" role="group" aria-label="Velg visning"><button type="button" aria-pressed="true">Måned</button><button type="button" aria-pressed="false">Uke</button></div>
@@ -138,7 +166,7 @@
   </section>
   <section class="seksjon">
     <div class="sek-topp"><h2>Ukene</h2><span class="kilde">Timer per spiller</span></div>
-    <div class="uker" id="uker"></div>
+    <div class="kort"><div class="ukesoyler" id="uker"></div></div>
     <div class="lg-rad"><span class="lg"><i class="fys"></i>FYS</span><span class="lg"><i class="tek"></i>TEK</span><span class="lg"><i class="slag"></i>SLAG</span><span class="lg"><i class="spill"></i>SPILL</span><span class="lg"><i class="turn"></i>TURN</span></div>
   </section>
   <section class="seksjon">
@@ -158,12 +186,19 @@
 <div class="app" data-aktiv="workbench">
 <main class="innhold">
   <header data-behold>
-    <span class="overlinje">Workbench · Mathea Lund · uke 43</span>
+    <span class="overlinje">Workbench · Spiller 01 · uke 43</span>
     <h1 class="tittel">Uka</h1>
-    <p class="ingress">Du ser det Mathea har delt. Direkte endring er slått av: endringer blir forslag hun godtar eller avviser.</p>
   </header>
+  <section class="helt">
+    <div class="helt-venstre">
+      <span class="sporsmaal">Er uka lagt inn som perioden sier?</span>
+      <div class="tall"><strong>9<small>/ 10 t</small></strong><span>lagt inn mot fordelt</span></div>
+      <p>Du ser det Spiller 01 har delt. Endringer blir forslag spilleren godtar eller avviser. FYS har 2 t mindre enn fordelt.</p>
+      <div class="knapper"><button type="button" class="knapp hvit">Foreslå FYS-økt</button></div>
+    </div>
+  </section>
   <div class="knapper" data-behold>
-    <div class="valg" role="group" aria-label="Spiller"><button type="button" aria-pressed="true">Mathea Lund</button><button type="button" aria-pressed="false">Sander Vik</button><button type="button" aria-pressed="false">Gruppa</button></div>
+    <div class="valg" role="group" aria-label="Spiller"><button type="button" aria-pressed="true">Spiller 01</button><button type="button" aria-pressed="false">Spiller 02</button><button type="button" aria-pressed="false">Gruppa</button></div>
     <div class="valg" role="group" aria-label="Uke"><button type="button" aria-pressed="false">Uke 42</button><button type="button" aria-pressed="true">Uke 43</button><button type="button" aria-pressed="false">Uke 44</button></div>
   </div>
   <section class="seksjon">
@@ -181,14 +216,14 @@
       <div class="dag"><h3>Lør 24.</h3><button type="button" class="okt mini turn"><span class="okt-tid">08:00<small>R1</small></span><span class="navn">Norgescup finale</span></button></div>
       <div class="dag"><h3>Søn 25.</h3><button type="button" class="okt mini turn"><span class="okt-tid">08:30<small>R2</small></span><span class="navn">Norgescup finale</span></button></div>
     </div>
-    <p class="kilde">Stiplet ramme: forslag fra deg som venter på Mathea.</p>
+    <p class="kilde">Stiplet ramme: forslag fra deg som venter på Spiller 01.</p>
   </section>
   <section class="seksjon">
     <div class="sek-topp"><h2>Nytt forslag</h2></div>
     <div class="kort forslag-kort">
       <span class="undertittel">Flytt økt</span>
       <div class="foer-etter"><div><small>Før</small><b>Wedge 40–90 m</b><span class="kilde">Tirsdag 20. kl. 16:00</span></div><span class="pil">→</span><div><small>Etter</small><b>Wedge 40–90 m</b><span class="kilde">Onsdag 21. kl. 16:00</span></div></div>
-      <div class="felt"><label for="wb-hvorfor">Hvorfor (vises for Mathea)</label><input id="wb-hvorfor" value="Styrke og wedge samme dag blir mye før turneringen."></div>
+      <div class="felt"><label for="wb-hvorfor">Hvorfor (vises for Spiller 01)</label><input id="wb-hvorfor" value="Styrke og wedge samme dag blir mye før turneringen."></div>
       <div class="knapper"><button type="button" class="knapp pri">Send flytteforslag</button><button type="button" class="knapp stille">Avbryt</button></div>
     </div>
   </section>
@@ -314,10 +349,10 @@
   <section class="seksjon">
     <div class="sek-topp"><h2>Fagteam</h2><span class="kilde">4 personer</span></div>
     <div class="kort">
-      <div class="person"><span class="avatar">IH</span><span><b>Ida Hovland</b><br><span class="kilde">Sportssjef · alle 14 spillere</span></span><span class="merke info"><i></i>Sportssjef</span></div>
-      <div class="person"><span class="avatar">TA</span><span><b>Tor Aune</b><br><span class="kilde">Trener · gutter, 7 spillere</span></span><span class="merke noy"><i></i>Trener</span></div>
-      <div class="person"><span class="avatar">KS</span><span><b>Kari Solberg</b><br><span class="kilde">Trener · jenter, 7 spillere</span></span><span class="merke noy"><i></i>Trener</span></div>
-      <div class="person"><span class="avatar">PR</span><span><b>Petter Ruud</b><br><span class="kilde">Fysisk trener · samlinger</span></span><span class="merke noy"><i></i>Assist Coach</span></div>
+      <div class="person"><span class="avatar">SS</span><span><b>Sportssjef</b><br><span class="kilde">Sportssjef · alle 14 spillere</span></span><span class="merke info"><i></i>Sportssjef</span></div>
+      <div class="person"><span class="avatar">T1</span><span><b>Trener 1</b><br><span class="kilde">Trener · gutter, 7 spillere</span></span><span class="merke noy"><i></i>Trener</span></div>
+      <div class="person"><span class="avatar">T2</span><span><b>Trener 2</b><br><span class="kilde">Trener · jenter, 7 spillere</span></span><span class="merke noy"><i></i>Trener</span></div>
+      <div class="person"><span class="avatar">07</span><span><b>Spiller 07</b><br><span class="kilde">Fysisk trener · samlinger</span></span><span class="merke noy"><i></i>Assist Coach</span></div>
     </div>
   </section>
 </main>
@@ -367,10 +402,10 @@
   </header>
   <div class="sok" data-behold style="display:grid;gap:8px"><div class="felt"><label for="k-sok">Søk</label><input id="k-sok" placeholder="Navn, rolle eller region"></div></div>
   <section class="kort">
-    <div class="person"><span class="avatar">IH</span><span><b>Ida Hovland</b><br><span class="kilde">Sportssjef junior · Øst</span></span><span class="merke info"><i></i>I gruppa</span></div>
-    <div class="person"><span class="avatar">LM</span><span><b>Lars Moen</b><br><span class="kilde">Regiontrener · Vest</span></span><span class="merke noy"><i></i>Ikke i gruppa</span></div>
-    <div class="person"><span class="avatar">AB</span><span><b>Anne Bakke</b><br><span class="kilde">Mental trener · Olympiatoppen</span></span><span class="merke noy"><i></i>Ikke i gruppa</span></div>
-    <div class="person"><span class="avatar">TA</span><span><b>Tor Aune</b><br><span class="kilde">Trener junior · Øst</span></span><span class="merke info"><i></i>I gruppa</span></div>
+    <div class="person"><span class="avatar">SS</span><span><b>Sportssjef</b><br><span class="kilde">Sportssjef junior · Øst</span></span><span class="merke info"><i></i>I gruppa</span></div>
+    <div class="person"><span class="avatar">09</span><span><b>Spiller 09</b><br><span class="kilde">Regiontrener · Vest</span></span><span class="merke noy"><i></i>Ikke i gruppa</span></div>
+    <div class="person"><span class="avatar">MT</span><span><b>Mental trener</b><br><span class="kilde">Mental trener · Olympiatoppen</span></span><span class="merke noy"><i></i>Ikke i gruppa</span></div>
+    <div class="person"><span class="avatar">T1</span><span><b>Trener 1</b><br><span class="kilde">Trener junior · Øst</span></span><span class="merke info"><i></i>I gruppa</span></div>
   </section>
   <p class="kilde">Tilgang gis under Trenere og tilgang, og bare med e-post som slutter på @golfforbundet.no.</p>
 </main>
@@ -387,9 +422,10 @@ TNUtkast.start({
   start: 'maned',
   skjermer: {
     maned: { mal: 'maned', etter: function (a) {
+        /* Utkast 2: fylte, stablede søyler per uke. Høyden er timer (maks 14 t). */
         a.querySelector('#uker').innerHTML = UKER.map(function (u) {
           var sum = u[2].reduce(function (s, x) { return s + x; }, 0);
-          return '<div class="uke' + (u[3] ? ' lett' : '') + '"><div class="topp"><b>' + u[0] + '</b><span class="kilde">' + u[1] + (u[3] ? ' · lett uke' : '') + '</span><span class="tall" style="font:500 15px/1 var(--mono)">' + sum + ' t</span></div><div class="fordeling" role="img" aria-label="' + NOKLER.map(function (n, i) { return n.toUpperCase() + ' ' + u[2][i] + ' t'; }).join(', ') + '">' + u[2].map(function (t, i) { return t ? '<span style="width:' + (t / 14 * 100) + '%;background:' + F[NOKLER[i]] + '"></span>' : ''; }).join('') + '</div><span class="kilde">' + NOKLER.map(function (n, i) { return n.toUpperCase() + ' ' + u[2][i]; }).join(' · ') + '</span></div>';
+          return '<div class="ukesoyle' + (u[3] ? ' lett' : '') + '"><b>' + sum + ' t</b><div class="stabel" role="img" aria-label="' + u[0] + ': ' + NOKLER.map(function (n, i) { return n.toUpperCase() + ' ' + u[2][i] + ' t'; }).join(', ') + '"><div class="fyll vokse" style="height:' + (sum / 14 * 100) + '%">' + u[2].map(function (t, i) { return t ? '<i class="s ' + NOKLER[i] + '" style="flex:' + t + '"></i>' : ''; }).join('') + '</div></div><span class="uke-navn">' + u[0].replace('Uke ', 'Uke&nbsp;') + '</span><span class="kilde">' + (u[3] ? 'Lett uke' : u[1]) + '</span></div>';
         }).join('');
       }, laster: 'Henter månedsplanen …', feil: 'Månedsplanen kunne ikke hentes',
       tom: { tittel: 'Ingen økter denne måneden', tekst: 'Gruppas årsplan har ingen perioder i oktober. Legg inn en periode, så får ukene timer.', knapp: 'Legg inn første økt' } },
@@ -399,7 +435,7 @@ TNUtkast.start({
           return '<div class="lagt-rad"><span class="akse-tekst ' + l[1] + '">' + l[0] + '</span><span class="stolpe ramme-s"><span data-til="' + Math.min(100, l[2] / 3 * 100) + '%" style="width:' + Math.min(100, l[2] / 3 * 100) + '%;background:' + F[l[1]] + '"></span><span style="left:' + (l[3] / 3 * 100) + '%;width:2px;background:var(--ink-900)"></span></span><span class="tall">' + k(l[2]) + ' / ' + l[3] + ' t</span></div>';
         }).join('') + '<p class="kilde">Strek: fordelt fra perioden. FYS har 2 t mindre enn fordelt, SLAG og SPILL mer. Workbench sier fra, men stopper ingenting.</p>';
       }, laster: 'Henter uka …', feil: 'Forslaget ble ikke sendt',
-      tom: { tittel: 'Spilleren har ikke delt planen', tekst: 'Mathea har ikke delt profilen med deg. Du kan sende en forespørsel om deling.', knapp: 'Be om deling' } },
+      tom: { tittel: 'Spilleren har ikke delt planen', tekst: 'Spiller 01 har ikke delt profilen med deg. Du kan sende en forespørsel om deling.', knapp: 'Be om deling' } },
     protokoller: { mal: 'protokoller', laster: 'Henter protokollene …', feil: 'Protokollene kunne ikke hentes',
       tom: { tittel: 'Ingen testprotokoller er publisert', tekst: 'Protokollene kommer fra Team Norways scorekort-ark. Se fellestesting når de er klare.', knapp: 'Se fellestesting' } },
     protokoll: { mal: 'protokoll', laster: 'Henter protokollen …', feil: 'Protokollen kunne ikke hentes',
@@ -409,7 +445,7 @@ TNUtkast.start({
     fagapparat: { mal: 'fagapparat', laster: 'Henter fagteamet …', feil: 'Fagapparatet kunne ikke hentes',
       tom: { tittel: 'Ingen aktive trenere', tekst: 'Ingen aktive trenere er registrert i Team Norway-gruppen.', knapp: 'Legg til trener' } },
     analyse: { mal: 'analyse', etter: function (a) {
-        var S = [['Mathea L.', 19], ['Hedda N.', 18], ['Ingrid S.', 18], ['Sander V.', 17], ['Ola S.', 16], ['Jonas H.', 13]];
+        var S = [['Spiller 01 L.', 19], ['Spiller 13 N.', 18], ['Spiller 05 S.', 18], ['Spiller 02 V.', 17], ['Spiller 08 S.', 16], ['Spiller 06 H.', 13]];
         a.querySelector('#soyler').innerHTML = S.map(function (s) { return '<div class="soyle"><span class="navn">' + s[0] + '</span><span class="stolpe"><span data-til="' + (s[1] / 40 * 100) + '%" style="width:' + (s[1] / 40 * 100) + '%"></span></span><span class="tall">' + s[1] + '</span></div>'; }).join('') + '<p class="kilde">Viser 6 av 11. Snitt 16,4.</p>';
       }, laster: 'Henter grunnlaget …', feil: 'Fant ikke grunnlaget',
       tom: { tittel: 'Velg en testdag eller en protokoll', tekst: 'Sammenligningen vises når du har valgt grunnlag med minst to spillere.', knapp: 'Velg grunnlag' } },

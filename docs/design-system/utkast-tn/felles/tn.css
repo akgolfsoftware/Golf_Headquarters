@@ -256,12 +256,12 @@ body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.
 }
 
 /* Status som bilde: farget markør, alltid med ord ved siden */
-.status{display:inline-flex;align-items:center;gap:6px;font:700 13px/1.2 var(--tekst);white-space:nowrap}
-.status i{width:10px;height:10px;flex:none}
-.status.trenger{color:var(--feil-tekst)} .status.trenger i{background:var(--feil)}
-.status.folger{color:var(--ok-tekst)} .status.folger i{background:var(--ok)}
-.status.folgmed{color:var(--vent-tekst)} .status.folgmed i{background:var(--vent)}
-.status.ikkedelt{color:var(--ink-700)} .status.ikkedelt i{background:var(--ink-400)}
+.markor{display:inline-flex;align-items:center;gap:6px;font:700 13px/1.2 var(--tekst);white-space:nowrap}
+.markor i{width:10px;height:10px;flex:none}
+.markor.trenger{color:var(--feil-tekst)} .markor.trenger i{background:var(--feil)}
+.markor.folger{color:var(--ok-tekst)} .markor.folger i{background:var(--ok)}
+.markor.folgmed{color:var(--vent-tekst)} .markor.folgmed i{background:var(--vent)}
+.markor.ikkedelt{color:var(--ink-700)} .markor.ikkedelt i{background:var(--ink-400)}
 
 /* Tre bånd: Trenger deg · Følger planen · Ikke delt, med teller i båndhodet */
 .baandene{display:grid;gap:var(--r5)}
@@ -307,14 +307,14 @@ body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.
 .kat{display:inline-flex;align-items:center;justify-content:center;height:22px;min-width:24px;padding:0 6px;background:var(--navy-900);color:var(--hvit);font:700 12px/1 var(--tekst);border-radius:2px}
 .kat.uten{background:transparent;color:var(--ink-700);border:1px dashed var(--ink-500)}
 
-/* Fylte søyler (pyramiden, timer per akse): .soyler > .soyle > .felt-s > .s (height i %) */
-.soyler{display:grid;grid-template-columns:repeat(var(--n,5),minmax(0,1fr));gap:var(--r2);align-items:end}
-.soyle{display:grid;gap:6px;text-align:center}
-.soyle .felt-s{height:var(--h,140px);display:flex;align-items:flex-end;background:var(--ink-50);border-bottom:2px solid var(--ink-300)}
-.soyle .s{display:block;width:100%}
+/* Fylte søyler (pyramiden, timer per akse): .akse-soyler > .akse-soyle > .felt-s > .s (height i %) */
+.akse-soyler{display:grid;grid-template-columns:repeat(var(--n,5),minmax(0,1fr));gap:var(--r2);align-items:end}
+.akse-soyle{display:grid;gap:6px;text-align:center}
+.akse-soyle .felt-s{height:var(--h,140px);display:flex;align-items:flex-end;background:var(--ink-50);border-bottom:2px solid var(--ink-300)}
+.akse-soyle .s{display:block;width:100%}
 .s.fys{background:var(--fys)} .s.tek{background:var(--tek)} .s.slag{background:var(--slag)} .s.spill{background:var(--spill)} .s.turn{background:var(--turn)} .s.navy{background:var(--navy-900)}
-.soyle b{font:500 16px/1 var(--mono);color:var(--ink-900)}
-.soyle span{font:700 12px/1.2 var(--tekst);letter-spacing:.04em;color:var(--ink-700)}
+.akse-soyle b{font:500 16px/1 var(--mono);color:var(--ink-900)}
+.akse-soyle span{font:700 12px/1.2 var(--tekst);letter-spacing:.04em;color:var(--ink-700)}
 
 /* Fylt graf: areal under linja (SVG: <path class="areal tek"> + <path class="linje tek">) */
 .graf .areal{stroke:none;opacity:.24}
