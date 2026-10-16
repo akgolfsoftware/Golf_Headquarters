@@ -1,4 +1,4 @@
-import { RunderLaster } from "@/components/portal/precision/PHRunderFelles";
+import { RunderLaster } from "@/components/portal/precision/PHRunderLaster";
 
 /* Ren serverkomponent: loading.tsx importerer aldri en "use client"-modul (gotchas §Bygg og drift). Alltid lyst. */
 export default function Loading() {

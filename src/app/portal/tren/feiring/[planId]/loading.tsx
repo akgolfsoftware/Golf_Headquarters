@@ -1,12 +1,12 @@
-import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
-import { LasterTilstand } from "@/components/precision/pa";
+import { PlayerHQSkallLaster } from "@/components/precision/PlayerHQSkallLaster";
+import { LasterTilstand } from "@/components/precision/laster-tilstand";
 
 export default function Loading() {
   return (
-    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+    <PlayerHQSkallLaster sti="/portal/tren/feiring/[planId]">
       <div className="pa-side">
         <LasterTilstand text="Henter plan-feiringen …" />
       </div>
-    </PlayerHQSkall>
+    </PlayerHQSkallLaster>
   );
 }

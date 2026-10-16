@@ -1,10 +1,10 @@
-import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
-import { TmLaster } from "@/components/portal/precision/PH17TmFelles";
+import { PlayerHQSkallLaster } from "@/components/precision/PlayerHQSkallLaster";
+import { TmLaster } from "@/components/portal/precision/PH17TmLaster";
 
 export default function Loading() {
   return (
-    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+    <PlayerHQSkallLaster sti="/portal/tren/tester">
       <TmLaster tekst="Henter testene" />
-    </PlayerHQSkall>
+    </PlayerHQSkallLaster>
   );
 }

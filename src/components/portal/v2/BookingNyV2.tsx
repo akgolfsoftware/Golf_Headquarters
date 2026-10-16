@@ -313,7 +313,7 @@ export function BookingNyV2({ data }: { data: BookingNyV2Data }) {
               <Icon name="lock" size={16} style={{ color: TL.text }} />
             </span>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontFamily: TL.font.sans, fontSize: 15, fontWeight: 700, color: TL.text }}>Booking krever Pro</div>
+              <div style={{ fontFamily: TL.font.sans, fontSize: 15, fontWeight: 700, color: TL.text }}>Booking krever Full</div>
               <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.55, margin: "5px 0 0" }}>
                 Free-konto: oppgrader til Pro eller et aktivt coaching-abonnement for å bruke forhåndsbetalte timer.
               </p>
@@ -321,7 +321,7 @@ export function BookingNyV2({ data }: { data: BookingNyV2Data }) {
                 <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
             borderRadius: 10, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
-          }}>Oppgrader til Pro</span>
+          }}>Oppgrader til Full</span>
               </Link>
             </div>
           </div>

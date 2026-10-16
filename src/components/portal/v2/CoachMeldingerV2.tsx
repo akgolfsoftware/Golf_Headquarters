@@ -73,8 +73,8 @@ export function CoachMeldingerV2({ data }: { data: CoachMeldingerData }) {
         <Kort tint>
           <TomTilstand
             icon="lock"
-            title="Direkte coach-meldinger er en Pro-funksjon"
-            sub="Meldinger til coachen er del av PlayerHQ Pro (299 kr/mnd)."
+            title="Direkte coach-meldinger er en del av Full"
+            sub="Meldinger til coachen er del av PlayerHQ Full (299 kr/mnd)."
           />
           <div style={{ marginTop: 12 }}>
             <Link href="/portal/meg/abonnement" style={{ textDecoration: "none", display: "block" }}>

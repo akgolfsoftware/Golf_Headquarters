@@ -56,7 +56,7 @@ import type {
 import { UI } from "@/lib/domain/workbench/labels";
 import { vaskDetaljer } from "@/lib/domain/workbench/ovelse-detaljer";
 import { lastPlanKalenderBlokker } from "@/lib/workbench/plan-kalender-data";
-import { weekLockedBlocks } from "@/lib/workbench/locked-blocks";
+import { slaSammenLaasteBlokker, weekLockedBlocks } from "@/lib/workbench/locked-blocks";
 import {
   initialWorkbenchLiveSnapshot,
   parseWorkbenchLiveSnapshot,
@@ -551,7 +551,7 @@ export async function loadWeek(params: {
   const vm = buildWeekViewModel(
     mandag,
     rows.map(mapSession),
-    weekLockedBlocks(mandag, busy, school).map((day, i) => [...day, ...planKalender[i]]),
+    weekLockedBlocks(mandag, busy, school).map((day, i) => slaSammenLaasteBlokker(day, planKalender[i])),
     params.mode,
     params.targetMinutes ?? 0,
     mappedWeekPlan,

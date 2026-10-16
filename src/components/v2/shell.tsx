@@ -27,6 +27,7 @@ import { SpillerVeksler, type VekslerData } from "./spiller-veksler";
 import { useErAdmin } from "./rolle";
 import { GlobalSearchModal } from "@/components/admin/global-search-modal";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { AGENCYOS_SKALL_TABS, AGENCYOS_UNDER_MEG, skallAktivFraPath } from "@/lib/agencyos/skall-ia";
 
 // D2 (17. juli): re-eksporter veksler-datakontrakten fra shellen så kallsteder
@@ -84,7 +85,7 @@ export interface V2Rom {
 export const PLAYERHQ_NAV: V2NavItem[] = [
   { id: "hjem", label: "I dag", icon: "home", href: "/portal" },
   { id: "plan", label: "Plan", icon: "calendar", href: "/portal/planlegge" },
-  { id: "analyse", label: "Analyse", icon: "bar-chart", href: "/portal/analysere" },
+  { id: "analyse", label: "Stats", icon: "bar-chart", href: "/portal/analysere" },
   { id: "meg", label: "Meg", icon: "user", href: "/portal/meg" },
 ];
 
@@ -1343,6 +1344,27 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
           )}
         </div>
       </AgencyOSSkall>
+    );
+  }
+
+  // PlayerHQ i nytt design (skjermkontrollen 15.10 funn 5): sider som ikke er
+  // portert ennå, får samme skall som de porterte — sidemeny på PC, topplinje og
+  // fanelinje på mobil — i stedet for den gamle railen og den flytende linja.
+  // Innholdet er uendret til siden porteres. Caddie-arket beholdes for sider som
+  // åpner det. Lyst tema (Precision Athletics).
+  if (erPlayer) {
+    return (
+      <TrainLockPlayerCaddie aktiv composer={composer}>
+        <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+          <div className="phq-legacy light" style={{ color: TL.text, fontFamily: TL.font.sans, colorScheme: "light" }}>
+            {bredde === "kolonne" ? (
+              <div data-paper-column="player" style={{ width: "100%", maxWidth: "720px", marginLeft: "auto", marginRight: "auto" }}>{children}</div>
+            ) : (
+              children
+            )}
+          </div>
+        </PlayerHQSkall>
+      </TrainLockPlayerCaddie>
     );
   }
 

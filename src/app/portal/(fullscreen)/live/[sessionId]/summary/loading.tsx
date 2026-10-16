@@ -1,4 +1,4 @@
-import { LasterTilstand } from "@/components/precision/pa";
+import { LasterTilstand } from "@/components/precision/laster-tilstand";
 import "@/styles/precision-athletics.css";
 
 export default function Loading() {

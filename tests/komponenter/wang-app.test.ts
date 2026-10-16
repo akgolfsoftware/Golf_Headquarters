@@ -25,11 +25,29 @@ mock.module('next/navigation', {
 });
 mock.module('next/link', { defaultExport: 'a' });
 
+// Syntetisk gruppe til komponenttestene. Ingen realistiske navn på mindreårige.
+const DATA = {
+  gruppeNavn: 'WANG Toppidrett (demo)',
+  idagIso: '2026-10-14',
+  ukeTekst: 'Uke 42 · 12.10–18.10.2026',
+  elever: Array.from({ length: 11 }, (_, i) => ({ id: `e${i + 1}`, navn: `Elev ${i + 1} Demo` })),
+  trenere: [{ id: 't1', navn: 'Demotrener WANG', rolle: 'Trener' as const }],
+  ukeOkter: [
+    { id: 'o1', datoIso: '2026-10-13', dag: 'Tir', tittel: 'Morgentrening nærspill (demo)', tid: '08:00–10:00', sted: 'Demo Golfklubb', passert: true },
+  ],
+  fasteOkter: [{ dag: 'Tir', tid: '08:00–10:00', tittel: 'Morgentrening nærspill (demo)', sted: 'Demo Golfklubb' }],
+  perioder: [
+    { id: 'p1', navn: 'Spesialperiode', fokus: 'Nærspill', startIso: '2026-09-01', endIso: '2026-10-31', status: 'naa' as const },
+  ],
+  turneringer: [
+    { id: 'u1', tittel: 'Høstcup (demo)', startIso: '2026-10-20', sluttIso: '2026-10-20', sted: null, passert: false },
+  ],
+  samlinger: [],
+  testdager: [],
+};
+
 describe('WANG Toppidrett Modul (Samtlige WANG-skjermer)', async () => {
-  const {
-    WANG_ELEVER,
-    WANG_SKJERMER_KATALOG,
-  } = await import('@/components/wang/wang-data');
+  const { WANG_SKJERMER_KATALOG } = await import('@/components/wang/wang-skjermkatalog');
 
   const { WangAppSkall } = await import('@/components/wang/WangAppSkall');
   const { WangIdag } = await import('@/components/wang/WangIdag');
@@ -41,33 +59,16 @@ describe('WANG Toppidrett Modul (Samtlige WANG-skjermer)', async () => {
   const { WangAdmin } = await import('@/components/wang/WangAdmin');
   const { WangSkjermoversikt } = await import('@/components/wang/WangSkjermoversikt');
 
-  test('wang-data: har registrert samtlige 63 WANG-skjermer i katalogen', () => {
-    assert.strictEqual(WANG_SKJERMER_KATALOG.length, 63, 'Skal ha nøyaktig 63 skjermer i katalogen (WANG-50 kuttet til DG-01–09, 15.10.2026)');
+  const vis = (komponent: React.ComponentType<{ data: typeof DATA }>, data = DATA) =>
+    renderToStaticMarkup(React.createElement(komponent, { data }));
+  const tom = { ...DATA, elever: [], trenere: [], ukeOkter: [], fasteOkter: [], perioder: [], turneringer: [] };
 
+  test('skjermkatalogen har samtlige 63 WANG-skjermer', () => {
+    assert.strictEqual(WANG_SKJERMER_KATALOG.length, 63, 'Skal ha nøyaktig 63 skjermer i katalogen (WANG-50 kuttet til DG-01–09, 15.10.2026)');
     const unikeIder = new Set(WANG_SKJERMER_KATALOG.map((s) => s.id));
     assert.strictEqual(unikeIder.size, 63, 'Alle 63 skjerm-IDer skal være unike');
-
-    // Sjekk at sentrale skjermer finnes
-    assert.ok(unikeIder.has('WANG-43'), 'WANG-43 I dag skal finnes');
-    assert.ok(unikeIder.has('WANG-42'), 'WANG-42 Trening skal finnes');
-    assert.ok(unikeIder.has('WG-03'), 'WG-03 Tester skal finnes');
-    assert.ok(unikeIder.has('WANG-10'), 'WANG-10 Kalender skal finnes');
-    assert.ok(unikeIder.has('WANG-13'), 'WANG-13 Meldinger skal finnes');
-    assert.ok(unikeIder.has('WANG-07'), 'WANG-07 Elever skal finnes');
-    assert.ok(unikeIder.has('WANG-44'), 'WANG-44 Elevprofil IUP skal finnes');
-    assert.ok(unikeIder.has('WANG-19'), 'WANG-19 Trenere skal finnes');
-    assert.ok(unikeIder.has('WANG-33'), 'WANG-33 Skolekoordinering skal finnes');
-    assert.ok(unikeIder.has('WANG-00'), 'WANG-00 Skjermoversikt skal finnes');
-  });
-
-  test('wang-data: etterlevelse er beregnet som faktisk tid mot planlagt tid siste 4 uker', () => {
-    for (const elev of WANG_ELEVER) {
-      assert.ok(elev.etterlevelseSiste4Uker.planlagtTimer > 0, `${elev.navn} må ha planlagte timer`);
-      assert.ok(elev.etterlevelseSiste4Uker.gjennomfortTimer >= 0, `${elev.navn} må ha gjennomførte timer`);
-      assert.ok(
-        elev.etterlevelseSiste4Uker.gjennomfortTimer <= elev.etterlevelseSiste4Uker.planlagtTimer * 1.5,
-        'Gjennomført tid skal være realistisk'
-      );
+    for (const id of ['WANG-43', 'WANG-42', 'WG-03', 'WANG-10', 'WANG-13', 'WANG-07', 'WANG-44', 'WANG-19', 'WANG-33', 'WANG-00']) {
+      assert.ok(unikeIder.has(id), `${id} skal finnes`);
     }
   });
 
@@ -79,92 +80,69 @@ describe('WANG Toppidrett Modul (Samtlige WANG-skjermer)', async () => {
         React.createElement('div', { id: 'test-innhold' }, 'Innhold for I dag')
       )
     );
-
     assert.ok(html.includes('alt="WANG Toppidrett"'), 'Skal vise WANG Toppidrett merkevare');
-    assert.ok(html.includes('I dag'), 'Skal inneholde menylenke I dag');
-    assert.ok(html.includes('Trening'), 'Skal inneholde menylenke Trening');
-    assert.ok(html.includes('Tester'), 'Skal inneholde menylenke Tester');
-    assert.ok(html.includes('Konkurranse'), 'Skal inneholde menylenke Konkurranse');
-    assert.ok(html.includes('Meldinger'), 'Skal inneholde menylenke Meldinger');
-    assert.ok(html.includes('Elever'), 'Skal inneholde menylenke Elever');
-    assert.ok(html.includes('Innhold for I dag'), 'Skal rendre children');
+    for (const ord of ['I dag', 'Trening', 'Tester', 'Konkurranse', 'Meldinger', 'Elever', 'Innhold for I dag']) {
+      assert.ok(html.includes(ord), `Skal inneholde ${ord}`);
+    }
   });
 
-  test('WangIdag: rendrer WG-01, dagsfokus og morgenøkter', () => {
-    const html = renderToStaticMarkup(
-      React.createElement(WangIdag, { campus: 'Fredrikstad' })
-    );
-
-    assert.ok(html.includes('I dag'), 'Skal ha tittel I dag');
-    assert.ok(html.includes('Morgentrening'), 'Skal vise morgentreninger');
-    assert.ok(html.includes('Dagens fokus'), 'Skal vise dagens fokus');
-    assert.ok(html.includes('Elever som trenger oppfølging'), 'Skal vise oppfølging');
+  test('WangIdag: teller elevene i gruppa, ikke en fast liste', () => {
+    const html = vis(WangIdag);
+    assert.ok(html.includes('I dag'));
+    assert.ok(html.includes('<strong>11</strong>'), 'Demogruppa har 11 elever');
+    assert.ok(html.includes('Morgentrening nærspill (demo)'), 'Skal vise ukas økter fra gruppa');
+    assert.ok(html.includes('Nærspill'), 'Skal vise periodens fokus');
+    assert.ok(!html.includes('112 mph'), 'Ingen oppdiktede måltall');
   });
 
-  test('WangTrening: rendrer 4-ukers etterlevelse og øktplan', () => {
-    const html = renderToStaticMarkup(
-      React.createElement(WangTrening, { campus: 'Fredrikstad' })
-    );
-
-    assert.ok(html.includes('Trening'), 'Skal ha treningsoverskrift');
-    assert.ok(html.includes('Etterlevelse'), 'Skal vise etterlevelse');
-    assert.ok(html.includes('Per elev'), 'Skal vise per elev');
+  test('WangIdag: tom gruppe gir tom tilstand', () => {
+    const html = vis(WangIdag, tom);
+    assert.ok(html.includes('Ingen økter er lagt inn denne uka.'));
+    assert.ok(html.includes('Ingen aktiv periode'));
   });
 
-  test('WangTester: rendrer nasjonalt testbatteri, godkjenningskø og testføring', () => {
-    const html = renderToStaticMarkup(
-      React.createElement(WangTester, { campus: 'Fredrikstad' })
-    );
-
-    assert.ok(html.includes('Til kontroll'), 'Skal vise kontrollkøen');
-    assert.ok(html.includes('Markløft trapbar'), 'Skal vise testbatteriet');
+  test('WangTrening: årsplan og faste økter fra gruppa', () => {
+    const html = vis(WangTrening);
+    assert.ok(html.includes('Etterlevelse'));
+    assert.ok(html.includes('Spesialperiode'));
+    assert.ok(html.includes('Elev 11 Demo'));
+    assert.ok(vis(WangTrening, tom).includes('Ingen perioder'));
   });
 
-  test('WangKonkurranse: rendrer kalender, rapportering, analyse og DataGolf', () => {
-    const html = renderToStaticMarkup(
-      React.createElement(WangKonkurranse, { campus: 'Fredrikstad' })
-    );
-
-    assert.ok(html.includes('Turneringskalender'), 'Skal vise kalender');
-    assert.ok(html.includes('Kalender'), 'Skal ha kalenderfane');
-    assert.ok(html.includes('Hent resultater'), 'Skal ha knapp for synk');
+  test('WangTester: testbatteriet uten oppdiktede resultater', () => {
+    const html = vis(WangTester);
+    assert.ok(html.includes('Markløft trapbar'));
+    assert.ok(html.includes('Ingen testdager i kalenderen.'));
   });
 
-  test('WangMeldinger: rendrer gruppeposter, post til elev og foreldremøte', () => {
-    const html = renderToStaticMarkup(
-      React.createElement(WangMeldinger, { campus: 'Fredrikstad' })
-    );
-
-    assert.ok(html.includes('Gruppeposter'), 'Skal vise gruppeposter');
-    assert.ok(html.includes('Ny gruppepost'), 'Skal ha skjema for gruppepost');
-    assert.ok(html.includes('Publiser melding'), 'Skal ha knapp for publisering');
+  test('WangKonkurranse: turneringer fra gruppas kalender', () => {
+    const html = vis(WangKonkurranse);
+    assert.ok(html.includes('Turneringskalender'));
+    assert.ok(html.includes('Høstcup (demo)'));
+    assert.ok(!html.includes('72,8'), 'Ingen oppdiktet snittscore');
   });
 
-  test('WangElever: rendrer elevliste, IUP-profil og 4-ukerssjekk', () => {
-    const html = renderToStaticMarkup(
-      React.createElement(WangElever, { campus: 'Fredrikstad' })
-    );
-
-    assert.ok(html.includes('Elever'), 'Skal vise elevliste');
-    assert.ok(html.includes('Åpne IUP'), 'Skal lenke til IUP');
-    assert.ok(html.includes('4-ukers etterlevelse'), 'Skal ha etterlevelseskolonne');
+  test('WangMeldinger: tom tilstand uten meldinger i basen', () => {
+    const html = vis(WangMeldinger);
+    assert.ok(html.includes('Gruppeposter'));
+    assert.ok(html.includes('Ingen meldinger ennå'));
   });
 
-  test('WangAdmin: rendrer trenere, samtykker, timeplan og rekruttering (for Sportssjef)', () => {
-    const html = renderToStaticMarkup(
-      React.createElement(WangAdmin, { campus: 'Fredrikstad' })
-    );
+  test('WangElever: elevlista fra gruppa med lenke til IUP', () => {
+    const html = vis(WangElever);
+    assert.ok(html.includes('Elev 1 Demo'));
+    assert.ok(html.includes('/team-wang/coach/iup/e1'));
+    assert.ok(vis(WangElever, tom).includes('Ingen elever i gruppa.'));
+  });
 
-    assert.ok(html.includes('Trenere og roller'), 'Skal vise trenerstab');
-    assert.ok(html.includes('Administrasjon'), 'Skal ha tittel Administrasjon');
-    assert.ok(html.includes('Sportssjef'), 'Skal vise sportssjef-rolle');
+  test('WangAdmin: trenere og timeplan fra gruppa', () => {
+    const html = vis(WangAdmin);
+    assert.ok(html.includes('Trenere og roller'));
+    assert.ok(html.includes('Demotrener WANG'));
   });
 
   test('WangSkjermoversikt (WANG-00): lister alle 63 skjermer med søk og filter', () => {
-    const html = renderToStaticMarkup(
-      React.createElement(WangSkjermoversikt, {})
-    );
-
+    const html = renderToStaticMarkup(React.createElement(WangSkjermoversikt, {}));
     assert.ok(html.includes('Skjermoversikt (63 skjermer)'), 'Skal vise 63 skjermer');
     assert.ok(html.includes('WANG-00'), 'Skal referere til WANG-00');
     assert.ok(html.includes('Åpne skjerm'), 'Skal ha direkte åpne-knapper');

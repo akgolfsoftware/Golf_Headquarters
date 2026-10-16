@@ -15,3 +15,9 @@
 .pa-skall--ny .phs-skille{height:1px;margin:12px 12px;background:#ddd9d1}
 .pa-skall--ny .phs-teller{margin-left:auto;min-width:22px;height:22px;padding:0 7px;border-radius:11px;background:#141413;color:#fff;font:600 12px/22px var(--font-mono,"IBM Plex Mono",monospace);text-align:center}
 }
+
+/* Sider som ikke er portert ennå (V2Shell med PlayerHQ-menyen): gammelt innhold i nytt skall. */
+.phq-legacy{display:flex;flex-direction:column;gap:16px;min-width:0;padding:16px 16px calc(var(--tabbar-h,64px) + 24px + env(safe-area-inset-bottom) + var(--ak-cookie-h,0px))}
+@media (min-width:1024px){.phq-legacy{padding:32px 40px 48px}}
+/* Precision har ingen kursiv i overskrifter. V2-Tittel sitt em-ledd (inline italic) rettes her til siden porteres. */
+.pa-skall--ny :is(h1,h2,h3) em{font-style:normal!important}

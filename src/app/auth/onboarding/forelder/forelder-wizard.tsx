@@ -19,7 +19,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { CreditCard, Mail, Smartphone, Users } from "lucide-react";
+import { CreditCard, Users } from "lucide-react";
 
 import {
   saveForelderOnboardingStep,
@@ -55,10 +55,9 @@ const RELASJONER = [
   { id: "FORESATT", label: "Foresatt" },
 ] as const;
 
+// Bare kort og Apple Pay gjennom Stripe (beslutning 15.10.2026: ingen Vipps, ingen faktura).
 const BETALINGSMETODER = [
-  { id: "VIPPS", label: "Vipps", sub: "Auto. 20. hver mnd", anbefalt: true, icon: Smartphone },
-  { id: "KORT", label: "Kort", sub: "Visa · MC · Stripe", anbefalt: false, icon: CreditCard },
-  { id: "FAKTURA", label: "Faktura", sub: "30 dagers frist", anbefalt: false, icon: Mail },
+  { id: "KORT", label: "Kort eller Apple Pay", sub: "Visa · Mastercard · Apple Pay, gjennom Stripe", icon: CreditCard },
 ] as const;
 
 // Kolonnen (bredde og luft) eies av VeiviserFlate; steget legger bare blokkene under hverandre.
@@ -88,7 +87,7 @@ export function ForelderWizard() {
   const [acceptedPayment, setAcceptedPayment] = useState(false);
 
   // Steg 4
-  const [paymentMethod, setPaymentMethod] = useState<"VIPPS" | "KORT" | "FAKTURA">("VIPPS");
+  const [paymentMethod, setPaymentMethod] = useState<"KORT">("KORT");
 
   function buildData(): ForelderOnboardingData {
     return {
@@ -170,7 +169,7 @@ export function ForelderWizard() {
             deck="Coach Anders og spilleren din har akkurat satt opp profilen hos AK Golf Academy. Som foresatt er du en sentral del av utviklingen — uten å være i veien."
           />
           <InlineVarsel tone="info">
-            Du får din egen <strong>foreldre-portal</strong> med innsyn i planer, runder, fakturaer og fremgang. Du kan også sende meldinger til Anders direkte.
+            Du får din egen <strong>foreldre-portal</strong> med innsyn i planer, runder, kvitteringer og fremgang. Du kan også sende meldinger til Anders direkte.
           </InlineVarsel>
           <PrimaryCta onClick={neste} disabled={pending}>
             La oss begynne
@@ -185,7 +184,7 @@ export function ForelderWizard() {
             title="Bekreft"
             emphasis="din info"
             titleAfter="."
-            deck="Litt info om deg som foresatt, slik at vi kan sende fakturaer og holde kontakten."
+            deck="Litt info om deg som foresatt, slik at vi kan sende kvitteringer og holde kontakten."
           />
           <Field label="Ditt navn" htmlFor="forelder-navn">
             <TextField
@@ -270,7 +269,7 @@ export function ForelderWizard() {
             />
             <AgreeItem
               title="Betaling og oppsigelse"
-              desc="Faktura månedlig. Avsluttes når som helst med 30 dagers oppsigelse."
+              desc="Trekkes månedlig fra kort. Avsluttes når som helst med 30 dagers oppsigelse."
               checked={acceptedPayment}
               onClick={() => setAcceptedPayment(!acceptedPayment)}
             />
@@ -295,22 +294,22 @@ export function ForelderWizard() {
             title="Sett opp"
             emphasis="betaling"
             titleAfter="."
-            deck="Spilleren har valgt FULL, 299 kr/mnd. Du faktureres månedlig fra dato spilleren er aktivert. Avsluttes når som helst."
+            deck="Spilleren har valgt Full, 299 kr/mnd. Beløpet trekkes månedlig fra dato spilleren er aktivert. Avsluttes når som helst."
           />
 
           <div className="pa-card" style={{ padding: 16, gap: 4 }}>
             <Meta>ABONNEMENT</Meta>
-            <span style={{ font: "600 15px/1.3 var(--font-sans)" }}>AK Golf Academy FULL</span>
+            <span style={{ font: "600 15px/1.3 var(--font-sans)" }}>AK Golf Academy Full</span>
             <span style={{ font: "var(--type-num)", fontSize: 28, lineHeight: 1.1 }}>299 kr/mnd</span>
             <Meta>AVSLUTTES NÅR SOM HELST · 30 DAGERS OPPSIGELSE</Meta>
           </div>
 
           <FieldGroupLabel>Velg betalingsmetode</FieldGroupLabel>
           <div role="radiogroup" aria-label="Betalingsmetode" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            {BETALINGSMETODER.map(({ id, label, sub, anbefalt, icon }) => (
+            {BETALINGSMETODER.map(({ id, label, sub, icon }) => (
               <OptionRow
                 key={id}
-                label={anbefalt ? `${label} · anbefalt` : label}
+                label={label}
                 sub={sub}
                 icon={icon}
                 selected={paymentMethod === id}

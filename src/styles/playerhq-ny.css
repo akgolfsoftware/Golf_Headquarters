@@ -269,3 +269,8 @@
 .phn .phn-sjekk input { width: 20px; height: 20px; }
 .phn :is(.phn-lenke, .phn-knytt a, .phn-uketab input):focus-visible { outline: 3px solid var(--phn-g900); outline-offset: 2px; }
 .phn .phn-felt :is(.phn-forklar, .phn-kilde, .phn-knytt span, .phn-sjekk) { font-weight: 400; }
+/* Team Norway-testlista (/portal/tren/tester/team-norway), skjermkontrollen 15.10 funn 6. */
+.phn.tn-oversikt { max-width: 1120px; margin-inline: auto; }
+.phn .tn-liste { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.phn .tn-liste .phn-rad-lenke > span { display: grid; gap: 2px; color: var(--phn-g600); }
+.phn .tn-liste .phn-rad-lenke b { color: var(--phn-g900); }

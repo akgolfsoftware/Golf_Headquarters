@@ -4,12 +4,11 @@
 
 import Link from "next/link";
 
-export type TalentFaneId = "mitt-niva" | "min-plan" | "roadmap" | "sammenligning";
+// «Min plan» og «Roadmap» utgår (28.09); adressene sender videre til Målsetninger og Plan.
+export type TalentFaneId = "mitt-niva" | "sammenligning";
 
 const FANER: { id: TalentFaneId; l: string; href: string }[] = [
   { id: "mitt-niva", l: "Mitt nivå", href: "/portal/talent/mitt-niva" },
-  { id: "min-plan", l: "Min plan", href: "/portal/talent/min-plan" },
-  { id: "roadmap", l: "Roadmap", href: "/portal/talent/roadmap" },
   { id: "sammenligning", l: "Sammenligning", href: "/portal/talent/sammenligning" },
 ];
 

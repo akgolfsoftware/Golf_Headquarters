@@ -17,16 +17,16 @@
   .post:last-child{border-bottom:0}
   .post .hvem{display:flex;flex-wrap:wrap;gap:2px 10px;align-items:baseline}
   .post .hvem b{font:700 14.5px/1.3 var(--tekst)}
-  .post .hvem span{font:500 11px/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-500)}
+  .post .hvem span{font:700 12.5px/1.35 var(--tekst);letter-spacing:.01em;color:var(--ink-500)}
   .post p{margin-top:6px!important;font-size:15px;line-height:1.6;max-width:68ch}
   .post .fot{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:10px;align-items:center}
-  .lest{display:inline-flex;align-items:center;gap:8px;font:500 12.5px/1 var(--mono);color:var(--ink-700)}
+  .lest{display:inline-flex;align-items:center;gap:8px;font:700 13px/1.2 var(--tekst);color:var(--ink-700)}
   .lest .stolpe{width:80px;height:6px}
   .vedlegg{display:inline-flex;align-items:center;gap:8px;min-height:36px;padding:0 10px;border:1px solid var(--ink-200);background:var(--ink-50);font:700 13px/1 var(--tekst);color:var(--navy-900);text-decoration:none}
-  .vedlegg small{font:500 11px/1 var(--mono);color:var(--ink-500)}
+  .vedlegg small{font:400 12.5px/1.35 var(--tekst);color:var(--ink-700)}
   .dok{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:4px 12px;padding:12px 0;border-bottom:1px solid var(--ink-200);align-items:center}
   .dok:last-child{border-bottom:0}
-  .dok .type{display:grid;place-items:center;width:40px;height:40px;background:var(--navy-100);color:var(--navy-900);font:500 10.5px/1 var(--mono);letter-spacing:.08em}
+  .dok .type{display:grid;place-items:center;width:40px;height:40px;background:var(--navy-100);color:var(--navy-900);font:700 11.5px/1 var(--tekst);letter-spacing:.08em}
   .dok b{font:700 15px/1.3 var(--tekst)}
   .dok .lest{grid-column:2/-1}
   .dok > button{grid-column:3;grid-row:1}
@@ -40,7 +40,7 @@
 <body>
 <div class="ytre">
   <header class="hode">
-    <span class="meta-s">Team Norway · trenerskjermer · pakke 6 Gruppe · utkast 1 · 14.10.2026</span>
+    <span class="meta-s">Team Norway · trenerskjermer · pakke 6 Gruppe · utkast 2 · 16.10.2026</span>
     <h1>Gruppe: poster og dokumenter</h1>
     <p>Fire skjermer fra menygruppen Gruppe og spillerens Post-fane. Bare syntetiske data.</p>
   </header>
@@ -68,6 +68,7 @@
   <div class="notater">
     <section class="endringer">
       <h2>Hva som er nytt</h2>
+      <p><b>Utkast 2 (16.10):</b> bare grunnmuren er byttet. Ro er riktig her. Mindre mono i metadata, menyen kan lukkes, og alle navn er syntetiske.</p>
       <ul>
         <li><b>Gruppeposter</b> har skrivefeltet øverst, mottakerne synlige, og «Lest av» per post.</li>
         <li><b>Post til én spiller</b> er Post-fanen i spillerens IUP. Den viser foresatt i mottakerlinjen. Uten registrert foresatt er sending sperret for spillere under 18, med forklaring.</li>
@@ -100,9 +101,9 @@
   <section class="seksjon">
     <div class="sek-topp"><h2>Siste</h2><span class="kilde">3 av 24</span></div>
     <div class="kort">
-      <div class="post"><span class="avatar">IH</span><div><div class="hvem"><b>Ida Hovland</b><span>Sportssjef · i går 18:40</span></div><p>Programmet for Bossum er lagt ut. Ta med regntøy og treningsdagbok. Svar på oppmøte innen fredag.</p><div class="fot"><a class="vedlegg" href="#">Program Bossum <small>PDF · 240 kB</small></a><span class="lest"><span class="stolpe"><span style="width:64%"></span></span>Lest av 9 av 14</span></div></div></div>
-      <div class="post"><span class="avatar">TA</span><div><div class="hvem"><b>Tor Aune</b><span>Trener · 12. okt</span></div><p>Resultatene fra fellestesten 7. oktober er ført. Se egen profil i PlayerHQ.</p><div class="fot"><span class="lest"><span class="stolpe"><span style="width:86%"></span></span>Lest av 12 av 14</span></div></div></div>
-      <div class="post"><span class="avatar">IH</span><div><div class="hvem"><b>Ida Hovland</b><span>Sportssjef · 9. okt</span></div><p>Påmeldingsfristen for Spanish International U18 er 20. oktober. To er påmeldt så langt.</p><div class="fot"><span class="lest"><span class="stolpe"><span style="width:100%"></span></span>Lest av 14 av 14</span></div></div></div>
+      <div class="post"><span class="avatar">SS</span><div><div class="hvem"><b>Sportssjef</b><span>Sportssjef · i går 18:40</span></div><p>Programmet for Bossum er lagt ut. Ta med regntøy og treningsdagbok. Svar på oppmøte innen fredag.</p><div class="fot"><a class="vedlegg" href="#">Program Bossum <small>PDF · 240 kB</small></a><span class="lest"><span class="stolpe"><span style="width:64%"></span></span>Lest av 9 av 14</span></div></div></div>
+      <div class="post"><span class="avatar">T1</span><div><div class="hvem"><b>Trener 1</b><span>Trener · 12. okt</span></div><p>Resultatene fra fellestesten 7. oktober er ført. Se egen profil i PlayerHQ.</p><div class="fot"><span class="lest"><span class="stolpe"><span style="width:86%"></span></span>Lest av 12 av 14</span></div></div></div>
+      <div class="post"><span class="avatar">SS</span><div><div class="hvem"><b>Sportssjef</b><span>Sportssjef · 9. okt</span></div><p>Påmeldingsfristen for Spanish International U18 er 20. oktober. To er påmeldt så langt.</p><div class="fot"><span class="lest"><span class="stolpe"><span style="width:100%"></span></span>Lest av 14 av 14</span></div></div></div>
     </div>
     <a class="lenke" href="#">Eldre poster</a>
   </section>
@@ -114,25 +115,25 @@
 <div class="app" data-aktiv="spillere" data-skall="tilbake" data-tilbake="IUP">
 <main class="innhold">
   <header data-behold>
-    <span class="overlinje">IUP · Mathea Lund · Post</span>
-    <h1 class="tittel">Post til Mathea</h1>
-    <p class="ingress">Bare Mathea, foresatte og trenerteamet ser disse postene.</p>
+    <span class="overlinje">IUP · Spiller 01 · Post</span>
+    <h1 class="tittel">Post til Spiller 01</h1>
+    <p class="ingress">Bare Spiller 01, foresatte og trenerteamet ser disse postene.</p>
   </header>
   <section class="kort komponer" data-behold>
     <label class="undertittel" for="e-tekst">Ny post</label>
     <textarea id="e-tekst">Bra fellestest! Wedge Gate opp fra 6 til 7. Vi ser på 100–110 m på samlingen.</textarea>
-    <div class="mottakere"><span class="kilde">Til:</span><span class="mottaker">Mathea Lund</span><span class="mottaker">Foresatt: Kjersti Lund</span></div>
+    <div class="mottakere"><span class="kilde">Til:</span><span class="mottaker">Spiller 01</span><span class="mottaker">Foresatt til Spiller 01</span></div>
     <div class="knapper"><button type="button" class="knapp pri">Send</button></div>
   </section>
   <section class="seksjon">
     <div class="sek-topp"><h2>Tidligere</h2></div>
     <div class="kort">
-      <div class="post"><span class="avatar">TA</span><div><div class="hvem"><b>Tor Aune</b><span>Trener · 2. okt</span></div><p>Husk å føre Club Speed etter styrkeøkta på fredag.</p><div class="fot"><span class="merke ok"><i></i>Lest av Mathea</span><span class="merke noy"><i></i>Ikke lest av foresatt</span></div></div></div>
+      <div class="post"><span class="avatar">T1</span><div><div class="hvem"><b>Trener 1</b><span>Trener · 2. okt</span></div><p>Husk å føre Club Speed etter styrkeøkta på fredag.</p><div class="fot"><span class="merke ok"><i></i>Lest av Spiller 01</span><span class="merke noy"><i></i>Ikke lest av foresatt</span></div></div></div>
     </div>
   </section>
   <section class="seksjon">
-    <div class="sek-topp"><h2>Når foresatt mangler</h2><span class="kilde">Eksempel: Jonas Haug, 16 år</span></div>
-    <div class="sperre"><b>Kan ikke sende ennå</b><p class="forklar">Jonas er under 18 og har ingen registrert foresatt. Be Jonas legge inn en foresatt i PlayerHQ, eller kontakt sportssjefen.</p><div class="knapper"><button type="button" class="knapp sek">Send forespørsel til Jonas</button></div></div>
+    <div class="sek-topp"><h2>Når foresatt mangler</h2><span class="kilde">Eksempel: Spiller 06, 16 år</span></div>
+    <div class="sperre"><b>Kan ikke sende ennå</b><p class="forklar">Spiller 06 er under 18 og har ingen registrert foresatt. Be Spiller 06 legge inn en foresatt i PlayerHQ, eller kontakt sportssjefen.</p><div class="knapper"><button type="button" class="knapp sek">Send forespørsel til Spiller 06</button></div></div>
   </section>
 </main>
 </div>
@@ -151,10 +152,10 @@
     <a class="knapp pri" href="#" data-gaa="last">Last opp</a>
   </div>
   <section class="kort">
-    <div class="dok"><span class="type">PDF</span><span><b>Program Høstsamling Bossum</b><br><span class="kilde">Samling · Ida Hovland · 13. okt</span></span><span class="lest"><span class="stolpe"><span style="width:64%"></span></span>9 / 14 åpnet</span><button type="button" class="knapp stille">Åpne</button></div>
-    <div class="dok"><span class="type">PDF</span><span><b>Uttakskriterier 2026</b><br><span class="kilde">Plan · Ida Hovland · 3. jan</span></span><span class="lest"><span class="stolpe"><span style="width:100%"></span></span>14 / 14 åpnet</span><button type="button" class="knapp stille">Åpne</button></div>
-    <div class="dok"><span class="type">XLSX</span><span><b>Scorekort TN-batteriet</b><br><span class="kilde">Plan · Tor Aune · 2. okt</span></span><span class="lest"><span class="stolpe"><span style="width:43%"></span></span>6 / 14 åpnet</span><button type="button" class="knapp stille">Åpne</button></div>
-    <div class="dok"><span class="type">PDF</span><span><b>Utøveravtale 2026–2027</b><br><span class="kilde">Avtale · Ida Hovland · 15. aug</span></span><span class="lest"><span class="stolpe"><span style="width:93%"></span></span>13 / 14 åpnet</span><button type="button" class="knapp stille">Åpne</button></div>
+    <div class="dok"><span class="type">PDF</span><span><b>Program Høstsamling Bossum</b><br><span class="kilde">Samling · Sportssjef · 13. okt</span></span><span class="lest"><span class="stolpe"><span style="width:64%"></span></span>9 / 14 åpnet</span><button type="button" class="knapp stille">Åpne</button></div>
+    <div class="dok"><span class="type">PDF</span><span><b>Uttakskriterier 2026</b><br><span class="kilde">Plan · Sportssjef · 3. jan</span></span><span class="lest"><span class="stolpe"><span style="width:100%"></span></span>14 / 14 åpnet</span><button type="button" class="knapp stille">Åpne</button></div>
+    <div class="dok"><span class="type">XLSX</span><span><b>Scorekort TN-batteriet</b><br><span class="kilde">Plan · Trener 1 · 2. okt</span></span><span class="lest"><span class="stolpe"><span style="width:43%"></span></span>6 / 14 åpnet</span><button type="button" class="knapp stille">Åpne</button></div>
+    <div class="dok"><span class="type">PDF</span><span><b>Utøveravtale 2026–2027</b><br><span class="kilde">Avtale · Sportssjef · 15. aug</span></span><span class="lest"><span class="stolpe"><span style="width:93%"></span></span>13 / 14 åpnet</span><button type="button" class="knapp stille">Åpne</button></div>
   </section>
 </main>
 </div>
@@ -187,7 +188,7 @@ TNUtkast.start({
     poster: { mal: 'poster', laster: 'Henter postene …', feil: 'Postene kunne ikke hentes',
       tom: { tittel: 'Ingen innlegg ennå', tekst: 'Trenerteamet har ikke skrevet noe til gruppa. Skriv den første posten over.', knapp: 'Skriv en post' } },
     enkelt: { mal: 'enkelt', laster: 'Henter postene …', feil: 'Posten ble ikke sendt',
-      tom: { tittel: 'Ingen poster ennå', tekst: 'Du har ikke skrevet til Mathea her. Det du skriver, ser også foresatte.', knapp: 'Skriv en post' } },
+      tom: { tittel: 'Ingen poster ennå', tekst: 'Du har ikke skrevet til Spiller 01 her. Det du skriver, ser også foresatte.', knapp: 'Skriv en post' } },
     dokumenter: { mal: 'dokumenter', laster: 'Henter dokumentene …', feil: 'Dokumentene kunne ikke hentes',
       tom: { tittel: 'Ingen dokumenter ennå', tekst: 'Last opp program, planer og avtaler, så finner spillerne dem her.', knapp: 'Last opp' } },
     last: { mal: 'last', laster: 'Laster opp …', feil: 'Filen ble ikke lastet opp',
