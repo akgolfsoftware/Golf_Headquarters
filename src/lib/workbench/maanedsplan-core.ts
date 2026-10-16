@@ -14,7 +14,9 @@ import {
   MaanedInputSchema, alleUkerIMaaned, gjeldendeOverstyringer, parseUkeOverstyringer, ukeNokkel, ukerForMaaned,
   type MaanedKvittering, type UkeOverstyringer,
 } from "@/lib/workbench/maanedsplan-regler";
-import { byggMaanedUker } from "@/lib/workbench/maaned-visning";
+import { byggMaanedUker, minutterFraUkeplan } from "@/lib/workbench/maaned-visning";
+import { isoUkeIdentitet } from "@/lib/workbench/ukeplan-schema";
+import type { AxisMinutes } from "@/lib/workbench/perioder";
 import { fraDatoKolonne } from "@/lib/workbench/wb-map";
 import type { MaanedDetaljer } from "@/lib/domain/workbench/types";
 
@@ -182,4 +184,27 @@ export async function hentMaanedDetaljer(
     perioder: blokk.filter((b) => !HENDELSE_TYPER.has(b.type)),
     hendelser,
   };
+}
+
+/**
+ * Fordelt per uke (WeekPlan.plannedHours*) for År og Periode, nøklet på ukas mandag.
+ * Bare lesing. Uker uten ukeplan, eller uten timer, får null.
+ */
+export async function hentFordeltPerUke(
+  userId: string,
+  mandager: readonly string[],
+): Promise<Map<string, AxisMinutes | null>> {
+  const ut = new Map<string, AxisMinutes | null>(mandager.map((m) => [m, null]));
+  if (mandager.length === 0) return ut;
+  const uker = mandager.map((m) => ({ mandag: m, ...isoUkeIdentitet(m) }));
+  const rader = await prisma.weekPlan.findMany({
+    where: { playerId: userId, OR: uker.map((u) => ({ isoYear: u.isoYear, weekNumber: u.weekNumber })) },
+    select: {
+      isoYear: true, weekNumber: true, plannedHoursFys: true, plannedHoursTek: true,
+      plannedHoursSlag: true, plannedHoursSpill: true, plannedHoursTurn: true,
+    },
+  });
+  const perNokkel = new Map(rader.map((r) => [ukeNokkel(r.isoYear, r.weekNumber), r]));
+  for (const u of uker) ut.set(u.mandag, minutterFraUkeplan(perNokkel.get(ukeNokkel(u.isoYear, u.weekNumber))));
+  return ut;
 }
