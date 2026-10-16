@@ -1,0 +1,315 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Utfordringer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="felles/felles.css">
+<style>
+/* ---------- Pakke 16: Utfordringer, Én utfordring, Ny utfordring ---------- */
+.skjermvalg button{font-size:13px;min-height:36px;padding:0 10px}
+.app [hidden]{display:none!important}
+.topp{display:grid;gap:var(--r3)}
+.topp-rad{display:flex;justify-content:space-between;align-items:flex-end;gap:var(--r3);flex-wrap:wrap}
+.toast{position:sticky;bottom:16px;z-index:5;display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;background:var(--graphite-900);color:var(--white);font:500 14px/1.4 var(--sans);animation:inn 240ms var(--ut);box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.ark-lag{position:sticky;bottom:0;z-index:6;display:grid;margin:0 calc(-1 * var(--r4)) calc(-1 * var(--r6))}
+.ark-lag .ark{animation:opp 300ms var(--ut)}
+.ark h2{margin:0;font:600 19px/1.25 var(--sans)}
+.ark-topp{display:flex;justify-content:space-between;align-items:center;gap:var(--r3)}
+.lukk{width:44px;height:44px;border:0;border-radius:8px;background:var(--sand-150);display:grid;place-items:center;cursor:pointer;color:var(--graphite-900);flex:none}
+.dialog-lag{position:sticky;bottom:0;z-index:7;display:grid;margin:0 calc(-1 * var(--r4)) calc(-1 * var(--r6));padding:var(--r4);background:rgba(20,20,19,.35)}
+.dialog{border-radius:16px;background:var(--white);padding:var(--r5) var(--r4) var(--r4);display:grid;gap:var(--r4);box-shadow:0 12px 40px rgba(0,0,0,.25);animation:inn 240ms var(--ut)}
+.dialog h2{margin:0;font:600 20px/1.25 var(--sans)}
+.dialog .knapper{display:grid;gap:var(--r2)}
+.to-del{display:grid;gap:var(--r5);align-content:start}
+.to-del > div{display:grid;gap:var(--r5);align-content:start}
+.avatar{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font:600 13px/1 var(--sans);flex:none;background:var(--sand-150);color:var(--graphite-900)}
+.avatar.meg{background:var(--graphite-900);color:#fff}
+.felt textarea{resize:vertical}
+.to-felt{display:grid;grid-template-columns:1fr 1fr;gap:var(--r2)}
+.vilkaar{display:grid;gap:6px;padding:12px 14px;border-radius:10px;background:var(--sand-100);font-size:14px}
+.vilkaar b{font-weight:600}
+
+/* Liste */
+.utf-liste{display:grid;gap:var(--r2)}
+.utf{display:grid;grid-template-columns:96px minmax(0,1fr);border-radius:12px;overflow:hidden;color:#fff;border:0;padding:0;text-align:left;font:inherit;width:100%;cursor:pointer}
+.utf.slag{background:var(--slag)} .utf.spill{background:var(--spill-ink)} .utf.tek{background:var(--tek-ink)}
+.utf img{width:100%;height:100%;min-height:116px;object-fit:cover}
+.utf .t{padding:12px 14px;display:grid;gap:6px;align-content:start}
+.utf .t b{font:600 16px/1.3 var(--sans)}
+.utf .akse-merke{justify-self:start}
+.utf .t .info{display:flex;flex-wrap:wrap;gap:2px 12px;font-size:13.5px;opacity:.92}
+.utf .plass{display:flex;align-items:baseline;gap:6px}
+.utf .plass strong{font:600 26px/1 var(--mono)}
+.utf .plass span{font-size:13px;opacity:.9}
+.utf.avsluttet{background:var(--white);color:var(--graphite-900);border:1px solid var(--sand-300);grid-template-columns:minmax(0,1fr) auto;padding:12px 14px;gap:var(--r3);align-items:center}
+.utf.avsluttet .t{padding:0}
+.utf.avsluttet .plass strong{font-size:20px}
+
+/* Én utfordring */
+.utf-topp{display:grid;border-radius:14px;overflow:hidden;background:var(--slag);color:#fff}
+.utf-topp img{display:block;width:100%;height:140px;object-fit:cover}
+.utf-topp .ft{padding:var(--r4) 18px 18px;display:grid;gap:var(--r2)}
+.utf-topp .ft .hoved strong{color:#fff}
+.utf-topp .ft .info{display:flex;flex-wrap:wrap;gap:2px 14px;font-size:14px;opacity:.92}
+.utf-topp .akse-merke{justify-self:start}
+.tabell{display:grid;margin:0;padding:0;list-style:none;border-top:1px solid var(--sand-300)}
+.tabell li{display:grid;grid-template-columns:32px auto minmax(0,1fr) auto;gap:var(--r3);align-items:center;min-height:60px;padding:8px 0;border-bottom:1px solid var(--sand-300)}
+.tabell li .nr{font:600 15px/1 var(--mono);text-align:center}
+.tabell li b{display:block;font:600 15px/1.3 var(--sans)}
+.tabell li .score{font:600 18px/1 var(--mono);text-align:right}
+.tabell li.meg{background:var(--sand-100);margin:0 -8px;padding:8px;border-radius:8px}
+.tabell li .ingen{color:var(--graphite-600);font-weight:500}
+.retning{display:inline-flex;align-items:center;gap:6px;font:600 13px/1 var(--sans)}
+.retning .ikon{width:16px;height:16px}
+
+/* Ny */
+.retning-valg{display:grid;grid-template-columns:1fr 1fr;gap:var(--r2)}
+.retning-valg button{display:grid;gap:4px;justify-items:start;text-align:left;padding:12px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white);font:inherit;color:inherit;cursor:pointer}
+.retning-valg button b{font:600 15px/1.25 var(--sans)}
+.retning-valg button span{font-size:13px;color:var(--graphite-600)}
+.retning-valg button[aria-pressed="true"]{border:2px solid var(--graphite-900);background:var(--sand-100)}
+.retning-valg button:disabled{opacity:.5;cursor:default}
+.ovelse-valgt{display:grid;grid-template-columns:72px minmax(0,1fr) auto;border-radius:12px;overflow:hidden;background:var(--slag);color:#fff;align-items:center}
+.ovelse-valgt img{width:100%;height:100%;min-height:72px;object-fit:cover}
+.ovelse-valgt span{padding:10px 12px;display:grid;gap:2px}
+.ovelse-valgt b{font:600 15px/1.3 var(--sans)}
+.ovelse-valgt small{font-size:13px;opacity:.9}
+.ovelse-valgt button{margin-right:10px;min-height:40px;padding:0 12px;border-radius:8px;border:1px solid rgba(255,255,255,.6);background:transparent;color:#fff;font:600 13px/1 var(--sans);cursor:pointer}
+.deltakere{display:grid;border:1px solid var(--sand-300);border-radius:12px;overflow:hidden;background:var(--white)}
+.deltakere label{display:grid;grid-template-columns:auto auto minmax(0,1fr);gap:var(--r3);align-items:center;min-height:56px;padding:8px 14px;border-bottom:1px solid var(--sand-300);cursor:pointer}
+.deltakere label:last-child{border-bottom:0}
+.deltakere input{width:22px;height:22px;margin:0;accent-color:var(--graphite-900)}
+.deltakere b{display:block;font:600 15px/1.3 var(--sans)}
+.velg-alle{justify-self:start}
+
+@container (min-width:900px){
+  .ark-lag,.dialog-lag{position:sticky;bottom:24px;margin:0;justify-items:center;background:transparent;padding:0}
+  .ark-lag .ark,.dialog{width:100%;max-width:520px;border-radius:16px}
+  .to-del{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:var(--r6);align-items:start}
+  .utf-liste.aktive{grid-template-columns:1fr 1fr}
+  .utf-topp{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .utf-topp img{height:100%;min-height:180px}
+}
+</style>
+</head><body>
+<div class="ytre">
+  <div class="hode">
+    <span class="meta-s">PlayerHQ · pakke 16 · Utfordringer · utkast 1 · 16.10.2026</span>
+    <h1>Utfordringer</h1>
+    <p>Tre skjermer i én fil: Utfordringer, Én utfordring og Ny utfordring. Deltakerne velges bare blant medlemmene i gruppene dine; venner kommer i neste versjon (Anders 16.10). Demodata for Øyvind Rohjan i WANG Toppidrett. I dag er mandag 5. oktober kl. 14:20, uke 41.</p>
+  </div>
+  <div class="kontroller">
+    <div class="velger skjermvalg" role="group" aria-label="Skjerm">
+      <button type="button" aria-pressed="true" data-skjerm="liste">Utfordringer</button>
+      <button type="button" aria-pressed="false" data-skjerm="en">Én utfordring</button>
+      <button type="button" aria-pressed="false" data-skjerm="ny">Ny utfordring</button>
+    </div>
+  </div>
+  <div class="kontroller">
+    <div class="velger" role="group" aria-label="Versjon"><button type="button" aria-pressed="true" data-versjon="etter">Utkast</button><button type="button" aria-pressed="false" data-versjon="for">Dagens design</button></div>
+    <div class="velger" role="group" aria-label="Bredde"><button type="button" aria-pressed="true" data-bredde="mob">Mobil</button><button type="button" aria-pressed="false" data-bredde="pc">PC</button></div>
+    <div class="velger" role="group" aria-label="Tilstand"><button type="button" aria-pressed="true" data-tilstand="data">Med data</button><button type="button" aria-pressed="false" data-tilstand="tom">Tom</button><button type="button" aria-pressed="false" data-tilstand="laster">Laster</button><button type="button" aria-pressed="false" data-tilstand="feil">Feil</button></div>
+  </div>
+  <div class="scene"><div class="ramme mob" id="ramme"></div></div>
+  <div class="notater">
+    <div class="endringer">
+      <span class="meta-s">Hva som er nytt</span>
+      <ul>
+        <li><b>Utfordringer</b> viser aktive som fylte kort i aksefargen til øvelsen, med din plass som stort tall. Avsluttede ligger under, som rader.</li>
+        <li><b>Én utfordring</b>: resultatlisten med deg markert, hvem som vinner (høyest eller lavest), «Registrer score», og «Avslutt» for den som laget den.</li>
+        <li><b>Ny utfordring</b>: navn, øvelse fra Øvelsesbanken, periode, retning og deltakere. Retningen låses når øvelsen har en. Deltakerne velges blant gruppene dine og får varsel i appen.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Reglene som er fulgt</span>
+      <ul>
+        <li>Ingen delbar lenke: bare valgte deltakere kan åpne og bli med (vedtak 22.09). I dag kan alle innloggede åpne en utfordring fra adressen; det må tettes når siden bygges.</li>
+        <li>«Opprett utfordring» er grafitt primærknapp. Rust bare i dialogen «Avslutt utfordringen» (vedtak 26.09 om rust går foran 22.09).</li>
+        <li>Statusordet er «Avsluttet», ikke «Fullført». Utfordringer teller ikke som trening og går ikke til planen.</li>
+        <li>Ikke tegnet: <code>utfordringer/spiller/[id]</code> og <code>utfordringer/samlinger</code> finnes ikke i koden. Venner-sidene skjules til neste versjon.</li>
+        <li>Ingen sidelengs rulling i 390 og 360 px.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Åpent hos Anders</span>
+      <ul>
+        <li><b>Rust på «Opprett utfordring»:</b> vedtaket 22.09 sa rust. Vedtaket 26.09 (Precision) sier rust bare for det som haster eller sletter. Utkastet følger 26.09: grafitt. Riktig?</li>
+        <li><b>Coach i gruppa</b> kan i dag velge hele stallen. Anbefaling: coach velger blant gruppene og stallen, spiller bare blant gruppene.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ================= Utfordringer ================= -->
+<template id="liste">
+<div class="app" data-fane="meg" data-skall="tilbake" data-tilbake="Meg">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div class="topp-rad"><div><div class="dato">Meg · utfordringer</div><h1 class="tittel">Utfordringer</h1></div><button type="button" class="knapp pri" data-gaa="ny">Ny utfordring</button></div>
+    </div>
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Aktive</h2><span class="kilde">2</span></div>
+      <div class="utf-liste aktive">
+        <button type="button" class="utf slag" data-gaa="en"><img src="bilder/naerspill-wedge.jpg" alt=""><span class="t"><span class="akse-merke"><i></i>SLAG</span><b>8-ball, flest poeng</b><span class="plass"><strong>2.</strong><span>av 5 · 31 poeng</span></span><span class="info"><span>Slutter søn 11. okt.</span><span>WANG Toppidrett</span></span></span></button>
+        <button type="button" class="utf spill" data-gaa="en"><img src="bilder/slag-putting.jpg" alt=""><span class="t"><span class="akse-merke"><i></i>SPILL</span><b>Færrest putter, 18 hull</b><span class="plass"><strong>—</strong><span>av 4 · ingen score ennå</span></span><span class="info"><span>Slutter 18. okt.</span><span>Laget av Selma</span></span></span></button>
+      </div>
+    </section>
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Avsluttet</h2><span class="kilde">2</span></div>
+      <div class="utf-liste">
+        <button type="button" class="utf avsluttet"><span class="t"><b>Wedge til tre lengder</b><span class="kilde">Avsluttet 27. sep. · 6 deltakere</span></span><span class="plass"><strong>1.</strong></span></button>
+        <button type="button" class="utf avsluttet"><span class="t"><b>Up and down fra bunker</b><span class="kilde">Avsluttet 13. sep. · 4 deltakere</span></span><span class="plass"><strong>3.</strong></span></button>
+      </div>
+    </section>
+    <p class="kildetekst">Utfordringer teller ikke som trening og vises ikke i planen eller Stats.</p>
+  </main>
+</div>
+</template>
+
+<!-- ================= Én utfordring ================= -->
+<template id="en">
+<div class="app" data-fane="meg" data-skall="tilbake" data-tilbake="Utfordringer">
+  <main class="innhold">
+    <div class="to-del">
+      <div>
+        <div class="utf-topp" data-behold>
+          <img src="bilder/naerspill-wedge.jpg" alt="">
+          <div class="ft">
+            <span class="akse-merke"><i></i>SLAG · 8-ball</span>
+            <h1 class="tittel" style="margin:0">8-ball, flest poeng</h1>
+            <span class="info"><span>Man 28. sep.–søn 11. okt.</span><span>Laget av Øyvind</span></span>
+            <span class="retning"><svg class="ikon" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg>Høyest score vinner</span>
+          </div>
+        </div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Resultatlisten</h2><span class="kilde">5 deltakere · 4 med score</span></div>
+          <ol class="tabell" data-tabell></ol>
+        </section>
+      </div>
+      <div>
+        <section class="kort">
+          <div class="hoved"><strong data-min>31</strong><span class="forklar">poeng, din beste · 2. plass</span></div>
+          <p class="forklar">Selma leder med 34. Seks dager igjen.</p>
+          <button type="button" class="knapp pri stor" data-score>Registrer score</button>
+          <p class="kildetekst">8 baller · i hull 5 poeng, innenfor 1 m 3, 2 m 2, 3 m 1. Beste forsøk teller.</p>
+        </section>
+        <div class="kort dempet">
+          <b class="undertittel">Du laget utfordringen</b>
+          <p class="forklar">Avslutt den før søndag hvis alle er ferdige. Resultatlisten låses.</p>
+          <div class="knapper"><button type="button" class="knapp sek" data-avslutt>Avslutt utfordringen</button></div>
+        </div>
+      </div>
+    </div>
+    <div class="ark-lag" data-ark hidden>
+      <div class="ark" role="dialog" aria-label="Registrer score">
+        <div class="ark-topp"><h2>Registrer score</h2><button type="button" class="lukk" aria-label="Lukk" data-lukk><svg class="ikon" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+        <div class="felt"><label for="u-score">Poeng</label><input id="u-score" inputmode="numeric" value="33"><span class="hjelp">Mellom 0 og 40.</span></div>
+        <div class="felt"><label for="u-notat">Notat <span class="kilde">valgfritt, deltakerne ser det</span></label><textarea id="u-notat" rows="2">Vind fra venstre på de fire siste.</textarea></div>
+        <button type="button" class="knapp pri stor" data-lagre>Lagre score</button>
+      </div>
+    </div>
+    <div class="dialog-lag" data-dialog hidden>
+      <div class="dialog" role="alertdialog" aria-labelledby="ua-t">
+        <h2 id="ua-t">Avslutte utfordringen?</h2>
+        <p class="forklar">Resultatlisten låses, og ingen kan registrere mer. De fem deltakerne får beskjed.</p>
+        <div class="knapper"><button type="button" class="knapp rust stor" data-ua-ok>Avslutt utfordringen</button><button type="button" class="knapp sek stor" data-ua-nei>La den gå til søndag</button></div>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= Ny utfordring ================= -->
+<template id="ny">
+<div class="app" data-fane="meg" data-skall="tilbake" data-tilbake="Utfordringer">
+  <main class="innhold">
+    <div class="topp" data-behold><div><div class="dato">Utfordringer · ny</div><h1 class="tittel">Ny utfordring</h1></div></div>
+    <div class="to-del">
+      <div>
+        <div class="felt"><label for="n-navn">Navn</label><input id="n-navn" value="8-ball, flest poeng"></div>
+        <div class="felt"><span class="etikett">Øvelse</span>
+          <div class="ovelse-valgt"><img src="bilder/naerspill-wedge.jpg" alt=""><span><b>8-ball</b><small>SLAG · Nærspill · poeng 0–40</small></span><button type="button" data-bytt>Bytt</button></div>
+          <span class="hjelp">Fra Øvelsesbanken. Uten øvelse blir det en fri utfordring.</span>
+        </div>
+        <div class="felt"><span class="etikett">Hvem vinner?</span>
+          <div class="retning-valg" data-gruppe><button type="button" aria-pressed="true"><b>Høyest score</b><span>Bestemt av øvelsen</span></button><button type="button" aria-pressed="false" disabled><b>Lavest score</b><span>For eksempel færrest putter</span></button></div>
+        </div>
+        <div class="to-felt"><div class="felt"><label for="n-fra">Fra</label><input id="n-fra" type="date" value="2026-10-05"></div><div class="felt"><label for="n-til">Til</label><input id="n-til" type="date" value="2026-10-11"></div></div>
+        <div class="felt"><label for="n-besk">Regler <span class="kilde">valgfritt</span></label><textarea id="n-besk" rows="2">Beste forsøk teller. Spill fra chippinggreen, 15 m.</textarea></div>
+      </div>
+      <div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Deltakere</h2><span class="kilde" data-antall>4 valgt</span></div>
+          <div class="felt"><label for="n-gruppe">Fra gruppa</label><select id="n-gruppe"><option>WANG Toppidrett (11)</option><option>AK Golf Academy (6)</option></select></div>
+          <div class="deltakere" data-deltakere>
+            <label><input type="checkbox" checked><span class="avatar">SR</span><span><b>Selma Ruud</b><span class="kilde">Kategori C</span></span></label>
+            <label><input type="checkbox" checked><span class="avatar">JB</span><span><b>Jonas Berg</b><span class="kilde">Kategori C</span></span></label>
+            <label><input type="checkbox" checked><span class="avatar">EH</span><span><b>Emma Haug</b><span class="kilde">Kategori D</span></span></label>
+            <label><input type="checkbox" checked><span class="avatar">AM</span><span><b>Adrian Moen</b><span class="kilde">Kategori D</span></span></label>
+            <label><input type="checkbox"><span class="avatar">TH</span><span><b>Tiril Hansen</b><span class="kilde">Kategori E</span></span></label>
+          </div>
+          <button type="button" class="knapp sek velg-alle" data-alle>Velg alle i gruppa</button>
+          <div class="vilkaar"><b>Bare de du velger</b><span>De får varsel i appen og kan åpne utfordringen. Du er med automatisk.</span></div>
+        </section>
+        <button type="button" class="knapp pri stor" data-opprett>Opprett utfordring</button>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<script src="felles/felles.js"></script>
+<script>
+(function () {
+  function toast(app, tekst) {
+    var gml = app.querySelector('.toast'); if (gml) gml.remove();
+    var t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role', 'status'); t.textContent = tekst;
+    app.querySelector('.innhold').appendChild(t);
+    setTimeout(function () { t.remove(); }, 3600);
+  }
+  var RES = [['SR', 'Selma Ruud', 34, '4. okt.'], ['ØR', 'Øyvind Rohjan', 31, '2. okt.', true], ['JB', 'Jonas Berg', 27, '1. okt.'], ['EH', 'Emma Haug', 22, '30. sep.'], ['AM', 'Adrian Moen', null, '']];
+  function en(app) {
+    var tab = app.querySelector('[data-tabell]');
+    function tegn() {
+      var r = RES.slice().sort(function (a, b) { return (b[2] === null ? -1 : b[2]) - (a[2] === null ? -1 : a[2]); });
+      var plass = 0, forrige = null;
+      tab.innerHTML = r.map(function (x, i) {
+        if (x[2] !== forrige) { plass = i + 1; forrige = x[2]; }
+        return '<li' + (x[4] ? ' class="meg"' : '') + '><span class="nr">' + (x[2] === null ? '—' : plass) + '</span><span class="avatar' + (x[4] ? ' meg' : '') + '">' + x[0] + '</span><span><b>' + x[1] + (x[4] ? ' (deg)' : '') + '</b><span class="kilde">' + (x[2] === null ? 'Ikke registrert ennå' : 'Registrert ' + x[3]) + '</span></span><span class="score' + (x[2] === null ? ' ingen' : '') + '">' + (x[2] === null ? '—' : x[2]) + '</span></li>';
+      }).join('');
+    }
+    tegn();
+    var ark = app.querySelector('[data-ark]');
+    app.querySelector('[data-score]').addEventListener('click', function () { ark.hidden = false; app.querySelector('#u-score').focus({ preventScroll: true }); });
+    app.querySelector('[data-lukk]').addEventListener('click', function () { ark.hidden = true; });
+    app.querySelector('[data-lagre]').addEventListener('click', function () {
+      var v = parseInt(app.querySelector('#u-score').value, 10);
+      if (isNaN(v) || v < 0 || v > 40) { toast(app, 'Skriv et tall mellom 0 og 40.'); return; }
+      if (v > RES[1][2]) { RES[1][2] = v; RES[1][3] = 'i dag'; }
+      app.querySelector('[data-min]').textContent = RES[1][2];
+      ark.hidden = true; tegn(); toast(app, 'Lagret. Resultatlisten er oppdatert.');
+    });
+    var d = app.querySelector('[data-dialog]');
+    app.querySelector('[data-avslutt]').addEventListener('click', function () { d.hidden = false; });
+    app.querySelector('[data-ua-nei]').addEventListener('click', function () { d.hidden = true; });
+    app.querySelector('[data-ua-ok]').addEventListener('click', function () { d.hidden = true; toast(app, 'Utfordringen er avsluttet. Deltakerne har fått beskjed.'); });
+  }
+  function ny(app) {
+    var boks = app.querySelector('[data-deltakere]');
+    function tell() { app.querySelector('[data-antall]').textContent = boks.querySelectorAll('input:checked').length + ' valgt'; }
+    boks.addEventListener('change', tell);
+    app.querySelector('[data-alle]').addEventListener('click', function () { boks.querySelectorAll('input').forEach(function (i) { i.checked = true; }); tell(); });
+    app.querySelector('[data-bytt]').addEventListener('click', function () { toast(app, 'Åpner Øvelsesbanken for å velge øvelse.'); });
+    app.querySelector('[data-opprett]').addEventListener('click', function () { AKUtkast.gaa('en'); });
+  }
+  function m(id, mal, etter, tom, laster, feil) { return { mal: mal, for: { mob: 'screenshots/' + id + '-390.jpg', pc: 'screenshots/' + id + '-1440.jpg' }, etter: etter, tom: tom, laster: laster, feil: feil }; }
+  /* Dagens skjermbilder finnes ikke for utfordringene i registeret. Nærmeste skjerm vises: PH-24 Meg. */
+  AKUtkast.start({
+    start: 'liste',
+    skjermer: {
+      liste: m('PH-24', 'liste', null, { tittel: 'Ingen utfordringer ennå', tekst: 'Lag en utfordring og velg hvem i gruppa som skal være med.', knapp: 'Ny utfordring' }, 'Henter utfordringene …', 'Utfordringene kunne ikke hentes'),
+      en: m('PH-24', 'en', en, { tittel: 'Ingen har registrert score ennå', tekst: 'Vær den første. Beste forsøk teller.', knapp: 'Registrer score' }, 'Henter utfordringen …', 'Utfordringen kunne ikke hentes'),
+      ny: m('PH-24', 'ny', ny, { tittel: 'Ingen i gruppene dine ennå', tekst: 'Du kan lage en utfordring når du er med i en gruppe.', knapp: 'Til Meg' }, 'Oppretter utfordringen …', 'Utfordringen kunne ikke opprettes. Ingen har fått varsel.')
+    }
+  });
+})();
+</script>
+</body></html>

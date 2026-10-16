@@ -60,6 +60,23 @@ Anders 16.10, etter pakke 11 og 12: «Det skal være et sted i workbenchen hvor 
 5. **Lenke «Hele øvelsesbanken»** i spillerens og coachens Workbench. Coachen får samme bank-side som spilleren, i AgencyOS-skallet. Ferdig når begge lenkene åpner banken med filtrene.
 6. **PR med skjermbilder** i 390 og 1280 px og full `npm run verify`. Ikke merge før Anders skriver «merge».
 
+## VENNER SKJULES TIL NESTE VERSJON, UTFORDRINGER SENDES BARE TIL GRUPPA (Anders 16.10.2026, bindende)
+
+Svar på punkt 3 i §DEL RUNDE FINNES VED LANSERING, stilt før pakke 16 Utfordringer ble tegnet: «Skjul venner, bare gruppa».
+
+- **`/portal/venner` og `/portal/venner/[spillerId]` skjules ved lansering.** Venner tegnes og bygges i neste versjon, med invitasjon, følging og feed.
+- **Deltakere i en utfordring velges bare blant medlemmene i gruppene spilleren selv er med i** (`GroupMember`, `endedAt: null`). En coach velger i tillegg fra stallen sin.
+- Ingen delbar lenke, som før. Bare valgte deltakere kan åpne og bli med.
+
+**Overstyrer:** «Deltakere velges fra venner og gruppa» i §UTFORDRINGER SKAL LEVE (22.09), for venner. Punkt 3 i §DEL RUNDE FINNES VED LANSERING er avklart for venner-sidene og utfordringene.
+
+**Arbeidet dette utløser:**
+
+1. **Skjul venner:** `/portal/venner` og `/portal/venner/[spillerId]` sender videre til `/portal/meg`, og ingen meny eller lenke viser dem. Ferdig når et søk etter `/portal/venner` i `src/` bare treffer videresendingen.
+2. **Deltakere bare fra gruppa:** `hentGyldigeDeltakerIder` (`src/app/portal/(legacy)/utfordringer/actions.ts`) og `PH24dNy` slutter å hente `Friendship`. Ferdig når en test låser at en venn utenfor gruppene avvises.
+3. **Tilgang til én utfordring:** `/portal/utfordringer/[id]` og `bliMed` slipper bare inn eier og valgte deltakere (i dag kan alle innloggede åpne og bli med). Ferdig når en test låser at en annen spiller avvises.
+4. **Tegning:** pakke 16, `docs/design-system/utkast-playerhq/utfordringer.html` (utkast 1, 16.10). Port 7 gjenstår.
+
 ## WANG-TRENERFLATEN FØLGER STILEN PÅ WANG.NO (Anders 16.10.2026, bindende)
 
 Anders 16.10 etter utkast 2: «WANG må litt nærmere stilen som er på www.wang.no», og etter justeringen: «Ja, WANG-stilen er riktig nå.» Gjelder trenerflaten i `/team-wang` (Trener og Sportssjef); fellessiden `/team-wang` er uendret.
