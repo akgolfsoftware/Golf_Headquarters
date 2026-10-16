@@ -1,6 +1,6 @@
 # Arbeidsplan — alle referansebilder
 
-Status: **plan, venter på Anders' ja (16.10.2026).** Ingen nye bilder er laget.
+Status: **plan, verktøy valgt 16.10.2026 (Gemini).** Ingen nye bilder er laget.
 Bygger på [bildeplanen 14.10](bildeplan-2026-10-14.md), som sier *hva* bildene viser og har reglene
 (ingen tekst, ingen ansikter, ingen logoer, nordisk lys, foto, 3:2 i 1800 × 1200, under 300 kB).
 Denne planen sier *i hvilken rekkefølge*, *hvor mange* og *når et bilde er ferdig*.
@@ -20,19 +20,20 @@ Denne planen sier *i hvilken rekkefølge*, *hvor mange* og *når et bilde er fer
 
 Pulje 1 setter stilen. Ingen andre bilder lages før Anders har godkjent den, ellers må alt lages på nytt.
 
-## Før start: ett valg hos Anders
+## Verktøy: Gemini (Anders 16.10)
 
-**Bildeverktøy.** Bildeplanen har dette åpent. Ett og samme verktøy for alle bilder, ellers spriker
-lyset og fargene. Foto er ikke realistisk for TURN (publikum, resultattavle), så et bildeverktøy er
-eneste vei for minst det bildet.
+Alle bilder lages i Gemini, ett og samme verktøy, så lys og farger holder seg like.
+Lim inn én bestilling om gangen i en ny samtale, slik at ett bilde ikke farger det neste.
+Gemini kan sette et lite merke i et hjørne av bildet. Det skal ikke være med i ferdig bilde:
+beskjær det bort, eller lag bildet på nytt.
 
 ## Slik blir ett bilde ferdig
 
-1. Lim inn bestillingen i bildeverktøyet. Lag tre varianter.
+1. Lim inn bestillingen i Gemini. Lag tre varianter.
 2. Anders velger én (eller ber om ny runde).
-3. Kontroll: ingen ansikt, ingen lesbar tekst eller logo, motivet tåler utsnitt til 4:5 og 16:9.
+3. Kontroll: ingen ansikt, ingen lesbar tekst, logo eller Gemini-merke, motivet tåler utsnitt til 4:5 og 16:9.
 4. Skalér til 1800 × 1200 og komprimer under 300 kB. Filnavn som i tabellene under.
-5. Legg i `docs/design-system/utkast-playerhq/bilder/` og skriv verktøy og dato i `bilder/KILDER.md`.
+5. Legg i `docs/design-system/utkast-playerhq/bilder/` og skriv «Gemini» og dato i `bilder/KILDER.md`.
 6. Bytt inn i utkastene der det gamle bildet står. Skjermbilde i 390 og 1280 px.
 7. Ferdig når Anders har sett bildet i utkastet (port 7).
 
