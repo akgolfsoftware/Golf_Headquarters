@@ -141,6 +141,44 @@ export function TnFilterknapper({ valg, etikett }: { valg: TnFilterValg[]; etike
   );
 }
 
+/** Tekstlenke: navy-600, understreket, minst 44 px høy. */
+export function TnTekstlenke({ href, children }: { href: string; children: ReactNode }) {
+  return <Link href={href} style={{ display: "inline-flex", alignItems: "center", gap: 4, minHeight: 44, fontSize: 14, fontWeight: 700, color: TN.navy600, textDecoration: "underline", textUnderlineOffset: 4, justifySelf: "start", alignSelf: "flex-start" }}>{children}</Link>;
+}
+
+/** Rad i en liste som blir kortrader på mobil: tekst til venstre, merke eller tall til høyre. */
+export function TnListerad({ tittel, tekst, hoyre, foran }: { tittel: ReactNode; tekst?: ReactNode; hoyre?: ReactNode; foran?: ReactNode }) {
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: foran ? "auto minmax(0, 1fr) auto" : "minmax(0, 1fr) auto", gap: "4px 12px", padding: "12px 0", borderBottom: `1px solid ${TN.ink200}`, alignItems: "center" }}>
+      {foran}
+      <div style={{ minWidth: 0 }}>
+        <div style={{ fontSize: 15, fontWeight: 700, lineHeight: 1.3, overflowWrap: "anywhere" }}>{tittel}</div>
+        {tekst ? <div style={{ fontSize: 12.5, lineHeight: 1.45, color: TN.ink500, marginTop: 2, overflowWrap: "anywhere" }}>{tekst}</div> : null}
+      </div>
+      {hoyre ?? <span />}
+    </div>
+  );
+}
+
+/** Hendelse i en liste: dagen stort i mono, tittel og kilde, merke til høyre. Hele raden er lenke når `href` er satt. */
+export function TnHendelserad({ dag, maned, tittel, tekst, hoyre, href, strek }: { dag: string; maned: string; tittel: ReactNode; tekst?: ReactNode; hoyre?: ReactNode; href?: string; strek?: string }) {
+  const innhold = (
+    <>
+      <span style={{ display: "grid", justifyItems: "start", fontFamily: TN.font.mono, fontWeight: 500, fontSize: 22, lineHeight: 1, color: TN.navy900, borderLeft: strek ? `4px solid ${strek}` : undefined, paddingLeft: strek ? 8 : 0 }}>
+        {dag}
+        <small style={{ fontSize: 11, lineHeight: 1.4, letterSpacing: "0.12em", textTransform: "uppercase", color: TN.ink500 }}>{maned}</small>
+      </span>
+      <span style={{ minWidth: 0 }}>
+        <b style={{ display: "block", fontSize: 15, lineHeight: 1.3, overflowWrap: "anywhere" }}>{tittel}</b>
+        {tekst ? <span style={{ display: "block", fontSize: 12.5, lineHeight: 1.45, color: TN.ink500, overflowWrap: "anywhere" }}>{tekst}</span> : null}
+      </span>
+      {hoyre ?? <span />}
+    </>
+  );
+  const stil: CSSProperties = { display: "grid", gridTemplateColumns: "64px minmax(0, 1fr) auto", gap: 12, alignItems: "center", padding: "12px 0", borderBottom: `1px solid ${TN.ink200}`, textDecoration: "none", color: "inherit", minHeight: 44 };
+  return href ? <Link href={href} style={stil}>{innhold}</Link> : <div style={stil}>{innhold}</div>;
+}
+
 /** To- eller flerkolonne som stables under 360 px per kolonne. */
 export function TnRutenett({ children, min = 360, style }: { children: ReactNode; min?: number; style?: CSSProperties }) {
   return <div style={{ display: "grid", gridTemplateColumns: `repeat(auto-fit, minmax(min(100%, ${min}px), 1fr))`, gap: 24, alignItems: "start", ...style }}>{children}</div>;

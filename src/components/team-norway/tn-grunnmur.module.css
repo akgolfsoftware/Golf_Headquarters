@@ -23,6 +23,9 @@
 .okt:active { transform: scale(0.97); }
 .okt:focus-visible { outline: 3px solid var(--tn-navy-400); outline-offset: 2px; }
 .liten { padding: 12px 14px; gap: 4px; }
+.noytral { background: var(--tn-white); color: var(--tn-ink-900); border: 1px solid var(--tn-ink-300); }
+.noytral .akseMerke { border-color: var(--tn-ink-500); color: var(--tn-ink-700); }
+.egentid { display: grid; gap: 2px; padding: 12px 14px; border: 1px dashed var(--tn-ink-300); background: var(--tn-white); }
 .oktRad { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
 .akseMerke { display: inline-flex; align-items: center; height: 22px; padding: 0 7px; border-radius: var(--tn-radius-sm); border: 1px solid rgba(255, 255, 255, 0.7); font-family: var(--tn-font-mono); font-weight: 500; font-size: 11px; line-height: 1; letter-spacing: 0.12em; width: max-content; }
 .oktTid { font-family: var(--tn-font-mono); font-weight: 500; font-size: 30px; line-height: 1.05; letter-spacing: -0.02em; white-space: nowrap; }

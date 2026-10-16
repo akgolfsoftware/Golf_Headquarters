@@ -10,388 +10,211 @@ interface WangTreningProps {
   campus?: string;
 }
 
+const FANER = [
+  { id: "oversikt", tittel: "Oversikt" },
+  { id: "oppmote", tittel: "Per elev" },
+  { id: "periode", tittel: "Årsplan" },
+  { id: "morgen", tittel: "Morgenøkter" },
+] as const;
+
+const TRINN = ["alle", "VG1", "VG2", "VG3"] as const;
+
+/** Periodene i gruppas plan. Navnene følger periodelista fra 28.09.2026. */
+const PERIODER = [
+  { nr: 1, type: "Grunnperiode", tittel: "Grunntrening og sving", uker: "Uke 33–35", status: "Avsluttet" },
+  { nr: 2, type: "Spesialperiode", tittel: "Spesialperiode og spissing", uker: "Uke 36–43 · 4 uker igjen", status: "Nå" },
+  { nr: 3, type: "Turneringsperiode", tittel: "Turneringsavslutning", uker: "Uke 44–46", status: "Kommende" },
+  { nr: 4, type: "Grunnperiode", tittel: "Vinteroppkjøring", uker: "Uke 47–02", status: "Kommende" },
+] as const;
+
+const MORGENOKTER = [
+  { dag: "Tirsdag 08:00–10:00", tittel: "Teknikk, TrackMan og langslag", sted: "Gamle Fredrikstad GK, simulator og range" },
+  { dag: "Torsdag 08:00–10:00", tittel: "Nærspill, putting og scoring", sted: "Onsøy GK, treningsgreen" },
+] as const;
+
+const prosent = (del: number, av: number) => (av > 0 ? Math.round((del / av) * 100) : null);
+
+/**
+ * WANG-42 Trening for trener og sportssjef.
+ * Fasit: docs/design-system/utkast-wang/trening.html (pakke 3, utkast 1, 14.10.2026).
+ * Avvik:
+ *   - Per akse, uke for uke, periodeskjemaet, Uka og Ny økt er ikke med. Kilden har
+ *     ikke tid per akse eller økter per uke for WANG-gruppa ennå.
+ *   - Etterlevelse er summen av gjennomførte minutter delt på planlagte minutter.
+ *   - Fanen Morgenøkter (WANG-04) er beholdt fra dagens skjerm.
+ */
 export function WangTrening({
   valgtFane = "oversikt",
   aktivFane,
-  onFaneEndret: _onFaneEndret,
+  onFaneEndret,
   campus: _campus = "Fredrikstad",
 }: WangTreningProps) {
   const [fane, setFane] = useState(aktivFane || valgtFane);
   const [elever] = useState<WangElev[]>(WANG_ELEVER);
   const [valgtTrinn, setValgtTrinn] = useState<string>("alle");
 
-  const filtrerteElever = elever.filter((e) =>
-    valgtTrinn === "alle" ? true : e.trinn === valgtTrinn
-  );
+  const filtrerteElever = elever
+    .filter((e) => (valgtTrinn === "alle" ? true : e.trinn === valgtTrinn))
+    .sort((a, b) => a.etterlevelseProsent - b.etterlevelseProsent);
+
+  const planlagt = filtrerteElever.reduce((s, e) => s + e.planlagtMinutter, 0);
+  const gjennomfort = filtrerteElever.reduce((s, e) => s + e.gjennomfortMinutter, 0);
+  const etterlevelse = prosent(gjennomfort, planlagt);
+  const snittFravaer = filtrerteElever.length
+    ? Math.round((filtrerteElever.reduce((s, e) => s + e.fravaerProsent, 0) / filtrerteElever.length) * 10) / 10
+    : null;
+  const oppfolging = filtrerteElever.filter((e) => e.trengerOppfolging).length;
+
+  const velgFane = (id: string) => {
+    setFane(id);
+    onFaneEndret?.(id);
+  };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
-      {/* 1. Tittel og faner */}
-      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: "16px" }}>
+    <>
+      <section className="wg-helt">
         <div>
-          <p className="wg-num" style={{ margin: "0 0 6px", fontSize: "12px", fontWeight: 500, color: "var(--wang-text-muted)" }}>
-            WANG-42 · Trening · Høst 2026
-          </p>
-          <h1
-            style={{
-              margin: 0,
-              fontFamily: "var(--font-wang-brand, Montserrat, sans-serif)",
-              fontWeight: 300,
-              fontSize: "36px",
-              letterSpacing: "-0.015em",
-              color: "var(--wang-blue)",
-              lineHeight: 1.1,
-            }}
-          >
-            Trening og etterlevelse
-          </h1>
+          <p className="wg-dato">WANG Golf · siste fire uker</p>
+          <h1 className="wg-tittel">Trening</h1>
+          <p className="wg-ingress">Gjennomført tid mot planlagt tid, oppmøte og gruppas årsplan.</p>
         </div>
-
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-          <button
-            type="button"
-            onClick={() => setFane("oversikt")}
-            className={`wg-chip ${fane === "oversikt" ? "wg-chip-pa" : ""}`}
-          >
-            Oversikt (WANG-42)
-          </button>
-          <button
-            type="button"
-            onClick={() => setFane("oppmote")}
-            className={`wg-chip ${fane === "oppmote" ? "wg-chip-pa" : ""}`}
-          >
-            Oppmøte (WANG-38)
-          </button>
-          <button
-            type="button"
-            onClick={() => setFane("periode")}
-            className={`wg-chip ${fane === "periode" ? "wg-chip-pa" : ""}`}
-          >
-            Årsplan & periode (WANG-29/16)
-          </button>
-          <button
-            type="button"
-            onClick={() => setFane("morgen")}
-            className={`wg-chip ${fane === "morgen" ? "wg-chip-pa" : ""}`}
-          >
-            Morgenøkter (WANG-04)
-          </button>
+        <div className="wg-helt-tall">
+          <div>
+            <span>Etterlevelse</span>
+            <strong>{etterlevelse === null ? "—" : `${etterlevelse} %`}</strong>
+            <span className="wg-kilde">Tid mot plan</span>
+          </div>
+          <div>
+            <span>Gjennomført</span>
+            <strong>{planlagt > 0 ? `${Math.round(gjennomfort / 60)} t` : "—"}</strong>
+            <span className="wg-kilde">av {Math.round(planlagt / 60)} t planlagt</span>
+          </div>
+          <div>
+            <span>Fravær</span>
+            <strong>{snittFravaer === null ? "—" : `${String(snittFravaer).replace(".", ",")} %`}</strong>
+            <span className="wg-kilde">Snitt per elev</span>
+          </div>
+          <div className={oppfolging > 0 ? "wg-signal" : undefined}>
+            <span>Følger opp</span>
+            <strong>{oppfolging}</strong>
+            <span className="wg-kilde">av {filtrerteElever.length} elever</span>
+          </div>
         </div>
-      </div>
+      </section>
 
-      {/* 2. Filter på trinn */}
-      <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
-        <span style={{ fontSize: "13px", fontWeight: 600, color: "var(--wang-blue)" }}>
-          Filtrer trinn:
-        </span>
-        <button
-          type="button"
-          onClick={() => setValgtTrinn("alle")}
-          className={`wg-chip ${valgtTrinn === "alle" ? "wg-chip-pa" : ""}`}
-          style={{ minHeight: "36px", padding: "0 14px", fontSize: "12px" }}
-        >
-          Alle ({elever.length})
-        </button>
-        <button
-          type="button"
-          onClick={() => setValgtTrinn("VG1")}
-          className={`wg-chip ${valgtTrinn === "VG1" ? "wg-chip-pa" : ""}`}
-          style={{ minHeight: "36px", padding: "0 14px", fontSize: "12px" }}
-        >
-          VG1 (4)
-        </button>
-        <button
-          type="button"
-          onClick={() => setValgtTrinn("VG2")}
-          className={`wg-chip ${valgtTrinn === "VG2" ? "wg-chip-pa" : ""}`}
-          style={{ minHeight: "36px", padding: "0 14px", fontSize: "12px" }}
-        >
-          VG2 (4)
-        </button>
-        <button
-          type="button"
-          onClick={() => setValgtTrinn("VG3")}
-          className={`wg-chip ${valgtTrinn === "VG3" ? "wg-chip-pa" : ""}`}
-          style={{ minHeight: "36px", padding: "0 14px", fontSize: "12px" }}
-        >
-          VG3 (4)
-        </button>
-      </div>
+      <nav aria-label="Visning" className="wgf-rad">
+        {FANER.map((f) => (
+          <button
+            key={f.id}
+            type="button"
+            aria-pressed={fane === f.id}
+            onClick={() => velgFane(f.id)}
+            className={`wgf ${fane === f.id ? "wgf-pa" : ""}`}
+          >
+            {f.tittel}
+          </button>
+        ))}
+      </nav>
 
-      {/* 3. WANG-42: Treningsoversikt (Etterlevelse = tid mot plan siste 4 uker) */}
       {(fane === "oversikt" || fane === "oppmote") && (
-        <section className="wg-kort">
-          <div style={{ padding: "20px", borderBottom: "1px solid var(--wang-grey-line)" }}>
-            <p className="wg-num" style={{ margin: "0 0 4px", fontSize: "11px", color: "var(--wang-text-muted)" }}>
-              WANG-42 / WANG-38 · Siste 4 uker
-            </p>
-            <h2
-              style={{
-                margin: 0,
-                fontFamily: "var(--font-wang-brand, Montserrat, sans-serif)",
-                fontSize: "18px",
-                fontWeight: 600,
-                color: "var(--wang-blue)",
-              }}
-            >
-              Etterlevelse og oppmøte per elev
-            </h2>
-            <p style={{ margin: "4px 0 0", fontSize: "13px", color: "var(--wang-text-muted)" }}>
-              Etterlevelse beregnes som faktisk gjennomførte minutter mot planlagte minutter med passert sluttid.
-            </p>
+        <section className="wg-seksjon" aria-labelledby="wg-elev-tittel">
+          <div className="wg-sek-topp">
+            <h2 id="wg-elev-tittel">Per elev</h2>
+            <span className="wg-kilde">Lavest først</span>
           </div>
-
-          <div style={{ overflowX: "auto" }}>
-            <div className="wg-trow wg-thead">
-              <span>Elev</span>
-              <span>Trinn</span>
-              <span>HCP</span>
-              <span>Etterlevelse (4 uker)</span>
-              <span>Tid (gj. / plan)</span>
-              <span>Oppmøte</span>
-              <span>Status</span>
-            </div>
-
-            {filtrerteElever.map((elev) => {
-              const erLav = elev.etterlevelseProsent < 80;
-              return (
-                <div key={elev.id} className="wg-trow">
-                  <div>
-                    <span style={{ fontWeight: 600, color: "var(--wang-blue)", display: "block" }}>
-                      {elev.navn}
-                    </span>
-                    <span style={{ fontSize: "12px", color: "var(--wang-text-muted)" }}>
-                      {elev.klubb}
-                    </span>
-                  </div>
-
-                  <span className="wg-num" style={{ fontWeight: 500 }}>
-                    {elev.trinn}
-                  </span>
-
-                  <span className="wg-num" style={{ fontWeight: 600, color: "var(--wang-blue)" }}>
-                    {elev.hcp}
-                  </span>
-
-                  <div>
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "4px" }}>
-                      <span
-                        className="wg-num"
-                        style={{
-                          fontWeight: 700,
-                          fontSize: "13px",
-                          color: erLav ? "var(--wang-pink)" : "var(--wang-green)",
-                        }}
-                      >
-                        {elev.etterlevelseProsent} %
-                      </span>
-                    </div>
-                    <div
-                      style={{
-                        width: "100%",
-                        height: "6px",
-                        backgroundColor: "var(--wang-grey-line)",
-                        borderRadius: "3px",
-                        overflow: "hidden",
-                      }}
-                    >
-                      <div
-                        style={{
-                          width: `${Math.min(elev.etterlevelseProsent, 100)}%`,
-                          height: "100%",
-                          backgroundColor: erLav ? "var(--wang-pink)" : "var(--wang-green)",
-                          borderRadius: "3px",
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  <span className="wg-num" style={{ fontSize: "12px", color: "var(--wang-text-muted)" }}>
-                    {Math.round(elev.gjennomfortMinutter / 60)} t / {Math.round(elev.planlagtMinutter / 60)} t
-                  </span>
-
-                  <div>
-                    <span className="wg-num" style={{ fontWeight: 600, fontSize: "13px" }}>
-                      {elev.oppmoteAntall} / 20 økter
-                    </span>
-                    <span style={{ fontSize: "11px", color: "var(--wang-text-muted)", display: "block" }}>
-                      {elev.fravaerProsent} % fravær
-                    </span>
-                  </div>
-
-                  <div>
-                    {elev.trengerOppfolging ? (
-                      <span className="wg-st" style={{ borderColor: "var(--wang-pink)", color: "var(--wang-pink)" }}>
-                        <span className="wg-dot wg-dot-varsel" />
-                        Følg opp
-                      </span>
-                    ) : (
-                      <span className="wg-st" style={{ borderColor: "var(--wang-green)", color: "var(--wang-green)" }}>
-                        <span className="wg-dot wg-dot-fullfort" />
-                        I rute
-                      </span>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </section>
-      )}
-
-      {/* 4. WANG-29 / WANG-16: Årsplan og Periodisering */}
-      {(fane === "oversikt" || fane === "periode") && (
-        <section className="wg-kort" style={{ padding: "20px" }}>
-          <div style={{ marginBottom: "16px" }}>
-            <p className="wg-num" style={{ margin: "0 0 4px", fontSize: "11px", color: "var(--wang-text-muted)" }}>
-              WANG-29 / WANG-16 · Periodisering
-            </p>
-            <h2
-              style={{
-                margin: 0,
-                fontFamily: "var(--font-wang-brand, Montserrat, sans-serif)",
-                fontSize: "18px",
-                fontWeight: 600,
-                color: "var(--wang-blue)",
-              }}
-            >
-              Gjeldende periode: Spesialperiode Høst (Uke 36–43)
-            </h2>
-          </div>
-
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "16px" }}>
-            <div style={{ padding: "16px", backgroundColor: "var(--wang-blue-tint)", borderRadius: "4px" }}>
-              <span className="wg-num" style={{ fontSize: "11px", fontWeight: 600, color: "var(--wang-text-muted)" }}>
-                PERIODE 1
-              </span>
-              <h3 style={{ margin: "4px 0", fontSize: "16px", fontWeight: 600, color: "var(--wang-blue)" }}>
-                Grunntrening & sving
-              </h3>
-              <p style={{ margin: "0 0 8px", fontSize: "12px", color: "var(--wang-text-muted)" }}>
-                Uke 33–35 · Fullført
-              </p>
-              <span className="wg-st" style={{ backgroundColor: "#FFFFFF" }}>
-                <span className="wg-dot wg-dot-fullfort" />
-                Avsluttet
-              </span>
-            </div>
-
-            <div style={{ padding: "16px", backgroundColor: "var(--wang-green-tint, #EEF6F5)", borderRadius: "4px", border: "1px solid var(--wang-green)" }}>
-              <span className="wg-num" style={{ fontSize: "11px", fontWeight: 600, color: "var(--wang-green)" }}>
-                PERIODE 2 (NÅ)
-              </span>
-              <h3 style={{ margin: "4px 0", fontSize: "16px", fontWeight: 700, color: "var(--wang-blue)" }}>
-                Spesialperiode & spissing
-              </h3>
-              <p style={{ margin: "0 0 8px", fontSize: "12px", color: "var(--wang-text-muted)" }}>
-                Uke 36–43 · 4 uker gjenstår
-              </p>
-              <span className="wg-st" style={{ backgroundColor: "#FFFFFF" }}>
-                <span className="wg-dot wg-dot-aktiv" />
-                Aktiv periode
-              </span>
-            </div>
-
-            <div style={{ padding: "16px", backgroundColor: "var(--wang-blue-tint)", borderRadius: "4px" }}>
-              <span className="wg-num" style={{ fontSize: "11px", fontWeight: 600, color: "var(--wang-text-muted)" }}>
-                PERIODE 3
-              </span>
-              <h3 style={{ margin: "4px 0", fontSize: "16px", fontWeight: 600, color: "var(--wang-blue)" }}>
-                Turneringsavslutning
-              </h3>
-              <p style={{ margin: "0 0 8px", fontSize: "12px", color: "var(--wang-text-muted)" }}>
-                Uke 44–46 · Planlagt
-              </p>
-              <span className="wg-st" style={{ backgroundColor: "#FFFFFF" }}>
-                <span className="wg-dot wg-dot-planlagt" />
-                Kommende
-              </span>
-            </div>
-
-            <div style={{ padding: "16px", backgroundColor: "var(--wang-blue-tint)", borderRadius: "4px" }}>
-              <span className="wg-num" style={{ fontSize: "11px", fontWeight: 600, color: "var(--wang-text-muted)" }}>
-                PERIODE 4
-              </span>
-              <h3 style={{ margin: "4px 0", fontSize: "16px", fontWeight: 600, color: "var(--wang-blue)" }}>
-                Vinteroppkjøring
-              </h3>
-              <p style={{ margin: "0 0 8px", fontSize: "12px", color: "var(--wang-text-muted)" }}>
-                Uke 47–02 · Planlagt
-              </p>
-              <span className="wg-st" style={{ backgroundColor: "#FFFFFF" }}>
-                <span className="wg-dot wg-dot-planlagt" />
-                Kommende
-              </span>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* 5. WANG-04: Morgenøkter */}
-      {(fane === "oversikt" || fane === "morgen") && (
-        <section className="wg-kort" style={{ padding: "20px" }}>
-          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: "16px" }}>
-            <div>
-              <p className="wg-num" style={{ margin: "0 0 4px", fontSize: "11px", color: "var(--wang-text-muted)" }}>
-                WANG-04 · Morgenøkter
-              </p>
-              <h2
-                style={{
-                  margin: 0,
-                  fontFamily: "var(--font-wang-brand, Montserrat, sans-serif)",
-                  fontSize: "18px",
-                  fontWeight: 600,
-                  color: "var(--wang-blue)",
-                }}
+          <div className="wg-filter" role="group" aria-label="Trinn">
+            {TRINN.map((t) => (
+              <button
+                key={t}
+                type="button"
+                aria-pressed={valgtTrinn === t}
+                onClick={() => setValgtTrinn(t)}
+                className={`wg-chip ${valgtTrinn === t ? "wg-chip-pa" : ""}`}
               >
-                Faste morgenøkter (Tirsdag & Torsdag 08:00)
-              </h2>
-            </div>
+                {t === "alle" ? `Alle (${elever.length})` : `${t} (${elever.filter((e) => e.trinn === t).length})`}
+              </button>
+            ))}
           </div>
-
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "16px" }}>
-            <div style={{ padding: "16px", border: "1px solid var(--wang-grey-line)", borderRadius: "4px" }}>
-              <span className="wg-num" style={{ fontSize: "12px", fontWeight: 600, color: "var(--wang-blue)" }}>
-                Tirsdager 08:00–10:00
-              </span>
-              <h3 style={{ margin: "4px 0", fontSize: "15px", fontWeight: 600, color: "var(--wang-blue)" }}>
-                Teknikk, TrackMan & langslag
-              </h3>
-              <p style={{ margin: "0 0 10px", fontSize: "13px", color: "var(--wang-text-muted)" }}>
-                Gamle Fredrikstad GK simulator / range. Hovedtrener: Anders Kristiansen.
-              </p>
-              <div style={{ display: "flex", gap: "8px" }}>
-                <span className="wg-chip" style={{ minHeight: "26px", fontSize: "11px" }}>
-                  12 plasser
-                </span>
-                <span className="wg-chip" style={{ minHeight: "26px", fontSize: "11px" }}>
-                  Obligatorisk
-                </span>
-              </div>
-            </div>
-
-            <div style={{ padding: "16px", border: "1px solid var(--wang-grey-line)", borderRadius: "4px" }}>
-              <span className="wg-num" style={{ fontSize: "12px", fontWeight: 600, color: "var(--wang-blue)" }}>
-                Torsdager 08:00–10:00
-              </span>
-              <h3 style={{ margin: "4px 0", fontSize: "15px", fontWeight: 600, color: "var(--wang-blue)" }}>
-                Nærspill, putting & scoring
-              </h3>
-              <p style={{ margin: "0 0 10px", fontSize: "13px", color: "var(--wang-text-muted)" }}>
-                Onsøy GK treningsgreen. Hovedtrener: Anders Kristiansen.
-              </p>
-              <div style={{ display: "flex", gap: "8px" }}>
-                <span className="wg-chip" style={{ minHeight: "26px", fontSize: "11px" }}>
-                  12 plasser
-                </span>
-                <span className="wg-chip" style={{ minHeight: "26px", fontSize: "11px" }}>
-                  Obligatorisk
-                </span>
-              </div>
-            </div>
+          <div className="wg-kort wg-rader">
+            {filtrerteElever.length === 0 ? (
+              <p className="wg-kilde" style={{ padding: "14px 0" }}>Ingen elever på dette trinnet.</p>
+            ) : (
+              filtrerteElever.map((elev) => {
+                const erLav = elev.etterlevelseProsent < 80;
+                return (
+                  <div key={elev.id} className="wg-rad">
+                    <div>
+                      <b>{elev.navn}</b>
+                      <p className="wg-kilde">
+                        {elev.trinn} · HCP {elev.hcp} · {Math.round(elev.gjennomfortMinutter / 60)} av {Math.round(elev.planlagtMinutter / 60)} t ·{" "}
+                        {elev.oppmoteAntall} oppmøter · {String(elev.fravaerProsent).replace(".", ",")} % fravær
+                      </p>
+                    </div>
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 10, flexWrap: "wrap", justifyContent: "flex-end" }}>
+                      {elev.trengerOppfolging ? (
+                        <span className="wg-pille wg-pille-haster"><i />Følg opp</span>
+                      ) : (
+                        <span className="wg-pille wg-pille-ok"><i />I rute</span>
+                      )}
+                      <span className="wg-tall">{elev.etterlevelseProsent} %</span>
+                    </span>
+                    <div className="wg-stolpe" role="img" aria-label={`Etterlevelse ${elev.etterlevelseProsent} prosent`}>
+                      <span className={erLav ? "wg-lav" : undefined} style={{ width: `${Math.min(elev.etterlevelseProsent, 100)}%` }} />
+                    </div>
+                  </div>
+                );
+              })
+            )}
+            <p className="wg-kilde" style={{ padding: "12px 0 14px", borderTop: "1px solid var(--wg-n100)" }}>
+              Gjennomført tid delt på planlagt tid. Bare økter med passert sluttid teller.
+            </p>
           </div>
         </section>
       )}
-    </div>
+
+      {(fane === "oversikt" || fane === "periode") && (
+        <section className="wg-seksjon" aria-labelledby="wg-periode-tittel">
+          <div className="wg-sek-topp">
+            <h2 id="wg-periode-tittel">Årsplan</h2>
+            <span className="wg-kilde">Gruppas plan. Elevene arver den.</span>
+          </div>
+          <div className="wg-rutenett">
+            {PERIODER.map((p) => (
+              <div key={p.nr} className={`wg-kort ${p.status === "Nå" ? "wg-naa" : ""}`}>
+                <span className="wg-dato">Periode {p.nr} · {p.type}</span>
+                <h3>{p.tittel}</h3>
+                <p className="wg-kilde">{p.uker}</p>
+                <span className={`wg-pille ${p.status === "Nå" ? "wg-pille-vent" : p.status === "Avsluttet" ? "wg-pille-ok" : ""}`} style={{ justifySelf: "start" }}>
+                  <i />
+                  {p.status === "Nå" ? "Aktiv periode" : p.status}
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {(fane === "oversikt" || fane === "morgen") && (
+        <section className="wg-seksjon" aria-labelledby="wg-morgen-tittel">
+          <div className="wg-sek-topp">
+            <h2 id="wg-morgen-tittel">Morgenøkter</h2>
+            <span className="wg-kilde">Faste, tirsdag og torsdag 08:00</span>
+          </div>
+          <div className="wg-rutenett">
+            {MORGENOKTER.map((m) => (
+              <div key={m.dag} className="wg-kort">
+                <span className="wg-dato">{m.dag}</span>
+                <h3>{m.tittel}</h3>
+                <p className="wg-kilde">{m.sted}. Hovedtrener: Anders Kristiansen.</p>
+                <span style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                  <span className="wg-pille">12 plasser</span>
+                  <span className="wg-pille">Obligatorisk</span>
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+    </>
   );
 }

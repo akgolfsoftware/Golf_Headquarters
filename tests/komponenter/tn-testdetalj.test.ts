@@ -59,6 +59,7 @@ const TILGANG: TnSpillerTilgang = {
 test("TnVisning krasjer IKKE når alle rader er utelatt, og viser en synlig forklaring", () => {
   const html = medRouter(createElement(TnVisning, {
     spillerId: "player-a",
+    brukerNavn: "Trener A",
     data: {
       tilgang: TILGANG, testId: "tn-v3-putt-1-3m", protokollNavn: "Putt 1–3 m",
       lowerIsBetter: null, besteScore: null, besteFormatert: null,
@@ -72,6 +73,7 @@ test("TnVisning krasjer IKKE når alle rader er utelatt, og viser en synlig fork
 test("TnVisning: lowerIsBetter=null rendres ALDRI som «Høyere er bedre»", () => {
   const html = medRouter(createElement(TnVisning, {
     spillerId: "player-a",
+    brukerNavn: "Trener A",
     data: {
       tilgang: TILGANG, testId: "tn-v3-putt-1-3m", protokollNavn: "Putt 1–3 m",
       lowerIsBetter: null, besteScore: null, besteFormatert: null,
@@ -85,6 +87,7 @@ test("TnVisning: lowerIsBetter=null rendres ALDRI som «Høyere er bedre»", () 
 test("TnVisning: med gyldige rader vises normalt, ingen krasj, riktig retning", () => {
   const html = medRouter(createElement(TnVisning, {
     spillerId: "player-a",
+    brukerNavn: "Trener A",
     data: {
       tilgang: TILGANG, testId: "tn-v3-putt-1-3m", protokollNavn: "Putt 1–3 m",
       lowerIsBetter: true, besteScore: 40, besteFormatert: "40 slag",
@@ -99,6 +102,7 @@ test("TnVisning: med gyldige rader vises normalt, ingen krasj, riktig retning", 
 test("TnOvrigVisning: uten resultater viser protokoll/steg og «ingen resultater ennå», ikke 404-liknende tomhet", () => {
   const html = medRouter(createElement(TnOvrigVisning, {
     spillerId: "player-a",
+    brukerNavn: "Trener A",
     data: {
       tilgang: TILGANG, testId: "60m-sprint", navn: "60m sprint", regel: "Tid i sekunder",
       enhet: "sek", lowerIsBetter: true,
@@ -113,6 +117,7 @@ test("TnOvrigVisning: uten resultater viser protokoll/steg og «ingen resultater
 test("TnOvrigVisning: viser måleenhet i resultatkolonnen og Gate-forsøksrutenett når det finnes", () => {
   const html = medRouter(createElement(TnOvrigVisning, {
     spillerId: "player-a",
+    brukerNavn: "Trener A",
     data: {
       tilgang: TILGANG, testId: "putt-gate", navn: "Putt Gate", regel: "Antall OK",
       enhet: "sek", lowerIsBetter: true,

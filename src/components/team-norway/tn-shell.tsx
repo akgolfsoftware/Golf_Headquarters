@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 
 import { TnKort, TnLogo, TnPille, type TnBunnValg, type TnMenyGruppe, type TnMenyLenke, type TnPilleTone } from "./core";
 import { TnRailMobil, initialer } from "./rail-mobil";
+import { TnIkon } from "./tn-ikon";
 import s from "./tn-skall.module.css";
 import { TnSeksjonDS, TnSidehodeDS } from "./tn-skjerm";
 import { TN } from "@/lib/v2/team-norway";
@@ -166,6 +167,7 @@ export function TnShell({
   visTrenerflater,
   kanAdministrere,
   flate = "standard",
+  tilbake,
   children,
 }: {
   aktiv: TnAktivSide;
@@ -181,6 +183,8 @@ export function TnShell({
    * spriken oppsto, ikke i innholdet.
    */
   flate?: "standard" | "full";
+  /** Undersider: tilbakelinje under topplinjen på mobil (PC har sidemenyen). */
+  tilbake?: { href: string; label: string };
   children: ReactNode;
 }) {
   const valg = { aktiv, groupId, visTrenerflater, kanAdministrere };
@@ -190,6 +194,11 @@ export function TnShell({
       <TnRail grupper={grupper} bruker={{ navn: brukerNavn, rolle }} orgNavn="Team Norway Golf" orgUndertittel="Prestasjon" />
       <div className={s.kolonne}>
         <TnRailMobil grupper={grupper} bunn={tnBunnmeny(valg)} brukerNavn={brukerNavn} rolle={rolle} orgNavn="Team Norway Golf" orgUndertittel="Prestasjon" />
+        {tilbake ? (
+          <div className={s.tilbakelinje}>
+            <Link href={tilbake.href} className={s.tilbake}><TnIkon navn="pil" />{tilbake.label}</Link>
+          </div>
+        ) : null}
         {flate === "full" ? children : <main className={s.innhold}>{children}</main>}
         {/* Plass til den faste bunnmenyen på mobil, så siste rad aldri skjules bak den. */}
         <div className={s.bunnplass} aria-hidden="true" />
@@ -266,27 +275,16 @@ export function TnLenke({ href, children, fremhevet = false }: { href: string; c
 export type TnSpillerFane = "post" | "oversikt" | "tester" | "analyse" | "workbench" | "teknisk-plan" | "evaluering";
 
 /**
- * Fast spillerhode + fanebar — brukes på ALLE spillerscopede TN-ruter
- * (post, oversikt, tester, analyse, og planøktens workbench/teknisk-plan/
- * evaluering) slik at spilleren forblir tydelig fastholdt i overskriften
- * uansett hvilken fane man er på. «Post» beholder sin egen, eksisterende
- * rute (/team-norway/spiller/[id]) uendret — denne baren gjør den nåbar
- * som en tydelig fane i stedet for eneste inngang.
+ * IUP-hodet for alle spillerscopede TN-ruter (Anders 15.10.2026: spillerprofilen
+ * heter IUP i Team Norway). Kvadratisk avatar, overlinje som begynner med «IUP»,
+ * navnet som tittel, og fanene i fast rekkefølge med rød strek under aktiv fane.
+ * Fanen som i koden heter «evaluering», heter Fireukerssjekk.
+ * Fasit: docs/design-system/utkast-tn/spillere.html (pakke 3).
  *
- * Plan/Teknisk plan/Evaluering er nå EKTE faner i samme nav (med
- * `aria-current`), ikke en løsrevet lenkerad under — planøktens sider kan
- * derfor sette `aktiv="workbench"`/`"teknisk-plan"`/`"evaluering"` uten
- * cast og faktisk få fanen markert aktiv.
- *
- * `kanAdministrere`-navnet er beholdt for bakoverkompatibilitet med
- * kalleren i planøktens ruter (ikke en omdøping som bryter planfiler),
- * men betydningen her er LESETILGANG (COACH/ASSISTANT/ADMIN — dvs.
- * `!erSpiller`), ikke skrivetilgang: en ASSISTANT skal se disse fanene
- * selv om de ikke kan redigere planen selv (de underliggende rutene har
- * sin egen skrivevakt). Kall med `!kontekst.erSpiller`, ikke
- * `kontekst.kanAdministrere` (se coordination.md for planøkten).
+ * `kanAdministrere` betyr her LESETILGANG til planfanene (COACH/ASSISTANT/ADMIN,
+ * dvs. `!erSpiller`), ikke skrivetilgang. De underliggende rutene har egen skrivevakt.
  */
-export function TnSpillerFaner({ spillerId, spillerNavn, aktiv, kanAdministrere }: { spillerId: string; spillerNavn: string; aktiv: TnSpillerFane; kanAdministrere: boolean }) {
+export function TnSpillerFaner({ spillerId, spillerNavn, aktiv, kanAdministrere, overlinje, kompakt = false, children }: { spillerId: string; spillerNavn: string; aktiv: TnSpillerFane; kanAdministrere: boolean; overlinje?: string; kompakt?: boolean; children?: ReactNode }) {
   const kjernefaner: { id: TnSpillerFane; label: string; href: string }[] = [
     { id: "oversikt", label: "Oversikt", href: `/team-norway/spiller/${spillerId}/oversikt` },
     { id: "post", label: "Post", href: `/team-norway/spiller/${spillerId}` },
@@ -295,36 +293,59 @@ export function TnSpillerFaner({ spillerId, spillerNavn, aktiv, kanAdministrere 
   ];
   const planfaner: { id: TnSpillerFane; label: string; href: string }[] = kanAdministrere
     ? [
-        { id: "workbench", label: "Plan (Workbench)", href: `/team-norway/workbench?spiller=${spillerId}` },
+        { id: "workbench", label: "Plan", href: `/team-norway/workbench?spiller=${spillerId}` },
         { id: "teknisk-plan", label: "Teknisk plan", href: `/team-norway/spiller/${spillerId}/teknisk-plan` },
-        { id: "evaluering", label: "Evaluering", href: `/team-norway/spiller/${spillerId}/evaluering` },
+        { id: "evaluering", label: "Fireukerssjekk", href: `/team-norway/spiller/${spillerId}/evaluering` },
       ]
     : [];
   const faner = [...kjernefaner, ...planfaner];
+  const nav = (
+    <nav aria-label="IUP-faner" style={{ display: "flex", flexWrap: "wrap", borderBottom: `1px solid ${TN.ink200}` }}>
+      {faner.map((f) => (
+        <Link
+          key={f.id}
+          href={f.href}
+          aria-current={aktiv === f.id ? "page" : undefined}
+          style={{
+            minHeight: 44, display: "inline-flex", alignItems: "center", padding: "0 12px", marginBottom: -1,
+            fontSize: 14, fontWeight: 700,
+            color: aktiv === f.id ? TN.navy900 : TN.ink700,
+            borderBottom: `3px solid ${aktiv === f.id ? TN.red600 : "transparent"}`,
+            textDecoration: "none",
+          }}
+        >
+          {f.label}
+        </Link>
+      ))}
+    </nav>
+  );
+  // Underfanene har sitt eget sidehode («IUP · navn» over sidetittelen); da vises bare fanene.
+  if (kompakt) return nav;
   return (
-    <header style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-      <div>
-        <p style={{ margin: 0, fontFamily: TN.font.mono, fontSize: TN.text.micro, letterSpacing: TN.tracking.eyebrow, textTransform: "uppercase", color: TN.textSecondary }}>Spiller</p>
-        <h1 style={{ margin: "6px 0 0", fontFamily: TN.font.display, fontSize: "clamp(1.75rem, 4vw, 2.25rem)", lineHeight: TN.leading.tight, color: TN.navy900 }}>{spillerNavn}</h1>
+    <header style={{ display: "grid", gap: 12 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 16, alignItems: "center" }}>
+        <span aria-hidden="true" style={{ display: "grid", placeItems: "center", width: 64, height: 64, flex: "none", background: TN.navy100, color: TN.navy900, fontFamily: TN.font.mono, fontSize: 20 }}>{initialer(spillerNavn)}</span>
+        <div style={{ minWidth: 0 }}>
+          <p style={{ margin: 0, fontFamily: TN.font.mono, fontSize: 12, lineHeight: 1.3, letterSpacing: "0.12em", textTransform: "uppercase", color: TN.ink500 }}>{overlinje ?? "IUP"}</p>
+          <h1 style={{ margin: 0, fontFamily: TN.font.display, fontWeight: 400, fontSize: "clamp(30px, 3vw, 38px)", lineHeight: 1.12, letterSpacing: "0.03em", color: TN.navy900, overflowWrap: "anywhere" }}>{spillerNavn}</h1>
+        </div>
       </div>
-      <nav aria-label="Spillerfaner" style={{ display: "flex", gap: 4, flexWrap: "wrap", borderBottom: `1px solid ${TN.borderSubtle}` }}>
-        {faner.map((f) => (
-          <Link
-            key={f.id}
-            href={f.href}
-            aria-current={aktiv === f.id ? "page" : undefined}
-            style={{
-              minHeight: 44, display: "inline-flex", alignItems: "center", padding: "0 14px",
-              fontSize: TN.text.sm, fontWeight: aktiv === f.id ? TN.weight.bold : TN.weight.semibold,
-              color: aktiv === f.id ? TN.navy900 : TN.textSecondary,
-              borderBottom: aktiv === f.id ? `2px solid ${TN.navy900}` : "2px solid transparent",
-              textDecoration: "none",
-            }}
-          >
-            {f.label}
-          </Link>
-        ))}
-      </nav>
+      {children}
+      {nav}
     </header>
+  );
+}
+
+/** Nøkkeltall i IUP-hodet: liten etikett i mono over verdien. Manglende verdi er «—». */
+export function TnNokkeltall({ tall }: { tall: Array<{ etikett: string; verdi: ReactNode }> }) {
+  return (
+    <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 20px" }}>
+      {tall.map((t) => (
+        <span key={t.etikett} style={{ display: "grid", gap: 2 }}>
+          <small style={{ fontFamily: TN.font.mono, fontSize: 11, lineHeight: 1, letterSpacing: "0.12em", textTransform: "uppercase", color: TN.ink500 }}>{t.etikett}</small>
+          <b style={{ fontFamily: TN.font.mono, fontWeight: 500, fontSize: 18, lineHeight: 1.1, color: TN.navy900 }}>{t.verdi}</b>
+        </span>
+      ))}
+    </div>
   );
 }
