@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Montserrat, Quattrocento_Sans } from "next/font/google";
+import { Montserrat, Quattrocento, Quattrocento_Sans } from "next/font/google";
 
 import "@/styles/wang-tokens.css";
 import "@/styles/wang-app.css";
@@ -18,6 +18,16 @@ const quattrocentoSans = Quattrocento_Sans({
   subsets: ["latin"],
   weight: ["400", "700"],
   display: "swap",
+});
+
+// Brødtekst i trenerflaten (/team-wang/coach) er Quattrocento med serif, som wang.no
+// (Anders 16.10.2026). Brukes bare under .wg-shell; fellessiden beholder Quattrocento Sans.
+const quattrocento = Quattrocento({
+  variable: "--font-wang-serif",
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -69,7 +79,7 @@ export default function TeamWangLayout({
 }) {
   return (
     <div
-      className={`wang-tp wang-app ${montserrat.variable} ${quattrocentoSans.variable} min-h-screen`}
+      className={`wang-tp wang-app ${montserrat.variable} ${quattrocentoSans.variable} ${quattrocento.variable} min-h-screen`}
     >
       {children}
     </div>

@@ -101,7 +101,7 @@ export function WangAppSkall({
 
   const hurtig = [
     { label: 'Ny økt', href: '/team-wang/coach?omraade=trening', ikon: CalendarPlus },
-    { label: 'Før oppmøte', href: '/team-wang/coach?omraade=idag', ikon: ClipboardCheck },
+    { label: 'Før oppmøte', href: '/team-wang/coach?omraade=idag&fane=oppmote', ikon: ClipboardCheck },
     { label: 'Ny melding', href: '/team-wang/coach?omraade=meldinger', ikon: MessageSquarePlus },
     { label: 'Før test', href: '/team-wang/coach?omraade=tester', ikon: Timer },
   ];
