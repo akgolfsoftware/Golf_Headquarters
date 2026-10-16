@@ -25,7 +25,7 @@ Vercel kjører UTC, appen tenker Oslo. All uke-/dagslogikk via `src/lib/uke-help
 Avbestill/endre-knapper kaller Stripe (`cancel_at_period_end`) FØR egen DB, eller sender til Billing Portal. Webhooken mapper `active` + `cancel_at_period_end` til `CANCELLED`.
 
 ## Bygg og drift
-- `loading.tsx`/`template.tsx` importerer aldri fra en `"use client"`-modul (CSP-nonce). Vakt: `tests/e2e/csp-konsoll.spec.ts`.
+- `loading.tsx`/`template.tsx` importerer aldri fra en `"use client"`-modul, heller ikke via `next/link`/`next/image`/`next/navigation` (CSP-nonce). PlayerHQ bruker `PlayerHQSkallLaster`. Vakter: `scripts/check-loading-server.mjs` (i verify, feiler for `/portal`) og `tests/e2e/csp-konsoll.spec.ts`.
 - PWA: `serwist build serwist.config.mjs` kjører ETTER `next build` (webpack-pluginen kjører aldri under Turbopack). Ikke precache hele `public/`.
 - Vercel-region skal matche Supabase (`lhr1`); ikke fjern `regions` i `vercel.json`.
 - AI Caddie: bruk `@ai-sdk/anthropic` direkte (Gateway free-tier gir ikke modelltilgang), normaliser `ANTHROPIC_BASE_URL` med `/v1`, `toUIMessageStreamResponse()`, `stopWhen: stepCountIs(n)`, modell `claude-sonnet-4-6`.

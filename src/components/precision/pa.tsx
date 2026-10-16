@@ -84,9 +84,7 @@ export function Sidehode({ kicker, title, sub }: { kicker?: ReactNode; title: Re
   </div></div></header>;
 }
 
-export function LasterTilstand({ text = "Henter …" }: { text?: string }) {
-  return <div className="pa-state pa-state--loading" role="status" aria-live="polite"><span className="pa-state__mono">{text}</span></div>;
-}
+export { LasterTilstand } from "./laster-tilstand";
 
 export function TomTilstand({ icon, title, text, actions }: { icon: LucideIcon; title: string; text?: string; actions?: ReactNode }) {
   return <div className="pa-state pa-state--empty">
