@@ -21,6 +21,8 @@ import { hentGodkjenteOvelsesbankElementer } from "@/lib/masterbrain/drill-bank"
 import { foreslaGodkjenteOvelser, ovelsesNavn } from "@/lib/portal-tester/test-anbefaling";
 import { ResultatKontekst } from "@/components/tester/ResultatKontekst";
 import { aktivtSpillerMedlemskapWhere } from "@/lib/domain/grupper";
+import { OvTilbake } from "@/components/portal/precision/PH13Felles";
+import "@/styles/playerhq-ny.css";
 
 export const dynamic = "force-dynamic";
 export default async function TeamNorwayTests({ searchParams }: { searchParams: Promise<{ test?: string; session?: string; participant?: string; count?: string; local?: string; version?: string }> }) {
@@ -111,7 +113,7 @@ export default async function TeamNorwayTests({ searchParams }: { searchParams: 
     if (!p) notFound();
     const localSessionId = query.local ?? crypto.randomUUID();
     content = p.variableCount && query.count === undefined
-      ? <form><h1>{p.name}</h1><input type="hidden" name="test" value={p.id} /><label>Antall slag før start <input type="number" name="count" min={1} max={200} defaultValue={p.rows.length} /></label><button type="submit">Velg antall</button></form>
+      ? <form className="phn-kort"><h1 className="phn-tittel">{p.name}</h1><input type="hidden" name="test" value={p.id} /><label className="phn-felt">Antall slag før start <input type="number" name="count" min={1} max={200} defaultValue={p.rows.length} /></label><div className="phn-knapper"><button type="submit" className="phn-knapp pri">Velg antall</button></div></form>
       : <TnScorecard key={`${p.id}-${p.rows.length}-${localSessionId}`} protocol={p} localSessionId={localSessionId} />;
     if (!(p.variableCount && query.count === undefined) && ph15TnType(p)) ny = <PH15TnTest key={`${p.id}-${p.rows.length}-${localSessionId}`} protocol={p} localSessionId={localSessionId} />;
   } else {
@@ -124,32 +126,32 @@ export default async function TeamNorwayTests({ searchParams }: { searchParams: 
     const kobledeSessioner = new Map(testdagKoblinger.filter((k) => k.sessionId).map((k) => [k.sessionId!, k.id]));
     const aktiveGrupper = new Set((await prisma.groupMember.findMany({ where: { groupId: { in: [...new Set(egneTestdager.map((d) => d.testDay.groupId))] }, userId: user.id, ...aktivtSpillerMedlemskapWhere() }, select: { groupId: true } })).map((m) => m.groupId));
     const aktiveEgneTestdager = egneTestdager.filter((d) => aktiveGrupper.has(d.testDay.groupId));
-    content = <><h1>Team Norway-tester</h1><p>Velg test og variant. Resultater fra denne utgaven holdes atskilt fra eldre testregler.</p><p>{TN_GODKJENT_VERSION}</p>
-      <h2>Pågående felles testdager</h2>{aktiveEgneTestdager.length === 0 ? <p>Ingen aktive testdagstildelinger.</p> : <ul>{aktiveEgneTestdager.map((d) => {
+    content = <><header className="phn-seksjon"><span className="phn-dato">Stats · tester</span><h1 className="phn-tittel">Team Norway-tester</h1><p className="phn-forklar">Velg test og variant. Resultater fra denne utgaven holdes atskilt fra eldre testregler.</p><p className="phn-kilde">Testregler: {TN_GODKJENT_VERSION}</p></header>
+      <section className="phn-seksjon"><div className="phn-sek-topp"><h2>Pågående felles testdager</h2></div>{aktiveEgneTestdager.length === 0 ? <p className="phn-forklar">Ingen aktive testdagstildelinger.</p> : <ul className="tn-liste">{aktiveEgneTestdager.map((d) => {
         const protocolId = (d.testDay.testDefinition.protocol as { protocolId?: string } | null)?.protocolId;
         const p = protocolId ? tnProtocol(protocolId, undefined, d.testDay.testDefinition.scoringRule ?? "") : null;
-        return <li key={d.id}><Link href={`?participant=${d.id}`}>{d.testDay.title} · {p?.name ?? d.testDay.testDefinition.name}</Link> · {d.testDay.group.name} · {d.testDay.scheduledAt.toLocaleDateString("nb-NO", { timeZone: "Europe/Oslo" })}</li>;
-      })}</ul>}
-      <h2>Tildelt av coach</h2>{assignments.length === 0 ? <p>Ingen åpne tildelinger.</p> : <ul>{assignments.map(a => {
+        return <li key={d.id}><Link className="phn-rad-lenke" href={`?participant=${d.id}`}><span><b>{d.testDay.title} · {p?.name ?? d.testDay.testDefinition.name}</b>{d.testDay.group.name} · {d.testDay.scheduledAt.toLocaleDateString("nb-NO", { timeZone: "Europe/Oslo" })}</span></Link></li>;
+      })}</ul>}</section>
+      <section className="phn-seksjon"><div className="phn-sek-topp"><h2>Tildelt av coach</h2></div>{assignments.length === 0 ? <p className="phn-forklar">Ingen åpne tildelinger.</p> : <ul className="tn-liste">{assignments.map(a => {
         const p = tnFromDefinitionId(a.testId);
         if (!p || p.blocked) return null;
-        return <li key={a.id}><Link href={`?test=${p.id}${p.variableCount ? `&count=${p.rows.length}` : ""}`}>{p.name} · {p.rows.length} forsøk</Link>{a.dueDate && <span> · Frist {a.dueDate.toLocaleDateString("nb-NO", { timeZone: "Europe/Oslo" })}</span>}{a.note && <p>{a.note}</p>}</li>;
-      })}</ul>}
-      <TnLocalDrafts /><h2>Dine registreringer</h2>{sessions.length === 0 ? <p>Ingen registreringer ennå.</p> : <ul>{sessions.map(s => {
+        return <li key={a.id}><Link className="phn-rad-lenke" href={`?test=${p.id}${p.variableCount ? `&count=${p.rows.length}` : ""}`}><span><b>{p.name} · {p.rows.length} forsøk</b>{a.dueDate && <>Frist {a.dueDate.toLocaleDateString("nb-NO", { timeZone: "Europe/Oslo" })}</>}{a.note && <> · {a.note}</>}</span></Link></li>;
+      })}</ul>}</section>
+      <TnLocalDrafts /><section className="phn-seksjon"><div className="phn-sek-topp"><h2>Dine registreringer</h2></div>{sessions.length === 0 ? <p className="phn-forklar">Ingen registreringer ennå.</p> : <ul className="tn-liste">{sessions.map(s => {
         const state = TnSessionSchema.safeParse(s.scoringData);
         if (!state.success) return null;
         const tekst = `${tnProtocol(state.data.protocolId, undefined, state.data.version)?.name ?? state.data.protocolId} · ${state.data.count} forsøk · ${s.status === "COMPLETED" ? "Fullført" : s.status === "ABORTED" ? "Ufullstendig" : "Utkast"} · ${s.startedAt.toLocaleDateString("nb-NO", { timeZone: "Europe/Oslo" })}`;
         // Pågående testdag-førte økter er IKKE en lenke her — de kan ikke
         // redigeres i egenføring uansett (samme vakt som over).
         if (s.status === "IN_PROGRESS" && kobledeSessioner.has(s.id)) {
-          return <li key={s.id}><Link href={`?participant=${kobledeSessioner.get(s.id)}`}>{tekst} · Fortsett testdagen</Link></li>;
+          return <li key={s.id}><Link className="phn-rad-lenke" href={`?participant=${kobledeSessioner.get(s.id)}`}><span><b>{tekst}</b>Fortsett testdagen</span></Link></li>;
         }
-        return <li key={s.id}><Link href={`?session=${s.id}`}>{tekst}</Link></li>;
-      })}</ul>}
-      <h2>Testvarianter</h2><ul>{TN_CATALOG.map(p => <li key={p.id} style={{ paddingBlock: 8 }}><Link href={`?test=${p.id}`}>{p.name} · {p.rows.length} forsøk</Link>{p.blocked && <span> · råregistrering tilgjengelig, testregel avventes</span>}</li>)}</ul>
+        return <li key={s.id}><Link className="phn-rad-lenke" href={`?session=${s.id}`}><b>{tekst}</b></Link></li>;
+      })}</ul>}</section>
+      <section className="phn-seksjon"><div className="phn-sek-topp"><h2>Testvarianter</h2></div><ul className="tn-liste">{TN_CATALOG.map(p => <li key={p.id}><Link className="phn-rad-lenke" href={`?test=${p.id}`}><span><b>{p.name}</b>{p.rows.length} forsøk{p.blocked && " · råregistrering tilgjengelig, testregel avventes"}</span></Link></li>)}</ul></section>
     </>;
   }
   const uleste = await prisma.notification.count({ where: { userId: user.id, readAt: null } });
   if (ny) return <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>{ny}</PlayerHQSkall>;
-  return <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}><div className="pa-side" style={{ maxWidth: 1120, margin: "auto" }}><Link href="/portal/tren/tester">Alle tester</Link>{content}</div></PlayerHQSkall>;
+  return <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}><div className="phn tn-oversikt"><OvTilbake href="/portal/tren/tester" tekst="Alle tester" />{content}</div></PlayerHQSkall>;
 }

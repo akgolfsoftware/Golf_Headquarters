@@ -15,7 +15,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { ReactNode } from "react";
+import { createContext, useContext, type ReactNode } from "react";
 import { Bell } from "lucide-react";
 import { PLAYERHQ_FANER as FANER, erAktivFane as erAktiv } from "./playerhq-faner";
 import { Ikon } from "./pa";
@@ -30,9 +30,15 @@ function Bjelle({ href, antall }: { href: string; antall: number }) {
   </Link>;
 }
 
+/* Et skall inni et annet (gammel side i V2Shell som rendrer en portert komponent med eget
+   skall) skal ikke gi to menyer: det indre skallet viser bare innholdet. */
+const InniSkall = createContext(false);
+
 export function PlayerHQSkall({ children, innboksHref, uleste }: { children: ReactNode; innboksHref: string; uleste: number }) {
   const path = usePathname() ?? "/portal";
-  return <div className="pa-root pa-skall pa-skall--ny" data-design="precision-athletics">
+  const inni = useContext(InniSkall);
+  if (inni) return <>{children}</>;
+  return <InniSkall.Provider value><div className="pa-root pa-skall pa-skall--ny" data-design="precision-athletics">
     <a className="pa-sr pa-skip" href="#pa-innhold">Hopp til innhold</a>
     <nav className="pa-skall__skinne" aria-label="Hovedmeny">
       <Link href="/portal" className="phs-logo" aria-label="PlayerHQ hjem">
@@ -59,5 +65,5 @@ export function PlayerHQSkall({ children, innboksHref, uleste }: { children: Rea
         <Ikon icon={f.icon} size={22} name={f.name} />{f.label}
       </Link>)}
     </nav>
-  </div>;
+  </div></InniSkall.Provider>;
 }
