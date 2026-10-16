@@ -1,14 +1,10 @@
-// PH23AnleggDetalj — Precision Athletics PH-23.
+// PH-23 Anlegg — Precision Athletics, pakke 11 og 12 (utkast booking-meldinger.html, godkjent 16.10.2026).
 /**
- * PlayerHQ · Anlegg/lokasjon-detalj (/portal/booking/anlegg/[anleggId]) — v2.
- * v2-port 17. juli 2026 (Team G-B): `BookingAnleggV2` erstatter legacy-siden,
- * ruten flyttet ut av (legacy). All logikk uendret:
+ * PlayerHQ · Anlegg/lokasjon-detalj (/portal/booking/anlegg/[anleggId]).
  * - [anleggId] er Location.id (cuid) — Location har ikke slug-felt.
- * - Honest data only: navn + adresse fra Location, ekte Facility-rader.
- *   Specs (hull/par/slope), rating og bio finnes IKKE på modellen og er
- *   BEVISST utelatt — vi fabrikkerer ikke data (beholdt fra legacy).
- * - Ingen per-lokasjon ledig-tider-kilde → CTA lenker til den ekte
- *   booking-flyten i stedet for et faux time-grid.
+ * - Bare ekte data: navn + adresse fra Location, aktive Facility-rader.
+ *   Specs (hull/par/slope), rating og bio finnes ikke på modellen og vises ikke.
+ * - Ingen ledige tider per lokasjon → knappen går til den ekte booking-flyten.
  */
 
 import { notFound } from "next/navigation";
@@ -16,10 +12,11 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import type { FacilityType } from "@/generated/prisma/client";
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
-import { TilbakeLenke } from "@/components/v2";
-import { BookingAnleggV2 } from "@/components/portal/v2/BookingAnleggV2";
+import { PH23Anlegg } from "@/components/portal/precision/PH23Anlegg";
+import { getUnreadNotifications } from "@/app/portal/actions";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Anlegg · PlayerHQ" };
 
 type Props = {
   params: Promise<{ anleggId: string }>;
@@ -40,49 +37,43 @@ const FASILITET_TYPE_LABEL: Record<FacilityType, string> = {
 };
 
 export default async function AnleggDetaljPage({ params }: Props) {
-  await requirePortalUser({ kreverTilgang: "TALENT", allow: ["PLAYER", "COACH", "ADMIN"] });
+  const user = await requirePortalUser({ kreverTilgang: "TALENT", allow: ["PLAYER", "COACH", "ADMIN"] });
   const { anleggId } = await params;
 
-  const anlegg = await prisma.location.findUnique({
-    where: { id: anleggId },
-    select: {
-      id: true,
-      name: true,
-      address: true,
-      facilities: {
-        where: { active: true },
-        orderBy: { name: "asc" },
-        select: {
-          id: true,
-          name: true,
-          type: true,
-          isIndoor: true,
-          description: true,
+  const [anlegg, uleste] = await Promise.all([
+    prisma.location.findUnique({
+      where: { id: anleggId },
+      select: {
+        id: true,
+        name: true,
+        address: true,
+        facilities: {
+          where: { active: true },
+          orderBy: { name: "asc" },
+          select: { id: true, name: true, type: true, isIndoor: true, description: true },
         },
       },
-    },
-  });
+    }),
+    getUnreadNotifications(user.id, 1),
+  ]);
 
   if (!anlegg) notFound();
 
   return (
-    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
-      <div className="pa-side">
-        <TilbakeLenke href="/portal/booking">Booking</TilbakeLenke>
-        <BookingAnleggV2
-          data={{
-            navn: anlegg.name,
-            adresse: anlegg.address,
-            fasiliteter: anlegg.facilities.map((f) => ({
-              id: f.id,
-              navn: f.name,
-              typeLabel: FASILITET_TYPE_LABEL[f.type],
-              inne: f.isIndoor,
-              beskrivelse: f.description,
-            })),
-          }}
-        />
-      </div>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste.count}>
+      <PH23Anlegg
+        data={{
+          navn: anlegg.name,
+          adresse: anlegg.address,
+          fasiliteter: anlegg.facilities.map((f) => ({
+            id: f.id,
+            navn: f.name,
+            typeLabel: FASILITET_TYPE_LABEL[f.type],
+            inne: f.isIndoor,
+            beskrivelse: f.description,
+          })),
+        }}
+      />
     </PlayerHQSkall>
   );
 }
