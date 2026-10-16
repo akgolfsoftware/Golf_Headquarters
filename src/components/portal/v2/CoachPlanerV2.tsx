@@ -107,15 +107,15 @@ export function CoachPlanerV2({ data }: { data: CoachPlanerData }) {
         <Kort tint>
           <TomTilstand
             icon="lock"
-            title="Krever PlayerHQ Pro"
-            sub="Coach-laget plan er del av Pro (299 kr/mnd)."
+            title="Krever PlayerHQ Full"
+            sub="Coach-laget plan er del av Full (299 kr/mnd)."
           />
           <div style={{ marginTop: 12 }}>
             <Link href="/portal/meg/abonnement" style={{ textDecoration: "none", display: "block" }}>
               <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
             borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
-          }}>Oppgrader til Pro</span>
+          }}>Oppgrader til Full</span>
             </Link>
           </div>
         </Kort>
