@@ -10,8 +10,16 @@
 <link rel="stylesheet" href="felles/wang.css">
 <style>
   /* Bare det I dag trenger i tillegg til wang.css */
-  .fokus{border-radius:var(--r-kort);background:var(--kort);box-shadow:var(--skygge);padding:18px;display:grid;gap:14px;border-top:6px solid var(--slag)}
-  .fokus h3{margin:0;font:800 20px/1.25 var(--brand);color:var(--navy-dyp);text-wrap:balance}
+  /* Dagens fokus: fylt flate i aksefargen (SLAG har mørk tekst), som øktkortet */
+  .fokus{border-radius:var(--r-kort);background:var(--slag-fyll);color:var(--slag-paa);padding:18px;display:grid;gap:14px}
+  .fokus h3{margin:0;font:800 21px/1.25 var(--brand);color:inherit;text-wrap:balance}
+  .fokus .kilde{color:var(--slag-paa)}
+  .fokus .okt-merke{background:rgba(255,255,255,.4);justify-self:start}
+  .fokus .maltall div{background:rgba(255,255,255,.45)}
+  .fokus .maltall strong{font-size:26px}
+  .maltall strong small{font-size:13px}
+  .nw{white-space:nowrap}
+  .fokus .maltall span{color:var(--navy-dyp)}
   .maltall{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
   .maltall div{display:grid;gap:4px;padding:12px;border-radius:var(--r-felt);background:var(--tint-orange)}
   .maltall strong{font:800 22px/1 var(--brand);color:var(--navy-dyp);white-space:nowrap}
@@ -52,7 +60,12 @@
   .gruppevelger{display:flex;flex-wrap:wrap;gap:6px}
   .gruppevelger button{min-height:36px;padding:0 14px;border-radius:var(--r-chip);border:1.5px solid var(--n300);background:#fff;font:700 13px/1 var(--brand);color:var(--tekst-2);cursor:pointer}
   .gruppevelger button[aria-pressed=true]{background:var(--navy);border-color:var(--navy);color:#fff}
-  .helt .knapp.mint{justify-self:start}
+  /* Krever handling, gruppert etter frist. Én primærknapp per sak. */
+  .frist + .frist{border-top:1px solid var(--n200)}
+  .frist-hode{display:flex;align-items:center;gap:8px;padding:14px 0 2px;font:800 15px/1.2 var(--brand);color:var(--navy-dyp)}
+  .frist-hode i{width:10px;height:10px;border-radius:50%;flex:none}
+  .frist-hode .kilde{margin-left:auto}
+  .frist:first-child .frist-hode{padding-top:0}
   /* Dagen som tidslinje, som Cockpit i AgencyOS: én rad per time, øktene som fylte blokker */
   .dagen{position:relative;display:grid;grid-template-columns:44px minmax(0,1fr);border:1px solid var(--n200);border-radius:var(--r-kort);overflow:hidden;background:#fff}
   .dagen .t{grid-column:1;height:52px;padding:6px 0 0 8px;border-bottom:1px solid var(--linje);background:var(--tint-graa);font:700 12px/1 var(--brand);color:var(--tekst-2)}
@@ -82,7 +95,7 @@
 <body>
 <div class="ytre">
   <header class="hode">
-    <p class="meta-s">WANG Toppidrett · trenerflaten · pakke 2 I dag · utkast 1 · 14.10.2026</p>
+    <p class="meta-s">WANG Toppidrett · trenerflaten · pakke 2 I dag · utkast 2 (retning B) · 16.10.2026</p>
     <h1>I dag</h1>
     <p>Første skjerm treneren ser: dagens fokus, økter, oppmøte på morgentreningen og det som venter. Onsdag 14. oktober kl. 07:40, uke 42. Alle navn og tall er syntetiske.</p>
   </header>
@@ -94,6 +107,15 @@
   </div>
   <div class="scene"><div id="ramme" class="ramme mob"></div></div>
   <div class="notater">
+    <section class="endringer">
+      <h2>Nytt i utkast 2</h2>
+      <ul>
+        <li><b>Ett hovedtall</b> på navy helteflate: «5 saker krever deg, 2 før 07:50», med én knapp. De tre andre tallene står som små tellere under.</li>
+        <li><b>Krever handling</b> er gruppert etter frist (før 07:50, i dag, denne uka), med én primærknapp per sak.</li>
+        <li><b>Én farge for handling:</b> navy. «Før oppmøte» var mint; mint er nå bare status «ok».</li>
+        <li><b>Dagens fokus</b> er en fylt SLAG-flate. <b>Oppfølging</b> viser elevene med plan-stolpe og rosa statusmarkør.</li>
+      </ul>
+    </section>
     <section class="endringer">
       <h2>Hva skjermen gjør</h2>
       <ul>
@@ -121,20 +143,28 @@
 <div class="app" data-fane="idag">
 <main class="innhold">
 
-  <section class="helt inn" data-behold>
+  <section class="topp inn" data-behold>
     <div>
       <p class="dato">Onsdag 14. oktober · uke 42 · kl. 07:40</p>
       <h1 class="tittel">I dag</h1>
-      <p class="ingress">Morgentrening om 20 minutter. Oppmøtet er ikke ført ennå.</p>
     </div>
-    <div class="helt-tall">
-      <div class="signal"><strong>5</strong><span>Krever handling</span><span class="kilde" style="order:3">Oppmøte ikke ført, frist 07:50</span></div>
-      <div><strong>2</strong><span>Økter i dag</span><span class="kilde" style="order:3">Morgentrening og styrke</span></div>
-      <div><strong>10 av 11</strong><span>Til stede i går</span><span class="kilde" style="order:3">Elev 09 ikke møtt</span></div>
-      <div><strong>3</strong><span>Følger opp</span><span class="kilde" style="order:3">Elever med lav etterlevelse</span></div>
-    </div>
-    <button type="button" class="knapp mint" data-gaa="oppmote">Før oppmøte</button>
   </section>
+
+  <section class="helt med-bilde inn" aria-label="Det som haster">
+    <div class="helt-tekst">
+      <span class="helt-merke haster"><i></i>Morgentrening om 20 minutter</span>
+      <p class="helt-hoved"><strong data-tell="5">5</strong><span>saker krever deg, <span class="nw">2 før 07:50</span></span></p>
+      <p class="helt-forklar">Oppmøtet er ikke ført, og Elev 09 har ikke møtt tre morgener på rad.</p>
+      <button type="button" class="knapp lys" data-gaa="oppmote">Før oppmøte</button>
+    </div>
+    <img class="helt-bilde" src="bilder/slag-utslag.jpg" alt="" width="480" height="230">
+  </section>
+
+  <div class="smaa-tall">
+    <a href="#"><strong>2</strong><span>Økter i dag</span></a>
+    <a href="#" data-gaa="oppmote"><strong>10<small>av 11</small></strong><span>Til stede i går</span></a>
+    <a href="#"><strong>3</strong><span>Følger opp</span></a>
+  </div>
 
   <div class="gruppevelger" data-bare="sportssjef" role="group" aria-label="Grupper" data-gruppe>
     <button type="button" aria-pressed="true">Alle golfgrupper</button><button type="button" aria-pressed="false">Toppidrett VG1</button><button type="button" aria-pressed="false">Toppidrett VG2–3</button><button type="button" aria-pressed="false">WANG Ung</button>
@@ -145,10 +175,10 @@
       <section class="seksjon r3">
         <div class="sek-topp"><h2>Dagens fokus</h2><a class="lenke" href="#">Endre fokus</a></div>
         <div class="fokus">
-          <span class="akse slag" style="justify-self:start">SLAG</span>
+          <span class="okt-merke"><i></i>SLAG</span>
           <h3>Driver: svinghastighet og balltreff før høstturneringen</h3>
           <div class="maltall">
-            <div><strong>112 mph</strong><span>Club Speed, snitt i gruppa</span></div>
+            <div><strong>112<small> mph</small></strong><span>Club Speed, snitt i gruppa</span></div>
             <div><strong>1,48</strong><span>Smash Factor</span></div>
             <div><strong>+2,5°</strong><span>Attack Angle</span></div>
           </div>
@@ -178,21 +208,32 @@
       <section class="seksjon r1">
         <div class="sek-topp"><h2>Krever handling <span class="teller">5</span></h2></div>
         <div class="kort saker">
-          <div class="sak"><span class="pille haster"><i></i>Frist 07:50</span><b>Oppmøte på morgentreningen er ikke ført</b><p>11 elever. To har meldt fravær.</p><div class="knapper"><button type="button" class="knapp pri" data-gaa="oppmote">Før oppmøte</button></div></div>
-          <div class="sak"><span class="pille haster"><i></i>3 dager</span><b>Elev 09 har ikke møtt tre morgener på rad</b><p>Ikke meldt fravær. Sist til stede fredag 9.10.</p><div class="knapper"><button type="button" class="knapp sek">Se elev</button><button type="button" class="knapp flat" data-gaa="fravaer">Meld fravær</button></div></div>
-          <div class="sak"><span class="pille vent"><i></i>Egenført</span><b>Elev 05 har ført 8-ball selv</b><p>34 poeng, tirsdag 13.10. Venter på kontroll.</p><div class="knapper"><button type="button" class="knapp sek">Kontroller</button></div></div>
-          <div class="sak"><span class="pille ok"><i></i>Delt</span><b>Elev 03 delte fireukerssjekken</b><p>Uke 38–41. Prosessmål og alle 41 spørsmål.</p><div class="knapper"><button type="button" class="knapp sek">Les</button></div></div>
-          <div class="sak"><span class="pille ok"><i></i>Godtatt</span><b>Elev 07 godtok forslaget ditt</b><p>SLAG 60 min ekstra torsdag. Lagt inn i elevens plan.</p><div class="knapper"><button type="button" class="knapp flat">Se planen</button></div></div>
+          <div class="frist">
+            <p class="frist-hode"><i style="background:var(--rosa)"></i>Før 07:50<span class="kilde">2 saker</span></p>
+            <div class="sak"><span class="pille haster"><i></i>Frist 07:50</span><b>Oppmøte på morgentreningen er ikke ført</b><p>11 elever. To har meldt fravær.</p><div class="knapper"><button type="button" class="knapp pri" data-gaa="oppmote">Før oppmøte</button></div></div>
+            <div class="sak"><span class="pille haster"><i></i>3 dager</span><b>Elev 09 har ikke møtt tre morgener på rad</b><p>Ikke meldt fravær. Sist til stede fredag 9.10.</p><div class="knapper"><button type="button" class="knapp pri" data-gaa="fravaer">Meld fravær</button><button type="button" class="knapp flat">Se elev</button></div></div>
+          </div>
+          <div class="frist">
+            <p class="frist-hode"><i style="background:var(--gul)"></i>I dag<span class="kilde">2 saker</span></p>
+            <div class="sak"><span class="pille vent"><i></i>Egenført</span><b>Elev 05 har ført 8-ball selv</b><p>34 poeng, tirsdag 13.10. Venter på kontroll.</p><div class="knapper"><button type="button" class="knapp pri">Kontroller</button></div></div>
+            <div class="sak"><span class="pille vent"><i></i>Delt</span><b>Elev 03 delte fireukerssjekken</b><p>Uke 38–41. Prosessmål og alle 41 spørsmål.</p><div class="knapper"><button type="button" class="knapp pri">Les</button></div></div>
+          </div>
+          <div class="frist">
+            <p class="frist-hode"><i style="background:var(--n400)"></i>Denne uka<span class="kilde">1 sak</span></p>
+            <div class="sak"><span class="pille noy"><i></i>Avslått</span><b>Elev 04 avslo forslaget ditt</b><p>SLAG 60 min ekstra torsdag. Eleven skrev: «Har prøve fredag.»</p><div class="knapper"><button type="button" class="knapp pri">Svar Elev 04</button></div></div>
+          </div>
         </div>
       </section>
 
       <section class="seksjon r4">
         <div class="sek-topp"><h2>Elever som trenger oppfølging</h2><span class="kilde">3 av 11</span></div>
-        <div class="kort saker">
-          <div class="sak"><span class="avatar">09</span><b>Elev 09 · VG2 · Kategori D</b><p>Borte fra morgentreningen tre dager på rad.</p><div class="knapper"><button type="button" class="knapp pri">Ta oppfølging</button><button type="button" class="knapp flat">Løst</button></div></div>
-          <div class="sak"><span class="avatar">02</span><b>Elev 02 · VG1 · Kategori E</b><p>Gjennomført 61 % av planen siste fire uker.</p><div class="knapper"><button type="button" class="knapp pri">Ta oppfølging</button><button type="button" class="knapp flat">Løst</button></div></div>
-          <div class="sak"><span class="avatar">11</span><b>Elev 11 · VG3 · Kategori C</b><p>Tre turneringsrunder på rad minst tre slag over snittet.</p><div class="knapper"><button type="button" class="knapp pri">Ta oppfølging</button><button type="button" class="knapp flat">Løst</button></div></div>
-          <p class="kilde">Kilde: oppmøte, gjennomført tid og turneringsresultater. Elevene ser ikke denne lista.</p>
+        <div class="baand-del trenger">
+          <div class="baand-liste">
+            <a class="elevrad trenger" href="#"><span class="avatar">09</span><span class="er-hvem"><b>Elev 09</b><span>VG2 · Kategori D</span><span class="er-grunn">Borte tre morgener på rad</span></span><span class="er-plan"><b>58 %</b><span class="stolpe"><span style="width:58%"></span><i class="mal" style="left:80%"></i></span></span></a>
+            <a class="elevrad trenger" href="#"><span class="avatar">02</span><span class="er-hvem"><b>Elev 02</b><span>VG1 · Kategori E</span><span class="er-grunn">Under 70 % av planen</span></span><span class="er-plan"><b>61 %</b><span class="stolpe"><span style="width:61%"></span><i class="mal" style="left:80%"></i></span></span></a>
+            <a class="elevrad trenger" href="#"><span class="avatar">11</span><span class="er-hvem"><b>Elev 11</b><span>VG3 · Kategori C</span><span class="er-grunn">Tre runder over snittet</span></span><span class="er-plan"><b>88 %</b><span class="stolpe"><span style="width:88%"></span><i class="mal" style="left:80%"></i></span></span></a>
+          </div>
+          <p class="kilde">Stolpen er gjennomført mot planlagt tid siste fire uker. Streken er 80 %. Elevene ser ikke denne lista.</p>
         </div>
       </section>
     </div>
@@ -241,7 +282,7 @@
         <div class="sek-topp"><h2>Hvorfor</h2></div>
         <p class="forklar">Høstturneringen er om tre uker. Vi bygger fart uten å miste treffet: rent treff først, så lengre sving.</p>
         <div class="maltall">
-          <div><strong>112 mph</strong><span>Club Speed, snitt i gruppa</span></div>
+          <div><strong>112<small> mph</small></strong><span>Club Speed, snitt i gruppa</span></div>
           <div><strong>1,48</strong><span>Smash Factor</span></div>
           <div><strong>+2,5°</strong><span>Attack Angle</span></div>
         </div>
