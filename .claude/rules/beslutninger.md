@@ -6,8 +6,9 @@ Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved kon
 
 ## STATS-RESTEN: TURNERINGER BLIR DEL AV RESULTATER, OG ØKT LOGGET I ETTERKANT TELLER BARE I TOTALEN (Anders 16.10.2026, bindende)
 
-Svar på punkt 3 og 4 i utkastet til PlayerHQ pakke 13 (PR #1367). Punkt 3: «Ja». Punkt 4: «Logg i etterkant går på totalen men ikke inforhold til plan».
+Svar på punkt 1, 3 og 4 i utkastet til PlayerHQ pakke 13 (PR #1367). Punkt 1 og 3: «Ja». Punkt 4: «Logg i etterkant går på totalen men ikke inforhold til plan».
 
+- **«Sammenlign med coach» finnes ikke.** Spilleren sammenlignes ikke med coachens tall.
 - **Turneringer er en del av Resultater** (pakke 6), med kurven over til par øverst. `/portal/analysere/turneringer` blir ikke egen side.
 - **En økt logget i etterkant teller i total treningstid** (Stats › Trening, akse og område). **Den teller ikke mot planen:** verken i «lagt inn mot fordelt» eller i etterlevelsen (§KARTLEGGINGSØKT FJERNES).
 
@@ -17,7 +18,7 @@ Svar på punkt 3 og 4 i utkastet til PlayerHQ pakke 13 (PR #1367). Punkt 3: «Ja
 
 1. **Turneringer inn i Resultater:** kurven fra `stats-resten.html` legges øverst i Turneringer-visningen i Resultater (`/portal/analysere/resultater`). `/portal/analysere/turneringer` sender dit, med sesongvalget med. Ferdig når turneringene vises én gang, ikke to (i dag gjør `MinKurveTrainLock` og `TurneringshistorikkTrainLock` det begge).
 2. **Logg økt i totalen, ikke i planen:** `TreningLoggV2` lagrer i `trainingLog`. Total treningstid i Stats leser den med; etterlevelse og «lagt inn mot fordelt» gjør det ikke. Ferdig når en test låser at en logget økt øker totalen og lar etterlevelsen stå.
-3. **Gjenstår (punkt 1):** om «Sammenlign med coach» (`/portal/coach/sg-hub`) sendes til Stats. Ikke besvart.
+3. **«Sammenlign med coach» sendes til Stats** (punkt 1, Anders 16.10: «Ja»): `/portal/coach/sg-hub` blir videresending til Stats › Strokes Gained, og de faste tallene `COACH_SG` (`src/app/portal/coach/sg-hub/page.tsx:21`) og `CoachSgHubV2` fjernes. Ferdig når adressen sender videre og ingen lenke peker dit.
 
 ## DEL RUNDE FINNES VED LANSERING, VENNER MED INVITASJON, FØLGING OG FEED KOMMER I NESTE VERSJON (Anders 16.10.2026, bindende)
 
