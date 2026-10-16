@@ -377,7 +377,7 @@ body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.
     var pan = B_PANEL[nokkel];
     var grupper = pan.g.map(function(g,gi){return '<div class="gruppe"><span class="etk">'+g[0]+'</span>'+g[1].map(function(l,li){return '<button type="button" class="nav-p'+(gi===0&&li===0?' aktiv':'')+'">'+i(l[0])+l[1]+(l[2]?'<span class="tall">'+l[2]+'</span>':'')+'</button>';}).join('')+'</div>';}).join('');
     var sti = HOVED.filter(function(p){return p.id===nokkel;})[0];
-    return '<div class="skjerm pc B"><nav class="skinne" aria-label="Hovedmeny"><span class="merke">AK</span>'+sk+'<div class="ned"><span class="av">AK</span></div></nav>'+
+    return '<div class="skjerm pc B"><nav class="skinne" aria-label="Hovedmeny"><span class="merke" title="Vis hele menyen">AK</span>'+sk+'<div class="ned"><span class="av">AK</span></div></nav>'+
       '<aside class="panel"><h3>'+pan.t+'</h3>'+grupper+'</aside>'+
       '<div class="hoved"><div class="topp-pc"><span class="sti">'+(sti?sti.n:'Mer')+' / <b>Oversikt</b></span><div class="h"><button type="button" class="knapp-i" aria-label="Søk">'+i('sok')+'</button>'+bjelle()+'</div></div><div class="rull">'+innhold()+'</div></div>'+hurtig+'</div>';
   }
@@ -428,7 +428,7 @@ body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.
       '<section><h2>Pris</h2><ul><li>Panelet tar 260 px fra innholdet. Bør kunne lukkes på smale PC-skjermer.</li><li>Workbench er ett trykk lenger unna på mobil.</li></ul></section>',
     C:'<section class="anbef"><h2>C · Søk først</h2><p>Sidemeny med søk øverst og neste økt som fylt kort. Punktene står i tre grupper: Daglig, Spillere og Drift.</p></section>'+
       '<section><h2>Slik virker den</h2><ul><li>PC: ⌘K åpner «Hopp til» midt på skjermen. Skriv tre bokstaver og trykk Enter for å havne hos spilleren.</li><li>Mobil: søkefeltet står alltid i topplinja. Menyen åpner som hel flate med siste besøkte og gruppene.</li></ul></section>'+
-      '<section><h2>Bare ikoner</h2><ul><li>Knappen øverst i menyen legger den sammen til en skinne på 72 px med ikoner, tellere og neste økt som et lite TEK-felt med klokkeslett.</li><li>Trykk hvor som helst på skinna, så glir hele menyen ut over innholdet. Innholdet flytter seg ikke.</li><li>Velg et punkt, så går du dit og menyen legger seg inn igjen. Trykk utenfor for å lukke uten å velge.</li><li>Knappen øverst i den utfelte menyen fester den som bred meny igjen.</li></ul></section>'+
+      '<section><h2>Bare ikoner</h2><ul><li>Knappen øverst i menyen legger den sammen til en skinne på 72 px med ikoner, tellere og neste økt som et lite TEK-felt med klokkeslett.</li><li>Trykk på et ikon, så går du rett til siden. Menyen blir liggende som skinne.</li><li>Trykk på AK-merket, søk, neste økt eller et tomt sted på skinna, så glir hele menyen ut over innholdet. Innholdet flytter seg ikke.</li><li>I den utfelte menyen: velg et punkt, så går du dit og menyen legger seg inn igjen. Trykk utenfor for å lukke uten å velge.</li><li>Knappen øverst i den utfelte menyen fester den som bred meny igjen.</li></ul></section>'+
       '<section><h2>Krever ditt ja</h2><ul><li>Mer er brettet ut i gruppene. Det bryter vedtaket om seks hovedpunkter med Mer (28.09 og 16.10). Velger du C, blir det en ny beslutning.</li></ul></section>'
   };
 
@@ -452,7 +452,11 @@ body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.
     skaler();
   }
   document.addEventListener('click', function(e){
-    if(e.target.closest('.C.smal .side')){ state.side='ut'; tegn(); return; }
+    if(e.target.closest('.C.smal .side')){
+      var ikon = e.target.closest('[data-gaa]');
+      if(ikon){ state.aktiv=ikon.dataset.gaa; } else { state.side='ut'; }
+      tegn(); return;
+    }
     var t = e.target.closest('[data-variant],[data-apen],[data-side],[data-feste],[data-gaa],[data-meny],.lag');
     if(!t) return;
     if(t.dataset.side){ state.side=t.dataset.side; state.apen=false; }
