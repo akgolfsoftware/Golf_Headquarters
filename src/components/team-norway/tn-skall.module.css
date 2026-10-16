@@ -31,13 +31,31 @@
 .gruppe {
   display: block;
   padding: 14px 20px 6px;
-  font-family: var(--tn-font-mono);
-  font-size: 11px;
+  font-family: var(--tn-font-body);
+  font-weight: 700;
+  font-size: 12px;
   line-height: 1;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--tn-rail-muted);
 }
+/* Utkast 2: menygruppene kan lukkes, bare gruppa du er i står åpen. */
+summary.gruppe {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 44px;
+  padding: 0 20px;
+  cursor: pointer;
+  list-style: none;
+}
+summary.gruppe::-webkit-details-marker { display: none; }
+summary.gruppe:hover, .menygruppe[open] > summary.gruppe { color: var(--tn-rail-on); }
+summary.gruppe:focus-visible { outline: 3px solid var(--tn-navy-400); outline-offset: -3px; }
+summary.gruppe svg { transition: transform var(--tn-duration-fast) var(--tn-ease-out); }
+.menygruppe[open] > summary.gruppe svg { transform: rotate(90deg); }
+.gruppePunkter { display: grid; gap: 2px; padding-bottom: 6px; }
+@media (prefers-reduced-motion: reduce) { summary.gruppe svg { transition: none; } }
 .lenke {
   position: relative;
   display: flex;

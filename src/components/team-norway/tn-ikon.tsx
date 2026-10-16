@@ -17,6 +17,7 @@ const STIER = {
   pil: "M15 5l-7 7 7 7",
   videre: "M9 5l7 7-7 7",
   lukk: "M5 5l14 14M19 5L5 19",
+  ned: "M5 9l7 7 7-7",
 } as const;
 
 export type TnIkonNavn = keyof typeof STIER;

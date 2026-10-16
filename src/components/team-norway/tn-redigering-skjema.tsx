@@ -56,9 +56,10 @@ export function TnSamlingSkjema({ samling, knapp, variant }: { samling?: TnSamli
   );
 }
 
-export function TnSlettSamling({ id, navn }: { id: string; navn: string }) {
+export function TnSlettSamling({ id, navn, variant }: { id: string; navn: string; variant?: TnKnappVariant }) {
   return (
     <TnSlettKnapp
+      variant={variant}
       knapp="Slett samling"
       tittel="Slett samling"
       tekst={`«${navn}» fjernes fra terminlisten og månedsplanen for hele gruppen.`}
