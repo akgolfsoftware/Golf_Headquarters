@@ -29,6 +29,15 @@ export function demoFlateForEpost(epost: string | null | undefined): string | nu
   return null;
 }
 
+/**
+ * Skal vakten (requirePortalUser / requireCoachActionUser) stoppe kontoen?
+ * Demokontoer stoppes alltid, unntatt der siden eller handlingen eksplisitt
+ * slipper dem inn (`tillatDemo`, bare Team Norway- og WANG-flatene).
+ */
+export function demoStoppesAvVakt(epost: string | null | undefined, tillatDemo: boolean): boolean {
+  return !tillatDemo && demoFlateForEpost(epost) !== null;
+}
+
 export type DemoSperre = { type: "send-til"; sti: string } | { type: "avvis" };
 
 /**

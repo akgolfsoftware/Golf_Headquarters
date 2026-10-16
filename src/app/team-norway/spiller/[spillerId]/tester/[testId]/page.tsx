@@ -16,7 +16,7 @@ import { TnVisning, TnOvrigVisning } from "./visning";
  */
 export default async function SpillerTestDetaljPage({ params }: { params: Promise<{ spillerId: string; testId: string }> }) {
   const { spillerId, testId } = await params;
-  const bruker = await requirePortalUser({ kreverTilgang: "TALENT" });
+  const bruker = await requirePortalUser({ tillatDemo: true, kreverTilgang: "TALENT" });
   const data = await hentTnSpillerTestDetalj(bruker, spillerId, testId);
   if (data) return <TnVisning spillerId={spillerId} data={data} brukerNavn={bruker.name ?? "Ukjent"} />;
 

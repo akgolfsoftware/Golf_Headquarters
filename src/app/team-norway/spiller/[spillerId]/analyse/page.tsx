@@ -28,7 +28,7 @@ function trend(rad: { sisteScore: number | null; forrigeScore: number | null; lo
  */
 export default async function SpillerAnalysePage({ params }: { params: Promise<{ spillerId: string }> }) {
   const { spillerId } = await params;
-  const bruker = await requirePortalUser({ kreverTilgang: "TALENT" });
+  const bruker = await requirePortalUser({ tillatDemo: true, kreverTilgang: "TALENT" });
   const data = await hentTnSpillerTester(bruker, spillerId);
   if (!data) notFound();
   const hub = await hentTnSpillerAnalyseHub(bruker, spillerId);

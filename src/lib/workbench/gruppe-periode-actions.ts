@@ -37,7 +37,7 @@ export async function coachLagreGruppePeriode(
   input: unknown,
   periodeId?: string,
 ): Promise<{ ok: boolean; periodeId?: string; error?: string; arv?: ArvKvittering }> {
-  const aktor = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const aktor = await requirePortalUser({ tillatDemo: true, allow: ["COACH", "ADMIN"] });
   await assertCapability(aktor, Capability.EDIT_GROUP_PLANS);
   if (!(await canEditGroup(aktor, groupId))) return { ok: false, error: "Fant ikke gruppen." };
   const parsed = PeriodeInputSchema.safeParse(input);
@@ -91,7 +91,7 @@ export async function coachSlettGruppePeriode(
   groupId: string,
   periodeId: string,
 ): Promise<{ ok: boolean; error?: string }> {
-  const aktor = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const aktor = await requirePortalUser({ tillatDemo: true, allow: ["COACH", "ADMIN"] });
   await assertCapability(aktor, Capability.EDIT_GROUP_PLANS);
   if (!(await canEditGroup(aktor, groupId))) return { ok: false, error: "Fant ikke gruppen." };
   const eier = await prisma.groupPeriodBlock.findFirst({ where: { id: periodeId, groupId }, select: { id: true } });
@@ -121,7 +121,7 @@ export type RullUtHoppet = {
 export async function coachRullUtGruppeAarsplan(
   groupId: string,
 ): Promise<{ ok: boolean; spillere?: number; perioderLagt?: number; hoppet?: RullUtHoppet[]; error?: string }> {
-  const aktor = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const aktor = await requirePortalUser({ tillatDemo: true, allow: ["COACH", "ADMIN"] });
   await assertCapability(aktor, Capability.EDIT_GROUP_PLANS);
   if (!(await canEditGroup(aktor, groupId))) return { ok: false, error: "Fant ikke gruppen." };
   // Utrullingen skriver i hvert medlems egen årsplan — bare eier/ADMIN (D-25, D-49).
