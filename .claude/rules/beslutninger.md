@@ -4,6 +4,32 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## NATTKJØRING 16.–17.10: CLAUDE GODKJENNER OG LEGGER INN SELV TIL ALLE FLATER ER I NYTT DESIGN (Anders 16.10.2026, bindende)
+
+Anders 16.10 kl. 22:45: «Alle sider i PlayerHQ, AgencyOS, Team Norway og WANG og nettsidene skal ha
+komplett nytt design som vi har jobbet med. Alt skal fungere og være fullt operativt for booking og
+opprettelse av konto.» Og: «Du må legge inn i prosjektregler at du kan gjøre alt og godkjenne uten min
+tillatelse for å gjøre prosjektet komplett i natt.» Bekreftet kl. 23:10: «Legg inn #1376 og start
+nattkjøringen etter planen.»
+
+- **Fullmakt for natten:** Claude gjør port 7 på Anders' vegne, legger inn i main uten «merge» når verify
+  og CI er grønn, avgjør åpne spørsmål med anbefalingen som alt står i utkastet eller her, og fører hvert
+  valg i planens §6 «Avgjort i natt». Grensen på tre samtidige økter er opphevet. Regelen står i
+  `CLAUDE.md` §Nattkjøring til Anders opphever den.
+- **Står fortsatt:** ingen ekte betaling, ingen e-post til ekte personer, ingen sletting av produksjonsdata,
+  ingen brytende skjemaendring, ingen domeneflytting, ingen hemmeligheter (AGENTS.md §Stående forhåndsgodkjenning).
+- **Målet:** alle sider under `/portal`, `/admin`, `/team-norway`, `/team-wang`, `/forelder`, `/auth`,
+  markedssidene og de øvrige flatene bygget etter utkastene i `docs/design-system/utkast-*/`, og kjeden
+  opprett konto → oppstart → book → betal (testmodus) → bekreftelse virker og er låst med E2E-test.
+
+**Overstyrer (midlertidig):** «Merge ALDRI til main før Anders har skrevet «merge»» i `CLAUDE.md`, og
+port 7 som Anders' egen gjennomgang, for alt som bygges i nattkjøringen.
+
+**Arbeidet dette utløser:** de ti stegene i `docs/planer/nattkjoring-komplett-design-2026-10-16.md`.
+Ferdig når morgenrapporten (planens §7) finnes, `npm run verify` er grønn på main, og lista «Avgjort i
+natt» er lagt fram for Anders. Det bare Anders kan gjøre etterpå står i planens §5: Stripe live-røyktest,
+Apple Pay, domeneflytting, og gjennomgang av «Avgjort i natt».
+
 ## AGENCYOS-MENYEN BLIR VARIANT C: SØK FØRST, TRE GRUPPER OG IKONSKINNE (Anders 16.10.2026, bindende)
 
 Anders valgte variant C av tre menyforslag (`docs/design-system/utkast-agencyos/meny.html`, PR #1368): «C skal bygges». Underveis bestemte han at menyen skal kunne legges sammen til ikoner som glir ut ved trykk, at et ikon går rett til siden, og at klokkeslettet i ikonvisning skal være stort.
