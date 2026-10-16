@@ -134,6 +134,33 @@
     });
   }
 
+
+  /* Fylt graf (utkast 2): linje med fylt areal under, stiplet mållinje og ukeetiketter.
+     WANGUtkast.fyltGraf(svg, { verdier: [..], etiketter: [..], min: 50, maks: 100, mal: 80, malTekst: 'Mål 80 %', enhet: ' %', marker: 4 })
+     svg må ha viewBox="0 0 340 180" og klassen .graf. marker = indeks fra og med hvor punktene fylles (siste fire uker). */
+  function fyltGraf(svg, o) {
+    var NS = 'http://www.w3.org/2000/svg', v = o.verdier, n = v.length, B = 340, H = 180, x0 = 34, x1 = B - 10, y0 = 14, y1 = H - 26;
+    function el(t, a, tekst) { var e = document.createElementNS(NS, t); for (var k in a) e.setAttribute(k, a[k]); if (tekst !== undefined) e.textContent = tekst; svg.appendChild(e); return e; }
+    function X(i) { return x0 + (n === 1 ? 0 : i * (x1 - x0) / (n - 1)); }
+    function Y(m) { return y1 - (m - o.min) / (o.maks - o.min) * (y1 - y0); }
+    (o.linjer || [o.min, (o.min + o.maks) / 2, o.maks]).forEach(function (m) {
+      el('line', { x1: x0 - 4, x2: x1, y1: Y(m), y2: Y(m), class: 'rutenett' });
+      el('text', { x: 0, y: Y(m) + 3, class: 'gt' }, m + (o.enhet || ''));
+    });
+    var linje = v.map(function (m, i) { return (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(m).toFixed(1); }).join(' ');
+    el('path', { d: linje + ' L' + X(n - 1).toFixed(1) + ' ' + y1 + ' L' + X(0).toFixed(1) + ' ' + y1 + ' Z', class: 'areal inn' });
+    if (o.mal !== undefined) {
+      el('line', { x1: x0, x2: x1, y1: Y(o.mal), y2: Y(o.mal), class: 'mal-linje' });
+      if (o.malTekst) el('text', { x: x1, y: Y(o.mal) - 6, 'text-anchor': 'end', class: 'gt-mal' }, o.malTekst);
+    }
+    el('path', { d: linje, class: 'linje tegn' });
+    v.forEach(function (m, i) {
+      var fylt = o.marker !== undefined && i >= o.marker;
+      el('circle', { cx: X(i), cy: Y(m), r: fylt ? 5 : 4, fill: fylt ? 'var(--navy)' : '#fff', stroke: 'var(--navy)', 'stroke-width': 2 });
+      if (o.etiketter) el('text', { x: X(i), y: H - 6, 'text-anchor': 'middle', class: 'gt' }, o.etiketter[i]);
+    });
+  }
+
   function start(opt) {
     opt = opt || {};
     var tilstand = { tilstand: 'data', bredde: 'mob', rolle: opt.rolle || 'trener', skjerm: opt.start || (opt.skjermer ? Object.keys(opt.skjermer)[0] : null) };
@@ -193,5 +220,5 @@
     tegn();
   }
 
-  window.WANGUtkast = { start: start, anim: anim, redusert: redusert, gaa: function (id) { if (window.WANGUtkast._gaa) window.WANGUtkast._gaa(id); } };
+  window.WANGUtkast = { start: start, anim: anim, fyltGraf: fyltGraf, redusert: redusert, gaa: function (id) { if (window.WANGUtkast._gaa) window.WANGUtkast._gaa(id); } };
 })();

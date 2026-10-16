@@ -4,6 +4,24 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## WANG-TRENERFLATEN FØLGER STILEN PÅ WANG.NO (Anders 16.10.2026, bindende)
+
+Anders 16.10 etter utkast 2: «WANG må litt nærmere stilen som er på www.wang.no», og etter justeringen: «Ja, WANG-stilen er riktig nå.» Gjelder trenerflaten i `/team-wang` (Trener og Sportssjef); fellessiden `/team-wang` er uendret.
+
+- **Firkantede hjørner overalt.** Bare avatarer og statusprikker er runde.
+- **Hovedknappen er vinrød `#AE0034`** med store bokstaver i Montserrat. Sekundærknapp har vinrød kant. I lister med flere saker har bare den mest akutte fylt knapp.
+- **Brødtekst i Quattrocento (serif)**, overskrifter i Montserrat, sidetittel vinrød. Bakgrunn `#FCFAFA`, tekst `#222` og `#444`.
+- **Helteflaten har wang.nos gradient** `#17446F` → `#2E857D` med store tall i lettere vekt. «Les mer →»-lenker i rosa tekstfarge `#A81F49`.
+- Aksefargene (14.10) og statusfargene (mint, gul, rosa, grå) er uendret. Fasit: `docs/design-system/utkast-wang/felles/wang.css` §Nærmere wang.no og README samme sted.
+
+**Overstyrer:** «navy er handling» og 14 px kort / 10 px knapper i §Nærmere AgencyOS (15.10) i `docs/design-system/utkast-wang/README.md` (rettet i samme PR).
+
+**Arbeidet dette utløser:**
+
+1. **Port 7 per pakke:** stilen er godkjent, men hver pakke (2–8 og 10) i utkast 2 venter fortsatt på Anders' ja. Ferdig når README-tabellen har «Godkjent» per pakke.
+2. **Tokens i koden når pakkene porteres:** `src/styles/wang-app.css` har `--wg-r-kort: 14px`, `--wg-r-knapp: 10px` og `.wg-btn-primary` i navy; `src/styles/wang-tokens.css` har `--radius-card: 26px` og ingen vinrød. Hjørner til 0, `--wang-vinrod: #AE0034` som primærknapp, bakgrunn `#FCFAFA`. Ferdig når trenerflaten i 390 og 1280 ser ut som utkastet, og fellessiden `/team-wang` er urørt.
+3. **Brødtekst i Quattrocento:** `src/app/team-wang/layout.tsx` laster `Quattrocento_Sans`. Legg til `Quattrocento` (serif) for brødtekst i trenerflaten. Ferdig når skjermkontrollen viser Quattrocento i `/team-wang/coach`.
+
 ## MER I AGENCYOS FÅR ET SJETTE PUNKT: DATA GOLF (Anders 16.10.2026, bindende)
 
 Svar på punkt 1 i `docs/design-system/datagolf-coach-datakart-og-skjermliste.md` §Åpent hos Anders: «mer meny skal ha et punkt til».

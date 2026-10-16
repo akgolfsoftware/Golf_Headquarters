@@ -6,21 +6,11 @@
 <title>WANG Elever</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Quattrocento+Sans:wght@400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Quattrocento:wght@400;700&family=Quattrocento+Sans:wght@400;700&display=swap">
 <link rel="stylesheet" href="felles/wang.css">
 <style>
   .sok{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
   .sok input{min-height:48px;padding:10px 16px;border:1.5px solid var(--n300);border-radius:var(--r-knapp);font:400 16px/1.4 var(--body);width:100%;background:#fff}
-  .elevkort{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:4px 12px;align-items:center;padding:14px 16px;border:0;background:#fff;border-radius:var(--r-kort-s);box-shadow:var(--skygge-s);text-align:left;font:inherit;cursor:pointer;width:100%}
-  .elevkort b{font:800 16px/1.2 var(--brand);color:var(--navy-dyp)}
-  .elevkort .sma{grid-column:2 / -1;font-size:13px;color:var(--tekst-2)}
-  .elevkort .tall{font:800 16px/1 var(--brand);color:var(--navy-dyp);text-align:right;white-space:nowrap}
-  .elevkort .tall span{display:block;font:700 11px/1.3 var(--brand);color:var(--tekst-2)}
-  .elevkort .rad{grid-column:1 / -1;display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
-  .elevkort.laast{background:var(--tint-graa);box-shadow:none}
-  /* Statuskant til venstre, som Stall i AgencyOS: rosa trenger deg, gul venter, mint i rute */
-  .elevkort.s-haster{border-left:5px solid var(--rosa)} .elevkort.s-vent{border-left:5px solid var(--gul)} .elevkort.s-ok{border-left:5px solid var(--mint)}
-  .elevliste{display:grid;gap:10px}
   .profil{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
   .profil .avatar{width:64px;height:64px;font-size:18px}
   .nok{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
@@ -56,7 +46,6 @@
   .laas{display:grid;gap:12px;justify-items:start;padding:22px;border-radius:var(--r-kort);background:#fff;box-shadow:var(--skygge)}
   .laas .ikon{width:36px;height:36px;color:var(--navy)}
   @container (min-width:900px){
-    .elevliste{grid-template-columns:repeat(2,minmax(0,1fr))}
     .nok{grid-template-columns:repeat(4,minmax(0,1fr))}
     .rank{grid-template-columns:repeat(2,minmax(0,220px))}
   }
@@ -65,7 +54,7 @@
 <body>
 <div class="ytre">
   <header class="hode">
-    <p class="meta-s">WANG Toppidrett · trenerflaten · pakke 7 Elever · utkast 1 · 14.10.2026</p>
+    <p class="meta-s">WANG Toppidrett · trenerflaten · pakke 7 Elever · utkast 2 (retning B) · 16.10.2026</p>
     <h1>Elever</h1>
     <p>Elevlista (WANG-07), elevprofilen (WANG-44), IUP-fanen i rekkefølgen fra Team Norways IUP-ark, fireukerssjekken (WANG-45), forslag til elevens plan og en elev som ikke har delt. Treneren ser bare det eleven har delt. Alle navn og tall er syntetiske.</p>
   </header>
@@ -77,6 +66,14 @@
   </div>
   <div class="scene"><div id="ramme" class="ramme mob"></div></div>
   <div class="notater">
+    <section class="endringer">
+      <h2>Nytt i utkast 2</h2>
+      <ul>
+        <li><b>Elevlista</b> har ett hovedtall, «2 elever trenger deg», og elevene i tre bånd: Trenger deg · Følger planen · Ikke delt. Hver rad har plan-stolpe med strek ved 80 % og statusmarkør.</li>
+        <li><b>IUP-hodet</b> har hovedtall (plan siste fire uker), målsetninger og neste samtale, og pyramiden som fylt bånd.</li>
+        <li>Tallene er de samme som i Trening › Per elev. Elev 06 og 10 har ikke delt.</li>
+      </ul>
+    </section>
     <section class="endringer">
       <h2>Hva skjermene gjør</h2>
       <ul>
@@ -102,11 +99,27 @@
 <div class="app" data-fane="elever">
 <main class="innhold">
   <section data-behold style="display:grid;gap:14px">
-    <div><p class="dato">WANG Golf · 11 elever · 10 har delt</p><h1 class="tittel">Elever</h1></div>
+    <div><p class="dato">WANG Golf · uke 42</p><h1 class="tittel">Elever</h1></div>
+  </section>
+  <section class="helt med-bilde inn" aria-label="Elever som trenger deg">
+    <div class="helt-tekst">
+      <span class="helt-merke haster"><i></i>Siste fire uker</span>
+      <p class="helt-hoved"><strong data-tell="2">2</strong><span>elever trenger deg</span></p>
+      <p class="helt-forklar">Elev 09 har vært borte tre morgener på rad. Elev 02 har gjennomført 61 % av planen.</p>
+      <button type="button" class="knapp lys" data-gaa="profil">Ta oppfølging</button>
+    </div>
+    <img class="helt-bilde" src="bilder/turn-tee.jpg" alt="" width="480" height="230">
+  </section>
+  <div class="smaa-tall">
+    <a href="#"><strong>11</strong><span>Elever i gruppa</span></a>
+    <a href="#"><strong>9<small>av 11</small></strong><span>Har delt med deg</span></a>
+    <a href="#"><strong>1</strong><span>Test til kontroll</span></a>
+  </div>
+  <section style="display:grid;gap:10px">
     <div class="sok"><input type="search" aria-label="Søk etter elev" placeholder="Søk etter elev"></div>
     <div class="valg" role="group" aria-label="Klasse"><button type="button" aria-pressed="true">Alle</button><button type="button" aria-pressed="false">VG1</button><button type="button" aria-pressed="false">VG2</button><button type="button" aria-pressed="false">VG3</button></div>
   </section>
-  <div class="elevliste" data-liste></div>
+  <div class="baand kol" data-liste></div>
   <p class="kilde">Elever ved andre WANG-skoler vises aldri. Kategori A–K fra PlayerHQ.</p>
 </main>
 </div>
@@ -159,7 +172,21 @@
 <div class="app" data-fane="elever" data-skall="tilbake" data-tilbake="Elev 04">
 <main class="innhold">
   <section data-behold style="display:grid;gap:10px">
-    <div><p class="dato">Elev 04 · IUP 2026/27</p><h1 class="tittel">IUP</h1></div>
+    <div><p class="dato">Elev 04 · VG2 · Kategori D</p><h1 class="tittel">IUP 2026/27</h1></div>
+  </section>
+  <section class="helt inn" aria-label="Plan siste fire uker">
+    <div class="helt-tekst">
+      <span class="helt-merke"><i></i>Følger planen</span>
+      <p class="helt-hoved"><strong><span data-tell="95">95</span><small>%</small></strong><span>av planen gjennomført siste fire uker</span></p>
+      <div class="stolpe" role="img" aria-label="95 % av planen"><span style="width:95%" data-til="95%"></span></div>
+      <p class="helt-linje"><span><b>1 av 3</b> målsetninger nådd</span><span>Neste samtale <b>21.10</b></span></p>
+      <button type="button" class="knapp lys">Forbered samtalen</button>
+    </div>
+  </section>
+  <section class="kort">
+    <div class="sek-topp"><h2 class="undertittel" style="margin:0">Pyramiden siste fire uker</h2><span class="kilde">Gjennomført tid, 9 t 10 min i snitt per uke</span></div>
+    <div class="band" role="img" aria-label="FYS 30 %, TEK 25 %, SLAG 24 %, SPILL 15 %, TURN 6 %"><span class="fyll-fys" style="flex:30">FYS</span><span class="fyll-tek" style="flex:25">TEK</span><span class="fyll-slag" style="flex:24">SLAG</span><span class="fyll-spill" style="flex:15">SPILL</span><span class="fyll-turn" style="flex:6"></span></div>
+    <div class="lg-rad"><span class="lg"><i class="bg-fys"></i>FYS 30 %</span><span class="lg"><i class="bg-tek"></i>TEK 25 %</span><span class="lg"><i class="bg-slag"></i>SLAG 24 %</span><span class="lg"><i class="bg-spill"></i>SPILL 15 %</span><span class="lg"><i class="bg-turn"></i>TURN 6 %</span></div>
     <p class="kilde">Fra PlayerHQ. Eleven eier planen; du foreslår endringer.</p>
   </section>
   <div class="to-kol">
@@ -262,11 +289,11 @@
 <template id="s-ikkedelt">
 <div class="app" data-fane="elever" data-skall="tilbake" data-tilbake="Elever">
 <main class="innhold">
-  <section data-behold><div class="profil"><span class="avatar" style="background:var(--n100);color:var(--tekst-2)">02</span><div><p class="dato">VG1</p><h1 class="tittel">Elev 02</h1></div></div></section>
+  <section data-behold><div class="profil"><span class="avatar" style="background:var(--n100);color:var(--tekst-2)">06</span><div><p class="dato">VG2</p><h1 class="tittel">Elev 06</h1></div></div></section>
   <div class="laas">
     <svg class="ikon" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
-    <b class="undertittel">Elev 02 har ikke delt data med deg ennå</b>
-    <p class="forklar">Du ser bare nummer og klasse. Eleven deler fra Meg i PlayerHQ med en lenke til din e-post. Eleven er 16 år, så ingen forelder må godkjenne.</p>
+    <b class="undertittel">Elev 06 har ikke delt data med deg ennå</b>
+    <p class="forklar">Du ser bare nummer og klasse. Eleven deler fra Meg i PlayerHQ med en lenke til din e-post. Eleven er 17 år, så ingen forelder må godkjenne.</p>
     <span class="pille vent"><i></i>Lenke sendt 8.10, gjelder til 15.10</span>
     <div class="knapper"><button type="button" class="knapp sek">Minn eleven på det</button></div>
   </div>
@@ -278,11 +305,19 @@
 <script>
 (function () {
   function liste(app) {
-    var E = [['01', 'VG1', 'E', '94 %', 'ok', 'Delt'], ['02', 'VG1', '—', '—', 'laast', 'Ikke delt'], ['03', 'VG1', 'D', '98 %', 'ok', 'Delt'], ['04', 'VG2', 'D', '95 %', 'ok', 'Delt'], ['05', 'VG2', 'D', '92 %', 'vent', '1 test til kontroll'], ['06', 'VG2', 'C', '96 %', 'ok', 'Delt'], ['07', 'VG2', 'E', '86 %', 'ok', 'Delt'], ['08', 'VG3', 'C', '101 %', 'ok', 'Delt'], ['09', 'VG2', 'D', '74 %', 'haster', 'Fravær 3 dager'], ['10', 'VG3', 'C', '99 %', 'ok', 'Delt'], ['11', 'VG3', 'C', '89 %', 'ok', 'Delt']];
-    app.querySelector('[data-liste]').innerHTML = E.map(function (e) {
-      var l = e[4] === 'laast';
-      return '<button type="button" class="elevkort' + (l ? ' laast' : ' s-' + e[4]) + '" data-gaa="' + (l ? 'ikkedelt' : 'profil') + '"><span class="avatar">' + e[0] + '</span><b>Elev ' + e[0] + '</b><span class="tall">' + e[3] + '<span>etterlevelse</span></span><span class="sma">' + e[1] + (l ? '' : ' · Kategori ' + e[2]) + '</span><div class="rad"><span class="pille ' + (l ? 'noy' : e[4]) + '"><i></i>' + e[5] + '</span></div></button>';
-    }).join('');
+    /* [elev, klasse, kategori, etterlevelse %, grunn]. Elev 06 og 10 har ikke delt. Samme tall som Trening › Per elev. */
+    var T = [['09', 'VG2', 'D', 74, 'Borte tre morgener på rad'], ['02', 'VG1', 'E', 61, 'Under 70 % av planen']];
+    var F = [['07', 'VG2', 'E', 86], ['11', 'VG3', 'C', 89], ['05', 'VG2', 'D', 92, '1 test til kontroll'], ['01', 'VG1', 'E', 94], ['04', 'VG2', 'D', 95], ['03', 'VG1', 'D', 98], ['08', 'VG3', 'C', 101]];
+    var I = [['06', 'VG2'], ['10', 'VG3']];
+    function rad(e, kl) {
+      var grunn = e[4] ? '<span' + (kl === 'trenger' ? ' class="er-grunn"' : '') + '>' + e[4] + '</span>' : '';
+      return '<a class="elevrad ' + kl + '" href="#" data-gaa="profil"><span class="avatar">' + e[0] + '</span><span class="er-hvem"><b>Elev ' + e[0] + '</b><span>' + e[1] + ' · Kategori ' + e[2] + '</span>' + grunn + '</span><span class="er-plan"><b>' + e[3] + ' %</b><span class="stolpe"><span style="width:' + Math.min(100, e[3]) + '%" data-til="' + Math.min(100, e[3]) + '%"></span><i class="strek" style="left:80%"></i></span></span></a>';
+    }
+    function del(kl, tittel, liste, tekst, f) { return '<section class="baand-del ' + kl + '"><div class="baand-hode"><h3>' + tittel + '</h3><span class="antall">' + liste.length + '</span><p>' + tekst + '</p></div><div class="baand-liste">' + liste.map(f).join('') + '</div></section>'; }
+    app.querySelector('[data-liste]').innerHTML =
+      del('trenger', 'Trenger deg', T, 'Under 80 % av planen, eller borte fra morgentreningen.', function (e) { return rad(e, 'trenger'); }) +
+      del('folger', 'Følger planen', F, '80 % eller mer av planen. Lavest først.', function (e) { return rad(e, 'folger'); }) +
+      del('ikke-delt', 'Ikke delt', I, 'Du ser bare nummer og klasse til eleven deler fra PlayerHQ.', function (e) { return '<a class="elevrad ikke-delt" href="#" data-gaa="ikkedelt"><span class="avatar">' + e[0] + '</span><span class="er-hvem"><b>Elev ' + e[0] + '</b><span>' + e[1] + ' · ikke delt</span></span><span class="er-plan"><b>—</b><span class="kilde">Lenke sendt</span></span></a>'; });
   }
   function prikker(n, kl) { var s = '<span class="prikker ' + (kl || '') + '" role="img" aria-label="' + n + ' av 5">'; for (var i = 1; i <= 5; i++) s += '<i class="' + (i <= n ? 'p' : '') + '"></i>'; return s + '</span>'; }
   function sjekk(app) {

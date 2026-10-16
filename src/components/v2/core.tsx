@@ -452,15 +452,17 @@ export interface CTAPillProps {
   /** Paper: clay «Én ting nå» — maks én per skjerm. Default solid = ink CTA. */
   enTing?: boolean;
   onClick?: () => void;
+  disabled?: boolean;
 }
 /* Paper-fasit: solid default = ink (--tl-fill). enTing=true → clay handling-monopol. */
-export function CTAPill({ icon, children, ghost, full, enTing, onClick }: CTAPillProps) {
+export function CTAPill({ icon, children, ghost, full, enTing, onClick, disabled }: CTAPillProps) {
   const solidBg = enTing ? TL.fill : TL.fill;
   const solidFg = enTing ? TL.onFill : TL.onFill;
   return (
     <button
       type="button"
       onClick={onClick}
+      disabled={disabled}
       className="v2-press v2-focus"
       data-paper-en-ting={enTing ? "true" : undefined}
       style={{
@@ -478,7 +480,8 @@ export function CTAPill({ icon, children, ghost, full, enTing, onClick }: CTAPil
         borderRadius: enTing ? 12 : TL.radius.row,
         padding: enTing ? "14px 18px" : "10px 16px",
         minHeight: enTing ? 56 : 44,
-        cursor: "pointer",
+        cursor: disabled ? "wait" : "pointer",
+        opacity: disabled ? 0.55 : undefined,
         width: full ? "100%" : undefined,
       }}
     >
