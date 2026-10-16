@@ -13,7 +13,7 @@
   .neste .sted{font:300 26px/1.1 var(--display);letter-spacing:.1em;text-transform:uppercase}
   .neste .linje{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px;padding:14px 0;border-block:1px solid var(--navy-700)}
   .neste .linje strong{font:500 46px/1 var(--mono)}
-  .neste .linje span{font:500 12px/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--rail-tekst)}
+  .neste .linje span{font:700 12.5px/1.35 var(--tekst);letter-spacing:.01em;color:var(--rail-tekst)}
   .neste p{color:var(--rail-tekst)}
   .knapp.hvit{background:var(--hvit);color:var(--navy-900);border-color:var(--hvit)}
   .fremdrift{height:8px;background:var(--navy-100)}
@@ -22,7 +22,7 @@
   .post:last-child{border-bottom:0}
   .post .hvem{display:flex;flex-wrap:wrap;gap:2px 10px;align-items:baseline}
   .post .hvem b{font:700 14.5px/1.3 var(--tekst)}
-  .post .hvem span{font:500 11px/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-500)}
+  .post .hvem span{font:700 12.5px/1.35 var(--tekst);letter-spacing:.01em;color:var(--ink-500)}
   .post p{margin-top:4px!important;font-size:14.5px;line-height:1.6}
   .fordeling{display:flex;height:28px;background:var(--ink-100)}
   .fordeling span{display:block;height:100%}
@@ -40,12 +40,12 @@
   .hendelse{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--ink-200);text-decoration:none;color:inherit}
   .hendelse:last-child{border-bottom:0}
   .hendelse .dag{display:grid;justify-items:start;font:500 22px/1 var(--mono);color:var(--navy-900)}
-  .hendelse .dag small{font:500 11px/1.4 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-500)}
+  .hendelse .dag small{font:700 12.5px/1.35 var(--tekst);letter-spacing:.01em;color:var(--ink-500)}
   .hendelse b{font:700 15px/1.3 var(--tekst)}
   .strek{width:4px;align-self:stretch}
   /* Samlingsprogram */
   .dag-blokk{display:grid;gap:var(--r2)}
-  .dag-blokk h3{margin:0;font:500 13px/1.3 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-700)}
+  .dag-blokk h3{margin:0;font:700 12.5px/1.35 var(--tekst);letter-spacing:.01em;color:var(--ink-700)}
   .okt-liste{display:grid;gap:var(--r2);grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))}
   .okt.liten{padding:12px 14px;gap:4px}
   .okt.liten .okt-tid{font-size:20px}
@@ -63,7 +63,7 @@
   @container (min-width:900px){
     .res-hode,.res-rad{grid-template-columns:56px minmax(0,1fr) repeat(3,64px) 96px}
     .res-rad .tot{grid-row:auto;grid-column:auto}
-    .res-hode{display:grid;gap:12px;padding:8px 0;font:500 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-500)}
+    .res-hode{display:grid;gap:12px;padding:8px 0;font:700 12.5px/1.35 var(--tekst);letter-spacing:.01em;color:var(--ink-500)}
     .res-rad .runder{display:contents}
     .res-rad .runder span{text-align:right}
     .res-rad .runder em{display:none}
@@ -72,25 +72,35 @@
   .runder em{font-style:normal;color:var(--ink-500)}
   .reise{display:grid;gap:10px}
   .reise div{display:grid;grid-template-columns:110px minmax(0,1fr);gap:12px}
-  .reise dt,.reise span.k{font:500 12px/1.5 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-500)}
+  .reise dt,.reise span.k{font:700 12.5px/1.35 var(--tekst);letter-spacing:.01em;color:var(--ink-500)}
   .skjema{display:grid;gap:var(--r4)}
   .to-felt{display:grid;gap:var(--r4);grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))}
   .live-rad{display:grid;grid-template-columns:36px minmax(0,1fr) auto;gap:12px;align-items:center;padding:14px 0;border-bottom:1px solid var(--ink-200)}
   .live-rad:last-child{border-bottom:0}
   .live-rad .verdi{text-align:right;font:500 18px/1.1 var(--mono)}
   .live-rad .verdi small{display:block;font:500 11.5px/1.3 var(--mono);color:var(--ink-500)}
-  .puls{display:inline-flex;align-items:center;gap:6px;font:500 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--turn)}
+  .puls{display:inline-flex;align-items:center;gap:6px;font:700 12.5px/1.35 var(--tekst);letter-spacing:.01em;color:var(--turn)}
   .puls i{width:8px;height:8px;background:var(--turn)}
   .app.anim .puls i{animation:puls 1.6s ease-in-out infinite}
   @keyframes puls{50%{opacity:.25}}
+  /* Utkast 2 */
+  .neste-navn{display:block;font:500 24px/1.2 var(--display);letter-spacing:.02em}
+  .bildekort.navy .hoved strong{color:var(--hvit)}
+  .bildekort .knapper{margin-top:4px}
+  .svar-stolpe{display:flex;height:10px;gap:2px;background:var(--navy-700)}
+  .svar-stolpe i{display:block;height:100%;background:var(--hvit)}
+  .svar-stolpe i.v{background:var(--navy-400)} .svar-stolpe i.n{background:var(--navy-700)}
+  .bildekort.side img{height:160px}
+  .turn-bilde{display:block;width:100%;height:160px;object-fit:cover;border-radius:2px}
+  @container (min-width:900px){.turn-bilde{height:220px}}
 </style>
 </head>
 <body>
 <div class="ytre">
   <header class="hode">
-    <span class="meta-s">Team Norway · trenerskjermer · pakke 2 Daglig · utkast 1 · 14.10.2026</span>
+    <span class="meta-s">Team Norway · trenerskjermer · pakke 2 Daglig · utkast 2 · 16.10.2026</span>
     <h1>Daglig: oversikt, samlinger, turneringer og Live Watch</h1>
-    <p>Syv skjermer fra menygruppen Daglig, i de godkjente aksefargene. Bare syntetiske data. Bytt skjerm, bredde og tilstand under.</p>
+    <p>Utkast 2, retning B «Stall og helteflate». Sju skjermer fra menygruppen Daglig, i de godkjente aksefargene. Bare syntetiske data: spillerne heter Spiller 01–14. Bytt skjerm, bredde og tilstand under.</p>
   </header>
   <div class="kontroller">
     <div class="velger" role="group" aria-label="Skjerm">
@@ -118,20 +128,21 @@
   <div class="scene"><div id="ramme" class="ramme mob"></div></div>
   <div class="notater">
     <section class="endringer">
-      <h2>Hva som er nytt</h2>
+      <h2>Hva som er nytt i utkast 2</h2>
       <ul>
-        <li><b>Oversikt</b> har de samme tre tingene som i dag (neste samling, fellestesten, gruppeposter), og i tillegg gruppas trening siste fire uker fordelt på aksene.</li>
-        <li><b>Samlinger</b> får et årshjul med tolv måneder. Navy rute er samling, mørk rød er turnering. Trykk på en måned for lista.</li>
-        <li><b>Én samling</b> viser programmet dag for dag som øktkort i aksefargen, med egentid stiplet, og hvem som har svart.</li>
-        <li><b>Turneringer</b> viser frist, påmeldte og kilde. Resultat er alltid brutto. Mangler et tall, står det en strek.</li>
-        <li><b>Live Watch</b> sier rett ut at live-score ikke er koblet til. Den viser hvem som spiller i dag og siste registrerte runde.</li>
+        <li><b>Oversikt</b> starter med ett svar: hvor mange spillere som trenger deg nå. Navy helteflate med hovedtallet, én knapp, og gruppas trening i de lyse aksefargene. Resten av handlingene ligger i «Ny».</li>
+        <li><b>Trenger deg</b> står rett under, med plan-stolpe (gjennomført mot planlagt) og grunnen i klartekst.</li>
+        <li><b>Neste samling</b> er et kort med golfbilde. Teksten står i eget felt under bildet, aldri oppå.</li>
+        <li><b>Fellestesten</b> er en stolpe, og de som mangler har farget statusmarkør med ord.</li>
+        <li><b>Samlinger, turneringer og Live Watch</b> har mindre grå småtekst, bilde på turneringen og stolpe for svar.</li>
       </ul>
     </section>
     <section class="endringer">
       <h2>Spørsmål til deg</h2>
       <ul>
-        <li>Skal oversikten vise gruppas fordeling på aksene, eller holde seg til de tre tingene den har i dag?</li>
+        <li>Skal oversikten vise gruppas fordeling på aksene? Utkastet viser den i helteflaten, lite og under hovedtallet.</li>
         <li>Reise (avreise, overnatting, ansvarlig) er tegnet inn på turneringen. Koden har ingen felt for det ennå. Skal det med?</li>
+        <li>«Trenger deg» bruker regelen fra AgencyOS: under 70 % av planen to uker på rad, eller manglende fellestest. Riktig for Team Norway?</li>
       </ul>
     </section>
   </div>
@@ -142,54 +153,99 @@
 <div class="app" data-aktiv="oversikt">
 <main class="innhold">
   <header data-behold>
-    <span class="overlinje">Team Norway Junior · onsdag 14. oktober</span>
-    <h1 class="tittel">Landslagsoversikt</h1>
-    <p class="ingress">Neste samling, fellestesten og det siste fra trenerteamet.</p>
+    <span class="overlinje">Onsdag 14. oktober · uke 42</span>
+    <h1 class="tittel">Oversikt</h1>
   </header>
-  <div class="knapper" data-behold>
-    <button type="button" class="knapp pri">Ny samling</button>
-    <button type="button" class="knapp sek">Ny økt</button>
-    <button type="button" class="knapp sek">Ny testdag</button>
-    <button type="button" class="knapp sek">Nytt innlegg</button>
-  </div>
+  <section class="helt">
+    <div class="helt-venstre">
+      <span class="sporsmaal">Hvem trenger deg nå?</span>
+      <div class="tall"><strong>3</strong><span>spillere trenger deg</span></div>
+      <p>To har gjennomført under 70 % av planen to uker på rad. Én har ikke tatt fellestesten.</p>
+      <div class="knapper">
+        <a class="knapp hvit" href="#trenger">Se de tre</a>
+        <div class="flere">
+          <button type="button" class="knapp kontur-hvit" aria-expanded="false" aria-haspopup="true">Ny<svg class="ikon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9l7 7 7-7"/></svg></button>
+          <div class="flere-liste" hidden><button type="button">Ny samling</button><button type="button">Ny økt</button><button type="button">Ny testdag</button><button type="button">Nytt innlegg</button></div>
+        </div>
+      </div>
+    </div>
+    <div class="helt-hoyre">
+      <div class="helt-akser">
+        <span class="sporsmaal">Gruppas trening uke 38–41 · 412 av 468 t</span>
+        <div class="fordeling-lys" role="img" aria-label="FYS 91 t, TEK 99 t, SLAG 124 t, SPILL 66 t, TURN 32 t"><span class="lys-fys" style="width:22%"></span><span class="lys-tek" style="width:24%"></span><span class="lys-slag" style="width:30%"></span><span class="lys-spill" style="width:16%"></span><span class="lys-turn" style="width:8%"></span></div>
+        <div class="lg-rad"><span class="lg"><i class="lys-fys"></i>FYS <b>91</b></span><span class="lg"><i class="lys-tek"></i>TEK <b>99</b></span><span class="lg"><i class="lys-slag"></i>SLAG <b>124</b></span><span class="lg"><i class="lys-spill"></i>SPILL <b>66</b></span><span class="lg"><i class="lys-turn"></i>TURN <b>32</b></span></div>
+      </div>
+      <div class="helt-tellere">
+        <div><b>9/12</b><span>har svart ja til Bossum</span></div>
+        <div><b>11/14</b><span>har tatt fellestesten</span></div>
+        <div><b>2</b><span>deler ikke treningen</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="baand trenger" id="trenger">
+    <div class="baand-hode"><h2>Trenger deg</h2><span class="teller">3</span><span class="kilde">Mest akutt først</span></div>
+    <div class="baand-liste">
+      <a class="sprad trenger" href="#">
+        <span class="avatar">03</span>
+        <span class="hvem"><b>Spiller 03</b><span class="fakta"><span class="kat">C</span>Junior jenter</span></span>
+        <span class="verdi"><b class="lav">58 %</b><span>av planen</span></span>
+        <span class="planstolpe"><span class="spor" role="img" aria-label="Gjennomført 58 prosent av planen"><span class="slag" data-til="58%" style="width:58%"></span></span><span class="tekst"><span>Mest SLAG</span><span><b>5,2</b> av <b>9</b> t</span></span></span>
+        <span class="grunn">Under 70 % av planen uke 40 og 41</span>
+      </a>
+      <a class="sprad trenger" href="#">
+        <span class="avatar">07</span>
+        <span class="hvem"><b>Spiller 07</b><span class="fakta"><span class="kat">D</span>Junior gutter</span></span>
+        <span class="verdi"><b class="lav">64 %</b><span>av planen</span></span>
+        <span class="planstolpe"><span class="spor" role="img" aria-label="Gjennomført 64 prosent av planen"><span class="tek" data-til="64%" style="width:64%"></span></span><span class="tekst"><span>Mest TEK</span><span><b>6,4</b> av <b>10</b> t</span></span></span>
+        <span class="grunn">Under 70 % av planen uke 40 og 41</span>
+      </a>
+      <a class="sprad trenger" href="#">
+        <span class="avatar">04</span>
+        <span class="hvem"><b>Spiller 04</b><span class="fakta"><span class="kat">C</span>Junior gutter</span></span>
+        <span class="verdi"><b>88 %</b><span>av planen</span></span>
+        <span class="planstolpe"><span class="spor" role="img" aria-label="Gjennomført 88 prosent av planen"><span class="fys" data-til="88%" style="width:88%"></span></span><span class="tekst"><span>Mest FYS</span><span><b>8,8</b> av <b>10</b> t</span></span></span>
+        <span class="grunn">Ikke møtt på fellestesten 7. oktober</span>
+      </a>
+    </div>
+    <a class="lenke" href="#">Alle 14 spillere i Spillerutvikling</a>
+  </section>
+
   <div class="to-kol">
-    <section class="kort navy neste">
-      <span class="overlinje" style="color:var(--rail-tekst)">Neste samling</span>
-      <div><div class="sted">Bossum</div><p>Høstsamling · 12 spillere</p></div>
-      <div class="linje"><strong>12</strong><span>dager igjen · 26.–28. okt</span></div>
-      <p>9 har svart ja, 2 venter, 1 kan ikke.</p>
-      <div class="knapper"><a class="knapp hvit" href="#" data-gaa="samling">Se samlingen</a></div>
-    </section>
+    <a class="bildekort navy" href="#" data-gaa="samling">
+      <img src="bilder/spill-bane.jpg" alt="Golfbane med fairway og green" width="800" height="300" loading="lazy">
+      <span class="bk-tekst">
+        <span class="kilde">Neste samling</span>
+        <span class="neste-navn">Høstsamling Bossum</span>
+        <span class="hoved"><strong>12</strong><span class="forklar">dager igjen · 26.–28. okt</span></span>
+        <span class="svar-stolpe" role="img" aria-label="9 ja, 2 venter, 1 kan ikke"><i style="width:75%"></i><i class="v" style="width:16.7%"></i><i class="n" style="width:8.3%"></i></span>
+        <span class="forklar">9 har svart ja, 2 venter, 1 kan ikke.</span>
+        <span class="knapper"><span class="knapp hvit">Se samlingen</span></span>
+      </span>
+    </a>
     <section class="kort">
       <div class="sek-topp"><span class="undertittel">Fellestest · TN-batteriet</span><span class="kilde">Testdag 7. okt</span></div>
-      <div class="hoved"><strong>11<small>/ 14</small></strong><span class="forklar">har gjennomført</span></div>
-      <div class="fremdrift" role="progressbar" aria-label="Gjennomført" aria-valuemin="0" aria-valuemax="14" aria-valuenow="11"><span data-til="78.6%" style="width:78.6%"></span></div>
+      <div class="planstolpe"><div class="hoved"><strong>11<small>/ 14</small></strong><span class="forklar">har gjennomført</span></div>
+        <span class="spor" role="img" aria-label="11 av 14 har gjennomført"><span data-til="78.6%" style="width:78.6%"></span></span></div>
       <div class="rader">
-        <div class="rad"><span><span class="navn">Emil Berg</span><br><span class="kilde">Moss GK</span></span><span class="merke vent"><i></i>Ikke møtt</span></div>
-        <div class="rad"><span><span class="navn">Ingrid Sæther</span><br><span class="kilde">Bærum GK</span></span><span class="merke vent"><i></i>Mangler Putt Speed</span></div>
-        <div class="rad"><span><span class="navn">Jonas Haug</span><br><span class="kilde">Stavanger GK</span></span><span class="merke noy"><i></i>Syk</span></div>
+        <div class="rad"><span><span class="navn">Spiller 04</span><br><span class="kilde">Moss GK</span></span><span class="status folgmed"><i></i>Ikke møtt</span></div>
+        <div class="rad"><span><span class="navn">Spiller 05</span><br><span class="kilde">Bærum GK</span></span><span class="status folgmed"><i></i>Mangler Putt Speed</span></div>
+        <div class="rad"><span><span class="navn">Spiller 06</span><br><span class="kilde">Stavanger GK</span></span><span class="status ikkedelt"><i></i>Syk</span></div>
       </div>
       <a class="lenke" href="#">Før resultater</a>
     </section>
   </div>
-  <section class="seksjon">
-    <div class="sek-topp"><h2>Gruppas trening</h2><span class="kilde">14 spillere, uke 38–41</span></div>
-    <div class="kort">
-      <div class="hoved"><strong>412<small>t</small></strong><span class="forklar">gjennomført av 468 t planlagt</span></div>
-      <div class="fordeling" aria-hidden="true"><span style="width:22%;background:var(--fys)"></span><span style="width:24%;background:var(--tek)"></span><span style="width:30%;background:var(--slag)"></span><span style="width:16%;background:var(--spill)"></span><span style="width:8%;background:var(--turn)"></span></div>
-      <div class="lg-rad"><span class="lg"><i class="fys"></i>FYS 91 t</span><span class="lg"><i class="tek"></i>TEK 99 t</span><span class="lg"><i class="slag"></i>SLAG 124 t</span><span class="lg"><i class="spill"></i>SPILL 66 t</span><span class="lg"><i class="turn"></i>TURN 32 t</span></div>
-      <p class="kilde">Bare det spillerne har delt med Team Norway. 2 spillere deler ikke treningen. Kilde: PlayerHQ, 14.10.2026.</p>
-    </div>
-  </section>
+
   <section class="seksjon">
     <div class="sek-topp"><h2>Gruppeposter</h2><span class="kilde">Siste 3</span></div>
     <div class="kort">
-      <div class="post"><span class="avatar">IH</span><div><div class="hvem"><b>Ida Hovland</b><span>Sportssjef · i går 18:40</span></div><p>Programmet for Bossum er lagt ut. Ta med regntøy og treningsdagbok. Svar på oppmøte innen fredag.</p></div></div>
-      <div class="post"><span class="avatar">TA</span><div><div class="hvem"><b>Tor Aune</b><span>Trener · 12. okt</span></div><p>Resultatene fra fellestesten 7. oktober er ført. Se egen profil i PlayerHQ.</p></div></div>
-      <div class="post"><span class="avatar">IH</span><div><div class="hvem"><b>Ida Hovland</b><span>Sportssjef · 9. okt</span></div><p>Påmeldingsfristen for Spanish International U18 er 20. oktober. To er påmeldt så langt.</p></div></div>
+      <div class="post"><span class="avatar">SS</span><div><div class="hvem"><b>Sportssjef</b><span>i går 18:40</span></div><p>Programmet for Bossum er lagt ut. Ta med regntøy og treningsdagbok. Svar på oppmøte innen fredag.</p></div></div>
+      <div class="post"><span class="avatar">T1</span><div><div class="hvem"><b>Trener 1</b><span>12. okt</span></div><p>Resultatene fra fellestesten 7. oktober er ført. Se egen profil i PlayerHQ.</p></div></div>
+      <div class="post"><span class="avatar">SS</span><div><div class="hvem"><b>Sportssjef</b><span>9. okt</span></div><p>Påmeldingsfristen for Spanish International U18 er 20. oktober. To er påmeldt så langt.</p></div></div>
     </div>
     <a class="lenke" href="#">Alle gruppeposter</a>
   </section>
+  <p class="kilde">Bare det spillerne har delt med Team Norway. Kilde: PlayerHQ og testdagen 7. oktober, hentet 14.10.2026.</p>
 </main>
 </div>
 </template>
@@ -225,11 +281,26 @@
     <h1 class="tittel">Høstsamling Bossum</h1>
     <p class="ingress">Tre dager med fellesøkter og egentid. Programmet er publisert til spillerne 13. oktober.</p>
   </header>
-  <div class="knapper" data-behold><button type="button" class="knapp pri">Endre program</button><button type="button" class="knapp sek">Send påminnelse</button></div>
-  <div class="rutenett">
-    <div class="kort"><span class="overlinje">Svar</span><div class="hoved"><strong>9<small>/ 12 ja</small></strong></div><p class="kilde">2 venter, 1 kan ikke</p></div>
-    <div class="kort"><span class="overlinje">Program</span><div class="hoved"><strong>14<small>t</small></strong></div><p class="kilde">10 t fellesøkter, 4 t egentid</p></div>
-  </div>
+  <section class="helt">
+    <div class="helt-venstre">
+      <span class="sporsmaal">Hvem kommer?</span>
+      <div class="tall"><strong>9<small>/ 12</small></strong><span>har svart ja</span></div>
+      <span class="svar-stolpe" role="img" aria-label="9 ja, 2 venter, 1 kan ikke"><i style="width:75%"></i><i class="v" style="width:16.7%"></i><i class="n" style="width:8.3%"></i></span>
+      <p>2 venter på svar, 1 kan ikke. Fristen for svar er fredag 23. oktober.</p>
+      <div class="knapper"><button type="button" class="knapp hvit">Send påminnelse til 2</button>
+        <div class="flere"><button type="button" class="knapp kontur-hvit" aria-expanded="false" aria-haspopup="true">Mer<svg class="ikon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9l7 7 7-7"/></svg></button>
+          <div class="flere-liste" hidden><button type="button">Endre program</button><button type="button">Legg inn økt</button><button type="button">Skriv gruppepost</button></div></div>
+      </div>
+    </div>
+    <div class="helt-hoyre">
+      <img class="turn-bilde" src="bilder/slag-utslag.jpg" alt="Spiller i utslag på rangen" width="800" height="300" loading="lazy">
+      <div class="helt-tellere">
+        <div><b>14 t</b><span>program</span></div>
+        <div><b>10 t</b><span>fellesøkter</span></div>
+        <div><b>4 t</b><span>egentid</span></div>
+      </div>
+    </div>
+  </section>
   <section class="seksjon">
     <div class="sek-topp"><h2>Programmet</h2></div>
     <div class="dag-blokk"><h3>Mandag 26. oktober</h3>
@@ -255,11 +326,11 @@
   <section class="seksjon">
     <div class="sek-topp"><h2>Deltakere</h2><span class="kilde">12 tatt ut</span></div>
     <div class="kort"><div class="rader">
-      <div class="rad"><span class="navn">Mathea Lund</span><span class="merke ok"><i></i>Ja</span></div>
-      <div class="rad"><span class="navn">Sander Vik</span><span class="merke ok"><i></i>Ja</span></div>
-      <div class="rad"><span class="navn">Emil Berg</span><span class="merke vent"><i></i>Venter på svar</span></div>
-      <div class="rad"><span class="navn">Ingrid Sæther</span><span class="merke vent"><i></i>Venter på svar</span></div>
-      <div class="rad"><span class="navn">Jonas Haug</span><span class="merke noy"><i></i>Kan ikke, skole</span></div>
+      <div class="rad"><span class="navn">Spiller 01</span><span class="merke ok"><i></i>Ja</span></div>
+      <div class="rad"><span class="navn">Spiller 02</span><span class="merke ok"><i></i>Ja</span></div>
+      <div class="rad"><span class="navn">Spiller 04</span><span class="merke vent"><i></i>Venter på svar</span></div>
+      <div class="rad"><span class="navn">Spiller 05</span><span class="merke vent"><i></i>Venter på svar</span></div>
+      <div class="rad"><span class="navn">Spiller 06</span><span class="merke noy"><i></i>Kan ikke, skole</span></div>
     </div><a class="lenke" href="#">Alle 12</a></div>
   </section>
   <section class="seksjon">
@@ -275,7 +346,6 @@
 <div class="app" data-aktiv="turneringer">
 <main class="innhold">
   <header data-behold>
-    <span class="overlinje">Team Norway Junior</span>
     <h1 class="tittel">Turneringer og reise</h1>
     <p class="ingress">Mesterskap og kvalifiseringsturneringer, med datoer, påmeldte og resultater.</p>
   </header>
@@ -303,18 +373,26 @@
   <header data-behold>
     <span class="overlinje">12.–14. oktober · Halmstad GK, Sverige</span>
     <h1 class="tittel">Junior Open Halmstad</h1>
-    <p class="ingress">Tre runder slagspill, par 72. Kilde: manuelt lagt inn av Tor Aune 12. okt.</p>
+    <p class="ingress">Tre runder slagspill, par 72. Kilde: manuelt lagt inn av Trener 1 12. okt.</p>
   </header>
+  <div class="bildekort side">
+    <img src="bilder/turn-tee.jpg" alt="Spiller på teestedet før utslag" width="800" height="300" loading="lazy">
+    <div class="bk-tekst">
+      <span class="kilde">Beste landslagsspiller etter runde 2</span>
+      <div class="hoved"><strong>4</strong><span class="forklar">plass · Spiller 01, 142 slag (−2)</span></div>
+      <p class="forklar">3 landslagsspillere er med. Runde 3 pågår.</p>
+    </div>
+  </div>
   <section class="seksjon">
     <div class="sek-topp"><h2>Landslagsspillere</h2><span class="kilde">Plass · brutto</span></div>
     <div class="kort">
       <div class="res">
         <div class="res-hode"><span>Plass</span><span>Spiller</span><span>R1</span><span>R2</span><span>R3</span><span>Totalt</span></div>
-        <div class="res-rad"><span class="plass">4</span><span class="navn" style="font:700 15px/1.3 var(--tekst)">Mathea Lund</span><span class="runder"><span><em>R1 </em>71</span><span><em>R2 </em>71</span><span><em>R3 </em>—</span></span><span class="tot">142<small>−2</small></span></div>
-        <div class="res-rad"><span class="plass">19</span><span class="navn" style="font:700 15px/1.3 var(--tekst)">Sander Vik</span><span class="runder"><span><em>R1 </em>74</span><span><em>R2 </em>73</span><span><em>R3 </em>—</span></span><span class="tot">147<small>+3</small></span></div>
-        <div class="res-rad"><span class="plass">—</span><span class="navn" style="font:700 15px/1.3 var(--tekst)">Ingrid Sæther</span><span class="runder"><span><em>R1 </em>76</span><span><em>R2 </em>—</span><span><em>R3 </em>—</span></span><span class="tot">76<small>+4</small></span></div>
+        <div class="res-rad"><span class="plass">4</span><span class="navn" style="font:700 15px/1.3 var(--tekst)">Spiller 01</span><span class="runder"><span><em>R1 </em>71</span><span><em>R2 </em>71</span><span><em>R3 </em>—</span></span><span class="tot">142<small>−2</small></span></div>
+        <div class="res-rad"><span class="plass">19</span><span class="navn" style="font:700 15px/1.3 var(--tekst)">Spiller 02</span><span class="runder"><span><em>R1 </em>74</span><span><em>R2 </em>73</span><span><em>R3 </em>—</span></span><span class="tot">147<small>+3</small></span></div>
+        <div class="res-rad"><span class="plass">—</span><span class="navn" style="font:700 15px/1.3 var(--tekst)">Spiller 05</span><span class="runder"><span><em>R1 </em>76</span><span><em>R2 </em>—</span><span><em>R3 </em>—</span></span><span class="tot">76<small>+4</small></span></div>
       </div>
-      <p class="kilde">Plass og score står slik de er registrert. Mangler et tall, står det en strek. Runde 2 for Ingrid er ikke ført.</p>
+      <p class="kilde">Plass og score står slik de er registrert. Mangler et tall, står det en strek. Runde 2 for Spiller 05 er ikke ført.</p>
     </div>
   </section>
   <section class="seksjon">
@@ -323,7 +401,7 @@
       <div class="reise">
         <div><span class="k">Avreise</span><span>Søndag 11. okt, 07:10 fra Gardermoen</span></div>
         <div><span class="k">Overnatting</span><span>Hotell Tylösand, 3 netter</span></div>
-        <div><span class="k">Ansvarlig</span><span>Tor Aune, trener</span></div>
+        <div><span class="k">Ansvarlig</span><span>Trener 1, trener</span></div>
         <div><span class="k">Hjemreise</span><span>Onsdag 14. okt, etter siste runde</span></div>
       </div>
     </div>
@@ -374,9 +452,9 @@
     <div class="sek-topp"><h2>I turnering nå</h2><span class="puls"><i></i>3 spillere</span></div>
     <div class="kort">
       <div class="sek-topp"><span class="undertittel">Junior Open Halmstad · runde 3</span><a class="lenke" href="#" data-gaa="turnering">Turneringen</a></div>
-      <div class="live-rad"><span class="avatar">ML</span><span><span class="navn" style="font:700 15px/1.3 var(--tekst)">Mathea Lund</span><br><span class="kilde">Starttid 08:20, hull 1</span></span><span class="verdi">4<small>etter R2 · −2</small></span></div>
-      <div class="live-rad"><span class="avatar">SV</span><span><span class="navn" style="font:700 15px/1.3 var(--tekst)">Sander Vik</span><br><span class="kilde">Starttid 09:40, hull 10</span></span><span class="verdi">19<small>etter R2 · +3</small></span></div>
-      <div class="live-rad"><span class="avatar">IS</span><span><span class="navn" style="font:700 15px/1.3 var(--tekst)">Ingrid Sæther</span><br><span class="kilde">Starttid 10:10, hull 1</span></span><span class="verdi">—<small>R2 ikke ført</small></span></div>
+      <div class="live-rad"><span class="avatar">01</span><span><span class="navn" style="font:700 15px/1.3 var(--tekst)">Spiller 01</span><br><span class="kilde">Starttid 08:20, hull 1</span></span><span class="verdi">4<small>etter R2 · −2</small></span></div>
+      <div class="live-rad"><span class="avatar">02</span><span><span class="navn" style="font:700 15px/1.3 var(--tekst)">Spiller 02</span><br><span class="kilde">Starttid 09:40, hull 10</span></span><span class="verdi">19<small>etter R2 · +3</small></span></div>
+      <div class="live-rad"><span class="avatar">05</span><span><span class="navn" style="font:700 15px/1.3 var(--tekst)">Spiller 05</span><br><span class="kilde">Starttid 10:10, hull 1</span></span><span class="verdi">—<small>R2 ikke ført</small></span></div>
     </div>
   </section>
   <section class="seksjon">
