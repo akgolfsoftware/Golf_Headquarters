@@ -207,15 +207,17 @@ body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.
 .C .side{transition:width 240ms var(--ut),box-shadow 240ms var(--ut)}
 .C.smal .side,.C.ut .side{position:absolute;left:0;top:0;bottom:0;z-index:22}
 .C.smal .hoved,.C.ut .hoved{margin-left:72px}
-.C.smal .side{width:72px;padding:18px 12px;align-items:center;cursor:pointer;overflow:hidden}
+.C.smal .side{width:72px;padding:14px 12px;gap:8px;align-items:center;cursor:pointer;overflow:hidden}
 .C.ut .side{width:264px;box-shadow:0 0 0 1px var(--sand-300),16px 0 40px rgba(0,0,0,.16)}
 .C.ut .lag{display:block;animation:fade 200ms var(--ut)}
 .C.smal .side .logo,.C.smal .feste,.C.smal .tx,.C.smal .lite,.C.smal kbd,.C.smal .neste .lang,.C.smal .coach .navn{display:none}
 .C.smal .merke{display:grid}
 .C.smal .side-topp{justify-content:center}
 .C.smal .sokefelt{width:44px;height:44px;padding:0;justify-content:center}
-.C.smal .neste{width:44px;height:44px;padding:0;place-items:center;border-radius:8px}
-.C .neste .kort-tid{display:none;font:600 12.5px/1 var(--mono)}
+.C.smal .neste{flex:none;width:48px;height:60px;padding:0;place-items:center;align-content:center;gap:0;border-radius:8px}
+.C .neste .kort-tid{display:none;text-align:center;font-family:var(--mono)}
+.C .neste .kort-tid .tt{display:block;font:600 22px/1 var(--mono);letter-spacing:-.02em}
+.C .neste .kort-tid .mm{display:block;font:500 14px/1.2 var(--mono);opacity:.9}
 .C.smal .neste .kort-tid{display:block}
 .C.smal .gruppe{width:100%;justify-items:center;gap:2px}
 .C.smal .gruppe .etk{font-size:0;padding:0;margin:2px 0 6px;width:28px;border-top:1px solid var(--sand-300)}
@@ -406,7 +408,7 @@ body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.
     return '<div class="skjerm pc C'+(state.side==='bred'?'':' '+state.side)+'"><nav class="side" aria-label="Hovedmeny"><div class="side-topp"><img class="logo" src="'+LOGO+'" alt="AK Golf HQ" width="100" height="22"><span class="merke">AK</span>'+
       '<button type="button" class="knapp-i feste" data-feste aria-label="'+(state.side==='ut'?'Fest menyen':'Skjul til bare ikoner')+'" title="'+(state.side==='ut'?'Fest menyen':'Skjul til bare ikoner')+'">'+i(state.side==='ut'?'pin':'skjul')+'</button></div>'+
       '<div class="sokefelt" title="Hopp til (⌘K)">'+i('sok')+'<span class="tx">Hopp til …</span><kbd>⌘K</kbd></div>'+
-      '<div class="neste" title="Neste økt 09:00 Øyvind Rohjan"><span class="kort-tid">09:00</span><span class="dato lang">Neste økt · om 40 min</span><b class="lang">09:00 Øyvind Rohjan</b><small class="lang">TEK · Teknikk P6.0 · Studio 1</small></div>'+
+      '<div class="neste" title="Neste økt 09:00 Øyvind Rohjan"><span class="kort-tid"><span class="tt">09</span><span class="mm">:00</span></span><span class="dato lang">Neste økt · om 40 min</span><b class="lang">09:00 Øyvind Rohjan</b><small class="lang">TEK · Teknikk P6.0 · Studio 1</small></div>'+
       C_liste()+'<div class="coach"><span class="av">AK</span><span class="navn"><b>Anders Kristiansen</b><span>Head coach</span></span></div></nav>'+
       '<div class="hoved"><div class="topp-pc">'+bjelle()+'</div><div class="rull">'+innhold()+'</div></div>'+
       '<div class="lag"></div><div class="palett" role="dialog" aria-label="Hopp til"><div class="sokefelt">'+i('sok')+'øyv</div>'+
