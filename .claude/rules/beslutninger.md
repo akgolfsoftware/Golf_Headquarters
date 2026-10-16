@@ -4,6 +4,51 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## NATTKJØRING 16.–17.10: CLAUDE GODKJENNER OG LEGGER INN SELV TIL ALLE FLATER ER I NYTT DESIGN (Anders 16.10.2026, bindende)
+
+Anders 16.10 kl. 22:45: «Alle sider i PlayerHQ, AgencyOS, Team Norway og WANG og nettsidene skal ha
+komplett nytt design som vi har jobbet med. Alt skal fungere og være fullt operativt for booking og
+opprettelse av konto.» Og: «Du må legge inn i prosjektregler at du kan gjøre alt og godkjenne uten min
+tillatelse for å gjøre prosjektet komplett i natt.» Bekreftet kl. 23:10: «Legg inn #1376 og start
+nattkjøringen etter planen.»
+
+- **Fullmakt for natten:** Claude gjør port 7 på Anders' vegne, legger inn i main uten «merge» når verify
+  og CI er grønn, avgjør åpne spørsmål med anbefalingen som alt står i utkastet eller her, og fører hvert
+  valg i planens §6 «Avgjort i natt». Grensen på tre samtidige økter er opphevet. Regelen står i
+  `CLAUDE.md` §Nattkjøring til Anders opphever den.
+- **Står fortsatt:** ingen ekte betaling, ingen e-post til ekte personer, ingen sletting av produksjonsdata,
+  ingen brytende skjemaendring, ingen domeneflytting, ingen hemmeligheter (AGENTS.md §Stående forhåndsgodkjenning).
+- **Målet:** alle sider under `/portal`, `/admin`, `/team-norway`, `/team-wang`, `/forelder`, `/auth`,
+  markedssidene og de øvrige flatene bygget etter utkastene i `docs/design-system/utkast-*/`, og kjeden
+  opprett konto → oppstart → book → betal (testmodus) → bekreftelse virker og er låst med E2E-test.
+
+**Overstyrer (midlertidig):** «Merge ALDRI til main før Anders har skrevet «merge»» i `CLAUDE.md`, og
+port 7 som Anders' egen gjennomgang, for alt som bygges i nattkjøringen.
+
+**Arbeidet dette utløser:** de ti stegene i `docs/planer/nattkjoring-komplett-design-2026-10-16.md`.
+Ferdig når morgenrapporten (planens §7) finnes, `npm run verify` er grønn på main, og lista «Avgjort i
+natt» er lagt fram for Anders. Det bare Anders kan gjøre etterpå står i planens §5: Stripe live-røyktest,
+Apple Pay, domeneflytting, og gjennomgang av «Avgjort i natt».
+
+## AGENCYOS-MENYEN BLIR VARIANT C: SØK FØRST, TRE GRUPPER OG IKONSKINNE (Anders 16.10.2026, bindende)
+
+Anders valgte variant C av tre menyforslag (`docs/design-system/utkast-agencyos/meny.html`, PR #1368): «C skal bygges». Underveis bestemte han at menyen skal kunne legges sammen til ikoner som glir ut ved trykk, at et ikon går rett til siden, og at klokkeslettet i ikonvisning skal være stort.
+
+- **PC:** sidemeny med søk øverst (⌘K), neste økt som fylt kort i aksefargen, og punktene i tre grupper: **Daglig** Cockpit · Innboks · Kalender · **Spillere** Stall · Workbench · Grupper · Tester · **Drift** Booking · Økonomi · Data Golf · Oppsett. Coachen nederst.
+- **Ikonskinne:** menyen kan legges sammen til 72 px. Trykk på et ikon går rett til siden. Trykk på merket, søk, neste økt eller tomt sted glir hele menyen ut over innholdet; valg av punkt går dit og legger den inn igjen. Klokkeslettet for neste økt står stort.
+- **Mobil:** søkefelt i topplinja; menyen åpner som hel flate med søk og de tre gruppene.
+- Økonomi vises bare for head coach. Data Golf vises bare for `kanSeDataGolf`, og først når coach-siden DG-01 finnes i AgencyOS.
+
+**Overstyrer:** seks hovedpunkter med Mer i §SKJERMENE I PLAYERHQ OG AGENCYOS ETTER GRILLINGEN RUNDE 8 (28.09) og §MER I AGENCYOS FÅR ET SJETTE PUNKT (16.10). Data Golf står i Drift, ikke i Mer.
+
+**Arbeidet dette utløser:**
+
+1. **Menylista** i `src/lib/agencyos/precision-ia.ts` blir tre grupper; `/admin/mer` fortsetter å virke. Ferdig når `precision-ia.test.ts` låser gruppene, rekkefølgen og at Økonomi bare vises for head coach.
+2. **Skallet** `src/components/precision/AgencyOSSkall.tsx` får bred meny, ikonskinne og mobilflate etter utkastet. Ferdig når et ikon-trykk går rett til siden, menyen glir ut ved trykk på merket, og 390 og 1280 px er uten sidelengs rulling.
+3. **Neste økt i menyen:** lett henting av coachens neste økt i dag; «—» når ingen finnes. Ferdig når kortet viser ekte økt eller «—», aldri demodata.
+4. **Data Golf i Drift** når DG-01 er bygget under `/admin` (pakke 10). Ferdig når punktet åpner DG-01 og ikke vises uten coach-rolle, låst med test.
+5. **Port 7:** Anders ser menyen i appen i 390 og desktop.
+
 ## STATS-RESTEN: TURNERINGER BLIR DEL AV RESULTATER, OG ØKT LOGGET I ETTERKANT TELLER BARE I TOTALEN (Anders 16.10.2026, bindende)
 
 Svar på punkt 1, 3 og 4 i utkastet til PlayerHQ pakke 13 (PR #1367). Punkt 1 og 3: «Ja». Punkt 4: «Logg i etterkant går på totalen men ikke inforhold til plan».
@@ -60,6 +105,46 @@ Anders 16.10, etter pakke 11 og 12: «Det skal være et sted i workbenchen hvor 
 5. **Lenke «Hele øvelsesbanken»** i spillerens og coachens Workbench. Coachen får samme bank-side som spilleren, i AgencyOS-skallet. Ferdig når begge lenkene åpner banken med filtrene.
 6. **PR med skjermbilder** i 390 og 1280 px og full `npm run verify`. Ikke merge før Anders skriver «merge».
 
+## PRØVEUKE FØR FØRSTE TREKK, CLAUDE SKRIVER HJELPEARTIKLENE, ANBEFALINGENE I PAKKE 14–17 OG AGENCYOS-RESTEN GJELDER (Anders 16.10.2026, bindende)
+
+Svar på «Åpent hos Anders» i `meg-resten.html`, `hjelp.html`, `utfordringer.html`, `plan-hjelpere.html` (PlayerHQ pakke 14–17, PR #1370) og `utkast-agencyos/resten.html` (AgencyOS pakke 11, #1372): «dine anbefalinger», «Hjelpeartiklene … skal du lage», «Nei, prøveuke».
+
+- **Prøveuke:** første gang en spiller velger Full, får hen én uke Full før første trekk (kort kreves, som i BUSINESS-RULES §Abonnement). Ingen «30 dagers angrerett» i skjermtekst.
+- **Claude skriver hjelpeartiklene.** Utkast: `docs/design-system/utkast-playerhq/hjelpeartikler.md` (16 artikler). «Slik bytter du coach» og «Be om videoanalyse» tas ut, fordi funksjonene ikke finnes.
+- **Anbefalingene gjelder:**
+  - Hjelp: «Send anonymt» fjernes · kontakt og tilbakemelding blir ett skjema, «Skriv til oss» · avkrysningen «Tillat at support ser profilen min» fjernes · én adresse, post@akgolf.no · ingen svartid lovet.
+  - Meg: tofaktor-reservekodene fjernes til de lagres · dokumenter sendes til Stripe-portalen (kvitteringer) og Hjelp (vilkår) · ordet er «kvittering», ikke «faktura».
+  - Utfordringer: «Opprett utfordring» er grafitt; rust bare i «Avslutt utfordringen» · coach velger deltakere fra gruppene og stallen, spiller bare fra gruppene.
+  - Plan: «Neste turnering» er Norgescup 1 (neste offisielle), og Klubbmesterskap innendørs er en økt, ikke en turnering · spilleren foreslår prioritet A/B/C, coachen kan endre · «Perioden er ferdig» vises for alle perioder · fri fysisk økt lages med hurtigknappen «Ny økt».
+  - AgencyOS: normer fra Data Golf venter til A–K-nivåtallene er vedtatt (siden sendes til AG-15 › Normer) · eksterne lesere ser bare det spilleren har delt · bare head coach inviterer coach.
+- **Uavklart:** markedsføringssiden i AgencyOS (`/admin/marketing`, innholdskalender for sosiale medier). Anders spurte hva den er; svaret er gitt, beslutningen gjenstår.
+
+**Overstyrer:** «30 dagers angrerett» i `oppgrader-flyt-wizard.tsx`, og «Klubbmesterskap innendørs» som neste turnering i `plan.html` (pakke 3, godkjent 14.10).
+
+**Arbeidet dette utløser:**
+
+1. **Hjelpeartiklene inn i appen** når pakke 15 bygges: `src/app/portal/meg/help/data.ts` får de 16 artiklene. Hver artikkel publiseres først når det den beskriver, virker (lista øverst i `hjelpeartikler.md`). Ferdig når ingen artikkel viser «ikke skrevet ferdig».
+2. **Prøveuke i teksten:** Velg Full (pakke 14) og Gratis og Full-artikkelen sier én uke. Ferdig når et søk etter «angrerett» i `src/` gir 0 treff i skjermtekst.
+3. **Plan rettes ved portering av pakke 3:** neste turnering fra `Tournament` (offisielle), ikke interne konkurranser.
+4. **Resten** bygges med pakkene, etter fila for hver pakke.
+
+## VENNER SKJULES TIL NESTE VERSJON, UTFORDRINGER SENDES BARE TIL GRUPPA (Anders 16.10.2026, bindende)
+
+Svar på punkt 3 i §DEL RUNDE FINNES VED LANSERING, stilt før pakke 16 Utfordringer ble tegnet: «Skjul venner, bare gruppa».
+
+- **`/portal/venner` og `/portal/venner/[spillerId]` skjules ved lansering.** Venner tegnes og bygges i neste versjon, med invitasjon, følging og feed.
+- **Deltakere i en utfordring velges bare blant medlemmene i gruppene spilleren selv er med i** (`GroupMember`, `endedAt: null`). En coach velger i tillegg fra stallen sin.
+- Ingen delbar lenke, som før. Bare valgte deltakere kan åpne og bli med.
+
+**Overstyrer:** «Deltakere velges fra venner og gruppa» i §UTFORDRINGER SKAL LEVE (22.09), for venner. Punkt 3 i §DEL RUNDE FINNES VED LANSERING er avklart for venner-sidene og utfordringene.
+
+**Arbeidet dette utløser:**
+
+1. **Skjul venner:** `/portal/venner` og `/portal/venner/[spillerId]` sender videre til `/portal/meg`, og ingen meny eller lenke viser dem. Ferdig når et søk etter `/portal/venner` i `src/` bare treffer videresendingen.
+2. **Deltakere bare fra gruppa:** `hentGyldigeDeltakerIder` (`src/app/portal/(legacy)/utfordringer/actions.ts`) og `PH24dNy` slutter å hente `Friendship`. Ferdig når en test låser at en venn utenfor gruppene avvises.
+3. **Tilgang til én utfordring:** `/portal/utfordringer/[id]` og `bliMed` slipper bare inn eier og valgte deltakere (i dag kan alle innloggede åpne og bli med). Ferdig når en test låser at en annen spiller avvises.
+4. **Tegning:** pakke 16, `docs/design-system/utkast-playerhq/utfordringer.html` (utkast 1, 16.10). Port 7 gjenstår.
+
 ## WANG-TRENERFLATEN FØLGER STILEN PÅ WANG.NO (Anders 16.10.2026, bindende)
 
 Anders 16.10 etter utkast 2: «WANG må litt nærmere stilen som er på www.wang.no», og etter justeringen: «Ja, WANG-stilen er riktig nå.» Gjelder trenerflaten i `/team-wang` (Trener og Sportssjef); fellessiden `/team-wang` er uendret.
@@ -82,7 +167,7 @@ Anders 16.10 etter utkast 2: «WANG må litt nærmere stilen som er på www.wang
 
 Svar på punkt 1 i `docs/design-system/datagolf-coach-datakart-og-skjermliste.md` §Åpent hos Anders: «mer meny skal ha et punkt til».
 
-- **Mer har seks punkter:** Booking · Grupper · Tester · Økonomi · Oppsett · Data Golf.
+- ~~**Mer har seks punkter:** Booking · Grupper · Tester · Økonomi · Oppsett · Data Golf.~~ Overstyrt 16.10: Data Golf står i Drift (§AGENCYOS-MENYEN BLIR VARIANT C).
 - Data Golf (DG-01 Oversikt) vises bare for dem `kanSeDataGolf` slipper inn (§DATA GOLF VISES ALDRI TIL KUNDER).
 - Inngangene fra Spiller 360 › Stats og Workbench-øvelsen «Fra Data Golf» beholdes i tillegg.
 
@@ -91,7 +176,7 @@ Svar på punkt 1 i `docs/design-system/datagolf-coach-datakart-og-skjermliste.md
 **Arbeidet dette utløser:**
 
 1. **Datakartet** sier at punktet er avgjort. Gjort i samme PR.
-2. **Mer-menyen i koden** får «Data Golf» som sjette punkt når AgencyOS pakke 10 porteres. Ferdig når punktet står i Mer,
+2. ~~**Mer-menyen i koden** får «Data Golf» som sjette punkt~~ Erstattet av punkt 4 i §AGENCYOS-MENYEN BLIR VARIANT C; når AgencyOS pakke 10 porteres. Ferdig når punktet står i Mer,
    åpner DG-01, og ikke vises for en bruker uten coach-rolle, låst med test.
 
 ## DATA GOLF VISES ALDRI TIL KUNDER, BARE TIL COACHER I AK GOLF, WANG TOPPIDRETT OG TEAM NORWAY (Anders 16.10.2026, bindende)
@@ -812,7 +897,7 @@ reglene.
 - **Hurtigknappen gjelder også PlayerHQ:** Spør Caddie · Ny økt · Registrer runde · Start økt.
 
 **AgencyOS**
-- Menyen: Cockpit · Innboks · Stall · Kalender · Workbench · Mer. Cockpit er startskjerm, med
+- ~~Menyen: Cockpit · Innboks · Stall · Kalender · Workbench · Mer.~~ Overstyrt 16.10 (§AGENCYOS-MENYEN BLIR VARIANT C). Cockpit er startskjerm, med
   dagens kalender 05–22. Hurtigknappen får også «Ny booking».
 - **Oppgaver kommer bare fra Notion** (Tasks og Prosjekter); oppgavelista i appen utgår.
 - **Live coachingøkt** med opptak, teknisk plan og sammendrag. Opptak krever samtykke fra
@@ -834,7 +919,7 @@ reglene.
 - **Workbench:** gruppeplanen er grunnmuren og arves av medlemmene; tilpasning merkes «Egen».
   «Gjenta» ved slipp. **Pyramiden velges først og styrer kategoriseringen og øvelsesbanken.**
   Coach kan lage egne øvelser.
-- **Mer** har fem punkter: Booking · Grupper · Tester · Økonomi · Oppsett (sjette punkt Data Golf fra 16.10, §MER I AGENCYOS). Økonomi leses fra
+- ~~**Mer** har fem punkter~~ Overstyrt 16.10: punktene står i gruppene Daglig · Spillere · Drift (§AGENCYOS-MENYEN BLIR VARIANT C). Økonomi leses fra
   budsjett, Tripletex-eksport og Stripe, aldri anslått. Turneringspåmeldinger bekreftes ikke.
 
 **Mulighetskartet:** A1–A8, A10–A12 og B1–B8 tegnes inn. A9 (skadevarsel på køllehastighet)
@@ -1497,7 +1582,7 @@ og ikke kan dras ut av syne.
 ## Produkt og tilgang
 
 - Nivåer FULL / TALENT / INGEN, avgjort av `resolveTilgang` i `src/lib/feature-flags.ts`. FULL: 299 kr/mnd eller 2 690 kr/år for alle spillere (ingen 199 kr juniorpris, Anders 24.09.2026). ELITE finnes ikke. Detaljer: BUSINESS-RULES §Abonnement.
-- PlayerHQ har fire faner: I dag · Plan · Stats · Meg (28.09). Coach-menyen følger prototypen fra 02.09 (Cockpit, Innboks, Stall, Kalender, Workbench + Mer).
+- PlayerHQ har fire faner: I dag · Plan · Stats · Meg (28.09). Coach-menyen er variant C med tre grupper (§AGENCYOS-MENYEN BLIR VARIANT C, 16.10).
 - Én inngang per funksjon: én adresse, gamle adresser blir redirects, ingenting fjernes.
 - Coachflaten kalles AgencyOS (`/admin`), aldri CoachHQ. Demo: spiller Øyvind Rohjan, coach Anders Kristiansen.
 - Jarvis forbereder alt og sender ingenting. Alt som forlater huset eller endrer noe for et menneske krever Anders' ja.

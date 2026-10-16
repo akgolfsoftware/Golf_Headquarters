@@ -246,3 +246,23 @@
     animation-duration: 0.01ms;
   }
 }
+
+/* ---- Trenerflaten /team-wang/coach følger wang.no (Anders 16.10.2026) ----
+   beslutninger.md §WANG-TRENERFLATEN FØLGER STILEN PÅ WANG.NO: firkantede hjørner,
+   vinrød #AE0034 som hovedknapp, bakgrunn #FCFAFA, tekst #222/#444, brødtekst i
+   Quattrocento (serif). Bare under .wg-shell (trenerskallet). Fellessiden /team-wang
+   har ingen .wg-shell og beholder tokenene over uendret. */
+.wang-tp .wg-shell {
+  --wang-vinrod: #ae0034;
+  --wang-vinrod-mork: #8a0029;
+  --bg-app: #fcfafa;
+  --text-primary: #222222;
+  --text-secondary: #444444;
+  --radius-card: 0;
+  --radius-card-sm: 0;
+  --radius-input: 0;
+  --radius-chip: 2px;
+  --radius-icon-chip: 0;
+  --grad-wang: linear-gradient(132deg, #17446f 46%, #2e857d 102%);
+  --font-body: var(--font-wang-serif), "Quattrocento", Georgia, serif;
+}

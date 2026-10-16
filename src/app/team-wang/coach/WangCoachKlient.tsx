@@ -19,6 +19,8 @@ interface WangCoachKlientProps {
   /** Området er avgjort av serveren (rolle og gyldighet er sjekket der). */
   omraade: WangOmraade;
   fane?: string;
+  /** Økta som I dag-undersidene (Oppmøte, Økta, Meld fravær) gjelder. */
+  oktId?: string;
   rolle: WangRolle;
   brukerNavn?: string;
   /** PLAYER-medlemmer i WANG-gruppa, til lenkene mot ekte data. */
@@ -30,6 +32,7 @@ interface WangCoachKlientProps {
 export function WangCoachKlient({
   omraade,
   fane,
+  oktId,
   rolle,
   brukerNavn,
   elever = [],
@@ -55,11 +58,7 @@ export function WangCoachKlient({
       }}
     >
       {omraade === 'idag' && (
-        <WangIdag
-          aktivFane={fane}
-          onFaneEndret={(nyFane) => navigerTil('idag', nyFane)}
-          data={data}
-        />
+        <WangIdag aktivFane={fane} oktId={oktId} data={data} />
       )}
 
       {omraade === 'trening' && (

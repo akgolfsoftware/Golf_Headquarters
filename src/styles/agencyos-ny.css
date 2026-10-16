@@ -4,7 +4,8 @@
  * utkast-playerhq/felles/felles.css (som AgencyOS-utkastene lenker til).
  *
  * To lag:
- *  - .agn      skallet (sidemeny på PC, topplinje med hamburgermeny på mobil, bjelle).
+ *  - .agn      skallet: menyvariant C (sidemeny med søk og grupper på PC, kan legges sammen
+ *              til ikonskinne; på mobil topplinje med søk og menyen som hel flate).
  *  - .agn-s    en skjerm i nytt design. Byggeklossene (kort, knapp, liste, teller …)
  *              har utkastets klassenavn, men gjelder bare inni .agn-s, så sider som
  *              ennå ikke er portert ikke endres.
@@ -30,52 +31,112 @@
 .agn *, .agn *::before, .agn *::after { box-sizing: border-box; }
 .agn .agn-ikon { width: 20px; height: 20px; flex: none; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-.agn-topp { display: flex; align-items: center; justify-content: space-between; gap: var(--r2); padding: 6px var(--r3); padding-top: calc(6px + env(safe-area-inset-top)); border-bottom: 1px solid var(--sand-300); background: var(--white); position: sticky; top: 0; z-index: 30; }
-.agn-topp .venstre { display: flex; align-items: center; gap: 4px; min-width: 0; }
+/* Menyvariant C (beslutninger.md §AGENCYOS-MENYEN BLIR VARIANT C). Fasit: utkast-agencyos/meny.html. */
+.agn-topp { display: flex; align-items: center; gap: 6px; padding: 8px; padding-top: calc(8px + env(safe-area-inset-top)); border-bottom: 1px solid var(--sand-300); background: var(--white); position: sticky; top: 0; z-index: 30; }
 .agn-logo { display: block; height: 20px; width: auto; }
 .agn-ikonknapp { width: 44px; height: 44px; display: grid; place-items: center; border: 0; border-radius: 8px; background: transparent; color: var(--graphite-900); cursor: pointer; position: relative; flex: none; text-decoration: none; }
-.agn-ikonknapp:focus-visible { outline: 3px solid var(--graphite-900); outline-offset: 2px; }
+.agn-ikonknapp:focus-visible, .agn-sok:focus-visible, .agn-neste:focus-visible { outline: 3px solid var(--graphite-900); outline-offset: 2px; }
 .agn-ikonknapp b { position: absolute; top: 6px; right: 5px; min-width: 18px; height: 18px; border-radius: 9px; background: var(--graphite-900); color: var(--white); font: 600 11px/18px var(--mono); text-align: center; padding: 0 4px; }
 .agn-ikonknapp b.haster { background: var(--rust); }
 @media (hover: hover) and (pointer: fine) { .agn-ikonknapp:hover { background: var(--sand-150); } }
 
-.agn-skuff { position: fixed; left: 0; right: 0; top: var(--ak-topbar-h, 57px); bottom: 0; z-index: 29; }
-.agn-skuff[hidden] { display: none; }
-.agn-skuff .bak { position: absolute; inset: 0; background: rgba(20, 20, 19, .25); border: 0; padding: 0; cursor: pointer; }
-.agn-skuff nav { position: relative; display: grid; gap: 2px; padding: var(--r3); background: var(--white); border-bottom: 1px solid var(--sand-300); box-shadow: 0 16px 32px rgba(0, 0, 0, .12); animation: agn-inn 200ms var(--ut); max-height: 100%; overflow-y: auto; }
+/* Søk: åpner det felles søket (⌘K) */
+.agn-sok { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; height: 42px; padding: 0 12px; border: 1px solid var(--sand-300); border-radius: 8px; background: var(--white); color: var(--graphite-600); font: 400 14px/1 var(--sans); cursor: pointer; text-align: left; white-space: nowrap; overflow: hidden; }
+.agn-sok .tx { overflow: hidden; text-overflow: ellipsis; }
+.agn-sok kbd { margin-left: auto; font: 500 12px/1 var(--mono); padding: 4px 6px; border: 1px solid var(--sand-300); border-radius: 4px; background: var(--sand-100); color: var(--graphite-600); }
 
-.agn-lenke { display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 0 12px; border-radius: 8px; color: var(--graphite-800); text-decoration: none; font: 500 15px/1 var(--sans); border: 0; background: transparent; cursor: pointer; width: 100%; text-align: left; }
+/* Neste økt: fylt kort i aksefargen, grafitt når aksen ikke er kjent */
+.agn-neste { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; padding: 12px; border-radius: 10px; background: var(--graphite-900); color: #fff; text-decoration: none; flex: none; }
+.agn-neste.fys { background: var(--fys-ink); } .agn-neste.tek { background: var(--tek-ink); } .agn-neste.slag { background: var(--slag); }
+.agn-neste.spill { background: var(--spill-ink); } .agn-neste.turn { background: var(--turn); }
+.agn-neste.tom { background: var(--sand-150); color: var(--graphite-900); }
+.agn-neste.laster { min-height: 76px; background: var(--sand-150); }
+.agn-neste .lang { display: grid; gap: 2px; min-width: 0; }
+.agn-neste .etk { font: 500 12px/1.3 var(--mono); letter-spacing: .06em; text-transform: uppercase; opacity: .85; }
+.agn-neste b { font: 600 15px/1.25 var(--sans); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.agn-neste small { font-size: 13px; line-height: 1.35; opacity: .92; }
+.agn-neste .kort-tid { display: none; text-align: center; }
+.agn-neste .kort-tid .tt { display: block; font: 600 22px/1 var(--mono); letter-spacing: -.02em; }
+.agn-neste .kort-tid .mm { display: block; font: 500 14px/1.2 var(--mono); opacity: .9; }
+
+/* Gruppene */
+.agn-gruppe { display: grid; gap: 1px; }
+.agn-gruppe .etk { font: 500 11.5px/1.4 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--graphite-600); padding: 0 12px 4px; }
+.agn-lenke { display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 0 12px; border-radius: 8px; color: var(--graphite-800); text-decoration: none; font: 500 15px/1.2 var(--sans); border: 0; background: transparent; cursor: pointer; width: 100%; text-align: left; position: relative; }
+.agn-lenke .agn-ikon { color: var(--graphite-600); }
+.agn-lenke .tx { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.agn-lenke .lite { margin-left: auto; font: 500 11px/1 var(--sans); color: var(--graphite-600); white-space: nowrap; }
 .agn-lenke .tall { margin-left: auto; font: 600 12px/1 var(--mono); min-width: 22px; height: 22px; border-radius: 11px; display: grid; place-items: center; padding: 0 6px; background: var(--sand-150); color: var(--graphite-900); }
 .agn-lenke .tall.haster { background: var(--rust); color: #fff; }
 .agn-lenke[aria-current="page"] { background: var(--graphite-900); color: var(--white); }
+.agn-lenke[aria-current="page"] .agn-ikon, .agn-lenke[aria-current="page"] .lite { color: var(--white); }
 .agn-lenke[aria-current="page"] .tall:not(.haster) { background: var(--white); color: var(--graphite-900); }
 .agn-lenke:focus-visible { outline: 3px solid var(--graphite-900); outline-offset: 2px; }
 @media (hover: hover) and (pointer: fine) { .agn-lenke:not([aria-current="page"]):hover { background: var(--sand-150); } }
 
 .agn-coach { display: flex; align-items: center; gap: 10px; padding: 12px; margin-top: auto; border-top: 1px solid var(--sand-300); min-width: 0; }
 .agn-coach .av { width: 36px; height: 36px; border-radius: 50%; background: var(--graphite-900); color: var(--white); display: grid; place-items: center; font: 600 13px/1 var(--sans); flex: none; }
+.agn-coach .navn { min-width: 0; }
 .agn-coach b { display: block; font: 600 14px/1.25 var(--sans); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.agn-coach span span { display: block; font-size: 12.5px; color: var(--graphite-600); }
+.agn-coach .navn span { display: block; font-size: 12.5px; color: var(--graphite-600); }
+
+/* Mobil: menyen som hel flate */
+.agn-flate { position: fixed; inset: 0; z-index: 40; background: var(--white); display: flex; flex-direction: column; animation: agn-fade 180ms var(--ut); }
+.agn-flate[hidden] { display: none; }
+.agn-flate .hd { display: flex; align-items: center; gap: 6px; padding: 8px; padding-top: calc(8px + env(safe-area-inset-top)); border-bottom: 1px solid var(--sand-300); }
+.agn-flate .hd .agn-sok { border-color: var(--graphite-900); color: var(--graphite-900); }
+.agn-flate .kropp { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; padding: 14px 12px calc(16px + env(safe-area-inset-bottom)); }
 
 .agn-skall { display: block; }
-.agn-meny { display: none; }
+.agn-meny-plass { display: none; }
 .agn-hoved { min-width: 0; }
 .agn-pc-topp { display: none; }
 .agn-main { min-width: 0; }
-/* Sider som ennå ikke er portert, får samme luft som før. */
+
 .agn-legacy { padding: 24px 16px calc(104px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 16px; min-width: 0; }
 
 @keyframes agn-inn { from { opacity: 0; transform: translateY(8px); } }
 @keyframes agn-opp { from { opacity: 0; transform: translateY(24px); } }
+@keyframes agn-fade { from { opacity: 0; } }
 
 @media (min-width: 900px) {
-  .agn-topp, .agn-skuff { display: none; }
-  .agn-skall { display: grid; grid-template-columns: 232px minmax(0, 1fr); min-height: 100dvh; background: linear-gradient(to right, var(--sand-100) 231px, var(--sand-300) 231px, var(--sand-300) 232px, var(--white) 232px); }
-  .agn-meny { display: flex; flex-direction: column; gap: 2px; padding: 22px 12px 12px; background: var(--sand-100); border-right: 1px solid var(--sand-300); position: sticky; top: 0; height: 100dvh; overflow-y: auto; }
-  .agn-meny .agn-logo { height: 22px; margin: 4px 12px 24px; }
+  .agn-topp, .agn-flate { display: none; }
+  .agn-skall { display: grid; grid-template-columns: 264px minmax(0, 1fr); min-height: 100dvh; }
+  .agn[data-meny="smal"] .agn-skall { grid-template-columns: 72px minmax(0, 1fr); }
+  .agn-meny-plass { display: block; position: relative; }
+  .agn-meny { display: flex; flex-direction: column; gap: 16px; width: 264px; padding: 18px 14px 12px; background: var(--sand-100); border-right: 1px solid var(--sand-300); position: sticky; top: 0; height: 100dvh; overflow-y: auto; z-index: 35; }
+  .agn-meny .agn-sok { flex: none; }
+  .agn-meny-topp { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+  .agn-logo-lenke { display: flex; align-items: center; min-height: 44px; padding-left: 10px; }
+  .agn-meny .agn-logo { height: 22px; }
+  .agn-merke { display: none; width: 40px; height: 40px; border-radius: 8px; background: var(--graphite-900); color: #fff; place-items: center; font: 700 13px/1 var(--sans); letter-spacing: -.02em; }
+  .agn-feste { width: 40px; height: 40px; color: var(--graphite-600); }
+  .agn-meny .agn-coach { padding: 12px 10px 0; }
+
+  /* Ikonskinna: 72 px, ikonene går rett til siden, resten av skinna åpner menyen */
+  .agn-meny.smal { width: 72px; padding: 14px 12px 12px; gap: 8px; align-items: center; cursor: pointer; overflow: hidden; }
+  .agn-meny.smal .agn-logo-lenke, .agn-meny.smal .lite, .agn-meny.smal kbd, .agn-meny.smal .agn-neste .lang, .agn-meny.smal .agn-coach .navn { display: none; }
+  .agn-meny.smal .tx { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .agn-meny.smal .agn-merke { display: grid; }
+  .agn-meny.smal .agn-meny-topp { justify-content: center; }
+  .agn-meny.smal .agn-sok { flex: none; width: 44px; height: 44px; padding: 0; justify-content: center; }
+  .agn-meny.smal .agn-neste { width: 48px; height: 60px; padding: 0; place-items: center; align-content: center; }
+  .agn-meny.smal .agn-neste .kort-tid { display: block; }
+  .agn-meny.smal .agn-gruppe { width: 100%; justify-items: center; gap: 2px; }
+  .agn-meny.smal .agn-gruppe .etk { font-size: 0; line-height: 0; padding: 0; margin: 2px 0 6px; width: 28px; border-top: 1px solid var(--sand-300); }
+  .agn-meny.smal .agn-lenke { width: 44px; padding: 0; justify-content: center; }
+  .agn-meny.smal .agn-lenke .tall { position: absolute; top: 2px; right: 0; min-width: 16px; height: 16px; font-size: 10px; padding: 0 4px; }
+  .agn-meny.smal .agn-coach { padding: 12px 0 0; justify-content: center; width: 100%; }
+
+  /* Menyen glir ut over innholdet; innholdet flytter seg ikke */
+  .agn[data-ute] .agn-meny { position: fixed; left: 0; top: 0; bottom: 0; height: auto; box-shadow: 16px 0 40px rgba(0, 0, 0, .16); animation: agn-ut 220ms var(--ut); }
+  .agn-meny-bak { position: fixed; inset: 0; z-index: 34; border: 0; padding: 0; background: rgba(20, 20, 19, .25); cursor: pointer; animation: agn-fade 180ms var(--ut); }
+
   .agn-pc-topp { display: flex; justify-content: flex-end; align-items: center; gap: 8px; padding: 12px 40px 0; }
   .agn-legacy { padding: 8px 40px 48px; }
 }
+@keyframes agn-ut { from { width: 72px; } }
+@media (prefers-reduced-motion: reduce) { .agn-meny, .agn-meny-bak, .agn-flate { animation: none !important; } }
 
 /* ---------- En skjerm i nytt design ---------- */
 .agn-s { position: relative; background: var(--white); color: var(--graphite-900); font: 400 15px/1.5 var(--sans); -webkit-font-smoothing: antialiased; font-variant-numeric: tabular-nums;

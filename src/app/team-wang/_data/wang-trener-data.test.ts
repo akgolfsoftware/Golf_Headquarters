@@ -18,9 +18,9 @@ const live: WangLiveData = {
     { id: "p2", fase: "SPESIAL", startIso: "2026-10-01", endIso: "2026-11-30", fokus: "Nærspill", ukevolMin: null, ukevolMax: null },
   ] as WangLiveData["perioder"],
   hendelser: [
-    { id: "h1", tittel: "Turnering: Høstcup", startIso: "2026-10-20", startTid: "09:00", sluttIso: "2026-10-20", kind: null, recurring: null, sted: null, beskrivelse: null },
-    { id: "h2", tittel: "Fysisk test", startIso: "2026-10-15", startTid: "14:00", sluttIso: "2026-10-15", kind: null, recurring: null, sted: "Demohallen", beskrivelse: null },
-    { id: "h3", tittel: "Samling (demo)", startIso: "2026-09-10", startTid: "09:00", sluttIso: "2026-09-11", kind: "SAMLING", recurring: null, sted: null, beskrivelse: null },
+    { id: "h1", tittel: "Turnering: Høstcup", startIso: "2026-10-20", startTid: "09:00", sluttIso: "2026-10-20", sluttTid: "17:00", kind: null, recurring: null, sted: null, beskrivelse: null },
+    { id: "h2", tittel: "Fysisk test", startIso: "2026-10-15", startTid: "14:00", sluttIso: "2026-10-15", sluttTid: "15:30", kind: null, recurring: null, sted: "Demohallen", beskrivelse: null },
+    { id: "h3", tittel: "Samling (demo)", startIso: "2026-09-10", startTid: "09:00", sluttIso: "2026-09-11", sluttTid: "15:00", kind: "SAMLING", recurring: null, sted: null, beskrivelse: null },
   ],
   fasteOkter: [{ ukedag: 1, startTid: "08:00", sluttTid: "10:00", sted: "Demo Golfklubb", tittel: "Morgentrening" }],
   skoleDager: [],
