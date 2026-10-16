@@ -4,6 +4,28 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## WORKBENCH FÅR SØK I ALLE ØVELSER, MEST BRUKT FØRST, «NY ØVELSE» MED ALLE PARAMETRE OG LENKE TIL HELE ØVELSESBANKEN (Anders 16.10.2026, bindende)
+
+Anders 16.10, etter pakke 11 og 12: «Det skal være et sted i workbenchen hvor man kan klikke seg inn og se en komplett egen side med alle øvelsene i øvelsesbanken, og filtrere på ulike ting.» Og: man skal kunne søke opp øvelsen, «som standard vises øvelsene som er gjort flest ganger», og trykke på pluss for å legge inn en egen øvelse med alle parametrene. Planen ble godkjent samme dag («ok»).
+
+- **Lenke fra Workbench til hele Øvelsesbanken** med filtrene (akse, treningsområde, miljø, press, søk). Spilleren går til `/portal/drills`; coachen får tilsvarende side i AgencyOS.
+- **Søket i Workbench leter i alle øvelser** brukeren har tilgang til, ikke bare de 60 første.
+- **Uten søkeord vises de mest brukte øvelsene først**, talt i økter i Workbench for spilleren.
+- **Pluss åpner «Ny øvelse»** med de åtte trinnene (pyramide, område, sted, måleutstyr, gjennomføring, press, mengde, mål) pluss navn, beskrivelse og video. Øvelsen lagres i Øvelsesbanken og legges samtidig i økta.
+- **Synlighet:** en spillers egen øvelse ser spilleren og coachen. En øvelse coachen lager, ser alle coachens spillere.
+- Gjelder både spillerens og coachens Workbench.
+
+**Overstyrer:** at «Egen øvelse» i Workbench bare lagres i økta (`addDrill`, `src/lib/workbench/wb-actions.ts`), og arket «Ny egen øvelse» i `docs/design-system/utkast-playerhq/ovelser.html` (bare akse, område og navn).
+
+**Arbeidet dette utløser:**
+
+1. **Utkast:** øvelsesdelen av Workbench med søk, «mest brukt», pluss-knapp med «Ny øvelse» og lenken til banken, i `docs/design-system/utkast-playerhq/`. Ferdig når Anders har sett det i 390 og 1280 px og sagt ja (port 7). Ingen kode før det.
+2. **Søk i alle øvelser:** `loadSources` (`src/lib/workbench/wb-actions.ts`) henter i dag `take: 60` sortert på navn. Søket må gå mot hele banken (serverside). Ferdig når en øvelse som ligger etter de 60 første kan søkes fram, låst med test.
+3. **Mest brukt først:** telling av `WorkbenchDrill` per `exerciseId` for spilleren (finnes ikke i koden i dag; `bruktSiste30()` i `src/lib/portal-drills/ovelser-data.ts` teller den gamle `TrainingDrillV2`). Ferdig når standardlista er sortert etter antall, låst med test.
+4. **«Ny øvelse» lagres i banken:** skjemaet (`src/components/workbench/OvelseSkjema.tsx`) oppretter en `ExerciseDefinition` (spiller: `PLAYER`/`PRIVATE` synlig for coach; coach: `COACH_PLAYERS`) og legger den i økta med `exerciseId`. Ferdig når øvelsen finnes i Øvelsesbanken etterpå.
+5. **Lenke «Hele øvelsesbanken»** i spillerens og coachens Workbench. Uavklart: coachens bank-side i AgencyOS finnes ikke som egen side ennå (`/admin/plan` har `AG14Ovelseark`); avklares i utkastet.
+6. **PR med skjermbilder** i 390 og 1280 px og full `npm run verify`. Ikke merge før Anders skriver «merge».
+
 ## WANG-TRENERFLATEN FØLGER STILEN PÅ WANG.NO (Anders 16.10.2026, bindende)
 
 Anders 16.10 etter utkast 2: «WANG må litt nærmere stilen som er på www.wang.no», og etter justeringen: «Ja, WANG-stilen er riktig nå.» Gjelder trenerflaten i `/team-wang` (Trener og Sportssjef); fellessiden `/team-wang` er uendret.
