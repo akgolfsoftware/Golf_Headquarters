@@ -12,6 +12,7 @@
  */
 import { useEffect, useState } from "react";
 import { AkseMerke, AKSE_NAVN, Meta, StatusPille } from "@/components/precision/pa";
+import { SegmentertValg } from "@/components/precision/pa-a2";
 import { Dempet, Etikett, Liste, Rad, Seksjon, Stolpe, TallFlis, Valg, Verdi } from "@/components/precision/pa-spiller360";
 import { hentTreningsHistorikkFiltrert } from "@/app/portal/analysere/actions";
 import { PERIODE_LABEL, PERIODE_VALG, type PeriodeValg } from "@/lib/portal-analyse/periode-vindu";
@@ -164,7 +165,7 @@ function Treningsfilter({ spillerId }: { spillerId: string }) {
   const maks = Math.max(1, ...(o?.perPyramide.map((p) => p.minutter) ?? [1]));
   return (
     <Seksjon k="Treningshistorikk" meta={hist?.vinduLabel ? `${hist.vinduLabel}`.toUpperCase() : "—"} gap={12}>
-      <div className="a8-faner" role="group" aria-label="Periode">{PERIODE_VALG.map((p) => <Valg key={p} valgt={periode === p} onClick={() => setPeriode(p)}>{PERIODE_LABEL[p]}</Valg>)}</div>
+      <SegmentertValg label="Periode" value={periode} onChange={setPeriode} options={PERIODE_VALG.map((p) => ({ id: p, label: PERIODE_LABEL[p] }))} />
       <div className="a8-faner" role="group" aria-label="Kilde">{([["ALLE", "Alt"], ["GOLF", "Golf"], ["FYS", "Fysisk"]] as const).map(([k, l]) => <Valg key={k} valgt={kilde === k} onClick={() => setKilde(k)}>{l}</Valg>)}</div>
       <div className="a8-faner" role="group" aria-label="Akse">{(["FYS", "TEK", "SLAG", "SPILL", "TURN"] as const).map((a) => <Valg key={a} valgt={akser.includes(a)} onClick={() => setAkser((l) => veksle(l, a))}>{a}</Valg>)}</div>
       <div className="a8-faner" role="group" aria-label="Miljø">{MILJO_GRUPPER.map((m) => <Valg key={m} valgt={miljo.includes(m)} onClick={() => setMiljo((l) => veksle(l, m))}>{MILJO_GRUPPE_LABEL[m]}</Valg>)}</div>

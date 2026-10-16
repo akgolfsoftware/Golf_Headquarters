@@ -170,7 +170,12 @@ color-scheme:dark;
 .pa-iconbtn:hover:not(:disabled){background:var(--surface-hover)}
 .pa-rail__item:hover{background:var(--surface-hover);color:var(--text-primary)}
 }
-.pa-btn__loading{font-family:var(--font-mono);font-size:var(--fs-13)}
+/* Precision 3.1.0-l: behold bredde, ikonplass og én lesbar etikett under lagring. */
+.pa-btn__labels{display:grid;min-width:0;gap:inherit}
+.pa-btn__content,.pa-btn__loading{grid-area:1/1;display:inline-flex;align-items:center;justify-content:center;gap:inherit}
+.pa-btn__loading{visibility:hidden;font:inherit}
+.pa-btn[data-loading="true"] .pa-btn__content{visibility:hidden}
+.pa-btn[data-loading="true"] .pa-btn__loading{visibility:visible}
 .pa-btn--icon-l{padding-left:14px}.pa-btn--icon-r{padding-right:14px}
 .pa-btn--lg.pa-btn--icon-l,.pa-btn--xl.pa-btn--icon-l{padding-left:18px}.pa-btn--lg.pa-btn--icon-r,.pa-btn--xl.pa-btn--icon-r{padding-right:18px}
 
