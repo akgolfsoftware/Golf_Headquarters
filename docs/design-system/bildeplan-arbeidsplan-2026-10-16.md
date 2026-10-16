@@ -24,6 +24,7 @@ Pulje 1 setter stilen. Ingen andre bilder lages før Anders har godkjent den, el
 
 Alle bilder lages i Gemini, ett og samme verktøy, så lys og farger holder seg like.
 Lim inn én bestilling om gangen i en ny samtale, slik at ett bilde ikke farger det neste.
+Legg alltid ved `tek-range.jpg` (godkjent 16.10) som stilreferanse, så alle bildene ser ut som samme fotograf tok dem.
 Gemini kan sette et lite merke i et hjørne av bildet. Det skal ikke være med i ferdig bilde:
 beskjær det bort, eller lag bildet på nytt.
 
@@ -46,7 +47,7 @@ Bestillingene står i bildeplanen §1 og brukes uendret.
 | # | Akse | Fil | Erstatter i utkastene |
 |---|---|---|---|
 | 1 | FYS Fysisk | `fys-gym.jpg` | `fys-styrke.jpg` (Unsplash, 3 steder) |
-| 2 | TEK Teknisk | `tek-range.jpg` | `tek-video.jpg` (9 steder) |
+| 2 | TEK Teknisk | `tek-range.jpg` | **Godkjent 16.10.** Byttet inn der økta er TEK; `tek-video.jpg` står igjen der bildet er et videoklipp |
 | 3 | SLAG Golfslag | `slag-tracer.jpg` | `slag-simulator.jpg` der den står for SLAG (12 steder, sjekkes ett og ett) |
 | 4 | SPILL Spill | `spill-runde.jpg` | `spill-bane.jpg` (7 steder) |
 | 5 | TURN Turnering | `turn-hull18.jpg` | `turn-tee.jpg` (5 steder) |

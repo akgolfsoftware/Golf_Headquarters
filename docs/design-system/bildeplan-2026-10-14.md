@@ -1,6 +1,6 @@
 # Bildeplan — referansebilder for økter, tester og flater
 
-Status: **plan, godkjent retning 14.10.2026 (Anders).** Ingen bilder er laget ennå.
+Status: **plan, godkjent retning 14.10.2026 (Anders).** TEK er godkjent 16.10; resten gjenstår.
 Bakgrunn: designbrevet 13.10, punkt «Bilder (åpent)». Denne planen svarer på *hva* bildene skal vise.
 *Hvem* som lager dem (bildeverktøy, egne foto eller lisens) er fortsatt Anders' valg.
 Rekkefølge, antall og ferdigkrav: [arbeidsplanen 16.10](bildeplan-arbeidsplan-2026-10-16.md).
@@ -15,6 +15,8 @@ Rekkefølge, antall og ferdigkrav: [arbeidsplanen 16.10](bildeplan-arbeidsplan-2
   dempet salviegrønt, som appens flater. Mykt, spredt lys, mye luft og ett tydelig motiv. Bildet holder seg i
   bakgrunnen; aksefargen på kortet bestemmer. Ikke mettet grønt, ikke blå himmel med gjenskinn, ikke grått og vått.
   Bildene som ligger i appen i dag er ikke stilfasit.
+- **Stilfasit er `tek-range.jpg`** (godkjent av Anders 16.10): naturlig, mykt overskyet dagslys, naturlige og litt
+  dempede farger, ryddig og eksklusivt. Legg det ved i Gemini som stilreferanse for alle nye bilder.
 - **Fotografisk, ikke illustrasjon.**
 - **Format:** lages i 3:2 (1800 × 1200). Motivet midt i bildet, så det tåler utsnitt til 4:5 (mobil) og 16:9 (topp).
 - **Filnavn:** `<akse>-<motiv>.jpg`, kebab-case, under 300 kB etter komprimering. Legges i
@@ -32,7 +34,7 @@ Rekkefølge, antall og ferdigkrav: [arbeidsplanen 16.10](bildeplan-arbeidsplan-2
 
 Bestillinger (lim inn i bildeverktøyet, én om gangen):
 
-- **FYS:** `A loaded olympic barbell with iron plates resting on a concrete gym floor, soft window light from the side, no people, calm minimal editorial sports photography, soft diffused natural light, warm muted desaturated palette of sand, stone, graphite and soft sage green, lots of negative space, one clear subject, uncluttered background, subtle film grain, no saturated colors, face not visible, no logos, no text, landscape 3:2 aspect ratio`
+- **FYS:** `Use the attached image as the style reference: same photographer, same soft natural light, same muted natural colors and clean premium sports-documentary look. Photorealistic, a dimly lit strength gym with daylight falling in from one large window, a loaded olympic barbell with iron plates resting on a rubber floor in the foreground, calm and uncluttered, shallow depth of field, no people, no logos, no readable text, landscape 3:2 aspect ratio`
 - **TEK:** `A golfer on a grass practice tee holding a slow, controlled position halfway into the backswing with the club shaft parallel to the ground, two alignment sticks laid on the grass at the feet, a smartphone on a small tripod filming from behind, a single ball, deliberate technical drill, seen from the side and slightly behind, calm minimal editorial sports photography, soft diffused natural light, warm muted desaturated palette of sand, stone, graphite and soft sage green, lots of negative space, one clear subject, uncluttered background, subtle film grain, no saturated colors, face not visible, no logos, no text, landscape 3:2 aspect ratio`
 - **SLAG:** `Elevated side view of a golfer just after impact on a fairway, a thin pale shot-tracer line in the sky following the ball toward a distant green with a flag, soft hazy morning, calm minimal editorial sports photography, soft diffused natural light, warm muted desaturated palette of sand, stone, graphite and soft sage green, lots of negative space, one clear subject, uncluttered background, subtle film grain, no saturated colors, face not visible, no logos, no text, landscape 3:2 aspect ratio`
 - **SPILL:** `A golfer crouching to read a putt on a quiet green during an ordinary round, early morning mist, birch trees in the background, seen from behind, no spectators, calm minimal editorial sports photography, soft diffused natural light, warm muted desaturated palette of sand, stone, graphite and soft sage green, lots of negative space, one clear subject, uncluttered background, subtle film grain, no saturated colors, face not visible, no logos, no text, landscape 3:2 aspect ratio`

@@ -99,6 +99,7 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | dokumentasjon | [docs/design-system/TEMA-LYS-MORK.md](<../design-system/TEMA-LYS-MORK.md>) |
 | dokumentasjon | [docs/design-system/utkast-agencyos/README.md](<../design-system/utkast-agencyos/README.md>) |
 | dokumentasjon | [docs/design-system/utkast-flater/README.md](<../design-system/utkast-flater/README.md>) |
+| dokumentasjon | [docs/design-system/utkast-playerhq/bilder/KILDER.md](<../design-system/utkast-playerhq/bilder/KILDER.md>) |
 | dokumentasjon | [docs/design-system/utkast-playerhq/README.md](<../design-system/utkast-playerhq/README.md>) |
 | dokumentasjon | [docs/design-system/utkast-tn/README.md](<../design-system/utkast-tn/README.md>) |
 | dokumentasjon | [docs/design-system/utkast-wang/README.md](<../design-system/utkast-wang/README.md>) |

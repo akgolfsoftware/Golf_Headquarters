@@ -1,7 +1,7 @@
 {
   "metode": "git ls-files -co --exclude-standard; eksisterende filer; genererte registerfiler utelatt. Kun metadata, ikke kundedata eller miljøverdier.",
   "telling": {
-    "prosjektfiler": 7350,
+    "prosjektfiler": 7352,
     "sidefiler": 549,
     "prismamodeller": 229,
     "enhetstestfiler": 724,
@@ -8029,12 +8029,12 @@
     {
       "sti": "docs/design-system/bildeplan-2026-10-14.md",
       "omrade": "dokumentasjon",
-      "byte": 7530
+      "byte": 9415
     },
     {
       "sti": "docs/design-system/bildeplan-arbeidsplan-2026-10-16.md",
       "omrade": "dokumentasjon",
-      "byte": 9418
+      "byte": 9909
     },
     {
       "sti": "docs/design-system/claude-design-d03-d05-beslutning-2026-09-13.md",
@@ -8286,6 +8286,11 @@
       "byte": 58295
     },
     {
+      "sti": "docs/design-system/utkast-playerhq/bilder/KILDER.md",
+      "omrade": "dokumentasjon",
+      "byte": 459
+    },
+    {
       "sti": "docs/design-system/utkast-playerhq/bilder/logo-ak-golf-hq.svg",
       "omrade": "dokumentasjon",
       "byte": 12179
@@ -8326,6 +8331,11 @@
       "byte": 345928
     },
     {
+      "sti": "docs/design-system/utkast-playerhq/bilder/tek-range.jpg",
+      "omrade": "dokumentasjon",
+      "byte": 268074
+    },
+    {
       "sti": "docs/design-system/utkast-playerhq/bilder/tek-video.jpg",
       "omrade": "dokumentasjon",
       "byte": 95477
@@ -8353,7 +8363,7 @@
     {
       "sti": "docs/design-system/utkast-playerhq/idag.html",
       "omrade": "dokumentasjon",
-      "byte": 51051
+      "byte": 51046
     },
     {
       "sti": "docs/design-system/utkast-playerhq/iup.html",
