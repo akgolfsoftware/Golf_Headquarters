@@ -2,6 +2,8 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { AdminRolleProvider } from "@/components/v2/rolle";
 import { AdminToaster } from "@/components/admin/admin-toaster";
 import { LokalDataEierProvider } from "@/lib/offline-queue/eier-context";
+import { startsideForDemokonto } from "@/lib/domain/demo-grupper";
+import { redirect } from "next/navigation";
 
 // TOPP-layout for /admin — kun auth-guarden, INGEN visuell chrome. page.tsx
 // (rot) er en ren redirect til /admin/agencyos og trenger ingen chrome.
@@ -15,6 +17,9 @@ export default async function AdminLayout({
   // Krever ADMIN eller COACH rolle — redirecter til /auth/login hvis ikke innlogget,
   // eller til /portal hvis innlogget med feil rolle (PLAYER/PARENT).
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
+  // Demokontoene for Team Norway og WANG har coach-rollen, men skal aldri se AgencyOS.
+  const demoStart = startsideForDemokonto(user.email);
+  if (demoStart) redirect(demoStart);
 
   // COACH får adminOnly-nav-punkter skjult i V2Shell (ren UI-skjuling —
   // hver ADMIN-side er i tillegg server-gated med egen requirePortalUser).

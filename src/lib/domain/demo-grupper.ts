@@ -41,6 +41,20 @@ export function gruppeSlugForEpost(epost: string | null | undefined, flate: Demo
   return demo === DEMO[flate] ? demo : null;
 }
 
+const STARTSIDE: Record<string, string> = {
+  [TN_DEMO_SLUG]: "/team-norway",
+  [WANG_DEMO_SLUG]: "/team-wang/coach",
+};
+
+/**
+ * Startsiden for en demokonto: trenerflaten den hører til, aldri AgencyOS.
+ * `null` for vanlige kontoer, som følger rollen som før.
+ */
+export function startsideForDemokonto(epost: string | null | undefined): string | null {
+  const demo = epost ? DEMOKONTOER[epost.trim().toLowerCase()] : undefined;
+  return demo ? STARTSIDE[demo] : null;
+}
+
 /** Team Norway-gruppa eller demoutgaven av den. */
 export function erTnGruppeSlug(slug: string | null | undefined): boolean {
   return slug === TEAM_NORWAY_SLUG || slug === TN_DEMO_SLUG;
