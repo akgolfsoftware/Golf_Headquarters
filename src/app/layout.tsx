@@ -15,6 +15,7 @@ import { trainLockVersjonForRute } from "@/lib/v2/valgt-design";
 import { TrainLockDesignSynk } from "@/components/shared/train-lock-design-synk";
 import { OfflineBanner } from "@/components/ui/OfflineBanner";
 import "./globals.css";
+import "@/styles/bevegelse.css";
 
 // Geist/Geist Mono er valgt for PlayerHQ/AgencyOS i ZIP (4), 10.09.2026.
 // Fontene forhåndslastes ikke på øvrige flater. Disse beholder sine profiler.
