@@ -43,13 +43,15 @@ function VentendeKort({
   const [pending, startTransition] = useTransition();
   return (
     <Kort style={{ borderColor: `color-mix(in srgb, ${TL.warn} 45%, ${TL.hair})` }}>
-      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8, minWidth: 0 }}>
         <Icon name="triangle-alert" size={16} style={{ color: TL.text }} />
-        <span style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 15, color: TL.text }}>{rad.navn}</span>
+        <span style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 15, color: TL.text, minWidth: 0, overflowWrap: "anywhere" }}>{rad.navn}</span>
         <StatusPill tone="warn">
-          Venter godkjenning · {rad.endringPct} % endring · {rad.årsak}
+          Venter godkjenning · {rad.endringPct} % endring
         </StatusPill>
       </div>
+      {/* Årsaken er lang fritekst: egen linje som brekker, ikke i pillen (nowrap ga sidelengs rulling i 390 px). */}
+      <p style={{ fontFamily: TL.font.sans, fontSize: 13, lineHeight: 1.5, color: TL.mute, margin: "8px 0 0", overflowWrap: "anywhere" }}>{rad.årsak}</p>
 
       <div style={{ marginTop: 12, maxWidth: 420 }}>
         {rad.nivaer.map((n, i) => (
@@ -113,22 +115,9 @@ export function AdminBenchmarksV2({
       </p>
 
       {/* B: én primær CTA */}
-      <button
-        type="button"
-        disabled={syncPending}
-        onClick={() => startSync(onSyncNow)}
-        style={{
-          all: "unset",
-          cursor: syncPending ? "wait" : "pointer",
-          opacity: syncPending ? 0.55 : 1,
-          display: "block",
-          width: "100%",
-        }}
-      >
-        <CTAPill icon="refresh-cw" full>
-          {syncPending ? "Synker …" : "Kjør synk nå"}
-        </CTAPill>
-      </button>
+      <CTAPill icon="refresh-cw" full disabled={syncPending} onClick={() => startSync(onSyncNow)}>
+        {syncPending ? "Synker …" : "Kjør synk nå"}
+      </CTAPill>
 
       {data.ventende.length === 0 && data.alle.length === 0 ? (
         <Kort>

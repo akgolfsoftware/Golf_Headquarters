@@ -6,10 +6,16 @@
 <title>WANG Tester</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Quattrocento+Sans:wght@400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Quattrocento:wght@400;700&family=Quattrocento+Sans:wght@400;700&display=swap">
 <link rel="stylesheet" href="felles/wang.css">
 <style>
   .testliste{display:grid;gap:10px}
+  /* Testuka: kort med bilde ved siden av (over på mobil), aldri tekst oppå bildet */
+  .testuke{display:grid;border:1px solid var(--n200);border-radius:var(--r-kort);overflow:hidden;background:#fff}
+  .testuke img{display:block;width:100%;height:110px;object-fit:cover}
+  .testuke-tekst{display:grid;gap:8px;padding:16px 18px 18px}
+  .testuke h2{margin:0;font:800 21px/1.25 var(--brand);color:var(--navy-dyp)}
+  @container (min-width:900px){.testuke{grid-template-columns:240px minmax(0,1fr)}.testuke img{height:100%}}
   .test{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:4px 12px;align-items:center;padding:14px 16px;border-radius:var(--r-kort-s);background:#fff;box-shadow:var(--skygge-s);border:0;text-align:left;font:inherit;cursor:pointer;width:100%}
   .test b{font:700 15px/1.3 var(--brand);color:var(--navy-dyp)}
   .test .sma{display:block;font-size:13px;color:var(--tekst-2)}
@@ -27,7 +33,7 @@
   .slagrad .nr{font:800 13px/1.2 var(--brand);color:var(--navy-dyp)}
   .slagrad .nr span{display:block;font:700 11px/1.2 var(--brand);color:var(--tekst-2)}
   .poeng{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}
-  .poeng button{min-height:44px;border-radius:12px;border:1.5px solid var(--n300);background:#fff;font:800 14px/1 var(--brand);color:var(--navy-dyp);cursor:pointer}
+  .poeng button{min-height:44px;border-radius:0;border:1.5px solid var(--n300);background:#fff;font:800 14px/1 var(--brand);color:var(--navy-dyp);cursor:pointer}
   .poeng button[aria-pressed=true]{background:var(--slag-fyll);color:var(--slag-paa);border-color:var(--slag-fyll)}
   .poeng-hjelp{display:flex;flex-wrap:wrap;gap:4px 14px;font:700 12px/1.3 var(--brand);color:var(--tekst-2)}
   .sum{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
@@ -46,7 +52,7 @@
   .ptest .sma{display:block;font-size:13px;color:var(--tekst-2)}
   .ptest svg{width:96px;height:32px;display:block}
   .ptest .v{font:800 15px/1.1 var(--brand);color:var(--navy-dyp);text-align:right;white-space:nowrap}
-  .merk{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:6px;font:700 11px/1 var(--brand)}
+  .merk{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:0;font:700 11px/1 var(--brand)}
   .merk.egen{background:var(--tint-gul);color:var(--gul-tekst)}
   .merk.kontr{background:var(--tint-mint);color:var(--navy-dyp-tekst)}
   @container (min-width:900px){
@@ -57,7 +63,7 @@
 <body>
 <div class="ytre">
   <header class="hode">
-    <p class="meta-s">WANG Toppidrett · trenerflaten · pakke 4 Tester · utkast 1 · 14.10.2026</p>
+    <p class="meta-s">WANG Toppidrett · trenerflaten · pakke 4 Tester · utkast 2 (retning B) · 16.10.2026</p>
     <h1>Tester</h1>
     <p>Ett testbatteri for AK Golf, WANG og Team Norway. Testbatteriet, kontrollkøen for egenførte resultater (WANG-37), føring på testdag (WANG-48B), resultater for én test og testprofilen til én elev. Alle navn og tall er syntetiske.</p>
   </header>
@@ -69,6 +75,14 @@
   </div>
   <div class="scene"><div id="ramme" class="ramme mob"></div></div>
   <div class="notater">
+    <section class="endringer">
+      <h2>Nytt i utkast 2</h2>
+      <ul>
+        <li><b>Ett hovedtall:</b> «4 resultater venter på kontroll» på navy helteflate, med Kontroller som eneste knapp.</li>
+        <li>Testuka er et kort med bilde, og «Start testdag» er navy. Mint er bare status.</li>
+        <li>Nivå og landslagsnivå står fortsatt som «—» til tallene er vedtatt. Ingenting er gjettet.</li>
+      </ul>
+    </section>
     <section class="endringer">
       <h2>Hva skjermene gjør</h2>
       <ul>
@@ -101,9 +115,28 @@
     </div>
     <nav class="faner" aria-label="Tester"><a href="#" class="aktiv">Testbatteriet</a><a href="#" data-gaa="ko">Til kontroll <span class="teller">4</span></a></nav>
   </section>
-  <section class="kort" style="border-left:6px solid var(--navy)">
-    <div><p class="dato">Testuke 47 · 16.–20. november</p><h2 class="undertittel" style="font-size:20px;margin:4px 0 0">Fysisk test og 8-ball</h2><p class="forklar" style="margin-top:6px">Fem fysiske tester og 8-ball for 11 elever. Planlagt i årsplanen, Grunnperiode 1.</p></div>
-    <div class="knapper"><button type="button" class="knapp mint" data-gaa="foring">Start testdag</button></div>
+  <section class="helt med-bilde inn" aria-label="Til kontroll">
+    <div class="helt-tekst">
+      <span class="helt-merke"><i></i>Egenført av elevene</span>
+      <p class="helt-hoved"><strong data-tell="4">4</strong><span>resultater venter på kontroll</span></p>
+      <p class="helt-forklar">De teller i IUP og deles med Team Norway først når du har kontrollert dem.</p>
+      <button type="button" class="knapp lys" data-gaa="ko">Kontroller</button>
+    </div>
+    <img class="helt-bilde" src="bilder/tek-video.jpg" alt="" width="480" height="230">
+  </section>
+  <div class="smaa-tall">
+    <a href="#"><strong>33<small>dager</small></strong><span>Til testuke 47</span></a>
+    <a href="#"><strong>15</strong><span>Tester i batteriet</span></a>
+    <a href="#"><strong>4<small>av 15</small></strong><span>Ikke testet i år</span></a>
+  </div>
+  <section class="testuke">
+    <img src="bilder/fys-styrke.jpg" alt="" width="200" height="140">
+    <div class="testuke-tekst">
+      <p class="undertittel">Testuke 47 · 16.–20. november</p>
+      <h2>Fysisk test og 8-ball</h2>
+      <p class="forklar">Fem fysiske tester og 8-ball for 11 elever. Planlagt i årsplanen, Grunnperiode 1.</p>
+      <div class="knapper"><button type="button" class="knapp pri" data-gaa="foring">Start testdag</button></div>
+    </div>
   </section>
   <div class="to-kol">
     <section class="seksjon">

@@ -6,10 +6,11 @@ let delt: Set<string>;
 let kandidater: { userId: string }[];
 let hendelser: string[];
 let kandidatFilter: unknown;
+let tidsgrenser: unknown[];
 const tx = { markor: "transaksjon" };
 mock.module("@/lib/prisma", { namedExports: { prisma: {
-  $transaction: async (les: (client: typeof tx) => Promise<unknown>) => {
-    hendelser.push("start");
+  $transaction: async (les: (client: typeof tx) => Promise<unknown>, valg?: unknown) => {
+    tidsgrenser.push(valg); hendelser.push("start");
     try { return await les(tx); } finally { hendelser.push("slutt"); }
   },
   trenerDelingsInvitasjon: { findMany: async (filter: unknown) => { kandidatFilter = filter; return kandidater; } },
@@ -23,10 +24,11 @@ mock.module("./navngitt", { namedExports: {
 } });
 let medNavngittProfil: typeof import("./profil-lesing").medNavngittProfil;
 let lesNavngitteProfiler: typeof import("./profil-lesing").lesNavngitteProfiler;
-test.before(async () => { ({ medNavngittProfil, lesNavngitteProfiler } = await import("./profil-lesing")); });
+let PROFIL_TRANSAKSJON: typeof import("./profil-lesing").PROFIL_TRANSAKSJON;
+test.before(async () => { ({ medNavngittProfil, lesNavngitteProfiler, PROFIL_TRANSAKSJON } = await import("./profil-lesing")); });
 test.beforeEach(() => {
   identitet = { id: "coach", epost: "syntetisk@wang.no" };
-  delt = new Set(["spiller"]); kandidater = [{ userId: "spiller" }]; hendelser = []; kandidatFilter = null;
+  delt = new Set(["spiller"]); kandidater = [{ userId: "spiller" }]; hendelser = []; kandidatFilter = null; tidsgrenser = [];
 });
 
 test("identiteten må stemme med den innloggede treneren før data eller kandidater leses", async () => {
@@ -69,4 +71,13 @@ test("godtatt invitasjon er bare en kandidat: tilbakekalte rettigheter og tomme 
 test("feil fra leseren lukker transaksjonen og returnerer aldri delvis innhold", async () => {
   await assert.rejects(medNavngittProfil("coach", "spiller", "gruppe", async () => { throw new Error("lesefeil"); }), /lesefeil/);
   assert.equal(hendelser.at(-1), "slutt");
+});
+test("hver profiltransaksjon får en eksplisitt tidsgrense over Prismas standard på 5 s", async () => {
+  kandidater = [{ userId: "spiller" }, { userId: "tom" }]; delt.add("tom");
+  await medNavngittProfil("coach", "spiller", "gruppe", async () => 1);
+  await lesNavngitteProfiler("coach", "gruppe", async (_client, id) => id);
+  assert.equal(tidsgrenser.length, 3);
+  for (const valg of tidsgrenser) assert.equal(valg, PROFIL_TRANSAKSJON);
+  assert.ok(PROFIL_TRANSAKSJON.timeout > 5_000 && PROFIL_TRANSAKSJON.maxWait > 2_000);
+  assert.ok(PROFIL_TRANSAKSJON.timeout <= 30_000, "låsen skal ikke kunne holdes vilkårlig lenge");
 });

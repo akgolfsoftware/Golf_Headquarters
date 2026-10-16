@@ -6,7 +6,7 @@
 <title>WANG Meldinger</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Quattrocento+Sans:wght@400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Quattrocento:wght@400;700&family=Quattrocento+Sans:wght@400;700&display=swap">
 <link rel="stylesheet" href="felles/wang.css">
 <style>
   .tr{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:2px 12px;align-items:center;padding:14px 16px;border:0;background:#fff;text-align:left;font:inherit;width:100%;cursor:pointer}
@@ -20,7 +20,7 @@
   .tr .ikon-avatar{display:grid;place-items:center;width:36px;height:36px;border-radius:50%}
   .innboks{padding:0;overflow:hidden;gap:0}
   .traad{display:grid;gap:12px}
-  .boble{max-width:min(85%,520px);padding:12px 14px;border-radius:20px;display:grid;gap:4px}
+  .boble{max-width:min(85%,520px);padding:12px 14px;border-radius:0;display:grid;gap:4px}
   .boble p{font-size:15px;line-height:1.5}
   .boble small{font:700 11px/1.2 var(--brand);color:var(--tekst-2)}
   .boble.inn{background:#fff;box-shadow:var(--skygge-s);border-bottom-left-radius:6px;justify-self:start}
@@ -30,7 +30,7 @@
   .info-linje{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:var(--r-felt);background:var(--tint-gul);color:var(--gul-tekst);font:700 13px/1.4 var(--brand)}
   .info-linje .ikon{color:var(--gul-tekst);width:18px;height:18px;margin-top:1px}
   .skriv{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:end;position:sticky;bottom:0;padding:12px 0 4px;background:var(--bg)}
-  .skriv textarea{min-height:48px;padding:12px 14px;border:1.5px solid var(--n300);border-radius:24px;font:400 16px/1.4 var(--body);width:100%;resize:none}
+  .skriv textarea{min-height:48px;padding:12px 14px;border:1.5px solid var(--n300);border-radius:0;font:400 16px/1.4 var(--body);width:100%;resize:none}
   .post{display:grid;gap:10px}
   .post-topp{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline}
   .post h3{margin:0;font:800 17px/1.3 var(--brand);color:var(--navy-dyp)}
@@ -45,7 +45,7 @@
   .dok + .dok{border-top:1px solid var(--linje)}
   .dok b{font:700 15px/1.3 var(--brand);color:var(--navy-dyp)}
   .dok .sma{grid-column:2;font-size:13px;color:var(--tekst-2)}
-  .dok .fil{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:var(--tint-navy);color:var(--navy);font:800 10px/1 var(--brand)}
+  .dok .fil{display:grid;place-items:center;width:40px;height:40px;border-radius:0;background:var(--tint-navy);color:var(--navy);font:800 10px/1 var(--brand)}
   @container (min-width:900px){
     .meldinger-kol{display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:24px;align-items:start}
   }
@@ -54,7 +54,7 @@
 <body>
 <div class="ytre">
   <header class="hode">
-    <p class="meta-s">WANG Toppidrett · trenerflaten · pakke 6 Meldinger · utkast 1 · 14.10.2026</p>
+    <p class="meta-s">WANG Toppidrett · trenerflaten · pakke 6 Meldinger · utkast 2 (retning B, lett hånd) · 16.10.2026</p>
     <h1>Meldinger</h1>
     <p>Innboksen, samtalen med én elev (WANG-14), gruppeposter (WANG-13), foreldremøte (WANG-15) og dokumenter (WANG-21). Alle navn og tall er syntetiske.</p>
   </header>
@@ -66,6 +66,12 @@
   </div>
   <div class="scene"><div id="ramme" class="ramme mob"></div></div>
   <div class="notater">
+    <section class="endringer">
+      <h2>Utkast 2</h2>
+      <ul>
+        <li>Ro er riktig her. Skjermene beholder oppsettet fra utkast 1 og bruker bare den nye grunnmuren: navy er eneste handlingsfarge, og store bokstaver er tatt bort fra lesekvitteringen.</li>
+      </ul>
+    </section>
     <section class="endringer">
       <h2>Hva skjermene gjør</h2>
       <ul>
@@ -147,12 +153,12 @@
       <div class="kort post">
         <div class="post-topp"><h3>Ny tid for fellessamling fredag</h3><span class="kilde">Mandag 12.10</span></div>
         <p class="forklar">Fellessamlingen flyttes til kl. 13:00 på grunn av heldagsprøve i norsk.</p>
-        <div class="lest"><div class="sek-topp"><span class="etikett">Lest</span><b class="undertittel">9 av 11</b></div><div class="stolpe"><span style="width:82%"></span></div><p class="kilde">Ikke lest: Elev 02, Elev 09. Bare du ser dette.</p></div>
+        <div class="lest"><div class="sek-topp"><span class="forklar">Lest</span><b class="undertittel">9 av 11</b></div><div class="stolpe"><span style="width:82%"></span></div><p class="kilde">Ikke lest: Elev 02, Elev 09. Bare du ser dette.</p></div>
       </div>
       <div class="kort post">
         <div class="post-topp"><h3>Testuke 47</h3><span class="kilde">Fredag 9.10</span></div>
         <p class="forklar">Fysisk test og 8-ball 16.–20. november. Timeplan kommer.</p>
-        <div class="lest"><div class="sek-topp"><span class="etikett">Lest</span><b class="undertittel">11 av 11</b></div><div class="stolpe"><span style="width:100%"></span></div></div>
+        <div class="lest"><div class="sek-topp"><span class="forklar">Lest</span><b class="undertittel">11 av 11</b></div><div class="stolpe"><span style="width:100%"></span></div></div>
       </div>
     </section>
   </div>
