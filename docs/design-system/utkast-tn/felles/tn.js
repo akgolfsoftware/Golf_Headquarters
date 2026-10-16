@@ -18,7 +18,9 @@
     meg: '<path d="M8 3h8v8H8zM4 21v-4l3-3h10l3 3v4"/>',
     mer: '<path d="M4 6h16M4 12h16M4 18h16"/>',
     bjelle: '<path d="M6 17V10a6 6 0 0 1 12 0v7l2 2H4zM10 21h4"/>',
-    pil: '<path d="M15 5l-7 7 7 7"/>'
+    pil: '<path d="M15 5l-7 7 7 7"/>',
+    hoyre: '<path d="M9 5l7 7-7 7"/>',
+    ned: '<path d="M5 9l7 7 7-7"/>'
   };
   function ikon(d) { return '<svg class="ikon" viewBox="0 0 24 24" aria-hidden="true">' + d + '</svg>'; }
   var MENY = [
@@ -46,11 +48,14 @@
     topp.innerHTML = '<img class="logo" src="' + LOGO + '" alt="Team Norway Golf" width="50" height="28"><span class="org"><b>Team Norway Golf</b><span>Prestasjon</span></span>' +
       '<button type="button" class="ikonknapp" aria-label="Varsler, 3 nye">' + ikon(IKON.bjelle) + '<b>3</b></button>';
     var meny = '<nav class="meny" aria-label="Hovedmeny"><img class="logo" src="' + LOGO + '" alt="Team Norway Golf" width="79" height="44"><span class="org"><b>Team Norway Golf</b><span>Prestasjon</span></span>';
-    MENY.forEach(function (g) {
-      meny += '<span class="gruppe">' + g[0] + '</span>';
+    /* Utkast 2: seks grupper som kan lukkes. Bare gruppa du er i står åpen. Ingen punkter er fjernet. */
+    MENY.forEach(function (g, gi) {
+      var her = g[1].some(function (p) { return p[0] === aktiv; });
+      meny += '<button type="button" class="gruppe" aria-expanded="' + her + '" aria-controls="mg-' + gi + '">' + g[0] + ikon(IKON.hoyre) + '</button><div class="gruppe-punkter" id="mg-' + gi + '"' + (her ? '' : ' hidden') + '>';
       g[1].forEach(function (p) { meny += '<a href="#"' + (p[0] === aktiv ? ' class="aktiv" aria-current="page"' : '') + '>' + p[1] + '</a>'; });
+      meny += '</div>';
     });
-    meny += '<div class="bruker"><span class="avatar">IH</span><span><b>Ida Hovland</b><span>Sportssjef</span></span></div></nav>';
+    meny += '<div class="bruker"><span class="avatar">SS</span><span><b>Sportssjef</b><span>Team Norway Junior</span></span></div></nav>';
     var s = document.createElement('div');
     s.className = 'skall';
     s.innerHTML = meny;
@@ -101,6 +106,17 @@
   }
   function velgere(app) {
     app.addEventListener('click', function (e) {
+      var g = e.target.closest('.meny button.gruppe');
+      if (g) {
+        var liste = app.querySelector('#' + g.getAttribute('aria-controls')), aapen = g.getAttribute('aria-expanded') === 'true';
+        g.setAttribute('aria-expanded', aapen ? 'false' : 'true'); liste.hidden = aapen; return;
+      }
+      var f = e.target.closest('.flere > button');
+      if (f) {
+        var fl = f.parentNode.querySelector('.flere-liste'), ap = f.getAttribute('aria-expanded') === 'true';
+        f.setAttribute('aria-expanded', ap ? 'false' : 'true'); fl.hidden = ap; return;
+      }
+      if (!e.target.closest('.flere')) app.querySelectorAll('.flere > button[aria-expanded="true"]').forEach(function (x) { x.setAttribute('aria-expanded', 'false'); x.parentNode.querySelector('.flere-liste').hidden = true; });
       var b = e.target.closest('.valg button, [data-gruppe] > button');
       if (!b) return;
       b.parentNode.querySelectorAll(':scope > button').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
