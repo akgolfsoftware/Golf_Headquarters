@@ -8,7 +8,7 @@
  * Regelen er ren og uten databaseoppslag, så den kan låses med test.
  */
 
-import { gruppeSlugForEpost, TN_DEMO_SLUG, WANG_DEMO_SLUG } from "@/lib/domain/demo-grupper";
+import { startsideForDemokonto } from "@/lib/domain/demo-grupper";
 
 const SPERREDE_SIDER = ["/admin"];
 const SPERREDE_API = ["/api/admin", "/api/coach", "/api/kommando", "/api/view-as-player", "/api/view-mode"];
@@ -24,9 +24,7 @@ export function erDemoSperretSti(path: string): boolean {
 
 /** Trenerflaten demokontoen hører til, eller `null` for vanlige kontoer. */
 export function demoFlateForEpost(epost: string | null | undefined): string | null {
-  if (gruppeSlugForEpost(epost, "TEAM_NORWAY") === TN_DEMO_SLUG) return "/team-norway";
-  if (gruppeSlugForEpost(epost, "WANG") === WANG_DEMO_SLUG) return "/team-wang/coach";
-  return null;
+  return startsideForDemokonto(epost);
 }
 
 /**

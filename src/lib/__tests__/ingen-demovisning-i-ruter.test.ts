@@ -67,7 +67,7 @@ test("ingen rute utenfor skjermkatalogen importerer en demovisning", () => {
 
 test("skjermkatalogen krever innlogging som coach eller admin", () => {
   const side = readFileSync(path.join(KATALOG, "page.tsx"), "utf8");
-  assert.match(side, /requirePortalUser\(\{\s*allow:\s*\["ADMIN",\s*"COACH"\]\s*\}\)/);
+  assert.match(side, /requirePortalUser\(\{\s*(?:tillatDemo:\s*true,\s*)?allow:\s*\["ADMIN",\s*"COACH"\]\s*\}\)/);
 });
 
 test("sider som rendrer WangCoachKlient krever innlogging som coach eller admin", () => {
@@ -81,7 +81,7 @@ test("sider som rendrer WangCoachKlient krever innlogging som coach eller admin"
   for (const fil of sider(path.join(APP_ROOT, "team-wang"))) {
     const kilde = readFileSync(fil, "utf8");
     if (!kilde.includes("WangCoachKlient")) continue;
-    if (!/requirePortalUser\(\{\s*allow:\s*\["ADMIN",\s*"COACH"\]/.test(kilde)) {
+    if (!/requirePortalUser\(\{\s*(?:tillatDemo:\s*true,\s*)?allow:\s*\["ADMIN",\s*"COACH"\]/.test(kilde)) {
       treff.push(path.relative(process.cwd(), fil));
     }
   }
