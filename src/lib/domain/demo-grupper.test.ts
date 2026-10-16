@@ -1,7 +1,14 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { erDemokonto, erTnGruppeSlug, gruppeSlugForEpost, TN_DEMO_SLUG, WANG_DEMO_SLUG } from "./demo-grupper";
+import {
+  erDemokonto,
+  erTnGruppeSlug,
+  gruppeSlugForEpost,
+  startsideForDemokonto,
+  TN_DEMO_SLUG,
+  WANG_DEMO_SLUG,
+} from "./demo-grupper";
 
 test("vanlige kontoer får de ekte gruppene", () => {
   assert.equal(gruppeSlugForEpost("trener@wang.no", "WANG"), "wang-toppidrett");
@@ -32,4 +39,11 @@ test("Team Norway-demogruppa regnes som Team Norway, WANG-demogruppa gjør ikke 
   assert.equal(erTnGruppeSlug(TN_DEMO_SLUG), true);
   assert.equal(erTnGruppeSlug(WANG_DEMO_SLUG), false);
   assert.equal(erTnGruppeSlug(null), false);
+});
+
+test("demokontoene starter på sin trenerflate, vanlige kontoer følger rollen", () => {
+  assert.equal(startsideForDemokonto("demo@golfforbundet.no"), "/team-norway");
+  assert.equal(startsideForDemokonto(" DEMO@wang.no "), "/team-wang/coach");
+  assert.equal(startsideForDemokonto("anders@akgolf.no"), null);
+  assert.equal(startsideForDemokonto(null), null);
 });

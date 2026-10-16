@@ -3,6 +3,7 @@
  *
  * Standard landingssti når ingen eksplisitt ?next= er oppgitt. Sender hver
  * rolle dit den hører hjemme i stedet for at alle havner på spiller-forsiden:
+ * - demokonto     → sin trenerflate (/team-norway eller /team-wang/coach)
  * - PARENT        → /forelder
  * - ADMIN / COACH → /admin/agencyos (AgencyOS-cockpit)
  * - ellers        → /portal
@@ -16,6 +17,7 @@ import { recordLastLogin } from "@/lib/auth/record-last-login";
 import { effectiveCapabilities } from "@/lib/auth/effective-capabilities";
 import { Capability } from "@/lib/auth/cbac";
 import { redirect } from "next/navigation";
+import { startsideForDemokonto } from "@/lib/domain/demo-grupper";
 
 export const dynamic = "force-dynamic";
 
@@ -30,6 +32,8 @@ export default async function EtterInnloggingPage() {
   // på denne stien så aktiveringsmetrikken alltid treffer.
   await recordLastLogin(user.id).catch(() => undefined);
 
+  const demoStart = startsideForDemokonto(user.email);
+  if (demoStart) redirect(demoStart);
   if (user.role === "PARENT") redirect("/forelder");
   if (user.role === "ADMIN" || user.role === "COACH") redirect("/admin/agencyos");
   // T8: ekstern leser (GUEST med view-shared-caps) hører hjemme på /innsyn —
