@@ -25,11 +25,6 @@
   .dag .gj{display:inline-flex;align-items:center;gap:4px;font:700 11px/1 var(--brand);color:var(--navy-dyp-tekst)}
   .dag .gj i{width:7px;height:7px;border-radius:50%;background:var(--mint)}
   .dag.i-dag b{color:var(--navy);text-decoration:underline;text-decoration-color:var(--mint);text-decoration-thickness:3px;text-underline-offset:5px}
-  .elevrad{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 0}
-  .elevrad + .elevrad{border-top:1px solid var(--linje)}
-  .elevrad .hvem{display:flex;align-items:center;gap:10px;flex:1 1 160px}
-  .elevrad .hvem b{font:700 15px/1.2 var(--brand);color:var(--navy-dyp)}
-  .elevrad .hvem div span{display:block;font-size:13px;color:var(--tekst-2)}
   .fargeprove{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:10px}
   .prove{border-radius:var(--r-kort-s);overflow:hidden;box-shadow:var(--skygge-s);background:#fff}
   .prove div{height:56px;display:flex;align-items:flex-end;padding:8px 10px;font:800 13px/1 var(--brand);letter-spacing:.04em}
@@ -43,7 +38,7 @@
 <body>
 <div class="ytre">
   <header class="hode">
-    <p class="meta-s">WANG Toppidrett · trenerflaten · pakke 1 grunnmur · utkast 1 · 14.10.2026</p>
+    <p class="meta-s">WANG Toppidrett · trenerflaten · pakke 1 grunnmur · utkast 2 (retning B) · 16.10.2026</p>
     <h1>Grunnmuren for trenerskjermene</h1>
     <p>Skall, meny, aksefarger, pyramide, øktkort, ukefordeling, graf, knapper og status. Bare WANGs egne farger og skrifter. Alle navn og tall er syntetiske.</p>
   </header>
@@ -61,6 +56,16 @@
         <li><b>FYS</b> navy · <b>TEK</b> teal · <b>SLAG</b> oransje · <b>SPILL</b> blå · <b>TURN</b> lilla.</li>
         <li>Det er de samme fargene som WANG-koden bruker i dag (årsplanen og IUP-samtalen). Ingen AK-farger.</li>
         <li>Status bruker andre farger enn aksene: mint er ok, gul venter, rosa haster. Da betyr oransje alltid SLAG og teal alltid TEK.</li>
+      </ul>
+    </section>
+    <section class="endringer">
+      <h2>Nytt i utkast 2</h2>
+      <ul>
+        <li><b>Helteflaten:</b> navy flate med ett stort hovedtall, kort forklaring, én hvit knapp og golfbilde ved siden av. Små tellere under.</li>
+        <li><b>Tre bånd:</b> Trenger deg · Følger planen · Ikke delt, med teller i båndhodet.</li>
+        <li><b>Elevrad:</b> statusmarkør, avatar, navn og grunn, plan-stolpe med strek ved 80 %.</li>
+        <li><b>Fylt graf:</b> arealet under linja er fylt, mållinje stiplet.</li>
+        <li><b>Én handlingsfarge:</b> navy. Mint er bare status «ok». Aksefargene og grunnmuren fra utkast 1 er uendret.</li>
       </ul>
     </section>
     <section class="endringer">
@@ -85,11 +90,41 @@
       <h1 class="tittel">Grunnmur</h1>
       <p class="ingress">Slik ser byggesteinene ut i WANG-designet. Gruppa er WANG Golf med 11 elever.</p>
     </div>
-    <div class="helt-tall">
-      <div><strong data-tell="11">11</strong><span>Elever</span></div>
-      <div><strong>2</strong><span>Økter i dag</span></div>
-      <div><strong>92 %</strong><span>Etterlevelse 4 uker</span></div>
+  </section>
+
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Helteflaten</h2><span class="kilde">Utkast 2 · én per hovedskjerm</span></div>
+    <section class="helt med-bilde inn" aria-label="Eksempel på helteflate">
+      <div class="helt-tekst">
+        <span class="helt-merke haster"><i></i>Morgentrening om 20 minutter</span>
+        <p class="helt-hoved"><strong data-tell="5">5</strong><span>saker krever deg, <span style="white-space:nowrap">2 før 07:50</span></span></p>
+        <p class="helt-forklar">Ett stort hovedtall, én kort forklaring og én knapp. Bildet står ved siden av, aldri med tekst oppå.</p>
+        <button type="button" class="knapp lys">Før oppmøte</button>
+      </div>
+      <img class="helt-bilde" src="bilder/slag-utslag.jpg" alt="" width="480" height="230">
+    </section>
+    <div class="smaa-tall">
+      <a href="#"><strong>11</strong><span>Elever</span></a>
+      <a href="#"><strong>2</strong><span>Økter i dag</span></a>
+      <a href="#"><strong>92<small>%</small></strong><span>Etterlevelse 4 uker</span></a>
     </div>
+    <p class="kilde">De andre tallene står som små tellere under helteflaten. Toppen får plass i én skjermhøyde på 390 px.</p>
+  </section>
+
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Tre bånd og elevrader</h2><span class="kilde">Utkast 2 · som Stall i AgencyOS</span></div>
+    <div class="baand kol">
+      <section class="baand-del trenger"><div class="baand-hode"><h3>Trenger deg</h3><span class="antall">1</span><p>Under 80 % av planen, eller borte fra morgentreningen.</p></div><div class="baand-liste">
+        <a class="elevrad trenger" href="#"><span class="avatar">09</span><span class="er-hvem"><b>Elev 09</b><span>VG2 · Kategori D</span><span class="er-grunn">Borte tre morgener på rad</span></span><span class="er-plan"><b>74 %</b><span class="stolpe"><span style="width:74%"></span><i class="strek" style="left:80%"></i></span></span></a>
+      </div></section>
+      <section class="baand-del folger"><div class="baand-hode"><h3>Følger planen</h3><span class="antall">1</span><p>80 % eller mer av planen.</p></div><div class="baand-liste">
+        <a class="elevrad folger" href="#"><span class="avatar">04</span><span class="er-hvem"><b>Elev 04</b><span>VG2 · Kategori D</span></span><span class="er-plan"><b>95 %</b><span class="stolpe"><span style="width:95%"></span><i class="strek" style="left:80%"></i></span></span></a>
+      </div></section>
+      <section class="baand-del ikke-delt"><div class="baand-hode"><h3>Ikke delt</h3><span class="antall">1</span><p>Bare nummer og klasse til eleven deler.</p></div><div class="baand-liste">
+        <a class="elevrad ikke-delt" href="#"><span class="avatar">06</span><span class="er-hvem"><b>Elev 06</b><span>VG2 · ikke delt</span></span><span class="er-plan"><b>—</b><span class="kilde">Lenke sendt</span></span></a>
+      </div></section>
+    </div>
+    <p class="kilde">Markøren til venstre er status: rosa trenger deg, mint følger planen, grå ikke delt. Stolpen er gjennomført mot planlagt tid siste fire uker, streken er 80 %.</p>
   </section>
 
   <section class="seksjon">
@@ -153,12 +188,12 @@
       </div>
     </section>
     <section class="seksjon">
-      <div class="sek-topp"><h2>Graf</h2><span class="kilde">Gjennomført mot planlagt</span></div>
+      <div class="sek-topp"><h2>Fylt graf</h2><span class="kilde">Utkast 2 · areal under linja</span></div>
       <div class="kort">
-        <div class="hoved"><strong>92 <small>%</small></strong><span class="trend ned"><svg class="ikon" viewBox="0 0 24 24"><path d="M7 7l10 10M17 9v8H9"/></svg>3 poeng</span></div>
-        <p class="forklar">Etterlevelse uke 38–41, snitt per elev</p>
-        <svg class="graf" viewBox="0 0 340 170" role="img" aria-label="Gjennomført tid per uke, uke 34 til 41" data-graf></svg>
-        <div class="lg-rad"><span class="lg"><i style="background:var(--navy)"></i>Gjennomført</span><span class="lg"><i style="background:var(--n400)"></i>Planlagt 9 t 30 min</span></div>
+        <div class="hoved"><strong>92 <small>%</small></strong></div>
+        <p class="forklar">Etterlevelse uke 38–41, snitt per elev. 3 prosentpoeng lavere enn uke 34–37.</p>
+        <svg class="graf" viewBox="0 0 340 180" role="img" aria-label="Gjennomført mot planlagt per uke, uke 34 til 41" data-graf></svg>
+        <div class="lg-rad"><span class="lg"><i style="background:var(--navy)"></i>Gjennomført mot plan</span><span class="lg"><i style="background:var(--n500)"></i>Mål 80 %</span></div>
         <p class="kilde">Gjennomført tid delt på planlagt tid, siste fire uker.</p>
       </div>
     </section>
@@ -170,11 +205,6 @@
       <div class="kort">
         <div class="knapper"><span class="pille ok"><i></i>Gjennomført</span><span class="pille vent"><i></i>Venter på elev</span><span class="pille haster"><i></i>Haster</span><span class="pille noy"><i></i>Ikke startet</span></div>
         <div class="knapper"><span class="kategori">Kategori D</span><span class="estimat">Estimat</span><span class="akse fys">FYS</span><span class="akse tek">TEK</span><span class="akse slag">SLAG</span><span class="akse spill">SPILL</span><span class="akse turn">TURN</span></div>
-        <div>
-          <div class="elevrad"><div class="hvem"><span class="avatar">04</span><div><b>Elev 04</b><span>VG2 · Kategori D</span></div></div><span class="pille ok"><i></i>Gjennomført</span></div>
-          <div class="elevrad"><div class="hvem"><span class="avatar">07</span><div><b>Elev 07</b><span>VG1 · Kategori E</span></div></div><span class="pille vent"><i></i>Venter på elev</span></div>
-          <div class="elevrad"><div class="hvem"><span class="avatar">09</span><div><b>Elev 09</b><span>VG3 · Kategori C</span></div></div><span class="pille haster"><i></i>Fravær 3 dager</span></div>
-        </div>
       </div>
     </section>
     <section class="seksjon">
@@ -182,9 +212,9 @@
       <div class="kort">
         <div class="knapp-rad">
           <div><button type="button" class="knapp pri">Lagre økt</button><button type="button" class="knapp sek">Avbryt</button></div>
-          <div><button type="button" class="knapp mint">Start testdag</button><button type="button" class="knapp flat">Se alle</button></div>
+          <div><button type="button" class="knapp flat">Se alle</button><span class="kilde">Flat knapp for det som er nest viktig.</span></div>
           <div><button type="button" class="knapp fare">Slett økt</button><button type="button" class="knapp" disabled>Ikke tilgjengelig</button></div>
-          <p class="forklar">Navy er vanlig handling. Mint er det viktigste valget på flaten, høyst ett. Rosa bare når noe slettes eller avsluttes.</p>
+          <p class="forklar">Navy er eneste handlingsfarge (utkast 2). På helteflaten er knappen hvit med navy tekst. Mint er bare status «ok». Rosa bare når noe slettes eller avsluttes.</p>
         </div>
         <div class="valg" role="group" aria-label="Visning"><button type="button" aria-pressed="true">Uke</button><button type="button" aria-pressed="false">Måned</button><button type="button" aria-pressed="false">År</button></div>
         <div class="felt"><label for="g-navn">Navn på økta</label><input id="g-navn" value="Innspill 50–100 m"><span class="hjelp">Vises for elevene i PlayerHQ.</span></div>
@@ -261,17 +291,7 @@
     }).join('');
     app.querySelector('[data-lg]').innerHTML = AKSER.map(function (x) { return '<span class="lg"><i class="bg-' + x.k + '"></i>' + x.a + '</span>'; }).join('');
 
-    var gr = app.querySelector('[data-graf]'), X = function (i) { return 34 + i * 40; }, Y = function (m) { return 140 - (m - 420) / 180 * 120; };
-    [420, 480, 540, 600].forEach(function (m) {
-      gr.appendChild(el('line', { x1: 30, x2: 330, y1: Y(m), y2: Y(m), stroke: 'var(--n200)', 'stroke-width': 1 }));
-      gr.appendChild(el('text', { x: 0, y: Y(m) + 3, class: 'gt' }, (m / 60) + ' t'));
-    });
-    gr.appendChild(el('line', { x1: 30, x2: 330, y1: Y(PLAN), y2: Y(PLAN), stroke: 'var(--n400)', 'stroke-width': 2, 'stroke-dasharray': '5 5' }));
-    gr.appendChild(el('path', { class: 'tegn', d: GJ.map(function (m, i) { return (i ? 'L' : 'M') + X(i) + ' ' + Y(m).toFixed(1); }).join(' '), fill: 'none', stroke: 'var(--navy)', 'stroke-width': 3, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }));
-    GJ.forEach(function (m, i) {
-      gr.appendChild(el('circle', { cx: X(i), cy: Y(m), r: i >= 4 ? 5 : 4, fill: i >= 4 ? 'var(--mint)' : '#fff', stroke: 'var(--navy)', 'stroke-width': 2 }));
-      gr.appendChild(el('text', { x: X(i), y: 162, 'text-anchor': 'middle', class: 'gt' }, 'U' + UKER[i]));
-    });
+    WANGUtkast.fyltGraf(app.querySelector('[data-graf]'), { verdier: GJ.map(function (m) { return Math.round(m / PLAN * 100); }), etiketter: UKER.map(function (u) { return 'U' + u; }), min: 70, maks: 100, linjer: [70, 80, 90, 100], mal: 80, malTekst: 'Mål 80 %', enhet: ' %', marker: 4 });
   }
 
   WANGUtkast.start({
