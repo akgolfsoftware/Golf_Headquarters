@@ -2,15 +2,15 @@
 name: ak-prompt-master
 description: Lag en presis, kopierbar prompt når Anders ber om en prompt eller ønsker å forbedre en bestilling. Bruk prompt-engineer som felles arbeidsmåte og ak-hq-design ved design av AK Golf HQ.
 metadata:
-  version: "5"
-  reviewed: "2026-09-13"
+  version: "6"
+  reviewed: "2026-10-15"
 ---
 
 # AK Prompt Master
 
 Dette er den korte inngangen til [prompt-engineer](../prompt-engineer/SKILL.md), som eier promptarbeidsmåten. Ikke vedlikehold parallelle modelltabeller her.
 
-1. Les den faktiske bestillingen og relevant tilgjengelig underlag. I AK Golf HQ gjelder brukerens siste beskjed foran historiske designlåser. Ved produktdesign: bruk [ak-hq-design](../ak-hq-design/SKILL.md) og den aktive retningen [Atletisk intelligens](../ak-hq-design/references/atletisk-intelligens.md).
+1. Les den faktiske bestillingen og relevant tilgjengelig underlag. Ved produktdesign i AK Golf HQ: bruk [ak-hq-design](../ak-hq-design/SKILL.md). Designsystemet er Claude Design «AK Golf Precision Athletics» (`7d7c2994`), valgt 26.09.2026 og låst (`docs/design-system/design-autoritet.md`); Team Norway har «Team Norway App». Prompten skal videreføre det valgte systemet, ikke åpne for en ny retning.
 2. Lever en kort anbefaling av arbeidsmåte og deretter én komplett kopierbar prompt, normalt XML med oppgave, kontekst, kilder, krav, leveranse og kontrollerbare ferdigkriterier. Lange prompter kan også leveres som lokal tekstfil.
 3. Behold brukerens valgte miljø/modell. Ikke oppgi modellnavn, tilgjengelighet, pris, kvote eller effort-nivå fra hukommelsen. Dersom et nytt valg er nødvendig: verifiser mot gjeldende verktøy eller offisiell dokumentasjon. Ukjent pris oppgis som ukjent; ingen konstruert kostnadsklasse.
 4. Bruk eksisterende autorisasjon. Ikke legg inn nye godkjenningsstopp for vanlig designarbeid, kode, dokumenter eller reversible rettinger som allerede er bestilt. Eksterne meldinger, produksjonsendringer og andre handlinger følger sesjonens faktiske autorisasjon.
@@ -26,6 +26,6 @@ Dette er den korte inngangen til [prompt-engineer](../prompt-engineer/SKILL.md),
 - For AK Golf HQ: kryssjekk funksjonsfamilier, detaljerte funksjonskort, reiser og ruter hver for seg. Bruk `FAM:`, `KORT:` og `REISE:` når ID-er kan kollidere. Én klikkbar familierepresentant beviser ikke et ferdig funksjonskort.
 - Tokenarbeid skal følge [videreføring og tokenkontroll](../ak-hq-design/references/videreforing-og-tokenkontroll.md): les faktiske navn før bruk, kontroller koblingen per aktiv fil og mål de faktiske komponentene. Riktig farge alene beviser ikke korrekt kobling.
 
-Når Anders starter blankt i Claude Design, skal prompten be om både et nytt Design System v0.1 og representative skjermer som beviser systemet. Ikke send mottakeren tilbake til eksisterende implementerte designverdier som visuell fasit.
+Starter Anders et helt nytt designprosjekt (utenfor AK Golf HQ og Team Norway), skal prompten be om både et designsystem og representative skjermer som beviser det. For AK Golf HQ gjelder ikke dette: der bygger prompten videre på Precision Athletics.
 
 Ingen personopplysninger eller hemmeligheter i sky-prompts. Bruk syntetiske eksempler og kontroller vedlegg før eksport.
