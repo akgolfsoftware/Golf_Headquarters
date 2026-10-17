@@ -1,5 +1,6 @@
 /**
- * Jarvis / Caddie — AG-19 i Precision Athletics (/admin/jarvis).
+ * Jarvis — AG-19 i nytt design (/admin/jarvis, utkast-agencyos/jarvis.html).
+ * Samtalen øverst, agentkjøringene og skillene under. Eldre fane-adresser (?fane=) viser samme side.
  *
  * Én samlet adresse for Caddie & Jarvis AI-hub:
  * 1. Agentkø med kjøringer, steg, godkjenning og feilhåndtering
@@ -13,26 +14,21 @@
 import { requireCapability } from "@/lib/auth/requireCapability";
 import { Capability } from "@/lib/auth/cbac";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
-import {
-  AG19CaddieHub,
-  type AG19Data,
-} from "@/components/admin/precision/AG19CaddieHub";
+import type { AG19Data } from "@/components/admin/precision/AG19CaddieHub";
+import { AG19Jarvis } from "@/components/admin/precision/AG19Jarvis";
+import { getOrCreateActiveConversation } from "@/lib/caddie/conversation";
 import { prisma } from "@/lib/prisma";
 import { AGENTICOS_SKILLS } from "@/lib/agencyos/agenticos-ia";
 import { formaterVarighet } from "@/lib/trackman/okt-oppsummering";
-import { velgJarvisFane } from "@/lib/admin/jarvis/faner";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Caddie · Jarvis · AgencyOS" };
 
-export default async function JarvisPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ fane?: string }>;
-}) {
+export default async function JarvisPage() {
   const user = await requireCapability(Capability.USE_AGENTS);
-  const { fane } = await searchParams;
-  const aktiv = velgJarvisFane(fane);
+  // Samtalen (AG-19) bruker /api/caddie/*, som bare head coach (ADMIN) slipper inn.
+  // Den aktive samtalen gir forslagene et sted å bli lagret som utkast.
+  const samtale = user.role === "ADMIN" ? await getOrCreateActiveConversation(user.id).catch(() => null) : null;
 
   const tid = (d: Date) =>
     d.toLocaleString("nb-NO", {
@@ -67,7 +63,7 @@ export default async function JarvisPage({
 
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
-      <AG19CaddieHub data={data} startFane={aktiv} />
+      <AG19Jarvis conversationId={samtale?.id ?? null} data={data} />
     </AgencyOSSkall>
   );
 }
