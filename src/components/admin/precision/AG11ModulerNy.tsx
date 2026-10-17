@@ -11,7 +11,7 @@
  * velg dag), opprett og publiser turneringsplan. Turneringsplanen redigeres i
  * WorkbenchTurneringsplanArk som før.
  *
- * Avvik fra utkastet, fordi appen ikke har det:
+ * Avvik:
  *   - «Trekk tilbake» fysisk plan og «Publiser til Øyvind» per turnering finnes
  *     ikke som handling; bare publiser. Trekk tilbake-dialogen er derfor utelatt.
  *   - Deload- og testuke er ikke merket på ukene i basen; ukevolumet vises likt.

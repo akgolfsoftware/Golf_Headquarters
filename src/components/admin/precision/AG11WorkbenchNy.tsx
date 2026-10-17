@@ -13,7 +13,7 @@
  * coachnotat (coachLagreNotat), dupliser uke (coachDuplicateWeek) og dupliser
  * økt (coachDuplicateSession). Lenke til hele Øvelsesbanken (/admin/ovelser).
  *
- * Avvik fra utkastet:
+ * Avvik:
  *   - «Sist brukt» finnes ikke: appen lagrer ikke hvilke spillere coachen
  *     åpnet sist. Lista er utelatt.
  *   - Gjenta: appen gjentar bare «hver uke» i N uker (serie). «Annenhver uke»,

@@ -12,7 +12,7 @@
  * velgeren mellom grupper. Nytt: periodene legges inn, endres og slettes i
  * samme skjema som spillerens (PeriodeArk).
  *
- * Avvik fra utkastet:
+ * Avvik:
  *   - Kurven «timer per uke per akse» er utelatt: gruppa har ingen ukeplan,
  *     bare perioder med timer per akse, så kurven ville bare gjentatt periodene.
  *   - «Gjennomført så langt» for gruppa finnes ikke som tall; vises ikke.

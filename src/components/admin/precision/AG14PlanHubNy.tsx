@@ -11,7 +11,7 @@
  * mal-detalj, redigering, ny mal og utrulling er med. «Hele øvelsesbanken»
  * fører til /admin/ovelser.
  *
- * Avvik fra utkastet:
+ * Avvik:
  *   - «Egen øvelse» er et ark med de åtte trinnene, ikke et innfelt skjema:
  *     skjemaet med AK-formel, områder per pyramide og mengde finnes alt i
  *     AG14Ovelseark og lagrer det samme.

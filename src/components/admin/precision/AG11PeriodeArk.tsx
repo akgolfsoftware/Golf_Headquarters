@@ -8,6 +8,10 @@
  * AG-11-GRUPPE-AR, og PH-11-PERSKJEMA for feltene (samme PeriodeInput).
  * Periodenavn etter beslutninger.md §PERIODENE HETER … (28.09).
  * Rust bare på «Slett periode», i dialogen.
+ *
+ * Avvik:
+ *   - Utkastet viser ikke periodeskjemaet; feltene følger PH-11-PERSKJEMA (samme PeriodeInput).
+ *   - Treningssamling, Heldagssamling og Testuke er med som typer, siden appen lagrer dem som perioder.
  */
 import { useState, useTransition } from "react";
 import { X } from "lucide-react";

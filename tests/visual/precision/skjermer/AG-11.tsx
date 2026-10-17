@@ -16,11 +16,12 @@ export const PERIODER: YearPeriodBand[] = [
 ];
 const NOTATER = [{ id: "n1", content: "Turnering lørdag. Hold torsdag lett, ingen FYS etter onsdag.", createdAt: "2026-09-27T18:00:00Z" }];
 
-export const Vis = ({ tom = false, startNiva = "uke" as const }: { tom?: boolean; startNiva?: "uke" | "periode" | "mal" }) => (
+/** `niva`, `side` og `valgtOktId` beholdes for prøvene AG-11-OKT, -MAL og -FYS, som viser nivåene i gammel inndeling. */
+export const Vis = ({ tom = false, startNiva, niva }: { tom?: boolean; startNiva?: "uke" | "periode" | "mal"; niva?: string; side?: string; valgtOktId?: string }) => (
   <AdminRolleProvider erAdmin>
     <AgencyOSSkall navn="Test Coach">
       <AG11WorkbenchNy playerId="p1" spillerNavn={SPILLER} uke={uke(tom)} kilder={tom ? [] : KILDER} roster={ROSTER} grupper={GRUPPER}
-        goals={tom ? [] : MAL} fys={tom ? TOM_FYS : FYS} perioder={tom ? [] : PERIODER} notater={tom ? [] : NOTATER} startNiva={startNiva} />
+        goals={tom ? [] : MAL} fys={tom ? TOM_FYS : FYS} perioder={tom ? [] : PERIODER} notater={tom ? [] : NOTATER} startNiva={startNiva ?? (niva === "mal" ? "mal" : "uke")} />
     </AgencyOSSkall>
   </AdminRolleProvider>
 );
