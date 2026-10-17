@@ -1,9 +1,9 @@
-/** Prøvefil for AG-12 Øktark etter live. Oppdiktede navn og tall, ingen ekte spillere. */
-import { CircleAlert, RotateCw } from "lucide-react";
+/** Prøvefil for AG-12 Øktark etter live i nytt design. Oppdiktede navn og tall, ingen ekte spillere. */
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { AdminRolleProvider } from "@/components/v2/rolle";
-import { FeilTilstand, Knapp, LasterTilstand } from "@/components/precision/pa";
-import { AG12Oktark, type OktarkData } from "@/components/admin/precision/AG12Oktark";
+import { Feil, Laster } from "@/components/admin/agencyos-ny/ny";
+import type { OktarkData } from "@/components/admin/precision/AG12Oktark";
+import { AG12OktarkNy } from "@/components/admin/precision/AG12OktarkNy";
 
 export const sti = "/admin/gjennomfore/okter/b1";
 
@@ -32,10 +32,9 @@ const Skall = ({ children }: { children: React.ReactNode }) => (
 );
 
 export const tilstander = {
-  data: <Skall><AG12Oktark data={data} /></Skall>,
-  aktiv: <Skall><AG12Oktark data={{ ...data, status: "AKTIV", okt: { ...data.okt!, opptak: null, coachBrief: "", coachRating: null } }} /></Skall>,
-  tom: <Skall><AG12Oktark data={tom} /></Skall>,
-  laster: <Skall><div className="pa-side"><LasterTilstand text="Henter øktarket …" /></div></Skall>,
-  feil: <Skall><div className="pa-side"><FeilTilstand icon={CircleAlert} title="Øktarket kunne ikke hentes" text="Ingenting i økta er endret. Notater og opptak ligger lagret på økta. Prøv igjen."
-    retry={<Knapp variant="secondary" icon={RotateCw} iconName="rotate-cw">Prøv igjen</Knapp>} /></div></Skall>,
+  data: <Skall><AG12OktarkNy data={data} /></Skall>,
+  aktiv: <Skall><AG12OktarkNy data={{ ...data, status: "AKTIV", okt: { ...data.okt!, opptak: null, coachBrief: "", coachRating: null } }} /></Skall>,
+  tom: <Skall><AG12OktarkNy data={tom} /></Skall>,
+  laster: <Skall><div className="agn-s"><Laster tekst="Henter øktarket …" hoyder={[120, 200, 200]} /></div></Skall>,
+  feil: <Skall><div className="agn-s"><Feil tittel="Øktarket kunne ikke hentes" tekst="Ingenting i økta er endret. Opptak ligger lagret på økta. Prøv igjen." kode="FEIL · ØKTARK" onProv={() => {}} /></div></Skall>,
 };
