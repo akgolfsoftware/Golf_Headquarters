@@ -1,59 +1,56 @@
+// PlayerHQ Turneringer — Precision Athletics, pakke 17 (utkast plan-hjelpere.html, 16.10.2026).
 /**
- * PlayerHQ · Turneringer (/portal/tren/turneringer) — Paper-port W1 (fase2).
- * Fasit: designsystem/paper/fase2/playerhq/playerhq-turneringer.html.
- * Planen din + katalogen · brutto score. Påmelding skjer ALDRI fra lista —
- * dobbel bekreftelse bor på detaljsiden (spilleransvar).
+ * Neste offisielle turnering, spillerens turneringer i planen og kalenderen fra GolfBox.
+ * Påmelding skjer aldri fra lista; den bor på siden for én turnering (spilleransvar).
  */
-
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
-import { TL } from "@/lib/v2/train-lock";
-
-import {
-  loadPlanleggerKatalog,
-  loadMinTurneringsplan,
-} from "@/lib/portal-turnering/planlegger-data";
-import { TurneringPlanleggerV2 } from "@/components/portal/v2/TurneringPlanleggerV2";
+import { getUnreadNotifications } from "@/app/portal/actions";
+import { loadMinTurneringsplan, loadPlanleggerKatalog, type PlanleggerTurnering } from "@/lib/portal-turnering/planlegger-data";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { PHTurneringer, type PHTurneringRad } from "@/components/portal/precision/PHTurneringer";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Turneringer · PlayerHQ" };
+
+const OSLO = "Europe/Oslo";
+const DAG = new Intl.DateTimeFormat("nb-NO", { timeZone: OSLO, day: "numeric" });
+const MND = new Intl.DateTimeFormat("nb-NO", { timeZone: OSLO, month: "short" });
+const LANG = new Intl.DateTimeFormat("nb-NO", { timeZone: OSLO, day: "numeric", month: "long", year: "numeric" });
+const UKE = 7 * 24 * 60 * 60 * 1000;
+
+function tilRad(t: PlanleggerTurnering): PHTurneringRad {
+  return {
+    id: t.id, navn: t.name, dag: DAG.format(t.startDate).replace(".", ""), mnd: MND.format(t.startDate).replace(".", ""),
+    dato: t.datoLabel, sted: t.venue, tour: t.tour, frist: t.entryClosesLabel, fristHaster: t.entryClosesUrgent,
+    tier: t.entry?.planTier ?? null, status: t.entry?.statusLabel ?? null,
+  };
+}
 
 export default async function TurneringerPage() {
   const user = await requirePortalUser();
   if (user.role === "GUEST") redirect("/admin/kalender");
   if (user.role === "PARENT") redirect("/forelder");
 
-  const [katalog, minPlan] = await Promise.all([
+  const [katalog, minPlan, uleste] = await Promise.all([
     loadPlanleggerKatalog(user.id),
     loadMinTurneringsplan(user.id),
+    getUnreadNotifications(user.id, 1),
   ]);
+  const naa = new Date();
+  const neste = katalog.find((t) => t.startDate.getTime() >= naa.getTime()) ?? null;
 
   return (
-    <V2Shell
-      bredde="kolonne"
-      aktiv="plan"
-      nav={PLAYERHQ_NAV}
-      navn={user.name}
-      avatarUrl={user.avatarUrl}
-    >
-      <TilbakeLenke href="/portal/tren">Tren</TilbakeLenke>
-      <div style={{ maxWidth: 720, margin: "0 auto", width: "100%", display: "flex", flexDirection: "column", gap: 16 }}>
-        {/* Topp — fasit: Turneringer / Planen din + katalogen · brutto score */}
-        <div style={{ minWidth: 0 }}>
-          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>
-            Turneringer
-          </h1>
-          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
-            Planen din + katalogen · brutto score
-          </span>
-        </div>
-        <TurneringPlanleggerV2
-          katalog={katalog}
-          minPlan={minPlan}
-          spillerNavn={user.name}
-        />
-      </div>
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste.count}>
+      <PHTurneringer data={{
+        neste: neste ? {
+          id: neste.id, navn: neste.name, sted: neste.venue, dato: LANG.format(neste.startDate),
+          uker: Math.max(0, Math.round((neste.startDate.getTime() - naa.getTime()) / UKE)),
+          frist: neste.entryCloses ? LANG.format(neste.entryCloses) : null,
+        } : null,
+        mine: minPlan.map(tilRad),
+        katalog: katalog.map(tilRad),
+      }} />
+    </PlayerHQSkall>
   );
 }
