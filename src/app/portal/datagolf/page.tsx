@@ -1,11 +1,11 @@
-/**
- * Flyttet (T6, 2026-08-16): DataGolf bor nå under Analyse —
- * /portal/analysere/datagolf. Gammel adresse beholdes som redirect så
- * bokmerker og eldre lenker fortsatt virker.
- */
-
 import { redirect } from "next/navigation";
+import { krevDataGolfBruker } from "@/lib/auth/datagolf-tilgang";
 
-export default function DataGolfFlyttetPage() {
-  redirect("/portal/analysere/datagolf");
+/**
+ * Gammel adresse. DG-01 for coach bor i AgencyOS (pakke 10).
+ * Data Golf er bare for coach og admin: spiller og forelder sendes bort av vakten, uinnlogget til innlogging.
+ */
+export default async function DataGolfVideresending() {
+  await krevDataGolfBruker("/portal/datagolf");
+  redirect("/admin/datagolf");
 }
