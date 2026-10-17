@@ -20,6 +20,7 @@ export default function AdminLegacyNotFound() {
       beskrivelse="Sjekk URLen eller gå tilbake til AgencyOS-oversikten."
       sekundarKnappTekst="Logg inn på nytt"
       sekundarHref="/auth/login"
+      iSkall
     />
   );
 }

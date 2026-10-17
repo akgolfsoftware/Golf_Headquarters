@@ -13,5 +13,5 @@ export const metadata: Metadata = {
 };
 
 export default function MarketingLegacyNotFound() {
-  return <IkkeFunnet />;
+  return <IkkeFunnet iSkall />;
 }

@@ -1,27 +1,28 @@
 import type { Metadata } from "next";
+import { WifiOff } from "lucide-react";
 import { PrecisionTilstand } from "@/components/system/precision-tilstand";
 
 export const metadata: Metadata = {
-  title: "Du er offline",
+  title: "Du er uten nett",
   description: "Sjekk nettforbindelsen din og prøv igjen.",
 };
 
 /**
- * /offline — SY01Offline. Serwist ruter hit ved manglende nettverk.
- * Produktteksten om lokal lagring er beholdt. Tegningens «3 endringer
- * venter» og «sist synket» er demodata og er ikke innført.
+ * /offline — SY-01 Frakoblet i nytt design. Serwist ruter hit ved manglende nettverk.
+ * Avvik: tegningens «3 slag venter på å sendes» er demodata og vises ikke; siden er
+ * forhåndslagret og kjenner ikke køen.
  */
 export default function OfflinePage() {
   return (
     <PrecisionTilstand
-      kicker="Offline"
+      kicker="Frakoblet"
+      ikon={
+        <span className="ikonboks" style={{ width: 64, height: 64, borderRadius: 16 }}>
+          <WifiOff className="ikon" style={{ width: 30, height: 30 }} aria-hidden="true" />
+        </span>
+      }
       tittel="Du er uten nett"
-      tekst="Vi mistet forbindelsen. Alt du har registrert på denne enheten er lagret lokalt, og sendes inn automatisk når nettet er tilbake."
-      linjer={[
-        { label: "Dagens økt", verdi: "lagret lokalt" },
-        { label: "Slagregistrering", verdi: "virker" },
-        { label: "Plan og analyse", verdi: "krever nett" },
-      ]}
+      tekst="Slag og økter du registrerer nå, lagres på telefonen og sendes når nettet er tilbake."
       primar={{ label: "Prøv igjen", href: "/offline" }}
       sekundar={{ label: "Fortsett økta", href: "/portal" }}
     />
