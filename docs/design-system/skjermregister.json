@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "7fbc76809cb41c16e6fbffd10ee9cf01ecc0b051",
+  "kodeversjon": "53062aee5fe6218fcc36d5205a8379d134c72484",
   "inventar": {
     "pageFiles": 549,
     "uniqueRoutePatterns": 549,
-    "componentFiles": 947,
+    "componentFiles": 945,
     "surfaceFiles": 287,
     "byArea": {
       "interne-eksempler": 6,
@@ -21484,20 +21484,19 @@
       "kodekommentar": "PH-21"
     },
     {
-      "screenId": "PH-24",
+      "screenId": "VIDERESENDING",
       "rute": "/portal/venner/[spillerId]",
       "kildefil": "src/app/portal/venner/[spillerId]/page.tsx",
       "omrade": "playerhq",
       "rolle": "spiller",
-      "designkilde": "AK Golf Precision Athletics (7d7c2994-cf63-4c5f-9bdc-fdaf67655a70)",
-      "designversjon": "precision-athletics-2026-09-28",
-      "komponentmonster": "/portal/venner*",
-      "handlinger": "Profil, kategori A–K, bag med 14 køller, helse",
+      "designkilde": "kode",
+      "designversjon": "ikke-en-skjerm",
+      "komponentmonster": null,
+      "handlinger": "Send videre til /portal/meg",
       "dataApi": "ikke-avlest-i-D01",
       "tilstander": [
-        "tom",
-        "laster",
-        "feil"
+        "videresending",
+        "manglende-mal"
       ],
       "formater": {
         "mobil": "ikke-kontrollert",
@@ -21508,39 +21507,38 @@
       "status": {
         "kartlagt": true,
         "wireframe": false,
-        "uiUtkast": true,
+        "uiUtkast": false,
         "prototype": false,
         "vurdert": false,
-        "valgtForBygging": true,
+        "valgtForBygging": false,
         "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
       "kontrollbevis": null,
       "avvik": [],
-      "kobling": "tegnet-skjermtype",
-      "forklaring": "PH-24 Meg er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
+      "kobling": "videresending",
+      "forklaring": "Filen har ingen egen visning. Den sender til /portal/meg. At målet finnes, og hva brukeren ser hvis lenken er ugyldig, er ikke prøvd i denne bolken.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
-      "videresendingMal": null,
+      "videresendingMal": "/portal/meg",
       "kodekommentar": null
     },
     {
-      "screenId": "PH-24",
+      "screenId": "VIDERESENDING",
       "rute": "/portal/venner",
       "kildefil": "src/app/portal/venner/page.tsx",
       "omrade": "playerhq",
       "rolle": "spiller",
-      "designkilde": "AK Golf Precision Athletics (7d7c2994-cf63-4c5f-9bdc-fdaf67655a70)",
-      "designversjon": "precision-athletics-2026-09-28",
-      "komponentmonster": "/portal/venner*",
-      "handlinger": "Profil, kategori A–K, bag med 14 køller, helse",
+      "designkilde": "kode",
+      "designversjon": "ikke-en-skjerm",
+      "komponentmonster": null,
+      "handlinger": "Send videre til /portal/meg",
       "dataApi": "ikke-avlest-i-D01",
       "tilstander": [
-        "tom",
-        "laster",
-        "feil"
+        "videresending",
+        "manglende-mal"
       ],
       "formater": {
         "mobil": "ikke-kontrollert",
@@ -21551,24 +21549,22 @@
       "status": {
         "kartlagt": true,
         "wireframe": false,
-        "uiUtkast": true,
+        "uiUtkast": false,
         "prototype": false,
         "vurdert": false,
-        "valgtForBygging": true,
-        "implementert": "precision-visning",
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Venner merker PH24Venner i PlayerHQSkall. Liste, søk, invitasjoner og leaderboard er beholdt.",
-      "avvik": [
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
-      "kobling": "tegnet-skjermtype",
-      "forklaring": "PH-24 Meg er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "videresending",
+      "forklaring": "Filen har ingen egen visning. Den sender til /portal/meg. At målet finnes, og hva brukeren ser hvis lenken er ugyldig, er ikke prøvd i denne bolken.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
-      "videresendingMal": null,
+      "videresendingMal": "/portal/meg",
       "kodekommentar": null
     },
     {
@@ -24161,16 +24157,16 @@
   ],
   "tellinger": {
     "sidefiler": 549,
-    "medAvvik": 155,
-    "valgtForBygging": 246,
+    "medAvvik": 154,
+    "valgtForBygging": 244,
     "utenEksaktType": 16,
-    "implementert": 126,
+    "implementert": 125,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,
       "felles-monster": 22,
-      "tegnet-skjermtype": 280,
-      "videresending": 170,
+      "tegnet-skjermtype": 278,
+      "videresending": 172,
       "teknisk-forklaring": 33,
       "byggeunderlag": 37
     },
@@ -24192,7 +24188,7 @@
       "ST-06": 8,
       "ST-04": 3,
       "MK-BEKREFT": 1,
-      "VIDERESENDING": 170,
+      "VIDERESENDING": 172,
       "AG-05": 4,
       "AG-08": 3,
       "AG-15": 3,
@@ -24256,7 +24252,7 @@
       "PH-19": 7,
       "PH-25": 22,
       "PH-27": 1,
-      "PH-24": 11,
+      "PH-24": 9,
       "PH-01": 1,
       "PH-11": 1,
       "PH-14": 5,

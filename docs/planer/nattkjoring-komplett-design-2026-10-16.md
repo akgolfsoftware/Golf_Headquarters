@@ -110,6 +110,7 @@ Fylles av øktene underveis. Hvert punkt: hva, hvilken anbefaling som ble valgt,
 ---
 
 - **A4 · AgencyOS pakke 1 (Cockpit og Innboks):** AI-dispatch («Jarvis: én ting nå») står på Cockpit under dagens kalender, selv om utkastet ikke har det (skill agenticos-cockpit sier det skal beholdes). «Lag utkast» virker for e-post (Jarvis lager utkast, coachen sender); for spørsmål fra spillere er knappen fortsatt av, fordi det ikke finnes en navnevasket utkastlager for dem. Leads vises under Oppfølging bare for head coach, som e-posten, med «Skriv e-post» som åpner e-postprogrammet. E-postkonto nr. 2 (akgolfgroup@gmail.com) kommer ikke inn i innboksen ennå; det krever en ny inntakskobling.
+- **A3 · PlayerHQ pakke 16 (Utfordringer):** Deltakere velges bare fra egne grupper; coach og ADMIN også fra stallen. Venner leses ikke lenger, og `/portal/venner` og `/portal/venner/[spillerId]` sender til Meg (logikken i `src/lib/venner` står til neste versjon). Én utfordring og «Bli med» slipper bare inn eier, valgte deltakere og ADMIN; andre får 404. Øvelsen i en ny utfordring må finnes i spillerens Øvelsesbank (før kunne enhver øvelse velges). Fargen på kortet kommer fra øvelsens pyramide; uten øvelse er kortet grafitt. Låst med tester i `actions.test.ts`.
 
 ## 7. Morgenrapport
 
