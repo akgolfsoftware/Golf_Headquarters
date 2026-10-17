@@ -64,6 +64,8 @@
 .phn-meg .mr-kode input { min-height: 56px; max-width: 240px; text-align: center; font: 600 24px/1 var(--phn-mono); letter-spacing: .3em; }
 .phn-meg .mr-hake { width: 64px; height: 64px; border-radius: 50%; background: var(--phn-green-700); color: #fff; display: grid; place-items: center; }
 
+.phn-meg .mr-dialogkort { box-shadow: 0 12px 40px rgba(0, 0, 0, .18); }
+
 /* Dataene dine */
 .phn-meg .mr-data-liste { display: grid; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--phn-sand-300); }
 .phn-meg .mr-data-liste li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--phn-sand-300); font-size: 14.5px; }

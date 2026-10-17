@@ -152,7 +152,7 @@ export function PH25Tofaktor() {
       </div>
     </section>}
 
-    {dialog && <div className="phn-kort" role="alertdialog" aria-labelledby="av-t" style={{ boxShadow: "0 12px 40px rgba(0,0,0,.18)" }}>
+    {dialog && <div className="phn-kort mr-dialogkort" role="alertdialog" aria-labelledby="av-t">
       <h2 id="av-t" className="phn-undertittel" style={{ margin: 0 }}>Slå av tofaktor?</h2>
       <p className="phn-forklar">Da holder passordet alene for å logge inn. Du må logge inn på nytt for å bekrefte.</p>
       <div style={{ display: "grid", gap: 8 }}>
