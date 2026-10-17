@@ -106,6 +106,10 @@ regelen «maks 3 økter samtidig» i `~/.claude/CLAUDE.md` §Forbruk, med Anders
 Fylles av øktene underveis. Hvert punkt: hva, hvilken anbefaling som ble valgt, hvor det står.
 
 
+- **B1 · SY-01 systemsidene:** utkastets faste feilreferanse, klokkeslett for vedlikehold og «3 slag venter» er demodata og vises ikke. 500 viser Next sin digest som referanse; vedlikehold viser ekte telefon og e-post. (`src/components/system/precision-tilstand.tsx`)
+- **B1 · Ikke tilgang (403):** ny side `/ikke-tilgang` etter utkastet. Innloggingsvakten sender fortsatt rett til egen hjemmeside ved rollefeil, som før (unngår løkker, endrer ingen sikkerhetsvakt i natt). (`src/app/ikke-tilgang/page.tsx`)
+- **B1 · Grunnmur for utkast-flater:** `src/styles/flater-ny.css` (generert av `scripts/lag-flater-ny-css.mjs`, avgrenset til `.fln`, klassenavn fra utkastet) brukes av alle grupper i `utkast-flater/`. (`src/components/flater/FlateRamme.tsx`)
+
 ---
 
 - **A4 · AgencyOS pakke 1 (Cockpit og Innboks):** AI-dispatch («Jarvis: én ting nå») står på Cockpit under dagens kalender, selv om utkastet ikke har det (skill agenticos-cockpit sier det skal beholdes). «Lag utkast» virker for e-post (Jarvis lager utkast, coachen sender); for spørsmål fra spillere er knappen fortsatt av, fordi det ikke finnes en navnevasket utkastlager for dem. Leads vises under Oppfølging bare for head coach, som e-posten, med «Skriv e-post» som åpner e-postprogrammet. E-postkonto nr. 2 (akgolfgroup@gmail.com) kommer ikke inn i innboksen ennå; det krever en ny inntakskobling.
