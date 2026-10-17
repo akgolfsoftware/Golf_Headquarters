@@ -72,31 +72,41 @@ export async function GET(req: NextRequest) {
           });
         }
       } else {
-        // Ny bruker — opprett som PLAYER med GRATIS tier + PLATFORM_ONLY enrollering.
-        // Coach må manuelt enrollere i et coachingprogram.
+        // Ny bruker. E-postregistrering (AU-02) bærer rolle og navn i metadata; Google gjør det ikke.
+        // Rollen whitelistes som i ensureUser: bare PLAYER eller PARENT, aldri privilegert. Tier er alltid
+        // GRATIS, og spillere får profilType TALENT (samme som ensureUser), ellers lander de på INGEN.
+        const meta = authUser.user_metadata ?? {};
         const metaName =
-          (authUser.user_metadata?.full_name as string | undefined) ??
-          (authUser.user_metadata?.name as string | undefined) ??
+          (meta.full_name as string | undefined) ??
+          (meta.name as string | undefined) ??
           email.split("@")[0];
+        const role = meta.role === "PARENT" ? "PARENT" : "PLAYER";
+        const fraSkjema = [meta.firstName, meta.lastName]
+          .filter((x): x is string => typeof x === "string" && x.trim() !== "")
+          .join(" ")
+          .trim();
         const nyBruker = await prisma.user.create({
           data: {
             authId: authUser.id,
             email,
-            name: metaName,
-            role: "PLAYER",
+            name: fraSkjema || metaName,
+            role,
             tier: "GRATIS",
             lastLoginAt: new Date(),
+            ...(role === "PLAYER" ? { profilType: "TALENT" as const, profilKilde: meta.kilde === "talenthq" ? "TALENTHQ" : "SIGNUP" } : {}),
           },
         });
-        // Automatisk PLATFORM_ONLY-enrollering — usynlig i AgencyOS inntil coach
-        // enrollerer spilleren i et coachingprogram.
-        await prisma.playerEnrollment.create({
-          data: {
-            userId: nyBruker.id,
-            program: "PLATFORM_ONLY",
-            coachId: null,
-          },
-        });
+        if (role === "PLAYER") {
+          // Automatisk PLATFORM_ONLY-enrollering — usynlig i AgencyOS inntil coach
+          // enrollerer spilleren i et coachingprogram.
+          await prisma.playerEnrollment.create({
+            data: {
+              userId: nyBruker.id,
+              program: "PLATFORM_ONLY",
+              coachId: null,
+            },
+          });
+        }
 
         // Automatisk kobling mot turneringshistorikk
         await linkAndSyncUserTournamentResults(prisma, nyBruker.id);

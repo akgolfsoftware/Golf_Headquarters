@@ -1,10 +1,6 @@
-/**
- * AU03NyttPassord — sett nytt passord i Precision Athletics.
- * Kilde: ui_kits/konto/screens/AU-01-03.jsx, funksjonen AU03.
- * updateUser, minst 8 tegn og likhetssjekk er beholdt.
- */
-import { ResetPasswordV2 } from "@/components/portal/v2/ResetPasswordV2";
+/** AU-03 Nytt passord i nytt design. updateUser, minst 10 tegn og likhetssjekk. */
+import { NyttPassord } from "@/components/auth/precision/KontoSkjermer";
 
 export default function ResetPasswordPage() {
-  return <ResetPasswordV2 />;
+  return <NyttPassord />;
 }

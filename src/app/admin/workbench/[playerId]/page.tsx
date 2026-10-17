@@ -1,11 +1,12 @@
 /**
- * AgencyOS Workbench — coach (AG-11 i Precision Athletics).
+ * AgencyOS Workbench — coach (AG-11 i nytt design, pakke 4, natt 17.10.2026).
  *
- * Uke, Økt og Målsetninger er portert (AG11Workbench): samme guard, samme
- * lastere (loadWeek, loadSources, hentMaalSpor, loadFysTurneringWorkbenchData)
- * og samme skriveside (wb-actions via useUkeMotor) som WorkbenchUke hadde.
+ * Uke, Økt, Periode og Målsetninger er AG11WorkbenchNy: samme guard, samme
+ * lastere (loadWeek, loadSources, hentMaalSpor, loadFysTurneringWorkbenchData,
+ * loadYear for periodene) og samme skriveside (wb-actions via useUkeMotor).
+ * Coachen legger inn, endrer og sletter perioder (coachLagrePeriode/coachSlettPeriode).
  * `?pille=fys` og `?pille=turn` er fysisk plan og turneringer (AG-WB-FYS,
- * AG-WB-TURN) med de samme seks handlingene som før.
+ * AG-WB-TURN i nytt design) med de samme seks handlingene som før.
  *
  * År, Periode, Måned, Uke, Økt, Volum og Målsetninger følger det felles
  * skjermkartet. Historiske dyplenker for Stall, Live og Min støttes fortsatt.
@@ -19,8 +20,8 @@ import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { FeilTilstand } from "@/components/precision/pa";
-import { AG11Workbench, type AG11Side } from "@/components/admin/precision/AG11Workbench";
-import { AG11Fysisk, AG11Turnering } from "@/components/admin/precision/AG11Moduler";
+import { AG11WorkbenchNy } from "@/components/admin/precision/AG11WorkbenchNy";
+import { AG11FysiskNy, AG11TurneringNy } from "@/components/admin/precision/AG11ModulerNy";
 import { WorkbenchAar } from "@/components/workbench/WorkbenchAar";
 import { WorkbenchPeriode } from "@/components/workbench/WorkbenchPeriode";
 import { WorkbenchManed } from "@/components/workbench/WorkbenchManed";
@@ -32,6 +33,7 @@ import { loadFysTurneringWorkbenchData } from "@/lib/workbench/fys-turnering-dat
 import { flyttFysiskOkt, opprettFysiskBlokk, opprettFysiskOkt, opprettTurneringsplan, publiserFysiskBlokk, publiserTurneringsplan } from "@/lib/workbench/fys-turnering-actions";
 import { parsePlanKontekst, type PlanQuery } from "@/lib/workbench/plan-kontekst";
 import { hentMaalSpor } from "@/lib/workbench/maal-spor";
+import { coachHentNotater } from "@/lib/workbench/session-actions";
 import { WorkbenchLastPaNytt } from "@/components/workbench/WorkbenchLastPaNytt";
 import { WorkbenchSamlet } from "@/components/workbench/WorkbenchSamlet";
 import { loadWorkbenchSamletData } from "@/lib/workbench/workbench-samlet-data";
@@ -47,8 +49,6 @@ type Props = {
   params: Promise<{ playerId: string }>;
   searchParams: Promise<PlanQuery>;
 };
-
-const SIDER: readonly AG11Side[] = ["bank", "fys", "maler", "turn", "tp", "mal"];
 
 /** Ramme for år, periode, måned og historiske dyplenker. */
 function Arv({ children, live }: { children: React.ReactNode; live?: boolean }) {
@@ -84,8 +84,8 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
     return (
       <AgencyOSSkall navn={navn}>
         {sp.pille === "fys"
-          ? <AG11Fysisk playerId={playerId} spillerNavn={spillerNavn} data={fys} actions={actions} />
-          : <AG11Turnering playerId={playerId} spillerNavn={spillerNavn} data={fys} actions={actions} />}
+          ? <AG11FysiskNy playerId={playerId} spillerNavn={spillerNavn} data={fys} actions={actions} />
+          : <AG11TurneringNy playerId={playerId} spillerNavn={spillerNavn} data={fys} actions={actions} />}
       </AgencyOSSkall>
     );
   }
@@ -192,8 +192,9 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
     );
   }
 
-  // Uke, Økt og Målsetninger: samme data, nivået velges i klienten.
-  const [roster, weekRes, kilderRes, fysTurnering, grupper] = await Promise.all([
+  // Uke, Økt, Periode og Målsetninger i nytt design (AG11WorkbenchNy): samme data,
+  // pluss spillerens perioder (loadYear) og coachens private notater.
+  const [roster, weekRes, kilderRes, fysTurnering, grupper, yearRes, notaterRes] = await Promise.all([
     hentRoster(),
     loadWeek({ weekStart, mode, playerId }),
     loadSources({ playerId, weekStart }),
@@ -204,13 +205,14 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
       select: { id: true, name: true },
       orderBy: { name: "asc" },
     }),
+    loadYear({ year: Number(weekStart.slice(0, 4)), mode, playerId }),
+    coachHentNotater(playerId),
   ]);
   if (!weekRes.ok) return <Feil navn={navn} melding={weekRes.error} />;
 
-  const side = SIDER.find((s) => s === sp.side);
   return (
     <AgencyOSSkall navn={navn}>
-      <AG11Workbench
+      <AG11WorkbenchNy
         planKontekst={kontekst.referanse}
         key={`${playerId}:${weekStart}:${visning}:${kontekst.referanse.okt ?? ""}`}
         playerId={playerId}
@@ -221,8 +223,9 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
         grupper={grupper.map((g) => ({ id: g.id, navn: g.name }))}
         goals={goals}
         fys={fysTurnering}
-        niva={visning === "mal" ? "mal" : visning === "vol" ? "vol" : visning === "okt" ? "okt" : "uke"}
-        side={side}
+        perioder={yearRes.ok ? yearRes.data.periods : []}
+        notater={notaterRes.ok ? notaterRes.notater ?? [] : []}
+        startNiva={visning === "mal" ? "mal" : "uke"}
         valgtOktId={kontekst.referanse.okt}
       />
     </AgencyOSSkall>

@@ -15,7 +15,7 @@ import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { hentTekniskPlan } from "@/lib/teknisk-plan/tp-last";
 import { TOMT_SKJEMA, oppgaveVisning, planVisning, skjemaFraOppgave } from "@/lib/teknisk-plan/tp-visning";
-import { AG10TekniskPlan, type AG10Props } from "@/components/admin/precision/AG10TekniskPlan";
+import { AG10TekniskPlanNy, type AG10NyProps } from "@/components/admin/precision/AG10TekniskPlanNy";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Teknisk plan · AgencyOS" };
@@ -37,7 +37,7 @@ export default async function SpillerTekniskPlanPage({
   ]);
   if (!spiller || !rad) notFound();
 
-  let skjema: AG10Props["skjema"] = null;
+  let skjema: AG10NyProps["skjema"] = null;
   if (oppgave === "ny") {
     skjema = { skjema: TOMT_SKJEMA, base: null };
   } else if (oppgave) {
@@ -48,7 +48,7 @@ export default async function SpillerTekniskPlanPage({
   }
 
   return (
-    <AG10TekniskPlan
+    <AG10TekniskPlanNy
       coachNavn={coach.name ?? "Coach"}
       spiller={{ id: spiller.id, navn: spiller.name ?? "Spiller" }}
       plan={planVisning(rad)}

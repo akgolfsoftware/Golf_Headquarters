@@ -1,11 +1,13 @@
 /**
  * Spør etter fødselsdato før PlayerHQ åpnes (punkt 8 i §KODEGJENNOMGANGEN 06.10).
  * Gjelder spillere som fullførte oppstarten uten dato, også voksne (Anders 14.10).
- * Ingen tegning: bygget med Precision-delene (phn) og kandidat til Anders har sett den.
+ * Nytt design: AU-04 «Fødselsdato» i utkast-flater/innlogging.html.
  */
 import { redirect } from "next/navigation";
 import { getCurrentUserRaw } from "@/lib/auth/getCurrentUser";
 import { maaFylleInnFodselsdato } from "@/lib/auth/minor";
+import { CalendarDays } from "lucide-react";
+import { FlateRamme } from "@/components/flater/FlateRamme";
 import { FodselsdatoSkjema } from "./fodselsdato-skjema";
 
 export const dynamic = "force-dynamic";
@@ -20,19 +22,14 @@ export default async function FodselsdatoPage() {
   }
 
   return (
-    <main className="phn" style={{ minHeight: "100dvh" }}>
-      <div style={{ display: "grid", gap: 24, width: "100%", maxWidth: 560, marginInline: "auto" }}>
-        <header>
-          <p className="phn-kilde">PlayerHQ</p>
-          <h1 className="phn-tittel">Når er du født?</h1>
-          <p className="phn-forklar">
-            Vi trenger fødselsdatoen din før du går videre. Den avgjør hvilke spørsmål og tester som
-            passer, og om en forelder må godkjenne kontoen. Datoen kan ikke endres etterpå, så sjekk at
-            den er riktig.
-          </p>
-        </header>
-        <FodselsdatoSkjema />
+    <FlateRamme skall="konto">
+      <span className="stor-ikon"><CalendarDays className="ikon" aria-hidden="true" /></span>
+      <div className="topp">
+        <h1 className="tittel">Fyll inn fødselsdatoen din</h1>
+        <p className="ingress">Vi trenger den før PlayerHQ åpnes. Den bestemmer hvilke regler som gjelder for samtykke og deling.</p>
       </div>
-    </main>
+      <FodselsdatoSkjema />
+      <p className="kilde">Er du under 16, sender vi en lenke til forelderen din.</p>
+    </FlateRamme>
   );
 }

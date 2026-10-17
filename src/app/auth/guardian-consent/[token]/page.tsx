@@ -7,8 +7,8 @@
 
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { calculateAge } from "@/lib/auth/minor";
-import { GuardianConsentV2 } from "@/components/portal/v2/GuardianConsentV2";
+import { calculateAge, forelderFrist } from "@/lib/auth/minor";
+import { ForelderGodkjenner } from "@/components/auth/precision/ForelderGodkjenner";
 
 type Props = {
   params: Promise<{ token: string }>;
@@ -30,6 +30,7 @@ export default async function GuardianConsentPage({ params }: Props) {
           dateOfBirth: true,
           requiresGuardianConsent: true,
           guardianConsentGivenAt: true,
+          createdAt: true,
         },
       },
     },
@@ -44,33 +45,24 @@ export default async function GuardianConsentPage({ params }: Props) {
 
   if (expired) {
     return (
-      <GuardianConsentV2
-        state="expired"
-        playerName={invitation.player.name}
-        playerAge={playerAge}
-        email={invitation.email}
-      />
+      <ForelderGodkjenner state="expired" playerName={invitation.player.name} />
     );
   }
 
   if (alreadyAccepted && alreadyConsented) {
     return (
-      <GuardianConsentV2
-        state="success"
-        playerName={invitation.player.name}
-        playerAge={playerAge}
-      />
+      <ForelderGodkjenner state="success" playerName={invitation.player.name} />
     );
   }
 
   return (
-    <GuardianConsentV2
+    <ForelderGodkjenner
       state="form"
       token={token}
       playerName={invitation.player.name}
       playerAge={playerAge}
-      playerEmail={invitation.player.email}
       guardianEmail={invitation.email}
+      fristTekst={new Intl.DateTimeFormat("nb-NO", { weekday: "short", day: "numeric", month: "long", timeZone: "Europe/Oslo" }).format(forelderFrist(invitation.player.createdAt))}
     />
   );
 }

@@ -1,25 +1,9 @@
-// PH26Break — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
-/**
- * PlayerHQ · Break-tabell (/portal/trening/break-tabell) — v2.
- * v2-port 17. juli 2026 (Team D2): `BreakTabellV2` erstatter legacy
- * break-tabell-client, ruten flyttet ut av (legacy). All break-matte kommer
- * fortsatt uendret fra @/lib/putt-core — kun presentasjonslaget er nytt.
- */
-
+// PlayerHQ steg 1 (docs/planer/playerhq-alle-sider-nytt-design-2026-10-16.md): dobbelt med Øvelser › Break-tabell.
+import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
-import { BreakTabellV2 } from "@/components/portal/v2/BreakTabellV2";
 
-export const dynamic = "force-dynamic";
-
-export default async function BreakTabellPage() {
+export default async function Videresend(): Promise<never> {
+  // Rot-layouten krever bare innlogging; tilgangsnivået håndheves her, som før videresendingen.
   await requirePortalUser();
-
-  return (
-        <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
-      <div className="pa-side">
-      <BreakTabellV2 />
-          </div>
-    </PlayerHQSkall>
-  );
+  redirect("/portal/drills/break-tabell");
 }

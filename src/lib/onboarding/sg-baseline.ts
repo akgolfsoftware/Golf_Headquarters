@@ -26,7 +26,7 @@ export type SgBaseline = {
 /** Tall fra tekstfelt. Tomt eller ugyldig gir undefined — aldri 0. */
 export function tolkTall(verdi: string): number | undefined {
   if (!verdi.trim()) return undefined;
-  const n = parseFloat(verdi.replace(",", "."));
+  const n = parseFloat(verdi.replace(",", ".").replace("−", "-"));
   return Number.isFinite(n) ? n : undefined;
 }
 
