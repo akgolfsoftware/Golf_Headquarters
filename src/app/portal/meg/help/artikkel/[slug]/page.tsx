@@ -1,88 +1,41 @@
-/**
- * PlayerHQ · Meg · Hjelp · Artikkel (/portal/meg/help/artikkel/[slug]) — v2.
- * v2-port 17. juli 2026 (Team D4a): MegHelpArtikkelV2 erstatter Tailwind-siden
- * (del-knapp.tsx + feedback.tsx er nå subkomponenter i V2-komponenten).
- * Auth, artikkel-oppslaget, fallbacken for artikler uten redaksjonelt innhold
- * og notFound-oppførselen er uendret — kun presentasjonslaget er nytt.
- *
- * NB: Innholdet i hjelpe-artiklene (brødtekst + eventuelle eksempeltall) er
- * redaksjonelt illustrasjonsmateriale for hjelpesenteret — ikke spillerens
- * egne data. Det er bevisst statisk og skal ikke forveksles med ekte tall.
- */
-import Link from "next/link";
-import { notFound } from "next/navigation";
+// PlayerHQ Hjelp › Én artikkel — Precision Athletics, pakke 15 (utkast hjelp.html, 16.10.2026).
+import { notFound, redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TilbakeLenke, TomTilstand, Kort, CTAPill } from "@/components/v2";
-import {
-  MegHelpArtikkelV2,
-  type MegHelpArtikkelData,
-} from "@/components/portal/v2/MegHelpArtikkelV2";
-import { HJELP_ARTIKLER } from "../../data";
+import { getUnreadNotifications } from "@/app/portal/actions";
+import { finnArtikkel, finnKategori } from "@/lib/portal-hjelp/artikler";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { PHHjelpArtikkel } from "@/components/portal/precision/PHHjelpArtikkel";
 
-const ARTIKLER: Record<string, MegHelpArtikkelData & { slug: string }> = {
-  "pyramide-systemet": {
-    slug: "pyramide-systemet",
-    tittelLead: "Hva er",
-    tittelItalic: "pyramide-systemet",
-    eyebrow: "Trening · Artikkel · 5 min lesetid",
-    forfatter: {
-      initialer: "AK",
-      navn: "Anders Kristiansen",
-      rolle: "Head Coach · AK Golf",
-    },
-    oppdatert: "12. mai 2026",
-    lesetid: 5,
-    toc: [
-      { id: "h1", tittel: "Hvorfor en pyramide?" },
-      { id: "h2", tittel: "De fem disiplinene" },
-      { id: "h3", tittel: "Slik balanseres uka" },
-      { id: "h4", tittel: "Når balansen tipper" },
-    ],
-  },
+export const dynamic = "force-dynamic";
+
+/** Gamle artikkeladresser fra den forrige hjelpesiden som har en ny artikkel. */
+const GAMLE: Record<string, string> = {
+  "logg-din-forste-runde": "registrer-din-forste-runde",
+  "sett-ditt-forste-mal": "sett-din-forste-malsetning",
+  "pyramide-systemet": "pyramiden",
+  "bygg-din-treningsuke": "bygg-treningsuka",
+  "drills-for-svake-omrader": "ovelser-der-du-taper-mest",
+  "tolke-trackman-data": "les-trackman-tallene",
+  "forbered-coaching-okt": "forbered-en-coachingtime",
+  "credits-forklart": "klipp-forklart",
+  "oppgrader-til-pro": "gratis-og-full",
+  "to-faktor-autentisering": "sla-pa-tofaktor",
+  "eksporter-data": "last-ned-dataene-dine",
+  "hva-er-sg": "hva-betyr-strokes-gained",
+  "lese-runde-rapport": "les-rundesammendraget",
 };
 
-export default async function ArtikkelPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export default async function HjelpArtikkelPage({ params }: { params: Promise<{ slug: string }> }) {
   const user = await requirePortalUser({ kreverTilgang: "INGEN" });
   const { slug } = await params;
-  const a = ARTIKLER[slug];
-
-  // Fallback for artikler som finnes i help-hub-lista (data.ts) men ennå ikke har
-  // fått fullt redaksjonelt innhold her — unngår dødlenke fra MegHelpV2/kategori-sidene.
-  // Ærlig tomrom: ingen fabrikkert brødtekst, kun metadata som faktisk finnes.
-  if (!a) {
-    const meta = HJELP_ARTIKLER.find((x) => x.slug === slug);
-    if (!meta) notFound();
-    return (
-      <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-        <TilbakeLenke href="/portal/meg/help">Hjelp-hub</TilbakeLenke>
-        <Kort eyebrow={`${meta.kategori} · Artikkel · ${meta.lesetid} min lesetid`}>
-          <TomTilstand
-            icon="file-text"
-            title={meta.tittel}
-            sub="Denne artikkelen er ikke skrevet ferdig ennå. Ta kontakt med coach-teamet, så hjelper de deg direkte i mellomtiden."
-          />
-          <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 8 }}>
-            <Link href="/portal/coach/melding/ny" style={{ textDecoration: "none" }}>
-              <CTAPill icon="message-square">Send melding til coach</CTAPill>
-            </Link>
-            <Link href="/portal/meg/help" style={{ textDecoration: "none" }}>
-              <CTAPill ghost>Tilbake til hjelp-hub</CTAPill>
-            </Link>
-          </div>
-        </Kort>
-      </V2Shell>
-    );
-  }
-
+  if (GAMLE[slug]) redirect(`/portal/meg/help/artikkel/${GAMLE[slug]}`);
+  const artikkel = finnArtikkel(slug);
+  const kategori = artikkel ? finnKategori(artikkel.kategori) : null;
+  if (!artikkel || !kategori) notFound();
+  const uleste = await getUnreadNotifications(user.id, 1);
   return (
-    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/meg/help">Hjelp-hub</TilbakeLenke>
-      <MegHelpArtikkelV2 data={a} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste.count}>
+      <PHHjelpArtikkel artikkel={artikkel} kategori={kategori} />
+    </PlayerHQSkall>
   );
 }
