@@ -32,14 +32,14 @@ Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kode
 
 | Kobling | Rader |
 |---|---:|
-| tegnet-skjermtype | 266 |
-| videresending | 185 |
+| tegnet-skjermtype | 261 |
+| videresending | 190 |
 | byggeunderlag | 37 |
 | teknisk-forklaring | 34 |
 | felles-monster | 22 |
 | intern-flate | 7 |
 
-235 rader treffer en av de 77 Precision-typene og er derfor merket valgt for bygging som design. 17 rader har ingen eksakt type. 141 rader har et registrert avvik. 110 rader har en Precision-visning i koden. 0 er kontrollert i appen.
+230 rader treffer en av de 77 Precision-typene og er derfor merket valgt for bygging som design. 17 rader har ingen eksakt type. 135 rader har et registrert avvik. 104 rader har en Precision-visning i koden. 0 er kontrollert i appen.
 
 ## Uten eksakt type
 
