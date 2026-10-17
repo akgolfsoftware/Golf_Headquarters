@@ -4,6 +4,7 @@
  * de kan enhetstestes uten database.
  */
 
+import { lesFokus } from "./etter-okta";
 import type {
   WorkbenchDrill as WorkbenchDrillRow,
   WorkbenchSession as WorkbenchSessionRow,
@@ -120,6 +121,7 @@ export function mapSession(row: WbRow): WorkbenchSession {
     skillArea: row.skillArea ?? undefined,
     pressureLevel: row.pressureLevel ?? undefined,
     maalsetning: row.maalsetning ?? undefined,
+    fokusEtterOkt: lesFokus(row.liveSnapshot),
     drills: [...row.drills]
       .sort((a, b) => a.sortOrder - b.sortOrder)
       .map(mapDrill),
