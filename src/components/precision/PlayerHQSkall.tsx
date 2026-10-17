@@ -9,14 +9,17 @@
  * (nytt design, utkast-playerhq/felles/felles.css; stil i playerhq-ny-skall.css).
  * Faner 28.09.2026: I dag · Plan · Stats · Meg.
  *
- * Ikke med ennå: hurtigknappen og innboks-arket bak bjella. Bjella lenker til
- * dagens meldingsside til arket er portert.
+ * Hurtigknappen (felles Hurtigknapp.tsx) står på alle PlayerHQ-sider: Spør Caddie · Ny økt ·
+ * Registrer runde · Start økt (beslutninger.md §Hurtigknappen, 28.09). «Start økt» går via
+ * /portal/tren/start, som åpner pågående eller neste økt.
+ * Ikke med ennå: innboks-arket bak bjella. Bjella lenker til dagens meldingsside til arket er portert.
  */
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { createContext, useContext, type ReactNode } from "react";
-import { Bell } from "lucide-react";
+import { Bell, Flag, Layers, Play, Sparkles } from "lucide-react";
+import { Hurtigknapp, type Hurtighandling } from "./Hurtigknapp";
 import { PLAYERHQ_FANER as FANER, erAktivFane as erAktiv } from "./playerhq-faner";
 import { Ikon } from "./pa";
 import "@/styles/precision-athletics.css";
@@ -29,6 +32,13 @@ function Bjelle({ href, antall }: { href: string; antall: number }) {
     {antall > 0 && <span className="pa-count pa-count--inverse" aria-hidden style={{ position: "absolute", top: 4, right: 2, minWidth: 18, height: 18, padding: "0 5px" }}>{antall}</span>}
   </Link>;
 }
+
+const HURTIG: Hurtighandling[] = [
+  { id: "caddie", label: "Spør Caddie", icon: Sparkles, iconName: "sparkles", href: "/portal/caddie" },
+  { id: "okt", label: "Ny økt", icon: Layers, iconName: "layers", href: "/portal/planlegge/workbench" },
+  { id: "runde", label: "Registrer runde", icon: Flag, iconName: "flag", href: "/portal/runde/logg" },
+  { id: "start", label: "Start økt", icon: Play, iconName: "play", href: "/portal/tren/start" },
+];
 
 /* Et skall inni et annet (gammel side i V2Shell som rendrer en portert komponent med eget
    skall) skal ikke gi to menyer: det indre skallet viser bare innholdet. */
@@ -65,5 +75,6 @@ export function PlayerHQSkall({ children, innboksHref, uleste }: { children: Rea
         <Ikon icon={f.icon} size={22} name={f.name} />{f.label}
       </Link>)}
     </nav>
+    <Hurtigknapp app="phq" handlinger={HURTIG} bunn={72} />
   </div></InniSkall.Provider>;
 }

@@ -1,7 +1,7 @@
 import { canAccessPlayer } from "@/lib/auth/own-or-coached";
 /**
  * PlayerHQ · Live-økt oppsummering — PH-07 Etter økten i nytt design (lyst tema).
- * Tall, pyramide, notater, vurdering og lagring beholdes.
+ * Tall, pyramide, notater, vurdering og lagring beholdes. Workbench-økter får Belastning/Fokus eller «Hvor tungt».
  * Visningen er PH07Oktoppsummering.
  */
 
@@ -11,6 +11,8 @@ import { prisma } from "@/lib/prisma";
 import { loadPH07SummaryData } from "@/lib/portal-live/load-ph04-07";
 import { PH07Oktoppsummering } from "@/components/portal/precision/PH07Oktoppsummering";
 import { lagreDineOrd } from "@/app/portal/(fullscreen)/live/[sessionId]/actions";
+import { lagreVurderingEtterOkt } from "@/lib/workbench/wb-session-life-actions";
+import { lesFokus, oktTypeFraPyramide } from "@/lib/workbench/etter-okta";
 
 export default async function LiveSummaryPage({
   params,
@@ -31,7 +33,7 @@ export default async function LiveSummaryPage({
     }),
     prisma.workbenchSession.findUnique({
       where: { id: sessionId },
-      select: { id: true, status: true, playerId: true },
+      select: { id: true, status: true, playerId: true, pyramid: true, perceivedEffort: true, liveSnapshot: true },
     }),
   ]);
 
@@ -54,12 +56,23 @@ export default async function LiveSummaryPage({
     }
   }
 
+  async function lagreVurdering(input: { belastning: number; fokus: number | null }) {
+    "use server";
+    const res = await lagreVurderingEtterOkt({ sessionId, ...input });
+    return res.ok ? { ok: true } : { ok: false, error: res.error };
+  }
+
+  const vurdering = wbRow && wbRow.status === "COMPLETED" && wbRow.playerId === user.id
+    ? { type: oktTypeFraPyramide(wbRow.pyramid), belastning: wbRow.perceivedEffort, fokus: lesFokus(wbRow.liveSnapshot), onLagre: lagreVurdering }
+    : undefined;
+
   return (
     <PH07Oktoppsummering
       key={sessionId}
       data={data}
       onSave={_v2 ? handleSave : undefined}
       onCloseHref="/portal"
+      vurdering={vurdering}
     />
   );
 }
