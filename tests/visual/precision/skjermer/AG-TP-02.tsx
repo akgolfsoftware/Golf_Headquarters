@@ -1,7 +1,7 @@
 /** Prøvefil for AG-TP-02 Før og nå. Syntetiske data, oppdiktede navn. */
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { AdminRolleProvider } from "@/components/v2/rolle";
-import { AGTP02ForOgNaa, type ForOgNaaOppgave } from "@/components/admin/precision/AGTP02ForOgNaa";
+import { AGTP02ForOgNaaNy as AGTP02ForOgNaa, type ForOgNaaOppgave } from "@/components/admin/precision/AGTP02ForOgNaaNy";
 
 export const sti = "/admin/spillere/u1/plan/plan1/for-og-na";
 const oppgaver: ForOgNaaOppgave[] = [
