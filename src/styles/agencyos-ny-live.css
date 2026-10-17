@@ -1,0 +1,75 @@
+/*
+ * AgencyOS pakke 5 i nytt design: AG-13 Live coachingøkt (med og uten samtykke
+ * til opptak) og AG-12 Øktark etter live.
+ * Portert fra docs/design-system/utkast-agencyos/live.html (utkast 1, 15.10.2026).
+ * Alltid lyst tema (beslutninger.md §LIVE-ØKTENE ER ALLTID LYSE, 14.10).
+ * Rust bare på Live-pillen. Alt gjelder bare inni .agn-s.
+ */
+.agn-s .live-topp { display: grid; gap: var(--r3); padding: 14px 16px; border-radius: 14px; background: var(--graphite-900); color: #fff; }
+.agn-s .live-topp .rad { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--r2); }
+.agn-s .live-topp .meta { font-size: 13.5px; opacity: .85; }
+.agn-s .live-pille { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 12px; border-radius: 999px; background: var(--rust); color: #fff; font: 600 13px/1 var(--sans); }
+.agn-s .live-pille i { width: 8px; height: 8px; border-radius: 50%; background: #fff; animation: agn-puls 1.4s infinite; }
+.agn-s .live-pille.stille { background: rgba(255, 255, 255, .18); }
+.agn-s .live-pille.stille i { animation: none; opacity: .7; }
+@keyframes agn-puls { 50% { opacity: .25; } }
+.agn-s .klokke { font: 600 44px/1 var(--mono); letter-spacing: -.03em; overflow-wrap: anywhere; }
+.agn-s .klokke small { font: 500 15px/1 var(--mono); opacity: .75; margin-left: 6px; letter-spacing: 0; }
+.agn-s .live-topp .navn { font: 600 18px/1.25 var(--sans); }
+.agn-s .live-topp .knapp.sek { background: transparent; color: #fff; border-color: rgba(255, 255, 255, .5); }
+.agn-s .live-topp .knapp.hvit { background: #fff; color: var(--graphite-900); border: 1px solid #fff; }
+.agn-s .spillerkort { display: grid; gap: var(--r3); }
+.agn-s .fakta { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--r2); }
+.agn-s .fakta > div { display: grid; gap: 2px; padding: 10px 12px; border-radius: 10px; background: var(--sand-100); }
+.agn-s .fakta b { font: 600 20px/1.1 var(--mono); overflow-wrap: anywhere; }
+.agn-s .fakta span { font-size: 12.5px; color: var(--graphite-600); }
+.agn-s .malsetning { display: flex; justify-content: space-between; gap: var(--r2); font-size: 14px; padding: 6px 0; align-items: center; }
+.agn-s .oppgave-kort { display: grid; border-radius: 12px; overflow: hidden; background: var(--tek-ink); color: #fff; text-decoration: none; }
+.agn-s .oppgave-kort > div { padding: 12px 14px; display: grid; gap: 4px; }
+.agn-s .oppgave-kort b { font: 600 17px/1.25 var(--sans); }
+.agn-s .oppgave-kort span { font-size: 13.5px; opacity: .92; }
+.agn-s .oppgave-kort .tall { font: 600 22px/1 var(--mono); opacity: 1; }
+.agn-s .media { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.agn-s .media .bilde { position: relative; aspect-ratio: 1; border-radius: 10px; overflow: hidden; background: var(--sand-150); display: grid; place-items: center; align-content: center; gap: 4px; color: var(--graphite-600); font: 500 12px/1.3 var(--sans); text-align: center; padding: 8px; }
+.agn-s .media .bilde span.tid { position: absolute; left: 6px; bottom: 6px; padding: 2px 6px; border-radius: 4px; background: rgba(20, 20, 19, .75); color: #fff; font: 600 11px/1.3 var(--mono); }
+.agn-s .opptak { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--r3); align-items: center; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--sand-300); }
+.agn-s .opptak .knapp { grid-column: 1 / -1; justify-self: start; }
+.agn-s .opptak .boelge { display: flex; align-items: center; gap: 2px; height: 28px; }
+.agn-s .opptak .boelge i { width: 3px; border-radius: 2px; background: var(--graphite-900); animation: agn-boelge 1s infinite ease-in-out; }
+@keyframes agn-boelge { 50% { transform: scaleY(.4); } }
+.agn-s .opptak.sperret { background: var(--sand-100); }
+.agn-s .opptak b { display: block; font: 600 15px/1.3 var(--sans); }
+.agn-s .opptak .kilde { display: block; }
+.agn-s .notat-felt { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--r2); align-items: start; }
+.agn-s .notat-felt input { min-height: 48px; padding: 10px 12px; border: 1px solid var(--graphite-500); border-radius: 8px; font: 400 16px/1.3 var(--sans); min-width: 0; width: 100%; background: var(--white); }
+.agn-s .sperre { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--r3); align-items: start; padding: 14px 16px; border-radius: 12px; border: 2px solid var(--amber-700); background: var(--amber-50); }
+.agn-s .sperre .ikon { color: var(--amber-700); margin-top: 2px; }
+.agn-s .sperre b { display: block; font: 600 16px/1.3 var(--sans); }
+.agn-s .stjerner { display: flex; gap: 4px; flex-wrap: wrap; }
+.agn-s .stjerner > button { width: 44px; height: 44px; border: 1px solid var(--sand-300); border-radius: 8px; background: var(--white); display: grid; place-items: center; cursor: pointer; color: var(--graphite-500); }
+.agn-s .stjerner > button[aria-pressed="true"] { color: var(--graphite-900); border-color: var(--graphite-900); }
+.agn-s .stjerner > button[aria-pressed="true"] .ikon { fill: currentColor; }
+.agn-s .notat-tekst { min-height: 72px; padding: 10px 12px; border: 1px solid var(--graphite-500); border-radius: 8px; font: 400 15px/1.45 var(--sans); resize: vertical; width: 100%; background: var(--white); }
+
+/* Øktark */
+.agn-s .utkast-ark { display: grid; gap: 8px; padding: 12px 14px; border-radius: 10px; background: var(--sand-100); border: 1px dashed var(--graphite-500); }
+.agn-s .utkast-ark .hode { display: flex; align-items: center; gap: 8px; font: 600 13px/1 var(--sans); color: var(--graphite-800); }
+.agn-s .utkast-ark .hode .ikon { width: 16px; height: 16px; }
+.agn-s .utkast-ark textarea { min-height: 200px; padding: 10px 12px; border: 1px solid var(--graphite-500); border-radius: 8px; font: 400 15px/1.55 var(--sans); width: 100%; resize: vertical; background: var(--white); }
+.agn-s .personvern { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; color: var(--graphite-600); }
+.agn-s .personvern .ikon { width: 16px; height: 16px; margin-top: 1px; flex: none; }
+.agn-s .tm-tabell { display: grid; border-top: 1px solid var(--sand-300); }
+.agn-s .tm-rad { display: grid; grid-template-columns: minmax(0, 1fr) 56px 56px; gap: var(--r2); align-items: center; padding: 9px 0; border-bottom: 1px solid var(--sand-300); font-size: 14px; }
+.agn-s .tm-rad.hode { font: 600 12.5px/1.2 var(--sans); color: var(--graphite-600); }
+.agn-s .tm-rad .v { font: 600 14px/1 var(--mono); text-align: right; }
+.agn-s .filer { display: grid; gap: 6px; }
+.agn-s .fil { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: var(--r3); align-items: center; padding: 8px 12px; border: 1px solid var(--sand-300); border-radius: 10px; font-size: 14px; }
+.agn-s .fil b { display: block; font: 600 14px/1.3 var(--sans); }
+.agn-s .fil .kilde { display: block; }
+
+@media (min-width: 900px) {
+  .agn-s .live-topp { grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
+  .agn-s .media { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .agn-s .opptak { grid-template-columns: auto minmax(0, 1fr) auto; }
+  .agn-s .opptak .knapp { grid-column: auto; }
+}
