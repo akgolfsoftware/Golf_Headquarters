@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "7fbc76809cb41c16e6fbffd10ee9cf01ecc0b051",
+  "kodeversjon": "8853afe11358e97902fbb7616bb126793e663577",
   "inventar": {
-    "pageFiles": 549,
-    "uniqueRoutePatterns": 549,
+    "pageFiles": 550,
+    "uniqueRoutePatterns": 550,
     "componentFiles": 947,
     "surfaceFiles": 287,
     "byArea": {
@@ -18,7 +18,7 @@
       "delt-innsyn": 11,
       "personlig-arbeidsflate": 3,
       "systemtilstand": 2,
-      "playerhq": 186
+      "playerhq": 187
     }
   },
   "presisjon": {
@@ -20692,6 +20692,48 @@
       "kodekommentar": null
     },
     {
+      "screenId": "VIDERESENDING",
+      "rute": "/portal/tren/start",
+      "kildefil": "src/app/portal/tren/start/page.tsx",
+      "omrade": "playerhq",
+      "rolle": "spiller",
+      "designkilde": "kode",
+      "designversjon": "ikke-en-skjerm",
+      "komponentmonster": null,
+      "handlinger": "Send videre til et mål som ikke er en fast adresse i filen",
+      "dataApi": "ikke-avlest-i-D01",
+      "tilstander": [
+        "videresending",
+        "manglende-mal"
+      ],
+      "formater": {
+        "mobil": "ikke-kontrollert",
+        "nettbrett": "ikke-kontrollert",
+        "desktop": "ikke-kontrollert",
+        "natt": "ikke-relevant"
+      },
+      "status": {
+        "kartlagt": true,
+        "wireframe": false,
+        "uiUtkast": false,
+        "prototype": false,
+        "vurdert": false,
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
+        "kontrollertIApp": false
+      },
+      "eier": "D01-skjermregister",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "videresending",
+      "forklaring": "Filen sender videre, men målet er ikke en fast adresse. Det er ikke prøvd.",
+      "legacyGruppe": false,
+      "naermesteSkjermtype": null,
+      "sammeSidefil": [],
+      "videresendingMal": null,
+      "kodekommentar": null
+    },
+    {
       "screenId": "PH-19",
       "rute": "/portal/tren/teknisk-plan/[planId]",
       "kildefil": "src/app/portal/tren/teknisk-plan/[planId]/page.tsx",
@@ -24160,7 +24202,7 @@
     }
   ],
   "tellinger": {
-    "sidefiler": 549,
+    "sidefiler": 550,
     "medAvvik": 155,
     "valgtForBygging": 246,
     "utenEksaktType": 16,
@@ -24170,7 +24212,7 @@
       "intern-flate": 7,
       "felles-monster": 22,
       "tegnet-skjermtype": 280,
-      "videresending": 170,
+      "videresending": 171,
       "teknisk-forklaring": 33,
       "byggeunderlag": 37
     },
@@ -24192,7 +24234,7 @@
       "ST-06": 8,
       "ST-04": 3,
       "MK-BEKREFT": 1,
-      "VIDERESENDING": 170,
+      "VIDERESENDING": 171,
       "AG-05": 4,
       "AG-08": 3,
       "AG-15": 3,
