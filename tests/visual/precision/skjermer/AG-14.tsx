@@ -1,9 +1,8 @@
-/** Prøvefil for AG-14 Plan-hub, maler og øvelser. Oppdiktede data, ingen ekte spillere eller maler. */
-import { CircleAlert, RotateCw } from "lucide-react";
+/** Prøvefil for AG-14 Maler og øvelser i nytt design. Oppdiktede data, ingen ekte spillere eller maler. */
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { AdminRolleProvider } from "@/components/v2/rolle";
-import { FeilTilstand, Knapp, LasterTilstand } from "@/components/precision/pa";
-import { AG14PlanHub } from "@/components/admin/precision/AG14PlanHub";
+import { Feil, Laster } from "@/components/admin/agencyos-ny/ny";
+import { AG14PlanHubNy } from "@/components/admin/precision/AG14PlanHubNy";
 import { AG14Ovelseark } from "@/components/admin/precision/AG14Ovelseark";
 import type { PlanhubData, PlanhubFane, PlanhubMal } from "@/lib/agencyos/planhub-typer";
 
@@ -50,18 +49,15 @@ const Skall = ({ children }: { children: React.ReactNode }) => (
     <AgencyOSSkall navn="Test Coach">{children}</AgencyOSSkall>
   </AdminRolleProvider>
 );
-const Vis = (d: PlanhubData, fane: PlanhubFane = "ukemaler") => <Skall><AG14PlanHub data={d} startFane={fane} /></Skall>;
+const Vis = (d: PlanhubData, fane: PlanhubFane = "ukemaler") => <Skall><AG14PlanHubNy data={d} startFane={fane} /></Skall>;
 
 export const tilstander = {
   data: Vis(data),
-  program: Vis(data, "program"),
-  standardokter: Vis(data, "standardokter"),
   ovelser: Vis(data, "ovelser"),
-  "ny-ovelse": <Skall><AG14PlanHub data={data} startFane="ovelser" /><AG14Ovelseark open ovelse={null} onLukk={() => {}} onLagret={() => {}} /></Skall>,
-  "rediger-ovelse": <Skall><AG14PlanHub data={data} startFane="ovelser" /><AG14Ovelseark open ovelse={data.ovelser[3]!} onLukk={() => {}} onLagret={() => {}} /></Skall>,
+  "ny-ovelse": <Skall><AG14PlanHubNy data={data} startFane="ovelser" /><AG14Ovelseark open ovelse={null} onLukk={() => {}} onLagret={() => {}} /></Skall>,
+  "rediger-ovelse": <Skall><AG14PlanHubNy data={data} startFane="ovelser" /><AG14Ovelseark open ovelse={data.ovelser[3]!} onLukk={() => {}} onLagret={() => {}} /></Skall>,
   tom: Vis(tom),
   "tom-ovelser": Vis(tom, "ovelser"),
-  laster: <Skall><div className="pa-side"><LasterTilstand text="Henter maler og øvelser …" /></div></Skall>,
-  feil: <Skall><div className="pa-side"><FeilTilstand icon={CircleAlert} title="Plan-hub kunne ikke hentes" text="Ingen maler eller øvelser er endret. Prøv igjen."
-    retry={<Knapp variant="secondary" icon={RotateCw} iconName="rotate-cw">Prøv igjen</Knapp>} /></div></Skall>,
+  laster: <Skall><div className="agn-s"><Laster tekst="Henter maler og øvelser …" /></div></Skall>,
+  feil: <Skall><div className="agn-s"><Feil tittel="Maler og øvelser kunne ikke hentes" tekst="Ingen maler eller øvelser er endret. Prøv igjen." kode="FEIL · PLAN" onProv={() => {}} /></div></Skall>,
 };
