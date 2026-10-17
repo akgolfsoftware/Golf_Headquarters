@@ -1,5 +1,6 @@
 "use server";
 import { revalidatePath } from "next/cache";
+import { z } from "zod";
 import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
@@ -10,6 +11,7 @@ import type { WbResultat } from "./wb-actions";
 import type { WorkbenchSession } from "@/lib/domain/workbench/types";
 import { osloInstant } from "@/lib/jarvis/dagen";
 import { type SessionExecution, ExecutionCommandSchema, jsonObject, readSessionExecution, transitionSessionExecution } from "./wb-session-life";
+import { medFokus, nyBelastning, oktTypeFraPyramide } from "./etter-okta";
 
 // Samme eierskap, faktisk trenerrelasjon, samtykke- og gruppegrenser som wb-actions.
 // Vakt er intern; aldri en eksponert serverhandling som returnerer rå databaserader.
@@ -70,4 +72,40 @@ export async function mutateSessionExecution(input: unknown): Promise<WbResultat
     return { ok: false, error: error instanceof Error && /gjennomføring|registrering|pause|pågående|Utkast|historikk|Forespørselen/.test(error.message)
       ? error.message : "Gjennomføringen kunne ikke lagres. Ingen bekreftelse er gitt." };
   }
+}
+
+const VurderingSchema = z.object({
+  sessionId: z.string().min(1),
+  belastning: z.number().int().min(1).max(10),
+  fokus: z.number().int().min(1).max(10).nullable(),
+}).strict();
+
+/**
+ * PH-07 Etter økta: spilleren lagrer Belastning (eller «Hvor tungt») og Fokus på en
+ * gjennomført økt. Belastningen settes én gang (nyBelastning); fokus legges i snapshotet.
+ */
+export async function lagreVurderingEtterOkt(input: unknown): Promise<WbResultat<WorkbenchSession>> {
+  const parsed = VurderingSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: "Velg et tall fra 1 til 10." };
+  const access = await hentMedTilgang(parsed.data.sessionId);
+  if ("feil" in access) return { ok: false, error: access.feil };
+  const { row, viewer } = access;
+  if (viewer.id !== row.playerId) return { ok: false, error: "Bare spilleren vurderer egen økt." };
+  if (row.status !== "COMPLETED") return { ok: false, error: "Økta er ikke gjennomført ennå." };
+  const belastning = nyBelastning(row.perceivedEffort, parsed.data.belastning);
+  if (!belastning.ok) return { ok: false, error: belastning.feil };
+  const fokus = oktTypeFraPyramide(row.pyramid) === "fys" ? null : parsed.data.fokus;
+  try {
+    const snapshot = medFokus(row.liveSnapshot, fokus, new Date().toISOString());
+    const result = await prisma.workbenchSession.updateMany({
+      where: { id: row.id, playerId: row.playerId, status: "COMPLETED", updatedAt: row.updatedAt },
+      data: { perceivedEffort: belastning.verdi, liveSnapshot: snapshot as Prisma.InputJsonValue },
+    });
+    if (result.count !== 1) return { ok: false, error: "Økten ble endret samtidig. Last inn på nytt." };
+  } catch (error) {
+    return { ok: false, error: error instanceof Error && /gjennomføringsdata/.test(error.message) ? error.message : "Vurderingen kunne ikke lagres. Prøv igjen." };
+  }
+  revalidatePath(`/portal/tren/wb/${row.id}`);
+  revalidatePath(`/portal/live/${row.id}/summary`);
+  return lagreOgHent(row.id);
 }

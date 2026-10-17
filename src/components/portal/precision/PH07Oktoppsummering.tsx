@@ -8,8 +8,9 @@
  * øvelsene med mengde, tid og treff, og notat som lagres på økta.
  *
  * Avvik:
- *   - Belastning og Fokus 1–10 (golføkt) og «Hvor tungt» (fysisk økt) er ikke med: oppsummeringen
- *     har ikke disse feltene å lagre til. Lagring av notat er beholdt.
+ *   - Belastning og Fokus 1–10 (golføkt) og «Hvor tungt» (fysisk økt) lagres bare for Workbench-økter
+ *     (perceivedEffort og liveSnapshot.etterOkta). Eldre økter (TrainingSessionV2, planøkter) har ikke feltene.
+ *     Lagring av notat er beholdt der den finnes.
  *   - Notat lagres bare for TrainingSessionV2 (lagreDineOrd). For Workbench- og planøkter vises ikke notatfeltet,
  *     fordi det aldri ble lagret der; økta er lagret når den fullføres.
  *   - Bryteren «Del med coach» er fjernet: valget ble aldri lagret, og meldingen «Delt med coach» var ikke sann.
@@ -21,6 +22,8 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Check, X } from "lucide-react";
 import { AkseMerke, type Akse } from "@/components/precision/pa";
+import { EtterOktaVurdering, type VurderingLagre } from "@/components/portal/precision/EtterOktaVurdering";
+import type { OktType } from "@/lib/workbench/etter-okta";
 import {
   type OktoppsummeringData,
   formatTimerOgMinutter,
@@ -33,12 +36,15 @@ interface PH07OktoppsummeringProps {
   data: OktoppsummeringData;
   onSave?: (note: string, shareWithCoach: boolean) => Promise<void> | void;
   onCloseHref?: string;
+  /** Workbench-økt: Belastning/Fokus (golf) eller «Hvor tungt» (fysisk). */
+  vurdering?: { type: OktType; belastning: number | null; fokus: number | null; onLagre: VurderingLagre };
 }
 
 export function PH07Oktoppsummering({
   data,
   onSave,
   onCloseHref = "/portal",
+  vurdering,
 }: PH07OktoppsummeringProps) {
   const empty = data.totalShots === 0 && data.completedDrillsCount === 0;
 
@@ -105,6 +111,8 @@ export function PH07Oktoppsummering({
           <span className="sub">{[r.quantityText, r.hitsText].filter((x) => x && x !== "—").join(" · ") || "—"}</span>
         </div>)}</div>
       </section>}
+
+      {vurdering && <EtterOktaVurdering type={vurdering.type} belastning={vurdering.belastning} fokus={vurdering.fokus} onLagre={vurdering.onLagre} />}
 
       {onSave ? <section className="phn-kort" aria-label="Notat">
         <label className="phn-felt" htmlFor="ph07-notat">Notat til coach

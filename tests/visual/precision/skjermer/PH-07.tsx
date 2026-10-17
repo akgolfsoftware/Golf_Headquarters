@@ -18,5 +18,7 @@ const data: OktoppsummeringData = {
 export const tilstander = {
   data: <PH07Oktoppsummering data={data} onSave={async () => {}} />,
   workbench: <PH07Oktoppsummering data={data} />,
+  vurdering: <PH07Oktoppsummering data={data} vurdering={{ type: "golf", belastning: null, fokus: null, onLagre: async () => ({ ok: true }) }} />,
+  fysisk: <PH07Oktoppsummering data={{ ...data, title: "Styrke bein og kjerne", axes: [{ axis: "fys", actualMin: 45, plannedMin: 45 }] }} vurdering={{ type: "fys", belastning: 6, fokus: null, onLagre: async () => ({ ok: true }) }} />,
   tom: <PH07Oktoppsummering data={{ ...data, totalShots: 0, completedDrillsCount: 0, drillRows: [], dagsform: "" }} onSave={async () => {}} />,
 };

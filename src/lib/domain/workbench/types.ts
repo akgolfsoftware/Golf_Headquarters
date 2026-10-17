@@ -211,6 +211,8 @@ export interface WorkbenchSession {
   actualMinutes?: number | null;
   /** Beregnet belastning (sRPE-poeng = minutter × anstrengelse) */
   load?: number | null;
+  /** Fokus 1–10 etter golføkt (PH-07), fra liveSnapshot.etterOkta. */
+  fokusEtterOkt?: number | null;
   /** Felter fra den kanoniske øktmodellen, brukt når migrerte økter vises. */
   rationale?: string;
   skillArea?: string;
