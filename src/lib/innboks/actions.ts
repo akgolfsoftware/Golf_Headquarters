@@ -19,6 +19,8 @@ import { prisma } from "@/lib/prisma";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { audit } from "@/lib/audit";
 import { resendKlient, FRA_EPOST } from "@/lib/email";
+import { rateLimit } from "@/lib/rate-limit";
+import { genererUtkast } from "./generer-utkast";
 
 
 
@@ -102,4 +104,27 @@ export async function arkiverEpost(epostId: string): Promise<void> {
   await audit({ actorId: user.id, action: "innboks_epost.arkiver", target: epostId });
 
   REVALIDER();
+}
+
+/**
+ * «Lag utkast» i Innboks (AG-04): Jarvis lager et nytt utkast til en e-post som
+ * mangler utkast (eller der coachen forkastet det). Bare head coach (ADMIN),
+ * som e-postinnboksen ellers. Lagrer utkastet på e-posten og returnerer teksten —
+ * ingenting sendes. Rate-limitet fordi hvert kall går til AI.
+ */
+export async function lagEpostUtkast(
+  epostId: string,
+): Promise<{ ok: true; tekst: string } | { ok: false; feil: string }> {
+  const user = await requirePortalUser({ allow: ["ADMIN"] });
+  const limit = await rateLimit({ key: `innboks-utkast:${user.id}`, max: 10, windowMs: 60_000 });
+  if (!limit.ok) return { ok: false, feil: "For mange utkast på kort tid. Vent litt og prøv igjen." };
+
+  const epost = await prisma.innboksEpost.findUnique({ where: { id: epostId }, select: { status: true } });
+  if (!epost) return { ok: false, feil: "Fant ikke e-posten." };
+  if (epost.status === "SENDT" || epost.status === "ARKIVERT") return { ok: false, feil: "E-posten er allerede besvart." };
+
+  await genererUtkast(epostId);
+  const etter = await prisma.innboksEpost.findUnique({ where: { id: epostId }, select: { utkastSvar: true } });
+  if (!etter?.utkastSvar) return { ok: false, feil: "Jarvis klarte ikke å lage et utkast. Skriv svaret selv." };
+  return { ok: true, tekst: etter.utkastSvar };
 }

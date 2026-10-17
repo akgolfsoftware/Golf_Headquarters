@@ -116,3 +116,14 @@
   .agn-s .nokkel.fire { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .agn-s .to-kort { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
+/* AI-dispatch på Cockpit: én ting nå og hvilken flate som eier resten (skill agenticos-cockpit) */
+.agn-s .dispatch-na { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--r3); align-items: center; padding: 14px 16px; border-radius: 12px; background: var(--graphite-900); color: var(--white); text-decoration: none; min-height: 56px; }
+.agn-s .dispatch-na .e { display: block; font: 600 11.5px/1.2 var(--sans); letter-spacing: .04em; text-transform: uppercase; opacity: .75; }
+.agn-s .dispatch-na b { display: block; font: 600 16px/1.3 var(--sans); }
+.agn-s .dispatch-na .ikon { width: 20px; height: 20px; }
+.agn-s .dispatch-rad { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--r3); align-items: center; padding: 10px 0; border-bottom: 1px solid var(--sand-300); text-decoration: none; color: inherit; min-height: 52px; }
+.agn-s .dispatch-rad:last-child { border-bottom: 0; }
+.agn-s .dispatch-rad b { display: block; font: 500 15px/1.35 var(--sans); }
+.agn-s .dispatch-rad .type { justify-self: end; }
+.agn-s .dispatch-rad.hoy .type { background: var(--graphite-900); color: var(--white); }

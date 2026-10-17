@@ -14,9 +14,13 @@
  *    sammen med resten av køen og finnes ikke som eget tall.
  *   - Kort svar fra Cockpit og avhuking av Notion-oppgaver finnes ikke i koden.
  *   - Øktblokkene får aksefarge bare når tittelen sier aksen; ellers nøytral grå.
+ *   - AI-dispatch («Én ting nå» og hvilken AI-flate som eier køen) er ikke i
+ *     utkastet, men beholdes fra forrige cockpit (skill agenticos-cockpit).
  */
 import Link from "next/link";
 import { useSyncExternalStore } from "react";
+import { ArrowRight } from "lucide-react";
+import type { AiDispatchData } from "@/lib/agencyos/ai-dispatch-build";
 import { PrintButton } from "@/components/shared/print-button";
 import { EksportTrigger } from "@/components/shared/eksport-trigger";
 import { KAL_START_MIN, KAL_SLUTT_MIN, hhmm, type AG01Data, type CockpitKalenderRad } from "@/lib/agencyos/cockpit-precision";
@@ -95,7 +99,22 @@ function Tom({ children }: { children: React.ReactNode }) {
   return <div className="kort dempet"><p className="forklar">{children}</p></div>;
 }
 
-export function AG01Cockpit({ tilstand, data }: { tilstand: AG01Tilstand; data: AG01Data }) {
+function Dispatch({ d }: { d: AiDispatchData }) {
+  return <Seksjon tittel="Jarvis: én ting nå" kilde="Hvem eier køen">
+    {d.enTingNa && <Link href={d.enTingNa.href} className="dispatch-na">
+      <span><span className="e">Én ting nå</span><b>{d.enTingNa.tekst}</b></span>
+      <ArrowRight className="ikon" aria-hidden />
+    </Link>}
+    {d.rader.length > 0 && <div className="kort tett">
+      {d.rader.map((r) => <Link key={r.id} href={r.href} className={`dispatch-rad${r.prioritet === "hoy" ? " hoy" : ""}`}>
+        <span><b>{r.oppgave}</b><span className="kilde">Ferdig når: {r.ferdigNar}</span></span>
+        <span className="type">{r.tilLabel}</span>
+      </Link>)}
+    </div>}
+  </Seksjon>;
+}
+
+export function AG01Cockpit({ tilstand, data, dispatch = null }: { tilstand: AG01Tilstand; data: AG01Data; dispatch?: AiDispatchData | null }) {
   const paaNett = usePaaNett();
   const topp = <div className="topp">
     <div className="topp-rad">
@@ -142,6 +161,7 @@ export function AG01Cockpit({ tilstand, data }: { tilstand: AG01Tilstand; data: 
             <div className="lg-rad" aria-hidden><span className="lg"><i className="a-fys" />FYS</span><span className="lg"><i className="a-tek" />TEK</span><span className="lg"><i className="a-slag" />SLAG</span><span className="lg"><i className="a-spill" />SPILL</span><span className="lg"><i className="a-turn" />TURN</span><span className="lg"><i className="a-noy" />Akse ikke satt</span></div>
           </> : <Tom>Ingen coaching- eller gruppeøkter i dag.</Tom>}
         </Seksjon>
+        {dispatch && !tom && <Dispatch d={dispatch} />}
         <Seksjon tittel="Venter på svar" lenke={{ href: "/admin/innboks", tekst: "Hele innboksen" }}>
           {d.venter.rader.length === 0 ? <Tom>Ingenting venter på deg. Godkjenninger, forespørsler og utkast dukker opp her.</Tom> : <div className="kort tett">
             {d.venter.rader.map((r) => <div key={r.id} className="svar-rad">
