@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "2be576ec31e1fe224ae4a98aee7c3cf73d3b2158",
+  "kodeversjon": "08779426addbb7ea73869e27c3b959a1355fc9e2",
   "inventar": {
     "pageFiles": 551,
     "uniqueRoutePatterns": 551,
-    "componentFiles": 948,
+    "componentFiles": 943,
     "surfaceFiles": 287,
     "byArea": {
       "interne-eksempler": 6,
@@ -11020,21 +11020,19 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "precision-visning",
+        "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Sjekk e-post merker AU02SjekkEpost i Precision. Lenkene til registrering og innlogging er beholdt. Tegningens 24-timersfrist er ikke innført. Kilde: ui_kits/konto/screens/AU-01-03.jsx, AU02. Målt lokalt 03.10.2026 i kjørende app på 390×844 og 1440×880. Ikke satt kontrollert-i-app.",
-      "avvik": [
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
+      "kontrollbevis": null,
+      "avvik": [],
       "kobling": "tegnet-skjermtype",
       "forklaring": "AU-02 Registrer er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "AU-02"
     },
     {
       "screenId": "AU-02",
@@ -11157,14 +11155,16 @@
       },
       "eier": "D01-skjermregister",
       "kontrollbevis": null,
-      "avvik": [],
+      "avvik": [
+        "Kodekommentaren sier AU-04, men skjermlisten har ingen treff. Kommentaren er opphav, ikke godkjenning."
+      ],
       "kobling": "teknisk-forklaring",
       "forklaring": "Ingen tegnet skjermtype ligger i nærheten av ruten. Ruten beholdes og må forklares før den porteres eller skjules.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "AU-04"
     },
     {
       "screenId": "AU-03",
@@ -11195,22 +11195,19 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "precision-visning",
+        "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Glemt passord merker AU03Glemt i Precision. resetPasswordForEmail og redirect til reset er beholdt. Kilde: ui_kits/konto/screens/AU-01-03.jsx, AU03. Målt lokalt 03.10.2026 i kjørende app på 390×844 og 1440×880. Ikke satt kontrollert-i-app.",
-      "avvik": [
-        "Kodekommentaren sier AU-01. Skjermlisten sier AU-03. Kommentaren er opphav, ikke en ny godkjenning.",
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
+      "kontrollbevis": null,
+      "avvik": [],
       "kobling": "tegnet-skjermtype",
       "forklaring": "AU-03 Passord er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": "AU-01"
+      "kodekommentar": "AU-03"
     },
     {
       "screenId": "AU-05",
@@ -11373,14 +11370,12 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "precision-visning",
+        "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Innlogging merker AU01Innlogging i Precision. Magisk lenke, kode, passord og Google er beholdt. Kilde: ui_kits/konto/screens/AU-01-03.jsx, AU01. Målt lokalt 03.10.2026 i kjørende app på 390×844 og 1440×880. Vercel-preview er bak SSO. Ikke satt kontrollert-i-app.",
-      "avvik": [
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
+      "kontrollbevis": null,
+      "avvik": [],
       "kobling": "tegnet-skjermtype",
       "forklaring": "AU-01 Logg inn er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -11549,22 +11544,19 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "precision-visning",
+        "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Nytt passord merker AU03NyttPassord i Precision. updateUser, minst 8 tegn og likhetssjekk er beholdt. Tegningen ber om minst 10 tegn og ett tall. Den regelen er ikke innført. Kilde: ui_kits/konto/screens/AU-01-03.jsx, AU03. Målt lokalt 03.10.2026 i kjørende app på 390×844 og 1440×880. Ikke satt kontrollert-i-app.",
-      "avvik": [
-        "Kodekommentaren sier AU-01. Skjermlisten sier AU-03. Kommentaren er opphav, ikke en ny godkjenning.",
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
+      "kontrollbevis": null,
+      "avvik": [],
       "kobling": "tegnet-skjermtype",
       "forklaring": "AU-03 Passord er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": "AU-01"
+      "kodekommentar": "AU-03"
     },
     {
       "screenId": "AU-05",
@@ -11640,21 +11632,19 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "precision-visning",
+        "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Registrering merker AU02Registrering i Precision. signUp, pakker, rolle, Google, minst 8 tegn og samtykke er beholdt. Tegningens firestegs Talent/Full-veiviser og prisene 0 kr / 299 kr / 2 690 kr er ikke innført. Kilde: ui_kits/konto/screens/AU-01-03.jsx, AU02. Målt lokalt 03.10.2026 i kjørende app på 390×844 og 1440×880. Ikke satt kontrollert-i-app.",
-      "avvik": [
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
+      "kontrollbevis": null,
+      "avvik": [],
       "kobling": "tegnet-skjermtype",
       "forklaring": "AU-02 Registrer er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "AU-02"
     },
     {
       "screenId": "UTEN-TEGNET-TYPE",
@@ -24244,10 +24234,10 @@
   ],
   "tellinger": {
     "sidefiler": 551,
-    "medAvvik": 154,
+    "medAvvik": 150,
     "valgtForBygging": 246,
     "utenEksaktType": 17,
-    "implementert": 124,
+    "implementert": 119,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,
