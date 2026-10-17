@@ -26,7 +26,8 @@ Følg AGENTS.md §Git-arbeidsflyt. Bestilt lokalt arbeid gir ikke i seg selv til
 ## Push og merge
 - Når en oppgave er ferdig: commit, push branchen og lag PR uten å spørre.
 - Etter push: gi Anders Vercel preview-lenken og skjermbilder på 390 px og desktop av alle skjermer som er endret.
-- Merge ALDRI til main før Anders har skrevet «merge». Han sjekker designet manuelt først. **Unntak: §Nattkjøring under, mens den gjelder.**
+- **Alt som er klart legges inn i main automatisk** (Anders 17.10.2026): slå på auto-merge (squash) på PR-en når den er laget. Klart betyr at `npm run verify` er grønn lokalt og alle sjekker i CI er grønne. Rødt legges aldri inn. Anders trenger ikke skrive «merge».
+- Unntakene i AGENTS.md §Stående forhåndsgodkjenning gjelder fortsatt: ingen ekte betaling, e-post til ekte personer, sletting av produksjonsdata, brytende skjemaendring, domeneflytting eller hemmeligheter uten ny beskjed fra Anders.
 - Push aldri direkte til main.
 
 ## Nattkjøring 16.–17.10.2026 (Anders 16.10 kl. 22:45, gjelder til Anders opphever den)
