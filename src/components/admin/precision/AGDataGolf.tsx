@@ -18,12 +18,13 @@ import Link from "next/link";
 import { ChevronRight, Search } from "lucide-react";
 import { KnappLenke, Pille, Seksjon, Tom, Topp, Nokkelverdier } from "@/components/admin/agencyos-ny/ny";
 import type { DgProffRad } from "@/lib/admin/datagolf/coach-data";
+import { formaterFortegn, formaterTall } from "@/lib/format-tall";
 import "@/styles/agencyos-ny-datagolf.css";
 
 const nb = new Intl.DateTimeFormat("nb-NO", { timeZone: "Europe/Oslo", day: "numeric", month: "short", year: "numeric" });
 export const dato = (d: Date | null | undefined) => (d ? nb.format(d) : "—");
-export const sg = (v: number | null | undefined) => (v == null ? "—" : `${v > 0 ? "+" : v < 0 ? "−" : ""}${Math.abs(v).toFixed(2).replace(".", ",")}`);
-export const tall = (v: number | null | undefined, d = 1) => (v == null ? "—" : v.toFixed(d).replace(".", ","));
+export const sg = (v: number | null | undefined) => formaterFortegn(v, 2);
+export const tall = (v: number | null | undefined, d = 1) => formaterTall(v, d, true);
 
 export function PoweredBy() {
   return <p className="dg-powered">Powered by <a href="https://datagolf.com" target="_blank" rel="noopener noreferrer">Data Golf</a> · ingen eksport</p>;
