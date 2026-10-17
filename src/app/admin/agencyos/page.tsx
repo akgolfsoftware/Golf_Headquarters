@@ -10,6 +10,8 @@
  *  - lastGodkjenninger: køen, samme tall og rader som /admin/ko.
  *  - lastCockpitTillegg: «Følger ikke planen» (to siste uker) og turneringer
  *    denne uka, i coachens spillerskop.
+ *  - loadAiDispatch: AI-dispatch («Én ting nå» og hvilken AI-flate som eier
+ *    køen), skill agenticos-cockpit. Nye e-poster telles bare for ADMIN.
  *
  * Tilgang: ADMIN og COACH, som før.
  *
@@ -28,6 +30,8 @@ import { loadDailyBrief } from "@/lib/agencyos/daily-brief-data";
 import { lastGodkjenninger } from "@/lib/admin/ko/last-godkjenninger";
 import { lastCockpitTillegg } from "@/lib/agencyos/cockpit-tillegg";
 import { byggAG01Data } from "@/lib/agencyos/cockpit-precision";
+import { loadAiDispatch } from "@/lib/agencyos/ai-dispatch-data";
+import { prisma } from "@/lib/prisma";
 import { ukenummer } from "@/lib/uke-helpers";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { AG01Cockpit } from "@/components/admin/precision/AG01Cockpit";
@@ -39,10 +43,12 @@ export default async function CockpitPage() {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
   const coach = { id: user.id, role: user.role };
 
-  const [brief, ko, tillegg] = await Promise.all([
+  const innboksNye = user.role === "ADMIN" ? prisma.innboksEpost.count({ where: { status: "NY" } }) : Promise.resolve(0);
+  const [brief, ko, tillegg, dispatch] = await Promise.all([
     loadDailyBrief({ id: user.id, name: user.name, avatarUrl: user.avatarUrl, role: user.role }),
     lastGodkjenninger(coach),
     lastCockpitTillegg(coach),
+    innboksNye.then((n) => loadAiDispatch({ id: user.id, role: user.role, innboksNye: n })),
   ]);
 
   const naa = new Date();
@@ -54,7 +60,7 @@ export default async function CockpitPage() {
 
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
-      <AG01Cockpit tilstand="data" data={data} />
+      <AG01Cockpit tilstand="data" data={data} dispatch={dispatch} />
     </AgencyOSSkall>
   );
 }
