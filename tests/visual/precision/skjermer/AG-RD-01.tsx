@@ -1,7 +1,7 @@
 /** Prøvefil for AG-RD-01 Rundeanalyse. Syntetiske data, oppdiktede navn. */
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { AdminRolleProvider } from "@/components/v2/rolle";
-import { AGRD01Runder, type RunderData } from "@/components/admin/precision/AGRD01Runder";
+import { AGRD01RunderNy as AGRD01Runder, type RunderData } from "@/components/admin/precision/AGRD01RunderNy";
 import Loading from "@/app/admin/runder/loading";
 import Feil from "@/app/admin/runder/error";
 

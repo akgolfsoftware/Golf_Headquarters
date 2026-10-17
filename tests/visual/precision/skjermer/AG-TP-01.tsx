@@ -1,5 +1,5 @@
 /** Prøvefil for AG-TP-01 Oppgaveskjema. Syntetiske data. */
-import { AG10TekniskPlan } from "@/components/admin/precision/AG10TekniskPlan";
+import { AG10TekniskPlanNy as AG10TekniskPlan } from "@/components/admin/precision/AG10TekniskPlanNy";
 import { TOMT_SKJEMA, oppgaveVisning, skjemaFraOppgave } from "@/lib/teknisk-plan/tp-visning";
 import { t1, tpPlan } from "./_tp-data";
 
