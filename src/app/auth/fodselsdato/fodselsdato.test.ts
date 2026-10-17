@@ -41,6 +41,11 @@ mock.module("@/components/portal/portal-providers", {
 });
 // Skjemaet er en klientkomponent med stilark; siden testes uten det.
 mock.module("./fodselsdato-skjema", { namedExports: { FodselsdatoSkjema: () => null } });
+// Rammen og ikonet fra AU-04 (nytt design) er presentasjon; siden testes uten dem.
+mock.module("@/components/flater/FlateRamme", {
+  namedExports: { FlateRamme: ({ children }: { children: unknown }) => children },
+});
+mock.module("lucide-react", { namedExports: { CalendarDays: () => null } });
 mock.module("@/lib/error-tracking", { namedExports: { logError: async () => undefined } });
 mock.module("@/lib/email", {
   namedExports: { resendKlient: () => ({ emails: { send: async () => undefined } }), FRA_EPOST: "x@y.no" },
