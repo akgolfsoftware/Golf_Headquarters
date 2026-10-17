@@ -5,8 +5,8 @@ import { reportClientError } from "@/lib/report-client-error";
 import { PrecisionTilstand } from "@/components/system/precision-tilstand";
 
 /**
- * Segment-feilside (500). Rapportering og reset() er beholdt.
- * Tegningens faste referanse «7F3A-26» er ikke innført.
+ * SY-01 500 i nytt design (gfgk-system.html). Rapportering og reset() er beholdt.
+ * Referansen er Next sin digest; tegningens faste referanse er demodata og vises ikke.
  */
 export default function Error({
   error,
@@ -30,10 +30,10 @@ export default function Error({
     <PrecisionTilstand
       kicker="500"
       tittel="Noe gikk galt hos oss"
-      tekst="Dette er ikke din feil, og ingenting du har registrert har gått tapt. Feilen er logget, og vi jobber med å løse det."
-      kode={error.digest ? `Feil 500 · ${error.digest}` : "Feil 500"}
+      tekst="Siden kunne ikke vises. Det du lagret før, er ikke borte."
+      kode={error.digest ? `Referanse: ${error.digest} · oppgi den hvis du kontakter post@akgolf.no` : undefined}
       primarKnapp={{ label: "Prøv igjen", onClick: reset }}
-      sekundar={{ label: "Til hjem", href: "/" }}
+      sekundar={{ label: "Til forsiden", href: "/" }}
     />
   );
 }
