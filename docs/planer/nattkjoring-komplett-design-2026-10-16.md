@@ -114,6 +114,7 @@ Fylles av øktene underveis. Hvert punkt: hva, hvilken anbefaling som ble valgt,
 ---
 
 - **A4 · AgencyOS pakke 1 (Cockpit og Innboks):** AI-dispatch («Jarvis: én ting nå») står på Cockpit under dagens kalender, selv om utkastet ikke har det (skill agenticos-cockpit sier det skal beholdes). «Lag utkast» virker for e-post (Jarvis lager utkast, coachen sender); for spørsmål fra spillere er knappen fortsatt av, fordi det ikke finnes en navnevasket utkastlager for dem. Leads vises under Oppfølging bare for head coach, som e-posten, med «Skriv e-post» som åpner e-postprogrammet. E-postkonto nr. 2 (akgolfgroup@gmail.com) kommer ikke inn i innboksen ennå; det krever en ny inntakskobling.
+- **A3 · PlayerHQ pakke 15 (Hjelp):** De 16 artiklene fra `hjelpeartikler.md` ligger i appen (`src/lib/portal-hjelp/artikler.ts`). «Koble til TrackMan» er ikke publisert, fordi importknappen ikke finnes i Stats › Trening ennå. Tre artikler er rettet mot appen: passordbyttet ber ikke om nåværende passord, målsetninger lages fra Plan › Målsetninger, og tofaktor lover ikke kode ved innlogging. Kontakt og tilbakemelding er ett skjema, «Skriv til oss», uten «Send anonymt» og uten «Tillat innsyn»; meldingen lagres på kontoen og går til post@akgolf.no. «Spør Anders» heter «Skriv til coachen».
 
 ## 7. Morgenrapport
 
