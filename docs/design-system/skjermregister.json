@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "cc759f3044d244c8b8c9a09edc21949cb776e814",
+  "kodeversjon": "8853afe11358e97902fbb7616bb126793e663577",
   "inventar": {
     "pageFiles": 550,
     "uniqueRoutePatterns": 550,
-    "componentFiles": 946,
-    "surfaceFiles": 288,
+    "componentFiles": 947,
+    "surfaceFiles": 287,
     "byArea": {
       "interne-eksempler": 6,
       "marked-og-offentlig": 70,
@@ -13927,7 +13927,7 @@
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Workbench-øktarket merker PH03WbArk i PlayerHQSkall. Start, fortsett, fullfør, hopp over, belastning og recap er beholdt. Utkast er fortsatt skjult. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-03.jsx ligger ikke i git.",
+      "kontrollbevis": "Workbench-øktarket merker PH03WbArk i PlayerHQSkall, i nytt design (PH03WbOktark, pakke 2, utkast-playerhq/treningsokt.html). Start, fortsett, fullfør, hopp over og oppsummering er beholdt; fullfør spør om Belastning og Fokus (golføkt) eller «Hvor tungt» (fysisk). Utkast er fortsatt skjult. Målt i prøven tests/visual/precision/skjermer/PH-03-WB.tsx i 390, 360 og 1440 natt 17.10.",
       "avvik": [
         "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
@@ -13940,20 +13940,19 @@
       "kodekommentar": "PH-03"
     },
     {
-      "screenId": "PH-02",
+      "screenId": "VIDERESENDING",
       "rute": "/portal/tren/wb",
       "kildefil": "src/app/portal/(fullscreen)/tren/wb/page.tsx",
       "omrade": "playerhq",
       "rolle": "spiller",
-      "designkilde": "AK Golf Precision Athletics (7d7c2994-cf63-4c5f-9bdc-fdaf67655a70)",
-      "designversjon": "precision-athletics-2026-09-28",
-      "komponentmonster": "/portal/tren/wb",
-      "handlinger": "Dagens økter og oppgaver, åpne økt",
+      "designkilde": "kode",
+      "designversjon": "ikke-en-skjerm",
+      "komponentmonster": null,
+      "handlinger": "Send videre til /portal",
       "dataApi": "ikke-avlest-i-D01",
       "tilstander": [
-        "tom",
-        "laster",
-        "feil"
+        "videresending",
+        "manglende-mal"
       ],
       "formater": {
         "mobil": "ikke-kontrollert",
@@ -13968,21 +13967,19 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": false,
-        "implementert": "precision-visning",
+        "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Dagens Workbench-økter merker PH02WbDag i PlayerHQSkall. Publiserte, pågående og fullførte økter lenker til øktarket. Øktarket er ikke med. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-02.jsx ligger ikke i git.",
-      "avvik": [
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
-      "kobling": "tegnet-skjermtype",
-      "forklaring": "PH-02 Gjør nå utgår i IA 28.09.2026. Funksjonen hører hjemme i PH-01 I dag. Skjermen skal ikke bygges.",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "videresending",
+      "forklaring": "Filen har ingen egen visning. Den sender til /portal. At målet finnes, og hva brukeren ser hvis lenken er ugyldig, er ikke prøvd i denne bolken.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
-      "videresendingMal": null,
-      "kodekommentar": "PH-02"
+      "videresendingMal": "/portal",
+      "kodekommentar": "PH-01"
     },
     {
       "screenId": "VIDERESENDING",
@@ -24206,16 +24203,16 @@
   ],
   "tellinger": {
     "sidefiler": 550,
-    "medAvvik": 156,
+    "medAvvik": 155,
     "valgtForBygging": 246,
     "utenEksaktType": 16,
-    "implementert": 127,
+    "implementert": 126,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,
       "felles-monster": 22,
-      "tegnet-skjermtype": 281,
-      "videresending": 170,
+      "tegnet-skjermtype": 280,
+      "videresending": 171,
       "teknisk-forklaring": 33,
       "byggeunderlag": 37
     },
@@ -24237,7 +24234,7 @@
       "ST-06": 8,
       "ST-04": 3,
       "MK-BEKREFT": 1,
-      "VIDERESENDING": 170,
+      "VIDERESENDING": 171,
       "AG-05": 4,
       "AG-08": 3,
       "AG-15": 3,
@@ -24285,7 +24282,6 @@
       "PH-09": 3,
       "PH-15": 1,
       "PH-03": 2,
-      "PH-02": 2,
       "PH-17": 4,
       "PH-26": 11,
       "PH-13": 5,
@@ -24296,6 +24292,7 @@
       "PH-23": 9,
       "PH-21": 13,
       "PH-20": 3,
+      "PH-02": 1,
       "PH-IUP-01": 1,
       "PH-10": 3,
       "PH-19": 7,
