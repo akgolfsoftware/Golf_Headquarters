@@ -4,11 +4,12 @@
  * Precision Athletics — Oppsett (AG-23).
  *
  * Kilde: Claude Design AG-23 (designsystem/precision-athletics/ui_kits/agencyos/screens/AG-23.jsx).
- * Ruter: /admin/oppsett, /admin/profile, /admin/team/ekstern, /admin/team/inviter, /admin/marketing.
+ * Ruter: /admin/oppsett, /admin/profile, /admin/team/ekstern, /admin/team/inviter.
  *
  * Viser bare det som finnes i basen (egen profil, team). Alt som ikke er koblet er
  * deaktivert med «Ikke koblet ennå»; ingenting lagres eller bekreftes falskt.
- * Faner: profil, team, inviter, ekstern, varsler, integr, mark, virks.
+ * Faner: profil, team, inviter, ekstern, varsler, integr, virks.
+ * Markedsføring er fjernet (Anders 16.10.2026); /admin/marketing sender hit.
  */
 
 import { useState } from "react";
@@ -57,7 +58,6 @@ const TABS = [
   { value: "ekstern", label: "Ekstern trener" },
   { value: "varsler", label: "Varsler" },
   { value: "integr", label: "Integrasjoner" },
-  { value: "mark", label: "Markedsføring" },
   { value: "virks", label: "Virksomhet" },
 ];
 
@@ -197,17 +197,6 @@ export function AG23Oppsett({ tilstand = "data", data = TOM_DATA, startFane = "t
             tekst="Status for TrackMan, GolfBox, Tripletex, Notion og Data Golf leses ikke her ennå."
             href="/admin/workspace/notion"
             lenke="Åpne Notion-oppsett"
-          />
-        </div>
-      )}
-
-      {aktivFane === "mark" && (
-        <div data-testid="ag23-fane-mark">
-          <IkkeKoblet
-            tittel="Markedsføring styres på egen side"
-            tekst="Forsidetekster lagres på markedssiden. Her lages ingenting."
-            href="/admin/marketing"
-            lenke="Åpne markedsføring"
           />
         </div>
       )}
