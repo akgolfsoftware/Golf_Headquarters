@@ -1,0 +1,81 @@
+/*
+ * PlayerHQ pakke 15 Hjelp: Hjelp, Én kategori, Én artikkel, Skriv til oss og Sendt.
+ * Fasit: docs/design-system/utkast-playerhq/hjelp.html (utkast 1, 16.10.2026).
+ * Bygger på playerhq-ny.css og playerhq-ny-meg.css. Avgrenset til .phn.phn-hjelp.
+ * Ingen rust: skjermene sletter eller avslutter ingenting. Aksefargene bare i pyramide-artikkelen.
+ */
+
+.phn-hjelp .hj-ingress { margin: 0; font: 400 16px/1.5 var(--phn-sans); color: var(--phn-g800); max-width: 60ch; }
+.phn-hjelp .hj-melding { display: flex; gap: 10px; align-items: center; padding: 12px 14px; border-radius: 10px; font: 500 14px/1.4 var(--phn-sans); background: var(--phn-rust-50); color: var(--phn-g900); }
+.phn-hjelp .hj-sok { position: relative; }
+.phn-hjelp .hj-sok input { width: 100%; min-height: 52px; padding: 12px 14px 12px 44px; border: 1px solid var(--phn-g500); border-radius: 12px; font: 400 16px/1.4 var(--phn-sans); color: var(--phn-g900); background: var(--phn-hvit); }
+.phn-hjelp .hj-sok svg { position: absolute; left: 14px; top: 16px; color: var(--phn-g600); }
+.phn-hjelp .hj-kat-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.phn-hjelp .hj-kat { display: grid; gap: 6px; align-content: start; padding: 14px; border: 1px solid var(--phn-sand-300); border-radius: 12px; background: var(--phn-hvit); color: inherit; text-decoration: none; min-height: 112px; min-width: 0; }
+.phn-hjelp .hj-kat b { font: 600 15px/1.3 var(--phn-sans); overflow-wrap: anywhere; }
+.phn-hjelp .hj-kat .phn-kilde { font-size: 13px; }
+.phn-hjelp .hj-kat.tek { background: var(--phn-tek-ink); color: #fff; border: 0; }
+.phn-hjelp .hj-kat.tek .ikonboks { background: rgba(255,255,255,.2); color: #fff; }
+.phn-hjelp .hj-kat.tek .phn-kilde { color: #fff; opacity: .9; }
+.phn-hjelp .hj-faq { display: grid; border: 1px solid var(--phn-sand-300); border-radius: 12px; overflow: hidden; background: var(--phn-hvit); }
+.phn-hjelp .hj-faq details { border-bottom: 1px solid var(--phn-sand-300); }
+.phn-hjelp .hj-faq details:last-child { border-bottom: 0; }
+.phn-hjelp .hj-faq summary { list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 56px; padding: 10px 14px; font: 600 15px/1.35 var(--phn-sans); cursor: pointer; }
+.phn-hjelp .hj-faq summary::-webkit-details-marker { display: none; }
+.phn-hjelp .hj-faq summary svg { transition: transform 200ms var(--phn-ut); flex: none; }
+.phn-hjelp .hj-faq details[open] summary svg { transform: rotate(180deg); }
+.phn-hjelp .hj-faq p { margin: 0; padding: 0 14px 14px; font-size: 14.5px; line-height: 1.55; color: var(--phn-g800); }
+.phn-hjelp .hj-skriv { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: center; }
+.phn-hjelp .hj-skriv .ikonboks { width: 44px; height: 44px; border-radius: 12px; background: var(--phn-g900); color: #fff; }
+.phn-hjelp .hj-skriv p { margin: 4px 0 0; }
+
+/* Artikkel */
+.phn-hjelp .hj-artikkel { display: grid; gap: 16px; max-width: 68ch; min-width: 0; }
+.phn-hjelp .hj-artikkel p { margin: 0; font-size: 16px; line-height: 1.65; color: var(--phn-g800); }
+.phn-hjelp .hj-artikkel :is(ul, ol) { margin: 0; padding-left: 20px; display: grid; gap: 8px; font-size: 16px; line-height: 1.6; color: var(--phn-g800); }
+.phn-hjelp .hj-artikkel b { font-weight: 600; color: var(--phn-g900); }
+.phn-hjelp .hj-akser { display: grid; gap: 8px; }
+.phn-hjelp .hj-akse-rad { display: grid; grid-template-columns: 72px minmax(0, 1fr); border-radius: 12px; overflow: hidden; color: #fff; }
+.phn-hjelp .hj-akse-rad b.k { display: grid; place-items: center; font: 600 14px/1 var(--phn-mono); letter-spacing: .06em; background: rgba(0,0,0,.14); color: #fff; }
+.phn-hjelp .hj-akse-rad span { padding: 12px 14px; font-size: 14.5px; line-height: 1.45; }
+.phn-hjelp .hj-akse-rad span b { color: #fff; }
+.phn-hjelp .hj-akse-rad.fys { background: var(--phn-fys-ink); }
+.phn-hjelp .hj-akse-rad.tek { background: var(--phn-tek-ink); }
+.phn-hjelp .hj-akse-rad.slag { background: var(--phn-slag); }
+.phn-hjelp .hj-akse-rad.spill { background: var(--phn-spill-ink); }
+.phn-hjelp .hj-akse-rad.turn { background: var(--phn-turn); }
+.phn-hjelp .hj-nyttig { display: flex; flex-wrap: wrap; gap: 8px; }
+.phn-hjelp .hj-nyttig button { min-height: 44px; padding: 0 18px; border: 1px solid var(--phn-g500); border-radius: 8px; background: var(--phn-hvit); font: 600 14px/1 var(--phn-sans); color: var(--phn-g900); cursor: pointer; }
+
+/* Skriv til oss og Sendt */
+.phn-hjelp .hj-typevalg { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.phn-hjelp .hj-typevalg button { display: grid; gap: 4px; justify-items: start; text-align: left; padding: 12px; border: 1px solid var(--phn-sand-300); border-radius: 12px; background: var(--phn-hvit); font: inherit; color: inherit; cursor: pointer; min-height: 76px; min-width: 0; }
+.phn-hjelp .hj-typevalg button b { font: 600 15px/1.25 var(--phn-sans); }
+.phn-hjelp .hj-typevalg button span { font-size: 13px; color: var(--phn-g600); line-height: 1.35; font-weight: 400; }
+.phn-hjelp .hj-typevalg button[aria-pressed="true"] { border: 2px solid var(--phn-g900); background: var(--phn-sand-100); padding: 11px; }
+.phn-hjelp .phn-felt textarea { resize: vertical; }
+.phn-hjelp .hj-skala { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
+.phn-hjelp .hj-skala button { min-height: 44px; border: 1px solid var(--phn-sand-300); border-radius: 8px; background: var(--phn-hvit); font: 600 14px/1 var(--phn-mono); color: var(--phn-g900); cursor: pointer; padding: 0; min-width: 0; }
+.phn-hjelp .hj-skala button[aria-pressed="true"] { background: var(--phn-g900); border-color: var(--phn-g900); color: #fff; }
+.phn-hjelp .hj-skala-tekst { display: flex; justify-content: space-between; font: 400 12.5px/1.3 var(--phn-sans); color: var(--phn-g600); }
+.phn-hjelp .hj-teller { font: 500 12.5px/1 var(--phn-mono); color: var(--phn-g600); justify-self: end; }
+.phn-hjelp .hj-oppsummering { display: grid; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--phn-sand-300); }
+.phn-hjelp .hj-oppsummering li { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--phn-sand-300); font-size: 14.5px; }
+.phn-hjelp .hj-oppsummering li span { color: var(--phn-g600); }
+.phn-hjelp .hj-oppsummering li b { font-weight: 600; overflow-wrap: anywhere; }
+.phn-hjelp .hj-hake { width: 64px; height: 64px; border-radius: 50%; background: var(--phn-green-700); color: #fff; display: grid; place-items: center; }
+.phn-hjelp .hj-grid { display: grid; gap: 32px; align-content: start; }
+.phn-hjelp .hj-grid > * { display: grid; gap: 24px; align-content: start; min-width: 0; }
+
+.phn-hjelp :is(.hj-kat, .hj-typevalg button, .hj-skala button, .hj-nyttig button, .hj-faq summary):focus-visible { outline: 3px solid var(--phn-g900); outline-offset: 2px; }
+
+@container (min-width: 620px) {
+  .phn-hjelp .hj-skala { grid-template-columns: repeat(11, minmax(0, 1fr)); gap: 4px; }
+}
+
+@container (min-width: 900px) {
+  .phn-hjelp .hj-kat-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .phn-hjelp .hj-grid { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 40px; align-items: start; }
+  .phn-hjelp .hj-grid.artikkel { grid-template-columns: minmax(0, 1fr) 300px; }
+  .phn-hjelp .hj-grid > aside { position: sticky; top: 24px; }
+}
