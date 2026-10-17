@@ -1,10 +1,13 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect } from "react";
 import { reportClientError } from "@/lib/report-client-error";
-import "@/styles/precision-athletics.css";
+import { PrecisionTilstand } from "@/components/system/precision-tilstand";
 
+/**
+ * SY-01 500 når selve rotlayouten feiler. Egen html og body, ellers samme flate som error.tsx.
+ * Rotlayoutens fonter finnes ikke her; flater-ny.css faller tilbake til IBM Plex og systemfont.
+ */
 export default function GlobalError({
   error,
 }: {
@@ -24,17 +27,13 @@ export default function GlobalError({
   return (
     <html lang="nb">
       <body style={{ margin: 0 }}>
-        <div className="pa-root au-ramme" data-design="precision-athletics">
-          <div className="au-boks">
-            <p className="au-kicker">500</p>
-            <h1>Noe feilet hos oss</h1>
-            <p>
-              Dette er ikke din feil, og ingenting du har registrert har gått tapt. Vi har fått beskjed automatisk og ser på det.
-            </p>
-            {error.digest ? <p className="au-kodeboks">500 · hendelse {error.digest}</p> : null}
-            <Link href="/" className="pa-btn pa-btn--primary">Til hjem</Link>
-          </div>
-        </div>
+        <PrecisionTilstand
+          kicker="500"
+          tittel="Noe gikk galt hos oss"
+          tekst="Siden kunne ikke vises. Det du lagret før, er ikke borte. Vi har fått beskjed automatisk."
+          kode={error.digest ? `Referanse: ${error.digest} · oppgi den hvis du kontakter post@akgolf.no` : undefined}
+          primar={{ label: "Til forsiden", href: "/" }}
+        />
       </body>
     </html>
   );
