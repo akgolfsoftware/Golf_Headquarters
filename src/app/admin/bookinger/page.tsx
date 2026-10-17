@@ -10,7 +10,7 @@
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { hentAG06Bookinger, hentAG06Tjenester } from "./data";
+import { hentAG06Bookinger, hentAG06Tjenester, naaMs } from "./data";
 import { hentBookingValg } from "@/app/admin/kalender/booking-actions";
 import { AG06Booking, type AG06Props } from "@/components/admin/precision/AG06Booking";
 
@@ -19,7 +19,7 @@ export const metadata = { title: "Booking · AgencyOS" };
 
 /** `?fane=tjenester` (fra den gamle /admin/services) og de interne fanenavnene. */
 const FANER: Record<string, NonNullable<AG06Props["fane"]>> = {
-  foresp: "foresp", alle: "alle", bookinger: "alle", ny: "ny", tj: "tj", tjenester: "tj",
+  foresp: "bookinger", alle: "bookinger", bookinger: "bookinger", ny: "ny", tj: "tj", tjenester: "tj",
 };
 
 export default async function AdminBookingerPage({ searchParams }: { searchParams: Promise<{ fane?: string }> }) {
@@ -39,6 +39,7 @@ export default async function AdminBookingerPage({ searchParams }: { searchParam
       tjenester={tjenesteData.tjenester}
       tjenesteValg={tjenesteData.valg}
       fane={fane ? FANER[fane] : undefined}
+      naaMs={naaMs()}
     />
   );
 }

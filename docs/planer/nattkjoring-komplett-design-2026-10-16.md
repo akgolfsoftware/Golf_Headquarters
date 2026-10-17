@@ -105,7 +105,15 @@ regelen «maks 3 økter samtidig» i `~/.claude/CLAUDE.md` §Forbruk, med Anders
 
 Fylles av øktene underveis. Hvert punkt: hva, hvilken anbefaling som ble valgt, hvor det står.
 
-(tom)
+**A5 Kalender og Booking (pakke 3, natt 17.10):**
+- Head coach er ADMIN-rollen, assistant coach COACH-rollen (samme regel som Økonomi). Assistant coach ser andre coachers bookinger som «Opptatt» uten navn, og andre coachers enkeltøkter ikke i det hele tatt.
+- Flytting med angre i kalenderen gjelder enkeltøkter fra Workbench. Bookinger får «Foreslå ny tid» (spilleren godtar), gruppeøkter flyttes i gruppas plan.
+- Coachkolonnene i Dag viser bookinger og gruppeøkter; spillernes egne økter, skole, turneringer og tester står i «Ellers i dag».
+- Åpent V8 i utkastet: knappen heter «Bekreft booking» for alle betalingsmåter, fordi AgencyOS ikke sender betalingslenke. «Stripe» merker bookingen med tjenestens pris og «Ikke betalt».
+- Avlysning i Bookingen har ikke «Angre i 10 sekunder»: refusjonen i Stripe kan ikke trekkes tilbake.
+- Påmeldte mot plasser på gruppeøkter vises som antall spillere; privattimer viser ingenting (utkastets anbefaling).
+- `/admin/bookinger/ny` (gammel veiviser med gruppebooking) beholdes til gruppebooking finnes i AG-06-NY.
+
 
 ---
 
