@@ -12,7 +12,7 @@
  * Nytt: opptak krever lydsamtykke (hentLydSamtykkeStatus). Uten GITT vises
  * sperren (AG-13-U) og «Start opptak» finnes ikke.
  *
- * Avvik fra utkastet, fordi appen ikke har det:
+ * Avvik:
  *   - Notater med klokkeslett under økta: lagres ikke. Det som lagres er meldingen
  *     til spilleren og transkriptet fra opptaket.
  *   - Video og bilder «fra iPhone» kan ikke tas her; antall videoer fra økta

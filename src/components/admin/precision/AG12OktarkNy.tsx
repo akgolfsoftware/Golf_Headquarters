@@ -10,7 +10,7 @@
  * (lastLiveOktData): øvelsene med logget-status, sammendraget fra opptaket som
  * utkast til coachen, fokuspunktet og vurderingen.
  *
- * Avvik fra utkastet, fordi appen ikke har det:
+ * Avvik:
  *   - «Godkjenn og send til spilleren» finnes ikke som handling. Knappen vises
  *     sperret med forklaring; utkastet kan ikke sendes herfra.
  *   - TrackMan fra økta og «Bruk som startverdi»: ingen TrackMan-data er knyttet
