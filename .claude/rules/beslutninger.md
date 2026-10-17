@@ -145,6 +145,21 @@ Svar på punkt 3 i §DEL RUNDE FINNES VED LANSERING, stilt før pakke 16 Utfordr
 3. **Tilgang til én utfordring:** `/portal/utfordringer/[id]` og `bliMed` slipper bare inn eier og valgte deltakere (i dag kan alle innloggede åpne og bli med). Ferdig når en test låser at en annen spiller avvises.
 4. **Tegning:** pakke 16, `docs/design-system/utkast-playerhq/utfordringer.html` (utkast 1, 16.10). Port 7 gjenstår.
 
+## MARKEDSFØRINGSSIDEN I AGENCYOS FJERNES (Anders 16.10.2026, bindende)
+
+Svar på det uavklarte punktet etter AgencyOS pakke 11 (`docs/design-system/utkast-agencyos/resten.html`): «Fjern markedsføringssiden i AgencyOS.»
+
+- **`/admin/marketing` (innholdskalender og post-kø for sosiale medier) fjernes.** Adressen sender til `/admin/oppsett`.
+- **Fanen «Markedsføring» i Oppsett (AG-23) og søkeoppføringen «Marketing» fjernes.**
+- Tabellen `MarketingPost` blir stående; ingen data slettes.
+
+**Overstyrer:** markedsføringsfanen i AG-23 og «Markedsføring og hjelp» i `mer.html`.
+
+**Arbeidet dette utløser:**
+
+1. **Kode:** videresending, fane og søk fjernet, og den døde koden (`AdminMarketingTrainLock`, `AdminMarketingV2`, `src/lib/admin-marketing/`) slettet. Gjort i samme PR.
+2. **Utkastet `mer.html`** (AgencyOS pakke 7): fanen «Markedsføring og hjelp» i Oppsett blir «Hjelp» når pakken rettes neste gang.
+
 ## WANG-TRENERFLATEN FØLGER STILEN PÅ WANG.NO (Anders 16.10.2026, bindende)
 
 Anders 16.10 etter utkast 2: «WANG må litt nærmere stilen som er på www.wang.no», og etter justeringen: «Ja, WANG-stilen er riktig nå.» Gjelder trenerflaten i `/team-wang` (Trener og Sportssjef); fellessiden `/team-wang` er uendret.
