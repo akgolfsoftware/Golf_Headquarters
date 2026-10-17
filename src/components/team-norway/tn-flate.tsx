@@ -7,25 +7,26 @@ import { TN } from "@/lib/v2/team-norway";
 /**
  * Byggeklosser for Team Norway-skjermene.
  * Fasit: docs/design-system/utkast-tn/felles/tn.css (pakke 1 grunnmur, 14.10.2026).
- * Overlinje i mono, tittel i Jost, seksjonstittel i sperrede versaler, kort med
- * én hårstrek, tall i IBM Plex Mono. Hjørner 2, ingen skygger, ingen sirkler.
+ * Utkast 2 (retning B, 16.10): overlinje i Lato, tittel og seksjonstittel i Jost,
+ * kort med én hårstrek, IBM Plex Mono bare på tall. Hjørner 2, ingen skygger, ingen sirkler.
  * Avvik:
  *   - Filterknapper og månedsvalg er lenker med valget i adressen, ikke
  *     klientstate. Da virker de uten JavaScript.
  */
 
+/** Utkast 2 (16.10): datolinje og etiketter i Lato. IBM Plex Mono bare på tall. */
 const etikettStil: CSSProperties = {
-  fontFamily: TN.font.mono,
-  fontSize: 12,
+  fontFamily: TN.font.body,
+  fontWeight: 700,
+  fontSize: 13,
   lineHeight: 1.3,
-  letterSpacing: "0.12em",
-  textTransform: "uppercase",
+  letterSpacing: "0.02em",
   color: TN.ink500,
 };
 
 const dagFormat = new Intl.DateTimeFormat("nb-NO", { weekday: "long", day: "numeric", month: "long", timeZone: "Europe/Oslo" });
 
-/** Sidehodet: dato og uke i mono, tittel i Jost, ingress, og handlinger under. */
+/** Sidehodet: datolinja i Lato, tittel i Jost, ingress, og handlinger under. */
 export function TnSkjermhode({ tittel, ingress, overlinje, handling }: { tittel: string; ingress: string; overlinje?: string; handling?: ReactNode }) {
   const naa = new Date();
   return (
@@ -49,11 +50,11 @@ export function TnFlate({ children, style }: { children: ReactNode; style?: CSSP
   );
 }
 
-/** Seksjonstittel i sperrede versaler, med valgfri merknad til høyre. */
+/** Seksjonstittel i Jost, med valgfri merknad til høyre. */
 export function TnFlatehode({ tittel, merknad, children }: { tittel: string; merknad?: ReactNode; children?: ReactNode }) {
   return (
     <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: "8px 12px", alignItems: "baseline", paddingBottom: 12 }}>
-      <h2 style={{ fontFamily: TN.font.display, fontWeight: 500, fontSize: 19, lineHeight: 1.25, letterSpacing: "0.06em", textTransform: "uppercase", color: TN.navy900, margin: 0 }}>{tittel}</h2>
+      <h2 style={{ fontFamily: TN.font.display, fontWeight: 500, fontSize: 20, lineHeight: 1.25, letterSpacing: "0.02em", color: TN.navy900, margin: 0 }}>{tittel}</h2>
       {merknad !== undefined ? <span style={{ fontSize: 12.5, lineHeight: 1.45, color: TN.ink500 }}>{merknad}</span> : null}
       {children}
     </div>
@@ -166,7 +167,7 @@ export function TnHendelserad({ dag, maned, tittel, tekst, hoyre, href, strek }:
     <>
       <span style={{ display: "grid", justifyItems: "start", fontFamily: TN.font.mono, fontWeight: 500, fontSize: 22, lineHeight: 1, color: TN.navy900, borderLeft: strek ? `4px solid ${strek}` : undefined, paddingLeft: strek ? 8 : 0 }}>
         {dag}
-        <small style={{ fontSize: 11, lineHeight: 1.4, letterSpacing: "0.12em", textTransform: "uppercase", color: TN.ink500 }}>{maned}</small>
+        <small style={{ fontFamily: TN.font.body, fontWeight: 700, fontSize: 12.5, lineHeight: 1.35, letterSpacing: "0.01em", color: TN.ink500 }}>{maned}</small>
       </span>
       <span style={{ minWidth: 0 }}>
         <b style={{ display: "block", fontSize: 15, lineHeight: 1.3, overflowWrap: "anywhere" }}>{tittel}</b>

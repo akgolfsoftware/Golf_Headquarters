@@ -209,8 +209,10 @@ export function TnShell({
 }
 
 /**
- * Navy sidemeny 252 px (PC). Gruppene står åpne med etikett i mono; aktiv rad
- * har lysere navy bak og rød markør 3 px. Brukeren står nederst med kvadratisk avatar.
+ * Navy sidemeny 252 px (PC). Seks grupper som kan lukkes (utkast 2, 16.10):
+ * bare gruppa du er i står åpen. `<details>` gjør det uten JavaScript, og ingen
+ * menypunkter er fjernet. Aktiv rad har lysere navy bak og rød markør 3 px.
+ * Brukeren står nederst med kvadratisk avatar.
  */
 function TnRail({ grupper, bruker, orgNavn, orgUndertittel }: { grupper: TnMenyGruppe[]; bruker: { navn: string; rolle: string }; orgNavn: string; orgUndertittel: string }) {
   return (
@@ -218,12 +220,14 @@ function TnRail({ grupper, bruker, orgNavn, orgUndertittel }: { grupper: TnMenyG
       <span className={s.menyLogo}><TnLogo hoyde={44} prioritet paaMork /></span>
       <span className={s.org}><span className="sr-only">{orgNavn}</span><span className={s.orgUnder}>{orgUndertittel}</span></span>
       {grupper.map((g) => (
-        <div key={g.id}>
-          <span className={s.gruppe}>{g.label}</span>
-          {g.punkter.map((p) => (
-            <a key={p.href} href={p.href} className={s.lenke} aria-current={p.aktiv ? "page" : undefined}>{p.label}</a>
-          ))}
-        </div>
+        <details key={g.id} className={s.menygruppe} open={g.aktiv || undefined}>
+          <summary className={s.gruppe}>{g.label}<TnIkon navn="videre" storrelse={16} /></summary>
+          <div className={s.gruppePunkter}>
+            {g.punkter.map((p) => (
+              <a key={p.href} href={p.href} className={s.lenke} aria-current={p.aktiv ? "page" : undefined}>{p.label}</a>
+            ))}
+          </div>
+        </details>
       ))}
       <div className={s.bruker}>
         <span className={s.avatar} aria-hidden="true">{initialer(bruker.navn)}</span>

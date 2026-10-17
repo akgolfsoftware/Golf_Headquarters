@@ -4,9 +4,10 @@ import { notFound } from "next/navigation";
 import { hentTnManedsplan, hentTnSamlinger, hentTnTurneringer } from "@/lib/domain/tn-arbeidsflate";
 import { TN } from "@/lib/v2/team-norway";
 import { TnPille } from "../core";
-import { TnFlate, TnFlatehode, TnFotnote, TnHendelserad, TnMangler, TnRutenett, TnSkjermhode, TnTekstlenke } from "../tn-flate";
-import { TnOktkort, TnStortTall } from "../tn-grunnmur";
-import { TnKnapperekke } from "../tn-handlinger";
+import { TnFlate, TnFlatehode, TnHendelserad, TnMangler, TnSkjermhode, TnTekstlenke } from "../tn-flate";
+import { TnOktkort } from "../tn-grunnmur";
+import { TnFlere } from "../tn-flere";
+import { TnHelt, TnHeltBilde, TnHeltKnapper, TnHeltSporsmaal, TnHeltTall, TnHeltTekst, TnHeltTellere } from "../tn-stall";
 import { TnSamlingSkjema, TnSlettSamling } from "../tn-redigering-skjema";
 import { SamlingsprogramKontroll } from "@/components/workbench/SamlingsprogramKontroll";
 import { Capability } from "@/lib/auth/cbac";
@@ -15,7 +16,7 @@ import { MANEDER, MANEDER_LANG, SkjermRamme, heltallParam, hentSkjermbruker, osl
 import d from "./tn-daglig.module.css";
 
 /**
- * TN-04 Samlinger og terminliste, og én samling.
+ * TN-04 Samlinger og terminliste, og én samling. Utkast 2, retning B (godkjent 16.10.2026).
  * Fasit: docs/design-system/utkast-tn/daglig.html, skjermene Samlinger og Én samling (pakke 2).
  *
  * Avvik:
@@ -24,8 +25,9 @@ import d from "./tn-daglig.module.css";
  *   - Programmet er gruppeøktene i samlingsperioden. Gruppeøkter har ingen akse i
  *     datamodellen, så øktkortene er nøytrale. Egentid, romfordeling og pakkeliste
  *     har ingen datamodell.
- *   - Svar på samlingen (ja / venter / kan ikke) har ingen datamodell. Hele
- *     gruppen deltar, så antallet er aktive spillere.
+ *   - Svar på samlingen (ja / venter / kan ikke) har ingen datamodell. Helteflaten
+ *     spør «Hvem er med?» og viser aktive spillere i gruppa; påminnelse og
+ *     deltakerliste med svar venter på modellen. Tellerne er program, gruppeøkter og dager.
  *   - Samlinger er gruppehendelser (Anders 27.09.2026). Trener lager, endrer og
  *     sletter dem her. Arrangør skrives i notatet.
  */
@@ -156,27 +158,51 @@ async function TnSamlingSkjerm({ id }: { id: string }) {
   const minutter = okter.reduce((sum, o) => sum + Math.max(0, Math.round((o.endAt.getTime() - o.startAt.getTime()) / 6e4)), 0);
   const timer = String(Math.round((minutter / 60) * 10) / 10).replace(".", ",");
 
+  const dagMs = (dato: Date) => { const o = osloDag(dato); return Date.UTC(o.aar, o.maned - 1, o.dag); };
+  const dager = Math.round((dagMs(valgt.endDate) - dagMs(valgt.startDate)) / 864e5) + 1;
+
   return (
     <SkjermRamme aktiv="samlinger" brukerNavn={bruker.name} kontekst={data.kontekst} tilbake={{ href: "/team-norway/samlinger", label: "Samlinger" }}>
       <TnSkjermhode
         overlinje={`Samling · ${periode(valgt.startDate, valgt.endDate, true)}`}
         tittel={valgt.location ? `${valgt.name} ${valgt.location}` : valgt.name}
         ingress={valgt.notes ?? "Ingen notater på samlingen."}
-        handling={data.kontekst.kanAdministrere ? (
-          <TnKnapperekke>
-            <TnSamlingSkjema
-              knapp="Endre samling"
-              samling={{ id: valgt.id, tittel: valgt.name, sted: valgt.location ?? "", fra: tilDagStreng(valgt.startDate), til: tilDagStreng(valgt.endDate), notat: valgt.notes ?? "" }}
-            />
-            <TnSlettSamling id={valgt.id} navn={valgt.name} />
-          </TnKnapperekke>
-        ) : undefined}
       />
 
-      <TnRutenett min={220}>
-        <TnFlate><span style={{ fontFamily: TN.font.mono, fontSize: 12, letterSpacing: "0.12em", textTransform: "uppercase", color: TN.ink500 }}>Deltakere</span><TnStortTall verdi={valgt.antallDeltakere} enhet="spillere" /><TnFotnote>Hele gruppen deltar. Svar på samlingen registreres ikke ennå.</TnFotnote></TnFlate>
-        <TnFlate><span style={{ fontFamily: TN.font.mono, fontSize: 12, letterSpacing: "0.12em", textTransform: "uppercase", color: TN.ink500 }}>Program</span><TnStortTall verdi={okter.length ? timer : "—"} enhet={okter.length ? "t" : undefined} /><TnFotnote>{okter.length} {okter.length === 1 ? "gruppeøkt" : "gruppeøkter"} i perioden.</TnFotnote></TnFlate>
-      </TnRutenett>
+      <TnHelt
+        etikett="Hvem er med"
+        venstre={
+          <>
+            <TnHeltSporsmaal>Hvem er med?</TnHeltSporsmaal>
+            <TnHeltTall verdi={valgt.antallDeltakere}>{valgt.antallDeltakere === 1 ? "spiller i gruppa" : "spillere i gruppa"}</TnHeltTall>
+            <TnHeltTekst>Hele gruppen deltar. Svar på samlingen (ja, venter, kan ikke) registreres ikke ennå.</TnHeltTekst>
+            {data.kontekst.kanAdministrere ? (
+              <TnHeltKnapper>
+                <TnSamlingSkjema
+                  knapp="Endre samling"
+                  variant="hvit"
+                  samling={{ id: valgt.id, tittel: valgt.name, sted: valgt.location ?? "", fra: tilDagStreng(valgt.startDate), til: tilDagStreng(valgt.endDate), notat: valgt.notes ?? "" }}
+                />
+                <TnFlere knapp="Mer" variant="konturHvit">
+                  <TnSlettSamling id={valgt.id} navn={valgt.name} variant="meny" />
+                </TnFlere>
+              </TnHeltKnapper>
+            ) : null}
+          </>
+        }
+        hoyre={
+          <>
+            <TnHeltBilde src="/team-norway/bilder/slag-utslag.jpg" alt="Spiller i utslag på rangen" />
+            <TnHeltTellere
+              tall={[
+                { verdi: okter.length ? `${timer} t` : "—", tekst: "program" },
+                { verdi: okter.length, tekst: okter.length === 1 ? "gruppeøkt" : "gruppeøkter" },
+                { verdi: dager, tekst: dager === 1 ? "dag" : "dager" },
+              ]}
+            />
+          </>
+        }
+      />
 
       <section style={{ display: "grid", gap: 12 }}>
         <TnFlatehode tittel="Programmet" />
