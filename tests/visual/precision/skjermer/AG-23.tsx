@@ -37,6 +37,5 @@ export const tilstander = {
   ekstern: <Vis tilstand="data" fane="ekstern" />,
   varsler: <Vis tilstand="data" fane="varsler" />,
   integrasjoner: <Vis tilstand="data" fane="integr" />,
-  markedsforing: <Vis tilstand="data" fane="mark" />,
   virksomhet: <Vis tilstand="data" fane="virks" />,
 };
