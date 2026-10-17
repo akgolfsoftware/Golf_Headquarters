@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Plus } from "lucide-react";
-import { Knapp } from "@/components/precision/pa";
+import { Knapp } from "@/components/admin/agencyos-ny/ny";
 import { NyGruppeModal, type CoachValg } from "./ny-gruppe-modal";
 import { bootstrapGfgkJuniorGrupper } from "./actions";
 
@@ -10,8 +10,8 @@ export function NyGruppeButton({ coaches }: { coaches: CoachValg[] }) {
   const [aapen, setAapen] = useState(false);
   return (
     <>
-      <Knapp variant="secondary" icon={Plus} iconName="plus" onClick={() => setAapen(true)}>
-        Ny gruppe
+      <Knapp onClick={() => setAapen(true)}>
+        <Plus className="ikon" aria-hidden />Ny gruppe
       </Knapp>
       {aapen && <NyGruppeModal coaches={coaches} onClose={() => setAapen(false)} />}
     </>
@@ -45,11 +45,11 @@ export function GfgkBootstrapButton() {
 
   return (
     <span style={{ display: "inline-flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-      <Knapp variant="ghost" icon={Plus} iconName="plus" onClick={kjor} disabled={kjorer}>
+      <Knapp variant="sek" onClick={kjor} disabled={kjorer}>
         {kjorer ? "Oppretter GFGK Junior …" : "Opprett GFGK Junior-gruppene"}
       </Knapp>
       {melding ? (
-        <span style={{ font: "var(--type-meta)", letterSpacing: ".04em", color: "var(--text-muted)" }}>{melding}</span>
+        <span className="kilde">{melding}</span>
       ) : null}
     </span>
   );

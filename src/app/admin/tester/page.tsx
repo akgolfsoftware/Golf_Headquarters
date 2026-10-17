@@ -18,7 +18,10 @@ import { Capability } from "@/lib/auth/cbac";
 import { hentAdminTestData } from "@/lib/portal-tester/admin-resultat-data";
 import { formaterLagretTestResultat, sammenlignLagredeTestresultater } from "@/lib/portal-tester/resultat-visning";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
-import { AG15Tester } from "@/components/admin/precision/AG15Tester";
+import { AG15Tester, type AG15Fane } from "@/components/admin/precision/AG15Tester";
+import { prisma } from "@/lib/prisma";
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
+import { withTnAssignments } from "@/lib/portal-tester/tn-integration";
 
 import type {
   AdminTesterV2Data,
@@ -44,9 +47,33 @@ function erUbetydelig(diff: number, forrige: number): boolean {
   return Math.abs(diff / forrige) < 0.01;
 }
 
-export default async function V2AdminTesterPage() {
+const FANER: readonly AG15Fane[] = ["resultater", "tildelt", "normer", "skala"];
+
+export default async function V2AdminTesterPage({ searchParams }: { searchParams: Promise<{ fane?: string; tildel?: string }> }) {
   // G6: MANAGE_TESTS ligger i COACH-defaulten — kan trekkes per trener.
   const user = await requireCapability(Capability.MANAGE_TESTS);
+  const { fane, tildel } = await searchParams;
+  const startFane = FANER.find((f) => f === fane) ?? "resultater";
+
+  // Tildelte tester som ikke er tatt, og valgene i «Tildel test»-arket. Samme
+  // coach-scoping og testkatalog som tildelTest selv håndhever.
+  const scope = coachScopedPlayerWhere(user);
+  const [tildeltRaw, spillereRaw, testerRaw] = await Promise.all([
+    prisma.testAssignment.findMany({
+      where: { status: "OPEN", player: scope },
+      orderBy: [{ dueDate: "asc" }, { createdAt: "desc" }],
+      take: 30,
+      select: { id: true, dueDate: true, createdAt: true, player: { select: { id: true, name: true } }, test: { select: { name: true } } },
+    }),
+    prisma.user.findMany({ where: { AND: [scope, { deletedAt: null }] }, orderBy: { name: "asc" }, select: { id: true, name: true } }),
+    prisma.testDefinition
+      .findMany({
+        where: user.role === "ADMIN" ? {} : { OR: [{ isCustom: false }, { createdById: user.id }, { visibility: { not: "PRIVATE" } }] },
+        orderBy: { name: "asc" },
+        select: { id: true, name: true, description: true, pyramidArea: true, isCustom: true },
+      })
+      .catch(() => []),
+  ]);
 
   const { paagaaende, resultater, antall30, antall7, d30 } = await hentAdminTestData(user);
 
@@ -122,7 +149,23 @@ export default async function V2AdminTesterPage() {
 
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
-      <AG15Tester data={data} />
+      <AG15Tester
+        data={data}
+        startFane={startFane}
+        tildelSpillerId={tildel && spillereRaw.some((s) => s.id === tildel) ? tildel : null}
+        tildelt={tildeltRaw.map((t) => ({
+          id: t.id,
+          spillerId: t.player.id,
+          spillerNavn: t.player.name ?? "Uten navn",
+          testNavn: t.test.name,
+          frist: t.dueDate ? datoLabel(t.dueDate) : null,
+          tildelt: datoLabel(t.createdAt),
+        }))}
+        valg={{
+          tester: withTnAssignments(testerRaw).map((t) => ({ id: t.id, navn: t.name })),
+          spillere: spillereRaw.map((s) => ({ id: s.id, navn: s.name ?? "Uten navn" })),
+        }}
+      />
     </AgencyOSSkall>
   );
 }

@@ -1,29 +1,27 @@
 "use client";
 
 /**
- * Precision Athletics — Oppsett (AG-23).
+ * AG-23 Oppsett i nytt design (designbrevet 13.10.2026) — /admin/oppsett og /admin/profile.
+ * Fasit: docs/design-system/utkast-agencyos/mer.html, skjerm «AG-23 Oppsett».
  *
- * Kilde: Claude Design AG-23 (designsystem/precision-athletics/ui_kits/agencyos/screens/AG-23.jsx).
- * Ruter: /admin/oppsett, /admin/profile, /admin/team/ekstern, /admin/team/inviter, /admin/marketing.
+ * Viser bare det som finnes i basen (egen profil, team). Det som ikke er koblet står
+ * som «ikke koblet ennå»; ingenting lagres eller bekreftes falskt. GDPR og logger har
+ * egne sider (/admin/gdpr, /admin/audit-log, /admin/feillogg) som fanene lenker til.
  *
- * Viser bare det som finnes i basen (egen profil, team). Alt som ikke er koblet er
- * deaktivert med «Ikke koblet ennå»; ingenting lagres eller bekreftes falskt.
- * Faner: profil, team, inviter, ekstern, varsler, integr, mark, virks.
+ * Faner: Team · Profil · Varsler · Integrasjoner · GDPR · Logger · Markedsføring og hjelp.
+ * Gamle fane-ider (inviter, ekstern, mark, virks) peker til fanen de nå ligger i.
+ *
+ * Avvik:
+ *   - Profilen kan ikke endres her (ingen handling); den vises.
+ *   - Sletteforespørsler og loggen vises på egne sider, ikke inni fanen.
+ *   - «Inviter coach» vises bare for head coach (Anders 16.10, anbefalingen i resten.html).
  */
 
 import { useState } from "react";
-import { ArrowRight, Settings } from "lucide-react";
-import {
-  FeilTilstand,
-  KnappLenke,
-  LasterTilstand,
-  Meta,
-  Sidehode,
-  StatusPille,
-  TomTilstand,
-} from "@/components/precision/pa";
-import { Faner, Kort, KortHode, Nokkelverdi, Tabell, type Kolonne } from "@/components/precision/pa-a5";
-import "@/styles/precision-a23.css";
+import Link from "next/link";
+import { ChevronRight } from "lucide-react";
+import { Avatar, Feil, KnappLenke, Laster, Nokkelverdier, Pille, Seksjon, Tom, Topp, Varsel } from "@/components/admin/agencyos-ny/ny";
+import "@/styles/agencyos-ny-mer.css";
 
 export type TeamMedlem = {
   id: string;
@@ -46,186 +44,94 @@ export type AG23OppsettProps = {
   tilstand?: AG23Tilstand;
   data?: AG23Data;
   startFane?: string;
+  /** Head coach (ADMIN) kan invitere coach og sette opp ekstern trener. */
+  erHeadCoach?: boolean;
 };
 
 const TOM_DATA: AG23Data = { team: [], profil: null };
 
-const TABS = [
-  { value: "profil", label: "Egen profil" },
-  { value: "team", label: "Team og tilgang" },
-  { value: "inviter", label: "Inviter coach" },
-  { value: "ekstern", label: "Ekstern trener" },
-  { value: "varsler", label: "Varsler" },
-  { value: "integr", label: "Integrasjoner" },
-  { value: "mark", label: "Markedsføring" },
-  { value: "virks", label: "Virksomhet" },
+type Fane = "team" | "profil" | "varsler" | "integr" | "gdpr" | "logg" | "hjelp";
+const FANER: ReadonlyArray<[Fane, string]> = [
+  ["team", "Team"], ["profil", "Profil"], ["varsler", "Varsler"], ["integr", "Integrasjoner"],
+  ["gdpr", "GDPR"], ["logg", "Logger"], ["hjelp", "Markedsføring og hjelp"],
 ];
+const ALIAS: Record<string, Fane> = { inviter: "team", ekstern: "team", mark: "hjelp", virks: "hjelp" };
+const tilFane = (f: string): Fane => ALIAS[f] ?? (FANER.find(([id]) => id === f)?.[0] ?? "team");
 
-const SUB = "Profil, team, tilgang, varsler og integrasjoner.";
-
-function IkkeKoblet({ tittel, tekst, href, lenke }: { tittel: string; tekst: string; href?: string; lenke?: string }) {
-  return (
-    <TomTilstand
-      icon={Settings}
-      title={tittel}
-      text={tekst}
-      actions={
-        href ? (
-          <KnappLenke href={href} variant="secondary" icon={ArrowRight}>
-            {lenke ?? "Åpne"}
-          </KnappLenke>
-        ) : undefined
-      }
-    />
-  );
+function Lenkeliste({ rader }: { rader: ReadonlyArray<[string, string, string]> }) {
+  return <div className="liste">
+    {rader.map(([href, tittel, tekst]) => <Link key={href} href={href}>
+      <span className="ikonboks"><ChevronRight className="ikon" aria-hidden /></span>
+      <span><b>{tittel}</b><span className="kilde">{tekst}</span></span>
+      <ChevronRight className="ikon" aria-hidden />
+    </Link>)}
+  </div>;
 }
 
-export function AG23Oppsett({ tilstand = "data", data = TOM_DATA, startFane = "team" }: AG23OppsettProps) {
-  const [aktivFane, setAktivFane] = useState(startFane);
+export function AG23Oppsett({ tilstand = "data", data = TOM_DATA, startFane = "team", erHeadCoach = false }: AG23OppsettProps) {
+  const [fane, setFane] = useState<Fane>(tilFane(startFane));
+  const topp = <Topp dato="Mer · oppsett" tittel="Oppsett" ingress="Profil, team, tilgang, varsler og integrasjoner." />;
 
-  if (tilstand === "laster") {
-    return (
-      <div className="pa-a23" data-testid="ag23-laster">
-        <Sidehode kicker="Oppsett" title="Oppsett" sub={SUB} />
-        <LasterTilstand text="Henter oppsett …" />
-      </div>
-    );
-  }
-
-  if (tilstand === "feil") {
-    return (
-      <div className="pa-a23" data-testid="ag23-feil">
-        <Sidehode kicker="Oppsett" title="Oppsett" sub={SUB} />
-        <FeilTilstand
-          icon={Settings}
-          title="Oppsettet kunne ikke hentes"
-          text="Ingen innstillinger er endret. Prøv igjen."
-          code="OPPSETT"
-        />
-      </div>
-    );
-  }
+  if (tilstand === "laster") return <div className="agn-s" data-testid="ag23-laster">{topp}<Laster tekst="Henter oppsett …" /></div>;
+  if (tilstand === "feil") return <div className="agn-s" data-testid="ag23-feil">{topp}<Feil tittel="Oppsettet kunne ikke hentes" tekst="Ingen innstillinger er endret. Prøv igjen." kode="OPPSETT" /></div>;
 
   const team = tilstand === "tom" ? [] : data.team;
 
-  const teamKolonner: Kolonne<TeamMedlem>[] = [
-    { key: "name", label: "Navn", render: (r) => r.name, lead: true },
-    { key: "role", label: "Rolle", render: (r) => r.role },
-    {
-      key: "access",
-      label: "Tilgang",
-      render: (r) => <StatusPille tone={r.access === "Admin" ? "ok" : "neutral"}>{r.access}</StatusPille>,
-    },
-    { key: "email", label: "E-post", render: (r) => r.email ?? "—", mono: true },
-  ];
-
-  return (
-    <div className="pa-a23" data-testid="ag23-oppsett">
-      <Sidehode kicker="Oppsett" title="Oppsett" sub={SUB} />
-
-      <Faner faner={TABS} value={aktivFane} onChange={setAktivFane} />
-
-      {aktivFane === "profil" && (
-        <div className="pa-a23__card" data-testid="ag23-fane-profil">
-          <Kort>
-            <KortHode tittel="Egen profil" aside="BARE VISNING" />
-            {data.profil ? (
-              <Nokkelverdi
-                items={[
-                  ["Navn", data.profil.navn],
-                  ["E-post", data.profil.epost ?? "—"],
-                  ["Rolle", data.profil.rolle],
-                ]}
-              />
-            ) : (
-              <Meta>PROFIL IKKE LASTET</Meta>
-            )}
-            <Meta>ENDRING AV PROFIL OG TOTRINNSINNLOGGING ER IKKE KOBLET ENNÅ</Meta>
-          </Kort>
-        </div>
-      )}
-
-      {aktivFane === "team" && (
-        <div data-testid="ag23-fane-team">
-          {team.length === 0 ? (
-            <TomTilstand
-              icon={Settings}
-              title="Ingen teammedlemmer å vise"
-              text="Coacher og admin vises her når de er lagt til."
-            />
-          ) : (
-            <Tabell caption="Team og tilgang" columns={teamKolonner} rows={team} tomTekst="Ingen medarbeidere registrert." />
-          )}
-        </div>
-      )}
-
-      {aktivFane === "inviter" && (
-        <div data-testid="ag23-fane-inviter">
-          <IkkeKoblet
-            tittel="Invitasjon sendes fra egen side"
-            tekst="Å invitere en coach lagres i basen på invitasjonssiden. Her lages ingenting."
-            href="/admin/team/inviter"
-            lenke="Åpne invitasjonssiden"
-          />
-        </div>
-      )}
-
-      {aktivFane === "ekstern" && (
-        <div data-testid="ag23-fane-ekstern">
-          <IkkeKoblet
-            tittel="Ekstern trener settes opp på egen side"
-            tekst="Lesetilgang for ekstern trener lagres i basen på egen side. Her lages ingenting."
-            href="/admin/team/ekstern"
-            lenke="Åpne siden for ekstern trener"
-          />
-        </div>
-      )}
-
-      {aktivFane === "varsler" && (
-        <div data-testid="ag23-fane-varsler">
-          <IkkeKoblet
-            tittel="Varselinnstillinger er ikke koblet ennå"
-            tekst="Innstillingene lagres ikke fra denne skjermen ennå."
-          />
-        </div>
-      )}
-
-      {aktivFane === "integr" && (
-        <div data-testid="ag23-fane-integr">
-          <IkkeKoblet
-            tittel="Integrasjonsstatus er ikke koblet ennå"
-            tekst="Status for TrackMan, GolfBox, Tripletex, Notion og Data Golf leses ikke her ennå."
-            href="/admin/workspace/notion"
-            lenke="Åpne Notion-oppsett"
-          />
-        </div>
-      )}
-
-      {aktivFane === "mark" && (
-        <div data-testid="ag23-fane-mark">
-          <IkkeKoblet
-            tittel="Markedsføring styres på egen side"
-            tekst="Forsidetekster lagres på markedssiden. Her lages ingenting."
-            href="/admin/marketing"
-            lenke="Åpne markedsføring"
-          />
-        </div>
-      )}
-
-      {aktivFane === "virks" && (
-        <div className="pa-a23__card" data-testid="ag23-fane-virks">
-          <Kort>
-            <KortHode tittel="Virksomhetsinformasjon" />
-            <Nokkelverdi
-              items={[
-                ["Org.nr.", "—", "IKKE REGISTRERT HER"],
-                ["Virksomheter", "Mulligan · Academy · Software · WANG · GFGK", undefined],
-                ["Tidssone", "Europe/Oslo", undefined],
-              ]}
-            />
-          </Kort>
-        </div>
-      )}
+  return <div className="agn-s" data-testid="ag23-oppsett">
+    {topp}
+    <div className="faner" role="group" aria-label="Del">
+      {FANER.map(([id, label]) => <button key={id} type="button" aria-pressed={fane === id} onClick={() => setFane(id)}>{label}</button>)}
     </div>
-  );
+
+    {fane === "team" && <div className="seksjon" data-testid="ag23-fane-team">
+      {team.length === 0
+        ? <Tom tittel="Ingen teammedlemmer å vise" tekst="Coacher og admin vises her når de er lagt til." />
+        : <div className="kort rader">
+          {team.map((m) => <div key={m.id} className="mer-rad">
+            <Avatar navn={m.name} liten />
+            <span><b>{m.name}</b><span className="kilde">{m.access === "Admin" ? "Head coach · ser alt, også Økonomi" : "Coach"}{m.email ? ` · ${m.email}` : " · —"}</span></span>
+            <Pille tone={m.access === "Admin" ? "ok" : "noy"}>{m.access === "Admin" ? "Head coach" : m.access}</Pille>
+          </div>)}
+        </div>}
+      {erHeadCoach && <div className="knapper">
+        <KnappLenke href="/admin/team/inviter" variant="pri">Inviter coach</KnappLenke>
+        <KnappLenke href="/admin/team/ekstern">Ekstern trener</KnappLenke>
+      </div>}
+    </div>}
+
+    {fane === "profil" && <Seksjon tittel="Egen profil" kilde="Bare visning">
+      <div data-testid="ag23-fane-profil">
+        {data.profil
+          ? <Nokkelverdier rader={[["Navn", data.profil.navn], ["E-post", data.profil.epost ?? "—"], ["Rolle", data.profil.rolle]]} />
+          : <p className="forklar">Profilen er ikke lastet.</p>}
+        <p className="kilde" style={{ marginTop: 8 }}>Endring av profil og totrinnsinnlogging er ikke koblet ennå.</p>
+      </div>
+    </Seksjon>}
+
+    {fane === "varsler" && <div data-testid="ag23-fane-varsler"><Tom tittel="Varselinnstillinger er ikke koblet ennå" tekst="Innstillingene lagres ikke fra denne skjermen ennå." /></div>}
+
+    {fane === "integr" && <div data-testid="ag23-fane-integr">
+      <Tom tittel="Integrasjonsstatus er ikke koblet ennå" tekst="Status for TrackMan, GolfBox, Tripletex og Data Golf leses ikke her ennå."
+        handling={<KnappLenke href="/admin/workspace/notion">Notion-oppsett</KnappLenke>} />
+    </div>}
+
+    {fane === "gdpr" && <div className="seksjon" data-testid="ag23-fane-gdpr">
+      <Varsel tittel="Sletteforespørsler">Spillere ber om sletting fra Meg › Personvern. Head coach godkjenner på GDPR-siden.</Varsel>
+      <Lenkeliste rader={[["/admin/gdpr", "GDPR og sletting", "Sletteforespørsler, eksport og samtykker"]]} />
+    </div>}
+
+    {fane === "logg" && <div className="seksjon" data-testid="ag23-fane-logg">
+      <Lenkeliste rader={[["/admin/audit-log", "Handlingslogg", "Hvem endret hva, og når"], ["/admin/feillogg", "Feillogg", "Feil fra appen og jobbene"]]} />
+    </div>}
+
+    {fane === "hjelp" && <div className="seksjon" data-testid="ag23-fane-mark">
+      <Lenkeliste rader={[
+        ["/admin/email-templates", "E-postmaler", "Malene som brukes i Innboks"],
+        ["/admin/hjelp", "Hjelp", "Spørsmål og svar for coacher"],
+      ]} />
+      <Seksjon tittel="Virksomhet">
+        <Nokkelverdier rader={[["Org.nr.", "—", "Ikke registrert her"], ["Virksomheter", "Mulligan · Academy · Software · WANG · GFGK"], ["Tidssone", "Europe/Oslo"]]} />
+      </Seksjon>
+    </div>}
+  </div>;
 }
