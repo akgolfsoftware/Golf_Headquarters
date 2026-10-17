@@ -122,6 +122,16 @@ Fylles av øktene underveis. Hvert punkt: hva, hvilken anbefaling som ble valgt,
 - **B1 · Forelder (AU-04/05):** forelderen godkjenner fra lenken og oppretter deretter egen konto med samme e-post. Kobling via barnets e-post (utkastet) finnes ikke i appen og er ikke bygget. Forelderoppstarten har to steg; betaling velges ved booking.
 - **B1 · `?next=` etter innlogging:** `safeRedirectPath` avviser kontrolltegn og normaliserte «//»-mål (sikkerhetsfunn under arbeidet).
 
+**A5 Kalender og Booking (pakke 3, natt 17.10):**
+- Head coach er ADMIN-rollen, assistant coach COACH-rollen (samme regel som Økonomi). Assistant coach ser andre coachers bookinger som «Opptatt» uten navn, og andre coachers enkeltøkter ikke i det hele tatt.
+- Flytting med angre i kalenderen gjelder enkeltøkter fra Workbench. Bookinger får «Foreslå ny tid» (spilleren godtar), gruppeøkter flyttes i gruppas plan.
+- Coachkolonnene i Dag viser bookinger og gruppeøkter; spillernes egne økter, skole, turneringer og tester står i «Ellers i dag».
+- Åpent V8 i utkastet: knappen heter «Bekreft booking» for alle betalingsmåter, fordi AgencyOS ikke sender betalingslenke. «Stripe» merker bookingen med tjenestens pris og «Ikke betalt».
+- Avlysning i Bookingen har ikke «Angre i 10 sekunder»: refusjonen i Stripe kan ikke trekkes tilbake.
+- Påmeldte mot plasser på gruppeøkter vises som antall spillere; privattimer viser ingenting (utkastets anbefaling).
+- `/admin/bookinger/ny` (gammel veiviser med gruppebooking) beholdes til gruppebooking finnes i AG-06-NY.
+
+
 ---
 
 - **A4 · AgencyOS pakke 1 (Cockpit og Innboks):** AI-dispatch («Jarvis: én ting nå») står på Cockpit under dagens kalender, selv om utkastet ikke har det (skill agenticos-cockpit sier det skal beholdes). «Lag utkast» virker for e-post (Jarvis lager utkast, coachen sender); for spørsmål fra spillere er knappen fortsatt av, fordi det ikke finnes en navnevasket utkastlager for dem. Leads vises under Oppfølging bare for head coach, som e-posten, med «Skriv e-post» som åpner e-postprogrammet. E-postkonto nr. 2 (akgolfgroup@gmail.com) kommer ikke inn i innboksen ennå; det krever en ny inntakskobling.

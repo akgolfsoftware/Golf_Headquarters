@@ -1,7 +1,11 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import {
+  akseFraPyramide,
   erKalenderLag,
+  filtrerCoach,
+  iCoachKolonne,
+  maskerForSeer,
   grupperPerDato,
   klokkeslett,
   sorterDag,
@@ -123,4 +127,60 @@ describe("kalender-lag · klokkeslett", () => {
   it("padder enkeltsifret time og minutt", () => {
     assert.equal(klokkeslett(5), "00.05");
   });
+});
+
+// --- AG-05 pakke 3 (natt 17.10): coach, akse og assistant coach -----------------
+
+const coachHendelser: KalenderHendelse[] = [
+  { id: "booking-a", lag: "BOOKING", dato: "2026-10-05", tittel: "Kari Prøvesen", undertekst: "Privattime", startMin: 600, sluttMin: 660, heldag: false, coachId: "ass", akse: "tek" },
+  { id: "booking-b", lag: "BOOKING", dato: "2026-10-05", tittel: "Ola Testesen", undertekst: "Performance Pro", startMin: 720, sluttMin: 810, heldag: false, coachId: "head", akse: null, href: "/admin/bookinger/b" },
+  { id: "okt-g", lag: "OEKTER", dato: "2026-10-05", tittel: "Nærspill", startMin: 960, sluttMin: 1050, heldag: false, coachId: "head", gruppe: true, antallSpillere: 8 },
+  { id: "okt-e", lag: "OEKTER", dato: "2026-10-05", tittel: "Wedge 50–90 m", undertekst: "Per Prøve", startMin: 540, sluttMin: 600, heldag: false, coachId: "head" },
+  { id: "skole-1", lag: "SKOLE", dato: "2026-10-05", tittel: "Heldagsprøve", startMin: null, sluttMin: null, heldag: true },
+];
+
+it("maskerForSeer: head coach ser alt uendret", () => {
+  assert.deepEqual(maskerForSeer(coachHendelser, { id: "head", erHeadCoach: true }), coachHendelser);
+});
+
+it("maskerForSeer: assistant coach ser egne bookinger, gruppeøkter og lag uten coach", () => {
+  const ut = maskerForSeer(coachHendelser, { id: "ass", erHeadCoach: false });
+  const ider = ut.map((h) => h.id);
+  assert.ok(ider.includes("booking-a"));
+  assert.ok(ider.includes("okt-g"));
+  assert.ok(ider.includes("skole-1"));
+  assert.equal(ut.find((h) => h.id === "booking-a")?.tittel, "Kari Prøvesen");
+});
+
+it("maskerForSeer: andre coachers privattime blir «Opptatt» uten navn, tjeneste eller lenke", () => {
+  const ut = maskerForSeer(coachHendelser, { id: "ass", erHeadCoach: false });
+  const b = ut.find((h) => h.id === "booking-b");
+  assert.ok(b);
+  assert.equal(b.tittel, "Opptatt");
+  assert.equal(b.opptatt, true);
+  assert.equal(b.undertekst, undefined);
+  assert.equal(b.href, undefined);
+  assert.equal(b.startMin, 720);
+  assert.ok(!JSON.stringify(b).includes("Ola"));
+});
+
+it("maskerForSeer: andre coachers enkeltøkter tas ut for assistant coach", () => {
+  const ut = maskerForSeer(coachHendelser, { id: "ass", erHeadCoach: false });
+  assert.equal(ut.some((h) => h.id === "okt-e"), false);
+});
+
+it("filtrerCoach: bare valgt coach, lag uten coach står", () => {
+  assert.deepEqual(filtrerCoach(coachHendelser, "ass").map((h) => h.id), ["booking-a", "skole-1"]);
+  assert.equal(filtrerCoach(coachHendelser, null).length, coachHendelser.length);
+});
+
+it("iCoachKolonne: bookinger og gruppeøkter, ikke enkeltøkter eller heldag", () => {
+  assert.deepEqual(coachHendelser.filter(iCoachKolonne).map((h) => h.id), ["booking-a", "booking-b", "okt-g"]);
+});
+
+it("akseFraPyramide: kjente akser, ellers null", () => {
+  assert.equal(akseFraPyramide("TEK"), "tek");
+  assert.equal(akseFraPyramide("turn"), "turn");
+  assert.equal(akseFraPyramide("TULL"), null);
+  assert.equal(akseFraPyramide(null), null);
 });
