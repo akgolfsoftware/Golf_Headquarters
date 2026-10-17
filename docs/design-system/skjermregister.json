@@ -1,15 +1,15 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "7421dc8fdaf61244a070d8b1209bf1e4ddd347ad",
+  "kodeversjon": "5fa7f89fa99ee1098c3af9f44bdbd6a2137afc4e",
   "inventar": {
-    "pageFiles": 550,
-    "uniqueRoutePatterns": 550,
-    "componentFiles": 946,
+    "pageFiles": 551,
+    "uniqueRoutePatterns": 551,
+    "componentFiles": 947,
     "surfaceFiles": 287,
     "byArea": {
       "interne-eksempler": 6,
-      "marked-og-offentlig": 70,
+      "marked-og-offentlig": 71,
       "offentlig-booking": 4,
       "agencyos": 168,
       "inngang-og-konto": 20,
@@ -12683,6 +12683,51 @@
       "kodekommentar": null
     },
     {
+      "screenId": "UTEN-TEGNET-TYPE",
+      "rute": "/ikke-tilgang",
+      "kildefil": "src/app/ikke-tilgang/page.tsx",
+      "omrade": "marked-og-offentlig",
+      "rolle": "åpen",
+      "designkilde": "docs/design-system/skjermliste-precision-athletics.md",
+      "designversjon": "precision-athletics-2026-09-28",
+      "komponentmonster": null,
+      "handlinger": "ikke-avlest-i-D01",
+      "dataApi": "ikke-avlest-i-D01",
+      "tilstander": [
+        "tom",
+        "laster",
+        "feil"
+      ],
+      "formater": {
+        "mobil": "ikke-kontrollert",
+        "nettbrett": "ikke-kontrollert",
+        "desktop": "ikke-kontrollert",
+        "natt": "ikke-relevant"
+      },
+      "status": {
+        "kartlagt": true,
+        "wireframe": false,
+        "uiUtkast": false,
+        "prototype": false,
+        "vurdert": false,
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
+        "kontrollertIApp": false
+      },
+      "eier": "D01-skjermregister",
+      "kontrollbevis": null,
+      "avvik": [
+        "Kodekommentaren sier SY-01, men skjermlisten har ingen treff. Kommentaren er opphav, ikke godkjenning."
+      ],
+      "kobling": "teknisk-forklaring",
+      "forklaring": "Ingen tegnet skjermtype ligger i nærheten av ruten. Ruten beholdes og må forklares før den porteres eller skjules.",
+      "legacyGruppe": false,
+      "naermesteSkjermtype": null,
+      "sammeSidefil": [],
+      "videresendingMal": null,
+      "kodekommentar": "SY-01"
+    },
+    {
       "screenId": "AU-06",
       "rute": "/innsyn/[spillerId]",
       "kildefil": "src/app/innsyn/[spillerId]/page.tsx",
@@ -13353,21 +13398,19 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "precision-visning",
+        "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Offline merker SY01Offline i Precision. Lokal lagring og de to lenkene er beholdt. Tegningens demokode om tre ventende endringer er ikke innført. Kilde: ui_kits/system/screens/SY-01.jsx. Målt lokalt 03.10.2026 i kjørende app på 390×844 og 1440×880. Ikke satt kontrollert-i-app.",
-      "avvik": [
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
+      "kontrollbevis": null,
+      "avvik": [],
       "kobling": "tegnet-skjermtype",
       "forklaring": "SY-01 Systemtilstander er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "SY-01"
     },
     {
       "screenId": "VIDERESENDING",
@@ -24181,36 +24224,34 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "precision-visning",
+        "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Vedlikehold merker SY01Vedlikehold i Precision. Telefon og e-post er beholdt. Tegningens klokkeslett er ikke innført. Kilde: ui_kits/system/screens/SY-01.jsx. Målt lokalt 03.10.2026 i kjørende app på 390×844 og 1440×880. Ikke satt kontrollert-i-app.",
-      "avvik": [
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
+      "kontrollbevis": null,
+      "avvik": [],
       "kobling": "tegnet-skjermtype",
       "forklaring": "SY-01 Systemtilstander er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "SY-01"
     }
   ],
   "tellinger": {
-    "sidefiler": 550,
-    "medAvvik": 154,
+    "sidefiler": 551,
+    "medAvvik": 153,
     "valgtForBygging": 245,
-    "utenEksaktType": 16,
-    "implementert": 125,
+    "utenEksaktType": 17,
+    "implementert": 123,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,
       "felles-monster": 22,
       "tegnet-skjermtype": 279,
       "videresending": 172,
-      "teknisk-forklaring": 33,
+      "teknisk-forklaring": 34,
       "byggeunderlag": 37
     },
     "screenId": {
@@ -24243,7 +24284,7 @@
       "AG-09": 2,
       "AG-24": 5,
       "AG-06": 2,
-      "UTEN-TEGNET-TYPE": 16,
+      "UTEN-TEGNET-TYPE": 17,
       "AG-04": 2,
       "AG-12": 1,
       "AG-11": 2,
