@@ -41,7 +41,7 @@
 @media (hover: hover) and (pointer: fine) { .agn-ikonknapp:hover { background: var(--sand-150); } }
 
 /* Søk: åpner det felles søket (⌘K) */
-.agn-sok { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; height: 42px; padding: 0 12px; border: 1px solid var(--sand-300); border-radius: 8px; background: var(--white); color: var(--graphite-600); font: 400 14px/1 var(--sans); cursor: pointer; text-align: left; white-space: nowrap; overflow: hidden; }
+.agn-sok { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 12px; border: 1px solid var(--sand-300); border-radius: 8px; background: var(--white); color: var(--graphite-600); font: 400 14px/1 var(--sans); cursor: pointer; text-align: left; white-space: nowrap; overflow: hidden; }
 .agn-sok .tx { overflow: hidden; text-overflow: ellipsis; }
 .agn-sok kbd { margin-left: auto; font: 500 12px/1 var(--mono); padding: 4px 6px; border: 1px solid var(--sand-300); border-radius: 4px; background: var(--sand-100); color: var(--graphite-600); }
 
