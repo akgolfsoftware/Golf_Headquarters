@@ -3,6 +3,7 @@ import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { AdminRolleProvider } from "@/components/v2/rolle";
 import { AG01Cockpit, type AG01Tilstand } from "@/components/admin/precision/AG01Cockpit";
 import type { AG01Data } from "@/lib/agencyos/cockpit-precision";
+import { byggAiDispatch } from "@/lib/agencyos/ai-dispatch-build";
 
 export const sti = "/admin/agencyos";
 
@@ -48,10 +49,12 @@ const data: AG01Data = {
   ],
 };
 
+const dispatch = byggAiDispatch({ isAdmin: true, planActions: 3, caddieDrafts: 1, sessionRequests: 0, agentRunsRunning: 0, innboksNye: 2 });
+
 const Vis = (t: AG01Tilstand, erAdmin = true, d: AG01Data = data) => (
   <AdminRolleProvider erAdmin={erAdmin}>
     <AgencyOSSkall navn="Test Coach">
-      <AG01Cockpit tilstand={t} data={d} />
+      <AG01Cockpit tilstand={t} data={d} dispatch={dispatch} />
     </AgencyOSSkall>
   </AdminRolleProvider>
 );

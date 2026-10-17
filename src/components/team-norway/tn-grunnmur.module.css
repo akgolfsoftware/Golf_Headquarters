@@ -9,7 +9,7 @@
 .fremdrift { height: 8px; background: var(--tn-navy-100); }
 .fremdrift span { display: block; height: 100%; background: var(--tn-navy-900); }
 
-.akseTekst { font-family: var(--tn-font-mono); font-weight: 500; font-size: 12px; line-height: 1; letter-spacing: 0.1em; }
+.akseTekst { font-family: var(--tn-font-body); font-weight: 700; font-size: 12.5px; line-height: 1; letter-spacing: 0.06em; }
 
 .okt {
   display: grid;
@@ -27,7 +27,7 @@
 .noytral .akseMerke { border-color: var(--tn-ink-500); color: var(--tn-ink-700); }
 .egentid { display: grid; gap: 2px; padding: 12px 14px; border: 1px dashed var(--tn-ink-300); background: var(--tn-white); }
 .oktRad { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
-.akseMerke { display: inline-flex; align-items: center; height: 22px; padding: 0 7px; border-radius: var(--tn-radius-sm); border: 1px solid rgba(255, 255, 255, 0.7); font-family: var(--tn-font-mono); font-weight: 500; font-size: 11px; line-height: 1; letter-spacing: 0.12em; width: max-content; }
+.akseMerke { display: inline-flex; align-items: center; height: 22px; padding: 0 7px; border-radius: var(--tn-radius-sm); border: 1px solid rgba(255, 255, 255, 0.7); font-family: var(--tn-font-body); font-weight: 700; font-size: 11.5px; line-height: 1; letter-spacing: 0.08em; width: max-content; }
 .oktTid { font-family: var(--tn-font-mono); font-weight: 500; font-size: 30px; line-height: 1.05; letter-spacing: -0.02em; white-space: nowrap; }
 .liten .oktTid { font-size: 20px; }
 .oktTid small { margin-left: 6px; font-size: 14px; letter-spacing: 0; }

@@ -1,0 +1,133 @@
+/* Utkast 2, retning B «Stall og helteflate» (16.10.2026).
+   Fasit: docs/design-system/utkast-tn/felles/tn.css §Utkast 2. Hjørner 2, ingen skygger, ingen sirkler. */
+
+/* Helteflate: navy, ett stort hovedtall i hvitt, kort forklaring, én knapp, flaggstreken som kant nederst. */
+.helt {
+  position: relative;
+  display: grid;
+  gap: 16px;
+  padding: 24px 16px 30px;
+  background: var(--tn-navy-900);
+  color: var(--tn-white);
+  border-radius: var(--tn-radius-sm);
+  overflow: hidden;
+}
+.helt::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 6px;
+  background: linear-gradient(90deg, var(--tn-red-600) 0 40%, var(--tn-white) 40% 46%, var(--tn-navy-900) 46% 60%, var(--tn-white) 60% 66%, var(--tn-red-600) 66% 100%);
+}
+.heltDel { display: grid; gap: 16px; align-content: start; }
+.sporsmaal { font-family: var(--tn-font-body); font-weight: 700; font-size: 14px; line-height: 1.35; letter-spacing: 0.02em; color: var(--tn-rail-text); }
+.heltTall { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 14px; }
+.heltTall strong { font-family: var(--tn-font-mono); font-weight: 500; font-size: 72px; line-height: 0.95; letter-spacing: -0.04em; color: var(--tn-white); }
+.heltTall strong small { margin-left: 4px; font-size: 22px; line-height: 1; letter-spacing: 0; color: var(--tn-rail-text); }
+.heltTall span { font-family: var(--tn-font-display); font-weight: 500; font-size: 22px; line-height: 1.2; letter-spacing: 0.02em; color: var(--tn-white); overflow-wrap: anywhere; }
+.heltTekst { margin: 0; max-width: 52ch; font-size: 15px; line-height: 1.55; color: var(--tn-rail-text); }
+.heltKnapper { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.heltBilde { display: block; width: 100%; height: 160px; object-fit: cover; border-radius: var(--tn-radius-sm); }
+
+.akser { display: grid; gap: 8px; }
+.fordelingLys { display: flex; height: 14px; gap: 2px; }
+.fordelingLys span { display: block; height: 100%; }
+.forklaringLys { display: flex; flex-wrap: wrap; gap: 6px 14px; }
+.forklaringLys span { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: 12px; line-height: 1.3; color: var(--tn-white); }
+.forklaringLys i { width: 10px; height: 10px; flex: none; }
+.forklaringLys b { font-family: var(--tn-font-mono); font-weight: 500; font-size: 13px; }
+
+.tellere { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; border-top: 1px solid var(--tn-navy-700); padding-top: 12px; }
+.tellere div { display: grid; gap: 4px; align-content: start; }
+.tellere b { font-family: var(--tn-font-mono); font-weight: 500; font-size: 24px; line-height: 1; color: var(--tn-white); }
+.tellere span { font-size: 13px; line-height: 1.3; color: var(--tn-rail-text); overflow-wrap: anywhere; }
+
+/* Status som bilde: farget markør, alltid med ord ved siden */
+.markor { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: 13px; line-height: 1.2; white-space: nowrap; }
+.markor i { width: 10px; height: 10px; flex: none; }
+.trenger { color: var(--tn-status-red-text); }
+.trenger i { background: var(--tn-status-red); }
+.folger { color: var(--tn-status-green-text); }
+.folger i { background: var(--tn-status-green); }
+.folgmed { color: var(--tn-status-amber-text); }
+.folgmed i { background: var(--tn-status-amber); }
+.ikkedelt { color: var(--tn-ink-700); }
+.ikkedelt i { background: var(--tn-ink-400); }
+
+/* Bånd med teller i båndhodet */
+.baand { display: grid; gap: 8px; }
+.baandHode { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; padding-bottom: 8px; border-bottom: 3px solid var(--tn-ink-300); }
+.baandHode h2 { margin: 0; font-family: var(--tn-font-display); font-weight: 500; font-size: 20px; line-height: 1.2; letter-spacing: 0.02em; color: var(--tn-navy-900); }
+.teller { display: grid; place-items: center; min-width: 36px; height: 32px; padding: 0 8px; font-family: var(--tn-font-mono); font-weight: 500; font-size: 18px; line-height: 1; background: var(--tn-ink-100); color: var(--tn-ink-900); }
+.baandKilde { margin-left: auto; font-size: 12.5px; line-height: 1.45; color: var(--tn-ink-500); }
+.baand.trenger .baandHode { border-color: var(--tn-status-red); }
+.baand.trenger .teller { background: var(--tn-status-red-text); color: var(--tn-white); }
+.baand.folger .baandHode { border-color: var(--tn-status-green); }
+.baand.folger .teller { background: var(--tn-status-green-bg); color: var(--tn-status-green-text); }
+.baandListe { display: grid; gap: 6px; }
+
+/* Spillerrad: avatar, navn og fakta, plan-stolpe, verdi. Statusmarkøren er venstre kant + ord. */
+.sprad {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 8px 12px;
+  align-items: center;
+  padding: 12px 14px;
+  background: var(--tn-white);
+  border: 1px solid var(--tn-ink-200);
+  border-left: 6px solid var(--tn-ink-400);
+  border-radius: var(--tn-radius-sm);
+  color: inherit;
+  text-decoration: none;
+}
+.sprad.trenger { border-left-color: var(--tn-status-red); color: inherit; }
+.sprad.folger { border-left-color: var(--tn-status-green); color: inherit; }
+.sprad.folgmed { border-left-color: var(--tn-status-amber); color: inherit; }
+.sprad:focus-visible { outline: 3px solid var(--tn-navy-400); outline-offset: 2px; }
+.avatar { display: grid; place-items: center; width: 40px; height: 40px; flex: none; background: var(--tn-navy-100); color: var(--tn-navy-900); font-family: var(--tn-font-mono); font-size: 13px; }
+.hvem { display: grid; gap: 4px; }
+.hvem b { font-size: 15.5px; line-height: 1.25; color: var(--tn-ink-900); overflow-wrap: anywhere; }
+.fakta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; font-size: 13.5px; color: var(--tn-ink-700); }
+.grunn { grid-column: 2 / -1; font-weight: 700; font-size: 13.5px; line-height: 1.4; color: var(--tn-status-red-text); }
+.verdi { display: grid; justify-items: end; gap: 2px; }
+.verdi b { font-family: var(--tn-font-mono); font-weight: 500; font-size: 22px; line-height: 1; color: var(--tn-navy-900); }
+.verdi b.lav { color: var(--tn-status-red-text); }
+.verdi span { font-size: 12.5px; color: var(--tn-ink-700); white-space: nowrap; }
+.sprad .planstolpe { grid-column: 2 / -1; }
+
+/* Plan-stolpe: gjennomført mot planlagt, fylt i aksefargen som trenes mest (eller navy) */
+.planstolpe { display: grid; gap: 4px; }
+.spor { position: relative; height: 10px; background: var(--tn-ink-100); }
+.spor span { position: absolute; inset: 0 auto 0 0; background: var(--tn-navy-900); }
+.stolpeTekst { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 2px 8px; font-size: 12.5px; color: var(--tn-ink-700); }
+.stolpeTekst b { font-family: var(--tn-font-mono); font-weight: 500; font-size: 12.5px; line-height: 1.2; color: var(--tn-ink-900); }
+
+/* Kategori A–K: navy fylt, kantete. En kategori, ikke en akse. */
+.kat { display: inline-flex; align-items: center; justify-content: center; height: 22px; min-width: 24px; padding: 0 6px; background: var(--tn-navy-900); color: var(--tn-white); font-weight: 700; font-size: 12px; line-height: 1; border-radius: var(--tn-radius-sm); }
+
+/* Bildekort: bilde øverst, tekst i eget felt under. Aldri tekst oppå bildet. */
+.bildekort { display: grid; border: 1px solid var(--tn-ink-200); border-radius: var(--tn-radius-sm); background: var(--tn-white); overflow: hidden; color: inherit; text-decoration: none; align-content: start; }
+.bildekort img { display: block; width: 100%; height: 150px; object-fit: cover; }
+.bkTekst { display: grid; gap: 12px; padding: 16px 18px 18px; align-content: start; }
+.bildekort.navy { background: var(--tn-navy-900); border-color: var(--tn-navy-900); color: var(--tn-white); }
+.bildekort.navy .bkKilde { color: var(--tn-rail-text); }
+.bkKilde { font-size: 12.5px; line-height: 1.45; color: var(--tn-ink-500); }
+a.bildekort:focus-visible { outline: 3px solid var(--tn-navy-400); outline-offset: 2px; }
+
+/* Én primærknapp, resten i en meny («Ny» / «Mer») */
+.flere { position: relative; display: inline-block; }
+.flereListe { position: absolute; z-index: 5; top: calc(100% + 4px); left: 0; min-width: 220px; display: grid; background: var(--tn-white); border: 1px solid var(--tn-navy-900); border-radius: var(--tn-radius-sm); }
+.flereListe[hidden] { display: none; }
+
+@media (min-width: 900px) {
+  .helt { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); column-gap: 32px; padding: 32px 36px 38px; align-items: end; }
+  .heltTall strong { font-size: 96px; }
+  .heltBilde { height: 220px; }
+  .sprad { grid-template-columns: auto minmax(0, 1.1fr) minmax(0, 1fr) auto; }
+  .sprad .planstolpe { grid-column: 3; grid-row: 1; }
+  .grunn { grid-column: 2 / 4; }
+  .bildekort.side { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); }
+  .bildekort.side img { height: 100%; min-height: 220px; }
+}

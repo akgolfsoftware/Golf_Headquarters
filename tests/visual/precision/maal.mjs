@@ -93,6 +93,8 @@ const server = createServer((req, res) => {
   const u = new URL(req.url, "http://127.0.0.1");
   if (u.pathname === "/prove.js") { res.setHeader("Content-Type", "text/javascript"); res.end(readFileSync(resolve(out, "prove.js"))); return; }
   if (u.pathname === "/") { res.setHeader("Content-Type", "text/html; charset=utf-8"); res.end(html(u.searchParams.get("t"))); return; }
+  // AgencyOS-skallet henter neste økt fra serveren; prøven har ingen, så svaret er «ingen økt».
+  if (u.pathname === "/api/admin/neste-okt") { res.setHeader("Content-Type", "application/json"); res.end('{"okt":null}'); return; }
   const fil = resolve(root, "public", "." + u.pathname);
   if (fil.startsWith(resolve(root, "public")) && existsSync(fil)) { res.setHeader("Content-Type", TYPER[extname(fil)] ?? "application/octet-stream"); res.end(readFileSync(fil)); return; }
   res.writeHead(404); res.end();

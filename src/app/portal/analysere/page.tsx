@@ -23,6 +23,8 @@ import { loadVisibleSessionRange } from "@/lib/portal/visible-session-range";
 import { hentTmOkter } from "@/lib/portal-analyse/load-trackman-stats";
 import { TM_FILTER_STANDARD, tellende } from "@/lib/portal-analyse/trackman-stats";
 import type { TreningAkse } from "@/lib/portal-analyse/trening-stats";
+import { loadTesterScreen } from "@/lib/portal-tester/tester-data";
+import { byggPH14 } from "@/lib/portal-tester/ph14-tester-data";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Stats · PlayerHQ" };
@@ -72,10 +74,12 @@ export default async function AnalyserePage({ searchParams }: AnalyserePageProps
     );
   }
 
-  const [data, uleste, etterlevelse] = await Promise.all([
+  const [data, uleste, etterlevelse, testSkjerm] = await Promise.all([
     loadPH16Stats(user.id, user.name),
     getUnreadNotifications(user.id, 1),
     aktivFane ? Promise.resolve(null) : hentStallEtterlevelse([user.id], naa).then((m) => m.get(user.id) ?? null),
+    // Testdelen i oversikten leser samme testliste som Tester (PH-14).
+    aktivFane ? Promise.resolve(null) : loadTesterScreen({ id: user.id, name: user.name, hcp: user.hcp, tier: user.tier }),
   ]);
 
   // Uten valgt del vises oversikten med fire deler (nytt design); ?del= åpner dybden.
@@ -87,7 +91,8 @@ export default async function AnalyserePage({ searchParams }: AnalyserePageProps
     } : null;
     return (
       <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste.count}>
-        <PH16StatsOversikt data={data} trening={trening} />
+        <PH16StatsOversikt data={data} trening={trening}
+          tester={testSkjerm ? byggPH14(testSkjerm.groups.flatMap((g) => g.rows), naa) : null} />
       </PlayerHQSkall>
     );
   }
