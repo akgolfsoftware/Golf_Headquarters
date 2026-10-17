@@ -76,6 +76,10 @@ export async function GET(req: NextRequest) {
         // Rollen whitelistes som i ensureUser: bare PLAYER eller PARENT, aldri privilegert. Tier er alltid
         // GRATIS, og spillere får profilType TALENT (samme som ensureUser), ellers lander de på INGEN.
         const meta = authUser.user_metadata ?? {};
+        const metaName =
+          (meta.full_name as string | undefined) ??
+          (meta.name as string | undefined) ??
+          email.split("@")[0];
         const role = meta.role === "PARENT" ? "PARENT" : "PLAYER";
         const fraSkjema = [meta.firstName, meta.lastName]
           .filter((x): x is string => typeof x === "string" && x.trim() !== "")
