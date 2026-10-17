@@ -63,7 +63,7 @@ export default async function TurneringDetaljPage({ params }: { params: Promise<
       <PHTurnering
         data={{
           id: data.id, navn: data.name,
-          undertittel: ["Turnering", data.entry ? `${data.entry.planTier}-turnering` : null, data.status.label].filter(Boolean).join(" · "),
+          undertittel: ["Turnering", data.entry ? `${data.entry.planTier}-turnering` : null, data.status?.label].filter(Boolean).join(" · "),
           fakta, arrangorUrl: data.registrationUrl ?? data.officialUrl,
           entry: data.entry ? { id: entryRad?.id ?? null, status, tier: data.entry.planTier } : null,
           kanStarteRunde, startHjelp,
