@@ -8,6 +8,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 import { notify } from "@/lib/notifications";
+import { harTilgangTilUtfordring, hentGyldigeDeltakerIder, ovelseTilgangWhere } from "@/lib/portal/utfordring-tilgang";
 
 async function krevBruker() {
   const user = await requireConsentingUser();
@@ -22,7 +23,7 @@ export type UtfordringInput = {
   endAt?: string | null;
   /** true = høyest score vinner. Overstyres av øvelsens egen retning når satt. */
   higherIsBetter?: boolean;
-  /** Bruker-id-er valgt fra venner/egne grupper/stallen. Eier legges alltid til automatisk. */
+  /** Bruker-id-er valgt fra egne grupper (coach: også stallen). Eier legges alltid til automatisk. */
   deltakerIds?: string[];
 };
 
@@ -43,40 +44,6 @@ function parseDato(verdi?: string | null): Date | null {
   return d;
 }
 
-/**
- * Gyldige deltaker-kandidater for en bruker: venner (Friendship ACCEPTED) og
- * medlemmer (uansett rolle, endedAt: null) av grupper brukeren selv er aktivt
- * medlem av. En coach sin gruppe gir dermed automatisk tilgang til stallen
- * (PLAYER-medlemmene der) — ingen delbar lenke, kun disse to kildene
- * (beslutninger.md §Utfordringer skal leve).
- */
-async function hentGyldigeDeltakerIder(userId: string): Promise<Set<string>> {
-  const [vennskap, egneMedlemskap] = await Promise.all([
-    prisma.friendship.findMany({
-      where: { status: "ACCEPTED", OR: [{ userAId: userId }, { userBId: userId }] },
-      select: { userAId: true, userBId: true },
-    }),
-    prisma.groupMember.findMany({
-      where: { userId, endedAt: null },
-      select: { groupId: true },
-    }),
-  ]);
-
-  const ider = new Set<string>();
-  for (const v of vennskap) ider.add(v.userAId === userId ? v.userBId : v.userAId);
-
-  const gruppeIder = egneMedlemskap.map((m) => m.groupId);
-  if (gruppeIder.length > 0) {
-    const medlemmer = await prisma.groupMember.findMany({
-      where: { groupId: { in: gruppeIder }, endedAt: null, userId: { not: userId } },
-      select: { userId: true },
-    });
-    for (const m of medlemmer) ider.add(m.userId);
-  }
-
-  return ider;
-}
-
 export async function opprettUtfordring(input: UtfordringInput) {
   const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"], kreverTilgang: "FULL" });
   const parsed = OpprettUtfordringSchema.safeParse(input);
@@ -86,18 +53,19 @@ export async function opprettUtfordring(input: UtfordringInput) {
 
   let higherIsBetter = data.higherIsBetter ?? true;
   if (data.drillId) {
-    const ovelse = await prisma.exerciseDefinition.findUnique({
-      where: { id: data.drillId },
+    const ovelse = await prisma.exerciseDefinition.findFirst({
+      where: { AND: [{ id: data.drillId }, await ovelseTilgangWhere(user)] },
       select: { higherIsBetter: true },
     });
-    if (ovelse?.higherIsBetter != null) higherIsBetter = ovelse.higherIsBetter;
+    if (!ovelse) throw new Error("Øvelsen finnes ikke i Øvelsesbanken din.");
+    if (ovelse.higherIsBetter != null) higherIsBetter = ovelse.higherIsBetter;
   }
 
   const onskedeDeltakere = [...new Set((data.deltakerIds ?? []).filter((id) => id !== user.id))];
   if (onskedeDeltakere.length > 0) {
-    const gyldige = await hentGyldigeDeltakerIder(user.id);
+    const gyldige = await hentGyldigeDeltakerIder(user);
     const ugyldig = onskedeDeltakere.find((id) => !gyldige.has(id));
-    if (ugyldig) throw new Error("Kan bare legge til venner eller medlemmer av egne grupper som deltakere.");
+    if (ugyldig) throw new Error("Du kan bare velge deltakere fra gruppene dine.");
   }
 
   const ny = await prisma.drillChallenge.create({
@@ -145,6 +113,8 @@ export async function bliMed(challengeId: string) {
     select: { id: true, name: true, status: true, ownerId: true },
   });
   if (!utfordring) throw new Error("Utfordring finnes ikke.");
+  // Ingen delbar lenke: bare eier og valgte deltakere kan bli med (16.10.2026).
+  if (!(await harTilgangTilUtfordring(challengeId, user))) throw new Error("Utfordring finnes ikke.");
   if (utfordring.status !== "ACTIVE") throw new Error("Utfordringen er avsluttet.");
 
   await prisma.challengeParticipant.upsert({
