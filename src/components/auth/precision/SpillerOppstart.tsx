@@ -1,60 +1,55 @@
 "use client";
 
 /**
- * Oppstart for spiller (AU-04), sju steg. Ren visning: all tilstand og alle
- * server-kall eies av onboarding-wizard.tsx. Tegning: Claude Design 7d7c2994,
- * ui_kits/konto/screens/AU-04-spiller.jsx (runde 23, Anders 28.09.2026), med
- * ui_kits/_shared/fasiliteter.jsx (Dekning og FasSkjema).
+ * AU-04 Oppstart for spiller i nytt design (docs/design-system/utkast-flater/innlogging.html, utkast 1
+ * 15.10.2026). Ren visning: tilstand og server-kall eies av onboarding-wizard.tsx.
  *
- * Rekkefølge: Om deg · Fasiliteter · Finn deg i resultatene · Teknikktest ·
- * Samtykker · Velg treningsplan · Klar.
+ * 1 Om deg · 2 Strokes Gained · 3 Hva har du tilgang til? · 4 Finn deg i turneringsresultatene ·
+ * 5 Teknikktest · 6 Samtykker · 7 Velg treningsplan. Alt unntatt Om deg kan hoppes over.
+ *
+ * Avvik mot utkastet:
+ * - Fødselsdato skrives dd.mm.åååå og lagres som ÅÅÅÅ-MM-DD.
+ * - Teknikktesten fører snitt av fem slag per kølle (carry og fra mål), ikke hvert slag. Målavstanden er
+ *   fast per kølle (TEST_KLUBBER). TrackMan-data kommer når TrackMan er koblet; før det vises ingenting.
+ * - Aksefordelingen på planene er merket «Eksempel» til planene er skrevet (åpent hos Anders).
+ * - Spillere under 16 kobles mot turneringsresultatene av treneren (som før).
  */
-import { useState, type ReactNode } from "react";
-import { AlertTriangle, ArrowRight, Check, Plus, Search } from "lucide-react";
-import { Knapp, Meta, StatusPille, FeilTilstand, LasterTilstand } from "@/components/precision/pa";
-import { InlineVarsel } from "@/components/precision/pa-a5";
-import { kategoriFraSnittscore } from "@/lib/domain/ak-kategori";
-import { tolkTall } from "@/lib/onboarding/sg-baseline";
+import type { ReactNode } from "react";
+import { AlertCircle } from "lucide-react";
+import { FlateRamme, FlateLaster, FlateMelding } from "@/components/flater/FlateRamme";
 import type { Kandidat } from "@/lib/profil-kobling/typer";
 import {
   OMRADER,
+  OMRADE_FAMILIER,
   OPPSTART_STEG,
-  SPORSMAL,
+  STEDER,
   TEST_KLUBBER,
-  TEST_VERKTOY,
   TRENINGSPLANER,
   TURNERINGSNIVAA,
   VALGFRIE_STEG,
   alderFraDato,
+  anbefaltPlan,
   d1,
-  dekkerOmrader,
-  samletDekning,
   testResultat,
-  type FasSvar,
   type TestKlubbId,
-  type TestSlag,
-  type TestSlagPerKlubb,
-  type TestVerktoy,
 } from "@/lib/onboarding/oppstart";
-import { Avkrysning, Field, Knapperad, ProgressDots, Segment, Skillelinje, StepHeading, TextField, Velg, VeiviserFlate } from "./oppstart";
+import { tolkTall } from "@/lib/onboarding/sg-baseline";
+import "@/styles/flater-ny-konto.css";
 
-/* ---------- Tilstand som vises ---------- */
+export type SgFelt = "sgOtt" | "sgApp" | "sgArg" | "sgPutt";
 
 export type OppstartVerdier = {
-  fodt: string; // ÅÅÅÅ-MM-DD
+  /** Slik spilleren skriver den: dd.mm.åååå. */
+  fodtTekst: string;
   hcp: string;
   snitt: string;
   nivaa: string;
-  sgIAar: string;
-  sgForrige: string;
-  fasiliteter: FasSvar[];
-  fasApen: boolean;
-  koblingModus: "Golf-ID" | "Navn og fødselsår";
+  sgIAar: Record<SgFelt, string>;
+  sgIFjor: Record<SgFelt, string>;
+  omrader: string[];
+  steder: string[];
   golfId: string;
-  testVerktoy: TestVerktoy;
-  testAvstand: Record<TestKlubbId, string>;
-  testSlag: TestSlagPerKlubb;
-  testVist: boolean;
+  test: Record<TestKlubbId, { carry: string; fraMal: string }>;
   ytelsesbilde: boolean;
   opptak: boolean;
   forelderEpost: string;
@@ -62,7 +57,6 @@ export type OppstartVerdier = {
 };
 
 export type Kobling = {
-  /** Navn og fødselsår fra profilen, som serveren søker på. */
   navn: string;
   fodselsaar: number | null;
   /** null = ikke søkt ennå. */
@@ -88,404 +82,327 @@ export type OppstartProps = {
   onProvIgjen: () => void;
 };
 
+const TOM_SG: Record<SgFelt, string> = { sgOtt: "", sgApp: "", sgArg: "", sgPutt: "" };
+
 export const TOMME_VERDIER: OppstartVerdier = {
-  fodt: "",
+  fodtTekst: "",
   hcp: "",
   snitt: "",
   nivaa: "",
-  sgIAar: "",
-  sgForrige: "",
-  fasiliteter: [],
-  fasApen: false,
-  koblingModus: "Navn og fødselsår",
+  sgIAar: { ...TOM_SG },
+  sgIFjor: { ...TOM_SG },
+  omrader: [],
+  steder: [],
   golfId: "",
-  testVerktoy: "TrackMan",
-  testAvstand: { sw: "70", i7: "140", dr: "220" },
-  testSlag: {},
-  testVist: false,
+  test: { sw: { carry: "", fraMal: "" }, i7: { carry: "", fraMal: "" }, dr: { carry: "", fraMal: "" } },
   ytelsesbilde: false,
   opptak: false,
   forelderEpost: "",
   plan: null,
 };
 
-const tekstStil = { margin: 0, font: "var(--type-body-s)", color: "var(--text-secondary)", textWrap: "pretty" } as const;
+/** «14.03.2011» → «2011-03-14». Ugyldig gir "". */
+export function fodtIso(tekst: string): string {
+  const m = /^(\d{1,2})\.(\d{1,2})\.(\d{4})$/.exec(tekst.trim());
+  if (!m) return /^\d{4}-\d{2}-\d{2}$/.test(tekst.trim()) ? tekst.trim() : "";
+  return `${m[3]}-${m[2].padStart(2, "0")}-${m[1].padStart(2, "0")}`;
+}
+
+/** «2011-03-14» → «14.03.2011». */
+export function fodtTekstFraIso(iso: string): string {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+  return m ? `${m[3]}.${m[2]}.${m[1]}` : "";
+}
 
 const epostOk = (v: string) => /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(v.trim());
 
-/* ---------- Fasiliteter: dekning og skjema ---------- */
+const SG_RADER: ReadonlyArray<[SgFelt, string]> = [["sgOtt", "Utslag"], ["sgApp", "Innspill"], ["sgArg", "Nærspill"], ["sgPutt", "Putting"]];
 
-function kortNavn(x: string) {
-  return x.replace("Innspill ca. ", "Innspill ").replace("Putting ", "Putt ");
-}
+/** Fargestripe per plan. Eksempel til planene er skrevet (åpent hos Anders). */
+const PLAN_INFO: Record<string, { tekst: string; akser: Array<[string, number]> }> = {
+  "Weekend Warrior": { tekst: "Få timer i uka, mest i helgene.", akser: [["a-tek", 20], ["a-slag", 40], ["a-spill", 40]] },
+  Klubbspilleren: { tekst: "Jevn trening og klubbspill gjennom sesongen.", akser: [["a-fys", 15], ["a-tek", 25], ["a-slag", 30], ["a-spill", 30]] },
+  "Junior-aspirant": { tekst: "Bred grunnmur for juniorer som vil videre.", akser: [["a-fys", 25], ["a-tek", 30], ["a-slag", 25], ["a-spill", 15], ["a-turn", 5]] },
+  Konkurransespilleren: { tekst: "For deg som spiller turneringer.", akser: [["a-fys", 20], ["a-tek", 20], ["a-slag", 25], ["a-spill", 20], ["a-turn", 15]] },
+  "Practice like the pros": { tekst: "Stor treningsmengde med tydelig struktur.", akser: [["a-fys", 20], ["a-tek", 25], ["a-slag", 25], ["a-spill", 15], ["a-turn", 15]] },
+};
 
-export function Dekning({ liste }: { liste: readonly FasSvar[] }) {
-  const dekket = new Set(samletDekning(liste));
-  const mangler = OMRADER.filter((o) => !dekket.has(o));
+function Steghode({ steg, onHopp, venter }: { steg: number; onHopp: () => void; venter: boolean }) {
+  const valgfri = VALGFRIE_STEG.has(steg);
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 8, minWidth: 0 }}>
-      <div style={{ display: "flex", gap: 8, alignItems: "baseline", flexWrap: "wrap" }}>
-        <span style={{ font: "600 15px/1.3 var(--font-sans)", color: "var(--text-primary)", flex: "1 1 auto" }}>{dekket.size} av {OMRADER.length} treningsområder dekket</span>
-        <Meta>{mangler.length ? `${mangler.length} MANGLER` : "ALLE DEKKET"}</Meta>
+    <div className="steghode">
+      <div className="rad">
+        <span className="nr">Steg {steg} av {OPPSTART_STEG.length}{steg === 5 ? " · anbefalt" : ""}</span>
+        {valgfri && <button type="button" className="hopp" onClick={onHopp} disabled={venter}>{steg === 3 ? "Fullfør senere" : "Hopp over"}</button>}
       </div>
-      <div role="img" aria-label={`${dekket.size} av ${OMRADER.length} dekket`} style={{ display: "grid", gridTemplateColumns: `repeat(${OMRADER.length}, minmax(0, 1fr))`, gap: 2 }}>
-        {OMRADER.map((o) => <span key={o} style={{ height: 8, background: dekket.has(o) ? "var(--primary)" : "var(--surface-sunken)" }} />)}
+      <div className="steg-linje" aria-hidden="true">
+        {OPPSTART_STEG.map((_, i) => <i key={i} className={i < steg ? "ja" : undefined} />)}
       </div>
-      {mangler.length > 0 && (
-        <>
-          <Meta>MANGLER</Meta>
-          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-            {mangler.map((o) => (
-              <span key={o} style={{ display: "inline-flex", alignItems: "center", minHeight: 28, padding: "0 10px", borderRadius: 999, font: "500 12px/1 var(--font-sans)", border: "1px dashed var(--border-strong)", color: "var(--text-muted)" }}>{kortNavn(o)}</span>
-            ))}
-          </div>
-        </>
-      )}
     </div>
   );
 }
 
-function JaNei({ verdi, onVelg, etikett }: { verdi: boolean | undefined; onVelg: (b: boolean) => void; etikett: string }) {
+function Feltlinje({ id, label, hjelp, children }: { id: string; label: string; hjelp?: ReactNode; children: ReactNode }) {
   return (
-    <div role="group" aria-label={etikett} style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 8 }}>
-      {([["Ja", true], ["Nei", false]] as const).map(([l, b]) => (
-        <button
-          key={l}
-          type="button"
-          aria-pressed={verdi === b}
-          onClick={() => onVelg(b)}
-          style={{
-            minHeight: 52, borderRadius: 8, cursor: "pointer", font: "600 15px/1 var(--font-sans)",
-            border: "1px solid " + (verdi === b ? "var(--border-ink)" : "var(--border-hairline)"),
-            background: verdi === b ? "var(--primary)" : "var(--surface-card)",
-            color: verdi === b ? "var(--text-on-primary)" : "var(--text-primary)",
-          }}
-        >
-          {l}
-        </button>
-      ))}
+    <div className="felt">
+      <label htmlFor={id}>{label}</label>
+      {children}
+      {hjelp && <span className="hjelp">{hjelp}</span>}
     </div>
   );
 }
 
-/** Ett spørsmål om gangen, ja/nei, oppfølging ved ja. Lagrer først når alle er besvart. */
-export function FasSkjema({ onSave, onCancel, startId, init, startSporsmal }: { onSave: (f: FasSvar) => void; onCancel: () => void; startId: string; init?: Partial<FasSvar>; startSporsmal?: number }) {
-  const [f, setF] = useState<FasSvar>({ id: startId, name: "", ...init });
-  const [i, setI] = useState(startSporsmal ?? -1);
-  const [feil, setFeil] = useState<string | null>(null);
-  const n = SPORSMAL.length;
-  const q = i >= 0 ? SPORSMAL[i] : null;
-  const sett = (k: string, v: boolean | number | undefined) => setF((x) => ({ ...x, [k]: v }));
-  const svar = f as unknown as Record<string, boolean | number | undefined>;
-  const besvart = q ? svar[q.id] != null : true;
-  const neste = () => {
-    if (i === -1) {
-      if (!f.name.trim()) { setFeil("Gi fasiliteten et navn."); return; }
-      setFeil(null);
-    }
-    if (i < n - 1) setI(i + 1);
-    else onSave({ ...f, name: f.name.trim() });
-  };
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 16, minWidth: 0 }}>
-      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-        <Meta>{i === -1 ? "NAVN" : `SPØRSMÅL ${i + 1} AV ${n}`}</Meta>
-        <div aria-hidden="true" style={{ display: "grid", gridTemplateColumns: `repeat(${n + 1}, minmax(0, 1fr))`, gap: 3 }}>
-          {Array.from({ length: n + 1 }, (_, k) => <span key={k} style={{ height: 4, background: k <= i + 1 ? "var(--primary)" : "var(--surface-sunken)" }} />)}
-        </div>
-      </div>
-      {q === null ? (
-        <Field label="Hva heter fasiliteten?" krav="påkrevd" htmlFor="fas-navn" hint={feil ?? undefined}>
-          <TextField id="fas-navn" value={f.name} placeholder="Fredrikstad GK" onChange={(e) => { setF((x) => ({ ...x, name: e.target.value })); setFeil(null); }} />
-        </Field>
-      ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-          <span style={{ font: "600 17px/1.35 var(--font-sans)", color: "var(--text-primary)", textWrap: "pretty" }}>{q.tekst}</span>
-          <JaNei verdi={svar[q.id] as boolean | undefined} onVelg={(b) => sett(q.id, b)} etikett={q.tekst} />
-          {svar[q.id] === true && q.oppfolging.map((o) =>
-            o.type === "yn" ? (
-              <div key={o.id} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                <span style={{ font: "500 14px/1.3 var(--font-sans)", color: "var(--text-primary)" }}>{o.label}</span>
-                <JaNei verdi={svar[o.id] as boolean | undefined} onVelg={(b) => sett(o.id, b)} etikett={o.label} />
-              </div>
-            ) : (
-              <Field key={o.id} label={o.label + (o.enhet ? ` (${o.enhet})` : "")} htmlFor={`fas-${o.id}`}>
-                <TextField id={`fas-${o.id}`} mono inputMode="numeric" value={svar[o.id] == null ? "" : String(svar[o.id])} placeholder="—" onChange={(e) => { const t = e.target.value.replace(/\D/g, "").slice(0, 3); sett(o.id, t === "" ? undefined : Number(t)); }} />
-              </Field>
-            ),
-          )}
-        </div>
-      )}
-      <div style={{ borderTop: "1px solid var(--border-hairline)", paddingTop: 12 }}>
-        <Dekning liste={[f]} />
-      </div>
-      <Knapperad>
-        <Knapp icon={i === n - 1 ? Check : ArrowRight} disabled={!besvart} onClick={neste}>{i === n - 1 ? "Lagre fasilitet" : "Neste"}</Knapp>
-        {i >= 0 && <Knapp variant="ghost" onClick={() => setI(i - 1)}>Tilbake</Knapp>}
-        <Knapp variant="ghost" onClick={onCancel}>Avbryt</Knapp>
-      </Knapperad>
-    </div>
-  );
-}
-
-/* ---------- Steg ---------- */
+/* ---------- Stegene ---------- */
 
 function OmDeg({ v, endre, alder }: { v: OppstartVerdier; endre: OppstartProps["endre"]; alder: number | null }) {
-  const snitt = tolkTall(v.snitt);
-  const kat = snitt != null ? kategoriFraSnittscore(snitt) : null;
-  const under16 = alder != null && alder < 16;
-  const felt = (k: keyof OppstartVerdier) => (e: { target: { value: string } }) => endre({ [k]: e.target.value } as Partial<OppstartVerdier>);
+  const nivaaer = TURNERINGSNIVAA.filter((n) => n.value !== "");
   return (
-    <>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 12 }}>
-        <Field label="Fødselsdato" krav="påkrevd" htmlFor="au-fodt" hint={alder != null ? `${alder} år` : "ÅÅÅÅ-MM-DD"}>
-          <TextField id="au-fodt" mono inputMode="numeric" autoComplete="bday" value={v.fodt} onChange={(e) => endre({ fodt: e.target.value.replace(/[^\d-]/g, "").slice(0, 10) })} placeholder="2009-04-12" />
-        </Field>
-        <Field label="HCP" htmlFor="au-hcp"><TextField id="au-hcp" mono inputMode="decimal" value={v.hcp} onChange={felt("hcp")} placeholder="—" /></Field>
-        <Field label="Snittscore" htmlFor="au-snitt" hint="Siste 10 runder, brutto"><TextField id="au-snitt" mono inputMode="decimal" value={v.snitt} onChange={felt("snitt")} placeholder="—" /></Field>
-        <Velg id="au-nivaa" label="Turneringsnivå" value={v.nivaa} onChange={(x) => endre({ nivaa: x })} options={TURNERINGSNIVAA} />
-        <Field label="SG i år" krav="valgfritt" htmlFor="au-sg" hint="Hvis du har det"><TextField id="au-sg" mono inputMode="decimal" value={v.sgIAar} onChange={felt("sgIAar")} placeholder="—" /></Field>
-        <Field label="SG forrige sesong" krav="valgfritt" htmlFor="au-sgf" hint="Hvis du har det"><TextField id="au-sgf" mono inputMode="decimal" value={v.sgForrige} onChange={felt("sgForrige")} placeholder="—" /></Field>
+    <form className="seksjon" onSubmit={(e) => e.preventDefault()}>
+      <Feltlinje id="fd" label="Fødselsdato" hjelp={alder != null ? `Du er ${alder} år. Fødselsdato kan bare endres av coach.` : "Skriv dd.mm.åååå."}>
+        <input id="fd" inputMode="numeric" autoComplete="bday" placeholder="dd.mm.åååå" value={v.fodtTekst} onChange={(e) => endre({ fodtTekst: e.target.value.replace(/[^\d.]/g, "").slice(0, 10) })} />
+      </Feltlinje>
+      <div className="to-felt">
+        <Feltlinje id="hcp" label="Handicap">
+          <input id="hcp" inputMode="decimal" style={{ fontFamily: "var(--mono)" }} value={v.hcp} onChange={(e) => endre({ hcp: e.target.value })} />
+        </Feltlinje>
+        <Feltlinje id="snitt" label="Snittscore" hjelp="Brutto, 18 hull">
+          <input id="snitt" inputMode="numeric" style={{ fontFamily: "var(--mono)" }} value={v.snitt} onChange={(e) => endre({ snitt: e.target.value })} />
+        </Feltlinje>
       </div>
-      <Meta>{(kat ? `KATEGORI ${kat.kategori} · ${kat.niva.toUpperCase()} · ESTIMAT FRA SNITTSCORE` : "KATEGORI —") + (under16 ? " · UNDER 16: FORELDER GIR SAMTYKKE" : "")}</Meta>
-    </>
+      <div className="felt">
+        <span className="etikett" id="niva-tekst">Høyeste turneringsnivå</span>
+        <div className="chips" role="group" aria-labelledby="niva-tekst">
+          {nivaaer.map((n) => (
+            <button key={n.value} type="button" aria-pressed={v.nivaa === n.value} onClick={() => endre({ nivaa: n.value })}>
+              {n.value === "REGION" ? "Region" : n.label}
+            </button>
+          ))}
+        </div>
+      </div>
+    </form>
+  );
+}
+
+function StrokesGained({ v, endre }: { v: OppstartVerdier; endre: OppstartProps["endre"] }) {
+  const sett = (periode: "sgIAar" | "sgIFjor", felt: SgFelt, verdi: string) =>
+    endre({ [periode]: { ...v[periode], [felt]: verdi.replace(/[^\d,.+\-−]/g, "").slice(0, 6) } } as Partial<OppstartVerdier>);
+  return (
+    <div className="kort">
+      <div className="sg-tabell">
+        <div className="sg-r hode"><span>Område</span><span style={{ textAlign: "right" }}>I år</span><span style={{ textAlign: "right" }}>I fjor</span></div>
+        {SG_RADER.map(([felt, navn]) => (
+          <div className="sg-r" key={felt}>
+            <span>{navn}</span>
+            <input aria-label={`${navn} i år`} inputMode="decimal" placeholder="—" value={v.sgIAar[felt]} onChange={(e) => sett("sgIAar", felt, e.target.value)} />
+            <input aria-label={`${navn} i fjor`} inputMode="decimal" placeholder="—" value={v.sgIFjor[felt]} onChange={(e) => sett("sgIFjor", felt, e.target.value)} />
+          </div>
+        ))}
+      </div>
+      <p className="kilde">Egne tall merkes «Egenført» til runder i appen tar over.</p>
+    </div>
   );
 }
 
 function Fasiliteter({ v, endre }: { v: OppstartVerdier; endre: OppstartProps["endre"] }) {
-  const fas = v.fasiliteter;
+  const valgt = new Set(v.omrader);
+  const veksle = (o: string) => endre({ omrader: valgt.has(o) ? v.omrader.filter((x) => x !== o) : [...v.omrader, o] });
+  const veksleSted = (s: string) => endre({ steder: v.steder.includes(s) ? v.steder.filter((x) => x !== s) : [...v.steder, s] });
   return (
     <>
-      <p style={tekstStil}>Hvor trener du? Legg inn så mange du vil. Ett spørsmål om gangen. Du kan fullføre senere i Meg.</p>
-      {fas.length > 0 && (
-        <div role="list">
-          {fas.map((f, i) => (
-            <div role="listitem" key={f.id} style={{ display: "flex", justifyContent: "space-between", gap: 8, minHeight: 44, alignItems: "center", borderTop: i ? "1px solid var(--border-hairline)" : "none" }}>
-              <span style={{ font: "500 14px/1.3 var(--font-sans)", minWidth: 0, overflowWrap: "anywhere" }}>{f.name}</span>
-              <Meta>{dekkerOmrader(f).length} OMRÅDER</Meta>
+      <div className="kort">
+        <div className="hoved"><strong>{valgt.size}<small>av {OMRADER.length}</small></strong><span className="trend">treningsområder dekket</span></div>
+        <div>
+          {OMRADE_FAMILIER.map((f) => (
+            <div className="fam" key={f.navn}>
+              <div className="fam-topp"><b>{f.navn}</b><span>{f.omrader.filter((o) => valgt.has(o.id)).length}/{f.omrader.length}</span></div>
+              <div className="omr" role="group" aria-label={f.navn}>
+                {f.omrader.map((o) => (
+                  <button key={o.id} type="button" aria-pressed={valgt.has(o.id)} onClick={() => veksle(o.id)}>{o.kort}</button>
+                ))}
+              </div>
             </div>
           ))}
         </div>
-      )}
-      {v.fasApen ? (
-        <FasSkjema startId={`f${fas.length + 1}`} onCancel={() => endre({ fasApen: false })} onSave={(f) => endre({ fasiliteter: [...fas, f], fasApen: false })} />
-      ) : (
-        <>
-          <Dekning liste={fas} />
-          <div><Knapp variant="secondary" icon={Plus} onClick={() => endre({ fasApen: true })}>{fas.length ? "Legg til en til" : "Legg til fasilitet"}</Knapp></div>
-        </>
-      )}
+      </div>
+      <section className="seksjon">
+        <span className="undertittel" id="steder-tekst">Steder du bruker</span>
+        <div className="chips" role="group" aria-labelledby="steder-tekst">
+          {STEDER.map((s) => (
+            <button key={s} type="button" aria-pressed={v.steder.includes(s)} onClick={() => veksleSted(s)}>{s}</button>
+          ))}
+        </div>
+      </section>
     </>
   );
 }
 
 function FinnDeg({ v, endre, kobling, venter, onSok, onKoble, under16 }: { v: OppstartVerdier; endre: OppstartProps["endre"]; kobling: Kobling; venter: boolean; onSok: () => void; onKoble: (id: number) => void; under16: boolean }) {
   if (under16) {
-    return (
-      <>
-        <p style={tekstStil}>Vi henter turneringsresultatene dine fra GolfBox.</p>
-        <InlineVarsel tone="info" tittel="Treneren din kobler resultatene.">Spillere under 16 år kobles av treneren sin. Du kan hoppe over dette steget.</InlineVarsel>
-      </>
-    );
+    return <div className="kort dempet"><b className="undertittel">Treneren din kobler resultatene</b><p className="forklar">Spillere under 16 år kobles av treneren sin. Du kan hoppe over dette steget.</p></div>;
   }
-  const soker = v.koblingModus === "Golf-ID";
   return (
     <>
-      <p style={tekstStil}>Vi henter turneringsresultatene dine fra GolfBox. Søk med golf-ID, eller med navnet og fødselsåret fra profilen din. Mellomnavn ignoreres.</p>
-      <Segment label="Søk med" options={["Golf-ID", "Navn og fødselsår"]} value={v.koblingModus} onChange={(m) => endre({ koblingModus: m as OppstartVerdier["koblingModus"] })} />
-      {soker ? (
-        <Field label="Golf-ID" htmlFor="au-golfid" hint="Minst fire siffer, for eksempel 303-579">
-          <TextField id="au-golfid" mono inputMode="numeric" value={v.golfId} onChange={(e) => endre({ golfId: e.target.value.replace(/[^\d-]/g, "").slice(0, 12) })} placeholder="303-579" />
-        </Field>
-      ) : (
-        <Meta>{`SØKER PÅ ${kobling.navn.toUpperCase() || "—"} · FØDT ${kobling.fodselsaar ?? "—"} · FRA PROFILEN DIN`}</Meta>
-      )}
-      <div><Knapp variant="secondary" icon={Search} onClick={onSok} loading={venter} loadingText="Søker …" disabled={soker && !v.golfId.trim()}>Søk</Knapp></div>
-      {kobling.feil && <InlineVarsel tone="warn">{kobling.feil}</InlineVarsel>}
-      {kobling.kandidater && !kobling.feil && (kobling.kandidater.length ? kobling.kandidater.map((k) => (
-        <div key={k.person_id} style={{ display: "flex", flexDirection: "column", gap: 6, padding: "12px 0", borderTop: "1px solid var(--border-hairline)" }}>
-          <span style={{ font: "600 14px/1.3 var(--font-sans)", overflowWrap: "anywhere" }}>{k.name}{k.birth_year ? ` · ${k.birth_year}` : ""}</span>
-          <Meta>{[k.club?.toUpperCase(), `${k.tournaments} TURNERINGER`].filter(Boolean).join(" · ")}</Meta>
-          {k.evidence[0] && <Meta>{`SISTE: ${[k.evidence[0].date ?? "—", k.evidence[0].tournament, k.evidence[0].class].filter(Boolean).join(" · ").toUpperCase()}`}</Meta>}
-          {kobling.koblet ? <div><StatusPille tone="ok">Koblet</StatusPille></div> : <div><Knapp icon={Check} onClick={() => onKoble(k.person_id)} disabled={venter}>Dette er meg</Knapp></div>}
-        </div>
-      )) : <Meta>INGEN TREFF · SJEKK STAVING ELLER BRUK GOLF-ID · DU KAN KOBLE SENERE I MEG › RESULTATER</Meta>)}
-    </>
-  );
-}
-
-function Teknikktest({ v, endre }: { v: OppstartVerdier; endre: OppstartProps["endre"] }) {
-  const avstander = { sw: +v.testAvstand.sw || 0, i7: +v.testAvstand.i7 || 0, dr: +v.testAvstand.dr || 0 };
-  const { rader, storste } = testResultat(v.testSlag, avstander);
-  const settSlag = (k: TestKlubbId, i: number, j: 0 | 1, tekst: string) => {
-    const liste: TestSlag[] = Array.from({ length: 5 }, (_, x) => {
-      const s = v.testSlag[k]?.[x];
-      return (s ? [s[0], s[1]] : [null, null]) as TestSlag;
-    });
-    liste[i][j] = tekst === "" ? null : Number(tekst);
-    endre({ testSlag: { ...v.testSlag, [k]: liste }, testVist: false });
-  };
-  return (
-    <>
-      <InlineVarsel tone="info" tittel="Anbefalt, ikke påkrevd">Bygger på Inspill Basic. Fem slag med sandwedge, 7-jern og driver på din egen avstand. Resultatet viser største svakhet. Det setter ikke nivå.</InlineVarsel>
-      <Segment label="Måleverktøy" options={TEST_VERKTOY} value={v.testVerktoy} onChange={(x) => endre({ testVerktoy: x as TestVerktoy, testVist: false })} />
-      {TEST_KLUBBER.map((k) => (
-        <Skillelinje key={k.id}>
-          <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) 112px", gap: 12, alignItems: "end" }}>
-            <span style={{ font: "600 15px/1.3 var(--font-sans)" }}>{k.navn}</span>
-            <Field label="Din avstand (m)" htmlFor={`t-${k.id}`}>
-              <TextField id={`t-${k.id}`} mono inputMode="numeric" value={v.testAvstand[k.id]} onChange={(e) => endre({ testAvstand: { ...v.testAvstand, [k.id]: e.target.value.replace(/\D/g, "").slice(0, 3) }, testVist: false })} />
-            </Field>
-          </div>
-          <div role="group" aria-label={`${k.navn} slag`} style={{ display: "grid", gridTemplateColumns: "28px minmax(0, 1fr) minmax(0, 1fr)", gap: 6, alignItems: "center" }}>
-            <Meta>#</Meta><Meta>CARRY (M)</Meta><Meta>FRA MÅL (M)</Meta>
-            {Array.from({ length: 5 }, (_, i) => {
-              const s = v.testSlag[k.id]?.[i] ?? [null, null];
-              return (
-                <Rad key={i} nr={i + 1}>
-                  <TextField mono inputMode="decimal" aria-label={`${k.navn} slag ${i + 1} carry`} value={s[0] == null ? "" : String(s[0])} placeholder="—" onChange={(e) => settSlag(k.id, i, 0, e.target.value.replace(/[^\d.]/g, ""))} />
-                  <TextField mono inputMode="decimal" aria-label={`${k.navn} slag ${i + 1} fra mål`} value={s[1] == null ? "" : String(s[1])} placeholder="—" onChange={(e) => settSlag(k.id, i, 1, e.target.value.replace(/[^\d.]/g, ""))} />
-                </Rad>
-              );
-            })}
-          </div>
-        </Skillelinje>
-      ))}
-      {v.testVerktoy === "TrackMan" ? (
-        <Skillelinje>
-          <Meta>FRA TRACKMAN · SPREDNING OG VARIASJON · 7-JERN</Meta>
-          {["Club Path", "Face Angle", "Face to Path", "Attack Angle", "Dynamic Loft", "Club Speed"].map((p, i) => (
-            <div key={p} style={{ display: "flex", justifyContent: "space-between", minHeight: 36, alignItems: "center", borderTop: i ? "1px solid var(--border-hairline)" : "none" }}>
-              <span style={{ font: "400 14px/1.3 var(--font-sans)" }}>{p}</span>
-              <span style={{ font: "600 13px/1 var(--font-mono)" }}>—</span>
+      <form className="seksjon" onSubmit={(e) => { e.preventDefault(); onSok(); }}>
+        <Feltlinje id="gid" label="Golf-ID" hjelp="Tomt felt søker på navnet og fødselsåret fra profilen din. Mellomnavn ignoreres.">
+          <input id="gid" inputMode="numeric" placeholder="F.eks. 123-4567" style={{ fontFamily: "var(--mono)" }} value={v.golfId} onChange={(e) => endre({ golfId: e.target.value.replace(/[^\d-]/g, "").slice(0, 12) })} />
+        </Feltlinje>
+        <p className="kilde">Søker på {kobling.navn || "—"} · født {kobling.fodselsaar ?? "—"}</p>
+        <button type="submit" className="knapp sek" disabled={venter}>{venter ? "Søker …" : "Søk"}</button>
+      </form>
+      {kobling.feil && <p className="feilmelding" role="alert"><AlertCircle className="ikon" aria-hidden="true" />{kobling.feil}</p>}
+      {kobling.kandidater && !kobling.feil && (
+        <section className="seksjon">
+          <div className="sek-topp"><h2>{kobling.kandidater.length} treff</h2></div>
+          {kobling.kandidater.length === 0 && <p className="forklar">Ingen treff. Sjekk stavingen, prøv Golf-ID, eller hopp over. Du kan koble senere i Meg › Resultater.</p>}
+          {kobling.kandidater.map((k) => (
+            <div key={k.person_id} className={kobling.koblet ? "treff valgt" : "treff"}>
+              <span className="avatar lys">{k.name.split(/\s+/).map((d) => d[0]).slice(0, 2).join("")}</span>
+              <span><b>{k.name}</b><span className="kilde">{[k.birth_year, k.club, `${k.tournaments} turneringer`].filter(Boolean).join(" · ")}</span></span>
+              {kobling.koblet ? <span className="pille ok"><i />Det er meg</span> : <button type="button" className="knapp sek" style={{ minHeight: 44 }} onClick={() => onKoble(k.person_id)} disabled={venter}>Det er meg</button>}
             </div>
           ))}
-          <Meta>KØLLEDATA HENTES FRA TRACKMAN NÅR DEN ER KOBLET · FØR DET VISES —</Meta>
-        </Skillelinje>
-      ) : (
-        <Meta>{v.testVerktoy === "Banen" ? "PÅ BANEN: MÅL AVSTAND MED LASER ELLER SKRITT · CARRY ANSLÅS" : "TRACKMAN RANGE GIR CARRY OG AVSTAND FRA MÅL · IKKE KØLLEDATA"}</Meta>
-      )}
-      <div><Knapp variant="secondary" icon={Check} disabled={!storste} onClick={() => endre({ testVist: true })}>Vis resultat</Knapp></div>
-      {v.testVist && storste && storste.snittFeil != null && storste.relativ != null && (
-        <section aria-label="Resultat" style={{ display: "flex", flexDirection: "column", gap: 6, padding: 12, borderRadius: 8, background: "var(--surface-sunken)" }}>
-          <Meta>STØRSTE SVAKHET</Meta>
-          <span style={{ font: "600 15px/1.4 var(--font-sans)", textWrap: "pretty" }}>{storste.navn}: {d1(storste.snittFeil)} m fra mål i snitt på {storste.avstand} m ({Math.round(storste.relativ * 100)} % av avstanden).</span>
-          <Meta>{rader.map((r) => `${r.navn.toUpperCase()} ${d1(r.snittFeil)} M`).join(" · ")} · SETTER IKKE NIVÅ</Meta>
         </section>
       )}
     </>
   );
 }
 
-function Rad({ nr, children }: { nr: number; children: ReactNode }) {
+function Teknikktest({ v, endre }: { v: OppstartVerdier; endre: OppstartProps["endre"] }) {
+  const slag = Object.fromEntries(TEST_KLUBBER.map((k) => [k.id, [[tolkTall(v.test[k.id].carry) ?? null, tolkTall(v.test[k.id].fraMal) ?? null]]]));
+  const avst = Object.fromEntries(TEST_KLUBBER.map((k) => [k.id, k.avstand])) as Record<TestKlubbId, number>;
+  const { storste } = testResultat(slag, avst);
+  const sett = (k: TestKlubbId, felt: "carry" | "fraMal", verdi: string) => endre({ test: { ...v.test, [k]: { ...v.test[k], [felt]: verdi.replace(/[^\d,.]/g, "").slice(0, 5) } } });
   return (
     <>
-      <Meta>{nr}</Meta>
-      {children}
+      <div className="kort">
+        <div className="test-rad hode"><span>Kølle og mål</span><span style={{ textAlign: "right" }}>Carry</span><span style={{ textAlign: "right" }}>Fra mål</span></div>
+        {TEST_KLUBBER.map((k, i) => (
+          <div className="test-rad" key={k.id} style={i === TEST_KLUBBER.length - 1 ? { borderBottom: 0 } : undefined}>
+            <span><b style={{ fontWeight: 600 }}>{k.navn}</b><br /><span className="kilde">mål {k.avstand} m</span></span>
+            <input aria-label={`Carry ${k.navn}`} inputMode="decimal" placeholder="—" value={v.test[k.id].carry} onChange={(e) => sett(k.id, "carry", e.target.value)} />
+            <input aria-label={`Fra mål ${k.navn}`} inputMode="decimal" placeholder="—" value={v.test[k.id].fraMal} onChange={(e) => sett(k.id, "fraMal", e.target.value)} />
+          </div>
+        ))}
+        <p className="kilde">Snitt av fem slag, i meter. Egenført.</p>
+      </div>
+      {storste && storste.snittFeil != null && storste.relativ != null && (
+        <div className="svakhet inn">
+          <span className="akse-merke"><i />SLAG</span>
+          <b>Største svakhet: {storste.navn}, avstand fra mål</b>
+          <p>{d1(storste.snittFeil)} m fra mål er {Math.round(storste.relativ * 100)} % av slaglengden. Testen setter ikke nivå.</p>
+        </div>
+      )}
     </>
   );
 }
 
 function Samtykker({ v, endre, alder }: { v: OppstartVerdier; endre: OppstartProps["endre"]; alder: number | null }) {
-  if (alder != null && alder < 16) {
-    return (
-      <>
-        <InlineVarsel tone="info" tittel={`Du er ${alder} år`}>Under 16 år gir forelderen samtykket. Vi sender en lenke.</InlineVarsel>
-        <Field label="Forelderens e-post" krav="påkrevd" htmlFor="au-forelder">
-          <TextField id="au-forelder" type="email" inputMode="email" autoComplete="off" value={v.forelderEpost} onChange={(e) => endre({ forelderEpost: e.target.value })} placeholder="navn@epost.no" />
-        </Field>
-        <Meta>YTELSESBILDE OG OPPTAK ER AV TIL FORELDEREN HAR SVART</Meta>
-      </>
-    );
-  }
+  const under16 = alder != null && alder < 16;
   return (
     <>
-      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        <Avkrysning checked={v.ytelsesbilde} onChange={(b) => endre({ ytelsesbilde: b })} label="Ytelsesbilde: søvn, mat og energi lagres og deles med coachen" />
-        <Avkrysning checked={v.opptak} onChange={(b) => endre({ opptak: b })} label="Opptak i coachingøkt: video og lyd fra timene lagres på profilen din" />
+      <div className="kort">
+        <div style={{ display: "grid", gap: 12 }}>
+          <label className="avkrysning" style={under16 ? { opacity: 0.7 } : undefined}>
+            <input type="checkbox" checked={!under16 && v.ytelsesbilde} disabled={under16} onChange={(e) => endre({ ytelsesbilde: e.target.checked })} />
+            <span><b>Ytelsesbilde</b>Søvn, mat og energi brukes til å tilpasse belastningen.{under16 ? " Forelderen bestemmer." : ""}</span>
+          </label>
+          <label className="avkrysning" style={under16 ? { opacity: 0.7 } : undefined}>
+            <input type="checkbox" checked={!under16 && v.opptak} disabled={under16} onChange={(e) => endre({ opptak: e.target.checked })} />
+            <span><b>Opptak i coachingtimer</b>Lyd fra timen blir sammendrag til deg.{under16 ? " Forelderen bestemmer. Sperret til forelderen har godkjent." : " Du kan trekke samtykket i Meg."}</span>
+          </label>
+        </div>
       </div>
-      <Meta>KAN ENDRES NÅR SOM HELST I MEG › INNSTILLINGER</Meta>
+      {under16 && (
+        <form className="seksjon" onSubmit={(e) => e.preventDefault()}>
+          <Feltlinje id="fe" label="Forelderens e-post" hjelp="Forelderen får en lenke og godkjenner kontoen innen sju dager.">
+            <input id="fe" type="email" autoComplete="off" value={v.forelderEpost} onChange={(e) => endre({ forelderEpost: e.target.value })} />
+          </Feltlinje>
+        </form>
+      )}
     </>
   );
 }
 
 function Treningsplan({ v, endre }: { v: OppstartVerdier; endre: OppstartProps["endre"] }) {
-  const snitt = tolkTall(v.snitt);
-  const kat = snitt != null ? kategoriFraSnittscore(snitt) : null;
+  const anbefalt = anbefaltPlan(v.nivaa);
+  const rekke = [anbefalt, ...TRENINGSPLANER.map((p) => p.navn).filter((n) => n !== anbefalt)];
   return (
     <>
-      <p style={tekstStil}>Alle fem planene kan velges i alle kategorier A–K. Innholdet tilpasses kategorien din{kat ? ` (Kategori ${kat.kategori})` : ""}. Du velger selv, og kan bytte senere i Plan.</p>
-      <div role="radiogroup" aria-label="Treningsplan" style={{ display: "flex", flexDirection: "column" }}>
-        {TRENINGSPLANER.map((p, i) => (
-          <button
-            key={p.navn}
-            type="button"
-            role="radio"
-            aria-checked={v.plan === p.navn}
-            onClick={() => endre({ plan: p.navn })}
-            style={{ all: "unset", boxSizing: "border-box", cursor: "pointer", display: "grid", gridTemplateColumns: "20px minmax(0, 1fr) auto", gap: 12, alignItems: "center", minHeight: 56, borderTop: i ? "1px solid var(--border-hairline)" : "none" }}
-          >
-            <span style={{ width: 18, height: 18, borderRadius: 999, border: "2px solid var(--text-primary)", boxShadow: v.plan === p.navn ? "inset 0 0 0 3px var(--surface-card), inset 0 0 0 9px var(--text-primary)" : "none" }} />
-            <span style={{ font: "500 14px/1.3 var(--font-sans)", overflowWrap: "anywhere" }}>{p.navn}</span>
-            <Meta>{p.timer}</Meta>
-          </button>
-        ))}
+      <div className="planer valg-grid" role="radiogroup" aria-label="Treningsplan" style={{ display: "grid", gap: "var(--r2)" }}>
+        {rekke.map((navn) => {
+          const info = PLAN_INFO[navn];
+          return (
+            <button key={navn} type="button" role="radio" className="plan-kort" aria-checked={v.plan === navn} aria-pressed={v.plan === navn} onClick={() => endre({ plan: navn })}>
+              {navn === anbefalt && <span className="anbefalt">Anbefalt for deg</span>}
+              <b className="n">{navn}</b>
+              <span className="forklar">{info.tekst}{navn === anbefalt ? (anbefalt === "Konkurransespilleren" ? " Fordi du har spilt turneringer på regionnivå eller høyere." : " Fordi du ikke har oppgitt turneringer på regionnivå.") : ""}</span>
+              <span className="akser" aria-hidden="true">{info.akser.map(([k, b]) => <i key={k} className={k} style={{ width: `${b}%` }} />)}</span>
+            </button>
+          );
+        })}
       </div>
+      <p className="kilde">Fargestripen viser fordeling på FYS · TEK · SLAG · SPILL · TURN. <span className="eksempel">Eksempel</span> til planene er skrevet.</p>
     </>
   );
 }
 
 /* ---------- Helhet ---------- */
 
+const INGRESS: Record<number, (alder: number | null) => ReactNode> = {
+  1: () => "Dette bestemmer hvor planen starter. Du kan endre alt utenom fødselsdato senere.",
+  2: () => "Har du tallene fra en app eller fra coach? Fyll inn det du har. Felt du lar stå tomme, vises som «—».",
+  3: () => "Trykk på det du kan trene på i vanlig uke. Planen bruker bare øvelser du kan gjennomføre.",
+  4: () => "Da kommer turneringsrundene dine inn i Stats av seg selv.",
+  5: () => "Inspill Basic: fem slag med hver kølle mot et mål. Før snitt av carry og avstand fra mål i meter.",
+  6: (alder) => (alder != null && alder < 16 ? `Du er ${alder} år. Forelderen din gir disse samtykkene. Du kan bruke hele appen i sju dager mens du venter.` : "Du bestemmer selv, og kan endre det senere i Meg."),
+  7: () => "Alle fem kan velges. Innholdet tilpasses kategorien din. Du kan bygge egne økter i Workbench når som helst.",
+};
+
 export function SpillerOppstart(p: OppstartProps) {
   const { steg, v, endre, tilstand = "data" } = p;
-  const bredde = steg === 4 ? 600 : 560;
-  if (tilstand === "laster") {
-    return <VeiviserFlate max={560}><LasterTilstand text="Gjør klart kontoen …" /></VeiviserFlate>;
-  }
-  if (tilstand === "feil") {
-    return (
-      <VeiviserFlate max={560}>
-        <FeilTilstand icon={AlertTriangle} title="Oppsettet kunne ikke lagres" text="Svarene er ikke lagret ennå. Prøv igjen." retry={<Knapp variant="secondary" onClick={p.onProvIgjen}>Prøv igjen</Knapp>} />
-      </VeiviserFlate>
+  const alder = alderFraDato(fodtIso(v.fodtTekst));
+  const under16 = alder != null && alder < 16;
+
+  let innhold: ReactNode;
+  if (tilstand === "laster") innhold = <FlateLaster tekst="Lager planen …" />;
+  else if (tilstand === "feil") innhold = <FlateMelding tittel="Oppsettet kunne ikke lagres" tekst="Ingenting er lagret. Sjekk nettet og prøv igjen." handling={<button type="button" className="knapp pri" onClick={p.onProvIgjen}>Prøv igjen</button>} />;
+  else {
+    let kanNeste = true;
+    if (steg === 1) kanNeste = alder != null;
+    if (steg === 6 && under16) kanNeste = epostOk(v.forelderEpost);
+    if (steg === 7) kanNeste = v.plan != null;
+    innhold = (
+      <>
+        {steg === 1 && <OmDeg v={v} endre={endre} alder={alder} />}
+        {steg === 2 && <StrokesGained v={v} endre={endre} />}
+        {steg === 3 && <Fasiliteter v={v} endre={endre} />}
+        {steg === 4 && <FinnDeg v={v} endre={endre} kobling={p.kobling} venter={p.venter} onSok={p.onSok} onKoble={p.onKoble} under16={under16} />}
+        {steg === 5 && <Teknikktest v={v} endre={endre} />}
+        {steg === 6 && <Samtykker v={v} endre={endre} alder={alder} />}
+        {steg === 7 && <Treningsplan v={v} endre={endre} />}
+        {p.melding && <p className="feilmelding" role="alert"><AlertCircle className="ikon" aria-hidden="true" />{p.melding}</p>}
+        <div className="bunnknapper">
+          {steg > 1 ? <button type="button" className="knapp sek" onClick={p.onTilbake} disabled={p.venter}>Tilbake</button> : <span />}
+          {steg === 7 ? (
+            <button type="button" className="knapp pri stor" onClick={p.onStart} disabled={!kanNeste || p.venter}>{v.plan ? `Start med ${v.plan}` : "Velg en plan"}</button>
+          ) : (
+            <button type="button" className="knapp pri stor" onClick={p.onNeste} disabled={!kanNeste || p.venter}>
+              {p.venter ? "Lagrer …" : steg === 6 && under16 ? "Send til forelder og fortsett" : "Neste"}
+            </button>
+          )}
+        </div>
+      </>
     );
   }
 
-  const alder = alderFraDato(v.fodt);
-  const under16 = alder != null && alder < 16;
-  const valgfri = VALGFRIE_STEG.has(steg);
-  const siste = steg === OPPSTART_STEG.length;
-  let kanNeste = true;
-  if (steg === 1) kanNeste = alder != null;
-  if (steg === 5 && under16) kanNeste = epostOk(v.forelderEpost);
-  if (steg === 6) kanNeste = v.plan != null;
-
-  let kropp: ReactNode = null;
-  if (steg === 1) kropp = <OmDeg v={v} endre={endre} alder={alder} />;
-  if (steg === 2) kropp = <Fasiliteter v={v} endre={endre} />;
-  if (steg === 3) kropp = <FinnDeg v={v} endre={endre} kobling={p.kobling} venter={p.venter} onSok={p.onSok} onKoble={p.onKoble} under16={under16} />;
-  if (steg === 4) kropp = <Teknikktest v={v} endre={endre} />;
-  if (steg === 5) kropp = <Samtykker v={v} endre={endre} alder={alder} />;
-  if (steg === 6) kropp = <Treningsplan v={v} endre={endre} />;
-  if (steg === 7) kropp = <p style={{ margin: 0, font: "var(--type-body)", color: "var(--text-secondary)" }}>PlayerHQ er klar{v.plan ? ` med ${v.plan}` : ""}. Start med I dag.{v.fasiliteter.length ? "" : " Fasilitetene kan du legge inn i Meg."}</p>;
-
   return (
-    <VeiviserFlate max={bredde}>
-      <ProgressDots total={OPPSTART_STEG.length} current={steg} etikett="Spiller" valgfri={valgfri} />
-      <StepHeading title={OPPSTART_STEG[steg - 1]} />
-      {kropp}
-      {p.melding && <InlineVarsel tone="warn">{p.melding}</InlineVarsel>}
-      <Knapperad>
-        {steg > 1 && <Knapp variant="ghost" onClick={p.onTilbake} disabled={p.venter}>Tilbake</Knapp>}
-        {siste ? (
-          <Knapp icon={ArrowRight} onClick={p.onStart} loading={p.venter} loadingText="Starter …">Start</Knapp>
-        ) : (
-          <>
-            <Knapp disabled={!kanNeste || p.venter} onClick={p.onNeste}>Fortsett</Knapp>
-            {valgfri && <Knapp variant="ghost" onClick={p.onHopp} disabled={p.venter}>Hopp over</Knapp>}
-          </>
-        )}
-      </Knapperad>
-    </VeiviserFlate>
+    <FlateRamme skall="konto" bred>
+      <Steghode steg={steg} onHopp={p.onHopp} venter={p.venter} />
+      <div className="topp">
+        <h1 className="tittel">{OPPSTART_STEG[steg - 1]}</h1>
+        <p className="ingress">{INGRESS[steg]?.(alder)}</p>
+      </div>
+      {innhold}
+    </FlateRamme>
   );
 }
