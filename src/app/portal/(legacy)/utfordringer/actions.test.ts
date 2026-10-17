@@ -8,7 +8,6 @@ import { mock, test } from "node:test";
 
 const EIER = { id: "eier-1", name: "Eier Eiersen", role: "PLAYER" as const };
 
-let venner: { userAId: string; userBId: string }[] = [];
 let egneMedlemskap: { groupId: string; userId: string; endedAt: Date | null }[] = [];
 let ovelseHigherIsBetter: boolean | null = null;
 let opprettetChallenge: Record<string, unknown> | null = null;
@@ -108,7 +107,6 @@ async function actions() {
 }
 
 test.beforeEach(() => {
-  venner = [];
   egneMedlemskap = [];
   ovelseHigherIsBetter = null;
   opprettetChallenge = null;
@@ -136,7 +134,7 @@ test("opprettUtfordring validerer input på serveren", async () => {
 });
 
 test("opprettUtfordring avviser en venn utenfor gruppene", async () => {
-  venner = [{ userAId: "venn-1", userBId: EIER.id }];
+  // venn-1 er venn, men ikke med i en av gruppene; Friendship leses ikke.
   const { opprettUtfordring } = await actions();
   await assert.rejects(
     () => opprettUtfordring({ name: "Puttekonkurranse", deltakerIds: ["venn-1"] }),
