@@ -20,6 +20,8 @@ export type LiveOktData = {
   kilde: "v2" | "wb";
   tittel: string;
   spillerNavn: string | null;
+  /** Spillerens konto-ID (for lenker og samtykkesjekk). */
+  spillerId?: string | null;
   coachNavn: string | null;
   sted: string | null;
   miljo: string;
@@ -140,6 +142,7 @@ export async function lastLiveOktData(sessionId: string): Promise<LiveOktData | 
     kilde: "v2",
     tittel: okt.title,
     spillerNavn: student?.name ?? null,
+    spillerId: okt.studentId,
     coachNavn: coach?.name ?? null,
     sted: okt.location,
     miljo: okt.miljo,
@@ -199,6 +202,7 @@ async function lastWbLiveOktData(sessionId: string): Promise<LiveOktData | null>
     kilde: "wb",
     tittel: okt.title,
     spillerNavn: spiller?.name ?? null,
+    spillerId: okt.playerId,
     coachNavn: coach?.name ?? null,
     sted: okt.location,
     miljo: okt.environment ?? "—",
