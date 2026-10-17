@@ -11,6 +11,7 @@
  */
 import Link from "next/link";
 import { Feil, Laster, Seksjon, Tom, Topp } from "@/components/admin/agencyos-ny/ny";
+import { safeUrl } from "@/lib/security/safe-url";
 import "@/styles/agencyos-ny-teknisk.css";
 
 export type ForOgNaaOppgave = { id: string; p: string; posisjon: string; tittel: string; bildeUrl: string | null; videoUrl: string | null };
@@ -35,6 +36,8 @@ export function AGTP02ForOgNaaNy({ tilstand, spiller, planId, oppgaver, valgtId 
   valgtId: string | null;
 }) {
   const t = oppgaver.find((o) => o.id === valgtId) ?? oppgaver[0] ?? null;
+  const video = safeUrl(t?.videoUrl);
+  const bilde = safeUrl(t?.bildeUrl);
   const tilbake = { href: `/admin/spillere/${spiller.id}/plan/${planId}`, tekst: "Teknisk plan" };
   return <div className="agn-s">
     <Topp tilbake={tilbake} dato={t ? `${spiller.navn} · ${t.p} ${t.posisjon}` : `${spiller.navn} · teknisk plan`} tittel="Før og nå" />
@@ -45,13 +48,13 @@ export function AGTP02ForOgNaaNy({ tilstand, spiller, planId, oppgaver, valgtId 
         {oppgaver.length > 1 && <nav className="chips" aria-label="Oppgave">
           {oppgaver.map((o) => <Link key={o.id} href={`?oppgave=${o.id}`} aria-current={o.id === t.id ? "page" : undefined}>{o.p} · {o.tittel}</Link>)}
         </nav>}
-        <Seksjon tittel={t.tittel} kilde={t.bildeUrl ? "1 bilde" : "Ingen bilder"}>
+        <Seksjon tittel={t.tittel} kilde={bilde ? "1 bilde" : "Ingen bilder"}>
           <div className="bilder-par">
             <Ramme hva="Før" url={null} tittel={t.tittel} tomTekst="Ingen før-bilde ennå" />
-            <Ramme hva="Nå" url={t.bildeUrl} tittel={t.tittel} tomTekst="Ingen bilde registrert" />
+            <Ramme hva="Nå" url={bilde} tittel={t.tittel} tomTekst="Ingen bilde registrert" />
           </div>
           <p className="kilde">Delelinje og datert før-bilde kommer når to bilder per oppgave kan lagres.</p>
-          {t.videoUrl && <div className="knapper"><a className="knapp sek" href={t.videoUrl} target="_blank" rel="noopener noreferrer">Åpne video</a></div>}
+          {video && <div className="knapper"><a className="knapp sek" href={video} target="_blank" rel="noopener noreferrer">Åpne video</a></div>}
         </Seksjon>
         <Seksjon tittel="Coachnotat"><p className="kilde">Ingen notat ennå.</p></Seksjon>
       </>}
