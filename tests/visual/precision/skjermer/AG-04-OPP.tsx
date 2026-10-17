@@ -8,4 +8,6 @@ export const tilstander = {
   tom: <Vis filter="oppfolging" tom />,
   laster: <Vis filter="oppfolging" tilstand="laster" />,
   feil: <Vis filter="oppfolging" tilstand="feil" />,
+  leads: <Vis filter="oppfolging" startLeads />,
+  leadsTom: <Vis filter="oppfolging" startLeads tom />,
 };

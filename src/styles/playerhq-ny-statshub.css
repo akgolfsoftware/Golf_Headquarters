@@ -41,3 +41,5 @@
   .phn-statshub .s-hode img { height: 180px; }
   .phn-statshub .deler { grid-template-columns: 1fr 1fr; gap: 24px; }
 }
+.phn-statshub a.tr { color: inherit; text-decoration: none; min-height: 44px; }
+.phn-statshub .test-topp .phn-pille { justify-self: start; margin-top: 6px; }

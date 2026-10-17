@@ -22,6 +22,7 @@ import { kanSeDataGolf, UTEN_DATAGOLF_TURNERING } from "@/lib/auth/datagolf-rege
 import { lesTurneringsresultat } from "./turneringsresultat";
 import { lesLeverteIupForProfil } from "@/lib/iup/trener-profil-lesing";
 import { summerAksefordeling } from "./tn-aksefordeling";
+import { tnDenneMandag, vurderTnTrening, type TnSpillerTrening } from "./tn-trenger-deg";
 
 /**
  * Datalag for TN-00–TN-21.
@@ -706,6 +707,36 @@ export async function hentTnSpillerAksefordeling(bruker: TnBruker, spillerId: st
       select: { pyramid: true, durationMinutes: true, status: true },
     });
     return summerAksefordeling(okter);
+  });
+}
+
+export type TnGruppetreningRad = { spillerId: string; navn: string; klubb: string | null; trening: TnSpillerTrening };
+
+/**
+ * Trening siste fire hele uker for spillerne som deler med Team Norway
+ * («Trenger deg» og gruppas aksefordeling på oversikten). Leses innenfor
+ * delingslåsen per spiller, som de andre personlige dataene. Spillere som ikke
+ * deler, er ikke med i radene. Null når brukeren ikke får lese personlige data.
+ */
+export async function hentTnGruppetrening(bruker: TnBruker, naa = new Date()) {
+  const mandag = tnDenneMandag(naa);
+  const fra = new Date(mandag - 28 * 864e5);
+  const til = new Date(mandag);
+  return lesTnProfiler(bruker, async (tx, spillerId): Promise<TnGruppetreningRad | null> => {
+    const [spiller, okter] = await Promise.all([
+      tx.user.findFirst({ where: { id: spillerId, deletedAt: null }, select: { name: true, homeClub: true } }),
+      tx.workbenchSession.findMany({
+        where: { playerId: spillerId, date: { gte: fra, lt: til } },
+        select: { date: true, durationMinutes: true, status: true, pyramid: true },
+      }),
+    ]);
+    if (!spiller) return null;
+    return {
+      spillerId,
+      navn: spiller.name,
+      klubb: spiller.homeClub,
+      trening: vurderTnTrening(okter.map((o) => ({ dato: o.date, minutter: o.durationMinutes, status: o.status, pyramid: o.pyramid })), mandag),
+    };
   });
 }
 

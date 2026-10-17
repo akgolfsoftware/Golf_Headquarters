@@ -6,17 +6,22 @@
  *
  * Avvik:
  *   - Periodevalget (Siste 5 runder · Siste 20 · Sesong) er ikke med: snittet regnes alltid av siste 10 runder.
- *   - Kategori og «snitt under X gir Kategori B» vises ikke: A–K-nivåtallene er ikke vedtatt (§Åpent).
- *   - Strokes Gained sammenlignes med PGA Tour, ikke neste kategori: kategorireferansen finnes ikke ennå.
+ *   - Kategori og «snitt under X gir Kategori Y» leses fra A–K-tabellen i koden (src/lib/domain/ak-kategori.ts,
+ *     Anders 22.06), samme som Spiller 360. Under 4 runder ingen kategori; 4–7 runder står «Foreløpig».
+ *   - Strokes Gained sammenlignes med PGA Tour, ikke neste kategori: SG-referansen per A–K-kategori finnes ikke
+ *     (HCP-stigen i dashboard.sg_benchmarks er SG mot scratch, ikke samme skala). Merket «Estimat».
  *     Setningen om hvilken økt som trener det svakeste området vises ikke.
- *   - Testene vises fra testbatteriet når det er koblet til Stats; i dag er lista tom og delen viser «—».
+ *   - Testene er samme liste som Tester (PH-14): siste personlige rekord først, deretter tatte tester.
+ *     «Neste fysiske test i uke X» vises bare når en tildelt test har frist.
  *   - Ingen riggrad i tests/visual/skjerm-mapping.ts; målt med tests/visual/precision/maal.mjs PH-16.
  */
 import Link from "next/link";
 import { ArrowRight, TrendingDown, TrendingUp } from "lucide-react";
 import { Ikon } from "@/components/precision/pa";
-import { formaterTall, formaterVarighet } from "@/lib/format-tall";
+import { formaterVarighet } from "@/lib/format-tall";
 import { formaterDesimal, formaterSg, MIN_RUNDER_FOR_KONKLUSJON, type PH16StatsData } from "@/lib/portal-analyse/ph16-stats-data";
+import { kategoriFraSnittscore, nesteKategori } from "@/lib/domain/ak-kategori";
+import type { PH14Data } from "@/lib/portal-tester/ph14-tester-data";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-statshub.css";
 
@@ -50,8 +55,14 @@ function Linje({ verdier }: { verdier: number[] }) {
   </svg>;
 }
 
-export function PH16StatsOversikt({ data, trening }: { data: PH16StatsData; trening: PH16Trening | null }) {
+/** Nok data (vedtak 28.09): under 4 runder ingen konklusjon, 4–7 «foreløpig». */
+export const FORELOPIG_TIL = 8;
+
+export function PH16StatsOversikt({ data, trening, tester: testData = null }: { data: PH16StatsData; trening: PH16Trening | null; tester?: PH14Data | null }) {
   const s = data.spiller;
+  const forelopig = s.antallSnittRunder >= MIN_RUNDER_FOR_KONKLUSJON && s.antallSnittRunder < FORELOPIG_TIL;
+  const band = s.snittBrutto != null && s.antallSnittRunder >= MIN_RUNDER_FOR_KONKLUSJON ? kategoriFraSnittscore(s.snittBrutto) : null;
+  const bedre = band ? nesteKategori(band.kategori) : null;
   const endring = s.snittBrutto != null && s.forrigeSnitt != null ? Math.round((s.forrigeSnitt - s.snittBrutto) * 10) / 10 : null;
 
   const grupper = data.sg.map((g) => {
@@ -65,13 +76,14 @@ export function PH16StatsOversikt({ data, trening }: { data: PH16StatsData; tren
   const svakest = [...medVerdi].sort((a, b) => (a.verdi ?? 0) - (b.verdi ?? 0))[0];
   const sterkest = [...medVerdi].sort((a, b) => (b.verdi ?? 0) - (a.verdi ?? 0))[0];
 
-  const tester = data.tester.filter((t) => t.hist.length > 0);
-  const forsteTest = tester[0];
-  const sistTest = (t: (typeof tester)[number]) => t.hist[t.hist.length - 1]!;
+  const tatt = (testData?.rader ?? []).filter((r) => r.vis != null);
+  const topp = testData?.sisteRekord ?? (tatt[0] ? { ...tatt[0], vis: tatt[0].vis! } : null);
+  const andre = tatt.filter((r) => r.navn !== topp?.navn).slice(0, 3);
+  const forer = (k: boolean | null) => (k == null ? null : k ? "Kontrollert" : "Egenført");
 
   return <div className="phn phn-statshub"><div className="hub">
     <div className="s-hode">
-      <div><div className="phn-dato">Stats · siste {SNITT_TEKST(s.antallSnittRunder)}</div><h1 className="phn-tittel">Stats</h1></div>
+      <div><div className="phn-dato">Stats · siste {SNITT_TEKST(s.antallSnittRunder)}{band ? ` · Kategori ${band.kategori}` : ""}</div><h1 className="phn-tittel">Stats</h1></div>
       {/* eslint-disable-next-line @next/next/no-img-element -- statisk bilde fra public, ingen tekst oppå */}
       <img src="/images/playerhq/stats-topp.jpg" alt="" width={1600} height={1067} />
     </div>
@@ -80,7 +92,8 @@ export function PH16StatsOversikt({ data, trening }: { data: PH16StatsData; tren
       <Del tittel="Snittscore" lenke="Alle runder" href="/portal/analysere/resultater">
         <div className="phn-hoved"><strong>{s.snittBrutto != null ? formaterDesimal(s.snittBrutto, 1) : "—"}</strong>
           {endring != null && endring !== 0 && <span className={`phn-trend ${endring > 0 ? "opp" : "ned"}`}><Ikon icon={endring > 0 ? TrendingUp : TrendingDown} size={16} name="trend" />{formaterDesimal(Math.abs(endring), 1)} {endring > 0 ? "bedre" : "dårligere"} enn de 10 før</span>}</div>
-        <p className="phn-forklar">{s.antallSnittRunder < MIN_RUNDER_FOR_KONKLUSJON ? `Registrer minst ${MIN_RUNDER_FOR_KONKLUSJON} runder, så regnes snittet ut.` : `Snitt av siste ${s.antallSnittRunder} runder, brutto.`}</p>
+        <p className="phn-forklar">{s.antallSnittRunder < MIN_RUNDER_FOR_KONKLUSJON ? `Registrer minst ${MIN_RUNDER_FOR_KONKLUSJON} runder, så regnes snittet ut.` : `Snitt av siste ${s.antallSnittRunder} runder, brutto.`}{forelopig && <> <span className="forelopig">Foreløpig</span></>}</p>
+        {band && <p className="phn-forklar"><b>Kategori {band.kategori}</b> · {band.niva}.{bedre && band.min != null ? ` Snitt under ${formaterDesimal(band.min, 0)} gir Kategori ${bedre.kategori}.` : ""}</p>}
         <Linje verdier={s.trend} />
         <p className="phn-kilde">Brutto · 18-hullsrunder · GolfBox og egne registreringer</p>
       </Del>
@@ -113,15 +126,15 @@ export function PH16StatsOversikt({ data, trening }: { data: PH16StatsData; tren
       </Del>
 
       <Del tittel="Tester" lenke="Alle tester" href="/portal/tren/tester">
-        {!forsteTest ? <>
+        {!topp ? <>
           <div className="phn-hoved"><strong>—</strong></div>
           <p className="phn-forklar">Ingen testresultater her ennå. Gjennomfør en test, så ser du utviklingen.</p>
           <div><Link className="phn-knapp sek" href="/portal/tren/tester">Gå til tester</Link></div>
         </> : <>
-          <div className="test-topp"><div><strong>{forsteTest.name}</strong><span className="stor">{formaterTall(sistTest(forsteTest), 1)}<small>{forsteTest.unit}</small></span><small>{[forsteTest.dates[forsteTest.dates.length - 1], forsteTest.by].filter(Boolean).join(" · ")}</small></div></div>
-          {tester.slice(1, 4).map((t) => <div key={t.id} className="tr"><div><strong>{t.name}</strong><small>{[t.dates[t.dates.length - 1], t.by].filter(Boolean).join(" · ")}</small></div><span className="tv">{formaterTall(sistTest(t), 1)} {t.unit}</span></div>)}
+          <div className="test-topp"><div><strong>{topp.navn}</strong>{testData?.sisteRekord && <span className="phn-pille ok">Personlig rekord</span>}<span className="stor">{topp.vis}</span><small>{[topp.dato, forer(topp.kontrollert)].filter(Boolean).join(" · ")}</small></div></div>
+          {andre.map((t) => <Link key={t.id} href={t.href} className="tr"><div><strong>{t.navn}</strong><small>{[t.dato, forer(t.kontrollert)].filter(Boolean).join(" · ")}</small></div><span className="tv">{t.vis}</span></Link>)}
         </>}
-        <p className="phn-kilde">Testbatteri AK Golf</p>
+        <p className="phn-kilde">Testbatteri AK Golf{testData ? ` · ${testData.tatt} av ${testData.totalt} tatt` : ""}{testData?.nesteTestdag ? ` · neste test ${testData.nesteTestdag.dato}` : ""}</p>
       </Del>
     </div>
   </div></div>;
