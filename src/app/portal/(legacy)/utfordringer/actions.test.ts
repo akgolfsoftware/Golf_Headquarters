@@ -1,7 +1,7 @@
 /**
- * Beslutning 22.09.2026 (beslutninger.md §Utfordringer skal leve): deltakere
- * kan bare velges fra venner/egne grupper (aldri delt lenke), og scoren får
- * en retning (higherIsBetter) i stedet for alltid «høyest vinner».
+ * Beslutning 22.09.2026 (§Utfordringer skal leve) og 16.10.2026 (§VENNER SKJULES …): deltakere
+ * velges bare fra egne grupper (coach også fra stallen), aldri venner eller delt lenke. Bare eier
+ * og valgte deltakere kan åpne og bli med. Scoren har en retning (higherIsBetter).
  */
 import assert from "node:assert/strict";
 import { mock, test } from "node:test";
@@ -18,6 +18,8 @@ let sisteRankOrder: "asc" | "desc" | null = null;
 let oppdaterteRanker: { id: string; rank: number }[] = [];
 let utfordringHigherIsBetter = true;
 let tilgangAvvist = false;
+let erDeltaker = true;
+let ovelseTilgjengelig = true;
 
 mock.module("next/cache", { namedExports: { revalidatePath: () => undefined } });
 mock.module("next/navigation", {
@@ -39,6 +41,10 @@ mock.module("@/lib/auth/requirePortalUser", {
     },
   },
 });
+mock.module("@/lib/auth/coached", { namedExports: { coachScopedPlayerWhere: () => ({ id: { in: [] } }) } });
+mock.module("@/lib/portal-drills/drills-data", {
+  namedExports: { drillAccessWhere: () => ({}), getMyCoachIds: async () => [] },
+});
 mock.module("@/lib/audit", { namedExports: { audit: async () => undefined } });
 mock.module("@/lib/notifications", {
   namedExports: {
@@ -51,8 +57,11 @@ mock.module("@/lib/prisma", {
   namedExports: {
     prisma: {
       friendship: {
-        findMany: async () => venner,
+        findMany: async () => {
+          throw new Error("Venner skal ikke leses (16.10.2026)");
+        },
       },
+      user: { findMany: async () => [] },
       groupMember: {
         findMany: async (args: { where: { userId?: string; groupId?: { in: string[] } } }) => {
           if (args.where.groupId) {
@@ -63,17 +72,19 @@ mock.module("@/lib/prisma", {
         },
       },
       exerciseDefinition: {
-        findUnique: async () => (ovelseHigherIsBetter === null ? null : { higherIsBetter: ovelseHigherIsBetter }),
+        findFirst: async () => (ovelseTilgjengelig ? { higherIsBetter: ovelseHigherIsBetter } : null),
       },
       drillChallenge: {
         create: async (args: { data: Record<string, unknown> }) => {
           opprettetChallenge = args.data;
           return { id: "utfordring-1", name: args.data.name, drillId: args.data.drillId };
         },
-        findUnique: async () => ({ higherIsBetter: utfordringHigherIsBetter }),
+        findUnique: async () => ({ id: "utfordring-1", name: "Puttekonkurranse", status: "ACTIVE", ownerId: "annen-eier", higherIsBetter: utfordringHigherIsBetter }),
+        findFirst: async () => (erDeltaker ? { id: "utfordring-1" } : null),
       },
       challengeParticipant: {
         findUnique: async () => ({ id: "eiers-egen-rad" }),
+        upsert: async () => ({}),
         findMany: async (args: { orderBy: { score: "asc" | "desc" } }) => {
           sisteRankOrder = args.orderBy.score;
           const sortert = [...deltakerRader].sort((a, b) =>
@@ -107,6 +118,8 @@ test.beforeEach(() => {
   oppdaterteRanker = [];
   utfordringHigherIsBetter = true;
   tilgangAvvist = false;
+  erDeltaker = true;
+  ovelseTilgjengelig = true;
 });
 
 test("opprettUtfordring avviser direkte kall uten full tilgang", async () => {
@@ -122,18 +135,31 @@ test("opprettUtfordring validerer input på serveren", async () => {
   assert.equal(opprettetChallenge, null);
 });
 
-test("opprettUtfordring avviser deltaker som verken er venn eller gruppemedlem", async () => {
+test("opprettUtfordring avviser en venn utenfor gruppene", async () => {
+  venner = [{ userAId: "venn-1", userBId: EIER.id }];
   const { opprettUtfordring } = await actions();
   await assert.rejects(
-    () => opprettUtfordring({ name: "Puttekonkurranse", deltakerIds: ["fremmed-1"] }),
-    /venner eller medlemmer/,
+    () => opprettUtfordring({ name: "Puttekonkurranse", deltakerIds: ["venn-1"] }),
+    /fra gruppene dine/,
   );
   assert.equal(opprettetChallenge, null);
   assert.equal(varslede.length, 0);
 });
 
-test("opprettUtfordring godtar venn og gruppemedlem, varsler begge", async () => {
-  venner = [{ userAId: "venn-1", userBId: EIER.id }];
+test("opprettUtfordring avviser en øvelse brukeren ikke har tilgang til", async () => {
+  ovelseTilgjengelig = false;
+  const { opprettUtfordring } = await actions();
+  await assert.rejects(() => opprettUtfordring({ name: "Privat øvelse", drillId: "annens-ovelse" }), /Øvelsesbanken/);
+  assert.equal(opprettetChallenge, null);
+});
+
+test("bliMed avviser en spiller som verken eier eller er valgt", async () => {
+  erDeltaker = false;
+  const { bliMed } = await actions();
+  await assert.rejects(() => bliMed("utfordring-1"), /finnes ikke/);
+});
+
+test("opprettUtfordring godtar gruppemedlem og varsler", async () => {
   egneMedlemskap = [
     { groupId: "gruppe-1", userId: EIER.id, endedAt: null },
     { groupId: "gruppe-1", userId: "gruppemedlem-1", endedAt: null },
@@ -141,7 +167,7 @@ test("opprettUtfordring godtar venn og gruppemedlem, varsler begge", async () =>
 
   const { opprettUtfordring } = await actions();
   await assert.rejects(
-    () => opprettUtfordring({ name: "Puttekonkurranse", deltakerIds: ["venn-1", "gruppemedlem-1"] }),
+    () => opprettUtfordring({ name: "Puttekonkurranse", deltakerIds: ["gruppemedlem-1"] }),
     /REDIRECT:\/portal\/utfordringer\/utfordring-1/,
   );
 
@@ -149,9 +175,9 @@ test("opprettUtfordring godtar venn og gruppemedlem, varsler begge", async () =>
   const deltakere = (opprettetChallenge!.participants as { create: { userId: string }[] }).create;
   assert.deepEqual(
     deltakere.map((d) => d.userId).sort(),
-    [EIER.id, "gruppemedlem-1", "venn-1"].sort(),
+    [EIER.id, "gruppemedlem-1"].sort(),
   );
-  assert.deepEqual(varslede.sort(), ["gruppemedlem-1", "venn-1"].sort());
+  assert.deepEqual(varslede, ["gruppemedlem-1"]);
 });
 
 test("opprettUtfordring bruker øvelsens retning når den er satt, ignorerer klientvalg", async () => {
