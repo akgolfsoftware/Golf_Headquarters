@@ -1,9 +1,6 @@
-import { CheckEmailV2 } from "@/components/portal/v2/CheckEmailV2";
+import { SjekkEpost } from "@/components/auth/precision/KontoSkjermer";
 
-/**
- * /auth/check-email — AU02SjekkEpost.
- * Statisk venteskjerm. Lenkene er /auth/signup og /auth/login.
- */
+/** /auth/check-email — AU-02 Sjekk e-post i nytt design. Lenken i e-posten fører til oppstarten. */
 export default function CheckEmailPage() {
-  return <CheckEmailV2 />;
+  return <SjekkEpost />;
 }

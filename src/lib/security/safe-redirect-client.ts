@@ -11,14 +11,25 @@ export function safeRedirectPath(
   if (!path) return fallback;
 
   // Kun relativ path tillatt: må starte med "/" men IKKE med "//" (protocol-relative)
-  if (!path.startsWith("/") || path.startsWith("//")) {
+  if (!path.startsWith("/") || path.startsWith("//") || path.includes("\\")) {
     return fallback;
   }
 
-  // Blokker paths som inneholder linjeskift (HTTP response splitting)
-  if (path.includes("\n") || path.includes("\r")) {
+  // Kontrolltegn og mellomrom: nettlesere fjerner tab og linjeskift, så «/\t/x» blir «//x».
+  if (/[\u0000-\u001F\u007F\s]/.test(path)) {
     return fallback;
   }
 
-  return path;
+  const PLASS = "https://plass.invalid";
+  let url: URL;
+  try {
+    url = new URL(path, PLASS);
+  } catch {
+    return fallback;
+  }
+  if (url.origin !== PLASS) return fallback;
+  // «/a/..//x» normaliseres til «//x»: sjekk resultatet på nytt.
+  const ut = url.pathname + url.search + url.hash;
+  if (ut.startsWith("//") || ut.includes("\\")) return fallback;
+  return ut;
 }

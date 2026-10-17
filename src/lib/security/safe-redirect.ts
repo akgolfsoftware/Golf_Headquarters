@@ -29,10 +29,24 @@ export function safeRedirectPath(
     return fallback;
   }
 
-  // Blokker paths som inneholder linjeskift (HTTP response splitting)
-  if (path.includes("\n") || path.includes("\r")) {
+  // Blokker kontrolltegn og mellomrom: nettlesere fjerner tab og linjeskift i adresser,
+  // så «/\t/evil.example» blir «//evil.example» (protocol-relative). Også HTTP response splitting.
+  if (/[\u0000-\u001F\u007F\s]/.test(path)) {
     return fallback;
   }
 
-  return path;
+  // Normaliser og krev at målet blir på samme opphav.
+  const PLASS = "https://plass.invalid";
+  let url: URL;
+  try {
+    url = new URL(path, PLASS);
+  } catch {
+    return fallback;
+  }
+  if (url.origin !== PLASS) return fallback;
+
+  // «/a/..//x» normaliseres til «//x»: sjekk resultatet på nytt.
+  const ut = url.pathname + url.search + url.hash;
+  if (ut.startsWith("//") || ut.includes("\\")) return fallback;
+  return ut;
 }

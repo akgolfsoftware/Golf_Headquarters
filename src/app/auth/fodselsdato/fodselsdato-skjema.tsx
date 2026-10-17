@@ -1,6 +1,6 @@
 "use client";
 
-import "@/styles/playerhq-ny.css";
+import "@/styles/flater-ny-konto.css";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { setDateOfBirthAndCheckMinor } from "@/app/auth/onboarding/actions";
@@ -45,9 +45,9 @@ export function FodselsdatoSkjema() {
   }
 
   return (
-    <form className="phn-kort" onSubmit={lagre} noValidate>
-      <label className="phn-felt">
-        <span>Fødselsdato</span>
+    <form className="seksjon" onSubmit={lagre} noValidate>
+      <label className="felt">
+        <span className="etikett">Fødselsdato</span>
         <input
           type="date"
           name="fodselsdato"
@@ -61,8 +61,8 @@ export function FodselsdatoSkjema() {
       </label>
 
       {under16 && (
-        <label className="phn-felt">
-          <span>E-post til forelder</span>
+        <label className="felt">
+          <span className="etikett">E-post til forelder</span>
           <input
             type="email"
             name="foresattEpost"
@@ -72,21 +72,20 @@ export function FodselsdatoSkjema() {
             autoComplete="off"
             inputMode="email"
           />
-          <span className="phn-forklar" style={{ fontWeight: 400 }}>
+          <span className="hjelp">
             Du er under 16 år. Forelderen din får en e-post og må godkjenne kontoen.
           </span>
         </label>
       )}
 
-      <div className="phn-meldinger" aria-live="polite">
-        {feil && <p className="phn-melding" role="alert">{feil}</p>}
+      <div aria-live="polite">
+        {feil && <p className="feilmelding" role="alert">{feil}</p>}
       </div>
 
-      <div className="phn-knapper">
-        <button type="submit" className="phn-knapp pri" disabled={lagrer} aria-busy={lagrer}>
-          {lagrer ? "Lagrer …" : "Lagre"}
-        </button>
-      </div>
+      <span className="hjelp" style={{ fontSize: 13, color: "var(--graphite-600)" }}>Du kan ikke endre den selv senere. Er den feil, kontakt coach.</span>
+      <button type="submit" className="knapp pri stor" disabled={lagrer} aria-busy={lagrer}>
+        {lagrer ? "Lagrer …" : "Lagre og åpne PlayerHQ"}
+      </button>
     </form>
   );
 }

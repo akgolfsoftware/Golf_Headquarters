@@ -111,6 +111,17 @@ Fylles av øktene underveis. Hvert punkt: hva, hvilken anbefaling som ble valgt,
 - **B1 · Ikke tilgang (403):** ny side `/ikke-tilgang` etter utkastet. Innloggingsvakten sender fortsatt rett til egen hjemmeside ved rollefeil, som før (unngår løkker, endrer ingen sikkerhetsvakt i natt). (`src/app/ikke-tilgang/page.tsx`)
 - **B1 · Grunnmur for utkast-flater:** `src/styles/flater-ny.css` (generert av `scripts/lag-flater-ny-css.mjs`, avgrenset til `.fln`, klassenavn fra utkastet) brukes av alle grupper i `utkast-flater/`. (`src/components/flater/FlateRamme.tsx`)
 
+- **B1 · SY-01 systemsidene:** utkastets faste feilreferanse, klokkeslett for vedlikehold og «3 slag venter» er demodata og vises ikke. 500 viser Next sin digest som referanse; vedlikehold viser ekte telefon og e-post. (`src/components/system/precision-tilstand.tsx`)
+- **B1 · Ikke tilgang (403):** ny side `/ikke-tilgang` etter utkastet. Innloggingsvakten sender fortsatt rett til egen hjemmeside ved rollefeil, som før (unngår løkker, endrer ingen sikkerhetsvakt i natt). (`src/app/ikke-tilgang/page.tsx`)
+- **B1 · Grunnmur for utkast-flater:** `src/styles/flater-ny.css` (generert av `scripts/lag-flater-ny-css.mjs`, avgrenset til `.fln`, klassenavn fra utkastet) brukes av alle grupper i `utkast-flater/`. (`src/components/flater/FlateRamme.tsx`)
+
+- **B1 · Innlogging (AU-01–03):** bare Google og e-post med passord; magisk lenke, engangskode og SMS-plassholderen er tatt bort. Nye passord krever minst 10 tegn (utkastet); gamle passord på 8–9 tegn virker fortsatt. (`src/components/auth/precision/KontoSkjermer.tsx`)
+- **B1 · «Velg nivå» ved registrering:** alle starter på Gratis; Full betales i Stripe Checkout etter oppstarten (plan «pro»). Årspris velges i Meg › Abonnement.
+- **B1 · Bekreftelseslenken beholder rollen:** `oauth-callback` oppretter brukeren med rollen fra registreringen (bare PLAYER eller PARENT) og TALENT for spillere, som `ensureUser`. Før ble en forelder som bekreftet e-posten opprettet som spiller.
+- **B1 · Oppstarten (AU-04):** utkastets sju steg. Fasilitetene velges som områder og steder; teknikktesten fører snitt av fem slag per kølle; planene er merket «Eksempel» til innholdet er skrevet.
+- **B1 · Forelder (AU-04/05):** forelderen godkjenner fra lenken og oppretter deretter egen konto med samme e-post. Kobling via barnets e-post (utkastet) finnes ikke i appen og er ikke bygget. Forelderoppstarten har to steg; betaling velges ved booking.
+- **B1 · `?next=` etter innlogging:** `safeRedirectPath` avviser kontrolltegn og normaliserte «//»-mål (sikkerhetsfunn under arbeidet).
+
 ---
 
 - **A4 · AgencyOS pakke 1 (Cockpit og Innboks):** AI-dispatch («Jarvis: én ting nå») står på Cockpit under dagens kalender, selv om utkastet ikke har det (skill agenticos-cockpit sier det skal beholdes). «Lag utkast» virker for e-post (Jarvis lager utkast, coachen sender); for spørsmål fra spillere er knappen fortsatt av, fordi det ikke finnes en navnevasket utkastlager for dem. Leads vises under Oppfølging bare for head coach, som e-posten, med «Skriv e-post» som åpner e-postprogrammet. E-postkonto nr. 2 (akgolfgroup@gmail.com) kommer ikke inn i innboksen ennå; det krever en ny inntakskobling.
