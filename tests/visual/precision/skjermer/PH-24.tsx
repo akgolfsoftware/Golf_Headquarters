@@ -5,7 +5,7 @@ import { PH24MegFeil, PH24MegLaster } from "@/components/portal/precision/PH24Me
 
 export const sti = "/portal/meg";
 
-const hrefs: PH24Props["hrefs"] = { profil: "#", fasiliteter: "#", utstyr: "#", helse: "#", coach: "#", bookinger: "#", mal: "#", foreldre: "#", deling: "#", venner: "#", abo: "#", innstillinger: "#", hjelp: "#" };
+const hrefs: PH24Props["hrefs"] = { profil: "#", fasiliteter: "#", utstyr: "#", helse: "#", coach: "#", bookinger: "#", mal: "#", foreldre: "#", deling: "#", utfordringer: "#", abo: "#", innstillinger: "#", hjelp: "#" };
 const base: PH24Props = {
   tilstand: "data",
   navn: "Øyvind Rohjan",
@@ -22,14 +22,13 @@ const base: PH24Props = {
   coach: { navn: "Anders Kristiansen", program: "AK Golf Academy" },
   nesteBooking: "fredag 9. oktober kl. 16:00",
   foreldre: { navn: "Hilde Rohjan", antall: 1 },
-  venner: 5,
   utfordringer: 1,
   hrefs,
 };
 const tom: Partial<PH24Props> = {
   undertekst: null, gruppe: null, hcp: null, pakke: null, niva: { navn: "Gratis", tekst: "Full gir Plan, Workbench og Caddie" }, deling: 0,
   fasiliteter: { valgte: 0, totalt: 10, steder: 0 }, utstyr: 0, helse: "Helse-loggen er slått av", coach: null, nesteBooking: null,
-  foreldre: { navn: null, antall: 0 }, venner: 0, utfordringer: 0,
+  foreldre: { navn: null, antall: 0 }, utfordringer: 0,
 };
 const Skall = ({ children }: { children: React.ReactNode }) => <PlayerHQSkall innboksHref="#" uleste={0}>{children}</PlayerHQSkall>;
 export const tilstander = {
