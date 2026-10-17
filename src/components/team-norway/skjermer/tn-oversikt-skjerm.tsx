@@ -81,7 +81,7 @@ export async function TnOversiktSkjerm() {
 
   const neste = [...samlingsdata.samlinger].sort((a, b) => a.startDate.getTime() - b.startDate.getTime()).find((s) => s.endDate.getTime() >= naa.getTime()) ?? null;
   const dagerIgjen = neste ? Math.max(0, dagnummer(neste.startDate) - dagnummer(naa)) : null;
-  const antallSpillere = samlingsdata.samlinger[0]?.antallDeltakere ?? null;
+  const antallSpillere = samlingsdata.antallSpillere;
 
   const testdagRad = testdager ? velgTestdag(testdager.dager, naa) : null;
   const testdag = testdagRad ? await hentTnTestdag(bruker, testdagRad.id) : null;
@@ -163,8 +163,8 @@ export async function TnOversiktSkjerm() {
           hoyre={
             <>
               <TnHeltAkser
-                tittel={gruppe ? `Gruppas trening uke ${ukeFra}–${ukeTil} · ${komma(gruppe.gjortTimer)} av ${komma(gruppe.planlagtTimer)} t` : `Gruppas trening uke ${ukeFra}–${ukeTil}`}
-                timer={gruppe ? gruppe.akseTimer : {}}
+                tittel={gruppe && gruppe.planlagtTimer > 0 ? `Gruppas trening uke ${ukeFra}–${ukeTil} · ${komma(gruppe.gjortTimer)} av ${komma(gruppe.planlagtTimer)} t` : `Gruppas trening uke ${ukeFra}–${ukeTil} · ingen delt plan`}
+                timer={gruppe && gruppe.planlagtTimer > 0 ? gruppe.akseTimer : {}}
               />
               <TnHeltTellere
                 tall={[
@@ -191,7 +191,7 @@ export async function TnOversiktSkjerm() {
       )}
 
       {trener && trening ? (
-        <TnBaand id="trenger" status="trenger" tittel="Trenger deg" antall={trenger.length} kilde="Mest akutt først">
+        <TnBaand id="trenger" status={trenger.length > 0 ? "trenger" : undefined} tittel="Trenger deg" antall={trenger.length} kilde="Mest akutt først">
           <TnBaandListe>
             {trenger.map((t) => {
               const pct = t.plan?.toUker.pct ?? null;
@@ -311,7 +311,7 @@ export async function TnOversiktSkjerm() {
         {postside ? <TnTekstlenke href={`/team-norway/${kontekst.gruppe.id}`}>Alle gruppeposter</TnTekstlenke> : null}
       </section>
 
-      {trener ? <TnFotnote>Bare det spillerne har delt med Team Norway. Kilde: Workbench i PlayerHQ{testDato ? ` og testdagen ${testDato}` : ""}, hentet {datoKort(naa)}.</TnFotnote> : null}
+      {trener ? <TnFotnote>Bare det spillerne har delt med Team Norway. Kilde: Workbench i PlayerHQ{testDato ? ` og testdagen ${testDato}` : ""}, hentet {datoKort(naa)}</TnFotnote> : null}
     </SkjermRamme>
   );
 }

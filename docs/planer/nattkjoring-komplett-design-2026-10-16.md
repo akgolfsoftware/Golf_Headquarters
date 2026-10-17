@@ -105,6 +105,7 @@ regelen «maks 3 økter samtidig» i `~/.claude/CLAUDE.md` §Forbruk, med Anders
 
 Fylles av øktene underveis. Hvert punkt: hva, hvilken anbefaling som ble valgt, hvor det står.
 
+- **PlayerHQ pakke 8 Meg (A2):** skjermene var allerede bygget i #1324. Port 7 gjort ved måling. Raden «Venner og utfordringer» på Meg er byttet til «Utfordringer» (lenke `/portal/utfordringer`), etter §VENNER SKJULES TIL NESTE VERSJON. `PH24Meg.tsx`, `src/app/portal/meg/page.tsx`.
 
 - **B1 · SY-01 systemsidene:** utkastets faste feilreferanse, klokkeslett for vedlikehold og «3 slag venter» er demodata og vises ikke. 500 viser Next sin digest som referanse; vedlikehold viser ekte telefon og e-post. (`src/components/system/precision-tilstand.tsx`)
 - **B1 · Ikke tilgang (403):** ny side `/ikke-tilgang` etter utkastet. Innloggingsvakten sender fortsatt rett til egen hjemmeside ved rollefeil, som før (unngår løkker, endrer ingen sikkerhetsvakt i natt). (`src/app/ikke-tilgang/page.tsx`)
