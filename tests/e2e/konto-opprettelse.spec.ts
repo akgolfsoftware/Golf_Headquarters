@@ -130,7 +130,7 @@ async function gjennomforOppstart(page: Page, fodt: string, forelderEpost?: stri
   }
   await expect(page.getByText("Steg 7 av 7")).toBeVisible();
   await expect(page.getByText("Anbefalt for deg")).toBeVisible();
-  await page.getByRole("radio", { name: /Klubbspilleren/ }).click();
+  await page.getByRole("button", { name: /^Klubbspilleren/ }).click();
   await page.getByRole("button", { name: "Start med Klubbspilleren" }).click();
   await page.waitForURL(/\/portal/, { timeout: 60_000 });
 }

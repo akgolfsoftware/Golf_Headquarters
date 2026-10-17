@@ -328,11 +328,11 @@ function Treningsplan({ v, endre }: { v: OppstartVerdier; endre: OppstartProps["
   const rekke = [anbefalt, ...TRENINGSPLANER.map((p) => p.navn).filter((n) => n !== anbefalt)];
   return (
     <>
-      <div className="planer valg-grid" role="radiogroup" aria-label="Treningsplan" style={{ display: "grid", gap: "var(--r2)" }}>
+      <div className="planer valg-grid" role="group" aria-label="Treningsplan" style={{ display: "grid", gap: "var(--r2)" }}>
         {rekke.map((navn) => {
           const info = PLAN_INFO[navn];
           return (
-            <button key={navn} type="button" role="radio" className="plan-kort" aria-checked={v.plan === navn} aria-pressed={v.plan === navn} onClick={() => endre({ plan: navn })}>
+            <button key={navn} type="button" className="plan-kort" aria-pressed={v.plan === navn} onClick={() => endre({ plan: navn })}>
               {navn === anbefalt && <span className="anbefalt">Anbefalt for deg</span>}
               <b className="n">{navn}</b>
               <span className="forklar">{info.tekst}{navn === anbefalt ? (anbefalt === "Konkurransespilleren" ? " Fordi du har spilt turneringer på regionnivå eller høyere." : " Fordi du ikke har oppgitt turneringer på regionnivå.") : ""}</span>

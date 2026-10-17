@@ -13,7 +13,8 @@
  *   via Stripe Checkout (plan «pro», 299 kr/mnd). Årspris velges i Meg › Abonnement.
  * - E-posten til «Sjekk e-posten din» bæres i sessionStorage, aldri i adressen.
  */
-import { useEffect, useState, type FormEvent, type ReactNode } from "react";
+import { useState, useSyncExternalStore, type FormEvent, type ReactNode } from "react";
+import Link from "next/link";
 import { AlertCircle, Check, Mail } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { FlateRamme } from "@/components/flater/FlateRamme";
@@ -22,6 +23,21 @@ import "@/styles/flater-ny-konto.css";
 export const MIN_PASSORD = 10;
 const EPOST_NOKKEL = "ak-registrert-epost";
 const FORELDER_EPOST_NOKKEL = "ak-forelder-epost";
+
+/** Leser én verdi fra sessionStorage etter hydrering (null på serveren og når lagring er stengt). */
+function useLagret(nokkel: string): string | null {
+  return useSyncExternalStore(
+    () => () => {},
+    () => {
+      try {
+        return sessionStorage.getItem(nokkel);
+      } catch {
+        return null;
+      }
+    },
+    () => null,
+  );
+}
 
 function Feil({ children }: { children: ReactNode }) {
   return (
@@ -134,7 +150,7 @@ export function LoggetUt() {
         <p className="ingress">Ingenting er lagret på denne enheten. Logg inn igjen når du vil fortsette.</p>
       </div>
       <a href="/auth/login" className="knapp pri stor">Logg inn</a>
-      <a href="/" className="lenke">Til forsiden</a>
+      <Link href="/" className="lenke">Til forsiden</Link>
     </FlateRamme>
   );
 }
@@ -160,22 +176,14 @@ export function Registrering({
   const [rolle, setRolle] = useState<Rolle>(startRolle);
   const [niva, setNiva] = useState<Niva>(subscribe ? "FULL" : "GRATIS");
   const [navn, setNavn] = useState("");
-  const [epost, setEpost] = useState(standardEpost ?? "");
+  const [epostSkrevet, setEpost] = useState<string | null>(standardEpost ?? null);
   const [passord, setPassord] = useState("");
   const [vilkar, setVilkar] = useState(false);
   const [feil, setFeil] = useState<string | null>(null);
   const [laster, setLaster] = useState(false);
-
   // Forelder som nettopp godkjente fra lenken: e-posten fra invitasjonen, aldri i adressen.
-  useEffect(() => {
-    if (startRolle !== "PARENT") return;
-    try {
-      const lagret = sessionStorage.getItem(FORELDER_EPOST_NOKKEL);
-      if (lagret) setEpost(lagret);
-    } catch {
-      // Forelderen skriver e-posten selv.
-    }
-  }, [startRolle]);
+  const fraGodkjenning = useLagret(FORELDER_EPOST_NOKKEL);
+  const epost = epostSkrevet ?? (startRolle === "PARENT" ? fraGodkjenning ?? "" : "");
 
   // Full betales etter oppstarten (checkout-resume). Forelder har ikke PlayerHQ-nivå.
   const plan = rolle === "PLAYER" && niva === "FULL" ? subscribe ?? "pro" : undefined;
@@ -285,15 +293,8 @@ export function Registrering({
 /* ---------- AU-02 Sjekk e-post ---------- */
 
 export function SjekkEpost() {
-  const [epost, setEpost] = useState<string | null>(null);
+  const epost = useLagret(EPOST_NOKKEL);
   const [status, setStatus] = useState<string | null>(null);
-  useEffect(() => {
-    try {
-      setEpost(sessionStorage.getItem(EPOST_NOKKEL));
-    } catch {
-      setEpost(null);
-    }
-  }, []);
 
   async function sendPaaNytt() {
     if (!epost) return;

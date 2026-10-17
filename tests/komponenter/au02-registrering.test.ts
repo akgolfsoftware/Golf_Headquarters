@@ -14,7 +14,8 @@ mock.module("react", { namedExports: { ...React, useState<T>(initial: T): [T, (v
   const index = cursor++;
   if (!(index in slots)) slots[index] = initial;
   return [slots[index] as T, value => { slots[index] = value; }];
-}, useEffect() {} } });
+}, useEffect() {}, useSyncExternalStore: (_s: unknown, hent: () => unknown) => hent() } });
+mock.module("next/link", { defaultExport: "a" });
 mock.module("@/lib/supabase/client", { namedExports: { createClient: () => ({ auth: {
   signUp: (input: SignUpInput) => signUp(input),
   signInWithOAuth: async () => ({ error: null }),

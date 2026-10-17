@@ -5,6 +5,7 @@
  * bekreftLydSamtykkeViaToken og ordlyden fra basen er uendret.
  */
 import { useState, useTransition } from "react";
+import Link from "next/link";
 import { Check, Mic } from "lucide-react";
 import { FlateRamme } from "@/components/flater/FlateRamme";
 import { bekreftLydSamtykkeViaToken } from "./actions";
@@ -67,7 +68,7 @@ export function LydSamtykkeForm({ token, spillerNavn, ordlyd }: Props) {
       {feil && <p className="feilmelding" role="alert">{feil}</p>}
       <div className="knapper">
         <button type="button" className="knapp pri" onClick={bekreft} disabled={pending}>{pending ? "Lagrer …" : "Gi samtykke"}</button>
-        <a href="/" className="knapp sek">Ikke nå</a>
+        <Link href="/" className="knapp sek">Ikke nå</Link>
       </div>
     </FlateRamme>
   );
