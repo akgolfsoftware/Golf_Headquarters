@@ -72,12 +72,11 @@ export async function dismissCookieBanner(page: Page): Promise<void> {
   }
 }
 
-/** Velg passord fra standardvisningen med magisk lenke, som en bruker gjør. */
+/** Innloggingen viser e-post og passord direkte (AU-01, natt 17.10: ingen magisk lenke). */
 export async function selectPasswordLogin(page: Page): Promise<void> {
-  // gotoAndWait stopper ved DOMContentLoaded; last også klientkoden før klikk.
+  // gotoAndWait stopper ved DOMContentLoaded; last også klientkoden før utfylling.
   await page.waitForLoadState("load");
   await dismissCookieBanner(page);
-  await page.getByRole("button", { name: "Logg inn med passord", exact: true }).click();
   await expect(page.locator('input[type="password"]')).toBeVisible();
 }
 
