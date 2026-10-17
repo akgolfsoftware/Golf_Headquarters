@@ -1,70 +1,150 @@
 "use client";
 
 /**
- * AG-15 Tester i Precision Athletics (Claude Design 7d7c2994,
- * ui_kits/agencyos/screens/AG-15.jsx).
+ * AG-15 Tester i nytt design (designbrevet 13.10.2026) — /admin/tester.
+ * Fasit: docs/design-system/utkast-agencyos/mer.html, skjerm «AG-15 Tester».
  *
- * Tegningen har testdetalj, nivåstiger, tildeling og forslag fra
- * øvelsesbanken — ingen av delene har en handling eller datamodell i appen i
- * dag (ingen «tildel test»-action, ingen nivåstige-data, ingen kobling
- * test→øvelsesbank). Porteringen holder seg derfor til det loaderen faktisk
- * gir: KPI-rad og resultatliste med delta og status, uendret fra
- * hentTesterFlate/AdminTesterV2Data. De manglende delene er parkert —
- * se PR-teksten §Parkert. «En test teller bare med alle slag registrert»
- * er allerede sant i loaderen (testResult finnes først når testen er ferdig).
+ * Faner: Resultater · Tildelt · Normer · Poengskala. «Tildel test» åpner arket
+ * og kaller samme handling som før (tildelTest: TestAssignment + varsel til spilleren).
+ * En test teller først når alle forsøk er registrert (testResult finnes da).
+ *
+ * Avvik:
+ *   - Arket tildeler til én spiller. Tildeling til en hel gruppe har ingen handling i appen.
+ *   - Normene viser «Referanse ikke satt» for A–K: nivåtallene er ikke vedtatt (beslutninger.md §Åpent).
+ *   - Tildelte TrackMan-økter har ingen datamodell og vises ikke.
  */
-import { Plus, Lightbulb, Target, ClipboardList, ChevronRight } from "lucide-react";
-import { Sidehode, TomTilstand, StatusPille, Meta, Ikon, KnappLenke } from "@/components/precision/pa";
-import { Tabell, Faner, type Kolonne } from "@/components/precision/pa-a5";
-import type { AdminTesterV2Data, AdminTesterV2Rad, AdminTesterStatus } from "@/components/admin/v2/AdminTesterV2";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import "@/styles/precision-a5.css";
+import Link from "next/link";
+import { ChevronRight, X } from "lucide-react";
+import { Avatar, Knapp, Pille, Tom, Topp, Varsel, type PilleTone } from "@/components/admin/agencyos-ny/ny";
+import type { AdminTesterV2Data, AdminTesterStatus } from "@/components/admin/v2/AdminTesterV2";
+import { tildelTest } from "@/app/admin/(legacy)/tester/tildel/[spillerId]/actions";
+import "@/styles/agencyos-ny-mer.css";
 
-export type AG15Props = { data: AdminTesterV2Data };
+export type AG15Tildelt = { id: string; spillerId: string; spillerNavn: string; testNavn: string; frist: string | null; tildelt: string };
+export type AG15Valg = { tester: ReadonlyArray<{ id: string; navn: string }>; spillere: ReadonlyArray<{ id: string; navn: string }> };
+export type AG15Fane = "resultater" | "tildelt" | "normer" | "skala";
 
-function statusTone(status: AdminTesterStatus): "neutral" | "ok" | "warn" {
-  if (status === "Bedre") return "ok";
-  if (status === "Svakere") return "warn";
-  return "neutral";
+export type AG15Props = {
+  data: AdminTesterV2Data;
+  tildelt?: readonly AG15Tildelt[];
+  valg?: AG15Valg;
+  startFane?: AG15Fane;
+  /** Åpner arket med spilleren valgt (fra /admin/tester/tildel/[spillerId]). */
+  tildelSpillerId?: string | null;
+};
+
+const FANER: ReadonlyArray<[AG15Fane, string]> = [["resultater", "Resultater"], ["tildelt", "Tildelt"], ["normer", "Normer"], ["skala", "Poengskala"]];
+const KATEGORIER = "ABCDEFGHIJK".split("");
+
+function tone(s: AdminTesterStatus): PilleTone {
+  if (s === "Bedre") return "ok";
+  if (s === "Svakere") return "feil";
+  if (s === "Pågår") return "vent";
+  return "noy";
 }
 
-type Rad = AdminTesterV2Rad & { id: string };
-
-export function AG15Tester({ data }: AG15Props) {
+function TildelArk({ valg, spillerId, onLukk }: { valg: AG15Valg; spillerId: string | null; onLukk: () => void }) {
   const router = useRouter();
+  const [test, setTest] = useState(valg.tester[0]?.id ?? "");
+  const [spiller, setSpiller] = useState(spillerId ?? valg.spillere[0]?.id ?? "");
+  const [frist, setFrist] = useState("");
+  const [feil, setFeil] = useState<string | null>(null);
+  const [venter, start] = useTransition();
+  const send = () => start(async () => {
+    setFeil(null);
+    const r = await tildelTest({ spillerId: spiller, testId: test, dueDate: frist || undefined });
+    if (!r.ok) { setFeil(r.error ?? "Testen ble ikke tildelt."); return; }
+    onLukk();
+    router.refresh();
+  });
+  return <div className="ark-lag" onClick={(e) => { if (e.target === e.currentTarget) onLukk(); }}>
+    <div className="ark" role="dialog" aria-modal="true" aria-label="Tildel test">
+      <div className="ark-topp"><h2>Tildel test</h2><button type="button" className="lukk" aria-label="Lukk" onClick={onLukk}><X className="ikon" aria-hidden /></button></div>
+      {valg.tester.length === 0 || valg.spillere.length === 0 ? <p className="forklar">{valg.spillere.length === 0 ? "Du har ingen spillere å tildele til." : "Ingen tester finnes i katalogen."}</p> : <>
+        <div className="felt"><label htmlFor="td-test">Test</label><select id="td-test" value={test} onChange={(e) => setTest(e.target.value)}>{valg.tester.map((t) => <option key={t.id} value={t.id}>{t.navn}</option>)}</select></div>
+        <div className="felt"><label htmlFor="td-spiller">Spiller</label><select id="td-spiller" value={spiller} onChange={(e) => setSpiller(e.target.value)}>{valg.spillere.map((s) => <option key={s.id} value={s.id}>{s.navn}</option>)}</select></div>
+        <div className="felt"><label htmlFor="td-frist">Frist</label><input id="td-frist" type="date" value={frist} onChange={(e) => setFrist(e.target.value)} /><span className="hjelp">Valgfri. Spilleren får varsel om testen.</span></div>
+        {feil && <p className="feiltekst" role="alert">{feil}</p>}
+        <Knapp stor disabled={venter || !test || !spiller} onClick={send}>{venter ? "Tildeler …" : "Tildel"}</Knapp>
+      </>}
+    </div>
+  </div>;
+}
+
+export function AG15Tester({ data, tildelt = [], valg, startFane = "resultater", tildelSpillerId = null }: AG15Props) {
+  const [fane, setFane] = useState<AG15Fane>(startFane);
+  const [ark, setArk] = useState<boolean>(!!tildelSpillerId && !!valg);
   const [filter, setFilter] = useState("alle");
-  const faner = useMemo(() => [{ value: "alle", label: "Alle", count: data.rader.length }, ...data.tester.map((t) => ({ value: t, label: t, count: data.rader.filter((r) => r.test === t).length }))], [data]);
-  const rader: Rad[] = useMemo(() => (filter === "alle" ? data.rader : data.rader.filter((r) => r.test === filter)).map((r) => ({ ...r, id: r.key })), [data.rader, filter]);
+  const rader = useMemo(() => filter === "alle" ? data.rader : data.rader.filter((r) => r.test === filter), [data.rader, filter]);
 
-  const cols: Kolonne<Rad>[] = [
-    { key: "navn", label: "Spiller", render: (r) => r.navn },
-    { key: "test", label: "Test", render: (r) => r.test },
-    { key: "resultat", label: "Resultat", mono: true, align: "right", render: (r) => r.resultat },
-    { key: "delta", label: "Endring", mono: true, align: "right", render: (r) => r.delta ?? "—" },
-    { key: "dato", label: "Dato", mono: true, render: (r) => r.dato },
-    { key: "status", label: "Status", render: (r) => <StatusPille tone={statusTone(r.status)}>{r.status}</StatusPille> },
-    { key: "aapne", label: "", render: () => <span style={{ display: "inline-flex", alignItems: "center", gap: 4, color: "var(--text-muted)" }}><Ikon icon={ChevronRight} size={16} /></span> },
-  ];
+  return <div className="agn-s">
+    <Topp dato="Mer · tester" tittel="Tester" ingress="En test teller først når spilleren har registrert alle forsøk."
+      handlinger={valg ? <Knapp onClick={() => setArk(true)}>Tildel test</Knapp> : undefined} />
 
-  return <div className="pa-side">
-    <Sidehode kicker="Tester · coach" title="Tester" sub="Resultater fra stallen. Testen teller først når spilleren har registrert alle forsøk." />
-    <div className="pa-a5-stat-grid">
-      {data.kpis.map((k) => <div key={k.label} className="pa-a5-stat">
-        <span className="pa-a5-stat__label">{k.label}</span>
-        <span className="pa-a5-stat__value">{k.value}</span>
-      </div>)}
+    <div className="teller-rad">
+      {data.kpis.map((k) => <div key={k.label} className={k.varsle ? "teller signal" : "teller"}><span className="e">{k.label}</span><b className="t">{k.value}</b></div>)}
     </div>
-    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-      <KnappLenke href="/admin/tester/tildel" icon={Plus} iconName="plus">Tildel test</KnappLenke>
-      <KnappLenke href="/admin/tester/foreslatte" variant="ghost" icon={Lightbulb} iconName="lightbulb">Foreslåtte</KnappLenke>
-      <KnappLenke href="/admin/tester/benchmarks" variant="ghost" icon={Target} iconName="target">Fasiter</KnappLenke>
+
+    <div className="faner" role="group" aria-label="Del">
+      {FANER.map(([id, label]) => <button key={id} type="button" aria-pressed={fane === id} onClick={() => setFane(id)}>{label}{id === "tildelt" && tildelt.length > 0 ? <span className="antall">{tildelt.length}</span> : null}</button>)}
     </div>
-    <Faner faner={faner} value={filter} onChange={setFilter} />
-    {rader.length === 0 ? <TomTilstand icon={ClipboardList} title="Ingen tester registrert ennå" text="Resultater dukker opp her når spillerne gjennomfører tester." /> : <>
-      <Tabell caption={`Testresultater · siste gjennomføring · ${rader.length}`} columns={cols} rows={rader}
-        onSelect={(r) => router.push(`/admin/spillere/${r.spillerId}`)} />
-      <Meta>{rader.length} RAD{rader.length === 1 ? "" : "ER"} · TRYKK EN RAD FOR SPILLERENS SIDE</Meta>
-    </>}
+
+    {fane === "resultater" && (data.rader.length === 0
+      ? <Tom tittel="Ingen tester registrert ennå" tekst="Resultater dukker opp her når spillerne gjennomfører tester." />
+      : <section className="seksjon" aria-label="Resultater">
+        {data.tester.length > 1 && <div className="chips" role="group" aria-label="Test">
+          {["alle", ...data.tester].map((t) => <button key={t} type="button" aria-pressed={filter === t} onClick={() => setFilter(t)}>{t === "alle" ? "Alle" : t}</button>)}
+        </div>}
+        <div className="kort rader">
+          {rader.map((r) => <Link key={r.key} href={`/admin/spillere/${r.spillerId}`} className="mer-rad">
+            <Avatar navn={r.navn} liten />
+            <span><b>{r.navn} · {r.test}</b><span className="kilde">{r.dato}{r.delta ? ` · ${r.delta}` : ""}</span></span>
+            <span className="hoyre"><span className="mono">{r.resultat}</span><Pille tone={tone(r.status)}>{r.status}</Pille></span>
+          </Link>)}
+        </div>
+        <p className="kilde">Trykk en rad for spillerens side.</p>
+      </section>)}
+
+    {fane === "tildelt" && (tildelt.length === 0
+      ? <Tom tittel="Ingen tester tildelt" tekst="Tildel en test til en spiller. Spilleren får varsel og finner testen i PlayerHQ."
+        handling={valg ? <Knapp onClick={() => setArk(true)}>Tildel test</Knapp> : undefined} />
+      : <section className="seksjon" aria-label="Tildelt">
+        <div className="hoved"><strong>{tildelt.length}</strong><span className="forklar">tildelt og ikke tatt</span></div>
+        <div className="kort rader">
+          {tildelt.map((t) => <Link key={t.id} href={`/admin/spillere/${t.spillerId}`} className="mer-rad">
+            <Avatar navn={t.spillerNavn} liten />
+            <span><b>{t.spillerNavn} · {t.testNavn}</b><span className="kilde">Tildelt {t.tildelt}{t.frist ? ` · frist ${t.frist}` : ""}</span></span>
+            <span className="hoyre"><Pille tone="vent">Ikke tatt</Pille><ChevronRight className="ikon" aria-hidden /></span>
+          </Link>)}
+        </div>
+      </section>)}
+
+    {fane === "normer" && <section className="seksjon" aria-label="Normer">
+      <div className="normer">
+        {KATEGORIER.map((k) => <div key={k} className="norm"><b>{k}</b><span>Kategori {k}</span><span className="v">Referanse ikke satt</span></div>)}
+      </div>
+      <p className="kilde">A–K-nivåtallene er ikke vedtatt. Normene fylles inn når de er det.</p>
+    </section>}
+
+    {fane === "skala" && <div className="seksjon">
+      <section className="seksjon" aria-label="Putt 9 hull lengde">
+        <div className="sek-topp"><h2>Putt 9 hull lengde</h2><span className="kilde">Restavstand i fot</span></div>
+        <div className="skala-tab">
+          {([["6", "senket"], ["3", "til 1 fot"], ["1", "til 2 fot"], ["0,5", "til 4 fot"], ["0", "over 4 fot"]] as const).map(([p, t]) => <div key={t}><b>{p}</b><span>{t}</span></div>)}
+        </div>
+      </section>
+      <section className="seksjon" aria-label="8-ball">
+        <div className="sek-topp"><h2>8-ball</h2><span className="kilde">Meter fra hullet</span></div>
+        <div className="skala-tab">
+          {([["5", "i hull"], ["3", "innen 1 m"], ["2", "innen 2 m"], ["1", "innen 3 m"], ["0", "lenger unna"]] as const).map(([p, t]) => <div key={t}><b>{p}</b><span>{t}</span></div>)}
+        </div>
+      </section>
+      <Varsel tittel="Gate-testene">Wedge Gate, Nærspill Gate og VISA Express føres som godkjent eller bom. Resultatet er antall godkjent av 9.</Varsel>
+      <p className="kilde">Kilde: Team Norways scorekort-ark (fanen Referens) og vedtakene 14.10 og 28.09.</p>
+    </div>}
+
+    {ark && valg && <TildelArk valg={valg} spillerId={tildelSpillerId} onLukk={() => setArk(false)} />}
   </div>;
 }
