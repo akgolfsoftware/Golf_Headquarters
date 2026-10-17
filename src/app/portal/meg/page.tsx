@@ -31,14 +31,14 @@ const KL = new Intl.DateTimeFormat("nb-NO", { ...OSLO, hour: "2-digit", minute: 
 const HREFS: PH24Props["hrefs"] = {
   profil: "/portal/meg/profil", fasiliteter: "/portal/meg/innstillinger/anlegg", utstyr: "/portal/meg/utstyr",
   helse: "/portal/meg/helse", coach: "/portal/coach", bookinger: "/portal/meg/bookinger", mal: "/portal/mal",
-  foreldre: "/portal/meg/foreldre", deling: "/portal/meg/innstillinger/personvern/deling", venner: "/portal/venner",
+  foreldre: "/portal/meg/foreldre", deling: "/portal/meg/innstillinger/personvern/deling", utfordringer: "/portal/utfordringer",
   abo: "/portal/meg/abonnement", innstillinger: "/portal/meg/innstillinger", hjelp: "/portal/meg/help",
 };
 
 const FEIL: PH24Props = {
   tilstand: "feil", navn: "", undertekst: null, gruppe: null, kategori: null, hcp: null, pakke: null,
   niva: { navn: "Gratis", tekst: "" }, deling: null, fasiliteter: { valgte: 0, totalt: ANTALL_FASILITETER, steder: 0 },
-  utstyr: 0, helse: "", coach: null, nesteBooking: null, foreldre: { navn: null, antall: 0 }, venner: 0, utfordringer: 0, hrefs: HREFS,
+  utstyr: 0, helse: "", coach: null, nesteBooking: null, foreldre: { navn: null, antall: 0 }, utfordringer: 0, hrefs: HREFS,
 };
 
 export default async function MegPage() {
@@ -51,7 +51,7 @@ export default async function MegPage() {
   let uleste = 0;
   try {
     const helseSamtykke = await harManuellHelseSamtykke(user.id);
-    const [profil, ekstra, abo, utstyr, neste, foreldre, steder, valgte, enrollment, utfordringer, venner, dash, aktivSkade, delingsgrupper] = await Promise.all([
+    const [profil, ekstra, abo, utstyr, neste, foreldre, steder, valgte, enrollment, utfordringer, dash, aktivSkade, delingsgrupper] = await Promise.all([
       hentProfil(),
       hentProfilEkstra(user.id),
       getAbonnementData(user.id),
@@ -74,7 +74,6 @@ export default async function MegPage() {
         select: { program: true, coach: { select: { name: true } } },
       }),
       prisma.drillChallenge.count({ where: { status: "ACTIVE", OR: [{ ownerId: user.id }, { participants: { some: { userId: user.id } } }] } }),
-      prisma.friendship.count({ where: { status: "ACCEPTED", OR: [{ userAId: user.id }, { userBId: user.id }] } }),
       getUnreadNotifications(user.id, 1).catch(() => null),
       helseSamtykke
         ? prisma.leave.count({ where: { userId: user.id, isInjury: true, returnedAt: null, OR: [{ endAt: null }, { endAt: { gte: na } }] } })
@@ -104,7 +103,6 @@ export default async function MegPage() {
       coach: enrollment && coachNavn ? { navn: coachNavn, program: enrollment.program } : null,
       nesteBooking: neste ? `${NESTE.format(neste.startAt)} kl. ${KL.format(neste.startAt)}` : null,
       foreldre: { navn: foreldre[0] ? foreldre[0].parent.name ?? foreldre[0].parent.email : null, antall: foreldre.length },
-      venner,
       utfordringer,
       hrefs: HREFS,
     };

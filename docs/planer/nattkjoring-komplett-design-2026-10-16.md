@@ -105,7 +105,7 @@ regelen «maks 3 økter samtidig» i `~/.claude/CLAUDE.md` §Forbruk, med Anders
 
 Fylles av øktene underveis. Hvert punkt: hva, hvilken anbefaling som ble valgt, hvor det står.
 
-(tom)
+- **PlayerHQ pakke 8 Meg (A2):** skjermene var allerede bygget i #1324. Port 7 gjort ved måling. Raden «Venner og utfordringer» på Meg er byttet til «Utfordringer» (lenke `/portal/utfordringer`), etter §VENNER SKJULES TIL NESTE VERSJON. `PH24Meg.tsx`, `src/app/portal/meg/page.tsx`.
 
 ---
 
