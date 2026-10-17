@@ -45,5 +45,8 @@ export function safeRedirectPath(
   }
   if (url.origin !== PLASS) return fallback;
 
-  return url.pathname + url.search + url.hash;
+  // «/a/..//x» normaliseres til «//x»: sjekk resultatet på nytt.
+  const ut = url.pathname + url.search + url.hash;
+  if (ut.startsWith("//") || ut.includes("\\")) return fallback;
+  return ut;
 }

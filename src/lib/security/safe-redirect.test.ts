@@ -15,7 +15,7 @@ test("innloggingsretur kan ikke sende brukeren til en fremmed origin", () => {
 
 test("tab, linjeskift og mellomrom kan ikke lure fram en fremmed origin", async () => {
   const klient = (await import("./safe-redirect-client")).safeRedirectPath;
-  for (const path of ["/\t/example.invalid", "/\n/example.invalid", "/ /example.invalid", "/\u0000/example.invalid"]) {
+  for (const path of ["/a/..//example.invalid", "/a/%2e%2e//example.invalid", "/\t/example.invalid", "/\n/example.invalid", "/ /example.invalid", "/\u0000/example.invalid"]) {
     assert.equal(safeRedirectPath(path, "/auth/etter-innlogging"), "/auth/etter-innlogging");
     assert.equal(klient(path, "/auth/etter-innlogging"), "/auth/etter-innlogging");
   }
