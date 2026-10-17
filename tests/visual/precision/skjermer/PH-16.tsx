@@ -2,6 +2,7 @@
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { PH16StatsOversikt, type PH16Trening } from "@/components/portal/precision/PH16StatsOversikt";
 import type { PH16StatsData, SgRad } from "@/lib/portal-analyse/ph16-stats-data";
+import type { PH14Data, PH14Rad } from "@/lib/portal-tester/ph14-tester-data";
 
 export const sti = "/portal/analysere";
 
@@ -22,5 +23,13 @@ const trening: PH16Trening = { gjortMin: 2890, planMin: 3140, pct: 92, periode: 
   akser: [{ akse: "fys", gjortMin: 540 }, { akse: "tek", gjortMin: 660 }, { akse: "slag", gjortMin: 1015 }, { akse: "spill", gjortMin: 450 }, { akse: "turn", gjortMin: 225 }] };
 const tom: PH16StatsData = { ...data, spiller: { ...data.spiller, snittBrutto: null, forrigeSnitt: null, antallSnittRunder: 0, trend: [] }, sg: data.sg.map((g) => ({ ...g, rows: g.rows.map((r) => ({ ...r, pga: null, n: 0 })) })), tester: [] };
 
-const Vis = ({ d, t }: { d: PH16StatsData; t: PH16Trening | null }) => <PlayerHQSkall innboksHref="#" uleste={2}><PH16StatsOversikt data={d} trening={t} /></PlayerHQSkall>;
-export const tilstander = { data: <Vis d={data} t={trening} />, tom: <Vis d={tom} t={null} /> };
+const tr = (id: string, navn: string, vis: string, dato: string, kontrollert: boolean): PH14Rad => ({ id, navn, akse: "fys", href: "#", vis, dato, kontrollert, historikk: [1, 2], rekord: false, forste: false });
+const tester: PH14Data = {
+  rader: [tr("cs", "Club Speed", "108,4 mph", "28. sep.", true), tr("ml", "Markløft trapbar", "140 kg", "21. sep.", false), tr("lh", "Lengdehopp", "2,48 m", "21. sep.", true), tr("rk", "Rotasjonskast", "11,2 m", "21. sep.", false)],
+  totalt: 12, tatt: 4, bedre: 3, sammenlignbare: 3, nesteTestdag: { navn: "Club Speed", dag: 19, mnd: "okt", dato: "19. okt.", href: "#" },
+  sisteRekord: { navn: "Club Speed", akse: "fys", vis: "108,4 mph", dato: "28. sep.", kontrollert: true, historikk: [106.5, 108.4], href: "#" },
+};
+const forelopig: PH16StatsData = { ...data, spiller: { ...data.spiller, antallSnittRunder: 5, trend: [75, 74, 76, 73, 72] } };
+
+const Vis = ({ d, t, te = null }: { d: PH16StatsData; t: PH16Trening | null; te?: PH14Data | null }) => <PlayerHQSkall innboksHref="#" uleste={2}><PH16StatsOversikt data={d} trening={t} tester={te} /></PlayerHQSkall>;
+export const tilstander = { data: <Vis d={data} t={trening} te={tester} />, forelopig: <Vis d={forelopig} t={trening} te={{ ...tester, sisteRekord: null }} />, tom: <Vis d={tom} t={null} /> };
