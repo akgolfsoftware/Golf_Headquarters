@@ -326,6 +326,7 @@ export async function hentTnSamlinger(bruker: TnBruker) {
   ]);
   return {
     kontekst,
+    antallSpillere,
     planHref: førsteSpiller ? `/admin/workbench/${encodeURIComponent(førsteSpiller.userId)}?flate=bord&gruppe=${encodeURIComponent(kontekst.gruppe.id)}` : null,
     samlinger: rader.map((r) => ({ id: r.id, name: r.title, startDate: r.startAt, endDate: r.endAt, location: r.location, notes: r.description, antallDeltakere: antallSpillere })),
   };
