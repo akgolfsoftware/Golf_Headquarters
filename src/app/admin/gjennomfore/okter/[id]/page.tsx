@@ -19,7 +19,8 @@ import { prisma } from "@/lib/prisma";
 import { coachBookingScope } from "@/lib/auth/booking-scope";
 import { lastLiveOktData } from "@/lib/agencyos/live-okt-data";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
-import { AG12Oktark, type OktarkData, type OktarkStatus } from "@/components/admin/precision/AG12Oktark";
+import type { OktarkData, OktarkStatus } from "@/components/admin/precision/AG12Oktark";
+import { AG12OktarkNy } from "@/components/admin/precision/AG12OktarkNy";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Øktark · AgencyOS" };
@@ -96,7 +97,7 @@ export default async function OktDetaljPage({ params }: { params: Promise<{ id: 
 
   return (
     <AgencyOSSkall navn={coach.name ?? "Coach"}>
-      <AG12Oktark data={data} />
+      <AG12OktarkNy data={data} />
     </AgencyOSSkall>
   );
 }
