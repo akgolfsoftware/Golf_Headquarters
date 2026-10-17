@@ -13,10 +13,11 @@
 import { Topp, Tom } from "@/components/admin/agencyos-ny/ny";
 import { GruppeFanerNy } from "@/components/admin/precision/AG16Gruppe";
 import type { EnGruppeAnalyse } from "@/lib/admin/analyse/gruppe-analyse";
+import { formaterTall } from "@/lib/format-tall";
 import "@/styles/agencyos-ny-mer.css";
 
 const pst = (p: number | null) => (p == null ? "—" : `${p} %`);
-const timer = (min: number) => (min === 0 ? "0 t" : `${(min / 60).toFixed(1).replace(".", ",")} t`);
+const timer = (min: number) => `${formaterTall(min / 60, 1)} t`;
 
 export function AGA03Gruppeanalyse({ groupId, navn, analyse }: { groupId: string; navn: string; analyse: EnGruppeAnalyse }) {
   const medData = analyse.dekning.filter(Boolean).length;

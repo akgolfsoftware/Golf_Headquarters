@@ -17,10 +17,11 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { Avatar, KnappLenke, Nokkelverdier, Pille, Seksjon, Tom, Topp } from "@/components/admin/agencyos-ny/ny";
 import type { GruppeDetaljV2Actions, GruppeDetaljV2Data } from "@/components/admin/v2/GruppeDetaljV2";
+import { formaterTall } from "@/lib/format-tall";
 import "@/styles/agencyos-ny-mer.css";
 
 const NB_DATO = new Intl.DateTimeFormat("nb-NO", { timeZone: "Europe/Oslo", weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
-const fmtHcp = (h: number | null) => (h == null ? "—" : h.toFixed(1).replace(".", ","));
+const fmtHcp = (h: number | null) => formaterTall(h, 1, true);
 
 export type GruppeFane = "medlemmer" | "tider" | "skoledata" | "stats";
 
