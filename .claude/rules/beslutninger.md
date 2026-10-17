@@ -4,6 +4,32 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## NATTKJØRING 16.–17.10: CLAUDE GODKJENNER OG LEGGER INN SELV TIL ALLE FLATER ER I NYTT DESIGN (Anders 16.10.2026, bindende)
+
+Anders 16.10 kl. 22:45: «Alle sider i PlayerHQ, AgencyOS, Team Norway og WANG og nettsidene skal ha
+komplett nytt design som vi har jobbet med. Alt skal fungere og være fullt operativt for booking og
+opprettelse av konto.» Og: «Du må legge inn i prosjektregler at du kan gjøre alt og godkjenne uten min
+tillatelse for å gjøre prosjektet komplett i natt.» Bekreftet kl. 23:10: «Legg inn #1376 og start
+nattkjøringen etter planen.»
+
+- **Fullmakt for natten:** Claude gjør port 7 på Anders' vegne, legger inn i main uten «merge» når verify
+  og CI er grønn, avgjør åpne spørsmål med anbefalingen som alt står i utkastet eller her, og fører hvert
+  valg i planens §6 «Avgjort i natt». Grensen på tre samtidige økter er opphevet. Regelen står i
+  `CLAUDE.md` §Nattkjøring til Anders opphever den.
+- **Står fortsatt:** ingen ekte betaling, ingen e-post til ekte personer, ingen sletting av produksjonsdata,
+  ingen brytende skjemaendring, ingen domeneflytting, ingen hemmeligheter (AGENTS.md §Stående forhåndsgodkjenning).
+- **Målet:** alle sider under `/portal`, `/admin`, `/team-norway`, `/team-wang`, `/forelder`, `/auth`,
+  markedssidene og de øvrige flatene bygget etter utkastene i `docs/design-system/utkast-*/`, og kjeden
+  opprett konto → oppstart → book → betal (testmodus) → bekreftelse virker og er låst med E2E-test.
+
+**Overstyrer (midlertidig):** «Merge ALDRI til main før Anders har skrevet «merge»» i `CLAUDE.md`, og
+port 7 som Anders' egen gjennomgang, for alt som bygges i nattkjøringen.
+
+**Arbeidet dette utløser:** de ti stegene i `docs/planer/nattkjoring-komplett-design-2026-10-16.md`.
+Ferdig når morgenrapporten (planens §7) finnes, `npm run verify` er grønn på main, og lista «Avgjort i
+natt» er lagt fram for Anders. Det bare Anders kan gjøre etterpå står i planens §5: Stripe live-røyktest,
+Apple Pay, domeneflytting, og gjennomgang av «Avgjort i natt».
+
 ## AGENCYOS-MENYEN BLIR VARIANT C: SØK FØRST, TRE GRUPPER OG IKONSKINNE (Anders 16.10.2026, bindende)
 
 Anders valgte variant C av tre menyforslag (`docs/design-system/utkast-agencyos/meny.html`, PR #1368): «C skal bygges». Underveis bestemte han at menyen skal kunne legges sammen til ikoner som glir ut ved trykk, at et ikon går rett til siden, og at klokkeslettet i ikonvisning skal være stort.
@@ -78,6 +104,29 @@ Anders 16.10, etter pakke 11 og 12: «Det skal være et sted i workbenchen hvor 
 4. **«Ny øvelse» lagres i banken:** skjemaet (`src/components/workbench/OvelseSkjema.tsx`) oppretter en `ExerciseDefinition` (spiller: `PLAYER`/`PRIVATE` synlig for coach; coach: `COACH_PLAYERS`) og legger den i økta med `exerciseId`. Ferdig når øvelsen finnes i Øvelsesbanken etterpå.
 5. **Lenke «Hele øvelsesbanken»** i spillerens og coachens Workbench. Coachen får samme bank-side som spilleren, i AgencyOS-skallet. Ferdig når begge lenkene åpner banken med filtrene.
 6. **PR med skjermbilder** i 390 og 1280 px og full `npm run verify`. Ikke merge før Anders skriver «merge».
+
+## PRØVEUKE FØR FØRSTE TREKK, CLAUDE SKRIVER HJELPEARTIKLENE, ANBEFALINGENE I PAKKE 14–17 OG AGENCYOS-RESTEN GJELDER (Anders 16.10.2026, bindende)
+
+Svar på «Åpent hos Anders» i `meg-resten.html`, `hjelp.html`, `utfordringer.html`, `plan-hjelpere.html` (PlayerHQ pakke 14–17, PR #1370) og `utkast-agencyos/resten.html` (AgencyOS pakke 11, #1372): «dine anbefalinger», «Hjelpeartiklene … skal du lage», «Nei, prøveuke».
+
+- **Prøveuke:** første gang en spiller velger Full, får hen én uke Full før første trekk (kort kreves, som i BUSINESS-RULES §Abonnement). Ingen «30 dagers angrerett» i skjermtekst.
+- **Claude skriver hjelpeartiklene.** Utkast: `docs/design-system/utkast-playerhq/hjelpeartikler.md` (16 artikler). «Slik bytter du coach» og «Be om videoanalyse» tas ut, fordi funksjonene ikke finnes.
+- **Anbefalingene gjelder:**
+  - Hjelp: «Send anonymt» fjernes · kontakt og tilbakemelding blir ett skjema, «Skriv til oss» · avkrysningen «Tillat at support ser profilen min» fjernes · én adresse, post@akgolf.no · ingen svartid lovet.
+  - Meg: tofaktor-reservekodene fjernes til de lagres · dokumenter sendes til Stripe-portalen (kvitteringer) og Hjelp (vilkår) · ordet er «kvittering», ikke «faktura».
+  - Utfordringer: «Opprett utfordring» er grafitt; rust bare i «Avslutt utfordringen» · coach velger deltakere fra gruppene og stallen, spiller bare fra gruppene.
+  - Plan: «Neste turnering» er Norgescup 1 (neste offisielle), og Klubbmesterskap innendørs er en økt, ikke en turnering · spilleren foreslår prioritet A/B/C, coachen kan endre · «Perioden er ferdig» vises for alle perioder · fri fysisk økt lages med hurtigknappen «Ny økt».
+  - AgencyOS: normer fra Data Golf venter til A–K-nivåtallene er vedtatt (siden sendes til AG-15 › Normer) · eksterne lesere ser bare det spilleren har delt · bare head coach inviterer coach.
+- **Uavklart:** markedsføringssiden i AgencyOS (`/admin/marketing`, innholdskalender for sosiale medier). Anders spurte hva den er; svaret er gitt, beslutningen gjenstår.
+
+**Overstyrer:** «30 dagers angrerett» i `oppgrader-flyt-wizard.tsx`, og «Klubbmesterskap innendørs» som neste turnering i `plan.html` (pakke 3, godkjent 14.10).
+
+**Arbeidet dette utløser:**
+
+1. **Hjelpeartiklene inn i appen** når pakke 15 bygges: `src/app/portal/meg/help/data.ts` får de 16 artiklene. Hver artikkel publiseres først når det den beskriver, virker (lista øverst i `hjelpeartikler.md`). Ferdig når ingen artikkel viser «ikke skrevet ferdig».
+2. **Prøveuke i teksten:** Velg Full (pakke 14) og Gratis og Full-artikkelen sier én uke. Ferdig når et søk etter «angrerett» i `src/` gir 0 treff i skjermtekst.
+3. **Plan rettes ved portering av pakke 3:** neste turnering fra `Tournament` (offisielle), ikke interne konkurranser.
+4. **Resten** bygges med pakkene, etter fila for hver pakke.
 
 ## VENNER SKJULES TIL NESTE VERSJON, UTFORDRINGER SENDES BARE TIL GRUPPA (Anders 16.10.2026, bindende)
 

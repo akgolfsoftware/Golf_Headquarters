@@ -144,7 +144,7 @@ button.rad,a.rad{cursor:pointer;text-decoration:none}
       <span class="meta-s">Åpent hos Anders</span>
       <ul>
         <li><b>Reservekoder for tofaktor</b> lages i dag i nettleseren og lagres ingen steder, så de virker ikke. Anbefaling: fjern dem til de lagres ordentlig. Utkastet viser «Mister du telefonen, skriv til oss».</li>
-        <li><b>Prøveuke eller angrerett:</b> dagens side lover «30 dagers angrerett», pakke 8 sier «én uke Full før det trekkes». Anbefaling: én uke, som i pakke 8. Hva gjelder?</li>
+        <li><b>Prøveuke, avgjort 16.10:</b> én uke Full før første trekk, ingen 30 dagers angrerett (Anders).</li>
         <li><b>Dokumenter</b> (kontrakter og vilkår) har ingen egen tegning. Anbefaling: send til Stripe-portalen for kvitteringer og til Hjelp for vilkår. Trengs en egen side for kontrakter?</li>
         <li><b>Kvittering, ikke faktura:</b> dagens kvitteringsside heter «Faktura», som kan leses som betalingsmåte. Anbefaling: bruk Stripe sine kvitteringer og ordet «kvittering».</li>
       </ul>
@@ -163,17 +163,17 @@ button.rad,a.rad{cursor:pointer;text-decoration:none}
       <div>
         <div class="full-topp">
           <img src="bilder/slag-simulator.jpg" alt="">
-          <div class="ft"><span class="e">PlayerHQ-nivå</span><b class="navn">Full</b><span>Hele planen, treningsøkta, testene og alle Stats. Du har Gratis i dag.</span></div>
+          <div class="ft"><span class="e">PlayerHQ-nivå</span><b class="navn">Full</b><span>Plan og Workbench, treningsøkta og Caddie. Du har Gratis i dag.</span></div>
         </div>
         <section class="seksjon">
           <div class="sek-topp"><h2>Det Full gir</h2></div>
           <ul class="inkl">
             <li><svg class="ikon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span><b>Plan og Workbench</b>År, periode, måned og uke som henger sammen.<span class="akse-prikk" aria-hidden="true"><i style="background:var(--fys)"></i><i style="background:var(--tek)"></i><i style="background:var(--slag)"></i><i style="background:var(--spill)"></i><i style="background:var(--turn)"></i></span></span></li>
-            <li><svg class="ikon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span><b>Treningsøkta og tester</b>Klokke, tellere og resultat rett i Stats.</span></li>
-            <li><svg class="ikon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span><b>Alle Stats</b>Strokes Gained, Trening og Tester, ikke bare snittscore.</span></li>
+            <li><svg class="ikon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span><b>Treningsøkta</b>Klokke, tellere og resultat rett i Stats.</span></li>
+            <li><svg class="ikon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span><b>Fysisk program og turneringer</b>I samme plan som golføktene.</span></li>
             <li><svg class="ikon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span><b>Caddie</b>Spør om planen, rundene og øvelsene dine.</span></li>
           </ul>
-          <span class="estimat">Eksempel på innhold. Fasit er produktreglene.</span>
+          <p class="kildetekst">Gratis har allerede runder, Stats med Strokes Gained, tester og booking. Fasit: <code>resolveTilgang</code> og produktreglene.</p>
         </section>
       </div>
       <div>
@@ -214,7 +214,7 @@ button.rad,a.rad{cursor:pointer;text-decoration:none}
           </div>
           <p class="kildetekst">Fra planen og Stats · i dag 14:20</p>
         </section>
-        <div class="vilkaar"><b>Med Gratis fra 1. november</b><span>Profilen, turneringsresultatene og snittscoren blir. Plan, Workbench, tester og Strokes Gained låses, men ingenting slettes.</span></div>
+        <div class="vilkaar"><b>Med Gratis fra 1. november</b><span>Runder, Stats med Strokes Gained, tester og booking blir. Plan, Workbench, treningsøkta og Caddie låses, men ingenting slettes.</span></div>
       </div>
       <div>
         <section class="seksjon">
@@ -280,7 +280,7 @@ button.rad,a.rad{cursor:pointer;text-decoration:none}
         <div class="ark-topp"><h2 data-ark-tittel>Endre passord</h2><button type="button" class="lukk" aria-label="Lukk" data-lukk><svg class="ikon" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
         <p class="forklar">Skriv passordet ditt først, så vi vet at det er deg.</p>
         <div class="felt"><label for="s-naa">Nåværende passord</label><input id="s-naa" type="password" value="xxxxxxxxxx" autocomplete="current-password"></div>
-        <div class="felt" data-nytt><label for="s-ny" data-ny-etikett>Nytt passord</label><input id="s-ny" type="password" autocomplete="new-password"><span class="hjelp" data-ny-hjelp>Minst 10 tegn.</span></div>
+        <div class="felt" data-nytt><label for="s-ny" data-ny-etikett>Nytt passord</label><input id="s-ny" type="password" autocomplete="new-password"><span class="hjelp" data-ny-hjelp>Minst 8 tegn.</span></div>
         <button type="button" class="knapp pri stor" data-lagre>Lagre</button>
       </div>
     </div>
@@ -407,7 +407,7 @@ button.rad,a.rad{cursor:pointer;text-decoration:none}
         app.querySelector('[data-ark-tittel]').textContent = e ? 'Endre e-post' : 'Endre passord';
         app.querySelector('[data-ny-etikett]').textContent = e ? 'Ny e-post' : 'Nytt passord';
         app.querySelector('#s-ny').type = e ? 'email' : 'password';
-        app.querySelector('[data-ny-hjelp]').textContent = e ? 'Vi sender en lenke for å bekrefte den nye adressen.' : 'Minst 10 tegn.';
+        app.querySelector('[data-ny-hjelp]').textContent = e ? 'Vi sender en lenke for å bekrefte den nye adressen.' : 'Minst 8 tegn.';
         ark.hidden = false; app.querySelector('#s-naa').focus({ preventScroll: true });
       });
     });

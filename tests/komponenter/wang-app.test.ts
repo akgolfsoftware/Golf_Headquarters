@@ -29,11 +29,13 @@ mock.module('next/link', { defaultExport: 'a' });
 const DATA = {
   gruppeNavn: 'WANG Toppidrett (demo)',
   idagIso: '2026-10-14',
+  naaTid: '07:40' as string | null,
   ukeTekst: 'Uke 42 · 12.10–18.10.2026',
   elever: Array.from({ length: 11 }, (_, i) => ({ id: `e${i + 1}`, navn: `Elev ${i + 1} Demo` })),
   trenere: [{ id: 't1', navn: 'Demotrener WANG', rolle: 'Trener' as const }],
   ukeOkter: [
-    { id: 'o1', datoIso: '2026-10-13', dag: 'Tir', tittel: 'Morgentrening nærspill (demo)', tid: '08:00–10:00', sted: 'Demo Golfklubb', passert: true },
+    { id: 'o1', datoIso: '2026-10-13', dag: 'Tir', tittel: 'Morgentrening nærspill (demo)', tid: '08:00–10:00', startTid: '08:00', sluttTid: '10:00' as string | null, sted: 'Demo Golfklubb', beskrivelse: null as string | null, passert: true },
+    { id: 'o2', datoIso: '2026-10-14', dag: 'Ons', tittel: 'Morgentrening driver (demo)', tid: '08:00–10:00', startTid: '08:00', sluttTid: '10:00' as string | null, sted: 'Demohallen', beskrivelse: null as string | null, passert: false },
   ],
   fasteOkter: [{ dag: 'Tir', tid: '08:00–10:00', tittel: 'Morgentrening nærspill (demo)', sted: 'Demo Golfklubb' }],
   perioder: [
@@ -97,8 +99,46 @@ describe('WANG Toppidrett Modul (Samtlige WANG-skjermer)', async () => {
 
   test('WangIdag: tom gruppe gir tom tilstand', () => {
     const html = vis(WangIdag, tom);
-    assert.ok(html.includes('Ingen økter er lagt inn denne uka.'));
+    assert.ok(html.includes('Ingen økter denne uka'));
+    assert.ok(html.includes('Ingen økter i dag'));
     assert.ok(html.includes('Ingen aktiv periode'));
+  });
+
+  test('WangIdag: helteflaten teller dagens økter, og det som ikke er koblet viser —', () => {
+    const html = vis(WangIdag);
+    assert.ok(html.includes('økt i dag'), 'Én økt i dag i demogruppa');
+    assert.ok(html.includes('Neste økt kl. 08:00'));
+    assert.ok(html.includes('kl. 07:40'), 'Klokka fra serveren');
+    assert.ok(html.includes('Krever handling'));
+    assert.ok(html.includes('Ikke koblet ennå'));
+  });
+
+  const visFane = (aktivFane: string, oktId?: string, data = DATA) =>
+    renderToStaticMarkup(React.createElement(WangIdag, { data, aktivFane, oktId }));
+
+  test('WangIdag › Oppmøte: alle elevene i gruppa, ingen forhåndsvalgt, lagring sperret', () => {
+    const html = visFane('oppmote', 'o2');
+    assert.ok(html.includes('Oppmøte'));
+    assert.ok(html.includes('Elev 11 Demo'));
+    assert.ok(html.includes('0 av 11 ført'), 'Ingen elev er satt til stede på forhånd');
+    assert.ok(!html.includes('aria-pressed="true"'), 'Ingen valg er forhåndsvalgt');
+    assert.match(html, /<button[^>]*disabled=""[^>]*>Lagre oppmøte<\/button>/);
+  });
+
+  test('WangIdag › Økta: viser økta fra kalenderen, avlysning er ikke koblet', () => {
+    const html = visFane('okt', 'o2');
+    assert.ok(html.includes('Morgentrening driver (demo)'));
+    assert.ok(html.includes('120 min'));
+    assert.ok(html.includes('Avlys økt'));
+    assert.ok(visFane('okt', 'finnes-ikke').includes('Fant ikke økta'));
+  });
+
+  test('WangIdag › Meld fravær: elevene som valg, bekreft er sperret og ingenting sendes', () => {
+    const html = visFane('fravaer', 'o2');
+    assert.ok(html.includes('Meld fravær'));
+    assert.ok(html.includes('<option value="e1">Elev 1 Demo</option>'));
+    assert.match(html, /<button[^>]*disabled=""[^>]*>Bekreft fravær<\/button>/);
+    assert.ok(html.includes('Ingenting er lagret eller sendt.'));
   });
 
   test('WangTrening: årsplan og faste økter fra gruppa', () => {

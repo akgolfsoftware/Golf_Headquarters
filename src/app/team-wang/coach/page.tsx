@@ -13,7 +13,11 @@ import { canUser } from "@/lib/auth/effective-capabilities";
 import { Capability } from "@/lib/auth/cbac";
 import { WangCoachKlient } from "@/app/team-wang/coach/WangCoachKlient";
 import type { WangOmraade } from "@/components/wang/WangAppSkall";
-import { byggWangTrenerData, osloIdagIso } from "@/app/team-wang/_data/wang-trener-data";
+import {
+  byggWangTrenerData,
+  osloIdagIso,
+  osloNaaTid,
+} from "@/app/team-wang/_data/wang-trener-data";
 
 export const dynamic = "force-dynamic";
 
@@ -28,6 +32,7 @@ interface WangCoachPageProps {
   searchParams?: Promise<{
     omraade?: string;
     fane?: string;
+    okt?: string;
     visArsplan?: string;
   }>;
 }
@@ -84,10 +89,11 @@ export default async function WangCoachPage({ searchParams }: WangCoachPageProps
     <WangCoachKlient
       omraade={aktivtOmraade}
       fane={params.fane}
+      oktId={params.okt}
       rolle={rolle}
       brukerNavn={bruker.name ?? undefined}
       elever={elever}
-      data={byggWangTrenerData(live, osloIdagIso())}
+      data={byggWangTrenerData(live, osloIdagIso(), osloNaaTid())}
     />
   );
 }
