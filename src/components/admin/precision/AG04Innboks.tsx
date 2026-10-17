@@ -38,7 +38,7 @@ import { batchApproveLowRisk } from "@/app/admin/(legacy)/approvals/actions";
 import { delUkesdigestAction } from "@/app/admin/godkjenninger/del-digest-action";
 import { settOppfolgingsstatus } from "@/app/admin/queue/actions";
 import { svarPaSporsmal } from "@/app/portal/(legacy)/coach/sporsmal/actions";
-import { arkiverEpost, sendGodkjentSvar } from "@/lib/innboks/actions";
+import { arkiverEpost, lagEpostUtkast, sendGodkjentSvar } from "@/lib/innboks/actions";
 import "@/styles/agencyos-ny-cockpit.css";
 
 export type AG04Tilstand = "data" | "laster" | "feil";
@@ -55,6 +55,9 @@ export type AG04Godkjenn = {
   andreKoer: { label: string; href: string }[];
 };
 
+/** Lead fra Lead-tabellen (NEW/CONTACTED). Bare head coach, som e-posten. */
+export type AG04Lead = { id: string; navn: string | null; epost: string; kilde: string; status: string; dato: string };
+
 export type AG04Props = {
   tilstand: AG04Tilstand;
   poster: InnboksPost[];
@@ -68,6 +71,10 @@ export type AG04Props = {
   godkjenn: AG04Godkjenn;
   oppfolgingSpillere: number | null;
   datakvalitet: DatakvalitetData;
+  /** Leads under Oppfølging. null = ikke head coach (vises ikke). */
+  leads?: AG04Lead[] | null;
+  /** Åpne Leads under Oppfølging (?filter=oppfolging&o=leads). */
+  startLeads?: boolean;
   /** Søkeparametre fra adressen, beholdes når fanen byttes. */
   sok?: Record<string, string>;
 };
@@ -76,6 +83,11 @@ const OPPF_KLASSE: Record<OppfStatus, string> = { risk: "risiko", watch: "folg",
 const OPPF_LABEL: Record<OppfStatus, string> = Object.fromEntries(OPPF_STATUSER.map((o) => [o.id, o.label])) as Record<OppfStatus, string>;
 const KILDE_LABEL: Record<GodkjennKilde, string> = { motor: "Motoren", caddie: "Caddie", foresporsel: "Forespørsler" };
 const DND = "application/x-akgolf-oppfolging";
+const LEAD_KILDE: Record<string, string> = {
+  "provetime-booking": "Prøvetime uten konto", "guide-download": "Guide", newsletter: "Nyhetsbrev",
+  "demo-request": "Demo", "for-klubber": "For klubber",
+};
+const LEAD_STATUS: Record<string, string> = { NEW: "Ny", CONTACTED: "Kontaktet" };
 const tallTekst = (n: number | null) => (n == null ? "—" : String(n));
 
 type Kjor = (fn: () => Promise<unknown>, etter?: () => void) => void;
@@ -114,7 +126,7 @@ function Sak({ p, open, onOpen, onBorte, onFilter, dra }: {
   const [grunnTekst, setGrunnTekst] = useState("");
   const [melding, setMelding] = useState<string | null>(null);
   const sub = [p.kind, p.konto].filter(Boolean).join(" · ");
-  const visUtkast = p.utkast && !forkastet;
+  const visUtkast = p.utkast && !forkastet && svar == null;
 
   const sendSvar = (tekst: string) => {
     if (h.t === "epost") epostSend(tekst);
@@ -189,7 +201,13 @@ function Sak({ p, open, onOpen, onBorte, onFilter, dra }: {
         <span className="kilde">Du sender. Jarvis lager bare utkast.</span>
         <div className="knapper">
           <Knapp disabled={pending || !svar.trim()} onClick={() => sendSvar(svar)}>Send</Knapp>
-          <Knapp variant="sek" disabled title="Jarvis lager ikke utkast på forespørsel ennå. Skriv svaret selv.">Lag utkast</Knapp>
+          {h.t === "epost"
+            ? <Knapp variant="sek" disabled={pending} onClick={() => kjor(async () => {
+              const r = await lagEpostUtkast(h.id);
+              if (r.ok) setSvar(r.tekst);
+              return r;
+            })}><Sparkles className="ikon" aria-hidden />{pending ? "Lager utkast …" : "Lag utkast"}</Knapp>
+            : <Knapp variant="sek" disabled title="Jarvis lager ikke utkast til spørsmål fra spillere ennå. Skriv svaret selv.">Lag utkast</Knapp>}
           <Knapp variant="spok" onClick={() => setSvar(null)}>Avbryt</Knapp>
         </div>
       </div>}
@@ -360,7 +378,8 @@ function Datakvalitet({ d }: { d: DatakvalitetData }) {
 
 /* ---------- Siden ---------- */
 export function AG04Innboks(props: AG04Props) {
-  const { tilstand, startFilter, startOppf, dagLabel, visSendt, harEpost, godkjenn, oppfolgingSpillere, datakvalitet, sok } = props;
+  const { tilstand, startFilter, startOppf, dagLabel, visSendt, harEpost, godkjenn, oppfolgingSpillere, datakvalitet, sok, leads = null, startLeads = false } = props;
+  const [visLeads, setVisLeads] = useState(startLeads && !!leads);
   const [f, setF] = useState<InnboksFilterId>(startFilter);
   const [o, setO] = useState<OppfStatus | null>(startOppf);
   const [kilde, setKilde] = useState<GodkjennKilde | "rapport" | null>(null);
@@ -372,7 +391,7 @@ export function AG04Innboks(props: AG04Props) {
   const flytt = useHandling();
 
   const velg = (neste: InnboksFilterId) => {
-    setF(neste); setO(null); setKilde(null);
+    setF(neste); setO(null); setKilde(null); setVisLeads(false);
     try {
       const q = new URLSearchParams(window.location.search);
       q.delete("o");
@@ -398,10 +417,11 @@ export function AG04Innboks(props: AG04Props) {
   const underfilter: ReactNode = visOppf
     ? <div role="group" aria-label="Oppfølging" className="under-filter">
       {OPPF_STATUSER.map((st) => <button type="button" key={st.id} aria-pressed={o === st.id} data-over={over === st.id || undefined}
-        onClick={() => setO(o === st.id ? null : st.id)}
+        onClick={() => { setVisLeads(false); setO(o === st.id ? null : st.id); }}
         onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; if (over !== st.id) setOver(st.id); }}
         onDragLeave={() => setOver((v) => (v === st.id ? null : v))}
         onDrop={slipp(st.id)}>{st.label} <b>{iFane.filter((p) => p.oppf === st.id).length}</b></button>)}
+      {leads && <button type="button" aria-pressed={visLeads} onClick={() => { setO(null); setVisLeads(!visLeads); }}>Leads <b>{leads.length}</b></button>}
     </div>
     : f === "godkjenn"
       ? <div role="group" aria-label="Kilde" className="under-filter">
@@ -423,10 +443,22 @@ export function AG04Innboks(props: AG04Props) {
       ? "E-postinnboksen (post@akgolf.no) er bare for head coach."
       : `Ingen saker under ${INNBOKS_FILTRE.find((x) => x.id === f)?.label ?? f}${visOppf && o ? " · " + OPPF_LABEL[o] : ""}.`;
 
-  const hovedliste = liste.length === 0
+  const leadListe = visOppf && visLeads && leads
+    ? leads.length === 0
+      ? <Tom tittel="Ingen nye leads." tekst="Prøvetimer uten konto og forespørsler fra nettsiden kommer hit." />
+      : <div className="saker" role="list" aria-label="Leads">{leads.map((l) => <div role="listitem" key={l.id} className="folg-rad">
+        <Avatar navn={l.navn ?? l.epost} liten />
+        <span><b>{l.navn ?? l.epost}</b>
+          <span className="status-rad"><span className="status-merke lead">Lead</span><span className="type">{LEAD_STATUS[l.status] ?? l.status}</span><span className="kilde">{LEAD_KILDE[l.kilde] ?? (l.kilde || "—")} · {l.dato}</span></span>
+        </span>
+        <a className="knapp sek" href={`mailto:${l.epost}`}>Skriv e-post</a>
+      </div>)}</div>
+    : null;
+
+  const hovedliste = leadListe ?? (liste.length === 0
     ? <Tom tittel="Alt er håndtert." tekst={tomTekst} />
     : <div className="saker" role="list" aria-label="Saker">{liste.map((p) => <Sak key={p.key} p={p} open={open === p.key}
-      onOpen={() => setOpen(open === p.key ? null : p.key)} onBorte={() => borteFra(p.key)} onFilter={velg} dra={visOppf} />)}</div>;
+      onOpen={() => setOpen(open === p.key ? null : p.key)} onBorte={() => borteFra(p.key)} onFilter={velg} dra={visOppf} />)}</div>);
 
   const topp = <Topp dato={`Innboks · ${dagLabel} · haster først`} tittel="Innboks"
     handlinger={<KnappLenke href="/admin/jarvis"><Sparkles className="ikon" aria-hidden />Jarvis</KnappLenke>} />;
