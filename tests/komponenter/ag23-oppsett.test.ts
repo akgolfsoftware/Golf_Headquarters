@@ -57,7 +57,7 @@ describe("AG23Oppsett (Innstillinger og oppsett)", async () => {
   });
 
   test("ukoblede faner gir ingen falske innstillinger eller integrasjonsstatus", () => {
-    for (const fane of ["varsler", "integr", "mark"]) {
+    for (const fane of ["varsler", "integr"]) {
       const html = vis({ tilstand: "data", startFane: fane, data });
       assert.doesNotMatch(html, /Koblet ·|SIST HENTET|Book time hos|ACWR over 1,5/);
     }
