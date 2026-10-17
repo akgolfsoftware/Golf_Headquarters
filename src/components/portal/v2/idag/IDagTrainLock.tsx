@@ -333,7 +333,7 @@ export function IDagTrainLock(p: IDagTrainLockProps) {
         <div style={{ marginTop: 8, fontSize: 13, color: TL.mute }}>
           Uke {p.ukeNummer} · {p.fullfortUke ?? 0} økter er gjennomført
         </div>
-        <Cta href="/portal/tren/wb" barn={IDAG_UI.startEgen} dim />
+        <Cta href="/portal/planlegge/workbench" barn={IDAG_UI.startEgen} dim />
         <TekstLenke href="/portal/planlegge" barn={IDAG_UI.apnePlan} />
       </div>
     );

@@ -1,7 +1,6 @@
 /**
- * PH03WbArk — spillerens Workbench-øktark i PlayerHQSkall.
- * Start, fullfør og hopp over er beholdt. Utkast er fortsatt usynlig.
- * Tegningen ui_kits/playerhq/screens/PH-03.jsx ligger ikke i git.
+ * PH03WbArk — PH-03 Øktark for en Workbench-økt i nytt design (pakke 2 Treningsøkta), i PlayerHQSkall.
+ * Start, fullfør og hopp over er beholdt. Utkast er fortsatt usynlig. Visningen er PH03WbOktark.
  */
 
 import Link from "next/link";
@@ -12,7 +11,7 @@ import { loadPlayerSession } from "@/lib/workbench/wb-actions";
 import { UI } from "@/lib/domain/workbench/labels";
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { FeilTilstand } from "@/components/precision/pa";
-import { OktArk } from "@/components/portal/workbench/OktArk";
+import { PH03WbOktark } from "@/components/portal/precision/PH03WbOktark";
 
 export const dynamic = "force-dynamic";
 
@@ -41,7 +40,7 @@ export default async function WorkbenchOktPage({
             retry={<Link href="/portal" className="pa-btn pa-btn--primary">{UI.backToToday}</Link>}
           />
         ) : (
-          <OktArk session={res.data} />
+          <PH03WbOktark session={res.data} />
         )}
       </div>
     </PlayerHQSkall>

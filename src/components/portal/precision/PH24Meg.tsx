@@ -45,11 +45,10 @@ export type PH24Props = {
   coach: { navn: string; program: string } | null;
   nesteBooking: string | null;
   foreldre: { navn: string | null; antall: number };
-  venner: number;
   utfordringer: number;
   hrefs: {
     profil: string; fasiliteter: string; utstyr: string; helse: string; coach: string; bookinger: string; mal: string;
-    foreldre: string; deling: string; venner: string; abo: string; innstillinger: string; hjelp: string;
+    foreldre: string; deling: string; utfordringer: string; abo: string; innstillinger: string; hjelp: string;
   };
 };
 
@@ -130,7 +129,7 @@ export function PH24Meg(p: PH24Props) {
               tittel="Foreldre"
               kilde={p.foreldre.antall === 0 ? "Ingen forelder er koblet til" : p.foreldre.antall === 1 && p.foreldre.navn ? `${p.foreldre.navn} er koblet til profilen din` : `${p.foreldre.antall} foreldre er koblet til`} />
             <Rad href={h.deling} ikon={<Boks><Share2 size={18} /></Boks>} tittel="Deling" kilde="Hvem ser profilen din, og del med trener" />
-            <Rad href={h.venner} ikon={<Boks><Users size={18} /></Boks>} tittel="Venner og utfordringer" kilde={`${flertall(p.venner, "venn", "venner")} · ${flertall(p.utfordringer, "utfordring", "utfordringer")} pågår`} />
+            <Rad href={h.utfordringer} ikon={<Boks><Users size={18} /></Boks>} tittel="Utfordringer" kilde={`${flertall(p.utfordringer, "utfordring", "utfordringer")} pågår`} />
           </div>
         </section>
 

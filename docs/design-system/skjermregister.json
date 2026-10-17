@@ -1,15 +1,15 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "8c137953f00b31f47cacd96ed150295f171ae456",
+  "kodeversjon": "2be576ec31e1fe224ae4a98aee7c3cf73d3b2158",
   "inventar": {
-    "pageFiles": 549,
-    "uniqueRoutePatterns": 549,
-    "componentFiles": 946,
-    "surfaceFiles": 288,
+    "pageFiles": 551,
+    "uniqueRoutePatterns": 551,
+    "componentFiles": 948,
+    "surfaceFiles": 287,
     "byArea": {
       "interne-eksempler": 6,
-      "marked-og-offentlig": 70,
+      "marked-og-offentlig": 71,
       "offentlig-booking": 4,
       "agencyos": 168,
       "inngang-og-konto": 20,
@@ -18,7 +18,7 @@
       "delt-innsyn": 11,
       "personlig-arbeidsflate": 3,
       "systemtilstand": 2,
-      "playerhq": 186
+      "playerhq": 187
     }
   },
   "presisjon": {
@@ -12683,6 +12683,51 @@
       "kodekommentar": null
     },
     {
+      "screenId": "UTEN-TEGNET-TYPE",
+      "rute": "/ikke-tilgang",
+      "kildefil": "src/app/ikke-tilgang/page.tsx",
+      "omrade": "marked-og-offentlig",
+      "rolle": "åpen",
+      "designkilde": "docs/design-system/skjermliste-precision-athletics.md",
+      "designversjon": "precision-athletics-2026-09-28",
+      "komponentmonster": null,
+      "handlinger": "ikke-avlest-i-D01",
+      "dataApi": "ikke-avlest-i-D01",
+      "tilstander": [
+        "tom",
+        "laster",
+        "feil"
+      ],
+      "formater": {
+        "mobil": "ikke-kontrollert",
+        "nettbrett": "ikke-kontrollert",
+        "desktop": "ikke-kontrollert",
+        "natt": "ikke-relevant"
+      },
+      "status": {
+        "kartlagt": true,
+        "wireframe": false,
+        "uiUtkast": false,
+        "prototype": false,
+        "vurdert": false,
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
+        "kontrollertIApp": false
+      },
+      "eier": "D01-skjermregister",
+      "kontrollbevis": null,
+      "avvik": [
+        "Kodekommentaren sier SY-01, men skjermlisten har ingen treff. Kommentaren er opphav, ikke godkjenning."
+      ],
+      "kobling": "teknisk-forklaring",
+      "forklaring": "Ingen tegnet skjermtype ligger i nærheten av ruten. Ruten beholdes og må forklares før den porteres eller skjules.",
+      "legacyGruppe": false,
+      "naermesteSkjermtype": null,
+      "sammeSidefil": [],
+      "videresendingMal": null,
+      "kodekommentar": "SY-01"
+    },
+    {
       "screenId": "AU-06",
       "rute": "/innsyn/[spillerId]",
       "kildefil": "src/app/innsyn/[spillerId]/page.tsx",
@@ -13353,21 +13398,19 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "precision-visning",
+        "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Offline merker SY01Offline i Precision. Lokal lagring og de to lenkene er beholdt. Tegningens demokode om tre ventende endringer er ikke innført. Kilde: ui_kits/system/screens/SY-01.jsx. Målt lokalt 03.10.2026 i kjørende app på 390×844 og 1440×880. Ikke satt kontrollert-i-app.",
-      "avvik": [
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
+      "kontrollbevis": null,
+      "avvik": [],
       "kobling": "tegnet-skjermtype",
       "forklaring": "SY-01 Systemtilstander er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "SY-01"
     },
     {
       "screenId": "VIDERESENDING",
@@ -13927,7 +13970,7 @@
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Workbench-øktarket merker PH03WbArk i PlayerHQSkall. Start, fortsett, fullfør, hopp over, belastning og recap er beholdt. Utkast er fortsatt skjult. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-03.jsx ligger ikke i git.",
+      "kontrollbevis": "Workbench-øktarket merker PH03WbArk i PlayerHQSkall, i nytt design (PH03WbOktark, pakke 2, utkast-playerhq/treningsokt.html). Start, fortsett, fullfør, hopp over og oppsummering er beholdt; fullfør spør om Belastning og Fokus (golføkt) eller «Hvor tungt» (fysisk). Utkast er fortsatt skjult. Målt i prøven tests/visual/precision/skjermer/PH-03-WB.tsx i 390, 360 og 1440 natt 17.10.",
       "avvik": [
         "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
@@ -13940,20 +13983,19 @@
       "kodekommentar": "PH-03"
     },
     {
-      "screenId": "PH-02",
+      "screenId": "VIDERESENDING",
       "rute": "/portal/tren/wb",
       "kildefil": "src/app/portal/(fullscreen)/tren/wb/page.tsx",
       "omrade": "playerhq",
       "rolle": "spiller",
-      "designkilde": "AK Golf Precision Athletics (7d7c2994-cf63-4c5f-9bdc-fdaf67655a70)",
-      "designversjon": "precision-athletics-2026-09-28",
-      "komponentmonster": "/portal/tren/wb",
-      "handlinger": "Dagens økter og oppgaver, åpne økt",
+      "designkilde": "kode",
+      "designversjon": "ikke-en-skjerm",
+      "komponentmonster": null,
+      "handlinger": "Send videre til /portal",
       "dataApi": "ikke-avlest-i-D01",
       "tilstander": [
-        "tom",
-        "laster",
-        "feil"
+        "videresending",
+        "manglende-mal"
       ],
       "formater": {
         "mobil": "ikke-kontrollert",
@@ -13968,21 +14010,19 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": false,
-        "implementert": "precision-visning",
+        "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Dagens Workbench-økter merker PH02WbDag i PlayerHQSkall. Publiserte, pågående og fullførte økter lenker til øktarket. Øktarket er ikke med. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-02.jsx ligger ikke i git.",
-      "avvik": [
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
-      "kobling": "tegnet-skjermtype",
-      "forklaring": "PH-02 Gjør nå utgår i IA 28.09.2026. Funksjonen hører hjemme i PH-01 I dag. Skjermen skal ikke bygges.",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "videresending",
+      "forklaring": "Filen har ingen egen visning. Den sender til /portal. At målet finnes, og hva brukeren ser hvis lenken er ugyldig, er ikke prøvd i denne bolken.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
-      "videresendingMal": null,
-      "kodekommentar": "PH-02"
+      "videresendingMal": "/portal",
+      "kodekommentar": "PH-01"
     },
     {
       "screenId": "VIDERESENDING",
@@ -20695,6 +20735,48 @@
       "kodekommentar": null
     },
     {
+      "screenId": "VIDERESENDING",
+      "rute": "/portal/tren/start",
+      "kildefil": "src/app/portal/tren/start/page.tsx",
+      "omrade": "playerhq",
+      "rolle": "spiller",
+      "designkilde": "kode",
+      "designversjon": "ikke-en-skjerm",
+      "komponentmonster": null,
+      "handlinger": "Send videre til et mål som ikke er en fast adresse i filen",
+      "dataApi": "ikke-avlest-i-D01",
+      "tilstander": [
+        "videresending",
+        "manglende-mal"
+      ],
+      "formater": {
+        "mobil": "ikke-kontrollert",
+        "nettbrett": "ikke-kontrollert",
+        "desktop": "ikke-kontrollert",
+        "natt": "ikke-relevant"
+      },
+      "status": {
+        "kartlagt": true,
+        "wireframe": false,
+        "uiUtkast": false,
+        "prototype": false,
+        "vurdert": false,
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
+        "kontrollertIApp": false
+      },
+      "eier": "D01-skjermregister",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "videresending",
+      "forklaring": "Filen sender videre, men målet er ikke en fast adresse. Det er ikke prøvd.",
+      "legacyGruppe": false,
+      "naermesteSkjermtype": null,
+      "sammeSidefil": [],
+      "videresendingMal": null,
+      "kodekommentar": null
+    },
+    {
       "screenId": "PH-19",
       "rute": "/portal/tren/teknisk-plan/[planId]",
       "kildefil": "src/app/portal/tren/teknisk-plan/[planId]/page.tsx",
@@ -24145,36 +24227,34 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "precision-visning",
+        "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Vedlikehold merker SY01Vedlikehold i Precision. Telefon og e-post er beholdt. Tegningens klokkeslett er ikke innført. Kilde: ui_kits/system/screens/SY-01.jsx. Målt lokalt 03.10.2026 i kjørende app på 390×844 og 1440×880. Ikke satt kontrollert-i-app.",
-      "avvik": [
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
+      "kontrollbevis": null,
+      "avvik": [],
       "kobling": "tegnet-skjermtype",
       "forklaring": "SY-01 Systemtilstander er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "SY-01"
     }
   ],
   "tellinger": {
-    "sidefiler": 549,
-    "medAvvik": 156,
+    "sidefiler": 551,
+    "medAvvik": 154,
     "valgtForBygging": 246,
-    "utenEksaktType": 16,
-    "implementert": 127,
+    "utenEksaktType": 17,
+    "implementert": 124,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,
       "felles-monster": 22,
-      "tegnet-skjermtype": 281,
-      "videresending": 169,
-      "teknisk-forklaring": 33,
+      "tegnet-skjermtype": 280,
+      "videresending": 171,
+      "teknisk-forklaring": 34,
       "byggeunderlag": 37
     },
     "screenId": {
@@ -24195,7 +24275,7 @@
       "ST-06": 8,
       "ST-04": 3,
       "MK-BEKREFT": 1,
-      "VIDERESENDING": 169,
+      "VIDERESENDING": 171,
       "AG-05": 4,
       "AG-08": 3,
       "AG-15": 3,
@@ -24207,7 +24287,7 @@
       "AG-09": 2,
       "AG-24": 5,
       "AG-06": 2,
-      "UTEN-TEGNET-TYPE": 16,
+      "UTEN-TEGNET-TYPE": 17,
       "AG-04": 2,
       "AG-12": 1,
       "AG-11": 2,
@@ -24243,7 +24323,6 @@
       "PH-09": 3,
       "PH-15": 1,
       "PH-03": 2,
-      "PH-02": 2,
       "PH-17": 4,
       "PH-26": 11,
       "PH-13": 5,
@@ -24254,6 +24333,7 @@
       "PH-23": 9,
       "PH-21": 13,
       "PH-20": 3,
+      "PH-02": 1,
       "PH-IUP-01": 1,
       "PH-10": 3,
       "PH-19": 7,
