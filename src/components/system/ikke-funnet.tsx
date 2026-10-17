@@ -7,25 +7,30 @@ export type IkkeFunnetProps = {
   beskrivelse?: string;
   sekundarKnappTekst?: string;
   sekundarHref?: string;
+  /** Inni PlayerHQ- eller AgencyOS-skallet: ingen egen topplinje. */
+  iSkall?: boolean;
 };
 
-/** 404 i samme Precision-ramme som SY-01. Handlinger er uendret. */
+/** SY-01 404 i nytt design (gfgk-system.html). Handlingene per flate er uendret. */
 export function IkkeFunnet({
   hjemHref = "/",
-  knappTekst = "Til hjem",
-  tittel = "Denne siden finnes ikke",
-  beskrivelse = "Lenken kan være gammel, eller siden kan ha flyttet. Fant du den i en e-post fra oss, er den trolig utdatert.",
-  sekundarKnappTekst = "Gå til I dag",
+  knappTekst = "Til forsiden",
+  tittel = "Siden finnes ikke",
+  beskrivelse = "Adressen kan være skrevet feil, eller siden er flyttet.",
+  sekundarKnappTekst = "Til PlayerHQ",
   sekundarHref = "/portal",
+  iSkall,
 }: IkkeFunnetProps) {
   return (
     <PrecisionTilstand
       kicker="404"
       tittel={tittel}
       tekst={beskrivelse}
-      kode="Feil 404"
-      primar={{ label: sekundarKnappTekst, href: sekundarHref }}
-      sekundar={{ label: knappTekst, href: hjemHref }}
+      hjelpeliste={["Sjekk adressen", "Gå til forsiden og finn veien derfra"]}
+      primar={{ label: knappTekst, href: hjemHref }}
+      sekundar={{ label: sekundarKnappTekst, href: sekundarHref }}
+      toppLenke={iSkall ? undefined : { tekst: "Logg inn", href: "/auth/login" }}
+      iSkall={iSkall}
     />
   );
 }

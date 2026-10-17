@@ -10,7 +10,7 @@ Rader: [JSON](skjermregister.json) og [CSV](skjermregister.csv). Regenerer med `
 
 ## Inventar
 
-Sidefiler med rute: **550**. Unike rutemønstre i skanningen: 550. Komponentfiler: 947. Ramme- og tilstandsfiler: 287.
+Sidefiler med rute: **551**. Unike rutemønstre i skanningen: 551. Komponentfiler: 948. Ramme- og tilstandsfiler: 287.
 
 Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kodeversjonen over og kan være høyere. Interne eksempler inngår. Ingen rute er slettet.
 
@@ -22,7 +22,7 @@ Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kode
 | inngang-og-konto | 20 |
 | interne-eksempler | 6 |
 | lag-og-skole | 63 |
-| marked-og-offentlig | 70 |
+| marked-og-offentlig | 71 |
 | offentlig-booking | 4 |
 | personlig-arbeidsflate | 3 |
 | playerhq | 187 |
@@ -35,11 +35,11 @@ Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kode
 | tegnet-skjermtype | 275 |
 | videresending | 176 |
 | byggeunderlag | 37 |
-| teknisk-forklaring | 33 |
+| teknisk-forklaring | 34 |
 | felles-monster | 22 |
 | intern-flate | 7 |
 
-241 rader treffer en av de 77 Precision-typene og er derfor merket valgt for bygging som design. 16 rader har ingen eksakt type. 149 rader har et registrert avvik. 120 rader har en Precision-visning i koden. 0 er kontrollert i appen.
+241 rader treffer en av de 77 Precision-typene og er derfor merket valgt for bygging som design. 17 rader har ingen eksakt type. 148 rader har et registrert avvik. 118 rader har en Precision-visning i koden. 0 er kontrollert i appen.
 
 ## Uten eksakt type
 
@@ -54,6 +54,7 @@ Tabellen er Precision-ruter uten treff i 74-listen, pluss WANG- og Team Norway-r
 | `/admin/spillere/[id]/plan/[planId]/for-og-na` | UTEN-TEGNET-TYPE | AG-10 Teknisk plan |
 | `/auth/fodselsdato` | UTEN-TEGNET-TYPE | — |
 | `/auth/trenerdeling` | UTEN-TEGNET-TYPE | — |
+| `/ikke-tilgang` | UTEN-TEGNET-TYPE | — |
 | `/portal/analysere/resultater` | UTEN-TEGNET-TYPE | PH-16 Stats |
 | `/portal/analysere/trackman/koller` | UTEN-TEGNET-TYPE | PH-17 TrackMan |
 | `/portal/mal/evaluering` | UTEN-TEGNET-TYPE | PH-19 Workbench › Målsetninger |
@@ -95,6 +96,7 @@ Tabellen er Precision-ruter uten treff i 74-listen, pluss WANG- og Team Norway-r
 | `/forelder/fakturaer` | FO-04 | Kodekommentaren sier FO-05. Skjermlisten sier FO-04. Kommentaren er opphav, ikke en ny godkjenning. |
 | `/forelder/ukerapport` | FO-01 | Kodekommentaren sier FO-09. Skjermlisten sier FO-01. Kommentaren er opphav, ikke en ny godkjenning. |
 | `/forelder/varsler` | FO-01 | Kodekommentaren sier FO-10. Skjermlisten sier FO-01. Kommentaren er opphav, ikke en ny godkjenning. |
+| `/ikke-tilgang` | UTEN-TEGNET-TYPE | Kodekommentaren sier SY-01, men skjermlisten har ingen treff. Kommentaren er opphav, ikke godkjenning. |
 | `/portal/analysere/trackman/koller` | UTEN-TEGNET-TYPE | Kodekommentaren sier PH-17, men skjermlisten har ingen treff. Kommentaren er opphav, ikke godkjenning. |
 | `/portal/analysere/turneringer` | PH-18 | Kodekommentaren sier PH-21. Skjermlisten sier PH-18. Kommentaren er opphav, ikke en ny godkjenning. |
 | `/portal/mal` | PH-19 | Kodekommentaren sier PH-11. Skjermlisten sier PH-19. Kommentaren er opphav, ikke en ny godkjenning. |
