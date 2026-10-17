@@ -107,9 +107,15 @@ Fylles av øktene underveis. Hvert punkt: hva, hvilken anbefaling som ble valgt,
 
 - **PlayerHQ pakke 8 Meg (A2):** skjermene var allerede bygget i #1324. Port 7 gjort ved måling. Raden «Venner og utfordringer» på Meg er byttet til «Utfordringer» (lenke `/portal/utfordringer`), etter §VENNER SKJULES TIL NESTE VERSJON. `PH24Meg.tsx`, `src/app/portal/meg/page.tsx`.
 
+- **B1 · SY-01 systemsidene:** utkastets faste feilreferanse, klokkeslett for vedlikehold og «3 slag venter» er demodata og vises ikke. 500 viser Next sin digest som referanse; vedlikehold viser ekte telefon og e-post. (`src/components/system/precision-tilstand.tsx`)
+- **B1 · Ikke tilgang (403):** ny side `/ikke-tilgang` etter utkastet. Innloggingsvakten sender fortsatt rett til egen hjemmeside ved rollefeil, som før (unngår løkker, endrer ingen sikkerhetsvakt i natt). (`src/app/ikke-tilgang/page.tsx`)
+- **B1 · Grunnmur for utkast-flater:** `src/styles/flater-ny.css` (generert av `scripts/lag-flater-ny-css.mjs`, avgrenset til `.fln`, klassenavn fra utkastet) brukes av alle grupper i `utkast-flater/`. (`src/components/flater/FlateRamme.tsx`)
+
 ---
 
 - **A4 · AgencyOS pakke 1 (Cockpit og Innboks):** AI-dispatch («Jarvis: én ting nå») står på Cockpit under dagens kalender, selv om utkastet ikke har det (skill agenticos-cockpit sier det skal beholdes). «Lag utkast» virker for e-post (Jarvis lager utkast, coachen sender); for spørsmål fra spillere er knappen fortsatt av, fordi det ikke finnes en navnevasket utkastlager for dem. Leads vises under Oppfølging bare for head coach, som e-posten, med «Skriv e-post» som åpner e-postprogrammet. E-postkonto nr. 2 (akgolfgroup@gmail.com) kommer ikke inn i innboksen ennå; det krever en ny inntakskobling.
+
+- **A7 · AgencyOS pakke 7, 8, 10, 11:** (1) `/admin/tester/benchmarks` sender til AG-15 › Normer; normene fra Data Golf venter til A–K-tallene er vedtatt (anbefalingen i `resten.html`, vedtatt 16.10). (2) Bare head coach ser «Inviter coach» i Oppsett. (3) Gruppeanalysen (AG-A03) ligger i hver gruppe (`/admin/grupper/[id]/analyse`); `/admin/analyse` sender til Stall. (4) Økonomi viser de fem tjenestene med «—» til budsjett og Tripletex har fordelingen. (5) Jarvis-samtalen (AG-19) er bare for head coach, fordi `/api/caddie/*` krever ADMIN; AG-A08 Forslag er Innboks › Godkjenn, AG-A05 Datakvalitet lenkes til Drift og Dubletter. (6) Data Golf står i Drift for alle i AgencyOS (alle har coach-rolle); `/stats/pga*` og `/portal/analysere/datagolf` sender coach til `/admin/datagolf`, spiller avvises. DG-05–07 er ikke bygget; stasjonen brukes for innspill mot proff. (7) Pakke 11: sidene har nytt skall og sidehode, men skjemaene inni (ny spiller, ny gruppetrening, skoledata, eksterne lesere, inviter, Notion, e-postmaler) er de gamle. Tilgjengelighet er overlatt til A5.
 
 ## 7. Morgenrapport
 
