@@ -34,6 +34,7 @@ export function FlateRamme({
     <div className="fln" data-skall={skall} data-bred={bred ? "" : undefined} style={iSkall ? { minHeight: 0 } : undefined}>
       {!iSkall && (
         <div className="fl-konto-topp">
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- rammen brukes i loading.tsx og skal ikke dra inn next/link (CSP-nonce) */}
           <a href="/" aria-label="AK Golf HQ, til forsiden">
             {/* eslint-disable-next-line @next/next/no-img-element -- rammen er server-trygg uten next/image */}
             <img className="logo" src="/logos/logo-ak-golf-hq.svg" alt="AK Golf HQ" width={91} height={20} />
