@@ -8,7 +8,7 @@ Hver skjerm publiseres som privat Artifact til Anders, med «Dagens design»-kna
 | Pakke | Skjermer | Status | Lenke |
 |---|---|---|---|
 | 1 Grunnmur | `felles/felles.css`, `felles/felles.js`, dagens design for alle PH-skjermer | Ferdig 14.10 | — |
-| — | PH-01 I dag (utkast 4) | Utkast | https://claude.ai/artifact/8qmhVSf3pQ5L5xUpKuKTmP |
+| — | PH-01 I dag (utkast 4) | **Bygget (natt 17.10)**; port 7 på Anders' vegne (nattfullmakt) | https://claude.ai/artifact/8qmhVSf3pQ5L5xUpKuKTmP |
 | — | PH-16 Stats (utkast 1) | **Bygget (natt 17.10)**; port 7 på Anders' vegne (nattfullmakt) | https://claude.ai/artifact/4EfjmFK426xVYoPy5SzbBC |
 | 3 Plan og Workbench | PH-10, PH-11, PH-11-AR, -NY, -PER, -PERSKJEMA, -MND, -MNDSKJEMA, -MAL (+IUP), -GJENTA | **Godkjent 14.10** (port 7, Anders), utkast 2 i `plan.html` | https://claude.ai/artifact/BqJqEsLH34JGA8reJaWDWi |
 | 2 Treningsøkta | PH-03, PH-04, PH-05, PH-06, PH-07 (lyst tema også i Live, Anders 14.10), `treningsokt.html` | **Bygget (natt 17.10)**, utkast 1; port 7 på Anders' vegne (nattfullmakt) | https://claude.ai/artifact/Aa2FmsQCfzVb9KDeS5gxUQ |
