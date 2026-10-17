@@ -1,13 +1,6 @@
-import {
-  SkeletonHero,
-  SkeletonList,
-} from "@/components/shared/loading-skeleton";
+/* Lastetilstand i nytt design (pakke 16). PH24MegLaster har ingen "use client" (gotchas §Bygg og drift). */
+import { PH24MegLaster } from "@/components/portal/precision/PH24MegLaster";
 
 export default function UtfordringerLoading() {
-  return (
-    <div className="space-y-6">
-      <SkeletonHero />
-      <SkeletonList rows={5} />
-    </div>
-  );
+  return <PH24MegLaster tekst="Henter utfordringene …" />;
 }

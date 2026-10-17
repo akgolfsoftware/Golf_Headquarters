@@ -1,8 +1,8 @@
 /**
  * AgencyOS — Plan-hub (AG-14 i Precision Athletics, /admin/plan).
  *
- * Tegning: Claude Design 7d7c2994, ui_kits/agencyos/screens/AG-14.jsx
- * («Plan-hub, maler og øvelser»). Visningen er AG14PlanHub; lasteren er
+ * Nytt design (pakke 4, natt 17.10.2026): docs/design-system/utkast-agencyos/workbench.html,
+ * skjerm «AG-14 Maler og øvelser». Visningen er AG14PlanHubNy; lasteren er
  * hentPlanhub (src/lib/agencyos/planhub-data.ts).
  *
  * Én adresse for planarbeidet (MASTERPLAN 15.9): /admin/planlegge og
@@ -17,7 +17,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentPlanhub } from "@/lib/agencyos/planhub-data";
 import { erPlanhubFane } from "@/lib/agencyos/planhub-typer";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
-import { AG14PlanHub } from "@/components/admin/precision/AG14PlanHub";
+import { AG14PlanHubNy } from "@/components/admin/precision/AG14PlanHubNy";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Plan · AgencyOS" };
@@ -29,7 +29,7 @@ export default async function AdminPlanPage({ searchParams }: { searchParams: Pr
 
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
-      <AG14PlanHub data={data} startFane={erPlanhubFane(fane) ? fane : "ukemaler"} />
+      <AG14PlanHubNy data={data} startFane={erPlanhubFane(fane) ? fane : "ukemaler"} />
     </AgencyOSSkall>
   );
 }

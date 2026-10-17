@@ -1,7 +1,7 @@
-/** Prøvefil for AG-WB-FYS i coachens Workbench. Syntetiske data, ingen ekte spillere. */
+/** Prøvefil for AG-WB-FYS i coachens Workbench, nytt design. Syntetiske data, ingen ekte spillere. */
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { AdminRolleProvider } from "@/components/v2/rolle";
-import { AG11Fysisk } from "@/components/admin/precision/AG11Moduler";
+import { AG11FysiskNy } from "@/components/admin/precision/AG11ModulerNy";
 import { Feil, Laster } from "./AG-11";
 import { FYS, SPILLER, TOM_FYS } from "./_wb-data";
 
@@ -13,7 +13,7 @@ const actions = { opprettFysiskBlokk: ok, opprettFysiskOkt: ok, flyttFysiskOkt: 
 const Vis = ({ tom = false }: { tom?: boolean }) => (
   <AdminRolleProvider erAdmin>
     <AgencyOSSkall navn="Test Coach">
-      <AG11Fysisk playerId="p1" spillerNavn={SPILLER} data={tom ? TOM_FYS : FYS} actions={actions} />
+      <AG11FysiskNy playerId="p1" spillerNavn={SPILLER} data={tom ? TOM_FYS : FYS} actions={actions} />
     </AgencyOSSkall>
   </AdminRolleProvider>
 );
