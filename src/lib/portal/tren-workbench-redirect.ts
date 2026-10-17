@@ -26,11 +26,15 @@ const TESTER_KEEP =
  */
 const TREN_V2_BASE = /^\/portal\/tren\/(tester|turneringer)\/?$/;
 
+/** Én turnering (pakke 17, 17.10.2026): siden finnes og skal vises, ikke sendes til Workbench. */
+const EN_TURNERING = /^\/portal\/tren\/turneringer\/[^/]+\/?$/;
+
 export function workbenchRedirectForTrenPath(path: string): string | null {
   if (!path.startsWith("/portal/tren")) return null;
   if (SESSION_ID.test(path)) return null;
   if (TESTER_KEEP.test(path)) return null;
   if (TREN_V2_BASE.test(path)) return null;
+  if (EN_TURNERING.test(path)) return null;
   if (path.startsWith("/portal/tren/feiring")) return null;
 
   if (path === "/portal/tren" || path === "/portal/tren/") {
