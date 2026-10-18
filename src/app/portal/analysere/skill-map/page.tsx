@@ -1,7 +1,8 @@
 /**
- * PH16bSkillMap — Precision Athletics. Data og handlinger er beholdt.
- * Skill Map skjematisk hullskisse med Strokes Gained per område.
- * Kilde: ui_kits/playerhq/screens/PH-16b-skill-map.jsx (Runde 22, 28.09.2026).
+ * PlayerHQ · Skill map (/portal/analysere/skill-map) i nytt design (pakke 13, Stats resten).
+ * Fasit: docs/design-system/utkast-playerhq/stats-resten.html, malen «skillmap».
+ * Avvik:
+ *   - står øverst i PH16bSkillMap.tsx. ?pga=1 starter fortsatt på PGA Tour.
  */
 
 import { redirect } from "next/navigation";
@@ -9,6 +10,8 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { PH16bSkillMap } from "@/components/portal/precision/PH16bSkillMap";
 import { loadPH16Stats } from "@/lib/portal-analyse/load-ph16-stats";
+import { hentSgRunder } from "@/lib/portal-analyse/load-omrade";
+import { gruppeGrunnlag, periodeTekst, type SgGruppe } from "@/lib/portal-analyse/omrade-data";
 import { getUnreadNotifications } from "@/app/portal/actions";
 
 export const dynamic = "force-dynamic";
@@ -28,14 +31,20 @@ export default async function SkillMapPage({ searchParams }: SkillMapPageProps) 
   const resolvedParams = searchParams ? await searchParams : {};
   const pgaTour = resolvedParams.pga === "true" || resolvedParams.pga === "1";
 
-  const [data, uleste] = await Promise.all([
+  const [data, runder, uleste] = await Promise.all([
     loadPH16Stats(user.id, user.name),
+    hentSgRunder(user.id),
     getUnreadNotifications(user.id, 1),
   ]);
 
+  const grunnlag = Object.fromEntries((["tee", "innspill", "naer", "putt"] as const).map((g) => {
+    const x = gruppeGrunnlag(runder, g);
+    return [g, { antall: x.antall, periode: periodeTekst(x.fra, x.til) }];
+  })) as Record<SgGruppe, { antall: number; periode: string | null }>;
+
   return (
     <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste.count}>
-      <PH16bSkillMap data={data} pgaTour={pgaTour} />
+      <PH16bSkillMap data={data} grunnlag={grunnlag} pgaTour={pgaTour} />
     </PlayerHQSkall>
   );
 }

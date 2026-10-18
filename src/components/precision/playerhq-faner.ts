@@ -33,7 +33,7 @@ export function erAktivFane(path: string, href: string) {
   }
   // Analyse, gameplan, ny runde og gapping markerte Analyse.
   if (href === "/portal/analysere") {
-    return path === href || path.startsWith(href + "/") || path.startsWith("/portal/gameplan") || path.startsWith("/portal/mal/runder") || path.startsWith("/portal/mal/trackman");
+    return path === href || path.startsWith(href + "/") || path.startsWith("/portal/statistikk") || path.startsWith("/portal/gameplan") || path.startsWith("/portal/mal/runder") || path.startsWith("/portal/mal/trackman");
   }
   return path === href || path.startsWith(href + "/");
 }

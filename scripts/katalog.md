@@ -15,6 +15,7 @@ Generert med `npm run prosjekt:register`. Kategoriene er veivisere basert på na
 | Data / integrasjon — kan skrive eller sende | [scripts/add-follow-up-case-2026-09-23.ts](<add-follow-up-case-2026-09-23.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/add-group-period-axis-minutes-2026-10-14.ts](<add-group-period-axis-minutes-2026-10-14.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/add-month-plans-2026-10-14.ts](<add-month-plans-2026-10-14.ts>) |
+| Data / integrasjon — kan skrive eller sende | [scripts/add-pakke13-logg-okt-og-runde-deling-2026-10-18.ts](<add-pakke13-logg-okt-og-runde-deling-2026-10-18.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/add-period-axis-minutes-2026-10-14.ts](<add-period-axis-minutes-2026-10-14.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/add-player-daily-form-2026-09-28.ts](<add-player-daily-form-2026-09-28.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/add-restitusjon-periode-2026-09-28.ts](<add-restitusjon-periode-2026-09-28.ts>) |
@@ -101,6 +102,7 @@ Generert med `npm run prosjekt:register`. Kategoriene er veivisere basert på na
 | Verktøy / drift — les kontrakten før kjøring | [scripts/iup-local-run.mjs](<iup-local-run.mjs>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/koble-runder-til-baner-2026-08-16.ts](<koble-runder-til-baner-2026-08-16.ts>) |
 | Verktøy / drift — les kontrakten før kjøring | [scripts/laeringslogg-til-masterbrain.ts](<laeringslogg-til-masterbrain.ts>) |
+| Data / integrasjon — kan skrive eller sende | [scripts/lag-flater-ny-css.mjs](<lag-flater-ny-css.mjs>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/lag-topar-grunnlag-2026-08-30.ts](<lag-topar-grunnlag-2026-08-30.ts>) |
 | Verktøy / drift — les kontrakten før kjøring | [scripts/launch-preflight.mjs](<launch-preflight.mjs>) |
 | Verktøy / drift — les kontrakten før kjøring | [scripts/launch-verify-bundle.sh](<launch-verify-bundle.sh>) |
