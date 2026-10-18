@@ -15,6 +15,29 @@ export interface WangDgProff {
   norsk: boolean;
 }
 
+/** En norsk proff i en turnering som pågår (DG-08). Mangler et tall, er det null og vises som «—». */
+export interface WangDgLive {
+  id: string;
+  navn: string;
+  turnering: string;
+  plass: number | null;
+  tilPar: number | null;
+  /** REGISTERED | TEED_OFF | CUT | WITHDREW | FINISHED */
+  status: string;
+  thru: number | null;
+  runde: number | null;
+  hentet: Date | null;
+}
+
+/** «R2 · 14», «R2 · F» eller «—» når runden ikke er kjent. Røk cut og trakk seg står som ord. */
+export function liveRundeTekst(r: Pick<WangDgLive, "runde" | "thru" | "status">): string {
+  if (r.status === "CUT") return "Røk cut";
+  if (r.status === "WITHDREW") return "Trakk seg";
+  const runde = r.runde != null ? `R${r.runde}` : null;
+  const hull = r.thru == null ? null : r.thru >= 18 ? "F" : r.thru === 0 ? "Ikke startet" : String(r.thru);
+  return [runde, hull].filter(Boolean).join(" · ") || "—";
+}
+
 export type WangDataGolfData =
   | {
       side: "oversikt";
@@ -62,6 +85,7 @@ export type WangDataGolfData =
       side: "norske";
       spillere: { id: string; navn: string; resultater: { id: string; plass: number | null; tilPar: number | null; turnering: string; dato: Date }[] }[];
       kommende: { id: string; navn: string; dato: Date; tour: string | null }[];
+      live: WangDgLive[];
     }
   | { side: "kilde"; rader: { endepunkt: string; rader: number | null; status: number | null; feil: string | null; sist: Date | null }[] };
 

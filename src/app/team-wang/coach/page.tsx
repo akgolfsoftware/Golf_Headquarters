@@ -16,6 +16,7 @@ import type { WangOmraade } from "@/components/wang/WangAppSkall";
 import { kanSeDataGolf } from "@/lib/auth/datagolf-tilgang";
 import { hentWangDataGolf } from "@/app/team-wang/_data/wang-datagolf-data";
 import { dgSideFraFane } from "@/app/team-wang/_data/wang-datagolf-visning";
+import { hentWangAdminData } from "@/app/team-wang/_data/wang-admin-data";
 import {
   hentWangSamtykkeStatus,
   hentWangTesterData,
@@ -105,6 +106,9 @@ export default async function WangCoachPage({ searchParams }: WangCoachPageProps
     );
   }
 
+  // Invitasjoner og timeplanunntak bare for sportssjef (siden har alt sendt trener bort fra admin).
+  const admin = aktivtOmraade === "admin" ? await hentWangAdminData(gruppeId) : undefined;
+
   // Data Golf bare for coach-rollen (kanSeDataGolf), aldri for elever.
   const dgSide = aktivtOmraade === "konkurranse" ? dgSideFraFane(params.fane) : null;
   const dataGolf =
@@ -128,6 +132,7 @@ export default async function WangCoachPage({ searchParams }: WangCoachPageProps
       rolle={rolle}
       brukerNavn={bruker.name ?? undefined}
       tester={tester}
+      admin={admin}
       dataGolf={dataGolf}
       data={byggWangTrenerData(live, osloIdagIso(), osloNaaTid())}
     />

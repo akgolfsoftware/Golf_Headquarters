@@ -130,6 +130,44 @@ export async function hentNorskeResultater() {
   return { spillere, kommende };
 }
 
+/** `rounds` på en live-deltakelse fra `syncLiveLeaderboards`: hull spilt og runde. Ukjent form gir null. */
+export function lesLiveRunde(rounds: unknown): { thru: number | null; runde: number | null } {
+  const r = rounds && typeof rounds === "object" && !Array.isArray(rounds) ? (rounds as Record<string, unknown>) : {};
+  const tall = (v: unknown) => (typeof v === "number" && Number.isInteger(v) && v >= 0 && v <= 99 ? v : null);
+  return { thru: tall(r.thru), runde: tall(r.round) };
+}
+
+/**
+ * Norske proffer i spill nå (DG-08): deltakelser i turneringer som pågår, skrevet av live-jobben
+ * (`turneringer-live`, Data Golf live-tournament-stats, bare pga og opp). `hentet` er når stillingen
+ * sist ble hentet; den kan være eldre enn nå.
+ */
+export async function hentNorskeLive() {
+  const rader = await prisma.publicPlayerEntry.findMany({
+    where: {
+      player: { dataGolfId: { not: null }, country: "NO" },
+      tournament: { status: "IN_PROGRESS", leaderboardSnap: { is: { source: "DATAGOLF" } } },
+    },
+    orderBy: [{ position: { sort: "asc", nulls: "last" } }],
+    take: 40,
+    select: {
+      id: true, status: true, position: true, scoreToPar: true, rounds: true,
+      player: { select: { name: true } },
+      tournament: { select: { name: true, leaderboardSnap: { select: { fetchedAt: true } } } },
+    },
+  }).catch(() => []);
+  return rader.map((r) => ({
+    id: r.id,
+    navn: r.player.name,
+    turnering: r.tournament.name,
+    plass: r.position,
+    tilPar: r.scoreToPar,
+    status: r.status,
+    ...lesLiveRunde(r.rounds),
+    hentet: r.tournament.leaderboardSnap?.fetchedAt ?? null,
+  }));
+}
+
 export async function hentKilde() {
   const synk = await prisma.datagolfSyncState.findMany({ orderBy: [{ endpoint: "asc" }] }).catch(() => []);
   return synk.map((s) => ({ endepunkt: s.endpoint, rader: s.rowCount, status: s.lastStatus, feil: s.lastError ? "Siste synk feilet." : null, sist: s.lastSyncedAt }));

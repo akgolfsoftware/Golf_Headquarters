@@ -71,6 +71,9 @@ mock.module("@/app/team-wang/_data/wang-datagolf-data", {
     },
   },
 });
+mock.module("@/app/team-wang/_data/wang-admin-data", {
+  namedExports: { hentWangAdminData: async () => ({ invitasjoner: [], unntak: [] }) },
+});
 mock.module("@/app/team-wang/_data/wang-tester-data", {
   namedExports: {
     hentWangTesterData: async (_bruker: unknown, gruppeId: string) => {
