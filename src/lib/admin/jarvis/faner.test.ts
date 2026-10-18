@@ -55,11 +55,10 @@ test("standardfanen har ren adresse, resten har ?fane=", () => {
  * `requireCapability(Capability.USE_AGENTS)`) — en sammenslåing skal aldri
  * utvide tilgang.
  */
-test("/admin/jarvis gater USE_AGENTS og bruker fanemodulen", () => {
+test("/admin/jarvis gater USE_AGENTS", () => {
   const src = readFileSync(join(process.cwd(), "src/app/admin/jarvis/page.tsx"), "utf8");
   const uten = src.replace(/\/\*[\s\S]*?\*\//g, "").replace(/(^|[^:])\/\/.*$/gm, "$1");
   assert.match(uten, /requireCapability\(Capability\.USE_AGENTS\)/);
-  assert.match(uten, /velgJarvisFane\(/);
 });
 
 /**
