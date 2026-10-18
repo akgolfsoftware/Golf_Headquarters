@@ -7509,6 +7509,23 @@ model TnUttak {
   @@map("tn_uttak")
 }
 
+// Frist og antall plasser for én uttaksrunde (TN-05), satt av trener.
+// Én rad per gruppe og arrangement; uttakene per spiller står i TnUttak.
+// DDL: scripts/add-tn-uttaksrunde-2026-10-18.ts
+model TnUttaksrunde {
+  id           String    @id @default(cuid())
+  groupId      String
+  arrangement  String
+  frist        DateTime? @db.Date
+  plasser      Int?
+  reserver     Int?
+  updatedById  String
+  updatedAt    DateTime  @updatedAt
+
+  @@unique([groupId, arrangement])
+  @@map("tn_uttaksrunde")
+}
+
 // Lisens, helseattest og antidoping per spiller og år (TN-10, TN-02).
 // Bare statusdatoer. Ingen helseopplysninger lagres her.
 model TnSpillerstatus {

@@ -15,6 +15,7 @@ let ferdigeDeltakere = 0;
 let erMedlem = false;
 let harDelt = false;
 let statusSkrevet = 0;
+let sisteRunde: unknown = null;
 
 mock.module("@/lib/domain/tn-arbeidsflate", {
   namedExports: { hentTnArbeidskontekst: async () => kontekst },
@@ -50,6 +51,12 @@ mock.module("@/lib/prisma", {
       },
       groupMember: { findFirst: async () => (erMedlem ? { id: "m1" } : null) },
       tnSpillerstatus: { upsert: async () => { statusSkrevet += 1; return {}; } },
+      tnUttaksrunde: {
+        upsert: async (arg: unknown) => {
+          sisteRunde = arg;
+          return {};
+        },
+      },
     },
   },
 });
@@ -121,6 +128,33 @@ test("Uttak for en som ikke er spiller i gruppen avvises", async () => {
   kontekst = trener;
   const r = await lagreUttak(bruker, { spillerId: "fremmed", arrangement: "EM 2027", status: "UTTATT" });
   assert.deepEqual(r, { ok: false, feil: "Spilleren er ikke med i gruppen." });
+});
+
+test("Frist og plasser lagres på runden i trenerens gruppe, og tomme felt blir null", async () => {
+  const { lagreUttaksrunde } = await skriv();
+  kontekst = trener;
+  const r = await lagreUttaksrunde(bruker, { arrangement: "European Young Masters 2027", frist: "2026-11-01", plasser: "4", reserver: "2" });
+  assert.deepEqual(r, { ok: true, data: undefined });
+  const lagret = sisteRunde as { where: unknown; create: Record<string, unknown> };
+  assert.deepEqual(lagret.where, { groupId_arrangement: { groupId: "tn", arrangement: "European Young Masters 2027" } });
+  assert.equal((lagret.create.frist as Date).toISOString(), "2026-11-01T00:00:00.000Z");
+  assert.equal(lagret.create.plasser, 4);
+  assert.equal(lagret.create.reserver, 2);
+
+  await lagreUttaksrunde(bruker, { arrangement: "NM lag", frist: "", plasser: "", reserver: "" });
+  const tom = sisteRunde as { create: Record<string, unknown> };
+  assert.equal(tom.create.frist, null);
+  assert.equal(tom.create.plasser, null);
+  assert.equal(tom.create.reserver, null);
+});
+
+test("Frist og plasser: bare trener, og plasser må være et helt tall", async () => {
+  const { lagreUttaksrunde } = await skriv();
+  kontekst = { ...trener!, rolle: "ASSISTANT", kanAdministrere: false };
+  assert.equal((await lagreUttaksrunde(bruker, { arrangement: "EM 2027", plasser: "4" })).ok, false);
+  kontekst = trener;
+  assert.deepEqual(await lagreUttaksrunde(bruker, { arrangement: "EM 2027", plasser: "0" }), { ok: false, feil: "Antall plasser må være et helt tall fra 1 til 99." });
+  assert.equal((await lagreUttaksrunde(bruker, { arrangement: "EM 2027", plasser: "2.5" })).ok, false);
 });
 
 test("TO-04: helse- og lisensdata skrives bare når spilleren har delt profilen med treneren", async () => {

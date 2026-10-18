@@ -275,6 +275,40 @@ export async function slettUttak(bruker: TnBruker, id: string): Promise<TnSkrivR
   }, "Kunne ikke fjerne uttaket.");
 }
 
+// ── Frist og plasser per uttaksrunde (TN-05, nattkjøring 18.10.2026) ──
+
+const antall = (min: number, feil: string) =>
+  z.union([z.literal(""), z.coerce.number().int(feil).min(min, feil).max(99, feil)]).optional().transform((v) => (v === "" || v === undefined ? null : v));
+
+export const UttaksrundeSchema = z.object({
+  arrangement: tekst(200).min(1, "Skriv hvilket arrangement uttaket gjelder."),
+  frist: z.union([z.literal(""), dagStreng]).optional().transform((v) => (v ? v : null)),
+  plasser: antall(1, "Antall plasser må være et helt tall fra 1 til 99."),
+  reserver: antall(0, "Antall reserver må være et helt tall fra 0 til 99."),
+});
+
+/** «2026-11-01» → UTC-midnatt, som `@db.Date` lagrer (gotchas §Tid og datoer). */
+function dagTilDato(dag: string) {
+  const [a, m, d] = dag.split("-").map(Number);
+  return new Date(Date.UTC(a!, m! - 1, d!));
+}
+
+export async function lagreUttaksrunde(bruker: TnBruker, input: unknown): Promise<TnSkrivResultat> {
+  const parsed = UttaksrundeSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, feil: parsed.error.issues[0]?.message ?? "Ugyldige felt." };
+  const d = parsed.data;
+  return kjor(async () => {
+    const kontekst = await krevTrener(bruker);
+    const felt = { frist: d.frist ? dagTilDato(d.frist) : null, plasser: d.plasser, reserver: d.reserver, updatedById: bruker.id };
+    await prisma.tnUttaksrunde.upsert({
+      where: { groupId_arrangement: { groupId: kontekst.gruppe.id, arrangement: d.arrangement } },
+      create: { groupId: kontekst.gruppe.id, arrangement: d.arrangement, ...felt },
+      update: felt,
+    });
+    return undefined;
+  }, "Kunne ikke lagre frist og plasser.");
+}
+
 // ── Lisens, helseattest og antidoping (TN-10) ──
 
 export const LISENS_STATUS = ["BETALT", "UBETALT", "FRITAK"] as const;

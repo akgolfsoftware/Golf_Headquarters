@@ -48,11 +48,11 @@ function Etikett({ children }: { children: ReactNode }) {
   return <span style={{ fontFamily: TN.font.body, fontSize: 14, lineHeight: 1.3, fontWeight: 700, color: TN.ink900 }}>{children}</span>;
 }
 
-export function TnFelt({ etikett, navn, type = "text", standard, pakrevd, hint, plassholder, maks }: { etikett: string; navn: string; type?: "text" | "date" | "time" | "datetime-local" | "email"; standard?: string; pakrevd?: boolean; hint?: string; plassholder?: string; maks?: number }) {
+export function TnFelt({ etikett, navn, type = "text", standard, pakrevd, hint, plassholder, maks }: { etikett: string; navn: string; type?: "text" | "date" | "time" | "datetime-local" | "email" | "number"; standard?: string; pakrevd?: boolean; hint?: string; plassholder?: string; maks?: number }) {
   return (
     <label style={{ display: "flex", flexDirection: "column", gap: 6, minWidth: 0 }}>
       <Etikett>{etikett}</Etikett>
-      <input name={navn} type={type} defaultValue={standard} required={pakrevd} placeholder={plassholder} maxLength={maks} style={{ ...feltStil, fontFamily: type === "text" || type === "email" ? TN.font.body : TN.font.mono }} />
+      <input name={navn} type={type} defaultValue={standard} required={pakrevd} placeholder={plassholder} maxLength={maks} inputMode={type === "number" ? "numeric" : undefined} min={type === "number" ? 0 : undefined} step={type === "number" ? 1 : undefined} style={{ ...feltStil, fontFamily: type === "text" || type === "email" ? TN.font.body : TN.font.mono }} />
       {hint ? <span style={{ fontSize: 13, color: TN.ink500 }}>{hint}</span> : null}
     </label>
   );
