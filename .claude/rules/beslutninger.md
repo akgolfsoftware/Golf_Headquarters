@@ -4,7 +4,21 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
-## WANG-SKJERMENE BRUKER BARE WANGS EGNE BILDER (Anders 18.10.2026, bindende)
+## TEAM NORWAY OG WANG FÅR INGEN EGNE LANDINGSSIDER, OG INNLOGGING SKJER FRA AKGOLF (Anders 18.10.2026, bindende)
+
+Anders 18.10: «Vi trenger ikke landing sider for disse. Innlogging gjøre fra akgolf.»
+
+- **Ingen markeds- eller landingssider for Team Norway og WANG.** Markedssidene (73 sider, 58 filer med `marketing/v2`) gjelder bare AK Golf.
+- **Innlogging skjer fra AK Golf HQ** (`/auth/login`, Google eller e-post og passord, §INNLOGGING BARE MED GOOGLE OG PASSORD). Trenere lander på sin flate etter innlogging (demokontoene: #1359).
+- **Sperren «landingssidene venter til TN og WANG er ferdige» (Anders 18.10) er opphevet.**
+- Den åpne fellessiden `/team-wang` er en egen avgjørelse (§WANG I AK GOLF HQ ER BARE FOR SPORTSSJEF OG TRENER, punkt 2) og røres ikke av denne.
+
+**Overstyrer:** «Landingssidene venter til Team Norway og WANG er ferdige» (muntlig 18.10, i sesjonsminnet).
+
+**Arbeidet dette utløser:**
+
+1. **Markedssidene starter nå**, uavhengig av TN og WANG, sammen med BK-02/03 og e-postene EP-01–06. Ferdig når kartlegging og plan er lagt fram for Anders.
+2. **Åpent, ikke avgjort:** `/team-wang` har egne innloggingssider (`src/app/team-wang/logg-inn/`, `src/app/team-wang/app/logg-inn/`), og `src/proxy.ts:256` sender uinnloggede dit i stedet for til `/auth/login`. Skal de byttes mot `/auth/login`, eller gjelder beslutningen bare markedssider? Svar fra Anders før noe endres.
 
 Anders 18.10: «Det er viktig at alle Wang skjermene bruker Wang bilder fra Wang toppidrett design systemet.»
 
