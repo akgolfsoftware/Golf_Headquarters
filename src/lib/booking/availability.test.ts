@@ -20,6 +20,7 @@ type Tjeneste = {
 
 let tjeneste: Tjeneste;
 let bookinger: Array<{ coachId: string; serviceTypeId: string; startAt: Date; endAt: Date; plassNr: number }> = [];
+let hendelser: Array<{ coachId: string | null; startAt: Date; endAt: Date }> = [];
 
 mock.module("@/lib/google-calendar", {
   namedExports: { getCalendarBusy: async () => ({ ok: true, busy: [] }) },
@@ -45,7 +46,7 @@ mock.module("@/lib/prisma", {
         ],
       },
       booking: { findMany: async () => bookinger },
-      calendarEvent: { findMany: async () => [] },
+      calendarEvent: { findMany: async () => hendelser },
     },
   },
 });
@@ -98,6 +99,15 @@ function klokkeslett(slots: Array<{ start: Date }>): string[] {
 test.beforeEach(() => {
   tjeneste = standard();
   bookinger = [];
+  hendelser = [];
+});
+
+test("en fridag (heldags kalenderhendelse for coachen) gir ingen luker", async () => {
+  const dag = dagFram(3);
+  const neste = new Date(dag);
+  neste.setDate(neste.getDate() + 1);
+  hendelser = [{ coachId: "coach-a", startAt: dag, endAt: neste }];
+  assert.equal((await getAvailableSlots("svc", dag)).length, 0);
 });
 
 test("uten buffer tilbys lukene rett før og rett etter en booking", async () => {
