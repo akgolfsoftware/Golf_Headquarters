@@ -6,6 +6,8 @@ import { ArrowLeft } from "lucide-react";
 /**
  * Felles byggeklosser for WANG-trenerflaten, pakke 3–10 (utkast 2, godkjent 16.10.2026).
  * Fasit: docs/design-system/utkast-wang/felles/wang.css (.faner, .baand, .elevrad, .helt).
+ * Avvik:
+ *   - Ingen egne: byggeklossene viser bare det skjermene sender inn. Avvikene står i hver skjerm.
  */
 
 export type WangAkse = "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN";
