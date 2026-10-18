@@ -43,13 +43,14 @@ export type TnAktivSide =
   | "lisens"
   | "apparatet"
   | "analyse"
+  | "datagolf"
   | "workbench";
 
 function lenke(label: string, href: string, id: TnAktivSide, aktiv: TnAktivSide): TnMenyLenke {
   return { label, href, aktiv: aktiv === id };
 }
 
-type MenyValg = { aktiv: TnAktivSide; groupId?: string; visTrenerflater: boolean; kanAdministrere: boolean };
+type MenyValg = { aktiv: TnAktivSide; groupId?: string; visTrenerflater: boolean; kanAdministrere: boolean; visDataGolf?: boolean };
 
 /**
  * Sidemenyen i seks grupper (fasit: «Team Norway App delivery», runde 26.09).
@@ -57,7 +58,7 @@ type MenyValg = { aktiv: TnAktivSide; groupId?: string; visTrenerflater: boolean
  * eller admin. Tomme grupper tas bort. Spillerprofil står ikke i menyen:
  * den krever en valgt spiller og nås fra Spillerutvikling.
  */
-export function tnHovedmeny({ aktiv, groupId, visTrenerflater: t, kanAdministrere }: MenyValg): TnMenyGruppe[] {
+export function tnHovedmeny({ aktiv, groupId, visTrenerflater: t, kanAdministrere, visDataGolf }: MenyValg): TnMenyGruppe[] {
   const grupper: Omit<TnMenyGruppe, "aktiv">[] = [
     {
       id: "daglig",
@@ -88,9 +89,7 @@ export function tnHovedmeny({ aktiv, groupId, visTrenerflater: t, kanAdministrer
         ? [
             lenke("Uttak og kriterier", "/team-norway/uttak", "uttak", aktiv),
             lenke("Rangliste", "/team-norway/rangliste", "rangliste", aktiv),
-            // DataGolf-lenken er fjernet: Data Golf er bare for coach og admin
-            // (Anders 09.10.2026), og TN-menyen vises også for trenere uten
-            // coach-rolle. Coacher når Data Golf fra PlayerHQ/AgencyOS.
+            // Data Golf ligger under Plan og fag, og vises bare for coach og admin (Anders 09.10.2026).
           ]
         : [],
     },
@@ -106,6 +105,8 @@ export function tnHovedmeny({ aktiv, groupId, visTrenerflater: t, kanAdministrer
               lenke("Referansenivåer", "/team-norway/referansenivaer", "referansenivaer", aktiv),
               lenke("Fagapparat", "/team-norway/fagapparat", "fagapparat", aktiv),
               lenke("Analyse", "/team-norway/analyse", "analyse", aktiv),
+              // Data Golf er bare for coach og admin (Anders 09.10.2026), ikke alle TN-trenere.
+              ...(visDataGolf ? [lenke("Data Golf", "/team-norway/datagolf", "datagolf", aktiv)] : []),
             ]
           : []),
       ],
@@ -167,6 +168,7 @@ export function TnShell({
   groupId,
   visTrenerflater,
   kanAdministrere,
+  visDataGolf = false,
   flate = "standard",
   tilbake,
   children,
@@ -177,6 +179,8 @@ export function TnShell({
   groupId?: string;
   visTrenerflater: boolean;
   kanAdministrere: boolean;
+  /** Menypunktet Data Golf. Settes av sider på serveren som har spurt datagolf-porten (bare coach og admin). */
+  visDataGolf?: boolean;
   /**
    * «full» dropper innholdsmarg og maksbredde for skjermer som har sin egen
    * flate — i dag bare liste/detalj på Trenere og tilgang. Skinnen, menyen,
@@ -188,7 +192,7 @@ export function TnShell({
   tilbake?: { href: string; label: string };
   children: ReactNode;
 }) {
-  const valg = { aktiv, groupId, visTrenerflater, kanAdministrere };
+  const valg = { aktiv, groupId, visTrenerflater, kanAdministrere, visDataGolf: visTrenerflater && visDataGolf };
   const grupper = tnHovedmeny(valg);
   return (
     <div className={s.skall}>

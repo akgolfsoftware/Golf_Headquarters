@@ -6,15 +6,19 @@ import { byggManedsplan, dagnokkel, manedsvindu, type TnHendelse, type TnPlanDag
 import { TN } from "@/lib/v2/team-norway";
 import { TnEtikett, TnFilterknapper, type TnFilterValg, TnFlate, TnFotnote, TnMangler, TnSkjermhode } from "../tn-flate";
 import { TnKnapperekke } from "../tn-handlinger";
+import { TnHelt, TnHeltKnapper, TnHeltSporsmaal, TnHeltTall, TnHeltTekst, TnHeltTellere } from "../tn-stall";
 import { TnOktSkjema, TnSlettOkt, type TnOktVerdier } from "../tn-redigering-skjema";
 import { MANEDER_LANG, SkjermRamme, heltallParam, hentSkjermbruker, osloDag, medDato } from "./felles";
 import pl from "./tn-plan.module.css";
 
 /**
- * TN-11 Månedsplan.
+ * TN-11 Månedsplan. Utkast 2, retning B (godkjent 16.10.2026).
  * Fasit: docs/design-system/utkast-tn/plan-fag.html, skjerm Månedsplan (pakke 5).
  *
  * Avvik:
+ *   - Helteflaten viser hvor mange økter, turneringsdager og samlingsdager som er lagt inn.
+ *     Timer per akse per uke og lett uke finnes ikke i datamodellen, så fordelingen på
+ *     aksene og de stablede ukesøylene er ikke med.
  *   - Frister har ingen datamodell. Tallet og forklaringen sier det, i stedet
  *     for å vise 0 som om ingen frister fantes.
  *   - Månedsvalget viser inneværende og neste måned, som i fasiten, men
@@ -238,7 +242,6 @@ export async function TnManedsplanSkjerm({ sokeparametre }: { sokeparametre: Rec
   return (
     <SkjermRamme aktiv="manedsplan" brukerNavn={bruker.name} kontekst={data.kontekst}>
       <TnSkjermhode overlinje={`${data.kontekst.gruppe.name} · ${MANEDER_LANG[maned - 1]!.toLowerCase()} ${aar}`} tittel="Månedsplan" ingress={`Gruppens økter for ${MANEDER_LANG[idag.maned - 1]!.toLowerCase()} og ${MANEDER_LANG[neste.maned - 1]!.toLowerCase()}. Båndene viser hvilken periode hver uke tilhører.`}
-        handling={data.kontekst.kanAdministrere ? <TnOktSkjema knapp="Ny økt" standardDato={valgtNokkel} /> : undefined}
       />
 
       <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: 12 }}>
@@ -250,19 +253,26 @@ export async function TnManedsplanSkjerm({ sokeparametre }: { sokeparametre: Rec
 
       <Tegnforklaring />
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 150px), 1fr))", gap: 1, background: TN.ink200, border: `1px solid ${TN.ink200}` }}>
-        {[
-          ["Økter", String(tall.okter)],
-          ["Turneringsdager", String(tall.turneringsdager)],
-          ["Samlingsdager", String(tall.samlingsdager)],
-          ["Frister", "—"],
-        ].map(([etikett, verdi]) => (
-          <div key={etikett} style={{ background: TN.white, padding: "14px 16px", minWidth: 0 }}>
-            <div style={{ fontFamily: TN.font.mono, fontWeight: 500, fontSize: 30, lineHeight: 1.05, color: TN.navy900, fontVariantNumeric: "tabular-nums" }}>{verdi}</div>
-            <TnEtikett style={{ marginTop: 4 }}>{etikett}</TnEtikett>
-          </div>
-        ))}
-      </div>
+      <TnHelt
+        etikett="Månedsplan"
+        venstre={
+          <>
+            <TnHeltSporsmaal>{`Hva er lagt inn i ${MANEDER_LANG[maned - 1]!.toLowerCase()}?`}</TnHeltSporsmaal>
+            <TnHeltTall verdi={tall.okter}>{tall.okter === 1 ? "økt" : "økter"}</TnHeltTall>
+            <TnHeltTekst>Gruppens egne økter. Turneringer og samlinger kommer i tillegg. Frister kan ikke registreres i AK Golf HQ ennå.</TnHeltTekst>
+            {data.kontekst.kanAdministrere ? <TnHeltKnapper><TnOktSkjema knapp="Ny økt" variant="hvit" standardDato={valgtNokkel} /></TnHeltKnapper> : null}
+          </>
+        }
+        hoyre={
+          <TnHeltTellere
+            tall={[
+              { verdi: tall.okter, tekst: "økter" },
+              { verdi: tall.turneringsdager, tekst: "turneringsdager" },
+              { verdi: tall.samlingsdager, tekst: "samlingsdager" },
+            ]}
+          />
+        }
+      />
 
       {tomMaaned ? (
         <TnFlate>
