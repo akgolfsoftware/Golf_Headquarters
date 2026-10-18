@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "native-utganger-kilderettet-avgrenset-ui-kontroll",
+  "export": {
+    "zipName": "AK Golf Precision Athletics (34).zip",
+    "zipSha256": "63cc09ffa4b16a2ddc18d7f19dd5a376f5871468563e6de8d440bd2305876080",
+    "fileCount": 607,
+    "exportedAt": "2026-10-01T03:35:32.673578+00:00",
+    "exportRoot": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-native-utganger",
+    "status": "native-utganger-afgraenset-mellomkontroll"
+  },
+  "syntax": {
+    "scripts": 306,
+    "inline": 63,
+    "inlineIncludedInScripts": true,
+    "syntax_errors": 0,
+    "errors": []
+  },
+  "modelEvidenceReused": {
+    "modelSha256": "536f94e4e28fea326bcdc68cf90c90943695ef4b6f1b022d71df16ecab588295",
+    "sameAsExport": 33,
+    "total": 77,
+    "pass": 77,
+    "fail": 0,
+    "skip": 0,
+    "error": 0,
+    "runnerSha256": "71afc9739ac3d82c01c86e9e0cc5803442160dcf01f5c05f1a5ad7a7ccd030f7",
+    "boundary": "Samme modellbytes, avgrenset modellbevis; ikke UI/app/DB."
+  },
+  "ownNative": {
+    "checks": 22,
+    "failures": 0,
+    "proofSha256": "64a0ccab1482fb7a8edb5304bb472e77a51207396f8584fc762d32084881f622",
+    "scope": "AG/PH ukevelger, eget grunnlag, Opprett, kvotefeil/retry til faktisk U51, månedsliste-reset feil/retry/reload med budsjett+minutter.",
+    "limits": [
+      "To perioder etablert direkte som uttrykkelig merket fixture.",
+      "Ikke native mndvelger/rediger-uke/maanedvalg/nestedinnsetting/turnering i denne prøven.",
+      "Månedsliste-reset har ingen importert TEK-ref i oppsettet.",
+      "Påstand én fysisk save+navwrite er ikke assertet; feildebug beregner trace uten å sjekke. Liste-reset har faktisk én-write-assert. Korrektert trace bestilt; modellbatch én-write består."
+    ]
+  },
+  "sourceDelta": {
+    "allFormer32BypassesGuarded": true,
+    "anchors": [
+      "WB3-lokal.jsx4 GG i felles omfang",
+      "WB3-lokal.jsx87–88/98 selects og ukeinngang",
+      "WB3-lokal.jsx99–100 grunnlagsvalg",
+      "WB3-lokal.jsx118–122 nested innsetting/ytreAvbryt",
+      "WB3-lokal.jsx128 Opprett",
+      "WB3-turn.jsx63 turneringsutganger"
+    ],
+    "scope": "Kun tidligere påviste konkrete bypass, ikke alt-i-hele-Workbench."
+  },
+  "active": "Eksplisitt månedsgrunnlagvisning og faktisk månedsel/valgreise. Nested/turneringsprøver følger i TP/årjobber.",
+  "resources": "Egen fane1416028652 og server62330 lukket.",
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false
+}

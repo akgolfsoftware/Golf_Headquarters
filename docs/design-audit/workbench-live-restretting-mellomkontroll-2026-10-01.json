@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "aktiv-retting-ikke-sluttreise",
+  "export": {
+    "zipName": "AK Golf Precision Athletics (27).zip",
+    "zipSha256": "33c59a41f6c8989bbc40537d94124ededfc5c4fcb3de022858d144d0b651e32f",
+    "fileCount": 601,
+    "exportedAt": "2026-10-01T02:05:18.162025+00:00",
+    "exportRoot": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-live-restretting",
+    "status": "aktiv-retting-mellomkontroll-ikke-ferdig"
+  },
+  "syntax": {
+    "scripts": 300,
+    "inline": 57,
+    "inlineIncludedInScripts": true,
+    "syntax_errors": 0,
+    "errors": []
+  },
+  "modelEvidenceReused": {
+    "sourceSha256": "7dce6188eb585ecb7773a01bf67c6870f34b489e78eea8bc556905fa6aea27e8",
+    "sameAsExport": 26,
+    "cases": 63,
+    "pass": 63,
+    "fail": 0,
+    "skip": 0,
+    "error": 0,
+    "scope": "Samme wb-model bytes; ingen ny modellkjøring eller større UI-bevis påstått"
+  },
+  "observedCloudUi": {
+    "page": "wb-pub-live2-repro.html",
+    "checks": 12,
+    "failures": 1,
+    "failure": "mangler skala Kvalitet3",
+    "limitation": "Aktiv prøve under retting, ingen egen lokal kjøring eller fullreiseteller"
+  },
+  "sourceDelta": {
+    "corrected": [
+      "Primær økt-ID separat cacheKey",
+      "Tom drillstart-vakt",
+      "FYS starter uten ferdige sett/usatt last/0 faktisk tid",
+      "Ingen publisert LS/LFY-demo eller oppdiktet receipt",
+      "Fersk PH03/golfStart"
+    ],
+    "partial": [
+      "FYS per-serieverdier finnes i receipt men mangler i lagret separat resultatsnapshot",
+      "Bare før-media, video behandles som bilde og toast",
+      "FYSStart fra Workbench mangler fersk pubkontroll"
+    ],
+    "notReached": [
+      "TURN/SPILL til konkret planlagt RD-rute"
+    ],
+    "renderFailure": {
+      "source": "ui_kits/playerhq/screens/PH-live.jsx:145",
+      "cause": "F(x.min||0) bruker senere deklarert F og udefinert x; golf evaluerer inaktiv FS-beregning",
+      "scope": "Reell PH07-renderfeil, ikke feil testselektor"
+    },
+    "fixesSent": true,
+    "limitation": "Kun kildeanalyse av oppgitte delta26funn, ingen ny native fullreise"
+  },
+  "queuedNext": "Fullført PH/Live først; deretter TEK/antall/år/vakter og eksplisitt månedsgrunnlag",
+  "remaining": [
+    "Full native golf/FYS/runde/medie-/feil-/returreise",
+    "TEK og års-/antallsreise",
+    "Gammel TP-modernisering",
+    "Visuell konsistens og øvrige knapper",
+    "Sluttregister/katalog/arkiv/frosset byggepakke"
+  ],
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false
+}

@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "bekreftet-arsvolum-dekningsfeil64-retting-bestilt",
+  "sourceExport": 64,
+  "testFile": "ui_kits/wb-arsdekning-repro.html",
+  "testSha256": "f548d22f0d87736fcafa1fa30ecc989ea9b5cb6cabb0e8d1068b525defdb2b02",
+  "ownProbe": {
+    "checks": 17,
+    "failures": 4,
+    "proofSha256": "42d9c1fbb28630da4c53c7673cb74013290d326fd54fb4185925c6a46c43dbf1",
+    "nativeOnly": true,
+    "modelWrites": false,
+    "coverage": [
+      "Tomårsplan07.12.2026–17.01.2027 opprettet med faktiske knapper",
+      "U50TEK2/FYS0 og egne minutterFYS0/SLAG30/øvrignull",
+      "Alle6uker åpnet, U53eksplisitt egetgrunnlag, faktisk år/volum/måned/ukeretur",
+      "Ingen øktoppretting, automatiskfordeling eller proratering"
+    ],
+    "failuresDescription": [
+      "TEKkjentdelsum2 uten synlig5av6manglendeuker",
+      "FYS0uten kjentdekning5av6mangler",
+      "Treusatteakseruten6av6mangler",
+      "Separat minuttbudsjett og dekning ikke synlig"
+    ]
+  },
+  "resources": "Egenfane1416028712 og server22864/8794 lukket.",
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false,
+  "next": "Inkluder eksakt17prøve i WBvisuell jobb; rettsynligdata og bevar negativedekking."
+}

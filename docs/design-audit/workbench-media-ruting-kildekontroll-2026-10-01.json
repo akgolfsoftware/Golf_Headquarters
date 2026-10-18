@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "sourceExport": 30,
+  "status": "mediaruting-delvis-koblet-innlasting-ikke-bevist",
+  "sourceCorrected": [
+    "PH05 har separate Før/Etter-knapper; manglende URL deaktiverer kontroll.",
+    "Adapter beholder navn/type/dato/URL og teknisk kilderevisjon fra valgt snapshot."
+  ],
+  "remaining": [
+    "PH04 har bare oversikt, ingen mediahandling.",
+    "URL sendes til ekstern fane; faktisk innlasting/avspilling eller popup-/filfeil ikke kontrollert.",
+    "Retur ved å lukke ekstern fane, ingen egen avbryt-/returkontroll.",
+    "Drill/oppgave/plan-ID ikke eksplisitt bundet til mediekontroll.",
+    "Legg til egen video viser bare Kamera åpnet-toast."
+  ],
+  "sourceAnchors": [
+    {
+      "file": "ui_kits/playerhq/screens/PH-live.jsx",
+      "lines": [
+        32,
+        36,
+        86,
+        87
+      ]
+    },
+    {
+      "file": "ui_kits/_shared/WB3-pub.jsx",
+      "line": 11
+    },
+    {
+      "file": "ui_kits/wb-pub-live3-repro.html",
+      "lines": [
+        24,
+        27
+      ]
+    }
+  ],
+  "testBoundary": "Cloudprøve erstatter window.open og sjekker URL; beviser ruting, ikke media-innlasting. Ingen egen UI-prøve av medieavspilling.",
+  "appChanged": false,
+  "visualApproval": false
+}

@@ -1,0 +1,141 @@
+{
+  "status": "mellomkontroll-ikke-frosset-ikke-godkjent",
+  "checked_at": "2026-09-30T22:09:18.635150+02:00",
+  "zip_sha256": "a95ca73e46adb8b83e7def9e04d7556a87df7341f2d50a2301c92664660c9ffc",
+  "export_files": 588,
+  "sources": [
+    {
+      "file": "ui_kits/_shared/wb-model.js",
+      "sha256": "474a34577c6c44eb2a3bdc87ec734029f0fe59cde40b779da3506b1a77bdb999"
+    },
+    {
+      "file": "ui_kits/_shared/WB3-kal.jsx",
+      "sha256": "fc98eefd44f53433402bca52bb6f7f3f9430b54d6e3f408419e402db7d4a0e91"
+    },
+    {
+      "file": "ui_kits/_shared/WB3-lokal.jsx",
+      "sha256": "1d3a72f94c9ed10fff7aceec95383780093f2a374bb7367c53d921acf02b56f9"
+    },
+    {
+      "file": "ui_kits/_shared/WB3-okt.jsx",
+      "sha256": "f5c79fa22c3d315739130ac64e8691879438eb7860054e8facac60870ec4631d"
+    },
+    {
+      "file": "ui_kits/_shared/WB3-turn.jsx",
+      "sha256": "84d40d63e6ad1778b11870924cac3407d38ba1d7915cec836f4199beeefcdcfd"
+    },
+    {
+      "file": "ui_kits/wb1-reise.html",
+      "sha256": "f652b6b87a1a2b63ffba252fce61d0ac14a4d1e69c2de13aea645e18ecca37ee"
+    },
+    {
+      "file": "ui_kits/wb1-test.html",
+      "sha256": "dc687e8bec9ba9b3dca62bd0b881e9e9771a5c5de876cf8fc6f61c59bd61e48b"
+    }
+  ],
+  "syntax": {
+    "total_scripts_including_inline": 288,
+    "inline_subset": 50,
+    "errors": 0
+  },
+  "cloud_reported": {
+    "model_checks": 54,
+    "model_errors": 0,
+    "ui_checks": 346,
+    "ui_errors": 0
+  },
+  "own_isolated_model": {
+    "runner_sha256": "1012c33e3ae27d36fe61f913a944aea984d2321e95017f6c04924e9bc70e5cb2",
+    "model_sha256": "474a34577c6c44eb2a3bdc87ec734029f0fe59cde40b779da3506b1a77bdb999",
+    "counts": {
+      "PASS": 14,
+      "FAIL": 1,
+      "SKIPPED": 0,
+      "ERROR": 0
+    },
+    "cases": [
+      {
+        "id": "outside-year-session",
+        "status": "PASS"
+      },
+      {
+        "id": "fresh-request-and-retry",
+        "status": "PASS"
+      },
+      {
+        "id": "partial-bank-atomicity",
+        "status": "PASS"
+      },
+      {
+        "id": "partial-template-new-session-atomicity",
+        "status": "PASS"
+      },
+      {
+        "id": "turn-unplan-replan-undo",
+        "status": "PASS"
+      },
+      {
+        "id": "round-session-date-guard",
+        "status": "PASS"
+      },
+      {
+        "id": "round-session-axis-guard",
+        "status": "PASS"
+      },
+      {
+        "id": "round-null-time-consistency",
+        "status": "PASS"
+      },
+      {
+        "id": "entry-date-change-existing-round-guard",
+        "status": "PASS"
+      },
+      {
+        "id": "stale-round-planning-guard",
+        "status": "FAIL",
+        "error": "Ugyldig handling ble godtatt"
+      },
+      {
+        "id": "dominant-axis-and-null-zero-budget",
+        "status": "PASS"
+      },
+      {
+        "id": "technical-snapshot-clone",
+        "status": "PASS"
+      },
+      {
+        "id": "technical-source-mismatch-atomicity",
+        "status": "PASS"
+      },
+      {
+        "id": "technical-publication-versus-task-revision",
+        "status": "PASS"
+      },
+      {
+        "id": "save-failure-no-session-mutation",
+        "status": "PASS"
+      }
+    ],
+    "not_ui_or_app_evidence": true
+  },
+  "own_ui_journey": {
+    "checks": 346,
+    "errors": 0,
+    "origin": "fresh-local-origin-127.0.0.1:8778",
+    "evidence": "private-export-root/egen-reisekjoring.txt",
+    "scope": "Begge prototypeverter, første kalenderetappe. Senere restjobb/namespace/grid ikke kontrollert i denne eksporten."
+  },
+  "issues": [
+    {
+      "id": "stale-round-planning-guard",
+      "method": "planRounds",
+      "status": "bestilt-ikke-verifisert",
+      "finding": "Gammel rundereferanse utenfor deltakelsens aktuelle datoer kan fortsatt planlegges; avvis hele handlingen uten mutasjon."
+    },
+    {
+      "id": "remaining-ui-and-test-isolation",
+      "status": "aktiv-skyretting",
+      "finding": "Flytt-økt dato/tid-UI, TURN-reise/fjerning/angre/rammebevis, desktopklokkeskala og full testnamespace gjenstår fra første kalenderjobb."
+    }
+  ]
+}

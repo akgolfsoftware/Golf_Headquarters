@@ -1,0 +1,193 @@
+{
+  "date": "2026-10-01",
+  "status": "kildekontroll-bestilling-krever-presisering",
+  "scope": "Eksport73 og avgrenset privat bestilling for runde, melding og egen media. Bare kilde- og dokumentkontroll; ingen UI-, sky-, modell- eller backendkjøring.",
+  "export": {
+    "version": 73,
+    "zipSha256": "4dc2c70cd0432deb5bd9d03e3a03f44a8dda7dc7fbedbb508f1e62fda29b1c91",
+    "zipEntries": 640,
+    "extractedFiles": 639,
+    "portable": false,
+    "final": false,
+    "receipt": "privat-bevis:eksport73-kvittering",
+    "receiptSha256": "2f500938c1b896a6765c619e9a283710a535c55f8b4b030c5b733138bd777c9d",
+    "caseCollision": "Gjennomgangsalias med forskjellig store/små bokstaver; ingen opprydding utført her."
+  },
+  "authority": {
+    "designFile": "docs/design-system/design-autoritet.md",
+    "ownDesignSha256": "39e5ba0b2795764f309cfa60c966f545704d52009c678e7ec86bf69fe7ce6c6b",
+    "currentMainDesignSha256": "aad75fc69c6138b1c5318646d4e6c4f775bdde36b7f61d98589e5ef829d3f839",
+    "masterFile": "docs/treningsplanlegging.md",
+    "currentMasterSha256": "baca89953dcf8e0fb61a39483dd931b9067f73a4304e1c0003b535dcb228f094",
+    "rules": [
+      "Precision Athletics; grafitt primær, rust som signal, lyst standard og nattema for Live/slag ute. Bruk eksisterende komponenter.",
+      "Master:146/732 brutto, aldri netto; :272–276 bekreftet lagring/deling med presis mottaker; ingen falsk sendt-status.",
+      "Master:472–474 TURN beholder turnering/runde/bane/forberedelse/mål/fokus/evaluering, forslag er ikke tvang; :547 bane/tee/hull/antall/start/rundetype."
+    ]
+  },
+  "prompt": {
+    "evidence": "privat-bevis:runde-melding-media-bestilling",
+    "sha256": "0f7b1a176aad32345724cddc6e05f4170195af8332ed35b9d85f55c85e3220e6",
+    "verdict": "Riktig retning og trygg prototypeavgrensning, men ikke tilstrekkelig som entydig ferdig bestilling uten presiseringene nedenfor.",
+    "alreadyClear": [
+      "Ingen ekte utsendelse, opplasting, app- eller databaseendringer.",
+      "Anonyme syntetiske prøver, stabile kontroll-IDer, faktiske knapper og ærlig feil/retry.",
+      "Brutto score, faktisk CSV-lesing og ingen duplikater; bevare andre eieres skjermer."
+    ],
+    "recommendedDelivery": "Tre avgrensede delleveranser: melding med eksplisitt retry; manuell runde med CSV; egen media. Samme visuelle system, og separat kort native bevis/knappregister for hver. Ikke utvid til SG-beregning eller redesign av eksisterende publisert runde."
+  },
+  "findings": [
+    {
+      "id": "RMM-01",
+      "area": "Meldingsinngang fra tom økt",
+      "anchors": [
+        "playerhq/screens/PH-03.jsx:39,54",
+        "_shared/WB3-pub.jsx:26,30–31"
+      ],
+      "controls": [
+        "Send melding til coach (legacy)",
+        "Publisert tom økt (effektiv Ark-gren)"
+      ],
+      "actual": "Legacy EmptyState har ingen onAction/CID. Publisert PH-03 rendres av WB3_PUB.Ark ved PHQ_SEL.pub/view03; den viser bare oppfordring om å be coach, deaktivert Start og Tilbake.",
+      "missing": "Koble meldingsinngang i begge relevante grener til PH-21. Ark må bære valgt publicationId/publishedRev/sessionId/planId og sel.returnTo; ingen erstatningsøkt eller demo.",
+      "suggestedControlIds": [
+        "ph03-melding-coach",
+        "ph03-pub-melding-coach"
+      ],
+      "promptAmendment": "Bestill eksplisitt også WB3_PUB.Ark sin tomtilstand, ikke bare PH03:39."
+    },
+    {
+      "id": "RMM-02",
+      "area": "PH-21 komponist og retur",
+      "anchors": [
+        "playerhq/screens/PH-21.jsx:13,18,22,55–56,63"
+      ],
+      "controls": [
+        "Melding-input (ph21-melding)",
+        "Send (ingen CID)",
+        "Tilbake til Workbench (ph21-tilbake)"
+      ],
+      "actual": "send legger bare tekst i komponentens lokale thread og viser sendt-toast. PH21_CTX-kortet forutsetter teknisk-plan-forespørsel fra Workbench; retur setter WB_RET.returnLevel, rydder ctx og går til returnTo. Ingen meldingsrecord med valgt coach/økt/pub eller dokumentert lagringsfeil/retry.",
+      "missing": "Egen type for øktspørsmål med valgt coachId, utfører, session/pub-referanse og opprinnelig retur. Bevar eksisterende Workbench-type. Bekreftet lokal prototypepost må ha ærlig lokal status; ingen automatisk ekte sending eller lovet svar. Avbryt/tilbake må bevare eller eksplisitt forkaste utkast og åpne samme valgte økt.",
+      "suggestedControlIds": [
+        "ph21-send-lokalt",
+        "ph21-utkast-avbryt"
+      ],
+      "promptAmendment": "Presiser konteksttype, lokal lagringsstatus/idempotent retry og dynamisk returmål/label; ikke bruk Workbench-retur for alle meldinger."
+    },
+    {
+      "id": "RMM-03",
+      "area": "Feilknappens faktiske handling",
+      "anchors": [
+        "playerhq/parts.jsx:24–28",
+        "agencyos/ag-parts.jsx:36–40",
+        "agencyos/screens/AG-16b.jsx:25–28"
+      ],
+      "controls": [
+        "ErrorState Prøv igjen gjennom Gate"
+      ],
+      "actual": "Begge Gate-funksjoner overstyrer onRetry med global toast. AG16b er registrert gruppens årsplan og sender bare error-data til Gate.",
+      "missing": "Eksplisitt callback fra berørt skjerm/kilde som utfører faktisk lokal lesing, beholder valgt kontekst og fortsatt viser vedvarende feil. Bevar resten av delt Gate og andre eieres skjermer; ingen global blind reload eller automatisk suksess.",
+      "suggestedControlIds": [
+        "ph03-prov-igjen",
+        "ag16b-prov-igjen"
+      ],
+      "promptAmendment": "Avgrens hvilke Gate-kall som endres og før stabil retry-ID fra caller. Eksisterende ph03-pub-prov-igjen må bevares; den gjør allerede ny publikasjonslesing via rerender."
+    },
+    {
+      "id": "RMM-04",
+      "area": "Manuell runde og samme runde gjennom RD03",
+      "anchors": [
+        "playerhq/screens/PH-RD-1.jsx:23,32,37,47–57,63,97",
+        "playerhq/screens/PH-RD-live.jsx:96–98",
+        "_shared/WB3-rund.jsx:5–10,18–29",
+        "_shared/wb-model.js:184–191"
+      ],
+      "controls": [
+        "Legg inn manuelt (ingen handler/CID)",
+        "Fortsett/Gjenopprett kladd (go PH-RD-03 uten lokal referanse)",
+        "Start runde (legacy go PH-RD-03)",
+        "Eksisterende rd2-start/rd2-tilbake/rd-pub-tilbake"
+      ],
+      "actual": "Uten PHQ_RUND brukes merket eksempelmodus og faste bane-/kladddata. Med PHQ_RUND brukes allerede WB3_RUND og saveRoundSetup for faktisk tilgjengelig publisert økt; nøkkel inkluderer utførende spiller. Legacy manuell-knapp har ingen handling.",
+      "missing": "Ny selvstendig manuell runde trenger faktisk lokal kladd og stabil ID som alle innganger/returer fører videre. Publisert runde skal beholde publikasjons-/økt-/roundRef-/entryRef-/utførerbinding og historikk; ingen forfalsket publicationId for en selvstendig runde. Dato/bane/tee/start-hull/antall/rundetype og usatte felt skal følge valgt oppsett.",
+      "suggestedControlIds": [
+        "rd02-manuell-apne",
+        "rd02-manuell-lagre",
+        "rd02-manuell-avbryt",
+        "rd01-fortsett-kladd",
+        "rd02-gjenopprett-kladd"
+      ],
+      "promptAmendment": "Skill selvstendig kladd fra den eksisterende planlagte/publiserte kjeden og angi eksakt caller/returnContext. Bevar eksisterende rd2-* og egen lagret historikk etter tilbaketrekking. Ingen generisk standalone-opprettings-API funnet i disse modellankrene."
+    },
+    {
+      "id": "RMM-05",
+      "area": "RD07 fil, parsing, radvalg og import",
+      "anchors": [
+        "playerhq/screens/PH-RD-2.jsx:61–66,70–80,85–94"
+      ],
+      "controls": [
+        "Velg fil (ingen handler/CID)",
+        "Lim inn textarea (defaultValue, ingen parser)",
+        "Kolonnekobling (kun fixturekolonner)",
+        "Importer 18 hull (setDone true)",
+        "Avbryt (go PH-RD-01)",
+        "Legg inn SG fra UpGame (go PH-RD-06)"
+      ],
+      "actual": "Forhåndsvisning og ferdigkvittering er faste eksempeldata; input blir ikke lest. Import endrer kun done. Ingen radvalg, lagringsmutasjon eller rundereferanse gjennom retur.",
+      "missing": "Les faktisk lokal fil/limt tekst, bruk filens headers/kolonnekart, valider valgte rader mot valgt 9/18-hullsoppsett og brutto. Vis radfeil og usatte valgfrie tall uten å gjøre dem til 0. Importbekreftelse må lagre bare godkjent valgt innhold atomisk én gang; feil beholder fil/map/valg/runde og retry gir ingen dublett. Avbryt/retur bevarer eksakt opprinnelig runde.",
+      "suggestedControlIds": [
+        "rd07-velg-fil",
+        "rd07-fil",
+        "rd07-csv-lim",
+        "rd07-kolonne-<field>",
+        "rd07-rad-<rowId>",
+        "rd07-importer",
+        "rd07-avbryt"
+      ],
+      "promptAmendment": "Angi minste faktisk CSV-skjema/mapping, hole-ID/duplikatregel og usatt-vs-0-kontrakt. Bevar ærlig SG-begrensning: ingen beregnet SG uten slagdata. SG-knappens videreføring må bevare samme runde dersom den forblir aktiv."
+    },
+    {
+      "id": "RMM-06",
+      "area": "Egen video fra golf-Live",
+      "anchors": [
+        "playerhq/screens/PH-live.jsx:93–99",
+        "_shared/WB3-pub.jsx:6–7,13–14"
+      ],
+      "controls": [
+        "Legg til egen video (ph05-egen-video-<drillInstanceId>)"
+      ],
+      "actual": "Eksisterende stabil CID, men handler viser bare kamera-/delings-toast. Ingen filvalg/opptak/forhåndsvisning/egen mediarecord. Publisert kilde og lagret resultat har separate adapter-/snapshotreferanser; Golf/FYS-utførerfelt er ikke bevist av denne kontrollen.",
+      "missing": "Lokalt media-panel med faktisk filvalg eller støttet opptak, preview, fjern, avbryt og bekreft. Bevar valgt drillInstanceId/økt/pub/retur og egen utfører separat fra plan-/kildeeier. Egen media må ikke overskrive publisert TP- eller WB-snapshot eller eldre lagret resultat. Ikke lov deling med coach ved lokal lagring.",
+      "suggestedControlIds": [
+        "ph05-media-panel",
+        "ph05-media-velg-fil",
+        "ph05-media-opptak",
+        "ph05-media-forhandsvisning",
+        "ph05-media-fjern",
+        "ph05-media-bekreft",
+        "ph05-media-avbryt"
+      ],
+      "promptAmendment": "Presiser eier/utfører og egen vedleggsrecord adskilt fra frosne kilder; bevar ph05-egen-video-* CID. Ikke utvid automatisk til FYS, lagret leser eller reell skyopplasting."
+    }
+  ],
+  "limits": [
+    "Alle foreslåtte kontroll-IDer er forslag, ikke implementerte eller reserverte IDer.",
+    "Ingen nye native prøver, grønne tester, samlet ferdigstatus, visuell godkjenning eller frys følger av denne kildekontrollen.",
+    "Ingen UI-kilder, eksisterende dokumenter, appkode eller private bevis endret. Ingen rå personnavn eller private rålogger gjengitt."
+  ],
+  "sourceHashes": {
+    "ui_kits/playerhq/screens/PH-03.jsx": "556ad0a07537cd56183c7f9bb802e24e3cafc68c161792f602db030db6df01a6",
+    "ui_kits/playerhq/screens/PH-21.jsx": "44d7084043571485568ca9926d7b1221788f3fd9a7ee35a69c31cc1b08a89b35",
+    "ui_kits/playerhq/screens/PH-RD-1.jsx": "5a60d8e8df6457921b197e1c21d908c2af9603f1da55c1a2cea50ffa079d9872",
+    "ui_kits/playerhq/screens/PH-RD-2.jsx": "2968334e03d8461b9455ab583d8d6167c9564aa32de40ac22a563067154fc3bc",
+    "ui_kits/playerhq/screens/PH-RD-live.jsx": "e05bab3b4a1dfe5b2f140d89d6dc8c6fffb91a0d798146ee23419e83b246b712",
+    "ui_kits/playerhq/screens/PH-live.jsx": "c899fc1490b6510ed5a7a9e2c95421f85d19b7960c480d06d2134c699623d87b",
+    "ui_kits/playerhq/parts.jsx": "1a0193d72649840632ce8312a263e63b3e4cb204f0b1927a8d43f7d88df1c2bf",
+    "ui_kits/agencyos/ag-parts.jsx": "e1fb4b4d9476e667370f3bbcab9f167779759a71ac9b43e828b09e7edd953f70",
+    "ui_kits/agencyos/screens/AG-16b.jsx": "53a2905217fcf3d65f72c63981de66e0f81c8a50de05a66a10f8ceba22c1e9ec",
+    "ui_kits/_shared/WB3-pub.jsx": "30d7527f2281b33879848dd504cdff6edf3dfb77a2f8e907e42144d66257d6d0",
+    "ui_kits/_shared/WB3-rund.jsx": "bcd191849eeed97e35dbec3ebc1cc8477f2578fa9216b0345f4818c0bf36cc1c",
+    "ui_kits/_shared/wb-model.js": "03487138b25330468ecb4715e70bdbb8f0d60d800ad2b5c8849ad29db6f3ca9c"
+  }
+}

@@ -13,7 +13,7 @@ Lever en inngang som beskriver versjon/dato, valgt retning, hva som faktisk er f
 7. Ressurser som faktisk er brukt: ikoner, bilder, fonter, diagram-/kartgrunnlag og kjent opphav/lisens der relevant.
 8. Kontroller, åpne spørsmål, kjente avvik og den konkrete neste oppgaven.
 
-Ikke produser en ny konkurrerende masterplan. Prosjektets arbeidsliste eier rekkefølgen; designleveransen dokumenterer konkret omfang og versjon.
+Ikke produser en ny konkurrerende masterplan. Anders' gjeldende bestilling og arbeid i beslutningenes egne blokker styrer rekkefølgen; designleveransen dokumenterer konkret omfang og versjon.
 
 ## Status holdes atskilt
 
@@ -42,3 +42,11 @@ Vis app og valgt referanse i relevante formater, med ekte funksjon og syntetiske
 ## Kort status til Anders
 
 Oppgi hva som er ferdig på hvilket nivå, lenke til resultatet, hvilke konkrete avvik som gjenstår og neste del i arbeidet. Unngå antall filer som eneste fremdriftsmål. Ved stor bestilling fortsetter arbeidet gjennom alle avklarte familier; hvis en økt må avsluttes, lagre eksakt restliste og neste inngang uten å kalle hele appen ferdig.
+
+## Konkrete byggedata til Codex og Grok Build
+
+Følg [prosjektets overlevering](../../../../docs/design-system/grok-build-overlevering.md). Lås eksport, skjerm-ID, hash (filkontroll), format, tema og syntetisk datasett. Registrer felt til eksisterende datamodell, hver handling til faktisk kode, tilgang, feilhåndtering, lagring, publisering og relevante kontroller. Manglende støtte merkes uttrykkelig; den må ikke skjules med et tidsstyrt «lagret»-varsel.
+
+Anders krever eksakt mål for hver knapp. Følg [knapp- og skjermkartet](../../../../docs/design-system/knapp-og-skjermkart.md): stabil kontroll-ID, plassering, rolle/tilstand og fra-versjon → mål-ID/versjon eller konkret overlegg/handling. Registrer objekt-ID-er, betingelser, faktisk rute/kodehandling, retur, feil, avbryt og ulagrede endringer. Alle trykkbare kontroller omfattes, også kort, faner og ikoner. Ingen uforklarte kontroller i skjermens byggepakke; kartet fryses med referansen. Knappetekst alene identifiserer ikke målet.
+
+Ved Training Motor-overføring: identifiser aktive filer gjennom arbeidsdokumentet. Versjonssuffikset alene avgjør ikke hvilken kilde som gjelder. Før arkivering kartlegges komponentavhengigheter og hvilken definisjon som faktisk lastes sist. Bevar videresendinger og brukte hjelpefunksjoner.

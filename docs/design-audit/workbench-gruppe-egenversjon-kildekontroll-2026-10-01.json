@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "egenversjon-prøveoppsett-undo-sammenligning-rettes",
+  "export": {
+    "archive": "AK Golf Precision Athletics (50).zip",
+    "sha256": "4f6dc6975ade8da83d50a7e036d3284d56a72f98d4a20ad1da3b3101e4ae8bb8",
+    "files": 615,
+    "exportedAt": "2026-10-01T05:55:51.640450+00:00",
+    "root": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-gruppe-egenversjon",
+    "liveJobStillRunning": true
+  },
+  "syntax": {
+    "scripts": 314,
+    "inline": 71,
+    "inlineIncludedInScripts": true,
+    "syntax_errors": 0,
+    "errors": []
+  },
+  "model": {
+    "reusedSameModel49": true,
+    "modelSha256": "bd2a7d5bde59987e71b978a261d2630c28bd0784fd1d36c9171202312482e73f",
+    "total": 111,
+    "pass": 110,
+    "fail": 0,
+    "skip": 1,
+    "error": 0
+  },
+  "sourceProbe": {
+    "file": "ui_kits/wb-gruppeegen-repro.html",
+    "sha256": "01741be028f1ba7c66dbc18c172ef8a2477cad4c1fac1fcc4349ef37fb58ae1e",
+    "lines": [
+      32,
+      33,
+      34
+    ],
+    "finding": "strip fjerner bare oekter, forventet ny undo-entry gjør målplan B ulik. Be om ellers fullidentisk plan og separate strenge før/etter-undoasserts, ikke modellendring eller ukontrollert deleteundo.",
+    "limits": "Kildeøkt uten øvelser. Ny prøve er native målplan/månedsgrunnlag/failretry/returbevis, ikke nye drill/sourcekopibevis. Tidligere79 dekker kjernen.",
+    "ownNativeProof": false
+  },
+  "active": "Claude retter avgrenset prøveoppsett, root venter faktisk delkvittering før egen nyeksport.",
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false
+}

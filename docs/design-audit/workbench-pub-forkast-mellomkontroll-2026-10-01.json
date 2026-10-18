@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "aktiv-publiseringsretting-mellomversjon-ikke-fryst",
+  "export": {
+    "zipName": "AK Golf Precision Athletics (23).zip",
+    "zipSha256": "0e14972e645fa31657c3505d8773e30d12840af2ca53803880636cb6914877ab",
+    "fileCount": 598,
+    "exportRoot": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-pub-forkast",
+    "exportedAt": "2026-10-01T00:49:14.984426+00:00",
+    "status": "aktive-pub-forkastrettinger-mellomversjon"
+  },
+  "syntax": {
+    "scripts": 298,
+    "inline": 55,
+    "inlineIncludedInScripts": true,
+    "syntax_errors": 0,
+    "errors": []
+  },
+  "modelCheck": {
+    "cases": 58,
+    "pass": 58,
+    "fail": 0,
+    "skip": 0,
+    "error": 0,
+    "proofSha256": "1918387aa93f1687ee189ae55cb0694397010f12323c9c1690e860f61731aa28",
+    "runnerSha256": "052c3913a5f2904fa553ea068504ba5bdd565668319ab06a0bddfee072d1e9ea",
+    "limitation": "58 tidligere tilfeller består; to nye dobbelwrite-feil er reprodusert av kildeprøven og blir lagt til. Dette er ikke samlet feilfri eller UI-godkjent sluttversjon."
+  },
+  "requestContract": {
+    "actualApi": [
+      "WB.fingerprint(planId,sids)",
+      "WB.publishSessions(planId,sids,requestId,expect)"
+    ],
+    "verified": [
+      "Original frossen retry returnerer samme immutable publikasjon etter draftendring",
+      "Samme key + nytt fingerprint avvises",
+      "Ny key + gammelt fingerprint avvises",
+      "Ny key + nytt fingerprint publiserer rev2"
+    ]
+  },
+  "sourceDelta": {
+    "corrected": [
+      "Rollback bevarer valgt plan",
+      "Ny gruppepub-unntak fjerner eldre liste og pin",
+      "TPN får global dirty/nav-binding",
+      "Lag egen versjon faktisk knapp"
+    ],
+    "reproducedFailures": [
+      "TP/TEK andre draftpersist etter deltcommit feiler: feilrespons og lokal rollback, men PH-publikasjon finnes",
+      "Workbench-Forkast lukker TPN uten nav.setDirty(false)",
+      "Eiervalg via søk/Sist brukt omgår WB_GUARD",
+      "Egen versjon velger automatisk første personlige plan og kopierer bare metadata, ikke øvelser/TP/FYS/retur"
+    ]
+  },
+  "unchangedRemaining": [
+    "PHPlan/I dag/PH03/Live/publisert-øktkobling",
+    "TEK-konfliktvalg, AG→PH antall og hent måned/periode",
+    "Gammel TP-reise modernisering",
+    "Visuell konsistens og sluttregister"
+  ],
+  "nextFollowup": "Fire lagringscommit-/globalvakt-/full egenversjonsrester sendt i samme aktive chat. Presisering av rettet skyreset59/0 og modell61=58/3 sendt etterpå. Ingen ny lang WB1-kjøring.",
+  "appChanged": false,
+  "visualApproval": false,
+  "extendedModelCheck": {
+    "cases": 60,
+    "pass": 58,
+    "fail": 2,
+    "skip": 0,
+    "error": 0,
+    "proofSha256": "ff0b4419e2e570a6efad63e35ccc5d85d59a86a5e96ae6a080b016fd226fa5ad",
+    "runnerSha256": "88f1b498cd491bb929af7f2ddfff35df1f078d4ae712ae258375213eda4eb6fd",
+    "failureFlagsForBothTaskAndTekCount": {
+      "rejected": true,
+      "localUnchanged": true,
+      "draftUnchanged": false,
+      "sharedUnchanged": false,
+      "phReloadUnchanged": false
+    },
+    "failurePoint": "Kun andre setItem på WB.lagreNokkel, eksakt to draftwritekall kontrollert.",
+    "uiApproval": false
+  },
+  "observedCloudUi": {
+    "page": "wb-lagring-repro.html",
+    "checks": 59,
+    "failures": 0,
+    "proofSha256": "a23f547551e24bdf3113e0d7b288418751f00613738a5b3a0fcdb7c0b9e58bcd",
+    "scope": "Observert AX-teller etter ny retting. Ikke egen UI-kjøring av eksport23; beviset lagrer teller/tittel/første logglinje før sky byttet side. Ingen full WB1-kontroll."
+  },
+  "fullOwnVersionModelCheck": {
+    "cases": 61,
+    "pass": 58,
+    "fail": 3,
+    "skip": 0,
+    "error": 0,
+    "proofSha256": "a032452953e32eade16c2a88a4c34fec7ab60afafac54c2286fcee136b58bed9",
+    "runnerSha256": "8e545256b773627d7a90d7fc10c876ae097913eaa97ce082695bd8b3c17517b4",
+    "newFailure": "createOwnVersion kopierer 0 øvelser mot forventet 2 med fullt TP/programinnhold/manuelle felt. Ingen ny målplanparameter antatt før faktisk API."
+  }
+}

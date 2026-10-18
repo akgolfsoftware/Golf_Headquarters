@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "jaarsperiode-maal-mellomkontroll-feil-funnet",
+  "export": {
+    "archive": "AK Golf Precision Athletics (52).zip",
+    "sha256": "af5880ed15d225a273a9ea87a7dd2d2cab10b5ed15d5da81bdf7f9a1a02590e9",
+    "files": 616,
+    "root": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-ar-periode-mal"
+  },
+  "syntax": {
+    "scripts": 315,
+    "inline": 72,
+    "syntax_errors": 0
+  },
+  "model": {
+    "total": 116,
+    "pass": 113,
+    "fail": 2,
+    "skip": 1,
+    "error": 0,
+    "modelSha256": "a995df95b77bdef1ec245706a481c8e2ed812d57f633623df70fec08abe802be",
+    "runnerSha256": "3beac85063a6112c3c461da488cc2af0bd34b93d966f83fc4f6de2287003afe6",
+    "original111": "110PASS/0FAIL/1SKIP",
+    "failures": [
+      "removeGoal kan skrive til tilgjengelig plan med annen eier",
+      "undoRemoveGoal kan skrive til tilgjengelig plan med annen eier"
+    ],
+    "newPass": "Målarkiv/gjenopprett samme ID og alle periode/måned/ukekoblinger, urørte andre planer/budsjetter/min/refs, lagringsfeil og retry én skriveoperasjon/ingen dobbelarkiv/reload"
+  },
+  "ownProbe": {
+    "checks": 26,
+    "failures": 1,
+    "proofSha256": "63a35c32945921be5dae1089259b0913392f5621818e9bd720a1627236d823c5",
+    "failure": "SEKSJON fjern periode stoppet ved manglende per-per-4-7qoe før konsekvens, remove/undo-period bevis mangler.",
+    "passed": "Årnavn/dato-utvidelse, avbryt/ugyldig/failretry/reload, alle8typer opprettet, mål fjern/failretry/arkiv/reload/gjenopprett.",
+    "cloudReported": "29/0; egen prøve26/1 har forrang for egen kontroll"
+  },
+  "resources": "Egenfane1416028684 og server39036 lukket.",
+  "next": "Claude Design mottok konkret eiervakt- og periodefeilbestilling. Måned-turn11/0 cloudkvittering mottatt, egen kontroll gjenstår.",
+  "frameContraction": "Avventer allerede stilt produktvalg; ingen antatt godkjenning.",
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false
+}

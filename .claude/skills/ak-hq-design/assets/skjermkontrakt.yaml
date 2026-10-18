@@ -36,3 +36,51 @@ valgt_for_bygging: null
 implementeringsstatus: ikke-bestilt
 kjente_avvik: []
 aapne_beslutninger: []
+
+# Eksakt referanse og egen vurdering. Hash = kontrollsum av eksport/fil.
+frosset_eksport:
+  fil: null
+  sha256: null
+  designprosjekt_id: null
+  kildefiler: []
+  kode_commit: null
+  dato: null
+# Felt: navn, type, enhet, validering, data-/beregningskilde, manglende-verdi.
+feltkoblinger: []
+# Handling: utloser, kodefunksjon, tilgang, resultat, feil, angre, test.
+handlingskoblinger: []
+# Hver trykkbar kontroll: stabil ID, tekst/ikon og plassering, rolle/tilstand,
+# fra-skjerm/versjon, maaltype, maal-ID/versjon, apprute, objekt-ID-er,
+# betingede grener, kodehandling/tilgang, suksess/feil/avbryt, tilbake/fokus,
+# ulagrede endringer og konkret kontrollbevis. Null betyr uavklart, ikke valgfritt.
+knapp_og_skjermkoblinger: []
+kontrolldekning:
+  trykkbare_kontroller: null
+  koblede_kontroller: null
+  uavklarte_kontroll_ider: []
+  register: null
+  frosset_med_skjermversjon: false
+lagring:
+  modus: ikke-verifisert
+  datamodeller: []
+  ikke_stottede_felt: []
+  lagringstilstander: []
+publisering:
+  eksisterende_kode: null
+  hvem_bekrefter: null
+  synlig_for_spiller_nar: null
+  revisjon_og_angre: null
+kontroller:
+  funksjon: []
+  visuelt_mot_referanse: []
+  tilgang: []
+  publisering: []
+  rapporterte_av_andre: []
+anders_designvalg:
+  versjon: null
+  dato: null
+  kommentar: null
+anders_appvurdering:
+  kodeversjon: null
+  dato: null
+  avvik: []

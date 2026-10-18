@@ -1,0 +1,173 @@
+{
+  "date": "2026-10-01",
+  "status": "snarveier-delkontroll-med-egne-skjerpede-nativeprober",
+  "export": {
+    "file": "AK Golf Precision Athletics (69).zip",
+    "sha256": "0114cd70801c728d6eb74caa580132e2967d3bd1cefa4a3a5b78f8e42d5d3ba1",
+    "fileCount": 627,
+    "exportedAt": "2026-10-01T11:10:25.026866+00:00"
+  },
+  "syntax": {
+    "scripts": 326,
+    "inline": 81,
+    "inlineIncludedInScripts": true,
+    "errors": 0,
+    "evidence": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/egen69-syntaks.json"
+  },
+  "scope": "Eksport69: snarveier A3/Mer, sidefelt, aksevalg og Coachnotat. Ingen samlet ferdigmelding, appimplementering eller ny visuell godkjenning.",
+  "ownChecks": {
+    "snarveierSterk": {
+      "result": "37/0",
+      "evidence": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/egen69-snarvei-sterk.txt",
+      "testFile": "/Users/anderskristiansen/Developer/akgolf-hq/.claude/worktrees/precision-athletics-konsolidering/.claude/local-design/wb-snarvei-kontroll-69/ui_kits/wb-snarvei-repro.html",
+      "sha256": "54f6254c5e42652538410376dd89ff8bc05f48ab73c0ae9a80a22c58244404f3",
+      "integratedInCloud": false,
+      "widths": [
+        1300,
+        390
+      ],
+      "widthMeaning": "Bredder angitt på prøvens verter; dette er funksjonsprøver, ingen root-målt visuell kontroll av hele grensesnittet."
+    },
+    "periodeLesbarMaaned": {
+      "result": "34/0",
+      "evidence": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/egen69-periode-lesbar-maned.txt",
+      "testFile": "/Users/anderskristiansen/Developer/akgolf-hq/.claude/worktrees/precision-athletics-konsolidering/.claude/local-design/wb-snarvei-kontroll-69/ui_kits/wb-antall-repro.html",
+      "sha256": "4f10cc5e1a2829ab6ec417d1022224e88f974a37a8b1fbbbc55f161a000028f2",
+      "integratedInCloud": false,
+      "cloudAttachmentStatus": "4f10cc5e1a2829ab6ec417d1022224e88f974a37a8b1fbbbc55f161a000028f2 er vedlagt pågående månedsjobb; ingen ny eksport eller skyprøve av vedlegget bekreftet i denne delkontrollen."
+    }
+  },
+  "nativeCoverage": [
+    {
+      "source": "Developer-kopi/ui_kits/wb-snarvei-repro.html",
+      "lines": [
+        19,
+        52
+      ],
+      "verified": "Tom årsplan opprettes med native felt/knapper. Uke-kopi har faktisk Avbryt, bekreftelse, injisert lagringsfeil og retry; kildeuke/kildeøkter og andre planer bevares. Kopier har egne sessionId/drill-ID-er og returnerer til valgt måluke."
+    },
+    {
+      "source": "Developer-kopi/ui_kits/wb-snarvei-repro.html",
+      "lines": [
+        53,
+        75
+      ],
+      "verified": "Dupliser økt har port uten valgt økt, Avbryt og bekreftelse til valgt ny økt. Malflate åpnes og Avbryt/Legg til/Erstatt utføres med knapper. Malresultat prøves med øvelsesantall, ikke full snapshot-/feltlikhet."
+    },
+    {
+      "source": "Developer-kopi/ui_kits/wb-snarvei-repro.html",
+      "lines": [
+        76,
+        88
+      ],
+      "verified": "Coachvelger velger faktisk teknisk oppgave; Avbryt og Legg til er native. Resultatet kontrolleres mot komplett valgt tp-kildeobjekt med oppgave/media-snapshot, eier, technicalPlanId/taskId/revisjon, ny drill-ID, riktig plan/uke/session og retur."
+    },
+    {
+      "source": "Developer-kopi/ui_kits/wb-snarvei-repro.html",
+      "lines": [
+        89,
+        102
+      ],
+      "verified": "Faktiske sidefaner skifter innhold. Alle fem pyramideknapper finnes; SLAG klikkes, banken filtreres, og ny-økt-skjemaets akse er SLAG. Ny økt avbrytes; ingen native Save av dette forhåndsvalget."
+    },
+    {
+      "source": "Developer-kopi/ui_kits/wb-snarvei-repro.html",
+      "lines": [
+        103,
+        140
+      ],
+      "verified": "Coachnotat lagres først i annen økt gjennom UI. Målnotat kontrolleres med eksakt owner/plan/session ved Avbryt, lagringsfeil/retry, gjenåpning, mobil Mer, mobil redigering/feil/retry og ny faktisk innlasting. Tekst/tidsstempel/disk, andre notater samt alle planer/økter kontrolleres urørt utenfor målet."
+    }
+  ],
+  "setupFixtures": [
+    {
+      "source": "Developer-kopi/ui_kits/wb-snarvei-repro.html",
+      "lines": [
+        21,
+        33
+      ],
+      "kind": "merket-modelloppsett",
+      "detail": "To kildeøkter opprettes med WB.saveSession, en bankdrill med WB.addExercises og to ekstra isolasjonsplaner med WB.createPlan. WB.store.bump brukes før native målreise. Dette beviser ikke native oppretting av disse øktene/øvelsen/isolasjonsplanene."
+    },
+    {
+      "source": "Developer-kopi/ui_kits/wb-snarvei-repro.html",
+      "lines": [
+        5,
+        5
+      ],
+      "kind": "negativ-feilinjeksjon",
+      "detail": "Storage.setItem blokkeres målrettet på faktisk lagringsnøkkel for kopi/notat. Selve bekreftelse/lagring/retry skjer med UI-knapper; modellen brukes lesende for resultat-/isolasjonskontroll."
+    },
+    {
+      "source": "Developer-kopi/ui_kits/wb-antall-repro.html",
+      "kind": "merket-periodeoppsett",
+      "detail": "34/0-prøven har to syntetiske perioder via modellfixture. Native periode-/månedimport, sammenligning, Behold, kvotefeil/retry, full femakset antall/min/null/0/ref/importmarkører, Avbryt/gjenåpning, annen periode og Save/reload kontrolleres. Oppsettet erstatter ikke native opprettingsreise for periodene."
+    }
+  ],
+  "cloudChecks": {
+    "snarveierOriginal": {
+      "reportedBeforeFinalChanges": "29/0",
+      "verifiedAfterRemovalAndLatestExport": false,
+      "status": "ukjent-etter-siste-endring",
+      "testSha256": "18a3a509bc66dd2688595deaae22317b4793e95444ae6281075f0f6494e7cc74",
+      "detail": "Skymetadata om gammel 29-prøve er ikke bekreftet nativekjøring av siste eksportfil. Root-kjørte 37-prøven er en annen, skjerpet fil."
+    },
+    "visual": "review69 er skyens gjennomgang; ingen egen root-visuell kontroll eller Anders-godkjenning registrert her."
+  },
+  "sourceLimits": [
+    {
+      "source": "Developer-kopi/ui_kits/wb-snarvei-repro.html",
+      "lines": [
+        80,
+        88
+      ],
+      "limit": "Full TP-snapshotprøve gjelder Coach-tilgang til valgt kilde/uttrykkelig eksempel. expectedTp har publisert:false og null publicationId/publicationRev. Dette beviser ikke PH-lesegrensen eller innsetting fra publisert TP-snapshot."
+    },
+    {
+      "source": "ui_kits/_shared/WB3-lokal.jsx",
+      "lines": [
+        152,
+        158
+      ],
+      "sha256": "593128758f03ec857030041bec664c690dac10598bf03af704d4cb6c30e5cfd0",
+      "limit": "FYS-sidefeltets innhold er konteksttekst. side-fys-program er en konkret inngang til prog, men 37-prøven åpner/verifiserer ikke programflate, programsnapshot eller faktisk innsetting. Sidefelttekst er ikke en ferdig programreise."
+    },
+    {
+      "source": "components/plan/DevelopmentPyramid.jsx",
+      "lines": [
+        4,
+        12
+      ],
+      "sha256": "1f016412c709d2673fb5b6e11b7ecb535a49c5e49c008e0f9f51791cab69bb41",
+      "limit": "De fem indre native knappene mangler stabile data-control-id-er. Root-prøven finner dem via aria-pressed og aksens tekst; den beviser SLAG-klikk, ikke et komplett CID-kart for alle fem."
+    },
+    {
+      "source": "ui_kits/playerhq/screens/PH-live.jsx",
+      "lines": [
+        43,
+        154
+      ],
+      "sha256": "c899fc1490b6510ed5a7a9e2c95421f85d19b7960c480d06d2134c699623d87b",
+      "limit": "Fire EmptyState-actionControlId-er finnes i kode: ph04-apne-workbench (43), ph05-tom-tilbake (64), ph06-tom-tilbake (119), ph07-tom-tilbake (154). Ingen ny root-nativeprøve av disse fire knappene/målene i denne batchen."
+    },
+    {
+      "source": "Developer-kopi/ui_kits/wb-snarvei-repro.html",
+      "lines": [
+        143,
+        146
+      ],
+      "limit": "Siste Totalt-markør bruker true, ikke et forventet assertantall. 37/0 er likevel konkret dokumentert med alle resultatlinjer og uten exception i eget bevis; tallet er ikke full funksjons-/visuell dekning."
+    }
+  ],
+  "pending": [
+    "Den nye månedsmodulen fra eid ignorert wb-maned-visning-68-kopi integreres i Claude nå. Eksport69 inneholder ikke dokumentert ferdig integrering; native/390/1440/lyst/natt-kontroll av ny månedstabell/-kort gjenstår.",
+    "Begge skjerpede root-prober er ennå ikke bekreftet integrert og kjørt i skyprosjektet. At periodeprøven er vedlagt pågående jobb er ikke testbevis.",
+    "Mobilprøven åpner Dupliser uke, Bruk mal og Coachnotat gjennom Mer; Mer Dupliser økt og Mer Søk TP er ikke native prøvd i denne 37-prøven.",
+    "Ingen ny visuell godkjenning av År/Periode/Måned/Uke, samlet arkivopprydding eller ferdig designsystem registreres av denne delkontrollen.",
+    "Ingen src-/DB-/deployendring, commit eller push utført i denne kontrolloppgaven."
+  ],
+  "documentChecks": {
+    "json": "Gyldig JSON; kilde-/test-SHA256 beregnet fra de konkrete filene.",
+    "prosjektSjekk": "npm run prosjekt:sjekk bestått: prosjektstruktur og lokale Markdown-lenker. Daterte underlag inngår ikke i den generelle lenkekontrollen."
+  }
+}

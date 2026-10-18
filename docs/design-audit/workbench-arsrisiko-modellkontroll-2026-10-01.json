@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "arsredigering-bekreftede-prototype-modellfeil-ikke-rettet",
+  "exportVersion": 38,
+  "modelSha256": "8830ebcb963f26e67317752f626aa44f5ba2456995730696aff5f6854a98e264",
+  "runnerSha256": "91810a5f472d533d4b67d837c89f2a8377f414a71c8732e6addb8c7f1d120ad5",
+  "counts": {
+    "total": 89,
+    "pass": 84,
+    "fail": 4,
+    "skip": 1,
+    "error": 0
+  },
+  "original83Pass": true,
+  "failures": [
+    "editPlan bool reqId gir falsk OK ved gjenbrukt ID/ny navn-dato-intent; identisk retry bestått.",
+    "editPlan godtar annen tilgjengelig eier-ID i valgt coachkontekst.",
+    "removePeriod godtar annen tilgjengelig eier-ID.",
+    "undoRemovePeriod godtar annen tilgjengelig eier-ID."
+  ],
+  "contractSkipped": "Rammeforkorting med bare budsjett/minutter/mål/basis beholder data på disk utenfor aktivramme. Preview viser utgående uke/måned. Produktvalg/konsekvens må være uttrykkelig; ingen ny avvisning/sletting er oppfunnet som PASS.",
+  "newPass": "Rammeforkorting som strander eksisterende periode+økt avvist; modell/disk bevart.",
+  "active": "MånedsUI prøves først; konkret årsretting følger kildevalg/grupper.",
+  "boundary": "Isolert eksportmodell; ingen app/produksjonstilgangsbevis. Ingen endring i app, database eller tilgangsregler."
+}

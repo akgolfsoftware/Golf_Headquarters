@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "ph-kildevalg-native-20-utvalgsknapp-rettet",
+  "export": {
+    "zip": "/Users/anderskristiansen/Downloads/AK Golf Precision Athletics (44).zip",
+    "root": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-kildevalg-ph",
+    "sha256": "b8b7927f6de16f54022dd9ed7334e8886bb9dc5fb9e116cf07a1eae1cc47beae",
+    "files": 612,
+    "exportedAt": "2026-10-01T04:56:53.640400+00:00"
+  },
+  "syntax": {
+    "scripts": 311,
+    "inline": 68,
+    "inlineIncludedInScripts": true,
+    "syntax_errors": 0,
+    "errors": []
+  },
+  "model": {
+    "total": 99,
+    "pass": 94,
+    "fail": 4,
+    "skip": 1,
+    "error": 0,
+    "modelSha256": "49ae1930240bf0829a019a02535a72bfa613b5b39374703a682764a3548d22c1",
+    "runnerSha256": "9bede65a3fa635b3f706aa67a4fe79003266e7b1f8e18c5f0e6836465dfabc39",
+    "reusedFrom41": "Identisk modell41–44, ingen nykjøring. Års4 og rammevalg gjenstår."
+  },
+  "ownNative": {
+    "checks": 20,
+    "failures": 0,
+    "proofSha256": "d898cc982394d7c745364ab295a4c532a2e156b12e8dbc180f39e06903b41c18",
+    "scope": "Separate AGpubliserings/PHverter, TPcountskilder, umiddelbar kildevalg→nyvert uten annenplanswrite, PHekteP1taskvalgførfailbevart/retryP2clear i ORIGINALvert, faktisk P2checkbox→Leggtil sammeøkt, A/B/import/resetfail/reload.",
+    "limits": [
+      "Oppgaveoppretting/publisering direkte modellfixtures test13–14; countsplan/antall via faktiskUI.",
+      "Innsettingasserter JSONincludes(taskId/planId)+sessionId, ikke rev/pubID/fullsnapshot/minutter.",
+      "Samme-kildecheckboxbevar er kilderettet men ikke separatnativeklikk.",
+      "Returklikk test42 kan feile uten åstoppe; plan/uke43kontrollert, faktiskretur må styrkes.",
+      "Resetfail fulldatafør/etter; suksessreset/A-Bmarkørbaseline fortsattetterreset58 og delvisassertert.",
+      "Ingen antallwrite-trace; plansfør/etterradio sammenlignet."
+    ]
+  },
+  "sourceFix": {
+    "file": "WB3-okt.jsx",
+    "lines": [
+      72,
+      73
+    ],
+    "detail": "sel nulles bare etter vellykket ANNENkilde; fail/samme-kilde bevarer. Test39gjøresi originalAvert, ekstrareloadB fjernes, så clearingassertikke trivieltremount."
+  },
+  "resources": "Egenfane1416028674/server57395lukket.",
+  "active": "Fireårsmodellfeil retting i sky, deretter gruppekilde og egenversjon/månedsbasis. Fullårsramme avventer åpent Andersvalg; restenavdesignscope fortsattbestilt.",
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false
+}

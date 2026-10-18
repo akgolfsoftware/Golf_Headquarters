@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "aktiv-siste-lagringsrestjobb-mellomversjon-ikke-fryst",
+  "export": {
+    "zipName": "AK Golf Precision Athletics (22).zip",
+    "zipSha256": "d5246014a3d4c9a2b2505cbfa867e622014b7eccf5fe5421af93f0d58dcf413e",
+    "fileCount": 598,
+    "exportRoot": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-lagring-siste-retting",
+    "exportedAt": "2026-10-01T00:28:32.957478+00:00",
+    "status": "aktiv-siste-lagringsrestjobb-mellomversjon-ikke-fryst-ikke-godkjent"
+  },
+  "syntax": {
+    "scripts": 298,
+    "inline": 55,
+    "inlineIncludedInScripts": true,
+    "syntax_errors": 0,
+    "errors": []
+  },
+  "ownStorageUi": {
+    "checks": 44,
+    "failures": 0,
+    "origin": "http://127.0.0.1:8785",
+    "privateProofFile": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-lagring-siste-retting/egen-lagring-siste-reise-44.txt",
+    "proofSha256": "40321c471a77090c3633ee3a74c039144ac362577b55d22a8e809486066204f1",
+    "limitation": "Avgrenset eksportreise med merket syntetisk modelloppsett. Gruppeegenversjon via helper; ikke full faktisk Live-, konflikt-, måned-/periode- eller gruppeegenversjonsknappflyt."
+  },
+  "sourceDelta": {
+    "corrected": [
+      "Valgt-plan-nullstilling",
+      "TP-korruptlager",
+      "Request-kontekst",
+      "Flere Workbench-navigasjonsvakter"
+    ],
+    "newReproducedModelFailures": [
+      {
+        "source": "wb-model.js:168,204",
+        "finding": "TP-publisering skrevet i delt lager før draftpersist; ved draftwritefail returneres feil men PH ser ny publikasjon. Også shareTek."
+      },
+      {
+        "source": "wb-model.js:203–204",
+        "finding": "Feilet nullstillPlan gjenoppretter S men mister WB_SEL/valgt kontekst."
+      },
+      {
+        "source": "wb-model.js:189",
+        "finding": "Ny gruppepublikasjon med medlemsunntak lar tidligere grupperevisjon forbli synlig for dette medlemmet."
+      }
+    ],
+    "remainingUi": [
+      "Forkast i GuardHost tilbakestiller ikke fortsatt rendret TPN-editor ved nivåbytte",
+      "TPN-global app-/sidebar-nav mangler dirty-binding",
+      "PHPlan/I dag/PH03/Live-kobling uendret",
+      "TEK-konflikt og faktisk AG→PH antall/month/periodreiser mangler",
+      "Egen gruppeversjon bare helper/fixture, konkret brukerflyt mangler",
+      "Eldre TP-reise ikke full modernisert/bestått"
+    ]
+  },
+  "modelCheck": {
+    "cases": 58,
+    "pass": 53,
+    "fail": 5,
+    "skip": 0,
+    "error": 0,
+    "proofSha256": "0180376ff8b4ec6f690a80b61b16fe2361a3e012b576066d83bd69276d95ab0e",
+    "runnerSha256": "dc25584cb2cbcef9192161d5179d1eee431a6c74d408df2ac311013350280e50",
+    "limitation": "Femte røde tilfelle gjelder manglende eksplisitt frossen innhold-/revisjonskontekst. Identisk retry av original bestilling skal fortsatt være gyldig selv om draft senere endres; endret hensikt med samme requestId skal avvises. Nåværende API skiller ikke disse. Fire andre feil er konkret rollback/atomisk publisering/gruppefallback."
+  },
+  "nextFollowup": "Seks konkrete punkter sendt til samme Precision Design-chat etter at bare langventing ble stoppet. Filendringer bevart; ingen full WB1-beståttkontroll.",
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false
+}

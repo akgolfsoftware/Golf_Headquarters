@@ -1,0 +1,400 @@
+{
+  "date": "2026-10-01",
+  "status": "maaned-roller-delkontroll-med-aapen-anonymiseringsfeil-og-uferdig-skjema",
+  "export": {
+    "file": "AK Golf Precision Athletics (70).zip",
+    "sha256": "b3fc8a939a68bbe63eaa7672c9fb4aa800b8aae7db3dbc24dea22ab50adc919f",
+    "fileCount": 631,
+    "archiveFileCount": 632,
+    "extractedFileCount": 631,
+    "exportedAt": "2026-10-01T11:45:14.175707+00:00",
+    "portable": false,
+    "final": false,
+    "caseInsensitiveCollisions": [
+      [
+        "ui_kits/Workbench-gjennomgang.html",
+        "ui_kits/workbench-gjennomgang.html"
+      ]
+    ],
+    "limit": "632 ZIP-oppføringer blir 631 utpakkede filer på filsystem som ikke skiller store/små bokstaver. Den gamle gjennomgangsaliasen må få unikt arkivnavn før en portabel sluttpakke. Ingen filer er arkivert av denne kontrollen.",
+    "receipt": {
+      "evidence": "privat-bevis:eksport70-kvittering",
+      "sha256": "8ff57361a48fefae9823e5ce621942d6351aa90d4f6e9b04801961574d5b2298",
+      "rawPrivateNamesIncluded": false
+    }
+  },
+  "syntax": {
+    "scripts": 330,
+    "inline": 83,
+    "inlineIncludedInScripts": true,
+    "errors": 0,
+    "evidence": "privat-bevis:eksport70-syntaks",
+    "sha256": "cfb08d3af6045eaa860433831029aaa9afec4eff2422a386273f102a67d37982",
+    "rawPrivateNamesIncluded": false
+  },
+  "scope": "Eksport70: ren månedsmodul, måned→uke, månedsgrunnlag og rollebytte. Skjemarester registreres før pågående retting. Ingen samlet ferdigmelding, appimplementering, backendkontroll eller ny visuell godkjenning.",
+  "ownChecks": {
+    "maanedOgRoller": {
+      "result": "37 kontroller / 1 feil",
+      "total": 37,
+      "passed": 36,
+      "failed": 1,
+      "completed": true,
+      "evidence": "privat-bevis:maaned-roller-70",
+      "sha256": "6a63d762e5821b039d5601683774f26f1c6d163e41382db88124b76e948c5b95",
+      "rawPrivateNamesIncluded": false,
+      "widths": [
+        1440,
+        390
+      ],
+      "widthMeaning": "De første 30 kontrollene av faktisk innholdsbredde, månedsrader og retur består ved 1440/390 px. Dette er avgrensede funksjons-/breddekontroller, ikke en full visuell godkjenning.",
+      "firstThirtyMonthControlsPassed": true,
+      "roleControls": {
+        "total": 7,
+        "failed": 1,
+        "failure": "AG-trenervisningen viser fortsatt et privatnavn; navnet er maskert i dette registeret. A3-snarveien finnes. Dette er en reell anonymiseringsrest, ikke et grønt resultat eller en avklart timingfeil."
+      },
+      "testFile": "ui_kits/wb-maaned-visning-repro.html",
+      "exportedTestSha256": "caf8ff2c570d8fdac70cf00e0e455d37c3888489dfec922718b09f7efbf4d011",
+      "exportedTestHashMeaning": "Kontrollsum for eksport70 sin prøve. En senere lokal reviewpatch er pågående og gir ikke nytt kontrollbevis her."
+    },
+    "maanedsgrener": {
+      "result": "30/0",
+      "total": 30,
+      "failed": 0,
+      "evidence": "privat-bevis:maanedsgrener-70",
+      "sha256": "1f8731fe8bd626d3f6c81694ed094ad66acbea69e272d0dc4e7edff4f22b44a8",
+      "rawPrivateNamesIncluded": false,
+      "roles": [
+        "AG",
+        "PH"
+      ],
+      "testFile": "ui_kits/wb-maanedsgrener-repro.html",
+      "sha256Test": "300a6d87153b9d2e3e5a15053b279194733eec814d5fc7299ac861fffcc49a97"
+    },
+    "maanedsgrunnlag": {
+      "result": "22/0",
+      "total": 22,
+      "failed": 0,
+      "evidence": "privat-bevis:maanedsgrunnlag-70",
+      "sha256": "17e570a386d0de2d9a576a16d043313346cc0cd67a42b6630ab110e6ec928e3d",
+      "rawPrivateNamesIncluded": false,
+      "roles": [
+        "AG",
+        "PH"
+      ]
+    },
+    "skjemaFoerRetting": {
+      "result": "25 kontroller / 15 feil",
+      "total": 25,
+      "passed": 10,
+      "failed": 15,
+      "completed": false,
+      "exceptions": 1,
+      "exceptionIncludedInFailedCount": true,
+      "evidence": "privat-bevis:skjema-foer-retting-70",
+      "sha256": "be1b01ff08d96d639a63f9c897de5ae0ca902625cb38c4b3b9a7e3f71a050215",
+      "rawPrivateNamesIncluded": false,
+      "testSourceSha256": "24aff102290af3f92986117c16acc7ec06ee902511e917d73b047f3c6140fef4",
+      "testSourceMeaning": "Den bestilte 32-filens prøve, kjørt mot eksport70 før aktiv skjemaretting; ikke 32 eller 25 ferdig beståtte kontroller. Unntaket ved manglende retur fra TEK-antall er med i det røde resultatet.",
+      "widths": [
+        1440
+      ],
+      "themes": [
+        "lyst"
+      ],
+      "failures": [
+        "Årsplan-/periode-/økt-/tekniskplan-/antallskjema bruker tekstfelt der native dato/tid kreves.",
+        "Brukertekst viser rå ISO-datoer i stedet for norsk datovisning.",
+        "Tilgjengelige etiketter for måned/uke og antall/minutter mangler per uke.",
+        "Økt Avbryt/Forkast og savefeil-kontekst består ikke denne prøvens krav.",
+        "TEK-antall-retur mangler; prøven stopper med unntak."
+      ],
+      "rawFailureTextCopied": false
+    }
+  },
+  "nativeCoverage": [
+    {
+      "source": "privat-bevis:maaned-roller-70",
+      "lines": [
+        7,
+        36
+      ],
+      "verified": "30 månedsprøver består: desktop DataTable med faktiske tr-rader, mobilkort/listitem, alle ISO-uker med data-week-key, null/0, periodearv/ukeoverstyring, kjente delsummer/manglende grunnlag, knapp minst 44 px, Åpne uke/retur til samme plan/måned/valgt uke og Tilbakestill i modell/visning."
+    },
+    {
+      "source": "privat-bevis:maaned-roller-70",
+      "lines": [
+        37,
+        43
+      ],
+      "verified": "Rollebytte beholder plan-ID/tittel, spillerretur og eget navnerom for Tom start. AG-anonymisering feiler; ingen rå navn er kopiert til registeret."
+    },
+    {
+      "source": "privat-bevis:maanedsgrener-70",
+      "lines": [
+        6,
+        35
+      ],
+      "verified": "AG/PH: kryssmåned-uke viser faktisk periode-/månedskjede, kjent SPILL 0, ukeimport sperret før grunnlag, uttrykkelig kildevalg, riktig månedsvalg og TEK 2/ref uten annenaksemutasjon eller økter; første måned→uke-lagringsfeil/retry/reload beholder riktig plan/uke/minne/disk."
+    },
+    {
+      "source": "privat-bevis:maanedsgrunnlag-70",
+      "lines": [
+        6,
+        27
+      ],
+      "verified": "AG/PH: desember/januar/Eget velges uttrykkelig; null er ukjent og 0 kjent. Kvotefeil ruller valget tilbake, retry lagrer, dirty-vakt vises, navigasjon/reload bevarer valg, og åpning fra annen måned overstyrer ikke et eksisterende ukegrunnlag taust."
+    }
+  ],
+  "setupFixtures": [
+    {
+      "source": "ui_kits/wb-maaned-visning-repro.html",
+      "kind": "merket-modelloppsett",
+      "detail": "Plan, perioder og to ukeoverstyringer opprettes med modellen. Åpne måned, Åpne uke, retur og Tilbakestill er native målhandlinger; oppsettet er ikke bevis på native oppretting av disse grunnobjektene."
+    },
+    {
+      "source": "privat-bevis:maanedsgrener-70",
+      "kind": "merket-modelloppsett-og-negativ-guard",
+      "detail": "Perioder/månedsbudsjett settes i fixture. Direkte modellavvisning av import uten grunnlag er en negativ modellkontroll; synlig sperre, kildevalg, månedsvalg, feil/retry og retur er egne UI-kontroller."
+    },
+    {
+      "source": "privat-bevis:maaned-roller-70",
+      "kind": "rollebytte-fixture-glue",
+      "detail": "Gjennomgangsrammen kopierer rolleavhengig lagring ved PH/AG-bytte. Dette er testoppsett, ikke en implementert appfunksjon eller bevis på flerbrukertilgang."
+    },
+    {
+      "source": "privat-bevis:skjema-foer-retting-70",
+      "kind": "merket-isolasjonsoppsett",
+      "detail": "To ekstra isolasjonsplaner og en foreldet valgtplan-ID er direkte modellfixtures. Målskjemaene betjenes med UI-felt/knapper; de røde resultatene er ikke erstattet av modellsettere."
+    }
+  ],
+  "cloudChecks": {
+    "receipt": {
+      "evidence": "privat-bevis:sky-maaned70-kvittering",
+      "sha256": "3a5cbb67471140061dcd9b7834ac03f8c035d0e6ed1df564bda97717fdfac0d3",
+      "rawPrivateNamesIncluded": false
+    },
+    "maanedVisning": {
+      "reportedResult": "37/0 i andre kjøring; første hadde to feil",
+      "ownResult": "37 kontroller / 1 feil",
+      "agAnonymizationResolved": false,
+      "detail": "Skykvitteringen kaller rolle-/privatnavn-feilen uavklart og mulig timingproblem. Egen eksport70-prøve viser den fortsatt; skyens 37/0 er ikke valgt som fasit."
+    },
+    "periode": {
+      "reportedResult": "34/0",
+      "ownRerunAfterExport70": false,
+      "exactAttachedTestSha256": "4f10cc5e1a2829ab6ec417d1022224e88f974a37a8b1fbbbc55f161a000028f2"
+    },
+    "gruppeantall": {
+      "reportedResult": "20/0",
+      "ownRerunAfterExport70": false
+    },
+    "visual": "Natt og 320/768/1024 samt full visuell mobilgjennomgang av trenerlinje/Mer/Ny teknisk plan er ikke dokumentert ferdige. Ingen Anders-godkjenning registreres."
+  },
+  "mimeCorrection": {
+    "status": "registrering-rettet-med-uendrede-filbytes",
+    "html": {
+      "source": "ui_kits/wb-antall-repro.html",
+      "sha256": "4f10cc5e1a2829ab6ec417d1022224e88f974a37a8b1fbbbc55f161a000028f2",
+      "before": "image/png",
+      "after": "text/html"
+    },
+    "jsx": {
+      "source": "ui_kits/_shared/wb3-maned-visning.jsx",
+      "sha256": "88f28fb994e5d93df60ebcccaf55b5128422d0c37b25fc7d3de358e25a41e3ca",
+      "before": "image/png",
+      "after": "application/javascript"
+    },
+    "rootDiagnosticRecordedByCoordinator": true,
+    "cloudReceiptConfirmsCorrection": true,
+    "scope": "Feilen gjaldt vedleggets registrerte MIME/type, altså hvordan filinnholdet åpnes. Kontrollsummer for begge eksakte vedlegg er kontrollert mot eksport70. Det er ikke et nytt eget UI-resultat for periode34/0."
+  },
+  "sourceLimits": [
+    {
+      "source": "ui_kits/_shared/wb3-maned-visning.jsx",
+      "sha256": "88f28fb994e5d93df60ebcccaf55b5128422d0c37b25fc7d3de358e25a41e3ca",
+      "lines": [
+        58,
+        89
+      ],
+      "limit": "Ren MonthWeeks-komponent bruker DataTable på desktop og listekort på mobil. Eksakte vedleggsbytes er bevart; kode-/breddeprøve er ikke samlet visuell godkjenning."
+    },
+    {
+      "source": "privat-bevis:skjema-foer-retting-70",
+      "limit": "25/15 inkluderer et exception og uferdig kjøring. Skjemarettingen er sendt til Claude og pågår; ingen resultatforventning er svekket og ingen ferdigmelding registreres."
+    },
+    {
+      "source": "ui_kits/_shared/wb-model.js",
+      "sha256": "03487138b25330468ecb4715e70bdbb8f0d60d800ad2b5c8849ad29db6f3ca9c",
+      "fixtureSource": "ui_kits/_shared/data-wb3.js",
+      "fixtureSha256": "3c471fbe40f48f12f87894582dbad74574aea585591255b5d094ab4c55b91949",
+      "limit": "Modell og fixture er oppgitt uendret fra eksport59 i koordinatorens tidligere kildekontroll. Ingen ny kjøring av 121 isolerte modellprøver er gjort som del av denne eksport70-delkontrollen; de nye native månedsresultatene erstatter ikke et modell- eller backendbevis."
+    }
+  ],
+  "pending": [
+    "AG-anonymiseringsresten må rettes og prøves på nytt; rå privatnavn holdes utenfor repoet.",
+    "Lokal reviewpatch for måneds-/rolleprøven pågår; ny prøve og eksport må få eget bevis.",
+    "Skjemaretting med byteidentifisert 32-prøve pågår; native dato/tid, norske etiketter/datovisning, Avbryt/feil/retry og TEK-retur er ikke ferdig dokumentert.",
+    "Eksportens casefold-kollisjon krever et unikt recoverable arkivnavn for gammel alias før portabel sluttpakke. Ingen arkivopprydding utføres her.",
+    "Periode34/0 og gruppe20/0 er skyrapporterte i eksport70; egne tidligere root-resultater er ikke en ny eksport70-kjøring.",
+    "Ingen samlet designgodkjenning, app-/DB-/deployendring, commit eller push i denne delkontrollen."
+  ],
+  "documentChecks": {
+    "json": "Gyldig JSON; kilde-/bevis-SHA256 beregnet fra konkrete filer. Private bevis identifiseres maskert og med kontrollsum; rå navn og rå feillogger er ikke kopiert.",
+    "prosjektSjekk": "npm run prosjekt:sjekk bestått: prosjektstruktur og lokale Markdown-lenker i 186 vedlikeholdte dokumenter. Daterte underlag er unntatt fra den generelle lenkekontrollen."
+  },
+  "localPatchProof": {
+    "date": "2026-10-01",
+    "status": "lokal-patch-native-45-av-45-bestatt-ikke-skyintegrert",
+    "baseExportSha256": "b3fc8a939a68bbe63eaa7672c9fb4aa800b8aae7db3dbc24dea22ab50adc919f",
+    "scope": "Kun de to lokale kontrollfilene, basert på eksport70. Produktmodell, app, database og skyprosjekt er ikke endret av patchen. Historiske eksport70-resultater og skyrapporterte resultater ovenfor står uendret.",
+    "files": [
+      {
+        "source": "ui_kits/workbench-gjennomgang.html",
+        "sha256": "adbbbcba0046d76c983f363b0c787aaee253eab973af78f55cc9b9f51488b7cf",
+        "frozen": true,
+        "cloudIntegrated": false
+      },
+      {
+        "source": "ui_kits/wb-maaned-visning-repro.html",
+        "sha256": "8ec6ffe87d973f38a7d81edd4e181388b0c9c457b36c8cd411348db37f6424fd",
+        "frozen": true,
+        "cloudIntegrated": false
+      }
+    ],
+    "ownNativeCheck": {
+      "result": "45/0",
+      "total": 45,
+      "passed": 45,
+      "failed": 0,
+      "completed": true,
+      "executedBy": "koordinator-i-nettleser",
+      "evidence": "privat-bevis:egen70-roller-sterk-kanonisk-ny-okt",
+      "sha256": "b3bc268b34d3d18d094018e35804326de82a31927ce61980fa18e38ff7b88a66",
+      "rawPrivateNamesIncluded": false,
+      "widths": [
+        1440,
+        390
+      ],
+      "themes": [
+        "lyst",
+        "natt"
+      ],
+      "coverage": [
+        "Alle 30 tidligere måneds-/breddekontroller består ved 1440/390 px; de er ikke erstattet av en kortere prøve.",
+        "Native måned oktober 2026 → uke 2026-U42 → valgt egen plan → Ny økt i valgt uke → nytt øktskjema → lagring og eksakt gjenvalg. Ukjent varighet forblir null. Tidligere økter og annen plan beholdes.",
+        "Eksakt spiller p1, mode/subj, plan-ID, uke, måned, økt-ID og nivå følger spiller → trener → spiller → trener. Hele den lagrede planmodellens S-objekt beholdes ved rolle-/tema-/breddebytte.",
+        "Native rolesynk-feil viser skjult feiltilstand; retry beholder samme plan/uke/økt og full modell uten fallback til annen plan.",
+        "Alle valgbare spiller-/gruppeprofiler og trenerprofil er syntetiske. Faktiske avatarers navn/initialer og trenerens personvelger følger valgt profil. Mobilheader/bunnmeny kontrolleres etter faktisk responsiv rendering.",
+        "Raske bredde-/eksempelbytter krever skjult ramme under klargjøring og bare siste generasjon klar. Anonymisering og kontekst kontrolleres før synlig ready.",
+        "Tema og bredde beholder valgt kontekst/modell. Tom/Eksempel er separate navnerom; Tom → rollebytter forblir tomt, og retur til Eksempel beholder opprinnelig valg uten bakgrunnsoppretting i Tom."
+      ],
+      "visualApproval": false
+    },
+    "correctionsAndTestExpectations": [
+      {
+        "kind": "lokal-reviewretting",
+        "detail": "Den reelle eksport70-anonymiseringsfeilen lå i feil profilkilde og for tidlig synliggjøring etter asynkron rendering. Patchen bruker faktisk AG_DATA.coach, skjult ramme, generasjonsvakt og ferdig render-/anonymiserings-/kontekstkontroll."
+      },
+      {
+        "kind": "kontrollfasit",
+        "detail": "Spillerens navn er avatarens title/initialer på desktop, ikke body-brødtekst. Mobil har logoheader og TabBar uten avatar. NavRail og TabBar deler aria-label Hovedmeny og må skilles med faktisk pa-tabbar-markup. Eksakt valgt profil kreves fortsatt."
+      },
+      {
+        "kind": "initial-kontekstfasit",
+        "detail": "Ved første lesing betyr planId:null ennå ikke lest kontekst. En gyldig lokal valgt økt/uke/måned beholdes fra samme WB_SEL-eier/plan; nullfasit skal ikke slette et eksisterende valg. Manglende eller fremmed økt/plan stoppes fortsatt. Eksplisitt husket øktretur er uendret."
+      },
+      {
+        "kind": "native-inngang",
+        "detail": "Når en gammel økt allerede er valgt, er ny-okt-slag fra ukelista ikke den aktuelle inngangen. Prøven bruker faktisk Uke/U42 og side-ny-okt (Ny økt i valgt uke), deretter okt-dom=slag. Ingen modellsetter, valgfri retur eller catch-suksess erstatter målhandlingen."
+      },
+      {
+        "kind": "isolasjonsfixture",
+        "detail": "En ekstra tom plan opprettes som merket modellfixture. Antall planer kreves nøyaktig tidligere antall+1, siden et lokalt navnerom kan ha eldre egne planer. Alle eksisterende planer kontrolleres uendret under fixtureoppretting; senere full modell- og valgtøkt-returkrav beholdes."
+      }
+    ],
+    "sourceReferences": [
+      {
+        "source": "ui_kits/playerhq/parts.jsx",
+        "lines": [
+          76,
+          87,
+          133
+        ],
+        "meaning": "Responsiv spillerheader, rail/avatar og faktisk PHQ-profil."
+      },
+      {
+        "source": "_ds_bundle.js",
+        "lines": [
+          20774,
+          20781,
+          23474,
+          23754,
+          23755
+        ],
+        "meaning": "Avatar title/initialer og NavRail/TabBar med delt tilgjengelig navn."
+      },
+      {
+        "source": "ui_kits/_shared/WB3.jsx",
+        "lines": [
+          27,
+          28
+        ],
+        "meaning": "openOwn beholder valgt økt når sessionId ikke angis; konkret Workbench-kontekst."
+      },
+      {
+        "source": "ui_kits/_shared/WB3-lokal.jsx",
+        "lines": [
+          115,
+          116,
+          133,
+          162
+        ],
+        "meaning": "Valg fra plan/uke/økt og egenmodellens side-ny-okt → shortcut ny."
+      },
+      {
+        "source": "ui_kits/_shared/WB3-okt.jsx",
+        "lines": [
+          91,
+          104,
+          109,
+          112,
+          119
+        ],
+        "meaning": "Ny økt-form, valgt økt og native retur/ukeliste."
+      }
+    ],
+    "agentStaticChecks": {
+      "syntax": "VM og Babel: begge HTML-filers ene innebygde JavaScript består.",
+      "identityFixtures": {
+        "total": 10,
+        "passed": 10,
+        "meaning": "Syntetiske positive/negative responsiv-/identitetskontroller av reveal-vakt og prøvens forventninger."
+      },
+      "initialSelectionFixtures": {
+        "total": 4,
+        "passed": 4,
+        "meaning": "Bevart gyldig økt, virkelig tomt valg, avvisning av manglende/fremmed økt og manglende valgt plan."
+      },
+      "nativeEvidenceReplacement": false
+    },
+    "localPackage": {
+      "sha256": "db4a6c5e15087226d75fe2f3cef1d8729efb82da0d05dbaf8d68a3260f96cd7f",
+      "hashVerifiedBy": "koordinator",
+      "cloudIntegrated": false,
+      "includedStrongShortcutTestSha256": "54f6254c5e42652538410376dd89ff8bc05f48ab73c0ae9a80a22c58244404f3",
+      "meaning": "Koordinatorens faktiske lokale vedleggspakke med de frosne filene og sterk37-prøven. En pakke eller lokal pass er ikke bevis på skyintegrering."
+    },
+    "limits": [
+      "Avgrenset lokal kontroll av original eksport70; nye skyendringer, framtidige skjemaer, forkortingsregler og sluttversjon er ikke prøvd her.",
+      "Rolesynk er lokal prototypeglue, ikke autentisering, serverlagring eller flerbrukertilgang. Publisering er lokal forhåndsvisning uten levering til ekte brukere.",
+      "Ingen samlet designgodkjenning eller ny skjermgodkjenning; bare original PH01 har tidligere brukerens godkjenning.",
+      "Originalens casefold-kollisjon og skjemarester ovenfor er ikke grønnmeldt av dette lokale beviset. Historisk 37/1, 30/0, 22/0, 25/15 og sky37-rapportene er bevart."
+    ],
+    "documentChecks": {
+      "json": "Gyldig JSON; konkrete frosne lokale filhash og native bevisfil kontrollert. Ingen rå kilder/personnavn kopiert.",
+      "prosjektSjekk": "npm run prosjekt:sjekk bestått: prosjektstruktur og lokale Markdown-lenker i 186 vedlikeholdte dokumenter. Daterte underlag er unntatt fra generell lenkekontroll."
+    }
+  }
+}

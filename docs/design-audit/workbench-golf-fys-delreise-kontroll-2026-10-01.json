@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "publisert-golf-fys-avgrenset-seksten-egenkontroll-pågår",
+  "export": {
+    "zipName": "AK Golf Precision Athletics (28).zip",
+    "zipSha256": "ae2d07fab22249302af0ade8847887d36d23dcdf81feba8204a2b9af85883540",
+    "fileCount": 601,
+    "exportedAt": "2026-10-01T02:17:39.546073+00:00",
+    "exportRoot": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-live-seksten",
+    "status": "seksten-reisekontroller-observert-videre-kildekontroll"
+  },
+  "syntax": {
+    "scripts": 300,
+    "inline": 57,
+    "inlineIncludedInScripts": true,
+    "syntax_errors": 0,
+    "errors": []
+  },
+  "modelEvidenceReused": {
+    "sourceSha256": "7dce6188eb585ecb7773a01bf67c6870f34b489e78eea8bc556905fa6aea27e8",
+    "sameAsExport": 26,
+    "cases": 63,
+    "pass": 63,
+    "fail": 0,
+    "skip": 0,
+    "error": 0,
+    "limitation": "Samme modellbytes; intet nytt UI-/appbevis fra modellprøven"
+  },
+  "observedCloudUi": {
+    "checks": 16,
+    "failures": 0,
+    "page": "wb-pub-live2-repro.html",
+    "proofSha256": "73cc53097b59dc8ad226b4ca3cf33c55c7d1fc09984ddfea1c6c217001a31b98",
+    "scope": "Native bank/FYS-program/publisering, golf vurdert og FYS uten vurdering, savefail/retry, I dag-datovalg, pin og start etter tilbaketrekking, retur. Les faktisk prøvekode og avgrensninger."
+  },
+  "ownUi": {
+    "checks": 16,
+    "failures": 1,
+    "proofSha256": "0166614b1b62333e9d1e8b72caabc794398ab7d3d416999bb8daa869d1cd2194",
+    "failure": "FYS-startassert krever00:00 etter oppstart; egen lesing så00:01. Andre15 bestått. Kilden har0 initialtid, men egen reise er ikke grønn.",
+    "resources": "Testfane lukket og server55951 stoppet.",
+    "next": "Før-start/monoton faktisk tid prøves presist; ikke skjul avvik eller godta demotid."
+  },
+  "receipt": "delkvittering-lagring-publisering.md er ved eksport fortsatt eldre12/1-status og listeugjort; ingen samlet completion",
+  "sourceDelta": {
+    "corrected": [
+      "PH07-render",
+      "Full execution/ex/sets/drillId/sourceRev i separat results",
+      "Fersk FYSStart fra WBpanel"
+    ],
+    "partial": [
+      "Resultatkopi tas før saved/vurdering oppdateres",
+      "RD-inngang setter ubrukt PHQ_RUND; videre RD-demo og feil entryRef-klassifisering",
+      "Bare ett valgt mediespor fremfor datert før/etter"
+    ],
+    "limitations": [
+      "16prøven prøver ikke eksakt endret reps/kg eller media/RD/FYS-WB-withdraw",
+      "Historikkassert teller bare to minnenøkler, ingen faktisk historikkskjerm"
+    ]
+  },
+  "remaining": [
+    "TURN/SPILL-rundeinngang og taskmedia/full separat receipt/fersk FYSStart må kilde- og nativekontrolleres",
+    "TEK/antall/år/avbryt-/grunnlagsvakter",
+    "Gammel TP-reise, visuell konsistens, øvrige knapper, sluttregister"
+  ],
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false
+}

@@ -1,0 +1,1698 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "title": "Workbench knappregister: tillegg fra historisk eksport26",
+  "status": "datert-kildeaudit-prototype-kandidat-ikke-endelig",
+  "scope": "Kun egenversjon målplan/uke/dato/editor/retur og publisert PH-10/PH-01/PH-03/Live.",
+  "sourceExport": {
+    "zipName": "AK Golf Precision Athletics (26).zip",
+    "zipSha256": "8316a2762f31dd2da3177c16ad81f46bfac4861ff3bac4d1be1ac8032c52a309",
+    "exportedAt": "2026-10-01T01:48:55.583586+00:00",
+    "fileCount": 600,
+    "version": 26,
+    "historical": true,
+    "cloudCorrectionActive": true
+  },
+  "baseline": {
+    "file": "docs/design-system/workbench-fra-tom-plan.json",
+    "sha256": "007da7a0d1f56dce542608ec7f63f6559b60a239aaf7316555410f7f3beb0f5d",
+    "markdown": "docs/design-system/workbench-fra-tom-plan.md",
+    "screenCandidates": 77,
+    "controlRules": 183,
+    "countsAreNotCeilings": true
+  },
+  "sourceFiles": [
+    {
+      "file": "ui_kits/_shared/WB3-pub.jsx",
+      "sha256": "db656634377f3f4688a723b22da6857280cbee50d6a335d5f4f0116ae574f18b"
+    },
+    {
+      "file": "ui_kits/_shared/WB3-lokal.jsx",
+      "sha256": "dd429ac4ebb9c7fc591680b1c4350155aea80d56653171b2ed720e991510be7e"
+    },
+    {
+      "file": "ui_kits/_shared/WB3-okt.jsx",
+      "sha256": "4e995e4edfc9ebb1c53515026e2c62c73266262777408a39f4ed784ce61092b0"
+    },
+    {
+      "file": "ui_kits/playerhq/screens/PH-live.jsx",
+      "sha256": "a073d3bf7717c4f24b5710795d92663465a0bd18469d837fd13bc0d346df9bd8"
+    },
+    {
+      "file": "ui_kits/_shared/WB3.jsx",
+      "sha256": "c4094c344f7955dc50ad9512d466737e3db5af1f6d7b3c7cf4a9de051d6cc1fb"
+    },
+    {
+      "file": "ui_kits/_shared/wb-model.js",
+      "sha256": "7dce6188eb585ecb7773a01bf67c6870f34b489e78eea8bc556905fa6aea27e8"
+    },
+    {
+      "file": "ui_kits/playerhq/screens/PH-10.jsx",
+      "sha256": "ba7ef700fb7a16bc59ddab07d7da8dd4bedf36fcb2b8d60098be57450d9f33a8"
+    },
+    {
+      "file": "ui_kits/playerhq/screens/PH-01.jsx",
+      "sha256": "00a37ea96db2086136fe04f51a5edfab62197d1a328c24546af442f75a846a2a"
+    },
+    {
+      "file": "ui_kits/playerhq/screens/PH-03.jsx",
+      "sha256": "556ad0a07537cd56183c7f9bb802e24e3cafc68c161792f602db030db6df01a6"
+    },
+    {
+      "file": "ui_kits/playerhq/screen.html",
+      "sha256": "158db9a401547e66b140e6871a71d0bde8b4b5aceb5a2515a9ba9df538b349c7"
+    }
+  ],
+  "hostRegistrationEvidence": [
+    {
+      "file": "ui_kits/playerhq/screen.html",
+      "lines": [
+        34,
+        36,
+        41,
+        72,
+        77
+      ],
+      "order": "PH-01/PH-03/PH-10/PH-live before WB3-pub/WB3; components reference WB3_PUB at render time"
+    }
+  ],
+  "contextGroups": {
+    "own": {
+      "surface": "Panel:view=egen / egen-ok",
+      "objectBinding": [
+        "groupPlanId=plan.id",
+        "sourceSessionId=sel[0] / eg.sid",
+        "memberId=r.memberId / eg.memberId",
+        "targetPlanId=egPlan",
+        "requestId=egReq",
+        "created sessionId/planId=egRes"
+      ],
+      "guard": "Coach branch. Entry: ot===gruppe, sel.length===1, no existing r.unntak. Confirmation disabled when no target plan. Model186 checks coach/source existence/target owner/date range/retry identity.",
+      "return": "Cancel/receipt back sets view=liste. Editor entry captures group mode/subj/planId/sid in WB_RET_OWN; no automatic publication."
+    },
+    "editor": {
+      "surface": "Reused owned week / Section / SessForm",
+      "objectBinding": [
+        "owner=okey(mode,subj)",
+        "planId=pid / plan.id",
+        "selected sessionId=st.okt[pid]",
+        "editor draftId=f.draftId",
+        "weekKey=st.wks[pid] / returned session.bind.weekKey"
+      ],
+      "guard": "openOwn uses WB_GUARD; selected source session must exist. Save checks returned r.ok. Unknown React state branches remain source prerequisites.",
+      "return": "done(session) chooses session.id and follows changed bind.weekKey. SessForm cancel directly clears view; dirty guard remains unverified."
+    },
+    "card": {
+      "surface": "Published cards in PH-10 and PH-01",
+      "objectBinding": [
+        "from=PH-10 / PH-01",
+        "s from WB.publishedForPlayer(spiller,pid())",
+        "pid()=TP2.scope().playerId",
+        "s.publicationId/publicationRev/sessionId/planId/ownerType/ownerId",
+        "snapshot.ovelser[].id"
+      ],
+      "guard": "Publication getter returns authorized visible list or raises error; dynamic s per map. openPub reuses rendered s, no fresh getter inside handler.",
+      "return": "PHQ_SEL.returnTo=from retained through PH-03 and Live"
+    },
+    "ark": {
+      "surface": "PH-03 conditional published Ark",
+      "objectBinding": [
+        "sel=PHQ_SEL",
+        "pb=sel.pub",
+        "s=WB.publishedSession(pb.publicationId,pb.sessionId,spiller,pid())",
+        "adapterKey=pub:+publicationId+:+sessionId",
+        "back=sel.returnTo || PH-01"
+      ],
+      "guard": "PH-03 wrapper selects Ark only with sel.pub && sel.view03 && WB3_PUB. Getter validates render-time access; no fresh start-click read.",
+      "return": "go(back), exact origin PH-10/PH-01 or fallback PH-01"
+    },
+    "published": {
+      "surface": "Workbench publication Panel player branch",
+      "objectBinding": [
+        "owner ot/oid",
+        "opn.pid pins publicationId",
+        "opn.sid pins sessionId",
+        "s=publishedSession(opn.pid,opn.sid,ot,oid)",
+        "latest=publishedForPlayer(ot,oid).find(sessionId===opn.sid)"
+      ],
+      "guard": "!coach; published getter/source state. Start uses rendered s and only checks LIVE_DATA/WB3_CTX.",
+      "return": "pub-okt-tilbake clears opn. pub-tilbake clears WB_PUB. startLive assigns returnTo=PH-11-AR and WB_RET.level=uke."
+    },
+    "live": {
+      "surface": "Existing PH-04/PH-05/PH-06/PH-07/PH-07-FYS with publication context",
+      "objectBinding": [
+        "PHQ_SEL.sessionId",
+        "PHQ_SEL.pub(publicationId,publishedRev,sourceOwnerType/sourceOwnerId,planId,sessionId,drillInstanceIds)",
+        "PHQ_SESSION and PHQ_SAVED inherit pub via WB3-pub hook7"
+      ],
+      "guard": "Published adapter registered in LIVE_DATA. Existing LS/LFY still have demo fallback. Save checks PHQ_SAVEFAIL, ratings validity and saving phase; no app persistence evidence.",
+      "return": "home()=(PHQ_SEL.pub && PHQ_SEL.returnTo)||PH-01"
+    }
+  },
+  "surfaces": [
+    {
+      "sourceComponent": "Panel:view=egen",
+      "registeredId": null,
+      "type": "new-local-component-state",
+      "source": {
+        "file": "ui_kits/_shared/WB3-pub.jsx",
+        "line": 51
+      },
+      "baselineAlias": []
+    },
+    {
+      "sourceComponent": "Panel:view=egen-ok",
+      "registeredId": null,
+      "type": "new-local-component-state",
+      "source": {
+        "file": "ui_kits/_shared/WB3-pub.jsx",
+        "line": 56
+      },
+      "baselineAlias": []
+    },
+    {
+      "sourceComponent": "openOwn → week/Section/SessForm",
+      "registeredId": null,
+      "type": "reuse-existing-surfaces-new-owner-and-origin-binding",
+      "source": {
+        "file": "ui_kits/_shared/WB3.jsx",
+        "line": 27
+      },
+      "baselineAlias": [
+        "AG-11-UKE",
+        "AG-11-OKT",
+        "AG-11-OKTSKJEMA"
+      ]
+    },
+    {
+      "sourceComponent": "Kort(from=PH-10)",
+      "registeredId": "PH-10",
+      "type": "existing-other-family-new-published-entry",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-10.jsx",
+        "line": 42
+      },
+      "baselineAlias": []
+    },
+    {
+      "sourceComponent": "Kort(from=PH-01)",
+      "registeredId": "PH-01",
+      "type": "existing-other-family-new-published-entry",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-01.jsx",
+        "line": 153
+      },
+      "baselineAlias": []
+    },
+    {
+      "sourceComponent": "Ark",
+      "registeredId": "PH-03",
+      "type": "existing-other-family-conditional-published-variant",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-03.jsx",
+        "line": 54
+      },
+      "baselineAlias": []
+    },
+    {
+      "sourceComponent": "PH-04",
+      "registeredId": "PH-04",
+      "type": "existing-other-family-published-context-variant",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-live.jsx",
+        "line": 170
+      },
+      "baselineAlias": []
+    },
+    {
+      "sourceComponent": "PH-05",
+      "registeredId": "PH-05",
+      "type": "existing-other-family-published-context-variant",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-live.jsx",
+        "line": 171
+      },
+      "baselineAlias": []
+    },
+    {
+      "sourceComponent": "PH-06",
+      "registeredId": "PH-06",
+      "type": "existing-other-family-published-context-variant",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-live.jsx",
+        "line": 172
+      },
+      "baselineAlias": []
+    },
+    {
+      "sourceComponent": "PH-07",
+      "registeredId": "PH-07",
+      "type": "existing-other-family-published-context-variant",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-live.jsx",
+        "line": 173
+      },
+      "baselineAlias": []
+    },
+    {
+      "sourceComponent": "PH-07-FYS",
+      "registeredId": "PH-07-FYS",
+      "type": "existing-other-family-published-context-variant",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-live.jsx",
+        "line": 174
+      },
+      "baselineAlias": []
+    }
+  ],
+  "controls": [
+    {
+      "controlId": null,
+      "controlIdExpression": "\"pub-egen-\" + r.memberId",
+      "identityKind": "source-data-control-id",
+      "source": {
+        "file": "ui_kits/_shared/WB3-pub.jsx",
+        "line": 61,
+        "start": 22974,
+        "end": 23205
+      },
+      "sourceOccurrencesOnSameLine": 1,
+      "tag": "Button",
+      "eventProps": [
+        "onClick"
+      ],
+      "contextGroup": "own",
+      "actionRule": "setEg(memberId=r.memberId,sid=sel[0]); clear target plan; view=egen",
+      "canonicalBaseline": {
+        "exists": false,
+        "ruleIds": [],
+        "relationship": "specific-rule-missing"
+      },
+      "status": "prototype-kandidat-ikke-appverifisert",
+      "sourceOccurrences": [
+        {
+          "line": 61,
+          "start": 22974,
+          "end": 23205
+        }
+      ]
+    },
+    {
+      "controlId": "egen-plan",
+      "controlIdExpression": null,
+      "identityKind": "source-data-control-id",
+      "source": {
+        "file": "ui_kits/_shared/WB3-pub.jsx",
+        "line": 53,
+        "start": 18049,
+        "end": 18210
+      },
+      "sourceOccurrencesOnSameLine": 1,
+      "tag": "select",
+      "eventProps": [
+        "onChange"
+      ],
+      "contextGroup": "own",
+      "actionRule": "setEgPlan(e.target.value); clear error",
+      "canonicalBaseline": {
+        "exists": false,
+        "ruleIds": [],
+        "relationship": "specific-rule-missing"
+      },
+      "status": "prototype-kandidat-ikke-appverifisert",
+      "sourceOccurrences": [
+        {
+          "line": 53,
+          "start": 18049,
+          "end": 18210
+        }
+      ]
+    },
+    {
+      "controlId": "egen-bekreft",
+      "controlIdExpression": null,
+      "identityKind": "source-data-control-id",
+      "source": {
+        "file": "ui_kits/_shared/WB3-pub.jsx",
+        "line": 55,
+        "start": 18616,
+        "end": 18898
+      },
+      "sourceOccurrencesOnSameLine": 1,
+      "tag": "Button",
+      "eventProps": [
+        "onClick"
+      ],
+      "contextGroup": "own",
+      "actionRule": "createOwnVersion(plan.id,eg.sid,eg.memberId,egPlan,egReq); !ok keeps error; success sets egRes/view=egen-ok",
+      "canonicalBaseline": {
+        "exists": false,
+        "ruleIds": [],
+        "relationship": "specific-rule-missing"
+      },
+      "status": "prototype-kandidat-ikke-appverifisert",
+      "sourceOccurrences": [
+        {
+          "line": 55,
+          "start": 18616,
+          "end": 18898
+        }
+      ]
+    },
+    {
+      "controlId": "egen-avbryt",
+      "controlIdExpression": null,
+      "identityKind": "source-data-control-id",
+      "source": {
+        "file": "ui_kits/_shared/WB3-pub.jsx",
+        "line": 55,
+        "start": 18950,
+        "end": 19084
+      },
+      "sourceOccurrencesOnSameLine": 1,
+      "tag": "Button",
+      "eventProps": [
+        "onClick"
+      ],
+      "contextGroup": "own",
+      "actionRule": "clear error; view=liste",
+      "canonicalBaseline": {
+        "exists": true,
+        "ruleIds": [
+          "ag-wb-avbryt-bekreft"
+        ],
+        "relationship": "semantic-match-not-declared-source-alias"
+      },
+      "status": "prototype-kandidat-ikke-appverifisert",
+      "sourceOccurrences": [
+        {
+          "line": 55,
+          "start": 18950,
+          "end": 19084
+        }
+      ]
+    },
+    {
+      "controlId": "egen-apne",
+      "controlIdExpression": null,
+      "identityKind": "source-data-control-id",
+      "source": {
+        "file": "ui_kits/_shared/WB3-pub.jsx",
+        "line": 56,
+        "start": 19580,
+        "end": 19871
+      },
+      "sourceOccurrencesOnSameLine": 1,
+      "tag": "Button",
+      "eventProps": [
+        "onClick"
+      ],
+      "contextGroup": "own",
+      "actionRule": "openOwn(mode=spiller,subj=eg.memberId.split(@)[0],planId=egRes.planId,sessionId=egRes.sessionId,pub=false,ret={mode:ot,subj:oid.split(@)[0],planId:plan.id,sid:eg.sid})",
+      "canonicalBaseline": {
+        "exists": false,
+        "ruleIds": [],
+        "relationship": "specific-rule-missing"
+      },
+      "status": "prototype-kandidat-ikke-appverifisert",
+      "sourceOccurrences": [
+        {
+          "line": 56,
+          "start": 19580,
+          "end": 19871
+        }
+      ]
+    },
+    {
+      "controlId": "egen-tilbake-gruppe",
+      "controlIdExpression": null,
+      "identityKind": "source-data-control-id",
+      "source": {
+        "file": "ui_kits/_shared/WB3-pub.jsx",
+        "line": 56,
+        "start": 19908,
+        "end": 20033
+      },
+      "sourceOccurrencesOnSameLine": 1,
+      "tag": "Button",
+      "eventProps": [
+        "onClick"
+      ],
+      "contextGroup": "own",
+      "actionRule": "view=liste",
+      "canonicalBaseline": {
+        "exists": false,
+        "ruleIds": [],
+        "relationship": "specific-rule-missing"
+      },
+      "status": "prototype-kandidat-ikke-appverifisert",
+      "sourceOccurrences": [
+        {
+          "line": 56,
+          "start": 19908,
+          "end": 20033
+        }
+      ]
+    },
+    {
+      "controlId": "egen-retur-knapp",
+      "controlIdExpression": null,
+      "identityKind": "source-data-control-id",
+      "source": {
+        "file": "ui_kits/_shared/WB3-lokal.jsx",
+        "line": 123,
+        "start": 44103,
+        "end": 44369
+      },
+      "sourceOccurrencesOnSameLine": 1,
+      "tag": "Button",
+      "eventProps": [
+        "onClick"
+      ],
+      "contextGroup": "own",
+      "actionRule": "r=WB_RET_OWN; openOwn(r.mode,r.subj,r.planId,sessionId=r.sid,pub=true,sel0=[r.sid],ret=null); WB_GUARD",
+      "canonicalBaseline": {
+        "exists": false,
+        "ruleIds": [],
+        "relationship": "specific-rule-missing"
+      },
+      "status": "prototype-kandidat-ikke-appverifisert",
+      "sourceOccurrences": [
+        {
+          "line": 123,
+          "start": 44103,
+          "end": 44369
+        }
+      ]
+    },
+    {
+      "controlId": "uke-velger",
+      "controlIdExpression": null,
+      "identityKind": "source-data-control-id",
+      "source": {
+        "file": "ui_kits/_shared/WB3-lokal.jsx",
+        "line": 93,
+        "start": 30233,
+        "end": 30406
+      },
+      "sourceOccurrencesOnSameLine": 1,
+      "tag": "select",
+      "eventProps": [
+        "onChange"
+      ],
+      "contextGroup": "editor",
+      "actionRule": "openWeekFor(st,pid,e.target.value); re",
+      "canonicalBaseline": {
+        "exists": true,
+        "ruleIds": [
+          "ag-wb-uke-dato",
+          "ph-wb-uke-dato"
+        ],
+        "relationship": "semantic-match-not-declared-source-alias"
+      },
+      "status": "prototype-kandidat-ikke-appverifisert",
+      "sourceOccurrences": [
+        {
+          "line": 93,
+          "start": 30233,
+          "end": 30406
+        }
+      ]
+    },
+    {
+      "controlId": "rediger-okt",
+      "controlIdExpression": null,
+      "identityKind": "source-data-control-id",
+      "source": {
+        "file": "ui_kits/_shared/WB3-okt.jsx",
+        "line": 108,
+        "start": 40774,
+        "end": 41034
+      },
+      "sourceOccurrencesOnSameLine": 1,
+      "tag": "Button",
+      "eventProps": [
+        "onClick"
+      ],
+      "contextGroup": "editor",
+      "actionRule": "view={t:form,init:{...s,sessionId:s.id,draftId:s.draftId,...}}",
+      "canonicalBaseline": {
+        "exists": true,
+        "ruleIds": [
+          "ag-wb-okt-rediger",
+          "ph-wb-okt-rediger"
+        ],
+        "relationship": "semantic-match-not-declared-source-alias"
+      },
+      "status": "prototype-kandidat-ikke-appverifisert",
+      "sourceOccurrences": [
+        {
+          "line": 108,
+          "start": 40774,
+          "end": 41034
+        }
+      ]
+    },
+    {
+      "controlId": "okt-dato",
+      "controlIdExpression": null,
+      "identityKind": "source-data-control-id",
+      "source": {
+        "file": "ui_kits/_shared/WB3-okt.jsx",
+        "line": 22,
+        "start": 6948,
+        "end": 7080
+      },
+      "sourceOccurrencesOnSameLine": 1,
+      "tag": "input",
+      "eventProps": [
+        "onChange"
+      ],
+      "contextGroup": "editor",
+      "actionRule": "patch f.dato=e.target.value",
+      "canonicalBaseline": {
+        "exists": true,
+        "ruleIds": [
+          "ag-wb-okt-rediger",
+          "ph-wb-okt-rediger"
+        ],
+        "relationship": "semantic-match-not-declared-source-alias"
+      },
+      "status": "prototype-kandidat-ikke-appverifisert",
+      "sourceOccurrences": [
+        {
+          "line": 22,
+          "start": 6948,
+          "end": 7080
+        }
+      ]
+    },
+    {
+      "controlId": "okt-tid",
+      "controlIdExpression": null,
+      "identityKind": "source-data-control-id",
+      "source": {
+        "file": "ui_kits/_shared/WB3-okt.jsx",
+        "line": 23,
+        "start": 7124,
+        "end": 7279
+      },
+      "sourceOccurrencesOnSameLine": 1,
+      "tag": "input",
+      "eventProps": [
+        "onChange"
+      ],
+      "contextGroup": "editor",
+      "actionRule": "patch f.startTid=e.target.value",
+      "canonicalBaseline": {
+        "exists": true,
+        "ruleIds": [
+          "ag-wb-okt-rediger",
+          "ph-wb-okt-rediger"
+        ],
+        "relationship": "semantic-match-not-declared-source-alias"
+      },
+      "status": "prototype-kandidat-ikke-appverifisert",
+      "sourceOccurrences": [
+        {
+          "line": 23,
+          "start": 7124,
+          "end": 7279
+        }
+      ]
+    },
+    {
+      "controlId": "okt-lagre",
+      "controlIdExpression": null,
+      "identityKind": "source-data-control-id",
+      "source": {
+        "file": "ui_kits/_shared/WB3-okt.jsx",
+        "line": 30,
+        "start": 10064,
+        "end": 10157
+      },
+      "sourceOccurrencesOnSameLine": 1,
+      "tag": "Button",
+      "eventProps": [
+        "onClick"
+      ],
+      "contextGroup": "editor",
+      "actionRule": "saveSession(plan.id,f); !ok leaves editor/error; onSaved(r.session)→done(session)",
+      "canonicalBaseline": {
+        "exists": true,
+        "ruleIds": [
+          "ag-wb-okt-lagre",
+          "ph-wb-okt-lagre"
+        ],
+        "relationship": "semantic-match-not-declared-source-alias"
+      },
+      "status": "prototype-kandidat-ikke-appverifisert",
+      "sourceOccurrences": [
+        {
+          "line": 30,
+          "start": 10064,
+          "end": 10157
+        }
+      ]
+    },
+    {
+      "controlId": "okt-avbryt",
+      "controlIdExpression": null,
+      "identityKind": "source-data-control-id",
+      "source": {
+        "file": "ui_kits/_shared/WB3-okt.jsx",
+        "line": 30,
+        "start": 10237,
+        "end": 10339
+      },
+      "sourceOccurrencesOnSameLine": 1,
+      "tag": "Button",
+      "eventProps": [
+        "onClick"
+      ],
+      "contextGroup": "editor",
+      "actionRule": "onCancel→setView(null) immediately",
+      "canonicalBaseline": {
+        "exists": true,
+        "ruleIds": [
+          "ag-wb-avbryt",
+          "ph-wb-avbryt"
+        ],
+        "relationship": "semantic-match-not-declared-source-alias"
+      },
+      "status": "prototype-kandidat-ikke-appverifisert",
+      "sourceOccurrences": [
+        {
+          "line": 30,
+          "start": 10237,
+          "end": 10339
+        }
+      ]
+    },
+    {
+      "controlId": null,
+      "controlIdExpression": "\"pub-kort-\" + from + \"-\" + s.sessionId",
+      "identityKind": "source-data-control-id",
+      "source": {
+        "file": "ui_kits/_shared/WB3-pub.jsx",
+        "line": 19,
+        "start": 5641,
+        "end": 5940
+      },
+      "sourceOccurrencesOnSameLine": 1,
+      "tag": "Button",
+      "eventProps": [
+        "onClick"
+      ],
+      "contextGroup": "card",
+      "actionRule": "openPub(s,from,go) → registerLive(s); PHQ_SEL(view03=true,returnTo=from); go(PH-03)",
+      "canonicalBaseline": {
+        "exists": false,
+        "ruleIds": [],
+        "relationship": "specific-rule-missing"
+      },
+      "status": "prototype-kandidat-ikke-appverifisert",
+      "sourceOccurrences": [
+        {
+          "line": 19,
+          "start": 5641,
+          "end": 5940
+        }
+      ]
+    },
+    {
+      "controlId": null,
+      "controlIdExpression": "\"pub-kort-prov-\" + from",
+      "identityKind": "source-data-control-id",
+      "source": {
+        "file": "ui_kits/_shared/WB3-pub.jsx",
+        "line": 19,
+        "start": 5491,
+        "end": 5594
+      },
+      "sourceOccurrencesOnSameLine": 1,
+      "tag": "Button",
+      "eventProps": [
+        "onClick"
+      ],
+      "contextGroup": "card",
+      "actionRule": "tk(x=>x+1); re-render publishedForPlayer read",
+      "canonicalBaseline": {
+        "exists": false,
+        "ruleIds": [],
+        "relationship": "specific-rule-missing"
+      },
+      "status": "prototype-kandidat-ikke-appverifisert",
+      "sourceOccurrences": [
+        {
+          "line": 19,
+          "start": 5491,
+          "end": 5594
+        }
+      ]
+    },
+    {
+      "controlId": "ph03-pub-prov-igjen",
+      "controlIdExpression": null,
+      "identityKind": "source-data-control-id",
+      "source": {
+        "file": "ui_kits/_shared/WB3-pub.jsx",
+        "line": 22,
+        "start": 7097,
+        "end": 7196
+      },
+      "sourceOccurrencesOnSameLine": 1,
+      "tag": "Button",
+      "eventProps": [
+        "onClick"
+      ],
+      "contextGroup": "ark",
+      "actionRule": "tk(x=>x+1); re-read publishedSession",
+      "canonicalBaseline": {
+        "exists": false,
+        "ruleIds": [],
+        "relationship": "specific-rule-missing"
+      },
+      "status": "prototype-kandidat-ikke-appverifisert",
+      "sourceOccurrences": [
+        {
+          "line": 22,
+          "start": 7097,
+          "end": 7196
+        }
+      ]
+    },
+    {
+      "controlId": "ph03-pub-tilbake",
+      "controlIdExpression": null,
+      "identityKind": "source-data-control-id",
+      "source": {
+        "file": "ui_kits/_shared/WB3-pub.jsx",
+        "line": 22,
+        "start": 7215,
+        "end": 7283
+      },
+      "sourceOccurrencesOnSameLine": 1,
+      "tag": "Button",
+      "eventProps": [
+        "onClick"
+      ],
+      "contextGroup": "ark",
+      "actionRule": "unavailable branch → go(back)",
+      "canonicalBaseline": {
+        "exists": false,
+        "ruleIds": [],
+        "relationship": "specific-rule-missing"
+      },
+      "status": "prototype-kandidat-ikke-appverifisert",
+      "sourceOccurrences": [
+        {
+          "line": 22,
+          "start": 7215,
+          "end": 7283
+        }
+      ]
+    },
+    {
+      "controlId": "ph03-pub-start",
+      "controlIdExpression": null,
+      "identityKind": "source-data-control-id",
+      "source": {
+        "file": "ui_kits/_shared/WB3-pub.jsx",
+        "line": 26,
+        "start": 8566,
+        "end": 8728
+      },
+      "sourceOccurrencesOnSameLine": 1,
+      "tag": "Button",
+      "eventProps": [
+        "onClick"
+      ],
+      "contextGroup": "ark",
+      "actionRule": "PHQ_SEL={...sel,view03:false}; go(s.snapshot.dominerende===fys ? PH-06 : PH-04)",
+      "canonicalBaseline": {
+        "exists": false,
+        "ruleIds": [],
+        "relationship": "specific-rule-missing"
+      },
+      "status": "prototype-kandidat-ikke-appverifisert",
+      "sourceOccurrences": [
+        {
+          "line": 26,
+          "start": 8566,
+          "end": 8728
+        }
+      ]
+    },
+    {
+      "controlId": "ph03-pub-tilbake",
+      "controlIdExpression": null,
+      "identityKind": "source-data-control-id",
+      "source": {
+        "file": "ui_kits/_shared/WB3-pub.jsx",
+        "line": 26,
+        "start": 8746,
+        "end": 8834
+      },
+      "sourceOccurrencesOnSameLine": 1,
+      "tag": "Button",
+      "eventProps": [
+        "onClick"
+      ],
+      "contextGroup": "ark",
+      "actionRule": "available branch → go(back)",
+      "canonicalBaseline": {
+        "exists": false,
+        "ruleIds": [],
+        "relationship": "specific-rule-missing"
+      },
+      "status": "prototype-kandidat-ikke-appverifisert",
+      "sourceOccurrences": [
+        {
+          "line": 26,
+          "start": 8746,
+          "end": 8834
+        }
+      ]
+    },
+    {
+      "controlId": null,
+      "controlIdExpression": "\"pub-apne-\" + s.sessionId",
+      "identityKind": "source-data-control-id",
+      "source": {
+        "file": "ui_kits/_shared/WB3-pub.jsx",
+        "line": 42,
+        "start": 15273,
+        "end": 15610
+      },
+      "sourceOccurrencesOnSameLine": 1,
+      "tag": "Button",
+      "eventProps": [
+        "onClick"
+      ],
+      "contextGroup": "published",
+      "actionRule": "setOpn({sid:s.sessionId,pid:s.publicationId})",
+      "canonicalBaseline": {
+        "exists": false,
+        "ruleIds": [],
+        "relationship": "specific-rule-missing"
+      },
+      "status": "prototype-kandidat-ikke-appverifisert",
+      "sourceOccurrences": [
+        {
+          "line": 42,
+          "start": 15273,
+          "end": 15610
+        }
+      ]
+    },
+    {
+      "controlId": "pub-apne-ny",
+      "controlIdExpression": null,
+      "identityKind": "source-data-control-id",
+      "source": {
+        "file": "ui_kits/_shared/WB3-pub.jsx",
+        "line": 38,
+        "start": 13135,
+        "end": 13287
+      },
+      "sourceOccurrencesOnSameLine": 1,
+      "tag": "Button",
+      "eventProps": [
+        "onClick"
+      ],
+      "contextGroup": "published",
+      "actionRule": "latest && latest.publicationId!==s.publicationId → setOpn(sid=opn.sid,pid=latest.publicationId)",
+      "canonicalBaseline": {
+        "exists": false,
+        "ruleIds": [],
+        "relationship": "specific-rule-missing"
+      },
+      "status": "prototype-kandidat-ikke-appverifisert",
+      "sourceOccurrences": [
+        {
+          "line": 38,
+          "start": 13135,
+          "end": 13287
+        }
+      ]
+    },
+    {
+      "controlId": "pub-start-okt",
+      "controlIdExpression": null,
+      "identityKind": "source-data-control-id",
+      "source": {
+        "file": "ui_kits/_shared/WB3-pub.jsx",
+        "line": 41,
+        "start": 14186,
+        "end": 14281
+      },
+      "sourceOccurrencesOnSameLine": 1,
+      "tag": "Button",
+      "eventProps": [
+        "onClick"
+      ],
+      "contextGroup": "published",
+      "actionRule": "startLive(s) → registerLive(s), PHQ_SEL.pub/key, go(PH-06 or PH-04)",
+      "canonicalBaseline": {
+        "exists": false,
+        "ruleIds": [],
+        "relationship": "specific-rule-missing"
+      },
+      "status": "prototype-kandidat-ikke-appverifisert",
+      "sourceOccurrences": [
+        {
+          "line": 41,
+          "start": 14186,
+          "end": 14281
+        }
+      ]
+    },
+    {
+      "controlId": "pub-okt-tilbake",
+      "controlIdExpression": null,
+      "identityKind": "source-data-control-id",
+      "source": {
+        "file": "ui_kits/_shared/WB3-pub.jsx",
+        "line": 41,
+        "start": 14298,
+        "end": 14415
+      },
+      "sourceOccurrencesOnSameLine": 2,
+      "tag": "Button",
+      "eventProps": [
+        "onClick"
+      ],
+      "contextGroup": "published",
+      "actionRule": "setOpn(null), including unavailable branch",
+      "canonicalBaseline": {
+        "exists": false,
+        "ruleIds": [],
+        "relationship": "specific-rule-missing"
+      },
+      "status": "prototype-kandidat-ikke-appverifisert",
+      "sourceOccurrences": [
+        {
+          "line": 41,
+          "start": 14298,
+          "end": 14415
+        },
+        {
+          "line": 41,
+          "start": 14737,
+          "end": 14854
+        }
+      ]
+    },
+    {
+      "controlId": "pub-tilbake",
+      "controlIdExpression": null,
+      "identityKind": "source-data-control-id",
+      "source": {
+        "file": "ui_kits/_shared/WB3-pub.jsx",
+        "line": 33,
+        "start": 10481,
+        "end": 10581
+      },
+      "sourceOccurrencesOnSameLine": 1,
+      "tag": "Button",
+      "eventProps": [
+        "onClick"
+      ],
+      "contextGroup": "published",
+      "actionRule": "WB_PUB=null; bump/store.bump",
+      "canonicalBaseline": {
+        "exists": true,
+        "ruleIds": [
+          "ag-wb-tilbake-oversikt",
+          "ph-wb-tilbake-oversikt"
+        ],
+        "relationship": "semantic-match-not-declared-source-alias"
+      },
+      "status": "prototype-kandidat-ikke-appverifisert",
+      "sourceOccurrences": [
+        {
+          "line": 33,
+          "start": 10481,
+          "end": 10581
+        }
+      ]
+    },
+    {
+      "controlId": null,
+      "controlIdExpression": null,
+      "identityKind": "source-span-only-no-stable-id",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-live.jsx",
+        "line": 21,
+        "start": 1862,
+        "end": 1979
+      },
+      "tag": "IconButton",
+      "eventProps": [
+        "onClick"
+      ],
+      "contextGroup": "live",
+      "actionRule": "() => go(home())",
+      "canonicalBaseline": {
+        "exists": false,
+        "ruleIds": [],
+        "relationship": "outside-workbench-baseline; source handler exists; stable control ID absent"
+      },
+      "status": "prototype-kandidat-ikke-appverifisert",
+      "sourceOccurrences": [
+        {
+          "line": 21,
+          "start": 1862,
+          "end": 1979
+        }
+      ],
+      "disabledExpression": null,
+      "controlScope": "interactive-source-control"
+    },
+    {
+      "controlId": null,
+      "controlIdExpression": null,
+      "identityKind": "source-span-only-no-stable-id",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-live.jsx",
+        "line": 22,
+        "start": 2154,
+        "end": 2245
+      },
+      "tag": "Button",
+      "eventProps": [
+        "onClick"
+      ],
+      "contextGroup": "live",
+      "actionRule": "() => go(\"PH-05\")",
+      "canonicalBaseline": {
+        "exists": false,
+        "ruleIds": [],
+        "relationship": "outside-workbench-baseline; source handler exists; stable control ID absent"
+      },
+      "status": "prototype-kandidat-ikke-appverifisert",
+      "sourceOccurrences": [
+        {
+          "line": 22,
+          "start": 2154,
+          "end": 2245
+        }
+      ],
+      "disabledExpression": null,
+      "controlScope": "interactive-source-control"
+    },
+    {
+      "controlId": null,
+      "controlIdExpression": null,
+      "identityKind": "source-span-only-no-stable-id",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-live.jsx",
+        "line": 22,
+        "start": 2284,
+        "end": 2380
+      },
+      "tag": "Button",
+      "eventProps": [
+        "onClick"
+      ],
+      "contextGroup": "live",
+      "actionRule": "() => go(home())",
+      "canonicalBaseline": {
+        "exists": false,
+        "ruleIds": [],
+        "relationship": "outside-workbench-baseline; source handler exists; stable control ID absent"
+      },
+      "status": "prototype-kandidat-ikke-appverifisert",
+      "sourceOccurrences": [
+        {
+          "line": 22,
+          "start": 2284,
+          "end": 2380
+        }
+      ],
+      "disabledExpression": null,
+      "controlScope": "interactive-source-control"
+    },
+    {
+      "controlId": null,
+      "controlIdExpression": null,
+      "identityKind": "source-span-only-no-stable-id",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-live.jsx",
+        "line": 66,
+        "start": 8955,
+        "end": 9036
+      },
+      "tag": "Button",
+      "eventProps": [
+        "onClick"
+      ],
+      "contextGroup": "live",
+      "actionRule": "finish",
+      "canonicalBaseline": {
+        "exists": false,
+        "ruleIds": [],
+        "relationship": "outside-workbench-baseline; source handler exists; stable control ID absent"
+      },
+      "status": "prototype-kandidat-ikke-appverifisert",
+      "sourceOccurrences": [
+        {
+          "line": 66,
+          "start": 8955,
+          "end": 9036
+        }
+      ],
+      "disabledExpression": null,
+      "controlScope": "interactive-source-control"
+    },
+    {
+      "controlId": null,
+      "controlIdExpression": null,
+      "identityKind": "source-span-only-no-stable-id",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-live.jsx",
+        "line": 98,
+        "start": 15480,
+        "end": 15769
+      },
+      "tag": "Dialog",
+      "eventProps": [
+        "onClose"
+      ],
+      "contextGroup": "live",
+      "actionRule": "() => setEnd(false)",
+      "canonicalBaseline": {
+        "exists": false,
+        "ruleIds": [],
+        "relationship": "outside-workbench-baseline; source handler exists; stable control ID absent"
+      },
+      "status": "prototype-kandidat-ikke-appverifisert",
+      "sourceOccurrences": [
+        {
+          "line": 98,
+          "start": 15480,
+          "end": 15769
+        }
+      ],
+      "disabledExpression": null,
+      "controlScope": "wrapper-close-contract"
+    },
+    {
+      "controlId": null,
+      "controlIdExpression": null,
+      "identityKind": "source-span-only-no-stable-id",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-live.jsx",
+        "line": 98,
+        "start": 15562,
+        "end": 15630
+      },
+      "tag": "Button",
+      "eventProps": [
+        "onClick"
+      ],
+      "contextGroup": "live",
+      "actionRule": "() => setEnd(false)",
+      "canonicalBaseline": {
+        "exists": false,
+        "ruleIds": [],
+        "relationship": "outside-workbench-baseline; source handler exists; stable control ID absent"
+      },
+      "status": "prototype-kandidat-ikke-appverifisert",
+      "sourceOccurrences": [
+        {
+          "line": 98,
+          "start": 15562,
+          "end": 15630
+        }
+      ],
+      "disabledExpression": null,
+      "controlScope": "interactive-source-control"
+    },
+    {
+      "controlId": null,
+      "controlIdExpression": null,
+      "identityKind": "source-span-only-no-stable-id",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-live.jsx",
+        "line": 98,
+        "start": 15647,
+        "end": 15725
+      },
+      "tag": "Button",
+      "eventProps": [
+        "onClick"
+      ],
+      "contextGroup": "live",
+      "actionRule": "() => { record(done, \"avsluttet\"); go(\"PH-07\"); }",
+      "canonicalBaseline": {
+        "exists": false,
+        "ruleIds": [],
+        "relationship": "outside-workbench-baseline; source handler exists; stable control ID absent"
+      },
+      "status": "prototype-kandidat-ikke-appverifisert",
+      "sourceOccurrences": [
+        {
+          "line": 98,
+          "start": 15647,
+          "end": 15725
+        }
+      ],
+      "disabledExpression": null,
+      "controlScope": "interactive-source-control"
+    },
+    {
+      "controlId": null,
+      "controlIdExpression": null,
+      "identityKind": "source-span-only-no-stable-id",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-live.jsx",
+        "line": 113,
+        "start": 17721,
+        "end": 17818
+      },
+      "tag": "Button",
+      "eventProps": [
+        "onClick"
+      ],
+      "contextGroup": "live",
+      "actionRule": "() => { recordFys(); go(\"PH-07-FYS\"); }",
+      "canonicalBaseline": {
+        "exists": false,
+        "ruleIds": [],
+        "relationship": "outside-workbench-baseline; source handler exists; stable control ID absent"
+      },
+      "status": "prototype-kandidat-ikke-appverifisert",
+      "sourceOccurrences": [
+        {
+          "line": 113,
+          "start": 17721,
+          "end": 17818
+        }
+      ],
+      "disabledExpression": null,
+      "controlScope": "interactive-source-control"
+    },
+    {
+      "controlId": null,
+      "controlIdExpression": null,
+      "identityKind": "source-span-only-no-stable-id",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-live.jsx",
+        "line": 114,
+        "start": 17872,
+        "end": 17986
+      },
+      "tag": "Button",
+      "eventProps": [
+        "onClick"
+      ],
+      "contextGroup": "live",
+      "actionRule": "() => { recordFys(); go(\"PH-07-FYS\"); }",
+      "canonicalBaseline": {
+        "exists": false,
+        "ruleIds": [],
+        "relationship": "outside-workbench-baseline; source handler exists; stable control ID absent"
+      },
+      "status": "prototype-kandidat-ikke-appverifisert",
+      "sourceOccurrences": [
+        {
+          "line": 114,
+          "start": 17872,
+          "end": 17986
+        }
+      ],
+      "disabledExpression": null,
+      "controlScope": "interactive-source-control"
+    },
+    {
+      "controlId": null,
+      "controlIdExpression": null,
+      "identityKind": "source-span-only-no-stable-id",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-live.jsx",
+        "line": 148,
+        "start": 24721,
+        "end": 24838
+      },
+      "tag": "IconButton",
+      "eventProps": [
+        "onClick"
+      ],
+      "contextGroup": "live",
+      "actionRule": "() => go(home())",
+      "canonicalBaseline": {
+        "exists": false,
+        "ruleIds": [],
+        "relationship": "outside-workbench-baseline; source handler exists; stable control ID absent"
+      },
+      "status": "prototype-kandidat-ikke-appverifisert",
+      "sourceOccurrences": [
+        {
+          "line": 148,
+          "start": 24721,
+          "end": 24838
+        }
+      ],
+      "disabledExpression": null,
+      "controlScope": "interactive-source-control"
+    },
+    {
+      "controlId": null,
+      "controlIdExpression": null,
+      "identityKind": "source-span-only-no-stable-id",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-live.jsx",
+        "line": 152,
+        "start": 27032,
+        "end": 27144
+      },
+      "tag": "Button",
+      "eventProps": [
+        "onClick"
+      ],
+      "contextGroup": "live",
+      "actionRule": "() => go(home())",
+      "canonicalBaseline": {
+        "exists": false,
+        "ruleIds": [],
+        "relationship": "outside-workbench-baseline; source handler exists; stable control ID absent"
+      },
+      "status": "prototype-kandidat-ikke-appverifisert",
+      "sourceOccurrences": [
+        {
+          "line": 152,
+          "start": 27032,
+          "end": 27144
+        }
+      ],
+      "disabledExpression": null,
+      "controlScope": "interactive-source-control"
+    },
+    {
+      "controlId": null,
+      "controlIdExpression": null,
+      "identityKind": "source-span-only-no-stable-id",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-live.jsx",
+        "line": 152,
+        "start": 27410,
+        "end": 27544
+      },
+      "tag": "Button",
+      "eventProps": [
+        "onClick"
+      ],
+      "contextGroup": "live",
+      "actionRule": "() => doSave(true)",
+      "canonicalBaseline": {
+        "exists": false,
+        "ruleIds": [],
+        "relationship": "outside-workbench-baseline; source handler exists; stable control ID absent"
+      },
+      "status": "prototype-kandidat-ikke-appverifisert",
+      "sourceOccurrences": [
+        {
+          "line": 152,
+          "start": 27410,
+          "end": 27544
+        }
+      ],
+      "disabledExpression": "!gyldig || phase === \"saving\"",
+      "controlScope": "interactive-source-control"
+    },
+    {
+      "controlId": null,
+      "controlIdExpression": null,
+      "identityKind": "source-span-only-no-stable-id",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-live.jsx",
+        "line": 152,
+        "start": 27639,
+        "end": 27770
+      },
+      "tag": "Button",
+      "eventProps": [
+        "onClick"
+      ],
+      "contextGroup": "live",
+      "actionRule": "() => doSave(false)",
+      "canonicalBaseline": {
+        "exists": false,
+        "ruleIds": [],
+        "relationship": "outside-workbench-baseline; source handler exists; stable control ID absent"
+      },
+      "status": "prototype-kandidat-ikke-appverifisert",
+      "sourceOccurrences": [
+        {
+          "line": 152,
+          "start": 27639,
+          "end": 27770
+        }
+      ],
+      "disabledExpression": "phase === \"saving\"",
+      "controlScope": "interactive-source-control"
+    }
+  ],
+  "modelEvidence": [
+    {
+      "file": "ui_kits/_shared/wb-model.js",
+      "line": 186,
+      "method": "WB.createOwnVersion",
+      "guard": "coach; source plan/session exists; target owner=spiller:+memberId; source date in target frame; request context bound",
+      "effect": "Draft copy with new drill IDs and parentGroup relation; no publication",
+      "verification": "source-only"
+    },
+    {
+      "file": "ui_kits/_shared/wb-model.js",
+      "line": 196,
+      "method": "WB.publishedForPlayer",
+      "guard": "recipient/session authorization; withdrawal and group exceptions",
+      "effect": "immutable published snapshot list",
+      "verification": "source-only"
+    },
+    {
+      "file": "ui_kits/_shared/wb-model.js",
+      "line": 198,
+      "method": "WB.publishedSession",
+      "guard": "publication exists, not withdrawn, recipient allowed, no newer group exception",
+      "effect": "pinned snapshot or null",
+      "verification": "source-only"
+    }
+  ],
+  "exportedOldMap": {
+    "file": "overlevering/knapp-skjerm-kart-2026-09-30.json",
+    "sha256": "17640a316ef66583bd5a2ff34928874d692cc7e4b849cf07011e417c8f9831e5",
+    "rows": 887,
+    "missingCheckedSourceIds": [
+      "egen-plan",
+      "egen-bekreft",
+      "egen-apne",
+      "egen-retur-knapp",
+      "pub-kort-",
+      "ph03-pub-start"
+    ]
+  },
+  "issues": [
+    {
+      "code": "own-version-contract",
+      "source": {
+        "file": "ui_kits/_shared/WB3-pub.jsx",
+        "line": 51
+      },
+      "finding": "Målplan, kopi/egenversjon, kvittering, editorinngang og fanget grupperetur mangler spesifikk kontrollregel i baseline. Eksisterende editor kan gjenbrukes.",
+      "status": "historisk-kildeobservasjon-maa-kontrolleres-i-ny-eksport"
+    },
+    {
+      "code": "published-entry-contract",
+      "source": {
+        "file": "ui_kits/_shared/WB3-pub.jsx",
+        "line": 19
+      },
+      "finding": "Publiserte PH-10/PH-01-innganger, PH-03-variant og Live-kontekst mangler i 77/183-registeret; eksportens 887-raders kart mangler også disse ID-ene.",
+      "status": "historisk-kildeobservasjon-maa-kontrolleres-i-ny-eksport"
+    },
+    {
+      "code": "live-stable-control-id",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-live.jsx",
+        "line": 21
+      },
+      "finding": "Undersøkte Live-inn/ut/lagre-kontroller har kildehandler, men ingen stabil data-control-id. Ingen nye ID-er er oppfunnet.",
+      "status": "historisk-kildeobservasjon-maa-kontrolleres-i-ny-eksport"
+    },
+    {
+      "code": "publication-freshness-at-click",
+      "source": {
+        "file": "ui_kits/_shared/WB3-pub.jsx",
+        "line": 26
+      },
+      "finding": "Ark/Panel validerer publisering ved rendering; åpne/start-handler gjenbruker rendret snapshot uten fersk publishedSession-kontroll. Skyretting pågår; eksport26 er historikk.",
+      "status": "historisk-kildeobservasjon-maa-kontrolleres-i-ny-eksport"
+    },
+    {
+      "code": "live-demo-fallback",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-live.jsx",
+        "line": 7
+      },
+      "finding": "LS/LFY har demo-fallback ved manglende adapter. Publisert valgt-økt-kontekst trenger egen utilgjengelighetsregel også inne i Live.",
+      "status": "historisk-kildeobservasjon-maa-kontrolleres-i-ny-eksport"
+    },
+    {
+      "code": "summary-prototype-save",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-live.jsx",
+        "line": 150
+      },
+      "finding": "Oppsummering lagres med setTimeout og globale prototypevariabler, ikke verifisert app-/databaselagring.",
+      "status": "historisk-kildeobservasjon-maa-kontrolleres-i-ny-eksport"
+    },
+    {
+      "code": "dirty-editor-cancel",
+      "source": {
+        "file": "ui_kits/_shared/WB3-okt.jsx",
+        "line": 30
+      },
+      "finding": "SessForm onCancel lukker direkte via setView(null); baselinekravet ULAGRET er ikke håndhevet i denne callbacken.",
+      "status": "historisk-kildeobservasjon-maa-kontrolleres-i-ny-eksport"
+    },
+    {
+      "code": "idag-date-scope",
+      "source": {
+        "file": "ui_kits/_shared/WB3-pub.jsx",
+        "line": 17
+      },
+      "finding": "Kort brukes både i Plan og I dag uten datofilter; I dag bruker samme publiserte liste. Skyretting pågår.",
+      "status": "historisk-kildeobservasjon-maa-kontrolleres-i-ny-eksport"
+    },
+    {
+      "code": "ambiguous-week-month-basis",
+      "source": {
+        "file": "ui_kits/_shared/WB3-lokal.jsx",
+        "line": 103
+      },
+      "finding": "openWeekFor kan velge månedsgrunnlag automatisk for uke over flere måneder. Eksisterende eksplisitt grunnlagskontrakt må kontrolleres; dette er gjenbruk, ingen ny flate.",
+      "status": "historisk-kildeobservasjon-maa-kontrolleres-i-ny-eksport",
+      "functionProof": {
+        "function": "openWeekFor(st,pid,key,fromYm)",
+        "source": {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 103
+        },
+        "branches": [
+          "No valid week or plan: return without mutation.",
+          "Multiple months + valid fromYm: setManedGrunnlag(pid,key,fromYm); ym=fromYm.",
+          "Existing g===eget: ym=ms[0], own week basis retained.",
+          "Existing valid g: ym=g, saved basis retained.",
+          "Otherwise: ym=valid st.mks[pid] ? st.mks[pid] : ms[0]; setManedGrunnlag(pid,key,ym) automatically."
+        ],
+        "result": "Writes st.wks[pid]=key and st.mks[pid]=ym; no returned value or explicit choice sheet in this helper.",
+        "returnContext": "No returnContext is read/written. openOwn(WB3.jsx27) calls with session.bind.weekKey, without fromYm; WB_RET_OWN holds group mode/subj/planId/sid, not month/week/basis."
+      }
+    }
+  ],
+  "coverage": {
+    "surfaceObservations": 11,
+    "controlObservations": 37,
+    "sourceIdRules": 24,
+    "sourceSpanOnlyControls": 13,
+    "semanticBaselineReuse": 8,
+    "newRegisteredIdsInvented": 0,
+    "allControlsCovered": false,
+    "implementationVerified": false,
+    "visualApproval": false,
+    "recheckRequiredAfterCloudExport": true,
+    "sourceSpanOnlyInteractiveControls": 12,
+    "sourceSpanOnlyWrapperCloseContracts": 1
+  },
+  "limitations": [
+    "PII-fritt: bare tekniske kildeuttrykk/ID-mal og generiske beskrivelser; ingen personnavn, konkrete mottaker-ID-er eller kopiert kildebulk.",
+    "Flateobservasjoner er ikke antall nye unike skjermdesign. ID-uttrykk er instansmaler, ikke opptelling av faktisk brukerdata.",
+    "Semantisk samsvar med baseline er ikke påstand om deklarert alias. Ingen nye screen/control-ID-er er reservert.",
+    "Kildeaudit med Babel AST og leksikalske helperreferanser; ingen kodeevaluering, nettleser/app/DB-operasjon eller sluttgodkjenning."
+  ],
+  "prototypeRoutes": [
+    {
+      "id": "PH-10",
+      "route": "/portal/planlegge",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-10.jsx",
+        "line": 67
+      },
+      "appBindingVerified": false,
+      "kind": "prototype-route-metadata-not-app-audit"
+    },
+    {
+      "id": "PH-01",
+      "route": "/portal",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-01.jsx",
+        "line": 173
+      },
+      "appBindingVerified": false,
+      "kind": "prototype-route-metadata-not-app-audit"
+    },
+    {
+      "id": "PH-03",
+      "route": "/portal/gjennomfore/[id]",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-03.jsx",
+        "line": 54
+      },
+      "appBindingVerified": false,
+      "kind": "prototype-route-metadata-not-app-audit"
+    },
+    {
+      "id": "PH-04",
+      "route": "/portal/live/[id]/brief",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-live.jsx",
+        "line": 170
+      },
+      "appBindingVerified": false,
+      "kind": "prototype-route-metadata-not-app-audit"
+    },
+    {
+      "id": "PH-05",
+      "route": "/portal/live/[id]/active",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-live.jsx",
+        "line": 171
+      },
+      "appBindingVerified": false,
+      "kind": "prototype-route-metadata-not-app-audit"
+    },
+    {
+      "id": "PH-06",
+      "route": "/portal/live/[sessionId]",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-live.jsx",
+        "line": 172
+      },
+      "appBindingVerified": false,
+      "kind": "prototype-route-metadata-not-app-audit"
+    },
+    {
+      "id": "PH-07",
+      "route": "/portal/live/[id]/summary",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-live.jsx",
+        "line": 173
+      },
+      "appBindingVerified": false,
+      "kind": "prototype-route-metadata-not-app-audit"
+    },
+    {
+      "id": "PH-07-FYS",
+      "route": "/portal/live/[id]/summary",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-live.jsx",
+        "line": 174
+      },
+      "appBindingVerified": false,
+      "kind": "prototype-route-metadata-not-app-audit"
+    }
+  ]
+}

@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-09-30",
+  "status": "mellomkontroll-med-fem-kildeavvik-ikke-frosset",
+  "export": {
+    "exportedAt": "2026-09-30T21:19:41.013633+00:00",
+    "zipName": "AK Golf Precision Athletics (15).zip",
+    "zipSha256": "1cd6961e869ff55bcf6068d0ae5a80afb926082d792bab2e7873745ac937801b",
+    "fileCount": 590,
+    "exportRoot": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-tek",
+    "status": "mellomversjon-ikke-frosset-ikke-godkjent"
+  },
+  "syntax": {
+    "scripts": 290,
+    "inline": 50,
+    "inlineIncludedInScripts": true,
+    "syntax_errors": 0,
+    "errors": []
+  },
+  "independentModel": {
+    "counts": {
+      "PASS": 15,
+      "FAIL": 0,
+      "SKIPPED": 0,
+      "ERROR": 0
+    },
+    "modelSha256": "9d7ecaf21fb822c00172f020e4441d4f4784f9c36d422090bfd7eb783d873488",
+    "runnerSha256": "c274767a244af7c9d15e9ccad6b85a599f93ea245976d7092f5cc8cff9d8e74a",
+    "scope": "15eksisterendemodellnegative; ikke nyTEKscope/UI/pub/persist/layout",
+    "closedFinding": "stale-round-planning-guard"
+  },
+  "cloudReported": {
+    "uiChecks": 891,
+    "uiFailures": 0,
+    "modelChecks": 78,
+    "modelFailures": 0,
+    "freshNamespaces": 2,
+    "hosts": [
+      "PH",
+      "AG"
+    ],
+    "source": "sky-tek-antall-leveransekvittering.txt",
+    "notIndependentLocalEvidence": true
+  },
+  "ownExportUi": {
+    "status": "891/0-bestått-for-oppførte-reiser",
+    "checks": 891,
+    "failures": 0,
+    "freshNamespaces": [
+      "codexTekA",
+      "codexTekB"
+    ],
+    "hosts": [
+      "PH",
+      "AG"
+    ],
+    "proofPrivateFile": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-tek/egen-reisekjoring-891.txt",
+    "proofSha256": "168c52562a44e7132b5519726fc117e3946a69c3029b0667f92d15c26dd01df4",
+    "limitation": "Fem uavhengige kildeavvik fortsatt åpne i denne eksporten; ingen komplett UI/app/publisering/layoutgodkjenning."
+  },
+  "remaining": [
+    "Tre kalenderUIbevis i smal skybestilling",
+    "TEK-måned/periode og annen eier UI",
+    "TEK coachutkast→publisert→separat PH gjennom faktiske knapper",
+    "Lokal persistens/ulagret-vakt/publiserte økter og Live",
+    "Visuell måling og aktivdemohistorikkopprydding",
+    "Aktiveknapprester/sluttregister/finalegenknappkart"
+  ],
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false,
+  "independentSourceFindings": [
+    {
+      "id": "published-count-hidden-by-draft",
+      "source": "ui_kits/_shared/wb-model.js:135",
+      "finding": "Ny coachredigering skjuler tidligere publisert antall i PH.",
+      "status": "bestilt-retting-pågår"
+    },
+    {
+      "id": "imported-count-stale-editor",
+      "source": "ui_kits/_shared/WB3-lokal.jsx:60",
+      "finding": "Hentet TEK kan overskrives ved senere lagring av annen akse/tid.",
+      "status": "bestilt-retting-pågår"
+    },
+    {
+      "id": "count-reference-manual-edit",
+      "source": "ui_kits/_shared/wb-model.js:33",
+      "finding": "Andre felt fjerner TEKref i uke/måned, mens manuell TEKendring i periode beholder foreldet ref.",
+      "status": "bestilt-retting-pågår"
+    },
+    {
+      "id": "count-source-duplicated-per-target-plan",
+      "source": "ui_kits/_shared/wb-model.js:135",
+      "finding": "Samme tekniske plankilde får konkurrerende antall per mottakende årsplan.",
+      "status": "bestilt-retting-pågår"
+    },
+    {
+      "id": "count-source-foreign-write",
+      "source": "ui_kits/_shared/wb-model.js:135",
+      "finding": "Ny TEK-antallrad for fremmed sourceOwner godtas uten valgt kilde/eksempelbekreftelse. Skrivekall, ikke lovlig eksempelimport.",
+      "status": "bestilt-retting-pågår"
+    }
+  ],
+  "extendedIndependentModel": {
+    "counts": {
+      "PASS": 17,
+      "FAIL": 4,
+      "SKIPPED": 0,
+      "ERROR": 0
+    },
+    "runnerSha256": "6f4605914055542eb47cf9444b99fb604dadaa2bce9a3029f2e6803aa3521911",
+    "scope": "15 tidligere +6 nye TEK-modellprøver, ikke UI eller app",
+    "resultPrivateFile": "egen-tek-utvidet-modellkontroll.json"
+  },
+  "activeCorrection": {
+    "status": "sendt-retting-og-regresjonsreise-pågår",
+    "instructionPrivateFile": "claude-design-workbench-tek-fire-rettinger-bestilling.txt",
+    "notYetIndependentlyExportVerified": true
+  }
+}

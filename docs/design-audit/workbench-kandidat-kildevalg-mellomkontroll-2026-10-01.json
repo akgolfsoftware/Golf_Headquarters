@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "kandidatkjede-rettet-kildevalg-synligfeil-gjenstar",
+  "export": {
+    "zip": "/Users/anderskristiansen/Downloads/AK Golf Precision Athletics (40).zip",
+    "root": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-kandidat-kildevalg",
+    "sha256": "0058a7367322d87ad05c74ea3d9da40a4c2b8c9a80512b0747f92e16989c85ac",
+    "files": 610,
+    "exportedAt": "2026-10-01T04:24:06.361963+00:00"
+  },
+  "syntax": {
+    "scripts": 309,
+    "inline": 66,
+    "inlineIncludedInScripts": true,
+    "syntax_errors": 0,
+    "errors": []
+  },
+  "model": {
+    "total": 99,
+    "pass": 90,
+    "fail": 8,
+    "skip": 1,
+    "error": 0,
+    "original92Preserved": true,
+    "original83Pass": true,
+    "modelSha256": "22290afbe2f755a8fae66e289c87532ce7d95e80c0a525d87f14b7339ed5836f",
+    "runnerSha256": "9bede65a3fa635b3f706aa67a4fe79003266e7b1f8e18c5f0e6836465dfabc39",
+    "newPass": "SelectTek/Task fail→retry→énwrite→reload/to-separateårsplaner, ukjent/fremmedTEK avvist.",
+    "newFailures": [
+      "selectTekSrc mangler authOk og endrer annen tilgjengelig eierplansvalg.",
+      "selectTaskSrc mangler authOk og endrer annen tilgjengelig eierplansvalg.",
+      "selectTaskSrc godtar ukjent nøkkel.",
+      "selectTaskSrc PH godtar privat upublisert TP-ID som lagretvalg."
+    ],
+    "previousFailures": "Fire årsrisikoer gjenstår; én ramme-kontraktSKIP.",
+    "privacyBoundary": "PHlesere filtrerer private planer/oppgaver/media; ugyldig lagretvalg er ikke påvist UI/datalekkasje.",
+    "rawFixtureError": "Første utvidetrapport med testfixtureERROR bevart; rettet til faktiskegenPHårsplan før endelig99resultat."
+  },
+  "ownNative": {
+    "checks": 30,
+    "failures": 0,
+    "proofSha256": "beffa652c86d1bcfa0019933e60c882a5fedcc485f59a2a062d12a5d5e199e1d",
+    "newCoverage": "Januar-kandidat arver SPILL0 fra ukas desemberperiode; valgt januar gir sammeSLAG7/SPILL0 iAGogPH.",
+    "limits": [
+      "Flereperioder/valgtperiode ikke nativeassertet.",
+      "Øvrige39grenser: fixtures/minutter/Eget/revisionsupdate/rulling.",
+      "Nye kildevalgAPIer ikke bevist av denneprøven."
+    ]
+  },
+  "sourceFindings": [
+    {
+      "file": "WB3-lokal.jsx",
+      "lines": [
+        59,
+        102
+      ],
+      "status": "rettet",
+      "detail": "Ren ukeoverstyring→kandidatmåned→WB.periodBasis(pid,wkKey); minutter/null0/noSwrite følger samme kjede."
+    },
+    {
+      "file": "WB3-tek.jsx",
+      "lines": [
+        21,
+        22
+      ],
+      "status": "kilderettet-native-pagar",
+      "detail": "selectTekSrc persisterer radiohandling/viserErr; Brukvalgtkilde lukker uten nywrite."
+    },
+    {
+      "file": "WB3-okt.jsx",
+      "lines": [
+        71,
+        72,
+        73,
+        74,
+        81
+      ],
+      "status": "reell-synlighetsfeil",
+      "detail": "selectTaskSrc-feil settes i er, men tp-kilde-velg earlyreturn viserikkeer; Err finnesførstoppgavelisten. Skyrettingdelta40sendt."
+    }
+  ],
+  "active": "Kildevalgmodellvakter og synligoppgavekildefeil retting i sky, native kildevalg/to-planer/refreset delreise; derettergruppen/årsrisikoer oghelepipeline.",
+  "resources": "Egenfane1416028666/server20568lukket.",
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false
+}

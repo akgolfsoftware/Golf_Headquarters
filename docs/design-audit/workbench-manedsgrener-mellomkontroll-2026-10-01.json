@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "manedsgrener-native-bestatt-med-kandidatvisningsfeil",
+  "export": {
+    "zip": "/Users/anderskristiansen/Downloads/AK Golf Precision Athletics (39).zip",
+    "root": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-manedsgrener",
+    "sha256": "7a032e6051ffd28e7f602713989f8993a8444efad2beff5b7689930a99327086",
+    "files": 610,
+    "exportedAt": "2026-10-01T04:18:57.075236+00:00"
+  },
+  "syntax": {
+    "scripts": 309,
+    "inline": 66,
+    "inlineIncludedInScripts": true,
+    "syntax_errors": 0,
+    "errors": []
+  },
+  "model": {
+    "total": 92,
+    "pass": 87,
+    "fail": 4,
+    "skip": 1,
+    "error": 0,
+    "original83Pass": true,
+    "modelSha256": "2ee7fe807460a88e89a0975f2ca1ebafcaa526558265f913092d40ac766c8202",
+    "runnerSha256": "59c614d84f3369eb77273bc4e19fb0db3f6297f94f7eac63d8fadf197b39daeb",
+    "failures": "Samme fire årsrisikoer som38; ingen nye månedsregresjoner.",
+    "newPass": "Avvist kryssmåned-import uten basis/ingenwrite; eksplisittmåned/Eget+0; periode/måned lovlig uten automatiskukebasis."
+  },
+  "ownNative": {
+    "monthChecks": 26,
+    "monthFailures": 0,
+    "monthProofSha256": "c68f486228cb8bb05329ec693d2cbd99ff34580311ea60b06da984fd76f443c5",
+    "periodRegressionChecks": 22,
+    "periodRegressionFailures": 0,
+    "periodProofSha256": "272fc2a0fd63c33603e99dcf7f26c6317909b0bd767ca53d207ceffa3679d86e",
+    "scope": "AG+PH faktisk arvet des-SLAG3/SPILL0/JanSLAG7, previewingenmutasjon, TEKgate/sourcevisning/øktopprettingsinngang førvalg; valgtdes-import; firstfromYmfail/retry/reload. Periodens38repro gjenkjørt etter modellvakt.",
+    "limits": [
+      "Periode/overstyring er merkede direkte fixtures; månedsbasis slettes direkte for firstfromYm-prøven.",
+      "JanSPILLarv, minutter, Egetvalg og sperret revisjonsoppdatering mangler nativeassert.",
+      "Gåtilmåned kontrollerer tilgjengeligvalg, ikke faktiskrulling.",
+      "Perioderegresjon har samme38grenser: ikke Avbryt/gjenåpning/reload etter skjema/andreperioder/fullsnapshot."
+    ]
+  },
+  "confirmedSourceDefect": {
+    "file": "ui_kits/_shared/screens/WB3-lokal.jsx",
+    "line": 58,
+    "problem": "chainTxt bruker hele kandidatmånedsperiodeoverlapp mens effective bruker ukas periodBasis. U53 januarpreview viserSPILLukjent, faktiskjanuarvalg arverdes-SPILL0. Flereperiodepreview kan være feil ved valgtukekilde.",
+    "status": "Dedikert skyretting aktiv; ikke godkjent av26/0."
+  },
+  "active": "Kandidatvisning følger faktiskukekjede uten mutasjon; kildevalgAPIer nettopp kilderettet i sky, native toplaner/refreset neste. Derettergruppe/år/runde/FYS/TP/visuelt/knappregister/frys.",
+  "resources": "Egnefaner1416028662/8663 ogserver46113lukket.",
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false
+}

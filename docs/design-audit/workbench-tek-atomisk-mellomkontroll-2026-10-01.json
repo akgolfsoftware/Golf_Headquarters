@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "uke-atomisk-avgrenset-kontrollert-ovrige-scope-under-kontroll",
+  "export": {
+    "zipName": "AK Golf Precision Athletics (31).zip",
+    "zipSha256": "f6472731c3622c159f99ed43af66a7bef9ec77e46cf78f098da521b438d55ffd",
+    "fileCount": 604,
+    "exportedAt": "2026-10-01T03:05:46.899665+00:00",
+    "exportRoot": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-tek-atomisk",
+    "status": "atomisk-tek-mellomkontroll"
+  },
+  "syntax": {
+    "scripts": 303,
+    "inline": 60,
+    "inlineIncludedInScripts": true,
+    "syntax_errors": 0,
+    "errors": []
+  },
+  "ownNative": {
+    "checks": 11,
+    "failures": 0,
+    "proofSha256": "692528bacaeee035a4b0526cea9eb7db2d244fc43d0dae088139d7fed5bcc5a3",
+    "scope": "AG uke-editor med lagre=1, blank TEK/feilet save, to akser+minutter med simulert feil i andre modellmetode, resetfail/retry, importmarkør rollback og reload.",
+    "limits": [
+      "Måned/periode/annen eier og plan er ikke prøvd her.",
+      "Ref-assert ved simulert andre modellmetode sammenligner objekt med seg selv; erstattes med faktisk før/etter.",
+      "Simulert andre setOverride er ikke andre disk-write; samlet commit må ha én SKEYwrite.",
+      "Egen eksempelkilde, ingen faktisk separat AG→PH-publiseringsreise."
+    ]
+  },
+  "cloudApiClaim": [
+    "WB.saveOverrides(planId,niv,key,{budsjett,minutter}) gir {ok:true} eller {ok:false,error}.",
+    "WB.clearOverrides(planId,niv,key)",
+    "tekImportSeq lagret per kontekst i S i stedet for global impCount."
+  ],
+  "model": {
+    "total": 76,
+    "pass": 72,
+    "fail": 4,
+    "skip": 0,
+    "error": 0,
+    "original63Pass": true,
+    "modelSha256": "e3b5befe7ae4920f7484058d19beedfa0c2924002527338ebf31de9e0128f1be",
+    "runnerSha256": "3899156dd741e1e07f99e2e0b187532179dc8e2104b4012b4d57ce831f66f6d1",
+    "passing": "Uke/måned batch én write, kvotefeil/retry, ugyldig sent felt uten mutation, reset, importmarkør feil/retry/isolasjon.",
+    "failures": [
+      "editPeriod er ikke med i persistfilteret; endrer minne uten disk og melder ok.",
+      "Blank periode-TEK omgår samme persist.",
+      "PH saveOverrides avviser ikke allerede tilgjengelig fixtureplan med feil eier.",
+      "PH clearOverrides avviser ikke allerede tilgjengelig fixtureplan med feil eier."
+    ],
+    "boundaries": "Eierprøvene etablerer coach-fixture, setter PH-kontekst og bruker en feil målplan-ID som allerede er i lokal modell. Ikke bevis for at en reell autentisert spiller kan laste fremmed plan, og ingen produksjonstilgangskontrakt er prøvd.",
+    "fixesSent": true
+  },
+  "next": "Vakter/SessForm/eksplisitt månedsgrunnlag og native måned/periode-grenser; deretter AG→PH antall og årsredigering.",
+  "resources": "Egen testfane1416028646 og server85216 lukket.",
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false,
+  "remainingSource31": [
+    "re()→store.bump gir ekstra persist etter batchcommit.",
+    "Månedslisten har to gamle resetOverride-kall."
+  ]
+}

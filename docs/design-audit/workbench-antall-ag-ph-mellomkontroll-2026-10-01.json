@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "native-manedsimport-dellevert-periodeknapp-mangler",
+  "export": {
+    "zipName": "AK Golf Precision Athletics (36).zip",
+    "zipSha256": "53bd4adc97decfd8625851580bcb57d0b090cd7f9c46a5a6f6548e21806010ee",
+    "fileCount": 609,
+    "exportedAt": "2026-10-01T03:50:45.989501+00:00",
+    "exportRoot": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-antall-ag-ph",
+    "status": "antall-ag-ph-periode-mangler-mellomkontroll"
+  },
+  "syntax": {
+    "scripts": 308,
+    "inline": 65,
+    "inlineIncludedInScripts": true,
+    "syntax_errors": 0,
+    "errors": []
+  },
+  "model": {
+    "total": 82,
+    "pass": 82,
+    "fail": 0,
+    "skip": 0,
+    "error": 0,
+    "original63Pass": true,
+    "original77Pass": true,
+    "sourceSha256": "8830ebcb963f26e67317752f626aa44f5ba2456995730696aff5f6854a98e264",
+    "runnerSha256": "a08cd6dde86211d709c112df32fb44773082323bb1d6e9ce08e3c808e53dd085",
+    "newCases": [
+      "Counts-only deler metadata+antall uten private oppgaver/media i PH.",
+      "Draft-/deltwritefail bevarer tidligere draft/shared; retry matching meta/count.",
+      "Dobbel skrivefeil/reload/reparasjon uten oppgavepub/duplikat.",
+      "Antallpub med eksisterende puboppgave bevarer gammelt oppgavesnapshot og skjuler senereprivat utkast.",
+      "tekSel/taskSel for to planer med eksplisitt persist/reload."
+    ],
+    "boundary": "Modellpersist av kildevalg ved WB.persist er bevist; faktisk radiohandler→umiddelbar reload uten annen handling er ikke prøvd. Ingen app/DB-/tilgangs-/UI-godkjenning."
+  },
+  "ownNative": {
+    "checks": 13,
+    "failures": [
+      "Kandidattekstassert matcher ikke synlig MAANED; panelet viser faktisk riktig måned/kandidat. Norsk label og målattrs spesifisert til polish.",
+      "Periodevisning mangler TEK-panel/Hent-planlagt-antall, dermed faktisk UI-import ikke støttet."
+    ],
+    "proofSha256": "b2af343a15b678805c334b2f35f3596a84ac8117594d3092faef26471e6b633c",
+    "scope": "Faktisk AG opprett tekniskplan/antallsutkast→PH reload ingenutkast→AG Publiser antall→PH velg faktisk kilde og bekreft til måned→AGrev2→PH gammelsnapshot→sammenlign/behold/kvotefeil/retry. Andre akser/min urørt, ingen økter opprettet.",
+    "limits": [
+      "Ingen native periodeimport ennå.",
+      "Gruppe/to årsplaner/valgt grunnlag og imported-ref månedsliste-reset ikke prøvd.",
+      "Delta35 fra-måned-feil/arvet visning/budsjettimport før basisvalg er ikke rettet i36."
+    ]
+  },
+  "active": "Egen kort periodeimport-jobb med faktisk knapp/panel/context/rev2/fail/retry/retur. Etterpå egne månedsgrunnlagsrester og gruppe/to planer, så årsredigering.",
+  "resources": "Egen fane1416028656 og server22085 lukket.",
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false,
+  "laterCorrection37": {
+    "audit": "workbench-periode-antall-mellomkontroll-2026-10-01.json",
+    "finding": "Periodepanelet fantes; rå13/2 valgte ikke perioden riktig. Testvalg og tekstassert korrigert, egen37 har15/0. Ikke en faktisk manglende periodeknapp."
+  }
+}

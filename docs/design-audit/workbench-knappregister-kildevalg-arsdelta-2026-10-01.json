@@ -1,0 +1,954 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "observedAtUTC": "2026-10-01T05:18:19.325Z",
+  "title": "Kildevalg, månedsgrunnlagsport og årsramme: eksport45",
+  "status": "avgrenset-prototype-kildeaudit-ikke-app-eller-designgodkjenning",
+  "sourceExport": {
+    "version": 45,
+    "directoryName": "mellomversjon-wb3-arsmodell-vakter",
+    "privateSourceNotEmbedded": true,
+    "wholeExportHashNotComputed": true
+  },
+  "baseline": {
+    "file": "docs/design-system/workbench-fra-tom-plan.json",
+    "sha256": "007da7a0d1f56dce542608ec7f63f6559b60a239aaf7316555410f7f3beb0f5d",
+    "readAtUTC": "2026-10-01T05:18:19.327Z",
+    "screenCandidates": 77,
+    "controlRules": 183,
+    "countsNotCeilings": true,
+    "priorDelta": {
+      "file": "docs/design-audit/workbench-knappregister-delta-2026-10-01.json",
+      "sha256": "f494bf88671b9a72376f6aeeb4fc7500b55dabb4bdb36469ecc5a3fae293af1c",
+      "exportVersion": 26,
+      "recordedBaselineHashIsHistorical": "007da7a0d1f56dce542608ec7f63f6559b60a239aaf7316555410f7f3beb0f5d",
+      "currentBaselineHashAbove": true
+    }
+  },
+  "sourceFiles": [
+    {
+      "file": "ui_kits/_shared/WB3-tek.jsx",
+      "sha256": "581fa0176410dc78522148dc38f79f18ea1a5d2da64992b0f3a9245d68cf30cf"
+    },
+    {
+      "file": "ui_kits/_shared/WB3-okt.jsx",
+      "sha256": "c59fc2478e5c3352a5f21e12ec97f1e2f73f94b7f4a32c6335d4bb3da69cf396"
+    },
+    {
+      "file": "ui_kits/_shared/WB3-plan.jsx",
+      "sha256": "46824d5fa412293df5cf74d0214019f01f41caa9582ebb12d62f97baf2625510"
+    },
+    {
+      "file": "ui_kits/_shared/WB3-lokal.jsx",
+      "sha256": "3aecfdd78db249adcbd96ae78a60a98d42bd1a5bde6ccf21b5360026a442cb97"
+    },
+    {
+      "file": "ui_kits/_shared/WB3-ar.jsx",
+      "sha256": "580df65c84d29c8016c146107b0b88d6b89987c1348b4f7db74233ca1dbbe9ca"
+    },
+    {
+      "file": "ui_kits/_shared/wb-model.js",
+      "sha256": "a8653f9347dd84aef30225f4c3c167cfe12d950640d57e9754bd784a39835328"
+    },
+    {
+      "file": "ui_kits/agencyos/screens/AG-11-wb3.jsx",
+      "sha256": "5c1c92776f327e5acfe35362b698167e958a92072bbb5f5da3400ceb3ecf2704"
+    },
+    {
+      "file": "ui_kits/playerhq/screens/PH-11-wb3.jsx",
+      "sha256": "8c911f0d88cacc59390ae94645f87abbb6ed1d17d1086a27151a3739d1a2d0da"
+    }
+  ],
+  "hostEvidence": [
+    {
+      "file": "ui_kits/agencyos/screens/AG-11-wb3.jsx",
+      "line": 3,
+      "host": "AG",
+      "component": "WB3_Workbench kit=AGQ coach"
+    },
+    {
+      "file": "ui_kits/agencyos/screens/AG-11-wb3.jsx",
+      "line": 6,
+      "screen": "AG-11-AR",
+      "stateLevel": "ar"
+    },
+    {
+      "file": "ui_kits/playerhq/screens/PH-11-wb3.jsx",
+      "line": 8,
+      "screen": "PH-11-AR",
+      "stateLevel": "ar"
+    }
+  ],
+  "contextGroups": {
+    "tek": {
+      "fromHost": "WB3_LOKAL owned plan; WB3_TEK.Panel",
+      "stateLevel": [
+        "periode",
+        "mnd",
+        "uke"
+      ],
+      "state": "Panel.view=velg / null; source choice persists independently of local view",
+      "mountEvidence": [
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 87,
+          "scope": "periode",
+          "key": "per.id"
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 94,
+          "scope": "maaned",
+          "key": "ym"
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 104,
+          "scope": "uke",
+          "key": "wk.key"
+        }
+      ],
+      "context": [
+        "owner=plan.owner",
+        "planId=pid",
+        "scope",
+        "key=skey",
+        "technicalPlanId/source owner from src",
+        "rc={owner,planId,scope,key,periodId|monthKey|weekStartDate}"
+      ],
+      "returnRule": "Closing source view keeps plan/scope/key and rc data attribute; immediate persisted source selection is not undone by close."
+    },
+    "task": {
+      "fromHost": "WB3_OKT.Section → TpPick",
+      "stateLevel": [
+        "uke",
+        "okt"
+      ],
+      "state": "Section.view=tp; TpPick.bytt; ch=WB.taskSel[plan.id]",
+      "mountEvidence": [
+        {
+          "file": "ui_kits/_shared/WB3-okt.jsx",
+          "line": 104
+        }
+      ],
+      "context": [
+        "planId=plan.id",
+        "sessionId=s.id",
+        "owner=plan.owner",
+        "chosen technicalPlanId=ch",
+        "local selected task IDs=sel"
+      ],
+      "returnRule": "tp-kilde-lukk clears bytt/error only; selected source remains. TpPick onDone in Section closes task picker and re-renders."
+    },
+    "gate": {
+      "fromHost": "WB3_TEK.Panel scope=uke inside existing Workbench week",
+      "stateLevel": [
+        "uke"
+      ],
+      "state": "velg = scope===uke && monthBasis(pid,skey).kind===velg",
+      "mountEvidence": [
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 104
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 102
+        }
+      ],
+      "context": [
+        "owner=plan.owner",
+        "planId=pid",
+        "weekKey=skey",
+        "rc includes weekStartDate from rng.fra"
+      ],
+      "returnRule": "tek-til-maanedsvalg sets view=null and scrolls existing main to maanedsgrunnlag. No route/owner/plan/week change; rc remains UI metadata, not a restored navigation stack."
+    },
+    "year": {
+      "fromHost": "WB3_LOKAL.Panel level=ar → WB3_PLAN.PlanEdit",
+      "stateLevel": [
+        "ar"
+      ],
+      "state": "pe=false → plan-rediger → pe=true; PlanEdit local f/er/req",
+      "mountEvidence": [
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 85
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 86
+        }
+      ],
+      "context": [
+        "owner=plan.owner",
+        "planId=plan.id",
+        "f={navn,fra,til}",
+        "req is internal action retry identity, not UI control ID"
+      ],
+      "returnRule": "Success and onDone cancel call setPe(false), preserving active owned plan. Direct cancel callback has no own dirty check; broader guard not verified."
+    }
+  },
+  "controls": [
+    {
+      "controlId": null,
+      "controlIdExpression": "\"tek-valg-\" + x.key",
+      "source": {
+        "file": "ui_kits/_shared/WB3-tek.jsx",
+        "line": 21,
+        "start": 4712,
+        "end": 5017
+      },
+      "tag": "input",
+      "interactive": true,
+      "contextGroup": "tek",
+      "actionRule": "Radio commits source immediately through selectTekSrc(pid,x.key); failure retains source/error; success clears error, keeps view=velg, bumps store.",
+      "status": "changed-persistence-validation",
+      "comparisonToExport26": {
+        "present": true,
+        "previousLines": [
+          18
+        ],
+        "eventExpressionsChanged": true
+      },
+      "canonicalBaseline": {
+        "ruleIds": [],
+        "exists": false,
+        "aliasStatus": "specific-source-state-rule-absent"
+      }
+    },
+    {
+      "controlId": "tek-valg-ok",
+      "controlIdExpression": null,
+      "source": {
+        "file": "ui_kits/_shared/WB3-tek.jsx",
+        "line": 22,
+        "start": 5479,
+        "end": 5589
+      },
+      "tag": "Button",
+      "interactive": true,
+      "contextGroup": "tek",
+      "actionRule": "Only setView(null); disabled when !src. Source already committed on radio. Label still Bruk valgt kilde, so wording implies a second confirmation that handler does not perform.",
+      "status": "existing-close-semantics-label-ambiguous",
+      "comparisonToExport26": {
+        "present": true,
+        "previousLines": [
+          19
+        ],
+        "eventExpressionsChanged": false
+      },
+      "canonicalBaseline": {
+        "ruleIds": [],
+        "exists": false,
+        "aliasStatus": "specific-source-state-rule-absent"
+      }
+    },
+    {
+      "controlId": "tek-tilbake",
+      "controlIdExpression": null,
+      "source": {
+        "file": "ui_kits/_shared/WB3-tek.jsx",
+        "line": 22,
+        "start": 5614,
+        "end": 5745
+      },
+      "tag": "Button",
+      "interactive": true,
+      "contextGroup": "tek",
+      "actionRule": "setView(null); setEr(null); does not revert chosen source.",
+      "status": "unchanged-local-return",
+      "comparisonToExport26": {
+        "present": true,
+        "previousLines": [
+          19,
+          25
+        ],
+        "eventExpressionsChanged": false
+      },
+      "canonicalBaseline": {
+        "ruleIds": [],
+        "exists": false,
+        "aliasStatus": "specific-source-state-rule-absent"
+      }
+    },
+    {
+      "controlId": "tek-velg-kilde",
+      "controlIdExpression": null,
+      "source": {
+        "file": "ui_kits/_shared/WB3-tek.jsx",
+        "line": 35,
+        "start": 12801,
+        "end": 12920
+      },
+      "tag": "Button",
+      "interactive": true,
+      "contextGroup": "tek",
+      "actionRule": "setView(velg), reopen planning-count source selector.",
+      "status": "existing-entry",
+      "comparisonToExport26": {
+        "present": true,
+        "previousLines": [
+          31
+        ],
+        "eventExpressionsChanged": false
+      },
+      "canonicalBaseline": {
+        "ruleIds": [],
+        "exists": false,
+        "aliasStatus": "specific-source-state-rule-absent"
+      }
+    },
+    {
+      "controlId": null,
+      "controlIdExpression": "\"tpk-\" + x.technicalPlanId",
+      "source": {
+        "file": "ui_kits/_shared/WB3-okt.jsx",
+        "line": 72,
+        "start": 22540,
+        "end": 22891
+      },
+      "tag": "input",
+      "interactive": true,
+      "contextGroup": "task",
+      "actionRule": "selectTaskSrc(plan.id,x.technicalPlanId); !ok → error; changed source → setSel([]); tk/store.bump.",
+      "status": "changed-persistence-validation",
+      "comparisonToExport26": {
+        "present": true,
+        "previousLines": [
+          69
+        ],
+        "eventExpressionsChanged": true
+      },
+      "canonicalBaseline": {
+        "ruleIds": [],
+        "exists": false,
+        "aliasStatus": "specific-source-state-rule-absent"
+      }
+    },
+    {
+      "controlId": "tpk-eksempel",
+      "controlIdExpression": null,
+      "source": {
+        "file": "ui_kits/_shared/WB3-okt.jsx",
+        "line": 73,
+        "start": 23133,
+        "end": 23471
+      },
+      "tag": "input",
+      "interactive": true,
+      "contextGroup": "task",
+      "actionRule": "selectTaskSrc(plan.id,eksempel); success enables marked example source, clears old task selection when changed, bumps store.",
+      "status": "changed-persistence-validation",
+      "comparisonToExport26": {
+        "present": true,
+        "previousLines": [
+          70
+        ],
+        "eventExpressionsChanged": true
+      },
+      "canonicalBaseline": {
+        "ruleIds": [],
+        "exists": false,
+        "aliasStatus": "specific-source-state-rule-absent"
+      }
+    },
+    {
+      "controlId": "tp-bytt-kilde",
+      "controlIdExpression": null,
+      "source": {
+        "file": "ui_kits/_shared/WB3-okt.jsx",
+        "line": 77,
+        "start": 25571,
+        "end": 25896
+      },
+      "tag": "Button",
+      "interactive": true,
+      "contextGroup": "task",
+      "actionRule": "Clear error; setBytt(true) opens source selector.",
+      "status": "new-source-entry",
+      "comparisonToExport26": {
+        "present": false,
+        "previousLines": [],
+        "eventExpressionsChanged": null
+      },
+      "canonicalBaseline": {
+        "ruleIds": [],
+        "exists": false,
+        "aliasStatus": "specific-source-state-rule-absent"
+      }
+    },
+    {
+      "controlId": "tp-bytt-kilde",
+      "controlIdExpression": null,
+      "source": {
+        "file": "ui_kits/_shared/WB3-okt.jsx",
+        "line": 82,
+        "start": 27720,
+        "end": 28045
+      },
+      "tag": "Button",
+      "interactive": true,
+      "contextGroup": "task",
+      "actionRule": "Clear error; setBytt(true) opens source selector from existing task-selection state.",
+      "status": "new-source-entry-second-branch",
+      "comparisonToExport26": {
+        "present": false,
+        "previousLines": [],
+        "eventExpressionsChanged": null
+      },
+      "canonicalBaseline": {
+        "ruleIds": [],
+        "exists": false,
+        "aliasStatus": "specific-source-state-rule-absent"
+      }
+    },
+    {
+      "controlId": "tp-kilde-lukk",
+      "controlIdExpression": null,
+      "source": {
+        "file": "ui_kits/_shared/WB3-okt.jsx",
+        "line": 74,
+        "start": 23896,
+        "end": 24030
+      },
+      "tag": "Button",
+      "interactive": true,
+      "contextGroup": "task",
+      "actionRule": "setBytt(false); setEr(null). Does not select/confirm source or add tasks.",
+      "status": "new-close-control",
+      "comparisonToExport26": {
+        "present": false,
+        "previousLines": [],
+        "eventExpressionsChanged": null
+      },
+      "canonicalBaseline": {
+        "ruleIds": [],
+        "exists": false,
+        "aliasStatus": "specific-source-state-rule-absent"
+      }
+    },
+    {
+      "controlId": "tp-feil",
+      "controlIdExpression": null,
+      "source": {
+        "file": "ui_kits/_shared/WB3-okt.jsx",
+        "line": 74,
+        "start": 23581,
+        "end": 23639
+      },
+      "tag": "span",
+      "interactive": false,
+      "contextGroup": "task",
+      "actionRule": "Visible er alert in source chooser; not interactive.",
+      "status": "error-state-source-branch",
+      "comparisonToExport26": {
+        "present": true,
+        "previousLines": [
+          78
+        ],
+        "eventExpressionsChanged": false
+      },
+      "canonicalBaseline": {
+        "ruleIds": [],
+        "exists": false,
+        "aliasStatus": "specific-source-state-rule-absent"
+      }
+    },
+    {
+      "controlId": "tp-feil",
+      "controlIdExpression": null,
+      "source": {
+        "file": "ui_kits/_shared/WB3-okt.jsx",
+        "line": 81,
+        "start": 27565,
+        "end": 27623
+      },
+      "tag": "span",
+      "interactive": false,
+      "contextGroup": "task",
+      "actionRule": "Visible er alert in task-selection view; not interactive.",
+      "status": "error-state-task-branch",
+      "comparisonToExport26": {
+        "present": true,
+        "previousLines": [
+          78
+        ],
+        "eventExpressionsChanged": false
+      },
+      "canonicalBaseline": {
+        "ruleIds": [],
+        "exists": false,
+        "aliasStatus": "specific-source-state-rule-absent"
+      }
+    },
+    {
+      "controlId": "tek-krever-grunnlag",
+      "controlIdExpression": null,
+      "source": {
+        "file": "ui_kits/_shared/WB3-tek.jsx",
+        "line": 19,
+        "start": 3606,
+        "end": 3853
+      },
+      "tag": "div",
+      "interactive": false,
+      "contextGroup": "gate",
+      "actionRule": "Status renders missing explicit month/week basis; no mutation.",
+      "status": "new-status",
+      "comparisonToExport26": {
+        "present": false,
+        "previousLines": [],
+        "eventExpressionsChanged": null
+      },
+      "canonicalBaseline": {
+        "ruleIds": [],
+        "exists": false,
+        "aliasStatus": "specific-source-state-rule-absent"
+      }
+    },
+    {
+      "controlId": "tek-til-maanedsvalg",
+      "controlIdExpression": null,
+      "source": {
+        "file": "ui_kits/_shared/WB3-tek.jsx",
+        "line": 19,
+        "start": 4056,
+        "end": 4168
+      },
+      "tag": "Button",
+      "interactive": true,
+      "contextGroup": "gate",
+      "actionRule": "tilMaaned: close TEK overlay; scroll current main to maanedsgrunnlag, if found.",
+      "status": "new-local-scroll-target",
+      "comparisonToExport26": {
+        "present": false,
+        "previousLines": [],
+        "eventExpressionsChanged": null
+      },
+      "canonicalBaseline": {
+        "ruleIds": [],
+        "exists": false,
+        "aliasStatus": "specific-source-state-rule-absent"
+      }
+    },
+    {
+      "controlId": "plan-rediger",
+      "controlIdExpression": null,
+      "source": {
+        "file": "ui_kits/_shared/WB3-lokal.jsx",
+        "line": 86,
+        "start": 22920,
+        "end": 23047
+      },
+      "tag": "Button",
+      "interactive": true,
+      "contextGroup": "year",
+      "actionRule": "setPe(true), level=ar enters actual owned PlanEdit.",
+      "status": "existing-control-model-guards-changed",
+      "comparisonToExport26": {
+        "present": true,
+        "previousLines": [
+          79
+        ],
+        "eventExpressionsChanged": false
+      },
+      "canonicalBaseline": {
+        "ruleIds": [
+          "ag-wb-planrediger",
+          "ph-wb-planrediger"
+        ],
+        "exists": true,
+        "aliasStatus": "semantic-correspondence-not-declared-source-alias"
+      }
+    },
+    {
+      "controlId": "planred-lagre",
+      "controlIdExpression": null,
+      "source": {
+        "file": "ui_kits/_shared/WB3-plan.jsx",
+        "line": 10,
+        "start": 2419,
+        "end": 2629
+      },
+      "tag": "Button",
+      "interactive": true,
+      "contextGroup": "year",
+      "actionRule": "editPlan(plan.id,f,req); !ok keeps form/error; success resets req/re/onDone.",
+      "status": "existing-ui-model-guards-changed",
+      "comparisonToExport26": {
+        "present": true,
+        "previousLines": [
+          10
+        ],
+        "eventExpressionsChanged": false
+      },
+      "canonicalBaseline": {
+        "ruleIds": [
+          "ag-wb-planramme-lagre",
+          "ph-wb-planramme-lagre"
+        ],
+        "exists": true,
+        "aliasStatus": "semantic-correspondence-not-declared-source-alias"
+      }
+    },
+    {
+      "controlId": "planred-avbryt",
+      "controlIdExpression": null,
+      "source": {
+        "file": "ui_kits/_shared/WB3-plan.jsx",
+        "line": 10,
+        "start": 2680,
+        "end": 2784
+      },
+      "tag": "Button",
+      "interactive": true,
+      "contextGroup": "year",
+      "actionRule": "onDone → setPe(false); no editPlan call.",
+      "status": "existing-local-return",
+      "comparisonToExport26": {
+        "present": true,
+        "previousLines": [
+          10
+        ],
+        "eventExpressionsChanged": false
+      },
+      "canonicalBaseline": {
+        "ruleIds": [
+          "ag-wb-avbryt",
+          "ph-wb-avbryt"
+        ],
+        "exists": true,
+        "aliasStatus": "semantic-correspondence-not-declared-source-alias"
+      }
+    },
+    {
+      "controlId": "planred-feil",
+      "controlIdExpression": null,
+      "source": {
+        "file": "ui_kits/_shared/WB3-plan.jsx",
+        "line": 10,
+        "start": 2285,
+        "end": 2348
+      },
+      "tag": "span",
+      "interactive": false,
+      "contextGroup": "year",
+      "actionRule": "er alert from editPlan failure; not interactive.",
+      "status": "existing-error-with-new-model-guard-reasons",
+      "comparisonToExport26": {
+        "present": true,
+        "previousLines": [
+          10
+        ],
+        "eventExpressionsChanged": false
+      },
+      "canonicalBaseline": {
+        "ruleIds": [],
+        "exists": false,
+        "aliasStatus": "specific-source-state-rule-absent"
+      }
+    },
+    {
+      "controlId": "planred-forhandsvisning",
+      "controlIdExpression": null,
+      "source": {
+        "file": "ui_kits/_shared/WB3-plan.jsx",
+        "line": 9,
+        "start": 1695,
+        "end": 1803
+      },
+      "tag": "div",
+      "interactive": false,
+      "contextGroup": "year",
+      "actionRule": "previewPlanEdit(plan.id,f) consequence display; not interactive.",
+      "status": "existing-preview",
+      "comparisonToExport26": {
+        "present": true,
+        "previousLines": [
+          9
+        ],
+        "eventExpressionsChanged": false
+      },
+      "canonicalBaseline": {
+        "ruleIds": [],
+        "exists": false,
+        "aliasStatus": "specific-source-state-rule-absent"
+      }
+    },
+    {
+      "controlId": "planred-strandet",
+      "controlIdExpression": null,
+      "source": {
+        "file": "ui_kits/_shared/WB3-plan.jsx",
+        "line": 9,
+        "start": 2129,
+        "end": 2182
+      },
+      "tag": "span",
+      "interactive": false,
+      "contextGroup": "year",
+      "actionRule": "preview shows objects outside proposed date frame; not interactive.",
+      "status": "existing-preview-guard-related",
+      "comparisonToExport26": {
+        "present": true,
+        "previousLines": [
+          9
+        ],
+        "eventExpressionsChanged": false
+      },
+      "canonicalBaseline": {
+        "ruleIds": [],
+        "exists": false,
+        "aliasStatus": "specific-source-state-rule-absent"
+      }
+    },
+    {
+      "controlId": "planred-navn",
+      "controlIdExpression": null,
+      "source": {
+        "file": "ui_kits/_shared/WB3-plan.jsx",
+        "line": 8
+      },
+      "nativeSource": {
+        "file": "ui_kits/_shared/WB3-plan.jsx",
+        "line": 5,
+        "idExpression": "id",
+        "valueExpression": "v"
+      },
+      "tag": "Fld → input",
+      "interactive": true,
+      "contextGroup": "year",
+      "actionRule": "Fld.set(v) → setF({...f,navn:v}); draft only until planred-lagre",
+      "status": "existing-field-canonical-instantiation",
+      "comparisonToExport26": {
+        "present": true,
+        "eventExpressionsChanged": false
+      },
+      "canonicalBaseline": {
+        "ruleIds": [
+          "ag-wb-planrediger",
+          "ph-wb-planrediger"
+        ],
+        "exists": true,
+        "aliasStatus": "semantic-correspondence-not-declared-source-alias"
+      }
+    },
+    {
+      "controlId": "planred-fra",
+      "controlIdExpression": null,
+      "source": {
+        "file": "ui_kits/_shared/WB3-plan.jsx",
+        "line": 8
+      },
+      "nativeSource": {
+        "file": "ui_kits/_shared/WB3-plan.jsx",
+        "line": 5,
+        "idExpression": "id",
+        "valueExpression": "v"
+      },
+      "tag": "Fld → input",
+      "interactive": true,
+      "contextGroup": "year",
+      "actionRule": "Fld.set(v) → setF({...f,fra:v}); draft only until planred-lagre",
+      "status": "existing-field-canonical-instantiation",
+      "comparisonToExport26": {
+        "present": true,
+        "eventExpressionsChanged": false
+      },
+      "canonicalBaseline": {
+        "ruleIds": [
+          "ag-wb-planrediger",
+          "ph-wb-planrediger"
+        ],
+        "exists": true,
+        "aliasStatus": "semantic-correspondence-not-declared-source-alias"
+      }
+    },
+    {
+      "controlId": "planred-til",
+      "controlIdExpression": null,
+      "source": {
+        "file": "ui_kits/_shared/WB3-plan.jsx",
+        "line": 8
+      },
+      "nativeSource": {
+        "file": "ui_kits/_shared/WB3-plan.jsx",
+        "line": 5,
+        "idExpression": "id",
+        "valueExpression": "v"
+      },
+      "tag": "Fld → input",
+      "interactive": true,
+      "contextGroup": "year",
+      "actionRule": "Fld.set(v) → setF({...f,til:v}); draft only until planred-lagre",
+      "status": "existing-field-canonical-instantiation",
+      "comparisonToExport26": {
+        "present": true,
+        "eventExpressionsChanged": false
+      },
+      "canonicalBaseline": {
+        "ruleIds": [
+          "ag-wb-planrediger",
+          "ph-wb-planrediger"
+        ],
+        "exists": true,
+        "aliasStatus": "semantic-correspondence-not-declared-source-alias"
+      }
+    }
+  ],
+  "sourceGuards": [
+    {
+      "file": "ui_kits/_shared/WB3-okt.jsx",
+      "line": 71,
+      "expression": "(cps.length && !cp && ch!==eksempel) || bytt",
+      "result": "Source chooser; radio immediate select; no task insertion until separate task add control."
+    },
+    {
+      "file": "ui_kits/_shared/WB3-tek.jsx",
+      "line": 29,
+      "expression": "velg && (view===hent || view===sammenlign)",
+      "result": "Only Krever + cancel; budget mutation branch replaced by explicit month/week basis gate."
+    },
+    {
+      "file": "ui_kits/_shared/WB3-tek.jsx",
+      "line": 35,
+      "expression": "disabled={velg} on tek-hent / tek-sammenlign",
+      "result": "Import/update entry disabled while month basis unset; source viewing remains available."
+    }
+  ],
+  "persistenceEvidence": {
+    "selectors": [
+      {
+        "file": "ui_kits/_shared/wb-model.js",
+        "line": 176,
+        "method": "selectTekSrc",
+        "write": "S.tekSel[planId]=key"
+      },
+      {
+        "file": "ui_kits/_shared/wb-model.js",
+        "line": 177,
+        "method": "selectTaskSrc",
+        "write": "S.taskSel[planId]=key"
+      }
+    ],
+    "validation": "Plan exists, authOk(current plan), key belongs to kildeValg(planId). Failure returns before selector write.",
+    "optIn": {
+      "file": "ui_kits/_shared/wb-model.js",
+      "line": 214,
+      "condition": "?lagre=1|lokal",
+      "storageScope": "namespace and role"
+    },
+    "transaction": {
+      "file": "ui_kits/_shared/wb-model.js",
+      "line": 219,
+      "rule": "select* included in opt-in mutation wrapper; successful mutation calls persist; persist failure restores S and WB_SEL and returns error."
+    },
+    "persist": {
+      "file": "ui_kits/_shared/wb-model.js",
+      "line": 217,
+      "payload": "{v:1,S,sel:WB_SEL}"
+    },
+    "storeBump": {
+      "file": "ui_kits/_shared/wb-model.js",
+      "line": 220,
+      "rule": "bump also invokes persist then subscribers"
+    },
+    "limits": "Verified source path only. No new localStorage, browser reload or database test was run."
+  },
+  "annualEditing": {
+    "requestedFile": "ui_kits/_shared/WB3-ar.jsx",
+    "requestedFileFinding": "No data-control-id, PlanEdit mount or editPlan call in WB3-ar. Legacy PeriodForm/MonthForm are not owned-year-frame edit.",
+    "actualComponent": "WB3_PLAN.PlanEdit",
+    "source": {
+      "file": "ui_kits/_shared/WB3-plan.jsx",
+      "line": 6
+    },
+    "mount": {
+      "file": "ui_kits/_shared/WB3-lokal.jsx",
+      "line": 85,
+      "condition": "level===ar && pe"
+    },
+    "model": {
+      "file": "ui_kits/_shared/wb-model.js",
+      "line": 121,
+      "guards": [
+        "plan exists",
+        "authOk plan",
+        "request identity binds planId/name/from/to",
+        "name nonempty",
+        "parse-valid from/to dates",
+        "from<=to",
+        "outside() proposed frame empty",
+        "write fail preserves previous plan"
+      ],
+      "effect": "Only name/from/to are updated; reqsE records retry fingerprint."
+    },
+    "noModelRequestIDsUsedAsControlIDs": true
+  },
+  "retiredSemantics": [
+    {
+      "controlId": "tp-kilde-ok",
+      "status": "absent-in-export45",
+      "alreadyAbsentInExport26": true,
+      "conclusion": "No removal delta between26 and45 is claimed; source selector now uses tp-kilde-lukk and commits on radio."
+    },
+    {
+      "controlId": "tek-valg-ok",
+      "status": "still-present-close-only",
+      "label": "Bruk valgt kilde",
+      "conclusion": "Not removed. Handler only closes view; it is not a second source-commit action. Label needs consistency review."
+    }
+  ],
+  "issues": [
+    {
+      "code": "tek-confirmation-label",
+      "source": {
+        "file": "ui_kits/_shared/WB3-tek.jsx",
+        "line": 22
+      },
+      "finding": "Bruk valgt kilde remains on a close-only callback after immediate radio commit."
+    },
+    {
+      "code": "month-gate-scroll-target",
+      "source": {
+        "file": "ui_kits/_shared/WB3-tek.jsx",
+        "line": 18
+      },
+      "finding": "querySelector searches first global maanedsgrunnlag; no navigation fallback/focus/error if target or main missing. Correct same-week placement depends on current DOM."
+    },
+    {
+      "code": "year-source-file-correction",
+      "source": {
+        "file": "ui_kits/_shared/WB3-plan.jsx",
+        "line": 6
+      },
+      "finding": "Actual owned-year editor is WB3-plan.PlanEdit, not WB3-ar; keep this source distinction in handover."
+    },
+    {
+      "code": "year-cancel-dirty-guard-unverified",
+      "source": {
+        "file": "ui_kits/_shared/WB3-plan.jsx",
+        "line": 10
+      },
+      "finding": "Direct onDone closes editor. No dirty confirmation in this callback; global integration not checked here."
+    }
+  ],
+  "coverage": {
+    "controlAndStatusObservations": 22,
+    "interactiveObservations": 16,
+    "statusOnlyObservations": 6,
+    "newRegisteredScreenIdsInvented": 0,
+    "newControlIdsInvented": 0,
+    "fullExportMapped": false,
+    "allControlsCovered": false,
+    "appBindingsVerified": false,
+    "visualApproval": false
+  },
+  "limitations": [
+    "Only the requested source-selection/gate/year-frame areas; no full native-control inventory or effective canonical-registry audit.",
+    "ID expressions denote dynamic templates, not item counts. Concrete Fld IDs are source-declared props with native source line5.",
+    "No raw source, user labels, recipient IDs, test JSON or private export files copied to Git.",
+    "77/183 and export26 are distinct dated baselines; this file is a delta observation, not an updated active build contract."
+  ]
+}

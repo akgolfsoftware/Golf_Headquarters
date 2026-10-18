@@ -1,0 +1,126 @@
+{
+  "date": "2026-09-30",
+  "codeRef": "110b4ec8f7d960fd1748b8f87babebde80cd764b",
+  "source": "Lagret Precision Athletics-eksport, adskilt fra dagens skyprosjekt og appkode",
+  "precisionZipSha256": "c4f028c7ac42c04c8d031a05d140b037706a7fc0c0c70851ef419574fb3cce0e",
+  "syntax": {
+    "jsJsxFiles": 276,
+    "inlineScriptBlocks": 55,
+    "errors": 0,
+    "method": "@babel/parser, unambiguous + jsx"
+  },
+  "catalog": {
+    "entries": 161,
+    "retired": 20,
+    "playerEntries": 65,
+    "agencyEntries": 63,
+    "sharedEntries": 24,
+    "notInResponsiveTest": [
+      "PH-24D",
+      "PH-24D-DETALJ",
+      "PH-24D-INVITERT",
+      "PH-24D-AVSLUTTET",
+      "PH-24D-NY",
+      "PH-26B"
+    ]
+  },
+  "responsive": {
+    "status": "completed",
+    "page": "ui_kits/audit.html?only=PHQ,AG,FOAU&w=390,1280&bad=1",
+    "widths": [
+      390,
+      1280
+    ],
+    "frameHeight": 900,
+    "states": [
+      "data",
+      "tom",
+      "laster",
+      "feil"
+    ],
+    "playerThemes": [
+      "lyst",
+      "natt"
+    ],
+    "agencyThemes": [
+      "lyst"
+    ],
+    "playerIds": 59,
+    "agencyIds": 63,
+    "sharedIdsOrSubstates": 30,
+    "measuredCases": 1688,
+    "reportedCasesWithDeviations": 0,
+    "visibleResult": "ferdig · 1688 tilfeller · 0 med avvik",
+    "limits": [
+      "Seks katalog-ID-er mangler",
+      "Utgående videresendinger telles blant tilfellene",
+      "Ingen kontroll av dataflyt eller faktisk lagring",
+      "Ingen full tilgjengelighetskontroll",
+      "ready-timeout og manglende skjerm-ID utløser ikke eksplisitt kontrollfeil"
+    ]
+  },
+  "codeTests": {
+    "files": [
+      "src/components/teknisk-plan/constants.test.ts",
+      "src/lib/__tests__/training/srpe.test.ts"
+    ],
+    "passed": 7,
+    "failed": 0,
+    "method": "tsx --conditions=react-server --test, kjørt i isolert arbeidskopi"
+  },
+  "manualCloudChecks": [
+    {
+      "id": "PH-12",
+      "width": 390,
+      "finding": "Gammel planbyggermodell"
+    },
+    {
+      "ids": [
+        "PH-04",
+        "PH-05",
+        "PH-07"
+      ],
+      "width": 390,
+      "finding": "Repknapp og navigasjon virker, oppsummering bevarer ikke øktdata"
+    },
+    {
+      "id": "AG-TP-01",
+      "width": 1280,
+      "finding": "Eksisterende fokus mangler blant redigeringsvalgene"
+    },
+    {
+      "id": "AG-23",
+      "width": 1280,
+      "finding": "Eldre åttefaners variant vises"
+    }
+  ],
+  "privateProof": [
+    {
+      "privateFile": "kontroll-1688-visninger.txt",
+      "sha256": "0d3982368014e331b32f43471b43074ee2dce4e6933ceeb7cc220cf9f46f2815"
+    },
+    {
+      "privateFile": "kontroll-1688-visninger.png",
+      "sha256": "43d3caff78c8344e560da7650cfae47bb543681378c23c745f826a4df47f6389"
+    },
+    {
+      "privateFile": "avvik-ph-12-gammel-planbygger.png",
+      "sha256": "1bb1d3f7fc4aa264833a6d91e800f858b78f4262f2aea871d6e044738955b0f5"
+    },
+    {
+      "privateFile": "avvik-live-oppsummering.png",
+      "sha256": "b922989b34d49e6b8b110b2d4d99019120f4572d0dff1633e804809a4778d58c"
+    },
+    {
+      "privateFile": "avvik-teknisk-fokus.png",
+      "sha256": "9d74f2869b7612de762bbb0d99f3964da1579df474f366ccb3dcecb1853d0ec3"
+    },
+    {
+      "privateFile": "avvik-oppsett-gammel-variant.png",
+      "sha256": "405da0c204d80ef68b73341a7a9eff5dc86bc283338e82579aa7a2f3349f9193"
+    }
+  ],
+  "appJourneyTested": false,
+  "cloudSourceEdited": false,
+  "merged": false
+}

@@ -26,14 +26,11 @@ Dette er et bindende valg av designsystem og visuell retning. Det skal ikke beha
 - Eksisterende appkode med Train-lock-, `v2`- eller eldre Paper-navn kan beholdes midlertidig mens
   funksjoner flyttes kontrollert. Navnene gir ingen visuell autoritet.
 
-## Arbeidsdeling
+## Arbeidsdeling — presisert 30.09.2026
 
-- **Claude Code og Claude Design** leser koden, bevarer funksjonene og lager/vedlikeholder designet
-  i «AK Golf Precision Athletics».
-- **Codex** bygger designet i appkoden, kontrollerer funksjon og sammenligner appen med den valgte
-  designleveransen.
-- Claude Code skal oppdatere designprosjektets egne autoritets-, overleverings- og minnefiler når
-  retningen utvikles. Codex skal oppdatere prosjektets aktive dokumentasjon og minne ved bygging.
+Claude Design vedlikeholder designet i Precision Athletics. Anders har senere 30.09.2026 bestemt at Codex eier appkoden; dette er også registrert i hovedcheckoutens gjeldende designautoritet. Codex bygger den valgte designversjonen, kontrollerer funksjon og sammenligner appen med referansen. Den presise [kodeoverleveringen](grok-build-overlevering.md) viderefører Anders' krav om entydige knappmål og kan også leses av Grok Build; filnavnet endrer ikke den gjeldende arbeidsdelingen.
+
+Anders velger konkrete skjermversjoner før ferdig bygging. Hvert verktøy registrerer hva det faktisk har lest, tegnet, bygget og prøvd. Verktøynavnet gir ikke en ny designautoritet eller godkjenning. Oppdater aktive kilder og minne ved videreføring.
 
 ## Valg og spørsmål
 
@@ -41,7 +38,7 @@ Det skal ikke spørres på nytt om hvilket designsystem som gjelder. Beslutninge
 ny, uttrykkelig beskjed fra Anders.
 
 Når flere skjermvarianter finnes i samme designsystem, kan Anders fortsatt velge hvilken konkret
-variant Codex skal bygge. Dette er et skjermvalg, ikke en ny diskusjon om designsystemet.
+variant som skal bygges. Dette er et skjermvalg, ikke en ny diskusjon om designsystemet.
 
 Produktregler, tilgang, personvern, sikkerhet og datamodeller endres ikke av denne
 designbeslutningen.

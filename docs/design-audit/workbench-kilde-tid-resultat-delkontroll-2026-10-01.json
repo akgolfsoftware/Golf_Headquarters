@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "kilde-tid-resultat-delkontroll-bestatt-restkontroller-bestilt",
+  "export": {
+    "archive": "AK Golf Precision Athletics (62).zip",
+    "sha256": "9660e265fe8cac285ca81d1a6adfe5c6bdaa8c25e3df164a3dae132aa70c1c9a",
+    "files": 621,
+    "exportedAt": "2026-10-01T09:06:04.860057+00:00"
+  },
+  "syntax": {
+    "scripts": 320,
+    "inline": 76,
+    "inlineIncludedInScripts": true,
+    "errors": 0
+  },
+  "ownProbe": {
+    "checks": 12,
+    "failures": 0,
+    "proofSha256": "29401d1632b4484c6f1bf1a76f24af42822559b158c8e2ad7d7639a0121b44b0",
+    "coverage": [
+      "FYS programRef/rev1 og WBpubRev2 bevart separat, full struktur og øvelsesinstans",
+      "Native programknapper, WB-publisering og PH-gjennomføring",
+      "Golf øvelsesmin0/null, tidsstempler, faktisk pause, aktiv7s/pause3s/vegg10s",
+      "To tidsavlesninger +3s mot3.0s vegg, toleranse1.3s; pause5→5 i2.6s",
+      "FYS lagret Plan-reader etter ny publisering og tilbaketrekking/cachetømming med merket injeksjon, faktisk PH10retur",
+      "Golf simuleringsflag-savefail/retry og faktisk sessionId ulik adaptercacheKey"
+    ],
+    "limits": [
+      "FYS min er45 i denne fixturen; null/0-FYS ikke dekket.",
+      "Saved-reader åpnes etter ny pub/withdraw; endring mens åpen og golf Plan-reader ikke dekket.",
+      "TPrefs finnes i kode, men bankfixture uten TPbinding gir ingen verdikontroll av sourceTaskRev/TPpubRev/WBpubRev.",
+      "Golf tidstartassert godtar første avlesning≤3s, ikke nativeobservasjon nøyaktig0.",
+      "Kontroll av UI for0min er ikke separat assert; null vises, resultatets0/null felt er eksplisitt sjekket.",
+      "Lagrede golf/FYSresultat fortsatt i minne; ferskvert ikke prøvd her.",
+      "Program/kilde-oppsett har anonym merket modellfixture og cachetømming er testinjeksjon.",
+      "12kontroller er ikke12skjermer eller full designgodkjenning."
+    ]
+  },
+  "modelEvidence": "M+data-wb3 identisk61/59;121modellprøve ikke kjørt på nytt.",
+  "cloudRegression": {
+    "checks": 192,
+    "failures": 0,
+    "ownRerunFor62": false
+  },
+  "resources": "Egenfane1416028708 og lokalserver53118/8792 lukket.",
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false,
+  "next": "Avgrenset retting av fire reader/source/min-rester, to bekreftede klokkeproblemer, reader-readonly/retur og stabile Liveknapp-IDer. Deretter WBvisuelt/øvrigeknapper/sluttregister/frossenegenkontroll.",
+  "confirmedSourceGapsAfterOwnProbe": [
+    {
+      "file": "PH-live.jsx",
+      "lines": [
+        14,
+        70
+      ],
+      "issue": "Pauseovergang fordeler siste intervall etter ny paused-verdi, ikke gammel."
+    },
+    {
+      "file": "PH-live.jsx",
+      "lines": [
+        66,
+        68,
+        76
+      ],
+      "issue": "Samme aktivfane eller bytte/skipp nullstiller drilltid; delvis annen drill får0 i resultat."
+    },
+    {
+      "file": "PH-live.jsx",
+      "lines": [
+        155,
+        171
+      ],
+      "issue": "Saved-reader har fortsatt tappbare vurderinger som bare endrer visning uten lagring."
+    },
+    {
+      "file": "PH-live.jsx",
+      "lines": [
+        6,
+        160
+      ],
+      "issue": "Til I dag-label er feil ved dynamisk retur til PH10/PH11AR."
+    }
+  ]
+}

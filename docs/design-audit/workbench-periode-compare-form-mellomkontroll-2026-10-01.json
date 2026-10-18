@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "syntax": {
+    "scripts": 308,
+    "inline": 65,
+    "inlineIncludedInScripts": true,
+    "syntax_errors": 0,
+    "errors": []
+  },
+  "model": {
+    "total": 83,
+    "pass": 83,
+    "fail": 0,
+    "skip": 0,
+    "error": 0,
+    "original82Pass": true,
+    "modelSha256": "8830ebcb963f26e67317752f626aa44f5ba2456995730696aff5f6854a98e264",
+    "runnerSha256": "0ddd97f5cc2ef6c9ac233364f42ad11ca16a23e4bfa20b893ea04f22e1d37335",
+    "newCase": "Full periodeskjemapatch med uendret importert TEK bevarer ref/markør/manueltfalse ved endring av SLAG/minutter; writefail/retry énwrite og null0 i andre akser bevares.",
+    "boundary": "Identisk modell-SHA37–38;83PASS gjenbrukt, ikke kjørt om.",
+    "evidenceReusedFromExport37": true
+  },
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false,
+  "status": "periode-compare-form-avgrenset-native-kontroll",
+  "export": {
+    "zip": "/Users/anderskristiansen/Downloads/AK Golf Precision Athletics (38).zip",
+    "root": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-periode-compare-form",
+    "sha256": "20c6c465f5705fb33455739b4fc401712d528586748c1205b2dae55b8f0eed1f",
+    "files": 609,
+    "exportedAt": "2026-10-01T04:08:46.221112+00:00"
+  },
+  "ownNative": {
+    "checks": 22,
+    "failures": 0,
+    "proofSha256": "77d2df40f08dfa39d8f433a22a1f9f61a6dcd36adb97d0c0259cc8f0ac99036f",
+    "scope": "AG→PH måned rev1→2 og valgt periode rev2→3, Sammenlign/Behold/Oppdater med writefail/retry; native periodeskjema SLAG5/40min mens TEK4/refrev3/manualfalse bevares.",
+    "limits": [
+      "Perioden opprettet ved merket modellgrunnoppsett.",
+      "Ikke Avbryt/gjenåpning/reload etter skjemalagring; disk lest direkte.",
+      "Bare én periode; andre perioder ikke native kontrollert.",
+      "Hele snapshot/importmarkør og øvrige fire akser/minutter er ikke sammenlignet i nativeasserts.",
+      "SLAG5/40min kontrollert i minne; diskasserts kontrollerer bare TEK/ref/manualfalse."
+    ]
+  },
+  "active": "Tre månedsgrunnlagsrettinger: førstegangs fra-måned lagringsfeil, arvet kandidatbudsjett og avhengig TEK-import før eksplisitt valg. Deretter to planer/kildevalg/refreset og gruppegrunnlag.",
+  "resources": "Egen fane1416028660 og server80838 lukket."
+}

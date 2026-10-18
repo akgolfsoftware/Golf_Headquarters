@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "lagringsdel-avgrenset-kontrollert-hele-design-pågår",
+  "export": {
+    "zipName": "AK Golf Precision Athletics (25).zip",
+    "zipSha256": "3b9acecb442bf9a6bd9fe555981f500ec2f8edde30d9fefc35bcab85c57a7a96",
+    "fileCount": 599,
+    "exportRoot": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-lagring-kontrollert",
+    "exportedAt": "2026-10-01T01:21:12.573550+00:00",
+    "status": "lagringsdel-kontrollert-i-sky-egenkontroll-og-Live-under-arbeid"
+  },
+  "syntax": {
+    "scripts": 298,
+    "inline": 55,
+    "inlineIncludedInScripts": true,
+    "syntax_errors": 0,
+    "errors": []
+  },
+  "model": {
+    "cases": 63,
+    "pass": 63,
+    "fail": 0,
+    "skip": 0,
+    "error": 0,
+    "sourceModelSha256": "7dce6188eb585ecb7773a01bf67c6870f34b489e78eea8bc556905fa6aea27e8",
+    "runnerSha256": "e933c0faa2f1473553a49f66d17292bb96fb67f0b81439a15d7654c534ae87d7",
+    "proofSha256": "dba1b25cf36f904b9b20111adc4d6fd00c15bdfc2a091f202a0c64a7609db98a"
+  },
+  "observedCloudUi": {
+    "checks": 79,
+    "failures": 0,
+    "page": "wb-lagring-repro.html",
+    "proofSha256": "6134c8b0bce210515ea359a37ca63c8db7a804fca76a41c1358a9381d7aaf318",
+    "scope": "Observert AX-teller. Separat egen lokal UI-kjøring ga også 79/0."
+  },
+  "ownLocalUi": {
+    "checks": 79,
+    "failures": 0,
+    "proofSha256": "29072b6e52142f635418e9e52215476216ad45ff289bb6b1d3a3f358b7dd4254",
+    "scope": "Syntetisk startoppsett; faktiske prototypeknapper; riktig eksportrot på lokal server. Full DOM-logg bevart privat. Første feil var feil serverrot, ikke designfunksjon.",
+    "resources": "Egen testfane lukket og server 25542 stoppet."
+  },
+  "recovery": "taskShared/tekShared avdekker absent/mismatch før retry. TPN viser IKKE DELT og faktisk Prøv å dele på nytt; TEK recoverytekst i kilde, ikke ny egen antallUI. Retry reparerer samme pubID/rev, PH-reload konsistent.",
+  "ownVersion": "Faktisk valgt andre målplan, full kopi, Åpne egen økt og Tilbake kontrollert i lokal 79/0-reise; separate modellprøver 63/0.",
+  "cloudReceipt": {
+    "file": "delkvittering-lagring-publisering.md",
+    "claimedRecent": [
+      "lagring79/0",
+      "pub17/0"
+    ],
+    "claimedOlder": [
+      "TPN70/0",
+      "femfunn24/0",
+      "TEK48/0"
+    ],
+    "limitation": "Kvittering har liten tidsmotstrid om pub var før eller etter siste endringer; eldre prøver gir ikke ny samlet regresjon."
+  },
+  "remaining": [
+    "Aktiv publisert Plan PH-10/I dag PH-01/PH-03→golf/FYS→PH-07-jobb, ikke kontrollert ennå",
+    "TEK-konflikt og AG→PH antall/periode/måned",
+    "Modernisert eldre TP-reise",
+    "Visuell konsistens, gammel aktivdemo-opprydding, øvrige knapper, sluttregister/frosset byggepakke"
+  ],
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false
+}

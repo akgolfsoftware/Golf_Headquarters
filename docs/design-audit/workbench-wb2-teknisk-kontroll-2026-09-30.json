@@ -1,0 +1,806 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-09-30",
+  "status": "WB2-teknisk-mellomkontroll-ikke-ferdig-eller-godkjent",
+  "scope": "Kun privat eksport, kildekontroll og isolert modellreplay med syntetiske verdier; ingen app-, DB- eller eksportendringer. Kun denne nye kontrollfilen skrives.",
+  "sourceLabel": "mellomversjon-wb2-teknisk",
+  "sourceZipSha256ReportedByParent": "ff40a5af2cca27754354f32e4976f6bf628ef9001c94e40a1c9df054e9382d18",
+  "sourceZipHashIndependentlyVerified": false,
+  "previousAudit": "docs/design-audit/workbench-wb1-mellomkontroll-2026-09-30.json",
+  "readFiles": [
+    {
+      "file": "ui_kits/_shared/wb-model.js",
+      "sha256": "d949dfb07fe9768ae7cdd3053a9e58f9b059e0a0919f02ca2ef66f9e8deaaa00",
+      "lines": 73
+    },
+    {
+      "file": "ui_kits/_shared/WB3-lokal.jsx",
+      "sha256": "f68a2a8feea590f889100640d847d4fa87913a1b0b93fd5fa24932db7a3dd7a8",
+      "lines": 113
+    },
+    {
+      "file": "ui_kits/_shared/WB3-ar.jsx",
+      "sha256": "580df65c84d29c8016c146107b0b88d6b89987c1348b4f7db74233ca1dbbe9ca",
+      "lines": 272
+    },
+    {
+      "file": "ui_kits/_shared/WB3.jsx",
+      "sha256": "82b6f9eddb738a7e4332c0c1e459de6062bf619b5597695408d367d1f950ef93",
+      "lines": 174
+    },
+    {
+      "file": "ui_kits/_shared/WB3-okt.jsx",
+      "sha256": "8ca76307513d850501b7bbd17c211d6bc6e2bf01b1ba8112bc3f55f21450371b",
+      "lines": 88
+    },
+    {
+      "file": "ui_kits/_shared/data-tp2.js",
+      "sha256": "20518ef17b888b3f31b91fc30e3ca9cd1ffa752e989219c29e0312c1680f52c2",
+      "lines": 30
+    },
+    {
+      "file": "ui_kits/_shared/tp-v2.jsx",
+      "sha256": "88cae8018db19f7dee0487bea5c2c6d021a4467d52fe16b3b136d1ebac1edc9f",
+      "lines": 121
+    },
+    {
+      "file": "ui_kits/agencyos/screens/AG-10.jsx",
+      "sha256": "bebe42505e4536286d4f0de481a168105f916c839426fa7de9f44a65f4ac98ea",
+      "lines": 47
+    },
+    {
+      "file": "ui_kits/agencyos/screens/AG-TP.jsx",
+      "sha256": "153e324878c16e5cfb957a69b1e90d9e706ccf3b1e6b7b01a1bd70c516d9d733",
+      "lines": 114
+    },
+    {
+      "file": "ui_kits/wb1-reise.html",
+      "sha256": "3433de11b971770eb6f0b4eadde448841141dca6b8334e9d1b1a984d1c2b285e",
+      "lines": 151
+    },
+    {
+      "file": "ui_kits/playerhq/screen.html",
+      "sha256": "a67d34cc2efab51217a18385106b2fa756c677af571ffb0cb4bc8adb054d7317",
+      "lines": 86
+    },
+    {
+      "file": "ui_kits/agencyos/screen.html",
+      "sha256": "ec01f0d3ecb7829a4c7f9f36672ca96dc2c3145e04bf84acec043d46a9c38ea3",
+      "lines": 77
+    },
+    {
+      "file": "components/core/Button.jsx",
+      "sha256": "ec7d4edef982230e60094fb5bcbeb929ea8b45f6cfadcc747c19b013999036f5",
+      "lines": 16
+    }
+  ],
+  "verification": {
+    "browserRunExecutedByThisAgent": false,
+    "parentReportedBrowserRun": {
+      "count": 171,
+      "failures": 0,
+      "independentlyVerifiedByThisAgent": false,
+      "interpretation": "171/0 gjelder den testens selektorer/påstander. Beviser ikke full eier-/revisjonsbinding eller fravær av global demo. Primæragentens separate manuelle UI viste konkrete avvik."
+    },
+    "modelReplay": {
+      "method": "Node-vm, kun wb-model.js; syntetisk owner/task/media, ingen nettverk/import/DB.",
+      "ownerReadIsolated": true,
+      "editOutsideRejected": true,
+      "periodNullVsZeroPreserved": true,
+      "unsetDurationCount": 1,
+      "unsetDurationRemaining": null,
+      "wrongSourcePlanAndRevAccepted": true,
+      "wrongOwnerSourceAccepted": true,
+      "snapshotIndependentFromGlobal": true,
+      "sourceRevMismatchAccepted": true,
+      "revisionKeepsInstanceId": true,
+      "oldSnapshotRetained": true,
+      "candidateMediaHasURL": false,
+      "outsideSessionDateAccepted": true,
+      "outsideSessionVisibleInSeasonWeeks": false
+    }
+  },
+  "previousFindings": [
+    {
+      "previousId": "wb1-test-direct-session",
+      "status": "rettet-i-kilde",
+      "title": "Ny økt gjennom faktiske UI-kontroller",
+      "observation": "Kritisk øktoppretting går nå via skjema og lagreknapp. Direkte modelloppretting på linje 91 er separat merket Modellfixture og hevdes ikke som UI-bevis.",
+      "evidence": [
+        {
+          "file": "ui_kits/wb1-reise.html",
+          "sha256": "3433de11b971770eb6f0b4eadde448841141dca6b8334e9d1b1a984d1c2b285e",
+          "line": 36,
+          "endLine": 37
+        },
+        {
+          "file": "ui_kits/wb1-reise.html",
+          "sha256": "3433de11b971770eb6f0b4eadde448841141dca6b8334e9d1b1a984d1c2b285e",
+          "line": 91
+        }
+      ]
+    },
+    {
+      "previousId": "wb1-test-reset-assert",
+      "status": "rettet-i-kilde",
+      "title": "Reset-påstanden krever både modell og UI",
+      "observation": "Tidligere OR med tom override er erstattet av AND mellom status, modell og arvet felttekst.",
+      "evidence": [
+        {
+          "file": "ui_kits/wb1-reise.html",
+          "sha256": "3433de11b971770eb6f0b4eadde448841141dca6b8334e9d1b1a984d1c2b285e",
+          "line": 40
+        }
+      ]
+    },
+    {
+      "previousId": "wb1-test-week-or-true",
+      "status": "rettet-i-kilde",
+      "title": "Uke 50 kan ikke lenger bestå via true",
+      "observation": "Ukeidentitet, modellnøkkel, urørt uke 41 og synlig status inngår nå.",
+      "evidence": [
+        {
+          "file": "ui_kits/wb1-reise.html",
+          "sha256": "3433de11b971770eb6f0b4eadde448841141dca6b8334e9d1b1a984d1c2b285e",
+          "line": 41,
+          "endLine": 42
+        }
+      ]
+    },
+    {
+      "previousId": "wb1-demo-level-test",
+      "status": "delvis-rettet",
+      "title": "Nivå tvinges ikke lenger til År",
+      "observation": "Planvelgerens bytte endrer ikke level. Testen hevder fortsatt valgt nivå beholdt uten å kontrollere aria-selected eller konkret månedsflate.",
+      "evidence": [
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "sha256": "f68a2a8feea590f889100640d847d4fa87913a1b0b93fd5fa24932db7a3dd7a8",
+          "line": 106
+        },
+        {
+          "file": "ui_kits/wb1-reise.html",
+          "sha256": "3433de11b971770eb6f0b4eadde448841141dca6b8334e9d1b1a984d1c2b285e",
+          "line": 52,
+          "endLine": 53
+        }
+      ]
+    },
+    {
+      "previousId": "wb1-override-plan-id",
+      "status": "rettet-i-kilde",
+      "title": "Override-editor får eier og plan i React-nøkkel",
+      "observation": "Måneds-/ukeeditor og PlanView nøkkeles med owner/plan/dato; egen test bytter mellom to planer med forskjellig override. Faktisk bytte mellom to eiere er ikke prøvd i testen.",
+      "evidence": [
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "sha256": "f68a2a8feea590f889100640d847d4fa87913a1b0b93fd5fa24932db7a3dd7a8",
+          "line": 53
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "sha256": "f68a2a8feea590f889100640d847d4fa87913a1b0b93fd5fa24932db7a3dd7a8",
+          "line": 79
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "sha256": "f68a2a8feea590f889100640d847d4fa87913a1b0b93fd5fa24932db7a3dd7a8",
+          "line": 88
+        },
+        {
+          "file": "ui_kits/wb1-reise.html",
+          "sha256": "3433de11b971770eb6f0b4eadde448841141dca6b8334e9d1b1a984d1c2b285e",
+          "line": 129,
+          "endLine": 132
+        }
+      ]
+    },
+    {
+      "previousId": "wb1-edit-period-outside",
+      "status": "rettet-i-kilde",
+      "title": "Redigering validerer årsplanens datogrense",
+      "observation": "editPeriod krever uttrykkelig utvidAar utenfor rammen. Isolert modellkontroll avviste overskridelse og bevarte årsplanens til-dato.",
+      "evidence": [
+        {
+          "file": "ui_kits/_shared/wb-model.js",
+          "sha256": "d949dfb07fe9768ae7cdd3053a9e58f9b059e0a0919f02ca2ef66f9e8deaaa00",
+          "line": 33
+        },
+        {
+          "file": "ui_kits/wb1-reise.html",
+          "sha256": "3433de11b971770eb6f0b4eadde448841141dca6b8334e9d1b1a984d1c2b285e",
+          "line": 28,
+          "endLine": 30
+        }
+      ]
+    },
+    {
+      "previousId": "wb1-week-select-month-context",
+      "status": "ikke-rettet",
+      "title": "Ukevelger synkroniserer ikke måned",
+      "observation": "Direkte uke-select skriver bare st.wks. Forrige/neste og goWeek oppdaterer st.mks med torsdagens måned. Tilbake til Måned kan derfor vise gammel eller annen måned enn valgt grunnlag.",
+      "evidence": [
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "sha256": "f68a2a8feea590f889100640d847d4fa87913a1b0b93fd5fa24932db7a3dd7a8",
+          "line": 67
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "sha256": "f68a2a8feea590f889100640d847d4fa87913a1b0b93fd5fa24932db7a3dd7a8",
+          "line": 85
+        }
+      ]
+    },
+    {
+      "previousId": "wb1-month-week-budget-gap",
+      "status": "rettet-i-kilde",
+      "title": "Måneden viser ukeverdier; månedsgrunnlaget velges synlig",
+      "observation": "Alle månedens uker har verdier/kilde, Rediger uke og egen reset. Uke som berører to måneder har eksplisitt månedsvalg/Eget. effective bruker valgt månedsgrunnlag fremfor skjult torsdag. Torsdagsregel består kun i navigasjonsmåned; se separat gammelt kontekstavvik.",
+      "evidence": [
+        {
+          "file": "ui_kits/_shared/wb-model.js",
+          "sha256": "d949dfb07fe9768ae7cdd3053a9e58f9b059e0a0919f02ca2ef66f9e8deaaa00",
+          "line": 53,
+          "endLine": 56
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "sha256": "f68a2a8feea590f889100640d847d4fa87913a1b0b93fd5fa24932db7a3dd7a8",
+          "line": 77
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "sha256": "f68a2a8feea590f889100640d847d4fa87913a1b0b93fd5fa24932db7a3dd7a8",
+          "line": 87
+        }
+      ]
+    },
+    {
+      "previousId": "wb1-unset-duration-to-zero",
+      "status": "rettet-i-kilde",
+      "title": "Ukjent varighet skilles fra kjent null/0",
+      "observation": "weekStatus teller økter uten varighet separat og tid_gjenstaar blir null ved ukjent varighet. UI viser antall uten varighet. UI-skjema tillater positiv varighet eller blankt; eksplisitt 0 øktvarighet finnes bare i navngitt modellfixture.",
+      "evidence": [
+        {
+          "file": "ui_kits/_shared/wb-model.js",
+          "sha256": "d949dfb07fe9768ae7cdd3053a9e58f9b059e0a0919f02ca2ef66f9e8deaaa00",
+          "line": 44
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "sha256": "f68a2a8feea590f889100640d847d4fa87913a1b0b93fd5fa24932db7a3dd7a8",
+          "line": 89
+        },
+        {
+          "file": "ui_kits/wb1-reise.html",
+          "sha256": "3433de11b971770eb6f0b4eadde448841141dca6b8334e9d1b1a984d1c2b285e",
+          "line": 91
+        }
+      ]
+    },
+    {
+      "previousId": "wb1-template-summary",
+      "status": "rettet-i-kilde",
+      "title": "Sammendrag viser periodene malen oppretter",
+      "observation": "Tom-plan-tekst og malperiode-preview er nå atskilt; løftet om ingen automatiske økter/mengder er beholdt.",
+      "evidence": [
+        {
+          "file": "ui_kits/_shared/wb-model.js",
+          "sha256": "d949dfb07fe9768ae7cdd3053a9e58f9b059e0a0919f02ca2ef66f9e8deaaa00",
+          "line": 16
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "sha256": "f68a2a8feea590f889100640d847d4fa87913a1b0b93fd5fa24932db7a3dd7a8",
+          "line": 19
+        }
+      ]
+    },
+    {
+      "previousId": "wb1-owner-reset-not-covered",
+      "status": "delvis-rettet",
+      "title": "Komponenter nøkkeles; ekte eierbytte mangler i testen",
+      "observation": "Panel nøkkeles på mode/subj/plan, Create på owner og PerForm på plan/periode/view. Test sjekker bare at annen:eier er tom, og åpner ikke en faktisk annen spiller/gruppe med egne data.",
+      "evidence": [
+        {
+          "file": "ui_kits/_shared/WB3-ar.jsx",
+          "sha256": "580df65c84d29c8016c146107b0b88d6b89987c1348b4f7db74233ca1dbbe9ca",
+          "line": 270
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "sha256": "f68a2a8feea590f889100640d847d4fa87913a1b0b93fd5fa24932db7a3dd7a8",
+          "line": 50,
+          "endLine": 53
+        },
+        {
+          "file": "ui_kits/wb1-reise.html",
+          "sha256": "3433de11b971770eb6f0b4eadde448841141dca6b8334e9d1b1a984d1c2b285e",
+          "line": 128,
+          "endLine": 141
+        }
+      ]
+    },
+    {
+      "previousId": "wb1-period-control-id",
+      "status": "rettet-i-kilde",
+      "title": "Periodekontroll har periodId",
+      "observation": "data-control-id og data-period-id er unike; data-wb med periodetype er fortsatt duplikert som kompatibilitetsselektor. Test velger to Grunnperioder via unike ID-er.",
+      "evidence": [
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "sha256": "f68a2a8feea590f889100640d847d4fa87913a1b0b93fd5fa24932db7a3dd7a8",
+          "line": 71
+        },
+        {
+          "file": "ui_kits/wb1-reise.html",
+          "sha256": "3433de11b971770eb6f0b4eadde448841141dca6b8334e9d1b1a984d1c2b285e",
+          "line": 31,
+          "endLine": 33
+        }
+      ]
+    },
+    {
+      "previousId": "wb1-button-role-listitem",
+      "status": "ikke-rettet",
+      "title": "Klikkbare kontroller har feil tilgjengelighetsrolle",
+      "observation": "Perioder, årsmåneder og periodeuker setter role=listitem på Button; ny øktliste gjør det samme. DOM .click() tester handling uten å kontrollere tilgjengelighetsrolle eller tastatur. Primæragentens manuelle AX-kontroll bekrefter listitem/generic. OnClick finnes, så kildekontrollen alene hevder ikke at månedsknappen er funksjonelt død.",
+      "evidence": [
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "sha256": "f68a2a8feea590f889100640d847d4fa87913a1b0b93fd5fa24932db7a3dd7a8",
+          "line": 71
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "sha256": "f68a2a8feea590f889100640d847d4fa87913a1b0b93fd5fa24932db7a3dd7a8",
+          "line": 73,
+          "endLine": 74
+        },
+        {
+          "file": "ui_kits/_shared/WB3-okt.jsx",
+          "sha256": "8ca76307513d850501b7bbd17c211d6bc6e2bf01b1ba8112bc3f55f21450371b",
+          "line": 83
+        },
+        {
+          "file": "components/core/Button.jsx",
+          "sha256": "ec7d4edef982230e60094fb5bcbeb929ea8b45f6cfadcc747c19b013999036f5",
+          "line": 5,
+          "endLine": 8
+        },
+        {
+          "file": "ui_kits/wb1-reise.html",
+          "sha256": "3433de11b971770eb6f0b4eadde448841141dca6b8334e9d1b1a984d1c2b285e",
+          "line": 5
+        }
+      ]
+    },
+    {
+      "previousId": "wb1-duplicate-create-demo",
+      "status": "delvis-rettet",
+      "title": "Parallelle opprettingsmodeller er samlet, men to knapper består",
+      "observation": "Demoens openWiz går nå til WB3_LOKAL.openCreate. Headerens Opprett årsplan og demoens egen Opprett årsplan vises fortsatt samtidig, og testen kontrollerer ikke antallet.",
+      "evidence": [
+        {
+          "file": "ui_kits/_shared/WB3-ar.jsx",
+          "sha256": "580df65c84d29c8016c146107b0b88d6b89987c1348b4f7db74233ca1dbbe9ca",
+          "line": 100,
+          "endLine": 103
+        },
+        {
+          "file": "ui_kits/_shared/WB3-ar.jsx",
+          "sha256": "580df65c84d29c8016c146107b0b88d6b89987c1348b4f7db74233ca1dbbe9ca",
+          "line": 118
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "sha256": "f68a2a8feea590f889100640d847d4fa87913a1b0b93fd5fa24932db7a3dd7a8",
+          "line": 106
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "sha256": "f68a2a8feea590f889100640d847d4fa87913a1b0b93fd5fa24932db7a3dd7a8",
+          "line": 112
+        }
+      ]
+    },
+    {
+      "previousId": "wb1-group-banner-report",
+      "status": "delvis-rettet",
+      "title": "Egen spillerplan skjuler banner etter parentrender; første lagring oppdaterer ikke parent",
+      "observation": "own ? null finnes nå, men own beregnes i Workbench og lagre-plan oppdaterer kun barnet. Primæragent så WANG-banner, demovelger og gammelt sidefelt umiddelbart etter lagring. Gruppegrenen på linje 114 påstår automatisk gruppeinnrulling også for eget utkast.",
+      "evidence": [
+        {
+          "file": "ui_kits/_shared/WB3.jsx",
+          "sha256": "82b6f9eddb738a7e4332c0c1e459de6062bf619b5597695408d367d1f950ef93",
+          "line": 22
+        },
+        {
+          "file": "ui_kits/_shared/WB3.jsx",
+          "sha256": "82b6f9eddb738a7e4332c0c1e459de6062bf619b5597695408d367d1f950ef93",
+          "line": 78,
+          "endLine": 80
+        },
+        {
+          "file": "ui_kits/_shared/WB3.jsx",
+          "sha256": "82b6f9eddb738a7e4332c0c1e459de6062bf619b5597695408d367d1f950ef93",
+          "line": 114,
+          "endLine": 115
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "sha256": "f68a2a8feea590f889100640d847d4fa87913a1b0b93fd5fa24932db7a3dd7a8",
+          "line": 14
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "sha256": "f68a2a8feea590f889100640d847d4fa87913a1b0b93fd5fa24932db7a3dd7a8",
+          "line": 50
+        },
+        {
+          "file": "ui_kits/wb1-reise.html",
+          "sha256": "3433de11b971770eb6f0b4eadde448841141dca6b8334e9d1b1a984d1c2b285e",
+          "line": 14
+        }
+      ]
+    }
+  ],
+  "previousStatusCounts": {
+    "rettet-i-kilde": 9,
+    "delvis-rettet": 4,
+    "ikke-rettet": 2
+  },
+  "currentFindings": [
+    {
+      "id": "wb2-parent-not-notified",
+      "severity": "høy",
+      "title": "Første lagring etterlater global demo i en egen plan",
+      "observation": "Create.save oppdaterer WB_SEL og kaller onDone. onDone bruker kun Panel.setView og lokal re; Workbench.bump sendes ikke videre. Parentens own, Selector og Side blir stående på gammel render. Test etter lagring sjekker bare data-wb=plan og tom i barnet. Primæragent har manuelt bekreftet stale velger/banner/sidefelt; kildeforklaringen støtter dette.",
+      "evidence": [
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "sha256": "f68a2a8feea590f889100640d847d4fa87913a1b0b93fd5fa24932db7a3dd7a8",
+          "line": 14
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "sha256": "f68a2a8feea590f889100640d847d4fa87913a1b0b93fd5fa24932db7a3dd7a8",
+          "line": 45,
+          "endLine": 50
+        },
+        {
+          "file": "ui_kits/_shared/WB3.jsx",
+          "sha256": "82b6f9eddb738a7e4332c0c1e459de6062bf619b5597695408d367d1f950ef93",
+          "line": 16,
+          "endLine": 22
+        },
+        {
+          "file": "ui_kits/_shared/WB3.jsx",
+          "sha256": "82b6f9eddb738a7e4332c0c1e459de6062bf619b5597695408d367d1f950ef93",
+          "line": 78,
+          "endLine": 80
+        },
+        {
+          "file": "ui_kits/wb1-reise.html",
+          "sha256": "3433de11b971770eb6f0b4eadde448841141dca6b8334e9d1b1a984d1c2b285e",
+          "line": 13,
+          "endLine": 14
+        }
+      ],
+      "requiredCorrection": "Varsle parent etter oppretting/valg. Test samme sammenhengende skjerm straks etter Lagre utkast, før navigasjon eller annet parentstate-kall; velger, sidefelt og banner må samsvare med ny plan."
+    },
+    {
+      "id": "wb2-old-week-header",
+      "severity": "høy",
+      "title": "Gammel uke 40/41 vises over egen uke",
+      "observation": "Den globale ukeheaderen, WeekAlloc, axisBar og gammel tidsum er styrt bare av level/week, ikke own. Egne planuker får dermed to ukeidentiteter og demohandlinger også etter at parentrender er oppdatert. Primæragent bekreftet dette manuelt.",
+      "evidence": [
+        {
+          "file": "ui_kits/_shared/WB3.jsx",
+          "sha256": "82b6f9eddb738a7e4332c0c1e459de6062bf619b5597695408d367d1f950ef93",
+          "line": 126,
+          "endLine": 132
+        }
+      ],
+      "requiredCorrection": "La egen plan eie hele ukeheaderen, pyramidehandlingene, kalenderen og summen; test én synlig ukevelger og konsekvent ISO-år/uke etter første navigasjon."
+    },
+    {
+      "id": "wb2-source-owner-plan-rev-unchecked",
+      "severity": "høy",
+      "title": "Teknisk kilde er global og valideres ikke mot eier/plan/revisjon",
+      "observation": "AG-10 sender bare taskId. Innsettingsark bruker nåværende Workbench-owner og global TP_DATA. addTechTasks slår opp taskId og kopierer technicalPlanId/rev fra caller uten validering mot kildeplanens ID, kildens rev eller eier. Isolert modellreplay aksepterte annen kildeeier, feil sourceplanId og rev 99 mens snapshot.task.rev var 1. Navnesjekken i TpPick er ikke en ownerId-sjekk.",
+      "evidence": [
+        {
+          "file": "ui_kits/agencyos/screens/AG-10.jsx",
+          "sha256": "bebe42505e4536286d4f0de481a168105f916c839426fa7de9f44a65f4ac98ea",
+          "line": 38
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "sha256": "f68a2a8feea590f889100640d847d4fa87913a1b0b93fd5fa24932db7a3dd7a8",
+          "line": 95,
+          "endLine": 100
+        },
+        {
+          "file": "ui_kits/_shared/WB3-okt.jsx",
+          "sha256": "8ca76307513d850501b7bbd17c211d6bc6e2bf01b1ba8112bc3f55f21450371b",
+          "line": 45,
+          "endLine": 50
+        },
+        {
+          "file": "ui_kits/_shared/wb-model.js",
+          "sha256": "d949dfb07fe9768ae7cdd3053a9e58f9b059e0a0919f02ca2ef66f9e8deaaa00",
+          "line": 67
+        },
+        {
+          "file": "ui_kits/_shared/tp-v2.jsx",
+          "sha256": "88cae8018db19f7dee0487bea5c2c6d021a4467d52fe16b3b136d1ebac1edc9f",
+          "line": 106
+        }
+      ],
+      "requiredCorrection": "Bær og valider ownerId/ownerType + sourceTechnicalPlanId + taskId + rev gjennom AG10, innsetting, snapshot og oppdatering. Avvis feil kilde; syntetisk eksempel skal være eksplisitt og beholde riktig kildebinding."
+    },
+    {
+      "id": "wb2-ph-coach-draft",
+      "severity": "høy",
+      "title": "Spillervisningen kopierer coachens upubliserte utkast",
+      "observation": "TpPick leser global TP_DATA.tasks/MEDIA. AG-TP Lagre endrer nettopp disse globalene og varsler IKKE PUBLISERT. PH bruker samme TpPick/model som AG, uten publishedTasks-spillerkilde. Setningen coachens utkast følger ikke med på linje 53 motsies av dataveien.",
+      "evidence": [
+        {
+          "file": "ui_kits/_shared/WB3-okt.jsx",
+          "sha256": "8ca76307513d850501b7bbd17c211d6bc6e2bf01b1ba8112bc3f55f21450371b",
+          "line": 45,
+          "endLine": 53
+        },
+        {
+          "file": "ui_kits/agencyos/screens/AG-TP.jsx",
+          "sha256": "153e324878c16e5cfb957a69b1e90d9e706ccf3b1e6b7b01a1bd70c516d9d733",
+          "line": 30
+        },
+        {
+          "file": "ui_kits/agencyos/screens/AG-TP.jsx",
+          "sha256": "153e324878c16e5cfb957a69b1e90d9e706ccf3b1e6b7b01a1bd70c516d9d733",
+          "line": 99
+        },
+        {
+          "file": "ui_kits/_shared/wb-model.js",
+          "sha256": "d949dfb07fe9768ae7cdd3053a9e58f9b059e0a0919f02ca2ef66f9e8deaaa00",
+          "line": 67
+        },
+        {
+          "file": "ui_kits/_shared/tp-v2.jsx",
+          "sha256": "88cae8018db19f7dee0487bea5c2c6d021a4467d52fe16b3b136d1ebac1edc9f",
+          "line": 111,
+          "endLine": 118
+        }
+      ],
+      "requiredCorrection": "PH må kun velge og kopiere spillerens publiserte, eieravgrensede revisjon/medier. AG kan vise egen kladd med synlig kladdstatus. Test lagret-men-ikke-publisert endring før og etter PH-kopiering."
+    },
+    {
+      "id": "wb2-ph-private-media",
+      "severity": "høy",
+      "title": "PH åpner ikke-delte medier som coach",
+      "observation": "Åpne oppgave bruker viewer=coach i den delte komponenten uten å følge PH/AG-rollen. Slot skjuler delt=false bare ved viewer=spiller. Kandidatoppdatering lager delt=false og kan derfor likevel vises til PH. Kildetest bruker oppgave med delte før/etter-medier og dekker ikke dette.",
+      "evidence": [
+        {
+          "file": "ui_kits/_shared/WB3-okt.jsx",
+          "sha256": "8ca76307513d850501b7bbd17c211d6bc6e2bf01b1ba8112bc3f55f21450371b",
+          "line": 73
+        },
+        {
+          "file": "ui_kits/_shared/tp-v2.jsx",
+          "sha256": "88cae8018db19f7dee0487bea5c2c6d021a4467d52fe16b3b136d1ebac1edc9f",
+          "line": 48,
+          "endLine": 58
+        },
+        {
+          "file": "ui_kits/_shared/tp-v2.jsx",
+          "sha256": "88cae8018db19f7dee0487bea5c2c6d021a4467d52fe16b3b136d1ebac1edc9f",
+          "line": 72
+        },
+        {
+          "file": "ui_kits/_shared/wb-model.js",
+          "sha256": "d949dfb07fe9768ae7cdd3053a9e58f9b059e0a0919f02ca2ef66f9e8deaaa00",
+          "line": 68
+        },
+        {
+          "file": "ui_kits/_shared/data-tp2.js",
+          "sha256": "20518ef17b888b3f31b91fc30e3ca9cd1ffa752e989219c29e0312c1680f52c2",
+          "line": 22
+        },
+        {
+          "file": "ui_kits/wb1-reise.html",
+          "sha256": "3433de11b971770eb6f0b4eadde448841141dca6b8334e9d1b1a984d1c2b285e",
+          "line": 120,
+          "endLine": 125
+        }
+      ],
+      "requiredCorrection": "Send faktisk seerrolle. Bevar deling i snapshot og vis ikke-delt-tilstand i PH, både oppgave og sammenligning. Test privat før/etter uten å laste mediet."
+    },
+    {
+      "id": "wb2-media-not-complete",
+      "severity": "middels",
+      "title": "Før/etter er tilstandsvisninger, ikke komplette faktiske medierevisjoner",
+      "observation": "Tomt/mangler/ikke-delt har egne Slot-tilstander og sammenligning krever to ok medier. Seedbilde har metadata uten URL, seedvideo genererer eksplisitt syntetisk eksempelvideo. Ny kandidat beskriver bare filnavn; updateTechRev lager bilde/status ok/delt false uten URL. Revisjonssammenligning viser filnavn, ikke faktisk kandidatmedie; testen kontrollerer filnavn og rev, ikke tilgjengelige bilder/videoer eller manglende t2/t4/t5.",
+      "evidence": [
+        {
+          "file": "ui_kits/_shared/data-tp2.js",
+          "sha256": "20518ef17b888b3f31b91fc30e3ca9cd1ffa752e989219c29e0312c1680f52c2",
+          "line": 19,
+          "endLine": 27
+        },
+        {
+          "file": "ui_kits/_shared/tp-v2.jsx",
+          "sha256": "88cae8018db19f7dee0487bea5c2c6d021a4467d52fe16b3b136d1ebac1edc9f",
+          "line": 45
+        },
+        {
+          "file": "ui_kits/_shared/tp-v2.jsx",
+          "sha256": "88cae8018db19f7dee0487bea5c2c6d021a4467d52fe16b3b136d1ebac1edc9f",
+          "line": 51,
+          "endLine": 55
+        },
+        {
+          "file": "ui_kits/_shared/tp-v2.jsx",
+          "sha256": "88cae8018db19f7dee0487bea5c2c6d021a4467d52fe16b3b136d1ebac1edc9f",
+          "line": 70,
+          "endLine": 94
+        },
+        {
+          "file": "ui_kits/_shared/wb-model.js",
+          "sha256": "d949dfb07fe9768ae7cdd3053a9e58f9b059e0a0919f02ca2ef66f9e8deaaa00",
+          "line": 68
+        },
+        {
+          "file": "ui_kits/_shared/WB3-okt.jsx",
+          "sha256": "8ca76307513d850501b7bbd17c211d6bc6e2bf01b1ba8112bc3f55f21450371b",
+          "line": 72
+        },
+        {
+          "file": "ui_kits/wb1-reise.html",
+          "sha256": "3433de11b971770eb6f0b4eadde448841141dca6b8334e9d1b1a984d1c2b285e",
+          "line": 144,
+          "endLine": 148
+        }
+      ],
+      "requiredCorrection": "Kandidat må ha egen avgrenset før/etter-mediesnapshot med type, URL/referanse, status og deling. La manglende medie stå manglende; vis begge faktiske revisjoner eller tydelig manglertilstand. Prøv tomt, manglende, privat og bilde/video-kombinasjon i PH og AG."
+    },
+    {
+      "id": "wb2-insertion-context-default",
+      "severity": "middels",
+      "title": "AG10-innsetting har ekte egne valg, men forhåndsvalg bruker første plan/uke",
+      "observation": "Arkets plan/uke/eksisterende økt-select fungerer mot WB.plansFor(owner). Initialt velges plans[0], weeks[0] og ny økt selv når valgt Workbench-plan/uke/session finnes. Ny økt får automatisk mandagsdato og ukjent tid/varighet; datoen vises i uken, men kan ikke velges før oppretting. Opphavskontekst fra AG10 følger ikke med.",
+      "evidence": [
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "sha256": "f68a2a8feea590f889100640d847d4fa87913a1b0b93fd5fa24932db7a3dd7a8",
+          "line": 95,
+          "endLine": 100
+        },
+        {
+          "file": "ui_kits/agencyos/screens/AG-10.jsx",
+          "sha256": "bebe42505e4536286d4f0de481a168105f916c839426fa7de9f44a65f4ac98ea",
+          "line": 38
+        },
+        {
+          "file": "ui_kits/wb1-reise.html",
+          "sha256": "3433de11b971770eb6f0b4eadde448841141dca6b8334e9d1b1a984d1c2b285e",
+          "line": 137,
+          "endLine": 142
+        }
+      ],
+      "requiredCorrection": "Start med gyldig valgt egen plan/uke/session, eller et eksplisitt valg hvis kontekst mangler. Ny økt skal gi synlig dato/starttid/varighetvalg før lagring og beholde det ved feil."
+    },
+    {
+      "id": "wb2-session-outside-season",
+      "severity": "middels",
+      "title": "Øktlagring godtar dato utenfor årsplanens ramme",
+      "observation": "saveSession validerer at datoen finnes, men sammenligner ikke mot plan.fra/til. Isolert modellreplay lagret en økt etter årsplanens sluttdato; øktens weekKey fantes ikke i weeksInSeason. Ingen avvisning eller uttrykkelig utvidelsesregel tilbys.",
+      "evidence": [
+        {
+          "file": "ui_kits/_shared/wb-model.js",
+          "sha256": "d949dfb07fe9768ae7cdd3053a9e58f9b059e0a0919f02ca2ef66f9e8deaaa00",
+          "line": 60,
+          "endLine": 62
+        }
+      ],
+      "requiredCorrection": "Gi synlig handling for dato utenfor sesong: avvis og behold skjema eller uttrykkelig utvid årsplan med avklarte følger. Test at en lagret økt faktisk kan gjenfinnes fra planens kalender."
+    }
+  ],
+  "positiveObservations": [
+    {
+      "title": "Snapshot følger ikke globale kildeendringer",
+      "evidence": [
+        {
+          "file": "ui_kits/_shared/wb-model.js",
+          "sha256": "d949dfb07fe9768ae7cdd3053a9e58f9b059e0a0919f02ca2ef66f9e8deaaa00",
+          "line": 67
+        },
+        {
+          "file": "ui_kits/wb1-reise.html",
+          "sha256": "3433de11b971770eb6f0b4eadde448841141dca6b8334e9d1b1a984d1c2b285e",
+          "line": 124,
+          "endLine": 126
+        }
+      ],
+      "verified": "JSON-kopien var uendret etter mutasjon av syntetisk global task/media i isolert replay. Dette er uavhengig snapshot, ikke Object.freeze eller permanent/publisert medielagring."
+    },
+    {
+      "title": "Oppdatering beholder valgt drillId og tidligere snapshot",
+      "evidence": [
+        {
+          "file": "ui_kits/_shared/wb-model.js",
+          "sha256": "d949dfb07fe9768ae7cdd3053a9e58f9b059e0a0919f02ca2ef66f9e8deaaa00",
+          "line": 68
+        },
+        {
+          "file": "ui_kits/_shared/WB3-okt.jsx",
+          "sha256": "8ca76307513d850501b7bbd17c211d6bc6e2bf01b1ba8112bc3f55f21450371b",
+          "line": 73
+        },
+        {
+          "file": "ui_kits/_shared/WB3-okt.jsx",
+          "sha256": "8ca76307513d850501b7bbd17c211d6bc6e2bf01b1ba8112bc3f55f21450371b",
+          "line": 80
+        },
+        {
+          "file": "ui_kits/wb1-reise.html",
+          "sha256": "3433de11b971770eb6f0b4eadde448841141dca6b8334e9d1b1a984d1c2b285e",
+          "line": 123
+        },
+        {
+          "file": "ui_kits/wb1-reise.html",
+          "sha256": "3433de11b971770eb6f0b4eadde448841141dca6b8334e9d1b1a984d1c2b285e",
+          "line": 145,
+          "endLine": 148
+        }
+      ],
+      "verified": "Modellreplay beholdt instans-ID og forrige snapshot. UI-kilden returnerer til samme sessionId og aria-current på samme drillId. Egen browserreise er ikke kjørt av denne underagenten."
+    },
+    {
+      "title": "Hostrekkefølgen laster modellen før Workbench",
+      "evidence": [
+        {
+          "file": "ui_kits/playerhq/screen.html",
+          "sha256": "a67d34cc2efab51217a18385106b2fa756c677af571ffb0cb4bc8adb054d7317",
+          "line": 28
+        },
+        {
+          "file": "ui_kits/playerhq/screen.html",
+          "sha256": "a67d34cc2efab51217a18385106b2fa756c677af571ffb0cb4bc8adb054d7317",
+          "line": 75,
+          "endLine": 77
+        },
+        {
+          "file": "ui_kits/agencyos/screen.html",
+          "sha256": "ec01f0d3ecb7829a4c7f9f36672ca96dc2c3145e04bf84acec043d46a9c38ea3",
+          "line": 31
+        },
+        {
+          "file": "ui_kits/agencyos/screen.html",
+          "sha256": "ec01f0d3ecb7829a4c7f9f36672ca96dc2c3145e04bf84acec043d46a9c38ea3",
+          "line": 60,
+          "endLine": 62
+        }
+      ],
+      "verified": "Modell og WB3-okt/WB3-lokal lastes før WB3-ar/WB3. Dette avklarer lastrekkefølgen, ikke parent-varsling."
+    }
+  ],
+  "testLimits": [
+    "DOM click finner også element med feil tilgjengelighetsrolle. Ingen tastatur/AX-kontroll i reisetesten.",
+    "Tom plan lagret-kontroll sjekker kun barnets planpanel; stale header og sidefelt er utenfor selektoren.",
+    "Planbytte-test hevder nivåbevaring uten aria-selected/kontroll av månedsflate.",
+    "Annen:eier er bare tom modellnøkkel, ikke ekte bytte mellom to eiere.",
+    "Global source-mutasjon i snapshot-test er en uttrykkelig modell-/snapshotprøve og ikke skjult UI-oppretting.",
+    "Innsetting/revisjon er prøvd på én seedoppgave; privat/manglende medier, feil kildeplan/rev og unpublished coachkladd er ikke negativt prøvd."
+  ],
+  "requiredNextChecks": [
+    "Ny sammenhengende UI-reise ved 390 px og desktop: opprett tom plan, kontroller hele skjermen straks etter lagring, åpne egen uke én gang, kontroller én identitet/kalender/pyramide.",
+    "Bytt mellom to faktiske syntetiske eiere med egne planer og mellom to planer i samme uke; formfelter/kilde/session/drill må tilhøre valgt eier.",
+    "AG10 valgt teknisk plan/task/rev → valgt egen årsplan/uke/eksisterende økt og ny økt → samme session/drill tilbake. Test feil kilde og doble retry.",
+    "PH kan ikke kopiere coachkladd eller åpne private medier; snapshot kan ikke skifte stille etter publisering.",
+    "Prøv før/etter: tomt, manglende fil, privat medie, bilde/video og faktisk revisjonsmedie. Kandidaten er ennå syntetisk, ikke ferdig integrasjon."
+  ],
+  "productClarifications": "Funnene over krever hovedsakelig gjennomføring av bestilt binding og tilstander, ikke nytt produktvalg. Torsdagsmåned i navigasjon bør erstattes med avtalt synlig kontekst, ikke fastsettes som skjult regel. Appkoden/Grok må kontrolleres separat mot gjeldende treningsplanlegging-master."
+}

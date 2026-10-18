@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "tp-reisetest-modernisert-delkontroll-bestatt",
+  "export": {
+    "archive": "AK Golf Precision Athletics (61).zip",
+    "sha256": "b744b04427e25a82527dfab23b6c43af95b99e18601d875e0a24c9b1b72bbd99",
+    "files": 620,
+    "exportedAt": "2026-10-01T08:44:15.785261+00:00"
+  },
+  "syntax": {
+    "scripts": 319,
+    "inline": 75,
+    "inlineIncludedInScripts": true,
+    "errors": 0
+  },
+  "ownProbe": {
+    "checks": 192,
+    "runs": 2,
+    "checksPerRunBeforeMarker": 95,
+    "failures": 0,
+    "proofSha256": "d2c256114eca701a9ccd161b374b9edb84d566ee7f0665db603865d952a4c8d2",
+    "coverage": [
+      "Faktisk innsettingsark og to separate målplaner, uker, økter og mål",
+      "Ytre avbryt: Bli, Forkast, Lagre og fortsett med feil og retry",
+      "Faktisk WB-publisering, PH-10-kort og PH-03 med oppgavebinding og øvelsesinstans",
+      "Publisert innhold mot utkast og negativ lekkasjedetektor"
+    ],
+    "limits": [
+      "To målplaner opprettes som merkede modellfixtures.",
+      "Testopprydding mellom legacytilfeller bruker direkte modellkall.",
+      "TP-publisert revisjon og oppgavens kilderevisjon er begge2 i innsettingsfixture; forskjellen er ikke testet her.",
+      "Legacydemo og øvelsesdesign finnes fortsatt i testforløpet.",
+      "192 kontroller omfatter to gjennomløp og to dekningsmarkører, ikke192 knapper eller skjermer.",
+      "Kun reisetest-tp.html ble modernisert; ingen UI/modelretting i61."
+    ]
+  },
+  "priorModelEvidence": {
+    "export": 59,
+    "total": 121,
+    "pass": 120,
+    "fail": 0,
+    "skip": 1,
+    "rerunFor61": false,
+    "modelAndFixtureUnchanged": true,
+    "modelSha256": "03487138b25330468ecb4715e70bdbb8f0d60d800ad2b5c8849ad29db6f3ca9c",
+    "fixtureSha256": "3c471fbe40f48f12f87894582dbad74574aea585591255b5d094ab4c55b91949"
+  },
+  "resources": "Egenfane1416028700 lukket. Lokalserver27380 på8791 beholdt for tre parallelle regresjonsprøver.",
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false,
+  "next": "Kilde/tid/resultat i Claude Design pågår. Tre skjerpede nativeprober kjøres i ignorert Developer-kontrollkopi61, deretter integreres presise patcher i skyprosjektet."
+}

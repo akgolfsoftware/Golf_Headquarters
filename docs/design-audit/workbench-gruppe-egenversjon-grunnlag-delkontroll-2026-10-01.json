@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "gruppe-egenversjon-separat-grunnlag-delreise-bestatt",
+  "export": {
+    "archive": "AK Golf Precision Athletics (51).zip",
+    "sha256": "4e0900d16ed11d624546b6a559cc28ace2f568b190270cc8a4567c9dd6993540",
+    "files": 615,
+    "exportedAt": "2026-10-01T06:00:42.150384+00:00",
+    "root": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-gruppe-egenversjon-slutt"
+  },
+  "syntax": {
+    "scripts": 314,
+    "inline": 71,
+    "inlineIncludedInScripts": true,
+    "syntax_errors": 0,
+    "errors": []
+  },
+  "model": {
+    "reusedSameModel49": true,
+    "modelSha256": "bd2a7d5bde59987e71b978a261d2630c28bd0784fd1d36c9171202312482e73f",
+    "total": 111,
+    "pass": 110,
+    "fail": 0,
+    "skip": 1,
+    "error": 0
+  },
+  "ownProbe": {
+    "checks": 15,
+    "failures": 0,
+    "proofSha256": "b586aaef02a81951eeb56c10fd081bc32f00bd8407e30a0c08f53896eacf276d",
+    "coverage": "AGgruppeøkt29.12/U53 publisert, nativekopi målvelgerANDREegenplanB, avbryt/failretry, nyID/parentGroup, heleB unntattøkt/undo identisk, gamleundo+énLagreøkt-before, A/group/p2 identisk, forskjellige Jan/Dec/Eget/femakser/min/null0 bevart, åpneB/U53/faktiskretur tilgroup/pub, nyvert.",
+    "fixtures": "Planbudsjetter/grunnlag syntetiske modellfixtures. Selve øktoppretting/pub/kopi/targetselector/avbryt/failretry/åpne/retur er nativeUI.",
+    "limits": [
+      "Én av15 teller uttrykkelig avgrensning: 0øvelserkopiert. Ingen nye drill-ID/TP/FYS-source/fastpubrev-kopibevis i denne prøven. Tidligere79 er eget historisk bevis.",
+      "Fail fullsnapshots minne; diskassert kun mål-Bøktliste tom, ikke alle diskobjekter.",
+      "Undo gamleentries/énnylabel og før-oekter/fra/til assert; ikke hele before-bodyens alle felt.",
+      "Retur beviser pubpanel og at gruppeøktsknapp finnes, men ikke checkboxchecked eksplisitt."
+    ]
+  },
+  "resources": "Egenfane1416028682/server78786 lukket; alle rootlokalressurser lukket.",
+  "active": "Uavhengig native årnavn/datoutvidelse/8typer/perioderemoveundo/goalremove/monthTurnguard bestilt, rammeforkortavventerbrukervalg. Så RD/FYS/TP/visuell/øvrigknapper/finalpakke.",
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false
+}

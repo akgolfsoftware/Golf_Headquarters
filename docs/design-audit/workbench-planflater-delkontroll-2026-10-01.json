@@ -1,0 +1,52 @@
+{
+  "date": "2026-10-01",
+  "status": "visuelle-planflater-delvis-med-egne-regresjoner",
+  "export": {
+    "file": "AK Golf Precision Athletics (68).zip",
+    "sha256": "bb1587007adcc1c5b1ff97d56a7b579260f08914d672bc9d8b4a45994458f70e",
+    "fileCount": 626,
+    "exportedAt": "2026-10-01T10:46:11.449669+00:00"
+  },
+  "syntax": {
+    "scripts": 325,
+    "inline": 80,
+    "errors": 0
+  },
+  "changed": [
+    "ui_kits/_shared/WB3-visuelt.jsx (ny)",
+    "ui_kits/_shared/WB3-lokal.jsx",
+    "ui_kits/_shared/WB3-tek.jsx",
+    "components/feedback/State.jsx",
+    "components/feedback/State.d.ts",
+    "ui_kits/playerhq/screens/PH-live.jsx",
+    "ui_kits/playerhq/screen.html",
+    "ui_kits/agencyos/screen.html",
+    "_ds_bundle.js"
+  ],
+  "ownChecks": {
+    "arsdekning": "17/0",
+    "gruppeantall": "20/0",
+    "periodeOriginal": "34/1 (gammelt krav om rå enum/måned-ID i synlig tekst)",
+    "periodeLesbarMaaned": "34/0 (samme34krav, nå lesbar tekst + eksakt data-scope/return monthKey/key/planId/owner og valgt countCID)"
+  },
+  "modifiedProbe": {
+    "location": "Ignorert Developer-kopi wb-maned-visning-68/ui_kits/wb-antall-repro.html",
+    "sha256": "5292ff85bd05ae9208caae8f68c21868ad4bb90ad05212be12ed849e5fe615de",
+    "integratedInCloud": false,
+    "evidence": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/egen68-periode-lesbar-maned.txt"
+  },
+  "cloudChecks": {
+    "tomstart": "26/0",
+    "arsdekning": "17/0",
+    "phKilde": "22/0",
+    "visual": "Bare desktop/lyst År/periode/uke; faktisk1440iframebredde ikke rootmålt."
+  },
+  "limits": [
+    "Måned som DataTable, DevelopmentPyramid, felleseditor/date/unit/ikonnames, mobil/natt og lange/overlappendeperioder er ikke ferdig kontrollert.",
+    "Fire PH EmptyStateCIDer er skrevet i indre Button, men ikke root-nativekontrollert.",
+    "GjennomgangTomstart-profiltekst/lagringsstripe og faktisk390/1440rammebredde er rester.",
+    "Snarvei/note/pyramidejobben pågårClaude. Ny månedmodul klargjøres parallelt i ignorertDeveloper-kopi, ennå ikke integrert.",
+    "Gamle demoavhengige reisetester ikke oppdatert/kjørt; gamle kilder ikke arkivertferdig.",
+    "Ingen appkode/DB/deploy/commit/push eller nyAndersgodkjenning."
+  ]
+}

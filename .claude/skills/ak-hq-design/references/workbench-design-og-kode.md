@@ -1,6 +1,6 @@
 # Workbench: design, kode og bevis
 
-Gjelder Workbench-bestillingen fra 20.09.2026, ikke andre organisasjonsprofiler.
+Oppdatert 30.09.2026: [Precision Athletics](../../../../docs/design-system/design-autoritet.md) og [Grok-kontrakten](../../../../docs/design-system/grok-build-overlevering.md) styrer videre bygging. Krav fra Workbench-bestillingen 20.09 brukes som datert funksjons-/måleunderlag, ikke en ny kjøreordre. Målverdier og PNG-regler nedenfor gjelder bare når den konkrete referanseversjonen er valgt; de overstyrer ikke senere Precision-skjermer eller språk-masteren.
 Den siste uttrykkelige brukerbeskjeden vinner. Bruk
 [overleveringen](../../../../docs/workbench-handover.md) til å finne gjeldende
 master, PNG, manifest og kontrollsummer. Eksportens SKILL er underlag; denne

@@ -1,0 +1,988 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-09-30",
+  "status": "delvis-kartlagt-ikke-frosset-byggepakke",
+  "authority": "Precision Athletics",
+  "sourceExportSha256": "c4f028c7ac42c04c8d031a05d140b037706a7fc0c0c70851ef419574fb3cce0e",
+  "coverage": {
+    "registeredControls": 38,
+    "complete": false,
+    "remaining": "Alle øvrige skjermer/kontroller og appkoblinger; oppdatering etter designretting.",
+    "appBindingsComplete": false
+  },
+  "requirements": [
+    "Én stabil kontroll-ID per kontekst, ikke bare knappetekst.",
+    "Alle mål krever valgt skjerm-/overleggs-ID og versjon.",
+    "Appadresse, kodehandling, nødvendig kontekst, tilgang, retur, suksess, feil og avbryt må være verifisert før berørt bygging.",
+    "Ikke utled neste skjerm fra etikett eller skjermnummer.",
+    "Null appRoute/codeBinding er eksplisitt manglende kobling, aldri tillatelse til gjetting."
+  ],
+  "controls": [
+    {
+      "id": "ph-nav-idag",
+      "sourceScreen": "PH-SKALL",
+      "controlScope": "hovedmeny",
+      "label": "I dag",
+      "prototypeDestination": {
+        "kind": "screen",
+        "id": "PH-01"
+      },
+      "requiredContext": [],
+      "buildRule": "Samme skjerm-ID i mobil- og desktopmeny; dokumenter valgt undermeny og tilbakevei.",
+      "source": {
+        "file": "ui_kits/_shared/ia.js",
+        "line": 7,
+        "sha256": "a50b9a77cc9a81aecbc2f65e4150baf6761e2a3d9c00ffcc93af519a772cadbc"
+      },
+      "evidence": "kildeanalyse",
+      "appRoute": null,
+      "codeBinding": null,
+      "status": "kartlagt-prototype",
+      "knownIssue": null
+    },
+    {
+      "id": "ph-nav-plan",
+      "sourceScreen": "PH-SKALL",
+      "controlScope": "hovedmeny",
+      "label": "Plan",
+      "prototypeDestination": {
+        "kind": "screen",
+        "id": "PH-10"
+      },
+      "requiredContext": [],
+      "buildRule": "Samme skjerm-ID i mobil- og desktopmeny; dokumenter valgt undermeny og tilbakevei.",
+      "source": {
+        "file": "ui_kits/_shared/ia.js",
+        "line": 8,
+        "sha256": "a50b9a77cc9a81aecbc2f65e4150baf6761e2a3d9c00ffcc93af519a772cadbc"
+      },
+      "evidence": "kildeanalyse",
+      "appRoute": null,
+      "codeBinding": null,
+      "status": "kartlagt-prototype",
+      "knownIssue": null
+    },
+    {
+      "id": "ph-nav-stats",
+      "sourceScreen": "PH-SKALL",
+      "controlScope": "hovedmeny",
+      "label": "Stats",
+      "prototypeDestination": {
+        "kind": "screen",
+        "id": "PH-16"
+      },
+      "requiredContext": [],
+      "buildRule": "Samme skjerm-ID i mobil- og desktopmeny; dokumenter valgt undermeny og tilbakevei.",
+      "source": {
+        "file": "ui_kits/_shared/ia.js",
+        "line": 9,
+        "sha256": "a50b9a77cc9a81aecbc2f65e4150baf6761e2a3d9c00ffcc93af519a772cadbc"
+      },
+      "evidence": "kildeanalyse",
+      "appRoute": null,
+      "codeBinding": null,
+      "status": "kartlagt-prototype",
+      "knownIssue": null
+    },
+    {
+      "id": "ph-nav-meg",
+      "sourceScreen": "PH-SKALL",
+      "controlScope": "hovedmeny",
+      "label": "Meg",
+      "prototypeDestination": {
+        "kind": "screen",
+        "id": "PH-24"
+      },
+      "requiredContext": [],
+      "buildRule": "Samme skjerm-ID i mobil- og desktopmeny; dokumenter valgt undermeny og tilbakevei.",
+      "source": {
+        "file": "ui_kits/_shared/ia.js",
+        "line": 10,
+        "sha256": "a50b9a77cc9a81aecbc2f65e4150baf6761e2a3d9c00ffcc93af519a772cadbc"
+      },
+      "evidence": "kildeanalyse",
+      "appRoute": null,
+      "codeBinding": null,
+      "status": "kartlagt-prototype",
+      "knownIssue": null
+    },
+    {
+      "id": "ph-hurtig-caddie",
+      "sourceScreen": "PH-SKALL",
+      "controlScope": "hurtigmeny",
+      "label": "Spør Caddie",
+      "prototypeDestination": {
+        "kind": "screen",
+        "id": "PH-22"
+      },
+      "requiredContext": [],
+      "buildRule": "Lukk hurtigmenyen ved overgang.",
+      "source": {
+        "file": "ui_kits/_shared/ia.js",
+        "line": 13,
+        "sha256": "a50b9a77cc9a81aecbc2f65e4150baf6761e2a3d9c00ffcc93af519a772cadbc"
+      },
+      "evidence": "kildeanalyse",
+      "appRoute": null,
+      "codeBinding": null,
+      "status": "kartlagt-prototype",
+      "knownIssue": null
+    },
+    {
+      "id": "ph-hurtig-nyokt",
+      "sourceScreen": "PH-SKALL",
+      "controlScope": "hurtigmeny",
+      "label": "Ny økt",
+      "prototypeDestination": {
+        "kind": "screen",
+        "id": "PH-11"
+      },
+      "requiredContext": [],
+      "buildRule": "Lukk hurtigmenyen ved overgang.",
+      "source": {
+        "file": "ui_kits/_shared/ia.js",
+        "line": 14,
+        "sha256": "a50b9a77cc9a81aecbc2f65e4150baf6761e2a3d9c00ffcc93af519a772cadbc"
+      },
+      "evidence": "kildeanalyse",
+      "appRoute": null,
+      "codeBinding": null,
+      "status": "kartlagt-prototype",
+      "knownIssue": null
+    },
+    {
+      "id": "ph-hurtig-runde",
+      "sourceScreen": "PH-SKALL",
+      "controlScope": "hurtigmeny",
+      "label": "Registrer runde",
+      "prototypeDestination": {
+        "kind": "screen",
+        "id": "PH-RD-01"
+      },
+      "requiredContext": [],
+      "buildRule": "Lukk hurtigmenyen ved overgang.",
+      "source": {
+        "file": "ui_kits/_shared/ia.js",
+        "line": 15,
+        "sha256": "a50b9a77cc9a81aecbc2f65e4150baf6761e2a3d9c00ffcc93af519a772cadbc"
+      },
+      "evidence": "kildeanalyse",
+      "appRoute": null,
+      "codeBinding": null,
+      "status": "kartlagt-prototype",
+      "knownIssue": null
+    },
+    {
+      "id": "ph-hurtig-start",
+      "sourceScreen": "PH-SKALL",
+      "controlScope": "hurtigmeny",
+      "label": "Start økt",
+      "prototypeDestination": {
+        "kind": "screen",
+        "id": "PH-04"
+      },
+      "requiredContext": [
+        "sessionId"
+      ],
+      "buildRule": "Lukk hurtigmenyen ved overgang; avklar øktvalg dersom ingen økt er valgt.",
+      "source": {
+        "file": "ui_kits/_shared/ia.js",
+        "line": 16,
+        "sha256": "a50b9a77cc9a81aecbc2f65e4150baf6761e2a3d9c00ffcc93af519a772cadbc"
+      },
+      "evidence": "kildeanalyse",
+      "appRoute": null,
+      "codeBinding": null,
+      "status": "kartlagt-prototype",
+      "knownIssue": null
+    },
+    {
+      "id": "ph-01-okt-start",
+      "sourceScreen": "PH-01",
+      "controlScope": "kort for ikke gjennomført økt",
+      "label": "Start",
+      "prototypeDestination": {
+        "kind": "screen",
+        "id": "PH-04"
+      },
+      "requiredContext": [
+        "sessionId",
+        "sessionType"
+      ],
+      "buildRule": "Åpne før-start for den valgte økta. Neste start må gå til riktig slag-/fysisk økt. Alle kort kan ikke vise samme demo.",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-01.jsx",
+        "line": 27,
+        "sha256": "e975bb35624af23122de96e76e43ed5348a70b76dca619e34fc2945e2d514076"
+      },
+      "evidence": "kildeanalyse",
+      "appRoute": null,
+      "codeBinding": null,
+      "status": "kartlagt-prototype",
+      "knownIssue": "Valgt økt sendes ikke i prototypens go-kall."
+    },
+    {
+      "id": "ph-01-okt-se",
+      "sourceScreen": "PH-01",
+      "controlScope": "kort for gjennomført økt",
+      "label": "Se økta",
+      "prototypeDestination": {
+        "kind": "screen",
+        "id": "PH-03"
+      },
+      "requiredContext": [
+        "sessionId"
+      ],
+      "buildRule": "Vis akkurat den gjennomførte økta og dens lagrede resultater.",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-01.jsx",
+        "line": 26,
+        "sha256": "e975bb35624af23122de96e76e43ed5348a70b76dca619e34fc2945e2d514076"
+      },
+      "evidence": "kildeanalyse",
+      "appRoute": null,
+      "codeBinding": null,
+      "status": "kartlagt-prototype",
+      "knownIssue": null
+    },
+    {
+      "id": "ph-01-fys",
+      "sourceScreen": "PH-01",
+      "controlScope": "Neste fysiske økt",
+      "label": "Registrer sett",
+      "prototypeDestination": {
+        "kind": "screen",
+        "id": "PH-WB-FYS"
+      },
+      "requiredContext": [
+        "sessionId"
+      ],
+      "buildRule": "Viderefør valgt objekt; bruk aktiv målversjon.",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-01.jsx",
+        "line": 68,
+        "sha256": "e975bb35624af23122de96e76e43ed5348a70b76dca619e34fc2945e2d514076"
+      },
+      "evidence": "kildeanalyse",
+      "appRoute": null,
+      "codeBinding": null,
+      "status": "kartlagt-prototype",
+      "knownIssue": null
+    },
+    {
+      "id": "ph-01-turn",
+      "sourceScreen": "PH-01",
+      "controlScope": "Neste turnering",
+      "label": "Se forberedelser",
+      "prototypeDestination": {
+        "kind": "screen",
+        "id": "PH-WB-TURN"
+      },
+      "requiredContext": [
+        "tournamentId"
+      ],
+      "buildRule": "Viderefør valgt objekt; bruk aktiv målversjon.",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-01.jsx",
+        "line": 80,
+        "sha256": "e975bb35624af23122de96e76e43ed5348a70b76dca619e34fc2945e2d514076"
+      },
+      "evidence": "kildeanalyse",
+      "appRoute": null,
+      "codeBinding": null,
+      "status": "kartlagt-prototype",
+      "knownIssue": null
+    },
+    {
+      "id": "ph-01-turn-tom",
+      "sourceScreen": "PH-01",
+      "controlScope": "Neste turnering · tom",
+      "label": "Legg til turnering",
+      "prototypeDestination": {
+        "kind": "screen",
+        "id": "PH-WB-TURN"
+      },
+      "requiredContext": [],
+      "buildRule": "Viderefør valgt objekt; bruk aktiv målversjon.",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-01.jsx",
+        "line": 75,
+        "sha256": "e975bb35624af23122de96e76e43ed5348a70b76dca619e34fc2945e2d514076"
+      },
+      "evidence": "kildeanalyse",
+      "appRoute": null,
+      "codeBinding": null,
+      "status": "kartlagt-prototype",
+      "knownIssue": null
+    },
+    {
+      "id": "ph-01-plan-tom",
+      "sourceScreen": "PH-01",
+      "controlScope": "Treningstid · tom",
+      "label": "Velg treningsplan",
+      "prototypeDestination": {
+        "kind": "screen",
+        "id": "PH-12"
+      },
+      "requiredContext": [],
+      "buildRule": "Viderefør valgt objekt; bruk aktiv målversjon.",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-01.jsx",
+        "line": 87,
+        "sha256": "e975bb35624af23122de96e76e43ed5348a70b76dca619e34fc2945e2d514076"
+      },
+      "evidence": "kildeanalyse",
+      "appRoute": null,
+      "codeBinding": null,
+      "status": "kartlagt-prototype",
+      "knownIssue": "R01: PH-12 tegner gammel planbygger."
+    },
+    {
+      "id": "ph-01-wb-tom",
+      "sourceScreen": "PH-01",
+      "controlScope": "Dagens økter · tom",
+      "label": "Bygg økter i Workbench",
+      "prototypeDestination": {
+        "kind": "screen",
+        "id": "PH-11"
+      },
+      "requiredContext": [],
+      "buildRule": "Viderefør valgt objekt; bruk aktiv målversjon.",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-01.jsx",
+        "line": 156,
+        "sha256": "e975bb35624af23122de96e76e43ed5348a70b76dca619e34fc2945e2d514076"
+      },
+      "evidence": "kildeanalyse",
+      "appRoute": null,
+      "codeBinding": null,
+      "status": "kartlagt-prototype",
+      "knownIssue": null
+    },
+    {
+      "id": "ph-01-runde-tom",
+      "sourceScreen": "PH-01",
+      "controlScope": "Dagens økter · tom",
+      "label": "Registrer runde",
+      "prototypeDestination": {
+        "kind": "screen",
+        "id": "PH-RD-01"
+      },
+      "requiredContext": [],
+      "buildRule": "Viderefør valgt objekt; bruk aktiv målversjon.",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-01.jsx",
+        "line": 156,
+        "sha256": "e975bb35624af23122de96e76e43ed5348a70b76dca619e34fc2945e2d514076"
+      },
+      "evidence": "kildeanalyse",
+      "appRoute": null,
+      "codeBinding": null,
+      "status": "kartlagt-prototype",
+      "knownIssue": null
+    },
+    {
+      "id": "ph-01-dagsform",
+      "sourceScreen": "PH-01",
+      "controlScope": "Dagsform",
+      "label": "1–5",
+      "prototypeDestination": {
+        "kind": "in-place",
+        "id": "PH-01"
+      },
+      "requiredContext": [
+        "playerId",
+        "date",
+        "value"
+      ],
+      "buildRule": "Registrer valgt dagsform. Bli på skjermen; feil beholder valget og tilbyr nytt forsøk.",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-01.jsx",
+        "line": 36,
+        "sha256": "e975bb35624af23122de96e76e43ed5348a70b76dca619e34fc2945e2d514076"
+      },
+      "evidence": "kildeanalyse",
+      "appRoute": null,
+      "codeBinding": null,
+      "status": "kartlagt-prototype",
+      "knownIssue": null
+    },
+    {
+      "id": "ph-01-endring-les",
+      "sourceScreen": "PH-01/OV-PLANENDRING",
+      "controlScope": "dialog Endring i dagens plan",
+      "label": "Les",
+      "prototypeDestination": {
+        "kind": "screen",
+        "id": "PH-21"
+      },
+      "requiredContext": [
+        "messageId"
+      ],
+      "buildRule": "Les må åpne riktig melding. Ignorer lukker uten å slette meldingen. Lukk returnerer til samme bakgrunn.",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-01.jsx",
+        "line": 139,
+        "sha256": "e975bb35624af23122de96e76e43ed5348a70b76dca619e34fc2945e2d514076"
+      },
+      "evidence": "kildeanalyse",
+      "appRoute": null,
+      "codeBinding": null,
+      "status": "kartlagt-prototype",
+      "knownIssue": null
+    },
+    {
+      "id": "ph-01-endring-ignorer",
+      "sourceScreen": "PH-01/OV-PLANENDRING",
+      "controlScope": "dialog Endring i dagens plan",
+      "label": "Ignorer",
+      "prototypeDestination": {
+        "kind": "close-overlay",
+        "id": "PH-01"
+      },
+      "requiredContext": [
+        "messageId"
+      ],
+      "buildRule": "Les må åpne riktig melding. Ignorer lukker uten å slette meldingen. Lukk returnerer til samme bakgrunn.",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-01.jsx",
+        "line": 139,
+        "sha256": "e975bb35624af23122de96e76e43ed5348a70b76dca619e34fc2945e2d514076"
+      },
+      "evidence": "kildeanalyse",
+      "appRoute": null,
+      "codeBinding": null,
+      "status": "kartlagt-prototype",
+      "knownIssue": null
+    },
+    {
+      "id": "ph-01-endring-lukk",
+      "sourceScreen": "PH-01/OV-PLANENDRING",
+      "controlScope": "dialog Endring i dagens plan",
+      "label": "Lukk",
+      "prototypeDestination": {
+        "kind": "close-overlay",
+        "id": "PH-01"
+      },
+      "requiredContext": [
+        "messageId"
+      ],
+      "buildRule": "Les må åpne riktig melding. Ignorer lukker uten å slette meldingen. Lukk returnerer til samme bakgrunn.",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-01.jsx",
+        "line": 139,
+        "sha256": "e975bb35624af23122de96e76e43ed5348a70b76dca619e34fc2945e2d514076"
+      },
+      "evidence": "kildeanalyse",
+      "appRoute": null,
+      "codeBinding": null,
+      "status": "kartlagt-prototype",
+      "knownIssue": null
+    },
+    {
+      "id": "ph-04-start",
+      "sourceScreen": "PH-04",
+      "controlScope": "før start · Data",
+      "label": "Start økt",
+      "prototypeDestination": {
+        "kind": "screen",
+        "id": "PH-05"
+      },
+      "requiredContext": [
+        "sessionId",
+        "sessionType"
+      ],
+      "buildRule": "Start valgt økt med riktig kodehandling; fysisk økt må ha sin avklarte variant. Feil blir på før-start med nytt forsøk.",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-live.jsx",
+        "line": 16,
+        "sha256": "a69031e8ebd6d8d5ba8d6063b36fd04d8cb442bdbb5f8bd43664c88febb03a7c"
+      },
+      "evidence": "kilde-og-nettleser",
+      "appRoute": null,
+      "codeBinding": null,
+      "status": "kartlagt-prototype",
+      "knownIssue": null
+    },
+    {
+      "id": "ph-04-lukk",
+      "sourceScreen": "PH-04",
+      "controlScope": "topp",
+      "label": "Lukk",
+      "prototypeDestination": {
+        "kind": "screen",
+        "id": "PH-01"
+      },
+      "requiredContext": [
+        "sessionId"
+      ],
+      "buildRule": "Avklar om økta ennå ikke er startet; bevar valgt økt i tilbakevisningen.",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-live.jsx",
+        "line": 15,
+        "sha256": "a69031e8ebd6d8d5ba8d6063b36fd04d8cb442bdbb5f8bd43664c88febb03a7c"
+      },
+      "evidence": "kildeanalyse",
+      "appRoute": null,
+      "codeBinding": null,
+      "status": "kartlagt-prototype",
+      "knownIssue": null
+    },
+    {
+      "id": "ph-04-tom",
+      "sourceScreen": "PH-04",
+      "controlScope": "ingen øvelser",
+      "label": "Åpne Workbench",
+      "prototypeDestination": {
+        "kind": "screen",
+        "id": "PH-11"
+      },
+      "requiredContext": [
+        "sessionId"
+      ],
+      "buildRule": "Åpne den samme økta for redigering.",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-live.jsx",
+        "line": 25,
+        "sha256": "a69031e8ebd6d8d5ba8d6063b36fd04d8cb442bdbb5f8bd43664c88febb03a7c"
+      },
+      "evidence": "kildeanalyse",
+      "appRoute": null,
+      "codeBinding": null,
+      "status": "kartlagt-prototype",
+      "knownIssue": null
+    },
+    {
+      "id": "ph-05-pause",
+      "sourceScreen": "PH-05",
+      "controlScope": "topp",
+      "label": "Pause / Fortsett",
+      "prototypeDestination": {
+        "kind": "in-place",
+        "id": "PH-05"
+      },
+      "requiredContext": [
+        "sessionId"
+      ],
+      "buildRule": "Endre pause-/klokketilstand; bevar reps og øvelse.",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-live.jsx",
+        "line": 58,
+        "sha256": "a69031e8ebd6d8d5ba8d6063b36fd04d8cb442bdbb5f8bd43664c88febb03a7c"
+      },
+      "evidence": "kildeanalyse",
+      "appRoute": null,
+      "codeBinding": null,
+      "status": "kartlagt-prototype",
+      "knownIssue": null
+    },
+    {
+      "id": "ph-05-teller",
+      "sourceScreen": "PH-05",
+      "controlScope": "teller per læringssteg",
+      "label": "−1 / +5 / +1",
+      "prototypeDestination": {
+        "kind": "in-place",
+        "id": "PH-05"
+      },
+      "requiredContext": [
+        "sessionId",
+        "drillId",
+        "counterType",
+        "delta"
+      ],
+      "buildRule": "Oppdater bare valgt teller. Negative antall er ikke gyldige. Bevar faktisk korrigering og lagringsstatus.",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-live.jsx",
+        "line": 40,
+        "sha256": "a69031e8ebd6d8d5ba8d6063b36fd04d8cb442bdbb5f8bd43664c88febb03a7c"
+      },
+      "evidence": "kilde-og-nettleser",
+      "appRoute": null,
+      "codeBinding": null,
+      "status": "kartlagt-prototype",
+      "knownIssue": null
+    },
+    {
+      "id": "ph-05-avslutt",
+      "sourceScreen": "PH-05",
+      "controlScope": "topp",
+      "label": "Avslutt",
+      "prototypeDestination": {
+        "kind": "overlay",
+        "id": "PH-05/OV-AVSLUTT"
+      },
+      "requiredContext": [
+        "sessionId"
+      ],
+      "buildRule": "Åpne bekreftelsen med faktisk status. Oppsummering åpnes først ved bekreftet avslutning.",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-live.jsx",
+        "line": 58,
+        "sha256": "a69031e8ebd6d8d5ba8d6063b36fd04d8cb442bdbb5f8bd43664c88febb03a7c"
+      },
+      "evidence": "kilde-og-nettleser",
+      "appRoute": null,
+      "codeBinding": null,
+      "status": "kartlagt-prototype",
+      "knownIssue": null
+    },
+    {
+      "id": "ph-05-avslutt-fortsett",
+      "sourceScreen": "PH-05/OV-AVSLUTT",
+      "controlScope": "bekreftelsesdialog",
+      "label": "Fortsett",
+      "prototypeDestination": {
+        "kind": "close-overlay",
+        "id": "PH-05"
+      },
+      "requiredContext": [
+        "sessionId"
+      ],
+      "buildRule": "Lukk dialogen og fortsett samme økt uten tap av tid/reps.",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-live.jsx",
+        "line": 91,
+        "sha256": "a69031e8ebd6d8d5ba8d6063b36fd04d8cb442bdbb5f8bd43664c88febb03a7c"
+      },
+      "evidence": "kildeanalyse",
+      "appRoute": null,
+      "codeBinding": null,
+      "status": "kartlagt-prototype",
+      "knownIssue": null
+    },
+    {
+      "id": "ph-05-avslutt-lagre",
+      "sourceScreen": "PH-05/OV-AVSLUTT",
+      "controlScope": "bekreftelsesdialog",
+      "label": "Avslutt og lagre",
+      "prototypeDestination": {
+        "kind": "screen",
+        "id": "PH-07"
+      },
+      "requiredContext": [
+        "sessionId",
+        "actualDuration",
+        "counters",
+        "completedDrills",
+        "skippedDrills"
+      ],
+      "buildRule": "Avslutt valgt økt og vis dens faktiske resultat. Dokumenter om gjennomføring eller vurdering lagres her; ikke bruk demoens etter-tall.",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-live.jsx",
+        "line": 91,
+        "sha256": "a69031e8ebd6d8d5ba8d6063b36fd04d8cb442bdbb5f8bd43664c88febb03a7c"
+      },
+      "evidence": "kilde-og-nettleser",
+      "appRoute": null,
+      "codeBinding": null,
+      "status": "kartlagt-prototype",
+      "knownIssue": "R02: oppsummeringen bruker separat demo."
+    },
+    {
+      "id": "ph-05-ferdig",
+      "sourceScreen": "PH-05",
+      "controlScope": "aktiv øvelse",
+      "label": "Ferdig med øvelsen",
+      "prototypeDestination": {
+        "kind": "conditional",
+        "branches": [
+          {
+            "condition": "Neste åpne øvelse finnes",
+            "kind": "in-place",
+            "id": "PH-05"
+          },
+          {
+            "condition": "Ingen åpne øvelser finnes",
+            "kind": "screen",
+            "id": "PH-07"
+          }
+        ]
+      },
+      "requiredContext": [
+        "sessionId",
+        "drillId",
+        "actualDuration",
+        "counters"
+      ],
+      "buildRule": "Neste åpne øvelse: bli på PH-05 og bytt drill. Ingen åpne øvelser: PH-07 med samme resultat. Tegn og test begge grenene.",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-live.jsx",
+        "line": 55,
+        "sha256": "a69031e8ebd6d8d5ba8d6063b36fd04d8cb442bdbb5f8bd43664c88febb03a7c"
+      },
+      "evidence": "kildeanalyse",
+      "appRoute": null,
+      "codeBinding": null,
+      "status": "kartlagt-prototype",
+      "knownIssue": null
+    },
+    {
+      "id": "ph-05-rekkefolge",
+      "sourceScreen": "PH-05",
+      "controlScope": "øvelsesliste",
+      "label": "Rekkefølge og hopp over",
+      "prototypeDestination": {
+        "kind": "overlay",
+        "id": "PH-05/OV-REKKEFOLGE"
+      },
+      "requiredContext": [
+        "sessionId",
+        "orderedDrillIds"
+      ],
+      "buildRule": "Bevar gjennomførte øvelser og faktiske målinger ved omrekkefølge/hopp over.",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-live.jsx",
+        "line": 65,
+        "sha256": "a69031e8ebd6d8d5ba8d6063b36fd04d8cb442bdbb5f8bd43664c88febb03a7c"
+      },
+      "evidence": "kildeanalyse",
+      "appRoute": null,
+      "codeBinding": null,
+      "status": "kartlagt-prototype",
+      "knownIssue": null
+    },
+    {
+      "id": "ph-07-lagre",
+      "sourceScreen": "PH-07",
+      "controlScope": "bunn",
+      "label": "Lagre økta",
+      "prototypeDestination": {
+        "kind": "screen",
+        "id": "PH-01"
+      },
+      "requiredContext": [
+        "sessionId",
+        "rpe",
+        "focus"
+      ],
+      "buildRule": "Returner etter bekreftet lagring, med oppdatert gjennomføringsstatus. Feil/nettbrudd beholder resultat og tilbyr nytt forsøk. Fysisk variant har andre relevante vurderingsfelt.",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-live.jsx",
+        "line": 138,
+        "sha256": "a69031e8ebd6d8d5ba8d6063b36fd04d8cb442bdbb5f8bd43664c88febb03a7c"
+      },
+      "evidence": "kildeanalyse",
+      "appRoute": null,
+      "codeBinding": null,
+      "status": "kartlagt-prototype",
+      "knownIssue": null
+    },
+    {
+      "id": "ph-07-lukk",
+      "sourceScreen": "PH-07",
+      "controlScope": "topp",
+      "label": "Lukk",
+      "prototypeDestination": {
+        "kind": "screen",
+        "id": "PH-01"
+      },
+      "requiredContext": [
+        "sessionId"
+      ],
+      "buildRule": "Avklar håndtering av ulagret vurdering; lukk må ikke stille forkaste resultat.",
+      "source": {
+        "file": "ui_kits/playerhq/screens/PH-live.jsx",
+        "line": 137,
+        "sha256": "a69031e8ebd6d8d5ba8d6063b36fd04d8cb442bdbb5f8bd43664c88febb03a7c"
+      },
+      "evidence": "kildeanalyse",
+      "appRoute": null,
+      "codeBinding": null,
+      "status": "kartlagt-prototype",
+      "knownIssue": null
+    },
+    {
+      "id": "ag-tp-01-tilbake",
+      "sourceScreen": "AG-TP-01",
+      "controlScope": "topp",
+      "label": "Teknisk plan",
+      "prototypeDestination": {
+        "kind": "screen",
+        "id": "AG-10"
+      },
+      "requiredContext": [
+        "playerId",
+        "planId",
+        "taskId"
+      ],
+      "buildRule": "Tilbake til samme spiller og plan; ulagrede endringer må håndteres.",
+      "source": {
+        "file": "ui_kits/agencyos/screens/AG-TP.jsx",
+        "line": 75,
+        "sha256": "7e4f1334e3af3012114f490880fef14b5bb452f135c1436d36b48e6f77d98184"
+      },
+      "evidence": "kildeanalyse",
+      "appRoute": null,
+      "codeBinding": null,
+      "status": "kartlagt-prototype",
+      "knownIssue": null
+    },
+    {
+      "id": "ag-tp-02-tilbake",
+      "sourceScreen": "AG-TP-02",
+      "controlScope": "topp",
+      "label": "Teknisk plan",
+      "prototypeDestination": {
+        "kind": "screen",
+        "id": "AG-10"
+      },
+      "requiredContext": [
+        "playerId",
+        "planId",
+        "taskId"
+      ],
+      "buildRule": "Tilbake til samme spiller og plan; ulagrede endringer må håndteres.",
+      "source": {
+        "file": "ui_kits/agencyos/screens/AG-TP.jsx",
+        "line": 91,
+        "sha256": "7e4f1334e3af3012114f490880fef14b5bb452f135c1436d36b48e6f77d98184"
+      },
+      "evidence": "kildeanalyse",
+      "appRoute": null,
+      "codeBinding": null,
+      "status": "kartlagt-prototype",
+      "knownIssue": null
+    },
+    {
+      "id": "ag-tp-01-skjema",
+      "sourceScreen": "AG-TP-01",
+      "controlScope": "mobil forhåndsvisning",
+      "label": "Åpne skjemaet",
+      "prototypeDestination": {
+        "kind": "overlay",
+        "id": "AG-TP-01/OV-SKJEMA"
+      },
+      "requiredContext": [
+        "playerId",
+        "planId",
+        "taskId"
+      ],
+      "buildRule": "Åpne oppgaveskjemaet som bunnark på mobil; desktop viser samme oppgave i sidepanel.",
+      "source": {
+        "file": "ui_kits/agencyos/screens/AG-TP.jsx",
+        "line": 72,
+        "sha256": "7e4f1334e3af3012114f490880fef14b5bb452f135c1436d36b48e6f77d98184"
+      },
+      "evidence": "kildeanalyse",
+      "appRoute": null,
+      "codeBinding": null,
+      "status": "kartlagt-prototype",
+      "knownIssue": null
+    },
+    {
+      "id": "ag-tp-01-lagre",
+      "sourceScreen": "AG-TP-01",
+      "controlScope": "skjemafot",
+      "label": "Lagre oppgave",
+      "prototypeDestination": {
+        "kind": "in-place",
+        "id": "AG-TP-01"
+      },
+      "requiredContext": [
+        "playerId",
+        "planId",
+        "taskId",
+        "revision"
+      ],
+      "buildRule": "Valider og lagre utkast. Bli på samme skjerm; skill lagret fra publisert.",
+      "source": {
+        "file": "ui_kits/agencyos/screens/AG-TP.jsx",
+        "line": 63,
+        "sha256": "7e4f1334e3af3012114f490880fef14b5bb452f135c1436d36b48e6f77d98184"
+      },
+      "evidence": "kildeanalyse",
+      "appRoute": null,
+      "codeBinding": null,
+      "status": "kartlagt-prototype",
+      "knownIssue": "R08: prototype simulerer bare lagring."
+    },
+    {
+      "id": "ag-tp-01-publiser",
+      "sourceScreen": "AG-TP-01",
+      "controlScope": "skjemafot",
+      "label": "Publiser til spiller",
+      "prototypeDestination": {
+        "kind": "in-place",
+        "id": "AG-TP-01"
+      },
+      "requiredContext": [
+        "playerId",
+        "planId",
+        "taskId",
+        "revision"
+      ],
+      "buildRule": "Publiser eksakt lagret revisjon etter tilgangskontroll. Resultatet blir synlig i PH-TP-01; coachen blir her.",
+      "source": {
+        "file": "ui_kits/agencyos/screens/AG-TP.jsx",
+        "line": 63,
+        "sha256": "7e4f1334e3af3012114f490880fef14b5bb452f135c1436d36b48e6f77d98184"
+      },
+      "evidence": "kildeanalyse",
+      "appRoute": null,
+      "codeBinding": null,
+      "status": "kartlagt-prototype",
+      "knownIssue": "Eksakt eksisterende publiseringshandling er ikke verifisert per knapp."
+    },
+    {
+      "id": "ag-tp-02-upload",
+      "sourceScreen": "AG-TP-02",
+      "controlScope": "tom medievisning",
+      "label": "Last opp bilde",
+      "prototypeDestination": {
+        "kind": "system-picker",
+        "id": "AG-TP-02"
+      },
+      "requiredContext": [
+        "playerId",
+        "planId",
+        "taskId",
+        "mediaSlot"
+      ],
+      "buildRule": "Åpne avklart bilde-/videovelger for før eller etter. Avbryt, filfeil og lagringsfeil skal være tegnet.",
+      "source": {
+        "file": "ui_kits/agencyos/screens/AG-TP.jsx",
+        "line": 93,
+        "sha256": "7e4f1334e3af3012114f490880fef14b5bb452f135c1436d36b48e6f77d98184"
+      },
+      "evidence": "kildeanalyse",
+      "appRoute": null,
+      "codeBinding": null,
+      "status": "kartlagt-prototype",
+      "knownIssue": "R04/R08: riktig før-/ettermedieflyt mangler."
+    }
+  ],
+  "overlayDefinitions": [
+    {
+      "id": "PH-01/OV-PLANENDRING",
+      "baseScreen": "PH-01",
+      "component": "Dialog",
+      "title": "Endring i dagens plan"
+    },
+    {
+      "id": "PH-05/OV-AVSLUTT",
+      "baseScreen": "PH-05",
+      "component": "Dialog",
+      "title": "Avslutte økta?"
+    },
+    {
+      "id": "PH-05/OV-REKKEFOLGE",
+      "baseScreen": "PH-05",
+      "component": "Sheet",
+      "title": "Rekkefølge"
+    },
+    {
+      "id": "AG-TP-01/OV-SKJEMA",
+      "baseScreen": "AG-TP-01",
+      "component": "Sheet",
+      "title": "Oppgaveskjema",
+      "responsiveRule": "Bunnark på mobil, docked sidepanel på desktop over 1024 px i undersøkt prototype."
+    }
+  ],
+  "existingAppObservations": {
+    "file": "appkoblinger-precision-athletics.json",
+    "count": 15,
+    "evidence": "kildeverifisert-ikke-innlogget-provd",
+    "replacesFrozenBindings": false
+  }
+}

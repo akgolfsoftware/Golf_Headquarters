@@ -1,0 +1,43 @@
+{
+  "date": "2026-10-01",
+  "status": "arsdekning-rettet-egen-nativekontroll-bestatt",
+  "export": {
+    "file": "AK Golf Precision Athletics (66).zip",
+    "sha256": "2cb27677dc11f3a78f06c3ccae823008c463b69a567fa912102c2b54fee1e109",
+    "fileCount": 623,
+    "exportedAt": "2026-10-01T10:22:11.868659+00:00"
+  },
+  "syntax": {
+    "scripts": 322,
+    "inline": 78,
+    "errors": 0
+  },
+  "probe": {
+    "file": "ui_kits/wb-arsdekning-repro.html",
+    "sha256": "f548d22f0d87736fcafa1fa30ecc989ea9b5cb6cabb0e8d1068b525defdb2b02",
+    "checks": 17,
+    "failures": 0,
+    "evidence": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/egen66-arsdekning.txt",
+    "native": true,
+    "modelFixtureWrites": false
+  },
+  "coverage": [
+    "Tom årsplan 07.12.2026–17.01.2027, seks faktiske ISO-uker inkludert U53.",
+    "Native U50 TEK2/FYS0, separate minutter FYS0/SLAG30, øvrige ukjente; alle seks uker åpnes og kontrolleres.",
+    "Årsvolum viser kjent delsum og manglende ukebudsjetter for fem antallsakser, og separat tid for fem akser.",
+    "Volum→År→måned→U50 beholder samme budsjett/null/0 og ingen automatisk opprettede økter."
+  ],
+  "sourceDelta": [
+    "ui_kits/_shared/WB3-lokal.jsx",
+    "_ds_bundle.js (generert bundle)",
+    "ui_kits/wb-arsdekning-repro.html (ny, eksakt test)",
+    "uploads/wb-arsdekning-repro.html (vedleggskopi)"
+  ],
+  "limits": [
+    "Avgrenset årsdekning, ikke hele Workbench eller visuell godkjenning.",
+    "Tomstart/ren anonym gjennomgang er bestilt i neste leveranse og pågår.",
+    "Golf/FYS resultat- og kildebevis43/0 fra eksport65 er ikke gjentatt66; de modulene er byteuendrede.",
+    "Årsforkortingens håndtering av objekter er fortsatt uavklart.",
+    "Ingen appkode, database, deploy, commit eller push."
+  ]
+}

@@ -1,0 +1,246 @@
+{
+  "date": "2026-10-01",
+  "status": "fokus-bundle-kildekontroll-med-aapne-native-og-returkontekstgrenser",
+  "export": {
+    "file": "AK Golf Precision Athletics (73).zip",
+    "sha256": "2f500938c1b896a6765c619e9a283710a535c55f8b4b030c5b733138bd777c9d",
+    "archiveFileCount": 640,
+    "extractedFileCount": 639,
+    "fileCount": 639,
+    "exportedAt": "2026-10-01T13:30:26.246457+00:00",
+    "caseInsensitiveCollisions": [
+      [
+        "ui_kits/Workbench-gjennomgang.html",
+        "ui_kits/workbench-gjennomgang.html"
+      ]
+    ],
+    "portable": false,
+    "final": false,
+    "limit": "640 ZIP-oppføringer blir 639 utpakkede filer. Gjennomgangsaliasene med forskjellig store/små bokstaver må få unikt recoverable arkivnavn før portabel sluttpakke.",
+    "evidence": "privat-bevis:eksport73-kvittering",
+    "rawPrivateNamesIncluded": false
+  },
+  "syntax": {
+    "scripts": 338,
+    "inline": 90,
+    "inlineIncludedInScripts": true,
+    "errors": 0,
+    "evidence": "privat-bevis:eksport73-syntaks",
+    "sha256": "a3d21f07a50df192338b3aba928561c62ba667e9d2871ffbd5454bd7747335f6",
+    "rawPrivateNamesIncluded": false,
+    "limit": "Lest privat syntaksbevis, ikke ny kjøring i denne dokumentoppgaven. Ingen native fokus- eller visuell godkjenning følger av grønn syntaks."
+  },
+  "scope": "Eksport73: kildeanalyse av fokus/feilfokus/retur/ActionRow og faktisk bundle-/vertslasting. Ingen CUA-, sky-, UI-, app- eller databasekjøring. Bare denne nye auditfilen skrives.",
+  "ownChecks": {
+    "nativeFocus": {
+      "result": null,
+      "performedByThisAudit": false,
+      "separateRootNativeFocusEvidenceIncluded": false,
+      "limit": "Ingen separat root-native fokusbevisfil for eksport73 inngår i kontrollen. Skyens80/0 omtolkes ikke til egen bestått prøve."
+    },
+    "sourceReceiptHashes": {
+      "declared": 3,
+      "matching": 3,
+      "fullSha256": true
+    },
+    "bundleSourceMetadata": {
+      "declared": 291,
+      "matching": 291,
+      "missing": 0,
+      "mismatching": 0,
+      "hashPrefixLength": 12,
+      "compiledSegments": 291,
+      "limit": "Alle 291 oppførte kildehash-prefikser matcher eksportfilene, og bundle inneholder 291 filsegmenter. Dette er metadata-/kildekontroll, ikke bitidentisk gjenbygging eller feilfri runtime."
+    },
+    "model": {
+      "sha256": "03487138b25330468ecb4715e70bdbb8f0d60d800ad2b5c8849ad29db6f3ca9c",
+      "sameBytesAsRestored72": true,
+      "fresh121CaseRun": false,
+      "result": null,
+      "limit": "Kanonisk03487138-byteidentitet er bevart. Ingen ny121-modellkjøring eller backendkontroll utføres her."
+    }
+  },
+  "cloudChecks": {
+    "receipt": {
+      "evidence": "privat-bevis:sky-fokus73-kvittering",
+      "sha256": "47764f2c1806a1e561187b1e5c3f057acb9938b9bea0ef6522a2dd5269a2da32",
+      "rawPrivateNamesIncluded": false
+    },
+    "focusReportedResult": "80/0 etter oppvarmingskjøring",
+    "host": "agencyos",
+    "PHHostRun": false,
+    "widths": [
+      390,
+      1440
+    ],
+    "themes": [
+      "lyst",
+      "natt"
+    ],
+    "eightTestsReportedGreen": true,
+    "otherReportedTests": [
+      "skjema",
+      "snarvei",
+      "tomstart",
+      "årsdekning",
+      "antall",
+      "gruppeantall",
+      "kildevalg"
+    ],
+    "otherExactCountsIndependentlyVerifiedHere": false,
+    "probeLimits": [
+      "Første kjøring ble forkastet som oppvarming etter fokusfeil; den er ikke en egen grønn kjøring.",
+      "Fokusprøven godtar at ønsket felt er observert i løpet av omtrent1,2sekund; den krever ikke at fokus blir stående.",
+      "Samme feilmelding to ganger etter hverandre gir ikke nytt fokus fordi useErrFocus-effekten avhenger av er.",
+      "Skyen oppgir nattprøve, men ingen visuell nattgjennomgang. PH-verten,320/768/1024, lav høyde, stor tekst og ekte Tab-rekkefølge er ikke prøvd."
+    ],
+    "notDoneReported": [
+      "TPN-oppgaveeditor/sheet og lese-/tom-kilde med overskriftsfokus",
+      "TEK-radio/kildevalg utover stikkprøve",
+      "Verts-Back/BackBar og PH-bunnmeny; eksisterende40px TabBar er urørt"
+    ],
+    "bundleDuringCloudTest": "Skykvitteringen oppgir at gammel bundle injiserte CSS under arbeidet og ble omgått; bundle regenereres ved slutten av turen. Ingen ny root-native kontroll av fersk eksport73 registreres her."
+  },
+  "sourceBindings": [
+    {
+      "source": "ui_kits/_shared/WB3-visuelt.jsx",
+      "sha256": "6ab375ad473acdaceca500c6733c10e877d2a95dbf5b573982252fdaacaeeb2c",
+      "lines": [
+        74,
+        87
+      ],
+      "symbols": [
+        "useOpenFocus",
+        "useErrFocus",
+        "restoreOpener",
+        "ActionRow",
+        "lastOpener"
+      ],
+      "observed": "Felles fokus-/scroll-/feil-/returhjelpere og ActionRow eksporteres via window.WB3_VIS; ActionRow bruker namespace ActionBar når den finnes."
+    },
+    {
+      "source": "ui_kits/_shared/WB3-lokal.jsx",
+      "sha256": "8399fbaf308a1e80f0ec460f2c2076e253e816f42b40f59514566e74745f8ade",
+      "lines": [
+        3,
+        70
+      ],
+      "observed": "Hjelperne kobles til egne plan-/periode-/overstyringspaneler. Dette er kildebinding, ikke native bevis for alle åpne/feil/returgrener."
+    },
+    {
+      "source": "ui_kits/_shared/WB3-okt.jsx",
+      "sha256": "51c3b1c9a598349cc17c1b7fb006858c2b08b59756e4a4f2ef281c70fd8e2ac5",
+      "lines": [
+        3,
+        18
+      ],
+      "observed": "Øktskjemaet bruker felles åpne-/feilhjelpere og handlingsrad."
+    },
+    {
+      "source": "ui_kits/_shared/WB3-tek.jsx",
+      "sha256": "72089edf9aee2855325b7b0bba763134729da917b1492c33e0eb708a16558b5e",
+      "lines": [
+        3,
+        14
+      ],
+      "observed": "TEK-panel bruker felles hjelpere; full native radiovalgs-/tomkilde- og returdekning er ikke dokumentert her."
+    },
+    {
+      "source": "ui_kits/_shared/WB3-tpn.jsx",
+      "sha256": "331fb487da89c685c6ad1bcb7fc7f69a9bb18694e923bc30fad9f57cf1bc1dca",
+      "lines": [
+        3,
+        17
+      ],
+      "observed": "Tekniskplanoppretting bruker felles hjelpere. Oppgaveeditor/sheet er fortsatt oppgitt ukontrollert i skyens fokuskvittering."
+    }
+  ],
+  "bundleBuild": {
+    "bundleFile": "_ds_bundle.js",
+    "bundleSha256": "163d116ea3f0306c12891e8135db8766e3e68d1e2e7aebdb894bd9dc44e2d28c",
+    "bundleFormat": 4,
+    "namespace": "AKGolfPrecisionAthletics_7d7c29",
+    "exportedComponents": 80,
+    "manifestFile": "_ds_manifest.json",
+    "manifestSha256": "96989500c2e867f7e5191ad0cef092d81ac5246dc14d4b1e24b4cdf9fdee6ac8",
+    "sourceMetadataIncluded": true,
+    "observedTransformation": "Bundle inneholder transpilerte JSX-kilder med React.createElement, filvise try/IIFE-blokker og feilsamling i namespace.__errors. De felles komponentene eksponeres i namespace. ui_kits-kilder er også kompilert inn selv om de ikke står som egne eksponerte komponenter i manifestlisten.",
+    "observedLoadOrder": [
+      {
+        "source": "ui_kits/playerhq/screen.html",
+        "sha256": "fe528cb0563049d31184db1cac1bd6effbbd15fc9e658753d093408d0ae5bca3",
+        "bundleLine": 7,
+        "plainModelLine": 28,
+        "jsxWorkbenchLine": 75,
+        "detail": "React/ReactDOM/Babel lastes før bundle. Deretter lastes modell/data og flere samme ui_kits-JSX-kilder som text/babel."
+      },
+      {
+        "source": "ui_kits/agencyos/screen.html",
+        "sha256": "4d4be0106746267ac2494f8887a6c59aeb15ec36b8344cfd49101b6f3f0d6800",
+        "bundleLine": 7,
+        "plainModelLine": 31,
+        "jsxWorkbenchLine": 60,
+        "detail": "Samme dobbeltlastmønster. WB3-visuelt kjøres både fra bundle og senere direkte JSX."
+      }
+    ],
+    "css": "Vertene lenker styles.css separat. Fokusmodulen fjerner gammelt wb3-vis-css og legger til wb3-vis-css2; denne kodeblokken finnes også i den ferske bundlen.",
+    "generatorIncludedInExport": false,
+    "packageJsonFound": false,
+    "buildCommands": [],
+    "buildCommandStatus": "Ingen lokal bygge-/bundle-generator eller package.json ble funnet i eksporten. Det kan derfor ikke gis en kildebekreftet npm/build-kommando. Automatisk regenerering ved slutten av Claude Design-turen er skyrapportert, ikke en eksportert lokal kompilator.",
+    "freshBundleNativeVerified": false,
+    "limit": "Ingen generator, bundle eller UI kjøres, og ingen kilder/bundle endres i denne kontrollen."
+  },
+  "sourceLimits": [
+    {
+      "id": "FOKUS-DOUBLE-LOAD",
+      "source": "ui_kits/_shared/WB3-visuelt.jsx",
+      "lines": [
+        78,
+        87
+      ],
+      "bundleSource": "_ds_bundle.js",
+      "bundleLines": [
+        39479,
+        39617
+      ],
+      "severity": "konkret-kildebundet-returrisiko",
+      "runtimeReproduced": false,
+      "observed": "lastOpen er lokalt i modulens IIFE. __wb3VisClick er global og tillater bare første dokumentklikklistener. Begge verter kjører modulen fra bundle og deretter som JSX; andre kjøring setter window.WB3_VIS til nye funksjoner/ny lastOpen uten ny listener. Klikklisteneren kan dermed skrive første closure mens restoreOpener/lastOpener leser den andre.",
+      "minimumCorrectionToConsider": "Bruk én bevisst initiering eller én delt åpnerstate/listener som også aktive fokusfunksjoner leser. Bevar eier/plan/kontrollkontekst og prøv eksakt returnert fokus med fersk bundle. Ingen retting implementeres her."
+    },
+    {
+      "id": "FOKUS-REPEATED-ERROR",
+      "source": "ui_kits/_shared/WB3-visuelt.jsx",
+      "lines": [
+        85,
+        85
+      ],
+      "observed": "useErrFocus har dependency[er]; uendret feilstreng trigges ikke på nytt. Skyen oppgir dette som kjent begrensning.",
+      "runtimeReproduced": false
+    },
+    {
+      "id": "FOKUS-PROBE-SAMPLING",
+      "source": "ui_kits/wb-fokus-repro.html",
+      "sha256": "66c7edecfb4e2be599ed1892319f76c4ac661bf9578d45d3ae354c9da7b4e189",
+      "lines": [
+        8,
+        46
+      ],
+      "observed": "Klikkhjelperen samler seen ved24×50ms. Oppvarmingsrun kjøres og R.length nullstilles før rapporterte målkjøringer.80/0 kan derfor ikke alene bevise varig fokus eller at førstegangsforløpet er feilfritt."
+    }
+  ],
+  "pending": [
+    "Egen native fokus-/feilfokus-/returprøve på fersk eksport73, særlig PH-vert og eksakt åpner i samme plan.",
+    "Dobbeltlastingens lokale lastOpen/global-listener må avklares; kildefunnet er ikke runtime-reprodusert og ingen retting hevdes.",
+    "Ugjorte editor/radio/tomkilde/BackBar/ekte tastatur/bredde-/høyde-/stor-tekst- og visuelle grener fra skyens kvittering står åpne.",
+    "Tidligere sporadisk Ny økt etter Save er ikke generelt lukket av denne kildekontrollen eller skyens grønne fokusrapport.",
+    "Lokal reviewpatch45 og andre vedlegg som først er bestilt etter73, er ikke dokumentert integrert i denne eksporten.",
+    "Casealiasen må arkiveres med unikt navn før en portabel sluttpakke. Årsrammevalget er fortsatt uavklart.",
+    "Ingen ny Anders-godkjenning, samlet ferdig-/frys-påstand, app-/DB-/deployendring, commit eller push."
+  ],
+  "documentChecks": {
+    "json": "Gyldig JSON; kilde-/bundle-/bevis-SHA256 og alle291 bundle-kildehash-prefikser er kontrollert mot de faktiske filene. Rå privatnavn og rå feillogger er ikke kopiert.",
+    "prosjektSjekk": "npm run prosjekt:sjekk bestått: prosjektstruktur og lokale Markdown-lenker i 186 vedlikeholdte dokumenter. Daterte underlag er unntatt fra den generelle lenkekontrollen."
+  }
+}

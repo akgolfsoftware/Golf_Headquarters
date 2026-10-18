@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "navigasjonsretry-og-periode-ref-under-retting",
+  "export": {
+    "zipName": "AK Golf Precision Athletics (32).zip",
+    "zipSha256": "18bdcab8f1c2826070c425fbf90489988494f830f1c6d2eec7265df3709cf09c",
+    "fileCount": 606,
+    "exportedAt": "2026-10-01T03:17:29.893401+00:00",
+    "exportRoot": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-vakter-grenser",
+    "status": "vakter-grenser-to-feil-mellomkontroll"
+  },
+  "syntax": {
+    "scripts": 305,
+    "inline": 62,
+    "inlineIncludedInScripts": true,
+    "syntax_errors": 0,
+    "errors": []
+  },
+  "model": {
+    "total": 76,
+    "pass": 75,
+    "fail": 1,
+    "skip": 0,
+    "error": 0,
+    "original63Pass": true,
+    "modelSha256": "37855cd3deb7b3134a289a3681a1e29c7b8d66f198ed553123fe1e3b0cbcd271",
+    "runnerSha256": "3899156dd741e1e07f99e2e0b187532179dc8e2104b4012b4d57ce831f66f6d1",
+    "failure": "editPeriod med budsjett:null/minutter:null beholder gammel tekKilde etter import.",
+    "corrected": "Periodepersistens og modellgrense ved feil tilgjengelig eier-ID består."
+  },
+  "ownNativeVakt": {
+    "checks": 24,
+    "failures": 2,
+    "proofSha256": "39c7d8910bae094e97f17896bab21bc20e0a2d7afa7aec5cb0be190358322360",
+    "failuresObserved": "AG og PH savefail→retry lagrer SLAG6, men står U50 i stedet for valgt U51.",
+    "scope": "Piler uke, Bli/Forkast, lagringsfeil/retry og SessForm Avbryt/vakt/retry uten dobbelt økt; ingen stille månedsgrunnlag ved åpning U53.",
+    "limits": [
+      "Ingen eksplisitt månedsgrunnlag-valgvisning bygget/prøvd.",
+      "Ingen månedsnav/alle select/alle native utganger dekket av denne prøven.",
+      "Ingen reell autentisert app/database eller designgodkjenning."
+    ]
+  },
+  "cloudBoundedEvidence": {
+    "atomisk": [
+      12,
+      0
+    ],
+    "grenser": [
+      8,
+      0
+    ],
+    "independentlyReproduced": false
+  },
+  "sourceMismatch": "Kvittering hevder månedslisten reset er clearOverrides; faktisk WB3-lokal87 har fortsatt to resetOverride med ignorerte resultater. Rettelist sendt.",
+  "active": "Tre konkrete rester: retry→mål, nullperiode→rydde ref, faktisk månedslistes samlet reset. Eksplisitt månedsgrunnlag egen neste jobb.",
+  "resources": "Egen fane1416028648 og server63823 lukket.",
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false
+}

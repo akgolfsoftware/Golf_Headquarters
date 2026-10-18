@@ -1,0 +1,135 @@
+{
+  "status": "statisk-kontroll-før-skyretting",
+  "kilde": "Precision eksport før konsolidering 30.09.2026",
+  "fil": "tokens/colors.css",
+  "sha256": "40bf3cb303d693d51d3996b8923b8d02511e1a09c2af34f6a6ab2fa222cb93ba",
+  "metode": "sRGB-luminans; alfabakgrunn sammensatt over surface-card; ingen avrunding ved klassifisering; ikke målt i nettleser",
+  "rows": [
+    {
+      "tema": "lyst",
+      "tekst": "--text-primary",
+      "bakgrunn": "--surface-page",
+      "forhold": 14.392710981325965,
+      "normaltekst45": true
+    },
+    {
+      "tema": "lyst",
+      "tekst": "--text-secondary",
+      "bakgrunn": "--surface-page",
+      "forhold": 7.5942543030265,
+      "normaltekst45": true
+    },
+    {
+      "tema": "lyst",
+      "tekst": "--text-muted",
+      "bakgrunn": "--surface-page",
+      "forhold": 4.530636679170644,
+      "normaltekst45": true
+    },
+    {
+      "tema": "lyst",
+      "tekst": "--text-faint",
+      "bakgrunn": "--surface-card",
+      "forhold": 3.6191944517089887,
+      "normaltekst45": false
+    },
+    {
+      "tema": "lyst",
+      "tekst": "--axis-fys-fg",
+      "bakgrunn": "--axis-fys-bg",
+      "forhold": 4.2339553678094,
+      "normaltekst45": false
+    },
+    {
+      "tema": "lyst",
+      "tekst": "--axis-tek-fg",
+      "bakgrunn": "--axis-tek-bg",
+      "forhold": 4.742327817477889,
+      "normaltekst45": true
+    },
+    {
+      "tema": "lyst",
+      "tekst": "--axis-slag-fg",
+      "bakgrunn": "--axis-slag-bg",
+      "forhold": 5.684714752819207,
+      "normaltekst45": true
+    },
+    {
+      "tema": "lyst",
+      "tekst": "--axis-spill-fg",
+      "bakgrunn": "--axis-spill-bg",
+      "forhold": 4.818273895330337,
+      "normaltekst45": true
+    },
+    {
+      "tema": "lyst",
+      "tekst": "--axis-turn-fg",
+      "bakgrunn": "--axis-turn-bg",
+      "forhold": 5.720717843104419,
+      "normaltekst45": true
+    },
+    {
+      "tema": "natt",
+      "tekst": "--text-primary",
+      "bakgrunn": "--surface-page",
+      "forhold": 18.345638980493103,
+      "normaltekst45": true
+    },
+    {
+      "tema": "natt",
+      "tekst": "--text-secondary",
+      "bakgrunn": "--surface-page",
+      "forhold": 7.933086821258548,
+      "normaltekst45": true
+    },
+    {
+      "tema": "natt",
+      "tekst": "--text-muted",
+      "bakgrunn": "--surface-page",
+      "forhold": 7.933086821258548,
+      "normaltekst45": true
+    },
+    {
+      "tema": "natt",
+      "tekst": "--text-faint",
+      "bakgrunn": "--surface-card",
+      "forhold": 3.2582440493336353,
+      "normaltekst45": false
+    },
+    {
+      "tema": "natt",
+      "tekst": "--axis-fys-fg",
+      "bakgrunn": "--axis-fys-bg",
+      "forhold": 5.918557227713629,
+      "normaltekst45": true
+    },
+    {
+      "tema": "natt",
+      "tekst": "--axis-tek-fg",
+      "bakgrunn": "--axis-tek-bg",
+      "forhold": 5.8632942989175065,
+      "normaltekst45": true
+    },
+    {
+      "tema": "natt",
+      "tekst": "--axis-slag-fg",
+      "bakgrunn": "--axis-slag-bg",
+      "forhold": 5.538620418958994,
+      "normaltekst45": true
+    },
+    {
+      "tema": "natt",
+      "tekst": "--axis-spill-fg",
+      "bakgrunn": "--axis-spill-bg",
+      "forhold": 5.06069192450304,
+      "normaltekst45": true
+    },
+    {
+      "tema": "natt",
+      "tekst": "--axis-turn-fg",
+      "bakgrunn": "--axis-turn-bg",
+      "forhold": 5.584444218153183,
+      "normaltekst45": true
+    }
+  ]
+}

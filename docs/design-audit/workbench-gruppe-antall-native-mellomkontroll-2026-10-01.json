@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "delprove-ni-bestatt-tre-fixturefeil-datofelt-fikseres",
+  "export": {
+    "archive": "AK Golf Precision Athletics (48).zip",
+    "sha256": "82352e782e287c0c5befa095d83f4a8045955933277044b1b22be6067e0f04d3",
+    "files": 614,
+    "exportedAt": "2026-10-01T05:38:18.568953+00:00",
+    "root": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-gruppe-antall-native",
+    "liveJobStillRunning": true
+  },
+  "syntax": {
+    "scripts": 313,
+    "inline": 70,
+    "inlineIncludedInScripts": true,
+    "syntax_errors": 0,
+    "errors": []
+  },
+  "model": {
+    "reusedSameModel47": true,
+    "modelSha256": "3a43afbe7543b0467faddc3c5452f4eefdbab81d61cc46fe2ae19b60063874fc",
+    "total": 109,
+    "pass": 108,
+    "fail": 0,
+    "skip": 1,
+    "error": 0
+  },
+  "ownProbe": {
+    "checks": 12,
+    "pass": 9,
+    "fail": 3,
+    "proofSha256": "ac5f59ebb71da399a1c3e4de7b1067321afd98d79eb51a3e458b6f83f1c5ed52",
+    "proof": "egen-gruppe-antall-mellomprove.txt",
+    "actualPass": "AG g1tekniskplan/utkast/pub1, AGg2pub5, PHg1medlemvelger/importtilmånedTEK2/fullmålplanstrip/planB/kildebevart; publisert2 står etter lokal3. Direkte negative grupper er merket modellbevis.",
+    "failCause": "AG tilbake til g1→Se plan bruker defaultuke 07–13.12. Test satte antall3, men ikke opprinnelige datofelt01.12–31.01. Ny count-rad opprettes, gammelcountID republiseres rev1. Rev2/Compare/exception avledet testfeil.",
+    "requestedRepair": "Fyll BEGGE opprinnelige datofelt native før save3, assert samme countID/draftrev/dato før pub2, bevar negatives. Ingen modellendring for fixturefeil.",
+    "limits": [
+      "Ingen Compare/Behold/Oppdater/failretry/retur/reloadslutt bevist i48.",
+      "Prøven bruker p1motg2 for ikke-medlem, ikke separatp3vert; ingen falskp3claim.",
+      "Full sourceRead publisertlista compare er ikke full gruppemasterplan-diskassert.",
+      "Noen optionalopenknappcatch-er finnes; ikke regn dem som beståttkontroll."
+    ]
+  },
+  "resources": "Egenfane1416028678 ogserver50966 lukket.",
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false
+}

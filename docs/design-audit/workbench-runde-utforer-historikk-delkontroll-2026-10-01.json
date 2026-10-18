@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "rd-delkontroll-bestatt",
+  "export": {
+    "archive": "AK Golf Precision Athletics (59).zip",
+    "sha256": "61624f3b9be172e07752a07f54bd476f954614f94b9e500593274dc66ffff0d4",
+    "files": 620,
+    "exportedAt": "2026-10-01T07:43:34.429926+00:00"
+  },
+  "syntax": {
+    "scripts": 319,
+    "inline": 75,
+    "inlineIncludedInScripts": true,
+    "errors": 0
+  },
+  "model": {
+    "total": 121,
+    "pass": 120,
+    "fail": 0,
+    "skip": 1,
+    "error": 0,
+    "modelSha256": "03487138b25330468ecb4715e70bdbb8f0d60d800ad2b5c8849ad29db6f3ca9c",
+    "runnerSha256": "3bc876f491559abd0a56aef98b2a687dca3504d0a1cca2e1a8cd33838243f7a6"
+  },
+  "ownProbe": {
+    "checks": 35,
+    "failures": 0,
+    "proofSha256": "f7b518719e211ee15ed2b557ce0d24ca65b048d85f8920151a58f5659201f3df",
+    "coverage": [
+      "Faktisk planlegging to TURN-runder og separat FYS/SLAGforberedelse",
+      "Publiser/PHkort/PH03/RD01/RD02/Live/oppsummering/Planretur",
+      "Ukjent manuell hullvalg tomt og validering",
+      "Innsprøytet skrivefeil via Storage.prototype.setItem ved setup/hull/Finish; faktiske UI-knapper og retry uten dubletter",
+      "Bruttoscore5+4=9 på2av9hull, ingen nettoscore",
+      "WBpanelrundeinngang og Start avvist ved AGwithdraw mens RD02åpent",
+      "Faktisk PHPlan historikkknapp på ny vert etterwithdraw, eksakt setup/hull/resultat/retur",
+      "To utførere av samme publiserte gruppeøkt med ulike baner/brutto5og8, separate kladder/resultat",
+      "Ny personlig publikasjon forp1 utilgjengelig forp2; separate negative API/modelchecks"
+    ],
+    "limits": [
+      "Kalender og runder satt opp med merket modellfixture, ikke kalenderUIoppretting.",
+      "p2identitet settes via TP2.scope-override; prototypen har ingen innlogging.",
+      "Negativ personlig recipient les/start/Finish kontrolleres med modellkall og Planliste; ikke native klikk på fremmedresultat som ikke finnes.",
+      "Ukjent publikasjon i negativtilfellet settes direkte.",
+      "Historikk i localStorageprototype, ikke server/app/DB; PHQ_RESULTS golf/FYS er fortsatt bare minne.",
+      "I dag-rundeinngang PH01 og flere revisjoner av samme runde ikke dekket.",
+      "35 kontroller betyr ikke35 nye native knapper eller35 skjermer.",
+      "Skrivefeilen simuleres ved at setItem kaster Error(\"QuotaExceededError\"); disken fylles ikke og ekte nettleserkvote overskrides ikke."
+    ]
+  },
+  "resources": "Egenfane1416028698 og lokalserver12531 lukket.",
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false,
+  "next": "TP/golf/source/resultatregresjon aktivt bestilt; deretter WB-visuell konsistens og øvrige knapprester/sluttregister."
+}

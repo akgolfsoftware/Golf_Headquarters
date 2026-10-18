@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "periode-skjerpet-integrert",
+  "export": {
+    "archive": "AK Golf Precision Athletics (63).zip",
+    "sha256": "cba5229880a80d6ebd66d3a98a5c1fbda262c1c2d7845c6be1de3a49ad8da277",
+    "files": 621,
+    "exportedAt": "2026-10-01T09:17:08.089004+00:00"
+  },
+  "cloudNative": {
+    "checks": 34,
+    "failures": 0
+  },
+  "sourceVerification": {
+    "changedSince62": [
+      "ui_kits/wb-antall-repro.html"
+    ],
+    "exactMatchToOwnPassed61Probe": true,
+    "probeSha256": "4f777ebbf17357fa9b3701732119b32b4dbbe8170212571dd70cbad30a441dc2",
+    "ownPriorChecks": 34,
+    "ownPriorFailures": 0,
+    "ownRerunFor63": false
+  },
+  "limits": [
+    "Claude rekonstruerte først en feil ankerutskifting; endelig63 er byteidentisk med Codex sin tidligere egenkontrollerte fil.",
+    "Gruppe-/PH-kildepatch og fire kilde/tidrester ble ikke utført før samtalekontekstgrensen.",
+    "Ny arbeidsøkt i samme prosjekt er startet med eksakt tofil-integrering; dette er ikke nytt designprosjekt eller godkjenning."
+  ],
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false,
+  "next": "To eksakte nativeprober, fire kilde/tidrester samt konkret drilltid/pausefeil; deretter WBvisuelt, øvrigeknapper og sluttregister."
+}

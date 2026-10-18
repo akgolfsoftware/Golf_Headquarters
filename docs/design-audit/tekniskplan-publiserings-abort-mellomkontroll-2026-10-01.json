@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "tp-publiserings-abort-kildediagnostisert",
+  "export": {
+    "archive": "AK Golf Precision Athletics (60).zip",
+    "sha256": "d5a0b9ea7704bd9eb140dd9a37f79851614140549040a08bab08429f324a73f1",
+    "files": 620,
+    "exportedAt": "2026-10-01T08:06:20.355359+00:00",
+    "partial": true
+  },
+  "source": {
+    "file": "ui_kits/reisetest-tp.html",
+    "sha256": "5eba769156ffd8b2db63e9c21aef23751c79ae584c1d4a81e0b48cee1fa97be9",
+    "cause": "Innsetting er modernisert, men172–178 søker fortsatt legacyTP2/workbench-okt. pW undefined og diagnostikk pW.rev på178 kaster; catch221 erstatter15 utelatte kontroller med1, netto14 færre.",
+    "notAProofOfAllSteps": "75av89markøren og catch/oppsett inngår i teller; tallet alene beviser ikke hele kontrollinventaret."
+  },
+  "evidenceType": "read-only-kildeanalyse-av-mellomversjon",
+  "nativeOwnReplay": false,
+  "cloudObserved": "120kontroller/4feil før neste kjøring;76markør etter75av89planlagte steg. Ingen ny beståttkvittering.",
+  "requestedFix": "Kort valgtinnsettingsøkt→side-pub/pub-velg/pub-bekreft→PH10kort→PH03 med eksakt TPbinding, deretter beholdte senere kontrollene. Tekniskoppgavepub er separat. Ikke senk dekningsmarkør/nullguard som eneste retting.",
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false
+}

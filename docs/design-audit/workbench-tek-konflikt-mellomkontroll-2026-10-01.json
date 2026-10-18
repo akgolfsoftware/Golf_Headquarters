@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "konflikt-valg-kontrollert-atomisk-lagring-under-retting",
+  "export": {
+    "zipName": "AK Golf Precision Athletics (30).zip",
+    "zipSha256": "6f96c9715f79470af5d4420bb87a298da95ed7bc3974b71c57c4a1f2556e2bed",
+    "fileCount": 603,
+    "exportedAt": "2026-10-01T02:51:32.994508+00:00",
+    "exportRoot": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-tek-konflikt",
+    "status": "konfliktvalg-mellomkontroll-atomisk-lagring-aktiv"
+  },
+  "syntax": {
+    "scripts": 302,
+    "inline": 59,
+    "inlineIncludedInScripts": true,
+    "syntax_errors": 0,
+    "errors": []
+  },
+  "model": {
+    "pass": 63,
+    "fail": 0,
+    "skip": 0,
+    "error": 0,
+    "modelSha256": "cc88d3b294ffff7829b1dbae6e4139c9adb367ba06f63fafbe96839526f0aa80",
+    "scope": "Avgrenset modellkontroll; ikke samlet editorhandling eller UI-bevis."
+  },
+  "ownNativeConflict": {
+    "checks": 10,
+    "failures": 0,
+    "proofSha256": "7b6af4ef962afdbd99347062492bff7e6e2b0c476f55cd04b4e0f1209775989d",
+    "scope": "AG uke-editor, uttrykkelig valgt eksempelkilde, native Behold mitt/Bruk hentet, ny konflikt ved senere import, avvist uløst lagring og nivåvakt.",
+    "limits": [
+      "Ingen faktisk separat AG→PH-publiseringsreise",
+      "Ingen lagringsfeil/reset/annen eier/månedsgrunnlag eller årsredigering i denne prøven"
+    ]
+  },
+  "remainingSource30": [
+    "Global impCount økes før persist og gjenopprettes ikke ved feil; falsk konflikt og kryssende kontekst mulig.",
+    "Parent saveDiff/reset ignorerer delresultater; ingen samlet atomisk lagring og full rollback.",
+    "Uke/månedsnavigasjon og SessForm omgår fortsatt vakt.",
+    "Uke over flere måneder velger automatisk første måned.",
+    "Native antall til periode/måned, gruppe/to planer og avgrenset årsredigering gjenstår."
+  ],
+  "active": "Atomisk TEK-lagring/reset og kontekstbundet importmarkør bestilt som konkret egen jobb; øvrige native reiser følger.",
+  "resources": "Egen testfane1416028644 og server49324 lukket.",
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false
+}

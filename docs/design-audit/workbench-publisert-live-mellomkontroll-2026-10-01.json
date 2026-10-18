@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "publisert-live-mellomkontroll-restretting-bestilt",
+  "export": {
+    "zipName": "AK Golf Precision Athletics (26).zip",
+    "zipSha256": "8316a2762f31dd2da3177c16ad81f46bfac4861ff3bac4d1be1ac8032c52a309",
+    "fileCount": 600,
+    "exportedAt": "2026-10-01T01:48:55.583586+00:00",
+    "exportRoot": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-publisert-live",
+    "status": "mellomkontroll"
+  },
+  "syntax": {
+    "scripts": 299,
+    "inline": 56,
+    "inlineIncludedInScripts": true,
+    "syntax_errors": 0,
+    "errors": []
+  },
+  "model": {
+    "counts": {
+      "PASS": 63,
+      "FAIL": 0,
+      "SKIPPED": 0,
+      "ERROR": 0
+    },
+    "sourceModelSha256": "7dce6188eb585ecb7773a01bf67c6870f34b489e78eea8bc556905fa6aea27e8",
+    "runnerSha256": "e933c0faa2f1473553a49f66d17292bb96fb67f0b81439a15d7654c534ae87d7"
+  },
+  "cloudUiClaim": {
+    "checks": 14,
+    "failures": 0,
+    "scope": "Innsetting av øvelser er fixture, FYS stopper ved visning; ingen vurdert lagring, pin/ny rev eller to separate gjennomføringer. Ikke komplett reise."
+  },
+  "ownUi": {
+    "checks": 14,
+    "failures": 0,
+    "proofSha256": "99a2aa7215822b18d4b8950e1bfdaa17a744fc77d550da00c4bca1e4a1cd934b",
+    "scope": "Faktisk lokal prøveside med fixture-øvelser; samme avgrensede kontroll som sky. Ingen vurdert lagring eller FYS-gjennomføring.",
+    "resources": "Egen testfane lukket og server95179 stoppet."
+  },
+  "remaining": [
+    "FYS programsnapshot og faktisk gjennomføring/lagring/retur",
+    "Manglende golf-tid usatt",
+    "Vurdert og uvurdert lagring, separat historikk, pin/ny revisjon",
+    "Ekte innholdsimport og I dag-datoavgrensing",
+    "TEK, gammel TP-reise, visuell konsistens og sluttregister"
+  ],
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false,
+  "sourceFindings": [
+    {
+      "finding": "Tom publisert golføkt kan startes og PH05 leser d.id uten tomguard.",
+      "locations": [
+        "WB3-pub.jsx:25",
+        "PH-live.jsx:58"
+      ],
+      "status": "Sendt som retting til aktiv designjobb"
+    },
+    {
+      "finding": "PHQ_SESSION/PHQ_SAVED bruker intern pub-cachekey som primær sessionId; bare nested pub.sessionId er riktig.",
+      "locations": [
+        "WB3-pub.jsx:12",
+        "PH-live.jsx:61",
+        "PH-live.jsx:150"
+      ],
+      "status": "Sendt som retting; cachekey og virkelig økt-ID skal skilles"
+    },
+    {
+      "finding": "FYS forhåndsfullført, 734 sekunder, null last skrevet som tekst; serieverdier mistes",
+      "locations": [
+        "PH-live.jsx:106",
+        "PH-live.jsx:107",
+        "PH-live.jsx:112"
+      ],
+      "status": "Sendt til aktiv restretting"
+    },
+    {
+      "finding": "Teknisk media mistes og Live/PH07 har demo-/receiptfallback, start revaliderer ikke allerede åpnet ark",
+      "locations": [
+        "WB3-pub.jsx:11",
+        "WB3-pub.jsx:26",
+        "PH-live.jsx:7",
+        "PH-live.jsx:141"
+      ],
+      "status": "Sendt til aktiv restretting"
+    },
+    {
+      "finding": "TURN/SPILL er gyldig planlegging men adapteren mangler kobling til konkret rundeinngang",
+      "locations": [
+        "WB3-pub.jsx:8",
+        "PH-RD-1.jsx:32"
+      ],
+      "status": "Sendt som konkret prototypekobling til eksisterende RD-reise"
+    }
+  ]
+}

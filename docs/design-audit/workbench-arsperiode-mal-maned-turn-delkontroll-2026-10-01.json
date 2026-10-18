@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "arsperiode-mal-og-maned-turn-delreiser-bestatt",
+  "export": {
+    "archive": "AK Golf Precision Athletics (53).zip",
+    "sha256": "cab42878d28db4ab52a9f899282c7ded2ea2239b4d142e90b48a2ad206979c79",
+    "files": 617,
+    "exportedAt": "2026-10-01T06:38:45.780827+00:00",
+    "root": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-ar-periode-mal-vakter",
+    "status": "mellomversjon før RD-jobb, ikke sluttpakke"
+  },
+  "syntax": {
+    "scripts": 316,
+    "inline": 73,
+    "inlineIncludedInScripts": true,
+    "syntax_errors": 0,
+    "errors": []
+  },
+  "model": {
+    "total": 116,
+    "pass": 115,
+    "fail": 0,
+    "skip": 1,
+    "error": 0,
+    "modelSha256": "88153d6dfeca5c9ef49843641aacc4b6ed8500c857d7f56e1419899fd5148309",
+    "runnerSha256": "3beac85063a6112c3c461da488cc2af0bd34b93d966f83fc4f6de2287003afe6"
+  },
+  "ownProbes": {
+    "year": {
+      "checks": 31,
+      "failures": 0,
+      "sha256": "835ee5fbf2166f8638079bb7e9924a53c69f771742ae295c8be2924961f1aab3"
+    },
+    "monthTurn": {
+      "checks": 11,
+      "failures": 0,
+      "sha256": "b59fc7f8256415eff10b5d63c44dbff8f9afdda4318d32f6762b86a067ae9998"
+    }
+  },
+  "repairs": [
+    "removeGoal/undoRemoveGoal har samme authOk(p) før mutasjon som årsmodell",
+    "SessForm unmount rydder dirty/handler: lagretøkt sperrer ikke lenger Periode-fanen"
+  ],
+  "coverage": "Årnavn/dato-utvidelse/avbryt/ugyldig/failretry/reload, alle8typer, konsekvens/periodremove-failretry/undo med TEKref, målarkiv/reload/gjenopprett. Måned→faktisk valgt turn-session/entry med Bli/Forkast/Lagre-feilretry, minne/disk, annenplan/eier og faktiskretur.",
+  "limits": [
+    "Syntetisk grunnoppsett med modellfixtures for periodens TEKref og kalenderforekomster; kontrollteller er ikke antall nativeknapper.",
+    "Årprøvens heleperiode+budsjett/TEKref gjenopprettet, men ikke komplett native tekniskplan-oppgavereise.",
+    "Rammeforkorting over innhold er uavklart, ikke bestått.",
+    "Rundeoppsett/Live/resultat og visuell konsistens/finalkart gjenstår."
+  ],
+  "resources": "Egenfaner1416028686/1416028687 og server8570 lukket.",
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false
+}
