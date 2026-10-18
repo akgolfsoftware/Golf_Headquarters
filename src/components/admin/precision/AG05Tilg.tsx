@@ -21,6 +21,10 @@ function datoTekst(iso: string) {
   return new Intl.DateTimeFormat("nb-NO", { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }).format(new Date(`${iso}T12:00:00Z`));
 }
 
+function datoKort(iso: string) {
+  return new Intl.DateTimeFormat("nb-NO", { day: "2-digit", month: "2-digit", timeZone: "UTC" }).format(new Date(`${iso}T12:00:00Z`));
+}
+
 type Skjema = {
   id?: string;
   type: "uke" | "dato";
@@ -161,7 +165,7 @@ export function AG05Tilg({ data }: { data: TilgData }) {
               {ukentlige.length > 0 && <div className="liste">{ukentlige.map((v) => vinduRad(v, KORT[v.weekday ?? 0]))}</div>}
               {datoer.length > 0 && <>
                 <p className="kilde">Enkeltdatoer</p>
-                <div className="liste">{datoer.map((v) => vinduRad(v, datoTekst(v.date ?? "")))}</div>
+                <div className="liste">{datoer.map((v) => vinduRad(v, datoKort(v.date ?? "")))}</div>
               </>}
             </>}
       </Seksjon>

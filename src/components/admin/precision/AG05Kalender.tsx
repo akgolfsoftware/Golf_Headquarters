@@ -207,7 +207,7 @@ function Blokk({ e, onClick, style }: { e: KalenderHendelse; onClick: () => void
 function plassering(e: KalenderHendelse): React.CSSProperties {
   const start = Math.max(H0 * 60, e.startMin ?? H0 * 60);
   const slutt = Math.min(H1 * 60, e.sluttMin ?? start + 30);
-  return { top: `calc(var(--time) * ${(start - H0 * 60) / 60} + 2px)`, height: `max(32px, calc(var(--time) * ${(slutt - start) / 60} - 4px))` };
+  return { top: `calc(var(--time) * ${(start - H0 * 60) / 60} + 2px)`, height: `max(44px, calc(var(--time) * ${(slutt - start) / 60} - 4px))` };
 }
 
 function Nalinje({ dato, idagIso }: { dato: string; idagIso: string }) {

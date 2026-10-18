@@ -72,7 +72,7 @@
 .agn-s .k-okt.opptatt, .agn-s .u-okt.opptatt { background: var(--sand-150); color: var(--graphite-600); border: 1px solid var(--sand-300); cursor: default; }
 .agn-s .k-na { position: absolute; left: 0; right: 0; border-top: 2px solid var(--graphite-900); z-index: 3; pointer-events: none; }
 
-.agn-s .dagvis { --time: 40px; display: grid; grid-template-columns: 40px repeat(var(--kol), minmax(0, 1fr)); border: 1px solid var(--sand-300); border-radius: 12px; overflow: hidden; background: var(--white); }
+.agn-s .dagvis { --time: 56px; display: grid; grid-template-columns: 40px repeat(var(--kol), minmax(0, 1fr)); border: 1px solid var(--sand-300); border-radius: 12px; overflow: hidden; background: var(--white); }
 .agn-s .dagvis .hd { display: flex; align-items: center; gap: 8px; min-width: 0; min-height: 44px; padding: 6px 8px; border-bottom: 1px solid var(--sand-300); border-left: 1px solid var(--sand-300); background: var(--sand-100); font: 600 13.5px/1.2 var(--sans); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .agn-s .dagvis .hd.tom { border-left: 0; }
 .agn-s .dagvis .timer { display: grid; grid-auto-rows: var(--time); background: var(--sand-100); }
@@ -132,3 +132,10 @@
 .agn-s .bk-filter { display: grid; gap: var(--r2); min-width: 0; }
 .agn-s .bk-filter-felt { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--r2); min-width: 0; }
 .agn-s .bk-filter-felt .felt { min-width: 0; align-content: start; }
+
+/* Treffmål minst 44 px: fanen «År» og datorutene i måned på 360 px. */
+.agn-s .valg > a, .agn-s .valg > button { min-width: 44px; justify-content: center; }
+@media (max-width: 400px) {
+  .agn-s .mnd { gap: 2px; }
+  .agn-s .mnd .d { padding: 4px 3px; }
+}
