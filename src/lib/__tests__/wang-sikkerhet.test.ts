@@ -113,8 +113,8 @@ test("deaktiverte handlinger bærer teksten «Ikke koblet ennå»", () => {
 test("de tre ekte datakoblede rutene nås fra skallet (IUP, testresultater, turneringer)", () => {
   const lenker = lesKilde("src/components/wang/WangKobledeVisninger.tsx");
   assert.match(lenker, /\/team-wang\/coach\/iup\//);
-  assert.match(lenker, /\/team-wang\/coach\/tester/);
-  assert.match(lenker, /\/team-wang\/coach\/turneringer\//);
+  assert.match(lesKilde("src/components/wang/WangTester.tsx"), /\/team-wang\/coach\/tester/);
+  assert.match(lesKilde("src/components/wang/WangKonkurranse.tsx"), /\/team-wang\/coach\/turneringer\//);
   const klient = lesKilde("src/app/team-wang/coach/WangCoachKlient.tsx");
   assert.match(klient, /WangKobledeVisninger/);
 });
