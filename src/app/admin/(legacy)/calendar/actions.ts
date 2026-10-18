@@ -31,7 +31,7 @@ export type OpprettOktInput = {
    * - FAKTURA: tjenestens pris, merket «skal faktureres» (fakturaen lages i Tripletex).
    * - GRATIS: pris 0.
    */
-  betaling?: "KLIPP" | "FAKTURA" | "GRATIS";
+  betaling?: "STRIPE" | "KLIPP" | "FAKTURA" | "GRATIS";
 };
 
 export type OpprettOktResult = {
@@ -55,7 +55,7 @@ export async function opprettOktPaaTid(
     spillerId: z.string().min(1).max(200), serviceTypeId: z.string().min(1).max(200), locationId: z.string().min(1).max(200),
     facilityId: z.string().min(1).max(200).optional(), startAt: z.union([z.date(), z.string().min(1).max(40)]),
     varighetMin: z.number().int().min(1).max(1440), notater: z.string().max(2000).optional(),
-    betaling: z.enum(["KLIPP", "FAKTURA", "GRATIS"]).optional(),
+    betaling: z.enum(["STRIPE", "KLIPP", "FAKTURA", "GRATIS"]).optional(),
   }).safeParse(data);
   if (!parsed.success) throw new Error("Kontroller bookingfeltene, varighet og betalingsmåte.");
   // Datetime-local sender Oslo-veggklokke. Bevar sifrene i databasens naive

@@ -1,40 +1,44 @@
 "use client";
 
 /**
- * AG-06 Booking i nytt design (designbrevet 13.10.2026). Fasit:
- * docs/design-system/utkast-agencyos/kalender.html, skjermene AG-06 Booking,
- * AG-06-NY og «Bookingen». Faner: Uten betaling · Bookinger · Ny booking ·
- * Tjenester og pris. Detaljen åpnes som ark på mobil og dialog på PC.
+ * AG-06 Booking, pakke 3 (bygget natt 17.10 etter
+ * docs/design-system/utkast-agencyos/kalender.html, skjermene AG-06 Booking og
+ * AG-06-NY). Faner: Bookinger · Ny booking · Tjenester og pris. En booking åpnes
+ * på egen side (/admin/bookinger/[id], AG06Bookingen), der avlys, foreslå ny tid,
+ * bekreft og avvis ligger (§COACH SOM AVLYSER GIR ALLTID FULL REFUSJON, 15.10).
  *
- * Avlys, Foreslå ny tid og avvisning med utkast i Innboks følger
- * beslutninger.md §COACH SOM AVLYSER GIR ALLTID FULL REFUSJON (15.10.2026):
- * avlysning gir alltid hele beløpet eller klippet tilbake, og en ny tid
- * gjelder først når spilleren har godtatt den i PlayerHQ.
+ * Ny booking går i fire steg: Spiller · Tjeneste · Tid · Bekreft, med
+ * betalingsmåte Stripe · Klipp · Faktura · Gratis.
  *
- * Avvik fra tegningen (se PR/rapport):
- * - Tjenester har ikke et «trekker klipp»-felt i ServiceType; det er derfor
- *   ikke tegnet inn i tjeneste-arket (ingen data å vise).
- * - «Timepris»-fallback i tegningen er demodata; pris er alltid ServiceType.priceOre.
+ * Avvik mot utkastet:
+ *   - Tid-steget har dato og klokkeslett, ikke ferdige ledige tider; serveren
+ *     avviser en tid som kolliderer (kollisjonsvernet i opprettOktPaaTid).
+ *   - «Send betalingslenke» finnes ikke: Stripe merker bookingen med tjenestens
+ *     pris og «Ikke betalt». Knappen heter «Bekreft booking» for alle betalingsmåter.
+ *   - Testtime som tildeler testen automatisk finnes ikke i koden.
+ *   - Tjenestelista er egen fane (med redigering, bookingplanen steg 2), ikke en
+ *     seksjon under bookingene.
+ *
+ * Bookinglista (bookingplanen steg 4): søk på navn, e-post og telefon, og filter
+ * på coach, tjeneste, sted og periode. Filtrene gjelder alle gruppene.
  *
  * Fanen «Tjenester og pris» (bookingplanen steg 2, 15.10.2026): opprett, endre,
- * slå av og på, og slett tjenester her, med sted, coach, kategori, buffer,
- * minste varsel og maks dager fram. Den gamle siden /admin/services sender hit.
+ * slå av og på, og slett tjenester, med sted, coach, kategori, buffer, minste
+ * varsel og maks dager fram. Den gamle siden /admin/services sender hit.
  */
-import { useState, useTransition } from "react";
+import Link from "next/link";
+import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
-import { Avatar, Knapp, KnappLenke, Nokkelverdier, Pille, Tom, Topp, Varsel, type PilleTone } from "@/components/admin/agencyos-ny/ny";
-import { bekreftBooking } from "@/app/admin/(legacy)/bookinger/actions";
-import { avlysBookingSomCoach, avvisBookingMedBegrunnelse } from "@/app/admin/bookinger/actions";
-import { foreslaaNyBookingtid, trekkTilbakeForslag } from "@/app/admin/kalender/flytt-actions";
+import { Avatar, Knapp, Pille, Tom, Topp, Varsel, type PilleTone } from "@/components/admin/agencyos-ny/ny";
 import { bookIKalender, type BookingValg } from "@/app/admin/kalender/booking-actions";
 import type { AG06Booking, AG06Tjeneste, AG06TjenesteValg } from "@/app/admin/bookinger/data";
 import { opprettTjeneste, oppdaterTjeneste, settTjenesteAktiv, slettTjeneste, type TjenesteInput } from "@/app/admin/bookinger/tjeneste-actions";
 import { TJENESTE_KATEGORIER, kategoriNavn } from "@/lib/booking/tjeneste-kategori";
 import "@/styles/agencyos-ny-kalender.css";
 
-const TONE: Record<AG06Booking["st"], PilleTone> = { Venter: "vent", Bekreftet: "ok", Avvist: "noy" };
+export const STATUS_TONE: Record<AG06Booking["st"], PilleTone> = { Venter: "vent", Bekreftet: "ok", Avlyst: "noy", Gjennomført: "noy" };
 
 function kr(ore: number): string {
   return (ore / 100).toLocaleString("nb-NO", { maximumFractionDigits: 0 }) + " kr";
@@ -46,7 +50,9 @@ export type AG06Props = {
   valg: BookingValg;
   tjenester: AG06Tjeneste[];
   tjenesteValg: AG06TjenesteValg;
-  fane?: "foresp" | "alle" | "ny" | "tj";
+  fane?: "bookinger" | "ny" | "tj";
+  /** Klokka «nå» i ms, satt av serveren så Kommende/Tidligere ikke flakker. */
+  naaMs?: number;
 };
 
 function Ark({ tittel, dato, onClose, children, knapper }: { tittel: string; dato?: string; onClose: () => void; children: React.ReactNode; knapper?: React.ReactNode }) {
@@ -60,85 +66,108 @@ function Ark({ tittel, dato, onClose, children, knapper }: { tittel: string; dat
   </div>;
 }
 
-export function AG06Booking({ navn, bookinger, valg, tjenester, tjenesteValg, fane: initialFane }: AG06Props) {
-  const [fane, setFane] = useState(initialFane ?? "foresp");
-  const [sel, setSel] = useState<string | null>(null);
-  const [rej, setRej] = useState<AG06Booking | null>(null);
-  const [avl, setAvl] = useState<AG06Booking | null>(null);
-  const [fly, setFly] = useState<AG06Booking | null>(null);
-  const [nyDato, setNyDato] = useState("");
-  const [nyTid, setNyTid] = useState("");
-  const [why, setWhy] = useState("");
+type Gruppe = "venter" | "kommende" | "tidligere" | "avlyst";
+
+export function grupperBookinger(bookinger: readonly AG06Booking[], naaMs: number): Record<Gruppe, AG06Booking[]> {
+  const ut: Record<Gruppe, AG06Booking[]> = { venter: [], kommende: [], tidligere: [], avlyst: [] };
+  for (const b of bookinger) {
+    if (b.st === "Avlyst") ut.avlyst.push(b);
+    else if (b.st === "Venter") ut.venter.push(b);
+    else if (b.st === "Bekreftet" && b.startMs >= naaMs) ut.kommende.push(b);
+    else ut.tidligere.push(b);
+  }
+  ut.kommende.sort((a, b) => a.startMs - b.startMs);
+  ut.venter.sort((a, b) => a.startMs - b.startMs);
+  return ut;
+}
+
+export function BookingRad({ b }: { b: AG06Booking }) {
+  return <Link href={`/admin/bookinger/${b.id}`} className="bk-rad">
+    <span className="d"><b>{b.dag}</b><span>{b.ukedag}</span></span>
+    <span><b className="n">{b.who} · {b.svcNavn}</b>
+      <span className="kilde">{b.t}–{b.slutt} · {b.where} · {b.coach ?? "—"} · {b.pay === "Klipp" ? "1 klipp" : b.pay === "Betalt" ? "betalt" : b.pay.toLowerCase()}</span></span>
+    <Pille tone={STATUS_TONE[b.st]}>{b.st === "Venter" ? "Venter på deg" : b.st}</Pille>
+  </Link>;
+}
+
+type Filter = { sok: string; coach: string; tjeneste: string; sted: string; fra: string; til: string };
+const TOMT_FILTER: Filter = { sok: "", coach: "", tjeneste: "", sted: "", fra: "", til: "" };
+
+export function filtrerBookinger(bookinger: readonly AG06Booking[], f: Filter): AG06Booking[] {
+  const sok = f.sok.trim().toLowerCase();
+  return bookinger.filter((b) =>
+    (!sok || `${b.who} ${b.guardian ?? ""} ${b.kontaktSok}`.toLowerCase().includes(sok)) &&
+    (!f.coach || (b.coach ?? "") === f.coach) &&
+    (!f.tjeneste || b.svcNavn === f.tjeneste) &&
+    (!f.sted || b.where === f.sted) &&
+    (!f.fra || b.datoIso >= f.fra) &&
+    (!f.til || b.datoIso <= f.til));
+}
+
+const unike = (verdier: Array<string | null>) => [...new Set(verdier.filter((v): v is string => !!v && v !== "—"))].sort((a, b) => a.localeCompare(b, "nb"));
+
+export function AG06Booking({ navn, bookinger, valg, tjenester, tjenesteValg, fane: initialFane, naaMs }: AG06Props) {
+  const [fane, setFane] = useState(initialFane ?? "bookinger");
   const [melding, setMelding] = useState<string | null>(null);
-  const [feil, setFeil] = useState<string | null>(null);
-  const [pending, start] = useTransition();
-  const router = useRouter();
+  const [filter, setFilter] = useState<Filter>(TOMT_FILTER);
+  const naa = naaMs ?? 0;
+  const filtrert = useMemo(() => filtrerBookinger(bookinger, filter), [bookinger, filter]);
+  const grupper = useMemo(() => grupperBookinger(filtrert, naa), [filtrert, naa]);
+  const valgListe = useMemo(() => ({
+    coacher: unike(bookinger.map((b) => b.coach)),
+    tjenester: unike(bookinger.map((b) => b.svcNavn)),
+    steder: unike(bookinger.map((b) => b.where)),
+  }), [bookinger]);
+  const [visFilter, setVisFilter] = useState(false);
+  const harFilter = Object.values(filter).some((v) => v !== "");
+  const antallFilter = (["coach", "tjeneste", "sted", "fra", "til"] as const).filter((k) => filter[k] !== "").length;
+  const settF = (k: keyof Filter, v: string) => setFilter((f) => ({ ...f, [k]: v }));
+  const [gruppe, setGruppe] = useState<Gruppe>(grupper.venter.length > 0 ? "venter" : "kommende");
+  const uke = naa + 7 * 86_400_000;
+  const denneUka = grupper.kommende.filter((b) => b.startMs < uke).length;
 
-  const pend = bookinger.filter((b) => b.st === "Venter");
-  const rows = fane === "foresp" ? pend : bookinger;
-  const cur = bookinger.find((b) => b.id === sel) ?? null;
-
-  const kjor = (fn: (id: string) => Promise<void>) => {
-    if (!sel) return;
-    start(async () => {
-      try { await fn(sel); setFeil(null); setSel(null); router.refresh(); }
-      catch (e) { setFeil(e instanceof Error ? e.message : "Bookingen kunne ikke bekreftes."); }
-    });
-  };
-  const ferdig = (tekst: string) => { setFeil(null); setMelding(tekst); setRej(null); setAvl(null); setFly(null); setWhy(""); setSel(null); router.refresh(); };
-  const doReject = () => {
-    if (!rej) return;
-    start(async () => {
-      const res = await avvisBookingMedBegrunnelse({ bookingId: rej.id, begrunnelse: why });
-      if (!res.ok) { setFeil(res.feil); setRej(null); return; }
-      ferdig(res.utkast ? "Bookingen er avvist. Svaret ligger som utkast i Innboks." : "Bookingen er avvist. Kunden har ingen e-post, så det ble ikke laget noe utkast.");
-    });
-  };
-  const doAvlys = () => {
-    if (!avl) return;
-    start(async () => {
-      const res = await avlysBookingSomCoach({ bookingId: avl.id, begrunnelse: why.trim() || undefined });
-      if (!res.ok) { setFeil(res.feil); setAvl(null); return; }
-      ferdig(res.refusjonVenter ? "Timen er avlyst. Refusjonen venter hos Stripe og følges opp."
-        : res.refundert ? "Timen er avlyst og hele beløpet er refundert."
-        : res.klippTilbake ? "Timen er avlyst og klippet er ført tilbake." : "Timen er avlyst.");
-    });
-  };
-  const doForslag = () => {
-    if (!fly) return;
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(nyDato) || !/^\d{2}:\d{2}$/.test(nyTid)) { setFeil("Velg dato og tid."); return; }
-    start(async () => {
-      const res = await foreslaaNyBookingtid({ bookingId: fly.id, dato: nyDato, tid: nyTid });
-      if (!res.ok) { setFeil(res.feil); return; }
-      ferdig("Forslaget er sendt. Timen står på den gamle tiden til spilleren har godtatt.");
-    });
-  };
-  const doTrekk = (id: string) => {
-    start(async () => {
-      const res = await trekkTilbakeForslag(id);
-      if (!res.ok) { setFeil(res.feil); return; }
-      ferdig("Forslaget er trukket tilbake.");
-    });
-  };
+  const GRUPPER: Array<{ id: Gruppe; navn: string }> = [
+    ...(grupper.venter.length > 0 ? [{ id: "venter" as const, navn: "Venter på deg" }] : []),
+    { id: "kommende", navn: "Kommende" },
+    { id: "tidligere", navn: "Tidligere" },
+    { id: "avlyst", navn: "Avlyst" },
+  ];
+  const rader = grupper[gruppe];
 
   let body: React.ReactNode;
-  if (fane === "foresp" || fane === "alle") {
-    body = rows.length === 0
-      ? <Tom tittel={fane === "foresp" ? "Ingen bookinger uten betaling venter" : "Ingen bookinger"} tekst="Spillere og foreldre booker fra PlayerHQ når du har satt tilgjengelighet." handling={<Knapp onClick={() => setFane("ny")}>Ny booking</Knapp>} />
-      : <div className="liste">{rows.map((b) => <button key={b.id} type="button" className="bk-rad" aria-pressed={sel === b.id} onClick={() => setSel(b.id)}>
-        <Avatar navn={b.who} liten lys />
-        <span><b>{b.who} · {b.svcNavn}</b><span className="kilde">{b.date} {b.t} · {kr(b.priceOre)} · {b.pay} · {b.src ?? "—"}</span></span>
-        <Pille tone={TONE[b.st]}>{b.st === "Venter" ? "Venter på deg" : b.st}</Pille>
-      </button>)}</div>;
+  if (fane === "bookinger") {
+    body = <>
+      <div className="hoved"><strong>{denneUka}</strong><span className="forklar">kommende bookinger de neste sju dagene</span></div>
+      <div className="bk-filter" role="search" aria-label="Søk og filter">
+        <label className="felt"><span className="etikett">Søk</span><input type="search" value={filter.sok} onChange={(e) => settF("sok", e.target.value)} placeholder="Navn, e-post eller telefon" autoComplete="off" /></label>
+        <div className="knapper"><Knapp variant="sek" aria-expanded={visFilter} onClick={() => setVisFilter((v) => !v)}>{antallFilter > 0 ? `Filter (${antallFilter})` : "Filter"}</Knapp>
+          {harFilter && <Knapp variant="spok" onClick={() => setFilter(TOMT_FILTER)}>Nullstill</Knapp>}</div>
+        {visFilter && <div className="bk-filter-felt">
+          <label className="felt"><span className="etikett">Coach</span><select value={filter.coach} onChange={(e) => settF("coach", e.target.value)}><option value="">Alle</option>{valgListe.coacher.map((c) => <option key={c}>{c}</option>)}</select></label>
+          <label className="felt"><span className="etikett">Tjeneste</span><select value={filter.tjeneste} onChange={(e) => settF("tjeneste", e.target.value)}><option value="">Alle</option>{valgListe.tjenester.map((c) => <option key={c}>{c}</option>)}</select></label>
+          <label className="felt"><span className="etikett">Sted</span><select value={filter.sted} onChange={(e) => settF("sted", e.target.value)}><option value="">Alle</option>{valgListe.steder.map((c) => <option key={c}>{c}</option>)}</select></label>
+          <label className="felt"><span className="etikett">Fra dato</span><input type="date" value={filter.fra} onChange={(e) => settF("fra", e.target.value)} /></label>
+          <label className="felt"><span className="etikett">Til dato</span><input type="date" value={filter.til} onChange={(e) => settF("til", e.target.value)} /></label>
+        </div>}
+      </div>
+      <div className="chips" role="group" aria-label="Vis">
+        {GRUPPER.map((g) => <button key={g.id} type="button" aria-pressed={gruppe === g.id} onClick={() => setGruppe(g.id)}>
+          {g.navn} <b>{grupper[g.id].length}</b></button>)}
+      </div>
+      {rader.length === 0
+        ? harFilter
+          ? <Tom tittel="Ingen treff" tekst="Ingen bookinger i denne gruppen passer søket og filtrene." handling={<Knapp variant="sek" onClick={() => setFilter(TOMT_FILTER)}>Nullstill filter</Knapp>} />
+          : <Tom tittel="Ingen bookinger her" tekst="Bookinger fra spillere, flexkunder og deg selv kommer hit." handling={<Knapp onClick={() => setFane("ny")}>Ny booking</Knapp>} />
+        : <div className="bk-liste">{rader.map((b) => <BookingRad key={b.id} b={b} />)}</div>}
+    </>;
   } else if (fane === "ny") {
-    body = <NyBookingSkjema valg={valg} onOpprettet={() => { setFane("alle"); router.refresh(); }} />;
+    body = <NyBooking valg={valg} onOpprettet={() => { setMelding("Booket og bekreftet. Spilleren har fått beskjed."); setFane("bookinger"); setGruppe("kommende"); }} />;
   } else {
     body = <TjenestePanel tjenester={tjenester} valg={tjenesteValg} />;
   }
 
   const FANER = [
-    { verdi: "foresp", navn: "Uten betaling", antall: pend.length },
-    { verdi: "alle", navn: "Bookinger" },
+    { verdi: "bookinger", navn: "Bookinger" },
     { verdi: "ny", navn: "Ny booking" },
     { verdi: "tj", navn: "Tjenester og pris" },
   ] as const;
@@ -146,133 +175,107 @@ export function AG06Booking({ navn, bookinger, valg, tjenester, tjenesteValg, fa
   return (
     <AgencyOSSkall navn={navn}>
       <div className="agn-s">
-        <Topp dato="Mer · Booking" tittel="Booking"
-          ingress="Betalte bookinger (offentlig og PlayerHQ) bekreftes automatisk når tiden er ledig. Du bekrefter eller avviser bare bookinger uten betaling."
-          handlinger={<Knapp variant="sek" onClick={() => { setFane("ny"); setSel(null); }}>Ny booking</Knapp>} />
-        <div className="faner" role="group" aria-label="Booking">
-          {FANER.map((f) => <button key={f.verdi} type="button" aria-pressed={fane === f.verdi} onClick={() => { setFane(f.verdi); setSel(null); }}>
-            {f.navn}{"antall" in f && f.antall ? <span className="antall">{f.antall}</span> : null}</button>)}
+        <Topp dato="Drift · Booking" tittel="Booking"
+          ingress="Betalte bookinger bekreftes automatisk når tiden er ledig. Du bekrefter eller avviser bare bookinger uten betaling."
+          handlinger={fane !== "ny" ? <Knapp onClick={() => { setFane("ny"); setMelding(null); }}>Ny booking</Knapp> : undefined} />
+        <div className="valg" role="group" aria-label="Booking">
+          {FANER.map((f) => <button key={f.verdi} type="button" aria-pressed={fane === f.verdi} onClick={() => { setFane(f.verdi); setMelding(null); }}>{f.navn}</button>)}
         </div>
-        {feil && <Varsel tone="advarsel">{feil}</Varsel>}
-        {melding && !feil && <Varsel tone="ok">{melding}</Varsel>}
+        {melding && <Varsel tone="ok">{melding}</Varsel>}
         {body}
-
-        {cur && !rej && !avl && !fly && <Ark dato="Bookingen" tittel={`${cur.who} · ${cur.svcNavn}`} onClose={() => setSel(null)}
-          knapper={cur.st === "Venter" ? <>
-            <Knapp stor disabled={pending} onClick={() => kjor(bekreftBooking)}>Bekreft booking</Knapp>
-            <Knapp variant="sek" stor disabled={pending} onClick={() => setRej(cur)}>Avvis</Knapp>
-          </> : cur.st === "Bekreftet" ? <>
-            <KnappLenke stor href={`/admin/bookinger/${cur.id}`}>Åpne booking</KnappLenke>
-            {cur.kommende && cur.harKonto && (cur.forslag
-              ? <Knapp variant="sek" stor disabled={pending} onClick={() => doTrekk(cur.id)}>Trekk tilbake forslaget</Knapp>
-              : <Knapp variant="sek" stor onClick={() => { setFly(cur); setNyDato(""); setNyTid(cur.t); setFeil(null); }}>Foreslå ny tid</Knapp>)}
-            {cur.kommende && <Knapp variant="sek" stor onClick={() => { setAvl(cur); setWhy(""); setFeil(null); }}>Avlys</Knapp>}
-          </>
-            : <Knapp variant="spok" stor onClick={() => setSel(null)}>Lukk</Knapp>}>
-          <Nokkelverdier rader={[
-            ["Kilde", cur.src ?? "—"],
-            ["Tjeneste", `${cur.svcNavn} · ${cur.min} min`],
-            ["Tid", `${cur.date} ${cur.t}`],
-            ["Sted", cur.where ?? "—"],
-            ["Pris", kr(cur.priceOre)],
-            ["Betaling", cur.pay ?? "—"],
-            ["Kontakt", cur.guardian ?? "—"],
-            ["Beskjed", cur.note ?? "—"],
-            ["Bestilt", cur.at ?? "—"],
-            ...(cur.forslag ? [["Foreslått ny tid", `${cur.forslag} · venter på spilleren`] as [string, string]] : []),
-          ]} />
-        </Ark>}
-
-        {rej && <div className="dialog-lag"><div role="dialog" aria-modal="true" aria-label="Avvise bookingen?" className="dialog">
-          <h2>Avvise bookingen?</h2>
-          <p className="forklar">{rej.who} · {rej.date} {rej.t}. Begrunnelsen blir et svarutkast i Innboks. Ingenting sendes før du sender det selv.</p>
-          <label className="felt"><span className="etikett">Kort begrunnelse</span>
-            <textarea rows={3} value={why} onChange={(e) => setWhy(e.target.value)} placeholder="Studio 1 er stengt for service tirsdag." />
-            <span className={why && why.trim().length < 8 ? "feiltekst" : "hjelp"}>{why && why.trim().length < 8 ? "Skriv en kort begrunnelse på minst 8 tegn." : "Minst 8 tegn."}</span></label>
-          <div className="knapper">
-            <Knapp variant="rust" disabled={why.trim().length < 8 || pending} onClick={doReject}>Avvis</Knapp>
-            <Knapp variant="spok" onClick={() => setRej(null)}>Avbryt</Knapp>
-          </div>
-        </div></div>}
-
-        {avl && <div className="dialog-lag"><div role="dialog" aria-modal="true" aria-label="Avlyse timen?" className="dialog">
-          <h2>Avlyse timen?</h2>
-          <p className="forklar">{avl.who} · {avl.svcNavn} · {avl.date} {avl.t}. {avl.pay === "Betalt" ? "Kunden får hele beløpet tilbake." : avl.pay === "Klipp" ? "Klippet føres tilbake til pakken." : "Det er ingen betaling å føre tilbake."} Kunden får beskjed på e-post{avl.harKonto ? " og i PlayerHQ" : ""}.</p>
-          <label className="felt"><span className="etikett">Begrunnelse (valgfritt, lagres i loggen)</span>
-            <textarea rows={3} value={why} onChange={(e) => setWhy(e.target.value)} /></label>
-          <div className="knapper">
-            <Knapp variant="rust" disabled={pending} onClick={doAvlys}>{pending ? "Avlyser …" : "Avlys timen"}</Knapp>
-            <Knapp variant="spok" onClick={() => setAvl(null)}>Avbryt</Knapp>
-          </div>
-        </div></div>}
-
-        {fly && <div className="dialog-lag"><div role="dialog" aria-modal="true" aria-label="Foreslå ny tid" className="dialog">
-          <h2>Foreslå ny tid</h2>
-          <p className="forklar">{fly.who} · {fly.svcNavn} · nå {fly.date} {fly.t}. Timen står på den gamle tiden til spilleren godtar i PlayerHQ.</p>
-          <div className="to-felt">
-            <label className="felt"><span className="etikett">Dato</span><input type="date" value={nyDato} onChange={(e) => setNyDato(e.target.value)} /></label>
-            <label className="felt"><span className="etikett">Tid</span><input type="time" value={nyTid} onChange={(e) => setNyTid(e.target.value)} /></label>
-          </div>
-          <div className="knapper">
-            <Knapp disabled={pending || !nyDato || !nyTid} onClick={doForslag}>{pending ? "Sender …" : "Send forslaget"}</Knapp>
-            <Knapp variant="spok" onClick={() => setFly(null)}>Avbryt</Knapp>
-          </div>
-        </div></div>}
       </div>
     </AgencyOSSkall>
   );
 }
 
-function NyBookingSkjema({ valg, onOpprettet }: { valg: BookingValg; onOpprettet: () => void }) {
-  const [spillerId, setSpillerId] = useState(valg.spillere[0]?.id ?? "");
-  const [serviceTypeId, setServiceTypeId] = useState(valg.tjenester[0]?.id ?? "");
+type Betaling = "STRIPE" | "KLIPP" | "FAKTURA" | "GRATIS";
+const BETALING: Array<{ id: Betaling; navn: string; tekst: string }> = [
+  { id: "STRIPE", navn: "Stripe", tekst: "Tjenestens pris, betales med kort" },
+  { id: "KLIPP", navn: "Klipp", tekst: "Ett klipp fra Performance-pakken" },
+  { id: "FAKTURA", navn: "Faktura", tekst: "Merkes, fakturaen lages i Tripletex" },
+  { id: "GRATIS", navn: "Gratis", tekst: "Ingen betaling" },
+];
+const STEG = ["Spiller", "Tjeneste", "Tid", "Bekreft"] as const;
+
+/** AG-06-NY: spiller → tjeneste → tid → bekreft. */
+export function NyBooking({ valg, onOpprettet }: { valg: BookingValg; onOpprettet: () => void }) {
+  const router = useRouter();
+  const [steg, setSteg] = useState(0);
+  const [sok, setSok] = useState("");
+  const [spillerId, setSpillerId] = useState("");
+  const [serviceTypeId, setServiceTypeId] = useState("");
   const [locationId, setLocationId] = useState(valg.steder[0]?.id ?? "");
   const [dato, setDato] = useState("");
   const [tid, setTid] = useState("16:00");
+  const [betaling, setBetaling] = useState<Betaling>("STRIPE");
   const [notater, setNotater] = useState("");
-  const [betaling, setBetaling] = useState<"" | "KLIPP" | "FAKTURA" | "GRATIS">("");
   const [feil, setFeil] = useState<string | null>(null);
   const [pending, start] = useTransition();
 
+  const spiller = valg.spillere.find((s) => s.id === spillerId);
   const tjeneste = valg.tjenester.find((t) => t.id === serviceTypeId);
+  const sted = valg.steder.find((s) => s.id === locationId);
+  const treff = valg.spillere.filter((s) => s.navn.toLowerCase().includes(sok.trim().toLowerCase())).slice(0, 8);
+  const kanVidere = steg === 0 ? !!spiller : steg === 1 ? !!tjeneste : steg === 2 ? /^\d{4}-\d{2}-\d{2}$/.test(dato) && /^\d{2}:\d{2}$/.test(tid) && !!locationId : true;
 
   const opprett = () => {
-    if (!spillerId || !serviceTypeId || !locationId || !dato) { setFeil("Fyll ut alle feltene."); return; }
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(dato) || !/^\d{2}:\d{2}$/.test(tid)) { setFeil("Velg dato og tid."); return; }
+    if (!spiller || !tjeneste || !locationId) return;
     start(async () => {
-      const res = await bookIKalender({ spillerId, serviceTypeId, locationId, start: `${dato}T${tid}`, notater: notater.trim() || undefined, betaling: betaling || undefined });
+      const res = await bookIKalender({ spillerId: spiller.id, serviceTypeId: tjeneste.id, locationId, start: `${dato}T${tid}`, notater: notater.trim() || undefined, betaling });
       if (!res.ok) { setFeil(res.feil); return; }
       setFeil(null);
+      router.refresh();
       onOpprettet();
     });
   };
 
-  return <div className="to-del">
-    <div className="kort">
-      <label className="felt"><span className="etikett">Spiller</span><select value={spillerId} onChange={(e) => setSpillerId(e.target.value)}>{valg.spillere.map((s) => <option key={s.id} value={s.id}>{s.navn}</option>)}</select></label>
-      <label className="felt"><span className="etikett">Tjeneste</span><select value={serviceTypeId} onChange={(e) => setServiceTypeId(e.target.value)}>{valg.tjenester.map((t) => <option key={t.id} value={t.id}>{`${t.navn} · ${t.varighetMin} min · ${kr(t.prisOre)}`}</option>)}</select></label>
-      <label className="felt"><span className="etikett">Sted</span><select value={locationId} onChange={(e) => setLocationId(e.target.value)}>{valg.steder.map((s) => <option key={s.id} value={s.id}>{s.navn}</option>)}</select></label>
+  const datoTekst = dato ? new Intl.DateTimeFormat("nb-NO", { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" }).format(new Date(`${dato}T12:00:00Z`)) : "—";
+
+  return <div className="smal-innhold">
+    <div className="steg-liste" aria-label="Steg">{STEG.map((s, i) => <span key={s} className={i < steg ? "ferdig" : i === steg ? "aktiv" : ""} aria-current={i === steg ? "step" : undefined}>{s}</span>)}</div>
+    {steg === 0 && <>
+      <label className="felt"><span className="etikett">Søk spiller</span><input type="search" value={sok} onChange={(e) => setSok(e.target.value)} placeholder="Navn" autoComplete="off" /></label>
+      {treff.length === 0 ? <Tom tittel="Ingen spillere" tekst="Ingen spillere du kan booke for passer søket." /> : <div className="valgliste">
+        {treff.map((s) => <button key={s.id} type="button" aria-pressed={s.id === spillerId} onClick={() => setSpillerId(s.id)}>
+          <Avatar navn={s.navn} liten lys /><span><b>{s.navn}</b></span><span /></button>)}
+      </div>}
+    </>}
+    {steg === 1 && <>
+      {valg.tjenester.length === 0 ? <Tom tittel="Ingen aktive tjenester" tekst="Opprett en tjeneste under Tjenester og pris." /> : <div className="valgliste">
+        {valg.tjenester.map((t) => <button key={t.id} type="button" aria-pressed={t.id === serviceTypeId} onClick={() => setServiceTypeId(t.id)}>
+          <span className="akse-prikk" style={{ background: "var(--graphite-900)" }} aria-hidden /><span><b>{t.navn}</b><span className="kilde">{t.varighetMin} min · maks {t.maxDeltakere}</span></span><span className="pris">{kr(t.prisOre)}</span></button>)}
+      </div>}
+      <p className="kildetekst">Fra tjenestelista. Pris og varighet leses fra tjenesten.</p>
+    </>}
+    {steg === 2 && <>
       <div className="to-felt">
         <label className="felt"><span className="etikett">Dato</span><input type="date" value={dato} onChange={(e) => setDato(e.target.value)} /></label>
         <label className="felt"><span className="etikett">Tid</span><input type="time" value={tid} onChange={(e) => setTid(e.target.value)} /></label>
       </div>
-      <label className="felt"><span className="etikett">Betaling</span><select value={betaling} onChange={(e) => setBetaling(e.target.value as typeof betaling)}>
-        <option value="">Pris fra tjenesten</option>
-        <option value="KLIPP">Klipp fra coaching-pakken</option>
-        <option value="FAKTURA">Faktura (lages i Tripletex)</option>
-        <option value="GRATIS">Gratis</option>
-      </select></label>
-      <label className="felt"><span className="etikett">Notat (valgfritt)</span><textarea rows={3} value={notater} onChange={(e) => setNotater(e.target.value)} /></label>
-      {feil && <Varsel tone="advarsel">{feil}</Varsel>}
-    </div>
-    <div className="kort dempet">
-      <b className="undertittel">Oppsummering</b>
-      <Nokkelverdier rader={[
-        ["Tjeneste", tjeneste ? `${tjeneste.navn} · ${tjeneste.varighetMin} min` : "—"],
-        ["Tid", dato ? `${dato} ${tid}` : "—"],
-        ["Pris", !tjeneste ? "—" : betaling === "KLIPP" || betaling === "GRATIS" ? kr(0) : kr(tjeneste.prisOre), betaling === "KLIPP" ? "ett klipp" : betaling === "GRATIS" ? "gratis" : betaling === "FAKTURA" ? "faktureres" : "fra tjenesten"],
-      ]} />
-      <Knapp stor disabled={pending} onClick={opprett}>{pending ? "Oppretter …" : "Opprett booking"}</Knapp>
+      <label className="felt"><span className="etikett">Sted</span><select value={locationId} onChange={(e) => setLocationId(e.target.value)}>{valg.steder.map((s) => <option key={s.id} value={s.id}>{s.navn}</option>)}</select></label>
+      <p className="kildetekst">Kolliderer tiden med en annen booking, sier systemet fra før noe lagres.</p>
+    </>}
+    {steg === 3 && <>
+      <div role="group" aria-label="Betaling" className="valgliste">
+        {BETALING.map((b) => <button key={b.id} type="button" aria-pressed={betaling === b.id} onClick={() => setBetaling(b.id)}>
+          <span className="akse-prikk" style={{ background: "var(--graphite-900)" }} aria-hidden /><span><b>{b.navn}</b><span className="kilde">{b.tekst}</span></span><span className="pris">{tjeneste ? (b.id === "KLIPP" || b.id === "GRATIS" ? kr(0) : kr(tjeneste.prisOre)) : "—"}</span></button>)}
+      </div>
+      <ul className="oppsummering">
+        <li><span>Spiller</span><b>{spiller?.navn ?? "—"}</b></li>
+        <li><span>Tjeneste</span><b>{tjeneste ? `${tjeneste.navn} · ${tjeneste.varighetMin} min` : "—"}</b></li>
+        <li><span>Tid</span><b>{datoTekst} kl. {tid}</b></li>
+        <li><span>Sted</span><b>{sted?.navn ?? "—"}</b></li>
+        <li><span>Betaling</span><b>{BETALING.find((b) => b.id === betaling)?.navn}</b></li>
+      </ul>
+      <label className="felt"><span className="etikett">Notat (valgfritt)</span><textarea rows={2} value={notater} onChange={(e) => setNotater(e.target.value)} /></label>
+      <p className="kildetekst">Bekreftes med en gang. Spilleren får beskjed.</p>
+    </>}
+    {feil && <Varsel tone="advarsel">{feil}</Varsel>}
+    <div className="knapper">
+      {steg > 0 && <Knapp variant="sek" onClick={() => { setSteg(steg - 1); setFeil(null); }}>Tilbake</Knapp>}
+      {steg < 3
+        ? <Knapp disabled={!kanVidere} onClick={() => setSteg(steg + 1)}>Neste</Knapp>
+        : <Knapp disabled={pending} onClick={opprett}>{pending ? "Booker …" : "Bekreft booking"}</Knapp>}
     </div>
   </div>;
 }
