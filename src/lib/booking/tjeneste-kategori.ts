@@ -36,10 +36,9 @@ export function erAbonnementTjeneste(t: { kategori: string | null; name: string 
 
 /**
  * Er tjenesten en duo-time (to deltakere, én betaler, bookingplanen steg 6)?
- * Kategorien avgjør når den er satt. Uten kategori: ordet «duo» i navnet,
- * slik Acuity-tjenestene heter («Flex Duo 50 min»).
+ * Kategorien «duo», eller ordet «duo» i navnet uansett kategori: de ekte
+ * tjenestene heter «Flex Duo 50 min» og står som «drop-in» i basen (19.10).
  */
 export function erDuoTjeneste(t: { kategori: string | null; name: string }): boolean {
-  if (t.kategori) return t.kategori === "duo";
-  return /\bduo\b/i.test(t.name);
+  return t.kategori === "duo" || /\bduo\b/i.test(t.name);
 }

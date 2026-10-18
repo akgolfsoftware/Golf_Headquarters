@@ -10,9 +10,10 @@ test("kategorien avgjør når den er satt; navnet bare når den mangler", () => 
   assert.equal(erAbonnementTjeneste({ kategori: null, name: "Flex 50 min" }), false);
 });
 
-test("duo: kategorien avgjør når den er satt; ordet «duo» i navnet bare når den mangler", () => {
+test("duo: kategorien «duo» eller ordet «duo» i navnet, også når kategorien er drop-in", () => {
   assert.equal(erDuoTjeneste({ kategori: "duo", name: "Coaching for to" }), true);
-  assert.equal(erDuoTjeneste({ kategori: "drop-in", name: "Flex Duo 50 min" }), false);
+  assert.equal(erDuoTjeneste({ kategori: "drop-in", name: "Flex Duo 50 min — Anders" }), true);
+  assert.equal(erDuoTjeneste({ kategori: "drop-in", name: "Flex 50 min — Anders" }), false);
   assert.equal(erDuoTjeneste({ kategori: null, name: "Flex Duo 90 min" }), true);
   assert.equal(erDuoTjeneste({ kategori: null, name: "Flex 50 min" }), false);
   assert.equal(erDuoTjeneste({ kategori: null, name: "Duologen" }), false);
