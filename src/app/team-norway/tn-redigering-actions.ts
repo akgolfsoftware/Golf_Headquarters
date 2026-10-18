@@ -80,6 +80,12 @@ export async function lagreUttakAction(input: unknown) {
   return r;
 }
 
+export async function lagreUttaksrundeAction(input: unknown) {
+  const r = await skriv.lagreUttaksrunde(await bruker(), input);
+  if (r.ok) oppdater("/team-norway/uttak");
+  return r;
+}
+
 export async function slettUttakAction(id: string) {
   const r = await skriv.slettUttak(await bruker(), id);
   if (r.ok) oppdater("/team-norway/uttak");

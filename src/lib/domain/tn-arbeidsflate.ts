@@ -1447,6 +1447,15 @@ export async function hentTnUttak(bruker: TnBruker, kontekst: TnArbeidskontekst)
   return rader.map((r) => ({ id: r.id, spillerId: r.userId, arrangement: r.arrangement, status: r.status, begrunnelse: r.begrunnelse, decidedAt: r.decidedAt }));
 }
 
+export type TnUttaksrundeRad = { arrangement: string; frist: Date | null; plasser: number | null; reserver: number | null };
+
+/** Frist og plasser per uttaksrunde. Gruppedata satt av trener, ikke spillerdata, så ingen deling kreves. */
+export async function hentTnUttaksrunder(bruker: TnBruker, kontekst: TnArbeidskontekst): Promise<TnUttaksrundeRad[]> {
+  const aktuell = await hentTnArbeidskontekst(bruker);
+  if (!aktuell || aktuell.gruppe.id !== kontekst.gruppe.id || aktuell.erSpiller) return [];
+  return prisma.tnUttaksrunde.findMany({ where: { groupId: kontekst.gruppe.id }, select: { arrangement: true, frist: true, plasser: true, reserver: true } });
+}
+
 export type TnSpillerstatusRad = { spillerId: string; lisensStatus: string | null; lisensBetaltDato: Date | null; helseattestUtloper: Date | null; antidopingSignert: Date | null };
 
 /** Status for ett år. Hver rad krever egeninnsyn eller aktuell navngitt deling. */
