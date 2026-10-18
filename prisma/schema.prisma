@@ -553,6 +553,10 @@ model User {
   treningTimerPerUke Int?
   treningOkterPerUke Int?
 
+  // Bookingplanen steg 3 (natt 17.10): coachens egen buffer mellom timer, i minutter.
+  // Gjelder i tillegg til tjenestens buffer; den største vinner (availability.ts).
+  bookingBufferMin Int @default(0)
+
   // GDPR soft-delete (P20). Bruker markeres som deletedAt = now() ved kontosletting.
   // Cron /api/cron/cleanup-deleted-accounts sletter permanent etter 30 dager.
   deletedAt DateTime?
