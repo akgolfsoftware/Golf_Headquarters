@@ -31,6 +31,17 @@ const LoggFysOktSchema = z.object({
         loggBelastningKg: z.number().min(0).max(1000).optional(),
         loggRir: z.number().int().min(0).max(10).optional(),
         notat: z.string().trim().max(500).optional(),
+        /** Per serie (Live fysisk): skrives til loggSettData. Utelatt: feltet røres ikke. */
+        settData: z
+          .array(
+            z.object({
+              vekt: z.number().min(0).max(1000),
+              reps: z.number().int().min(0).max(200),
+              rir: z.number().int().min(0).max(10).optional(),
+            }),
+          )
+          .max(30)
+          .optional(),
       }),
     )
     .max(60)
@@ -83,6 +94,7 @@ export async function loggFysOkt(
           loggBelastningKg: r.loggBelastningKg ?? null,
           loggRir: r.loggRir ?? null,
           notat: r.notat || null,
+          ...(r.settData ? { loggSettData: r.settData } : {}),
         },
       }),
     ),
@@ -95,7 +107,8 @@ export async function loggFysOkt(
     }),
   ]);
 
-  revalidatePath("/portal/fysisk");
+  revalidatePath("/portal/planlegge/fysisk", "layout");
+  revalidatePath("/portal");
   revalidatePath("/portal/analysere");
   return { ok: true };
 }
@@ -118,7 +131,8 @@ export async function angreFysOktLogg(
     where: { id: oktId },
     data: { gjennomfortAt: null, faktiskMinutter: null },
   });
-  revalidatePath("/portal/fysisk");
+  revalidatePath("/portal/planlegge/fysisk", "layout");
+  revalidatePath("/portal");
   revalidatePath("/portal/analysere");
   return { ok: true };
 }

@@ -35,6 +35,7 @@ describe("Fysisk program (pakke 17b)", () => {
     assert.equal(p.tidsrom, "Uke 39–41");
     assert.equal(p.dager, "Tirsdag og fredag");
     assert.equal(p.neste?.navn, "Økt A3");
+    assert.equal(p.neste?.id, "A3");
     assert.equal(p.neste?.dato, "Tir 6. okt.");
     assert.deepEqual(p.okter.map((o) => o.id), ["A3", "B3"]);
   });
@@ -110,6 +111,7 @@ describe("Videresendinger fra de gamle adressene (pakke 17b)", () => {
       "/portal/kalender/opptatt": "/portal/planlegge/opptatt",
       "/portal/tren/feiring/[planId]": "/portal/planlegge/periode-ferdig",
       "/portal/ai/mal-bygger": "/portal/mal/ny",
+      "/portal/fysisk": "/portal/planlegge/fysisk",
     });
     assert.equal(periodeFerdigHref("abc"), "/portal/planlegge/periode-ferdig/abc");
   });

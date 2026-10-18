@@ -3,7 +3,7 @@ import "server-only";
 /**
  * Loader for v2 fysisk-logging-skjermen (bølge 3, ny datamodell 2026-07-09).
  * Henter EN fysisk økt for spilleren fra FysiskPlan → FysUke → FysOkt →
- * FysOvelseRad og mapper til view-modellen FysiskV2 rendrer. Ingen fabrikkering:
+ * FysOvelseRad og mapper til view-modellen I dag viser. Ingen fabrikkering:
  * tonnasje BEREGNES fra loggSettData (sum vekt×reps), aldri lagret felt. Mangler
  * spilleren en fysisk plan/økt returneres `okt: null` → ærlig tom-tilstand i UI.
  *
