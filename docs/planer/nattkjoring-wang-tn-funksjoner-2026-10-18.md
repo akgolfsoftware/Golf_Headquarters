@@ -42,6 +42,11 @@ funksjoner uten data. Kilden er avviksfeltene i #1402, #1406 og #1411 og filhode
 - **T2 · TN-månedsplanen leser gruppas perioder, uten månedsoverstyring og lette uker.** Gruppa har ingen månedsplan og ingen markering av lett uke i datamodellen; utkastet sier «Arvet fra gruppas årsplan. Spillerne tilpasser sin egen plan i PlayerHQ». Alle uker bruker periodens vanlige uke. Grunn: en gruppemånedsplan ville kreve ny tabell, og utkastet ber ikke om den.
 - **T2 · Timene står som en linje under ukebåndet**, ikke som stablede ukesøyler, så kalenderen og lista beholdes. Helteflaten viser fordelte timer og aksefordelingen når periodene har timer, ellers økter som før. Grunn: minst mulig endring av en skjerm som alt er godkjent.
 - **T2 · Neste steg (ikke i pakken):** skriving nedover til `WeekPlan` når en gruppeperiode endres (punkt 3–4) og kvittering ved lagring (punkt 6); lett uke og månedsoverstyring for gruppa, hvis Anders vil ha det.
+- W3 · Ingen samlet poeng, vurderingspunkter eller notatfelt i Opptak · vurderingspunktene (D1) er ikke avgjort, og vurderinger av navngitte mindreårige lagres ikke før de er det. Lista sorteres med stjernemerkede først, så navn.
+- W3 · Status (Søkt, Prøvespill, Venteliste, Tatt opp, Ikke tatt opp) føres av sportssjef og merkes «underlag, ikke vedtak» · opptak er skolens beslutning; appen forbereder.
+- W3 · Koordineringen viser en kandidat for de andre skolene først når en skole har stjernemerket eller logget kontakt, og viser aldri status eller innhold · utkastets regel «aldri innhold, aldri tall».
+- W3 · Kontaktloggen fører bare sportssjefens egne kontakter · bare sportssjef har tilgang til flaten.
+- W3 · Tabellene (`scripts/add-wang-opptak-2026-10-18.ts`) fantes allerede i produksjonsbasen 19.10 med RLS, sjekket med lesespørring · skriptet ble ikke kjørt på nytt.
 
 ## 5. Morgenrapport
 
