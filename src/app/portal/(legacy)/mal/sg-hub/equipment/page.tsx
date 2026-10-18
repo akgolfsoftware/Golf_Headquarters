@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { extractClubs, extractShots } from "@/lib/sg-hub/extract-shots";
@@ -21,9 +22,11 @@ function sortClubs(clubs: string[]): string[] {
   });
 }
 
+// PlayerHQ steg 1 (playerhq-alle-sider-nytt-design-2026-10-16.md): spillerens egen side er dobbelt
+// med Meg › Utstyr og sendes dit. Visningen under brukes fortsatt av coachens SG-hub (venter på AgencyOS).
 export default async function EquipmentPage() {
-  const user = await requirePortalUser();
-  return <EquipmentView userId={user.id} backHref="/portal/mal/sg-hub" />;
+  await requirePortalUser();
+  redirect("/portal/meg/utstyr");
 }
 
 // Felles visning — gjenbrukt av coach-proxy-ruten.

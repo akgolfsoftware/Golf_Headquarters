@@ -46,7 +46,6 @@ export default async function OppsettPage({
     ekstern: "ekstern",
     varsler: "varsler",
     integr: "integr",
-    mark: "mark",
     virks: "virks",
   };
 
@@ -54,7 +53,7 @@ export default async function OppsettPage({
 
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
-      <AG23Oppsett data={await lastOppsettData(user)} startFane={startFane} />
+      <AG23Oppsett erHeadCoach={user.role === "ADMIN"} data={await lastOppsettData(user)} startFane={startFane} />
     </AgencyOSSkall>
   );
 }

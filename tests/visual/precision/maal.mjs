@@ -84,7 +84,9 @@ const bolkCss = readdirSync(resolve(root, "src/styles")).filter((f) => /^precisi
 // playerhq-ny.css først (tokens), så alle playerhq-ny-*.css som pakkene legger til, og AgencyOS i nytt design (agencyos-ny*.css).
 const phnCss = readdirSync(resolve(root, "src/styles")).filter((f) => /^playerhq-ny-[a-z0-9-]+\.css$/.test(f)).sort();
 const agnCss = readdirSync(resolve(root, "src/styles")).filter((f) => /^agencyos-ny.*\.css$/.test(f)).sort();
-const css = ["precision-komponenter.css", "precision-athletics.css", ...bolkCss, "playerhq-ny.css", ...phnCss, ...agnCss].map((f) => readFileSync(resolve(root, "src/styles", f), "utf8")).join("\n");
+// Øvrige flater i nytt design (utkast-flater): flater-ny.css først (tokens), så flater-ny-*.css per gruppe.
+const flnCss = ["flater-ny.css", ...readdirSync(resolve(root, "src/styles")).filter((f) => /^flater-ny-[a-z0-9-]+\.css$/.test(f)).sort()];
+const css = ["precision-komponenter.css", "precision-athletics.css", ...bolkCss, "playerhq-ny.css", ...phnCss, ...agnCss, ...flnCss].map((f) => readFileSync(resolve(root, "src/styles", f), "utf8")).join("\n");
 const html = (t) => `<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=block" rel="stylesheet">
 <style>:root{--font-ibm-plex-sans:"IBM Plex Sans";--font-ibm-plex-mono:"IBM Plex Mono"}\n${css}\nhtml,body{margin:0}</style><title>${id} · ${t}</title></head><body><div id="root"></div><script src="/prove.js"></script></body></html>`;
@@ -135,7 +137,11 @@ try {
           }
           if (el.matches("a[href],button,[role=button],input,select,textarea,[role=tab]") && el.closest(".pa-sr") == null && (r.height < min || r.width < min)) {
             // Tekstlenker inne i løpende tekst er unntatt; alt annet skal ha 44 px.
-            if (!(el.tagName === "A" && cs.display === "inline")) smaa.push(`${el.tagName.toLowerCase()} «${(el.getAttribute("aria-label") || el.textContent || "").trim().slice(0, 30)}» ${Math.round(r.width)}×${Math.round(r.height)}`);
+            // En avkrysning inni en <label> treffes på hele etiketten; mål etiketten i stedet.
+            const etikett = el.matches("input[type=checkbox],input[type=radio]") ? el.closest("label") : null;
+            const er = etikett?.getBoundingClientRect();
+            const etikettStor = er && er.height >= min && er.width >= min;
+            if (!(el.tagName === "A" && cs.display === "inline") && !etikettStor) smaa.push(`${el.tagName.toLowerCase()} «${(el.getAttribute("aria-label") || el.textContent || "").trim().slice(0, 30)}» ${Math.round(r.width)}×${Math.round(r.height)}`);
           }
         }
         return { scrollWidth: d.scrollWidth, clientWidth: vw, utenfor: utenfor.slice(0, 10), smaa: smaa.slice(0, 10), tekst: document.body.innerText.length };

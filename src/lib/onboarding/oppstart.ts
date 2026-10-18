@@ -6,18 +6,19 @@
 
 /* ---------- Steg ---------- */
 
+/** Rekkefølgen i utkast-flater/innlogging.html (utkast 1, 15.10.2026). */
 export const OPPSTART_STEG = [
   "Om deg",
-  "Fasiliteter",
-  "Finn deg i resultatene",
+  "Strokes Gained",
+  "Hva har du tilgang til?",
+  "Finn deg i turneringsresultatene",
   "Teknikktest",
   "Samtykker",
   "Velg treningsplan",
-  "Klar",
 ] as const;
 
-/** Stegene som kan hoppes over (design: «KAN HOPPES OVER»). */
-export const VALGFRIE_STEG: ReadonlySet<number> = new Set([2, 3, 4]);
+/** Stegene som kan hoppes over eller fullføres senere. */
+export const VALGFRIE_STEG: ReadonlySet<number> = new Set([2, 3, 4, 5]);
 
 /* ---------- Turneringsnivå ---------- */
 
@@ -180,6 +181,72 @@ const CAPABILITY_TIL_PREFS: Record<string, string> = {
 
 export function tilPrefsIder(capabilities: readonly string[]): string[] {
   return [...new Set(capabilities.map((c) => CAPABILITY_TIL_PREFS[c]).filter((x): x is string => Boolean(x)))];
+}
+
+/* ---------- Fasiliteter som områder og steder (utkast-flater, natt 17.10) ---------- */
+
+/** Områdene gruppert slik utkastet viser dem. Navnene er de samme som OMRADER. */
+export const OMRADE_FAMILIER: ReadonlyArray<{ navn: string; omrader: ReadonlyArray<{ id: Omrade; kort: string }> }> = [
+  { navn: "Utslag", omrader: [{ id: "Utslag", kort: "Utslag" }] },
+  { navn: "Innspill", omrader: [{ id: "Innspill ca. 200 m", kort: "200 m og lengre" }, { id: "Innspill ca. 150 m", kort: "150–200 m" }, { id: "Innspill ca. 100 m", kort: "100–150 m" }, { id: "Innspill ca. 50 m", kort: "50–100 m" }] },
+  { navn: "Nærspill", omrader: [{ id: "Chip", kort: "Chip" }, { id: "Pitch", kort: "Pitch" }, { id: "Lob", kort: "Lob" }, { id: "Bunker", kort: "Bunker" }] },
+  { navn: "Putting", omrader: [{ id: "Putting 0–3 fot", kort: "0–3 fot" }, { id: "Putting 3–5 fot", kort: "3–5 fot" }, { id: "Putting 5–10 fot", kort: "5–10 fot" }, { id: "Putting 10–25 fot", kort: "10–25 fot" }, { id: "Putting 25–40 fot", kort: "25–40 fot" }, { id: "Putting 40+ fot", kort: "40+ fot" }] },
+  { navn: "Fysisk", omrader: [{ id: "Styrke", kort: "Styrke" }, { id: "Kondisjon", kort: "Kondisjon" }, { id: "Bevegelighet", kort: "Bevegelighet" }] },
+  { navn: "Spill", omrader: [{ id: "Banespill", kort: "Banespill" }] },
+];
+
+const OMRADE_CAP: Partial<Record<Omrade, string>> = {
+  Utslag: "DRIVING_RANGE",
+  "Innspill ca. 200 m": "DRIVING_RANGE",
+  "Innspill ca. 150 m": "DRIVING_RANGE",
+  "Innspill ca. 100 m": "DRIVING_RANGE",
+  "Innspill ca. 50 m": "DRIVING_RANGE",
+  Chip: "SHORT_GAME_AREA",
+  Pitch: "SHORT_GAME_AREA",
+  Lob: "SHORT_GAME_AREA",
+  Bunker: "BUNKER",
+  "Putting 0–3 fot": "PUTTING_GREEN_KORT",
+  "Putting 3–5 fot": "PUTTING_GREEN_KORT",
+  "Putting 5–10 fot": "PUTTING_GREEN_KORT",
+  "Putting 10–25 fot": "PUTTING_GREEN_LANG",
+  "Putting 25–40 fot": "PUTTING_GREEN_LANG",
+  "Putting 40+ fot": "PUTTING_GREEN_LANG",
+  Styrke: "VEKTSTANG",
+  Kondisjon: "LOPEBANE",
+  Banespill: "BANE",
+};
+
+export const STEDER = ["Driving range", "Puttinggreen", "Golfbane", "Simulator", "Treningsrom", "Hjemme"] as const;
+export type Sted = (typeof STEDER)[number];
+
+const STED_CAP: Record<Sted, { inne: boolean; cap: string[] }> = {
+  "Driving range": { inne: false, cap: ["DRIVING_RANGE"] },
+  Puttinggreen: { inne: false, cap: ["PUTTING_GREEN_KORT", "PUTTING_GREEN_LANG"] },
+  Golfbane: { inne: false, cap: ["BANE", "SHORT_GAME_AREA", "BUNKER", "PUTTING_GREEN_KORT", "PUTTING_GREEN_LANG"] },
+  Simulator: { inne: true, cap: ["SIMULATOR", "RADAR"] },
+  Treningsrom: { inne: true, cap: ["VEKTSTANG", "TRAPBAR", "MED_BALL", "LOPEBANE"] },
+  Hjemme: { inne: true, cap: ["MAT_NET"] },
+};
+
+/** Utstyr som ingen av de 19 områdene sier noe om; beholdes alltid når stedet er valgt. */
+const UTEN_OMRADE = new Set(["SIMULATOR", "RADAR", "TRAPBAR", "MED_BALL", "MAT_NET"]);
+
+/**
+ * Stedene spilleren bruker, med de DrillFasilitet-verdiene stedet har OG som spilleren har sagt
+ * at hen kan trene på (områdene). Uten valgte områder gjelder stedets fulle liste.
+ */
+export function stederMedCapabilities(steder: readonly string[], omrader: readonly string[]): Array<{ name: string; isIndoor: boolean; capabilities: string[] }> {
+  const fraOmrader = new Set(omrader.map((o) => OMRADE_CAP[o as Omrade]).filter((c): c is string => Boolean(c)));
+  return STEDER.filter((s) => steder.includes(s)).map((s) => ({
+    name: s,
+    isIndoor: STED_CAP[s].inne,
+    capabilities: STED_CAP[s].cap.filter((c) => fraOmrader.size === 0 || UTEN_OMRADE.has(c) || fraOmrader.has(c)),
+  }));
+}
+
+/** Anbefalt standardplan etter turneringsnivå (vedtak 28.09): region og høyere gir Konkurransespilleren. */
+export function anbefaltPlan(nivaa: string): "Konkurransespilleren" | "Klubbspilleren" {
+  return ["REGION", "NASJONALT", "INTERNASJONALT"].includes(nivaa) ? "Konkurransespilleren" : "Klubbspilleren";
 }
 
 /* ---------- Teknikktest ---------- */

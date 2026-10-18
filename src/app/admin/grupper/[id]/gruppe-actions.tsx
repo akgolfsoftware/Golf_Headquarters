@@ -16,7 +16,7 @@ export function StartOktButton() {
     <button
       type="button"
       onClick={() => router.push("/admin/bookinger/ny")}
-      className="rounded-md bg-primary px-4 py-1.5 text-xs font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+      className="knapp sek"
     >
       Start økt
     </button>
@@ -38,7 +38,7 @@ export function LeggTilSpillerButton({
       <button
         type="button"
         onClick={() => setAapen(true)}
-        className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+        className="knapp pri"
       >
         Legg til medlem
       </button>
@@ -88,9 +88,9 @@ export function FjernMedlemButton({
       onClick={fjern}
       disabled={pending}
       aria-label={`Fjern ${navn} fra gruppen`}
-      className="shrink-0 rounded-md p-1 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive disabled:opacity-50"
+      className="lukk"
     >
-      <UserMinus className="h-3.5 w-3.5" strokeWidth={1.75} />
+      <UserMinus className="ikon" aria-hidden />
     </button>
   );
 }
@@ -136,9 +136,9 @@ export function SlettGruppeButton({
       type="button"
       onClick={slett}
       disabled={pending}
-      className="inline-flex items-center gap-1.5 rounded-md border border-destructive/30 bg-card px-4 py-2 text-[13px] font-medium text-destructive transition-colors hover:bg-destructive/10 disabled:opacity-50"
+      className="knapp sek"
     >
-      <Trash2 className="h-3.5 w-3.5" strokeWidth={1.75} />
+      <Trash2 className="ikon" aria-hidden />
       Slett gruppe
     </button>
   );
@@ -149,7 +149,7 @@ export function SeAlleTimePlanButton({ groupId }: { groupId: string }) {
   return (
     <Link
       href={`/admin/grupper/${groupId}/timeplan`}
-      className="font-mono text-[11px] font-semibold text-primary hover:underline"
+      className="lenke"
     >
       Se alle →
     </Link>
@@ -171,7 +171,7 @@ export function DetaljerButton({
   return (
     <Link
       href={`/admin/grupper/${groupId}/timeplan?focus=${scheduleId}#s-${scheduleId}`}
-      className="rounded-md border border-border bg-card px-4 py-1.5 text-xs font-medium text-foreground transition-colors hover:border-primary"
+      className="knapp sek"
     >
       Detaljer
     </Link>
@@ -189,7 +189,7 @@ export function AapneButton({
   return (
     <Link
       href={`/admin/grupper/${groupId}/timeplan?focus=${scheduleId}#s-${scheduleId}`}
-      className="font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground hover:text-primary"
+      className="lenke"
     >
       Åpne →
     </Link>

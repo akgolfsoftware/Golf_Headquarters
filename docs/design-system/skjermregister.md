@@ -10,19 +10,19 @@ Rader: [JSON](skjermregister.json) og [CSV](skjermregister.csv). Regenerer med `
 
 ## Inventar
 
-Sidefiler med rute: **556**. Unike rutemønstre i skanningen: 556. Komponentfiler: 948. Ramme- og tilstandsfiler: 287.
+Sidefiler med rute: **558**. Unike rutemønstre i skanningen: 558. Komponentfiler: 929. Ramme- og tilstandsfiler: 282.
 
 Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kodeversjonen over og kan være høyere. Interne eksempler inngår. Ingen rute er slettet.
 
 | Område | Sidefiler |
 |---|---:|
-| agencyos | 174 |
+| agencyos | 175 |
 | delt-innsyn | 11 |
 | forelder | 16 |
 | inngang-og-konto | 20 |
 | interne-eksempler | 6 |
 | lag-og-skole | 63 |
-| marked-og-offentlig | 70 |
+| marked-og-offentlig | 71 |
 | offentlig-booking | 4 |
 | personlig-arbeidsflate | 3 |
 | playerhq | 187 |
@@ -32,14 +32,14 @@ Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kode
 
 | Kobling | Rader |
 |---|---:|
-| tegnet-skjermtype | 269 |
-| videresending | 182 |
-| teknisk-forklaring | 39 |
+| tegnet-skjermtype | 253 |
+| videresending | 198 |
+| teknisk-forklaring | 41 |
 | byggeunderlag | 37 |
 | felles-monster | 22 |
 | intern-flate | 7 |
 
-235 rader treffer en av de 77 Precision-typene og er derfor merket valgt for bygging som design. 22 rader har ingen eksakt type. 155 rader har et registrert avvik. 126 rader har en Precision-visning i koden. 0 er kontrollert i appen.
+222 rader treffer en av de 77 Precision-typene og er derfor merket valgt for bygging som design. 24 rader har ingen eksakt type. 141 rader har et registrert avvik. 110 rader har en Precision-visning i koden. 0 er kontrollert i appen.
 
 ## Uten eksakt type
 
@@ -54,12 +54,14 @@ Tabellen er Precision-ruter uten treff i 74-listen, pluss WANG- og Team Norway-r
 | `/admin/datagolf/proffer/[dgId]` | UTEN-TEGNET-TYPE | — |
 | `/admin/datagolf/proffer` | UTEN-TEGNET-TYPE | — |
 | `/admin/datagolf/topplister` | UTEN-TEGNET-TYPE | — |
+| `/admin/grupper/[id]/analyse` | UTEN-TEGNET-TYPE | AG-16 Grupper |
 | `/admin/innboks` | UTEN-TEGNET-TYPE | — |
 | `/admin/mer` | UTEN-TEGNET-TYPE | — |
 | `/admin/ovelser` | UTEN-TEGNET-TYPE | — |
 | `/admin/spillere/[id]/plan/[planId]/for-og-na` | UTEN-TEGNET-TYPE | AG-10 Teknisk plan |
 | `/auth/fodselsdato` | UTEN-TEGNET-TYPE | — |
 | `/auth/trenerdeling` | UTEN-TEGNET-TYPE | — |
+| `/ikke-tilgang` | UTEN-TEGNET-TYPE | — |
 | `/portal/analysere/resultater` | UTEN-TEGNET-TYPE | PH-16 Stats |
 | `/portal/analysere/trackman/koller` | UTEN-TEGNET-TYPE | PH-17 TrackMan |
 | `/portal/mal/evaluering` | UTEN-TEGNET-TYPE | PH-19 Workbench › Målsetninger |
@@ -94,13 +96,13 @@ Tabellen er Precision-ruter uten treff i 74-listen, pluss WANG- og Team Norway-r
 | `/admin/innboks` | UTEN-TEGNET-TYPE | Kodekommentaren sier AG-04, men skjermlisten har ingen treff. Kommentaren er opphav, ikke godkjenning. |
 | `/admin/ovelser` | UTEN-TEGNET-TYPE | Kodekommentaren sier PH-13, men skjermlisten har ingen treff. Kommentaren er opphav, ikke godkjenning. |
 | `/admin/spillere/[id]/plan/[planId]/for-og-na` | UTEN-TEGNET-TYPE | Kodekommentaren sier AG-10, men skjermlisten har ingen treff. Kommentaren er opphav, ikke godkjenning. |
-| `/auth/forgot-password` | AU-03 | Kodekommentaren sier AU-01. Skjermlisten sier AU-03. Kommentaren er opphav, ikke en ny godkjenning. |
-| `/auth/reset-password` | AU-03 | Kodekommentaren sier AU-01. Skjermlisten sier AU-03. Kommentaren er opphav, ikke en ny godkjenning. |
+| `/auth/fodselsdato` | UTEN-TEGNET-TYPE | Kodekommentaren sier AU-04, men skjermlisten har ingen treff. Kommentaren er opphav, ikke godkjenning. |
 | `/forelder/bookinger/ny` | FO-03 | Kodekommentaren sier FO-01. Skjermlisten sier FO-03. Kommentaren er opphav, ikke en ny godkjenning. |
 | `/forelder/coach` | FO-06 | Kodekommentaren sier FO-04. Skjermlisten sier FO-06. Kommentaren er opphav, ikke en ny godkjenning. |
 | `/forelder/fakturaer` | FO-04 | Kodekommentaren sier FO-05. Skjermlisten sier FO-04. Kommentaren er opphav, ikke en ny godkjenning. |
 | `/forelder/ukerapport` | FO-01 | Kodekommentaren sier FO-09. Skjermlisten sier FO-01. Kommentaren er opphav, ikke en ny godkjenning. |
 | `/forelder/varsler` | FO-01 | Kodekommentaren sier FO-10. Skjermlisten sier FO-01. Kommentaren er opphav, ikke en ny godkjenning. |
+| `/ikke-tilgang` | UTEN-TEGNET-TYPE | Kodekommentaren sier SY-01, men skjermlisten har ingen treff. Kommentaren er opphav, ikke godkjenning. |
 | `/portal/analysere/trackman/koller` | UTEN-TEGNET-TYPE | Kodekommentaren sier PH-17, men skjermlisten har ingen treff. Kommentaren er opphav, ikke godkjenning. |
 | `/portal/analysere/turneringer` | PH-18 | Kodekommentaren sier PH-21. Skjermlisten sier PH-18. Kommentaren er opphav, ikke en ny godkjenning. |
 | `/portal/mal` | PH-19 | Kodekommentaren sier PH-11. Skjermlisten sier PH-19. Kommentaren er opphav, ikke en ny godkjenning. |

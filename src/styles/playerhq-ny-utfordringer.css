@@ -1,0 +1,75 @@
+/*
+ * PlayerHQ pakke 16 Utfordringer: Utfordringer, Én utfordring og Ny utfordring.
+ * Fasit: docs/design-system/utkast-playerhq/utfordringer.html (utkast 1, 16.10.2026).
+ * Bygger på playerhq-ny.css og playerhq-ny-meg.css. Avgrenset til .phn.phn-utf.
+ * Farge betyr akse (øvelsens pyramide). Rust bare i dialogen «Avslutt utfordringen».
+ */
+
+.phn-utf .utf-melding { display: flex; gap: 10px; align-items: center; padding: 12px 14px; border-radius: 10px; font: 500 14px/1.4 var(--phn-sans); background: var(--phn-rust-50); color: var(--phn-g900); }
+.phn-utf .utf-vilkaar { display: grid; gap: 6px; padding: 12px 14px; border-radius: 10px; background: var(--phn-sand-100); font-size: 14px; line-height: 1.45; }
+.phn-utf .utf-vilkaar b { font-weight: 600; }
+.phn-utf .utf-liste { display: grid; gap: 8px; }
+.phn-utf .utf { display: grid; grid-template-columns: 96px minmax(0, 1fr); border-radius: 12px; overflow: hidden; color: #fff; text-decoration: none; background: var(--phn-g800); min-width: 0; }
+.phn-utf :is(.utf, .utf-topp).fys { background: var(--phn-fys-ink); }
+.phn-utf :is(.utf, .utf-topp).tek { background: var(--phn-tek-ink); }
+.phn-utf :is(.utf, .utf-topp).slag { background: var(--phn-slag); }
+.phn-utf :is(.utf, .utf-topp).spill { background: var(--phn-spill-ink); }
+.phn-utf :is(.utf, .utf-topp).turn { background: var(--phn-turn); }
+.phn-utf .utf.fri { grid-template-columns: minmax(0, 1fr); }
+.phn-utf .utf img { width: 100%; height: 100%; min-height: 116px; object-fit: cover; }
+.phn-utf .utf .t { padding: 12px 14px; display: grid; gap: 6px; align-content: start; min-width: 0; }
+.phn-utf .utf .t b { font: 600 16px/1.3 var(--phn-sans); overflow-wrap: anywhere; }
+.phn-utf .utf .t .slutter { font-size: 13px; opacity: .9; }
+.phn-utf .utf-merke { display: inline-flex; align-items: center; gap: 6px; justify-self: start; font: 600 12px/1 var(--phn-mono); letter-spacing: .06em; }
+.phn-utf .utf-merke i { width: 8px; height: 8px; border-radius: 50%; background: #fff; }
+.phn-utf .utf .plass { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+.phn-utf .utf .plass strong { font: 600 26px/1 var(--phn-mono); }
+.phn-utf .utf .plass span { font-size: 13px; opacity: .9; }
+.phn-utf .utf.avsluttet { background: var(--phn-hvit); color: var(--phn-g900); border: 1px solid var(--phn-sand-300); grid-template-columns: minmax(0, 1fr) auto; padding: 12px 14px; gap: 12px; align-items: center; }
+.phn-utf .utf.avsluttet .t { padding: 0; }
+.phn-utf .utf.avsluttet .plass strong { font-size: 20px; }
+
+.phn-utf .utf-topp { display: grid; border-radius: 14px; overflow: hidden; background: var(--phn-g800); color: #fff; }
+.phn-utf .utf-topp img { display: block; width: 100%; height: 140px; object-fit: cover; }
+.phn-utf .utf-topp .ft { padding: 16px 18px 18px; display: grid; gap: 8px; min-width: 0; }
+.phn-utf .utf-topp .phn-tittel { margin: 0; color: #fff; overflow-wrap: anywhere; }
+.phn-utf .utf-topp .info { display: flex; flex-wrap: wrap; gap: 2px 14px; font-size: 14px; opacity: .92; }
+.phn-utf .utf-retning { display: inline-flex; align-items: center; gap: 6px; font: 600 13px/1 var(--phn-sans); }
+.phn-utf .utf-regler { margin: 0; white-space: pre-wrap; }
+.phn-utf .utf-tabell { display: grid; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--phn-sand-300); }
+.phn-utf .utf-tabell li { display: grid; grid-template-columns: 32px auto minmax(0, 1fr) auto; gap: 12px; align-items: center; min-height: 60px; padding: 8px 0; border-bottom: 1px solid var(--phn-sand-300); }
+.phn-utf .utf-tabell li .nr { font: 600 15px/1 var(--phn-mono); text-align: center; }
+.phn-utf .utf-tabell li b { display: block; font: 600 15px/1.3 var(--phn-sans); overflow-wrap: anywhere; }
+.phn-utf .utf-tabell li .notat { display: block; white-space: pre-wrap; }
+.phn-utf .utf-tabell li .score { font: 600 18px/1 var(--phn-mono); text-align: right; }
+.phn-utf .utf-tabell li.meg { background: var(--phn-sand-100); margin: 0 -8px; padding: 8px; border-radius: 8px; }
+.phn-utf .utf-tabell li .ingen { color: var(--phn-g600); font-weight: 500; font-size: 14px; }
+.phn-utf .avatar.liten { width: 36px; height: 36px; font-size: 13px; background: var(--phn-sand-150); color: var(--phn-g900); }
+.phn-utf .avatar.liten.meg { background: var(--phn-g900); color: #fff; }
+.phn-utf .utf-dialog-tittel { margin: 0; font: 600 20px/1.25 var(--phn-sans); }
+
+.phn-utf .utf-retning-valg { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.phn-utf .utf-retning-valg button { display: grid; gap: 4px; justify-items: start; text-align: left; padding: 12px; border: 1px solid var(--phn-sand-300); border-radius: 12px; background: var(--phn-hvit); font: inherit; color: inherit; cursor: pointer; min-width: 0; min-height: 44px; }
+.phn-utf .utf-retning-valg button b { font: 600 15px/1.25 var(--phn-sans); }
+.phn-utf .utf-retning-valg button span { font-size: 13px; color: var(--phn-g600); font-weight: 400; }
+.phn-utf .utf-retning-valg button[aria-pressed="true"] { border: 2px solid var(--phn-g900); background: var(--phn-sand-100); padding: 11px; }
+.phn-utf .utf-retning-valg button:disabled { opacity: .5; cursor: default; }
+.phn-utf .utf-to-felt { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; }
+.phn-utf .utf-deltakere { display: grid; border: 1px solid var(--phn-sand-300); border-radius: 12px; overflow: hidden; background: var(--phn-hvit); }
+.phn-utf .utf-deltakere label { position: relative; display: grid; grid-template-columns: auto auto minmax(0, 1fr); gap: 12px; align-items: center; min-height: 56px; padding: 8px 14px; border-bottom: 1px solid var(--phn-sand-300); cursor: pointer; font: 400 14px/1.3 var(--phn-sans); }
+.phn-utf .utf-deltakere label:last-child { border-bottom: 0; }
+.phn-utf .utf-deltakere input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.phn-utf .utf-deltakere .boks { width: 22px; height: 22px; border: 2px solid var(--phn-g500); border-radius: 5px; display: grid; place-items: center; color: transparent; background: var(--phn-hvit); }
+.phn-utf .utf-deltakere input:checked + .boks { background: var(--phn-g900); border-color: var(--phn-g900); color: #fff; }
+.phn-utf .utf-deltakere input:focus-visible + .boks { outline: 3px solid var(--phn-g900); outline-offset: 2px; }
+.phn-utf .utf-deltakere b { display: block; font: 600 15px/1.3 var(--phn-sans); overflow-wrap: anywhere; }
+.phn-utf .phn-felt textarea { resize: vertical; }
+.phn-utf .phn-felt .valgfri { display: inline; }
+
+.phn-utf :is(.utf, .utf-retning-valg button):focus-visible { outline: 3px solid var(--phn-g900); outline-offset: 2px; }
+
+@container (min-width: 900px) {
+  .phn-utf .utf-liste.aktive { grid-template-columns: 1fr 1fr; }
+  .phn-utf .utf-topp { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .phn-utf .utf-topp img { height: 100%; min-height: 180px; }
+}
