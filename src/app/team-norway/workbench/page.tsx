@@ -38,6 +38,7 @@ import { TnShell, TnSidehode, TnSeksjon, TnSpillerFaner } from "@/components/tea
 import { TnOktkort, erTnAkse } from "@/components/team-norway/tn-grunnmur";
 import { TnKort, TnPille, TnKnapp } from "@/components/team-norway/core";
 import { TrenerforslagSkjema } from "@/components/workbench/Trenerforslag";
+import { TnAkseSoyler, TnHelt, TnHeltSporsmaal, TnHeltTall, TnHeltTekst } from "@/components/team-norway/tn-stall";
 
 export const dynamic = "force-dynamic";
 
@@ -727,7 +728,34 @@ async function renderPersonligPlan(args: {
     ? [...andreV2, ...andrePlan].filter((r) => new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Oslo" }).format(r.start) === dag)
     : [...andreV2, ...andrePlan];
 
+  // Lagt inn mot fordelt: fordelt (minutter i WeekPlan.plannedHours*) kommer fra ukeplanen (perioden), aldri fra et fast tall.
+  const plan = res.data.weekPlan;
+  const fordeltTimer: Partial<Record<PyramidArea, number>> = plan
+    ? { FYS: plan.plannedHoursFys != null ? plan.plannedHoursFys / 60 : undefined, TEK: plan.plannedHoursTek != null ? plan.plannedHoursTek / 60 : undefined, SLAG: plan.plannedHoursSlag != null ? plan.plannedHoursSlag / 60 : undefined, SPILL: plan.plannedHoursSpill != null ? plan.plannedHoursSpill / 60 : undefined, TURN: plan.plannedHoursTurn != null ? plan.plannedHoursTurn / 60 : undefined }
+    : {};
+  const harFordelt = PYRAMIDER.some((a) => fordeltTimer[a] !== undefined);
+  const fordeltSum = PYRAMIDER.reduce((n, a) => n + (fordeltTimer[a] ?? 0), 0);
+  const lagtInnTimer = res.data.budget.plannedMinutes / 60;
+  const lagtPerAkse = Object.fromEntries(PYRAMIDER.map((a) => [a, Math.round(((res.data.budget.byPyramid[a] ?? 0) / 60) * 10) / 10])) as Partial<Record<PyramidArea, number>>;
+  const t1 = (n: number) => String(Math.round(n * 10) / 10).replace(".", ",");
+
   return (
+    <>
+    {visning === "uke" && (
+      <TnHelt
+        etikett="Er uka lagt inn som perioden sier"
+        venstre={
+          <>
+            <TnHeltSporsmaal>Er uka lagt inn som perioden sier?</TnHeltSporsmaal>
+            <TnHeltTall verdi={t1(lagtInnTimer)} enhet={harFordelt ? `/ ${t1(fordeltSum)} t` : " t"}>{harFordelt ? "lagt inn mot fordelt" : "lagt inn"}</TnHeltTall>
+            <TnHeltTekst>{harFordelt ? "Fordelt kommer fra perioden i årsplanen. Forslag er ikke sperrer: Workbench sier fra om avvik, men stopper ingenting." : "Perioden har ikke fordelt timer for denne uka ennå."}</TnHeltTekst>
+          </>
+        }
+      />
+    )}
+    {visning === "uke" && (
+      <TnAkseSoyler etikett="Lagt inn per akse" timer={lagtPerAkse} />
+    )}
     <TnSeksjon
       tittel={visning === "dag" ? fmtDato(new Date(`${dag}T12:00:00Z`)) : `Uke fra ${weekStart}`}
       forklaring="Samme plan som spilleren ser i PlayerHQ. Personlige endringer sendes som forslag og trer først i kraft når spilleren godkjenner."
@@ -789,6 +817,7 @@ async function renderPersonligPlan(args: {
 
       {kanSkrive && await renderOpprettFraKilde({ spillerId, standardDato: visning === "dag" ? dag : weekStart, bruker, kontekst, opprettFraKilde })}
     </TnSeksjon>
+    </>
   );
 }
 

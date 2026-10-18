@@ -6,15 +6,19 @@ import { byggManedsplan, dagnokkel, manedsvindu, type TnHendelse, type TnPlanDag
 import { TN } from "@/lib/v2/team-norway";
 import { TnEtikett, TnFilterknapper, type TnFilterValg, TnFlate, TnFotnote, TnMangler, TnSkjermhode } from "../tn-flate";
 import { TnKnapperekke } from "../tn-handlinger";
+import { TnHelt, TnHeltSporsmaal, TnHeltTall, TnHeltTekst, TnHeltTellere } from "../tn-stall";
 import { TnOktSkjema, TnSlettOkt, type TnOktVerdier } from "../tn-redigering-skjema";
 import { MANEDER_LANG, SkjermRamme, heltallParam, hentSkjermbruker, osloDag, medDato } from "./felles";
 import pl from "./tn-plan.module.css";
 
 /**
  * TN-11 Månedsplan.
+ * Utkast 2, retning B (godkjent 16.10.2026): helteflate med månedens tall.
  * Fasit: docs/design-system/utkast-tn/plan-fag.html, skjerm Månedsplan (pakke 5).
  *
  * Avvik:
+ *   - Timer per akse per uke (fylte, stablede søyler i utkastet) finnes ikke for
+ *     gruppeøkter; helteflaten viser antall økter, turneringsdager og samlingsdager.
  *   - Frister har ingen datamodell. Tallet og forklaringen sier det, i stedet
  *     for å vise 0 som om ingen frister fantes.
  *   - Månedsvalget viser inneværende og neste måned, som i fasiten, men
@@ -250,19 +254,25 @@ export async function TnManedsplanSkjerm({ sokeparametre }: { sokeparametre: Rec
 
       <Tegnforklaring />
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 150px), 1fr))", gap: 1, background: TN.ink200, border: `1px solid ${TN.ink200}` }}>
-        {[
-          ["Økter", String(tall.okter)],
-          ["Turneringsdager", String(tall.turneringsdager)],
-          ["Samlingsdager", String(tall.samlingsdager)],
-          ["Frister", "—"],
-        ].map(([etikett, verdi]) => (
-          <div key={etikett} style={{ background: TN.white, padding: "14px 16px", minWidth: 0 }}>
-            <div style={{ fontFamily: TN.font.mono, fontWeight: 500, fontSize: 30, lineHeight: 1.05, color: TN.navy900, fontVariantNumeric: "tabular-nums" }}>{verdi}</div>
-            <TnEtikett style={{ marginTop: 4 }}>{etikett}</TnEtikett>
-          </div>
-        ))}
-      </div>
+      <TnHelt
+        etikett={`Hva skjer i ${MANEDER_LANG[maned - 1]!.toLowerCase()}`}
+        venstre={
+          <>
+            <TnHeltSporsmaal>Hva skjer i {MANEDER_LANG[maned - 1]!.toLowerCase()}?</TnHeltSporsmaal>
+            <TnHeltTall verdi={tall.okter}>{tall.okter === 1 ? "økt lagt inn" : "økter lagt inn"}</TnHeltTall>
+            <TnHeltTekst>Gruppens egne økter, med samlinger og turneringer fra spillernes planer. Spillerne tilpasser sin egen plan i PlayerHQ.</TnHeltTekst>
+          </>
+        }
+        hoyre={
+          <TnHeltTellere
+            tall={[
+              { verdi: tall.turneringsdager, tekst: "turneringsdager" },
+              { verdi: tall.samlingsdager, tekst: "samlingsdager" },
+              { verdi: "—", tekst: "frister" },
+            ]}
+          />
+        }
+      />
 
       {tomMaaned ? (
         <TnFlate>

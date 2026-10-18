@@ -3,14 +3,16 @@ import { notFound } from "next/navigation";
 
 import { hentTnSpillere, hentTnSpillerstatuser, type TnSpillerstatusRad } from "@/lib/domain/tn-arbeidsflate";
 import { TN } from "@/lib/v2/team-norway";
-import { TnPille, type TnPilleTone } from "../core";
+import { TnPille } from "../core";
+import { TnMarkor, type TnStatus } from "../tn-stall";
 import { TnFlate, TnFlatehode, TnFotnote, TnMangler, TnRutenett, TnSkjermhode } from "../tn-flate";
 import { LISENS_TEKST, TnSpillerstatusSkjema } from "../tn-redigering-skjema";
 import { SkjermRamme, datoKort, hentSkjermbruker, osloDag } from "./felles";
 
 /**
  * TN-10 Lisens og økonomi.
- * Fasit: docs/design-system/utkast-tn/admin.html, skjerm Lisens og økonomi (pakke 7).
+ * Utkast 2 (godkjent 16.10.2026): status vises som markør med ord. Fasit:
+ * docs/design-system/utkast-tn/admin.html, skjerm Lisens og økonomi (pakke 7).
  *
  * Avvik:
  *   - Lisens, helseattest og antidoping registreres per spiller og år av trener
@@ -21,7 +23,10 @@ import { SkjermRamme, datoKort, hentSkjermbruker, osloDag } from "./felles";
  */
 
 const DAG_MS = 24 * 60 * 60 * 1000;
-type Merke = { tekst: string; tone: TnPilleTone; ok: boolean };
+type Tone = "green" | "red" | "amber" | "nøytral";
+type Merke = { tekst: string; tone: Tone; ok: boolean };
+/** Status som markør: farget kvadrat og ordet ved siden (utkast 2). */
+const MARKOR_STATUS: Record<Tone, TnStatus> = { green: "folger", red: "trenger", amber: "folgmed", "nøytral": "ikkedelt" };
 
 function helseMerke(utloper: Date | null, naa: Date): Merke {
   if (!utloper) return { tekst: "Helseattest ikke registrert", tone: "nøytral", ok: false };
@@ -65,11 +70,11 @@ export async function TnLisensSkjerm() {
               <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "4px 12px" }}>
                 {kontekst.erSpiller ? <b style={{ fontSize: 15 }}>{r.navn}</b> : <Link href={`/team-norway/spiller/${r.id}/oversikt`} style={{ fontSize: 15, fontWeight: 700, color: TN.ink900, minHeight: 44, display: "inline-flex", alignItems: "center", overflowWrap: "anywhere", textUnderlineOffset: 4 }}>{r.navn}</Link>}
                 <span style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
-                  <TnPille tone={mangler === 0 ? "green" : merker.some((m) => m.tone === "red") ? "red" : "amber"}>{mangler === 0 ? "I orden" : `Mangler ${mangler}`}</TnPille>
+                  <TnMarkor status={MARKOR_STATUS[mangler === 0 ? "green" : merker.some((m) => m.tone === "red") ? "red" : "amber"]}>{mangler === 0 ? "I orden" : `Mangler ${mangler}`}</TnMarkor>
                   {kontekst.kanAdministrere ? <TnSpillerstatusSkjema spillerId={r.id} spillerNavn={r.navn} aar={aar} standard={{ lisensStatus: s.lisensStatus ?? "", lisensBetaltDato: dagStreng(s.lisensBetaltDato), helseattestUtloper: dagStreng(s.helseattestUtloper), antidopingSignert: dagStreng(s.antidopingSignert) }} /> : null}
                 </span>
               </div>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>{merker.map((m) => <TnPille key={m.tekst} tone={m.tone}>{m.tekst}</TnPille>)}</div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>{merker.map((m) => <TnMarkor key={m.tekst} status={MARKOR_STATUS[m.tone]}>{m.tekst}</TnMarkor>)}</div>
             </div>
           ))}
           {rader.length === 0 ? <TnMangler>Ingen spillere i gruppen ennå.</TnMangler> : null}
