@@ -1,415 +1,201 @@
 "use client";
 
+/**
+ * Skill map i nytt design (PlayerHQ pakke 13, Stats resten, godkjent av Anders 16.10.2026).
+ * Fasit: docs/design-system/utkast-playerhq/stats-resten.html, malen «skillmap». Stil: playerhq-ny-statsresten-omrade.css.
+ * Hullet er delt i soner (utslag, fire innspillsavstander, fire nærspill og seks puttelengder). Trykk på en sone
+ * viser SG, utviklingen og øvelser. Kategori B og PGA Tour er en bryter på skjermen.
+ *
+ * Avvik:
+ *   - Kategori B-referansen per A–K-kategori er ikke satt. Med Kategori B valgt står sonene grå med «—», og
+ *     detaljen sier at referansen mangler. Bryteren starter derfor på PGA Tour så lenge Kategori B mangler.
+ *   - Utkastet har 16 soner; Stats lagrer 15 (putt 10–15 og 15–25 fot er slått sammen til 10–25 fot, som i Stats).
+ *   - Nærhet til hullet lagres ikke per sone ennå. Boksene vises bare når tallet finnes.
+ *   - «Caddie foreslår …» er byttet med en fast tekst: forslaget per sone finnes ikke.
+ *   - Utviklingen er siste 10 runder mot de 10 før (som Stats), ikke «siste 10 runder».
+ *   - «Øvelser for …» åpner Øvelsesbanken uten forhåndsvalgt filter.
+ *   - «Green · ringene er puttlengde» står i teksten under kartet, ikke i kartet (den lå oppå innspillssonen).
+ */
+import Link from "next/link";
 import { useState } from "react";
-import { ArrowLeft, List } from "lucide-react";
-import { KnappLenke, Sidehode, Meta } from "@/components/precision/pa";
-import {
-  formaterDesimal,
-  formaterSg,
-  MIN_RUNDER_FOR_KONKLUSJON,
-  type SgRad,
-  type PH16StatsData,
-} from "@/lib/portal-analyse/ph16-stats-data";
+import { Crosshair } from "lucide-react";
+import { TmTilbake } from "./PH17TmFelles";
+import { formaterDesimal, formaterSg, MIN_RUNDER_FOR_KONKLUSJON, type PH16StatsData, type SgRad } from "@/lib/portal-analyse/ph16-stats-data";
+import { SG_GRUPPE_INFO, SIKKER_RUNDER, type SgGruppe } from "@/lib/portal-analyse/omrade-data";
+import "@/styles/playerhq-ny.css";
+import "@/styles/playerhq-ny-stats.css";
+import "@/styles/playerhq-ny-statsdybde.css";
+import "@/styles/playerhq-ny-statsresten-omrade.css";
 
 export interface PH16bSkillMapProps {
   data: PH16StatsData;
+  /** Runder med SG i hver gruppe, for «Foreløpig», og perioden de dekker. */
+  grunnlag: Record<SgGruppe, { antall: number; periode: string | null }>;
+  /** ?pga=1 i adressen: start på PGA Tour. */
   pgaTour?: boolean;
-  onTilbakeHref?: string;
 }
 
-// Geometri i viewBox 360 x 548 (1 enhet = 1 px på 390)
-const GEOMETRI: Record<string, [x: number, y: number, w: number, h: number]> = {
-  p0: [8, 12, 112, 44],
-  p3: [124, 12, 112, 44],
-  p6: [240, 12, 112, 44],
-  p10: [8, 62, 112, 44],
-  p20: [124, 62, 112, 44],
-  p40: [240, 62, 112, 44],
-  chip: [8, 126, 82, 52],
-  pitch: [98, 126, 82, 52],
-  lob: [188, 126, 82, 52],
-  bunker: [278, 126, 74, 52],
-  i50: [30, 202, 300, 48],
-  i100: [50, 258, 260, 48],
-  i150: [70, 314, 220, 48],
-  i200: [90, 370, 180, 48],
-  tee: [110, 442, 140, 52],
+type Mot = "b" | "pga";
+type Form = { rect: [number, number, number, number] } | { sirkel: [number, number, number] } | { ring: number };
+
+// Geometri i viewBox 320 × 470 som i utkastet, med lob, bunker og innerste putteringer litt større (treffmål 44 px). Tee nederst, greenen øverst.
+const FORM: Record<string, Form> = {
+  tee: { rect: [110, 400, 100, 44] },
+  i200: { rect: [80, 330, 160, 56] },
+  i150: { rect: [80, 270, 160, 56] },
+  i100: { rect: [80, 210, 160, 56] },
+  i50: { rect: [80, 150, 160, 56] },
+  chip: { sirkel: [40, 70, 22] },
+  pitch: { sirkel: [280, 70, 22] },
+  lob: { sirkel: [52, 126, 22] },
+  bunker: { sirkel: [268, 126, 22] },
+  p40: { ring: 66 },
+  p20: { ring: 56 },
+  p10: { ring: 47 },
+  p6: { ring: 39 },
+  p3: { ring: 31 },
+  p0: { ring: 23 },
 };
 
-const GRUPPE_NAVN: Record<string, string> = {
-  tee: "Tee",
-  innspill: "Innspill",
-  naer: "Nærspill 0–50 m",
-  putt: "Putting",
-};
-
-function kortNavn(r: SgRad): string {
-  if (r.g === "tee") return "Tee";
-  if (r.g === "innspill") return r.label.replace(" m", "");
-  return r.label.replace(" fot", "");
+function farge(v: number | null): string {
+  if (v == null) return "var(--phn-sand-150)";
+  if (v >= 0.05) return "var(--phn-green-50)";
+  if (v > -0.15) return "#dbe6fb";
+  if (v > -0.35) return "#8fb0f3";
+  return "var(--phn-slag)";
 }
 
-function langtNavn(r: SgRad): string {
-  if (r.g === "tee") return "Tee";
+function navn(r: SgRad): string {
+  if (r.g === "tee") return "Utslag";
   if (r.g === "innspill") return `Innspill ${r.label}`;
-  if (r.g === "putt") return `Putting ${r.label}`;
+  if (r.g === "putt") return `Putt ${r.label}`;
   return r.label;
 }
 
-export function PH16bSkillMap({
-  data,
-  pgaTour = false,
-  onTilbakeHref = "/portal/analysere?del=sg",
-}: PH16bSkillMapProps) {
-  const alleRader: SgRad[] = data.sg.flatMap((g) => g.rows);
-  const [valgtId, setValgtId] = useState<string>("i100");
+export function PH16bSkillMap({ data, grunnlag, pgaTour = false }: PH16bSkillMapProps) {
+  const rader = data.sg.flatMap((g) => g.rows);
+  const harB = rader.some((r) => r.c != null);
+  const [mot, setMot] = useState<Mot>(pgaTour || !harB ? "pga" : "b");
+  const [valgtId, setValgtId] = useState<string>(rader.some((r) => r.id === "i100") ? "i100" : rader[0]?.id ?? "");
+  const verdi = (r: SgRad) => (mot === "pga" ? r.pga : r.c);
+  const motNavn = mot === "b" ? "Kategori B" : "PGA Tour";
+  const valgt = rader.find((r) => r.id === valgtId);
+  const antallRunder = Math.max(0, ...Object.values(grunnlag).map((g) => g.antall));
 
-  const sgVerdi = (r: SgRad) => (pgaTour ? r.pga : r.c);
-  const valgtRad = alleRader.find((r) => r.id === valgtId) ?? alleRader[0];
-  const verdi = sgVerdi(valgtRad);
+  function sone(r: SgRad) {
+    const form = FORM[r.id];
+    if (!form) return null;
+    const v = verdi(r), svak = v != null && v <= -0.35;
+    const felles = {
+      className: `z${r.id === valgtId ? " valgt" : ""}`,
+      tabIndex: 0,
+      role: "button",
+      "aria-pressed": r.id === valgtId,
+      "aria-label": `${navn(r)}, ${v == null ? "ingen tall" : `${formaterSg(v)} slag per runde`}`,
+      onClick: () => setValgtId(r.id),
+      onKeyDown: (e: React.KeyboardEvent) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setValgtId(r.id); } },
+    };
+    if ("rect" in form) {
+      const [x, y, w, h] = form.rect;
+      return (
+        <g key={r.id}>
+          <rect {...felles} x={x} y={y} width={w} height={h} rx={6} fill={farge(v)} />
+          <text x={160} y={y + h / 2 - 2} textAnchor="middle" className={svak ? "hvit" : undefined}>{r.g === "tee" ? "Utslag" : r.label}</text>
+          <text x={160} y={y + h / 2 + 12} textAnchor="middle" className={`m${svak ? " hvit" : ""}`}>{formaterSg(v)}</text>
+        </g>
+      );
+    }
+    if ("sirkel" in form) {
+      const [cx, cy, rr] = form.sirkel, bunker = r.id === "bunker";
+      return (
+        <g key={r.id}>
+          <circle {...felles} cx={cx} cy={cy} r={rr} fill={bunker && v == null ? "#efe2c4" : farge(v)} stroke={bunker ? "#c9b48a" : "none"} />
+          <text x={cx} y={cy + 3} textAnchor="middle" className={svak ? "hvit" : undefined}>{r.label}</text>
+        </g>
+      );
+    }
+    return <circle key={r.id} {...felles} cx={160} cy={80} r={form.ring} fill={farge(v)} stroke="var(--phn-hvit)" strokeWidth={1.5} />;
+  }
 
-  // Finn område med lavest målt SG for fokusmarkering
-  const svakeste = alleRader
-    .filter((r) => sgVerdi(r) != null)
-    .sort((a, b) => (sgVerdi(a) as number) - (sgVerdi(b) as number))[0]?.id;
+  const ikkeRinger = rader.filter((r) => FORM[r.id] && !("ring" in FORM[r.id]!));
+  const ringer = rader.filter((r) => FORM[r.id] && "ring" in FORM[r.id]!).sort((a, b) => (FORM[b.id] as { ring: number }).ring - (FORM[a.id] as { ring: number }).ring);
 
   return (
-    <div className="pa-side" style={{ maxWidth: 1000, margin: "0 auto", padding: "16px 20px" }}>
-      {/* Toppseksjon med Tilbake og Liste-knapper */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "flex-end",
-          gap: 16,
-          flexWrap: "wrap",
-          marginBottom: 16,
-        }}
-      >
-        <div style={{ flex: 1, minWidth: 240 }}>
-          <Sidehode
-            kicker="Stats · Strokes Gained"
-            title="Skill map"
-            sub="Skjematisk hullskisse med Strokes Gained per område. Tee nederst, putting øverst."
-          />
+    <div className="phn">
+      <TmTilbake href="/portal/analysere?del=sg" tekst="Stats" />
+      <div className="phn-om-topp">
+        <div>
+          <div className="phn-dato">Strokes Gained · {antallRunder} {antallRunder === 1 ? "runde" : "runder"} slag for slag</div>
+          <h1 className="phn-tittel">Skill map</h1>
         </div>
-        <div style={{ display: "flex", gap: 8 }}>
-          <KnappLenke
-            variant="secondary"
-            icon={List}
-            iconName="list"
-            href={onTilbakeHref}
-          >
-            Se som liste
-          </KnappLenke>
-          <KnappLenke
-            variant="secondary"
-            icon={ArrowLeft}
-            iconName="arrow-left"
-            href="/portal/analysere"
-          >
-            Stats
-          </KnappLenke>
+        <div className="phn-om-sammenlign" role="group" aria-label="Sammenlign med">
+          <button type="button" aria-pressed={mot === "b"} onClick={() => setMot("b")}>Kategori B</button>
+          <button type="button" aria-pressed={mot === "pga"} onClick={() => setMot("pga")}>PGA Tour</button>
         </div>
       </div>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-          gap: 20,
-          alignItems: "start",
-        }}
-      >
-        {/* Venstre: Skjematisk hullkart i SVG */}
-        <div
-          className="pa-card"
-          style={{
-            padding: 16,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            minWidth: 0,
-          }}
-        >
-          <svg
-            role="group"
-            aria-label="Skill map: Strokes Gained per område på en skjematisk hull-skisse"
-            viewBox="0 0 360 548"
-            style={{
-              width: "100%",
-              maxWidth: 380,
-              height: "auto",
-              display: "block",
-            }}
-          >
-            <rect
-              x="0.5"
-              y="0.5"
-              width="359"
-              height="547"
-              fill="var(--surface-sunken)"
-              stroke="var(--border-hairline)"
-            />
-            {/* Skisse av fairway/hull */}
-            <polygon
-              points="24,196 336,196 300,424 60,424"
-              fill="var(--surface-page)"
-              stroke="var(--border-hairline)"
-              strokeDasharray="4 4"
-            />
-            <text
-              x="12"
-              y="120"
-              fontFamily="var(--font-mono)"
-              fontSize="10"
-              fill="var(--text-muted)"
-              letterSpacing=".04em"
-            >
-              GREEN
-            </text>
-            <text
-              x="348"
-              y="196"
-              textAnchor="end"
-              fontFamily="var(--font-mono)"
-              fontSize="10"
-              fill="var(--text-muted)"
-              letterSpacing=".04em"
-            >
-              FAIRWAY
-            </text>
-            <text
-              x="180"
-              y="536"
-              textAnchor="middle"
-              fontFamily="var(--font-mono)"
-              fontSize="10"
-              fill="var(--text-muted)"
-              letterSpacing=".04em"
-            >
-              SKISSE · IKKE EN BANE
-            </text>
-
-            {alleRader.map((r) => {
-              const geom = GEOMETRI[r.id];
-              if (!geom) return null;
-              const [x, y, w, h] = geom;
-              const v = sgVerdi(r);
-              const erValgt = valgtId === r.id;
-              const erSvak = r.id === svakeste;
-
-              return (
-                <g
-                  key={r.id}
-                  role="button"
-                  tabIndex={0}
-                  aria-pressed={erValgt}
-                  aria-label={`${langtNavn(r)}, SG ${formaterSg(v)} per runde`}
-                  style={{ cursor: "pointer" }}
-                  onClick={() => setValgtId(r.id)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      setValgtId(r.id);
-                    }
-                  }}
-                >
-                  <rect
-                    x={x}
-                    y={y}
-                    width={w}
-                    height={h}
-                    fill={erValgt ? "var(--surface-flat)" : "var(--surface-card)"}
-                    stroke={erValgt ? "var(--text-primary)" : "var(--border-strong)"}
-                    strokeWidth={erValgt ? 2 : 1}
-                  />
-                  <text
-                    x={x + w / 2}
-                    y={y + h / 2 - 3}
-                    textAnchor="middle"
-                    fontFamily="var(--font-sans)"
-                    fontWeight="600"
-                    fontSize="12"
-                    fill="var(--text-primary)"
-                  >
-                    {kortNavn(r)}
-                  </text>
-                  <text
-                    x={x + w / 2}
-                    y={y + h / 2 + 13}
-                    textAnchor="middle"
-                    fontFamily="var(--font-mono)"
-                    fontSize="12"
-                    fill="var(--text-secondary)"
-                  >
-                    {formaterSg(v)}
-                  </text>
-                  {erSvak && (
-                    <rect
-                      x={x + 3}
-                      y={y + 3}
-                      width="6"
-                      height="6"
-                      fill="var(--text-primary)"
-                    />
-                  )}
-                </g>
-              );
-            })}
+      <div className="phn-om-kart-grid">
+        <div className="phn-seksjon">
+          <svg className="phn-om-hullkart" viewBox="0 0 320 470" role="group" aria-label="Hullet delt i soner. Trykk på en sone.">
+            <path d="M60 460 L60 150 Q60 40 160 40 Q260 40 260 150 L260 460 Z" fill="var(--phn-om-fairway)" />
+            {ikkeRinger.map(sone)}
+            <circle cx={160} cy={80} r={70} fill="var(--phn-om-green)" />
+            {ringer.map(sone)}
+            <circle cx={160} cy={80} r={4} fill="var(--phn-g900)" />
+            <text x={160} y={455} textAnchor="middle">Tee</text>
           </svg>
+          <p className="phn-kilde phn-om-sentrert">Fargen er SG per runde mot {motNavn}. Mørkere blå taper mer. Ringene på greenen er puttlengde.</p>
         </div>
-
-        {/* Høyre: Detaljpanel for valgt område */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          <div
-            className="pa-card"
-            style={{
-              padding: 16,
-              display: "flex",
-              flexDirection: "column",
-              gap: 12,
-              minWidth: 0,
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                gap: 8,
-                flexWrap: "wrap",
-              }}
-            >
-              <span className="kicker">{GRUPPE_NAVN[valgtRad.g]}</span>
-              <Meta>{langtNavn(valgtRad).toUpperCase()}</Meta>
-            </div>
-
-            <div
-              style={{
-                display: "flex",
-                alignItems: "baseline",
-                gap: 12,
-                flexWrap: "wrap",
-              }}
-            >
-              <span
-                style={{
-                  font: "600 32px/1 var(--font-mono)",
-                  color: "var(--text-primary)",
-                  letterSpacing: "-0.02em",
-                }}
-              >
-                {formaterSg(verdi)}
-              </span>
-              <span
-                style={{
-                  font: "var(--type-body-s)",
-                  color: "var(--text-secondary)",
-                }}
-              >
-                {pgaTour
-                  ? "slag per runde mot PGA Tour"
-                  : "mot neste kategori · referanse ikke satt"}
-              </span>
-            </div>
-
-            {/* SG-stolpe */}
-            <div
-              aria-hidden="true"
-              style={{
-                position: "relative",
-                height: 10,
-                background: "var(--surface-sunken)",
-                borderRadius: 4,
-                overflow: "hidden",
-                margin: "4px 0",
-              }}
-            >
-              <span
-                style={{
-                  position: "absolute",
-                  left: "50%",
-                  top: 0,
-                  bottom: 0,
-                  width: 2,
-                  background: "var(--text-muted)",
-                }}
-              />
-              {verdi != null && verdi !== 0 && (
-                <span
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    bottom: 0,
-                    left: verdi < 0 ? `${50 - Math.min(50, Math.abs(verdi) * 40)}%` : "50%",
-                    width: `${Math.min(50, Math.abs(verdi) * 40)}%`,
-                    background: "var(--primary)",
-                  }}
-                />
-              )}
-            </div>
-
-            <dl className="pa-kv">
-              <div className="pa-kv__row">
-                <dt className="pa-kv__k">Runder i grunnlaget</dt>
-                <dd className="pa-kv__v is-mono">{valgtRad.n} runder</dd>
-              </div>
-
-              <div className="pa-kv__row">
-                <dt className="pa-kv__k">Trend (siste 10 mot 10 før)</dt>
-                <dd className="pa-kv__v is-mono">{formaterSg(valgtRad.d)}</dd>
-              </div>
-
-              {valgtRad.prox && (
-                <div className="pa-kv__row">
-                  <dt className="pa-kv__k">Nærhet til hull</dt>
-                  <dd className="pa-kv__v is-mono">
-                    Du {formaterDesimal(valgtRad.prox[0], 1)} m · PGA {formaterDesimal(valgtRad.prox[1], 1)} m
-                  </dd>
-                </div>
-              )}
-            </dl>
-          </div>
-
-          <div
-            className="pa-card"
-            style={{
-              padding: 16,
-              display: "flex",
-              flexDirection: "column",
-              gap: 8,
-              minWidth: 0,
-            }}
-          >
-            <span className="kicker">Anbefaling fra Caddie</span>
-            <p
-              style={{
-                margin: 0,
-                font: "var(--type-body-s)",
-                color: "var(--text-secondary)",
-              }}
-            >
-              {verdi == null
-                ? pgaTour
-                  ? `Ingen konklusjon ennå. ${langtNavn(valgtRad)} trenger målt SG fra minst ${MIN_RUNDER_FOR_KONKLUSJON} runder.`
-                  : "Referanse ikke satt for neste kategori. Slå på PGA Tour for å se målt SG."
-                : verdi < 0
-                ?`${langtNavn(valgtRad)} koster deg ${formaterSg(verdi)} slag per runde. Legg inn målrettede øvelser i treningsplanen.`
-                : `${langtNavn(valgtRad)} er en styrke i spillet ditt med ${formaterSg(verdi)} gevinst per runde.`}
-            </p>
-            <div style={{ marginTop: 8 }}>
-              <KnappLenke
-                variant="secondary"
-                size="sm"
-                href="/portal/drills"
-              >
-                Finn øvelser i øvelsesbanken
-              </KnappLenke>
-            </div>
-          </div>
-        </div>
+        {valgt ? <Detalj r={valgt} mot={mot} harB={harB} grunnlag={grunnlag[valgt.g]} /> : <section className="phn-kort phn-om-detalj"><p className="phn-forklar">Ingen soner å vise ennå.</p></section>}
       </div>
+      <Link className="phn-lenke" href="/portal/analysere?del=sg" style={{ justifySelf: "start" }}>Se som liste i Stats</Link>
     </div>
+  );
+}
+
+function Detalj({ r, mot, harB, grunnlag }: { r: SgRad; mot: Mot; harB: boolean; grunnlag: { antall: number; periode: string | null } }) {
+  const v = mot === "pga" ? r.pga : r.c;
+  const motNavn = mot === "b" ? "Kategori B" : "PGA Tour";
+  const gruppe = SG_GRUPPE_INFO[r.g].navn;
+  const forelopig = (r.g === "naer" || r.g === "putt") && grunnlag.antall < SIKKER_RUNDER[r.g];
+  return (
+    <section className="phn-kort phn-om-detalj" aria-live="polite">
+      <div className="phn-sek-topp"><h2>{navn(r)}</h2><span className="phn-kilde">{gruppe}</span></div>
+      {v == null ? (
+        <>
+          <div className="phn-hoved"><strong>—</strong></div>
+          <p className="phn-forklar">
+            {mot === "b" && !harB && r.pga != null
+              ? "Referansen for Kategori B er ikke satt ennå. Velg PGA Tour for å se tallet."
+              : `For få runder med slag herfra ennå (${r.n} av de siste 10). Tallet vises fra ${MIN_RUNDER_FOR_KONKLUSJON} runder.`}
+          </p>
+        </>
+      ) : (
+        <>
+          <div className="phn-hoved">
+            <strong>{formaterSg(v)}</strong>
+            {mot === "pga" && r.d != null && Math.abs(r.d) >= 0.05 && (
+              <span className={`phn-trend ${r.d > 0 ? "opp" : "ned"}`}>{formaterSg(r.d)} mot de 10 før</span>
+            )}
+          </div>
+          <p className="phn-forklar">
+            Slag per runde mot {motNavn} <span className="phn-om-merke">Estimat</span>{forelopig && <> <span className="phn-om-merke">Foreløpig</span></>}
+          </p>
+          {r.prox && (
+            <div className="phn-om-naer">
+              <span><b>{formaterDesimal(r.prox[0], 1)} m</b>du, fra hullet</span>
+              <span><b>{formaterDesimal(r.prox[1], 1)} m</b>PGA Tour</span>
+            </div>
+          )}
+        </>
+      )}
+      <p className="phn-kilde">{r.n} {r.n === 1 ? "runde" : "runder"} i snittet{grunnlag.periode ? ` · ${grunnlag.periode}` : ""} · brutto</p>
+      {v != null && v <= -0.15 && (
+        <>
+          <div className="phn-uthev slag"><Crosshair className="phn-ikon" aria-hidden /><span><b>Her ligger mest å hente.</b> Legg inn øvelser for {navn(r).toLowerCase()} i planen.</span></div>
+          <Link className="phn-knapp pri" href="/portal/drills">Øvelser for {navn(r).toLowerCase()}</Link>
+        </>
+      )}
+    </section>
   );
 }

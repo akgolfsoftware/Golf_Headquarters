@@ -95,7 +95,7 @@ export async function lastSpiller360Hode(viewer: Viewer, id: string): Promise<S3
 
   const [runder, okter, avtale, nesteTurnering, sisteBooking, forslag] = await Promise.all([
     prisma.round.findMany({
-      where: { userId: id },
+      where: { userId: id, sharedWithCoach: true },
       orderBy: { playedAt: "desc" },
       take: 20,
       select: { score: true, playedAt: true, _count: { select: { holeScores: true } } },
@@ -235,7 +235,7 @@ async function lastPlan(viewer: Viewer, id: string): Promise<S360Plan> {
 async function stallSnitt(viewer: Viewer): Promise<Record<SgCategory, number | null>> {
   const grense = new Date(Date.now() - 56 * DAG);
   const agg = await prisma.round.aggregate({
-    where: { playedAt: { gte: grense }, user: { AND: [coachScopedPlayerWhere(viewer), { role: "PLAYER" }] } },
+    where: { playedAt: { gte: grense }, sharedWithCoach: true, user: { AND: [coachScopedPlayerWhere(viewer), { role: "PLAYER" }] } },
     _avg: { sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
   });
   return { OTT: agg._avg.sgOtt, APP: agg._avg.sgApp, ARG: agg._avg.sgArg, PUTT: agg._avg.sgPutt };
@@ -251,7 +251,7 @@ async function lastStats(viewer: Viewer, id: string): Promise<S360Stats> {
     loadMinGolf(id, "elite"),
     loadAnalyticsWorkbenchData(id),
     prisma.round.findMany({
-      where: { userId: id },
+      where: { userId: id, sharedWithCoach: true },
       orderBy: { playedAt: "desc" },
       take: 30,
       select: {
@@ -262,7 +262,7 @@ async function lastStats(viewer: Viewer, id: string): Promise<S360Stats> {
       },
     }),
     prisma.round.findMany({
-      where: { userId: id },
+      where: { userId: id, sharedWithCoach: true },
       orderBy: { playedAt: "desc" },
       take: STANDARD_VINDU * 2,
       select: { playedAt: true, sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },

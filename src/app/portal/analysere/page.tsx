@@ -19,6 +19,7 @@ import { loadPH16Stats } from "@/lib/portal-analyse/load-ph16-stats";
 import { getUnreadNotifications } from "@/app/portal/actions";
 import type { StatsFane } from "@/lib/portal-analyse/ph16-stats-data";
 import { PH17Trening } from "@/components/portal/precision/PH17Trening";
+import { hentLoggetTrening } from "@/lib/portal-analyse/logget-trening";
 import { loadVisibleSessionRange } from "@/lib/portal/visible-session-range";
 import { hentTmOkter } from "@/lib/portal-analyse/load-trackman-stats";
 import { TM_FILTER_STANDARD, tellende } from "@/lib/portal-analyse/trackman-stats";
@@ -56,16 +57,19 @@ export default async function AnalyserePage({ searchParams }: AnalyserePageProps
   // PH-17 Trening: øktene siste fire uker og TrackMan i samme vindu.
   if (aktivFane === "tren") {
     const fra = etterlevelseFra(naa);
-    const [okter, tmOkter, ulest] = await Promise.all([
+    const [okter, tmOkter, ulest, logget] = await Promise.all([
       loadVisibleSessionRange(user.id, fra.toISOString(), naa.toISOString()),
       hentTmOkter(user.id, fra),
       getUnreadNotifications(user.id, 1),
+      // Logg økt (pakke 13): teller i tiden, aldri mot planen.
+      hentLoggetTrening(user.id, fra, naa),
     ]);
     const slag = tmOkter.reduce((a, o) => a + tellende(o.slag, TM_FILTER_STANDARD).length, 0);
     return (
       <PlayerHQSkall innboksHref="/portal/varsler" uleste={ulest.count}>
         <PH17Trening data={{
           okter: okter.map((o) => ({ start: o.startTime.toISOString(), min: o.durationMin, status: o.status, akse: o.pyramidArea as TreningAkse, sted: o.sted })),
+          logget,
           naa: naa.toISOString(),
           periode: `${kort.format(fra)}–${kort.format(naa)}`,
           tm: tmOkter.length ? { okter: tmOkter.length, slag } : null,

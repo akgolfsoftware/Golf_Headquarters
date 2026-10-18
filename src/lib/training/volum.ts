@@ -79,5 +79,7 @@ export async function hentTreningsVolum(
     orderBy: { date: "asc" },
   });
 
-  return aggregerVolumPerUke(logger, uker, now);
+  // Logger uten SG-område (FYS/TEK/SPILL/TURN fra Logg økt) hører ikke til SG-volumet.
+  const medSg = logger.filter((l): l is typeof l & { sgArea: NonNullable<typeof l.sgArea> } => l.sgArea != null);
+  return aggregerVolumPerUke(medSg, uker, now);
 }

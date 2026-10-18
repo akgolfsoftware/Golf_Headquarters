@@ -13,22 +13,25 @@
  *   - Banenavn finnes ikke på turneringsresultatene; klassen står der i stedet.
  *   - Turneringer fra Data Golf vises aldri for spilleren (§KODEGJENNOMGANGEN 06.10).
  *   - Ingen riggrad i tests/visual/skjerm-mapping.ts; målt med tests/visual/precision/maal.mjs PH-16-RES.
+ *   - Turneringer (pakke 13, vedtak 16.10 §STATS-RESTEN punkt 1) er egen visning med kurven øverst
+ *     (PH16Turneringer). «Alle runder» og «Egne runder» viser bare rundelista, så turneringene står ett sted.
  */
 import Link from "next/link";
 import { useState } from "react";
 import { ChevronRight, TrendingDown, TrendingUp } from "lucide-react";
 import { TmTilbake } from "./PH17TmFelles";
 import { formaterDesimal } from "@/lib/portal-analyse/ph16-stats-data";
-import { motParTekst, type ResultaterData, type ResultatRunde } from "@/lib/portal-analyse/resultater-data";
+import { motParTekst, type ResultaterData, type ResultatRunde, type TurnKurveData } from "@/lib/portal-analyse/resultater-data";
+import { PH16Turneringer } from "./PH16Turneringer";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-stats.css";
 import "@/styles/playerhq-ny-statsdybde.css";
 
-type Valg = "alle" | "turn" | "egen";
+export type Valg = "alle" | "turn" | "egen";
 const VALG: { id: Valg; navn: string }[] = [{ id: "alle", navn: "Alle runder" }, { id: "turn", navn: "Turneringer" }, { id: "egen", navn: "Egne runder" }];
 
-export function PH16Resultater({ data, koblet }: { data: ResultaterData; koblet: boolean }) {
-  const [valg, setValg] = useState<Valg>("alle");
+export function PH16Resultater({ data, koblet, kurve, startVis = "alle" }: { data: ResultaterData; koblet: boolean; kurve: TurnKurveData; startVis?: Valg }) {
+  const [valg, setValg] = useState<Valg>(startVis);
   const endring = data.snitt != null && data.forrigeSnitt != null ? Math.round((data.forrigeSnitt - data.snitt) * 10) / 10 : null;
   const vis = data.runder.filter((r) => valg === "alle" || r.type === valg);
   const snittVis = vis.length ? vis.reduce((a, r) => a + r.brutto, 0) / vis.length : null;
@@ -75,46 +78,21 @@ export function PH16Resultater({ data, koblet }: { data: ResultaterData; koblet:
           <div className="phn-valg" role="group" aria-label="Vis">
             {VALG.map((v) => <button key={v.id} type="button" aria-pressed={valg === v.id} onClick={() => setValg(v.id)}>{v.navn}</button>)}
           </div>
-          <div className="phn-to-kol">
-            {valg !== "egen" && (
-              <div className="phn-kol">
-                <section className="phn-seksjon">
-                  <div className="phn-sek-topp"><h2>Turneringer</h2><span className="phn-kilde">{data.turneringer.length} {data.turneringer.length === 1 ? "turnering" : "turneringer"}</span></div>
-                  {data.turneringer.length ? (
-                    <div className="phn-turn-liste">
-                      {data.turneringer.map((t, i) => (
-                        <div key={t.id} className="phn-turn-kort phn-inn" style={{ animationDelay: `${Math.min(i, 10) * 40}ms` }}>
-                          <div className="phn-tk-plass"><b>{t.plass ? `${t.plass}.` : "—"}</b><small>{t.plass ? "Plassering" : t.plassTekst ?? "Ikke publisert"}</small></div>
-                          <div className="phn-tk-midt">
-                            <strong>{t.navn}</strong>
-                            <small>{[t.klasse, t.dato].filter(Boolean).join(" · ")}</small>
-                            {t.runder.length > 0 && <span className="phn-tk-runder">{t.runder.map((r) => <span key={r.nr}>R{r.nr} <b>{r.brutto ?? "—"}</b></span>)}</span>}
-                          </div>
-                          <div className="phn-tk-sum"><b>{t.sum ?? "—"}</b><small>{motParTekst(t.motPar)}</small></div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="phn-forklar">{koblet ? "Ingen turneringer med resultat ennå." : "Profilen din er ikke koblet til turneringsresultatene ennå. Coachen din kobler den."}</p>
-                  )}
-                  <p className="phn-kilde">Brutto · resultater fra GolfBox via AK Golf · plassering slik arrangøren har publisert den</p>
-                </section>
+          {valg === "turn" ? (
+            <PH16Turneringer kurve={kurve} turneringer={data.turneringer} koblet={koblet} />
+          ) : (
+            <section className="phn-seksjon">
+              <div className="phn-sek-topp">
+                <h2>{valg === "egen" ? "Egne runder" : "Alle runder"}</h2>
+                <span className="phn-kilde">{vis.length} runder{snittVis != null ? ` · snitt ${formaterDesimal(snittVis, 1)}` : ""}</span>
               </div>
-            )}
-            <div className="phn-kol">
-              <section className="phn-seksjon">
-                <div className="phn-sek-topp">
-                  <h2>{valg === "turn" ? "Turneringsrunder" : valg === "egen" ? "Egne runder" : "Alle runder"}</h2>
-                  <span className="phn-kilde">{vis.length} runder{snittVis != null ? ` · snitt ${formaterDesimal(snittVis, 1)}` : ""}</span>
-                </div>
-                {vis.length ? (
-                  <div className="phn-runde-liste">{vis.slice(0, 60).map((r) => <RundeRad key={r.id} r={r} />)}</div>
-                ) : <p className="phn-forklar">Ingen runder her ennå.</p>}
-                {vis.length > 60 && <p className="phn-kilde">Viser de 60 nyeste.</p>}
-                <p className="phn-kilde">Brutto · GolfBox og egne registreringer</p>
-              </section>
-            </div>
-          </div>
+              {vis.length ? (
+                <div className="phn-runde-liste">{vis.slice(0, 60).map((r) => <RundeRad key={r.id} r={r} />)}</div>
+              ) : <p className="phn-forklar">Ingen runder her ennå.</p>}
+              {vis.length > 60 && <p className="phn-kilde">Viser de 60 nyeste.</p>}
+              <p className="phn-kilde">Brutto · GolfBox og egne registreringer</p>
+            </section>
+          )}
         </>
       )}
     </div>

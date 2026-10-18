@@ -11,6 +11,7 @@
  *     (periodene fordeler ikke timer per akse ennå, jf. §PLANNIVÅENE HENGER SAMMEN).
  *   - «Mengde mot Strokes Gained» og «Læringssteg i TEK» regnes ikke ut ennå: kortene står med «—» og sier hvorfor.
  *   - Øverste tall er gjennomført tid; «% av plan» er etterlevelsen.
+ *   - Økter logget i etterkant (pakke 13) teller i tiden per akse og sted, men ikke i «% av plan» eller underskuddet.
  *   - Ingen riggrad i tests/visual/skjerm-mapping.ts; målt med tests/visual/precision/maal.mjs PH-17-TR.
  */
 import Link from "next/link";
@@ -18,13 +19,15 @@ import { useRef, useState } from "react";
 import { SlidersHorizontal, Target, X } from "lucide-react";
 import { TmTilbake } from "./PH17TmFelles";
 import { formaterVarighet } from "@/lib/format-tall";
-import { byggTrening, treningSteder, TRENING_AKSER, type TreningAkse, type TreningFilter, type TreningOkt } from "@/lib/portal-analyse/trening-stats";
+import { byggTrening, treningSteder, TRENING_AKSER, type LoggetOkt, type TreningAkse, type TreningFilter, type TreningOkt } from "@/lib/portal-analyse/trening-stats";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-stats.css";
 import "@/styles/playerhq-ny-statsdybde.css";
 
 export type PH17TreningData = {
   okter: TreningOkt[];
+  /** Økter logget i etterkant, samme vindu. Teller i tiden, aldri mot planen. */
+  logget?: LoggetOkt[];
   /** ISO-tid «nå», slik at server og klient regner likt. */
   naa: string;
   /** «7. sep.–4. okt.» */
@@ -42,12 +45,13 @@ export function PH17Trening({ data }: { data: PH17TreningData }) {
   const [filter, setFilter] = useState<TreningFilter>(TOM);
   const [utkast, setUtkast] = useState<TreningFilter>(TOM);
   const ark = useRef<HTMLDialogElement>(null);
-  const s = byggTrening(data.okter, naa, filter);
-  const steder = treningSteder(data.okter);
+  const logget = data.logget ?? [];
+  const s = byggTrening(data.okter, naa, filter, logget);
+  const steder = treningSteder(data.okter, logget);
   const maks = Math.max(1, ...s.akser.flatMap((a) => [a.gjortMin, a.planMin]));
-  const under = [...s.akser].sort((a, b) => (b.planMin - b.gjortMin) - (a.planMin - a.gjortMin))[0];
+  const under = [...s.akser].sort((a, b) => (b.planMin - b.planGjortMin) - (a.planMin - a.planGjortMin))[0];
   const stedMaks = Math.max(1, ...s.sted.map((x) => x.min));
-  const harData = data.okter.length > 0;
+  const harData = data.okter.length > 0 || logget.length > 0;
 
   return (
     <div className="phn">
@@ -60,7 +64,7 @@ export function PH17Trening({ data }: { data: PH17TreningData }) {
         {/* eslint-disable-next-line @next/next/no-img-element -- statisk bilde fra public, ingen tekst oppå */}
         <img src="/images/playerhq/slag-simulator.jpg" alt="" width={1600} height={1067} />
         <div className="phn-hoved">
-          <strong>{s.planMin ? <Tid min={s.gjortMin} /> : "—"}</strong>
+          <strong>{s.planMin || s.loggetMin ? <Tid min={s.gjortMin} /> : "—"}</strong>
           {s.pct != null && <span className="phn-trend">{s.pct} % av plan</span>}
         </div>
       </div>
@@ -69,7 +73,10 @@ export function PH17Trening({ data }: { data: PH17TreningData }) {
         <section className="phn-kort dempet">
           <h2>Ingen trening registrert ennå</h2>
           <p className="phn-forklar">Når du har gjennomført en økt, ser du tiden mot planen og hvor du trener.</p>
-          <div className="phn-knapper"><Link className="phn-knapp pri" href="/portal/planlegge/workbench">Åpne Workbench</Link></div>
+          <div className="phn-knapper">
+            <Link className="phn-knapp pri" href="/portal/planlegge/workbench">Åpne Workbench</Link>
+            <Link className="phn-knapp sek" href="/portal/trening/logg">Logg økt</Link>
+          </div>
         </section>
       ) : (
         <>
@@ -104,13 +111,16 @@ export function PH17Trening({ data }: { data: PH17TreningData }) {
                     );
                   })}
                 </div>
-                {under && under.planMin - under.gjortMin >= UNDERSKUDD_MIN && (
+                {under && under.planMin - under.planGjortMin >= UNDERSKUDD_MIN && (
                   <div className={`phn-uthev ${under.akse.toLowerCase()}`}>
                     <Target className="phn-ikon" aria-hidden />
-                    <span><b>{under.akse} er {formaterVarighet(under.planMin - under.gjortMin)} under planen.</b> Gjennomført {formaterVarighet(under.gjortMin)} av {formaterVarighet(under.planMin)}.</span>
+                    <span><b>{under.akse} er {formaterVarighet(under.planMin - under.planGjortMin)} under planen.</b> Gjennomført {formaterVarighet(under.planGjortMin)} av {formaterVarighet(under.planMin)}.</span>
                   </div>
                 )}
-                <p className="phn-kilde">Gjennomført tid · {data.periode} · plan fra øktene i Plan</p>
+                <p className="phn-kilde">
+                  Gjennomført tid · {data.periode} · plan fra øktene i Plan
+                  {s.loggetMin > 0 ? ` · ${formaterVarighet(s.loggetMin)} logget i etterkant teller i tiden, ikke mot planen` : ""}
+                </p>
               </section>
 
               <section className="phn-kort dempet">

@@ -1,163 +1,74 @@
-// PH18HullAnalyse — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
 /**
- * PlayerHQ · Hull-analyse — v2 (rekomponert 2026-07-17, samme URL). V2Shell
- * leverer chrome-en, AnalysereHullV2 rendrer innholds-stacken (to faner:
- * Sone-kart + Hull for hull).
+ * PlayerHQ · Hull (/portal/analysere/hull) i nytt design (pakke 13, Stats resten).
+ * Fasit: docs/design-system/utkast-playerhq/stats-resten.html, malen «hull».
+ * Avvik:
+ *   - står øverst i PH16dHull.tsx.
  *
- * Dataloader:
- *   - SG: kanonisk selector `hentSpillerSg` (én SG-sannhet, AP0.1 i
- *     docs/plan-baneguide-sg-app-2026-08-16.md) — beregnede runder primært,
- *     selvrapportert kun som fallback, alltid med kilde-merke. (Frem til
- *     2026-08-16 leste skjermen BrukerSgInput direkte og spriket mot
- *     Analysere/Hjem som bruker runde-snitt.)
- *   - Trening: TrainingPlanSession per skillArea (siste 30 d) → økter/minutter.
- *   - Siste runde (nyeste med hull-score) → hull-for-hull (ekte HoleScore-data,
- *     ingen fabrikkering).
+ * Data:
+ *   - SG per sone som i Stats (loadPH16Stats, siste 10 runder mot PGA Tour) og antall runder fra hentSgRunder.
+ *   - Trening per sone: gjennomførte Workbench-økter med treningsområde, siste 30 dager.
+ *   - Varmekart: hullscore på banen med flest runder (minst 3). Siste runde: nyeste runde med hullscore.
  */
-
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
-import { TilbakeLenke } from "@/components/v2";
-import {
-  AnalysereHullV2,
-  type AnalysereHullV2Data,
-  type HullSone,
-} from "@/components/portal/v2/AnalysereHullV2";
-import { aggregerHullVarme } from "@/lib/domain/hole-heatmap";
+import { PH16dHull } from "@/components/portal/precision/PH16dHull";
+import { getUnreadNotifications } from "@/app/portal/actions";
 import { hentSpillerAkKategori } from "@/lib/domain/spiller-kategori";
-import { hentSpillerSg } from "@/lib/domain/spiller-sg";
+import { hentEffektivNaa } from "@/lib/testing/dato-override";
+import { loadPH16Stats } from "@/lib/portal-analyse/load-ph16-stats";
+import { hentHullRader, hentSgRunder, hentTreningPerSone } from "@/lib/portal-analyse/load-omrade";
+import { byggHullSoner, byggHullVarme, type HullData } from "@/lib/portal-analyse/omrade-data";
 
 export const dynamic = "force-dynamic";
-
-type Area = "TEE_TOTAL" | "TILNAERMING" | "AROUND_GREEN" | "PUTTING";
+export const metadata = { title: "Hull · Stats · PlayerHQ" };
 
 export default async function HullAnalysePage() {
   const user = await requirePortalUser({ kreverTilgang: "TALENT" });
+  const naa = await hentEffektivNaa(user.email);
+  const fra = new Date(naa.getTime() - 30 * 86_400_000);
+  const kort = new Intl.DateTimeFormat("nb-NO", { timeZone: "Europe/Oslo", day: "numeric", month: "short" });
 
-  const tretti = new Date();
-  tretti.setDate(tretti.getDate() - 30);
-
-  const [spillerSg, sessions, sisteRunde, alleHullScores, akKategori] = await Promise.all([
-    hentSpillerSg(user.id),
-    prisma.trainingPlanSession.findMany({
-      where: { plan: { userId: user.id }, scheduledAt: { gte: tretti } },
-      select: { skillArea: true, durationMin: true },
-    }),
-    // Siste runde (nyeste) for innlogget spiller, med hull-score.
+  const [stats, runder, trening, hullRader, sisteRunde, kategori, uleste] = await Promise.all([
+    loadPH16Stats(user.id, user.name),
+    hentSgRunder(user.id),
+    hentTreningPerSone(user.id, fra, naa),
+    hentHullRader(user.id),
     prisma.round.findFirst({
       where: { userId: user.id, holeScores: { some: {} } },
       orderBy: { playedAt: "desc" },
       select: {
         score: true,
+        playedAt: true,
         course: { select: { name: true } },
-        holeScores: {
-          orderBy: { holeNumber: "asc" },
-          select: { holeNumber: true, par: true, strokes: true },
-        },
+        holeScores: { orderBy: { holeNumber: "asc" }, select: { holeNumber: true, par: true, strokes: true } },
       },
     }),
-    // Varmekart: hull-score på tvers av ALLE spillerens runder (ikke bare
-    // siste), for å aggregere snitt avvik fra par per hull server-side.
-    prisma.holeScore.findMany({
-      where: { round: { userId: user.id } },
-      select: { holeNumber: true, par: true, strokes: true, roundId: true },
-    }),
-    // A–K-kategori for fasit-subteksten «navn · kat. X» (null når ukjent).
     hentSpillerAkKategori(user.id, { hcp: user.hcp }),
+    getUnreadNotifications(user.id, 1),
   ]);
 
-  // Trening per skillArea (siste 30 d) → økter + minutter.
-  const trening: Record<Area, { okter: number; minutter: number }> = {
-    TEE_TOTAL: { okter: 0, minutter: 0 },
-    TILNAERMING: { okter: 0, minutter: 0 },
-    AROUND_GREEN: { okter: 0, minutter: 0 },
-    PUTTING: { okter: 0, minutter: 0 },
-  };
-  for (const s of sessions) {
-    if (s.skillArea && s.skillArea in trening) {
-      const t = trening[s.skillArea as Area];
-      t.okter += 1;
-      t.minutter += s.durationMin;
-    }
-  }
-
-  const soner: HullSone[] = [
-    {
-      id: "tee",
-      kode: "OTT",
-      label: "Tee total",
-      sub: "Tee-slag",
-      sg: spillerSg?.ott.sg ?? null,
-      ...trening.TEE_TOTAL,
-      trend: spillerSg?.ott.trend ?? [],
-    },
-    {
-      id: "app",
-      kode: "APP",
-      label: "Innspill",
-      sub: "Tilnærming",
-      sg: spillerSg?.app.sg ?? null,
-      ...trening.TILNAERMING,
-      trend: spillerSg?.app.trend ?? [],
-    },
-    {
-      id: "arg",
-      kode: "ARG",
-      label: "Nærspill",
-      sub: "Chip, pitch, bunker",
-      sg: spillerSg?.arg.sg ?? null,
-      ...trening.AROUND_GREEN,
-      trend: spillerSg?.arg.trend ?? [],
-    },
-    {
-      id: "putt",
-      kode: "PUTT",
-      label: "Putt",
-      sub: "Putting",
-      sg: spillerSg?.putt.sg ?? null,
-      ...trening.PUTTING,
-      trend: spillerSg?.putt.trend ?? [],
-    },
-  ];
-
-  // Siste runde → hull-for-hull (ekte HoleScore-data, ingen fabrikkering).
-  const data: AnalysereHullV2Data = {
-    soner,
-    // Klarspråk-grunnlag med tillitsnivå («10 runder · beregnet» /
-    // «3 registreringer · selvrapportert») — null når SG-data mangler.
-    sgGrunnlag: spillerSg
-      ? `${spillerSg.grunnlag} · ${spillerSg.kilde === "BEREGNET" ? "beregnet" : "selvrapportert"}`
-      : null,
-    runde: sisteRunde
+  const data: HullData = {
+    kategori,
+    ...byggHullSoner(stats, runder),
+    trening,
+    treningPeriode: `${kort.format(fra)}–${kort.format(naa)}`,
+    varme: byggHullVarme(hullRader),
+    runderMedHull: new Set(hullRader.map((r) => r.roundId)).size,
+    siste: sisteRunde
       ? {
-          courseName: sisteRunde.course.name,
-          totalScore: sisteRunde.score,
-          parDiff: sisteRunde.holeScores.reduce(
-            (sum, h) => sum + (h.strokes - h.par),
-            0,
-          ),
-          holeCount: sisteRunde.holeScores.length,
-          holes: sisteRunde.holeScores.map((h) => ({
-            holeNumber: h.holeNumber,
-            par: h.par,
-            strokes: h.strokes,
-          })),
+          bane: sisteRunde.course.name,
+          dato: kort.format(sisteRunde.playedAt),
+          brutto: sisteRunde.score,
+          motPar: sisteRunde.holeScores.reduce((sum, h) => sum + (h.strokes - h.par), 0),
+          hull: sisteRunde.holeScores.map((h) => ({ nr: h.holeNumber, par: h.par, slag: h.strokes })),
         }
       : null,
-    // Varmekart over banen: snitt avvik fra par per hull, aggregert over
-    // ALLE registrerte runder (domenelogikk i src/lib/domain/hole-heatmap.ts).
-    hullVarme: aggregerHullVarme(alleHullScores),
-    spillerNavn: user.name ?? null,
-    kategori: akKategori,
   };
 
   return (
-        <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
-      <div className="pa-side">
-      <TilbakeLenke href="/portal/analysere">Analyse</TilbakeLenke>
-      <AnalysereHullV2 data={data} />
-          </div>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste.count}>
+      <PH16dHull data={data} />
     </PlayerHQSkall>
   );
 }

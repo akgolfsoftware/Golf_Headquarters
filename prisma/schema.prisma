@@ -1796,11 +1796,18 @@ model TrainingLog {
   id        String     @id @default(cuid())
   userId    String
   date      DateTime   @db.Date
-  sgArea    SgCategory
+  // Null for økter uten SG-område (FYS, TEK, SPILL, TURN). Logg økt (pakke 13) setter den for SLAG.
+  sgArea    SgCategory?
   minutes   Int
   drillName String?
   quality   Int?       @db.SmallInt // 1-5
   notes     String?
+  // Logg økt i etterkant (pakke 13, 18.10.2026): teller i total treningstid, aldri mot planen.
+  pyramid   String? // FYS | TEK | SLAG | SPILL | TURN
+  area      String? // Treningsområdet slik spilleren valgte det, f.eks. «Innspill»
+  location  String?
+  effort    Int?       @db.SmallInt // Belastning / «Hvor tungt» 1–10
+  focus     Int?       @db.SmallInt // Fokus 1–10, ikke for FYS
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 
@@ -1814,6 +1821,8 @@ model TrainingLog {
 model Round {
   id                     String          @id @default(cuid())
   userId                 String
+  // Del runde (pakke 13): «Bare deg» = false. Coachen ser bare delte runder i Spiller 360 og Runder.
+  sharedWithCoach        Boolean         @default(true)
   courseId               String
   teeId                  String?
   sgReferenceSetId       String?

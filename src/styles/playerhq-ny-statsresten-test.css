@@ -1,0 +1,115 @@
+/*
+ * PH-14 Ny test og Egen test (PlayerHQ pakke 13, Stats resten). Stegvise skjema.
+ * Fasit: docs/design-system/utkast-playerhq/stats-resten.html, malene «nytest» og «egentest».
+ * Grunnstil i playerhq-ny.css. Alt her er avgrenset til .phn-nt.
+ */
+
+.phn-nt .phn-nt-smal { display: grid; gap: 24px; align-content: start; width: 100%; max-width: 720px; justify-self: center; }
+.phn-nt .phn-nt-topp { display: grid; gap: 12px; }
+
+/* Stegtopp */
+.phn-nt .phn-nt-stegtopp { display: grid; gap: 8px; }
+.phn-nt .phn-nt-stegtopp small { font: 500 12px/1 var(--phn-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--phn-g600); }
+.phn-nt .phn-nt-spor { height: 6px; border-radius: 3px; background: var(--phn-sand-150); overflow: hidden; }
+.phn-nt .phn-nt-spor span { display: block; height: 100%; background: var(--phn-g900); border-radius: 3px; transition: width 300ms var(--phn-ut); }
+
+.phn-nt .phn-nt-steg { display: grid; gap: 16px; }
+.phn-nt .phn-nt-steg > h2 { margin: 0; font: 600 20px/1.25 var(--phn-sans); }
+.phn-nt .phn-nt-steg .phn-sek-topp h2 { font-size: 16px; }
+
+.phn-nt .phn-nt-sok { min-height: 44px; padding: 0 12px; border: 1px solid var(--phn-g500); border-radius: 8px; font: 400 16px/1 var(--phn-sans); width: 100%; background: var(--phn-hvit); color: var(--phn-g900); }
+
+/* Testvalg med aksestripe */
+.phn-nt .phn-nt-testvalg { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.phn-nt .phn-nt-testvalg :is(button, a) { display: grid; grid-template-columns: 6px minmax(0, 1fr) auto; gap: 2px 12px; align-items: center; text-align: left; padding: 12px 14px 12px 0; min-height: 56px; border: 1px solid var(--phn-sand-300); border-radius: 12px; background: var(--phn-hvit); font: inherit; color: inherit; cursor: pointer; width: 100%; overflow: hidden; text-decoration: none; }
+.phn-nt .phn-nt-testvalg :is(button, a)::before { content: ""; grid-row: 1 / span 2; align-self: stretch; margin: -12px 0; background: var(--c, var(--phn-g600)); }
+.phn-nt .phn-nt-testvalg b { font: 600 15px/1.3 var(--phn-sans); }
+.phn-nt .phn-nt-testvalg span { font-size: 13px; color: var(--phn-g600); grid-column: 2; }
+.phn-nt .phn-nt-testvalg em { grid-row: 1 / span 2; grid-column: 3; font: 500 12px/1.2 var(--phn-sans); font-style: normal; color: var(--phn-g600); text-align: right; }
+.phn-nt .phn-nt-testvalg [aria-pressed="true"] { border: 2px solid var(--phn-g900); }
+
+/* Valgkort med ring */
+.phn-nt .phn-nt-velgkort { display: grid; gap: 8px; }
+.phn-nt .phn-nt-velgkort button { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; align-items: center; text-align: left; padding: 12px 14px; min-height: 56px; border: 1px solid var(--phn-sand-300); border-radius: 12px; background: var(--phn-hvit); font: inherit; color: inherit; cursor: pointer; width: 100%; }
+.phn-nt .phn-nt-velgkort b { font: 600 15px/1.3 var(--phn-sans); }
+.phn-nt .phn-nt-velgkort span { font-size: 13px; color: var(--phn-g600); grid-column: 1; font-weight: 400; }
+.phn-nt .phn-nt-velgkort i { grid-row: 1 / span 2; grid-column: 2; width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--phn-g500); }
+.phn-nt .phn-nt-velgkort [aria-pressed="true"] { border: 2px solid var(--phn-g900); }
+.phn-nt .phn-nt-velgkort [aria-pressed="true"] i { border: 6px solid var(--phn-g900); }
+
+/* Stort resultatfelt */
+.phn-nt .phn-nt-stor input { font: 600 40px/1 var(--phn-mono); min-height: 72px; text-align: center; }
+.phn-nt .phn-nt-stor > label { text-align: center; }
+.phn-nt .phn-nt-enhet { font: 500 14px/1 var(--phn-sans); color: var(--phn-g600); text-align: center; }
+
+/* Fylt resultatkort i aksefargen */
+.phn-nt .phn-nt-fylt { border: 0; color: var(--phn-hvit); background: var(--phn-fys-ink); }
+.phn-nt .phn-nt-fylt.slag { background: var(--phn-slag-ink); }
+.phn-nt .phn-nt-fylt.tek { background: var(--phn-tek-ink); }
+.phn-nt .phn-nt-fylt.spill { background: var(--phn-spill-ink); }
+.phn-nt .phn-nt-fylt.turn { background: var(--phn-turn-ink); }
+.phn-nt .phn-nt-fylt .phn-hoved strong { color: var(--phn-hvit); overflow-wrap: anywhere; }
+.phn-nt .phn-nt-fylt .phn-hoved span { font: 500 18px/1 var(--phn-mono); opacity: .9; }
+.phn-nt .phn-nt-fylt p { font-size: 14px; }
+
+/* Oppsummering */
+.phn-nt .phn-nt-oppsum { display: grid; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--phn-sand-300); }
+.phn-nt .phn-nt-oppsum li { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--phn-sand-300); font-size: 14.5px; }
+.phn-nt .phn-nt-oppsum li span { color: var(--phn-g600); }
+.phn-nt .phn-nt-oppsum li b { font-weight: 600; overflow-wrap: anywhere; }
+
+/* Bryter */
+.phn-nt .phn-nt-bryter { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; align-items: center; padding: 12px 14px; border: 1px solid var(--phn-sand-300); border-radius: 12px; }
+.phn-nt .phn-nt-bryter b { font: 600 15px/1.3 var(--phn-sans); }
+.phn-nt .phn-nt-bryter span { font-size: 13px; color: var(--phn-g600); }
+.phn-nt .phn-nt-bryter button { grid-row: 1 / span 2; grid-column: 2; width: 52px; height: 44px; border: 0; padding: 0; background: transparent; position: relative; cursor: pointer; }
+.phn-nt .phn-nt-bryter button::before { content: ""; position: absolute; left: 0; right: 0; top: 6px; height: 32px; border-radius: 16px; background: var(--phn-sand-300); transition: background 200ms var(--phn-ut); }
+.phn-nt .phn-nt-bryter button::after { content: ""; position: absolute; top: 9px; left: 3px; width: 26px; height: 26px; border-radius: 50%; background: #fff; transition: transform 200ms var(--phn-ut); box-shadow: 0 1px 3px rgba(0, 0, 0, .2); }
+.phn-nt .phn-nt-bryter button[aria-checked="true"]::before { background: var(--phn-g900); }
+.phn-nt .phn-nt-bryter button[aria-checked="true"]::after { transform: translateX(20px); }
+.phn-nt .phn-nt-bryter button:focus-visible { outline: 3px solid var(--phn-g900); outline-offset: 2px; border-radius: 18px; }
+
+/* Pyramidevalg */
+.phn-nt .phn-nt-akser { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+.phn-nt .phn-nt-akser button { display: grid; gap: 4px; justify-items: center; align-content: center; padding: 10px 0; border: 1px solid var(--phn-sand-300); border-radius: 10px; background: var(--phn-hvit); font: 600 12px/1 var(--phn-sans); letter-spacing: .04em; color: var(--phn-g900); cursor: pointer; min-height: 56px; }
+.phn-nt .phn-nt-akser i { width: 14px; height: 14px; border-radius: 50%; background: var(--c); }
+.phn-nt .phn-nt-akser [aria-pressed="true"] { color: #fff; border-color: transparent; background: var(--cf); }
+.phn-nt .phn-nt-akser [aria-pressed="true"] i { background: #fff; }
+
+/* Protokollsteg */
+.phn-nt .phn-nt-proto { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; counter-reset: p; }
+.phn-nt .phn-nt-proto li { display: grid; grid-template-columns: 28px minmax(0, 1fr) 44px; gap: 8px; align-items: center; counter-increment: p; }
+.phn-nt .phn-nt-proto li::before { content: counter(p); width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center; background: var(--phn-sand-150); font: 600 13px/1 var(--phn-mono); }
+.phn-nt .phn-nt-proto input { min-height: 44px; padding: 8px 10px; border: 1px solid var(--phn-g500); border-radius: 8px; font: 400 15px/1.3 var(--phn-sans); width: 100%; background: var(--phn-hvit); color: var(--phn-g900); }
+.phn-nt .phn-nt-proto button { height: 44px; border: 0; border-radius: 8px; background: transparent; cursor: pointer; color: var(--phn-g600); display: grid; place-items: center; }
+.phn-nt .phn-nt-proto button:disabled { opacity: .35; cursor: default; }
+
+/* Brikker (måleenhet) */
+.phn-nt .phn-nt-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.phn-nt .phn-nt-chips button { min-height: 44px; padding: 0 14px; border: 1px solid var(--phn-sand-300); border-radius: 999px; background: var(--phn-hvit); font: 500 14px/1 var(--phn-sans); color: var(--phn-g800); cursor: pointer; }
+.phn-nt .phn-nt-chips [aria-pressed="true"] { background: var(--phn-g900); border-color: var(--phn-g900); color: var(--phn-hvit); }
+
+/* Måltall A–K */
+.phn-nt .phn-nt-maaltall { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.phn-nt .phn-nt-maaltall label { display: grid; gap: 4px; font: 600 12px/1 var(--phn-sans); color: var(--phn-g600); }
+.phn-nt .phn-nt-maaltall input { min-height: 44px; padding: 6px; border: 1px solid var(--phn-g500); border-radius: 8px; font: 600 15px/1 var(--phn-mono); text-align: center; width: 100%; background: var(--phn-hvit); color: var(--phn-g900); }
+
+/* Forhåndsvisning */
+.phn-nt .phn-nt-forhand { border-left: 6px solid var(--c); }
+.phn-nt .phn-nt-forhand .phn-sek-topp b { font: 600 18px/1.3 var(--phn-sans); overflow-wrap: anywhere; }
+.phn-nt .phn-nt-akse-tekst { font: 600 12px/1 var(--phn-sans); letter-spacing: .05em; color: var(--ci); }
+.phn-nt .phn-nt-tre { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.phn-nt .phn-nt-tre span { display: grid; gap: 2px; font-size: 13px; line-height: 1.35; color: var(--phn-g600); background: var(--phn-sand-100); border-radius: 10px; padding: 10px 12px; }
+.phn-nt .phn-nt-tre b { font: 600 20px/1.1 var(--phn-mono); color: var(--phn-g900); overflow-wrap: anywhere; }
+
+.phn-nt .phn-nt-feil { padding: 12px 14px; border-radius: 10px; background: var(--phn-rust-50); color: var(--phn-g900); font-size: 14px; line-height: 1.45; }
+
+/* Festet knapperad */
+.phn-nt .phn-nt-festet { position: sticky; bottom: calc(var(--tabbar-h, 64px) + env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px)); z-index: 4; display: grid; grid-template-columns: auto 1fr; gap: 8px; padding: 12px 0 8px; background: linear-gradient(transparent, var(--phn-hvit) 30%); }
+
+.phn-nt .phn-nt-dialog-knapper { display: grid; gap: 8px; }
+.phn-nt .phn-nt-dialog-knapper .phn-knapp.rust { min-height: 52px; font-size: 16px; }
+
+@container (min-width: 900px) {
+  .phn-nt .phn-nt-festet { position: static; background: none; }
+}

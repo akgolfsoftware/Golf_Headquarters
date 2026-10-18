@@ -7,6 +7,7 @@
 import { erNettoKlasse } from "@/lib/stats/profil-resultater";
 import { MIN_RUNDER_FOR_KONKLUSJON, SNITT_VINDU } from "./ph16-stats-data";
 import type { TurneringsRad } from "@/lib/domain/turneringshistorikk";
+import type { MinKurve } from "@/lib/domain/min-kurve";
 
 export type ResultatRundeInn = {
   id: string;
@@ -22,6 +23,8 @@ export type ResultatTurnering = {
   id: string;
   navn: string;
   dato: string;
+  /** Sesongen turneringen startet i (Oslo-tid), for sesongvalget i Turneringer. */
+  aar: number;
   klasse: string | null;
   /** Plassering slik arrangøren har publisert den. null = ikke publisert eller ikke fullført. */
   plass: number | null;
@@ -56,6 +59,9 @@ export type ResultaterData = {
 };
 
 const KORT = new Intl.DateTimeFormat("nb-NO", { timeZone: "Europe/Oslo", day: "numeric", month: "short", year: "numeric" });
+const AAR = new Intl.DateTimeFormat("nb-NO", { timeZone: "Europe/Oslo", year: "numeric" });
+const KORT_UTEN_AAR = new Intl.DateTimeFormat("nb-NO", { timeZone: "Europe/Oslo", day: "numeric", month: "short" });
+const UKEDAG = new Intl.DateTimeFormat("nb-NO", { timeZone: "Europe/Oslo", weekday: "long", day: "numeric", month: "short" });
 const UTEN_RESULTAT = new Set(["WITHDREW", "CUT", "REGISTERED", "TEED_OFF", "DQ", "DNF", "PLANNED", "CONFIRMED", "WITHDRAWN"]);
 const snittAv = (xs: number[]) => (xs.length >= MIN_RUNDER_FOR_KONKLUSJON ? Math.round(xs.reduce((a, b) => a + b, 0) / xs.length * 10) / 10 : null);
 
@@ -76,6 +82,7 @@ export function byggResultater(runderInn: readonly ResultatRundeInn[], turnering
         id: t.turneringId,
         navn: t.navn,
         dato: KORT.format(t.startDato),
+        aar: Number(AAR.format(t.startDato)),
         klasse: t.klasse ?? null,
         plass: fullfort && t.plassering != null && t.plassering > 0 ? t.plassering : null,
         plassTekst: t.plasseringTekst ?? null,
@@ -134,4 +141,52 @@ export function byggResultater(runderInn: readonly ResultatRundeInn[], turnering
 export function motParTekst(v: number | null): string {
   if (v == null) return "—";
   return v === 0 ? "E" : v > 0 ? `+${v}` : `−${Math.abs(v)}`;
+}
+
+/** Ett punkt i turneringskurven: snitt til par per runde, og beste og verste runde når båndet er kjent. */
+export type TurnKurvePunkt = { id: string; navn: string; dato: string; snitt: number; beste: number | null; verste: number | null };
+
+/** Kurven øverst i Resultater › Turneringer (vedtak 16.10, §STATS-RESTEN punkt 1). */
+export type TurnKurveData = {
+  koblet: boolean;
+  sesonger: number[];
+  valgt: number | "alle";
+  punkter: TurnKurvePunkt[];
+  /** Snitt til par per runde i utvalget, vektet med antall runder. */
+  snittPerRunde: number | null;
+  /** Samme snitt sesongen før, når en sesong er valgt og den har turneringer. */
+  forrige: { sesong: number; snitt: number } | null;
+  antallTurneringer: number;
+  antallRunder: number;
+  oppdatert: string | null;
+  tomGrunn: string;
+};
+
+function snittPerRunde(k: MinKurve): number | null {
+  const runder = k.punkter.reduce((a, p) => a + p.runder, 0);
+  if (!runder) return null;
+  return Math.round(k.punkter.reduce((a, p) => a + p.snitt * p.runder, 0) / runder * 10) / 10;
+}
+
+export function byggTurnKurve(kurve: MinKurve, forrige: MinKurve | null, sistHentet: Date | null): TurnKurveData {
+  const forrigeSnitt = forrige ? snittPerRunde(forrige) : null;
+  return {
+    koblet: kurve.koblet,
+    sesonger: kurve.sesonger,
+    valgt: kurve.valgtSesong,
+    punkter: kurve.punkter.map((p) => ({ id: p.turneringId, navn: p.navn, dato: KORT_UTEN_AAR.format(p.dato), snitt: p.snitt, beste: p.beste, verste: p.verste })),
+    snittPerRunde: snittPerRunde(kurve),
+    forrige: forrigeSnitt != null && typeof forrige?.valgtSesong === "number" ? { sesong: forrige.valgtSesong, snitt: forrigeSnitt } : null,
+    antallTurneringer: kurve.grunnlag.turneringer,
+    antallRunder: kurve.grunnlag.runder,
+    oppdatert: sistHentet ? UKEDAG.format(sistHentet) : null,
+    tomGrunn: kurve.tomGrunn,
+  };
+}
+
+/** «+3,4», «0,0» eller «−1,2» med ekte minustegn. */
+export function motParDesimal(v: number | null): string {
+  if (v == null) return "—";
+  const s = Math.abs(v).toLocaleString("nb-NO", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  return v > 0 ? `+${s}` : v < 0 ? `−${s}` : s;
 }
