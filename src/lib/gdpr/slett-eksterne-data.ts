@@ -79,7 +79,7 @@ export async function slettEksterneBrukerdata(
     } catch {
       plan.push("ville forsøke opprydding av private testbilder");
     }
-    plan.push("ville vaske guestName/guestEmail/guestPhone på egne bookinger");
+    plan.push("ville vaske guestName/guestEmail/guestPhone og deltaker 2 på egne bookinger");
     plan.push("ville slette profilkobling og oppslagslogg (dashboard.delete_profile_data)");
     try {
       // Siden A1 kan brukeren ha to abonnement (COACHING + PLAYERHQ) — begge tas.
@@ -210,7 +210,7 @@ export async function slettEksterneBrukerdata(
   try {
     const res = await prisma.booking.updateMany({
       where: { userId },
-      data: { guestName: null, guestEmail: null, guestPhone: null },
+      data: { guestName: null, guestEmail: null, guestPhone: null, partnerName: null, partnerEmail: null },
     });
     bookingerGjestevasket = res.count;
   } catch (err) {
