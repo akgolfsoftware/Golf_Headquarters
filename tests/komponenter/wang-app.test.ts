@@ -60,6 +60,7 @@ describe('WANG Toppidrett Modul (Samtlige WANG-skjermer)', async () => {
   const { WangElever } = await import('@/components/wang/WangElever');
   const { WangAdmin } = await import('@/components/wang/WangAdmin');
   const { WangSkjermoversikt } = await import('@/components/wang/WangSkjermoversikt');
+  const { WangDataGolf } = await import('@/components/wang/WangDataGolf');
 
   const vis = (komponent: React.ComponentType<{ data: typeof DATA }>, data = DATA) =>
     renderToStaticMarkup(React.createElement(komponent, { data }));
@@ -227,6 +228,17 @@ describe('WANG Toppidrett Modul (Samtlige WANG-skjermer)', async () => {
     const samtykke = visMed(WangAdmin, { aktivFane: 'samtykke', tester: { ...TESTER, samtykke: { e1: 'DELT', e3: 'VENTER_PA_FORELDER' } } });
     assert.ok(samtykke.includes('Venter på forelder'));
     assert.ok(samtykke.includes('av 11 deler testene med WANG'));
+  });
+
+  test('WangDataGolf: bare data fra serveren, «Powered by Data Golf», og ingen tilgang uten data', () => {
+    const uten = renderToStaticMarkup(React.createElement(WangDataGolf, {}));
+    assert.ok(uten.includes('Ingen tilgang'));
+    const oversikt = renderToStaticMarkup(React.createElement(WangDataGolf, { d: { side: 'oversikt', antallProffer: 0, kildedato: null, sistSynk: null, feiletSynk: 0, endepunkter: 0, forsinket: true, norske: [] } }));
+    assert.ok(oversikt.includes('Ingen synk ennå'));
+    assert.ok(oversikt.includes('Powered by'));
+    const proff = renderToStaticMarkup(React.createElement(WangDataGolf, { d: { side: 'proff', proff: null } }));
+    assert.ok(proff.includes('Fant ikke proffen'));
+    assert.ok(vis(WangKonkurranse).includes('fane=dg'), 'Konkurranse har fanen Data Golf');
   });
 
   test('WangSkjermoversikt (WANG-00): lister alle 63 skjermer med søk og filter', () => {

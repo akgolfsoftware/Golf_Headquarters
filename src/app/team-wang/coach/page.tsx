@@ -13,6 +13,9 @@ import { canUser } from "@/lib/auth/effective-capabilities";
 import { Capability } from "@/lib/auth/cbac";
 import { WangCoachKlient } from "@/app/team-wang/coach/WangCoachKlient";
 import type { WangOmraade } from "@/components/wang/WangAppSkall";
+import { kanSeDataGolf } from "@/lib/auth/datagolf-tilgang";
+import { hentWangDataGolf } from "@/app/team-wang/_data/wang-datagolf-data";
+import { dgSideFraFane } from "@/app/team-wang/_data/wang-datagolf-visning";
 import {
   hentWangSamtykkeStatus,
   hentWangTesterData,
@@ -38,6 +41,11 @@ interface WangCoachPageProps {
     fane?: string;
     okt?: string;
     id?: string;
+    sok?: string;
+    tour?: string;
+    norske?: string;
+    kat?: string;
+    aar?: string;
     visArsplan?: string;
   }>;
 }
@@ -97,6 +105,20 @@ export default async function WangCoachPage({ searchParams }: WangCoachPageProps
     );
   }
 
+  // Data Golf bare for coach-rollen (kanSeDataGolf), aldri for elever.
+  const dgSide = aktivtOmraade === "konkurranse" ? dgSideFraFane(params.fane) : null;
+  const dataGolf =
+    dgSide && kanSeDataGolf(bruker)
+      ? await hentWangDataGolf(dgSide, {
+          id: params.id,
+          sok: params.sok,
+          tour: params.tour,
+          norske: params.norske,
+          kat: params.kat,
+          aar: params.aar,
+        })
+      : undefined;
+
   return (
     <WangCoachKlient
       omraade={aktivtOmraade}
@@ -106,6 +128,7 @@ export default async function WangCoachPage({ searchParams }: WangCoachPageProps
       rolle={rolle}
       brukerNavn={bruker.name ?? undefined}
       tester={tester}
+      dataGolf={dataGolf}
       data={byggWangTrenerData(live, osloIdagIso(), osloNaaTid())}
     />
   );

@@ -62,6 +62,15 @@ mock.module("@/app/team-wang/coach/WangCoachKlient", {
 });
 
 let testerKall: string[] = [];
+let dgKall: string[] = [];
+mock.module("@/app/team-wang/_data/wang-datagolf-data", {
+  namedExports: {
+    hentWangDataGolf: async (side: string) => {
+      dgKall.push(side);
+      return { side: "kilde", rader: [] };
+    },
+  },
+});
 mock.module("@/app/team-wang/_data/wang-tester-data", {
   namedExports: {
     hentWangTesterData: async (_bruker: unknown, gruppeId: string) => {
@@ -268,7 +277,7 @@ async function skjermerPage() {
   return (await import("../skjermer/page")).default;
 }
 
-type KlientProps = { omraade: string; rolle: string; elever?: Array<{ id: string; navn: string }>; tester?: unknown };
+type KlientProps = { omraade: string; rolle: string; elever?: Array<{ id: string; navn: string }>; tester?: unknown; dataGolf?: unknown };
 function propsFra(element: unknown): KlientProps {
   return (element as { props: KlientProps }).props;
 }
@@ -327,4 +336,15 @@ test("skjermoversikten kaller vakten med ADMIN/COACH og krever WANG-gruppe", asy
   const props = propsFra(await side());
   assert.equal(props.omraade, "system");
   assert.equal(props.rolle, "Trener");
+});
+
+test("Data Golf hentes bare på Data Golf-fanen i Konkurranse", async () => {
+  const side = await coachPage();
+  dgKall = [];
+  const kalender = propsFra(await side({ searchParams: Promise.resolve({ omraade: "konkurranse" }) }));
+  assert.equal(kalender.dataGolf, undefined);
+  assert.deepEqual(dgKall, []);
+  const dg = propsFra(await side({ searchParams: Promise.resolve({ omraade: "konkurranse", fane: "dg-kilde" }) }));
+  assert.deepEqual(dg.dataGolf, { side: "kilde", rader: [] });
+  assert.deepEqual(dgKall, ["kilde"]);
 });

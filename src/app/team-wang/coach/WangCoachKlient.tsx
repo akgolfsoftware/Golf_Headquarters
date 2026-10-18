@@ -14,6 +14,8 @@ import { WangSkjermoversikt } from '@/components/wang/WangSkjermoversikt';
 import type { WangRolle } from '@/app/team-wang/_data/wang-rolle';
 import type { WangTrenerData } from '@/app/team-wang/_data/wang-trener-data';
 import type { WangTesterData } from '@/app/team-wang/_data/wang-tester-visning';
+import type { WangDataGolfData } from '@/app/team-wang/_data/wang-datagolf-visning';
+import { WangDataGolf } from '@/components/wang/WangDataGolf';
 
 interface WangCoachKlientProps {
   /** Området er avgjort av serveren (rolle og gyldighet er sjekket der). */
@@ -27,6 +29,8 @@ interface WangCoachKlientProps {
   brukerNavn?: string;
   /** Testresultater og testsamtykke for elevene som deler med WANG (Tester, Elever, Administrasjon). */
   tester?: WangTesterData;
+  /** Data Golf (Konkurranse › Data Golf), bare når kanSeDataGolf slapp brukeren inn. */
+  dataGolf?: WangDataGolfData;
   /** Ekte gruppedata, bygget på serveren (byggWangTrenerData). */
   data: WangTrenerData;
 }
@@ -39,6 +43,7 @@ export function WangCoachKlient({
   rolle,
   brukerNavn,
   tester,
+  dataGolf,
   data,
 }: WangCoachKlientProps) {
   const router = useRouter();
@@ -83,7 +88,9 @@ export function WangCoachKlient({
         />
       )}
 
-      {omraade === 'konkurranse' && (
+      {omraade === 'konkurranse' && fane?.startsWith('dg') && <WangDataGolf d={dataGolf} />}
+
+      {omraade === 'konkurranse' && !fane?.startsWith('dg') && (
         <WangKonkurranse
           aktivFane={fane}
           id={id}

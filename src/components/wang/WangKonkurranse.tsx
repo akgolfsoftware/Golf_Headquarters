@@ -28,6 +28,7 @@ const FANER = [
   { id: "kalender", tittel: "Kalender" },
   { id: "sesong", tittel: "Sesongen" },
   { id: "samling", tittel: "Samlinger" },
+  { id: "dg", tittel: "Data Golf" },
 ];
 
 const datoSpenn = (h: WangTrenerHendelse) =>
@@ -35,7 +36,7 @@ const datoSpenn = (h: WangTrenerHendelse) =>
 
 /**
  * Pakke 5 Konkurranse for trener og sportssjef: Kalender (WANG-10), Én turnering (WANG-11), Sesongen (WANG-09)
- * og Samling og uttak (WANG-27). Data Golf (WANG-50) er pakke 10.
+ * og Samling og uttak (WANG-27). Fanen Data Golf (WANG-50) åpner pakke 10 (WangDataGolf).
  * Fasit: docs/design-system/utkast-wang/konkurranse.html (utkast 2, retning B, godkjent av Anders 16.10.2026).
  * Bare ekte gruppedata: turneringer og samlinger fra gruppas kalender.
  * Avvik:
@@ -242,7 +243,7 @@ function Sesongen({ data }: { data: WangTrenerData }) {
         </div>
         <div className="wg-kort wg-fyll">
           <p className="wg-forklar">Bare for trenere. Elevene ser ikke denne sammenligningen.</p>
-          <Link className="wg-lenke" href={wangHref("konkurranse", "datagolf")}>Data Golf</Link>
+          <Link className="wg-lenke" href={wangHref("konkurranse", "dg")}>Data Golf</Link>
         </div>
       </section>
     </>

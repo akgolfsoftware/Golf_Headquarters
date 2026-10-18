@@ -671,3 +671,17 @@
 .wang-app .wg-skriv { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: end; }
 .wang-app .wg-skjult { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .wang-app .wg-merknad { margin: 0; }
+
+/* Pakke 10 Data Golf: rader med rang til venstre, filterskjema */
+.wang-app .wg-dg-rad { grid-template-columns: auto minmax(0, 1fr) auto; }
+.wang-app .wg-dg-rang { min-width: 44px; font: 700 13px/1.2 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-tekst-2); font-variant-numeric: tabular-nums; }
+.wang-app .wg-dg-filter { display: grid; gap: 12px; }
+@container (min-width: 900px) {
+  .wang-app .wg-dg-filter { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr) auto; align-items: end; }
+}
+/* Data Golf: aksen er SLAG. Fylt flate i oransje med mørk navy tekst (hvit gir 2,7:1), valgte filtre i oransje. */
+.wang-app .wg-fylt-slag { background: var(--wg-slag); border-color: var(--wg-slag); }
+.wang-app .wg-fylt-slag, .wang-app .wg-fylt-slag .wg-hoved strong, .wang-app .wg-fylt-slag .wg-hoved span,
+.wang-app .wg-fylt-slag .wg-rad-info, .wang-app .wg-fylt-slag .wg-rad-info b { color: var(--wg-navy-dyp); }
+.wang-app .wg-dg-chips .wg-chip-pa, .wang-app .wg-dg-chips .wg-chip-pa:hover { background: var(--wg-slag); border-color: var(--wg-slag); color: var(--wg-slag-paa); }
+.wang-app .wg-dg-tellere .wg-smaa-tall > * { background: #fef3eb; border-color: #f9c9a3; }
