@@ -9,6 +9,7 @@ import { workbenchRedirectForTrenPath } from "@/lib/portal/tren-workbench-redire
 import { demoSperre, erDemoSperretSti } from "@/lib/domain/demo-sperre";
 import { erUnntattVedlikehold, vedlikeholdAktivt } from "@/lib/vedlikehold";
 import { erSperretTeamWangSti } from "@/lib/auth/team-wang-sperre";
+import { erSperretTeamNorwaySti } from "@/lib/auth/team-norway-sperre";
 import { oppdaterWangProxySesjon } from "@/lib/wang-supabase/proxy";
 import { erBeskyttetWangAppSti } from "@/lib/wang-supabase/routes";
 
@@ -226,6 +227,7 @@ export async function proxy(request: NextRequest) {
     // proxyen stopper kun uautentiserte (samme arbeidsdeling som /admin).
     path.startsWith("/innsyn") ||
     erTeamWangCoach ||
+    erSperretTeamNorwaySti(path) ||
     erAargangHub;
 
   if (erBeskyttet || erDemoSperretSti(path)) {
@@ -253,7 +255,11 @@ export async function proxy(request: NextRequest) {
 
     if (!user && erBeskyttet) {
       const url = request.nextUrl.clone();
-      url.pathname = path.startsWith("/team-wang") ? "/team-wang/logg-inn" : "/auth/login";
+      url.pathname = path.startsWith("/team-wang")
+        ? "/wang"
+        : path.startsWith("/team-norway")
+          ? "/teamnorway"
+          : "/auth/login";
       url.searchParams.set("next", path);
       return NextResponse.redirect(url);
     }
