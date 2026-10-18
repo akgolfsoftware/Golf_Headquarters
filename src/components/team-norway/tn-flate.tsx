@@ -144,7 +144,7 @@ export function TnFilterknapper({ valg, etikett }: { valg: TnFilterValg[]; etike
 
 /** Tekstlenke: navy-600, understreket, minst 44 px høy. */
 export function TnTekstlenke({ href, children }: { href: string; children: ReactNode }) {
-  return <Link href={href} style={{ display: "inline-flex", alignItems: "center", gap: 4, minHeight: 44, fontSize: 14, fontWeight: 700, color: TN.navy600, textDecoration: "underline", textUnderlineOffset: 4, justifySelf: "start", alignSelf: "flex-start" }}>{children}</Link>;
+  return <Link href={href} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, minHeight: 44, minWidth: 44, fontSize: 14, fontWeight: 700, color: TN.navy600, textDecoration: "underline", textUnderlineOffset: 4, justifySelf: "start", alignSelf: "flex-start" }}>{children}</Link>;
 }
 
 /** Rad i en liste som blir kortrader på mobil: tekst til venstre, merke eller tall til høyre. */
