@@ -618,7 +618,7 @@ export function renderMarkdown(register) {
     "",
     "Kilder: [skjermlisten](skjermliste-precision-athletics.md), [designautoriteten](design-autoritet.md), [WANG-byggeunderlaget](../../designsystem/wang/SKJERMREGISTER.md), [Team Norway-handover](../../designsystem/team-norway/handover/SKJERMREGISTER.md), [porteringsplanen](../planer/portering-alle-skjermer-2026-10-02.md).",
     "",
-    "Rader: [JSON](skjermregister.json) og [CSV](skjermregister.csv). Regenerer med `node scripts/bygg-skjermregister.mjs --write`. `npm run prosjekt:sjekk` feiler hvis filene driver fra koden.",
+    "Rader: [JSON](skjermregister.json) og [CSV](skjermregister.csv). Registeret er et øyeblikksbilde. Vanlige PR-er rører det ikke (parallelle PR-er kolliderte på det); det oppdateres i en egen PR med `node scripts/bygg-skjermregister.mjs --write`, og `npm run skjermregister:sjekk` viser om det har drevet fra koden.",
     "",
     "## Inventar",
     "",
