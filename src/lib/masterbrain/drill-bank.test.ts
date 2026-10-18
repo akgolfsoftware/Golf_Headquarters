@@ -15,11 +15,15 @@ import {
 
 test("Masterbrain godkjentbank leser første Anders-godkjente batch", () => {
   const godkjente = hentGodkjenteOvelsesbankElementer();
-  assert.equal(masterbrainDrillAntall(), 16);
+  assert.equal(masterbrainDrillAntall(), 22);
   assert.equal(erMasterbrainDrillBankTom(), false);
-  assert.equal(godkjente.length, 16);
+  assert.equal(godkjente.length, 22);
   assert.equal(
     godkjente.some((item) => item.id === "ring-rundt-hull-1m-360-8baller"),
+    true,
+  );
+  assert.equal(
+    godkjente.some((item) => item.id === "chip-clock-12-distanser"),
     true,
   );
 });
@@ -27,8 +31,8 @@ test("Masterbrain godkjentbank leser første Anders-godkjente batch", () => {
 test("status teller kandidater og batcher uten å gjøre dem til fasit", () => {
   const s = masterbrainDrillBankStatus();
   assert.equal(s.tom, false);
-  assert.equal(s.antall, 16);
-  assert.equal(s.godkjentAntall, 16);
+  assert.equal(s.antall, 22);
+  assert.equal(s.godkjentAntall, 22);
   assert.equal(s.kandidatAntall, 895);
   assert.equal(s.tilGodkjenningAntall, 0);
   assert.equal(masterbrainKandidatAntall(), 895);

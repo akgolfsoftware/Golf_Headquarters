@@ -1,0 +1,272 @@
+{
+  "id": "naerspill-batch-001",
+  "status": "GODKJENT",
+  "created": "2026-10-18",
+  "sourceFile": "ovelsesbank/kandidater/naerspill.json",
+  "description": "Første batch med nærspill/chipping til godkjenning av Anders Kristiansen. Fokus: grunnleggende balltreff (scooping-fix, shaft lean), carry/landing spot, klubbvalg og 12-klokke lengdekontroll.",
+  "items": [
+    {
+      "id": "chip-en-fot-balanse",
+      "type": "DRILL",
+      "navn": "chip-en-fot-balanse",
+      "beskrivelse": "Chip 10 baller fra 8m mens du står kun på fremre fot. Bakre fot lett borte fra bakken. Tvinger vekten frem og eliminerer scooping. Bruk PW eller GW.",
+      "kilde": "ak-second-brain:ak-golf-academy",
+      "status": "GODKJENT",
+      "minKategori": "K",
+      "maxKategori": "A",
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "fasilitetKrav": [
+        "SHORT_GAME_AREA"
+      ],
+      "treningstype": "BLOKK",
+      "akFormel": {
+        "pyramidArea": "TEK",
+        "omraade": "CHIP",
+        "dimensjon": "TREFFPUNKT",
+        "belastning": "TRENINGSOMRAADE",
+        "press": "ALENE",
+        "maaleutstyr": "UTEN"
+      },
+      "facilityRequirements": {
+        "longestShotM": 10,
+        "longestShotKind": "CHIP_ROLL",
+        "minimumFacilityLengthM": 15,
+        "minimumCeilingHeightM": null,
+        "surface": "GRASS"
+      },
+      "sourceBatch": "naerspill-batch-001",
+      "sourceFile": "ovelsesbank/kandidater/naerspill.json",
+      "sourceIndex": 2,
+      "kategoriNotat": "Gammel kandidat brukte L-C. L er normalisert til K, og øvelsen er også nyttig for elite (A) ved treffproblemer.",
+      "kontrollpunkterVurdert": [
+        "Plassert i TEK da målet er teknisk bunnpunktkontroll og eliminering av scooping.",
+        "Er 'TREFFPUNKT' riktig dimensjon, eller foretrekkes 'BOUNCE_BRUK'?"
+      ],
+      "godkjentAv": "Anders Kristiansen",
+      "godkjentDato": "2026-10-18",
+      "godkjenningsnotat": "Godkjent av Anders Kristiansen 2026-10-18."
+    },
+    {
+      "id": "chip-hands-forward-shaft-lean",
+      "type": "DRILL",
+      "navn": "chip-hands-forward-shaft-lean",
+      "beskrivelse": "Setup med hendene tydelig foran ballen (shaft lean fremover). Hold den posisjonen gjennom impact. Chip 10 baller fra tight lie 6m unna. Bruk PW. Føler at clubface kommer ned-og-frem, ikke opp.",
+      "kilde": "ak-second-brain:ak-golf-academy",
+      "status": "GODKJENT",
+      "minKategori": "K",
+      "maxKategori": "A",
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "fasilitetKrav": [
+        "SHORT_GAME_AREA"
+      ],
+      "treningstype": "BLOKK",
+      "akFormel": {
+        "pyramidArea": "TEK",
+        "omraade": "CHIP",
+        "dimensjon": "TREFFPUNKT",
+        "belastning": "TRENINGSOMRAADE",
+        "press": "ALENE",
+        "maaleutstyr": "UTEN"
+      },
+      "facilityRequirements": {
+        "longestShotM": 8,
+        "longestShotKind": "CHIP_ROLL",
+        "minimumFacilityLengthM": 12,
+        "minimumCeilingHeightM": null,
+        "surface": "GRASS"
+      },
+      "sourceBatch": "naerspill-batch-001",
+      "sourceFile": "ovelsesbank/kandidater/naerspill.json",
+      "sourceIndex": 4,
+      "kategoriNotat": "Gammel kandidat brukte L-A. L er normalisert til K.",
+      "kontrollpunkterVurdert": [
+        "Plassert i TEK da målet er å etablere rent treff og forward shaft lean uten tidlig release."
+      ],
+      "godkjentAv": "Anders Kristiansen",
+      "godkjentDato": "2026-10-18",
+      "godkjenningsnotat": "Godkjent av Anders Kristiansen 2026-10-18."
+    },
+    {
+      "id": "chip-landing-zone-tau",
+      "type": "DRILL",
+      "navn": "chip-landing-zone-tau",
+      "beskrivelse": "Legg et tau eller siktepinne på green 2-3m foran ballen som landingssone. Chip 10 baller som må lande i eller før sonen for å kontrollere carry-distanse fremfor total rull. Bruk PW fra 10m.",
+      "kilde": "Dave Pelz - Short Game Bible",
+      "status": "GODKJENT",
+      "minKategori": "K",
+      "maxKategori": "A",
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "fasilitetKrav": [
+        "SHORT_GAME_AREA"
+      ],
+      "treningstype": "BLOKK",
+      "akFormel": {
+        "pyramidArea": "SLAG",
+        "omraade": "CHIP",
+        "dimensjon": "LANDINGSPUNKT",
+        "belastning": "TRENINGSOMRAADE",
+        "press": "ALENE",
+        "maaleutstyr": "UTEN"
+      },
+      "facilityRequirements": {
+        "longestShotM": 12,
+        "longestShotKind": "CHIP_ROLL",
+        "minimumFacilityLengthM": 15,
+        "minimumCeilingHeightM": null,
+        "surface": "GRASS"
+      },
+      "sourceBatch": "naerspill-batch-001",
+      "sourceFile": "ovelsesbank/kandidater/naerspill.json",
+      "sourceIndex": 3,
+      "kategoriNotat": "Gammel kandidat brukte L-B. Normalisert til K-A.",
+      "kontrollpunkterVurdert": [
+        "Plassert i SLAG med dimensjon LANDINGSPUNKT fordi oppgaven isolerer carry og visuell landingskontroll."
+      ],
+      "godkjentAv": "Anders Kristiansen",
+      "godkjentDato": "2026-10-18",
+      "godkjenningsnotat": "Godkjent av Anders Kristiansen 2026-10-18."
+    },
+    {
+      "id": "chip-3-klubber-samme-distanse",
+      "type": "DRILL",
+      "navn": "chip-3-klubber-samme-distanse",
+      "beskrivelse": "Fra 8m fra flagg, chip 5 baller med PW, 5 med 9-jern, 5 med 7-jern. Samme svinglengde hver gang. Observer differansen i carry vs rull og lær klubbvalgslogikk rundt green.",
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "status": "GODKJENT",
+      "minKategori": "K",
+      "maxKategori": "A",
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "fasilitetKrav": [
+        "SHORT_GAME_AREA"
+      ],
+      "treningstype": "VARIABEL",
+      "akFormel": {
+        "pyramidArea": "SLAG",
+        "omraade": "CHIP",
+        "dimensjon": "KOLLEVALG",
+        "belastning": "TRENINGSOMRAADE",
+        "press": "ALENE",
+        "maaleutstyr": "UTEN"
+      },
+      "facilityRequirements": {
+        "longestShotM": 14,
+        "longestShotKind": "CHIP_ROLL",
+        "minimumFacilityLengthM": 18,
+        "minimumCeilingHeightM": null,
+        "surface": "GRASS"
+      },
+      "sourceBatch": "naerspill-batch-001",
+      "sourceFile": "ovelsesbank/kandidater/naerspill.json",
+      "sourceIndex": 1,
+      "kategoriNotat": "Gammel kandidat brukte K-B. Utvidet til K-A for taktisk repetisjon.",
+      "kontrollpunkterVurdert": [
+        "Dimensjon satt til KOLLEVALG (alternativt UTRULLING).",
+        "Treningstype satt til VARIABEL fordi kølle og ballbane veksles systematisk."
+      ],
+      "godkjentAv": "Anders Kristiansen",
+      "godkjentDato": "2026-10-18",
+      "godkjenningsnotat": "Godkjent av Anders Kristiansen 2026-10-18."
+    },
+    {
+      "id": "chip-tight-lie-pw-vs-sw",
+      "type": "DRILL",
+      "navn": "chip-tight-lie-pw-vs-sw",
+      "beskrivelse": "Fra hardpakket lie eller kortklipt gress 8m unna: chip 10 baller med PW og 10 med SW med høy bounce. Lærer spilleren hvordan bounce reagerer mot fast underlag og forhindrer feil klubbvalg.",
+      "kilde": "ak-second-brain:ak-golf-academy",
+      "status": "GODKJENT",
+      "minKategori": "K",
+      "maxKategori": "A",
+      "environment": [
+        "RANGE",
+        "BANE"
+      ],
+      "fasilitetKrav": [
+        "SHORT_GAME_AREA"
+      ],
+      "treningstype": "VARIABEL",
+      "akFormel": {
+        "pyramidArea": "TEK",
+        "omraade": "CHIP",
+        "dimensjon": "BOUNCE_BRUK",
+        "belastning": "TRENINGSOMRAADE",
+        "press": "ALENE",
+        "maaleutstyr": "UTEN"
+      },
+      "facilityRequirements": {
+        "longestShotM": 12,
+        "longestShotKind": "CHIP_ROLL",
+        "minimumFacilityLengthM": 15,
+        "minimumCeilingHeightM": null,
+        "surface": "GRASS"
+      },
+      "sourceBatch": "naerspill-batch-001",
+      "sourceFile": "ovelsesbank/kandidater/naerspill.json",
+      "sourceIndex": 5,
+      "kategoriNotat": "Gammel kandidat brukte K-B. Normalisert til K-A.",
+      "kontrollpunkterVurdert": [
+        "Satt i TEK med dimensjon BOUNCE_BRUK da formålet er å forstå sålens interaksjon med bakken."
+      ],
+      "godkjentAv": "Anders Kristiansen",
+      "godkjentDato": "2026-10-18",
+      "godkjenningsnotat": "Godkjent av Anders Kristiansen 2026-10-18."
+    },
+    {
+      "id": "chip-clock-12-distanser",
+      "type": "DRILL",
+      "navn": "chip-clock-12-distanser",
+      "beskrivelse": "Plasser 12 ballposisjoner i klokkeformasjon rundt greenen fra 2 til 15 meters avstand. Spill 3 chipper fra hver posisjon mot samme flagg. Mål er å få ballene innenfor 2m fra hullet og loggføre antall under 1m.",
+      "kilde": "ak-second-brain:morad-drill-bibliotek",
+      "status": "GODKJENT",
+      "minKategori": "K",
+      "maxKategori": "A",
+      "environment": [
+        "BANE"
+      ],
+      "fasilitetKrav": [
+        "SHORT_GAME_AREA",
+        "BANE"
+      ],
+      "treningstype": "KONKURRANSE",
+      "akFormel": {
+        "pyramidArea": "SLAG",
+        "omraade": "CHIP",
+        "dimensjon": "LENGDEKONTROLL",
+        "belastning": "TRENINGSOMRAADE",
+        "press": "OBSERVERT",
+        "maaleutstyr": "UTEN"
+      },
+      "facilityRequirements": {
+        "longestShotM": 15,
+        "longestShotKind": "CHIP_ROLL",
+        "minimumFacilityLengthM": 20,
+        "minimumCeilingHeightM": null,
+        "surface": "GRASS"
+      },
+      "sourceBatch": "naerspill-batch-001",
+      "sourceFile": "ovelsesbank/kandidater/naerspill.json",
+      "sourceIndex": 0,
+      "kategoriNotat": "Gammel kandidat brukte L-A. Normalisert til K-A.",
+      "kontrollpunkterVurdert": [
+        "Plassert i SLAG med dimensjon LENGDEKONTROLL.",
+        "Press er satt til OBSERVERT på grunn av scoringskrav og registrering av suksessrate."
+      ],
+      "godkjentAv": "Anders Kristiansen",
+      "godkjentDato": "2026-10-18",
+      "godkjenningsnotat": "Godkjent av Anders Kristiansen 2026-10-18."
+    }
+  ],
+  "godkjentAv": "Anders Kristiansen",
+  "godkjentDato": "2026-10-18"
+}
