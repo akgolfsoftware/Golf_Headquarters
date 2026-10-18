@@ -4,6 +4,24 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## WANG OG TEAM NORWAY FÅR EGNE INNLOGGINGSADRESSER, OG HELE /TEAM-NORWAY ER STENGT FOR UINNLOGGEDE (Anders 18.10.2026, bindende)
+
+Anders 18.10: «Logg inn via akgolf.no … www.akgolf.no/wang og www.akgolf.no/teamnorway», valgte alternativ A (egen inngang, felles konto), og «Ingen team Norway sider skal være åpne». Rangeringen: «legg rangering bak innloggingen for nå».
+
+- **`/wang` og `/teamnorway` er innloggingssider** med eget utseende (WANG; Team Norway-språket: Jost/Lato, navy skinne), men samme AK Golf-konto og samme Supabase-innlogging som `/auth/login`. Ingen ny brukerdatabase og ingen landingsside. Innlogget sendes rett til returstien (`/team-wang` hhv. `/team-norway`).
+- **Hele `/team-norway/*` krever innlogging**, også rangliste (`/team-norway/rangliste`, som `ngf-spillerranking`-adressen sender forsiden til). Uinnloggede sendes til `/teamnorway?next=…`. «For nå»: en åpen rangering kan komme tilbake som egen beslutning.
+- **Gamle `/team-wang/logg-inn` videresender til `/wang`.** `/team-wang`-fellessiden er uendret åpen.
+
+**Overstyrer:** punkt 2 («Åpent, ikke avgjort») i blokken under, og «innlogging fra `/auth/login`» for WANG og TN i den: de har nå egne innganger, men ikke egen konto.
+
+**Arbeidet dette utløser** (PR #1412 gjør 1–3; resten er åpent):
+
+1. **Innloggingsadressene og proxy-stengingen** bygget i #1412 (`src/app/wang`, `src/app/teamnorway`, `src/lib/auth/team-norway-sperre.ts`, `src/proxy.ts`). Ferdig når PR-en er i main.
+2. **Port 7:** Anders ser `/wang` og `/teamnorway` i 390 og 1280 px. Ikke målt i nettleser ennå.
+3. **Rydding:** trenerflatene under `/team-wang/coach` og `/team-wang/skjermer` peker fortsatt på `/team-wang/logg-inn?next=…` i `redirectTo` og i `wang-reise.ts`; det fungerer via videresendingen, men en runde ekstra. Pek rett på `/wang`.
+4. **Åpent, ikke avgjort:** (a) `/wang` og `/teamnorway` er ikke unntatt vedlikeholdsmodus (`src/lib/vedlikehold.ts`), som den gamle WANG-innloggingen heller ikke var; skal de være åpne mens vedlikehold står på? (b) `/team-wang/app/logg-inn` (skoleplattform-varianten) har fortsatt egen side; skal den også til `/wang`? (c) Skal rangeringen åpnes igjen offentlig, og i så fall hvor?
+5. **Domenet:** `www.akgolf.no/wang` og `/teamnorway` virker først når akgolf.no flyttes fra Acuity til appen (§AKGOLF.NO FLYTTES IKKE FØR HELE NETTSIDEN ER GODKJENT). Til da: `akgolf-hq.vercel.app/wang` og `/teamnorway`.
+
 ## TEAM NORWAY OG WANG FÅR INGEN EGNE LANDINGSSIDER, OG INNLOGGING SKJER FRA AKGOLF (Anders 18.10.2026, bindende)
 
 Anders 18.10: «Vi trenger ikke landing sider for disse. Innlogging gjøre fra akgolf.»
@@ -18,7 +36,7 @@ Anders 18.10: «Vi trenger ikke landing sider for disse. Innlogging gjøre fra a
 **Arbeidet dette utløser:**
 
 1. **Markedssidene starter nå**, uavhengig av TN og WANG, sammen med BK-02/03 og e-postene EP-01–06. Ferdig når kartlegging og plan er lagt fram for Anders.
-2. **Åpent, ikke avgjort:** `/team-wang` har egne innloggingssider (`src/app/team-wang/logg-inn/`, `src/app/team-wang/app/logg-inn/`), og `src/proxy.ts:256` sender uinnloggede dit i stedet for til `/auth/login`. Skal de byttes mot `/auth/login`, eller gjelder beslutningen bare markedssider? Svar fra Anders før noe endres.
+2. **Avgjort samme dag:** WANG og Team Norway får egne innloggingsadresser, `/wang` og `/teamnorway`, med felles konto (se blokken over). Skoleplattform-varianten `/team-wang/app/logg-inn` er fortsatt uavklart.
 
 Anders 18.10: «Det er viktig at alle Wang skjermene bruker Wang bilder fra Wang toppidrett design systemet.»
 
