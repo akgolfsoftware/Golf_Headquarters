@@ -6,13 +6,16 @@ import { TnPille } from "../core";
 import { TnFlate, TnFlatehode, TnFotnote, TnInitialer, TnListerad, TnMangler, TnSkjermhode, TnTekstlenke } from "../tn-flate";
 import { UTTAKSKRITERIER } from "../tn-registrerte-skjermer";
 import { TnKnapperekke } from "../tn-handlinger";
+import { TnHelt, TnHeltKnapper, TnHeltSporsmaal, TnHeltTall, TnHeltTekst, TnHeltTellere } from "../tn-stall";
 import { TnSlettUttak, TnUttakSkjema, UTTAK_TEKST } from "../tn-redigering-skjema";
 import { SkjermRamme, datoLang, hentSkjermbruker, osloDag } from "./felles";
 import u from "./tn-uttak.module.css";
 
 /**
  * TN-05 Uttak og kriterier.
+ * Utkast 2, retning B (godkjent 16.10.2026).
  * Fasit: docs/design-system/utkast-tn/uttak.html, skjerm Uttak og kriterier (pakke 4).
+ * Helteflaten viser hvor langt uttaket er kommet i den siste runden.
  *
  * Avvik:
  *   - Kriteriene er de tre bindende (resultater, prestasjoner, prosess og adferd).
@@ -20,6 +23,10 @@ import u from "./tn-uttak.module.css";
  *   - Uttaksrundene er arrangementene det er registrert uttak for. Frist,
  *     antall plasser og «send til spillerne» har ingen datamodell. Uttak
  *     registreres per spiller med begrunnelse (Anders 27.09.2026).
+ *   - Nedtelling til uttaksfristen og «x av y plasser» er ikke med: frist og antall
+ *     plasser har ingen datamodell. Hovedtallet er antall tatt ut i siste runde.
+ *   - «Registrer uttak» er et ark, ikke en egen skjerm: uttak lagres per spiller
+ *     og det finnes ingen «send til spillerne».
  *   - Ranglisten har egen side (Rangliste) og står ikke her.
  */
 
@@ -32,6 +39,9 @@ export async function TnUttakSkjerm() {
   const spillernavn = new Map(data.rader.map((r) => [r.id, r.navn]));
   const spillervalg = [...data.rader].sort((a, b) => a.navn.localeCompare(b.navn, "nb")).map((r) => ({ id: r.id, navn: r.navn }));
   const arrangementer = [...new Set(uttak.map((u) => u.arrangement))];
+  const sisteRunde = [...uttak].sort((a, b) => b.decidedAt.getTime() - a.decidedAt.getTime())[0]?.arrangement ?? null;
+  const siste = sisteRunde ? uttak.filter((x) => x.arrangement === sisteRunde) : [];
+  const antall = (status: string) => siste.filter((x) => x.status === status).length;
 
   return (
     <SkjermRamme aktiv="uttak" brukerNavn={bruker.name} kontekst={data.kontekst}>
@@ -39,7 +49,38 @@ export async function TnUttakSkjerm() {
         overlinje={`Uttakskriterier · sesong ${osloDag(new Date()).aar}`}
         tittel="Uttak og kriterier"
         ingress="Kriteriene er kjent på forhånd. Ranglisten viser hvor hver spiller står i dag."
-        handling={data.kontekst.kanAdministrere && spillervalg.length > 0 ? <TnUttakSkjema spillere={spillervalg} knapp="Registrer uttak" /> : undefined}
+      />
+
+      <TnHelt
+        etikett="Uttak"
+        venstre={
+          <>
+            <TnHeltSporsmaal>Hvor langt har du kommet med uttaket?</TnHeltSporsmaal>
+            {sisteRunde ? (
+              <>
+                <TnHeltTall verdi={antall("UTTATT")}>tatt ut</TnHeltTall>
+                <TnHeltTekst>{sisteRunde}. {antall("RESERVE")} {antall("RESERVE") === 1 ? "reserve" : "reserver"} og {antall("IKKE_UTTATT")} ikke tatt ut. Frist og antall plasser er ikke registrert.</TnHeltTekst>
+              </>
+            ) : (
+              <>
+                <TnHeltTall verdi="—" />
+                <TnHeltTekst>Ingen uttak er registrert ennå.</TnHeltTekst>
+              </>
+            )}
+            {data.kontekst.kanAdministrere && spillervalg.length > 0 ? (
+              <TnHeltKnapper><TnUttakSkjema spillere={spillervalg} knapp="Registrer uttak" variant="hvit" /></TnHeltKnapper>
+            ) : null}
+          </>
+        }
+        hoyre={
+          <TnHeltTellere
+            tall={[
+              { verdi: sisteRunde ? antall("UTTATT") : "—", tekst: "tatt ut" },
+              { verdi: sisteRunde ? antall("RESERVE") : "—", tekst: "reserve" },
+              { verdi: sisteRunde ? antall("IKKE_UTTATT") : "—", tekst: "ikke tatt ut" },
+            ]}
+          />
+        }
       />
 
       <section style={{ display: "grid", gap: 12 }}>
