@@ -15,7 +15,7 @@
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { TrainLockSpillerNy } from "@/components/admin/v2/TrainLockSpillerNy";
 
 export const dynamic = "force-dynamic";
@@ -24,8 +24,10 @@ export default async function V2SpillerNyPage() {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
 
   return (
-    <V2Shell bredde="kolonne" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <TrainLockSpillerNy />
-    </V2Shell>
+    <AgencyOSSkall navn={user.name ?? "Coach"}>
+      <div className="agn-legacy">
+        <TrainLockSpillerNy />
+      </div>
+    </AgencyOSSkall>
   );
 }

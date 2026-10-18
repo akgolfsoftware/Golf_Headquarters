@@ -10,9 +10,8 @@
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TilbakeLenke, Tittel, Caps } from "@/components/v2";
-import { TL } from "@/lib/v2/train-lock";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { Topp } from "@/components/admin/agencyos-ny/ny";
 
 import { SlettKnapp } from "./slett-knapp";
 
@@ -41,29 +40,13 @@ export default async function HendelseDetaljPage({ params }: { params: Promise<{
   const kanSlette = user.role === "ADMIN" || hendelse.coachId === user.id;
 
   return (
-    <V2Shell bredde="kolonne" aktiv="kalender" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <TilbakeLenke href="/admin/kalender">Kalender</TilbakeLenke>
-      <div style={{ marginTop: 12, marginBottom: 20 }}>
-        <Caps>Hendelse</Caps>
-        <div style={{ marginTop: 6 }}>
-          <Tittel mobile={false}>{hendelse.title}</Tittel>
-        </div>
+    <AgencyOSSkall navn={user.name ?? "Coach"}>
+      <div className="agn-s">
+        <Topp tilbake={{ href: "/admin/kalender", tekst: "Kalender" }} dato="Hendelse · blokkert tid" tittel={hendelse.title}
+          ingress={`${fmt(hendelse.startAt)} – ${fmt(hendelse.endAt)}`} />
+        {hendelse.notes && <p className="forklar smal">{hendelse.notes}</p>}
+        {kanSlette && <div className="knapper"><SlettKnapp id={hendelse.id} /></div>}
       </div>
-
-      <div style={{ display: "flex", flexDirection: "column", gap: 6, maxWidth: 420 }}>
-        <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute }}>
-          {fmt(hendelse.startAt)} – {fmt(hendelse.endAt)}
-        </span>
-        {hendelse.notes && (
-          <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, marginTop: 8 }}>{hendelse.notes}</span>
-        )}
-      </div>
-
-      {kanSlette && (
-        <div style={{ marginTop: 24 }}>
-          <SlettKnapp id={hendelse.id} />
-        </div>
-      )}
-    </V2Shell>
+    </AgencyOSSkall>
   );
 }

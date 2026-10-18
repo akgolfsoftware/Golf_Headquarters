@@ -11,16 +11,16 @@ AgencyOS kan være roligere enn PlayerHQ, men Cockpit skal vise hvem som trenger
 | 0 Grunnmur | `felles/agencyos.css`, `felles/agencyos.js`, `felles/demo.js` | Ferdig 14.10 | — |
 | 1 Cockpit og Innboks | AG-01, AG-04 (+ sak, haster, oppfølging), `cockpit.html` | **Bygget (natt 17.10)** · port 7 gjort i nattkjøringen | https://claude.ai/artifact/Hb2VAqh6Sr9GxCs5bagRyK |
 | 2 Stall og Spiller 360 | AG-07, AG-08 (+ faner), AG-A02, AG-A04, AG-A06, AG-08-TALENT, `stall.html` | **Utkast 1** (15.10), venter på port 7 | https://claude.ai/artifact/XrBWRwAsnaFsvhHVX9uhwX |
-| 3 Kalender og Booking | AG-05 (+ uke, måned, år, assistant coach), AG-06 (+ ny booking, bookingen), `kalender.html` | **Utkast 1** (15.10), venter på port 7 | https://claude.ai/artifact/GuayaQiCeJtqCGqnsQNeKp |
+| 3 Kalender og Booking | AG-05 (+ uke, måned, år, assistant coach), AG-06 (+ ny booking, bookingen), `kalender.html` | **Bygget (natt 17.10)**, port 7 gjort på Anders' vegne (nattregelen) | https://claude.ai/artifact/GuayaQiCeJtqCGqnsQNeKp |
 | 4 Workbench coach | AG-11 (spiller og gruppe), AG-11-GRUPPE-AR, AG-WB-FYS, AG-WB-TURN, AG-14, `workbench.html` | **Utkast 1** (15.10), venter på port 7 | https://claude.ai/artifact/FjojaPjQxC6yKaPzz3nnks |
 | 5 Live coachingøkt | AG-13 (+ AG-13-U uten samtykke), AG-12, `live.html` | **Utkast 1** (15.10), venter på port 7 | https://claude.ai/artifact/NvmKeAQwkUAnJPLfEya1VL |
 | 6 Teknisk plan og runder | AG-10, AG-TP-01, AG-TP-02, AG-RD-01, AG-RD-02, `teknisk.html` | **Utkast 1** (15.10), venter på port 7 | https://claude.ai/artifact/5Zue1iXogFbYvTu7hGHp8f |
-| 7 Mer | Mer, AG-15, AG-16 (+ gruppa), AG-A03, AG-20 (bare head coach, + AG-20-ASS), AG-23, `mer.html` | **Utkast 1** (15.10), venter på port 7 | https://claude.ai/artifact/3f8o54VRQF2j7oKn6YKCYs |
-| 8 Jarvis og Caddie | AG-19, AG-A08, AG-A05, `jarvis.html` | **Utkast 1** (15.10), venter på port 7 | https://claude.ai/artifact/GjxtcH7JeoeMARfSMxu5SG |
+| 7 Mer | Mer, AG-15, AG-16 (+ gruppa), AG-A03, AG-20 (bare head coach, + AG-20-ASS), AG-23, `mer.html` | **Bygget (natt 17.10)**, #1390 | https://claude.ai/artifact/3f8o54VRQF2j7oKn6YKCYs |
+| 8 Jarvis og Caddie | AG-19, AG-A08, AG-A05, `jarvis.html` | **Bygget (natt 17.10)**, AG-19 med administrator-Caddie; AG-A08 i Innboks | https://claude.ai/artifact/GjxtcH7JeoeMARfSMxu5SG |
 | 9 Samleside | Alle lenker på én side, `samleside.html` | **Ferdig** (15.10) | https://claude.ai/artifact/Ursvr6vJ7qgptHq7V6sxuF |
 | 11 Ny meny | Tre forslag (A Toppmeny · B Skinne og panel · C Søk først), PC og mobil, `meny.html` | **Utkast 1** (16.10), Anders velger variant | https://claude.ai/artifact/MA7XszAS56HkNTiG16iHNR |
-| 10 Data Golf for coach | DG-01 Oversikt, DG-02 Proffkatalog, DG-03 Proffprofil, DG-04 Topplister, DG-05 Spiller mot proff, DG-06 Innspill-tak, DG-07 Fra funn til forslag, DG-08 Norske proffer, DG-09 Kilde og dekning, `datagolf.html` | **Utkast 1** (15.10), venter på port 7 | https://claude.ai/artifact/7hbTKLJdXoUYYyj86cZHPN |
-| 11 Resten i gammelt design | Tilgjengelighet, Kalenderhendelse, Ny spiller, Ny gruppetrening, Skoledata, Team og tilgang, Notion, E-postmaler, `resten.html`. De andre 16 gamle sidene bygges fra pakke 3, 4 og 7 eller sendes videre (liste i fila) | **Utkast 1** (16.10), venter på port 7 | https://claude.ai/artifact/VHiahuKmFTQpTZrwVzYpNp |
+| 10 Data Golf for coach | DG-01 Oversikt, DG-02 Proffkatalog, DG-03 Proffprofil, DG-04 Topplister, DG-05 Spiller mot proff, DG-06 Innspill-tak, DG-07 Fra funn til forslag, DG-08 Norske proffer, DG-09 Kilde og dekning, `datagolf.html` | **Bygget (natt 17.10)**, DG-01–04, 08, 09; DG-05–07 gjenstår | https://claude.ai/artifact/7hbTKLJdXoUYYyj86cZHPN |
+| 11 Resten i gammelt design | Tilgjengelighet, Kalenderhendelse, Ny spiller, Ny gruppetrening, Skoledata, Team og tilgang, Notion, E-postmaler, `resten.html`. De andre 16 gamle sidene bygges fra pakke 3, 4 og 7 eller sendes videre (liste i fila) | **Bygget (natt 17.10)**, sidehode og skall; skjemaene inni gjenstår | https://claude.ai/artifact/VHiahuKmFTQpTZrwVzYpNp |
 
 Hva hver skjerm skal inneholde: `docs/design-handoff/regler/skjermliste.md` og vedtakene i `.claude/rules/beslutninger.md`.
 Data Golf-skjermene (pakke 10) følger `docs/design-system/datagolf-coach-datakart-og-skjermliste.md`: ni skjermer, bare det basen har, samme liste for WANG og Team Norway.

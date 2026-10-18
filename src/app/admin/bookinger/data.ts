@@ -26,13 +26,25 @@ export type AG06Booking = {
   src: string | null;
   note: string | null;
   at: string;
-  st: "Venter" | "Bekreftet" | "Avvist";
+  st: "Venter" | "Bekreftet" | "Avlyst" | "Gjennomført";
+  /** Dagnummer og kort ukedag for datoboksen i lista («5», «man»). */
+  dag: string;
+  ukedag: string;
+  /** Sluttid «11:30». */
+  slutt: string;
+  coach: string | null;
+  /** Start i ms, for Kommende/Tidligere i lista. */
+  startMs: number;
   /** Bekreftet og ikke startet: kan avlyses eller få forslag om ny tid. */
   kommende: boolean;
   /** Spillerkonto finnes; gjester kan ikke godta et forslag i PlayerHQ. */
   harKonto: boolean;
   /** Coachens forslag om ny tid som spilleren ikke har svart på. */
   forslag: string | null;
+  /** E-post og telefon på kontoen, for søket i lista (gjestens står i `guardian`). */
+  kontaktSok: string;
+  /** Oslo-dato «YYYY-MM-DD», for periodefilteret. */
+  datoIso: string;
 };
 
 const DATO_FMT = new Intl.DateTimeFormat("nb-NO", { day: "2-digit", month: "2-digit", timeZone: "Europe/Oslo" });
@@ -46,20 +58,30 @@ function betaling(b: { priceOre: number; stripePaymentIntentId: string | null; s
   return "Ikke betalt";
 }
 
+const ISO_FMT = new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Oslo" });
+const DAG_FMT = new Intl.DateTimeFormat("nb-NO", { day: "numeric", timeZone: "Europe/Oslo" });
+const UKEDAG_FMT = new Intl.DateTimeFormat("nb-NO", { weekday: "short", timeZone: "Europe/Oslo" });
+
 function status(s: string): AG06Booking["st"] {
   if (s === "PENDING") return "Venter";
-  if (s === "CANCELLED") return "Avvist";
+  if (s === "CANCELLED") return "Avlyst";
+  if (s === "COMPLETED") return "Gjennomført";
   return "Bekreftet";
+}
+
+/** Klokka for Kommende/Tidligere, lest én gang på serveren per visning. */
+export function naaMs(): number {
+  return Date.now();
 }
 
 export async function hentAG06Bookinger(user: User): Promise<AG06Booking[]> {
   const rader = await prisma.booking.findMany({
     where: {
-      status: { in: ["PENDING", "CONFIRMED", "COMPLETED"] },
       ...coachBookingScope(user),
     },
     include: {
-      user: { select: { name: true } },
+      user: { select: { name: true, email: true, phone: true } },
+      coach: { select: { name: true } },
       serviceType: { select: { id: true, name: true, durationMin: true, priceOre: true } },
       facility: { select: { name: true } },
       location: { select: { name: true } },
@@ -88,6 +110,13 @@ export async function hentAG06Bookinger(user: User): Promise<AG06Booking[]> {
     kommende: r.status === "CONFIRMED" && r.startAt.getTime() > naa,
     harKonto: r.userId != null,
     forslag: r.proposedStartAt ? `${DATO_FMT.format(r.proposedStartAt)} ${KL_FMT.format(r.proposedStartAt)}` : null,
+    dag: DAG_FMT.format(r.startAt).replace(".", ""),
+    ukedag: UKEDAG_FMT.format(r.startAt).replace(".", ""),
+    slutt: KL_FMT.format(r.endAt),
+    coach: r.coach?.name ?? null,
+    startMs: r.startAt.getTime(),
+    kontaktSok: [r.user?.email, r.user?.phone, r.guestPhone].filter(Boolean).join(" "),
+    datoIso: ISO_FMT.format(r.startAt),
   }));
 }
 

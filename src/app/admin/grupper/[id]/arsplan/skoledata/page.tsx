@@ -3,9 +3,9 @@ import { requireCapability } from "@/lib/auth/requireCapability";
 import { Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
 import { editableGroupWhere } from "@/lib/workbench/group-scope";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TlTilbake } from "@/components/admin/v2/oppsett/tl-kit";
-import { GruppeFaner } from "@/components/admin/v2/GruppeFaner";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { Topp } from "@/components/admin/agencyos-ny/ny";
+import { GruppeFanerNy } from "@/components/admin/precision/AG16Gruppe";
 import { SkoledataForm } from "./skoledata-form";
 
 export const dynamic = "force-dynamic";
@@ -20,22 +20,13 @@ export default async function SkoledataPage({ params }: { params: Promise<{ id: 
   if (!gruppe) notFound();
 
   return (
-    <V2Shell bredde="kolonne" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TlTilbake href={`/admin/grupper/${id}/arsplan`}>Årsplan</TlTilbake>
-
-      <div className="flex flex-col gap-4">
-        <GruppeFaner groupId={id} aktiv="skoledata" />
-
-        <div>
-          <h1 className="mb-1 font-display text-2xl font-bold tracking-[-0.02em] text-foreground">Legg inn skoledata</h1>
-          <p className="mb-4 max-w-2xl text-[13px] text-muted-foreground">
-            Lim inn skolerute, timeplan eller prøveplan — ett rad per linje. Brukes til å legge inn
-            strukturen fra skolens prøveplan/timeplan når den er publisert.
-          </p>
-
-          <SkoledataForm groupId={id} />
-        </div>
+    <AgencyOSSkall navn={user.name ?? "Coach"}>
+      <div className="agn-s">
+        <Topp tilbake={{ href: `/admin/grupper/${id}`, tekst: "Gruppa" }} dato="Gruppa · skoledata" tittel="Legg inn skoledata"
+          ingress="Lim inn skolerute, timeplan eller prøveplan, én rad per linje. Brukes til å legge skolens datoer inn i årsplanen." />
+        <GruppeFanerNy groupId={id} aktiv="skoledata" />
+        <SkoledataForm groupId={id} />
       </div>
-    </V2Shell>
+    </AgencyOSSkall>
   );
 }

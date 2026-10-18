@@ -54,6 +54,9 @@ const nextConfig: NextConfig = {
       // Sub-paths (:path*) inkludert for å fange opp underruter etter sletting.
       { source: "/admin/bookings", destination: "/admin/bookinger", permanent: true },
       { source: "/admin/bookings/:path*", destination: "/admin/bookinger/:path*", permanent: true },
+      // AG-06 Booking (pakke 3, natt 17.10): én inngang, /admin/bookinger.
+      { source: "/admin/agencyos/booking", destination: "/admin/bookinger", permanent: true },
+      { source: "/admin/agencyos/booking/:path*", destination: "/admin/bookinger/:path*", permanent: true },
       { source: "/admin/groups", destination: "/admin/grupper", permanent: true },
       { source: "/admin/groups/:path*", destination: "/admin/grupper/:path*", permanent: true },
       { source: "/admin/elever", destination: "/admin/spillere", permanent: true },
