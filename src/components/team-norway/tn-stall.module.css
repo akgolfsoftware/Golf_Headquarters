@@ -131,3 +131,11 @@ a.bildekort:focus-visible { outline: 3px solid var(--tn-navy-400); outline-offse
   .bildekort.side { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); }
   .bildekort.side img { height: 100%; min-height: 220px; }
 }
+
+/* Fylte søyler (pyramiden, timer per akse). Fasit: tn.css §Fylte søyler. */
+.soyler { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; align-items: end; }
+.soyle { display: grid; gap: 6px; text-align: center; min-width: 0; }
+.soyle b { font-family: var(--tn-font-mono); font-weight: 500; font-size: 16px; line-height: 1; color: var(--tn-ink-900); }
+.soyle > span { font-weight: 700; font-size: 12px; line-height: 1.2; letter-spacing: 0.04em; color: var(--tn-ink-700); }
+.soyleFelt { height: 140px; display: flex; align-items: flex-end; background: var(--tn-ink-50); border-bottom: 2px solid var(--tn-ink-300); }
+.soyleFelt i { display: block; width: 100%; }
