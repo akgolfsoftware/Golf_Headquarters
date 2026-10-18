@@ -4,6 +4,18 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## PORT 7 ER GITT FOR ALLE UTKASTENE I OVERSIKTEN 18.10 (Anders 18.10.2026, bindende)
+
+Anders 18.10 fikk en oversikt over skjermene han ikke selv hadde godkjent og svarte «Godkjent».
+
+- **Omfatter:** AgencyOS utkast 1 (Stall og Spiller 360, Workbench for coach, Live coachingøkt, Teknisk plan og runder), flatene (Forelder, Offentlig booking, Statistikk, e-postene etter booking, Markedssidene, GFGK Junior og systemsider, Innlogging og oppstart), nattbyggene som fikk ja på hans vegne (AgencyOS Cockpit, Kalender, Mer, Jarvis, Data Golf, Resten; PlayerHQ I dag, Stats, Treningsøkta, Meg, Meg resten, Hjelp, Utfordringer, Plan-hjelpere, Stats resten), og Team Norway og WANG utkast 2 med Data Golf.
+- **Gjelder designet i utkastene.** Appskjermene Anders ikke har sett i nettleseren, må fortsatt måles i 390 og 1280 og vises på Vercel-forhåndsvisningen.
+- **Åpent:** `/wang` og `/teamnorway` starter mørke uten lagret temavalg (ikke i `erLysFlate`, `src/lib/v2/tema-default.ts`). Ikke avgjort om det er ønsket.
+
+**Overstyrer:** «venter på port 7» i README-ene under `docs/design-system/utkast-*/` for skjermene over.
+
+**Arbeidet dette utløser:** statuslinjene i README-ene settes til «Godkjent 18.10» når pakken porteres, ikke i denne PR-en. Ferdig per skjerm når den er porteret og målt uten sidelengs rulling.
+
 ## WANG OG TEAM NORWAY FÅR EGNE INNLOGGINGSADRESSER, OG HELE /TEAM-NORWAY ER STENGT FOR UINNLOGGEDE (Anders 18.10.2026, bindende)
 
 Anders 18.10: «Logg inn via akgolf.no … www.akgolf.no/wang og www.akgolf.no/teamnorway», valgte alternativ A (egen inngang, felles konto), og «Ingen team Norway sider skal være åpne». Rangeringen: «legg rangering bak innloggingen for nå».
