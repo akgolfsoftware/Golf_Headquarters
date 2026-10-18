@@ -37,6 +37,14 @@ funksjoner uten data. Kilden er avviksfeltene i #1402, #1406 og #1411 og filhode
 
 (Hver økt fører sine valg her: pakke · valg · grunn.)
 
+- **W1 · Planen deles med eget samtykke, `TRENINGSPLAN`, ikke med testsamtykket eller KOMPLETT_PROFIL.** Grunn: testsamtykket (D-55) lover eleven at planen ikke deles, og KOMPLETT_PROFIL åpner også TrackMan og analyse. Minst mulig innsyn. Samme regler som testene: under 16 teller bare forelderens ja, et trekk virker med en gang.
+- **W1 · Plandelingen gjelder bare WANG-skolen, aldri Team Norway.** Grunn: oppdraget gjaldt WANG-treneren; Team Norway får fortsatt bare testene.
+- **W1 · Treneren ser tall, ikke økter.** Etterlevelse (gjennomført mot planlagt tid, fire uker), tid per akse og morgentrening. Ingen notater, øktnavn eller meldinger. Grunn: det er det skjermene trenger.
+- **W1 · Morgentrening = gruppas økter i elevens plan** (Workbench-kopier med `groupId` lik WANG-gruppa), gjennomført mot planlagt tid. Grunn: oppmøte lagres ikke ennå, og WANG-gruppeøktene er morgentreningene.
+- **W1 · Elevene sorteres i Trenger deg (under 80 % av planen eller morgentreningen), Følger planen og Ikke delt.** En elev som har delt, men ikke har forfalte økter, står i Følger planen med «—».
+- **W1 · Eleven får forespørselen om å dele planen i I dag (til eleven har svart), under Personvern, og forelderen i foreldreportalen.** Grunn: samme steder som testsamtykket.
+- **W1 · Ingen skjemaendring.** `delings_samtykker.scope` er tekst, så `TRENINGSPLAN` er en ny verdi, ikke en ny kolonne.
+
 ## 5. Morgenrapport
 
 (Skrives av koordinatoren når K er ferdig.)
