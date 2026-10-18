@@ -9,12 +9,7 @@ export const PLAN_HJELPERE_VIDERESENDING = {
   "/portal/kalender/opptatt": "/portal/planlegge/opptatt",
   "/portal/tren/feiring/[planId]": "/portal/planlegge/periode-ferdig",
   "/portal/ai/mal-bygger": "/portal/mal/ny",
+  "/portal/fysisk": "/portal/planlegge/fysisk",
 } as const;
-
-/**
- * Føringen av én fysisk økt (dagens logger, FysiskV2). Den er ikke i nytt design ennå og blir stående på
- * /portal/fysisk til Live fysisk er koblet til programmet; adressen videresendes derfor ikke i 17b.
- */
-export const FYSISK_OKT_HREF = "/portal/fysisk";
 
 export const periodeFerdigHref = (periodeId: string) => `/portal/planlegge/periode-ferdig/${periodeId}`;

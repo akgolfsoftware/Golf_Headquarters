@@ -6,8 +6,7 @@
  * Data: spillerens aktive FysiskPlan (ellers nyeste), siste fysiske tester. Regler: lib/portal-plan/fysisk-program.ts.
  *
  * Avvik:
- *   - Selve økta føres i dagens logger (/portal/fysisk, ikke i nytt design ennå). Live fysisk (PH-06) er
- *     ikke koblet til det fysiske programmet, så /portal/fysisk er ikke videresendt.
+ *   - Selve økta føres i Live fysisk for programmets økter (/portal/planlegge/fysisk/okt/[oktId]).
  *   - Belastning står i kilo når den er logget, ellers som prosent av 1RM fra programmet.
  *   - Periodenavnet («Grunnperiode 1») vises ikke på programmet; programmet er ikke knyttet til en periode.
  *   - «Neste fysiske test uke 45» vises ikke: appen lagrer ikke når neste test er.
@@ -18,7 +17,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import type { FysProgram, FysTestRad } from "@/lib/portal-plan/fysisk-program";
-import { FYSISK_OKT_HREF } from "@/lib/portal/plan-hjelpere-videresending";
+import { fysOktHref } from "@/lib/portal-plan/fysisk-okt";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-meg.css";
 import "@/styles/playerhq-ny-plan-hjelpere.css";
@@ -111,7 +110,7 @@ export function PHFysiskProgram({ data }: { data: PHFysiskProgramData }) {
       </div>
       <div>
         {p.neste
-          ? <Link className="phn-okt fys" href={FYSISK_OKT_HREF}>
+          ? <Link className="phn-okt fys" href={fysOktHref(p.neste.id)}>
             <span className="phn-okt-tekst">
               <span className="phn-okt-s">{[p.neste.dato, "FYS"].filter(Boolean).join(" · ")}</span>
               <span className="phn-navn">Neste: {p.neste.navn}, uke {p.neste.ukeIso}</span>

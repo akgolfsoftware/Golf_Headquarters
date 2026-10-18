@@ -105,3 +105,14 @@ test("angreFysOktLogg fjerner stempel men rører ikke øvelsesrader", async () =
   assert.equal(fysOktData?.gjennomfortAt, null);
   assert.equal(radData, null);
 });
+
+test("loggFysOkt lagrer hver serie i loggSettData, og lar feltet stå når serier utelates", async () => {
+  const fn = await logg();
+  await fn({
+    oktId: "okt-1",
+    rader: [{ radId: "rad-1", loggSett: 2, settData: [{ vekt: 90, reps: 6, rir: 2 }, { vekt: 92.5, reps: 5 }] }],
+  });
+  assert.deepEqual(radData?.loggSettData, [{ vekt: 90, reps: 6, rir: 2 }, { vekt: 92.5, reps: 5 }]);
+  await fn({ oktId: "okt-1", rader: [{ radId: "rad-1", loggSett: 3 }] });
+  assert.equal("loggSettData" in (radData ?? {}), false);
+});

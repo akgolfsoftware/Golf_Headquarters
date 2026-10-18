@@ -33,7 +33,7 @@ export type FysProgram = {
   navn: string; fra: string | null; tidsrom: string; dager: string | null; varighet: string | null;
   uker: FysUkeStatus[]; gjort: number; totalt: number; ukeNaa: number | null;
   okter: FysOktVisning[];
-  neste: { navn: string; dato: string | null; ukeIso: number; varighet: string | null; antallOvelser: number } | null;
+  neste: { id: string; navn: string; dato: string | null; ukeIso: number; varighet: string | null; antallOvelser: number } | null;
 };
 
 /** Mandagen (UTC-midnatt, ms) i uka en dato ligger i, regnet på Oslo-kalenderdag. */
@@ -129,7 +129,7 @@ export function byggFysiskProgram(plan: FysPlanInn, naa: Date): FysProgram {
     const o = uker[i].okter.find((x) => !x.gjennomfortAt);
     if (!o) continue;
     const dato = o.dag ? `${DAG_KORT[o.dag]} ${KORT_DATO.format(new Date(ukeMs(i) + DAG_IDX[o.dag] * DAG_MS))}` : null;
-    neste = { navn: o.navn, dato, ukeIso: isoUke(ukeMs(i)), varighet: varighetTekst([o.estimertMinutter]), antallOvelser: o.rader.length };
+    neste = { id: o.id, navn: o.navn, dato, ukeIso: isoUke(ukeMs(i)), varighet: varighetTekst([o.estimertMinutter]), antallOvelser: o.rader.length };
   }
 
   const tidsrom = uker.length

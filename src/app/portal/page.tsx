@@ -33,6 +33,7 @@ import { TrenerforslagInnboks, type SpillerTrenerforslag } from "@/components/wo
 import { hentMineTrenerforslag } from "@/lib/workbench/trenerforslag";
 import { hentWangTestdeling } from "@/lib/portal-tester/wang-resultat-tilgang";
 import { WangTestforesporsel } from "@/components/portal/precision/WangTestforesporsel";
+import { fysOktHref } from "@/lib/portal-plan/fysisk-okt";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "I dag · PlayerHQ" };
@@ -162,7 +163,7 @@ async function PortalHjemInnhold() {
       const kg = [...new Set(o.startSett.map((s) => s.vekt))].filter((v) => v > 0);
       return [o.navn, o.startSett.length ? `${o.startSett.length} × ${reps.length === 1 ? reps[0] : reps.join("/")}` : "—", kg.length === 1 ? `${kg[0]} kg` : "—"];
     }),
-    href: "/portal/fysisk",
+    href: fysOktHref(fo.oktId),
   };
 
   const nt = data.nextTournament;
