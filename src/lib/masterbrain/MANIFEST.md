@@ -55,7 +55,7 @@ Maskinlesbar. Dette er det eneste stedet en agent skal hente fagkunnskap fra.
 
 | Fil | Innhold |
 |---|---|
-| `canon-methodology.json` | CANON v3.5 — kategori A–K, pyramide, L-faser, 13 invarianter |
+| `canon-methodology.json` | CANON v3.5 — kategori A–K, pyramide og perioder. Inneholder fortsatt L-faser, CS-skala og 13 invarianter, som er utgått; AK Golf HQ siler dem bort før agentene leser |
 | `ltad-framework.json` | LTAD/ATK aldersmodell, volumtak, AK-stigen |
 | `sg-principles.json` | SG-prinsipper, 5 APP-bånd, **`sg_to_morad_faults`** og **`app_band_faults`** |
 | `upgame-dimensions.json` | UpGame konkurranseintelligens |

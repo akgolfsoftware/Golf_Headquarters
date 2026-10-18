@@ -319,11 +319,12 @@ async function hentForrigeEffektivitet(
 ): Promise<ForrigeEffektivitet | null> {
   const eff = await prisma.planEffectiveness.findFirst({
     where: { userId },
-    orderBy: { computedAt: "desc" },
+    orderBy: { createdAt: "desc" },
     select: {
       planId: true,
       templateId: true,
       completionRate: true,
+      complianceRate: true,
       sgTotalDelta: true,
       sgOttDelta: true,
       sgAppDelta: true,
@@ -333,13 +334,14 @@ async function hentForrigeEffektivitet(
       coachRating: true,
       notes: true,
       computedAt: true,
+      createdAt: true,
     },
   });
-  if (!eff) return null;
+  if (!eff || !eff.planId) return null;
   return {
     planId: eff.planId,
     templateId: eff.templateId,
-    completionRate: eff.completionRate,
+    completionRate: eff.completionRate ?? eff.complianceRate ?? 0,
     sgTotalDelta: eff.sgTotalDelta,
     sgOttDelta: eff.sgOttDelta,
     sgAppDelta: eff.sgAppDelta,
@@ -348,7 +350,7 @@ async function hentForrigeEffektivitet(
     selfRating: eff.selfRating,
     coachRating: eff.coachRating,
     notes: eff.notes,
-    computedAt: eff.computedAt.toISOString().slice(0, 10),
+    computedAt: (eff.computedAt ?? eff.createdAt).toISOString().slice(0, 10),
   };
 }
 
