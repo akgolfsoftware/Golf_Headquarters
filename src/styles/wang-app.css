@@ -480,7 +480,7 @@
 .wang-app .wg-smaa-tall { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .wang-app .wg-smaa-tall > * { display: grid; gap: 3px; align-content: start; padding: 10px 12px; border: 1px solid var(--wg-n200); background: #ffffff; }
 .wang-app .wg-smaa-tall strong { font: 600 22px/1.1 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-navy-dyp); }
-.wang-app .wg-smaa-tall span { font: 700 12px/1.3 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-tekst-2); }
+.wang-app .wg-smaa-tall span { hyphens: auto; overflow-wrap: anywhere; font: 700 12px/1.3 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-tekst-2); }
 
 /* Mobil: én kolonne i prioritert rekkefølge (det som venter først). PC: to kolonner. */
 .wang-app .wg-idag-kol { display: grid; gap: 28px; }
@@ -565,3 +565,109 @@
 @keyframes wg-skjelett { to { background-position: -200% 0; } }
 @media (prefers-reduced-motion: reduce) { .wang-app .wg-skjelett { animation: none; } }
 .wang-app .wg-idag-kol .wg-sek-topp { min-height: 44px; align-items: center; }
+
+/* =========================================================================
+   Pakke 3–10 (utkast 2, godkjent 16.10.2026): tre bånd, elevrad, aksestolper,
+   periodebånd, aksevalg, timetabell og kvittering. Fasit: felles/wang.css og
+   trening.html, tester.html, konkurranse.html, meldinger.html, elever.html og
+   administrasjon.html i docs/design-system/utkast-wang/. Perioder og status
+   bruker aldri aksefargene.
+   ========================================================================= */
+.wang-app .wg-baand { display: grid; gap: 22px; }
+.wang-app .wg-baand-del { display: grid; gap: 10px; align-content: start; }
+.wang-app .wg-baand-hode { display: flex; align-items: center; gap: 6px 10px; flex-wrap: wrap; }
+.wang-app .wg-baand-hode h3 { margin: 0; font: 800 17px/1.25 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-tekst); }
+.wang-app .wg-baand-hode p { flex-basis: 100%; margin: 0; font-size: 14px; line-height: 1.45; color: var(--wg-tekst-2); }
+.wang-app .wg-antall { display: inline-flex; align-items: center; justify-content: center; min-width: 26px; height: 22px; padding: 0 7px; background: var(--wg-n200); color: var(--wg-navy-dyp); font: 800 12px/1 var(--font-wang-brand, Montserrat, sans-serif); }
+.wang-app .wg-baand-trenger .wg-antall { background: var(--wg-rosa-tekst); color: #ffffff; }
+.wang-app .wg-baand-folger .wg-antall { background: var(--wg-mint); color: var(--wg-navy-dyp); }
+.wang-app .wg-baand-liste { display: grid; gap: 6px; }
+.wang-app .wg-baand-tom { padding: 12px 14px; background: var(--wg-tint-graa); font-size: 14px; color: var(--wg-tekst-2); }
+
+.wang-app .wg-elevrad { display: grid; grid-template-columns: auto minmax(0, 1fr) minmax(88px, 32%); gap: 12px; align-items: center; padding: 10px 12px 10px 16px; border: 1px solid var(--wg-n200); background: #ffffff; color: inherit; text-decoration: none; }
+.wang-app a.wg-elevrad:hover { border-color: var(--wg-n400); text-decoration: none; }
+.wang-app .wg-elevrad:focus-visible { outline: 3px solid var(--wg-mint); outline-offset: 2px; }
+.wang-app .wg-elevrad-trenger { box-shadow: inset 5px 0 0 var(--wg-rosa); }
+.wang-app .wg-elevrad-folger { box-shadow: inset 5px 0 0 var(--wg-mint); }
+.wang-app .wg-elevrad-ikke { box-shadow: inset 5px 0 0 var(--wg-n400); background: var(--wg-tint-graa); }
+.wang-app .wg-er-hvem b { display: block; font: 700 15px/1.25 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-navy-dyp); }
+.wang-app .wg-er-hvem span { display: block; font-size: 13px; line-height: 1.4; color: var(--wg-tekst-2); }
+.wang-app .wg-er-plan { display: grid; gap: 5px; justify-items: end; }
+.wang-app .wg-er-plan b { font: 600 17px/1 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-navy-dyp); white-space: nowrap; }
+.wang-app .wg-er-plan .wg-stolpe { width: 100%; height: 8px; }
+.wang-app .wg-stolpe > i.wg-strek { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--wg-navy-dyp); z-index: 1; }
+
+.wang-app .wg-akserad { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 8px 0; }
+.wang-app .wg-akserad .wg-tall { font: 800 13px/1.2 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-navy-dyp); text-align: right; white-space: nowrap; }
+.wang-app .wg-akserad .wg-tall span { display: block; font: 700 11px/1.2 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-tekst-2); }
+
+.wang-app .wg-lg-rad { display: flex; flex-wrap: wrap; gap: 6px 14px; }
+.wang-app .wg-lg { display: inline-flex; align-items: center; gap: 6px; font: 700 12px/1.3 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-tekst-2); }
+.wang-app .wg-lg i { width: 10px; height: 10px; }
+
+/* Periodene: nøytrale toner, aldri aksefargene (farge betyr akse) */
+.wang-app .wg-periodebaand { display: flex; height: 44px; overflow: hidden; gap: 2px; }
+.wang-app .wg-periodebaand > span { display: flex; align-items: center; justify-content: center; min-width: 4px; font: 800 10px/1 var(--font-wang-brand, Montserrat, sans-serif); letter-spacing: 0.04em; overflow: hidden; white-space: nowrap; }
+.wang-app .wg-p-GRUNN { background: var(--wg-n300); color: var(--wg-navy-dyp); }
+.wang-app .wg-p-SPESIAL { background: var(--wg-n200); color: var(--wg-navy-dyp); }
+.wang-app .wg-p-TURNERING { background: var(--wg-tint-navy); color: var(--wg-navy-dyp); }
+.wang-app .wg-p-TESTUKE, .wang-app .wg-p-EVALUERING { background: var(--wg-gul); color: var(--wg-navy-dyp); }
+.wang-app .wg-p-RESTITUSJON { background: var(--wg-tint-mint); color: var(--wg-navy-dyp-tekst); }
+.wang-app .wg-p-FERIE, .wang-app .wg-p-TRENINGSSAMLING, .wang-app .wg-p-HELDAGSSAMLING { background: var(--wg-tint-graa); color: var(--wg-tekst-2); }
+.wang-app .wg-perioder { display: grid; gap: 12px; }
+.wang-app .wg-periode { display: grid; gap: 10px; padding: 16px; background: #ffffff; border: 1px solid var(--wg-n200); border-left: 8px solid var(--wg-n300); color: inherit; text-decoration: none; }
+.wang-app a.wg-periode:hover { border-color: var(--wg-n400); text-decoration: none; }
+.wang-app .wg-periode-naa { box-shadow: 0 0 0 3px var(--wg-mint); }
+.wang-app .wg-periode-topp { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; align-items: baseline; }
+.wang-app .wg-periode-topp b { font: 800 17px/1.2 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-navy-dyp); }
+.wang-app .wg-periode-topp span { font: 700 13px/1 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-tekst-2); }
+.wang-app .wg-hendelser { display: flex; flex-wrap: wrap; gap: 6px; }
+.wang-app .wg-hend { display: inline-flex; align-items: center; height: 26px; padding: 0 10px; background: var(--wg-tint-graa); font: 700 12px/1 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-tekst); }
+
+/* Skjema: aksevalg (pyramiden først), timetabell, kvittering */
+.wang-app .wg-aksevalg { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+.wang-app .wg-aksevalg button { min-height: 52px; border: 0; font: 800 12px/1 var(--font-wang-brand, Montserrat, sans-serif); letter-spacing: 0.04em; cursor: pointer; color: var(--wg-navy-dyp); background: var(--wg-tint-graa); }
+.wang-app .wg-aksevalg button[aria-pressed="true"] { box-shadow: 0 0 0 3px #ffffff, 0 0 0 5px var(--wg-navy-dyp); }
+.wang-app .wg-aksevalg button:focus-visible { outline: 3px solid var(--wg-mint); outline-offset: 2px; }
+.wang-app .wg-aksevalg .wg-akse-fys[aria-pressed="true"] { background: var(--wg-fys); color: var(--wg-fys-paa); }
+.wang-app .wg-aksevalg .wg-akse-tek[aria-pressed="true"] { background: var(--wg-tek); color: var(--wg-tek-paa); }
+.wang-app .wg-aksevalg .wg-akse-slag[aria-pressed="true"] { background: var(--wg-slag); color: var(--wg-slag-paa); }
+.wang-app .wg-aksevalg .wg-akse-spill[aria-pressed="true"] { background: var(--wg-spill); color: var(--wg-spill-paa); }
+.wang-app .wg-aksevalg .wg-akse-turn[aria-pressed="true"] { background: var(--wg-turn); color: var(--wg-turn-paa); }
+.wang-app .wg-to-felt { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
+.wang-app .wg-timetabell { display: grid; gap: 8px; }
+.wang-app .wg-timetabell .wg-t { display: grid; grid-template-columns: 56px minmax(0, 1fr) minmax(0, 1fr); gap: 8px; align-items: center; }
+.wang-app .wg-timetabell .wg-t-hode span { font: 700 11px/1.2 var(--font-wang-brand, Montserrat, sans-serif); letter-spacing: 0.06em; text-transform: uppercase; color: var(--wg-tekst-2); }
+.wang-app .wg-kvittering { display: grid; gap: 6px; padding: 14px 16px; background: var(--wg-tint-mint); color: var(--wg-navy-dyp-tekst); }
+.wang-app .wg-kvittering b { font: 800 15px/1.3 var(--font-wang-brand, Montserrat, sans-serif); }
+.wang-app .wg-merknad { display: grid; gap: 6px; padding: 14px 16px; background: var(--wg-tint-gul); color: var(--wg-navy-dyp); }
+.wang-app .wg-merknad b { font: 800 15px/1.3 var(--font-wang-brand, Montserrat, sans-serif); }
+.wang-app .wg-ukeplan { display: grid; gap: 12px; }
+.wang-app .wg-dagkol { display: grid; gap: 8px; align-content: start; }
+.wang-app .wg-dagkol h3 { margin: 0; font: 800 14px/1 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-tekst-2); display: flex; justify-content: space-between; gap: 8px; }
+.wang-app .wg-dagkol-idag h3 { color: var(--wg-navy); }
+.wang-app .wg-leggtil { display: flex; align-items: center; justify-content: center; min-height: 44px; border: 2px dashed var(--wg-n300); background: transparent; font: 700 13px/1 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-tekst-2); text-decoration: none; }
+.wang-app .wg-leggtil:hover { border-color: var(--wg-n400); text-decoration: none; }
+
+.wang-app .wg-smaa-tall.wg-smaa-fire { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@container (min-width: 900px) {
+  .wang-app .wg-baand-kol { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+  .wang-app .wg-smaa-tall.wg-smaa-fire { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .wang-app .wg-perioder { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .wang-app .wg-ukeplan { grid-template-columns: repeat(5, minmax(0, 1fr)); align-items: start; }
+}
+@media (max-width: 420px) {
+  .wang-app .wg-aksevalg { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+/* Pakke 4 Tester: lenkerader i lister, poengvalg for 8-ball */
+.wang-app a.wg-rad-lenke { color: inherit; text-decoration: none; min-height: 44px; }
+.wang-app a.wg-rad-lenke:hover b { text-decoration: underline; }
+.wang-app a.wg-rad-lenke:focus-visible { outline: 3px solid var(--wg-mint); outline-offset: 2px; }
+.wang-app .wg-valg-fem { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.wang-app .wg-testuke { border-left: 6px solid var(--wg-navy); }
+.wang-app a.wg-turnkort { display: grid; gap: 6px; align-content: start; padding: 16px; color: inherit; text-decoration: none; border-top: 4px solid var(--wg-navy); }
+.wang-app a.wg-turnkort:hover { border-color: var(--wg-n400); border-top-color: var(--wg-navy); text-decoration: none; }
+.wang-app .wg-skriv { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: end; }
+.wang-app .wg-skjult { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.wang-app .wg-merknad { margin: 0; }

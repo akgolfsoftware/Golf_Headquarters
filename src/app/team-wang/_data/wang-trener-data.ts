@@ -41,10 +41,18 @@ export interface WangTrenerUkeOkt {
 
 export interface WangTrenerPeriode {
   id: string;
+  /** Kodenavnet fra basen (GRUNN, SPESIAL …). Styrer den nøytrale periodetonen. */
+  fase: string;
   navn: string;
   fokus: string | null;
   startIso: string;
   endIso: string;
+  /** ISO-ukenummer for første og siste dag. */
+  fraUke: number;
+  tilUke: number;
+  /** Minutter per uke fra perioden, når den er satt. */
+  ukevolMin: number | null;
+  ukevolMax: number | null;
   status: "avsluttet" | "naa" | "kommende";
 }
 
@@ -108,7 +116,7 @@ function ukedag(iso: string): number {
 }
 
 /** ISO 8601-ukenummer. */
-function ukenummer(iso: string): number {
+export function ukenummer(iso: string): number {
   const [y, m, d] = iso.split("-").map(Number);
   // Torsdagen i samme uke avgjør hvilket år uka hører til.
   const torsdag = new Date(Date.UTC(y, m - 1, d + 3 - ukedag(iso)));
@@ -201,10 +209,15 @@ export function byggWangTrenerData(
       })),
     perioder: [...live.perioder].sort(etterDato).map((p) => ({
       id: p.id,
+      fase: p.fase,
       navn: FASE_NAVN[p.fase] ?? p.fase,
       fokus: p.fokus,
       startIso: p.startIso,
       endIso: p.endIso,
+      fraUke: ukenummer(p.startIso),
+      tilUke: ukenummer(p.endIso),
+      ukevolMin: p.ukevolMin,
+      ukevolMax: p.ukevolMax,
       status: p.endIso < idagIso ? "avsluttet" : p.startIso > idagIso ? "kommende" : "naa",
     })),
     turneringer: live.hendelser.filter((h) => erTurnering(h.tittel)).map(tilHendelse).sort(etterDato),

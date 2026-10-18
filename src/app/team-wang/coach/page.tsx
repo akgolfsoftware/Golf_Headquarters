@@ -14,6 +14,10 @@ import { Capability } from "@/lib/auth/cbac";
 import { WangCoachKlient } from "@/app/team-wang/coach/WangCoachKlient";
 import type { WangOmraade } from "@/components/wang/WangAppSkall";
 import {
+  hentWangSamtykkeStatus,
+  hentWangTesterData,
+} from "@/app/team-wang/_data/wang-tester-data";
+import {
   byggWangTrenerData,
   osloIdagIso,
   osloNaaTid,
@@ -33,6 +37,7 @@ interface WangCoachPageProps {
     omraade?: string;
     fane?: string;
     okt?: string;
+    id?: string;
     visArsplan?: string;
   }>;
 }
@@ -81,18 +86,26 @@ export default async function WangCoachPage({ searchParams }: WangCoachPageProps
     redirect("/team-wang/coach?omraade=idag");
   }
 
-  const elever = live.elever
-    .filter((e) => e.rolle === "PLAYER")
-    .map((e) => ({ id: e.id, navn: e.navn }));
+  // Testresultater og testsamtykke bare der de vises. Tilgangen går gjennom delingssamtykket.
+  const tester = ["tester", "elever", "admin"].includes(aktivtOmraade)
+    ? await hentWangTesterData(bruker, gruppeId)
+    : undefined;
+  if (tester && aktivtOmraade === "admin") {
+    tester.samtykke = await hentWangSamtykkeStatus(
+      live.elever.filter((e) => e.rolle === "PLAYER").map((e) => e.id),
+      gruppeId,
+    );
+  }
 
   return (
     <WangCoachKlient
       omraade={aktivtOmraade}
       fane={params.fane}
       oktId={params.okt}
+      id={params.id}
       rolle={rolle}
       brukerNavn={bruker.name ?? undefined}
-      elever={elever}
+      tester={tester}
       data={byggWangTrenerData(live, osloIdagIso(), osloNaaTid())}
     />
   );
