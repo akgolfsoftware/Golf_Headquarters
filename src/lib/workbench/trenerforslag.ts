@@ -24,6 +24,10 @@ const LagForslagSchema = z.object({
   if (v.handling !== "ADD" && (!v.sessionId || (v.handling === "UPDATE" && !v.etter) || (v.handling === "CANCEL" && v.etter)))
     ctx.addIssue({ code: "custom", message: "Ugyldig endringsforslag." });
 });
+const LagSerieSchema = z.object({
+  organisasjon: z.enum(["WANG", "TEAM_NORWAY"]), spillerId: z.string().min(1).max(120),
+  okter: z.array(Innslag).min(1).max(24), begrunnelse: z.string().trim().min(5).max(1000),
+}).strict();
 const SvarSchema = z.object({ actionId: z.string().min(1).max(120), beslutning: z.enum(["ACCEPTED", "REJECTED"]) }).strict();
 const KANONISK_TILSTAND = new Set(["DRAFT", "SCHEDULED", "PUBLISHED"]);
 const ORGANISASJON_SLUG: Record<"WANG" | "TEAM_NORWAY", string> = { WANG: "wang-toppidrett", TEAM_NORWAY: TEAM_NORWAY_SLUG };
@@ -38,6 +42,26 @@ type Forslag = {
 function datoKolonne(iso: string) { return new Date(`${iso}T00:00:00.000Z`); }
 function osloIdag() { return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Oslo" }).format(new Date()); }
 
+/** Organisasjonsgruppa der treneren har aktiv trenerrolle. Gruppemedlemskap alene gir ikke innsyn; det gjør delingen. */
+async function trenerGruppe(trenerId: string, organisasjon: "WANG" | "TEAM_NORWAY") {
+  const gruppe = await prisma.group.findFirst({ where: { slug: ORGANISASJON_SLUG[organisasjon], arkivertAt: null }, select: { id: true } });
+  if (!gruppe) return { ok: false as const, feil: "Organisasjonen er ikke tilgjengelig." };
+  const trenerrolle = await prisma.groupMember.findFirst({ where: {
+    groupId: gruppe.id, userId: trenerId, role: "COACH", ...aktivtTrenerMedlemskapWhere(trenerId),
+  }, select: { id: true } });
+  if (!trenerrolle) return { ok: false as const, feil: "Du har ikke trenerrolle i denne organisasjonen." };
+  return { id: gruppe.id };
+}
+
+/** Øktene spilleren har i perioden nå. Endres de før spilleren svarer, gir svaret konflikt. */
+async function planIPerioden(tx: Prisma.TransactionClient, spillerId: string, fra: string, til: string) {
+  const rader = await tx.workbenchSession.findMany({
+    where: { playerId: spillerId, date: { gte: datoKolonne(fra), lte: datoKolonne(til) } },
+    select: { id: true, updatedAt: true }, orderBy: { id: "asc" },
+  });
+  return { antall: rader.length, sistEndret: rader.reduce<string | null>((m, r) => { const t = r.updatedAt.toISOString(); return !m || t > m ? t : m; }, null) };
+}
+
 /** Treneren lagrer et separat, versjonsfestet forslag. Spillerens aktive plan røres ikke. */
 export async function lagTrenerforslag(input: unknown) {
   const trener = await requireCoachActionUser({ tillatDemo: true });
@@ -47,12 +71,8 @@ export async function lagTrenerforslag(input: unknown) {
     return { ok: false as const, feil: "Vent litt før du sender flere forslag." };
   const p = parsed.data;
   if (p.etter && p.etter.date < osloIdag()) return { ok: false as const, feil: "Treningsforslag må gjelde i dag eller framover." };
-  const gruppe = await prisma.group.findFirst({ where: { slug: ORGANISASJON_SLUG[p.organisasjon], arkivertAt: null }, select: { id: true } });
-  if (!gruppe) return { ok: false as const, feil: "Organisasjonen er ikke tilgjengelig." };
-  const trenerrolle = await prisma.groupMember.findFirst({ where: {
-    groupId: gruppe.id, userId: trener.id, role: "COACH", ...aktivtTrenerMedlemskapWhere(trener.id),
-  }, select: { id: true } });
-  if (!trenerrolle) return { ok: false as const, feil: "Du har ikke trenerrolle i denne organisasjonen." };
+  const gruppe = await trenerGruppe(trener.id, p.organisasjon);
+  if ("feil" in gruppe) return gruppe;
 
   const opprettet = await medNavngittProfil(trener.id, p.spillerId, gruppe.id, async (tx) => {
     const session = p.handling !== "ADD" ? await tx.workbenchSession.findFirst({ where: { id: p.sessionId, playerId: p.spillerId }, select: {
@@ -81,6 +101,40 @@ export async function lagTrenerforslag(input: unknown) {
   if (!opprettet) return { ok: false as const, feil: "Spillerens deling er ikke aktiv, eller økten kan ikke endres." };
   revalidatePath("/portal");
   revalidatePath(`/team-norway/workbench`);
+  return { ok: true as const, id: opprettet.id };
+}
+
+/**
+ * Planforslag med flere økter (Data Golf DG-07): ett forslag spilleren godtar eller avviser samlet.
+ * Spillerens plan røres ikke. Godtatt forslag legges inn én gang; har planen i perioden endret seg, gir det konflikt.
+ */
+export async function lagTrenerforslagSerie(input: unknown) {
+  const trener = await requireCoachActionUser({ tillatDemo: true });
+  const parsed = LagSerieSchema.safeParse(input);
+  if (!parsed.success) return { ok: false as const, feil: "Kontroller øktene og begrunnelsen." };
+  if (!(await rateLimit({ key: `trenerforslag:${trener.id}`, max: 20, windowMs: 60_000 })).ok)
+    return { ok: false as const, feil: "Vent litt før du sender flere forslag." };
+  const p = parsed.data;
+  const datoer = p.okter.map((o) => o.date).sort();
+  if (datoer[0] < osloIdag()) return { ok: false as const, feil: "Treningsforslag må gjelde i dag eller framover." };
+  const gruppe = await trenerGruppe(trener.id, p.organisasjon);
+  if ("feil" in gruppe) return gruppe;
+  const opprettet = await medNavngittProfil(trener.id, p.spillerId, gruppe.id, async (tx) => {
+    const suggestion: SerieForslag = {
+      versjon: 1, kind: "SESSION_SERIES", organisasjon: p.organisasjon, fra: datoer[0], til: datoer[datoer.length - 1],
+      expected: await planIPerioden(tx, p.spillerId, datoer[0], datoer[datoer.length - 1]),
+      okter: p.okter.map((o) => ({ ...o, location: o.location ?? null })), begrunnelse: p.begrunnelse,
+    };
+    return tx.planAction.create({ data: {
+      userId: p.spillerId, coachId: trener.id, actionType: "WORKBENCH_COACH_PROPOSAL",
+      suggestion: suggestion satisfies Prisma.InputJsonObject, status: "PENDING",
+      agentName: p.organisasjon === "WANG" ? "WANG_COACH" : "TEAM_NORWAY_COACH",
+    }, select: { id: true } });
+  });
+  if (!opprettet) return { ok: false as const, feil: "Spillerens deling er ikke aktiv." };
+  revalidatePath("/portal");
+  revalidatePath("/team-norway/datagolf");
+  revalidatePath("/team-wang");
   return { ok: true as const, id: opprettet.id };
 }
 
@@ -117,10 +171,20 @@ const IupFokusSchema = z.object({
     egentidMinUke: z.number().int().min(0).max(2400), maalemetode: z.string().max(500).nullable() }).strict()).max(10),
   begrunnelse: z.string().max(1000),
 }).strict();
-const ForslagSchema = z.union([SessionForslagSchema, IupFokusSchema]);
+const SerieForslagSchema = z.object({
+  versjon: z.literal(1), kind: z.literal("SESSION_SERIES"), organisasjon: z.enum(["WANG", "TEAM_NORWAY"]),
+  fra: z.iso.date(), til: z.iso.date(),
+  expected: z.object({ antall: z.number().int().min(0), sistEndret: z.iso.datetime().nullable() }).strict(),
+  okter: z.array(Innslag.extend({ location: z.string().max(120).nullable() })).min(1).max(24), begrunnelse: z.string().max(1000),
+}).strict();
+type SerieForslag = z.infer<typeof SerieForslagSchema>;
+const ForslagSchema = z.union([SessionForslagSchema, IupFokusSchema, SerieForslagSchema]);
 type LagretForslag = z.infer<typeof ForslagSchema>;
 function erIupFokus(p: LagretForslag): p is z.infer<typeof IupFokusSchema> {
   return "kind" in p && p.kind === "IUP_FOCUS";
+}
+function erSerie(p: LagretForslag): p is SerieForslag {
+  return "kind" in p && p.kind === "SESSION_SERIES";
 }
 
 /** Aksept og planendring er én transaksjon; samme forslag kan aldri anvendes to ganger. */
@@ -173,6 +237,29 @@ export async function svarPaTrenerforslag(input: unknown) {
         userId: spiller.id, periodBlockId: p.periodBlockId, akse: goal.akse, tittel: goal.tittel,
         egentidMinUke: goal.egentidMinUke, maalemetode: goal.maalemetode,
       })) });
+      const claimed = await tx.planAction.updateMany({ where: { id: action.id, userId: spiller.id, status: "PENDING" }, data: {
+        status: "ACCEPTED", decidedAt: new Date(), decidedById: spiller.id,
+      } });
+      if (claimed.count !== 1) throw new Error("proposal_already_decided");
+      return { ok: true as const, status: "ACCEPTED" as const };
+    }
+    if (erSerie(p)) {
+      const naa = await planIPerioden(tx, spiller.id, p.fra, p.til);
+      if (naa.antall !== p.expected.antall || naa.sistEndret !== p.expected.sistEndret || p.fra < osloIdag()) {
+        await tx.planAction.updateMany({ where: { id: action.id, userId: spiller.id, status: "PENDING" }, data: {
+          status: "CONFLICT", decidedAt: new Date(), decidedById: spiller.id,
+        } });
+        return { ok: false as const, feil: "Planen er endret siden forslaget ble laget. Be treneren sende et nytt forslag." };
+      }
+      for (const o of p.okter) {
+        await tx.workbenchSession.create({ data: {
+          playerId: spiller.id, coachId: action.coachId ?? "", createdBy: action.coachId ?? "",
+          date: datoKolonne(o.date), startMinute: o.startMinute, durationMinutes: o.durationMinutes,
+          title: o.title, pyramid: o.pyramid, location: o.location ?? null,
+          status: "PUBLISHED", publishedAt: new Date(), publishedBy: spiller.id,
+          blockType: "OEKT", origin: p.organisasjon, planActionId: action.id,
+        } });
+      }
       const claimed = await tx.planAction.updateMany({ where: { id: action.id, userId: spiller.id, status: "PENDING" }, data: {
         status: "ACCEPTED", decidedAt: new Date(), decidedById: spiller.id,
       } });
