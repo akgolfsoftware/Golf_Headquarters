@@ -1,49 +1,59 @@
+// PH-25 Sikkerhet — Precision Athletics, pakke 14 (utkast meg-resten.html, 16.10.2026).
 /**
- * v2 — PlayerHQ Innstillinger · Sikkerhet (retning C). V2Shell leverer chrome-en
- * (IkonRail/BunnNav, aktiv «meg»), InnstillingerSikkerhetV2 rendrer innholds-stacken.
+ * PlayerHQ · Innstillinger · Sikkerhet. Kanonisk sikkerhetsskjerm etter D7-konsolideringen
+ * (17.07.2026): /portal/meg/sikkerhet sender hit.
  *
- * KANONISK sikkerhet-skjerm etter D7-konsolideringen (Anders 17. juli 2026):
- * /portal/meg/sikkerhet er nå redirect hit; passord-/e-post-skjemaene derfra
- * er flyttet inn i InnstillingerSikkerhetV2. Auth-guard og score-heuristikk
- * uendret:
- *   - Sikkerhetsscore utledet ærlig fra hva vi faktisk vet (e-post bekreftet
- *     → 80, ellers 55; 2FA-flagg finnes ikke på User ennå, så +20 opptjenes
- *     via 2FA-flyten).
- *   - Endre passord/e-post: skjema klientside mot Supabase Auth (i
- *     komponenten). Glemt passord: lenke til /auth/forgot-password.
- *     Tofaktor: lenke til den ekte TOTP-flyten på /portal/meg/sikkerhet/2fa.
- *   - Aktive økter: ekte lastLoginAt; full øktliste er «kommer snart» —
- *     ingen oppdiktede enheter eller tidspunkter.
+ * Innloggingsmåte og tofaktor leses fra Supabase-økta (identiteter og faktorer), ikke gjettet.
+ * Passord og e-post byttes klientside mot Supabase Auth i komponenten.
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { InnstillingerSikkerhetV2 } from "@/components/portal/v2/InnstillingerSikkerhetV2";
+import { createClient } from "@/lib/supabase/server";
+import { logout } from "@/lib/auth/logout";
+import { getUnreadNotifications } from "@/app/portal/actions";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { PH25Sikkerhet } from "@/components/portal/precision/PH25Sikkerhet";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Sikkerhet · PlayerHQ" };
 
-function formatSiste(d: Date | null | undefined): string {
-  if (!d) return "Ukjent";
-  return `${d.toLocaleDateString("nb-NO", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    timeZone: "Europe/Oslo",
-  })} · ${d.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Oslo" })}`;
+const OSLO = "Europe/Oslo";
+const DAG = new Intl.DateTimeFormat("sv-SE", { timeZone: OSLO, year: "numeric", month: "2-digit", day: "2-digit" });
+const KL = new Intl.DateTimeFormat("nb-NO", { timeZone: OSLO, hour: "2-digit", minute: "2-digit" });
+const DATO = new Intl.DateTimeFormat("nb-NO", { timeZone: OSLO, day: "numeric", month: "long" });
+
+function sistInnlogget(d: Date | null | undefined): string | null {
+  if (!d) return null;
+  const iDag = DAG.format(new Date()) === DAG.format(d);
+  return `${iDag ? "i dag" : DATO.format(d)} ${KL.format(d)}`;
 }
 
 export default async function SikkerhetPage() {
   const user = await requirePortalUser({ kreverTilgang: "INGEN" });
+  const supabase = await createClient();
+  const [{ data: auth }, { data: faktorer }, uleste] = await Promise.all([
+    supabase.auth.getUser(),
+    supabase.auth.mfa.listFactors(),
+    getUnreadNotifications(user.id, 1),
+  ]);
 
-  // Ærlig score: passord (Supabase-konto) gir basis, e-post bekreftet løfter,
-  // 2FA-aktivering gir resten. Vi har ikke 2FA-flagg på User enda, så toppen
-  // (+20) opptjenes via 2FA-flyten — derav 80 som realistisk nåverdi.
-  const harEpost = !!user.email;
-  const score = harEpost ? 80 : 55;
+  const leverandorer = new Set((auth.user?.identities ?? []).map((i) => i.provider));
+  const google = leverandorer.has("google");
+  // E-post-identiteten er passordinnloggingen. Uten kjent identitet antas passord, som før.
+  const passord = leverandorer.has("email") || leverandorer.size === 0;
 
   return (
-    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <InnstillingerSikkerhetV2 data={{ score, sisteInnlogging: formatSiste(user.lastLoginAt) }} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste.count}>
+      <PH25Sikkerhet
+        data={{
+          epost: user.email ?? "—",
+          google,
+          passord,
+          tofaktorPaa: (faktorer?.totp ?? []).some((f) => f.status === "verified"),
+          sisteInnlogging: sistInnlogget(user.lastLoginAt),
+        }}
+        loggUt={logout}
+      />
+    </PlayerHQSkall>
   );
 }
