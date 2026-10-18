@@ -86,10 +86,6 @@ export default async function WangCoachPage({ searchParams }: WangCoachPageProps
     redirect("/team-wang/coach?omraade=idag");
   }
 
-  const elever = live.elever
-    .filter((e) => e.rolle === "PLAYER")
-    .map((e) => ({ id: e.id, navn: e.navn }));
-
   // Testresultater og testsamtykke bare der de vises. Tilgangen går gjennom delingssamtykket.
   const tester = ["tester", "elever", "admin"].includes(aktivtOmraade)
     ? await hentWangTesterData(bruker, gruppeId)
@@ -109,7 +105,6 @@ export default async function WangCoachPage({ searchParams }: WangCoachPageProps
       id={params.id}
       rolle={rolle}
       brukerNavn={bruker.name ?? undefined}
-      elever={elever}
       tester={tester}
       data={byggWangTrenerData(live, osloIdagIso(), osloNaaTid())}
     />

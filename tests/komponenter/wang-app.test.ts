@@ -215,14 +215,18 @@ describe('WANG Toppidrett Modul (Samtlige WANG-skjermer)', async () => {
   test('WangElever: elevlista fra gruppa med lenke til IUP', () => {
     const html = vis(WangElever);
     assert.ok(html.includes('Elev 1 Demo'));
-    assert.ok(html.includes('/team-wang/coach/iup/e1'));
+    assert.ok(html.includes('fane=elev&amp;id=e1'));
+    assert.ok(visMed(WangElever, { aktivFane: 'elev', id: 'e1' }).includes('/team-wang/coach/iup/e1'));
     assert.ok(vis(WangElever, tom).includes('Ingen elever i gruppa.'));
   });
 
-  test('WangAdmin: trenere og timeplan fra gruppa', () => {
+  test('WangAdmin: trenere og timeplan fra gruppa, samtykket per elev', () => {
     const html = vis(WangAdmin);
     assert.ok(html.includes('Trenere og roller'));
     assert.ok(html.includes('Demotrener WANG'));
+    const samtykke = visMed(WangAdmin, { aktivFane: 'samtykke', tester: { ...TESTER, samtykke: { e1: 'DELT', e3: 'VENTER_PA_FORELDER' } } });
+    assert.ok(samtykke.includes('Venter på forelder'));
+    assert.ok(samtykke.includes('av 11 deler testene med WANG'));
   });
 
   test('WangSkjermoversikt (WANG-00): lister alle 63 skjermer med søk og filter', () => {

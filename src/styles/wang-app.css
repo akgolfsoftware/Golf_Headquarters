@@ -649,9 +649,10 @@
 .wang-app .wg-leggtil { display: flex; align-items: center; justify-content: center; min-height: 44px; border: 2px dashed var(--wg-n300); background: transparent; font: 700 13px/1 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-tekst-2); text-decoration: none; }
 .wang-app .wg-leggtil:hover { border-color: var(--wg-n400); text-decoration: none; }
 
+.wang-app .wg-smaa-tall.wg-smaa-fire { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 @container (min-width: 900px) {
   .wang-app .wg-baand-kol { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
-  .wang-app .wg-smaa-fire { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .wang-app .wg-smaa-tall.wg-smaa-fire { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .wang-app .wg-perioder { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
   .wang-app .wg-ukeplan { grid-template-columns: repeat(5, minmax(0, 1fr)); align-items: start; }
 }

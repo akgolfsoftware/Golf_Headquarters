@@ -11,7 +11,6 @@ import { WangMeldinger } from '@/components/wang/WangMeldinger';
 import { WangElever } from '@/components/wang/WangElever';
 import { WangAdmin } from '@/components/wang/WangAdmin';
 import { WangSkjermoversikt } from '@/components/wang/WangSkjermoversikt';
-import { WangKobledeVisninger, type WangKobletElev } from '@/components/wang/WangKobledeVisninger';
 import type { WangRolle } from '@/app/team-wang/_data/wang-rolle';
 import type { WangTrenerData } from '@/app/team-wang/_data/wang-trener-data';
 import type { WangTesterData } from '@/app/team-wang/_data/wang-tester-visning';
@@ -26,9 +25,7 @@ interface WangCoachKlientProps {
   id?: string;
   rolle: WangRolle;
   brukerNavn?: string;
-  /** PLAYER-medlemmer i WANG-gruppa, til lenkene mot ekte data. */
-  elever?: WangKobletElev[];
-  /** Testresultater for elevene som deler testene med WANG (Tester). */
+  /** Testresultater og testsamtykke for elevene som deler med WANG (Tester, Elever, Administrasjon). */
   tester?: WangTesterData;
   /** Ekte gruppedata, bygget på serveren (byggWangTrenerData). */
   data: WangTrenerData;
@@ -41,7 +38,6 @@ export function WangCoachKlient({
   id,
   rolle,
   brukerNavn,
-  elever = [],
   tester,
   data,
 }: WangCoachKlientProps) {
@@ -106,11 +102,10 @@ export function WangCoachKlient({
       )}
 
       {omraade === 'elever' && (
-        <WangKobledeVisninger elever={elever} visning="iup" />
-      )}
-      {omraade === 'elever' && (
         <WangElever
           aktivFane={fane}
+          id={id}
+          tester={tester}
           onFaneEndret={(nyFane) => navigerTil('elever', nyFane)}
           data={data}
         />
@@ -119,6 +114,7 @@ export function WangCoachKlient({
       {omraade === 'admin' && (
         <WangAdmin
           aktivFane={fane}
+          tester={tester}
           onFaneEndret={(nyFane) => navigerTil('admin', nyFane)}
           data={data}
         />
