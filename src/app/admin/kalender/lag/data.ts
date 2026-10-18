@@ -117,6 +117,7 @@ async function hentHendelserIVindu(
   vinduStart: Date,
   vinduSlutt: Date,
   dager: string[],
+  seer: KalenderSeer,
 ): Promise<{
   hendelser: KalenderHendelse[];
   /** Coachene som har hendelser i vinduet (pluss den som ser), for coachfilteret. */
@@ -353,7 +354,7 @@ async function hentHendelserIVindu(
 }
 
 export async function hentKalenderLagUke(
-  ukeParam?: string,
+  ukeParam: string | undefined,
   opts: { lag?: KalenderLag; visning?: "uke" | "dag"; dato?: string; seer: KalenderSeer },
 ): Promise<KalenderLagUkeData> {
   const visning: KalenderVisning = opts.visning === "dag" ? "dag" : "uke";
@@ -410,7 +411,7 @@ export async function hentKalenderLagUke(
 }
 
 export async function hentKalenderLagManed(
-  maanedParam?: string,
+  maanedParam: string | undefined,
   opts: { lag?: KalenderLag; seer: KalenderSeer },
 ): Promise<KalenderLagUkeData> {
   const idag = new Date();
