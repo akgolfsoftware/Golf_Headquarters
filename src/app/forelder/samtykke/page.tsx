@@ -83,12 +83,13 @@ export default async function V2ForelderSamtykkePreviewPage() {
   // eneste som teller i ekstern-leser-scopet.
   const delingPerBarn = new Map<
     string,
-    { navn: string; grupper: DelingGruppeStatus[]; wangTestdeling: WangTestdeling[] }
+    { navn: string; grupper: DelingGruppeStatus[]; wangTestdeling: WangTestdeling[]; wangPlandeling: WangTestdeling[] }
   >(
     await Promise.all(
       relasjoner.map(async (r) => {
         const grupper = await grupperMedEksterneLesereForSpiller(r.child.id);
         const wangTestdeling = await hentWangTestdeling(r.child.id);
+        const wangPlandeling = await hentWangTestdeling(r.child.id, "TRENINGSPLAN");
         const status = await hentDelingsStatus(
           r.child.id,
           grupper.map((g) => g.id),
@@ -99,6 +100,7 @@ export default async function V2ForelderSamtykkePreviewPage() {
           {
             navn: r.child.name,
             wangTestdeling,
+            wangPlandeling,
             grupper: grupper.map((g) => ({
               gruppeId: g.id,
               gruppeNavn: g.name,
@@ -151,6 +153,11 @@ export default async function V2ForelderSamtykkePreviewPage() {
             {deling.wangTestdeling.map((d) => (
               <div key={d.gruppeId} style={{ marginBottom: 16 }}>
                 <WangTestforesporsel {...d} modus={{ type: "foresatt", childId: r.child.id, barnNavn: deling.navn }} />
+              </div>
+            ))}
+            {deling.wangPlandeling.map((d) => (
+              <div key={`plan-${d.gruppeId}`} style={{ marginBottom: 16 }}>
+                <WangTestforesporsel {...d} modus={{ type: "foresatt", childId: r.child.id, barnNavn: deling.navn }} omfang="TRENINGSPLAN" />
               </div>
             ))}
             {deling.grupper.length > 0 && <DelingSamtykkeKort

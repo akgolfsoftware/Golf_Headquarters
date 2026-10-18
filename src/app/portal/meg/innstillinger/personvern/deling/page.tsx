@@ -29,9 +29,10 @@ export default async function DelingPage() {
   const krevesForesatt = maaHaForesattSamtykke(user);
   const na = new Date();
 
-  const [grupper, wangTestdeling, enrollment, foreldre, navngitt] = await Promise.all([
+  const [grupper, wangTestdeling, wangPlandeling, enrollment, foreldre, navngitt] = await Promise.all([
     grupperMedEksterneLesereForSpiller(user.id),
     hentWangTestdeling(user.id),
+    hentWangTestdeling(user.id, "TRENINGSPLAN"),
     prisma.playerEnrollment.findFirst({
       where: { userId: user.id, endedAt: null, coachId: { not: null } },
       orderBy: { enrolledAt: "desc" },
@@ -73,7 +74,16 @@ export default async function DelingPage() {
       <PH27Deling
         data={data}
         settSamtykke={settSamtykke}
-        ekstra={wangTestdeling.length > 0 ? wangTestdeling.map((d) => <WangTestforesporsel key={d.gruppeId} {...d} modus={{ type: "spiller" }} />) : undefined}
+        ekstra={
+          wangTestdeling.length > 0 ? (
+            <>
+              {wangTestdeling.map((d) => <WangTestforesporsel key={d.gruppeId} {...d} modus={{ type: "spiller" }} />)}
+              {wangPlandeling.map((d) => (
+                <WangTestforesporsel key={`plan-${d.gruppeId}`} {...d} modus={{ type: "spiller" }} omfang="TRENINGSPLAN" />
+              ))}
+            </>
+          ) : undefined
+        }
       />
     </PlayerHQSkall>
   );

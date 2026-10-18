@@ -14,6 +14,7 @@ import { WangSkjermoversikt } from '@/components/wang/WangSkjermoversikt';
 import type { WangRolle } from '@/app/team-wang/_data/wang-rolle';
 import type { WangTrenerData } from '@/app/team-wang/_data/wang-trener-data';
 import type { WangTesterData } from '@/app/team-wang/_data/wang-tester-visning';
+import type { WangPlanData } from '@/app/team-wang/_data/wang-plan-visning';
 import type { WangDataGolfData } from '@/app/team-wang/_data/wang-datagolf-visning';
 import { WangDataGolf } from '@/components/wang/WangDataGolf';
 
@@ -29,6 +30,8 @@ interface WangCoachKlientProps {
   brukerNavn?: string;
   /** Testresultater og testsamtykke for elevene som deler med WANG (Tester, Elever, Administrasjon). */
   tester?: WangTesterData;
+  /** Elevenes delte plan (I dag, Trening, Elever). Bare elever som har delt planen med gruppa. */
+  plan?: WangPlanData;
   /** Data Golf (Konkurranse › Data Golf), bare når kanSeDataGolf slapp brukeren inn. */
   dataGolf?: WangDataGolfData;
   /** Ekte gruppedata, bygget på serveren (byggWangTrenerData). */
@@ -43,6 +46,7 @@ export function WangCoachKlient({
   rolle,
   brukerNavn,
   tester,
+  plan,
   dataGolf,
   data,
 }: WangCoachKlientProps) {
@@ -66,7 +70,7 @@ export function WangCoachKlient({
       }}
     >
       {omraade === 'idag' && (
-        <WangIdag aktivFane={fane} oktId={oktId} data={data} />
+        <WangIdag aktivFane={fane} oktId={oktId} data={data} plan={plan} />
       )}
 
       {omraade === 'trening' && (
@@ -74,6 +78,7 @@ export function WangCoachKlient({
           aktivFane={fane}
           id={id}
           onFaneEndret={(nyFane) => navigerTil('trening', nyFane)}
+          plan={plan}
           data={data}
         />
       )}
@@ -113,6 +118,7 @@ export function WangCoachKlient({
           aktivFane={fane}
           id={id}
           tester={tester}
+          plan={plan}
           onFaneEndret={(nyFane) => navigerTil('elever', nyFane)}
           data={data}
         />
