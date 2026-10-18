@@ -3,6 +3,8 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 import { Knapp } from "@/components/marketing/ak";
+import { PLAYERHQ_PRIS_MND_ORE } from "@/lib/domain/abonnement";
+import { prisma } from "@/lib/prisma";
 
 /**
  * Forsiden (akgolf.no) i «AK Golf Precision Athletics» — Anders 04.10.2026.
@@ -16,6 +18,23 @@ import { Knapp } from "@/components/marketing/ak";
 
 const FOTO = "/images/akgolf/";
 
+const kroner = (ore: number) => `${Math.round(ore / 100).toLocaleString("nb-NO")} kr`;
+const PLAYERHQ_PRIS = `${kroner(PLAYERHQ_PRIS_MND_ORE)} / mnd`;
+
+/** Laveste pris blant aktive coachingtjenester. Null hvis basen ikke svarer. */
+async function hentFraPris(): Promise<string | null> {
+  try {
+    const t = await prisma.serviceType.findFirst({
+      where: { active: true, priceOre: { gt: 0 } },
+      orderBy: { priceOre: "asc" },
+      select: { priceOre: true },
+    });
+    return t ? `fra ${kroner(t.priceOre)}` : null;
+  } catch {
+    return null;
+  }
+}
+
 const MAATER = [
   { nr: "01", navn: "Enkelttime på bane", hvor: "Fredrikstad" },
   { nr: "02", navn: "Enkelttime i studio", hvor: "Innendørs · helår" },
@@ -25,15 +44,15 @@ const MAATER = [
 ];
 
 const AKADEMIET = [
-  { navn: "Helårsplan med fast trener", hvor: "Junior og voksen" },
+  { navn: "Fast trener", hvor: "Junior og voksen" },
+  { navn: "Plan gjennom hele året", hvor: "Tilpasset deg" },
   { navn: "Player HQ inkludert", hvor: "Uten tillegg" },
-  { navn: "Opptak etter prøvetime", hvor: "Løpende" },
 ];
 
 const PLAYERHQ = [
   { tittel: "I dag", tekst: "Dagens økt, klar når du våkner." },
   { tittel: "Plan", tekst: "Uken framover. Lagret er ikke delt." },
-  { tittel: "Analyse", tekst: "Det vi har målt, ikke det vi tror." },
+  { tittel: "Stats", tekst: "Det vi har målt, ikke det vi tror." },
   { tittel: "Meg", tekst: "Din historikk, dine mål." },
 ];
 
@@ -78,7 +97,8 @@ function Rad({ nr, navn, hvor }: { nr: string; navn: string; hvor: string }) {
   );
 }
 
-export function ForsidePrecision() {
+export async function ForsidePrecision() {
+  const fraPris = await hentFraPris();
   return (
     <>
       {/* Hero */}
@@ -88,7 +108,7 @@ export function ForsidePrecision() {
           style={WRAP_STIL}
         >
           <div style={{ minWidth: 0 }}>
-            <span className="ak-etikett">Fredrikstad · coaching siden 2018</span>
+            <span className="ak-etikett">Fredrikstad · coaching</span>
             <h1
               style={{
                 font: "var(--type-display)",
@@ -144,7 +164,8 @@ export function ForsidePrecision() {
               className="inline-flex items-center gap-ak-2"
               style={{ marginTop: "var(--ak-r-2)", fontWeight: 600 }}
             >
-              Book time <ArrowRight size={16} aria-hidden="true" />
+              {fraPris ? `Book time · ${fraPris}` : "Book time"}{" "}
+              <ArrowRight size={16} aria-hidden="true" />
             </span>
           </Link>
           <Link href="/playerhq" className="pa-card ak-trykk ak-kort-trykk" style={KORTLENKE}>
@@ -157,7 +178,7 @@ export function ForsidePrecision() {
               className="inline-flex items-center gap-ak-2"
               style={{ marginTop: "var(--ak-r-2)", fontWeight: 600 }}
             >
-              299 kr / mnd <ArrowRight size={16} aria-hidden="true" />
+              {PLAYERHQ_PRIS} <ArrowRight size={16} aria-hidden="true" />
             </span>
           </Link>
         </div>
@@ -203,7 +224,7 @@ export function ForsidePrecision() {
       {/* Player HQ */}
       <section id="playerhq" className="py-ak-8 md:py-ak-9">
         <div className={WRAP} style={WRAP_STIL}>
-          <span className="ak-etikett">Player HQ · 299 kr/mnd</span>
+          <span className="ak-etikett">Player HQ · {PLAYERHQ_PRIS}</span>
           <h2 style={H2}>Appen mellom timene</h2>
           <p style={{ color: "var(--ak-dempet)", maxWidth: "52ch" }}>
             For satsende juniorer og for voksne som vil bli bedre. Samme app, samme plan, ulik
@@ -238,8 +259,8 @@ export function ForsidePrecision() {
             <span className="ak-etikett">Akademiet</span>
             <h2 style={H2}>For dem som vil lenger</h2>
             <p style={{ color: "var(--ak-dempet)", maxWidth: "40ch" }}>
-              AK Golf Academy er det tetteste sporet: helårsplan, fast oppfølging og Player HQ
-              inkludert. Få plasser, opptak etter prøvetime.
+              AK Golf Academy er det tetteste sporet: egen plan, fast oppfølging og Player HQ
+              inkludert. Plassene er få: ta kontakt, så finner vi ut om det passer.
             </p>
           </div>
           <ul
@@ -261,7 +282,7 @@ export function ForsidePrecision() {
       {/* Bildearkiv */}
       <section className="py-ak-8 md:py-ak-9">
         <div className={WRAP} style={WRAP_STIL}>
-          <span className="ak-etikett">Bildearkiv</span>
+          <span className="ak-etikett">Bane og studio</span>
           <h2 style={{ ...H2, marginBottom: "var(--ak-r-5)" }}>Fra banen og studioet</h2>
           <div className="grid grid-cols-2 gap-ak-3 md:grid-cols-3">
             {ARKIV.map((fil) => (
@@ -277,7 +298,7 @@ export function ForsidePrecision() {
               >
                 <Image
                   src={`${FOTO}${fil}`}
-                  alt="AK Golf — bane og studio"
+                  alt=""
                   fill
                   sizes="(max-width: 768px) 50vw, 33vw"
                   style={{ objectFit: "cover" }}
