@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 
-import { tnKnappStil, type TnKnappVariant } from "./tn-handlinger";
+import { tnKnappStil, type TnKnappVariant } from "./tn-knapp-stil";
 import { TnIkon } from "./tn-ikon";
 import s from "./tn-stall.module.css";
 
