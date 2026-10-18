@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "a9854e75eea688825a399add226a0f64af343c3d",
+  "kodeversjon": "fdca4ef2fec75d69c605efd87241be3cb52bf66c",
   "inventar": {
     "pageFiles": 552,
     "uniqueRoutePatterns": 552,
-    "componentFiles": 926,
-    "surfaceFiles": 288,
+    "componentFiles": 928,
+    "surfaceFiles": 282,
     "byArea": {
       "interne-eksempler": 6,
       "marked-og-offentlig": 71,
@@ -14524,7 +14524,7 @@
       "designkilde": "kode",
       "designversjon": "ikke-en-skjerm",
       "komponentmonster": null,
-      "handlinger": "Send videre til /portal/analysere",
+      "handlinger": "Send videre til /portal/coach/sg-hub",
       "dataApi": "ikke-avlest-i-D01",
       "tilstander": [
         "videresending",
@@ -14550,11 +14550,11 @@
       "kontrollbevis": null,
       "avvik": [],
       "kobling": "videresending",
-      "forklaring": "Filen har ingen egen visning. Den sender til /portal/analysere. At målet finnes, og hva brukeren ser hvis lenken er ugyldig, er ikke prøvd i denne bolken.",
+      "forklaring": "Filen har ingen egen visning. Den sender til /portal/coach/sg-hub. At målet finnes, og hva brukeren ser hvis lenken er ugyldig, er ikke prøvd i denne bolken.",
       "legacyGruppe": true,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
-      "videresendingMal": "/portal/analysere",
+      "videresendingMal": "/portal/coach/sg-hub",
       "kodekommentar": null
     },
     {
@@ -14609,7 +14609,7 @@
       "designkilde": "kode",
       "designversjon": "ikke-en-skjerm",
       "komponentmonster": null,
-      "handlinger": "Send videre til /portal/analysere",
+      "handlinger": "Send videre til /portal/coach/sg-hub",
       "dataApi": "ikke-avlest-i-D01",
       "tilstander": [
         "videresending",
@@ -14635,11 +14635,11 @@
       "kontrollbevis": null,
       "avvik": [],
       "kobling": "videresending",
-      "forklaring": "Filen har ingen egen visning. Den sender til /portal/analysere. At målet finnes, og hva brukeren ser hvis lenken er ugyldig, er ikke prøvd i denne bolken.",
+      "forklaring": "Filen har ingen egen visning. Den sender til /portal/coach/sg-hub. At målet finnes, og hva brukeren ser hvis lenken er ugyldig, er ikke prøvd i denne bolken.",
       "legacyGruppe": true,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
-      "videresendingMal": "/portal/analysere",
+      "videresendingMal": "/portal/coach/sg-hub",
       "kodekommentar": null
     },
     {
@@ -15225,12 +15225,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Historikken merker PH16Historikk i PlayerHQSkall. Runder, økter, tester, TrackMan og filteret er beholdt. 390×844 og 1440×880 er ikke målt mot tegningen.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-16 Stats er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -15272,7 +15274,7 @@
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Stats- og analyse-huben merker PH16Stats i PlayerHQSkall. Fire deler (Snittscore, Strokes Gained, Trening og Tester) etter Claude Design PH-16-stats.",
+      "kontrollbevis": "Hullanalyse merker PH18HullAnalyse i PlayerHQSkall. Tallene er beholdt. Indre kort er fortsatt v2. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
       "avvik": [
         "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
       ],
@@ -15553,19 +15555,20 @@
       "kodekommentar": "PH-17"
     },
     {
-      "screenId": "VIDERESENDING",
+      "screenId": "PH-18",
       "rute": "/portal/analysere/turneringer",
       "kildefil": "src/app/portal/analysere/turneringer/page.tsx",
       "omrade": "playerhq",
       "rolle": "spiller",
-      "designkilde": "kode",
-      "designversjon": "ikke-en-skjerm",
-      "komponentmonster": null,
-      "handlinger": "Send videre til /portal/analysere/resultater",
+      "designkilde": "AK Golf Precision Athletics (7d7c2994-cf63-4c5f-9bdc-fdaf67655a70)",
+      "designversjon": "precision-athletics-2026-09-28",
+      "komponentmonster": "/portal/analysere/turneringer",
+      "handlinger": "Scorekort, metrikk over tid, hull-analyse, til-par-kurve",
       "dataApi": "ikke-avlest-i-D01",
       "tilstander": [
-        "videresending",
-        "manglende-mal"
+        "tom",
+        "laster",
+        "feil"
       ],
       "formater": {
         "mobil": "ikke-kontrollert",
@@ -15576,23 +15579,26 @@
       "status": {
         "kartlagt": true,
         "wireframe": false,
-        "uiUtkast": false,
+        "uiUtkast": true,
         "prototype": false,
         "vurdert": false,
-        "valgtForBygging": false,
-        "implementert": "ikke-verifisert",
+        "valgtForBygging": true,
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
-      "kobling": "videresending",
-      "forklaring": "Filen har ingen egen visning. Den sender til /portal/analysere/resultater. At målet finnes, og hva brukeren ser hvis lenken er ugyldig, er ikke prøvd i denne bolken.",
+      "kontrollbevis": "Turneringshistorikk merker PH18TurnHist i PlayerHQSkall. Kurve og sesong er beholdt. Indre kort er fortsatt v2. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "avvik": [
+        "Kodekommentaren sier PH-21. Skjermlisten sier PH-18. Kommentaren er opphav, ikke en ny godkjenning.",
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
+      "kobling": "tegnet-skjermtype",
+      "forklaring": "PH-18 Runder og statistikk er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
-      "videresendingMal": "/portal/analysere/resultater",
-      "kodekommentar": null
+      "videresendingMal": null,
+      "kodekommentar": "PH-21"
     },
     {
       "screenId": "VIDERESENDING",
@@ -16338,19 +16344,20 @@
       "kodekommentar": null
     },
     {
-      "screenId": "VIDERESENDING",
+      "screenId": "PH-21",
       "rute": "/portal/coach/sg-hub",
       "kildefil": "src/app/portal/coach/sg-hub/page.tsx",
       "omrade": "playerhq",
       "rolle": "spiller",
-      "designkilde": "kode",
-      "designversjon": "ikke-en-skjerm",
-      "komponentmonster": null,
-      "handlinger": "Send videre til /portal/analysere",
+      "designkilde": "AK Golf Precision Athletics (7d7c2994-cf63-4c5f-9bdc-fdaf67655a70)",
+      "designversjon": "precision-athletics-2026-09-28",
+      "komponentmonster": "/portal/coach/sg-hub*",
+      "handlinger": "Meldingstråd, spørsmål, tilbakemelding, videoer, ønsket økt",
       "dataApi": "ikke-avlest-i-D01",
       "tilstander": [
-        "videresending",
-        "manglende-mal"
+        "tom",
+        "laster",
+        "feil"
       ],
       "formater": {
         "mobil": "ikke-kontrollert",
@@ -16361,22 +16368,24 @@
       "status": {
         "kartlagt": true,
         "wireframe": false,
-        "uiUtkast": false,
+        "uiUtkast": true,
         "prototype": false,
         "vurdert": false,
-        "valgtForBygging": false,
-        "implementert": "ikke-verifisert",
+        "valgtForBygging": true,
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
-      "kobling": "videresending",
-      "forklaring": "Filen har ingen egen visning. Den sender til /portal/analysere. At målet finnes, og hva brukeren ser hvis lenken er ugyldig, er ikke prøvd i denne bolken.",
+      "kontrollbevis": "SG-huben hos coach merker PH21SgHubCoach i PlayerHQSkall. Tallene er beholdt. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
+      "kobling": "tegnet-skjermtype",
+      "forklaring": "PH-21 Innboks er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
-      "videresendingMal": "/portal/analysere",
+      "videresendingMal": null,
       "kodekommentar": null
     },
     {
@@ -20024,14 +20033,12 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "precision-visning",
+        "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Stats- og analyse-huben merker PH16Stats i PlayerHQSkall. Fire deler (Snittscore, Strokes Gained, Trening og Tester) etter Claude Design PH-16-stats.",
-      "avvik": [
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
+      "kontrollbevis": null,
+      "avvik": [],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-18 Runder og statistikk er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
@@ -20935,7 +20942,7 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": "PH-14"
+      "kodekommentar": null
     },
     {
       "screenId": "PH-14",
@@ -20966,19 +20973,21 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Ny test merker PH14OpprettTest i PlayerHQSkall. Opprettelsen er beholdt. Ingen fane lyser, fordi den gamle siden sendte aktiv gjor. Indre kort er fortsatt v2. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-14 Tester er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": "PH-14"
+      "kodekommentar": null
     },
     {
       "screenId": "PH-14",
@@ -21225,12 +21234,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": false,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Treningslogg merker PH26TreningLogg i PlayerHQSkall. Skjema for dato, område, varighet, øvelse, kvalitet og notater er beholdt.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-26 Utenfor banen utgår i IA 28.09.2026. Funksjonen hører hjemme i Plan og Meg. Skjermen skal ikke bygges.",
       "legacyGruppe": false,
@@ -21268,12 +21279,14 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": false,
-        "implementert": "ikke-verifisert",
+        "implementert": "precision-visning",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": null,
-      "avvik": [],
+      "kontrollbevis": "Puttelaboratoriet merker PH26PutteLab i PlayerHQSkall. Visningen er beholdt. Ingen fane lyser, fordi den gamle siden sendte aktiv gjor. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
+      "avvik": [
+        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
+      ],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-26 Utenfor banen utgår i IA 28.09.2026. Funksjonen hører hjemme i Plan og Meg. Skjermen skal ikke bygges.",
       "legacyGruppe": false,
@@ -24212,16 +24225,16 @@
   ],
   "tellinger": {
     "sidefiler": 552,
-    "medAvvik": 130,
-    "valgtForBygging": 226,
+    "medAvvik": 135,
+    "valgtForBygging": 228,
     "utenEksaktType": 18,
-    "implementert": 99,
+    "implementert": 104,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,
       "felles-monster": 22,
-      "tegnet-skjermtype": 256,
-      "videresending": 195,
+      "tegnet-skjermtype": 258,
+      "videresending": 193,
       "teknisk-forklaring": 35,
       "byggeunderlag": 37
     },
@@ -24243,7 +24256,7 @@
       "ST-06": 8,
       "ST-04": 3,
       "MK-BEKREFT": 1,
-      "VIDERESENDING": 195,
+      "VIDERESENDING": 193,
       "AG-05": 4,
       "AG-08": 3,
       "AG-16": 6,
@@ -24294,11 +24307,11 @@
       "PH-17": 4,
       "PH-26": 9,
       "PH-12": 2,
-      "PH-18": 6,
+      "PH-18": 7,
       "PH-16": 3,
       "PH-23": 9,
       "PH-22": 1,
-      "PH-21": 12,
+      "PH-21": 13,
       "PH-13": 4,
       "PH-20": 3,
       "PH-IUP-01": 1,
