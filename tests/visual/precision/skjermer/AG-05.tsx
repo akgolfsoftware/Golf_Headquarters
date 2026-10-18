@@ -4,7 +4,7 @@ import { Feil, KnappLenke, Laster, Topp } from "@/components/admin/agencyos-ny/n
 import { AG05Aar, AG05Dag, AG05Uke, AG05Maned, AG05Periode } from "@/components/admin/precision/AG05Kalender";
 import { AG05Tilg } from "@/components/admin/precision/AG05Tilg";
 import type { KalenderLagUkeData } from "@/app/admin/kalender/lag/data";
-import type { UkedagRad } from "@/app/admin/kalender/tilg-data";
+import type { TilgData } from "@/app/admin/kalender/tilg-data";
 import type { KalenderAarData } from "@/app/admin/kalender/aar-data";
 import { summerAar } from "@/lib/domain/kalender-aar";
 
@@ -54,15 +54,16 @@ const manedData: KalenderLagUkeData = {
   }),
 };
 
-const tilgRader: UkedagRad[] = [
-  { ukedag: 0, navn: "Mandag", slotId: "s1", antall: 1, paa: true, tekst: "15:00–19:00" },
-  { ukedag: 1, navn: "Tirsdag", slotId: "s2", antall: 1, paa: true, tekst: "15:00–19:00 · Studio 1" },
-  { ukedag: 2, navn: "Onsdag", slotId: null, antall: 0, paa: false, tekst: null },
-  { ukedag: 3, navn: "Torsdag", slotId: null, antall: 2, paa: true, tekst: null },
-  { ukedag: 4, navn: "Fredag", slotId: "s4", antall: 1, paa: false, tekst: "16:00–20:00" },
-  { ukedag: 5, navn: "Lørdag", slotId: null, antall: 0, paa: false, tekst: null },
-  { ukedag: 6, navn: "Søndag", slotId: null, antall: 0, paa: false, tekst: null },
-];
+const tilg: TilgData = {
+  vinduer: [
+    { id: "s1", weekday: 0, date: null, startTime: "15:00", endTime: "19:00", locationId: null, stedNavn: null, validFrom: null, validTo: null, recurrenceInterval: null, active: true },
+    { id: "s2", weekday: 1, date: null, startTime: "15:00", endTime: "19:00", locationId: "l1", stedNavn: "Prøvestudio 1", validFrom: "2026-08-01", validTo: "2027-06-30", recurrenceInterval: 2, active: true },
+    { id: "s4", weekday: 4, date: null, startTime: "16:00", endTime: "20:00", locationId: null, stedNavn: null, validFrom: null, validTo: null, recurrenceInterval: null, active: false },
+    { id: "s5", weekday: null, date: "2026-10-24", startTime: "09:00", endTime: "13:00", locationId: "l1", stedNavn: "Prøvestudio 1", validFrom: null, validTo: null, recurrenceInterval: null, active: true },
+  ],
+  fridager: [{ id: "f1", dato: "2026-12-24", grunn: "Juleaften" }, { id: "f2", dato: "2026-12-31", grunn: null }],
+  steder: [{ id: "l1", navn: "Prøvestudio 1" }],
+};
 
 const FANER = [
   { href: "?fane=dag", navn: "Dag", aktiv: false },
@@ -90,7 +91,7 @@ export const tilstander = {
   ass: <Skjelett periode="Tirsdag 29. sep."><AG05Dag data={assData} dagIso="2026-09-29" erHeadCoach={false} /></Skjelett>,
   ar: <Skjelett periode="2026"><AG05Aar data={aarData} /></Skjelett>,
   maned: <Skjelett periode={manedData.periode}><AG05Maned data={manedData} /></Skjelett>,
-  tilg: <Skjelett periode="Tilgjengelighet"><AG05Tilg rader={tilgRader} /></Skjelett>,
+  tilg: <Skjelett periode="Tilgjengelighet"><AG05Tilg data={tilg} /></Skjelett>,
   laster: <Skjelett periode={ukeData.periode}><Laster tekst="Henter kalenderen …" /></Skjelett>,
   feil: <Skjelett periode={ukeData.periode}><Feil tittel="Kalenderen kunne ikke hentes" tekst="Ingen hendelser er endret." /></Skjelett>,
   tom: <Skjelett periode={ukeData.periode}><AG05Uke data={{ ...ukeData, hendelser: [] }} /></Skjelett>,

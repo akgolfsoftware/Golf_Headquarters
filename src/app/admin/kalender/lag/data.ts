@@ -404,7 +404,7 @@ export async function hentKalenderLagUke(
       ukeHref: kalenderHref({ visning: "uke", uke: ukeIso, lag }),
       manedHref: kalenderHref({ visning: "maned", maaned, lag }),
       nyBookingHref: "/admin/bookinger/ny",
-      tilgjengelighetHref: "/admin/availability",
+      tilgjengelighetHref: "/admin/kalender?fane=tilg",
       nyHendelseHref: "/admin/kalender/hendelse/ny",
     },
   };
@@ -451,7 +451,7 @@ export async function hentKalenderLagManed(
       ukeHref: kalenderHref({ visning: "uke", uke: ukeIso, lag }),
       manedHref: kalenderHref({ visning: "maned", maaned: denneNokkel, lag }),
       nyBookingHref: "/admin/bookinger/ny",
-      tilgjengelighetHref: "/admin/availability",
+      tilgjengelighetHref: "/admin/kalender?fane=tilg",
       nyHendelseHref: "/admin/kalender/hendelse/ny",
     },
   };

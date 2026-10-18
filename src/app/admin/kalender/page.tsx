@@ -20,7 +20,7 @@ import { TL_SCOPE } from "@/components/workbench/wb-tl-scope";
 import { loadStallDag } from "@/lib/workbench/wb-actions";
 import { erKalenderLag, type KalenderLag } from "@/lib/domain/kalender-lag";
 import { hentKalenderLagManed, hentKalenderLagUke } from "./lag/data";
-import { hentUkemonster } from "./tilg-data";
+import { hentTilgjengelighet } from "./tilg-data";
 import { hentKalenderAar } from "./aar-data";
 import { KALENDER_FANER, kalenderHref, velgKalenderFane } from "@/lib/admin/kalender/faner";
 
@@ -65,9 +65,9 @@ export default async function AgencyKalenderPage({ searchParams }: { searchParam
       </div>
     );
   } else if (fane === "tilg") {
-    const rader = await hentUkemonster(user);
+    const data = await hentTilgjengelighet(user);
     periode = "Tilgjengelighet";
-    innhold = <AG05Tilg rader={rader} />;
+    innhold = <AG05Tilg data={data} />;
   } else if (fane === "ar") {
     const data = await hentKalenderAar(sp.aar, seer);
     periode = String(data.aar);
