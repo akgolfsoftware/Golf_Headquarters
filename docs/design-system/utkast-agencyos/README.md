@@ -11,7 +11,7 @@ AgencyOS kan være roligere enn PlayerHQ, men Cockpit skal vise hvem som trenger
 | 0 Grunnmur | `felles/agencyos.css`, `felles/agencyos.js`, `felles/demo.js` | Ferdig 14.10 | — |
 | 1 Cockpit og Innboks | AG-01, AG-04 (+ sak, haster, oppfølging), `cockpit.html` | **Bygget (natt 17.10)** · port 7 gjort i nattkjøringen | https://claude.ai/artifact/Hb2VAqh6Sr9GxCs5bagRyK |
 | 2 Stall og Spiller 360 | AG-07, AG-08 (+ faner), AG-A02, AG-A04, AG-A06, AG-08-TALENT, `stall.html` | **Utkast 1** (15.10), venter på port 7 | https://claude.ai/artifact/XrBWRwAsnaFsvhHVX9uhwX |
-| 3 Kalender og Booking | AG-05 (+ uke, måned, år, assistant coach), AG-06 (+ ny booking, bookingen), `kalender.html` | **Utkast 1** (15.10), venter på port 7 | https://claude.ai/artifact/GuayaQiCeJtqCGqnsQNeKp |
+| 3 Kalender og Booking | AG-05 (+ uke, måned, år, assistant coach), AG-06 (+ ny booking, bookingen), `kalender.html` | **Bygget (natt 17.10)**, port 7 gjort på Anders' vegne (nattregelen) | https://claude.ai/artifact/GuayaQiCeJtqCGqnsQNeKp |
 | 4 Workbench coach | AG-11 (spiller og gruppe), AG-11-GRUPPE-AR, AG-WB-FYS, AG-WB-TURN, AG-14, `workbench.html` | **Utkast 1** (15.10), venter på port 7 | https://claude.ai/artifact/FjojaPjQxC6yKaPzz3nnks |
 | 5 Live coachingøkt | AG-13 (+ AG-13-U uten samtykke), AG-12, `live.html` | **Utkast 1** (15.10), venter på port 7 | https://claude.ai/artifact/NvmKeAQwkUAnJPLfEya1VL |
 | 6 Teknisk plan og runder | AG-10, AG-TP-01, AG-TP-02, AG-RD-01, AG-RD-02, `teknisk.html` | **Utkast 1** (15.10), venter på port 7 | https://claude.ai/artifact/5Zue1iXogFbYvTu7hGHp8f |
