@@ -28,10 +28,8 @@ test("Teknikk med Utslag viser læringssteg, teknisk fokus, måleutstyr, trening
   assert.deepEqual([...f.mengde.enheter], ["SLAG"]);
 });
 
-test("Læringssteg vises ikke for nærspill, og sandtrinn bare for bunker", () => {
+test("Læringssteg vises ikke for nærspill", () => {
   assert.equal(feltForOvelse("TEK", "CHIP").laeringssteg, false);
-  assert.equal(feltForOvelse("TEK", "CHIP").sandTrinn, false);
-  assert.equal(feltForOvelse("TEK", "BUNKER").sandTrinn, true);
   assert.equal(feltForOvelse("SLAG", "PUTT_3_5").laeringssteg, false);
 });
 
@@ -80,7 +78,6 @@ test("felt fra en annen gren eller et annet område vaskes bort", () => {
     tekniskFokus: "KURVE",
     maaleutstyr: "MED_TRACKMAN",
     treningsmaate: "BLOKK",
-    sandTrinn: "MED_BALL",
     mengde: { enhet: "SERIER", antall: 4, reps: 6, vektKg: 60, rir: 2, pauseSek: 90 },
   });
   assert.deepEqual(ut, { mengde: { enhet: "SERIER", antall: 4, reps: 6, vektKg: 60, rir: 2, pauseSek: 90 } });

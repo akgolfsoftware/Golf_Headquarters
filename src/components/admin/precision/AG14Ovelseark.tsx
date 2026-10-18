@@ -23,8 +23,6 @@ import {
   PRESS_KODER,
   PRESS_LABEL,
   PYRAMIDE_KODER,
-  SAND_TRINN_KODER,
-  SAND_TRINN_LABEL,
   hastighetForMotorikk,
   hastighetLabel,
   type DimensjonKode,
@@ -160,9 +158,6 @@ export function AG14Ovelseark({ open, ovelse, onLukk, onLagret }: {
         <Nedtrekk value={d.tekniskFokus ?? ""} onChange={(e) => endreDetaljer({ tekniskFokus: (e.target.value || undefined) as DimensjonKode | undefined })}
           options={[{ value: "", label: "—" }, ...felt.tekniskFokus.map((k) => ({ value: k, label: DIMENSJON_LABEL[k] }))]} />
       </Felt>}
-      {felt.sandTrinn && <Valgrad label="Sandtrinn">
-        {SAND_TRINN_KODER.map((s) => <Valgpille key={s} valgt={d.sandTrinn === s} onVelg={() => endreDetaljer({ sandTrinn: d.sandTrinn === s ? undefined : s })}>{SAND_TRINN_LABEL[s]}</Valgpille>)}
-      </Valgrad>}
     </div>
 
     {felt.press && <Valgrad label="6 · Press">

@@ -39,7 +39,6 @@ function oppgave(p: Partial<TpOppgaveInn> = {}): TpOppgaveInn {
     belastning: "TRENINGSOMRAADE",
     press: "ALENE",
     dimensjon: "TREFFPUNKT",
-    sandTrinn: null,
     maaleutstyr: "TRACKMAN",
     status: "ACTIVE",
     repsMaalDry: 60,

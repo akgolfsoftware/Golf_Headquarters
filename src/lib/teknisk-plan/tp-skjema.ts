@@ -18,7 +18,6 @@ import {
   MOTORIKK_KODER,
   OMRAADE_KODER,
   PRESS_KODER,
-  SAND_TRINN_KODER,
   omraadeDef,
   type BelastningKode,
   type MotorikkKode,
@@ -40,7 +39,6 @@ export const TpSkjemaSchema = z.object({
   slagNavn: z.string().trim().max(120),
   omraadeKode: z.enum(OMRAADE_KODER, { message: "Velg område" }),
   motorikk: z.enum(MOTORIKK_KODER).nullable(),
-  sandTrinn: z.enum(SAND_TRINN_KODER).nullable(),
   dimensjon: z.enum(DIMENSJON_KODER).nullable(),
   kolle: z.string().trim().max(40).nullable(),
   belastning: z.enum(BELASTNING_KODER).nullable(),
@@ -73,7 +71,6 @@ export function oppgaveFelt(s: GyldigSkjema) {
     belastning: s.belastning,
     press: s.press,
     dimensjon: s.dimensjon && erGyldigDimensjon(s.omraadeKode, s.dimensjon) ? s.dimensjon : null,
-    sandTrinn: s.sandTrinn,
   });
   const fullsving = familieFor(s.omraadeKode) === "FULLSVING";
   return {
@@ -86,7 +83,6 @@ export function oppgaveFelt(s: GyldigSkjema) {
     belastning: vasket.belastning,
     press: vasket.press,
     dimensjon: vasket.dimensjon,
-    sandTrinn: vasket.sandTrinn,
     maaleutstyr: s.maaleutstyr,
     repsMaalDry: fullsving ? s.repSteg.UTEN_BALL : 0,
     repsMaalLav: fullsving ? s.repSteg.LAV_HAST : 0,

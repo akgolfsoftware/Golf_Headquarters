@@ -27,7 +27,7 @@ import {
 } from "@/lib/teknisk-plan/tp-visning";
 import {
   BELASTNING_KODER, BELASTNING_LABEL, DIMENSJON_LABEL, MAALEUTSTYR_KODER, MAALEUTSTYR_LABEL, MOTORIKK_KODER,
-  MOTORIKK_LABEL, OMRAADER, PRESS_KODER, PRESS_LABEL, SAND_TRINN_KODER, SAND_TRINN_LABEL, omraadeDef, type OmraadeKode,
+  MOTORIKK_LABEL, OMRAADER, PRESS_KODER, PRESS_LABEL, omraadeDef, type OmraadeKode,
 } from "@/lib/domain/ak-formel-v2";
 import { dimensjonerFor } from "@/lib/domain/omrade-relevans";
 import { KOLLER, pNavn } from "@/components/teknisk-plan/constants";
@@ -77,7 +77,7 @@ export function AGTP01OppgaveskjemaNy({ planId, spillerId, spillerNavn, planAkti
   const planHref = `/admin/spillere/${spillerId}/plan/${planId}`;
   const opp = (p: Partial<TpSkjema>) => { setF((o) => ({ ...o, ...p })); setSt("endret"); };
   const fam = familieAv(f.omraadeKode);
-  const fullsving = fam === "Fullsving", bunker = fam === "Bunker";
+  const fullsving = fam === "Fullsving";
   const radar = !!f.maaleutstyr && RADAR_UTSTYR.includes(f.maaleutstyr);
   const sumSteg = fullsving ? MOTORIKK_KODER.reduce((s, m) => s + f.repSteg[m], 0) : f.rep;
   const sumMiljo = BELASTNING_KODER.reduce((s, b) => s + (f.repMiljo[b] ?? 0), 0);
@@ -142,7 +142,6 @@ export function AGTP01OppgaveskjemaNy({ planId, spillerId, spillerNavn, planAkti
         {fullsving && <Gruppe navn="Læringssteg" hint="Bare fullsving. Formelen viser steget spilleren er på.">
           <div className="chips" role="group" aria-label="Læringssteg">{MOTORIKK_KODER.map((m) => <button key={m} type="button" aria-pressed={f.motorikk === m} onClick={() => opp({ motorikk: f.motorikk === m ? null : m })}>{MOTORIKK_LABEL[m]}</button>)}</div>
         </Gruppe>}
-        {bunker && <Gruppe navn="Sandtrinn"><div className="chips" role="group" aria-label="Sandtrinn">{SAND_TRINN_KODER.map((s) => <button key={s} type="button" aria-pressed={f.sandTrinn === s} onClick={() => opp({ sandTrinn: f.sandTrinn === s ? null : s })}>{SAND_TRINN_LABEL[s]}</button>)}</div></Gruppe>}
         <Gruppe navn="Teknisk fokus" hint={f.omraadeKode ? "Listen følger området. Maks ett." : "Velg område først."}>
           {f.omraadeKode && <div className="chips" role="group" aria-label="Teknisk fokus">{dimensjonerFor(f.omraadeKode).map((d) => <button key={d} type="button" aria-pressed={f.dimensjon === d} onClick={() => opp({ dimensjon: f.dimensjon === d ? null : d })}>{DIMENSJON_LABEL[d]}</button>)}</div>}
         </Gruppe>
