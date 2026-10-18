@@ -1,4 +1,6 @@
 import type { LPhase } from "@/generated/prisma/client";
+import { parseAxisMinutes } from "@/lib/workbench/perioder";
+import { sumPerAkse, timerPerAksePerUke } from "@/lib/workbench/timer-per-akse";
 
 /**
  * TN-11 Månedsplan: bygger kalenderuker for én måned av gruppeøkter,
@@ -67,6 +69,25 @@ export function manedsvindu(aar: number, maned: number) {
 
 function erSamlingsokt(kind: string | null) {
   return kind === "SAMLING" || kind === "HELDAGSSAMLING";
+}
+
+/**
+ * Timer per akse per uke for gruppas måned, arvet fra gruppas perioder
+ * (GroupPeriodBlock.axisMinutes). Gruppa har ingen månedsplan eller lette uker;
+ * spillerne tilpasser sin egen plan i PlayerHQ.
+ */
+export function tnTimerPerAkse(aar: number, maned: number, perioder: Array<{ startDate: Date; endDate: Date; axisMinutes: unknown; axisMinutesLight: unknown }>) {
+  const uker = timerPerAksePerUke({
+    year: aar,
+    month: maned,
+    perioder: perioder.map((p) => ({
+      startDate: dagnokkel(p.startDate),
+      endDate: dagnokkel(p.endDate),
+      axisMinutes: parseAxisMinutes(p.axisMinutes),
+      axisMinutesLight: parseAxisMinutes(p.axisMinutesLight),
+    })),
+  });
+  return { uker, sum: sumPerAkse(uker), fordelt: uker.some((u) => u.minutter) };
 }
 
 export function byggManedsplan({
