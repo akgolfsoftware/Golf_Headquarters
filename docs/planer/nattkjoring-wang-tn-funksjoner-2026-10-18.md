@@ -37,6 +37,13 @@ funksjoner uten data. Kilden er avviksfeltene i #1402, #1406 og #1411 og filhode
 
 (Hver økt fører sine valg her: pakke · valg · grunn.)
 
+- **W2 · Ingen skjemaendring.** Klasse (`User.schoolYear`) og HCP (`User.hcp`) fantes allerede; kategori A–K regnes som i `hentSpillerAkKategori` (snitt brutto i år, ellers HCP-estimat). Grunn: ikke lage dobbelt lagring av noe som finnes.
+- **W2 · Klasse vises alltid, HCP og kategori bare ved deling.** Klasse er skoleopplysning ført av coach/admin; HCP, kategori og Fireukerssjekk er elevens data og krever navngitt deling til akkurat denne treneren (`navngittTrenerHarTilgang`, forelder under 16, aktivt WANG-medlemskap). Grunn: §KODEGJENNOMGANGEN 06.10, WANG-trenere ser bare det eleven har delt.
+- **W2 · Kategorien bruker bare runder eleven har delt med coach** («Bare deg»-runder teller ikke). Grunn: en privat runde skal ikke lekke via et utledet tall.
+- **W2 · Klassefilteret er knapper (Alle · VG1 · VG2 · VG3 · Uten klasse), bare klassene som finnes i gruppa.** Vises ikke når gruppa bare har én klasse. Grunn: brekker om på 360 px, ingen nedtrekksliste å lete i.
+- **W2 · Fireukerssjekken viser elevens leverte svar, ikke trenerens vurdering.** Knappen «Lagre vurderingen» er fjernet; teksten sier at vurderingen føres i IUP-samtalen. Grunn: ingen lagring for trenervurdering finnes, og en død knapp lover noe som ikke virker.
+- **W2 · Trener uten verifisert @wang.no-adresse (også admin) ser «Ikke delt» for alle.** Grunn: delingen er knyttet til trenerens e-post; ingen kan arve innsyn gjennom rolle.
+
 ## 5. Morgenrapport
 
 (Skrives av koordinatoren når K er ferdig.)
