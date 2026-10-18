@@ -1,24 +1,13 @@
-import type { Metadata } from "next";
+import { permanentRedirect } from "next/navigation";
 
-import { WangLogin } from "./wang-login";
 import { tryggWangRetursti } from "../_data/wang-retur-sti";
 
-// Innloggingen trenger skript med samme nonce som forespørselens CSP.
-// Et forhåndsbygd dokument har ingen forespørsel og kan ikke få denne verdien.
-export const dynamic = "force-dynamic";
-
-export const metadata: Metadata = {
-  title: "Logg inn — WANG Toppidrett Fredrikstad Golf",
-  description:
-    "Innlogging for trenere og sportssjef i golfgruppa ved WANG Toppidrett Fredrikstad.",
-  robots: { index: false, follow: false },
-};
-
-export default async function WangLoginPage({
+/** Den gamle adressen virker fortsatt; innloggingen bor nå på /wang. */
+export default async function WangLoggInnRedirect({
   searchParams,
 }: {
   searchParams: Promise<{ next?: string | string[] }>;
 }) {
-  const { next } = await searchParams;
-  return <WangLogin retursti={tryggWangRetursti(next)} />;
+  const retursti = tryggWangRetursti((await searchParams).next);
+  permanentRedirect(retursti === "/team-wang" ? "/wang" : `/wang?next=${encodeURIComponent(retursti)}`);
 }
