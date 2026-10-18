@@ -6,16 +6,18 @@ import { WangTomTilstand } from "./WangIkkeKoblet";
 import { WangFaner, WangSmaaTall, WangTilbake, WangTopp, wangHref } from "./wang-felles";
 import { formaterFortegn, formaterTall } from "@/lib/format-tall";
 import type { WangDataGolfData, WangDgProff } from "@/app/team-wang/_data/wang-datagolf-visning";
+import { WangDataGolfElev } from "./WangDataGolfElev";
 
 /**
  * Pakke 10 Data Golf for trener og sportssjef, under Konkurranse (WANG-50): DG-01 Oversikt, DG-02 Proffkatalog,
- * DG-03 Proffprofil, DG-04 Topplister, DG-08 Norske proffer og DG-09 Kilde og dekning.
+ * DG-03 Proffprofil, DG-04 Topplister, DG-05 Elev mot proff, DG-06 Innspill-tak og DG-07 Fra funn til forslag
+ * (WangDataGolfElev), DG-08 Norske proffer og DG-09 Kilde og dekning.
  * Fasit: docs/design-system/utkast-wang/datagolf.html (utkast 1, godkjent av Anders 16.10.2026) og
  * felles/wang.css §Nærmere wang.no. Samme data og regler som AgencyOS pakke 10 (#1398).
  * Bare for coach-rollen (kanSeDataGolf på serveren). «Powered by Data Golf» på hver skjerm. Ingen eksport.
  * Avvik:
- *   - DG-05 Elev mot proff, DG-06 Innspill-tak og DG-07 Fra funn til forslag har ingen egne sider, som i AgencyOS:
- *     elevenes tall deles ikke med WANG ennå, og funn kan ikke bli forslag herfra.
+ *   - DG-05–07 leser elevens tall bare når eleven har delt med treneren, og forslag går som forslag til
+ *     elevens Workbench (nattkjøring 18.–19.10, pakke T3).
  *   - DG-08 viser norske proffers siste resultater og kommende turneringer; live-stilling er ikke koblet.
  *   - Tallene er Data Golfs modellerte ferdighetstall med kildedato, merket som modell.
  *   - Live-prikk og avatar per proff er ikke med: det finnes ingen live-stilling eller proffbilder.
@@ -34,6 +36,14 @@ export function WangDataGolf({ d }: { d?: WangDataGolfData }) {
   if (d.side === "topp") return <Topplister d={d} />;
   if (d.side === "norske") return <Norske d={d} />;
   if (d.side === "kilde") return <Kilde d={d} />;
+  if (d.side === "spiller" || d.side === "innspill" || d.side === "forslag") {
+    return (
+      <>
+        <WangDataGolfElev side={d.side} v={d.v} idag={d.idag} hode={(tittel, ingress) => <Hode aktiv="dg-spiller" tittel={tittel} ingress={ingress} />} />
+        <PoweredBy />
+      </>
+    );
+  }
   return <Oversikt d={d} />;
 }
 
@@ -47,6 +57,7 @@ const FANER = [
   { id: "dg", tittel: "Oversikt" },
   { id: "dg-proffer", tittel: "Proffer" },
   { id: "dg-topp", tittel: "Topplister" },
+  { id: "dg-spiller", tittel: "Elev mot proff" },
   { id: "dg-norske", tittel: "Norske proffer" },
   { id: "dg-kilde", tittel: "Kilde" },
 ];
