@@ -10,13 +10,13 @@ Rader: [JSON](skjermregister.json) og [CSV](skjermregister.csv). Regenerer med `
 
 ## Inventar
 
-Sidefiler med rute: **558**. Unike rutemønstre i skanningen: 558. Komponentfiler: 929. Ramme- og tilstandsfiler: 282.
+Sidefiler med rute: **552**. Unike rutemønstre i skanningen: 552. Komponentfiler: 928. Ramme- og tilstandsfiler: 282.
 
 Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kodeversjonen over og kan være høyere. Interne eksempler inngår. Ingen rute er slettet.
 
 | Område | Sidefiler |
 |---|---:|
-| agencyos | 175 |
+| agencyos | 169 |
 | delt-innsyn | 11 |
 | forelder | 16 |
 | inngang-og-konto | 20 |
@@ -32,14 +32,14 @@ Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kode
 
 | Kobling | Rader |
 |---|---:|
-| tegnet-skjermtype | 248 |
-| videresending | 203 |
-| teknisk-forklaring | 41 |
+| tegnet-skjermtype | 258 |
+| videresending | 193 |
 | byggeunderlag | 37 |
+| teknisk-forklaring | 35 |
 | felles-monster | 22 |
 | intern-flate | 7 |
 
-217 rader treffer en av de 77 Precision-typene og er derfor merket valgt for bygging som design. 24 rader har ingen eksakt type. 135 rader har et registrert avvik. 104 rader har en Precision-visning i koden. 0 er kontrollert i appen.
+228 rader treffer en av de 77 Precision-typene og er derfor merket valgt for bygging som design. 18 rader har ingen eksakt type. 135 rader har et registrert avvik. 104 rader har en Precision-visning i koden. 0 er kontrollert i appen.
 
 ## Uten eksakt type
 
@@ -48,12 +48,6 @@ Tabellen er Precision-ruter uten treff i 74-listen, pluss WANG- og Team Norway-r
 | Rute | ID | Nærmeste |
 |---|---|---|
 | `/admin/bookinger` | UTEN-TEGNET-TYPE | AG-06 Booking (coach) |
-| `/admin/datagolf/kilde` | UTEN-TEGNET-TYPE | — |
-| `/admin/datagolf/norske` | UTEN-TEGNET-TYPE | — |
-| `/admin/datagolf` | UTEN-TEGNET-TYPE | — |
-| `/admin/datagolf/proffer/[dgId]` | UTEN-TEGNET-TYPE | — |
-| `/admin/datagolf/proffer` | UTEN-TEGNET-TYPE | — |
-| `/admin/datagolf/topplister` | UTEN-TEGNET-TYPE | — |
 | `/admin/grupper/[id]/analyse` | UTEN-TEGNET-TYPE | AG-16 Grupper |
 | `/admin/innboks` | UTEN-TEGNET-TYPE | — |
 | `/admin/mer` | UTEN-TEGNET-TYPE | — |
