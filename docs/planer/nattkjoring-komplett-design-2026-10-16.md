@@ -130,6 +130,9 @@ Fylles av øktene underveis. Hvert punkt: hva, hvilken anbefaling som ble valgt,
 - Avlysning i Bookingen har ikke «Angre i 10 sekunder»: refusjonen i Stripe kan ikke trekkes tilbake.
 - Påmeldte mot plasser på gruppeøkter vises som antall spillere; privattimer viser ingenting (utkastets anbefaling).
 - `/admin/bookinger/ny` (gammel veiviser med gruppebooking) beholdes til gruppebooking finnes i AG-06-NY.
+- **Fullført 18.10 (A5-resten):** bookingplanens steg 3 (vinduer, hel uke og fridager i Kalender › Tilgjengelighet) og steg 4 (søk og filter i lista, «Merk gjennomført» og notat på Bookingen) er bygget uten skjemaendring.
+- **Avvik, venter på Anders:** buffer per coach (krever `users.bookingBufferMin`, skriptet fra natt-A5 er ikke tatt med) og «No-show» (krever ny status `NO_SHOW`). Steg 5 gjestelenke er ikke bygget: den krever en ny hemmelig nøkkel i Vercel og endrer e-posten til ekte kunder.
+- `/admin/availability` sender ikke videre ennå: Google-synk og årsoversikten finnes bare der. Kalenderen lenker dit som «Google-synk og årsoversikt».
 
 
 ---
