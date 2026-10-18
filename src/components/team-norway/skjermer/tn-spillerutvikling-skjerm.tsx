@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 
-import { hentTnGruppetrening, hentTnSpillere, type TnSpillerRad } from "@/lib/domain/tn-arbeidsflate";
+import { hentTnGruppetrening, hentTnSamlinger, hentTnSpillere, type TnSpillerRad } from "@/lib/domain/tn-arbeidsflate";
 import { summerTnGruppetrening, tnDenneMandag, tnUkenummer, UTENFOR_PLAN_TERSKEL } from "@/lib/domain/tn-trenger-deg";
 import { TN } from "@/lib/v2/team-norway";
 import { initialer } from "../initialer";
@@ -38,7 +38,7 @@ function hcp(verdi: number | null) {
 export async function TnSpillerutviklingSkjerm({ sokeparametre }: { sokeparametre: Record<string, string | string[] | undefined> }) {
   const bruker = await hentSkjermbruker();
   const naa = new Date();
-  const [data, trening] = await Promise.all([hentTnSpillere(bruker), hentTnGruppetrening(bruker, naa)]);
+  const [data, trening, samlingsdata] = await Promise.all([hentTnSpillere(bruker), hentTnGruppetrening(bruker, naa), hentTnSamlinger(bruker)]);
   if (!data || data.kontekst.erSpiller) notFound();
 
   const q = (Array.isArray(sokeparametre.q) ? sokeparametre.q[0] : sokeparametre.q)?.trim() ?? "";
@@ -53,7 +53,8 @@ export async function TnSpillerutviklingSkjerm({ sokeparametre }: { sokeparametr
   const trenger = delt.filter((r) => r.t.underPlan).sort((a, b) => (a.t.toUker.pct ?? 101) - (b.t.toUker.pct ?? 101));
   const folger = delt.filter((r) => !r.t.underPlan && r.pct !== null).sort((a, b) => (b.pct ?? 0) - (a.pct ?? 0));
   const utenPlan = delt.filter((r) => !r.t.underPlan && r.pct === null);
-  const antallIkkeDelt = Math.max(0, data.rader.length - delt.length);
+  // Alle i gruppa (fra samlingsdataene) minus dem treneren kan lese: spillere som ikke har delt, er ikke i radene.
+  const antallIkkeDelt = samlingsdata?.antallSpillere != null ? Math.max(0, samlingsdata.antallSpillere - data.rader.length) : null;
 
   const gruppe = summerTnGruppetrening(delt.map((r) => r.t));
   const gruppePct = gruppe.planlagtTimer > 0 ? Math.round((gruppe.gjortTimer / gruppe.planlagtTimer) * 100) : null;
@@ -119,7 +120,7 @@ export async function TnSpillerutviklingSkjerm({ sokeparametre }: { sokeparametr
             tall={[
               { verdi: trening ? trenger.length : "—", tekst: "trenger deg" },
               { verdi: trening ? folger.length : "—", tekst: "følger planen" },
-              { verdi: trening ? antallIkkeDelt : "—", tekst: "deler ikke" },
+              { verdi: antallIkkeDelt ?? "—", tekst: "deler ikke" },
             ]}
           />
         }
@@ -133,7 +134,7 @@ export async function TnSpillerutviklingSkjerm({ sokeparametre }: { sokeparametr
       </form>
 
       {data.rader.length === 0 ? (
-        <TnFlate><TnMangler>Ingen spillere i gruppen ennå. Spillerne vises her når de er lagt inn i Team Norway-gruppen.</TnMangler></TnFlate>
+        <TnFlate><TnMangler>{antallIkkeDelt ? `Ingen spillere har delt med deg ennå. ${antallIkkeDelt} i gruppen deler ikke.` : "Ingen spillere i gruppen ennå. Spillerne vises her når de er lagt inn i Team Norway-gruppen."}</TnMangler></TnFlate>
       ) : (
         <>
           <TnBaand id="trenger" status={trenger.length > 0 ? "trenger" : undefined} tittel="Trenger deg" antall={trenger.filter((r) => passer(r.s)).length} kilde={`Under ${UTENFOR_PLAN_TERSKEL} % to uker på rad`}>
@@ -153,13 +154,13 @@ export async function TnSpillerutviklingSkjerm({ sokeparametre }: { sokeparametr
             </TnBaand>
           ) : null}
 
-          <TnBaand status="ikkedelt" tittel="Ikke delt" antall={antallIkkeDelt} kilde="Treneren ser ingenting før spilleren deler">
+          <TnBaand status="ikkedelt" tittel="Ikke delt" antall={antallIkkeDelt ?? 0} kilde="Treneren ser ingenting før spilleren deler">
             <TnFotnote>Spilleren deler selv fra Meg i PlayerHQ. Under 16 år må en foresatt godkjenne.</TnFotnote>
           </TnBaand>
         </>
       )}
 
-      <TnFotnote>Plan er gjennomført tid mot planlagt tid siste fire uker. Fargen viser aksen spilleren har trent mest. Kilde: Workbench i PlayerHQ, hentet {datoKort(naa)}.</TnFotnote>
+      <TnFotnote>Plan er gjennomført tid mot planlagt tid siste fire uker. Fargen viser aksen spilleren har trent mest. Kilde: Workbench i PlayerHQ, hentet {datoKort(naa)}</TnFotnote>
       <TnTekstlenke href="/team-norway/uttak">Se uttakskriterier</TnTekstlenke>
     </SkjermRamme>
   );
