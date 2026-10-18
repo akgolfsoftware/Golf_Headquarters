@@ -2,6 +2,7 @@
 // per elev, og Fireukerssjekken én elev har delt. Ren modul uten database, trygg i klienten.
 // Serverhentingen står i wang-elevdata.ts.
 
+import { formaterTall } from "@/lib/format-tall";
 import type { IupBesvarelse } from "@/lib/iup/utviklingssjekk";
 
 export interface WangElevInfo {
@@ -67,7 +68,7 @@ export function filtrerElever<T extends { id: string; navn: string }>(
 /** «4,2», «+1,3» for plusshandicap, «—» når ukjent. */
 export function visHcp(hcp: number | null): string {
   if (hcp == null) return "—";
-  const tall = Math.abs(hcp).toFixed(1).replace(".", ",");
+  const tall = formaterTall(Math.abs(hcp), 1, true);
   return hcp < 0 ? `+${tall}` : tall;
 }
 
