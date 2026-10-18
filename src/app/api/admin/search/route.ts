@@ -70,7 +70,7 @@ const ROUTES: (Omit<SearchRoute, "id"> & { bareHeadCoach?: true })[] = [
   { label: "Agenter", description: "AI-agenter og team", href: "/admin/agenticos" },
   { label: "Workspace", description: "Oppgaver, prosjekter, Notion", href: "/admin/workspace" },
   { label: "Anlegg & Tjenester", description: "Fasiliteter, priser, kapasitet", href: "/admin/anlegg" },
-  { label: "Tilgjengelighet", description: "Availability grid", href: "/admin/availability" },
+  { label: "Tilgjengelighet", description: "Vinduer, hel uke og fridager", href: "/admin/kalender?fane=tilg" },
   { label: "Live", description: "Pågående økter", href: "/admin/agencyos/live" },
   { bareHeadCoach: true, label: "Rapporter", description: "Eksport og statistikk", href: "/admin/reports" },
   { bareHeadCoach: true, label: "Økonomi", description: "MRR, betalinger, faktura", href: "/admin/okonomi" },
