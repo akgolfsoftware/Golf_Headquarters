@@ -1,42 +1,10 @@
-// PH12MalBygger — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
-/**
- * /portal/ai/mal-bygger — AI mål-bygger (3-stegs SMART-wizard) — v2.
- * v2-port 16. juli 2026: `AiMalByggerV2` erstatter mal-bygger-wizard (v10),
- * ruten flyttet ut av (legacy). Auth-guard (PLAYER/COACH/ADMIN), props og
- * server action (lagreMalForslag) uendret. Ingen oppdiktede tall — spilleren
- * fyller inn sine egne verdier.
- */
-
+// PlayerHQ pakke 17b (plan-hjelpere.html): målbyggeren blir «Ny målsetning» i Målsetninger.
+import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { prisma } from "@/lib/prisma";
-import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
-import { TilbakeLenke } from "@/components/v2";
-import { AiMalByggerV2 } from "@/components/portal/v2/AiMalByggerV2";
+import { PLAN_HJELPERE_VIDERESENDING } from "@/lib/portal/plan-hjelpere-videresending";
 
-export const dynamic = "force-dynamic";
-
-export default async function MalByggerPage() {
-  const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
-  const yearEnd = `${new Date().getFullYear()}-12-31`;
-
-  // Kun offisielle/coach-godkjente tester kan kobles til et testresultat-mål —
-  // egne, ikke-godkjente tester gir for usikker fremdrift til å bruke som mål.
-  const testOptions = await prisma.testDefinition.findMany({
-    where: { OR: [{ isCustom: false }, { isCoachApproved: true }] },
-    select: { id: true, name: true },
-    orderBy: { name: "asc" },
-  });
-
-  return (
-        <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
-      <div className="pa-side">
-      <TilbakeLenke href="/portal/mal">Mål</TilbakeLenke>
-      <AiMalByggerV2
-        playerFirstName={(user.name ?? "deg").split(" ")[0]}
-        defaultYearEnd={yearEnd}
-        testOptions={testOptions}
-      />
-          </div>
-    </PlayerHQSkall>
-  );
+export default async function Videresend(): Promise<never> {
+  // Samme rollesperre som siden hadde før videresendingen.
+  await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
+  redirect(PLAN_HJELPERE_VIDERESENDING["/portal/ai/mal-bygger"]);
 }

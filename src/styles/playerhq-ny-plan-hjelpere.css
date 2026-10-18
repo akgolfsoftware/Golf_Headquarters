@@ -50,3 +50,91 @@
 @container (min-width: 900px) {
   .phn-ph .ph-helt { height: 260px; }
 }
+
+/* ---------- 17b: Fysisk program ---------- */
+.phn-ph .ph-fys-topp { display: grid; border-radius: 14px; overflow: hidden; background: var(--phn-fys-ink); color: #fff; }
+.phn-ph .ph-fys-topp img { display: block; width: 100%; height: 140px; object-fit: cover; }
+.phn-ph .ph-fys-topp .ft { padding: 16px 18px 18px; display: grid; gap: 8px; }
+.phn-ph .ph-fys-topp .phn-dato { color: #fff; opacity: .85; }
+.phn-ph .ph-fys-topp b.navn { font: 700 26px/1.1 var(--phn-sans); letter-spacing: -.02em; overflow-wrap: anywhere; }
+.phn-ph .ph-fys-topp .info { display: flex; flex-wrap: wrap; gap: 2px 14px; font-size: 14px; opacity: .92; }
+.phn-ph .ph-ukerad { display: grid; grid-template-columns: repeat(auto-fit, minmax(28px, 1fr)); gap: 4px; }
+.phn-ph .ph-ukerad span { display: grid; gap: 4px; justify-items: center; font: 500 11.5px/1 var(--phn-mono); color: var(--phn-g600); }
+.phn-ph .ph-ukerad i { display: block; width: 100%; height: 36px; border-radius: 6px; background: var(--phn-sand-150); }
+.phn-ph .ph-ukerad i.gjort { background: var(--phn-fys-ink); }
+.phn-ph .ph-ukerad i.del { background: linear-gradient(to top, var(--phn-fys-ink) 50%, var(--phn-sand-150) 50%); }
+.phn-ph .ph-ukerad i.naa { outline: 2px solid var(--phn-g900); outline-offset: 1px; }
+.phn-ph .ph-okt-velg { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; }
+.phn-ph .ph-okt-velg button { display: grid; gap: 2px; justify-items: start; min-height: 64px; padding: 12px; border: 1px solid var(--phn-sand-300); border-radius: 12px; background: var(--phn-hvit); font: inherit; color: inherit; cursor: pointer; text-align: left; }
+.phn-ph .ph-okt-velg button b { font: 600 15px/1.25 var(--phn-sans); overflow-wrap: anywhere; }
+.phn-ph .ph-okt-velg button span { font-size: 13px; color: var(--phn-g600); }
+.phn-ph .ph-okt-velg button[aria-pressed="true"] { border: 2px solid var(--phn-fys-ink); background: var(--phn-sand-100); }
+.phn-ph .ph-ovelser, .phn-ph .ph-tester { display: grid; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--phn-sand-300); }
+.phn-ph .ph-ovelser li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; padding: 12px 0; border-bottom: 1px solid var(--phn-sand-300); }
+.phn-ph .ph-ovelser li b { font: 600 15px/1.3 var(--phn-sans); overflow-wrap: anywhere; }
+.phn-ph .ph-ovelser li .mengde { font: 600 14px/1.3 var(--phn-mono); text-align: right; }
+.phn-ph .ph-ovelser li .phn-kilde { grid-column: 1 / -1; }
+.phn-ph .ph-soner { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; }
+.phn-ph .ph-soner span { display: grid; gap: 2px; justify-items: center; padding: 8px 2px; border-radius: 8px; background: var(--phn-sand-100); font: 600 13px/1 var(--phn-mono); }
+.phn-ph .ph-soner span small { font: 500 11px/1.2 var(--phn-sans); color: var(--phn-g600); }
+.phn-ph .ph-soner span.paa { background: var(--phn-fys-ink); color: #fff; }
+.phn-ph .ph-soner span.paa small { color: #fff; }
+.phn-ph .ph-tester li { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--phn-sand-300); font-size: 14.5px; }
+.phn-ph .ph-tester li b { font: 600 15px/1 var(--phn-mono); text-align: right; }
+.phn-ph .ph-tester li .phn-trend { min-height: 24px; font-size: 12px; }
+
+/* ---------- 17b: Opptatt tid ---------- */
+.phn-ph .ingress { font-size: 15px; line-height: 1.5; color: var(--phn-g800); max-width: 60ch; }
+.phn-ph .ph-uke { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+.phn-ph .ph-dag { display: grid; gap: 4px; align-content: start; }
+.phn-ph .ph-dag > b { display: grid; gap: 2px; justify-items: center; font: 600 12px/1 var(--phn-mono); color: var(--phn-g600); padding-bottom: 4px; }
+.phn-ph .ph-dag > b small { font: 500 11px/1 var(--phn-mono); }
+.phn-ph .ph-dag > b.idag { color: var(--phn-g900); }
+.phn-ph .ph-blokk { border-radius: 6px; padding: 5px 4px; font: 500 11px/1.25 var(--phn-sans); overflow-wrap: anywhere; min-height: 34px; }
+.phn-ph .ph-blokk.opptatt { background: var(--phn-sand-150); color: var(--phn-g800); border: 1px dashed var(--phn-g500); }
+.phn-ph .ph-blokk.google { background: var(--phn-hvit); color: var(--phn-g800); border: 1px solid var(--phn-g500); }
+.phn-ph .ph-blokk.okt { background: var(--phn-g800); color: #fff; }
+.phn-ph .ph-blokk.fys { background: var(--phn-fys-ink); } .phn-ph .ph-blokk.tek { background: var(--phn-tek-ink); }
+.phn-ph .ph-blokk.slag { background: var(--phn-slag); } .phn-ph .ph-blokk.spill { background: var(--phn-spill-ink); }
+.phn-ph .ph-blokk.turn { background: var(--phn-turn); }
+.phn-ph .ph-lg-opptatt { background: var(--phn-sand-150); border: 1px dashed var(--phn-g500); }
+.phn-ph .ph-lg-google { background: var(--phn-hvit); border: 1px solid var(--phn-g500); }
+.phn-ph .ph-ukepil { display: flex; align-items: center; gap: 8px; }
+.phn-ph .ph-avtaler { display: grid; border: 1px solid var(--phn-sand-300); border-radius: 12px; overflow: hidden; background: var(--phn-hvit); }
+.phn-ph .ph-avtaler > * { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; min-height: 60px; padding: 10px 14px; border: 0; border-bottom: 1px solid var(--phn-sand-300); background: transparent; text-align: left; font: inherit; color: inherit; width: 100%; cursor: pointer; text-decoration: none; }
+.phn-ph .ph-avtaler > *:last-child { border-bottom: 0; }
+.phn-ph .ph-avtaler b { display: block; font: 600 15px/1.3 var(--phn-sans); overflow-wrap: anywhere; }
+.phn-ph .ph-avtaler .phn-kilde { display: block; overflow-wrap: anywhere; }
+.phn-ph .ph-ikonboks { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; background: var(--phn-sand-150); color: var(--phn-g900); flex: none; font: 700 16px/1 var(--phn-sans); }
+.phn-ph .ph-to-felt { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; }
+.phn-ph .ph-avkryss { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: start; min-height: 44px; font-size: 15px; line-height: 1.45; cursor: pointer; }
+.phn-ph .ph-avkryss input { width: 24px; height: 24px; margin: 0; accent-color: var(--phn-g900); }
+.phn-ph .phn-ark .phn-felt .etikett { font: 600 14px/1.3 var(--phn-sans); }
+
+/* ---------- 17b: Perioden er ferdig ---------- */
+.phn-ph .ph-ferdig-topp { display: grid; gap: 12px; padding: 20px 18px; border-radius: 14px; background: var(--phn-g900); color: #fff; }
+.phn-ph .ph-ferdig-topp .phn-dato, .phn-ph .ph-ferdig-topp .phn-forklar { color: #fff; opacity: .9; }
+.phn-ph .ph-ferdig-topp .phn-hoved strong { color: #fff; }
+.phn-ph .ph-akse-tabell { display: grid; gap: 10px; }
+.phn-ph .ph-akse-tabell .r { display: grid; grid-template-columns: 52px minmax(0, 1fr) minmax(92px, auto); gap: 12px; align-items: center; font-size: 14px; }
+.phn-ph .ph-akse-tabell .r b { font: 600 12px/1 var(--phn-sans); letter-spacing: .05em; }
+.phn-ph .ph-akse-tabell .r .v { font: 600 13px/1.2 var(--phn-mono); text-align: right; }
+.phn-ph .ph-akse-tabell .spor { position: relative; height: 12px; border-radius: 6px; background: var(--phn-sand-150); overflow: hidden; }
+.phn-ph .ph-akse-tabell .spor span { position: absolute; inset: 0 auto 0 0; border-radius: 6px; }
+.phn-ph .ph-akse-tabell .spor .fys { background: var(--phn-fys-ink); } .phn-ph .ph-akse-tabell .spor .tek { background: var(--phn-tek); }
+.phn-ph .ph-akse-tabell .spor .slag { background: var(--phn-slag); } .phn-ph .ph-akse-tabell .spor .spill { background: var(--phn-spill); }
+.phn-ph .ph-akse-tabell .spor .turn { background: var(--phn-turn); }
+.phn-ph .ph-beholder { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.phn-ph .ph-beholder > div { display: grid; gap: 2px; padding: 12px; border-radius: 10px; background: var(--phn-sand-100); }
+.phn-ph .ph-beholder b { font: 600 22px/1.1 var(--phn-mono); }
+.phn-ph .ph-beholder span { font-size: 13px; color: var(--phn-g600); }
+.phn-ph .ph-sitat { padding: 12px 14px; border-radius: 10px; background: var(--phn-sand-100); font-size: 14.5px; line-height: 1.5; overflow-wrap: anywhere; white-space: pre-line; }
+.phn-ph .ph-sitat b { display: block; font: 600 13px/1.3 var(--phn-sans); margin-bottom: 4px; }
+
+.phn-ph :is(.ph-okt-velg button, .ph-avtaler > a, .ph-avtaler > button, .ph-avkryss input):focus-visible { outline: 3px solid var(--phn-g900); outline-offset: 2px; }
+
+@container (min-width: 900px) {
+  .phn-ph .ph-fys-topp { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .phn-ph .ph-fys-topp img { height: 100%; min-height: 170px; }
+  .phn-ph .ph-blokk { font-size: 12px; }
+}

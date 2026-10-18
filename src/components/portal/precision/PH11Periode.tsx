@@ -10,7 +10,7 @@
  * Avvik:
  *   - Fordelt per uke leses fra ukeplanen (WeekPlan.plannedHours*). «Lett»-merket på ukene finnes ikke,
  *     fordi appen ikke lagrer hvilke uker som er lette.
- *   - Målsetninger knyttet til perioden og evaluering når perioden er over finnes ikke i appen.
+ *   - Målsetninger knyttet til perioden finnes ikke i appen. Når perioden er over, lenker siden til «Perioden er ferdig» (pakke 17b).
  *   - Kilden er «Fra gruppa» eller «Egen»; appen lagrer ikke hvem som la inn perioden.
  *   - Skjemaet beholder dagens felt som utkastet ikke viser (lett uke, øktbudsjett, min og maks per uke),
  *     under «Flere valg». Testuke og samlinger kan fortsatt velges som type.
@@ -32,6 +32,7 @@ import { formaterVarighet } from "@/lib/format-tall";
 import { leggSammen, tempo, ukeErGatt, ukeErNa, velgGrunnlag } from "@/lib/workbench/plan-progresjon";
 import { FordelingStolper, HeltKort, HendelseListe, SoyleForklaring, UkeSoyler, tempoSetning, varighet, type PlanHendelse, type SoyleUke } from "@/components/portal/precision/PlanProgresjon";
 import { PublishConfirmDialog } from "@/components/workbench/PublishConfirmDialog";
+import { periodeFerdigHref } from "@/lib/portal/plan-hjelpere-videresending";
 import "@/styles/playerhq-ny.css";
 
 const AKSER: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
@@ -174,6 +175,7 @@ export function PH11Periode({ playerId, periode, referanse, idag }: PH11PeriodeP
           {uker.length > 0 ? <UkeSoyler uker={soyler} /> : <p className="phn-forklar">Ingen uker i perioden.</p>}
           <SoyleForklaring />
         </section>
+        {fase === "for" && <Link className="phn-knapp sek" style={{ justifySelf: "start" }} href={periodeFerdigHref(p.id)}>Perioden er ferdig: se hvordan den gikk</Link>}
       </div>
 
       <div className="phn-kol">

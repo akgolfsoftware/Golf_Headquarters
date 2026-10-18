@@ -302,7 +302,9 @@ export function PH10Plan({ data, kalender = [], forslag = [], opptatt = [], ukeO
       <nav className="phn-plan-fot" aria-label="Mer i Plan">
         {harTekniskPlan && <Link className="phn-rad-lenke" href="/portal/tren/teknisk-plan"><span><b>Teknisk plan</b><span className="phn-kilde">Oppgavene fra coachen din</span></span><ChevronRight className="phn-ikon" aria-hidden /></Link>}
         <Link className="phn-rad-lenke" href="/portal/kalender"><span><b>Kalender</b><span className="phn-kilde">Alle avtaler, dag for dag</span></span><ChevronRight className="phn-ikon" aria-hidden /></Link>
-        <Link className="phn-rad-lenke" href="/portal/kalender/opptatt"><span><b>Opptatt tid</b><span className="phn-kilde">Legg inn tider du ikke kan trene</span></span><ChevronRight className="phn-ikon" aria-hidden /></Link>
+        <Link className="phn-rad-lenke" href="/portal/tren/turneringer"><span><b>Turneringer</b><span className="phn-kilde">Dine turneringer og kalenderen fra GolfBox</span></span><ChevronRight className="phn-ikon" aria-hidden /></Link>
+        <Link className="phn-rad-lenke" href="/portal/planlegge/fysisk"><span><b>Fysisk program</b><span className="phn-kilde">Øktene og siste fysiske test</span></span><ChevronRight className="phn-ikon" aria-hidden /></Link>
+        <Link className="phn-rad-lenke" href="/portal/planlegge/opptatt"><span><b>Opptatt tid</b><span className="phn-kilde">Legg inn tider du ikke kan trene</span></span><ChevronRight className="phn-ikon" aria-hidden /></Link>
       </nav>
     </>}
 

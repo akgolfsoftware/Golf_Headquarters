@@ -1,38 +1,39 @@
-// PH14EgenTest — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
-import { TL } from "@/lib/v2/train-lock";
 /**
- * PlayerHQ · Tren · Tester · Ny egen test (/portal/tren/tester/ny/egen) — v2.
- * v2-port 17. juli 2026 (Team F3): `NyTestEgenV2` erstatter legacy
- * EgenTestWizard, ruten flyttet ut av (legacy). Auth (PLAYER/COACH/ADMIN) er
- * uendret; server action `opprettCustomTest` er flyttet byte-identisk til
- * ./actions.ts. Kun presentasjonslaget er nytt.
+ * PlayerHQ · Tester · Egen test (/portal/tren/tester/ny/egen). PH-14 Egen test i nytt design (pakke 13, Stats resten).
+ * Design og avvik: se PH14EgenTest.
+ * Auth (PLAYER/COACH/ADMIN) er uendret; server action `opprettCustomTest` ligger i ./actions.ts.
  */
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { prisma } from "@/lib/prisma";
+import { aktivtMedlemskapWhere } from "@/lib/domain/grupper";
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
-import { TilbakeLenke, Caps, Tittel } from "@/components/v2";
-import { NyTestEgenV2 } from "@/components/portal/v2/NyTestEgenV2";
+import { PH14EgenTest } from "@/components/portal/precision/PH14EgenTest";
 
 export const dynamic = "force-dynamic";
 
 export default async function NyEgenTestPage() {
   const user = await requirePortalUser({ kreverTilgang: "TALENT", allow: ["PLAYER", "COACH", "ADMIN"] });
 
+  const [enrollment, medlemskap] = await Promise.all([
+    prisma.playerEnrollment.findFirst({
+      where: { userId: user.id, endedAt: null, coachId: { not: null } },
+      orderBy: { enrolledAt: "desc" },
+      select: { coach: { select: { name: true } } },
+    }),
+    prisma.groupMember.findFirst({
+      where: { userId: user.id, ...aktivtMedlemskapWhere() },
+      orderBy: { joinedAt: "desc" },
+      select: { group: { select: { name: true } } },
+    }),
+  ]);
+
   return (
-        <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
-      <div className="pa-side">
-      <TilbakeLenke href="/portal/tren/tester">Tilbake til tester</TilbakeLenke>
-      <div style={{ maxWidth: 720, width: "100%", margin: "0 auto" }}>
-        <Caps>Trening · Tester</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em="egen test">Lag en</Tittel>
-        </div>
-        <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.55, margin: "10px 0 0" }}>
-          Fem steg — navn, protokoll, måleenhet, synlighet og forhåndsvisning
-          {user.name ? `, ${user.name.split(" ")[0]}` : ""}.
-        </p>
-      </div>
-      <NyTestEgenV2 rolle={user.role} />
-          </div>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <PH14EgenTest
+        rolle={user.role}
+        coachNavn={enrollment?.coach?.name?.split(" ")[0] ?? null}
+        gruppeNavn={medlemskap?.group.name ?? null}
+      />
     </PlayerHQSkall>
   );
 }

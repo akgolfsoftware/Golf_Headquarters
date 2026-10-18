@@ -1,6 +1,6 @@
 {
-  "sitert": 130,
+  "sitert": 129,
   "av": 219,
-  "sistEndret": "2026-10-17",
-  "grunn": "PlayerHQ pakke 16 Utfordringer: den ubrukte MegV2 (src/components/portal/v2/MegV2.tsx) er slettet. Den siterte «designsystem/train-lock/PH-17 Meg.dc.html»; Meg er bygget i nytt design i PH24Meg etter utkast-playerhq (pakke 8, #1384). Én Train-lock-sitering faller bort, 131→130."
+  "sistEndret": "2026-10-18",
+  "grunn": "PlayerHQ pakke 13 Stats resten: /portal/analysere/turneringer er en videresending til Resultater › Turneringer, og den ubrukte MinKurveTrainLock er slettet. Begge siterte «designsystem/train-lock/PH-21 Min kurve.dc.html»; Turneringer er bygget i nytt design i PH16Turneringer etter utkast-playerhq/stats-resten.html. Én Train-lock-sitering faller bort, 130→129."
 }

@@ -12,6 +12,10 @@ for (const css of [
   "precision-a7.css",
   "precision-komponenter.css",
   "precision-athletics.css",
+  "playerhq-ny.css",
+  "playerhq-ny-stats.css",
+  "playerhq-ny-statsdybde.css",
+  "playerhq-ny-statsresten-omrade.css",
 ]) {
   mock.module(`@/styles/${css}`, { namedExports: {} });
 }
@@ -73,7 +77,7 @@ describe("PH16Stats (Stats) uten demotall", async () => {
   });
 
   test("Skill map rendrer «—» uten målt SG", () => {
-    const html = renderToStaticMarkup(React.createElement(PH16bSkillMap, { data: tom }));
+    const html = renderToStaticMarkup(React.createElement(PH16bSkillMap, { data: tom, grunnlag: { tee: { antall: 0, periode: null }, innspill: { antall: 0, periode: null }, naer: { antall: 0, periode: null }, putt: { antall: 0, periode: null } } }));
     assert.ok(html.includes("—"));
     assert.ok(!html.includes("Kategori C"));
   });
