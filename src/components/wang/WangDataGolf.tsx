@@ -36,7 +36,7 @@ export function WangDataGolf({ d }: { d?: WangDataGolfData }) {
   if (d.side === "topp") return <Topplister d={d} />;
   if (d.side === "norske") return <Norske d={d} />;
   if (d.side === "kilde") return <Kilde d={d} />;
-  if (d.side === "spiller" || d.side === "innspill" || d.side === "forslag") {
+  if ("v" in d) {
     return (
       <>
         <WangDataGolfElev side={d.side} v={d.v} idag={d.idag} hode={(tittel, ingress) => <Hode aktiv="dg-spiller" tittel={tittel} ingress={ingress} />} />

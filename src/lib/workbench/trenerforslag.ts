@@ -43,9 +43,9 @@ function datoKolonne(iso: string) { return new Date(`${iso}T00:00:00.000Z`); }
 function osloIdag() { return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Oslo" }).format(new Date()); }
 
 /** Organisasjonsgruppa der treneren har aktiv trenerrolle. Gruppemedlemskap alene gir ikke innsyn; det gjør delingen. */
-async function trenerGruppe(trenerId: string, organisasjon: "WANG" | "TEAM_NORWAY") {
+async function trenerGruppe(trenerId: string, organisasjon: "WANG" | "TEAM_NORWAY"): Promise<{ ok: false; feil: string } | { id: string }> {
   const gruppe = await prisma.group.findFirst({ where: { slug: ORGANISASJON_SLUG[organisasjon], arkivertAt: null }, select: { id: true } });
-  if (!gruppe) return { ok: false as const, feil: "Organisasjonen er ikke tilgjengelig." };
+  if (!gruppe) return { ok: false, feil: "Organisasjonen er ikke tilgjengelig." };
   const trenerrolle = await prisma.groupMember.findFirst({ where: {
     groupId: gruppe.id, userId: trenerId, role: "COACH", ...aktivtTrenerMedlemskapWhere(trenerId),
   }, select: { id: true } });
