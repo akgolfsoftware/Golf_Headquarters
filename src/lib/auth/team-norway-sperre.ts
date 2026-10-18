@@ -1,23 +1,16 @@
 /**
- * Hvilke /team-norway-stier som krever innlogging (proxy.ts).
+ * /team-norway er stengt for uinnloggede (proxy.ts). Anders 18.10.2026: ingen
+ * Team Norway-sider skal være åpne. Uinnloggede sendes til Team Norways egen
+ * inngang, /teamnorway, med ?next= bevart. Rolle og samtykke avgjøres fortsatt
+ * av requirePortalUser i hver rute; proxyen stopper bare dem uten innlogging.
  *
- * Disse rutene kaller requirePortalUser og sendte uinnloggede til /auth/login.
- * Proxyen sender dem nå til Team Norways egen inngang, /teamnorway, med
- * ?next= bevart. Andre /team-norway-stier er uendret: ruten selv avgjør.
+ * /teamnorway (uten bindestrek) er innloggingssiden selv og er IKKE stengt.
  */
-const SPERRET_ROTER = [
-  "/team-norway/workbench",
-  "/team-norway/analyse",
-  "/team-norway/tilgang",
-  "/team-norway/spiller",
-  "/team-norway/wang-resultater",
-] as const;
+const TN_ROT = "/team-norway";
 
 export function erSperretTeamNorwaySti(path: string): boolean {
-  return SPERRET_ROTER.some((rot) => path === rot || path.startsWith(`${rot}/`));
+  return path === TN_ROT || path.startsWith(`${TN_ROT}/`);
 }
-
-const TN_ROT = "/team-norway";
 
 /** Returstien etter innlogging: bare interne stier under /team-norway. */
 export function tryggTeamNorwayRetursti(verdi: string | string[] | undefined): string {
@@ -26,7 +19,7 @@ export function tryggTeamNorwayRetursti(verdi: string | string[] | undefined): s
   try {
     const url = new URL(verdi, "https://tn-retur.invalid");
     if (url.origin !== "https://tn-retur.invalid") return TN_ROT;
-    if (url.pathname !== TN_ROT && !url.pathname.startsWith(`${TN_ROT}/`)) return TN_ROT;
+    if (!erSperretTeamNorwaySti(url.pathname)) return TN_ROT;
     return `${url.pathname}${url.search}${url.hash}`;
   } catch {
     return TN_ROT;

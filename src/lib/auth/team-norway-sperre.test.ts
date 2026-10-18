@@ -3,12 +3,25 @@ import { test } from "node:test";
 
 import { erSperretTeamNorwaySti, tryggTeamNorwayRetursti } from "./team-norway-sperre";
 
-test("sperrer bare rutene som krever innlogging", () => {
-  assert.equal(erSperretTeamNorwaySti("/team-norway/workbench"), true);
-  assert.equal(erSperretTeamNorwaySti("/team-norway/spiller/abc/tester"), true);
-  assert.equal(erSperretTeamNorwaySti("/team-norway"), false);
-  assert.equal(erSperretTeamNorwaySti("/team-norway/rangliste"), false);
-  assert.equal(erSperretTeamNorwaySti("/team-norway/workbench-ond"), false);
+test("hele /team-norway er stengt for uinnloggede", () => {
+  for (const sti of [
+    "/team-norway",
+    "/team-norway/",
+    "/team-norway/workbench",
+    "/team-norway/spiller/abc/tester",
+    "/team-norway/rangliste",
+    "/team-norway/inviter",
+    "/team-norway/live-watch",
+    "/team-norway/gruppe-1/dokumenter",
+  ]) {
+    assert.equal(erSperretTeamNorwaySti(sti), true, sti);
+  }
+});
+
+test("innloggingssiden og andre flater er ikke stengt av denne vakten", () => {
+  for (const sti of ["/teamnorway", "/team-norway-ond", "/team-wang", "/portal"]) {
+    assert.equal(erSperretTeamNorwaySti(sti), false, sti);
+  }
 });
 
 test("beholder interne returstier under team-norway", () => {
