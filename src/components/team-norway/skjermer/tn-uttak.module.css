@@ -1,7 +1,7 @@
 /* Pakke 4 Uttak. Fasit: docs/design-system/utkast-tn/uttak.html. */
 .kriterier { display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
 .kriterium { display: grid; gap: 8px; align-content: start; padding: 16px 18px 18px; border: 1px solid var(--tn-ink-200); border-radius: var(--tn-radius-sm); background: var(--tn-white); }
-.nr { font-family: var(--tn-font-mono); font-weight: 500; font-size: 12px; line-height: 1; letter-spacing: 0.12em; text-transform: uppercase; color: var(--tn-ink-500); }
+.nr { font-family: var(--tn-font-body); font-weight: 700; font-size: 12px; line-height: 1; letter-spacing: 0.08em; text-transform: uppercase; color: var(--tn-ink-500); }
 .kriterium h3 { margin: 0; font-family: var(--tn-font-display); font-weight: 500; font-size: 20px; line-height: 1.2; letter-spacing: 0.03em; color: var(--tn-navy-900); }
 
 .rl { display: grid; border-top: 1px solid var(--tn-ink-200); }

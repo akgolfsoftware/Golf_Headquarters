@@ -6,15 +6,19 @@ import { TnPille } from "../core";
 import { TnFlate, TnFlatehode, TnFotnote, TnInitialer, TnListerad, TnMangler, TnSkjermhode, TnTekstlenke } from "../tn-flate";
 import { UTTAKSKRITERIER } from "../tn-registrerte-skjermer";
 import { TnKnapperekke } from "../tn-handlinger";
+import { TnHelt, TnHeltSporsmaal, TnHeltTall, TnHeltTekst, TnHeltTellere, TnMarkor, type TnStatus } from "../tn-stall";
 import { TnSlettUttak, TnUttakSkjema, UTTAK_TEKST } from "../tn-redigering-skjema";
 import { SkjermRamme, datoLang, hentSkjermbruker, osloDag } from "./felles";
 import u from "./tn-uttak.module.css";
 
 /**
  * TN-05 Uttak og kriterier.
+ * Utkast 2, retning B (godkjent 16.10.2026): helteflate med hvor mange som er tatt ut.
  * Fasit: docs/design-system/utkast-tn/uttak.html, skjerm Uttak og kriterier (pakke 4).
  *
  * Avvik:
+ *   - Hovedtallet er antall tatt ut. «Dager til uttaksfristen» og nedtellingen finnes
+ *     ikke: uttaksrunder har ingen frist eller antall plasser i datamodellen.
  *   - Kriteriene er de tre bindende (resultater, prestasjoner, prosess og adferd).
  *     De summeres aldri. Kriterium 3 har ingen vedtatt vurderingsmodell.
  *   - Uttaksrundene er arrangementene det er registrert uttak for. Frist,
@@ -22,6 +26,8 @@ import u from "./tn-uttak.module.css";
  *     registreres per spiller med begrunnelse (Anders 27.09.2026).
  *   - Ranglisten har egen side (Rangliste) og står ikke her.
  */
+
+const UTTAK_STATUS: Record<string, TnStatus> = { UTTATT: "folger", RESERVE: "folgmed" };
 
 export async function TnUttakSkjerm() {
   const bruker = await hentSkjermbruker();
@@ -31,6 +37,7 @@ export async function TnUttakSkjerm() {
   const uttak = await hentTnUttak(bruker, data.kontekst);
   const spillernavn = new Map(data.rader.map((r) => [r.id, r.navn]));
   const spillervalg = [...data.rader].sort((a, b) => a.navn.localeCompare(b.navn, "nb")).map((r) => ({ id: r.id, navn: r.navn }));
+  const totalt = (status: string) => uttak.filter((x) => x.status === status).length;
   const arrangementer = [...new Set(uttak.map((u) => u.arrangement))];
 
   return (
@@ -40,6 +47,26 @@ export async function TnUttakSkjerm() {
         tittel="Uttak og kriterier"
         ingress="Kriteriene er kjent på forhånd. Ranglisten viser hvor hver spiller står i dag."
         handling={data.kontekst.kanAdministrere && spillervalg.length > 0 ? <TnUttakSkjema spillere={spillervalg} knapp="Registrer uttak" /> : undefined}
+      />
+
+      <TnHelt
+        etikett="Hvor mange er tatt ut"
+        venstre={
+          <>
+            <TnHeltSporsmaal>Hvor mange er tatt ut?</TnHeltSporsmaal>
+            <TnHeltTall verdi={totalt("UTTATT")}>{totalt("UTTATT") === 1 ? "spiller tatt ut" : "spillere tatt ut"}</TnHeltTall>
+            <TnHeltTekst>{arrangementer.length === 0 ? "Ingen uttaksrunder er registrert ennå." : `${arrangementer.length} ${arrangementer.length === 1 ? "uttaksrunde" : "uttaksrunder"} registrert. Spillerne får beskjed først når uttaket er sendt.`}</TnHeltTekst>
+          </>
+        }
+        hoyre={
+          <TnHeltTellere
+            tall={[
+              { verdi: totalt("UTTATT"), tekst: "tatt ut" },
+              { verdi: totalt("RESERVE"), tekst: "reserve" },
+              { verdi: uttak.length - totalt("UTTATT") - totalt("RESERVE"), tekst: "ikke tatt ut" },
+            ]}
+          />
+        }
       />
 
       <section style={{ display: "grid", gap: 12 }}>
@@ -79,7 +106,7 @@ export async function TnUttakSkjerm() {
                     tekst={<>{datoLang(x.decidedAt)}{x.begrunnelse ? <span style={{ display: "block", whiteSpace: "pre-line", color: TN.ink700 }}>{x.begrunnelse}</span> : null}</>}
                     hoyre={
                       <span style={{ display: "grid", justifyItems: "end", gap: 4 }}>
-                        <TnPille tone={x.status === "UTTATT" ? "green" : x.status === "RESERVE" ? "amber" : "nøytral"}>{UTTAK_TEKST[x.status] ?? x.status}</TnPille>
+                        <TnMarkor status={UTTAK_STATUS[x.status] ?? "ikkedelt"}>{UTTAK_TEKST[x.status] ?? x.status}</TnMarkor>
                         {data.kontekst.kanAdministrere ? (
                           <TnKnapperekke>
                             <TnUttakSkjema spillere={spillervalg} knapp="Endre" variant="tekst" standard={{ spillerId: x.spillerId, arrangement: x.arrangement, status: x.status, begrunnelse: x.begrunnelse ?? "" }} />
