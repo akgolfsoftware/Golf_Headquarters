@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { innloggetKanSeDataGolf } from "@/lib/auth/datagolf-tilgang";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentTnGruppeanalyseValg, hentTnGruppeanalyseResultat } from "@/lib/domain/tn-arbeidsflate";
 import { TnShell, TnSidehode, TnSeksjon, TnTomtilstand, tnRolleNavn } from "@/components/team-norway/tn-shell";
@@ -47,7 +48,7 @@ export default async function GruppeanalysePage({ searchParams }: { searchParams
   const ugyldigValg = (sp.protokoll || sp.dag) && !resultat;
 
   return (
-    <TnShell aktiv="analyse" brukerNavn={bruker.name ?? "Ukjent"} rolle={tnRolleNavn(valg.kontekst.rolle)} groupId={valg.kontekst.gruppe.id} visTrenerflater={!valg.kontekst.erSpiller} kanAdministrere={valg.kontekst.kanAdministrere}>
+    <TnShell aktiv="analyse" brukerNavn={bruker.name ?? "Ukjent"} rolle={tnRolleNavn(valg.kontekst.rolle)} groupId={valg.kontekst.gruppe.id} visTrenerflater={!valg.kontekst.erSpiller} kanAdministrere={valg.kontekst.kanAdministrere} visDataGolf={!valg.kontekst.erSpiller && (await innloggetKanSeDataGolf())}>
       <TnSidehode overlinje="Gruppeanalyse" tittel="Sammenlign kompatible målinger" ingress="Velg én testdag eller én protokoll. Ulike protokoller blandes aldri i samme sammenligning." />
 
       {!valg.kontekst.erSpiller && (

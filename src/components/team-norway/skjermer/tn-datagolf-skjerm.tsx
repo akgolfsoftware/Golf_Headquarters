@@ -23,6 +23,8 @@ import { SkjermRamme, hentSkjermbruker } from "./felles";
  *     spillernes egne tall deles ikke med Data Golf-flaten, og funn kan ikke bli forslag herfra.
  *   - DG-08 viser norske proffers siste resultater og kommende turneringer. Live-stilling er ikke koblet.
  *   - Tallene er Data Golfs modellerte ferdighetstall med kildedato og merket som modell.
+ *   - Menypunktet vises på skjermene som går via SkjermRamme, tn-registrerte-skjermer og Analyse.
+ *     Spillerprofil-, Workbench- og Gruppe-sidene bygger skallet selv og viser det ikke.
  *   - Dataene hentes med WANGs lesemodul (samme spørringer som AgencyOS), ikke en egen kopi.
  */
 

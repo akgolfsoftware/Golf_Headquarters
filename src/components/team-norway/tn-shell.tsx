@@ -8,7 +8,6 @@ import { TnIkon } from "./tn-ikon";
 import s from "./tn-skall.module.css";
 import { TnSeksjonDS, TnSidehodeDS } from "./tn-skjerm";
 import { TN } from "@/lib/v2/team-norway";
-import { innloggetKanSeDataGolf } from "@/lib/auth/datagolf-tilgang";
 
 /**
  * TN-01 Organisasjonsskall — felles skall for alle Team Norway-ruter.
@@ -162,13 +161,14 @@ export function tnRolleNavn(rolle: string) {
   return rolle;
 }
 
-export async function TnShell({
+export function TnShell({
   aktiv,
   brukerNavn,
   rolle,
   groupId,
   visTrenerflater,
   kanAdministrere,
+  visDataGolf = false,
   flate = "standard",
   tilbake,
   children,
@@ -179,6 +179,8 @@ export async function TnShell({
   groupId?: string;
   visTrenerflater: boolean;
   kanAdministrere: boolean;
+  /** Menypunktet Data Golf. Settes av sider på serveren som har spurt datagolf-porten (bare coach og admin). */
+  visDataGolf?: boolean;
   /**
    * «full» dropper innholdsmarg og maksbredde for skjermer som har sin egen
    * flate — i dag bare liste/detalj på Trenere og tilgang. Skinnen, menyen,
@@ -190,7 +192,7 @@ export async function TnShell({
   tilbake?: { href: string; label: string };
   children: ReactNode;
 }) {
-  const valg = { aktiv, groupId, visTrenerflater, kanAdministrere, visDataGolf: visTrenerflater && (await innloggetKanSeDataGolf()) };
+  const valg = { aktiv, groupId, visTrenerflater, kanAdministrere, visDataGolf: visTrenerflater && visDataGolf };
   const grupper = tnHovedmeny(valg);
   return (
     <div className={s.skall}>

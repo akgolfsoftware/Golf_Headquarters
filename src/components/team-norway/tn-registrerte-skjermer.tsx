@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 
+import { innloggetKanSeDataGolf } from "@/lib/auth/datagolf-tilgang";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentTnArbeidskontekst, type TnArbeidskontekst } from "@/lib/domain/tn-arbeidsflate";
 import { TnInviterSpiller } from "./tn-inviter-spiller";
@@ -13,9 +14,10 @@ type Skjerm =
   | "inviter";
 
 
-function Chrome({ aktiv, brukerNavn, kontekst, tilbake, children }: { aktiv: TnAktivSide; brukerNavn: string; kontekst: TnArbeidskontekst; tilbake?: { href: string; label: string }; children: ReactNode }) {
+async function Chrome({ aktiv, brukerNavn, kontekst, tilbake, children }: { aktiv: TnAktivSide; brukerNavn: string; kontekst: TnArbeidskontekst; tilbake?: { href: string; label: string }; children: ReactNode }) {
+  const visDataGolf = !kontekst.erSpiller && (await innloggetKanSeDataGolf());
   return (
-    <TnShell aktiv={aktiv} brukerNavn={brukerNavn} rolle={tnRolleNavn(kontekst.rolle)} groupId={kontekst.gruppe.id} visTrenerflater={!kontekst.erSpiller} kanAdministrere={kontekst.kanAdministrere} tilbake={tilbake}>
+    <TnShell aktiv={aktiv} brukerNavn={brukerNavn} rolle={tnRolleNavn(kontekst.rolle)} groupId={kontekst.gruppe.id} visTrenerflater={!kontekst.erSpiller} kanAdministrere={kontekst.kanAdministrere} visDataGolf={visDataGolf} tilbake={tilbake}>
       {children}
     </TnShell>
   );
