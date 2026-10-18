@@ -12,10 +12,14 @@ type IupFokusforslag = { kind: "IUP_FOCUS"; organisasjon: "WANG"; periodName: st
   etter: IupFokus[]; begrunnelse: string };
 type Oktsforslag = { organisasjon: "WANG" | "TEAM_NORWAY"; handling: "ADD" | "UPDATE" | "CANCEL"; sessionId: string | null;
   for: Partial<Innslag> | null; etter: Innslag | null; begrunnelse: string };
+type Serieforslag = { kind: "SESSION_SERIES"; organisasjon: "WANG" | "TEAM_NORWAY"; fra: string; til: string; okter: Innslag[]; begrunnelse: string };
 export type SpillerTrenerforslag = {
   id: string; trener: string; opprettet: string;
-  forslag: IupFokusforslag | Oktsforslag;
+  forslag: IupFokusforslag | Oktsforslag | Serieforslag;
 };
+function erSerieforslag(forslag: SpillerTrenerforslag["forslag"]): forslag is Serieforslag {
+  return "kind" in forslag && forslag.kind === "SESSION_SERIES";
+}
 function erIupFokusforslag(forslag: SpillerTrenerforslag["forslag"]): forslag is IupFokusforslag {
   return "kind" in forslag && forslag.kind === "IUP_FOCUS";
 }
@@ -76,7 +80,7 @@ export function TrenerforslagInnboks({ forslag }: { forslag: SpillerTrenerforsla
   async function svar(id: string, beslutning: "ACCEPTED" | "REJECTED") { setValgt(id); start(async () => { const result = await svarPaTrenerforslag({ actionId: id, beslutning }); setValgt(null); setMelding(result.ok ? (beslutning === "ACCEPTED" ? "Endringen er lagt inn i planen." : "Planen er uendret; forslaget er avvist.") : result.feil); router.refresh(); }); }
   return <section aria-label="Forslag fra trener" style={panel}>
     <div><h2 style={{ margin: 0, font: "var(--type-heading-s)", color: "var(--text-primary)" }}>Forslag fra trener</h2><p style={{ margin: "4px 0 0", color: "var(--text-secondary)", font: "var(--type-body-s)" }}>Planen endres først når du godkjenner.</p></div>
-    {forslag.map(f => { const iup = erIupFokusforslag(f.forslag); const iupData = iup ? f.forslag as IupFokusforslag : null; const oekt = f.forslag as Oktsforslag; return <article key={f.id} aria-busy={pending && valgt === f.id} style={{ display: "grid", gap: 10, padding: 12, borderTop: "1px solid var(--border-hairline)" }}>
+    {forslag.map(f => { const iup = erIupFokusforslag(f.forslag); const iupData = iup ? f.forslag as IupFokusforslag : null; const serie = erSerieforslag(f.forslag) ? f.forslag : null; const oekt = f.forslag as Oktsforslag; return <article key={f.id} aria-busy={pending && valgt === f.id} style={{ display: "grid", gap: 10, padding: 12, borderTop: "1px solid var(--border-hairline)" }}>
       <p style={{ margin: 0, color: "var(--text-secondary)", font: "var(--type-body-s)" }}>{f.forslag.organisasjon === "WANG" ? "WANG" : "Team Norway"} · {f.trener}</p>
       {iupData ? <>
         <strong style={{ color: "var(--text-primary)" }}>Foreslåtte fokusområder · {iupData.periodName}</strong>
@@ -85,6 +89,10 @@ export function TrenerforslagInnboks({ forslag }: { forslag: SpillerTrenerforsla
           <div><strong>Etter godkjenning</strong>{iupData.etter.length ? iupData.etter.map((g, i) => <p key={`${g.tittel}-${i}`} style={{ margin: "6px 0", color: "var(--text-secondary)" }}>{g.akse} · {g.tittel} · {g.egentidMinUke} min/uke{g.maalemetode ? ` · ${g.maalemetode}` : ""}</p>) : <p>Fokusområdene fjernes for perioden</p>}</div>
         </div>
         <p style={{ margin: 0, color: "var(--text-secondary)" }}>Årsplanen endres først når du godkjenner.</p>
+      </> : serie ? <>
+        <strong style={{ color: "var(--text-primary)" }}>Forslag: {serie.okter.length} økter, {serie.fra}–{serie.til}</strong>
+        <div style={{ display: "grid", gap: 4 }}>{serie.okter.map((o, i) => <p key={`${o.date}-${i}`} style={{ margin: 0, color: "var(--text-secondary)" }}>{vis(o)}</p>)}</div>
+        <p style={{ margin: 0, color: "var(--text-secondary)" }}>{serie.begrunnelse}</p>
       </> : <>
         <div style={{ display: "grid", gap: 6 }}><strong style={{ color: "var(--text-primary)" }}>Før: {vis(oekt.for)}</strong><strong style={{ color: "var(--text-primary)" }}>Etter: {oekt.handling === "CANCEL" ? "Økten foreslås tatt ut av planen" : vis(oekt.etter)}</strong></div>
         <p style={{ margin: 0, color: "var(--text-secondary)" }}>{oekt.begrunnelse}</p>
