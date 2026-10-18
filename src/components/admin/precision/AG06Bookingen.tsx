@@ -8,6 +8,9 @@
  * - Venter (uten betaling): Bekreft · Avvis (begrunnelsen blir utkast i Innboks).
  * - Bekreftet og kommende: Foreslå ny tid (spilleren godtar i PlayerHQ) · Avlys
  *   (alltid full refusjon eller klippet tilbake, §COACH SOM AVLYSER, 15.10).
+ * - Bekreftet og startet: Merk gjennomført (bookingplanen steg 4).
+ * - Notatet kan endres for alle bookinger (steg 4). «No-show» venter på ny
+ *   status i basen.
  *
  * Avvik mot utkastet:
  *   - Avlysning har ikke «Angre i 10 sekunder»: refusjonen i Stripe kan ikke
@@ -22,6 +25,7 @@ import { Knapp, KnappLenke, Pille, Topp, Varsel, type PilleTone } from "@/compon
 import { bekreftBooking } from "@/app/admin/(legacy)/bookinger/actions";
 import { avlysBookingSomCoach, avvisBookingMedBegrunnelse } from "@/app/admin/bookinger/actions";
 import { foreslaaNyBookingtid, trekkTilbakeForslag } from "@/app/admin/kalender/flytt-actions";
+import { lagreNotat, merkGjennomfort } from "@/app/admin/bookinger/oppfolging-actions";
 import "@/styles/agencyos-ny-kalender.css";
 
 export type AG06BookingenData = {
@@ -61,6 +65,7 @@ export function AG06Bookingen({ navn, b }: { navn: string; b: AG06BookingenData 
   const [nyDato, setNyDato] = useState(b.datoIso);
   const [nyTid, setNyTid] = useState(b.tid);
   const [feil, setFeil] = useState<string | null>(null);
+  const [notat, setNotat] = useState(b.notat ?? "");
   const [melding, setMelding] = useState<string | null>(null);
   const [pending, start] = useTransition();
   const fornavn = b.hvem.split(" ")[0];
@@ -107,7 +112,6 @@ export function AG06Bookingen({ navn, b }: { navn: string; b: AG06BookingenData 
             <li><span>Coach</span><b>{b.coach ?? "—"}</b></li>
             <li><span>Betaling</span><b>{b.betaling} · {b.pris}</b></li>
             <li><span>Kontakt</span><b>{b.kontakt ?? "—"}</b></li>
-            <li><span>Beskjed</span><b>{b.notat ?? "—"}</b></li>
             <li><span>Bestilt</span><b>{b.bestilt}</b></li>
             {b.forslag && <li><span>Ny tid</span><b>{b.forslag} · venter på {fornavn}</b></li>}
           </ul>
@@ -120,8 +124,14 @@ export function AG06Bookingen({ navn, b }: { navn: string; b: AG06BookingenData 
               ? <Knapp variant="sek" disabled={pending} onClick={() => kjor(() => trekkTilbakeForslag(b.id), "Forslaget er trukket tilbake.")}>Trekk tilbake forslaget</Knapp>
               : <Knapp variant="sek" onClick={() => { setDialog("flytt"); setFeil(null); }}>Foreslå ny tid</Knapp>)}
             {b.status === "CONFIRMED" && b.kommende && <Knapp variant="sek" onClick={() => { setDialog("avlys"); setTekst(""); setFeil(null); }}>Avlys</Knapp>}
+            {b.status === "CONFIRMED" && !b.kommende && <Knapp disabled={pending} onClick={() => kjor(() => merkGjennomfort(b.id), "Timen er merket gjennomført.")}>Merk gjennomført</Knapp>}
             {b.spillerHref && <KnappLenke href={b.spillerHref}>Åpne spilleren</KnappLenke>}
           </div>
+          <form style={{ display: "grid", gap: 8 }} onSubmit={(e) => { e.preventDefault(); kjor(() => lagreNotat({ bookingId: b.id, notat }), "Notatet er lagret."); }}>
+            <label className="felt"><span className="etikett">Notat</span>
+              <textarea rows={3} maxLength={2000} value={notat} onChange={(e) => setNotat(e.target.value)} /></label>
+            <div className="knapper"><Knapp type="submit" variant="sek" disabled={pending || notat === (b.notat ?? "")}>Lagre notatet</Knapp></div>
+          </form>
           {b.status === "CONFIRMED" && b.kommende && !b.harKonto && <p className="kildetekst">Gjesten har ingen PlayerHQ-konto å godta ny tid i. Avtal ny tid direkte, eller avlys.</p>}
         </div>
 

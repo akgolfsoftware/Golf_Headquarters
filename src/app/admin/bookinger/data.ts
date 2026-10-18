@@ -41,6 +41,10 @@ export type AG06Booking = {
   harKonto: boolean;
   /** Coachens forslag om ny tid som spilleren ikke har svart på. */
   forslag: string | null;
+  /** E-post og telefon på kontoen, for søket i lista (gjestens står i `guardian`). */
+  kontaktSok: string;
+  /** Oslo-dato «YYYY-MM-DD», for periodefilteret. */
+  datoIso: string;
 };
 
 const DATO_FMT = new Intl.DateTimeFormat("nb-NO", { day: "2-digit", month: "2-digit", timeZone: "Europe/Oslo" });
@@ -54,6 +58,7 @@ function betaling(b: { priceOre: number; stripePaymentIntentId: string | null; s
   return "Ikke betalt";
 }
 
+const ISO_FMT = new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Oslo" });
 const DAG_FMT = new Intl.DateTimeFormat("nb-NO", { day: "numeric", timeZone: "Europe/Oslo" });
 const UKEDAG_FMT = new Intl.DateTimeFormat("nb-NO", { weekday: "short", timeZone: "Europe/Oslo" });
 
@@ -75,7 +80,7 @@ export async function hentAG06Bookinger(user: User): Promise<AG06Booking[]> {
       ...coachBookingScope(user),
     },
     include: {
-      user: { select: { name: true } },
+      user: { select: { name: true, email: true, phone: true } },
       coach: { select: { name: true } },
       serviceType: { select: { id: true, name: true, durationMin: true, priceOre: true } },
       facility: { select: { name: true } },
@@ -110,6 +115,8 @@ export async function hentAG06Bookinger(user: User): Promise<AG06Booking[]> {
     slutt: KL_FMT.format(r.endAt),
     coach: r.coach?.name ?? null,
     startMs: r.startAt.getTime(),
+    kontaktSok: [r.user?.email, r.user?.phone, r.guestPhone].filter(Boolean).join(" "),
+    datoIso: ISO_FMT.format(r.startAt),
   }));
 }
 

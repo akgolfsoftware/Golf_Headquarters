@@ -10,7 +10,7 @@ import type { BookingValg } from "@/app/admin/kalender/booking-actions";
 export const sti = "/admin/bookinger";
 
 const N = Date.UTC(2026, 9, 5, 8, 0);
-const ekstra = (dag: string, ukedag: string, slutt: string, coach: string | null, startMs: number) => ({ dag, ukedag, slutt, coach, startMs });
+const ekstra = (dag: string, ukedag: string, slutt: string, coach: string | null, startMs: number) => ({ dag, ukedag, slutt, coach, startMs, kontaktSok: "", datoIso: new Date(startMs).toISOString().slice(0, 10) });
 const bookinger: Booking[] = [
   { id: "b1", who: "Ola Testesen", guardian: null, svcId: "s1", svcNavn: "Privattime 60 min", min: 60, priceOre: 80000, where: "Studio 1", date: "06.10", t: "17:00", pay: "Ikke betalt", src: "PlayerHQ", note: "Vil jobbe med wedge.", at: "26.09", st: "Venter", kommende: false, harKonto: true, forslag: null, ...ekstra("6", "tir", "18:00", "Test Coach", N + 86_400_000) },
   { id: "b2", who: "Kari Gjest med et ganske langt navn", guardian: "kari@eksempel.no", svcId: "s2", svcNavn: "Drop-in range", min: 30, priceOre: 25000, where: "Range", date: "07.10", t: "10:00", pay: "Betalt", src: "Gjest", note: null, at: "25.09", st: "Bekreftet", kommende: true, harKonto: false, forslag: null, ...ekstra("7", "ons", "10:30", "Prøve Assistent", N + 2 * 86_400_000) },

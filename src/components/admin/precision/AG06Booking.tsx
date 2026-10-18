@@ -19,6 +19,9 @@
  *   - Tjenestelista er egen fane (med redigering, bookingplanen steg 2), ikke en
  *     seksjon under bookingene.
  *
+ * Bookinglista (bookingplanen steg 4): søk på navn, e-post og telefon, og filter
+ * på coach, tjeneste, sted og periode. Filtrene gjelder alle gruppene.
+ *
  * Fanen «Tjenester og pris» (bookingplanen steg 2, 15.10.2026): opprett, endre,
  * slå av og på, og slett tjenester, med sted, coach, kategori, buffer, minste
  * varsel og maks dager fram. Den gamle siden /admin/services sender hit.
@@ -87,11 +90,38 @@ export function BookingRad({ b }: { b: AG06Booking }) {
   </Link>;
 }
 
+type Filter = { sok: string; coach: string; tjeneste: string; sted: string; fra: string; til: string };
+const TOMT_FILTER: Filter = { sok: "", coach: "", tjeneste: "", sted: "", fra: "", til: "" };
+
+export function filtrerBookinger(bookinger: readonly AG06Booking[], f: Filter): AG06Booking[] {
+  const sok = f.sok.trim().toLowerCase();
+  return bookinger.filter((b) =>
+    (!sok || `${b.who} ${b.guardian ?? ""} ${b.kontaktSok}`.toLowerCase().includes(sok)) &&
+    (!f.coach || (b.coach ?? "") === f.coach) &&
+    (!f.tjeneste || b.svcNavn === f.tjeneste) &&
+    (!f.sted || b.where === f.sted) &&
+    (!f.fra || b.datoIso >= f.fra) &&
+    (!f.til || b.datoIso <= f.til));
+}
+
+const unike = (verdier: Array<string | null>) => [...new Set(verdier.filter((v): v is string => !!v && v !== "—"))].sort((a, b) => a.localeCompare(b, "nb"));
+
 export function AG06Booking({ navn, bookinger, valg, tjenester, tjenesteValg, fane: initialFane, naaMs }: AG06Props) {
   const [fane, setFane] = useState(initialFane ?? "bookinger");
   const [melding, setMelding] = useState<string | null>(null);
+  const [filter, setFilter] = useState<Filter>(TOMT_FILTER);
   const naa = naaMs ?? 0;
-  const grupper = useMemo(() => grupperBookinger(bookinger, naa), [bookinger, naa]);
+  const filtrert = useMemo(() => filtrerBookinger(bookinger, filter), [bookinger, filter]);
+  const grupper = useMemo(() => grupperBookinger(filtrert, naa), [filtrert, naa]);
+  const valgListe = useMemo(() => ({
+    coacher: unike(bookinger.map((b) => b.coach)),
+    tjenester: unike(bookinger.map((b) => b.svcNavn)),
+    steder: unike(bookinger.map((b) => b.where)),
+  }), [bookinger]);
+  const [visFilter, setVisFilter] = useState(false);
+  const harFilter = Object.values(filter).some((v) => v !== "");
+  const antallFilter = (["coach", "tjeneste", "sted", "fra", "til"] as const).filter((k) => filter[k] !== "").length;
+  const settF = (k: keyof Filter, v: string) => setFilter((f) => ({ ...f, [k]: v }));
   const [gruppe, setGruppe] = useState<Gruppe>(grupper.venter.length > 0 ? "venter" : "kommende");
   const uke = naa + 7 * 86_400_000;
   const denneUka = grupper.kommende.filter((b) => b.startMs < uke).length;
@@ -108,12 +138,26 @@ export function AG06Booking({ navn, bookinger, valg, tjenester, tjenesteValg, fa
   if (fane === "bookinger") {
     body = <>
       <div className="hoved"><strong>{denneUka}</strong><span className="forklar">kommende bookinger de neste sju dagene</span></div>
+      <div className="bk-filter" role="search" aria-label="Søk og filter">
+        <label className="felt"><span className="etikett">Søk</span><input type="search" value={filter.sok} onChange={(e) => settF("sok", e.target.value)} placeholder="Navn, e-post eller telefon" autoComplete="off" /></label>
+        <div className="knapper"><Knapp variant="sek" aria-expanded={visFilter} onClick={() => setVisFilter((v) => !v)}>{antallFilter > 0 ? `Filter (${antallFilter})` : "Filter"}</Knapp>
+          {harFilter && <Knapp variant="spok" onClick={() => setFilter(TOMT_FILTER)}>Nullstill</Knapp>}</div>
+        {visFilter && <div className="bk-filter-felt">
+          <label className="felt"><span className="etikett">Coach</span><select value={filter.coach} onChange={(e) => settF("coach", e.target.value)}><option value="">Alle</option>{valgListe.coacher.map((c) => <option key={c}>{c}</option>)}</select></label>
+          <label className="felt"><span className="etikett">Tjeneste</span><select value={filter.tjeneste} onChange={(e) => settF("tjeneste", e.target.value)}><option value="">Alle</option>{valgListe.tjenester.map((c) => <option key={c}>{c}</option>)}</select></label>
+          <label className="felt"><span className="etikett">Sted</span><select value={filter.sted} onChange={(e) => settF("sted", e.target.value)}><option value="">Alle</option>{valgListe.steder.map((c) => <option key={c}>{c}</option>)}</select></label>
+          <label className="felt"><span className="etikett">Fra dato</span><input type="date" value={filter.fra} onChange={(e) => settF("fra", e.target.value)} /></label>
+          <label className="felt"><span className="etikett">Til dato</span><input type="date" value={filter.til} onChange={(e) => settF("til", e.target.value)} /></label>
+        </div>}
+      </div>
       <div className="chips" role="group" aria-label="Vis">
         {GRUPPER.map((g) => <button key={g.id} type="button" aria-pressed={gruppe === g.id} onClick={() => setGruppe(g.id)}>
           {g.navn} <b>{grupper[g.id].length}</b></button>)}
       </div>
       {rader.length === 0
-        ? <Tom tittel="Ingen bookinger her" tekst="Bookinger fra spillere, flexkunder og deg selv kommer hit." handling={<Knapp onClick={() => setFane("ny")}>Ny booking</Knapp>} />
+        ? harFilter
+          ? <Tom tittel="Ingen treff" tekst="Ingen bookinger i denne gruppen passer søket og filtrene." handling={<Knapp variant="sek" onClick={() => setFilter(TOMT_FILTER)}>Nullstill filter</Knapp>} />
+          : <Tom tittel="Ingen bookinger her" tekst="Bookinger fra spillere, flexkunder og deg selv kommer hit." handling={<Knapp onClick={() => setFane("ny")}>Ny booking</Knapp>} />
         : <div className="bk-liste">{rader.map((b) => <BookingRad key={b.id} b={b} />)}</div>}
     </>;
   } else if (fane === "ny") {
