@@ -28,7 +28,7 @@ import { Faner, SegmentFilter, SideHode } from "@/components/precision/pa-a4";
 import { Aksebar, Hendelseskort, Seksjon, Varsel, type PaAkse } from "@/components/precision/pa-planhub";
 import { LPHASE_LABEL } from "@/lib/labels/taxonomy";
 import { formaterFortegn, formaterTall } from "@/lib/format-tall";
-import { formelForOvelse, mengdeForOvelse, metaForOvelse } from "@/lib/agencyos/planhub-ovelse";
+import { mengdeForOvelse, metaForOvelse } from "@/lib/agencyos/planhub-ovelse";
 import type { PlanhubData, PlanhubFane, PlanhubMal, PlanhubOvelse } from "@/lib/agencyos/planhub-typer";
 import { AG14Ovelseark } from "./AG14Ovelseark";
 
@@ -68,7 +68,7 @@ function MalHandlinger({ m }: { m: PlanhubMal }) {
   return <div className="a10-knapperad">
     <KnappLenke href={`/admin/plan-templates/${m.id}`} variant="secondary" icon={Layers} iconName="layers">Åpne mal</KnappLenke>
     <KnappLenke href={`/admin/plan-templates/${m.id}/rediger`} variant="ghost" icon={Pencil} iconName="pencil">Rediger</KnappLenke>
-    {m.godkjent && <KnappLenke href="/admin/grupper" variant="ghost" icon={Send} iconName="send">Rull ut</KnappLenke>}
+    {m.godkjent && <KnappLenke href={`/admin/plan-templates/${encodeURIComponent(m.id)}/rull-ut`} variant="ghost" icon={Send} iconName="send">Rull ut</KnappLenke>}
   </div>;
 }
 
@@ -128,8 +128,7 @@ function OvelseKort({ o, onApne }: { o: PlanhubOvelse; onApne: () => void }) {
   const meta = metaForOvelse(o);
   return <Hendelseskort akser={[ak(o.pyramide)]} onClick={onApne} label={`Rediger øvelsen ${o.navn}`}>
     <span className="a10-ev__hode"><span className="a10-ev__tittel">{o.navn}</span><Meta>{mengde ?? "—"} · MÅL {mal ?? "—"}</Meta></span>
-    <span className="a10-ev__kode">{formelForOvelse(o)}</span>
-    <Meta>{meta ? meta.toUpperCase() : "OMRÅDE IKKE SATT"}</Meta>
+    <span className="ag14-ovelsegrunnlag">{meta || "Område ikke satt"}</span>
   </Hendelseskort>;
 }
 
@@ -187,7 +186,7 @@ export function AG14PlanHub({ data, startFane = "ukemaler" }: AG14Props) {
   const u = data.uke;
   return <div className="pa-side">
     <SideHode kicker="Plan · maler og øvelser" title="Plan-hub"
-      sub="Ukemaler, program, standardøkter og øvelsesbanken. Øvelser bygges etter AK-formelen v2."
+      sub="Velg en mal for ukene, eller finn og rediger øvelsen du trenger. Innholdet bygges etter AK-formelen v2."
       actions={<Knapp icon={Plus} iconName="plus" onClick={nyOvelse}>Ny øvelse</Knapp>} />
     <Seksjon tittel={`Uke ${u.nr}`} meta={`${pl(u.spillere, "SPILLER", "SPILLERE")} · ${pl(u.okter, "ØKT", "ØKTER")} · ${u.udekket} UDEKKET`} label="Denne uka">
       <div className="a10-knapperad">

@@ -42,7 +42,7 @@ test("hentSpillerSg — kilderegel, vindu og fallback", async (t) => {
         round: {
           findMany: async (args: Record<string, unknown>) => {
             kall.rundeArgs = args;
-            return runder;
+            return runder.map(row => ({ sgSource: "manual", sgReferenceSet: null, ...row }));
           },
         },
         brukerSgInput: {

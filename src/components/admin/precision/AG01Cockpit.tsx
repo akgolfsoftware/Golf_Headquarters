@@ -120,6 +120,23 @@ function Nokkeltall({ tittel, meta, rader, tom }: { tittel: string; meta: string
   </Seksjon>;
 }
 
+function NesteHandling({ data }: { data: AG01Data }) {
+  const neste = data.kalender.find((rad) => rad.status === "pagar")
+    ?? data.kalender.find((rad) => rad.status === "neste")
+    ?? data.kalender.find((rad) => rad.status === "planlagt");
+  const ventende = data.venter.totalt;
+  return <section className="ag01-prioritet" aria-label="Neste handling">
+    <div>
+      <Meta>{neste?.status === "pagar" ? "Pågår nå" : neste ? "Neste avtale" : ventende ? "Venter på deg" : "Dagen er åpen"}</Meta>
+      <h2>{neste ? neste.tittel : ventende ? `${ventende} ${ventende === 1 ? "sak trenger" : "saker trenger"} et svar` : "Planlegg neste økt"}</h2>
+      <p>{neste ? `${neste.start}–${neste.slutt} · ${neste.hvem}${neste.sted ? ` · ${neste.sted}` : ""}` : ventende ? "Se godkjenninger, forespørsler og utkast samlet i køen." : "Åpne stallen for å arbeide med en spiller, eller kalenderen for å planlegge dagen."}</p>
+    </div>
+    <KnappLenke href={neste?.href ?? (ventende ? "/admin/ko" : "/admin/spillere")} variant="primary" iconRight={ArrowRight}>
+      {neste?.href ? "Åpne avtale" : ventende ? "Åpne køen" : "Åpne stallen"}
+    </KnappLenke>
+  </section>;
+}
+
 export function AG01Cockpit({ tilstand, data }: { tilstand: AG01Tilstand; data: AG01Data }) {
   const paaNett = usePaaNett();
   const tom = tilstand === "tom";
@@ -159,6 +176,7 @@ export function AG01Cockpit({ tilstand, data }: { tilstand: AG01Tilstand; data: 
   </div>;
   return <div className="pa-a6-side">
     {hode}
+    <NesteHandling data={d} />
     {tellere}
     <div className="pa-a6-kolonner">{venstre}{hoyre}</div>
   </div>;

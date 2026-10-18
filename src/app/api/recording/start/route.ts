@@ -17,6 +17,7 @@ import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 import { rateLimit } from "@/lib/rate-limit";
 import { vurderOktOpptakTilgang } from "@/lib/recording/okt-tilgang";
+import { erWorkbenchOpptakskilde } from "@/lib/recording/workbench-tilgang";
 import {
   hentLydSamtykkeStatus,
   lydSamtykkeMelding,
@@ -25,12 +26,12 @@ import {
 
 const Body = z
   .object({
-    bookingId: z.string().min(1).optional(),
-    sessionId: z.string().min(1).optional(),
-    playerId: z.string().min(1).optional(),
+    bookingId: z.string().min(1).max(200).optional(),
+    sessionId: z.string().min(1).max(200).optional(),
+    playerId: z.string().min(1).max(200).optional(),
   })
-  .refine((v) => !!v.bookingId || !!v.sessionId || !!v.playerId, {
-    message: "bookingId, sessionId eller playerId må oppgis",
+  .refine((v) => [v.bookingId, v.sessionId, v.playerId].filter(Boolean).length === 1, {
+    message: "Oppgi nøyaktig én booking, økt eller spiller",
   });
 
 /** Hard gate: uten LydSamtykke status GITT → 403. Klient kan ikke omgå. */
@@ -78,10 +79,16 @@ export async function POST(req: Request) {
     // Treningsøkt — opptak knyttet til en TrainingSessionV2. Spilleren hentes
     // fra økta, så coachen aldri kan koble opptaket til feil person.
     if (parsed.data.sessionId) {
-      const okt = await prisma.trainingSessionV2.findUnique({
+      const v2 = await prisma.trainingSessionV2.findUnique({
         where: { id: parsed.data.sessionId },
         select: { id: true, studentId: true, coachId: true },
       });
+      const wb = v2 ? null : await prisma.workbenchSession.findUnique({
+        where: { id: parsed.data.sessionId },
+        select: { id: true, playerId: true, coachId: true, isTemplate: true, hiddenByPlayer: true, needsPlayerApproval: true, status: true },
+      });
+      const eligibleWb = wb && erWorkbenchOpptakskilde(wb);
+      const okt = v2 ?? (eligibleWb ? { id: wb.id, studentId: wb.playerId, coachId: wb.coachId } : null);
       if (!okt) {
         return NextResponse.json({ error: "Økta finnes ikke" }, { status: 404 });
       }
@@ -102,6 +109,12 @@ export async function POST(req: Request) {
               { status: 400 },
             )
           : NextResponse.json({ error: "Du har ikke tilgang til denne økta" }, { status: 403 });
+      }
+
+      // Samme skriverett kreves ved start, opplasting og fullføring.
+      // En historisk coach-ID på økta erstatter ikke en gjeldende relasjon.
+      if (!(await harCoachTilgangTilSpiller(user, tilgang.playerId))) {
+        return NextResponse.json({ error: "Du har ikke gjeldende coachingtilgang til spilleren" }, { status: 403 });
       }
 
       const sperre = await avvisUtenLydSamtykke(tilgang.playerId);

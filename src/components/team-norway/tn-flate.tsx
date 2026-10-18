@@ -17,7 +17,7 @@ import { TN } from "@/lib/v2/team-norway";
 
 const etikettStil: CSSProperties = {
   fontFamily: TN.font.display,
-  fontSize: "0.6875rem",
+  fontSize: "0.8125rem",
   letterSpacing: "0.16em",
   textTransform: "uppercase",
   color: TN.textSecondary,
@@ -32,8 +32,8 @@ export function TnSkjermhode({ rute, tittel, ingress, handling }: { rute: string
   return (
     <header style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "flex-end", gap: "16px 32px", paddingBottom: 22, borderBottom: `1px solid ${TN.navy100}` }}>
       <div style={{ minWidth: 0, flex: "1 1 320px" }}>
-        <div style={{ fontFamily: TN.font.mono, fontSize: TN.text.micro, letterSpacing: "0.08em", color: TN.textSecondary, overflowWrap: "anywhere" }}>{rute}</div>
-        <h1 style={{ fontFamily: TN.font.display, fontWeight: 300, fontSize: "clamp(24px, 3vw, 36px)", lineHeight: 1.1, letterSpacing: "0.1em", textTransform: "uppercase", margin: "10px 0 0", color: TN.navy900 }}>{tittel}</h1>
+        <h1 style={{ fontFamily: TN.font.display, fontWeight: 300, fontSize: "clamp(24px, 3vw, 36px)", lineHeight: 1.1, letterSpacing: "0.1em", textTransform: "uppercase", margin: 0, color: TN.navy900 }}>{tittel}</h1>
+        <p style={{ fontFamily: TN.font.body, fontSize: TN.text.xs, letterSpacing: 0, color: TN.textSecondary, overflowWrap: "anywhere", margin: "10px 0 0" }}>{rute}</p>
         <p style={{ fontSize: 15, lineHeight: 1.6, color: TN.textSecondary, maxWidth: "64ch", margin: "10px 0 0" }}>{ingress}</p>
       </div>
       <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 12 }}>

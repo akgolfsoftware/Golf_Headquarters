@@ -30,5 +30,5 @@ const lato = Lato({
 });
 
 export default function TeamNorwayLayout({ children }: { children: ReactNode }) {
-  return <div className={`${jost.variable} ${lato.variable}`}>{children}</div>;
+  return <div data-org="team-norway" className={`pa-root tn-app ${jost.variable} ${lato.variable}`}>{children}</div>;
 }

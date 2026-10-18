@@ -34,11 +34,14 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from "react"
 import { useRouter } from "next/navigation";
 import { LydSamtykkePilotPanel } from "@/components/admin/lyd-samtykke-pilot-panel";
 import {
-  antallVentendeChunks,
   fjernChunkFraKo,
   leggChunkIKo,
   tomChunkKo,
+  readRecordingDraftMeta,
+  saveRecordingDraftMeta,
+  verifiedPendingRecordingChunks,
 } from "@/lib/offline-queue/recording-chunk-queue";
+import { chooseRecordingMime, recordingElapsedMs } from "@/lib/recording/chunk-contract";
 import { useLokalDataEier } from "@/lib/offline-queue/eier-context";
 
 type Mode = "idle" | "recovery" | "recording" | "paused" | "finalizing" | "behandler";
@@ -59,6 +62,8 @@ type Props = {
   recordingId: string | null;
   recoveryRecordingId: string | null;
   recoveryStartedAt: string | null;
+  recoveryExpectedChunks?: number;
+  recoveryDurationSec?: number | null;
   spillere: SpillerValg[];
   topbar: ReactNode;
   stage: ReactNode;
@@ -109,6 +114,8 @@ export function RecordingControls({
   recordingId,
   recoveryRecordingId,
   recoveryStartedAt,
+  recoveryExpectedChunks = 0,
+  recoveryDurationSec = null,
   spillere,
   topbar,
   stage,
@@ -129,6 +136,13 @@ export function RecordingControls({
   const [elapsedSec, setElapsedSec] = useState(0);
   const [chunkInfo, setChunkInfo] = useState<string | null>(null);
   const [batteryWarn, setBatteryWarn] = useState(false);
+  const [starting, setStarting] = useState(false);
+  const [recoverId, setRecoverId] = useState(recoveryRecordingId);
+  const startBusyRef = useRef(false);
+  const finalizeBusyRef = useRef(false);
+  const accumulatedMsRef = useRef(0);
+  const mimeRef = useRef("audio/webm");
+  const pendingMemoryRef = useRef(new Map<number, Blob>());
 
   // Aktiv recording-ID: enten den serveren ga oss, eller den vi nettopp
   // opprettet i start-kallet. Ref (ikke state) fordi ID-en kun leses av
@@ -146,11 +160,10 @@ export function RecordingControls({
 
   // Live timer
   useEffect(() => {
-    if (mode === "recording" || mode === "paused") {
-      if (!startedAtRef.current) startedAtRef.current = Date.now();
+    if (mode === "recording") {
       tickRef.current = setInterval(() => {
         if (mode === "recording" && startedAtRef.current) {
-          setElapsedSec(Math.floor((Date.now() - startedAtRef.current) / 1000));
+          setElapsedSec(Math.floor(recordingElapsedMs(accumulatedMsRef.current, startedAtRef.current, Date.now()) / 1000));
         }
       }, 1000);
       return () => {
@@ -299,54 +312,52 @@ export function RecordingControls({
   function uploadChunk(idx: number, blob: Blob): Promise<void> {
     const id = aktivIdRef.current;
     if (!id) return Promise.resolve();
-    return new Promise<void>((resolve) => {
-      uploadQueueRef.current = uploadQueueRef.current.then(async () => {
-        // 1) Lokal kø først — mistet dekning skal ikke miste biten.
-        let lokaltLagret = false;
-        try {
-          if (!eierId) throw new Error("Mangler lokal eier");
-          lokaltLagret = await leggChunkIKo(eierId, id, idx, blob);
-        } catch (err) {
-          console.error("[recording] IDB-kø feilet", err);
-        }
-        // 2) Prøv nett
-        const res = await lastOppChunkHttp(id, idx, blob);
-        if (res.ok) {
-          if (eierId) await fjernChunkFraKo(eierId, id, idx).catch(() => undefined);
-          setChunkInfo(`Lagret chunk ${idx + 1} (${formatTimer(elapsedSec)})`);
-        } else {
-          const vent = eierId ? await antallVentendeChunks(eierId, id).catch(() => 0) : 0;
-          setBanner({
-            tone: lokaltLagret ? "warn" : "error",
-            text:
-              !lokaltLagret
-                ? "Lydbiten kunne ikke lastes opp eller lagres på enheten. Hold siden åpen og prøv igjen når nettet er tilbake."
-                : vent > 0
-                ? `${vent} lydbiter venter på opplasting — prøver igjen automatisk.`
-                : "Kobling avbrutt — prøver igjen automatisk.",
-          });
-        }
-        // 3) Tøm resten av køen for denne recording
-        try {
-          if (!eierId) throw new Error("Mangler lokal eier");
-          const flush = await tomChunkKo(eierId, id, lastOppChunkHttp);
-          if (flush.gjenstaar > 0) {
-            setBanner({
-              tone: flush.gittOpp ? "error" : "warn",
-              text: flush.gittOpp
-                ? `${flush.gjenstaar} lydbiter kunne ikke lastes opp. Sjekk nett og prøv «Avslutt» på nytt.`
-                : `${flush.gjenstaar} lydbiter venter på opplasting.`,
-            });
-          }
-        } catch {
-          /* ignorer flush-feil */
-        }
-        resolve();
-      });
-    });
+    pendingMemoryRef.current.set(idx, blob);
+    const job = uploadQueueRef.current.catch(() => undefined).then(async () => {
+      const durationSec = Math.floor(recordingElapsedMs(accumulatedMsRef.current, startedAtRef.current, Date.now()) / 1000);
+      let stored = false;
+      if (eierId) {
+        await saveRecordingDraftMeta(eierId, id, { expectedChunks: chunkIdxRef.current, durationSec, mimeType: mimeRef.current }).catch(() => false);
+        stored = await leggChunkIKo(eierId, id, idx, blob).catch(() => false);
+      }
+      const res = await lastOppChunkHttp(id, idx, blob);
+      if (res.ok) {
+        pendingMemoryRef.current.delete(idx);
+        if (eierId) await fjernChunkFraKo(eierId, id, idx).catch(() => undefined);
+        setChunkInfo("Lyd lagret til " + formatTimer(durationSec));
+      } else setBanner({ tone: stored ? "warn" : "error", text: stored
+        ? "Lyd venter på opplasting. Hold siden åpen; prøv fullføring når nettet er tilbake."
+        : "Lyd er ikke bekreftet lagret. Hold siden åpen og prøv fullføring igjen." });
+    }).catch(() => { setBanner({ tone: "error", text: "Lyd venter fortsatt. Hold siden åpen og prøv igjen." }); });
+    uploadQueueRef.current = job;
+    return job;
+  }
+
+  async function flushBeforeComplete(id: string): Promise<void> {
+    for (const [idx, blob] of [...pendingMemoryRef.current].sort(([a], [b]) => a - b)) {
+      const res = await lastOppChunkHttp(id, idx, blob);
+      if (!res.ok) throw new Error("Lydbiter venter på opplasting. Prøv igjen når nettet er tilbake.");
+      pendingMemoryRef.current.delete(idx);
+      if (eierId) await fjernChunkFraKo(eierId, id, idx);
+    }
+    if (!eierId) throw new Error("Kunne ikke kontrollere opptakets eier.");
+    await tomChunkKo(eierId, id, lastOppChunkHttp);
+    if ((await verifiedPendingRecordingChunks(eierId, id)).length) throw new Error("Lydbiter venter fortsatt på opplasting. Opptaket er ikke fullført.");
   }
 
   async function startRecording() {
+    if (startBusyRef.current || mode !== "idle") return;
+    if (typeof MediaRecorder === "undefined" || !navigator.mediaDevices?.getUserMedia) {
+      setBanner({ tone: "error", text: "Denne nettleseren støtter ikke lydopptak. Bruk tekstfeltet i Live-økta." }); return;
+    }
+    const mimeType = chooseRecordingMime(mime => MediaRecorder.isTypeSupported(mime));
+    if (!mimeType) { setBanner({ tone: "error", text: "Nettleseren støtter ikke et opptaksformat som appen kan lagre." }); return; }
+    startBusyRef.current = true; setStarting(true);
+    try { await startRecordingInternal(mimeType); }
+    finally { startBusyRef.current = false; setStarting(false); }
+  }
+
+  async function startRecordingInternal(mimeType: string) {
     if (!valgtSpiller) {
       setBanner({ tone: "warn", text: "Velg spiller før du starter opptaket." });
       return;
@@ -415,11 +426,15 @@ export function RecordingControls({
     try {
       streamRef.current = stream;
       const recorder = new MediaRecorder(stream, {
-        mimeType: "audio/webm;codecs=opus",
+        mimeType,
         audioBitsPerSecond: 32000,
       });
       recorderRef.current = recorder;
       chunkIdxRef.current = 0;
+      accumulatedMsRef.current = 0;
+      pendingMemoryRef.current.clear();
+      mimeRef.current = recorder.mimeType || mimeType;
+      if (eierId) await saveRecordingDraftMeta(eierId, id, { expectedChunks: 0, durationSec: 0, mimeType: mimeRef.current }).catch(() => false);
 
       recorder.ondataavailable = (ev) => {
         if (!ev.data || ev.data.size === 0) return;
@@ -450,119 +465,92 @@ export function RecordingControls({
     if (!rec) return;
     if (mode === "recording" && rec.state === "recording") {
       rec.pause();
+      accumulatedMsRef.current = recordingElapsedMs(accumulatedMsRef.current, startedAtRef.current, Date.now());
+      startedAtRef.current = null;
+      setElapsedSec(Math.floor(accumulatedMsRef.current / 1000));
       setMode("paused");
       setBanner({ tone: "info", text: "Opptak på pause." });
     } else if (mode === "paused" && rec.state === "paused") {
       rec.resume();
+      startedAtRef.current = Date.now();
       setMode("recording");
       setBanner({ tone: "info", text: "Opptak fortsetter." });
     }
   }
 
+  async function completeConfirmed(id: string, expectedChunks: number, durationSec?: number) {
+    const response = await fetch("/api/recording/complete", { method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ recordingId: id, expectedChunks, ...(durationSec === undefined ? {} : { durationSec }) }) });
+    const result = await response.json().catch(() => ({})) as { ok?: boolean; recordingId?: string; message?: string };
+    if (!response.ok || result.ok !== true || result.recordingId !== id) throw new Error(result.message ?? "Opptaket er ikke bekreftet fullført. Prøv igjen.");
+    setBanner({ tone: "success", text: "Opptaket er lagret. Transkript og analyse vises når behandlingen er ferdig." });
+    setMode("behandler"); router.refresh(); pollStatus(id);
+  }
+
   async function stopRecording() {
     const id = aktivIdRef.current;
-    if (!id) return;
-    const rec = recorderRef.current;
-    setMode("finalizing");
-
-    // Be om siste data-chunk før vi stopper
-    if (rec && (rec.state === "recording" || rec.state === "paused")) {
-      await new Promise<void>((resolve) => {
-        rec.addEventListener("stop", () => resolve(), { once: true });
-        rec.stop();
-      });
-    }
-    stopStream();
-    await releaseWakeLock();
-
-    // Vent på køen — siste chunk skal være lastet opp
-    await uploadQueueRef.current;
-
-    setBanner({ tone: "info", text: "Avslutter og lagrer opptaket …" });
-
+    if (!id || finalizeBusyRef.current) return;
+    finalizeBusyRef.current = true; setMode("finalizing"); setRecoverId(id);
     try {
-      const res = await fetch("/api/recording/complete", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          recordingId: id,
-          durationSec: elapsedSec,
-        }),
-      });
-      if (!res.ok) {
-        const j = (await res.json().catch(() => ({}))) as { error?: string };
-        setBanner({
-          tone: "error",
-          text: `Klarte ikke å fullføre: ${j.error ?? res.status}`,
-        });
-        setMode("idle");
-        return;
+      accumulatedMsRef.current = recordingElapsedMs(accumulatedMsRef.current, startedAtRef.current, Date.now());
+      startedAtRef.current = null;
+      const durationSec = Math.floor(accumulatedMsRef.current / 1000);
+      setElapsedSec(durationSec);
+      const rec = recorderRef.current;
+      if (rec && (rec.state === "recording" || rec.state === "paused")) {
+        await new Promise<void>((resolve) => { rec.addEventListener("stop", () => resolve(), { once: true }); rec.stop(); });
       }
-      setBanner({
-        tone: "info",
-        text: "Opptak lagret. Transkriberer og lager sammendrag — dette tar noen minutter.",
-      });
-      setMode("behandler");
-      router.refresh();
-      pollStatus(id);
-    } catch (err) {
-      console.error("[recording] complete feilet", err);
-      setBanner({ tone: "error", text: "Nettverksfeil ved fullføring." });
-      setMode("idle");
-    }
+      stopStream(); await releaseWakeLock();
+      await uploadQueueRef.current;
+      if (eierId) await saveRecordingDraftMeta(eierId, id, { expectedChunks: chunkIdxRef.current, durationSec, mimeType: mimeRef.current });
+      await flushBeforeComplete(id);
+      if (!chunkIdxRef.current) throw new Error("Det er ingen registrert lyd å fullføre. Opptaket kan forkastes.");
+      await completeConfirmed(id, chunkIdxRef.current, durationSec);
+    } catch (error) {
+      setBanner({ tone: "error", text: error instanceof Error ? error.message : "Opptaket ble ikke fullført. Lyd er beholdt; prøv igjen." });
+      setMode("recovery");
+    } finally { finalizeBusyRef.current = false; }
   }
 
   async function recoverUpload() {
-    if (!recoveryRecordingId) return;
-    setMode("finalizing");
+    if (!recoverId || finalizeBusyRef.current || !eierId) return;
+    finalizeBusyRef.current = true; setMode("finalizing");
     try {
-      const res = await fetch("/api/recording/complete", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          recordingId: recoveryRecordingId,
-          durationSec: 0,
-        }),
-      });
-      if (!res.ok) {
-        const j = (await res.json().catch(() => ({}))) as { error?: string };
-        setBanner({
-          tone: "error",
-          text: `Recovery feilet: ${j.error ?? res.status}`,
-        });
-        setMode("recovery");
-        return;
-      }
-      setBanner({ tone: "info", text: "Opptaket er gjenopprettet. Behandler …" });
-      setMode("behandler");
-      router.refresh();
-      pollStatus(recoveryRecordingId);
-    } catch (err) {
-      console.error("[recording] recovery feilet", err);
+      const local = await readRecordingDraftMeta(eierId, recoverId);
+      const queued = await verifiedPendingRecordingChunks(eierId, recoverId);
+      const expected = Math.max(local?.expectedChunks ?? 0, recoveryExpectedChunks,
+        ...queued.map(index => index + 1), aktivIdRef.current === recoverId ? chunkIdxRef.current : 0);
+      await flushBeforeComplete(recoverId);
+      if (!expected) throw new Error("Ingen registrerte lydbiter er funnet. Opptaket kan forkastes.");
+      await completeConfirmed(recoverId, expected, local?.durationSec ?? recoveryDurationSec ?? undefined);
+    } catch (error) {
+      setBanner({ tone: "error", text: error instanceof Error ? error.message : "Gjenoppretting er ikke bekreftet. Prøv igjen." });
       setMode("recovery");
-    }
+    } finally { finalizeBusyRef.current = false; }
   }
 
   async function recoverDiscard() {
-    if (!recoveryRecordingId) return;
+    if (!recoverId || finalizeBusyRef.current) return;
+    finalizeBusyRef.current = true; setMode("finalizing");
     try {
-      await fetch("/api/recording/abort", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ recordingId: recoveryRecordingId }),
-      });
-      setBanner({ tone: "info", text: "Det avbrutte opptaket er forkastet." });
-      setMode("idle");
-      router.refresh();
-    } catch (err) {
-      console.error("[recording] abort feilet", err);
-    }
+      const response = await fetch("/api/recording/abort", { method: "POST",
+        headers: { "content-type": "application/json" }, body: JSON.stringify({ recordingId: recoverId }) });
+      const result = await response.json().catch(() => ({})) as { ok?: boolean };
+      if (!response.ok || result.ok !== true) throw new Error("Opptaket kunne ikke forkastes. Det er beholdt.");
+      pendingMemoryRef.current.clear();
+      setBanner({ tone: "success", text: "Det avbrutte opptaket er markert forkastet." });
+      setRecoverId(null); setMode("idle"); router.refresh();
+    } catch (error) {
+      setBanner({ tone: "error", text: error instanceof Error ? error.message : "Forkasting er ikke bekreftet. Opptaket er beholdt." });
+      setMode("recovery");
+    } finally { finalizeBusyRef.current = false; }
   }
 
   if (skjult) {
     return (
       <div className="flex items-center justify-between rounded-lg border border-dashed border-border bg-card px-4 py-4 text-[13px] text-muted-foreground">
-        <span>Live-vinduet er skjult.</span>
+        <span>{mode === "recording" ? "Opptaket fortsetter. Kontrollene er skjult." : mode === "paused" ? "Opptaket er på pause. Kontrollene er skjult." : "Opptakskontrollene er skjult."}</span>
         <button
           type="button"
           onClick={() => setSkjult(false)}
@@ -574,7 +562,7 @@ export function RecordingControls({
     );
   }
 
-  const showRecovery = mode === "recovery" && recoveryRecordingId;
+  const showRecovery = mode === "recovery" && recoverId;
   const isRecordingActive = mode === "recording" || mode === "paused";
   const isFinalizing = mode === "finalizing";
   const isBehandler = mode === "behandler";
@@ -582,7 +570,7 @@ export function RecordingControls({
     !!valgtSpiller &&
     (spillere.find((s) => s.id === valgtSpiller)?.lydSamtykkeGitt ?? false);
   // Spec §4: Start-knapp vises ikke uten GITT — ikke bare disabled.
-  const canStart = mode === "idle" && valgtHarSamtykke;
+  const canStart = mode === "idle" && valgtHarSamtykke && !starting && !!eierId;
   const visStartKnapp =
     !isRecordingActive &&
     mode === "idle" &&
@@ -637,8 +625,7 @@ export function RecordingControls({
           <div>
             <div className="font-semibold">Avbrutt opptak funnet</div>
             <div className="text-muted-foreground">
-              Startet {recoveryStartedAt ?? "tidligere"} — chunks ligger i Storage.
-              For å starte nytt opptak: trykk Forkast først.
+              Startet {recoveryStartedAt ?? "tidligere"}. Ventende lyd lastes opp før opptaket kan fullføres.
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2">
@@ -682,7 +669,8 @@ export function RecordingControls({
           <button
             type="button"
             onClick={() => setSkjult(true)}
-            aria-label="Lukk"
+            aria-label="Skjul opptakskontrollene"
+            title={isRecordingActive ? "Skjul kontrollene. Opptaket beholder sin nåværende tilstand." : "Skjul kontrollene"}
             className="grid h-7 w-7 place-items-center rounded-sm text-muted-foreground hover:bg-card hover:text-foreground"
           >
             <X className="h-4 w-4" strokeWidth={1.5} />
@@ -700,7 +688,7 @@ export function RecordingControls({
               <select
                 value={valgtSpiller}
                 onChange={(e) => setValgtSpiller(e.target.value)}
-                disabled={isFinalizing || isBehandler}
+                disabled={!!okt || starting || isFinalizing || isBehandler}
                 className="w-full rounded-md border border-border bg-card px-3 py-2.5 text-[13px] text-foreground disabled:opacity-50"
               >
                 <option value="">Velg spiller …</option>
@@ -735,7 +723,7 @@ export function RecordingControls({
               ) : (
                 <Mic className="h-4 w-4" strokeWidth={1.75} />
               )}
-              {isFinalizing ? "Fullfører …" : isBehandler ? "Behandler …" : "Start opptak"}
+              {starting ? "Starter …" : isFinalizing ? "Fullfører …" : isBehandler ? "Behandler …" : "Start opptak"}
             </button>
           )}
 

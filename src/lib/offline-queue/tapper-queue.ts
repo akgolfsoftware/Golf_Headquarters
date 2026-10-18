@@ -1,114 +1,90 @@
 "use client";
 
-/**
- * IndexedDB-laget for tapper-offline-køen. Ren I/O — regel/format-logikk
- * (retry-telling, når appen skal gi opp stille retry) ligger i tapper-kladd.ts
- * og er enhetstestet der. Native `indexedDB`-API — ingen ny avhengighet.
- *
- * Nye rader ligger i «tapper-ko-v2», nøkkel = eierId + sessionId. Den gamle
- * eierløse butikken beholdes urørt ved oppgradering, men leses aldri automatisk.
- * Køen trenger kun siste kjente snapshot per bruker og økt.
- */
-
-import { byggKoRad, registrerMislykketForsok, trengerManuellHandling, type TapperKoRad } from "./tapper-kladd";
+import { byggKoRad, registrerMislykketForsok, trengerManuellHandling, sammeTapperSnapshot, type TapperKoRad } from "./tapper-kladd";
 import { byggEierNokkel, erGyldigEierId, filtrerEideRader } from "./eier-scope";
 
 const DB_NAVN = "akgolf-offline-ko";
 const DB_VERSJON = 2;
 const BUTIKK = "tapper-ko-v2";
-
+export type TapperSyncResult = "tom" | "synket" | "venter" | "feilet" | "gitt-opp";
 function apneDb(): Promise<IDBDatabase | null> {
   if (typeof indexedDB === "undefined") return Promise.resolve(null);
   return new Promise((resolve) => {
-    const req = indexedDB.open(DB_NAVN, DB_VERSJON);
-    req.onupgradeneeded = () => {
-      if (!req.result.objectStoreNames.contains(BUTIKK)) {
-        req.result.createObjectStore(BUTIKK, { keyPath: "key" });
-      }
-    };
+    let req: IDBOpenDBRequest;
+    try { req = indexedDB.open(DB_NAVN, DB_VERSJON); } catch { resolve(null); return; }
+    req.onupgradeneeded = () => { if (!req.result.objectStoreNames.contains(BUTIKK)) req.result.createObjectStore(BUTIKK, { keyPath: "key" }); };
     req.onsuccess = () => resolve(req.result);
-    // Blokkert/feilet IndexedDB (privat modus, kvote osv.) skal aldri
-    // velte selve tapper-lagringen — bare gjøre offline-køen utilgjengelig.
-    req.onerror = () => resolve(null);
-    req.onblocked = () => resolve(null);
+    req.onerror = () => resolve(null); req.onblocked = () => resolve(null);
   });
 }
 
-async function medButikk<T>(
-  modus: IDBTransactionMode,
-  gjor: (butikk: IDBObjectStore) => IDBRequest<T>,
-): Promise<T | null> {
+/** Les/endring er én transaksjon, og lokal lagring bekreftes først ved commit. */
+async function transaction<T>(mode: IDBTransactionMode, operation: (store: IDBObjectStore, result: (value: T) => void) => void): Promise<T | null> {
   const db = await apneDb();
   if (!db) return null;
   return new Promise((resolve) => {
     try {
-      const tx = db.transaction(BUTIKK, modus);
-      const req = gjor(tx.objectStore(BUTIKK));
-      req.onsuccess = () => resolve(req.result);
-      req.onerror = () => resolve(null);
-    } catch {
-      // db.transaction() kan kaste synkront (f.eks. lukket forbindelse) —
-      // skal aldri velte kalleren, bare gjøre køen utilgjengelig denne gangen.
-      resolve(null);
-    }
+      const tx = db.transaction(BUTIKK, mode);
+      let value: T | null = null;
+      tx.oncomplete = () => { db.close(); resolve(value); };
+      tx.onabort = () => { db.close(); resolve(null); };
+      operation(tx.objectStore(BUTIKK), (next) => { value = next; });
+    } catch { db.close(); resolve(null); }
   });
 }
 
-/** Legger (eller erstatter) siste kjente tellinger for en økt i køen. */
-export async function leggIKo(
-  eierId: string,
-  sessionId: string,
-  counts: Array<{ club: string; count: number }>,
-): Promise<boolean> {
+export async function leggIKo(eierId: string, sessionId: string, counts: Array<{ club: string; count: number }>): Promise<boolean> {
   if (!erGyldigEierId(eierId)) return false;
   const key = byggEierNokkel(eierId, sessionId);
-  const eksisterende = await medButikk<TapperKoRad>("readonly", (b) => b.get(key));
-  const rad = eksisterende
-    ? { ...eksisterende, counts, sistOppdatert: new Date().toISOString() }
-    : byggKoRad(eierId, sessionId, counts, new Date());
-  return (await medButikk("readwrite", (b) => b.put(rad))) != null;
+  const snapshot = counts.map((item) => ({ ...item }));
+  return await transaction<boolean>("readwrite", (store, result) => {
+    const req = store.get(key);
+    req.onsuccess = () => {
+      const previous: TapperKoRad | undefined = req.result;
+      const changed = !previous || JSON.stringify(previous.counts) !== JSON.stringify(snapshot);
+      const row: TapperKoRad = { ...(previous ?? byggKoRad(eierId, sessionId, snapshot, new Date())),
+        counts: snapshot, revision: (previous?.revision ?? 0) + (changed ? 1 : 0),
+        forsokAntall: changed ? 0 : previous?.forsokAntall ?? 0, sistOppdatert: new Date().toISOString() };
+      store.put(row); result(true);
+    };
+  }) === true;
 }
 
-async function fjernFraKo(eierId: string, sessionId: string): Promise<void> {
-  await medButikk("readwrite", (b) => b.delete(byggEierNokkel(eierId, sessionId)));
-}
-
-async function alleRader(): Promise<TapperKoRad[]> {
-  const rader = await medButikk<TapperKoRad[]>("readonly", (b) => b.getAll());
-  return rader ?? [];
-}
-
-/** Alle rader i offline-køen (for portal-wide flush). */
 export async function listTapperKo(eierId: string): Promise<TapperKoRad[]> {
   if (!erGyldigEierId(eierId)) return [];
-  return filtrerEideRader(await alleRader(), eierId);
+  const rows = await transaction<TapperKoRad[]>("readonly", (store, result) => {
+    const req = store.getAll(); req.onsuccess = () => result(req.result);
+  });
+  return filtrerEideRader(rows ?? [], eierId);
 }
-
-/**
- * Tømmer køen for én økt: prøver å synke via gitt lagringsfunksjon
- * (`saveTapperCounts`, injisert for å holde denne fila fri for
- * server-actions-importer). Suksess → fjernes fra køen. Feil → forsøks-
- * telleren økes og raden blir liggende til neste `tomKo`-kall.
- * Returnerer `"gitt-opp"` når terskelen for stille retry er nådd, slik at
- * kalleren kan vise en tydelig feil i stedet for å late som alt er bra.
- */
-export async function tomKo(
-  eierId: string,
-  sessionId: string,
-  lagre: (sessionId: string, counts: Array<{ club: string; count: number }>) => Promise<{ ok: boolean }>,
-): Promise<"tom" | "synket" | "feilet" | "gitt-opp"> {
-  if (!erGyldigEierId(eierId)) return "feilet";
-  const rader = await listTapperKo(eierId);
-  const rad = rader.find((r) => r.sessionId === sessionId);
-  if (!rad) return "tom";
-
-  const res = await lagre(rad.sessionId, rad.counts).catch(() => ({ ok: false }));
-  if (res.ok) {
-    await fjernFraKo(eierId, sessionId);
-    return "synket";
-  }
-
-  const oppdatert = registrerMislykketForsok(rad, new Date());
-  await medButikk("readwrite", (b) => b.put(oppdatert));
-  return trengerManuellHandling(oppdatert) ? "gitt-opp" : "feilet";
+const sending = new Map<string, Promise<TapperSyncResult>>();
+/** Ordnet sending. En eldre kvittering verken sletter eller overskriver nyere tellinger. */
+export function tomKo(eierId: string, sessionId: string,
+  save: (sessionId: string, counts: Array<{ club: string; count: number }>) => Promise<{ ok: boolean }>,
+): Promise<TapperSyncResult> {
+  if (!erGyldigEierId(eierId)) return Promise.resolve("feilet");
+  const key = byggEierNokkel(eierId, sessionId);
+  const run = async (): Promise<TapperSyncResult> => {
+    const row = (await listTapperKo(eierId)).find((item) => item.sessionId === sessionId);
+    if (!row) return "tom";
+    const response = await save(row.sessionId, row.counts).catch(() => ({ ok: false }));
+    return await transaction<TapperSyncResult>("readwrite", (store, result) => {
+      const req = store.get(key);
+      req.onsuccess = () => {
+        const current: TapperKoRad | undefined = req.result;
+        if (!current) { result("tom"); return; }
+        if (!sammeTapperSnapshot(current, row)) { result("venter"); return; }
+        if (response.ok) { store.delete(key); result("synket"); return; }
+        const updated = registrerMislykketForsok(current, new Date());
+        store.put(updated); result(trengerManuellHandling(updated) ? "gitt-opp" : "feilet");
+      };
+    }) ?? "feilet";
+  };
+  const prior = sending.get(key) ?? Promise.resolve("tom" as const);
+  const next = prior.catch(() => "feilet" as const).then(async () => typeof navigator !== "undefined" && navigator.locks
+    ? await navigator.locks.request("akgolf-tapper-" + key, run) : await run());
+  sending.set(key, next);
+  const clean = () => { if (sending.get(key) === next) sending.delete(key); };
+  void next.then(clean, clean);
+  return next;
 }

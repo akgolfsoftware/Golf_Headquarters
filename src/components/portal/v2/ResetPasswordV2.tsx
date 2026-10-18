@@ -32,6 +32,7 @@ export function ResetPasswordV2() {
 
   async function lagre(e: React.FormEvent) {
     e.preventDefault();
+    if (pending) return;
     if (passord.length < 8) {
       setFeil("Passordet må være minst 8 tegn.");
       return;
@@ -42,14 +43,13 @@ export function ResetPasswordV2() {
     }
     setFeil(null);
     setPending(true);
-    const { error: err } = await supabase.auth.updateUser({ password: passord });
-    setPending(false);
-    if (err) {
-      setFeil(oversettPassordFeil(err.message));
-      return;
-    }
-    router.push("/portal");
-    router.refresh();
+    try {
+      const { error: err } = await supabase.auth.updateUser({ password: passord });
+      if (err) { setFeil(oversettPassordFeil(err.message)); return; }
+      router.push("/auth/etter-innlogging");
+      router.refresh();
+    } catch { setFeil("Passordet ble ikke endret. Kontroller nettet og prøv igjen."); }
+    finally { setPending(false); }
   }
 
   return (

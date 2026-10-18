@@ -381,7 +381,7 @@ export function PH08RundeLive({ data, rundeId: _rundeId }: PH08RundeLiveProps) {
 
       {/* Modus-velger: Slag vs. Putt */}
       <div
-        role="tablist"
+        role="group"
         style={{
           display: "flex",
           borderRadius: 8,
@@ -394,8 +394,8 @@ export function PH08RundeLive({ data, rundeId: _rundeId }: PH08RundeLiveProps) {
           <button
             key={m}
             type="button"
-            role="tab"
-            aria-selected={mode === m}
+
+            aria-pressed={mode === m}
             onClick={() => setMode(m)}
             style={{
               flex: 1,

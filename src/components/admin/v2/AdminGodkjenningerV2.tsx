@@ -65,6 +65,7 @@ export interface AdminGodkjenningV2Row {
   when: string;
   urgent: boolean;
   lowRisk: boolean;
+  epostUtkast?: string;
   /** A1: kilde-chip — "agent" (PlanAction) | "caddie" | "forespørsel". */
   kilde?: "agent" | "caddie" | "forespørsel";
   /** A1: kilder uten inline godkjenn-action lenker til sin flate. */

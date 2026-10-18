@@ -65,6 +65,7 @@ export function PH24Profil({ data, onLagre }: PH24ProfilProps) {
     setSuksess(false);
 
     startTransition(async () => {
+      try {
       const res = await onLagre({
         navn: navn.trim(),
         mobil: mobil.trim() || null,
@@ -79,6 +80,7 @@ export function PH24Profil({ data, onLagre }: PH24ProfilProps) {
       } else {
         setFeil(res.feil);
       }
+      } catch { setFeil("Profilen kunne ikke bekreftes lagret. Endringene er beholdt her."); }
     });
   };
 

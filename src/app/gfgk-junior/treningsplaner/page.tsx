@@ -33,7 +33,7 @@ export default async function TreningsplanerPage({
   return (
     <div>
       <GfgkHeader aktiv="treningsplaner" />
-      <TreningsplanerInnhold startGruppe={tilGruppeKey(g)} ukeplaner={ukeplaner} />
+      <TreningsplanerInnhold startGruppe={tilGruppeKey(g)} ukeplaner={ukeplaner} kilder={Object.fromEntries(GRUPPE_KEYS.map((k) => [k, grupper[k].kilde]))} />
       <GfgkFooter />
     </div>
   );

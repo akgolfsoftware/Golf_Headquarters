@@ -246,3 +246,43 @@
     animation-duration: 0.01ms;
   }
 }
+
+/* Gjeldende Precision D-47, eksport 34 (3.1.0-l), 06.10.2026. */
+.wang-tp.wang-app {
+  --org-shell-bg: #17446F;        /* WANG-blå, struktur. Hvit 10,0:1 */
+  --org-shell-deep: #0F2E4C;      /* dybde, topplinje */
+  --org-shell-ink: #FFFFFF;
+  --org-shell-ink-muted: #A9BDD0; /* 5,2:1 på blå */
+  --org-shell-active: #49CA9F;    /* mint, aktivt valg i skallet. 4,9:1 på blå */
+  --org-flag-a: #17446F; --org-flag-b: #2E857D;
+  /* Handling: WANG-rosa, høyst én primærknapp per flate. Hvit 5,0:1 · hover 6,4:1 */
+  --action: #D12A5C; --action-hover: #B32450; --action-press: #9C1F46; --action-text: #FFFFFF; --action-tint: #FBEEF2;
+  /* Lenker og valgt tilstand: WANG-blå */
+  --primary: #17446F; --primary-hover: #0F2E4C; --primary-press: #0F2E4C; --text-on-primary: #FFFFFF;
+  --signal: #D12A5C; --signal-hover: #B32450; --signal-ink: #B32450; --signal-tint: #FBEEF2; --text-on-signal: #FFFFFF;
+  --surface-page: #F2F5F8; --surface-flat: #FFFFFF; --surface-card: #FFFFFF; --surface-sunken: #F2F5F8; --surface-hover: #E6E8EA;
+  --surface-ink: #17446F; --surface-ink-hover: #0F2E4C; --surface-inverse: #17446F; --text-inverse: #FFFFFF; --text-inverse-soft: #A9BDD0;
+  /* Meta: #5B7793 er 4,26:1 på #F2F5F8. Rettet til WANGs AA-variant #4A6A8A (5,2:1 på tint, 5,7:1 på hvit) */
+  --text-primary: #17446F; --text-body: #17446F; --text-secondary: #4A6A8A; --text-muted: #4A6A8A; --text-faint: #4A6A8A;
+  --border-hairline: #E6E8EA; --border-strong: #D2D2D2; --border-control: #4A6A8A; /* grå #D2D2D2 er 1,5:1, for svak for felt */
+  --border-ink: #17446F; --border-action: #17446F; --focus-ring: #007DB1; /* WANG fokus, 4,6:1 */ --link: #17446F;
+  --surface-raised: var(--surface-card); --surface-selected: var(--surface-card);
+  --font-display: var(--font-wang-brand), "Montserrat", "Helvetica Neue", Arial, sans-serif;
+  --font-sans: var(--font-wang-body), "Quattrocento Sans", "IBM Plex Sans Fallback", Georgia, serif;
+  /* 2.34.0: de semantiske ordrollene settes på nytt her, så de får organisasjonens tekstfont (verdier fra :root løses der de settes). */
+  --type-instruction: 400 var(--fs-15)/1.5 var(--font-sans); --type-source: 400 var(--fs-13)/1.4 var(--font-sans); --type-place: 500 var(--fs-15)/1.35 var(--font-sans);
+  --type-display: 300 var(--fs-40)/1.08 var(--font-display);
+  --type-title-l: 500 var(--fs-28)/1.18 var(--font-display);
+  --type-title-m: 500 var(--fs-21)/1.22 var(--font-display);
+  --type-title-s: 600 var(--fs-17)/1.25 var(--font-display);
+  --type-body: 400 var(--fs-15)/1.55 var(--font-sans);
+  --type-body-s: 400 var(--fs-14)/1.5 var(--font-sans);
+  --type-label: 500 var(--fs-13)/1.3 var(--font-display);
+  --type-button: 600 var(--fs-14)/1 var(--font-display);
+  --type-kicker: 600 var(--fs-11)/1.3 var(--font-display);
+  --radius: 8px; --radius-input: 8px; --radius-card-sm: 4px; --radius-icon-chip: 4px; --bg-app: #F2F5F8; --wang-text-muted: #4A6A8A; --wang-text-disabled: #4A6A8A; --text-secondary: #4A6A8A; --text-on-dark-dim: #A9BDD0; --shadow-card: 0 1px 2px color-mix(in srgb, #17446F 8%, transparent); --shadow-card-sm: var(--shadow-card); --radius-card: 4px; --radius-modal: 8px; --radius-inner: 4px; --radius-pill: 999px;
+  --shadow-raised: 0 1px 2px color-mix(in srgb, #17446F 8%, transparent);
+}
+
+.wang-tp.wang-app .wg-num, .wang-tp.wang-app .wang-num { font-family: var(--font-ibm-plex-mono); }
+.wang-tp.wang-app :is(a, button, input, select, textarea):focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 3px; }

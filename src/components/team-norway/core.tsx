@@ -108,11 +108,9 @@ export function TnPille({ children, tone = "nøytral" }: { children: ReactNode; 
   return (
     <span
       style={{
-        fontFamily: TN.font.mono,
-        fontSize: TN.text.micro,
+        fontFamily: TN.font.body,
+        fontSize: TN.text.xs,
         fontWeight: TN.weight.semibold,
-        letterSpacing: TN.tracking.eyebrow,
-        textTransform: "uppercase",
         padding: "4px 9px",
         borderRadius: TN.radius.xs,
         background: t.bg,

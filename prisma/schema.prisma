@@ -3594,6 +3594,34 @@ model TournamentResult {
 
 // ---------- Sesongplanlegger (Fase 1.18) ----------
 
+// Månedsplanmetadata. Eksklusiv player/group-eier håndheves også i SQL CHECK.
+// Coachforslag endrer aldri aktiv spillerplan før spilleren godtar forslaget.
+model MonthlyPlan {
+  id                         String   @id @default(cuid())
+  playerId                   String?
+  groupId                    String?
+  year                       Int
+  month                      Int
+  details                    Json?
+  proposedDetails            Json?
+  proposedBy                 String?
+  proposalBaseActiveRevision Int?
+  playerEvaluation           Json?
+  coachEvaluation            Json?
+  revision                   Int      @default(0)
+  activeRevision             Int      @default(0)
+  lastRequestId              String?
+  lastRequestHash            String?
+  createdBy                  String
+  updatedBy                  String
+  createdAt                  DateTime @default(now())
+  updatedAt                  DateTime @updatedAt
+
+  @@unique([playerId, year, month])
+  @@unique([groupId, year, month])
+  @@map("monthly_plans")
+}
+
 model SeasonPlan {
   id        String   @id @default(cuid())
   userId    String

@@ -21,12 +21,12 @@ export interface TrackManSessionItem {
 }
 
 export interface TrackManClubStats {
-  carry: number;
-  clubSpeed: number;
-  ballSpeed: number;
-  smashFactor: number;
-  launchAngle: number;
-  clubPath: number;
+  carry: number | null;
+  clubSpeed: number | null;
+  ballSpeed: number | null;
+  smashFactor: number | null;
+  launchAngle: number | null;
+  clubPath: number | null;
   faceToPath: number | null;
   spinRate: number | null;
 }
@@ -60,11 +60,13 @@ export interface TrackManStationRow {
 }
 
 export interface PH17TrackManData {
+  state?: "data" | "tom" | "feil";
   sessions: TrackManSessionItem[];
   shots: Record<string, Array<[x: number, y: number]>>;
   clubStats: Record<string, TrackManClubStats>;
   gapping: TrackManGappingRow[];
   gear: TrackManGearItem[];
+  sessionData?: Record<string, { shots: Record<string, Array<[number, number]>>; clubStats: Record<string, TrackManClubStats> }>;
   station: {
     club: string;
     spillerNavn: string;

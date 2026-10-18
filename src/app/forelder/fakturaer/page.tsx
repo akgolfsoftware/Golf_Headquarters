@@ -12,6 +12,8 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentBarnForForelder } from "@/lib/forelder";
+import { velgBarnFraGodkjente } from "@/lib/forelder-kontekst";
+import { ForelderBarnValg, ForelderBarnAvvist } from "@/components/forelder/ForelderBarnValg";
 import { prisma } from "@/lib/prisma";
 import { ForelderSkall } from "@/components/precision/ForelderSkall";
 import {
@@ -40,10 +42,14 @@ function manedLabel(d: Date): string {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
-export default async function V2ForelderFakturaerPreviewPage() {
+export default async function V2ForelderFakturaerPreviewPage({ searchParams }: { searchParams?: Promise<{ barn?: string }> } = {}) {
   const user = await requirePortalUser({ allow: ["PARENT"] });
   const barn = await hentBarnForForelder(user.id);
-  const childIds = barn.map((b) => b.child.id);
+  const valgt = (await searchParams)?.barn;
+  const utvalg = velgBarnFraGodkjente(barn, valgt);
+  const valgListe = barn.map((b) => ({ id: b.child.id, navn: b.child.name }));
+  if (!utvalg.gyldig) return <ForelderSkall><ForelderBarnAvvist barn={valgListe} /></ForelderSkall>;
+  const childIds = utvalg.barn.map((b) => b.child.id);
 
   const payments = childIds.length
     ? await prisma.payment.findMany({
@@ -76,6 +82,7 @@ export default async function V2ForelderFakturaerPreviewPage() {
 
   return (
     <ForelderSkall>
+      <ForelderBarnValg barn={valgListe} valgt={valgt ?? null} alle />
       <ForelderFakturaerV2 data={{ fakturaer, parentName: user.name }} />
     </ForelderSkall>
   );

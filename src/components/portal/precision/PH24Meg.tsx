@@ -43,11 +43,10 @@ export type PH24Props = {
   hrefs: { profil: string; fasiliteter: string; book: string; bookinger: string; abo: string; foreldre: string; deling: string; fravaer: string; helse: string; utstyr: string; utfordringer: string; venner: string; hjelp: string; innstillinger: string; mal: string; personvern: string };
 };
 
-function Sek({ n, k, meta, children }: { n: number; k: string; meta?: ReactNode; children: ReactNode }) {
-  return <section aria-label={k} className="pa-card" style={{ padding: 16, gap: 12, minWidth: 0, display: "flex", flexDirection: "column" }}>
+function Sek({ k, meta, children }: { n: number; k: string; meta?: ReactNode; children: ReactNode }) {
+  return <section aria-label={k} className="ph24-seksjon" style={{ padding: "20px 0", gap: 12, minWidth: 0, display: "flex", flexDirection: "column" }}>
     <div style={{ display: "flex", gap: 8, alignItems: "baseline", flexWrap: "wrap" }}>
-      <span style={{ font: "600 11px/1 var(--font-mono)", color: "var(--text-muted)" }}>{String(n).padStart(2, "0")}</span>
-      <span className="kicker" style={{ flex: "1 1 auto" }}>{k}</span>
+      <h2 className="ph24-seksjon__tittel" style={{ flex: "1 1 auto", margin: 0 }}>{k}</h2>
       {meta != null && <Meta>{meta}</Meta>}
     </div>
     {children}
@@ -94,7 +93,7 @@ export function PH24Meg(p: PH24Props) {
         <Knapper><KnappLenke href={h.foreldre} variant="secondary" size="sm" icon={UserPlus} iconName="user-plus">Inviter forelder</KnappLenke><KnappLenke href={h.foreldre} variant="ghost" size="sm" icon={Eye} iconName="eye">Se tilgang</KnappLenke></Knapper>
       </Sek>,
       <Sek key="d" n={6} k="Deling">
-        <Dempet>Styr hvilke trenere og grupper som ser hva. Trenere med tilgang ser også helse og meldinger.</Dempet>
+        <Dempet>Styr hvilke trenere og grupper som ser hva. Kontroller delingsvalgene for profil, helse og meldinger hver for seg.</Dempet>
         <div><KnappLenke href={h.deling} variant="secondary" size="sm" iconRight={ArrowRight}>Åpne deling</KnappLenke></div>
       </Sek>,
       <Sek key="h" n={7} k="Helse og fravær" meta={<span style={{ display: "inline-flex", gap: 6, alignItems: "center" }}><Ikon icon={Lock} size={12} name="lock" />FORELDRE SER IKKE DETTE</span>}>
@@ -120,7 +119,7 @@ export function PH24Meg(p: PH24Props) {
       </Sek>,
       <Sek key="c" n={9} k="Min coach" meta={p.coach ? `SIDEN ${p.coach.siden}` : "—"}>
         {p.coach ? <Nokkelverdi items={[["Coach", p.coach.navn], ["Program", p.coach.program]]} /> : <Dempet>Ingen coach ennå. Book en privattime for å komme i gang.</Dempet>}
-        <Meta>MELDINGER LIGGER I INNBOKSEN BAK BJELLA</Meta>
+        <div><KnappLenke href="/portal/varsler" variant="ghost" size="sm" iconRight={ArrowRight}>Åpne meldinger</KnappLenke></div>
       </Sek>,
       <Sek key="v" n={10} k="Venner og utfordringer" meta={`${p.venner} VENNER`}>
         {p.utfordringer.length ? <Rader rader={p.utfordringer} /> : <Dempet>Ingen aktive utfordringer.</Dempet>}
@@ -134,8 +133,10 @@ export function PH24Meg(p: PH24Props) {
         <div><KnappLenke href={h.innstillinger} variant="secondary" size="sm" icon={Settings} iconName="settings" iconRight={ArrowRight}>Åpne innstillinger</KnappLenke></div>
       </Sek>,
     ];
-    const half = Math.ceil(s.length / 2);
-    return <div className="ph24-kol"><div>{s.slice(0, half)}</div><div>{s.slice(half)}</div></div>;
+    return <div className="ph24-kol ph24-grupper">
+      <div><h2 className="ph24-gruppehode">Din hverdag</h2>{[s[0], s[8], s[2], s[3], s[1], s[7]]}</div>
+      <div><h2 className="ph24-gruppehode">Team, deling og innstillinger</h2>{[s[4], s[5], s[6], s[9], s[10], s[11]]}</div>
+    </div>;
   })();
 
   return <Side max={1280}>

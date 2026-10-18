@@ -33,16 +33,12 @@ const NB_DATO = new Intl.DateTimeFormat("nb-NO", {
 export default async function V2ForelderVarslerPreviewPage() {
   const user = await requirePortalUser({ allow: ["PARENT"] });
   const barn = await hentBarnForForelder(user.id);
-  const childIds = barn.map((b) => b.child.id);
-
-  const sisteVarsler = childIds.length
-    ? await prisma.notification.findMany({
-        where: { userId: { in: childIds } },
+  const sisteVarsler = await prisma.notification.findMany({
+        where: { userId: user.id },
         orderBy: { createdAt: "desc" },
         take: 8,
-        include: { user: { select: { id: true, name: true } } },
-      })
-    : [];
+        select: { id: true, type: true, title: true, body: true, createdAt: true },
+      });
 
   const data: ForelderVarslerData = {
     email: user.email,
@@ -57,7 +53,7 @@ export default async function V2ForelderVarslerPreviewPage() {
       type: v.type,
       title: v.title,
       body: v.body,
-      childFirstName: v.user?.name?.split(" ")[0] ?? "—",
+      childFirstName: "Til deg",
       dato: NB_DATO.format(v.createdAt),
     })),
   };

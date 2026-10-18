@@ -9,6 +9,8 @@ const withMDX = createMDX({
 });
 
 const nextConfig: NextConfig = {
+  // Eksplisitt loopback-adresse for prosjektets isolerte nettlesertester.
+  allowedDevOrigins: ["127.0.0.1"],
   pageExtensions: ["ts", "tsx", "md", "mdx"],
   // Next logger ellers argumentene til serverhandlinger i utvikling.
   // IUP-fritekst og andre personopplysninger skal ikke havne i terminalen.

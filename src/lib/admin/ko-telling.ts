@@ -15,6 +15,7 @@ import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { caddieDraftKoWhere } from "@/lib/caddie/draft-eier";
+import { COACHING_EMAIL_DRAFT } from "@/lib/email/coaching-oppfolging-kontrakt";
 
 export type KoTelling = {
   planActions: number;
@@ -39,7 +40,10 @@ export function planActionKoWhere(viewer: {
     status: "PENDING",
     actionType: { not: "WORKBENCH_GATHERING_INVITE" },
     OR: [{ coachId: viewer.id }, { coachId: null }],
-    user: userFilter,
+    AND: [{ OR: [
+      { actionType: COACHING_EMAIL_DRAFT, userId: viewer.id, coachId: viewer.id },
+      { actionType: { not: COACHING_EMAIL_DRAFT }, user: userFilter },
+    ] }],
   };
 }
 

@@ -1,3 +1,4 @@
+import { withoutDataGolfRoundSg } from '@/lib/datagolf/round-provenance';
 /**
  * Data-loader for Spiller 360-landingssiden («Oversikt»-fanen).
  *
@@ -203,12 +204,12 @@ export async function lastSpillerOversiktForViewer(
     };
   }
 
-  const sgRunder = await prisma.round.findMany({
+  const sgRunder = await (prisma.round.findMany({
     where: { userId: playerId, sgTotal: { not: null }, playedAt: { gte: new Date(naa.getTime() - 84 * 24 * 60 * 60 * 1000) } },
-    select: { sgTotal: true },
+    select: {source: true, sgSource: true, sgReferenceSet: {select:{source:true,sourceVersion:true}},  sgTotal: true },
     orderBy: { playedAt: "desc" },
     take: 12,
-  });
+  })).then(rows => rows.map(withoutDataGolfRoundSg));
   const sgSnitt = sgRunder.length > 0
     ? Math.round((sgRunder.reduce((s, r) => s + (r.sgTotal ?? 0), 0) / sgRunder.length) * 100) / 100
     : null;

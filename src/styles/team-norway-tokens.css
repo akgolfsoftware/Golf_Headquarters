@@ -1,14 +1,14 @@
 /* ─────────────────────────────────────────────────────────────────────────
    AK Golf HQ · TEAM NORWAY-TOKENS — PRODUKSJONSSPEIL
 
-   FASIT (Anders 22.09.2026, .claude/rules/beslutninger.md §TEAM NORWAY-APPEN
+   FASIT: Precision D-47, 06.10.2026, eksport 34 (3.1.0-l). Historisk kilde (Anders 22.09.2026, .claude/rules/beslutninger.md §TEAM NORWAY-APPEN
    BYTTER DESIGNSPRÅK): Claude Design-prosjektet «Team Norway App». Claw og
    speilet designsystem/team-norway/ er funksjonsinventar og historikk, ikke
    visuell fasit. Verdiene her er hentet fra prosjektets tokens, aldri fra
    hukommelse.
 
    Kjernen i språket: Jost/Lato, hjørner 0 · 2 · 4, ingen skygger, ingen
-   sirkler, kvadratisk avatar, navy skinne. Rød er #D70232 — målt fra
+   sirkler, kvadratisk avatar, navy skinne. Rød er #D40E3A — målt fra
    logofilen, identitet og frist, ALDRI statusfarge.
 
    Train-lock (--tl-*) og disse tokenene er to parallelle, ikke-konkurrerende
@@ -29,20 +29,20 @@
    ───────────────────────────────────────────────────────────────────────── */
 
 :root {
-  /* ── Merkevarefarger — TN-rødt låst til #D70232, navy til #012B5D
+  /* ── Merkevarefarger — TN-rødt låst til #D40E3A, navy til #012B5D
          (målt fra logofilen, Anders 30.08.2026 — se beslutninger.md).
          Merkevarerød er identitet (logo/skinne), ALDRI status. ── */
   --tn-navy-900: #012B5D;
-  --tn-navy-800: #01234C;
-  --tn-navy-700: #033C7A;
-  --tn-navy-600: #0A5199;
+  --tn-navy-800: #001F45;
+  --tn-navy-700: #001F45;
+  --tn-navy-600: #012B5D;
   --tn-navy-400: #4A85C0;
   --tn-navy-300: #7FA3C9;
-  --tn-navy-100: #E3ECF6;
-  --tn-navy-50: #F2F7FC;
+  --tn-navy-100: #E8EDF4;
+  --tn-navy-50: #EEF2F7;
 
-  --tn-red-600: #D70232;
-  --tn-red-700: #A80126;
+  --tn-red-600: #D40E3A;
+  --tn-red-700: #A60B2D;
   --tn-red-400: #E8506F;
   --tn-red-100: #FCE3E8;
 
@@ -55,36 +55,36 @@
 
   /* Nøytral gråskala. --tn-ink-400 er LYSESTE tone som får bære tekst
      (--ink-300 og lysere er kun kanter/linjer, gjelder også 9–11px etiketter). */
-  --tn-ink-900: #0C1219;
-  --tn-ink-700: #33414F;
-  --tn-ink-500: #5E6E7F;
-  --tn-ink-400: #647280;
-  --tn-ink-300: #B9C4CE;
-  --tn-ink-200: #DCE2E8;
+  --tn-ink-900: #141414;
+  --tn-ink-700: #3A3A3A;
+  --tn-ink-500: #6B6B6B;
+  --tn-ink-400: #6B6B6B;
+  --tn-ink-300: #A8A8A8;
+  --tn-ink-200: #E2E2E2;
   --tn-ink-100: #EDF1F4;
-  --tn-ink-50: #F6F8FA;
+  --tn-ink-50: #F7F7F5;
   --tn-white: #FFFFFF;
 
   /* Status — ALDRI merkevarerødt. Egen rød (#C2352B) skilt fra --tn-red-600. */
-  --tn-status-green: #0E8A43;
-  --tn-status-green-text: #076530;
-  --tn-status-green-bg: #E4F4EA;
-  --tn-status-amber: #B87503;
-  --tn-status-amber-text: #8A5602;
-  --tn-status-amber-bg: #FDF1DC;
-  --tn-status-red: #C2352B;
-  --tn-status-red-text: #96241C;
-  --tn-status-red-bg: #FBE8E6;
-  --tn-status-info: #0A5199;
-  --tn-status-info-text: #023B76;
-  --tn-status-info-bg: #E3ECF6;
+  --tn-status-green: #2F6B3A;
+  --tn-status-green-text: #2F6B3A;
+  --tn-status-green-bg: #EAF2EA;
+  --tn-status-amber: #7E6110;
+  --tn-status-amber-text: #7E6110;
+  --tn-status-amber-bg: #FBF4E4;
+  --tn-status-red: #9B2415;
+  --tn-status-red-text: #7D1C10;
+  --tn-status-red-bg: #FBEBEA;
+  --tn-status-info: #1D3557;
+  --tn-status-info-text: #1D3557;
+  --tn-status-info-bg: #E8EDF4;
 
   --tn-data-1: #012B5D;
-  --tn-data-2: #0A5199;
+  --tn-data-2: #1D3557;
   --tn-data-3: #3E8FC4;
   --tn-data-4: #7FBBD9;
   --tn-data-5: #C3DDEC;
-  --tn-data-accent: #D70232;
+  --tn-data-accent: #D40E3A;
 
   /* ── Flater ── */
   --tn-surface-page: var(--tn-ink-50);
@@ -125,7 +125,7 @@
 
   --tn-link: var(--tn-navy-600);
   --tn-link-hover: var(--tn-navy-900);
-  --tn-focus-ring: 0 0 0 3px rgba(10, 81, 153, 0.28);
+  --tn-focus-ring: 0 0 0 2px #D40E3A;
 
   /* ── Geometri — 0, 2 eller 4. Ingenting annet.
          Ordmerket er geometrisk og tett; myke hjørner over 4 px gjør flatene
@@ -136,9 +136,9 @@
   --tn-radius-xs: 0;
   --tn-radius-sm: 2px;
   --tn-radius-md: 2px;
-  --tn-radius-lg: 4px;
+  --tn-radius-lg: 0px;
   --tn-radius-xl: 4px;
-  --tn-radius-full: 0;
+  --tn-radius-full: 4px;
 
   /* ── Skygger finnes ikke. Flater skilles med én hårstrek, ikke med dybde.
          Navnene står igjen så kallsteder ikke må skrives om; verdien er
@@ -204,7 +204,7 @@
   --tn-text-base: 1rem;
   --tn-text-sm: 0.875rem;
   --tn-text-xs: 0.8125rem;
-  --tn-text-micro: 0.6875rem;
+  --tn-text-micro: 0.8125rem;
 
   --tn-weight-light: 300;
   --tn-weight-regular: 400;
@@ -224,4 +224,39 @@
   --tn-leading-snug: 1.22;
   --tn-leading-normal: 1.62;
   --tn-leading-relaxed: 1.7;
+}
+
+/* Full D-47-merkevare på alle organisasjonsflater. */
+.pa-root[data-org="team-norway"], .pa-root[data-org="tn"] {
+  --org-shell-bg: #012B5D;        /* navy. Hvit 14,0:1 */
+  --org-shell-deep: #001F45;
+  --org-shell-ink: #FFFFFF;
+  --org-shell-ink-muted: #B8C4D4; /* 7,9:1 */
+  --org-shell-active: #FFFFFF;
+  --org-flag-a: #012B5D; --org-flag-b: #D40E3A;
+  --action: #012B5D; --action-hover: #001F45; --action-press: #001F45; --action-text: #FFFFFF; --action-tint: #EEF2F7;
+  --primary: #012B5D; --primary-hover: #001F45; --primary-press: #001F45; --text-on-primary: #FFFFFF;
+  /* Rød bare som aksent, én gang per flate. Rød 700 bare for frist og feil (7,8:1) */
+  --signal: #D40E3A; --signal-hover: #A60B2D; --signal-ink: #A60B2D; --signal-tint: #FDEEF1; --text-on-signal: #FFFFFF;
+  --surface-page: #F7F7F5; --surface-flat: #FFFFFF; --surface-card: #FFFFFF; --surface-sunken: #F7F7F5; --surface-hover: #EEF2F7;
+  --surface-ink: #012B5D; --surface-ink-hover: #001F45; --surface-inverse: #012B5D; --text-inverse: #FFFFFF; --text-inverse-soft: #B8C4D4;
+  --text-primary: #141414; --text-body: #3A3A3A; --text-secondary: #6B6B6B; --text-muted: #6B6B6B; --text-faint: #6B6B6B; /* 5,0:1 på #F7F7F5 */
+  --border-hairline: #E2E2E2; --border-strong: #A8A8A8; --border-control: #6B6B6B;
+  --border-ink: #012B5D; --border-action: #012B5D; --focus-ring: #D40E3A; --link: #012B5D;
+  --surface-raised: var(--surface-card); --surface-selected: var(--surface-card);
+  --font-display: var(--font-jost), "Jost", "Futura", system-ui, sans-serif;
+  --font-sans: var(--font-lato), "Lato", "IBM Plex Sans Fallback", system-ui, sans-serif;
+  /* 2.34.0: de semantiske ordrollene settes på nytt her, så de får organisasjonens tekstfont (verdier fra :root løses der de settes). */
+  --type-instruction: 400 var(--fs-15)/1.5 var(--font-sans); --type-source: 400 var(--fs-13)/1.4 var(--font-sans); --type-place: 500 var(--fs-15)/1.35 var(--font-sans);
+  --type-display: 300 var(--fs-40)/1.04 var(--font-display);
+  --type-title-l: 300 var(--fs-28)/1.22 var(--font-display);
+  --type-title-m: 400 var(--fs-21)/1.22 var(--font-display);
+  --type-title-s: 500 var(--fs-17)/1.22 var(--font-display);
+  --type-body: 400 16px/1.62 var(--font-sans);
+  --type-body-s: 400 var(--fs-14)/1.5 var(--font-sans);
+  --type-label: 500 var(--fs-13)/1.3 var(--font-display);
+  --type-button: 500 var(--fs-14)/1 var(--font-display);
+  --type-kicker: 500 var(--fs-11)/1.3 var(--font-display);
+  --radius: 2px; --radius-card: 0px; --radius-modal: 4px; --radius-inner: 0px; --radius-pill: 4px; /* ingen piller, unntatt bryteren */
+  --shadow-raised: none;
 }

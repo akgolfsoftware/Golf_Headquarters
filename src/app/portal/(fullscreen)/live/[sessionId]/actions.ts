@@ -19,6 +19,8 @@ import { GENERERT_FRA } from "@/lib/workbench/v2-sync";
 import { applyPositionTaskReps } from "@/lib/teknisk-plan/apply-reps";
 import { beregnSRpe } from "@/lib/training/srpe";
 import { summaryFieldUpdate } from "@/lib/portal-live/summary-field";
+import { executionSeconds, jsonObject, readSessionExecution, sealSessionSnapshot } from "@/lib/workbench/wb-session-life";
+import { z } from "zod";
 
 export type StartSessionResult =
   | { state: "active" }
@@ -271,10 +273,20 @@ export async function loadLiveSession(sessionId: string): Promise<AccessResult> 
     pyramide,
     drills: session.drills.map(mapDrill),
     existingLogs: existingLogs.map(mapLog),
-    completedSummary: session.completedSummary,
+    completedSummary: summaryForViewer(session.completedSummary, user.id === session.studentId || user.id === session.hostId),
   };
 
   return { ok: true, data };
+}
+
+/** Et privat refleksjonsfelt sendes aldri til en coach/deltaker via legacy-leseren. */
+function summaryForViewer(summary: Prisma.JsonValue, own: boolean): Prisma.JsonValue {
+  const raw = jsonObject(summary);
+  if (own || !raw) return summary;
+  const reflection = jsonObject(raw.playerReflection);
+  if (reflection?.shareWithCoach === true) return summary;
+  const { playerReflection: _privateReflection, ...shared } = raw;
+  return shared as Prisma.JsonObject;
 }
 
 
@@ -285,7 +297,7 @@ export async function startSession(sessionId: string): Promise<StartSessionResul
   switch (session.status) {
     case "PLANNED":
       await prisma.trainingSessionV2.update({
-        where: { id: sessionId },
+        where: { id: sessionId, status: "PLANNED", updatedAt: session.updatedAt },
         data: { status: "IN_PROGRESS" },
       });
       void triggerLiveSessionAgent({ userId: user.id, sessionId, kind: "session-v2" });
@@ -304,70 +316,77 @@ export async function startSession(sessionId: string): Promise<StartSessionResul
 
 /** Logger reps for en drill (upsert på drillId + loggedBy). */
 export async function logDrillReps(input: CompleteDrillInput): Promise<{ ok: boolean }> {
+  const parsed = z.object({ sessionId: z.string().min(1).max(100), drillId: z.string().min(1).max(100),
+    repsTotal: z.number().int().min(0).max(5000), repsWithoutBall: z.number().int().min(0).max(5000), repsLowSpeed: z.number().int().min(0).max(5000),
+    repsAutomatic: z.number().int().min(0).max(5000), repsHit: z.number().int().min(0).max(5000), successRate: z.number().min(0).max(100).optional(),
+    notes: z.string().max(2000).optional(), actualDurationSec: z.number().int().min(0).max(43200).optional() }).strict().safeParse(input);
+  if (!parsed.success) throw new Error("Kontroller antall registreringer.");
   const { user, session } = await verifyAccess(input.sessionId);
   if (session.status !== "IN_PROGRESS") return { ok: false };
   if (!session.drills.some((drill) => drill.id === input.drillId)) throw new Error("Øvelsen tilhører ikke denne økta.");
   const counters = [input.repsTotal, input.repsWithoutBall, input.repsLowSpeed, input.repsAutomatic, input.repsHit];
   if (counters.some((value) => !Number.isSafeInteger(value) || value < 0)) throw new Error("Kontroller antall registreringer.");
 
-  const successRate =
-    input.successRate ??
-    (input.repsTotal > 0 ? Math.round((input.repsHit / input.repsTotal) * 100) : 0);
+  const successRate = input.successRate ?? (input.repsTotal > 0 ? Math.min(100, Math.round((input.repsHit / input.repsTotal) * 100)) : 0);
 
   // Hent forrige logg (om noen) FØR upsert — trengs for å regne delta til
   // teknisk-oppgave-automatikken under, siden denne upserten SETTER de nye
   // totalene (ikke øker dem), mens PositionTask.repsGjort* skal ØKES.
-  const existingLog = await prisma.drillLogV2.findFirst({
-    where: { drillId: input.drillId, loggedBy: user.id },
-    select: { id: true, repsWithoutBall: true, repsLowSpeed: true, repsHit: true },
-    orderBy: { loggedAt: "desc" },
-  });
-
-  await prisma.drillLogV2.upsert({
-    where: {
-      // Prisma støtter ikke unik sammensatt nøkkel uten @unique; vi bruker id-en
-      // via drillId + loggedBy lookup i stedet.
-      id: existingLog?.id ?? "__new__",
-    },
-    create: {
-      drillId: input.drillId,
-      loggedBy: user.id,
-      repsTotal: input.repsTotal,
-      repsWithoutBall: input.repsWithoutBall,
-      repsLowSpeed: input.repsLowSpeed,
-      repsAutomatic: input.repsAutomatic,
-      repsHit: input.repsHit,
-      successRate,
-      notes: input.notes ?? null,
-    },
-    update: {
-      repsTotal: input.repsTotal,
-      repsWithoutBall: input.repsWithoutBall,
-      repsLowSpeed: input.repsLowSpeed,
-      repsAutomatic: input.repsAutomatic,
-      repsHit: input.repsHit,
-      successRate,
-      notes: input.notes ?? null,
-      loggedAt: new Date(),
-    },
-  });
-
-  // Faktisk medgått tid på drillen (2026-07-27). Skrives kun oppover: en
-  // pause-og-fortsett-runde skal ikke kunne kutte tiden som alt er registrert,
-  // og en 0-verdi fra en avbrutt drill skal aldri overskrive ekte tid.
-  if (input.actualDurationSec !== undefined && input.actualDurationSec > 0) {
-    const sek = Math.min(Math.round(input.actualDurationSec), 12 * 60 * 60);
-    const forrige = await prisma.trainingDrillV2.findUnique({
-      where: { id: input.drillId },
-      select: { actualDurationSec: true },
+  const existingLog = await prisma.$transaction(async (tx) => {
+    // Samme øktradlås som fullføring. En forsinket logg fra en annen fane
+    // kan ikke skrive i en økt som ble fullført etter tilgangslesingen.
+    await tx.trainingSessionV2.update({ where: { id: input.sessionId, status: "IN_PROGRESS", updatedAt: session.updatedAt }, data: { updatedAt: new Date() } });
+    const previous = await tx.drillLogV2.findFirst({
+      where: { drillId: input.drillId, loggedBy: user.id },
+      select: { id: true, repsWithoutBall: true, repsLowSpeed: true, repsHit: true },
+      orderBy: { loggedAt: "desc" },
     });
-    if (sek > (forrige?.actualDurationSec ?? 0)) {
-      await prisma.trainingDrillV2.update({
+    await tx.drillLogV2.upsert({
+      where: {
+        // Prisma har ingen unik drillId + loggedBy-nøkkel; øktradlåsen
+        // serialiserer oppslaget og opprettingen av samme spillerlogg.
+        id: previous?.id ?? "__new__",
+      },
+      create: {
+        drillId: input.drillId,
+        loggedBy: user.id,
+        repsTotal: input.repsTotal,
+        repsWithoutBall: input.repsWithoutBall,
+        repsLowSpeed: input.repsLowSpeed,
+        repsAutomatic: input.repsAutomatic,
+        repsHit: input.repsHit,
+        successRate,
+        notes: input.notes ?? null,
+      },
+      update: {
+        repsTotal: input.repsTotal,
+        repsWithoutBall: input.repsWithoutBall,
+        repsLowSpeed: input.repsLowSpeed,
+        repsAutomatic: input.repsAutomatic,
+        repsHit: input.repsHit,
+        successRate,
+        notes: input.notes ?? null,
+        loggedAt: new Date(),
+      },
+    });
+
+    // Faktisk tid skrives bare oppover. En pause/fortsett-runde eller
+    // en uferdig kladd kan ikke kutte tiden som allerede er registrert.
+    if (input.actualDurationSec !== undefined && input.actualDurationSec > 0) {
+      const sek = Math.min(Math.round(input.actualDurationSec), 12 * 60 * 60);
+      const forrige = await tx.trainingDrillV2.findUnique({
         where: { id: input.drillId },
-        data: { actualDurationSec: sek },
+        select: { actualDurationSec: true },
       });
+      if (sek > (forrige?.actualDurationSec ?? 0)) {
+        await tx.trainingDrillV2.update({
+          where: { id: input.drillId },
+          data: { actualDurationSec: sek },
+        });
+      }
     }
-  }
+    return previous;
+  });
 
   // Runde 2 (2026-07-14): drill koblet til en teknisk oppgave? Logg reps
   // automatisk mot den — uten ball → dry, lav fart → lav, truffet → fullt.
@@ -423,14 +442,6 @@ export async function completeSession(sessionId: string, clientDurationSec?: num
 
   const totalReps = logs.reduce((sum, l) => sum + l.repsTotal, 0);
   const drillsCompleted = completedDrillIds ? new Set(completedDrillIds).size : new Set(logs.map((log) => log.drillId)).size;
-  const startedAt = logs.length > 0 ? logs[0].loggedAt : session.startTime;
-  const lastLoggedAt = logs.length > 0 ? logs[logs.length - 1].loggedAt : new Date();
-  const computedDurationSec = Math.max(
-    0,
-    Math.round((lastLoggedAt.getTime() - startedAt.getTime()) / 1000),
-  );
-  const durationSec = clientDurationSec ?? computedDurationSec;
-
   const existingSummary =
     session.completedSummary &&
     typeof session.completedSummary === "object" &&
@@ -438,11 +449,17 @@ export async function completeSession(sessionId: string, clientDurationSec?: num
       ? (session.completedSummary as Record<string, unknown>)
       : {};
 
+  const execution = readSessionExecution(existingSummary);
+  const savedStart = typeof existingSummary.startedAtISO === "string" && Number.isFinite(Date.parse(existingSummary.startedAtISO)) ? new Date(existingSummary.startedAtISO) : null;
+  const completedAt = new Date();
+  const startedAt = savedStart ?? (logs.length > 0 ? logs[0].loggedAt : null);
+  const durationSec = clientDurationSec ?? (execution ? executionSeconds(execution, completedAt.getTime()) : logs.length > 1 && startedAt
+    ? Math.max(0, Math.round((logs[logs.length - 1].loggedAt.getTime() - startedAt.getTime()) / 1000)) : null);
   const summary = {
-    ...existingSummary,
+    ...(execution ? sealSessionSnapshot(existingSummary, "COMPLETED", new Date().toISOString()) : existingSummary),
     liveSummary: {
-      startedAt: startedAt.toISOString(),
-      completedAt: new Date().toISOString(),
+      startedAt: startedAt?.toISOString() ?? null,
+      completedAt: completedAt.toISOString(),
       durationSec,
       totalReps,
       drillsCompleted,
@@ -452,10 +469,10 @@ export async function completeSession(sessionId: string, clientDurationSec?: num
   };
 
   const writes: Prisma.PrismaPromise<unknown>[] = [prisma.trainingSessionV2.update({
-    where: { id: sessionId },
+    where: { id: sessionId, status: "IN_PROGRESS", updatedAt: session.updatedAt },
     data: {
       status: "COMPLETED",
-      completedSummary: summary as unknown as Prisma.InputJsonValue,
+      completedSummary: z.record(z.string(), z.json()).parse(JSON.parse(JSON.stringify(summary))),
     },
   })];
 
@@ -480,16 +497,16 @@ export async function completeSession(sessionId: string, clientDurationSec?: num
         where: { sessionId: session.generertFraId },
         create: {
           sessionId: session.generertFraId,
-          startedAt,
-          completedAt: new Date(),
+          startedAt: startedAt ?? completedAt,
+          completedAt,
           totalReps,
           rating: null,
-          drillAggregates: drillAggregates as unknown as Prisma.InputJsonValue,
+          drillAggregates,
         },
         update: {
-          completedAt: new Date(),
+          completedAt,
           totalReps,
-          drillAggregates: drillAggregates as unknown as Prisma.InputJsonValue,
+          drillAggregates,
         },
       }),
     );

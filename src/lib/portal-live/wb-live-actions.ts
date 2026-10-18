@@ -17,7 +17,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { canAccessPlayer } from "@/lib/auth/own-or-coached";
 import { isAwaitingGuardianConsent } from "@/lib/auth/minor";
 import { prisma } from "@/lib/prisma";
-import { completeSession } from "@/lib/workbench/wb-actions";
+import { sealSessionSnapshot } from "@/lib/workbench/wb-session-life";
 import { rekalkulerMaalMatrise } from "@/lib/teknisk-plan/apply-reps";
 import { hastighetForMotorikk, ovelseSnapshot } from "./wb-ovelse-logg";
 
@@ -42,7 +42,7 @@ async function hentOkt(sessionId: string) {
   return prisma.workbenchSession.findUnique({
     where: { id: sessionId },
     select: {
-      id: true, playerId: true, status: true, isTemplate: true, hiddenByPlayer: true, needsPlayerApproval: true,
+      id: true, playerId: true, status: true, updatedAt: true, liveSnapshot: true, isTemplate: true, hiddenByPlayer: true, needsPlayerApproval: true, approvalStatus: true, groupId: true, sourceGroupSessionId: true,
       drills: { select: { id: true, title: true, akFormel: true, positionTaskId: true } },
     },
   });
@@ -50,7 +50,8 @@ async function hentOkt(sessionId: string) {
 type Okt = NonNullable<Awaited<ReturnType<typeof hentOkt>>>;
 
 function kanLogges(okt: Okt): boolean {
-  return okt.status === PAAGAAENDE && !okt.isTemplate && !okt.hiddenByPlayer && !okt.needsPlayerApproval;
+  return okt.status === PAAGAAENDE && !okt.isTemplate && !okt.hiddenByPlayer && !okt.needsPlayerApproval && okt.approvalStatus !== "REJECTED"
+    && !(okt.groupId && !okt.sourceGroupSessionId && /^wb-group-[a-f0-9]{64}$/.test(okt.id));
 }
 
 function revalider(sessionId: string) {
@@ -90,7 +91,13 @@ export async function lagreWbOvelse(sessionId: string, input: unknown): Promise<
   if (!okt || !(await canAccessPlayer(user, okt.playerId))) return { ok: false, error: "Ingen tilgang til økta." };
   if (!kanLogges(okt)) return { ok: false, error: "Økta er ikke i gang." };
   try {
-    await prisma.$transaction((tx) => skrivLogger(tx, okt, user.id, [parsed.data]));
+    await prisma.$transaction(async (tx) => {
+      // Lås økten før loggen, så en forsinket registrering ikke kan endre
+      // resultatet etter at en annen fane har fullført samme økt.
+      const locked = await tx.workbenchSession.updateMany({ where: { id: okt.id, status: PAAGAAENDE, updatedAt: okt.updatedAt, isTemplate: false, hiddenByPlayer: false, needsPlayerApproval: false }, data: { updatedAt: new Date() } });
+      if (locked.count !== 1) throw new Error("Økta ble endret samtidig.");
+      await skrivLogger(tx, okt, user.id, [parsed.data]);
+    });
   } catch {
     return { ok: false, error: "Kunne ikke lagre øvelsen. Prøv igjen." };
   }
@@ -156,12 +163,16 @@ export async function fullforWbLiveOkt(sessionId: string, logger: unknown): Prom
   if (okt.status !== "COMPLETED") {
     if (!kanLogges(okt)) return { ok: false, error: "Økta er ikke i gang." };
     try {
-      await prisma.$transaction((tx) => skrivLogger(tx, okt, user.id, parsed.data));
+      await prisma.$transaction(async (tx) => {
+        const sealed = sealSessionSnapshot(okt.liveSnapshot, "COMPLETED", new Date().toISOString());
+        const locked = await tx.workbenchSession.updateMany({ where: { id: okt.id, playerId: okt.playerId, status: PAAGAAENDE, updatedAt: okt.updatedAt,
+          isTemplate: false, hiddenByPlayer: false, needsPlayerApproval: false }, data: { status: "COMPLETED", liveSnapshot: sealed as Prisma.InputJsonObject } });
+        if (locked.count !== 1) throw new Error("Økta ble endret samtidig.");
+        await skrivLogger(tx, okt, user.id, parsed.data);
+      });
     } catch {
       return { ok: false, error: "Kunne ikke lagre økta. Prøv igjen." };
     }
-    const ferdig = await completeSession(sessionId);
-    if (!ferdig.ok) return { ok: false, error: ferdig.error };
   }
   try {
     await overforTilTekniskPlan(okt, user.id);

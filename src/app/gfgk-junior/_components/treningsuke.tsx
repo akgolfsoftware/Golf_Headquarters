@@ -17,9 +17,11 @@ import {
 export function Treningsuke({
   ukeplaner,
   notater,
+  kilder,
 }: {
   ukeplaner: Record<GruppeKey, UkeOkt[]>;
   notater?: Record<GruppeKey, string>;
+  kilder?: Partial<Record<GruppeKey, "agencyos" | "fallback">>;
 }) {
   const [valgt, setValgt] = useState<GruppeKey>("U13");
   const g = GRUPPER[valgt];
@@ -30,14 +32,14 @@ export function Treningsuke({
       <div
         className="mt-7 flex w-fit max-w-full flex-wrap gap-1.5 rounded-full bg-white p-1.5"
         style={{ boxShadow: "var(--shadow-sm)" }}
-        role="tablist"
+        role="group"
         aria-label="Velg gruppe"
       >
         {GRUPPE_KEYS.map((k) => (
           <button
             key={k}
-            role="tab"
-            aria-selected={k === valgt}
+            type="button"
+            aria-pressed={k === valgt}
             onClick={() => setValgt(k)}
             className="cursor-pointer rounded-full border-none px-4 py-2 text-sm font-bold transition-all sm:px-5"
             style={{
@@ -50,6 +52,8 @@ export function Treningsuke({
           </button>
         ))}
       </div>
+
+      {kilder?.[valgt] === "fallback" && <p className="jr-kilde" role="status">Dette er en foreløpig treningsramme. Aktuelle tider er ikke bekreftet fra trenerteamets plan. Avklar tid og sted med treneren før du møter opp.</p>}
 
       <div
         key={valgt}

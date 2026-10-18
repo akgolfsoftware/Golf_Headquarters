@@ -1,3 +1,4 @@
+import { independentRoundSgWhere, independentSgInputWhere } from '@/lib/datagolf/round-provenance';
 /**
  * Data-loader for AgencyOS Stallen — spillertabell (/admin/spillere).
  * Henter ekte Prisma-data og mapper til StallenRow[] for den sortbare
@@ -234,13 +235,13 @@ export async function loadStallen(
       },
       // SG-trend: foretrekk BrukerSgInput, fall tilbake på Round.
       sgInputs: {
-        where: { sgTotal: { not: null } },
+        where: { ...independentSgInputWhere(), sgTotal: { not: null } },
         select: { sgTotal: true },
         orderBy: { dato: "desc" },
         take: 8,
       },
       rounds: {
-        where: { sgTotal: { not: null } },
+        where: { AND: [{ sgTotal: { not: null } }, independentRoundSgWhere()] },
         select: { sgTotal: true },
         orderBy: { playedAt: "desc" },
         take: 8,

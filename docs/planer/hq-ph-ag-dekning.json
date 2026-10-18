@@ -1,0 +1,2004 @@
+{
+  "source": "AK Golf HQ skjermregister eksport 8",
+  "mainBase": "a1aa2b18382f59d4aef73c9450ad8528e1a491f9",
+  "date": "2026-10-12",
+  "count": 111,
+  "entries": [
+    {
+      "id": "PH-01",
+      "title": "I dag",
+      "route": "/portal",
+      "family": "1a I dag",
+      "files": [
+        "src/app/portal/page.tsx"
+      ],
+      "components": [
+        "PH01IDag",
+        "Trenerforslag",
+        "WangTestforesporsel"
+      ],
+      "actual": "/portal",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Prioritert pågående/neste økt først; ekte dagsformkvittering; forslag samles. Anonymt treningsfoto."
+    },
+    {
+      "id": "PH-03",
+      "title": "Øktark",
+      "route": "/portal/gjennomfore/[id]",
+      "family": "1a I dag",
+      "files": [
+        "src/app/portal/gjennomfore/[id]/page.tsx"
+      ],
+      "components": [
+        "PH03Oktark"
+      ],
+      "actual": "/portal/gjennomfore/[id]",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Handling og øktinstruksjon først, normal overskrift og utfoldbar AK-formel."
+    },
+    {
+      "id": "PH-IUP-01",
+      "title": "Fireukerssjekk",
+      "route": "/portal/iup/fireukerssjekk",
+      "family": "1a I dag",
+      "files": [
+        "src/app/portal/iup/fireukerssjekk/page.tsx"
+      ],
+      "components": [
+        "PHIUP01Fireukerssjekk"
+      ],
+      "actual": "/portal/iup/fireukerssjekk",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen."
+    },
+    {
+      "id": "PH-IUP-02",
+      "title": "Sesongevaluering",
+      "route": "/portal/iup/sesongevaluering",
+      "family": "1a I dag",
+      "files": [
+        "src/app/portal/iup/sesongevaluering/page.tsx",
+        "src/app/portal/mal/evaluering/page.tsx"
+      ],
+      "components": [
+        "PHIupEvaluering"
+      ],
+      "actual": "/portal/mal/evaluering?ny=SESONGEVALUERING",
+      "note": "Beskyttet inngang til eksisterende sesongevaluering.",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach"
+    },
+    {
+      "id": "PH-01-DELING",
+      "title": "Delingsforespørsel i I dag",
+      "route": "/portal",
+      "family": "1a I dag",
+      "files": [
+        "src/app/portal/page.tsx"
+      ],
+      "components": [
+        "PH01IDag",
+        "Trenerforslag",
+        "WangTestforesporsel"
+      ],
+      "actual": "/portal",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen."
+    },
+    {
+      "id": "PH-01-TESTER-TN",
+      "title": "Delingsforespørsel i I dag · D-13 testene til Team Norway",
+      "route": "/portal",
+      "family": "1a I dag",
+      "files": [
+        "src/app/portal/page.tsx"
+      ],
+      "components": [
+        "PH01IDag",
+        "Trenerforslag",
+        "WangTestforesporsel"
+      ],
+      "actual": "/portal",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen."
+    },
+    {
+      "id": "PH-01-OPPGAVE",
+      "title": "I dag › Din oppgave fra WANG / Team Norway",
+      "route": "/portal",
+      "family": "1a I dag",
+      "files": [
+        "src/app/portal/page.tsx"
+      ],
+      "components": [
+        "PH01IDag",
+        "Trenerforslag",
+        "WangTestforesporsel"
+      ],
+      "actual": "/portal",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen."
+    },
+    {
+      "id": "PH-04",
+      "title": "Live-økt · før start",
+      "route": "/portal/live/[id]/brief",
+      "family": "1b Live og registrering",
+      "files": [
+        "src/app/portal/(fullscreen)/live/[sessionId]/brief/page.tsx"
+      ],
+      "components": [],
+      "actual": "/portal/live/[id]/brief",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Live-pakken",
+      "note": "Live prioriteres og implementeres av hoved-/Live-agenten."
+    },
+    {
+      "id": "PH-05",
+      "title": "Live-økt · aktiv",
+      "route": "/portal/live/[id]/active",
+      "family": "1b Live og registrering",
+      "files": [
+        "src/app/portal/(fullscreen)/live/[sessionId]/active/page.tsx"
+      ],
+      "components": [
+        "PH05LiveAktiv"
+      ],
+      "actual": "/portal/live/[id]/active",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Live-pakken",
+      "note": "Live prioriteres og implementeres av hoved-/Live-agenten."
+    },
+    {
+      "id": "PH-06",
+      "title": "Live-økt · fysisk",
+      "route": "/portal/live/[id]/tapper",
+      "family": "1b Live og registrering",
+      "files": [
+        "src/app/portal/(fullscreen)/live/[sessionId]/tapper/page.tsx"
+      ],
+      "components": [
+        "PH06Slagteller"
+      ],
+      "actual": "/portal/live/[id]/tapper",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Live-pakken",
+      "note": "Live prioriteres og implementeres av hoved-/Live-agenten."
+    },
+    {
+      "id": "PH-07",
+      "title": "Etter økt",
+      "route": "/portal/live/[id]/summary",
+      "family": "1b Live og registrering",
+      "files": [
+        "src/app/portal/(fullscreen)/live/[sessionId]/summary/page.tsx"
+      ],
+      "components": [
+        "PH07Oktoppsummering"
+      ],
+      "actual": "/portal/live/[id]/summary",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Live-pakken",
+      "note": "Live prioriteres og implementeres av hoved-/Live-agenten."
+    },
+    {
+      "id": "PH-08",
+      "title": "Runde live",
+      "route": "/portal/runde/live",
+      "family": "1b Live og registrering",
+      "files": [
+        "src/app/portal/(fullscreen)/runde/live/page.tsx"
+      ],
+      "components": [
+        "PH08RundeLive"
+      ],
+      "actual": "/portal/runde/live",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen."
+    },
+    {
+      "id": "PH-09",
+      "title": "Registrer runde",
+      "route": "/portal/runde/logg",
+      "family": "1b Live og registrering",
+      "files": [
+        "src/app/portal/(fullscreen)/runde/logg/page.tsx"
+      ],
+      "components": [
+        "PH09RegistrerRunde"
+      ],
+      "actual": "/portal/runde/logg",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen."
+    },
+    {
+      "id": "PH-RD-01",
+      "title": "Registrer runde · velg nivå",
+      "route": "/portal/mal/runder/ny",
+      "family": "1b Live og registrering",
+      "files": [
+        "src/app/portal/mal/runder/ny/page.tsx"
+      ],
+      "components": [
+        "PHRD01VelgNiva",
+        "PH09RegistrerRunde"
+      ],
+      "actual": "/portal/mal/runder/ny",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen."
+    },
+    {
+      "id": "PH-RD-02",
+      "title": "Registrer runde · oppsett",
+      "route": "/portal/runde/logg",
+      "family": "1b Live og registrering",
+      "files": [
+        "src/app/portal/(fullscreen)/runde/logg/page.tsx"
+      ],
+      "components": [
+        "PH09RegistrerRunde"
+      ],
+      "actual": "/portal/runde/logg",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen."
+    },
+    {
+      "id": "PH-RD-03",
+      "title": "Live runde · slag",
+      "route": "/portal/runde/live",
+      "family": "1b Live og registrering",
+      "files": [
+        "src/app/portal/(fullscreen)/runde/live/page.tsx"
+      ],
+      "components": [
+        "PH08RundeLive"
+      ],
+      "actual": "/portal/runde/live",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen."
+    },
+    {
+      "id": "PH-RD-04",
+      "title": "Live runde · putt",
+      "route": "/portal/mal/runder/[id]/slag",
+      "family": "1b Live og registrering",
+      "files": [
+        "src/app/portal/mal/runder/[id]/slag/page.tsx"
+      ],
+      "components": [],
+      "actual": "/portal/mal/runder/[id]/slag",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen."
+    },
+    {
+      "id": "PH-RD-05",
+      "title": "SG hittil",
+      "route": "/portal/runde/live",
+      "family": "1b Live og registrering",
+      "files": [
+        "src/app/portal/(fullscreen)/runde/live/page.tsx"
+      ],
+      "components": [
+        "PH08RundeLive"
+      ],
+      "actual": "/portal/runde/live",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen."
+    },
+    {
+      "id": "PH-RD-06",
+      "title": "Etterregistrering · rask score",
+      "route": "/portal/mal/runder/ny",
+      "family": "1b Live og registrering",
+      "files": [
+        "src/app/portal/mal/runder/ny/page.tsx"
+      ],
+      "components": [
+        "PHRD01VelgNiva",
+        "PH09RegistrerRunde"
+      ],
+      "actual": "/portal/mal/runder/ny",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen."
+    },
+    {
+      "id": "PH-RD-07",
+      "title": "Import fra annen app",
+      "route": "/portal/mal/runder/ny",
+      "family": "1b Live og registrering",
+      "files": [
+        "src/app/portal/mal/runder/ny/page.tsx"
+      ],
+      "components": [
+        "PHRD01VelgNiva",
+        "PH09RegistrerRunde"
+      ],
+      "actual": "/portal/mal/runder/ny",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen."
+    },
+    {
+      "id": "PH-RD-08",
+      "title": "Runde gjennomført",
+      "route": "/portal/mal/runder/[id]",
+      "family": "1b Live og registrering",
+      "files": [
+        "src/app/portal/mal/runder/[id]/page.tsx"
+      ],
+      "components": [
+        "PHRD08RundeFerdig"
+      ],
+      "actual": "/portal/mal/runder/[id]",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen."
+    },
+    {
+      "id": "PH-RD-09",
+      "title": "Rediger runde",
+      "route": "/portal/mal/runder/[id]/rediger",
+      "family": "1b Live og registrering",
+      "files": [
+        "src/app/portal/mal/runder/[id]/rediger/page.tsx",
+        "src/app/portal/mal/runder/[id]/hull/page.tsx"
+      ],
+      "components": [
+        "HullRedigerForm"
+      ],
+      "actual": "/portal/mal/runder/[id]/hull",
+      "note": "Beskyttet inngang til eksisterende redigering; målruten kontrollerer runde-eierskap.",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach"
+    },
+    {
+      "id": "PH-15",
+      "title": "Test · gjennomfør",
+      "route": "/portal/tren/tester/[testId]/gjennomfor",
+      "family": "1b Live og registrering",
+      "files": [
+        "src/app/portal/(fullscreen)/tren/tester/[testId]/gjennomfor/page.tsx"
+      ],
+      "components": [
+        "PH15TestGjennomfor",
+        "ScorekortKlient"
+      ],
+      "actual": "/portal/tren/tester/[testId]/gjennomfor",
+      "verification": "Protokolltest og 6/6 syntetiske protokollvisninger kontrollert på mobil og desktop; faktisk lagring og samlet kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Hele protokollen med målt verdi, flere felt, select, checkbox og gjenopptak. Ingen oppdiktet grense på 4 m eller standardmåling. Fylte valg, bekreftet fullføring, registreringer beholdes ved feil."
+    },
+    {
+      "id": "PH-15-TN",
+      "title": "Test · Team Norway-poengskala",
+      "route": "/portal/tren/tester/[testId]/gjennomfor",
+      "family": "1b Live og registrering",
+      "files": [
+        "src/app/portal/(fullscreen)/tren/tester/[testId]/gjennomfor/page.tsx"
+      ],
+      "components": [
+        "PH15TestGjennomfor",
+        "ScorekortKlient"
+      ],
+      "actual": "/portal/tren/tester/[testId]/gjennomfor",
+      "verification": "Protokolltest og 6/6 syntetiske protokollvisninger kontrollert på mobil og desktop; faktisk lagring og samlet kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Hele protokollen med målt verdi, flere felt, select, checkbox og gjenopptak. Ingen oppdiktet grense på 4 m eller standardmåling. Fylte valg, bekreftet fullføring, registreringer beholdes ved feil."
+    },
+    {
+      "id": "PH-10",
+      "title": "Plan",
+      "route": "/portal/planlegge",
+      "family": "1c Plan og Workbench",
+      "files": [
+        "src/app/portal/planlegge/page.tsx"
+      ],
+      "components": [
+        "PH10Plan"
+      ],
+      "actual": "/portal/planlegge",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen."
+    },
+    {
+      "id": "PH-11",
+      "title": "Workbench",
+      "route": "/portal/planlegge/workbench",
+      "family": "2 Workbench",
+      "files": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "components": [
+        "WorkbenchSamlet",
+        "WorkbenchSesongkart",
+        "WorkbenchUkeverksted",
+        "AG11Ark"
+      ],
+      "actual": "/portal/planlegge/workbench",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Aktiv standard er samlet Workbench. År/Periode/Måned/Uke/Dag har tydelig horisont; eksisterende motor og lagre-/publiseringshandlinger gjenbrukes."
+    },
+    {
+      "id": "PH-11-AR",
+      "title": "Workbench › Årsplan",
+      "route": "/portal/planlegge/workbench?niva=ar",
+      "family": "2 Workbench",
+      "files": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "components": [
+        "WorkbenchSamlet",
+        "WorkbenchSesongkart",
+        "SesongArk"
+      ],
+      "actual": "/portal/planlegge/workbench?niva=ar",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Aktiv standard er samlet Workbench. År/Periode/Måned/Uke/Dag har tydelig horisont; eksisterende motor og lagre-/publiseringshandlinger gjenbrukes. Opprett årsplan åpnes med knappen når sesongen mangler; eksisterende sesong har grenser."
+    },
+    {
+      "id": "PH-11-NY",
+      "title": "Workbench › Opprett årsplan",
+      "route": "/portal/planlegge/workbench?niva=ar&ny=1",
+      "family": "1c Plan og Workbench",
+      "files": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "components": [
+        "WorkbenchSamlet",
+        "WorkbenchSesongkart",
+        "SesongArk"
+      ],
+      "actual": "/portal/planlegge/workbench?niva=ar",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Aktiv standard er samlet Workbench. År/Periode/Måned/Uke/Dag har tydelig horisont; eksisterende motor og lagre-/publiseringshandlinger gjenbrukes. Opprett årsplan åpnes med knappen når sesongen mangler; eksisterende sesong har grenser."
+    },
+    {
+      "id": "PH-11-PER",
+      "title": "Workbench › Periode",
+      "route": "/portal/planlegge/workbench?niva=periode",
+      "family": "2 Workbench",
+      "files": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "components": [
+        "WorkbenchSamlet",
+        "WorkbenchSesongkart",
+        "PeriodeArk"
+      ],
+      "actual": "/portal/planlegge/workbench?niva=periode",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Aktiv standard er samlet Workbench. År/Periode/Måned/Uke/Dag har tydelig horisont; eksisterende motor og lagre-/publiseringshandlinger gjenbrukes."
+    },
+    {
+      "id": "PH-11-PERSKJEMA",
+      "title": "Workbench › Periodeskjema",
+      "route": "/portal/planlegge/workbench?niva=periode",
+      "family": "1c Plan og Workbench",
+      "files": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "components": [
+        "WorkbenchSamlet",
+        "WorkbenchSesongkart",
+        "PeriodeArk"
+      ],
+      "actual": "/portal/planlegge/workbench?niva=periode",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Aktiv standard er samlet Workbench. År/Periode/Måned/Uke/Dag har tydelig horisont; eksisterende motor og lagre-/publiseringshandlinger gjenbrukes."
+    },
+    {
+      "id": "PH-11-MND",
+      "title": "Workbench › Måned",
+      "route": "/portal/planlegge/workbench?niva=maned",
+      "family": "2 Workbench",
+      "files": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "components": [
+        "WorkbenchSamlet",
+        "WorkbenchSesongkart",
+        "MonthPlan",
+        "MonthPlanFields"
+      ],
+      "actual": "/portal/planlegge/workbench?niva=maned",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Egen månedsmodell: fokus/mål, formål/sted, ramme og 19 prioriteringer. Coach sender personlig forslag; spiller godkjenner. Egne evalueringer etter månedsslutt."
+    },
+    {
+      "id": "PH-11-MNDSKJEMA",
+      "title": "Workbench › Månedsskjema",
+      "route": "/portal/planlegge/workbench?niva=maned",
+      "family": "1c Plan og Workbench",
+      "files": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "components": [
+        "WorkbenchSamlet",
+        "WorkbenchSesongkart",
+        "MonthPlan",
+        "MonthPlanFields"
+      ],
+      "actual": "/portal/planlegge/workbench?niva=maned",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Egen månedsmodell: fokus/mål, formål/sted, ramme og 19 prioriteringer. Coach sender personlig forslag; spiller godkjenner. Egne evalueringer etter månedsslutt."
+    },
+    {
+      "id": "PH-11-UKE",
+      "title": "Workbench › Uke",
+      "route": "/portal/planlegge/workbench?niva=uke",
+      "family": "2 Workbench",
+      "files": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "components": [
+        "WorkbenchSamlet",
+        "WorkbenchSesongkart",
+        "WorkbenchUkeverksted",
+        "AG11Ark"
+      ],
+      "actual": "/portal/planlegge/workbench?niva=uke",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Aktiv standard er samlet Workbench. År/Periode/Måned/Uke/Dag har tydelig horisont; eksisterende motor og lagre-/publiseringshandlinger gjenbrukes."
+    },
+    {
+      "id": "PH-11-DAG",
+      "title": "Workbench › Dag",
+      "route": "/portal/planlegge/workbench?niva=dag",
+      "family": "2 Workbench",
+      "files": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "components": [
+        "WorkbenchSamlet",
+        "WorkbenchSesongkart",
+        "WorkbenchUkeverksted",
+        "AG11Ark"
+      ],
+      "actual": "/portal/planlegge/workbench?niva=dag",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Aktiv standard er samlet Workbench. År/Periode/Måned/Uke/Dag har tydelig horisont; eksisterende motor og lagre-/publiseringshandlinger gjenbrukes. Dagsvisningen åpnes også fra registerets niva=dag."
+    },
+    {
+      "id": "PH-11-BIBLIOTEK",
+      "title": "Workbench › Øvelsesbanken",
+      "route": "/portal/planlegge/workbench?bibliotek=1",
+      "family": "2 Workbench",
+      "files": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "components": [
+        "WorkbenchSamlet",
+        "WorkbenchSesongkart",
+        "WorkbenchUkeverksted",
+        "AG11Ark"
+      ],
+      "actual": "/portal/planlegge/workbench?bibliotek=1",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Aktiv standard er samlet Workbench. År/Periode/Måned/Uke/Dag har tydelig horisont; eksisterende motor og lagre-/publiseringshandlinger gjenbrukes. Bibliotekarket kan åpnes direkte fra inngangen."
+    },
+    {
+      "id": "PH-11-GJENTA",
+      "title": "Workbench › Gjenta økt",
+      "route": "/portal/planlegge/workbench?niva=uke",
+      "family": "2 Workbench",
+      "files": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "components": [
+        "WorkbenchUkeverksted",
+        "AG11Ark"
+      ],
+      "actual": "/portal/planlegge/workbench?niva=uke",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Gjenta-/kopierfunksjonen bruker eksisterende ukemotor. Ingen økt er fullført på grunn av kalenderdato."
+    },
+    {
+      "id": "PH-11-PUBLISER",
+      "title": "Workbench › Publiser · N",
+      "route": "/portal/planlegge/workbench?niva=uke",
+      "family": "2 Workbench",
+      "files": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "components": [
+        "WorkbenchUkeverksted",
+        "PubliserArk"
+      ],
+      "actual": "/portal/planlegge/workbench?niva=uke",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Aktiv standard er samlet Workbench. År/Periode/Måned/Uke/Dag har tydelig horisont; eksisterende motor og lagre-/publiseringshandlinger gjenbrukes. Publiser-arket åpnes fra Publiser; bare faktisk utkastmengde og eksisterende serverbekreftelse."
+    },
+    {
+      "id": "PH-11-FORSLAG",
+      "title": "Workbench › Samlet forslag fra coach",
+      "route": "/portal/planlegge/workbench?niva=uke",
+      "family": "2 Workbench",
+      "files": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "components": [
+        "WorkbenchPlanHandlinger"
+      ],
+      "actual": "/portal/planlegge/workbench?niva=uke",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende forslag-/svarflyt bevarer spillergodkjenning og organisasjonens ansvar."
+    },
+    {
+      "id": "PH-11-START",
+      "title": "Workbench › Start økt",
+      "route": "/portal/planlegge/workbench?okt=[id]&start=1",
+      "family": "2 Workbench",
+      "files": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "components": [
+        "WorkbenchLive"
+      ],
+      "actual": "/portal/planlegge/workbench?niva=live&klassisk=1&okt=[id]",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Valgt faktisk økt tas med til eksisterende Live-inngang med autentisering og eie-/coach-scope."
+    },
+    {
+      "id": "PH-11-FYS",
+      "title": "Workbench › Fysisk økt med SetLogger",
+      "route": "/portal/planlegge/workbench?okt=[id]",
+      "family": "2 Workbench",
+      "files": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "components": [
+        "WorkbenchUkeverksted",
+        "OktArk",
+        "OvelseArk"
+      ],
+      "actual": "/portal/planlegge/workbench?okt=[id]",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Velg faktisk økt i kalenderen. Skjema, mengde og øvelser redigeres i fokusert ark."
+    },
+    {
+      "id": "PH-11-TURNERING",
+      "title": "Workbench › Turnering i heldagsraden",
+      "route": "/portal/planlegge/workbench?niva=uke",
+      "family": "2 Workbench",
+      "files": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "components": [
+        "AG11Turnering"
+      ],
+      "actual": "/portal/planlegge/workbench?pille=turn",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende turneringsplan, prioritering og reise; ingen påmelding automatisk."
+    },
+    {
+      "id": "PH-11-PANEL",
+      "title": "Workbench › Planlagt mot registrert",
+      "route": "/portal/planlegge/workbench?panel=plan",
+      "family": "2 Workbench",
+      "files": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "components": [
+        "WorkbenchUkeverksted",
+        "UkeplanArk"
+      ],
+      "actual": "/portal/planlegge/workbench?panel=plan",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Ukeplan-knappen åpner eksisterende typed skjema; måned lagres i egen modell."
+    },
+    {
+      "id": "PH-11-TEK",
+      "title": "Workbench › Live TEK-økt med teknisk plan",
+      "route": "/portal/planlegge/workbench?okt=[id]&start=1",
+      "family": "2 Workbench",
+      "files": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "components": [
+        "WorkbenchLive"
+      ],
+      "actual": "/portal/planlegge/workbench?niva=live&klassisk=1&okt=[id]",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Valgt faktisk økt tas med til eksisterende Live-inngang med autentisering og eie-/coach-scope."
+    },
+    {
+      "id": "PH-11-FYSUKE",
+      "title": "Workbench › Fysisk uke",
+      "route": "/portal/planlegge/workbench?fys=uke",
+      "family": "2 Workbench",
+      "files": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "components": [
+        "AG11Fysisk"
+      ],
+      "actual": "/portal/planlegge/workbench?pille=fys",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende fysisk program/faktiske registreringer gjenbrukes gjennom den fysiske modulen."
+    },
+    {
+      "id": "PH-11-FYSVELG",
+      "title": "Workbench › Velg fysisk økt",
+      "route": "/portal/planlegge/workbench?fys=program",
+      "family": "2 Workbench",
+      "files": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "components": [
+        "AG11Fysisk"
+      ],
+      "actual": "/portal/planlegge/workbench?pille=fys",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende fysisk program/faktiske registreringer gjenbrukes gjennom den fysiske modulen."
+    },
+    {
+      "id": "PH-11-FYSLIVE",
+      "title": "Workbench › Live fysisk økt",
+      "route": "/portal/planlegge/workbench?okt=[id]&start=1",
+      "family": "2 Workbench",
+      "files": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "components": [
+        "WorkbenchLive"
+      ],
+      "actual": "/portal/planlegge/workbench?niva=live&klassisk=1&okt=[id]",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Valgt faktisk økt tas med til eksisterende Live-inngang med autentisering og eie-/coach-scope."
+    },
+    {
+      "id": "PH-11-OKT",
+      "title": "Workbench › Økt",
+      "route": "/portal/planlegge/workbench?niva=okt",
+      "family": "1c Plan og Workbench",
+      "files": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "components": [
+        "WorkbenchUkeverksted",
+        "OktArk",
+        "OvelseArk"
+      ],
+      "actual": "/portal/planlegge/workbench?niva=okt",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Velg faktisk økt i kalenderen. Skjema, mengde og øvelser redigeres i fokusert ark."
+    },
+    {
+      "id": "PH-11-MAL",
+      "title": "Workbench › Målsetninger",
+      "route": "/portal/planlegge/workbench?vis=malsetninger",
+      "family": "1c Plan og Workbench",
+      "files": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "components": [
+        "AG11Workbench"
+      ],
+      "actual": "/portal/planlegge/workbench?niva=malsetninger&klassisk=1",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Aktiv standard er samlet Workbench. År/Periode/Måned/Uke/Dag har tydelig horisont; eksisterende motor og lagre-/publiseringshandlinger gjenbrukes."
+    },
+    {
+      "id": "PH-11-MAL-IUP",
+      "title": "Workbench › Målsetninger · IUP-måltall",
+      "route": "/portal/planlegge/workbench?vis=malsetninger&iup=1",
+      "family": "1c Plan og Workbench",
+      "files": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "components": [
+        "PHIupEvaluering",
+        "AG08Iup"
+      ],
+      "actual": "/portal/mal/evaluering",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "IUP har eksisterende rettigheter, lagring, historikk og leveringsstatus."
+    },
+    {
+      "id": "PH-11-UKEMAL",
+      "title": "Workbench › Ukemal per periodetype",
+      "route": "/portal/planlegge/workbench?vis=ukemal",
+      "family": "1c Plan og Workbench",
+      "files": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "components": [
+        "AG11Workbench"
+      ],
+      "actual": "/portal/planlegge/workbench?niva=uke&klassisk=1&side=maler",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Fungerende maler/legge-til-handlinger i eksisterende Workbench er beholdt."
+    },
+    {
+      "id": "PH-11-OKTMAL",
+      "title": "Workbench › Øktmaler og oppvarming",
+      "route": "/portal/planlegge/workbench?vis=oktmaler",
+      "family": "1c Plan og Workbench",
+      "files": [
+        "src/app/portal/planlegge/workbench/page.tsx"
+      ],
+      "components": [
+        "AG11Workbench"
+      ],
+      "actual": "/portal/planlegge/workbench?niva=uke&klassisk=1&side=maler",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Fungerende maler/legge-til-handlinger i eksisterende Workbench er beholdt."
+    },
+    {
+      "id": "PH-12",
+      "title": "Velg treningsplan",
+      "route": "/portal/planlegge/bygger",
+      "family": "1c Plan og Workbench",
+      "files": [
+        "src/app/portal/planlegge/bygger/page.tsx"
+      ],
+      "components": [
+        "PH12VelgPlan"
+      ],
+      "actual": "/portal/planlegge/bygger",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen."
+    },
+    {
+      "id": "PH-13",
+      "title": "Øvelsesbank",
+      "route": "/portal/drills",
+      "family": "1c Plan og Workbench",
+      "files": [
+        "src/app/portal/drills/page.tsx"
+      ],
+      "components": [
+        "PH13DrillBank"
+      ],
+      "actual": "/portal/drills",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Reell bank uten syntetiske øvelser. Søk og oppskrift først; velg kommende eget utkast og bekreft faktisk tillegg."
+    },
+    {
+      "id": "PH-WB-FYS",
+      "title": "Plan › lag Fysisk",
+      "route": "/portal/tren/fys-plan",
+      "family": "1c Plan og Workbench",
+      "files": [
+        "src/app/portal/tren/fys-plan/page.tsx"
+      ],
+      "components": [
+        "FysPlanKort",
+        "NyPlanKnapp"
+      ],
+      "actual": "/portal/tren/fys-plan",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen."
+    },
+    {
+      "id": "PH-WB-TURN",
+      "title": "Plan › lag Turneringer · turneringsreise",
+      "route": "/portal/tren/turneringer/[id]",
+      "family": "1c Plan og Workbench",
+      "files": [
+        "src/app/portal/tren/turneringer/[id]/page.tsx"
+      ],
+      "components": [
+        "TurneringDetaljV2",
+        "TurneringshistorikkTrainLock"
+      ],
+      "actual": "/portal/tren/turneringer/[id]",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen."
+    },
+    {
+      "id": "PH-WB-TURN-KAT",
+      "title": "Plan › Team Norways turneringskatalog 2027",
+      "route": "/portal/tren/turneringer/katalog",
+      "family": "1c Plan og Workbench",
+      "files": [
+        "src/app/portal/tren/turneringer/katalog/page.tsx",
+        "src/app/portal/tren/turneringer/page.tsx"
+      ],
+      "components": [
+        "TurneringPlanleggerV2"
+      ],
+      "actual": "/portal/tren/turneringer",
+      "note": "Katalog og personlig plan er én eksisterende funksjon. Registerets separate kataloginngang er koblet dit.",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach"
+    },
+    {
+      "id": "PH-TP-01",
+      "title": "Teknisk plan",
+      "route": "/portal/tren/teknisk-plan/[planId]",
+      "family": "1c Plan og Workbench",
+      "files": [
+        "src/app/portal/tren/teknisk-plan/[planId]/page.tsx"
+      ],
+      "components": [
+        "PHTP01TekniskPlan"
+      ],
+      "actual": "/portal/tren/teknisk-plan/[planId]",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen."
+    },
+    {
+      "id": "PH-16",
+      "title": "Stats",
+      "route": "/portal/analysere",
+      "family": "1d Stats",
+      "files": [
+        "src/app/portal/analysere/page.tsx"
+      ],
+      "components": [
+        "PH16Stats"
+      ],
+      "actual": "/portal/analysere",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Resultat, valgt periode, datamengde og kilde først. Korrekte knappegrupper."
+    },
+    {
+      "id": "PH-14",
+      "title": "Stats › Tester",
+      "route": "/portal/tren/tester",
+      "family": "1d Stats",
+      "files": [
+        "src/app/portal/tren/tester/page.tsx"
+      ],
+      "components": [
+        "TesterRad"
+      ],
+      "actual": "/portal/tren/tester",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen."
+    },
+    {
+      "id": "PH-17",
+      "title": "Stats › Trening · TrackMan · omtegnes: ingen DataGolf-tall",
+      "route": "/portal/analysere/trackman",
+      "family": "1d Stats",
+      "files": [
+        "src/app/portal/analysere/trackman/page.tsx"
+      ],
+      "components": [
+        "PH17TrackMan"
+      ],
+      "actual": "/portal/analysere/trackman",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Kun egne målte data; ukjent er null; hver økt har egne målinger. Ingen oppdiktet bay/fitting eller DataGolf-stasjon."
+    },
+    {
+      "id": "PH-18",
+      "title": "Stats › Snittscore · runder · omtegnes: ingen DataGolf-tall",
+      "route": "/portal/mal/runder",
+      "family": "1d Stats",
+      "files": [
+        "src/app/portal/mal/runder/page.tsx"
+      ],
+      "components": [
+        "PH18Runder"
+      ],
+      "actual": "/portal/mal/runder",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende runder og registrering gjenbrukes; korrekte knappegrupper."
+    },
+    {
+      "id": "PH-20",
+      "title": "Gameplan og banekart",
+      "route": "/portal/gameplan",
+      "family": "1d Stats",
+      "files": [
+        "src/app/portal/gameplan/page.tsx"
+      ],
+      "components": [
+        "PH20Gameplan"
+      ],
+      "actual": "/portal/gameplan",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen."
+    },
+    {
+      "id": "PH-24",
+      "title": "Meg",
+      "route": "/portal/meg",
+      "family": "1e Meg og innboks",
+      "files": [
+        "src/app/portal/meg/page.tsx"
+      ],
+      "components": [
+        "PH24Meg"
+      ],
+      "actual": "/portal/meg",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Forutsigbare grupper Din hverdag / Team, deling og innstillinger; direkte innboks."
+    },
+    {
+      "id": "PH-24-TEAM",
+      "title": "Meg › Mitt team",
+      "route": "/portal/meg/team",
+      "family": "1e Meg og innboks",
+      "files": [
+        "src/app/portal/meg/team/page.tsx",
+        "src/app/portal/meg/deling/page.tsx"
+      ],
+      "components": [
+        "NavngittDeling"
+      ],
+      "actual": "/portal/meg/deling",
+      "note": "Team-/tilgangsoversikten bruker den eksisterende navngitte delingen og godkjenningsflyten.",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach"
+    },
+    {
+      "id": "PH-27",
+      "title": "Meg › Deling",
+      "route": "/portal/meg/deling",
+      "family": "1e Meg og innboks",
+      "files": [
+        "src/app/portal/meg/deling/page.tsx"
+      ],
+      "components": [
+        "navngitt-deling"
+      ],
+      "actual": "/portal/meg/deling",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen."
+    },
+    {
+      "id": "PH-25",
+      "title": "Abonnement og innstillinger",
+      "route": "/portal/meg/abonnement",
+      "family": "1e Meg og innboks",
+      "files": [
+        "src/app/portal/meg/abonnement/page.tsx"
+      ],
+      "components": [
+        "PH25Abonnement"
+      ],
+      "actual": "/portal/meg/abonnement",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Ekte tilgang/fakturaer; ingen demo-Visa, fake dato, 2FA eller lokal abonnements-/slettekvittering. Reelle sikre betalings-/personvernflyter."
+    },
+    {
+      "id": "PH-21",
+      "title": "Innboks",
+      "route": "/portal/coach",
+      "family": "1e Meg og innboks",
+      "files": [
+        "src/app/portal/coach/page.tsx"
+      ],
+      "components": [
+        "PH21Innboks"
+      ],
+      "actual": "/portal/coach",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Skrivefelt beholdes ved feil. Sendt/planstatus endres bare etter faktisk svar; ønske bruker valgt dato."
+    },
+    {
+      "id": "PH-23",
+      "title": "Booking",
+      "route": "/portal/booking",
+      "family": "1e Meg og innboks",
+      "files": [
+        "src/app/portal/booking/page.tsx"
+      ],
+      "components": [
+        "PH23Booking"
+      ],
+      "actual": "/portal/booking",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende tjeneste/tid/bekreftelse og Stripe-flow beholdes. Ingen demofallback; avbestilling krever positivt svar; gamle slot-svar ignoreres."
+    },
+    {
+      "id": "AG-01",
+      "title": "Cockpit",
+      "route": "/admin/agencyos",
+      "family": "2a Cockpit og Innboks",
+      "files": [
+        "src/app/admin/agencyos/page.tsx"
+      ],
+      "components": [
+        "AG01Cockpit"
+      ],
+      "actual": "/admin/agencyos",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Nyttig neste handling fra kalender/kø først; valgt spiller beholdes i videre arbeid."
+    },
+    {
+      "id": "AG-04",
+      "title": "Innboks",
+      "route": "/admin/kommunikasjon",
+      "family": "2a Cockpit og Innboks",
+      "files": [
+        "src/app/admin/kommunikasjon/page.tsx",
+        "src/app/admin/innboks/page.tsx"
+      ],
+      "components": [
+        "AG04Innboks"
+      ],
+      "actual": "/admin/innboks",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen."
+    },
+    {
+      "id": "AG-07",
+      "title": "Stall",
+      "route": "/admin/spillere",
+      "family": "2b Stall og Spiller 360",
+      "files": [
+        "src/app/admin/spillere/page.tsx"
+      ],
+      "components": [
+        "AG07Stall"
+      ],
+      "actual": "/admin/spillere",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Reelle oppfølgingsrader; tomme skjemafelter fjernet; meldingsark med felles fokus og bekreftet sending."
+    },
+    {
+      "id": "AG-08",
+      "title": "Spiller 360",
+      "route": "/admin/spillere/[id]",
+      "family": "2b Stall og Spiller 360",
+      "files": [
+        "src/app/admin/spillere/[id]/page.tsx"
+      ],
+      "components": [
+        "AG08Spiller360"
+      ],
+      "actual": "/admin/spillere/[id]",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Krav/plan/registrerte data gjenbrukes. Ekte kilde/periode i Stats, valgt spiller til Live, anonymt sportsfoto."
+    },
+    {
+      "id": "AG-08-IUP",
+      "title": "Spiller 360 › IUP",
+      "route": "/admin/spillere/[id]?fane=iup",
+      "family": "2b Stall og Spiller 360",
+      "files": [
+        "src/app/admin/spillere/[id]/page.tsx"
+      ],
+      "components": [
+        "AG08Spiller360"
+      ],
+      "actual": "/admin/spillere/[id]?fane=iup",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende typed IUP og navngitt coachinnsyn gjenbrukes."
+    },
+    {
+      "id": "AG-05",
+      "title": "Kalender",
+      "route": "/admin/kalender",
+      "family": "2c Kalender, Workbench og teknisk plan",
+      "files": [
+        "src/app/admin/kalender/page.tsx"
+      ],
+      "components": [
+        "AG05Kalender",
+        "AG05Tilg",
+        "StallDagV2",
+        "wb-tl-scope"
+      ],
+      "actual": "/admin/kalender",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen."
+    },
+    {
+      "id": "AG-11",
+      "title": "Workbench",
+      "route": "/admin/workbench/[playerId]",
+      "family": "2 Workbench",
+      "files": [
+        "src/app/admin/workbench/[playerId]/page.tsx"
+      ],
+      "components": [
+        "WorkbenchSamlet",
+        "WorkbenchSesongkart",
+        "WorkbenchUkeverksted",
+        "AG11Ark"
+      ],
+      "actual": "/admin/workbench/[playerId]",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Aktiv standard er samlet Workbench. År/Periode/Måned/Uke/Dag har tydelig horisont; eksisterende motor og lagre-/publiseringshandlinger gjenbrukes."
+    },
+    {
+      "id": "AG-11-AR",
+      "title": "Workbench › Årsplan",
+      "route": "/admin/workbench/[playerId]",
+      "family": "2c Kalender, Workbench og teknisk plan",
+      "files": [
+        "src/app/admin/workbench/[playerId]/page.tsx"
+      ],
+      "components": [
+        "WorkbenchSamlet",
+        "WorkbenchSesongkart",
+        "SesongArk"
+      ],
+      "actual": "/admin/workbench/[playerId]?niva=ar",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Aktiv standard er samlet Workbench. År/Periode/Måned/Uke/Dag har tydelig horisont; eksisterende motor og lagre-/publiseringshandlinger gjenbrukes. Opprett årsplan åpnes med knappen når sesongen mangler; eksisterende sesong har grenser."
+    },
+    {
+      "id": "AG-11-NY",
+      "title": "Workbench › Opprett årsplan",
+      "route": "/admin/workbench/[playerId]",
+      "family": "2c Kalender, Workbench og teknisk plan",
+      "files": [
+        "src/app/admin/workbench/[playerId]/page.tsx"
+      ],
+      "components": [
+        "WorkbenchSamlet",
+        "WorkbenchSesongkart",
+        "SesongArk"
+      ],
+      "actual": "/admin/workbench/[playerId]?niva=ar",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Aktiv standard er samlet Workbench. År/Periode/Måned/Uke/Dag har tydelig horisont; eksisterende motor og lagre-/publiseringshandlinger gjenbrukes. Opprett årsplan åpnes med knappen når sesongen mangler; eksisterende sesong har grenser."
+    },
+    {
+      "id": "AG-11-PER",
+      "title": "Workbench › Periode",
+      "route": "/admin/workbench/[playerId]",
+      "family": "2c Kalender, Workbench og teknisk plan",
+      "files": [
+        "src/app/admin/workbench/[playerId]/page.tsx"
+      ],
+      "components": [
+        "WorkbenchSamlet",
+        "WorkbenchSesongkart",
+        "PeriodeArk"
+      ],
+      "actual": "/admin/workbench/[playerId]?niva=periode",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Aktiv standard er samlet Workbench. År/Periode/Måned/Uke/Dag har tydelig horisont; eksisterende motor og lagre-/publiseringshandlinger gjenbrukes."
+    },
+    {
+      "id": "AG-11-PERSKJEMA",
+      "title": "Workbench › Periodeskjema",
+      "route": "/admin/workbench/[playerId]",
+      "family": "2c Kalender, Workbench og teknisk plan",
+      "files": [
+        "src/app/admin/workbench/[playerId]/page.tsx"
+      ],
+      "components": [
+        "WorkbenchSamlet",
+        "WorkbenchSesongkart",
+        "PeriodeArk"
+      ],
+      "actual": "/admin/workbench/[playerId]?niva=periode",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Aktiv standard er samlet Workbench. År/Periode/Måned/Uke/Dag har tydelig horisont; eksisterende motor og lagre-/publiseringshandlinger gjenbrukes."
+    },
+    {
+      "id": "AG-11-MND",
+      "title": "Workbench › Måned",
+      "route": "/admin/workbench/[playerId]",
+      "family": "2 Workbench",
+      "files": [
+        "src/app/admin/workbench/[playerId]/page.tsx"
+      ],
+      "components": [
+        "WorkbenchSamlet",
+        "WorkbenchSesongkart",
+        "MonthPlan",
+        "MonthPlanFields"
+      ],
+      "actual": "/admin/workbench/[playerId]?niva=maned",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Egen månedsmodell: fokus/mål, formål/sted, ramme og 19 prioriteringer. Coach sender personlig forslag; spiller godkjenner. Egne evalueringer etter månedsslutt."
+    },
+    {
+      "id": "AG-11-UKE",
+      "title": "Workbench › Uke med Trenerbord",
+      "route": "/admin/workbench/[playerId]",
+      "family": "2 Workbench",
+      "files": [
+        "src/app/admin/workbench/[playerId]/page.tsx"
+      ],
+      "components": [
+        "WorkbenchSamlet",
+        "WorkbenchSesongkart",
+        "WorkbenchUkeverksted",
+        "AG11Ark"
+      ],
+      "actual": "/admin/workbench/[playerId]",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Aktiv standard er samlet Workbench. År/Periode/Måned/Uke/Dag har tydelig horisont; eksisterende motor og lagre-/publiseringshandlinger gjenbrukes."
+    },
+    {
+      "id": "AG-11-UTKAST",
+      "title": "Workbench › Coachens utkast · Publiser · 3",
+      "route": "/admin/workbench/[playerId]",
+      "family": "2 Workbench",
+      "files": [
+        "src/app/admin/workbench/[playerId]/page.tsx"
+      ],
+      "components": [
+        "WorkbenchUkeverksted",
+        "PubliserArk"
+      ],
+      "actual": "/admin/workbench/[playerId]",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Aktiv standard er samlet Workbench. År/Periode/Måned/Uke/Dag har tydelig horisont; eksisterende motor og lagre-/publiseringshandlinger gjenbrukes. Publiser-arket åpnes fra Publiser; bare faktisk utkastmengde og eksisterende serverbekreftelse."
+    },
+    {
+      "id": "AG-11-SVAR",
+      "title": "Workbench › Svar på forslag og varsel",
+      "route": "/admin/workbench/[playerId]",
+      "family": "2 Workbench",
+      "files": [
+        "src/app/admin/workbench/[playerId]/page.tsx"
+      ],
+      "components": [
+        "WorkbenchPlanHandlinger"
+      ],
+      "actual": "/admin/workbench/[playerId]",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende forslag-/svarflyt bevarer spillergodkjenning og organisasjonens ansvar."
+    },
+    {
+      "id": "AG-11-GRUPPE",
+      "title": "Workbench › Gruppeplan WANG G2",
+      "route": "/admin/workbench/[playerId]",
+      "family": "2 Workbench",
+      "files": [
+        "src/app/admin/workbench/[playerId]/page.tsx"
+      ],
+      "components": [
+        "AG11Gruppe",
+        "MonthPlan",
+        "GruppeAarsplanKlient",
+        "RullUtMalPanel",
+        "GruppeMalPublisering"
+      ],
+      "actual": "/admin/grupper/[groupId]/workbench",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksakt gruppescope; Årsplan/Månedsplan, faste tider og lagrede gruppeutkast. Personlige maløkter sendes som forslag; publiserte gruppeoriginaler får lenkede medlemskopier innen gruppetid."
+    },
+    {
+      "id": "AG-11-TEK",
+      "title": "Workbench › Ny TEK-økt · Velg fra teknisk plan",
+      "route": "/admin/workbench/[playerId]",
+      "family": "2 Workbench",
+      "files": [
+        "src/app/admin/workbench/[playerId]/page.tsx"
+      ],
+      "components": [
+        "WorkbenchLive"
+      ],
+      "actual": "/admin/workbench/[playerId]?niva=live&klassisk=1&okt=[id]",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Valgt faktisk økt tas med til eksisterende Live-inngang med autentisering og eie-/coach-scope."
+    },
+    {
+      "id": "AG-11-FYS",
+      "title": "Workbench › Fysisk program · programbygger",
+      "route": "/admin/workbench/[playerId]?fys=program",
+      "family": "2 Workbench",
+      "files": [
+        "src/app/admin/workbench/[playerId]/page.tsx"
+      ],
+      "components": [
+        "AG11Fysisk"
+      ],
+      "actual": "/admin/workbench/[playerId]?pille=fys",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende fysisk program/faktiske registreringer gjenbrukes gjennom den fysiske modulen."
+    },
+    {
+      "id": "AG-11-MNDSKJEMA",
+      "title": "Workbench › Månedsskjema",
+      "route": "/admin/workbench/[playerId]",
+      "family": "2c Kalender, Workbench og teknisk plan",
+      "files": [
+        "src/app/admin/workbench/[playerId]/page.tsx"
+      ],
+      "components": [
+        "WorkbenchSamlet",
+        "WorkbenchSesongkart",
+        "MonthPlan",
+        "MonthPlanFields"
+      ],
+      "actual": "/admin/workbench/[playerId]?niva=maned",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Egen månedsmodell: fokus/mål, formål/sted, ramme og 19 prioriteringer. Coach sender personlig forslag; spiller godkjenner. Egne evalueringer etter månedsslutt."
+    },
+    {
+      "id": "AG-11-GRUPPE-AR",
+      "title": "Workbench › Gruppas årsplan",
+      "route": "/admin/workbench/[playerId]",
+      "family": "2c Kalender, Workbench og teknisk plan",
+      "files": [
+        "src/app/admin/workbench/[playerId]/page.tsx"
+      ],
+      "components": [
+        "AG11Gruppe",
+        "MonthPlan",
+        "GruppeAarsplanKlient",
+        "RullUtMalPanel",
+        "GruppeMalPublisering"
+      ],
+      "actual": "/admin/grupper/[groupId]/workbench",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksakt gruppescope; Årsplan/Månedsplan, faste tider og lagrede gruppeutkast. Personlige maløkter sendes som forslag; publiserte gruppeoriginaler får lenkede medlemskopier innen gruppetid."
+    },
+    {
+      "id": "AG-14",
+      "title": "Plan-hub, maler og øvelser",
+      "route": "/admin/plan",
+      "family": "2c Kalender, Workbench og teknisk plan",
+      "files": [
+        "src/app/admin/plan/page.tsx"
+      ],
+      "components": [
+        "AG14PlanHub",
+        "RullUtMalPanel",
+        "GruppeMalPublisering"
+      ],
+      "actual": "/admin/plan",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Valgt mal-ID følger til beskyttet utrullingsside. Reelle mottakere, kildefestet forhåndsvisning/bekreftelse, spillerforslag og D49-gruppeutkast med faktisk publisering."
+    },
+    {
+      "id": "AG-WB-FYS",
+      "title": "Workbench · fysisk plan",
+      "route": "/admin/workbench/[playerId]",
+      "family": "2c Kalender, Workbench og teknisk plan",
+      "files": [
+        "src/app/admin/workbench/[playerId]/page.tsx"
+      ],
+      "components": [
+        "AG11Fysisk"
+      ],
+      "actual": "/admin/workbench/[playerId]?pille=fys",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende fysisk program/faktiske registreringer gjenbrukes gjennom den fysiske modulen."
+    },
+    {
+      "id": "AG-WB-TURN",
+      "title": "Workbench · turneringer",
+      "route": "/admin/workbench/[playerId]",
+      "family": "2c Kalender, Workbench og teknisk plan",
+      "files": [
+        "src/app/admin/workbench/[playerId]/page.tsx"
+      ],
+      "components": [
+        "AG11Turnering"
+      ],
+      "actual": "/admin/workbench/[playerId]?pille=turn",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende turneringsplan, prioritering og reise; ingen påmelding automatisk."
+    },
+    {
+      "id": "AG-10",
+      "title": "Teknisk plan",
+      "route": "/admin/plan/teknisk",
+      "family": "2c Kalender, Workbench og teknisk plan",
+      "files": [
+        "src/app/admin/plan/teknisk/page.tsx"
+      ],
+      "components": [
+        "AG10Oversikt"
+      ],
+      "actual": "/admin/plan/teknisk",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen."
+    },
+    {
+      "id": "AG-TP-01",
+      "title": "Teknisk plan · oppgaveskjema",
+      "route": "/admin/spillere/[id]/plan/[planId]",
+      "family": "2c Kalender, Workbench og teknisk plan",
+      "files": [
+        "src/app/admin/spillere/[id]/plan/[planId]/page.tsx"
+      ],
+      "components": [
+        "AG10TekniskPlan"
+      ],
+      "actual": "/admin/spillere/[id]/plan/[planId]",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen."
+    },
+    {
+      "id": "AG-TP-02",
+      "title": "Teknisk plan · før og nå",
+      "route": "/admin/spillere/[id]/plan/[planId]/for-og-na",
+      "family": "2c Kalender, Workbench og teknisk plan",
+      "files": [
+        "src/app/admin/spillere/[id]/plan/[planId]/for-og-na/page.tsx"
+      ],
+      "components": [
+        "AGTP02ForOgNaa"
+      ],
+      "actual": "/admin/spillere/[id]/plan/[planId]/for-og-na",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen."
+    },
+    {
+      "id": "AG-13",
+      "title": "Live coachingøkt",
+      "route": "/admin/agencyos/live/[sessionId]",
+      "family": "2d Live",
+      "files": [
+        "src/app/admin/agencyos/live/[sessionId]/page.tsx"
+      ],
+      "components": [
+        "AG13LiveOkt"
+      ],
+      "actual": "/admin/agencyos/live/[sessionId]",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Live-pakken",
+      "note": "Live prioriteres og implementeres av hoved-/Live-agenten."
+    },
+    {
+      "id": "AG-12",
+      "title": "Øktark etter live",
+      "route": "/admin/gjennomfore/okter/[id]",
+      "family": "2d Live",
+      "files": [
+        "src/app/admin/gjennomfore/okter/[id]/page.tsx"
+      ],
+      "components": [
+        "AG12Oktark"
+      ],
+      "actual": "/admin/gjennomfore/okter/[id]",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen."
+    },
+    {
+      "id": "AG-A02",
+      "title": "Spilleranalyse samlet",
+      "route": "/admin/analyse",
+      "family": "2e Analyse",
+      "files": [
+        "src/app/admin/analyse/page.tsx"
+      ],
+      "components": [
+        "AnalyseHode",
+        "InnsiktHubV2",
+        "InnsiktStallV2",
+        "InnsiktSpillerListe",
+        "WorkbenchAnalyseV2",
+        "AdminComplianceV2"
+      ],
+      "actual": "/admin/analyse",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen."
+    },
+    {
+      "id": "AG-A03",
+      "title": "Gruppeanalyse",
+      "route": "/admin/analyse",
+      "family": "2e Analyse",
+      "files": [
+        "src/app/admin/analyse/page.tsx"
+      ],
+      "components": [
+        "AnalyseHode",
+        "InnsiktHubV2",
+        "InnsiktStallV2",
+        "InnsiktSpillerListe",
+        "WorkbenchAnalyseV2",
+        "AdminComplianceV2"
+      ],
+      "actual": "/admin/analyse",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen."
+    },
+    {
+      "id": "AG-A04",
+      "title": "Plan mot faktisk",
+      "route": "/admin/analyse",
+      "family": "2e Analyse",
+      "files": [
+        "src/app/admin/analyse/page.tsx"
+      ],
+      "components": [
+        "AnalyseHode",
+        "InnsiktHubV2",
+        "InnsiktStallV2",
+        "InnsiktSpillerListe",
+        "WorkbenchAnalyseV2",
+        "AdminComplianceV2"
+      ],
+      "actual": "/admin/analyse",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen."
+    },
+    {
+      "id": "AG-A05",
+      "title": "Datakvalitet",
+      "route": "/admin/analyse",
+      "family": "2e Analyse",
+      "files": [
+        "src/app/admin/analyse/page.tsx"
+      ],
+      "components": [
+        "AnalyseHode",
+        "InnsiktHubV2",
+        "InnsiktStallV2",
+        "InnsiktSpillerListe",
+        "WorkbenchAnalyseV2",
+        "AdminComplianceV2"
+      ],
+      "actual": "/admin/analyse",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen."
+    },
+    {
+      "id": "AG-A06",
+      "title": "Tiltaksverksted",
+      "route": "/admin/analyse",
+      "family": "2e Analyse",
+      "files": [
+        "src/app/admin/analyse/page.tsx"
+      ],
+      "components": [
+        "AnalyseHode",
+        "InnsiktHubV2",
+        "InnsiktStallV2",
+        "InnsiktSpillerListe",
+        "WorkbenchAnalyseV2",
+        "AdminComplianceV2"
+      ],
+      "actual": "/admin/analyse",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen."
+    },
+    {
+      "id": "AG-RD-01",
+      "title": "Rundeanalyse",
+      "route": "/admin/runder",
+      "family": "2e Analyse",
+      "files": [
+        "src/app/admin/runder/page.tsx"
+      ],
+      "components": [
+        "AGRD01Runder"
+      ],
+      "actual": "/admin/runder",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen."
+    },
+    {
+      "id": "AG-RD-02",
+      "title": "Manglende SG-grunnlag",
+      "route": "/admin/runder",
+      "family": "2e Analyse",
+      "files": [
+        "src/app/admin/runder/page.tsx"
+      ],
+      "components": [
+        "AGRD01Runder"
+      ],
+      "actual": "/admin/runder",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen."
+    },
+    {
+      "id": "AG-06",
+      "title": "Booking",
+      "route": "/admin/bookinger",
+      "family": "2f Mer",
+      "files": [
+        "src/app/admin/bookinger/page.tsx"
+      ],
+      "components": [
+        "AG06Booking"
+      ],
+      "actual": "/admin/bookinger",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen."
+    },
+    {
+      "id": "AG-15",
+      "title": "Tester",
+      "route": "/admin/tester",
+      "family": "2f Mer",
+      "files": [
+        "src/app/admin/tester/page.tsx"
+      ],
+      "components": [
+        "AG15Tester"
+      ],
+      "actual": "/admin/tester",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Resultat-/pågår-omfang og sammenligningsgrunnlag først; dato og originalenheter beholdes."
+    },
+    {
+      "id": "AG-16",
+      "title": "Grupper",
+      "route": "/admin/grupper",
+      "family": "2f Mer",
+      "files": [
+        "src/app/admin/grupper/page.tsx"
+      ],
+      "components": [
+        "AG16Grupper"
+      ],
+      "actual": "/admin/grupper",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Gruppe først; medlems-/planseksjoner har reelle overskrifter og tydelige innganger."
+    },
+    {
+      "id": "AG-20",
+      "title": "Økonomi",
+      "route": "/admin/agencyos/okonomi",
+      "family": "2f Mer",
+      "files": [
+        "src/app/admin/agencyos/okonomi/page.tsx"
+      ],
+      "components": [
+        "AG20Okonomi"
+      ],
+      "actual": "/admin/agencyos/okonomi",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Regnskap/kilde først; budsjett/avvik vises bare med faktisk grunnlag; ingen løfte om eksport som ikke finnes."
+    },
+    {
+      "id": "AG-23",
+      "title": "Oppsett",
+      "route": "/admin/oppsett",
+      "family": "2f Mer",
+      "files": [
+        "src/app/admin/oppsett/page.tsx"
+      ],
+      "components": [
+        "AG23Oppsett"
+      ],
+      "actual": "/admin/oppsett",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Egen profil, tilgang og koblede tjenester er tydelig beskrevet; eksisterende tilgangssikrede innstillinger gjenbrukes."
+    },
+    {
+      "id": "PH-FORMEL",
+      "title": "AK-formelen · interaktiv 3D-pyramide",
+      "route": "/portal/formel",
+      "family": "1a AK-formelen",
+      "files": [
+        "src/app/portal/formel/page.tsx"
+      ],
+      "components": [
+        "PHFormel"
+      ],
+      "actual": "/portal/formel",
+      "note": "Ny interaktiv pyramide og alle 19 områder fra kanonisk v2; ingen ny CS-skala.",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach"
+    },
+    {
+      "id": "PH-IUP-01-LEVERT",
+      "title": "Fireukerssjekk · levert",
+      "route": "/portal/iup/fireukerssjekk",
+      "family": "1a IUP",
+      "files": [
+        "src/app/portal/iup/fireukerssjekk/page.tsx"
+      ],
+      "components": [
+        "PHIUP01Fireukerssjekk"
+      ],
+      "actual": "/portal/iup/fireukerssjekk",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen."
+    },
+    {
+      "id": "PH-IUP-01-UNG",
+      "title": "Fireukerssjekk · ung",
+      "route": "/portal/iup/fireukerssjekk",
+      "family": "1a IUP",
+      "files": [
+        "src/app/portal/iup/fireukerssjekk/page.tsx"
+      ],
+      "components": [
+        "PHIUP01Fireukerssjekk"
+      ],
+      "actual": "/portal/iup/fireukerssjekk",
+      "verification": "Kilde/ruting gjennomgått; samlet visuell og funksjonell kontroll føres av hovedagenten.",
+      "visualApproval": "Ikke visuelt godkjent av Anders.",
+      "owner": "Spiller/coach",
+      "note": "Eksisterende innhold og autentiserte handlinger gjenbrukes innen samme familie. Felles Precision-ramme, felter, valgt- og fokustilstander følger oppgraderingen."
+    }
+  ]
+}

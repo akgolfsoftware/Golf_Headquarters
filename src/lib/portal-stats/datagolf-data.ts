@@ -1,3 +1,4 @@
+import { requireDataGolfAnalyst } from "@/lib/datagolf/access";
 /**
  * Data-loader for PlayerHQ DataGolf-spillerkort (DG-01 / C10).
  *
@@ -130,6 +131,7 @@ function sisteSnitt(
 }
 
 export async function hentDataGolf(userId: string): Promise<DataGolfData> {
+  await requireDataGolfAnalyst(userId);
   const user = await prisma.user.findUnique({
     where: { id: userId },
     select: {

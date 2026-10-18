@@ -13,7 +13,7 @@ interface SparkBarsProps {
 export function SparkBars({
   values,
   height = 56,
-  accent = "hsl(var(--primary))",
+  accent = "var(--s-primary)",
   highlight,
 }: SparkBarsProps) {
   const max = Math.max(...values) * 1.05;
@@ -37,7 +37,7 @@ export function SparkBars({
             width={10}
             height={h}
             rx={1.5}
-            fill={isHi ? "hsl(var(--accent))" : accent}
+            fill={isHi ? "var(--s-primary)" : accent}
             opacity={isHi ? 1 : 0.85}
           />
         );
@@ -55,7 +55,7 @@ interface SparkLineProps {
 export function SparkLine({
   values,
   height = 36,
-  color = "hsl(var(--primary))",
+  color = "var(--s-primary)",
 }: SparkLineProps) {
   const w = 120;
   const max = Math.max(...values);

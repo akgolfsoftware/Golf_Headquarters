@@ -11,15 +11,15 @@ interface EyebrowProps {
 }
 
 const TONE_COLOR: Record<string, string> = {
-  default: "hsl(var(--primary))",
-  lime: "hsl(var(--accent))",
-  muted: "hsl(var(--muted-foreground))",
+  default: "var(--s-fg)",
+  lime: "var(--s-primary)",
+  muted: "var(--s-muted-fg)",
 };
 
 const DOT_BG: Record<string, string> = {
-  default: "hsl(var(--accent))",
-  lime: "hsl(var(--primary))",
-  muted: "hsl(var(--accent))",
+  default: "var(--s-primary)",
+  lime: "var(--s-primary)",
+  muted: "var(--s-muted-fg)",
 };
 
 export function StatsEyebrow({

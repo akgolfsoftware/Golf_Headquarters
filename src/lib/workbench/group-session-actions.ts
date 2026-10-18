@@ -11,16 +11,17 @@ import { assertCapability } from "@/lib/auth/effective-capabilities";
 import { Capability } from "@/lib/auth/cbac";
 import { canEditGroup } from "./group-scope";
 import { AkFormelSchema, AkFormelLeseSchema, IsoDateSchema, PyramidAreaSchema, EnvironmentSchema } from "@/lib/domain/workbench/schemas";
-import { hentBankReferanser } from "./bank-referanser";
+import { hentBankReferanser, lastBankOvelse } from "./bank-referanser";
 import { bevarHistoriskeDrillfelt, FORMEL_FELT, gyldigFormelEndring } from "./drill-formel-bevaring";
 import { mapSession, tilDatoKolonne } from "./wb-map";
 import { datoIOslo } from "./samlingsinvitasjon-kontrakt";
 import { osloInstant } from "@/lib/jarvis/dagen";
 import type { WorkbenchSession } from "@/lib/domain/workbench/types";
 import type { WbResultat } from "./wb-actions";
+import { groupPublicationSnapshot, GroupPublicationExpectedSchema } from "./group-publication-snapshot";
 
 const Id = z.string().min(1).max(200);
-const GroupSelection = z.object({ groupId: Id, sessionIds: z.array(Id).min(1).max(100) });
+const GroupSelection = z.object({ groupId: Id, sessionIds: z.array(Id).min(1).max(100), expected: GroupPublicationExpectedSchema.optional() });
 const GroupContent = z.object({
   groupId: Id, requestId: z.uuid().optional(), sessionId: Id.optional(),
   expectedUpdatedAt: z.iso.datetime().optional(),
@@ -179,6 +180,17 @@ async function changeGroupPublication(input: unknown, publish: boolean): Promise
       if (publish && sources.some(source => iSamling(source.date))) throw new Error("gathering-invitation-required");
       const members = await tx.groupMember.findMany({ where: { groupId, endedAt: null, role: "PLAYER",
         user: { role: "PLAYER", deletedAt: null } }, select: { userId: true, joinedAt: true } });
+      if (parsed.data.expected) {
+        const schedules = await tx.groupSchedule.findMany({ where: { groupId },
+          select: { id: true, startAt: true, endAt: true, recurring: true, kind: true, updatedAt: true } });
+        if (!isDeepStrictEqual(parsed.data.expected, groupPublicationSnapshot(sources, members, schedules))) throw new Error("stale-publication");
+        for (const source of sources) {
+          const start = osloInstant(source.date.getUTCFullYear(), source.date.getUTCMonth() + 1, source.date.getUTCDate(), Math.floor(source.startMinute / 60), source.startMinute % 60);
+          for (const member of members.filter(m => start > m.joinedAt)) for (const drill of source.drills) {
+            if (drill.exerciseId && !(await lastBankOvelse(drill.exerciseId, viewer, member.userId, tx))) throw new Error("bank-scope");
+          }
+        }
+      }
       const now = new Date();
       const result = [];
       for (const source of sources) {
@@ -231,6 +243,7 @@ async function changeGroupPublication(input: unknown, publish: boolean): Promise
     revalidate(groupId);
     return { ok: true, data: rows.map(mapSession) };
   } catch (error) {
+    if (error instanceof Error && error.message === "stale-publication") return { ok: false, error: "Øktene, mottakerne eller gruppetidene er endret. Vis og bekreft publiseringen på nytt." };
     if (error instanceof Error && error.message === "gathering-invitation-required") {
       return { ok: false, error: "Bruk samlingens invitasjon for økter i samlingsperioden." };
     }

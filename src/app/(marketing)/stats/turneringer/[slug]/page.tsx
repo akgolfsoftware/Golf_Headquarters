@@ -1,3 +1,5 @@
+import { publicEntrySourceWhere } from "@/lib/datagolf/public-sources";
+import { publicTournamentSourceWhere } from "@/lib/datagolf/public-sources";
 import { AK } from "@/lib/v2/ak-palett";
 
 /**
@@ -34,7 +36,7 @@ type Props = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const t = await prisma.tournament.findUnique({ where: { slug } });
+  const t = await prisma.tournament.findFirst({ where: { slug, ...publicTournamentSourceWhere() } });
   if (!t) return { title: "Turnering ikke funnet | AK Golf Stats" };
 
   const tourLabel = formaterTour(t.tour);
@@ -60,8 +62,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function StatsTurneringDetalj({ params }: Props) {
   const { slug } = await params;
 
-  const t = await prisma.tournament.findUnique({
-    where: { slug },
+  const t = await prisma.tournament.findFirst({
+    where: { slug, ...publicTournamentSourceWhere() },
     include: {
       course: {
         select: {
@@ -72,7 +74,7 @@ export default async function StatsTurneringDetalj({ params }: Props) {
           par: true,
         },
       },
-      publicEntries: {
+      publicEntries: { where: publicEntrySourceWhere(),
         include: {
           player: {
             select: {
@@ -101,7 +103,7 @@ export default async function StatsTurneringDetalj({ params }: Props) {
 
   const relaterte = aarStart
     ? await prisma.tournament.findMany({
-        where: {
+        where: { ...publicTournamentSourceWhere(),
           tour: t.tour ?? undefined,
           id: { not: t.id },
           startDate: { gte: aarStart },
@@ -179,7 +181,7 @@ export default async function StatsTurneringDetalj({ params }: Props) {
             alignItems: "center",
             gap: 6,
             fontSize: 13,
-            color: "hsl(var(--muted-foreground))",
+            color: "var(--s-muted-fg)",
             textDecoration: "none",
             fontWeight: 500,
           }}
@@ -193,7 +195,7 @@ export default async function StatsTurneringDetalj({ params }: Props) {
             fontSize: 10,
             letterSpacing: "0.14em",
             textTransform: "uppercase",
-            color: "hsl(var(--muted-foreground))",
+            color: "var(--s-muted-fg)",
           }}
         >
           AK GOLF STATS · {t.name.toUpperCase()}
@@ -316,7 +318,7 @@ export default async function StatsTurneringDetalj({ params }: Props) {
           {erFerdig && (
             <span
               style={{
-                background: "hsl(var(--border))",
+                background: "var(--s-border)",
                 color: "var(--s-muted-fg)",
                 fontFamily: "var(--font-mono)",
                 fontSize: 11,
@@ -332,7 +334,7 @@ export default async function StatsTurneringDetalj({ params }: Props) {
           {erKommende && (
             <span
               style={{
-                background: "hsl(var(--secondary))",
+                background: "var(--s-secondary)",
                 color: "var(--s-fg)",
                 fontFamily: "var(--font-mono)",
                 fontSize: 11,
@@ -1053,7 +1055,7 @@ export default async function StatsTurneringDetalj({ params }: Props) {
                           background:
                             r.status === "IN_PROGRESS"
                               ? "var(--s-accent)"
-                              : "hsl(var(--border))",
+                              : "var(--s-border)",
                           color:
                             r.status === "IN_PROGRESS"
                               ? "var(--s-accent-fg)"

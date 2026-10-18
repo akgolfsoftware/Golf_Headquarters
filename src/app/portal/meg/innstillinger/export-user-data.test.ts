@@ -59,6 +59,9 @@ Object.assign(prismaMock, { user: {
 } });
 
 mock.module("@/lib/prisma", { namedExports: { prisma: prismaMock } });
+mock.module("@/lib/workbench/month-plan-personvern", { namedExports: { eksporterMaanedsplaner: async (id: string) => {
+  assert.equal(id, bruker.id); return { egnePlaner: [], forfatterspor: [] };
+} } });
 mock.module("@/lib/auth/getCurrentUser", {
   namedExports: { getCurrentUser: async () => innlogget ? bruker : null },
 });

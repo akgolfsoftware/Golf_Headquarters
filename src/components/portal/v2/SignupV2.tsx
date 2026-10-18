@@ -16,6 +16,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { UserRole, Tier } from "@/generated/prisma/client";
+import { PLAYERHQ_PRIS_MND_ORE } from "@/lib/domain/abonnement";
 import "@/styles/precision-athletics.css";
 
 type RoleOption = { value: UserRole; label: string };
@@ -38,7 +39,7 @@ const PAKKER: PackageOption[] = [
   {
     value: "PERFORMANCE_PRO",
     name: "Performance Pro",
-    price: "2 220 kr/mnd",
+    price: "Pris vises før betaling",
     desc: "4 coaching-økter i måneden · PlayerHQ inkludert",
     monthlyCredits: 4,
     featured: true,
@@ -46,15 +47,15 @@ const PAKKER: PackageOption[] = [
   {
     value: "PERFORMANCE",
     name: "Performance",
-    price: "1 200 kr/mnd",
+    price: "Pris vises før betaling",
     desc: "2 coaching-økter i måneden · PlayerHQ inkludert",
     monthlyCredits: 2,
   },
   {
     value: "PLAYERHQ_ONLY",
     name: "PlayerHQ",
-    price: "299 kr/mnd",
-    trialHint: "1. måned gratis",
+    price: `${(PLAYERHQ_PRIS_MND_ORE / 100).toLocaleString("nb-NO")} kr/mnd`,
+    trialHint: "1 uke prøve ved første abonnement · kort kreves",
     desc: "App-tilgang: tracking, AI-coach, treningsplaner",
     monthlyCredits: 0,
   },
@@ -98,7 +99,7 @@ function PakkeVelger({
             className="au-pakke"
             onClick={() => onChange(pakke.value)}
           >
-            {pakke.featured ? <span className="au-merke">Mest populær</span> : null}
+            {pakke.featured ? <span className="au-merke">Fast oppfølging</span> : null}
             <span className="au-pakke-hode">
               <strong>{pakke.name}</strong>
               <em>{pakke.price}</em>
@@ -144,6 +145,7 @@ export function SignupV2({
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
+    if (laster) return;
     setFeil(null);
 
     if (passord.length < 8) {
@@ -177,48 +179,29 @@ export function SignupV2({
           firstName: fornavn,
           lastName: etternavn,
         };
-    const { data, error: err } = await supabase.auth.signUp({
-      email,
-      password: passord,
-      options: { data: metadata },
-    });
-    setLaster(false);
-
-    if (err) {
-      setFeil(oversettAuthFeil(err.message));
-      return;
-    }
-
-    const onbUrl = subscribe
-      ? `/auth/onboarding?subscribe=${encodeURIComponent(subscribe)}`
-      : "/auth/onboarding";
-    if (data.session) {
-      router.push(onbUrl);
-      router.refresh();
-    } else {
-      router.push(
-        subscribe ? `/auth/check-email?subscribe=${encodeURIComponent(subscribe)}` : "/auth/check-email",
-      );
-    }
+    try {
+      const { data, error: err } = await supabase.auth.signUp({ email, password: passord, options: { data: metadata } });
+      if (err) { setFeil(oversettAuthFeil(err.message)); return; }
+      const onbUrl = subscribe ? `/auth/onboarding?subscribe=${encodeURIComponent(subscribe)}` : "/auth/onboarding";
+      if (data.session) { router.push(onbUrl); router.refresh(); }
+      else router.push(subscribe ? `/auth/check-email?subscribe=${encodeURIComponent(subscribe)}` : "/auth/check-email");
+    } catch { setFeil("Vi fikk ikke bekreftet registreringen. Prøv å logge inn, eller prøv igjen når nettet er tilbake."); }
+    finally { setLaster(false); }
   }
 
   async function fortsettMedGoogle() {
+    if (laster) return;
     setFeil(null);
     setLaster(true);
     const next = subscribe
       ? `/auth/onboarding?subscribe=${encodeURIComponent(subscribe)}`
       : "/auth/onboarding";
     const origin = typeof window !== "undefined" ? window.location.origin : "";
-    const { error: err } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${origin}/api/auth/oauth-callback?next=${encodeURIComponent(next)}`,
-      },
-    });
-    if (err) {
-      setLaster(false);
-      setFeil(oversettGoogleFeil(err.message));
-    }
+    try {
+      const { error: err } = await supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: `${origin}/api/auth/oauth-callback?next=${encodeURIComponent(next)}` } });
+      if (err) setFeil(oversettGoogleFeil(err.message));
+    } catch { setFeil("Google-innlogging kunne ikke åpnes. Prøv igjen."); }
+    finally { setLaster(false); }
   }
 
   return (

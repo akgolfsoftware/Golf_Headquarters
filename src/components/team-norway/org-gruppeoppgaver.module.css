@@ -1,0 +1,17 @@
+.flate { display: grid; gap: 1.5rem; min-width: 0; font: var(--type-body); color: var(--text-primary); }
+.filter, .rad header { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; }
+.filter label, .rad label { display: grid; gap: .5rem; font: var(--type-label); }
+.flate :is(input, select, textarea) { min-height: 44px; padding: .5rem .75rem; min-width: 0; max-width: 100%; font: var(--type-body); border: 1px solid var(--border-control); border-radius: var(--radius); background: var(--surface-flat); color: var(--text-primary); }
+.liste { display: grid; gap: 1rem; }
+.rad { padding: 1.25rem; background: var(--surface-flat); border-radius: var(--radius-card); }
+.rad h3 { margin: .75rem 0 .5rem; font: var(--type-title-s); }
+.rad p { margin: .5rem 0; }
+.rad header span, .tom { color: var(--text-secondary); }
+.rad summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font: var(--type-button); }
+.rad form { display: grid; gap: 1rem; padding-block: 1rem; }
+.rad button { min-height: 44px; justify-self: start; padding: .75rem 1rem; border: 0; border-radius: var(--radius); color: var(--text-on-primary); background: var(--primary); font: var(--type-button); cursor: pointer; }
+.tall { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.tallrad { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr)); gap: 1rem; margin: 0; }
+.tallrad dt { font: var(--type-label); color: var(--text-secondary); }
+.tallrad dd { margin: .5rem 0 0; font: var(--type-num-l, 500 1.75rem/1.1 var(--font-mono)); }
+.flate :is(button, select, input, textarea, summary):focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 3px; }

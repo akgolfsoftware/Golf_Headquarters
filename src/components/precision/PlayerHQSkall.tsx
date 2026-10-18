@@ -18,6 +18,8 @@ import type { ReactNode } from "react";
 import { Bell, CalendarDays, ChartNoAxesColumn, Sun, User } from "lucide-react";
 import { Ikon } from "./pa";
 import "@/styles/precision-athletics.css";
+import "@/styles/precision-live.css";
+import "@/styles/precision-player-coach-upgrade.css";
 
 const FANER = [
   { href: "/portal", label: "I dag", icon: Sun, name: "sun" },

@@ -4,24 +4,22 @@ import React, { useState } from "react";
 import {
   ArrowLeft,
   Calendar,
-  CheckCircle2,
   Compass,
   Layers,
-  Play,
   TriangleAlert,
   Wrench,
 } from "lucide-react";
 import {
-  Knapp,
   KnappLenke,
   Sidehode,
   StatusPille,
   Meta,
+  FeilTilstand,
+  TomTilstand,
 } from "@/components/precision/pa";
 import {
   formaterDesimal,
   formaterHeltall,
-  STANDARD_PH17_DATA,
   type TrackManFane,
   type PH17TrackManData,
 } from "@/lib/portal-analyse/ph17-trackman-data";
@@ -45,31 +43,35 @@ const TABS: ReadonlyArray<{
   { id: "stasjon", label: "Stasjon", ikon: Compass, ikonNavn: "compass" },
 ];
 
+const TOMME_DATA: PH17TrackManData = { sessions: [], shots: {}, clubStats: {}, gapping: [], gear: [], station: { club: "", spillerNavn: "", rows: [] } };
+
 export function PH17TrackMan({
   data,
-  initialData = STANDARD_PH17_DATA,
+  initialData = TOMME_DATA,
   initialFane = "okter",
   aktivFane,
 }: PH17TrackManProps) {
   const d = data ?? initialData;
   const [fane, setFane] = useState<TrackManFane>(aktivFane ?? initialFane);
   const [valgtSessionId, setValgtSessionId] = useState<string>(
-    d.sessions[0]?.id ?? "tm1"
+    d.sessions[0]?.id ?? ""
   );
-  const [valgtKolle, setValgtKolle] = useState<string>("7i");
-  const [stasjonStartet, setStasjonStartet] = useState<boolean>(false);
+  const [valgtKolle, setValgtKolle] = useState<string>(d.sessions[0]?.clubs[0] ?? "");
 
   const aktivSession =
     d.sessions.find((s) => s.id === valgtSessionId) ?? d.sessions[0];
-  const klubber = aktivSession?.clubs ?? ["7i"];
+  const klubber = aktivSession?.clubs ?? [];
 
   // Oppdater valgt kølle hvis nåværende ikke er i økta
-  const aktivKolle = klubber.includes(valgtKolle) ? valgtKolle : klubber[0] ?? "7i";
-  const pts = d.shots[aktivKolle] ?? [];
-  const stats = d.clubStats[aktivKolle];
+  const aktivKolle = klubber.includes(valgtKolle) ? valgtKolle : klubber[0] ?? "";
+  const measurements = aktivSession ? d.sessionData?.[aktivSession.id] : null;
+  const pts = (measurements?.shots ?? d.shots)[aktivKolle] ?? [];
+  const stats = (measurements?.clubStats ?? d.clubStats)[aktivKolle];
 
   const scatterRng = aktivKolle === "Driver" ? 24 : ["6i", "7i", "8i"].includes(aktivKolle) ? 12 : 8;
-  const kildeOkt = `TRACKMAN · ${aktivSession?.bay.toUpperCase() ?? "BAY 3"} · ${aktivSession?.date ?? "24.09.2026"}`;
+  const kildeOkt = ["TrackMan", aktivSession?.bay, aktivSession?.date].filter(Boolean).join(" · ");
+
+  if (d.state === "feil") return <div className="pa-side"><Sidehode title="TrackMan" kicker="Stats" /><FeilTilstand icon={TriangleAlert} title="Målingene kunne ikke hentes" text="Ingen målinger er endret. Prøv igjen." code="TRACKMAN · FEIL" retry={<button type="button" className="pa-btn pa-btn--secondary" onClick={() => window.location.reload()}>Prøv igjen</button>} /></div>;
 
   return (
     <div className="pa-side" style={{ maxWidth: 1080, margin: "0 auto", padding: "16px 20px" }}>
@@ -88,7 +90,7 @@ export function PH17TrackMan({
           <Sidehode
             kicker="Stats · TrackMan"
             title="TrackMan"
-            sub="Økter importeres automatisk fra bay-ene på Fredrikstad GK. Tallene står på engelsk slik TrackMan viser dem."
+            sub="Dine importerte økter og målte slag. Parameterne beholder navnene fra TrackMan."
           />
         </div>
         <KnappLenke
@@ -103,7 +105,7 @@ export function PH17TrackMan({
 
       {/* Fanelinje */}
       <div
-        role="tablist"
+        role="group"
         aria-label="TrackMan analyse"
         style={{
           display: "flex",
@@ -119,12 +121,12 @@ export function PH17TrackMan({
           return (
             <button
               key={tab.id}
-              role="tab"
-              aria-selected={aktiv}
+
+              aria-pressed={aktiv}
               type="button"
               onClick={() => setFane(tab.id)}
               style={{
-                all: "unset",
+                border: 0,
                 cursor: "pointer",
                 padding: "10px 16px",
                 display: "inline-flex",
@@ -133,7 +135,10 @@ export function PH17TrackMan({
                 font: aktiv
                   ? "600 13px/1.2 var(--font-sans)"
                   : "500 13px/1.2 var(--font-sans)",
-                color: aktiv ? "var(--text-primary)" : "var(--text-secondary)",
+                color: aktiv ? "var(--text-on-primary)" : "var(--text-secondary)",
+                background: aktiv ? "var(--primary)" : "transparent",
+                borderRadius: "var(--radius)",
+                minHeight: 44,
                 borderBottom: aktiv
                   ? "2px solid var(--border-ink)"
                   : "2px solid transparent",
@@ -147,8 +152,13 @@ export function PH17TrackMan({
         })}
       </div>
 
+      <section className="ph16-grunnlag" aria-label="TrackMan datagrunnlag">
+        <div><Meta>Registrerte økter</Meta><strong className="ph16-grunnlag__verdi">{d.sessions.length}</strong><p>{d.sessions.reduce((sum, session) => sum + session.shots, 0)} målte slag</p></div>
+        <div className="ph16-grunnlag__metadata"><p><strong>Periode:</strong> Siste 10 importerte økter</p><p><strong>Kilde:</strong> TrackMan · {aktivSession ? `valgt økt ${aktivSession.date}` : "ingen økt registrert"}</p></div>
+      </section>
+
       {/* Fane 1: Økter */}
-      {fane === "okter" && (
+      {fane === "okter" && !d.sessions.length ? <TomTilstand icon={Calendar} title="Ingen TrackMan-økter registrert" text="Importerte målinger vises her når de er knyttet til kontoen din. Manglende data fylles ikke med eksempeltall." /> : fane === "okter" && (
         <div
           style={{
             display: "grid",
@@ -185,7 +195,7 @@ export function PH17TrackMan({
                       if (s.clubs[0]) setValgtKolle(s.clubs[0]);
                     }}
                     style={{
-                      all: "unset",
+                      appearance: "none", border: 0,
                       cursor: "pointer",
                       display: "flex",
                       flexDirection: "column",
@@ -195,7 +205,7 @@ export function PH17TrackMan({
                       boxSizing: "border-box",
                       borderTop: i ? "1px solid var(--border-hairline)" : "none",
                       background: aktiv ? "var(--surface-flat)" : "transparent",
-                      boxShadow: aktiv ? "inset 2px 0 0 var(--border-ink)" : "none",
+                      boxShadow: "none",
                       minHeight: 56,
                     }}
                   >
@@ -244,8 +254,9 @@ export function PH17TrackMan({
                     key={c}
                     type="button"
                     onClick={() => setValgtKolle(c)}
+                    aria-pressed={valgt}
                     style={{
-                      all: "unset",
+                      appearance: "none",
                       cursor: "pointer",
                       padding: "6px 12px",
                       borderRadius: "var(--radius-pill)",
@@ -253,6 +264,7 @@ export function PH17TrackMan({
                       background: valgt ? "var(--border-ink)" : "var(--surface-sunken)",
                       color: valgt ? "var(--surface-flat)" : "var(--text-primary)",
                       border: "1px solid var(--border-hairline)",
+                      minHeight: 44,
                     }}
                   >
                     {c}
@@ -457,7 +469,7 @@ export function PH17TrackMan({
               )}
 
               {stats && stats.faceToPath == null && (
-                <Meta>FACE TO PATH MANGLER · BAY 3 MÅLER IKKE KØLLEBLAD</Meta>
+                <Meta>Face to Path mangler i målingene for denne økten.</Meta>
               )}
             </div>
           </div>
@@ -465,7 +477,7 @@ export function PH17TrackMan({
       )}
 
       {/* Fane 2: Gapping */}
-      {fane === "gap" && (
+      {fane === "gap" && !d.gapping.length ? <TomTilstand icon={Layers} title="Ingen gapping-målinger" text="Carry og avstand mellom køller vises når de er målt. En manglende kølle får ikke en beregnet standardlengde." /> : fane === "gap" && (
         <div
           style={{
             display: "grid",
@@ -636,7 +648,7 @@ export function PH17TrackMan({
       )}
 
       {/* Fane 3: Utstyr */}
-      {fane === "utstyr" && (
+      {fane === "utstyr" && !d.gear.length ? <TomTilstand icon={Wrench} title="Ingen fittingvurdering registrert" text="Se eller oppdater utstyrsbagens faktiske opplysninger. Vi beregner ikke rilleslitasje fra eksempeltall." actions={<KnappLenke href="/portal/meg/utstyr" variant="secondary">Åpne utstyrsbag</KnappLenke>} /> : fane === "utstyr" && (
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <p
             style={{
@@ -646,7 +658,7 @@ export function PH17TrackMan({
               maxWidth: 700,
             }}
           >
-            Utstyrshelse bygger på siste fitting og endringer i TrackMan-tall over tid. Slitasje på riller er et estimat fra fall i Spin Rate.
+            Fitting og utstyrsvurderinger vises når de er registrert. TrackMan-tall alene fastslår ikke slitasje på riller.
           </p>
 
           <div
@@ -717,126 +729,12 @@ export function PH17TrackMan({
         </div>
       )}
 
-      {/* Fane 4: Stasjon */}
-      {fane === "stasjon" && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          <div className="pa-card" style={{ padding: 16, display: "flex", flexDirection: "column", gap: 14 }}>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                flexWrap: "wrap",
-                gap: 8,
-              }}
-            >
-              <span className="pa-kicker" style={{ margin: 0 }}>
-                Stasjonsmodus · {d.station.club} mot proff-referanse
-              </span>
-              <span
-                style={{
-                  font: "600 10px/1 var(--font-mono)",
-                  padding: "4px 8px",
-                  borderRadius: "var(--radius-pill)",
-                  background: "var(--surface-sunken)",
-                  color: "var(--text-secondary)",
-                  textTransform: "uppercase",
-                }}
-              >
-                POWERED BY DATA GOLF
-              </span>
-            </div>
-
-            <p style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-secondary)" }}>
-              Slå 10 slag med samme kølle. Tallene sammenlignes med PGA Tour-snitt fra Data Golf og normen for kategori C.
-            </p>
-
-            {/* Tabell */}
-            <div style={{ overflowX: "auto" }}>
-              <table style={{ width: "100%", borderCollapse: "collapse", font: "13px var(--font-sans)" }}>
-                <thead>
-                  <tr style={{ borderBottom: "1px solid var(--border-hairline)", textAlign: "left" }}>
-                    <th style={{ padding: "8px 6px", font: "600 11px var(--font-mono)", color: "var(--text-muted)" }}>
-                      PARAMETER
-                    </th>
-                    <th style={{ padding: "8px 6px", font: "600 11px var(--font-mono)", color: "var(--text-muted)", textAlign: "right" }}>
-                      {d.station.spillerNavn.toUpperCase()}
-                    </th>
-                    <th style={{ padding: "8px 6px", font: "600 11px var(--font-mono)", color: "var(--text-muted)", textAlign: "right" }}>
-                      PGA TOUR
-                    </th>
-                    <th style={{ padding: "8px 6px", font: "600 11px var(--font-mono)", color: "var(--text-muted)", textAlign: "right" }}>
-                      KATEGORI C
-                    </th>
-                    <th style={{ padding: "8px 6px", font: "600 11px var(--font-mono)", color: "var(--text-muted)", textAlign: "right" }}>
-                      AVVIK PGA
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {d.station.rows.map((row, i) => {
-                    const des = row.param === "Smash Factor" ? 2 : 1;
-                    const formatVal = (v: number) =>
-                      row.param === "Spin Rate"
-                        ? formaterHeltall(v)
-                        : formaterDesimal(v, des);
-                    const avvikFortegn = row.avvikPga > 0 ? "+" : "";
-
-                    return (
-                      <tr
-                        key={row.id}
-                        style={{ borderTop: i ? "1px solid var(--border-hairline)" : "none" }}
-                      >
-                        <td style={{ padding: "8px 6px", font: "500 13px var(--font-sans)" }}>
-                          {row.param}
-                        </td>
-                        <td style={{ padding: "8px 6px", textAlign: "right", font: "600 13px var(--font-mono)" }}>
-                          {formatVal(row.spillerVerdi)}{row.enhet ? ` ${row.enhet}` : ""}
-                        </td>
-                        <td style={{ padding: "8px 6px", textAlign: "right", font: "13px var(--font-mono)", color: "var(--text-secondary)" }}>
-                          {formatVal(row.pgaTourVerdi)}{row.enhet ? ` ${row.enhet}` : ""}
-                        </td>
-                        <td style={{ padding: "8px 6px", textAlign: "right", font: "13px var(--font-mono)", color: "var(--text-secondary)" }}>
-                          {formatVal(row.kategoriCVerdi)}{row.enhet ? ` ${row.enhet}` : ""}
-                        </td>
-                        <td
-                          style={{
-                            padding: "8px 6px",
-                            textAlign: "right",
-                            font: "600 13px var(--font-mono)",
-                            color: row.avvikPga >= 0 ? "var(--ok)" : "var(--warn)",
-                          }}
-                        >
-                          {avvikFortegn}{formatVal(row.avvikPga)}{row.enhet ? ` ${row.enhet}` : ""}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 4 }}>
-              <Meta>{d.station.spillerNavn.toUpperCase()} · TRACKMAN · BAY 3 · 24.09.2026</Meta>
-              <Meta>PGA TOUR · DATA GOLF · SESONG 2025</Meta>
-              <Meta>KATEGORI C · AK GOLF-NORM · ESTIMAT</Meta>
-            </div>
-          </div>
-
-          <div>
-            <Knapp
-              variant="primary"
-              icon={stasjonStartet ? CheckCircle2 : Play}
-              iconName={stasjonStartet ? "check" : "play"}
-              onClick={() => setStasjonStartet(true)}
-            >
-              {stasjonStartet
-                ? "Stasjonsmodus aktiv · 10 slag logges i Bay 3"
-                : "Start stasjon · 10 slag"}
-            </Knapp>
-          </div>
-        </div>
-      )}
+      {fane === "stasjon" && <section className="pa-card" style={{ padding: 24, gap: 16 }}>
+        <Sidehode title="Arbeid med egne målinger" sub="Velg en registrert økt og kølle for å se faktisk resultat, spredning og datagrunnlag." />
+        <p>Gjennomfør oppgaven som er avtalt med coachen. Målinger vises når økten er registrert i appen. Denne siden starter eller styrer ikke TrackMan-maskinen.</p>
+        <div><button type="button" className="pa-btn pa-btn--primary" onClick={() => setFane("okter")}>Åpne registrerte økter</button></div>
+        <KnappLenke variant="secondary" href="/portal/planlegge/workbench">Planlegg økten i Workbench</KnappLenke>
+      </section>}
     </div>
   );
 }

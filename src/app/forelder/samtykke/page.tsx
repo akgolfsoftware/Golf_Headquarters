@@ -28,13 +28,15 @@ import {
 } from "@/components/portal/v2/DelingSamtykkeKort";
 import { hentWangTestdeling, type WangTestdeling } from "@/lib/portal-tester/wang-resultat-tilgang";
 import { WangTestforesporsel } from "@/components/portal/precision/WangTestforesporsel";
+import { velgBarnFraGodkjente, lesForelderSamtykker } from "@/lib/forelder-kontekst";
+import { ForelderBarnValg, ForelderBarnAvvist } from "@/components/forelder/ForelderBarnValg";
 
 export const dynamic = "force-dynamic";
 
-export default async function V2ForelderSamtykkePreviewPage() {
+export default async function V2ForelderSamtykkePreviewPage({ searchParams }: { searchParams?: Promise<{ barn?: string }> } = {}) {
   const user = await requirePortalUser({ allow: ["PARENT"] });
 
-  const relasjoner = await prisma.parentRelation.findMany({
+  const alleRelasjoner = await prisma.parentRelation.findMany({
     where: { parentId: user.id, approved: true },
     include: {
       child: {
@@ -43,6 +45,12 @@ export default async function V2ForelderSamtykkePreviewPage() {
     },
     orderBy: { createdAt: "asc" },
   });
+
+  const valgt = (await searchParams)?.barn;
+  const utvalg = velgBarnFraGodkjente(alleRelasjoner, valgt);
+  const valgListe = alleRelasjoner.map((r) => ({ id: r.child.id, navn: r.child.name }));
+  if (!utvalg.gyldig) return <ForelderSkall><ForelderBarnAvvist barn={valgListe} /></ForelderSkall>;
+  const relasjoner = utvalg.barn;
 
   const sisteSletting = await prisma.dataExportRequest.findFirst({
     where: { userId: user.id, type: "DELETE" },
@@ -57,8 +65,7 @@ export default async function V2ForelderSamtykkePreviewPage() {
   const alleAktive =
     relasjoner.length > 0 &&
     relasjoner.every((r) => {
-      const prefs =
-        (r.child.preferences as Record<string, boolean> | null) ?? {};
+      const prefs = lesForelderSamtykker(r.child.preferences);
       return requiredKeys.every((k) => prefs[k] === true);
     });
 
@@ -116,7 +123,7 @@ export default async function V2ForelderSamtykkePreviewPage() {
       id: r.child.id,
       name: r.child.name,
       email: r.child.email,
-      prefs: (r.child.preferences as Record<string, boolean> | null) ?? {},
+      prefs: lesForelderSamtykker(r.child.preferences),
       helse: {
         wearable: helsePerBarn.get(r.child.id)?.wearable ?? false,
         manuell: helsePerBarn.get(r.child.id)?.manuell ?? false,
@@ -138,6 +145,7 @@ export default async function V2ForelderSamtykkePreviewPage() {
 
   return (
     <ForelderSkall>
+      <ForelderBarnValg barn={valgListe} valgt={valgt ?? null} alle />
       <ForelderSamtykkeV2 data={data} />
       {/* T8: delingssamtykke per barn — funksjonelt, merkes for fasit-runde. */}
       {relasjoner.map((r) => {

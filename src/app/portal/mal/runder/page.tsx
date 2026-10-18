@@ -1,3 +1,4 @@
+import { withoutDataGolfRoundSg } from '@/lib/datagolf/round-provenance';
 /**
  * PH18RunderPage — PlayerHQ Runder og statistikk (PH-18) i PlayerHQSkall (Precision Athletics).
  *
@@ -21,17 +22,17 @@ export default async function PH18RunderPage() {
   if (user.role === "GUEST") redirect("/admin/kalender");
 
   const [rounds, ulest] = await Promise.all([
-    prisma.round.findMany({
+    (prisma.round.findMany({
       where: { userId: user.id },
       orderBy: { playedAt: "desc" },
-      include: {
+      include: {sgReferenceSet: {select:{source:true,sourceVersion:true}},
         course: { select: { name: true, par: true } },
         holeScores: {
           select: { holeNumber: true, par: true, strokes: true, putts: true, fairway: true, gir: true },
           orderBy: { holeNumber: "asc" },
         },
       },
-    }),
+    })).then(rows => rows.map(withoutDataGolfRoundSg)),
     getUnreadNotifications(user.id, 1).catch(() => ({ count: 0 })),
   ]);
 

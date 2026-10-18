@@ -1,6 +1,7 @@
 // Kunnskapsbase-artikler for gfgkjunior.no — v1: typet datamodul (skjema fra
 // design-prosjektets CLAUDE.md; CMS/DB-collection er et senere steg).
-// Fulltekst hentet ordrett fra gfgkjunior.no/veileder (juli 2026).
+// Grunntekst fra gfgkjunior.no/veileder (juli 2026). Den utgåtte L-fasemodellen
+// er fjernet 12.10.2026 etter Anders' gjeldende AK-formel v2-instruksjon.
 // Body er markdown og rendres av ArtikkelMd.
 
 export type ArtikkelKategori = "filosofi" | "foreldre" | "spillere" | "treningsfaglig";
@@ -580,32 +581,6 @@ Det er ikke _mengden_ trening som avgjør, men _kvaliteten_. Bevisst praksis bet
 - **Evaluer etterpå** — hva lærte du? Hva tar du med videre?
 
 > 30 minutter med bevisst praksis slår 2 timer med tankeløs repetering.
-
-## L-fasene — slik læres nye ferdigheter
-
-Når du skal lære noe nytt, går du gjennom fem faser:
-
-### Fase 1: Kropp
-
-Fokus på fysiske forutsetninger — har du bevegeligheten og styrken som trengs? Grunnlaget må være på plass.
-
-### Fase 2: Arm
-
-Isolerte bevegelser — hvordan armene, hendene og overkroppen jobber. Langsom repetisjon uten ball.
-
-### Fase 3: Kølle
-
-Legg til køllen — fokus på kontakt, vinkel, bane. Fortsatt langsomt, med kontroll.
-
-### Fase 4: Ball
-
-Nå treffer vi baller — men fokuset er på _kvalitet_, ikke _resultat_. Ingen mål om retning ennå, bare ren kontakt og riktig bevegelse.
-
-### Fase 5: Auto
-
-Ferdigheten er automatisert — du kan utføre den uten å tenke på det. Først nå flyttes fokus til mål, retning og situasjon.
-
-**Viktig:** Hopp ikke over faser! Mange prøver å gå rett til ball, men uten grunnlaget bygger du på sand.
 
 ## Tips for effektiv trening
 

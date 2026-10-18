@@ -7,6 +7,16 @@
  */
 
 export type AkseType = "slag" | "fys" | "tek" | "spill" | "turn";
+export interface FysDrillPlan {
+  type?: "styrke" | "kondisjon" | "hold" | "reps";
+  sett?: number;
+  reps?: number;
+  vektKg?: number;
+  minutter?: number;
+  holdSek?: number;
+  pulssone?: string;
+  segmenter?: Array<{ minutter: number; pulssone: string }>;
+}
 
 export interface DrillItem {
   id: string;
@@ -24,6 +34,9 @@ export interface DrillItem {
   kommentar?: string;
   /** Antall videoer lagret for øvelsen i denne økta. */
   videoer?: number;
+  elapsedSec?: number;
+  status?: "done" | "active" | "queued";
+  fys?: FysDrillPlan;
 }
 
 export interface TrackManShot {
@@ -43,8 +56,8 @@ export interface LiveBriefData {
   scheduledTime: string;
   location: string;
   totalMinutes: number;
-  belastning: "lav" | "moderat" | "hoy";
-  press: "lavt" | "middels" | "hoyt" | "konkurranse";
+  belastning: "lav" | "moderat" | "hoy" | null;
+  press: "lavt" | "middels" | "hoyt" | "konkurranse" | null;
   goal: string;
   focus: string;
   axis: AkseType;
@@ -62,7 +75,8 @@ export interface LiveAktivData {
   drills: DrillItem[];
   currentDrillIndex?: number;
   /** "workbench": reps, kommentar og video lagres per øvelse. Uten: bare visning. */
-  lagring?: "workbench";
+  lagring?: "workbench" | "v2" | "plan";
+  eierUserId?: string;
   /** Klokka går bare når økta er aktiv, ikke på pause. */
   pauset?: boolean;
 }
@@ -70,7 +84,7 @@ export interface LiveAktivData {
 export interface SlagtellerData {
   sessionId: string;
   title: string;
-  activeDrill: DrillItem;
+  activeDrill: DrillItem | null;
   drillIndex: number;
   totalDrills: number;
   bagClubs: string[];
@@ -79,23 +93,27 @@ export interface SlagtellerData {
   currentShots: number;
   trackmanShot?: TrackManShot | null;
   isPutterSelected?: boolean;
+  counts?: Array<{ club: string; count: number }>;
+  countsByClub?: Record<string, number>;
+  eierUserId?: string;
 }
 
 export interface OktoppsummeringData {
+  eierUserId?: string;
   sessionId: string;
   title: string;
   playerName: string;
   dateStr: string;
   timeRangeStr: string;
   totalShots: number;
-  actualMinutes: number;
+  actualMinutes: number | null;
   plannedMinutes: number;
   completedDrillsCount: number;
   totalDrillsCount: number;
   dagsform: string;
   axes: Array<{
     axis: AkseType;
-    actualMin: number;
+    actualMin: number | null;
     plannedMin: number;
   }>;
   drillRows: Array<{
@@ -105,6 +123,8 @@ export interface OktoppsummeringData {
     timeText: string;
     hitsText: string;
   }>;
+  note?: string;
+  shareWithCoach?: boolean;
 }
 
 /** Formater sekunder til "mm:ss" for stoppeklokke */

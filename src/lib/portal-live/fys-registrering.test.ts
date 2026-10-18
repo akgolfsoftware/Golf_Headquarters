@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { fysLoggState, fysVisningsrader, golfLoggTall, lesFysRegistrering, type FysRegistrering } from "./fys-registrering";
+import { FysRegistreringSchema, fysLoggState, fysVisningsrader, golfLoggTall, lesFysRegistrering, type FysRegistrering } from "./fys-registrering";
 
 const registreringer: FysRegistrering[] = [
   { type: "styrke", sett: [{ vekt: 2.5, reps: 2 }, { vekt: 0, reps: 3 }], notat: "Siste tekst — med tillegg" },
@@ -27,4 +27,12 @@ test("blandede økter summerer bare golfregistreringene som reps/treff", () => {
   const logs = [{ drillId: "golf", repsTotal: 12, repsHit: 7 }, { drillId: "fys", repsTotal: 25, repsHit: 25 }, { drillId: "ukjent", repsTotal: 99, repsHit: 99 }];
   assert.deepEqual(golfLoggTall(drills, logs), { planReps: 20, totalReps: 12, treff: 7 });
   assert.deepEqual(golfLoggTall(drills.slice(1), logs), { planReps: 0, totalReps: 0, treff: 0 });
+});
+test("registrering krever ekte verdier og pulssone, og godtar en uttrykkelig registrert null", () => {
+  assert.equal(FysRegistreringSchema.safeParse({ type: "styrke", sett: [{ vekt: NaN, reps: 3 }], notat: "" }).success, false);
+  assert.equal(FysRegistreringSchema.safeParse({ type: "kondisjon", minutter: 20, sone: "", notat: "" }).success, false);
+  assert.equal(FysRegistreringSchema.safeParse({ type: "hold", sekunder: -1, notat: "" }).success, false);
+  assert.equal(FysRegistreringSchema.safeParse({ type: "reps", repetisjoner: 1.5, notat: "" }).success, false);
+  assert.equal(FysRegistreringSchema.safeParse({ type: "kondisjon", minutter: 0, sone: "S1", notat: "" }).success, true);
+  for (const reg of registreringer) assert.equal(FysRegistreringSchema.safeParse(reg).success, true);
 });

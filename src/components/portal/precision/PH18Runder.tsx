@@ -473,13 +473,13 @@ export function PH18Runder(p: PH18Props) {
       />
 
       {/* Fanene vises alltid (punkt 5 i review) */}
-      <div className="pa-tabs" role="tablist">
+      <div className="pa-tabs" role="group">
         {FANER.map((f) => (
           <button
             key={f.verdi}
             type="button"
-            role="tab"
-            aria-selected={f.verdi === fane}
+
+            aria-pressed={f.verdi === fane}
             className="pa-tab"
             style={{ minWidth: 44 }}
             onClick={() => setFane(f.verdi)}

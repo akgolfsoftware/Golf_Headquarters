@@ -18,7 +18,7 @@ import type { SporsmalVm } from "./last-sporsmal";
 import type { InnboksFilterId, OppfStatus } from "./filter";
 
 export type InnboksPostHandling =
-  | { t: "plan"; id: string; lavRisiko: boolean }
+  | { t: "plan"; id: string; lavRisiko: boolean; epostUtkast?: boolean }
   | { t: "caddie"; id: string }
   | { t: "caddieGruppe"; antall: number }
   | { t: "foresporsel"; id: string }
@@ -155,15 +155,15 @@ export function byggInnboks(k: InnboksKilder): InnboksPost[] {
         key: `plan:${r.id}`,
         filtre: ["godkjenn"],
         godkjennKilde: "motor",
-        kind: "Forslag fra motoren",
+        kind: r.epostUtkast ? "E-postutkast" : "Forslag fra motoren",
         tittel: r.title,
         tekst: r.detail || "—",
         detaljer,
         grunnlag: sak?.grunnlag ?? [],
         merker: r.lowRisk ? ["Lav risiko"] : [],
-        utkast: null,
-        handling: { t: "plan", id: r.id, lavRisiko: r.lowRisk },
-        lenker: r.playerId ? [{ label: "Spiller 360", href: `/admin/spillere/${r.playerId}` }] : [],
+        utkast: r.epostUtkast ? { av: "coachen", tekst: r.epostUtkast, kanRedigeres: true } : null,
+        handling: { t: "plan", id: r.id, lavRisiko: r.lowRisk, ...(r.epostUtkast ? { epostUtkast: true } : {}) },
+        lenker: r.playerId && !r.epostUtkast ? [{ label: "Spiller 360", href: `/admin/spillere/${r.playerId}` }] : [],
       });
     } else if (kilde === "caddie") {
       const sak = sakPerId.get(`caddieDraft:${r.id}`);

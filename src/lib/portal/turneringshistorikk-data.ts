@@ -1,4 +1,5 @@
 import "server-only";
+import { publicTournamentSourceWhere, publicRoundSourceWhere } from "@/lib/datagolf/public-sources";
 
 import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
@@ -33,7 +34,7 @@ export async function hentTurneringshistorikk(
     where: {
       playerId: bruker.publicPlayerId,
       // Sammenslåtte dubletter skal ikke dukke opp to ganger.
-      tournament: { mergedIntoId: null },
+      tournament: { mergedIntoId: null, ...publicTournamentSourceWhere() },
     },
     orderBy: { tournament: { startDate: "desc" } },
     select: {
@@ -41,7 +42,7 @@ export async function hentTurneringshistorikk(
       position: true,
       scoreToPar: true,
       totalScore: true, rounds: true, klasseNavn: true, updatedAt: true,
-      roundDetails: { select: { roundNumber: true, score: true, toPar: true, source: true }, orderBy: { roundNumber: "asc" } },
+      roundDetails: { where: publicRoundSourceWhere(), select: { roundNumber: true, score: true, toPar: true, source: true }, orderBy: { roundNumber: "asc" } },
       tournament: {
         select: {
           id: true,
@@ -54,7 +55,7 @@ export async function hentTurneringshistorikk(
       },
     },
   }) : Promise.resolve([]), db.tournamentEntry.findMany({
-    where: { userId, withdrawnAt: null, OR: [{ tournamentId: null }, { tournament: { mergedIntoId: null } }] },
+    where: { userId, withdrawnAt: null, OR: [{ tournamentId: null }, { tournament: { mergedIntoId: null, ...publicTournamentSourceWhere() } }] },
     select: { id: true, manualName: true, manualDate: true, entryStatus: true, category: true,
       tournament: { select: { id: true, name: true, sourceOrigin: true, tour: true, startDate: true, officialUrl: true } } },
     orderBy: { createdAt: "desc" },

@@ -16,6 +16,7 @@ import { TnSamtykkeSide, type TnOrganisasjon } from "@/components/portal/v2/TnSa
 import { settDelingsSamtykkeForBarn } from "@/app/forelder/samtykke/actions";
 import { hentWangTestdeling } from "@/lib/portal-tester/wang-resultat-tilgang";
 import { WangTestforesporsel } from "@/components/portal/precision/WangTestforesporsel";
+import { forelderKontekstHref } from "@/lib/forelder-kontekst";
 
 export const dynamic = "force-dynamic";
 
@@ -48,10 +49,10 @@ export default async function ForelderDelingPage({ params }: { params: Promise<{
   }
 
   return (
-        <ForelderSkall>
+        <ForelderSkall barnId={childId}>
       <div className="pa-side">
       <div style={{ maxWidth: 720, margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
-        <InnstillingerHode tittel={`Hvem ser ${barn.name.split(" ")[0]}s data`} undertekst="Samtykke og deling" tilbakeHref="/forelder/samtykke" />
+        <InnstillingerHode tittel={`Hvem ser ${barn.name.split(" ")[0]}s data`} undertekst="Samtykke og deling" tilbakeHref={forelderKontekstHref("/forelder/samtykke", childId)} />
         <Link href={`/portal/meg/deling?barn=${encodeURIComponent(childId)}`} style={{ minHeight: 44, display: "inline-flex", alignItems: "center" }}>Navngitt trenerdeling for {barn.name.split(" ")[0]}</Link>
         <TnSamtykkeSide organisasjoner={organisasjoner} settSamtykke={settSamtykke} krevesForesatt={barn.requiresGuardianConsent} modus="foresatt" />
         {wangTestdeling.map((d) => <WangTestforesporsel key={d.gruppeId} {...d} modus={{ type: "foresatt", childId, barnNavn: barn.name }} />)}

@@ -205,8 +205,8 @@ export default async function PgaStatsHub() {
   const scoringData = kategorier.find((k) => k.config.stat === "avgScore");
 
   // Mock sparkline data for drive distribution (top 5 representative values)
-  const DRIVE_SPARKLINE = [248, 270, 285, 297, 318, 332];
-  const topSgValue = sgRows[0]?.value ?? 2.34;
+  const DRIVE_SPARKLINE = driveData?.topp3.flatMap(r => typeof r.driveDist === "number" && Number.isFinite(r.driveDist) ? [r.driveDist] : []) ?? [];
+  const topSgValue = sgRows[0]?.value ?? 0;
 
   return (
     <StatsLegacyShell>
@@ -244,14 +244,13 @@ export default async function PgaStatsHub() {
           >
             {harData
               ? `${totalSpillere} spillere · sesong ${YEAR}`
-              : `Sesong ${YEAR} · venter på sync`}
+              : `Sesong ${YEAR} · grunnlaget mangler`}
           </div>
           <h1>
             Hva er <em className="italic-accent">snittet</em> egentlig?
           </h1>
           <p className="hero-sub">
-            Alt fra drive distance til putter per runde, hentet rett fra DataGolf,
-            vektet mot Tour-snittet. Lek deg gjennom seks kategorier.
+            Offentlig statistikk krever en tillatt og dokumentert kilde. Det er ingen slik PGA-kilde koblet til nå. Puttingverktøyene viser sine egne kildeførte estimater.
           </p>
           <div style={{ display: "flex", gap: 12, marginTop: 28, alignItems: "center", flexWrap: "wrap" }}>
             <Link href="/stats/pga/drive-distance" className="inline-flex">
@@ -763,7 +762,7 @@ function DuVsTour() {
           <div key={r.label}>
             <div className="du-vs-row-label">
               <span style={{ color: "var(--accent)" }}>{r.label}</span>
-              <span style={{ color: "hsl(var(--background))" }}>{r.du.toFixed(2)}</span>
+              <span style={{ color: "var(--s-bg)" }}>{r.du.toFixed(2)}</span>
             </div>
             <div className="du-vs-track">
               <div className="du-vs-center" />

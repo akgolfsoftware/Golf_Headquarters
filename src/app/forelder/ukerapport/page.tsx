@@ -13,7 +13,8 @@
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { hentBarnForForelder, hentForelderUkerapport } from "@/lib/forelder";
+import { velgGodkjentBarn, hentForelderUkerapport } from "@/lib/forelder";
+import { ForelderBarnValg, ForelderBarnAvvist } from "@/components/forelder/ForelderBarnValg";
 import { prisma } from "@/lib/prisma";
 import { startOfWeek, endOfWeek } from "@/lib/uke-helpers";
 import { ForelderSkall } from "@/components/precision/ForelderSkall";
@@ -64,10 +65,13 @@ const STATUS_TEKST: Record<string, string> = {
   SKIPPED: "hoppet over",
 };
 
-export default async function ForelderUkerapportPage() {
+export default async function ForelderUkerapportPage({ searchParams }: { searchParams?: Promise<{ barn?: string }> } = {}) {
   const user = await requirePortalUser({ allow: ["PARENT"] });
-  const data = await hentForelderUkerapport(user.id);
-  const barn = await hentBarnForForelder(user.id);
+  const valgt = (await searchParams)?.barn;
+  const { alle: barn, fokus } = await velgGodkjentBarn(user.id, valgt);
+  const valgListe = barn.map((b) => ({ id: b.child.id, navn: b.child.name }));
+  if (valgt && !fokus) return <ForelderSkall><ForelderBarnAvvist barn={valgListe} /></ForelderSkall>;
+  const data = await hentForelderUkerapport(user.id, fokus?.child.id);
 
   const now = new Date();
   const ukeStart = startOfWeek(now);
@@ -76,8 +80,8 @@ export default async function ForelderUkerapportPage() {
   const ukeSpenn = `${OSLO_DATO_KORT.format(ukeStart)}.–${OSLO_DATO_FULL.format(sisteDag)}`;
 
   let okter: UkerapportOktRad[] = [];
-  if (barn.length > 0) {
-    const childId = barn[0].child.id;
+  if (fokus) {
+    const childId = fokus.child.id;
     const rader = await prisma.trainingSessionV2.findMany({
       // Samme ukevindu som hentForelderUkerapport (gte/lt — endOfWeek er
       // neste mandag 00:00, eksklusiv).
@@ -95,7 +99,8 @@ export default async function ForelderUkerapportPage() {
   }
 
   return (
-    <ForelderSkall>
+    <ForelderSkall barnId={fokus?.child.id}>
+      <ForelderBarnValg barn={valgListe} valgt={fokus?.child.id ?? null} />
       <ForelderUkerapportV2
         data={data}
         okter={okter}

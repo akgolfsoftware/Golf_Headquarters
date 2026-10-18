@@ -1,3 +1,4 @@
+import { withoutDataGolfRoundSg } from '@/lib/datagolf/round-provenance';
 /**
  * Data-loader for Spiller 360 — arbeidsvisningen (Ø13, MASTERPLAN STEG 1B).
  *
@@ -129,12 +130,12 @@ export async function lastSpillerArbeidsvisning(
       select: { title: true, startTime: true, practiceType: true, location: true },
       orderBy: { startTime: "asc" },
     }),
-    prisma.round.findMany({
+    (prisma.round.findMany({
       where: { userId: playerId, sgTotal: { not: null }, playedAt: { gte: tolvUkerSiden } },
-      select: { sgTotal: true, sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
+      select: {source: true, sgSource: true, sgReferenceSet: {select:{source:true,sourceVersion:true}},  sgTotal: true, sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
       orderBy: { playedAt: "desc" },
       take: 12,
-    }),
+    })).then(rows => rows.map(withoutDataGolfRoundSg)),
     prisma.testResult.findMany({
       where: { userId: playerId },
       select: { id: true, takenAt: true, test: { select: { name: true } } },

@@ -1,3 +1,4 @@
+import { publicPgaSourceWhere } from "@/lib/datagolf/public-sources";
 /**
  * /stats/sg-sammenlign/start — 2-stegs onboarding wizard (auth-protected)
  * Pixel-perfect port av design 08 fra design-handoff-stats-2026-05-25.
@@ -26,7 +27,7 @@ export default async function SgStartPage({ searchParams }: Props) {
   }
 
   const refSpillere = await prisma.pgaPlayerSeason.findMany({
-    where: {
+    where: { ...publicPgaSourceWhere(),
       tour: "pga",
       sgTotal: { not: null },
       rounds: { gte: 20 },
@@ -72,7 +73,7 @@ export default async function SgStartPage({ searchParams }: Props) {
             alignItems: "center",
             gap: 6,
             fontSize: 13,
-            color: "hsl(var(--muted-foreground))",
+            color: "var(--s-muted-fg)",
             textDecoration: "none",
             fontWeight: 500,
           }}
@@ -86,7 +87,7 @@ export default async function SgStartPage({ searchParams }: Props) {
             fontSize: 10,
             letterSpacing: "0.14em",
             textTransform: "uppercase",
-            color: "hsl(var(--muted-foreground))",
+            color: "var(--s-muted-fg)",
           }}
         >
           AK GOLF STATS · SG-SAMMENLIGNING
@@ -110,7 +111,7 @@ export default async function SgStartPage({ searchParams }: Props) {
               borderRadius: 16,
             }}
           >
-            <p style={{ color: "hsl(var(--muted-foreground))", fontSize: 15 }}>
+            <p style={{ color: "var(--s-muted-fg)", fontSize: 15 }}>
               PGA Tour-data er ikke synket ennå. Prøv igjen om litt.
             </p>
           </div>

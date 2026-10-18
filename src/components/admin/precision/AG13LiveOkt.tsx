@@ -9,33 +9,23 @@
  * coachingøkt). Hurtigknappen vises ikke på nattflater»; beslutninger.md
  * §PRECISION ATHLETICS: nattema i Live-økt) — satt av page.tsx.
  *
- * Bevisst avvik fra tegningen:
- *   - Samtykke til opptak finnes ikke som eget felt i datamodellen ennå
- *     (beslutninger.md §SKJERMENE … RUNDE 8, punkt 9). Sida påstår derfor
- *     verken «samtykke gitt» eller «samtykke mangler»: opptakskortet sier
- *     rett ut at samtykket ikke registreres i appen, og «Start opptak»
- *     (lenke til /admin/recording, som før) er sekundærknapp. Ingen rust.
- *   - Tegningens spillerkort (kategori, HCP, siste runde, målsetninger),
- *     teknisk plan, «Fra iPhone», hjemmelekse og «Avslutt økta» krever
- *     lastere som ikke finnes for denne ruta — parkert, se PR.
- *   - Én ting nå-kortet, driller, transkript og analyse er datalikt med
- *     før portingen (lastLiveOktData/live-okt-actions.ts, urørt).
+ * Opptaket åpnes med den faktiske økt-ID-en. Spiller, tilgang og registrert
+ * lydsamtykke kontrolleres på serveren; ingen godkjenning antas i denne flaten.
  */
 import Link from "next/link";
 import { useState, useTransition } from "react";
 import { ArrowLeft, Check, Mic, Star } from "lucide-react";
 import { Ikon, Knapp, KnappLenke, Meta } from "@/components/precision/pa";
-import { Nokkellinje } from "@/components/precision/pa-a3";
 import { MicButton } from "@/components/shared/mic-button";
 import { sendLiveMelding, sendBriefTilSpiller, lagreCoachVurdering } from "@/lib/agencyos/live-okt-actions";
 import type { LiveOktData } from "@/lib/agencyos/live-okt-data";
 
 function Kort({ children, eyebrow }: { children: React.ReactNode; eyebrow?: string }) {
   return (
-    <div className="pa-card" style={{ padding: 16, gap: 10 }}>
-      {eyebrow && <span className="kicker">{eyebrow}</span>}
+    <section className="pa-coach-live__section">
+      {eyebrow && <h2>{eyebrow}</h2>}
       {children}
-    </div>
+    </section>
   );
 }
 
@@ -61,12 +51,11 @@ function LiveMeldingSeksjon({ sessionId }: { sessionId: string }) {
     setFeil(null);
     setSendt(false);
     startTransition(async () => {
-      const res = await sendLiveMelding(sessionId, trimmet);
-      if (!res.ok) setFeil(res.error);
-      else {
-        setTekst("");
-        setSendt(true);
-      }
+      try {
+        const res = await sendLiveMelding(sessionId, trimmet);
+        if (!res.ok) setFeil(res.error);
+        else { setTekst(""); setSendt(true); }
+      } catch { setFeil("Meldingen ble ikke sendt. Teksten er beholdt; prøv igjen."); }
     });
   }
 
@@ -75,6 +64,7 @@ function LiveMeldingSeksjon({ sessionId }: { sessionId: string }) {
       <div style={{ display: "flex", gap: 8 }}>
         <div className="pa-control" style={{ flex: 1, position: "relative", paddingRight: 44 }}>
           <input
+            aria-label="Melding til spiller"
             type="text"
             value={tekst}
             onChange={(e) => {
@@ -123,15 +113,18 @@ function BriefSeksjon({ sessionId, initialMelding }: { sessionId: string; initia
     setFeil(null);
     setSendt(false);
     startTransition(async () => {
-      const res = await sendBriefTilSpiller(sessionId, trimmet);
-      if (!res.ok) setFeil(res.error);
-      else setSendt(true);
+      try {
+        const res = await sendBriefTilSpiller(sessionId, trimmet);
+        if (!res.ok) setFeil(res.error);
+        else setSendt(true);
+      } catch { setFeil("Fokuspunktet ble ikke sendt. Teksten er beholdt; prøv igjen."); }
     });
   }
 
   return (
     <Kort eyebrow="Fokuspunkt før økten">
       <textarea
+        aria-label="Fokuspunkt før økta"
         className="pa-control"
         value={tekst}
         onChange={(e) => {
@@ -173,9 +166,11 @@ function VurderingSeksjon({ sessionId, initialRating }: { sessionId: string; ini
     setFeil(null);
     setLagret(false);
     startTransition(async () => {
-      const res = await lagreCoachVurdering(sessionId, rating, notat.trim());
-      if (!res.ok) setFeil(res.error);
-      else setLagret(true);
+      try {
+        const res = await lagreCoachVurdering(sessionId, rating, notat.trim());
+        if (!res.ok) setFeil(res.error);
+        else setLagret(true);
+      } catch { setFeil("Vurderingen ble ikke lagret. Notatet er beholdt; prøv igjen."); }
     });
   }
 
@@ -191,6 +186,7 @@ function VurderingSeksjon({ sessionId, initialRating }: { sessionId: string; ini
               setLagret(false);
             }}
             aria-label={`${n} av 5`}
+            aria-pressed={n === rating}
             className="pa-iconbtn"
             style={{ color: n <= rating ? "var(--warn)" : "var(--text-faint)" }}
           >
@@ -199,6 +195,7 @@ function VurderingSeksjon({ sessionId, initialRating }: { sessionId: string; ini
         ))}
       </div>
       <textarea
+        aria-label="Coachens vurdering"
         className="pa-control"
         value={notat}
         onChange={(e) => {
@@ -226,114 +223,53 @@ function VurderingSeksjon({ sessionId, initialRating }: { sessionId: string; ini
 }
 
 export function AG13LiveOkt({ data }: { data: LiveOktData }) {
-  return (
-    <div className="pa-side" style={{ maxWidth: 1080 }}>
-      <Link href="/admin/agencyos/live" style={{ display: "inline-flex", alignItems: "center", gap: 6, minHeight: 44, font: "var(--type-body-s)", color: "var(--text-secondary)", textDecoration: "none", alignSelf: "flex-start" }}>
-        <Ikon icon={ArrowLeft} size={16} /> Tavle
-      </Link>
-      <header className="pa-pagehead">
-        <div className="pa-pagehead__row">
-          <div className="pa-pagehead__text">
-            <div className="kicker pa-pagehead__kicker">
-              {`Live coachingøkt · ${new Date(data.startTime).toLocaleDateString("nb-NO", { weekday: "short", day: "numeric", month: "short", timeZone: "Europe/Oslo" })} · ${new Date(data.startTime).toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Oslo" })}${data.sted ? ` · ${data.sted}` : ""}`}
-            </div>
-            <h1 className="pa-pagehead__title">{data.spillerNavn ?? data.tittel}</h1>
-            {data.spillerNavn && <p className="pa-pagehead__sub">{data.tittel}</p>}
-          </div>
-        </div>
-      </header>
-
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,320px),1fr))", gap: 16, alignItems: "start" }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          <Kort eyebrow="Økta">
-            <Nokkellinje k="Spiller" v={data.spillerNavn ?? "ikke satt"} />
-            <Nokkellinje k="Coach" v={data.coachNavn ?? "—"} />
-            <Nokkellinje k="Sted" v={data.sted ?? "ikke satt"} />
-            <Nokkellinje k="Type" v={data.type} />
-            <Nokkellinje k="Status" v={data.status} />
-            {data.malsetning && <p style={{ margin: "4px 0 0", font: "var(--type-body-s)", color: "var(--text-secondary)" }}>{data.malsetning}</p>}
-          </Kort>
-
-          {data.kilde === "v2" && <LiveMeldingSeksjon sessionId={data.id} />}
-          {data.kilde === "v2" && <BriefSeksjon sessionId={data.id} initialMelding={data.coachBrief} />}
-
-          <Kort eyebrow="Løpet">
-            {data.driller.length === 0 ? (
-              <p style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-secondary)" }}>Ingen driller på denne økta ennå.</p>
-            ) : (
-              data.driller.map((d) => (
-                <div key={d.id} style={{ padding: "8px 0", display: "flex", flexDirection: "column", gap: 4, minWidth: 0 }}>
-                  <div className="pa-row" style={{ minHeight: 40, padding: 0, minWidth: 0 }}>
-                    <span style={{ flex: 1, minWidth: 0, display: "inline-flex", alignItems: "center", gap: 8, font: "var(--type-body-s)", color: "var(--text-primary)" }}>
-                      {d.logget && <Ikon icon={Check} size={14} />}
-                      {d.navn}
-                    </span>
-                    <Meta>
-                      {[d.pyramide || null, `${d.varighetMin} min`, d.reps !== undefined ? `${d.reps ?? "—"} reps` : null, d.videoer ? `${d.videoer} video` : null]
-                        .filter(Boolean)
-                        .join(" · ")}
-                    </Meta>
-                  </div>
-                  {d.kommentar && (
-                    <p style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-secondary)", overflowWrap: "anywhere" }}>
-                      Spilleren: {d.kommentar}
-                    </p>
-                  )}
-                </div>
-              ))
-            )}
-          </Kort>
-
-          {data.kilde === "v2" && <VurderingSeksjon sessionId={data.id} initialRating={data.coachRating} />}
-        </div>
-
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          <Kort eyebrow="Opptak">
-            <div style={{ font: "600 15px/1.3 var(--font-sans)", color: "var(--text-primary)" }}>Lyd fra økta</div>
-            {data.opptak ? (
-              <>
-                <p style={{ margin: 0, font: "700 24px/1 var(--font-mono)", color: "var(--text-primary)", fontVariantNumeric: "tabular-nums" }}>{fmtVarighet(data.opptak.durationSec)}</p>
-                <Meta>status: {data.opptak.status.toLowerCase()}</Meta>
-              </>
-            ) : (
-              <>
-                <p style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-secondary)" }}>
-                  Ingen opptak på denne økta ennå. Alt du sier fra du trykker og til du stopper blir til transkript, analyse og hjemmelekse.
-                </p>
-                <div className="pa-alert">
-                  <div style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0 }}>
-                    <span className="pa-alert__title">Samtykke til opptak registreres ikke i appen ennå</span>
-                    <span>Spør spilleren før du starter opptaket.</span>
-                  </div>
-                </div>
-                <div>
-                  <KnappLenke variant="secondary" icon={Mic} href={`/admin/recording?okt=${data.id}`}>
-                    Start opptak
-                  </KnappLenke>
-                </div>
-              </>
-            )}
-          </Kort>
-
-          <Kort eyebrow="Siste analyse">
-            {data.opptak?.coachAnalyse ? (
-              <p style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-primary)" }}>{data.opptak.coachAnalyse}</p>
-            ) : (
-              <p style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-secondary)" }}>
-                {data.opptak ? "Analysen lages av opptaket. Kjøres når opptaket er ferdig transkribert." : "Analysen lages av opptaket. Start opptaket, så kommer analysen hit når den er ferdig."}
-              </p>
-            )}
-          </Kort>
-
-          <Kort eyebrow="Transkript">
-            {data.opptak?.transcript ? (
-              <p style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-primary)", whiteSpace: "pre-wrap", overflowWrap: "anywhere" }}>{data.opptak.transcript}</p>
-            ) : (
-              <p style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-secondary)" }}>Ingen transkript ennå. Kommer når opptaket er ferdig behandlet.</p>
-            )}
-          </Kort>
-        </div>
+  const date = new Date(data.startTime).toLocaleDateString("nb-NO", { weekday: "long", day: "numeric", month: "long", timeZone: "Europe/Oslo" });
+  const time = new Date(data.startTime).toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Oslo" });
+  return <div className="pa-side pa-coach-live" style={{ maxWidth: 1080 }}>
+    <Link className="pa-live__secondary-link" href="/admin/agencyos/live"><Ikon icon={ArrowLeft} size={16} /> Til Live-tavla</Link>
+    <header className="pa-pagehead">
+      <h1 className="pa-pagehead__title">{data.spillerNavn ?? data.tittel}</h1>
+      {data.spillerNavn && <p className="pa-pagehead__sub">{data.tittel}</p>}
+      <p className="pa-live__help">{date} · <span className="pa-coach-live__data">{time}</span>{data.sted ? " · " + data.sted : ""}</p>
+      {data.malsetning && <p className="pa-live__instruction">{data.malsetning}</p>}
+      <KnappLenke icon={Mic} href={`/admin/recording/coaching?okt=${data.id}`}>Åpne coachingopptak</KnappLenke>
+    </header>
+    <div className="pa-coach-live__columns">
+      <div className="pa-coach-live__work">
+        <Kort eyebrow="Øvelser i økta">
+          {data.driller.length === 0 ? <p>Det er ingen øvelser i denne økta ennå.</p> : data.driller.map(d => <article key={d.id} className="pa-coach-live__drill">
+            <h3>{d.logget && <Ikon icon={Check} size={18} />} {d.navn}</h3>
+            <p>{d.pyramide} · Planlagt <span className="pa-coach-live__data">{d.varighetMin} min</span></p>
+            <p>{d.reps !== undefined ? <><span className="pa-coach-live__data">{d.reps ?? "—"}</span> registrerte repetisjoner</> : "Mengde ikke registrert"}
+              {d.videoer ? <> · <span className="pa-coach-live__data">{d.videoer}</span> video</> : null}</p>
+            {d.kommentar && <p className="pa-coach-live__comment">Spilleren: {d.kommentar}</p>}
+          </article>)}
+        </Kort>
+        <details className="pa-live__notes"><summary>Øktopplysninger og opptaksstatus</summary><div className="pa-live__note-body">
+          <dl className="pa-coach-live__metadata">
+            <div><dt>Spiller</dt><dd>{data.spillerNavn ?? "Ikke satt"}</dd></div>
+            <div><dt>Coach</dt><dd>{data.coachNavn ?? "—"}</dd></div>
+            <div><dt>Sted</dt><dd>{data.sted ?? "Ikke satt"}</dd></div>
+            <div><dt>Type</dt><dd>{data.type}</dd></div>
+            <div><dt>Status</dt><dd>{data.status}</dd></div>
+          </dl>
+          {data.opptak ? <p>Registrert opptak: <span className="pa-coach-live__data">{fmtVarighet(data.opptak.durationSec)}</span> · {data.opptak.status.toLowerCase()}</p>
+            : <p>Det er ingen registrerte lydopptak. Samtykke kontrolleres før et nytt opptak kan starte.</p>}
+        </div></details>
       </div>
+      <aside className="pa-coach-live__followup" aria-label="Oppfølging av denne økta">
+        {data.kilde === "v2" && <>
+          <details className="pa-live__notes"><summary>Melding til spilleren</summary><LiveMeldingSeksjon sessionId={data.id} /></details>
+          <details className="pa-live__notes"><summary>Fokuspunkt før økta</summary><BriefSeksjon sessionId={data.id} initialMelding={data.coachBrief} /></details>
+          <details className="pa-live__notes"><summary>Coachens vurdering</summary><VurderingSeksjon sessionId={data.id} initialRating={data.coachRating} /></details>
+        </>}
+        <details className="pa-live__notes"><summary>Analyse fra opptaket</summary><div className="pa-live__note-body">
+          <p>{data.opptak?.coachAnalyse ?? "Ingen ferdig analyse er registrert. Analyse vises når opptaket er behandlet."}</p>
+        </div></details>
+        <details className="pa-live__notes"><summary>Transkript</summary><div className="pa-live__note-body">
+          <p style={{ whiteSpace: "pre-wrap", overflowWrap: "anywhere" }}>{data.opptak?.transcript ?? "Ingen transkript er registrert."}</p>
+        </div></details>
+      </aside>
     </div>
-  );
+  </div>;
 }

@@ -16,10 +16,9 @@
  * Sticky filterlag (Alle/barn-piller, translucent per fasit), dag-grupperte
  * agenda-kort (tid | hairline | tittel+meta), «Venter»-caps i warn på
  * PENDING, «Tidligere» som samlet kort med opacity 0.5-rader. Radene har
- * ingen detalj-side ennå — chevronen er visuell (avvik notert i PR-en).
+ * Beskyttet detalj-side bruker samme godkjente barnerelasjon.
  */
 
-import { useMemo, useState } from "react";
 import Link from "next/link";
 import {
   FoSkjerm,
@@ -53,25 +52,26 @@ export type ForelderBookingerData = {
   tidligere: ForelderBookingRad[];
   /** Forelderens navn (caps-linjen «Forelder · …»). */
   parentName?: string;
+  fokusBarnId?: string | null;
 };
 
-/* ── Oslo-formatering (fasitens nb-NO-format) ──────────────────────── */
+/* Bookinger lagrer Oslo-veggklokke i UTC-feltene. Ikke konverter den én gang til. */
 
 const OSLO_TID = new Intl.DateTimeFormat("nb-NO", {
-  timeZone: "Europe/Oslo",
+  timeZone: "UTC",
   hour: "2-digit",
   minute: "2-digit",
 });
 const OSLO_UKEDAG = new Intl.DateTimeFormat("nb-NO", {
-  timeZone: "Europe/Oslo",
+  timeZone: "UTC",
   weekday: "long",
 });
 const OSLO_UKEDAG_KORT = new Intl.DateTimeFormat("nb-NO", {
-  timeZone: "Europe/Oslo",
+  timeZone: "UTC",
   weekday: "short",
 });
 const OSLO_DATO = new Intl.DateTimeFormat("nb-NO", {
-  timeZone: "Europe/Oslo",
+  timeZone: "UTC",
   day: "2-digit",
   month: "2-digit",
 });
@@ -111,7 +111,7 @@ function varighet(min: number): string {
 
 function BookingKort({ b }: { b: ForelderBookingRad }) {
   return (
-    <div className="fo-kort fo-agenda">
+    <Link href={`/forelder/bookinger/${encodeURIComponent(b.id)}`} className="fo-kort fo-agenda" style={{ textDecoration: "none", color: "inherit" }}>
       <span className="fo-tid">{tid(b.startAt)}</span>
       <div>
         <p className="fo-navn">{b.serviceName} · {b.childName}</p>
@@ -119,7 +119,7 @@ function BookingKort({ b }: { b: ForelderBookingRad }) {
       </div>
       {b.status === "PENDING" && <span className="fo-kicker">Venter</span>}
       <FoChevron />
-    </div>
+    </Link>
   );
 }
 
@@ -128,22 +128,13 @@ function BookingKort({ b }: { b: ForelderBookingRad }) {
 export function ForelderBookingerV2({ data }: { data: ForelderBookingerData }) {
   const { antallBarn, kommende, tidligere, parentName } = data;
   const fornavn = (parentName ?? "").split(" ")[0] || "deg";
-  const [filter, setFilter] = useState<string>("Alle");
-
-  const barnNavn = useMemo(() => {
-    const s = new Set<string>();
-    for (const b of [...kommende, ...tidligere]) if (b.childName !== "—") s.add(b.childName);
-    return [...s];
-  }, [kommende, tidligere]);
-
   const venter = kommende.filter((b) => b.status === "PENDING").length;
   const naa = new Date();
 
-  const filtrert = (rader: ForelderBookingRad[]) =>
-    filter === "Alle" ? rader : rader.filter((b) => b.childName === filter);
-
-  const kommendeVis = filtrert(kommende);
-  const tidligereVis = filtrert(tidligere);
+  // Barnevalg gjøres med godkjent ID i ForelderBarnValg og server-loaderen.
+  // Felles fornavn er aldri en identitet eller et ekstra lokalt filter.
+  const kommendeVis = kommende;
+  const tidligereVis = tidligere;
 
   /* Dag-grupper i innsendt (stigende) rekkefølge. */
   const grupper: { label: string; rader: ForelderBookingRad[] }[] = [];
@@ -159,26 +150,16 @@ export function ForelderBookingerV2({ data }: { data: ForelderBookingerData }) {
       <FoHode
         caps={`Forelder · ${fornavn}`}
         tittel="Bookinger"
-        under={`${kommende.length} kommende${venter > 0 ? ` · ${venter} venter svar` : ""}`}
+        under={`${kommende.length} kommende${venter > 0 ? ` · ${venter} venter bekreftelse` : ""}`}
       />
 
       {/* Book ny time — CTA lagt til STEG 9.8 (foreldreportalen hadde ingen
           bookingsvei inn, kun lesevisning). FoCtaPrimar-stilen (samme som
           FO-04/06/08/10 allerede bruker), ikke en ny visuell komponent. */}
       {antallBarn > 0 && (
-        <Link href="/forelder/bookinger/ny" className="pa-btn pa-btn--primary pa-btn--full">
+        <Link href={data.fokusBarnId ? `/forelder/bookinger/ny/${encodeURIComponent(data.fokusBarnId)}` : "/forelder/bookinger/ny"} className="pa-btn pa-btn--primary pa-btn--full">
           Book ny time
         </Link>
-      )}
-
-      {barnNavn.length > 1 && (
-        <div className="fo-filter" role="group" aria-label="Filtrer på barn">
-          {["Alle", ...barnNavn].map((navn) => (
-            <button key={navn} type="button" aria-pressed={filter === navn} onClick={() => setFilter(navn)}>
-              {navn}
-            </button>
-          ))}
-        </div>
       )}
 
       {antallBarn === 0 ? (
@@ -211,14 +192,14 @@ export function ForelderBookingerV2({ data }: { data: ForelderBookingerData }) {
               </div>
               <div className="fo-kort fo-tidligere">
                 {tidligereVis.map((b, i) => (
-                  <div key={b.id} className="fo-rad" data-last={i === tidligereVis.length - 1 ? "true" : undefined}>
+                  <Link key={b.id} href={`/forelder/bookinger/${encodeURIComponent(b.id)}`} className="fo-rad" style={{ textDecoration: "none", color: "inherit" }} data-last={i === tidligereVis.length - 1 ? "true" : undefined}>
                     <span className="fo-dato">{dato(b.startAt)}</span>
                     <div>
                       <strong>{b.serviceName} · {b.childName}</strong>
-                      <small>{b.status === "CANCELLED" ? "Avlyst av coach" : "Gjennomført"}</small>
+                      <small>{b.status === "CANCELLED" ? "Avlyst" : b.status === "COMPLETED" ? "Gjennomført" : "Passert tidspunkt"}</small>
                     </div>
                     <FoChevron />
-                  </div>
+                  </Link>
                 ))}
               </div>
             </>
@@ -227,7 +208,7 @@ export function ForelderBookingerV2({ data }: { data: ForelderBookingerData }) {
       )}
 
       <FoFotnote size={13} style={{ marginTop: 16, lineHeight: 1.5 }}>
-        Venter betyr at coachen ikke har svart ennå. Du trenger ikke gjøre noe.
+        Venter betyr at timen ennå ikke er bekreftet. Kontakt coachen hvis du trenger hjelp med booking eller betaling.
       </FoFotnote>
     </FoSkjerm>
   );

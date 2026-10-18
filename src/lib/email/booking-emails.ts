@@ -237,6 +237,7 @@ export async function sendBookingRescheduled(bookingId: string, oldStartAt: Date
     priceOre: booking.priceOre,
     erKlipp: !!booking.subscriptionId,
     stripePaymentIntentId: booking.stripePaymentIntentId,
+    stripeCheckoutSessionId: booking.stripeCheckoutSessionId,
     harKonto: !!booking.userId,
   });
 

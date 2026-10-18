@@ -129,7 +129,7 @@ const IKKE_HANDHEVET: readonly string[] = [
   // Coach/admin-rettigheter G6 definerte, men som ennå ikke har en gate.
   // Disse er de reelle hullene i lista — flatene de gjelder styres i dag av
   // rolle-guards, så en REVOKE på en enkelt trener har ingen effekt.
-  "EDIT_PLAYER_PLAN",
+  // EDIT_PLAYER_PLAN håndheves nå i månedsplan og malutrulling.
   "MANAGE_BOOKINGS",
   "MANAGE_USERS",
   "VIEW_ALL_PLAYERS",

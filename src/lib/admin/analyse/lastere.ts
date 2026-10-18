@@ -1,3 +1,4 @@
+import { independentRoundSgWhere, withoutDataGolfRoundSg } from '@/lib/datagolf/round-provenance';
 /**
  * Analyse (Innsikt) — datalastere (MASTERPLAN 15.8).
  *
@@ -58,7 +59,7 @@ export async function lastInnsiktHub(viewer: { id: string; role: string }): Prom
     prisma.round.aggregate({
       _avg: { sgTotal: true, sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
       _count: { sgTotal: true },
-      where: { userId: { in: spillerIds }, playedAt: { gte: d8u, lte: naa }, sgTotal: { not: null } },
+      where: { AND: [{ userId: { in: spillerIds }, playedAt: { gte: d8u, lte: naa }, sgTotal: { not: null } }, independentRoundSgWhere()] },
     }),
     prisma.trainingPlanSession.count({
       where: {
@@ -149,21 +150,21 @@ export async function lastInnsiktStall(viewer: { id: string; role: string }): Pr
     prisma.round.aggregate({
       _avg: { sgTotal: true },
       _count: { sgTotal: true },
-      where: { userId: { in: spillerIds }, playedAt: { gte: ukeStart, lt: ukeSlutt }, sgTotal: { not: null } },
+      where: { AND: [{ userId: { in: spillerIds }, playedAt: { gte: ukeStart, lt: ukeSlutt }, sgTotal: { not: null } }, independentRoundSgWhere()] },
     }),
     prisma.round.aggregate({
       _avg: { sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
       _count: { sgTotal: true },
-      where: { userId: { in: spillerIds }, playedAt: { gte: kategoriStart, lte: naa }, sgTotal: { not: null } },
+      where: { AND: [{ userId: { in: spillerIds }, playedAt: { gte: kategoriStart, lte: naa }, sgTotal: { not: null } }, independentRoundSgWhere()] },
     }),
-    prisma.round.findMany({
+    (prisma.round.findMany({
       where: { userId: { in: spillerIds }, playedAt: { gte: kategoriStart, lte: naa }, sgTotal: { not: null } },
-      select: { userId: true, sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
-    }),
-    prisma.round.findMany({
+      select: {source: true, sgSource: true, sgReferenceSet: {select:{source:true,sourceVersion:true}},  userId: true, sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
+    })).then(rows => rows.map(withoutDataGolfRoundSg)),
+    (prisma.round.findMany({
       where: { userId: { in: spillerIds }, playedAt: { gte: trendStart, lte: naa }, sgTotal: { not: null } },
-      select: { playedAt: true, sgTotal: true },
-    }),
+      select: {source: true, sgSource: true, sgReferenceSet: {select:{source:true,sourceVersion:true}},  playedAt: true, sgTotal: true },
+    })).then(rows => rows.map(withoutDataGolfRoundSg)),
   ]);
 
   const kategorier = [

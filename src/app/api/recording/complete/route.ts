@@ -11,33 +11,25 @@ import { supabaseAdmin } from "@/lib/supabase/admin";
 import { audit } from "@/lib/audit";
 import { logError } from "@/lib/error-tracking";
 import { rateLimit } from "@/lib/rate-limit";
+import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
+import { hentLydSamtykkeStatus } from "@/lib/recording/lyd-samtykke";
+import { checkedRecordingChunks, recordingFormat } from "@/lib/recording/chunk-contract";
 
 const BUCKET = "coaching-recordings";
 const RETENTION_DAYS = 90;
 
 const Body = z.object({
   recordingId: z.string().min(1),
-  durationSec: z.number().int().nonnegative(),
+  durationSec: z.number().int().min(0).max(43200).optional(),
+  expectedChunks: z.number().int().min(1).max(1441),
 });
-
-type ChunkEntry = { idx: number; path: string; size: number };
-
-function isChunkArray(value: unknown): value is ChunkEntry[] {
-  if (!Array.isArray(value)) return false;
-  return value.every(
-    (v) =>
-      v !== null &&
-      typeof v === "object" &&
-      typeof (v as { idx?: unknown }).idx === "number" &&
-      typeof (v as { path?: unknown }).path === "string",
-  );
-}
 
 export async function POST(req: Request) {
   const user = await getCurrentUser();
   if (!user) {
     return NextResponse.json({ error: "Ikke innlogget" }, { status: 401 });
   }
+  if (user.role !== "COACH" && user.role !== "ADMIN") return NextResponse.json({ error: "Mangler tilgang" }, { status: 403 });
   const rl = await rateLimit({ key: `recording-complete:${user.id}`, max: 30, windowMs: 60_000 });
   if (!rl.ok) {
     return NextResponse.json(
@@ -62,6 +54,8 @@ export async function POST(req: Request) {
       chunks: true,
       bookingId: true,
       playerId: true,
+      updatedAt: true,
+      audioUrl: true,
     },
   });
   if (!recording) {
@@ -70,12 +64,18 @@ export async function POST(req: Request) {
   if (recording.uploadedById !== user.id && user.role !== "ADMIN") {
     return NextResponse.json({ error: "Mangler tilgang" }, { status: 403 });
   }
+  if (!recording.playerId || !(await harCoachTilgangTilSpiller(user, recording.playerId))
+    || !(await hentLydSamtykkeStatus(recording.playerId)).tillatt)
+    return NextResponse.json({ error: "Mangler gjeldende tilgang eller lydsamtykke" }, { status: 403 });
+  if (["PROCESSING", "DONE"].includes(recording.status) && recording.audioUrl)
+    return NextResponse.json({ ok: true, recordingId: recording.id });
+  if (recording.status !== "RECORDING") return NextResponse.json({ error: "Opptaket kan ikke fullføres i denne tilstanden" }, { status: 409 });
 
-  const chunks = isChunkArray(recording.chunks) ? recording.chunks : [];
-  if (chunks.length === 0) {
+  const chunks = checkedRecordingChunks(recording.chunks, recording.uploadedById, recording.id, parsed.data.expectedChunks);
+  if (!chunks) {
     return NextResponse.json(
-      { error: "Ingen chunks å merge" },
-      { status: 400 },
+      { error: "ufullstendig-lyd", message: "Alle registrerte lydbiter er ikke bekreftet. Last opp ventende lyd og prøv igjen." },
+      { status: 409 },
     );
   }
 
@@ -96,18 +96,19 @@ export async function POST(req: Request) {
   }
 
   const merged = Buffer.concat(buffers);
-  const finalPath = `${recording.uploadedById}/${recording.id}/final.webm`;
+  const format = recordingFormat(sorted[0].mimeType ?? "audio/webm")!;
+  const finalPath = `${recording.uploadedById}/${recording.id}/final-${recording.updatedAt.getTime()}.${format.extension}`;
 
   const { error: uploadErr } = await admin.storage
     .from(BUCKET)
     .upload(finalPath, merged, {
-      contentType: "audio/webm",
+      contentType: format.mime,
       upsert: true,
     });
   if (uploadErr) {
     await logError({ context: "recording.complete.final-upload", error: uploadErr, meta: { recordingId: recording.id } });
     return NextResponse.json(
-      { error: `Storage-feil: ${uploadErr.message}` },
+      { error: "Lydfilen kunne ikke lagres. Prøv igjen." },
       { status: 500 },
     );
   }
@@ -115,9 +116,11 @@ export async function POST(req: Request) {
   const completedAt = new Date();
   const retentionUntil = new Date(completedAt);
   retentionUntil.setDate(retentionUntil.getDate() + RETENTION_DAYS);
+  if (!(await hentLydSamtykkeStatus(recording.playerId)).tillatt)
+    return NextResponse.json({ error: "lyd-samtykke-mangler" }, { status: 403 });
 
-  await prisma.sessionRecording.update({
-    where: { id: recording.id },
+  const completed = await prisma.sessionRecording.updateMany({
+    where: { id: recording.id, status: "RECORDING", updatedAt: recording.updatedAt },
     data: {
       audioUrl: finalPath,
       durationSec,
@@ -126,6 +129,7 @@ export async function POST(req: Request) {
       retentionUntil,
     },
   });
+  if (completed.count !== 1) return NextResponse.json({ error: "opptak-endret", message: "Opptaket ble endret under lagring. Prøv fullføring igjen." }, { status: 409 });
 
   await audit({
     actorId: user.id,

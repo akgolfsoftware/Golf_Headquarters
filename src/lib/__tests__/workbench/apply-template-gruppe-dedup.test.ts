@@ -1,265 +1,55 @@
-/**
- * O02-rest · gruppeplan uten dublett og uten bortfall av spillerens egne økter.
- *
- * `gruppeplan-dedup.test.ts` dekker den rene regelen. Denne filen dekker
- * HANDLINGEN `coachApplyTemplateToGroup` → `applyTemplateCore`: at regelen
- * faktisk brukes på spillerens lagrede plan-økter, og — like viktig — at en
- * kollisjon aldri sletter eller overskriver økta som allerede lå der.
- *
- * Mock-mønster som resten av suiten: `t.mock.module` før dynamisk import,
- * modulen lastes ÉN gang, subtestene resetter det mutable «butikk»-lukket.
- * Kjør med: npm test
- */
-
-import { test } from "node:test";
 import assert from "node:assert/strict";
-
-type PlanRad = { id: string };
-type SessionRad = {
-  id: string;
-  planId: string;
-  title: string;
-  scheduledAt: Date;
-  durationMin: number;
-  pyramidArea: string;
-  sourceGroupId: string | null;
-};
-type Butikk = { plans: Map<string, PlanRad>; sessions: SessionRad[]; usageCount: number };
-
-const GRUPPE_ID = "gruppe-1";
-const ANNEN_GRUPPE_ID = "gruppe-2";
-const SPILLER_ID = "spiller-1";
-
-function tomButikk(): Butikk {
-  return { plans: new Map(), sessions: [], usageCount: 0 };
-}
-
-/** Mal med to økter i uke 1 (mandag + tirsdag). */
-const MAL_SESSIONS = [
-  {
-    title: "Chip-økt",
-    varighetMin: 60,
-    pyramidArea: "TEK" as const,
-    skillArea: null,
-    environment: "RANGE" as const,
-    ukeNr: 1,
-    dagNr: 1,
-  },
-  {
-    title: "Putt-økt",
-    varighetMin: 45,
-    pyramidArea: "TEK" as const,
-    skillArea: null,
-    environment: "PUTTING_GREEN" as const,
-    ukeNr: 1,
-    dagNr: 2,
-  },
-];
-
-test("gruppeutrulling — dedup uten bortfall av spillerens egne økter (O02)", async (t) => {
-  let butikk: Butikk = tomButikk();
-  let sessionTeller = 0;
-
-  t.mock.module("next/cache", { namedExports: { revalidatePath: () => {} } });
-
-  t.mock.module("@/lib/auth/requirePortalUser", {
-    namedExports: {
-      requirePortalUser: async () => ({ id: "coach-1", name: "Test Coach", role: "COACH" }),
-    },
-  });
-
-  t.mock.module("@/lib/auth/effective-capabilities", {
-    namedExports: { assertCapability: async () => {} },
-  });
-
-  t.mock.module("@/lib/auth/coached", {
-    namedExports: { harCoachTilgangTilSpiller: async () => true },
-  });
-
-  t.mock.module("@/lib/error-tracking", { namedExports: { logError: async () => {} } });
-
-  t.mock.module("@/lib/plan-engine/load-signals", {
-    namedExports: { hentPlayerSignals: async () => ({}) },
-  });
-
-  t.mock.module("@/lib/plan-engine/adapt-template", {
-    namedExports: {
-      adaptTemplateWeek: (sessions: unknown) => ({ okter: sessions, justeringer: [] }),
-    },
-  });
-
-  t.mock.module("@/lib/workbench/v2-sync", {
-    namedExports: { upsertV2ForPlanSession: async () => {} },
-  });
-
-  t.mock.module("@/lib/prisma", {
-    namedExports: {
-      prisma: {
-        group: {
-          findFirst: async () => ({ id: GRUPPE_ID }),
-          findUnique: async () => ({
-            id: GRUPPE_ID,
-            name: "P0 Gruppe",
-            members: [{ user: { id: SPILLER_ID, name: "Test Spiller" } }],
-          }),
-        },
-        planTemplate: {
-          // Samme mock dekker begge oppslagene i handlingen: gruppe-oppslaget
-          // (varighetUker + distinkte ukeNr) og uke-oppslaget (selve øktene).
-          findUnique: async () => ({
-            id: "mal-1",
-            lPhase: "GRUNN",
-            varighetUker: 1,
-            sessions: MAL_SESSIONS,
-          }),
-        },
-        $transaction: async (cb: (tx: unknown) => Promise<unknown>) => {
-          const draft: Butikk = {
-            plans: new Map(butikk.plans),
-            sessions: [...butikk.sessions],
-            usageCount: butikk.usageCount,
-          };
-          const tx = {
-            trainingPlan: {
-              findFirst: async ({ where }: { where: { userId: string } }) =>
-                draft.plans.get(where.userId) ?? null,
-              create: async ({ data }: { data: { userId: string } }) => {
-                const rad: PlanRad = { id: `plan-${data.userId}` };
-                draft.plans.set(data.userId, rad);
-                return rad;
-              },
-            },
-            trainingPlanSession: {
-              // Speiler spørringen i handlingen: spillerens egne økter i vinduet.
-              findMany: async ({
-                where,
-              }: {
-                where: { scheduledAt: { gte: Date; lt: Date } };
-              }) =>
-                draft.sessions
-                  .filter(
-                    (s) =>
-                      s.scheduledAt >= where.scheduledAt.gte &&
-                      s.scheduledAt < where.scheduledAt.lt,
-                  )
-                  .map((s) => ({
-                    scheduledAt: s.scheduledAt,
-                    durationMin: s.durationMin,
-                    sourceGroupId: s.sourceGroupId,
-                  })),
-              create: async ({ data }: { data: Omit<SessionRad, "id"> }) => {
-                sessionTeller++;
-                const rad: SessionRad = { id: `okt-${sessionTeller}`, ...data };
-                draft.sessions.push(rad);
-                return rad;
-              },
-            },
-            planTemplate: {
-              update: async () => {
-                draft.usageCount += 1;
-              },
-            },
-          };
-          const resultat = await cb(tx);
-          butikk = draft;
-          return resultat;
-        },
-      },
-    },
-  });
-
-  const { coachApplyTemplateToGroup } = await import("@/lib/workbench/apply-template-actions");
-
-  await t.test("første utrulling oppretter gruppeøktene, stemplet med gruppa", async () => {
-    butikk = tomButikk();
-
-    const res = await coachApplyTemplateToGroup(GRUPPE_ID, "mal-1", { uker: 1 });
-
-    assert.equal(res.ok, true);
-    assert.equal(res.spillere, 1);
-    assert.equal(res.okterOpprettet, 2);
-    assert.deepEqual(res.hoppet, []);
-    assert.equal(butikk.sessions.length, 2);
-    assert.ok(butikk.sessions.every((s) => s.sourceGroupId === GRUPPE_ID));
-  });
-
-  await t.test("re-kjøring av SAMME gruppe er stille idempotent — ingen dublett", async () => {
-    butikk = tomButikk();
-    await coachApplyTemplateToGroup(GRUPPE_ID, "mal-1", { uker: 1 });
-    const forsteIder = butikk.sessions.map((s) => s.id);
-
-    const res = await coachApplyTemplateToGroup(GRUPPE_ID, "mal-1", { uker: 1 });
-
-    assert.equal(res.ok, true);
-    assert.equal(res.okterOpprettet, 0, "re-kjøring skal ikke opprette nye økter");
-    assert.deepEqual(res.hoppet, [], "samme gruppe rapporteres ikke — stille idempotens");
-    assert.equal(butikk.sessions.length, 2, "ingen dublett i spillerens plan");
-    assert.deepEqual(butikk.sessions.map((s) => s.id), forsteIder, "eksisterende rader er urørt");
-  });
-
-  await t.test(
-    "krysskilde: spillerens egen økt kolliderer → hoppes og rapporteres, men slettes ALDRI",
-    async () => {
-      butikk = tomButikk();
-      // Legg ut gruppeøktene først for å få eksakte tidspunkt, gjør dem så om
-      // til spillerens EGNE økter (sourceGroupId null) og nullstill utrullingen.
-      await coachApplyTemplateToGroup(GRUPPE_ID, "mal-1", { uker: 1 });
-      const egne = butikk.sessions.map((s) => ({ ...s, sourceGroupId: null }));
-      butikk = { plans: butikk.plans, sessions: egne, usageCount: 0 };
-
-      const res = await coachApplyTemplateToGroup(GRUPPE_ID, "mal-1", { uker: 1 });
-
-      assert.equal(res.ok, true);
-      assert.equal(res.okterOpprettet, 0, "kolliderende gruppeøkter skal ikke opprettes");
-      assert.equal(res.hoppet?.length, 2, "krysskilde skal rapporteres per økt");
-      assert.ok(res.hoppet?.every((h) => h.grunn === "KRYSSKILDE"));
-      assert.equal(butikk.sessions.length, 2, "spillerens egne økter skal fortsatt ligge der");
-      assert.ok(
-        butikk.sessions.every((s) => s.sourceGroupId === null),
-        "spillerens egne økter skal ikke stemples om til gruppa",
-      );
-      assert.deepEqual(
-        butikk.sessions.map((s) => s.id),
-        egne.map((s) => s.id),
-        "ingen egen økt er byttet ut",
-      );
-    },
-  );
-
-  await t.test("annen gruppes økt i samme tidsrom hoppes som krysskilde", async () => {
-    butikk = tomButikk();
-    await coachApplyTemplateToGroup(GRUPPE_ID, "mal-1", { uker: 1 });
-    const andres = butikk.sessions.map((s) => ({ ...s, sourceGroupId: ANNEN_GRUPPE_ID }));
-    butikk = { plans: butikk.plans, sessions: andres, usageCount: 0 };
-
-    const res = await coachApplyTemplateToGroup(GRUPPE_ID, "mal-1", { uker: 1 });
-
-    assert.equal(res.okterOpprettet, 0);
-    assert.equal(res.hoppet?.length, 2);
-    assert.ok(res.hoppet?.every((h) => h.grunn === "KRYSSKILDE"));
-    assert.equal(butikk.sessions.length, 2);
-    assert.ok(butikk.sessions.every((s) => s.sourceGroupId === ANNEN_GRUPPE_ID));
-  });
-
-  await t.test(
-    "spillerens egen økt samme dag UTEN tidsoverlapp stopper ikke gruppeøkta",
-    async () => {
-      butikk = tomButikk();
-      await coachApplyTemplateToGroup(GRUPPE_ID, "mal-1", { uker: 1 });
-      // Flytt spillerens egne økter to døgn bak i tid: samme uke, ingen overlapp.
-      const egne = butikk.sessions.map((s) => ({
-        ...s,
-        sourceGroupId: null,
-        scheduledAt: new Date(s.scheduledAt.getTime() - 2 * 24 * 60 * 60_000),
-      }));
-      butikk = { plans: butikk.plans, sessions: egne, usageCount: 0 };
-
-      const res = await coachApplyTemplateToGroup(GRUPPE_ID, "mal-1", { uker: 1 });
-
-      assert.equal(res.okterOpprettet, 2, "ingen falsk dedup uten ekte tidsoverlapp");
-      assert.deepEqual(res.hoppet, []);
-      assert.equal(butikk.sessions.length, 4, "spillerens egne økter er beholdt ved siden av");
-      assert.equal(butikk.sessions.filter((s) => s.sourceGroupId === null).length, 2);
-    },
-  );
+import { beforeEach, test } from "node:test";
+import { templateHarness } from "./template-rollout-harness";
+const h=templateHarness(); beforeEach(()=>h.reset());
+async function preview(extra={}) { const r=await (await h.actions()).forhaandsvisMalUtrulling(h.state.group.id,h.state.template.id,{...h.input,...extra}); assert.ok(r.ok,r.ok?"":r.error); return r.data; }
+async function apply(fingerprint:string,extra={}) { return (await h.actions()).coachApplyTemplateToGroup(h.state.group.id,h.state.template.id,{...h.input,...extra,expectedFingerprint:fingerprint}); }
+test("D23/D49: gruppecoach med eller uten personlig skriverett oppretter bare spillerforslag", async()=>{
+  for (const canWrite of [false,true]) { h.reset(); h.state.canWrite=canWrite; const p=await preview(); assert.equal(p.personalWriteScope,canWrite); const r=await apply(p.fingerprint); assert.ok(r.ok); assert.equal(r.okterOpprettet,4);
+    for(const row of h.state.store.rows.values()) { assert.equal(row.needsPlayerApproval,true); assert.equal(row.approvalStatus,"PENDING"); assert.equal(row.groupId,null); assert.equal(row.origin,"WANG"); assert.equal(row.sourceGroupSessionId,null); }
+  }
+});
+test("D49: gruppens utkast eies av coachen og holder seg innen virkelig gruppetid",async()=>{
+  const options={mode:"GRUPPEUTKAST" as const}; const p=await preview(options); assert.equal(p.newCount,2); assert.equal(p.sessions[0].startMinute,480); assert.equal(p.sessions[0].location,"Syntetisk anlegg");
+  const r=await apply(p.fingerprint,options); assert.ok(r.ok); assert.equal(h.state.store.rows.size,2);
+  for(const row of h.state.store.rows.values()) { assert.equal(row.playerId,"syntetisk-coach"); assert.equal(row.coachId,row.playerId); assert.equal(row.groupId,h.state.group.id); assert.equal(row.origin,"GROUP"); assert.equal(row.status,"DRAFT"); assert.equal(row.needsPlayerApproval,false); assert.match(row.id,/^wb-group-[a-f0-9]{64}$/); }
+});
+test("ingen utrulling uten konkret forhåndsvisning, tilgang eller gyldig mottaker",async()=>{
+  const api=await h.actions(); assert.equal((await api.coachApplyTemplateToGroup(h.state.group.id,h.state.template.id,h.input)).ok,false);
+  h.state.canEdit=false; assert.equal((await api.forhaandsvisMalUtrulling(h.state.group.id,h.state.template.id,h.input)).ok,false); assert.equal(h.state.store.rows.size,0);
+  h.state.canEdit=true; assert.equal((await api.forhaandsvisMalUtrulling(h.state.group.id,h.state.template.id,{...h.input,recipientIds:["annen-spiller"]})).ok,false);
+  h.state.capability=false; await assert.rejects(()=>api.forhaandsvisMalUtrulling(h.state.group.id,h.state.template.id,h.input));
+});
+test("endret mal, banktilgang, bankrevisjon, mottakere eller gruppefrist avviser bekreftelsen",async()=>{
+  for(const change of [()=>{h.state.template.updatedAt=new Date(1);},()=>{h.state.group.members.pop();},()=>{h.state.bankRevision=new Date(1);},()=>{h.state.bankBlocked.add("spiller-b");},()=>{h.state.canEdit=false;}]) {
+    h.reset(); const p=await preview(); change(); assert.equal((await apply(p.fingerprint)).ok,false); assert.equal(h.state.store.rows.size,0);
+  }
+  h.reset(); const p=await preview({mode:"GRUPPEUTKAST" as const}); h.state.group.schedules[0].endAt=new Date("2026-01-05T08:00:00Z"); assert.equal((await apply(p.fingerprint,{mode:"GRUPPEUTKAST" as const})).ok,false);
+});
+test("bankkilden kontrolleres per faktisk mottaker, og utvalget kan avgrenses til en gyldig spiller",async()=>{
+  h.state.bankBlocked.add("spiller-b"); const api=await h.actions();
+  assert.equal((await api.forhaandsvisMalUtrulling(h.state.group.id,h.state.template.id,h.input)).ok,false);
+  const options={recipientIds:["spiller-a"]}; const p=await preview(options); assert.equal(p.recipients.length,1);
+  const r=await apply(p.fingerprint,options); assert.ok(r.ok); assert.equal(h.state.store.rows.size,2); assert.ok([...h.state.store.rows.values()].every(row=>row.playerId==="spiller-a"));
+});
+test("samme utrulling, samtidig bekreftelse og senere re-forsøk gir ingen duplikater eller overskriving",async()=>{
+  const p=await preview(); const results=await Promise.all([apply(p.fingerprint),apply(p.fingerprint)]); assert.ok(results.every(r=>r.ok)); assert.equal(h.state.store.rows.size,4); assert.equal(h.state.store.usage,1);
+  const row=[...h.state.store.rows.values()][0]; row.title="Spillerens egen versjon"; row.status="COMPLETED";
+  const retry=await apply(p.fingerprint); assert.ok(retry.ok); assert.equal(retry.okterOpprettet,0); assert.equal(retry.eksisterende,4); assert.equal(h.state.store.rows.get(row.id)?.title,"Spillerens egen versjon"); assert.equal(h.state.store.rows.get(row.id)?.status,"COMPLETED");
+});
+test("en urelatert eksisterende økt røres aldri av malforslagene",async()=>{
+  h.state.store.rows.set("annen-okt",{id:"annen-okt",playerId:"spiller-a",title:"Eksisterende plan",status:"PUBLISHED"});
+  const p=await preview(); const r=await apply(p.fingerprint); assert.ok(r.ok); assert.equal(h.state.store.rows.get("annen-okt")?.title,"Eksisterende plan"); assert.equal(h.state.store.rows.size,5);
+});
+test("maluker med hull bevarer kalendermellomrommet og finner ingen oppdiktet uke",async()=>{
+  h.state.template.sessions[1].ukeNr=3; const p=await preview({uker:3});
+  assert.equal((Date.parse(p.sessions[1].date)-Date.parse(p.sessions[0].date))/86400000,15);
+  assert.equal(p.sessions.length,2);
+});
+test("manglende, tvetydig eller for kort gruppetid og samling uten invitasjon avvises",async()=>{
+  const api=await h.actions(); const opts={...h.input,mode:"GRUPPEUTKAST" as const};
+  h.state.group.schedules=[]; assert.equal((await api.forhaandsvisMalUtrulling(h.state.group.id,h.state.template.id,opts)).ok,false);
+  h.reset(); h.state.group.schedules.push({...h.state.group.schedules[0],id:"annen-tid"}); assert.equal((await api.forhaandsvisMalUtrulling(h.state.group.id,h.state.template.id,opts)).ok,false);
+  const p=await preview({mode:"GRUPPEUTKAST" as const,groupScheduleIds:["tid-0","tid-1"]}); assert.equal(p.sessions.length,2);
+  h.reset(); h.state.template.sessions[0].varighetMin=150; assert.equal((await api.forhaandsvisMalUtrulling(h.state.group.id,h.state.template.id,opts)).ok,false);
 });

@@ -20,6 +20,7 @@
  */
 import { useMemo, useState, useTransition, type DragEvent, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import {
   Check, CheckCheck, ChevronDown, ChevronUp, Pencil, Reply, Send, Sparkles, Trash2, TriangleAlert, X,
 } from "lucide-react";
@@ -42,6 +43,9 @@ import { delUkesdigestAction } from "@/app/admin/godkjenninger/del-digest-action
 import { settOppfolgingsstatus } from "@/app/admin/queue/actions";
 import { svarPaSporsmal } from "@/app/portal/(legacy)/coach/sporsmal/actions";
 import { arkiverEpost, sendGodkjentSvar } from "@/lib/innboks/actions";
+import { klargjorCoachingEpostUtkast } from "@/lib/email/coaching-oppfolging-actions";
+import { CoachingEpostOppdater } from "./CoachingEpostOppdater";
+import { CoachingEpostMottaker } from "./CoachingEpostMottaker";
 import "@/styles/precision-a7.css";
 
 export type AG04Tilstand = "data" | "laster" | "feil";
@@ -115,6 +119,7 @@ function Sak({ p, open, onOpen, onBorte, onFilter, dra }: {
   const [grunn, setGrunn] = useState<{ valg: "godkjenn" | "avvis" } | null>(null);
   const [grunnTekst, setGrunnTekst] = useState("");
   const [melding, setMelding] = useState<string | null>(null);
+  const [epostKlargjort, setEpostKlargjort] = useState(false);
   const sub = [p.kind, p.konto, p.at].filter(Boolean).join(" · ").toUpperCase();
   const visUtkast = p.utkast && !forkastet;
 
@@ -172,7 +177,8 @@ function Sak({ p, open, onOpen, onBorte, onFilter, dra }: {
       {p.grunnlag.length > 0 && <Meta>{p.grunnlag.join(" · ").toUpperCase()}</Meta>}
 
       {visUtkast && <div className="pa-a7-blokk pa-a7-blokk--utkast">
-        <Meta>{`UTKAST FRA ${p.utkast!.av.toUpperCase()} · SENDES IKKE UTEN TRYKK${p.konto ? " · FRA " + p.konto.toUpperCase() : ""}`}</Meta>
+        <Meta>{h.t === "plan" && h.epostUtkast ? "E-POSTUTKAST · GODKJENNING KLARGJØR, INGENTING SENDES" : `UTKAST FRA ${p.utkast!.av.toUpperCase()} · SENDES IKKE UTEN TRYKK${p.konto ? " · FRA " + p.konto.toUpperCase() : ""}`}</Meta>
+        {h.t === "plan" && h.epostUtkast && <CoachingEpostMottaker actionId={h.id} />}
         {red ? <Tekstomrade rows={4} value={txt} aria-label="Rediger utkast" onChange={(e) => setTxt(e.target.value)} />
           : <p className="pa-a7-p pa-a7-p--dempet">{txt}</p>}
         {h.t === "epost" && <div className="pa-a7-knapper">
@@ -183,6 +189,9 @@ function Sak({ p, open, onOpen, onBorte, onFilter, dra }: {
         {h.t === "caddie" && <div className="pa-a7-knapper">
           <Knapp size="sm" icon={Send} iconName="send" disabled={pending} onClick={() => kjor(() => godkjennCaddieDraft(h.id), onBorte)}>Send</Knapp>
           <Knapp size="sm" variant="ghost" icon={Trash2} iconName="trash-2" disabled={pending} onClick={() => kjor(() => avvisProaktivtForslag(h.id), onBorte)}>Forkast</Knapp>
+        </div>}
+        {h.t === "plan" && h.epostUtkast && !epostKlargjort && <div className="pa-a7-knapper">
+          <Knapp size="sm" variant="secondary" icon={Pencil} iconName="pencil" disabled={pending} onClick={() => setRed(!red)}>{red ? "Ferdig redigert" : "Rediger e-postutkast"}</Knapp>
         </div>}
       </div>}
 
@@ -212,8 +221,10 @@ function Sak({ p, open, onOpen, onBorte, onFilter, dra }: {
       {(feil || melding) && <InlineVarsel tone={feil ? "warn" : "info"}>{feil ?? melding}</InlineVarsel>}
 
       <div className="pa-a7-knapper">
-        {h.t === "plan" && !grunn && <>
-          <Knapp size="sm" icon={Check} iconName="check" disabled={pending} onClick={() => kjor(() => acceptPlanAction(h.id), onBorte)}>Godkjenn</Knapp>
+        {h.t === "plan" && !grunn && !epostKlargjort && <>
+          <Knapp size="sm" icon={Check} iconName="check" disabled={pending || (h.epostUtkast && !txt.trim())} onClick={() => h.epostUtkast
+            ? kjor(async () => { const result = await klargjorCoachingEpostUtkast({ actionId: h.id, body: txt }); if (result.ok) { setMelding(result.tekst); setEpostKlargjort(true); setRed(false); toast.success(result.tekst); } return result; })
+            : kjor(() => acceptPlanAction(h.id), onBorte)}>{h.epostUtkast ? "Godkjenn og klargjør e-postutkast" : "Godkjenn"}</Knapp>
           <Knapp size="sm" variant="secondary" disabled={pending} onClick={() => setGrunn({ valg: "avvis" })}>Avvis</Knapp>
         </>}
         {h.t === "foresporsel" && <>
@@ -454,7 +465,7 @@ export function AG04Innboks(props: AG04Props) {
           {f === "caddie" ? <CaddieForslag poster={iFane.filter((p) => !p.lost)} onBorte={borteFra} />
             : f === "datakvalitet" ? <Datakvalitet d={datakvalitet} />
               : <>
-                {f === "godkjenn" && <GodkjennTopp g={godkjenn} visRapport={!kilde || kilde === "rapport"} />}
+                {f === "godkjenn" && <><CoachingEpostOppdater /><GodkjennTopp g={godkjenn} visRapport={!kilde || kilde === "rapport"} /></>}
                 {!(f === "godkjenn" && kilde === "rapport") && hovedliste}
                 {f === "godkjenn" && <GodkjennBunn g={godkjenn} lost={lost} />}
                 {f !== "godkjenn" && !visOppf && lost.length > 0 && <section aria-label="Løst" className="pa-card pa-a7-kort">

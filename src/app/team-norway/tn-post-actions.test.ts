@@ -42,6 +42,7 @@ mock.module("@/lib/prisma", {
   namedExports: {
     prisma: {
       group: {
+        findFirst: async ({ where }: { where: { id: string } }) => where.id === "gruppe-tn" ? { id: "gruppe-tn" } : null,
         findUnique: async ({ where }: { where: { id: string } }) =>
           where.id === "gruppe-tn" ? { slug: "team-norway", name: "Team Norway Golf" } : { slug: "annen-gruppe", name: "Annen" },
       },

@@ -22,7 +22,7 @@ import type { Prisma, User } from "@/generated/prisma/client";
  * bookingen er ikke det samme som å ha staff-tilgang til den. Kalles kun bak
  * `requireCoachActionUser()`, som allerede har avvist alt annet enn COACH/ADMIN.
  */
-export function coachBookingScope(user: User): Prisma.BookingWhereInput {
+export function coachBookingScope(user: Pick<User, "id" | "role">): Prisma.BookingWhereInput {
   if (user.role === "ADMIN") return {};
   return {
     OR: [{ coachId: user.id }, { serviceType: { coachUserId: user.id } }],

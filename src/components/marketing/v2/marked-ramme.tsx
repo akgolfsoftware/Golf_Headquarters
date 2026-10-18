@@ -165,6 +165,7 @@ const STANDARD_CTA: MNavCta = { label: "Kom i gang gratis", href: "/auth/signup"
 export function MNav({ mobile, aktiv, cta = STANDARD_CTA }: { mobile: boolean; aktiv: string; cta?: MNavCta }) {
   return (
     <div
+      className="marketing-main-nav"
       style={{
         display: "flex",
         alignItems: "center",
@@ -231,6 +232,7 @@ export function MNav({ mobile, aktiv, cta = STANDARD_CTA }: { mobile: boolean; a
 export function MFot({ mobile }: { mobile: boolean }) {
   return (
     <div
+      className="marketing-main-footer"
       style={{
         borderTop: `1px solid ${TL.hair}`,
         padding: mobile ? "32px 22px" : "40px 64px",
@@ -388,7 +390,7 @@ export function MCta({
     border: ghost ? `1px solid ${TL.hair}` : "none",
     borderRadius: 12,
     padding: small ? "9px 18px" : "14px 28px",
-    minHeight: small ? 40 : 56,
+    minHeight: small ? 44 : 56,
     cursor: "pointer",
     whiteSpace: "nowrap",
     textDecoration: "none",

@@ -45,6 +45,16 @@ bør vurdere om det holder, eller om et aktivt avkrysnings-samtykke må inn i on
 | Foresatt-invitasjon | `ParentInvitation` (email, token, relation, acceptedAt) | Koble foresatt til barn | Avtale/rettslig forpliktelse | Utløper etter 7 dager; AVKLAR: utløpte/ubrukte invitasjoner ryddes ikke i dag |
 | Samtykke-spor | `AuditLog` («samtykke.updated», «data.export.requested» m.fl.) | Dokumentere at samtykke ble gitt/endret | Rettslig forpliktelse | AVKLAR: AuditLog har ingen retention i dag — samtykke-spor bør bevares lenge, øvrige actions kortere |
 
+Forelderens bookingretur (12.10.2026) bruker en nødvendig, kortlivet cookie på
+appdomenet: `ak-booking-retur-<tilfeldig UUID>` inneholder foresatt-ID, barn-ID og
+absolutt utløpstid. Cookien har HttpOnly, SameSite=Lax, Secure i produksjon,
+sti `/forelder/bookinger` og levetid 35 minutter. Stripe-returadressene mottar
+bare den tilfeldige referansen. Serveren kontrollerer innlogget foresatt,
+aktiv godkjent barneliste og utløpstid ved retur. Dette velger bare barnet i
+visningen; det gir ingen betalingskvittering eller selvstendig tilgang.
+Ingen ny databaseoppføring eller varig lagring. Kilde:
+`src/lib/portal-booking/forelder-retur.ts`.
+
 ## 4. Trening, golf-data og AI
 
 | Kategori | Prisma-modell (felter) | Formål | Rettsgrunnlag (forslag) | Retention (forslag) |

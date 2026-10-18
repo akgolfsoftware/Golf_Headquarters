@@ -26,14 +26,12 @@ export type AG20Props = { tilstand: AG20Tilstand; data: AdminOkonomiV2Data };
 function YtdKort({ data }: { data: AdminOkonomiV2Data }) {
   const avvik = ytdAvvik(data.ytd.budsjettKr, data.ytd.resultatKr);
   return <Kort>
-    <KortHode tittel={`Budsjett mot regnskap · hittil i ${data.aar}`} aside={data.tripletexKonfigurert ? "REGNSKAP FRA TRIPLETEX · ALDRI ANSLÅTT" : "TRIPLETEX IKKE KOBLET"} />
+    <KortHode tittel={`Regnskap · hittil i ${data.aar}`} aside={data.tripletexKonfigurert ? "Kilde: Tripletex" : "Tripletex er ikke koblet"} />
     <div className="pa-a5-stat-grid">
-      <div className="pa-a5-stat"><span className="pa-a5-stat__label">Budsjett</span><span className="pa-a5-stat__value">{fmtKrNb(data.ytd.budsjettKr)}</span></div>
+      {data.ytd.budsjettKr !== null && <div className="pa-a5-stat"><span className="pa-a5-stat__label">Budsjett</span><span className="pa-a5-stat__value">{fmtKrNb(data.ytd.budsjettKr)}</span></div>}
       <div className="pa-a5-stat"><span className="pa-a5-stat__label">Regnskap</span><span className="pa-a5-stat__value">{fmtKrNb(data.ytd.resultatKr)}</span></div>
     </div>
-    <span style={{ font: "var(--type-meta)", letterSpacing: ".04em", color: "var(--text-muted)" }}>
-      AVVIK MOT BUDSJETT: {ytdAvvikTekst(avvik).toUpperCase()}
-    </span>
+    {avvik && <p style={{ font: "var(--type-source)", color: "var(--text-secondary)", margin: 0 }}>Avvik mot budsjett: {ytdAvvikTekst(avvik)}</p>}
     {!data.hull.budsjettkilde && <InlineVarsel tone="info" tittel="Mangler">Ingen budsjettkilde er koblet ennå. Fordelingen på AK Golfs tjenester vises ikke før den finnes.</InlineVarsel>}
   </Kort>;
 }
@@ -68,7 +66,7 @@ export function AG20Okonomi({ tilstand, data }: AG20Props) {
     <Sidehode kicker="Mer · Økonomi · bare head coach" title="Økonomi" sub="Kroner leses fra Tripletex og Stripe. Ingenting estimeres." />
     {tilstand === "laster" && <LasterTilstand text="Leser Tripletex-eksporten …" />}
     {tilstand === "feil" && <FeilTilstand icon={FileSpreadsheet} title="Tripletex-eksporten kunne ikke leses" text="Ingen tall er endret. Prøv igjen." code="TRIPLETEX · FEIL" />}
-    {tilstand === "tom" && <TomTilstand icon={FileSpreadsheet} title="Ingen eksport lest ennå" text="Økonomitallene hentes fra Tripletex. Første eksport kommer om kort tid." />}
+    {tilstand === "tom" && <TomTilstand icon={FileSpreadsheet} title="Ingen eksport lest ennå" text="Økonomitallene vises når en Tripletex-eksport er tilgjengelig." />}
     {tilstand === "data" && <div className="pa-a5-stack">
       {!data.tripletexKonfigurert && <InlineVarsel tone="warn" tittel="Tripletex er ikke koblet">Resultattallet mangler til integrasjonen er satt opp i Oppsett.</InlineVarsel>}
       <div className="pa-a5-grid pa-a5-grid--2">

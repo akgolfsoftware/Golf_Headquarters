@@ -1,3 +1,4 @@
+import { publicPgaSourceWhere } from "@/lib/datagolf/public-sources";
 /**
  * /stats/pga/spillere/[dg_id] — PGA Spillerprofil (design 21 — detalj)
  *
@@ -12,7 +13,6 @@ import Link from "next/link";
 import { formaterTall, formaterProsent, formaterFortegn } from "@/lib/format-tall";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { SEED_SPILLERE } from "../page";
 import { StatsEyebrow } from "@/components/stats/eyebrow";
 import { Reveal } from "@/components/stats/reveal";
 import { FlagGlyph } from "@/components/stats/flag-glyph";
@@ -28,7 +28,7 @@ export const revalidate = 3600;
 // ---------------------------------------------------------------------------
 
 export function generateStaticParams() {
-  return SEED_SPILLERE.map((s) => ({ dg_id: s.dgId.toString() }));
+  return [];
 }
 
 // ---------------------------------------------------------------------------
@@ -41,9 +41,7 @@ export async function generateMetadata({
   params: Promise<{ dg_id: string }>;
 }): Promise<Metadata> {
   const { dg_id } = await params;
-  const dgId = parseInt(dg_id, 10);
-  const seed = SEED_SPILLERE.find((s) => s.dgId === dgId);
-  const navn = seed?.navn ?? "PGA-spiller";
+  const navn = "PGA-spiller";
 
   return {
     title: `${navn}: Stats & SG | AK Golf Stats`,
@@ -83,7 +81,7 @@ type SpillerData = {
 
 async function hentSpiller(dgId: number): Promise<SpillerData | null> {
   const db = await prisma.pgaPlayerSeason.findFirst({
-    where: { dgPlayerId: dgId, year: CURRENT_YEAR },
+    where: { ...publicPgaSourceWhere(),  dgPlayerId: dgId, year: CURRENT_YEAR },
   });
 
   if (db) {
@@ -106,29 +104,8 @@ async function hentSpiller(dgId: number): Promise<SpillerData | null> {
     };
   }
 
-  // Fallback til seed
-  const seed = SEED_SPILLERE.find((s) => s.dgId === dgId);
-  if (!seed) return null;
+  return null;
 
-  // Bygg SG fra sgTotal med estimerte fordelinger
-  const sg = seed.sgTotal;
-  return {
-    dgId: seed.dgId,
-    navn: seed.navn,
-    land: seed.land,
-    tour: seed.tour,
-    runder: seed.runder,
-    sgTotal: sg,
-    sgOtt:  +(sg * 0.36).toFixed(2),
-    sgApp:  +(sg * 0.42).toFixed(2),
-    sgArg:  +(sg * 0.12).toFixed(2),
-    sgPutt: +(sg * 0.10).toFixed(2),
-    drive: seed.drive,
-    fairway: seed.fairway,
-    gir: seed.gir,
-    putts: 28.9,
-    scoring: seed.scoring,
-  };
 }
 
 // ---------------------------------------------------------------------------
@@ -176,7 +153,7 @@ export default async function SpillerProfilPage({
   if (isNaN(dgId)) notFound();
 
   const spiller = await hentSpiller(dgId);
-  if (!spiller) notFound();
+  if (!spiller) return <StatsLegacyShell><main style={{ padding: "clamp(20px,4vw,48px)" }}><h1>Ingen tillatt offentlig kilde</h1><p>Det finnes ikke offentlig tilgjengelige målinger for denne profilen. Manglende grunnlag vises ikke som null.</p></main></StatsLegacyShell>;
 
   const initials = spiller.navn
     .split(" ")

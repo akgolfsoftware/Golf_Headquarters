@@ -1,3 +1,4 @@
+import { publicTournamentSourceWhere } from "@/lib/datagolf/public-sources";
 /**
  * /stats/klubber — Klubbdatabase (v2, retning C)
  * Swap av (mlegacy)/stats/klubber/page.tsx → v2-utseende. Data-lag
@@ -46,7 +47,7 @@ export const SEED_KLUBBER = [
 async function hentKlubbStats() {
   const [totalSpillere, totalTurneringer] = await Promise.all([
     prisma.publicPlayer.count({ where: { isActive: true } }),
-    prisma.tournament.count({ where: { mergedIntoId: null } }),
+    prisma.tournament.count({ where: { ...publicTournamentSourceWhere(),  mergedIntoId: null } }),
   ]);
 
   return { totalSpillere, totalTurneringer };

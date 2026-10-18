@@ -120,7 +120,7 @@ export function PH04LiveBrief({
           </h1>
           <Meta style={{ display: "block", marginTop: 6 }}>
             {data.totalMinutes} MIN · {empty ? "—" : `${data.drills.length} ØVELSER`} ·{" "}
-            {data.belastning.toUpperCase()} · {data.press.toUpperCase()}
+            {[data.belastning, data.press].filter(Boolean).join(" · ")}
           </Meta>
         </div>
 

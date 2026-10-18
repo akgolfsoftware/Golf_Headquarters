@@ -46,9 +46,6 @@ export default async function GuardianConsentPage({ params }: Props) {
     return (
       <GuardianConsentV2
         state="expired"
-        playerName={invitation.player.name}
-        playerAge={playerAge}
-        email={invitation.email}
       />
     );
   }

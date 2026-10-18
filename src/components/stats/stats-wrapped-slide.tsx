@@ -84,8 +84,8 @@ export type WrappedSlideData =
 
 // Fargene under er BEVISST hardkodet, ikke tema-tokens: hvert "wrapped"-kort
 // har sin egen faste fargeidentitet (photo-card-estetikk) uavhengig av
-// lys/mørk app-tema. De erstatter tidligere hsl(var(--background))/
-// hsl(var(--foreground)) — som i praksis alltid resolvet til disse samme
+// lys/mørk app-tema. De erstatter tidligere var(--s-bg)/
+// var(--s-fg) — som i praksis alltid resolvet til disse samme
 // verdiene i det (lys-only) legacy-appen, men som ville blitt INVERTERT
 // under v2s mørke adapter-scope (der --background/--foreground er byttet om).
 // Selve hex-verdiene bor i AK.wrapped (src/lib/v2/tokens.ts) så denne fila

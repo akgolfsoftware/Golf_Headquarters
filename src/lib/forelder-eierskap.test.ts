@@ -26,6 +26,7 @@ type Rel = {
 };
 
 let relasjoner: Rel[] = [];
+let varsler: { id: string; userId: string; link: string; type: string; title: string; body: string; createdAt: Date }[] = [];
 
 function barn(id: string, name: string): Rel["child"] {
   return {
@@ -76,7 +77,7 @@ mock.module("@/lib/prisma", {
       },
       trainingPlanSession: { findMany: async () => [] },
       payment: { findMany: async () => [] },
-      notification: { findMany: async () => [] },
+      notification: { findMany: async ({ where }: { where: { userId: string; link?: string } }) => varsler.filter((v) => v.userId === where.userId && (!where.link || v.link === where.link)) },
     },
   },
 });
@@ -86,6 +87,7 @@ async function helpers() {
 }
 
 test.beforeEach(() => {
+  varsler = [];
   const eldre = new Date("2026-01-01T00:00:00Z");
   const nyere = new Date("2026-02-01T00:00:00Z");
   relasjoner = [
@@ -188,4 +190,17 @@ test("hentForelderOversikt lekker ikke annet barns identitet ved feil id", async
   assert.equal(tom.fokusBarn, null);
   assert.equal(tom.kpi.okter30d, 0);
   assert.equal(tom.kommendeBookinger.length, 0);
+});
+
+test("forelderens aktivitet viser bare egne varsler om valgt barn", async () => {
+  const { hentForelderOversikt } = await helpers();
+  const now = new Date();
+  varsler = [
+    { id: "private", userId: "barn-a", link: "/portal/coach", type: "melding", title: "Privat", body: "Privat coachtekst", createdAt: now },
+    { id: "parent-a", userId: "forelder-a", link: "/forelder/barn/barn-a", type: "melding", title: "Til forelder", body: "Tillatt tekst", createdAt: now },
+    { id: "parent-b", userId: "forelder-a", link: "/forelder/barn/barn-b", type: "melding", title: "Annet barn", body: "Barn B-tekst", createdAt: now },
+  ];
+  const data = await hentForelderOversikt("forelder-a", "barn-a");
+  assert.deepEqual(data.aktivitet.map((v) => v.id), ["parent-a"]);
+  assert.doesNotMatch(JSON.stringify(data.aktivitet), /Privat coachtekst|Barn B-tekst/);
 });

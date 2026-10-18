@@ -10,13 +10,13 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { SportsCover } from "@/components/precision/SportsCover";
 import {
   Check,
   Plus,
   RotateCcw,
   Search,
   Sparkles,
-  X,
 } from "lucide-react";
 import {
   AkseMerke,
@@ -36,12 +36,15 @@ import {
 } from "@/lib/portal-drills/ph13-drills-data";
 import { PH13DrillDetalj } from "./PH13DrillDetalj";
 import { usePaToast } from "@/components/precision/pa-toast";
+import { Ark } from "@/components/precision/pa-a4";
+import { PH13LeggTilOkt } from "./PH13LeggTilOkt";
 
 export type PH13DrillBankProps = {
   initialDrills: PH13Drill[];
   initialDrafts?: PH13Drill[];
   state?: "data" | "tom" | "laster" | "feil";
   onRetry?: () => void;
+  sessions?: readonly { id: string; title: string; date: string; time: string }[];
 };
 
 const BREAK_FOT = [3, 5, 10, 15, 20, 25];
@@ -52,8 +55,9 @@ export function PH13DrillBank({
   initialDrafts = [],
   state = initialDrills.length === 0 ? "tom" : "data",
   onRetry,
+  sessions = [],
 }: PH13DrillBankProps) {
-  const [bank, setBank] = useState<PH13Drill[]>(initialDrills);
+  const bank = initialDrills;
   const [drafts, setDrafts] = useState<PH13Drill[]>(initialDrafts);
   const [q, setQ] = useState("");
   const [ax, setAx] = useState<string>("alle");
@@ -62,21 +66,14 @@ export function PH13DrillBank({
   const [visMobilModal, setVisMobilModal] = useState(false);
   const [stimp, setStimp] = useState<"8" | "10" | "12">("10");
   const paToast = usePaToast();
+  const [tilOkt, setTilOkt] = useState<PH13Drill | null>(null);
 
   function visToast(tittel: string, tekst?: string) {
     paToast.vis(tittel, tekst);
   }
 
   function handleAcceptDraft(c: PH13Drill) {
-    setDrafts((prev) => prev.filter((x) => x.id !== c.id));
-    const accepted: PH13Drill = {
-      ...c,
-      draft: false,
-      src: "mine",
-      bruktTekst: "ny for deg",
-    };
-    setBank((prev) => [accepted, ...prev]);
-    visToast("Lagt i øvelsesbanken", "MERKET SOM DIN · ANDERS SER DEN");
+    visToast("Utkastet er ikke lagret", `Åpne Workbench for å arbeide videre med ${c.name}.`);
   }
 
   function handleDiscardDraft(c: PH13Drill) {
@@ -85,11 +82,11 @@ export function PH13DrillBank({
       setSel(null);
       setVisMobilModal(false);
     }
-    visToast("Utkastet er forkastet", "CADDIE FORESLÅR IKKE DENNE IGJEN");
+    visToast("Utkastet er skjult i denne visningen", "Ingen lagrede øvelser er endret.");
   }
 
   function handleAddToSession(drill: PH13Drill) {
-    visToast("Lagt til i økt", `${drill.name.toUpperCase()} · WORKBENCH`);
+    setTilOkt(drill); setVisMobilModal(false);
   }
 
   // Filtrering
@@ -103,7 +100,7 @@ export function PH13DrillBank({
 
   // Nåværende valgte øvelse (fra bank eller drafts)
   const currentDrill =
-    [...bank, ...drafts].find((o) => o.id === sel) ?? bank[0] ?? null;
+    [...hits, ...drafts].find((o) => o.id === sel) ?? hits[0] ?? null;
 
   // Akse-tellere
   const akseValg = [
@@ -177,7 +174,7 @@ export function PH13DrillBank({
 
   return (
     <div
-      className="pa-side"
+      className="pa-side ph13-side"
       style={{
         display: "flex",
         flexDirection: "column",
@@ -202,15 +199,15 @@ export function PH13DrillBank({
         <Sidehode
           kicker={`Plan · ${bank.length} øvelser`}
           title="Øvelsesbank"
-          sub="Alle øvelser er navngitt etter AK-formelen. Caddie-forslag er utkast til du legger dem i banken."
+          sub="Finn øvelsen du trenger, se oppskriften og legg den i ditt eget øktutkast."
         />
         <Link
-          href="/portal/ai/foresla-drill"
+          href="/portal/planlegge/workbench"
           className="pa-btn pa-btn--secondary"
           style={{ textDecoration: "none" }}
         >
           <Ikon icon={Plus} size={16} name="plus" />
-          <span>Ny øvelse</span>
+          <span>Åpne Workbench</span>
         </Link>
       </div>
 
@@ -224,12 +221,13 @@ export function PH13DrillBank({
         }}
       >
         {/* Venstre kolonne: Caddie-utkast, søk, filtre, drill-liste, break-tabell */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 16, minWidth: 0 }}>
+        <div className="ph13-bank" style={{ display: "flex", flexDirection: "column", gap: 16, minWidth: 0 }}>
+      <SportsCover compact scene="range" />
           {/* Caddie foreslår utkast */}
           {drafts.length > 0 && (
             <section
               aria-label="Caddie forslag"
-              className="pa-card"
+              className="pa-card ph13-utkast"
               style={{
                 padding: 16,
                 gap: 12,
@@ -329,7 +327,7 @@ export function PH13DrillBank({
           )}
 
           {/* Søk og kildevalg */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <div className="ph13-sok" style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             <div
               style={{
                 display: "flex",
@@ -408,16 +406,16 @@ export function PH13DrillBank({
                     type="button"
                     onClick={() => setSrc(label)}
                     aria-pressed={src === label}
-                    className="v2-press"
+                    className="ph13-filter"
                     style={{
                       border: "none",
-                      background: src === label ? "var(--surface-card)" : "transparent",
-                      color: src === label ? "var(--text-primary)" : "var(--text-secondary)",
+                      background: src === label ? "var(--primary)" : "transparent",
+                      color: src === label ? "var(--text-on-primary)" : "var(--text-secondary)",
                       font: "600 12px/1 var(--font-sans)",
                       padding: "8px 12px",
                       borderRadius: "calc(var(--radius) - 2px)",
                       cursor: "pointer",
-                      boxShadow: src === label ? "0 1px 3px var(--scrim-modal)" : "none",
+                      minHeight: 44,
                     }}
                   >
                     {label}
@@ -443,7 +441,7 @@ export function PH13DrillBank({
                   type="button"
                   onClick={() => setAx(opt.value)}
                   aria-pressed={ax === opt.value}
-                  className="v2-press"
+                  className="ph13-filter"
                   style={{
                     display: "inline-flex",
                     alignItems: "center",
@@ -454,17 +452,18 @@ export function PH13DrillBank({
                       ax === opt.value ? "var(--border-ink)" : "var(--border-hairline)"
                     }`,
                     background:
-                      ax === opt.value ? "var(--surface-flat)" : "transparent",
+                      ax === opt.value ? "var(--primary)" : "transparent",
                     color:
                       ax === opt.value
-                        ? "var(--text-primary)"
+                        ? "var(--text-on-primary)"
                         : "var(--text-secondary)",
-                    font: "600 12px/1.3 var(--font-mono)",
+                    font: "600 14px/1.3 var(--font-sans)",
+                    minHeight: 44,
                     cursor: "pointer",
                   }}
                 >
                   <span>{opt.label}</span>
-                  <span style={{ color: "var(--text-muted)", fontSize: 11 }}>
+                  <span style={{ opacity: .8, font: "500 12px/1.3 var(--font-mono)" }}>
                     {opt.count}
                   </span>
                 </button>
@@ -474,7 +473,7 @@ export function PH13DrillBank({
 
           {/* Drill-liste */}
           <div
-            className="pa-card"
+            className="pa-card ph13-resultater"
             style={{
               padding: 0,
               overflow: "hidden",
@@ -484,7 +483,7 @@ export function PH13DrillBank({
             {hits.length > 0 ? (
               <div style={{ display: "flex", flexDirection: "column" }}>
                 {hits.map((o, i) => {
-                  const on = o.id === sel;
+                  const on = o.id === currentDrill?.id;
                   return (
                     <button
                       key={o.id}
@@ -494,8 +493,9 @@ export function PH13DrillBank({
                         setVisMobilModal(true);
                       }}
                       aria-pressed={on}
+                      className="ph13-resultat"
                       style={{
-                        all: "unset",
+                        border: 0,
                         cursor: "pointer",
                         display: "grid",
                         gridTemplateColumns: "4px minmax(0,1fr) auto",
@@ -503,8 +503,7 @@ export function PH13DrillBank({
                         alignItems: "center",
                         padding: "12px 16px 12px 12px",
                         borderTop: i ? "1px solid var(--border-hairline)" : "none",
-                        background: on ? "var(--surface-flat)" : "transparent",
-                        boxShadow: on ? "inset 2px 0 0 var(--border-ink)" : "none",
+                        background: on ? "var(--surface-sunken)" : "transparent",
                         minHeight: 56,
                       }}
                     >
@@ -577,7 +576,7 @@ export function PH13DrillBank({
                   title={bank.length === 0 ? "Øvelsesbanken er tom" : "Ingen øvelser passer filteret"}
                   text={
                     bank.length === 0
-                      ? "Anders har ikke delt øvelser med deg ennå. Du kan lage din egen eller be Caddie foreslå."
+                      ? "Ingen øvelser er delt med deg ennå. Du kan lage en egen øvelse i Workbench."
                       : "Prøv en annen akse eller nullstill søket for å se flere øvelser."
                   }
                   actions={
@@ -603,7 +602,7 @@ export function PH13DrillBank({
           {(ax === "alle" || ax === "slag") && (
             <section
               aria-label="Putting Break-tabell"
-              className="pa-card"
+              className="pa-card ph13-break"
               style={{
                 padding: 16,
                 gap: 12,
@@ -769,89 +768,14 @@ export function PH13DrillBank({
         </aside>
       </div>
 
-      {/* Mobil Modal / Bottom Sheet for valgt øvelse */}
-      {visMobilModal && currentDrill && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-label={currentDrill.name}
-          style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 90,
-            display: "flex",
-            alignItems: "flex-end",
-            justifyContent: "center",
-            padding: 0,
-            background: "var(--scrim-modal)",
-          }}
-        >
-          <div
-            className="pa-card"
-            style={{
-              width: "100%",
-              maxWidth: 540,
-              maxHeight: "85vh",
-              overflowY: "auto",
-              borderBottomLeftRadius: 0,
-              borderBottomRightRadius: 0,
-              padding: 20,
-              background: "var(--surface-card)",
-              display: "flex",
-              flexDirection: "column",
-              gap: 16,
-              boxShadow: "0 -8px 24px var(--scrim-modal)",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "flex-start",
-                gap: 12,
-              }}
-            >
-              <div>
-                <span className="kicker">Øvelse</span>
-                <h3
-                  style={{
-                    font: "var(--type-title-s)",
-                    color: "var(--text-primary)",
-                    margin: "4px 0 0",
-                  }}
-                >
-                  {currentDrill.name}
-                </h3>
-              </div>
-              <button
-                type="button"
-                onClick={() => setVisMobilModal(false)}
-                className="pa-btn pa-btn--ghost pa-btn--sm"
-                aria-label="Lukk detaljer"
-              >
-                <Ikon icon={X} size={18} name="x" />
-              </button>
-            </div>
-
-            <PH13DrillDetalj
-              drill={currentDrill}
-              onClose={() => setVisMobilModal(false)}
-              onAcceptDraft={(c) => {
-                handleAcceptDraft(c);
-                setVisMobilModal(false);
-              }}
-              onDiscardDraft={(c) => {
-                handleDiscardDraft(c);
-                setVisMobilModal(false);
-              }}
-              onAddToSession={(c) => {
-                handleAddToSession(c);
-                setVisMobilModal(false);
-              }}
-            />
-          </div>
-        </div>
-      )}
+      {visMobilModal && currentDrill && <Ark open onClose={() => setVisMobilModal(false)} kicker="Øvelse" title={currentDrill.name}>
+        <PH13DrillDetalj drill={currentDrill} onClose={() => setVisMobilModal(false)}
+          onAcceptDraft={handleAcceptDraft} onDiscardDraft={handleDiscardDraft} onAddToSession={handleAddToSession} />
+      </Ark>}
+      {tilOkt && <PH13LeggTilOkt exerciseId={tilOkt.id} title={tilOkt.name} sessions={sessions}
+        onClose={() => setTilOkt(null)} onSaved={(already, sessionTitle) => {
+          visToast(already ? "Øvelsen ligger allerede i økten" : "Øvelsen er lagt til", sessionTitle);
+        }} />}
     </div>
   );
 }

@@ -317,7 +317,7 @@ function SlettingSeksjon({
               window.location.href = "/forelder/samtykke/eksport";
             }}
           >
-            Last ned alle data
+            Last ned delte opplysninger
           </FoCtaSekundar>
         </div>
       </FoKort>
