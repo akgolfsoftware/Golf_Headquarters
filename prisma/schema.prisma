@@ -3906,6 +3906,72 @@ model GroupPeriodGoal {
   @@map("group_period_goals")
 }
 
+// WANG opptak (WANG-31, -32) og koordinering mellom skolene (WANG-33), nattkjøring 18.10.2026 pakke W3.
+// Kandidatene er mindreårige. Bare sportssjef ved skolen leser og skriver (src/lib/wang/opptak.ts).
+// Skole = WANG-gruppa (groupId). Ingen vurderingstall eller notater lagres: vurderingspunktene (D1) er
+// ikke avgjort. Plain ID-er; FK med ON DELETE CASCADE håndheves i DDL (scripts/add-wang-opptak-2026-10-18.ts).
+model WangOpptak {
+  id          String   @id @default(cuid())
+  groupId     String
+  // Skoleåret opptaket gjelder, f.eks. «2027/28».
+  skoleaar    String
+  plasser     Int?
+  updatedById String
+  updatedAt   DateTime @updatedAt
+
+  @@unique([groupId, skoleaar])
+  @@map("wang_opptak")
+}
+
+model WangKandidat {
+  id          String   @id @default(cuid())
+  // Skolen som eier kandidaten (status ses bare her).
+  groupId     String
+  skoleaar    String
+  navn        String
+  klubb       String?
+  fodselsaar  Int?
+  // SOKT | PROVESPILL | VENTELISTE | TATT_OPP | IKKE_TATT_OPP
+  status      String   @default("SOKT")
+  createdById String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([groupId, skoleaar])
+  @@index([skoleaar])
+  @@map("wang_kandidater")
+}
+
+// Stjernemerke fra én skole på én kandidat. Synlig for alle WANG-skolene.
+model WangKandidatStjerne {
+  id          String   @id @default(cuid())
+  kandidatId  String
+  groupId     String
+  createdById String
+  createdAt   DateTime @default(now())
+
+  @@unique([kandidatId, groupId])
+  @@map("wang_kandidat_stjerner")
+}
+
+// Kontaktlogg: hvem ved hvilken skole snakket med kandidaten eller foresatte, og når. Aldri innhold.
+model WangKandidatKontakt {
+  id          String   @id @default(cuid())
+  kandidatId  String
+  groupId     String
+  // Sportssjef | Trener — rollen personen hadde ved skolen.
+  personRolle String
+  personNavn  String
+  // KANDIDAT | FORESATTE
+  mottaker    String
+  kontaktetAt DateTime
+  createdById String
+  createdAt   DateTime @default(now())
+
+  @@index([kandidatId, kontaktetAt])
+  @@map("wang_kandidat_kontakter")
+}
+
 model TournamentEntry {
   id                          String                @id @default(cuid())
   userId                      String
