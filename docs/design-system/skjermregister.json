@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "a57bbbfcc7481af9deb2c41c595fa9f58b420121",
+  "kodeversjon": "fdca4ef2fec75d69c605efd87241be3cb52bf66c",
   "inventar": {
     "pageFiles": 552,
     "uniqueRoutePatterns": 552,
-    "componentFiles": 929,
+    "componentFiles": 928,
     "surfaceFiles": 282,
     "byArea": {
       "interne-eksempler": 6,
@@ -5815,20 +5815,19 @@
       "kodekommentar": null
     },
     {
-      "screenId": "AG-09",
+      "screenId": "VIDERESENDING",
       "rute": "/admin/analyse",
       "kildefil": "src/app/admin/analyse/page.tsx",
       "omrade": "agencyos",
       "rolle": "trener",
-      "designkilde": "AK Golf Precision Athletics (7d7c2994-cf63-4c5f-9bdc-fdaf67655a70)",
-      "designversjon": "precision-athletics-2026-09-28",
-      "komponentmonster": "/admin/analyse",
-      "handlinger": "SG, trend, etterlevelse, stall-analyse",
+      "designkilde": "kode",
+      "designversjon": "ikke-en-skjerm",
+      "komponentmonster": null,
+      "handlinger": "Send videre til /admin/spillere",
       "dataApi": "ikke-avlest-i-D01",
       "tilstander": [
-        "tom",
-        "laster",
-        "feil"
+        "videresending",
+        "manglende-mal"
       ],
       "formater": {
         "mobil": "ikke-kontrollert",
@@ -5849,12 +5848,12 @@
       "eier": "D01-skjermregister",
       "kontrollbevis": null,
       "avvik": [],
-      "kobling": "tegnet-skjermtype",
-      "forklaring": "AG-09 Spilleranalyse utgår i IA 28.09.2026. Funksjonen hører hjemme i AG-08 Spiller 360 › Stats. Skjermen skal ikke bygges.",
+      "kobling": "videresending",
+      "forklaring": "Filen har ingen egen visning. Den sender til /admin/spillere. At målet finnes, og hva brukeren ser hvis lenken er ugyldig, er ikke prøvd i denne bolken.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
-      "videresendingMal": null,
+      "videresendingMal": "/admin/spillere",
       "kodekommentar": null
     },
     {
@@ -24234,8 +24233,8 @@
     "kobling": {
       "intern-flate": 7,
       "felles-monster": 22,
-      "tegnet-skjermtype": 259,
-      "videresending": 192,
+      "tegnet-skjermtype": 258,
+      "videresending": 193,
       "teknisk-forklaring": 35,
       "byggeunderlag": 37
     },
@@ -24257,7 +24256,7 @@
       "ST-06": 8,
       "ST-04": 3,
       "MK-BEKREFT": 1,
-      "VIDERESENDING": 192,
+      "VIDERESENDING": 193,
       "AG-05": 4,
       "AG-08": 3,
       "AG-16": 6,
@@ -24265,7 +24264,6 @@
       "AG-20": 1,
       "AG-01": 2,
       "AG-19": 2,
-      "AG-09": 2,
       "AG-24": 5,
       "AG-06": 2,
       "UTEN-TEGNET-TYPE": 18,
@@ -24279,6 +24277,7 @@
       "AG-14": 4,
       "AG-10": 2,
       "AG-18": 4,
+      "AG-09": 1,
       "AG-07": 2,
       "AG-15": 1,
       "AG-17": 3,

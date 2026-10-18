@@ -38,6 +38,7 @@ Avbestill/endre-knapper kaller Stripe (`cancel_at_period_end`) FØR egen DB, ell
 - Signalfargene `danger`/`ok`/`warn` er aldri tekstfarge på nøytral bunn; `dim` bærer aldri lesbar tekst (gjelder eksisterende Train-lock-kode).
 
 ## Arbeidsmåte
+- **Skjermregisteret (`docs/design-system/skjermregister.*`) røres ikke i vanlige PR-er.** Parallelle økter kolliderte på det hver gang én PR ble lagt inn. Det er ikke i `verify`; oppdater det i en egen PR (`node scripts/bygg-skjermregister.mjs --write`) når ingen andre designPR-er står åpne. Kolliderer en gammel gren på det: `git checkout origin/main -- docs/design-system/skjermregister.*`.
 - Aldri kopier `.env*` mellom worktrees. `prisma generate` klarer seg med dummy `DIRECT_URL`/`DATABASE_URL` i skallet.
 - Shell-cwd setter seg fast: bruk absolutte stier og `pwd` før filoperasjoner.
 - Redirect lange kommandoer (`npm run build`) til fil og les halen; ikke les store dokumenter hele; ikke les en fil rett etter egen Edit.
