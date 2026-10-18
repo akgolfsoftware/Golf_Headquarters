@@ -30,6 +30,8 @@ export type BekreftelseInput = {
   spillerhqTilbud: { tekst: string; manedNok: number | null; arNok: number | null } | null;
   natt?: boolean;
   introHtml?: string;
+  /** Duo: deltaker 2 betalte ikke. Navnet på den som booket og betalte, i stedet for pris og betaling. */
+  betaltAv?: string | null;
 };
 
 const DATO = new Intl.DateTimeFormat("nb-NO", { weekday: "long", day: "2-digit", month: "2-digit", year: "numeric", timeZone: "UTC" });
@@ -68,10 +70,13 @@ export function byggBekreftelse(i: BekreftelseInput): { subject: string; html: s
     ["Tid", esc(`${dag} kl. ${tid}`)],
     ["Sted", esc(i.sted)],
     ["Coach", i.coach ? esc(i.coach) : "—"],
-    ["Pris", i.prisOre === null ? "Inkludert i abonnement" : esc(kr(i.prisOre / 100))],
   ];
-  if (i.prisOre === null) rader.push(["Betaling", "1 klipp"]);
-  else if (i.betalingsref) rader.push(["Betaling", esc(i.betalingsref), true]);
+  if (i.betaltAv) rader.push(["Betaling", esc(`Betalt av ${i.betaltAv}`)]);
+  else {
+    rader.push(["Pris", i.prisOre === null ? "Inkludert i abonnement" : esc(kr(i.prisOre / 100))]);
+    if (i.prisOre === null) rader.push(["Betaling", "1 klipp"]);
+    else if (i.betalingsref) rader.push(["Betaling", esc(i.betalingsref), true]);
+  }
   rader.push(["Referanse", esc(i.referanse), true]);
 
   const frist = `${datoTekst(i.frist).toLowerCase()} kl. ${klokkeTekst(i.frist)}`;

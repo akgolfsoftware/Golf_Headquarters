@@ -9,6 +9,7 @@
 export const TJENESTE_KATEGORIER = [
   { verdi: "drop-in", navn: "Drop-in (Flex)" },
   { verdi: "abonnement", navn: "Abonnement (Performance)" },
+  { verdi: "duo", navn: "Duo (to deltakere)" },
   { verdi: "gruppe", navn: "Gruppe" },
   { verdi: "annet", navn: "Annet" },
 ] as const;
@@ -31,4 +32,14 @@ export function kategoriNavn(kategori: string | null): string {
 export function erAbonnementTjeneste(t: { kategori: string | null; name: string }): boolean {
   if (t.kategori) return t.kategori === "abonnement";
   return t.name.toLowerCase().includes("performance");
+}
+
+/**
+ * Er tjenesten en duo-time (to deltakere, én betaler, bookingplanen steg 6)?
+ * Kategorien avgjør når den er satt. Uten kategori: ordet «duo» i navnet,
+ * slik Acuity-tjenestene heter («Flex Duo 50 min»).
+ */
+export function erDuoTjeneste(t: { kategori: string | null; name: string }): boolean {
+  if (t.kategori) return t.kategori === "duo";
+  return /\bduo\b/i.test(t.name);
 }
