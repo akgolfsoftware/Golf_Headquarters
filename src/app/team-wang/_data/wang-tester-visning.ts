@@ -35,7 +35,7 @@ export const TOM_TESTERDATA: WangTesterData = { delerIder: [], resultater: [] };
  * Ett testbatteri for AK Golf, WANG og Team Norway (beslutninger §ÉN IUP OG ETT TESTBATTERI):
  * golftestene fra NGFs 6-årsløp og de fem fysiske. `navn` matches mot testens navn i basen.
  */
-export const WANG_TESTBATTERI: { navn: string; akse: WangTestAkse; beskrivelse: string; fysisk: boolean }[] = [
+export const TESTBATTERI: { navn: string; akse: WangTestAkse; beskrivelse: string; fysisk: boolean }[] = [
   { navn: "8-ball", akse: "SLAG", beskrivelse: "Nærspill, 8 slag", fysisk: false },
   { navn: "Wedge Gate", akse: "SLAG", beskrivelse: "Godkjent eller bom per slag", fysisk: false },
   { navn: "Nærspill Gate", akse: "SLAG", beskrivelse: "Godkjent eller bom per slag", fysisk: false },

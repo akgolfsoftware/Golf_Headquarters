@@ -18,7 +18,7 @@ import {
 import { visDato, type WangTrenerData } from "@/app/team-wang/_data/wang-trener-data";
 import {
   TOM_TESTERDATA,
-  WANG_TESTBATTERI,
+  TESTBATTERI,
   hoererTil,
   sistePerElev,
   type WangTestResultat,
@@ -86,7 +86,7 @@ function Batteri({ data, tester }: { data: WangTrenerData; tester: WangTesterDat
   const ko = tilKontroll(tester);
   const nesteTest = data.testdager.find((t) => !t.passert);
   const aar = data.idagIso.slice(0, 4);
-  const ikkeTestet = WANG_TESTBATTERI.filter(
+  const ikkeTestet = TESTBATTERI.filter(
     (t) => !tester.resultater.some((r) => hoererTil(r, t.navn) && r.datoIso.startsWith(aar)),
   ).length;
 
@@ -112,7 +112,7 @@ function Batteri({ data, tester }: { data: WangTrenerData; tester: WangTesterDat
       <WangSmaaTall
         tall={[
           { verdi: nesteTest ? String(dagerMellom(data.idagIso, nesteTest.startIso)) : "—", tekst: "Dager til testdag" },
-          { verdi: String(WANG_TESTBATTERI.length), tekst: "Tester i batteriet" },
+          { verdi: String(TESTBATTERI.length), tekst: "Tester i batteriet" },
           { verdi: `${tester.delerIder.length} av ${data.elever.length}`, tekst: "Elever deler testene" },
         ]}
       />
@@ -125,7 +125,7 @@ function Batteri({ data, tester }: { data: WangTrenerData; tester: WangTesterDat
         </div>
         <p className="wg-forklar">
           {nesteTest
-            ? `${nesteTest.sted ? `${nesteTest.sted}. ` : ""}${data.elever.length} elever i gruppa. ${ikkeTestet} av ${WANG_TESTBATTERI.length} tester er ikke tatt i år.`
+            ? `${nesteTest.sted ? `${nesteTest.sted}. ` : ""}${data.elever.length} elever i gruppa. ${ikkeTestet} av ${TESTBATTERI.length} tester er ikke tatt i år.`
             : "Legg testdagen inn i gruppas kalender, så står den her. Fysisk test hver sjette uke i grunnperioden."}
         </p>
         <div className="wg-knapper">
@@ -154,7 +154,7 @@ function Testliste({ tittel, kilde, fysisk, tester }: { tittel: string; kilde: s
         <span className="wg-kilde">{kilde}</span>
       </div>
       <div className="wg-kort wg-rader">
-        {WANG_TESTBATTERI.filter((t) => t.fysisk === fysisk).map((t) => {
+        {TESTBATTERI.filter((t) => t.fysisk === fysisk).map((t) => {
           const treff = tester.resultater.filter((r) => hoererTil(r, t.navn));
           const elever = sistePerElev(treff).length;
           return (
@@ -325,7 +325,7 @@ function ForTest({ data }: { data: WangTrenerData }) {
 // ---------------------------------------------------------------------------
 
 function EnTest({ data, tester, testNavn }: { data: WangTrenerData; tester: WangTesterData; testNavn?: string }) {
-  const test = WANG_TESTBATTERI.find((t) => t.navn === testNavn);
+  const test = TESTBATTERI.find((t) => t.navn === testNavn);
   if (!test) {
     return (
       <>
@@ -409,7 +409,7 @@ function EnElev({ data, tester, elevId }: { data: WangTrenerData; tester: WangTe
 
   const liste = (fysisk: boolean) => (
     <div className="wg-kort wg-rader">
-      {WANG_TESTBATTERI.filter((t) => t.fysisk === fysisk).map((t) => {
+      {TESTBATTERI.filter((t) => t.fysisk === fysisk).map((t) => {
         const treff = egne.filter((r) => hoererTil(r, t.navn));
         return (
           <div key={t.navn} className="wg-rad">
