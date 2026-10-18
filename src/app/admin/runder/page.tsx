@@ -25,7 +25,8 @@ export default async function RunderPage() {
 
   // Coach-scope: head coach (ADMIN) ser alle coachede spillere, assistant coach
   // bare egne (coachScopedPlayerWhere). Uten dette så assistant coach alles runder.
-  const rundeScope = rundeScopeWhere(user);
+  // «Bare deg» i Del runde (pakke 13): coachen ser bare runder spilleren deler.
+  const rundeScope = { AND: [rundeScopeWhere(user), { sharedWithCoach: true }] };
 
   const [rounds, total] = await Promise.all([
     prisma.round.findMany({

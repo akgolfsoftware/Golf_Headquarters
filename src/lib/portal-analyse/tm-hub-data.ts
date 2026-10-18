@@ -243,7 +243,7 @@ export async function hentAnalyseHub(userId: string): Promise<TmHubData> {
       {
         /* Spillerens egne turneringsresultater (beslutning 2026-08-30).
            Meta sier antall, eller hvorfor det er tomt — aldri bare «0». */
-        href: "/portal/analysere/turneringer",
+        href: "/portal/analysere/resultater?vis=turneringer",
         tittel: "Turneringer",
         meta: turneringsMeta,
       },

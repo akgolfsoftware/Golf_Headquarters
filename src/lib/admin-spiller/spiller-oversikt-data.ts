@@ -131,7 +131,7 @@ export async function lastSpillerOversiktForViewer(
         },
       }),
       prisma.round.findMany({
-        where: { userId: playerId, roundType: "turnering", playedAt: { gte: aarStart } },
+        where: { userId: playerId, sharedWithCoach: true, roundType: "turnering", playedAt: { gte: aarStart } },
         select: { score: true },
       }),
       prisma.tournamentEntry.findMany({
@@ -204,7 +204,7 @@ export async function lastSpillerOversiktForViewer(
   }
 
   const sgRunder = await prisma.round.findMany({
-    where: { userId: playerId, sgTotal: { not: null }, playedAt: { gte: new Date(naa.getTime() - 84 * 24 * 60 * 60 * 1000) } },
+    where: { userId: playerId, sharedWithCoach: true, sgTotal: { not: null }, playedAt: { gte: new Date(naa.getTime() - 84 * 24 * 60 * 60 * 1000) } },
     select: { sgTotal: true },
     orderBy: { playedAt: "desc" },
     take: 12,
