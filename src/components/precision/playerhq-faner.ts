@@ -23,9 +23,9 @@ export function erAktivFane(path: string, href: string) {
     // Booking med coach utelater aktiv. Det gamle skallet utleder da I dag.
     return path === "/portal" || path.startsWith("/portal/booking/coach");
   }
-  // Coach, målbygger og enkeltmål hørte til Meg (aktiv="meg").
+  // Coach, ny målsetning (før målbyggeren) og enkeltmål hørte til Meg (aktiv="meg").
   if (href === "/portal/meg") {
-    return path === href || path.startsWith(href + "/") || path.startsWith("/portal/coach") || path.startsWith("/portal/ai/mal-bygger") || path.startsWith("/portal/mal/goal");
+    return path === href || path.startsWith(href + "/") || path.startsWith("/portal/coach") || path === "/portal/mal/ny" || path.startsWith("/portal/mal/goal");
   }
   // Øvelser, ny booking, testdetalj og FYS-plan markerte Plan. aktiv="gjor" og /ny skal ikke lyse noen fane.
   if (href === "/portal/planlegge") {

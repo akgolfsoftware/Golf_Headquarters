@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "b1b2abf04073afc64f865d5202c805cb59a19c9d",
+  "kodeversjon": "072aed87cde50b66ea7f49d02d94a4cc603c2a39",
   "inventar": {
-    "pageFiles": 552,
-    "uniqueRoutePatterns": 552,
-    "componentFiles": 928,
-    "surfaceFiles": 282,
+    "pageFiles": 557,
+    "uniqueRoutePatterns": 557,
+    "componentFiles": 929,
+    "surfaceFiles": 278,
     "byArea": {
       "interne-eksempler": 6,
       "marked-og-offentlig": 71,
@@ -18,7 +18,7 @@
       "delt-innsyn": 11,
       "personlig-arbeidsflate": 3,
       "systemtilstand": 2,
-      "playerhq": 187
+      "playerhq": 192
     }
   },
   "presisjon": {
@@ -14820,7 +14820,7 @@
       "designkilde": "kode",
       "designversjon": "ikke-en-skjerm",
       "komponentmonster": null,
-      "handlinger": "Send videre til /portal/fysisk",
+      "handlinger": "Send videre til et mål som ikke er en fast adresse i filen",
       "dataApi": "ikke-avlest-i-D01",
       "tilstander": [
         "videresending",
@@ -14846,11 +14846,11 @@
       "kontrollbevis": null,
       "avvik": [],
       "kobling": "videresending",
-      "forklaring": "Filen har ingen egen visning. Den sender til /portal/fysisk. At målet finnes, og hva brukeren ser hvis lenken er ugyldig, er ikke prøvd i denne bolken.",
+      "forklaring": "Filen sender videre, men målet er ikke en fast adresse. Det er ikke prøvd.",
       "legacyGruppe": true,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
-      "videresendingMal": "/portal/fysisk",
+      "videresendingMal": null,
       "kodekommentar": null
     },
     {
@@ -15023,20 +15023,19 @@
       "kodekommentar": null
     },
     {
-      "screenId": "PH-12",
+      "screenId": "VIDERESENDING",
       "rute": "/portal/ai/mal-bygger",
       "kildefil": "src/app/portal/ai/mal-bygger/page.tsx",
       "omrade": "playerhq",
       "rolle": "spiller",
-      "designkilde": "AK Golf Precision Athletics (7d7c2994-cf63-4c5f-9bdc-fdaf67655a70)",
-      "designversjon": "precision-athletics-2026-09-28",
-      "komponentmonster": "/portal/ai/mal-bygger",
-      "handlinger": "Stegviser, mal, SMART-mål",
+      "designkilde": "kode",
+      "designversjon": "ikke-en-skjerm",
+      "komponentmonster": null,
+      "handlinger": "Send videre til et mål som ikke er en fast adresse i filen",
       "dataApi": "ikke-avlest-i-D01",
       "tilstander": [
-        "tom",
-        "laster",
-        "feil"
+        "videresending",
+        "manglende-mal"
       ],
       "formater": {
         "mobil": "ikke-kontrollert",
@@ -15047,20 +15046,18 @@
       "status": {
         "kartlagt": true,
         "wireframe": false,
-        "uiUtkast": true,
+        "uiUtkast": false,
         "prototype": false,
         "vurdert": false,
-        "valgtForBygging": true,
-        "implementert": "precision-visning",
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Målbygger merker PH12MalBygger i PlayerHQSkall. Skjemaet er beholdt. Indre kort er fortsatt v2. Meg lyser. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
-      "avvik": [
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
-      "kobling": "tegnet-skjermtype",
-      "forklaring": "PH-12 Velg treningsplan er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "videresending",
+      "forklaring": "Filen sender videre, men målet er ikke en fast adresse. Det er ikke prøvd.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
@@ -17141,20 +17138,19 @@
       "kodekommentar": null
     },
     {
-      "screenId": "PH-10",
+      "screenId": "VIDERESENDING",
       "rute": "/portal/kalender/opptatt",
       "kildefil": "src/app/portal/kalender/opptatt/page.tsx",
       "omrade": "playerhq",
       "rolle": "spiller",
-      "designkilde": "AK Golf Precision Athletics (7d7c2994-cf63-4c5f-9bdc-fdaf67655a70)",
-      "designversjon": "precision-athletics-2026-09-28",
-      "komponentmonster": "/portal/kalender/opptatt",
-      "handlinger": "Uke/dag/måned, økter per akse, opptatt tid",
+      "designkilde": "kode",
+      "designversjon": "ikke-en-skjerm",
+      "komponentmonster": null,
+      "handlinger": "Send videre til et mål som ikke er en fast adresse i filen",
       "dataApi": "ikke-avlest-i-D01",
       "tilstander": [
-        "tom",
-        "laster",
-        "feil"
+        "videresending",
+        "manglende-mal"
       ],
       "formater": {
         "mobil": "ikke-kontrollert",
@@ -17165,20 +17161,18 @@
       "status": {
         "kartlagt": true,
         "wireframe": false,
-        "uiUtkast": true,
+        "uiUtkast": false,
         "prototype": false,
         "vurdert": false,
-        "valgtForBygging": true,
-        "implementert": "precision-visning",
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Opptatt tid merker PH10Opptatt i PlayerHQSkall. Egne avtaler kan legges til og slettes. Skole og gruppetrening er ikke med her. 390×844 og 1440×880 er ikke målt mot tegningen.",
-      "avvik": [
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
-      "kobling": "tegnet-skjermtype",
-      "forklaring": "PH-10 Plan er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "videresending",
+      "forklaring": "Filen sender videre, men målet er ikke en fast adresse. Det er ikke prøvd.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
@@ -17437,6 +17431,49 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": "/portal/analysere",
+      "kodekommentar": null
+    },
+    {
+      "screenId": "UTEN-TEGNET-TYPE",
+      "rute": "/portal/mal/ny",
+      "kildefil": "src/app/portal/mal/ny/page.tsx",
+      "omrade": "playerhq",
+      "rolle": "spiller",
+      "designkilde": "docs/design-system/skjermliste-precision-athletics.md",
+      "designversjon": "precision-athletics-2026-09-28",
+      "komponentmonster": null,
+      "handlinger": "ikke-avlest-i-D01",
+      "dataApi": "ikke-avlest-i-D01",
+      "tilstander": [
+        "tom",
+        "laster",
+        "feil"
+      ],
+      "formater": {
+        "mobil": "ikke-kontrollert",
+        "nettbrett": "ikke-kontrollert",
+        "desktop": "ikke-kontrollert",
+        "natt": "ikke-relevant"
+      },
+      "status": {
+        "kartlagt": true,
+        "wireframe": false,
+        "uiUtkast": false,
+        "prototype": false,
+        "vurdert": false,
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
+        "kontrollertIApp": false
+      },
+      "eier": "D01-skjermregister",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "teknisk-forklaring",
+      "forklaring": "Ingen tegnet skjermtype treffer ruten eksakt. Nærmeste type er PH-19 Workbench › Målsetninger, men det er et hint, ikke en tildeling. Ruten beholdes til D02 avgjør om den hører til typen, er et eget mønster eller er en videresending.",
+      "legacyGruppe": false,
+      "naermesteSkjermtype": "PH-19 Workbench › Målsetninger",
+      "sammeSidefil": [],
+      "videresendingMal": null,
       "kodekommentar": null
     },
     {
@@ -19830,6 +19867,92 @@
       "kodekommentar": "PH-12"
     },
     {
+      "screenId": "UTEN-TEGNET-TYPE",
+      "rute": "/portal/planlegge/fysisk",
+      "kildefil": "src/app/portal/planlegge/fysisk/page.tsx",
+      "omrade": "playerhq",
+      "rolle": "spiller",
+      "designkilde": "docs/design-system/skjermliste-precision-athletics.md",
+      "designversjon": "precision-athletics-2026-09-28",
+      "komponentmonster": null,
+      "handlinger": "ikke-avlest-i-D01",
+      "dataApi": "ikke-avlest-i-D01",
+      "tilstander": [
+        "tom",
+        "laster",
+        "feil"
+      ],
+      "formater": {
+        "mobil": "ikke-kontrollert",
+        "nettbrett": "ikke-kontrollert",
+        "desktop": "ikke-kontrollert",
+        "natt": "ikke-relevant"
+      },
+      "status": {
+        "kartlagt": true,
+        "wireframe": false,
+        "uiUtkast": false,
+        "prototype": false,
+        "vurdert": false,
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
+        "kontrollertIApp": false
+      },
+      "eier": "D01-skjermregister",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "teknisk-forklaring",
+      "forklaring": "Ingen tegnet skjermtype treffer ruten eksakt. Nærmeste type er PH-10 Plan, men det er et hint, ikke en tildeling. Ruten beholdes til D02 avgjør om den hører til typen, er et eget mønster eller er en videresending.",
+      "legacyGruppe": false,
+      "naermesteSkjermtype": "PH-10 Plan",
+      "sammeSidefil": [],
+      "videresendingMal": null,
+      "kodekommentar": null
+    },
+    {
+      "screenId": "UTEN-TEGNET-TYPE",
+      "rute": "/portal/planlegge/opptatt",
+      "kildefil": "src/app/portal/planlegge/opptatt/page.tsx",
+      "omrade": "playerhq",
+      "rolle": "spiller",
+      "designkilde": "docs/design-system/skjermliste-precision-athletics.md",
+      "designversjon": "precision-athletics-2026-09-28",
+      "komponentmonster": null,
+      "handlinger": "ikke-avlest-i-D01",
+      "dataApi": "ikke-avlest-i-D01",
+      "tilstander": [
+        "tom",
+        "laster",
+        "feil"
+      ],
+      "formater": {
+        "mobil": "ikke-kontrollert",
+        "nettbrett": "ikke-kontrollert",
+        "desktop": "ikke-kontrollert",
+        "natt": "ikke-relevant"
+      },
+      "status": {
+        "kartlagt": true,
+        "wireframe": false,
+        "uiUtkast": false,
+        "prototype": false,
+        "vurdert": false,
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
+        "kontrollertIApp": false
+      },
+      "eier": "D01-skjermregister",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "teknisk-forklaring",
+      "forklaring": "Ingen tegnet skjermtype treffer ruten eksakt. Nærmeste type er PH-10 Plan, men det er et hint, ikke en tildeling. Ruten beholdes til D02 avgjør om den hører til typen, er et eget mønster eller er en videresending.",
+      "legacyGruppe": false,
+      "naermesteSkjermtype": "PH-10 Plan",
+      "sammeSidefil": [],
+      "videresendingMal": null,
+      "kodekommentar": null
+    },
+    {
       "screenId": "PH-10",
       "rute": "/portal/planlegge",
       "kildefil": "src/app/portal/planlegge/page.tsx",
@@ -19873,6 +19996,92 @@
       "sammeSidefil": [],
       "videresendingMal": null,
       "kodekommentar": "PH-10"
+    },
+    {
+      "screenId": "UTEN-TEGNET-TYPE",
+      "rute": "/portal/planlegge/periode-ferdig/[periodeId]",
+      "kildefil": "src/app/portal/planlegge/periode-ferdig/[periodeId]/page.tsx",
+      "omrade": "playerhq",
+      "rolle": "spiller",
+      "designkilde": "docs/design-system/skjermliste-precision-athletics.md",
+      "designversjon": "precision-athletics-2026-09-28",
+      "komponentmonster": null,
+      "handlinger": "ikke-avlest-i-D01",
+      "dataApi": "ikke-avlest-i-D01",
+      "tilstander": [
+        "tom",
+        "laster",
+        "feil"
+      ],
+      "formater": {
+        "mobil": "ikke-kontrollert",
+        "nettbrett": "ikke-kontrollert",
+        "desktop": "ikke-kontrollert",
+        "natt": "ikke-relevant"
+      },
+      "status": {
+        "kartlagt": true,
+        "wireframe": false,
+        "uiUtkast": false,
+        "prototype": false,
+        "vurdert": false,
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
+        "kontrollertIApp": false
+      },
+      "eier": "D01-skjermregister",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "teknisk-forklaring",
+      "forklaring": "Ingen tegnet skjermtype treffer ruten eksakt. Nærmeste type er PH-10 Plan, men det er et hint, ikke en tildeling. Ruten beholdes til D02 avgjør om den hører til typen, er et eget mønster eller er en videresending.",
+      "legacyGruppe": false,
+      "naermesteSkjermtype": "PH-10 Plan",
+      "sammeSidefil": [],
+      "videresendingMal": null,
+      "kodekommentar": null
+    },
+    {
+      "screenId": "UTEN-TEGNET-TYPE",
+      "rute": "/portal/planlegge/periode-ferdig",
+      "kildefil": "src/app/portal/planlegge/periode-ferdig/page.tsx",
+      "omrade": "playerhq",
+      "rolle": "spiller",
+      "designkilde": "docs/design-system/skjermliste-precision-athletics.md",
+      "designversjon": "precision-athletics-2026-09-28",
+      "komponentmonster": null,
+      "handlinger": "ikke-avlest-i-D01",
+      "dataApi": "ikke-avlest-i-D01",
+      "tilstander": [
+        "tom",
+        "laster",
+        "feil"
+      ],
+      "formater": {
+        "mobil": "ikke-kontrollert",
+        "nettbrett": "ikke-kontrollert",
+        "desktop": "ikke-kontrollert",
+        "natt": "ikke-relevant"
+      },
+      "status": {
+        "kartlagt": true,
+        "wireframe": false,
+        "uiUtkast": false,
+        "prototype": false,
+        "vurdert": false,
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
+        "kontrollertIApp": false
+      },
+      "eier": "D01-skjermregister",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "teknisk-forklaring",
+      "forklaring": "Ingen tegnet skjermtype treffer ruten eksakt. Nærmeste type er PH-10 Plan, men det er et hint, ikke en tildeling. Ruten beholdes til D02 avgjør om den hører til typen, er et eget mønster eller er en videresending.",
+      "legacyGruppe": false,
+      "naermesteSkjermtype": "PH-10 Plan",
+      "sammeSidefil": [],
+      "videresendingMal": null,
+      "kodekommentar": null
     },
     {
       "screenId": "PH-11",
@@ -20512,65 +20721,19 @@
       "kodekommentar": null
     },
     {
-      "screenId": "PH-07",
+      "screenId": "VIDERESENDING",
       "rute": "/portal/tren/feiring/[planId]",
       "kildefil": "src/app/portal/tren/feiring/[planId]/page.tsx",
       "omrade": "playerhq",
       "rolle": "spiller",
-      "designkilde": "AK Golf Precision Athletics (7d7c2994-cf63-4c5f-9bdc-fdaf67655a70)",
-      "designversjon": "precision-athletics-2026-09-28",
-      "komponentmonster": "/portal/tren/feiring/[planId]",
-      "handlinger": "Slag, tid, pyramidefordeling, del/lagre",
+      "designkilde": "kode",
+      "designversjon": "ikke-en-skjerm",
+      "komponentmonster": null,
+      "handlinger": "Send videre til et mål som ikke er en fast adresse i filen",
       "dataApi": "ikke-avlest-i-D01",
       "tilstander": [
-        "tom",
-        "laster",
-        "feil"
-      ],
-      "formater": {
-        "mobil": "ikke-kontrollert",
-        "nettbrett": "ikke-kontrollert",
-        "desktop": "ikke-kontrollert",
-        "natt": "pavkrevd-ikke-kontrollert"
-      },
-      "status": {
-        "kartlagt": true,
-        "wireframe": false,
-        "uiUtkast": true,
-        "prototype": false,
-        "vurdert": false,
-        "valgtForBygging": true,
-        "implementert": "precision-visning",
-        "kontrollertIApp": false
-      },
-      "eier": "D01-skjermregister",
-      "kontrollbevis": "Plan-feiring merker PH07Feiring og monterer FeiringV2 i PlayerHQSkall. Ekte timer, etterlevelse, SG og ikke-ferdig-vakt er beholdt. Øktoppsummering er en annen flate. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-07.jsx ligger ikke i git.",
-      "avvik": [
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
-      "kobling": "tegnet-skjermtype",
-      "forklaring": "PH-07 Øktoppsummering er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
-      "legacyGruppe": false,
-      "naermesteSkjermtype": null,
-      "sammeSidefil": [],
-      "videresendingMal": null,
-      "kodekommentar": "PH-07"
-    },
-    {
-      "screenId": "PH-26",
-      "rute": "/portal/tren/fys-plan",
-      "kildefil": "src/app/portal/tren/fys-plan/page.tsx",
-      "omrade": "playerhq",
-      "rolle": "spiller",
-      "designkilde": "AK Golf Precision Athletics (7d7c2994-cf63-4c5f-9bdc-fdaf67655a70)",
-      "designversjon": "precision-athletics-2026-09-28",
-      "komponentmonster": "/portal/tren/fys-plan",
-      "handlinger": "FYS-økt, utfordringer, putte-lab, break-tabell, turneringsplan, ukesdigest",
-      "dataApi": "ikke-avlest-i-D01",
-      "tilstander": [
-        "tom",
-        "laster",
-        "feil"
+        "videresending",
+        "manglende-mal"
       ],
       "formater": {
         "mobil": "ikke-kontrollert",
@@ -20585,21 +20748,61 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": false,
-        "implementert": "precision-visning",
+        "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "FYS-planlisten merker PH26FysPlan i PlayerHQSkall. Dagens økt, aktive og arkiverte planer og den ærlige score-plassholderen er beholdt. Enkeltplanen er ikke med. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-26.jsx ligger ikke i git.",
-      "avvik": [
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
-      "kobling": "tegnet-skjermtype",
-      "forklaring": "PH-26 Utenfor banen utgår i IA 28.09.2026. Funksjonen hører hjemme i Plan og Meg. Skjermen skal ikke bygges.",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "videresending",
+      "forklaring": "Filen sender videre, men målet er ikke en fast adresse. Det er ikke prøvd.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": "PH-26"
+      "kodekommentar": null
+    },
+    {
+      "screenId": "VIDERESENDING",
+      "rute": "/portal/tren/fys-plan",
+      "kildefil": "src/app/portal/tren/fys-plan/page.tsx",
+      "omrade": "playerhq",
+      "rolle": "spiller",
+      "designkilde": "kode",
+      "designversjon": "ikke-en-skjerm",
+      "komponentmonster": null,
+      "handlinger": "Send videre til et mål som ikke er en fast adresse i filen",
+      "dataApi": "ikke-avlest-i-D01",
+      "tilstander": [
+        "videresending",
+        "manglende-mal"
+      ],
+      "formater": {
+        "mobil": "ikke-kontrollert",
+        "nettbrett": "ikke-kontrollert",
+        "desktop": "ikke-kontrollert",
+        "natt": "ikke-relevant"
+      },
+      "status": {
+        "kartlagt": true,
+        "wireframe": false,
+        "uiUtkast": false,
+        "prototype": false,
+        "vurdert": false,
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
+        "kontrollertIApp": false
+      },
+      "eier": "D01-skjermregister",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "videresending",
+      "forklaring": "Filen sender videre, men målet er ikke en fast adresse. Det er ikke prøvd.",
+      "legacyGruppe": false,
+      "naermesteSkjermtype": null,
+      "sammeSidefil": [],
+      "videresendingMal": null,
+      "kodekommentar": null
     },
     {
       "screenId": "VIDERESENDING",
@@ -24225,18 +24428,18 @@
     }
   ],
   "tellinger": {
-    "sidefiler": 552,
-    "medAvvik": 135,
-    "valgtForBygging": 228,
-    "utenEksaktType": 18,
-    "implementert": 104,
+    "sidefiler": 557,
+    "medAvvik": 131,
+    "valgtForBygging": 225,
+    "utenEksaktType": 23,
+    "implementert": 100,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,
       "felles-monster": 22,
-      "tegnet-skjermtype": 259,
-      "videresending": 192,
-      "teknisk-forklaring": 35,
+      "tegnet-skjermtype": 255,
+      "videresending": 196,
+      "teknisk-forklaring": 40,
       "byggeunderlag": 37
     },
     "screenId": {
@@ -24257,7 +24460,7 @@
       "ST-06": 8,
       "ST-04": 3,
       "MK-BEKREFT": 1,
-      "VIDERESENDING": 192,
+      "VIDERESENDING": 196,
       "AG-05": 4,
       "AG-08": 3,
       "AG-16": 6,
@@ -24268,7 +24471,7 @@
       "AG-09": 2,
       "AG-24": 5,
       "AG-06": 2,
-      "UTEN-TEGNET-TYPE": 18,
+      "UTEN-TEGNET-TYPE": 23,
       "AG-04": 2,
       "AG-12": 1,
       "AG-11": 2,
@@ -24299,15 +24502,14 @@
       "SY-01": 2,
       "PH-05": 1,
       "PH-04": 1,
-      "PH-07": 2,
+      "PH-07": 1,
       "PH-06": 1,
       "PH-08": 2,
       "PH-09": 3,
       "PH-15": 1,
       "PH-03": 2,
       "PH-17": 4,
-      "PH-26": 9,
-      "PH-12": 2,
+      "PH-26": 8,
       "PH-18": 7,
       "PH-16": 3,
       "PH-23": 9,
@@ -24316,12 +24518,13 @@
       "PH-13": 4,
       "PH-20": 3,
       "PH-IUP-01": 1,
-      "PH-10": 2,
       "PH-19": 3,
       "PH-25": 18,
       "PH-27": 1,
       "PH-24": 7,
       "PH-01": 1,
+      "PH-12": 1,
+      "PH-10": 1,
       "PH-11": 1,
       "PH-14": 5,
       "AVSLATT": 1,

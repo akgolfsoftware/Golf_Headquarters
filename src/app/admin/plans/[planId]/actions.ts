@@ -353,7 +353,7 @@ export async function markPlanCompleted(
     type: "achievement",
     title: `Du fullførte planen: ${plan.name}`,
     body: "Se hvordan du har utviklet deg og be om ny plan.",
-    link: `/portal/tren/feiring/${planId}`,
+    link: "/portal/planlegge/periode-ferdig",
   });
 
   revalidatePath("/admin/plans");
