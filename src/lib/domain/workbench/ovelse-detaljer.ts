@@ -1,6 +1,6 @@
 /**
  * Øvelsesdetaljer — valgene i trinn 3–8 i masteren (docs/treningsplanlegging.md
- * kap. 12–17): sted, måleutstyr, hastighet i læringssteg, teknisk fokus, sandtrinn,
+ * kap. 12–17): sted, måleutstyr, hastighet i læringssteg, teknisk fokus,
  * treningsmåte, mengde og målfelt.
  *
  * Lagres som `detaljer` inne i `WorkbenchDrill.akFormel` (Json), uten databaseendring.
@@ -18,7 +18,6 @@ import {
   hastighetForMotorikk,
   HASTIGHET_PROSENT,
   DIMENSJON_KODER,
-  SAND_TRINN_KODER,
   type BelastningKode,
   type DimensjonKode,
   type MotorikkKode,
@@ -139,7 +138,6 @@ const kortTekst = (maks: number) =>
 export const OvelseDetaljerSchema = z.object({
   hastighetProsent: z.union([z.literal(25), z.literal(50), z.literal(75), z.literal(100)]).optional(),
   tekniskFokus: z.enum(DIMENSJON_KODER).optional(),
-  sandTrinn: z.enum(SAND_TRINN_KODER).optional(),
   sted: z
     .object({ hoved: z.enum(STED_HOVED), delvalg: kortTekst(60) })
     .optional(),
@@ -194,7 +192,6 @@ export type MengdeFelt = {
 export type FeltSett = {
   laeringssteg: boolean;
   tekniskFokus: readonly DimensjonKode[];
-  sandTrinn: boolean;
   sted: boolean;
   maaleutstyr: boolean;
   treningsmaate: boolean;
@@ -237,7 +234,6 @@ export function feltForOvelse(pyramid: PyramidArea, area: TrainingArea): FeltSet
   return {
     laeringssteg: r.motorikk && teknisk,
     tekniskFokus: r.dimensjon && golf ? dimensjonerFor(omraade) : [],
-    sandTrinn: r.sandTrinn && golf,
     sted: true,
     maaleutstyr: teknisk && !r.fysParametere,
     treningsmaate: teknisk && !r.fysParametere,
@@ -277,7 +273,6 @@ export function vaskDetaljer(
   if (detaljer.tekniskFokus && felt.tekniskFokus.length > 0 && erGyldigDimensjon(omraade, detaljer.tekniskFokus)) {
     ut.tekniskFokus = detaljer.tekniskFokus;
   }
-  if (felt.sandTrinn && detaljer.sandTrinn) ut.sandTrinn = detaljer.sandTrinn;
   if (detaljer.sted && stedGyldig(detaljer.sted.hoved, detaljer.sted.delvalg)) {
     ut.sted = detaljer.sted.delvalg
       ? { hoved: detaljer.sted.hoved, delvalg: detaljer.sted.delvalg }

@@ -9,8 +9,6 @@ import {
   MOTORIKK_LABEL,
   PRESS_KODER,
   PRESS_LABEL,
-  SAND_TRINN_KODER,
-  SAND_TRINN_LABEL,
   type MotorikkKode,
 } from "@/lib/domain/ak-formel-v2";
 import { AREA_LABEL, PYRAMID_LABEL, UI } from "@/lib/domain/workbench/labels";
@@ -194,7 +192,7 @@ export function OvelseSkjema({ standardPyramide, drill, disabled, onSubmit, modu
         </>
       ) : null}
 
-      {felt.laeringssteg || felt.tekniskFokus.length > 0 || felt.sandTrinn || felt.treningsmaate ? (
+      {felt.laeringssteg || felt.tekniskFokus.length > 0 || felt.treningsmaate ? (
         <span className={kicker}>5 · Gjennomføring</span>
       ) : null}
       {felt.laeringssteg ? (
@@ -220,14 +218,6 @@ export function OvelseSkjema({ standardPyramide, drill, disabled, onSubmit, modu
           <select value={u.tekniskFokus} onChange={(e) => sett("tekniskFokus", e.target.value)}>
             <option value="">Ikke valgt</option>
             {felt.tekniskFokus.map((d) => <option key={d} value={d}>{DIMENSJON_LABEL[d]}</option>)}
-          </select>
-        </label>
-      ) : null}
-      {felt.sandTrinn ? (
-        <label>Sandtrinn
-          <select value={u.sandTrinn} onChange={(e) => sett("sandTrinn", e.target.value)}>
-            <option value="">Ikke valgt</option>
-            {SAND_TRINN_KODER.map((s) => <option key={s} value={s}>{SAND_TRINN_LABEL[s]}</option>)}
           </select>
         </label>
       ) : null}

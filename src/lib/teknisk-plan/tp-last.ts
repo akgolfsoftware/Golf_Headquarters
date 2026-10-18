@@ -22,7 +22,7 @@ const TP_INCLUDE = {
         orderBy: { sortOrder: "asc" },
         select: {
           id: true, tittel: true, slagNavn: true, pyramide: true, omraade: true, omraadeKode: true, koller: true,
-          motorikk: true, belastning: true, press: true, dimensjon: true, sandTrinn: true, maaleutstyr: true,
+          motorikk: true, belastning: true, press: true, dimensjon: true, maaleutstyr: true,
           status: true, repsMaalDry: true, repsMaalLav: true, repsMaalFull: true,
           repsGjortDry: true, repsGjortLav: true, repsGjortFull: true,
           logs: {

@@ -35,7 +35,6 @@ export type MasterbrainOvelsesbankElement = Record<string, unknown> & {
     belastning?: string;
     press?: string;
     maaleutstyr?: string;
-    sandTrinn?: string;
   };
   facilityRequirements?: {
     longestShotM?: number;

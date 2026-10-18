@@ -504,7 +504,7 @@ Det er området, ikke pyramiden, som bestemmer hvilke detaljvalg som kommer vide
 |---|---|
 | Utslag og Innspill | Læringssteg · teknisk fokus · sted · måleutstyr · press · mengde |
 | Chip, pitch eller lob | Teknisk fokus · sted · måleutstyr · press · mengde |
-| Bunker | Sandtrinn · teknisk fokus · sted · måleutstyr · press · mengde |
+| Bunker | Teknisk fokus · sted · måleutstyr · press · mengde |
 | Putting | Puttingfokus · sted · måleutstyr · press · antall putter |
 | Styrke | Serier · repetisjoner · belastning (vekt) · RIR · pause · mål |
 | Kondisjon | Aktivitet · varighet eller distanse · intensitetssone · intervaller og pauser · mål |
@@ -636,8 +636,6 @@ kapittel 19. Feltet vises bare for Utslag og Innspill.
 | Bunker | Sandinngang (`SANDINNGANG`) · Lengdekontroll · Høyde · Lie-variasjon (`LIE_VARIASJON`) |
 | Putting | Greenlesing (`GREENLESING`) · Ballstart (`BALLSTART`) · Sikte · Lengdekontroll |
 | Banespill | Spilleformat (`SPILLEFORMAT`) · Strategioppgave (`STRATEGIOPPGAVE`) |
-
-**Sandtrinn (bare bunker):** Uten ball i sanden (`UTEN_BALL_I_SAND`) · Med ball (`MED_BALL`).
 
 **Ett fokus per øvelse, flere øvelser per økt** (bekreftet av Anders 30.09.2026). En økt kan ha
 flere øvelser, og spiller og coach kan velge dem fra spillerens individuelle tekniske plan. Hver
