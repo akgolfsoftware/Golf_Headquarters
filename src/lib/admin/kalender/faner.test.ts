@@ -16,10 +16,10 @@ import {
  * `?visning=`-dyplenker og at redirect-kilden faktisk peker hit.
  */
 
-test("fem faner, uke først som standard", () => {
+test("seks faner i utkastets rekkefølge, uke som standard", () => {
   assert.deepEqual(
     KALENDER_FANER.map((f) => f.id),
-    ["uke", "maned", "dag", "stall", "tilg"],
+    ["dag", "uke", "maned", "ar", "stall", "tilg"],
   );
   assert.equal(KALENDER_STANDARDFANE, "uke");
 });
@@ -27,7 +27,7 @@ test("fem faner, uke først som standard", () => {
 test("stall-fanen dokumenterer adressen den erstattet", () => {
   assert.deepEqual(
     KALENDER_FANER.map((f) => f.gammelHref),
-    [null, null, null, "/admin/stall/dag", null],
+    [null, null, null, null, "/admin/stall/dag", null],
   );
 });
 
