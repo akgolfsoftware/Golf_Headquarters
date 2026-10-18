@@ -8,8 +8,8 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { ensureNotionConnection } from "@/lib/notion/bootstrap";
 import { getNotionConnectionForUser } from "@/lib/notion/client";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TlTilbake } from "@/components/admin/v2/oppsett/tl-kit";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { Topp } from "@/components/admin/agencyos-ny/ny";
 import {
   AdminWorkspaceNotionTrainLock,
   type AdminWorkspaceNotionData,
@@ -47,9 +47,12 @@ export default async function WorkspaceNotionPage({
   };
 
   return (
-    <V2Shell bredde="kolonne" aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TlTilbake href="/admin/oppgaver">Oppgaver</TlTilbake>
-      <AdminWorkspaceNotionTrainLock data={data} />
-    </V2Shell>
+    <AgencyOSSkall navn={user.name ?? "Coach"}>
+      <div className="agn-s">
+        <Topp tilbake={{ href: "/admin/oppsett?fane=integr", tekst: "Oppsett" }} dato="Oppsett · integrasjoner" tittel="Notion"
+          ingress="Oppgaver og prosjekter kommer bare fra Notion. Her ser du hvilke databaser som er koblet, og siste synk." />
+        <AdminWorkspaceNotionTrainLock data={data} />
+      </div>
+    </AgencyOSSkall>
   );
 }

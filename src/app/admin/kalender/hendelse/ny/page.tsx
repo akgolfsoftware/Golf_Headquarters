@@ -7,8 +7,8 @@
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TilbakeLenke, Tittel } from "@/components/v2";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { Topp } from "@/components/admin/agencyos-ny/ny";
 import { HendelseForm } from "./hendelse-form";
 
 export const dynamic = "force-dynamic";
@@ -32,12 +32,12 @@ export default async function NyHendelsePage({ searchParams }: { searchParams: S
   const [dato, tid] = start?.includes("T") ? start.split("T") : [fallback.dato, fallback.tid];
 
   return (
-    <V2Shell bredde="kolonne" aktiv="kalender" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <TilbakeLenke href="/admin/kalender">Kalender</TilbakeLenke>
-      <div style={{ marginTop: 12, marginBottom: 20 }}>
-        <Tittel mobile={false}>Ny hendelse</Tittel>
+    <AgencyOSSkall navn={user.name ?? "Coach"}>
+      <div className="agn-s">
+        <Topp tilbake={{ href: "/admin/kalender", tekst: "Kalender" }} dato="Kalender · blokkert tid" tittel="Ny hendelse"
+          ingress="Møte, ferie eller reise. Tiden er ikke en økt, og spillerne kan ikke booke deg i den." />
+        <div className="smal"><HendelseForm startDato={dato} startKlokkeslett={tid} /></div>
       </div>
-      <HendelseForm startDato={dato} startKlokkeslett={tid} />
-    </V2Shell>
+    </AgencyOSSkall>
   );
 }

@@ -32,8 +32,8 @@ Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kode
 
 | Kobling | Rader |
 |---|---:|
-| tegnet-skjermtype | 259 |
-| videresending | 192 |
+| tegnet-skjermtype | 258 |
+| videresending | 193 |
 | byggeunderlag | 37 |
 | teknisk-forklaring | 35 |
 | felles-monster | 22 |
