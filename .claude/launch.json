@@ -32,6 +32,16 @@
         "docs/design-system"
       ],
       "port": 8765
+    },
+    {
+      "name": "marked-kjernesider",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": [
+        "-c",
+        "cd /Users/anderskristiansen/Developer/akgolf-hq-marked && VEDLIKEHOLD=0 DOTENV_CONFIG_PATH=/Users/anderskristiansen/Developer/akgolf-hq/.env.local NODE_OPTIONS='--require dotenv/config --max-old-space-size=8192' npx next dev -p 3141"
+      ],
+      "port": 3141,
+      "autoPort": false
     }
   ]
 }
