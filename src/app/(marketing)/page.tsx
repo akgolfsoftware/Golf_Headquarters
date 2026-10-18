@@ -13,7 +13,7 @@ import { ForsidePrecision } from "@/components/marketing/ds-sider/ForsidePrecisi
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "AK Golf · Coaching og Player HQ i Fredrikstad",
+  title: "Coaching og Player HQ i Fredrikstad",
   description:
     "Coaching med Anders Kristiansen på bane, i studio og i gruppe, og Player HQ for deg som trener videre mellom timene.",
 };

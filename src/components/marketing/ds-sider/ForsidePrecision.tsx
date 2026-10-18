@@ -29,7 +29,7 @@ async function hentFraPris(): Promise<string | null> {
       orderBy: { priceOre: "asc" },
       select: { priceOre: true },
     });
-    return t ? `Fra ${kroner(t.priceOre)}` : null;
+    return t ? `fra ${kroner(t.priceOre)}` : null;
   } catch {
     return null;
   }
