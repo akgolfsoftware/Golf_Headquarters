@@ -6,7 +6,7 @@ type JsonFelt = { [key: string]: true | JsonFelt };
 export const FORMEL_FELT: JsonFelt = {
   pyramid: true, area: true, label: true, motorikk: true, belastning: true, press: true,
   detaljer: {
-    hastighetProsent: true, tekniskFokus: true, sandTrinn: true, maaleutstyr: true, treningsmaate: true,
+    hastighetProsent: true, tekniskFokus: true, maaleutstyr: true, treningsmaate: true,
     kondisjonssegmenter: true, utstyr: true,
     sted: { hoved: true, delvalg: true },
     mengde: { enhet: true, antall: true, reps: true, vektKg: true, rir: true, pauseSek: true },

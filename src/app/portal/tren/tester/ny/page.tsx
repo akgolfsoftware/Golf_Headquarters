@@ -1,68 +1,43 @@
-// PH14OpprettTest — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
-import { TL } from "@/lib/v2/train-lock";
 /**
- * PlayerHQ · Tren · Tester · Ny test (/portal/tren/tester/ny) — v2.
- * v2-port 17. juli 2026 (Team D2): `NyTestV2` erstatter legacy NyTestWizard,
- * ruten flyttet ut av (legacy). Auth, testliste-spørringen og siste-resultat-
- * uttrekket (for delta i bekreft-steget) er uendret; server action `logTest`
- * er flyttet byte-identisk til ./actions.ts. Underruten /ny/egen er utenfor
- * denne porten og ligger fortsatt i (legacy).
+ * PlayerHQ · Tester · Ny test (/portal/tren/tester/ny). PH-14 Ny test i nytt design (pakke 13, Stats resten).
+ * Design og avvik: se PH14NyTest.
+ * Testbatteriet er testene spilleren har tilgang til (testTilgangWhere), med siste og beste resultat per test.
+ * Server action `logTest` ligger i ./actions.ts.
  */
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { testTilgangWhere } from "@/lib/portal-tester/test-tilgang";
+import { byggNyTestValg } from "@/lib/portal-tester/ny-test-data";
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
-import { TilbakeLenke, Caps, Tittel } from "@/components/v2";
-import { NyTestV2 } from "@/components/portal/v2/NyTestV2";
+import { PH14NyTest } from "@/components/portal/precision/PH14NyTest";
+
+export const dynamic = "force-dynamic";
 
 export default async function NyTestPage() {
   const user = await requirePortalUser({ kreverTilgang: "TALENT" });
 
-  const tests = await prisma.testDefinition.findMany({
-    orderBy: { name: "asc" },
-    select: {
-      id: true,
-      name: true,
-      pyramidArea: true,
-      description: true,
-    },
-  });
+  const [defs, resultater, enrollment] = await Promise.all([
+    prisma.testDefinition.findMany({
+      where: testTilgangWhere(user.id),
+      orderBy: { name: "asc" },
+      select: { id: true, name: true, description: true, pyramidArea: true, scoringRule: true, protocol: true, isCustom: true },
+    }),
+    prisma.testResult.findMany({
+      where: { userId: user.id },
+      select: { testId: true, score: true, takenAt: true },
+    }),
+    prisma.playerEnrollment.findFirst({
+      where: { userId: user.id, endedAt: null, coachId: { not: null } },
+      orderBy: { enrolledAt: "desc" },
+      select: { coach: { select: { name: true } } },
+    }),
+  ]);
 
-  // Siste resultat per test for å vise delta i bekreft-steget.
-  const sisteResultater = await prisma.testResult.findMany({
-    where: { userId: user.id },
-    orderBy: { takenAt: "desc" },
-    select: { testId: true, score: true, takenAt: true },
-  });
-  const sistePerTest = new Map<string, { score: number; takenAt: string }>();
-  for (const r of sisteResultater) {
-    if (!sistePerTest.has(r.testId)) {
-      sistePerTest.set(r.testId, {
-        score: r.score,
-        takenAt: r.takenAt.toISOString(),
-      });
-    }
-  }
+  const coachNavn = enrollment?.coach?.name?.split(" ")[0] ?? null;
 
   return (
-        <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
-      <div className="pa-side">
-      <TilbakeLenke href="/portal/tren/tester">Tilbake til tester</TilbakeLenke>
-      <div style={{ maxWidth: 720, width: "100%", margin: "0 auto" }}>
-        <Caps>Trening · Tester</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em="ny test">Logg</Tittel>
-        </div>
-        <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.55, margin: "10px 0 0" }}>
-          Gå gjennom de fire stegene — type, detaljer, resultat og bekreft
-          {user.name ? `, ${user.name.split(" ")[0]}` : ""}.
-        </p>
-      </div>
-      <NyTestV2
-        tests={tests}
-        sistePerTest={Object.fromEntries(sistePerTest)}
-        spillerNavn={user.name ?? "Spiller"}
-      />
-          </div>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <PH14NyTest tester={byggNyTestValg(defs, resultater)} coachNavn={coachNavn} />
     </PlayerHQSkall>
   );
 }

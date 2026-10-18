@@ -6,7 +6,7 @@
  * Stil: src/styles/playerhq-ny.css og src/styles/playerhq-ny-maal.css.
  *
  * Data som før: aktive Goal-rader, fremdrift fra beregnGoalProgress, siste milepæl og IUP-inngangen
- * (harEgenIupInngang). «Ny målsetning» går til /portal/ai/mal-bygger, som før. Hvert kort åpner
+ * (harEgenIupInngang). «Ny målsetning» går til /portal/mal/ny (pakke 17b). Hvert kort åpner
  * /portal/mal/goal/[id].
  *
  * Avvik:
@@ -62,7 +62,7 @@ function Hode() {
           <h1 className="phn-tittel">Målsetninger</h1>
         </div>
         <div className="phn-knapper">
-          <Link className="phn-knapp pri" href="/portal/ai/mal-bygger"><Plus className="phn-ikon" aria-hidden />Ny målsetning</Link>
+          <Link className="phn-knapp pri" href="/portal/mal/ny"><Plus className="phn-ikon" aria-hidden />Ny målsetning</Link>
         </div>
       </div>
     </div>
@@ -157,7 +157,7 @@ export function PHMalsetninger({ data, avsluttede = [], visIup, state, onRetry }
         <section className="phn-kort phn-k-dempet phn-m-tomt">
           <b className="phn-k-undertittel">Ingen målsetninger ennå</b>
           <p className="phn-forklar">Sett en målsetning for året, en periode eller en enkelt økt. Fremdriften regnes ut fra det du registrerer.</p>
-          <Link className="phn-knapp pri" href="/portal/ai/mal-bygger"><Plus className="phn-ikon" aria-hidden />Ny målsetning</Link>
+          <Link className="phn-knapp pri" href="/portal/mal/ny"><Plus className="phn-ikon" aria-hidden />Ny målsetning</Link>
         </section>
       ) : null}
       {tilstand === "tom" ? iupRad : (

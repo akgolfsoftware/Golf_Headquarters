@@ -18,7 +18,7 @@ describe("AgencyOS-menyen (variant C, 16.10)", () => {
       [
         ["Daglig", ["Cockpit", "Innboks", "Kalender"]],
         ["Spillere", ["Stall", "Workbench", "Grupper", "Tester"]],
-        ["Drift", ["Booking", "Økonomi", "Oppsett"]],
+        ["Drift", ["Booking", "Økonomi", "Data Golf", "Oppsett"]],
       ],
     );
     assert.deepEqual(AOS_MER.map((m) => m.label), ["Booking", "Grupper", "Tester", "Økonomi", "Oppsett"]);
@@ -38,9 +38,11 @@ describe("AgencyOS-menyen (variant C, 16.10)", () => {
     assert.ok(!synligeMer(false).some((m) => m.id === "okonomi"));
   });
 
-  it("Data Golf er ikke i menyen før DG-01 finnes i AgencyOS", () => {
-    const labels = AOS_GRUPPER.flatMap((g) => g.punkter.map((p) => p.label));
-    assert.ok(!labels.includes("Data Golf"));
+  it("Data Golf står i Drift og åpner DG-01, som finnes (pakke 10)", () => {
+    const dg = AOS_GRUPPER.find((g) => g.id === "drift")!.punkter.find((p) => p.id === "datagolf");
+    assert.equal(dg?.href, "/admin/datagolf");
+    assert.ok(finnesSide("/admin/datagolf"));
+    assert.equal(aktivtAosId("/admin/datagolf/proffer/123"), "datagolf");
   });
 
   it("lengste treff vinner", () => {

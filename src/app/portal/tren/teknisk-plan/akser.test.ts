@@ -14,7 +14,6 @@ test("læringssteg lagres bare for full sving", () => {
     belastning: "BANE",
     press: "ALENE",
     dimensjon: "BALLSTART",
-    sandTrinn: null,
   });
   assert.equal(putt.motorikk, null, "putting har ingen læringssteg");
   assert.equal(putt.dimensjon, "BALLSTART", "teknisk fokus gjelder putting");
@@ -25,7 +24,6 @@ test("læringssteg lagres bare for full sving", () => {
     belastning: "BANE",
     press: "ALENE",
     dimensjon: "SIKTE",
-    sandTrinn: null,
   });
   assert.equal(tee.motorikk, "LAV_HAST");
 });
@@ -37,7 +35,6 @@ test("teknisk fokus som ikke hører til området forkastes", () => {
     belastning: "TRENINGSOMRAADE",
     press: "OBSERVERT",
     dimensjon: "GREENLESING",
-    sandTrinn: null,
   });
   assert.equal(chip.dimensjon, null, "greenlesing gjelder ikke chip");
 });

@@ -20,7 +20,7 @@ import {
   unpublishSession,
 } from "@/lib/workbench/wb-actions";
 import { workbenchUrl } from "@/lib/workbench/visning-url";
-import { DIMENSJON_LABEL, SAND_TRINN_LABEL } from "@/lib/domain/ak-formel-v2";
+import { DIMENSJON_LABEL } from "@/lib/domain/ak-formel-v2";
 import {
   hastighetTekst,
   MAALEUTSTYR_LABEL,
@@ -98,7 +98,6 @@ function detaljRader(drill: Drill | undefined) {
     { label: "Måleutstyr", hint: "Hvordan øvelsen måles", value: d.maaleutstyr ? MAALEUTSTYR_LABEL[d.maaleutstyr] : undefined },
     { label: "Hastighet", hint: "Prosent av spillerens Club Speed", value: hastighetTekst(d.hastighetProsent) },
     { label: "Teknisk fokus", hint: "Ett fokus per øvelse", value: d.tekniskFokus ? DIMENSJON_LABEL[d.tekniskFokus] : undefined },
-    { label: "Sandtrinn", hint: "Bare bunker", value: d.sandTrinn ? SAND_TRINN_LABEL[d.sandTrinn] : undefined },
     { label: "Treningsmåte", hint: "Hvordan spilleren skal trene", value: d.treningsmaate ? TRENINGSMAATE_LABEL[d.treningsmaate] : undefined },
     { label: "Mengde", hint: "Hvor mye som skal gjøres", value: mengdeTekst(d.mengde) },
     { label: "Kondisjonssegmenter", hint: "Tid og pulssone", value: kondisjonssegmentTekst(d.kondisjonssegmenter) },

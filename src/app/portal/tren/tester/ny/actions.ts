@@ -28,6 +28,9 @@ const LogTestInput = z.object({
   preNotes: z.string().max(2000).optional().default(""),
   postNotes: z.string().max(2000).optional().default(""),
   shareWithCoach: z.boolean().default(true),
+  // PH-14 Ny test (pakke 13): spilleren noterer at en trener var til stede. Resultatet er fortsatt
+  // «Egenført»; «Kontrollert» krever at treneren fører selv (`recordedById`).
+  trenerTilStede: z.boolean().default(false),
   // Per-metrikk resultater (key = metrikk-slug, value = tall i SI-enhet)
   results: z.record(z.string(), z.number().nonnegative()),
 });
@@ -71,6 +74,7 @@ export async function logTest(input: unknown) {
     equipment: data.equipment,
     preNotes: data.preNotes,
     shareWithCoach: data.shareWithCoach,
+    trenerTilStede: data.trenerTilStede,
     metrics: Object.fromEntries(values),
   };
 

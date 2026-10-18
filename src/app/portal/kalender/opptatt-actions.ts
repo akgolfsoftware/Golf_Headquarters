@@ -1,3 +1,5 @@
+"use server";
+
 /**
  * Server actions for spillerens egen opptatte tid (PlayerBusyBlock).
  *
@@ -6,8 +8,6 @@
  * er hans egne, og skal ikke kunne opprettes eller endres av andre. Coachen
  * ser tiden gjennom tilgjengelighet.ts, ikke gjennom disse actionene.
  */
-
-"use server";
 
 import "server-only";
 import { revalidatePath } from "next/cache";
@@ -53,6 +53,7 @@ export async function leggTilOpptattTid(
   });
 
   revalidatePath("/portal/kalender");
+  revalidatePath("/portal/planlegge/opptatt");
   return { ok: true, id: rad.id };
 }
 
@@ -75,6 +76,7 @@ export async function endreOpptattTid(
   if (res.count === 0) return { ok: false, feil: "Fant ikke avtalen" };
 
   revalidatePath("/portal/kalender");
+  revalidatePath("/portal/planlegge/opptatt");
   return { ok: true, id };
 }
 
@@ -87,6 +89,7 @@ export async function slettOpptattTid(id: string): Promise<ActionResultat> {
   if (res.count === 0) return { ok: false, feil: "Fant ikke avtalen" };
 
   revalidatePath("/portal/kalender");
+  revalidatePath("/portal/planlegge/opptatt");
   return { ok: true, id };
 }
 

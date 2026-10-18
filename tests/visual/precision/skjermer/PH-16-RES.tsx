@@ -3,7 +3,7 @@ import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { PH16Resultater } from "@/components/portal/precision/PH16Resultater";
 import { TmLaster } from "@/components/portal/precision/PH17TmFelles";
 import { SdFeil } from "@/components/portal/precision/PHStatsDybdeFelles";
-import { byggResultater, type ResultatRundeInn } from "@/lib/portal-analyse/resultater-data";
+import { byggResultater, type ResultatRundeInn, type TurnKurveData } from "@/lib/portal-analyse/resultater-data";
 import type { TurneringsRad } from "@/lib/domain/turneringshistorikk";
 
 export const sti = "/portal/analysere/resultater";
@@ -26,11 +26,28 @@ const turn: TurneringsRad[] = [
   t("Østlandstour 3", "2026-07-11", [76], null, "Gutter 17–19", "CUT"),
 ];
 
+const kurve: TurnKurveData = {
+  koblet: true, sesonger: [2026, 2025], valgt: 2026,
+  punkter: [
+    { id: "a", navn: "Østlandstour 1", dato: "18. apr.", snitt: 6, beste: 4, verste: 8 },
+    { id: "b", navn: "Srixon Tour 1", dato: "16. mai", snitt: 4.5, beste: 3, verste: 6 },
+    { id: "c", navn: "Østlandstour 3", dato: "11. juli", snitt: 4, beste: null, verste: null },
+    { id: "d", navn: "Klubbmesterskap", dato: "15. aug.", snitt: 1.5, beste: 0, verste: 3 },
+    { id: "e", navn: "Srixon Tour 3", dato: "12. sep.", snitt: 1, beste: 0, verste: 2 },
+    { id: "f", navn: "Srixon Tour 4", dato: "26. sep.", snitt: 0.5, beste: 0, verste: 1 },
+  ],
+  snittPerRunde: 3.4, forrige: { sesong: 2025, snitt: 5.2 }, antallTurneringer: 6, antallRunder: 14,
+  oppdatert: "mandag 5. okt.", tomGrunn: "",
+};
+const tomKurve: TurnKurveData = { ...kurve, sesonger: [], valgt: "alle", punkter: [], snittPerRunde: null, forrige: null, antallTurneringer: 0, antallRunder: 0, koblet: false, tomGrunn: "Profilen din er ikke koblet til turneringsresultatene ennå. Coachen din kobler den." };
+
 const skall = (n: React.ReactNode) => <PlayerHQSkall innboksHref="/portal/varsler" uleste={2}>{n}</PlayerHQSkall>;
 export const tilstander = {
-  data: skall(<PH16Resultater data={byggResultater(runder, turn)} koblet />),
-  "ikke-koblet": skall(<PH16Resultater data={byggResultater(runder.slice(0, 3), [])} koblet={false} />),
-  tom: skall(<PH16Resultater data={byggResultater([], [])} koblet={false} />),
+  data: skall(<PH16Resultater data={byggResultater(runder, turn)} koblet kurve={kurve} />),
+  turneringer: skall(<PH16Resultater data={byggResultater(runder, turn)} koblet kurve={kurve} startVis="turn" />),
+  "turneringer-tom": skall(<PH16Resultater data={byggResultater(runder.slice(0, 3), [])} koblet={false} kurve={tomKurve} startVis="turn" />),
+  "ikke-koblet": skall(<PH16Resultater data={byggResultater(runder.slice(0, 3), [])} koblet={false} kurve={tomKurve} />),
+  tom: skall(<PH16Resultater data={byggResultater([], [])} koblet={false} kurve={tomKurve} />),
   laster: skall(<TmLaster tekst="Henter resultatene" />),
   feil: skall(<SdFeil tittel="Resultatene kunne ikke hentes" tekst="Rundene og turneringene dine er trygge. Prøv igjen om litt." reset={() => {}} />),
 };

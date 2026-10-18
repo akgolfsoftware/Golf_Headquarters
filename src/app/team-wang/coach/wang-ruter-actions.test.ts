@@ -61,6 +61,25 @@ mock.module("@/app/team-wang/coach/WangCoachKlient", {
   namedExports: { WangCoachKlient: () => null },
 });
 
+let testerKall: string[] = [];
+let dgKall: string[] = [];
+mock.module("@/app/team-wang/_data/wang-datagolf-data", {
+  namedExports: {
+    hentWangDataGolf: async (side: string) => {
+      dgKall.push(side);
+      return { side: "kilde", rader: [] };
+    },
+  },
+});
+mock.module("@/app/team-wang/_data/wang-tester-data", {
+  namedExports: {
+    hentWangTesterData: async (_bruker: unknown, gruppeId: string) => {
+      testerKall.push(gruppeId);
+      return { delerIder: [], resultater: [] };
+    },
+    hentWangSamtykkeStatus: async () => ({}),
+  },
+});
 mock.module("@/app/team-wang/coach/iup/[elevId]/iup-samtale", {
   namedExports: { IupSamtale: () => null },
 });
@@ -258,7 +277,7 @@ async function skjermerPage() {
   return (await import("../skjermer/page")).default;
 }
 
-type KlientProps = { omraade: string; rolle: string; elever?: Array<{ id: string; navn: string }> };
+type KlientProps = { omraade: string; rolle: string; elever?: Array<{ id: string; navn: string }>; tester?: unknown; dataGolf?: unknown };
 function propsFra(element: unknown): KlientProps {
   return (element as { props: KlientProps }).props;
 }
@@ -287,10 +306,15 @@ test("rollen kan ikke velges via adressen: trener forblir Trener", async () => {
   assert.equal(props.rolle, "Trener");
 });
 
-test("coachruten gir bare spillere videre til lenker mot ekte data", async () => {
+test("coachruten henter testresultater bare der de vises, og bare for egen gruppe", async () => {
   const side = await coachPage();
-  const props = propsFra(await side());
-  assert.deepEqual(props.elever, [{ id: "elev-1", navn: "Test Elev" }]);
+  testerKall = [];
+  const idag = propsFra(await side());
+  assert.equal(idag.tester, undefined);
+  assert.deepEqual(testerKall, []);
+  const tester = propsFra(await side({ searchParams: Promise.resolve({ omraade: "tester" }) }));
+  assert.deepEqual(tester.tester, { delerIder: [], resultater: [] });
+  assert.equal(testerKall.length, 1);
 });
 
 test("skjermoversikten krever innlogget trener eller sportssjef", async () => {
@@ -312,4 +336,15 @@ test("skjermoversikten kaller vakten med ADMIN/COACH og krever WANG-gruppe", asy
   const props = propsFra(await side());
   assert.equal(props.omraade, "system");
   assert.equal(props.rolle, "Trener");
+});
+
+test("Data Golf hentes bare på Data Golf-fanen i Konkurranse", async () => {
+  const side = await coachPage();
+  dgKall = [];
+  const kalender = propsFra(await side({ searchParams: Promise.resolve({ omraade: "konkurranse" }) }));
+  assert.equal(kalender.dataGolf, undefined);
+  assert.deepEqual(dgKall, []);
+  const dg = propsFra(await side({ searchParams: Promise.resolve({ omraade: "konkurranse", fane: "dg-kilde" }) }));
+  assert.deepEqual(dg.dataGolf, { side: "kilde", rader: [] });
+  assert.deepEqual(dgKall, ["kilde"]);
 });

@@ -12,7 +12,7 @@ const tm = (p: Partial<TpTmInn>): TpTmInn => ({
 
 const oppgave = (p: Partial<TpOppgaveInn>): TpOppgaveInn => ({
   id: "t", tittel: "", slagNavn: null, pyramide: "TEK", omraade: "", omraadeKode: null, koller: [], motorikk: null, belastning: null,
-  press: null, dimensjon: null, sandTrinn: null, maaleutstyr: null, status: "ACTIVE", repsMaalDry: 0, repsMaalLav: 0, repsMaalFull: 0,
+  press: null, dimensjon: null, maaleutstyr: null, status: "ACTIVE", repsMaalDry: 0, repsMaalLav: 0, repsMaalFull: 0,
   repsGjortDry: 0, repsGjortLav: 0, repsGjortFull: 0, logs: [], maalMatrise: [], tmGoals: [], ...p,
 });
 

@@ -4,6 +4,17 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## WANG-SKJERMENE BRUKER BARE WANGS EGNE BILDER (Anders 18.10.2026, bindende)
+
+Anders 18.10: «Det er viktig at alle Wang skjermene bruker Wang bilder fra Wang toppidrett design systemet.»
+
+- **Alle bilder i `/team-wang/*` kommer fra fotobiblioteket i Claude Design «WANG Toppidrett Designsystem»** (`3580374e`, `assets/photo/` og `uploads/wang-stills/`). Ingen PlayerHQ-, AK Golf- eller stockbilder.
+- Bildene ligger i `public/team-wang/hero/`. I trenerflaten: `trening-golf.jpg` (golfutslag fra wang.no), `golf-putt.jpg` (still fra WANGs film) og `styrke-eleiko.jpg` (still med WANG-logo).
+
+**Overstyrer:** bildene fra PlayerHQ i `docs/design-system/utkast-wang/bilder/` (README §Slik lages en skjerm).
+
+**Arbeidet dette utløser:** pakke 3–8 og 10 bruker bare disse bildene. Ferdig når et søk etter `/images/playerhq` i `src/components/wang` og `src/app/team-wang` gir 0 treff.
+
 ## ALT SOM ER KLART LEGGES INN I MAIN AUTOMATISK (Anders 17.10.2026, bindende)
 
 Anders 17.10: «kan du legge til regel at alt som er klart auto merges til main».

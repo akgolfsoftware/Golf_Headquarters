@@ -38,7 +38,7 @@ for (const m of schema.matchAll(/^enum\s+(\w+)\s*\{([^}]*)\}/gm)) {
 
 // ── 2. Masteren må dekke de treningsrelevante enumene ──────────────
 const MAA_DEKKES = [
-  "PyramidArea", "Omraade", "Motorikk", "Belastning", "Press", "OmradeDimensjon", "SandTrinn",
+  "PyramidArea", "Omraade", "Motorikk", "Belastning", "Press", "OmradeDimensjon",
 ];
 const master = readFileSync(MASTER, "utf-8");
 const mangler: string[] = [];

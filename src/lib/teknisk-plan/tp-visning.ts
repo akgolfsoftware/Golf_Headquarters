@@ -26,7 +26,6 @@ import {
   MAALEUTSTYR_LABEL,
   MOTORIKK_KODER,
   MOTORIKK_LABEL,
-  SAND_TRINN_LABEL,
   erOmraadeKode,
   formelStreng,
   omraadeDef,
@@ -38,7 +37,6 @@ import {
   type OmraadeKode,
   type PressKode,
   type PyramideKode,
-  type SandTrinnKode,
 } from "@/lib/domain/ak-formel-v2";
 import { vaskMotRelevans } from "@/lib/domain/omrade-relevans";
 import { P_POSITIONS, hovedP, omraadeTilKode, pNavn } from "@/components/teknisk-plan/constants";
@@ -178,7 +176,6 @@ export type TpOppgaveInn = {
   belastning: BelastningKode | null;
   press: PressKode | null;
   dimensjon: DimensjonKode | null;
-  sandTrinn: SandTrinnKode | null;
   maaleutstyr: MaaleutstyrKode | null;
   status: "PENDING" | "ACTIVE" | "DONE" | "ARCHIVED";
   repsMaalDry: number;
@@ -354,7 +351,6 @@ export function formelFor(t: {
     belastning: t.belastning,
     press: t.press,
     dimensjon: null,
-    sandTrinn: null,
   });
   return formelStreng({ pyramide: t.pyramide, omraade: t.omraadeKode, motorikk: v.motorikk, belastning: v.belastning, press: v.press });
 }
@@ -370,8 +366,7 @@ function stegFor(t: TpOppgaveInn, familie: TpOppgave["familie"]): TpSteg[] {
   }
   const gjort = t.repsGjortDry + t.repsGjortLav + t.repsGjortFull;
   const maal = t.repsMaalDry + t.repsMaalLav + t.repsMaalFull;
-  const navn = familie === "BUNKER" && t.sandTrinn ? `Repetisjoner · ${SAND_TRINN_LABEL[t.sandTrinn]}` : "Repetisjoner";
-  return [{ navn, gjort, maal: maal > 0 ? maal : null }];
+  return [{ navn: "Repetisjoner", gjort, maal: maal > 0 ? maal : null }];
 }
 
 function miljoFor(t: TpOppgaveInn): TpMiljo[] {
@@ -511,7 +506,6 @@ export type TpSkjema = {
   slagNavn: string;
   omraadeKode: OmraadeKode | null;
   motorikk: MotorikkKode | null;
-  sandTrinn: SandTrinnKode | null;
   dimensjon: DimensjonKode | null;
   kolle: string | null;
   belastning: BelastningKode | null;
@@ -534,7 +528,6 @@ export const TOMT_SKJEMA: TpSkjema = {
   slagNavn: "",
   omraadeKode: null,
   motorikk: null,
-  sandTrinn: null,
   dimensjon: null,
   kolle: null,
   belastning: null,
@@ -560,7 +553,6 @@ export function skjemaFraOppgave(t: TpOppgaveInn, pNummer: string): TpSkjema {
     slagNavn: t.slagNavn ?? "",
     omraadeKode: kode,
     motorikk: t.motorikk,
-    sandTrinn: t.sandTrinn,
     dimensjon: t.dimensjon,
     kolle: t.koller[0] ?? null,
     belastning: t.belastning,

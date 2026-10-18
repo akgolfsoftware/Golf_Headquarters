@@ -28,7 +28,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, useSyncExternalStore, type MouseEvent, type ReactNode } from "react";
 import {
-  Bell, CalendarCheck, CalendarDays, CalendarPlus, ClipboardCheck, Flag, Inbox, LayoutDashboard, Layers, LineChart, Menu,
+  Bell, BarChart3, CalendarCheck, CalendarDays, CalendarPlus, ClipboardCheck, Flag, Inbox, LayoutDashboard, Layers, LineChart, Menu,
   MessageSquarePlus, PanelLeftClose, PanelLeftOpen, Search, SlidersHorizontal, Sparkles, Users, UsersRound, X, type LucideIcon,
 } from "lucide-react";
 import { Hurtigknapp, type Hurtighandling } from "./Hurtigknapp";
@@ -43,7 +43,7 @@ import "@/styles/agencyos-ny.css";
 
 const IKON: Record<AosId, LucideIcon> = {
   cockpit: LayoutDashboard, innboks: Inbox, kalender: CalendarDays, stall: Users, workbench: Layers,
-  grupper: UsersRound, tester: ClipboardCheck, booking: CalendarCheck, okonomi: LineChart, oppsett: SlidersHorizontal,
+  grupper: UsersRound, tester: ClipboardCheck, booking: CalendarCheck, okonomi: LineChart, datagolf: BarChart3, oppsett: SlidersHorizontal,
 };
 const HURTIG_IKON: Record<string, [LucideIcon, string]> = {
   okt: [Layers, "layers"], melding: [MessageSquarePlus, "message-square-plus"], runde: [Flag, "flag"],

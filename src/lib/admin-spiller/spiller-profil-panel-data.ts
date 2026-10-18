@@ -126,7 +126,7 @@ export async function loadSpillerProfilPanel(
     loadSpillerDashboardEkstra(player.id),
     // Speiler [id]-sidens runde-spørring (siste 4).
     prisma.round.findMany({
-      where: { userId: player.id },
+      where: { userId: player.id, sharedWithCoach: true },
       orderBy: { playedAt: "desc" },
       take: 4,
       select: {

@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { byggTrening, treningSteder, UTEN_STED, type TreningOkt } from "./trening-stats";
+import { byggTrening, treningSteder, UTEN_STED, type LoggetOkt, type TreningOkt } from "./trening-stats";
 import { byggResultater, motParTekst, type ResultatRundeInn } from "./resultater-data";
 import { byggPH14 } from "@/lib/portal-tester/ph14-tester-data";
 import type { TestRow } from "@/lib/portal-tester/tester-data";
@@ -20,8 +20,8 @@ describe("byggTrening (PH-17)", () => {
     assert.equal(s.gjortMin, 150);
     assert.equal(s.planMin, 210);
     assert.equal(s.pct, 71);
-    assert.deepEqual(s.akser.find((a) => a.akse === "TEK"), { akse: "TEK", gjortMin: 60, planMin: 120 });
-    assert.deepEqual(s.akser.find((a) => a.akse === "SLAG"), { akse: "SLAG", gjortMin: 0, planMin: 0 });
+    assert.deepEqual(s.akser.find((a) => a.akse === "TEK"), { akse: "TEK", gjortMin: 60, planGjortMin: 60, loggetMin: 0, planMin: 120 });
+    assert.deepEqual(s.akser.find((a) => a.akse === "SLAG"), { akse: "SLAG", gjortMin: 0, planGjortMin: 0, loggetMin: 0, planMin: 0 });
     assert.deepEqual(s.sted, [{ navn: "Styrkerom", min: 90 }, { navn: "Range", min: 60 }]);
   });
   it("filter på akse og sted, og økter uten sted får egen rad", () => {
@@ -32,6 +32,24 @@ describe("byggTrening (PH-17)", () => {
   });
   it("ingen økter gir null i prosent, aldri 0 %", () => {
     assert.equal(byggTrening([], NAA).pct, null);
+  });
+  it("logget økt øker total treningstid, men lar etterlevelsen og planen stå (vedtak 16.10)", () => {
+    const okter = [okt(2, "TEK", "COMPLETED"), okt(3, "TEK", "SKIPPED")];
+    const logget: LoggetOkt[] = [{ dato: "2026-10-04", min: 45, akse: "SLAG", sted: "Range 3" }, { dato: "2026-10-03", min: 30, akse: "TEK", sted: null }];
+    const uten = byggTrening(okter, NAA);
+    const med = byggTrening(okter, NAA, undefined, logget);
+    assert.equal(med.gjortMin, uten.gjortMin + 75);
+    assert.equal(med.loggetMin, 75);
+    assert.equal(med.planGjortMin, uten.gjortMin);
+    assert.equal(med.planMin, uten.planMin);
+    assert.equal(med.pct, uten.pct);
+    assert.deepEqual(med.akser.find((a) => a.akse === "TEK"), { akse: "TEK", gjortMin: 90, planGjortMin: 60, loggetMin: 30, planMin: 120 });
+    assert.deepEqual(med.akser.find((a) => a.akse === "SLAG"), { akse: "SLAG", gjortMin: 45, planGjortMin: 0, loggetMin: 45, planMin: 0 });
+    assert.deepEqual(med.sted.find((x) => x.navn === "Range 3"), { navn: "Range 3", min: 45 });
+    assert.deepEqual(treningSteder(okter, logget), ["Range", "Range 3", UTEN_STED].sort((a, b) => a.localeCompare(b, "nb-NO")));
+  });
+  it("logget økt fram i tid teller ikke", () => {
+    assert.equal(byggTrening([], NAA, undefined, [{ dato: "2026-10-06", min: 60, akse: "FYS", sted: null }]).gjortMin, 0);
   });
 });
 

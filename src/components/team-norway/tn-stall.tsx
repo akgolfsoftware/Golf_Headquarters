@@ -173,3 +173,19 @@ export function TnBildekort({ href, bilde, alt, navy = false, side = false, chil
 export function TnBildekortKilde({ children }: { children: ReactNode }) {
   return <span className={s.bkKilde}>{children}</span>;
 }
+
+/** Fylte søyler i aksefargene: timer per akse. Aksenavnet og tallet står alltid ved fargen. */
+export function TnAkseSoyler({ timer, etikett }: { timer: Partial<Record<TnAkse, number>>; etikett: string }) {
+  const maks = Math.max(0, ...TN_AKSER.map((k) => timer[k] ?? 0));
+  return (
+    <div className={s.soyler} role="img" aria-label={`${etikett}: ${TN_AKSER.map((k) => `${k} ${timer[k] === undefined ? "—" : `${komma(timer[k] ?? 0)} t`}`).join(", ")}`}>
+      {TN_AKSER.map((k) => (
+        <div key={k} className={s.soyle}>
+          <b>{timer[k] === undefined ? "—" : komma(timer[k] ?? 0)}</b>
+          <div className={s.soyleFelt}><i style={{ height: maks > 0 ? `${((timer[k] ?? 0) / maks) * 100}%` : 0, background: TN.akse[k].fyll }} /></div>
+          <span>{k}</span>
+        </div>
+      ))}
+    </div>
+  );
+}

@@ -37,7 +37,7 @@ Delte deler: `ui_kits/_shared/tp-parts.jsx` (PosLine, RepBars, EnvGrid, TMScale,
 - Over 1024: forhåndsvisning av kortet til venstre + inspektør 340 (docked). 1024 og smalere: ark nedenfra, «Åpne skjemaet» gjenåpner.
 - AK-formelen øverst (sticky) og oppdateres for hvert valg. Ledd som ikke gjelder, utelates (motorikk bare fullsving).
 - **Regel (avklart av Anders 27.09.2026):** når en oppgave har flere læringssteg og flere miljøer, viser AK-formelen steget spilleren er på nå (`task.currentStep`) og hovedmiljøet (`task.primaryEnvironment`). Rep-mål per steg og per miljø lagres hver for seg. Når spilleren går til neste steg, får oppgaven ny formel; den gamle står i historikken.
-- Rekkefølge: posisjon · tittel · slag · område (familie → område) · læringssteg/sandtrinn · teknisk fokus (listen følger området, maks ett) · kølle · miljø og press · måleutstyr (TrackMan · FlightScope · Garmin R10 · Mevo+ · Annet · Uten) · TrackMan-mål (bare radar; nedre/øvre med Stepper, utgangspunkt fra siste økt) · rep-mål per steg og per miljø (sum vises, ulik sum lagres likevel) · treffprotokoll med antall slag og treff.
+- Rekkefølge: posisjon · tittel · slag · område (familie → område) · læringssteg · teknisk fokus (listen følger området, maks ett) · kølle · miljø og press · måleutstyr (TrackMan · FlightScope · Garmin R10 · Mevo+ · Annet · Uten) · TrackMan-mål (bare radar; nedre/øvre med Stepper, utgangspunkt fra siste økt) · rep-mål per steg og per miljø (sum vises, ulik sum lagres likevel) · treffprotokoll med antall slag og treff.
 - Bunnlinje: status i mono («Lagret 08:41 · ikke publisert», «Endret · ikke lagret», «Publisert 18.09.2026 · ingen endringer»), «Lagre oppgave» (primær), «Publiser til spiller» (sekundær, aktiv etter lagring).
 
 ## AG-TP-02 Før og nå

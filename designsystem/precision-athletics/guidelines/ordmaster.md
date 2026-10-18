@@ -38,7 +38,7 @@ FYS (Fysisk) · TEK (Teknisk) · SLAG (Golfslag) · SPILL (Banespill) · TURN (T
   - Utslag: Sikte og oppstilling · Startretning · Kurve · Treffpunkt
   - Innspill: Startretning · Kurve · Høyde · Lengdekontroll · Spinn
   - Nærspill: Landingspunkt · Utrulling · Treffpunkt · Køllevalg · Bruk av bounce
-  - Bunker: Sandinngang · Lengdekontroll · Høyde · Lie-variasjon (sandtrinn: Uten ball i sanden / Med ball)
+  - Bunker: Sandinngang · Lengdekontroll · Høyde · Lie-variasjon
   - Putting: Greenlesing · Ballstart · Sikte · Lengdekontroll
   - Banespill: Spilleformat · Strategioppgave
 - **Turneringstyper** (kun TURN): Treningsturnering · Utviklingsturnering · Prestasjonsturnering

@@ -1,22 +1,12 @@
 // POST /api/portal/trening/logg
-// Spiller logger en treningsøkt fra portal quick-log. Validerer input med Zod
-// og oppretter en TrainingLog koblet til innlogget bruker.
+// Logg økt i etterkant (PlayerHQ pakke 13). Validerer med Zod og oppretter en TrainingLog
+// for innlogget bruker. Økta teller i total treningstid, aldri mot planen (vedtak 16.10).
 
 import { NextResponse } from "next/server";
-import { z } from "zod";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
-import { SgCategory } from "@/generated/prisma/client";
 import { rateLimit } from "@/lib/rate-limit";
-
-const LoggSchema = z.object({
-  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-  sgArea: z.nativeEnum(SgCategory),
-  minutes: z.number().int().min(1).max(240),
-  drillName: z.string().max(100).optional(),
-  quality: z.number().int().min(1).max(5).optional(),
-  notes: z.string().max(500).optional(),
-});
+import { datoIkkeFramITid, LoggOktSchema, sgOmradeFor } from "@/lib/portal-analyse/logg-okt";
 
 export async function POST(req: Request) {
   const user = await getCurrentUser();
@@ -31,37 +21,35 @@ export async function POST(req: Request) {
     );
   }
 
-
   const body = await req.json().catch(() => ({}));
-  const parsed = LoggSchema.safeParse(body);
+  const parsed = LoggOktSchema.safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json(
-      { error: parsed.error.flatten() },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
   }
-
-  const { date, sgArea, minutes, drillName, quality, notes } = parsed.data;
+  const v = parsed.data;
+  if (!datoIkkeFramITid(v.date, new Date())) {
+    return NextResponse.json({ error: "Datoen kan ikke være fram i tid" }, { status: 400 });
+  }
 
   try {
     const logg = await prisma.trainingLog.create({
       data: {
         userId: user.id,
-        date: new Date(date),
-        sgArea,
-        minutes,
-        drillName,
-        quality,
-        notes,
+        date: new Date(`${v.date}T00:00:00.000Z`),
+        sgArea: sgOmradeFor(v.pyramid, v.area),
+        pyramid: v.pyramid,
+        area: v.area,
+        location: v.location,
+        minutes: v.minutes,
+        drillName: v.drillName,
+        effort: v.effort,
+        focus: v.focus,
+        notes: v.notes,
       },
       select: { id: true },
     });
-
     return NextResponse.json({ id: logg.id }, { status: 201 });
   } catch {
-    return NextResponse.json(
-      { error: 'Intern feil ved lagring' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Intern feil ved lagring" }, { status: 500 });
   }
 }
