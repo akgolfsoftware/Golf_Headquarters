@@ -1,8 +1,7 @@
 /**
  * AgencyOS-menyen er variant C (Anders 16.10.2026, beslutninger.md §AGENCYOS-MENYEN
  * BLIR VARIANT C): søk først og punktene i tre grupper — Daglig · Spillere · Drift.
- * Økonomi bare for head coach (ADMIN). Data Golf står i Drift når coach-siden DG-01
- * finnes under /admin (pakke 10); til da er den ikke i menyen.
+ * Økonomi bare for head coach (ADMIN). Data Golf står i Drift (DG-01, pakke 10).
  * Fasit: docs/design-system/utkast-agencyos/meny.html, variant C.
  *
  * Mer-siden (/admin/mer) virker fortsatt og bruker AOS_MER.
@@ -10,7 +9,7 @@
  */
 
 export type AosMerId = "booking" | "grupper" | "tester" | "okonomi" | "oppsett";
-export type AosId = "cockpit" | "innboks" | "kalender" | "stall" | "workbench" | AosMerId;
+export type AosId = "cockpit" | "innboks" | "kalender" | "stall" | "workbench" | "datagolf" | AosMerId;
 export type AosPunkt = { id: AosId; label: string; href: string; bareHeadCoach?: true };
 
 export const AOS_MER: ReadonlyArray<{ id: AosMerId; label: string; href: string; bareHeadCoach?: true }> = [
@@ -35,7 +34,13 @@ export const AOS_GRUPPER: ReadonlyArray<{ id: "daglig" | "spillere" | "drift"; l
     merPunkt("grupper"),
     merPunkt("tester"),
   ] },
-  { id: "drift", label: "Drift", punkter: [merPunkt("booking"), merPunkt("okonomi"), merPunkt("oppsett")] },
+  { id: "drift", label: "Drift", punkter: [
+    merPunkt("booking"), merPunkt("okonomi"),
+    // DG-01 finnes (pakke 10). Alle i AgencyOS har coach-rolle, så kanSeDataGolf slipper dem inn;
+    // siden har i tillegg sin egen vakt (krevDataGolfBruker).
+    { id: "datagolf", label: "Data Golf", href: "/admin/datagolf" },
+    merPunkt("oppsett"),
+  ] },
 ];
 
 /** Gruppene med punktene denne brukeren skal se (Økonomi bare for head coach). */
@@ -64,6 +69,7 @@ const PREFIKS: ReadonlyArray<[string, AosId]> = [
   ["/admin/bookinger", "booking"], ["/admin/services", "booking"],
   ["/admin/grupper", "grupper"],
   ["/admin/tester", "tester"],
+  ["/admin/datagolf", "datagolf"],
   ["/admin/oppsett", "oppsett"], ["/admin/profile", "oppsett"], ["/admin/team", "oppsett"],
 ];
 
