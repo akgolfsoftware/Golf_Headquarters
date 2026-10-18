@@ -8,6 +8,7 @@ import {
   SAMTYKKE_TEKST_VERSJON,
   harGyldigSamtykke,
   wangTestdelingStatus,
+  type WangDelingsomfang,
   type WangTestdelingStatus,
 } from "@/lib/deling/samtykke-regler";
 import { aktivtTrenerMedlemskapWhere } from "@/lib/domain/grupper";
@@ -24,6 +25,8 @@ const WANG_PROGRAM = ["WANG_UNG", "WANG_TOPPIDRETT"] as const;
  * ingenting. D-69: spilleren kan alltid trekke, og trekket skjuler også eldre
  * resultater med en gang. Samtykket åpner bare tester, aldri profil, plan,
  * IUP, helse eller meldinger (D-04). Ingen rolle har en sti forbi samtykket.
+ * Planen deles med et eget samtykke (TRENINGSPLAN, W1 18.10.2026), bare mot
+ * WANG-gruppa og aldri med Team Norway.
  */
 async function hentAktiveWangGrupperForElev(userId: string): Promise<{ id: string; name: string }[]> {
   const medlemskap = await prisma.groupMember.findMany({
@@ -47,14 +50,20 @@ export type WangTestdeling = {
   kreverForesatt: boolean;
 };
 
-/** Testsamtykket per aktiv WANG-gruppe. Tom liste når eleven ikke er aktiv WANG-elev. */
-export async function hentWangTestdeling(userId: string): Promise<WangTestdeling[]> {
+/**
+ * Samtykket per aktiv WANG-gruppe. Tom liste når eleven ikke er aktiv WANG-elev.
+ * `omfang` TRENINGSPLAN (W1) er planen, som bare deles med WANG-skolen.
+ */
+export async function hentWangTestdeling(
+  userId: string,
+  omfang: WangDelingsomfang = "TEST_RESULTATER",
+): Promise<WangTestdeling[]> {
   const grupper = await hentAktiveWangGrupperForElev(userId);
   if (grupper.length === 0) return [];
   const [bruker, rader] = await Promise.all([
     prisma.user.findUnique({ where: { id: userId }, select: { requiresGuardianConsent: true, dateOfBirth: true } }),
     prisma.delingsSamtykke.findMany({
-      where: { userId, scope: "TEST_RESULTATER", mottakerGruppeId: { in: grupper.map((g) => g.id) } },
+      where: { userId, scope: omfang, mottakerGruppeId: { in: grupper.map((g) => g.id) } },
       select: { scope: true, mottakerGruppeId: true, gitt: true, gittAvRolle: true, createdAt: true },
     }),
   ]);
@@ -64,7 +73,7 @@ export async function hentWangTestdeling(userId: string): Promise<WangTestdeling
     gruppeId: gruppe.id,
     gruppeNavn: gruppe.name,
     kreverForesatt,
-    status: wangTestdelingStatus(rader, { mottakerGruppeId: gruppe.id, kreverForesatt, fodselsdato: bruker.dateOfBirth }),
+    status: wangTestdelingStatus(rader, { mottakerGruppeId: gruppe.id, kreverForesatt, fodselsdato: bruker.dateOfBirth }, omfang),
   }));
 }
 
@@ -80,14 +89,16 @@ export async function registrerWangTestsvar(input: {
   gitt: boolean;
   gittAvUserId: string;
   gittAvRolle: "SELV" | "FORESATT";
+  omfang?: WangDelingsomfang;
 }): Promise<WangTestdeling> {
-  const deling = (await hentWangTestdeling(input.userId)).find((d) => d.gruppeId === input.gruppeId);
+  const omfang = input.omfang ?? "TEST_RESULTATER";
+  const deling = (await hentWangTestdeling(input.userId, omfang)).find((d) => d.gruppeId === input.gruppeId);
   if (!deling) throw new Error("Forespørselen gjelder bare aktive WANG-elever i denne gruppa.");
   if (input.gitt && input.gittAvRolle === "SELV" && deling.kreverForesatt) {
     await prisma.delingsSamtykke.create({
       data: {
         userId: input.userId,
-        scope: "TEST_RESULTATER",
+        scope: omfang,
         mottakerGruppeId: input.gruppeId,
         gitt: true,
         tekstVersjon: SAMTYKKE_TEKST_VERSJON,
@@ -99,19 +110,19 @@ export async function registrerWangTestsvar(input: {
       actorId: input.gittAvUserId,
       action: "deling.samtykke.venter-foresatt",
       target: `User:${input.userId}`,
-      metadata: { scope: "TEST_RESULTATER", mottakerGruppeId: input.gruppeId, tekstVersjon: SAMTYKKE_TEKST_VERSJON },
+      metadata: { scope: omfang, mottakerGruppeId: input.gruppeId, tekstVersjon: SAMTYKKE_TEKST_VERSJON },
     });
   } else {
     await registrerDelingsSamtykke({
       userId: input.userId,
-      scope: "TEST_RESULTATER",
+      scope: omfang,
       mottakerGruppeId: input.gruppeId,
       gitt: input.gitt,
       gittAvUserId: input.gittAvUserId,
       gittAvRolle: input.gittAvRolle,
     });
   }
-  return (await hentWangTestdeling(input.userId)).find((d) => d.gruppeId === input.gruppeId) ?? deling;
+  return (await hentWangTestdeling(input.userId, omfang)).find((d) => d.gruppeId === input.gruppeId) ?? deling;
 }
 
 export type WangResultatSkoleScope = {
@@ -127,7 +138,11 @@ export type WangResultatSkoleScope = {
  * eller manglende samtykke faller ut i filteret. Skolen vises selv om ingen
  * elever har samtykket.
  */
-async function hentWangSkolerMedSamtykke(groupIds?: string[], demo = false): Promise<WangResultatSkoleScope[]> {
+async function hentWangSkolerMedSamtykke(
+  groupIds?: string[],
+  demo = false,
+  omfang: WangDelingsomfang = "TEST_RESULTATER",
+): Promise<WangResultatSkoleScope[]> {
   const grupper = await prisma.group.findMany({
     where: {
       ...(groupIds ? { id: { in: groupIds } } : {}),
@@ -152,7 +167,7 @@ async function hentWangSkolerMedSamtykke(groupIds?: string[], demo = false): Pro
   const alle = [...new Set(grupper.flatMap((g) => g.members.map((m) => m.userId)))];
   const rader = alle.length
     ? await prisma.delingsSamtykke.findMany({
-        where: { userId: { in: alle }, scope: "TEST_RESULTATER", mottakerGruppeId: { in: grupper.map((g) => g.id) } },
+        where: { userId: { in: alle }, scope: omfang, mottakerGruppeId: { in: grupper.map((g) => g.id) } },
         select: { userId: true, scope: true, mottakerGruppeId: true, gitt: true, gittAvRolle: true, createdAt: true },
       })
     : [];
@@ -160,7 +175,7 @@ async function hentWangSkolerMedSamtykke(groupIds?: string[], demo = false): Pro
     const players = [...new Map(
       gruppe.members
         .filter((medlem) => harGyldigSamtykke(rader.filter((rad) => rad.userId === medlem.userId), {
-          scope: "TEST_RESULTATER",
+          scope: omfang,
           mottakerGruppeId: gruppe.id,
           kreverForesatt: maaHaForesattSamtykke(medlem.user),
           fodselsdato: medlem.user.dateOfBirth,
@@ -178,8 +193,9 @@ async function hentWangSkolerMedSamtykke(groupIds?: string[], demo = false): Pro
  */
 export async function hentWangTestresultatSkolerForTrener(
   bruker: { id: string; role: UserRole },
+  omfang: WangDelingsomfang = "TEST_RESULTATER",
 ): Promise<WangResultatSkoleScope[]> {
-  if (bruker.role === "ADMIN") return hentWangSkolerMedSamtykke();
+  if (bruker.role === "ADMIN") return hentWangSkolerMedSamtykke(undefined, false, omfang);
   if (bruker.role !== "COACH") return [];
 
   const epost = (await prisma.user.findUnique({ where: { id: bruker.id }, select: { email: true } }))?.email;
@@ -189,7 +205,7 @@ export async function hentWangTestresultatSkolerForTrener(
       where: { ...aktivtTrenerMedlemskapWhere(bruker.id), group: { slug, arkivertAt: null } },
       select: { groupId: true },
     }) : null;
-    return demo ? hentWangSkolerMedSamtykke([demo.groupId], true) : [];
+    return demo ? hentWangSkolerMedSamtykke([demo.groupId], true, omfang) : [];
   }
 
   const medlemskap = await prisma.groupMember.findMany({
@@ -200,7 +216,7 @@ export async function hentWangTestresultatSkolerForTrener(
     select: { groupId: true },
   });
   const groupIds = [...new Set(medlemskap.map((rad) => rad.groupId))];
-  return groupIds.length ? hentWangSkolerMedSamtykke(groupIds) : [];
+  return groupIds.length ? hentWangSkolerMedSamtykke(groupIds, false, omfang) : [];
 }
 
 /**

@@ -6,13 +6,16 @@
  * eleven har sagt ja, og under 16 år må forelder også godkjenne. D-69: trekk
  * virker med en gang og skjuler også eldre resultater.
  *
+ * W1 (18.10.2026): `omfang` TRENINGSPLAN gir samme kort for planen. Planen deles
+ * bare med WANG-skolen, aldri Team Norway, og bare tid mot plan og oppmøte.
+ *
  * `bareNyForesporsel`: I dag viser kortet bare når eleven ikke har svart.
  * Personvern og foreldreportalen viser alltid status og handling.
  */
 
 import { useState, useTransition } from "react";
 import { Knapp, StatusPille } from "@/components/precision/pa";
-import type { WangTestdelingStatus } from "@/lib/deling/samtykke-regler";
+import type { WangDelingsomfang, WangTestdelingStatus } from "@/lib/deling/samtykke-regler";
 import { svarWangTestforesporsel } from "@/app/portal/meg/innstillinger/personvern/wang-testdeling-actions";
 import { svarWangTestforesporselForBarn } from "@/app/forelder/samtykke/actions";
 
@@ -23,6 +26,20 @@ export type WangTestforesporselProps = {
   kreverForesatt: boolean;
   modus: { type: "spiller" } | { type: "foresatt"; childId: string; barnNavn: string };
   bareNyForesporsel?: boolean;
+  omfang?: WangDelingsomfang;
+};
+
+const TEKST: Record<WangDelingsomfang, { tittel: string; knapp: string; ting: string }> = {
+  TEST_RESULTATER: {
+    tittel: "Del testresultatene med WANG og Team Norway",
+    knapp: "Del testresultatene",
+    ting: "testene",
+  },
+  TRENINGSPLAN: {
+    tittel: "Del planen med WANG",
+    knapp: "Del planen",
+    ting: "planen",
+  },
 };
 
 const STATUS_PILLE: Record<WangTestdelingStatus, { tone: "neutral" | "ok" | "warn"; tekst: string }> = {
@@ -32,7 +49,16 @@ const STATUS_PILLE: Record<WangTestdelingStatus, { tone: "neutral" | "ok" | "war
   IKKE_SVART: { tone: "neutral", tekst: "Samtykke mangler" },
 };
 
-export function WangTestforesporsel({ gruppeId, gruppeNavn, status: start, kreverForesatt, modus, bareNyForesporsel = false }: WangTestforesporselProps) {
+export function WangTestforesporsel({
+  gruppeId,
+  gruppeNavn,
+  status: start,
+  kreverForesatt,
+  modus,
+  bareNyForesporsel = false,
+  omfang = "TEST_RESULTATER",
+}: WangTestforesporselProps) {
+  const tekst = TEKST[omfang];
   const [status, setStatus] = useState(start);
   const [skjult, setSkjult] = useState(false);
   const [feil, setFeil] = useState<string | null>(null);
@@ -49,8 +75,8 @@ export function WangTestforesporsel({ gruppeId, gruppeNavn, status: start, kreve
     setFeil(null);
     startTransition(async () => {
       const res = foresatt
-        ? await svarWangTestforesporselForBarn(modus.childId, gruppeId, gitt)
-        : await svarWangTestforesporsel(gruppeId, gitt);
+        ? await svarWangTestforesporselForBarn(modus.childId, gruppeId, gitt, omfang)
+        : await svarWangTestforesporsel(gruppeId, gitt, omfang);
       if (!res.ok) {
         setFeil(res.feil);
         return;
@@ -65,21 +91,29 @@ export function WangTestforesporsel({ gruppeId, gruppeNavn, status: start, kreve
   const hvem = foresatt ? `${fornavn}s` : "dine";
 
   return (
-    <section className="pa-card" style={{ padding: 16, gap: 12 }} aria-label="Del testresultatene med WANG og Team Norway">
+    <section className="pa-card" style={{ padding: 16, gap: 12 }} aria-label={tekst.tittel}>
       <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", minWidth: 0 }}>
-        <h2 style={{ flex: 1, minWidth: 0, margin: 0 }}>Del testresultatene med WANG og Team Norway</h2>
+        <h2 style={{ flex: 1, minWidth: 0, margin: 0 }}>{tekst.tittel}</h2>
         {status !== "IKKE_SVART" && <StatusPille tone={pille.tone}>{pille.tekst}</StatusPille>}
       </div>
-      <p style={{ margin: 0 }}>
-        Med ett ja ser {gruppeNavn} og Team Norway testresultatene {hvem}: hvilke tester, når, score og nivå. De ser ikke
-        resten av profilen, planen, meldinger eller helsedata. Delingen kan trekkes når som helst, og da skjules også eldre
-        resultater med en gang.
-      </p>
+      {omfang === "TRENINGSPLAN" ? (
+        <p style={{ margin: 0 }}>
+          Med ett ja ser trenerne i {gruppeNavn} hvor mye av {foresatt ? `${fornavn}s plan` : "planen din"} som er gjennomført siste
+          fire uker: tid mot plan per akse og oppmøte på gruppas økter. De ser ikke notater, meldinger, helsedata eller
+          testene, og Team Norway ser ingenting av planen. Delingen kan trekkes når som helst, og da stopper den med en gang.
+        </p>
+      ) : (
+        <p style={{ margin: 0 }}>
+          Med ett ja ser {gruppeNavn} og Team Norway testresultatene {hvem}: hvilke tester, når, score og nivå. De ser ikke
+          resten av profilen, planen, meldinger eller helsedata. Delingen kan trekkes når som helst, og da skjules også eldre
+          resultater med en gang.
+        </p>
+      )}
       {status === "VENTER_PA_FORELDER" && (
         <p style={{ margin: 0 }}>
           {foresatt
-            ? `${fornavn} har sagt ja. Testene deles ikke før du godkjenner.`
-            : "Du har sagt ja. En forelder må godkjenne i foreldreportalen før testene deles."}
+            ? `${fornavn} har sagt ja. ${tekst.ting[0].toUpperCase()}${tekst.ting.slice(1)} deles ikke før du godkjenner.`
+            : `Du har sagt ja. En forelder må godkjenne i foreldreportalen før ${tekst.ting} deles.`}
         </p>
       )}
       {!foresatt && kreverForesatt && status !== "VENTER_PA_FORELDER" && status !== "DELT" && (
@@ -87,7 +121,7 @@ export function WangTestforesporsel({ gruppeId, gruppeNavn, status: start, kreve
       )}
       <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
         {kanDele && (
-          <Knapp onClick={() => svar(true)} loading={pending}>Del testresultatene</Knapp>
+          <Knapp onClick={() => svar(true)} loading={pending}>{tekst.knapp}</Knapp>
         )}
         {kanDele && status !== "IKKE_DELT" && (
           <Knapp variant="secondary" onClick={() => svar(false)} disabled={pending}>Ikke nå</Knapp>

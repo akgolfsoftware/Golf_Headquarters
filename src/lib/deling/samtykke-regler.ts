@@ -101,7 +101,7 @@ export type DelingSamtykkeRad = {
 };
 
 export type SamtykkeKrav = {
-  scope: DelingScope;
+  scope: DelingScope | WangDelingsomfang;
   mottakerGruppeId: string;
   /** Under 16 (User.requiresGuardianConsent): bare FORESATT kan gi. */
   kreverForesatt: boolean;
@@ -231,11 +231,22 @@ export function velgSamtykkedeSpillerePerGruppe(
  */
 export type WangTestdelingStatus = "DELT" | "VENTER_PA_FORELDER" | "IKKE_DELT" | "IKKE_SVART";
 
+/**
+ * W1 (nattkjøring 18.10.2026): eleven kan også dele treningsplanen med
+ * WANG-gruppa. Eget omfang, aldri en del av testsamtykket, og bare mot
+ * WANG-skolen, ikke Team Norway. Åpner gjennomført mot planlagt tid og
+ * oppmøte på gruppas økter, aldri notater, helse eller meldinger.
+ * Står utenfor DELING_SCOPES fordi det bare gjelder WANG-flaten.
+ */
+export const WANG_PLAN_SCOPE = "TRENINGSPLAN";
+export type WangDelingsomfang = "TEST_RESULTATER" | typeof WANG_PLAN_SCOPE;
+
 export function wangTestdelingStatus(
   rader: readonly DelingSamtykkeRad[],
   krav: Omit<SamtykkeKrav, "scope">,
+  omfang: WangDelingsomfang = "TEST_RESULTATER",
 ): WangTestdelingStatus {
-  const fullt: SamtykkeKrav = { ...krav, scope: "TEST_RESULTATER" };
+  const fullt: SamtykkeKrav = { ...krav, scope: omfang };
   if (harGyldigSamtykke(rader, fullt)) return "DELT";
   let nyeste: DelingSamtykkeRad | null = null;
   for (const rad of rader) {

@@ -15,11 +15,14 @@ import {
 } from "./wang-felles";
 import type { WangTrenerData } from "@/app/team-wang/_data/wang-trener-data";
 import { TOM_TESTERDATA, type WangTesterData } from "@/app/team-wang/_data/wang-tester-visning";
+import { TOM_PLANDATA, trengerDeg, visPct, type WangPlanData } from "@/app/team-wang/_data/wang-plan-visning";
 
 interface WangEleverProps {
   data: WangTrenerData;
   /** Testdelingen: hvem som deler testene med WANG, og egenførte resultater. */
   tester?: WangTesterData;
+  /** Elevenes delte plan: etterlevelse og morgentrening, bare for elever som har delt. */
+  plan?: WangPlanData;
   /** Underside: liste · elev · sjekk · ikke-delt. */
   aktivFane?: string;
   /** Eleven undersiden gjelder. */
@@ -35,13 +38,13 @@ const iupHref = (id: string) => `/team-wang/coach/iup/${id}`;
  * Fasit: docs/design-system/utkast-wang/elever.html (utkast 2, retning B, godkjent av Anders 16.10.2026).
  * Bare ekte gruppedata og testdelingen (hentWangTesterData).
  * Avvik:
- *   - Elevenes plan deles ikke med WANG ennå, så etterlevelse og morgentrening viser «—» og elevene står i «Ikke delt».
- *     «Har delt med deg» teller elever som deler testene, fordi det er den eneste delingen som finnes.
+ *   - Etterlevelse og morgentrening leses fra elevens delte plan (W1, hentWangPlanData). Elever som ikke har delt
+ *     planen, står i «Ikke delt» med «—». Morgentrening er gruppas økter i elevens plan, gjennomført mot planlagt.
  *   - IUP og Foreslå endring åpner den eksisterende IUP-siden (/team-wang/coach/iup/[elevId]), der forslagene lagres.
  *   - Fireukerssjekken finnes ikke i basen ennå. Siden viser tom tilstand.
  *   - Klasse (VG1–VG3), kategori og HCP finnes ikke på gruppemedlemmet. Klassefilteret er derfor ikke med; søk er med.
  */
-export function WangElever({ data, tester = TOM_TESTERDATA, aktivFane, id }: WangEleverProps) {
+export function WangElever({ data, tester = TOM_TESTERDATA, plan = TOM_PLANDATA, aktivFane, id }: WangEleverProps) {
   const elev = id ? data.elever.find((e) => e.id === id) : undefined;
   if (aktivFane === "elev" || aktivFane === "sjekk") {
     if (!elev) {
@@ -55,16 +58,49 @@ export function WangElever({ data, tester = TOM_TESTERDATA, aktivFane, id }: Wan
     return aktivFane === "sjekk" ? (
       <Fireukerssjekk data={data} elev={elev} />
     ) : (
-      <EnElev data={data} elev={elev} deler={tester.delerIder.includes(elev.id)} tester={tester} />
+      <EnElev data={data} elev={elev} deler={tester.delerIder.includes(elev.id)} tester={tester} plan={plan} />
     );
   }
-  return <Elevlista data={data} tester={tester} />;
+  return <Elevlista data={data} tester={tester} plan={plan} />;
 }
 
-function Elevlista({ data, tester }: { data: WangTrenerData; tester: WangTesterData }) {
+/** Linja under navnet: planen går foran testene, fordi planen gir mest innsyn. */
+function delingTekst(id: string, tester: WangTesterData, plan: WangPlanData): string {
+  if (plan.delerIder.includes(id)) return "Har delt med deg";
+  return tester.delerIder.includes(id) ? "Deler testene" : "Deler ikke testene";
+}
+
+function Elevlista({ data, tester, plan }: { data: WangTrenerData; tester: WangTesterData; plan: WangPlanData }) {
   const [sok, setSok] = useState("");
   const treff = data.elever.filter((e) => e.navn.toLowerCase().includes(sok.trim().toLowerCase()));
   const tilKontroll = tester.resultater.filter((r) => !r.kontrollert && !r.avvist).length;
+  const lavestFoerst = (a: { id: string }, b: { id: string }) =>
+    (plan.perElev[a.id]?.etterlevelse.pct ?? 101) - (plan.perElev[b.id]?.etterlevelse.pct ?? 101);
+  const delt = treff.filter((e) => plan.perElev[e.id]);
+  const trenger = delt.filter((e) => trengerDeg(plan.perElev[e.id])).sort(lavestFoerst);
+  const folger = delt.filter((e) => !trengerDeg(plan.perElev[e.id])).sort(lavestFoerst);
+  const ikke = treff.filter((e) => !plan.perElev[e.id]);
+  const alleTrenger = data.elever.filter((e) => plan.perElev[e.id] && trengerDeg(plan.perElev[e.id])).length;
+  const rad = (e: { id: string; navn: string }, type: "trenger" | "folger" | "ikke") => {
+    const tall = plan.perElev[e.id];
+    return (
+      <WangElevrad
+        key={e.id}
+        type={type}
+        navn={e.navn}
+        linje={
+          !tall
+            ? delingTekst(e.id, tester, plan)
+            : tall.etterlevelse.pct === null
+              ? "Har delt med deg · ingen økter er forfalt"
+              : `Har delt med deg · morgentrening ${visPct(tall.morgen)}`
+        }
+        verdi={visPct(tall?.etterlevelse)}
+        prosent={tall?.etterlevelse.pct ?? null}
+        href={wangHref("elever", "elev", e.id)}
+      />
+    );
+  };
 
   return (
     <>
@@ -73,16 +109,20 @@ function Elevlista({ data, tester }: { data: WangTrenerData; tester: WangTesterD
       <WangHelt
         etikett="Elever som trenger deg"
         merke="Siste fire uker"
-        tall="—"
+        tall={plan.delerIder.length > 0 ? String(alleTrenger) : "—"}
         tekst="elever trenger deg"
-        forklar="Oppfølging bygges av oppmøte og gjennomført tid mot plan. Ingen av delene deles med WANG ennå."
+        forklar={
+          plan.delerIder.length > 0
+            ? "Under 80 % av planen eller av morgentreningen siste fire uker. Bare elever som har delt planen med deg teller."
+            : "Oppfølging bygges av gjennomført tid mot plan. Ingen elever har delt planen med deg ennå."
+        }
         bilde="/team-wang/hero/trening-golf.jpg"
       />
 
       <WangSmaaTall
         tall={[
           { verdi: String(data.elever.length), tekst: "Elever i gruppa" },
-          { verdi: `${tester.delerIder.length} av ${data.elever.length}`, tekst: "Deler testene" },
+          { verdi: `${plan.delerIder.length} av ${data.elever.length}`, tekst: "Har delt med deg" },
           { verdi: String(tilKontroll), tekst: "Test til kontroll" },
         ]}
       />
@@ -102,26 +142,20 @@ function Elevlista({ data, tester }: { data: WangTrenerData; tester: WangTesterD
             />
           </label>
           <div className="wg-baand wg-baand-kol">
-            <WangBaand type="trenger" tittel="Trenger deg" tekst="Under 80 % av planen, eller borte fra morgentreningen." antall={0} tomTekst="Ingen elever å vise før planen er delt." />
-            <WangBaand type="folger" tittel="Følger planen" tekst="80 % eller mer. Lavest først." antall={0} tomTekst="Ingen elever å vise før planen er delt." />
+            <WangBaand type="trenger" tittel="Trenger deg" tekst="Under 80 % av planen, eller av morgentreningen." antall={trenger.length} tomTekst={delt.length > 0 ? "Ingen elever under 80 %." : "Ingen elever å vise før planen er delt."}>
+              {trenger.map((e) => rad(e, "trenger"))}
+            </WangBaand>
+            <WangBaand type="folger" tittel="Følger planen" tekst="80 % eller mer. Lavest først." antall={folger.length} tomTekst={delt.length > 0 ? "Ingen elever på 80 % eller mer." : "Ingen elever å vise før planen er delt."}>
+              {folger.map((e) => rad(e, "folger"))}
+            </WangBaand>
             <WangBaand
               type="ikke"
               tittel="Ikke delt"
-              tekst="Planen deles ikke med WANG ennå. Testene vises når eleven har samtykket."
-              antall={treff.length}
-              tomTekst="Ingen elever passer søket."
+              tekst="Eleven har ikke delt planen med WANG. Testene vises når eleven har samtykket til dem."
+              antall={ikke.length}
+              tomTekst={treff.length === 0 ? "Ingen elever passer søket." : "Alle elevene har delt planen."}
             >
-              {treff.map((e) => (
-                <WangElevrad
-                  key={e.id}
-                  type="ikke"
-                  navn={e.navn}
-                  linje={tester.delerIder.includes(e.id) ? "Deler testene" : "Deler ikke testene"}
-                  verdi="—"
-                  prosent={null}
-                  href={wangHref("elever", "elev", e.id)}
-                />
-              ))}
+              {ikke.map((e) => rad(e, "ikke"))}
             </WangBaand>
           </div>
         </>
@@ -136,13 +170,16 @@ function EnElev({
   elev,
   deler,
   tester,
+  plan,
 }: {
   data: WangTrenerData;
   elev: { id: string; navn: string };
   deler: boolean;
   tester: WangTesterData;
+  plan: WangPlanData;
 }) {
   const sisteTest = tester.resultater.find((r) => r.elevId === elev.id);
+  const tall = plan.perElev[elev.id];
   return (
     <>
       <WangTilbake href={wangHref("elever")} tekst="Elever" />
@@ -159,7 +196,7 @@ function EnElev({
             <i />
             {deler ? "Deler testene med WANG" : "Deler ikke testene"}
           </span>
-          <span className="wg-pille"><i />Plan ikke delt</span>
+          <span className={`wg-pille ${tall ? "wg-pille-ok" : ""}`}><i />{tall ? "Har delt planen med deg" : "Plan ikke delt"}</span>
         </div>
         <nav aria-label="Elev" className="wgf-rad">
           <Link href={wangHref("elever", "elev", elev.id)} className="wgf wgf-pa" aria-current="page">Oversikt</Link>
@@ -172,8 +209,8 @@ function EnElev({
       <WangSmaaTall
         fire
         tall={[
-          { verdi: "—", tekst: "Etterlevelse" },
-          { verdi: "—", tekst: "Morgentrening" },
+          { verdi: visPct(tall?.etterlevelse), tekst: "Etterlevelse" },
+          { verdi: visPct(tall?.morgen), tekst: "Morgentrening" },
           { verdi: sisteTest ? sisteTest.verdi : "—", tekst: sisteTest ? `Siste test: ${sisteTest.testNavn}` : "Siste test" },
           { verdi: "—", tekst: "Neste samtale" },
         ]}

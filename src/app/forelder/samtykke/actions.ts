@@ -7,7 +7,7 @@ import { audit } from "@/lib/audit";
 import { registrerHelseSamtykke } from "@/lib/health/samtykke";
 import { erHelseSamtykkeType } from "@/lib/health/samtykke-regler";
 import { registrerDelingsSamtykke } from "@/lib/deling/samtykke";
-import { erDelingScope, type WangTestdelingStatus } from "@/lib/deling/samtykke-regler";
+import { erDelingScope, WANG_PLAN_SCOPE, type WangDelingsomfang, type WangTestdelingStatus } from "@/lib/deling/samtykke-regler";
 import { registrerWangTestsvar } from "@/lib/portal-tester/wang-resultat-tilgang";
 import { aktivtSpillerMedlemskapWhere } from "@/lib/domain/grupper";
 
@@ -244,17 +244,20 @@ export async function svarWangTestforesporselForBarn(
   childId: string,
   gruppeId: string,
   gitt: boolean,
+  omfang: WangDelingsomfang = "TEST_RESULTATER",
 ): Promise<{ ok: true; status: WangTestdelingStatus } | { ok: false; feil: string }> {
   const user = await requirePortalUser({ allow: ["PARENT"] });
+  if (omfang !== "TEST_RESULTATER" && omfang !== WANG_PLAN_SCOPE) return { ok: false, feil: "Ukjent deling." };
   const relasjon = await prisma.parentRelation.findFirst({
     where: { parentId: user.id, childId, approved: true },
   });
   if (!relasjon) return { ok: false, feil: "Du er ikke godkjent foresatt for dette barnet" };
   try {
-    const deling = await registrerWangTestsvar({ userId: childId, gruppeId, gitt, gittAvUserId: user.id, gittAvRolle: "FORESATT" });
+    const deling = await registrerWangTestsvar({ userId: childId, gruppeId, gitt, gittAvUserId: user.id, gittAvRolle: "FORESATT", omfang });
     revalidatePath("/forelder/samtykke");
     revalidatePath("/team-norway/wang-resultater");
     revalidatePath("/team-wang/coach/tester");
+    revalidatePath("/team-wang/coach");
     return { ok: true, status: deling.status };
   } catch (err) {
     return { ok: false, feil: err instanceof Error ? err.message : "Kunne ikke lagre svaret." };

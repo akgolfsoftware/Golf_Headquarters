@@ -11,6 +11,7 @@ import {
 } from "@/app/team-wang/_data/wang-rolle";
 import { canUser } from "@/lib/auth/effective-capabilities";
 import { Capability } from "@/lib/auth/cbac";
+import { hentWangPlanData } from "@/app/team-wang/_data/wang-plan-data";
 import { WangCoachKlient } from "@/app/team-wang/coach/WangCoachKlient";
 import type { WangOmraade } from "@/components/wang/WangAppSkall";
 import { kanSeDataGolf } from "@/lib/auth/datagolf-tilgang";
@@ -105,6 +106,11 @@ export default async function WangCoachPage({ searchParams }: WangCoachPageProps
     );
   }
 
+  // Elevenes delte plan (W1): bare elever med plansamtykke mot gruppa. Andre får «—».
+  const plan = ["idag", "trening", "elever"].includes(aktivtOmraade)
+    ? await hentWangPlanData(gruppeId)
+    : undefined;
+
   // Data Golf bare for coach-rollen (kanSeDataGolf), aldri for elever.
   const dgSide = aktivtOmraade === "konkurranse" ? dgSideFraFane(params.fane) : null;
   const dataGolf =
@@ -128,6 +134,7 @@ export default async function WangCoachPage({ searchParams }: WangCoachPageProps
       rolle={rolle}
       brukerNavn={bruker.name ?? undefined}
       tester={tester}
+      plan={plan}
       dataGolf={dataGolf}
       data={byggWangTrenerData(live, osloIdagIso(), osloNaaTid())}
     />

@@ -37,6 +37,7 @@ export default async function PersonvernPage() {
   // T8: delingssamtykke per gruppe med aktive eksterne lesere (Team Norway/WANG).
   const delingGrupper = await grupperMedEksterneLesereForSpiller(user.id);
   const wangTestdeling = await hentWangTestdeling(user.id);
+  const wangPlandeling = await hentWangTestdeling(user.id, "TRENINGSPLAN");
   const delingStatus = await hentDelingsStatus(
     user.id,
     delingGrupper.map((g) => g.id),
@@ -87,6 +88,9 @@ export default async function PersonvernPage() {
 
       {wangTestdeling.map((d) => (
         <WangTestforesporsel key={d.gruppeId} {...d} modus={{ type: "spiller" }} />
+      ))}
+      {wangPlandeling.map((d) => (
+        <WangTestforesporsel key={`plan-${d.gruppeId}`} {...d} modus={{ type: "spiller" }} omfang="TRENINGSPLAN" />
       ))}
 
       <DelingSamtykkeKort

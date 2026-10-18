@@ -24,6 +24,7 @@ import {
   type WangTrenerPeriode,
   type WangTrenerUkeOkt,
 } from "@/app/team-wang/_data/wang-trener-data";
+import { TOM_PLANDATA, trengerDeg, visPct, type WangPlanData } from "@/app/team-wang/_data/wang-plan-visning";
 
 interface WangTreningProps {
   data: WangTrenerData;
@@ -31,6 +32,8 @@ interface WangTreningProps {
   aktivFane?: string;
   /** Perioden periodeskjemaet gjelder. Uten id er det en ny periode. */
   id?: string;
+  /** Elevenes delte plan (W1). Bare elever som har delt planen med gruppa teller. */
+  plan?: WangPlanData;
   /** Beholdt for kallere fra før; fanene er lenker. */
   onFaneEndret?: (fane: string) => void;
 }
@@ -63,29 +66,52 @@ const OMRAADER: Record<WangAkse, string[]> = {
  * Fasit: docs/design-system/utkast-wang/trening.html (utkast 2, retning B, godkjent av Anders 16.10.2026)
  * og felles/wang.css §Nærmere wang.no. Bare ekte gruppedata (byggWangTrenerData).
  * Avvik:
- *   - Gjennomført tid mot plan, morgentrening, fravær, per akse og uke for uke viser «—»: elevenes plan deles
- *     ikke med WANG (delingen gjelder bare tester), og oppmøte lagres ikke ennå.
- *   - Per elev: alle elevene står i «Ikke delt» av samme grunn. Trenger deg og Følger planen er tomme.
+ *   - Gjennomført tid mot plan, morgentrening, per akse og per elev leses fra elevenes delte plan (W1,
+ *     hentWangPlanData). Elever som ikke har delt, står i «Ikke delt» og teller ikke i tallene.
+ *   - Fravær og uke for uke viser «—»: oppmøte lagres ikke ennå, og ukegrafen er ikke regnet ut.
  *   - Periodeskjemaet viser periodens type, uker, fokus og ukevolum fra basen. Timer per akse finnes ikke på
  *     perioden (§PLANNIVÅENE punkt 1), og lagring fra trenerflaten er ikke koblet. Lagre er sperret.
  *   - Uka viser gruppas økter fra kalenderen uten akse, og «lagt inn mot fordelt» viser «—». Bare denne uka.
  *   - Ny økt: skjemaet er tegnet, men gruppeøkter kan ikke lagres herfra ennå, og øvelsesbanken er ikke koblet.
  */
-export function WangTrening({ data, aktivFane, id }: WangTreningProps) {
+export function WangTrening({ data, aktivFane, id, plan = TOM_PLANDATA }: WangTreningProps) {
   if (aktivFane === "arsplan") return <Arsplan data={data} />;
   if (aktivFane === "periode") return <Periodeskjema data={data} periode={data.perioder.find((p) => p.id === id)} />;
   if (aktivFane === "uke") return <Uka data={data} />;
   if (aktivFane === "nyokt") return <NyOkt data={data} />;
-  return <Oversikt data={data} />;
+  return <Oversikt data={data} plan={plan} />;
 }
 
 // ---------------------------------------------------------------------------
 // Oversikt (WANG-42)
 // ---------------------------------------------------------------------------
 
-function Oversikt({ data }: { data: WangTrenerData }) {
+function Oversikt({ data, plan }: { data: WangTrenerData; plan: WangPlanData }) {
   const ukeNaa = Number(data.ukeTekst.match(/Uke (\d+)/)?.[1] ?? 0);
   const fireUker = ukeNaa > 4 ? `uke ${ukeNaa - 4}–${ukeNaa - 1}` : "siste fire uker";
+  const antallDelt = plan.delerIder.length;
+  const samlet = plan.samlet.pct;
+  const perElevMin = antallDelt > 0 ? Math.round(plan.samlet.gjennomfortMin / antallDelt) : null;
+  const delte = data.elever.filter((e) => plan.perElev[e.id]);
+  const lavestFoerst = (a: { id: string }, b: { id: string }) =>
+    (plan.perElev[a.id].etterlevelse.pct ?? 101) - (plan.perElev[b.id].etterlevelse.pct ?? 101);
+  const trenger = delte.filter((e) => trengerDeg(plan.perElev[e.id])).sort(lavestFoerst);
+  const folger = delte.filter((e) => !trengerDeg(plan.perElev[e.id])).sort(lavestFoerst);
+  const ikke = data.elever.filter((e) => !plan.perElev[e.id]);
+  const rad = (e: { id: string; navn: string }, type: "trenger" | "folger" | "ikke") => {
+    const tall = plan.perElev[e.id];
+    return (
+      <WangElevrad
+        key={e.id}
+        type={type}
+        navn={e.navn}
+        linje={tall ? `Har delt med deg · morgentrening ${visPct(tall.morgen)}` : "Plan ikke delt"}
+        verdi={visPct(tall?.etterlevelse)}
+        prosent={tall?.etterlevelse.pct ?? null}
+        href={wangHref("elever", "elev", e.id)}
+      />
+    );
+  };
 
   return (
     <>
@@ -96,17 +122,22 @@ function Oversikt({ data }: { data: WangTrenerData }) {
       <WangHelt
         etikett="Etterlevelse"
         merke="Mål 80 % av planen"
-        tall="—"
+        tall={samlet === null ? "—" : String(samlet)}
+        enhet="%"
         tekst="av planen gjennomført siste fire uker"
-        forklar="Gjennomført tid mot plan kan ikke regnes ut ennå: elevenes plan deles ikke med WANG."
+        forklar={
+          antallDelt > 0
+            ? `Gjennomført mot planlagt tid for ${antallDelt} av ${data.elever.length} elever som har delt planen med deg.`
+            : "Ingen elever har delt planen med deg ennå. Eleven deler i PlayerHQ, og under 16 år godkjenner forelderen."
+        }
         knapp={{ tekst: "Se uka", href: wangHref("trening", "uke") }}
         bilde="/team-wang/hero/golf-putt.jpg"
       />
 
       <WangSmaaTall
         tall={[
-          { verdi: "—", tekst: "Gjennomført per elev" },
-          { verdi: "—", tekst: "Morgen\u00ADtrening" },
+          { verdi: perElevMin === null ? "—" : visMinutter(perElevMin), tekst: "Gjennomført per elev" },
+          { verdi: visPct(plan.morgen), tekst: "Morgen\u00ADtrening" },
           { verdi: "—", tekst: "Fravær meldt" },
         ]}
       />
@@ -118,16 +149,24 @@ function Oversikt({ data }: { data: WangTrenerData }) {
             <span className="wg-kilde">Gjennomført mot planlagt</span>
           </div>
           <div className="wg-kort wg-fyll" style={{ gap: 0 }}>
-            {AKSER.map((a) => (
-              <div key={a} className="wg-akserad">
-                <span className={`wg-akse wg-akse-${a.toLowerCase()}`}>{a}</span>
-                <span className="wg-stolpe" aria-hidden />
-                <span className="wg-tall">
-                  —<span>av —</span>
-                </span>
-              </div>
-            ))}
-            <p className="wg-kilde" style={{ marginTop: 10 }}>Fylles når elevene deler planen sin med WANG.</p>
+            {AKSER.map((a) => {
+              const t = plan.perAkse[a];
+              return (
+                <div key={a} className="wg-akserad">
+                  <span className={`wg-akse wg-akse-${a.toLowerCase()}`}>{a}</span>
+                  <span className="wg-stolpe" aria-hidden>
+                    {t.pct !== null ? <span style={{ width: `${Math.min(100, t.pct)}%` }} /> : null}
+                  </span>
+                  <span className="wg-tall">
+                    {t.planlagtMin > 0 ? visMinutter(t.gjennomfortMin) : "—"}
+                    <span>av {t.planlagtMin > 0 ? visMinutter(t.planlagtMin) : "—"}</span>
+                  </span>
+                </div>
+              );
+            })}
+            <p className="wg-kilde" style={{ marginTop: 10 }}>
+              {antallDelt > 0 ? "Bare elever som har delt planen med deg." : "Fylles når elevene deler planen sin med WANG."}
+            </p>
           </div>
         </section>
         <section className="wg-seksjon" aria-labelledby="wg-uke-tittel">
@@ -154,35 +193,29 @@ function Oversikt({ data }: { data: WangTrenerData }) {
             <WangBaand
               type="trenger"
               tittel="Trenger deg"
-              tekst="Under 80 % av planen, eller borte fra morgentreningen."
-              antall={0}
-              tomTekst="Ingen elever å vise før planen er delt."
-            />
+              tekst="Under 80 % av planen, eller av morgentreningen."
+              antall={trenger.length}
+              tomTekst={antallDelt > 0 ? "Ingen elever under 80 %." : "Ingen elever å vise før planen er delt."}
+            >
+              {trenger.map((e) => rad(e, "trenger"))}
+            </WangBaand>
             <WangBaand
               type="folger"
               tittel="Følger planen"
               tekst="80 % eller mer. Lavest først."
-              antall={0}
-              tomTekst="Ingen elever å vise før planen er delt."
-            />
+              antall={folger.length}
+              tomTekst={antallDelt > 0 ? "Ingen elever på 80 % eller mer." : "Ingen elever å vise før planen er delt."}
+            >
+              {folger.map((e) => rad(e, "folger"))}
+            </WangBaand>
             <WangBaand
               type="ikke"
               tittel="Ikke delt"
-              tekst="Planen deles ikke med WANG ennå. Du ser bare det som ligger i gruppas kalender."
-              antall={data.elever.length}
-              tomTekst=""
+              tekst="Eleven har ikke delt planen med WANG. Du ser bare det som ligger i gruppas kalender."
+              antall={ikke.length}
+              tomTekst="Alle elevene har delt planen."
             >
-              {data.elever.map((e) => (
-                <WangElevrad
-                  key={e.id}
-                  type="ikke"
-                  navn={e.navn}
-                  linje="Plan ikke delt"
-                  verdi="—"
-                  prosent={null}
-                  href={`/team-wang/coach/iup/${e.id}`}
-                />
-              ))}
+              {ikke.map((e) => rad(e, "ikke"))}
             </WangBaand>
           </div>
         )}
