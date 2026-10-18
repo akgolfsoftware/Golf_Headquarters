@@ -58,6 +58,84 @@ export interface KalenderHendelse {
   lesevisning?: boolean;
   /** KA-05: id-ene til hendelsene denne kolliderer med (kun BOOKING). */
   kollidererMed?: string[];
+  /**
+   * AG-05 (pakke 3, natt 17.10): coachen som eier hendelsen. Satt på bookinger
+   * (`Booking.coachId`) og Workbench-økter (`WorkbenchSession.coachId`).
+   */
+  coachId?: string | null;
+  /** Akse fra pyramiden (økter) eller tjenestenavnet (bookinger). null = nøytral. */
+  akse?: KalenderAkse | null;
+  /** Gruppeøkt: alle spillerne i gruppa samlet i én blokk. */
+  gruppe?: boolean;
+  /** Antall spillere i en gruppeøkt («8 spillere»). */
+  antallSpillere?: number;
+  /** Maskert for assistant coach: bare at tiden er opptatt, ingen navn. */
+  opptatt?: boolean;
+  /** Workbench-økt som kan flyttes fra kalenderen (id på én rad i økta). */
+  flyttOktId?: string;
+}
+
+export type KalenderAkse = "fys" | "tek" | "slag" | "spill" | "turn";
+
+const PYRAMIDE_AKSE: Record<string, KalenderAkse> = { FYS: "fys", TEK: "tek", SLAG: "slag", SPILL: "spill", TURN: "turn" };
+
+/** Workbench-øktas pyramide («TEK») som akse. Ukjent verdi gir null, aldri en gjettet akse. */
+export function akseFraPyramide(p: string | null | undefined): KalenderAkse | null {
+  return p ? (PYRAMIDE_AKSE[p.toUpperCase()] ?? null) : null;
+}
+
+/** Hvem som ser kalenderen. Head coach er ADMIN (samme regel som Økonomi). */
+export type KalenderSeer = { id: string; erHeadCoach: boolean };
+
+/**
+ * Head coach ser alt. Assistant coach ser egne økter og bookinger og alle
+ * gruppeøkter (beslutninger.md §SKJERMENE … RUNDE 8, Kalender). Andre coachers
+ * bookinger står som «Opptatt» uten navn; andre coachers enkeltøkter (spillerens
+ * egen plan) tas ut, fordi de ikke binder tid for noen coach. Lag uten coach
+ * (skole, turnering, tester) er uendret.
+ *
+ * Kjøres på serveren før data sendes til klienten, så navnene aldri forlater huset.
+ */
+export function maskerForSeer(hendelser: readonly KalenderHendelse[], seer: KalenderSeer): KalenderHendelse[] {
+  if (seer.erHeadCoach) return [...hendelser];
+  const ut: KalenderHendelse[] = [];
+  for (const h of hendelser) {
+    const harCoach = h.lag === "BOOKING" || h.lag === "OEKTER";
+    if (!harCoach || h.gruppe || h.coachId === seer.id) {
+      ut.push(h);
+      continue;
+    }
+    if (h.lag === "OEKTER") continue;
+    ut.push({
+      id: h.id,
+      lag: h.lag,
+      dato: h.dato,
+      tittel: "Opptatt",
+      startMin: h.startMin,
+      sluttMin: h.sluttMin,
+      heldag: h.heldag,
+      coachId: h.coachId ?? null,
+      akse: null,
+      opptatt: true,
+      lesevisning: true,
+    });
+  }
+  return ut;
+}
+
+/** Coachfilteret i AG-05: null = alle coacher. Lag uten coach vises alltid. */
+export function filtrerCoach(hendelser: readonly KalenderHendelse[], coachId: string | null): KalenderHendelse[] {
+  if (!coachId) return [...hendelser];
+  return hendelser.filter((h) => (h.lag !== "BOOKING" && h.lag !== "OEKTER") || h.coachId === coachId);
+}
+
+/**
+ * Hendelser som hører hjemme i en coachkolonne i dagvisningen: bookinger og
+ * gruppeøkter med coach og klokkeslett. Enkeltøkter fra spillerens plan og lag
+ * uten coach står i lista under rutenettet.
+ */
+export function iCoachKolonne(h: KalenderHendelse): boolean {
+  return !!h.coachId && !h.heldag && h.startMin != null && (h.lag === "BOOKING" || (h.lag === "OEKTER" && !!h.gruppe));
 }
 
 /** Behold kun hendelser fra synlige lag — komponenten eier `synligeLag`-state. */
