@@ -88,7 +88,7 @@ export async function bookIKalender(input: {
   start: string;
   notater?: string;
   /** Utelatt = pris fra tjenesten, som før. */
-  betaling?: "KLIPP" | "FAKTURA" | "GRATIS";
+  betaling?: "STRIPE" | "KLIPP" | "FAKTURA" | "GRATIS";
 }): Promise<BookResultat> {
   // Auth gjøres også i opprettOktPaaTid; her for tidlig og tydelig avvisning.
   await requireCoachActionUser();

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "3638296397b5d639d4a7ec2edf54b7d1f6810319",
+  "kodeversjon": "5c532965e1e4dfa321e9c1d5c4e1d94abc71ad17",
   "inventar": {
     "pageFiles": 558,
     "uniqueRoutePatterns": 558,
@@ -6101,7 +6101,7 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "AG-06"
     },
     {
       "screenId": "AG-06",
@@ -18207,20 +18207,19 @@
       "kodekommentar": null
     },
     {
-      "screenId": "PH-25",
+      "screenId": "VIDERESENDING",
       "rute": "/portal/meg/abonnement/avbestill",
       "kildefil": "src/app/portal/meg/abonnement/avbestill/page.tsx",
       "omrade": "playerhq",
       "rolle": "spiller",
-      "designkilde": "AK Golf Precision Athletics (7d7c2994-cf63-4c5f-9bdc-fdaf67655a70)",
-      "designversjon": "precision-athletics-2026-09-28",
-      "komponentmonster": "/portal/meg/abonnement*",
-      "handlinger": "TALENT/FULL, faktura, kort, avbestill, samtykke, varsler, hjelp",
+      "designkilde": "kode",
+      "designversjon": "ikke-en-skjerm",
+      "komponentmonster": null,
+      "handlinger": "Send videre til /portal/meg/abonnement",
       "dataApi": "ikke-avlest-i-D01",
       "tilstander": [
-        "tom",
-        "laster",
-        "feil"
+        "videresending",
+        "manglende-mal"
       ],
       "formater": {
         "mobil": "ikke-kontrollert",
@@ -18231,39 +18230,38 @@
       "status": {
         "kartlagt": true,
         "wireframe": false,
-        "uiUtkast": true,
+        "uiUtkast": false,
         "prototype": false,
         "vurdert": false,
-        "valgtForBygging": true,
+        "valgtForBygging": false,
         "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
       "kontrollbevis": null,
       "avvik": [],
-      "kobling": "tegnet-skjermtype",
-      "forklaring": "PH-25 Abonnement og innstillinger er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
+      "kobling": "videresending",
+      "forklaring": "Filen har ingen egen visning. Den sender til /portal/meg/abonnement. At målet finnes, og hva brukeren ser hvis lenken er ugyldig, er ikke prøvd i denne bolken.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
-      "videresendingMal": null,
+      "videresendingMal": "/portal/meg/abonnement",
       "kodekommentar": null
     },
     {
-      "screenId": "PH-25",
+      "screenId": "VIDERESENDING",
       "rute": "/portal/meg/abonnement/faktura/[id]",
       "kildefil": "src/app/portal/meg/abonnement/faktura/[id]/page.tsx",
       "omrade": "playerhq",
       "rolle": "spiller",
-      "designkilde": "AK Golf Precision Athletics (7d7c2994-cf63-4c5f-9bdc-fdaf67655a70)",
-      "designversjon": "precision-athletics-2026-09-28",
-      "komponentmonster": "/portal/meg/abonnement*",
-      "handlinger": "TALENT/FULL, faktura, kort, avbestill, samtykke, varsler, hjelp",
+      "designkilde": "kode",
+      "designversjon": "ikke-en-skjerm",
+      "komponentmonster": null,
+      "handlinger": "Send videre til et mål som ikke er en fast adresse i filen",
       "dataApi": "ikke-avlest-i-D01",
       "tilstander": [
-        "tom",
-        "laster",
-        "feil"
+        "videresending",
+        "manglende-mal"
       ],
       "formater": {
         "mobil": "ikke-kontrollert",
@@ -18274,18 +18272,18 @@
       "status": {
         "kartlagt": true,
         "wireframe": false,
-        "uiUtkast": true,
+        "uiUtkast": false,
         "prototype": false,
         "vurdert": false,
-        "valgtForBygging": true,
+        "valgtForBygging": false,
         "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
       "kontrollbevis": null,
       "avvik": [],
-      "kobling": "tegnet-skjermtype",
-      "forklaring": "PH-25 Abonnement og innstillinger er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
+      "kobling": "videresending",
+      "forklaring": "Filen sender videre, men målet er ikke en fast adresse. Det er ikke prøvd.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
@@ -18333,23 +18331,22 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "PH-25"
     },
     {
-      "screenId": "PH-25",
+      "screenId": "VIDERESENDING",
       "rute": "/portal/meg/abonnement/kort/ny",
       "kildefil": "src/app/portal/meg/abonnement/kort/ny/page.tsx",
       "omrade": "playerhq",
       "rolle": "spiller",
-      "designkilde": "AK Golf Precision Athletics (7d7c2994-cf63-4c5f-9bdc-fdaf67655a70)",
-      "designversjon": "precision-athletics-2026-09-28",
-      "komponentmonster": "/portal/meg/abonnement*",
-      "handlinger": "TALENT/FULL, faktura, kort, avbestill, samtykke, varsler, hjelp",
+      "designkilde": "kode",
+      "designversjon": "ikke-en-skjerm",
+      "komponentmonster": null,
+      "handlinger": "Send videre til et mål som ikke er en fast adresse i filen",
       "dataApi": "ikke-avlest-i-D01",
       "tilstander": [
-        "tom",
-        "laster",
-        "feil"
+        "videresending",
+        "manglende-mal"
       ],
       "formater": {
         "mobil": "ikke-kontrollert",
@@ -18360,20 +18357,18 @@
       "status": {
         "kartlagt": true,
         "wireframe": false,
-        "uiUtkast": true,
+        "uiUtkast": false,
         "prototype": false,
         "vurdert": false,
-        "valgtForBygging": true,
-        "implementert": "precision-visning",
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Nytt kort merker PH25NyttKort i PlayerHQSkall. Stripe-flyten er beholdt. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
-      "avvik": [
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
-      "kobling": "tegnet-skjermtype",
-      "forklaring": "PH-25 Abonnement og innstillinger er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "videresending",
+      "forklaring": "Filen sender videre, men målet er ikke en fast adresse. Det er ikke prøvd.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
@@ -18409,21 +18404,19 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "precision-visning",
+        "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Oppgradering merker PH25OppgraderFlyt i PlayerHQSkall. Flyten er beholdt. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
-      "avvik": [
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
+      "kontrollbevis": null,
+      "avvik": [],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-25 Abonnement og innstillinger er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "PH-25"
     },
     {
       "screenId": "VIDERESENDING",
@@ -18689,20 +18682,19 @@
       "kodekommentar": null
     },
     {
-      "screenId": "PH-24",
+      "screenId": "VIDERESENDING",
       "rute": "/portal/meg/dokumenter",
       "kildefil": "src/app/portal/meg/dokumenter/page.tsx",
       "omrade": "playerhq",
       "rolle": "spiller",
-      "designkilde": "AK Golf Precision Athletics (7d7c2994-cf63-4c5f-9bdc-fdaf67655a70)",
-      "designversjon": "precision-athletics-2026-09-28",
-      "komponentmonster": "/portal/meg/dokumenter",
-      "handlinger": "Profil, kategori A–K, bag med 14 køller, helse",
+      "designkilde": "kode",
+      "designversjon": "ikke-en-skjerm",
+      "komponentmonster": null,
+      "handlinger": "Send videre til /portal/meg/help",
       "dataApi": "ikke-avlest-i-D01",
       "tilstander": [
-        "tom",
-        "laster",
-        "feil"
+        "videresending",
+        "manglende-mal"
       ],
       "formater": {
         "mobil": "ikke-kontrollert",
@@ -18713,24 +18705,22 @@
       "status": {
         "kartlagt": true,
         "wireframe": false,
-        "uiUtkast": true,
+        "uiUtkast": false,
         "prototype": false,
         "vurdert": false,
-        "valgtForBygging": true,
-        "implementert": "precision-visning",
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Dokumenter merker PH24Dokumenter i PlayerHQSkall. Dokumentliste, KPI-er og eksterne lenker er beholdt.",
-      "avvik": [
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
-      "kobling": "tegnet-skjermtype",
-      "forklaring": "PH-24 Meg er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "videresending",
+      "forklaring": "Filen har ingen egen visning. Den sender til /portal/meg/help. At målet finnes, og hva brukeren ser hvis lenken er ugyldig, er ikke prøvd i denne bolken.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
-      "videresendingMal": null,
+      "videresendingMal": "/portal/meg/help",
       "kodekommentar": null
     },
     {
@@ -19038,20 +19028,19 @@
       "kodekommentar": "PH-24"
     },
     {
-      "screenId": "PH-24",
+      "screenId": "VIDERESENDING",
       "rute": "/portal/meg/helse/symptom/ny",
       "kildefil": "src/app/portal/meg/helse/symptom/ny/page.tsx",
       "omrade": "playerhq",
       "rolle": "spiller",
-      "designkilde": "AK Golf Precision Athletics (7d7c2994-cf63-4c5f-9bdc-fdaf67655a70)",
-      "designversjon": "precision-athletics-2026-09-28",
-      "komponentmonster": "/portal/meg/helse*",
-      "handlinger": "Profil, kategori A–K, bag med 14 køller, helse",
+      "designkilde": "kode",
+      "designversjon": "ikke-en-skjerm",
+      "komponentmonster": null,
+      "handlinger": "Send videre til /portal/meg/helse",
       "dataApi": "ikke-avlest-i-D01",
       "tilstander": [
-        "tom",
-        "laster",
-        "feil"
+        "videresending",
+        "manglende-mal"
       ],
       "formater": {
         "mobil": "ikke-kontrollert",
@@ -19062,67 +19051,64 @@
       "status": {
         "kartlagt": true,
         "wireframe": false,
-        "uiUtkast": true,
+        "uiUtkast": false,
         "prototype": false,
         "vurdert": false,
-        "valgtForBygging": true,
-        "implementert": "precision-visning",
-        "kontrollertIApp": false
-      },
-      "eier": "D01-skjermregister",
-      "kontrollbevis": "Nytt symptom merker PH24NyttSymptom i PlayerHQSkall. Registreringen er beholdt. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
-      "avvik": [
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
-      "kobling": "tegnet-skjermtype",
-      "forklaring": "PH-24 Meg er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
-      "legacyGruppe": false,
-      "naermesteSkjermtype": null,
-      "sammeSidefil": [],
-      "videresendingMal": null,
-      "kodekommentar": null
-    },
-    {
-      "screenId": "PH-25",
-      "rute": "/portal/meg/innstillinger/ai-coach",
-      "kildefil": "src/app/portal/meg/innstillinger/ai-coach/page.tsx",
-      "omrade": "playerhq",
-      "rolle": "spiller",
-      "designkilde": "AK Golf Precision Athletics (7d7c2994-cf63-4c5f-9bdc-fdaf67655a70)",
-      "designversjon": "precision-athletics-2026-09-28",
-      "komponentmonster": "/portal/meg/innstillinger*",
-      "handlinger": "TALENT/FULL, faktura, kort, avbestill, samtykke, varsler, hjelp",
-      "dataApi": "ikke-avlest-i-D01",
-      "tilstander": [
-        "tom",
-        "laster",
-        "feil"
-      ],
-      "formater": {
-        "mobil": "ikke-kontrollert",
-        "nettbrett": "ikke-kontrollert",
-        "desktop": "ikke-kontrollert",
-        "natt": "ikke-relevant"
-      },
-      "status": {
-        "kartlagt": true,
-        "wireframe": false,
-        "uiUtkast": true,
-        "prototype": false,
-        "vurdert": false,
-        "valgtForBygging": true,
+        "valgtForBygging": false,
         "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
       "kontrollbevis": null,
       "avvik": [],
-      "kobling": "tegnet-skjermtype",
-      "forklaring": "PH-25 Abonnement og innstillinger er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
+      "kobling": "videresending",
+      "forklaring": "Filen har ingen egen visning. Den sender til /portal/meg/helse. At målet finnes, og hva brukeren ser hvis lenken er ugyldig, er ikke prøvd i denne bolken.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
-      "videresendingMal": null,
+      "videresendingMal": "/portal/meg/helse",
+      "kodekommentar": null
+    },
+    {
+      "screenId": "VIDERESENDING",
+      "rute": "/portal/meg/innstillinger/ai-coach",
+      "kildefil": "src/app/portal/meg/innstillinger/ai-coach/page.tsx",
+      "omrade": "playerhq",
+      "rolle": "spiller",
+      "designkilde": "kode",
+      "designversjon": "ikke-en-skjerm",
+      "komponentmonster": null,
+      "handlinger": "Send videre til /portal/meg/help",
+      "dataApi": "ikke-avlest-i-D01",
+      "tilstander": [
+        "videresending",
+        "manglende-mal"
+      ],
+      "formater": {
+        "mobil": "ikke-kontrollert",
+        "nettbrett": "ikke-kontrollert",
+        "desktop": "ikke-kontrollert",
+        "natt": "ikke-relevant"
+      },
+      "status": {
+        "kartlagt": true,
+        "wireframe": false,
+        "uiUtkast": false,
+        "prototype": false,
+        "vurdert": false,
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
+        "kontrollertIApp": false
+      },
+      "eier": "D01-skjermregister",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "videresending",
+      "forklaring": "Filen har ingen egen visning. Den sender til /portal/meg/help. At målet finnes, og hva brukeren ser hvis lenken er ugyldig, er ikke prøvd i denne bolken.",
+      "legacyGruppe": false,
+      "naermesteSkjermtype": null,
+      "sammeSidefil": [],
+      "videresendingMal": "/portal/meg/help",
       "kodekommentar": null
     },
     {
@@ -19172,19 +19158,20 @@
       "kodekommentar": "PH-24"
     },
     {
-      "screenId": "VIDERESENDING",
+      "screenId": "PH-25",
       "rute": "/portal/meg/innstillinger/eksport",
       "kildefil": "src/app/portal/meg/innstillinger/eksport/page.tsx",
       "omrade": "playerhq",
       "rolle": "spiller",
-      "designkilde": "kode",
-      "designversjon": "ikke-en-skjerm",
-      "komponentmonster": null,
-      "handlinger": "Send videre til /portal/meg/innstillinger/personvern",
+      "designkilde": "AK Golf Precision Athletics (7d7c2994-cf63-4c5f-9bdc-fdaf67655a70)",
+      "designversjon": "precision-athletics-2026-09-28",
+      "komponentmonster": "/portal/meg/innstillinger*",
+      "handlinger": "TALENT/FULL, faktura, kort, avbestill, samtykke, varsler, hjelp",
       "dataApi": "ikke-avlest-i-D01",
       "tilstander": [
-        "videresending",
-        "manglende-mal"
+        "tom",
+        "laster",
+        "feil"
       ],
       "formater": {
         "mobil": "ikke-kontrollert",
@@ -19195,23 +19182,23 @@
       "status": {
         "kartlagt": true,
         "wireframe": false,
-        "uiUtkast": false,
+        "uiUtkast": true,
         "prototype": false,
         "vurdert": false,
-        "valgtForBygging": false,
+        "valgtForBygging": true,
         "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
       "kontrollbevis": null,
       "avvik": [],
-      "kobling": "videresending",
-      "forklaring": "Filen har ingen egen visning. Den sender til /portal/meg/innstillinger/personvern. At målet finnes, og hva brukeren ser hvis lenken er ugyldig, er ikke prøvd i denne bolken.",
+      "kobling": "tegnet-skjermtype",
+      "forklaring": "PH-25 Abonnement og innstillinger er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
-      "videresendingMal": "/portal/meg/innstillinger/personvern",
-      "kodekommentar": null
+      "videresendingMal": null,
+      "kodekommentar": "PH-25"
     },
     {
       "screenId": "PH-25",
@@ -19436,7 +19423,7 @@
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "PH-25"
     },
     {
       "screenId": "PH-25",
@@ -19643,21 +19630,19 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "precision-visning",
+        "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Resultater merker PH24ResultatListe i PlayerHQSkall. Listen er beholdt. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
-      "avvik": [
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
+      "kontrollbevis": null,
+      "avvik": [],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-24 Meg er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "PH-24"
     },
     {
       "screenId": "PH-25",
@@ -19688,21 +19673,19 @@
         "prototype": false,
         "vurdert": false,
         "valgtForBygging": true,
-        "implementert": "precision-visning",
+        "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
-      "kontrollbevis": "Tofaktor merker PH25ToFaktor i PlayerHQSkall. Oppsettet er beholdt. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app.",
-      "avvik": [
-        "Ikke kontrollert i appen på 390×844 og 1440×880, og ikke sammenlignet med tegningsfilen. Den mangler i git."
-      ],
+      "kontrollbevis": null,
+      "avvik": [],
       "kobling": "tegnet-skjermtype",
       "forklaring": "PH-25 Abonnement og innstillinger er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
       "legacyGruppe": false,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
       "videresendingMal": null,
-      "kodekommentar": null
+      "kodekommentar": "PH-25"
     },
     {
       "screenId": "VIDERESENDING",
@@ -24490,16 +24473,16 @@
   ],
   "tellinger": {
     "sidefiler": 558,
-    "medAvvik": 141,
-    "valgtForBygging": 222,
+    "medAvvik": 135,
+    "valgtForBygging": 217,
     "utenEksaktType": 24,
-    "implementert": 110,
+    "implementert": 104,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,
       "felles-monster": 22,
-      "tegnet-skjermtype": 253,
-      "videresending": 198,
+      "tegnet-skjermtype": 248,
+      "videresending": 203,
       "teknisk-forklaring": 41,
       "byggeunderlag": 37
     },
@@ -24518,7 +24501,7 @@
       "ST-02": 9,
       "ST-03": 6,
       "ST-05": 5,
-      "VIDERESENDING": 198,
+      "VIDERESENDING": 203,
       "ST-06": 8,
       "ST-04": 3,
       "MK-BEKREFT": 1,
@@ -24582,9 +24565,9 @@
       "PH-IUP-01": 1,
       "PH-10": 2,
       "PH-19": 3,
-      "PH-25": 21,
+      "PH-25": 18,
       "PH-27": 1,
-      "PH-24": 9,
+      "PH-24": 7,
       "PH-01": 1,
       "PH-11": 1,
       "PH-14": 5,

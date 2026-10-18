@@ -1,5 +1,8 @@
 /**
- * AG-05 Kalender i nytt design (designbrevet 13.10.2026, utkast-agencyos/kalender.html). Samme fem faner, samme guard, samme datakilder som før —
+ * AG-05 Kalender, pakke 3 (bygget natt 17.10 etter utkast-agencyos/kalender.html):
+ * Dag (kolonne per coach) · Uke · Måned · År · Stall-dag · Tilgjengelighet. Samme guard
+ * (ADMIN/COACH). Head coach (ADMIN) ser alle coacher; assistant coach (COACH) egne
+ * økter og gruppeøkter, andre coachers timer som «Opptatt» (maskerForSeer).
  * Faner er ekte lenker (`?fane=`), så bare den aktive fanen laster data.
  *
  * «Tilgjengelighet» er en ny, femte fane (AG-05-tegningen, 28.09.2026) — se
@@ -9,15 +12,16 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import Link from "next/link";
-import { Topp } from "@/components/admin/agencyos-ny/ny";
-import { AG05Uke, AG05Maned, AG05Periode, AG05Verktoylinje } from "@/components/admin/precision/AG05Kalender";
+import { KnappLenke, Topp } from "@/components/admin/agencyos-ny/ny";
+import { AG05Aar, AG05Dag, AG05Uke, AG05Maned, AG05Periode } from "@/components/admin/precision/AG05Kalender";
 import { AG05Tilg } from "@/components/admin/precision/AG05Tilg";
 import { StallDagV2, StallDagFeil } from "@/components/workbench/StallDagV2";
 import { TL_SCOPE } from "@/components/workbench/wb-tl-scope";
 import { loadStallDag } from "@/lib/workbench/wb-actions";
 import { erKalenderLag, type KalenderLag } from "@/lib/domain/kalender-lag";
 import { hentKalenderLagManed, hentKalenderLagUke } from "./lag/data";
-import { hentUkemonster } from "./tilg-data";
+import { hentTilgjengelighet } from "./tilg-data";
+import { hentKalenderAar } from "./aar-data";
 import { KALENDER_FANER, kalenderHref, velgKalenderFane } from "@/lib/admin/kalender/faner";
 
 export const dynamic = "force-dynamic";
@@ -30,6 +34,7 @@ type SearchParams = Promise<{
   maaned?: string;
   dato?: string;
   lag?: string;
+  aar?: string;
 }>;
 
 const ISO_DATO = /^\d{4}-\d{2}-\d{2}$/;
@@ -43,6 +48,7 @@ export default async function AgencyKalenderPage({ searchParams }: { searchParam
   const sp = await searchParams;
   const fane = velgKalenderFane(sp.fane, sp.visning);
   const startLag: KalenderLag | undefined = sp.lag && erKalenderLag(sp.lag) ? sp.lag : undefined;
+  const seer = { id: user.id, erHeadCoach: user.role === "ADMIN" };
 
   let innhold: React.ReactNode;
   let periode = "";
@@ -59,27 +65,43 @@ export default async function AgencyKalenderPage({ searchParams }: { searchParam
       </div>
     );
   } else if (fane === "tilg") {
-    const rader = await hentUkemonster(user);
+    const data = await hentTilgjengelighet(user);
     periode = "Tilgjengelighet";
-    innhold = <AG05Tilg rader={rader} />;
+    innhold = <AG05Tilg data={data} />;
+  } else if (fane === "ar") {
+    const data = await hentKalenderAar(sp.aar, seer);
+    periode = String(data.aar);
+    navigasjon = <AG05Periode forrige={data.nav.forrige} idag={data.nav.idag} neste={data.nav.neste} tekst={periode} />;
+    innhold = <AG05Aar data={data} />;
   } else if (fane === "maned") {
-    const data = await hentKalenderLagManed(sp.maaned, { lag: startLag });
+    const data = await hentKalenderLagManed(sp.maaned, { lag: startLag, seer });
     periode = data.periode;
     navigasjon = <AG05Periode forrige={data.nav.forrige} idag={data.nav.idag} neste={data.nav.neste} tekst={data.periode} />;
     innhold = <AG05Maned data={data} startLag={startLag} />;
   } else {
-    const data = await hentKalenderLagUke(sp.uke, { lag: startLag, visning: fane, dato: sp.dato });
-    periode = data.periode;
-    navigasjon = <AG05Periode forrige={data.nav.forrige} idag={data.nav.idag} neste={data.nav.neste} tekst={data.periode} />;
-    innhold = <AG05Uke data={data} dagIso={sp.dato} startLag={startLag} />;
+    const data = await hentKalenderLagUke(sp.uke, { lag: startLag, visning: fane, dato: sp.dato, seer });
+    if (fane === "dag") {
+      const dato = sp.dato && data.dager.includes(sp.dato) ? sp.dato : data.dager.includes(data.idagIso) ? data.idagIso : data.dager[0];
+      periode = new Intl.DateTimeFormat("nb-NO", { weekday: "long", day: "numeric", month: "short", timeZone: "UTC" }).format(new Date(`${dato}T12:00:00Z`));
+      periode = periode.charAt(0).toUpperCase() + periode.slice(1);
+      navigasjon = <AG05Periode forrige={data.nav.forrige} idag={data.nav.idag} neste={data.nav.neste} tekst={periode} />;
+      innhold = <AG05Dag data={data} dagIso={dato} startLag={startLag} erHeadCoach={seer.erHeadCoach} />;
+    } else {
+      periode = data.periode;
+      navigasjon = <AG05Periode forrige={data.nav.forrige} idag={data.nav.idag} neste={data.nav.neste} tekst={data.periode} />;
+      innhold = <AG05Uke data={data} startLag={startLag} />;
+    }
   }
 
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
       <div className="agn-s">
-        <Topp dato={`Kalender · ${periode}`} tittel="Kalender"
-          handlinger={<AG05Verktoylinje nyHendelseHref="/admin/kalender/hendelse/ny" nyBookingHref="/admin/bookinger/ny" />} />
-        <nav className="faner" aria-label="Visning">
+        <Topp dato={seer.erHeadCoach ? `Alle coacher · ${periode}` : `${user.name ?? "Coach"} · Assist Coach`} tittel="Kalender"
+          handlinger={<>
+            <KnappLenke variant="pri" href="/admin/bookinger?fane=ny">Ny booking</KnappLenke>
+            <KnappLenke href="/admin/kalender/hendelse/ny">Ny hendelse</KnappLenke>
+          </>} />
+        <nav className="valg" aria-label="Visning">
           {KALENDER_FANER.map((f) => <Link key={f.id} href={kalenderHref(f.id)} aria-current={f.id === fane ? "page" : undefined}>{f.label}</Link>)}
         </nav>
         {navigasjon}
