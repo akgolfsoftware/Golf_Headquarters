@@ -84,7 +84,7 @@ som eget lag nederst i `felles/wang.css` (gjelder alle pakkene). Aksefargene og 
 |---|---|---|---|---|
 | FYS | Navy | `#17446F` | `#17446F` | hvit |
 | TEK | Teal | `#2E857D` | `#226F67` (WANGs `--wang-teal-text`) | hvit |
-| SLAG | Oransje | `#F47B20` | `#F47B20` | mørk navy `#0F172A` |
+| SLAG | Mint (var oransje) | `#49CA9F` | `#49CA9F` | mørk navy `#0F172A` |
 | SPILL | Blå | `#007DB1` | `#007DB1` | hvit |
 | TURN | Lilla | `#7F1975` | `#7F1975` | hvit |
 

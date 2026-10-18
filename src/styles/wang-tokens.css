@@ -16,7 +16,7 @@
   --wang-teal-text: #226f67;
 
   /* ---- Kategorifarger ---- */
-  --cat-orange: #f47b20;
+  --cat-orange: #49ca9f;
   --cat-yellow: #fcd700;
   --cat-pink: #d12a5c;
   --cat-blue: #007db1;
@@ -26,7 +26,7 @@
   /* Mørkere varianter, kun til TEKST på tilhørende tint-flate. Oransje og blå
      er for lyse til å leses som tekst på --tint-*. Hentet fra PY_FG i
      årsplan-fasiten (designsystem/wang/fasit/). */
-  --cat-orange-text: #b4571a;
+  --cat-orange-text: #226f67;
   --cat-blue-text: #00618a;
   --cat-yellow-text: #7a6200;
 
@@ -95,7 +95,7 @@
   --color-primary: var(--wang-navy);
   --color-success: var(--wang-teal);
   --color-accent: var(--wang-mint);
-  --color-warning: var(--cat-orange);
+  --color-warning: #f47b20; /* advarsel forblir oransje: grønn betyr OK */
   --color-danger: var(--cat-pink);
   --color-info: var(--cat-blue);
   --color-disabled: var(--cat-gray);
