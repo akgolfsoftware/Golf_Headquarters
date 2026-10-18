@@ -1,10 +1,10 @@
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { PLAN_HJELPERE_VIDERESENDING } from "@/lib/portal/plan-hjelpere-videresending";
 
-/** Legacy → moderne PlayerHQ-rute (B / v2). */
+/** Legacy → Fysisk program (pakke 17b). */
 export default async function LegacyRedirect(): Promise<never> {
-  // (legacy)-layouten krever kun innlogging (17.08) — nivået håndheves her.
-  // Målruten /portal/fysisk står ikke på talent-allowlisten: FULL.
+  // (legacy)-layouten krever kun innlogging (17.08) — nivået håndheves her (FULL).
   await requirePortalUser({ kreverTilgang: "FULL" });
-  redirect("/portal/fysisk");
+  redirect(PLAN_HJELPERE_VIDERESENDING["/portal/tren/fys-plan/[planId]"]);
 }

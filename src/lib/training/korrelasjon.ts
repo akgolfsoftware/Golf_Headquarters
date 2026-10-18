@@ -104,7 +104,9 @@ export async function beregnKorrelasjon(
     where: { userId, date: { gte: grense } },
     select: { date: true, sgArea: true, minutes: true },
   });
-  const treningUker = aggregerVolumPerUke(treningLogger, uker + 1, now);
+  // Logger uten SG-område (FYS/TEK/SPILL/TURN fra Logg økt) hører ikke til SG-volumet.
+  const medSg = treningLogger.filter((l): l is typeof l & { sgArea: NonNullable<typeof l.sgArea> } => l.sgArea != null);
+  const treningUker = aggregerVolumPerUke(medSg, uker + 1, now);
 
   const runder = await prisma.round.findMany({
     where: {

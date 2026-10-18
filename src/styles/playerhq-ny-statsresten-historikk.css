@@ -1,0 +1,64 @@
+/*
+ * PlayerHQ pakke 13 (Stats, resten): Historikk (PH-16-HIST) og Puttelaboratoriet (PH-13-PUTT).
+ * Fasit: docs/design-system/utkast-playerhq/stats-resten.html, malene «historikk» og «putt».
+ * Bygger på playerhq-ny.css og playerhq-ny-stats.css. Alt avgrenset til .phn.
+ */
+
+/* ---------- Historikk ---------- */
+.phn .phn-hi-filter { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.phn .phn-hi-filter .phn-brikke { min-height: 44px; }
+.phn .phn-hi-apne { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--phn-g900); background: var(--phn-g900); color: var(--phn-hvit); font: 500 14px/1 var(--phn-sans); cursor: pointer; }
+.phn .phn-hi-apne .phn-ikon { width: 16px; height: 16px; }
+.phn .phn-hist { display: grid; gap: 8px; align-content: start; }
+.phn .phn-hist-mnd { font: 500 12px/1.3 var(--phn-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--phn-g600); margin-top: 8px; }
+.phn .phn-hrad { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; gap: 12px; align-items: center; min-height: 56px; padding: 10px 12px; border: 1px solid var(--phn-sand-300); border-radius: 12px; background: var(--phn-hvit); color: inherit; text-decoration: none; }
+.phn a.phn-hrad:focus-visible { outline: 3px solid var(--phn-g900); outline-offset: 2px; }
+.phn .phn-hrad .phn-hr-dag { display: grid; justify-items: center; font: 600 18px/1 var(--phn-mono); }
+.phn .phn-hrad .phn-hr-dag small { font: 500 11px/1.2 var(--phn-sans); color: var(--phn-g600); margin-top: 3px; }
+.phn .phn-hrad b.phn-hr-navn { display: block; font: 600 15px/1.3 var(--phn-sans); overflow-wrap: anywhere; }
+.phn .phn-hrad .phn-hr-meta { display: flex; flex-wrap: wrap; gap: 2px 10px; font-size: 13px; line-height: 1.4; color: var(--phn-g600); align-items: center; }
+.phn .phn-hrad .phn-hr-meta i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 4px; }
+.phn .phn-hrad .phn-hr-meta i:not([class]) { background: var(--phn-g900); }
+.phn .phn-hrad .phn-hr-tall { text-align: right; font: 600 16px/1.1 var(--phn-mono); white-space: nowrap; }
+.phn .phn-hrad .phn-hr-tall small { display: block; font: 400 11.5px/1.3 var(--phn-sans); color: var(--phn-g600); }
+.phn .phn-hi-ark-fot { display: flex; gap: 8px; flex-wrap: wrap; }
+.phn .phn-hi-ark-fot .phn-knapp.pri { flex: 1; }
+.phn .phn-velg-brikker button i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: 0; }
+.phn .phn-velg-brikker button[aria-pressed="true"] i { box-shadow: 0 0 0 2px var(--phn-hvit); }
+
+/* ---------- Puttelaboratoriet ---------- */
+.phn .phn-pl-ingress { font-size: 15px; line-height: 1.5; color: var(--phn-g800); max-width: 62ch; }
+.phn .phn-pl-forvalg { display: flex; flex-wrap: wrap; gap: 6px; }
+.phn .phn-pl-forvalg button { min-height: 44px; padding: 0 12px; border: 1px solid var(--phn-sand-300); border-radius: 999px; background: var(--phn-hvit); font: 500 14px/1 var(--phn-sans); color: var(--phn-g800); cursor: pointer; }
+.phn .phn-pl-forvalg button[aria-pressed="true"] { background: var(--phn-g900); border-color: var(--phn-g900); color: var(--phn-hvit); }
+.phn .phn-ledd { display: grid; gap: 10px; }
+.phn .phn-ledd-rad { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; align-items: center; }
+.phn .phn-ledd-rad label, .phn .phn-ledd-rad > span { font: 600 14px/1.3 var(--phn-sans); }
+.phn .phn-ledd-rad output { font: 600 15px/1 var(--phn-mono); text-align: right; white-space: nowrap; }
+.phn .phn-ledd-rad input { grid-column: 1 / -1; width: 100%; accent-color: var(--phn-slag); min-height: 44px; margin: 0; }
+.phn .phn-ledd-rad.svakest label { color: var(--phn-slag-ink); }
+.phn .phn-ledd-rad.svakest label::after { content: " · svakest"; font-weight: 500; }
+.phn .phn-ledd-rad.fast { padding-top: 10px; border-top: 1px solid var(--phn-sand-300); }
+.phn .phn-ledd-rad.fast small { grid-column: 1 / -1; font: 400 13px/1.4 var(--phn-sans); color: var(--phn-g600); }
+.phn .phn-pl-green { width: 100%; max-width: 420px; height: auto; display: block; justify-self: center; border-radius: 12px; }
+.phn .phn-pl-green .gress { fill: #d7e6c8; }
+.phn .phn-pl-green .stripe { stroke: #c6dab3; stroke-width: 1; }
+.phn .phn-pl-green .tekst { font: 500 11px var(--phn-sans); fill: var(--phn-g600); }
+.phn .phn-pl-green .tekst.sterk { font-weight: 600; fill: var(--phn-g900); }
+.phn .phn-pl-green .linje { stroke: var(--phn-g600); stroke-dasharray: 5 4; fill: none; }
+.phn .phn-pl-green .bane { stroke: var(--phn-slag); stroke-width: 3; stroke-linecap: round; fill: none; }
+.phn .phn-pl-naer { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; }
+.phn .phn-pl-naer span { display: grid; gap: 2px; padding: 10px 12px; border-radius: 10px; background: var(--phn-sand-100); font-size: 13px; line-height: 1.35; color: var(--phn-g600); }
+.phn .phn-pl-naer b { font: 600 20px/1.1 var(--phn-mono); color: var(--phn-g900); }
+.phn .phn-pl-putter { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+.phn .phn-pl-putter button { min-height: 44px; border: 1px solid var(--phn-sand-300); border-radius: 8px; display: grid; place-items: center; font: 600 13px/1 var(--phn-mono); background: var(--phn-sand-150); color: var(--phn-g900); cursor: pointer; padding: 0; }
+.phn .phn-pl-putter button[aria-pressed="true"] { background: var(--phn-slag); border-color: var(--phn-slag); color: #fff; }
+.phn .phn-pl-putter button:focus-visible { outline: 3px solid var(--phn-g900); outline-offset: 2px; }
+.phn .phn-pl-skive { --p: 0; display: grid; place-items: center; width: 140px; height: 140px; border-radius: 50%; justify-self: center; background: conic-gradient(var(--phn-slag) calc(var(--p) * 1%), var(--phn-sand-150) 0); }
+.phn .phn-pl-skive span { display: grid; place-items: center; width: 108px; height: 108px; border-radius: 50%; background: var(--phn-hvit); font: 600 32px/1 var(--phn-mono); }
+.phn .phn-pl-midt { text-align: center; }
+
+@container (min-width: 900px) {
+  .phn .phn-hist { max-width: 820px; }
+  .phn .phn-pl-putter { grid-template-columns: repeat(10, minmax(0, 1fr)); }
+}

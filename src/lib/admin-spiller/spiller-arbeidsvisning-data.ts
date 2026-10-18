@@ -130,7 +130,7 @@ export async function lastSpillerArbeidsvisning(
       orderBy: { startTime: "asc" },
     }),
     prisma.round.findMany({
-      where: { userId: playerId, sgTotal: { not: null }, playedAt: { gte: tolvUkerSiden } },
+      where: { userId: playerId, sharedWithCoach: true, sgTotal: { not: null }, playedAt: { gte: tolvUkerSiden } },
       select: { sgTotal: true, sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
       orderBy: { playedAt: "desc" },
       take: 12,

@@ -100,6 +100,7 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | dokumentasjon | [docs/design-system/utkast-agencyos/README.md](<../design-system/utkast-agencyos/README.md>) |
 | dokumentasjon | [docs/design-system/utkast-flater/README.md](<../design-system/utkast-flater/README.md>) |
 | dokumentasjon | [docs/design-system/utkast-playerhq/bilder/KILDER.md](<../design-system/utkast-playerhq/bilder/KILDER.md>) |
+| dokumentasjon | [docs/design-system/utkast-playerhq/hjelpeartikler.md](<../design-system/utkast-playerhq/hjelpeartikler.md>) |
 | dokumentasjon | [docs/design-system/utkast-playerhq/README.md](<../design-system/utkast-playerhq/README.md>) |
 | dokumentasjon | [docs/design-system/utkast-tn/README.md](<../design-system/utkast-tn/README.md>) |
 | dokumentasjon | [docs/design-system/utkast-wang/README.md](<../design-system/utkast-wang/README.md>) |
@@ -141,6 +142,7 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | datert-plan | [docs/planer/hovedprompt-wang-team-norway-playerhq-2026-10-02.md](<../planer/hovedprompt-wang-team-norway-playerhq-2026-10-02.md>) |
 | datert-plan | [docs/planer/iup-2027-felt-og-beregningsregister-2026-10-02.md](<../planer/iup-2027-felt-og-beregningsregister-2026-10-02.md>) |
 | datert-plan | [docs/planer/lanseringsplan-2026-10-01.md](<../planer/lanseringsplan-2026-10-01.md>) |
+| datert-plan | [docs/planer/nattkjoring-komplett-design-2026-10-16.md](<../planer/nattkjoring-komplett-design-2026-10-16.md>) |
 | datert-plan | [docs/planer/plan-portering-claude-design-til-kode-2026-09-25.md](<../planer/plan-portering-claude-design-til-kode-2026-09-25.md>) |
 | datert-plan | [docs/planer/planlegging-trening-og-analyse-design-og-kode-2026-09-21.md](<../planer/planlegging-trening-og-analyse-design-og-kode-2026-09-21.md>) |
 | datert-plan | [docs/planer/playerhq-alle-sider-nytt-design-2026-10-16.md](<../planer/playerhq-alle-sider-nytt-design-2026-10-16.md>) |
@@ -216,6 +218,7 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | dokumentasjon | [docs/treningsplanlegging-og-sprak.md](<../treningsplanlegging-og-sprak.md>) |
 | dokumentasjon | [docs/treningsplanlegging.md](<../treningsplanlegging.md>) |
 | dokumentasjon | [docs/turnering-datakilder.md](<../turnering-datakilder.md>) |
+| dokumentasjon | [docs/utvikling/konto-e2e.md](<../utvikling/konto-e2e.md>) |
 | dokumentasjon | [docs/utvikling/lokal-brukertest.md](<../utvikling/lokal-brukertest.md>) |
 | dokumentasjon | [docs/utvikling/lokal-testdatabase.md](<../utvikling/lokal-testdatabase.md>) |
 | dokumentasjon | [docs/vedlikehold/avhengighetssikkerhet-2026-09-13.md](<avhengighetssikkerhet-2026-09-13.md>) |

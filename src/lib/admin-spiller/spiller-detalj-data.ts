@@ -124,7 +124,7 @@ export async function loadSpillerDetaljOversikt(playerId: string): Promise<Spill
     }),
     // Runder siste 30 d (SG-trend)
     prisma.round.findMany({
-      where: { userId: playerId, playedAt: { gte: tretti, lt: now } },
+      where: { userId: playerId, sharedWithCoach: true, playedAt: { gte: tretti, lt: now } },
       orderBy: { playedAt: "asc" },
     }),
     // Neste kommende booking
