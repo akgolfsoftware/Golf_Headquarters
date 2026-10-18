@@ -1,6 +1,6 @@
 {
-  "sitert": 131,
+  "sitert": 130,
   "av": 219,
-  "sistEndret": "2026-10-16",
-  "grunn": "PlayerHQ pakke 11 og 12 portert til nytt design: Gameplan-banekartet (/portal/gameplan/[baneId]) siterte «designsystem/train-lock/GP-02 Gameplan Onsoy.dc.html» og siterer nå utkastet docs/design-system/utkast-playerhq/iup.html (godkjent). Én Train-lock-sitering faller bort, 132→131."
+  "sistEndret": "2026-10-17",
+  "grunn": "PlayerHQ pakke 16 Utfordringer: den ubrukte MegV2 (src/components/portal/v2/MegV2.tsx) er slettet. Den siterte «designsystem/train-lock/PH-17 Meg.dc.html»; Meg er bygget i nytt design i PH24Meg etter utkast-playerhq (pakke 8, #1384). Én Train-lock-sitering faller bort, 131→130."
 }

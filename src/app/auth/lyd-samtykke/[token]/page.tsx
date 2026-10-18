@@ -40,7 +40,7 @@ export default async function LydSamtykkeTokenPage({ params }: Props) {
   if (!rad) {
     return (
       <PrecisionTilstand
-        kicker="Lydopptak"
+        kicker="Opptak"
         tittel="Lenken virker ikke"
         tekst="Lenken er ugyldig eller allerede brukt. Be treneren sende ny e-post hvis du fortsatt skal gi samtykke."
         primar={{ label: "Til forsiden", href: "/" }}
@@ -57,7 +57,7 @@ export default async function LydSamtykkeTokenPage({ params }: Props) {
   if (rad.status === "GITT") {
     return (
       <PrecisionTilstand
-        kicker="Lydopptak"
+        kicker="Opptak"
         tittel="Allerede registrert"
         tekst={`Samtykke for ${spillerNavn} er allerede gitt. Du trenger ikke gjøre noe mer.`}
         primar={{ label: "Til forsiden", href: "/" }}
@@ -75,7 +75,7 @@ export default async function LydSamtykkeTokenPage({ params }: Props) {
   ) {
     return (
       <PrecisionTilstand
-        kicker="Lydopptak"
+        kicker="Opptak"
         tittel="Lenken er utløpt"
         tekst="Be treneren sende en ny e-post med fersk lenke."
         primar={{ label: "Til forsiden", href: "/" }}

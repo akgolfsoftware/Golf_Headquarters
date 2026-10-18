@@ -6,8 +6,9 @@
 import { getCurrentUserRaw } from "@/lib/auth/getCurrentUser";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { isAwaitingGuardianConsent } from "@/lib/auth/minor";
-import { SamtykkeVenterV2 } from "@/components/portal/v2/SamtykkeVenterV2";
+import { forelderFrist, isAwaitingGuardianConsent } from "@/lib/auth/minor";
+import { logout } from "@/lib/auth/logout";
+import { SpillerVenter } from "@/components/auth/precision/SpillerVenter";
 
 export const dynamic = "force-dynamic";
 
@@ -33,9 +34,11 @@ export default async function SamtykkeVenterPage() {
   });
 
   return (
-    <SamtykkeVenterV2
+    <SpillerVenter
       spillerNavn={user.name ?? ""}
       invitasjonEmail={sisteInvitasjon?.email ?? null}
+      loggUt={logout}
+      fristTekst={new Intl.DateTimeFormat("nb-NO", { weekday: "long", day: "numeric", month: "long", timeZone: "Europe/Oslo" }).format(forelderFrist(user.createdAt))}
     />
   );
 }

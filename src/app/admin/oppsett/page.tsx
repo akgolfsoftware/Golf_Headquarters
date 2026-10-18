@@ -46,7 +46,6 @@ export default async function OppsettPage({
     ekstern: "ekstern",
     varsler: "varsler",
     integr: "integr",
-    mark: "mark",
     virks: "virks",
   };
 

@@ -137,7 +137,11 @@ try {
           }
           if (el.matches("a[href],button,[role=button],input,select,textarea,[role=tab]") && el.closest(".pa-sr") == null && (r.height < min || r.width < min)) {
             // Tekstlenker inne i løpende tekst er unntatt; alt annet skal ha 44 px.
-            if (!(el.tagName === "A" && cs.display === "inline")) smaa.push(`${el.tagName.toLowerCase()} «${(el.getAttribute("aria-label") || el.textContent || "").trim().slice(0, 30)}» ${Math.round(r.width)}×${Math.round(r.height)}`);
+            // En avkrysning inni en <label> treffes på hele etiketten; mål etiketten i stedet.
+            const etikett = el.matches("input[type=checkbox],input[type=radio]") ? el.closest("label") : null;
+            const er = etikett?.getBoundingClientRect();
+            const etikettStor = er && er.height >= min && er.width >= min;
+            if (!(el.tagName === "A" && cs.display === "inline") && !etikettStor) smaa.push(`${el.tagName.toLowerCase()} «${(el.getAttribute("aria-label") || el.textContent || "").trim().slice(0, 30)}» ${Math.round(r.width)}×${Math.round(r.height)}`);
           }
         }
         return { scrollWidth: d.scrollWidth, clientWidth: vw, utenfor: utenfor.slice(0, 10), smaa: smaa.slice(0, 10), tekst: document.body.innerText.length };

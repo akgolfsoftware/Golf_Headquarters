@@ -4,6 +4,19 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## ALT SOM ER KLART LEGGES INN I MAIN AUTOMATISK (Anders 17.10.2026, bindende)
+
+Anders 17.10: «kan du legge til regel at alt som er klart auto merges til main».
+
+- **Claude slår på auto-merge (squash) på hver PR** når den er laget. GitHub legger den inn i main når alle sjekker er grønne.
+- **Klart betyr:** `npm run verify` grønn lokalt og alle CI-sjekker grønne. Rødt legges aldri inn, og `--no-verify` brukes aldri.
+- Skjermbilder i 390 og desktop og Vercel-lenken sendes fortsatt etter push, så Anders kan se designet i etterkant og be om endring.
+- **Står fortsatt:** unntakene i AGENTS.md §Stående forhåndsgodkjenning (ekte betaling, e-post til ekte personer, sletting av produksjonsdata, brytende skjemaendring, domeneflytting, hemmeligheter).
+
+**Overstyrer:** «Merge ALDRI til main før Anders har skrevet «merge»» i `CLAUDE.md` §Push og merge, også etter at nattkjøringen er opphevet.
+
+**Arbeidet dette utløser:** `CLAUDE.md` §Push og merge er rettet i samme PR. Ferdig når regelen står der.
+
 ## NATTKJØRING 16.–17.10: CLAUDE GODKJENNER OG LEGGER INN SELV TIL ALLE FLATER ER I NYTT DESIGN (Anders 16.10.2026, bindende)
 
 Anders 16.10 kl. 22:45: «Alle sider i PlayerHQ, AgencyOS, Team Norway og WANG og nettsidene skal ha
@@ -144,6 +157,21 @@ Svar på punkt 3 i §DEL RUNDE FINNES VED LANSERING, stilt før pakke 16 Utfordr
 2. **Deltakere bare fra gruppa:** `hentGyldigeDeltakerIder` (`src/app/portal/(legacy)/utfordringer/actions.ts`) og `PH24dNy` slutter å hente `Friendship`. Ferdig når en test låser at en venn utenfor gruppene avvises.
 3. **Tilgang til én utfordring:** `/portal/utfordringer/[id]` og `bliMed` slipper bare inn eier og valgte deltakere (i dag kan alle innloggede åpne og bli med). Ferdig når en test låser at en annen spiller avvises.
 4. **Tegning:** pakke 16, `docs/design-system/utkast-playerhq/utfordringer.html` (utkast 1, 16.10). Port 7 gjenstår.
+
+## MARKEDSFØRINGSSIDEN I AGENCYOS FJERNES (Anders 16.10.2026, bindende)
+
+Svar på det uavklarte punktet etter AgencyOS pakke 11 (`docs/design-system/utkast-agencyos/resten.html`): «Fjern markedsføringssiden i AgencyOS.»
+
+- **`/admin/marketing` (innholdskalender og post-kø for sosiale medier) fjernes.** Adressen sender til `/admin/oppsett`.
+- **Fanen «Markedsføring» i Oppsett (AG-23) og søkeoppføringen «Marketing» fjernes.**
+- Tabellen `MarketingPost` blir stående; ingen data slettes.
+
+**Overstyrer:** markedsføringsfanen i AG-23 og «Markedsføring og hjelp» i `mer.html`.
+
+**Arbeidet dette utløser:**
+
+1. **Kode:** videresending, fane og søk fjernet, og den døde koden (`AdminMarketingTrainLock`, `AdminMarketingV2`, `src/lib/admin-marketing/`) slettet. Gjort i samme PR.
+2. **Utkastet `mer.html`** (AgencyOS pakke 7): fanen «Markedsføring og hjelp» i Oppsett blir «Hjelp» når pakken rettes neste gang.
 
 ## WANG-TRENERFLATEN FØLGER STILEN PÅ WANG.NO (Anders 16.10.2026, bindende)
 

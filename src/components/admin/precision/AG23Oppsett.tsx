@@ -8,7 +8,7 @@
  * som «ikke koblet ennå»; ingenting lagres eller bekreftes falskt. GDPR og logger har
  * egne sider (/admin/gdpr, /admin/audit-log, /admin/feillogg) som fanene lenker til.
  *
- * Faner: Team · Profil · Varsler · Integrasjoner · GDPR · Logger · Markedsføring og hjelp.
+ * Faner: Team · Profil · Varsler · Integrasjoner · GDPR · Logger · Maler og hjelp.
  * Gamle fane-ider (inviter, ekstern, mark, virks) peker til fanen de nå ligger i.
  *
  * Avvik:
@@ -53,7 +53,7 @@ const TOM_DATA: AG23Data = { team: [], profil: null };
 type Fane = "team" | "profil" | "varsler" | "integr" | "gdpr" | "logg" | "hjelp";
 const FANER: ReadonlyArray<[Fane, string]> = [
   ["team", "Team"], ["profil", "Profil"], ["varsler", "Varsler"], ["integr", "Integrasjoner"],
-  ["gdpr", "GDPR"], ["logg", "Logger"], ["hjelp", "Markedsføring og hjelp"],
+  ["gdpr", "GDPR"], ["logg", "Logger"], ["hjelp", "Maler og hjelp"],
 ];
 const ALIAS: Record<string, Fane> = { inviter: "team", ekstern: "team", mark: "hjelp", virks: "hjelp" };
 const tilFane = (f: string): Fane => ALIAS[f] ?? (FANER.find(([id]) => id === f)?.[0] ?? "team");

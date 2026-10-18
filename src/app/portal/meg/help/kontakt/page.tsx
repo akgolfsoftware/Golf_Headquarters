@@ -1,65 +1,49 @@
+// PlayerHQ «Skriv til oss» og «Sendt» — Precision Athletics, pakke 15 (utkast hjelp.html, 16.10.2026).
 /**
- * /portal/meg/help/kontakt — B-pakke.
- * Status (svartid) først, deretter skjema med én grønn send-CTA.
+ * /portal/meg/help/kontakt — ett skjema for spørsmål, feil, forslag og ros (sendSkrivTilOss).
+ * ?type= forhåndsvelger typen, ?fra= er siden spilleren kom fra. Etter sending viser ?sendt=<id>
+ * kvitteringen, og bare for meldinger brukeren selv har sendt.
  */
-
+import { z } from "zod";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { TL } from "@/lib/v2/train-lock";
+import { prisma } from "@/lib/prisma";
+import { getUnreadNotifications } from "@/app/portal/actions";
+import { SKRIV_TYPE_NAVN, saksnummer, type SkrivTilOssType } from "@/lib/portal-hjelp/saksnummer";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { PHSendt, PHSkrivTilOss } from "@/components/portal/precision/PHSkrivTilOss";
 
-import { Caps, Tittel, Kort, TilbakeLenke, StatusPill } from "@/components/v2";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { KontaktSupportForm } from "./kontakt-support-form";
+export const dynamic = "force-dynamic";
+export const metadata = { title: "Skriv til oss · PlayerHQ" };
 
-export default async function KontaktSupportPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ ticket?: string }>;
-}) {
+const Sok = z.object({
+  type: z.enum(["sporsmal", "bug", "forslag", "ros"]).optional().catch(undefined),
+  fra: z.string().max(200).regex(/^[a-z0-9/_\-[\]]+$/i).optional().catch(undefined),
+  sendt: z.string().max(40).optional().catch(undefined),
+});
+const TID = new Intl.DateTimeFormat("nb-NO", { timeZone: "Europe/Oslo", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" });
+
+export default async function SkrivTilOssPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const user = await requirePortalUser({ kreverTilgang: "INGEN" });
-  const sp = await searchParams;
+  const raa = await searchParams;
+  const sp = Sok.parse(Object.fromEntries(Object.entries(raa).map(([k, v]) => [k, Array.isArray(v) ? v[0] : v])));
+  const [uleste, sendt] = await Promise.all([
+    getUnreadNotifications(user.id, 1),
+    sp.sendt
+      ? prisma.appFeedback.findFirst({ where: { id: sp.sendt, userId: user.id }, select: { id: true, type: true, tekst: true, createdAt: true } })
+      : null,
+  ]);
 
   return (
-    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <div
-        style={{
-          maxWidth: 720,
-          margin: "0 auto",
-          display: "flex",
-          flexDirection: "column",
-          gap: 16,
-        }}
-      >
-        <TilbakeLenke href="/portal/meg/help">Hjelp</TilbakeLenke>
-
-        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-          <div>
-            <Caps>Støtte · Direkte kontakt</Caps>
-            <div style={{ marginTop: 10 }}>
-              <Tittel em="support">Kontakt</Tittel>
-            </div>
-            <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: "8px 0 0", lineHeight: 1.45, maxWidth: "42ch" }}>
-              Beskriv problemet — jo mer kontekst, desto raskere svar.
-            </p>
-          </div>
-          <StatusPill tone="up">~4 t · hverdager 08–17</StatusPill>
-        </div>
-
-        {sp?.ticket && (
-          <Kort style={{ borderColor: `color-mix(in srgb, ${TL.ok} 30%, ${TL.hair})` }}>
-            <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 13.5, color: TL.text, lineHeight: 1.5 }}>
-              Melding sendt. Ticket-ID{" "}
-              <span style={{ fontFamily: TL.font.mono, fontWeight: 700 }}>#{sp.ticket}</span>. Du får svar på e-post.
-            </p>
-          </Kort>
-        )}
-
-        <KontaktSupportForm
-          bruker={{
-            navn: user.name ?? "",
-            epost: user.email ?? "",
-          }}
-        />
-      </div>
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste.count}>
+      {sendt
+        ? <PHSendt data={{
+          tid: TID.format(sendt.createdAt),
+          type: SKRIV_TYPE_NAVN[sendt.type as SkrivTilOssType] ?? "Melding",
+          emne: sendt.tekst.split("\n")[0] ?? "",
+          epost: user.email ?? "",
+          saksnummer: saksnummer(sendt.id),
+        }} />
+        : <PHSkrivTilOss data={{ navn: user.name ?? "", epost: user.email ?? "", type: sp.type ?? "sporsmal", fra: sp.fra ?? null }} />}
+    </PlayerHQSkall>
   );
 }
