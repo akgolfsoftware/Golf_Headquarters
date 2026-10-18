@@ -4,6 +4,19 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## NATTKJØRING 18.–19.10: AUTOMATISK GODKJENNING I HELE PROSJEKTET, WANG OG TEAM NORWAY FULLFØRES (Anders 18.10.2026, bindende)
+
+Anders 18.10: «fullfør nå alle oppgaver nå. legg til at auto godkjenning i hele prosjektet i natt så alle sessions kan jobbe.»
+Svar på gjennomgangen samme dag, som viste at WANG og Team Norway er bygget i nytt design, men at flere funksjoner står tomme fordi dataene ikke finnes.
+
+- **Fullmakten fra 16.–17.10 gjelder igjen, for hele prosjektet og alle økter:** Claude gjør port 7, legger inn i main når verify og CI er grønn, avgjør åpne spørsmål og fører valgene i planens §4. Grensen på tre samtidige økter er opphevet.
+- **Additive skjemaendringer** kjøres av økta selv etter AGENTS.md §Stående forhåndsgodkjenning.
+- **Står fortsatt:** ingen ekte betaling, ingen e-post eller invitasjon til ekte personer, ingen sletting eller omskriving av produksjonsdata, ingen brytende skjemaendring, ingen domeneflytting, ingen hemmeligheter, ingen `--no-verify`. Elevdata om mindreårige behandles etter `ak-personvern`.
+
+**Overstyrer:** at datamodellen for WANG og Team Norway venter på Anders' ja (§ÉN IUP OG ETT TESTBATTERI punkt 5, §WANG: FEM ANSATTROLLER punkt 4), for natten.
+
+**Arbeidet dette utløser:** arbeidspakkene W1–W4 og T1–T3 i `docs/planer/nattkjoring-wang-tn-funksjoner-2026-10-18.md`, én økt og én PR per pakke, og kontrollen K til slutt. Ferdig når hver pakke er lagt inn eller står med grunn i planens §3, og morgenrapporten (§5) finnes.
+
 ## SLAG I WANG ER MINT, IKKE ORANSJE (Anders 18.10.2026, bindende)
 
 Anders 18.10: «Vi må bytte ut orange fargen med den grønne WANG-fargen på alle flater.» Valgt: bare WANG-flatene, og mint `#49CA9F` (ikke teal, som ligger for nær TEK `#226F67`).

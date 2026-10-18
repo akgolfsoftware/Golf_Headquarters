@@ -30,12 +30,20 @@ Følg AGENTS.md §Git-arbeidsflyt. Bestilt lokalt arbeid gir ikke i seg selv til
 - Unntakene i AGENTS.md §Stående forhåndsgodkjenning gjelder fortsatt: ingen ekte betaling, e-post til ekte personer, sletting av produksjonsdata, brytende skjemaendring, domeneflytting eller hemmeligheter uten ny beskjed fra Anders.
 - Push aldri direkte til main.
 
-## Nattkjøring 16.–17.10.2026 (Anders 16.10 kl. 22:45, gjelder til Anders opphever den)
+## Nattkjøring 18.–19.10.2026: automatisk godkjenning i hele prosjektet (Anders 18.10, gjelder til Anders opphever den)
 
-Anders: «Du må legge inn i prosjektregler at du kan gjøre alt og godkjenne uten min tillatelse for å
-gjøre prosjektet komplett i natt.» Planen er [nattkjøringen](docs/planer/nattkjoring-komplett-design-2026-10-16.md).
+Anders 18.10: «fullfør nå alle oppgaver nå. legg til at auto godkjenning i hele prosjektet i natt så alle
+sessions kan jobbe.» Gjelder **alle økter og alle flater** i AK Golf HQ, ikke bare WANG og Team Norway.
+Planen for natten er [nattkjøring 18.10](docs/planer/nattkjoring-wang-tn-funksjoner-2026-10-18.md).
+Den erstatter regelen fra 16.–17.10 (planen fra den natten ligger i
+[nattkjøringen 16.10](docs/planer/nattkjoring-komplett-design-2026-10-16.md)).
 
 Mens denne regelen gjelder:
+- **Ingen økt venter på Anders.** Åpne spørsmål avgjøres med anbefalingen i utkastet, beslutningsloggen
+  eller økta selv, og føres i planens §4 «Avgjort i natt».
+- **Additive skjemaendringer kjøres av økta selv** (`CREATE TABLE IF NOT EXISTS`, `ADD COLUMN IF NOT EXISTS`
+  via `db execute`, gotchas §Database, RLS på nye tabeller), etter AGENTS.md §Stående forhåndsgodkjenning.
+  Skriptet legges i `scripts/` og nevnes i PR-en.
 - **Claude gjør port 7 på Anders' vegne.** En skjerm bygget etter et utkast i `docs/design-system/utkast-*/`
   regnes som godkjent når den er målt i 390 og 1280 px uten sidelengs rulling og uten konsollfeil.
 - **Claude legger inn i main uten «merge»**, når `npm run verify` og CI er grønn. Rødt legges aldri inn.
