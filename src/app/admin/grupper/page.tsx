@@ -19,6 +19,7 @@ import { AG16Grupper } from "@/components/admin/precision/AG16Grupper";
 import type { GrupperData, GruppeV2, FastTid } from "@/components/admin/v2/GrupperV2";
 import { GfgkBootstrapButton, NyGruppeButton } from "./grupper-actions";
 import { GFGK_BOOTSTRAP_GRUPPER } from "@/lib/gfgk-junior/bootstrap";
+import { AK_STIGEN_TRINN, VED_SIDEN_AV_STIGEN } from "@/lib/agencyos/ak-stigen-data";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Grupper · AgencyOS" };
@@ -133,6 +134,7 @@ export default async function V2GrupperPage() {
         data={data}
         nyGruppeKnapp={<NyGruppeButton coaches={coaches} />}
         gfgkBootstrapKnapp={manglerGfgk ? <GfgkBootstrapButton /> : null}
+        stigen={{ trinn: AK_STIGEN_TRINN.map((t) => t.navn), vedSiden: VED_SIDEN_AV_STIGEN }}
       />
     </AgencyOSSkall>
   );

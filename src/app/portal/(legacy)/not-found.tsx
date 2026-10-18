@@ -20,6 +20,7 @@ export default function PortalLegacyNotFound() {
       beskrivelse="Adressen kan være flyttet eller feilskrevet. Sjekk URLen eller gå tilbake til portalen."
       sekundarKnappTekst="Logg inn på nytt"
       sekundarHref="/auth/login"
+      iSkall
     />
   );
 }

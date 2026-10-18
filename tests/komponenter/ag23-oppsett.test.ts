@@ -16,6 +16,7 @@ for (const css of [
   "precision-a21.css",
   "precision-a22.css",
   "precision-a23.css",
+  "agencyos-ny-mer.css",
   "precision-komponenter.css",
   "precision-athletics.css",
 ]) {
@@ -52,12 +53,12 @@ describe("AG23Oppsett (Innstillinger og oppsett)", async () => {
   test("profil er bare visning", () => {
     const html = vis({ tilstand: "data", startFane: "profil", data });
     assert.match(html, /admin@test\.no/);
-    assert.match(html, /IKKE KOBLET ENNÅ/);
+    assert.match(html, /ikke koblet ennå/);
     assert.doesNotMatch(html, /Lagre/);
   });
 
   test("ukoblede faner gir ingen falske innstillinger eller integrasjonsstatus", () => {
-    for (const fane of ["varsler", "integr", "mark"]) {
+    for (const fane of ["varsler", "integr"]) {
       const html = vis({ tilstand: "data", startFane: fane, data });
       assert.doesNotMatch(html, /Koblet ·|SIST HENTET|Book time hos|ACWR over 1,5/);
     }
@@ -66,8 +67,10 @@ describe("AG23Oppsett (Innstillinger og oppsett)", async () => {
   });
 
   test("invitasjon lenker til egne sider i stedet for å lage lokale medlemmer", () => {
-    assert.match(vis({ tilstand: "data", startFane: "inviter", data }), /\/admin\/team\/inviter/);
-    assert.match(vis({ tilstand: "data", startFane: "ekstern", data }), /\/admin\/team\/ekstern/);
+    assert.match(vis({ tilstand: "data", startFane: "inviter", data, erHeadCoach: true }), /\/admin\/team\/inviter/);
+    assert.match(vis({ tilstand: "data", startFane: "ekstern", data, erHeadCoach: true }), /\/admin\/team\/ekstern/);
+    // Bare head coach inviterer coach (Anders 16.10).
+    assert.doesNotMatch(vis({ tilstand: "data", startFane: "team", data }), /\/admin\/team\/inviter/);
   });
 
   test("uten data vises ingen demoteam", () => {

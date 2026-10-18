@@ -1,5 +1,5 @@
 /** Prøvefil for AG-10 Teknisk plan (coach). Syntetiske data. */
-import { AG10TekniskPlan } from "@/components/admin/precision/AG10TekniskPlan";
+import { AG10TekniskPlanNy as AG10TekniskPlan } from "@/components/admin/precision/AG10TekniskPlanNy";
 import Loading from "@/app/admin/spillere/[id]/plan/[planId]/loading";
 import Feil from "@/app/admin/spillere/[id]/plan/[planId]/error";
 import { tpPlan, tpTom } from "./_tp-data";

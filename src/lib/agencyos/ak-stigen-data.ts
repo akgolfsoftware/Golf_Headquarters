@@ -40,7 +40,7 @@ export const AK_STIGEN_TRINN: AkStigenTrinn[] = [
  * (Anders 22.09.2026). Uten denne lista ville Knøtt-gruppen havnet under «ukartlagt»
  * med varsel — som om noen hadde skrevet feil navn.
  */
-const VED_SIDEN_AV_STIGEN = ["WANG Toppidrett Fredrikstad", "GFGK Junior Knøtt U12"];
+export const VED_SIDEN_AV_STIGEN = ["WANG Toppidrett Fredrikstad", "GFGK Junior Knøtt U12"];
 
 export type AkStigenGruppeData = {
   id: string;

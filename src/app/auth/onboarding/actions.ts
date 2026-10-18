@@ -134,6 +134,8 @@ export type SpillerOnboardingData = {
   snittScoreSiste10?: number;
   /** Svarene fra fasilitetsskjemaet (ja/nei og lengder), én rad per sted. */
   fasiliteterSvar?: OppstartFasSvar[];
+  /** De av de 19 treningsområdene spilleren kan trene på (oppstart steg 3, natt 17.10). */
+  fasilitetOmrader?: string[];
   /** Teknikktest (Inspill Basic): verktøy, avstander og fem slag per kølle. Setter ikke nivå. */
   teknikktest?: OppstartTeknikktest;
   /** Ytelsesbilde (søvn, mat, energi) lagres og deles med coach. */
@@ -577,8 +579,8 @@ export async function completeForelderOnboarding(): Promise<void> {
     data: { preferences: updatedPrefs },
   });
 
-  revalidatePath("/portal");
-  redirect("/portal");
+  revalidatePath("/forelder");
+  redirect("/forelder");
 }
 
 // ──────────────────────────────────────────────────────────────────────────────

@@ -1,0 +1,77 @@
+/*
+ * Innlogging og oppstart (AU-01 til AU-06), fra innlogging.html.
+ * GENERERT av scripts/lag-flater-ny-css.mjs fra docs/design-system/utkast-flater (utkast 1, 15.10.2026),
+ * avgrenset til .fln. Klassenavnene er utkastets, så skjermene kan porteres linje for linje.
+ * Rett i utkastet eller i skriptet, ikke her. PC fra 900 px containerbredde.
+ */
+
+/* ---------- Gruppe 2: Innlogging og oppstart · AU-01 til AU-06 ---------- */
+.fln .konto-bilde{display:block;width:100%;height:150px;object-fit:cover;border-radius:12px}
+.fln .eller{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;font-size:13px;color:var(--graphite-600)}
+.fln .eller::before,.fln .eller::after{content:"";height:1px;background:var(--sand-300)}
+.fln .knapp.hel{width:100%}
+.fln .knapp.google{background:var(--white);color:var(--graphite-900);border:1px solid var(--graphite-500)}
+.fln .knapp:disabled{opacity:.55;cursor:not-allowed}
+.fln .feilmelding{display:flex;gap:8px;align-items:flex-start;font-size:13.5px;color:#8a2a1c}
+.fln .felt input[aria-invalid="true"]{border-color:#8a2a1c;border-width:2px}
+.fln .pakker{display:grid;gap:var(--r2)}
+.fln .pakke{display:grid;gap:6px;padding:14px 16px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white);text-align:left;font:inherit;color:inherit;cursor:pointer}
+.fln .pakke[aria-pressed="true"]{border:2px solid var(--graphite-900);padding:13px 15px;background:var(--sand-100)}
+.fln .pakke .rad{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.fln .pakke b{font:600 17px/1.2 var(--sans)}
+.fln .pakke .pris{font:600 18px/1 var(--mono)}
+.fln .pakke ul{margin:0;padding-left:18px;font-size:14px;color:var(--graphite-800);display:grid;gap:2px}
+.fln .steghode{display:grid;gap:10px}
+.fln .steghode .rad{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.fln .steghode .nr{font:600 13px/1 var(--mono);color:var(--graphite-600)}
+.fln .hopp{font:500 14px/1 var(--sans);color:var(--graphite-900);text-decoration:underline;text-underline-offset:3px;border:0;background:none;cursor:pointer;min-height:44px}
+.fln .bunnknapper{display:grid;gap:var(--r2)}
+.fln .to-felt{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--r3)}
+.fln .sg-tabell{display:grid;gap:0;border-top:1px solid var(--sand-300)}
+.fln .sg-r{display:grid;grid-template-columns:minmax(0,1fr) 84px 84px;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--sand-300);font-size:14.5px}
+.fln .sg-r.hode{font:600 12.5px/1.2 var(--sans);color:var(--graphite-600)}
+.fln .sg-r input{min-height:44px;width:100%;padding:8px;border:1px solid var(--graphite-500);border-radius:8px;font:500 15px/1 var(--mono);text-align:right;background:var(--white);color:var(--graphite-900)}
+.fln .fam{display:grid;gap:8px;padding:12px 0;border-bottom:1px solid var(--sand-300)}
+.fln .fam:last-child{border-bottom:0}
+.fln .fam-topp{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.fln .fam-topp b{font:600 15px/1.3 var(--sans)}
+.fln .fam-topp span{font:600 13px/1 var(--mono);color:var(--graphite-600)}
+.fln .omr{display:flex;flex-wrap:wrap;gap:6px}
+.fln .omr button{min-height:40px;padding:0 12px;border:1px solid var(--sand-300);border-radius:8px;background:var(--white);font:500 14px/1 var(--sans);color:var(--graphite-800);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.fln .omr button[aria-pressed="true"]{background:var(--graphite-900);border-color:var(--graphite-900);color:var(--white)}
+.fln .omr button .ikon{width:16px;height:16px}
+.fln .treff{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--r3);align-items:center;padding:12px 14px;border:1px solid var(--sand-300);border-radius:12px}
+.fln .treff b{display:block;font:600 15px/1.3 var(--sans)}
+.fln .treff.valgt{border:2px solid var(--graphite-900);padding:11px 13px;background:var(--sand-100)}
+.fln .test-rad{display:grid;grid-template-columns:minmax(0,1fr) 80px 80px;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--sand-300);font-size:14.5px}
+.fln .test-rad.hode{font:600 12.5px/1.2 var(--sans);color:var(--graphite-600)}
+.fln .test-rad input{min-height:44px;width:100%;padding:8px;border:1px solid var(--graphite-500);border-radius:8px;font:500 15px/1 var(--mono);text-align:right;background:var(--white);color:var(--graphite-900)}
+.fln .svakhet{display:grid;gap:6px;padding:var(--r4) 18px;border-radius:12px;background:var(--slag);color:#fff}
+.fln .svakhet .akse-merke{justify-self:start}
+.fln .svakhet b{font:600 22px/1.2 var(--sans)}
+.fln .svakhet p{opacity:.92;font-size:14px}
+.fln .plan-kort{display:grid;gap:8px;padding:var(--r4) 18px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white);text-align:left;font:inherit;color:inherit;cursor:pointer;position:relative}
+.fln .plan-kort[aria-pressed="true"]{border:2px solid var(--graphite-900);padding:15px 17px;background:var(--sand-100)}
+.fln .plan-kort b.n{font:600 18px/1.25 var(--sans)}
+.fln .plan-kort .akser{display:flex;height:10px;border-radius:5px;overflow:hidden}
+.fln .plan-kort .akser i{display:block;height:100%}
+.fln .anbefalt{display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:999px;background:var(--graphite-900);color:#fff;font:600 12px/1 var(--sans);width:max-content}
+.fln .innsyn-gruppe{display:grid;gap:8px;padding:14px 16px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white);text-align:left;font:inherit;color:inherit;cursor:pointer}
+.fln .innsyn-gruppe .rad{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.fln .innsyn-gruppe b{font:600 17px/1.3 var(--sans)}
+.fln .res{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:var(--r3);align-items:center;padding:10px 0;border-bottom:1px solid var(--sand-300);font-size:14.5px}
+.fln .res:last-child{border-bottom:0}
+.fln .res b{display:block;font-weight:600}
+.fln .res .s{font:600 17px/1 var(--mono);text-align:right}
+.fln .skjult-rad{display:flex;gap:10px;align-items:center;padding:12px 14px;border-radius:10px;background:var(--sand-100);font-size:14px;color:var(--graphite-800)}
+.fln .skjult-rad .ikon{width:18px;height:18px;color:var(--graphite-600)}
+.fln .stor-ikon{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;background:var(--sand-150)}
+.fln .stor-ikon .ikon{width:28px;height:28px}
+@container (min-width:900px){
+  .fln .pakker{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .fln .planer{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .fln .bunnknapper{grid-template-columns:auto 1fr;align-items:center}
+  .fln .bunnknapper .knapp.pri{justify-self:end;min-width:200px}
+  .fln[data-bred] .innhold{max-width:820px!important}
+}
+

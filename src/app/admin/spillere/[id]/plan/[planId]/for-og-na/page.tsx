@@ -13,7 +13,7 @@ import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { pNavn } from "@/components/teknisk-plan/constants";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
-import { AGTP02ForOgNaa } from "@/components/admin/precision/AGTP02ForOgNaa";
+import { AGTP02ForOgNaaNy } from "@/components/admin/precision/AGTP02ForOgNaaNy";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Før og nå · AgencyOS" };
@@ -49,7 +49,7 @@ export default async function ForOgNaaPage({
 
   return (
     <AgencyOSSkall navn={coach.name ?? "Coach"}>
-      <AGTP02ForOgNaa tilstand={oppgaver.length ? "data" : "tom"} spiller={{ id: spiller.id, navn: spiller.name ?? "Spiller" }} planId={planId} oppgaver={oppgaver} valgtId={oppgave ?? null} />
+      <AGTP02ForOgNaaNy tilstand={oppgaver.length ? "data" : "tom"} spiller={{ id: spiller.id, navn: spiller.name ?? "Spiller" }} planId={planId} oppgaver={oppgaver} valgtId={oppgave ?? null} />
     </AgencyOSSkall>
   );
 }

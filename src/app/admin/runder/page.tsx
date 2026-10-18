@@ -14,7 +14,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { rundeScopeWhere } from "@/lib/admin/runder-scope";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
-import { AGRD01Runder, type RundeRad, type RunderData } from "@/components/admin/precision/AGRD01Runder";
+import { AGRD01RunderNy, type RundeRad, type RunderData } from "@/components/admin/precision/AGRD01RunderNy";
 import { dato, hcp } from "@/lib/admin-spiller/spiller360-visning";
 
 export const dynamic = "force-dynamic";
@@ -82,7 +82,7 @@ export default async function RunderPage() {
 
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
-      <AGRD01Runder tilstand={total === 0 ? "tom" : "data"} data={data} />
+      <AGRD01RunderNy tilstand={total === 0 ? "tom" : "data"} data={data} />
     </AgencyOSSkall>
   );
 }

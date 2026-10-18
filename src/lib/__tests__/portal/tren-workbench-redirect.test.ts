@@ -9,9 +9,14 @@ describe("workbenchRedirectForTrenPath", () => {
       "/portal/planlegge/workbench?tab=gantt",
     );
     assert.equal(
-      workbenchRedirectForTrenPath("/portal/tren/turneringer/gammel-lenke"),
+      workbenchRedirectForTrenPath("/portal/tren/turneringer/gammel-lenke/mer"),
       "/portal/planlegge/workbench?tab=seson",
     );
+  });
+
+  it("keeps Én turnering (/portal/tren/turneringer/[id]) — pakke 17, 17.10.2026", () => {
+    assert.equal(workbenchRedirectForTrenPath("/portal/tren/turneringer/cmabc123"), null);
+    assert.equal(workbenchRedirectForTrenPath("/portal/tren/turneringer/cmabc123/"), null);
   });
 
   it("keeps teknisk plan (PH-TP-01) — Workbench has no teknisk tab", () => {
