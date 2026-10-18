@@ -1,39 +1,39 @@
-/** Prøvefil for PH-24 Meg. Syntetiske data, demo: Øyvind Rohjan. */
+/** Prøvefil for PH-24 Meg i nytt design. Syntetiske data, demo: Øyvind Rohjan. */
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { PH24Meg, type PH24Props } from "@/components/portal/precision/PH24Meg";
+import { PH24MegFeil, PH24MegLaster } from "@/components/portal/precision/PH24MegTilstand";
 
 export const sti = "/portal/meg";
-export const natt = ["data-natt"];
 
-const hrefs: PH24Props["hrefs"] = { profil: "#", fasiliteter: "#", book: "#", bookinger: "#", abo: "#", foreldre: "#", deling: "#", fravaer: "#", helse: "#", utstyr: "#", utfordringer: "#", venner: "#", hjelp: "#", innstillinger: "#", mal: "#", personvern: "#" };
+const hrefs: PH24Props["hrefs"] = { profil: "#", fasiliteter: "#", utstyr: "#", helse: "#", coach: "#", bookinger: "#", mal: "#", foreldre: "#", deling: "#", utfordringer: "#", abo: "#", innstillinger: "#", hjelp: "#" };
 const base: PH24Props = {
   tilstand: "data",
-  profil: { navn: "Øyvind Rohjan", alder: 17, klubb: "Gamle Fredrikstad Golfklubb med et langt navn", fodt: "14.03.2009", hcp: "3,4", golfId: "123-4567", epost: "oyvind.rohjan@eksempel.no", telefon: "900 00 000" },
-  fasiliteter: [{ id: "1", navn: "Mulligan Indoor Golf" }, { id: "2", navn: "GFGK range og puttinggrønn" }],
-  bookinger: [
-    { id: "b1", tittel: "Privattime 60 min", status: { tekst: "Bekreftet", tone: "ok" }, meta: "02.10 KL 16:00 · MULLIGAN INDOOR GOLF" },
-    { id: "b2", tittel: "Trackman-økt", status: { tekst: "Venter på betaling", tone: "neutral" }, meta: "09.10 KL 17:00 · MULLIGAN" },
-  ],
-  klipp: { igjen: 3, totalt: 4, fornyes: "01.11.2026" },
-  abo: { plan: "Performance Pro", fornyes: "01.11.2026", pris: null },
-  foreldre: [{ id: "f1", tittel: "Kari Rohjan", meta: "MOR · KARI.ROHJAN@EKSEMPEL.NO" }],
-  helse: { samtykke: true, sovnSnitt: "7,6 t", skadeNa: false, fravaer: [{ id: "l1", tittel: "Sykdom · 12.09–14.09", status: { tekst: "Avsluttet", tone: "neutral" }, meta: "FORKJØLET" }] },
-  utstyr: [{ kode: "Dr", spec: "TaylorMade Qi10 9°", carry: null }, { kode: "Jn", spec: "Titleist T100 4-PW", carry: null }, { kode: "Pt", spec: "Scotty Cameron", carry: null }],
-  utstyrMalt: null,
-  coach: { navn: "Anders Kristiansen", program: "AK Golf Academy", siden: "AUGUST 2025" },
-  venner: 6,
-  utfordringer: [{ id: "u1", tittel: "Færrest putter på 9 hull med et langt navn", status: { tekst: "Pågår", tone: "neutral" }, meta: "SLUTT 05.10.2026 · TELLER IKKE SOM TRENING" }],
+  navn: "Øyvind Rohjan",
+  undertekst: "Gamle Fredrikstad Golfklubb med et langt navn · coach Anders Kristiansen",
+  gruppe: "WANG Toppidrett Fredrikstad",
+  kategori: null,
+  hcp: "3,6",
+  pakke: { navn: "Performance Pro", igjen: 2, totalt: 4 },
+  niva: { navn: "Full", tekst: "inkludert i Performance Pro" },
+  deling: 2,
+  fasiliteter: { valgte: 7, totalt: 10, steder: 2 },
+  utstyr: 8,
+  helse: "Ingen skade registrert",
+  coach: { navn: "Anders Kristiansen", program: "AK Golf Academy" },
+  nesteBooking: "fredag 9. oktober kl. 16:00",
+  foreldre: { navn: "Hilde Rohjan", antall: 1 },
+  utfordringer: 1,
   hrefs,
 };
 const tom: Partial<PH24Props> = {
-  profil: { navn: "Øyvind Rohjan", alder: null, klubb: null, fodt: null, hcp: null, golfId: null, epost: "oyvind.rohjan@eksempel.no", telefon: null },
-  fasiliteter: [], bookinger: [], klipp: null, abo: { plan: "TALENT · gratis", fornyes: null, pris: null }, foreldre: [],
-  helse: { samtykke: false, sovnSnitt: null, skadeNa: false, fravaer: [] }, utstyr: [], coach: null, venner: 0, utfordringer: [],
+  undertekst: null, gruppe: null, hcp: null, pakke: null, niva: { navn: "Gratis", tekst: "Full gir Plan, Workbench og Caddie" }, deling: 0,
+  fasiliteter: { valgte: 0, totalt: 10, steder: 0 }, utstyr: 0, helse: "Helse-loggen er slått av", coach: null, nesteBooking: null,
+  foreldre: { navn: null, antall: 0 }, utfordringer: 0,
 };
-const Vis = (p: Partial<PH24Props>) => <PlayerHQSkall innboksHref="#" uleste={0}><PH24Meg {...base} {...p} /></PlayerHQSkall>;
+const Skall = ({ children }: { children: React.ReactNode }) => <PlayerHQSkall innboksHref="#" uleste={0}>{children}</PlayerHQSkall>;
 export const tilstander = {
-  data: <Vis />,
-  "data-natt": <Vis />,
-  tom: <Vis {...tom} />,
-  feil: <Vis tilstand="feil" ukjentKode="FEIL 503 · PROFIL" />,
+  data: <Skall><PH24Meg {...base} /></Skall>,
+  tom: <Skall><PH24Meg {...base} {...tom} /></Skall>,
+  laster: <Skall><PH24MegLaster /></Skall>,
+  feil: <Skall><PH24MegFeil tittel="Profilen kunne ikke hentes" /></Skall>,
 };

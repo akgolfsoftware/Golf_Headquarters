@@ -25,7 +25,7 @@ Vercel kjører UTC, appen tenker Oslo. All uke-/dagslogikk via `src/lib/uke-help
 Avbestill/endre-knapper kaller Stripe (`cancel_at_period_end`) FØR egen DB, eller sender til Billing Portal. Webhooken mapper `active` + `cancel_at_period_end` til `CANCELLED`.
 
 ## Bygg og drift
-- `loading.tsx`/`template.tsx` importerer aldri fra en `"use client"`-modul (CSP-nonce). Vakt: `tests/e2e/csp-konsoll.spec.ts`.
+- `loading.tsx`/`template.tsx` importerer aldri fra en `"use client"`-modul, heller ikke via `next/link`/`next/image`/`next/navigation` (CSP-nonce). PlayerHQ bruker `PlayerHQSkallLaster`. Vakter: `scripts/check-loading-server.mjs` (i verify, feiler for `/portal`) og `tests/e2e/csp-konsoll.spec.ts`.
 - PWA: `serwist build serwist.config.mjs` kjører ETTER `next build` (webpack-pluginen kjører aldri under Turbopack). Ikke precache hele `public/`.
 - Vercel-region skal matche Supabase (`lhr1`); ikke fjern `regions` i `vercel.json`.
 - AI Caddie: bruk `@ai-sdk/anthropic` direkte (Gateway free-tier gir ikke modelltilgang), normaliser `ANTHROPIC_BASE_URL` med `/v1`, `toUIMessageStreamResponse()`, `stopWhen: stepCountIs(n)`, modell `claude-sonnet-4-6`.
@@ -38,6 +38,7 @@ Avbestill/endre-knapper kaller Stripe (`cancel_at_period_end`) FØR egen DB, ell
 - Signalfargene `danger`/`ok`/`warn` er aldri tekstfarge på nøytral bunn; `dim` bærer aldri lesbar tekst (gjelder eksisterende Train-lock-kode).
 
 ## Arbeidsmåte
+- **Skjermregisteret (`docs/design-system/skjermregister.*`) røres ikke i vanlige PR-er.** Parallelle økter kolliderte på det hver gang én PR ble lagt inn. Det er ikke i `verify`; oppdater det i en egen PR (`node scripts/bygg-skjermregister.mjs --write`) når ingen andre designPR-er står åpne. Kolliderer en gammel gren på det: `git checkout origin/main -- docs/design-system/skjermregister.*`.
 - Aldri kopier `.env*` mellom worktrees. `prisma generate` klarer seg med dummy `DIRECT_URL`/`DATABASE_URL` i skallet.
 - Shell-cwd setter seg fast: bruk absolutte stier og `pwd` før filoperasjoner.
 - Redirect lange kommandoer (`npm run build`) til fil og les halen; ikke les store dokumenter hele; ikke les en fil rett etter egen Edit.

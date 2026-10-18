@@ -6,6 +6,7 @@ import { getCurrentUserRaw } from "./getCurrentUser";
 import { canAccessPortalRoute } from "./cbac";
 import { isAwaitingGuardianConsent } from "./minor";
 import type { UserRole } from "@/generated/prisma/client";
+import { demoFlateForEpost, demoStoppesAvVakt } from "@/lib/domain/demo-sperre";
 
 type Options = {
   allow?: UserRole | UserRole[];
@@ -29,6 +30,13 @@ type Options = {
    * Gjelder kun PLAYER — coach/admin/forelder har egne flater og rammes ikke.
    */
   kreverTilgang?: "FULL" | "TALENT" | "INGEN";
+  /**
+   * Demokontoene for Team Norway og WANG sendes til sin egen flate med mindre
+   * siden eller handlingen slipper dem inn her. Bare Team Norway- og
+   * WANG-flatene (og det de bruker) setter den. Server-handlinger kan postes
+   * til hvilken som helst adresse, så sperren må bo i vakten, ikke i proxyen.
+   */
+  tillatDemo?: boolean;
 };
 
 export async function requirePortalUser(options: Options = {}) {
@@ -37,6 +45,7 @@ export async function requirePortalUser(options: Options = {}) {
     redirectTo = "/auth/login",
     allowAwaitingConsent = false,
     kreverTilgang = "FULL",
+    tillatDemo = false,
   } = options;
   // P0-4 (GDPR): getCurrentUser er eneste innloggings-sti for portal/admin og
   // returnerer null for soft-slettet konto (deletedAt satt) — så !user-redirecten
@@ -47,6 +56,7 @@ export async function requirePortalUser(options: Options = {}) {
   // ubetinget og gjort allowAwaitingConsent-flagget dødt.
   const user = await getCurrentUserRaw();
   if (!user) redirect(redirectTo);
+  if (demoStoppesAvVakt(user.email, tillatDemo)) redirect(demoFlateForEpost(user.email) ?? "/auth/login");
   if (allow && !canAccessPortalRoute(user.role, allow)) {
     // Send brukere til riktig "hjemmeside" basert på rolle for å unngå loops.
     if (user.role === "PARENT") redirect("/forelder");

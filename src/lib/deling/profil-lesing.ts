@@ -6,6 +6,14 @@ import { krevNavngittTrener, navngittTrenerHarTilgang } from "./navngitt";
 
 type Tx = Prisma.TransactionClient;
 
+/**
+ * Tilgangssjekken og lesingen er rundt 16 databaseoppslag i én transaksjon. På Vercel (lhr1, samme
+ * region som Supabase) tar det noen titalls millisekunder, men over tregt nett (målt 16.10.2026:
+ * 60–170 ms per oppslag, 1,3–1,7 s per spiller) traff Prismas standardgrense på 5 s og hele siden
+ * feilet (P2028). Låsen gjelder bare én spiller, så en lengre grense holder ingen andre igjen.
+ */
+export const PROFIL_TRANSAKSJON = { maxWait: 10_000, timeout: 20_000 } as const;
+
 async function trenerFor(brukerId: string) {
   try {
     const trener = await krevNavngittTrener();
@@ -28,7 +36,7 @@ export async function medNavngittProfil<T>(
   return prisma.$transaction(async (tx) => {
     if (!(await navngittTrenerHarTilgang(tx, trener, spillerId, gruppeId))) return null;
     return les(tx);
-  });
+  }, PROFIL_TRANSAKSJON);
 }
 
 /** Kandidat-ID-er er ikke en rettighet. Hver profil kontrolleres på nytt før data leses. */
@@ -49,7 +57,7 @@ export async function lesNavngitteProfiler<T>(
     const rad = await prisma.$transaction(async (tx) => {
       if (!(await navngittTrenerHarTilgang(tx, trener, userId, gruppeId))) return null;
       return les(tx, userId);
-    });
+    }, PROFIL_TRANSAKSJON);
     if (rad !== null) resultat.push(rad);
   }
   return resultat;

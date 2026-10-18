@@ -1,4 +1,4 @@
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { lastAgenticosGodkjennCount, lastAgenticosRuntimeLinje } from "@/lib/agencyos/last-agenticos";
 import { AgenticosSkall } from "./AgenticosSkall";
 import type { ReactNode } from "react";
@@ -15,10 +15,12 @@ export async function AgenticosRamme({
     lastAgenticosRuntimeLinje(),
   ]);
   return (
-    <V2Shell bredde="full" aktiv="jarvis" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} avatarUrl={user.avatarUrl}>
+    <AgencyOSSkall navn={user.name ?? "Coach"}>
+      <div className="agn-legacy">
       <AgenticosSkall godkjennCount={godkjennCount} runtimeLinje={runtimeLinje}>
         {children}
       </AgenticosSkall>
-    </V2Shell>
+    </div>
+    </AgencyOSSkall>
   );
 }

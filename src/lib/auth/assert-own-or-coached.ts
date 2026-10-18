@@ -12,13 +12,13 @@ import "server-only";
  */
 
 import { getCurrentUser } from "./getCurrentUser";
-import { harCoachTilgangTilSpiller } from "./coached";
+import { harCoachLesetilgangTilSpiller } from "./coached";
 
 export async function assertCanViewPlayerData(userId: string): Promise<void> {
   const viewer = await getCurrentUser();
   if (!viewer) throw new Error("Ikke innlogget");
   if (viewer.id === userId) return;
   const isCoachOrAdmin = viewer.role === "COACH" || viewer.role === "ADMIN";
-  if (isCoachOrAdmin && (await harCoachTilgangTilSpiller(viewer, userId))) return;
+  if (isCoachOrAdmin && (await harCoachLesetilgangTilSpiller(viewer, userId))) return;
   throw new Error("Ingen tilgang");
 }

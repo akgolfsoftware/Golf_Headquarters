@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Team Norway Uttak</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Jost:wght@300;400;500&family=Lato:wght@400;700&display=swap">
+<link rel="stylesheet" href="felles/tn.css">
+<style>
+  .kriterier{display:grid;gap:var(--r3);grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))}
+  .kriterium{display:grid;gap:8px;align-content:start}
+  .kriterium .nr{font:700 12.5px/1.35 var(--tekst);letter-spacing:.01em;color:var(--ink-500)}
+  .kriterium h3{margin:0;font:500 20px/1.2 var(--display);letter-spacing:.03em;color:var(--navy-900)}
+  .runde{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;padding:14px 0;border-bottom:1px solid var(--ink-200);align-items:center;text-decoration:none;color:inherit}
+  .runde:last-child{border-bottom:0}
+  .runde b{font:700 15px/1.3 var(--tekst)}
+  .kandidat{display:grid;gap:10px;padding:16px 0;border-bottom:1px solid var(--ink-200)}
+  .kandidat:last-child{border-bottom:0}
+  .kandidat .topp{display:flex;gap:12px;align-items:center}
+  .kandidat .topp b{font:700 16px/1.3 var(--tekst)}
+  .tre{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+  .tre span{display:grid;gap:3px;padding:8px 10px;background:var(--ink-50);border:1px solid var(--ink-200)}
+  .tre small{font:700 12.5px/1.35 var(--tekst);letter-spacing:.01em;color:var(--ink-500)}
+  .tre b{font:500 16px/1.1 var(--mono);color:var(--navy-900)}
+  .beslutt{display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--navy-900);justify-self:start}
+  .beslutt button{min-height:44px;padding:0 14px;border:0;border-right:1px solid var(--navy-900);background:var(--hvit);font:700 13.5px/1 var(--tekst);color:var(--navy-900);cursor:pointer}
+  .beslutt button:last-child{border-right:0}
+  .beslutt button[aria-pressed="true"]{background:var(--navy-900);color:var(--hvit)}
+  .rl{display:grid;border-top:1px solid var(--ink-200)}
+  .rl-rad{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:4px 12px;padding:12px 0;border-bottom:1px solid var(--ink-200);align-items:center}
+  .rl-rad .plass{font:500 20px/1 var(--mono);color:var(--navy-900)}
+  .rl-rad .navn{font:700 15px/1.3 var(--tekst)}
+  .rl-rad .tall{font:500 18px/1 var(--mono);text-align:right}
+  .rl-rad .ekstra{grid-column:2/-1;display:flex;flex-wrap:wrap;gap:4px 14px;font:500 13px/1.2 var(--mono);color:var(--ink-700)}
+  .rl-hode{display:none}
+  .rl-rad .ekstra em{font-style:normal;color:var(--ink-500)}
+  .rl-rad .ekstra span.klubb{font:400 13.5px/1.3 var(--tekst);color:var(--ink-700)}
+  /* Utkast 2 */
+  .rang{font:500 24px/1 var(--mono);color:var(--navy-900);min-width:26px}
+  .krit{display:grid;gap:8px}
+  .k-rad{display:grid;grid-template-columns:96px minmax(0,1fr) 52px;gap:10px;align-items:center;font-size:13.5px;color:var(--ink-700)}
+  .k-rad b{font:500 15px/1 var(--mono);text-align:right;color:var(--ink-900)}
+  .k-rad .spor{position:relative;height:12px;background:var(--ink-100)}
+  .k-rad .spor span{position:absolute;inset:0 auto 0 0;background:var(--navy-900)}
+  .k-rad .spor.uten{background:transparent;border:1px dashed var(--ink-500)}
+  .kandidat p.markor{white-space:normal}
+  @container (min-width:900px){
+    .kandidat{grid-template-columns:minmax(0,260px) minmax(0,1fr) auto;align-items:center;column-gap:var(--r5)}
+    .kandidat p.markor{grid-column:2}
+    .rl-hode,.rl-rad{grid-template-columns:56px minmax(0,1.6fr) minmax(0,1.2fr) 80px 100px 110px}
+    .rl-hode{display:grid;gap:12px;padding:8px 0;font:700 12.5px/1.35 var(--tekst);letter-spacing:.01em;color:var(--ink-500)}
+    .rl-hode span:nth-child(n+4){text-align:right}
+    .rl-rad .ekstra{display:contents}
+    .rl-rad .ekstra span{text-align:right}
+    .rl-rad .ekstra span.klubb{text-align:left;font:400 14px/1.3 var(--tekst);color:var(--ink-700)}
+    .rl-rad .ekstra em{display:none}
+    .rl-rad .tall{order:9}
+  }
+</style>
+</head>
+<body>
+<div class="ytre">
+  <header class="hode">
+    <span class="meta-s">Team Norway · trenerskjermer · pakke 4 Uttak · utkast 2 · 16.10.2026</span>
+    <h1>Uttak og rangliste</h1>
+    <p>Tre skjermer fra menygruppen Uttak. Kriteriene vises hver for seg, aldri slått sammen til én poengsum. Bare syntetiske data.</p>
+  </header>
+  <div class="kontroller">
+    <div class="velger" role="group" aria-label="Skjerm">
+      <button type="button" data-skjerm="uttak" aria-pressed="true">Uttak og kriterier</button>
+      <button type="button" data-skjerm="registrer" aria-pressed="false">Registrer uttak</button>
+      <button type="button" data-skjerm="rangliste" aria-pressed="false">Rangliste</button>
+    </div>
+  </div>
+  <div class="kontroller">
+    <div class="velger" role="group" aria-label="Bredde">
+      <button type="button" data-bredde="mob" aria-pressed="true">Mobil 390</button>
+      <button type="button" data-bredde="pc" aria-pressed="false">PC 1280</button>
+    </div>
+    <div class="velger" role="group" aria-label="Tilstand">
+      <button type="button" data-tilstand="data" aria-pressed="true">Med data</button>
+      <button type="button" data-tilstand="tom" aria-pressed="false">Tom</button>
+      <button type="button" data-tilstand="laster" aria-pressed="false">Laster</button>
+      <button type="button" data-tilstand="feil" aria-pressed="false">Feil</button>
+    </div>
+  </div>
+  <div class="scene"><div id="ramme" class="ramme mob"></div></div>
+  <div class="notater">
+    <section class="endringer">
+      <h2>Hva som er nytt i utkast 2</h2>
+      <ul>
+        <li><b>Nedtelling</b>: hovedtallet er dagene til neste uttaksfrist, med ukene som stolpe. Én knapp: Fortsett uttaket.</li>
+        <li><b>Kandidatene</b> er rangert på kriterium 1 og har én stolpe per kriterium, side om side. Prosess er stiplet til vurderingsmodellen finnes. Ingen samlet poengsum.</li>
+        <li><b>Uttak og kriterier</b> viser de tre kriteriene som i dag, og uttaksrundene med status og svar fra spillerne.</li>
+        <li><b>Registrer uttak</b> viser hver kandidat med alle tre kriterier side om side. Treneren velger Tatt ut, Reserve eller Ikke tatt ut. Ingenting sendes før treneren trykker Send til spillerne.</li>
+        <li><b>Rangliste</b> er bare brutto og kan sorteres på snitt, snittplassering og antall starter.</li>
+      </ul>
+    </section>
+    <section class="endringer">
+      <h2>Åpne spørsmål</h2>
+      <ul>
+        <li>Kriterium 3 «Prosess og adferd» har ingen vurderingsmodell. Utkastet viser en strek til modellen er vedtatt. Hvem lager den?</li>
+        <li>Kjønn i ranglisten venter til delingen virker (vedtak 28.09). Utkastet har filter på klasse, ikke kjønn.</li>
+      </ul>
+    </section>
+  </div>
+</div>
+
+<template id="uttak">
+<div class="app" data-aktiv="uttak">
+<main class="innhold">
+  <header data-behold>
+    <span class="overlinje">Onsdag 14. oktober · sesong 2026</span>
+    <h1 class="tittel">Uttak og kriterier</h1>
+  </header>
+  <section class="helt">
+    <div class="helt-venstre">
+      <span class="sporsmaal">Hvor lang tid har du til neste uttak?</span>
+      <div class="tall"><strong>18</strong><span>dager til uttaksfristen</span></div>
+      <p>European Young Masters 2027, frist søndag 1. november. 3 av 4 plasser og 1 av 2 reserver er satt.</p>
+      <div class="knapper"><a class="knapp hvit" href="#" data-gaa="registrer">Fortsett uttaket</a></div>
+    </div>
+    <div class="helt-hoyre">
+      <div class="helt-akser">
+        <span class="sporsmaal">Ukene fram mot fristen</span>
+        <div class="nedtelling" style="--n:4"><i class="gaatt"></i><i></i><i></i><i></i><span>Uke 42, nå</span><span>Uke 43</span><span>Uke 44</span><span>Frist 1. nov</span></div>
+      </div>
+      <div class="helt-tellere">
+        <div><b>8</b><span>kandidater</span></div>
+        <div><b>3/4</b><span>tatt ut</span></div>
+        <div><b>1/2</b><span>reserver</span></div>
+      </div>
+    </div>
+  </section>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Tre kriterier, hver for seg</h2><button type="button" class="knapp stille">Endre</button></div>
+    <div class="kriterier">
+      <div class="kort kriterium"><span class="nr">Kriterium 1</span><h3>Resultater</h3><p class="forklar">Brutto snitt og plassering i tellende turneringer siste 12 måneder.</p><span class="kilde">Kilde: registrerte turneringsresultater</span></div>
+      <div class="kort kriterium"><span class="nr">Kriterium 2</span><h3>Prestasjoner</h3><p class="forklar">TN-batteriet fra fellestesting. Landslagsnivå per klasse mangler fra Team Norway.</p><span class="kilde">Kilde: TN-batteriet, fellestesting</span></div>
+      <div class="kort kriterium"><span class="nr">Kriterium 3</span><h3>Prosess og adferd</h3><p class="forklar">Treningsetterlevelse, IUP og holdning på samling.</p><span class="merke kontur">Vurderingsmodell ikke vedtatt</span></div>
+    </div>
+  </section>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Uttaksrunder</h2></div>
+    <div class="kort">
+      <a class="runde" href="#" data-gaa="registrer"><span><b>European Young Masters 2027</b><br><span class="kilde">Frist for uttak 1. november · 8 kandidater</span></span><span class="merke vent"><i></i>Under arbeid</span></a>
+      <div class="runde"><span><b>Høstsamling Bossum</b><br><span class="kilde">12 tatt ut · 9 har svart ja</span></span><span class="merke ok"><i></i>Sendt</span></div>
+      <div class="runde"><span><b>Nordic Junior 2026</b><br><span class="kilde">4 tatt ut · avsluttet 30. august</span></span><span class="merke noy"><i></i>Avsluttet</span></div>
+    </div>
+    <div class="knapper"><button type="button" class="knapp pri">Registrer uttak</button><a class="lenke" href="#" data-gaa="rangliste">Rangliste</a></div>
+  </section>
+</main>
+</div>
+</template>
+
+<template id="registrer">
+<div class="app" data-aktiv="uttak" data-skall="tilbake" data-tilbake="Uttak">
+<main class="innhold">
+  <header data-behold>
+    <span class="overlinje">Uttak · frist 1. november</span>
+    <h1 class="tittel">European Young Masters 2027</h1>
+    <p class="ingress">Fire plasser, to reserver. Velg for hver kandidat. Spillerne får beskjed først når du sender.</p>
+  </header>
+  <section class="helt">
+    <div class="helt-venstre">
+      <span class="sporsmaal">Hvor langt har du kommet?</span>
+      <div class="tall"><strong>3<small>/ 4</small></strong><span>plasser satt</span></div>
+      <p>1 av 2 reserver er satt. Frist søndag 1. november, om 18 dager. Spillerne får beskjed først når du sender.</p>
+    </div>
+    <div class="helt-hoyre">
+      <div class="helt-tellere">
+        <div><b>3</b><span>tatt ut</span></div>
+        <div><b>1</b><span>reserve</span></div>
+        <div><b>4</b><span>ikke avgjort</span></div>
+      </div>
+    </div>
+  </section>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Kandidater</h2><span class="kilde">Rangert på kriterium 1, de tre vises hver for seg</span></div>
+    <div class="kort">
+      <div class="kandidat"><div class="topp"><span class="rang">1</span><span class="avatar">01</span><span><b>Spiller 01</b><br><span class="kilde">Jenter U18 · Kategori B</span></span></div>
+        <div class="krit">
+          <div class="k-rad"><span>Resultater</span><span class="spor" role="img" aria-label="Brutto snitt 71,8"><span style="width:70%"></span></span><b>71,8</b></div>
+          <div class="k-rad"><span>Prestasjoner</span><span class="spor" role="img" aria-label="5 av 6 tester tatt"><span style="width:83%"></span></span><b>5/6</b></div>
+          <div class="k-rad"><span>Prosess</span><span class="spor uten" role="img" aria-label="Ingen vurderingsmodell"></span><b>—</b></div>
+        </div>
+        <div class="beslutt" data-gruppe role="group" aria-label="Uttak Spiller 01"><button type="button" aria-pressed="true">Tatt ut</button><button type="button" aria-pressed="false">Reserve</button><button type="button" aria-pressed="false">Ikke tatt ut</button></div></div>
+      <div class="kandidat"><div class="topp"><span class="rang">2</span><span class="avatar">04</span><span><b>Spiller 04</b><br><span class="kilde">Gutter U18 · Kategori B</span></span></div>
+        <div class="krit">
+          <div class="k-rad"><span>Resultater</span><span class="spor" role="img" aria-label="Brutto snitt 72,1"><span style="width:65%"></span></span><b>72,1</b></div>
+          <div class="k-rad"><span>Prestasjoner</span><span class="spor uten" role="img" aria-label="Ingen tester tatt"></span><b>—</b></div>
+          <div class="k-rad"><span>Prosess</span><span class="spor uten" role="img" aria-label="Ingen vurderingsmodell"></span><b>—</b></div>
+        </div>
+        <p class="markor folgmed"><i></i>Mangler fellestesten 7. oktober. Ikke vurdert ennå.</p>
+        <div class="beslutt" data-gruppe role="group" aria-label="Uttak Spiller 04"><button type="button" aria-pressed="false">Tatt ut</button><button type="button" aria-pressed="false">Reserve</button><button type="button" aria-pressed="false">Ikke tatt ut</button></div></div>
+      <div class="kandidat"><div class="topp"><span class="rang">3</span><span class="avatar">05</span><span><b>Spiller 05</b><br><span class="kilde">Jenter U18 · Kategori B</span></span></div>
+        <div class="krit">
+          <div class="k-rad"><span>Resultater</span><span class="spor" role="img" aria-label="Brutto snitt 72,6"><span style="width:57%"></span></span><b>72,6</b></div>
+          <div class="k-rad"><span>Prestasjoner</span><span class="spor" role="img" aria-label="5 av 6 tester tatt"><span style="width:83%"></span></span><b>5/6</b></div>
+          <div class="k-rad"><span>Prosess</span><span class="spor uten" role="img" aria-label="Ingen vurderingsmodell"></span><b>—</b></div>
+        </div>
+        <div class="beslutt" data-gruppe role="group" aria-label="Uttak Spiller 05"><button type="button" aria-pressed="true">Tatt ut</button><button type="button" aria-pressed="false">Reserve</button><button type="button" aria-pressed="false">Ikke tatt ut</button></div></div>
+      <div class="kandidat"><div class="topp"><span class="rang">4</span><span class="avatar">02</span><span><b>Spiller 02</b><br><span class="kilde">Gutter U18 · Kategori C</span></span></div>
+        <div class="krit">
+          <div class="k-rad"><span>Resultater</span><span class="spor" role="img" aria-label="Brutto snitt 73,4"><span style="width:43%"></span></span><b>73,4</b></div>
+          <div class="k-rad"><span>Prestasjoner</span><span class="spor" role="img" aria-label="6 av 6 tester tatt"><span style="width:100%"></span></span><b>6/6</b></div>
+          <div class="k-rad"><span>Prosess</span><span class="spor uten" role="img" aria-label="Ingen vurderingsmodell"></span><b>—</b></div>
+        </div>
+        <div class="beslutt" data-gruppe role="group" aria-label="Uttak Spiller 02"><button type="button" aria-pressed="false">Tatt ut</button><button type="button" aria-pressed="true">Reserve</button><button type="button" aria-pressed="false">Ikke tatt ut</button></div></div>
+    </div>
+    <p class="kilde">Resultater: brutto snitt siste 12 måneder; lengre stolpe er lavere snitt (skala 70–76). Kravet per klasse er ikke satt. Prestasjoner: TN-tester tatt i år. Prosess har ingen vurderingsmodell ennå. Ingen samlet poengsum. 4 kandidater til vises med «Vis alle 8».</p>
+  </section>
+  <div class="felt"><label for="u-beg">Begrunnelse til spillerne (valgfritt)</label><input id="u-beg" placeholder="Vises i meldingen sammen med uttaket"></div>
+  <div class="knapper"><button type="button" class="knapp pri">Send til spillerne</button><button type="button" class="knapp sek">Lagre utkast</button></div>
+</main>
+</div>
+</template>
+
+<template id="rangliste">
+<div class="app" data-aktiv="rangliste">
+<main class="innhold">
+  <header data-behold>
+    <span class="overlinje">Resultatgrunnlag · siste 12 måneder</span>
+    <h1 class="tittel">Rangliste</h1>
+    <p class="ingress">Bare brutto. Spillere uten koblet resultatprofil står nederst.</p>
+  </header>
+  <div class="knapper" data-behold>
+    <div class="valg" role="group" aria-label="Sorter ranglisten"><button type="button" aria-pressed="true">Brutto snitt</button><button type="button" aria-pressed="false">Snittplassering</button><button type="button" aria-pressed="false">Flest starter</button></div>
+    <div class="valg" role="group" aria-label="Klasse"><button type="button" aria-pressed="true">Alle</button><button type="button" aria-pressed="false">U16</button><button type="button" aria-pressed="false">U18</button><button type="button" aria-pressed="false">U21</button></div>
+  </div>
+  <section class="kort">
+    <div class="rl" id="rl"></div>
+    <p class="kilde">Kilde: GolfBox og manuelle resultater, hentet mandag 12. oktober. Netto er filtrert bort.</p>
+  </section>
+</main>
+</div>
+</template>
+
+<script src="felles/tn.js"></script>
+<script>
+var RL = [['Spiller 01', 'Bossum GK', 14, 71.8, 6.2], ['Spiller 04', 'Moss GK', 11, 72.1, 8.9], ['Spiller 05', 'Bærum GK', 12, 72.6, 9.4], ['Spiller 02', 'Oslo GK', 15, 73.4, 14.1], ['Spiller 06', 'Stavanger GK', 9, 74.0, 17.6], ['Spiller 08', 'Klubb ikke registrert', 0, null, null]];
+function k(x) { return x === null ? '—' : (typeof x === 'number' && x % 1 === 0 && x > 50 ? x.toFixed(1) : String(x)).replace('.', ','); }
+TNUtkast.start({
+  start: 'uttak',
+  skjermer: {
+    uttak: { mal: 'uttak', laster: 'Henter uttak …', feil: 'Uttakene kunne ikke hentes',
+      tom: { tittel: 'Ingen uttaksrunder ennå', tekst: 'Lag en uttaksrunde for en samling eller turnering. Kriteriene gjelder alle rundene.', knapp: 'Registrer uttak' } },
+    registrer: { mal: 'registrer', laster: 'Henter kandidatene …', feil: 'Uttaket ble ikke lagret',
+      tom: { tittel: 'Ingen kandidater', tekst: 'Ingen aktive spillere i Team Norway-gruppen passer klassen for denne turneringen.', knapp: 'Velg klasse' } },
+    rangliste: { mal: 'rangliste', etter: function (a) {
+        a.querySelector('#rl').innerHTML = '<div class="rl-hode"><span>Plass</span><span>Spiller</span><span>Klubb</span><span>Starter</span><span>Snittplass</span><span>Brutto snitt</span></div>' + RL.map(function (r, i) {
+          return '<div class="rl-rad"><span class="plass">' + (r[3] === null ? '—' : i + 1) + '</span><span class="navn">' + r[0] + '</span><span class="tall">' + k(r[3]) + '</span><span class="ekstra"><span class="klubb">' + r[1] + '</span><span><em>Starter </em>' + r[2] + '</span><span><em>Snittplass </em>' + k(r[4]) + '</span></span></div>';
+        }).join('');
+      }, laster: 'Henter ranglisten …', feil: 'Ranglisten kunne ikke hentes',
+      tom: { tittel: 'Ingen resultater ennå', tekst: 'Ranglisten fylles når spillerne har tellende turneringer med brutto score.', knapp: 'Turneringer og reise' } }
+  }
+});
+</script>
+</body>
+</html>

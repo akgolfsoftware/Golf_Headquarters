@@ -83,14 +83,14 @@ export function TnTilgangSkjema({
           role="alert"
           style={{
             background: TN.status.redBg,
-            borderRadius: TN.radius.md,
+            borderRadius: TN.radius.sm,
             padding: "12px 16px",
             display: "flex",
             alignItems: "flex-start",
             gap: 10,
           }}
         >
-          <span style={{ width: 7, height: 7, borderRadius: TN.radius.full, background: TN.status.red, flexShrink: 0, marginTop: 5 }} />
+          <span style={{ width: 7, height: 7, borderRadius: TN.radius.xs, background: TN.status.red, flexShrink: 0, marginTop: 5 }} />
           <span style={{ fontSize: TN.text.xs, fontWeight: TN.weight.semibold, color: TN.status.redText, lineHeight: TN.leading.normal }}>
             Siste trener i {feil.gruppeNavn}. Avsluttes tilgangen, står {feil.antallSpillere}{" "}
             {feil.antallSpillere === 1 ? "utøver" : "utøvere"} uten trener og gruppens økter kan ikke publiseres.
@@ -134,7 +134,7 @@ export function TnTilgangSkjema({
                   flex: 1,
                   minHeight: 44,
                   padding: "0 8px",
-                  borderRadius: TN.radius.full,
+                  borderRadius: TN.radius.xs,
                   border: aktiv ? "none" : `1px solid ${TN.borderDefault}`,
                   background: aktiv ? TN.navy900 : TN.white,
                   color: aktiv ? TN.white : TN.textSecondary,
@@ -185,7 +185,7 @@ export function TnTilgangSkjema({
           style={{
             minHeight: 48,
             padding: "0 18px",
-            borderRadius: TN.radius.full,
+            borderRadius: TN.radius.xs,
             border: `1px solid ${TN.status.red}`,
             background: "transparent",
             color: TN.status.redText,

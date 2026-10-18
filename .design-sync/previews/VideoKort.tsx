@@ -55,7 +55,7 @@ export function Feil() {
   return (
     <div style={boks}>
       <VideoKort
-        title="Bunker — åpen bladvinkel og sandtrinn"
+        title="Bunker — åpen bladvinkel"
         coach="Anders Kristiansen"
         tag="Golfslag"
         dato="28. august"

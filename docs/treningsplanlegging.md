@@ -14,6 +14,28 @@ styrer alle skjermer. Gjennomføringen i kode og design styres av
 eller pyramidegren er et automatisk krav eller en sperre (Anders 18.08.2026). Workbench foreslår
 og viser bare relevante felt. Coachen og spilleren bestemmer.
 
+## MASTER-STATUS 14.10.2026
+
+Masteren dekker språk for hele AK Golf HQ, ikke bare trening. Kartleggingen av brukertekst
+ligger i [ordbok-avvik-2026-10-14.md](ordbok-avvik-2026-10-14.md).
+
+| Flate | Status | Hvor |
+|---|---|---|
+| Tone, roller, TrackMan, tall, produkt, navigasjon (PlayerHQ og AgencyOS) | Dekket | §2 |
+| Ord og forbudte ord, handlinger, meldinger, statusord | Dekket | §3–§4 |
+| Planlegging, perioder, økt, øvelse | Dekket | §5–§21 |
+| AgencyOS | Første versjon | §22 |
+| Forelder, innlogging, oppstart | Første versjon | §23 |
+| Booking, betaling, e-post | Første versjon | §24 |
+| WANG | Første versjon | §25 |
+| Team Norway | Første versjon, åpent valg (V13) | §26 |
+| Markedssider og GFGK Junior | Første versjon, publisert tekst venter på Anders | §27 |
+| Caddie og AI-tekster | Første versjon, åpent valg (V1) | §28 |
+
+**Gjenstår:** 18 valg og 4 mindre valg i avviksfila. E-postmalenes brødtekst, sidetitler og
+metadata, Stripe-portalen og push-varsler er ikke kartlagt. `hjelpetekster.ts` er ikke
+gjennomgått ord for ord mot §2.3. Avviksfila er ikke rettet i kode.
+
 ## Innhold
 
 1. Bruk av masteren
@@ -37,6 +59,13 @@ og viser bare relevante felt. Coachen og spilleren bestemmer.
 19. Låste verdier
 20. Kodenøkler og overgang
 21. Åpne punkter
+22. AgencyOS
+23. Forelder, innlogging og oppstart
+24. Booking, betaling og e-post
+25. WANG
+26. Team Norway
+27. Markedssider og GFGK Junior
+28. Caddie og AI-tekster
 
 ## 1. Bruk av masteren
 
@@ -248,6 +277,7 @@ plan eller mengde.
 | Ferdig som universell status | Den presise statusen: lagret, publisert, gjennomført eller utført |
 | Pro / Premium / Plus | Gratis eller Full |
 | Emoji i UI | Tekst eller et relevant ikon |
+| Opp og ned / opp-og-ned | Up and down (Anders 14.10.2026) |
 
 ## 4. Handlinger, statuser og meldinger
 
@@ -501,7 +531,7 @@ Det er området, ikke pyramiden, som bestemmer hvilke detaljvalg som kommer vide
 |---|---|
 | Utslag og Innspill | Læringssteg · teknisk fokus · sted · måleutstyr · press · mengde |
 | Chip, pitch eller lob | Teknisk fokus · sted · måleutstyr · press · mengde |
-| Bunker | Sandtrinn · teknisk fokus · sted · måleutstyr · press · mengde |
+| Bunker | Teknisk fokus · sted · måleutstyr · press · mengde |
 | Putting | Puttingfokus · sted · måleutstyr · press · antall putter |
 | Styrke | Serier · repetisjoner · belastning (vekt) · RIR · pause · mål |
 | Kondisjon | Aktivitet · varighet eller distanse · intensitetssone · intervaller og pauser · mål |
@@ -633,8 +663,6 @@ kapittel 19. Feltet vises bare for Utslag og Innspill.
 | Bunker | Sandinngang (`SANDINNGANG`) · Lengdekontroll · Høyde · Lie-variasjon (`LIE_VARIASJON`) |
 | Putting | Greenlesing (`GREENLESING`) · Ballstart (`BALLSTART`) · Sikte · Lengdekontroll |
 | Banespill | Spilleformat (`SPILLEFORMAT`) · Strategioppgave (`STRATEGIOPPGAVE`) |
-
-**Sandtrinn (bare bunker):** Uten ball i sanden (`UTEN_BALL_I_SAND`) · Med ball (`MED_BALL`).
 
 **Ett fokus per øvelse, flere øvelser per økt** (bekreftet av Anders 30.09.2026). En økt kan ha
 flere øvelser, og spiller og coach kan velge dem fra spillerens individuelle tekniske plan. Hver
@@ -783,3 +811,105 @@ eller testen. Databasen beholder de finkornede enum-verdiene; `ak-formel-v2.ts` 
 | Flytt opp/ned og fjern øvelse på mobil | Bygget i «Valgt øvelse»-arket; fjerning krever bekreftelse. Sett i komponentprøve, ikke i innlogget app |
 | Testuke, Treningssamling og Heldagssamling | Beholdes (Anders 28.09.2026). De er hendelser i årsplanen, ikke treningsperioder |
 | Kondisjon: intensitetssone og segmenter | Pulssone S1–S5 besluttet 30.09.2026. Ikke bygget |
+
+## 22. AgencyOS
+
+Kilde: beslutningene 22.09, 26.09, 27.09 og 28.09.2026. Menyen står i §2.6.
+
+| Bruk / betydning | Ikke bruk / bruk i stedet |
+|---|---|
+| Mer har fem punkter: Booking · Grupper · Tester · Økonomi · Oppsett | «Hjem» om startskjermen, «CoachHQ» |
+| **Innboks** er all kommunikasjon og alle godkjenninger. Risiko · Følg med · Sjekk · Løst er filter | «Kø», «Oppfølgingskø» og «Godkjenninger» som egne menypunkt. «Watch» |
+| **Assist Coach** (rolle ASSISTANT) | «Hjelpecoach», «Hjelpetrener» |
+| **Stall** i tre bånd: I dag · Trener nå · Hele stallen. «Trener nå» er spillere som trener nå | «Trener nå» om coachen |
+| **Spiller 360** er den ene spillerprofilen | |
+| **Etterlevelse** er gjennomført tid mot planlagt tid, siste fire uker. Mangler forfalte økter vises — | Etterlevelse som antall økter |
+| **Økonomi** vises bare for head coach | |
+| Hurtigknapp: Ny økt i Workbench · Ny melding til spiller · Registrer runde · Spør Jarvis · Ny booking | |
+| **Jarvis** forbereder og sender ingenting. Alt som forlater huset krever Anders' ja | «Jarvis» og «Caddie» om hverandre. Se V1 i avviksfila |
+| **Egen** merker en gruppeøkt spilleren har tilpasset | |
+
+## 23. Forelder, innlogging og oppstart
+
+Kilde: beslutningene 23.09, 06.10 og §2.2.
+
+| Bruk / betydning | Ikke bruk / bruk i stedet |
+|---|---|
+| **Forelder** i skjermtekst. «Foresatt» bare i juridiske samtykketekster | «Foresatt» som vanlig rolleord |
+| Forelderen godkjenner innen **sju dager** etter at kontoen er opprettet. Barnet bruker appen fullt ut de sju dagene. Deretter er kontoen låst til godkjenning foreligger | «30 dager» |
+| Deling og opptak er sperret til forelder har godkjent | |
+| Fødselsdato kreves for spillere og kan ikke endres av spilleren selv | |
+| **Logg inn**, **Logg ut** | «Logg» alene |
+| Forelderens innsyn fortsetter etter 16 år, til spilleren fjerner forelderen | |
+
+Forelderflaten bruker felles skall (FO-01 til FO-04). Valg som står åpne: V2, V3, V4, V5, V11.
+
+## 24. Booking, betaling og e-post
+
+Kilde: beslutningene 26.09 og 27.09.
+
+| Bruk / betydning | Ikke bruk / bruk i stedet |
+|---|---|
+| Hovedknappen heter **Book time** | «Book kartleggingsøkt». Kartleggingsøkt finnes ikke |
+| Offentlig booking **bekreftes automatisk** når tiden er ledig og betalingen er gjennomført | «Venter på bekreftelse fra coach» for offentlig booking og flexkunder |
+| **Flexkunde** er en kunde som booker én time på nett uten konto | |
+| **Klippekort** gjelder coaching-pakkene Performance og Performance Pro. Én coachet økt trekker ett klipp | «Klippekort» om privattime 60 min alene |
+| Priser leses fra `ServiceType.priceOre` | Hardkodet beløp i tekst |
+| Bookingepostene: Bekreftelse · Endret time · Påminnelse · Avbestilling · Takk etter coachingtime · Oppfølging | |
+| Takk-e-posten er utkast hos coachen innen 24 timer. Én oppfølging etter 14 dager, bare hvis kunden ikke har booket eller kjøpt | Flere oppfølginger |
+
+Valg som står åpne: V6, V7, V8, V9, V10.
+
+## 25. WANG
+
+Kilde: beslutningene 26.09, 27.09 og 28.09.
+
+| Bruk / betydning | Ikke bruk / bruk i stedet |
+|---|---|
+| `/team-wang` har to roller: **Sportssjef** og **Trener** | «Assist Coach», «Admin», «Rektor», «Toppidrettssjef» i `/team-wang` |
+| Menyen har seks hovedpunkter. Trener: I dag · Trening · Tester · Konkurranse · Meldinger · Elever. Sportssjef får i tillegg Administrasjon | 43 menypunkter |
+| Periodene heter Grunnperiode · Spesialperiode · Turneringsperiode · Evaluering · Ferie · Restitusjon (§6) | «Spesialisering», «Turnering» som periodenavn |
+| Kategori A–K | Kategori E–A+ |
+| **Fireukerssjekk** erstatter halvårsevalueringen | «Halvårsevaluering» |
+| WANG og Team Norway **foreslår**, spilleren bestemmer | «Endrer planen» om WANG-trener |
+
+Valg som står åpne: V14 og samlingsordene under «Mindre valg».
+
+## 26. Team Norway
+
+Kilde: beslutningene 22.09, 28.09 og 06.10.
+
+| Bruk / betydning | Ikke bruk / bruk i stedet |
+|---|---|
+| Nivå: Ung · Junior · Amatør · Profesjonell. I Norge er man junior til og med det året man fyller 19 | |
+| **Wedge Gate** teller treff | Poengfelt og sperre |
+| Poeng for Nærspill Gate og VISA Express føres for hånd per slag; appen summerer | Egen poengskala |
+| Mangler en skala, vises **—** og «Referanse ikke satt» | Antatte tall |
+| Trenere foreslår og leser bare det spilleren har delt | |
+
+Valg som står åpent: V13 (egne ord som Analyse og Protokoll).
+
+## 27. Markedssider og GFGK Junior
+
+Kilde: §Merke og tekst i beslutningene. **All publisert tekst her venter på Anders, og rettes ikke uten hans ja.**
+
+| Bruk / betydning | Ikke bruk / bruk i stedet |
+|---|---|
+| Vis målingen | Vitnesbyrd, sitater, stjerner |
+| P-posisjoner er internt fagspråk | MORAD og Mac O'Grady nevnes aldri offentlig |
+| AK-stigen har fire trinn (Mini → Basis → Utvikling → Elite). Knøtt har egen gruppe ved siden av | «Fem trinn» (publisert, venter) |
+| Mulligan er et eget merke | Mulligan som del av AK Golf-merket |
+| Hovedknappen heter **Book time** | «Book kartleggingsøkt» |
+| Periodene følger §6 | «Spesialisering» (GFGK-teksten er publisert, venter) |
+
+## 28. Caddie og AI-tekster
+
+Kilde: §2.2, §4.2, §4.3 og beslutningene 28.09.
+
+| Bruk / betydning | Ikke bruk / bruk i stedet |
+|---|---|
+| **Caddie** er navnet på AI-assistenten (§2.2). Se V1 for forholdet til Jarvis | «AI-coach», «AI Golf Coach», «Coach AI», «AI-Caddie» |
+| Forslag har status Forslag · Godkjent · Kjører · Utført · Feilet (§4.3) | «Fullført» og «Forkastet» på AI-forslag |
+| Navn tas ut før tekst sendes til AI | Spillernavn i prompt |
+| Alt appen sier om en spiller har måling, dato og kilde. Estimat merkes «Estimat» | Tall uten kilde |
+| Caddie bruker masterens ord. L-faser, CS-koder, M0–M5 og PR1–PR5 er utgått | «L-faser» i Caddies instruks (se F2) |

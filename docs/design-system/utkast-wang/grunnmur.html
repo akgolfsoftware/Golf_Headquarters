@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WANG grunnmur</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Quattrocento:wght@400;700&family=Quattrocento+Sans:wght@400;700&display=swap">
+<link rel="stylesheet" href="felles/wang.css">
+<style>
+  /* Bare det grunnmuren trenger i tillegg til wang.css */
+  .akse-rad{display:grid;gap:10px}
+  .akse-linje{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px}
+  .akse-linje .navn{font:700 15px/1.3 var(--brand);color:var(--navy-dyp)}
+  .akse-linje .tall{font:800 15px/1 var(--brand);color:var(--navy-dyp)}
+  .pyramide{display:block;width:100%;max-width:360px;height:auto;justify-self:center}
+  .pyramide text{font:800 12px/1 var(--brand);letter-spacing:.04em}
+  .uke{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;align-items:end}
+  .dag{display:grid;gap:6px;justify-items:center}
+  .soyle{width:100%;max-width:56px;height:160px;display:flex;flex-direction:column-reverse;border-radius:0;overflow:hidden;background:var(--n100)}
+  .soyle span{display:block;width:100%}
+  .dag b{font:800 13px/1 var(--brand);color:var(--navy-dyp)}
+  .dag small{font:700 12px/1 var(--brand);color:var(--tekst-2)}
+  .dag .gj{display:inline-flex;align-items:center;gap:4px;font:700 11px/1 var(--brand);color:var(--navy-dyp-tekst)}
+  .dag .gj i{width:7px;height:7px;border-radius:50%;background:var(--mint)}
+  .dag.i-dag b{color:var(--navy);text-decoration:underline;text-decoration-color:var(--mint);text-decoration-thickness:3px;text-underline-offset:5px}
+  .fargeprove{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:10px}
+  .prove{border-radius:var(--r-kort-s);overflow:hidden;box-shadow:var(--skygge-s);background:#fff}
+  .prove div{height:56px;display:flex;align-items:flex-end;padding:8px 10px;font:800 13px/1 var(--brand);letter-spacing:.04em}
+  .prove p{padding:8px 10px;font:700 11px/1.4 var(--brand);color:var(--tekst-2)}
+  .knapp-rad{display:grid;gap:10px}
+  .knapp-rad > div{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+  .knapp-rad .forklar{font-size:13px}
+  .skrift-prove{display:grid;gap:8px}
+</style>
+</head>
+<body>
+<div class="ytre">
+  <header class="hode">
+    <p class="meta-s">WANG Toppidrett · trenerflaten · pakke 1 grunnmur · utkast 2 (retning B) · 16.10.2026</p>
+    <h1>Grunnmuren for trenerskjermene</h1>
+    <p>Skall, meny, aksefarger, pyramide, øktkort, ukefordeling, graf, knapper og status. Bare WANGs egne farger og skrifter. Alle navn og tall er syntetiske.</p>
+  </header>
+  <div class="kontroller">
+    <div class="velger" aria-label="Bredde"><button type="button" data-bredde="mob" aria-pressed="true">Mobil 390</button><button type="button" data-bredde="pc" aria-pressed="false">PC 1280</button></div>
+    <div class="velger" aria-label="Rolle"><button type="button" data-rolle="trener" aria-pressed="true">Trener</button><button type="button" data-rolle="sportssjef" aria-pressed="false">Sportssjef</button></div>
+    <div class="velger" aria-label="Tilstand"><button type="button" data-tilstand="data" aria-pressed="true">Med data</button><button type="button" data-tilstand="tom" aria-pressed="false">Tom</button><button type="button" data-tilstand="laster" aria-pressed="false">Laster</button><button type="button" data-tilstand="feil" aria-pressed="false">Feil</button></div>
+  </div>
+  <div class="scene"><div id="ramme" class="ramme mob"></div></div>
+  <div class="notater">
+    <section class="endringer">
+      <h2>Spørsmålet til deg</h2>
+      <p>Er dette riktige aksefarger for WANG?</p>
+      <ul>
+        <li><b>FYS</b> navy · <b>TEK</b> teal · <b>SLAG</b> oransje · <b>SPILL</b> blå · <b>TURN</b> lilla.</li>
+        <li>Det er de samme fargene som WANG-koden bruker i dag (årsplanen og IUP-samtalen). Ingen AK-farger.</li>
+        <li>Status bruker andre farger enn aksene: mint er ok, gul venter, rosa haster. Da betyr oransje alltid SLAG og teal alltid TEK.</li>
+      </ul>
+    </section>
+    <section class="endringer">
+      <h2>Nytt i utkast 2</h2>
+      <ul>
+        <li><b>Helteflaten:</b> navy flate med ett stort hovedtall, kort forklaring, én hvit knapp og golfbilde ved siden av. Små tellere under.</li>
+        <li><b>Tre bånd:</b> Trenger deg · Følger planen · Ikke delt, med teller i båndhodet.</li>
+        <li><b>Elevrad:</b> statusmarkør, avatar, navn og grunn, plan-stolpe med strek ved 80 %.</li>
+        <li><b>Fylt graf:</b> arealet under linja er fylt, mållinje stiplet.</li>
+        <li><b>Én handlingsfarge:</b> navy. Mint er bare status «ok». Aksefargene og grunnmuren fra utkast 1 er uendret.</li>
+      </ul>
+    </section>
+    <section class="endringer">
+      <h2>Slik er det tegnet</h2>
+      <ul>
+        <li>Menyen har seks hovedpunkter. Administrasjon kommer bare for sportssjef (bytt rolle over).</li>
+        <li>På mobil: I dag, Trening, Tester, Elever og Mer. Konkurranse, Meldinger og Administrasjon ligger under Mer. Bjella går til Meldinger.</li>
+        <li>Kort er hvite med myk skygge og runde hjørner, knapper er piller. Det er WANGs eget uttrykk.</li>
+        <li>Kategori A–K erstatter E–A+.</li>
+      </ul>
+    </section>
+  </div>
+</div>
+
+<template id="skjerm">
+<div class="app" data-fane="idag">
+<main class="innhold">
+
+  <section class="topp inn" data-behold>
+    <div>
+      <p class="dato">Onsdag 14. oktober · uke 42 · Evaluering</p>
+      <h1 class="tittel">Grunnmur</h1>
+      <p class="ingress">Slik ser byggesteinene ut i WANG-designet. Gruppa er WANG Golf med 11 elever.</p>
+    </div>
+  </section>
+
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Helteflaten</h2><span class="kilde">Utkast 2 · én per hovedskjerm</span></div>
+    <section class="helt med-bilde inn" aria-label="Eksempel på helteflate">
+      <div class="helt-tekst">
+        <span class="helt-merke haster"><i></i>Morgentrening om 20 minutter</span>
+        <p class="helt-hoved"><strong data-tell="5">5</strong><span>saker krever deg, <span style="white-space:nowrap">2 før 07:50</span></span></p>
+        <p class="helt-forklar">Ett stort hovedtall, én kort forklaring og én knapp. Bildet står ved siden av, aldri med tekst oppå.</p>
+        <button type="button" class="knapp lys">Før oppmøte</button>
+      </div>
+      <img class="helt-bilde" src="bilder/slag-utslag.jpg" alt="" width="480" height="230">
+    </section>
+    <div class="smaa-tall">
+      <a href="#"><strong>11</strong><span>Elever</span></a>
+      <a href="#"><strong>2</strong><span>Økter i dag</span></a>
+      <a href="#"><strong>92<small>%</small></strong><span>Etterlevelse 4 uker</span></a>
+    </div>
+    <p class="kilde">De andre tallene står som små tellere under helteflaten. Toppen får plass i én skjermhøyde på 390 px.</p>
+  </section>
+
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Tre bånd og elevrader</h2><span class="kilde">Utkast 2 · som Stall i AgencyOS</span></div>
+    <div class="baand kol">
+      <section class="baand-del trenger"><div class="baand-hode"><h3>Trenger deg</h3><span class="antall">1</span><p>Under 80 % av planen, eller borte fra morgentreningen.</p></div><div class="baand-liste">
+        <a class="elevrad trenger" href="#"><span class="avatar">09</span><span class="er-hvem"><b>Elev 09</b><span>VG2 · Kategori D</span><span class="er-grunn">Borte tre morgener på rad</span></span><span class="er-plan"><b>74 %</b><span class="stolpe"><span style="width:74%"></span><i class="strek" style="left:80%"></i></span></span></a>
+      </div></section>
+      <section class="baand-del folger"><div class="baand-hode"><h3>Følger planen</h3><span class="antall">1</span><p>80 % eller mer av planen.</p></div><div class="baand-liste">
+        <a class="elevrad folger" href="#"><span class="avatar">04</span><span class="er-hvem"><b>Elev 04</b><span>VG2 · Kategori D</span></span><span class="er-plan"><b>95 %</b><span class="stolpe"><span style="width:95%"></span><i class="strek" style="left:80%"></i></span></span></a>
+      </div></section>
+      <section class="baand-del ikke-delt"><div class="baand-hode"><h3>Ikke delt</h3><span class="antall">1</span><p>Bare nummer og klasse til eleven deler.</p></div><div class="baand-liste">
+        <a class="elevrad ikke-delt" href="#"><span class="avatar">06</span><span class="er-hvem"><b>Elev 06</b><span>VG2 · ikke delt</span></span><span class="er-plan"><b>—</b><span class="kilde">Lenke sendt</span></span></a>
+      </div></section>
+    </div>
+    <p class="kilde">Markøren til venstre er status: rosa trenger deg, mint følger planen, grå ikke delt. Stolpen er gjennomført mot planlagt tid siste fire uker, streken er 80 %.</p>
+  </section>
+
+  <section class="seksjon">
+    <div class="sek-topp"><h2>De fem aksene</h2><span class="kilde">Fast farge per akse, aldri etter verdi</span></div>
+    <div class="fargeprove" data-fargeprove></div>
+  </section>
+
+  <div class="to-kol">
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Pyramiden denne uka</h2></div>
+      <div class="kort">
+        <svg class="pyramide" viewBox="0 0 320 232" role="img" aria-label="Pyramiden: FYS 32 %, TEK 26 %, SLAG 21 %, SPILL 16 %, TURN 5 %" data-pyramide></svg>
+        <p class="kilde">Planlagt tid for gruppa, uke 42. Kilde: gruppas ukeplan.</p>
+      </div>
+    </section>
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Fordeling som bånd</h2></div>
+      <div class="kort">
+        <div class="hoved"><strong>9 t 30 <small>min</small></strong></div>
+        <p class="forklar">Planlagt per elev denne uka</p>
+        <div class="band" role="img" aria-label="FYS 3 t, TEK 2 t 30 min, SLAG 2 t, SPILL 1 t 30 min, TURN 30 min" data-band></div>
+        <div class="akse-rad" data-akselinjer></div>
+      </div>
+    </section>
+  </div>
+
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Øktkort</h2><a class="lenke" href="#">Hele uka</a></div>
+    <div class="to-kol">
+      <button type="button" class="okt fys inn">
+        <img src="bilder/fys-styrke.jpg" alt="" width="390" height="120">
+        <div class="okt-tekst">
+          <div class="okt-rad"><span class="okt-tid">07:15<small>60 min</small></span><span class="okt-merke"><i></i>FYS</span></div>
+          <span class="navn">Morgentrening styrke</span>
+          <div class="okt-info"><span>Styrkerommet</span><span>11 elever</span><span>5 øvelser</span></div>
+        </div>
+      </button>
+      <button type="button" class="okt tek inn">
+        <img src="bilder/tek-video.jpg" alt="" width="390" height="120">
+        <div class="okt-tekst">
+          <div class="okt-rad"><span class="okt-tid">12:30<small>45 min</small></span><span class="okt-merke"><i></i>TEK</span></div>
+          <span class="navn">P6.0 Kølle parallell i nedsving</span>
+          <div class="okt-info"><span>Innendørshallen</span><span>11 elever</span><span>3 øvelser</span></div>
+        </div>
+      </button>
+    </div>
+    <div class="tre-kol" style="display:grid;gap:10px">
+      <button type="button" class="okt mini slag"><img src="bilder/slag-utslag.jpg" alt="" width="76" height="76"><div class="okt-tekst"><span class="okt-merke" style="justify-self:start"><i></i>SLAG</span><span class="navn">Innspill 50–100 m</span><div class="okt-info"><span>Tor 13:00 · 60 min</span></div></div></button>
+      <button type="button" class="okt mini spill"><img src="bilder/spill-bane.jpg" alt="" width="76" height="76"><div class="okt-tekst"><span class="okt-merke" style="justify-self:start"><i></i>SPILL</span><span class="navn">9 hull med oppgaver</span><div class="okt-info"><span>Tor 14:30 · 60 min</span></div></div></button>
+      <button type="button" class="okt mini turn"><img src="bilder/turn-tee.jpg" alt="" width="76" height="76"><div class="okt-tekst"><span class="okt-merke" style="justify-self:start"><i></i>TURN</span><span class="navn">Rutiner før start</span><div class="okt-info"><span>Fre 13:00 · 30 min</span></div></div></button>
+    </div>
+  </section>
+
+  <div class="to-kol">
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Ukefordeling</h2><span class="kilde">Uke 42 · minutter per dag</span></div>
+      <div class="kort">
+        <div class="uke" data-uke></div>
+        <div class="lg-rad" data-lg></div>
+        <p class="kilde">4 t 30 min av 9 t 30 min er gjennomført. Kilde: oppmøte ført av trener.</p>
+      </div>
+    </section>
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Fylt graf</h2><span class="kilde">Utkast 2 · areal under linja</span></div>
+      <div class="kort">
+        <div class="hoved"><strong>92 <small>%</small></strong></div>
+        <p class="forklar">Etterlevelse uke 38–41, snitt per elev. 3 prosentpoeng lavere enn uke 34–37.</p>
+        <svg class="graf" viewBox="0 0 340 180" role="img" aria-label="Gjennomført mot planlagt per uke, uke 34 til 41" data-graf></svg>
+        <div class="lg-rad"><span class="lg"><i style="background:var(--navy)"></i>Gjennomført mot plan</span><span class="lg"><i style="background:var(--n500)"></i>Mål 80 %</span></div>
+        <p class="kilde">Gjennomført tid delt på planlagt tid, siste fire uker.</p>
+      </div>
+    </section>
+  </div>
+
+  <div class="to-kol">
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Status og merker</h2></div>
+      <div class="kort">
+        <div class="knapper"><span class="pille ok"><i></i>Gjennomført</span><span class="pille vent"><i></i>Venter på elev</span><span class="pille haster"><i></i>Haster</span><span class="pille noy"><i></i>Ikke startet</span></div>
+        <div class="knapper"><span class="kategori">Kategori D</span><span class="estimat">Estimat</span><span class="akse fys">FYS</span><span class="akse tek">TEK</span><span class="akse slag">SLAG</span><span class="akse spill">SPILL</span><span class="akse turn">TURN</span></div>
+      </div>
+    </section>
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Knapper og felt</h2></div>
+      <div class="kort">
+        <div class="knapp-rad">
+          <div><button type="button" class="knapp pri">Lagre økt</button><button type="button" class="knapp sek">Avbryt</button></div>
+          <div><button type="button" class="knapp flat">Se alle</button><span class="kilde">Flat knapp for det som er nest viktig.</span></div>
+          <div><button type="button" class="knapp fare">Slett økt</button><button type="button" class="knapp" disabled>Ikke tilgjengelig</button></div>
+          <p class="forklar">Navy er eneste handlingsfarge (utkast 2). På helteflaten er knappen hvit med navy tekst. Mint er bare status «ok». Rosa bare når noe slettes eller avsluttes.</p>
+        </div>
+        <div class="valg" role="group" aria-label="Visning"><button type="button" aria-pressed="true">Uke</button><button type="button" aria-pressed="false">Måned</button><button type="button" aria-pressed="false">År</button></div>
+        <div class="felt"><label for="g-navn">Navn på økta</label><input id="g-navn" value="Innspill 50–100 m"><span class="hjelp">Vises for elevene i PlayerHQ.</span></div>
+        <div class="felt feil"><label for="g-min">Varighet i minutter</label><input id="g-min" value="0" inputmode="numeric"><span class="feiltekst">Varigheten må være minst 5 minutter.</span></div>
+      </div>
+    </section>
+  </div>
+
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Skrift</h2></div>
+    <div class="kort skrift-prove">
+      <p class="etikett">Etikett · Montserrat 700</p>
+      <p class="undertittel">Undertittel · Montserrat 700</p>
+      <p style="font:800 22px/1.2 var(--brand);color:var(--navy-dyp)">Overskrift · Montserrat 800</p>
+      <p class="forklar">Brødtekst er Quattrocento Sans. Tall bruker faste sifferbredder, så kolonner står rett: 9 t 30 min, 92 %.</p>
+    </div>
+  </section>
+
+</main>
+</div>
+</template>
+
+<script src="felles/wang.js"></script>
+<script>
+(function () {
+  var AKSER = [
+    { k: 'fys', a: 'FYS', navn: 'Fysisk', min: 180, pst: 32, farge: 'Navy #17446F' },
+    { k: 'tek', a: 'TEK', navn: 'Teknisk', min: 150, pst: 26, farge: 'Teal #2E857D' },
+    { k: 'slag', a: 'SLAG', navn: 'Golfslag', min: 120, pst: 21, farge: 'Oransje #F47B20' },
+    { k: 'spill', a: 'SPILL', navn: 'Spill', min: 90, pst: 16, farge: 'Blå #007DB1' },
+    { k: 'turn', a: 'TURN', navn: 'Turnering', min: 30, pst: 5, farge: 'Lilla #7F1975' }
+  ];
+  /* Uke 42, planlagte minutter per dag og akse. Summen per akse stemmer med AKSER. */
+  var UKE = [
+    { d: 'Man', gj: true, fys: 60, tek: 60 },
+    { d: 'Tir', gj: true, slag: 60, spill: 30 },
+    { d: 'Ons', idag: true, fys: 60, tek: 45 },
+    { d: 'Tor', slag: 60, spill: 60 },
+    { d: 'Fre', fys: 60, tek: 45, turn: 30 }
+  ];
+  /* Gjennomført minutter per elev, uke 34–41. Planlagt 570 hver uke. */
+  var UKER = [34, 35, 36, 37, 38, 39, 40, 41], GJ = [540, 555, 500, 570, 515, 480, 545, 560], PLAN = 570;
+
+  function tid(m) { var t = Math.floor(m / 60), r = m % 60; return (t ? t + ' t' : '') + (t && r ? ' ' : '') + (r ? r + ' min' : ''); }
+  var NS = 'http://www.w3.org/2000/svg';
+  function el(n, a, tekst) { var e = document.createElementNS(NS, n); for (var k in a) e.setAttribute(k, a[k]); if (tekst) e.textContent = tekst; return e; }
+
+  function etter(app) {
+    app.querySelector('[data-fargeprove]').innerHTML = AKSER.map(function (x) {
+      return '<div class="prove"><div class="fyll-' + x.k + '">' + x.a + '</div><p>' + x.navn + '<br>' + x.farge + '</p></div>';
+    }).join('');
+
+    var py = app.querySelector('[data-pyramide]'), ned = AKSER.slice().reverse();
+    ned.forEach(function (x, i) {
+      var y0 = 8 + i * 44, y1 = y0 + 40, hw = function (y) { return 30 + (y - 8) * 128 / 220; };
+      var p = [[160 - hw(y0), y0], [160 + hw(y0), y0], [160 + hw(y1), y1], [160 - hw(y1), y1]].map(function (q) { return q[0].toFixed(1) + ',' + q[1]; }).join(' ');
+      var g = el('g', { class: 'inn', style: 'animation-delay:' + (i * 70) + 'ms' });
+      g.appendChild(el('polygon', { points: p, style: 'fill:var(--' + x.k + '-fyll)' }));
+      g.appendChild(el('text', { x: 160, y: y0 + 25, 'text-anchor': 'middle', style: 'fill:var(--' + x.k + '-paa)' }, x.a + ' ' + x.pst + ' %'));
+      py.appendChild(g);
+    });
+
+    app.querySelector('[data-band]').innerHTML = AKSER.map(function (x) {
+      return '<span class="fyll-' + x.k + '" style="flex:' + x.min + '">' + (x.pst >= 15 ? x.a : '') + '</span>';
+    }).join('');
+    app.querySelector('[data-akselinjer]').innerHTML = AKSER.map(function (x) {
+      return '<div class="akse-linje"><span class="akse ' + x.k + '">' + x.a + '</span><div class="stolpe"><span class="bg-' + x.k + '" data-til="' + (x.min / 180 * 100) + '%" style="width:' + (x.min / 180 * 100) + '%"></span></div><span class="tall">' + tid(x.min) + '</span></div>';
+    }).join('');
+
+    var maks = 135;
+    app.querySelector('[data-uke]').innerHTML = UKE.map(function (d) {
+      var sum = 0, seg = AKSER.map(function (x) { var m = d[x.k] || 0; sum += m; return m ? '<span class="bg-' + x.k + '" style="height:' + (m / maks * 100) + '%"></span>' : ''; }).join('');
+      return '<div class="dag' + (d.idag ? ' i-dag' : '') + '"><div class="soyle vokse" role="img" aria-label="' + d.d + ': ' + tid(sum) + '">' + seg + '</div><b>' + d.d + '</b><small>' + tid(sum) + '</small>' + (d.gj ? '<span class="gj"><i></i>Ferdig</span>' : '') + '</div>';
+    }).join('');
+    app.querySelector('[data-lg]').innerHTML = AKSER.map(function (x) { return '<span class="lg"><i class="bg-' + x.k + '"></i>' + x.a + '</span>'; }).join('');
+
+    WANGUtkast.fyltGraf(app.querySelector('[data-graf]'), { verdier: GJ.map(function (m) { return Math.round(m / PLAN * 100); }), etiketter: UKER.map(function (u) { return 'U' + u; }), min: 70, maks: 100, linjer: [70, 80, 90, 100], mal: 80, malTekst: 'Mål 80 %', enhet: ' %', marker: 4 });
+  }
+
+  WANGUtkast.start({
+    etter: etter,
+    tom: { tittel: 'Ingen økter i uke 42 ennå', tekst: 'Gruppa har ingen plan for denne uka. Kopier forrige uke, eller legg inn økter selv.', knapp: 'Kopier uke 41' },
+    laster: 'Henter uka for WANG Golf …',
+    feil: 'Uka kunne ikke hentes'
+  });
+})();
+</script>
+</body>
+</html>

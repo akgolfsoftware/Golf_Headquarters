@@ -115,3 +115,34 @@ describe("byggPH18", () => {
     assert.equal(m.sesonger[1].maaneder[6], null);
   });
 });
+
+describe("byggPH18 oversikt (PH-18 snittscore)", () => {
+  it("snittet bruker bare 18-hullsrunder i nyeste sesong, og ni hull teller ikke", () => {
+    const m = byggPH18([
+      runde("n", "2026-09-01T10:00:00Z", Array.from({ length: 9 }, (_, i) => hull(i + 1, 4, 5))),
+      runde("a", "2026-08-01T10:00:00Z", atten(Array(18).fill(4))),
+      runde("b", "2026-07-01T10:00:00Z", atten([...Array(17).fill(4), 6])),
+      runde("c", "2025-07-01T10:00:00Z", atten(Array(18).fill(5))),
+    ]);
+    assert.equal(m.oversikt.aar, 2026);
+    assert.equal(m.oversikt.antall, 2);
+    assert.equal(m.oversikt.snitt, 73);
+    assert.equal(m.oversikt.siste5, null);
+    assert.equal(m.oversikt.forrigeSnitt, 90);
+    assert.deepEqual(m.oversikt.serie.map((x) => [x.score, x.glidende]), [[74, 74], [72, 73]]);
+  });
+
+  it("snitt per par regnes fra alle runder med hullscore, og mangler paren gir null", () => {
+    const m = byggPH18([
+      runde("a", "2026-08-01T10:00:00Z", [hull(1, 3, 3), hull(2, 3, 4), hull(3, 4, 4)]),
+      runde("t", "2026-08-02T10:00:00Z", [], { score: 70 }),
+    ]);
+    assert.deepEqual(m.oversikt.perPar, [
+      { par: 3, snitt: 3.5, hull: 2 },
+      { par: 4, snitt: 4, hull: 1 },
+      { par: 5, snitt: null, hull: 0 },
+    ]);
+    assert.equal(m.oversikt.runderMedHull, 1);
+    assert.equal(m.oversikt.snitt, null);
+  });
+});

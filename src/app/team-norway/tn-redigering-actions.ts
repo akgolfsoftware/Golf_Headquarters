@@ -13,7 +13,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import * as skriv from "@/lib/domain/tn-redigering";
 
 async function bruker() {
-  return requirePortalUser({ kreverTilgang: "INGEN" });
+  return requirePortalUser({ tillatDemo: true, kreverTilgang: "INGEN" });
 }
 
 function oppdater(...stier: string[]) {
@@ -98,12 +98,14 @@ export async function lagreCollegeAction(input: unknown) {
   return r;
 }
 
+// tilgang: trenerrolle i TN-gruppen sjekkes i domenelaget (krevTrener i lib/domain/tn-redigering)
 export async function slettCollegeAction(spillerId: string) {
   const r = await skriv.slettCollege(await bruker(), spillerId);
   if (r.ok) oppdater("/team-norway/college");
   return r;
 }
 
+// tilgang: trenerrolle i TN-gruppen sjekkes i domenelaget (krevTrener i lib/domain/tn-redigering)
 export async function avsluttSpillerAction(spillerId: string) {
   const r = await skriv.avsluttSpiller(await bruker(), spillerId);
   if (r.ok) oppdater("/team-norway", "/team-norway/tilgang", "/team-norway/spillere");

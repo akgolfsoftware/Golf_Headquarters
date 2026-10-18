@@ -1,7 +1,6 @@
-/* v2-skjelett for /portal/drills (øvelsesliste). */
-
-import { V2Laster } from "@/components/v2/laster";
+/* PH-13 Øvelsesbank: lastetilstand i nytt design. Ren serverkomponent (gotchas §Bygg og drift). */
+import { OvLaster } from "@/components/portal/precision/PH13OvLaster";
 
 export default function Loading() {
-  return <V2Laster variant="liste" />;
+  return <OvLaster dato="Plan · øvelsesbank" tekst="Henter øvelsene …" />;
 }

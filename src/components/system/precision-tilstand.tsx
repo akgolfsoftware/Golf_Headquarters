@@ -1,11 +1,14 @@
 import type { ReactNode } from "react";
-import Link from "next/link";
-import "@/styles/precision-athletics.css";
+import { FlateRamme, type FlateLenke } from "@/components/flater/FlateRamme";
 
 /**
- * Felles Precision-ramme for SY-01. Tegningens demokoder (klokkeslett,
- * «3 endringer venter», falsk feilreferanse) brukes ikke. Produkttekst
- * og ekte telefon/e-post beholdes.
+ * SY-01 systemsidene i nytt design (utkast-flater/gfgk-system.html, utkast 1 15.10.2026):
+ * 404, 500, vedlikehold, ikke tilgang og frakoblet. Navnet og props er beholdt, så alle
+ * not-found-, error- og tilstandssider bytter design samtidig.
+ *
+ * Avvik mot utkastet: tegningens faste referanse («7F3A-21C9 · 15.10 14:22»), klokkeslett for
+ * vedlikehold og «3 slag venter» er demodata og vises ikke. Referansen er Next sin digest når
+ * den finnes. Ekte telefon og e-post beholdes.
  */
 export function PrecisionTilstand({
   kicker,
@@ -13,63 +16,81 @@ export function PrecisionTilstand({
   tekst,
   kode,
   linjer,
-  linjeTittel = "Virker fortsatt",
+  hjelpeliste,
   primar,
   primarKnapp,
   sekundar,
+  toppLenke,
+  iSkall,
+  ikon,
   barn,
 }: {
+  /** Stort tegn øverst: «404», «500», «403» eller et ord som «Vedlikehold». */
   kicker: string;
   tittel: string;
   tekst: string;
+  /** Referanse til support (mono, liten). */
   kode?: string;
   linjer?: { label: string; verdi: string }[];
+  /** Ikke i bruk lenger, beholdt for kompatibilitet. */
   linjeTittel?: string;
+  hjelpeliste?: string[];
   primar?: { label: string; href: string };
   primarKnapp?: { label: string; onClick: () => void };
   sekundar?: { label: string; href: string };
+  toppLenke?: FlateLenke;
+  /** Siden vises inni et annet skall (PlayerHQ, AgencyOS, marked): ingen egen topplinje. */
+  iSkall?: boolean;
+  /** Ikon i stedet for kode, som frakoblet. */
+  ikon?: ReactNode;
   barn?: ReactNode;
 }) {
+  const tall = /^\d{3}$/.test(kicker);
   return (
-    <div className="pa-root au-ramme" data-design="precision-athletics">
-      <div className="au-boks au-boks--bred">
-        <Link href="/" className="au-logo">AK Golf HQ</Link>
-        <header>
-          <p className="au-kicker">{kicker}</p>
-          <h1>{tittel}</h1>
-          <p>{tekst}</p>
-        </header>
-        {kode ? <p className="au-kodeboks">{kode}</p> : null}
-        {linjer && linjer.length > 0 ? (
-          <div className="au-tips">
-            <p className="au-kicker">{linjeTittel}</p>
-            <ul className="au-linjer">
-              {linjer.map((linje) => (
-                <li key={linje.label}>
-                  <span>{linje.label}</span>
-                  <span>{linje.verdi}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ) : null}
-        {barn}
+    <FlateRamme skall="system" toppLenke={toppLenke} iSkall={iSkall}>
+      <div className="sys">
+        {ikon ?? <span className={tall ? "kode" : "kode rolig"}>{kicker}</span>}
+        <h1>{tittel}</h1>
+        <p className="ingress">{tekst}</p>
+        {hjelpeliste && hjelpeliste.length > 0 && (
+          <ul className="hjelp-liste">
+            {hjelpeliste.map((l) => (
+              <li key={l}>{l}</li>
+            ))}
+          </ul>
+        )}
+        {linjer && linjer.length > 0 && (
+          <dl className="dl" style={{ width: "100%", maxWidth: 420 }}>
+            {linjer.map((l) => (
+              <div key={l.label}>
+                <dt>{l.label}</dt>
+                <dd>{l.verdi}</dd>
+              </div>
+            ))}
+          </dl>
+        )}
         {(primar || primarKnapp || sekundar) && (
-          <div className="au-handlinger">
-            {primarKnapp ? (
-              <button type="button" className="pa-btn pa-btn--primary" onClick={primarKnapp.onClick}>
+          <div className="knapper">
+            {primarKnapp && (
+              <button type="button" className="knapp pri" onClick={primarKnapp.onClick}>
                 {primarKnapp.label}
               </button>
-            ) : null}
-            {primar ? (
-              <Link href={primar.href} className="pa-btn pa-btn--primary">{primar.label}</Link>
-            ) : null}
-            {sekundar ? (
-              <Link href={sekundar.href} className="pa-btn pa-btn--secondary">{sekundar.label}</Link>
-            ) : null}
+            )}
+            {primar && (
+              <a href={primar.href} className="knapp pri">
+                {primar.label}
+              </a>
+            )}
+            {sekundar && (
+              <a href={sekundar.href} className="knapp sek">
+                {sekundar.label}
+              </a>
+            )}
           </div>
         )}
+        {barn}
+        {kode && <span className="ref">{kode}</span>}
       </div>
-    </div>
+    </FlateRamme>
   );
 }

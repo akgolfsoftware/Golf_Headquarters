@@ -39,7 +39,6 @@ function oppgave(p: Partial<TpOppgaveInn> = {}): TpOppgaveInn {
     belastning: "TRENINGSOMRAADE",
     press: "ALENE",
     dimensjon: "TREFFPUNKT",
-    sandTrinn: null,
     maaleutstyr: "TRACKMAN",
     status: "ACTIVE",
     repsMaalDry: 60,
@@ -132,7 +131,7 @@ describe("oppgave i planvisningen", () => {
 
   it("treffprotokoll: setning og nåtall; uten måling blir nå «—»", () => {
     const med = planVisning(plan([oppgave({ tmGoals: [tm({ id: "h", targetType: "HIT_RATE", protocol: "ROLLING_WINDOW", windowSize: 20, requiredHits: 16, currentHits: 12, currentBatchSize: 20 })] })])).oppgaver[0];
-    expect(med.protokoll).toEqual({ type: "ROLLING_WINDOW", navn: "Rullende vindu", tekst: "16 av de siste 20 slagene innenfor målboksen", naa: "12 av 20" });
+    expect(med.protokoll).toEqual({ type: "ROLLING_WINDOW", navn: "Rullende vindu", tekst: "16 av de siste 20 slagene innenfor målboksen", naa: "12 av 20", siste: { treff: 12, antall: 20 } });
     expect(med.tm).toHaveLength(0);
     const uten = planVisning(plan([oppgave({ tmGoals: [tm({ id: "h", targetType: "HIT_RATE", protocol: "STREAK", requiredHits: 5 })] })])).oppgaver[0];
     expect(uten.protokoll?.naa).toBe("—");

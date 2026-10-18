@@ -1,118 +1,59 @@
-// PH25AboOversikt — Precision Athletics. Data og handlinger er beholdt.
+/**
+ * PlayerHQ · Meg · Abonnement (/portal/meg/abonnement) — PH-25 i nytt design
+ * (docs/design-system/utkast-playerhq/meg.html, skjermen «PH-25 Abonnement»).
+ *
+ * Bare ekte data: nivå og pakke fra getAbonnementData, betalinger fra Payment, og om det finnes
+ * et Stripe-abonnement som kan avsluttes. Avslutt går via cancelPro (Stripe før database).
+ */
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { prisma } from "@/lib/prisma";
 import { getAbonnementData } from "@/lib/portal-abonnement/abonnement-data";
+import { pakkeNavn } from "@/lib/domain/abonnement";
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
-import { PH25Abonnement } from "@/components/portal/precision/PH25Abonnement";
-import {
-  PH25_PLANER,
-  PH25_STANDARD_DATA,
-  PH25_STANDARD_HJELP,
-  type PH25AbonnementData,
-  type PlanId,
-} from "@/lib/portal-abonnement/ph25-abonnement-data";
+import { PH25Abonnement, type PH25Data } from "@/components/portal/precision/PH25Abonnement";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Abonnement og innstillinger · PlayerHQ" };
+export const metadata = { title: "Abonnement · PlayerHQ" };
 
 const OSLO = { timeZone: "Europe/Oslo" } as const;
-const DMA = new Intl.DateTimeFormat("nb-NO", {
-  ...OSLO,
-  day: "2-digit",
-  month: "2-digit",
-  year: "numeric",
-});
-function formatDato(d: Date | null): string | null {
-  if (!d) return null;
-  return DMA.format(d).replaceAll("/", ".");
-}
+const LANG = new Intl.DateTimeFormat("nb-NO", { ...OSLO, day: "numeric", month: "long" });
+const DMA = new Intl.DateTimeFormat("nb-NO", { ...OSLO, day: "2-digit", month: "2-digit", year: "numeric" });
 
 export default async function AbonnementPage({
   searchParams,
 }: {
-  searchParams: Promise<{
-    ok?: string;
-    cancelled?: string;
-    avbestilt?: string;
-    fra?: string;
-    state?: string;
-  }>;
+  searchParams: Promise<{ ok?: string; cancelled?: string; avbestilt?: string; fra?: string; state?: string }>;
 }) {
   const sp = await searchParams;
   const user = await requirePortalUser({ kreverTilgang: "INGEN" });
   if (user.role === "PARENT") redirect("/forelder");
   if (user.role === "GUEST") redirect("/admin/kalender");
 
-  const abo = await getAbonnementData(user.id);
+  const [abo, stripeAbo] = await Promise.all([
+    getAbonnementData(user.id),
+    prisma.subscription.findFirst({ where: { userId: user.id, stripeSubscriptionId: { not: null } }, select: { id: true } }),
+  ]);
+  const pakke = pakkeNavn(abo.monthlyCredits);
 
-  const planId: PlanId = abo.erPro ? "FULL" : "TALENT";
-  const fornyesDato = formatDato(abo.nesteTrekk) ?? "26.10.2026";
-  const endsDato = formatDato(abo.nesteTrekk) ?? "25.10.2026";
-  const erAvbestilt = abo.status === "CANCELLED" || sp.avbestilt === "1";
-
-  const maskertTelefon = user.phone
-    ? `+47 ••• •• ${user.phone.slice(-3)}`
-    : "+47 ••• •• 412";
-
-  const fakturaer = abo.fakturaer.length > 0
-    ? abo.fakturaer.map((f) => ({
-        id: f.id,
-        dato: formatDato(f.paidAt) ?? "—",
-        gjelder: f.description ?? (f.type === "SUBSCRIPTION" ? "Full · måned" : "Betaling"),
-        belop: Math.round(f.amountOre / 100),
-        status: "Betalt",
-      }))
-    : planId === "FULL"
-    ? PH25_STANDARD_DATA.invoices
-    : [];
-
-  const initialData: PH25AbonnementData = {
-    current: {
-      plan: planId,
-      period: "mnd",
-      renews: fornyesDato,
-      ends: endsDato,
-      cancelled: erAvbestilt,
-    },
-    plans: PH25_PLANER,
-    card: planId === "FULL" || abo.monthlyCredits > 0
-      ? { brand: "Visa", last4: "4821", exp: "08/28" }
-      : null,
-    invoices: fakturaer,
-    samtykker: {
-      coach: true,
-      data: true,
-      bilder: false,
-      forsk: false,
-    },
-    varsler: {
-      plan: true,
-      meld: true,
-      turn: true,
-      digest: true,
-      caddie: false,
-    },
-    sikkerhet: {
-      tofaktor: true,
-      telefonMaskert: maskertTelefon,
-      sidenDato: "12.01.2026",
-    },
-    hjelp: PH25_STANDARD_HJELP,
+  const data: PH25Data = {
+    niva: abo.erPro ? "Full" : "Gratis",
+    pakke: pakke ? { navn: pakke, igjen: abo.creditsRemaining, totalt: abo.monthlyCredits } : null,
+    avsluttes: abo.status === "CANCELLED" || sp.avbestilt === "1",
+    periodeSlutt: abo.nesteTrekk ? LANG.format(abo.nesteTrekk) : null,
+    kanAvsluttes: stripeAbo !== null,
+    fakturaer: abo.fakturaer.map((f) => ({
+      id: f.id,
+      dato: f.paidAt ? DMA.format(f.paidAt).replaceAll("/", ".") : "—",
+      gjelder: f.description ?? (f.type === "SUBSCRIPTION" ? "Abonnement" : f.type === "BOOKING" ? "Booking" : "Betaling"),
+      belop: Math.round(f.amountOre / 100),
+    })),
+    fraLaast: sp.fra === "laast" || sp.fra === "gameplan",
   };
-
-  const visGameplanAlert = sp.fra === "laast" || sp.fra === "gameplan";
-  const tilstand = sp.state === "tom" ? "tom" : "data";
 
   return (
     <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
-      <PH25Abonnement
-        initialData={initialData}
-        tilstand={tilstand}
-        visGameplanAlert={visGameplanAlert}
-        onTilbakeHref="/portal/meg"
-        onOppgraderHref="/portal/meg/abonnement/oppgrader/flyt"
-        onKortHref="/portal/meg/abonnement/kort/ny"
-      />
+      <PH25Abonnement data={data} />
     </PlayerHQSkall>
   );
 }

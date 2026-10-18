@@ -5,6 +5,7 @@
  */
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
+import { UTEN_DATAGOLF_TURNERING } from "@/lib/auth/datagolf-regel";
 import {
   MarkedTurneringerListeV2,
   type Tab,
@@ -99,6 +100,8 @@ async function hentNorskeDenneUka(): Promise<NorskeEntry[]> {
         startDate: { gte: today, lte: in7 },
         status: { in: ["UPCOMING", "IN_PROGRESS"] },
         mergedIntoId: null,
+        // Resultater fra Data Golf-turneringer vises aldri offentlig (Anders 09.10.2026).
+        AND: [UTEN_DATAGOLF_TURNERING],
       },
     },
     include: {

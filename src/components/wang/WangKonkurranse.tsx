@@ -1,544 +1,325 @@
-'use client';
+"use client";
 
-import { WangIkkeKoblet, IKKE_KOBLET_KNAPP_STIL } from './WangIkkeKoblet';
-import React, { useState } from 'react';
+import React from "react";
+import Link from "next/link";
+import { WangTomTilstand } from "./WangIkkeKoblet";
 import {
-  WANG_TURNERINGER,
-  WANG_ELEVER,
-} from './wang-data';
+  WangFaner,
+  WangHelt,
+  WangSmaaTall,
+  WangTilbake,
+  WangTopp,
+  dagerMellom,
+  initialer,
+  wangHref,
+} from "./wang-felles";
+import { visDato, type WangTrenerData, type WangTrenerHendelse } from "@/app/team-wang/_data/wang-trener-data";
 
 interface WangKonkurranseProps {
+  data: WangTrenerData;
+  /** Underside: kalender · turnering · sesong · samling. */
   aktivFane?: string;
+  /** Turneringen eller samlingen undersiden gjelder. */
+  id?: string;
   onFaneEndret?: (fane: string) => void;
-  campus?: string;
 }
 
-export function WangKonkurranse({
-  aktivFane = 'WANG-10',
-  onFaneEndret,
-  campus = 'Fredrikstad',
-}: WangKonkurranseProps) {
-  const [fane, setFane] = useState(aktivFane);
-  const [kalenderFilter, setKalenderFilter] = useState<'kommende' | 'gjennomfort'>('kommende');
-  const [valgtTurneringId, setValgtTurneringId] = useState<string>(WANG_TURNERINGER[0]?.id || 't1');
+const FANER = [
+  { id: "kalender", tittel: "Kalender" },
+  { id: "sesong", tittel: "Sesongen" },
+  { id: "samling", tittel: "Samlinger" },
+  { id: "dg", tittel: "Data Golf" },
+];
 
-  // Turneringsrapportering tilstand
-  const [rapportElevId, setRapportElevId] = useState<string>('sofie');
-  const [rapportRunde, setRapportRunde] = useState<string>('1');
-  const [rapportScore, setRapportScore] = useState<string>('71');
-  const [rapportFairway, setRapportFairway] = useState<string>('10');
-  const [rapportGir, setRapportGir] = useState<string>('12');
-  const [rapportPutter, setRapportPutter] = useState<string>('29');
-  const [rapportNotat, setRapportNotat] = useState<string>('');
+const datoSpenn = (h: WangTrenerHendelse) =>
+  h.sluttIso && h.sluttIso !== h.startIso ? `${visDato(h.startIso)}–${visDato(h.sluttIso)}` : visDato(h.startIso);
 
-  const byttFane = (nyFane: string) => {
-    setFane(nyFane);
-    if (onFaneEndret) onFaneEndret(nyFane);
-  };
+/**
+ * Pakke 5 Konkurranse for trener og sportssjef: Kalender (WANG-10), Én turnering (WANG-11), Sesongen (WANG-09)
+ * og Samling og uttak (WANG-27). Fanen Data Golf (WANG-50) åpner pakke 10 (WangDataGolf).
+ * Fasit: docs/design-system/utkast-wang/konkurranse.html (utkast 2, retning B, godkjent av Anders 16.10.2026).
+ * Bare ekte gruppedata: turneringer og samlinger fra gruppas kalender.
+ * Avvik:
+ *   - Påmeldte elever, påmeldingsfrist og ansvarlig trener finnes ikke i kalenderen. De vises ikke.
+ *   - Én turnering: resultater og evaluering per elev er ikke koblet til kalenderens turnering. Hver elevs
+ *     turneringer (fra GolfBox, med delingssjekk) åpnes fra Sesongen › Per elev. Publiser evaluering er sperret.
+ *   - Sesongen: snitt brutto, GIR, fairway, putter og Strokes Gained for gruppa er ikke regnet ut og viser «—».
+ *   - Samling: program og kriterium finnes ikke på samlingen, og uttak kan ikke lagres. Uttaket er sperret.
+ */
+export function WangKonkurranse({ data, aktivFane, id }: WangKonkurranseProps) {
+  if (aktivFane === "turnering") return <EnTurnering turnering={data.turneringer.find((t) => t.id === id)} />;
+  if (aktivFane === "sesong") return <Sesongen data={data} />;
+  if (aktivFane === "samling") return <Samling data={data} samling={data.samlinger.find((s) => s.id === id)} />;
+  return <Kalender data={data} />;
+}
 
-  const gjeldendeTurnering = WANG_TURNERINGER.find((t) => t.id === valgtTurneringId) || WANG_TURNERINGER[0];
-  const kommendeTurneringer = WANG_TURNERINGER.filter((t) => t.status === 'kommende');
-  const gjennomforteTurneringer = WANG_TURNERINGER.filter((t) => t.status === 'gjennomfort');
+// ---------------------------------------------------------------------------
+// Kalender
+// ---------------------------------------------------------------------------
+
+function Kalender({ data }: { data: WangTrenerData }) {
+  const kommende = data.turneringer.filter((t) => !t.passert);
+  const spilt = data.turneringer.filter((t) => t.passert).reverse();
+  const neste = kommende[0];
+  const dager = neste ? dagerMellom(data.idagIso, neste.startIso) : null;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-      {/* Fanevelger */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', borderBottom: '1px solid #E6E8EA', paddingBottom: '12px' }}>
-        {[
-          { id: 'WANG-10', navn: 'Kalender (WANG-10)' },
-          { id: 'WANG-11', navn: 'Rapportering (WANG-11)' },
-          { id: 'WANG-09', navn: 'Analyse (WANG-09)' },
-          { id: 'WANG-27', navn: 'Samlinger og leir (WANG-27)' },
-          { id: 'WANG-50', navn: 'DataGolf (WANG-50)' },
-        ].map((f) => (
-          <button
-            key={f.id}
-            onClick={() => byttFane(f.id)}
-            style={{
-              minHeight: '44px',
-              padding: '0 16px',
-              borderRadius: '999px',
-              border: fane === f.id ? '1px solid #17446F' : '1px solid #D2D2D2',
-              background: fane === f.id ? '#17446F' : '#FFFFFF',
-              color: fane === f.id ? '#FFFFFF' : '#17446F',
-              fontFamily: 'Montserrat, sans-serif',
-              fontSize: '13px',
-              fontWeight: 500,
-              cursor: 'pointer',
-            }}
-          >
-            {f.navn}
-          </button>
-        ))}
+    <>
+      <WangTopp dato={`${data.gruppeNavn} · turneringer`} tittel="Konkurranse">
+        <WangFaner omraade="konkurranse" aktiv="kalender" faner={FANER} etikett="Konkurranse" />
+      </WangTopp>
+
+      <WangHelt
+        etikett="Neste turnering"
+        merke={neste ? datoSpenn(neste) : "Ingen kommende turneringer"}
+        tall={dager === null ? "—" : String(dager)}
+        tekst={neste ? `${dager === 1 ? "dag" : "dager"} til ${neste.tittel}` : "dager til neste turnering"}
+        forklar={
+          neste
+            ? `${neste.sted ? `${neste.sted}. ` : ""}Påmeldingen skjer hos arrangøren. Påmeldte elever vises ikke her ennå.`
+            : "Legg turneringene inn i gruppas kalender, så står de her."
+        }
+        knapp={neste ? { tekst: "Se turneringen", href: wangHref("konkurranse", "turnering", neste.id) } : undefined}
+        bilde="/team-wang/hero/trening-golf.jpg"
+      />
+
+      <WangSmaaTall
+        tall={[
+          { verdi: String(kommende.length), tekst: "Kommende turneringer" },
+          { verdi: "—", tekst: "Påmeldinger totalt" },
+          { verdi: String(spilt.length), tekst: "Spilt i kalenderen" },
+        ]}
+      />
+
+      <Liste tittel="Kommende" kilde="Kilde: gruppas kalender" turneringer={kommende} tom="Ingen kommende turneringer i kalenderen." />
+      <Liste tittel="Spilt" turneringer={spilt} tom="Ingen spilte turneringer i kalenderen." />
+    </>
+  );
+}
+
+function Liste({
+  tittel,
+  kilde,
+  turneringer,
+  tom,
+}: {
+  tittel: string;
+  kilde?: string;
+  turneringer: WangTrenerHendelse[];
+  tom: string;
+}) {
+  return (
+    <section className="wg-seksjon" aria-label={tittel}>
+      <div className="wg-sek-topp">
+        <h2>{tittel}</h2>
+        {kilde ? <span className="wg-kilde">{kilde}</span> : null}
       </div>
-
-      {/* ========================================================== */}
-      {/* WANG-10: Turneringskalender                                */}
-      {/* ========================================================== */}
-      {fane === 'WANG-10' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', justifyContent: 'space-between', gap: '12px' }}>
-            <div>
-              <p style={{ margin: '0 0 4px', fontSize: '12px', fontWeight: 500, color: '#5B7793', fontFamily: 'Montserrat, sans-serif' }}>
-                WANG-10 · WANG {campus} · Sesong 2026
-              </p>
-              <h2 style={{ margin: 0, fontSize: '28px', fontWeight: 400, color: '#17446F', fontFamily: 'Montserrat, sans-serif' }}>
-                Turneringskalender
-              </h2>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-              <span style={{ fontSize: '13px', color: '#5B7793' }}>Pipeline: —</span>
-              <button
-                type="button"
-                disabled
-                style={{
-                  minHeight: '44px',
-                  padding: '0 16px',
-                  borderRadius: '6px',
-                  border: '1px solid #D2D2D2',
-                  background: '#FFFFFF',
-                  color: '#17446F',
-                  fontFamily: 'Montserrat, sans-serif',
-                  fontSize: '13px',
-                  fontWeight: 500,
-                  ...IKKE_KOBLET_KNAPP_STIL,
-                }}
-              >
-                Hent resultater
-              </button>
-              <WangIkkeKoblet />
-            </div>
-          </div>
-
-          <div style={{ display: 'flex', gap: '4px' }}>
-            <button
-              onClick={() => setKalenderFilter('kommende')}
-              style={{
-                minHeight: '44px',
-                padding: '0 16px',
-                border: '1px solid #D2D2D2',
-                borderRadius: '6px 0 0 6px',
-                background: kalenderFilter === 'kommende' ? '#17446F' : '#FFFFFF',
-                color: kalenderFilter === 'kommende' ? '#FFFFFF' : '#17446F',
-                fontWeight: 500,
-                fontSize: '13px',
-                cursor: 'pointer',
-              }}
-            >
-              Kommende ({kommendeTurneringer.length})
-            </button>
-            <button
-              onClick={() => setKalenderFilter('gjennomfort')}
-              style={{
-                minHeight: '44px',
-                padding: '0 16px',
-                border: '1px solid #D2D2D2',
-                borderLeft: 'none',
-                borderRadius: '0 6px 6px 0',
-                background: kalenderFilter === 'gjennomfort' ? '#17446F' : '#FFFFFF',
-                color: kalenderFilter === 'gjennomfort' ? '#FFFFFF' : '#17446F',
-                fontWeight: 500,
-                fontSize: '13px',
-                cursor: 'pointer',
-              }}
-            >
-              Gjennomført ({gjennomforteTurneringer.length})
-            </button>
-          </div>
-
-          <div style={{ background: '#FFFFFF', border: '1px solid #D2D2D2', borderRadius: '8px', overflow: 'hidden' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '120px 1.5fr 1fr 120px 100px', padding: '12px 16px', background: '#F2F5F8', fontWeight: 600, fontSize: '12px', color: '#5B7793' }}>
-              <span>Dato</span>
-              <span>Turnering og bane</span>
-              <span>Kategori</span>
-              <span>Påmeldte elever</span>
-              <span>Handling</span>
-            </div>
-            {(kalenderFilter === 'kommende' ? kommendeTurneringer : gjennomforteTurneringer).map((t) => (
-              <div
-                key={t.id}
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: '120px 1.5fr 1fr 120px 100px',
-                  padding: '16px',
-                  borderTop: '1px solid #E6E8EA',
-                  alignItems: 'center',
-                  fontSize: '14px',
-                }}
-              >
-                <span style={{ fontWeight: 500, color: '#17446F' }}>{t.dato}</span>
-                <div>
-                  <div style={{ fontWeight: 600, color: '#17446F' }}>{t.navn}</div>
-                  <div style={{ fontSize: '12px', color: '#5B7793' }}>{t.bane} · Par {t.par}</div>
-                </div>
-                <div>
-                  <span style={{ display: 'inline-block', padding: '2px 8px', borderRadius: '4px', background: '#E6E8EA', fontSize: '12px', color: '#17446F' }}>
-                    {t.serie}
-                  </span>
-                </div>
-                <span style={{ fontWeight: 600, color: '#17446F' }}>
-                  {t.pamelteElever.length} elever
-                </span>
-                <button
-                  onClick={() => {
-                    setValgtTurneringId(t.id);
-                    byttFane('WANG-11');
-                  }}
-                  style={{
-                    minHeight: '44px',
-                    padding: '0 12px',
-                    borderRadius: '6px',
-                    border: '1px solid #17446F',
-                    background: '#FFFFFF',
-                    color: '#17446F',
-                    fontSize: '12px',
-                    fontWeight: 500,
-                    cursor: 'pointer',
-                  }}
-                >
-                  Vis detaljer
-                </button>
-              </div>
-            ))}
-          </div>
+      {turneringer.length === 0 ? (
+        <p className="wg-baand-tom">{tom}</p>
+      ) : (
+        <div className="wg-rutenett">
+          {turneringer.map((t) => (
+            <Link key={t.id} href={wangHref("konkurranse", "turnering", t.id)} className="wg-kort wg-turnkort">
+              <span className="wg-dato">{datoSpenn(t)}</span>
+              <h3>{t.tittel}</h3>
+              <p className="wg-kilde">{t.sted ?? "Sted ikke satt"}</p>
+            </Link>
+          ))}
         </div>
       )}
+    </section>
+  );
+}
 
-      {/* ========================================================== */}
-      {/* WANG-11: Turneringsrapportering                            */}
-      {/* ========================================================== */}
-      {fane === 'WANG-11' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
-            <div>
-              <p style={{ margin: '0 0 4px', fontSize: '12px', fontWeight: 500, color: '#5B7793', fontFamily: 'Montserrat, sans-serif' }}>
-                WANG-11 · Turneringsrapportering · {gjeldendeTurnering.serie}
-              </p>
-              <h2 style={{ margin: 0, fontSize: '28px', fontWeight: 400, color: '#17446F', fontFamily: 'Montserrat, sans-serif' }}>
-                {gjeldendeTurnering.navn}
-              </h2>
-              <p style={{ margin: '4px 0 0', fontSize: '13px', color: '#5B7793' }}>
-                {gjeldendeTurnering.bane} · Par {gjeldendeTurnering.par} · {gjeldendeTurnering.dato}
+// ---------------------------------------------------------------------------
+// Én turnering
+// ---------------------------------------------------------------------------
+
+function EnTurnering({ turnering }: { turnering?: WangTrenerHendelse }) {
+  if (!turnering) {
+    return (
+      <>
+        <WangTilbake href={wangHref("konkurranse")} tekst="Kalender" />
+        <WangTomTilstand tittel="Fant ikke turneringen" tekst="Turneringen finnes ikke i gruppas kalender." />
+      </>
+    );
+  }
+  return (
+    <>
+      <WangTilbake href={wangHref("konkurranse")} tekst="Kalender" />
+      <WangTopp
+        dato={`${datoSpenn(turnering)}${turnering.sted ? ` · ${turnering.sted}` : ""}`}
+        tittel={turnering.tittel}
+        ingress="Alle tall er brutto."
+      />
+      <WangSmaaTall
+        tall={[
+          { verdi: "—", tekst: "WANG snitt per runde" },
+          { verdi: "—", tekst: "Feltet snitt" },
+          { verdi: "—", tekst: "Evaluert" },
+        ]}
+      />
+      <section className="wg-seksjon" aria-labelledby="wg-res-tittel">
+        <div className="wg-sek-topp">
+          <h2 id="wg-res-tittel">Resultater og evaluering</h2>
+        </div>
+        <WangTomTilstand
+          tittel={turnering.passert ? "Resultatene er ikke koblet til turneringen" : "Turneringen er ikke spilt ennå"}
+          tekst="Turneringen i kalenderen er ikke koblet til resultatlista fra GolfBox. Hver elevs turneringer finner du under Sesongen › Per elev."
+        />
+        <div className="wg-knapper">
+          <button type="button" className="wg-btn wg-btn-primary" disabled>Publiser evalueringene</button>
+          <Link href={wangHref("konkurranse", "sesong")} className="wg-btn wg-btn-secondary">Per elev</Link>
+        </div>
+        <p className="wg-kilde">Evaluering per elev kan ikke lagres ennå. Ingenting er publisert.</p>
+      </section>
+    </>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Sesongen
+// ---------------------------------------------------------------------------
+
+function Sesongen({ data }: { data: WangTrenerData }) {
+  const aar = data.idagIso.slice(0, 4);
+  return (
+    <>
+      <WangTopp dato={`${data.gruppeNavn} · sesongen ${aar}`} tittel="Sesongen">
+        <WangFaner omraade="konkurranse" aktiv="sesong" faner={FANER} etikett="Konkurranse" />
+      </WangTopp>
+
+      <WangSmaaTall
+        fire
+        tall={[
+          { verdi: "—", tekst: "Snitt brutto" },
+          { verdi: "—", tekst: "GIR" },
+          { verdi: "—", tekst: "Fairway" },
+          { verdi: "—", tekst: "Putter per runde" },
+        ]}
+      />
+
+      <div className="wg-to-kol">
+        <section className="wg-seksjon" aria-labelledby="wg-sg-tittel">
+          <div className="wg-sek-topp">
+            <h2 id="wg-sg-tittel">Strokes Gained mot neste kategori</h2>
+            <span className="wg-pille wg-pille-vent"><i />Estimat</span>
+          </div>
+          <WangTomTilstand
+            tittel="Ikke regnet ut for gruppa"
+            tekst="Snitt per runde for gruppa mot neste kategori (Broadie per HCP). Tee og innspill er sikre fra 12 runder, nærspill og putting fra 24."
+          />
+        </section>
+        <section className="wg-seksjon" aria-labelledby="wg-perelev-tittel">
+          <div className="wg-sek-topp">
+            <h2 id="wg-perelev-tittel">Per elev</h2>
+            <span className="wg-kilde">Turneringer fra GolfBox, brutto</span>
+          </div>
+          {data.elever.length === 0 ? (
+            <WangTomTilstand tittel="Ingen elever i gruppa" tekst="Elevene vises her når de er lagt inn i gruppa." />
+          ) : (
+            <div className="wg-kort wg-rader">
+              {data.elever.map((e) => (
+                <Link key={e.id} href={`/team-wang/coach/turneringer/${e.id}`} className="wg-rad wg-rad-lenke">
+                  <span style={{ display: "flex", gap: 10, alignItems: "center" }}>
+                    <span className="wg-avatar" aria-hidden>{initialer(e.navn)}</span>
+                    <b>{e.navn}</b>
+                  </span>
+                  <span className="wg-kilde">Turneringene</span>
+                </Link>
+              ))}
+              <p className="wg-kilde" style={{ padding: "10px 0 14px" }}>
+                Eleven må ha delt med deg. Uten deling åpnes ikke siden.
               </p>
             </div>
-            <button
-              onClick={() => byttFane('WANG-10')}
-              style={{
-                minHeight: '44px',
-                padding: '0 16px',
-                border: '1px solid #D2D2D2',
-                borderRadius: '6px',
-                background: '#FFFFFF',
-                color: '#17446F',
-                fontSize: '13px',
-                fontWeight: 500,
-                cursor: 'pointer',
-              }}
-            >
-              Tilbake til kalender
-            </button>
-          </div>
+          )}
+        </section>
+      </div>
 
-          {/* Registrering av treners rapport */}
-          <div style={{ background: '#FFFFFF', border: '1px solid #D2D2D2', borderRadius: '8px', padding: '20px' }}>
-            <h3 style={{ margin: '0 0 16px', fontSize: '16px', color: '#17446F' }}>
-              Registrer rundeoppfølging for elev (WANG-notat)
-            </h3>
-            <form onSubmit={(e) => e.preventDefault()} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px' }}>
-                <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '13px', color: '#17446F' }}>
-                  Elev
-                  <select
-                    value={rapportElevId}
-                    onChange={(e) => setRapportElevId(e.target.value)}
-                    style={{ minHeight: '44px', padding: '0 12px', border: '1px solid #D2D2D2', borderRadius: '6px' }}
-                  >
-                    {WANG_ELEVER.map((el) => (
-                      <option key={el.id} value={el.id}>{el.navn} ({el.campus})</option>
-                    ))}
-                  </select>
-                </label>
-                <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '13px', color: '#17446F' }}>
-                  Runde
-                  <select
-                    value={rapportRunde}
-                    onChange={(e) => setRapportRunde(e.target.value)}
-                    style={{ minHeight: '44px', padding: '0 12px', border: '1px solid #D2D2D2', borderRadius: '6px' }}
-                  >
-                    <option value="1">Runde 1</option>
-                    <option value="2">Runde 2</option>
-                    <option value="3">Runde 3</option>
-                  </select>
-                </label>
-                <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '13px', color: '#17446F' }}>
-                  Brutto score
-                  <input
-                    type="number"
-                    value={rapportScore}
-                    onChange={(e) => setRapportScore(e.target.value)}
-                    style={{ minHeight: '44px', padding: '0 12px', border: '1px solid #D2D2D2', borderRadius: '6px' }}
-                  />
-                </label>
-                <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '13px', color: '#17446F' }}>
-                  Fairway treff
-                  <input
-                    type="number"
-                    value={rapportFairway}
-                    onChange={(e) => setRapportFairway(e.target.value)}
-                    style={{ minHeight: '44px', padding: '0 12px', border: '1px solid #D2D2D2', borderRadius: '6px' }}
-                  />
-                </label>
-                <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '13px', color: '#17446F' }}>
-                  GIR (Greens in reg)
-                  <input
-                    type="number"
-                    value={rapportGir}
-                    onChange={(e) => setRapportGir(e.target.value)}
-                    style={{ minHeight: '44px', padding: '0 12px', border: '1px solid #D2D2D2', borderRadius: '6px' }}
-                  />
-                </label>
-                <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '13px', color: '#17446F' }}>
-                  Antall putter
-                  <input
-                    type="number"
-                    value={rapportPutter}
-                    onChange={(e) => setRapportPutter(e.target.value)}
-                    style={{ minHeight: '44px', padding: '0 12px', border: '1px solid #D2D2D2', borderRadius: '6px' }}
-                  />
-                </label>
-              </div>
-              <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '13px', color: '#17446F' }}>
-                Trenerens observasjoner og læringsmomenter
-                <textarea
-                  value={rapportNotat}
-                  onChange={(e) => setRapportNotat(e.target.value)}
-                  placeholder="Hva fungerte bra? Hva skal eleven ta med seg inn i treningsuka?"
-                  rows={3}
-                  style={{ padding: '10px 12px', border: '1px solid #D2D2D2', borderRadius: '6px', fontSize: '14px', fontFamily: 'inherit' }}
-                />
-              </label>
-              <button
-                type="submit"
-                disabled
-                style={{
-                  ...IKKE_KOBLET_KNAPP_STIL,
-                  alignSelf: 'flex-start',
-                  minHeight: '44px',
-                  padding: '0 20px',
-                  borderRadius: '6px',
-                  border: 'none',
-                  background: '#2E857D',
-                  color: '#FFFFFF',
-                  fontWeight: 600,
-                  fontSize: '14px',
-                }}
+      <section className="wg-seksjon" aria-labelledby="wg-pga-tittel">
+        <div className="wg-sek-topp">
+          <h2 id="wg-pga-tittel">Mot PGA Tour</h2>
+          <span className="wg-kilde">Powered by Data Golf</span>
+        </div>
+        <div className="wg-kort wg-fyll">
+          <p className="wg-forklar">Bare for trenere. Elevene ser ikke denne sammenligningen.</p>
+          <Link className="wg-lenke" href={wangHref("konkurranse", "dg")}>Data Golf</Link>
+        </div>
+      </section>
+    </>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Samling og uttak
+// ---------------------------------------------------------------------------
+
+function Samling({ data, samling }: { data: WangTrenerData; samling?: WangTrenerHendelse }) {
+  const valgt = samling ?? data.samlinger.find((s) => !s.passert) ?? data.samlinger[data.samlinger.length - 1];
+
+  return (
+    <>
+      <WangTopp
+        dato={valgt ? `${datoSpenn(valgt)}${valgt.sted ? ` · ${valgt.sted}` : ""}` : data.gruppeNavn}
+        tittel={valgt ? valgt.tittel : "Samlinger"}
+      >
+        <WangFaner omraade="konkurranse" aktiv="samling" faner={FANER} etikett="Konkurranse" />
+        {data.samlinger.length > 1 ? (
+          <div className="wg-filter">
+            {data.samlinger.map((s) => (
+              <Link
+                key={s.id}
+                href={wangHref("konkurranse", "samling", s.id)}
+                className={`wg-chip ${s.id === valgt?.id ? "wg-chip-pa" : ""}`}
+                aria-current={s.id === valgt?.id ? "page" : undefined}
               >
-                Lagre runderapport
-              </button>
-              <WangIkkeKoblet />
-            </form>
+                {s.tittel} {visDato(s.startIso).slice(0, 5)}
+              </Link>
+            ))}
           </div>
+        ) : null}
+      </WangTopp>
 
-          {/* Offisiell resultatliste */}
-          <div style={{ background: '#FFFFFF', border: '1px solid #D2D2D2', borderRadius: '8px', overflow: 'hidden' }}>
-            <div style={{ padding: '16px', background: '#F2F5F8', borderBottom: '1px solid #E6E8EA' }}>
-              <h3 style={{ margin: 0, fontSize: '15px', color: '#17446F' }}>Offisiell resultatliste for WANG-elever</h3>
-              <p style={{ margin: '4px 0 0', fontSize: '12px', color: '#5B7793' }}>Alltid brutto score ifølge AK Golf-standard</p>
+      {!valgt ? (
+        <WangTomTilstand tittel="Ingen samlinger" tekst="Gruppas kalender har ingen samlinger ennå." />
+      ) : (
+        <div className="wg-to-kol">
+          <div className="wg-kort wg-fyll">
+            <b className="wg-undertittel">Kriterium</b>
+            <p className="wg-forklar">—</p>
+            <b className="wg-undertittel">Program</b>
+            <p className="wg-forklar">—</p>
+            <p className="wg-kilde">Kriterium og program er ikke lagt inn på samlingen i kalenderen.</p>
+          </div>
+          <div className="wg-kort wg-fyll">
+            <div className="wg-sek-topp">
+              <b className="wg-undertittel">Uttak</b>
+              <span className="wg-kilde">— plasser</span>
             </div>
-            {gjeldendeTurnering.resultater && gjeldendeTurnering.resultater.length > 0 ? (
-              <div>
-                <div style={{ display: 'grid', gridTemplateColumns: '60px 1.5fr 1fr 100px 100px', padding: '12px 16px', fontWeight: 600, fontSize: '12px', color: '#5B7793', borderBottom: '1px solid #E6E8EA' }}>
-                  <span>Plass</span>
-                  <span>Elev</span>
-                  <span>Runder</span>
-                  <span>Total brutto</span>
-                  <span>Til par</span>
-                </div>
-                {gjeldendeTurnering.resultater.map((res, idx) => (
-                  <div key={idx} style={{ display: 'grid', gridTemplateColumns: '60px 1.5fr 1fr 100px 100px', padding: '14px 16px', borderTop: idx > 0 ? '1px solid #E6E8EA' : 'none', alignItems: 'center', fontSize: '14px' }}>
-                    <span style={{ fontWeight: 600, color: '#17446F' }}>#{res.plassering}</span>
-                    <span style={{ fontWeight: 500, color: '#17446F' }}>{res.elevNavn}</span>
-                    <span style={{ color: '#5B7793' }}>{res.runder.join(' · ')}</span>
-                    <span style={{ fontWeight: 700, color: '#17446F' }}>{res.totalScore}</span>
-                    <span style={{ fontWeight: 600, color: res.tilPar.startsWith('-') ? '#2E857D' : '#17446F' }}>{res.tilPar}</span>
+            {data.elever.length === 0 ? (
+              <p className="wg-kilde">Ingen elever i gruppa.</p>
+            ) : (
+              <div className="wg-rader" style={{ padding: 0 }}>
+                {data.elever.map((e) => (
+                  <div key={e.id} className="wg-rad">
+                    <span style={{ display: "flex", gap: 10, alignItems: "center" }}>
+                      <span className="wg-avatar" aria-hidden>{initialer(e.navn)}</span>
+                      <b>{e.navn}</b>
+                    </span>
+                    <span className="wg-pille"><i />Ikke vurdert</span>
                   </div>
                 ))}
               </div>
-            ) : (
-              <div style={{ padding: '24px', textAlign: 'center', color: '#5B7793', fontSize: '14px' }}>
-                Turneringen er ikke spilt ennå. Resultater hentes automatisk når turneringen er ferdigspilt.
-              </div>
             )}
+            <div className="wg-knapper">
+              <button type="button" className="wg-btn wg-btn-primary" disabled>Publiser uttaket</button>
+            </div>
+            <p className="wg-kilde">
+              Uttak kan ikke lagres ennå. Grunnen skal skrives per elev og bare vises til eleven selv og foresatte.
+            </p>
           </div>
         </div>
       )}
-
-      {/* ========================================================== */}
-      {/* WANG-09: Turneringsanalyse                                 */}
-      {/* ========================================================== */}
-      {fane === 'WANG-09' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          <div>
-            <p style={{ margin: '0 0 4px', fontSize: '12px', fontWeight: 500, color: '#5B7793', fontFamily: 'Montserrat, sans-serif' }}>
-              WANG-09 · Turneringsanalyse og feltstatistikk
-            </p>
-            <h2 style={{ margin: 0, fontSize: '28px', fontWeight: 400, color: '#17446F', fontFamily: 'Montserrat, sans-serif' }}>
-              Turneringsanalyse
-            </h2>
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px' }}>
-            <div style={{ background: '#FFFFFF', border: '1px solid #D2D2D2', borderRadius: '8px', padding: '20px' }}>
-              <div style={{ fontSize: '12px', fontWeight: 600, color: '#5B7793', textTransform: 'uppercase' }}>Gj.snitt Brutto Score</div>
-              <div style={{ fontSize: '32px', fontWeight: 700, color: '#17446F', margin: '8px 0 4px' }}>72.8</div>
-              <div style={{ fontSize: '12px', color: '#2E857D' }}>-1.2 slag bedring fra forrige sesong</div>
-            </div>
-            <div style={{ background: '#FFFFFF', border: '1px solid #D2D2D2', borderRadius: '8px', padding: '20px' }}>
-              <div style={{ fontSize: '12px', fontWeight: 600, color: '#5B7793', textTransform: 'uppercase' }}>Greens in Regulation (GIR)</div>
-              <div style={{ fontSize: '32px', fontWeight: 700, color: '#17446F', margin: '8px 0 4px' }}>68.4%</div>
-              <div style={{ fontSize: '12px', color: '#5B7793' }}>12.3 av 18 greener</div>
-            </div>
-            <div style={{ background: '#FFFFFF', border: '1px solid #D2D2D2', borderRadius: '8px', padding: '20px' }}>
-              <div style={{ fontSize: '12px', fontWeight: 600, color: '#5B7793', textTransform: 'uppercase' }}>Fairway-treff</div>
-              <div style={{ fontSize: '32px', fontWeight: 700, color: '#17446F', margin: '8px 0 4px' }}>64.1%</div>
-              <div style={{ fontSize: '12px', color: '#5B7793' }}>9.0 av 14 fairways</div>
-            </div>
-            <div style={{ background: '#FFFFFF', border: '1px solid #D2D2D2', borderRadius: '8px', padding: '20px' }}>
-              <div style={{ fontSize: '12px', fontWeight: 600, color: '#5B7793', textTransform: 'uppercase' }}>Putter per runde</div>
-              <div style={{ fontSize: '32px', fontWeight: 700, color: '#17446F', margin: '8px 0 4px' }}>29.6</div>
-              <div style={{ fontSize: '12px', color: '#2E857D' }}>1.76 putter per GIR</div>
-            </div>
-          </div>
-
-          <div style={{ background: '#FFFFFF', border: '1px solid #D2D2D2', borderRadius: '8px', overflow: 'hidden' }}>
-            <div style={{ padding: '16px', background: '#F2F5F8', borderBottom: '1px solid #E6E8EA' }}>
-              <h3 style={{ margin: 0, fontSize: '15px', color: '#17446F' }}>Feltanalyse per elev · Sesong 2026</h3>
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 100px 100px 100px 100px 100px', padding: '12px 16px', fontWeight: 600, fontSize: '12px', color: '#5B7793', borderBottom: '1px solid #E6E8EA' }}>
-              <span>Elev</span>
-              <span>Runder</span>
-              <span>Snitt Brutto</span>
-              <span>Fairway %</span>
-              <span>GIR %</span>
-              <span>Putter</span>
-            </div>
-            {WANG_ELEVER.map((el, i) => (
-              <div key={el.id} style={{ display: 'grid', gridTemplateColumns: '1.5fr 100px 100px 100px 100px 100px', padding: '14px 16px', borderTop: i > 0 ? '1px solid #E6E8EA' : 'none', alignItems: 'center', fontSize: '14px' }}>
-                <span style={{ fontWeight: 600, color: '#17446F' }}>{el.navn}</span>
-                <span style={{ color: '#5B7793' }}>—</span>
-                <span style={{ fontWeight: 700, color: '#17446F' }}>—</span>
-                <span style={{ color: '#17446F' }}>—</span>
-                <span style={{ color: '#17446F' }}>—</span>
-                <span style={{ color: '#17446F' }}>—</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* ========================================================== */}
-      {/* WANG-27: Samlingsplan og leir                              */}
-      {/* ========================================================== */}
-      {fane === 'WANG-27' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          <div>
-            <p style={{ margin: '0 0 4px', fontSize: '12px', fontWeight: 500, color: '#5B7793', fontFamily: 'Montserrat, sans-serif' }}>
-              WANG-27 · Samlingsplan og treningsleir 2026/2027
-            </p>
-            <h2 style={{ margin: 0, fontSize: '28px', fontWeight: 400, color: '#17446F', fontFamily: 'Montserrat, sans-serif' }}>
-              Samlinger og treningsleir
-            </h2>
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' }}>
-            <div style={{ background: '#FFFFFF', border: '1px solid #D2D2D2', borderRadius: '8px', padding: '24px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
-                <div>
-                  <span style={{ display: 'inline-block', padding: '2px 8px', borderRadius: '4px', background: '#E3F5EC', color: '#1B5E57', fontSize: '12px', fontWeight: 600 }}>
-                    Høstsamling
-                  </span>
-                  <h3 style={{ margin: '8px 0 0', fontSize: '18px', color: '#17446F' }}>Oslo Golfklubb Bogstad</h3>
-                </div>
-                <span style={{ fontWeight: 600, fontSize: '13px', color: '#5B7793' }}>14.–17. oktober 2026</span>
-              </div>
-              <p style={{ fontSize: '14px', color: '#5B7793', margin: '0 0 16px' }}>
-                Fokus på svingkapasitet mot vintersesong, TrackMan-kalibrering og nærspillstester.
-              </p>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
-                <span style={{ fontWeight: 500, color: '#17446F' }}>12 elever påmeldt</span>
-                <span style={{ color: '#2E857D', fontWeight: 600 }}>Ansvarlig: Anders K.</span>
-              </div>
-            </div>
-
-            <div style={{ background: '#FFFFFF', border: '1px solid #D2D2D2', borderRadius: '8px', padding: '24px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
-                <div>
-                  <span style={{ display: 'inline-block', padding: '2px 8px', borderRadius: '4px', background: '#F2F5F8', color: '#17446F', fontSize: '12px', fontWeight: 600 }}>
-                    Vinterleir
-                  </span>
-                  <h3 style={{ margin: '8px 0 0', fontSize: '18px', color: '#17446F' }}>Marbella, Spania (La Quinta)</h3>
-                </div>
-                <span style={{ fontWeight: 600, fontSize: '13px', color: '#5B7793' }}>18.–26. februar 2027</span>
-              </div>
-              <p style={{ fontSize: '14px', color: '#5B7793', margin: '0 0 16px' }}>
-                Sesongoppkjøring på gress. Banestrategi, spilltrening 18 hull daglig og fysisk oppfølging.
-              </p>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
-                <span style={{ fontWeight: 500, color: '#17446F' }}>16 elever påmeldt</span>
-                <span style={{ color: '#2E857D', fontWeight: 600 }}>Ansvarlig: Jørn / Niklas</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ========================================================== */}
-      {/* WANG-50: DataGolf                                          */}
-      {/* ========================================================== */}
-      {fane === 'WANG-50' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          <div>
-            <p style={{ margin: '0 0 4px', fontSize: '12px', fontWeight: 500, color: '#5B7793', fontFamily: 'Montserrat, sans-serif' }}>
-              WANG-50 · DataGolf Benchmarking & Strokes Gained
-            </p>
-            <h2 style={{ margin: 0, fontSize: '28px', fontWeight: 400, color: '#17446F', fontFamily: 'Montserrat, sans-serif' }}>
-              DataGolf Modellanalyse
-            </h2>
-          </div>
-
-          <div style={{ background: '#FFFFFF', border: '1px solid #D2D2D2', borderRadius: '8px', padding: '20px' }}>
-            <h3 style={{ margin: '0 0 8px', fontSize: '16px', color: '#17446F' }}>
-              Strokes Gained Benchmark mot NCAA Division 1 & DP World Tour
-            </h3>
-            <p style={{ margin: '0 0 20px', fontSize: '13px', color: '#5B7793' }}>
-              Sammenligning av WANG-elevenes nøkkeltall mot referansenivåer fra DataGolf.
-            </p>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px' }}>
-              <div style={{ padding: '16px', background: '#F2F5F8', borderRadius: '6px' }}>
-                <div style={{ fontSize: '12px', fontWeight: 600, color: '#5B7793' }}>SG Off-The-Tee</div>
-                <div style={{ fontSize: '24px', fontWeight: 700, color: '#17446F', margin: '6px 0' }}>+0.42</div>
-                <div style={{ fontSize: '12px', color: '#2E857D' }}>College D1 snitt: +0.25</div>
-              </div>
-              <div style={{ padding: '16px', background: '#F2F5F8', borderRadius: '6px' }}>
-                <div style={{ fontSize: '12px', fontWeight: 600, color: '#5B7793' }}>SG Approach</div>
-                <div style={{ fontSize: '24px', fontWeight: 700, color: '#17446F', margin: '6px 0' }}>+0.18</div>
-                <div style={{ fontSize: '12px', color: '#5B7793' }}>College D1 snitt: +0.30</div>
-              </div>
-              <div style={{ padding: '16px', background: '#F2F5F8', borderRadius: '6px' }}>
-                <div style={{ fontSize: '12px', fontWeight: 600, color: '#5B7793' }}>SG Around-The-Green</div>
-                <div style={{ fontSize: '24px', fontWeight: 700, color: '#17446F', margin: '6px 0' }}>+0.05</div>
-                <div style={{ fontSize: '12px', color: '#5B7793' }}>College D1 snitt: +0.10</div>
-              </div>
-              <div style={{ padding: '16px', background: '#F2F5F8', borderRadius: '6px' }}>
-                <div style={{ fontSize: '12px', fontWeight: 600, color: '#5B7793' }}>SG Putting</div>
-                <div style={{ fontSize: '24px', fontWeight: 700, color: '#17446F', margin: '6px 0' }}>+0.22</div>
-                <div style={{ fontSize: '12px', color: '#2E857D' }}>College D1 snitt: +0.12</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+    </>
   );
 }

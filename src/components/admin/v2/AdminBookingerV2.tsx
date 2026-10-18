@@ -467,7 +467,7 @@ export function AdminBookingerV2({ data }: { data: AdminBookingerV2Data }) {
       <Kort
         eyebrow="Tjenester og åpningstid"
         action={
-          <Link href="/admin/services" className="v2-focus" style={{ textDecoration: "none" }}>
+          <Link href="/admin/bookinger?fane=tjenester" className="v2-focus" style={{ textDecoration: "none" }}>
             <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: TL.mute }}>
               Rediger
             </span>

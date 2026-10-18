@@ -13,9 +13,13 @@ import { dagerIUken, endOfDay, endOfWeek, formatPeriode, startOfDay, startOfWeek
 import { fraDatoKolonne, tilDatoKolonne } from "@/lib/workbench/wb-map";
 import {
   ALLE_LAG,
+  akseFraPyramide,
+  maskerForSeer,
   type KalenderHendelse,
   type KalenderLag,
+  type KalenderSeer,
 } from "@/lib/domain/kalender-lag";
+import { akseFraTekst } from "@/lib/agencyos/neste-okt";
 import {
   romKollisjoner,
   romKollidererIder,
@@ -42,6 +46,8 @@ export interface KalenderLagUkeData {
   rutenett: ManedsCelle[];
   idagIso: string;
   hendelser: KalenderHendelse[];
+  /** Coachene som har hendelser i vinduet (pluss den som ser), for coachfilteret. */
+  coacher: Array<{ id: string; navn: string }>;
   kollisjoner: RomKollisjonPar[];
   /** Serialiserbart over RSC → klient (ikke Set). */
   kollidererIder: string[];
@@ -111,8 +117,11 @@ async function hentHendelserIVindu(
   vinduStart: Date,
   vinduSlutt: Date,
   dager: string[],
+  seer: KalenderSeer,
 ): Promise<{
   hendelser: KalenderHendelse[];
+  /** Coachene som har hendelser i vinduet (pluss den som ser), for coachfilteret. */
+  coacher: Array<{ id: string; navn: string }>;
   kollisjoner: RomKollisjonPar[];
   kollidererIder: string[];
 }> {
@@ -130,6 +139,10 @@ async function hentHendelserIVindu(
         title: true,
         location: true,
         playerId: true,
+        coachId: true,
+        groupId: true,
+        sourceGroupSessionId: true,
+        pyramid: true,
       },
       orderBy: [{ date: "asc" }, { startMinute: "asc" }],
       take: 2000,
@@ -170,20 +183,39 @@ async function hentHendelserIVindu(
     }),
   ]);
 
-  const spillerIder = [...new Set(oktRader.map((r) => r.playerId))];
+  const spillerIder = [...new Set(oktRader.filter((r) => !r.groupId).map((r) => r.playerId))];
+  const gruppeIder = [...new Set(oktRader.map((r) => r.groupId).filter((g): g is string => !!g))];
   const spillerNavn = new Map<string, string | null>();
-  if (spillerIder.length > 0) {
-    const spillere = await prisma.user.findMany({
-      where: { id: { in: spillerIder } },
-      select: { id: true, name: true },
-    });
-    for (const s of spillere) spillerNavn.set(s.id, s.name);
-  }
+  const gruppeNavn = new Map<string, string>();
+  const [spillere, grupper] = await Promise.all([
+    spillerIder.length > 0
+      ? prisma.user.findMany({ where: { id: { in: spillerIder } }, select: { id: true, name: true } })
+      : Promise.resolve([]),
+    gruppeIder.length > 0
+      ? prisma.group.findMany({ where: { id: { in: gruppeIder } }, select: { id: true, name: true } })
+      : Promise.resolve([]),
+  ]);
+  for (const sp of spillere) spillerNavn.set(sp.id, sp.name);
+  for (const g of grupper) gruppeNavn.set(g.id, g.name);
 
   const hendelser: KalenderHendelse[] = [];
 
+  // Gruppeøkter: én rad per spiller i basen, én blokk i kalenderen.
+  const gruppeOkter = new Map<string, { rad: (typeof oktRader)[number]; antall: number }>();
   for (const r of oktRader) {
     const dato = fraDatoKolonne(r.date);
+    if (r.groupId) {
+      // Kopiene peker på originalen (wb-group-…); originalen er gruppas egen rad.
+      const original = !r.sourceGroupSessionId && r.id.startsWith("wb-group-");
+      const nokkel = r.sourceGroupSessionId ?? (original ? r.id : `${r.groupId}|${dato}|${r.startMinute}|${r.title}`);
+      const kopi = original ? 0 : 1;
+      const g = gruppeOkter.get(nokkel);
+      if (g) {
+        g.antall += kopi;
+        if (original) g.rad = r;
+      } else gruppeOkter.set(nokkel, { rad: r, antall: kopi });
+      continue;
+    }
     hendelser.push({
       id: `okt-${r.id}`,
       lag: "OEKTER",
@@ -194,6 +226,27 @@ async function hentHendelserIVindu(
       sluttMin: Math.min(1440, r.startMinute + r.durationMinutes),
       heldag: false,
       href: `/admin/workbench/${r.playerId}`,
+      coachId: r.coachId,
+      akse: akseFraPyramide(r.pyramid),
+      flyttOktId: r.id,
+    });
+  }
+  for (const { rad: r, antall } of gruppeOkter.values()) {
+    const gNavn = r.groupId ? gruppeNavn.get(r.groupId) : undefined;
+    hendelser.push({
+      id: `gruppe-${r.id}`,
+      lag: "OEKTER",
+      dato: fraDatoKolonne(r.date),
+      tittel: gNavn ?? r.title,
+      undertekst: gNavn ? r.title : undefined,
+      startMin: r.startMinute,
+      sluttMin: Math.min(1440, r.startMinute + r.durationMinutes),
+      heldag: false,
+      href: r.groupId ? `/admin/grupper/${r.groupId}` : undefined,
+      coachId: r.coachId,
+      akse: akseFraPyramide(r.pyramid),
+      gruppe: true,
+      antallSpillere: antall,
     });
   }
 
@@ -257,6 +310,8 @@ async function hentHendelserIVindu(
       sluttMin,
       heldag: false,
       href: `/admin/bookinger/${r.id}`,
+      coachId: r.coachId,
+      akse: akseFraTekst(`${r.serviceType.name} ${r.notes ?? ""}`),
     });
     if (r.facility) {
       kapasitetPerFasilitet[r.facility.id] = r.facility.capacity;
@@ -281,19 +336,29 @@ async function hentHendelserIVindu(
     }
   }
 
+  const synlige = maskerForSeer(hendelser, seer);
+  const coachIder = [...new Set([seer.id, ...synlige.map((h) => h.coachId).filter((c): c is string => !!c)])];
+  const coachRader = await prisma.user.findMany({ where: { id: { in: coachIder } }, select: { id: true, name: true, email: true } });
+  const coacher = coachIder
+    .map((id) => coachRader.find((c) => c.id === id))
+    .filter((c): c is NonNullable<typeof c> => !!c)
+    .map((c) => ({ id: c.id, navn: c.name ?? c.email ?? "Coach" }));
+  // Kollisjonsmerket kan avsløre en annen coachs booking; det følger maskeringen.
+  const synligeIder = new Set(synlige.filter((h) => !h.opptatt).map((h) => h.id));
   return {
-    hendelser,
-    kollisjoner,
-    kollidererIder: [...kollidererSet],
+    hendelser: synlige,
+    coacher,
+    kollisjoner: kollisjoner.filter((k) => synligeIder.has(k.a) && synligeIder.has(k.b)),
+    kollidererIder: [...kollidererSet].filter((id) => synligeIder.has(id)),
   };
 }
 
 export async function hentKalenderLagUke(
-  ukeParam?: string,
-  opts?: { lag?: KalenderLag; visning?: "uke" | "dag"; dato?: string },
+  ukeParam: string | undefined,
+  opts: { lag?: KalenderLag; visning?: "uke" | "dag"; dato?: string; seer: KalenderSeer },
 ): Promise<KalenderLagUkeData> {
-  const visning: KalenderVisning = opts?.visning === "dag" ? "dag" : "uke";
-  const basisIso = opts?.dato ?? ukeParam;
+  const visning: KalenderVisning = opts.visning === "dag" ? "dag" : "uke";
+  const basisIso = opts.dato ?? ukeParam;
   const basis = basisIso && !Number.isNaN(new Date(basisIso).getTime()) ? new Date(basisIso) : new Date();
   const ukeStart = startOfWeek(basis);
   const ukeSlutt = endOfWeek(basis);
@@ -306,16 +371,16 @@ export async function hentKalenderLagUke(
   const nesteUke = new Date(ukeStart);
   nesteUke.setDate(nesteUke.getDate() + 7);
 
-  const lastet = await hentHendelserIVindu(ukeStart, ukeSlutt, dager);
+  const lastet = await hentHendelserIVindu(ukeStart, ukeSlutt, dager, opts.seer);
 
   const ukeIso = isoAvLokalDato(ukeStart);
   const dagIso =
-    (opts?.dato && dager.includes(opts.dato) ? opts.dato : undefined) ??
+    (opts.dato && dager.includes(opts.dato) ? opts.dato : undefined) ??
     (idagIso && dager.includes(idagIso) ? idagIso : undefined) ??
     dager[0] ??
     ukeIso;
   const maaned = ukeIso.slice(0, 7);
-  const lag = opts?.lag;
+  const lag = opts.lag;
 
   return {
     visning,
@@ -339,15 +404,15 @@ export async function hentKalenderLagUke(
       ukeHref: kalenderHref({ visning: "uke", uke: ukeIso, lag }),
       manedHref: kalenderHref({ visning: "maned", maaned, lag }),
       nyBookingHref: "/admin/bookinger/ny",
-      tilgjengelighetHref: "/admin/availability",
+      tilgjengelighetHref: "/admin/kalender?fane=tilg",
       nyHendelseHref: "/admin/kalender/hendelse/ny",
     },
   };
 }
 
 export async function hentKalenderLagManed(
-  maanedParam?: string,
-  opts?: { lag?: KalenderLag },
+  maanedParam: string | undefined,
+  opts: { lag?: KalenderLag; seer: KalenderSeer },
 ): Promise<KalenderLagUkeData> {
   const idag = new Date();
   const parsed = parseManedParam(maanedParam) ?? {
@@ -362,13 +427,13 @@ export async function hentKalenderLagManed(
   const vinduSlutt = siste ? endOfDay(new Date(`${siste}T12:00:00`)) : endOfWeek(idag);
   const idagIso = isoAvLokalDato(idag);
 
-  const lastet = await hentHendelserIVindu(vinduStart, vinduSlutt, dager);
+  const lastet = await hentHendelserIVindu(vinduStart, vinduSlutt, dager, opts.seer);
 
   const forrige = skiftManed(parsed.aar, parsed.maaned, -1);
   const neste = skiftManed(parsed.aar, parsed.maaned, 1);
   const denneNokkel = manedNokkel(parsed.aar, parsed.maaned);
   const ukeIso = dager.includes(idagIso) ? idagIso : (foerste ?? idagIso);
-  const lag = opts?.lag;
+  const lag = opts.lag;
 
   return {
     visning: "maned",
@@ -386,7 +451,7 @@ export async function hentKalenderLagManed(
       ukeHref: kalenderHref({ visning: "uke", uke: ukeIso, lag }),
       manedHref: kalenderHref({ visning: "maned", maaned: denneNokkel, lag }),
       nyBookingHref: "/admin/bookinger/ny",
-      tilgjengelighetHref: "/admin/availability",
+      tilgjengelighetHref: "/admin/kalender?fane=tilg",
       nyHendelseHref: "/admin/kalender/hendelse/ny",
     },
   };

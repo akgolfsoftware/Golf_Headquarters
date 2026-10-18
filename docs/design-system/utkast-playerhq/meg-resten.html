@@ -1,0 +1,454 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Meg, resten</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="felles/felles.css">
+<style>
+/* ---------- Pakke 14 Meg, resten: Velg Full, Behold PlayerHQ, Sikkerhet, Tofaktor, Dataene dine ---------- */
+.skjermvalg button{font-size:13px;min-height:36px;padding:0 10px}
+.app [hidden]{display:none!important}
+.topp{display:grid;gap:var(--r3)}
+.toast{position:sticky;bottom:16px;z-index:5;display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;background:var(--graphite-900);color:var(--white);font:500 14px/1.4 var(--sans);animation:inn 240ms var(--ut);box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.ark-lag{position:sticky;bottom:0;z-index:6;display:grid;margin:0 calc(-1 * var(--r4)) calc(-1 * var(--r6))}
+.ark-lag .ark{animation:opp 300ms var(--ut)}
+.ark h2{margin:0;font:600 19px/1.25 var(--sans)}
+.ark-topp{display:flex;justify-content:space-between;align-items:center;gap:var(--r3)}
+.lukk{width:44px;height:44px;border:0;border-radius:8px;background:var(--sand-150);display:grid;place-items:center;cursor:pointer;color:var(--graphite-900);flex:none}
+.vilkaar{display:grid;gap:6px;padding:12px 14px;border-radius:10px;background:var(--sand-100);font-size:14px}
+.vilkaar b{font-weight:600}
+.to-del{display:grid;gap:var(--r5);align-content:start}
+.to-del > div{display:grid;gap:var(--r5);align-content:start}
+.smal{max-width:760px}
+
+/* Velg Full og Behold PlayerHQ */
+.planvalg{display:grid;gap:var(--r2)}
+.plan{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--r3);align-items:center;padding:16px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white);text-align:left;font:inherit;color:inherit;cursor:pointer;width:100%}
+.plan .rund{width:22px;height:22px;border-radius:50%;border:2px solid var(--graphite-500);display:grid;place-items:center}
+.plan[aria-pressed="true"]{border:2px solid var(--graphite-900);background:var(--sand-100)}
+.plan[aria-pressed="true"] .rund{border-color:var(--graphite-900)}
+.plan[aria-pressed="true"] .rund::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--graphite-900)}
+.plan b{display:block;font:600 16px/1.3 var(--sans)}
+.plan .pris{font:600 20px/1.1 var(--mono);text-align:right;white-space:nowrap}
+.plan .pris small{display:block;font:500 12px/1.3 var(--sans);color:var(--graphite-600)}
+.full-topp{display:grid;border-radius:14px;overflow:hidden;background:var(--graphite-900);color:#fff}
+.full-topp img{display:block;width:100%;height:140px;object-fit:cover;object-position:50% 50%;opacity:.95}
+.full-topp .ft{padding:var(--r4) 18px 18px;display:grid;gap:var(--r2)}
+.full-topp .ft .e{font:600 13px/1.3 var(--sans);opacity:.85}
+.full-topp .ft b.navn{font:700 34px/1 var(--sans);letter-spacing:-.02em}
+.inkl{display:grid;gap:var(--r2);margin:0;padding:0;list-style:none}
+.inkl li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--r3);align-items:start;font-size:15px;line-height:1.45}
+.inkl li .ikon{color:var(--green-700);margin-top:2px}
+.inkl li b{display:block;font-weight:600}
+.akse-prikk{display:inline-flex;gap:4px;margin-left:6px;vertical-align:1px}
+.akse-prikk i{width:8px;height:8px;border-radius:50%}
+.beholder{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--r2)}
+.beholder > div{display:grid;gap:2px;padding:12px;border-radius:10px;background:var(--sand-100)}
+.beholder b{font:600 24px/1.1 var(--mono)}
+.beholder span{font-size:13px;color:var(--graphite-600)}
+.betal-merke{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px;color:var(--graphite-600)}
+.betal-merke span.m{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:6px;border:1px solid var(--sand-300);font:600 12.5px/1 var(--sans);color:var(--graphite-800)}
+
+/* Sikkerhet */
+.boks{border:1px solid var(--sand-300);border-radius:12px;background:var(--white);overflow:hidden}
+.rad{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--r3);align-items:center;min-height:64px;padding:10px 14px;border:0;border-bottom:1px solid var(--sand-300);background:transparent;text-align:left;font:inherit;color:inherit;width:100%}
+.rad:last-child{border-bottom:0}
+button.rad,a.rad{cursor:pointer;text-decoration:none}
+.rad b{display:block;font:600 15px/1.3 var(--sans)}
+.rad .kilde{display:block;overflow-wrap:anywhere}
+.ikonboks{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--sand-150);color:var(--graphite-900)}
+.ikonboks .ikon{width:18px;height:18px}
+.rad .hoyre{display:inline-flex;align-items:center;gap:6px;color:var(--graphite-600);font:500 13px/1 var(--sans)}
+.google{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--sand-150);font:700 17px/1 var(--sans)}
+
+/* Tofaktor */
+.stegrad{display:flex;gap:6px}
+.stegrad i{flex:1;height:6px;border-radius:3px;background:var(--sand-150)}
+.stegrad i.paa{background:var(--graphite-900)}
+.qr{width:180px;height:180px;border-radius:12px;border:1px solid var(--sand-300);padding:12px;background:var(--white);justify-self:start}
+.hemmelig{display:flex;flex-wrap:wrap;align-items:center;gap:var(--r2);padding:10px 12px;border-radius:8px;background:var(--sand-100);font:600 15px/1.4 var(--mono);letter-spacing:.06em;overflow-wrap:anywhere}
+.kode{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;max-width:360px}
+.kode input{min-height:56px;text-align:center;font:600 22px/1 var(--mono);border:1px solid var(--graphite-500);border-radius:10px;padding:0;width:100%;color:var(--graphite-900);background:var(--white)}
+.hake{width:64px;height:64px;border-radius:50%;background:var(--green-700);color:#fff;display:grid;place-items:center}
+.hake .ikon{width:32px;height:32px;stroke-width:2.5}
+.forklar-liste{margin:0;padding-left:18px;display:grid;gap:4px;font-size:14.5px;color:var(--graphite-800)}
+
+/* Dataene dine */
+.data-liste{display:grid;margin:0;padding:0;list-style:none;border-top:1px solid var(--sand-300)}
+.data-liste li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--r3);align-items:center;padding:10px 0;border-bottom:1px solid var(--sand-300);font-size:14.5px}
+.data-liste li b{font:600 15px/1.2 var(--mono);text-align:right}
+.data-liste li .k{display:inline-flex;align-items:center;gap:8px}
+.data-liste li .k i{width:10px;height:10px;border-radius:50%;background:var(--graphite-600)}
+
+@container (min-width:900px){
+  .ark-lag{position:sticky;bottom:24px;margin:0;justify-items:center;background:transparent;padding:0}
+  .ark-lag .ark{width:100%;max-width:520px;border-radius:16px}
+  .to-del{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--r6);align-items:start}
+  .full-topp{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .full-topp img{height:100%;min-height:170px}
+}
+</style>
+</head><body>
+<div class="ytre">
+  <div class="hode">
+    <span class="meta-s">PlayerHQ · pakke 14 · Meg, resten · utkast 1 · 16.10.2026</span>
+    <h1>Meg, resten</h1>
+    <p>De 16 sidene i Meg som manglet tegning er gått gjennom. Fem trenger egen skjerm og er tegnet her: Velg Full, Behold PlayerHQ etter coaching-pakken, Sikkerhet, Tofaktor og Dataene dine. De elleve andre dekkes av skjermer i pakke 8 Meg og pakke 15 Hjelp, og foreslås sendt videre (se tabellen under). Demodata for Øyvind Rohjan, Kategori C, med coaching-pakken Performance Pro som avsluttes 31. oktober («Velg Full» viser samme spiller etter at pakken er avsluttet, på Gratis). I dag er mandag 5. oktober kl. 14:20, uke 41.</p>
+  </div>
+  <div class="kontroller">
+    <div class="velger skjermvalg" role="group" aria-label="Skjerm">
+      <button type="button" aria-pressed="true" data-skjerm="full">Velg Full</button>
+      <button type="button" aria-pressed="false" data-skjerm="behold">Behold PlayerHQ</button>
+      <button type="button" aria-pressed="false" data-skjerm="sikkerhet">Sikkerhet</button>
+      <button type="button" aria-pressed="false" data-skjerm="tofaktor">Tofaktor</button>
+      <button type="button" aria-pressed="false" data-skjerm="data">Dataene dine</button>
+    </div>
+  </div>
+  <div class="kontroller">
+    <div class="velger" role="group" aria-label="Versjon"><button type="button" aria-pressed="true" data-versjon="etter">Utkast</button><button type="button" aria-pressed="false" data-versjon="for">Dagens design</button></div>
+    <div class="velger" role="group" aria-label="Bredde"><button type="button" aria-pressed="true" data-bredde="mob">Mobil</button><button type="button" aria-pressed="false" data-bredde="pc">PC</button></div>
+    <div class="velger" role="group" aria-label="Tilstand"><button type="button" aria-pressed="true" data-tilstand="data">Med data</button><button type="button" aria-pressed="false" data-tilstand="tom">Tom</button><button type="button" aria-pressed="false" data-tilstand="laster">Laster</button><button type="button" aria-pressed="false" data-tilstand="feil">Feil</button></div>
+  </div>
+  <div class="scene"><div class="ramme mob" id="ramme"></div></div>
+  <div class="notater">
+    <div class="endringer">
+      <span class="meta-s">Hva som er nytt</span>
+      <ul>
+        <li><b>Velg Full</b> åpnes fra «Velg Full» i Abonnement: måned eller år, hva Full gir, og videre til betaling hos Stripe med kort eller Apple Pay. Ingen «Pro», ingen «4 credits» og ingen «Familiekonto».</li>
+        <li><b>Behold PlayerHQ</b> vises når coaching-pakken avsluttes: hva du har bygget opp, årlig eller månedlig Full, eller «Nei takk» til Gratis. Får skall og tilbakelenke, som dagens side mangler.</li>
+        <li><b>Sikkerhet</b> viser hvordan du logger inn (Google eller e-post og passord), og bare de valgene som gjelder deg. Ingen oppdiktet «sikkerhetsscore» og ingen «kommer snart».</li>
+        <li><b>Tofaktor</b> i tre steg: skann koden, skriv sekssifret kode, ferdig. Slå av krever ny innlogging.</li>
+        <li><b>Dataene dine</b> viser hva som er lagret om deg, og laster ned alt som én fil. Lenkes fra Innstillinger, ved «Slett kontoen min».</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Sendes videre (tegnes ikke)</span>
+      <ul>
+        <li><b>abonnement/avbestill</b> → Abonnement. Dialogen «Avslutte …» i pakke 8 gjør det samme.</li>
+        <li><b>abonnement/kort/ny</b> og <b>faktura/[id]</b> → Stripe-portalen («Bytt kort og se kvitteringer» i Abonnement).</li>
+        <li><b>innstillinger/varsler</b>, <b>sprak</b>, <b>integrasjoner</b> og <b>personvern</b> → Innstillinger (pakke 8). Språk har bare norsk; integrasjonskatalogen har ingenting bak knappene.</li>
+        <li><b>innstillinger/ai-coach</b> → Hjelp (pakke 15). Siden har ingen innstillinger.</li>
+        <li><b>meg/deling</b> → Deling (PH-27, pakke 8). <b>meg/resultater</b> → Profil › Turneringsresultater (pakke 8).</li>
+        <li><b>helse/symptom/ny</b> → Helse › Registrer fravær (pakke 8). Dagens kroppskart lagrer ingenting.</li>
+        <li><b>meg/sikkerhet</b> sender allerede til Sikkerhet.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Reglene som er fulgt</span>
+      <ul>
+        <li>Nivåene heter Gratis og Full: 299 kr/mnd eller 2 690 kr/år. Betaling bare med kort og Apple Pay, gjennom Stripe. Innlogging bare med Google eller e-post og passord.</li>
+        <li>Rust bare i dialogen «Slå av tofaktor», som svekker sikkerheten. Ingen rust på selve skjermene.</li>
+        <li>Farge betyr akse. Abonnement og sikkerhet er grafitt; aksefargene vises bare der dataene er trening.</li>
+        <li>Tall har kilde. Manglende verdi vises som «—». Ingen sidelengs rulling i 390 og 360 px.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Åpent hos Anders</span>
+      <ul>
+        <li><b>Reservekoder for tofaktor</b> lages i dag i nettleseren og lagres ingen steder, så de virker ikke. Anbefaling: fjern dem til de lagres ordentlig. Utkastet viser «Mister du telefonen, skriv til oss».</li>
+        <li><b>Prøveuke, avgjort 16.10:</b> én uke Full før første trekk, ingen 30 dagers angrerett (Anders).</li>
+        <li><b>Dokumenter</b> (kontrakter og vilkår) har ingen egen tegning. Anbefaling: send til Stripe-portalen for kvitteringer og til Hjelp for vilkår. Trengs en egen side for kontrakter?</li>
+        <li><b>Kvittering, ikke faktura:</b> dagens kvitteringsside heter «Faktura», som kan leses som betalingsmåte. Anbefaling: bruk Stripe sine kvitteringer og ordet «kvittering».</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ================= Velg Full ================= -->
+<template id="full">
+<div class="app" data-fane="meg" data-skall="tilbake" data-tilbake="Abonnement">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div><div class="dato">Meg · abonnement</div><h1 class="tittel">Velg Full</h1></div>
+    </div>
+    <div class="to-del">
+      <div>
+        <div class="full-topp">
+          <img src="bilder/slag-simulator.jpg" alt="">
+          <div class="ft"><span class="e">PlayerHQ-nivå</span><b class="navn">Full</b><span>Plan og Workbench, treningsøkta og Caddie. Du har Gratis i dag.</span></div>
+        </div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Det Full gir</h2></div>
+          <ul class="inkl">
+            <li><svg class="ikon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span><b>Plan og Workbench</b>År, periode, måned og uke som henger sammen.<span class="akse-prikk" aria-hidden="true"><i style="background:var(--fys)"></i><i style="background:var(--tek)"></i><i style="background:var(--slag)"></i><i style="background:var(--spill)"></i><i style="background:var(--turn)"></i></span></span></li>
+            <li><svg class="ikon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span><b>Treningsøkta</b>Klokke, tellere og resultat rett i Stats.</span></li>
+            <li><svg class="ikon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span><b>Fysisk program og turneringer</b>I samme plan som golføktene.</span></li>
+            <li><svg class="ikon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span><b>Caddie</b>Spør om planen, rundene og øvelsene dine.</span></li>
+          </ul>
+          <p class="kildetekst">Gratis har allerede runder, Stats med Strokes Gained, tester og booking. Fasit: <code>resolveTilgang</code> og produktreglene.</p>
+        </section>
+      </div>
+      <div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Betal per måned eller år</h2></div>
+          <div class="planvalg" data-plan>
+            <button type="button" class="plan" aria-pressed="false" data-p="mnd"><span class="rund"></span><span><b>Månedlig</b><span class="kilde">Si opp når som helst</span></span><span class="pris">299 kr<small>per måned</small></span></button>
+            <button type="button" class="plan" aria-pressed="true" data-p="ar"><span class="rund"></span><span><b>Årlig</b><span class="kilde">Tilsvarer 224 kr i måneden</span></span><span class="pris">2 690 kr<small>per år</small></span></button>
+          </div>
+        </section>
+        <div class="vilkaar"><b>Én uke Full før første trekk</b><span data-trekk>Første trekk: 2 690 kr mandag 12. oktober. Du kan si opp før det.</span></div>
+        <button type="button" class="knapp pri stor" data-betal>Til betaling</button>
+        <div class="betal-merke"><span>Betal hos Stripe med</span><span class="m">Kort</span><span class="m">Apple Pay</span></div>
+        <p class="kildetekst">Er du med i coaching-pakken Performance eller Performance Pro, er Full inkludert, og du betaler ikke for appen.</p>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= Behold PlayerHQ ================= -->
+<template id="behold">
+<div class="app" data-fane="meg" data-skall="tilbake" data-tilbake="Abonnement">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div><div class="dato">Meg · abonnement · Performance Pro avsluttes 31. oktober</div><h1 class="tittel">Behold PlayerHQ</h1></div>
+      <p class="ingress">Coaching-pakken avsluttes, men planen og treningen din blir liggende. Velg Full for å fortsette som i dag, eller gå over til Gratis.</p>
+    </div>
+    <div class="to-del">
+      <div>
+        <section class="kort" aria-label="Det du har bygget opp">
+          <div class="hoved"><strong>48<small>t 10 min</small></strong><span class="forklar">trent siste fire uker</span></div>
+          <div class="beholder">
+            <div><b>86</b><span>økter i planen siden januar</span></div>
+            <div><b>23</b><span>runder slag for slag</span></div>
+            <div><b>11</b><span>tester med resultat</span></div>
+            <div><b>3</b><span>målsetninger i gang</span></div>
+          </div>
+          <p class="kildetekst">Fra planen og Stats · i dag 14:20</p>
+        </section>
+        <div class="vilkaar"><b>Med Gratis fra 1. november</b><span>Runder, Stats med Strokes Gained, tester og booking blir. Plan, Workbench, treningsøkta og Caddie låses, men ingenting slettes.</span></div>
+      </div>
+      <div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Fortsett med Full</h2></div>
+          <div class="planvalg" data-plan>
+            <button type="button" class="plan" aria-pressed="true" data-p="ar"><span class="rund"></span><span><b>Årlig</b><span class="kilde">Fra 1. november</span></span><span class="pris">2 690 kr<small>per år</small></span></button>
+            <button type="button" class="plan" aria-pressed="false" data-p="mnd"><span class="rund"></span><span><b>Månedlig</b><span class="kilde">Fra 1. november</span></span><span class="pris">299 kr<small>per måned</small></span></button>
+          </div>
+        </section>
+        <button type="button" class="knapp pri stor" data-fortsett>Fortsett med årlig, 2 690 kr</button>
+        <button type="button" class="knapp sek" data-nei>Nei takk, gå over til Gratis</button>
+        <p class="kildetekst">Ingenting trekkes før 1. november. Betaling hos Stripe med kort eller Apple Pay.</p>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= Sikkerhet ================= -->
+<template id="sikkerhet">
+<div class="app" data-fane="meg" data-skall="tilbake" data-tilbake="Innstillinger">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div><div class="dato">Meg · innstillinger</div><h1 class="tittel">Sikkerhet</h1></div>
+      <div class="valg" role="group" aria-label="Eksempel" data-variant><button type="button" aria-pressed="true" data-v="epost">E-post og passord</button><button type="button" aria-pressed="false" data-v="google">Google</button></div>
+    </div>
+    <div class="to-del">
+      <div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Slik logger du inn</h2></div>
+          <div class="boks" data-epost>
+            <button type="button" class="rad" data-endre="E-post"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg></span><span><b>E-post</b><span class="kilde">oyvind.rohjan@eksempel.no</span></span><span class="hoyre">Endre<svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span></button>
+            <button type="button" class="rad" data-endre="Passord"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span><span><b>Passord</b><span class="kilde">Endret 14. august</span></span><span class="hoyre">Endre<svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span></button>
+          </div>
+          <div class="boks" data-google hidden>
+            <div class="rad"><span class="google" aria-hidden="true">G</span><span><b>Google-konto</b><span class="kilde">oyvind.rohjan@gmail.com · passordet styres hos Google</span></span><span class="pille ok"><i></i>Koblet</span></div>
+          </div>
+        </section>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Tofaktor</h2></div>
+          <div class="boks">
+            <button type="button" class="rad" data-gaa="tofaktor"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg></span><span><b>Kode fra app</b><span class="kilde">Når du logger inn på en ny enhet</span></span><span class="hoyre"><span class="pille noy">Av</span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span></button>
+          </div>
+        </section>
+      </div>
+      <div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Innlogget nå</h2></div>
+          <div class="boks">
+            <div class="rad"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg></span><span><b>Denne enheten</b><span class="kilde">Sist innlogget i dag 07:42</span></span><span class="pille ok"><i></i>Aktiv</span></div>
+          </div>
+          <button type="button" class="knapp sek" data-ut style="justify-self:start">Logg ut</button>
+        </section>
+        <div class="kort dempet">
+          <b class="undertittel">Mistenker du at noen andre har logget inn?</b>
+          <p class="forklar">Bytt passord, slå på tofaktor, og skriv til oss.</p>
+          <div class="knapper"><button type="button" class="knapp sek" data-skriv>Skriv til oss</button></div>
+        </div>
+      </div>
+    </div>
+    <div class="ark-lag" data-ark hidden>
+      <div class="ark" role="dialog" aria-label="Endre">
+        <div class="ark-topp"><h2 data-ark-tittel>Endre passord</h2><button type="button" class="lukk" aria-label="Lukk" data-lukk><svg class="ikon" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+        <p class="forklar">Skriv passordet ditt først, så vi vet at det er deg.</p>
+        <div class="felt"><label for="s-naa">Nåværende passord</label><input id="s-naa" type="password" value="xxxxxxxxxx" autocomplete="current-password"></div>
+        <div class="felt" data-nytt><label for="s-ny" data-ny-etikett>Nytt passord</label><input id="s-ny" type="password" autocomplete="new-password"><span class="hjelp" data-ny-hjelp>Minst 8 tegn.</span></div>
+        <button type="button" class="knapp pri stor" data-lagre>Lagre</button>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= Tofaktor ================= -->
+<template id="tofaktor">
+<div class="app" data-fane="meg" data-skall="tilbake" data-tilbake="Sikkerhet">
+  <main class="innhold smal">
+    <div class="topp" data-behold>
+      <div><div class="dato" data-steg-tekst>Tofaktor · steg 1 av 3</div><h1 class="tittel" data-steg-tittel>Skann koden</h1></div>
+      <div class="stegrad" aria-hidden="true"><i class="paa"></i><i></i><i></i></div>
+    </div>
+    <section class="seksjon" data-steg="1">
+      <p class="forklar">Åpne en kodeapp på telefonen, for eksempel Google Authenticator eller 1Password, og skann koden.</p>
+      <svg class="qr" viewBox="0 0 29 29" role="img" aria-label="QR-kode (eksempel)" shape-rendering="crispEdges"><path fill="#141413" d="M0 0h7v7H0zM1 1v5h5V1zM2 2h3v3H2zM22 0h7v7h-7zm1 1v5h5V1zm1 1h3v3h-3zM0 22h7v7H0zm1 1v5h5v-5zm1 1h3v3H2zM9 0h2v2H9zm4 0h1v3h-1zm3 1h2v2h-2zm3 0h1v1h-1zM9 4h3v1H9zm5 1h2v2h-2zm4 0h2v1h-2zM8 8h2v2H8zm4 0h3v1h-3zm5 0h1v3h-1zm3 0h2v2h-2zm4 0h3v1h-3zM0 9h2v1H0zm4 0h3v2H4zm6 2h2v2h-2zm4 0h2v1h-2zm9 0h2v2h-2zm4 1h2v2h-2zM1 12h2v2H1zm7 1h1v3H8zm5 1h3v2h-3zm5 0h2v1h-2zm4 1h1v2h-1zM3 15h3v1H3zm8 2h2v2h-2zm5 0h1v2h-1zm4 0h3v1h-3zm5 0h2v2h-2zM9 20h3v1H9zm5 0h2v2h-2zm4 1h2v2h-2zm4 1h1v3h-1zm3 0h3v1h-3zM9 24h1v2H9zm3 1h2v2h-2zm5 0h2v1h-2zm6 2h2v2h-2zm4 0h2v1h-2z"/></svg>
+      <div class="felt"><span class="etikett">Kan du ikke skanne? Skriv inn nøkkelen</span><div class="hemmelig"><span>JBSW Y3DP EHPK 3PXP</span></div></div>
+      <button type="button" class="knapp pri stor" data-neste="2">Jeg har skannet koden</button>
+    </section>
+    <section class="seksjon" data-steg="2" hidden>
+      <p class="forklar">Skriv de seks sifrene appen viser nå. Koden byttes hvert 30. sekund.</p>
+      <div class="kode" role="group" aria-label="Sekssifret kode"><input inputmode="numeric" maxlength="1" value="4" aria-label="Siffer 1"><input inputmode="numeric" maxlength="1" value="8" aria-label="Siffer 2"><input inputmode="numeric" maxlength="1" value="2" aria-label="Siffer 3"><input inputmode="numeric" maxlength="1" value="0" aria-label="Siffer 4"><input inputmode="numeric" maxlength="1" value="1" aria-label="Siffer 5"><input inputmode="numeric" maxlength="1" value="7" aria-label="Siffer 6"></div>
+      <button type="button" class="knapp pri stor" data-neste="3">Bekreft</button>
+      <button type="button" class="knapp sek" data-neste="1" style="justify-self:start">Tilbake</button>
+    </section>
+    <section class="seksjon" data-steg="3" hidden>
+      <span class="hake"><svg class="ikon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span>
+      <p class="forklar">Neste gang du logger inn på en ny enhet, ber vi om en kode fra appen.</p>
+      <div class="vilkaar"><b>Mister du telefonen?</b><span>Skriv til oss fra e-posten kontoen er registrert på, så hjelper vi deg inn igjen.</span></div>
+      <div class="knapper"><button type="button" class="knapp pri" data-ferdig>Til Sikkerhet</button><button type="button" class="knapp sek" data-av>Slå av tofaktor</button></div>
+    </section>
+    <div class="dialog-lag" data-dialog hidden style="position:sticky;bottom:0;z-index:7;display:grid;margin:0 calc(-1 * var(--r4)) calc(-1 * var(--r6));padding:var(--r4);background:rgba(20,20,19,.35)">
+      <div class="kort" role="alertdialog" aria-labelledby="av-t" style="box-shadow:0 12px 40px rgba(0,0,0,.25)">
+        <h2 id="av-t" style="margin:0;font:600 19px/1.25 var(--sans)">Slå av tofaktor?</h2>
+        <p class="forklar">Da holder passordet alene for å logge inn. Du må skrive passordet ditt for å bekrefte.</p>
+        <div class="felt"><label for="av-pw">Passord</label><input id="av-pw" type="password" autocomplete="current-password"></div>
+        <div class="knapper" style="display:grid"><button type="button" class="knapp rust stor" data-av-ok>Slå av tofaktor</button><button type="button" class="knapp sek stor" data-av-nei>Behold</button></div>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= Dataene dine ================= -->
+<template id="data">
+<div class="app" data-fane="meg" data-skall="tilbake" data-tilbake="Innstillinger">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div><div class="dato">Meg · innstillinger · personvern</div><h1 class="tittel">Dataene dine</h1></div>
+      <p class="ingress">Alt som er lagret om deg i PlayerHQ. Du kan laste det ned som én fil, når du vil.</p>
+    </div>
+    <div class="to-del">
+      <section class="kort" aria-label="Lagret om deg">
+        <div class="hoved"><strong>1 284</strong><span class="forklar">registreringer lagret</span></div>
+        <ul class="data-liste">
+          <li><span class="k"><i style="background:var(--graphite-900)"></i>Profil, samtykker og innstillinger</span><b>1</b></li>
+          <li><span class="k"><i style="background:var(--tek)"></i>Økter i planen</span><b>214</b></li>
+          <li><span class="k"><i style="background:var(--spill)"></i>Runder og slag</span><b>23 · 812</b></li>
+          <li><span class="k"><i style="background:var(--slag)"></i>Testresultater</span><b>11</b></li>
+          <li><span class="k"><i style="background:var(--slag)"></i>TrackMan-økter</span><b>9</b></li>
+          <li><span class="k"><i style="background:var(--graphite-600)"></i>Målsetninger</span><b>5</b></li>
+          <li><span class="k"><i style="background:var(--graphite-600)"></i>Meldinger med coachen</span><b>209</b></li>
+        </ul>
+        <p class="kildetekst">Talt i dag 14:20. Turneringsresultatene fra GolfBox er offentlige og ligger hos GolfBox.</p>
+      </section>
+      <div>
+        <div class="kort">
+          <b class="undertittel">Last ned alt</b>
+          <p class="forklar">Én fil (JSON) med alt over. Den lages med en gang, og lastes ned på denne enheten.</p>
+          <button type="button" class="knapp pri stor" data-last>Last ned dataene mine</button>
+          <p class="kildetekst" data-sist>Aldri lastet ned før.</p>
+        </div>
+        <div class="kort dempet">
+          <b class="undertittel">Vil du slette kontoen?</b>
+          <p class="forklar">Det gjør du under Innstillinger › Konto. Last gjerne ned dataene først.</p>
+          <div class="knapper"><button type="button" class="knapp sek">Til Innstillinger</button></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<script src="felles/felles.js"></script>
+<script>
+(function () {
+  function toast(app, tekst) {
+    var gml = app.querySelector('.toast'); if (gml) gml.remove();
+    var t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role', 'status'); t.textContent = tekst;
+    app.querySelector('.innhold').appendChild(t);
+    setTimeout(function () { t.remove(); }, 3600);
+  }
+  function velgPlan(app, kall) {
+    var g = app.querySelector('[data-plan]');
+    g.addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (!b) return;
+      g.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      kall(b.dataset.p);
+    });
+  }
+  function full(app) {
+    velgPlan(app, function (p) {
+      app.querySelector('[data-trekk]').textContent = p === 'ar' ? 'Første trekk: 2 690 kr mandag 12. oktober. Du kan si opp før det.' : 'Første trekk: 299 kr mandag 12. oktober. Du kan si opp før det.';
+    });
+    app.querySelector('[data-betal]').addEventListener('click', function () { toast(app, 'Åpner betalingen hos Stripe.'); });
+  }
+  function behold(app) {
+    velgPlan(app, function (p) { app.querySelector('[data-fortsett]').textContent = p === 'ar' ? 'Fortsett med årlig, 2 690 kr' : 'Fortsett med månedlig, 299 kr'; });
+    app.querySelector('[data-fortsett]').addEventListener('click', function () { toast(app, 'Åpner betalingen hos Stripe. Ingenting trekkes før 1. november.'); });
+    app.querySelector('[data-nei]').addEventListener('click', function () { toast(app, 'Greit. Du har Gratis fra 1. november, og ingenting slettes.'); });
+  }
+  function sikkerhet(app) {
+    var ark = app.querySelector('[data-ark]');
+    app.querySelector('[data-variant]').addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (!b) return;
+      app.querySelector('[data-epost]').hidden = b.dataset.v !== 'epost';
+      app.querySelector('[data-google]').hidden = b.dataset.v !== 'google';
+    });
+    app.querySelectorAll('[data-endre]').forEach(function (r) {
+      r.addEventListener('click', function () {
+        var e = r.dataset.endre === 'E-post';
+        app.querySelector('[data-ark-tittel]').textContent = e ? 'Endre e-post' : 'Endre passord';
+        app.querySelector('[data-ny-etikett]').textContent = e ? 'Ny e-post' : 'Nytt passord';
+        app.querySelector('#s-ny').type = e ? 'email' : 'password';
+        app.querySelector('[data-ny-hjelp]').textContent = e ? 'Vi sender en lenke for å bekrefte den nye adressen.' : 'Minst 8 tegn.';
+        ark.hidden = false; app.querySelector('#s-naa').focus({ preventScroll: true });
+      });
+    });
+    app.querySelector('[data-lukk]').addEventListener('click', function () { ark.hidden = true; });
+    app.querySelector('[data-lagre]').addEventListener('click', function () { ark.hidden = true; toast(app, 'Lagret.'); });
+    app.querySelector('[data-ut]').addEventListener('click', function () { toast(app, 'Du blir logget ut.'); });
+    app.querySelector('[data-skriv]').addEventListener('click', function () { toast(app, 'Åpner «Skriv til oss».'); });
+  }
+  function tofaktor(app) {
+    var TIT = { 1: 'Skann koden', 2: 'Skriv koden', 3: 'Tofaktor er på' };
+    function steg(n) {
+      app.querySelectorAll('[data-steg]').forEach(function (s) { s.hidden = s.dataset.steg !== String(n); });
+      app.querySelectorAll('.stegrad i').forEach(function (i, k) { i.className = k < n ? 'paa' : ''; });
+      app.querySelector('[data-steg-tekst]').textContent = 'Tofaktor · steg ' + n + ' av 3';
+      app.querySelector('[data-steg-tittel]').textContent = TIT[n];
+    }
+    app.querySelectorAll('[data-neste]').forEach(function (b) { b.addEventListener('click', function () { steg(+b.dataset.neste); }); });
+    app.querySelector('[data-ferdig]').addEventListener('click', function () { toast(app, 'Tilbake til Sikkerhet. Tofaktor står som På.'); });
+    var d = app.querySelector('[data-dialog]');
+    app.querySelector('[data-av]').addEventListener('click', function () { d.hidden = false; app.querySelector('#av-pw').focus({ preventScroll: true }); });
+    app.querySelector('[data-av-nei]').addEventListener('click', function () { d.hidden = true; });
+    app.querySelector('[data-av-ok]').addEventListener('click', function () { d.hidden = true; toast(app, 'Tofaktor er slått av.'); steg(1); });
+  }
+  function data(app) {
+    app.querySelector('[data-last]').addEventListener('click', function () {
+      app.querySelector('[data-sist]').textContent = 'Sist lastet ned i dag 14:20.';
+      toast(app, 'Filen er lastet ned: ak-golf-oyvind-rohjan-2026-10-05.json');
+    });
+  }
+  function m(id, mal, etter, tom, laster, feil) { return { mal: mal, for: { mob: 'screenshots/' + id + '-390.jpg', pc: 'screenshots/' + id + '-1440.jpg' }, etter: etter, tom: tom, laster: laster, feil: feil }; }
+  /* Dagens skjermbilder finnes ikke for disse sidene i registeret. Nærmeste skjerm vises: PH-25 Abonnement og innstillinger. */
+  AKUtkast.start({
+    start: 'full',
+    skjermer: {
+      full: m('PH-25', 'full', full, { tittel: 'Du har allerede Full', tekst: 'Full er inkludert i coaching-pakken din. Du trenger ikke betale for appen.', knapp: 'Til Abonnement' }, 'Henter prisene …', 'Prisene kunne ikke hentes'),
+      behold: m('PH-25', 'behold', behold, { tittel: 'Ingen pakke avsluttes', tekst: 'Coaching-pakken din fortsetter. Du har Full så lenge den løper.', knapp: 'Til Abonnement' }, 'Henter abonnementet …', 'Abonnementet kunne ikke hentes'),
+      sikkerhet: m('PH-25', 'sikkerhet', sikkerhet, null, 'Henter sikkerhetsvalgene …', 'Sikkerhetsvalgene kunne ikke hentes'),
+      tofaktor: m('PH-25', 'tofaktor', tofaktor, null, 'Lager koden …', 'Koden kunne ikke lages. Ingenting er endret.'),
+      data: m('PH-25', 'data', data, { tittel: 'Ingenting lagret ennå', tekst: 'Når du legger inn økter, runder og tester, vises de her.', knapp: 'Til Innstillinger' }, 'Teller dataene dine …', 'Dataene kunne ikke telles')
+    }
+  });
+})();
+</script>
+</body></html>

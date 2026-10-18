@@ -17,7 +17,7 @@ import { z } from "zod";
 import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { coachScopedPlayerWhere, harCoachTilgangTilSpiller } from "@/lib/auth/coached";
+import { coachScopedPlayerWhere, harCoachLesetilgangTilSpiller, harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { loadStallen } from "@/lib/admin/stallen-data";
 import {
   addDays,
@@ -56,7 +56,7 @@ import type {
 import { UI } from "@/lib/domain/workbench/labels";
 import { vaskDetaljer } from "@/lib/domain/workbench/ovelse-detaljer";
 import { lastPlanKalenderBlokker } from "@/lib/workbench/plan-kalender-data";
-import { weekLockedBlocks } from "@/lib/workbench/locked-blocks";
+import { slaSammenLaasteBlokker, weekLockedBlocks } from "@/lib/workbench/locked-blocks";
 import {
   initialWorkbenchLiveSnapshot,
   parseWorkbenchLiveSnapshot,
@@ -89,6 +89,7 @@ import {
   mapSession,
   tilDatoKolonne,
   fraDatoKolonne,
+  flyttAar,
   type WbRow,
 } from "@/lib/workbench/wb-map";
 import {
@@ -103,8 +104,10 @@ import { canEditGroup, canReadOwnGroupCopy, ownGroupPublicationWhere } from "@/l
 import { FORMEL_FELT, bevarHistoriskeDrillfelt, gyldigFormelEndring } from "./drill-formel-bevaring";
 import { bankOvelseWhere, hentBankReferanser, lastBankOvelse, lastBankOppgave } from "./bank-referanser";
 import { hentTekniskPanel } from "@/lib/workbench/teknisk-plan-panel";
-import { opprettPeriodeCore, oppdaterPeriodeCore, slettPeriodeCore } from "@/lib/workbench/periode-core";
-import { parseSessionBudget } from "@/lib/workbench/perioder";
+import { opprettPeriodeCore, oppdaterPeriodeCore, slettPeriodeCore, type FordeltPeriodeResultat } from "@/lib/workbench/periode-core";
+import { parseAxisMinutes, parseSessionBudget } from "@/lib/workbench/perioder";
+import { hentFordeltPerUke, hentMaaned, hentMaanedDetaljer, lagreMaanedCore } from "@/lib/workbench/maanedsplan-core";
+import type { MaanedKvittering } from "@/lib/workbench/maanedsplan-regler";
 import {
   isoUkeIdentitet,
   isoUkeMandag,
@@ -164,14 +167,22 @@ function revalider(playerId: string): void {
 
 type Viewer = { id: string; role: string };
 
-async function kreverTilgangTilSpiller(playerId: string): Promise<Viewer | null> {
-  const user = await requirePortalUser();
+/**
+ * «les» = innsyn (lese-scope eller uttrykkelig deling, D-04); «skriv» = egen
+ * coach-relasjon (D-25). Standard er skriving, så en glemt lesesti blir
+ * strengere, aldri løsere.
+ */
+async function kreverTilgangTilSpiller(
+  playerId: string,
+  modus: "les" | "skriv" = "skriv",
+): Promise<Viewer | null> {
+  const user = await requirePortalUser({ tillatDemo: true });
   if (user.id === playerId) return { id: user.id, role: user.role };
   if (user.role !== "COACH" && user.role !== "ADMIN") return null;
-  const harTilgang = await harCoachTilgangTilSpiller(
-    { id: user.id, role: user.role },
-    playerId,
-  );
+  const viewer = { id: user.id, role: user.role };
+  const harTilgang = modus === "les"
+    ? await harCoachLesetilgangTilSpiller(viewer, playerId)
+    : await harCoachTilgangTilSpiller(viewer, playerId);
   return harTilgang ? { id: user.id, role: user.role } : null;
 }
 
@@ -179,13 +190,14 @@ async function kreverTilgangTilSpiller(playerId: string): Promise<Viewer | null>
 async function hentMedTilgang(
   sessionId: string,
   db: Pick<Prisma.TransactionClient, "workbenchSession" | "group"> = prisma,
+  modus: "les" | "skriv" = "skriv",
 ): Promise<{ row: WbRow; viewer: Viewer } | { feil: string }> {
   const row = await db.workbenchSession.findUnique({
     where: { id: sessionId },
     include: { drills: true },
   });
   if (!row) return { feil: FINNES_IKKE };
-  const viewer = await kreverTilgangTilSpiller(row.playerId);
+  const viewer = await kreverTilgangTilSpiller(row.playerId, modus);
   if (!viewer) return { feil: INGEN_TILGANG };
   if (viewer.id === row.playerId && !canReadOwnGroupCopy(row)) return { feil: INGEN_TILGANG };
   if (row.groupId && !row.sourceGroupSessionId && /^wb-group-[a-f0-9]{64}$/.test(row.id)) {
@@ -360,11 +372,7 @@ export async function createSeasonPlan(
   }
 
   const yearShift = previous ? year - previous.year : 0;
-  const shiftYear = (date: Date) => {
-    const next = new Date(date);
-    next.setUTCFullYear(next.getUTCFullYear() + yearShift);
-    return next;
-  };
+  const shiftYear = (date: Date) => flyttAar(date, yearShift);
 
   const plan = await prisma.$transaction(async (tx) => {
     const row = existing
@@ -389,6 +397,8 @@ export async function createSeasonPlan(
           weeklyVolMin: period.weeklyVolMin,
           weeklyVolMax: period.weeklyVolMax,
           weeklySessionBudget: period.weeklySessionBudget ?? undefined,
+          axisMinutes: period.axisMinutes ?? undefined,
+          axisMinutesLight: period.axisMinutesLight ?? undefined,
           notes: period.notes,
           sourceGroupId: period.sourceGroupId,
         })),
@@ -408,24 +418,27 @@ export async function saveSeasonPeriod(input: {
   periodId?: string;
   seasonPlanId?: string;
   data: unknown;
-}): Promise<WbResultat<{ periodId: string }>> {
+}): Promise<WbResultat<{ periodId: string } & Pick<FordeltPeriodeResultat, "fordeling" | "fordelingFeilet">>> {
   const viewer = await kreverTilgangTilSpiller(input.playerId);
   if (!viewer) return { ok: false, error: INGEN_TILGANG };
   if (input.seasonPlanId !== undefined && !["PLAYER", "COACH", "ADMIN"].includes(viewer.role))
     return { ok: false, error: INGEN_TILGANG };
   let periodId = input.periodId;
+  let fordeling: Pick<FordeltPeriodeResultat, "fordeling" | "fordelingFeilet"> = {};
   if (periodId) {
     const result = await oppdaterPeriodeCore(input.playerId, periodId, input.data, input.seasonPlanId);
     if (!result.ok) return { ok: false, error: result.error ?? "Kunne ikke lagre perioden." };
+    fordeling = { ...(result.fordeling && { fordeling: result.fordeling }), ...(result.fordelingFeilet && { fordelingFeilet: true }) };
   } else {
     const result = await opprettPeriodeCore(input.playerId, input.data, input.seasonPlanId);
     if (!result.ok || !result.periodeId) return { ok: false, error: result.error ?? "Kunne ikke opprette perioden." };
     periodId = result.periodeId;
+    fordeling = { ...(result.fordeling && { fordeling: result.fordeling }), ...(result.fordelingFeilet && { fordelingFeilet: true }) };
   }
   revalider(input.playerId);
   revalidatePath(`/admin/workbench/${input.playerId}`);
   revalidatePath("/portal/planlegge/workbench");
-  return { ok: true, data: { periodId } };
+  return { ok: true, data: { periodId, ...fordeling } };
 }
 
 export async function deleteSeasonPeriod(input: {
@@ -455,7 +468,7 @@ export async function loadWeek(params: {
   const weekStart = IsoDateSchema.safeParse(params.weekStart);
   if (!weekStart.success) return { ok: false, error: "Ugyldig ukestart." };
 
-  const viewer = await kreverTilgangTilSpiller(params.playerId);
+  const viewer = await kreverTilgangTilSpiller(params.playerId, "les");
   if (!viewer) return { ok: false, error: INGEN_TILGANG };
 
   const mandag = mondayOf(weekStart.data);
@@ -538,7 +551,7 @@ export async function loadWeek(params: {
   const vm = buildWeekViewModel(
     mandag,
     rows.map(mapSession),
-    weekLockedBlocks(mandag, busy, school).map((day, i) => [...day, ...planKalender[i]]),
+    weekLockedBlocks(mandag, busy, school).map((day, i) => slaSammenLaasteBlokker(day, planKalender[i])),
     params.mode,
     params.targetMinutes ?? 0,
     mappedWeekPlan,
@@ -658,7 +671,7 @@ export async function loadStallFollowup(params: {
   const parsed = IsoDateSchema.safeParse(params.weekStart);
   if (!parsed.success) return { ok: false, error: "Ugyldig ukestart." };
 
-  const viewer = await kreverTilgangTilSpiller(params.playerId);
+  const viewer = await kreverTilgangTilSpiller(params.playerId, "les");
   if (!viewer) return { ok: false, error: INGEN_TILGANG };
 
   const from = mondayOf(parsed.data);
@@ -694,7 +707,7 @@ export async function loadWorkbenchLive(params: {
   const parsed = IsoDateSchema.safeParse(params.weekStart);
   if (!parsed.success) return { ok: false, error: "Ugyldig ukestart." };
 
-  const viewer = await kreverTilgangTilSpiller(params.playerId);
+  const viewer = await kreverTilgangTilSpiller(params.playerId, "les");
   if (!viewer) return { ok: false, error: INGEN_TILGANG };
 
   const from = mondayOf(parsed.data);
@@ -745,9 +758,9 @@ export async function loadMinCalendar(params: {
   const parsed = IsoDateSchema.safeParse(params.weekStart);
   if (!parsed.success) return { ok: false, error: "Ugyldig ukestart." };
 
-  const access = await kreverTilgangTilSpiller(params.playerId);
+  const access = await kreverTilgangTilSpiller(params.playerId, "les");
   if (!access) return { ok: false, error: INGEN_TILGANG };
-  const viewer = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
+  const viewer = await requirePortalUser({ tillatDemo: true, allow: ["ADMIN", "COACH"] });
   const weekStart = mondayOf(parsed.data);
   const weekEnd = addDays(weekStart, 7);
   const [year, month, day] = weekStart.split("-").map(Number);
@@ -893,7 +906,7 @@ export async function loadMonth(params: {
   if (!parsed.success) return { ok: false, error: "Ugyldig måned." };
   const monthStart = monthStartOf(parsed.data);
 
-  const viewer = await kreverTilgangTilSpiller(params.playerId);
+  const viewer = await kreverTilgangTilSpiller(params.playerId, "les");
   if (!viewer) return { ok: false, error: INGEN_TILGANG };
 
   const last = lastDayOfMonth(monthStart);
@@ -903,16 +916,41 @@ export async function loadMonth(params: {
   const [y, m] = monthStart.split("-").map(Number);
   const label = `${UI.monthNames[m - 1]} ${y}`;
   const idagIso = new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Oslo" }).format(new Date());
+  const maanedsplan = await hentMaaned(params.playerId, y, m);
+  const detaljer = await hentMaanedDetaljer(params.playerId, y, m, sessions, maanedsplan?.uker ?? {});
   return {
     ok: true,
-    data: buildMonthViewModel(
-      monthStart,
-      sessions,
-      params.mode,
-      params.targetMinutes ?? 0,
-      label,
-      idagIso,
-    ),
+    data: {
+      ...buildMonthViewModel(
+        monthStart,
+        sessions,
+        params.mode,
+        params.targetMinutes ?? 0,
+        label,
+        idagIso,
+      ),
+      maanedsplan,
+      detaljer,
+    },
+  };
+}
+
+/**
+ * Lagre månedsplanen (fokus, notat, evaluering og uker måneden tilpasser) og skriv
+ * tilpassede timer til ukeplanene fra og med inneværende uke. Samme tilgang som perioder.
+ */
+export async function saveMonthPlan(input: {
+  playerId: string;
+  data: unknown;
+}): Promise<WbResultat<{ kvittering: MaanedKvittering; fordelingFeilet?: boolean }>> {
+  const viewer = await kreverTilgangTilSpiller(input.playerId);
+  if (!viewer) return { ok: false, error: INGEN_TILGANG };
+  const result = await lagreMaanedCore(input.playerId, viewer.id, input.data);
+  if (!result.ok) return { ok: false, error: result.error };
+  revalider(input.playerId);
+  return {
+    ok: true,
+    data: { kvittering: result.kvittering, ...(result.fordelingFeilet && { fordelingFeilet: true }) },
   };
 }
 
@@ -926,7 +964,7 @@ export async function loadYear(params: {
   if (!Number.isInteger(params.year) || params.year < 2000 || params.year > 2100) {
     return { ok: false, error: "Ugyldig år." };
   }
-  const viewer = await kreverTilgangTilSpiller(params.playerId);
+  const viewer = await kreverTilgangTilSpiller(params.playerId, "les");
   if (!viewer) return { ok: false, error: INGEN_TILGANG };
 
   const yearStart = new Date(Date.UTC(params.year, 0, 1));
@@ -969,6 +1007,10 @@ export async function loadYear(params: {
     weeklyVolMin: b.weeklyVolMin,
     weeklyVolMax: b.weeklyVolMax,
     sessionBudget: parseSessionBudget(b.weeklySessionBudget),
+    axisMinutes: parseAxisMinutes(b.axisMinutes),
+    axisMinutesLight: parseAxisMinutes(b.axisMinutesLight),
+    fraGruppe: b.sourceGroupId !== null,
+    notat: b.notes,
   }));
   const tournamentEvents = tournamentEntries
     .map((e) => {
@@ -982,18 +1024,20 @@ export async function loadYear(params: {
     dato: fraDatoKolonne(t.takenAt),
   }));
 
+  const aar = buildYearViewModel(
+    params.year,
+    sessions,
+    params.mode,
+    params.targetMinutes ?? 0,
+    periodInput,
+    tournamentEvents,
+    testEvents,
+    idagIso,
+  );
+  const fordelt = await hentFordeltPerUke(params.playerId, (aar.weeks ?? []).map((u) => u.weekStart));
   return {
     ok: true,
-    data: buildYearViewModel(
-      params.year,
-      sessions,
-      params.mode,
-      params.targetMinutes ?? 0,
-      periodInput,
-      tournamentEvents,
-      testEvents,
-      idagIso,
-    ),
+    data: { ...aar, weeks: aar.weeks?.map((u) => ({ ...u, fordelt: fordelt.get(u.weekStart) ?? null })) },
   };
 }
 
@@ -1007,7 +1051,7 @@ export async function loadPeriod(params: {
   if (!Number.isInteger(params.year) || params.year < 2000 || params.year > 2100) {
     return { ok: false, error: "Ugyldig år." };
   }
-  const viewer = await kreverTilgangTilSpiller(params.playerId);
+  const viewer = await kreverTilgangTilSpiller(params.playerId, "les");
   if (!viewer) return { ok: false, error: INGEN_TILGANG };
 
   const yearStart = new Date(Date.UTC(params.year, 0, 1));
@@ -1045,6 +1089,10 @@ export async function loadPeriod(params: {
     weeklyVolMin: block.weeklyVolMin,
     weeklyVolMax: block.weeklyVolMax,
     sessionBudget: parseSessionBudget(block.weeklySessionBudget),
+    axisMinutes: parseAxisMinutes(block.axisMinutes),
+    axisMinutesLight: parseAxisMinutes(block.axisMinutesLight),
+    fraGruppe: block.sourceGroupId !== null,
+    notat: block.notes,
   }));
   const tournamentEvents = tournamentEntries
     .map((entry) => {
@@ -1064,16 +1112,18 @@ export async function loadPeriod(params: {
     idagIso,
   );
 
+  const periode = buildPeriodViewModel(
+    params.year,
+    year.periods,
+    params.periodId ?? null,
+    sessions,
+    params.mode,
+    idagIso,
+  );
+  const fordelt = await hentFordeltPerUke(params.playerId, periode.weeks.map((u) => u.weekStart));
   return {
     ok: true,
-    data: buildPeriodViewModel(
-      params.year,
-      year.periods,
-      params.periodId ?? null,
-      sessions,
-      params.mode,
-      idagIso,
-    ),
+    data: { ...periode, weeks: periode.weeks.map((u) => ({ ...u, fordelt: fordelt.get(u.weekStart) ?? null })) },
   };
 }
 
@@ -1081,7 +1131,7 @@ export async function loadPeriod(params: {
 export async function loadSession(
   sessionId: string,
 ): Promise<WbResultat<WorkbenchSession | null>> {
-  const treff = await hentMedTilgang(sessionId);
+  const treff = await hentMedTilgang(sessionId, prisma, "les");
   if ("feil" in treff) {
     return treff.feil === FINNES_IKKE
       ? { ok: true, data: null }
@@ -1102,7 +1152,7 @@ export async function loadStallDag(params: {
   const dato = IsoDateSchema.safeParse(params.dato);
   if (!dato.success) return { ok: false, error: "Ugyldig dato." };
 
-  const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
+  const user = await requirePortalUser({ tillatDemo: true, allow: ["ADMIN", "COACH"] });
   const stall = await loadStallen({ id: user.id, role: user.role }, {});
 
   const dag = tilDatoKolonne(dato.data);
@@ -1134,7 +1184,7 @@ export async function loadSources(params: {
   playerId: string;
   weekStart?: string;
 }): Promise<WbResultat<SourceItem[]>> {
-  const viewer = await kreverTilgangTilSpiller(params.playerId);
+  const viewer = await kreverTilgangTilSpiller(params.playerId, "les");
   if (!viewer) return { ok: false, error: INGEN_TILGANG };
 
   const ukeStart = params.weekStart
@@ -1221,7 +1271,7 @@ export async function loadPlayerDay(params: {
   const dato = IsoDateSchema.safeParse(params.date);
   if (!dato.success) return { ok: false, error: "Ugyldig dato." };
 
-  const viewer = await kreverTilgangTilSpiller(params.playerId);
+  const viewer = await kreverTilgangTilSpiller(params.playerId, "les");
   if (!viewer) return { ok: false, error: INGEN_TILGANG };
 
   const rows = await prisma.workbenchSession.findMany({
@@ -1268,7 +1318,7 @@ export async function loadPlayerDay(params: {
 export async function loadPlayerSession(
   sessionId: string,
 ): Promise<WbResultat<WorkbenchSession | null>> {
-  const user = await requirePortalUser({ allow: ["PLAYER"] });
+  const user = await requirePortalUser({ tillatDemo: true, allow: ["PLAYER"] });
 
   const row = await prisma.workbenchSession.findUnique({
     where: { id: sessionId },

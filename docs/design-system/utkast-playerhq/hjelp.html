@@ -1,0 +1,394 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Hjelp og tilbakemelding</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="felles/felles.css">
+<style>
+/* ---------- Pakke 15: Hjelp, kategori, artikkel, Skriv til oss, sendt ---------- */
+.skjermvalg button{font-size:13px;min-height:36px;padding:0 10px}
+.app [hidden]{display:none!important}
+.topp{display:grid;gap:var(--r3)}
+.toast{position:sticky;bottom:16px;z-index:5;display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;background:var(--graphite-900);color:var(--white);font:500 14px/1.4 var(--sans);animation:inn 240ms var(--ut);box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.sok{position:relative}
+.sok input{width:100%;min-height:52px;padding:12px 14px 12px 44px;border:1px solid var(--graphite-500);border-radius:12px;font:400 16px/1.4 var(--sans);color:var(--graphite-900);background:var(--white)}
+.sok .ikon{position:absolute;left:14px;top:16px;color:var(--graphite-600)}
+.kat-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--r2)}
+.kat{display:grid;gap:6px;align-content:start;padding:14px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white);text-align:left;font:inherit;color:inherit;cursor:pointer;min-height:112px}
+.kat .ikonboks{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--sand-150)}
+.kat .ikonboks .ikon{width:18px;height:18px}
+.kat b{font:600 15px/1.3 var(--sans)}
+.kat span.kilde{font-size:13px}
+.kat.akse{color:#fff;border:0}
+.kat.akse .ikonboks{background:rgba(255,255,255,.2)}
+.kat.akse span.kilde{color:#fff;opacity:.9}
+.kat.tek{background:var(--tek-ink)}
+.liste{display:grid;border:1px solid var(--sand-300);border-radius:12px;overflow:hidden;background:var(--white)}
+.liste > *{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--r3);align-items:center;min-height:60px;padding:10px 14px;border:0;border-bottom:1px solid var(--sand-300);background:transparent;text-align:left;font:inherit;color:inherit;cursor:pointer;text-decoration:none;width:100%}
+.liste > *:last-child{border-bottom:0}
+.liste b{display:block;font:600 15px/1.3 var(--sans)}
+.liste .kilde{display:block}
+.liste .ikon{color:var(--graphite-600)}
+.liste .ikke-skrevet b{color:var(--graphite-600);font-weight:500}
+.faq{display:grid;border:1px solid var(--sand-300);border-radius:12px;overflow:hidden;background:var(--white)}
+.faq details{border-bottom:1px solid var(--sand-300)}
+.faq details:last-child{border-bottom:0}
+.faq summary{list-style:none;display:flex;justify-content:space-between;align-items:center;gap:var(--r3);min-height:56px;padding:10px 14px;font:600 15px/1.35 var(--sans);cursor:pointer}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary .ikon{transition:transform 200ms var(--ut);flex:none}
+.faq details[open] summary .ikon{transform:rotate(180deg)}
+.faq p{padding:0 14px 14px;font-size:14.5px;line-height:1.55;color:var(--graphite-800)}
+.skriv{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--r3);align-items:center}
+.skriv .ikonboks{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:var(--graphite-900);color:#fff}
+.treff{font-size:13.5px;color:var(--graphite-600)}
+
+/* Artikkel */
+.artikkel{display:grid;gap:var(--r4);max-width:68ch}
+.artikkel h2{margin:var(--r3) 0 0;font:600 20px/1.3 var(--sans)}
+.artikkel p{font-size:16px;line-height:1.65;color:var(--graphite-800)}
+.akser{display:grid;gap:var(--r2)}
+.akse-rad{display:grid;grid-template-columns:72px minmax(0,1fr);gap:0;border-radius:12px;overflow:hidden;color:#fff}
+.akse-rad b.k{display:grid;place-items:center;font:600 14px/1 var(--mono);letter-spacing:.06em;background:rgba(0,0,0,.14)}
+.akse-rad span{padding:12px 14px;font-size:14.5px;line-height:1.45}
+.akse-rad span b{display:block;font:600 15px/1.3 var(--sans)}
+.a-fys{background:var(--fys-ink)} .a-tek{background:var(--tek-ink)} .a-slag{background:var(--slag)} .a-spill{background:var(--spill-ink)} .a-turn{background:var(--turn)}
+.fordeling{display:flex;height:28px;border-radius:8px;overflow:hidden}
+.fordeling i{display:block;height:100%}
+.innhold-liste{margin:0;padding-left:18px;display:grid;gap:4px;font-size:14.5px}
+.innhold-liste a{color:var(--graphite-900)}
+.nyttig{display:flex;flex-wrap:wrap;gap:var(--r2)}
+.nyttig button{min-height:44px;padding:0 18px;border:1px solid var(--graphite-500);border-radius:8px;background:var(--white);font:600 14px/1 var(--sans);color:var(--graphite-900);cursor:pointer}
+.nyttig button[aria-pressed="true"]{background:var(--graphite-900);color:#fff;border-color:var(--graphite-900)}
+.avatar{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font:600 14px/1 var(--sans);flex:none;background:var(--graphite-900);color:var(--white)}
+.coach-rad{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--r3);align-items:center}
+.coach-rad b{display:block;font:600 15px/1.3 var(--sans)}
+
+/* Skriv til oss */
+.typevalg{display:grid;grid-template-columns:1fr 1fr;gap:var(--r2)}
+.typevalg button{display:grid;gap:4px;justify-items:start;text-align:left;padding:12px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white);font:inherit;color:inherit;cursor:pointer;min-height:76px}
+.typevalg button b{font:600 15px/1.25 var(--sans)}
+.typevalg button span{font-size:13px;color:var(--graphite-600);line-height:1.35}
+.typevalg button[aria-pressed="true"]{border:2px solid var(--graphite-900);background:var(--sand-100)}
+.felt textarea{resize:vertical}
+.skala-valg{display:grid;grid-template-columns:repeat(11,minmax(0,1fr));gap:4px}
+.skala-valg button{min-height:44px;border:1px solid var(--sand-300);border-radius:8px;background:var(--white);font:600 14px/1 var(--mono);color:var(--graphite-900);cursor:pointer;padding:0}
+.skala-valg button[aria-pressed="true"]{background:var(--graphite-900);border-color:var(--graphite-900);color:#fff}
+.skala-tekst{display:flex;justify-content:space-between;font-size:12.5px;color:var(--graphite-600)}
+.vedlegg{display:grid;gap:6px;padding:12px 14px;border-radius:10px;background:var(--sand-100);font-size:14px}
+.vedlegg b{font-weight:600}
+.teller{font:500 12.5px/1 var(--mono);color:var(--graphite-600);justify-self:end}
+.oppsummering{display:grid;margin:0;padding:0;list-style:none;border-top:1px solid var(--sand-300)}
+.oppsummering li{display:grid;grid-template-columns:110px minmax(0,1fr);gap:var(--r3);padding:10px 0;border-bottom:1px solid var(--sand-300);font-size:14.5px}
+.oppsummering li span{color:var(--graphite-600)}
+.oppsummering li b{font-weight:600}
+.hake{width:64px;height:64px;border-radius:50%;background:var(--green-700);color:#fff;display:grid;place-items:center}
+.hake .ikon{width:32px;height:32px;stroke-width:2.5}
+.bekreftet-topp{display:grid;justify-items:start;gap:var(--r3)}
+.hub-grid,.art-grid,.skriv-grid{display:grid;gap:var(--r5);align-content:start}
+.hub-grid > div,.art-grid > div,.art-grid > aside,.skriv-grid > div,.skriv-grid > aside{display:grid;gap:var(--r5);align-content:start}
+.smal{max-width:760px}
+
+@container (min-width:900px){
+  .kat-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .hub-grid{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:var(--r6);align-items:start}
+  .art-grid{grid-template-columns:minmax(0,1fr) 300px;gap:var(--r6);align-items:start}
+  .art-grid > aside,.skriv-grid > aside{position:sticky;top:24px}
+  .skriv-grid{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:var(--r6);align-items:start}
+}
+</style>
+</head><body>
+<div class="ytre">
+  <div class="hode">
+    <span class="meta-s">PlayerHQ · pakke 15 · Hjelp og tilbakemelding · utkast 1 · 16.10.2026</span>
+    <h1>Hjelp og tilbakemelding</h1>
+    <p>Fem skjermer i én fil: Hjelp (søk, kategorier og vanlige spørsmål), én kategori, én artikkel, «Skriv til oss» og kvitteringen. Kontakt og tilbakemelding er slått sammen til ett skjema, fordi begge havner i samme Innboks hos coachen i dag. Demodata for Øyvind Rohjan, Kategori C. I dag er mandag 5. oktober kl. 14:20, uke 41.</p>
+  </div>
+  <div class="kontroller">
+    <div class="velger skjermvalg" role="group" aria-label="Skjerm">
+      <button type="button" aria-pressed="true" data-skjerm="hjelp">Hjelp</button>
+      <button type="button" aria-pressed="false" data-skjerm="kategori">Én kategori</button>
+      <button type="button" aria-pressed="false" data-skjerm="artikkel">Én artikkel</button>
+      <button type="button" aria-pressed="false" data-skjerm="skriv">Skriv til oss</button>
+      <button type="button" aria-pressed="false" data-skjerm="sendt">Sendt</button>
+    </div>
+  </div>
+  <div class="kontroller">
+    <div class="velger" role="group" aria-label="Versjon"><button type="button" aria-pressed="true" data-versjon="etter">Utkast</button><button type="button" aria-pressed="false" data-versjon="for">Dagens design</button></div>
+    <div class="velger" role="group" aria-label="Bredde"><button type="button" aria-pressed="true" data-bredde="mob">Mobil</button><button type="button" aria-pressed="false" data-bredde="pc">PC</button></div>
+    <div class="velger" role="group" aria-label="Tilstand"><button type="button" aria-pressed="true" data-tilstand="data">Med data</button><button type="button" aria-pressed="false" data-tilstand="tom">Tom</button><button type="button" aria-pressed="false" data-tilstand="laster">Laster</button><button type="button" aria-pressed="false" data-tilstand="feil">Feil</button></div>
+  </div>
+  <div class="scene"><div class="ramme mob" id="ramme"></div></div>
+  <div class="notater">
+    <div class="endringer">
+      <span class="meta-s">Hva som er nytt</span>
+      <ul>
+        <li><b>Hjelp</b> starter med søk. Søket leter i artikler og vanlige spørsmål samtidig. Seks kategorier som ruter, vanlige spørsmål som trekkspill, og «Skriv til oss» nederst.</li>
+        <li><b>Én kategori</b> er en enkel liste. Ingen oppdiktede visningstall eller datoer. Artikler som ikke er skrevet, vises ikke.</li>
+        <li><b>Én artikkel</b> har én mal: ingress, innhold, «Var dette nyttig?» og «Spør Anders». Eksempelet er pyramiden, den eneste artikkelen som er skrevet i dag.</li>
+        <li><b>Skriv til oss</b> erstatter både «Kontakt support» og «Gi tilbakemelding»: velg Spørsmål, Feil i appen, Forslag eller Ros. «Hvor fornøyd er du» er et valgfritt spørsmål i samme skjema.</li>
+        <li><b>Sendt</b> sier hva som skjer: meldingen ligger hos AK Golf, og svaret kommer på e-post. Ingen løfte om svartid.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Reglene som er fulgt</span>
+      <ul>
+        <li>Ingen svartid lovet noe sted (vedtak: ikke før Jarvis er i drift). Dagens «innen 1 t», «~4 t», «innen 4 timer» og «innen 48 timer» er fjernet.</li>
+        <li>Nivåene heter Gratis og Full. Artikkelen «Hvordan oppgrader til Pro?» heter «Gratis og Full». «Credits» heter klipp, «Mål» heter målsetning, TrackMan skrives med stor M.</li>
+        <li>Farge betyr akse: bare artikkelen om pyramiden bruker aksefargene. Resten er grafitt.</li>
+        <li>Innlogging bare med Google og e-post og passord. Artikkelen om tofaktor nevner ikke SMS.</li>
+        <li>Ingen rust: skjermene sletter eller avslutter ingenting. Ingen sidelengs rulling i 390 og 360 px.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Åpent hos Anders</span>
+      <ul>
+        <li><b>Artiklene, avgjort 16.10:</b> Claude skriver dem. 16 artikler ligger i <code>hjelpeartikler.md</code> og venter på din gjennomlesning. «Bytt coach» og «Be om videoanalyse» er tatt ut fordi funksjonene ikke finnes.</li>
+        <li><b>«Send anonymt» fjernes.</b> Dagens bryter lover at svaret ikke kobles til kontoen, men kontoen lagres alltid. Anbefaling: fjern bryteren. Alternativet er å gjøre den ekte.</li>
+        <li><b>Kontakt og tilbakemelding blir ett skjema.</b> Anbefaling: ja. Gamle adresser sender til «Skriv til oss» med riktig type valgt.</li>
+        <li><b>«Tillat at AK Golf ser profilen min»</b> lagres ikke i dag og er ikke koblet til noe. Anbefaling: fjern den. Coachen ser allerede det spilleren har delt.</li>
+        <li><b>Én adresse:</b> i dag står både support@akgolf.no og post@akgolf.no. Anbefaling: post@akgolf.no, som skjemaet faktisk sender til.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ================= Hjelp ================= -->
+<template id="hjelp">
+<div class="app" data-fane="meg" data-skall="tilbake" data-tilbake="Meg">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div><div class="dato">Meg · hjelp</div><h1 class="tittel">Hjelp</h1></div>
+      <label class="sok"><svg class="ikon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><input type="search" placeholder="Søk i hjelpen, f.eks. «klipp»" aria-label="Søk i hjelpen" data-sok></label>
+    </div>
+    <div class="hub-grid">
+      <div>
+        <section class="seksjon" data-sokresultat hidden>
+          <div class="sek-topp"><h2>Treff</h2><span class="treff" data-antall></span></div>
+          <div class="liste" data-treff></div>
+        </section>
+        <section class="seksjon" data-kategorier>
+          <div class="sek-topp"><h2>Kategorier</h2><span class="kilde">6 kategorier · 16 artikler</span></div>
+          <div class="kat-grid">
+            <button type="button" class="kat" data-gaa="kategori"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span><b>Komme i gang</b><span class="kilde">Første runde, TrackMan, første målsetning</span></button>
+            <button type="button" class="kat" data-gaa="kategori"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><path d="M12 3l9 16H3z"/></svg></span><b>Trening</b><span class="kilde">Pyramiden, uka, øvelser</span></button>
+            <button type="button" class="kat" data-gaa="kategori"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span><b>Coaching</b><span class="kilde">Meldinger, før timen, flytte timen</span></button>
+            <button type="button" class="kat" data-gaa="kategori"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></span><b>Booking og betaling</b><span class="kilde">Klipp, Gratis og Full, avbestilling</span></button>
+            <button type="button" class="kat" data-gaa="kategori"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span><b>Konto</b><span class="kilde">Passord, tofaktor, dataene dine</span></button>
+            <button type="button" class="kat" data-gaa="kategori"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><path d="M12 20V10M18 20V4M6 20v-4"/></svg></span><b>Stats</b><span class="kilde">Strokes Gained, rundene</span></button>
+          </div>
+        </section>
+      </div>
+      <div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Vanlige spørsmål</h2></div>
+          <div class="faq">
+            <details open><summary>Hvordan registrerer jeg en runde?<svg class="ikon" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary><p>Trykk på hurtigknappen og velg «Registrer runde». Før slag for slag, så regnes Strokes Gained og brutto score ut med en gang.</p></details>
+            <details><summary>Hvor planlegger jeg treningen?<svg class="ikon" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary><p>I Plan. «Rediger» åpner Workbench med År, Periode, Måned, Uke og Målsetninger.</p></details>
+            <details><summary>Hva koster appen?<svg class="ikon" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary><p>Gratis koster ingenting. Full koster 299 kr/mnd eller 2 690 kr/år, og er inkludert i coaching-pakkene Performance og Performance Pro.</p></details>
+            <details><summary>Hvordan når jeg coachen?<svg class="ikon" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary><p>Bjella øverst åpner Innboks. Der skriver du til Anders, og der kommer forslag og svar.</p></details>
+          </div>
+        </section>
+        <div class="kort dempet">
+          <div class="skriv"><span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><path d="M4 4h16v12H5.2L4 17.2z"/></svg></span><span><b class="undertittel">Fant du ikke svaret?</b><p class="forklar">Skriv til oss om spørsmål, feil eller forslag. Svaret kommer på e-post.</p></span></div>
+          <div class="knapper"><button type="button" class="knapp pri" data-gaa="skriv">Skriv til oss</button></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= Én kategori ================= -->
+<template id="kategori">
+<div class="app" data-fane="meg" data-skall="tilbake" data-tilbake="Hjelp">
+  <main class="innhold smal">
+    <div class="topp" data-behold>
+      <div><div class="dato">Hjelp · kategori</div><h1 class="tittel">Trening</h1></div>
+      <p class="ingress">Hvordan pyramiden, uka og øvelsene henger sammen, og hvordan du bruker Stats til å trene på det som teller mest.</p>
+    </div>
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Artikler</h2><span class="kilde">4 artikler</span></div>
+      <div class="liste">
+        <a href="#" data-gaa="artikkel"><span><b>Pyramiden: FYS, TEK, SLAG, SPILL og TURN</b><span class="kilde">4 min lesing</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></a>
+        <a href="#"><span><b>Bygg treningsuka i Workbench</b><span class="kilde">3 min lesing</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></a>
+        <a href="#"><span><b>Øvelser for området der du taper mest</b><span class="kilde">3 min lesing</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></a>
+        <a href="#"><span><b>Les TrackMan-tallene: Club Path, Attack Angle og Smash Factor</b><span class="kilde">5 min lesing</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></a>
+      </div>
+    </section>
+    <div class="kort dempet">
+      <b class="undertittel">Fant du ikke svaret?</b>
+      <p class="forklar">Skriv til oss. Spørsmålet havner hos AK Golf, og svaret kommer på e-post.</p>
+      <div class="knapper"><button type="button" class="knapp sek" data-gaa="skriv">Skriv til oss</button></div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= Én artikkel ================= -->
+<template id="artikkel">
+<div class="app" data-fane="meg" data-skall="tilbake" data-tilbake="Trening">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div><div class="dato">Hjelp · trening · 4 min lesing</div><h1 class="tittel">Pyramiden: FYS, TEK, SLAG, SPILL og TURN</h1></div>
+      <p class="ingress">All trening i PlayerHQ tilhører én av fem akser. Fargen på en økt forteller hvilken. Slik ser du om uka har den fordelingen du og coachen har planlagt.</p>
+    </div>
+    <div class="art-grid">
+      <article class="artikkel">
+        <h2 id="a1">De fem aksene</h2>
+        <div class="akser">
+          <div class="akse-rad a-fys"><b class="k">FYS</b><span><b>Fysisk</b>Styrke, kraft, bevegelighet og kondisjon. Grunnlaget under svingen.</span></div>
+          <div class="akse-rad a-tek"><b class="k">TEK</b><span><b>Teknisk</b>Bevegelsen i svingen, ofte uten ball eller på lav hastighet.</span></div>
+          <div class="akse-rad a-slag"><b class="k">SLAG</b><span><b>Golfslag</b>Slag mot et mål: utslag, innspill, nærspill og putting.</span></div>
+          <div class="akse-rad a-spill"><b class="k">SPILL</b><span><b>Spill</b>På banen: hull, valg og scoring.</span></div>
+          <div class="akse-rad a-turn"><b class="k">TURN</b><span><b>Turnering</b>Turneringsrunder og det du gjør for å prestere der.</span></div>
+        </div>
+        <h2 id="a2">Hvorfor en pyramide?</h2>
+        <p>Bunnen bærer toppen. Uten fysisk og teknisk grunnlag holder ikke slagene under press, og uten spill og turnering blir treningen aldri prøvd der det teller. Fordelingen endrer seg gjennom året: mer FYS og TEK i grunnperioden, mer SPILL og TURN i turneringsperioden.</p>
+        <h2 id="a3">Slik ser du din egen fordeling</h2>
+        <p>Plan viser timene per akse for uka, måneden og året. Eksempel fra en uke i grunnperioden:</p>
+        <div class="fordeling" role="img" aria-label="Eksempel: FYS 20 prosent, TEK 30, SLAG 30, SPILL 15, TURN 5"><i class="a-fys" style="width:20%"></i><i class="a-tek" style="width:30%"></i><i class="a-slag" style="width:30%"></i><i class="a-spill" style="width:15%"></i><i class="a-turn" style="width:5%"></i></div>
+        <div class="lg-rad"><span class="lg"><i class="a-fys"></i>FYS 20 %</span><span class="lg"><i class="a-tek"></i>TEK 30 %</span><span class="lg"><i class="a-slag"></i>SLAG 30 %</span><span class="lg"><i class="a-spill"></i>SPILL 15 %</span><span class="lg"><i class="a-turn"></i>TURN 5 %</span><span class="estimat">Eksempel</span></div>
+        <p>Fordelingen er et forslag, ikke en sperre. Workbench sier fra når uka avviker fra det måneden har fordelt, men stopper ingenting.</p>
+        <section class="kort" aria-label="Var dette nyttig?" data-nyttig>
+          <b class="undertittel">Var dette nyttig?</b>
+          <div class="nyttig" data-gruppe><button type="button" aria-pressed="false" data-ja>Ja</button><button type="button" aria-pressed="false" data-nei>Nei</button></div>
+        </section>
+      </article>
+      <aside>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>I artikkelen</h2></div>
+          <ol class="innhold-liste"><li><a href="#a1">De fem aksene</a></li><li><a href="#a2">Hvorfor en pyramide?</a></li><li><a href="#a3">Slik ser du din egen fordeling</a></li></ol>
+        </section>
+        <div class="kort dempet">
+          <div class="coach-rad"><span class="avatar">AK</span><span><b>Spør Anders</b><span class="kilde">Coachen din</span></span></div>
+          <p class="forklar">Lurer du på fordelingen i din egen plan? Skriv til Anders i Innboks.</p>
+          <div class="knapper"><button type="button" class="knapp sek" data-spor>Skriv til Anders</button></div>
+        </div>
+      </aside>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= Skriv til oss ================= -->
+<template id="skriv">
+<div class="app" data-fane="meg" data-skall="tilbake" data-tilbake="Hjelp">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div><div class="dato">Hjelp · skriv til oss</div><h1 class="tittel">Skriv til oss</h1></div>
+    </div>
+    <div class="skriv-grid">
+      <div>
+        <div class="felt"><span class="etikett">Hva gjelder det?</span>
+          <div class="typevalg" data-type>
+            <button type="button" aria-pressed="true" data-t="sporsmal"><b>Spørsmål</b><span>Noe du lurer på</span></button>
+            <button type="button" aria-pressed="false" data-t="feil"><b>Feil i appen</b><span>Noe virker ikke</span></button>
+            <button type="button" aria-pressed="false" data-t="forslag"><b>Forslag</b><span>Noe som kan bli bedre</span></button>
+            <button type="button" aria-pressed="false" data-t="ros"><b>Ros</b><span>Noe som virker bra</span></button>
+          </div>
+        </div>
+        <div class="felt"><label for="s-emne">Emne</label><input id="s-emne" value="Klippene vises ikke etter booking"></div>
+        <div class="felt"><label for="s-tekst">Beskriv det</label><textarea id="s-tekst" rows="5" maxlength="1000" data-tekst>Jeg booket time onsdag 7. oktober, men under Abonnement står det fortsatt 2 klipp igjen.</textarea><span class="teller" data-teller></span></div>
+        <div class="vedlegg" data-vedlegg hidden><b>Vi legger ved</b><span>Siden du var på (Meg › Abonnement), appversjon og enhet. Ingen andre data.</span></div>
+        <div class="felt"><span class="etikett">Hvor fornøyd er du med PlayerHQ? <span class="kilde">Valgfritt</span></span>
+          <div class="skala-valg" data-gruppe aria-label="0 til 10"><button type="button" aria-pressed="false">0</button><button type="button" aria-pressed="false">1</button><button type="button" aria-pressed="false">2</button><button type="button" aria-pressed="false">3</button><button type="button" aria-pressed="false">4</button><button type="button" aria-pressed="false">5</button><button type="button" aria-pressed="false">6</button><button type="button" aria-pressed="false">7</button><button type="button" aria-pressed="true">8</button><button type="button" aria-pressed="false">9</button><button type="button" aria-pressed="false">10</button></div>
+          <div class="skala-tekst"><span>Lite</span><span>Svært</span></div>
+        </div>
+      </div>
+      <aside>
+        <div class="kort">
+          <ul class="oppsummering">
+            <li><span>Fra</span><b>Øyvind Rohjan</b></li>
+            <li><span>Svar til</span><b>oyvind.rohjan@eksempel.no</b></li>
+            <li><span>Til</span><b>AK Golf, post@akgolf.no</b></li>
+          </ul>
+          <button type="button" class="knapp pri stor" data-send>Send</button>
+          <p class="kildetekst">Meldingen havner i Innboks hos AK Golf. Svaret kommer på e-post.</p>
+        </div>
+      </aside>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= Sendt ================= -->
+<template id="sendt">
+<div class="app" data-fane="meg" data-skall="tilbake" data-tilbake="Hjelp">
+  <main class="innhold smal">
+    <div class="bekreftet-topp">
+      <span class="hake"><svg class="ikon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span>
+      <div><div class="dato">Sendt i dag 14:20</div><h1 class="tittel">Takk, vi har fått meldingen</h1></div>
+    </div>
+    <div class="kort">
+      <ul class="oppsummering">
+        <li><span>Type</span><b>Spørsmål</b></li>
+        <li><span>Emne</span><b>Klippene vises ikke etter booking</b></li>
+        <li><span>Svar til</span><b>oyvind.rohjan@eksempel.no</b></li>
+        <li><span>Saksnummer</span><b class="mono" style="font-family:var(--mono)">AK-2041</b></li>
+      </ul>
+    </div>
+    <p class="forklar">Svaret kommer på e-post. Oppgi saksnummeret hvis du skriver igjen om det samme.</p>
+    <div class="knapper"><button type="button" class="knapp pri" data-gaa="hjelp">Til Hjelp</button><button type="button" class="knapp sek">Til Meg</button></div>
+  </main>
+</div>
+</template>
+
+<script src="felles/felles.js"></script>
+<script>
+(function () {
+  function toast(app, tekst) {
+    var gml = app.querySelector('.toast'); if (gml) gml.remove();
+    var t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role', 'status'); t.textContent = tekst;
+    app.querySelector('.innhold').appendChild(t);
+    setTimeout(function () { t.remove(); }, 3600);
+  }
+  var ARTIKLER = [
+    ['Registrer din første runde', 'Komme i gang'], ['Koble til TrackMan', 'Komme i gang'], ['Sett din første målsetning', 'Komme i gang'],
+    ['Pyramiden: FYS, TEK, SLAG, SPILL og TURN', 'Trening'], ['Bygg treningsuka i Workbench', 'Trening'], ['Les TrackMan-tallene', 'Trening'],
+    ['Skriv til coachen', 'Coaching'], ['Forbered en coachingtime', 'Coaching'], ['Flytt eller avbestill en time', 'Coaching'], ['Book en time', 'Booking og betaling'], ['Klipp forklart', 'Booking og betaling'], ['Gratis og Full', 'Booking og betaling'], ['Endre passord', 'Konto'], ['Slå på tofaktor', 'Konto'], ['Last ned dataene dine', 'Konto'], ['Hva betyr Strokes Gained?', 'Stats'], ['Les rundesammendraget', 'Stats']
+  ];
+  var FAQ = ['Hvordan registrerer jeg en runde?', 'Hvor planlegger jeg treningen?', 'Hva koster appen?', 'Hvordan når jeg coachen?'];
+  function hjelp(app) {
+    var inn = app.querySelector('[data-sok]'), res = app.querySelector('[data-sokresultat]'), kat = app.querySelector('[data-kategorier]');
+    inn.addEventListener('input', function () {
+      var q = inn.value.trim().toLowerCase();
+      if (!q) { res.hidden = true; kat.hidden = false; return; }
+      var t = ARTIKLER.filter(function (a) { return a[0].toLowerCase().indexOf(q) > -1 || a[1].toLowerCase().indexOf(q) > -1; }).map(function (a) { return '<a href="#"><span><b>' + a[0] + '</b><span class="kilde">Artikkel · ' + a[1] + '</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></a>'; })
+        .concat(FAQ.filter(function (f) { return f.toLowerCase().indexOf(q) > -1; }).map(function (f) { return '<a href="#"><span><b>' + f + '</b><span class="kilde">Vanlig spørsmål</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></a>'; }));
+      res.hidden = false; kat.hidden = true;
+      app.querySelector('[data-antall]').textContent = t.length + (t.length === 1 ? ' treff' : ' treff');
+      app.querySelector('[data-treff]').innerHTML = t.length ? t.join('') : '<button type="button" data-gaa="skriv"><span><b>Ingen treff på «' + inn.value.trim().replace(/[<>&]/g, '') + '»</b><span class="kilde">Skriv til oss, så svarer vi på e-post</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>';
+    });
+  }
+  function artikkel(app) {
+    app.querySelector('[data-ja]').addEventListener('click', function () { toast(app, 'Takk. Svaret er lagret.'); });
+    app.querySelector('[data-nei]').addEventListener('click', function () {
+      var k = app.querySelector('[data-nyttig]');
+      if (!k.querySelector('textarea')) { var f = document.createElement('div'); f.className = 'felt'; f.innerHTML = '<label for="n-tekst">Hva manglet?</label><textarea id="n-tekst" rows="2"></textarea><div class="knapper"><button type="button" class="knapp sek">Send</button></div>'; k.appendChild(f); f.querySelector('button').addEventListener('click', function () { toast(app, 'Takk. Vi bruker svaret når artikkelen skrives om.'); }); }
+    });
+    app.querySelector('[data-spor]').addEventListener('click', function () { toast(app, 'Åpner ny melding til Anders i Innboks.'); });
+  }
+  function skriv(app) {
+    var tekst = app.querySelector('[data-tekst]'), teller = app.querySelector('[data-teller]');
+    function tell() { teller.textContent = tekst.value.length + ' / 1000'; }
+    tekst.addEventListener('input', tell); tell();
+    app.querySelector('[data-type]').addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (!b) return;
+      app.querySelectorAll('[data-type] button').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      app.querySelector('[data-vedlegg]').hidden = b.dataset.t !== 'feil';
+    });
+    app.querySelector('[data-send]').addEventListener('click', function () { AKUtkast.gaa('sendt'); });
+  }
+  function m(id, mal, etter, tom, laster, feil) { return { mal: mal, for: { mob: 'screenshots/' + id + '-390.jpg', pc: 'screenshots/' + id + '-1440.jpg' }, etter: etter, tom: tom, laster: laster, feil: feil }; }
+  /* Dagens skjermbilder finnes ikke for hjelpesidene i registeret. Nærmeste skjerm vises: PH-25 Innstillinger. */
+  AKUtkast.start({
+    start: 'hjelp',
+    skjermer: {
+      hjelp: m('PH-25', 'hjelp', hjelp, { tittel: 'Hjelpen er ikke skrevet ennå', tekst: 'Skriv til oss, så svarer vi på e-post.', knapp: 'Skriv til oss' }, 'Henter hjelpen …', 'Hjelpen kunne ikke hentes'),
+      kategori: m('PH-25', 'kategori', null, { tittel: 'Ingen artikler her ennå', tekst: 'Artiklene i denne kategorien er ikke skrevet. Skriv til oss om det du lurer på.', knapp: 'Skriv til oss' }, 'Henter artiklene …', 'Artiklene kunne ikke hentes'),
+      artikkel: m('PH-25', 'artikkel', artikkel, { tittel: 'Artikkelen er ikke skrevet ennå', tekst: 'Skriv til oss om det du lurer på, eller spør coachen.', knapp: 'Skriv til oss' }, 'Henter artikkelen …', 'Artikkelen kunne ikke hentes'),
+      skriv: m('PH-25', 'skriv', skriv, null, 'Sender …', 'Meldingen kunne ikke sendes. Teksten er tatt vare på.'),
+      sendt: m('PH-25', 'sendt', null, null, 'Sender …', 'Meldingen kunne ikke sendes. Teksten er tatt vare på.')
+    }
+  });
+})();
+</script>
+</body></html>

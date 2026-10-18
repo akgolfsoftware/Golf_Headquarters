@@ -6,8 +6,12 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { updateSession } from "@/lib/supabase/proxy";
 import { workbenchRedirectForTrenPath } from "@/lib/portal/tren-workbench-redirect";
+import { demoSperre, erDemoSperretSti } from "@/lib/domain/demo-sperre";
 import { erUnntattVedlikehold, vedlikeholdAktivt } from "@/lib/vedlikehold";
 import { erSperretTeamWangSti } from "@/lib/auth/team-wang-sperre";
+import { erSperretTeamNorwaySti } from "@/lib/auth/team-norway-sperre";
+import { oppdaterWangProxySesjon } from "@/lib/wang-supabase/proxy";
+import { erBeskyttetWangAppSti } from "@/lib/wang-supabase/routes";
 
 // Stats-sider som fortsatt har hardkodede design-/prototypedata (fabrikkerte
 // spillere). Skjules i PRODUKSJON (redirect → /stats) til de er wired til ekte
@@ -179,6 +183,17 @@ export async function proxy(request: NextRequest) {
   const csp = buildCsp(nonce);
   const response = await updateSession(request, nonce, csp);
 
+  if (erBeskyttetWangAppSti(path)) {
+    const wangSession = await oppdaterWangProxySesjon(request, response);
+    if (wangSession.status === "unauthenticated") {
+      const url = request.nextUrl.clone();
+      url.pathname = "/team-wang/app/logg-inn";
+      url.search = "";
+      url.searchParams.set("next", `${path}${request.nextUrl.search}`);
+      return NextResponse.redirect(url);
+    }
+  }
+
   // /team-wang: fellessiden er ÅPEN uten innlogging — den skal kunne deles med
   // elever og foreldre. Det er trygt fordi siden ikke viser navn:
   // `hentWangGruppe()` utelater elevlista som standard, og fellessiden ber
@@ -212,9 +227,10 @@ export async function proxy(request: NextRequest) {
     // proxyen stopper kun uautentiserte (samme arbeidsdeling som /admin).
     path.startsWith("/innsyn") ||
     erTeamWangCoach ||
+    erSperretTeamNorwaySti(path) ||
     erAargangHub;
 
-  if (erBeskyttet) {
+  if (erBeskyttet || erDemoSperretSti(path)) {
     // Sjekk auth-status via samme cookies som updateSession nettopp refresjet.
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -232,9 +248,18 @@ export async function proxy(request: NextRequest) {
       data: { user },
     } = await supabase.auth.getUser();
 
-    if (!user) {
+    // Demokontoene (coach-rollen) skal aldri nå AgencyOS eller coach-API-ene.
+    const sperre = demoSperre(user?.email, path);
+    if (sperre?.type === "send-til") return NextResponse.redirect(new URL(sperre.sti, request.url));
+    if (sperre?.type === "avvis") return NextResponse.json({ error: "forbidden" }, { status: 403 });
+
+    if (!user && erBeskyttet) {
       const url = request.nextUrl.clone();
-      url.pathname = path.startsWith("/team-wang") ? "/team-wang/logg-inn" : "/auth/login";
+      url.pathname = path.startsWith("/team-wang")
+        ? "/wang"
+        : path.startsWith("/team-norway")
+          ? "/teamnorway"
+          : "/auth/login";
       url.searchParams.set("next", path);
       return NextResponse.redirect(url);
     }

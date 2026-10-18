@@ -18,6 +18,8 @@ function useState<T>(initial: T | (() => T)): [T, (next: T | ((old: T) => T)) =>
   if (!(index in slots)) slots[index] = typeof initial === "function" ? (initial as () => T)() : initial;
   return [slots[index] as T, next => { slots[index] = typeof next === "function" ? (next as (old: T) => T)(slots[index] as T) : next; }];
 }
+mock.module("@/lib/workbench/ovelse-bank-actions", { namedExports: { sokOvelser: async () => ({ ok: false, error: "Ubrukt øvelsessøk" }), opprettOvelseIBank: async () => ({ ok: false, error: "Ubrukt øvelseslagring" }) } });
+mock.module("@/styles/playerhq-ny-wb-ovelser.css", { namedExports: {} });
 mock.module("@/lib/workbench/wb-session-life-actions", { namedExports: { loadSessionExecution: async () => ({ ok: false, error: "Ubrukt gjennomføringslesing" }), mutateSessionExecution: async () => ({ ok: false, error: "Ubrukt gjennomføringshandling" }) } });
 mock.module("react", { namedExports: { ...React, useState, useMemo: (fn: () => unknown) => fn(), useCallback: (fn: unknown) => fn, useRef: (v: unknown) => ({ current: v }), useEffect() {}, useTransition: () => [false, (fn: () => Promise<unknown>) => transitions.push(fn())] } });
 const replacements: string[] = [];
@@ -235,7 +237,10 @@ test("valg av økt og periode følger URL uten å miste kalender og zoom", () =>
   assert.equal(q.get("periode"), "syntetisk-periode"); assert.equal(q.get("uke"), d.uke.weekStart); assert.equal(q.get("aar"), "2026"); assert.equal(q.get("maned"), "2026-10"); assert.equal(q.get("niva"), "ar"); assert.equal(q.get("flate"), "sesong");
 });
 test("mobil kalender vises før verktøy og Bibliotek åpner samme kildehandling i ark", () => {
-  const render = () => draw("mobiluke", () => WorkbenchUkeverksted({ data: fixture() }));
+  // Øvelser søkes nå i OvelseVelger; biblioteklista viser maler, teknisk plan og tidligere uker.
+  const base = fixture();
+  const data: WorkbenchSamletData = { ...base, kilder: [...base.kilder, { id: "template:syntetisk", kind: "TEMPLATE", title: "Syntetisk mal", durationMinutes: 30 }] };
+  const render = () => draw("mobiluke", () => WorkbenchUkeverksted({ data }));
   const start = render();
   const dagvalg = find(start, n => n.props.className === "ws-mobile-day-selector");
   const toolbar = find(start, n => n.props.className === "ws-toolbar ws-week-toolbar");
@@ -245,7 +250,7 @@ test("mobil kalender vises før verktøy og Bibliotek åpner samme kildehandling
   click(find(ark.props.children as React.ReactNode, n => n.props.children === "Plasser i uka"));
   const etter = render();
   assert.ok(!nodes(etter).some(n => n.type === "sheet" && n.props.title === "Bibliotek"));
-  assert.match(html(etter), /Plasserer «Syntetisk øvelse»/);
+  assert.match(html(etter), /Plasserer «Syntetisk mal»/);
 });
 test("desktop samtidige økter beholder klokkeakse, startminutter, varighet og separate spor", () => {
   const base = fixture();

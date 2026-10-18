@@ -74,6 +74,15 @@ export const TN = {
     infoBg: "var(--tn-status-info-bg)",
   },
 
+  /** Aksefargene (Anders 14.10.2026). Fyll med hvit tekst, lys på navy, tint som bakgrunn. */
+  akse: {
+    FYS: { fyll: "var(--tn-akse-fys)", lys: "var(--tn-akse-fys-lys)", tint: "var(--tn-akse-fys-tint)" },
+    TEK: { fyll: "var(--tn-akse-tek)", lys: "var(--tn-akse-tek-lys)", tint: "var(--tn-akse-tek-tint)" },
+    SLAG: { fyll: "var(--tn-akse-slag)", lys: "var(--tn-akse-slag-lys)", tint: "var(--tn-akse-slag-tint)" },
+    SPILL: { fyll: "var(--tn-akse-spill)", lys: "var(--tn-akse-spill-lys)", tint: "var(--tn-akse-spill-tint)" },
+    TURN: { fyll: "var(--tn-akse-turn)", lys: "var(--tn-akse-turn-lys)", tint: "var(--tn-akse-turn-tint)" },
+  },
+
   data: {
     d1: "var(--tn-data-1)",
     d2: "var(--tn-data-2)",
@@ -126,7 +135,6 @@ export const TN = {
     md: "var(--tn-radius-md)",
     lg: "var(--tn-radius-lg)",
     xl: "var(--tn-radius-xl)",
-    full: "var(--tn-radius-full)",
   },
 
   shadow: {

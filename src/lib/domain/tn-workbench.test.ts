@@ -67,7 +67,10 @@ mock.module("@/lib/domain/tn-arbeidsflate", {
   },
 });
 mock.module("@/lib/auth/coached", {
-  namedExports: { harCoachTilgangTilSpiller: async () => harCoachTilgangResultat },
+  namedExports: {
+    harCoachTilgangTilSpiller: async () => harCoachTilgangResultat,
+    harCoachLesetilgangTilSpiller: async () => harCoachTilgangResultat,
+  },
 });
 mock.module("@/lib/auth/effective-capabilities", {
   namedExports: { canUser: async () => harCapability },

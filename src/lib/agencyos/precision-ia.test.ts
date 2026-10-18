@@ -4,35 +4,54 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
-import { AOS_HURTIG, AOS_MENY, AOS_MER, aktivtAosPunkt, synligeMer } from "./precision-ia";
+import { AOS_GRUPPER, AOS_HURTIG, AOS_MER, aktivtAosId, synligeGrupper, synligeMer } from "./precision-ia";
 
 const finnesSide = (href: string) => {
   const rel = href.replace(/^\/admin/, "");
   return ["", "/(legacy)"].some((g) => existsSync(`src/app/admin${g}${rel}/page.tsx`));
 };
 
-describe("AgencyOS-menyen (Precision)", () => {
-  it("har menyen fra 28.09 i riktig rekkefølge", () => {
-    assert.deepEqual(AOS_MENY.map((m) => m.label), ["Cockpit", "Innboks", "Stall", "Kalender", "Workbench"]);
+describe("AgencyOS-menyen (variant C, 16.10)", () => {
+  it("har tre grupper med punktene i riktig rekkefølge", () => {
+    assert.deepEqual(
+      AOS_GRUPPER.map((g) => [g.label, g.punkter.map((p) => p.label)]),
+      [
+        ["Daglig", ["Cockpit", "Innboks", "Kalender"]],
+        ["Spillere", ["Stall", "Workbench", "Grupper", "Tester"]],
+        ["Drift", ["Booking", "Økonomi", "Data Golf", "Oppsett"]],
+      ],
+    );
     assert.deepEqual(AOS_MER.map((m) => m.label), ["Booking", "Grupper", "Tester", "Økonomi", "Oppsett"]);
     assert.equal(AOS_HURTIG.length, 5);
   });
 
   it("hver lenke peker på en side som finnes", () => {
-    for (const m of [...AOS_MENY, ...AOS_MER, ...AOS_HURTIG]) assert.ok(finnesSide(m.href), `${m.label}: ${m.href}`);
+    const alle = [...AOS_GRUPPER.flatMap((g) => g.punkter), ...AOS_MER, ...AOS_HURTIG, { label: "Mer", href: "/admin/mer" }];
+    for (const m of alle) assert.ok(finnesSide(m.href), `${m.label}: ${m.href}`);
   });
 
   it("Økonomi vises bare for head coach", () => {
+    const har = (head: boolean) => synligeGrupper(head).some((g) => g.punkter.some((p) => p.id === "okonomi"));
+    assert.ok(har(true));
+    assert.ok(!har(false));
     assert.ok(synligeMer(true).some((m) => m.id === "okonomi"));
     assert.ok(!synligeMer(false).some((m) => m.id === "okonomi"));
   });
 
-  it("lengste treff vinner, og Mer-sider lyser Mer", () => {
-    assert.deepEqual(aktivtAosPunkt("/admin/agencyos"), { punkt: "cockpit", mer: null });
-    assert.deepEqual(aktivtAosPunkt("/admin/agencyos/okonomi"), { punkt: "mer", mer: "okonomi" });
-    assert.deepEqual(aktivtAosPunkt("/admin/spillere/abc/plan"), { punkt: "stall", mer: null });
-    assert.deepEqual(aktivtAosPunkt("/admin/plan-templates/x"), { punkt: "workbench", mer: null });
-    assert.deepEqual(aktivtAosPunkt("/admin/bookinger/ny"), { punkt: "mer", mer: "booking" });
-    assert.deepEqual(aktivtAosPunkt("/admin/planleggeX"), { punkt: null, mer: null });
+  it("Data Golf står i Drift og åpner DG-01, som finnes (pakke 10)", () => {
+    const dg = AOS_GRUPPER.find((g) => g.id === "drift")!.punkter.find((p) => p.id === "datagolf");
+    assert.equal(dg?.href, "/admin/datagolf");
+    assert.ok(finnesSide("/admin/datagolf"));
+    assert.equal(aktivtAosId("/admin/datagolf/proffer/123"), "datagolf");
+  });
+
+  it("lengste treff vinner", () => {
+    assert.equal(aktivtAosId("/admin/agencyos"), "cockpit");
+    assert.equal(aktivtAosId("/admin/agencyos/okonomi"), "okonomi");
+    assert.equal(aktivtAosId("/admin/spillere/abc/plan"), "stall");
+    assert.equal(aktivtAosId("/admin/plan-templates/x"), "workbench");
+    assert.equal(aktivtAosId("/admin/bookinger/ny"), "booking");
+    assert.equal(aktivtAosId("/admin/mer"), null);
+    assert.equal(aktivtAosId("/admin/planleggeX"), null);
   });
 });

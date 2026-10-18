@@ -21,7 +21,7 @@ export const PRECISION_TYPER = [
   { id: "PH-10", navn: "Plan", natt: false, maVise: "Uke/dag/måned, økter per akse, opptatt tid", monster: ["/portal/planlegge", "/portal/kalender", "/portal/kalender/opptatt"] },
   { id: "PH-11", navn: "Workbench (spiller)", natt: false, maVise: "År → periode → uke → økt på én flate, dra-og-slipp", monster: ["/portal/planlegge/workbench"] },
   { id: "PH-12", navn: "Velg treningsplan", natt: false, maVise: "Stegviser, mal, SMART-mål", monster: ["/portal/planlegge/bygger", "/portal/ai/mal-bygger"] },
-  { id: "PH-13", navn: "Øvelsesbank", natt: false, maVise: "Liste med filter per akse, øvelsesdetalj, Caddie-forslag", monster: ["/portal/drills", "/portal/drills/[id]", "/portal/coach/ovelser", "/portal/ai/foresla-drill"] },
+  { id: "PH-13", navn: "Øvelsesbank", natt: false, maVise: "Liste med filter per akse, øvelsesdetalj, Caddie-forslag", monster: ["/portal/drills", "/portal/drills/[id]", "/portal/drills/break-tabell", "/portal/coach/ovelser", "/portal/ai/foresla-drill"] },
   { id: "PH-14", navn: "Tester", natt: false, maVise: "Protokoller, historikk, registrer resultat", monster: ["/portal/tren/tester", "/portal/tren/tester/[testId]", "/portal/tren/tester/ny", "/portal/tren/tester/ny/egen", "/portal/tren/tester/team-norway"] },
   { id: "PH-15", navn: "Test: gjennomfør", natt: true, maVise: "Scorekort, live-registrering", monster: ["/portal/tren/tester/[testId]/gjennomfor"] },
   { id: "PH-16", navn: "Stats", natt: false, maVise: "SG per kategori, siste runder/økter, filter", monster: ["/portal/analysere", "/portal/analysere/historikk", "/portal/analysere/skill-map"] },
@@ -61,7 +61,7 @@ export const PRECISION_TYPER = [
   { id: "AG-20", navn: "Økonomi", natt: false, maVise: "Tall fra Tripletex, per virksomhet, avvik", monster: ["/admin/agencyos/okonomi"] },
   { id: "AG-21", navn: "Oppgaver", utgar: "AG-01 Cockpit", natt: false, maVise: "Prosjekter, rutiner, tildelte oppgaver", monster: ["/admin/oppgaver", "/admin/workspace/notion"] },
   { id: "AG-22", navn: "Innsikt og talent", utgar: "AG-08 Spiller 360 › Talent", natt: false, maVise: "Radar mot peer-snitt, opptil fire spillere side ved side", monster: ["/admin/innsikt", "/innsyn/talent/radar", "/innsyn/talent/discovery", "/innsyn/talent/sammenligning", "/innsyn/talent/wagr-import"] },
-  { id: "AG-23", navn: "Oppsett", natt: false, maVise: "Åtte faner, tilgang, inviter coach, egen profil", monster: ["/admin/oppsett", "/admin/profile", "/admin/team/ekstern", "/admin/team/inviter", "/admin/marketing"] },
+  { id: "AG-23", navn: "Oppsett", natt: false, maVise: "Åtte faner, tilgang, inviter coach, egen profil", monster: ["/admin/oppsett", "/admin/profile", "/admin/team/ekstern", "/admin/team/inviter"] },
   { id: "AG-24", navn: "Drift (kun admin)", utgar: "AG-23 Oppsett", natt: false, maVise: "Logg, feil, sletteforespørsler, hjelp", monster: ["/admin/drift", "/admin/audit-log", "/admin/feillogg", "/admin/gdpr", "/admin/hjelp"] },
 
   { id: "FO-01", navn: "Forelder i dag", natt: false, maVise: "Dagens økt, neste booking, uke, ACWR-varsel", monster: ["/forelder", "/forelder/ukerapport", "/forelder/varsler"] },
@@ -71,7 +71,7 @@ export const PRECISION_TYPER = [
   { id: "FO-05", navn: "Samtykke", natt: false, maVise: "Under 16 år, deling, revisjonshistorikk", monster: ["/forelder/samtykke", "/forelder/samtykke/deling/[childId]"] },
   { id: "FO-06", navn: "Coach og innstillinger", natt: false, maVise: "Coach, siste melding, egen kontakt", monster: ["/forelder/coach", "/forelder/innstillinger"] },
 
-  { id: "AU-01", navn: "Logg inn", natt: false, maVise: "E-post/passord, Google, BankID-plassholder", monster: ["/auth/login", "/auth/bankid", "/auth/logget-ut"] },
+  { id: "AU-01", navn: "Logg inn", natt: false, maVise: "E-post/passord og Google (ingen BankID, beslutning 15.10)", monster: ["/auth/login", "/auth/logget-ut"] },
   { id: "AU-02", navn: "Registrer", natt: false, maVise: "Pakke, samtykke, sjekk e-post", monster: ["/auth/signup", "/auth/check-email", "/auth/checkout-resume"] },
   { id: "AU-03", navn: "Passord", natt: false, maVise: "Be om lenke, nytt passord", monster: ["/auth/forgot-password", "/auth/reset-password"] },
   { id: "AU-04", navn: "Onboarding", natt: false, maVise: "Stegviser for spiller/coach og forelder", monster: ["/auth/onboarding", "/auth/onboarding/forelder"] },

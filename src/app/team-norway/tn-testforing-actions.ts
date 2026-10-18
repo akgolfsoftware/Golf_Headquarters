@@ -50,7 +50,7 @@ import { prisma } from "@/lib/prisma";
 import { TEAM_NORWAY_SLUG, aktivtMedlemskapWhere, aktivtSpillerMedlemskapWhere } from "@/lib/domain/grupper";
 import { medSerialisertTestdagTransaksjon } from "@/lib/domain/tn-testdag-lock";
 import { syncTalentEtterTest } from "@/lib/talent/test-sync";
-import { tnProtocol, TN_VERSION, TN_RULES_VERSION, tnVersion } from "@/lib/portal-tester/tn-catalog";
+import { tnProtocol, TN_VERSIONS, tnVersion } from "@/lib/portal-tester/tn-catalog";
 import { tnScore, tnValidate, tnSameValues, TnValuesSchema } from "@/lib/portal-tester/tn-scoring";
 import { TnSessionSchema, type TnSaveResult } from "@/lib/portal-tester/tn-session";
 
@@ -64,7 +64,7 @@ const TnCoachSaveSchema = z.object({
 
 /** Trenerførte testdag-økter — playerId/protokoll kommer ALLTID fra den autoriserte deltakerraden, aldri fra klienten. */
 export async function saveTnTestSomCoach(input: unknown): Promise<TnSaveResult> {
-  const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const coach = await requirePortalUser({ tillatDemo: true, allow: ["COACH", "ADMIN"] });
   const parsed = TnCoachSaveSchema.safeParse(input);
   if (!parsed.success) return { ok: false, error: "Ugyldige registreringer." };
   const data = parsed.data;
@@ -94,7 +94,7 @@ export async function saveTnTestSomCoach(input: unknown): Promise<TnSaveResult> 
       if (!spillerMedlem) throw new Error("Spilleren er ikke lenger et aktivt medlem av stasjonsgruppen.");
 
       // Protokollversjon låst til testdagen — aldri live-katalogen.
-      if (![TN_VERSION, TN_RULES_VERSION].includes(deltaker.testDay.testDefinition.scoringRule ?? "")) {
+      if (!(TN_VERSIONS as readonly string[]).includes(deltaker.testDay.testDefinition.scoringRule ?? "")) {
         throw new Error(`Testdagens protokollversjon (${deltaker.testDay.testDefinition.scoringRule}) er ukjent eller utdatert og kan ikke føres videre.`);
       }
       const protokollJson = deltaker.testDay.testDefinition.protocol as { protocolId?: string } | null;

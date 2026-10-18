@@ -7,7 +7,7 @@
  * Layout-guards kjører ikke for actions, så hver action slår opp brukeren selv.
  * Gruppeposter og påminnelser krever bare innlogging her; at brukeren er
  * trener i DENNE gruppen håndheves i domenelaget (tn-post.ts). Spillerposter
- * krever i tillegg plattformrollen via requireCoachActionUser().
+ * krever i tillegg plattformrollen via requireCoachActionUser({ tillatDemo: true }).
  */
 
 import { z } from "zod";
@@ -59,7 +59,7 @@ export async function opprettSpillerpostAction(
   if (!parsed.success) {
     return { ok: false, feil: parsed.error.issues[0]?.message ?? "Ugyldig post" };
   }
-  const bruker = await requireCoachActionUser();
+  const bruker = await requireCoachActionUser({ tillatDemo: true });
   try {
     await opprettSpillerpost({ forfatterId: bruker.id, spillerId, tekst: parsed.data.tekst, kind: parsed.data.kind });
     revalidatePath(`/team-norway/spiller/${spillerId}`);

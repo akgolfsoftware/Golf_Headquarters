@@ -1,0 +1,1156 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Stats, resten</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="felles/felles.css">
+<style>
+/* ---------- Pakke 13 Stats, resten ---------- */
+.skjermvalg button{font-size:13px;min-height:36px;padding:0 10px}
+.app [hidden]{display:none!important}
+.topp{display:grid;gap:var(--r3)}
+.toast{position:sticky;bottom:16px;z-index:5;display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;background:var(--graphite-900);color:var(--white);font:500 14px/1.4 var(--sans);animation:inn 240ms var(--ut);box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.ark-lag{position:sticky;bottom:0;z-index:6;display:grid;margin:0 calc(-1 * var(--r4)) calc(-1 * var(--r6))}
+.ark-lag .ark{animation:opp 300ms var(--ut)}
+.ark h2{margin:0;font:600 19px/1.25 var(--sans)}
+.ark-topp{display:flex;justify-content:space-between;align-items:center;gap:var(--r3)}
+.lukk{width:44px;height:44px;border:0;border-radius:8px;background:var(--sand-150);display:grid;place-items:center;cursor:pointer;color:var(--graphite-900);flex:none}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{min-height:40px;padding:0 12px;border:1px solid var(--sand-300);border-radius:999px;background:var(--white);font:500 14px/1 var(--sans);color:var(--graphite-800);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.chips button i{width:10px;height:10px;border-radius:50%}
+.chips button b{font:600 12px/1 var(--mono)}
+.chips button[aria-pressed="true"]{background:var(--graphite-900);border-color:var(--graphite-900);color:var(--white)}
+.chips button.fjern{background:var(--sand-150);border-color:var(--sand-150)}
+.ark-grp{display:grid;gap:8px}
+.ark-grp > b{font:600 14px/1.3 var(--sans)}
+.tre-tall{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--r2)}
+.tre-tall span{display:grid;gap:2px;font-size:13px;line-height:1.35;color:var(--graphite-600);background:var(--sand-100);border-radius:10px;padding:10px 12px}
+.tre-tall b{font:600 20px/1.1 var(--mono);color:var(--graphite-900)}
+.liste{display:grid;gap:0;margin:0;padding:0;list-style:none;border-top:1px solid var(--sand-300)}
+.liste li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px var(--r3);align-items:center;padding:10px 0;border-bottom:1px solid var(--sand-300);font-size:14.5px}
+.liste li b.v{font:600 15px/1.2 var(--mono);text-align:right}
+.liste li .kilde{grid-column:1 / -1}
+.to-grid{display:grid;gap:var(--r5);align-content:start}
+.to-grid > div,.to-grid > aside,.to-grid > section{display:grid;gap:var(--r5);align-content:start}
+.festet{position:sticky;bottom:0;z-index:4;padding:var(--r3) 0 var(--r2);background:linear-gradient(transparent,var(--white) 30%)}
+.datanote{font-size:13px;line-height:1.5;color:var(--graphite-800);padding:12px 14px;border-radius:10px;border:1px dashed var(--graphite-500)}
+
+/* SG-søyler (som PH-16) */
+.sg-liste{display:grid;gap:10px}
+.sgr{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1.4fr) 48px;gap:10px;align-items:center}
+.sgn{font-size:14px;line-height:1.3;display:flex;flex-wrap:wrap;gap:2px 6px;align-items:center}
+.sgn small{font:500 11px/1 var(--mono);color:var(--graphite-600)}
+.sgbar{position:relative;height:14px;border-radius:3px;background:var(--sand-150)}
+.sgbar .null{position:absolute;left:50%;top:-3px;bottom:-3px;width:2px;background:var(--graphite-600)}
+.sgbar span{position:absolute;top:0;bottom:0;border-radius:3px;background:var(--slag);opacity:.45}
+.sgr.svakest .sgbar span{opacity:1}
+.sgv{font:600 15px/1 var(--mono);text-align:right}
+.uthev{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;padding:12px 14px;border-radius:10px;background:var(--slag);color:#fff;font-size:14px;line-height:1.45}
+.uthev b{font-weight:600}
+.sammenlign{display:inline-flex;flex-wrap:wrap;gap:3px;padding:3px;border-radius:8px;border:1px solid var(--sand-300);justify-self:start}
+.sammenlign button{min-height:36px;padding:0 12px;border:0;border-radius:6px;background:transparent;font:500 13px/1 var(--sans);color:var(--graphite-800);cursor:pointer}
+.sammenlign button[aria-pressed="true"]{background:var(--slag);color:#fff}
+
+/* Ett område */
+.akse-kort{display:grid;gap:6px;padding:16px 18px;border-radius:12px;color:#fff}
+.akse-kort.slag{background:var(--slag)} .akse-kort.tek{background:var(--tek-ink)}
+.akse-kort .hoved strong{color:#fff}
+.akse-kort .trend{background:rgba(255,255,255,.2);color:#fff}
+.akse-kort p{font-size:14px;line-height:1.45;opacity:.95}
+.akse-kort .estimat{border-color:rgba(255,255,255,.7);color:#fff}
+
+/* Del runde */
+.delekort{border-radius:16px;overflow:hidden;background:var(--graphite-900);color:#fff;display:grid;max-width:340px;justify-self:center;width:100%}
+.delekort > img{width:100%;height:150px;object-fit:cover;display:block;opacity:.85}
+.delekort .dk{padding:18px;display:grid;gap:12px}
+.dk-topp{display:flex;gap:10px;align-items:center}
+.dk-av{width:36px;height:36px;border-radius:50%;background:#fff;color:var(--graphite-900);display:grid;place-items:center;font:600 13px/1 var(--sans)}
+.dk-topp small{display:block;font-size:12.5px;opacity:.8}
+.dk-score{font:600 64px/1 var(--mono);letter-spacing:-.04em}
+.dk-score small{font:500 20px/1 var(--mono);opacity:.8;margin-left:8px;letter-spacing:0}
+.dk-sg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.dk-sg span{display:grid;gap:2px;padding:8px;border-radius:8px;background:rgba(255,255,255,.1);font-size:11px;line-height:1.2}
+.dk-sg b{font:600 15px/1 var(--mono)}
+.dk-logo{height:16px;width:auto;filter:invert(1);opacity:.8}
+.velg-kort{display:grid;gap:var(--r2)}
+.velg-kort button{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px var(--r3);align-items:center;text-align:left;padding:12px 14px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white);font:inherit;color:inherit;cursor:pointer;width:100%}
+.velg-kort button b{font:600 15px/1.3 var(--sans)}
+.velg-kort button span{font-size:13px;color:var(--graphite-600);grid-column:1}
+.velg-kort button[aria-pressed="true"]{border:2px solid var(--graphite-900)}
+.velg-kort .ring{grid-row:1 / span 2;grid-column:2;width:20px;height:20px;border-radius:50%;border:2px solid var(--graphite-500)}
+.velg-kort button[aria-pressed="true"] .ring{border:6px solid var(--graphite-900)}
+
+/* Historikk */
+.hist{display:grid;gap:var(--r2)}
+.hist-mnd{font:500 12px/1.3 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--graphite-600);margin-top:var(--r2)}
+.hrad{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:var(--r3);align-items:center;padding:10px 12px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white);color:inherit;text-decoration:none}
+.hrad .dag{display:grid;justify-items:center;font:600 18px/1 var(--mono)}
+.hrad .dag small{font:500 11px/1.2 var(--sans);color:var(--graphite-600);margin-top:3px}
+.hrad b{display:block;font:600 15px/1.3 var(--sans)}
+.hrad .meta{display:flex;flex-wrap:wrap;gap:2px 10px;font-size:13px;color:var(--graphite-600);align-items:center}
+.hrad .meta i{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:4px}
+.hrad .tall{text-align:right;font:600 16px/1.1 var(--mono)}
+.hrad .tall small{display:block;font:400 11.5px/1.3 var(--sans);color:var(--graphite-600)}
+
+/* Hull */
+.sonekjede{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.sone{display:grid;gap:4px;padding:10px;border-radius:10px;background:var(--sand-100);font-size:12.5px;line-height:1.3;color:var(--graphite-800);border:0;text-align:left;cursor:pointer;font-family:inherit}
+.sone b{font:600 18px/1 var(--mono);color:var(--graphite-900)}
+.sone.svak{background:var(--slag);color:#fff}.sone.svak b{color:#fff}
+.varme{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:4px}
+.varme span{display:grid;justify-items:center;gap:2px;padding:6px 0;border-radius:6px;font:600 13px/1 var(--mono)}
+.varme span small{font:500 10px/1 var(--sans);opacity:.85}
+.hulltab{width:100%;border-collapse:collapse;font-size:14px}
+.hulltab th,.hulltab td{padding:8px 4px;border-bottom:1px solid var(--sand-300);text-align:right;font-variant-numeric:tabular-nums}
+.hulltab th:first-child,.hulltab td:first-child{text-align:left}
+.hulltab th{font:600 12px/1.2 var(--sans);color:var(--graphite-600)}
+.hulltab td{font-family:var(--mono)}
+.hulltab tr.sum td{font-weight:600;border-bottom:0}
+.hulltab .birdie{color:var(--green-700);font-weight:600}
+.hulltab-par{display:grid;gap:var(--r3)}
+
+/* Skill map */
+.kart-grid{display:grid;gap:var(--r5);align-content:start}
+.hullkart{width:100%;max-width:360px;height:auto;justify-self:center;display:block}
+.hullkart .z{cursor:pointer;transition:opacity 160ms var(--ut)}
+.hullkart .z:hover{opacity:.85}
+.hullkart .z.valgt{stroke:var(--graphite-900);stroke-width:3}
+.hullkart text{font:600 10px var(--sans);fill:var(--graphite-900);pointer-events:none}
+.hullkart text.hvit{fill:#fff}
+.sone-detalj{display:grid;gap:var(--r3)}
+.naer{display:grid;grid-template-columns:1fr 1fr;gap:var(--r2)}
+.naer span{display:grid;gap:2px;padding:10px 12px;border-radius:10px;background:var(--sand-100);font-size:13px;color:var(--graphite-600)}
+.naer b{font:600 20px/1.1 var(--mono);color:var(--graphite-900)}
+
+/* Turneringer */
+.kurve{width:100%;height:auto;display:block;overflow:visible}
+.kurve text{font:500 10.5px var(--sans);fill:var(--graphite-600)}
+.turn-liste{display:grid;gap:var(--r2)}
+.turn-kort{display:grid;grid-template-columns:56px minmax(0,1fr) auto;gap:var(--r3);align-items:center;padding:12px 14px;border-radius:12px;border:1px solid var(--sand-300);border-left:6px solid var(--turn);background:var(--white)}
+.turn-kort summary{display:contents;cursor:pointer;list-style:none}
+.turn-kort summary::-webkit-details-marker{display:none}
+.tk-plass b{display:block;font:600 22px/1 var(--mono)}
+.tk-plass small,.tk-sum small{display:block;font-size:12px;line-height:1.3;color:var(--graphite-600);margin-top:3px}
+.tk-midt strong{display:block;font:600 15px/1.3 var(--sans)}
+.tk-midt small{display:block;font-size:12.5px;line-height:1.4;color:var(--graphite-600)}
+.tk-sum{text-align:right}
+.tk-sum b{display:block;font:600 18px/1 var(--mono)}
+.tk-runder{grid-column:1 / -1;display:flex;flex-wrap:wrap;gap:4px 14px;padding-top:8px;border-top:1px solid var(--sand-300);font:500 13px/1.4 var(--mono);color:var(--graphite-800)}
+.sok{min-height:44px;padding:0 12px;border:1px solid var(--graphite-500);border-radius:8px;font:400 16px/1 var(--sans);width:100%}
+
+/* Logg økt og skjema */
+.aksevalg{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.aksevalg button{display:grid;gap:4px;justify-items:center;padding:10px 0;border:1px solid var(--sand-300);border-radius:10px;background:var(--white);font:600 12px/1 var(--sans);letter-spacing:.04em;color:var(--graphite-900);cursor:pointer;min-height:56px}
+.aksevalg button i{width:14px;height:14px;border-radius:50%}
+.aksevalg button[aria-pressed="true"]{color:#fff;border-color:transparent}
+.aksevalg button[aria-pressed="true"] i{background:#fff!important}
+.aksevalg button.fys[aria-pressed="true"]{background:var(--fys-ink)} .aksevalg button.tek[aria-pressed="true"]{background:var(--tek-ink)} .aksevalg button.slag[aria-pressed="true"]{background:var(--slag)} .aksevalg button.spill[aria-pressed="true"]{background:var(--spill-ink)} .aksevalg button.turn[aria-pressed="true"]{background:var(--turn)}
+.teller{display:grid;grid-template-columns:48px minmax(0,1fr) 48px;gap:var(--r2);align-items:center}
+.teller button{height:48px;border:1px solid var(--graphite-500);border-radius:10px;background:var(--white);font:600 22px/1 var(--mono);cursor:pointer;color:var(--graphite-900)}
+.teller output{text-align:center;font:600 28px/1 var(--mono)}
+.skala10{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:4px}
+.skala10 button{min-height:44px;border:1px solid var(--sand-300);border-radius:8px;background:var(--white);font:600 14px/1 var(--mono);color:var(--graphite-900);cursor:pointer;padding:0}
+.skala10 button[aria-pressed="true"]{background:var(--graphite-900);border-color:var(--graphite-900);color:var(--white)}
+.skala10-tekst{display:flex;justify-content:space-between;font-size:12.5px;color:var(--graphite-600)}
+.felt textarea{resize:vertical}
+.to-felt{display:grid;grid-template-columns:1fr 1fr;gap:var(--r2)}
+
+/* Stegvis skjema */
+.stegtopp{display:grid;gap:8px}
+.stegtopp .spor{height:6px;border-radius:3px;background:var(--sand-150);overflow:hidden}
+.stegtopp .spor span{display:block;height:100%;background:var(--graphite-900);border-radius:3px;transition:width 300ms var(--ut)}
+.stegtopp small{font:500 12px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--graphite-600)}
+.steg-flate{display:grid;gap:var(--r4)}
+.steg-flate h2{margin:0;font:600 20px/1.25 var(--sans)}
+.testvalg{display:grid;gap:var(--r2)}
+.testvalg button{display:grid;grid-template-columns:6px minmax(0,1fr) auto;gap:2px 12px;align-items:center;text-align:left;padding:12px 14px 12px 0;border:1px solid var(--sand-300);border-radius:12px;background:var(--white);font:inherit;color:inherit;cursor:pointer;width:100%;overflow:hidden}
+.testvalg button::before{content:"";grid-row:1 / span 2;align-self:stretch;margin:-12px 0;background:var(--c,var(--graphite-600))}
+.testvalg button b{font:600 15px/1.3 var(--sans)}
+.testvalg button span{font-size:13px;color:var(--graphite-600);grid-column:2}
+.testvalg button em{grid-row:1 / span 2;grid-column:3;font:500 12px/1.2 var(--sans);font-style:normal;color:var(--graphite-600);text-align:right}
+.testvalg button[aria-pressed="true"]{border:2px solid var(--graphite-900)}
+.stor-felt input{font:600 40px/1 var(--mono);min-height:72px;text-align:center}
+.enhet{font:500 14px/1 var(--sans);color:var(--graphite-600);text-align:center}
+.bryter{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px var(--r3);align-items:center;padding:12px 14px;border:1px solid var(--sand-300);border-radius:12px}
+.bryter b{font:600 15px/1.3 var(--sans)}
+.bryter span{font-size:13px;color:var(--graphite-600)}
+.bryter button{grid-row:1 / span 2;grid-column:2;width:52px;height:32px;border-radius:16px;border:0;background:var(--sand-300);position:relative;cursor:pointer}
+.bryter button::after{content:"";position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:50%;background:#fff;transition:transform 200ms var(--ut);box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.bryter button[aria-checked="true"]{background:var(--graphite-900)}
+.bryter button[aria-checked="true"]::after{transform:translateX(20px)}
+.oppsummering{display:grid;gap:0;margin:0;padding:0;list-style:none;border-top:1px solid var(--sand-300)}
+.oppsummering li{display:grid;grid-template-columns:120px minmax(0,1fr);gap:var(--r3);padding:10px 0;border-bottom:1px solid var(--sand-300);font-size:14.5px}
+.oppsummering li span{color:var(--graphite-600)}
+.oppsummering li b{font-weight:600}
+.protosteg{display:grid;gap:6px;margin:0;padding:0;list-style:none;counter-reset:p}
+.protosteg li{display:grid;grid-template-columns:28px minmax(0,1fr) 44px;gap:var(--r2);align-items:center;counter-increment:p}
+.protosteg li::before{content:counter(p);width:28px;height:28px;border-radius:8px;display:grid;place-items:center;background:var(--sand-150);font:600 13px/1 var(--mono)}
+.protosteg li input{min-height:44px;padding:8px 10px;border:1px solid var(--graphite-500);border-radius:8px;font:400 15px/1.3 var(--sans);width:100%}
+.protosteg li button{height:44px;border:0;border-radius:8px;background:transparent;cursor:pointer;color:var(--graphite-600)}
+.maaltall{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.maaltall label{display:grid;gap:4px;font:600 12px/1 var(--sans);color:var(--graphite-600)}
+.maaltall input{min-height:44px;padding:6px;border:1px solid var(--graphite-500);border-radius:8px;font:600 15px/1 var(--mono);text-align:center;width:100%}
+
+/* Putte-laboratoriet */
+.ledd{display:grid;gap:10px}
+.ledd-rad{display:grid;grid-template-columns:minmax(0,1fr) 52px;gap:4px var(--r3);align-items:center}
+.ledd-rad label{font:600 14px/1.3 var(--sans)}
+.ledd-rad output{font:600 15px/1 var(--mono);text-align:right}
+.ledd-rad input{grid-column:1 / -1;width:100%;accent-color:var(--slag);min-height:36px}
+.ledd-rad.svakest label{color:var(--slag-ink)}
+.ledd-rad.svakest label::after{content:" · svakest";font-weight:500}
+.green{width:100%;max-width:420px;height:auto;display:block;justify-self:center;border-radius:12px}
+.skive{display:grid;place-items:center;width:140px;height:140px;border-radius:50%;justify-self:center;background:conic-gradient(var(--slag) calc(var(--p) * 1%),var(--sand-150) 0)}
+.skive span{display:grid;place-items:center;width:108px;height:108px;border-radius:50%;background:var(--white);font:600 32px/1 var(--mono)}
+.putter{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:4px}
+.putter span{height:36px;border-radius:6px;display:grid;place-items:center;font:600 12px/1 var(--mono);background:var(--sand-150)}
+.putter span.inne{background:var(--slag);color:#fff}
+
+@container (min-width:900px){
+  .ark-lag{position:sticky;bottom:24px;margin:0;justify-items:center;background:transparent;padding:0}
+  .ark-lag .ark{width:100%;max-width:520px;border-radius:16px}
+  .to-grid{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:var(--r6);align-items:start}
+  .to-grid > aside{position:sticky;top:24px}
+  .kart-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--r6);align-items:start}
+  .smal{max-width:720px}
+  .hist{max-width:820px}
+  .festet{position:static;background:none}
+}
+</style>
+</head><body>
+<div class="ytre">
+  <div class="hode">
+    <span class="meta-s">PlayerHQ · pakke 13 Stats, resten · utkast 1 · 16.10.2026</span>
+    <h1>Stats, resten</h1>
+    <p>Ti sider under Stats som ikke hadde tegning i nytt design. De bygger på Stats (PH-16) og Stats i dybden (pakke 6, godkjent 14.10). Demodata for Øyvind Rohjan, Kategori C, brutto snitt 73,1. I dag er mandag 5. oktober kl. 14:20, uke 41.</p>
+  </div>
+  <div class="kontroller">
+    <div class="velger skjermvalg" role="group" aria-label="Skjerm">
+      <button type="button" aria-pressed="true" data-skjerm="omrade">Ett område</button>
+      <button type="button" aria-pressed="false" data-skjerm="skillmap">Skill map</button>
+      <button type="button" aria-pressed="false" data-skjerm="hull">Hull</button>
+      <button type="button" aria-pressed="false" data-skjerm="historikk">Historikk</button>
+      <button type="button" aria-pressed="false" data-skjerm="turneringer">Turneringer</button>
+      <button type="button" aria-pressed="false" data-skjerm="del">Del runde</button>
+      <button type="button" aria-pressed="false" data-skjerm="logg">Logg økt</button>
+      <button type="button" aria-pressed="false" data-skjerm="putt">Puttelaboratoriet</button>
+      <button type="button" aria-pressed="false" data-skjerm="nytest">Ny test</button>
+      <button type="button" aria-pressed="false" data-skjerm="egentest">Egen test</button>
+    </div>
+  </div>
+  <div class="kontroller">
+    <div class="velger" role="group" aria-label="Versjon"><button type="button" aria-pressed="true" data-versjon="etter">Utkast</button><button type="button" aria-pressed="false" data-versjon="for">Dagens design</button></div>
+    <div class="velger" role="group" aria-label="Bredde"><button type="button" aria-pressed="true" data-bredde="mob">Mobil</button><button type="button" aria-pressed="false" data-bredde="pc">PC</button></div>
+    <div class="velger" role="group" aria-label="Tilstand"><button type="button" aria-pressed="true" data-tilstand="data">Med data</button><button type="button" aria-pressed="false" data-tilstand="tom">Tom</button><button type="button" aria-pressed="false" data-tilstand="laster">Laster</button><button type="button" aria-pressed="false" data-tilstand="feil">Feil</button></div>
+  </div>
+  <div class="scene"><div class="ramme mob" id="ramme"></div></div>
+  <div class="notater">
+    <div class="endringer">
+      <span class="meta-s">Hva som er nytt</span>
+      <ul>
+        <li><b>Ett område</b> (`/portal/statistikk/[omrade]`) åpnes fra «Per område» i Stats. Det finnes i to utgaver: et SG-område (Utslag, Innspill, Nærspill, Putting) og en akse (FYS, TEK, SLAG, SPILL, TURN). Ett stort tall, utviklingen og hva som trekker ned. Tabellene og «Snitt A1» er borte.</li>
+        <li><b>Skill map</b> viser hullet med 16 soner. Trykk på en sone, så ser du SG, nærhet til hullet og øvelser. Kategori B og PGA Tour er nå en bryter på skjermen, ikke en skjult adresse.</li>
+        <li><b>Hull</b> har to visninger: Soner, og Hull for hull med varmekart over alle 18 hull og siste runde.</li>
+        <li><b>Historikk</b> samler runder, økter, tester og TrackMan per måned, med filter i et ark.</li>
+        <li><b>Turneringer</b> blir én liste i stedet for to. Kurven med til par og bånd for beste og verste runde står over lista.</li>
+        <li><b>Del runde</b> lager et bilde for story eller innlegg, eller en PDF. Delingslenken er tatt ut, for den førte til en side som ikke finnes.</li>
+        <li><b>Logg økt</b> fører en økt i etterkant. Du velger pyramiden først, og belastning og fokus på 1–10 som etter en live-økt.</li>
+        <li><b>Puttelaboratoriet</b> har tre faner: Kjeden, Greenen og Kontroll.</li>
+        <li><b>Ny test</b> velger fra testbatteriet. Golftester med slag for slag åpner gjennomføringen fra pakke 6. <b>Egen test</b> har måltall per kategori A–K.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Reglene som er fulgt</span>
+      <ul>
+        <li>Bare brutto. Ingen sammenligning med andre spillere. Sammenligningen er Kategori B (merket «Estimat»), og PGA Tour kan slås på (vedtak 28.09).</li>
+        <li>Farge betyr akse. Strokes Gained er SLAG, turneringer er TURN, testene har aksen sin. Runder og deling er grafitt.</li>
+        <li>Nok data: under 4 runder ingen konklusjon. Nærspill og putting er «Foreløpig» under 24 runder.</li>
+        <li>Tall har kilde og dato. Manglende verdi vises som «—». Tilbakelenkene sier «Stats», aldri «Analyse».</li>
+        <li>Rust bare én gang: «Forkast testen» i dialogen for å avbryte en test.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Ikke tegnet</span>
+      <ul>
+        <li><b>Stasjonsmodus</b> (`/portal/analysere/datagolf/stasjon`) er bare for coach. Den er Data Golf og flyttes til Data Golf i AgencyOS (pakke 10). I dag viser den faste eksempeltall.</li>
+        <li><b>Sammenlign med coach</b> (`/portal/coach/sg-hub`) sammenligner spilleren med faste tall (0,8 · 0,9 · 0,2 · 0,6) som ikke er målt. Den har også en lenke som går i ring. Forslag: send siden til Stats › Strokes Gained.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Åpent hos Anders</span>
+      <ul>
+        <li><s>Sende «Sammenlign med coach» videre til Stats?</s> Avgjort 16.10: ja.</li>
+        <li><s>Del runde: offentlig og delingslenke?</s> Avgjort 16.10: Del runde er med ved lansering som i utkastet. Venner med invitasjon, følging og feed kommer i neste versjon.</li>
+        <li><s>Turneringer som egen side?</s> Avgjort 16.10: blir en del av Resultater, med kurven øverst.</li>
+        <li><s>Skal Logg økt telle i Plan?</s> Avgjort 16.10: den teller i total treningstid, men ikke i «lagt inn mot fordelt» eller etterlevelsen.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ================= Ett område ================= -->
+<template id="omrade">
+<div class="app" data-fane="stats" data-skall="tilbake" data-tilbake="Stats">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div><div class="dato" data-o-dato>Strokes Gained · område</div><h1 class="tittel" data-o-navn>Innspill</h1></div>
+      <div class="valg" role="group" aria-label="Utgave" data-o-valg><button type="button" aria-pressed="true" data-o="sg">SG-område: Innspill</button><button type="button" aria-pressed="false" data-o="akse">Akse: TEK</button></div>
+    </div>
+    <div class="to-grid" data-o-innhold></div>
+  </main>
+</div>
+</template>
+
+<!-- ================= Skill map ================= -->
+<template id="skillmap">
+<div class="app" data-fane="stats" data-skall="tilbake" data-tilbake="Stats">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div><div class="dato">Strokes Gained · 12 runder slag for slag</div><h1 class="tittel">Skill map</h1></div>
+      <div class="sammenlign" role="group" aria-label="Sammenlign med" data-sm-mot><button type="button" aria-pressed="true" data-mot="b">Kategori B</button><button type="button" aria-pressed="false" data-mot="pga">PGA Tour</button></div>
+    </div>
+    <div class="kart-grid">
+      <div class="seksjon">
+        <svg class="hullkart" viewBox="0 0 320 470" role="group" aria-label="Hullet delt i 16 soner. Trykk på en sone." data-kart></svg>
+        <p class="kildetekst" style="text-align:center">Fargen er SG per runde mot <span data-sm-motnavn>Kategori B</span>. Mørkere blå taper mer.</p>
+      </div>
+      <section class="kort sone-detalj" data-sm-detalj aria-live="polite"></section>
+    </div>
+    <a class="lenke" href="#" style="justify-self:start">Se som liste i Stats</a>
+  </main>
+</div>
+</template>
+
+<!-- ================= Hull ================= -->
+<template id="hull">
+<div class="app" data-fane="stats" data-skall="tilbake" data-tilbake="Stats">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div><div class="dato">Stats · Kategori C</div><h1 class="tittel">Hull</h1></div>
+      <div class="valg" role="group" aria-label="Visning" data-h-valg><button type="button" aria-pressed="true" data-h="soner">Soner</button><button type="button" aria-pressed="false" data-h="hull">Hull for hull</button></div>
+    </div>
+    <div data-h-soner class="to-grid">
+      <div>
+        <section class="kort">
+          <div class="sek-topp"><h2>Fra tee til hull</h2><span class="kilde">SG per runde mot Kategori B <span class="estimat">Estimat</span></span></div>
+          <div class="sonekjede">
+            <button type="button" class="sone"><span>Utslag</span><b>+0,2</b></button>
+            <button type="button" class="sone svak"><span>Innspill</span><b>−0,9</b></button>
+            <button type="button" class="sone"><span>Nærspill <span class="forelopig">Foreløpig</span></span><b>−0,4</b></button>
+            <button type="button" class="sone"><span>Putting <span class="forelopig">Foreløpig</span></span><b>0,0</b></button>
+          </div>
+          <div class="uthev"><svg class="ikon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg><span><b>Innspill taper mest</b>, 0,9 slag per runde. Mest fra 100–150 m.</span></div>
+          <p class="kildetekst">12 runder slag for slag · 2. juni–4. okt.</p>
+        </section>
+      </div>
+      <aside>
+        <section class="kort">
+          <div class="sek-topp"><h2>Trening per sone</h2><span class="kilde">Siste 30 dager</span></div>
+          <ul class="liste">
+            <li><span>Utslag</span><b class="v">2 t 10 min</b><span class="kilde">3 økter</span></li>
+            <li><span>Innspill</span><b class="v">6 t 40 min</b><span class="kilde">7 økter · flest av alle</span></li>
+            <li><span>Nærspill</span><b class="v">4 t 15 min</b><span class="kilde">5 økter</span></li>
+            <li><span>Putting</span><b class="v">3 t 50 min</b><span class="kilde">6 økter</span></li>
+          </ul>
+          <p class="kildetekst">Gjennomført tid fra planen · 5. sep.–4. okt.</p>
+        </section>
+      </aside>
+    </div>
+    <div data-h-hull hidden class="to-grid">
+      <div>
+        <section class="kort">
+          <div class="sek-topp"><h2>Snitt mot par per hull</h2><span class="kilde">Fredrikstad GK · 9 runder</span></div>
+          <div class="varme" data-varme></div>
+          <div class="lg-rad"><span class="lg"><i style="background:var(--green-50);border:1px solid var(--green-700)"></i>Under par</span><span class="lg"><i style="background:var(--sand-150)"></i>Rundt par</span><span class="lg"><i style="background:var(--slag)"></i>Over par</span></div>
+          <p class="forklar">Hull 7 og 14 koster mest: begge er par 4 med innspill fra 130–150 m.</p>
+          <p class="kildetekst">Brutto · hullscore fra 9 runder · 12. april–4. okt. Varmekartet krever minst 3 runder på banen.</p>
+        </section>
+      </div>
+      <aside>
+        <section class="kort hulltab-par">
+          <div class="sek-topp"><h2>Siste runde</h2><span class="kilde">4. okt. · Fredrikstad GK</span></div>
+          <div class="tre-tall"><span><b>72</b>brutto</span><span><b>0</b>mot par</span><span><b>4,00</b>snitt per hull</span></div>
+          <table class="hulltab" data-hulltab><thead><tr><th>Hull</th><th>Par</th><th>Score</th><th>Mot par</th></tr></thead><tbody></tbody></table>
+        </section>
+      </aside>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= Historikk ================= -->
+<template id="historikk">
+<div class="app" data-fane="stats" data-skall="tilbake" data-tilbake="Stats">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div><div class="dato">Stats · alle økter, runder og tester</div><h1 class="tittel">Historikk</h1></div>
+      <div class="chips" data-hi-aktive></div>
+    </div>
+    <div class="hist" data-hi-liste></div>
+    <div class="ark-lag" data-hi-ark hidden>
+      <div class="ark" role="dialog" aria-label="Filtrer historikk">
+        <div class="ark-topp"><h2>Filtrer historikk</h2><button type="button" class="lukk" aria-label="Lukk" data-lukk><svg class="ikon" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+        <div class="ark-grp"><b>Periode</b><div class="chips" data-f="periode"><button type="button" aria-pressed="false" data-v="30">30 dager</button><button type="button" aria-pressed="true" data-v="90">90 dager</button><button type="button" aria-pressed="false" data-v="sesong">Sesong</button><button type="button" aria-pressed="false" data-v="alt">Alt</button></div></div>
+        <div class="ark-grp"><b>Type</b><div class="chips" data-f="type" data-flere><button type="button" aria-pressed="true" data-v="runde">Runder</button><button type="button" aria-pressed="true" data-v="okt">Økter</button><button type="button" aria-pressed="true" data-v="test">Tester</button><button type="button" aria-pressed="true" data-v="tm">TrackMan</button></div></div>
+        <div class="ark-grp"><b>Akse</b><div class="chips" data-f="akse"><button type="button" aria-pressed="true" data-v="alle">Alle</button><button type="button" aria-pressed="false" data-v="fys"><i style="background:var(--fys)"></i>FYS</button><button type="button" aria-pressed="false" data-v="tek"><i style="background:var(--tek)"></i>TEK</button><button type="button" aria-pressed="false" data-v="slag"><i style="background:var(--slag)"></i>SLAG</button><button type="button" aria-pressed="false" data-v="spill"><i style="background:var(--spill)"></i>SPILL</button><button type="button" aria-pressed="false" data-v="turn"><i style="background:var(--turn)"></i>TURN</button></div></div>
+        <div class="ark-grp"><b>Rekkefølge</b><div class="chips" data-f="sort"><button type="button" aria-pressed="true" data-v="ny">Nyeste først</button><button type="button" aria-pressed="false" data-v="gml">Eldste først</button></div></div>
+        <div class="knapper"><button type="button" class="knapp sek" data-nullstill>Nullstill</button><button type="button" class="knapp pri" data-vis style="flex:1">Vis treff</button></div>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= Turneringer ================= -->
+<template id="turneringer">
+<div class="app" data-fane="stats" data-skall="tilbake" data-tilbake="Resultater">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div><div class="dato">Stats · Resultater · brutto</div><h1 class="tittel">Turneringer</h1></div>
+      <div class="valg" role="group" aria-label="Sesong" data-t-sesong><button type="button" aria-pressed="true" data-s="2026">2026</button><button type="button" aria-pressed="false" data-s="2025">2025</button><button type="button" aria-pressed="false" data-s="alle">Alle</button></div>
+    </div>
+    <div class="to-grid">
+      <div>
+        <section class="kort">
+          <div class="hoved"><strong data-t-snitt>+3,4</strong><span class="trend opp"><svg class="ikon" viewBox="0 0 24 24"><path d="M7 7l10 10M17 9v8H9"/></svg>1,8 bedre enn 2025</span></div>
+          <p class="forklar">Snitt til par per runde i turnering. <span data-t-grunn>6 turneringer, 14 runder.</span></p>
+          <svg class="kurve" viewBox="0 0 340 170" role="img" aria-label="Til par per turnering i 2026, fra +6,0 i april til +1,5 i september" data-t-kurve></svg>
+          <div class="lg-rad"><span class="lg"><i style="background:var(--turn);height:3px"></i>Snitt per turnering</span><span class="lg"><i style="background:var(--turn);opacity:.15"></i>Beste til verste runde</span></div>
+          <div class="tre-tall"><span><b data-t-ant>6</b>turneringer</span><span><b data-t-runder>14</b>runder</span><span><b data-t-beste>70</b>beste runde</span></div>
+          <p class="kildetekst">Brutto · GolfBox via AK Golf · oppdatert mandag 5. okt.</p>
+        </section>
+      </div>
+      <section class="seksjon">
+        <div class="sek-topp"><h2>Turneringene</h2><span class="kilde">Trykk for rundene</span></div>
+        <input class="sok" type="search" placeholder="Søk etter turnering eller bane" aria-label="Søk etter turnering eller bane" data-t-sok>
+        <div class="turn-liste" data-t-liste></div>
+        <p class="kildetekst">Plassering slik arrangøren har publisert den, i klassen din.</p>
+      </section>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= Del runde ================= -->
+<template id="del">
+<div class="app" data-fane="stats" data-skall="tilbake" data-tilbake="Runden">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div><div class="dato">Runde · Fredrikstad GK · 4. okt.</div><h1 class="tittel">Del runden</h1></div>
+    </div>
+    <div class="to-grid">
+      <div>
+        <div class="delekort" data-delekort>
+          <img src="bilder/spill-bane.jpg" alt="">
+          <div class="dk">
+            <div class="dk-topp"><span class="dk-av">ØR</span><span><b>Øyvind Rohjan</b><small>Fredrikstad GK · 4. okt. 2026</small></span></div>
+            <div class="dk-score">72<small>brutto · på par</small></div>
+            <div class="dk-sg"><span>Utslag<b>+0,4</b></span><span>Innspill<b>−0,6</b></span><span>Nærspill<b>+0,1</b></span><span>Putting<b>+0,3</b></span></div>
+            <img class="dk-logo" src="bilder/logo-ak-golf-hq.svg" alt="AK Golf HQ" width="74" height="16">
+          </div>
+        </div>
+        <p class="kildetekst" style="text-align:center">Brutto. SG mot Kategori B, estimat. Bare tall du selv har ført.</p>
+      </div>
+      <aside>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Format</h2></div>
+          <div class="velg-kort" data-gruppe>
+            <button type="button" aria-pressed="true"><b>Story</b><span>Bilde 1080 × 1920</span><i class="ring"></i></button>
+            <button type="button" aria-pressed="false"><b>Innlegg</b><span>Bilde 1080 × 1080</span><i class="ring"></i></button>
+            <button type="button" aria-pressed="false"><b>PDF</b><span>Scorekort med alle hull</span><i class="ring"></i></button>
+          </div>
+        </section>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Hvem ser runden i appen</h2></div>
+          <div class="velg-kort" data-gruppe>
+            <button type="button" aria-pressed="false"><b>Bare deg</b><span>Privat</span><i class="ring"></i></button>
+            <button type="button" aria-pressed="true"><b>Coach kan se</b><span>Anders ser runden i Spiller 360</span><i class="ring"></i></button>
+          </div>
+        </section>
+        <div class="festet knapper" style="display:grid"><button type="button" class="knapp pri stor" data-lagre-bilde>Lagre bildet</button></div>
+      </aside>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= Logg økt ================= -->
+<template id="logg">
+<div class="app" data-fane="plan" data-skall="tilbake" data-tilbake="Plan">
+  <main class="innhold smal">
+    <div class="topp" data-behold>
+      <div><div class="dato">Økt ført i etterkant</div><h1 class="tittel">Logg økt</h1></div>
+      <p class="ingress">For trening som ikke lå i planen. Den teller i total treningstid, men ikke mot planen.</p>
+    </div>
+    <div class="felt"><span class="etikett">Pyramide</span>
+      <div class="aksevalg" data-l-akse>
+        <button type="button" class="fys" aria-pressed="false" data-a="fys"><i style="background:var(--fys)"></i>FYS</button>
+        <button type="button" class="tek" aria-pressed="false" data-a="tek"><i style="background:var(--tek)"></i>TEK</button>
+        <button type="button" class="slag" aria-pressed="true" data-a="slag"><i style="background:var(--slag)"></i>SLAG</button>
+        <button type="button" class="spill" aria-pressed="false" data-a="spill"><i style="background:var(--spill)"></i>SPILL</button>
+        <button type="button" class="turn" aria-pressed="false" data-a="turn"><i style="background:var(--turn)"></i>TURN</button>
+      </div>
+    </div>
+    <div class="felt"><span class="etikett">Område</span><div class="chips" data-l-omrade data-gruppe></div></div>
+    <div class="to-felt">
+      <div class="felt"><label for="l-dato">Dato</label><input id="l-dato" type="date" value="2026-10-04" max="2026-10-05"></div>
+      <div class="felt"><label for="l-sted">Sted</label><select id="l-sted"><option>Range 3</option><option>Simulator 2</option><option>Chippinggreen</option><option>Puttegreen</option><option>Hjemme</option></select></div>
+    </div>
+    <div class="felt"><span class="etikett">Varighet</span>
+      <div class="teller"><button type="button" aria-label="5 minutter mindre" data-l-min="-5">−</button><output data-l-tid>45 min</output><button type="button" aria-label="5 minutter mer" data-l-min="5">+</button></div>
+    </div>
+    <div class="felt"><label for="l-ov">Øvelse <span class="kilde">valgfritt</span></label><input id="l-ov" placeholder="Søk i øvelsesbanken" value="Innspill 100–150 m, stigen"></div>
+    <div class="felt"><span class="etikett" data-l-bel-navn>Belastning</span>
+      <div class="skala10" data-gruppe data-l-bel></div>
+      <div class="skala10-tekst"><span>Lett</span><span>Maks</span></div>
+    </div>
+    <div class="felt" data-l-fokus-felt><span class="etikett">Fokus</span>
+      <div class="skala10" data-gruppe data-l-fokus></div>
+      <div class="skala10-tekst"><span>Tankene andre steder</span><span>Helt til stede</span></div>
+    </div>
+    <div class="felt"><label for="l-notat">Notat <span class="kilde">valgfritt</span></label><textarea id="l-notat" rows="3" placeholder="Hva gikk bra, hva vil du ta med?"></textarea></div>
+    <div class="festet knapper" style="display:grid"><button type="button" class="knapp pri stor" data-l-lagre>Lagre økt</button></div>
+  </main>
+</div>
+</template>
+
+<!-- ================= Puttelaboratoriet ================= -->
+<template id="putt">
+<div class="app" data-fane="plan" data-skall="tilbake" data-tilbake="Øvelsesbank">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div><div class="dato">Putting · seks ledd</div><h1 class="tittel">Puttelaboratoriet</h1></div>
+      <p class="ingress">En putt går i hullet når seks ledd holder: lesing, sikte, ballstart, lengde, flaks og aksept. Prøv hvor mye hvert ledd betyr.</p>
+      <div class="valg" role="group" aria-label="Fane" data-p-valg><button type="button" aria-pressed="true" data-p="kjeden">Kjeden</button><button type="button" aria-pressed="false" data-p="greenen">Greenen</button><button type="button" aria-pressed="false" data-p="kontroll">Kontroll</button></div>
+    </div>
+    <div data-p-kjeden class="to-grid">
+      <div>
+        <section class="kort">
+          <div class="sek-topp"><h2>Hvert ledd</h2><span class="kilde">Prosent riktig</span></div>
+          <div class="chips" data-p-forvalg><button type="button" aria-pressed="false" data-f="skarp">Skarp</button><button type="button" aria-pressed="true" data-f="snitt">Snittrunde</button><button type="button" aria-pressed="false" data-f="lengde">Sliter med lengde</button><button type="button" aria-pressed="false" data-f="sikte">Sikter skjevt</button></div>
+          <div class="ledd" data-p-ledd></div>
+        </section>
+      </div>
+      <aside>
+        <section class="akse-kort slag">
+          <span style="font-size:13px;opacity:.9">Sjanse for å sette en putt på 3 m</span>
+          <div class="hoved"><strong data-p-sjanse>—</strong></div>
+          <p data-p-svak></p>
+        </section>
+        <p class="kildetekst">Modell, ikke måling. Ledd ganges sammen, så det svakeste leddet styrer mest.</p>
+        <a class="knapp sek" href="#" style="justify-self:start">Puttøvelser i øvelsesbanken</a>
+      </aside>
+    </div>
+    <div data-p-greenen hidden class="to-grid">
+      <div>
+        <svg class="green" viewBox="0 0 400 300" role="img" aria-label="Green sett ovenfra med ballbane fra ballen til hullet" data-p-green></svg>
+      </div>
+      <aside>
+        <section class="kort">
+          <div class="ledd">
+            <div class="ledd-rad"><label for="g-len">Lengde</label><output data-g-o="len">3,0 m</output><input id="g-len" type="range" min="1" max="15" step="0.5" value="3" data-g="len"></div>
+            <div class="ledd-rad"><label for="g-fall">Fall</label><output data-g-o="fall">2 %</output><input id="g-fall" type="range" min="0" max="4" step="0.5" value="2" data-g="fall"></div>
+            <div class="ledd-rad"><label for="g-stimp">Greenhastighet (stimp)</label><output data-g-o="stimp">10</output><input id="g-stimp" type="range" min="7" max="13" step="0.5" value="10" data-g="stimp"></div>
+          </div>
+          <div class="naer"><span><b data-g-sikt>—</b>sikt over kanten</span><span><b data-g-forbi>40 cm</b>forbi hullet</span></div>
+          <p class="kildetekst">Ballen bør rulle 40 cm forbi hullet om den bommer. Høyrebrekk, sett fra ballen.</p>
+        </section>
+      </aside>
+    </div>
+    <div data-p-kontroll hidden class="to-grid">
+      <div>
+        <section class="kort">
+          <div class="sek-topp"><h2>Prosessen, ikke resultatet</h2><span class="kilde">10 putter på 2 m</span></div>
+          <p class="forklar">Huk av for hver putt der du gjorde rutinen helt: leste, siktet, ett prøvesving og slo. Om ballen gikk i, er nummer to.</p>
+          <div class="putter" data-p-putter></div>
+          <div class="knapper"><button type="button" class="knapp sek" data-p-ny>Ny runde med 10</button></div>
+        </section>
+      </div>
+      <aside>
+        <div class="skive" style="--p:70" data-p-skive><span data-p-score>7/10</span></div>
+        <p class="forklar" style="text-align:center">Rutinen holdt på 7 av 10. Målet er 9 av 10 før du flytter deg ut til 3 m.</p>
+      </aside>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= Ny test ================= -->
+<template id="nytest">
+<div class="app" data-fane="stats" data-skall="tilbake" data-tilbake="Tester">
+  <main class="innhold smal">
+    <div class="topp" data-behold>
+      <div><div class="dato">Testbatteri AK Golf</div><h1 class="tittel">Ny test</h1></div>
+      <div class="stegtopp"><small data-st-tekst>Steg 1 av 4 · Velg test</small><div class="spor"><span data-st-spor style="width:25%"></span></div></div>
+    </div>
+    <div class="steg-flate" data-steg="1">
+      <h2>Hvilken test tok du?</h2>
+      <input class="sok" type="search" placeholder="Søk i testbatteriet" aria-label="Søk i testbatteriet">
+      <div class="seksjon"><div class="sek-topp"><h2 style="font-size:16px">Fysisk</h2><span class="kilde">Hver sjette uke i grunnperioden</span></div>
+        <div class="testvalg" data-gruppe data-nt-valg>
+          <button type="button" aria-pressed="true" style="--c:var(--fys)" data-enhet="mph" data-forrige="106,5"><b>Club Speed</b><span>TrackMan · driver · beste av 5</span><em>Sist 28. sep.</em></button>
+          <button type="button" aria-pressed="false" style="--c:var(--fys)" data-enhet="kg" data-forrige="140"><b>Markløft trapbar</b><span>Tyngste løft med 1 rep</span><em>Sist 21. sep.</em></button>
+          <button type="button" aria-pressed="false" style="--c:var(--fys)" data-enhet="kg" data-forrige="—"><b>Benkpress</b><span>Tyngste løft med 1 rep</span><em>Aldri tatt</em></button>
+          <button type="button" aria-pressed="false" style="--c:var(--fys)" data-enhet="m" data-forrige="2,48"><b>Lengdehopp</b><span>Stille fra to bein · beste av 3</span><em>Sist 21. sep.</em></button>
+          <button type="button" aria-pressed="false" style="--c:var(--fys)" data-enhet="m" data-forrige="11,2"><b>Rotasjonskast</b><span>Medisinball 3 kg · beste side</span><em>Sist 21. sep.</em></button>
+        </div>
+      </div>
+      <div class="seksjon"><div class="sek-topp"><h2 style="font-size:16px">Golf</h2><span class="kilde">Føres slag for slag</span></div>
+        <div class="testvalg" data-nt-golf>
+          <button type="button" aria-pressed="false" style="--c:var(--slag)"><b>8-ball</b><span>Meter fra hullet og poeng</span><em>Åpner gjennomføringen</em></button>
+          <button type="button" aria-pressed="false" style="--c:var(--slag)"><b>Wedge Gate</b><span>Godkjent eller bom · 9 slag</span><em>Åpner gjennomføringen</em></button>
+          <button type="button" aria-pressed="false" style="--c:var(--slag)"><b>Nærspill Gate</b><span>Godkjent eller bom · 9 slag</span><em>Åpner gjennomføringen</em></button>
+          <button type="button" aria-pressed="false" style="--c:var(--slag)"><b>PEI 100 m</b><span>Carry og side · appen regner PEI</span><em>Åpner gjennomføringen</em></button>
+        </div>
+      </div>
+    </div>
+    <div class="steg-flate" data-steg="2" hidden>
+      <h2 data-nt-navn>Club Speed</h2>
+      <div class="to-felt">
+        <div class="felt"><label for="nt-dato">Dato</label><input id="nt-dato" type="date" value="2026-10-05" max="2026-10-05"></div>
+        <div class="felt"><label for="nt-sted">Sted</label><select id="nt-sted"><option>Simulator 2</option><option>Range 3</option><option>Styrkerommet</option><option>Annet</option></select></div>
+      </div>
+      <div class="felt"><span class="etikett">Hvem førte resultatet?</span>
+        <div class="velg-kort" data-gruppe>
+          <button type="button" aria-pressed="true"><b>Jeg selv</b><span>Merkes «Egenført»</span><i class="ring"></i></button>
+          <button type="button" aria-pressed="false"><b>En trener var til stede</b><span>Treneren bekrefter, så merkes den «Kontrollert»</span><i class="ring"></i></button>
+        </div>
+      </div>
+      <div class="felt"><label for="nt-for">Notat før testen <span class="kilde">valgfritt</span></label><textarea id="nt-for" rows="2" placeholder="Søvn, oppvarming, vær"></textarea></div>
+    </div>
+    <div class="steg-flate" data-steg="3" hidden>
+      <h2>Resultat</h2>
+      <div class="felt stor-felt"><label for="nt-res" style="text-align:center">Beste forsøk</label><input id="nt-res" inputmode="decimal" value="108,4" aria-describedby="nt-enhet"><span class="enhet" id="nt-enhet" data-nt-enhet>mph</span></div>
+      <p class="kildetekst" style="text-align:center">Komma og punktum virker begge.</p>
+    </div>
+    <div class="steg-flate" data-steg="4" hidden>
+      <h2>Ser det riktig ut?</h2>
+      <section class="kort" style="background:var(--fys-ink);color:#fff;border:0">
+        <div class="hoved"><strong data-nt-res style="color:#fff">108,4</strong><span data-nt-res-enhet style="font:500 18px/1 var(--mono);opacity:.85">mph</span></div>
+        <p data-nt-delta style="font-size:14px">+1,9 mph siden 28. sep. · Personlig rekord</p>
+      </section>
+      <ul class="oppsummering">
+        <li><span>Test</span><b data-nt-sum-navn>Club Speed</b></li>
+        <li><span>Dato og sted</span><b>Man 5. okt. · Simulator 2</b></li>
+        <li><span>Ført av</span><b>Egenført</b></li>
+      </ul>
+      <div class="felt"><label for="nt-etter">Notat etter testen <span class="kilde">valgfritt</span></label><textarea id="nt-etter" rows="2"></textarea></div>
+      <div class="bryter"><b>Del med Anders</b><span>Coachen ser resultatet i Spiller 360</span><button type="button" role="switch" aria-checked="true" aria-label="Del med Anders" data-bryter></button></div>
+    </div>
+    <div class="festet knapper" style="display:grid;grid-template-columns:auto 1fr" data-behold-ikke>
+      <button type="button" class="knapp sek" data-st-tilbake>Tilbake</button>
+      <button type="button" class="knapp pri" data-st-neste>Neste</button>
+    </div>
+    <div class="ark-lag" data-avbryt-ark hidden>
+      <div class="ark" role="alertdialog" aria-labelledby="nt-avb">
+        <h2 id="nt-avb">Forkaste testen?</h2>
+        <p class="forklar">Det du har ført, blir ikke lagret.</p>
+        <div class="knapper" style="display:grid"><button type="button" class="knapp rust stor" data-avbryt-ok>Forkast testen</button><button type="button" class="knapp sek" data-lukk>Fortsett å føre</button></div>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= Egen test ================= -->
+<template id="egentest">
+<div class="app" data-fane="stats" data-skall="tilbake" data-tilbake="Tester">
+  <main class="innhold smal">
+    <div class="topp" data-behold>
+      <div><div class="dato">Tester · lag din egen</div><h1 class="tittel">Egen test</h1></div>
+      <div class="stegtopp"><small data-st-tekst>Steg 1 av 5 · Navn</small><div class="spor"><span data-st-spor style="width:20%"></span></div></div>
+    </div>
+    <div class="steg-flate" data-steg="1">
+      <h2>Hva heter testen?</h2>
+      <div class="felt"><label for="et-navn">Navn</label><input id="et-navn" value="Bunker til 3 m"></div>
+      <div class="felt"><span class="etikett">Pyramide</span>
+        <div class="aksevalg" data-gruppe>
+          <button type="button" class="fys" aria-pressed="false"><i style="background:var(--fys)"></i>FYS</button>
+          <button type="button" class="tek" aria-pressed="false"><i style="background:var(--tek)"></i>TEK</button>
+          <button type="button" class="slag" aria-pressed="true"><i style="background:var(--slag)"></i>SLAG</button>
+          <button type="button" class="spill" aria-pressed="false"><i style="background:var(--spill)"></i>SPILL</button>
+          <button type="button" class="turn" aria-pressed="false"><i style="background:var(--turn)"></i>TURN</button>
+        </div>
+      </div>
+    </div>
+    <div class="steg-flate" data-steg="2" hidden>
+      <h2>Slik gjør du testen</h2>
+      <div class="felt"><label for="et-besk">Kort beskrivelse</label><textarea id="et-besk" rows="2">10 bunkerslag fra greenside-bunkeren til et hull 12 m unna.</textarea></div>
+      <div class="felt"><span class="etikett">Steg</span>
+        <ol class="protosteg">
+          <li><input value="Legg 10 baller i bunkeren, flat lie" aria-label="Steg 1"><button type="button" aria-label="Fjern steg 1"><svg class="ikon" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></li>
+          <li><input value="Slå én ball om gangen mot hullet" aria-label="Steg 2"><button type="button" aria-label="Fjern steg 2"><svg class="ikon" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></li>
+          <li><input value="Tell baller som stopper innenfor 3 m" aria-label="Steg 3"><button type="button" aria-label="Fjern steg 3"><svg class="ikon" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></li>
+        </ol>
+        <button type="button" class="knapp sek" style="justify-self:start">Legg til steg</button>
+      </div>
+      <div class="to-felt">
+        <div class="felt"><label for="et-tid">Tid</label><input id="et-tid" value="15 min"></div>
+        <div class="felt"><label for="et-utstyr">Utstyr</label><input id="et-utstyr" value="Sandwedge, 10 baller"></div>
+      </div>
+    </div>
+    <div class="steg-flate" data-steg="3" hidden>
+      <h2>Hvordan måles den?</h2>
+      <div class="felt"><span class="etikett">Måleenhet</span><div class="chips" data-gruppe><button type="button" aria-pressed="true">Antall</button><button type="button" aria-pressed="false">Prosent</button><button type="button" aria-pressed="false">Tid</button><button type="button" aria-pressed="false">Meter</button><button type="button" aria-pressed="false">Poeng</button><button type="button" aria-pressed="false">Serier</button></div></div>
+      <div class="felt"><span class="etikett">Hva er best?</span><div class="valg" data-gruppe><button type="button" aria-pressed="true">Høyest</button><button type="button" aria-pressed="false">Lavest</button></div></div>
+      <div class="felt"><span class="etikett">Måltall per kategori <span class="kilde">valgfritt</span></span>
+        <div class="maaltall">
+          <label>A<input value="8" inputmode="numeric"></label><label>B<input value="7" inputmode="numeric"></label><label>C<input value="6" inputmode="numeric"></label><label>D<input value="5" inputmode="numeric"></label>
+          <label>E<input value="4" inputmode="numeric"></label><label>F<input value="" placeholder="—" inputmode="numeric"></label><label>G<input value="" placeholder="—" inputmode="numeric"></label><label>H<input value="" placeholder="—" inputmode="numeric"></label>
+          <label>I<input value="" placeholder="—" inputmode="numeric"></label><label>J<input value="" placeholder="—" inputmode="numeric"></label><label>K<input value="" placeholder="—" inputmode="numeric"></label>
+        </div>
+        <span class="hjelp">Står feltet tomt, vises «—» for den kategorien.</span>
+      </div>
+    </div>
+    <div class="steg-flate" data-steg="4" hidden>
+      <h2>Hvem ser testen?</h2>
+      <div class="velg-kort" data-gruppe>
+        <button type="button" aria-pressed="true"><b>Bare deg</b><span>Privat</span><i class="ring"></i></button>
+        <button type="button" aria-pressed="false"><b>Deg og Anders</b><span>Coachen ser testen og resultatene</span><i class="ring"></i></button>
+        <button type="button" aria-pressed="false"><b>Gruppa di</b><span>GFGK Junior Elite kan ta testen</span><i class="ring"></i></button>
+      </div>
+    </div>
+    <div class="steg-flate" data-steg="5" hidden>
+      <h2>Slik ser den ut</h2>
+      <section class="kort" style="border-left:6px solid var(--slag)">
+        <div class="sek-topp"><b style="font:600 18px/1.3 var(--sans)">Bunker til 3 m</b><span class="akse-tekst" style="color:var(--slag-ink)">SLAG</span></div>
+        <p class="forklar">10 bunkerslag fra greenside-bunkeren til et hull 12 m unna. Antall innenfor 3 m, høyest er best.</p>
+        <div class="tre-tall"><span><b>15 min</b>tid</span><span><b>6</b>måltall C</span><span><b>Privat</b>synlig for</span></div>
+      </section>
+    </div>
+    <div class="festet knapper" style="display:grid;grid-template-columns:auto 1fr">
+      <button type="button" class="knapp sek" data-st-tilbake>Tilbake</button>
+      <button type="button" class="knapp pri" data-st-neste>Neste</button>
+    </div>
+    <div class="ark-lag" data-avbryt-ark hidden>
+      <div class="ark" role="alertdialog" aria-labelledby="et-avb">
+        <h2 id="et-avb">Forkaste testen?</h2>
+        <p class="forklar">Det du har skrevet, blir ikke lagret.</p>
+        <div class="knapper" style="display:grid"><button type="button" class="knapp rust stor" data-avbryt-ok>Forkast testen</button><button type="button" class="knapp sek" data-lukk>Fortsett</button></div>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<script src="felles/felles.js"></script>
+<script>
+(function () {
+  function k(n, d) { var s = (d === undefined ? String(n) : n.toFixed(d)).replace('.', ','); if (n < 0) s = '−' + s.replace('-', ''); return s; }
+  function ks(n, d) { return (n > 0 ? '+' : '') + k(n, d); }
+  function toast(app, tekst) {
+    var gml = app.querySelector('.toast'); if (gml) gml.remove();
+    var t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role', 'status'); t.textContent = tekst;
+    app.querySelector('.innhold').appendChild(t);
+    setTimeout(function () { t.remove(); }, 3400);
+  }
+  function vis(app, sel, aapen) {
+    var a = app.querySelector(sel); a.hidden = !aapen;
+    if (aapen) { var f = a.querySelector('button, input'); if (f) f.focus({ preventScroll: true }); }
+  }
+  function grupper(app) {
+    app.querySelectorAll('[data-gruppe]').forEach(function (g) {
+      g.addEventListener('click', function (e) {
+        var b = e.target.closest('button'); if (!b || !g.contains(b) || b.parentElement !== g) return;
+        g.querySelectorAll(':scope > button').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      });
+    });
+  }
+  function fane(app, gruppe, attr, felt) {
+    var g = app.querySelector(gruppe);
+    g.addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (!b) return;
+      g.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      felt.forEach(function (f) { app.querySelector('[data-' + f[0] + ']').hidden = f[1] !== b.dataset[attr]; });
+    });
+  }
+  function sgbar(v, maks) { var w = Math.min(Math.abs(v) / maks * 50, 50); return '<span class="sgbar"><i class="null"></i><span data-til="' + w.toFixed(1) + '%" style="left:' + (v < 0 ? 50 - w : 50).toFixed(1) + '%;width:' + w.toFixed(1) + '%"></span></span>'; }
+
+  /* ---------- Ett område ---------- */
+  var OMR = {
+    sg: {
+      dato: 'Strokes Gained · område', navn: 'Innspill',
+      html: '<div><section class="akse-kort slag"><span style="font-size:13px;opacity:.9">Slag per runde mot Kategori B <span class="estimat">Estimat</span></span><div class="hoved"><strong>−0,9</strong><span class="trend">0,3 bedre siden juni</span></div><p>Innspill er der du taper mest. Mest fra 100–150 m, der ballen lander 9 m fra hullet mot 7 m for Kategori B.</p></section>' +
+        '<section class="seksjon"><div class="sek-topp"><h2>Utviklingen</h2><span class="kilde">Snitt per måned</span></div>' + linje([-1.2, -1.15, -1.05, -0.95, -0.9], ['jun', 'jul', 'aug', 'sep', 'okt'], 'slag') + '</section>' +
+        '<section class="seksjon"><div class="sek-topp"><h2>Per avstand</h2></div><div class="sg-liste">' +
+        [['200 m +', -0.1, 2.6], ['150–200 m', -0.2, 3.1], ['100–150 m', -0.5, 4.4], ['50–100 m', -0.1, 2.2]].map(function (r, i) { return '<div class="sgr' + (i === 2 ? ' svakest' : '') + '"><span class="sgn"><b>' + r[0] + '</b><small>' + k(r[2], 1) + ' slag/runde</small></span>' + sgbar(r[1], 0.6) + '<span class="sgv">' + ks(r[1], 1) + '</span></div>'; }).join('') +
+        '</div><p class="kildetekst">12 runder slag for slag · 2. juni–4. okt. · Kategori B fra Broadie-tabellen for HCP, estimat</p></section></div>' +
+        '<aside><section class="kort"><div class="sek-topp"><h2>Trening på innspill</h2><span class="kilde">Siste 4 uker</span></div><div class="hoved"><strong style="font-size:40px">6<small>t 40 min</small></strong></div><p class="forklar">35 % av SLAG-tiden. Dagens økt kl. 15:30 er innspill 100–150 m.</p><p class="kildetekst">Gjennomført tid · uke 37–40</p></section>' +
+        '<div class="knapper" style="display:grid"><button type="button" class="knapp pri" data-o-ovelser>Øvelser for innspill</button><button type="button" class="knapp sek" data-o-coach>Be Anders om mer fokus her</button></div></aside>'
+    },
+    akse: {
+      dato: 'Trening · akse', navn: 'TEK Teknisk',
+      html: '<div><section class="akse-kort tek"><span style="font-size:13px;opacity:.9">Gjennomført siste 4 uker</span><div class="hoved"><strong>11<small style="color:#fff;opacity:.85">t</small></strong><span class="trend">94 % av plan</span></div><p>Av 11 t 40 min fordelt fra oktober i årsplanen. Spesialperiode til uke 43.</p></section>' +
+        '<section class="seksjon"><div class="sek-topp"><h2>Uke for uke</h2><span class="kilde">Lagt inn mot fordelt</span></div>' + soyler([[150, 165], [180, 175], [165, 175], [165, 185]], ['Uke 37', 'Uke 38', 'Uke 39', 'Uke 40']) + '<div class="lg-rad"><span class="lg"><i style="background:var(--tek)"></i>Gjennomført</span><span class="lg"><i style="background:var(--graphite-900);height:2px"></i>Fordelt fra måneden</span></div></section></div>' +
+        '<aside><section class="kort"><div class="sek-topp"><h2>Mest brukte øvelser</h2></div><ul class="liste">' +
+        [['P6.0 med pinne langs skaftet', '3 t 20 min', '8 ganger'], ['P6.0 til P7.0 på 75 %', '2 t 30 min', '6 ganger'], ['Speilarbeid P4.0', '1 t 50 min', '5 ganger'], ['Video fra coach', '1 t 10 min', '3 ganger']].map(function (r) { return '<li><span>' + r[0] + '</span><b class="v">' + r[1] + '</b><span class="kilde">' + r[2] + '</span></li>'; }).join('') +
+        '</ul><p class="kildetekst">Fra gjennomførte økter · 7. sep.–4. okt.</p></section><div class="knapper" style="display:grid"><button type="button" class="knapp pri" data-o-ovelser>Til Plan</button></div></aside>'
+    }
+  };
+  function linje(v, x, akse) {
+    var min = Math.min.apply(null, v) - 0.1, max = Math.max.apply(null, v) + 0.1, W = 320, H = 120;
+    var p = v.map(function (y, i) { return [30 + i * (W - 40) / (v.length - 1), 10 + (max - y) / (max - min) * (H - 20)]; });
+    var d = 'M' + p.map(function (q) { return q[0].toFixed(1) + ',' + q[1].toFixed(1); }).join(' L');
+    return '<svg class="graf" viewBox="0 0 ' + W + ' ' + (H + 22) + '" role="img" aria-label="Fra ' + k(v[0], 2) + ' til ' + k(v[v.length - 1], 2) + '">' +
+      '<line x1="30" x2="' + (W - 10) + '" y1="' + H + '" y2="' + H + '" stroke="var(--sand-300)"/>' +
+      '<path class="tegn" d="' + d + '" fill="none" stroke="var(--' + akse + ')" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>' +
+      p.map(function (q, i) { return '<circle cx="' + q[0].toFixed(1) + '" cy="' + q[1].toFixed(1) + '" r="' + (i === p.length - 1 ? 5 : 3.5) + '" fill="var(--' + akse + ')"/><text class="gt" x="' + q[0].toFixed(1) + '" y="' + (H + 16) + '" text-anchor="middle">' + x[i] + '</text><text class="gt" x="' + q[0].toFixed(1) + '" y="' + (q[1] - 9).toFixed(1) + '" text-anchor="middle">' + k(v[i], 2) + '</text>'; }).join('') + '</svg>';
+  }
+  function soyler(v, x) {
+    var W = 320, H = 130, maks = 200, b = 44;
+    return '<svg class="graf" viewBox="0 0 ' + W + ' ' + (H + 20) + '" role="img" aria-label="TEK per uke, uke 37 til 40">' + v.map(function (r, i) {
+      var cx = 40 + i * 76, h = r[0] / maks * H, hp = H - r[1] / maks * H;
+      return '<rect class="vokse" x="' + (cx - b / 2) + '" y="' + (H - h).toFixed(1) + '" width="' + b + '" height="' + h.toFixed(1) + '" rx="3" fill="var(--tek)" style="transform-origin:' + cx + 'px ' + H + 'px"/>' +
+        '<line x1="' + (cx - b / 2 - 6) + '" x2="' + (cx + b / 2 + 6) + '" y1="' + hp.toFixed(1) + '" y2="' + hp.toFixed(1) + '" stroke="var(--graphite-900)" stroke-width="2"/>' +
+        '<text class="gt" x="' + cx + '" y="' + (H + 14) + '" text-anchor="middle">' + x[i] + '</text>';
+    }).join('') + '</svg>';
+  }
+  function omrade(app) {
+    function tegn(o) {
+      var d = OMR[o];
+      app.querySelector('[data-o-dato]').textContent = d.dato;
+      app.querySelector('[data-o-navn]').textContent = d.navn;
+      app.querySelector('[data-o-innhold]').innerHTML = d.html;
+      app.querySelectorAll('[data-o-ovelser]').forEach(function (b) { b.addEventListener('click', function () { toast(app, o === 'sg' ? 'Åpner Øvelsesbanken filtrert på innspill.' : 'Åpner Plan på uke 41.'); }); });
+      var c = app.querySelector('[data-o-coach]'); if (c) c.addEventListener('click', function () { toast(app, 'Åpner Ny melding til Anders med «Innspill» som tema.'); });
+      AKUtkast.anim && AKUtkast.anim(app);
+    }
+    tegn('sg');
+    var g = app.querySelector('[data-o-valg]');
+    g.addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; g.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); }); tegn(b.dataset.o); });
+  }
+
+  /* ---------- Skill map ---------- */
+  var SONER = [
+    { id: 'tee', navn: 'Utslag', g: 'Utslag', b: 0.2, pga: -0.3, n: 12, trend: 0.1, du: null, ref: null, rect: [110, 400, 100, 44] },
+    { id: 'i200', navn: 'Innspill 200 m +', g: 'Innspill', b: -0.1, pga: -0.4, n: 12, trend: 0.0, du: 14.2, ref: 12.8, refPga: 10.9, rect: [80, 330, 160, 56] },
+    { id: 'i150', navn: 'Innspill 150–200 m', g: 'Innspill', b: -0.2, pga: -0.6, n: 12, trend: 0.1, du: 11.6, ref: 10.1, refPga: 8.3, rect: [80, 270, 160, 56] },
+    { id: 'i100', navn: 'Innspill 100–150 m', g: 'Innspill', b: -0.5, pga: -0.9, n: 12, trend: 0.2, du: 9.1, ref: 7.0, refPga: 6.1, rect: [80, 210, 160, 56] },
+    { id: 'i50', navn: 'Innspill 50–100 m', g: 'Innspill', b: -0.1, pga: -0.4, n: 12, trend: 0.0, du: 6.4, ref: 5.8, refPga: 4.6, rect: [80, 150, 160, 56] },
+    { id: 'chip', navn: 'Chip', g: 'Nærspill', b: -0.1, pga: -0.2, n: 12, trend: 0.0, du: 2.1, ref: 1.8, refPga: 1.5, sirkel: [40, 70, 22] },
+    { id: 'pitch', navn: 'Pitch', g: 'Nærspill', b: -0.2, pga: -0.3, n: 12, trend: -0.1, du: 3.4, ref: 2.6, refPga: 2.2, sirkel: [280, 70, 22] },
+    { id: 'lob', navn: 'Lob', g: 'Nærspill', b: 0.0, pga: -0.1, n: 5, trend: null, du: null, ref: null, sirkel: [60, 122, 18] },
+    { id: 'bunker', navn: 'Bunker', g: 'Nærspill', b: -0.1, pga: -0.2, n: 7, trend: null, du: 3.9, ref: 3.1, refPga: 2.7, sirkel: [262, 122, 18] },
+    { id: 'p40', navn: 'Putt 40 fot +', g: 'Putting', b: null, pga: null, n: 2, r: 66 },
+    { id: 'p25', navn: 'Putt 25–40 fot', g: 'Putting', b: 0.0, pga: -0.1, n: 12, trend: 0.0, r: 56 },
+    { id: 'p10', navn: 'Putt 10–25 fot', g: 'Putting', b: 0.0, pga: -0.1, n: 12, trend: 0.0, r: 46 },
+    { id: 'p5', navn: 'Putt 5–10 fot', g: 'Putting', b: -0.1, pga: -0.2, n: 12, trend: -0.1, r: 34 },
+    { id: 'p3', navn: 'Putt 3–5 fot', g: 'Putting', b: 0.0, pga: -0.1, n: 12, trend: 0.0, r: 24 },
+    { id: 'p0', navn: 'Putt 0–3 fot', g: 'Putting', b: 0.1, pga: 0.0, n: 12, trend: 0.0, r: 14 }
+  ];
+  function farge(v) {
+    if (v === null) return 'var(--sand-150)';
+    if (v >= 0.05) return 'var(--green-50)';
+    if (v > -0.15) return '#dbe6fb';
+    if (v > -0.35) return '#8fb0f3';
+    return 'var(--slag)';
+  }
+  function skillmap(app) {
+    var mot = 'b', valgt = 'i100', svg = app.querySelector('[data-kart]');
+    function tegnKart() {
+      var h = '<path d="M60 460 L60 150 Q60 40 160 40 Q260 40 260 150 L260 460 Z" fill="#eef3e6"/>';
+      SONER.forEach(function (s) {
+        var v = mot === 'b' ? s.b : s.pga, svak = v !== null && v <= -0.35, kl = 'z' + (s.id === valgt ? ' valgt' : '');
+        if (s.rect) {
+          var r = s.rect;
+          h += '<rect class="' + kl + '" data-z="' + s.id + '" x="' + r[0] + '" y="' + r[1] + '" width="' + r[2] + '" height="' + r[3] + '" rx="6" fill="' + farge(v) + '" tabindex="0" role="button" aria-label="' + s.navn + ', ' + (v === null ? 'for lite data' : ks(v, 1)) + '"/>';
+          h += '<text x="160" y="' + (r[1] + r[3] / 2 - 2) + '" text-anchor="middle" class="' + (svak ? 'hvit' : '') + '">' + s.navn.replace('Innspill ', '') + '</text><text x="160" y="' + (r[1] + r[3] / 2 + 12) + '" text-anchor="middle" class="' + (svak ? 'hvit' : '') + '" style="font-family:var(--mono)">' + (v === null ? '—' : ks(v, 1)) + '</text>';
+        } else if (s.sirkel) {
+          var c = s.sirkel;
+          h += '<circle class="' + kl + '" data-z="' + s.id + '" cx="' + c[0] + '" cy="' + c[1] + '" r="' + c[2] + '" fill="' + (s.id === 'bunker' ? '#efe2c4' : farge(v)) + '" stroke="' + (s.id === 'bunker' ? '#c9b48a' : 'none') + '" tabindex="0" role="button" aria-label="' + s.navn + ', ' + (v === null ? 'for lite data' : ks(v, 1)) + '"/>';
+          h += '<text x="' + c[0] + '" y="' + (c[1] + 3) + '" text-anchor="middle">' + s.navn + '</text>';
+        }
+      });
+      h += '<circle cx="160" cy="80" r="70" fill="#d7e6c8"/>';
+      SONER.filter(function (s) { return s.r; }).forEach(function (s) {
+        var v = mot === 'b' ? s.b : s.pga;
+        h += '<circle class="z' + (s.id === valgt ? ' valgt' : '') + '" data-z="' + s.id + '" cx="160" cy="80" r="' + s.r + '" fill="' + farge(v) + '" stroke="#fff" stroke-width="1.5" tabindex="0" role="button" aria-label="' + s.navn + ', ' + (v === null ? 'for lite data' : ks(v, 1)) + '"/>';
+      });
+      h += '<circle cx="160" cy="80" r="4" fill="var(--graphite-900)"/><text x="160" y="152" text-anchor="middle">Green · ringene er puttlengde</text><text x="160" y="455" text-anchor="middle">Tee</text>';
+      svg.innerHTML = h;
+      svg.querySelectorAll('[data-z]').forEach(function (z) {
+        function velg() { valgt = z.dataset.z; tegnKart(); detalj(); }
+        z.addEventListener('click', velg);
+        z.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); velg(); } });
+      });
+    }
+    function detalj() {
+      var s = SONER.filter(function (x) { return x.id === valgt; })[0], v = mot === 'b' ? s.b : s.pga, mn = mot === 'b' ? 'Kategori B' : 'PGA Tour';
+      var h = '<div class="sek-topp"><h2>' + s.navn + '</h2><span class="kilde">' + s.g + '</span></div>';
+      if (s.n < 4 || v === null) {
+        h += '<div class="hoved"><strong>—</strong></div><p class="forklar">For få slag her ennå (' + s.n + ' runder med slag fra denne sonen). Tallet vises fra 4 runder.</p>';
+      } else {
+        h += '<div class="hoved"><strong>' + ks(v, 1) + '</strong>' + (s.trend ? '<span class="trend ' + (s.trend > 0 ? 'opp' : 'ned') + '">' + ks(s.trend, 1) + ' siste 10 runder</span>' : '') + '</div>';
+        h += '<p class="forklar">Slag per runde mot ' + mn + (mot === 'b' ? ' <span class="estimat">Estimat</span>' : '') + (s.n < 24 && (s.g === 'Nærspill' || s.g === 'Putting') ? ' <span class="forelopig">Foreløpig</span>' : '') + '</p>';
+        if (s.du !== null && s.du !== undefined) h += '<div class="naer"><span><b>' + k(s.du, 1) + ' m</b>du, fra hullet</span><span><b>' + k(mot === 'b' ? s.ref : s.refPga, 1) + ' m</b>' + mn + '</span></div>';
+      }
+      h += '<p class="kildetekst">' + s.n + ' runder slag for slag · 2. juni–4. okt.</p>';
+      if (v !== null && v <= -0.15) h += '<div class="uthev"><svg class="ikon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg><span><b>Her ligger mest å hente.</b> Caddie foreslår stigen 100–150 m to ganger i uka.</span></div><button type="button" class="knapp pri" data-sm-ov>Øvelser for ' + s.navn.toLowerCase() + '</button>';
+      var d = app.querySelector('[data-sm-detalj]'); d.innerHTML = h;
+      var b = d.querySelector('[data-sm-ov]'); if (b) b.addEventListener('click', function () { toast(app, 'Åpner Øvelsesbanken filtrert på sonen.'); });
+    }
+    var g = app.querySelector('[data-sm-mot]');
+    g.addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; g.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); }); mot = b.dataset.mot; app.querySelector('[data-sm-motnavn]').textContent = mot === 'b' ? 'Kategori B' : 'PGA Tour'; tegnKart(); detalj(); });
+    tegnKart(); detalj();
+  }
+
+  /* ---------- Hull ---------- */
+  var HULL = [[4, 0.2], [3, 0.1], [5, -0.2], [4, 0.3], [4, 0.0], [3, 0.4], [4, 0.9], [5, -0.1], [4, 0.2], [4, 0.1], [3, 0.3], [4, 0.0], [5, -0.3], [4, 0.8], [3, 0.2], [4, 0.1], [5, 0.0], [4, 0.3]];
+  var SISTE = [4, 3, 4, 4, 4, 4, 5, 5, 4, 4, 3, 4, 4, 5, 3, 4, 5, 3];
+  function hull(app) {
+    fane(app, '[data-h-valg]', 'h', [['h-soner', 'soner'], ['h-hull', 'hull']]);
+    app.querySelector('[data-varme]').innerHTML = HULL.map(function (h, i) {
+      var v = h[1], bg = v < -0.05 ? 'var(--green-50)' : v < 0.25 ? 'var(--sand-150)' : v < 0.5 ? '#8fb0f3' : 'var(--slag)', c = v >= 0.5 ? '#fff' : v < -0.05 ? 'var(--green-700)' : 'var(--graphite-900)';
+      return '<span style="background:' + bg + ';color:' + c + '" aria-label="Hull ' + (i + 1) + ', par ' + h[0] + ', snitt ' + ks(v, 1) + '"><small>' + (i + 1) + '</small>' + ks(v, 1) + '</span>';
+    }).join('');
+    var sp = 0, ss = 0;
+    app.querySelector('[data-hulltab] tbody').innerHTML = SISTE.map(function (s, i) {
+      var p = HULL[i][0], d = s - p; sp += p; ss += s;
+      return '<tr><td>' + (i + 1) + '</td><td>' + p + '</td><td' + (d < 0 ? ' class="birdie"' : '') + '>' + s + '</td><td>' + (d === 0 ? '0' : ks(d)) + '</td></tr>';
+    }).join('') + '<tr class="sum"><td>Sum</td><td>' + sp + '</td><td>' + ss + '</td><td>' + (ss - sp === 0 ? '0' : ks(ss - sp)) + '</td></tr>';
+    app.querySelectorAll('.sone').forEach(function (b) { b.addEventListener('click', function () { toast(app, 'Åpner ' + b.querySelector('span').firstChild.textContent.trim() + ' i Ett område.'); }); });
+  }
+
+  /* ---------- Historikk ---------- */
+  var HIST = [
+    { mnd: 'Oktober', d: 4, u: 'lør', t: 'runde', navn: 'Runde · Fredrikstad GK', meta: ['18 hull', 'slag for slag'], v: '72', s: 'brutto' },
+    { mnd: 'Oktober', d: 3, u: 'fre', t: 'okt', a: 'slag', navn: 'Innspill 100–150 m', meta: ['75 min', 'Range 3'], v: '7', s: 'belastning' },
+    { mnd: 'Oktober', d: 2, u: 'tor', t: 'tm', a: 'slag', navn: 'TrackMan · 7-jern', meta: ['42 slag', 'Simulator 2'], v: '141 m', s: 'snitt carry' },
+    { mnd: 'Oktober', d: 2, u: 'tor', t: 'okt', a: 'tek', navn: 'Svingtrening P6–P7', meta: ['60 min', 'med Anders'], v: '6', s: 'belastning' },
+    { mnd: 'Oktober', d: 1, u: 'ons', t: 'okt', a: 'fys', navn: 'Styrke, underkropp', meta: ['55 min', 'Styrkerommet'], v: '8', s: 'hvor tungt' },
+    { mnd: 'September', d: 28, u: 'man', t: 'test', a: 'fys', navn: 'Club Speed', meta: ['Test', 'Kontrollert'], v: '108,4', s: 'mph · rekord' },
+    { mnd: 'September', d: 27, u: 'søn', t: 'runde', navn: 'Runde · Gamle Fredrikstad', meta: ['18 hull', 'slag for slag'], v: '74', s: 'brutto' },
+    { mnd: 'September', d: 26, u: 'lør', t: 'okt', a: 'spill', navn: 'Ni hull, én ball, to køller', meta: ['75 min', 'Fredrikstad GK'], v: '5', s: 'belastning' },
+    { mnd: 'September', d: 24, u: 'tor', t: 'test', a: 'slag', navn: 'Wedge Gate', meta: ['Test', 'Egenført'], v: '6 / 9', s: 'godkjent' },
+    { mnd: 'September', d: 21, u: 'man', t: 'test', a: 'fys', navn: 'Markløft trapbar', meta: ['Test', 'Egenført'], v: '140 kg', s: '+10 kg' },
+    { mnd: 'September', d: 20, u: 'søn', t: 'runde', navn: 'Runde · Fredrikstad GK', meta: ['18 hull', 'bare score'], v: '73', s: 'brutto' }
+  ];
+  var AKSENAVN = { fys: 'FYS', tek: 'TEK', slag: 'SLAG', spill: 'SPILL', turn: 'TURN' };
+  var TYPENAVN = { runde: 'Runder', okt: 'Økter', test: 'Tester', tm: 'TrackMan' };
+  function historikk(app) {
+    var f = { periode: '90', type: ['runde', 'okt', 'test', 'tm'], akse: 'alle', sort: 'ny' };
+    function treff() {
+      var r = HIST.filter(function (h) { return f.type.indexOf(h.t) >= 0 && (f.akse === 'alle' || h.a === f.akse); });
+      if (f.periode === '30') r = r.filter(function (h) { return h.mnd === 'Oktober' || h.d >= 6; });
+      return f.sort === 'gml' ? r.slice().reverse() : r;
+    }
+    function tegn() {
+      var r = treff(), ut = '', mnd = '';
+      ut += '<p class="kilde">' + r.length + ' av ' + HIST.length + ' · runder, økter, tester og TrackMan</p>';
+      if (!r.length) ut += '<div class="kort dempet"><b class="undertittel">Ingen treff på dette filteret</b><p class="forklar">Prøv en lengre periode eller flere typer.</p><div class="knapper"><button type="button" class="knapp pri" data-nullstill2>Nullstill filteret</button></div></div>';
+      r.forEach(function (h) {
+        if (h.mnd !== mnd) { mnd = h.mnd; ut += '<div class="hist-mnd">' + mnd + ' 2026</div>'; }
+        var prikk = h.a ? '<i style="background:var(--' + h.a + ')"></i>' + AKSENAVN[h.a] : '<i style="background:var(--graphite-900)"></i>Runde';
+        ut += '<a class="hrad" href="#"><span class="dag">' + h.d + '<small>' + h.u + '</small></span><span><b>' + h.navn + '</b><span class="meta"><span>' + prikk + '</span>' + h.meta.map(function (m) { return '<span>' + m + '</span>'; }).join('') + '</span></span><span class="tall">' + h.v + '<small>' + h.s + '</small></span></a>';
+      });
+      app.querySelector('[data-hi-liste]').innerHTML = ut;
+      var n2 = app.querySelector('[data-nullstill2]'); if (n2) n2.addEventListener('click', nullstill);
+      var a = [{ l: f.periode === 'sesong' ? 'Sesong' : f.periode === 'alt' ? 'Alt' : f.periode + ' dager' }];
+      if (f.type.length < 4) a.push({ l: f.type.map(function (t) { return TYPENAVN[t]; }).join(', ') });
+      if (f.akse !== 'alle') a.push({ l: AKSENAVN[f.akse] });
+      app.querySelector('[data-hi-aktive]').innerHTML = a.map(function (x) { return '<button type="button" class="fjern" aria-pressed="false">' + x.l + '</button>'; }).join('') + '<button type="button" aria-pressed="true" data-apne><svg class="ikon" viewBox="0 0 24 24" style="width:16px;height:16px"><path d="M4 6h16M7 12h10M10 18h4"/></svg>Filter</button>';
+      app.querySelector('[data-apne]').addEventListener('click', function () { vis(app, '[data-hi-ark]', true); oppdaterKnapp(); });
+    }
+    function oppdaterKnapp() { app.querySelector('[data-vis]').textContent = 'Vis ' + treff().length + ' treff'; }
+    function nullstill() { f = { periode: '90', type: ['runde', 'okt', 'test', 'tm'], akse: 'alle', sort: 'ny' }; synk(); tegn(); oppdaterKnapp(); }
+    function synk() {
+      app.querySelectorAll('[data-f]').forEach(function (g) {
+        var n = g.dataset.f;
+        g.querySelectorAll('button').forEach(function (b) { b.setAttribute('aria-pressed', (n === 'type' ? f.type.indexOf(b.dataset.v) >= 0 : f[n] === b.dataset.v) ? 'true' : 'false'); });
+      });
+    }
+    app.querySelectorAll('[data-f]').forEach(function (g) {
+      g.addEventListener('click', function (e) {
+        var b = e.target.closest('button'); if (!b) return; var n = g.dataset.f;
+        if (n === 'type') { var i = f.type.indexOf(b.dataset.v); if (i >= 0 && f.type.length > 1) f.type.splice(i, 1); else if (i < 0) f.type.push(b.dataset.v); }
+        else f[n] = b.dataset.v;
+        synk(); oppdaterKnapp();
+      });
+    });
+    app.querySelector('[data-hi-ark] [data-lukk]').addEventListener('click', function () { vis(app, '[data-hi-ark]', false); });
+    app.querySelector('[data-vis]').addEventListener('click', function () { vis(app, '[data-hi-ark]', false); tegn(); });
+    app.querySelector('[data-nullstill]').addEventListener('click', nullstill);
+    tegn();
+  }
+
+  /* ---------- Turneringer ---------- */
+  var TURN = {
+    '2026': [
+      { navn: 'Østlandstour 1', bane: 'Borre GK', dato: '25.–26. apr.', plass: 'T18', av: 42, r: [78, 76], par: 72 },
+      { navn: 'Junior Tour Øst 2', bane: 'Kongsberg GK', dato: '16.–17. mai', plass: 'T9', av: 38, r: [75, 77], par: 72 },
+      { navn: 'Østlandstour 3', bane: 'Fredrikstad GK', dato: '13.–14. jun.', plass: '6', av: 40, r: [74, 73, 75], par: 72 },
+      { navn: 'NM Junior, kvalifisering', bane: 'Miklagard GK', dato: '18.–19. jul.', plass: 'T21', av: 66, r: [76, 75], par: 72 },
+      { navn: 'Østlandstour 5', bane: 'Moss & Rygge GK', dato: '22.–23. aug.', plass: '4', av: 41, r: [73, 74, 72], par: 72 },
+      { navn: 'Klubbmesterskap', bane: 'Fredrikstad GK', dato: '12.–13. sep.', plass: '2', av: 24, r: [70, 74], par: 72 }
+    ],
+    '2025': [
+      { navn: 'Østlandstour 2', bane: 'Larvik GK', dato: '10.–11. mai', plass: 'T26', av: 44, r: [80, 79], par: 72 },
+      { navn: 'Østlandstour 4', bane: 'Tønsberg GK', dato: '14.–15. jun.', plass: 'T15', av: 40, r: [77, 76, 78], par: 72 },
+      { navn: 'Klubbmesterskap', bane: 'Fredrikstad GK', dato: '13.–14. sep.', plass: '5', av: 22, r: [75, 77], par: 72 }
+    ]
+  };
+  function turneringer(app) {
+    var ses = '2026';
+    function liste() { return ses === 'alle' ? TURN['2025'].concat(TURN['2026']) : TURN[ses]; }
+    function tegn() {
+      var L = liste(), q = (app.querySelector('[data-t-sok]').value || '').toLowerCase();
+      var runder = [].concat.apply([], L.map(function (t) { return t.r; }));
+      var snitt = runder.reduce(function (a, b) { return a + b - 72; }, 0) / runder.length;
+      app.querySelector('[data-t-snitt]').textContent = ks(snitt, 1);
+      app.querySelector('[data-t-grunn]').textContent = L.length + ' turneringer, ' + runder.length + ' runder.';
+      app.querySelector('[data-t-ant]').textContent = L.length;
+      app.querySelector('[data-t-runder]').textContent = runder.length;
+      app.querySelector('[data-t-beste]').textContent = Math.min.apply(null, runder);
+      var W = 340, H = 140, x0 = 34, lo = -3, hi = 9, y = function (v) { return 10 + (hi - v) / (hi - lo) * (H - 20); };
+      var pts = L.map(function (t, i) { var s = t.r.map(function (r) { return r - t.par; }); return { x: x0 + i * (W - x0 - 10) / Math.max(L.length - 1, 1), m: s.reduce(function (a, b) { return a + b; }, 0) / s.length, b: Math.min.apply(null, s), v: Math.max.apply(null, s) }; });
+      var band = 'M' + pts.map(function (p) { return p.x.toFixed(1) + ',' + y(p.b).toFixed(1); }).join(' L') + ' L' + pts.slice().reverse().map(function (p) { return p.x.toFixed(1) + ',' + y(p.v).toFixed(1); }).join(' L') + ' Z';
+      var h = [0, 3, 6, 9].map(function (g) { return '<line x1="' + x0 + '" x2="' + W + '" y1="' + y(g) + '" y2="' + y(g) + '" stroke="var(--sand-300)"' + (g === 0 ? ' stroke-dasharray="4 3" stroke="var(--graphite-600)"' : '') + '/><text x="' + (x0 - 6) + '" y="' + (y(g) + 4) + '" text-anchor="end">' + (g === 0 ? 'Par' : '+' + g) + '</text>'; }).join('');
+      h += '<path d="' + band + '" fill="var(--turn)" opacity=".15"/>';
+      h += '<path class="tegn" d="M' + pts.map(function (p) { return p.x.toFixed(1) + ',' + y(p.m).toFixed(1); }).join(' L') + '" fill="none" stroke="var(--turn)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>';
+      h += pts.map(function (p, i) { return '<circle cx="' + p.x.toFixed(1) + '" cy="' + y(p.m).toFixed(1) + '" r="' + (i === pts.length - 1 ? 5 : 3.5) + '" fill="var(--turn)"/>'; }).join('');
+      h += '<text x="' + x0 + '" y="' + (H + 20) + '">' + L[0].dato.split('.–')[0].replace(/^\d+/, '').trim() + L[0].dato.split(' ').pop() + '</text><text x="' + W + '" y="' + (H + 20) + '" text-anchor="end">' + L[L.length - 1].dato.split(' ').pop() + '</text>';
+      app.querySelector('[data-t-kurve]').innerHTML = h;
+      app.querySelector('[data-t-liste]').innerHTML = L.slice().reverse().filter(function (t) { return !q || (t.navn + ' ' + t.bane).toLowerCase().indexOf(q) >= 0; }).map(function (t) {
+        var sum = t.r.reduce(function (a, b) { return a + b; }, 0), tp = sum - t.par * t.r.length;
+        return '<details class="turn-kort"><summary><span class="tk-plass"><b>' + t.plass + '</b><small>av ' + t.av + '</small></span><span class="tk-midt"><strong>' + t.navn + '</strong><small>' + t.bane + ' · ' + t.dato + '</small></span><span class="tk-sum"><b>' + ks(tp) + '</b><small>' + t.r.length + ' runder</small></span></summary><div class="tk-runder">' + t.r.map(function (r, i) { return '<span>R' + (i + 1) + ' ' + r + ' (' + (r - t.par === 0 ? '0' : ks(r - t.par)) + ')</span>'; }).join('') + '<span>Totalt ' + sum + '</span></div></details>';
+      }).join('') || '<p class="forklar">Ingen turneringer matcher søket.</p>';
+    }
+    var g = app.querySelector('[data-t-sesong]');
+    g.addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; g.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); }); ses = b.dataset.s; tegn(); });
+    app.querySelector('[data-t-sok]').addEventListener('input', tegn);
+    tegn();
+  }
+
+  /* ---------- Del runde ---------- */
+  function del(app) {
+    grupper(app);
+    app.querySelector('[data-lagre-bilde]').addEventListener('click', function () { toast(app, 'Bildet er lagret i Bilder. Del det der du vil.'); });
+  }
+
+  /* ---------- Logg økt ---------- */
+  var OMRADER = {
+    fys: ['Styrke', 'Kondisjon', 'Bevegelighet', 'Spenst'], tek: ['Sving', 'Kortsving', 'Putting-teknikk'],
+    slag: ['Utslag', 'Innspill', 'Nærspill', 'Bunker', 'Putting'], spill: ['Banespill', 'Spill på simulator', 'Strategi'], turn: ['Turneringsrunde', 'Treningsrunde med score']
+  };
+  function logg(app) {
+    var min = 45, akse = 'slag';
+    function skala(sel, valgt) { app.querySelector(sel).innerHTML = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(function (n) { return '<button type="button" aria-pressed="' + (n === valgt) + '">' + n + '</button>'; }).join(''); }
+    function omr() {
+      app.querySelector('[data-l-omrade]').innerHTML = OMRADER[akse].map(function (o, i) { return '<button type="button" aria-pressed="' + (akse === 'slag' ? o === 'Innspill' : i === 0) + '">' + o + '</button>'; }).join('');
+      app.querySelector('[data-l-bel-navn]').textContent = akse === 'fys' ? 'Hvor tungt' : 'Belastning';
+      app.querySelector('[data-l-fokus-felt]').hidden = akse === 'fys';
+    }
+    skala('[data-l-bel]', 7); skala('[data-l-fokus]', 8); omr(); grupper(app);
+    var g = app.querySelector('[data-l-akse]');
+    g.addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; g.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); }); akse = b.dataset.a; omr(); });
+    app.querySelectorAll('[data-l-min]').forEach(function (b) { b.addEventListener('click', function () { min = Math.max(5, Math.min(240, min + Number(b.dataset.lMin))); var t = Math.floor(min / 60), m = min % 60; app.querySelector('[data-l-tid]').textContent = t ? t + ' t' + (m ? ' ' + m + ' min' : '') : m + ' min'; }); });
+    app.querySelector('[data-l-lagre]').addEventListener('click', function () { toast(app, 'Lagret lørdag 4. okt. Den teller i total treningstid, ikke mot planen.'); });
+  }
+
+  /* ---------- Puttelaboratoriet ---------- */
+  var LEDD = [['Lesing', 'lesing'], ['Sikte', 'sikte'], ['Ballstart', 'start'], ['Lengde', 'lengde'], ['Flaks', 'flaks'], ['Aksept', 'aksept']];
+  var FORVALG = { skarp: [92, 94, 95, 93, 90, 95], snitt: [82, 86, 88, 78, 85, 90], lengde: [84, 88, 90, 62, 85, 88], sikte: [85, 68, 86, 82, 85, 88] };
+  function putt(app) {
+    fane(app, '[data-p-valg]', 'p', [['p-kjeden', 'kjeden'], ['p-greenen', 'greenen'], ['p-kontroll', 'kontroll']]);
+    var verdi = FORVALG.snitt.slice();
+    function tegn() {
+      var lav = verdi.indexOf(Math.min.apply(null, verdi)), p = verdi.reduce(function (a, b) { return a * b / 100; }, 100);
+      app.querySelector('[data-p-ledd]').innerHTML = LEDD.map(function (l, i) { return '<div class="ledd-rad' + (i === lav ? ' svakest' : '') + '"><label for="pl-' + l[1] + '">' + l[0] + '</label><output>' + verdi[i] + ' %</output><input id="pl-' + l[1] + '" type="range" min="40" max="100" value="' + verdi[i] + '" data-i="' + i + '"></div>'; }).join('');
+      app.querySelector('[data-p-sjanse]').textContent = Math.round(p) + ' %';
+      var opp = verdi.slice(); opp[lav] = Math.min(100, opp[lav] + 10);
+      var p2 = opp.reduce(function (a, b) { return a * b / 100; }, 100);
+      app.querySelector('[data-p-svak]').textContent = LEDD[lav][0] + ' er svakest. 10 prosentpoeng bedre der gir ' + Math.round(p2) + ' %, mer enn i noe annet ledd.';
+      app.querySelectorAll('[data-p-ledd] input').forEach(function (inp) { inp.addEventListener('change', function () { verdi[Number(inp.dataset.i)] = Number(inp.value); tegn(); }); inp.addEventListener('input', function () { inp.previousElementSibling.textContent = inp.value + ' %'; }); });
+    }
+    var fg = app.querySelector('[data-p-forvalg]');
+    fg.addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; fg.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); }); verdi = FORVALG[b.dataset.f].slice(); tegn(); });
+    tegn();
+    /* Greenen */
+    var G = { len: 3, fall: 2, stimp: 10 };
+    function green() {
+      var brekk = Math.round(G.len * G.fall * G.stimp * 0.45), px = 300 / Math.max(G.len, 3) * 0.9, ballY = 260, hullY = ballY - G.len * px, siktX = 200 - brekk / 100 * px;
+      var h = '<rect width="400" height="300" fill="#d7e6c8"/>';
+      for (var i = 0; i < 8; i++) h += '<path d="M' + (40 + i * 46) + ' 0 l-30 300" stroke="#c6dab3" stroke-width="1"/>';
+      h += '<text x="390" y="18" text-anchor="end" style="font:500 11px var(--sans);fill:var(--graphite-600)">Fall mot venstre ' + k(G.fall, 1) + ' %</text>';
+      h += '<line x1="200" y1="' + ballY + '" x2="' + siktX.toFixed(1) + '" y2="' + hullY.toFixed(1) + '" stroke="var(--graphite-600)" stroke-dasharray="5 4"/>';
+      h += '<path class="tegn" d="M200 ' + ballY + ' Q' + (siktX - 4).toFixed(1) + ' ' + ((ballY + hullY) / 2).toFixed(1) + ' 200 ' + (hullY - 8).toFixed(1) + '" fill="none" stroke="var(--slag)" stroke-width="3" stroke-linecap="round"/>';
+      h += '<circle cx="200" cy="' + hullY.toFixed(1) + '" r="7" fill="var(--graphite-900)"/><circle cx="200" cy="' + ballY + '" r="6" fill="#fff" stroke="var(--graphite-600)"/>';
+      h += '<circle cx="' + siktX.toFixed(1) + '" cy="' + hullY.toFixed(1) + '" r="4" fill="none" stroke="var(--graphite-900)" stroke-width="2"/><text x="' + (siktX - 8).toFixed(1) + '" y="' + (hullY + 4).toFixed(1) + '" text-anchor="end" style="font:600 11px var(--sans);fill:var(--graphite-900)">Sikt hit</text>';
+      app.querySelector('[data-p-green]').innerHTML = h;
+      app.querySelector('[data-g-sikt]').textContent = brekk + ' cm';
+    }
+    app.querySelectorAll('[data-g]').forEach(function (inp) { inp.addEventListener('input', function () { G[inp.dataset.g] = Number(inp.value); app.querySelector('[data-g-o="' + inp.dataset.g + '"]').textContent = inp.dataset.g === 'len' ? k(G.len, 1) + ' m' : inp.dataset.g === 'fall' ? k(G.fall, 1) + ' %' : k(G.stimp, 1); green(); }); });
+    green();
+    /* Kontroll */
+    var P = [1, 1, 0, 1, 1, 1, 0, 1, 1, 0];
+    function kontroll() {
+      app.querySelector('[data-p-putter]').innerHTML = P.map(function (p, i) { return '<span role="checkbox" tabindex="0" aria-checked="' + !!p + '" aria-label="Putt ' + (i + 1) + '" class="' + (p ? 'inne' : '') + '">' + (i + 1) + '</span>'; }).join('');
+      var s = P.reduce(function (a, b) { return a + b; }, 0);
+      app.querySelector('[data-p-score]').textContent = s + '/10';
+      app.querySelector('[data-p-skive]').style.setProperty('--p', s * 10);
+      app.querySelectorAll('[data-p-putter] span').forEach(function (el, i) { function t() { P[i] = P[i] ? 0 : 1; kontroll(); } el.addEventListener('click', t); el.addEventListener('keydown', function (e) { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); t(); } }); });
+    }
+    app.querySelector('[data-p-ny]').addEventListener('click', function () { P = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]; kontroll(); });
+    kontroll();
+  }
+
+  /* ---------- Stegvise skjema ---------- */
+  function steg(app, navn, ferdig) {
+    var n = 1, maks = app.querySelectorAll('[data-steg]').length;
+    function vis2() {
+      app.querySelectorAll('[data-steg]').forEach(function (s) { s.hidden = Number(s.dataset.steg) !== n; });
+      app.querySelector('[data-st-tekst]').textContent = 'Steg ' + n + ' av ' + maks + ' · ' + navn[n - 1];
+      app.querySelector('[data-st-spor]').style.width = (n / maks * 100) + '%';
+      app.querySelector('[data-st-tilbake]').textContent = n === 1 ? 'Avbryt' : 'Tilbake';
+      app.querySelector('[data-st-neste]').textContent = n === maks ? ferdig : 'Neste';
+    }
+    app.querySelector('[data-st-neste]').addEventListener('click', function () {
+      if (n < maks) { n++; vis2(); if (app.onSteg) app.onSteg(n); app.querySelector('.innhold').scrollIntoView({ block: 'start' }); }
+      else toast(app, app.dataset.ferdigTekst);
+    });
+    app.querySelector('[data-st-tilbake]').addEventListener('click', function () { if (n > 1) { n--; vis2(); } else vis(app, '[data-avbryt-ark]', true); });
+    app.querySelectorAll('[data-avbryt-ark] [data-lukk]').forEach(function (b) { b.addEventListener('click', function () { vis(app, '[data-avbryt-ark]', false); }); });
+    app.querySelector('[data-avbryt-ok]').addEventListener('click', function () { vis(app, '[data-avbryt-ark]', false); toast(app, 'Forkastet. Tilbake til Tester.'); });
+    vis2();
+  }
+  function nytest(app) {
+    grupper(app);
+    app.dataset.ferdigTekst = 'Lagret som Egenført. Club Speed er oppdatert i Tester og Stats, og Anders ser resultatet.';
+    steg(app, ['Velg test', 'Når og hvor', 'Resultat', 'Bekreft'], 'Lagre resultatet');
+    app.onSteg = function () {
+      var b = app.querySelector('[data-nt-valg] [aria-pressed="true"]'), navn = b.querySelector('b').textContent, enh = b.dataset.enhet;
+      app.querySelector('[data-nt-navn]').textContent = navn; app.querySelector('[data-nt-sum-navn]').textContent = navn;
+      app.querySelector('[data-nt-enhet]').textContent = enh; app.querySelector('[data-nt-res-enhet]').textContent = enh;
+      var res = app.querySelector('#nt-res').value || '—';
+      app.querySelector('[data-nt-res]').textContent = res;
+      var f = b.dataset.forrige, a = parseFloat(res.replace(',', '.')), fv = parseFloat((f || '').replace(',', '.'));
+      app.querySelector('[data-nt-delta]').textContent = isNaN(fv) || isNaN(a) ? 'Første måling' : ks(Math.round((a - fv) * 10) / 10, enh === 'kg' ? 0 : 1) + ' ' + enh + ' siden ' + b.querySelector('em').textContent.replace('Sist ', '');
+    };
+    app.querySelectorAll('[data-nt-golf] button').forEach(function (b) { b.addEventListener('click', function () { toast(app, 'Åpner gjennomføringen av ' + b.querySelector('b').textContent + ' slag for slag (pakke 6).'); }); });
+    var br = app.querySelector('[data-bryter]');
+    br.addEventListener('click', function () { br.setAttribute('aria-checked', br.getAttribute('aria-checked') === 'true' ? 'false' : 'true'); });
+  }
+  function egentest(app) {
+    grupper(app);
+    app.dataset.ferdigTekst = 'Testen er lagret. Du finner den under Tester › Egne.';
+    steg(app, ['Navn', 'Slik gjør du den', 'Måling', 'Hvem ser den', 'Se over'], 'Lagre testen');
+  }
+
+  function m(id, mal, etter, tom, laster, feil) { return { mal: mal, for: { mob: 'screenshots/' + id + '-390.jpg', pc: 'screenshots/' + id + '-1440.jpg' }, etter: etter, tom: tom, laster: laster, feil: feil }; }
+  /* Dagens skjermbilder finnes ikke for disse sidene i registeret. Nærmeste skjerm vises: PH-16 Stats, PH-17 Trening, PH-18 Runder og PH-14 Tester. */
+  AKUtkast.start({
+    start: 'omrade',
+    skjermer: {
+      omrade: m('PH-16', 'omrade', omrade, { tittel: 'Ingen runder slag for slag ennå', tekst: 'Strokes Gained regnes ut når du har ført minst 4 runder slag for slag.', knapp: 'Registrer runde' }, 'Henter området …', 'Området kunne ikke hentes'),
+      skillmap: m('PH-16', 'skillmap', skillmap, { tittel: 'Kartet trenger runder', tekst: 'Før minst 4 runder slag for slag, så fargelegges sonene.', knapp: 'Registrer runde' }, 'Henter kartet …', 'Kartet kunne ikke hentes'),
+      hull: m('PH-18', 'hull', hull, { tittel: 'Ingen runder med hullscore ennå', tekst: 'Før score per hull, så ser du hvilke hull som koster mest. Varmekartet kommer fra 3 runder på samme bane.', knapp: 'Registrer runde' }, 'Henter hullene …', 'Hullene kunne ikke hentes'),
+      historikk: m('PH-17', 'historikk', historikk, { tittel: 'Ingenting her ennå', tekst: 'Gjennomførte økter, runder, tester og TrackMan-økter samles her.', knapp: 'Til I dag' }, 'Henter historikken …', 'Historikken kunne ikke hentes'),
+      turneringer: m('PH-18', 'turneringer', turneringer, { tittel: 'Ingen turneringer funnet', tekst: 'Turneringer fra GolfBox kommer hit når kontoen er koblet til deg i turneringsresultatene. Det tar en mandag etter koblingen.', knapp: 'Finn deg i turneringsresultatene' }, 'Henter turneringene …', 'Turneringene kunne ikke hentes'),
+      del: m('PH-18', 'del', del, null, 'Lager bildet …', 'Bildet kunne ikke lages'),
+      logg: m('PH-17', 'logg', logg, null, 'Lagrer økta …', 'Økta kunne ikke lagres. Ingenting er endret.'),
+      putt: m('PH-17', 'putt', putt, null, 'Laster laboratoriet …', 'Laboratoriet kunne ikke lastes'),
+      nytest: m('PH-14', 'nytest', nytest, { tittel: 'Ingen tester i batteriet ditt', tekst: 'Coachen din legger inn testene. Du kan lage en egen test i mellomtiden.', knapp: 'Lag egen test' }, 'Henter testbatteriet …', 'Testbatteriet kunne ikke hentes'),
+      egentest: m('PH-14', 'egentest', egentest, null, 'Lagrer testen …', 'Testen kunne ikke lagres. Det du skrev, er beholdt.')
+    }
+  });
+})();
+</script>
+</body></html>

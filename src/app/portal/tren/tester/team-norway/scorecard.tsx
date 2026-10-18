@@ -7,7 +7,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Knapp, Sidehode, StatusPille } from "@/components/precision/pa";
 import { tnVersion, type TnProtocol } from "@/lib/portal-tester/tn-catalog";
-import { tnFormat, tnRowError, tnScore, tnValidate, type TnResult } from "@/lib/portal-tester/tn-scoring";
+import { tnFormat, tnRowError, tnRowPreview, tnScore, tnValidate, type TnResult } from "@/lib/portal-tester/tn-scoring";
 import { tnReadRaw } from "@/lib/portal-tester/tn-draft";
 import { useTnDraft, type TnInitial } from "@/lib/portal-tester/use-tn-draft";
 import type { TnSaveInput } from "@/lib/portal-tester/tn-session";
@@ -32,6 +32,12 @@ export function TnScorecard({ protocol: p, initial, savedResult, localSessionId,
   const validation = rawError ?? tnValidate(p, values, true);
   const preview = closed ? (draft.status === "COMPLETED" ? savedResult ?? (!validation ? tnScore(p, values) : null) : null) : !validation ? tnScore(p, values) : null;
   const row = p.rows[attempt];
+  // Avstand fra hullet og PEI rett etter hvert slag (Anders 14.10.2026).
+  const shot = (i: number) => {
+    const pv = tnRowPreview(p, i, values[String(i + 1)]);
+    return pv && `${tnFormat({ value: pv.distance, unit: "m" })} fra hullet · PEI ${tnFormat({ value: pv.pei, unit: "PEI" })}${pv.points === undefined ? "" : ` · ${tnFormat({ value: pv.points, unit: "poeng" })}`}`;
+  };
+  const currentShot = shot(attempt);
   const visiblePhoto = photo?.attempt === attempt ? photo : null;
   useEffect(() => {
     let active = true;
@@ -94,6 +100,7 @@ export function TnScorecard({ protocol: p, initial, savedResult, localSessionId,
           <fieldset disabled={closed || !draft.ready || draft.blocked || draft.closing} className="tb-fields"><legend className="pa-sr">Registrer forsøk {attempt + 1}</legend>
             {row.fields.map(f => f.choices ? <fieldset key={f.key} className="tb-choice"><legend>{f.label}{f.optional ? " · valgfritt" : ""}</legend><div>{f.choices.map(v => <button type="button" key={v} aria-pressed={draft.raw[String(attempt + 1)]?.[f.key] === v} onClick={() => field(f.key, draft.raw[String(attempt + 1)]?.[f.key] === v ? "" : v)}>{v}</button>)}</div></fieldset> : <label key={f.key} className="tb-field">{f.label}{f.unit ? ` (${f.unit})` : ""}{f.optional ? " · valgfritt" : ""}<input type="text" autoComplete="off" inputMode={f.integer ? "numeric" : "decimal"} maxLength={200} value={draft.raw[String(attempt + 1)]?.[f.key] ?? ""} onChange={e => field(f.key, e.target.value)} /></label>)}
           </fieldset>
+          {currentShot && <p className="tb-target" role="status">{currentShot}</p>}
           <section className="tb-photo" aria-label="Valgfritt bilde">
             <h3>Bilde · valgfritt</h3>
             <p>Ta bilde av ballen eller resultatet. Unngå personer. Bildet lagres privat og deles ikke automatisk med grupper.</p>
@@ -108,7 +115,7 @@ export function TnScorecard({ protocol: p, initial, savedResult, localSessionId,
       <section className="tb-pane"><h2>Forsøksoversikt</h2><p>{closed ? "Trykk på et forsøk for å se registreringen." : "Trykk på et forsøk for å se eller rette registreringen."}</p><ol className="tb-attempts">{p.rows.map((r, i) => {
         const done = !tnRowError(r, values[String(i + 1)], true);
         const text = r.fields.map(f => draft.raw[String(i + 1)]?.[f.key]).filter(Boolean).join(" · ");
-        return <li key={i}><button type="button" aria-current={!summary && i === attempt ? "step" : undefined} onClick={() => { setAttempt(i); setScreen("attempt"); }} aria-label={`Forsøk ${i + 1}, ${done ? "registrert" : text ? "ufullstendig" : "ikke registrert"}`}><b>{i + 1}</b><span>{text || "Ikke registrert"}<small>{r.label} · {done ? "Registrert" : text ? "Ufullstendig" : "Venter"}</small></span></button></li>;
+        return <li key={i}><button type="button" aria-current={!summary && i === attempt ? "step" : undefined} onClick={() => { setAttempt(i); setScreen("attempt"); }} aria-label={`Forsøk ${i + 1}, ${done ? "registrert" : text ? "ufullstendig" : "ikke registrert"}`}><b>{i + 1}</b><span>{text || "Ikke registrert"}<small>{r.label} · {done ? shot(i) ?? "Registrert" : text ? "Ufullstendig" : "Venter"}</small></span></button></li>;
       })}</ol>{!closed && <Knapp variant="secondary" onClick={() => setScreen("summary")}>Se oppsummering</Knapp>}</section>
     </div>
     <details className="tb-pane"><summary>Kilde og registreringsregler</summary><p>{p.source} · {tnVersion(p)}</p><p>Faste mål og rekkefølge følger valgt testvariant. Manglende verdi er forskjellig fra null. Resultater sammenlignes bare med samme versjon, variant og antall forsøk.</p><p>Utkast på denne enheten slettes ved utlogging eller bytte av konto, og ryddes ved neste åpning etter sju dager uten endringer. Vent på «lagret på kontoen» før du logger ut.</p></details>

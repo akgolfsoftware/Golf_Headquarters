@@ -9,14 +9,13 @@ import styles from "./tn-skjerm.module.css";
 
 /**
  * Knapper, felt og ark for handlingene på Team Norway-skjermene.
- * Fasit: Claude Design «Team Norway App delivery» (bc3e41fc): navy knapp med
- * hvit tekst, Jost i versaler med sperring, hjørner 2 px, minst 44 px høy.
- * Sletting er grafitt i et kort med rød kant, aldri en rød knapp.
+ * Fasit: docs/design-system/utkast-tn/felles/tn.css (pakke 1 grunnmur): navy
+ * primærknapp, navy kontur sekundær, Lato 14 px, hjørner 2 px, minst 44 px høy.
+ * Sletting er mørk statusrød. Aldri logorød på knapper.
  *
  * Avvik:
- *   - Designet tegner ingen skjemaark. Arket bruker kortenes språk: hvit flate,
- *     tittel over 2 px navy strek, felt og knapper fra TN-03 «Registrer resultat».
- *   - Bekreftelsesarket har rød toppkant i stedet for rød kant rundt hele kortet.
+ *   - Grunnmuren tegner ingen skjemaark. Arket bruker kortenes språk: hvit flate,
+ *     seksjonstittel, felt og knapper fra grunnmuren.
  */
 
 type Resultat = { ok: true; videre?: string } | { ok: false; feil: string };
@@ -25,10 +24,10 @@ const knappGrunn: CSSProperties = {
   minHeight: 44,
   padding: "0 18px",
   borderRadius: 2,
-  fontFamily: TN.font.display,
-  fontSize: 12,
-  letterSpacing: "0.16em",
-  textTransform: "uppercase",
+  fontFamily: TN.font.body,
+  fontSize: 14,
+  fontWeight: 700,
+  letterSpacing: "0.02em",
   display: "inline-flex",
   alignItems: "center",
   justifyContent: "center",
@@ -39,12 +38,19 @@ const knappGrunn: CSSProperties = {
   maxWidth: "100%",
 };
 
-export type TnKnappVariant = "primar" | "sekundar" | "grafitt" | "tekst";
+/**
+ * «hvit» og «konturHvit» står på navy helteflate (utkast 2). «meny» er en rad i
+ * «Ny»/«Mer»-lista (TnFlere): venstrestilt, full bredde, hårstrek under.
+ */
+export type TnKnappVariant = "primar" | "sekundar" | "slett" | "tekst" | "hvit" | "konturHvit" | "meny";
 
 export function tnKnappStil(variant: TnKnappVariant = "primar"): CSSProperties {
   if (variant === "primar") return { ...knappGrunn, background: TN.navy900, color: TN.white, border: `1px solid ${TN.navy900}` };
-  if (variant === "grafitt") return { ...knappGrunn, background: TN.ink900, color: TN.white, border: `1px solid ${TN.ink900}` };
-  if (variant === "tekst") return { ...knappGrunn, padding: "0 4px", background: "transparent", color: TN.navy900, border: "1px solid transparent" };
+  if (variant === "hvit") return { ...knappGrunn, background: TN.white, color: TN.navy900, border: `1px solid ${TN.white}` };
+  if (variant === "konturHvit") return { ...knappGrunn, background: "transparent", color: TN.white, border: "1px solid rgba(255, 255, 255, 0.75)" };
+  if (variant === "meny") return { ...knappGrunn, width: "100%", justifyContent: "flex-start", padding: "0 14px", letterSpacing: 0, background: TN.white, color: TN.navy900, border: 0, borderBottom: `1px solid ${TN.ink200}`, borderRadius: 0 };
+  if (variant === "slett") return { ...knappGrunn, background: TN.status.redText, color: TN.white, border: `1px solid ${TN.status.redText}` };
+  if (variant === "tekst") return { ...knappGrunn, padding: "0 4px", background: "transparent", color: TN.navy600, border: "1px solid transparent", textDecoration: "underline", textUnderlineOffset: 4 };
   return { ...knappGrunn, background: TN.white, color: TN.navy900, border: `1px solid ${TN.navy900}` };
 }
 
@@ -57,20 +63,20 @@ export function TnKnapperekke({ children }: { children: ReactNode }) {
 }
 
 const feltStil: CSSProperties = {
-  minHeight: 44,
+  minHeight: 48,
   padding: "0 12px",
-  border: `1px solid ${TN.ink300}`,
+  border: `1px solid ${TN.ink500}`,
   borderRadius: 2,
   background: TN.white,
   color: TN.ink900,
   fontFamily: TN.font.body,
-  fontSize: 15,
+  fontSize: 16,
   width: "100%",
   minWidth: 0,
 };
 
 function Etikett({ children }: { children: ReactNode }) {
-  return <span style={{ fontFamily: TN.font.display, fontSize: 11, letterSpacing: "0.16em", textTransform: "uppercase", color: TN.textSecondary }}>{children}</span>;
+  return <span style={{ fontFamily: TN.font.body, fontSize: 14, lineHeight: 1.3, fontWeight: 700, color: TN.ink900 }}>{children}</span>;
 }
 
 export function TnFelt({ etikett, navn, type = "text", standard, pakrevd, hint, plassholder, maks }: { etikett: string; navn: string; type?: "text" | "date" | "time" | "datetime-local" | "email"; standard?: string; pakrevd?: boolean; hint?: string; plassholder?: string; maks?: number }) {
@@ -78,7 +84,7 @@ export function TnFelt({ etikett, navn, type = "text", standard, pakrevd, hint, 
     <label style={{ display: "flex", flexDirection: "column", gap: 6, minWidth: 0 }}>
       <Etikett>{etikett}</Etikett>
       <input name={navn} type={type} defaultValue={standard} required={pakrevd} placeholder={plassholder} maxLength={maks} style={{ ...feltStil, fontFamily: type === "text" || type === "email" ? TN.font.body : TN.font.mono }} />
-      {hint ? <span style={{ fontSize: 13, color: TN.textSecondary }}>{hint}</span> : null}
+      {hint ? <span style={{ fontSize: 13, color: TN.ink500 }}>{hint}</span> : null}
     </label>
   );
 }
@@ -152,11 +158,11 @@ export function TnSkjemaArk({ knapp, knappVariant = "primar", tittel, send, lagr
   return (
     <>
       <button type="button" onClick={apne} style={tnKnappStil(knappVariant)}>{knapp}</button>
-      <dialog ref={ref} aria-labelledby={tittelId} className={styles.ark} style={{ border: `1px solid ${TN.navy100}`, borderRadius: 4, padding: 0, width: "min(560px, calc(100vw - 32px))", maxHeight: "calc(100dvh - 32px)", color: TN.ink900 }}>
+      <dialog ref={ref} aria-labelledby={tittelId} className={styles.ark} style={{ border: `1px solid ${TN.ink200}`, borderRadius: 4, padding: 0, width: "min(560px, calc(100vw - 32px))", maxHeight: "calc(100dvh - 32px)", color: TN.ink900 }}>
         <form onSubmit={lagre} style={{ display: "flex", flexDirection: "column", gap: 16, padding: "clamp(18px, 3vw, 26px)" }}>
-          <h2 id={tittelId} style={{ fontFamily: TN.font.display, fontWeight: 400, fontSize: 13, letterSpacing: "0.2em", textTransform: "uppercase", color: TN.navy900, margin: 0, paddingBottom: 12, borderBottom: `2px solid ${TN.navy900}` }}>{tittel}</h2>
+          <h2 id={tittelId} style={{ fontFamily: TN.font.display, fontWeight: 500, fontSize: 19, lineHeight: 1.25, letterSpacing: "0.06em", textTransform: "uppercase", color: TN.navy900, margin: 0 }}>{tittel}</h2>
           {children}
-          {feil ? <div role="alert" style={{ fontSize: 13.5, color: TN.status.redText, padding: "10px 12px", background: TN.navy50, borderLeft: `3px solid ${TN.status.red}`, borderRadius: 2 }}>{feil}</div> : null}
+          {feil ? <div role="alert" style={{ fontSize: 13.5, fontWeight: 700, color: TN.status.redText, padding: "10px 12px", background: TN.status.redBg, borderRadius: 2 }}>{feil}</div> : null}
           <TnKnapperekke>
             <button type="submit" disabled={venter} style={{ ...tnKnappStil("primar"), opacity: venter ? 0.6 : 1 }}>{venter ? "Lagrer …" : lagreTekst}</button>
             <button type="button" onClick={() => ref.current?.close()} style={tnKnappStil("sekundar")}>Avbryt</button>
@@ -167,7 +173,7 @@ export function TnSkjemaArk({ knapp, knappVariant = "primar", tittel, send, lagr
   );
 }
 
-/** Slett/avslutt med bekreftelse: grafitt knapp i et kort med rød kant. */
+/** Slett/avslutt med bekreftelse: mørk statusrød knapp i et ark med statusrød toppkant. */
 export function TnSlettKnapp({ knapp, tittel, tekst, bekreft, handling, videre, variant = "sekundar" }: {
   knapp: string;
   tittel: string;
@@ -200,13 +206,13 @@ export function TnSlettKnapp({ knapp, tittel, tekst, bekreft, handling, videre, 
   return (
     <>
       <button type="button" onClick={() => { setFeil(null); ref.current?.showModal(); }} style={tnKnappStil(variant)}>{knapp}</button>
-      <dialog ref={ref} aria-labelledby={tittelId} className={styles.ark} style={{ border: `1px solid ${TN.navy100}`, borderTop: `3px solid ${TN.red600}`, borderRadius: 4, padding: 0, width: "min(460px, calc(100vw - 32px))", color: TN.ink900 }}>
+      <dialog ref={ref} aria-labelledby={tittelId} className={styles.ark} style={{ border: `1px solid ${TN.ink200}`, borderTop: `3px solid ${TN.status.red}`, borderRadius: 4, padding: 0, width: "min(460px, calc(100vw - 32px))", color: TN.ink900 }}>
         <div style={{ display: "flex", flexDirection: "column", gap: 14, padding: "clamp(18px, 3vw, 24px)" }}>
-          <h2 id={tittelId} style={{ fontFamily: TN.font.display, fontWeight: 400, fontSize: 13, letterSpacing: "0.2em", textTransform: "uppercase", color: TN.navy900, margin: 0 }}>{tittel}</h2>
+          <h2 id={tittelId} style={{ fontFamily: TN.font.display, fontWeight: 500, fontSize: 19, lineHeight: 1.25, letterSpacing: "0.06em", textTransform: "uppercase", color: TN.navy900, margin: 0 }}>{tittel}</h2>
           <p style={{ fontSize: 14.5, lineHeight: 1.6, margin: 0 }}>{tekst}</p>
           {feil ? <div role="alert" style={{ fontSize: 13.5, color: TN.status.redText }}>{feil}</div> : null}
           <TnKnapperekke>
-            <button type="button" disabled={venter} onClick={utfor} style={{ ...tnKnappStil("grafitt"), opacity: venter ? 0.6 : 1 }}>{venter ? "Vent …" : bekreft}</button>
+            <button type="button" disabled={venter} onClick={utfor} style={{ ...tnKnappStil("slett"), opacity: venter ? 0.6 : 1 }}>{venter ? "Vent …" : bekreft}</button>
             <button type="button" onClick={() => ref.current?.close()} style={tnKnappStil("sekundar")}>Avbryt</button>
           </TnKnapperekke>
         </div>

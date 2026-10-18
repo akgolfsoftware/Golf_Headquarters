@@ -7,6 +7,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
+import { kanSeDataGolf } from "@/lib/auth/datagolf-regel";
 import { MinProgresjonV2 } from "@/components/marketing/v2/MarkedStatsMinProgresjonV2";
 
 export const dynamic = "force-dynamic";
@@ -37,7 +38,12 @@ export default async function MinProgresjonPage() {
   const user = await getCurrentUser();
   if (!user) redirect("/auth/login?next=/stats/min-progresjon");
 
-  const { sammenligninger, sgInputs } = await hentBrukerProgresjon(user.id);
+  const progresjon = await hentBrukerProgresjon(user.id);
+  // Sammenligningene er mot PGA-spillere fra Data Golf (referanse, estimert
+  // Tour-score, SG-avstand) og vises bare for coach og admin (Anders 09.10.2026).
+  // Egne SG-tall vises for alle.
+  const sammenligninger = kanSeDataGolf(user) ? progresjon.sammenligninger : [];
+  const { sgInputs } = progresjon;
   const fornavn = user.name?.split(" ")[0] ?? "deg";
 
   return <MinProgresjonV2 fornavn={fornavn} sammenligninger={sammenligninger} sgInputs={sgInputs} />;

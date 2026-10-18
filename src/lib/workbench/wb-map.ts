@@ -4,6 +4,7 @@
  * de kan enhetstestes uten database.
  */
 
+import { lesFokus } from "./etter-okta";
 import type {
   WorkbenchDrill as WorkbenchDrillRow,
   WorkbenchSession as WorkbenchSessionRow,
@@ -31,6 +32,17 @@ export type WbRow = WorkbenchSessionRow & { drills: WorkbenchDrillRow[] };
 export function tilDatoKolonne(iso: string): Date {
   const [y, m, d] = iso.split("-").map(Number);
   return new Date(Date.UTC(y, m - 1, d));
+}
+
+/**
+ * Samme kalenderdag flyttet et antall år (kopi av fjorårets årsplan). 29. februar
+ * blir 28. februar i år uten skuddår, ikke 1. mars.
+ */
+export function flyttAar(d: Date, aar: number): Date {
+  const neste = new Date(d);
+  neste.setUTCFullYear(neste.getUTCFullYear() + aar);
+  if (neste.getUTCMonth() !== d.getUTCMonth()) neste.setUTCDate(0);
+  return neste;
 }
 
 /** Date (@db.Date, UTC-midnatt) → «YYYY-MM-DD». */
@@ -109,6 +121,7 @@ export function mapSession(row: WbRow): WorkbenchSession {
     skillArea: row.skillArea ?? undefined,
     pressureLevel: row.pressureLevel ?? undefined,
     maalsetning: row.maalsetning ?? undefined,
+    fokusEtterOkt: lesFokus(row.liveSnapshot),
     drills: [...row.drills]
       .sort((a, b) => a.sortOrder - b.sortOrder)
       .map(mapDrill),

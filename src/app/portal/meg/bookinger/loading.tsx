@@ -1,7 +1,11 @@
-/* v2-skjelett for /portal/meg/bookinger — liste over bookinger. */
-
-import { V2Laster } from "@/components/v2/laster";
+/* Lastetilstand for /portal/meg/bookinger, nytt design (pakke 7). */
+import { PlayerHQSkallLaster } from "@/components/precision/PlayerHQSkallLaster";
+import { PHKommunikasjonLaster } from "@/components/portal/precision/PHKommunikasjonLaster";
 
 export default function Loading() {
-  return <V2Laster variant="liste" />;
+  return (
+    <PlayerHQSkallLaster sti="/portal/meg/bookinger">
+      <PHKommunikasjonLaster variant="booking" />
+    </PlayerHQSkallLaster>
+  );
 }

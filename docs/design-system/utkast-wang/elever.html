@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WANG Elever</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Quattrocento:wght@400;700&family=Quattrocento+Sans:wght@400;700&display=swap">
+<link rel="stylesheet" href="felles/wang.css">
+<style>
+  .sok{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
+  .sok input{min-height:48px;padding:10px 16px;border:1.5px solid var(--n300);border-radius:var(--r-knapp);font:400 16px/1.4 var(--body);width:100%;background:#fff}
+  .profil{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+  .profil .avatar{width:64px;height:64px;font-size:18px}
+  .nok{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .nok .kort{gap:4px;padding:16px}
+  .nok strong{font:800 26px/1 var(--brand);color:var(--navy-dyp)}
+  .mal{display:grid;gap:8px;padding:14px 0}
+  .mal + .mal{border-top:1px solid var(--linje)}
+  .mal-topp{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
+  .mal b{font:700 15px/1.35 var(--brand);color:var(--navy-dyp)}
+  .mal .stolpe span{background:var(--navy)}
+  .mal .sma{font-size:13px;color:var(--tekst-2)}
+  .iup-del{display:grid;gap:10px}
+  .iup-del h3{margin:0;display:flex;align-items:center;gap:10px;font:800 16px/1.25 var(--brand);color:var(--navy-dyp)}
+  .iup-del h3 .nr{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;font:800 12px/1 var(--brand);flex:none}
+  .fokus-rad{display:flex;flex-wrap:wrap;gap:8px}
+  .fokus-chip{display:inline-flex;align-items:center;gap:8px;min-height:36px;padding:0 14px;border-radius:var(--r-chip);font:700 13px/1.2 var(--brand)}
+  .rank{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .rank div{padding:14px;border-radius:var(--r-felt);background:var(--tint-navy);display:grid;gap:4px}
+  .rank strong{font:800 24px/1 var(--brand);color:var(--navy-dyp)}
+  .rank span{font:700 12px/1.3 var(--brand);color:var(--tekst-2)}
+  .sp{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;align-items:center;padding:10px 0}
+  .sp + .sp{border-top:1px solid var(--linje)}
+  .sp p{font-size:14px;color:var(--navy-dyp)}
+  .prikker{display:inline-flex;gap:4px}
+  .prikker i{width:10px;height:10px;border-radius:50%;background:var(--n200)}
+  .prikker i.p{background:var(--mint)}
+  .prikker.trener i.p{background:var(--navy)}
+  .omr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;padding:8px 0}
+  .omr b{font:700 14px/1.3 var(--brand);color:var(--navy-dyp)}
+  .forslag{display:grid;gap:6px;padding:12px 0}
+  .forslag + .forslag{border-top:1px solid var(--linje)}
+  .forslag b{font:700 15px/1.3 var(--brand);color:var(--navy-dyp)}
+  .laas{display:grid;gap:12px;justify-items:start;padding:22px;border-radius:var(--r-kort);background:#fff;box-shadow:var(--skygge)}
+  .laas .ikon{width:36px;height:36px;color:var(--navy)}
+  @container (min-width:900px){
+    .nok{grid-template-columns:repeat(4,minmax(0,1fr))}
+    .rank{grid-template-columns:repeat(2,minmax(0,220px))}
+  }
+</style>
+</head>
+<body>
+<div class="ytre">
+  <header class="hode">
+    <p class="meta-s">WANG Toppidrett · trenerflaten · pakke 7 Elever · utkast 2 (retning B) · 16.10.2026</p>
+    <h1>Elever</h1>
+    <p>Elevlista (WANG-07), elevprofilen (WANG-44), IUP-fanen i rekkefølgen fra Team Norways IUP-ark, fireukerssjekken (WANG-45), forslag til elevens plan og en elev som ikke har delt. Treneren ser bare det eleven har delt. Alle navn og tall er syntetiske.</p>
+  </header>
+  <div class="kontroller">
+    <div class="velger" aria-label="Skjerm"><button type="button" data-skjerm="liste" aria-pressed="true">Elevlista</button><button type="button" data-skjerm="profil" aria-pressed="false">Én elev</button><button type="button" data-skjerm="iup" aria-pressed="false">IUP</button><button type="button" data-skjerm="sjekk" aria-pressed="false">Fireukerssjekk</button><button type="button" data-skjerm="forslag" aria-pressed="false">Foreslå endring</button><button type="button" data-skjerm="ikkedelt" aria-pressed="false">Ikke delt</button></div>
+    <div class="velger" aria-label="Bredde"><button type="button" data-bredde="mob" aria-pressed="true">Mobil 390</button><button type="button" data-bredde="pc" aria-pressed="false">PC 1280</button></div>
+    <div class="velger" aria-label="Rolle"><button type="button" data-rolle="trener" aria-pressed="true">Trener</button><button type="button" data-rolle="sportssjef" aria-pressed="false">Sportssjef</button></div>
+    <div class="velger" aria-label="Tilstand"><button type="button" data-tilstand="data" aria-pressed="true">Med data</button><button type="button" data-tilstand="tom" aria-pressed="false">Tom</button><button type="button" data-tilstand="laster" aria-pressed="false">Laster</button><button type="button" data-tilstand="feil" aria-pressed="false">Feil</button></div>
+  </div>
+  <div class="scene"><div id="ramme" class="ramme mob"></div></div>
+  <div class="notater">
+    <section class="endringer">
+      <h2>Nytt i utkast 2</h2>
+      <ul>
+        <li><b>Elevlista</b> har ett hovedtall, «2 elever trenger deg», og elevene i tre bånd: Trenger deg · Følger planen · Ikke delt. Hver rad har plan-stolpe med strek ved 80 % og statusmarkør.</li>
+        <li><b>IUP-hodet</b> har hovedtall (plan siste fire uker), målsetninger og neste samtale, og pyramiden som fylt bånd.</li>
+        <li>Tallene er de samme som i Trening › Per elev. Elev 06 og 10 har ikke delt.</li>
+      </ul>
+    </section>
+    <section class="endringer">
+      <h2>Hva skjermene gjør</h2>
+      <ul>
+        <li><b>Elevlista:</b> bare elever ved egen skole. Hver elev viser om data er delt. Uten deling ser treneren bare nummer og klasse.</li>
+        <li><b>Én elev:</b> etterlevelse, oppmøte, tester, turneringer og neste samtale. Treneren foreslår, eleven bestemmer.</li>
+        <li><b>IUP:</b> hentet fra PlayerHQ, i rekkefølgen fra Team Norways IUP-ark. Ranking er WAGR og NGFs juniorranking.</li>
+        <li><b>Fireukerssjekk:</b> prosessmål, målsetninger og utviklingssjekkens 41 spørsmål på nivå Junior. Elevens svar og trenerens vurdering side om side. Ordet er «vurdering», aldri «karakter».</li>
+        <li><b>Foreslå endring:</b> forslaget endrer ikke planen før eleven godtar det.</li>
+      </ul>
+    </section>
+    <section class="endringer">
+      <h2>Åpne spørsmål</h2>
+      <ul>
+        <li>Skole og fravær (WANG-05) er ikke tegnet som egen skjerm: timeplan og prøver hører til eleven i PlayerHQ. Skal treneren se elevens prøveplan?</li>
+        <li>Invitasjon til PlayerHQ fra WANG (WANG-20) venter til delingen virker (vedtaket 28.09).</li>
+      </ul>
+    </section>
+  </div>
+</div>
+
+<!-- ================= Elevlista ================= -->
+<template id="s-liste">
+<div class="app" data-fane="elever">
+<main class="innhold">
+  <section data-behold style="display:grid;gap:14px">
+    <div><p class="dato">WANG Golf · uke 42</p><h1 class="tittel">Elever</h1></div>
+  </section>
+  <section class="helt med-bilde inn" aria-label="Elever som trenger deg">
+    <div class="helt-tekst">
+      <span class="helt-merke haster"><i></i>Siste fire uker</span>
+      <p class="helt-hoved"><strong data-tell="2">2</strong><span>elever trenger deg</span></p>
+      <p class="helt-forklar">Elev 09 har vært borte tre morgener på rad. Elev 02 har gjennomført 61 % av planen.</p>
+      <button type="button" class="knapp lys" data-gaa="profil">Ta oppfølging</button>
+    </div>
+    <img class="helt-bilde" src="bilder/turn-tee.jpg" alt="" width="480" height="230">
+  </section>
+  <div class="smaa-tall">
+    <a href="#"><strong>11</strong><span>Elever i gruppa</span></a>
+    <a href="#"><strong>9<small>av 11</small></strong><span>Har delt med deg</span></a>
+    <a href="#"><strong>1</strong><span>Test til kontroll</span></a>
+  </div>
+  <section style="display:grid;gap:10px">
+    <div class="sok"><input type="search" aria-label="Søk etter elev" placeholder="Søk etter elev"></div>
+    <div class="valg" role="group" aria-label="Klasse"><button type="button" aria-pressed="true">Alle</button><button type="button" aria-pressed="false">VG1</button><button type="button" aria-pressed="false">VG2</button><button type="button" aria-pressed="false">VG3</button></div>
+  </section>
+  <div class="baand kol" data-liste></div>
+  <p class="kilde">Elever ved andre WANG-skoler vises aldri. Kategori A–K fra PlayerHQ.</p>
+</main>
+</div>
+</template>
+
+<!-- ================= Én elev ================= -->
+<template id="s-profil">
+<div class="app" data-fane="elever" data-skall="tilbake" data-tilbake="Elever">
+<main class="innhold">
+  <section data-behold style="display:grid;gap:14px">
+    <div class="profil"><span class="avatar">04</span><div><p class="dato">VG2 · Kategori D · HCP 3,4</p><h1 class="tittel">Elev 04</h1></div></div>
+    <div class="knapper"><span class="pille ok"><i></i>Delt med deg 1.9</span><span class="pille noy"><i></i>Delt med Team Norway</span></div>
+    <nav class="faner" aria-label="Elev"><a href="#" class="aktiv">Oversikt</a><a href="#" data-gaa="iup">IUP</a><a href="#" data-gaa="sjekk">Fireukerssjekk</a><a href="#">Plan</a><a href="#">Tester</a></nav>
+  </section>
+  <div class="nok">
+    <div class="kort"><span class="etikett">Etterlevelse</span><strong>95 %</strong><span class="kilde">Uke 38–41</span></div>
+    <div class="kort"><span class="etikett">Morgentrening</span><strong>94 %</strong><span class="kilde">15 av 16</span></div>
+    <div class="kort"><span class="etikett">Snitt brutto</span><strong>75,2</strong><span class="kilde">11 runder i 2026</span></div>
+    <div class="kort"><span class="etikett">Neste samtale</span><strong>21.10</strong><span class="kilde">IUP-samtale</span></div>
+  </div>
+  <div class="to-kol">
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Fokus nå</h2><a class="lenke" href="#" data-gaa="iup">Hele IUP</a></div>
+      <div class="kort">
+        <div class="fokus-rad"><span class="fokus-chip fyll-slag">SLAG · Innspill 100–150 m</span><span class="fokus-chip fyll-tek">TEK · P6.0 i nedsving</span><span class="fokus-chip fyll-fys">FYS · Rotasjonsfart</span></div>
+        <p class="kilde">Satt av eleven i PlayerHQ 1.9, sist endret 6.10.</p>
+      </div>
+      <div class="sek-topp"><h2>Siste turneringer</h2></div>
+      <div class="kort">
+        <div class="omr"><b>Juniortour Øst, runde 6 · 76 + 74</b><span class="pille noy"><i></i>+6 · delt 12.</span></div>
+        <div class="omr"><b>Regionsmesterskap · 75 + 73</b><span class="pille noy"><i></i>+4 · delt 7.</span></div>
+        <p class="kilde">Brutto. Kilde: GolfBox.</p>
+      </div>
+    </section>
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Forslag fra deg</h2></div>
+      <div class="kort">
+        <div class="forslag"><div class="mal-topp"><b>Ekstra innspill torsdag 60 min</b><span class="pille vent"><i></i>Venter på elev</span></div><p class="kilde">Sendt mandag 12.10</p></div>
+        <div class="forslag"><div class="mal-topp"><b>Bytt fredagens video til nærspill</b><span class="pille ok"><i></i>Godtatt</span></div><p class="kilde">Godtatt 2.10</p></div>
+        <div class="knapper"><button type="button" class="knapp pri" data-gaa="forslag">Foreslå endring</button><button type="button" class="knapp sek">Skriv melding</button></div>
+      </div>
+    </section>
+  </div>
+</main>
+</div>
+</template>
+
+<!-- ================= IUP ================= -->
+<template id="s-iup">
+<div class="app" data-fane="elever" data-skall="tilbake" data-tilbake="Elev 04">
+<main class="innhold">
+  <section data-behold style="display:grid;gap:10px">
+    <div><p class="dato">Elev 04 · VG2 · Kategori D</p><h1 class="tittel">IUP 2026/27</h1></div>
+  </section>
+  <section class="helt inn" aria-label="Plan siste fire uker">
+    <div class="helt-tekst">
+      <span class="helt-merke"><i></i>Følger planen</span>
+      <p class="helt-hoved"><strong><span data-tell="95">95</span><small>%</small></strong><span>av planen gjennomført siste fire uker</span></p>
+      <div class="stolpe" role="img" aria-label="95 % av planen"><span style="width:95%" data-til="95%"></span></div>
+      <p class="helt-linje"><span><b>1 av 3</b> målsetninger nådd</span><span>Neste samtale <b>21.10</b></span></p>
+      <button type="button" class="knapp lys">Forbered samtalen</button>
+    </div>
+  </section>
+  <section class="kort">
+    <div class="sek-topp"><h2 class="undertittel" style="margin:0">Pyramiden siste fire uker</h2><span class="kilde">Gjennomført tid, 9 t 10 min i snitt per uke</span></div>
+    <div class="band" role="img" aria-label="FYS 30 %, TEK 25 %, SLAG 24 %, SPILL 15 %, TURN 6 %"><span class="fyll-fys" style="flex:30">FYS</span><span class="fyll-tek" style="flex:25">TEK</span><span class="fyll-slag" style="flex:24">SLAG</span><span class="fyll-spill" style="flex:15">SPILL</span><span class="fyll-turn" style="flex:6"></span></div>
+    <div class="lg-rad"><span class="lg"><i class="bg-fys"></i>FYS 30 %</span><span class="lg"><i class="bg-tek"></i>TEK 25 %</span><span class="lg"><i class="bg-slag"></i>SLAG 24 %</span><span class="lg"><i class="bg-spill"></i>SPILL 15 %</span><span class="lg"><i class="bg-turn"></i>TURN 6 %</span></div>
+    <p class="kilde">Fra PlayerHQ. Eleven eier planen; du foreslår endringer.</p>
+  </section>
+  <div class="to-kol">
+    <div style="display:grid;gap:20px">
+      <section class="kort iup-del">
+        <h3><span class="nr">1</span>Målsetninger for sesongen</h3>
+        <div class="mal"><div class="mal-topp"><b>Snitt brutto under 74 i turnering</b><span class="pille vent"><i></i>På vei</span></div><div class="stolpe"><span style="width:62%"></span></div><span class="sma">Resultatmål · nå 75,2 · slutt 30.6</span></div>
+        <div class="mal"><div class="mal-topp"><b>Kvalifisere til NM junior</b><span class="pille noy"><i></i>Ikke startet</span></div><div class="stolpe"><span style="width:0%"></span></div><span class="sma">Resultatmål · uttak i mai</span></div>
+        <div class="mal"><div class="mal-topp"><b>Fast rutine før hvert slag i turnering</b><span class="pille ok"><i></i>Nådd</span></div><div class="stolpe"><span style="width:100%"></span></div><span class="sma">Prosessmål · 4 av 4 turneringer</span></div>
+      </section>
+      <section class="kort iup-del">
+        <h3><span class="nr">2</span>Hovedfokusområder</h3>
+        <div class="fokus-rad"><span class="fokus-chip fyll-slag">Innspill 100–150 m</span><span class="fokus-chip fyll-tek">P6.0 Kølle parallell i nedsving</span><span class="fokus-chip fyll-fys">Rotasjonsfart</span></div>
+      </section>
+      <section class="kort iup-del">
+        <h3><span class="nr">3</span>Tiltak og treningsprioriteter</h3>
+        <p class="forklar">To innspillsøkter i uka med TrackMan. Video av P6.0 hver fredag. Styrke med rotasjon to ganger i uka i grunnperioden.</p>
+      </section>
+    </div>
+    <div style="display:grid;gap:20px">
+      <section class="kort iup-del">
+        <h3><span class="nr">4</span>Ranking</h3>
+        <div class="rank"><div><strong>1 284</strong><span>WAGR · 12.10</span></div><div><strong>38</strong><span>NGF juniorranking · 12.10</span></div></div>
+      </section>
+      <section class="kort iup-del">
+        <h3><span class="nr">5</span>Tester</h3>
+        <div class="omr"><b>8-ball</b><span class="pille noy"><i></i>31 p · uke 41</span></div>
+        <div class="omr"><b>Benkpress</b><span class="pille noy"><i></i>60 kg · uke 41</span></div>
+        <div class="omr"><b>Club Speed</b><span class="pille noy"><i></i>109 mph · uke 41</span></div>
+        <a class="lenke" href="#">Alle tester</a>
+      </section>
+      <section class="kort iup-del">
+        <h3><span class="nr">6</span>Evalueringssamtale</h3>
+        <p class="forklar">Neste: onsdag 21. oktober kl. 14:00, sesongevaluering. Sist: 2. september.</p>
+        <div class="knapper"><button type="button" class="knapp pri">Forbered samtalen</button><button type="button" class="knapp sek" data-gaa="forslag">Foreslå endring</button></div>
+      </section>
+    </div>
+  </div>
+</main>
+</div>
+</template>
+
+<!-- ================= Fireukerssjekk ================= -->
+<template id="s-sjekk">
+<div class="app" data-fane="elever" data-skall="tilbake" data-tilbake="Elev 04">
+<main class="innhold">
+  <section data-behold style="display:grid;gap:10px">
+    <div><p class="dato">Elev 04 · uke 38–41 · levert fredag 9.10</p><h1 class="tittel">Fireukerssjekk</h1></div>
+    <div class="knapper"><span class="pille ok"><i></i>Delt med deg</span><span class="pille noy"><i></i>Nivå Junior · 41 spørsmål</span></div>
+  </section>
+  <div class="to-kol">
+    <div style="display:grid;gap:20px">
+      <section class="kort">
+        <b class="undertittel">Prosessmål</b>
+        <div class="omr"><b>Rutine før hvert slag</b><span class="pille ok"><i></i>Holdt 4 av 4 uker</span></div>
+        <div class="omr"><b>To innspillsøkter i uka</b><span class="pille vent"><i></i>3 av 4 uker</span></div>
+        <div class="omr"><b>Video av P6.0 hver fredag</b><span class="pille ok"><i></i>4 av 4 uker</span></div>
+      </section>
+      <section class="kort">
+        <div class="sek-topp"><b class="undertittel">Utviklingssjekken per område</b><span class="kilde">Snitt 1–5</span></div>
+        <div data-omrader></div>
+        <div class="lg-rad"><span class="lg"><i style="background:var(--mint)"></i>Eleven</span><span class="lg"><i style="background:var(--navy)"></i>Din vurdering</span></div>
+      </section>
+    </div>
+    <div style="display:grid;gap:20px">
+      <section class="kort">
+        <div class="sek-topp"><b class="undertittel">Største avstand</b><span class="kilde">3 av 41 spørsmål</span></div>
+        <div data-sporsmal></div>
+        <a class="lenke" href="#">Alle 41 spørsmål</a>
+      </section>
+      <section class="kort">
+        <div class="felt"><label for="s-svar">Svar til eleven</label><textarea id="s-svar" rows="4">Sterke fire uker. Vi tar avstanden på mental forberedelse i samtalen 21.10.</textarea><span class="hjelp">Eleven ser svaret i PlayerHQ. Foresatte til elever under 18 ser det også.</span></div>
+        <div class="knapper"><button type="button" class="knapp pri" data-send>Send svar</button></div>
+        <p class="kilde" data-kvittering hidden>Sendt. Fireukerssjekken er markert som lest.</p>
+      </section>
+    </div>
+  </div>
+</main>
+</div>
+</template>
+
+<!-- ================= Foreslå endring ================= -->
+<template id="s-forslag">
+<div class="app" data-fane="elever" data-skall="tilbake" data-tilbake="Elev 04">
+<main class="innhold">
+  <section data-behold><p class="dato">Elev 04 · uke 43</p><h1 class="tittel">Foreslå endring</h1><p class="ingress">Forslaget endrer ikke planen før eleven godtar det.</p></section>
+  <div class="kort" style="max-width:620px">
+    <div class="felt"><label for="f-hva">Hva</label><select id="f-hva"><option>Legg til en økt</option><option>Flytt en økt</option><option>Endre timer per akse</option><option>Endre fokusområde i IUP</option></select></div>
+    <div class="felt"><span class="etikett-felt">Akse</span><div class="fokus-rad"><span class="akse slag">SLAG</span></div></div>
+    <div class="felt"><label for="f-okt">Økt</label><input id="f-okt" value="Innspill 100–150 m · torsdag 13:00 · 60 min"></div>
+    <div class="felt"><label for="f-hvorfor">Hvorfor</label><textarea id="f-hvorfor" rows="3">Innspill er der du taper mest mot Kategori C. En ekstra økt i to uker før Høstturneringen.</textarea></div>
+    <div class="knapper"><button type="button" class="knapp pri" data-send>Send forslaget</button><button type="button" class="knapp sek">Avbryt</button></div>
+    <p class="kilde" data-kvittering hidden>Sendt til Elev 04. Du får beskjed når eleven godtar eller avviser.</p>
+  </div>
+</main>
+</div>
+</template>
+
+<!-- ================= Ikke delt ================= -->
+<template id="s-ikkedelt">
+<div class="app" data-fane="elever" data-skall="tilbake" data-tilbake="Elever">
+<main class="innhold">
+  <section data-behold><div class="profil"><span class="avatar" style="background:var(--n100);color:var(--tekst-2)">06</span><div><p class="dato">VG2</p><h1 class="tittel">Elev 06</h1></div></div></section>
+  <div class="laas">
+    <svg class="ikon" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+    <b class="undertittel">Elev 06 har ikke delt data med deg ennå</b>
+    <p class="forklar">Du ser bare nummer og klasse. Eleven deler fra Meg i PlayerHQ med en lenke til din e-post. Eleven er 17 år, så ingen forelder må godkjenne.</p>
+    <span class="pille vent"><i></i>Lenke sendt 8.10, gjelder til 15.10</span>
+    <div class="knapper"><button type="button" class="knapp sek">Minn eleven på det</button></div>
+  </div>
+</main>
+</div>
+</template>
+
+<script src="felles/wang.js"></script>
+<script>
+(function () {
+  function liste(app) {
+    /* [elev, klasse, kategori, etterlevelse %, grunn]. Elev 06 og 10 har ikke delt. Samme tall som Trening › Per elev. */
+    var T = [['09', 'VG2', 'D', 74, 'Borte tre morgener på rad'], ['02', 'VG1', 'E', 61, 'Under 70 % av planen']];
+    var F = [['07', 'VG2', 'E', 86], ['11', 'VG3', 'C', 89], ['05', 'VG2', 'D', 92, '1 test til kontroll'], ['01', 'VG1', 'E', 94], ['04', 'VG2', 'D', 95], ['03', 'VG1', 'D', 98], ['08', 'VG3', 'C', 101]];
+    var I = [['06', 'VG2'], ['10', 'VG3']];
+    function rad(e, kl) {
+      var grunn = e[4] ? '<span' + (kl === 'trenger' ? ' class="er-grunn"' : '') + '>' + e[4] + '</span>' : '';
+      return '<a class="elevrad ' + kl + '" href="#" data-gaa="profil"><span class="avatar">' + e[0] + '</span><span class="er-hvem"><b>Elev ' + e[0] + '</b><span>' + e[1] + ' · Kategori ' + e[2] + '</span>' + grunn + '</span><span class="er-plan"><b>' + e[3] + ' %</b><span class="stolpe"><span style="width:' + Math.min(100, e[3]) + '%" data-til="' + Math.min(100, e[3]) + '%"></span><i class="strek" style="left:80%"></i></span></span></a>';
+    }
+    function del(kl, tittel, liste, tekst, f) { return '<section class="baand-del ' + kl + '"><div class="baand-hode"><h3>' + tittel + '</h3><span class="antall">' + liste.length + '</span><p>' + tekst + '</p></div><div class="baand-liste">' + liste.map(f).join('') + '</div></section>'; }
+    app.querySelector('[data-liste]').innerHTML =
+      del('trenger', 'Trenger deg', T, 'Under 80 % av planen, eller borte fra morgentreningen.', function (e) { return rad(e, 'trenger'); }) +
+      del('folger', 'Følger planen', F, '80 % eller mer av planen. Lavest først.', function (e) { return rad(e, 'folger'); }) +
+      del('ikke-delt', 'Ikke delt', I, 'Du ser bare nummer og klasse til eleven deler fra PlayerHQ.', function (e) { return '<a class="elevrad ikke-delt" href="#" data-gaa="ikkedelt"><span class="avatar">' + e[0] + '</span><span class="er-hvem"><b>Elev ' + e[0] + '</b><span>' + e[1] + ' · ikke delt</span></span><span class="er-plan"><b>—</b><span class="kilde">Lenke sendt</span></span></a>'; });
+  }
+  function prikker(n, kl) { var s = '<span class="prikker ' + (kl || '') + '" role="img" aria-label="' + n + ' av 5">'; for (var i = 1; i <= 5; i++) s += '<i class="' + (i <= n ? 'p' : '') + '"></i>'; return s + '</span>'; }
+  function sjekk(app) {
+    var O = [['Teknikk', 4, 4], ['Slag og spill', 3, 3], ['Fysisk', 4, 4], ['Mental forberedelse', 4, 2], ['Livsstil og skole', 3, 3]];
+    app.querySelector('[data-omrader]').innerHTML = O.map(function (o) { return '<div class="omr"><b>' + o[0] + '</b><span style="display:grid;gap:4px;justify-items:end">' + prikker(o[1]) + prikker(o[2], 'trener') + '</span></div>'; }).join('');
+    var S = [['Jeg har en fast plan for hva jeg gjør når en runde går dårlig.', 4, 2], ['Jeg vet hva jeg skal trene på når jeg kommer til en økt.', 5, 3], ['Jeg sover minst åtte timer før turneringsdager.', 3, 4]];
+    app.querySelector('[data-sporsmal]').innerHTML = S.map(function (s) { return '<div class="sp"><p>' + s[0] + '</p><span style="display:grid;gap:4px;justify-items:end">' + prikker(s[1]) + prikker(s[2], 'trener') + '</span></div>'; }).join('');
+    app.querySelector('[data-send]').addEventListener('click', function () { app.querySelector('[data-kvittering]').hidden = false; });
+  }
+  function forslag(app) { app.querySelector('[data-send]').addEventListener('click', function () { app.querySelector('[data-kvittering]').hidden = false; }); }
+  WANGUtkast.start({
+    start: 'liste',
+    skjermer: {
+      liste: { mal: 's-liste', etter: liste, tom: { tittel: 'Ingen elever i gruppa', tekst: 'Elever legges til av sportssjef under Administrasjon.', knapp: 'Gå til Administrasjon' }, laster: 'Henter elevene …', feil: 'Elevlista kunne ikke hentes' },
+      profil: { mal: 's-profil', tom: { tittel: 'Elev 04 er ikke i gruppa lenger', tekst: 'Medlemskapet er avsluttet. Data er ikke lenger synlig for deg.', knapp: 'Tilbake til Elever' }, laster: 'Henter elevprofilen …', feil: 'Elevprofilen kunne ikke hentes' },
+      iup: { mal: 's-iup', tom: { tittel: 'Elev 04 har ikke laget IUP ennå', tekst: 'Eleven lager IUP i PlayerHQ. Du kan foreslå målsetninger.', knapp: 'Foreslå målsetning' }, laster: 'Henter IUP fra PlayerHQ …', feil: 'IUP kunne ikke hentes' },
+      sjekk: { mal: 's-sjekk', etter: sjekk, tom: { tittel: 'Ingen fireukerssjekk levert', tekst: 'Neste sjekk er fredag 6. november, etter uke 42–45.', knapp: 'Minn eleven på det' }, laster: 'Henter fireukerssjekken …', feil: 'Svaret ble ikke sendt. Teksten ligger fortsatt i feltet.' },
+      forslag: { mal: 's-forslag', etter: forslag, tom: { tittel: 'Eleven har ingen plan å endre', tekst: 'Eleven har ikke valgt plan i PlayerHQ ennå.', knapp: 'Skriv melding' }, laster: 'Henter elevens plan …', feil: 'Forslaget ble ikke sendt. Ingenting er endret.' },
+      ikkedelt: { mal: 's-ikkedelt', tom: { tittel: 'Eleven finnes ikke', tekst: 'Eleven er ikke i noen av gruppene dine.', knapp: 'Tilbake til Elever' }, laster: 'Sjekker deling …', feil: 'Delingen kunne ikke sjekkes' }
+    }
+  });
+})();
+</script>
+</body>
+</html>

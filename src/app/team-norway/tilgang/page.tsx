@@ -20,10 +20,10 @@ export default async function TilgangPage({ searchParams }: { searchParams: Prom
   const { valgt } = await searchParams;
   // Trener i Team Norway-gruppen slipper inn uten plattformrolle COACH (Anders 26.09.2026).
   // erSportssjef er selve sperren: aktiv COACH i TN-gruppen, eller ADMIN.
-  const bruker = await requirePortalUser({ kreverTilgang: "INGEN" });
+  const bruker = await requirePortalUser({ tillatDemo: true, kreverTilgang: "INGEN" });
   if (!await erSportssjef({ id: bruker.id, role: bruker.role })) notFound();
 
-  const data = await hentTeamNorwayTilganger();
+  const data = await hentTeamNorwayTilganger({ id: bruker.id });
   if (!data) notFound();
   const { gruppe, rader } = data;
   const valgtRad = rader.find((rad) => rad.userId === valgt);

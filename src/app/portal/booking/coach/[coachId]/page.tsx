@@ -1,35 +1,33 @@
-// PH23CoachTid — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
+// PH-23 Coach — Precision Athletics, pakke 11 og 12 (utkast booking-meldinger.html, godkjent 16.10.2026).
 /**
- * PlayerHQ · Book direkte med coach (/portal/booking/coach/[coachId]) — v2.
- * v2-port 17. juli 2026 (Team G-B): `BookingCoachV2` erstatter legacy-siden,
- * ruten flyttet ut av (legacy). All logikk uendret:
- * - `resolveCoach()` cuid/fornavn-slug-fallback beholdt EKSAKT (skjør —
- *   inngående lenker fra anlegg-siden bruker fornavn-slug, se NB nederst).
- * - Ekte øktteller (coachingSession.count) + aktive tjenester per coach.
- * - Siden er et inngangspunkt: alle CTA-er lenker til den ekte credit-flyten
- *   (/portal/booking/ny) med tjeneste forhåndsvalgt. Selve ledige-tider +
- *   credit-trekk skjer i wizarden.
+ * PlayerHQ · Book direkte med coach (/portal/booking/coach/[coachId]).
+ * Beholdt fra forrige versjon:
+ * - `resolveCoach()` cuid/fornavn-slug-fallback EKSAKT (inngående lenker kan sende fornavn-slug).
+ * - Samtaleteller (coachingSession.count) og aktive tjenester per coach.
+ * - Siden er et inngangspunkt: «Velg tid» går til /portal/booking/ny med tjenesten forhåndsvalgt.
+ * Nytt: «Dere sammen» leser ekte bookinger med coachen og klippene i coaching-pakken.
  */
 
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
-import { TilbakeLenke } from "@/components/v2";
-import { BookingCoachV2 } from "@/components/portal/v2/BookingCoachV2";
+import { PH23Coach } from "@/components/portal/precision/PH23Coach";
+import { getUnreadNotifications } from "@/app/portal/actions";
+import { tilNaivVeggklokke } from "@/lib/google-calendar-tid";
+import { AVBESTILLING_FRIST_TIMER } from "@/lib/booking/policy";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Coach · PlayerHQ" };
 
 type Props = {
   params: Promise<{ coachId: string }>;
 };
 
-const WIZARD = "/portal/booking/ny";
-
 /**
  * Slår opp coach på [coachId]. Prøver cuid-oppslag først (kanonisk, brukt av
  * /portal/coach/[coachId]); faller tilbake til fornavn-match blant COACH-brukere
- * fordi inngående lenker fra anlegg-siden sender fornavn-slug (f.eks. «anders»).
+ * fordi inngående lenker kan sende fornavn-slug (f.eks. «anders»).
  */
 async function resolveCoach(coachId: string) {
   const byId = await prisma.user.findUnique({
@@ -48,6 +46,13 @@ async function resolveCoach(coachId: string) {
   );
 }
 
+function initialer(navn: string): string {
+  return navn.split(" ").map((p) => p[0]).filter(Boolean).slice(0, 2).join("").toUpperCase();
+}
+
+/** Booking-tider er naiv veggklokke (se google-calendar-tid.ts): les med lokale gettere. */
+const ddmm = (d: Date) => `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}`;
+
 export default async function BookingCoachPage({ params }: Props) {
   const user = await requirePortalUser({ kreverTilgang: "TALENT", allow: ["PLAYER", "COACH", "ADMIN"] });
   const { coachId } = await params;
@@ -55,53 +60,48 @@ export default async function BookingCoachPage({ params }: Props) {
   const coach = await resolveCoach(coachId);
   if (!coach) notFound();
 
-  // Ekte øktteller (delte coaching-sesjoner) — samme kilde som /portal/coach/[coachId].
-  const sesjoner = await prisma.coachingSession.count({
-    where: { userId: user.id, coachId: coach.id },
-  });
+  const naa = tilNaivVeggklokke(new Date());
+  const maanedStart = new Date(naa.getFullYear(), naa.getMonth(), 1);
+  const maanedSlutt = new Date(naa.getFullYear(), naa.getMonth() + 1, 1);
+  const medCoach = { userId: user.id, coachId: coach.id };
 
-  // Ekte tjenester for denne coachen.
-  const services = await prisma.serviceType.findMany({
-    where: { coachUserId: coach.id, active: true },
-    orderBy: { durationMin: "asc" },
-  });
+  const [samtaler, services, timerSammen, forsteTime, timerIMaaned, nesteTime, pakke, uleste] = await Promise.all([
+    // Samtaler i appen (delte coaching-sesjoner) — samme kilde som /portal/coach/[coachId].
+    prisma.coachingSession.count({ where: { userId: user.id, coachId: coach.id } }),
+    prisma.serviceType.findMany({ where: { coachUserId: coach.id, active: true }, orderBy: { durationMin: "asc" } }),
+    prisma.booking.count({ where: { ...medCoach, status: { in: ["CONFIRMED", "COMPLETED"] }, startAt: { lte: naa } } }),
+    prisma.booking.findFirst({ where: { ...medCoach, status: { in: ["CONFIRMED", "COMPLETED"] } }, orderBy: { startAt: "asc" }, select: { startAt: true } }),
+    prisma.booking.count({ where: { ...medCoach, status: { in: ["PENDING", "CONFIRMED", "COMPLETED"] }, startAt: { gte: maanedStart, lt: maanedSlutt } } }),
+    prisma.booking.findFirst({ where: { ...medCoach, status: { in: ["PENDING", "CONFIRMED"] }, startAt: { gte: naa } }, orderBy: { startAt: "asc" }, select: { startAt: true } }),
+    prisma.subscription.findUnique({ where: { userId_kind: { userId: user.id, kind: "COACHING" } }, select: { creditsRemaining: true } }),
+    getUnreadNotifications(user.id, 1),
+  ]);
 
   return (
-    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
-      <div className="pa-side">
-      <TilbakeLenke href="/portal/booking">Booking</TilbakeLenke>
-      <BookingCoachV2
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste.count}>
+      <PH23Coach
         data={{
+          coachId: coach.id,
           navn: coach.name,
-          ambition: coach.ambition,
-          epost: coach.email,
-          fellesOkter: sesjoner,
+          initialer: initialer(coach.name),
+          timerSammen,
+          siden: forsteTime ? forsteTime.startAt.toLocaleDateString("nb-NO", { month: "long", year: "numeric" }) : null,
+          maanedNavn: naa.toLocaleDateString("nb-NO", { month: "long" }),
+          timerIMaaned,
+          klippIgjen: pakke ? pakke.creditsRemaining : null,
+          nesteTime: nesteTime ? ddmm(nesteTime.startAt) : null,
+          samtaler,
           tjenester: services.map((s) => ({
             id: s.id,
             navn: s.name,
             varighetMin: s.durationMin,
             beskrivelse: s.description,
-            prisTekst:
-              s.priceOre > 0
-                ? `${(s.priceOre / 100).toLocaleString("nb-NO")} kr`
-                : "1 credit",
-            href: `${WIZARD}?coachId=${coach.id}&service=${s.slug}`,
+            pris: s.priceOre > 0 ? `${(s.priceOre / 100).toLocaleString("nb-NO")} kr` : "1 klipp",
           })),
-          wizardHref: `${WIZARD}?coachId=${coach.id}`,
-          meldingHref: "/portal/coach/melding",
-          visProKrav: user.tier === "GRATIS",
+          avbestillingTimer: AVBESTILLING_FRIST_TIMER,
+          kreverFull: user.tier === "GRATIS",
         }}
       />
-          </div>
     </PlayerHQSkall>
   );
 }
-
-/*
- * NB — slug vs cuid:
- * /portal/coach/[coachId] bruker cuid (prisma.user.id). Men inngående lenker fra
- * /portal/booking/anlegg/[anleggId] sender fornavn-slug ("anders", "markus") fordi
- * den siden fortsatt har hardkodede coach-navn. resolveCoach() håndterer begge,
- * men den ekte fiksen er å gi anlegg-siden ekte coach-data + cuid-lenker. Flagget
- * til Anders i leveranse-sammendraget.
- */

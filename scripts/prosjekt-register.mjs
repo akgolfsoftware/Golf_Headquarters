@@ -20,7 +20,7 @@ function area(p) {
   if (p.startsWith('docs/')) return 'dokumentasjon';
   if (p.startsWith('src/')) return p.includes('.test.') ? 'test' : 'appkode';
   if (p.startsWith('tests/')) return 'test';
-  if (p.startsWith('prisma/') || p.startsWith('supabase-meg/')) return 'databasekilde';
+  if (p.startsWith('prisma/') || p.startsWith('supabase-meg/') || p.startsWith('supabase-wang/')) return 'databasekilde';
   if (p.startsWith('scripts/')) return 'verktoy';
   if (p.startsWith('public/') || p.startsWith('content/')) return 'offentlig-innhold';
   if (p.startsWith('data/')) return 'datamal';

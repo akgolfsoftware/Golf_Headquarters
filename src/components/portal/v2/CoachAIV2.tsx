@@ -219,7 +219,7 @@ function ProGate({ mobile }: { mobile: boolean }) {
       <div>
         <Caps>PlayerHQ · Caddie</Caps>
         <div style={{ marginTop: 10 }}>
-          <Tittel mobile={mobile} em="Pro.">Krever</Tittel>
+          <Tittel mobile={mobile} em="Full.">Krever</Tittel>
         </div>
       </div>
       <Kort tint>
@@ -227,7 +227,7 @@ function ProGate({ mobile }: { mobile: boolean }) {
           Caddie er en del av Pro-abonnementet.
         </p>
         <Link href="/portal/meg/abonnement" style={{ textDecoration: "none", alignSelf: "flex-start" }}>
-          <Knapp icon="arrow-up-right">Oppgrader til Pro</Knapp>
+          <Knapp icon="arrow-up-right">Oppgrader til Full</Knapp>
         </Link>
       </Kort>
     </div>

@@ -1,0 +1,345 @@
+/* Felles grunnmur for Team Norway-utkastene (trenerskjermene under /team-norway/*).
+   Språket: §TEAM NORWAY-APPEN BYTTER DESIGNSPRÅK (Anders 22.09.2026) og src/styles/team-norway-tokens.css.
+   Jost display, Lato brødtekst, IBM Plex Mono på tall. Hjørner 0 · 2 · 4. Ingen skygger, ingen sirkler.
+   Navy sidemeny #012B5D med hvit tekst og rød markør. Rød #D70232 er identitet, aldri status.
+   To lag: .ytre = siden rundt skjermen (velgere, notater), .app = selve skjermen.
+   PC fra 900 px containerbredde. Ingen AK Golf-farger (rust, sand, AK-aksefarger) i denne mappen. */
+
+:root{
+  /* Siden rundt skjermen (ikke en del av designet) */
+  --side-bg:#EDF1F4; --side-tekst:#0C1219; --side-dempet:#5E6E7F; --side-linje:#DCE2E8; --side-kort:#FFFFFF; --side-valgt:#012B5D; --side-paa-valgt:#FFFFFF;
+
+  /* TN-tokens, kopiert fra src/styles/team-norway-tokens.css */
+  --navy-900:#012B5D; --navy-800:#01234C; --navy-700:#033C7A; --navy-600:#0A5199; --navy-400:#4A85C0; --navy-100:#E3ECF6; --navy-50:#F2F7FC;
+  --red-600:#D70232; --red-700:#A80126; --red-100:#FCE3E8;
+  --ink-900:#0C1219; --ink-700:#33414F; --ink-500:#5E6E7F; --ink-400:#647280; --ink-300:#B9C4CE; --ink-200:#DCE2E8; --ink-100:#EDF1F4; --ink-50:#F6F8FA; --hvit:#FFFFFF;
+  --ok:#0E8A43; --ok-tekst:#076530; --ok-bg:#E4F4EA;
+  --vent:#B87503; --vent-tekst:#8A5602; --vent-bg:#FDF1DC;
+  --feil:#C2352B; --feil-tekst:#96241C; --feil-bg:#FBE8E6;
+  --info-tekst:#023B76; --info-bg:#E3ECF6;
+  --rail-bg:#012B5D; --rail-aktiv:#013B7D; --rail-markor:#D70232; --rail-tekst:#C6D6EA; --rail-dempet:#9DB4D0; --rail-paa:#FFFFFF;
+
+  /* FORSLAG (venter på Anders' ja): fem aksefarger laget fra TN-paletten.
+     Utgangspunkt: navy-600 (TEK) og røds mørke tone red-700 (TURN). FYS, SLAG og SPILL er lagt mellom og
+     utenfor dem på fargehjulet med samme dybde: fjordgrønn-blå, indigo og plomme (navy blandet med rød).
+     Hver akse har fyll (hvit tekst oppå), lys (på navy) og tint (bakgrunn). Alle målt minst 4,5:1. */
+  --fys:#0D6E6A;  --fys-lys:#6FD3C9;  --fys-tint:#E2F2F0;
+  --tek:#0A5199;  --tek-lys:#8DBDF0;  --tek-tint:#E3ECF6;
+  --slag:#4B3F9E; --slag-lys:#B9B0F2; --slag-tint:#ECEAF8;
+  --spill:#8A2A72;--spill-lys:#EBA3D8;--spill-tint:#F6E6F1;
+  --turn:#A80126; --turn-lys:#FF9CB0; --turn-tint:#FCE3E8;
+
+  --display:"Jost","Futura",system-ui,sans-serif;
+  --tekst:"Lato",system-ui,-apple-system,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --r1:4px; --r2:8px; --r3:12px; --r4:16px; --r5:24px; --r6:32px;
+  --ut:cubic-bezier(.23,1,.32,1);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--side-bg:#06111F;--side-tekst:#EDF1F4;--side-dempet:#9DB4D0;--side-linje:#23384F;--side-kort:#0C1B2C;--side-valgt:#EDF1F4;--side-paa-valgt:#012B5D;color-scheme:dark}}
+:root[data-theme="dark"]{--side-bg:#06111F;--side-tekst:#EDF1F4;--side-dempet:#9DB4D0;--side-linje:#23384F;--side-kort:#0C1B2C;--side-valgt:#EDF1F4;--side-paa-valgt:#012B5D;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.55 var(--tekst)}
+
+/* ---------- Siden rundt skjermen ---------- */
+.ytre{max-width:1320px;margin:0 auto;padding-inline:16px;padding-block:24px 56px;display:grid;gap:20px}
+.hode{display:grid;gap:8px;max-width:72ch}
+.meta-s{font:500 12px/1.4 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--side-dempet)}
+.hode h1{margin:0;font:500 clamp(1.6rem,4.5vw,2.3rem)/1.15 var(--display);letter-spacing:.02em;text-wrap:balance}
+.hode p{margin:0;color:var(--side-dempet)}
+.kontroller{display:flex;flex-wrap:wrap;gap:10px}
+.velger{display:inline-flex;flex-wrap:wrap;border:1px solid var(--side-linje);border-radius:4px;padding:3px;gap:3px;background:var(--side-kort)}
+.velger button{font:700 14px/1 var(--tekst);min-height:40px;padding:0 14px;border:0;border-radius:2px;background:transparent;color:var(--side-tekst);cursor:pointer}
+.velger button[aria-pressed="true"]{background:var(--side-valgt);color:var(--side-paa-valgt)}
+.velger button:focus-visible{outline:3px solid #4A85C0;outline-offset:2px}
+.scene{display:flex;justify-content:center;min-width:0}
+.ramme{border:1px solid var(--side-linje);border-radius:4px;overflow:hidden;background:var(--hvit);position:relative}
+.ramme.mob{width:390px;max-width:100%}
+.ramme.pc{width:100%}
+.skala{width:1280px;transform-origin:top left}
+.notater{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));align-items:start}
+.endringer{background:var(--side-kort);border:1px solid var(--side-linje);border-radius:4px;padding:16px 18px;display:grid;gap:10px;min-width:0}
+.endringer h2{margin:0;font:500 18px/1.3 var(--display);letter-spacing:.02em}
+.endringer ul{margin:0;padding-left:18px;display:grid;gap:6px}
+.endringer p{margin:0}
+
+/* ---------- Skjermen ---------- */
+.app{position:relative;container-type:inline-size;background:var(--ink-50);color:var(--ink-900);font:400 15px/1.55 var(--tekst);-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+.app *{min-width:0}
+.app p{margin:0}
+.ikon{width:20px;height:20px;flex:none;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:square;stroke-linejoin:miter}
+
+/* Skall på mobil: navy topplinje med logo og «Mer», hvit bunnmeny med fire valg + Mer */
+.topplinje{display:flex;align-items:center;justify-content:space-between;gap:var(--r3);padding:8px 8px 8px var(--r4);background:var(--rail-bg);color:var(--rail-paa)}
+.logo{display:block;height:28px;width:auto}
+.topplinje .org{display:grid;gap:2px;margin-right:auto}
+.topplinje .org b{font:500 13px/1 var(--display);letter-spacing:.14em;text-transform:uppercase}
+.topplinje .org span{font:400 12px/1 var(--tekst);color:var(--rail-dempet)}
+.ikonknapp{display:grid;place-items:center;width:44px;height:44px;border:0;border-radius:2px;background:transparent;color:inherit;cursor:pointer;position:relative}
+.ikonknapp b{position:absolute;top:6px;right:5px;min-width:18px;height:18px;padding:0 4px;background:var(--hvit);color:var(--navy-900);font:600 11px/18px var(--mono);text-align:center}
+.skall{display:block}
+.meny{display:none}
+.innhold{padding:var(--r5) var(--r4) var(--r6);display:grid;gap:var(--r6);align-content:start}
+.bunnmeny{position:sticky;bottom:0;z-index:3;display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--ink-200);background:var(--hvit)}
+.bunnmeny a{position:relative;display:grid;justify-items:center;gap:4px;padding:10px 0 12px;font:700 11.5px/1 var(--tekst);color:var(--ink-500);text-decoration:none}
+.bunnmeny a.aktiv{color:var(--navy-900)}
+.bunnmeny a.aktiv::before{content:"";position:absolute;top:-1px;left:22%;right:22%;height:3px;background:var(--rail-markor)}
+.tilbakelinje{display:flex;align-items:center;justify-content:space-between;gap:var(--r3);padding:6px var(--r3);border-bottom:1px solid var(--ink-200);background:var(--hvit);position:sticky;top:0;z-index:3}
+.tilbake{display:inline-flex;align-items:center;gap:6px;height:44px;padding:0 10px;font:700 15px/1 var(--tekst);color:var(--navy-900);text-decoration:none}
+
+/* Tekst */
+/* Utkast 2: datolinja står høyst én gang per skjerm, i Lato. Mono bare på tall. */
+.overlinje{font:700 13px/1.3 var(--tekst);letter-spacing:.02em;color:var(--ink-500)}
+.tittel{margin:var(--r1) 0 0;font:400 30px/1.12 var(--display);letter-spacing:.03em;color:var(--navy-900)}
+.ingress{margin-top:var(--r2)!important;font-size:15.5px;line-height:1.6;color:var(--ink-700);max-width:52ch}
+.seksjon{display:grid;gap:var(--r3)}
+.sek-topp{display:flex;align-items:baseline;justify-content:space-between;gap:var(--r3);flex-wrap:wrap}
+.sek-topp h2{margin:0;font:500 20px/1.25 var(--display);letter-spacing:.02em;color:var(--navy-900)}
+.kilde{font:400 12.5px/1.45 var(--tekst);color:var(--ink-500)}
+.lenke{display:inline-flex;align-items:center;gap:4px;min-height:44px;font:700 14px/1 var(--tekst);color:var(--navy-600);text-decoration:underline;text-underline-offset:4px}
+.forklar{font-size:14.5px;line-height:1.55;color:var(--ink-700)}
+.undertittel{font:700 15px/1.3 var(--tekst);color:var(--ink-900)}
+
+/* Flater: én hårstrek, aldri skygge */
+.kort{border:1px solid var(--ink-200);border-radius:2px;background:var(--hvit);padding:var(--r4) 18px 18px;display:grid;gap:var(--r4);align-content:start}
+.kort.dempet{background:var(--ink-50)}
+.kort.navy{background:var(--navy-900);border-color:var(--navy-900);color:var(--hvit)}
+.skille{height:1px;background:var(--ink-200)}
+.to-kol{display:grid;gap:var(--r6)}
+.rutenett{display:grid;gap:var(--r3);grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
+
+/* Flaggstreken: det eneste motivet. Navy, hvit, rød, hvit, navy — tynn, alltid horisontal. */
+.flaggstrek{height:6px;background:linear-gradient(90deg,var(--red-600) 0 40%,var(--hvit) 40% 46%,var(--navy-900) 46% 60%,var(--hvit) 60% 66%,var(--red-600) 66% 100%)}
+
+/* Ett stort tall per flate */
+.hoved{display:flex;align-items:baseline;gap:var(--r3);flex-wrap:wrap}
+.hoved strong{font:500 48px/1 var(--mono);letter-spacing:-.03em;color:var(--navy-900)}
+.hoved strong small{font:500 17px/1 var(--mono);letter-spacing:0;margin-left:4px;color:var(--ink-500)}
+.kort.navy .hoved strong,.bildekort.navy .hoved strong{color:var(--hvit)}
+.kort.navy .hoved strong small,.bildekort.navy .hoved strong small{color:var(--rail-tekst)}
+
+/* Merker: kantete, aldri piller med runde ender */
+.merke{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 8px;border-radius:2px;font:700 12px/1 var(--tekst);white-space:nowrap;flex:none}
+.merke i{width:6px;height:6px;flex:none}
+.merke.ok{background:var(--ok-bg);color:var(--ok-tekst)} .merke.ok i{background:var(--ok)}
+.merke.vent{background:var(--vent-bg);color:var(--vent-tekst)} .merke.vent i{background:var(--vent)}
+.merke.feil{background:var(--feil-bg);color:var(--feil-tekst)} .merke.feil i{background:var(--feil)}
+.merke.info{background:var(--info-bg);color:var(--info-tekst)} .merke.info i{background:var(--navy-600)}
+.merke.noy{background:var(--ink-100);color:var(--ink-700)} .merke.noy i{background:var(--ink-500)}
+.merke.kontur{background:transparent;border:1px dashed var(--ink-500);color:var(--ink-700)}
+.akse-merke{display:inline-flex;align-items:center;height:22px;padding:0 7px;border-radius:2px;border:1px solid rgba(255,255,255,.7);font:700 11.5px/1 var(--tekst);letter-spacing:.08em;color:#fff;width:max-content}
+.akse-tekst{font:700 12.5px/1 var(--tekst);letter-spacing:.06em}
+.akse-tekst.fys{color:var(--fys)} .akse-tekst.tek{color:var(--tek)} .akse-tekst.slag{color:var(--slag)} .akse-tekst.spill{color:var(--spill)} .akse-tekst.turn{color:var(--turn)}
+
+/* Knapper: navy primær, kontur sekundær, statusrød bare for det som sletter. Aldri merkevarerød på knapper. */
+.knapp{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border-radius:2px;font:700 14px/1 var(--tekst);letter-spacing:.02em;cursor:pointer;text-decoration:none;border:1px solid transparent}
+.knapp.pri{background:var(--navy-900);color:var(--hvit);border-color:var(--navy-900)}
+.knapp.sek{background:var(--hvit);color:var(--navy-900);border-color:var(--navy-900)}
+.knapp.stille{background:transparent;color:var(--navy-600);border-color:transparent;text-decoration:underline;text-underline-offset:4px}
+.knapp.slett{background:var(--feil-tekst);color:var(--hvit);border-color:var(--feil-tekst)}
+.knapp[disabled]{background:var(--ink-100);color:var(--ink-500);border-color:var(--ink-200);cursor:not-allowed}
+.knapp:focus-visible,.okt:focus-visible,.valg button:focus-visible{outline:3px solid var(--navy-400);outline-offset:2px}
+.knapper{display:flex;gap:var(--r2);flex-wrap:wrap}
+.valg{display:inline-flex;flex-wrap:wrap;gap:0;border:1px solid var(--navy-900);border-radius:2px;justify-self:start}
+.valg button{min-height:40px;padding:0 14px;border:0;border-right:1px solid var(--navy-900);background:var(--hvit);font:700 13.5px/1 var(--tekst);color:var(--navy-900);cursor:pointer}
+.valg button:last-child{border-right:0}
+.valg button[aria-pressed="true"]{background:var(--navy-900);color:var(--hvit)}
+
+/* Fylt øktkort i aksefargen */
+.okt{display:grid;gap:var(--r2);padding:var(--r4) 18px 18px;border-radius:2px;color:#fff;text-decoration:none;cursor:pointer;border:0;width:100%;text-align:left;font:inherit}
+.okt.fys{background:var(--fys)} .okt.tek{background:var(--tek)} .okt.slag{background:var(--slag)} .okt.spill{background:var(--spill)} .okt.turn{background:var(--turn)}
+.okt-rad{display:flex;justify-content:space-between;align-items:center;gap:var(--r3);flex-wrap:wrap}
+.okt-tid{font:500 30px/1.05 var(--mono);letter-spacing:-.02em;white-space:nowrap}
+.okt-tid small{font:500 14px/1 var(--mono);opacity:.88;letter-spacing:0;margin-left:6px}
+.okt .navn{display:block;font:500 19px/1.25 var(--display);letter-spacing:.02em}
+.okt-info{display:flex;flex-wrap:wrap;gap:var(--r1) var(--r4);font-size:14px;line-height:1.45}
+
+/* Stolper og grafer */
+.stolpe{height:10px;background:var(--ink-100);position:relative}
+.stolpe span{position:absolute;inset:0 auto 0 0;background:var(--navy-900)}
+.graf{display:block;width:100%;height:auto;overflow:visible}
+.gt{font:500 10.5px/1 var(--mono);fill:var(--ink-500)}
+.lg-rad{display:flex;flex-wrap:wrap;gap:6px 14px}
+.lg{display:inline-flex;align-items:center;gap:6px;font:700 12px/1.3 var(--tekst);color:var(--ink-700)}
+.lg i{width:10px;height:10px}
+
+/* Tabell som blir kortrader på mobil */
+.rader{display:grid;border-top:1px solid var(--ink-200)}
+.rad{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px var(--r3);padding:12px 0;border-bottom:1px solid var(--ink-200);align-items:center}
+.rad .navn{font:700 15px/1.3 var(--tekst)}
+.rad .tall{font:500 15px/1 var(--mono);text-align:right}
+.avatar{display:grid;place-items:center;width:36px;height:36px;flex:none;background:var(--navy-100);color:var(--navy-900);font:500 13px/1 var(--mono)}
+
+/* Skjema */
+.felt{display:grid;gap:6px}
+.felt label{font:700 14px/1.3 var(--tekst)}
+.felt input,.felt select{min-height:48px;padding:10px 12px;border:1px solid var(--ink-500);border-radius:2px;background:var(--hvit);color:var(--ink-900);font:400 16px/1.4 var(--tekst);width:100%}
+.felt .hjelp{font-size:13px;color:var(--ink-500)}
+.felt.feil input{border-color:var(--feil);border-width:2px}
+.felt .feiltekst{font:700 13px/1.4 var(--tekst);color:var(--feil-tekst)}
+
+/* Tom, laster og feil */
+.tilstand-blokk{display:grid;gap:var(--r3)}
+.skjelett{display:block;background:linear-gradient(90deg,var(--ink-100) 0%,var(--ink-50) 50%,var(--ink-100) 100%);background-size:200% 100%;animation:skjelett 1.4s linear infinite}
+@keyframes skjelett{to{background-position:-200% 0}}
+
+/* Bevegelse: bare transform og opasitet, under 300 ms */
+.okt,.knapp,.valg button{transition:transform 120ms var(--ut)}
+.okt:active,.knapp:active,.valg button:active{transform:scale(.97)}
+.app.anim .vokse{animation:vokse 600ms var(--ut) both;transform-origin:bottom}
+.app.anim .tegn{stroke-dasharray:1200;animation:tegn 1100ms var(--ut) both}
+@keyframes vokse{from{transform:scaleY(0)}}
+@keyframes tegn{from{stroke-dashoffset:1200}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* PC fra 900 px containerbredde: navy sidemeny 252 px med menygrupper */
+@container (min-width:900px){
+  .topplinje,.bunnmeny,.tilbake-mob{display:none}
+  .skall{display:grid;grid-template-columns:252px 1fr;min-height:900px}
+  .meny{display:flex;flex-direction:column;gap:2px;padding:20px 0 16px;background:var(--rail-bg);color:var(--rail-tekst)}
+  .meny .logo{height:44px;margin:0 20px 6px;align-self:flex-start}
+  .meny .org{display:grid;gap:2px;margin:0 20px 18px}
+  .meny .org b{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  .meny .org span{font:400 12.5px/1.2 var(--tekst);color:var(--rail-dempet)}
+  .meny .gruppe{font:700 12px/1 var(--tekst);letter-spacing:.12em;text-transform:uppercase;color:var(--rail-dempet);padding:14px 20px 6px}
+  /* Utkast 2: menygruppene kan lukkes, bare gruppa du er i står åpen */
+  .meny button.gruppe{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:44px;padding:0 20px;border:0;background:transparent;cursor:pointer;text-align:left}
+  .meny button.gruppe:hover,.meny button.gruppe[aria-expanded="true"]{color:var(--rail-paa)}
+  .meny button.gruppe:focus-visible{outline:3px solid var(--navy-400);outline-offset:-3px}
+  .meny button.gruppe .ikon{width:16px;height:16px;transition:transform 160ms var(--ut)}
+  .meny button.gruppe[aria-expanded="true"] .ikon{transform:rotate(90deg)}
+  .meny .gruppe-punkter{display:grid;gap:2px;padding-bottom:6px}
+  .meny .gruppe-punkter[hidden]{display:none}
+  .meny .gruppe-teller{font:500 12px/1 var(--mono);letter-spacing:0;color:var(--rail-dempet);margin-left:auto;margin-right:10px}
+  .meny a{position:relative;display:flex;align-items:center;gap:12px;min-height:40px;padding:0 20px;color:var(--rail-tekst);text-decoration:none;font:400 14.5px/1.2 var(--tekst)}
+  .meny a.aktiv{background:var(--rail-aktiv);color:var(--rail-paa);font-weight:700}
+  .meny a.aktiv::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--rail-markor)}
+  .meny .bruker{margin-top:auto;padding:16px 20px 4px;display:flex;align-items:center;gap:12px}
+  .meny .bruker .avatar{background:var(--rail-aktiv);color:var(--rail-paa)}
+  .meny .bruker b{display:block;font:700 14px/1.2 var(--tekst);color:var(--rail-paa)}
+  .meny .bruker span{font:400 12.5px/1.2 var(--tekst);color:var(--rail-dempet)}
+  .innhold{padding:var(--r6) 44px 48px;max-width:1160px}
+  .to-kol{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--r5);align-items:start}
+  .tittel{font-size:38px}
+}
+
+/* ================= Utkast 2: retning B «Stall og helteflate» (16.10.2026) =================
+   Nye byggeklosser. De gamle klassene over er uendret, så utkast 1-filer virker som før. */
+
+/* Helteflate: navy, ett stort hovedtall i hvitt, kort forklaring, én knapp, flaggstreken som kant nederst.
+   Valgfri aksefordeling i de LYSE aksefargene på navy (alle over 7 : 1). */
+.helt{position:relative;display:grid;gap:var(--r4);padding:var(--r5) var(--r4) calc(var(--r5) + 6px);background:var(--navy-900);color:var(--hvit);border-radius:2px;overflow:hidden}
+.helt::after{content:"";position:absolute;left:0;right:0;bottom:0;height:6px;background:linear-gradient(90deg,var(--red-600) 0 40%,var(--hvit) 40% 46%,var(--navy-900) 46% 60%,var(--hvit) 60% 66%,var(--red-600) 66% 100%)}
+.helt-venstre,.helt-hoyre{display:grid;gap:var(--r4);align-content:start}
+.helt .sporsmaal{font:700 14px/1.35 var(--tekst);letter-spacing:.02em;color:var(--rail-tekst)}
+.helt .tall{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 14px}
+.helt .tall strong{font:500 72px/.95 var(--mono);letter-spacing:-.04em;color:var(--hvit)}
+.helt .tall strong small{font:500 22px/1 var(--mono);letter-spacing:0;margin-left:4px;color:var(--rail-tekst)}
+.helt .tall span{font:500 22px/1.2 var(--display);letter-spacing:.02em;color:var(--hvit)}
+.helt p{color:var(--rail-tekst);font-size:15px;line-height:1.55;max-width:52ch}
+.helt .knapper{align-items:center}
+.helt .lenke{color:var(--hvit)}
+.knapp.hvit{background:var(--hvit);color:var(--navy-900);border-color:var(--hvit)}
+.knapp.kontur-hvit{background:transparent;color:var(--hvit);border-color:rgba(255,255,255,.75)}
+.helt-akser{display:grid;gap:8px}
+.fordeling-lys{display:flex;height:14px;gap:2px}
+.fordeling-lys span{display:block;height:100%}
+.helt-akser .lg{color:var(--hvit)}
+.helt-akser .lg b{font:500 13px/1 var(--mono)}
+.lys-fys{background:var(--fys-lys)} .lys-tek{background:var(--tek-lys)} .lys-slag{background:var(--slag-lys)} .lys-spill{background:var(--spill-lys)} .lys-turn{background:var(--turn-lys)}
+.helt-tellere{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--r2);border-top:1px solid var(--navy-700);padding-top:var(--r3)}
+.helt-tellere div{display:grid;gap:4px;align-content:start}
+.helt-tellere b{font:500 24px/1 var(--mono);color:var(--hvit)}
+.helt-tellere span{font:400 13px/1.3 var(--tekst);color:var(--rail-tekst)}
+@container (min-width:900px){
+  .helt{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);column-gap:var(--r6);padding:var(--r6) 36px calc(var(--r6) + 6px);align-items:end}
+  .helt .tall strong{font-size:96px}
+}
+
+/* Status som bilde: farget markør, alltid med ord ved siden */
+.markor{display:inline-flex;align-items:center;gap:6px;font:700 13px/1.2 var(--tekst);white-space:nowrap}
+.markor i{width:10px;height:10px;flex:none}
+.markor.trenger{color:var(--feil-tekst)} .markor.trenger i{background:var(--feil)}
+.markor.folger{color:var(--ok-tekst)} .markor.folger i{background:var(--ok)}
+.markor.folgmed{color:var(--vent-tekst)} .markor.folgmed i{background:var(--vent)}
+.markor.ikkedelt{color:var(--ink-700)} .markor.ikkedelt i{background:var(--ink-400)}
+
+/* Tre bånd: Trenger deg · Følger planen · Ikke delt, med teller i båndhodet */
+.baandene{display:grid;gap:var(--r5)}
+.baand{display:grid;gap:var(--r2)}
+.baand-hode{display:flex;align-items:center;flex-wrap:wrap;gap:6px var(--r3);padding-bottom:8px;border-bottom:3px solid var(--ink-300)}
+.baand-hode h2,.baand-hode h3{margin:0;font:500 20px/1.2 var(--display);letter-spacing:.02em;color:var(--navy-900)}
+.baand-hode .teller{display:grid;place-items:center;min-width:36px;height:32px;padding:0 8px;font:500 18px/1 var(--mono);background:var(--ink-100);color:var(--ink-900)}
+.baand-hode .kilde{margin-left:auto}
+.baand.trenger .baand-hode{border-color:var(--feil)} .baand.trenger .teller{background:var(--feil-tekst);color:var(--hvit)}
+.baand.folger .baand-hode{border-color:var(--ok)} .baand.folger .teller{background:var(--ok-bg);color:var(--ok-tekst)}
+.baand.ikkedelt .baand-hode{border-color:var(--ink-400)}
+.baand-liste{display:grid;gap:6px}
+
+/* Spillerrad: avatar, navn og fakta, plan-stolpe, verdi. Statusmarkøren er venstre kant + ord. */
+.sprad{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px var(--r3);align-items:center;padding:12px 14px 12px 14px;background:var(--hvit);border:1px solid var(--ink-200);border-left:6px solid var(--ink-400);border-radius:2px;color:inherit;text-decoration:none;cursor:pointer;width:100%;font:inherit;text-align:left}
+.sprad.trenger{border-left-color:var(--feil)} .sprad.folger{border-left-color:var(--ok)} .sprad.folgmed{border-left-color:var(--vent)} .sprad.ikkedelt{border-left-color:var(--ink-400);background:var(--ink-50);cursor:default}
+.sprad:focus-visible{outline:3px solid var(--navy-400);outline-offset:2px}
+.sprad .avatar{width:40px;height:40px}
+.sprad .hvem{display:grid;gap:4px}
+.sprad .hvem b{font:700 15.5px/1.25 var(--tekst);color:var(--ink-900)}
+.sprad .fakta{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;font-size:13.5px;color:var(--ink-700)}
+.sprad .grunn{grid-column:2/-1;font:700 13.5px/1.4 var(--tekst);color:var(--feil-tekst)}
+.sprad .verdi{display:grid;justify-items:end;gap:2px}
+.sprad .verdi b{font:500 22px/1 var(--mono);color:var(--navy-900)}
+.sprad .verdi b.lav{color:var(--feil-tekst)}
+.sprad .verdi span{font-size:12.5px;color:var(--ink-700);white-space:nowrap}
+.sprad .planstolpe{grid-column:2/-1}
+@container (min-width:900px){
+  .sprad{grid-template-columns:auto minmax(0,1.1fr) minmax(0,1fr) auto}
+  .sprad .planstolpe{grid-column:3;grid-row:1}
+  .sprad .grunn{grid-column:2/4}
+}
+/* Plan-stolpe: gjennomført mot planlagt, fylt i aksefargen som trenes mest (eller navy) */
+.planstolpe{display:grid;gap:4px}
+.planstolpe .spor{position:relative;height:10px;background:var(--ink-100)}
+.planstolpe .spor span{position:absolute;inset:0 auto 0 0;background:var(--navy-900)}
+.planstolpe .spor span.fys{background:var(--fys)} .planstolpe .spor span.tek{background:var(--tek)} .planstolpe .spor span.slag{background:var(--slag)} .planstolpe .spor span.spill{background:var(--spill)} .planstolpe .spor span.turn{background:var(--turn)}
+.planstolpe .spor .maal{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--ink-700)}
+.planstolpe .tekst{display:flex;justify-content:space-between;flex-wrap:wrap;gap:2px 8px;font-size:12.5px;color:var(--ink-700)}
+.planstolpe .tekst b{font:500 12.5px/1.2 var(--mono);color:var(--ink-900)}
+
+/* Kategori-merke A–K: navy fylt, kantete. En kategori, ikke en akse. */
+.kat{display:inline-flex;align-items:center;justify-content:center;height:22px;min-width:24px;padding:0 6px;background:var(--navy-900);color:var(--hvit);font:700 12px/1 var(--tekst);border-radius:2px}
+.kat.uten{background:transparent;color:var(--ink-700);border:1px dashed var(--ink-500)}
+
+/* Fylte søyler (pyramiden, timer per akse): .akse-soyler > .akse-soyle > .felt-s > .s (height i %) */
+.akse-soyler{display:grid;grid-template-columns:repeat(var(--n,5),minmax(0,1fr));gap:var(--r2);align-items:end}
+.akse-soyle{display:grid;gap:6px;text-align:center}
+.akse-soyle .felt-s{height:var(--h,140px);display:flex;align-items:flex-end;background:var(--ink-50);border-bottom:2px solid var(--ink-300)}
+.akse-soyle .s{display:block;width:100%}
+.s.fys{background:var(--fys)} .s.tek{background:var(--tek)} .s.slag{background:var(--slag)} .s.spill{background:var(--spill)} .s.turn{background:var(--turn)} .s.navy{background:var(--navy-900)}
+.akse-soyle b{font:500 16px/1 var(--mono);color:var(--ink-900)}
+.akse-soyle span{font:700 12px/1.2 var(--tekst);letter-spacing:.04em;color:var(--ink-700)}
+
+/* Fylt graf: areal under linja (SVG: <path class="areal tek"> + <path class="linje tek">) */
+.graf .areal{stroke:none;opacity:.24}
+.graf .areal.fys{fill:var(--fys)} .graf .areal.tek{fill:var(--tek)} .graf .areal.slag{fill:var(--slag)} .graf .areal.spill{fill:var(--spill)} .graf .areal.turn{fill:var(--turn)} .graf .areal.navy{fill:var(--navy-900)}
+.graf .linje{fill:none;stroke-width:2.5}
+.graf .linje.fys{stroke:var(--fys)} .graf .linje.tek{stroke:var(--tek)} .graf .linje.slag{stroke:var(--slag)} .graf .linje.spill{stroke:var(--spill)} .graf .linje.turn{stroke:var(--turn)} .graf .linje.navy{stroke:var(--navy-900)}
+
+/* Bildekort: bilde øverst, tekst i eget felt under. Aldri tekst oppå bildet. */
+.bildekort{display:grid;border:1px solid var(--ink-200);border-radius:2px;background:var(--hvit);overflow:hidden;color:inherit;text-decoration:none;align-content:start}
+.bildekort img{display:block;width:100%;height:150px;object-fit:cover}
+.bildekort .bk-tekst{display:grid;gap:var(--r3);padding:var(--r4) 18px 18px;align-content:start}
+.bildekort.navy{background:var(--navy-900);border-color:var(--navy-900);color:var(--hvit)}
+.bildekort.navy .forklar,.bildekort.navy .kilde{color:var(--rail-tekst)}
+@container (min-width:900px){.bildekort.side{grid-template-columns:minmax(0,1fr) minmax(0,1.2fr)}.bildekort.side img{height:100%;min-height:220px}}
+
+/* Én primærknapp, resten i en meny («Mer») */
+.flere{position:relative;display:inline-block}
+.flere-liste{position:absolute;z-index:5;top:calc(100% + 4px);left:0;min-width:220px;display:grid;background:var(--hvit);border:1px solid var(--navy-900);border-radius:2px}
+.flere-liste[hidden]{display:none}
+.flere-liste button{min-height:44px;padding:0 14px;border:0;border-bottom:1px solid var(--ink-200);background:var(--hvit);text-align:left;font:700 14px/1 var(--tekst);color:var(--navy-900);cursor:pointer}
+.flere-liste button:last-child{border-bottom:0}
+.flere-liste button:hover,.flere-liste button:focus-visible{background:var(--navy-50)}
+
+/* Nedtelling mot frist (uttak) */
+.nedtelling{display:grid;grid-template-columns:repeat(var(--n,4),minmax(0,1fr));gap:2px}
+.nedtelling i{display:block;height:8px;background:var(--navy-700)}
+.nedtelling i.gaatt{background:var(--hvit)}
+.nedtelling span{font:400 12.5px/1.3 var(--tekst);color:var(--rail-tekst);padding-top:4px}

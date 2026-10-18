@@ -1,26 +1,25 @@
-// PH26PutteLab — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
 /**
- * PlayerHQ · Putte-laboratoriet (/portal/trening/putte-laboratoriet) — v2.
- * v2-port 17. juli 2026 (Team D2): `PutteLabV2` erstatter legacy
- * putte-lab-client, ruten flyttet ut av (legacy). All putt-fysikk/-sannsynlighet
- * kommer fortsatt uendret fra @/lib/putt-core — kun presentasjonslaget er nytt
- * (og legacy-filens 25 rå hex er borte).
+ * Puttelaboratoriet i nytt design (PlayerHQ pakke 13, godkjent av Anders 16.10.2026).
+ * Fasit: docs/design-system/utkast-playerhq/stats-resten.html, malen «putt».
+ * Avvik:
+ *   - står øverst i PH13Puttelab.tsx. Regnemodellen er @/lib/putt-core, uendret.
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { getUnreadNotifications } from "@/app/portal/actions";
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
-import { PutteLabV2 } from "@/components/portal/v2/PutteLabV2";
+import { PH13Puttelab } from "@/components/portal/precision/PH13Puttelab";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Puttelaboratoriet · PlayerHQ" };
 
 export default async function PutteLaboratorietPage() {
-  await requirePortalUser();
+  const user = await requirePortalUser();
+  const ulest = await getUnreadNotifications(user.id, 1);
 
   return (
-        <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
-      <div className="pa-side">
-      <PutteLabV2 />
-          </div>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={ulest.count}>
+      <PH13Puttelab />
     </PlayerHQSkall>
   );
 }

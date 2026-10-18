@@ -4,6 +4,7 @@ import { useEffect, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { hentSamlingsinvitasjonsstatus, publiserSamlingsprogram } from "@/lib/workbench/samlingsinvitasjon-actions";
+import { TN } from "@/lib/v2/team-norway";
 
 export type SamlingKontrollrad = { id: string; tittel: string; fra: string; til: string; sted: string | null };
 type Status = NonNullable<Awaited<ReturnType<typeof hentSamlingsinvitasjonsstatus>>>;
@@ -70,19 +71,21 @@ export function SamlingsprogramKontroll({ organisasjon, planHref, samlinger }: {
   </section>;
 }
 
-const wangSection: React.CSSProperties = { display: "grid", gap: 14, marginBlock: 22, padding: 18, borderRadius: 12, background: "var(--bg-surface)", border: "1px solid var(--border-subtle)" };
-const wangCard: React.CSSProperties = { display: "grid", gap: 10, padding: 14, borderRadius: 10, background: "var(--bg-app)", border: "1px solid var(--border-subtle)" };
+// Flaten får tema fra systemet den vises i: WANG-tokens (wang-tokens.css) eller
+// Team Norway-tokens (team-norway-tokens.css). Ingen egne farger her.
+const wangSection: React.CSSProperties = { display: "grid", gap: 14, marginBlock: 22, padding: 18, borderRadius: "var(--radius-card-sm)", background: "var(--surface-card)", border: "1px solid var(--border-subtle)" };
+const wangCard: React.CSSProperties = { display: "grid", gap: 10, padding: 14, borderRadius: "var(--radius-input)", background: "var(--bg-app)", border: "1px solid var(--border-subtle)" };
 const wangHeading: React.CSSProperties = { margin: 0, color: "var(--text-primary)", fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 18 };
 const wangTitle: React.CSSProperties = { color: "var(--text-primary)", fontFamily: "var(--font-brand)", fontSize: 15, fontWeight: 700 };
 const wangText: React.CSSProperties = { margin: "4px 0 0", color: "var(--text-secondary)", fontFamily: "var(--font-body)", fontSize: 13, lineHeight: 1.5 };
-const wangLink: React.CSSProperties = { display: "inline-flex", alignItems: "center", minHeight: 44, width: "fit-content", color: "var(--text-primary)", fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 13 };
-const wangCount: React.CSSProperties = { margin: 0, color: "var(--text-secondary)", fontFamily: "var(--font-mono)", fontSize: 11, lineHeight: 1.5 };
-const wangButton: React.CSSProperties = { minHeight: 44, justifySelf: "start", padding: "0 14px", border: 0, borderRadius: 8, background: "var(--wang-navy)", color: "var(--white)", fontFamily: "var(--font-brand)", fontWeight: 700, cursor: "pointer" };
-const tnSection: React.CSSProperties = { display: "grid", gap: 14, marginBlock: 22, padding: 18, border: "1px solid #D8DEE6", background: "#FFFFFF" };
-const tnCard: React.CSSProperties = { display: "grid", gap: 10, padding: 14, border: "1px solid #D8DEE6", background: "#F8FAFC" };
-const tnHeading: React.CSSProperties = { margin: 0, color: "#11243B", fontFamily: "var(--font-tn-display, sans-serif)", fontSize: 17, fontWeight: 600 };
-const tnTitle: React.CSSProperties = { color: "#11243B", fontFamily: "var(--font-tn-body, sans-serif)", fontSize: 14, fontWeight: 600 };
-const tnText: React.CSSProperties = { margin: "4px 0 0", color: "#506176", fontFamily: "var(--font-tn-body, sans-serif)", fontSize: 13, lineHeight: 1.5 };
-const tnLink: React.CSSProperties = { display: "inline-flex", alignItems: "center", minHeight: 44, width: "fit-content", color: "#11243B", fontFamily: "var(--font-tn-body, sans-serif)", fontWeight: 600, fontSize: 13 };
-const tnCount: React.CSSProperties = { margin: 0, color: "#506176", fontFamily: "var(--font-tn-mono, monospace)", fontSize: 11, lineHeight: 1.5 };
-const tnButton: React.CSSProperties = { minHeight: 44, justifySelf: "start", padding: "0 14px", border: 0, borderRadius: 0, background: "#11243B", color: "#FFFFFF", fontFamily: "var(--font-tn-body, sans-serif)", fontWeight: 600, cursor: "pointer" };
+const wangLink: React.CSSProperties = { display: "inline-flex", alignItems: "center", minHeight: 44, width: "fit-content", color: "var(--wang-navy)", fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 13 };
+const wangCount: React.CSSProperties = { margin: 0, color: "var(--text-secondary)", fontFamily: "var(--font-body)", fontSize: 12, lineHeight: 1.5, fontVariantNumeric: "tabular-nums" };
+const wangButton: React.CSSProperties = { minHeight: 44, justifySelf: "start", padding: "0 14px", border: 0, borderRadius: "var(--radius-input)", background: "var(--wang-navy)", color: "var(--white)", fontFamily: "var(--font-brand)", fontWeight: 700, cursor: "pointer" };
+const tnSection: React.CSSProperties = { display: "grid", gap: 14, marginBlock: 22, padding: 18, borderRadius: TN.radius.sm, border: `1px solid ${TN.borderSubtle}`, background: TN.surfaceCard };
+const tnCard: React.CSSProperties = { display: "grid", gap: 10, padding: 14, borderRadius: TN.radius.sm, border: `1px solid ${TN.borderSubtle}`, background: TN.ink50 };
+const tnHeading: React.CSSProperties = { margin: 0, color: TN.navy900, fontFamily: TN.font.display, fontSize: 19, fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase" };
+const tnTitle: React.CSSProperties = { color: TN.ink900, fontFamily: TN.font.body, fontSize: 15, fontWeight: 700 };
+const tnText: React.CSSProperties = { margin: "4px 0 0", color: TN.ink700, fontFamily: TN.font.body, fontSize: 14, lineHeight: 1.55 };
+const tnLink: React.CSSProperties = { display: "inline-flex", alignItems: "center", minHeight: 44, width: "fit-content", color: TN.navy600, fontFamily: TN.font.body, fontWeight: 700, fontSize: 14, textUnderlineOffset: 4 };
+const tnCount: React.CSSProperties = { margin: 0, color: TN.ink500, fontFamily: TN.font.mono, fontSize: 12, lineHeight: 1.5, fontVariantNumeric: "tabular-nums" };
+const tnButton: React.CSSProperties = { minHeight: 44, justifySelf: "start", padding: "0 18px", border: `1px solid ${TN.navy900}`, borderRadius: TN.radius.sm, background: TN.navy900, color: TN.white, fontFamily: TN.font.body, fontWeight: 700, fontSize: 14, cursor: "pointer" };

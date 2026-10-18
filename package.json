@@ -11,12 +11,14 @@
     "start": "next start",
     "lint": "eslint",
     "check:action-auth": "node scripts/check-action-auth.mjs",
+    "check:tilgang-vakt": "node scripts/check-tilgang-vakt.mjs",
+    "test:tilgang-vakt": "node --test scripts/check-tilgang-vakt.test.mjs",
     "check:token-gap": "node scripts/check-token-gap.mjs",
     "check:ak-golf-tokens": "node scripts/ak-golf-tokens.mjs",
     "ak-golf-tokens:write": "node scripts/ak-golf-tokens.mjs --write",
     "check:doc-lenker": "node scripts/check-doc-lenker.mjs",
     "check:fasit-sitering": "node scripts/check-fasit-sitering.mjs",
-    "verify:static": "prisma validate && prisma generate && tsc --noEmit && npm run lint && node scripts/check-action-auth.mjs && node scripts/check-token-gap.mjs && node scripts/check-critical-imports.mjs && node scripts/check-sensitive-route-guards.mjs && node scripts/check-ingen-paper.mjs && node scripts/check-fasit-sitering.mjs && node scripts/check-v2shell-bredde.mjs && node scripts/ak-golf-tokens.mjs && node scripts/ak-golf-ds-tokens.mjs --sjekk && node scripts/check-ak-golf-kits.mjs --rask && npm run prosjekt:sjekk && node scripts/check-tl-kontrast.mjs && node scripts/check-workbench-handover.mjs && node scripts/check-fasitdekning-baseline.mjs && node scripts/check-signalfarge-tekst.mjs && tsx scripts/ordbok-json.ts",
+    "verify:static": "prisma validate && prisma generate && tsc --noEmit && npm run lint && node scripts/check-action-auth.mjs && node scripts/check-tilgang-vakt.mjs && node scripts/check-token-gap.mjs && node scripts/check-critical-imports.mjs && node scripts/check-sensitive-route-guards.mjs && node scripts/check-ingen-paper.mjs && node scripts/check-loading-server.mjs && node scripts/check-fasit-sitering.mjs && node scripts/check-v2shell-bredde.mjs && node scripts/ak-golf-tokens.mjs && node scripts/ak-golf-ds-tokens.mjs --sjekk && node scripts/check-ak-golf-kits.mjs --rask && npm run prosjekt:sjekk && npm run test:repo-status && node scripts/check-tl-kontrast.mjs && node scripts/check-workbench-handover.mjs && node scripts/check-fasitdekning-baseline.mjs && node scripts/check-signalfarge-tekst.mjs && tsx scripts/ordbok-json.ts",
     "verify": "npm run verify:static && npm test && npm run build",
     "postinstall": "prisma generate",
     "db:seed": "tsx prisma/seed.ts",
@@ -51,9 +53,13 @@
     "saker:triage": "tsx --conditions=react-server scripts/saker-innsamling/triage.ts",
     "check:critical-imports": "node scripts/check-critical-imports.mjs",
     "check:sensitive-route-guards": "node scripts/check-sensitive-route-guards.mjs",
-    "prosjekt:sjekk": "node scripts/check-project-structure.mjs && node scripts/check-doc-lenker.mjs && node scripts/bygg-skjermregister.mjs --check",
+    "prosjekt:sjekk": "node scripts/check-project-structure.mjs && node scripts/check-doc-lenker.mjs",
+    "skjermregister:sjekk": "node scripts/bygg-skjermregister.mjs --check",
     "prosjekt:register": "node scripts/prosjekt-register.mjs --write",
-    "check:workbench-handover": "node scripts/check-workbench-handover.mjs"
+    "check:workbench-handover": "node scripts/check-workbench-handover.mjs",
+    "repo:status": "node scripts/repo-status.mjs",
+    "test:repo-status": "node --test scripts/repo-status.test.mjs",
+    "wang:testprofiler:koble": "tsx scripts/wang-koble-testprofiler.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.85",
@@ -145,7 +151,7 @@
   "lint-staged": {
     "*.{ts,tsx}": [
       "eslint --max-warnings 0 --no-warn-ignored",
-      "bash -c 'tsc --noEmit'"
+      "bash -c 'NODE_OPTIONS=--max-old-space-size=8192 tsc --noEmit'"
     ]
   }
 }

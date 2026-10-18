@@ -1,0 +1,937 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Kommunikasjon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="felles/felles.css">
+<style>
+/* ---------- Kommunikasjon (PH-21 Innboks, PH-22 Caddie, PH-23 Booking) ---------- */
+.skjermvalg button{font-size:13px;min-height:36px;padding:0 10px}
+.app [hidden]{display:none!important}
+.mono{font-family:var(--mono)}
+.topp{display:grid;gap:var(--r3)}
+.toast{position:sticky;bottom:16px;z-index:5;display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;background:var(--graphite-900);color:var(--white);font:500 14px/1.4 var(--sans);animation:inn 240ms var(--ut);box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.ark-lag{position:sticky;bottom:0;z-index:6;display:grid;margin:0 calc(-1 * var(--r4)) calc(-1 * var(--r6))}
+.ark-lag .ark{animation:opp 300ms var(--ut)}
+.ark h2{margin:0;font:600 19px/1.25 var(--sans)}
+.ark-topp{display:flex;justify-content:space-between;align-items:center;gap:var(--r3)}
+.lukk{width:44px;height:44px;border:0;border-radius:8px;background:var(--sand-150);display:grid;place-items:center;cursor:pointer;color:var(--graphite-900);flex:none}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{min-height:40px;padding:0 12px;border:1px solid var(--sand-300);border-radius:999px;background:var(--white);font:500 14px/1 var(--sans);color:var(--graphite-800);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.chips button b{font:600 12px/1 var(--mono)}
+.chips button[aria-pressed="true"]{background:var(--graphite-900);border-color:var(--graphite-900);color:var(--white)}
+.rad-lenke{display:flex;align-items:center;justify-content:space-between;gap:var(--r3);min-height:56px;padding:10px 14px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white);color:var(--graphite-900);text-decoration:none;font-size:14px;line-height:1.4;cursor:pointer;text-align:left;width:100%;font-family:inherit}
+.rad-lenke b{display:block;font:600 15px/1.3 var(--sans)}
+.rad-lenke .ikon{color:var(--graphite-600)}
+.avatar{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font:600 14px/1 var(--sans);flex:none;background:var(--graphite-900);color:var(--white)}
+.avatar.caddie{border-radius:10px}
+.avatar.wang{background:#1d3557}
+.avatar.lys{background:var(--sand-150);color:var(--graphite-900)}
+.avatar .ikon{width:20px;height:20px}
+.ulest{width:10px;height:10px;border-radius:50%;background:var(--graphite-900);flex:none}
+
+/* PH-21 Innboks */
+.saker{display:grid;gap:var(--r3)}
+.dag-merke{font:600 13px/1.3 var(--sans);color:var(--graphite-800);margin-top:var(--r2)}
+.sak{border:1px solid var(--sand-300);border-radius:12px;background:var(--white);padding:14px 16px 16px;display:grid;gap:var(--r3)}
+.sak.ny{border-color:var(--graphite-900);box-shadow:inset 3px 0 0 var(--graphite-900)}
+.sak-topp{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--r3);align-items:start}
+.sak-topp b{display:block;font:600 16px/1.3 var(--sans)}
+.sak-topp .fra{font-size:13.5px;color:var(--graphite-600)}
+.sak-topp time{font:500 13px/1.3 var(--mono);color:var(--graphite-600);white-space:nowrap}
+.sak .sitat{font-size:15px;line-height:1.5;color:var(--graphite-800)}
+.fra-til{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:var(--r2);align-items:center}
+.fra-til .pil{color:var(--graphite-600)}
+.fra-til .gml{opacity:.55}
+.fra-til .gml .okt-tid{text-decoration:line-through;text-decoration-thickness:2px}
+.fra-til .okt.mini{grid-template-columns:1fr}
+.fra-til .okt.mini img{display:none}
+.fra-til .okt.mini .okt-tekst{padding:10px 12px}
+.fra-til .okt-tid{font-size:19px}
+.fra-til .navn{font-size:14px!important}
+.konsekvens{font-size:14px;color:var(--graphite-800);display:flex;gap:8px;align-items:flex-start}
+.konsekvens .ikon{width:18px;height:18px;margin-top:2px;color:var(--graphite-600)}
+.status-linje{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:14px}
+.varsel-rad{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--r3);align-items:center;min-height:64px;padding:10px 14px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white);text-decoration:none;color:inherit;cursor:pointer;text-align:left;font:inherit;width:100%}
+.varsel-rad b{display:block;font:600 15px/1.3 var(--sans)}
+.varsel-rad span.kilde{display:block}
+.varsel-rad .ikonboks{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:var(--sand-150)}
+.varsel-rad .ikonboks.ok{background:var(--green-50);color:var(--green-700)}
+.hovedtall-kort{display:grid;gap:var(--r3)}
+.oversikt-rad{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--r2)}
+.oversikt-rad span{display:grid;gap:2px;font-size:13px;color:var(--graphite-600);background:var(--sand-100);border-radius:10px;padding:10px 12px}
+.oversikt-rad b{font:600 22px/1.1 var(--mono);color:var(--graphite-900)}
+
+/* Tråd */
+.samtaler{display:grid;gap:var(--r2)}
+.samtale{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--r3);align-items:center;padding:12px 14px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white);cursor:pointer;text-align:left;font:inherit;color:inherit;width:100%}
+.samtale b{display:block;font:600 15px/1.3 var(--sans)}
+.samtale .siste{display:block;font-size:14px;color:var(--graphite-600);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.samtale time{font:500 12.5px/1 var(--mono);color:var(--graphite-600)}
+.samtale[aria-current="true"]{border:2px solid var(--graphite-900)}
+.traad{display:grid;gap:var(--r3)}
+.traad-hode{display:flex;align-items:center;gap:var(--r3);padding-bottom:var(--r3);border-bottom:1px solid var(--sand-300)}
+.traad-hode b{display:block;font:600 17px/1.25 var(--sans)}
+.bobler{display:grid;gap:10px}
+.boble{max-width:84%;display:grid;gap:6px;padding:10px 14px;border-radius:16px 16px 16px 4px;background:var(--sand-150);font-size:15px;line-height:1.5;justify-self:start}
+.boble.meg{justify-self:end;border-radius:16px 16px 4px 16px;background:var(--graphite-900);color:var(--white)}
+.boble time{font:500 11.5px/1 var(--mono);opacity:.7}
+.boble img{display:block;width:100%;max-width:260px;border-radius:10px;aspect-ratio:16/10;object-fit:cover}
+.boble .vedlegg{display:flex;align-items:center;gap:8px;font:600 14px/1.3 var(--sans)}
+.dag-skille{justify-self:center;font:500 12px/1 var(--sans);color:var(--graphite-600);padding:6px 10px;border-radius:999px;background:var(--sand-100)}
+.skrivefelt{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--r2);align-items:end;padding-top:var(--r3);border-top:1px solid var(--sand-300)}
+.skrivefelt textarea{min-height:48px;max-height:140px;resize:none;padding:12px;border:1px solid var(--graphite-500);border-radius:12px;font:400 16px/1.4 var(--sans);width:100%;color:var(--graphite-900);background:var(--white)}
+.ikonknapp{width:48px;height:48px;border-radius:12px;border:1px solid var(--sand-300);background:var(--white);display:grid;place-items:center;cursor:pointer;color:var(--graphite-900)}
+.ikonknapp.pri{background:var(--graphite-900);border-color:var(--graphite-900);color:var(--white)}
+.typer{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--r2)}
+.typer button{display:grid;gap:4px;justify-items:start;text-align:left;padding:12px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white);font:inherit;color:inherit;cursor:pointer;min-height:76px}
+.typer button b{font:600 15px/1.25 var(--sans)}
+.typer button span{font-size:13px;color:var(--graphite-600);line-height:1.35}
+.typer button[aria-pressed="true"]{border:2px solid var(--graphite-900)}
+
+/* PH-22 Caddie */
+.caddie-hode{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--r3);align-items:center}
+.caddie-hode .avatar{width:48px;height:48px}
+.forslag-chips{display:flex;flex-wrap:wrap;gap:8px}
+.forslag-chips button{min-height:44px;padding:8px 14px;border:1px solid var(--sand-300);border-radius:12px;background:var(--sand-100);font:500 14px/1.3 var(--sans);color:var(--graphite-900);cursor:pointer;text-align:left}
+.svar{display:grid;gap:var(--r3);padding:14px 16px;border-radius:16px 16px 16px 4px;background:var(--sand-100);border:1px solid var(--sand-300);max-width:100%;font-size:15px;line-height:1.55}
+.svar-topp{display:flex;align-items:center;gap:8px;font:600 14px/1 var(--sans)}
+.svar-topp .avatar{width:28px;height:28px}
+.svar-topp .avatar .ikon{width:16px;height:16px}
+.sg-rader{display:grid;gap:10px}
+.sg-rad{display:grid;grid-template-columns:96px minmax(0,1fr) 56px;gap:10px;align-items:center;font-size:14px}
+.sg-rad .v{font:600 14px/1 var(--mono);text-align:right}
+.sg-spor{position:relative;height:14px;background:var(--white);border-radius:4px;border:1px solid var(--sand-300)}
+.sg-spor::before{content:"";position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:var(--graphite-500)}
+.sg-spor i{position:absolute;top:1px;bottom:1px;border-radius:3px}
+.kilder{display:grid;gap:4px;margin:0;padding:10px 0 0;border-top:1px solid var(--sand-300);list-style:none;font-size:13px;color:var(--graphite-600)}
+.kilder li{display:flex;gap:6px;align-items:flex-start}
+.kilder .ikon{width:14px;height:14px;margin-top:3px;flex:none}
+.forslagskort{border:2px solid var(--graphite-900);border-radius:12px;background:var(--white);padding:14px 16px 16px;display:grid;gap:var(--r3)}
+.forslagskort .fk-topp{display:flex;justify-content:space-between;align-items:center;gap:var(--r3);flex-wrap:wrap}
+.forslagskort .fk-topp b{font:600 16px/1.3 var(--sans)}
+.okt-par{display:grid;gap:var(--r2)}
+.okt.mini{grid-template-columns:84px 1fr}
+.okt.mini .okt-tekst{gap:4px}
+.okt.mini .okt-info{font-size:13px;gap:2px 12px}
+.okt.mini .okt-tid{font-size:22px;white-space:normal}
+.skriver{display:inline-flex;gap:5px;padding:14px 16px;border-radius:16px;background:var(--sand-100);justify-self:start}
+.skriver i{width:7px;height:7px;border-radius:50%;background:var(--graphite-600);animation:prikk 1.2s infinite}
+.skriver i:nth-child(2){animation-delay:.15s} .skriver i:nth-child(3){animation-delay:.3s}
+@keyframes prikk{0%,60%,100%{opacity:.25}30%{opacity:1}}
+.personvern{display:flex;gap:8px;align-items:flex-start;font-size:13px;color:var(--graphite-600)}
+.personvern .ikon{width:16px;height:16px;margin-top:1px;flex:none}
+.turnkort{display:grid;grid-template-columns:84px minmax(0,1fr);border-radius:12px;overflow:hidden;background:var(--turn);color:#fff}
+.turnkort img{width:100%;height:100%;min-height:96px;object-fit:cover}
+.turnkort div{padding:10px 12px;display:grid;gap:4px}
+.turnkort b{font:600 16px/1.3 var(--sans)}
+.turnkort span{font-size:13.5px;opacity:.92}
+.ser-liste{display:grid;gap:0;margin:0;padding:0;list-style:none}
+.ser-liste li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;padding:10px 0;border-bottom:1px solid var(--sand-300);font-size:14px}
+.ser-liste li b{font:600 14px/1.3 var(--mono);text-align:right}
+.ser-liste li span{grid-column:1 / -1;font-size:12.5px;color:var(--graphite-600)}
+
+/* PH-23 Booking */
+.klipp-kort{display:grid;gap:var(--r3)}
+.klipp{display:flex;gap:8px}
+.klipp i{flex:1;height:14px;border-radius:7px;background:var(--sand-150);border:1px solid var(--sand-300)}
+.klipp i.brukt{background:var(--graphite-900);border-color:var(--graphite-900)}
+.klipp i.reservert{background:repeating-linear-gradient(45deg,var(--graphite-600) 0 4px,var(--graphite-500) 4px 8px);border-color:var(--graphite-600)}
+.booking-helt{display:grid;border-radius:12px;overflow:hidden;background:var(--graphite-900);color:#fff;text-decoration:none;cursor:pointer;border:0;padding:0;text-align:left;font:inherit;width:100%}
+.booking-helt img{display:block;width:100%;height:140px;object-fit:cover;object-position:50% 40%}
+.booking-helt .bt{padding:var(--r4) 18px 18px;display:grid;gap:var(--r2)}
+.booking-helt .bt-dag{font:600 15px/1.2 var(--sans);opacity:.9}
+.booking-helt .bt-tid{font:600 40px/1 var(--mono);letter-spacing:-.03em}
+.booking-helt .bt-tid small{font:500 16px/1 var(--mono);opacity:.8;margin-left:6px;letter-spacing:0}
+.booking-helt .navn{font:600 19px/1.25 var(--sans)}
+.booking-helt .info{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:14px;opacity:.92}
+.booking-helt .pille.ok{background:#e3f1e3}
+.booking-liste{display:grid;gap:0;border-top:1px solid var(--sand-300)}
+.booking-liste a{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:var(--r3);align-items:center;min-height:64px;padding:10px 0;border-bottom:1px solid var(--sand-300);color:inherit;text-decoration:none}
+.booking-liste .d{display:grid;justify-items:center;gap:2px;border-radius:10px;background:var(--sand-100);padding:8px 0}
+.booking-liste .d b{font:600 20px/1 var(--mono)}
+.booking-liste .d span{font:500 12px/1 var(--sans);color:var(--graphite-600)}
+.booking-liste .t b{display:block;font:600 15px/1.3 var(--sans)}
+.tjenester{display:grid;gap:var(--r2)}
+.tjeneste{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px var(--r3);align-items:center;padding:14px 16px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white);text-align:left;font:inherit;color:inherit;cursor:pointer;width:100%}
+.tjeneste b{font:600 16px/1.3 var(--sans)}
+.tjeneste .pris{font:600 15px/1.2 var(--mono);text-align:right;white-space:nowrap}
+.tjeneste .kilde{grid-column:1 / -1}
+.tjeneste[aria-pressed="true"]{border:2px solid var(--graphite-900);box-shadow:0 0 0 3px var(--sand-150)}
+.coacher{display:flex;flex-wrap:wrap;gap:var(--r2)}
+.coacher button{display:flex;align-items:center;gap:10px;min-height:56px;padding:6px 14px 6px 8px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white);font:500 15px/1.2 var(--sans);color:var(--graphite-900);cursor:pointer}
+.coacher button .avatar{width:40px;height:40px}
+.coacher button[aria-pressed="true"]{border:2px solid var(--graphite-900)}
+.coacher button:disabled{opacity:.45;cursor:default}
+.dager{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.dager button{display:grid;justify-items:center;gap:3px;min-height:60px;padding:6px 0;border:1px solid var(--sand-300);border-radius:10px;background:var(--white);font:500 12px/1 var(--sans);color:var(--graphite-800);cursor:pointer}
+.dager button b{font:600 17px/1 var(--mono);color:var(--graphite-900)}
+.dager button i{width:6px;height:6px;border-radius:50%;background:var(--green-700)}
+.dager button:disabled{opacity:.45;cursor:default}
+.dager button:disabled i{background:transparent}
+.dager button[aria-pressed="true"]{background:var(--graphite-900);border-color:var(--graphite-900);color:var(--white)}
+.dager button[aria-pressed="true"] b{color:var(--white)}
+.dager button[aria-pressed="true"] i{background:var(--white)}
+.tider{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.tider button{min-height:48px;border:1px solid var(--sand-300);border-radius:10px;background:var(--white);font:600 15px/1 var(--mono);color:var(--graphite-900);cursor:pointer}
+.tider button[aria-pressed="true"]{background:var(--graphite-900);border-color:var(--graphite-900);color:var(--white)}
+.oppsummering{display:grid;gap:0;margin:0;padding:0;list-style:none;border-top:1px solid var(--sand-300)}
+.oppsummering li{display:grid;grid-template-columns:110px minmax(0,1fr);gap:var(--r3);padding:10px 0;border-bottom:1px solid var(--sand-300);font-size:14.5px}
+.oppsummering li span{color:var(--graphite-600)}
+.oppsummering li b{font-weight:600}
+.festet{position:sticky;bottom:0;z-index:4;padding:var(--r3) 0 var(--r2);background:linear-gradient(transparent,var(--white) 30%)}
+.bekreftet-topp{display:grid;justify-items:start;gap:var(--r3)}
+.hake{width:64px;height:64px;border-radius:50%;background:var(--green-700);color:#fff;display:grid;place-items:center}
+.hake .ikon{width:32px;height:32px;stroke-width:2.5}
+.dialog-lag{position:sticky;bottom:0;z-index:7;display:grid;margin:0 calc(-1 * var(--r4)) calc(-1 * var(--r6));padding:var(--r4);background:rgba(20,20,19,.35)}
+.dialog{border-radius:16px;background:var(--white);padding:var(--r5) var(--r4) var(--r4);display:grid;gap:var(--r4);box-shadow:0 12px 40px rgba(0,0,0,.25);animation:inn 240ms var(--ut)}
+.dialog h2{margin:0;font:600 20px/1.25 var(--sans)}
+.dialog .knapper{display:grid;gap:var(--r2)}
+.vilkaar{display:grid;gap:6px;padding:12px 14px;border-radius:10px;background:var(--sand-100);font-size:14px}
+.vilkaar b{font-weight:600}
+
+.innboks-grid,.caddie-grid,.booking-grid,.ny-grid,.traad-grid{display:grid;gap:var(--r5);align-content:start}
+.innboks-grid > aside,.caddie-grid > aside,.booking-grid > div{display:grid;gap:var(--r4);align-content:start}
+
+@container (min-width:900px){
+  .ark-lag,.dialog-lag{position:sticky;bottom:24px;margin:0;justify-items:center;background:transparent;padding:0}
+  .ark-lag .ark,.dialog{width:100%;max-width:520px;border-radius:16px}
+  .innboks-grid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:var(--r6);align-items:start}
+  .innboks-grid > aside{position:sticky;top:24px;display:grid;gap:var(--r4)}
+  .traad-grid{display:grid;grid-template-columns:320px minmax(0,1fr);gap:var(--r5);align-items:start}
+  .traad-grid .tilbake-samtaler{display:none}
+  .caddie-grid{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:var(--r6);align-items:start}
+  .caddie-grid > aside{position:sticky;top:24px;display:grid;gap:var(--r4)}
+  .booking-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--r6);align-items:start}
+  .booking-grid > div{display:grid;gap:var(--r5);align-content:start}
+  .booking-helt{grid-template-columns:minmax(0,.9fr) minmax(0,1fr)}
+  .booking-helt img{height:100%;min-height:230px}
+  .ny-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:var(--r6);align-items:start}
+  .ny-grid > aside{position:sticky;top:24px}
+  .smal{max-width:760px}
+}
+@container (max-width:899px){
+  .traad-grid .samtaler{display:none}
+  .traad-grid.liste .samtaler{display:grid}
+  .traad-grid.liste .traad{display:none}
+}
+</style>
+
+<div class="ytre">
+  <div class="hode">
+    <span class="meta-s">PlayerHQ · pakke 7 · PH-21, PH-22 og PH-23 · utkast 1 · 14.10.2026</span>
+    <h1>Kommunikasjon</h1>
+    <p>Åtte skjermer i én fil: Innboks med forslag, meldinger og varsler, meldingstråden med coachen, Caddie, og booking fra klippekort til bekreftet time, flytting og avbestilling. Demodata for Øyvind Rohjan, Kategori C, i WANG Toppidrett og med coaching-pakken Performance Pro. I dag er mandag 5. oktober kl. 14:20, uke 41.</p>
+  </div>
+  <div class="kontroller">
+    <div class="velger skjermvalg" role="group" aria-label="Skjerm">
+      <button type="button" aria-pressed="true" data-skjerm="innboks">PH-21 Innboks</button>
+      <button type="button" aria-pressed="false" data-skjerm="traad">Meldinger</button>
+      <button type="button" aria-pressed="false" data-skjerm="caddie">PH-22 Caddie</button>
+      <button type="button" aria-pressed="false" data-skjerm="booking">PH-23 Booking</button>
+      <button type="button" aria-pressed="false" data-skjerm="ny">Book time</button>
+      <button type="button" aria-pressed="false" data-skjerm="bekreftet">Bekreftet</button>
+      <button type="button" aria-pressed="false" data-skjerm="detalj">Bookingen</button>
+    </div>
+  </div>
+  <div class="kontroller">
+    <div class="velger" role="group" aria-label="Versjon"><button type="button" aria-pressed="true" data-versjon="etter">Utkast</button><button type="button" aria-pressed="false" data-versjon="for">Dagens design</button></div>
+    <div class="velger" role="group" aria-label="Bredde"><button type="button" aria-pressed="true" data-bredde="mob">Mobil</button><button type="button" aria-pressed="false" data-bredde="pc">PC</button></div>
+    <div class="velger" role="group" aria-label="Tilstand"><button type="button" aria-pressed="true" data-tilstand="data">Med data</button><button type="button" aria-pressed="false" data-tilstand="tom">Tom</button><button type="button" aria-pressed="false" data-tilstand="laster">Laster</button><button type="button" aria-pressed="false" data-tilstand="feil">Feil</button></div>
+  </div>
+  <div class="scene"><div class="ramme mob" id="ramme"></div></div>
+  <div class="notater">
+    <div class="endringer">
+      <span class="meta-s">Hva som er nytt</span>
+      <ul>
+        <li><b>Innboksen samler alt</b> bak bjella: forslag, meldinger og varsler (vedtak 28.09). Ett stort tall: hvor mange saker som venter på Øyvind.</li>
+        <li><b>Forslag viser økta før og etter</b> som fylte kort i aksefargen, og hva som oppdateres når han godtar (uka, måneden og årsplanen, vedtak 14.10).</li>
+        <li><b>Avsender står på hvert forslag:</b> WANG-treneren foreslår (Godta · Avvis). Anders endrer direkte, og Øyvind kan angre. Caddie foreslår, og Øyvind godkjenner selv. «Send til coach» finnes ikke.</li>
+        <li><b>Meldinger:</b> tråd med video, bilde og tekst. «Ny melding» velger type: melding, spørsmål, video til tilbakemelding eller ønsket økt.</li>
+        <li><b>Caddie</b> svarer med tallene sine og kilden, merker estimat, og lager forslag som utkast med Godkjenn · Avvis. Caddie foreslår også turnering. Øverst står at navnet ikke sendes til AI.</li>
+        <li><b>Booking</b> åpner med klippekortet (Performance Pro, 4 klipp i måneden) og neste time som fylt kort med bilde. Ny booking: tjeneste, coach, dag, tid. Timen er bekreftet med en gang, uten venting.</li>
+        <li><b>Flytt time:</b> Øyvind booker om selv til en ledig tid, men bare innenfor tilgjengeligheten coachen har satt (Anders 14.10). Gammel og ny tid står side om side. <b>Avbestill</b> er en dialog med fristen og rust bekreftknapp.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Reglene som er fulgt</span>
+      <ul>
+        <li>Farge betyr akse. Økter i forslag og Caddie-svar er fylte kort i aksefargen. Bookingen er grafitt, fordi en coachingtime ikke er én akse.</li>
+        <li>Rust bare én gang: bekreftknappen i avbestill-dialogen. Bjelletallet er grafitt, siden ingenting haster for Øyvind.</li>
+        <li>Booking bekreftes automatisk når tiden er ledig og betalt (vedtak 27.09). Ingen «venter på bekreftelse».</li>
+        <li>Klippekortet gjelder Performance og Performance Pro (vedtak 26.09). Én coachet økt trekker ett klipp. Kartleggingsøkt finnes ikke.</li>
+        <li>Priser er merket «Eksempel». I appen leses de fra tjenestelista, aldri skrevet inn i teksten.</li>
+        <li>Gratis avbestilling inntil 24 timer før, som regelen i koden. Statusord fra masteren §4.3: Forslag · Godkjent · Utført.</li>
+        <li>Manglende verdi vises som «—». Ingen sidelengs rulling i 390 og 360 px.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Åpent hos Anders</span>
+      <ul>
+        <li><b>V6:</b> enheten heter «klipp», timen «coaching-time» (anbefaling a i ordbok-avvikene). Ikke avgjort.</li>
+        <li><b>V8 og V9:</b> knappen «Bekreft og betal» og «Gratis avbestilling inntil 24 timer før» er anbefalingen, ikke avgjort.</li>
+        <li><b>V1:</b> spilleren møter bare «Caddie». Om coachens assistent heter Jarvis, står åpent.</li>
+                <li>Turneringen Caddie foreslår er eksempel. Påmeldingsfrist hentes fra turneringskalenderen.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ================= PH-21 Innboks ================= -->
+<template id="innboks">
+<div class="app" data-fane="idag" data-skall="tilbake" data-tilbake="I dag">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div>
+        <div class="dato">Innboks · 2 nye siden i går</div>
+        <h1 class="tittel">Innboks</h1>
+      </div>
+    </div>
+    <div class="innboks-grid">
+      <div class="saker">
+        <div class="kort hovedtall-kort">
+          <div class="hoved"><strong data-venter data-tell="3">3</strong><span class="forklar">saker venter på deg</span></div>
+          <div class="oversikt-rad"><span>Forslag<b data-ant-forslag>2</b></span><span>Meldinger<b>1</b></span><span>Varsler<b>2</b></span></div>
+        </div>
+        <div class="chips" data-filter role="group" aria-label="Vis">
+          <button type="button" aria-pressed="true" data-f="alle">Alle</button>
+          <button type="button" aria-pressed="false" data-f="forslag">Forslag</button>
+          <button type="button" aria-pressed="false" data-f="melding">Meldinger</button>
+          <button type="button" aria-pressed="false" data-f="varsel">Varsler</button>
+        </div>
+
+        <div class="dag-merke" data-type="forslag melding">I dag og i går</div>
+
+        <!-- Forslag fra WANG-trener (samme som i I dag) -->
+        <article class="sak ny" data-type="forslag" data-sak="wang">
+          <div class="sak-topp">
+            <span class="avatar wang" aria-hidden="true">W</span>
+            <span><b>Forslag: nærspill i stedet for innspill torsdag</b><span class="fra">WANG Toppidrett · trener</span></span>
+            <time>i går 20:41</time>
+          </div>
+          <div class="fra-til">
+            <div class="okt mini slag gml"><div class="okt-tekst"><span class="okt-tid">Tor 8. okt</span><span class="navn">Innspill</span></div></div>
+            <svg class="ikon pil" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            <div class="okt mini slag"><div class="okt-tekst"><span class="okt-tid">Tor 8. okt</span><span class="navn">Nærspill på chippinggreenen</span></div></div>
+          </div>
+          <p class="sitat">«Range 2 er booket av VG1 torsdag.»</p>
+          <p class="konsekvens"><svg class="ikon" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg><span>Godtar du, oppdateres uke 41, oktober og årsplanen. Tiden er den samme, bare treningsområdet endres.</span></p>
+          <div class="knapper" data-svar><button type="button" class="knapp pri" data-godta>Godta</button><button type="button" class="knapp sek" data-avvis>Avvis</button></div>
+        </article>
+
+        <!-- Forslag fra Caddie (samme som i PH-22) -->
+        <article class="sak" data-type="forslag" data-sak="caddie">
+          <div class="sak-topp">
+            <span class="avatar caddie" aria-hidden="true"><svg class="ikon" viewBox="0 0 24 24"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/></svg></span>
+            <span><b>Caddie: to innspillsøkter i uke 42</b><span class="fra">Caddie · forslag fra samtalen kl. 14:12</span></span>
+            <time>14:13</time>
+          </div>
+          <p class="sitat">Innspill koster deg mest: −0,9 slag per runde mot Kategori B. To innspillsøkter erstatter utslagsøkta onsdag.</p>
+          <div class="okt-par">
+            <div class="okt mini slag"><img src="bilder/naerspill-wedge.jpg" alt=""><div class="okt-tekst"><span class="okt-tid">Tir 13. okt</span><span class="navn">Innspill 50–100 m · TrackMan</span><span class="okt-info"><span>60 min</span></span></div></div>
+            <div class="okt mini slag"><img src="bilder/slag-simulator.jpg" alt=""><div class="okt-tekst"><span class="okt-tid">Tor 15. okt</span><span class="navn">Innspill 100–150 m · simulator</span><span class="okt-info"><span>60 min</span></span></div></div>
+          </div>
+          <p class="kildetekst">Kilde: Stats, Strokes Gained siste 12 runder. <span class="estimat">Estimat</span></p>
+          <div class="knapper" data-svar><button type="button" class="knapp pri" data-godta>Godkjenn</button><button type="button" class="knapp sek" data-avvis>Avvis</button></div>
+        </article>
+
+        <!-- Direkte endring fra AK-coach med Angre (vedtak runde 31) -->
+        <article class="sak" data-type="forslag" data-sak="anders">
+          <div class="sak-topp">
+            <span class="avatar" aria-hidden="true">AK</span>
+            <span><b>Anders byttet teknisk oppgave til P7.0</b><span class="fra">Anders Kristiansen · AK-coach</span></span>
+            <time>07:40</time>
+          </div>
+          <div class="okt mini tek"><img src="bilder/tek-range.jpg" alt=""><div class="okt-tekst"><span class="okt-tid">P7.0</span><span class="navn">Treffpunktet · Face to Path</span></div></div>
+          <p class="sitat">«Ballstarten går til høyre på de siste 20 slagene.»</p>
+          <div class="status-linje" data-angre-linje><span class="pille ok"><i></i>Lagt inn i teknisk plan</span><button type="button" class="knapp sek" data-angre>Angre</button></div>
+        </article>
+
+        <!-- Melding fra Anders -->
+        <button type="button" class="varsel-rad" data-type="melding" data-gaa="traad">
+          <span class="avatar" aria-hidden="true">AK</span>
+          <span><b>Anders Kristiansen</b><span class="kilde">«Så videoen fra i går. Ballstarten går til høyre. Vi tar P7.0 på fredag.»</span></span>
+          <span class="ulest" aria-label="Ulest"></span>
+        </button>
+
+        <div class="dag-merke" data-type="varsel">Varsler</div>
+
+        <button type="button" class="varsel-rad" data-type="varsel" data-gaa="detalj">
+          <span class="ikonboks ok"><svg class="ikon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span>
+          <span><b>Timen er bekreftet</b><span class="kilde">Fredag 9. oktober kl. 16:00 · Performance Pro med Anders</span></span>
+          <svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+        <button type="button" class="varsel-rad" data-type="varsel">
+          <span class="ikonboks"><svg class="ikon" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg></span>
+          <span><b>Uke 40: 11 t 5 min gjennomført</b><span class="kilde">79 % av 14 t 5 min planlagt</span></span>
+          <svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+        <p class="kildetekst" data-tom-filter hidden>Ingen saker her.</p>
+      </div>
+      <aside>
+        <div class="kort dempet">
+          <b class="undertittel">Hvem kan gjøre hva</b>
+          <p class="forklar">Anders er AK-coachen din og endrer planen direkte. Du kan alltid angre.</p>
+          <p class="forklar">WANG-treneren ser det du har delt, og sender forslag. Ingenting endres før du godtar.</p>
+          <p class="forklar">Caddie foreslår. Du godkjenner selv.</p>
+        </div>
+        <button type="button" class="knapp pri stor" data-gaa="traad">Ny melding</button>
+      </aside>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= PH-21 Meldinger ================= -->
+<template id="traad">
+<div class="app" data-fane="idag" data-skall="tilbake" data-tilbake="Innboks">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div>
+        <div class="dato">Innboks · meldinger</div>
+        <h1 class="tittel">Meldinger</h1>
+      </div>
+    </div>
+    <div class="traad-grid">
+      <div class="samtaler" aria-label="Samtaler">
+        <button type="button" class="samtale" aria-current="true" data-samtale="ak"><span class="avatar">AK</span><span><b>Anders Kristiansen</b><span class="siste">Så videoen fra i går. Ballstarten …</span></span><time>12:04</time></button>
+        <button type="button" class="samtale" data-samtale="mh"><span class="avatar wang">W</span><span><b>WANG Toppidrett · trener</b><span class="siste">Husk testuke i uke 43.</span></span><time>fre</time></button>
+        <button type="button" class="knapp sek" data-ny>Ny melding</button>
+      </div>
+      <section class="traad" aria-label="Samtale med Anders Kristiansen">
+        <div class="traad-hode">
+          <button type="button" class="lukk tilbake-samtaler" aria-label="Alle samtaler" data-liste><svg class="ikon" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
+          <span class="avatar">AK</span>
+          <span><b data-traad-navn>Anders Kristiansen</b><span class="kilde" data-traad-rolle>AK-coach · svarer vanligvis samme dag</span></span>
+        </div>
+        <div class="bobler" data-bobler></div>
+        <form class="skrivefelt" data-skriv>
+          <button type="button" class="ikonknapp" aria-label="Legg ved video eller bilde"><svg class="ikon" viewBox="0 0 24 24"><path d="M21.4 11.1l-9.2 9.2a6 6 0 0 1-8.5-8.5l9.2-9.2a4 4 0 0 1 5.7 5.7l-9.2 9.2a2 2 0 0 1-2.8-2.8l8.5-8.5"/></svg></button>
+          <label class="felt" style="gap:0"><span class="etikett" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Melding</span><textarea rows="1" placeholder="Skriv til Anders" data-tekst></textarea></label>
+          <button type="submit" class="ikonknapp pri" aria-label="Send"><svg class="ikon" viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg></button>
+        </form>
+      </section>
+    </div>
+    <div class="ark-lag" data-ny-ark hidden>
+      <div class="ark" role="dialog" aria-label="Ny melding">
+        <div class="ark-topp"><h2>Ny melding</h2><button type="button" class="lukk" aria-label="Lukk" data-lukk><svg class="ikon" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+        <div class="felt"><span class="etikett">Til</span><div class="chips" data-til><button type="button" aria-pressed="true">Anders Kristiansen</button><button type="button" aria-pressed="false">WANG-treneren</button></div></div>
+        <div class="typer" data-gruppe>
+          <button type="button" aria-pressed="true" data-type="melding"><b>Melding</b><span>Skriv fritt</span></button>
+          <button type="button" aria-pressed="false" data-type="sporsmal"><b>Spørsmål</b><span>Om trening, plan eller test</span></button>
+          <button type="button" aria-pressed="false" data-type="video"><b>Video</b><span>Be om tilbakemelding på svingen</span></button>
+          <button type="button" aria-pressed="false" data-type="okt"><b>Ønsket økt</b><span>Be coachen om en time</span></button>
+        </div>
+        <div class="felt"><label for="ny-tekst">Melding</label><textarea id="ny-tekst" rows="3" placeholder="Hva vil du si?"></textarea></div>
+        <button type="button" class="knapp pri stor" data-send-ny>Send</button>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= PH-22 Caddie ================= -->
+<template id="caddie">
+<div class="app" data-fane="idag" data-skall="tilbake" data-tilbake="I dag">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div class="caddie-hode">
+        <span class="avatar caddie" aria-hidden="true"><svg class="ikon" viewBox="0 0 24 24"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/></svg></span>
+        <div><div class="dato">Caddie</div><h1 class="tittel" style="margin:0">Spør Caddie</h1></div>
+      </div>
+      <p class="personvern"><svg class="ikon" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span>Caddie ser tallene og planen din, ikke navnet ditt. Alt Caddie foreslår er et utkast til du godkjenner det.</span></p>
+    </div>
+    <div class="caddie-grid">
+      <div class="traad" data-chat>
+        <div class="boble meg" style="justify-self:end"><span>Hva bør jeg trene mer på før sesongslutt?</span><time>14:12</time></div>
+        <div class="svar">
+          <div class="svar-topp"><span class="avatar caddie"><svg class="ikon" viewBox="0 0 24 24"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/></svg></span>Caddie</div>
+          <p>Innspill koster deg mest. Mot Kategori B taper du <b>0,9 slag per runde</b> der, mest fra 100–150 m. Nærspill er nest størst, men tallet er foreløpig.</p>
+          <div class="sg-rader" aria-label="Strokes Gained mot Kategori B">
+            <div class="sg-rad"><span><b>Innspill</b></span><span class="sg-spor"><i style="right:50%;width:36%;background:var(--slag-ink)"></i></span><span class="v">−0,9</span></div>
+            <div class="sg-rad"><span>Nærspill</span><span class="sg-spor"><i style="right:50%;width:16%;background:var(--slag)"></i></span><span class="v">−0,4</span></div>
+          </div>
+          <p>Jeg foreslår to innspillsøkter i uke 42, i stedet for én utslagsøkt. Totalen i uka blir den samme.</p>
+          <div class="forslagskort" data-forslag>
+            <div class="fk-topp"><b>Utkast: innspill i uke 42</b><span class="pille vent" data-status><i></i>Forslag</span></div>
+            <div class="okt-par">
+              <div class="okt mini slag"><img src="bilder/naerspill-wedge.jpg" alt=""><div class="okt-tekst"><span class="okt-tid">Tir 13. okt</span><span class="navn">Innspill 50–100 m · TrackMan</span><span class="okt-info"><span>60 min</span></span></div></div>
+              <div class="okt mini slag"><img src="bilder/slag-simulator.jpg" alt=""><div class="okt-tekst"><span class="okt-tid">Tor 15. okt</span><span class="navn">Innspill 100–150 m · simulator</span><span class="okt-info"><span>60 min</span></span></div></div>
+            </div>
+            <p class="kildetekst">Erstatter «Utslag · driver» onsdag (2 t). Tiden i uke 42 er den samme.</p>
+            <div class="knapper" data-svar><button type="button" class="knapp pri" data-godkjenn>Godkjenn</button><button type="button" class="knapp sek" data-avvis>Avvis</button></div>
+          </div>
+          <ul class="kilder">
+            <li><svg class="ikon" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>Stats · Strokes Gained, siste 12 runder, sist 4. oktober. Nærspill er foreløpig til 24 runder</li>
+            <li><svg class="ikon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg><span><span class="estimat">Estimat</span> Sammenligning mot Kategori B (Broadie per HCP)</span></li>
+          </ul>
+        </div>
+        <div class="boble meg" style="justify-self:end"><span>Finn en turnering jeg kan spille i oktober.</span><time>14:15</time></div>
+        <div class="svar">
+          <div class="svar-topp"><span class="avatar caddie"><svg class="ikon" viewBox="0 0 24 24"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/></svg></span>Caddie</div>
+          <p>Én passer: den ligger før testuka i uke 43, og nivået stemmer med det du spilte i sommer. Du er i grunnperioden, så den blir en treningsturnering.</p>
+          <div class="turnkort"><img src="bilder/turn-tee.jpg" alt=""><div><b>Høstcup junior</b><span>Lør 17.–søn 18. okt · 36 hull</span><span>Påmeldingsfrist: —</span></div></div>
+          <div class="knapper"><button type="button" class="knapp sek" data-legg-turn>Legg i planen</button></div>
+          <ul class="kilder"><li><svg class="ikon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Turneringskalenderen, hentet 5. oktober. Eksempel.</li></ul>
+        </div>
+        <div class="forslag-chips" aria-label="Forslag til spørsmål">
+          <button type="button" data-spor>Hvordan gikk uka?</button>
+          <button type="button" data-spor>Forklar Strokes Gained</button>
+          <button type="button" data-spor>Lag en putteøkt</button>
+        </div>
+        <form class="skrivefelt" data-skriv style="grid-template-columns:minmax(0,1fr) auto">
+          <label class="felt" style="gap:0"><span class="etikett" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Spørsmål til Caddie</span><textarea rows="1" placeholder="Spør Caddie" data-tekst></textarea></label>
+          <button type="submit" class="ikonknapp pri" aria-label="Send"><svg class="ikon" viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg></button>
+        </form>
+      </div>
+      <aside>
+        <div class="kort">
+          <b class="undertittel">Dette ser Caddie</b>
+          <ul class="ser-liste">
+            <li>Kategori<b>C</b><span>Brutto snitt 73,1 · 18 runder</span></li>
+            <li>Uke 41<b>0 / 14 t 5 min</b><span>Lagt inn mot fordelt fra oktober</span></li>
+            <li>Siste 4 uker<b>48 t 10 min</b><span>av 52 t 20 min planlagt, uke 37–40</span></li>
+            <li>Periode<b>Grunnperiode 1</b><span>Uke 39–46 · innspill 100–150 m og styrke</span></li>
+            <li>Teknisk plan<b>P7.0</b><span>Face to Path, Lav hastighet 50 %</span></li>
+          </ul>
+        </div>
+        <div class="kort dempet"><b class="undertittel">Caddie endrer ingenting selv</b><p class="forklar">Forslag blir liggende i Innboks til du godkjenner eller avviser dem. Anders ser det du godkjenner.</p></div>
+      </aside>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= PH-23 Booking ================= -->
+<template id="booking">
+<div class="app" data-fane="meg" data-skall="tilbake" data-tilbake="Meg">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div>
+        <div class="dato">Meg · booking</div>
+        <h1 class="tittel">Bookinger</h1>
+      </div>
+    </div>
+    <div class="booking-grid">
+      <div>
+        <div class="kort klipp-kort">
+          <div class="sek-topp"><b class="undertittel">Klippekort · Performance Pro</b><span class="kilde">Fornyes 1. november</span></div>
+          <div class="hoved"><strong data-tell="2">2</strong><span class="forklar">klipp igjen i oktober</span></div>
+          <div class="klipp" aria-label="1 brukt, 1 booket, 2 igjen av 4"><i class="brukt"></i><i class="reservert"></i><i></i><i></i></div>
+          <div class="lg-rad"><span class="lg"><i style="background:var(--graphite-900)"></i>Brukt 1</span><span class="lg"><i style="background:var(--graphite-500)"></i>Booket 1</span><span class="lg"><i style="background:var(--sand-150);border:1px solid var(--sand-300)"></i>Igjen 2</span></div>
+          <p class="kildetekst">Én coachet økt trekker ett klipp. Et klipp er brukt når timen er gjennomført.</p>
+        </div>
+        <button type="button" class="knapp pri stor" data-gaa="ny">Book time</button>
+      </div>
+      <div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Neste time</h2></div>
+          <button type="button" class="booking-helt" data-gaa="detalj">
+            <img src="bilder/slag-simulator.jpg" alt="">
+            <div class="bt">
+              <span class="pille ok" style="justify-self:start"><i></i>Bekreftet</span>
+              <span class="bt-dag">Fredag 9. oktober</span>
+              <span class="bt-tid">16:00<small>90 min</small></span>
+              <span class="navn">Performance Pro med Anders</span>
+              <span class="info"><span>Simulator 2, Fredrikstad</span><span>1 klipp</span></span>
+            </div>
+          </button>
+        </section>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Tidligere</h2><span class="kilde">Siste 3 måneder</span></div>
+          <div class="booking-liste">
+            <a href="#"><span class="d"><b>24</b><span>sep</span></span><span class="t"><b>Performance Pro med Anders</b><span class="kilde">Gjennomført · sammendrag i Meldinger</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></a>
+            <a href="#"><span class="d"><b>10</b><span>sep</span></span><span class="t"><b>Performance Pro med Anders</b><span class="kilde">Gjennomført</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></a>
+            <a href="#"><span class="d"><b>27</b><span>aug</span></span><span class="t"><b>Flex 50 min med Markus</b><span class="kilde">Avbestilt av deg · refundert</span></span><svg class="ikon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></a>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= PH-23 Book time ================= -->
+<template id="ny">
+<div class="app" data-fane="meg" data-skall="tilbake" data-tilbake="Bookinger">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div>
+        <div class="dato">Booking · ny time</div>
+        <h1 class="tittel">Book time</h1>
+      </div>
+    </div>
+    <div class="ny-grid">
+      <div class="seksjon" style="gap:var(--r5)">
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Tjeneste</h2></div>
+          <div class="tjenester" data-tjenester>
+            <button type="button" class="tjeneste" aria-pressed="true" data-t="pro" data-varighet="90" data-klipp="1"><b>Performance Pro</b><span class="pris">1 klipp</span><span class="kilde">90 min · TrackMan, video og skriftlig plan</span></button>
+            <button type="button" class="tjeneste" aria-pressed="false" data-t="flex50" data-varighet="50" data-pris="1 500 kr"><b>Flex 50 min</b><span class="pris">1 500 kr <span class="estimat">Eksempel</span></span><span class="kilde">50 min · ett tema. Betales ved booking, trekker ikke klipp</span></button>
+            <button type="button" class="tjeneste" aria-pressed="false" data-t="flex20" data-varighet="20" data-pris="600 kr"><b>Flex 20 min</b><span class="pris">600 kr <span class="estimat">Eksempel</span></span><span class="kilde">20 min · kort fokusøkt</span></button>
+          </div>
+        </section>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Coach</h2></div>
+          <div class="coacher" data-gruppe data-coach><button type="button" aria-pressed="true" data-c="Anders"><span class="avatar">AK</span>Anders</button><button type="button" aria-pressed="false" data-c="Markus"><span class="avatar lys">MP</span>Markus</button></div>
+        </section>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Dag</h2><span class="kilde">Uke 41 · prikk = ledig tid</span></div>
+          <div class="dager" data-dager></div>
+        </section>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Tid</h2><span class="kilde" data-tid-kilde></span></div>
+          <div class="tider" data-tider></div>
+        </section>
+      </div>
+      <aside>
+        <div class="kort">
+          <b class="undertittel">Din booking</b>
+          <ul class="oppsummering" data-oppsum></ul>
+          <div class="vilkaar"><b>Gratis avbestilling inntil 24 timer før</b><span data-frist></span></div>
+        </div>
+        <div class="festet"><button type="button" class="knapp pri stor" data-bekreft>Bekreft booking</button></div>
+      </aside>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= PH-23 Bekreftet ================= -->
+<template id="bekreftet">
+<div class="app" data-fane="meg" data-skall="tilbake" data-tilbake="Bookinger">
+  <main class="innhold smal">
+    <div class="bekreftet-topp">
+      <span class="hake inn"><svg class="ikon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span>
+      <div><div class="dato">Booking · bekreftet</div><h1 class="tittel">Timen er bekreftet</h1><p class="ingress"><span data-b-coach>Anders</span> har fått beskjed. Du får påminnelse dagen før.</p></div>
+    </div>
+    <div class="booking-helt" style="cursor:default">
+      <img src="bilder/slag-simulator.jpg" alt="">
+      <div class="bt">
+        <span class="bt-dag" data-b-dag>Onsdag 7. oktober</span>
+        <span class="bt-tid"><span data-b-kl>10:30</span><small>90 min</small></span>
+        <span class="navn">Performance Pro med Anders</span>
+        <span class="info"><span>Simulator 2, Fredrikstad</span><span>1 klipp</span></span>
+      </div>
+    </div>
+    <div class="kort">
+      <div class="hoved"><strong>1</strong><span class="forklar">klipp igjen i oktober</span></div>
+      <div class="klipp" aria-label="1 brukt, 2 booket, 1 igjen av 4"><i class="brukt"></i><i class="reservert"></i><i class="reservert"></i><i></i></div>
+      <div class="vilkaar"><b>Gratis avbestilling inntil 24 timer før</b><span data-b-frist>Til tirsdag 6. oktober kl. 10:30. Etter det trekkes klippet.</span></div>
+    </div>
+    <div class="knapper"><button type="button" class="knapp pri">Legg i kalender</button><button type="button" class="knapp sek" data-gaa="booking">Mine bookinger</button></div>
+    <p class="kildetekst">Økta ligger også i Plan, uke 41. Den teller i uka, oktober og årsplanen.</p>
+  </main>
+</div>
+</template>
+
+<!-- ================= PH-23 Bookingen ================= -->
+<template id="detalj">
+<div class="app" data-fane="meg" data-skall="tilbake" data-tilbake="Bookinger">
+  <main class="innhold smal">
+    <div class="topp">
+      <div><div class="dato">Booking</div><h1 class="tittel">Performance Pro med Anders</h1></div>
+    </div>
+    <div class="booking-helt" style="cursor:default">
+      <img src="bilder/slag-simulator.jpg" alt="">
+      <div class="bt">
+        <span class="pille ok" style="justify-self:start" data-status><i></i>Bekreftet</span>
+        <span class="bt-dag" data-dag>Fredag 9. oktober</span>
+        <span class="bt-tid"><span data-kl>16:00</span><small>90 min</small></span>
+        <span class="info"><span>Simulator 2, Fredrikstad</span><span>1 klipp</span></span>
+      </div>
+    </div>
+    <ul class="oppsummering">
+      <li><span>Coach</span><b>Anders Kristiansen</b></li>
+      <li><span>Sted</span><b>Simulator 2, Fredrikstad</b></li>
+      <li><span>Betaling</span><b>1 klipp, Performance Pro</b></li>
+      <li><span>Tema</span><b>P7.0 Treffpunktet og Face to Path, fra teknisk plan</b></li>
+      <li><span>Avbestilling</span><b data-frist-tekst>Gratis til torsdag 8. oktober kl. 16:00</b></li>
+    </ul>
+    <div class="knapper" data-handlinger><button type="button" class="knapp pri" data-flytt>Flytt time</button><button type="button" class="knapp sek" data-avbestill>Avbestill</button><button type="button" class="knapp sek" data-gaa="traad">Skriv til Anders</button></div>
+
+    <div class="ark-lag" data-flytt-ark hidden>
+      <div class="ark" role="dialog" aria-label="Flytt time">
+        <div class="ark-topp"><h2>Flytt time</h2><button type="button" class="lukk" aria-label="Lukk" data-lukk><svg class="ikon" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+        <p class="forklar">Ledige tider hos Anders denne uka. Du ser bare tider Anders har åpnet for booking, og kan flytte fram til 24 timer før timen.</p>
+        <div class="dager" data-fdager></div>
+        <div class="tider" data-ftider></div>
+        <div class="fra-til" data-fratil></div>
+        <p class="kildetekst">Anders får beskjed om den nye tiden. Ingen klipp trekkes for flyttingen.</p>
+        <button type="button" class="knapp pri stor" data-flytt-ok>Flytt til ny tid</button>
+      </div>
+    </div>
+
+    <div class="dialog-lag" data-dialog hidden>
+      <div class="dialog" role="alertdialog" aria-labelledby="avb-tittel" aria-describedby="avb-tekst">
+        <h2 id="avb-tittel">Avbestille timen fredag kl. 16:00?</h2>
+        <p class="forklar" id="avb-tekst">Du avbestiller før fristen, så klippet går tilbake til klippekortet. Anders får beskjed. Økta fjernes fra Plan.</p>
+        <div class="vilkaar"><b>Klipp tilbake: 1</b><span>Du får 3 klipp igjen i oktober.</span></div>
+        <div class="knapper"><button type="button" class="knapp rust stor" data-avb-ok>Avbestill timen</button><button type="button" class="knapp sek stor" data-avb-nei>Behold timen</button></div>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<script src="felles/felles.js"></script>
+<script>
+(function () {
+  function toast(app, tekst) {
+    var gml = app.querySelector('.toast'); if (gml) gml.remove();
+    var t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role', 'status'); t.textContent = tekst;
+    app.querySelector('.innhold').appendChild(t);
+    setTimeout(function () { t.remove(); }, 3600);
+  }
+  function vis(app, sel, aapen) {
+    var a = app.querySelector(sel); a.hidden = !aapen;
+    if (aapen) { var f = a.querySelector('button, textarea, input'); if (f) f.focus({ preventScroll: true }); }
+  }
+
+  /* ---------- PH-21 Innboks ---------- */
+  function innboks(app) {
+    var venter = app.querySelector('[data-venter]'), antForslag = app.querySelector('[data-ant-forslag]');
+    function tell(d) {
+      var v = Math.max(0, +venter.textContent + d); venter.textContent = v; venter.removeAttribute('data-tell');
+      antForslag.textContent = Math.max(0, +antForslag.textContent + d);
+    }
+    app.querySelectorAll('.sak [data-svar]').forEach(function (s) {
+      var sak = s.closest('.sak'), hvem = sak.dataset.sak;
+      s.addEventListener('click', function (e) {
+        var b = e.target.closest('button'); if (!b) return;
+        var godtatt = b.hasAttribute('data-godta');
+        sak.classList.remove('ny');
+        s.outerHTML = '<div class="status-linje"><span class="pille ' + (godtatt ? 'ok' : 'noy') + '"><i></i>' + (godtatt ? (hvem === 'caddie' ? 'Godkjent' : 'Godtatt') : 'Avvist') + '</span></div>';
+        tell(-1);
+        if (godtatt && hvem === 'wang') toast(app, 'Uke 41, oktober og årsplanen er oppdatert. Treneren får beskjed.');
+        else if (godtatt) toast(app, 'Uke 42, oktober og årsplanen er oppdatert. Anders ser endringen.');
+        else toast(app, hvem === 'wang' ? 'Forslaget er avvist. Treneren får beskjed.' : 'Forslaget er avvist. Planen er uendret.');
+      });
+    });
+    var angre = app.querySelector('[data-angre]');
+    angre.addEventListener('click', function () {
+      angre.closest('[data-angre-linje]').innerHTML = '<span class="pille noy"><i></i>Angret</span>';
+      toast(app, 'Den tekniske oppgaven er tilbake til P6.0. Anders får beskjed.');
+    });
+    var filter = app.querySelector('[data-filter]'), tom = app.querySelector('[data-tom-filter]');
+    filter.addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (!b) return;
+      var f = b.dataset.f, synlige = 0;
+      app.querySelectorAll('.saker > [data-type]').forEach(function (x) {
+        var vises = f === 'alle' || x.dataset.type.split(' ').indexOf(f) > -1;
+        x.hidden = !vises; if (vises && !x.classList.contains('dag-merke')) synlige++;
+      });
+      tom.hidden = synlige > 0;
+    });
+  }
+
+  /* ---------- PH-21 Meldinger ---------- */
+  var TRAAD = {
+    ak: { navn: 'Anders Kristiansen', rolle: 'AK-coach · svarer vanligvis samme dag', mld: [
+      { dag: 'Søndag 4. oktober' },
+      { meg: true, t: 'Filmet svingen på rangen i dag. Kjennes som jeg kommer for mye utenfra.', kl: '17:48', bilde: 'bilder/tek-video.jpg', vedlegg: 'Video · 0:24' },
+      { dag: 'I dag' },
+      { t: 'Så videoen fra i går. Ballstarten går til høyre, og face er åpen i P7.0. Vi tar det på fredag.', kl: '12:04' },
+      { t: 'Jeg har lagt P7.0 inn i den tekniske planen din. Gjør Face to Path med Lav hastighet 50 % til da.', kl: '12:05' }
+    ] },
+    mh: { navn: 'WANG Toppidrett · trener', rolle: 'Ser det du har delt', mld: [
+      { dag: 'Fredag 2. oktober' },
+      { t: 'Husk testuke i uke 43. Fysisk test tirsdag morgen.', kl: '08:30' }
+    ] }
+  };
+  function traad(app) {
+    var grid = app.querySelector('.traad-grid'), bobler = app.querySelector('[data-bobler]'), valgt = 'ak';
+    function tegn() {
+      var s = TRAAD[valgt];
+      app.querySelector('[data-traad-navn]').textContent = s.navn;
+      app.querySelector('[data-traad-rolle]').textContent = s.rolle;
+      app.querySelector('.traad-hode .avatar').textContent = valgt === 'ak' ? 'AK' : 'W';
+      app.querySelector('.traad-hode .avatar').className = 'avatar' + (valgt === 'mh' ? ' wang' : '');
+      app.querySelector('[data-tekst]').placeholder = valgt === 'ak' ? 'Skriv til Anders' : 'Skriv til treneren';
+      bobler.innerHTML = s.mld.map(function (m) {
+        if (m.dag) return '<span class="dag-skille">' + m.dag + '</span>';
+        return '<div class="boble' + (m.meg ? ' meg' : '') + '">' + (m.bilde ? '<img src="' + m.bilde + '" alt="Videoklipp av svingen">' : '') + (m.vedlegg ? '<span class="vedlegg"><svg class="ikon" viewBox="0 0 24 24"><polygon points="6 4 20 12 6 20 6 4"/></svg>' + m.vedlegg + '</span>' : '') + '<span>' + m.t + '</span><time>' + m.kl + '</time></div>';
+      }).join('');
+      app.querySelectorAll('[data-samtale]').forEach(function (x) { x.setAttribute('aria-current', x.dataset.samtale === valgt ? 'true' : 'false'); });
+    }
+    app.querySelector('.samtaler').addEventListener('click', function (e) {
+      var b = e.target.closest('[data-samtale]'); if (!b) return;
+      valgt = b.dataset.samtale; grid.classList.remove('liste'); tegn();
+    });
+    app.querySelector('[data-liste]').addEventListener('click', function () { grid.classList.add('liste'); });
+    app.querySelector('[data-skriv]').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var f = app.querySelector('[data-tekst]'), v = f.value.trim(); if (!v) return;
+      TRAAD[valgt].mld.push({ meg: true, t: v.replace(/</g, '&lt;'), kl: '14:20' }); f.value = ''; tegn();
+      toast(app, 'Sendt.');
+    });
+    app.querySelector('[data-ny]').addEventListener('click', function () { vis(app, '[data-ny-ark]', true); });
+    app.querySelector('[data-ny-ark] [data-lukk]').addEventListener('click', function () { vis(app, '[data-ny-ark]', false); });
+    app.querySelector('[data-ny-ark] .typer').addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (!b) return;
+      var tekst = { melding: 'Hva vil du si?', sporsmal: 'Hva lurer du på?', video: 'Hva vil du ha tilbakemelding på? Legg ved videoen etterpå.', okt: 'Hva vil du jobbe med, og når passer det?' };
+      app.querySelector('#ny-tekst').placeholder = tekst[b.dataset.type];
+      app.querySelector('[data-send-ny]').textContent = b.dataset.type === 'okt' ? 'Send ønske om økt' : 'Send';
+    });
+    app.querySelector('[data-send-ny]').addEventListener('click', function () {
+      vis(app, '[data-ny-ark]', false); toast(app, 'Sendt. Svaret kommer i Innboks.');
+    });
+    tegn();
+  }
+
+  /* ---------- PH-22 Caddie ---------- */
+  var CADDIE_IKON = '<span class="avatar caddie"><svg class="ikon" viewBox="0 0 24 24"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/></svg></span>';
+  function caddie(app) {
+    var fk = app.querySelector('[data-forslag]');
+    fk.querySelector('[data-svar]').addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (!b) return;
+      var st = fk.querySelector('[data-status]'), ja = b.hasAttribute('data-godkjenn');
+      fk.querySelector('[data-svar]').remove();
+      if (!ja) { st.className = 'pille noy'; st.innerHTML = '<i></i>Avvist'; toast(app, 'Forslaget er avvist. Planen er uendret.'); return; }
+      st.className = 'pille vent'; st.innerHTML = '<i></i>Kjører';
+      setTimeout(function () {
+        st.className = 'pille ok'; st.innerHTML = '<i></i>Utført';
+        toast(app, 'Uke 42, oktober og årsplanen er oppdatert. Anders ser endringen.');
+      }, 700);
+    });
+    app.querySelector('[data-legg-turn]').addEventListener('click', function (e) {
+      e.target.outerHTML = '<span class="pille ok"><i></i>Lagt i planen</span>';
+      toast(app, 'Høstcup junior ligger i Plan. Anders får beskjed.');
+    });
+    var chat = app.querySelector('[data-chat]'), skjema = app.querySelector('[data-skriv]'), chips = app.querySelector('.forslag-chips');
+    function spor(tekst) {
+      var meg = document.createElement('div'); meg.className = 'boble meg'; meg.style.justifySelf = 'end';
+      meg.innerHTML = '<span></span><time>14:20</time>'; meg.firstChild.textContent = tekst;
+      chat.insertBefore(meg, chips);
+      var sk = document.createElement('div'); sk.className = 'skriver'; sk.setAttribute('aria-label', 'Caddie skriver'); sk.innerHTML = '<i></i><i></i><i></i>';
+      chat.insertBefore(sk, chips);
+      setTimeout(function () {
+        var s = document.createElement('div'); s.className = 'svar';
+        s.innerHTML = '<div class="svar-topp">' + CADDIE_IKON + 'Caddie</div><p>Uke 40 ble <b>11 t 5 min</b>, 79 % av 14 t 5 min planlagt. Siste fire uker er du på 92 %. Uke 41 har 14 t 5 min lagt inn, og ingenting er gjennomført ennå.</p><ul class="kilder"><li>Plan · gjennomført mot planlagt tid, uke 37–41</li></ul>';
+        sk.replaceWith(s);
+      }, 900);
+    }
+    chips.addEventListener('click', function (e) { var b = e.target.closest('[data-spor]'); if (b) spor(b.textContent); });
+    skjema.addEventListener('submit', function (e) {
+      e.preventDefault(); var f = skjema.querySelector('[data-tekst]'), v = f.value.trim(); if (!v) return; f.value = ''; spor(v);
+    });
+  }
+
+  /* ---------- PH-23 Book time ---------- */
+  /* Fristen er 24 timer før start. Nå er mandag 5. oktober kl. 14:20. */
+  function fristTekst(d, kl, etter) {
+    var fd = DAGER[d - 6];
+    if (!fd || (d - 1 === 5 && kl < '14:20')) return 'Under 24 timer til start. Avbestiller du, trekkes klippet.';
+    return 'Til ' + UKEDAG[fd[0]].toLowerCase() + ' ' + (d - 1) + '. oktober kl. ' + kl + '.' + (etter || '');
+  }
+  var SISTE = { dag: 'Onsdag', d: 7, kl: '10:30', min: 90, coach: 'Anders' };
+  function bekreftet(app) {
+    app.querySelector('[data-b-dag]').textContent = SISTE.dag + ' ' + SISTE.d + '. oktober';
+    app.querySelector('[data-b-kl]').textContent = SISTE.kl;
+    app.querySelector('[data-b-frist]').textContent = fristTekst(SISTE.d, SISTE.kl, ' Etter det trekkes klippet.');
+  }
+  var DAGER = [['Man', 5], ['Tir', 6], ['Ons', 7], ['Tor', 8], ['Fre', 9], ['Lør', 10], ['Søn', 11]];
+  var UKEDAG = { Man: 'Mandag', Tir: 'Tirsdag', Ons: 'Onsdag', Tor: 'Torsdag', Fre: 'Fredag', 'Lør': 'Lørdag', 'Søn': 'Søndag' };
+  /* Ledige tider per coach og dag (demodata). Mandag er passert etter 14:20. */
+  var LEDIG = {
+    Anders: { 5: [], 6: ['09:00', '15:00'], 7: ['10:30', '13:00', '15:00'], 8: ['09:00'], 9: [], 10: [], 11: [] },
+    Markus: { 5: ['17:00'], 6: ['16:00', '17:30'], 7: [], 8: ['16:00'], 9: ['14:00', '15:30'], 10: ['10:00'], 11: [] }
+  };
+  function tegnDager(boks, ledig, valgt) {
+    boks.innerHTML = DAGER.map(function (d) {
+      var har = ledig[d[1]].length > 0;
+      return '<button type="button" data-d="' + d[1] + '" aria-pressed="' + (d[1] === valgt) + '"' + (har ? '' : ' disabled') + ' aria-label="' + UKEDAG[d[0]] + ' ' + d[1] + '. oktober' + (har ? '' : ', ingen ledige tider') + '">' + d[0] + '<b>' + d[1] + '</b><i></i></button>';
+    }).join('');
+  }
+  function slutt(kl, min) { var p = kl.split(':'), t = +p[0] * 60 + +p[1] + min; return String(Math.floor(t / 60)).padStart(2, '0') + ':' + String(t % 60).padStart(2, '0'); }
+  function ny(app) {
+    var st = { t: 'pro', coach: 'Anders', d: 7, kl: '10:30' };
+    var dager = app.querySelector('[data-dager]'), tider = app.querySelector('[data-tider]');
+    function tjeneste() { return app.querySelector('[data-t="' + st.t + '"]'); }
+    function tegn() {
+      var ledig = LEDIG[st.coach];
+      if (!ledig[st.d].length) { st.d = DAGER.map(function (x) { return x[1]; }).filter(function (d) { return ledig[d].length; })[0]; st.kl = ledig[st.d][0]; }
+      if (ledig[st.d].indexOf(st.kl) < 0) st.kl = ledig[st.d][0];
+      tegnDager(dager, ledig, st.d);
+      tider.innerHTML = ledig[st.d].map(function (k) { return '<button type="button" aria-pressed="' + (k === st.kl) + '" data-kl="' + k + '">' + k + '</button>'; }).join('');
+      var dagNavn = UKEDAG[DAGER[st.d - 5][0]], t = tjeneste(), min = +t.dataset.varighet, klipp = !!t.dataset.klipp;
+      app.querySelector('[data-tid-kilde]').textContent = ledig[st.d].length + ' ledige · ' + min + ' min';
+      app.querySelector('[data-oppsum]').innerHTML =
+        '<li><span>Tjeneste</span><b>' + t.querySelector('b').textContent + '</b></li>' +
+        '<li><span>Coach</span><b>' + (st.coach === 'Anders' ? 'Anders Kristiansen' : 'Markus Roinas Pedersen') + '</b></li>' +
+        '<li><span>Tid</span><b>' + dagNavn + ' ' + st.d + '. oktober, ' + st.kl + '–' + slutt(st.kl, min) + '</b></li>' +
+        '<li><span>Sted</span><b>Simulator 2, Fredrikstad</b></li>' +
+        '<li><span>Betaling</span><b>' + (klipp ? '1 klipp · du har 2 igjen' : t.dataset.pris + ' ') + (klipp ? '' : '<span class="estimat">Eksempel</span>') + '</b></li>';
+      app.querySelector('[data-frist]').textContent = fristTekst(st.d, st.kl, klipp ? '' : ' Pengene refunderes.');
+      app.querySelector('[data-bekreft]').textContent = klipp ? 'Bekreft booking' : 'Bekreft og betal';
+    }
+    app.querySelector('[data-tjenester]').addEventListener('click', function (e) {
+      var b = e.target.closest('.tjeneste'); if (!b) return;
+      app.querySelectorAll('.tjeneste').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      st.t = b.dataset.t; if (st.t === 'pro') { st.coach = 'Anders'; app.querySelectorAll('[data-coach] button').forEach(function (x) { x.setAttribute('aria-pressed', x.dataset.c === 'Anders' ? 'true' : 'false'); }); }
+      app.querySelector('[data-c="Markus"]').disabled = st.t === 'pro';
+      tegn();
+    });
+    app.querySelector('[data-c="Markus"]').disabled = true;
+    app.querySelector('[data-coach]').addEventListener('click', function (e) { var b = e.target.closest('button'); if (b && !b.disabled) { st.coach = b.dataset.c; tegn(); } });
+    dager.addEventListener('click', function (e) { var b = e.target.closest('button'); if (b && !b.disabled) { st.d = +b.dataset.d; tegn(); } });
+    tider.addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) { st.kl = b.dataset.kl; tegn(); } });
+    app.querySelector('[data-bekreft]').addEventListener('click', function () {
+      if (!tjeneste().dataset.klipp) { toast(app, 'Du sendes til betaling. Timen er bekreftet når betalingen er gjennomført.'); return; }
+      SISTE = { dag: UKEDAG[DAGER[st.d - 5][0]], d: st.d, kl: st.kl, min: +tjeneste().dataset.varighet, coach: st.coach };
+      AKUtkast.gaa('bekreftet');
+    });
+    tegn();
+  }
+
+  /* ---------- PH-23 Bookingen: flytt og avbestill ---------- */
+  function detalj(app) {
+    var st = { d: 7, kl: '13:00' }, fdager = app.querySelector('[data-fdager]'), ftider = app.querySelector('[data-ftider]');
+    function tegnFlytt() {
+      var ledig = LEDIG.Anders;
+      tegnDager(fdager, ledig, st.d);
+      if (ledig[st.d].indexOf(st.kl) < 0) st.kl = ledig[st.d][0];
+      ftider.innerHTML = ledig[st.d].map(function (k) { return '<button type="button" aria-pressed="' + (k === st.kl) + '" data-kl="' + k + '">' + k + '</button>'; }).join('');
+      app.querySelector('[data-fratil]').innerHTML =
+        '<div class="okt mini gml" style="background:var(--graphite-600)"><div class="okt-tekst"><span class="okt-tid">Fre 16:00</span><span class="navn">9. oktober</span></div></div>' +
+        '<svg class="ikon pil" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>' +
+        '<div class="okt mini" style="background:var(--graphite-900)"><div class="okt-tekst"><span class="okt-tid">' + DAGER[st.d - 5][0] + ' ' + st.kl + '</span><span class="navn">' + st.d + '. oktober</span></div></div>';
+    }
+    fdager.addEventListener('click', function (e) { var b = e.target.closest('button'); if (b && !b.disabled) { st.d = +b.dataset.d; tegnFlytt(); } });
+    ftider.addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) { st.kl = b.dataset.kl; tegnFlytt(); } });
+    app.querySelector('[data-flytt]').addEventListener('click', function () { tegnFlytt(); vis(app, '[data-flytt-ark]', true); });
+    app.querySelector('[data-flytt-ark] [data-lukk]').addEventListener('click', function () { vis(app, '[data-flytt-ark]', false); });
+    app.querySelector('[data-flytt-ok]').addEventListener('click', function () {
+      var dag = UKEDAG[DAGER[st.d - 5][0]];
+      app.querySelector('[data-dag]').textContent = dag + ' ' + st.d + '. oktober';
+      app.querySelector('[data-kl]').textContent = st.kl;
+      app.querySelector('[data-frist-tekst]').textContent = 'Gratis til ' + UKEDAG[DAGER[st.d - 6][0]].toLowerCase() + ' ' + (st.d - 1) + '. oktober kl. ' + st.kl;
+      app.querySelector('#avb-tittel').textContent = 'Avbestille timen ' + dag.toLowerCase() + ' kl. ' + st.kl + '?';
+      vis(app, '[data-flytt-ark]', false);
+      toast(app, 'Timen er flyttet til ' + dag.toLowerCase() + ' ' + st.d + '. oktober kl. ' + st.kl + '. Anders får beskjed.');
+    });
+    app.querySelector('[data-avbestill]').addEventListener('click', function () { vis(app, '[data-dialog]', true); });
+    app.querySelector('[data-avb-nei]').addEventListener('click', function () { vis(app, '[data-dialog]', false); });
+    app.querySelector('[data-avb-ok]').addEventListener('click', function () {
+      vis(app, '[data-dialog]', false);
+      var s = app.querySelector('[data-status]'); s.className = 'pille noy'; s.style.background = '#fff'; s.innerHTML = '<i></i>Avbestilt';
+      app.querySelector('[data-handlinger]').innerHTML = '<button type="button" class="knapp pri" data-gaa="ny">Book ny time</button>';
+      app.querySelector('[data-frist-tekst]').textContent = 'Avbestilt av deg i dag kl. 14:20. Klippet er tilbake.';
+      toast(app, 'Timen er avbestilt. Du har 3 klipp igjen i oktober.');
+    });
+  }
+
+  function m(id, mal, etter, tom, laster, feil) { return { mal: mal, for: { mob: 'screenshots/' + id + '-390.jpg', pc: 'screenshots/' + id + '-1440.jpg' }, etter: etter, tom: tom, laster: laster, feil: feil }; }
+  /* Dagens PH-22 finnes ikke som skjermbilde i registeret. Dagens Innboks (PH-21) vises i stedet. */
+  AKUtkast.start({
+    start: 'innboks',
+    skjermer: {
+      innboks: m('PH-21', 'innboks', innboks, { tittel: 'Ingenting venter på deg', tekst: 'Forslag, meldinger og varsler fra coachen, treneren og Caddie kommer hit.', knapp: 'Skriv til Anders' }, 'Henter innboksen …', 'Innboksen kunne ikke hentes'),
+      traad: m('PH-21', 'traad', traad, { tittel: 'Ingen meldinger ennå', tekst: 'Når coachen skriver til deg, kommer meldingen her. Du kan også skrive først.', knapp: 'Skriv til Anders' }, 'Henter meldingene …', 'Meldingene kunne ikke hentes'),
+      caddie: m('PH-21', 'caddie', caddie, { tittel: 'Hva lurer du på?', tekst: 'Caddie svarer ut fra planen, rundene og testene dine, med kilde. Prøv «Hvordan gikk uka?» eller «Hva bør jeg trene mer på?».', knapp: 'Spør Caddie' }, 'Caddie skriver …', 'Caddie svarer ikke akkurat nå'),
+      booking: m('PH-23', 'booking', null, { tittel: 'Ingen bookinger ennå', tekst: 'Book en time med Anders eller Markus. Med Performance eller Performance Pro trekker timen ett klipp.', knapp: 'Book time' }, 'Henter bookingene …', 'Bookingene kunne ikke hentes'),
+      ny: m('PH-23', 'ny', ny, { tittel: 'Ingen ledige tider i uke 41', tekst: 'Anders har ingen ledige tider denne uka. Se neste uke, eller skriv og spør.', knapp: 'Vis uke 42' }, 'Henter ledige tider …', 'Ledige tider kunne ikke hentes'),
+      bekreftet: m('PH-23', 'bekreftet', bekreftet, null),
+      detalj: m('PH-23', 'detalj', detalj, null)
+    }
+  });
+})();
+</script>

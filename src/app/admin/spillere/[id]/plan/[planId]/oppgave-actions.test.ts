@@ -65,7 +65,7 @@ const last = () => import("./oppgave-actions");
 
 const skjema: TpSkjema = {
   id: null, pNummer: "P7.0", tittel: "Hendene foran ballen", slagNavn: "7-jern lav fade", omraadeKode: "INNSPILL_150",
-  motorikk: "LAV_HAST", sandTrinn: null, dimensjon: "TREFFPUNKT", kolle: "7-jern", belastning: "BANE", press: "ALENE",
+  motorikk: "LAV_HAST", dimensjon: "TREFFPUNKT", kolle: "7-jern", belastning: "BANE", press: "ALENE",
   maaleutstyr: "TRACKMAN", tm: [{ id: null, metric: "face_to_path_mean", fra: -2.5, til: -1 }],
   repSteg: { UTEN_BALL: 60, LAV_HAST: 120, AUTO: 0 }, rep: 0, repMiljo: { INNENDORS: 100 },
   protokoll: { type: "ROLLING_WINDOW", antall: 20, treff: 16 },

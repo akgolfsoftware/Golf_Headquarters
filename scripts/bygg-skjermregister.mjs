@@ -163,13 +163,13 @@ const PRECISION_VISNING = [
   ["PH02Gjor", "Siden monterer PH02Gjor i PlayerHQSkall. Dagens økter, markering, runde og fysisk logging er beholdt. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-02.jsx ligger ikke i git."],
   ["PH02WbDag", "Dagens Workbench-økter merker PH02WbDag i PlayerHQSkall. Publiserte, pågående og fullførte økter lenker til øktarket. Øktarket er ikke med. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-02.jsx ligger ikke i git."],
   ["PH03Oktark", "Siden monterer PH03Oktark i PlayerHQSkall. Start, flytting, invitasjon og oppsummering er beholdt. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-03.jsx ligger ikke i git."],
-  ["PH03WbArk", "Workbench-øktarket merker PH03WbArk i PlayerHQSkall. Start, fortsett, fullfør, hopp over, belastning og recap er beholdt. Utkast er fortsatt skjult. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-03.jsx ligger ikke i git."],
+  ["PH03WbArk", "Workbench-øktarket merker PH03WbArk i PlayerHQSkall, i nytt design (PH03WbOktark, pakke 2, utkast-playerhq/treningsokt.html). Start, fortsett, fullfør, hopp over og oppsummering er beholdt; fullfør spør om Belastning og Fokus (golføkt) eller «Hvor tungt» (fysisk). Utkast er fortsatt skjult. Målt i prøven tests/visual/precision/skjermer/PH-03-WB.tsx i 390, 360 og 1440 natt 17.10."],
   ["PH04Brief", "Brief-siden merker PH04Brief og monterer PH04LiveBrief i Precision Athletics (nattmodus). Dagens målsetning, fokus, øvelser med køller og reps, og Start økt-knapp etter Claude Design PH-04."],
   ["PH05Live", "Aktiv-siden merker PH05Live og monterer PH05LiveAktiv i Precision Athletics (nattmodus). Stoppeklokke, øvelsesgrid, aktivt kort, Angre, +5 og +1 knapper etter Claude Design PH-05."],
   ["PH06Tapper", "Slagteller-siden merker PH06Tapper og monterer PH06Slagteller i Precision Athletics (nattmodus). Kjempeteller, 14 køller fra bagen, TrackMan siste slag (6 metrikker), Angre, +5 og +1 slag etter Claude Design PH-06."],
   ["PH07Summary", "Oppsummeringssiden merker PH07Summary og monterer PH07Oktoppsummering i Precision Athletics (nattmodus). Slag/tid/øvelser/dagsform, pyramidefordeling, tabell per øvelse, notat til coach og deling etter Claude Design PH-07."],
   ["PH07Feiring", "Plan-feiring merker PH07Feiring og monterer FeiringV2 i PlayerHQSkall. Ekte timer, etterlevelse, SG og ikke-ferdig-vakt er beholdt. Øktoppsummering er en annen flate. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-07.jsx ligger ikke i git."],
-  ["PH10Plan", "Siden monterer PH10Plan i PlayerHQSkall. Uke, forslag, flytting og ny økt er beholdt. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-10.jsx ligger ikke i git."],
+  ["PH10Plan", "Siden monterer PH10Plan i PlayerHQSkall i nytt design (pakke 3, godkjent 14.10.2026, fasit docs/design-system/utkast-playerhq/plan.html). Uke, forslag, flytting og ny økt er beholdt."],
   ["PH10Kalender", "Kalendersiden merker PH10Kalender og monterer KalenderV2 i PlayerHQSkall. Dag, uke, måned, år og ?dato=-navigasjon er beholdt. Opptatt tid er ikke med. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-10.jsx ligger ikke i git."],
   ["PH11Workbench", "Workbench monterer PH11Workbench i PlayerHQSkall i Precision Athletics. År, periode, måned, uke, økt, volum, mål, fysisk og turnering bruker samme motor for spiller. Målt i Playwright med 22/22 tilfeller uten avvik på 390 px og 1440 px, lys og natt."],
   ["PH14Hub", "Tester-huben merker PH14Hub i PlayerHQSkall. Grupper, forfall, Team Norway-lenke, egen test og tom tilstand er beholdt. Gjennomføring er ikke med. 390×844 og 1440×880 er ikke målt mot tegningen. ui_kits/playerhq/screens/PH-14.jsx ligger ikke i git."],
@@ -232,8 +232,9 @@ const PRECISION_VISNING = [
   ["PH24ResultatListe", "Resultater merker PH24ResultatListe i PlayerHQSkall. Listen er beholdt. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app."],
   ["PH25ToFaktor", "Tofaktor merker PH25ToFaktor i PlayerHQSkall. Oppsettet er beholdt. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app."],
   ["PH24UtstyrBag", "Utstyr merker PH24UtstyrBag i PlayerHQSkall. Lesevisning og redigering er beholdt. Krever innlogget spiller, så flaten er ikke målt. Ikke satt kontrollert-i-app."],
-  ["PH13DrillListe", "Øvelsesbanken merker PH13DrillListe i PlayerHQSkall. AK-formel, søk, aksefilter, Caddie-utkast, Putting Break-tabell og detaljpanel er implementert etter Claude Design PH-13."],
-  ["PH13DrillDetalj", "Drill-detaljen merker PH13DrillDetalj i PlayerHQSkall. AK-formel, nøkkelfakta, caddie-begrunnelse og handlinger er beholdt."],
+  ["PH13DrillListe", "Siden merker PH13DrillListe og monterer PH13DrillBank i PlayerHQSkall i nytt design (pakke 4, godkjent 14.10.2026, fasit docs/design-system/utkast-playerhq/ovelser.html). Pyramide, treningsområde, søk, Caddie-forslag og ny egen øvelse. Ingen eksempeløvelser."],
+  ["PH13BreakTabell", "Break-tabellen monterer PH13BreakTabell i PlayerHQSkall i nytt design (pakke 4, fasit docs/design-system/utkast-playerhq/ovelser.html). Tallene er eksempel til Anders har valgt tabell."],
+  ["PH13DrillDetalj", "Øvelsen monterer PH13DrillDetalj i PlayerHQSkall i nytt design (pakke 4, fasit docs/design-system/utkast-playerhq/ovelser.html). AK-formelen i åtte trinn og Legg i plan (Workbench-utkast)."],
   ["PH23BookingHub", "Booking-hub og timebestilling merker PH23BookingHub og PH23Booking i PlayerHQSkall. Steg, klipp, ledige tider, flytting og avbestilling er beholdt."],
   ["PH23MineBookinger", "Mine bookinger merker PH23MineBookinger og PH23Booking i PlayerHQSkall. Oversikt over kommende og tidligere timer, klippekort og handlinger er beholdt."],
   ["PH23BookingBekreftet", "Booking bekreftet merker PH23BookingBekreftet i PlayerHQSkall. Kvittering, dato, klokkeslett og kalenderlenke er beholdt."],
@@ -270,7 +271,7 @@ const PRECISION_VISNING = [
   ["PH21Innboks", "Innboks og coach-kontakt merker PH21Innboks i PlayerHQSkall. Meldinger, spørsmål, tilbakemelding, videoer, planer og ønsket økt er beholdt."],
   ["PH19Leaderboard", "Leaderboard merker PH19Leaderboard i PlayerHQSkall. Rangering, SG-områder og egen plassering er beholdt."],
   ["PH19Utviklingsplan", "Utviklingsplan merker PH19Utviklingsplan i PlayerHQSkall. Posisjoner P1–P10, læringstrinn og coach-forslag er beholdt."],
-  ["PHTP01TekniskPlan", "Teknisk plan merker PHTP01TekniskPlan i PlayerHQSkall. Posisjonslinje, oppgaver, felles fremdrift og repetisjonslogg er beholdt."],
+  ["PHTP01TekniskPlan", "Teknisk plan monterer PHTP01TekniskPlan i PlayerHQSkall i nytt design (pakke 4, fasit docs/design-system/utkast-playerhq/ovelser.html). Hovedfokus, fra og til, oppgaver med læringssteg, svingen P1.0–P10.0, registrering og utkastvisning."],
   ["PH19TalentMittNiva", "Mitt nivå merker PH19TalentMittNiva i PlayerHQSkall. Nivå og testresultater er beholdt."],
   ["PH19TalentMinPlan", "Min plan merker PH19TalentMinPlan i PlayerHQSkall. Milepæler og treningsmål er beholdt."],
   ["PH19TalentRoadmap", "Roadmap merker PH19TalentRoadmap i PlayerHQSkall. Sesongplan og periodeblokker er beholdt."],
@@ -281,6 +282,10 @@ const PRECISION_VISNING = [
   ["PH08RundeLive", "Runde live merker PH08RundeLive i Precision Athletics (nattmodus/fokus). Hull 1-18, brutto score, slag- og putteregistrering etter Claude Design PH-08."],
   ["PH09RegistrerRunde", "Registrer runde merker PH09RegistrerRunde i Precision Athletics. Hull 1-9 Ut og 10-18 Inn, HoleCell og brutto score oppsummering etter Claude Design PH-09."],
   ["PH15TestGjennomfor", "Test gjennomfør merker PH15TestGjennomfor i Precision Athletics (nattmodus/fokus). Scorekort, avstands- og poengtasting etter Claude Design PH-15."],
+  ["PH25Abonnement", "Abonnement monterer PH25Abonnement i PlayerHQSkall i nytt design (pakke 8 Meg, utkast-playerhq/meg.html). Avbestilling går til Stripe før egen database, uendret."],
+  ["PH24Helse", "Helse og fravær monterer PH24Helse i PlayerHQSkall i nytt design (pakke 8 Meg). Samtykke og visning er beholdt."],
+  ["PH24Fasiliteter", "Fasiliteter monterer PH24Fasiliteter i PlayerHQSkall i nytt design (pakke 8 Meg). Lagring av anlegg og utstyr er beholdt."],
+  ["PH27Deling", "Deling monterer PH27Deling i PlayerHQSkall i nytt design (pakke 8 Meg). Samtykke per organisasjon og navngitt deling er beholdt."],
   ["PH24Meg", "Meg-hub merker PH24Meg i PlayerHQSkall. Profil, fasiliteter, bookinger, abonnement, foreldre, deling, helse, utstyr og coach etter Claude Design PH-24."],
   ["PH24Profil", "Profil og personalia merker PH24Profil i PlayerHQSkall. Redigering, kontaktinfo og forbundsstatus etter Claude Design PH-24."],
   ["PH24Utstyr", "Utstyr og bag merker PH24Utstyr i PlayerHQSkall. 14-køllers bagoversikt, gapping-trapp og spesifikasjoner etter Claude Design PH-24."],
@@ -371,7 +376,7 @@ const OVERLEGG = [
 
 export function buildRegister(root) {
   const data = inventory(root);
-  const wang = loadNamedRoutes(readFileSync(resolve(root, "designsystem/wang/SKJERMREGISTER.md"), "utf8"), /^[ABCD]\d+$/);
+  const wang = loadNamedRoutes(readFileSync(resolve(root, "designsystem/wang/SKJERMREGISTER.md"), "utf8"), /^(?:[ABCD]\d+|APP-\d+)$/);
   const tn = loadNamedRoutes(readFileSync(resolve(root, "designsystem/team-norway/handover/SKJERMREGISTER.md"), "utf8"), /^TN-\d+$/);
   const tnById = new Map(tn.rows.filter((row) => row.path).map((row) => [row.id, row]));
   const wangTypes = [...wang.byPath.entries()].map(([path, rows]) => ({
@@ -454,7 +459,7 @@ export function buildRegister(root) {
         row.screenId = primary.id;
         row.rolle = primary.roller;
         row.designkilde = "designsystem/wang/SKJERMREGISTER.md";
-        row.designversjon = "wang-lokalt-35-ikke-59-fasit";
+        row.designversjon = "wang-lokalt-49-ikke-59-fasit";
         row.handlinger = primary.navn;
         row.sammeSidefil = matches.filter((item) => item.id !== primary.id).map((item) => `${item.id} ${item.navn}`);
         row.forklaring = `Lokal WANG-rad ${primary.id} ${primary.navn}. De 59 skjermene i Claude Design er fasit og ligger ikke i git. Lokal rad er byggeunderlag for rute og rolle, ikke visuell godkjenning, og appen er ikke kontrollert i denne bolken.`;
@@ -463,8 +468,8 @@ export function buildRegister(root) {
         row.kobling = "teknisk-forklaring";
         row.screenId = "WANG-UTEN-RAD";
         row.designkilde = "designsystem/wang/SKJERMREGISTER.md";
-        row.designversjon = "wang-lokalt-35-ikke-59-fasit";
-        row.forklaring = "App-ruten finnes, men ingen av de 35 lokale WANG-radene peker på den. Den slettes ikke. Kobling til den 59-skjermers prototypen gjenstår i D03.";
+        row.designversjon = "wang-lokalt-49-ikke-59-fasit";
+        row.forklaring = "App-ruten finnes, men ingen av de 49 lokale WANG-radene peker på den. Den slettes ikke. Kobling til den 59-skjermers prototypen gjenstår i D03.";
       }
     } else if (route.startsWith("/team-norway")) {
       const hit = bestMatch(route, tnTypes);
@@ -613,7 +618,7 @@ export function renderMarkdown(register) {
     "",
     "Kilder: [skjermlisten](skjermliste-precision-athletics.md), [designautoriteten](design-autoritet.md), [WANG-byggeunderlaget](../../designsystem/wang/SKJERMREGISTER.md), [Team Norway-handover](../../designsystem/team-norway/handover/SKJERMREGISTER.md), [porteringsplanen](../planer/portering-alle-skjermer-2026-10-02.md).",
     "",
-    "Rader: [JSON](skjermregister.json) og [CSV](skjermregister.csv). Regenerer med `node scripts/bygg-skjermregister.mjs --write`. `npm run prosjekt:sjekk` feiler hvis filene driver fra koden.",
+    "Rader: [JSON](skjermregister.json) og [CSV](skjermregister.csv). Registeret er et øyeblikksbilde. Vanlige PR-er rører det ikke (parallelle PR-er kolliderte på det); det oppdateres i en egen PR med `node scripts/bygg-skjermregister.mjs --write`, og `npm run skjermregister:sjekk` viser om det har drevet fra koden.",
     "",
     "## Inventar",
     "",

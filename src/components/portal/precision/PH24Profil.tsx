@@ -1,22 +1,31 @@
 "use client";
 
 /**
- * PlayerHQ · Meg · Profil (PH-24) — Precision Athletics.
- * Kilde: AK Golf Precision Athletics PH-24 (Meg / Profil).
+ * PH-24 Meg › Profil i nytt design: HCP øverst, personalia som skjema, turneringsresultatene og
+ * målsetningene i høyre kolonne på PC.
+ * Fasit: docs/design-system/utkast-playerhq/meg.html (utkast 1, skjermen «Profil»).
+ * Stil: src/styles/playerhq-ny-meg.css. Lagring går som før via lagreProfil (zod på grensen).
  *
- * Egenskaper:
- * - Redigering av personopplysninger: Navn, Mobil, Fødselsdato, Hjemmeklubb, Mål/ambisjon.
- * - Lesefelt (eies av forbund / system): Forbunds-HCP, NGF Golf-ID, E-post (Supabase Auth), Stall, Runder i år.
- * - Kompletthetsmåler basert på beregnProfilKompletthet.
- * - Null hardkodede farger, kun semantiske CSS-variabler.
+ * Avvik:
+ *   - HCP vises uten «oppdatert»-dato: appen lagrer ikke når HCP sist ble hentet fra NGF.
+ *   - Kategori vises som «—»: kategorien er ikke lagret på spilleren ennå.
+ *   - E-post er et låst felt: den eies av innloggingen og endres i egen flyt. Hjemmeklubb er fritekst,
+ *     ikke nedtrekksliste: appen har ingen klubbliste å velge fra.
+ *   - Fødselsdatoen kan settes én gang hvis den mangler (D-63), deretter er den låst.
+ *   - «Finn deg i turneringsresultatene» med «Det er meg» er ikke med: spilleren kan ikke koble seg
+ *     selv i dag; coachen kobler profilen. Skjermen sier det, og viser resultatene når koblingen finnes.
+ *   - Ambisjon, Golf-ID, stall, runder i år og HCP-mål er beholdt fra forrige versjon.
+ *   - Ingen riggrad i tests/visual/skjerm-mapping.ts; målt med tests/visual/precision/maal.mjs PH-24-PROFIL.
  */
-
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import { User, Phone, Calendar, MapPin, ShieldCheck, Save, ArrowLeft, CheckCircle2, AlertCircle } from "lucide-react";
-import { type LagreProfilInput } from "@/app/portal/meg/profil/actions";
-import { beregnProfilKompletthet } from "@/lib/portal/ph24-data";
+import { ChevronLeft, Lock } from "lucide-react";
+import type { LagreProfilInput } from "@/app/portal/meg/profil/actions";
 import { formaterTall } from "@/lib/format-tall";
+import "@/styles/playerhq-ny.css";
+import "@/styles/playerhq-ny-meg.css";
+
+export type PH24ProfilTurnering = { id: string; navn: string; dato: string; runder: string | null; brutto: number | null; plassering: string | null };
 
 export type PH24ProfilData = {
   navn: string;
@@ -32,6 +41,8 @@ export type PH24ProfilData = {
   runderIAar: number;
   ngfId: string | null;
   hcpMaalTekst: string | null;
+  /** Turneringsresultatene fra koblingen til den offentlige turneringsbasen. Valgfritt for eldre kallere. */
+  turneringer?: { koblet: boolean; rader: PH24ProfilTurnering[]; tomGrunn: string } | null;
 };
 
 export type PH24ProfilProps = {
@@ -39,435 +50,100 @@ export type PH24ProfilProps = {
   onLagre: (input: LagreProfilInput) => Promise<{ ok: true } | { ok: false; feil: string }>;
 };
 
+const DATO = new Intl.DateTimeFormat("nb-NO", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+function visDato(iso: string): string {
+  const [a, m, d] = iso.split("-").map(Number);
+  return DATO.format(new Date(Date.UTC(a, m - 1, d)));
+}
+
 export function PH24Profil({ data, onLagre }: PH24ProfilProps) {
   const [navn, setNavn] = useState(data.navn);
   const [mobil, setMobil] = useState(data.mobil ?? "");
   const [fodselsdato, setFodselsdato] = useState(data.fodselsdatoISO ?? "");
   const [hjemmeklubb, setHjemmeklubb] = useState(data.homeClub ?? "");
   const [maalTekst, setMaalTekst] = useState(data.ambition ?? "");
+  const [melding, setMelding] = useState<{ ok: boolean; tekst: string } | null>(null);
+  const [pending, start] = useTransition();
+  const t = data.turneringer ?? null;
 
-  const [feil, setFeil] = useState<string | null>(null);
-  const [suksess, setSuksess] = useState(false);
-  const [isPending, startTransition] = useTransition();
-
-  const komplett = beregnProfilKompletthet({
-    navn,
-    epost: data.epost,
-    mobil,
-    fodselsdatoISO: fodselsdato,
-    homeClub: hjemmeklubb,
-    ambition: maalTekst,
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
+  function lagre(e: React.FormEvent) {
     e.preventDefault();
-    setFeil(null);
-    setSuksess(false);
-
-    startTransition(async () => {
-      const res = await onLagre({
-        navn: navn.trim(),
-        mobil: mobil.trim() || null,
-        fodselsdato: fodselsdato ? fodselsdato : null,
-        hjemmeklubb: hjemmeklubb.trim() || null,
-        maalTekst: maalTekst.trim() || null,
-      });
-
-      if (res.ok) {
-        setSuksess(true);
-        setTimeout(() => setSuksess(false), 4000);
-      } else {
-        setFeil(res.feil);
-      }
+    setMelding(null);
+    start(async () => {
+      try {
+        const r = await onLagre({
+          navn: navn.trim(),
+          mobil: mobil.trim() || null,
+          fodselsdato: fodselsdato || null,
+          hjemmeklubb: hjemmeklubb.trim() || null,
+          maalTekst: maalTekst.trim() || null,
+        });
+        setMelding(r.ok ? { ok: true, tekst: "Lagret." } : { ok: false, tekst: r.feil });
+      } catch { setMelding({ ok: false, tekst: "Kunne ikke lagre. Prøv igjen." }); }
     });
-  };
+  }
 
-  return (
-    <div style={{ maxWidth: 840, margin: "0 auto", padding: "16px 20px 48px", display: "flex", flexDirection: "column", gap: 24 }}>
-      {/* Toppseksjon med brødsmule og tittel */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        <Link
-          href="/portal/meg"
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
-            minHeight: 44,
-            fontSize: 13,
-            fontWeight: 500,
-            color: "var(--text-secondary)",
-            textDecoration: "none",
-          }}
-        >
-          <ArrowLeft size={14} />
-          Tilbake til Meg
-        </Link>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", flexWrap: "wrap", gap: 12 }}>
-          <div>
-            <h1 style={{ margin: 0, fontSize: 24, fontWeight: 700, letterSpacing: "-0.02em", color: "var(--text-primary)" }}>
-              Profil og opplysninger
-            </h1>
-            <p style={{ margin: "4px 0 0", fontSize: 14, color: "var(--text-secondary)" }}>
-              Personlige opplysninger, forbundsstatus og kontaktinformasjon.
-            </p>
-          </div>
-          <div
-            style={{
-              padding: "6px 12px",
-              borderRadius: "var(--radius-pill)",
-              background: komplett.prosent === 100 ? "var(--ok-tint)" : "var(--surface-sunken)",
-              border: "1px solid var(--border-hairline)",
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              fontSize: 12,
-              fontWeight: 600,
-              color: komplett.prosent === 100 ? "var(--ok)" : "var(--text-secondary)",
-            }}
-          >
-            {komplett.prosent === 100 ? <CheckCircle2 size={14} /> : <AlertCircle size={14} />}
-            <span>{komplett.prosent}% komplett profil</span>
-          </div>
+  return <div className="phn phn-meg"><div className="side">
+    <div className="topp">
+      <Link className="tilbake" href="/portal/meg"><ChevronLeft size={18} aria-hidden />Meg</Link>
+      <div><div className="phn-dato">Meg · profil</div><h1 className="phn-tittel">Profil</h1></div>
+    </div>
+
+    <div className="to-del">
+      <div>
+        <div className="phn-kort">
+          <div className="phn-hoved"><strong>{data.hcp != null ? formaterTall(data.hcp, 1, true) : "—"}</strong><span className="phn-forklar">HCP</span></div>
+          <p className="phn-kilde">Kilde: NGF. HCP endres bare der, ikke i appen.</p>
         </div>
+
+        <form className="felter" onSubmit={lagre}>
+          <label className="phn-felt">Navn<input value={navn} onChange={(e) => setNavn(e.target.value)} autoComplete="name" required minLength={2} maxLength={120} /></label>
+          {data.fodselsdatoISO
+            ? <div className="phn-felt"><span className="etikett">Fødselsdato</span><span className="laast">{visDato(data.fodselsdatoISO)}<Lock size={16} aria-label="Låst" /></span><span className="hjelp">Fødselsdatoen kan bare endres av coachen din.</span></div>
+            : <label className="phn-felt">Fødselsdato<input type="date" value={fodselsdato} onChange={(e) => setFodselsdato(e.target.value)} /><span className="hjelp">Kan settes én gang. Etterpå kan bare coachen endre den.</span></label>}
+          <label className="phn-felt">Hjemmeklubb<input value={hjemmeklubb} onChange={(e) => setHjemmeklubb(e.target.value)} maxLength={120} /></label>
+          <div className="phn-felt"><span className="etikett">Kategori</span><span className="laast">—<Lock size={16} aria-label="Låst" /></span><span className="hjelp">Settes av coachen ut fra brutto snittscore.</span></div>
+          <div className="phn-felt"><span className="etikett">E-post</span><span className="laast">{data.epost}<Lock size={16} aria-label="Låst" /></span><span className="hjelp">E-posten er innloggingen din. Den endres ikke her.</span></div>
+          <label className="phn-felt">Mobil<input type="tel" value={mobil} onChange={(e) => setMobil(e.target.value)} autoComplete="tel" maxLength={30} /></label>
+          <label className="phn-felt">Ambisjon<textarea rows={3} value={maalTekst} onChange={(e) => setMaalTekst(e.target.value)} maxLength={500} placeholder="Hva vil du oppnå denne sesongen?" /></label>
+          <div className="phn-meldinger" aria-live="polite">{melding && <p className="phn-melding" role={melding.ok ? "status" : "alert"}>{melding.tekst}</p>}</div>
+          <button type="submit" className="phn-knapp pri stor" disabled={pending}>{pending ? "Lagrer …" : "Lagre"}</button>
+        </form>
       </div>
 
-      {komplett.mangler.length > 0 && (
-        <div
-          style={{
-            padding: "12px 16px",
-            borderRadius: "var(--radius)",
-            background: "var(--surface-sunken)",
-            border: "1px solid var(--border-hairline)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            flexWrap: "wrap",
-            gap: 8,
-            fontSize: 13,
-            color: "var(--text-secondary)",
-          }}
-        >
-          <span>
-            Tips: Fyll ut <strong>{komplett.mangler.join(", ")}</strong> for at treneren din har fullstendig grunnlag.
-          </span>
-        </div>
-      )}
-
-      {/* Skjema for redigerbare felter */}
-      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-        {/* Personalia */}
-        <section
-          style={{
-            padding: 20,
-            borderRadius: "var(--radius)",
-            background: "var(--surface-card)",
-            border: "1px solid var(--border-hairline)",
-            display: "flex",
-            flexDirection: "column",
-            gap: 16,
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <User size={18} style={{ color: "var(--text-secondary)" }} />
-            <h2 style={{ margin: 0, fontSize: 16, fontWeight: 600, color: "var(--text-primary)" }}>Personalia</h2>
-          </div>
-
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
-            <div>
-              <label style={{ display: "block", fontSize: 13, fontWeight: 500, color: "var(--text-secondary)", marginBottom: 6 }}>
-                Fullt navn
-              </label>
-              <input
-                type="text"
-                value={navn}
-                onChange={(e) => setNavn(e.target.value)}
-                required
-                style={{
-                  width: "100%",
-                  minHeight: 44,
-                  padding: "10px 12px",
-                  borderRadius: "var(--radius)",
-                  background: "var(--surface-card)",
-                  border: "1px solid var(--border-hairline)",
-                  color: "var(--text-primary)",
-                  fontSize: 14,
-                  fontFamily: "inherit",
-                  boxSizing: "border-box",
-                }}
-              />
+      <div>
+        <section className="phn-seksjon" aria-labelledby="profil-turn">
+          <div className="phn-sek-topp"><h2 id="profil-turn">Turneringsresultater</h2></div>
+          {t?.koblet && t.rader.length > 0
+            ? <div style={{ display: "grid", gap: 12 }}>
+              <span className="phn-pille ok" style={{ justifySelf: "start" }}><i />Koblet til turneringsresultatene</span>
+              {t.rader.map((r) => <div key={r.id} className="turn-rad">
+                {/* eslint-disable-next-line @next/next/no-img-element -- statisk bilde fra public, ingen tekst oppå */}
+                <img src="/images/playerhq/turn-tee.jpg" alt="" width={144} height={152} />
+                <div><b>{r.navn}</b><span>{[r.dato, r.runder, r.brutto != null ? `brutto ${r.brutto}` : null, r.plassering ? `${r.plassering}. plass` : null].filter(Boolean).join(" · ")}</span></div>
+              </div>)}
+              <p className="phn-kilde">Kilde: turneringsdataene fra GolfBox. Bare brutto score.</p>
+              <Link className="lenke" href="/portal/analysere?del=snitt">Se alle i Stats</Link>
             </div>
-
-            <div>
-              <label style={{ display: "block", fontSize: 13, fontWeight: 500, color: "var(--text-secondary)", marginBottom: 6 }}>
-                Mobilnummer
-              </label>
-              <div style={{ position: "relative" }}>
-                <Phone size={14} style={{ position: "absolute", left: 12, top: 15, color: "var(--text-muted)" }} />
-                <input
-                  type="tel"
-                  value={mobil}
-                  onChange={(e) => setMobil(e.target.value)}
-                  placeholder="+47 000 00 000"
-                  style={{
-                    width: "100%",
-                    minHeight: 44,
-                    padding: "10px 12px 10px 34px",
-                    borderRadius: "var(--radius)",
-                    background: "var(--surface-card)",
-                    border: "1px solid var(--border-hairline)",
-                    color: "var(--text-primary)",
-                    fontSize: 14,
-                    fontFamily: "inherit",
-                    boxSizing: "border-box",
-                  }}
-                />
-              </div>
-            </div>
-
-            <div>
-              <label style={{ display: "block", fontSize: 13, fontWeight: 500, color: "var(--text-secondary)", marginBottom: 6 }}>
-                Fødselsdato
-              </label>
-              <div style={{ position: "relative" }}>
-                <Calendar size={14} style={{ position: "absolute", left: 12, top: 15, color: "var(--text-muted)" }} />
-                <input
-                  type="date"
-                  value={fodselsdato}
-                  onChange={(e) => setFodselsdato(e.target.value)}
-                  style={{
-                    width: "100%",
-                    minHeight: 44,
-                    padding: "10px 12px 10px 34px",
-                    borderRadius: "var(--radius)",
-                    background: "var(--surface-card)",
-                    border: "1px solid var(--border-hairline)",
-                    color: "var(--text-primary)",
-                    fontSize: 14,
-                    fontFamily: "inherit",
-                    boxSizing: "border-box",
-                  }}
-                />
-              </div>
-            </div>
-
-            <div>
-              <label style={{ display: "block", fontSize: 13, fontWeight: 500, color: "var(--text-secondary)", marginBottom: 6 }}>
-                Hjemmeklubb
-              </label>
-              <div style={{ position: "relative" }}>
-                <MapPin size={14} style={{ position: "absolute", left: 12, top: 15, color: "var(--text-muted)" }} />
-                <input
-                  type="text"
-                  value={hjemmeklubb}
-                  onChange={(e) => setHjemmeklubb(e.target.value)}
-                  placeholder="f.eks. Losby Golfklubb"
-                  style={{
-                    width: "100%",
-                    minHeight: 44,
-                    padding: "10px 12px 10px 34px",
-                    borderRadius: "var(--radius)",
-                    background: "var(--surface-card)",
-                    border: "1px solid var(--border-hairline)",
-                    color: "var(--text-primary)",
-                    fontSize: 14,
-                    fontFamily: "inherit",
-                    boxSizing: "border-box",
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <label style={{ display: "block", fontSize: 13, fontWeight: 500, color: "var(--text-secondary)", marginBottom: 6 }}>
-              Ambisjon og målsetning
-            </label>
-            <textarea
-              value={maalTekst}
-              onChange={(e) => setMaalTekst(e.target.value)}
-              rows={3}
-              placeholder="Beskriv kort din sportslige ambisjon for sesongen..."
-              style={{
-                width: "100%",
-                padding: "10px 12px",
-                borderRadius: "var(--radius)",
-                background: "var(--surface-card)",
-                border: "1px solid var(--border-hairline)",
-                color: "var(--text-primary)",
-                fontSize: 14,
-                fontFamily: "inherit",
-                boxSizing: "border-box",
-                resize: "vertical",
-              }}
-            />
-          </div>
+            : <div className="phn-kort dempet">
+              <b className="phn-undertittel">{t?.koblet ? "Ingen turneringer ennå" : "Ikke koblet til turneringsresultatene"}</b>
+              <p className="phn-forklar">{t?.tomGrunn || "Profilen din er ikke koblet til turneringsresultatene ennå. Coachen din kobler den."}</p>
+            </div>}
         </section>
 
-        {/* Forbund og systemdata (lesefelt) */}
-        <section
-          style={{
-            padding: 20,
-            borderRadius: "var(--radius)",
-            background: "var(--surface-card)",
-            border: "1px solid var(--border-hairline)",
-            display: "flex",
-            flexDirection: "column",
-            gap: 16,
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <ShieldCheck size={18} style={{ color: "var(--text-secondary)" }} />
-            <h2 style={{ margin: 0, fontSize: 16, fontWeight: 600, color: "var(--text-primary)" }}>
-              Forbundsdata og status (lesefelt)
-            </h2>
-          </div>
-          <p style={{ margin: 0, fontSize: 13, color: "var(--text-muted)" }}>
-            Disse verdiene administreres av Norges Golfforbund, GolfBox eller klubben din. E-post styres via sikker innlogging.
-          </p>
+        <dl className="nokkel">
+          <div><dt>Golf-ID</dt><dd>{data.ngfId ?? "—"}</dd></div>
+          <div><dt>Runder i år</dt><dd className="tall">{data.runderIAar}</dd></div>
+          <div><dt>Gruppe</dt><dd>{data.stallNavn ?? "—"}</dd></div>
+          <div><dt>Spiller siden</dt><dd>{data.spillerSiden || "—"}</dd></div>
+        </dl>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 16 }}>
-            <div style={{ padding: "12px 14px", borderRadius: "var(--radius)", background: "var(--surface-sunken)" }}>
-              <span style={{ display: "block", fontSize: 11, fontWeight: 600, color: "var(--text-muted)", textTransform: "uppercase" }}>
-                Forbunds-handicap
-              </span>
-              <span style={{ fontSize: 18, fontWeight: 700, fontFamily: "var(--font-mono)", color: "var(--text-primary)" }}>
-                {data.hcp != null ? formaterTall(data.hcp, 1) : "—"}
-              </span>
-            </div>
-
-            <div style={{ padding: "12px 14px", borderRadius: "var(--radius)", background: "var(--surface-sunken)" }}>
-              <span style={{ display: "block", fontSize: 11, fontWeight: 600, color: "var(--text-muted)", textTransform: "uppercase" }}>
-                NGF Medlems-ID / GolfBox
-              </span>
-              <span style={{ fontSize: 15, fontWeight: 600, fontFamily: "var(--font-mono)", color: "var(--text-primary)" }}>
-                {data.ngfId || "Ikke koblet"}
-              </span>
-            </div>
-
-            <div style={{ padding: "12px 14px", borderRadius: "var(--radius)", background: "var(--surface-sunken)" }}>
-              <span style={{ display: "block", fontSize: 11, fontWeight: 600, color: "var(--text-muted)", textTransform: "uppercase" }}>
-                E-post (innlogging)
-              </span>
-              <span style={{ fontSize: 14, fontWeight: 500, color: "var(--text-primary)", wordBreak: "break-all" }}>
-                {data.epost}
-              </span>
-            </div>
-
-            <div style={{ padding: "12px 14px", borderRadius: "var(--radius)", background: "var(--surface-sunken)" }}>
-              <span style={{ display: "block", fontSize: 11, fontWeight: 600, color: "var(--text-muted)", textTransform: "uppercase" }}>
-                Stall / Gruppe
-              </span>
-              <span style={{ fontSize: 14, fontWeight: 600, color: "var(--text-primary)" }}>
-                {data.stallNavn || "Individuell spiller"}
-              </span>
-            </div>
-
-            <div style={{ padding: "12px 14px", borderRadius: "var(--radius)", background: "var(--surface-sunken)" }}>
-              <span style={{ display: "block", fontSize: 11, fontWeight: 600, color: "var(--text-muted)", textTransform: "uppercase" }}>
-                Runder i år
-              </span>
-              <span style={{ fontSize: 18, fontWeight: 700, fontFamily: "var(--font-mono)", color: "var(--text-primary)" }}>
-                {data.runderIAar}
-              </span>
-            </div>
-
-            {data.hcpMaalTekst && (
-              <div style={{ padding: "12px 14px", borderRadius: "var(--radius)", background: "var(--surface-sunken)" }}>
-                <span style={{ display: "block", fontSize: 11, fontWeight: 600, color: "var(--text-muted)", textTransform: "uppercase" }}>
-                  Aktivt HCP-mål
-                </span>
-                <span style={{ fontSize: 15, fontWeight: 600, color: "var(--text-primary)" }}>
-                  {data.hcpMaalTekst}
-                </span>
-              </div>
-            )}
-          </div>
-        </section>
-
-        {feil && (
-          <div
-            style={{
-              padding: "12px 16px",
-              borderRadius: "var(--radius)",
-              background: "var(--signal-tint)",
-              color: "var(--signal-ink)",
-              border: "1px solid var(--signal)",
-              fontSize: 14,
-            }}
-          >
-            {feil}
-          </div>
-        )}
-
-        {suksess && (
-          <div
-            style={{
-              padding: "12px 16px",
-              borderRadius: "var(--radius)",
-              background: "var(--ok-tint)",
-              color: "var(--ok)",
-              border: "1px solid var(--ok)",
-              fontSize: 14,
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-            }}
-          >
-            <CheckCircle2 size={16} />
-            <span>Profilen ble lagret og oppdatert!</span>
-          </div>
-        )}
-
-        <div style={{ display: "flex", justifyContent: "flex-end", gap: 12 }}>
-          <Link
-            href="/portal/meg"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              minHeight: 44,
-              minWidth: 80,
-              padding: "10px 16px",
-              borderRadius: "var(--radius)",
-              background: "transparent",
-              border: "1px solid var(--border-hairline)",
-              color: "var(--text-secondary)",
-              textDecoration: "none",
-              fontSize: 14,
-              fontWeight: 500,
-              boxSizing: "border-box",
-            }}
-          >
-            Avbryt
-          </Link>
-
-          <button
-            type="submit"
-            disabled={isPending}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              minHeight: 44,
-              minWidth: 150,
-              padding: "10px 20px",
-              borderRadius: "var(--radius)",
-              background: "var(--primary)",
-              color: "var(--text-on-primary)",
-              border: "none",
-              fontSize: 14,
-              fontWeight: 600,
-              cursor: isPending ? "not-allowed" : "pointer",
-              gap: 8,
-              opacity: isPending ? 0.7 : 1,
-              boxSizing: "border-box",
-            }}
-          >
-            <Save size={16} />
-            <span>{isPending ? "Lagrer..." : "Lagre profilen"}</span>
-          </button>
+        <div className="phn-kort dempet">
+          <b className="phn-undertittel">Målsetninger</b>
+          <p className="phn-forklar">{data.hcpMaalTekst ? `HCP-mål: ${data.hcpMaalTekst}. ` : ""}Målsetningene dine ligger i Plan › Workbench, sammen med planen de styrer.</p>
+          <Link className="lenke" href="/portal/mal">Åpne målsetninger</Link>
         </div>
-      </form>
+      </div>
     </div>
-  );
+  </div></div>;
 }

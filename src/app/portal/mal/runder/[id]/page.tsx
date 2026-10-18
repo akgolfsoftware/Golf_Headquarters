@@ -6,7 +6,7 @@
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
+import { harCoachLesetilgangTilSpiller } from "@/lib/auth/coached";
 import { SG_ALLE_FELT, type ManuellSgVerdier } from "@/lib/portal-runder/manuell-sg";
 import {
   RUNDE_SG_KILDE,
@@ -15,6 +15,7 @@ import {
   lesRundeKilde,
   lesRundeStatus,
 } from "@/lib/runde-logg/kontrakt";
+import { tiger5ForRunde } from "@/lib/portal-runder/tiger5-runde";
 import { PHRD08RundeFerdig, type PHRD08Data } from "@/components/portal/precision/PHRD08RundeFerdig";
 
 export const dynamic = "force-dynamic";
@@ -44,26 +45,26 @@ export default async function RundeDetaljPage({
 
   if (!runde) notFound();
   if (runde.userId !== user.id &&
-    (!(user.role === "ADMIN" || user.role === "COACH") || !(await harCoachTilgangTilSpiller(user, runde.userId)))) notFound();
+    (!(user.role === "ADMIN" || user.role === "COACH") || !(await harCoachLesetilgangTilSpiller(user, runde.userId)))) notFound();
 
   const erEier = runde.userId === user.id;
 
   // Hull-for-hull: HoleScore er sannheten (skrives av slag-føring OG import);
   // fall tilbake til slag-avledet score for eldre runder uten HoleScore-rader.
-  const hullMap = new Map<number, { par: number; score: number }>();
+  const hullMap = new Map<number, { par: number; score: number; putter: number | null }>();
   for (const h of runde.holeScores) {
-    hullMap.set(h.holeNumber, { par: h.par, score: h.strokes });
+    hullMap.set(h.holeNumber, { par: h.par, score: h.strokes, putter: h.putts });
   }
   if (hullMap.size === 0) {
     for (const s of runde.shots) {
       const e = hullMap.get(s.holeNumber);
       if (e) e.score += 1;
-      else hullMap.set(s.holeNumber, { par: s.holePar, score: 1 });
+      else hullMap.set(s.holeNumber, { par: s.holePar, score: 1, putter: null });
     }
   }
   const hull = [...hullMap.entries()]
     .sort(([a], [b]) => a - b)
-    .map(([nr, h]) => ({ nr, par: h.par, score: h.score, sg: null }));
+    .map(([nr, h]) => ({ nr, par: h.par, score: h.score, putter: h.putter }));
 
   // Delvis runde (færre hull på scorekortet): mål mot par for de SPILTE
   // hullene — «8 slag mot par 72» ville vært løgn for en 2-hulls runde.
@@ -178,6 +179,12 @@ export default async function RundeDetaljPage({
     straff,
     ut: hullStat ? { score: hullStat.ut.score, par: hullStat.ut.par } : null,
     inn: hullStat && hullStat.inn.antall > 0 ? { score: hullStat.inn.score, par: hullStat.inn.par } : null,
+    art: runde.roundType === "turnering" || runde.roundType === "trening" ? runde.roundType : null,
+    notat: runde.notes,
+    tiger5: tiger5ForRunde(
+      runde.holeScores.map((h) => ({ holeNumber: h.holeNumber, par: h.par, strokes: h.strokes, putts: h.putts })),
+      runde.shots.map((s) => ({ holeNumber: s.holeNumber, shotNumber: s.shotNumber, lie: s.lie, distanceToPin: s.distanceToPin, isPenalty: s.isPenalty })),
+    ),
   };
 
   return <PHRD08RundeFerdig data={data} uleste={uleste} />;

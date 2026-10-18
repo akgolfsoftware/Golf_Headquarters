@@ -34,6 +34,15 @@ enum BookingStatus {
   COMPLETED
 }
 
+// Betalingsmåte på booking (Anders 29.09.2026). FAKTURA er bare et merke: selve
+// fakturaen lages i Tripletex av Anders.
+enum BookingPaymentMethod {
+  STRIPE
+  KLIPP
+  FAKTURA
+  GRATIS
+}
+
 // PlayerHQ-domenet (Fase 1.5)
 
 enum SessionStatus {
@@ -1226,13 +1235,29 @@ model ServiceType {
   // Coach som tilbyr tjenesten. Null = felles (gruppe, WANG).
   // Erstatter slug-prefiks-konvensjonen i UI med ekte DB-relasjon.
   coachUserId  String?
+  // Bookingplanen steg 2 (15.10.2026): stedet settes på tjenesten, ikke gjettet
+  // fra navnet. Null = ikke satt; da brukes navnegjetningen som fallback
+  // (src/lib/booking/tjeneste-sted.ts).
+  locationId     String?
+  // Minutter som holdes av før og etter timen, så coachen får pause mellom to.
+  bufferForMin   Int      @default(0)
+  bufferEtterMin Int      @default(0)
+  // Kunden kan tidligst booke så mange timer før start.
+  minVarselTimer Int      @default(24)
+  // Kunden kan booke så mange dager fram i tid.
+  maksDagerFram  Int      @default(7)
+  // Gruppering på BK-01 og i AgencyOS (src/lib/booking/tjeneste-kategori.ts).
+  // Null = ikke satt; da gjettes «abonnement» fra navnet (Performance).
+  kategori       String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
   bookings Booking[]
   coach    User?     @relation("CoachServiceTypes", fields: [coachUserId], references: [id], onDelete: SetNull)
+  location Location? @relation("ServiceTypeLocation", fields: [locationId], references: [id], onDelete: SetNull)
 
   @@index([coachUserId])
+  @@index([locationId])
   @@map("service_types")
 }
 
@@ -1249,6 +1274,7 @@ model Location {
   bookings          Booking[]
   facilities        Facility[]
   coachAvailability CoachAvailability[]
+  serviceTypes      ServiceType[]       @relation("ServiceTypeLocation")
 
   @@map("locations")
 }
@@ -1300,6 +1326,15 @@ model Booking {
   // Live-økt: settes når coach trykker «Start økt» — kobler bookingen til den
   // opprettede TrainingSessionV2 (live-konsoll). Plain id (ingen relasjon — isolert).
   trainingSessionV2Id     String?
+  // Betalingsmåte (Anders 29.09.2026). Null = eldre booking: betalingen leses fra
+  // Stripe-feltene og subscriptionId som før.
+  paymentMethod           BookingPaymentMethod?
+  // Coach foreslår ny tid på en betalt time; spilleren må godta før startAt/endAt
+  // endres (Anders 29.09.2026). proposedById er coachens id (plain id).
+  proposedStartAt         DateTime?
+  proposedEndAt           DateTime?
+  proposedAt              DateTime?
+  proposedById            String?
 
   user         User?              @relation(fields: [userId], references: [id])
   coach        User?              @relation("BookingCoach", fields: [coachId], references: [id], onDelete: SetNull)
@@ -1309,6 +1344,7 @@ model Booking {
   facility     Facility?          @relation(fields: [facilityId], references: [id], onDelete: SetNull)
   payments     Payment[]
   recordings   SessionRecording[]
+  innboksUtkast InnboksEpost[]
 
   @@index([userId])
   @@index([coachId])
@@ -1844,11 +1880,18 @@ model TrainingLog {
   id        String     @id @default(cuid())
   userId    String
   date      DateTime   @db.Date
-  sgArea    SgCategory
+  // Null for økter uten SG-område (FYS, TEK, SPILL, TURN). Logg økt (pakke 13) setter den for SLAG.
+  sgArea    SgCategory?
   minutes   Int
   drillName String?
   quality   Int?       @db.SmallInt // 1-5
   notes     String?
+  // Logg økt i etterkant (pakke 13, 18.10.2026): teller i total treningstid, aldri mot planen.
+  pyramid   String? // FYS | TEK | SLAG | SPILL | TURN
+  area      String? // Treningsområdet slik spilleren valgte det, f.eks. «Innspill»
+  location  String?
+  effort    Int?       @db.SmallInt // Belastning / «Hvor tungt» 1–10
+  focus     Int?       @db.SmallInt // Fokus 1–10, ikke for FYS
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 
@@ -1862,6 +1905,8 @@ model TrainingLog {
 model Round {
   id                     String          @id @default(cuid())
   userId                 String
+  // Del runde (pakke 13): «Bare deg» = false. Coachen ser bare delte runder i Spiller 360 og Runder.
+  sharedWithCoach        Boolean         @default(true)
   courseId               String
   teeId                  String?
   sgReferenceSetId       String?
@@ -3711,6 +3756,11 @@ model PeriodBlock {
   // 8c.1: øktbudsjett per pyramideområde per uke ({"FYS":4,"TEK":2,...}).
   // JSON — zod-valideres ved lesing (lib/workbench/perioder.ts).
   weeklySessionBudget Json?
+  // Plannivåene henger sammen (14.10.2026): minutter per akse for en vanlig og en
+  // lett uke ({"FYS":60,"TEK":120,...}). JSON — zod-valideres ved lesing
+  // (lib/workbench/perioder.ts). Null = ikke satt.
+  axisMinutes         Json?
+  axisMinutesLight    Json?
   notes               String?
   // G3: kildesporing for gruppeutrulling — satt når perioden ble rullet ut fra
   // en gruppes årsplan (coachRullUtGruppeAarsplan). Null = spillerens egen.
@@ -3723,6 +3773,32 @@ model PeriodBlock {
   @@index([seasonPlanId])
   @@index([sourceGroupId])
   @@map("period_blocks")
+}
+
+// Plannivåene henger sammen (Anders 14.10.2026, punkt 2): månedsplan. Én rad per
+// spiller, år og måned. `weekAxisMinutes` er {"ÅÅÅÅ-Uxx": {FYS,TEK,SLAG,SPILL,TURN}};
+// en uke som står der er «Endret i måneden» og beholder månedens tall når perioden
+// endres. JSON — zod-valideres ved lesing (lib/workbench/maanedsplan.ts).
+// Plain userId/seasonPlanId (FK håndheves i DB-DDL; ingen @relation for å holde
+// endringen isolert — jf. gotcha-regelen for additive tabeller).
+model MonthPlan {
+  id              String   @id @default(cuid())
+  userId          String
+  seasonPlanId    String?
+  year            Int
+  /// 1–12
+  month           Int
+  focus           String?
+  notes           String?
+  evaluation      String?
+  weekAxisMinutes Json?
+  createdById     String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([userId, year, month])
+  @@index([userId])
+  @@map("month_plans")
 }
 
 // 8c.1 (Anders 2026-07-12): gruppens EGEN årsplan — samme tidslinje-UI som
@@ -3739,6 +3815,9 @@ model GroupPeriodBlock {
   weeklyVolMin        Int?
   weeklyVolMax        Int?
   weeklySessionBudget Json?
+  /// Minutter per akse (FYS/TEK/SLAG/SPILL/TURN) for vanlig og lett uke, som PeriodBlock.
+  axisMinutes         Json?
+  axisMinutesLight    Json?
   notes               String?
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
@@ -6534,8 +6613,12 @@ model InnboksEpost {
   utkastGenerertAt DateTime?
   sendtAt          DateTime?
   sendtAv          String?
+  // Utkast med begrunnelse når coach avviser en booking (Anders 29.09.2026).
+  bookingId        String?
+  booking          Booking?  @relation(fields: [bookingId], references: [id], onDelete: SetNull)
 
   @@index([status, mottattAt])
+  @@index([bookingId])
   @@map("innboks_epost")
 }
 

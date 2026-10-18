@@ -11,14 +11,15 @@ import { AK } from "@/lib/v2/ak-palett";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Circle, Crosshair, Flag, Sparkles, Target, Trophy } from "lucide-react";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { krevDataGolfBruker } from "@/lib/auth/datagolf-tilgang";
 import { StatsEyebrow } from "@/components/stats/eyebrow";
 import { Reveal } from "@/components/stats/reveal";
 import { MiniRadar } from "@/components/stats/mini-radar";
 import "@/app/(marketing)/(mlegacy)/stats/stats.css";
 import { StatsLegacyShell } from "@/components/marketing/v2/stats-ramme";
 
-export const revalidate = 3600;
+// Data Golf-verktøy: bare for innlogget coach og admin (Anders 09.10.2026).
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "SG-sammenligning: sammenlign deg med Rory McIlroy",
@@ -34,10 +35,9 @@ export const metadata: Metadata = {
 };
 
 export default async function SgSammenlignLanding() {
-  const user = await getCurrentUser();
-  const startHref = user
-    ? "/stats/sg-sammenlign/start"
-    : "/auth/signup?next=/stats/sg-sammenlign/start";
+  // PGA-sammenligningen bygger på Data Golf-tall: bare coach og admin (Anders 09.10.2026).
+  const user = await krevDataGolfBruker("/stats/sg-sammenlign");
+  const startHref = "/stats/sg-sammenlign/start";
 
   return (
     <StatsLegacyShell>

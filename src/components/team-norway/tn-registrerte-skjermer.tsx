@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 
+import { innloggetKanSeDataGolf } from "@/lib/auth/datagolf-tilgang";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentTnArbeidskontekst, type TnArbeidskontekst } from "@/lib/domain/tn-arbeidsflate";
 import { TnInviterSpiller } from "./tn-inviter-spiller";
@@ -13,9 +14,10 @@ type Skjerm =
   | "inviter";
 
 
-function Chrome({ aktiv, brukerNavn, kontekst, children }: { aktiv: TnAktivSide; brukerNavn: string; kontekst: TnArbeidskontekst; children: ReactNode }) {
+async function Chrome({ aktiv, brukerNavn, kontekst, tilbake, children }: { aktiv: TnAktivSide; brukerNavn: string; kontekst: TnArbeidskontekst; tilbake?: { href: string; label: string }; children: ReactNode }) {
+  const visDataGolf = !kontekst.erSpiller && (await innloggetKanSeDataGolf());
   return (
-    <TnShell aktiv={aktiv} brukerNavn={brukerNavn} rolle={tnRolleNavn(kontekst.rolle)} groupId={kontekst.gruppe.id} visTrenerflater={!kontekst.erSpiller} kanAdministrere={kontekst.kanAdministrere}>
+    <TnShell aktiv={aktiv} brukerNavn={brukerNavn} rolle={tnRolleNavn(kontekst.rolle)} groupId={kontekst.gruppe.id} visTrenerflater={!kontekst.erSpiller} kanAdministrere={kontekst.kanAdministrere} visDataGolf={visDataGolf} tilbake={tilbake}>
       {children}
     </TnShell>
   );
@@ -36,7 +38,7 @@ export const UTTAKSKRITERIER = [
   {
     nummer: "Kriterium 2",
     tittel: "Prestasjoner",
-    tekst: "Testresultater og målinger fra fellestesting. Antall tester i tabellen over sier hvor mye som faktisk er målt.",
+    tekst: "Testresultater og målinger fra fellestesting. Antall tester per spiller står i Spillerutvikling og sier hvor mye som faktisk er målt.",
     kilde: "Kilde: TN-batteriet, fellestesting",
   },
   {
@@ -48,13 +50,13 @@ export const UTTAKSKRITERIER = [
 ] as const;
 
 export async function TnRegistrertSkjerm({ skjerm }: { skjerm: Skjerm }) {
-  const bruker = await requirePortalUser({ kreverTilgang: "INGEN" });
+  const bruker = await requirePortalUser({ tillatDemo: true, kreverTilgang: "INGEN" });
   const brukerNavn = bruker.name ?? "Ukjent";
 
   if (skjerm === "turnering-ny") {
     const kontekst = await hentTnArbeidskontekst(bruker);
     if (!kontekst || !kontekst.erSpiller) notFound();
-    return <Chrome aktiv="turneringer" brukerNavn={brukerNavn} kontekst={kontekst}><TnSidehode overlinje="Data · Manuell kilde" tittel="Legg inn turnering selv" ingress="Brukes når turneringen ikke finnes i katalogen." /><TnKort><TnManuellTurnering /></TnKort></Chrome>;
+    return <Chrome aktiv="turneringer" brukerNavn={brukerNavn} kontekst={kontekst} tilbake={{ href: "/team-norway/turneringer", label: "Turneringer" }}><TnSidehode overlinje="Manuell kilde" tittel="Legg inn turnering selv" ingress="Brukes når turneringen ikke finnes i GolfBox. Resultater føres brutto." /><TnKort><TnManuellTurnering /></TnKort></Chrome>;
   }
 
   if (skjerm === "inviter") {

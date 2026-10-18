@@ -24,7 +24,7 @@ import {
   type OmraadeKode,
 } from "@/lib/domain/ak-formel-v2";
 
-export type Akse = "motorikk" | "belastning" | "press" | "dimensjon" | "sandTrinn" | "fysParametere";
+export type Akse = "motorikk" | "belastning" | "press" | "dimensjon" | "fysParametere";
 
 export type Relevans = {
   /** Motoriske læringssteg — kun fullsving. */
@@ -35,8 +35,6 @@ export type Relevans = {
   press: boolean;
   /** Egen teknikk-dimensjon — én, valgfri. FYS har ingen. */
   dimensjon: boolean;
-  /** Sand-trappen — kun bunker. */
-  sandTrinn: boolean;
   /** Serier · reps · pause · RIR · vekt — kun FYS. */
   fysParametere: boolean;
 };
@@ -46,7 +44,6 @@ const INGEN: Relevans = {
   belastning: false,
   press: false,
   dimensjon: false,
-  sandTrinn: false,
   fysParametere: false,
 };
 
@@ -89,15 +86,7 @@ export function relevansFor(omraade: OmraadeKode): Relevans {
     case "FULLSVING":
       return { ...INGEN, motorikk: true, belastning: true, press: true, dimensjon: true };
     case "NAERSPILL":
-      // Bunker er del av Nærspill-familien, men har i tillegg sand-trappen —
-      // et eget to-verdis felt kun bunker-øvelser skal vise (§2.1 i masteren).
-      return {
-        ...INGEN,
-        belastning: true,
-        press: true,
-        dimensjon: true,
-        sandTrinn: omraade === "BUNKER",
-      };
+      return { ...INGEN, belastning: true, press: true, dimensjon: true };
     case "PUTT":
       return { ...INGEN, belastning: true, press: true, dimensjon: true };
     case "BANE":
@@ -135,7 +124,6 @@ export type DrillMerking = {
   press?: unknown;
   belastning?: unknown;
   dimensjon?: DimensjonKode | null;
-  sandTrinn?: unknown;
 };
 
 /**
@@ -157,6 +145,5 @@ export function vaskMotRelevans<T extends DrillMerking>(merking: T): T {
     press: r.press ? merking.press : FYS_DEFAULT.press,
     belastning: r.belastning ? merking.belastning : FYS_DEFAULT.belastning,
     dimensjon,
-    sandTrinn: r.sandTrinn ? merking.sandTrinn : null,
   };
 }

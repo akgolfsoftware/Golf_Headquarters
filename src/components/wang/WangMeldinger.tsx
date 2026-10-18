@@ -1,295 +1,204 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { WangIkkeKoblet, IKKE_KOBLET_KNAPP_STIL } from './WangIkkeKoblet';
-import {
-  WANG_MELDINGER,
-  WANG_ELEVER,
-  type WangMelding,
-} from './wang-data';
+import React, { useState } from "react";
+import Link from "next/link";
+import { WangTomTilstand } from "./WangIkkeKoblet";
+import { WangFaner, WangTilbake, WangTopp, initialer, langDato, wangHref } from "./wang-felles";
+import type { WangTrenerData } from "@/app/team-wang/_data/wang-trener-data";
 
 interface WangMeldingerProps {
+  data: WangTrenerData;
+  /** Underside: innboks · elev · gruppe · mote · dokumenter. */
   aktivFane?: string;
+  /** Eleven samtalen gjelder. */
+  id?: string;
   onFaneEndret?: (fane: string) => void;
-  campus?: string;
 }
 
-export function WangMeldinger({
-  aktivFane = 'WANG-13',
-  onFaneEndret,
-  campus = 'Fredrikstad',
-}: WangMeldingerProps) {
-  const [fane, setFane] = useState(aktivFane);
-  const [meldinger] = useState<WangMelding[]>(WANG_MELDINGER);
+const FANER = [
+  { id: "innboks", tittel: "Alle" },
+  { id: "gruppe", tittel: "Gruppa" },
+  { id: "mote", tittel: "Foresatte" },
+  { id: "dokumenter", tittel: "Dokumenter" },
+];
 
-  // Ny gruppepost tilstand
-  const [nyTittel, setNyTittel] = useState('');
-  const [nyttInnhold, setNyttInnhold] = useState('');
-  const [nyMottakerNavn, setNyMottakerNavn] = useState('VG1 Golf ' + campus);
+/**
+ * Pakke 6 Meldinger for trener og sportssjef: Innboks, Én elev (foresatte leser under 18, WANG-14),
+ * Gruppepost med lesekvittering (WANG-13), Foreldremøte (WANG-15) og Dokumenter med rekkevidde (WANG-21).
+ * Fasit: docs/design-system/utkast-wang/meldinger.html (utkast 2, godkjent av Anders 16.10.2026). Lett hånd: ro er riktig her.
+ * Avvik:
+ *   - Trenerflaten har ingen meldinger, gruppeposter, foreldremøter eller dokumenter i basen ennå. Alle lister er tomme.
+ *   - Send, Publiser, Inviter og Last opp er sperret: ingenting sendes til elever eller foresatte herfra.
+ */
+export function WangMeldinger({ data, aktivFane, id }: WangMeldingerProps) {
+  if (aktivFane === "elev") return <EnElev data={data} elevId={id} />;
+  if (aktivFane === "gruppe") return <Gruppepost data={data} />;
+  if (aktivFane === "mote") return <Foreldremote data={data} />;
+  if (aktivFane === "dokumenter") return <Dokumenter data={data} />;
+  return <Innboks data={data} />;
+}
 
-  const byttFane = (nyFane: string) => {
-    setFane(nyFane);
-    if (onFaneEndret) onFaneEndret(nyFane);
-  };
-
-  const synligeMeldinger = meldinger.filter((m) => {
-    if (fane === 'WANG-13') return m.mottakerType === 'gruppe';
-    if (fane === 'WANG-14') return m.mottakerType === 'elev';
-    if (fane === 'WANG-15') return m.mottakerType === 'forelder';
-    return true;
-  });
-
+function Innboks({ data }: { data: WangTrenerData }) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-      {/* Fanevelger */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', borderBottom: '1px solid #E6E8EA', paddingBottom: '12px' }}>
-        {[
-          { id: 'WANG-13', navn: 'Gruppeposter (WANG-13)' },
-          { id: 'WANG-14', navn: 'Post til elev (WANG-14)' },
-          { id: 'WANG-15', navn: 'Foreldremøte og foresatte (WANG-15)' },
-          { id: 'WANG-21', navn: 'Dokumenter og maler (WANG-21)' },
-        ].map((f) => (
-          <button
-            key={f.id}
-            onClick={() => byttFane(f.id)}
-            style={{
-              minHeight: '44px',
-              padding: '0 16px',
-              borderRadius: '999px',
-              border: fane === f.id ? '1px solid #17446F' : '1px solid #D2D2D2',
-              background: fane === f.id ? '#17446F' : '#FFFFFF',
-              color: fane === f.id ? '#FFFFFF' : '#17446F',
-              fontFamily: 'Montserrat, sans-serif',
-              fontSize: '13px',
-              fontWeight: 500,
-              cursor: 'pointer',
-            }}
-          >
-            {f.navn}
-          </button>
-        ))}
+    <>
+      <WangTopp dato={`${data.gruppeNavn} · 0 uleste`} tittel="Meldinger">
+        <WangFaner omraade="meldinger" aktiv="innboks" faner={FANER} etikett="Meldinger" />
+        <div className="wg-knapper">
+          <Link href={wangHref("meldinger", "gruppe")} className="wg-btn wg-btn-primary">Ny gruppepost</Link>
+        </div>
+      </WangTopp>
+      <div className="wg-to-kol">
+        <WangTomTilstand
+          tittel="Ingen meldinger ennå"
+          tekst="Samtaler med elevene, gruppa og foresatte samles her, uleste øverst. Meldinger kan ikke slettes."
+        />
+        <section className="wg-seksjon" aria-labelledby="wg-skriv-tittel">
+          <div className="wg-sek-topp">
+            <h2 id="wg-skriv-tittel">Skriv til elev</h2>
+          </div>
+          {data.elever.length === 0 ? (
+            <p className="wg-baand-tom">Ingen elever i gruppa.</p>
+          ) : (
+            <div className="wg-kort wg-rader">
+              {data.elever.map((e) => (
+                <Link key={e.id} href={wangHref("meldinger", "elev", e.id)} className="wg-rad wg-rad-lenke">
+                  <span style={{ display: "flex", gap: 10, alignItems: "center" }}>
+                    <span className="wg-avatar" aria-hidden>{initialer(e.navn)}</span>
+                    <b>{e.navn}</b>
+                  </span>
+                  <span className="wg-kilde">Ingen samtale</span>
+                </Link>
+              ))}
+            </div>
+          )}
+        </section>
       </div>
+    </>
+  );
+}
 
-      {/* ========================================================== */}
-      {/* WANG-13 / WANG-14 / WANG-15 Felles oppretting og liste     */}
-      {/* ========================================================== */}
-      {fane !== 'WANG-21' ? (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', justifyContent: 'space-between', gap: '12px' }}>
-            <div>
-              <p style={{ margin: '0 0 4px', fontSize: '12px', fontWeight: 500, color: '#5B7793', fontFamily: 'Montserrat, sans-serif' }}>
-                {fane === 'WANG-13' && 'WANG-13 · Gruppebeskjeder og fellessending'}
-                {fane === 'WANG-14' && 'WANG-14 · Individuell oppfølging og tilbakemelding'}
-                {fane === 'WANG-15' && 'WANG-15 · Foresattkontakt og møteinnkallinger'}
-              </p>
-              <h2 style={{ margin: 0, fontSize: '28px', fontWeight: 400, color: '#17446F', fontFamily: 'Montserrat, sans-serif' }}>
-                {fane === 'WANG-13' && 'Gruppeposter'}
-                {fane === 'WANG-14' && 'Post til elev'}
-                {fane === 'WANG-15' && 'Foreldremøte og foresatte'}
-              </h2>
-            </div>
-          </div>
-
-          {/* Opprett ny melding */}
-          <div style={{ background: '#FFFFFF', border: '1px solid #D2D2D2', borderRadius: '8px', padding: '20px' }}>
-            <h3 style={{ margin: '0 0 16px', fontSize: '16px', color: '#17446F' }}>
-              {fane === 'WANG-13' && 'Opprett ny gruppepost'}
-              {fane === 'WANG-14' && 'Skriv melding til elev'}
-              {fane === 'WANG-15' && 'Opprett innkalling / melding til foresatte'}
-            </h3>
-            <form onSubmit={(e) => e.preventDefault()} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '12px' }}>
-                <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '13px', color: '#17446F' }}>
-                  Mottaker
-                  {fane === 'WANG-13' && (
-                    <select
-                      value={nyMottakerNavn}
-                      onChange={(e) => setNyMottakerNavn(e.target.value)}
-                      style={{ minHeight: '44px', padding: '0 12px', border: '1px solid #D2D2D2', borderRadius: '6px' }}
-                    >
-                      <option value={'VG1 Golf ' + campus}>VG1 Golf {campus}</option>
-                      <option value={'VG2 Golf ' + campus}>VG2 Golf {campus}</option>
-                      <option value={'VG3 Golf ' + campus}>VG3 Golf {campus}</option>
-                      <option value={'Alle golfklasser ' + campus}>Alle golfklasser {campus}</option>
-                    </select>
-                  )}
-                  {fane === 'WANG-14' && (
-                    <select
-                      value={nyMottakerNavn}
-                      onChange={(e) => setNyMottakerNavn(e.target.value)}
-                      style={{ minHeight: '44px', padding: '0 12px', border: '1px solid #D2D2D2', borderRadius: '6px' }}
-                    >
-                      {WANG_ELEVER.map((el) => (
-                        <option key={el.id} value={el.navn}>{el.navn} ({el.klasse})</option>
-                      ))}
-                    </select>
-                  )}
-                  {fane === 'WANG-15' && (
-                    <select
-                      value={nyMottakerNavn}
-                      onChange={(e) => setNyMottakerNavn(e.target.value)}
-                      style={{ minHeight: '44px', padding: '0 12px', border: '1px solid #D2D2D2', borderRadius: '6px' }}
-                    >
-                      <option value={'Foresatte VG1 ' + campus}>Foresatte VG1 {campus}</option>
-                      <option value={'Foresatte VG2 ' + campus}>Foresatte VG2 {campus}</option>
-                      <option value={'Foresatte VG3 ' + campus}>Foresatte VG3 {campus}</option>
-                      <option value={'Alle foresatte ' + campus}>Alle foresatte {campus}</option>
-                    </select>
-                  )}
-                </label>
-                <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '13px', color: '#17446F' }}>
-                  Tittel
-                  <input
-                    type="text"
-                    value={nyTittel}
-                    onChange={(e) => setNyTittel(e.target.value)}
-                    placeholder="Tittel på innlegget..."
-                    style={{ minHeight: '44px', padding: '0 12px', border: '1px solid #D2D2D2', borderRadius: '6px' }}
-                  />
-                </label>
-              </div>
-              <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '13px', color: '#17446F' }}>
-                Innhold
-                <textarea
-                  value={nyttInnhold}
-                  onChange={(e) => setNyttInnhold(e.target.value)}
-                  placeholder="Skriv beskjeden her..."
-                  rows={4}
-                  style={{ padding: '10px 12px', border: '1px solid #D2D2D2', borderRadius: '6px', fontSize: '14px', fontFamily: 'inherit' }}
-                />
-              </label>
-              <button
-                type="submit"
-                disabled
-                style={{
-                  ...IKKE_KOBLET_KNAPP_STIL,
-                  alignSelf: 'flex-start',
-                  minHeight: '44px',
-                  padding: '0 24px',
-                  borderRadius: '6px',
-                  border: 'none',
-                  background: '#17446F',
-                  color: '#FFFFFF',
-                  fontWeight: 600,
-                  fontSize: '14px',
-                }}
-              >
-                Publiser melding
-              </button>
-              <WangIkkeKoblet />
-            </form>
-          </div>
-
-          {/* Liste over meldinger */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            {synligeMeldinger.length > 0 ? (
-              synligeMeldinger.map((m) => (
-                <div
-                  key={m.id}
-                  style={{
-                    background: '#FFFFFF',
-                    border: '1px solid #D2D2D2',
-                    borderRadius: '8px',
-                    padding: '20px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '10px',
-                  }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    <div>
-                      <span style={{ fontSize: '12px', fontWeight: 600, color: '#5B7793', textTransform: 'uppercase' }}>
-                        Til: {m.mottakerNavn}
-                      </span>
-                      <h4 style={{ margin: '4px 0 0', fontSize: '18px', color: '#17446F' }}>{m.tittel}</h4>
-                    </div>
-                    <div style={{ textAlign: 'right', fontSize: '12px', color: '#5B7793' }}>
-                      <div>{m.opprettetDato}</div>
-                      <div style={{ color: '#2E857D', fontWeight: 500 }}>
-                        Lest av: —
-                      </div>
-                    </div>
-                  </div>
-                  <p style={{ margin: 0, fontSize: '14px', color: '#17446F', whiteSpace: 'pre-line', lineHeight: 1.5 }}>
-                    {m.innhold}
-                  </p>
-                  <div style={{ borderTop: '1px solid #E6E8EA', paddingTop: '10px', fontSize: '12px', color: '#5B7793' }}>
-                    Sendt av {m.avsender} ({m.rolle})
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div style={{ padding: '32px', textAlign: 'center', background: '#FFFFFF', border: '1px solid #D2D2D2', borderRadius: '8px', color: '#5B7793' }}>
-                Ingen meldinger funnet for dette området ennå.
-              </div>
-            )}
-          </div>
+function EnElev({ data, elevId }: { data: WangTrenerData; elevId?: string }) {
+  const elev = data.elever.find((e) => e.id === elevId);
+  const [tekst, setTekst] = useState("");
+  if (!elev) {
+    return (
+      <>
+        <WangTilbake href={wangHref("meldinger")} tekst="Meldinger" />
+        <WangTomTilstand tittel="Fant ikke eleven" tekst="Eleven er ikke med i gruppa." />
+      </>
+    );
+  }
+  return (
+    <>
+      <WangTilbake href={wangHref("meldinger")} tekst="Meldinger" />
+      <section className="wg-topp" style={{ gridTemplateColumns: "auto minmax(0,1fr)", alignItems: "center", gap: 12 }}>
+        <span className="wg-avatar" aria-hidden style={{ width: 48, height: 48 }}>{initialer(elev.navn)}</span>
+        <div>
+          <p className="wg-dato">{data.gruppeNavn}</p>
+          <h1 className="wg-tittel" style={{ fontSize: 24 }}>{elev.navn}</h1>
         </div>
-      ) : (
-        /* ========================================================== */
-        /* WANG-21: Dokumenter og maler                               */
-        /* ========================================================== */
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          <div>
-            <p style={{ margin: '0 0 4px', fontSize: '12px', fontWeight: 500, color: '#5B7793', fontFamily: 'Montserrat, sans-serif' }}>
-              WANG-21 · Dokumentarkiv og retningslinjer
+      </section>
+      <WangTomTilstand tittel="Ingen meldinger" tekst="Dere har ikke skrevet til hverandre ennå." />
+      <p className="wg-merknad">
+        <span>Foresatte skal lese samtalen når eleven er under 18. Meldinger kan ikke slettes.</span>
+      </p>
+      <form className="wg-skriv" onSubmit={(e) => e.preventDefault()}>
+        <textarea className="wg-field" aria-label="Skriv melding" rows={2} value={tekst} onChange={(e) => setTekst(e.target.value)} />
+        <button type="submit" className="wg-btn wg-btn-primary" disabled>Send</button>
+      </form>
+      <p className="wg-kilde">Meldinger fra trenerflaten er ikke koblet ennå. Ingenting sendes.</p>
+    </>
+  );
+}
+
+function Gruppepost({ data }: { data: WangTrenerData }) {
+  const [til, setTil] = useState<"alle" | "valgte">("alle");
+  return (
+    <>
+      <WangTilbake href={wangHref("meldinger")} tekst="Meldinger" />
+      <WangTopp dato={`${data.gruppeNavn} · ${data.elever.length} elever`} tittel="Gruppeposter" />
+      <div className="wg-to-kol">
+        <section className="wg-seksjon" aria-labelledby="wg-ny-tittel">
+          <div className="wg-sek-topp"><h2 id="wg-ny-tittel">Ny post</h2></div>
+          <form className="wg-kort wg-fyll" onSubmit={(e) => e.preventDefault()}>
+            <label className="wg-lbl">
+              Tittel
+              <input className="wg-field" />
+            </label>
+            <label className="wg-lbl">
+              Tekst
+              <textarea className="wg-field" rows={5} />
+            </label>
+            <div className="wg-lbl" role="group" aria-label="Mottakere">
+              Til
+              <div className="wg-valg wg-valg-to">
+                <button type="button" aria-pressed={til === "alle"} onClick={() => setTil("alle")}>Hele gruppa</button>
+                <button type="button" aria-pressed={til === "valgte"} onClick={() => setTil("valgte")}>Velg elever</button>
+              </div>
+            </div>
+            <div className="wg-knapper">
+              <button type="submit" className="wg-btn wg-btn-primary" disabled>Publiser</button>
+            </div>
+            <p className="wg-kilde">
+              Gruppeposter kan ikke publiseres herfra ennå. Foresatte til elever under 18 skal se posten også.
             </p>
-            <h2 style={{ margin: 0, fontSize: '28px', fontWeight: 400, color: '#17446F', fontFamily: 'Montserrat, sans-serif' }}>
-              Dokumenter og maler
-            </h2>
-          </div>
+          </form>
+        </section>
+        <section className="wg-seksjon" aria-labelledby="wg-publ-tittel">
+          <div className="wg-sek-topp"><h2 id="wg-publ-tittel">Publisert</h2></div>
+          <WangTomTilstand
+            tittel="Ingen gruppeposter"
+            tekst="Publiserte poster står her med hvor mange som har lest. Elevene ser aldri hvem som ikke har lest."
+          />
+        </section>
+      </div>
+    </>
+  );
+}
 
-          <div style={{ background: '#FFFFFF', border: '1px solid #D2D2D2', borderRadius: '8px', overflow: 'hidden' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1.5fr 120px 100px', padding: '12px 16px', background: '#F2F5F8', fontWeight: 600, fontSize: '12px', color: '#5B7793' }}>
-              <span>Dokumentnavn</span>
-              <span>Kategori</span>
-              <span>Sist endret</span>
-              <span>Handling</span>
-            </div>
-            {[
-              { navn: 'WANG Toppidrett Utøveravtale 2026/27.pdf', kat: 'Kontrakter', dato: '15.08.2026' },
-              { navn: 'IUP Standardmal Golf VGS.docx', kat: 'Utviklingsplaner', dato: '01.09.2026' },
-              { navn: 'Testprotokoll Fysisk og Golf WANG 2026.pdf', kat: 'Tester', dato: '10.09.2026' },
-              { navn: 'Reisereglement og permisjonsregler ved turnering.pdf', kat: 'Reglement', dato: '20.08.2026' },
-              { navn: 'Skolekoordinering og fraværsrutiner.pdf', kat: 'Administrasjon', dato: '25.08.2026' },
-            ].map((d, i) => (
-              <div
-                key={i}
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: '2fr 1.5fr 120px 100px',
-                  padding: '16px',
-                  borderTop: '1px solid #E6E8EA',
-                  alignItems: 'center',
-                  fontSize: '14px',
-                }}
-              >
-                <span style={{ fontWeight: 600, color: '#17446F' }}>{d.navn}</span>
-                <span style={{ color: '#5B7793' }}>{d.kat}</span>
-                <span style={{ color: '#5B7793', fontSize: '13px' }}>{d.dato}</span>
-                <button
-                  type="button"
-                  disabled
-                  title="Ikke koblet ennå"
-                  style={{
-                    ...IKKE_KOBLET_KNAPP_STIL,
-                    minHeight: '44px',
-                    padding: '0 12px',
-                    borderRadius: '6px',
-                    border: '1px solid #D2D2D2',
-                    background: '#FFFFFF',
-                    color: '#17446F',
-                    fontSize: '12px',
-                    fontWeight: 500,
-                  }}
-                >
-                  Last ned (ikke koblet ennå)
-                </button>
-              </div>
-            ))}
+function Foreldremote({ data }: { data: WangTrenerData }) {
+  return (
+    <>
+      <WangTilbake href={wangHref("meldinger")} tekst="Meldinger" />
+      <WangTopp dato={langDato(data.idagIso)} tittel="Foreldremøte">
+        <WangFaner omraade="meldinger" aktiv="mote" faner={FANER} etikett="Meldinger" />
+      </WangTopp>
+      <div className="wg-to-kol">
+        <div className="wg-kort wg-fyll">
+          <WangTomTilstand
+            tittel="Ingen foreldremøter"
+            tekst="Invitasjon, svar per hjem og referat samles her. Hvert hjem ser bare sitt eget svar."
+          />
+          <div className="wg-knapper">
+            <button type="button" className="wg-btn wg-btn-primary" disabled>Inviter til foreldremøte</button>
           </div>
+          <p className="wg-kilde">Invitasjoner kan ikke sendes herfra ennå. Ingenting er sendt.</p>
         </div>
-      )}
-    </div>
+        <div className="wg-kort wg-fyll">
+          <b className="wg-undertittel">Svar per hjem</b>
+          <p className="wg-kilde">{data.elever.length} hjem i gruppa. Ingen svar.</p>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function Dokumenter({ data }: { data: WangTrenerData }) {
+  return (
+    <>
+      <WangTopp dato={data.gruppeNavn} tittel="Dokumenter">
+        <WangFaner omraade="meldinger" aktiv="dokumenter" faner={FANER} etikett="Meldinger" />
+        <div className="wg-knapper">
+          <button type="button" className="wg-btn wg-btn-primary" disabled>Last opp</button>
+        </div>
+      </WangTopp>
+      <WangTomTilstand
+        tittel="Ingen dokumenter"
+        tekst="Last opp årsplanen eller retningslinjer, og velg hvem som skal se dem: elever, foresatte eller begge."
+      />
+      <p className="wg-kilde">
+        Opplasting er ikke koblet ennå. Rekkevidden skal bestemme hvem som ser dokumentet i PlayerHQ.
+      </p>
+    </>
   );
 }

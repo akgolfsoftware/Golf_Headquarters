@@ -1,22 +1,16 @@
 /**
- * AgencyOS-menyen i Precision Athletics (Anders 28.09.2026, grillingen runde 8):
- * Cockpit · Innboks · Stall · Kalender · Workbench · Mer. Mer har Booking ·
- * Grupper · Tester · Økonomi · Oppsett. Økonomi bare for head coach (ADMIN).
- * Kilde: Claude Design 7d7c2994, ui_kits/_shared/ia.js (AK_IA.aos).
+ * AgencyOS-menyen er variant C (Anders 16.10.2026, beslutninger.md §AGENCYOS-MENYEN
+ * BLIR VARIANT C): søk først og punktene i tre grupper — Daglig · Spillere · Drift.
+ * Økonomi bare for head coach (ADMIN). Data Golf står i Drift (DG-01, pakke 10).
+ * Fasit: docs/design-system/utkast-agencyos/meny.html, variant C.
  *
+ * Mer-siden (/admin/mer) virker fortsatt og bruker AOS_MER.
  * Ren data og ren funksjon — ikonene kobles på i skallet.
  */
 
-export type AosPunktId = "cockpit" | "innboks" | "stall" | "kalender" | "workbench" | "mer";
 export type AosMerId = "booking" | "grupper" | "tester" | "okonomi" | "oppsett";
-
-export const AOS_MENY: ReadonlyArray<{ id: AosPunktId; label: string; href: string }> = [
-  { id: "cockpit", label: "Cockpit", href: "/admin/agencyos" },
-  { id: "innboks", label: "Innboks", href: "/admin/innboks" },
-  { id: "stall", label: "Stall", href: "/admin/spillere" },
-  { id: "kalender", label: "Kalender", href: "/admin/kalender" },
-  { id: "workbench", label: "Workbench", href: "/admin/planlegge" },
-];
+export type AosId = "cockpit" | "innboks" | "kalender" | "stall" | "workbench" | "datagolf" | AosMerId;
+export type AosPunkt = { id: AosId; label: string; href: string; bareHeadCoach?: true };
 
 export const AOS_MER: ReadonlyArray<{ id: AosMerId; label: string; href: string; bareHeadCoach?: true }> = [
   { id: "booking", label: "Booking", href: "/admin/bookinger" },
@@ -25,6 +19,34 @@ export const AOS_MER: ReadonlyArray<{ id: AosMerId; label: string; href: string;
   { id: "okonomi", label: "Økonomi", href: "/admin/agencyos/okonomi", bareHeadCoach: true },
   { id: "oppsett", label: "Oppsett", href: "/admin/oppsett" },
 ];
+
+const merPunkt = (id: AosMerId): AosPunkt => AOS_MER.find((m) => m.id === id)!;
+
+export const AOS_GRUPPER: ReadonlyArray<{ id: "daglig" | "spillere" | "drift"; label: string; punkter: ReadonlyArray<AosPunkt> }> = [
+  { id: "daglig", label: "Daglig", punkter: [
+    { id: "cockpit", label: "Cockpit", href: "/admin/agencyos" },
+    { id: "innboks", label: "Innboks", href: "/admin/innboks" },
+    { id: "kalender", label: "Kalender", href: "/admin/kalender" },
+  ] },
+  { id: "spillere", label: "Spillere", punkter: [
+    { id: "stall", label: "Stall", href: "/admin/spillere" },
+    { id: "workbench", label: "Workbench", href: "/admin/planlegge" },
+    merPunkt("grupper"),
+    merPunkt("tester"),
+  ] },
+  { id: "drift", label: "Drift", punkter: [
+    merPunkt("booking"), merPunkt("okonomi"),
+    // DG-01 finnes (pakke 10). Alle i AgencyOS har coach-rolle, så kanSeDataGolf slipper dem inn;
+    // siden har i tillegg sin egen vakt (krevDataGolfBruker).
+    { id: "datagolf", label: "Data Golf", href: "/admin/datagolf" },
+    merPunkt("oppsett"),
+  ] },
+];
+
+/** Gruppene med punktene denne brukeren skal se (Økonomi bare for head coach). */
+export function synligeGrupper(erHeadCoach: boolean) {
+  return AOS_GRUPPER.map((g) => ({ ...g, punkter: g.punkter.filter((p) => erHeadCoach || !p.bareHeadCoach) }));
+}
 
 export const AOS_HURTIG: ReadonlyArray<{ id: string; label: string; href: string }> = [
   { id: "okt", label: "Ny økt i Workbench", href: "/admin/planlegge" },
@@ -35,7 +57,7 @@ export const AOS_HURTIG: ReadonlyArray<{ id: string; label: string; href: string
 ];
 
 /** Adresser som hører til et menypunkt uten å ligge under punktets egen adresse. */
-const PREFIKS: ReadonlyArray<[string, AosPunktId | AosMerId]> = [
+const PREFIKS: ReadonlyArray<[string, AosId]> = [
   ["/admin/agencyos/okonomi", "okonomi"],
   ["/admin/agencyos", "cockpit"],
   ["/admin/innboks", "innboks"], ["/admin/ko", "innboks"], ["/admin/queue", "innboks"],
@@ -43,21 +65,19 @@ const PREFIKS: ReadonlyArray<[string, AosPunktId | AosMerId]> = [
   ["/admin/spillere", "stall"], ["/admin/stall", "stall"],
   ["/admin/kalender", "kalender"], ["/admin/availability", "kalender"],
   ["/admin/planlegge", "workbench"], ["/admin/workbench", "workbench"], ["/admin/coach-workbench", "workbench"],
-  ["/admin/plan", "workbench"], ["/admin/plan-templates", "workbench"],
+  ["/admin/plan", "workbench"], ["/admin/plan-templates", "workbench"], ["/admin/ovelser", "workbench"],
   ["/admin/bookinger", "booking"], ["/admin/services", "booking"],
   ["/admin/grupper", "grupper"],
   ["/admin/tester", "tester"],
+  ["/admin/datagolf", "datagolf"],
   ["/admin/oppsett", "oppsett"], ["/admin/profile", "oppsett"], ["/admin/team", "oppsett"],
 ];
 
 const under = (path: string, p: string) => path === p || path.startsWith(p + "/");
 
-/** Menypunktet som lyser for en adresse. Mer-punkter lyser «mer» i menyen. */
-export function aktivtAosPunkt(path: string): { punkt: AosPunktId | null; mer: AosMerId | null } {
-  const treff = PREFIKS.filter(([p]) => under(path, p)).sort((a, b) => b[0].length - a[0].length)[0]?.[1] ?? null;
-  if (!treff) return { punkt: null, mer: null };
-  if (AOS_MER.some((m) => m.id === treff)) return { punkt: "mer", mer: treff as AosMerId };
-  return { punkt: treff as AosPunktId, mer: null };
+/** Menypunktet som lyser for en adresse, eller null (for eksempel /admin/mer). */
+export function aktivtAosId(path: string): AosId | null {
+  return PREFIKS.filter(([p]) => under(path, p)).sort((a, b) => b[0].length - a[0].length)[0]?.[1] ?? null;
 }
 
 export function synligeMer(erHeadCoach: boolean) {

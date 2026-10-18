@@ -119,8 +119,8 @@ export function useUkeMotor({ playerId, uke }: { playerId: string; uke: WeekView
       toast.success(UI.toastSourceDropped);
     });
 
-  const drillFraKilde = (sessionId: string, sourceId: string) =>
-    kjor(() => addDrillFromSource({ sessionId, sourceId }), () => toast.success(UI.toastDrillDroppedOnSession));
+  const drillFraKilde = (sessionId: string, sourceId: string, ferdig?: () => void) =>
+    kjor(() => addDrillFromSource({ sessionId, sourceId }), () => { toast.success(UI.toastDrillDroppedOnSession); ferdig?.(); });
 
   /** `tilbake`: meldingen får «Angre», som flytter økta tilbake (AG-11, dra-og-slipp). */
   const flytt = (sessionId: string, v: FlyttVerdier, tilbake?: FlyttVerdier) =>

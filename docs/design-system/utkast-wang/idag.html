@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WANG I dag</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Quattrocento:wght@400;700&family=Quattrocento+Sans:wght@400;700&display=swap">
+<link rel="stylesheet" href="felles/wang.css">
+<style>
+  /* Bare det I dag trenger i tillegg til wang.css */
+  /* Dagens fokus: fylt flate i aksefargen (SLAG har mørk tekst), som øktkortet */
+  .fokus{border-radius:var(--r-kort);background:var(--slag-fyll);color:var(--slag-paa);padding:18px;display:grid;gap:14px}
+  .fokus h3{margin:0;font:800 21px/1.25 var(--brand);color:inherit;text-wrap:balance}
+  .fokus .kilde{color:var(--slag-paa)}
+  .fokus .okt-merke{background:rgba(255,255,255,.4);justify-self:start}
+  .fokus .maltall div{background:rgba(255,255,255,.45)}
+  .fokus .maltall strong{font-size:26px}
+  .maltall strong small{font-size:13px}
+  .nw{white-space:nowrap}
+  .fokus .maltall span{color:var(--navy-dyp)}
+  .maltall{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+  .maltall div{display:grid;gap:4px;padding:12px;border-radius:var(--r-felt);background:var(--tint-orange)}
+  .maltall strong{font:800 22px/1 var(--brand);color:var(--navy-dyp);white-space:nowrap}
+  .maltall span{font:700 11px/1.3 var(--brand);color:var(--tekst-2)}
+  .saker{display:grid}
+  .sak{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;padding:14px 0;align-items:center}
+  .sak + .sak{border-top:1px solid var(--linje)}
+  .sak > .pille,.sak > .avatar{justify-self:start}
+  .sak > p{grid-column:1 / -1}
+  .sak b{font:700 15px/1.35 var(--brand);color:var(--navy-dyp)}
+  .sak p{font-size:14px;color:var(--tekst-2)}
+  .sak .knapper{grid-column:1 / -1;margin-top:6px}
+  .sak .knapp{min-height:40px;padding:0 16px;font-size:13px}
+  .ukerad{display:grid;grid-template-columns:44px 1fr;gap:12px;align-items:center;padding:6px 0}
+  .ukerad .dg{font:800 13px/1 var(--brand);color:var(--tekst-2)}
+  .ukerad.i-dag .dg{color:var(--navy);text-decoration:underline;text-decoration-color:var(--mint);text-decoration-thickness:3px;text-underline-offset:5px}
+  .ukerad .ok-r{display:grid;gap:6px}
+  .oppmote-topp{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .ring{width:72px;height:72px;flex:none}
+  .ring circle{fill:none;stroke-width:9}
+  .elev{display:grid;grid-template-columns:auto 1fr;gap:10px 12px;align-items:center;padding:12px 0}
+  .elev + .elev{border-top:1px solid var(--linje)}
+  .elev .hvem b{display:block;font:700 15px/1.2 var(--brand);color:var(--navy-dyp)}
+  .elev .hvem span{display:block;font-size:13px;color:var(--tekst-2)}
+  .elev .valg{grid-column:1 / -1;justify-self:stretch;display:grid;grid-template-columns:repeat(3,1fr)}
+  .elev .valg button{padding:0 6px;font-size:13px}
+  .elev .valg button[data-v=fravaer][aria-pressed=true]{background:var(--gul);color:var(--navy-dyp)}
+  .elev .valg button[data-v=borte][aria-pressed=true]{background:var(--rosa);color:#fff}
+  .elev .merknad{grid-column:1 / -1;font-size:13px;color:var(--gul-tekst);font-weight:700}
+  .feste{position:sticky;bottom:0;z-index:2;padding:12px 16px 16px;background:linear-gradient(to top,var(--bg) 70%,rgba(244,246,248,0));display:grid;gap:8px}
+  .ovelse{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:12px 0}
+  .ovelse + .ovelse{border-top:1px solid var(--linje)}
+  .ovelse b{display:block;font:700 15px/1.3 var(--brand);color:var(--navy-dyp)}
+  .ovelse span.f{display:block;font-size:13px;color:var(--tekst-2)}
+  .ovelse .min{font:800 14px/1 var(--brand);color:var(--navy-dyp);white-space:nowrap}
+  .rad-info{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:15px;color:var(--tekst-2)}
+  .rad-info b{color:var(--navy-dyp)}
+  .gruppevelger{display:flex;flex-wrap:wrap;gap:6px}
+  .gruppevelger button{min-height:36px;padding:0 14px;border-radius:var(--r-chip);border:1.5px solid var(--n300);background:#fff;font:700 13px/1 var(--brand);color:var(--tekst-2);cursor:pointer}
+  .gruppevelger button[aria-pressed=true]{background:var(--navy);border-color:var(--navy);color:#fff}
+  /* Krever handling, gruppert etter frist. Én primærknapp per sak. */
+  .frist + .frist{border-top:1px solid var(--n200)}
+  .frist-hode{display:flex;align-items:center;gap:8px;padding:14px 0 2px;font:800 15px/1.2 var(--brand);color:var(--navy-dyp)}
+  .frist-hode i{width:10px;height:10px;border-radius:50%;flex:none}
+  .frist-hode .kilde{margin-left:auto}
+  .frist:first-child .frist-hode{padding-top:0}
+  /* Dagen som tidslinje, som Cockpit i AgencyOS: én rad per time, øktene som fylte blokker */
+  .dagen{position:relative;display:grid;grid-template-columns:44px minmax(0,1fr);border:1px solid var(--n200);border-radius:var(--r-kort);overflow:hidden;background:#fff}
+  .dagen .t{grid-column:1;height:52px;padding:6px 0 0 8px;border-bottom:1px solid var(--linje);background:var(--tint-graa);font:700 12px/1 var(--brand);color:var(--tekst-2)}
+  .dagen .s{grid-column:2;height:52px;border-bottom:1px solid var(--linje)}
+  .dagen .blokk{position:absolute;left:52px;right:8px;display:grid;align-content:start;gap:2px;padding:6px 12px;border-radius:0;border:0;text-align:left;font:inherit;cursor:pointer;overflow:hidden}
+  .dagen .blokk b{font:800 14px/1.2 var(--brand)}
+  .dagen .blokk span{font:700 12px/1.3 var(--brand)}
+  .dagen .blokk.skole{background:var(--n100);color:var(--tekst-2);cursor:default}
+  .dagen .na{position:absolute;left:44px;right:0;height:0;border-top:2px solid var(--rosa)}
+  .dagen .na::before{content:"07:40";position:absolute;left:-44px;top:-10px;padding:2px 5px;border-radius:0;background:var(--rosa);color:#fff;font:700 10px/1.2 var(--brand)}
+  /* Mobil: én kolonne i prioritert rekkefølge. Det som venter kommer først. */
+  .idag-kol{display:grid;gap:28px}
+  .idag-kol > div{display:contents}
+  .r1{order:1} .r2{order:2} .r3{order:3} .r4{order:4} .r5{order:5}
+  @container (min-width:900px){
+    .idag-kol{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:24px;align-items:start}
+    .idag-kol > div{display:grid;gap:28px}
+    .r1,.r2,.r3,.r4,.r5{order:0}
+    .feste{position:static;background:none;padding:0;grid-template-columns:auto auto;justify-content:start}
+    .elever-kol{columns:2;column-gap:32px}
+    .elever-kol .elev{break-inside:avoid}
+    .elev{grid-template-columns:auto 1fr minmax(0,280px)}
+    .elev .valg{grid-column:auto}
+  }
+</style>
+</head>
+<body>
+<div class="ytre">
+  <header class="hode">
+    <p class="meta-s">WANG Toppidrett · trenerflaten · pakke 2 I dag · utkast 2 (retning B) · 16.10.2026</p>
+    <h1>I dag</h1>
+    <p>Første skjerm treneren ser: dagens fokus, økter, oppmøte på morgentreningen og det som venter. Onsdag 14. oktober kl. 07:40, uke 42. Alle navn og tall er syntetiske.</p>
+  </header>
+  <div class="kontroller">
+    <div class="velger" aria-label="Skjerm"><button type="button" data-skjerm="idag" aria-pressed="true">I dag</button><button type="button" data-skjerm="oppmote" aria-pressed="false">Oppmøte</button><button type="button" data-skjerm="okt" aria-pressed="false">Økta</button><button type="button" data-skjerm="fravaer" aria-pressed="false">Meld fravær</button></div>
+    <div class="velger" aria-label="Bredde"><button type="button" data-bredde="mob" aria-pressed="true">Mobil 390</button><button type="button" data-bredde="pc" aria-pressed="false">PC 1280</button></div>
+    <div class="velger" aria-label="Rolle"><button type="button" data-rolle="trener" aria-pressed="true">Trener</button><button type="button" data-rolle="sportssjef" aria-pressed="false">Sportssjef</button></div>
+    <div class="velger" aria-label="Tilstand"><button type="button" data-tilstand="data" aria-pressed="true">Med data</button><button type="button" data-tilstand="tom" aria-pressed="false">Tom</button><button type="button" data-tilstand="laster" aria-pressed="false">Laster</button><button type="button" data-tilstand="feil" aria-pressed="false">Feil</button></div>
+  </div>
+  <div class="scene"><div id="ramme" class="ramme mob"></div></div>
+  <div class="notater">
+    <section class="endringer">
+      <h2>Nytt i utkast 2</h2>
+      <ul>
+        <li><b>Ett hovedtall</b> på navy helteflate: «5 saker krever deg, 2 før 07:50», med én knapp. De tre andre tallene står som små tellere under.</li>
+        <li><b>Krever handling</b> er gruppert etter frist (før 07:50, i dag, denne uka), med én primærknapp per sak.</li>
+        <li><b>Én farge for handling:</b> navy. «Før oppmøte» var mint; mint er nå bare status «ok».</li>
+        <li><b>Dagens fokus</b> er en fylt SLAG-flate. <b>Oppfølging</b> viser elevene med plan-stolpe og rosa statusmarkør.</li>
+      </ul>
+    </section>
+    <section class="endringer">
+      <h2>Hva skjermen gjør</h2>
+      <ul>
+        <li><b>Dagens fokus</b> med tre måltall fra TrackMan. Treneren setter det, elevene ser det i PlayerHQ.</li>
+        <li><b>Krever handling</b> samler det som venter: oppmøte som ikke er ført, fravær flere dager på rad, egenførte tester som skal kontrolleres, delte fireukerssjekker og svar på forslag.</li>
+        <li><b>Oppmøte på morgentreningen</b> føres med ett trykk per elev. Frist kl. 07:50. Meldt fravær står ferdig utfylt.</li>
+        <li><b>Elever som trenger oppfølging</b> med «Ta oppfølging» og «Løst».</li>
+        <li>Sportssjef ser alle golfgruppene og kan filtrere. Trener ser bare egne grupper.</li>
+      </ul>
+    </section>
+    <section class="endringer">
+      <h2>Fra dagens skjerm, beholdt</h2>
+      <ul>
+        <li>Dagsfokus med Club Speed, Smash Factor og Attack Angle (WG-01).</li>
+        <li>Prioritert oppfølging med «Ta oppfølging» og «Løst» (WANG-43).</li>
+        <li>Morgentreninger og fellessamlinger i uka (WANG-30), og fravær fra morgentreningen.</li>
+        <li>Rød bekreftknapp for fravær er byttet til navy. Rosa brukes bare når noe slettes eller avlyses.</li>
+      </ul>
+    </section>
+  </div>
+</div>
+
+<!-- ================= I dag ================= -->
+<template id="s-idag">
+<div class="app" data-fane="idag">
+<main class="innhold">
+
+  <section class="topp inn" data-behold>
+    <div>
+      <p class="dato">Onsdag 14. oktober · uke 42 · kl. 07:40</p>
+      <h1 class="tittel">I dag</h1>
+    </div>
+  </section>
+
+  <section class="helt med-bilde inn" aria-label="Det som haster">
+    <div class="helt-tekst">
+      <span class="helt-merke haster"><i></i>Morgentrening om 20 minutter</span>
+      <p class="helt-hoved"><strong data-tell="5">5</strong><span>saker krever deg, <span class="nw">2 før 07:50</span></span></p>
+      <p class="helt-forklar">Oppmøtet er ikke ført, og Elev 09 har ikke møtt tre morgener på rad.</p>
+      <button type="button" class="knapp lys" data-gaa="oppmote">Før oppmøte</button>
+    </div>
+    <img class="helt-bilde" src="bilder/slag-utslag.jpg" alt="" width="480" height="230">
+  </section>
+
+  <div class="smaa-tall">
+    <a href="#"><strong>2</strong><span>Økter i dag</span></a>
+    <a href="#" data-gaa="oppmote"><strong>10<small>av 11</small></strong><span>Til stede i går</span></a>
+    <a href="#"><strong>3</strong><span>Følger opp</span></a>
+  </div>
+
+  <div class="gruppevelger" data-bare="sportssjef" role="group" aria-label="Grupper" data-gruppe>
+    <button type="button" aria-pressed="true">Alle golfgrupper</button><button type="button" aria-pressed="false">Toppidrett VG1</button><button type="button" aria-pressed="false">Toppidrett VG2–3</button><button type="button" aria-pressed="false">WANG Ung</button>
+  </div>
+
+  <div class="idag-kol">
+    <div>
+      <section class="seksjon r3">
+        <div class="sek-topp"><h2>Dagens fokus</h2><a class="lenke" href="#">Endre fokus</a></div>
+        <div class="fokus">
+          <span class="okt-merke"><i></i>SLAG</span>
+          <h3>Driver: svinghastighet og balltreff før høstturneringen</h3>
+          <div class="maltall">
+            <div><strong>112<small> mph</small></strong><span>Club Speed, snitt i gruppa</span></div>
+            <div><strong>1,48</strong><span>Smash Factor</span></div>
+            <div><strong>+2,5°</strong><span>Attack Angle</span></div>
+          </div>
+          <p class="kilde">Satt av Trener 1 mandag 12.10. Elevene ser fokuset i PlayerHQ.</p>
+        </div>
+      </section>
+
+      <section class="seksjon r2">
+        <div class="sek-topp"><h2>Dagen</h2><span class="kilde">2 økter · 07–16</span></div>
+        <div class="dagen" data-dagen></div>
+        <div class="lg-rad"><span class="lg"><i class="bg-slag"></i>SLAG</span><span class="lg"><i class="bg-fys"></i>FYS</span><span class="lg"><i style="background:var(--n200)"></i>Skole</span></div>
+      </section>
+
+      <section class="seksjon r5">
+        <div class="sek-topp"><h2>Uka</h2><span class="kilde">Morgentreninger og fellessamlinger</span></div>
+        <div class="kort">
+          <div class="ukerad"><span class="dg">Man</span><div class="ok-r"><button type="button" class="okt mini tek"><img src="bilder/tek-video.jpg" alt="" width="76" height="76"><div class="okt-tekst"><span class="navn">P6.0 Kølle parallell i nedsving</span><div class="okt-info"><span>08:00 · Gjennomført</span></div></div></button></div></div>
+          <div class="ukerad"><span class="dg">Tir</span><div class="ok-r"><button type="button" class="okt mini fys"><img src="bilder/fys-styrke.jpg" alt="" width="76" height="76"><div class="okt-tekst"><span class="navn">Hurtighet og hopp</span><div class="okt-info"><span>08:00 · Gjennomført</span></div></div></button></div></div>
+          <div class="ukerad i-dag"><span class="dg">Ons</span><div class="ok-r"><button type="button" class="okt mini slag" data-gaa="okt"><img src="bilder/slag-utslag.jpg" alt="" width="76" height="76"><div class="okt-tekst"><span class="navn">Driver med TrackMan</span><div class="okt-info"><span>08:00 · I dag</span></div></div></button></div></div>
+          <div class="ukerad"><span class="dg">Tor</span><div class="ok-r"><button type="button" class="okt mini spill"><img src="bilder/spill-bane.jpg" alt="" width="76" height="76"><div class="okt-tekst"><span class="navn">9 hull med oppgaver</span><div class="okt-info"><span>08:00 · Gamle Fredrikstad GK</span></div></div></button></div></div>
+          <div class="ukerad"><span class="dg">Fre</span><div class="ok-r"><button type="button" class="okt mini turn"><img src="bilder/turn-tee.jpg" alt="" width="76" height="76"><div class="okt-tekst"><span class="navn">Fellessamling: rutiner før start</span><div class="okt-info"><span>13:00 · Alle golfgrupper</span></div></div></button></div></div>
+        </div>
+      </section>
+    </div>
+
+    <div>
+      <section class="seksjon r1">
+        <div class="sek-topp"><h2>Krever handling <span class="teller">5</span></h2></div>
+        <div class="kort saker">
+          <div class="frist">
+            <p class="frist-hode"><i style="background:var(--rosa)"></i>Før 07:50<span class="kilde">2 saker</span></p>
+            <div class="sak"><span class="pille haster"><i></i>Frist 07:50</span><b>Oppmøte på morgentreningen er ikke ført</b><p>11 elever. To har meldt fravær.</p><div class="knapper"><button type="button" class="knapp pri" data-gaa="oppmote">Før oppmøte</button></div></div>
+            <div class="sak"><span class="pille haster"><i></i>3 dager</span><b>Elev 09 har ikke møtt tre morgener på rad</b><p>Ikke meldt fravær. Sist til stede fredag 9.10.</p><div class="knapper"><button type="button" class="knapp sek" data-gaa="fravaer">Meld fravær</button><button type="button" class="knapp flat">Se elev</button></div></div>
+          </div>
+          <div class="frist">
+            <p class="frist-hode"><i style="background:var(--gul)"></i>I dag<span class="kilde">2 saker</span></p>
+            <div class="sak"><span class="pille vent"><i></i>Egenført</span><b>Elev 05 har ført 8-ball selv</b><p>34 poeng, tirsdag 13.10. Venter på kontroll.</p><div class="knapper"><button type="button" class="knapp sek">Kontroller</button></div></div>
+            <div class="sak"><span class="pille vent"><i></i>Delt</span><b>Elev 03 delte fireukerssjekken</b><p>Uke 38–41. Prosessmål og alle 41 spørsmål.</p><div class="knapper"><button type="button" class="knapp sek">Les</button></div></div>
+          </div>
+          <div class="frist">
+            <p class="frist-hode"><i style="background:var(--n400)"></i>Denne uka<span class="kilde">1 sak</span></p>
+            <div class="sak"><span class="pille noy"><i></i>Avslått</span><b>Elev 04 avslo forslaget ditt</b><p>SLAG 60 min ekstra torsdag. Eleven skrev: «Har prøve fredag.»</p><div class="knapper"><button type="button" class="knapp sek">Svar Elev 04</button></div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="seksjon r4">
+        <div class="sek-topp"><h2>Elever som trenger oppfølging</h2><span class="kilde">3 av 11</span></div>
+        <div class="baand-del trenger">
+          <div class="baand-liste">
+            <a class="elevrad trenger" href="#"><span class="avatar">09</span><span class="er-hvem"><b>Elev 09</b><span>VG2 · Kategori D</span><span class="er-grunn">Borte tre morgener på rad</span></span><span class="er-plan"><b>74 %</b><span class="stolpe"><span style="width:74%"></span><i class="strek" style="left:80%"></i></span></span></a>
+            <a class="elevrad trenger" href="#"><span class="avatar">02</span><span class="er-hvem"><b>Elev 02</b><span>VG1 · Kategori E</span><span class="er-grunn">Under 70 % av planen</span></span><span class="er-plan"><b>61 %</b><span class="stolpe"><span style="width:61%"></span><i class="strek" style="left:80%"></i></span></span></a>
+            <a class="elevrad trenger" href="#"><span class="avatar">11</span><span class="er-hvem"><b>Elev 11</b><span>VG3 · Kategori C</span><span class="er-grunn">Tre runder over snittet</span></span><span class="er-plan"><b>89 %</b><span class="stolpe"><span style="width:89%"></span><i class="strek" style="left:80%"></i></span></span></a>
+          </div>
+          <p class="kilde">Stolpen er gjennomført mot planlagt tid siste fire uker. Streken er 80 %. Elevene ser ikke denne lista.</p>
+        </div>
+      </section>
+    </div>
+  </div>
+
+</main>
+</div>
+</template>
+
+<!-- ================= Oppmøte ================= -->
+<template id="s-oppmote">
+<div class="app" data-fane="idag" data-skall="tilbake" data-tilbake="I dag">
+<main class="innhold">
+  <section class="seksjon" data-behold>
+    <p class="dato">Onsdag 14. oktober · 08:00 · Innendørshallen</p>
+    <h1 class="tittel">Oppmøte morgentrening</h1>
+    <div class="oppmote-topp">
+      <svg class="ring" viewBox="0 0 72 72" role="img" aria-label="9 av 11 til stede">
+        <circle cx="36" cy="36" r="30" stroke="var(--n100)"/>
+        <circle cx="36" cy="36" r="30" stroke="var(--mint)" stroke-dasharray="154 189" stroke-linecap="round" transform="rotate(-90 36 36)" data-ring/>
+      </svg>
+      <div><div class="hoved"><strong data-tilstede>9</strong><span class="forklar">av 11 til stede</span></div><p class="kilde">Frist kl. 07:50. Endringer etter fristen merkes.</p></div>
+    </div>
+  </section>
+  <div class="kort elever-kol" data-elever></div>
+  <div class="feste"><button type="button" class="knapp pri stor" data-lagre>Lagre oppmøte</button><p class="kilde" data-kvittering hidden>Lagret 07:44. Elevene ser sitt eget oppmøte i PlayerHQ.</p></div>
+</main>
+</div>
+</template>
+
+<!-- ================= Økta ================= -->
+<template id="s-okt">
+<div class="app" data-fane="idag" data-skall="tilbake" data-tilbake="I dag">
+<main class="innhold">
+  <button type="button" class="okt slag" data-behold style="cursor:default">
+    <img src="bilder/slag-utslag.jpg" alt="" width="390" height="120">
+    <div class="okt-tekst">
+      <div class="okt-rad"><span class="okt-tid">08:00<small>120 min</small></span><span class="okt-merke"><i></i>SLAG</span></div>
+      <span class="navn">Morgentrening: driver med TrackMan</span>
+      <div class="okt-info"><span>Innendørshallen</span><span>Trener 1</span><span>11 elever</span></div>
+    </div>
+  </button>
+  <div class="idag-kol">
+    <div>
+      <section class="seksjon">
+        <div class="sek-topp"><h2>Hvorfor</h2></div>
+        <p class="forklar">Høstturneringen er om tre uker. Vi bygger fart uten å miste treffet: rent treff først, så lengre sving.</p>
+        <div class="maltall">
+          <div><strong>112<small> mph</small></strong><span>Club Speed, snitt i gruppa</span></div>
+          <div><strong>1,48</strong><span>Smash Factor</span></div>
+          <div><strong>+2,5°</strong><span>Attack Angle</span></div>
+        </div>
+      </section>
+      <section class="seksjon">
+        <div class="sek-topp"><h2>Øvelser</h2><span class="kilde">4 øvelser · 120 min</span></div>
+        <div class="kort">
+          <div class="ovelse"><span class="akse fys">FYS</span><div><b>Oppvarming med strikk</b><span class="f">Hofte og brystrygg</span></div><span class="min">15 min</span></div>
+          <div class="ovelse"><span class="akse tek">TEK</span><div><b>Uten ball: P6.0 i speil</b><span class="f">10 rep sakte, 10 rep i 50 % fart</span></div><span class="min">20 min</span></div>
+          <div class="ovelse"><span class="akse slag">SLAG</span><div><b>Driver i tre fartstrinn</b><span class="f">75 % · 90 % · 100 % av Club Speed. TrackMan stasjon 1–3.</span></div><span class="min">60 min</span></div>
+          <div class="ovelse"><span class="akse spill">SPILL</span><div><b>Fairway-treff i press</b><span class="f">10 slag, treff i 30 m bred korridor teller</span></div><span class="min">25 min</span></div>
+        </div>
+      </section>
+    </div>
+    <div>
+      <section class="seksjon">
+        <div class="sek-topp"><h2>Deltakere</h2><a class="lenke" href="#" data-gaa="oppmote">Før oppmøte</a></div>
+        <div class="kort">
+          <div class="rad-info"><span><b>11</b> i gruppa</span><span><b>2</b> fravær meldt</span><span><b>0</b> ført</span></div>
+          <div class="stolpe"><span style="width:0%"></span></div>
+          <p class="kilde">Oppmøte er ikke ført. Frist kl. 07:50.</p>
+        </div>
+      </section>
+      <section class="seksjon">
+        <div class="sek-topp"><h2>Utstyr</h2></div>
+        <div class="kort"><p class="forklar">TrackMan stasjon 1–3, driver, strikk, speil, kjegler til korridoren.</p></div>
+      </section>
+      <section class="seksjon">
+        <div class="knapper"><button type="button" class="knapp pri">Endre økt</button><button type="button" class="knapp sek">Gjenta neste uke</button><button type="button" class="knapp fare" data-avlys>Avlys økt</button></div>
+        <div class="kort" data-avlys-ark hidden>
+          <b class="undertittel">Avlyse morgentreningen i dag?</b>
+          <p class="forklar">11 elever får beskjed i PlayerHQ med en gang. Økta forsvinner fra planen deres, og tiden teller ikke som planlagt.</p>
+          <div class="knapper"><button type="button" class="knapp fare">Avlys og varsle elevene</button><button type="button" class="knapp sek" data-avbryt>Behold økta</button></div>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+</div>
+</template>
+
+<!-- ================= Meld fravær ================= -->
+<template id="s-fravaer">
+<div class="app" data-fane="idag" data-skall="tilbake" data-tilbake="I dag">
+<main class="innhold">
+  <section data-behold>
+    <p class="dato">Morgentrening · onsdag 14. oktober · 08:00</p>
+    <h1 class="tittel">Meld fravær</h1>
+    <p class="ingress">For en elev som ikke kommer. Eleven og foresatte under 18 ser fraværet i PlayerHQ.</p>
+  </section>
+  <div class="kort" style="max-width:560px">
+    <div class="felt"><label for="f-elev">Elev</label><select id="f-elev"><option>Elev 09 · VG2</option><option>Elev 01 · VG1</option><option>Elev 02 · VG1</option></select></div>
+    <div class="felt"><span class="etikett-felt">Økter</span>
+      <div class="valg" role="group" aria-label="Økter" style="justify-self:stretch;display:grid;grid-template-columns:1fr 1fr"><button type="button" aria-pressed="true">Bare morgentrening</button><button type="button" aria-pressed="false">Hele dagen</button></div>
+    </div>
+    <div class="felt"><label for="f-grunn">Grunn</label><select id="f-grunn"><option>Ikke meldt, ukjent grunn</option><option>Skole: prøve eller undervisning</option><option>Reise eller turnering</option><option>Meldt av foresatt</option><option>Annet</option></select><span class="hjelp">Skriv aldri helseopplysninger her. De hører hjemme hos helsepersonell.</span></div>
+    <div class="felt"><label for="f-notat">Notat til eleven</label><textarea id="f-notat" rows="3">Hei, vi savnet deg i dag. Gi beskjed hvis noe er i veien.</textarea><span class="hjelp">Valgfritt. Sendes som melding i PlayerHQ når du lagrer.</span></div>
+    <div class="knapper"><button type="button" class="knapp pri" data-bekreft>Bekreft fravær</button><button type="button" class="knapp sek">Avbryt</button></div>
+    <p class="kilde" data-kvittering hidden>Fravær lagret for Elev 09. Melding sendt.</p>
+  </div>
+</main>
+</div>
+</template>
+
+<script src="felles/wang.js"></script>
+<script>
+(function () {
+  /* Syntetisk gruppe: 11 elever. Elev 06 og 10 har meldt fravær. */
+  var ELEVER = [
+    ['01', 'VG1', 'E'], ['02', 'VG1', 'E'], ['03', 'VG1', 'D'], ['04', 'VG2', 'D'], ['05', 'VG2', 'D'], ['06', 'VG2', 'C', 'Skole: prøve i norsk'],
+    ['07', 'VG2', 'E'], ['08', 'VG3', 'C'], ['09', 'VG2', 'D'], ['10', 'VG3', 'C', 'Meldt av foresatt'], ['11', 'VG3', 'C']
+  ];
+
+  function dagen(app) {
+    var el = app.querySelector('[data-dagen]'); if (!el) return;
+    var fra = 7, til = 16, h = 52, html = '';
+    for (var t = fra; t < til; t++) html += '<span class="t">' + (t < 10 ? '0' : '') + t + '</span><span class="s"></span>';
+    var B = [[8, 10, 'fyll-slag', 'Morgentrening: driver med TrackMan', '08:00–10:00 · Innendørshallen · 2 fravær meldt', 'okt'], [10.25, 12.75, 'skole', 'Skole', '10:15–12:45', ''], [13, 14, 'fyll-fys', 'Styrke: bein og rotasjon', '13:00–14:00 · Styrkerommet', 'okt'], [14.25, 15.5, 'skole', 'Skole', '14:15–15:30', '']];
+    html += B.map(function (b) { return '<button type="button" class="blokk ' + b[2] + '" style="top:' + ((b[0] - fra) * h + 3) + 'px;height:' + ((b[1] - b[0]) * h - 6) + 'px"' + (b[5] ? ' data-gaa="' + b[5] + '"' : ' tabindex="-1"') + '><b>' + b[3] + '</b><span>' + b[4] + '</span></button>'; }).join('');
+    html += '<span class="na" style="top:' + ((7 + 40 / 60 - fra) * h) + 'px" aria-label="Nå 07:40"></span>';
+    el.innerHTML = html;
+  }
+
+  function oppmote(app) {
+    var liste = app.querySelector('[data-elever]');
+    liste.innerHTML = ELEVER.map(function (e) {
+      var fr = !!e[3];
+      return '<div class="elev" data-elev="' + e[0] + '"><span class="avatar">' + e[0] + '</span><div class="hvem"><b>Elev ' + e[0] + '</b><span>' + e[1] + ' · Kategori ' + e[2] + '</span></div>' +
+        '<div class="valg" role="group" aria-label="Oppmøte Elev ' + e[0] + '"><button type="button" data-v="til" aria-pressed="' + !fr + '">Til stede</button><button type="button" data-v="fravaer" aria-pressed="' + fr + '">Fravær</button><button type="button" data-v="borte" aria-pressed="false">Ikke møtt</button></div>' +
+        (fr ? '<span class="merknad">Meldt fravær: ' + e[3] + '</span>' : '') + '</div>';
+    }).join('');
+    function tell() {
+      var n = app.querySelectorAll('[data-v=til][aria-pressed=true]').length;
+      app.querySelector('[data-tilstede]').textContent = n;
+      app.querySelector('[data-ring]').setAttribute('stroke-dasharray', (188.5 * n / 11).toFixed(1) + ' 189');
+      app.querySelector('.ring').setAttribute('aria-label', n + ' av 11 til stede');
+    }
+    liste.addEventListener('click', function (ev) { if (ev.target.closest('.valg button')) setTimeout(tell, 0); });
+    app.querySelector('[data-lagre]').addEventListener('click', function () { app.querySelector('[data-kvittering]').hidden = false; });
+    tell();
+  }
+
+  function okt(app) {
+    var ark = app.querySelector('[data-avlys-ark]');
+    app.querySelector('[data-avlys]').addEventListener('click', function () { ark.hidden = false; });
+    app.querySelector('[data-avbryt]').addEventListener('click', function () { ark.hidden = true; });
+  }
+
+  function fravaer(app) {
+    app.querySelector('[data-bekreft]').addEventListener('click', function () { app.querySelector('[data-kvittering]').hidden = false; });
+  }
+
+  WANGUtkast.start({
+    start: 'idag',
+    skjermer: {
+      idag: { mal: 's-idag', etter: dagen, tom: { tittel: 'Ingen økter i dag', tekst: 'Gruppa har fri i dag. Ingen saker venter på deg.', knapp: 'Se uka' }, laster: 'Henter dagen …', feil: 'Dagen kunne ikke hentes' },
+      oppmote: { mal: 's-oppmote', etter: oppmote, tom: { tittel: 'Ingen elever i gruppa', tekst: 'Legg til elever under Elever før du fører oppmøte.', knapp: 'Gå til Elever' }, laster: 'Henter elevene …', feil: 'Oppmøtet kunne ikke hentes' },
+      okt: { mal: 's-okt', etter: okt, tom: { tittel: 'Økta har ingen øvelser', tekst: 'Legg inn øvelser, eller kopier fra en tidligere økt.', knapp: 'Legg inn øvelser' }, laster: 'Henter økta …', feil: 'Økta kunne ikke hentes' },
+      fravaer: { mal: 's-fravaer', etter: fravaer, tom: { tittel: 'Ingen økter å melde fravær fra', tekst: 'Gruppa har ingen økter i dag.', knapp: 'Tilbake til I dag' }, laster: 'Henter elevene …', feil: 'Fraværet kunne ikke lagres. Ingenting er sendt.' }
+    }
+  });
+})();
+</script>
+</body>
+</html>

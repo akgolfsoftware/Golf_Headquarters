@@ -20,8 +20,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import { harCoachLesetilgangTilSpiller } from "@/lib/auth/coached";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { TL } from "@/lib/v2/train-lock";
 import { Icon } from "@/components/v2/icon";
 import { computeTrackManDispersionMap } from "@/lib/trackman/dispersion-map";
@@ -45,7 +45,7 @@ export default async function AdminTrackmanSessionPage({ params }: Props) {
     include: { user: { select: { id: true, name: true, hcp: true } } },
   });
   // Coach-scope: en assistant coach kan ikke åpne en annen coachs spillers økt via id.
-  if (!sesjon || !(await harCoachTilgangTilSpiller(user, sesjon.userId))) notFound();
+  if (!sesjon || !(await harCoachLesetilgangTilSpiller(user, sesjon.userId))) notFound();
 
   const shots = await prisma.trackManShot.findMany({
     where: { sessionId: sesjon.id },
@@ -74,7 +74,8 @@ export default async function AdminTrackmanSessionPage({ params }: Props) {
   const portalDetalj = `/portal/analysere/trackman/${sesjon.id}`;
 
   return (
-    <V2Shell bredde="kolonne" aktiv="innsikt" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <AgencyOSSkall navn={user.name ?? "Coach"}>
+      <div className="agn-legacy">
       <Link
         href="/admin/trackman"
         style={{
@@ -136,6 +137,7 @@ export default async function AdminTrackmanSessionPage({ params }: Props) {
           allShotsHref="#alle-slag"
         />
       )}
-    </V2Shell>
+      </div>
+    </AgencyOSSkall>
   );
 }

@@ -288,15 +288,6 @@ export const DIMENSJON_LABEL: Record<DimensjonKode, string> = {
   STRATEGIOPPGAVE: "Strategioppgave",
 };
 
-/** Sand-trappen — bunkerens eneste trappe-lignende verdi, atskilt fra motorikk. */
-export const SAND_TRINN_KODER = ["UTEN_BALL_I_SAND", "MED_BALL"] as const;
-export type SandTrinnKode = (typeof SAND_TRINN_KODER)[number];
-
-export const SAND_TRINN_LABEL: Record<SandTrinnKode, string> = {
-  UTEN_BALL_I_SAND: "Uten ball i sanden",
-  MED_BALL: "Med ball",
-};
-
 // ---------------------------------------------------------------------------
 // Formel-strengen
 // ---------------------------------------------------------------------------

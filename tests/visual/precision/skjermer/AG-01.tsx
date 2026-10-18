@@ -3,18 +3,20 @@ import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { AdminRolleProvider } from "@/components/v2/rolle";
 import { AG01Cockpit, type AG01Tilstand } from "@/components/admin/precision/AG01Cockpit";
 import type { AG01Data } from "@/lib/agencyos/cockpit-precision";
+import { byggAiDispatch } from "@/lib/agencyos/ai-dispatch-build";
 
 export const sti = "/admin/agencyos";
 
 const data: AG01Data = {
+  hilsen: "God morgen, Test",
   kicker: "Tirsdag 29. september · uke 40",
   klokke: "10:24",
   naaMin: 10 * 60 + 24,
   kalender: [
-    { id: "k1", start: "07:30", slutt: "09:00", startMin: 450, sluttMin: 540, tittel: "Gruppeøkt", hvem: "Prøvegruppe Nord", sted: "Testbanen GK · Range 1", status: "ferdig", href: "#" },
-    { id: "k2", start: "10:00", slutt: "11:00", startMin: 600, sluttMin: 660, tittel: "Privattime", hvem: "Eirik Dalen", sted: "Studio 1 · TrackMan", status: "pagar", href: "#" },
-    { id: "k3", start: "11:15", slutt: "12:15", startMin: 675, sluttMin: 735, tittel: "Privattime med et langt tjenestenavn som må brytes pent", hvem: "Mari Solberg-Kristoffersen", sted: "Studio 1 · TrackMan", status: "neste", href: "#" },
-    { id: "k4", start: "14:30", slutt: "16:00", startMin: 870, sluttMin: 960, tittel: "Gruppeøkt", hvem: "Prøvegruppe Sør", sted: null, status: "planlagt", href: null },
+    { id: "k1", start: "07:30", slutt: "09:00", startMin: 450, sluttMin: 540, tittel: "Gruppeøkt", hvem: "Prøvegruppe Nord", sted: "Testbanen GK · Range 1", status: "ferdig", href: "#" , akse: "slag" },
+    { id: "k2", start: "10:00", slutt: "11:00", startMin: 600, sluttMin: 660, tittel: "Privattime", hvem: "Eirik Dalen", sted: "Studio 1 · TrackMan", status: "pagar", href: "#" , akse: "tek" },
+    { id: "k3", start: "11:15", slutt: "12:15", startMin: 675, sluttMin: 735, tittel: "Privattime med et langt tjenestenavn som må brytes pent", hvem: "Mari Solberg-Kristoffersen", sted: "Studio 1 · TrackMan", status: "neste", href: "#" , akse: null },
+    { id: "k4", start: "14:30", slutt: "16:00", startMin: 870, sluttMin: 960, tittel: "Gruppeøkt", hvem: "Prøvegruppe Sør", sted: null, status: "planlagt", href: null , akse: "fys" },
   ],
   venter: {
     totalt: 7,
@@ -47,10 +49,12 @@ const data: AG01Data = {
   ],
 };
 
+const dispatch = byggAiDispatch({ isAdmin: true, planActions: 3, caddieDrafts: 1, sessionRequests: 0, agentRunsRunning: 0, innboksNye: 2 });
+
 const Vis = (t: AG01Tilstand, erAdmin = true, d: AG01Data = data) => (
   <AdminRolleProvider erAdmin={erAdmin}>
     <AgencyOSSkall navn="Test Coach">
-      <AG01Cockpit tilstand={t} data={d} />
+      <AG01Cockpit tilstand={t} data={d} dispatch={dispatch} />
     </AgencyOSSkall>
   </AdminRolleProvider>
 );

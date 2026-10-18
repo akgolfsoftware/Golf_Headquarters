@@ -20,7 +20,8 @@ import { osloDagDato } from "./bygg-innboks";
 
 export type ManglendeSgRunde = {
   id: string;
-  spillerId: string;
+  /** null når kontoen ikke er en spiller Spiller 360 kan åpne. */
+  spillerId: string | null;
   spiller: string;
   /** «Lør 26.09 · Borregaard GK · 78 slag» */
   runde: string;

@@ -79,7 +79,7 @@ export async function hentSpillerverktoy(userId: string, sp: Record<string, stri
     prisma.round.findMany({ where: { userId }, orderBy: [{ playedAt: "desc" }, { id: "desc" }], take: valg.runder,
       select: { score: true, playedAt: true, holeScores: { select: { holeNumber: true, par: true, strokes: true, fairway: true, gir: true } } } }),
     prisma.datagolfTak.findMany({ where: { isActive: true }, include: { bands: true }, orderBy: { sortOrder: "asc" } }),
-    hentTurneringshistorikk(userId),
+    hentTurneringshistorikk(userId, undefined, { medDataGolf: true }),
   ]);
   // Offentlig tak-pakke er reserve ved utilgjengelig historisk kilde.
   const proffer = profferResult.data.length ? profferResult.data : taker.map(t => ({

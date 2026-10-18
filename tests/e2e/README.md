@@ -53,6 +53,7 @@ PLAYWRIGHT_BASE_URL=https://akgolf-hq.vercel.app npm run test:e2e
 | `robots-sitemap.spec.ts` | robots.txt + sitemap.xml svarer (200 eller 404, ikke 500) |
 | `https-redirect.spec.ts` | HSTS + X-Content-Type-Options på prod (skipper lokalt) |
 | `pilot-recording-smoke.spec.ts` | Pilot: auth-redirect + (med coach) opptak-UI, godkjenninger, Før-kort |
+| `wang-role-preview.spec.ts` | Alle ti fiktive WANG-roller på desktop og mobil, uten overflyt og med synlig tastaturfokus |
 
 ## Helpers
 

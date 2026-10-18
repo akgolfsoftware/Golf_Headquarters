@@ -34,4 +34,11 @@ test("referanse avledes fra autorisert kilde; fri ID gir ingen tilgang", async (
   assert.equal((await api.hentBankReferanser({ sourceId: "tek:task-own" }, viewer, viewer.id)).ok, true);
   assert.deepEqual(await api.hentBankReferanser({ sourceId: "syntetisk-gammel-proveniens" }, viewer, viewer.id), { ok: true, data: { sourceId: "syntetisk-gammel-proveniens", exerciseId: undefined, positionTaskId: undefined } });
 });
+test("coachen som planlegger for spilleren ser spillerens egne øvelser (16.10.2026)", async () => {
+  const coach = { id: "aktuell-coach", role: "COACH" };
+  const where = await api.bankOvelseWhere(coach, viewer.id);
+  assert.deepEqual(where.OR?.at(-1), { source: "PLAYER", createdBy: viewer.id });
+  assert.equal((await api.lastBankOvelse("egen", coach, viewer.id))?.id, "egen");
+  assert.equal(await api.lastBankOvelse("egen", coach, "annen-spiller"), null);
+});
 // Ingen ekte konto, bankrad eller database benyttes i disse enhetsprøvene.

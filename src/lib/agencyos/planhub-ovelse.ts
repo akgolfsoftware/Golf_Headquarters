@@ -5,11 +5,11 @@
  *
  * De åtte trinnene (docs/treningsplanlegging.md, kap. 9–17): pyramide, område,
  * sted, måleutstyr, gjennomføring (læringssteg, hastighet, treningsmåte,
- * teknisk fokus, sandtrinn), press, mengde og mål.
+ * teknisk fokus), press, mengde og mål.
  *
  * Lagring: aksene som har egne kolonner på ExerciseDefinition (område,
  * motorikk, belastning, press) skrives dit. Resten av trinnene — sted,
- * måleutstyr, treningsmåte, hastighet, teknisk fokus, sandtrinn, mengde og mål
+ * måleutstyr, treningsmåte, hastighet, teknisk fokus, mengde og mål
  * — har ingen kolonne og lagres som `akFormelV2.detaljer` inne i
  * `parametersJson`, i samme form som Workbench lagrer dem på økta
  * (`OvelseDetaljerSchema`). Øvrige nøkler i `parametersJson` beholdes, så en

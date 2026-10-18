@@ -55,6 +55,7 @@ export default async function IupPage({
   const { elevId } = await params;
 
   const bruker = await requirePortalUser({
+    tillatDemo: true,
     allow: ["ADMIN", "COACH", "PLAYER", "PARENT"],
     redirectTo: `/team-wang/logg-inn?next=${encodeURIComponent(`/team-wang/coach/iup/${encodeURIComponent(elevId)}`)}`,
     kreverTilgang: "INGEN",

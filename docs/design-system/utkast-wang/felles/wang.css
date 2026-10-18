@@ -1,0 +1,362 @@
+/* Felles grunnmur for WANG-utkastene (trenerflaten i /team-wang).
+   Samme metode som utkast-playerhq, men bare WANGs egne farger og skrifter.
+   Kilde for verdiene: src/styles/wang-tokens.css og PY_AXES/AKSE_FARGE i
+   src/app/team-wang/_components/ak-primitiver.tsx. Ingen AK-farger (rust, sand, grafitt, Precision-akser).
+   To lag: .ytre = siden rundt skjermen (velgere, notater), .app = selve skjermen.
+   PC fra 900 px containerbredde. */
+
+:root{
+  --side-bg:#F4F6F8; --side-tekst:#1E293B; --side-dempet:#475569; --side-linje:#DCE3EA; --side-kort:#FFFFFF; --side-valgt:#17446F; --side-paa-valgt:#FFFFFF;
+  --brand:"Montserrat",system-ui,-apple-system,sans-serif; --body:"Quattrocento Sans",system-ui,-apple-system,sans-serif;
+  --ut:cubic-bezier(.22,1,.36,1);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--side-bg:#0F172A;--side-tekst:#E9EDF1;--side-dempet:#94A3B8;--side-linje:#334155;--side-kort:#1E293B;--side-valgt:#49CA9F;--side-paa-valgt:#0F172A;color-scheme:dark}}
+:root[data-theme="dark"]{--side-bg:#0F172A;--side-tekst:#E9EDF1;--side-dempet:#94A3B8;--side-linje:#334155;--side-kort:#1E293B;--side-valgt:#49CA9F;--side-paa-valgt:#0F172A;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.5 var(--body)}
+
+/* ---------- Siden rundt skjermen ---------- */
+.ytre{max-width:1320px;margin:0 auto;padding-inline:16px;padding-block:24px 56px;display:grid;gap:20px}
+.hode{display:grid;gap:8px;max-width:72ch}
+.meta-s{font:700 12px/1.4 var(--brand);letter-spacing:.08em;text-transform:uppercase;color:var(--side-dempet)}
+.hode h1{margin:0;font:800 clamp(1.6rem,4.5vw,2.3rem)/1.15 var(--brand);letter-spacing:-.02em;text-wrap:balance}
+.hode p{margin:0;color:var(--side-dempet)}
+.kontroller{display:flex;flex-wrap:wrap;gap:10px}
+.velger{display:inline-flex;flex-wrap:wrap;border:1px solid var(--side-linje);border-radius:999px;padding:3px;gap:3px;background:var(--side-kort)}
+.velger button{font:600 14px/1 var(--brand);min-height:40px;padding:0 16px;border:0;border-radius:999px;background:transparent;color:var(--side-tekst);cursor:pointer}
+.velger button[aria-pressed="true"]{background:var(--side-valgt);color:var(--side-paa-valgt)}
+.velger button:focus-visible{outline:3px solid #49CA9F;outline-offset:2px}
+.scene{display:flex;justify-content:center;min-width:0}
+.ramme{border:1px solid var(--side-linje);border-radius:20px;overflow:hidden;background:#F4F6F8;box-shadow:0 12px 32px rgba(15,42,68,.14);position:relative}
+.ramme.mob{width:390px;max-width:100%}
+.ramme.pc{width:100%}
+.skala{width:1280px;transform-origin:top left}
+.notater{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));align-items:start}
+.endringer{background:var(--side-kort);border:1px solid var(--side-linje);border-radius:16px;padding:16px 18px;display:grid;gap:10px;min-width:0}
+.endringer h2{margin:0;font:700 17px/1.3 var(--brand)}
+.endringer ul{margin:0;padding-left:18px;display:grid;gap:6px}
+.endringer p{margin:0}
+
+/* ---------- Skjermen: WANG-tokens ---------- */
+.app{
+  /* Merkevarekjerne (wang-tokens.css) */
+  --navy:#17446F; --teal:#2E857D; --teal-tekst:#226F67; --mint:#49CA9F; --navy-dyp-tekst:#0D3050;
+  --orange:#F47B20; --orange-tekst:#B4571A; --gul:#FCD700; --gul-tekst:#7A6200; --rosa:#D12A5C; --blaa:#007DB1; --blaa-tekst:#00618A; --lilla:#7F1975; --graa:#D2D2D2;
+  /* Ny i utkastet: rosa som tekst på rosa tint. #D12A5C gir bare 4,2:1 der. Forslag, ikke i wang-tokens.css ennå. */
+  --rosa-tekst:#A81F49;
+  --bg:#FFFFFF; --kort:#FFFFFF; --tekst:#1E293B; --tekst-2:#475569; --navy-dyp:#0F172A; --linje:#E9EDF1;
+  --n100:#E9EDF1; --n200:#DCE3EA; --n300:#C5D0DA; --n400:#94A3B8; --n500:#64748B;
+  --tint-navy:color-mix(in srgb,var(--navy) 12%,white); --tint-teal:color-mix(in srgb,var(--teal) 13%,white); --tint-mint:color-mix(in srgb,var(--mint) 13%,white);
+  --tint-orange:color-mix(in srgb,var(--orange) 9%,white); --tint-gul:color-mix(in srgb,var(--gul) 9%,white); --tint-rosa:color-mix(in srgb,var(--rosa) 10%,white);
+  --tint-blaa:color-mix(in srgb,var(--blaa) 10%,white); --tint-lilla:color-mix(in srgb,var(--lilla) 10%,white); --tint-graa:#F1F4F7;
+  --grad-score:linear-gradient(135deg,var(--teal) 0%,var(--mint) 100%);
+  --r-kort:14px; --r-kort-s:12px; --r-felt:10px; --r-chip:999px; --r-ikon:10px; --r-knapp:10px;
+  /* Skyggene er tynne kanter, som AgencyOS. Flytende lag (hurtigmeny, ark) beholder ekte skygge. */
+  --skygge:0 0 0 1px var(--n200); --skygge-s:0 0 0 1px var(--n200); --skygge-flyt:0 12px 32px rgba(15,42,68,.18);
+  /* Aksene. Samme fargevalg som AKSE_FARGE (ak-primitiver.tsx).
+     --x = ren farge (søyler, prikker). --x-fyll = flate med tekst. --x-paa = tekst på fyllet. --x-tekst = tekst på hvitt/tint. */
+  --fys:var(--navy);   --fys-fyll:var(--navy);        --fys-paa:#FFFFFF;          --fys-tekst:var(--navy);        --fys-tint:var(--tint-navy);
+  --tek:var(--teal);   --tek-fyll:var(--teal-tekst);  --tek-paa:#FFFFFF;          --tek-tekst:var(--teal-tekst);  --tek-tint:var(--tint-teal);
+  --slag:var(--orange);--slag-fyll:var(--orange);     --slag-paa:var(--navy-dyp); --slag-tekst:var(--orange-tekst);--slag-tint:var(--tint-orange);
+  --spill:var(--blaa); --spill-fyll:var(--blaa);      --spill-paa:#FFFFFF;        --spill-tekst:var(--blaa-tekst);--spill-tint:var(--tint-blaa);
+  --turn:var(--lilla); --turn-fyll:var(--lilla);      --turn-paa:#FFFFFF;         --turn-tekst:var(--lilla);      --turn-tint:var(--tint-lilla);
+  position:relative;container-type:inline-size;background:var(--bg);color:var(--tekst);font:400 15px/1.5 var(--body);-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+.app *{min-width:0}
+.app p{margin:0}
+.app [hidden]{display:none!important}
+.ikon{width:20px;height:20px;flex:none;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ---------- Skall: samme oppsett som AgencyOS-utkastene ----------
+   Mobil: topplinje med hamburgermeny, logo og bjelle. PC fra 900 px: lys sidemeny, bjelle øverst til høyre.
+   Hurtigknappen står på alle skjermer. */
+.topplinje{position:sticky;top:0;z-index:8;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 12px;background:#fff;border-bottom:1px solid var(--n200)}
+.topp-venstre{display:flex;align-items:center;gap:4px}
+.logo{display:block;height:32px;width:auto}
+.ikonknapp,.bjelle{position:relative;width:44px;height:44px;display:grid;place-items:center;border-radius:var(--r-ikon);color:var(--navy-dyp);background:transparent;border:0;cursor:pointer}
+.bjelle b{position:absolute;top:5px;right:4px;min-width:18px;height:18px;padding:0 4px;border-radius:9px;background:var(--rosa);color:#fff;font:700 11px/18px var(--brand);text-align:center}
+.skuff{position:sticky;top:57px;z-index:9;height:0}
+.skuff nav{position:absolute;left:0;right:0;top:0;display:grid;gap:2px;padding:12px;background:#fff;border-bottom:1px solid var(--n200);box-shadow:0 16px 32px rgba(15,23,42,.12)}
+.skall{display:block}
+.meny{display:none}
+.pc-topp{display:none}
+.meny a,.skuff a{display:flex;align-items:center;gap:12px;min-height:48px;padding:0 12px;border-radius:var(--r-knapp);color:var(--tekst);text-decoration:none;font:700 15px/1 var(--brand)}
+.meny a.aktiv,.skuff a.aktiv{background:var(--navy);color:#fff}
+.meny a.aktiv .teller,.skuff a.aktiv .teller{background:#fff;color:var(--navy)}
+.meny .teller,.skuff .teller{margin-left:auto}
+.meny .del,.skuff .del{margin:12px 12px 4px}
+.bruker{display:flex;align-items:center;gap:10px;padding:12px;margin-top:auto;border-top:1px solid var(--n200)}
+.bruker b{display:block;font:700 14px/1.2 var(--brand);color:var(--navy-dyp)}
+.bruker div span{font-size:13px;color:var(--tekst-2)}
+.innhold{padding:20px 16px 96px;display:grid;gap:28px;align-content:start}
+.tilbakelinje{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 12px;background:#fff;border-bottom:1px solid var(--n200);position:sticky;top:0;z-index:8}
+.tilbake{display:inline-flex;align-items:center;gap:6px;height:44px;padding:0 10px;border:0;background:transparent;font:700 15px/1 var(--brand);color:var(--navy);cursor:pointer;border-radius:var(--r-ikon);text-decoration:none}
+.hurtig-lag{position:sticky;bottom:0;z-index:7;height:0}
+.hurtig{position:absolute;right:16px;bottom:16px;width:56px;height:56px;border-radius:var(--r-knapp);border:0;background:var(--navy);color:#fff;display:grid;place-items:center;cursor:pointer;box-shadow:0 8px 24px rgba(15,23,42,.28)}
+.hurtig .ikon{width:24px;height:24px;transition:transform 200ms var(--ut)}
+.hurtig[aria-expanded="true"] .ikon{transform:rotate(45deg)}
+.hurtig-meny{position:absolute;right:16px;bottom:84px;width:240px;display:grid;gap:2px;padding:8px;border-radius:var(--r-kort);background:#fff;border:1px solid var(--n200);box-shadow:0 16px 40px rgba(15,23,42,.18)}
+.hurtig-meny button{display:flex;align-items:center;gap:12px;min-height:48px;padding:0 12px;border:0;border-radius:var(--r-knapp);background:transparent;font:700 15px/1.2 var(--brand);color:var(--navy-dyp);cursor:pointer;text-align:left}
+.hurtig-meny button:hover,.hurtig-meny button:focus-visible{background:var(--tint-graa)}
+.hurtig-meny .ikon{color:var(--navy)}
+
+/* Rolle: [data-bare=sportssjef] vises bare når rollevelgeren står på Sportssjef */
+.app:not(.rolle-sportssjef) [data-bare=sportssjef]{display:none!important}
+
+/* ---------- Tekst ---------- */
+.dato{font:700 12px/1.3 var(--brand);letter-spacing:.08em;text-transform:uppercase;color:var(--tekst-2)}
+.tittel{margin:4px 0 0;font:800 28px/1.12 var(--brand);letter-spacing:-.02em;color:var(--navy-dyp)}
+.ingress{margin-top:8px!important;font-size:16px;line-height:1.55;color:var(--tekst-2);max-width:52ch}
+.seksjon{display:grid;gap:12px}
+.sek-topp{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.sek-topp h2{margin:0;font:800 19px/1.25 var(--brand);color:var(--navy-dyp)}
+.kilde{font:400 13px/1.45 var(--body);color:var(--tekst-2)}
+.lenke{display:inline-flex;align-items:center;gap:4px;min-height:44px;font:700 14px/1 var(--brand);color:var(--navy);text-decoration:underline;text-underline-offset:3px}
+.forklar{font-size:15px;line-height:1.5;color:var(--tekst-2)}
+.undertittel{font:700 15px/1.3 var(--brand);color:var(--navy-dyp)}
+.etikett{font:700 11px/1.3 var(--brand);letter-spacing:.08em;text-transform:uppercase;color:var(--tekst-2)}
+
+/* Toppen av en skjerm: dato over tittel, ingen farget flate (samme som AgencyOS).
+   .topp er rammen rundt dato, tittel og tellere. .helt-tall blir tellere med kant; en teller som krever handling får .signal. */
+.topp{display:grid;gap:16px}
+.topp > .knapper,.topp > .knapp{justify-self:start}
+.helt-tall{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.helt-tall > div{display:grid;gap:4px;align-content:start;padding:14px;border-radius:var(--r-kort);border:1px solid var(--n200);background:#fff;min-height:92px}
+.helt-tall strong{order:2;font:800 30px/1 var(--brand);letter-spacing:-.02em;color:var(--navy-dyp)}
+.helt-tall span{order:1;font:700 12px/1.3 var(--brand);color:var(--tekst-2)}
+.helt-tall > div.signal{border:2px solid var(--rosa)}
+.helt-tall > div.signal strong{color:var(--rosa-tekst)}
+
+/* ---------- Utkast 2: helteflaten ----------
+   Navy flate med ETT stort hovedtall, kort forklaring og én knapp. Valgfritt golfbilde ved siden av
+   (over på mobil), aldri tekst oppå bildet. Høyst én helteflate per skjerm.
+   <section class="helt med-bilde"><div class="helt-tekst"><span class="helt-merke">…</span>
+   <p class="helt-hoved"><strong>5</strong><span>saker krever deg før 07:50</span></p>
+   <p class="helt-forklar">…</p><button class="knapp lys">…</button></div><img class="helt-bilde" …></section> */
+.helt{display:grid;border-radius:var(--r-kort);overflow:hidden;background:var(--navy);color:#fff}
+.helt-tekst{display:grid;gap:10px;padding:18px 20px 20px;align-content:start}
+.helt-merke{display:inline-flex;align-items:center;gap:6px;justify-self:start;height:26px;padding:0 11px;border-radius:var(--r-chip);background:rgba(255,255,255,.16);color:#fff;font:700 12px/1 var(--brand)}
+.helt-merke i{width:7px;height:7px;border-radius:50%;background:var(--mint)}
+.helt-merke.haster i{background:var(--rosa);box-shadow:0 0 0 2px #fff}
+.helt-hoved{display:flex;align-items:baseline;gap:6px 14px;flex-wrap:wrap}
+.helt-hoved strong{font:800 64px/.95 var(--brand);letter-spacing:-.03em;color:#fff}
+.helt-hoved strong small{font:800 26px/1 var(--brand);letter-spacing:0;margin-left:2px}
+.helt-hoved > span{font:800 19px/1.25 var(--brand);color:#fff;max-width:20ch}
+.helt-forklar{font-size:15px;line-height:1.5;color:var(--n100);max-width:46ch}
+.helt .knapp{justify-self:start;margin-top:4px}
+.helt-bilde{display:block;width:100%;height:96px;object-fit:cover;object-position:50% 45%;order:-1}
+.helt-linje{display:flex;flex-wrap:wrap;gap:6px 18px;font:700 14px/1.3 var(--brand);color:var(--n100)}
+.helt-linje b{color:#fff}
+.helt .stolpe{background:rgba(255,255,255,.22)} .helt .stolpe span{background:#fff}
+
+/* Små tellere under helteflaten: de andre tallene, mindre og stille */
+.smaa-tall{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.smaa-tall > *{display:grid;gap:3px;align-content:start;padding:10px 12px;border-radius:var(--r-kort-s);border:1px solid var(--n200);background:#fff;color:inherit;text-decoration:none;font:inherit;text-align:left}
+.smaa-tall strong{font:800 22px/1.1 var(--brand);letter-spacing:-.01em;color:var(--navy-dyp)}
+.smaa-tall strong small{font:700 13px/1 var(--brand);margin-left:2px;color:var(--tekst-2)}
+.smaa-tall span{font:700 12px/1.3 var(--brand);color:var(--tekst-2)}
+
+/* ---------- Utkast 2: tre bånd (Trenger deg · Følger planen · Ikke delt), som Stall i AgencyOS ----------
+   <div class="baand"><section class="baand-del trenger"><div class="baand-hode"><h3>Trenger deg</h3><span class="antall">3</span><p>…</p></div>
+   <div class="baand-liste"><a class="elevrad trenger">…</a></div></section>…</div>. .baand.kol står side om side på PC. */
+.baand{display:grid;gap:22px}
+.baand-del{display:grid;gap:10px;align-content:start}
+.baand-hode{display:flex;align-items:center;gap:6px 10px;flex-wrap:wrap}
+.baand-hode h3{margin:0;font:800 17px/1.25 var(--brand);color:var(--navy-dyp)}
+.baand-hode p{flex-basis:100%;font-size:14px;line-height:1.45;color:var(--tekst-2)}
+.antall{display:inline-grid;place-items:center;min-width:28px;height:26px;padding:0 9px;border-radius:13px;background:var(--n200);color:var(--navy-dyp);font:800 13px/1 var(--brand)}
+.baand-del.trenger .antall{background:var(--rosa);color:#fff}
+.baand-del.folger .antall{background:var(--mint);color:var(--navy-dyp)}
+.baand-liste{display:grid;gap:6px}
+.baand-tom{padding:12px 14px;border-radius:var(--r-kort-s);background:var(--tint-graa);font-size:14px;color:var(--tekst-2)}
+
+/* Elevrad: statusmarkør til venstre, avatar, navn og grunn, plan-stolpe til høyre.
+   Markøren bruker status (rosa trenger deg, mint følger planen, grå ikke delt), aldri aksefarger.
+   Stolpen er gjennomført mot planlagt tid siste fire uker; streken i stolpen er 80 %. */
+.elevrad{display:grid;grid-template-columns:auto minmax(0,1fr) minmax(88px,32%);gap:12px;align-items:center;padding:10px 12px 10px 16px;border:1px solid var(--n200);border-radius:var(--r-kort-s);background:#fff;color:inherit;text-decoration:none;font:inherit;text-align:left;width:100%;cursor:pointer;box-shadow:inset 5px 0 0 var(--n400)}
+.elevrad.trenger{box-shadow:inset 5px 0 0 var(--rosa)}
+.elevrad.folger{box-shadow:inset 5px 0 0 var(--mint)}
+.elevrad.ikke-delt{box-shadow:inset 5px 0 0 var(--n400);background:var(--tint-graa)}
+.er-hvem b{display:block;font:700 15px/1.25 var(--brand);color:var(--navy-dyp)}
+.er-hvem span{display:block;font-size:13px;line-height:1.4;color:var(--tekst-2)}
+.er-hvem .er-grunn{color:var(--rosa-tekst);font-weight:700}
+.er-plan{display:grid;gap:5px;justify-items:end}
+.er-plan b{font:800 17px/1 var(--brand);color:var(--navy-dyp);white-space:nowrap}
+.er-plan b small{font:700 12px/1 var(--brand);color:var(--tekst-2);margin-left:3px}
+.er-plan .stolpe{width:100%;height:8px}
+.stolpe i.strek{position:absolute;top:0;bottom:0;width:2px;background:var(--navy-dyp);z-index:1}
+.elevrad:focus-visible,.smaa-tall > *:focus-visible{outline:3px solid var(--mint);outline-offset:2px}
+
+/* Fylt graf: arealet under linja (WANGUtkast.fyltGraf). Navy linje, lys navy flate, stiplet mål. */
+.graf .areal{fill:var(--tint-navy)}
+.graf .linje{fill:none;stroke:var(--navy);stroke-width:3;stroke-linejoin:round;stroke-linecap:round}
+.graf .mal-linje{stroke:var(--n500);stroke-width:2;stroke-dasharray:5 5}
+.graf .rutenett{stroke:var(--n200);stroke-width:1}
+.graf .gt-mal{font:800 10px/1 var(--brand);fill:var(--navy-dyp)}
+
+/* ---------- Flater: hvite kort med tynn kant (samme som AgencyOS) ---------- */
+.kort{border-radius:var(--r-kort);background:var(--kort);border:1px solid var(--n200);padding:18px;display:grid;gap:14px;align-content:start}
+.kort.dempet{background:var(--tint-graa);border-color:transparent}
+.skille{height:1px;background:var(--linje)}
+
+/* Ett stort tall per flate */
+.hoved{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.hoved strong{font:800 48px/1 var(--brand);letter-spacing:-.03em;color:var(--navy-dyp)}
+.hoved strong small{font:700 18px/1 var(--brand);letter-spacing:0;margin-left:4px;color:var(--tekst-2)}
+.trend{display:inline-flex;align-items:center;gap:4px;height:28px;padding:0 10px;border-radius:var(--r-chip);font:700 13px/1 var(--brand);background:var(--tint-graa);color:var(--tekst)}
+.trend.opp{background:var(--tint-mint);color:var(--navy-dyp-tekst)}
+.trend.ned{background:var(--tint-rosa);color:var(--rosa-tekst)}
+.trend .ikon{width:16px;height:16px}
+
+/* ---------- Merker ---------- */
+/* Status bruker IKKE aksefargene: mint = ok, gul = venter, rosa = haster/feil, grå = nøytral */
+.pille{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 11px;border-radius:var(--r-chip);font:700 12px/1 var(--brand);white-space:nowrap;flex:none}
+.pille i{width:7px;height:7px;border-radius:50%}
+.pille.ok{background:var(--tint-mint);color:var(--navy-dyp-tekst)} .pille.ok i{background:var(--mint)}
+.pille.vent{background:var(--tint-gul);color:var(--gul-tekst)} .pille.vent i{background:var(--gul)}
+.pille.haster{background:var(--tint-rosa);color:var(--rosa-tekst)} .pille.haster i{background:var(--rosa)}
+.pille.noy{background:var(--n100);color:var(--tekst-2)} .pille.noy i{background:var(--n400)}
+.kategori{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:8px;background:var(--navy);color:#fff;font:800 12px/1 var(--brand);letter-spacing:.04em;white-space:nowrap;flex:none}
+.estimat{display:inline-flex;height:22px;align-items:center;padding:0 8px;border-radius:6px;border:1px dashed var(--n500);font:700 11px/1 var(--brand);color:var(--tekst-2);width:max-content}
+.teller{display:inline-grid;place-items:center;min-width:24px;height:24px;padding:0 7px;border-radius:12px;background:var(--rosa);color:#fff;font:800 12px/1 var(--brand)}
+/* Aksemerke: firkantet chip fylt i aksefargen, samme fyll og tekst som øktkortet */
+.akse{display:inline-flex;align-items:center;justify-content:center;min-width:48px;height:24px;padding:0 8px;border-radius:7px;font:800 11px/1 var(--brand);letter-spacing:.05em;flex:none}
+.akse.fys{background:var(--fys-fyll);color:var(--fys-paa)} .akse.tek{background:var(--tek-fyll);color:var(--tek-paa)}
+.akse.slag{background:var(--slag-fyll);color:var(--slag-paa)} .akse.spill{background:var(--spill-fyll);color:var(--spill-paa)}
+.akse.turn{background:var(--turn-fyll);color:var(--turn-paa)}
+.avatar{display:inline-grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--navy);color:#fff;font:800 12px/1 var(--brand);flex:none}
+
+/* ---------- Knapper: pille-form, navy primær, rosa bare for det som sletter eller avslutter ---------- */
+.knapp{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border-radius:var(--r-knapp);font:700 14px/1 var(--brand);cursor:pointer;text-decoration:none;border:2px solid transparent}
+.knapp.pri{background:var(--navy);color:#fff}
+.knapp.sek{background:#fff;color:var(--navy);border-color:var(--navy)}
+.knapp.lys{background:#fff;color:var(--navy)}
+/* Utgått i utkast 2: én primærfarge for handling. .mint vises som navy så gamle lenker ikke brekker; mint er bare status «ok». */
+.knapp.mint{background:var(--navy);color:#fff}
+.knapp.fare{background:var(--rosa);color:#fff}
+.knapp.flat{background:transparent;color:var(--navy);padding:0 12px}
+.knapp[disabled]{background:var(--n100);color:var(--tekst-2);cursor:not-allowed}
+.knapp.stor{min-height:54px;font-size:16px;width:100%}
+.helt .knapp:focus-visible{outline-color:#fff}
+.knapp:focus-visible,.valg button:focus-visible,.okt:focus-visible,.meny a:focus-visible,.skuff a:focus-visible,.hurtig:focus-visible{outline:3px solid var(--mint);outline-offset:2px}
+.knapper{display:flex;gap:8px;flex-wrap:wrap}
+.valg{display:inline-flex;flex-wrap:wrap;gap:3px;padding:3px;border-radius:var(--r-knapp);background:var(--tint-graa);justify-self:start}
+.valg button{min-height:40px;padding:0 14px;border:0;border-radius:8px;background:transparent;font:700 14px/1 var(--brand);color:var(--tekst-2);cursor:pointer}
+.valg button[aria-pressed="true"]{background:var(--navy);color:#fff}
+
+/* Faner: understreket, som AgencyOS. Gjelder .faner i alle skjermene. */
+.app .faner{display:flex;flex-wrap:wrap;gap:4px;border-bottom:1px solid var(--n200)}
+.app .faner a{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 12px;border-radius:0;background:transparent;box-shadow:none;border-bottom:3px solid transparent;font:700 15px/1 var(--brand);color:var(--tekst-2);text-decoration:none}
+.app .faner a.aktiv{background:transparent;color:var(--navy-dyp);border-bottom-color:var(--navy)}
+
+/* ---------- Øktkort: fylt flate i aksefargen, bilde øverst, aldri tekst oppå bildet ---------- */
+.okt{display:grid;border-radius:var(--r-kort-s);overflow:hidden;text-decoration:none;cursor:pointer;border:0;padding:0;width:100%;text-align:left;font:inherit}
+.okt.fys{background:var(--fys-fyll);color:var(--fys-paa)} .okt.tek{background:var(--tek-fyll);color:var(--tek-paa)}
+.okt.slag{background:var(--slag-fyll);color:var(--slag-paa)} .okt.spill{background:var(--spill-fyll);color:var(--spill-paa)}
+.okt.turn{background:var(--turn-fyll);color:var(--turn-paa)}
+.okt img{display:block;width:100%;height:120px;object-fit:cover;object-position:50% 45%}
+.okt-tekst{padding:14px 18px 18px;display:grid;gap:6px}
+.okt-rad{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.okt-tid{font:800 30px/1.05 var(--brand);letter-spacing:-.02em;white-space:nowrap}
+.okt-tid small{font:700 14px/1 var(--brand);letter-spacing:0;margin-left:6px}
+.okt .navn{display:block;font:800 18px/1.25 var(--brand)}
+.okt-info{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:15px;line-height:1.45}
+.okt-merke{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:var(--r-chip);font:800 11px/1 var(--brand);letter-spacing:.08em;background:rgba(15,23,42,.22)}
+.okt.slag .okt-merke{background:rgba(255,255,255,.4)}
+.okt-merke i{width:7px;height:7px;border-radius:50%;background:currentColor}
+.okt.mini{grid-template-columns:76px 1fr}
+.okt.mini img{height:100%;min-height:76px}
+.okt.mini .okt-tekst{padding:10px 14px;gap:2px}
+.okt.mini .navn{font-size:15px}
+
+/* ---------- Søyler, stolper og grafer ---------- */
+.stolpe{height:10px;border-radius:5px;background:var(--n100);overflow:hidden;position:relative}
+.stolpe span{position:absolute;inset:0 auto 0 0;border-radius:5px;background:var(--navy)}
+.band{display:flex;height:30px;border-radius:10px;overflow:hidden;background:var(--n100)}
+.band span{display:flex;align-items:center;justify-content:center;font:800 11px/1 var(--brand);letter-spacing:.04em;overflow:hidden}
+.graf{display:block;width:100%;height:auto;overflow:visible}
+.gt{font:700 10px/1 var(--brand);fill:var(--tekst-2)}
+.lg-rad{display:flex;flex-wrap:wrap;gap:6px 14px}
+.lg{display:inline-flex;align-items:center;gap:6px;font:700 12px/1.3 var(--brand);color:var(--tekst-2)}
+.lg i{width:10px;height:10px;border-radius:3px}
+.app .bg-fys{background:var(--fys)} .app .bg-tek{background:var(--tek)} .app .bg-slag{background:var(--slag)} .app .bg-spill{background:var(--spill)} .app .bg-turn{background:var(--turn)}
+.fyll-fys{background:var(--fys-fyll);color:var(--fys-paa)} .fyll-tek{background:var(--tek-fyll);color:var(--tek-paa)} .fyll-slag{background:var(--slag-fyll);color:var(--slag-paa)}
+.fyll-spill{background:var(--spill-fyll);color:var(--spill-paa)} .fyll-turn{background:var(--turn-fyll);color:var(--turn-paa)}
+
+/* ---------- Skjema ---------- */
+.felt{display:grid;gap:6px}
+.felt label,.felt .etikett-felt{font:700 14px/1.3 var(--brand);color:var(--navy-dyp)}
+.felt input,.felt select,.felt textarea{min-height:48px;padding:10px 14px;border:1.5px solid var(--n300);border-radius:var(--r-felt);background:#fff;color:var(--tekst);font:400 16px/1.4 var(--body);width:100%}
+.felt input:focus,.felt select:focus,.felt textarea:focus{outline:none;border-color:var(--mint);box-shadow:0 0 0 3px var(--tint-mint)}
+.felt .hjelp{font-size:13px;color:var(--tekst-2)}
+.felt.feil input{border-color:var(--rosa)}
+.felt .feiltekst{font:700 13px/1.3 var(--brand);color:var(--rosa-tekst)}
+
+/* ---------- Tom, laster og feil ---------- */
+.tilstand-blokk{display:grid;gap:12px}
+.skjelett{display:block;border-radius:var(--r-kort-s);background:linear-gradient(90deg,var(--n100) 0%,#F7F9FB 50%,var(--n100) 100%);background-size:200% 100%;animation:skjelett 1.4s linear infinite}
+@keyframes skjelett{to{background-position:-200% 0}}
+
+/* ---------- Bevegelse: bare transform og opasitet ---------- */
+.okt,.knapp,.valg button{transition:transform 140ms var(--ut)}
+.okt:active,.knapp:active,.valg button:active{transform:scale(.97)}
+.tegn{stroke-dasharray:1000;stroke-dashoffset:0}
+.app.anim .tegn{animation:tegn 1100ms var(--ut) both}
+.app.anim .vokse{transform-origin:bottom;animation:vokse 600ms var(--ut) both}
+.app.anim .inn{animation:inn 360ms var(--ut) both}
+@keyframes tegn{from{stroke-dashoffset:1000}}
+@keyframes vokse{from{transform:scaleY(0)}}
+@keyframes inn{from{opacity:0;transform:translateY(10px)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---------- PC fra 900 px containerbredde ---------- */
+@container (min-width:900px){
+  .topplinje,.skuff{display:none!important}
+  .skall{display:grid;grid-template-columns:248px minmax(0,1fr);min-height:900px}
+  .meny{display:flex;flex-direction:column;gap:2px;padding:20px 12px 12px;background:var(--tint-graa);border-right:1px solid var(--n200)}
+  .meny .logo{height:40px;margin:2px 10px 4px}
+  .meny .gruppe{margin:0 12px 18px;font:700 12px/1.3 var(--brand);color:var(--tekst-2)}
+  .pc-topp{display:flex;justify-content:flex-end;padding:12px 40px 0}
+  .innhold{padding:8px 40px 96px}
+  .helt-tall{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .helt.med-bilde{grid-template-columns:minmax(0,1.55fr) minmax(0,1fr)}
+  .helt-tekst{padding:26px 30px 28px}
+  .helt-bilde{order:0;height:100%;min-height:230px}
+  .helt-hoved strong{font-size:84px}
+  .helt-hoved > span{font-size:22px}
+  .smaa-tall.fire{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .baand.kol{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+  .to-kol{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:start}
+  .tre-kol{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;align-items:start}
+  .tittel{font-size:34px}
+}
+
+/* ---------- Nærmere wang.no (Anders 16.10: «WANG må litt nærmere stilen som er på www.wang.no») ----------
+   Målt på wang.no 16.10: firkantede hjørner overalt, vinrød hovedknapp #AE0034 med store bokstaver i Montserrat,
+   brødtekst i Quattrocento (serif), varm off-white bakgrunn #FCFAFA og tekst #222/#444,
+   store flater med gradient navy → teal (#17446F → #2E857D) og store, tynne tall, rosa «Les mer →».
+   Aksefargene og statusfargene er uendret. Rosa lenketekst bruker --rosa-tekst, fordi #D12A5C gir under 4,5:1. */
+.app{
+  --vinrod:#AE0034; --vinrod-mork:#8A0029;
+  --bg:#FCFAFA; --tekst:#222222; --tekst-2:#444444;
+  --r-kort:0; --r-kort-s:0; --r-felt:0; --r-knapp:0; --r-ikon:0; --r-chip:2px;
+  --grad-wang:linear-gradient(132deg,#17446F 46%,#2E857D 102%);
+  --body:"Quattrocento",Georgia,"Times New Roman",serif;
+}
+.app .tittel{color:var(--vinrod)}
+.app .sek-topp h2,.app .baand-hode h3,.app .undertittel{color:var(--tekst)}
+.app .helt{background:var(--grad-wang)}
+.app .helt-hoved strong{font-weight:500;letter-spacing:-.02em}
+.app .helt-hoved > span{font-weight:600}
+.app .hoved strong,.app .smaa-tall strong,.app .helt-tall strong{font-weight:600}
+.app .knapp{font:700 14px/1 var(--brand);text-transform:uppercase;letter-spacing:.03em;padding:0 22px}
+.app .knapp.pri,.app .knapp.mint{background:var(--vinrod);color:#fff}
+.app .knapp.pri:hover,.app .knapp.mint:hover{background:var(--vinrod-mork)}
+.app .knapp.sek{background:#fff;color:var(--vinrod);border-color:var(--vinrod)}
+.app .knapp.lys{background:#fff;color:var(--vinrod)}
+.app .knapp.fare{background:#fff;color:var(--rosa-tekst);border-color:var(--rosa)}
+.app .knapp.flat{text-transform:none;letter-spacing:0;color:var(--navy)}
+.app .hurtig{background:var(--vinrod);border-radius:0}
+.app .lenke{color:var(--rosa-tekst);font-weight:600;text-decoration:none}
+.app .lenke::after{content:"→";margin-left:4px}
+.app .stolpe,.app .stolpe span,.app .band,.app .lg i,.app .akse,.app .kategori,.app .estimat,.app .antall,.app .helt-merke,.app .velger,.app .valg,.app .valg button,.app .okt-merke,.app .skjelett{border-radius:0}
+.app .meny a.aktiv,.app .skuff a.aktiv{border-radius:0}

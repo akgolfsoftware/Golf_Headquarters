@@ -27,6 +27,8 @@ function useState<T>(initial: T | (() => T)): [T, (next: T | ((prev: T) => T)) =
     slots[index] = typeof next === "function" ? (next as (prev: T) => T)(slots[index] as T) : next;
   }];
 }
+mock.module("@/lib/workbench/ovelse-bank-actions", { namedExports: { sokOvelser: async () => ({ ok: false, error: "Ubrukt øvelsessøk" }), opprettOvelseIBank: async () => ({ ok: false, error: "Ubrukt øvelseslagring" }) } });
+mock.module("@/styles/playerhq-ny-wb-ovelser.css", { namedExports: {} });
 mock.module("react", { namedExports: {
   ...React, useState, useMemo: (fn: () => unknown) => fn(), useCallback: (fn: unknown) => fn,
   useRef: (initial: unknown) => ({ current: initial }), useEffect() {},

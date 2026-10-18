@@ -77,11 +77,16 @@ await build({
 });
 
 // Samme rekkefølge som skallene: komponentstilene først, så Precision-laget.
-// Basestilene alltid, pluss enhver bolk-egen stil (precision-a1.css, precision-a4.css, …)
+// Basestilene alltid, pluss enhver bolk-egen stil (precision-a1.css, precision-a4.css, …) og PlayerHQs nye design (playerhq-ny.css og alle playerhq-ny-*.css)
 // bolkene legger i src/styles/ ved siden av sin egen visning.
 import { readdirSync } from "node:fs";
 const bolkCss = readdirSync(resolve(root, "src/styles")).filter((f) => /^precision-(a\d+|tp|iup|bk)\.css$/.test(f)).sort();
-const css = ["precision-komponenter.css", "precision-athletics.css", ...bolkCss].map((f) => readFileSync(resolve(root, "src/styles", f), "utf8")).join("\n");
+// playerhq-ny.css først (tokens), så alle playerhq-ny-*.css som pakkene legger til, og AgencyOS i nytt design (agencyos-ny*.css).
+const phnCss = readdirSync(resolve(root, "src/styles")).filter((f) => /^playerhq-ny-[a-z0-9-]+\.css$/.test(f)).sort();
+const agnCss = readdirSync(resolve(root, "src/styles")).filter((f) => /^agencyos-ny.*\.css$/.test(f)).sort();
+// Øvrige flater i nytt design (utkast-flater): flater-ny.css først (tokens), så flater-ny-*.css per gruppe.
+const flnCss = ["flater-ny.css", ...readdirSync(resolve(root, "src/styles")).filter((f) => /^flater-ny-[a-z0-9-]+\.css$/.test(f)).sort()];
+const css = ["precision-komponenter.css", "precision-athletics.css", ...bolkCss, "playerhq-ny.css", ...phnCss, ...agnCss, ...flnCss].map((f) => readFileSync(resolve(root, "src/styles", f), "utf8")).join("\n");
 const html = (t) => `<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=block" rel="stylesheet">
 <style>:root{--font-ibm-plex-sans:"IBM Plex Sans";--font-ibm-plex-mono:"IBM Plex Mono"}\n${css}\nhtml,body{margin:0}</style><title>${id} · ${t}</title></head><body><div id="root"></div><script src="/prove.js"></script></body></html>`;
@@ -90,6 +95,8 @@ const server = createServer((req, res) => {
   const u = new URL(req.url, "http://127.0.0.1");
   if (u.pathname === "/prove.js") { res.setHeader("Content-Type", "text/javascript"); res.end(readFileSync(resolve(out, "prove.js"))); return; }
   if (u.pathname === "/") { res.setHeader("Content-Type", "text/html; charset=utf-8"); res.end(html(u.searchParams.get("t"))); return; }
+  // AgencyOS-skallet henter neste økt fra serveren; prøven har ingen, så svaret er «ingen økt».
+  if (u.pathname === "/api/admin/neste-okt") { res.setHeader("Content-Type", "application/json"); res.end('{"okt":null}'); return; }
   const fil = resolve(root, "public", "." + u.pathname);
   if (fil.startsWith(resolve(root, "public")) && existsSync(fil)) { res.setHeader("Content-Type", TYPER[extname(fil)] ?? "application/octet-stream"); res.end(readFileSync(fil)); return; }
   res.writeHead(404); res.end();
@@ -130,7 +137,11 @@ try {
           }
           if (el.matches("a[href],button,[role=button],input,select,textarea,[role=tab]") && el.closest(".pa-sr") == null && (r.height < min || r.width < min)) {
             // Tekstlenker inne i løpende tekst er unntatt; alt annet skal ha 44 px.
-            if (!(el.tagName === "A" && cs.display === "inline")) smaa.push(`${el.tagName.toLowerCase()} «${(el.getAttribute("aria-label") || el.textContent || "").trim().slice(0, 30)}» ${Math.round(r.width)}×${Math.round(r.height)}`);
+            // En avkrysning inni en <label> treffes på hele etiketten; mål etiketten i stedet.
+            const etikett = el.matches("input[type=checkbox],input[type=radio]") ? el.closest("label") : null;
+            const er = etikett?.getBoundingClientRect();
+            const etikettStor = er && er.height >= min && er.width >= min;
+            if (!(el.tagName === "A" && cs.display === "inline") && !etikettStor) smaa.push(`${el.tagName.toLowerCase()} «${(el.getAttribute("aria-label") || el.textContent || "").trim().slice(0, 30)}» ${Math.round(r.width)}×${Math.round(r.height)}`);
           }
         }
         return { scrollWidth: d.scrollWidth, clientWidth: vw, utenfor: utenfor.slice(0, 10), smaa: smaa.slice(0, 10), tekst: document.body.innerText.length };

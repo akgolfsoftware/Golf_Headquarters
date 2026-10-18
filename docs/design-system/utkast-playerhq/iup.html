@@ -1,0 +1,551 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PlayerHQ IUP og gameplan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="felles/felles.css">
+<style>
+/* ---------- IUP og gameplan (PH-IUP-01 Fireukerssjekk, PH-IUP-02 Sesongevaluering, PH-20 Gameplan) ---------- */
+:root{--kart-rough:#cfdcc0;--kart-fairway:#9cc27e;--kart-green:#6fae5b;--kart-sand:#eadcb4;--kart-vann:#9cc3df;--kart-tee:#5b8f4a;--kart-skog:#7c9a6a}
+.skjermvalg button{font-size:13px;min-height:36px;padding:0 10px}
+.app [hidden]{display:none!important}
+.mono{font-family:var(--mono)}
+.topp{display:grid;gap:var(--r3)}
+.toast{position:sticky;bottom:16px;z-index:5;display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;background:var(--graphite-900);color:var(--white);font:500 14px/1.4 var(--sans);animation:inn 240ms var(--ut);box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.iup-merke{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:999px;background:#1d3557;color:#fff;font:600 12px/1 var(--sans);justify-self:start}
+
+/* Flyt: ett steg om gangen */
+.flyt{display:grid;gap:var(--r5)}
+.flyt [data-steg]{display:grid;gap:var(--r3)}
+button.lenke{background:none;border:0;padding:0;cursor:pointer;font-family:inherit}
+.steg-topp{display:grid;gap:8px}
+.steg-topp .rad{display:flex;justify-content:space-between;align-items:center;gap:var(--r3);flex-wrap:wrap}
+.steg-topp .stolpe{height:8px}
+.lagring{display:inline-flex;align-items:center;gap:6px;font:500 13px/1.3 var(--sans);color:var(--graphite-600)}
+.lagring .ikon{width:16px;height:16px}
+.lagring.ok{color:var(--green-700)}
+.lagring.feil{color:#8a2a1c}
+.ko{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--r3);align-items:center;padding:12px 14px;border-radius:12px;border:2px solid #8a2a1c;background:var(--rust-50)}
+.ko b{display:block;font:600 15px/1.3 var(--sans)}
+.ko .ikon{color:#8a2a1c}
+.omr-tittel{display:flex;align-items:baseline;justify-content:space-between;gap:var(--r3);flex-wrap:wrap}
+.omr-tittel h2{margin:0;font:700 24px/1.15 var(--sans);letter-spacing:-.02em}
+.spm-liste{display:grid;gap:var(--r3)}
+.spm{display:grid;gap:10px;padding:14px 16px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white)}
+.spm.besvart{border-color:var(--graphite-500)}
+.spm p{font:500 15.5px/1.45 var(--sans)}
+.skal{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.skal.fire{grid-template-columns:repeat(4,minmax(0,1fr))}
+.skal button{position:relative;min-height:48px;border:1px solid var(--sand-300);border-radius:10px;background:var(--white);font:600 17px/1 var(--mono);color:var(--graphite-900);cursor:pointer}
+.skal button[aria-pressed="true"]{background:var(--graphite-900);border-color:var(--graphite-900);color:var(--white)}
+.skal button.forrige::after{content:"";position:absolute;left:50%;bottom:5px;width:14px;height:3px;margin-left:-7px;border-radius:2px;background:var(--graphite-500)}
+.skal button[aria-pressed="true"].forrige::after{background:var(--white)}
+.skal-forklar{display:flex;justify-content:space-between;gap:var(--r3);font-size:12.5px;color:var(--graphite-600)}
+.tre{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.tre button{min-height:48px;border:1px solid var(--sand-300);border-radius:10px;background:var(--white);font:600 15px/1 var(--sans);color:var(--graphite-900);cursor:pointer}
+.tre button[aria-pressed="true"]{background:var(--graphite-900);border-color:var(--graphite-900);color:var(--white)}
+.navigasjon{position:sticky;bottom:0;z-index:4;display:flex;gap:var(--r2);padding:var(--r3) 0 var(--r2);background:linear-gradient(transparent,var(--white) 30%)}
+.navigasjon .knapp{flex:1}
+.omr-oversikt{display:grid;gap:6px}
+.omr-oversikt button{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--r3);align-items:center;min-height:52px;padding:8px 14px;border:1px solid var(--sand-300);border-radius:10px;background:var(--white);font:inherit;color:inherit;text-align:left;cursor:pointer}
+.omr-oversikt b{font:600 15px/1.3 var(--sans)}
+.omr-oversikt span.n{font:500 13px/1 var(--mono);color:var(--graphite-600)}
+
+/* Levert */
+.hake{width:56px;height:56px;border-radius:50%;background:var(--green-700);color:#fff;display:grid;place-items:center}
+.hake .ikon{width:28px;height:28px;stroke-width:2.5}
+.snitt-rader{display:grid;gap:12px}
+.snitt-rad{display:grid;grid-template-columns:110px minmax(0,1fr) 92px;gap:10px;align-items:center;font-size:14px}
+.snitt-rad b{font-weight:600}
+.snitt-spor{position:relative;height:22px;border-radius:5px;background:var(--sand-150)}
+.snitt-spor .naa{position:absolute;inset:0 auto 0 0;border-radius:5px;background:var(--graphite-900)}
+.snitt-spor .forr{position:absolute;top:-4px;bottom:-4px;width:3px;margin-left:-1px;border-radius:2px;background:var(--amber-700)}
+.snitt-rad .v{display:flex;justify-content:flex-end;align-items:center;gap:6px;font:600 14px/1 var(--mono)}
+.endr{font:600 12px/1 var(--mono);padding:4px 6px;border-radius:6px;background:var(--sand-150)}
+.endr.opp{background:var(--green-50);color:var(--green-700)} .endr.ned{background:var(--rust-50);color:#8a2a1c}
+.historikk{display:grid;gap:0;margin:0;padding:0;list-style:none;border-top:1px solid var(--sand-300)}
+.historikk li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;padding:10px 0;border-bottom:1px solid var(--sand-300);font-size:14px}
+.historikk li b{font:600 14px/1.3 var(--mono);text-align:right}
+.historikk li span.kilde{grid-column:1 / -1}
+
+/* Sesongevaluering */
+.felt textarea{min-height:96px;resize:vertical}
+.fordeling{display:grid;gap:var(--r4)}
+.stablet{display:flex;height:28px;border-radius:6px;overflow:hidden;background:var(--sand-150)}
+.stablet i{display:block;height:100%;transition:width 300ms var(--ut)}
+.f-fys{background:var(--fys)} .f-tek{background:var(--tek)} .f-slag{background:var(--slag)} .f-spill{background:var(--spill)} .f-turn{background:var(--turn)}
+.fordel-rader{display:grid;gap:8px}
+.fordel-rad{display:grid;grid-template-columns:auto minmax(0,1fr) 64px 132px;gap:10px;align-items:center;font-size:14.5px}
+.fordel-rad i.prikk{width:12px;height:12px;border-radius:3px}
+.fordel-rad .faktisk{font:500 14px/1 var(--mono);color:var(--graphite-600);text-align:right}
+.trinn{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;align-items:center;border:1px solid var(--graphite-500);border-radius:10px;overflow:hidden}
+.trinn button{height:44px;border:0;background:var(--sand-100);font:600 18px/1 var(--sans);cursor:pointer;color:var(--graphite-900)}
+.trinn output{text-align:center;font:600 16px/1 var(--mono)}
+.sum{display:flex;align-items:center;justify-content:space-between;gap:var(--r3);padding:10px 14px;border-radius:10px;font:600 15px/1.3 var(--sans)}
+.sum.ok{background:var(--green-50);color:var(--green-700)}
+.sum.feil{background:var(--amber-50);color:var(--amber-700)}
+.tiltak{display:grid;gap:var(--r2)}
+.tiltak-rad{display:grid;gap:8px;padding:12px 14px;border:1px solid var(--sand-300);border-radius:12px}
+.tiltak-rad input[type=text]{min-height:48px;padding:10px 12px;border:1px solid var(--graphite-500);border-radius:8px;font:400 16px/1.4 var(--sans);width:100%}
+.avkryss{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:center;font-size:14.5px;cursor:pointer}
+.avkryss input{width:22px;height:22px;margin:0;accent-color:var(--graphite-900)}
+
+/* PH-20 Gameplan */
+.bane-topp{display:grid;border-radius:14px;overflow:hidden;border:1px solid var(--sand-300)}
+.bane-topp img{display:block;width:100%;height:150px;object-fit:cover}
+.bane-topp .bt{padding:var(--r4) 18px 18px;display:grid;gap:var(--r2)}
+.hull-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.hull{display:grid;gap:2px;justify-items:start;padding:10px;border-radius:10px;border:1px solid var(--sand-300);background:var(--white);font:inherit;color:inherit;text-align:left;cursor:pointer;min-height:84px}
+.hull b{font:600 20px/1 var(--mono)}
+.hull span{font-size:12.5px;color:var(--graphite-600)}
+.hull .ris{font:600 11.5px/1 var(--sans);padding:3px 6px;border-radius:4px;margin-top:4px}
+.hull .ris.forsiktig{background:var(--amber-50);color:var(--amber-700)}
+.hull .ris.angrip{background:var(--green-50);color:var(--green-700)}
+.hull[aria-current="true"]{border:2px solid var(--graphite-900)}
+.hull-kart{display:block;width:100%;max-width:340px;height:auto;justify-self:center;border-radius:12px;background:var(--kart-skog)}
+.hull-kart text{font:600 11px/1 var(--sans);fill:#141413}
+.slagplan{display:grid;gap:var(--r2)}
+.slag-steg{display:grid;grid-template-columns:36px minmax(0,1fr) auto;gap:var(--r3);align-items:center;padding:12px 14px;border-radius:12px;background:var(--slag);color:#fff}
+.slag-steg.putt{background:var(--slag-ink)}
+.slag-steg .nr{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.2);display:grid;place-items:center;font:600 15px/1 var(--mono)}
+.slag-steg b{display:block;font:600 16px/1.3 var(--sans)}
+.slag-steg span.i{font-size:13.5px;opacity:.92}
+.slag-steg .m{font:600 22px/1 var(--mono);white-space:nowrap}
+.alt-plan{display:grid;gap:6px;padding:12px 14px;border:1px dashed var(--graphite-500);border-radius:12px;font-size:14.5px}
+.eksempel-banner{display:flex;gap:8px;align-items:flex-start;padding:10px 14px;border-radius:10px;background:var(--amber-50);color:var(--amber-700);font:500 14px/1.45 var(--sans)}
+.eksempel-banner .ikon{flex:none;margin-top:1px}
+
+.to-del{display:grid;gap:var(--r5);align-content:start}
+.to-del > div{display:grid;gap:var(--r5);align-content:start}
+
+@container (min-width:900px){
+  .to-del{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--r6);align-items:start}
+  .smal{max-width:760px}
+  .hull-grid{grid-template-columns:repeat(6,minmax(0,1fr))}
+  .bane-topp{grid-template-columns:minmax(0,1fr) minmax(0,1.1fr)}
+  .bane-topp img{height:100%;min-height:170px}
+  .navigasjon{position:static;background:none}
+}
+</style>
+
+<div class="ytre">
+  <div class="hode">
+    <span class="meta-s">PlayerHQ · pakke 9 · PH-IUP-01, PH-IUP-02 og PH-20 · utkast 1 · 14.10.2026</span>
+    <h1>IUP og gameplan</h1>
+    <p>Seks skjermer i én fil: Fireukerssjekken med prosessmål og de 43 Junior-spørsmålene i sju områder, levert sjekk mot forrige runde, sesongevalueringen med tidsfordeling og forbedringspunkter, og gameplan for Fredrikstad GK med hull for hull. Demodata for Øyvind Rohjan, 17 år, Kategori C, i WANG Toppidrett. I dag er mandag 5. oktober kl. 14:20, uke 41.</p>
+  </div>
+  <div class="kontroller">
+    <div class="velger skjermvalg" role="group" aria-label="Skjerm">
+      <button type="button" aria-pressed="true" data-skjerm="sjekk">PH-IUP-01 Fireukerssjekk</button>
+      <button type="button" aria-pressed="false" data-skjerm="levert">Sjekk levert</button>
+      <button type="button" aria-pressed="false" data-skjerm="sesong">PH-IUP-02 Sesongevaluering</button>
+      <button type="button" aria-pressed="false" data-skjerm="sesonglevert">Evaluering levert</button>
+      <button type="button" aria-pressed="false" data-skjerm="gameplan">PH-20 Gameplan</button>
+      <button type="button" aria-pressed="false" data-skjerm="hull">Hull 7</button>
+    </div>
+  </div>
+  <div class="kontroller">
+    <div class="velger" role="group" aria-label="Versjon"><button type="button" aria-pressed="true" data-versjon="etter">Utkast</button><button type="button" aria-pressed="false" data-versjon="for">Dagens design</button></div>
+    <div class="velger" role="group" aria-label="Bredde"><button type="button" aria-pressed="true" data-bredde="mob">Mobil</button><button type="button" aria-pressed="false" data-bredde="pc">PC</button></div>
+    <div class="velger" role="group" aria-label="Tilstand"><button type="button" aria-pressed="true" data-tilstand="data">Med data</button><button type="button" aria-pressed="false" data-tilstand="tom">Tom</button><button type="button" aria-pressed="false" data-tilstand="laster">Laster</button><button type="button" aria-pressed="false" data-tilstand="feil">Feil</button></div>
+  </div>
+  <div class="scene"><div class="ramme mob" id="ramme"></div></div>
+  <div class="notater">
+    <div class="endringer">
+      <span class="meta-s">Hva som er nytt</span>
+      <ul>
+        <li><b>Fireukerssjekken er ett steg om gangen:</b> prosessmålene først (Ja · Delvis · Nei), deretter ett av de sju områdene per side, til slutt en oversikt før Lever. Forrige svar står som en strek under tallet.</li>
+        <li><b>Lagres for hvert trykk.</b> Feiler lagringen, ligger svaret i kø med «Prøv igjen» øverst, og ingenting går tapt. Knappen «Vis lagringsfeil» i steget viser tilstanden.</li>
+        <li><b>Levert</b> viser snittet per område mot forrige runde 27. september, med endringen som grønn eller rød pille. Svarene fra 2025 står for seg og sammenlignes ikke.</li>
+        <li><b>Sesongevalueringen</b> har fire steg: tre åpne spørsmål, ti påstander 1–4, tidsfordeling faktisk og ønsket (begge 100 %), og minst tre forbedringspunkter. Merket «Prosessmål» legges i Målsetninger.</li>
+        <li><b>Gameplan</b> viser banen med alle 18 hull, og hull for hull med kart og slagvalg ut fra Øyvinds egne carry-lengder fra TrackMan.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Reglene som er fulgt</span>
+      <ul>
+        <li>IUP vises bare for spillere i en WANG- eller Team Norway-gruppe. Ingen egen fane: sjekken nås fra kortet i I dag og fra Målsetninger. Ender medlemskapet, skjules alt.</li>
+        <li>Spørsmålene og skalaene er hentet ordrett fra kildene i koden: IUP 2027 Junior, 43 spørsmål, skala 1–5. Sesongevaluering 2027, 3 åpne og 10 påstander, skala 1–4.</li>
+        <li>Farge betyr akse: tidsfordelingen og slagvalgene bruker aksefargene. IUP-områdene er ikke akser og står i grafitt. Grønt og rødt bare som endring.</li>
+        <li>Banekartet er eksempeldata ved lansering, merket på skjermen. Ingen rust på disse skjermene.</li>
+        <li>Manglende verdi vises som «—». Ingen sidelengs rulling i 390 og 360 px.</li>
+      </ul>
+    </div>
+    <div class="endringer">
+      <span class="meta-s">Åpent hos Anders</span>
+      <ul>
+        <li><b>Hva 1 og 5 betyr</b> på skalaen står ikke i arket. Utkastet skriver «1 svakt · 5 sterkt» for 1–5 og «1 helt uenig · 4 helt enig» for 1–4.</li>
+        <li><b>Faktisk tidsfordeling</b> er foreslått fra treningsdataene siste 12 måneder. Spilleren kan endre den. Ikke avgjort om forslaget skal låses.</li>
+        <li><b>Hullstrategien</b> er et forslag fra spillerens egne lengder. Hvem som skriver den ved lansering (spilleren, coachen eller Caddie), er ikke avgjort.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ================= PH-IUP-01 Fireukerssjekk ================= -->
+<template id="sjekk">
+<div class="app" data-fane="idag" data-skall="tilbake" data-tilbake="I dag">
+  <main class="innhold smal">
+    <div class="topp" data-behold>
+      <div><span class="iup-merke">IUP · WANG Toppidrett</span><h1 class="tittel" style="margin-top:8px">Fireukerssjekk</h1></div>
+    </div>
+    <div class="flyt">
+      <div class="steg-topp">
+        <div class="rad"><span class="kilde" data-steg-nr>Steg 1 av 9</span><span class="lagring ok" data-lagring><svg class="ikon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Lagret 14:20</span></div>
+        <div class="stolpe"><span data-steg-stolpe style="width:11%"></span></div>
+      </div>
+      <div class="ko" data-ko hidden>
+        <svg class="ikon" viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+        <span><b data-ko-tekst>2 svar er ikke lagret</b><span class="kilde">Svarene ligger på telefonen til de er lagret.</span></span>
+        <button type="button" class="knapp sek" data-prov>Prøv igjen</button>
+      </div>
+      <div data-steg></div>
+      <div class="navigasjon"><button type="button" class="knapp sek" data-forrige>Tilbake</button><button type="button" class="knapp pri" data-neste>Neste</button></div>
+      <button type="button" class="lenke" data-vis-feil style="justify-self:start">Vis lagringsfeil (eksempel)</button>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= PH-IUP-01 Levert ================= -->
+<template id="levert">
+<div class="app" data-fane="idag" data-skall="tilbake" data-tilbake="I dag">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div><span class="iup-merke">IUP · WANG Toppidrett</span><h1 class="tittel" style="margin-top:8px">Fireukerssjekk levert</h1></div>
+    </div>
+    <div class="to-del">
+      <div>
+        <div class="kort">
+          <span class="hake"><svg class="ikon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span>
+          <div class="hoved"><strong data-snitt>3,6</strong><span class="trend opp" data-snitt-trend><svg class="ikon" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg>+0,2</span></div>
+          <p class="forklar">Snitt av 43 svar, skala 1–5. Forrige runde 27. september.</p>
+          <p class="kildetekst">Levert mandag 5. oktober kl. 14:31. Anders og WANG-treneren ser svarene.</p>
+        </div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Prosessmål</h2></div>
+          <ul class="historikk">
+            <li><span>Registrer alle runder slag for slag</span><b>Delvis</b></li>
+            <li><span>2 FYS-økter per uke</span><b>Ja</b></li>
+            <li><span>3 nærspilløkter per uke</span><b>Ja</b></li>
+          </ul>
+        </section>
+      </div>
+      <div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Per område</h2><span class="lg-rad"><span class="lg"><i style="background:var(--graphite-900)"></i>Nå</span><span class="lg"><i style="background:var(--amber-700);width:3px"></i>27. sep</span></span></div>
+          <div class="snitt-rader" data-snitt-rader></div>
+        </section>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Utviklingssjekk 2025</h2></div>
+          <p class="forklar">Spørsmålene var andre i 2025, så tallene står for seg og sammenlignes ikke.</p>
+          <ul class="historikk">
+            <li><span>Våren 2025 · 41 spørsmål</span><b>3,2</b></li>
+            <li><span>Høsten 2025 · 41 spørsmål</span><b>3,4</b></li>
+          </ul>
+        </section>
+        <div class="knapper"><button type="button" class="knapp pri" data-gaa="sjekk">Se svarene</button><a class="knapp sek" href="#">Til målsetninger</a></div>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= PH-IUP-02 Sesongevaluering ================= -->
+<template id="sesong">
+<div class="app" data-fane="idag" data-skall="tilbake" data-tilbake="I dag">
+  <main class="innhold smal">
+    <div class="topp" data-behold>
+      <div><span class="iup-merke">IUP · WANG Toppidrett</span><h1 class="tittel" style="margin-top:8px">Sesongevaluering 2026</h1></div>
+    </div>
+    <div class="flyt">
+      <div class="steg-topp">
+        <div class="rad"><span class="kilde" data-steg-nr>Steg 1 av 4</span><span class="lagring ok"><svg class="ikon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Lagret 14:20</span></div>
+        <div class="stolpe"><span data-steg-stolpe style="width:25%"></span></div>
+      </div>
+      <div data-steg></div>
+      <div class="navigasjon"><button type="button" class="knapp sek" data-forrige>Tilbake</button><button type="button" class="knapp pri" data-neste>Neste</button></div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= PH-IUP-02 Levert ================= -->
+<template id="sesonglevert">
+<div class="app" data-fane="idag" data-skall="tilbake" data-tilbake="I dag">
+  <main class="innhold">
+    <div class="topp" data-behold>
+      <div><span class="iup-merke">IUP · WANG Toppidrett</span><h1 class="tittel" style="margin-top:8px">Sesongevaluering levert</h1></div>
+    </div>
+    <div class="to-del">
+      <div>
+        <div class="kort">
+          <span class="hake"><svg class="ikon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span>
+          <div class="hoved"><strong>3</strong><span class="forklar">nye prosessmål i Målsetninger</span></div>
+          <p class="kildetekst">Levert 18. oktober. Anders og WANG-treneren ser evalueringen og tar den med i årsplanen for 2027.</p>
+        </div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Forbedringspunkter</h2></div>
+          <ul class="historikk">
+            <li><span>Innspill 100–150 m: flere slag innenfor 8 m</span><b>Prosessmål</b></li>
+            <li><span>Fast rutine før hver putt</span><b>Prosessmål</b></li>
+            <li><span>Sove 8 timer før turneringsdager</span><b>Prosessmål</b></li>
+            <li><span>Bedre plan for skolearbeid i turneringsuker</span><b>—</b></li>
+          </ul>
+        </section>
+      </div>
+      <div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Tidsfordeling</h2></div>
+          <div class="fordeling">
+            <div style="display:grid;gap:6px"><span class="kilde">Faktisk 2026</span><div class="stablet"><i class="f-fys" style="width:18%"></i><i class="f-tek" style="width:22%"></i><i class="f-slag" style="width:34%"></i><i class="f-spill" style="width:18%"></i><i class="f-turn" style="width:8%"></i></div></div>
+            <div style="display:grid;gap:6px"><span class="kilde">Ønsket 2027</span><div class="stablet"><i class="f-fys" style="width:20%"></i><i class="f-tek" style="width:20%"></i><i class="f-slag" style="width:30%"></i><i class="f-spill" style="width:20%"></i><i class="f-turn" style="width:10%"></i></div></div>
+            <div class="lg-rad"><span class="lg"><i class="f-fys"></i>FYS</span><span class="lg"><i class="f-tek"></i>TEK</span><span class="lg"><i class="f-slag"></i>SLAG</span><span class="lg"><i class="f-spill"></i>SPILL</span><span class="lg"><i class="f-turn"></i>TURN</span></div>
+          </div>
+        </section>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Påstandene</h2><span class="kilde">Snitt, skala 1–4</span></div>
+          <div class="hoved"><strong style="font-size:40px">3,1</strong><span class="forklar">av 4 · 10 påstander</span></div>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<!-- ================= PH-20 Gameplan ================= -->
+<template id="gameplan">
+<div class="app" data-fane="plan" data-skall="tilbake" data-tilbake="Plan">
+  <main class="innhold">
+    <div class="topp" data-behold><div><div class="dato">Plan · gameplan</div><h1 class="tittel">Gameplan</h1></div></div>
+    <div class="eksempel-banner"><svg class="ikon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg><span>Banekartet er eksempeldata. Lengder og hindre er ikke målt på banen ennå.</span></div>
+    <div class="bane-topp">
+      <img src="bilder/spill-bane.jpg" alt="">
+      <div class="bt">
+        <b style="font:700 22px/1.2 var(--sans)">Fredrikstad GK · gul tee</b>
+        <div class="hoved"><strong>72,4</strong><span class="forklar">din snittscore her, 6 runder</span></div>
+        <p class="kildetekst">Kilde: dine registrerte runder siden mai. Brutto. Par 72.</p>
+        <div class="valg" role="group" aria-label="Bane"><button type="button" aria-pressed="true">Fredrikstad GK</button><button type="button" aria-pressed="false">Neste turnering</button></div>
+      </div>
+    </div>
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Hull for hull</h2><span class="lg-rad"><span class="lg"><i style="background:var(--green-50);border:1px solid var(--green-700)"></i>Angrip</span><span class="lg"><i style="background:var(--amber-50);border:1px solid var(--amber-700)"></i>Spill trygt</span></span></div>
+      <div class="hull-grid" data-hull-grid></div>
+    </section>
+  </main>
+</div>
+</template>
+
+<!-- ================= PH-20 Hull ================= -->
+<template id="hull">
+<div class="app" data-fane="plan" data-skall="tilbake" data-tilbake="Gameplan">
+  <main class="innhold">
+    <div class="topp" data-behold><div><div class="dato">Fredrikstad GK · gul tee</div><h1 class="tittel">Hull 7 · par 4 · 362 m</h1></div></div>
+    <div class="to-del">
+      <div>
+        <svg class="hull-kart" viewBox="0 0 300 520" role="img" aria-label="Hull 7: dogleg til venstre, vann langs høyre side fra 200 m, bunker foran green til venstre">
+          <rect x="0" y="0" width="300" height="520" fill="var(--kart-skog)"/>
+          <path d="M120 500 C 120 420, 140 330, 170 260 C 190 210, 160 140, 130 70" stroke="var(--kart-rough)" stroke-width="120" fill="none" stroke-linecap="round"/>
+          <path d="M122 480 C 124 410, 142 330, 168 262 C 186 214, 160 150, 136 92" stroke="var(--kart-fairway)" stroke-width="58" fill="none" stroke-linecap="round"/>
+          <path d="M228 330 C 262 300, 270 230, 246 190 C 232 166, 218 196, 220 236 C 222 280, 210 316, 228 330 Z" fill="var(--kart-vann)"/>
+          <ellipse cx="88" cy="96" rx="22" ry="14" fill="var(--kart-sand)"/>
+          <ellipse cx="190" cy="300" rx="16" ry="10" fill="var(--kart-sand)"/>
+          <ellipse cx="128" cy="62" rx="40" ry="30" fill="var(--kart-green)"/>
+          <circle cx="132" cy="56" r="3" fill="#141413"/>
+          <rect x="108" y="482" width="24" height="16" rx="3" fill="var(--kart-tee)"/>
+          <path d="M120 490 L 160 284" stroke="#ffffff" stroke-width="2.5" stroke-dasharray="6 5" fill="none"/>
+          <path d="M160 284 L 132 58" stroke="#ffffff" stroke-width="2.5" stroke-dasharray="6 5" fill="none"/>
+          <circle cx="160" cy="284" r="9" fill="var(--slag)" stroke="#fff" stroke-width="2.5"/>
+          <rect x="174" y="262" width="104" height="22" rx="4" fill="#fff"/><text x="180" y="277">192 m · 170 m inn</text>
+          <rect x="140" y="10" width="76" height="22" rx="4" fill="#fff"/><text x="146" y="25">Flagg midt-bak</text>
+          <rect x="16" y="120" width="96" height="22" rx="4" fill="#fff"/><text x="22" y="135">Bunker: 150 m inn</text>
+          <rect x="190" y="160" width="88" height="22" rx="4" fill="#fff"/><text x="196" y="175">Vann fra 200 m</text>
+        </svg>
+        <p class="kildetekst" style="text-align:center">Eksempeldata. Kartet er ikke målt på banen.</p>
+      </div>
+      <div>
+        <div class="kort">
+          <div class="hoved"><strong>4,6</strong><span class="trend ned">+0,6 over par</span></div>
+          <p class="forklar">Ditt snitt på hull 7, 6 runder. To dobbeltbogeyer etter utslag i vannet.</p>
+          <p class="kildetekst">Kilde: dine registrerte runder på Fredrikstad GK siden mai.</p>
+        </div>
+        <section class="seksjon">
+          <div class="sek-topp"><h2>Slagvalg</h2><span class="pille vent"><i></i>Spill trygt</span></div>
+          <div class="slagplan">
+            <div class="slag-steg"><span class="nr">1</span><span><b>Hybrid 4 mot venstre halvdel</b><span class="i">Carry 192 m. Vannet når du ikke.</span></span><span class="m">192</span></div>
+            <div class="slag-steg"><span class="nr">2</span><span><b>6-jern til midten av greenen</b><span class="i">170 m inn. Bunkeren foran til venstre er ute av spill.</span></span><span class="m">170</span></div>
+            <div class="slag-steg putt"><span class="nr">3</span><span><b>To putter</b><span class="i">Greenen heller bakfra. Sikt under hullet.</span></span><span class="m">2</span></div>
+          </div>
+          <div class="alt-plan"><b>Driver i stedet?</b><span>Carry 228 m går rett i vannet med en svak høyre-miss. Driveren sparer 40 m, men gir mer risiko enn gevinst her.</span></div>
+          <p class="kildetekst">Lengdene er dine egne fra TrackMan, full hastighet, 14. september.</p>
+        </section>
+        <div class="knapper"><button type="button" class="knapp pri" data-gaa="gameplan">Alle hull</button><button type="button" class="knapp sek">Endre slagvalg</button></div>
+      </div>
+    </div>
+  </main>
+</div>
+</template>
+
+<script src="felles/felles.js"></script>
+<script>
+(function () {
+  /* Kilde: src/lib/iup/utviklingssjekk-kilder.json, iup-2027, JUNIOR (43 spørsmål, skala 1–5) */
+  var JUNIOR = [["Sosial", "Jeg er fornøyd med hvordan det fungerer med vennene mine"], ["Sosial", "Jeg har noen å snakke med om personlige saker"], ["Sosial", "Jeg er en god venn for vennene mine"], ["Sosial", "Jeg får støtte i golfsatsingen min"], ["Mentalt", "Min mentale tilstand er"], ["Mentalt", "Jeg har balanse mellom golf og livet utenfor golfen"], ["Mentalt", "Mine forventninger er i balanse med min innsats"], ["Mentalt", "Andres forventninger er i balanse med mine egne"], ["Mentalt", "Min motivasjon for trening er"], ["Fysisk", "Energinivået mitt til å takle trening og livet generelt er"], ["Fysisk", "Min søvnkvalitet og kvantitet er"], ["Fysisk", "Kostholdet jeg spiser er av god kvalitet"], ["Fysisk", "Mengden mat jeg spiser er"], ["Fysisk", "Mitt fysiske nivå er god nok for de tekniske målene jeg har."], ["Fysisk", "Mitt fysiske nivå er god nok til å gjennomføre den treningsmengden jeg trenger."], ["Fysisk", "Min fysiske form for trening er"], ["Strategisk", "Min plan for å håndtere livet er"], ["Strategisk", "Planen min for å takle skolearbeid er"], ["Strategisk", "Jeg er i fase med skolen"], ["Strategisk", "Jeg tar avgjørelser i livet som jeg vinner i det lange løp"], ["Strategisk", "Jeg tar beslutninger om golf som jeg vinner i det lange løp"], ["Strategisk", "Jeg har funnet ut ting jeg trenger for å ta gode beslutninger"], ["Strategisk", "Jeg dokumenterer og evaluerer treningen/turneringen min"], ["Teknisk", "Jeg har et tydelig bilde/film av hvordan mine GOBBS skal være"], ["Teknisk", "Jeg har et tydelig bilde/film av hvordan bevegelsen min skal være"], ["Teknisk", "Jeg vet hvordan det skal føles når jeg gjør mine korrekte GOBBS"], ["Teknisk", "Jeg vet hvordan det skal føles når jeg utfører min korrekte bevegelse (teknikk)"], ["Teknisk", "Jeg kjenner til en/flere spillere som har en teknikk som ligner på min ønskede teknikk"], ["Teknisk", "Jeg har kunnskap om hvorfor mine GOBBS og min bevegelse skal være på en bestemt måte"], ["Teknisk", "Jeg vet hva mønstrene mine er innen teknikk"], ["Teknisk", "Jeg har øvelser/øvelser som vil hjelpe meg med å trene riktig svingbevegelse."], ["Teknisk", "Jeg har en teknisk plan for de fleste golfslagene (utslag, innspill, nærspill, putt)"], ["Golfutvikling", "Jeg har klare mål for golfutviklingen min"], ["Golfutvikling", "Min treningsplan for golfutviklingen min er"], ["Golfutvikling", "Jeg implementerer innholdet i planleggingen min"], ["Golfutvikling", "Jeg gjennomfär mengden trening i planleggingen min"], ["Golfutvikling", "Jeg har forutsetninger for å gjennomføre treningen min (lokaler/treningsområde etc.)"], ["Neste trinn", "Jeg har treningskompiser"], ["Neste trinn", "Jeg har en god forståelse av hva collegelivet innebærer."], ["Neste trinn", "Jeg har en god forståelse av amerikansk kultur."], ["Neste trinn", "Jeg har en klar plan for hvordan mine ulike trenere (hjemme, college, Team Norway) skal samhandle."], ["Neste trinn", "Jeg forstår de akademiske kravene som vil bli stilt til meg på college."], ["Neste trinn", "Jeg forstår hvordan treningskulturen kan være annerledes i USA sammenlignet med Norge."]];
+  /* Kilde: src/lib/iup/sesongevaluering-kilder.json, iup-2027 (3 fritekst, 10 påstander 1–4) */
+  var SESONG = [["FRITEKST", "Hva har du gjort bra denne sesongen?"], ["FRITEKST", "Hva kunne vært bedre?"], ["FRITEKST", "Hvordan vil du vurdere innsatsen din (f.eks. hvor mye tid har du brukt på golf)?"], ["SKALA", "Jeg har hatt (2026) en god plan som dekker alle delene (pyramiden) og forteller meg når jeg skal trene på forskjellige ting."], ["SKALA", "Jeg gjennomfører planen jeg hadde"], ["SKALA", "Jeg har god kunnskap om hva og hvor god jeg må være for å nå mine mål (neste år)"], ["SKALA", "Jeg har god kunnskap om innsatsen jeg må gjøre for å nå mine mål"], ["SKALA", "Jeg har god kunnskap om pyramiden"], ["SKALA", "Jeg kan håndtere utfordringene som oppstår i turneringer"], ["SKALA", "Jeg kan håndtere utfordringene som oppstår i forbindelse med min eliteinnsats (forsinkede flyreiser, dårlig vær under trening osv.)"], ["SKALA", "Jeg er i stand til å følge planen min selv om jeg ikke oppnår resultater"], ["SKALA", "Jeg kan ta personlig ansvar for min utvikling (f.eks. når treneren ikke er med på treningen)"], ["SKALA", "Vurder ditt daglige treningsmiljø med fokus på bane, treningsområde, innendørsfasiliteter og teknisk utstyr."]];
+  var OMRADER = ['Sosial', 'Mentalt', 'Fysisk', 'Strategisk', 'Teknisk', 'Golfutvikling', 'Neste trinn'];
+  var PROSESS = ['Registrer alle runder slag for slag', '2 FYS-økter per uke', '3 nærspilløkter per uke'];
+  /* Forrige runde (27. sep) og dagens svar: syntetiske, faste */
+  function forrige(i) { return [3, 4, 3, 4, 3, 3, 2, 4, 4][i % 9]; }
+  function naa(i) { return [4, 4, 3, 4, 4, 3, 3, 4, 5][i % 9]; }
+
+  function toast(app, tekst) {
+    var gml = app.querySelector('.toast'); if (gml) gml.remove();
+    var t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role', 'status'); t.textContent = tekst;
+    app.querySelector('.innhold').appendChild(t);
+    setTimeout(function () { t.remove(); }, 3600);
+  }
+  function komma(x) { return x.toFixed(1).replace('.', ',').replace('-', '−'); }
+  function skala(n, valgt, forr) {
+    var s = ''; for (var k = 1; k <= n; k++) s += '<button type="button" aria-pressed="' + (k === valgt) + '"' + (k === forr ? ' class="forrige" title="Forrige svar"' : '') + ' data-k="' + k + '">' + k + '</button>';
+    return '<div class="skal' + (n === 4 ? ' fire' : '') + '" role="group">' + s + '</div>';
+  }
+
+  /* ---------- PH-IUP-01 Fireukerssjekk ---------- */
+  function sjekk(app) {
+    var svar = JUNIOR.map(function (q, i) { return i < 9 ? naa(i) : null; }), pros = [1, 0, 0], steg = 0, feil = 0;
+    var N = OMRADER.length + 2, boks = app.querySelector('[data-steg]');
+    function lagret() {
+      var l = app.querySelector('[data-lagring]');
+      if (feil) { l.className = 'lagring feil'; l.innerHTML = '<svg class="ikon" viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/><circle cx="12" cy="12" r="10"/></svg>Ikke lagret'; app.querySelector('[data-ko]').hidden = false; app.querySelector('[data-ko-tekst]').textContent = feil + (feil === 1 ? ' svar er' : ' svar er') + ' ikke lagret'; }
+      else { l.className = 'lagring ok'; l.innerHTML = '<svg class="ikon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Lagret 14:2' + (steg % 10); app.querySelector('[data-ko]').hidden = true; }
+    }
+    function tegn() {
+      app.querySelector('[data-steg-nr]').textContent = 'Steg ' + (steg + 1) + ' av ' + N + (steg && steg <= OMRADER.length ? ' · ' + OMRADER[steg - 1] : '');
+      app.querySelector('[data-steg-stolpe]').style.width = Math.round((steg + 1) / N * 100) + '%';
+      var h = '';
+      if (steg === 0) {
+        h = '<div class="omr-tittel"><h2>Prosessmål</h2><span class="kilde">Siste fire uker</span></div><p class="forklar">Har du gjort det du satte deg fore? Målsetningene ligger i Workbench.</p><div class="spm-liste">' +
+          PROSESS.map(function (p, i) { return '<div class="spm besvart"><p>' + p + '</p><div class="tre" role="group" data-p="' + i + '">' + ['Ja', 'Delvis', 'Nei'].map(function (v, k) { return '<button type="button" aria-pressed="' + (pros[i] === k) + '" data-k="' + k + '">' + v + '</button>'; }).join('') + '</div></div>'; }).join('') + '</div>';
+      } else if (steg <= OMRADER.length) {
+        var o = OMRADER[steg - 1], idx = [];
+        JUNIOR.forEach(function (q, i) { if (q[0] === o) idx.push(i); });
+        var besv = idx.filter(function (i) { return svar[i]; }).length;
+        h = '<div class="omr-tittel"><h2>' + o + '</h2><span class="kilde">' + besv + ' av ' + idx.length + ' besvart</span></div><div class="skal-forklar"><span>1 svakt</span><span>Streken viser svaret 27. sep</span><span>5 sterkt</span></div><div class="spm-liste">' +
+          idx.map(function (i) { return '<div class="spm' + (svar[i] ? ' besvart' : '') + '" data-i="' + i + '"><p>' + JUNIOR[i][1] + '</p>' + skala(5, svar[i], forrige(i)) + '</div>'; }).join('') + '</div>';
+      } else {
+        var mangler = svar.filter(function (s) { return !s; }).length;
+        h = '<div class="omr-tittel"><h2>Klar til å levere?</h2><span class="kilde">' + (43 - mangler) + ' av 43 besvart</span></div><p class="forklar">' + (mangler ? 'Du har ' + mangler + ' spørsmål igjen. Du kan levere uten dem, de står som «—».' : 'Alle spørsmålene er besvart.') + ' Anders og WANG-treneren ser svarene når du leverer.</p><div class="omr-oversikt">' +
+          OMRADER.map(function (o, k) { var idx = JUNIOR.map(function (q, i) { return q[0] === o ? i : -1; }).filter(function (i) { return i >= 0; }); var b = idx.filter(function (i) { return svar[i]; }).length; return '<button type="button" data-hopp="' + (k + 1) + '"><b>' + o + '</b><span class="n">' + b + ' / ' + idx.length + '</span></button>'; }).join('') + '</div>';
+      }
+      boks.innerHTML = h;
+      app.querySelector('[data-forrige]').textContent = steg ? 'Tilbake' : 'Lukk';
+      app.querySelector('[data-neste]').textContent = steg === N - 1 ? 'Lever sjekken' : 'Neste';
+      lagret();
+    }
+    boks.addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (!b) return;
+      if (b.dataset.hopp) { steg = +b.dataset.hopp; tegn(); return; }
+      var g = b.parentNode;
+      if (g.dataset.p !== undefined) pros[+g.dataset.p] = +b.dataset.k;
+      else { var s = b.closest('.spm'); svar[+s.dataset.i] = +b.dataset.k; }
+      if (feil) feil++;
+      tegn();
+    });
+    app.querySelector('[data-neste]').addEventListener('click', function () { if (steg < N - 1) { steg++; tegn(); app.querySelector('.innhold').scrollIntoView({ block: 'start' }); } else AKUtkast.gaa('levert'); });
+    app.querySelector('[data-forrige]').addEventListener('click', function () { if (steg) { steg--; tegn(); } });
+    app.querySelector('[data-vis-feil]').addEventListener('click', function () { feil = 2; lagret(); });
+    app.querySelector('[data-prov]').addEventListener('click', function () { feil = 0; lagret(); toast(app, 'Lagret.'); });
+    tegn();
+  }
+
+  function levert(app) {
+    var tot = 0, totF = 0, rader = OMRADER.map(function (o) {
+      var a = 0, f = 0, n = 0;
+      JUNIOR.forEach(function (q, i) { if (q[0] === o) { a += naa(i); f += forrige(i); n++; } });
+      tot += a; totF += f; return [o, a / n, f / n];
+    });
+    var s = tot / JUNIOR.length, sf = totF / JUNIOR.length, d = s - sf;
+    app.querySelector('[data-snitt]').textContent = komma(s);
+    var tr = app.querySelector('[data-snitt-trend]'); tr.className = 'trend ' + (d >= 0 ? 'opp' : 'ned'); tr.lastChild.textContent = (d >= 0 ? '+' : '') + komma(d);
+    app.querySelector('[data-snitt-rader]').innerHTML = rader.map(function (r) {
+      var e = r[1] - r[2], kl = Math.abs(e) < .05 ? '' : (e > 0 ? ' opp' : ' ned');
+      return '<div class="snitt-rad"><b>' + r[0] + '</b><div class="snitt-spor"><span class="naa" data-til="' + (r[1] / 5 * 100) + '%" style="width:' + (r[1] / 5 * 100) + '%"></span><span class="forr" style="left:' + (r[2] / 5 * 100) + '%"></span></div><span class="v">' + komma(r[1]) + '<span class="endr' + kl + '">' + (e >= 0 ? '+' : '') + komma(e) + '</span></span></div>';
+    }).join('');
+  }
+
+  /* ---------- PH-IUP-02 Sesongevaluering ---------- */
+  var AKSER = [['fys', 'FYS'], ['tek', 'TEK'], ['slag', 'SLAG'], ['spill', 'SPILL'], ['turn', 'TURN']];
+  function sesong(app) {
+    var steg = 0, fakt = [18, 22, 34, 18, 8], onsk = [20, 20, 30, 20, 10], pst = SESONG.map(function (q, i) { return q[0] === 'SKALA' ? (i < 8 ? [3, 3, 4, 3, 3][i - 3] : null) : null; });
+    var tekst = ['Jeg har trent jevnt hele året og fått mer ut av innspillet.', '', ''];
+    var tiltak = [['Innspill 100–150 m: flere slag innenfor 8 m', true], ['Fast rutine før hver putt', true], ['', false]];
+    var boks = app.querySelector('[data-steg]');
+    function sum(a) { return a.reduce(function (x, y) { return x + y; }, 0); }
+    function stablet(a) { return '<div class="stablet">' + a.map(function (v, k) { return '<i class="f-' + AKSER[k][0] + '" style="width:' + v + '%"></i>'; }).join('') + '</div>'; }
+    function tegn() {
+      app.querySelector('[data-steg-nr]').textContent = 'Steg ' + (steg + 1) + ' av 4';
+      app.querySelector('[data-steg-stolpe]').style.width = ((steg + 1) * 25) + '%';
+      var h = '';
+      if (steg === 0) {
+        h = '<div class="omr-tittel"><h2>Sesongen din</h2></div><div class="spm-liste">' + SESONG.filter(function (q) { return q[0] === 'FRITEKST'; }).map(function (q, i) { return '<div class="felt"><label for="fri' + i + '">' + q[1] + '</label><textarea id="fri' + i + '" data-fri="' + i + '">' + tekst[i] + '</textarea></div>'; }).join('') + '</div>';
+      } else if (steg === 1) {
+        h = '<div class="omr-tittel"><h2>Ti påstander</h2><span class="kilde">' + pst.filter(function (x) { return x; }).length + ' av 10 besvart</span></div><div class="skal-forklar"><span>1 helt uenig</span><span>4 helt enig</span></div><div class="spm-liste">' +
+          SESONG.map(function (q, i) { return q[0] === 'SKALA' ? '<div class="spm' + (pst[i] ? ' besvart' : '') + '" data-i="' + i + '"><p>' + q[1] + '</p>' + skala(4, pst[i]) + '</div>' : ''; }).join('') + '</div>';
+      } else if (steg === 2) {
+        var so = sum(onsk), sf = sum(fakt);
+        h = '<div class="omr-tittel"><h2>Tidsfordeling</h2></div><p class="forklar">Hvordan brukte du tiden i 2026, og hvordan vil du bruke den i 2027? Faktisk er foreslått fra treningsdataene dine.</p>' +
+          '<div class="fordeling"><div style="display:grid;gap:6px"><span class="kilde">Faktisk 2026 · ' + sf + ' %</span>' + stablet(fakt) + '</div><div style="display:grid;gap:6px"><span class="kilde">Ønsket 2027 · ' + so + ' %</span>' + stablet(onsk) + '</div>' +
+          '<div class="fordel-rader"><div class="fordel-rad" style="font-size:12.5px;color:var(--graphite-600)"><span></span><span>Akse</span><span style="text-align:right">Faktisk</span><span style="text-align:center">Ønsket</span></div>' +
+          AKSER.map(function (a, k) { return '<div class="fordel-rad"><i class="prikk f-' + a[0] + '"></i><b>' + a[1] + '</b><span class="faktisk">' + fakt[k] + ' %</span><div class="trinn"><button type="button" aria-label="Mindre ' + a[1] + '" data-t="' + k + '" data-d="-5">−</button><output>' + onsk[k] + ' %</output><button type="button" aria-label="Mer ' + a[1] + '" data-t="' + k + '" data-d="5">+</button></div></div>'; }).join('') +
+          '</div><div class="sum ' + (so === 100 ? 'ok' : 'feil') + '"><span>Ønsket til sammen</span><span class="mono">' + so + ' %</span></div>' + (so === 100 ? '' : '<p class="forklar">Begge må bli 100 % før du kan gå videre.</p>') + '</div>';
+      } else {
+        var fylt = tiltak.filter(function (t) { return t[0].trim(); }).length;
+        h = '<div class="omr-tittel"><h2>Forbedringspunkter</h2><span class="kilde">' + fylt + ' av minst 3</span></div><p class="forklar">Hva vil du bli bedre på i 2027? Merk dem du vil gjøre til prosessmål. De legges i Målsetninger når du leverer.</p><div class="tiltak">' +
+          tiltak.map(function (t, i) { return '<div class="tiltak-rad"><label class="kilde" for="tl' + i + '">Punkt ' + (i + 1) + '</label><input type="text" id="tl' + i + '" data-tl="' + i + '" value="' + t[0] + '" placeholder="Skriv et forbedringspunkt"><label class="avkryss"><input type="checkbox" data-pm="' + i + '"' + (t[1] ? ' checked' : '') + '><span>Prosessmål</span></label></div>'; }).join('') +
+          '</div><button type="button" class="knapp sek" data-flere style="justify-self:start">Legg til punkt</button>';
+      }
+      boks.innerHTML = h;
+      var neste = app.querySelector('[data-neste]');
+      neste.textContent = steg === 3 ? 'Lever evalueringen' : 'Neste';
+      var blokk = (steg === 2 && sum(onsk) !== 100) || (steg === 3 && tiltak.filter(function (t) { return t[0].trim(); }).length < 3);
+      neste.disabled = blokk; neste.style.opacity = blokk ? '.45' : '';
+      app.querySelector('[data-forrige]').textContent = steg ? 'Tilbake' : 'Lukk';
+    }
+    boks.addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (!b) return;
+      if (b.dataset.t !== undefined) { var k = +b.dataset.t; onsk[k] = Math.max(0, Math.min(100, onsk[k] + +b.dataset.d)); tegn(); return; }
+      if (b.hasAttribute('data-flere')) { tiltak.push(['', false]); tegn(); return; }
+      var s = b.closest('.spm'); if (s) { pst[+s.dataset.i] = +b.dataset.k; tegn(); }
+    });
+    boks.addEventListener('input', function (e) {
+      var t = e.target;
+      if (t.dataset.fri !== undefined) tekst[+t.dataset.fri] = t.value;
+      if (t.dataset.tl !== undefined) { tiltak[+t.dataset.tl][0] = t.value; var n = app.querySelector('[data-neste]'), ok = tiltak.filter(function (x) { return x[0].trim(); }).length >= 3; n.disabled = !ok; n.style.opacity = ok ? '' : '.45'; boks.querySelector('.omr-tittel .kilde').textContent = tiltak.filter(function (x) { return x[0].trim(); }).length + ' av minst 3'; }
+      if (t.dataset.pm !== undefined) tiltak[+t.dataset.pm][1] = t.checked;
+    });
+    app.querySelector('[data-neste]').addEventListener('click', function () { if (steg < 3) { steg++; tegn(); } else AKUtkast.gaa('sesonglevert'); });
+    app.querySelector('[data-forrige]').addEventListener('click', function () { if (steg) { steg--; tegn(); } });
+    tegn();
+  }
+
+  /* ---------- PH-20 Gameplan: eksempeldata ---------- */
+  var HULL = [[4, 352, 'a'], [3, 158, 'a'], [5, 471, 'a'], [4, 338, ''], [4, 395, 'f'], [3, 172, ''], [4, 362, 'f'], [5, 488, 'a'], [4, 326, 'a'], [4, 371, ''], [3, 145, 'a'], [4, 402, 'f'], [5, 455, 'a'], [4, 318, 'a'], [3, 188, 'f'], [4, 344, ''], [4, 381, ''], [5, 492, 'a']];
+  function gameplan(app) {
+    app.querySelector('[data-hull-grid]').innerHTML = HULL.map(function (h, i) {
+      return '<button type="button" class="hull"' + (i === 6 ? ' aria-current="true" data-gaa="hull"' : ' data-gaa="hull"') + '><b>' + (i + 1) + '</b><span>Par ' + h[0] + ' · ' + h[1] + ' m</span>' + (h[2] === 'a' ? '<span class="ris angrip">Angrip</span>' : h[2] === 'f' ? '<span class="ris forsiktig">Spill trygt</span>' : '') + '</button>';
+    }).join('');
+  }
+
+  function m(id, mal, etter, tom, laster, feil) { return { mal: mal, for: { mob: 'screenshots/' + id + '-390.jpg', pc: 'screenshots/' + id + '-1440.jpg' }, etter: etter, tom: tom, laster: laster, feil: feil }; }
+  AKUtkast.start({
+    start: 'sjekk',
+    skjermer: {
+      sjekk: m('PH-IUP-01', 'sjekk', sjekk, { tittel: 'Ingen sjekk nå', tekst: 'Neste fireukerssjekk åpner mandag 19. oktober. Du får beskjed i I dag.', knapp: 'Se forrige sjekk' }, 'Henter sjekken …', 'Sjekken kunne ikke hentes'),
+      levert: m('PH-IUP-01', 'levert', levert, { tittel: 'Ingen sjekk levert ennå', tekst: 'Når du har levert den første fireukerssjekken, ser du snittet per område her.', knapp: 'Start sjekken' }, 'Henter svarene …', 'Svarene kunne ikke hentes'),
+      sesong: m('PH-IUP-02', 'sesong', sesong, { tittel: 'Sesongevalueringen åpner i uke 42', tekst: 'Du får kortet i I dag mandag 12. oktober. Evalueringen tar rundt 20 minutter.', knapp: 'Til I dag' }, 'Henter evalueringen …', 'Evalueringen kunne ikke hentes'),
+      sesonglevert: m('PH-IUP-02', 'sesonglevert', null, null),
+      gameplan: m('PH-20', 'gameplan', gameplan, { tittel: 'Ingen bane valgt', tekst: 'Velg hjemmebanen eller banen for neste turnering, så får du en plan for hvert hull.', knapp: 'Velg bane' }, 'Henter banen …', 'Banen kunne ikke hentes'),
+      hull: m('PH-20', 'hull', null, null)
+    }
+  });
+})();
+</script>

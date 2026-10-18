@@ -6,7 +6,7 @@
 |---|---|
 | Statisk kodeinventar, importer og databasekall (ingen nettverk/appkjøring) | `node scripts/codebase-audit.mjs --output docs/design-audit/kodebase-inventar-YYYY-MM-DD.json` |
 | Struktur, delte instrukser og dokumentlenker | `npm run prosjekt:sjekk` |
-| Skjermregister for D01 | `node scripts/bygg-skjermregister.mjs --check` |
+| Skjermregister for D01 | `npm run skjermregister:sjekk` (ikke i verify; oppdateres i egen PR med `--write`) |
 | Oppdater fil- og dokumentregister | `npm run prosjekt:register` |
 | Kode, designregler og bygg | `npm run verify` |
 | Enhets- og komponenttester | `npm test` |
@@ -33,3 +33,7 @@
 - `trenerdeling-app-local.mjs`: fire syntetiske Auth-kontoer og egen skole i IUP-testmiljøet; valgfritt `--mindrearig` for foresattreisen. Kontrollerer lokale URL-er, loopback-binding og databasemarkør. Ingen e-post.
 - `trenerdeling-iup-local.mjs`: kildevaliderte leveringer og nyere privat utkast for den syntetiske spilleren. Kjør Node 24 med `--import tsx --conditions=react-server`.
 - Se [IUP-testveiledningen](../tests/iup-local/README.md). Skriptene inngår ikke i dokumentkontrollen og må aldri få produksjonskonfigurasjon.
+
+## Repo og maskinbytte
+
+`npm run repo:status -- --fetch --label macbook-air` (eller `mac-mini`) lager en JSON-rapport over denne klonen og registrerte worktrees. Uten `--fetch` er kommandoen helt lokal og referanser kan være utdaterte. Ingen checkout, commit, reset, stash, prune eller sletting utføres. Filinnhold, ignorerte filer og remote-URL med mulige credentials skrives ikke ut. Se [Git-arbeidsflyten](../docs/vedlikehold/git-arbeidsflyt.md). Kontroller verktøyet med `npm run test:repo-status`.

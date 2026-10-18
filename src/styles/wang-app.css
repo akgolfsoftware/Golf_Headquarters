@@ -18,7 +18,7 @@
   --wang-grey: #d2d2d2;
   --wang-blue-tint: #f2f5f8;
   --wang-grey-line: #e6e8ea;
-  --wang-text-muted: #5b7793;
+  --wang-text-muted: #475569;
   --wang-text-disabled: #9bafc1;
 
   background-color: var(--wang-blue-tint);
@@ -47,73 +47,106 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* App-skall med sidemeny og hovedflate */
+/* =========================================================================
+   Trenerflaten /team-wang/coach — grunnmur etter docs/design-system/utkast-wang
+   (pakke 1, aksefargene godkjent av Anders 14.10.2026). Oppsettet er hentet fra
+   AgencyOS (Anders 15.10: «litt nærmere AgencyOS»), fargene og skriftene er WANGs.
+   Lys sidemeny med navy aktiv rad, hamburgermeny på mobil, hvite kort med tynn
+   kant. Nærmere wang.no (Anders 16.10.2026, beslutninger §WANG-TRENERFLATEN):
+   firkantede hjørner, vinrød hovedknapp #AE0034 med store bokstaver i Montserrat,
+   brødtekst i Quattrocento (serif), bakgrunn #FCFAFA, tekst #222 og #444.
+   Rosa haster. Status bruker aldri aksefargene.
+   Fellessiden /team-wang bruker ingen wg-klasser og påvirkes ikke.
+   ========================================================================= */
 .wang-app .wg-shell {
+  --wg-navy: #17446f;
+  --wg-navy-dyp: #0f172a;
+  --wg-navy-dyp-tekst: #0d3050;
+  --wg-mint: #49ca9f;
+  --wg-teal-tekst: #226f67;
+  --wg-rosa: #d12a5c;
+  --wg-rosa-tekst: #a81f49;
+  --wg-gul: #fcd700;
+  --wg-gul-tekst: #7a6200;
+  --wg-tekst: #222222;
+  --wg-tekst-2: #444444;
+  --wg-bg: #fcfafa;
+  --wg-vinrod: #ae0034;
+  --wg-vinrod-mork: #8a0029;
+  --wg-grad: linear-gradient(132deg, #17446f 46%, #2e857d 102%);
+  --wg-n100: #e9edf1;
+  --wg-n200: #dce3ea;
+  --wg-n300: #c5d0da;
+  --wg-n400: #94a3b8;
+  --wg-tint-graa: #f1f4f7;
+  --wg-tint-mint: #e8f8f2;
+  --wg-tint-gul: #fefbe8;
+  --wg-tint-rosa: #faeaef;
+  --wg-tint-navy: #e3e9ee;
+  /* Aksene (godkjent 14.10). Fyll med tekstfarge; SLAG har mørk tekst, TEK mørk teal. */
+  --wg-fys: #17446f; --wg-fys-paa: #ffffff;
+  --wg-tek: #226f67; --wg-tek-paa: #ffffff;
+  --wg-slag: #f47b20; --wg-slag-paa: #0f172a;
+  --wg-spill: #007db1; --wg-spill-paa: #ffffff;
+  --wg-turn: #7f1975; --wg-turn-paa: #ffffff;
+  --wg-r-kort: 0;
+  --wg-r-knapp: 0;
+  --wg-r-felt: 0;
+  --wg-r-chip: 2px;
+  --wg-ut: cubic-bezier(0.22, 1, 0.36, 1);
   display: grid;
   grid-template-columns: 248px minmax(0, 1fr);
   min-height: 100vh;
   width: 100%;
+  background: var(--wg-bg);
+  color: var(--wg-tekst);
+  font-family: var(--font-wang-serif, "Quattrocento"), Georgia, "Times New Roman", serif;
+  font-variant-numeric: tabular-nums;
 }
+.wang-app .wg-shell * { min-width: 0; }
+.wang-app .wg-shell a:not([class]) { color: var(--wg-navy); }
 
 .wang-app .wg-side {
   display: flex;
   flex-direction: column;
-  background-color: var(--wang-blue);
+  gap: 2px;
+  padding: 20px 12px 12px;
+  background: var(--wg-tint-graa);
+  border-right: 1px solid var(--wg-n200);
   position: sticky;
   top: 0;
   height: 100vh;
   overflow-y: auto;
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
   z-index: 30;
 }
+.wang-app .wg-logo { display: block; width: auto; height: 40px; margin: 2px 10px 4px; }
+.wang-app .wg-gruppe { margin: 0 12px 18px; font: 700 12px/1.3 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-tekst-2); }
 
-.wang-app .wg-main {
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  background-color: var(--wang-blue-tint);
-}
+.wang-app .wg-main { min-width: 0; display: flex; flex-direction: column; background: var(--wg-bg); }
 
-.wang-app .wg-dtop {
-  background-color: var(--wang-white);
-  border-bottom: 1px solid var(--wang-grey-line);
-  padding: 0 32px;
-  min-height: 64px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  position: sticky;
-  top: 0;
-  z-index: 20;
-}
-
-.wang-app .wg-mtop {
-  display: none;
-}
-
-.wang-app .wg-mbar {
-  display: none;
-}
+.wang-app .wg-dtop { display: flex; justify-content: flex-end; align-items: center; gap: 8px; padding: 12px 40px 0; }
+.wang-app .wg-mtop { display: none; }
+.wang-app .wg-mbar { display: none; }
 
 .wang-app .wg-body {
-  padding: 24px 32px 64px;
+  padding: 8px 40px 96px;
   width: 100%;
   max-width: 1244px;
   min-width: 0;
+  display: grid;
+  gap: 28px;
+  align-content: start;
 }
-
 .wang-app .wg-body p,
 .wang-app .wg-body h1,
 .wang-app .wg-body h2,
-.wang-app .wg-body span {
-  overflow-wrap: anywhere;
-}
+.wang-app .wg-body span { overflow-wrap: anywhere; }
 
-/* Kort og flater */
+/* Kort og flater: hvite med tynn kant, ingen skygge */
 .wang-app .wg-kort {
-  background-color: var(--wang-white);
-  border: 1px solid var(--wang-grey);
-  border-radius: 4px;
+  background-color: #ffffff;
+  border: 1px solid var(--wg-n200, #dce3ea);
+  border-radius: var(--wg-r-kort, 14px);
   overflow: hidden;
   min-width: 0;
 }
@@ -127,217 +160,148 @@
   min-height: 48px;
   padding: 0 12px;
   border: 0;
-  border-radius: 8px;
+  border-radius: var(--wg-r-knapp);
   background: transparent;
-  color: rgba(255, 255, 255, 0.82);
-  font-family: var(--font-wang-brand, Montserrat, sans-serif);
-  font-size: 13.5px;
+  color: var(--wg-tekst);
+  font: 700 15px/1 var(--font-wang-brand, Montserrat, sans-serif);
   text-align: left;
   cursor: pointer;
   text-decoration: none;
-  transition: background-color 180ms ease;
 }
-
-.wang-app .wg-nav:hover {
-  background-color: rgba(255, 255, 255, 0.08);
-  color: var(--wang-white);
-  text-decoration: none;
-}
-
+.wang-app .wg-nav:hover { background-color: var(--wg-n100); color: var(--wg-navy-dyp); text-decoration: none; }
 .wang-app .wg-nav-pa,
-.wang-app .wg-nav-pa:hover {
-  background-color: rgba(255, 255, 255, 0.16);
-  color: var(--wang-white);
-  font-weight: 600;
-}
+.wang-app .wg-nav-pa:hover { background-color: var(--wg-navy); color: #ffffff; }
+.wang-app .wg-nav:focus-visible,
+.wang-app .wg-ikonknapp:focus-visible,
+.wang-app .wg-btn:focus-visible,
+.wang-app .wg-chip:focus-visible,
+.wang-app .wgf:focus-visible,
+.wang-app .wg-hurtig:focus-visible { outline: 3px solid var(--wg-mint); outline-offset: 2px; }
+.wang-app .wg-del { margin: 12px 12px 4px; font: 700 11px/1.3 var(--font-wang-brand, Montserrat, sans-serif); letter-spacing: 0.08em; text-transform: uppercase; color: var(--wg-tekst-2); }
 
-/* Pille-faner i toppen */
-.wang-app .wgf-rad {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  gap: 4px 6px;
-  border-bottom: 1px solid var(--wang-grey-line);
-  min-width: 0;
-  margin-bottom: 24px;
-}
+.wang-app .wg-bruker { display: flex; align-items: center; gap: 10px; padding: 12px; margin-top: auto; border-top: 1px solid var(--wg-n200); }
+.wang-app .wg-bruker b { display: block; font: 700 14px/1.2 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-navy-dyp); }
+.wang-app .wg-bruker small { display: block; font-size: 13px; color: var(--wg-tekst-2); }
+.wang-app .wg-avatar { display: inline-grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--wg-navy); color: #ffffff; font: 800 12px/1 var(--font-wang-brand, Montserrat, sans-serif); flex: none; }
+.wang-app .wg-ikonknapp { position: relative; width: 44px; height: 44px; display: grid; place-items: center; border-radius: var(--wg-r-knapp); color: var(--wg-navy-dyp); background: transparent; border: 0; cursor: pointer; }
 
+/* Hurtigknappen: navy 56 x 56 på alle skjermer */
+.wang-app .wg-hurtig-lag { position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px)); z-index: 45; display: grid; justify-items: end; gap: 8px; }
+.wang-app .wg-hurtig { width: 56px; height: 56px; border-radius: var(--wg-r-knapp); border: 0; background: var(--wg-vinrod); color: #ffffff; display: grid; place-items: center; cursor: pointer; box-shadow: 0 8px 24px rgba(15, 23, 42, 0.28); }
+.wang-app .wg-hurtig svg { transition: transform 200ms var(--wg-ut); }
+.wang-app .wg-hurtig[aria-expanded="true"] svg { transform: rotate(45deg); }
+.wang-app .wg-hurtig-meny { width: 240px; display: grid; gap: 2px; padding: 8px; border-radius: var(--wg-r-kort); background: #ffffff; border: 1px solid var(--wg-n200); box-shadow: 0 16px 40px rgba(15, 23, 42, 0.18); }
+.wang-app .wg-hurtig-meny a { display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 0 12px; border-radius: var(--wg-r-knapp); font: 700 15px/1.2 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-navy-dyp); text-decoration: none; }
+.wang-app .wg-hurtig-meny a:hover,
+.wang-app .wg-hurtig-meny a:focus-visible { background: var(--wg-tint-graa); text-decoration: none; }
+
+/* Faner: understreket, som AgencyOS */
+.wang-app .wgf-rad { display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid var(--wg-n200); min-width: 0; }
 .wang-app .wgf {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
-  padding: 0 14px;
+  padding: 0 12px;
   margin-bottom: -1px;
-  border-bottom: 2px solid transparent;
-  color: var(--wang-text-muted);
-  font-family: var(--font-wang-brand, Montserrat, sans-serif);
-  font-size: 14px;
-  font-weight: 500;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  color: var(--wg-tekst-2);
+  font: 700 15px/1 var(--font-wang-brand, Montserrat, sans-serif);
   text-decoration: none;
   cursor: pointer;
   background: transparent;
-  border-top: none;
-  border-left: none;
-  border-right: none;
   white-space: nowrap;
 }
-
-.wang-app .wgf:hover {
-  background-color: var(--wang-blue-tint);
-  color: var(--wang-blue);
-  text-decoration: none;
-}
-
+.wang-app .wgf:hover { color: var(--wg-navy-dyp); text-decoration: none; }
 .wang-app .wgf-pa,
-.wang-app .wgf-pa:hover {
-  color: var(--wang-blue);
-  border-bottom-color: var(--wang-blue);
-  font-weight: 600;
-}
+.wang-app .wgf-pa:hover { color: var(--wg-navy-dyp); border-bottom-color: var(--wg-navy); }
+.wang-app .wgf-sel { display: none; }
 
-.wang-app .wgf-sel {
-  display: none;
-}
-
-/* Knapper og chips */
+/* Knapper som wang.no: vinrød primær med store bokstaver, vinrød kontur sekundær, rosa kant bare for det som sletter eller avslutter */
 .wang-app .wg-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   min-height: 44px;
-  padding: 0 20px;
-  border-radius: 8px;
-  font-family: var(--font-wang-brand, Montserrat, sans-serif);
-  font-size: 14px;
-  font-weight: 600;
+  padding: 0 18px;
+  border-radius: var(--wg-r-knapp, 10px);
+  font: 700 14px/1 var(--font-wang-brand, Montserrat, sans-serif);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
   cursor: pointer;
-  border: 1px solid transparent;
-  transition: background-color 180ms ease, border-color 180ms ease;
+  border: 2px solid transparent;
   white-space: nowrap;
-}
-
-.wang-app .wg-btn-primary {
-  background-color: var(--wang-pink);
-  color: var(--wang-white);
-  border-color: var(--wang-pink);
-}
-
-.wang-app .wg-btn-primary:hover {
-  background-color: #b32450;
-  color: var(--wang-white);
   text-decoration: none;
+  transition: transform 140ms var(--wg-ut, ease);
 }
+.wang-app .wg-btn:active { transform: scale(0.97); }
+.wang-app .wg-btn-primary { background-color: var(--wg-vinrod, #ae0034); color: #ffffff; border-color: var(--wg-vinrod, #ae0034); }
+.wang-app .wg-btn-primary:hover { background-color: var(--wg-vinrod-mork, #8a0029); border-color: var(--wg-vinrod-mork, #8a0029); color: #ffffff; text-decoration: none; }
+.wang-app .wg-btn-secondary { background-color: #ffffff; color: var(--wg-vinrod, #ae0034); border-color: var(--wg-vinrod, #ae0034); }
+.wang-app .wg-btn-secondary:hover { background-color: var(--wg-tint-graa, #f1f4f7); text-decoration: none; }
+.wang-app .wg-btn-ghost { background-color: transparent; color: var(--wg-navy, #17446f); border-color: transparent; text-transform: none; letter-spacing: 0; }
+.wang-app .wg-btn-ghost:hover { background-color: var(--wg-tint-graa, #f1f4f7); }
+.wang-app .wg-btn-mint { background-color: var(--wg-mint, #49ca9f); color: var(--wg-navy-dyp, #0f172a); border-color: var(--wg-mint, #49ca9f); }
+.wang-app .wg-btn-fare { background-color: #ffffff; color: var(--wg-rosa-tekst, #a81f49); border-color: var(--wg-rosa, #d12a5c); }
+.wang-app .wg-btn[disabled],
+.wang-app .wg-btn[disabled]:hover { background-color: var(--wg-n100); border-color: var(--wg-n100); color: var(--wg-tekst-2); cursor: not-allowed; transform: none; }
 
-.wang-app .wg-btn-secondary {
-  background-color: var(--wang-white);
-  color: var(--wang-blue);
-  border-color: var(--wang-grey);
-}
-
-.wang-app .wg-btn-secondary:hover {
-  background-color: var(--wang-blue-tint);
-  text-decoration: none;
-}
-
-.wang-app .wg-btn-ghost {
-  background-color: transparent;
-  color: var(--wang-blue);
-  border-color: transparent;
-}
-
-.wang-app .wg-btn-ghost:hover {
-  background-color: rgba(23, 68, 111, 0.06);
-}
-
+/* Valg: segmentert grå flate, navy for valgt */
 .wang-app .wg-chip {
-  white-space: nowrap;
-  min-height: 44px;
-  padding: 0 16px;
-  border-radius: 999px;
-  border: 1px solid var(--wang-grey);
-  background-color: var(--wang-white);
-  color: var(--wang-text-muted);
-  font-family: var(--font-wang-brand, Montserrat, sans-serif);
-  font-size: 13px;
-  font-weight: 500;
+  white-space: normal;
+  text-align: center;
+  max-width: 100%;
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 0;
+  border: 0;
+  background-color: var(--wg-tint-graa, #f1f4f7);
+  color: var(--wg-tekst-2, #475569);
+  font: 700 14px/1 var(--font-wang-brand, Montserrat, sans-serif);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 180ms ease;
 }
-
-.wang-app .wg-chip:hover {
-  background-color: var(--wang-blue-tint);
-}
-
+.wang-app .wg-chip:hover { background-color: var(--wg-n100, #e9edf1); }
 .wang-app .wg-chip-pa,
-.wang-app .wg-chip-pa:hover {
-  border-color: var(--wang-blue);
-  background-color: var(--wang-blue);
-  color: var(--wang-white);
-}
+.wang-app .wg-chip-pa:hover { background-color: var(--wg-navy, #17446f); color: #ffffff; }
 
-/* Inputfelter og skjemaelementer */
+/* Inputfelter */
 .wang-app .wg-field {
   width: 100%;
-  min-height: 44px;
-  padding: 0 12px;
-  border: 1px solid var(--wang-grey);
-  border-radius: 8px;
-  background-color: var(--wang-white);
-  color: var(--wang-blue);
-  font-family: var(--font-wang-brand, Montserrat, sans-serif);
-  font-size: 14px;
+  min-height: 48px;
+  padding: 10px 14px;
+  border: 1.5px solid var(--wg-n300, #c5d0da);
+  border-radius: var(--wg-r-felt, 10px);
+  background-color: #ffffff;
+  color: var(--wg-tekst, #1e293b);
+  font: 400 16px/1.4 var(--font-wang-body, "Quattrocento Sans", sans-serif);
 }
+.wang-app .wg-field:focus { outline: none; border-color: var(--wg-mint, #49ca9f); box-shadow: 0 0 0 3px var(--wg-tint-mint, #e4f8f1); }
+.wang-app .wg-lbl { display: grid; gap: 6px; min-width: 0; font: 700 14px/1.3 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-navy-dyp, #0f172a); }
 
-.wang-app .wg-field:focus {
-  outline: none;
-  border-color: var(--wang-lightblue);
-  box-shadow: 0 0 0 3px rgba(0, 125, 177, 0.25);
-}
-
-.wang-app .wg-lbl {
-  display: grid;
-  gap: 6px;
-  min-width: 0;
-  font-family: var(--font-wang-brand, Montserrat, sans-serif);
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--wang-blue);
-}
-
-/* Statuspiller */
+/* Statuspiller: mint ok, gul venter, rosa haster, grå nøytral. Aldri aksefargene. */
 .wang-app .wg-st {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  min-height: 28px;
-  padding: 0 10px;
-  border-radius: 999px;
-  border: 1px solid var(--wang-grey);
-  background-color: var(--wang-white);
-  color: var(--wang-blue);
-  font-family: var(--font-wang-brand, Montserrat, sans-serif);
-  font-size: 12px;
-  font-weight: 500;
+  min-height: 26px;
+  padding: 0 11px;
+  border-radius: var(--wg-r-chip, 2px);
+  border: 0;
+  background-color: var(--wg-n100, #e9edf1);
+  color: var(--wg-tekst-2, #475569);
+  font: 700 12px/1 var(--font-wang-brand, Montserrat, sans-serif);
   white-space: nowrap;
 }
-
-.wang-app .wg-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  flex: none;
-  display: inline-block;
-}
-
-.wang-app .wg-dot-planlagt { background-color: var(--wang-lightblue); }
-.wang-app .wg-dot-aktiv { background-color: var(--wang-orange); }
-.wang-app .wg-dot-fullfort { background-color: var(--wang-green); }
-.wang-app .wg-dot-varsel { background-color: var(--wang-pink); }
-.wang-app .wg-dot-fravaer { background-color: var(--wang-purple); }
+.wang-app .wg-dot { width: 7px; height: 7px; border-radius: 50%; flex: none; display: inline-block; background: var(--wg-n400, #94a3b8); }
+.wang-app .wg-dot-planlagt { background-color: var(--wg-navy, #17446f); }
+.wang-app .wg-dot-aktiv { background-color: var(--wg-gul, #fcd700); }
+.wang-app .wg-dot-fullfort { background-color: var(--wg-mint, #49ca9f); }
+.wang-app .wg-dot-varsel { background-color: var(--wg-rosa, #d12a5c); }
+.wang-app .wg-dot-fravaer { background-color: var(--wg-n400, #94a3b8); }
 
 /* Tabeller og rader */
 .wang-app .wg-trow {
@@ -345,104 +309,379 @@
   grid-template-columns: minmax(0, 1.2fr) 70px 70px minmax(0, 1.2fr) 90px 110px 40px;
   gap: 8px 12px;
   align-items: center;
-  padding: 12px 20px;
-  border-top: 1px solid var(--wang-grey-line);
-  background-color: var(--wang-white);
+  padding: 12px 18px;
+  border-top: 1px solid var(--wg-n200, #dce3ea);
+  background-color: #ffffff;
 }
+.wang-app .wg-trow:hover { background-color: var(--wg-tint-graa, #f1f4f7); }
+.wang-app .wg-thead { background-color: #ffffff; font: 700 11px/1.3 var(--font-wang-brand, Montserrat, sans-serif); letter-spacing: 0.08em; text-transform: uppercase; color: var(--wg-tekst-2, #475569); }
 
-.wang-app .wg-trow:hover {
-  background-color: var(--wang-blue-tint);
-}
-
-.wang-app .wg-thead {
-  background-color: var(--wang-blue-tint);
-  font-family: var(--font-wang-brand, Montserrat, sans-serif);
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--wang-text-muted);
-}
-
-/* Mobil-responsivitet (< 820px) */
-@media (max-width: 820px) {
-  .wang-app .wg-shell {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
+/* Mobil under 900 px: hvit topplinje med hamburgermeny, logo og meny-skuff. Ingen bunnmeny. */
+@media (max-width: 899px) {
+  .wang-app .wg-shell { grid-template-columns: minmax(0, 1fr); }
   .wang-app .wg-side,
-  .wang-app .wg-dtop {
-    display: none !important;
-  }
-
+  .wang-app .wg-dtop { display: none !important; }
   .wang-app .wg-mtop {
     display: flex;
-    background-color: var(--wang-blue);
-    padding: 12px 20px;
     align-items: center;
-    gap: 12px;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 6px 12px;
+    background: #ffffff;
+    border-bottom: 1px solid var(--wg-n200);
     position: sticky;
     top: 0;
     z-index: 20;
-    min-height: 56px;
+    min-height: 57px;
   }
-
-  .wang-app .wg-mbar {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 64px;
-    background-color: var(--wang-white);
-    border-top: 1px solid var(--wang-grey-line);
-    z-index: 40;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
-  }
-
-  .wang-app .wg-tab {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 2px;
-    height: 64px;
-    border: none;
-    background: transparent;
-    color: var(--wang-text-muted);
-    font-family: var(--font-wang-brand, Montserrat, sans-serif);
-    font-size: 10px;
-    font-weight: 500;
-    cursor: pointer;
-  }
-
-  .wang-app .wg-tab-pa {
-    color: var(--wang-pink);
-    font-weight: 600;
-  }
-
-  .wang-app .wg-body {
-    padding: 16px 16px 88px;
-  }
-
-  .wang-app .wgf-rad {
-    display: none !important;
-  }
-
-  .wang-app .wgf-sel {
-    display: flex !important;
-    margin-bottom: 20px;
-  }
-
-  .wang-app .wg-trow {
-    grid-template-columns: minmax(0, 1fr) auto;
-    padding: 12px 16px;
-  }
-
-  .wang-app .wg-trow > *:not(:first-child):not(:nth-child(2)) {
-    display: none;
-  }
-
-  .wang-app .wg-thead {
-    display: none;
-  }
+  .wang-app .wg-mtop .wg-logo { height: 32px; margin: 0; }
+  .wang-app .wg-skuff { position: sticky; top: 57px; z-index: 21; height: 0; }
+  .wang-app .wg-skuff nav { position: absolute; left: 0; right: 0; top: 0; display: grid; gap: 2px; padding: 12px; background: #ffffff; border-bottom: 1px solid var(--wg-n200); box-shadow: 0 16px 32px rgba(15, 23, 42, 0.12); max-height: calc(100dvh - 57px); overflow-y: auto; }
+  .wang-app .wg-body { padding: 20px 16px 96px; }
+  .wang-app .wg-trow { grid-template-columns: minmax(0, 1fr) auto; padding: 12px 16px; }
+  .wang-app .wg-trow > *:not(:first-child):not(:nth-child(2)) { display: none; }
+  .wang-app .wg-thead { display: none; }
 }
+@media (min-width: 900px) {
+  .wang-app .wg-skuff { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wang-app .wg-btn, .wang-app .wg-hurtig svg { transition: none; }
+}
+
+/* =========================================================================
+   Skjermdeler for trenerflaten (pakke 2 og videre), etter
+   docs/design-system/utkast-wang/felles/wang.css. Dato over tittel, tellere
+   med tynn kant, saker i hvite kort, øktkort fylt i aksefargen.
+   ========================================================================= */
+.wang-app .wg-body { container-type: inline-size; }
+.wang-app .wg-dato { margin: 0; font: 700 12px/1.3 var(--font-wang-brand, Montserrat, sans-serif); letter-spacing: 0.08em; text-transform: uppercase; color: var(--wg-tekst-2); }
+.wang-app .wg-tittel { margin: 4px 0 0; font: 800 28px/1.12 var(--font-wang-brand, Montserrat, sans-serif); letter-spacing: -0.02em; color: var(--wg-vinrod); }
+.wang-app .wg-ingress { margin: 8px 0 0; font-size: 16px; line-height: 1.55; color: var(--wg-tekst-2); max-width: 52ch; }
+.wang-app .wg-seksjon { display: grid; gap: 12px; align-content: start; }
+.wang-app .wg-sek-topp { display: flex; align-items: baseline; justify-content: space-between; gap: 4px 12px; flex-wrap: wrap; }
+.wang-app .wg-sek-topp h2 { margin: 0; display: inline-flex; align-items: center; gap: 8px; font: 800 19px/1.25 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-tekst); }
+.wang-app .wg-kilde { margin: 0; font-size: 13px; line-height: 1.45; color: var(--wg-tekst-2); }
+.wang-app .wg-fyll { padding: 18px; display: grid; gap: 14px; align-content: start; }
+.wang-app .wg-to-kol { display: grid; gap: 28px; }
+.wang-app .wg-to-kol > div { display: grid; gap: 28px; align-content: start; }
+
+.wang-app .wg-helt { display: grid; gap: 16px; }
+.wang-app .wg-helt-tall { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.wang-app .wg-helt-tall > div { display: grid; gap: 4px; align-content: start; padding: 14px; border-radius: var(--wg-r-kort); border: 1px solid var(--wg-n200); background: #ffffff; min-height: 92px; }
+.wang-app .wg-helt-tall strong { order: 2; font: 800 30px/1 var(--font-wang-brand, Montserrat, sans-serif); letter-spacing: -0.02em; color: var(--wg-navy-dyp); }
+.wang-app .wg-helt-tall span { order: 1; font: 700 12px/1.3 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-tekst-2); }
+.wang-app .wg-helt-tall .wg-kilde { order: 3; font: 400 13px/1.45 inherit; }
+.wang-app .wg-helt-tall > div.wg-signal { border: 2px solid var(--wg-rosa); }
+.wang-app .wg-helt-tall > div.wg-signal strong { color: var(--wg-rosa-tekst); }
+
+.wang-app .wg-pille { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 11px; border-radius: var(--wg-r-chip); font: 700 12px/1 var(--font-wang-brand, Montserrat, sans-serif); white-space: nowrap; flex: none; background: var(--wg-n100); color: var(--wg-tekst-2); }
+.wang-app .wg-pille i { width: 7px; height: 7px; border-radius: 50%; background: var(--wg-n400); }
+.wang-app .wg-pille-ok { background: var(--wg-tint-mint); color: var(--wg-navy-dyp-tekst); }
+.wang-app .wg-pille-ok i { background: var(--wg-mint); }
+.wang-app .wg-pille-vent { background: var(--wg-tint-gul); color: var(--wg-gul-tekst); }
+.wang-app .wg-pille-vent i { background: var(--wg-gul); }
+.wang-app .wg-pille-haster { background: var(--wg-tint-rosa); color: var(--wg-rosa-tekst); }
+.wang-app .wg-pille-haster i { background: var(--wg-rosa); }
+.wang-app .wg-teller { display: inline-grid; place-items: center; min-width: 24px; height: 24px; padding: 0 7px; border-radius: var(--wg-r-chip); background: var(--wg-rosa); color: #ffffff; font: 800 12px/1 var(--font-wang-brand, Montserrat, sans-serif); }
+
+/* Aksemerke og fylte flater i aksefargen (godkjent 14.10.2026) */
+.wang-app .wg-akse { display: inline-flex; align-items: center; justify-content: center; min-width: 48px; height: 24px; padding: 0 8px; border-radius: 0; font: 800 11px/1 var(--font-wang-brand, Montserrat, sans-serif); letter-spacing: 0.05em; flex: none; justify-self: start; }
+.wang-app .wg-akse-fys { background: var(--wg-fys); color: var(--wg-fys-paa); }
+.wang-app .wg-akse-tek { background: var(--wg-tek); color: var(--wg-tek-paa); }
+.wang-app .wg-akse-slag { background: var(--wg-slag); color: var(--wg-slag-paa); }
+.wang-app .wg-akse-spill { background: var(--wg-spill); color: var(--wg-spill-paa); }
+.wang-app .wg-akse-turn { background: var(--wg-turn); color: var(--wg-turn-paa); }
+
+.wang-app .wg-fokus { border-top: 6px solid var(--wg-slag); }
+.wang-app .wg-fokus h3 { margin: 0; font: 800 20px/1.25 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-navy-dyp); text-wrap: balance; }
+.wang-app .wg-maltall { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.wang-app .wg-maltall > div { display: grid; gap: 4px; align-content: start; padding: 12px; border-radius: var(--wg-r-felt); background: #fef3eb; }
+.wang-app .wg-maltall strong { font: 800 22px/1 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-navy-dyp); white-space: nowrap; }
+.wang-app .wg-maltall span { font: 700 11px/1.3 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-tekst-2); }
+
+/* Saker: én rad per ting som venter, med knappene under */
+.wang-app .wg-saker { padding: 4px 18px; display: grid; }
+.wang-app .wg-sak { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; padding: 14px 0; align-items: center; }
+.wang-app .wg-sak + .wg-sak { border-top: 1px solid var(--wg-n100); }
+.wang-app .wg-sak > .wg-pille,
+.wang-app .wg-sak > .wg-avatar { justify-self: start; }
+.wang-app .wg-sak b { font: 700 15px/1.35 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-navy-dyp); }
+.wang-app .wg-sak > p { grid-column: 1 / -1; margin: 0; font-size: 14px; color: var(--wg-tekst-2); }
+.wang-app .wg-sak .wg-knapper { grid-column: 1 / -1; margin-top: 6px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.wang-app .wg-saker > .wg-kilde { padding: 12px 0 14px; border-top: 1px solid var(--wg-n100); }
+
+/* Øktkort: hvit med tynn kant når aksen ikke er kjent, fylt i aksefargen når den er det */
+.wang-app .wg-ukerad { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 12px; align-items: center; padding: 6px 0; }
+.wang-app .wg-ukerad .wg-dg { font: 800 13px/1 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-tekst-2); }
+.wang-app .wg-okt { display: grid; gap: 4px; padding: 12px 14px; border-radius: 0; border: 1px solid var(--wg-n200); background: #ffffff; color: var(--wg-navy-dyp); }
+.wang-app .wg-okt .wg-navn { font: 800 15px/1.25 var(--font-wang-brand, Montserrat, sans-serif); }
+.wang-app .wg-okt-info { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; line-height: 1.45; color: var(--wg-tekst-2); }
+.wang-app .wg-okt-rad { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; }
+
+@container (min-width: 900px) {
+  .wang-app .wg-helt-tall { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .wang-app .wg-tittel { font-size: 34px; }
+  .wang-app .wg-to-kol { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+}
+@media (max-width: 420px) {
+  .wang-app .wg-maltall { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Stolper og elevrader (pakke 3 og videre) */
+.wang-app .wg-stolpe { height: 10px; border-radius: 0; background: var(--wg-n100); overflow: hidden; position: relative; }
+.wang-app .wg-stolpe > span { position: absolute; inset: 0 auto 0 0; border-radius: 0; background: var(--wg-navy); }
+.wang-app .wg-stolpe > span.wg-lav { background: var(--wg-rosa); }
+.wang-app .wg-rader { padding: 4px 18px; display: grid; }
+.wang-app .wg-rad { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 12px; padding: 12px 0; align-items: center; }
+.wang-app .wg-rad + .wg-rad { border-top: 1px solid var(--wg-n100); }
+.wang-app .wg-rad b { font: 700 15px/1.3 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-navy-dyp); }
+.wang-app .wg-rad .wg-stolpe { grid-column: 1 / -1; }
+.wang-app .wg-rad .wg-tall { font: 800 16px/1 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-navy-dyp); white-space: nowrap; }
+.wang-app .wg-rutenett { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 12px; }
+.wang-app .wg-rutenett > .wg-kort { padding: 16px; display: grid; gap: 6px; align-content: start; }
+.wang-app .wg-rutenett h3 { margin: 0; font: 800 16px/1.3 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-navy-dyp); }
+.wang-app .wg-rutenett > .wg-kort.wg-naa { border: 2px solid var(--wg-navy); }
+.wang-app .wg-filter { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+
+/* =========================================================================
+   Pakke 2 I dag (utkast 2, retning B, godkjent 16.10.2026), med wang.no-laget:
+   helteflate med wang.nos gradient og ett stort tall i lett vekt, små tellere,
+   dagen som tidslinje, oppmøte med ett trykk per elev. Fasit:
+   docs/design-system/utkast-wang/idag.html og felles/wang.css.
+   ========================================================================= */
+.wang-app .wg-topp { display: grid; gap: 4px; }
+.wang-app .wg-knapper { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.wang-app .wg-forklar { margin: 0; font-size: 16px; line-height: 1.55; color: var(--wg-tekst-2); }
+.wang-app .wg-undertittel { font: 700 15px/1.3 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-tekst); }
+.wang-app .wg-hjelp { font: 400 13px/1.45 var(--font-wang-serif, "Quattrocento"), Georgia, serif; color: var(--wg-tekst-2); }
+.wang-app .wg-lenke { display: inline-flex; align-items: center; min-height: 44px; font: 600 14px/1 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-rosa-tekst); text-decoration: none; }
+.wang-app .wg-lenke::after { content: "→"; margin-left: 4px; }
+.wang-app .wg-lenke:hover { text-decoration: underline; }
+.wang-app .wg-tilbake { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; justify-self: start; font: 700 15px/1 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-navy); text-decoration: none; }
+.wang-app .wg-tilbake:hover { text-decoration: underline; }
+
+/* Helteflaten: wang.nos gradient, ett hovedtall, én hvit knapp, bilde ved siden av (over på mobil) */
+.wang-app .wg-helteflate { display: grid; overflow: hidden; background: var(--wg-grad); color: #ffffff; }
+.wang-app .wg-helt-tekst { display: grid; gap: 10px; padding: 18px 20px 20px; align-content: start; }
+.wang-app .wg-helt-merke { display: inline-flex; align-items: center; gap: 6px; justify-self: start; height: 26px; padding: 0 11px; background: rgba(255, 255, 255, 0.16); color: #ffffff; font: 700 12px/1 var(--font-wang-brand, Montserrat, sans-serif); }
+.wang-app .wg-helt-merke i { width: 7px; height: 7px; border-radius: 50%; background: var(--wg-mint); }
+.wang-app .wg-helt-hoved { margin: 0; display: flex; align-items: baseline; gap: 6px 14px; flex-wrap: wrap; }
+.wang-app .wg-helt-hoved strong { font: 500 64px/0.95 var(--font-wang-brand, Montserrat, sans-serif); letter-spacing: -0.02em; color: #ffffff; }
+.wang-app .wg-helt-hoved > span { font: 600 19px/1.25 var(--font-wang-brand, Montserrat, sans-serif); color: #ffffff; max-width: 20ch; }
+.wang-app .wg-helt-forklar { margin: 0; font-size: 16px; line-height: 1.5; color: #ffffff; max-width: 46ch; }
+.wang-app .wg-helteflate .wg-btn { justify-self: start; margin-top: 4px; }
+.wang-app .wg-btn-lys { background-color: #ffffff; color: var(--wg-vinrod); border-color: #ffffff; }
+.wang-app .wg-btn-lys:hover { background-color: var(--wg-tint-rosa); border-color: var(--wg-tint-rosa); color: var(--wg-vinrod); text-decoration: none; }
+.wang-app .wg-helteflate .wg-btn:focus-visible { outline-color: #ffffff; }
+.wang-app .wg-helt-bilde { display: block; width: 100%; height: 96px; object-fit: cover; object-position: 50% 45%; order: -1; }
+
+/* Små tellere under helteflaten */
+.wang-app .wg-smaa-tall { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.wang-app .wg-smaa-tall > * { display: grid; gap: 3px; align-content: start; padding: 10px 12px; border: 1px solid var(--wg-n200); background: #ffffff; }
+.wang-app .wg-smaa-tall strong { font: 600 22px/1.1 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-navy-dyp); }
+.wang-app .wg-smaa-tall span { hyphens: auto; overflow-wrap: anywhere; font: 700 12px/1.3 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-tekst-2); }
+
+/* Mobil: én kolonne i prioritert rekkefølge (det som venter først). PC: to kolonner. */
+.wang-app .wg-idag-kol { display: grid; gap: 28px; }
+.wang-app .wg-idag-kol > div { display: contents; }
+.wang-app .wg-r1 { order: 1; } .wang-app .wg-r2 { order: 2; } .wang-app .wg-r3 { order: 3; } .wang-app .wg-r4 { order: 4; } .wang-app .wg-r5 { order: 5; }
+
+/* Dagens fokus: hvit flate. Periodens fokus har ingen akse, så flaten fylles ikke i en aksefarge. */
+.wang-app .wg-idag-fokus h3 { margin: 0; font: 800 20px/1.25 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-tekst); text-wrap: balance; }
+.wang-app .wg-idag-fokus .wg-pille { justify-self: start; }
+.wang-app .wg-idag-fokus .wg-maltall > div { background: var(--wg-tint-graa); }
+
+/* Dagen som tidslinje: én rad per time, øktene som blokker, rosa nå-strek */
+.wang-app .wg-dagen { position: relative; display: grid; grid-template-columns: 44px minmax(0, 1fr); grid-auto-rows: 52px; border: 1px solid var(--wg-n200); overflow: hidden; background: #ffffff; }
+.wang-app .wg-dagen-t { grid-column: 1; padding: 6px 0 0 8px; border-bottom: 1px solid var(--wg-n100); background: var(--wg-tint-graa); font: 700 12px/1 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-tekst-2); }
+.wang-app .wg-dagen-s { grid-column: 2; border-bottom: 1px solid var(--wg-n100); }
+.wang-app .wg-blokk { position: absolute; left: 52px; right: 8px; display: grid; align-content: start; gap: 2px; padding: 6px 12px; overflow: hidden; background: var(--wg-tint-graa); border-left: 4px solid var(--wg-n400); color: var(--wg-navy-dyp); text-decoration: none; }
+.wang-app .wg-blokk:hover { background: var(--wg-n200); text-decoration: none; }
+.wang-app .wg-blokk:focus-visible { outline: 3px solid var(--wg-mint); outline-offset: -3px; }
+.wang-app .wg-blokk b { font: 800 14px/1.2 var(--font-wang-brand, Montserrat, sans-serif); }
+.wang-app .wg-blokk span { font: 700 12px/1.3 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-tekst-2); }
+.wang-app .wg-naa { position: absolute; left: 44px; right: 0; height: 0; border-top: 2px solid var(--wg-rosa); z-index: 1; pointer-events: none; }
+.wang-app .wg-naa b { position: absolute; left: -44px; top: -10px; padding: 2px 5px; background: var(--wg-rosa); color: #ffffff; font: 700 10px/1.2 var(--font-wang-brand, Montserrat, sans-serif); }
+
+/* Uka: dagens rad understreket i mint, øktene som lenker */
+.wang-app .wg-ukerad-idag .wg-dg { color: var(--wg-navy); text-decoration: underline; text-decoration-color: var(--wg-mint); text-decoration-thickness: 3px; text-underline-offset: 5px; }
+.wang-app .wg-okt-lenke { text-decoration: none; }
+.wang-app .wg-okt-lenke:hover { background: var(--wg-tint-graa); text-decoration: none; }
+.wang-app .wg-okt-lenke:focus-visible { outline: 3px solid var(--wg-mint); outline-offset: 2px; }
+
+/* Oppmøte */
+.wang-app .wg-oppmote-topp { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.wang-app .wg-ring { width: 72px; height: 72px; flex: none; }
+.wang-app .wg-ring circle { fill: none; stroke-width: 9; }
+.wang-app .wg-hoved { margin: 0; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.wang-app .wg-hoved strong { font: 600 48px/1 var(--font-wang-brand, Montserrat, sans-serif); letter-spacing: -0.03em; color: var(--wg-navy-dyp); }
+.wang-app .wg-hoved span { font-size: 16px; color: var(--wg-tekst-2); }
+.wang-app .wg-elever-kol { padding: 4px 18px; }
+.wang-app .wg-elev { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px 12px; align-items: center; padding: 12px 0; }
+.wang-app .wg-elev + .wg-elev { border-top: 1px solid var(--wg-n100); }
+.wang-app .wg-elev-navn { font: 700 15px/1.25 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-tekst); }
+.wang-app .wg-valg { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 3px; padding: 3px; background: var(--wg-tint-graa); }
+.wang-app .wg-elev .wg-valg { grid-column: 1 / -1; }
+.wang-app .wg-valg-to { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.wang-app .wg-valg button { min-height: 44px; padding: 0 6px; border: 0; background: transparent; font: 700 13px/1.2 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-tekst-2); cursor: pointer; }
+.wang-app .wg-valg button:focus-visible { outline: 3px solid var(--wg-mint); outline-offset: 2px; }
+.wang-app .wg-valg button[aria-pressed="true"] { background: var(--wg-navy); color: #ffffff; }
+.wang-app .wg-valg button[data-v="fravaer"][aria-pressed="true"] { background: var(--wg-gul); color: var(--wg-navy-dyp); }
+.wang-app .wg-valg button[data-v="borte"][aria-pressed="true"] { background: var(--wg-rosa-tekst); color: #ffffff; }
+.wang-app .wg-feste { position: sticky; bottom: 0; z-index: 2; display: grid; gap: 8px; padding: 12px 0 16px; background: linear-gradient(to top, var(--wg-bg) 75%, rgba(252, 250, 250, 0)); }
+
+/* Økta */
+.wang-app .wg-okt-hode { gap: 6px; }
+.wang-app .wg-okt-hode .wg-okt-rad { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.wang-app .wg-okt-tid { font: 600 30px/1.05 var(--font-wang-brand, Montserrat, sans-serif); letter-spacing: -0.02em; color: var(--wg-navy-dyp); white-space: nowrap; }
+.wang-app .wg-okt-tid small { font: 700 14px/1 var(--font-wang-brand, Montserrat, sans-serif); letter-spacing: 0; margin-left: 6px; color: var(--wg-tekst-2); }
+.wang-app .wg-okt-navn { margin: 0; font: 800 22px/1.25 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-vinrod); }
+.wang-app .wg-okt-hode .wg-okt-info { margin: 0; font-size: 15px; }
+.wang-app .wg-rad-info { margin: 0; display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 16px; color: var(--wg-tekst-2); }
+.wang-app .wg-rad-info b { font-family: var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-navy-dyp); }
+
+/* Meld fravær */
+.wang-app .wg-skjema { max-width: 560px; gap: 18px; }
+.wang-app .wg-skjema textarea.wg-field { min-height: 96px; resize: vertical; }
+
+@container (min-width: 900px) {
+  .wang-app .wg-helteflate { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); }
+  .wang-app .wg-helt-tekst { padding: 26px 30px 28px; }
+  .wang-app .wg-helt-bilde { order: 0; height: 100%; min-height: 230px; }
+  .wang-app .wg-helt-hoved strong { font-size: 84px; }
+  .wang-app .wg-helt-hoved > span { font-size: 22px; }
+  .wang-app .wg-idag-kol { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+  .wang-app .wg-idag-kol > div { display: grid; gap: 28px; align-content: start; }
+  .wang-app .wg-r1, .wang-app .wg-r2, .wang-app .wg-r3, .wang-app .wg-r4, .wang-app .wg-r5 { order: 0; }
+  .wang-app .wg-elever-kol { columns: 2; column-gap: 32px; }
+  .wang-app .wg-elev { break-inside: avoid; grid-template-columns: auto minmax(0, 1fr) minmax(0, 280px); }
+  .wang-app .wg-elev .wg-valg { grid-column: auto; }
+  .wang-app .wg-feste { position: static; background: none; padding: 0; }
+}
+
+/* Laster: skjelett uten runde hjørner. Bevegelsen er stille ved redusert bevegelse. */
+.wang-app .wg-skjelett { display: block; background: linear-gradient(90deg, var(--wg-n100) 0%, #f7f9fb 50%, var(--wg-n100) 100%); background-size: 200% 100%; animation: wg-skjelett 1.4s linear infinite; }
+@keyframes wg-skjelett { to { background-position: -200% 0; } }
+@media (prefers-reduced-motion: reduce) { .wang-app .wg-skjelett { animation: none; } }
+.wang-app .wg-idag-kol .wg-sek-topp { min-height: 44px; align-items: center; }
+
+/* =========================================================================
+   Pakke 3–10 (utkast 2, godkjent 16.10.2026): tre bånd, elevrad, aksestolper,
+   periodebånd, aksevalg, timetabell og kvittering. Fasit: felles/wang.css og
+   trening.html, tester.html, konkurranse.html, meldinger.html, elever.html og
+   administrasjon.html i docs/design-system/utkast-wang/. Perioder og status
+   bruker aldri aksefargene.
+   ========================================================================= */
+.wang-app .wg-baand { display: grid; gap: 22px; }
+.wang-app .wg-baand-del { display: grid; gap: 10px; align-content: start; }
+.wang-app .wg-baand-hode { display: flex; align-items: center; gap: 6px 10px; flex-wrap: wrap; }
+.wang-app .wg-baand-hode h3 { margin: 0; font: 800 17px/1.25 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-tekst); }
+.wang-app .wg-baand-hode p { flex-basis: 100%; margin: 0; font-size: 14px; line-height: 1.45; color: var(--wg-tekst-2); }
+.wang-app .wg-antall { display: inline-flex; align-items: center; justify-content: center; min-width: 26px; height: 22px; padding: 0 7px; background: var(--wg-n200); color: var(--wg-navy-dyp); font: 800 12px/1 var(--font-wang-brand, Montserrat, sans-serif); }
+.wang-app .wg-baand-trenger .wg-antall { background: var(--wg-rosa-tekst); color: #ffffff; }
+.wang-app .wg-baand-folger .wg-antall { background: var(--wg-mint); color: var(--wg-navy-dyp); }
+.wang-app .wg-baand-liste { display: grid; gap: 6px; }
+.wang-app .wg-baand-tom { padding: 12px 14px; background: var(--wg-tint-graa); font-size: 14px; color: var(--wg-tekst-2); }
+
+.wang-app .wg-elevrad { display: grid; grid-template-columns: auto minmax(0, 1fr) minmax(88px, 32%); gap: 12px; align-items: center; padding: 10px 12px 10px 16px; border: 1px solid var(--wg-n200); background: #ffffff; color: inherit; text-decoration: none; }
+.wang-app a.wg-elevrad:hover { border-color: var(--wg-n400); text-decoration: none; }
+.wang-app .wg-elevrad:focus-visible { outline: 3px solid var(--wg-mint); outline-offset: 2px; }
+.wang-app .wg-elevrad-trenger { box-shadow: inset 5px 0 0 var(--wg-rosa); }
+.wang-app .wg-elevrad-folger { box-shadow: inset 5px 0 0 var(--wg-mint); }
+.wang-app .wg-elevrad-ikke { box-shadow: inset 5px 0 0 var(--wg-n400); background: var(--wg-tint-graa); }
+.wang-app .wg-er-hvem b { display: block; font: 700 15px/1.25 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-navy-dyp); }
+.wang-app .wg-er-hvem span { display: block; font-size: 13px; line-height: 1.4; color: var(--wg-tekst-2); }
+.wang-app .wg-er-plan { display: grid; gap: 5px; justify-items: end; }
+.wang-app .wg-er-plan b { font: 600 17px/1 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-navy-dyp); white-space: nowrap; }
+.wang-app .wg-er-plan .wg-stolpe { width: 100%; height: 8px; }
+.wang-app .wg-stolpe > i.wg-strek { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--wg-navy-dyp); z-index: 1; }
+
+.wang-app .wg-akserad { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 8px 0; }
+.wang-app .wg-akserad .wg-tall { font: 800 13px/1.2 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-navy-dyp); text-align: right; white-space: nowrap; }
+.wang-app .wg-akserad .wg-tall span { display: block; font: 700 11px/1.2 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-tekst-2); }
+
+.wang-app .wg-lg-rad { display: flex; flex-wrap: wrap; gap: 6px 14px; }
+.wang-app .wg-lg { display: inline-flex; align-items: center; gap: 6px; font: 700 12px/1.3 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-tekst-2); }
+.wang-app .wg-lg i { width: 10px; height: 10px; }
+
+/* Periodene: nøytrale toner, aldri aksefargene (farge betyr akse) */
+.wang-app .wg-periodebaand { display: flex; height: 44px; overflow: hidden; gap: 2px; }
+.wang-app .wg-periodebaand > span { display: flex; align-items: center; justify-content: center; min-width: 4px; font: 800 10px/1 var(--font-wang-brand, Montserrat, sans-serif); letter-spacing: 0.04em; overflow: hidden; white-space: nowrap; }
+.wang-app .wg-p-GRUNN { background: var(--wg-n300); color: var(--wg-navy-dyp); }
+.wang-app .wg-p-SPESIAL { background: var(--wg-n200); color: var(--wg-navy-dyp); }
+.wang-app .wg-p-TURNERING { background: var(--wg-tint-navy); color: var(--wg-navy-dyp); }
+.wang-app .wg-p-TESTUKE, .wang-app .wg-p-EVALUERING { background: var(--wg-gul); color: var(--wg-navy-dyp); }
+.wang-app .wg-p-RESTITUSJON { background: var(--wg-tint-mint); color: var(--wg-navy-dyp-tekst); }
+.wang-app .wg-p-FERIE, .wang-app .wg-p-TRENINGSSAMLING, .wang-app .wg-p-HELDAGSSAMLING { background: var(--wg-tint-graa); color: var(--wg-tekst-2); }
+.wang-app .wg-perioder { display: grid; gap: 12px; }
+.wang-app .wg-periode { display: grid; gap: 10px; padding: 16px; background: #ffffff; border: 1px solid var(--wg-n200); border-left: 8px solid var(--wg-n300); color: inherit; text-decoration: none; }
+.wang-app a.wg-periode:hover { border-color: var(--wg-n400); text-decoration: none; }
+.wang-app .wg-periode-naa { box-shadow: 0 0 0 3px var(--wg-mint); }
+.wang-app .wg-periode-topp { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; align-items: baseline; }
+.wang-app .wg-periode-topp b { font: 800 17px/1.2 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-navy-dyp); }
+.wang-app .wg-periode-topp span { font: 700 13px/1 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-tekst-2); }
+.wang-app .wg-hendelser { display: flex; flex-wrap: wrap; gap: 6px; }
+.wang-app .wg-hend { display: inline-flex; align-items: center; height: 26px; padding: 0 10px; background: var(--wg-tint-graa); font: 700 12px/1 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-tekst); }
+
+/* Skjema: aksevalg (pyramiden først), timetabell, kvittering */
+.wang-app .wg-aksevalg { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+.wang-app .wg-aksevalg button { min-height: 52px; border: 0; font: 800 12px/1 var(--font-wang-brand, Montserrat, sans-serif); letter-spacing: 0.04em; cursor: pointer; color: var(--wg-navy-dyp); background: var(--wg-tint-graa); }
+.wang-app .wg-aksevalg button[aria-pressed="true"] { box-shadow: 0 0 0 3px #ffffff, 0 0 0 5px var(--wg-navy-dyp); }
+.wang-app .wg-aksevalg button:focus-visible { outline: 3px solid var(--wg-mint); outline-offset: 2px; }
+.wang-app .wg-aksevalg .wg-akse-fys[aria-pressed="true"] { background: var(--wg-fys); color: var(--wg-fys-paa); }
+.wang-app .wg-aksevalg .wg-akse-tek[aria-pressed="true"] { background: var(--wg-tek); color: var(--wg-tek-paa); }
+.wang-app .wg-aksevalg .wg-akse-slag[aria-pressed="true"] { background: var(--wg-slag); color: var(--wg-slag-paa); }
+.wang-app .wg-aksevalg .wg-akse-spill[aria-pressed="true"] { background: var(--wg-spill); color: var(--wg-spill-paa); }
+.wang-app .wg-aksevalg .wg-akse-turn[aria-pressed="true"] { background: var(--wg-turn); color: var(--wg-turn-paa); }
+.wang-app .wg-to-felt { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
+.wang-app .wg-timetabell { display: grid; gap: 8px; }
+.wang-app .wg-timetabell .wg-t { display: grid; grid-template-columns: 56px minmax(0, 1fr) minmax(0, 1fr); gap: 8px; align-items: center; }
+.wang-app .wg-timetabell .wg-t-hode span { font: 700 11px/1.2 var(--font-wang-brand, Montserrat, sans-serif); letter-spacing: 0.06em; text-transform: uppercase; color: var(--wg-tekst-2); }
+.wang-app .wg-kvittering { display: grid; gap: 6px; padding: 14px 16px; background: var(--wg-tint-mint); color: var(--wg-navy-dyp-tekst); }
+.wang-app .wg-kvittering b { font: 800 15px/1.3 var(--font-wang-brand, Montserrat, sans-serif); }
+.wang-app .wg-merknad { display: grid; gap: 6px; padding: 14px 16px; background: var(--wg-tint-gul); color: var(--wg-navy-dyp); }
+.wang-app .wg-merknad b { font: 800 15px/1.3 var(--font-wang-brand, Montserrat, sans-serif); }
+.wang-app .wg-ukeplan { display: grid; gap: 12px; }
+.wang-app .wg-dagkol { display: grid; gap: 8px; align-content: start; }
+.wang-app .wg-dagkol h3 { margin: 0; font: 800 14px/1 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-tekst-2); display: flex; justify-content: space-between; gap: 8px; }
+.wang-app .wg-dagkol-idag h3 { color: var(--wg-navy); }
+.wang-app .wg-leggtil { display: flex; align-items: center; justify-content: center; min-height: 44px; border: 2px dashed var(--wg-n300); background: transparent; font: 700 13px/1 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-tekst-2); text-decoration: none; }
+.wang-app .wg-leggtil:hover { border-color: var(--wg-n400); text-decoration: none; }
+
+.wang-app .wg-smaa-tall.wg-smaa-fire { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@container (min-width: 900px) {
+  .wang-app .wg-baand-kol { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+  .wang-app .wg-smaa-tall.wg-smaa-fire { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .wang-app .wg-perioder { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .wang-app .wg-ukeplan { grid-template-columns: repeat(5, minmax(0, 1fr)); align-items: start; }
+}
+@media (max-width: 420px) {
+  .wang-app .wg-aksevalg { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+/* Pakke 4 Tester: lenkerader i lister, poengvalg for 8-ball */
+.wang-app a.wg-rad-lenke { color: inherit; text-decoration: none; min-height: 44px; }
+.wang-app a.wg-rad-lenke:hover b { text-decoration: underline; }
+.wang-app a.wg-rad-lenke:focus-visible { outline: 3px solid var(--wg-mint); outline-offset: 2px; }
+.wang-app .wg-valg-fem { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.wang-app .wg-testuke { border-left: 6px solid var(--wg-navy); }
+.wang-app a.wg-turnkort { display: grid; gap: 6px; align-content: start; padding: 16px; color: inherit; text-decoration: none; border-top: 4px solid var(--wg-navy); }
+.wang-app a.wg-turnkort:hover { border-color: var(--wg-n400); border-top-color: var(--wg-navy); text-decoration: none; }
+.wang-app .wg-skriv { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: end; }
+.wang-app .wg-skjult { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.wang-app .wg-merknad { margin: 0; }
+
+/* Pakke 10 Data Golf: rader med rang til venstre, filterskjema */
+.wang-app .wg-dg-rad { grid-template-columns: auto minmax(0, 1fr) auto; }
+.wang-app .wg-dg-rang { min-width: 44px; font: 700 13px/1.2 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-tekst-2); font-variant-numeric: tabular-nums; }
+.wang-app .wg-dg-filter { display: grid; gap: 12px; }
+@container (min-width: 900px) {
+  .wang-app .wg-dg-filter { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr) auto; align-items: end; }
+}
+/* Data Golf: aksen er SLAG. Fylt flate i oransje med mørk navy tekst (hvit gir 2,7:1), valgte filtre i oransje. */
+.wang-app .wg-fylt-slag { background: var(--wg-slag); border-color: var(--wg-slag); }
+.wang-app .wg-fylt-slag, .wang-app .wg-fylt-slag .wg-hoved strong, .wang-app .wg-fylt-slag .wg-hoved span,
+.wang-app .wg-fylt-slag .wg-rad-info, .wang-app .wg-fylt-slag .wg-rad-info b { color: var(--wg-navy-dyp); }
+.wang-app .wg-dg-chips .wg-chip-pa, .wang-app .wg-dg-chips .wg-chip-pa:hover { background: var(--wg-slag); border-color: var(--wg-slag); color: var(--wg-slag-paa); }
+.wang-app .wg-dg-tellere .wg-smaa-tall > * { background: #fef3eb; border-color: #f9c9a3; }

@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Team Norway grunnmur</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Jost:wght@300;400;500&family=Lato:wght@400;700&display=swap">
+<link rel="stylesheet" href="felles/tn.css">
+<style>
+  .forslag-topp{display:flex;flex-wrap:wrap;gap:var(--r2);align-items:center}
+  .akser{display:grid;gap:var(--r2)}
+  .akse{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) minmax(0,1fr);border:1px solid var(--ink-200);background:var(--hvit)}
+  .akse > div{padding:12px 14px;display:grid;gap:4px;align-content:start}
+  .akse .fyll{color:#fff}
+  .akse .fyll b{font:500 13px/1 var(--mono);letter-spacing:.14em}
+  .akse .fyll span{font:500 17px/1.2 var(--display);letter-spacing:.02em}
+  .akse small{font:500 11.5px/1.3 var(--mono);letter-spacing:.02em}
+  .akse .tint b{font:700 14px/1.3 var(--tekst)}
+  .akse .paa-navy{background:var(--navy-900)}
+  .akse .paa-navy b{font:500 13px/1 var(--mono);letter-spacing:.14em}
+  .akse .paa-navy small{color:var(--rail-tekst)}
+  @container (max-width:520px){.akse{grid-template-columns:1fr 1fr}.akse .fyll{grid-column:1/-1}}
+  .pyr{display:grid;gap:var(--r4)}
+  .pyr svg text{font:500 12px/1 var(--mono);letter-spacing:.12em;fill:#fff}
+  .pyr svg text.t{font:500 13px/1 var(--mono);letter-spacing:0}
+  .fordeling{display:flex;height:28px;background:var(--ink-100)}
+  .fordeling span{display:block;height:100%}
+  .akserader{display:grid;gap:12px}
+  .akserad{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:10px;align-items:center}
+  .akserad .tall{font:500 13.5px/1 var(--mono);white-space:nowrap}
+  .dobbel{display:grid;gap:3px}
+  .dobbel .stolpe{height:8px}
+  .graf-kort svg .linje{fill:none;stroke:var(--navy-900);stroke-width:2.5;stroke-linejoin:miter}
+  .graf-kort svg .ref{stroke:var(--ink-500);stroke-width:1.5;stroke-dasharray:5 4}
+  .graf-kort svg .rute{stroke:var(--ink-200);stroke-width:1}
+  .graf-kort svg rect.punkt{fill:var(--navy-900)}
+  .graf-kort svg rect.punkt.siste{fill:var(--hvit);stroke:var(--navy-900);stroke-width:2.5}
+  .typo{display:grid;gap:10px}
+  .typo .d{font:300 34px/1.1 var(--display);letter-spacing:.16em;text-transform:uppercase;color:var(--navy-900)}
+  .typo .b{font:400 16px/1.6 var(--tekst)}
+  .typo .m{font:500 24px/1 var(--mono);color:var(--navy-900)}
+  .spiller{display:flex;gap:12px;align-items:center}
+</style>
+</head>
+<body>
+<div class="ytre">
+  <header class="hode">
+    <span class="meta-s">Team Norway · trenerskjermer · pakke 1 grunnmur · utkast 2 · 16.10.2026</span>
+    <h1>Grunnmur for Team Norway-skjermene</h1>
+    <p>Skallet med navy sidemeny, fem aksefarger laget fra Team Norway-paletten, og byggeklossene skjermene skal settes sammen av. Bare syntetiske data. Aksefargene er godkjent av Anders 14.10. Utkast 2 legger til byggeklossene for retning B: helteflate, tre bånd, spillerrad med plan-stolpe, fylte søyler, fylt graf og bildekort.</p>
+  </header>
+  <div class="kontroller">
+    <div class="velger" role="group" aria-label="Bredde">
+      <button type="button" data-bredde="mob" aria-pressed="true">Mobil 390</button>
+      <button type="button" data-bredde="pc" aria-pressed="false">PC 1280</button>
+    </div>
+    <div class="velger" role="group" aria-label="Tilstand">
+      <button type="button" data-tilstand="data" aria-pressed="true">Med data</button>
+      <button type="button" data-tilstand="tom" aria-pressed="false">Tom</button>
+      <button type="button" data-tilstand="laster" aria-pressed="false">Laster</button>
+      <button type="button" data-tilstand="feil" aria-pressed="false">Feil</button>
+    </div>
+  </div>
+  <div class="scene"><div id="ramme" class="ramme mob"></div></div>
+  <div class="notater">
+    <section class="endringer">
+      <h2>Nytt i utkast 2 (16.10, retning B)</h2>
+      <ul>
+        <li><b>.helt</b>: navy helteflate med ett hovedtall i hvitt, kort forklaring, én knapp, valgfri aksefordeling i de lyse aksefargene og flaggstreken som kant.</li>
+        <li><b>.baand</b> og <b>.sprad</b>: tre bånd (Trenger deg · Følger planen · Ikke delt) med teller, spillerrad med plan-stolpe og statusmarkør på venstre kant, alltid med ord.</li>
+        <li><b>.akse-soyler</b>, <b>.graf .areal</b> og <b>.bildekort</b>: fylte søyler, fylt graf under linja, og bilde med tekst i eget felt.</li>
+        <li><b>Menyen</b> har seks grupper som kan lukkes. Bare gruppa du er i står åpen. Ingen punkter er fjernet.</li>
+        <li><b>Mindre mono</b>: datolinja og akse-merker står i Lato. IBM Plex Mono bare på tall.</li>
+      </ul>
+    </section>
+    <section class="endringer">
+      <h2>Aksefargene (godkjent 14.10)</h2>
+      <ul>
+        <li>Ingen AK Golf-farger og ikke bare flaggets rød, hvit og blå. Fargene er laget av Team Norways egen navy og røde, med tre toner lagt mellom og utenfor dem i samme dybde.</li>
+        <li>FYS fjord <b>#0D6E6A</b> · TEK blå <b>#0A5199</b> (Team Norways navy-600) · SLAG indigo <b>#4B3F9E</b> · SPILL plomme <b>#8A2A72</b> (navy blandet med rød) · TURN mørk rød <b>#A80126</b> (Team Norways red-700).</li>
+        <li>Logorøden #D70232 brukes ikke som akse. Den er identitet og markøren i menyen.</li>
+        <li>Hvit tekst på hver farge er målt 6,1 til 8,4 : 1. Lyse varianter på navy er 7,0 til 7,9 : 1. Alle over kravet på 4,5.</li>
+      </ul>
+    </section>
+    <section class="endringer">
+      <h2>Faste regler i grunnmuren</h2>
+      <ul>
+        <li>Jost i overskrifter, Lato i tekst, IBM Plex Mono på alle tall. Hjørner 0, 2 eller 4 px. Ingen skygger, ingen sirkler, kvadratisk avatar.</li>
+        <li>Navy sidemeny 252 px på PC med seks grupper fra dagens meny. Rød strek foran aktiv rad. På mobil: navy topplinje og fire faner pluss Mer.</li>
+        <li>Primærknapp er navy. Sletting er mørk statusrød. Grønt, gult og rødt betyr bare status.</li>
+        <li>Fargen er aldri alene: aksenavnet står alltid ved fargen.</li>
+      </ul>
+    </section>
+    <section class="endringer">
+      <h2>Spørsmål til deg</h2>
+      <ul>
+        <li>Ja til de fem aksefargene? Hvis nei: hvilken akse skal endres?</li>
+        <li>TURN i mørk rød ligger nær statusrød (#C2352B). Statusrød vises alltid med ordet Feil eller Avvist ved seg. Godt nok, eller vil du ha TURN i navy?</li>
+      </ul>
+    </section>
+  </div>
+</div>
+
+<template id="skjerm">
+<div class="app" data-aktiv="oversikt">
+<main class="innhold">
+  <header data-behold>
+    <span class="overlinje">Grunnmur · uke 42</span>
+    <h1 class="tittel">Landslagsoversikt</h1>
+    <p class="ingress">Eksempelinnhold for å vise byggeklossene. Alle navn og tall er laget for utkastet.</p>
+  </header>
+
+  <!-- ===== Utkast 2: nye byggeklosser for retning B ===== -->
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Helteflate</h2><span class="kilde">.helt · én per hovedskjerm</span></div>
+    <section class="helt">
+      <div class="helt-venstre">
+        <span class="sporsmaal">Hvem trenger deg nå?</span>
+        <div class="tall"><strong>3</strong><span>spillere trenger deg</span></div>
+        <p>Ett spørsmål, ett hovedtall, én kort forklaring og én knapp. Resten av handlingene ligger i «Ny».</p>
+        <div class="knapper">
+          <button type="button" class="knapp hvit">Se de tre</button>
+          <div class="flere"><button type="button" class="knapp kontur-hvit" aria-expanded="false" aria-haspopup="true">Ny<svg class="ikon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9l7 7 7-7"/></svg></button>
+            <div class="flere-liste" hidden><button type="button">Ny samling</button><button type="button">Ny økt</button><button type="button">Ny testdag</button></div></div>
+        </div>
+      </div>
+      <div class="helt-hoyre">
+        <div class="helt-akser">
+          <span class="sporsmaal">Aksefordeling i de lyse aksefargene på navy</span>
+          <div class="fordeling-lys" role="img" aria-label="FYS 22 %, TEK 24 %, SLAG 30 %, SPILL 16 %, TURN 8 %"><span class="lys-fys" style="width:22%"></span><span class="lys-tek" style="width:24%"></span><span class="lys-slag" style="width:30%"></span><span class="lys-spill" style="width:16%"></span><span class="lys-turn" style="width:8%"></span></div>
+          <div class="lg-rad"><span class="lg"><i class="lys-fys"></i>FYS <b>91</b></span><span class="lg"><i class="lys-tek"></i>TEK <b>99</b></span><span class="lg"><i class="lys-slag"></i>SLAG <b>124</b></span><span class="lg"><i class="lys-spill"></i>SPILL <b>66</b></span><span class="lg"><i class="lys-turn"></i>TURN <b>32</b></span></div>
+        </div>
+        <div class="nedtelling" style="--n:4"><i class="gaatt"></i><i></i><i></i><i></i><span>Uke 42, nå</span><span>Uke 43</span><span>Uke 44</span><span>Frist</span></div>
+        <div class="helt-tellere"><div><b>9/12</b><span>små tellere</span></div><div><b>11/14</b><span>under</span></div><div><b>2</b><span>hovedtallet</span></div></div>
+      </div>
+    </section>
+    <p class="kilde">Flaggstreken er kanten nederst. Logorøden er bare identitet her, aldri status eller knapp.</p>
+  </section>
+
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Tre bånd og spillerrad</h2><span class="kilde">.baand · .sprad · .planstolpe · .markor</span></div>
+    <div class="baandene">
+      <section class="baand trenger">
+        <div class="baand-hode"><h3>Trenger deg</h3><span class="teller">1</span><span class="kilde">Mest akutt først</span></div>
+        <div class="baand-liste"><a class="sprad trenger" href="#"><span class="avatar">03</span><span class="hvem"><b>Spiller 03</b><span class="fakta"><span class="kat">C</span>Moss GK</span></span><span class="verdi"><b class="lav">58 %</b><span>av planen</span></span><span class="planstolpe"><span class="spor" role="img" aria-label="58 prosent av planen"><span class="slag" style="width:58%"></span></span><span class="tekst"><span>Mest SLAG</span><span><b>21</b> av <b>36</b> t</span></span></span><span class="grunn">Under 70 % av planen to uker på rad</span></a></div>
+      </section>
+      <section class="baand folger">
+        <div class="baand-hode"><h3>Følger planen</h3><span class="teller">1</span></div>
+        <div class="baand-liste"><a class="sprad folger" href="#"><span class="avatar">01</span><span class="hvem"><b>Spiller 01</b><span class="fakta"><span class="kat">B</span>Bossum GK</span></span><span class="verdi"><b>94 %</b><span>av planen</span></span><span class="planstolpe"><span class="spor" role="img" aria-label="94 prosent av planen"><span class="tek" style="width:94%"></span></span><span class="tekst"><span>Mest TEK</span><span><b>38</b> av <b>40</b> t</span></span></span></a></div>
+      </section>
+      <section class="baand ikkedelt">
+        <div class="baand-hode"><h3>Ikke delt</h3><span class="teller">1</span></div>
+        <div class="baand-liste"><div class="sprad ikkedelt"><span class="avatar">14</span><span class="hvem"><b>Spiller 14</b><span class="fakta"><span class="kat uten">—</span>Kristiansand GK</span></span><span class="verdi"><b>—</b><span>ikke delt</span></span></div></div>
+      </section>
+    </div>
+    <div class="knapper"><span class="markor trenger"><i></i>Trenger deg</span><span class="markor folgmed"><i></i>Følg med</span><span class="markor folger"><i></i>Følger planen</span><span class="markor ikkedelt"><i></i>Ikke delt</span></div>
+    <p class="kilde">Venstre kant og ordet bærer statusen sammen. Stolpen er gjennomført mot planlagt, i aksefargen spilleren trener mest. Kategori A–K er et navy merke, ikke en akse.</p>
+  </section>
+
+  <div class="to-kol">
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Fylte søyler</h2><span class="kilde">.akse-soyler</span></div>
+      <div class="kort">
+        <div class="akse-soyler" role="img" aria-label="FYS 8 timer, TEK 9, SLAG 12, SPILL 6, TURN 3">
+          <div class="akse-soyle"><b>8</b><div class="felt-s"><i class="s fys vokse" style="height:67%"></i></div><span>FYS</span></div>
+          <div class="akse-soyle"><b>9</b><div class="felt-s"><i class="s tek vokse" style="height:75%"></i></div><span>TEK</span></div>
+          <div class="akse-soyle"><b>12</b><div class="felt-s"><i class="s slag vokse" style="height:100%"></i></div><span>SLAG</span></div>
+          <div class="akse-soyle"><b>6</b><div class="felt-s"><i class="s spill vokse" style="height:50%"></i></div><span>SPILL</span></div>
+          <div class="akse-soyle"><b>3</b><div class="felt-s"><i class="s turn vokse" style="height:25%"></i></div><span>TURN</span></div>
+        </div>
+        <p class="kilde">Pyramiden som søyler: timer siste fire uker. Aksenavnet står alltid under fargen.</p>
+      </div>
+    </section>
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Fylt graf</h2><span class="kilde">.graf .areal + .linje</span></div>
+      <div class="kort">
+        <div class="hoved"><strong>9,5<small>t</small></strong><span class="forklar">TEK denne uka</span></div>
+        <svg class="graf" viewBox="0 0 340 130" role="img" aria-label="TEK-timer per uke: 6, 7, 6,5, 8, 9, 9,5">
+          <line x1="0" x2="340" y1="120" y2="120" stroke="var(--ink-200)"/>
+          <path class="areal tek" d="M10 66 L74 54 L138 60 L202 36 L266 24 L330 18 L330 120 L10 120 Z"/>
+          <path class="linje tek tegn" d="M10 66 L74 54 L138 60 L202 36 L266 24 L330 18"/>
+          <text class="gt" x="10" y="130">uke 37</text><text class="gt" x="330" y="130" text-anchor="end">uke 42</text>
+        </svg>
+        <p class="kilde">Arealet under linja er fylt i aksefargen. Kilde: PlayerHQ, 14.10.2026.</p>
+      </div>
+    </section>
+  </div>
+
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Bildekort</h2><span class="kilde">.bildekort · tekst aldri oppå bildet</span></div>
+    <div class="rutenett">
+      <div class="bildekort navy"><img src="bilder/spill-bane.jpg" alt="Golfbane med fairway og green" width="800" height="300" loading="lazy"><div class="bk-tekst"><span class="kilde">Neste samling</span><b class="undertittel" style="color:var(--hvit)">Høstsamling Bossum</b><div class="hoved"><strong>12</strong><span class="forklar">dager igjen</span></div></div></div>
+      <div class="bildekort"><img src="bilder/turn-tee.jpg" alt="Spiller på teestedet" width="800" height="300" loading="lazy"><div class="bk-tekst"><span class="kilde">Turnering</span><b class="undertittel">Junior Open Halmstad</b><div class="hoved"><strong>4</strong><span class="forklar">plass etter runde 2</span></div></div></div>
+    </div>
+  </section>
+
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Aksefarger</h2><span class="merke ok"><i></i>Godkjent 14.10</span></div>
+    <div class="akser" id="akser"></div>
+    <p class="kilde">Kontrast målt etter WCAG 2.1. Venstre: fyll med hvit tekst. Midten: tint med fargen som tekst. Høyre: lys variant på navy.</p>
+  </section>
+
+  <div class="to-kol">
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Pyramiden</h2><span class="kilde">Gruppa, siste 4 uker</span></div>
+      <div class="kort pyr">
+        <svg id="pyramide" viewBox="0 0 340 230" role="img" aria-label="Pyramiden: FYS 31 timer, TEK 24, SLAG 38, SPILL 19, TURN 8"></svg>
+        <p class="kilde">Timer gjennomført, alle 14 spillere. Kilde: treningsloggen, 14.10.2026.</p>
+      </div>
+    </section>
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Ukefordeling</h2><span class="kilde">Uke 42</span></div>
+      <div class="kort">
+        <div class="hoved"><strong>9,5<small>t</small></strong><span class="merke vent"><i></i>3,5 t under plan</span></div>
+        <div class="fordeling" id="fordeling" aria-hidden="true"></div>
+        <div class="akserader" id="akserader"></div>
+        <div class="lg-rad"><span class="lg"><i style="background:var(--navy-900)"></i>Gjennomført</span><span class="lg"><i style="background:var(--ink-300)"></i>Planlagt</span></div>
+      </div>
+    </section>
+  </div>
+
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Øktkort</h2><a class="lenke" href="#">Hele samlingen</a></div>
+    <div class="rutenett">
+      <button type="button" class="okt tek"><span class="okt-rad"><span class="akse-merke">TEK</span><span class="okt-tid">09:00<small>90 min</small></span></span><span class="navn">P6.0 og treffpunkt</span><span class="okt-info"><span>Bossum, matte 4</span><span>4 øvelser</span></span></button>
+      <button type="button" class="okt slag"><span class="okt-rad"><span class="akse-merke">SLAG</span><span class="okt-tid">11:00<small>60 min</small></span></span><span class="navn">Wedge Gate, 9 slag</span><span class="okt-info"><span>Kortspillsområdet</span><span>1 test</span></span></button>
+      <button type="button" class="okt fys"><span class="okt-rad"><span class="akse-merke">FYS</span><span class="okt-tid">15:30<small>45 min</small></span></span><span class="navn">Rotasjonskast og lengdehopp</span><span class="okt-info"><span>Styrkerommet</span><span>3 øvelser</span></span></button>
+      <button type="button" class="okt spill"><span class="okt-rad"><span class="akse-merke">SPILL</span><span class="okt-tid">13:00<small>120 min</small></span></span><span class="navn">9 hull, presisjonsstrategi</span><span class="okt-info"><span>Hull 1–9</span><span>Scorekort</span></span></button>
+      <button type="button" class="okt turn"><span class="okt-rad"><span class="akse-merke">TURN</span><span class="okt-tid">08:10<small>Runde 1</small></span></span><span class="navn">Norgescup, Kristiansand</span><span class="okt-info"><span>6 påmeldt</span><span>Frist passert</span></span></button>
+    </div>
+  </section>
+
+  <div class="to-kol">
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Graf</h2><span class="kilde">Club Speed, driver</span></div>
+      <div class="kort graf-kort">
+        <div class="hoved"><strong>108,4<small>mph</small></strong><span class="merke ok"><i></i>+2,1 siden juni</span></div>
+        <svg id="graf" class="graf" viewBox="0 0 340 150" role="img" aria-label="Club Speed fra 103,2 til 108,4 mph over seks tester"></svg>
+        <p class="kilde">Stiplet linje: referansenivå Kategori B. Kilde: fellestesting, siste 14.10.2026.</p>
+      </div>
+    </section>
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Ett stort tall</h2></div>
+      <div class="kort navy">
+        <span class="overlinje" style="color:var(--rail-tekst)">Fellestest oktober</span>
+        <div class="hoved"><strong>11<small>av 14</small></strong></div>
+        <p style="color:var(--rail-tekst)">spillere har levert alle testene. Tre mangler Putt Speed.</p>
+        <div class="knapper"><button type="button" class="knapp sek">Se hvem som mangler</button></div>
+      </div>
+    </section>
+  </div>
+
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Liste som blir kortrader</h2><span class="kilde">3 av 14</span></div>
+    <div class="kort">
+      <div class="rader">
+        <div class="rad"><span class="spiller"><span class="avatar">01</span><span><span class="navn">Spiller 01</span><br><span class="kilde">Kategori B · 8-ball 31 poeng</span></span></span><span class="merke ok"><i></i>Kontrollert</span></div>
+        <div class="rad"><span class="spiller"><span class="avatar">02</span><span><span class="navn">Spiller 02</span><br><span class="kilde">Kategori C · 8-ball 24 poeng</span></span></span><span class="merke info"><i></i>Egenført</span></div>
+        <div class="rad"><span class="spiller"><span class="avatar">04</span><span><span class="navn">Spiller 04</span><br><span class="kilde">Kategori B · ikke testet</span></span></span><span class="merke vent"><i></i>Mangler</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="to-kol">
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Knapper og status</h2></div>
+      <div class="kort">
+        <div class="knapper"><button type="button" class="knapp pri">Publiser plan</button><button type="button" class="knapp sek">Lagre utkast</button><button type="button" class="knapp stille">Avbryt</button></div>
+        <div class="knapper"><button type="button" class="knapp slett">Slett samling</button><button type="button" class="knapp" disabled>Ikke tilgjengelig</button></div>
+        <div class="valg" role="group" aria-label="Periode"><button type="button" aria-pressed="false">Uke</button><button type="button" aria-pressed="true">Måned</button><button type="button" aria-pressed="false">Sesong</button></div>
+        <div class="knapper"><span class="merke ok"><i></i>Godkjent</span><span class="merke feil"><i></i>Bom</span><span class="merke vent"><i></i>Venter på spiller</span><span class="merke info"><i></i>Delt med deg</span><span class="merke noy"><i></i>Utkast</span><span class="merke kontur">Estimat</span></div>
+      </div>
+    </section>
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Skjema og skrift</h2></div>
+      <div class="kort">
+        <div class="felt"><label for="g-navn">Navn på samling</label><input id="g-navn" value="Høstsamling Bossum"><span class="hjelp">Vises for spillerne når den publiseres.</span></div>
+        <div class="felt feil"><label for="g-epost">Trenerens e-post</label><input id="g-epost" value="trener1@gmail.com"><span class="feiltekst">Bare adresser som slutter på @golfforbundet.no kan få tilgang.</span></div>
+        <div class="skille"></div>
+        <div class="typo"><span class="d">Team Norway</span><span class="b">Lato bærer teksten uten å konkurrere med overskriftene.</span><span class="m">72,4 · 8,51 m · 31</span></div>
+      </div>
+    </section>
+  </div>
+</main>
+</div>
+</template>
+
+<script src="felles/tn.js"></script>
+<script>
+var AKSER = [
+  { id: 'fys', kort: 'FYS', navn: 'Fysisk', fyll: '#0D6E6A', lys: '#6FD3C9', tint: '#E2F2F0', k: ['6,1', '5,3', '7,9'], t: 31, plan: 3, gj: 2.5 },
+  { id: 'tek', kort: 'TEK', navn: 'Teknisk', fyll: '#0A5199', lys: '#8DBDF0', tint: '#E3ECF6', k: ['7,9', '6,6', '7,1'], t: 24, plan: 3, gj: 2 },
+  { id: 'slag', kort: 'SLAG', navn: 'Golfslag', fyll: '#4B3F9E', lys: '#B9B0F2', tint: '#ECEAF8', k: ['8,4', '7,1', '7,0'], t: 38, plan: 4, gj: 3.5 },
+  { id: 'spill', kort: 'SPILL', navn: 'Spill', fyll: '#8A2A72', lys: '#EBA3D8', tint: '#F6E6F1', k: ['7,9', '6,6', '7,2'], t: 19, plan: 2, gj: 1.5 },
+  { id: 'turn', kort: 'TURN', navn: 'Turnering', fyll: '#A80126', lys: '#FF9CB0', tint: '#FCE3E8', k: ['7,8', '6,4', '7,1'], t: 8, plan: 1, gj: 0 }
+];
+function komma(x) { return String(x).replace('.', ','); }
+TNUtkast.start({
+  tom: { tittel: 'Ingen spillere i gruppa ennå', tekst: 'Når du inviterer spillere og de godtar, vises testene og treningen deres her.', knapp: 'Inviter spiller' },
+  laster: 'Henter gruppa …',
+  feil: 'Oversikten kunne ikke hentes',
+  etter: function (app) {
+    app.querySelector('#akser').innerHTML = AKSER.map(function (a) {
+      return '<div class="akse"><div class="fyll" style="background:' + a.fyll + '"><b>' + a.kort + '</b><span>' + a.navn + '</span><small>' + a.fyll + ' · hvit ' + a.k[0] + ' : 1</small></div>' +
+        '<div class="tint" style="background:' + a.tint + ';color:' + a.fyll + '"><b>' + a.navn + '</b><small>Tint · ' + a.k[1] + ' : 1</small></div>' +
+        '<div class="paa-navy" style="color:' + a.lys + '"><b>' + a.kort + '</b><small>' + a.lys + ' · ' + a.k[2] + ' : 1</small></div></div>';
+    }).join('');
+    /* Pyramide: FYS nederst og bredest, TURN øverst. Kantete trapeser, ingen avrunding. */
+    var svg = '', h = 42, gap = 3, topp = 70, bunn = 340, total = 5 * h + 4 * gap;
+    function bredde(y) { return topp + (bunn - topp) * (y / total); }
+    AKSER.slice().reverse().forEach(function (a, i) {
+      var y0 = i * (h + gap), y1 = y0 + h, w0 = bredde(y0), w1 = bredde(y1);
+      var p = [[(340 - w0) / 2, y0], [(340 + w0) / 2, y0], [(340 + w1) / 2, y1], [(340 - w1) / 2, y1]].map(function (q) { return q[0].toFixed(1) + ',' + q[1]; }).join(' ');
+      svg += '<polygon class="vokse" style="animation-delay:' + (4 - i) * 70 + 'ms" points="' + p + '" fill="' + a.fyll + '"/>';
+      svg += '<text x="170" y="' + (y0 + 26) + '" text-anchor="middle">' + a.kort + (i > 0 ? '  <tspan class="t">' + a.t + ' t</tspan>' : '') + '</text>';
+    });
+    svg += '<text x="338" y="' + (26) + '" text-anchor="end" style="fill:var(--ink-700)" class="t">' + AKSER[4].t + ' t</text>';
+    app.querySelector('#pyramide').innerHTML = svg;
+    var sum = AKSER.reduce(function (s, a) { return s + a.gj; }, 0);
+    app.querySelector('#fordeling').innerHTML = AKSER.map(function (a) { return a.gj ? '<span style="width:' + (a.gj / 13 * 100) + '%;background:' + a.fyll + '"></span>' : ''; }).join('');
+    app.querySelector('#akserader').innerHTML = AKSER.map(function (a) {
+      return '<div class="akserad"><span class="akse-tekst ' + a.id + '">' + a.kort + '</span><span class="dobbel"><span class="stolpe"><span data-til="' + (a.gj / 4 * 100) + '%" style="width:' + (a.gj / 4 * 100) + '%;background:' + a.fyll + '"></span></span><span class="stolpe"><span style="width:' + (a.plan / 4 * 100) + '%;background:var(--ink-300)"></span></span></span><span class="tall">' + komma(a.gj) + ' / ' + a.plan + ' t</span></div>';
+    }).join('');
+    /* Graf: seks tester, navy linje, firkantede punkter, stiplet referanse */
+    var v = [103.2, 104.0, 105.1, 104.6, 106.3, 108.4], x0 = 34, x1 = 330, y = function (n) { return 130 - (n - 100) / 10 * 120; };
+    var g = '';
+    [100, 105, 110].forEach(function (n) { g += '<line class="rute" x1="' + x0 + '" x2="' + x1 + '" y1="' + y(n) + '" y2="' + y(n) + '"/><text class="gt" x="0" y="' + (y(n) + 4) + '">' + n + '</text>'; });
+    g += '<line class="ref" x1="' + x0 + '" x2="' + x1 + '" y1="' + y(107) + '" y2="' + y(107) + '"/>';
+    var pts = v.map(function (n, i) { return [x0 + i * (x1 - x0) / 5, y(n)]; });
+    g += '<polyline class="linje tegn" points="' + pts.map(function (p) { return p[0] + ',' + p[1].toFixed(1); }).join(' ') + '"/>';
+    pts.forEach(function (p, i) { g += '<rect class="punkt' + (i === 5 ? ' siste' : '') + '" x="' + (p[0] - 4) + '" y="' + (p[1] - 4).toFixed(1) + '" width="8" height="8"/>'; });
+    ['jan', 'mar', 'apr', 'jun', 'aug', 'okt'].forEach(function (m, i) { g += '<text class="gt" x="' + pts[i][0] + '" y="148" text-anchor="middle">' + m + '</text>'; });
+    app.querySelector('#graf').innerHTML = g;
+  }
+});
+</script>
+</body>
+</html>

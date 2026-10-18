@@ -60,7 +60,7 @@ test("fellessiden /team-wang er åpen: ingen innloggingskrav i selve siden", () 
 
 test("skjermoversikten har eget innloggingskrav for ADMIN/COACH", () => {
   const side = lesKilde("src/app/team-wang/skjermer/page.tsx");
-  assert.match(side, /requirePortalUser\(\{\s*allow:\s*\["ADMIN",\s*"COACH"\]/);
+  assert.match(side, /requirePortalUser\(\{\s*(?:tillatDemo:\s*true,\s*)?allow:\s*\["ADMIN",\s*"COACH"\]/);
   assert.match(side, /hentWangCoachGruppeId/);
 });
 
@@ -110,11 +110,8 @@ test("deaktiverte handlinger bærer teksten «Ikke koblet ennå»", () => {
   assert.match(merke, /Ikke koblet ennå/);
 });
 
-test("de tre ekte datakoblede rutene nås fra skallet (IUP, testresultater, turneringer)", () => {
-  const lenker = lesKilde("src/components/wang/WangKobledeVisninger.tsx");
-  assert.match(lenker, /\/team-wang\/coach\/iup\//);
-  assert.match(lenker, /\/team-wang\/coach\/tester/);
-  assert.match(lenker, /\/team-wang\/coach\/turneringer\//);
-  const klient = lesKilde("src/app/team-wang/coach/WangCoachKlient.tsx");
-  assert.match(klient, /WangKobledeVisninger/);
+test("de tre ekte datakoblede rutene nås fra trenerflaten (IUP, testresultater, turneringer)", () => {
+  assert.match(lesKilde("src/components/wang/WangElever.tsx"), /\/team-wang\/coach\/iup\//);
+  assert.match(lesKilde("src/components/wang/WangTester.tsx"), /\/team-wang\/coach\/tester/);
+  assert.match(lesKilde("src/components/wang/WangKonkurranse.tsx"), /\/team-wang\/coach\/turneringer\//);
 });

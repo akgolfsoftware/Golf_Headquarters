@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Team Norway Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Jost:wght@300;400;500&family=Lato:wght@400;700&display=swap">
+<link rel="stylesheet" href="felles/tn.css">
+<style>
+  .status{display:grid;border-top:1px solid var(--ink-200)}
+  .status-rad{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;padding:12px 0;border-bottom:1px solid var(--ink-200);align-items:center}
+  .status-rad .navn{font:700 15px/1.3 var(--tekst)}
+  .status-rad .tre{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px}
+  .status-hode{display:none}
+  @container (min-width:900px){
+    .status-hode,.status-rad{grid-template-columns:minmax(0,1.4fr) repeat(3,minmax(0,1fr)) 90px}
+    .status-hode{display:grid;gap:12px;padding:8px 0;font:700 12.5px/1.35 var(--tekst);letter-spacing:.01em;color:var(--ink-500)}
+    .status-rad .tre{display:contents}
+    .status-rad > .merke{order:9;justify-self:end}
+  }
+  .belop{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;padding:12px 0;border-bottom:1px solid var(--ink-200);align-items:center}
+  .belop:last-child{border-bottom:0}
+  .belop b{font:700 15px/1.3 var(--tekst)}
+  .belop .tall{font:500 17px/1 var(--mono);text-align:right;color:var(--navy-900)}
+  .belop .tall small{display:block;font:400 12.5px/1.35 var(--tekst);color:var(--ink-700)}
+  .tilgang{display:grid;grid-template-columns:36px minmax(0,1fr) auto;gap:4px 12px;padding:12px 0;border-bottom:1px solid var(--ink-200);align-items:center}
+  .tilgang:last-child{border-bottom:0}
+  .tilgang b{font:700 15px/1.3 var(--tekst)}
+  .tilgang .knapper{grid-column:2/-1}
+  .roller{display:grid;gap:var(--r2);grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
+  .roller .kort{gap:8px}
+  .roller ul{margin:0;padding-left:18px;display:grid;gap:4px;font-size:14px}
+  .dialog-bak{display:grid;place-items:end center;padding:var(--r4) 0 0;background:rgba(12,18,25,.55);margin:calc(-1 * var(--r5)) calc(-1 * var(--r4)) 0;min-height:520px}
+  .dialog{width:100%;display:grid;gap:var(--r3);padding:var(--r5) var(--r4);background:var(--hvit);border-top:3px solid var(--feil)}
+  .dialog h2{margin:0;font:500 22px/1.2 var(--display);letter-spacing:.02em;color:var(--navy-900)}
+  @container (min-width:900px){.dialog-bak{place-items:center;margin:0;min-height:600px}.dialog{max-width:520px;border:1px solid var(--ink-200);border-top:3px solid var(--feil)}}
+  .inv{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;padding:12px 0;border-bottom:1px solid var(--ink-200);align-items:center}
+  .inv:last-child{border-bottom:0}
+  .inv b{font:700 15px/1.3 var(--tekst)}
+  .steg{display:flex;flex-wrap:wrap;gap:4px;grid-column:1/-1}
+  .steg span{display:inline-flex;align-items:center;height:24px;padding:0 8px;font:700 12.5px/1 var(--tekst);background:var(--ink-100);color:var(--ink-500)}
+  .steg span.ja{background:var(--navy-900);color:var(--hvit)}
+</style>
+</head>
+<body>
+<div class="ytre">
+  <header class="hode">
+    <span class="meta-s">Team Norway · trenerskjermer · pakke 7 Meg og admin · utkast 2 · 16.10.2026</span>
+    <h1>Meg og admin: lisens, tilgang og invitasjoner</h1>
+    <p>Fem skjermer fra menygruppen Meg og admin. Trenere og tilgang og Inviter spiller vises bare for sportssjefen. Bare syntetiske data.</p>
+  </header>
+  <div class="kontroller">
+    <div class="velger" role="group" aria-label="Skjerm">
+      <button type="button" data-skjerm="lisens" aria-pressed="true">Lisens og økonomi</button>
+      <button type="button" data-skjerm="tilgang" aria-pressed="false">Trenere og tilgang</button>
+      <button type="button" data-skjerm="legg" aria-pressed="false">Legg til trener</button>
+      <button type="button" data-skjerm="avslutt" aria-pressed="false">Avslutt tilgang</button>
+      <button type="button" data-skjerm="inviter" aria-pressed="false">Inviter spiller</button>
+    </div>
+  </div>
+  <div class="kontroller">
+    <div class="velger" role="group" aria-label="Bredde">
+      <button type="button" data-bredde="mob" aria-pressed="true">Mobil 390</button>
+      <button type="button" data-bredde="pc" aria-pressed="false">PC 1280</button>
+    </div>
+    <div class="velger" role="group" aria-label="Tilstand">
+      <button type="button" data-tilstand="data" aria-pressed="true">Med data</button>
+      <button type="button" data-tilstand="tom" aria-pressed="false">Tom</button>
+      <button type="button" data-tilstand="laster" aria-pressed="false">Laster</button>
+      <button type="button" data-tilstand="feil" aria-pressed="false">Feil</button>
+    </div>
+  </div>
+  <div class="scene"><div id="ramme" class="ramme mob"></div></div>
+  <div class="notater">
+    <section class="endringer">
+      <h2>Hva som er nytt</h2>
+      <p><b>Utkast 2 (16.10):</b> bare grunnmuren er byttet. Ro er riktig her. Mindre mono i metadata, menyen kan lukkes, og alle navn er syntetiske.</p>
+      <ul>
+        <li><b>Lisens og økonomi</b> for treneren: status på lisens, helseattest og antidoping for hver spiller, og trenerens egen kjøregodtgjørelse og refusjon.</li>
+        <li><b>Trenere og tilgang</b>: hvem som har tilgang, fra og til dato, og hva hver rolle ser. Tilgang gis bare til @golfforbundet.no.</li>
+        <li><b>Avslutt tilgang</b> er en egen dialog med statusrød kant. Treneren mister tilgangen med en gang.</li>
+        <li><b>Inviter spiller</b> viser stegene: sendt, godtatt, delt, og forelder godkjent for spillere under 16. Delingslenken gjelder i sju dager.</li>
+      </ul>
+    </section>
+    <section class="endringer">
+      <h2>Åpne spørsmål</h2>
+      <ul>
+        <li>Stipend og budsjett: koden viser «Ikke registrert». Hvor kommer tallene fra, og skal treneren se dem?</li>
+        <li>Kan en trener legge til Assist Coach i egen gruppe, eller bare sportssjefen? (B2 i registeret)</li>
+      </ul>
+    </section>
+  </div>
+</div>
+
+<template id="lisens">
+<div class="app" data-aktiv="lisens">
+<main class="innhold">
+  <header data-behold>
+    <span class="overlinje">Sesong 2026–2027</span>
+    <h1 class="tittel">Lisens og økonomi</h1>
+    <p class="ingress">Det som må være i orden før spillerne kan stille, og det du har krav på som trener.</p>
+  </header>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Lisens, helse og antidoping</h2><span class="kilde">12 av 14 i orden</span></div>
+    <div class="kort">
+      <div class="status">
+        <div class="status-hode"><span>Spiller</span><span>Lisens</span><span>Helseattest</span><span>Antidoping</span><span></span></div>
+        <div class="status-rad"><span class="navn">Spiller 01</span><span class="merke ok"><i></i>I orden</span><span class="tre"><span class="merke ok"><i></i>Lisens</span><span class="merke ok"><i></i>Helseattest</span><span class="merke ok"><i></i>Antidoping</span></span></div>
+        <div class="status-rad"><span class="navn">Spiller 04</span><span class="merke vent"><i></i>Mangler 1</span><span class="tre"><span class="merke ok"><i></i>Lisens</span><span class="merke vent"><i></i>Helseattest utløper 1. nov</span><span class="merke ok"><i></i>Antidoping</span></span></div>
+        <div class="status-rad"><span class="navn">Spiller 06</span><span class="merke feil"><i></i>Mangler 1</span><span class="tre"><span class="merke ok"><i></i>Lisens</span><span class="merke ok"><i></i>Helseattest</span><span class="merke feil"><i></i>Antidoping ikke tatt</span></span></div>
+      </div>
+      <p class="kilde">Viser 3 av 14. Spillere som ikke har levert, får påminnelse i PlayerHQ.</p>
+    </div>
+  </section>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Kjøregodtgjørelse og refusjon</h2><span class="kilde">Sportssjef</span></div>
+    <div class="kort">
+      <div class="belop"><span><b>Kjøring til Bossum, 7. okt</b><br><span class="kilde">186 km · sendt 8. okt</span></span><span class="tall">—<small>Venter på Team Norway</small></span></div>
+      <div class="belop"><span><b>Hotell Halmstad</b><br><span class="kilde">3 netter · kvittering lagt ved</span></span><span class="tall">—<small>Venter på Team Norway</small></span></div>
+    </div>
+    <div class="knapper"><button type="button" class="knapp sek">Nytt krav</button></div>
+    <p class="kilde">Beløpene leses fra Team Norways regnskap og vises når de er godkjent. Appen regner dem aldri ut selv.</p>
+  </section>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Stipend og budsjett</h2><span class="merke kontur">Ikke registrert</span></div>
+    <div class="kort dempet"><p class="forklar">Stipend og gruppebudsjett er ikke koblet til ennå.</p></div>
+  </section>
+</main>
+</div>
+</template>
+
+<template id="tilgang">
+<div class="app" data-aktiv="tilgang">
+<main class="innhold">
+  <header data-behold>
+    <span class="overlinje">Bare for sportssjef</span>
+    <h1 class="tittel">Trenere og tilgang</h1>
+    <p class="ingress">Hvem som er trener eller Assist Coach i gruppa. Legg til nye, og avslutt tilgang for dem som ikke lenger er med.</p>
+  </header>
+  <div class="knapper" data-behold><a class="knapp pri" href="#" data-gaa="legg">Legg til trener</a></div>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Aktiv tilgang</h2><span class="kilde">4 personer</span></div>
+    <div class="kort">
+      <div class="tilgang"><span class="avatar">SS</span><span><b>Sportssjef</b><br><span class="kilde">Sportssjef · fra 1. jan 2026 · til åpen</span></span><span class="merke info"><i></i>Sportssjef</span></div>
+      <div class="tilgang"><span class="avatar">T1</span><span><b>Trener 1</b><br><span class="kilde">Trener · fra 1. jan 2026 · til 31. des 2026</span></span><span class="merke noy"><i></i>Trener</span><span class="knapper"><button type="button" class="knapp stille">Endre</button><a class="knapp stille" href="#" data-gaa="avslutt">Avslutt</a></span></div>
+      <div class="tilgang"><span class="avatar">T2</span><span><b>Trener 2</b><br><span class="kilde">Trener · fra 15. mar 2026 · til åpen</span></span><span class="merke noy"><i></i>Trener</span><span class="knapper"><button type="button" class="knapp stille">Endre</button><button type="button" class="knapp stille">Avslutt</button></span></div>
+      <div class="tilgang"><span class="avatar">07</span><span><b>Spiller 07</b><br><span class="kilde">Assist Coach · samlinger · til 31. des 2026</span></span><span class="merke noy"><i></i>Assist Coach</span><span class="knapper"><button type="button" class="knapp stille">Endre</button><button type="button" class="knapp stille">Avslutt</button></span></div>
+    </div>
+  </section>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Hva rollene ser</h2></div>
+    <div class="roller">
+      <div class="kort"><span class="undertittel">Trener</span><ul><li>Det spillerne har delt med Team Norway</li><li>Fører tester og uttak</li><li>Sender forslag, skriver aldri direkte i planen</li></ul></div>
+      <div class="kort"><span class="undertittel">Assist Coach</span><ul><li>Samlinger og testdager</li><li>Fører tester på testdagen</li><li>Ingen uttak, ingen forslag</li></ul></div>
+    </div>
+  </section>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Avsluttet tilgang</h2></div>
+    <div class="kort"><div class="tilgang"><span class="avatar">09</span><span><b>Spiller 09</b><br><span class="kilde">Trener · avsluttet 30. juni 2026</span></span><span class="merke noy"><i></i>Avsluttet</span></div></div>
+  </section>
+</main>
+</div>
+</template>
+
+<template id="legg">
+<div class="app" data-aktiv="tilgang" data-skall="tilbake" data-tilbake="Trenere og tilgang">
+<main class="innhold">
+  <header data-behold>
+    <span class="overlinje">Trenere og tilgang</span>
+    <h1 class="tittel">Legg til trener</h1>
+    <p class="ingress">Personen må ha en AK Golf-konto. Tilgangen gjelder med en gang.</p>
+  </header>
+  <form class="kort" onsubmit="return false">
+    <div class="felt feil"><label for="t-epost">E-post</label><input id="t-epost" value="kari.solberg@gmail.com"><span class="feiltekst">Bare adresser som slutter på @golfforbundet.no kan få tilgang.</span></div>
+    <div class="felt"><label>Rolle</label><div class="valg" role="group" aria-label="Rolle"><button type="button" aria-pressed="true">Trener</button><button type="button" aria-pressed="false">Assist Coach</button></div></div>
+    <div class="to-kol" style="display:grid;gap:var(--r4);grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr))">
+      <div class="felt"><label for="t-fra">Fra</label><input id="t-fra" value="14.10.2026" inputmode="numeric"></div>
+      <div class="felt"><label for="t-til">Til</label><input id="t-til" placeholder="åpen" inputmode="numeric"><span class="hjelp">Tomt betyr til tilgangen avsluttes.</span></div>
+    </div>
+    <div class="knapper"><button type="submit" class="knapp pri">Lagre tilgang</button><a class="knapp stille" href="#" data-gaa="tilgang">Avbryt</a></div>
+  </form>
+</main>
+</div>
+</template>
+
+<template id="avslutt">
+<div class="app" data-aktiv="tilgang">
+<main class="innhold">
+  <div class="dialog-bak">
+    <div class="dialog" role="dialog" aria-labelledby="d-tittel">
+      <span class="merke feil" style="justify-self:start"><i></i>Avslutt tilgang</span>
+      <h2 id="d-tittel">Avslutte tilgangen til Trener 1?</h2>
+      <p class="forklar">Trener 1 mister tilgang til gruppa og alle 14 spillere med en gang. Tester og poster han har ført, blir stående. Du kan gi tilgang igjen senere.</p>
+      <div class="knapper"><button type="button" class="knapp slett">Avslutt tilgang</button><a class="knapp sek" href="#" data-gaa="tilgang">Avbryt</a></div>
+    </div>
+  </div>
+</main>
+</div>
+</template>
+
+<template id="inviter">
+<div class="app" data-aktiv="inviter">
+<main class="innhold">
+  <header data-behold>
+    <span class="overlinje">Administrasjon · medlemmer</span>
+    <h1 class="tittel">Inviter spiller</h1>
+    <p class="ingress">Inviter spillere til Team Norway og følg status for hver invitasjon.</p>
+  </header>
+  <form class="kort" onsubmit="return false" data-behold>
+    <div class="felt"><label for="i-epost">Spillerens e-post</label><input id="i-epost" placeholder="navn@eksempel.no"></div>
+    <div class="felt"><label for="i-fdato">Fødselsdato</label><input id="i-fdato" placeholder="dd.mm.åååå" inputmode="numeric"><span class="hjelp">Under 16 år: forelder må godkjenne før noe deles.</span></div>
+    <div class="knapper"><button type="submit" class="knapp pri">Send invitasjon</button></div>
+  </form>
+  <section class="seksjon">
+    <div class="sek-topp"><h2>Invitasjoner</h2><span class="kilde">Lenken gjelder i 7 dager</span></div>
+    <div class="kort">
+      <div class="inv"><span><b>Spiller 13</b><br><span class="kilde">17 år · sendt 10. okt</span></span><span class="merke ok"><i></i>Delt</span><span class="steg"><span class="ja">Sendt</span><span class="ja">Godtatt</span><span class="ja">Delt</span></span></div>
+      <div class="inv"><span><b>Spiller 08</b><br><span class="kilde">15 år · sendt 12. okt</span></span><span class="merke vent"><i></i>Venter på forelder</span><span class="steg"><span class="ja">Sendt</span><span class="ja">Godtatt</span><span>Forelder godkjent</span><span>Delt</span></span></div>
+      <div class="inv"><span><b>Spiller 11</b><br><span class="kilde">16 år · sendt 6. okt</span></span><span class="merke feil"><i></i>Utløpt</span><span class="steg"><span class="ja">Sendt</span><span>Godtatt</span><span>Delt</span></span></div>
+    </div>
+    <div class="knapper"><button type="button" class="knapp sek">Send på nytt til Spiller 11</button></div>
+  </section>
+</main>
+</div>
+</template>
+
+<script src="felles/tn.js"></script>
+<script>
+TNUtkast.start({
+  start: 'lisens',
+  skjermer: {
+    lisens: { mal: 'lisens', laster: 'Henter lisens og økonomi …', feil: 'Lisens og økonomi kunne ikke hentes',
+      tom: { tittel: 'Ingen spillere i gruppen ennå', tekst: 'Lisens, helseattest og antidoping vises når spillerne er lagt inn.', knapp: 'Inviter spiller' } },
+    tilgang: { mal: 'tilgang', laster: 'Henter tilgangene …', feil: 'Tilgangene kunne ikke hentes',
+      tom: { tittel: 'Ingen trenere ennå', tekst: 'Ingen har trener- eller Assist Coach-tilgang til gruppen.', knapp: 'Legg til trener' } },
+    legg: { mal: 'legg', laster: 'Lagrer …', feil: 'Tilgangen ble ikke lagret',
+      tom: { tittel: 'Fyll inn e-post', tekst: 'Bare adresser som slutter på @golfforbundet.no kan få tilgang.', knapp: 'Start' } },
+    avslutt: { mal: 'avslutt', laster: 'Avslutter …', feil: 'Tilgangen ble ikke avsluttet',
+      tom: { tittel: 'Ingen valgt', tekst: 'Velg en trener i lista først.', knapp: 'Trenere og tilgang' } },
+    inviter: { mal: 'inviter', laster: 'Henter invitasjonene …', feil: 'Invitasjonen ble ikke sendt',
+      tom: { tittel: 'Ingen invitasjoner ennå', tekst: 'Send den første invitasjonen over. Spilleren får en lenke som gjelder i sju dager.', knapp: 'Send invitasjon' } }
+  }
+});
+</script>
+</body>
+</html>

@@ -1,384 +1,583 @@
 "use client";
 
-import { WangIkkeKoblet, IKKE_KOBLET_KNAPP_STIL } from './WangIkkeKoblet';
 import React, { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
+import { WangTomTilstand } from "./WangIkkeKoblet";
 import {
-  WANG_ELEVER,
-  WANG_OKTER,
-  WangElev,
-  WangOkt,
-} from "./wang-data";
+  visDato,
+  type WangTrenerData,
+  type WangTrenerUkeOkt,
+} from "@/app/team-wang/_data/wang-trener-data";
 
 interface WangIdagProps {
-  valgtFane?: string;
+  data: WangTrenerData;
+  /** Undersiden: oppmote · okt · fravaer. Alt annet gir I dag. */
   aktivFane?: string;
-  onFaneEndret?: (fane: string) => void;
-  campus?: string;
+  /** Økta som Oppmøte, Økta og Meld fravær gjelder (id fra data.ukeOkter). */
+  oktId?: string;
 }
 
-export function WangIdag({
-  valgtFane = "fokus",
-  aktivFane,
-  onFaneEndret: _onFaneEndret,
-  campus: _campus = "Fredrikstad",
-}: WangIdagProps) {
-  const [fane, setFane] = useState(aktivFane || valgtFane);
-  const [okter] = useState<WangOkt[]>(WANG_OKTER);
-  const [oppfolgingElever] = useState<WangElev[]>(
-    WANG_ELEVER.filter((e) => e.trengerOppfolging)
-  );
+const BASE = "/team-wang/coach?omraade=idag";
+const tilOkt = (id: string) => `${BASE}&fane=okt&okt=${encodeURIComponent(id)}`;
+const tilOppmote = (id: string) => `${BASE}&fane=oppmote&okt=${encodeURIComponent(id)}`;
+const tilFravaer = (id: string) => `${BASE}&fane=fravaer&okt=${encodeURIComponent(id)}`;
+
+/**
+ * Pakke 2 I dag for trener og sportssjef: I dag, Oppmøte morgentrening, Økta (med avlys) og Meld fravær.
+ * Fasit: docs/design-system/utkast-wang/idag.html (utkast 2, retning B, godkjent av Anders 16.10.2026)
+ * og felles/wang.css §Nærmere wang.no.
+ * Bare ekte gruppedata (byggWangTrenerData). Avvikene skyldes at dataene ikke finnes i basen ennå.
+ * Avvik:
+ *   - Helteflaten viser dagens økter, ikke «saker krever deg»: Krever handling er ikke koblet.
+ *   - Dagens fokus er periodens fokus fra årsplanen, uten akse og uten TrackMan-måltall («—»).
+ *   - Øktene har ingen akse i kalenderen, så de vises nøytrale, ikke fylt i aksefargen.
+ *   - Oppmøte, fravær og avlysning lagres ikke: basen har ingen tabell for dem. Knappene er sperret med forklaring.
+ *   - Skoletimene og gruppevelgeren for sportssjef er ikke med: trenerflaten har én gruppe og ingen timeplan.
+ */
+export function WangIdag({ data, aktivFane, oktId }: WangIdagProps) {
+  const okt = oktId ? data.ukeOkter.find((o) => o.id === oktId) : undefined;
+  const dagensOkter = data.ukeOkter.filter((o) => o.datoIso === data.idagIso);
+
+  if (aktivFane === "oppmote") {
+    return <Oppmote data={data} okt={okt ?? dagensOkter[0]} />;
+  }
+  if (aktivFane === "fravaer") {
+    return <MeldFravaer data={data} okt={okt ?? dagensOkter[0]} />;
+  }
+  if (aktivFane === "okt") {
+    return <Okta data={data} okt={okt} />;
+  }
+  return <IdagHoved data={data} dagensOkter={dagensOkter} />;
+}
+
+// ---------------------------------------------------------------------------
+// I dag
+// ---------------------------------------------------------------------------
+
+function IdagHoved({ data, dagensOkter }: { data: WangTrenerData; dagensOkter: WangTrenerUkeOkt[] }) {
+  const naa = data.naaTid;
+  const neste = dagensOkter.find((o) => !naa || (o.sluttTid ?? o.startTid) > naa);
+  const aktivPeriode = data.perioder.find((p) => p.status === "naa");
+  const antall = dagensOkter.length;
+  const oppmoteOkt = neste ?? dagensOkter[0];
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
-      {/* 1. Header med tittel */}
-      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: "16px" }}>
-        <div>
-          <p className="wg-num" style={{ margin: "0 0 6px", fontSize: "12px", fontWeight: 500, color: "var(--wang-text-muted)" }}>
-            WG-01 · Uke 40 · 28.09–02.10.2026
-          </p>
-          <h1
-            style={{
-              margin: 0,
-              fontFamily: "var(--font-wang-brand, Montserrat, sans-serif)",
-              fontWeight: 300,
-              fontSize: "36px",
-              letterSpacing: "-0.015em",
-              color: "var(--wang-blue)",
-              lineHeight: 1.1,
-            }}
-          >
-            I dag · WANG Toppidrett
-          </h1>
-        </div>
+    <>
+      <section className="wg-topp">
+        <p className="wg-dato">
+          {langDato(data.idagIso)} · {data.ukeTekst.split(" · ")[0].toLowerCase()}
+          {naa ? ` · kl. ${naa}` : ""}
+        </p>
+        <h1 className="wg-tittel">I dag</h1>
+      </section>
 
-        <div style={{ display: "flex", gap: "8px" }}>
-          <button
-            type="button"
-            onClick={() => setFane("fokus")}
-            className={`wg-chip ${fane === "fokus" ? "wg-chip-pa" : ""}`}
-          >
-            Dagsfokus (WG-01)
-          </button>
-          <button
-            type="button"
-            onClick={() => setFane("trenger-deg")}
-            className={`wg-chip ${fane === "trenger-deg" ? "wg-chip-pa" : ""}`}
-          >
-            Trenger deg ({oppfolgingElever.length})
-          </button>
-          <button
-            type="button"
-            onClick={() => setFane("uke")}
-            className={`wg-chip ${fane === "uke" ? "wg-chip-pa" : ""}`}
-          >
-            Uke og plan (WANG-30)
-          </button>
+      <section className="wg-helteflate" aria-label="Dagen">
+        <div className="wg-helt-tekst">
+          <span className="wg-helt-merke">
+            <i />
+            {neste ? `Neste økt kl. ${neste.startTid}` : antall > 0 ? "Dagens økter er ferdige" : data.gruppeNavn}
+          </span>
+          <p className="wg-helt-hoved">
+            <strong>{antall}</strong>
+            <span>{antall === 1 ? "økt i dag" : "økter i dag"}</span>
+          </p>
+          <p className="wg-helt-forklar">
+            {neste
+              ? `${neste.tittel}, ${neste.tid}${neste.sted ? `, ${neste.sted}` : ""}.`
+              : antall > 0
+                ? "Alle økter i gruppas kalender i dag er passert."
+                : "Ingen økter i gruppas kalender i dag."}
+          </p>
+          {oppmoteOkt ? (
+            <Link href={tilOppmote(oppmoteOkt.id)} className="wg-btn wg-btn-lys">
+              Før oppmøte
+            </Link>
+          ) : (
+            <Link href="/team-wang/coach?omraade=trening" className="wg-btn wg-btn-lys">
+              Se treningen
+            </Link>
+          )}
+        </div>
+        <Image
+          className="wg-helt-bilde"
+          src="/team-wang/hero/trening-golf.jpg"
+          alt=""
+          width={480}
+          height={230}
+          sizes="(min-width: 1100px) 420px, 100vw"
+        />
+      </section>
+
+      <div className="wg-smaa-tall">
+        <div>
+          <strong>{data.elever.length}</strong>
+          <span>Elever i gruppa</span>
+        </div>
+        <div>
+          <strong>{data.ukeOkter.length}</strong>
+          <span>Økter i uka</span>
+        </div>
+        <div>
+          <strong>—</strong>
+          <span>Krever handling</span>
         </div>
       </div>
 
-      {/* 2. Dagsfokus Hero (WG-01) */}
-      <section
-        style={{
-          backgroundColor: "var(--wang-green)",
-          borderRadius: "4px",
-          padding: "28px",
-          color: "#FFFFFF",
-          display: "grid",
-          gap: "18px",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
-          <span
-            style={{
-              fontFamily: "var(--font-wang-brand, Montserrat, sans-serif)",
-              fontSize: "12px",
-              fontWeight: 600,
-              color: "#FFFFFF",
-              letterSpacing: "0.04em",
-              textTransform: "uppercase",
-            }}
-          >
-            Dagens fokus fra coach Anders Kristiansen
-          </span>
-          <span className="wg-num" style={{ fontSize: "12px", color: "rgba(255, 255, 255, 0.85)" }}>
-            Tirsdag 29.09 · Morgentrening 08:00
-          </span>
+      <div className="wg-idag-kol">
+        <div>
+          <section className="wg-seksjon wg-r3" aria-labelledby="wg-fokus-tittel">
+            <div className="wg-sek-topp">
+              <h2 id="wg-fokus-tittel">Dagens fokus</h2>
+              <Link className="wg-lenke" href="/team-wang/coach?visArsplan=1">
+                Endre fokus
+              </Link>
+            </div>
+            {aktivPeriode ? (
+              <div className="wg-kort wg-fyll wg-idag-fokus">
+                <span className="wg-pille">
+                  <i />
+                  {aktivPeriode.navn}
+                </span>
+                <h3>{aktivPeriode.fokus || "Ingen fokus skrevet for perioden"}</h3>
+                <div className="wg-maltall">
+                  <div><strong>—</strong><span>Club Speed</span></div>
+                  <div><strong>—</strong><span>Smash Factor</span></div>
+                  <div><strong>—</strong><span>Attack Angle</span></div>
+                </div>
+                <p className="wg-kilde">
+                  Fra gruppas årsplan, {visDato(aktivPeriode.startIso)}–{visDato(aktivPeriode.endIso)}. Måltall fra
+                  TrackMan er ikke koblet ennå.
+                </p>
+              </div>
+            ) : (
+              <WangTomTilstand tittel="Ingen aktiv periode" tekst="Gruppas årsplan har ingen periode som gjelder i dag." />
+            )}
+          </section>
+
+          <section className="wg-seksjon wg-r2" aria-labelledby="wg-dagen-tittel">
+            <div className="wg-sek-topp">
+              <h2 id="wg-dagen-tittel">Dagen</h2>
+              <span className="wg-kilde">Fra gruppas kalender</span>
+            </div>
+            {antall === 0 ? (
+              <WangTomTilstand tittel="Ingen økter i dag" tekst="Gruppa har ingen økter i kalenderen i dag." />
+            ) : (
+              <Tidslinje okter={dagensOkter} naaTid={naa} />
+            )}
+          </section>
+
+          <section className="wg-seksjon wg-r5" aria-labelledby="wg-uka-tittel">
+            <div className="wg-sek-topp">
+              <h2 id="wg-uka-tittel">Uka</h2>
+              <span className="wg-kilde">{data.ukeTekst}</span>
+            </div>
+            {data.ukeOkter.length === 0 ? (
+              <WangTomTilstand tittel="Ingen økter denne uka" tekst="Gruppas kalender har ingen økter denne uka." />
+            ) : (
+              <div className="wg-kort wg-fyll" style={{ gap: 4 }}>
+                {data.ukeOkter.map((o) => {
+                  const iDag = o.datoIso === data.idagIso;
+                  return (
+                    <div key={o.id} className={`wg-ukerad ${iDag ? "wg-ukerad-idag" : ""}`}>
+                      <span className="wg-dg">{o.dag}</span>
+                      <Link href={tilOkt(o.id)} className="wg-okt wg-okt-lenke">
+                        <span className="wg-navn">{o.tittel}</span>
+                        <span className="wg-okt-info">
+                          <span>{o.tid}</span>
+                          <span>{o.passert ? "Passert" : iDag ? "I dag" : "Planlagt"}</span>
+                          {o.sted ? <span>{o.sted}</span> : null}
+                        </span>
+                      </Link>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </section>
         </div>
 
-        <p
+        <div>
+          <section className="wg-seksjon wg-r1" aria-labelledby="wg-handling-tittel">
+            <div className="wg-sek-topp">
+              <h2 id="wg-handling-tittel">Krever handling</h2>
+            </div>
+            <WangTomTilstand
+              tittel="Ikke koblet ennå"
+              tekst="Her samles oppmøte som ikke er ført, fravær flere dager på rad, egenførte tester til kontroll, delte fireukerssjekker og svar på forslag, gruppert etter frist."
+            />
+          </section>
+
+          <section className="wg-seksjon wg-r4" aria-labelledby="wg-oppfolging-tittel">
+            <div className="wg-sek-topp">
+              <h2 id="wg-oppfolging-tittel">Elever som trenger oppfølging</h2>
+            </div>
+            <WangTomTilstand
+              tittel="Ikke koblet ennå"
+              tekst="Lista bygges av oppmøte, gjennomført tid mot plan siste fire uker og turneringsresultater når de er koblet til WANG-gruppa."
+            />
+          </section>
+        </div>
+      </div>
+    </>
+  );
+}
+
+const TIME_H = 52;
+
+function Tidslinje({ okter, naaTid }: { okter: WangTrenerUkeOkt[]; naaTid: string | null }) {
+  const start = okter.map((o) => minutter(o.startTid));
+  const slutt = okter.map((o, i) => (o.sluttTid ? minutter(o.sluttTid) : start[i] + 60));
+  const fra = Math.min(7, Math.floor(Math.min(...start) / 60));
+  const til = Math.max(16, Math.ceil(Math.max(...slutt) / 60));
+  const timer = Array.from({ length: til - fra }, (_, i) => fra + i);
+  const naa = naaTid ? minutter(naaTid) : null;
+
+  return (
+    <div className="wg-dagen" style={{ height: timer.length * TIME_H }}>
+      {timer.map((t) => (
+        <React.Fragment key={t}>
+          <span className="wg-dagen-t">{String(t).padStart(2, "0")}</span>
+          <span className="wg-dagen-s" />
+        </React.Fragment>
+      ))}
+      {okter.map((o, i) => (
+        <Link
+          key={o.id}
+          href={tilOkt(o.id)}
+          className="wg-blokk"
           style={{
-            margin: 0,
-            fontFamily: "var(--font-wang-brand, Montserrat, sans-serif)",
-            fontWeight: 300,
-            fontSize: "26px",
-            letterSpacing: "-0.015em",
-            lineHeight: 1.25,
-            maxWidth: "780px",
+            top: ((start[i] - fra * 60) / 60) * TIME_H + 3,
+            height: Math.max(((slutt[i] - start[i]) / 60) * TIME_H - 6, 40),
           }}
         >
-          Driver: svinghastighet og balltreff før høstturneringen.
-        </p>
-
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "16px" }}>
-          <div style={{ borderTop: "1px solid rgba(255, 255, 255, 0.35)", paddingTop: "12px" }}>
-            <p className="wg-num" style={{ margin: "0 0 4px", fontSize: "24px", fontWeight: 700, color: "#FFFFFF" }}>
-              112 mph
-            </p>
-            <p style={{ margin: 0, fontSize: "14px", lineHeight: 1.4, color: "rgba(255, 255, 255, 0.9)" }}>
-              Køllehastighet (mål snitt i gruppa). Måles på TrackMan stasjon 1.
-            </p>
-          </div>
-          <div style={{ borderTop: "1px solid rgba(255, 255, 255, 0.35)", paddingTop: "12px" }}>
-            <p className="wg-num" style={{ margin: "0 0 4px", fontSize: "24px", fontWeight: 700, color: "#FFFFFF" }}>
-              1.48
-            </p>
-            <p style={{ margin: 0, fontSize: "14px", lineHeight: 1.4, color: "rgba(255, 255, 255, 0.9)" }}>
-              Smash Factor: rent balltreff prioriteres foran overdreven svinglengde.
-            </p>
-          </div>
-          <div style={{ borderTop: "1px solid rgba(255, 255, 255, 0.35)", paddingTop: "12px" }}>
-            <p className="wg-num" style={{ margin: "0 0 4px", fontSize: "24px", fontWeight: 700, color: "#FFFFFF" }}>
-              +2.5°
-            </p>
-            <p style={{ margin: 0, fontSize: "14px", lineHeight: 1.4, color: "rgba(255, 255, 255, 0.9)" }}>
-              Attack Angle: oppadgående treff for optimal utgangsvinkel.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. Elever som trenger oppfølging (WANG-43) */}
-      {(fane === "fokus" || fane === "trenger-deg") && (
-        <section className="wg-kort" style={{ padding: "20px" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px" }}>
-            <div>
-              <p className="wg-num" style={{ margin: "0 0 4px", fontSize: "11px", color: "var(--wang-text-muted)" }}>
-                WANG-43 · Prioritert oppfølging
-              </p>
-              <h2
-                style={{
-                  margin: 0,
-                  fontFamily: "var(--font-wang-brand, Montserrat, sans-serif)",
-                  fontSize: "18px",
-                  fontWeight: 600,
-                  color: "var(--wang-blue)",
-                }}
-              >
-                Elever som trenger oppfølging
-              </h2>
-            </div>
-            <span className="wg-num" style={{ fontSize: "12px", color: "var(--wang-text-muted)" }}>
-              {oppfolgingElever.length} av {WANG_ELEVER.length} elever
-            </span>
-          </div>
-
-          <div style={{ display: "grid", gap: "10px" }}>
-            {oppfolgingElever.map((elev) => (
-              <div
-                key={elev.id}
-                style={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  gap: "12px",
-                  padding: "12px 16px",
-                  backgroundColor: "var(--wang-blue-tint)",
-                  borderRadius: "4px",
-                  borderLeft: "4px solid var(--wang-pink)",
-                }}
-              >
-                <div style={{ minWidth: "220px" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                    <span style={{ fontWeight: 600, fontSize: "14px", color: "var(--wang-blue)" }}>
-                      {elev.navn}
-                    </span>
-                    <span className="wg-chip" style={{ minHeight: "24px", padding: "0 8px", fontSize: "11px" }}>
-                      {elev.trinn} · HCP {elev.hcp}
-                    </span>
-                  </div>
-                  <p style={{ margin: "4px 0 0", fontSize: "13px", color: "var(--wang-text-muted)" }}>
-                    {elev.oppfolgingAarsak}
-                  </p>
-                </div>
-
-                <div style={{ display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap" }}>
-                  <button
-                    type="button"
-                    disabled
-                    className="wg-btn wg-btn-secondary"
-                    style={{ minHeight: "36px", padding: "0 12px", fontSize: "12px", ...IKKE_KOBLET_KNAPP_STIL }}
-                  >
-                    Ta oppfølging
-                  </button>
-                  <button
-                    type="button"
-                    disabled
-                    className="wg-btn wg-btn-primary"
-                    style={{ minHeight: "36px", padding: "0 12px", fontSize: "12px", ...IKKE_KOBLET_KNAPP_STIL }}
-                  >
-                    Løst
-                  </button>
-                  <WangIkkeKoblet />
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* 4. Morgentreninger denne uken (WANG-30, WG-01) */}
-      {(fane === "fokus" || fane === "uke") && (
-        <section className="wg-kort" style={{ padding: "20px" }}>
-          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: "16px" }}>
-            <div>
-              <p className="wg-num" style={{ margin: "0 0 4px", fontSize: "11px", color: "var(--wang-text-muted)" }}>
-                WANG-30 · Ukeoversikt
-              </p>
-              <h2
-                style={{
-                  margin: 0,
-                  fontFamily: "var(--font-wang-brand, Montserrat, sans-serif)",
-                  fontSize: "18px",
-                  fontWeight: 600,
-                  color: "var(--wang-blue)",
-                }}
-              >
-                Morgentreninger og fellessamlinger
-              </h2>
-            </div>
-            <span className="wg-num" style={{ fontSize: "12px", color: "var(--wang-text-muted)" }}>
-              Tirsdag og torsdag · 08:00–10:00
-            </span>
-          </div>
-
-          <div style={{ display: "grid", gap: "12px" }}>
-            {okter.map((okt) => (
-              <div
-                key={okt.id}
-                style={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  gap: "12px",
-                  padding: "14px 18px",
-                  border: "1px solid var(--wang-grey-line)",
-                  borderRadius: "4px",
-                  backgroundColor: "#FFFFFF",
-                }}
-              >
-                <div>
-                  <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "4px" }}>
-                    <span className="wg-st">
-                      <span
-                        className={`wg-dot ${
-                          okt.status === "Gjennomført"
-                            ? "wg-dot-fullfort"
-                            : "wg-dot-planlagt"
-                        }`}
-                      />
-                      {okt.status}
-                    </span>
-                    <span style={{ fontWeight: 600, fontSize: "15px", color: "var(--wang-blue)" }}>
-                      {okt.dag} · {okt.tid}
-                    </span>
-                  </div>
-                  <p style={{ margin: 0, fontSize: "14px", fontWeight: 500, color: "var(--wang-blue)" }}>
-                    {okt.tittel}
-                  </p>
-                  <p style={{ margin: "2px 0 0", fontSize: "12.5px", color: "var(--wang-text-muted)" }}>
-                    {okt.sted} · Trener: {okt.trener}
-                  </p>
-                </div>
-
-                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                  <span className="wg-num" style={{ fontSize: "13px", fontWeight: 600, color: "var(--wang-blue)" }}>
-                    {okt.antallPameldt} / {okt.totaltElever} elever
-                  </span>
-                  <button
-                    type="button"
-                    disabled
-                    className="wg-btn wg-btn-secondary"
-                    style={{ minHeight: "36px", padding: "0 12px", fontSize: "12px", ...IKKE_KOBLET_KNAPP_STIL }}
-                  >
-                    Se økt
-                  </button>
-                  <WangIkkeKoblet />
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* 5. Ukessammendrag (WANG-12) */}
-      <section className="wg-kort" style={{ padding: "20px" }}>
-        <p className="wg-num" style={{ margin: "0 0 4px", fontSize: "11px", color: "var(--wang-text-muted)" }}>
-          WANG-12 · Nøkkeltall
-        </p>
-        <h2
-          style={{
-            margin: "0 0 16px",
-            fontFamily: "var(--font-wang-brand, Montserrat, sans-serif)",
-            fontSize: "18px",
-            fontWeight: 600,
-            color: "var(--wang-blue)",
-          }}
-        >
-          Ukessammendrag for gruppa
-        </h2>
-
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "12px" }}>
-          <div style={{ padding: "14px", backgroundColor: "var(--wang-blue-tint)", borderRadius: "4px" }}>
-            <span style={{ fontSize: "12px", color: "var(--wang-text-muted)", display: "block" }}>
-              Snitt etterlevelse
-            </span>
-            <p className="wg-num" style={{ margin: "4px 0 0", fontSize: "28px", fontWeight: 700, color: "var(--wang-blue)" }}>
-              —
-            </p>
-            <span style={{ fontSize: "11px", color: "var(--wang-green)", fontWeight: 600 }}>
-              Ikke koblet ennå
-            </span>
-          </div>
-
-          <div style={{ padding: "14px", backgroundColor: "var(--wang-blue-tint)", borderRadius: "4px" }}>
-            <span style={{ fontSize: "12px", color: "var(--wang-text-muted)", display: "block" }}>
-              Gjennomsnittlig oppmøte
-            </span>
-            <p className="wg-num" style={{ margin: "4px 0 0", fontSize: "28px", fontWeight: 700, color: "var(--wang-blue)" }}>
-              —
-            </p>
-            <span style={{ fontSize: "11px", color: "var(--wang-text-muted)" }}>
-              Ikke koblet ennå
-            </span>
-          </div>
-
-          <div style={{ padding: "14px", backgroundColor: "var(--wang-blue-tint)", borderRadius: "4px" }}>
-            <span style={{ fontSize: "12px", color: "var(--wang-text-muted)", display: "block" }}>
-              Totalt treningsvolum
-            </span>
-            <p className="wg-num" style={{ margin: "4px 0 0", fontSize: "28px", fontWeight: 700, color: "var(--wang-blue)" }}>
-              —
-            </p>
-            <span style={{ fontSize: "11px", color: "var(--wang-text-muted)" }}>
-              Ikke koblet ennå
-            </span>
-          </div>
-
-          <div style={{ padding: "14px", backgroundColor: "var(--wang-blue-tint)", borderRadius: "4px" }}>
-            <span style={{ fontSize: "12px", color: "var(--wang-text-muted)", display: "block" }}>
-              Neste turnering
-            </span>
-            <p className="wg-num" style={{ margin: "4px 0 0", fontSize: "20px", fontWeight: 700, color: "var(--wang-blue)" }}>
-              —
-            </p>
-            <span style={{ fontSize: "11px", color: "var(--wang-pink)", fontWeight: 600 }}>
-              Ikke koblet ennå
-            </span>
-          </div>
-        </div>
-      </section>
+          <b>{o.tittel}</b>
+          <span>
+            {o.tid}
+            {o.sted ? ` · ${o.sted}` : ""}
+          </span>
+        </Link>
+      ))}
+      {naa !== null && naa >= fra * 60 && naa <= til * 60 ? (
+        <span className="wg-naa" style={{ top: ((naa - fra * 60) / 60) * TIME_H }} aria-label={`Nå ${naaTid}`}>
+          <b aria-hidden>{naaTid}</b>
+        </span>
+      ) : null}
     </div>
   );
+}
+
+// ---------------------------------------------------------------------------
+// Undersidene
+// ---------------------------------------------------------------------------
+
+function Tilbake() {
+  return (
+    <Link href={BASE} className="wg-tilbake">
+      <ArrowLeft size={18} aria-hidden />I dag
+    </Link>
+  );
+}
+
+type Oppmotevalg = "til" | "fravaer" | "borte";
+
+const OPPMOTEVALG: { id: Oppmotevalg; tittel: string }[] = [
+  { id: "til", tittel: "Til stede" },
+  { id: "fravaer", tittel: "Fravær" },
+  { id: "borte", tittel: "Ikke møtt" },
+];
+
+function Oppmote({ data, okt }: { data: WangTrenerData; okt?: WangTrenerUkeOkt }) {
+  const [valg, setValg] = useState<Record<string, Oppmotevalg>>({});
+  const antall = data.elever.length;
+  const fort = Object.keys(valg).length;
+  const tilStede = Object.values(valg).filter((v) => v === "til").length;
+
+  return (
+    <>
+      <Tilbake />
+      <section className="wg-seksjon">
+        <div>
+          <p className="wg-dato">
+            {okt ? `${langDato(okt.datoIso)} · ${okt.tid}${okt.sted ? ` · ${okt.sted}` : ""}` : langDato(data.idagIso)}
+          </p>
+          <h1 className="wg-tittel">Oppmøte</h1>
+          {okt ? <p className="wg-ingress">{okt.tittel}</p> : null}
+        </div>
+        {okt && antall > 0 ? (
+          <div className="wg-oppmote-topp">
+            <svg className="wg-ring" viewBox="0 0 72 72" role="img" aria-label={`${tilStede} av ${antall} til stede`}>
+              <circle cx="36" cy="36" r="30" stroke="var(--wg-n100)" />
+              <circle
+                cx="36"
+                cy="36"
+                r="30"
+                stroke="var(--wg-mint)"
+                pathLength={100}
+                strokeDasharray={`${Math.round((100 * tilStede) / antall)} 100`}
+                transform="rotate(-90 36 36)"
+              />
+            </svg>
+            <div>
+              <p className="wg-hoved">
+                <strong>{tilStede}</strong>
+                <span>av {antall} til stede</span>
+              </p>
+              <p className="wg-kilde">
+                {fort} av {antall} ført.
+              </p>
+            </div>
+          </div>
+        ) : null}
+      </section>
+
+      {!okt ? (
+        <WangTomTilstand tittel="Ingen økter i dag" tekst="Gruppa har ingen økter i kalenderen i dag, så det er ikke noe oppmøte å føre." />
+      ) : antall === 0 ? (
+        <WangTomTilstand tittel="Ingen elever i gruppa" tekst="Legg til elever i gruppa før du fører oppmøte." />
+      ) : (
+        <>
+          <div className="wg-kort wg-elever-kol">
+            {data.elever.map((e) => (
+              <div key={e.id} className="wg-elev">
+                <span className="wg-avatar" aria-hidden>{initialer(e.navn)}</span>
+                <b className="wg-elev-navn">{e.navn}</b>
+                <div className="wg-valg" role="group" aria-label={`Oppmøte ${e.navn}`}>
+                  {OPPMOTEVALG.map((v) => (
+                    <button
+                      key={v.id}
+                      type="button"
+                      data-v={v.id}
+                      aria-pressed={valg[e.id] === v.id}
+                      onClick={() => setValg((f) => ({ ...f, [e.id]: v.id }))}
+                    >
+                      {v.tittel}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="wg-feste">
+            <div className="wg-knapper">
+              <button type="button" className="wg-btn wg-btn-primary" disabled>
+                Lagre oppmøte
+              </button>
+              <Link href={tilFravaer(okt.id)} className="wg-btn wg-btn-secondary">
+                Meld fravær
+              </Link>
+            </div>
+            <p className="wg-kilde">
+              Oppmøtet kan ikke lagres ennå: basen har ingen tabell for oppmøte. Valgene du gjør her, forsvinner når du
+              forlater siden.
+            </p>
+          </div>
+        </>
+      )}
+    </>
+  );
+}
+
+function Okta({ data, okt }: { data: WangTrenerData; okt?: WangTrenerUkeOkt }) {
+  const [visAvlys, setVisAvlys] = useState(false);
+
+  if (!okt) {
+    return (
+      <>
+        <Tilbake />
+        <WangTomTilstand tittel="Fant ikke økta" tekst="Økta finnes ikke i gruppas kalender denne uka. Velg en økt fra I dag." />
+      </>
+    );
+  }
+
+  const varighet = okt.sluttTid ? minutter(okt.sluttTid) - minutter(okt.startTid) : null;
+
+  return (
+    <>
+      <Tilbake />
+      <section className="wg-kort wg-fyll wg-okt-hode">
+        <div className="wg-okt-rad">
+          <span className="wg-okt-tid">
+            {okt.startTid}
+            {varighet ? <small>{varighet} min</small> : null}
+          </span>
+          <span className="wg-pille">
+            <i />
+            {okt.passert ? "Passert" : okt.datoIso === data.idagIso ? "I dag" : "Planlagt"}
+          </span>
+        </div>
+        <h1 className="wg-okt-navn">{okt.tittel}</h1>
+        <p className="wg-okt-info">
+          <span>{langDato(okt.datoIso)}</span>
+          {okt.sted ? <span>{okt.sted}</span> : null}
+          <span>{data.elever.length} elever</span>
+        </p>
+      </section>
+
+      <div className="wg-idag-kol">
+        <div>
+          <section className="wg-seksjon" aria-labelledby="wg-hvorfor-tittel">
+            <div className="wg-sek-topp"><h2 id="wg-hvorfor-tittel">Hvorfor</h2></div>
+            <p className="wg-forklar">{okt.beskrivelse?.trim() || "Ingen beskrivelse i kalenderen."}</p>
+          </section>
+          <section className="wg-seksjon" aria-labelledby="wg-ovelser-tittel">
+            <div className="wg-sek-topp"><h2 id="wg-ovelser-tittel">Øvelser</h2></div>
+            <WangTomTilstand
+              tittel="Ingen øvelser lagt inn"
+              tekst="Gruppas kalender har bare tid og sted for økta. Øvelsene kommer når økta planlegges i Workbench."
+            />
+          </section>
+        </div>
+        <div>
+          <section className="wg-seksjon" aria-labelledby="wg-deltakere-tittel">
+            <div className="wg-sek-topp">
+              <h2 id="wg-deltakere-tittel">Deltakere</h2>
+              <Link className="wg-lenke" href={tilOppmote(okt.id)}>Før oppmøte</Link>
+            </div>
+            <div className="wg-kort wg-fyll">
+              <p className="wg-rad-info">
+                <span><b>{data.elever.length}</b> i gruppa</span>
+                <span><b>—</b> fravær meldt</span>
+                <span><b>—</b> ført</span>
+              </p>
+              <p className="wg-kilde">Oppmøte og fravær lagres ikke ennå.</p>
+            </div>
+          </section>
+          <section className="wg-seksjon" aria-labelledby="wg-utstyr-tittel">
+            <div className="wg-sek-topp"><h2 id="wg-utstyr-tittel">Utstyr</h2></div>
+            <div className="wg-kort wg-fyll"><p className="wg-forklar">—</p></div>
+          </section>
+          <section className="wg-seksjon">
+            <div className="wg-knapper">
+              <Link href={tilFravaer(okt.id)} className="wg-btn wg-btn-secondary">Meld fravær</Link>
+              {!okt.passert ? (
+                <button type="button" className="wg-btn wg-btn-fare" aria-expanded={visAvlys} onClick={() => setVisAvlys(true)}>
+                  Avlys økt
+                </button>
+              ) : null}
+            </div>
+            {visAvlys ? (
+              <div className="wg-kort wg-fyll" role="region" aria-label="Avlys økt">
+                <b className="wg-undertittel">Avlyse «{okt.tittel}»?</b>
+                <p className="wg-forklar">Elevene skal få beskjed i PlayerHQ med en gang, og økta skal forsvinne fra planen deres.</p>
+                <p className="wg-kilde">
+                  Avlysning fra trenerflaten er ikke koblet ennå: kalenderen kan ikke ta bort én dag av en fast økt, og
+                  ingenting sendes til elevene herfra.
+                </p>
+                <div className="wg-knapper">
+                  <button type="button" className="wg-btn wg-btn-fare" disabled>Avlys og varsle elevene</button>
+                  <button type="button" className="wg-btn wg-btn-secondary" onClick={() => setVisAvlys(false)}>
+                    Behold økta
+                  </button>
+                </div>
+              </div>
+            ) : null}
+          </section>
+        </div>
+      </div>
+    </>
+  );
+}
+
+const GRUNNER = [
+  "Ikke meldt, ukjent grunn",
+  "Skole: prøve eller undervisning",
+  "Reise eller turnering",
+  "Meldt av foresatt",
+  "Annet",
+];
+
+function MeldFravaer({ data, okt }: { data: WangTrenerData; okt?: WangTrenerUkeOkt }) {
+  const [omfang, setOmfang] = useState<"okt" | "dag">("okt");
+
+  return (
+    <>
+      <Tilbake />
+      <section>
+        <p className="wg-dato">
+          {okt ? `${okt.tittel} · ${langDato(okt.datoIso)} · ${okt.startTid}` : langDato(data.idagIso)}
+        </p>
+        <h1 className="wg-tittel">Meld fravær</h1>
+        <p className="wg-ingress">For en elev som ikke kommer. Eleven og foresatte under 18 skal se fraværet i PlayerHQ.</p>
+      </section>
+
+      {!okt ? (
+        <WangTomTilstand tittel="Ingen økter å melde fravær fra" tekst="Gruppa har ingen økter i kalenderen i dag." />
+      ) : data.elever.length === 0 ? (
+        <WangTomTilstand tittel="Ingen elever i gruppa" tekst="Legg til elever i gruppa før du melder fravær." />
+      ) : (
+        <form className="wg-kort wg-fyll wg-skjema" onSubmit={(e) => e.preventDefault()}>
+          <label className="wg-lbl">
+            Elev
+            <select className="wg-field" defaultValue="">
+              <option value="" disabled>Velg elev</option>
+              {data.elever.map((e) => (
+                <option key={e.id} value={e.id}>{e.navn}</option>
+              ))}
+            </select>
+          </label>
+          <div className="wg-lbl" role="group" aria-label="Økter">
+            Økter
+            <div className="wg-valg wg-valg-to">
+              <button type="button" aria-pressed={omfang === "okt"} onClick={() => setOmfang("okt")}>Bare denne økta</button>
+              <button type="button" aria-pressed={omfang === "dag"} onClick={() => setOmfang("dag")}>Hele dagen</button>
+            </div>
+          </div>
+          <label className="wg-lbl">
+            Grunn
+            <select className="wg-field" defaultValue={GRUNNER[0]}>
+              {GRUNNER.map((g) => (
+                <option key={g}>{g}</option>
+              ))}
+            </select>
+            <span className="wg-hjelp">Skriv aldri helseopplysninger her. De hører hjemme hos helsepersonell.</span>
+          </label>
+          <label className="wg-lbl">
+            Notat til eleven
+            <textarea className="wg-field" rows={3} placeholder="Valgfritt" />
+            <span className="wg-hjelp">Skal sendes som melding i PlayerHQ når fraværet lagres.</span>
+          </label>
+          <div className="wg-knapper">
+            <button type="submit" className="wg-btn wg-btn-primary" disabled>Bekreft fravær</button>
+            <Link href={BASE} className="wg-btn wg-btn-secondary">Avbryt</Link>
+          </div>
+          <p className="wg-kilde">
+            Fravær kan ikke lagres ennå: basen har ingen tabell for fravær fra økter. Ingenting er lagret eller sendt.
+          </p>
+        </form>
+      )}
+    </>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Hjelpere
+// ---------------------------------------------------------------------------
+
+function minutter(hhmm: string): number {
+  const [t, m] = hhmm.split(":").map(Number);
+  return t * 60 + (m || 0);
+}
+
+/** «2026-10-14» → «Onsdag 14. oktober». Dagstrengen tolkes som UTC-dato, så tidssonen ikke flytter dagen. */
+function langDato(iso: string): string {
+  const [y, m, d] = iso.split("-").map(Number);
+  const tekst = new Intl.DateTimeFormat("nb-NO", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    timeZone: "UTC",
+  }).format(new Date(Date.UTC(y, m - 1, d)));
+  return tekst.charAt(0).toUpperCase() + tekst.slice(1);
+}
+
+function initialer(navn: string): string {
+  return navn
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((del) => del[0]?.toUpperCase() ?? "")
+    .join("");
 }

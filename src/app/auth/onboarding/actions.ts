@@ -11,7 +11,8 @@ import { getCurrentUserRaw as getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { lesRaaPreferences } from "@/lib/preferences";
 import { prisma } from "@/lib/prisma";
 import { DrillFasilitet } from "@/generated/prisma/enums";
-import { isMinor } from "@/lib/auth/minor";
+import { FODSELSDATO_LAAST_MELDING, isMinor, vurderEgenFodselsdato } from "@/lib/auth/minor";
+import { SPILLER_TOTAL_STEPS } from "@/lib/auth/onboarding-state";
 import { resendKlient, FRA_EPOST } from "@/lib/email";
 import { emailLayout, primaryButton } from "@/lib/email/templates/shared";
 import { logError } from "@/lib/error-tracking";
@@ -34,6 +35,8 @@ const SetDateOfBirthSchema = z.object({
   guardianEmail: email.optional(),
   guardianRelation: z.enum(["GUARDIAN", "MOTHER", "FATHER"]).optional(),
 });
+
+const FODSELSDATO_MANGLER = "Fødselsdato mangler. Fyll den inn i første steg før du fullfører.";
 
 const ResendInvitationSchema = z.object({
   guardianEmail: email,
@@ -131,6 +134,8 @@ export type SpillerOnboardingData = {
   snittScoreSiste10?: number;
   /** Svarene fra fasilitetsskjemaet (ja/nei og lengder), én rad per sted. */
   fasiliteterSvar?: OppstartFasSvar[];
+  /** De av de 19 treningsområdene spilleren kan trene på (oppstart steg 3, natt 17.10). */
+  fasilitetOmrader?: string[];
   /** Teknikktest (Inspill Basic): verktøy, avstander og fem slag per kølle. Setter ikke nivå. */
   teknikktest?: OppstartTeknikktest;
   /** Ytelsesbilde (søvn, mat, energi) lagres og deles med coach. */
@@ -158,9 +163,23 @@ export type ForelderOnboardingData = {
   acceptedTermsParent?: boolean;
   acceptedPrivacyParent?: boolean;
   acceptedPaymentParent?: boolean;
-  // Steg 4 — Betaling
-  paymentMethod?: string;
+  // Steg 4 — Betaling. Bare kort gjennom Stripe (beslutning 15.10.2026: ingen Vipps, ingen faktura).
+  paymentMethod?: "KORT";
 };
+
+/** Bare kjente felt, og bare kort som betalingsmåte, lagres i forelderens preferences. */
+const ForelderOnboardingSchema = z
+  .object({
+    parentName: z.string().max(200).optional(),
+    parentPhone: z.string().max(40).optional(),
+    parentEmail: z.string().max(320).optional(),
+    parentRelation: z.string().max(40).optional(),
+    acceptedTermsParent: z.boolean().optional(),
+    acceptedPrivacyParent: z.boolean().optional(),
+    acceptedPaymentParent: z.boolean().optional(),
+    paymentMethod: z.literal("KORT").optional(),
+  })
+  .strict();
 
 // ──────────────────────────────────────────────────────────────────────────────
 // Lagre spiller-onboarding steg
@@ -247,6 +266,9 @@ export async function saveSpillerOnboardingStep(
 export async function markStepComplete(stepNumber: number): Promise<void> {
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
+  if (user.role === "PLAYER" && stepNumber >= SPILLER_TOTAL_STEPS && !user.dateOfBirth) {
+    throw new Error(FODSELSDATO_MANGLER);
+  }
 
   const prefs = lesRaaPreferences(user);
   const existing =
@@ -435,9 +457,15 @@ async function fullforOnboardingSideEffekter(
   }
 }
 
-export async function completeOnboarding(subscribe?: string): Promise<void> {
+export async function completeOnboarding(
+  subscribe?: string,
+): Promise<{ ok: false; feil: string } | void> {
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
+  // D-63: oppstarten kan ikke fullføres uten fødselsdato.
+  if (user.role === "PLAYER" && !user.dateOfBirth) {
+    return { ok: false, feil: FODSELSDATO_MANGLER };
+  }
 
   const prefs = lesRaaPreferences(user);
   const existing =
@@ -491,8 +519,9 @@ export async function completeOnboarding(subscribe?: string): Promise<void> {
 // ──────────────────────────────────────────────────────────────────────────────
 
 export async function saveForelderOnboardingStep(
-  data: ForelderOnboardingData
+  input: ForelderOnboardingData
 ): Promise<void> {
+  const data = ForelderOnboardingSchema.parse(input);
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
 
@@ -550,8 +579,8 @@ export async function completeForelderOnboarding(): Promise<void> {
     data: { preferences: updatedPrefs },
   });
 
-  revalidatePath("/portal");
-  redirect("/portal");
+  revalidatePath("/forelder");
+  redirect("/forelder");
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -585,6 +614,12 @@ export async function setDateOfBirthAndCheckMinor(input: {
       return { ok: false, error: "Ugyldig fødselsdato.", isMinor: false };
     }
 
+    // D-63/TP-02: spilleren setter fødselsdatoen én gang. Samme dato igjen er
+    // lov (ny invitasjon til forelder), en annen dato avvises.
+    if (vurderEgenFodselsdato(user.dateOfBirth, dob) === "avvist") {
+      return { ok: false, error: FODSELSDATO_LAAST_MELDING, isMinor: isMinor(user.dateOfBirth) };
+    }
+
     const minor = isMinor(dob);
 
     // Hvis mindreårig: krever guardian-email
@@ -602,7 +637,8 @@ export async function setDateOfBirthAndCheckMinor(input: {
       where: { id: user.id },
       data: {
         dateOfBirth: dob,
-        requiresGuardianConsent: minor,
+        // Flagget nullstilles aldri automatisk (TP-02).
+        requiresGuardianConsent: user.requiresGuardianConsent || minor,
       },
     });
 

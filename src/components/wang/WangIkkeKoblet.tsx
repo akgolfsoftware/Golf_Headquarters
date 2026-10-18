@@ -23,3 +23,16 @@ export const IKKE_KOBLET_KNAPP_STIL: React.CSSProperties = {
   opacity: 0.55,
   cursor: 'not-allowed',
 };
+
+/**
+ * Tom tilstand for en flate der basen ikke har data ennå. Brukes i stedet for
+ * eksempeldata: trenerflaten viser aldri oppdiktede elever eller tall.
+ */
+export function WangTomTilstand({ tittel, tekst }: { tittel: string; tekst: string }) {
+  return (
+    <div className="wg-kort wg-fyll" role="status">
+      <b>{tittel}</b>
+      <p className="wg-kilde">{tekst}</p>
+    </div>
+  );
+}

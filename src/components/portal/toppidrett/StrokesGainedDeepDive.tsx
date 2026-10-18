@@ -56,7 +56,7 @@ export function StrokesGainedDeepDive({ className = "" }: StrokesGainedDeepDiveP
       id: "ARG",
       navn: "Nærspill (ARG)",
       verdi: 0.2,
-      forklaring: "Solid opp-og-ned rate fra fairway og rough rundt green.",
+      forklaring: "Solid up and down-andel fra fairway og rough rundt green.",
       detaljer: [
         { etikett: "Chip fra fringe", verdi: "68 % up-and-down", status: "ok" },
         { etikett: "Pitch 30–50 m", verdi: "52 % up-and-down", status: "ok" },

@@ -4,6 +4,8 @@ import * as React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { uke, SPILLER, FYS, MAL, KILDER } from "../visual/precision/skjermer/_wb-data";
 
+mock.module("@/lib/workbench/ovelse-bank-actions", { namedExports: { sokOvelser: async () => ({ ok: false, error: "Ubrukt øvelsessøk" }), opprettOvelseIBank: async () => ({ ok: false, error: "Ubrukt øvelseslagring" }) } });
+mock.module("@/styles/playerhq-ny-wb-ovelser.css", { namedExports: {} });
 mock.module("server-only", { defaultExport: {} });
 
 // Mock CSS imports for Node environment

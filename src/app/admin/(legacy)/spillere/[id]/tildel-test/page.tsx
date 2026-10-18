@@ -19,5 +19,5 @@ export default async function TildelTestRedirect({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  permanentRedirect(`/admin/tester/tildel/${id}`);
+  permanentRedirect(`/admin/tester?fane=tildelt&tildel=${encodeURIComponent(id)}`);
 }

@@ -692,7 +692,7 @@ export async function loadWorkbenchData(
       paletteItems: earlyPalette.length > 0 ? earlyPalette : undefined,
       fysPlanHref: fysiskPlan
         ? opts?.viewer === "player"
-          ? "/portal/fysisk"
+          ? "/portal/planlegge/fysisk"
           : `/admin/spillere/${userId}?fane=fysisk`
         : null,
       fysTurnering,
@@ -1009,7 +1009,7 @@ export async function loadWorkbenchData(
 
   const fysPlanHref = fysiskPlan
     ? opts?.viewer === "player"
-      ? "/portal/fysisk"
+      ? "/portal/planlegge/fysisk"
       : `/admin/spillere/${userId}?fane=fysisk`
     : null;
 

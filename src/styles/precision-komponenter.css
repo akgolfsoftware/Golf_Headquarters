@@ -1,9 +1,11 @@
 /*
- * AK Golf Precision Athletics — komponentstiler, uendret fra Claude Design-
+ * AK Golf Precision Athletics — komponentstiler, opprinnelig fra Claude Design-
  * prosjektet 7d7c2994 (components/components.css), hentet 28.09.2026.
- * Eneste endring: to elementregler (main, [draggable]) er avgrenset til .pa-root
+ * To elementregler (main, [draggable]) er avgrenset til .pa-root
  * så de ikke treffer resten av appen. Alle andre klasser har prefiks pa-.
  * Lastes FØR precision-athletics.css, som vinner der PH-01 har egne justeringer.
+ * Knapp og enkeltvalg er videreført 11.10.2026; øvrige komponenter er ikke
+ * dermed kontrollert mot 3.1.0-l. Se docs/design-audit/precision-appintegrasjon-2026-10-11.md.
  */
 /* Komponentstiler — prefiks pa- (Precision Athletics). Kun semantiske tokens. */
 .pa-icon{display:inline-block;flex:none;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-size:contain;mask-size:contain;-webkit-mask-position:center;mask-position:center}
@@ -31,7 +33,12 @@
 .pa-sidenav__item:hover{background:var(--surface-hover);color:var(--text-primary)}
 .pa-tab:hover{color:var(--text-primary)}
 }
-.pa-btn__loading{font-family:var(--font-mono);font-size:var(--fs-13)}
+/* Precision 3.1.0-l: behold bredde, ikonplass og én lesbar etikett under lagring. */
+.pa-btn__labels{display:grid;min-width:0;gap:inherit}
+.pa-btn__content,.pa-btn__loading{grid-area:1/1;display:inline-flex;align-items:center;justify-content:center;gap:inherit}
+.pa-btn__loading{visibility:hidden;font:inherit}
+.pa-btn[data-loading="true"] .pa-btn__content{visibility:hidden}
+.pa-btn[data-loading="true"] .pa-btn__loading{visibility:visible}
 
 /* IconButton */
 .pa-iconbtn{display:inline-flex;align-items:center;justify-content:center;width:var(--hit-min);height:var(--hit-min);border-radius:var(--radius);border:1px solid transparent;background:transparent;color:var(--text-primary);cursor:pointer;transition:background-color var(--dur-fast) var(--ease-color),transform var(--dur-press) var(--ease-out)}
@@ -469,3 +476,11 @@
 [data-theme="night"] .pa-sheet__head .pa-iconbtn,[data-theme="night"] .pa-dialog__head .pa-iconbtn,[data-theme="night"] .pa-iconbtn{width:var(--hit-outdoor);height:var(--hit-outdoor)}
 [data-theme="night"] .pa-btn{min-height:var(--hit-outdoor)}
 [data-theme="night"] .pa-choice{min-height:var(--hit-outdoor)}
+
+/* Precision 3.1.0-l: enkeltvalg har én Tab-stopp og separat valgt/fokus. */
+.pa-seg[data-single-select]{max-width:100%;min-width:0;flex-wrap:wrap;border-color:var(--border-ink)}
+.pa-seg[data-single-select] .pa-seg__opt{flex:1 1 auto;min-width:0;min-height:44px;height:auto;padding-block:6px;white-space:normal;overflow-wrap:anywhere}
+.pa-seg[data-single-select] .pa-seg__opt[aria-checked="true"]{background:var(--primary);color:var(--text-on-primary);font-weight:600}
+.pa-seg[data-single-select] .pa-seg__opt:focus-visible{outline:2px solid var(--focus-ring);outline-offset:3px}
+/* Treffflaten er selve knappen. Ingen overlapp med naboen når valg brytes. */
+.pa-seg[data-single-select] .pa-seg__opt::after{content:none}

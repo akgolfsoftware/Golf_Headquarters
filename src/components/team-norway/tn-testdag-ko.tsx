@@ -65,7 +65,7 @@ export function TnTestdagKo({ dag, kanSkrive }: { dag: TnTestdag; kanSkrive: boo
             key={deltaker.id}
             data-testid={`tn-deltaker-rad-${deltaker.id}`}
             data-spiller-id={deltaker.spillerId}
-            style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", padding: "12px 14px", borderRadius: TN.radius.md, border: `1px solid ${TN.borderSubtle}`, background: TN.white }}
+            style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", padding: "12px 14px", borderRadius: TN.radius.sm, border: `1px solid ${TN.borderSubtle}`, background: TN.white }}
           >
             <span style={{ flex: 1, minWidth: 0, fontFamily: TN.font.body, fontSize: TN.text.sm, fontWeight: TN.weight.semibold, color: TN.navy900 }}>{deltaker.spillerNavn}</span>
             <TnPille tone={STATUS_TONE[deltaker.status]}>{deltaker.status === "PENDING" && deltaker.lagredeForsok !== null ? "Pågår" : STATUS_LABEL[deltaker.status]}</TnPille>

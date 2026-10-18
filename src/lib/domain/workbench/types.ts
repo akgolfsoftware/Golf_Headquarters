@@ -211,6 +211,8 @@ export interface WorkbenchSession {
   actualMinutes?: number | null;
   /** Beregnet belastning (sRPE-poeng = minutter × anstrengelse) */
   load?: number | null;
+  /** Fokus 1–10 etter golføkt (PH-07), fra liveSnapshot.etterOkta. */
+  fokusEtterOkt?: number | null;
   /** Felter fra den kanoniske øktmodellen, brukt når migrerte økter vises. */
   rationale?: string;
   skillArea?: string;
@@ -618,6 +620,37 @@ export interface MonthViewModel {
   completedByPyramid: Record<PyramidArea, number>;
   empty: boolean;
   mode: WorkbenchMode;
+  /** Månedsplanen (fokus, notat og uker måneden har tilpasset). Satt av loadMonth. */
+  maanedsplan?: MaanedsplanVisning | null;
+  /** PH-11-MND: ukene i måneden (torsdagsregelen), periodene og hendelsene. Satt av loadMonth. */
+  detaljer?: MaanedDetaljer;
+}
+
+/** Det spillerens Måned (PH-11-MND) trenger utover kalenderen. */
+export interface MaanedDetaljer {
+  uker: Array<{
+    nokkel: string;
+    weekStart: string;
+    weekNumber: number;
+    fordelt: Partial<Record<PyramidArea, number>> | null;
+    lagtInn: Record<PyramidArea, number>;
+    gjennomfort: number;
+    /** Gjennomført per akse (samme økter som `gjennomfort`). */
+    gjennomfortPerAkse: Record<PyramidArea, number>;
+    endret: boolean;
+  }>;
+  /** Treningsperioder som overlapper måneden (uten testuker og samlinger). */
+  perioder: Array<{ id: string; type: PeriodType; startDate: string; endDate: string; focus: string | null }>;
+  /** Testuker, samlinger og turneringer i måneden, kronologisk. */
+  hendelser: Array<{ type: PeriodType | "TURNERING"; navn: string; startDate: string; endDate: string }>;
+}
+
+/** Lagret månedsplan. `uker`: «ÅÅÅÅ-Uxx» → minutter per akse; en uke her er «Endret i måneden». */
+export interface MaanedsplanVisning {
+  fokus: string | null;
+  notat: string | null;
+  evaluering: string | null;
+  uker: Record<string, Partial<Record<PyramidArea, number>>>;
 }
 
 export interface YearMonthRow {
@@ -653,6 +686,9 @@ export interface YearPeriodBand {
   weeklyVolMin?: number | null;
   weeklyVolMax?: number | null;
   sessionBudget?: Partial<Record<PyramidArea, number>> | null;
+  /** Minutter per akse, vanlig og lett uke. */
+  axisMinutes?: Partial<Record<PyramidArea, number>> | null;
+  axisMinutesLight?: Partial<Record<PyramidArea, number>> | null;
   /** 0–100, andel av årets dager — WB-06 periodebånd-segmentbredde. */
   widthPct: number;
   /** Var perioden aktiv på «i dag» ved bygging. */
@@ -663,6 +699,22 @@ export interface YearPeriodBand {
   plannedToDateMinutes: number;
   completedMinutes: number;
   turneringer: { navn: string; dato: string }[];
+  /** Rullet ut fra en gruppes årsplan (PeriodBlock.sourceGroupId satt). */
+  fraGruppe?: boolean;
+  /** PeriodBlock.notes. */
+  notat?: string | null;
+}
+
+/** Én ISO-uke i årsgrafen (PH-11-AR): lagt inn per akse og gjennomført. */
+export interface YearWeekRow {
+  weekStart: string; // mandag, YYYY-MM-DD
+  weekNumber: number;
+  plannedByPyramid: Record<PyramidArea, number>;
+  completedMinutes: number;
+  /** Gjennomført per akse i uka. */
+  completedByPyramid?: Record<PyramidArea, number>;
+  /** Ukeplanens fordelte minutter per akse (WeekPlan.plannedHours*). Null = ikke fordelt. */
+  fordelt?: Partial<Record<PyramidArea, number>> | null;
 }
 
 export interface YearViewModel {
@@ -673,6 +725,8 @@ export interface YearViewModel {
   plannedToDateMinutes: number;
   completedMinutes: number;
   completedByPyramid: Record<PyramidArea, number>;
+  /** ISO-ukene der torsdagen ligger i året. */
+  weeks?: YearWeekRow[];
   mode: WorkbenchMode;
 }
 
@@ -683,6 +737,12 @@ export interface PeriodWeekRow {
   completedMinutes: number;
   sessionCount: number;
   dominantPyramid: PyramidArea | null;
+  /** Lagt inn per akse i uka (PH-11-PER). */
+  byPyramid?: Record<PyramidArea, number>;
+  /** Gjennomført per akse i uka. */
+  completedByPyramid?: Record<PyramidArea, number>;
+  /** Ukeplanens fordelte minutter per akse (WeekPlan.plannedHours*). Null = ikke fordelt. */
+  fordelt?: Partial<Record<PyramidArea, number>> | null;
 }
 
 export interface PeriodPyramidRow {

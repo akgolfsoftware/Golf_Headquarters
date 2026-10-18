@@ -1,0 +1,274 @@
+/*
+ * PlayerHQ pakke 5 «Runder» (PH-RD-01 til PH-RD-09 og PH-18), godkjent av Anders 14.10.2026 (utkast 2 med farge).
+ * Portert fra docs/design-system/utkast-playerhq/runder.html.
+ * Bygger på src/styles/playerhq-ny.css (tokens og felles flater) og er avgrenset til .phn.
+ * Farge betyr akse: runden er SPILL, turnering er TURN, Strokes Gained er SLAG. Grønt og gult bare som status.
+ * Alltid lyst, også ute på banen (vedtak 14.10).
+ */
+
+.phn { --phr-spill-50: #f8ecf1; --phr-spill-100: #efd3de; --phr-slag-50: #e8effd; }
+.phn .phr-mono { font-family: var(--phn-mono); }
+.phn .phr-topp { display: grid; gap: 4px; }
+.phn .phr-ingress { font-size: 15px; line-height: 1.5; color: var(--phn-g800); margin-top: 6px; }
+.phn .phr-tilbake { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 10px 0 4px; margin: -8px 0 -16px -4px; border-radius: 8px; font: 500 15px/1 var(--phn-sans); color: var(--phn-g900); text-decoration: none; justify-self: start; background: transparent; border: 0; cursor: pointer; }
+.phn .phr-hode-rad { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin: -8px 0 -16px; }
+.phn .phr-hode-rad .phr-tilbake { margin: 0 0 0 -4px; }
+.phn .phr-grid, .phn .phr-grid > div { display: grid; gap: 24px; align-content: start; }
+.phn .phr-smal { max-width: 760px; width: 100%; }
+.phn .phr-undertittel { font: 600 15px/1.3 var(--phn-sans); }
+.phn .phr-kort-dempet { background: var(--phn-sand-100); }
+.phn .phr-kort h2 { margin: 0; font: 600 17px/1.25 var(--phn-sans); }
+.phn .phr-estimat { display: inline-flex; align-items: center; height: 24px; padding: 0 10px; border-radius: 999px; border: 1px dashed var(--phn-g500); font: 500 12px/1 var(--phn-sans); color: var(--phn-g800); }
+.phn .phr-hjelp { font: 400 12.5px/1.45 var(--phn-sans); color: var(--phn-g600); }
+.phn .phr-paakrevd { font: 500 12px/1 var(--phn-sans); color: var(--phn-g600); }
+.phn .phr-paakrevd.mangler { color: var(--phn-amber-700); font-weight: 600; }
+.phn .phr-etikett-rad { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.phn .phr-etikett { font: 600 14px/1.3 var(--phn-sans); }
+.phn .phr-felt { display: grid; gap: 8px; }
+.phn .phr-knapp-stor { min-height: 52px; font-size: 16px; width: 100%; }
+.phn .phr-knapp-tekst { background: transparent; border: 0; color: var(--phn-g900); text-decoration: underline; text-underline-offset: 3px; padding: 0 6px; }
+.phn .phr-festet { position: sticky; bottom: 64px; z-index: 4; padding: 12px 0 0; background: linear-gradient(transparent, var(--phn-hvit) 30%); }
+.phn .phr-fullskjerm .phr-festet { bottom: 0; padding-bottom: 12px; }
+.phn .phr-laast { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; line-height: 1.45; color: var(--phn-g800); }
+.phn .phr-laast .phn-ikon { flex: none; margin-top: 1px; }
+.phn .phr-melding { font-size: 14px; }
+.phn .phr-melding[role="alert"] { color: #8a2a1c; }
+
+/* Valg i aksefargen */
+.phn .phr-valg > [aria-pressed="true"] { background: var(--phn-spill-ink); color: #fff; }
+.phn .phr-valg > [data-t="turnering"][aria-pressed="true"] { background: var(--phn-turn); }
+.phn .phr-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.phn .phr-chips button { min-height: 44px; padding: 0 14px; border: 1px solid var(--phr-spill-100); border-radius: 999px; background: var(--phn-hvit); font: 500 15px/1 var(--phn-sans); color: var(--phn-g800); cursor: pointer; }
+.phn .phr-chips.feil button { border-color: var(--phn-amber-700); }
+.phn .phr-ruter { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.phn .phr-ruter.to { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.phn .phr-ruter button { min-height: 56px; border: 1px solid var(--phr-spill-100); border-radius: 10px; background: var(--phn-hvit); font: 500 15px/1.2 var(--phn-sans); color: var(--phn-g900); cursor: pointer; display: grid; place-items: center; padding: 6px; text-align: center; }
+.phn .phr-ruter.lav button { min-height: 48px; font-size: 14px; }
+.phn :is(.phr-ruter, .phr-chips) button[aria-pressed="true"] { background: var(--phn-spill-ink); border-color: var(--phn-spill-ink); color: #fff; }
+.phn :is(.phr-ruter, .phr-chips, .phr-hopp, .phr-trinn, .phr-avstand, .phr-stripe) button:active { transform: scale(.97); }
+
+/* Kladd (runde som ikke er ferdig) */
+.phn .phr-kladd { display: grid; gap: 12px; border: 1px solid var(--phr-spill-100); border-radius: 12px; padding: 16px 18px 18px; background: var(--phr-spill-50); }
+.phn .phr-kladd-topp { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: center; }
+.phn .phr-kladd-ikon { width: 40px; height: 40px; border-radius: 10px; background: var(--phn-spill-ink); color: #fff; display: grid; place-items: center; }
+
+/* PH-RD-01 nivåkort */
+.phn .phr-nivaa { display: grid; gap: 12px; }
+.phn .phr-nivaakort { display: grid; align-content: start; border: 1px solid var(--phn-sand-300); border-radius: 12px; background: var(--phn-hvit); padding: 0; overflow: hidden; text-align: left; font: inherit; color: inherit; cursor: pointer; width: 100%; transition: transform 160ms var(--phn-ut); }
+.phn .phr-nivaakort:active { transform: scale(.98); }
+.phn .phr-nivaakort[aria-checked="true"] { border: 2px solid var(--phn-spill-ink); box-shadow: 0 0 0 3px var(--phr-spill-100); }
+.phn .phr-nivaakort[aria-checked="true"] .phr-nk-navn { color: var(--phn-spill-ink); }
+.phn .phr-nivaakort img { display: block; width: 100%; height: 96px; object-fit: cover; }
+.phn .phr-nk-tekst { display: grid; gap: 14px; padding: 16px 18px 18px; }
+.phn .phr-nk-topp { display: grid; gap: 2px; }
+.phn .phr-nk-navn { font: 600 18px/1.3 var(--phn-sans); }
+.phn .phr-nk-tid { font: 400 13px/1.4 var(--phn-sans); color: var(--phn-g600); }
+.phn .phr-hvaer { font: 600 12px/1.3 var(--phn-sans); letter-spacing: .04em; text-transform: uppercase; color: var(--phn-g600); margin-bottom: -8px; }
+.phn .phr-nivaakort ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; font-size: 14px; color: var(--phn-g800); }
+.phn .phr-nivaakort li { position: relative; padding-left: 16px; line-height: 1.4; }
+.phn .phr-nivaakort li::before { content: ""; position: absolute; left: 2px; top: .55em; width: 6px; height: 6px; border-radius: 50%; background: var(--phn-spill); }
+.phn .phr-kvalitet { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 13px; color: var(--phn-g800); }
+.phn .phr-nivaakort .phr-kvalitet { padding-top: 12px; border-top: 1px solid var(--phn-sand-300); }
+.phn .phr-prikker { display: inline-flex; gap: 3px; }
+.phn .phr-prikker i { width: 22px; height: 6px; border-radius: 3px; background: var(--phn-sand-300); }
+.phn .phr-prikker i.paa { background: var(--phn-spill-ink); }
+
+/* Hullhode (live) i SPILL */
+.phn .phr-hullhode { display: grid; gap: 10px; border-radius: 12px; padding: 16px 18px 18px; background: var(--phn-spill-ink); color: #fff; }
+.phn .phr-hullhode .phr-hode-tekst { font: 500 12px/1.3 var(--phn-mono); letter-spacing: .06em; text-transform: uppercase; opacity: .85; }
+.phn .phr-hullhode h1 { margin: 0; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; font: 700 30px/1.1 var(--phn-sans); letter-spacing: -.025em; }
+.phn .phr-hullhode h1 small { font: 500 16px/1.3 var(--phn-sans); letter-spacing: 0; opacity: .92; }
+.phn .phr-stilling { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; font-size: 13px; }
+.phn .phr-hullhode .phn-pille { background: rgba(255, 255, 255, .18); color: #fff; }
+.phn .phr-stripe { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 4px; }
+@container (min-width: 560px) { .phn .phr-stripe { grid-template-columns: repeat(9, minmax(0, 1fr)); } }
+.phn .phr-stripe button { min-height: 52px; border: 1px solid rgba(255, 255, 255, .22); border-radius: 8px; background: rgba(255, 255, 255, .1); display: grid; place-items: center; align-content: center; gap: 3px; padding: 4px 0; font: inherit; color: #fff; cursor: pointer; }
+.phn .phr-stripe i { font: 500 11px/1 var(--phn-sans); font-style: normal; opacity: .8; }
+.phn .phr-stripe b { font: 600 15px/1 var(--phn-mono); }
+.phn .phr-stripe .naa { background: #fff; border-color: #fff; color: var(--phn-spill-ink); }
+.phn .phr-stripe .ikke b { opacity: .6; font-weight: 500; }
+
+/* Score-merker: ring = under par, firkant = over par. Ingen farge. */
+.phn .phr-sk { display: inline-grid; place-items: center; min-width: 24px; height: 24px; padding: 0 2px; font: 600 14px/1 var(--phn-mono); }
+.phn .phr-sk.b { border: 1.5px solid currentColor; border-radius: 50%; }
+.phn .phr-sk.e { border: 1.5px solid currentColor; border-radius: 50%; box-shadow: 0 0 0 2px var(--phn-hvit), 0 0 0 3.5px currentColor; }
+.phn .phr-sk.bo { border: 1.5px solid currentColor; border-radius: 2px; }
+.phn .phr-sk.db { border: 1.5px solid currentColor; border-radius: 2px; box-shadow: 0 0 0 2px var(--phn-hvit), 0 0 0 3.5px currentColor; }
+.phn .phr-stripe .phr-sk { min-width: 20px; height: 20px; font-size: 13px; }
+.phn .phr-stripe .phr-sk.e, .phn .phr-stripe .phr-sk.db { box-shadow: none; border-width: 2.5px; }
+
+/* Stort avstandstall */
+.phn .phr-avstand { display: grid; grid-template-columns: 56px minmax(0, 1fr) 56px; gap: 8px; align-items: stretch; }
+.phn .phr-avstand button { border: 1px solid var(--phn-spill-ink); border-radius: 10px; background: var(--phn-hvit); font: 600 18px/1 var(--phn-mono); color: var(--phn-spill-ink); cursor: pointer; min-height: 72px; }
+.phn .phr-avstand label { display: flex; align-items: baseline; justify-content: center; gap: 6px; border-radius: 10px; background: var(--phr-spill-50); padding: 0 8px; cursor: text; }
+.phn .phr-avstand input { width: 100%; max-width: 4.2ch; border: 0; background: transparent; font: 600 52px/72px var(--phn-mono); letter-spacing: -.04em; text-align: right; color: var(--phn-g900); padding: 0; -moz-appearance: textfield; appearance: textfield; }
+.phn .phr-avstand input::-webkit-inner-spin-button, .phn .phr-avstand input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.phn .phr-avstand input:focus { outline: none; }
+.phn .phr-avstand label:focus-within { outline: 3px solid var(--phn-g900); outline-offset: 2px; }
+.phn .phr-enhet { font: 500 16px/1 var(--phn-mono); color: var(--phn-g600); }
+.phn .phr-hopp { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.phn .phr-hopp button { min-height: 44px; border: 1px solid var(--phr-spill-100); border-radius: 8px; background: var(--phr-spill-50); font: 600 14px/1 var(--phn-mono); color: var(--phn-g900); cursor: pointer; }
+
+/* Slag på hullet */
+.phn .phr-slagliste { display: grid; border-top: 1px solid var(--phn-sand-300); }
+.phn .phr-slagliste > * { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; gap: 10px; align-items: center; min-height: 52px; padding: 8px 2px; border: 0; border-bottom: 1px solid var(--phn-sand-300); background: transparent; text-align: left; font: inherit; color: var(--phn-g900); }
+.phn .phr-slagliste .nr { font: 600 14px/1 var(--phn-mono); color: var(--phn-g600); }
+.phn .phr-slagliste b { font: 600 15px/1.3 var(--phn-sans); }
+.phn .phr-slagliste .v { font: 600 15px/1 var(--phn-mono); white-space: nowrap; }
+.phn .phr-straff { display: inline-block; margin-left: 6px; height: 20px; padding: 0 7px; border-radius: 4px; background: var(--phn-sand-150); font: 600 11px/20px var(--phn-sans); }
+.phn .phr-handlinger { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 8px; }
+.phn .phr-handlinger .phn-knapp { min-height: 56px; font-size: 16px; }
+.phn .phr-smaa { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+
+/* SG-stolper rundt null, i SLAG-blått som i Stats */
+.phn .phr-sg-liste { display: grid; gap: 12px; }
+.phn .phr-sgr { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.4fr) 48px; gap: 10px; align-items: center; }
+.phn .phr-sgn { font-size: 14px; line-height: 1.3; display: flex; flex-wrap: wrap; gap: 2px 6px; align-items: center; }
+.phn .phr-sgn small { font: 500 11px/1 var(--phn-mono); color: var(--phn-g600); }
+.phn .phr-sgbar { position: relative; height: 14px; border-radius: 3px; background: var(--phn-sand-150); }
+.phn .phr-sgbar .null { position: absolute; left: 50%; top: -3px; bottom: -3px; width: 2px; background: var(--phn-g600); }
+.phn .phr-sgbar span { position: absolute; top: 0; bottom: 0; border-radius: 3px; background: var(--phn-slag); opacity: .45; }
+.phn .phr-sgr.svakest .phr-sgbar span { opacity: 1; }
+.phn .phr-sgr.svakest .phr-sgv { color: var(--phn-slag-ink); }
+.phn .phr-sgv { font: 600 15px/1 var(--phn-mono); text-align: right; }
+
+/* Runde gjennomført */
+.phn .phr-helt { display: grid; border-radius: 12px; overflow: hidden; color: #fff; background: var(--phn-spill-ink); }
+.phn .phr-helt img { display: block; width: 100%; height: 132px; object-fit: cover; object-position: 50% 55%; }
+.phn .phr-helt .t { padding: 16px 18px 20px; display: grid; gap: 10px; }
+.phn .phr-akse-merke { font: 600 12px/1.3 var(--phn-sans); letter-spacing: .05em; opacity: .95; }
+.phn .phr-stort { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.phn .phr-stort strong { font: 600 64px/1 var(--phn-mono); letter-spacing: -.04em; }
+.phn .phr-stort > span { font: 600 22px/1 var(--phn-mono); }
+.phn .phr-helt .phn-trend { background: rgba(255, 255, 255, .18); color: #fff; align-self: center; }
+.phn .phr-info { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 14px; opacity: .92; }
+.phn .phr-fakta, .phn .phr-partype { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.phn .phr-fakta > div, .phn .phr-partype > div { border: 1px solid var(--phr-spill-100); border-radius: 10px; padding: 12px; display: grid; gap: 4px; background: var(--phr-spill-50); }
+.phn .phr-fakta b, .phn .phr-partype b { font: 600 22px/1 var(--phn-mono); white-space: nowrap; color: var(--phn-spill-ink); }
+.phn .phr-fakta b small { font: 500 12px/1 var(--phn-mono); color: var(--phn-g600); margin-left: 3px; }
+.phn .phr-fakta span, .phn .phr-partype span { font-size: 13px; line-height: 1.3; color: var(--phn-g800); }
+.phn .phr-tiger { display: grid; border-top: 1px solid var(--phn-sand-300); }
+.phn .phr-tiger > div { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; padding: 12px 0; border-bottom: 1px solid var(--phn-sand-300); align-items: center; }
+.phn .phr-tiger b { font: 600 15px/1.3 var(--phn-sans); }
+.phn .phr-tiger > div > span > span { display: block; font-size: 13px; color: var(--phn-g600); }
+.phn .phr-tiger .v { display: inline-grid; place-items: center; min-width: 32px; height: 28px; padding: 0 8px; border-radius: 999px; font: 600 15px/1 var(--phn-mono); background: var(--phn-sand-150); color: var(--phn-g800); }
+.phn .phr-tiger .v.null { background: var(--phn-green-50); color: var(--phn-green-700); }
+.phn .phr-tiger .v.feil { background: var(--phn-amber-50); color: var(--phn-amber-700); }
+.phn .phr-oppdat { display: grid; gap: 10px; border: 1px solid #cfdcf9; border-radius: 12px; padding: 16px 18px 18px; background: var(--phr-slag-50); }
+.phn .phr-oppdat-topp { display: flex; align-items: center; gap: 10px; font: 600 15px/1.3 var(--phn-sans); }
+.phn .phr-oppdat-ikon { width: 32px; height: 32px; border-radius: 8px; background: var(--phn-slag); color: #fff; display: grid; place-items: center; flex: none; }
+.phn .phr-oppdat-ikon .phn-ikon { width: 18px; height: 18px; }
+.phn .phr-sjekk { display: flex; gap: 10px; align-items: flex-start; border-radius: 10px; padding: 12px 14px; font-size: 14px; line-height: 1.45; }
+.phn .phr-sjekk.ok { background: var(--phn-green-50); color: var(--phn-green-700); }
+.phn .phr-sjekk.vent { background: var(--phn-amber-50); color: var(--phn-g900); border: 1px dashed var(--phn-amber-700); }
+.phn .phr-sjekk .phn-ikon { flex: none; margin-top: 1px; }
+
+/* Scorekort uten sidelengs rulling: to tabeller à ni hull */
+.phn .phr-scorekort { display: grid; gap: 16px; }
+.phn .phr-sktab { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.phn .phr-sktab th, .phn .phr-sktab td { padding: 6px 0; text-align: center; border-bottom: 1px solid var(--phn-sand-300); }
+.phn .phr-sktab th:first-child, .phn .phr-sktab td:first-child { text-align: left; width: 15%; font: 500 12px/1.2 var(--phn-sans); color: var(--phn-g600); }
+.phn .phr-sktab th:last-child, .phn .phr-sktab td:last-child { width: 12%; font-weight: 600; color: var(--phn-spill-ink); }
+.phn .phr-sktab thead th { font: 600 12px/1 var(--phn-mono); background: var(--phr-spill-50); color: var(--phn-spill-ink); }
+.phn .phr-sktab td { font: 500 13px/1 var(--phn-mono); }
+.phn .phr-sktab tr.par td { color: var(--phn-g600); }
+.phn .phr-sktab tr.score td { height: 40px; }
+.phn .phr-sk-sum { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 14px; }
+.phn .phr-sk-sum b { font: 600 15px/1 var(--phn-mono); }
+.phn .phr-sk-forklar { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12.5px; color: var(--phn-g600); align-items: center; }
+.phn .phr-sk-forklar > span { display: inline-flex; align-items: center; gap: 6px; }
+.phn .phr-sk-forklar .phr-sk { min-width: 18px; height: 18px; font-size: 11px; }
+
+/* Rask score */
+.phn .phr-fylt { display: grid; gap: 8px; padding: 18px; border-radius: 12px; color: #fff; background: var(--phn-spill-ink); }
+.phn .phr-fylt .phn-hoved strong small { color: rgba(255, 255, 255, .8); }
+.phn .phr-fylt .phn-trend { background: rgba(255, 255, 255, .18); color: #fff; }
+.phn .phr-fylt .phn-trend.opp { background: #fff; color: var(--phn-green-700); }
+.phn .phr-fylt .phn-forklar, .phn .phr-fylt .phn-kilde { color: rgba(255, 255, 255, .92); }
+.phn .phr-hullrader { display: grid; border-top: 1px solid var(--phn-sand-300); }
+.phn .phr-hullrad { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--phn-sand-300); }
+.phn .phr-hullrad b { font: 600 15px/1.3 var(--phn-sans); }
+.phn .phr-hullrad > span > span { display: block; font-size: 13px; color: var(--phn-g600); }
+.phn .phr-trinn { display: grid; grid-template-columns: 44px 48px 44px; align-items: center; gap: 4px; }
+.phn .phr-trinn button { min-height: 44px; border: 1px solid var(--phn-g500); border-radius: 8px; background: var(--phn-hvit); font: 600 18px/1 var(--phn-mono); color: var(--phn-g900); cursor: pointer; }
+.phn .phr-trinn output { font: 600 22px/1 var(--phn-mono); text-align: center; color: var(--phn-spill-ink); }
+.phn .phr-trinn output.tom { color: var(--phn-g500); font-weight: 500; }
+.phn .phr-ekstra { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.phn .phr-ekstra label { display: grid; gap: 4px; font-size: 12.5px; color: var(--phn-g600); }
+.phn .phr-ekstra select { min-height: 44px; width: 100%; border: 1px solid var(--phn-sand-300); border-radius: 8px; background: var(--phn-hvit); font: 500 14px/1 var(--phn-sans); padding: 0 8px; color: var(--phn-g900); }
+
+/* Endringslogg og forhåndsvisning */
+.phn .phr-forhand { display: grid; border-top: 1px solid var(--phn-sand-300); }
+.phn .phr-forhand > * { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; padding: 12px 0; border-bottom: 1px solid var(--phn-sand-300); }
+.phn .phr-forhand b { font: 600 15px/1.3 var(--phn-sans); }
+.phn .phr-forhand > * > span > span { display: block; font-size: 13px; color: var(--phn-g600); }
+.phn .phr-forhand .v { font: 600 15px/1 var(--phn-mono); text-align: right; }
+
+/* PH-18 Runder */
+.phn .phr-rundeliste { display: grid; border-top: 1px solid var(--phn-sand-300); }
+.phn .phr-rundeliste a { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; align-items: center; min-height: 64px; padding: 12px 2px; border-bottom: 1px solid var(--phn-sand-300); text-align: left; color: var(--phn-g900); text-decoration: none; }
+.phn .phr-rundeliste b { font: 600 15px/1.3 var(--phn-sans); }
+.phn .phr-rundeliste .phr-meta { display: block; font-size: 13px; color: var(--phn-g600); }
+.phn .phr-rundeliste .v { font: 600 17px/1 var(--phn-mono); text-align: right; }
+.phn .phr-rundeliste .v small { display: block; margin-top: 4px; font: 500 12px/1 var(--phn-mono); color: var(--phn-g600); }
+.phn .phr-merke { display: inline-block; height: 20px; padding: 0 7px; border-radius: 4px; background: var(--phn-sand-150); font: 600 11px/20px var(--phn-sans); color: var(--phn-g800); margin-left: 6px; vertical-align: 1px; }
+.phn .phr-merke.sg { background: var(--phr-slag-50); color: var(--phn-slag-ink); }
+.phn .phr-akse-prikk { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; vertical-align: 1px; background: var(--phn-spill); }
+.phn .phr-akse-prikk.turn { background: var(--phn-turn); }
+.phn .phr-antall { font: 500 14px/1 var(--phn-mono); color: var(--phn-g600); margin-left: 4px; }
+.phn .phr-graf { display: block; width: 100%; height: auto; overflow: visible; }
+.phn .phr-graf .gt { font: 500 10px/1 var(--phn-sans); fill: rgba(255, 255, 255, .85); }
+.phn .phr-graf .phr-graf-linje { stroke: rgba(255, 255, 255, .22); stroke-width: 1; }
+.phn .phr-graf .phr-graf-hver { fill: none; stroke: rgba(255, 255, 255, .6); stroke-width: 1.5; stroke-linejoin: round; }
+.phn .phr-graf .phr-graf-snitt { fill: none; stroke: #fff; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.phn .phr-graf .phr-graf-prikk { fill: #fff; }
+.phn .phr-lag { position: fixed; inset: 0; z-index: 60; display: grid; background: rgba(20, 20, 19, .45); }
+.phn .phr-lg-rad { display: flex; flex-wrap: wrap; gap: 6px 14px; font: 500 12px/1.3 var(--phn-sans); }
+.phn .phr-lg-rad span { display: inline-flex; align-items: center; gap: 6px; }
+.phn .phr-lg-rad i { display: inline-block; width: 14px; border-radius: 2px; background: #fff; }
+.phn .phr-mer { display: grid; gap: 16px; }
+.phn .phr-mer > summary { min-height: 52px; display: flex; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; font: 600 17px/1.3 var(--phn-sans); border-top: 1px solid var(--phn-sand-300); }
+
+.phn :is(.phr-tilbake, .phr-nivaakort, .phr-chips button, .phr-ruter button, .phr-hopp button, .phr-trinn button, .phr-avstand button, .phr-stripe button, .phr-rundeliste a, .phr-knapp-tekst):focus-visible { outline: 3px solid var(--phn-g900); outline-offset: 2px; }
+
+@container (max-width: 380px) {
+  .phn .phr-ekstra { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .phn .phr-fakta b, .phn .phr-partype b { font-size: 19px; }
+}
+@container (min-width: 900px) {
+  .phn .phr-festet { bottom: 0; }
+  .phn .phr-to { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; }
+  .phn .phr-to.live { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); }
+  .phn .phr-helt { grid-template-columns: minmax(0, .9fr) minmax(0, 1fr); }
+  .phn .phr-helt img { height: 100%; min-height: 220px; }
+  .phn .phr-nivaa { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+/* ---------- Pakke 11: PH-RD-03 Rediger slag og PH-RD-09 Rediger hull for hull (nye klasser, 16.10.2026) ---------- */
+.phn .phrd-hullvalg { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 4px; }
+@container (min-width: 560px) { .phn .phrd-hullvalg { grid-template-columns: repeat(9, minmax(0, 1fr)); } }
+.phn .phrd-hullvalg button { min-height: 56px; border: 1px solid var(--phr-spill-100); border-radius: 8px; background: var(--phn-hvit); display: grid; place-items: center; align-content: center; gap: 4px; padding: 4px 0; font: inherit; color: var(--phn-g900); cursor: pointer; }
+.phn .phrd-hullvalg i { font: 500 11px/1 var(--phn-sans); font-style: normal; color: var(--phn-g600); }
+.phn .phrd-hullvalg b { font: 600 15px/1 var(--phn-mono); }
+.phn .phrd-hullvalg .phr-sk { min-width: 22px; height: 22px; font-size: 13px; }
+.phn .phrd-hullvalg [aria-pressed="true"] { border: 2px solid var(--phn-spill-ink); background: var(--phr-spill-50); }
+.phn .phrd-hullvalg .endret i::after { content: ""; display: inline-block; width: 6px; height: 6px; margin-left: 3px; border-radius: 50%; background: var(--phn-spill-ink); vertical-align: 1px; }
+.phn .phrd-sum { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; font-size: 14px; }
+.phn .phrd-sum b { font: 600 15px/1 var(--phn-mono); }
+.phn .phrd-to-trinn { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.phn .phrd-to-trinn .phr-trinn { justify-self: start; }
+.phn .phrd-felt-rad { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.phn .phrd-kart { border: 1px solid var(--phn-sand-300); border-radius: 12px; overflow: hidden; }
+.phn .phrd-kart > div { display: block; width: 100%; height: 300px; }
+.phn .phrd-kart-tom { padding: 16px; border: 1px dashed var(--phn-g500); border-radius: 12px; background: var(--phn-sand-100); font-size: 14px; color: var(--phn-g800); text-align: center; }
+.phn .phrd-punkt { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; font: 500 13px/1.3 var(--phn-mono); color: var(--phn-g600); }
+.phn .phrd-kobling { display: grid; border-top: 1px solid var(--phn-sand-300); }
+.phn .phrd-kobling label { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 10px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--phn-sand-300); font: 500 14px/1.3 var(--phn-sans); }
+.phn .phrd-kobling select { min-height: 44px; width: 100%; border: 1px solid var(--phn-g500); border-radius: 8px; background: var(--phn-hvit); font: 500 14px/1 var(--phn-sans); padding: 0 8px; color: var(--phn-g900); }
+.phn .phrd-csv { display: grid; gap: 4px; font: 400 12.5px/1.45 var(--phn-mono); color: var(--phn-g800); overflow-wrap: anywhere; padding: 10px 12px; border-radius: 10px; background: var(--phn-sand-100); }
+.phn .phrd-slipp { display: grid; justify-items: center; gap: 8px; padding: 24px 16px; border: 1px dashed var(--phn-g500); border-radius: 12px; background: var(--phn-sand-100); text-align: center; }
+.phn :is(.phrd-hullvalg button):focus-visible { outline: 3px solid var(--phn-g900); outline-offset: 2px; }
+.phn .phr-hullhode h2 { margin: 0; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; font: 700 26px/1.1 var(--phn-sans); letter-spacing: -.02em; }
+.phn .phr-hullhode h2 small { font: 500 16px/1.3 var(--phn-sans); letter-spacing: 0; opacity: .92; }
+.phn .phr-slagliste [aria-pressed="true"] { background: var(--phr-spill-50); }
+.phn .phr-ingress a { color: var(--phn-g900); font-weight: 600; text-underline-offset: 3px; }

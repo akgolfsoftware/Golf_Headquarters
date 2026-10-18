@@ -7,7 +7,9 @@ let writes = 0;
 let fail = false;
 let viewer = "spiller-a";
 let invalidReference = false;
-mock.module("@/lib/auth/requirePortalUser", { namedExports: { requirePortalUser: async () => ({ id: viewer }) } });
+// Data Golf er bare for coach og admin (Anders 09.10.2026) — økten lagres av en coach.
+let viewerRole: "COACH" | "ADMIN" | "PLAYER" | "PARENT" = "COACH";
+mock.module("@/lib/auth/requirePortalUser", { namedExports: { requirePortalUser: async () => ({ id: viewer, role: viewerRole }) } });
 mock.module("next/cache", { namedExports: { revalidatePath: () => {} } });
 mock.module("@/lib/datagolf/stasjon-data", { namedExports: { hentStasjonSide: async () => ({
   valgtTak: { dgPlayerId: 1, name: "Proff A" },
@@ -35,7 +37,7 @@ mock.module("@/lib/prisma", { namedExports: { prisma: {
 } } });
 let save: typeof import("@/app/portal/analysere/datagolf/actions").lagreDataGolfUtfordring;
 before(async () => { save = (await import("@/app/portal/analysere/datagolf/actions")).lagreDataGolfUtfordring; });
-beforeEach(() => { rows = new Map(); writes = 0; fail = false; viewer = "spiller-a"; invalidReference = false; });
+beforeEach(() => { rows = new Map(); writes = 0; fail = false; viewer = "spiller-a"; viewerRole = "COACH"; invalidReference = false; });
 const input = () => ({ attemptId: "e141256c-e12f-45a8-b018-81183a542ac7", tak: 1, slag: "innspill100", carry: 100,
   lie: "fairway", baller: [...Array(4).fill("inne"), ...Array(6).fill("ute")], target: 5,
   startedAt: new Date(Date.now() - 60_000).toISOString() });
@@ -65,4 +67,12 @@ test("lagringsfeil returnerer feil og kan forsøkes på nytt", async () => {
   assert.equal((await save(v)).ok, false); assert.equal(rows.size, 0);
   fail = false;
   assert.equal((await save(v)).ok, true); assert.equal(rows.size, 1);
+});
+test("spiller og forelder kan aldri lagre en Data Golf-utfordring", async () => {
+  for (const rolle of ["PLAYER", "PARENT"] as const) {
+    viewerRole = rolle;
+    assert.equal((await save(input())).ok, false);
+  }
+  assert.equal(writes, 0);
+  assert.equal(rows.size, 0);
 });

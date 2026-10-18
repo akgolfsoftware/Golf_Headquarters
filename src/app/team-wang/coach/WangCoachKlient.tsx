@@ -11,27 +11,40 @@ import { WangMeldinger } from '@/components/wang/WangMeldinger';
 import { WangElever } from '@/components/wang/WangElever';
 import { WangAdmin } from '@/components/wang/WangAdmin';
 import { WangSkjermoversikt } from '@/components/wang/WangSkjermoversikt';
-import { WangKobledeVisninger, type WangKobletElev } from '@/components/wang/WangKobledeVisninger';
 import type { WangRolle } from '@/app/team-wang/_data/wang-rolle';
+import type { WangTrenerData } from '@/app/team-wang/_data/wang-trener-data';
+import type { WangTesterData } from '@/app/team-wang/_data/wang-tester-visning';
+import type { WangDataGolfData } from '@/app/team-wang/_data/wang-datagolf-visning';
+import { WangDataGolf } from '@/components/wang/WangDataGolf';
 
 interface WangCoachKlientProps {
   /** Området er avgjort av serveren (rolle og gyldighet er sjekket der). */
   omraade: WangOmraade;
   fane?: string;
+  /** Økta som I dag-undersidene (Oppmøte, Økta, Meld fravær) gjelder. */
+  oktId?: string;
+  /** Det én underside gjelder (periode, test, turnering, elev …). */
+  id?: string;
   rolle: WangRolle;
   brukerNavn?: string;
-  /** PLAYER-medlemmer i WANG-gruppa, til lenkene mot ekte data. */
-  elever?: WangKobletElev[];
-  campus?: string;
+  /** Testresultater og testsamtykke for elevene som deler med WANG (Tester, Elever, Administrasjon). */
+  tester?: WangTesterData;
+  /** Data Golf (Konkurranse › Data Golf), bare når kanSeDataGolf slapp brukeren inn. */
+  dataGolf?: WangDataGolfData;
+  /** Ekte gruppedata, bygget på serveren (byggWangTrenerData). */
+  data: WangTrenerData;
 }
 
 export function WangCoachKlient({
   omraade,
   fane,
+  oktId,
+  id,
   rolle,
   brukerNavn,
-  elever = [],
-  campus = 'Fredrikstad',
+  tester,
+  dataGolf,
+  data,
 }: WangCoachKlientProps) {
   const router = useRouter();
 
@@ -53,67 +66,64 @@ export function WangCoachKlient({
       }}
     >
       {omraade === 'idag' && (
-        <WangIdag
-          aktivFane={fane}
-          onFaneEndret={(nyFane) => navigerTil('idag', nyFane)}
-          campus={campus}
-        />
+        <WangIdag aktivFane={fane} oktId={oktId} data={data} />
       )}
 
       {omraade === 'trening' && (
         <WangTrening
           aktivFane={fane}
+          id={id}
           onFaneEndret={(nyFane) => navigerTil('trening', nyFane)}
-          campus={campus}
+          data={data}
         />
       )}
 
-      {omraade === 'tester' && (
-        <WangKobledeVisninger elever={elever} visning="tester" />
-      )}
       {omraade === 'tester' && (
         <WangTester
           aktivFane={fane}
+          id={id}
+          tester={tester}
           onFaneEndret={(nyFane) => navigerTil('tester', nyFane)}
-          campus={campus}
+          data={data}
         />
       )}
 
-      {omraade === 'konkurranse' && (
-        <WangKobledeVisninger elever={elever} visning="turneringer" />
-      )}
-      {omraade === 'konkurranse' && (
+      {omraade === 'konkurranse' && fane?.startsWith('dg') && <WangDataGolf d={dataGolf} />}
+
+      {omraade === 'konkurranse' && !fane?.startsWith('dg') && (
         <WangKonkurranse
           aktivFane={fane}
+          id={id}
           onFaneEndret={(nyFane) => navigerTil('konkurranse', nyFane)}
-          campus={campus}
+          data={data}
         />
       )}
 
       {omraade === 'meldinger' && (
         <WangMeldinger
           aktivFane={fane}
+          id={id}
           onFaneEndret={(nyFane) => navigerTil('meldinger', nyFane)}
-          campus={campus}
+          data={data}
         />
       )}
 
       {omraade === 'elever' && (
-        <WangKobledeVisninger elever={elever} visning="iup" />
-      )}
-      {omraade === 'elever' && (
         <WangElever
           aktivFane={fane}
+          id={id}
+          tester={tester}
           onFaneEndret={(nyFane) => navigerTil('elever', nyFane)}
-          campus={campus}
+          data={data}
         />
       )}
 
       {omraade === 'admin' && (
         <WangAdmin
           aktivFane={fane}
+          tester={tester}
           onFaneEndret={(nyFane) => navigerTil('admin', nyFane)}
-          campus={campus}
+          data={data}
         />
       )}
 

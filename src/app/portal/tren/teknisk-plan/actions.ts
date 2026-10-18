@@ -186,7 +186,6 @@ function vasketeAkser(input: {
     belastning: input.belastning ?? null,
     press: input.press ?? null,
     dimensjon: input.dimensjon ?? null,
-    sandTrinn: null,
   });
   return {
     motorikk: vasket.motorikk,

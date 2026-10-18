@@ -1,0 +1,35 @@
+/*
+ * AgencyOS pakke 8 Jarvis i nytt design. Fasit: docs/design-system/utkast-agencyos/jarvis.html.
+ * Gjelder bare inni .agn-s.
+ */
+.agn-s .jarvis-grid { display: grid; gap: var(--r5); }
+.agn-s .jarvis-grid > aside { display: grid; gap: var(--r4); align-content: start; }
+.agn-s .jarvis-ikon { width: 28px; height: 28px; border-radius: 8px; background: var(--graphite-900); color: #fff; display: grid; place-items: center; flex: none; }
+.agn-s .jarvis-ikon .ikon { width: 16px; height: 16px; }
+.agn-s .forslag-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.agn-s .forslag-chips button { min-height: 44px; padding: 8px 14px; border: 1px solid var(--sand-300); border-radius: 12px; background: var(--sand-100); font: 500 14px/1.3 var(--sans); color: var(--graphite-900); cursor: pointer; text-align: left; }
+.agn-s .samtale { display: grid; gap: var(--r3); }
+.agn-s .boble-meg { justify-self: end; max-width: 84%; padding: 10px 14px; border-radius: 16px 16px 4px 16px; background: var(--graphite-900); color: #fff; font-size: 15px; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; }
+.agn-s .svar { display: grid; gap: var(--r3); padding: 14px 16px; border-radius: 16px 16px 16px 4px; background: var(--sand-100); border: 1px solid var(--sand-300); font-size: 15px; line-height: 1.55; overflow-wrap: anywhere; }
+.agn-s .svar-topp { display: flex; align-items: center; gap: 8px; font: 600 14px/1 var(--sans); }
+.agn-s .utkast-kort { display: grid; gap: 8px; padding: 12px 14px; border-radius: 10px; background: var(--white); border: 1px dashed var(--graphite-500); }
+.agn-s .utkast-kort .hode { font: 600 13px/1.3 var(--sans); color: var(--graphite-800); }
+.agn-s .skrivefelt { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--r2); align-items: end; padding-top: var(--r3); border-top: 1px solid var(--sand-300); }
+.agn-s .skrivefelt textarea { min-height: 48px; max-height: 140px; resize: none; padding: 12px; border: 1px solid var(--graphite-500); border-radius: 12px; font: 400 16px/1.4 var(--sans); width: 100%; color: var(--graphite-900); background: var(--white); }
+.agn-s .ikonknapp { width: 48px; height: 48px; border-radius: 12px; border: 0; background: var(--graphite-900); display: grid; place-items: center; cursor: pointer; color: #fff; }
+.agn-s .ikonknapp:disabled { opacity: .5; cursor: not-allowed; }
+.agn-s .skriver { display: inline-flex; gap: 5px; padding: 14px 16px; border-radius: 16px; background: var(--sand-100); justify-self: start; }
+.agn-s .skriver i { width: 7px; height: 7px; border-radius: 50%; background: var(--graphite-600); animation: agn-prikk 1.2s infinite; }
+.agn-s .skriver i:nth-child(2) { animation-delay: .15s; } .agn-s .skriver i:nth-child(3) { animation-delay: .3s; }
+@keyframes agn-prikk { 0%, 60%, 100% { opacity: .25; } 30% { opacity: 1; } }
+.agn-s .personvern { font-size: 13px; color: var(--graphite-600); }
+.agn-s .j-rad { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: var(--r3); align-items: center; padding: 10px 0; border-bottom: 1px solid var(--sand-300); }
+.agn-s .j-rad:last-child { border-bottom: 0; }
+.agn-s .j-rad b { display: block; font: 600 15px/1.3 var(--sans); overflow-wrap: anywhere; }
+.agn-s .j-rad .kilde { display: block; }
+.agn-s .kort.rader { gap: 0; padding-top: 4px; padding-bottom: 4px; }
+
+@media (min-width: 900px) {
+  .agn-s .jarvis-grid { grid-template-columns: minmax(0, 1fr) 300px; gap: var(--r6); align-items: start; }
+  .agn-s .jarvis-grid > aside { position: sticky; top: 24px; }
+}

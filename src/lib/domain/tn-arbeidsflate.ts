@@ -6,9 +6,10 @@ import { tnFormat, tnScore, tnSameScore, tnRowError, type TnResult } from "@/lib
 import { TnResultSchema } from "@/lib/portal-tester/tn-scoring";
 import { TnSessionSchema } from "@/lib/portal-tester/tn-session";
 import { hentTnOversiktForBruker } from "@/lib/domain/tn-tilgang";
+import { erTnGruppeSlug, TN_DEMO_SLUG, WANG_DEMO_SLUG } from "@/lib/domain/demo-grupper";
 import { prisma } from "@/lib/prisma";
 import { medNavngittProfil, lesNavngitteProfiler } from "@/lib/deling/profil-lesing";
-import { TN_CATALOG, TN_RULES_VERSION, tnVersion, tnProtocol, type TnProtocol } from "@/lib/portal-tester/tn-catalog";
+import { TN_CATALOG, TN_GODKJENT_VERSION, tnVersion, tnProtocol, type TnProtocol } from "@/lib/portal-tester/tn-catalog";
 import { tnFromDefinitionId, tnDefinitionId } from "@/lib/portal-tester/tn-integration";
 import { hentWangTestresultatSkolerForTeamNorway } from "@/lib/portal-tester/wang-resultat-tilgang";
 import { resolveTilgang, type TilgangsNivaa, type TilgangsKilde } from "@/lib/feature-flags";
@@ -17,8 +18,11 @@ import { parseProtocol, type ScorekortForsok } from "@/lib/portal-tester/protoco
 import { parseForScoring, lavereErBedre, ScoringDetailsSchema } from "@/lib/portal-tester/test-scoring";
 import { testTilgangWhere } from "@/lib/portal-tester/test-tilgang";
 import { aggregerRangliste } from "./tn-rangliste";
+import { kanSeDataGolf, UTEN_DATAGOLF_TURNERING } from "@/lib/auth/datagolf-regel";
 import { lesTurneringsresultat } from "./turneringsresultat";
 import { lesLeverteIupForProfil } from "@/lib/iup/trener-profil-lesing";
+import { summerAksefordeling } from "./tn-aksefordeling";
+import { tnDenneMandag, vurderTnTrening, type TnSpillerTrening } from "./tn-trenger-deg";
 
 /**
  * Datalag for TN-00–TN-21.
@@ -28,6 +32,11 @@ import { lesLeverteIupForProfil } from "@/lib/iup/trener-profil-lesing";
  */
 
 export type TnBruker = { id: string; role: UserRole; name: string | null };
+
+/** Data Golf-resultater er bare for coacher og admin (Anders 09.10.2026); alle andre får dem filtrert bort. */
+function utenDataGolfForBruker(bruker: TnBruker): typeof UTEN_DATAGOLF_TURNERING | Record<string, never> {
+  return kanSeDataGolf(bruker) ? {} : UTEN_DATAGOLF_TURNERING;
+}
 
 export type TnArbeidskontekst = {
   gruppe: { id: string; name: string };
@@ -134,7 +143,7 @@ async function lesTnSpillerRader(tx: Prisma.TransactionClient, spillerId: string
 
 export function hentTnProtokollbibliotek() {
   return {
-    versjon: TN_RULES_VERSION,
+    versjon: TN_GODKJENT_VERSION,
     rader: TN_CATALOG.map((protokoll) => ({
       id: protokoll.id,
       navn: protokoll.name,
@@ -247,12 +256,17 @@ async function lesTnTurneringer(tx: Prisma.TransactionClient, spillerId: string)
  */
 export async function hentTnRangliste(bruker: TnBruker, aar?: number) {
   return lesTnProfiler(bruker, async (tx, spillerId) => {
-    const data = await lesTnRanglisteRad(tx, spillerId, aar);
+    const data = await lesTnRanglisteRad(tx, spillerId, aar, utenDataGolfForBruker(bruker));
     return data.rader[0] ?? null;
   });
 }
 
-async function lesTnRanglisteRad(tx: Prisma.TransactionClient, spillerId: string, aar?: number) {
+async function lesTnRanglisteRad(
+  tx: Prisma.TransactionClient,
+  spillerId: string,
+  aar: number | undefined,
+  datagolfFilter: ReturnType<typeof utenDataGolfForBruker>,
+) {
   const rader = await lesTnSpillerRader(tx, spillerId);
   const spillerside = { rader };
   const koblinger = await tx.user.findMany({
@@ -262,7 +276,7 @@ async function lesTnRanglisteRad(tx: Prisma.TransactionClient, spillerId: string
   const entries = await tx.publicPlayerEntry.findMany({
     where: {
       playerId: { in: koblinger.map((k) => k.publicPlayerId!) },
-      tournament: { mergedIntoId: null, ...(aar ? { startDate: { gte: new Date(Date.UTC(aar - 1, 11, 31, 12)), lt: new Date(Date.UTC(aar, 11, 31, 12)) } } : {}) },
+      tournament: { mergedIntoId: null, ...datagolfFilter, ...(aar ? { startDate: { gte: new Date(Date.UTC(aar - 1, 11, 31, 12)), lt: new Date(Date.UTC(aar, 11, 31, 12)) } } : {}) },
     },
     select: {
       playerId: true, status: true, position: true, scoreToPar: true, totalScore: true, rounds: true, klasseNavn: true,
@@ -312,6 +326,7 @@ export async function hentTnSamlinger(bruker: TnBruker) {
   ]);
   return {
     kontekst,
+    antallSpillere,
     planHref: førsteSpiller ? `/admin/workbench/${encodeURIComponent(førsteSpiller.userId)}?flate=bord&gruppe=${encodeURIComponent(kontekst.gruppe.id)}` : null,
     samlinger: rader.map((r) => ({ id: r.id, name: r.title, startDate: r.startAt, endDate: r.endAt, location: r.location, notes: r.description, antallDeltakere: antallSpillere })),
   };
@@ -405,10 +420,15 @@ export type TnTestdagGruppevalg = {
 export async function hentTnFellesTestdagGrupper(bruker: TnBruker): Promise<TnTestdagGruppevalg[] | null> {
   const kontekst = await hentTnArbeidskontekst(bruker);
   if (!kontekst || !erTnTestdagLeser(kontekst, bruker)) return null;
+  const erDemo = (await prisma.group.findUnique({ where: { id: kontekst.gruppe.id }, select: { slug: true } }))?.slug === TN_DEMO_SLUG;
   const grupper = await prisma.group.findMany({
     where: {
       arkivertAt: null,
-      OR: [
+      // Demogruppa ser bare WANG-demogruppa, aldri ekte WANG-skoler.
+      OR: erDemo ? [
+        { id: kontekst.gruppe.id, slug: TN_DEMO_SLUG },
+        { slug: WANG_DEMO_SLUG },
+      ] : [
         { id: kontekst.gruppe.id, slug: "team-norway" },
         { program: { in: ["WANG_UNG", "WANG_TOPPIDRETT"] } },
       ],
@@ -427,11 +447,11 @@ export async function hentTnFellesTestdagGrupper(bruker: TnBruker): Promise<TnTe
     },
   });
   return grupper
-    .filter((gruppe) => gruppe.id === kontekst.gruppe.id || gruppe.program === "WANG_UNG" || gruppe.program === "WANG_TOPPIDRETT")
+    .filter((gruppe) => gruppe.id === kontekst.gruppe.id || (erDemo ? gruppe.slug === WANG_DEMO_SLUG : gruppe.program === "WANG_UNG" || gruppe.program === "WANG_TOPPIDRETT"))
     .map((gruppe) => ({
       id: gruppe.id,
       navn: gruppe.name,
-      type: gruppe.slug === "team-norway" ? "TEAM_NORWAY" as const : "WANG" as const,
+      type: erTnGruppeSlug(gruppe.slug) ? "TEAM_NORWAY" as const : "WANG" as const,
       spillere: gruppe.members.map(({ user }) => ({ id: user.id, navn: user.name ?? "Ukjent spiller" })),
     }));
 }
@@ -674,6 +694,51 @@ export async function medTnSpillerData<T>(bruker: TnBruker, spillerId: string, l
 
 export async function hentTnSpillerTilgang(bruker: TnBruker, spillerId: string): Promise<TnSpillerTilgang | null> {
   return medTnSpillerData(bruker, spillerId, async (_tx, tilgang) => tilgang);
+}
+
+/**
+ * Spillerens trening per akse siste 28 dager (pyramiden i IUP-en). Leses bare
+ * innenfor delingslåsen, som de andre personlige dataene.
+ */
+export async function hentTnSpillerAksefordeling(bruker: TnBruker, spillerId: string) {
+  const fra = new Date(Date.now() - 28 * 864e5);
+  return medTnSpillerData(bruker, spillerId, async (tx, tilgang) => {
+    const okter = await tx.workbenchSession.findMany({
+      where: { playerId: tilgang.spillerId, date: { gte: fra, lte: new Date() } },
+      select: { pyramid: true, durationMinutes: true, status: true },
+    });
+    return summerAksefordeling(okter);
+  });
+}
+
+export type TnGruppetreningRad = { spillerId: string; navn: string; klubb: string | null; trening: TnSpillerTrening };
+
+/**
+ * Trening siste fire hele uker for spillerne som deler med Team Norway
+ * («Trenger deg» og gruppas aksefordeling på oversikten). Leses innenfor
+ * delingslåsen per spiller, som de andre personlige dataene. Spillere som ikke
+ * deler, er ikke med i radene. Null når brukeren ikke får lese personlige data.
+ */
+export async function hentTnGruppetrening(bruker: TnBruker, naa = new Date()) {
+  const mandag = tnDenneMandag(naa);
+  const fra = new Date(mandag - 28 * 864e5);
+  const til = new Date(mandag);
+  return lesTnProfiler(bruker, async (tx, spillerId): Promise<TnGruppetreningRad | null> => {
+    const [spiller, okter] = await Promise.all([
+      tx.user.findFirst({ where: { id: spillerId, deletedAt: null }, select: { name: true, homeClub: true } }),
+      tx.workbenchSession.findMany({
+        where: { playerId: spillerId, date: { gte: fra, lt: til } },
+        select: { date: true, durationMinutes: true, status: true, pyramid: true },
+      }),
+    ]);
+    if (!spiller) return null;
+    return {
+      spillerId,
+      navn: spiller.name,
+      klubb: spiller.homeClub,
+      trening: vurderTnTrening(okter.map((o) => ({ dato: o.date, minutter: o.durationMinutes, status: o.status, pyramid: o.pyramid })), mandag),
+    };
+  });
 }
 
 /** IUP-besvarelser leses bare innenfor aktuell navngitt profiltilgang/lås. */
@@ -1036,7 +1101,8 @@ export async function hentTnGruppeanalyseResultat(bruker: TnBruker, params: { pr
     });
     if (!dag) return null;
     const protokollId = (dag.testDefinition.protocol as { protocolId?: string } | null)?.protocolId ?? "";
-    const protokoll = tnProtocol(protokollId);
+    // Testdagens låste regelversjon, ellers avvises resultater ført før en regelendring.
+    const protokoll = tnProtocol(protokollId, undefined, dag.testDefinition.scoringRule ?? "");
     if (!protokoll) return null;
     // Statisk fra protokollen (samme regel som `tnScore` bruker for å velge
     // primærmetrikk): kun 8-ball-protokoller har "høyere er bedre"
@@ -1340,7 +1406,7 @@ export async function hentTnSpillerProfil(bruker: TnBruker, spillerId: string, a
     const entries = await tx.publicPlayerEntry.findMany({
       where: {
         playerId: spiller.publicPlayerId,
-        tournament: { mergedIntoId: null, startDate: { gte: new Date(Date.UTC(aar - 1, 11, 31, 12)), lt: new Date(Date.UTC(aar, 11, 31, 12)) } },
+        tournament: { mergedIntoId: null, ...utenDataGolfForBruker(bruker), startDate: { gte: new Date(Date.UTC(aar - 1, 11, 31, 12)), lt: new Date(Date.UTC(aar, 11, 31, 12)) } },
       },
       select: {
         status: true, position: true, scoreToPar: true, totalScore: true, rounds: true, klasseNavn: true,

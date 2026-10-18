@@ -28,11 +28,6 @@ test("motorikk gjelder KUN de fem fullsving-områdene", () => {
   assert.equal(gjelder("BANE", "motorikk"), false);
 });
 
-test("sandtrinnet finnes kun på bunker", () => {
-  const medSand = OMRAADE_KODER.filter((k) => relevansFor(k).sandTrinn);
-  assert.deepEqual(medSand, ["BUNKER"]);
-});
-
 test("FYS har verken motorikk, dimensjon eller synlig press", () => {
   for (const kode of ["STYRKE", "KONDISJON", "BEVEGELIGHET"] as const) {
     const r = relevansFor(kode);
@@ -72,10 +67,8 @@ test("vask fjerner motorikk når området ikke har den", () => {
     belastning: "BANE",
     press: "OBSERVERT",
     dimensjon: "GREENLESING" as const,
-    sandTrinn: "MED_BALL",
   });
   assert.equal(vasket.motorikk, null);
-  assert.equal(vasket.sandTrinn, null);
   assert.equal(vasket.dimensjon, "GREENLESING");
   assert.equal(vasket.belastning, "BANE");
 });

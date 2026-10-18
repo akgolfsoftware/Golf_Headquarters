@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { weekLockedBlocks } from "./locked-blocks";
+import { slaSammenLaasteBlokker, weekLockedBlocks } from "./locked-blocks";
 
 const school = { id: "school", title: "Skole", kind: "SKOLE", isPrivate: false, recurring: null,
   startAt: new Date("2026-09-16T06:00:00Z"), endAt: new Date("2026-09-16T12:00:00Z") };
@@ -41,4 +41,14 @@ test("heldagsprøve vises, ferie og fremtidig ukentlig avtale utelates", () => {
   ]);
   assert.equal(days.flat().length, 1);
   assert.equal(days[1][0].durationMinutes, 1440);
+});
+
+test("samme opptattblokk fra uka og plankalenderen vises én gang, med eierens tittel", () => {
+  const privat = { ...school, title: "Tannlege", kind: "HELSE", isPrivate: true };
+  const fraUka = weekLockedBlocks("2026-09-14", [privat], [])[2];
+  const fraPlan = weekLockedBlocks("2026-09-14", [privat], [], true)[2];
+  const dag = slaSammenLaasteBlokker(fraUka, fraPlan);
+  assert.equal(dag.length, 1);
+  assert.equal(new Set(dag.map(b => b.id)).size, dag.length);
+  assert.equal(dag[0].title, "Tannlege");
 });

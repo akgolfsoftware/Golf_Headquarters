@@ -32,6 +32,7 @@ export default async function WangTestresultaterPage({
   searchParams: Promise<{ side?: string }>;
 }) {
   const bruker = await requirePortalUser({
+    tillatDemo: true,
     allow: ["ADMIN", "COACH"],
     redirectTo: "/team-wang/logg-inn?next=%2Fteam-wang%2Fcoach%2Ftester",
   });

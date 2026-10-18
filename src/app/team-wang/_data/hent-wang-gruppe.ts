@@ -72,6 +72,7 @@ export interface WangHendelseDb {
   startIso: string; // yyyy-mm-dd (Oslo)
   startTid: string; // HH:mm (Oslo)
   sluttIso: string;
+  sluttTid: string; // HH:mm (Oslo)
   kind: string | null; // SAMLING | HELDAGSSAMLING | null
   recurring: string | null; // WEEKLY | NONE | null
   sted: string | null;
@@ -168,8 +169,11 @@ function skoleAr(
 export async function hentWangGruppe(
   {
     brukerId,
+    gruppeId,
     medElevnavn = false,
   }: {
+    /** Gruppa tilgangssjekken ga. Uten den leses den ekte Toppidrett-gruppa. */
+    gruppeId?: string;
     /** Innlogget elev. Uten den hentes ingen fokusområder — de er personlige. */
     brukerId?: string;
     /** PII om mindreårige — opt-in, og kun fra auth-gatede sider. */
@@ -178,7 +182,7 @@ export async function hentWangGruppe(
 ): Promise<WangLiveData | null> {
   try {
     const gruppe = await prisma.group.findUnique({
-      where: { slug: WANG_TOPPIDRETT_SLUG },
+      where: gruppeId ? { id: gruppeId } : { slug: WANG_TOPPIDRETT_SLUG },
       select: {
         id: true,
         name: true,
@@ -255,6 +259,7 @@ export async function hentWangGruppe(
         startIso: osloDato(s.startAt),
         startTid: osloTid(s.startAt),
         sluttIso: osloDato(s.endAt),
+        sluttTid: osloTid(s.endAt),
         kind: s.kind,
         recurring: s.recurring,
         sted: s.location,

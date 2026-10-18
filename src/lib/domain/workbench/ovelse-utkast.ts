@@ -18,7 +18,7 @@ import {
   OvelseDetaljerSchema,
   OvelseDetaljerLeseSchema,
 } from "@/lib/domain/workbench/ovelse-detaljer";
-import { DIMENSJON_KODER, MOTORIKK_KODER, PRESS_KODER, SAND_TRINN_KODER } from "@/lib/domain/ak-formel-v2";
+import { DIMENSJON_KODER, MOTORIKK_KODER, PRESS_KODER } from "@/lib/domain/ak-formel-v2";
 import type { AKFormel, Belastning, Drill, Motorikk, Press, PyramidArea, TrainingArea } from "@/lib/domain/workbench/types";
 
 export type GrenUtkast = {
@@ -28,7 +28,6 @@ export type GrenUtkast = {
   maaleutstyr: string;
   motorikk: string;
   hastighet: string;
-  sandTrinn: string;
   tekniskFokus: string;
   treningsmaate: string;
   press: string;
@@ -73,7 +72,6 @@ export function tomtUtkast(pyramid: PyramidArea): GrenUtkast {
     maaleutstyr: "",
     motorikk: "",
     hastighet: "",
-    sandTrinn: "",
     tekniskFokus: "",
     treningsmaate: "",
     press: "",
@@ -112,7 +110,7 @@ export function utkastFraOvelse(drill: Drill): Record<PyramidArea, GrenUtkast> {
     ...utkast[f.pyramid], area: f.area,
     stedHoved: d?.sted?.hoved ?? "", stedDelvalg: d?.sted?.delvalg ?? "",
     maaleutstyr: d?.maaleutstyr ?? "", motorikk: f.motorikk ?? "",
-    hastighet: tekst(d?.hastighetProsent), sandTrinn: d?.sandTrinn ?? "",
+    hastighet: tekst(d?.hastighetProsent),
     tekniskFokus: d?.tekniskFokus ?? "", treningsmaate: d?.treningsmaate ?? "", press: f.press ?? "",
     enhet: d?.mengde?.enhet ?? "", antall: tekst(d?.mengde?.antall), reps: tekst(d?.mengde?.reps),
     vektKg: tekst(d?.mengde?.vektKg), rir: tekst(d?.mengde?.rir), pauseSek: tekst(d?.mengde?.pauseSek),
@@ -167,7 +165,6 @@ export function byggOvelse(pyramid: PyramidArea, u: GrenUtkast, felles: FellesUt
   const rå: OvelseDetaljer = {
     hastighetProsent: (heltall(u.hastighet) as OvelseDetaljer["hastighetProsent"]) ?? undefined,
     tekniskFokus: ett(DIMENSJON_KODER, u.tekniskFokus),
-    sandTrinn: ett(SAND_TRINN_KODER, u.sandTrinn),
     sted: stedHoved ? { hoved: stedHoved, delvalg: u.stedDelvalg || undefined } : undefined,
     maaleutstyr: ett(MAALEUTSTYR, u.maaleutstyr),
     treningsmaate: ett(TRENINGSMAATE, u.treningsmaate),

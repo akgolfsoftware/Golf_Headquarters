@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getCurrentUserRaw } from "@/lib/auth/getCurrentUser";
-import { isAwaitingGuardianConsent } from "@/lib/auth/minor";
+import { venterPaaForelder } from "@/lib/auth/minor";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/rate-limit";
 import { supabaseAdmin } from "@/lib/supabase/admin";
@@ -24,11 +24,12 @@ const PHOTO_REQUEST_MAX = TN_TEST_PHOTO_INPUT_MAX + 64 * 1024;
 async function viewer() {
   const user = await getCurrentUserRaw();
   if (!user) return { response: NextResponse.json({ error: "Logg inn for å fortsette." }, { status: 401 }) };
-  if (isAwaitingGuardianConsent(user)) return { response: NextResponse.json({ error: "Foresattes samtykke må være på plass." }, { status: 403 }) };
+  if (venterPaaForelder(user)) return { response: NextResponse.json({ error: "Foresattes samtykke må være på plass." }, { status: 403 }) };
   if (user.role !== "PLAYER") return { response: NextResponse.json({ error: "Bare spilleren kan legge til eller hente dette bildet." }, { status: 403 }) };
   return { user };
 }
 
+// tilgang: eier sjekkes i ownAttempt (økta må tilhøre innlogget spiller), PLAYER-rolle kreves i innloggingshjelperen over
 async function ownAttempt(userId: string, sessionId: string, attempt: number) {
   const session = await prisma.testSession.findFirst({
     where: { id: sessionId, userId, testId: { startsWith: "tn-v3-" }, status: { in: ["IN_PROGRESS", "COMPLETED"] } },

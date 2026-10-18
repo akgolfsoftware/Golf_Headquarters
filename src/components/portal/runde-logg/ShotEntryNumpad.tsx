@@ -87,7 +87,7 @@ export function ShotEntryNumpad({
 
   return (
     <section className="pa-root mx-auto w-full max-w-md rounded-lg bg-[var(--surface-card)] p-4 text-[var(--text-primary)]"
-      data-theme="night" aria-label={`Registrer slag ${shotNumber}`}>
+      data-theme="light" aria-label={`Registrer slag ${shotNumber}`}>
       <header className="mb-4 flex items-baseline justify-between gap-3">
         <h2 className="text-xl font-semibold">Slag {shotNumber}</h2>
         <span className="font-mono text-sm text-[var(--text-secondary)]">

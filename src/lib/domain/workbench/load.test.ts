@@ -7,7 +7,8 @@ test("registrerte null minutter gir null belastning uten planlagt reserveverdi",
   assert.equal(computeSessionLoad(session), 0);
   const week = computeWeeklyLoad([session]);
   assert.equal(week.totalLoad, 0);
-  assert.equal(week.completedMinutes, 0);
+  // Gjennomført tid er planlagt varighet (samme regel som måned, periode og år).
+  assert.equal(week.completedMinutes, 60);
   assert.equal(week.ratedSessionsCount, 1);
 });
 

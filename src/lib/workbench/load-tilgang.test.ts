@@ -9,7 +9,10 @@ mock.module("@/lib/auth/requirePortalUser", {
   namedExports: { requirePortalUser: async () => ({ id: "coach-1", role: "COACH" }) },
 });
 mock.module("@/lib/auth/coached", {
-  namedExports: { harCoachTilgangTilSpiller: async () => tilgang },
+  namedExports: {
+    harCoachTilgangTilSpiller: async () => tilgang,
+    harCoachLesetilgangTilSpiller: async () => tilgang,
+  },
 });
 mock.module("@/lib/admin/stallen-data", { namedExports: { loadStallen: async () => [] } });
 mock.module("next/cache", { namedExports: { revalidatePath: () => undefined } });

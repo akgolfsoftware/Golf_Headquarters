@@ -1,10 +1,15 @@
-"use client";
-import { usePathname } from "next/navigation";
-import { V2Laster } from "@/components/v2/laster";
-import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
-import { LasterTilstand } from "@/components/precision/pa";
+/* Felles lastetilstand for PlayerHQ-sider uten egen loading.tsx. Ren serverkomponent: klientkode i en
+   loading-grense stoppes av CSP (gotchas §Bygg og drift, vakt scripts/check-loading-server.mjs).
+   I dag (/portal) har eget skjelett som Suspense-fallback i page.tsx. */
+import { PlayerHQSkallLaster } from "@/components/precision/PlayerHQSkallLaster";
+import { LasterTilstand } from "@/components/precision/laster-tilstand";
+
 export default function Loading() {
-  return usePathname() === "/portal"
-    ? <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}><div className="pa-side"><LasterTilstand text="Henter dagen din …" /></div></PlayerHQSkall>
-    : <V2Laster variant="hjem" />;
+  return (
+    <PlayerHQSkallLaster sti="">
+      <div className="pa-side">
+        <LasterTilstand text="Henter …" />
+      </div>
+    </PlayerHQSkallLaster>
+  );
 }

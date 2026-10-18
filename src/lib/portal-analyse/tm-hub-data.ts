@@ -243,18 +243,12 @@ export async function hentAnalyseHub(userId: string): Promise<TmHubData> {
       {
         /* Spillerens egne turneringsresultater (beslutning 2026-08-30).
            Meta sier antall, eller hvorfor det er tomt — aldri bare «0». */
-        href: "/portal/analysere/turneringer",
+        href: "/portal/analysere/resultater?vis=turneringer",
         tittel: "Turneringer",
         meta: turneringsMeta,
       },
-      {
-        /* DG-01-inngangen hører hjemme her — HANDOFF §DataGolf: «Inngang:
-           PH-10 "Gå dypere"-rad (lagt til)». Egen motor, blandes aldri med
-           Broadie-SG over. */
-        href: "/portal/analysere/datagolf",
-        tittel: "DataGolf",
-        meta: "mot feltet",
-      },
+      /* DG-01-inngangen (DataGolf) er fjernet: Data Golf er bare for coach og
+         admin (Anders 09.10.2026), og huben vises for spillere. */
     ],
     trackman,
   };

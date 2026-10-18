@@ -10,9 +10,38 @@ personvernerklæring i `src/components/marketing/v2/MarkedPersonvernV2.tsx`).
 
 Lagringssteder:
 - **Database:** Supabase Postgres (EU) via Prisma — alle modellene under.
+- **WANG-database:** separat Supabase Postgres i EU, med egen Auth og RLS. Skjemakilden ligger i `supabase-wang/`.
 - **Filer:** Supabase Storage-buckets (bl.a. `message-attachments`, `coaching-recordings`, video-buckets).
 - **Auth:** Supabase Auth (`auth.users`, koblet via `User.authId`).
 - **Tredjeparter:** Stripe (betaling), Resend (e-post), Anthropic (AI), Deepgram (transkripsjon), Google (kalender-sync), Notion (sync), Vercel (hosting/logger).
+
+### WANG-database — tillegg 13.10.2026
+
+Den separate WANG-databasen har tabeller for skole, idretter, skoleidretter, roller, grupper,
+utøvere, foresattrelasjoner, tidsbegrenset ekstern tilgang, planhierarki, kalenderhendelser og daglig innsjekk. Tilgang styres med
+RLS per skole, idrett, gruppe, utøver og foresattrelasjon. Den åpne `/team-wang/demo` kan bare lese
+idrettskatalogen og rader som eksplisitt er merket `is_demo = true`; disse radene bruker kun
+syntetiske navn og demoinnhold. Daglig innsjekk, søvn, helse, kontaktpersoner og autentiserte
+profiler er ikke offentlig lesbare.
+
+`wang_message_threads`, `wang_message_participants` og `wang_messages` gir et skrivebeskyttet
+grunnlag for rolleavgrensede elevsamtaler. Innloggede klienter har bare leserett, og bare når
+kontoen er aktiv deltaker med fortsatt gyldig elevtilgang. Den beskyttede detaljvisningen kan vise
+lagret meldingstekst og avsenderetikett til denne deltakeren, men henter ikke e-post, telefon,
+søvn eller dagsform. Sentral admin og generell lesetilgang får ikke automatisk innsyn. Eksterne
+mottakere trenger aktiv deling med eksplisitt `messages`-omfang. Ingen meldingsrader eller
+kontaktopplysninger ble lagt til da grunnlaget eller detaljvisningen ble opprettet.
+
+`wang_external_access` lagrer hvilken foresatt eller klubbtrener som er invitert til hvilken elev,
+rolle, eksplisitte leseområder, start, sluttdato, tilbakekalling, inviterende profil og tekniske
+tidsstempler. Eleven kan bare oppdatere tilbakekallingsfeltet på egne delinger. Tabellen inneholder
+ingen invitasjonstoken og sender ingen e-post. Sentral admin får ikke automatisk tilgang til
+navngitte elever. Morgeninnsjekk kan bare leses av eleven selv og tildelt sportssjef eller trener.
+
+**AVKLAR før ekte elevdata:** behandlingsgrunnlag, opplysningstekst, foresattes rolle, art. 9-samtykke
+for søvn/form, lagringstid, eksport, retting og full sletting må være besluttet og bygget. Dette
+gjelder også meldingsinnhold, deltakere og samtalehistorikk før skriving åpnes. Dagens
+databasegrunnlag, rolleinnlogging og demo er ikke godkjenning til å importere ekte elever.
 
 ## 1. Identitet og profil
 
@@ -147,3 +176,9 @@ Invitasjoner som gjelder brukeren, følger dataeksport uten token-hash. Anonymis
 Navngitt deling har nå egen beskyttet spiller-/foresattflate. Rå invitasjonslenke vises bare ved første oppretting og holdes i komponentminnet, uten lokal nettleserlagring. Lenken bruker URL-fragment som fjernes etter innlasting; fragmentet inngår ikke i HTTP-adressen til akseptsiden. Offentlig akseptside viser ingen spilleropplysninger og sender ingen e-post. Aksepten krever innlogging, bekreftet mottakeradresse og aktiv trenertilknytning. Trenerens beskyttede IUP-leser kontrollerer samtykket ved hvert nytt oppslag og viser bare leverte, kildevaliderte revisjoner. Utkast forblir private. Dette er ikke en påstand om at alle eldre WANG/TN-lesere er samordnet med det nye fullprofilomfanget.
 
 Trenerens delingsoversikt viser bare navn og miljø for aksepterte, fortsatt gyldige navngitte delinger. Kandidat-ID-er fra invitasjonsregisteret kontrolleres under spillerlås før navn leses. Listeinndeling begrenser arbeidet til 20 kandidater per side; tilbakekalte, avsluttede og ubekreftede rettigheter gir ikke spilleropplysninger. Ingen ny lagring.
+
+### Bookingforslag og avvisningsutkast (PR #1010)
+
+Booking lagrer betalingsmåte og foreslått start/slutt med coach-ID. Feltene følger eksisterende bookingeksport. Avvisning oppretter et knyttet InnboksEpost-utkast med kontaktopplysninger og begrunnelse; ingenting sendes av avvisningshandlingen. Avvisning og utkast lagres i samme transaksjon. Tilgangen til selve bookingen avgrenses til riktig coach/admin.
+
+Knyttede innboksutkast følger nå spillerens bookingeksport. Anonymisering vasker kontakt, emne, fritekst og utkast før den eksterne ryddekjeden kobler booking fra brukeren; booking- og betalingshistorikken beholdes. Gjestenes eksisterende retention-/slettespørsmål gjelder fortsatt som beskrevet over. Dette arbeidet legger ikke til noen automatisk utsending ved avvisning.

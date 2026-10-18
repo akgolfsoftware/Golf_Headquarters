@@ -13,6 +13,18 @@ import { canUser } from "@/lib/auth/effective-capabilities";
 import { Capability } from "@/lib/auth/cbac";
 import { WangCoachKlient } from "@/app/team-wang/coach/WangCoachKlient";
 import type { WangOmraade } from "@/components/wang/WangAppSkall";
+import { kanSeDataGolf } from "@/lib/auth/datagolf-tilgang";
+import { hentWangDataGolf } from "@/app/team-wang/_data/wang-datagolf-data";
+import { dgSideFraFane } from "@/app/team-wang/_data/wang-datagolf-visning";
+import {
+  hentWangSamtykkeStatus,
+  hentWangTesterData,
+} from "@/app/team-wang/_data/wang-tester-data";
+import {
+  byggWangTrenerData,
+  osloIdagIso,
+  osloNaaTid,
+} from "@/app/team-wang/_data/wang-trener-data";
 
 export const dynamic = "force-dynamic";
 
@@ -27,6 +39,13 @@ interface WangCoachPageProps {
   searchParams?: Promise<{
     omraade?: string;
     fane?: string;
+    okt?: string;
+    id?: string;
+    sok?: string;
+    tour?: string;
+    norske?: string;
+    kat?: string;
+    aar?: string;
     visArsplan?: string;
   }>;
 }
@@ -46,13 +65,14 @@ const GYLDIGE_OMRAADER: WangOmraade[] = [
 export default async function WangCoachPage({ searchParams }: WangCoachPageProps = {}) {
   const params = searchParams ? await searchParams : {};
   const bruker = await requirePortalUser({
+    tillatDemo: true,
     allow: ["ADMIN", "COACH"],
     redirectTo: "/team-wang/logg-inn?next=%2Fteam-wang%2Fcoach",
   });
   const gruppeId = await hentWangCoachGruppeId(bruker);
   if (!gruppeId) notFound();
 
-  const live = await hentWangGruppe({ medElevnavn: true });
+  const live = await hentWangGruppe({ gruppeId, medElevnavn: true });
   if (!live || live.gruppeId !== gruppeId) notFound();
 
   // Hvis eksplisitt bestilt gammel årsplanvisning:
@@ -74,18 +94,42 @@ export default async function WangCoachPage({ searchParams }: WangCoachPageProps
     redirect("/team-wang/coach?omraade=idag");
   }
 
-  const elever = live.elever
-    .filter((e) => e.rolle === "PLAYER")
-    .map((e) => ({ id: e.id, navn: e.navn }));
+  // Testresultater og testsamtykke bare der de vises. Tilgangen går gjennom delingssamtykket.
+  const tester = ["tester", "elever", "admin"].includes(aktivtOmraade)
+    ? await hentWangTesterData(bruker, gruppeId)
+    : undefined;
+  if (tester && aktivtOmraade === "admin") {
+    tester.samtykke = await hentWangSamtykkeStatus(
+      live.elever.filter((e) => e.rolle === "PLAYER").map((e) => e.id),
+      gruppeId,
+    );
+  }
+
+  // Data Golf bare for coach-rollen (kanSeDataGolf), aldri for elever.
+  const dgSide = aktivtOmraade === "konkurranse" ? dgSideFraFane(params.fane) : null;
+  const dataGolf =
+    dgSide && kanSeDataGolf(bruker)
+      ? await hentWangDataGolf(dgSide, {
+          id: params.id,
+          sok: params.sok,
+          tour: params.tour,
+          norske: params.norske,
+          kat: params.kat,
+          aar: params.aar,
+        })
+      : undefined;
 
   return (
     <WangCoachKlient
       omraade={aktivtOmraade}
       fane={params.fane}
+      oktId={params.okt}
+      id={params.id}
       rolle={rolle}
       brukerNavn={bruker.name ?? undefined}
-      elever={elever}
-      campus="Fredrikstad"
+      tester={tester}
+      dataGolf={dataGolf}
+      data={byggWangTrenerData(live, osloIdagIso(), osloNaaTid())}
     />
   );
 }

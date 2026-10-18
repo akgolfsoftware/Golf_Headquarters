@@ -1,53 +1,24 @@
 "use client";
 
 /**
- * Forelder-onboarding-wizard — MOBIL-FØRST 430px.
- * Foreldre-flyt etter at en mindreårig spiller er satt opp: bekreft info,
- * godkjenn vilkår/samtykke, og sett opp betaling.
+ * Forelderens oppstart (AU-04 Forelder) i nytt design (utkast-flater/innlogging.html, «forelderstart»).
+ * To steg: 1 Om deg (navn, telefon, relasjon) · 2 Vilkår og samtykke. Lagring er uendret
+ * (saveForelderOnboardingStep, completeForelderOnboarding).
  *
- * 4 steg: 1 Velkommen · 2 Din info + relasjon · 3 Vilkår og samtykke ·
- *         4 Betaling.
- *
- * VIKTIG: All steg-logikk og lagre-actions er beholdt uendret — kun
- * presentasjonen er portet til DS-token-komponenter (samme vokabular som
- * spiller-wizarden i onboarding-wizard.tsx). v2-port 16. juli 2026:
- * primitivfilene er restylet til v2-tokens; her er KUN inline-presentasjon
- * (velkomst-kort, relasjon-/betalingsvalg, abonnement-kort, feilboks)
- * flyttet til T-tokens. Steg-maskin og actions 100 % uendret.
- * Ingen hardkodet hex. Ingen emoji — kun lucide-react. Norsk bokmål.
+ * Avvik mot utkastet: utkastet kobler barnet med barnets e-post. Den koblingen finnes ikke i appen;
+ * barnet sender forelderen en lenke fra oppstarten, og forelderen godkjenner der (AU-05). Betaling
+ * velges ikke her: forelderen betaler med kort eller Apple Pay når hen booker (§INNLOGGING BARE MED
+ * GOOGLE OG PASSORD). Betalingsmåten lagres som «KORT», som før.
  */
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { CreditCard, Mail, Smartphone, Users } from "lucide-react";
+import { AlertCircle } from "lucide-react";
+import { FlateRamme } from "@/components/flater/FlateRamme";
+import { saveForelderOnboardingStep, completeForelderOnboarding, type ForelderOnboardingData } from "../actions";
+import "@/styles/flater-ny-konto.css";
 
-import {
-  saveForelderOnboardingStep,
-  completeForelderOnboarding,
-  type ForelderOnboardingData,
-} from "../actions";
-import {
-  VeiviserFlate,
-  ProgressDots,
-  StepHeader,
-  StepHeading,
-  PrimaryCta,
-  Field,
-  TextField,
-  FieldGroupLabel,
-  HeroIllo,
-  OptionRow,
-  AgreeItem,
-  SecurityStrip,
-} from "@/components/auth/precision/oppstart";
-import { InlineVarsel } from "@/components/precision/pa-a5";
-import { Meta } from "@/components/precision/pa";
-
-// ──────────────────────────────────────────────────────────────────────────────
-// Konstanter
-// ──────────────────────────────────────────────────────────────────────────────
-
-const TOTAL_STEPS = 4;
+const TOTAL_STEPS = 2;
 
 const RELASJONER = [
   { id: "MOR", label: "Mor" },
@@ -55,51 +26,28 @@ const RELASJONER = [
   { id: "FORESATT", label: "Foresatt" },
 ] as const;
 
-const BETALINGSMETODER = [
-  { id: "VIPPS", label: "Vipps", sub: "Auto. 20. hver mnd", anbefalt: true, icon: Smartphone },
-  { id: "KORT", label: "Kort", sub: "Visa · MC · Stripe", anbefalt: false, icon: CreditCard },
-  { id: "FAKTURA", label: "Faktura", sub: "30 dagers frist", anbefalt: false, icon: Mail },
-] as const;
-
-// Kolonnen (bredde og luft) eies av VeiviserFlate; steget legger bare blokkene under hverandre.
-function StepBody({ children }: { children: React.ReactNode }) {
-  return <div className="flex flex-col gap-5">{children}</div>;
-}
-
-// ──────────────────────────────────────────────────────────────────────────────
-// Wizard
-// ──────────────────────────────────────────────────────────────────────────────
-
 export function ForelderWizard() {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
-  // Steg 2
   const [parentName, setParentName] = useState("");
   const [parentPhone, setParentPhone] = useState("");
-  const [parentEmail, setParentEmail] = useState("");
-  const [parentRelation, setParentRelation] = useState<"MOR" | "FAR" | "FORESATT">("MOR");
-
-  // Steg 3
+  const [parentRelation, setParentRelation] = useState<"MOR" | "FAR" | "FORESATT">("FORESATT");
   const [acceptedTraining, setAcceptedTraining] = useState(false);
   const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
   const [acceptedPayment, setAcceptedPayment] = useState(false);
-
-  // Steg 4
-  const [paymentMethod, setPaymentMethod] = useState<"VIPPS" | "KORT" | "FAKTURA">("VIPPS");
 
   function buildData(): ForelderOnboardingData {
     return {
       parentName: parentName || undefined,
       parentPhone: parentPhone || undefined,
-      parentEmail: parentEmail || undefined,
       parentRelation,
       acceptedTermsParent: acceptedTraining,
       acceptedPrivacyParent: acceptedPrivacy,
       acceptedPaymentParent: acceptedPayment,
-      paymentMethod,
+      paymentMethod: "KORT",
     };
   }
 
@@ -112,14 +60,8 @@ export function ForelderWizard() {
         setError("Kunne ikke lagre. Prøv igjen.");
         return;
       }
-      if (step < TOTAL_STEPS) {
-        setStep(step + 1);
-      }
+      setStep(2);
     });
-  }
-
-  function tilbake() {
-    if (step > 1) setStep(step - 1);
   }
 
   function fullfor() {
@@ -129,7 +71,7 @@ export function ForelderWizard() {
         await saveForelderOnboardingStep(buildData());
         await completeForelderOnboarding();
       } catch {
-        router.push("/portal");
+        router.push("/forelder");
         router.refresh();
       }
     });
@@ -137,199 +79,49 @@ export function ForelderWizard() {
 
   const kanFullfore = acceptedTraining && acceptedPrivacy && acceptedPayment;
 
-  const eyebrowFor: Record<number, string> = {
-    1: "Velkommen",
-    2: "Din info",
-    3: "Vilkår og samtykke",
-    4: "Betaling",
-  };
-
   return (
-    <VeiviserFlate>
-      {/* stegstrek + tilbake (felles chrome) */}
-      <div className="flex flex-col gap-2">
-        <ProgressDots total={TOTAL_STEPS} current={step} etikett="Forelder" />
-        <StepHeader
-          step={step}
-          total={TOTAL_STEPS}
-          eyebrow={eyebrowFor[step]}
-          onBack={tilbake}
-          canGoBack={step > 1}
-          disabled={pending}
-        />
+    <FlateRamme skall="konto">
+      <div className="steghode">
+        <div className="rad"><span className="nr">Forelder · steg {step} av {TOTAL_STEPS}</span></div>
+        <div className="steg-linje" aria-hidden="true">{Array.from({ length: TOTAL_STEPS }, (_, i) => <i key={i} className={i < step ? "ja" : undefined} />)}</div>
       </div>
-
-      {/* ── STEG 1 — Velkommen ─────────────────────────────────── */}
-      {step === 1 && (
-        <StepBody>
-          <HeroIllo label="Foreldre-portal" />
-          <StepHeading
-            title="Hei —"
-            emphasis="velkommen inn"
-            titleAfter="."
-            deck="Coach Anders og spilleren din har akkurat satt opp profilen hos AK Golf Academy. Som foresatt er du en sentral del av utviklingen — uten å være i veien."
-          />
-          <InlineVarsel tone="info">
-            Du får din egen <strong>foreldre-portal</strong> med innsyn i planer, runder, fakturaer og fremgang. Du kan også sende meldinger til Anders direkte.
-          </InlineVarsel>
-          <PrimaryCta onClick={neste} disabled={pending}>
-            La oss begynne
-          </PrimaryCta>
-        </StepBody>
-      )}
-
-      {/* ── STEG 2 — Din info + relasjon ───────────────────────── */}
-      {step === 2 && (
-        <StepBody>
-          <StepHeading
-            title="Bekreft"
-            emphasis="din info"
-            titleAfter="."
-            deck="Litt info om deg som foresatt, slik at vi kan sende fakturaer og holde kontakten."
-          />
-          <Field label="Ditt navn" htmlFor="forelder-navn">
-            <TextField
-              id="forelder-navn"
-              type="text"
-              value={parentName}
-              onChange={(e) => setParentName(e.target.value)}
-              placeholder="Fullt navn"
-              autoComplete="name"
-            />
-          </Field>
-          <Field label="Telefon" htmlFor="forelder-telefon">
-            <TextField
-              id="forelder-telefon"
-              mono
-              type="tel"
-              value={parentPhone}
-              onChange={(e) => setParentPhone(e.target.value)}
-              placeholder="+47 ..."
-              autoComplete="tel"
-            />
-          </Field>
-          <Field label="E-post" htmlFor="forelder-epost">
-            <TextField
-              id="forelder-epost"
-              type="email"
-              value={parentEmail}
-              onChange={(e) => setParentEmail(e.target.value)}
-              placeholder="din@epost.no"
-              autoComplete="email"
-            />
-          </Field>
-
-          <FieldGroupLabel>Relasjon</FieldGroupLabel>
-          <div className="pa-seg pa-seg--full" role="group" aria-label="Relasjon">
-            {RELASJONER.map((rel) => (
-              <button
-                key={rel.id}
-                type="button"
-                className="pa-seg__opt"
-                onClick={() => setParentRelation(rel.id)}
-                aria-pressed={parentRelation === rel.id}
-              >
-                {rel.label}
-              </button>
-            ))}
+      {step === 1 ? (
+        <>
+          <div className="topp">
+            <h1 className="tittel">Om deg</h1>
+            <p className="ingress">Barnet ditt sender deg en lenke fra oppstarten. Der godkjenner du kontoen, og barnet vises under Barn.</p>
           </div>
-
-          <SecurityStrip>
-            Du kan invitere annen foresatt senere fra foreldre-portalen.{" "}
-            <strong className="font-semibold">Begge får samme tilgangsnivå.</strong>
-          </SecurityStrip>
-
-          <PrimaryCta onClick={neste} disabled={pending}>
-            {pending ? "Lagrer…" : "Neste — Godkjenn vilkår"}
-          </PrimaryCta>
-        </StepBody>
-      )}
-
-      {/* ── STEG 3 — Vilkår og samtykke ────────────────────────── */}
-      {step === 3 && (
-        <StepBody>
-          <StepHeading
-            title="Vilkår og"
-            emphasis="samtykke"
-            titleAfter="."
-            deck="Som foresatt for en mindreårig spiller må du godkjenne våre vilkår, personvernerklæringen og avtalen om trenings-data."
-          />
-
-          <div className="flex flex-col gap-2">
-            <AgreeItem
-              title="AK Golf Academy treningsavtale"
-              desc="Hva spilleren får tilgang til, frekvens og forventninger."
-              checked={acceptedTraining}
-              onClick={() => setAcceptedTraining(!acceptedTraining)}
-            />
-            <AgreeItem
-              title="Personvernerklæring og datadeling"
-              desc="Hvilke data vi samler, hvordan vi bruker dem, og dine rettigheter."
-              checked={acceptedPrivacy}
-              onClick={() => setAcceptedPrivacy(!acceptedPrivacy)}
-            />
-            <AgreeItem
-              title="Betaling og oppsigelse"
-              desc="Faktura månedlig. Avsluttes når som helst med 30 dagers oppsigelse."
-              checked={acceptedPayment}
-              onClick={() => setAcceptedPayment(!acceptedPayment)}
-            />
+          <form className="seksjon" onSubmit={(e) => { e.preventDefault(); neste(); }}>
+            <div className="felt"><label htmlFor="fn">Navn</label><input id="fn" autoComplete="name" value={parentName} onChange={(e) => setParentName(e.target.value)} /></div>
+            <div className="felt"><label htmlFor="ft">Telefon</label><input id="ft" type="tel" autoComplete="tel" value={parentPhone} onChange={(e) => setParentPhone(e.target.value)} /></div>
+            <div className="felt">
+              <span className="etikett" id="rel">Jeg er</span>
+              <div className="valg" role="group" aria-labelledby="rel">
+                {RELASJONER.map((r) => <button key={r.id} type="button" aria-pressed={parentRelation === r.id} onClick={() => setParentRelation(r.id)}>{r.label}</button>)}
+              </div>
+            </div>
+            {error && <p className="feilmelding" role="alert"><AlertCircle className="ikon" aria-hidden="true" />{error}</p>}
+            <button type="submit" className="knapp pri stor" disabled={pending || !parentName.trim()}>{pending ? "Lagrer …" : "Neste"}</button>
+          </form>
+        </>
+      ) : (
+        <>
+          <div className="topp">
+            <h1 className="tittel">Vilkår og samtykke</h1>
+            <p className="ingress">Du betaler med kort eller Apple Pay når du booker for barnet. Ingenting trekkes nå.</p>
           </div>
-
-          <SecurityStrip>
-            <strong className="font-semibold">Anders Kristiansen og AK Golf Academy</strong> er
-            forsikret, registrert som golftrener av NGF og har politiattest. Alle rutiner følger
-            NIF sine retningslinjer for arbeid med mindreårige.
-          </SecurityStrip>
-
-          <PrimaryCta onClick={neste} disabled={pending || !kanFullfore}>
-            {pending ? "Lagrer…" : "Neste — Betaling"}
-          </PrimaryCta>
-        </StepBody>
-      )}
-
-      {/* ── STEG 4 — Betaling ──────────────────────────────────── */}
-      {step === 4 && (
-        <StepBody>
-          <StepHeading
-            title="Sett opp"
-            emphasis="betaling"
-            titleAfter="."
-            deck="Spilleren har valgt FULL, 299 kr/mnd. Du faktureres månedlig fra dato spilleren er aktivert. Avsluttes når som helst."
-          />
-
-          <div className="pa-card" style={{ padding: 16, gap: 4 }}>
-            <Meta>ABONNEMENT</Meta>
-            <span style={{ font: "600 15px/1.3 var(--font-sans)" }}>AK Golf Academy FULL</span>
-            <span style={{ font: "var(--type-num)", fontSize: 28, lineHeight: 1.1 }}>299 kr/mnd</span>
-            <Meta>AVSLUTTES NÅR SOM HELST · 30 DAGERS OPPSIGELSE</Meta>
+          <section className="seksjon">
+            <label className="avkrysning"><input type="checkbox" checked={acceptedTraining} onChange={(e) => setAcceptedTraining(e.target.checked)} /><span><b>AK Golf Academy treningsavtale</b>Jeg har lest <a href="/vilkar">vilkårene</a>.</span></label>
+            <label className="avkrysning"><input type="checkbox" checked={acceptedPrivacy} onChange={(e) => setAcceptedPrivacy(e.target.checked)} /><span><b>Personvern og datadeling</b>Jeg har lest <a href="/personvern">personvernerklæringen</a>.</span></label>
+            <label className="avkrysning"><input type="checkbox" checked={acceptedPayment} onChange={(e) => setAcceptedPayment(e.target.checked)} /><span><b>Betaling og oppsigelse</b>Timer betales med kort eller Apple Pay gjennom Stripe. Avbestilling er gratis til 24 timer før.</span></label>
+            {error && <p className="feilmelding" role="alert"><AlertCircle className="ikon" aria-hidden="true" />{error}</p>}
+          </section>
+          <div className="bunnknapper">
+            <button type="button" className="knapp sek" onClick={() => setStep(1)} disabled={pending}>Tilbake</button>
+            <button type="button" className="knapp pri stor" onClick={fullfor} disabled={pending || !kanFullfore}>{pending ? "Lagrer …" : "Til forelder"}</button>
           </div>
-
-          <FieldGroupLabel>Velg betalingsmetode</FieldGroupLabel>
-          <div role="radiogroup" aria-label="Betalingsmetode" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            {BETALINGSMETODER.map(({ id, label, sub, anbefalt, icon }) => (
-              <OptionRow
-                key={id}
-                label={anbefalt ? `${label} · anbefalt` : label}
-                sub={sub}
-                icon={icon}
-                selected={paymentMethod === id}
-                onClick={() => setPaymentMethod(id)}
-              />
-            ))}
-          </div>
-
-          <SecurityStrip>
-            Sikret med Stripe · 256-bit kryptering · GDPR-kompatibelt
-          </SecurityStrip>
-
-          <PrimaryCta onClick={fullfor} disabled={pending} icon={Users}>
-            {pending ? "Aktiverer…" : "Fullfør og aktiver"}
-          </PrimaryCta>
-        </StepBody>
+        </>
       )}
-
-      {error && <InlineVarsel tone="signal">{error}</InlineVarsel>}
-    </VeiviserFlate>
+    </FlateRamme>
   );
 }

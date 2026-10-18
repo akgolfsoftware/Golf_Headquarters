@@ -6,12 +6,12 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { Topp } from "@/components/admin/agencyos-ny/ny";
 import {
   AdminEksternLeserTrainLock,
   type EksternLeserRad,
 } from "@/components/admin/v2/oppsett/AdminEksternLeserTrainLock";
-import { TlTilbake } from "@/components/admin/v2/oppsett/tl-kit";
 
 export const dynamic = "force-dynamic";
 
@@ -55,9 +55,11 @@ export default async function AdminEksternLeserPage() {
         }));
 
   return (
-    <V2Shell bredde="kolonne" nav={AGENCYOS_NAV} navn={user.name ?? "Admin"}>
-      <TlTilbake href="/admin/team">Team</TlTilbake>
-      <AdminEksternLeserTrainLock grupper={grupper} lesere={lesere} />
-    </V2Shell>
+    <AgencyOSSkall navn={user.name ?? "Admin"}>
+      <div className="agn-s">
+        <Topp tilbake={{ href: "/admin/oppsett?fane=team", tekst: "Oppsett" }} dato="Oppsett · team og tilgang" tittel="Eksterne lesere" />
+        <AdminEksternLeserTrainLock grupper={grupper} lesere={lesere} />
+      </div>
+    </AgencyOSSkall>
   );
 }

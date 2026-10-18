@@ -1,45 +1,54 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { hentTnSamlinger, hentTnTurneringer } from "@/lib/domain/tn-arbeidsflate";
+import { hentTnManedsplan, hentTnSamlinger, hentTnTurneringer } from "@/lib/domain/tn-arbeidsflate";
 import { TN } from "@/lib/v2/team-norway";
-import { TnDatoRad, TnEtikett, TnFlate, TnFlatehode, TnFotnote, TnKorttittel, TnMangler, TnSkjermhode } from "../tn-flate";
-import { TnKnapperekke } from "../tn-handlinger";
+import { TnPille } from "../core";
+import { TnFlate, TnFlatehode, TnHendelserad, TnMangler, TnSkjermhode, TnTekstlenke } from "../tn-flate";
+import { TnOktkort } from "../tn-grunnmur";
+import { TnFlere } from "../tn-flere";
+import { TnHelt, TnHeltBilde, TnHeltKnapper, TnHeltSporsmaal, TnHeltTall, TnHeltTekst, TnHeltTellere } from "../tn-stall";
 import { TnSamlingSkjema, TnSlettSamling } from "../tn-redigering-skjema";
 import { SamlingsprogramKontroll } from "@/components/workbench/SamlingsprogramKontroll";
 import { Capability } from "@/lib/auth/cbac";
 import { canUser } from "@/lib/auth/effective-capabilities";
-import { MANEDER, MANEDER_LANG, SkjermRamme, datoKort, heltallParam, hentSkjermbruker, osloDag, periode, medDato } from "./felles";
+import { MANEDER, MANEDER_LANG, SkjermRamme, heltallParam, hentSkjermbruker, osloDag, periode, medDato } from "./felles";
+import d from "./tn-daglig.module.css";
 
 /**
- * TN-04 Samlinger og terminliste.
- * Fasit: Claude Design «Team Norway App delivery» (bc3e41fc), skjerm TN-04.
+ * TN-04 Samlinger og terminliste, og én samling. Utkast 2, retning B (godkjent 16.10.2026).
+ * Fasit: docs/design-system/utkast-tn/daglig.html, skjermene Samlinger og Én samling (pakke 2).
  *
  * Avvik:
  *   - Mesterskap er ikke egen kategori i turneringsdataene. Årshjulet viser
- *     samlinger og turneringer, ikke mesterskap som eget merke.
- *   - Dagsprogram, romfordeling og pakkeliste har ingen datamodell. Kortet sier
- *     det rett ut i stedet for å vise eksempeltekst.
+ *     samlinger og turneringer.
+ *   - Programmet er gruppeøktene i samlingsperioden. Gruppeøkter har ingen akse i
+ *     datamodellen, så øktkortene er nøytrale. Egentid, romfordeling og pakkeliste
+ *     har ingen datamodell.
+ *   - Svar på samlingen (ja / venter / kan ikke) har ingen datamodell. Helteflaten
+ *     spør «Hvem er med?» og viser aktive spillere i gruppa; påminnelse og
+ *     deltakerliste med svar venter på modellen. Tellerne er program, gruppeøkter og dager.
  *   - Samlinger er gruppehendelser (Anders 27.09.2026). Trener lager, endrer og
- *     sletter dem her. Arrangør er ikke et eget felt; det skrives i notatet.
- *   - Samlinger og turneringer i årshjulet er egne lenker (Anders 27.09.2026).
+ *     sletter dem her. Arrangør skrives i notatet.
  */
 
-const tilDagStreng = (d: Date) => {
-  const o = osloDag(d);
+const tilDagStreng = (dato: Date) => {
+  const o = osloDag(dato);
   return `${o.aar}-${String(o.maned).padStart(2, "0")}-${String(o.dag).padStart(2, "0")}`;
 };
+const klokke = new Intl.DateTimeFormat("nb-NO", { hour: "2-digit", minute: "2-digit", hourCycle: "h23", timeZone: "Europe/Oslo" });
+const ukedag = new Intl.DateTimeFormat("nb-NO", { weekday: "long", day: "numeric", month: "long", timeZone: "Europe/Oslo" });
+const MND_KORT = ["jan", "feb", "mar", "apr", "mai", "jun", "jul", "aug", "sep", "okt", "nov", "des"] as const;
 
 type Hendelse = { type: "samling" | "turnering"; tittel: string; fra: Date; til: Date; sted: string | null; id: string };
 
 export async function TnSamlingerSkjerm({ sokeparametre, valgtId }: { sokeparametre: Record<string, string | string[] | undefined>; valgtId?: string }) {
+  if (valgtId) return <TnSamlingSkjerm id={valgtId} />;
   const bruker = await hentSkjermbruker();
   const [data, turneringsdata] = await Promise.all([hentTnSamlinger(bruker), hentTnTurneringer(bruker)]);
   if (!data) notFound();
-  const kanPublisere = await canUser(bruker, Capability.EDIT_GROUP_PLANS);
 
-  const naa = new Date();
-  const idag = osloDag(naa);
+  const idag = osloDag(new Date());
   const aar = heltallParam(sokeparametre.ar, 2000, 2100, idag.aar);
   const maned = heltallParam(sokeparametre.maned, 1, 12, aar === idag.aar ? idag.maned : 1);
 
@@ -51,137 +60,173 @@ export async function TnSamlingerSkjerm({ sokeparametre, valgtId }: { sokeparame
   const iManed = (h: Hendelse, a: number, m: number) => {
     const fra = osloDag(h.fra);
     const til = osloDag(h.til);
-    const start = fra.aar * 12 + fra.maned;
-    const slutt = til.aar * 12 + til.maned;
     const denne = a * 12 + m;
-    return denne >= start && denne <= slutt;
+    return denne >= fra.aar * 12 + fra.maned && denne <= til.aar * 12 + til.maned;
   };
-
-  const valgt = valgtId
-    ? data.samlinger.find((s) => s.id === valgtId)
-    : [...data.samlinger].sort((a, b) => a.startDate.getTime() - b.startDate.getTime()).find((s) => s.endDate.getTime() >= naa.getTime());
-  if (valgtId && !valgt) notFound();
-
   const manedsrader = hendelser.filter((h) => iManed(h, aar, maned));
+  const antallSamlinger = manedsrader.filter((h) => h.type === "samling").length;
+  const antallTurneringer = manedsrader.length - antallSamlinger;
   const lenke = (a: number, m: number) => `/team-norway/samlinger?ar=${a}&maned=${m}`;
+  const flertall = (n: number, en: string, flere: string) => `${n} ${n === 1 ? en : flere}`;
 
   return (
     <SkjermRamme aktiv="samlinger" brukerNavn={bruker.name} kontekst={data.kontekst}>
       <TnSkjermhode
-        rute={valgt && valgtId ? `/team-norway/samlinger/${valgt.id}` : "/team-norway/samlinger"}
+        overlinje={`Sesong ${aar}`}
         tittel="Samlinger og terminliste"
         ingress="Hele sesongen på ett ark. Velg en måned for detaljer."
         handling={data.kontekst.kanAdministrere ? <TnSamlingSkjema knapp="Ny samling" /> : undefined}
       />
 
-      <TnFlate>
-        <TnFlatehode tittel={`Årshjul ${aar}`}>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 14, fontSize: 12.5, color: TN.textSecondary, alignItems: "center" }}>
-            <span style={{ display: "flex", alignItems: "center", gap: 6 }}><span aria-hidden="true" style={{ width: 10, height: 10, background: TN.navy900 }} />Samling</span>
-            <span style={{ display: "flex", alignItems: "center", gap: 6 }}><span aria-hidden="true" style={{ width: 10, height: 10, background: TN.navy100, border: `1px solid ${TN.navy300}` }} />Turnering</span>
-            <span style={{ display: "flex", gap: 10, fontFamily: TN.font.mono, fontSize: 12 }}>
-              <Link href={lenke(aar - 1, 12)} style={{ color: TN.navy700, minHeight: 44, display: "inline-flex", alignItems: "center" }}>← {aar - 1}</Link>
-              <Link href={lenke(aar + 1, 1)} style={{ color: TN.navy700, minHeight: 44, display: "inline-flex", alignItems: "center" }}>{aar + 1} →</Link>
+      <section style={{ display: "grid", gap: 12 }}>
+        <TnFlatehode tittel="Årshjulet">
+          <span className={d.forklaring}>
+            <span><i style={{ background: TN.navy900 }} />Samling</span>
+            <span><i style={{ background: TN.akse.TURN.fyll }} />Turnering</span>
+            <span className={d.aarsvalg}>
+              <TnTekstlenke href={lenke(aar - 1, 12)}>{aar - 1}</TnTekstlenke>
+              <TnTekstlenke href={lenke(aar + 1, 1)}>{aar + 1}</TnTekstlenke>
             </span>
-          </div>
+          </span>
         </TnFlatehode>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(max(84px, calc(100% / 12)), 1fr))", borderTop: `1px solid ${TN.navy100}`, borderLeft: `1px solid ${TN.navy100}`, marginTop: 16 }}>
+        <nav aria-label={`Måneder i ${aar}`} className={d.aar}>
           {MANEDER.map((navn, i) => {
             const m = i + 1;
-            const aktiv = m === maned;
-            const hendelserIManed = hendelser.filter((h) => iManed(h, aar, m));
+            const iDenne = hendelser.filter((h) => iManed(h, aar, m));
+            const s = iDenne.filter((h) => h.type === "samling").length;
+            const t = iDenne.length - s;
+            const gaatt = aar < idag.aar || (aar === idag.aar && m < idag.maned);
             return (
-              <div
+              <Link
                 key={navn}
-                style={{ background: aktiv ? TN.navy50 : TN.white, borderTop: `3px solid ${aktiv ? TN.red600 : "transparent"}`, borderRight: `1px solid ${TN.navy100}`, borderBottom: `1px solid ${TN.navy100}`, padding: "4px 6px 10px", minHeight: 118, display: "flex", flexDirection: "column", gap: 4, minWidth: 0 }}
+                href={lenke(aar, m)}
+                scroll={false}
+                aria-current={m === maned ? "true" : undefined}
+                aria-label={`${MANEDER_LANG[i]}: ${flertall(s, "samling", "samlinger")}, ${flertall(t, "turnering", "turneringer")}`}
+                className={gaatt ? `${d.maned} ${d.gaatt}` : d.maned}
               >
-                <Link
-                  href={lenke(aar, m)}
-                  scroll={false}
-                  aria-current={aktiv ? "true" : undefined}
-                  aria-label={`${MANEDER_LANG[i]} ${aar}, ${hendelserIManed.length} hendelser`}
-                  style={{ fontFamily: TN.font.display, fontSize: 12, letterSpacing: "0.18em", color: TN.navy900, textDecoration: "none", minHeight: 44, display: "flex", alignItems: "center", paddingLeft: 2 }}
-                >
-                  {navn}
-                </Link>
-                {hendelserIManed.slice(0, 3).map((h) => (
-                  <Link
-                    key={`${h.type}-${h.id}`}
-                    href={h.type === "samling" ? `/team-norway/samlinger/${h.id}` : `/team-norway/turneringer/${h.id}`}
-                    style={{ display: "flex", alignItems: "center", minHeight: 44, fontSize: 11.5, lineHeight: 1.3, padding: "4px 6px", borderRadius: TN.radius.sm, background: h.type === "samling" ? TN.navy900 : TN.navy100, color: h.type === "samling" ? TN.white : TN.navy900, overflowWrap: "anywhere", textDecoration: "none" }}
-                  >
-                    {h.tittel}
-                  </Link>
-                ))}
-                {hendelserIManed.length > 3 ? <Link href={lenke(aar, m)} scroll={false} style={{ fontFamily: TN.font.mono, fontSize: 11, color: TN.textSecondary, minHeight: 44, display: "flex", alignItems: "center", paddingLeft: 2 }}>+{hendelserIManed.length - 3} til</Link> : null}
-              </div>
+                <b>{MND_KORT[i]}</b>
+                <span className={d.prikker} aria-hidden="true">
+                  {Array.from({ length: s }, (_, k) => <i key={`s${k}`} style={{ background: TN.navy900 }} />)}
+                  {Array.from({ length: t }, (_, k) => <i key={`t${k}`} style={{ background: TN.akse.TURN.fyll }} />)}
+                </span>
+              </Link>
             );
           })}
-        </div>
-      </TnFlate>
+        </nav>
+      </section>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 360px), 1fr))", gap: 20, alignItems: "start" }}>
-        <TnFlate>
-          <TnFlatehode tittel={`${MANEDER_LANG[maned - 1]} ${aar}`} merknad={`${manedsrader.length} i terminlisten`} />
-          {manedsrader.map((h) => (
-            <TnDatoRad
-              key={`${h.type}-${h.id}`}
-              dato={periode(h.fra, h.til)}
-              datoFarge={h.type === "samling" ? TN.navy900 : TN.textSecondary}
-              tittel={<Link href={h.type === "samling" ? `/team-norway/samlinger/${h.id}` : `/team-norway/turneringer/${h.id}`} style={{ color: TN.textPrimary, minHeight: 44, display: "inline-flex", alignItems: "center" }}>{h.tittel}</Link>}
-              tekst={`${h.type === "samling" ? "Samling" : "Turnering"} · ${h.sted ?? "Sted ikke registrert"}`}
-            />
-          ))}
+      <section style={{ display: "grid", gap: 12 }}>
+        <TnFlatehode tittel={MANEDER_LANG[maned - 1] ?? ""} merknad={`${flertall(antallSamlinger, "samling", "samlinger")} · ${flertall(antallTurneringer, "turnering", "turneringer")}`} />
+        <TnFlate style={{ paddingBlock: 4 }}>
+          {manedsrader.map((h) => {
+            const fra = osloDag(h.fra);
+            return (
+              <TnHendelserad
+                key={`${h.type}-${h.id}`}
+                dag={String(fra.dag).padStart(2, "0")}
+                maned={MND_KORT[fra.maned - 1] ?? ""}
+                tittel={h.tittel}
+                tekst={`${periode(h.fra, h.til)} · ${h.sted ?? "Sted ikke registrert"}`}
+                href={h.type === "samling" ? `/team-norway/samlinger/${h.id}` : `/team-norway/turneringer/${h.id}`}
+                hoyre={h.type === "samling" ? <TnPille tone="info">Samling</TnPille> : <TnPille>Turnering</TnPille>}
+              />
+            );
+          })}
           {manedsrader.length === 0 ? <TnMangler>Ingen aktivitet i terminlisten denne måneden.</TnMangler> : null}
         </TnFlate>
+      </section>
+    </SkjermRamme>
+  );
+}
 
-        <TnFlate>
-          {valgt ? (
-            <>
-              <TnKorttittel overlinje={`${valgtId ? "Samling" : "Neste samling"} · ${periode(valgt.startDate, valgt.endDate, true)}`} tittel={valgt.location ?? valgt.name}>
-                {valgt.location ? <div style={{ fontSize: 14, color: TN.textSecondary, marginTop: 4 }}>{valgt.name}</div> : null}
-              </TnKorttittel>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 1, background: TN.navy100, border: `1px solid ${TN.navy100}`, marginTop: 18 }}>
-                {[
-                  ["Deltakere", String(valgt.antallDeltakere)],
-                  ["Fra", datoKort(valgt.startDate)],
-                  ["Til", datoKort(valgt.endDate)],
-                ].map(([etikett, verdi]) => (
-                  <div key={etikett} style={{ background: TN.white, padding: "12px 14px", minWidth: 0 }}>
-                    <div style={{ fontFamily: TN.font.mono, fontSize: 22, fontVariantNumeric: "tabular-nums" }}>{verdi}</div>
-                    <TnEtikett style={{ marginTop: 4 }}>{etikett}</TnEtikett>
-                  </div>
+async function TnSamlingSkjerm({ id }: { id: string }) {
+  const bruker = await hentSkjermbruker();
+  const data = await hentTnSamlinger(bruker);
+  if (!data) notFound();
+  const valgt = data.samlinger.find((s) => s.id === id);
+  if (!valgt) notFound();
+  const naa = new Date();
+  const [kanPublisere, plan] = await Promise.all([
+    canUser(bruker, Capability.EDIT_GROUP_PLANS),
+    hentTnManedsplan(bruker, valgt.startDate, new Date(valgt.endDate.getTime() + 864e5)),
+  ]);
+
+  const okter = (plan?.okter ?? []).filter((o) => o.startAt.getTime() <= valgt.endDate.getTime() + 864e5);
+  const perDag = new Map<string, typeof okter>();
+  for (const o of okter) perDag.set(tilDagStreng(o.startAt), [...(perDag.get(tilDagStreng(o.startAt)) ?? []), o]);
+  const minutter = okter.reduce((sum, o) => sum + Math.max(0, Math.round((o.endAt.getTime() - o.startAt.getTime()) / 6e4)), 0);
+  const timer = String(Math.round((minutter / 60) * 10) / 10).replace(".", ",");
+
+  const dagMs = (dato: Date) => { const o = osloDag(dato); return Date.UTC(o.aar, o.maned - 1, o.dag); };
+  const dager = Math.round((dagMs(valgt.endDate) - dagMs(valgt.startDate)) / 864e5) + 1;
+
+  return (
+    <SkjermRamme aktiv="samlinger" brukerNavn={bruker.name} kontekst={data.kontekst} tilbake={{ href: "/team-norway/samlinger", label: "Samlinger" }}>
+      <TnSkjermhode
+        overlinje={`Samling · ${periode(valgt.startDate, valgt.endDate, true)}`}
+        tittel={valgt.location ? `${valgt.name} ${valgt.location}` : valgt.name}
+        ingress={valgt.notes ?? "Ingen notater på samlingen."}
+      />
+
+      <TnHelt
+        etikett="Hvem er med"
+        venstre={
+          <>
+            <TnHeltSporsmaal>Hvem er med?</TnHeltSporsmaal>
+            <TnHeltTall verdi={valgt.antallDeltakere}>{valgt.antallDeltakere === 1 ? "spiller i gruppa" : "spillere i gruppa"}</TnHeltTall>
+            <TnHeltTekst>Hele gruppen deltar. Svar på samlingen (ja, venter, kan ikke) registreres ikke ennå.</TnHeltTekst>
+            {data.kontekst.kanAdministrere ? (
+              <TnHeltKnapper>
+                <TnSamlingSkjema
+                  knapp="Endre samling"
+                  variant="hvit"
+                  samling={{ id: valgt.id, tittel: valgt.name, sted: valgt.location ?? "", fra: tilDagStreng(valgt.startDate), til: tilDagStreng(valgt.endDate), notat: valgt.notes ?? "" }}
+                />
+                <TnFlere knapp="Mer" variant="konturHvit">
+                  <TnSlettSamling id={valgt.id} navn={valgt.name} variant="meny" />
+                </TnFlere>
+              </TnHeltKnapper>
+            ) : null}
+          </>
+        }
+        hoyre={
+          <>
+            <TnHeltBilde src="/team-norway/bilder/slag-utslag.jpg" alt="Spiller i utslag på rangen" />
+            <TnHeltTellere
+              tall={[
+                { verdi: okter.length ? `${timer} t` : "—", tekst: "program" },
+                { verdi: okter.length, tekst: okter.length === 1 ? "gruppeøkt" : "gruppeøkter" },
+                { verdi: dager, tekst: dager === 1 ? "dag" : "dager" },
+              ]}
+            />
+          </>
+        }
+      />
+
+      <section style={{ display: "grid", gap: 12 }}>
+        <TnFlatehode tittel="Programmet" />
+        {perDag.size === 0 ? (
+          <TnFlate style={{ background: TN.ink50 }}><TnMangler>Ingen gruppeøkter er lagt inn i samlingsperioden. Legg dem inn i gruppeplanen, så vises de her dag for dag.</TnMangler></TnFlate>
+        ) : (
+          [...perDag.entries()].map(([dag, liste]) => (
+            <div key={dag} className={d.dagBlokk}>
+              <h3>{ukedag.format(liste[0]!.startAt)}</h3>
+              <div className={d.oktListe}>
+                {liste.map((o) => (
+                  <TnOktkort key={o.id} akse={null} liten tid={klokke.format(o.startAt)} varighet={`${Math.round((o.endAt.getTime() - o.startAt.getTime()) / 6e4)} min`} navn={o.title} info={o.location ? [o.location] : []} />
                 ))}
               </div>
-              <TnEtikett style={{ marginTop: 22, paddingBottom: 6, borderBottom: `1px solid ${TN.navy100}` }}>Notater</TnEtikett>
-              <p style={{ fontSize: 14.5, lineHeight: 1.6, margin: "10px 0 0", whiteSpace: "pre-line", overflowWrap: "anywhere" }}>{valgt.notes ?? "Ingen notater på samlingen."}</p>
-              {kanPublisere && valgt.endDate >= naa ? <SamlingsprogramKontroll organisasjon="TEAM_NORWAY" planHref={data.planHref} samlinger={[{
-                id: valgt.id, tittel: valgt.name, fra: tilDagStreng(valgt.startDate), til: tilDagStreng(valgt.endDate), sted: valgt.location,
-              }]} /> : null}
-              <TnFotnote>Romfordeling og pakkeliste er ikke del av samlingsprogrammet ennå.</TnFotnote>
-              {data.kontekst.kanAdministrere ? (
-                <div style={{ marginTop: 18 }}>
-                  <TnKnapperekke>
-                    <TnSamlingSkjema
-                      knapp="Endre samling"
-                      variant="sekundar"
-                      samling={{ id: valgt.id, tittel: valgt.name, sted: valgt.location ?? "", fra: tilDagStreng(valgt.startDate), til: tilDagStreng(valgt.endDate), notat: valgt.notes ?? "" }}
-                    />
-                    <TnSlettSamling id={valgt.id} navn={valgt.name} />
-                  </TnKnapperekke>
-                </div>
-              ) : null}
-              {valgtId ? <p style={{ margin: "14px 0 0" }}><Link href="/team-norway/samlinger" style={{ color: TN.navy700, fontSize: 14, minHeight: 44, display: "inline-flex", alignItems: "center" }}>Alle samlinger</Link></p> : null}
-            </>
-          ) : (
-            <>
-              <TnFlatehode tittel="Neste samling" />
-              <TnMangler>Ingen kommende samlinger er registrert for gruppen.</TnMangler>
-              {data.kontekst.kanAdministrere ? <div style={{ marginTop: 16 }}><TnSamlingSkjema knapp="Ny samling" variant="sekundar" /></div> : null}
-            </>
-          )}
-        </TnFlate>
-      </div>
+            </div>
+          ))
+        )}
+      </section>
+
+      {kanPublisere && valgt.endDate >= naa ? (
+        <SamlingsprogramKontroll organisasjon="TEAM_NORWAY" planHref={data.planHref} samlinger={[{ id: valgt.id, tittel: valgt.name, fra: tilDagStreng(valgt.startDate), til: tilDagStreng(valgt.endDate), sted: valgt.location }]} />
+      ) : null}
+
+      <TnTekstlenke href="/team-norway/samlinger">Alle samlinger</TnTekstlenke>
     </SkjermRamme>
   );
 }

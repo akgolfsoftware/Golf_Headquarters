@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect } from "react";
-import { CircleAlert, RotateCw } from "lucide-react";
+import { RotateCw } from "lucide-react";
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
-import { FeilTilstand, Knapp } from "@/components/precision/pa";
 import { reportClientError } from "@/lib/report-client-error";
+import "@/styles/playerhq-ny.css";
 
 export default function PlanleggeError({
   error,
@@ -26,14 +26,13 @@ export default function PlanleggeError({
 
   return (
     <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
-      <div className="pa-side">
-        <FeilTilstand
-          icon={CircleAlert}
-          title="Fikk ikke lastet uken"
-          text="Sjekk nettet og prøv igjen. Ingenting er endret i planen."
-          code={error.digest ? `FEIL · PLAN · ${error.digest}` : "FEIL · PLAN"}
-          retry={<Knapp variant="secondary" icon={RotateCw} onClick={reset}>Prøv igjen</Knapp>}
-        />
+      <div className="phn">
+        <section className="phn-kort" role="alert">
+          <h1 className="phn-tittel" style={{ fontSize: 22 }}>Fikk ikke lastet uka</h1>
+          <p className="phn-forklar">Sjekk nettet og prøv igjen. Ingenting er endret i planen.</p>
+          {error.digest && <p className="phn-kilde">Feilkode {error.digest}</p>}
+          <div className="phn-knapper"><button type="button" className="phn-knapp sek" onClick={reset}><RotateCw className="phn-ikon" aria-hidden />Prøv igjen</button></div>
+        </section>
       </div>
     </PlayerHQSkall>
   );

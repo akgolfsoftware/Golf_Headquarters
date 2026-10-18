@@ -20,6 +20,7 @@ import { beregnSlotVindu, type SlotVindu } from "@/lib/portal-booking/slot-vindu
 import { createCreditBooking } from "@/lib/booking/credit-booking";
 import { kanBrukeCredits } from "@/lib/booking/credits-tilgang";
 import { isSlotStillAvailable } from "@/lib/booking/availability";
+import { finnStedForTjeneste } from "@/lib/booking/tjeneste-sted";
 import { startBookingPayment } from "@/lib/booking/payment-start";
 import { sjekkKollisjon, erKollisjonsfeil, kollisjonsmelding } from "@/lib/booking/kollisjonsvern";
 import { acquireHold, releaseHold, DEFAULT_HOLD_TTL_MS } from "@/lib/booking/slot-hold";
@@ -151,7 +152,7 @@ export async function opprettBookingMedKort(
 
   const service = await prisma.serviceType.findUnique({
     where: { id: input.serviceTypeId },
-    select: { id: true, name: true, slug: true, active: true, priceOre: true, durationMin: true, coachUserId: true },
+    select: { id: true, name: true, slug: true, active: true, priceOre: true, durationMin: true, coachUserId: true, locationId: true },
   });
   if (!service?.active) return { ok: false, grunn: "Tjenesten er ikke tilgjengelig." };
   if (service.priceOre < 300) return { ok: false, grunn: "Tjenesten mangler gyldig pris — kontakt oss." };
@@ -177,11 +178,9 @@ export async function opprettBookingMedKort(
   }
   await recordBookingMetric("book_checkout_start");
 
-  const lokasjon = await prisma.location.findFirst({
-    where: service.slug.includes("trackman")
-      ? { name: { contains: "Mulligan" } }
-      : { name: { contains: "Fredrikstad" } },
-  }) ?? (await prisma.location.findFirst());
+  // Stedet leses fra tjenesten (locationId); navnegjetning bare som fallback
+  // når det ikke er satt (src/lib/booking/tjeneste-sted.ts).
+  const lokasjon = await finnStedForTjeneste(service);
   if (!lokasjon) return { ok: false, grunn: "Ingen lokasjon registrert — kontakt oss." };
 
   let booking: { id: string };

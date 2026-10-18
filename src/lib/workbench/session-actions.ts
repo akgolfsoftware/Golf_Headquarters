@@ -19,7 +19,7 @@ import { dateForDayIndex, executeSessionMove, weekRefDate } from "@/lib/workbenc
 import { deleteV2ForPlanSession, upsertV2ForPlanSession } from "@/lib/workbench/v2-sync";
 import { duplicateWeekCore } from "@/lib/workbench/duplicate-week";
 import { sanitizeAkFormel, type AkFormelInput } from "@/lib/workbench/ak-formel";
-import { opprettPeriodeCore, oppdaterPeriodeCore, slettPeriodeCore } from "@/lib/workbench/periode-core";
+import { opprettPeriodeCore, oppdaterPeriodeCore, slettPeriodeCore, type FordeltPeriodeResultat } from "@/lib/workbench/periode-core";
 import { erCoachetSpiller, harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { duplicateSessionCore } from "@/lib/workbench/duplicate-session";
 
@@ -276,7 +276,7 @@ export async function coachLagrePeriode(
   playerId: string,
   input: unknown,
   periodeId?: string,
-): Promise<{ ok: boolean; periodeId?: string; error?: string }> {
+): Promise<{ ok: boolean; periodeId?: string; error?: string } & FordeltPeriodeResultat> {
   const coach = await ensureCoach();
   // I0: coach kan kun planlegge for coachede spillere.
   if (!(await erCoachetSpiller(playerId))) return { ok: false, error: "Ingen tilgang" };
@@ -328,8 +328,9 @@ export async function coachHentNotater(
   const coach = await ensureCoach();
   if (!(await erCoachetSpiller(playerId))) return { ok: false };
   if (!(await harCoachTilgangTilSpiller(coach, playerId))) return { ok: false };
+  // Private notater er bare for coachen som skrev dem.
   const rader = await prisma.coachNote.findMany({
-    where: { playerId },
+    where: { playerId, coachId: coach.id },
     orderBy: { createdAt: "desc" },
     take: 3,
     select: { id: true, content: true, createdAt: true },

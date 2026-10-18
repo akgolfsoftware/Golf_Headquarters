@@ -3,7 +3,7 @@
 import { z } from "zod";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { krevDataGolfBruker } from "@/lib/auth/datagolf-tilgang";
 import { prisma } from "@/lib/prisma";
 import {
   estimerSgFordelingFraSnitt,
@@ -27,10 +27,8 @@ const StartSchema = z.object({
 export async function startSammenligning(
   formData: FormData,
 ): Promise<void> {
-  const user = await getCurrentUser();
-  if (!user) {
-    redirect("/auth/login?next=/stats/sg-sammenlign/start");
-  }
+  // PGA-sammenligningen bygger på Data Golf-tall: bare coach og admin (Anders 09.10.2026).
+  const user = await krevDataGolfBruker("/stats/sg-sammenlign/start");
 
   const raw = Object.fromEntries(formData.entries());
   const parsed = StartSchema.safeParse(raw);

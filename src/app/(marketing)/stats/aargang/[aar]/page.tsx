@@ -9,6 +9,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { UTEN_DATAGOLF_TURNERING } from "@/lib/auth/datagolf-regel";
 import { StatsEyebrow } from "@/components/stats/eyebrow";
 import { Reveal } from "@/components/stats/reveal";
 import { CountUp } from "@/components/stats/count-up";
@@ -68,7 +69,8 @@ async function hentKohortData(aar: number): Promise<KohortData> {
       where: { country: "NO", birthYear: aar, isActive: true },
       include: {
         entries: {
-          where: { status: "FINISHED" },
+          // Resultater fra Data Golf-turneringer vises aldri offentlig (Anders 09.10.2026).
+          where: { status: "FINISHED", tournament: UTEN_DATAGOLF_TURNERING },
           include: {
             tournament: { select: { startDate: true, tour: true, name: true } },
           },

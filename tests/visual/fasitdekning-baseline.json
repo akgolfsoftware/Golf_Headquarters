@@ -1,6 +1,6 @@
 {
-  "sitert": 132,
+  "sitert": 129,
   "av": 219,
-  "sistEndret": "2026-10-05",
-  "grunn": "Oppstart (AU-04) portert til Precision Athletics (7d7c2994): onboarding-wizard.tsx siterte «designsystem/train-lock/PH-19 Onboarding.dc.html» og er erstattet av SpillerOppstart.tsx. Én Train-lock-sitering faller bort, 133→132 (målt etter fletting med main 05.10)."
+  "sistEndret": "2026-10-18",
+  "grunn": "PlayerHQ pakke 13 Stats resten: /portal/analysere/turneringer er en videresending til Resultater › Turneringer, og den ubrukte MinKurveTrainLock er slettet. Begge siterte «designsystem/train-lock/PH-21 Min kurve.dc.html»; Turneringer er bygget i nytt design i PH16Turneringer etter utkast-playerhq/stats-resten.html. Én Train-lock-sitering faller bort, 130→129."
 }

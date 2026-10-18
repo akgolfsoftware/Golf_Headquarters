@@ -13,6 +13,7 @@ import { TL } from "@/lib/v2/train-lock";
 import Link from "next/link";
 import { Caps, Tittel, Kort, StatusPill, MikroMeta, type StatusTone } from "@/components/v2";
 import { BookingAvbestillKnapp } from "./BookingAvbestillKnapp";
+import { BookingFlytteforslag } from "./BookingFlytteforslag";
 
 export type BookingDetaljV2Data = {
   bookingId: string;
@@ -35,6 +36,8 @@ export type BookingDetaljV2Data = {
   kanAvbestille: boolean;
   /** >24 t til start — avgjør kun teksten i avbestill-varselet (server håndhever). */
   kanFaaRefusjon: boolean;
+  /** Coachens forslag om ny tid («mandag 5. oktober kl. 17:00»), null uten forslag. */
+  flytteforslag?: string | null;
 };
 
 function DetaljRad({ label, verdi, last }: { label: string; verdi: React.ReactNode; last?: boolean }) {
@@ -68,6 +71,11 @@ export function BookingDetaljV2({ data }: { data: BookingDetaljV2Data }) {
           {data.coachNavn && <MikroMeta icon="user">{data.coachNavn}</MikroMeta>}
         </div>
       </div>
+
+      {/* Coachens forslag om ny tid — spilleren godtar eller avslår */}
+      {data.flytteforslag && (
+        <BookingFlytteforslag bookingId={data.bookingId} naa={`${data.dato} kl. ${data.tid}`} forslag={data.flytteforslag} />
+      )}
 
       {/* Detaljer — kun ekte felter fra bookingen */}
       <Kort eyebrow="Detaljer">

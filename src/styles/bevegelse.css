@@ -1,0 +1,160 @@
+/* AK Golf HQ — FELLES BEVEGELSE FOR ALLE APPFLATER (Anders 16.10.2026).
+ *
+ * Gjelder PlayerHQ, AgencyOS, forelder, innlogging, booking, Team Norway og
+ * WANG. Markedssidene (.ak-marked) er utenfor: de får egen reise etter
+ * docs/planer/akgolf-no-nettsted-reise-plan-2026-10-15.md. Booking ligger i
+ * markedsrammen, men har egen <main> inne i den og får derfor sideskiftet.
+ *
+ * Regler:
+ * - Bare opacity, translate og scale animeres (60 fps på mobil).
+ * - translate/scale er egne CSS-egenskaper, så de rører aldri en komponents
+ *   egen transform (f.eks. sentrering med translate(-50%, -50%)).
+ * - Alle velgere står i :where() (spesifisitet 0): en komponent som har egen
+ *   animation eller transition, beholder den.
+ * - Sideskiftet er bare opacity. translate på <main> ville gjort den til
+ *   ramme for position: fixed-barn og flyttet faste bunnlinjer under animasjonen.
+ * - Alt ligger i prefers-reduced-motion: no-preference. Har brukeren slått av
+ *   bevegelse, vises samme side uten bevegelse.
+ *
+ * Sideskiftet virker uten JavaScript: hver side eier sitt eget skall med
+ * <main>, og Next monterer siden på nytt ved navigasjon, så animasjonen
+ * spilles hver gang.
+ */
+
+:root {
+  --bv-ease: cubic-bezier(0.23, 1, 0.32, 1);
+  --bv-side: 240ms;
+  --bv-inn: 360ms;
+  --bv-trinn: 40ms;
+  --bv-loft: 8px;
+  --bv-trykk: 0.98;
+}
+
+@keyframes bv-tone {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes bv-loft {
+  from {
+    opacity: 0;
+    translate: 0 var(--bv-loft);
+  }
+}
+@keyframes bv-meny {
+  from {
+    opacity: 0;
+    translate: 0 -4px;
+  }
+}
+@keyframes bv-fyll {
+  from {
+    scale: 0 1;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* ── 1. Sideskifte: innholdsfeltet tones inn ─────────────────────── */
+  :where(main):where(:not(.ak-marked > main)) {
+    animation: bv-tone var(--bv-side) var(--bv-ease) backwards;
+  }
+  /* Innloggingssidene har ingen <main>; rammen deres er .au-ramme. */
+  :where(.au-ramme):where(:not(.ak-marked *)) {
+    animation: bv-tone var(--bv-side) var(--bv-ease) backwards;
+  }
+
+  /* ── 2. Innholdet kommer inn ett og ett ──────────────────────────── */
+  :where(main):where(:not(.ak-marked > main)) > :where(*),
+  :where(main):where(:not(.ak-marked > main)) > :where(:only-child) > :where(*),
+  :where(.au-boks):where(:not(.ak-marked *)) > :where(*) {
+    animation: bv-tone var(--bv-inn) var(--bv-ease) backwards;
+    animation-delay: calc(var(--bv-i) * var(--bv-trinn));
+  }
+
+  /* Kort og rader løftes lett inn. Kort inneholder ikke faste bunnlinjer. */
+  :where(
+      .pa-card,
+      .pa-row,
+      .pa-timeline__item,
+      .pa-table tbody tr,
+      .phn-kort,
+      .phn-fokus-kort,
+      .phn-prad,
+      .phn-rad-lenke,
+      .mer-kort,
+      .wg-kort,
+      .wg-rad,
+      .wg-trow
+    ):where(:not(.ak-marked *)) {
+    animation: bv-loft var(--bv-inn) var(--bv-ease) backwards;
+    animation-delay: calc(var(--bv-i) * var(--bv-trinn));
+  }
+
+  /* Rekkefølgen: de åtte første får hvert sitt trinn, resten kommer samlet. */
+  :where(*):nth-child(1) { --bv-i: 0; }
+  :where(*):nth-child(2) { --bv-i: 1; }
+  :where(*):nth-child(3) { --bv-i: 2; }
+  :where(*):nth-child(4) { --bv-i: 3; }
+  :where(*):nth-child(5) { --bv-i: 4; }
+  :where(*):nth-child(6) { --bv-i: 5; }
+  :where(*):nth-child(7) { --bv-i: 6; }
+  :where(*):nth-child(8) { --bv-i: 7; }
+  /* Settes på alle, så ingen arver trinnet til forelderen sin. */
+  :where(*):nth-child(n + 9) { --bv-i: 8; }
+
+  /* ── 3. Trykk-svar på knapper, faner og kortlenker ───────────────── */
+  :where(
+      button,
+      [role="button"],
+      [role="tab"],
+      summary,
+      a[class*="kort"],
+      a[class*="card"],
+      a[class*="btn"],
+      a[class*="knapp"],
+      .phn-rad-lenke
+    ):where(:not(.ak-marked *)) {
+    transition: scale 150ms var(--bv-ease);
+  }
+  :where(
+      button,
+      [role="button"],
+      [role="tab"],
+      summary,
+      a[class*="kort"],
+      a[class*="card"],
+      a[class*="btn"],
+      a[class*="knapp"],
+      .phn-rad-lenke
+    ):where(:not(:disabled, [aria-disabled="true"], .ak-marked *)):active {
+    scale: var(--bv-trykk);
+  }
+
+  /* ── 4. Faner, menyer og dialoger ────────────────────────────────── */
+  :where([role="tabpanel"]):where(:not(.ak-marked *)) {
+    animation: bv-tone var(--bv-inn) var(--bv-ease) backwards;
+  }
+  :where([role="menu"], [role="listbox"], [role="tooltip"]):where(:not(.ak-marked *)) {
+    animation: bv-meny 180ms var(--bv-ease) backwards;
+  }
+  /* Bare opacity: dialoger sentreres ofte med transform. Ark (pa-sheet) har
+     egen glid-inn-animasjon som vinner over denne. */
+  :where([role="dialog"], [role="alertdialog"], dialog[open]):where(:not(.ak-marked *)) {
+    animation: bv-tone 200ms var(--bv-ease) backwards;
+  }
+
+  /* ── 5. Fremdriftsstreker fylles fra venstre ─────────────────────── */
+  :where(
+      .pa-barrow__fill,
+      .pa-a21__progress-fill,
+      .tp-strek__fyll,
+      .a8-stolpe__fyll,
+      .a9-fremdrift__fyll,
+      .a10-pbar__fyll,
+      .pyr-bar-fill,
+      [role="progressbar"] > *
+    ):where(:not(.ak-marked *)) {
+    transform-origin: left center;
+    animation: bv-fyll 700ms var(--bv-ease) 120ms backwards;
+  }
+}

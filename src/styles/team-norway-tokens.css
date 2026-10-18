@@ -79,6 +79,29 @@
   --tn-status-info-text: #023B76;
   --tn-status-info-bg: #E3ECF6;
 
+  /* ── Aksefargene FYS · TEK · SLAG · SPILL · TURN (Anders 14.10.2026, se
+         beslutninger.md §TEAM NORWAY FÅR EGNE AKSEFARGER FRA TN-PALETTEN).
+         Laget av TN-navy og TN-rød: TEK er navy-600, TURN er red-700, SPILL er
+         navy blandet med rød, FYS og SLAG i samme dybde på hver side.
+         Fyll bærer hvit tekst (6,1–8,4 : 1). Lys brukes på navy (7,0–7,9 : 1).
+         Tint er bakgrunn med fyllfargen som tekst (5,3–7,1 : 1).
+         Logorøden #D70232 er aldri akse. Aksenavnet står alltid ved fargen. ── */
+  --tn-akse-fys: #0D6E6A;
+  --tn-akse-fys-lys: #6FD3C9;
+  --tn-akse-fys-tint: #E2F2F0;
+  --tn-akse-tek: #0A5199;
+  --tn-akse-tek-lys: #8DBDF0;
+  --tn-akse-tek-tint: #E3ECF6;
+  --tn-akse-slag: #4B3F9E;
+  --tn-akse-slag-lys: #B9B0F2;
+  --tn-akse-slag-tint: #ECEAF8;
+  --tn-akse-spill: #8A2A72;
+  --tn-akse-spill-lys: #EBA3D8;
+  --tn-akse-spill-tint: #F6E6F1;
+  --tn-akse-turn: #A80126;
+  --tn-akse-turn-lys: #FF9CB0;
+  --tn-akse-turn-tint: #FCE3E8;
+
   --tn-data-1: #012B5D;
   --tn-data-2: #0A5199;
   --tn-data-3: #3E8FC4;
@@ -129,16 +152,13 @@
 
   /* ── Geometri — 0, 2 eller 4. Ingenting annet.
          Ordmerket er geometrisk og tett; myke hjørner over 4 px gjør flatene
-         runde på en måte merket ikke er. Sirkler finnes ikke i systemet —
-         derfor er også avataren kvadratisk.
-         `--tn-radius-full` beholder NAVNET for at 18 kallsteder ikke må
-         skrives om, men verdien er 0: piller finnes ikke lenger. ── */
+         runde på en måte merket ikke er. Sirkler og piller finnes ikke i
+         systemet — derfor er også avataren kvadratisk. ── */
   --tn-radius-xs: 0;
   --tn-radius-sm: 2px;
   --tn-radius-md: 2px;
   --tn-radius-lg: 4px;
   --tn-radius-xl: 4px;
-  --tn-radius-full: 0;
 
   /* ── Skygger finnes ikke. Flater skilles med én hårstrek, ikke med dybde.
          Navnene står igjen så kallsteder ikke må skrives om; verdien er

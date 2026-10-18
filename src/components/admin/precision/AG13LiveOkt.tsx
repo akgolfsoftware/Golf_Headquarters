@@ -5,9 +5,7 @@
  * (Claude Design 7d7c2994, ui_kits/agencyos/screens/AG-cockpit.jsx, AG13
  * med noConsent, «Live coachingøkt · uten samtykke til opptak»).
  *
- * Nattema via AgencyOSSkall natt (skallets egen regel: «Nattema (Live
- * coachingøkt). Hurtigknappen vises ikke på nattflater»; beslutninger.md
- * §PRECISION ATHLETICS: nattema i Live-økt) — satt av page.tsx.
+ * Lys flate (beslutninger.md §LIVE-ØKTENE ER ALLTID LYSE, 14.10).
  *
  * Bevisst avvik fra tegningen:
  *   - Samtykke til opptak finnes ikke som eget felt i datamodellen ennå
@@ -89,6 +87,7 @@ function LiveMeldingSeksjon({ sessionId }: { sessionId: string }) {
             }}
             disabled={isPending}
             placeholder="Skriv en rask melding …"
+            style={{ minHeight: 44 }}
           />
           <span style={{ position: "absolute", right: 6 }}>
             <MicButton variant="suffix" onResult={(t) => setTekst((prev) => (prev ? prev + " " + t : t))} disabled={isPending} />

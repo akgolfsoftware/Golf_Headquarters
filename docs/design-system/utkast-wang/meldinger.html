@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WANG Meldinger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Quattrocento:wght@400;700&family=Quattrocento+Sans:wght@400;700&display=swap">
+<link rel="stylesheet" href="felles/wang.css">
+<style>
+  .tr{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:2px 12px;align-items:center;padding:14px 16px;border:0;background:#fff;text-align:left;font:inherit;width:100%;cursor:pointer}
+  .tr + .tr{border-top:1px solid var(--linje)}
+  .tr.ulest{background:var(--tint-mint)}
+  .tr b{font:700 15px/1.3 var(--brand);color:var(--navy-dyp)}
+  .tr .sma{grid-column:2;font-size:14px;color:var(--tekst-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .tr time{font:700 12px/1 var(--brand);color:var(--tekst-2);white-space:nowrap}
+  .tr .avatar.gr{background:var(--tint-mint);color:var(--navy-dyp-tekst)}
+  .tr .avatar.fo{background:var(--tint-gul);color:var(--gul-tekst)}
+  .tr .ikon-avatar{display:grid;place-items:center;width:36px;height:36px;border-radius:50%}
+  .innboks{padding:0;overflow:hidden;gap:0}
+  .traad{display:grid;gap:12px}
+  .boble{max-width:min(85%,520px);padding:12px 14px;border-radius:0;display:grid;gap:4px}
+  .boble p{font-size:15px;line-height:1.5}
+  .boble small{font:700 11px/1.2 var(--brand);color:var(--tekst-2)}
+  .boble.inn{background:#fff;box-shadow:var(--skygge-s);border-bottom-left-radius:6px;justify-self:start}
+  .boble.ut{background:var(--navy);color:#fff;border-bottom-right-radius:6px;justify-self:end}
+  .boble.ut small{color:rgba(255,255,255,.85)}
+  .dagskille{justify-self:center;font:700 11px/1 var(--brand);letter-spacing:.08em;text-transform:uppercase;color:var(--tekst-2)}
+  .info-linje{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:var(--r-felt);background:var(--tint-gul);color:var(--gul-tekst);font:700 13px/1.4 var(--brand)}
+  .info-linje .ikon{color:var(--gul-tekst);width:18px;height:18px;margin-top:1px}
+  .skriv{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:end;position:sticky;bottom:0;padding:12px 0 4px;background:var(--bg)}
+  .skriv textarea{min-height:48px;padding:12px 14px;border:1.5px solid var(--n300);border-radius:0;font:400 16px/1.4 var(--body);width:100%;resize:none}
+  .post{display:grid;gap:10px}
+  .post-topp{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline}
+  .post h3{margin:0;font:800 17px/1.3 var(--brand);color:var(--navy-dyp)}
+  .lest{display:grid;gap:6px}
+  .lest .stolpe span{background:var(--mint)}
+  .vedlegg{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 14px;border-radius:var(--r-chip);background:var(--tint-graa);font:700 13px/1 var(--brand);color:var(--navy-dyp);justify-self:start}
+  .svar-rad{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+  .svar-rad div{padding:12px;border-radius:var(--r-felt);display:grid;gap:4px}
+  .svar-rad strong{font:800 24px/1 var(--brand);color:var(--navy-dyp)}
+  .svar-rad span{font:700 12px/1.3 var(--brand);color:var(--tekst-2)}
+  .dok{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:2px 12px;align-items:center;padding:12px 0}
+  .dok + .dok{border-top:1px solid var(--linje)}
+  .dok b{font:700 15px/1.3 var(--brand);color:var(--navy-dyp)}
+  .dok .sma{grid-column:2;font-size:13px;color:var(--tekst-2)}
+  .dok .fil{display:grid;place-items:center;width:40px;height:40px;border-radius:0;background:var(--tint-navy);color:var(--navy);font:800 10px/1 var(--brand)}
+  @container (min-width:900px){
+    .meldinger-kol{display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:24px;align-items:start}
+  }
+</style>
+</head>
+<body>
+<div class="ytre">
+  <header class="hode">
+    <p class="meta-s">WANG Toppidrett · trenerflaten · pakke 6 Meldinger · utkast 2 (retning B, lett hånd) · 16.10.2026</p>
+    <h1>Meldinger</h1>
+    <p>Innboksen, samtalen med én elev (WANG-14), gruppeposter (WANG-13), foreldremøte (WANG-15) og dokumenter (WANG-21). Alle navn og tall er syntetiske.</p>
+  </header>
+  <div class="kontroller">
+    <div class="velger" aria-label="Skjerm"><button type="button" data-skjerm="innboks" aria-pressed="true">Innboks</button><button type="button" data-skjerm="traad" aria-pressed="false">Én elev</button><button type="button" data-skjerm="gruppe" aria-pressed="false">Gruppepost</button><button type="button" data-skjerm="mote" aria-pressed="false">Foreldremøte</button><button type="button" data-skjerm="dok" aria-pressed="false">Dokumenter</button></div>
+    <div class="velger" aria-label="Bredde"><button type="button" data-bredde="mob" aria-pressed="true">Mobil 390</button><button type="button" data-bredde="pc" aria-pressed="false">PC 1280</button></div>
+    <div class="velger" aria-label="Rolle"><button type="button" data-rolle="trener" aria-pressed="true">Trener</button><button type="button" data-rolle="sportssjef" aria-pressed="false">Sportssjef</button></div>
+    <div class="velger" aria-label="Tilstand"><button type="button" data-tilstand="data" aria-pressed="true">Med data</button><button type="button" data-tilstand="tom" aria-pressed="false">Tom</button><button type="button" data-tilstand="laster" aria-pressed="false">Laster</button><button type="button" data-tilstand="feil" aria-pressed="false">Feil</button></div>
+  </div>
+  <div class="scene"><div id="ramme" class="ramme mob"></div></div>
+  <div class="notater">
+    <section class="endringer">
+      <h2>Utkast 2</h2>
+      <ul>
+        <li>Ro er riktig her. Skjermene beholder oppsettet fra utkast 1 og bruker bare den nye grunnmuren: navy er eneste handlingsfarge, og store bokstaver er tatt bort fra lesekvitteringen.</li>
+      </ul>
+    </section>
+    <section class="endringer">
+      <h2>Hva skjermene gjør</h2>
+      <ul>
+        <li><b>Innboks:</b> alle samtaler med elever, gruppa og foresatte på ett sted, uleste øverst.</li>
+        <li><b>Én elev:</b> foresatte til elever under 18 leser samtalen, og det står over skrivefeltet. Meldinger kan ikke slettes. Post krysser aldri skoler.</li>
+        <li><b>Gruppepost:</b> treneren ser hvem som har lest. Elevene ser aldri hvem som ikke har lest.</li>
+        <li><b>Foreldremøte:</b> invitasjon, svar og referat. Skolen ser svar per hjem; et hjem ser aldri andres svar.</li>
+        <li><b>Dokumenter:</b> hvert dokument har rekkevidde: elever, foresatte eller begge.</li>
+      </ul>
+    </section>
+    <section class="endringer">
+      <h2>Åpne spørsmål</h2>
+      <ul>
+        <li>Skal Meldinger i WANG være samme innboks som i AgencyOS, eller egen for WANG? Utkastet viser egen, bare med WANG-samtaler.</li>
+        <li>Skal foreldremøter sendes som e-post i tillegg til PlayerHQ? Utkastet sender bare i PlayerHQ.</li>
+      </ul>
+    </section>
+  </div>
+</div>
+
+<!-- ================= Innboks ================= -->
+<template id="s-innboks">
+<div class="app" data-fane="meldinger">
+<main class="innhold">
+  <section data-behold style="display:grid;gap:14px">
+    <div><p class="dato">WANG Golf · 3 uleste</p><h1 class="tittel">Meldinger</h1></div>
+    <nav class="faner" aria-label="Meldinger"><a href="#" class="aktiv">Alle</a><a href="#" data-gaa="traad">Elever</a><a href="#" data-gaa="gruppe">Gruppa</a><a href="#" data-gaa="mote">Foresatte</a><a href="#" data-gaa="dok">Dokumenter</a></nav>
+    <div class="knapper"><button type="button" class="knapp pri" data-gaa="gruppe">Ny gruppepost</button><button type="button" class="knapp sek" data-gaa="traad">Skriv til elev</button></div>
+  </section>
+  <div class="meldinger-kol">
+    <div class="kort innboks" data-innboks></div>
+    <div class="kort dempet" data-bare="sportssjef"><b class="undertittel">Som sportssjef</b><p class="forklar">Du ser samtaler i alle golfgruppene ved WANG Fredrikstad. Samtaler ved andre WANG-skoler vises aldri.</p></div>
+  </div>
+</main>
+</div>
+</template>
+
+<!-- ================= Én elev ================= -->
+<template id="s-traad">
+<div class="app" data-fane="meldinger" data-skall="tilbake" data-tilbake="Meldinger">
+<main class="innhold">
+  <section data-behold style="display:flex;gap:12px;align-items:center">
+    <span class="avatar">09</span>
+    <div><p class="dato">VG2 · Kategori D</p><h1 class="tittel" style="font-size:24px">Elev 09</h1></div>
+  </section>
+  <div class="traad">
+    <span class="dagskille">Mandag 12. oktober</span>
+    <div class="boble ut"><p>Hei! Vi savnet deg på morgentreningen i dag. Alt i orden?</p><small>Trener 1 · 09:12 · Lest</small></div>
+    <span class="dagskille">Tirsdag 13. oktober</span>
+    <div class="boble ut"><p>Gi beskjed hvis du trenger en prat. Du kan også svare her.</p><small>Trener 1 · 10:05 · Lest</small></div>
+    <span class="dagskille">I dag</span>
+    <div class="boble inn"><p>Sorry, har hatt mye med skolen. Er tilbake i morgen.</p><small>Elev 09 · 07:21</small></div>
+  </div>
+  <div class="info-linje"><svg class="ikon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg><span>Foresatte leser denne samtalen fordi eleven er under 18. Meldinger kan ikke slettes.</span></div>
+  <div class="skriv"><textarea aria-label="Skriv melding" rows="1">Fint å høre. Vi sees kl. 08:00.</textarea><button type="button" class="knapp pri" data-send>Send</button></div>
+</main>
+</div>
+</template>
+
+<!-- ================= Gruppepost ================= -->
+<template id="s-gruppe">
+<div class="app" data-fane="meldinger" data-skall="tilbake" data-tilbake="Meldinger">
+<main class="innhold">
+  <section data-behold><p class="dato">WANG Golf · 11 elever</p><h1 class="tittel">Gruppeposter</h1></section>
+  <div class="to-kol">
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Ny post</h2></div>
+      <div class="kort">
+        <div class="felt"><label for="g-tittel">Tittel</label><input id="g-tittel" value="Pakkeliste til finalen i Larvik"></div>
+        <div class="felt"><label for="g-tekst">Tekst</label><textarea id="g-tekst" rows="5">Avreise lørdag 24.10 kl. 06:30 fra skolen. Husk regntøy, to hansker og matpakke. Spørsmål? Svar her.</textarea></div>
+        <div class="felt"><span class="etikett-felt">Til</span><div class="valg" role="group" aria-label="Mottakere" style="justify-self:stretch;display:grid;grid-template-columns:1fr 1fr"><button type="button" aria-pressed="false">Hele gruppa</button><button type="button" aria-pressed="true">4 påmeldte</button></div></div>
+        <button type="button" class="vedlegg">Legg ved fil</button>
+        <div class="knapper"><button type="button" class="knapp pri" data-publiser>Publiser</button><button type="button" class="knapp sek">Lagre kladd</button></div>
+        <p class="kilde" data-kvittering hidden>Publisert til 4 elever. Foresatte til elever under 18 ser den også.</p>
+      </div>
+    </section>
+    <section class="seksjon">
+      <div class="sek-topp"><h2>Publisert</h2></div>
+      <div class="kort post">
+        <div class="post-topp"><h3>Ny tid for fellessamling fredag</h3><span class="kilde">Mandag 12.10</span></div>
+        <p class="forklar">Fellessamlingen flyttes til kl. 13:00 på grunn av heldagsprøve i norsk.</p>
+        <div class="lest"><div class="sek-topp"><span class="forklar">Lest</span><b class="undertittel">9 av 11</b></div><div class="stolpe"><span style="width:82%"></span></div><p class="kilde">Ikke lest: Elev 02, Elev 09. Bare du ser dette.</p></div>
+      </div>
+      <div class="kort post">
+        <div class="post-topp"><h3>Testuke 47</h3><span class="kilde">Fredag 9.10</span></div>
+        <p class="forklar">Fysisk test og 8-ball 16.–20. november. Timeplan kommer.</p>
+        <div class="lest"><div class="sek-topp"><span class="forklar">Lest</span><b class="undertittel">11 av 11</b></div><div class="stolpe"><span style="width:100%"></span></div></div>
+      </div>
+    </section>
+  </div>
+</main>
+</div>
+</template>
+
+<!-- ================= Foreldremøte ================= -->
+<template id="s-mote">
+<div class="app" data-fane="meldinger" data-skall="tilbake" data-tilbake="Meldinger">
+<main class="innhold">
+  <section data-behold><p class="dato">Torsdag 29. oktober · 18:00 · Auditoriet</p><h1 class="tittel">Foreldremøte høst</h1></section>
+  <div class="to-kol">
+    <div class="kort">
+      <b class="undertittel">Agenda</b>
+      <p class="forklar">Sesongen som var · årsplanen for 2026/27 · samlingen i Spania uke 13 · deling av data med Team Norway · spørsmål.</p>
+      <button type="button" class="vedlegg">Årsplan 2026/27.pdf</button>
+      <div class="skille"></div>
+      <b class="undertittel">Svar</b>
+      <div class="svar-rad"><div style="background:var(--tint-mint)"><strong>7</strong><span>Kommer</span></div><div style="background:var(--tint-gul)"><strong>2</strong><span>Kommer ikke</span></div><div style="background:var(--n100)"><strong>2</strong><span>Ikke svart</span></div></div>
+      <p class="kilde">11 hjem. Hvert hjem ser bare sitt eget svar.</p>
+      <div class="knapper"><button type="button" class="knapp pri">Påminn de som ikke har svart</button><button type="button" class="knapp sek">Skriv referat</button></div>
+    </div>
+    <div class="kort">
+      <b class="undertittel">Svar per hjem</b>
+      <div data-hjem></div>
+    </div>
+  </div>
+  <div class="knapper"><button type="button" class="knapp fare">Avlys møtet</button></div>
+</main>
+</div>
+</template>
+
+<!-- ================= Dokumenter ================= -->
+<template id="s-dok">
+<div class="app" data-fane="meldinger" data-skall="tilbake" data-tilbake="Meldinger">
+<main class="innhold">
+  <section data-behold style="display:grid;gap:12px"><div><p class="dato">WANG Golf</p><h1 class="tittel">Dokumenter</h1></div><div class="knapper"><button type="button" class="knapp pri">Last opp</button></div></section>
+  <div class="kort" data-dok></div>
+  <p class="kilde">Rekkevidden bestemmer hvem som ser dokumentet i PlayerHQ. «Bare foresatte» vises ikke for eleven.</p>
+</main>
+</div>
+</template>
+
+<script src="felles/wang.js"></script>
+<script>
+(function () {
+  var IK_GR = '<svg class="ikon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9"/></svg>';
+  function innboks(app) {
+    var T = [
+      ['09', 'Elev 09', 'Sorry, har hatt mye med skolen. Er tilbake i morgen.', '07:21', 1, 'traad', ''],
+      ['F', 'Foresatt til Elev 06', 'Takk for beskjed om prøven. Hun kommer fredag.', 'I går', 1, 'mote', 'fo'],
+      ['05', 'Elev 05', 'Har ført 8-ball, kan du se på den?', 'I går', 1, 'traad', ''],
+      ['GR', 'WANG Golf · gruppa', 'Ny tid for fellessamling fredag. 9 av 11 har lest.', 'Man', 0, 'gruppe', 'gr'],
+      ['07', 'Elev 07', 'Godtok forslaget ditt om ekstra SLAG torsdag.', 'Man', 0, 'traad', ''],
+      ['F', 'Foreldremøte høst', '7 kommer, 2 kommer ikke, 2 har ikke svart.', 'Fre', 0, 'mote', 'fo']
+    ];
+    app.querySelector('[data-innboks]').innerHTML = T.map(function (t) {
+      return '<button type="button" class="tr' + (t[4] ? ' ulest' : '') + '" data-gaa="' + t[5] + '"><span class="avatar ' + t[6] + '">' + (t[0] === 'GR' ? IK_GR : t[0]) + '</span><b>' + t[1] + (t[4] ? ' <span class="pille ok" style="margin-left:4px"><i></i>Ny</span>' : '') + '</b><time>' + t[3] + '</time><span class="sma">' + t[2] + '</span></button>';
+    }).join('');
+  }
+  function traad(app) {
+    app.querySelector('[data-send]').addEventListener('click', function () {
+      var ta = app.querySelector('textarea'); if (!ta.value.trim()) return;
+      var b = document.createElement('div'); b.className = 'boble ut'; b.innerHTML = '<p></p><small>Trener 1 · nå · Sendt</small>'; b.querySelector('p').textContent = ta.value;
+      app.querySelector('.traad').appendChild(b); ta.value = '';
+    });
+  }
+  function gruppe(app) { app.querySelector('[data-publiser]').addEventListener('click', function () { app.querySelector('[data-kvittering]').hidden = false; }); }
+  function mote(app) {
+    var H = [['01', 'ok', 'Kommer, 2 personer'], ['02', 'noy', 'Ikke svart'], ['03', 'ok', 'Kommer, 1 person'], ['04', 'ok', 'Kommer, 2 personer'], ['05', 'vent', 'Kommer ikke'], ['06', 'ok', 'Kommer, 1 person'], ['07', 'ok', 'Kommer, 2 personer'], ['08', 'vent', 'Kommer ikke'], ['09', 'noy', 'Ikke svart'], ['10', 'ok', 'Kommer, 1 person'], ['11', 'ok', 'Kommer, 2 personer']];
+    app.querySelector('[data-hjem]').innerHTML = H.map(function (h) { return '<div class="dok"><span class="avatar">' + h[0] + '</span><b>Hjemmet til Elev ' + h[0] + '</b><span class="pille ' + h[1] + '"><i></i>' + h[2] + '</span></div>'; }).join('');
+  }
+  function dok(app) {
+    var D = [['PDF', 'Årsplan 2026/27', 'Elever og foresatte · oppdatert 1.10'], ['PDF', 'Retningslinjer for fravær', 'Elever og foresatte · 15.8'], ['PDF', 'Samtykke til deling med Team Norway', 'Bare foresatte · 15.8'], ['DOC', 'Pakkeliste turnering', 'Elever · 9.10'], ['PDF', 'Program samling uke 13', 'Kladd · ikke delt']];
+    app.querySelector('[data-dok]').innerHTML = D.map(function (d) { return '<div class="dok"><span class="fil">' + d[0] + '</span><b>' + d[1] + '</b><span class="pille ' + (d[2].indexOf('Kladd') === 0 ? 'vent' : 'noy') + '"><i></i>' + d[2].split(' · ')[0] + '</span><span class="sma">' + d[2] + '</span></div>'; }).join('');
+  }
+  WANGUtkast.start({
+    start: 'innboks',
+    skjermer: {
+      innboks: { mal: 's-innboks', etter: innboks, tom: { tittel: 'Ingen meldinger ennå', tekst: 'Når elever, gruppa eller foresatte skriver, kommer det hit.', knapp: 'Skriv til elev' }, laster: 'Henter meldinger …', feil: 'Meldingene kunne ikke hentes' },
+      traad: { mal: 's-traad', etter: traad, tom: { tittel: 'Ingen meldinger med Elev 09', tekst: 'Skriv den første. Foresatte leser med så lenge eleven er under 18.', knapp: 'Skriv melding' }, laster: 'Henter samtalen …', feil: 'Meldingen ble ikke sendt. Teksten ligger fortsatt i feltet.' },
+      gruppe: { mal: 's-gruppe', etter: gruppe, tom: { tittel: 'Ingen gruppeposter', tekst: 'En gruppepost går til alle elevene i gruppa på en gang.', knapp: 'Ny gruppepost' }, laster: 'Henter gruppeposter …', feil: 'Posten ble ikke publisert. Ingenting er sendt.' },
+      mote: { mal: 's-mote', etter: mote, tom: { tittel: 'Ingen foreldremøter planlagt', tekst: 'Planlegg minst to uker frem.', knapp: 'Nytt foreldremøte' }, laster: 'Henter møtet …', feil: 'Møtet kunne ikke hentes' },
+      dok: { mal: 's-dok', etter: dok, tom: { tittel: 'Ingen dokumenter', tekst: 'Last opp årsplanen eller retningslinjer, og velg hvem som skal se dem.', knapp: 'Last opp' }, laster: 'Henter dokumenter …', feil: 'Dokumentene kunne ikke hentes' }
+    }
+  });
+})();
+</script>
+</body>
+</html>

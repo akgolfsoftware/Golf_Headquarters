@@ -9,7 +9,7 @@ import { AK } from "@/lib/v2/ak-palett";
  *     hva-nå-steg, PlayerHQ-mersalg, del-modul.
  */
 
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -19,7 +19,7 @@ import {
   Sparkles,
   Trophy,
 } from "lucide-react";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { krevDataGolfBruker } from "@/lib/auth/datagolf-tilgang";
 import { prisma } from "@/lib/prisma";
 import { sammenlignMedReferanse } from "@/lib/stats/sg-estimator";
 import { StatsEyebrow } from "@/components/stats/eyebrow";
@@ -54,10 +54,8 @@ const GAP_LABEL: Record<string, string> = {
 };
 
 export default async function SgResultatPage({ params }: Props) {
-  const user = await getCurrentUser();
-  if (!user) {
-    redirect("/auth/login?next=/stats/sg-sammenlign");
-  }
+  // PGA-sammenligningen bygger på Data Golf-tall: bare coach og admin (Anders 09.10.2026).
+  const user = await krevDataGolfBruker("/stats/sg-sammenlign");
 
   const { id } = await params;
 

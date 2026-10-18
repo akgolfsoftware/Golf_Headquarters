@@ -1,18 +1,30 @@
 /**
- * PH-03 Øktark — Precision Athletics (7d7c2994).
- * Tegningen ui_kits/playerhq/screens/PH-03.jsx ligger ikke i git.
+ * PH-03 Øktark i nytt design (pakke 2 Treningsøkten).
+ * Fasit: docs/design-system/utkast-playerhq/treningsokt.html, skjerm «okt». Stil: src/styles/playerhq-ny-okt.css.
  *
  * Start, oppsummering, flytting, invitasjon og AK-formel beholdes.
  * data-od-id er den eksisterende klikk-kontrakten.
+ *
+ * Avvik:
+ *   - «Hopp over økten» med årsak er ikke med: økta har ikke noe felt for årsak i alle tre øktmodellene.
+ *     «Flytt økta» åpner Workbench som før.
+ *   - Utstyr og «Hvorfor den ligger i uka» med prosessmål vises bare når coach har skrevet en begrunnelse;
+ *     koblingen til prosessmål finnes ikke i datamodellen.
+ *   - Valget Golføkt/Fysisk økt i tegningen er en demovelger og er ikke med.
+ *   - Ingen riggrad i tests/visual/skjerm-mapping.ts; målt med tests/visual/precision/maal.mjs PH-03.
  */
 import Link from "next/link";
-import { Check } from "lucide-react";
-import { AkseMerke, Ikon, Meta, Sidehode, StatusPille, Tall, type Akse } from "@/components/precision/pa";
+import { Check, ChevronLeft, Play } from "lucide-react";
+import { Ikon } from "@/components/precision/pa";
 import { InviteFriendTrigger } from "@/components/portal/workbench/invite-friend-trigger";
 import { formaterVarighet } from "@/lib/format-tall";
+import { oktBilde } from "@/lib/portal/okt-bilde";
+import { formelLedd } from "@/lib/portal-okt/formel-ord";
 import type { OktDetaljData, OktDrill } from "@/lib/portal-okt/okt-detalj-data";
+import "@/styles/playerhq-ny.css";
+import "@/styles/playerhq-ny-okt.css";
 
-const AKSE: Record<string, Akse> = { FYS: "fys", TEK: "tek", SLAG: "slag", SPILL: "spill", TURN: "turn" };
+const AKSE: Record<string, string> = { FYS: "fys", TEK: "tek", SLAG: "slag", SPILL: "spill", TURN: "turn" };
 
 export function PH03Oktark({
   data,
@@ -28,97 +40,105 @@ export function PH03Oktark({
   harNeste: boolean;
 }) {
   if (!data.found) {
-    return <div className="pa-side" data-od-id="playerhq-okt-detalj-tom">
-      <Sidehode kicker="Økt" title="Fant ikke økta" sub={`Den kan være slettet fra planen, eller lenken er gammel.${nesteTekst ? ` ${nesteTekst}` : ""}`} />
-      <Link href="/portal/planlegge" data-od-id="okt-tom-plan" className="pa-btn pa-btn--primary pa-btn--lg pa-btn--full">Åpne planen</Link>
-    </div>;
+    return <div className="phn phn-okt" data-od-id="playerhq-okt-detalj-tom"><div className="smal">
+      <div className="hode-okt"><span className="phn-dato">Økt</span><h1>Fant ikke økta</h1></div>
+      <p className="phn-forklar">Den kan være slettet fra planen, eller lenken er gammel.{nesteTekst ? ` ${nesteTekst}` : ""}</p>
+      <div><Link href="/portal/planlegge" data-od-id="okt-tom-plan" className="phn-knapp pri stor">Åpne planen</Link></div>
+    </div></div>;
   }
 
   const erGjort = data.status === "done";
-  const akse = AKSE[data.pyramide];
-  const rader: [string, string][] = [
-    ["Når", `${data.dagTekst} ${data.tidTekst}`],
-    ["Sted", data.sted],
-    ["Varighet", formaterVarighet(data.varighetMin)],
-    ["Pyramide", data.pyramide],
-  ];
+  const akse = AKSE[data.pyramide] ?? "tek";
+  const [fra, til] = data.tidTekst.split("–");
+  const bilde = oktBilde(data.pyramide, `${data.emTittel} ${data.sted}`);
+  const rader: [string, string][] = [["Når", `${data.dagTekst} ${data.tidTekst}`], ["Sted", data.sted], ["Varighet", formaterVarighet(data.varighetMin)]];
   if (data.publisertAv) rader.push(["Publisert av", data.publisertAv]);
-  if (erGjort && data.resultat?.fullfortKl) rader.push(["Fullført", `${data.dagTekst} ${data.resultat.fullfortKl}`]);
+  if (erGjort && data.resultat?.fullfortKl) rader.push(["Gjennomført", `${data.dagTekst} ${data.resultat.fullfortKl}`]);
 
-  return <div className="pa-side ph03" data-od-id="playerhq-okt-detalj">
-    <Link href="/portal/planlegge" className="pa-btn pa-btn--ghost">Tilbake til plan</Link>
-    <Sidehode kicker={`${data.dagTekst} · uke ${data.ukeNr}`} title={data.emTittel} sub={data.tittel} />
-    <div className="ph02-merker">
-      {akse && <AkseMerke axis={akse} />}
-      {data.status === "cancelled" && <StatusPille tone="warn">{data.statusLabel}</StatusPille>}
-      {data.status === "skipped" && <StatusPille tone="neutral">{data.statusLabel}</StatusPille>}
+  return <div className="phn phn-okt" data-od-id="playerhq-okt-detalj"><div className="smal">
+    <Link href="/portal/planlegge" className="phn-knapp sek" style={{ justifySelf: "start" }}><Ikon icon={ChevronLeft} size={20} name="chevron-left" />Plan</Link>
+    <div className="hode-okt"><span className="phn-dato">{data.dagTekst} · uke {data.ukeNr} · {data.sted}</span></div>
+
+    <div className={`okt-hero fylt-${akse}`}>
+      {/* eslint-disable-next-line @next/next/no-img-element -- statisk bilde fra public, ingen tekst oppå */}
+      <img src={bilde.src} alt="" width={1400} height={933} style={{ objectPosition: bilde.posisjon }} />
+      <div className="tekst">
+        <div className="okt-rad"><span className="okt-tid">{fra}{til && <small>–{til}</small>}</span><span className="akse-merke"><i />{data.pyramide}</span></div>
+        <span className="navn">{data.emTittel}</span>
+        <div className="okt-info"><span>{formaterVarighet(data.varighetMin)}</span><span>{data.drills.length} {data.drills.length === 1 ? "øvelse" : "øvelser"}</span><span>{data.sted}</span></div>
+        {data.status === "cancelled" || data.status === "skipped" ? <span className="phn-pille noy" style={{ justifySelf: "start" }}>{data.statusLabel}</span> : null}
+      </div>
     </div>
+
     {erGjort ? <>
-      {data.resultat && <section className="pa-card ph03-kort" aria-label="Resultat">
-        <Meta>Resultat</Meta>
-        <p className="ph03-resultat"><Tall>{data.resultat.drillsFullfort}</Tall> av {data.resultat.antallDrills}</p>
-        {data.resultat.antallDrills > 0 && data.resultat.drillsFullfort === data.resultat.antallDrills && <StatusPille tone="ok">Mål nådd</StatusPille>}
+      {data.resultat && <section className="phn-kort" aria-label="Resultat">
+        <span className="phn-dato">Resultat</span>
+        <div className="phn-hoved"><strong>{data.resultat.drillsFullfort}<small>av {data.resultat.antallDrills}</small></strong>
+          {data.resultat.antallDrills > 0 && data.resultat.drillsFullfort === data.resultat.antallDrills && <span className="phn-pille ok">Mål nådd</span>}</div>
+        <span className="sub">Øvelser gjennomført</span>
       </section>}
-      {data.maal && <Maal maal={data.maal} hvorfor={data.hvorfor} />}
-      {data.notat && <section className="pa-card ph03-kort"><Meta>Din observasjon</Meta><p>{data.notat}</p></section>}
-      <MetaRader tittel={data.tittel} rader={rader} />
-      <Drills drills={data.drills} medHaker />
-      <div className="ph03-handlinger">
-        <Link href={nesteHref} data-od-id="okt-gjort-neste" className="pa-btn pa-btn--primary pa-btn--lg">{harNeste ? "Åpne neste økt" : "Åpne planen"}</Link>
-        <Link href={`/portal/live/${data.id}/summary`} data-od-id="okt-gjort-summary" className="pa-btn pa-btn--secondary pa-btn--lg">Se oppsummering</Link>
+      <div className="to-kol">
+        <div className="phn-seksjon">
+          {data.maal && <Maal maal={data.maal} hvorfor={data.hvorfor} />}
+          {data.notat && <section className="phn-kort"><span className="phn-dato">Din observasjon</span><p className="phn-forklar">{data.notat}</p></section>}
+          <MetaRader rader={rader} />
+        </div>
+        <Drills drills={data.drills} medHaker />
+      </div>
+      <div className="phn-knapper">
+        <Link href={nesteHref} data-od-id="okt-gjort-neste" className="phn-knapp pri stor">{harNeste ? "Åpne neste økt" : "Åpne planen"}</Link>
+        <Link href={`/portal/live/${data.id}/summary`} data-od-id="okt-gjort-summary" className="phn-knapp sek stor">Se oppsummering</Link>
       </div>
     </> : <>
-      {data.kanStarte && <section className="pa-card ph03-kort" aria-label="Én ting nå">
-        <Meta>Én ting nå</Meta>
-        <h2>{data.status === "now" ? "Økta pågår" : <>Økta starter kl. <Tall>{data.tidTekst.split("–")[0]}</Tall></>}</h2>
-        <p className="ph02-meta">{data.status === "now"
-          ? `${data.sted} · ${data.tidTekst}. Loggen ligger i live-flyten.`
-          : `${data.sted} · ${data.tidTekst}. Du kan starte når du er klar.`}</p>
-        <div className="ph03-handlinger">
-          <Link href={data.startHref} data-od-id="okt-start" className="pa-btn pa-btn--primary pa-btn--xl pa-btn--full">{data.startLabel}</Link>
-          <Link href="/portal/planlegge/workbench" data-od-id="okt-flytt" className="pa-btn pa-btn--secondary">Flytt økta</Link>
+      <div className="to-kol">
+        <div className="phn-seksjon">
+          {data.maal ? <Maal maal={data.maal} hvorfor={data.hvorfor} />
+            : data.hvorfor ? <section className="phn-kort dempet" aria-label="Fra coach"><span className="phn-dato">Fra coach</span><p className="phn-forklar">{data.hvorfor}</p></section>
+            : <section className="phn-kort dempet" aria-label="Mål for økten"><span className="phn-dato">Mål for økten</span><p className="phn-forklar">—</p></section>}
+          <MetaRader rader={rader} />
+          {(data.invite || data.deltakere.length > 0) && <section className="phn-kort" aria-label="Tren sammen">
+            <span className="phn-dato">Tren sammen</span>
+            <div className="rad-liste">{data.deltakere.map((p) => <div key={p.id}><span>{p.navn}</span><span className="sub">{p.statusLabel}</span></div>)}</div>
+            {data.invite && <InviteFriendTrigger sessionId={data.id} hostId={userId} maxParticipants={data.invite.maxParticipants} currentParticipants={data.invite.currentParticipants} spillere={data.invite.spillere} label="Inviter en kompis" variant="ghost" />}
+          </section>}
         </div>
-      </section>}
-      <MetaRader tittel={data.tittel} rader={rader} />
-      {data.maal && <Maal maal={data.maal} hvorfor={data.hvorfor} />}
-      {!data.maal && data.hvorfor && <section className="pa-card ph03-kort"><Meta>Fra coach</Meta><p>{data.hvorfor}</p></section>}
-      <Drills drills={data.drills} medHaker={false} />
-      {(data.invite || data.deltakere.length > 0) && <section className="pa-card ph03-kort" aria-label="Tren sammen">
-        <Meta>Tren sammen</Meta>
-        {data.deltakere.map((p) => <div key={p.id} className="ph03-rad"><span>{p.navn}</span><Meta>{p.statusLabel}</Meta></div>)}
-        {data.invite && <InviteFriendTrigger sessionId={data.id} hostId={userId} maxParticipants={data.invite.maxParticipants} currentParticipants={data.invite.currentParticipants} spillere={data.invite.spillere} label="Inviter en kompis" variant="ghost" />}
-      </section>}
-      <p className="ph02-meta">Økta er din. Du kan endre målet, hoppe over øvelser eller droppe økta. Treneren får beskjed.</p>
+        <Drills drills={data.drills} medHaker={false} />
+      </div>
+      {data.kanStarte && <div className="phn-knapper" aria-label="Start">
+        <Link href={data.startHref} data-od-id="okt-start" className="phn-knapp pri stor"><Ikon icon={Play} size={20} name="play" />{data.startLabel}</Link>
+        <Link href="/portal/planlegge/workbench" data-od-id="okt-flytt" className="phn-knapp sek stor">Flytt økta</Link>
+      </div>}
+      <p className="sub">Økta er din. Du kan endre målet, hoppe over øvelser eller droppe økta. Treneren får beskjed.</p>
     </>}
-  </div>;
+  </div></div>;
 }
 
-function MetaRader({ tittel, rader }: { tittel: string; rader: [string, string][] }) {
-  return <section className="pa-card ph03-kort" aria-label={tittel}>
-    <Meta>{tittel}</Meta>
-    <dl className="ph03-meta">{rader.map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}</dl>
+function MetaRader({ rader }: { rader: [string, string][] }) {
+  return <section className="phn-kort" aria-label="Om økta">
+    <dl className="meta-liste">{rader.map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}</dl>
   </section>;
 }
 
 function Maal({ maal, hvorfor }: { maal: string; hvorfor: string | null }) {
-  return <section className="pa-card ph03-kort">
-    <Meta>Målsetning</Meta>
-    <p>{maal}</p>
-    {hvorfor && <details data-od-id="okt-why-maal"><summary>Hvorfor dette tallet</summary><p className="ph02-meta">{hvorfor}</p></details>}
+  return <section className="phn-kort" aria-label="Mål for økten">
+    <span className="phn-dato">Mål for økten</span>
+    <b className="undertittel" style={{ fontSize: 18 }}>{maal}</b>
+    {hvorfor && <details data-od-id="okt-why-maal"><summary>Hvorfor dette målet</summary><p className="phn-forklar">{hvorfor}</p></details>}
   </section>;
 }
 
 function Drills({ drills, medHaker }: { drills: OktDrill[]; medHaker: boolean }) {
   const total = drills.reduce((s, d) => s + (d.tidMin ?? 0), 0);
-  return <section className="pa-card ph03-kort" aria-label="Øvelser">
-    <Meta>Øvelser · {drills.length}{total > 0 ? ` · ${formaterVarighet(total)}` : ""}</Meta>
-    {drills.length === 0 ? <p className="ph02-meta">Økta har ingen øvelser. Innholdet avtales på stedet.</p> : drills.map((d) => <div key={d.id} className="ph03-ovelse">
-      {medHaker && <span className={d.gjort ? "ph03-hake ph03-hake--pa" : "ph03-hake"} aria-label={d.gjort ? "Fullført" : "Ikke logget"}>{d.gjort ? <Ikon icon={Check} size={14} /> : null}</span>}
-      <div>
-        <strong>{d.navn}</strong>
-        {(d.volum || d.tidMin != null) && <Meta>{[d.volum, d.tidMin != null ? `${d.tidMin} min` : null].filter(Boolean).join(" · ")}</Meta>}
-        {d.formel && <span className="ph03-formel">{d.formel}</span>}
-      </div>
-    </div>)}
+  return <section className="phn-seksjon" aria-label="Øvelser">
+    <div className="phn-sek-topp"><h2>Øvelser</h2><span className="phn-kilde">{drills.length} {drills.length === 1 ? "øvelse" : "øvelser"}{total > 0 ? ` · ${formaterVarighet(total)}` : ""}</span></div>
+    {drills.length === 0 ? <p className="phn-forklar">Økta har ingen øvelser. Innholdet avtales på stedet.</p>
+      : <ol className="ovelser">{drills.map((d, i) => <li key={d.id} className={`ovelse${medHaker && d.gjort ? " gjort" : ""}`}>
+        <span className="nr" aria-label={medHaker ? (d.gjort ? "Gjennomført" : "Ikke registrert") : undefined}>{medHaker && d.gjort ? <Ikon icon={Check} size={16} name="check" /> : i + 1}</span>
+        <div>
+          <b>{d.volum ? `${d.volum} · ${d.navn}` : d.navn}</b>
+          {d.formel && <div className="formel" aria-label={`AK-formel ${d.formel}`}>{formelLedd(d.formel).map((l, j) => <span key={`${l}-${j}`}>{l}</span>)}</div>}
+        </div>
+        <span className="min">{d.tidMin != null ? `${d.tidMin} min` : "—"}</span>
+      </li>)}</ol>}
   </section>;
 }
