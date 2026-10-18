@@ -41,7 +41,7 @@ body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.
 .app{
   /* Merkevarekjerne (wang-tokens.css) */
   --navy:#17446F; --teal:#2E857D; --teal-tekst:#226F67; --mint:#49CA9F; --navy-dyp-tekst:#0D3050;
-  --orange:#F47B20; --orange-tekst:#B4571A; --gul:#FCD700; --gul-tekst:#7A6200; --rosa:#D12A5C; --blaa:#007DB1; --blaa-tekst:#00618A; --lilla:#7F1975; --graa:#D2D2D2;
+  --orange:#49CA9F; --orange-tekst:#226F67; --gul:#FCD700; --gul-tekst:#7A6200; --rosa:#D12A5C; --blaa:#007DB1; --blaa-tekst:#00618A; --lilla:#7F1975; --graa:#D2D2D2;
   /* Ny i utkastet: rosa som tekst på rosa tint. #D12A5C gir bare 4,2:1 der. Forslag, ikke i wang-tokens.css ennå. */
   --rosa-tekst:#A81F49;
   --bg:#FFFFFF; --kort:#FFFFFF; --tekst:#1E293B; --tekst-2:#475569; --navy-dyp:#0F172A; --linje:#E9EDF1;

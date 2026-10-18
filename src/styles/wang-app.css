@@ -10,7 +10,7 @@
   --wang-green: #2e857d;
   --wang-mint: #49ca9f;
   --wang-pink: #d12a5c;
-  --wang-orange: #f47b20;
+  --wang-orange: #49ca9f;
   --wang-yellow: #fcd700;
   --wang-lightblue: #007db1;
   --wang-purple: #7f1975;
@@ -86,7 +86,7 @@
   /* Aksene (godkjent 14.10). Fyll med tekstfarge; SLAG har mørk tekst, TEK mørk teal. */
   --wg-fys: #17446f; --wg-fys-paa: #ffffff;
   --wg-tek: #226f67; --wg-tek-paa: #ffffff;
-  --wg-slag: #f47b20; --wg-slag-paa: #0f172a;
+  --wg-slag: #49ca9f; --wg-slag-paa: #0f172a;
   --wg-spill: #007db1; --wg-spill-paa: #ffffff;
   --wg-turn: #7f1975; --wg-turn-paa: #ffffff;
   --wg-r-kort: 0;

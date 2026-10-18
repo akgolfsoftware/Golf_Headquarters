@@ -4,6 +4,16 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## SLAG I WANG ER MINT, IKKE ORANSJE (Anders 18.10.2026, bindende)
+
+Anders 18.10: «Vi må bytte ut orange fargen med den grønne WANG-fargen på alle flater.» Valgt: bare WANG-flatene, og mint `#49CA9F` (ikke teal, som ligger for nær TEK `#226F67`).
+
+- Oransje `#F47B20` i `/team-wang` og `docs/design-system/utkast-wang/` er byttet til mint `#49CA9F`; tekstvarianten er `#226F67`.
+- **Advarselsfargen (`--color-warning`) forblir oransje**, fordi grønn betyr OK.
+- PlayerHQ, AgencyOS og Team Norway er ikke berørt.
+
+**Overstyrer:** SLAG = oransje i `utkast-wang/README.md` §Aksefargene (godkjent 14.10).
+
 ## WANG OG TEAM NORWAY FÅR EGNE INNLOGGINGSADRESSER, OG HELE /TEAM-NORWAY ER STENGT FOR UINNLOGGEDE (Anders 18.10.2026, bindende)
 
 Anders 18.10: «Logg inn via akgolf.no … www.akgolf.no/wang og www.akgolf.no/teamnorway», valgte alternativ A (egen inngang, felles konto), og «Ingen team Norway sider skal være åpne». Rangeringen: «legg rangering bak innloggingen for nå».
