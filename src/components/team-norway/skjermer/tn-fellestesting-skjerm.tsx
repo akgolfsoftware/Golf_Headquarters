@@ -11,14 +11,19 @@ import { TnPille, type TnPilleTone } from "../core";
 import { TnDatoRad, TnEtikett, TnFlate, TnFlatehode, TnFotnote, TnMangler, TnRutenett, TnSkjermhode, TnTekstlenke } from "../tn-flate";
 import { TnFremdrift, TnStortTall } from "../tn-grunnmur";
 import { TnKnapperekke } from "../tn-handlinger";
+import { TnHelt, TnHeltBilde, TnHeltSporsmaal, TnHeltTall, TnHeltTekst } from "../tn-stall";
 import { TnSlettTestdag, TnTestdagEndre } from "../tn-redigering-skjema";
 import { SkjermRamme, datoKort, datoLang, hentSkjermbruker, osloDag } from "./felles";
 
 /**
  * TN-03 Fellestesting. Minstekrav per klasse og føring av resultater på testdagen.
+ * Utkast 2, retning B (godkjent 16.10.2026): helteflate med antall ferdige på testdagen.
  * Fasit: docs/design-system/utkast-tn/spillere.html, skjerm Fellestesting (pakke 3).
  *
  * Avvik:
+ *   - Helteflaten følger pågående eller neste testdag; stasjoner med «ført av» finnes
+ *     ikke i datamodellen, så stasjonskortene i utkastet er ikke med (felles testdag
+ *     har egne stasjonsfaner på testdagen).
  *   - Minstekrav per klasse finnes ikke i protokollkilden (samme som TN-18).
  *     Tabellen viser protokollene med strek i klassekolonnene til nivåene er lagt inn.
  *   - Resultater føres på en testdag, ikke som frittstående tall. En test teller
@@ -105,6 +110,27 @@ export async function TnFellestestingSkjerm({ dagId }: { dagId?: string }) {
   return (
     <SkjermRamme aktiv="fellestesting" brukerNavn={bruker.name} kontekst={spillerside.kontekst}>
       <TnSkjermhode overlinje={aapne[0] ? `Testdag · ${datoLang(aapne[0].scheduledAt)}` : undefined} tittel="Fellestesting" ingress="Nasjonale minstekrav per klasse. Før resultatet mens spilleren står ved siden av deg." />
+
+      <TnHelt
+        etikett="Hvor mange har fullført testdagen"
+        venstre={
+          <>
+            <TnHeltSporsmaal>Hvor mange har fullført testdagen?</TnHeltSporsmaal>
+            {aapne[0] ? (
+              <>
+                <TnHeltTall verdi={aapne[0].antallFullfort} enhet={`/ ${aapne[0].antallDeltakere}`}>spillere ferdig</TnHeltTall>
+                <TnHeltTekst>{aapne[0].title} · {aapne[0].protokollNavn}. Før resultatet mens spilleren står ved siden av deg.</TnHeltTekst>
+              </>
+            ) : (
+              <>
+                <TnHeltTall verdi="—" />
+                <TnHeltTekst>Ingen testdag pågår eller er planlagt.</TnHeltTekst>
+              </>
+            )}
+          </>
+        }
+        hoyre={<TnHeltBilde src="/team-norway/bilder/naerspill-wedge.jpg" alt="Wedgeslag fra kanten av greenen" />}
+      />
 
       <TnRutenett min={380}>
         <TnFlate>

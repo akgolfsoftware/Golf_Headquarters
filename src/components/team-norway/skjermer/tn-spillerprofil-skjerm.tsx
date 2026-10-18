@@ -8,15 +8,16 @@ import { alderFraFodselsdato } from "@/lib/forelder";
 import type { TilgangsNivaa } from "@/lib/feature-flags";
 import { TN } from "@/lib/v2/team-norway";
 import { TnPille, type TnPilleTone } from "../core";
-import { TnNokkeltall, TnShell, TnSpillerFaner, tnRolleNavn } from "../tn-shell";
+import { TnShell, TnSpillerFaner, tnRolleNavn } from "../tn-shell";
 import { TnFlate, TnFlatehode, TnFotnote, TnListerad, TnMangler, TnRutenett, TnTekstlenke } from "../tn-flate";
-import { TnPyramide } from "../tn-grunnmur";
 import { TnHandlingLenke, TnKnapperekke } from "../tn-handlinger";
+import { TnAkseSoyler, TnHelt, TnHeltKnapper, TnHeltSporsmaal, TnHeltTall, TnHeltTekst, TnHeltTellere } from "../tn-stall";
 import { LISENS_TEKST, TnAvsluttSpiller } from "../tn-redigering-skjema";
 import { ER_COLLEGE, datoKort, datoLang, osloDag, periode } from "./felles";
 
 /**
  * TN-02 Spillerprofil, som heter IUP i Team Norway (Anders 15.10.2026). Fanen Oversikt.
+ * Utkast 2, retning B (godkjent 16.10.2026). Hovedtallet er plan siste fire uker.
  * Fasit: docs/design-system/utkast-tn/spillere.html, skjerm IUP (pakke 3).
  *
  * Avvik:
@@ -24,7 +25,7 @@ import { ER_COLLEGE, datoKort, datoLang, osloDag, periode } from "./felles";
  *     er Post-fanen.
  *   - Kategori A–K og WAGR har ingen datakilde her og står med strek.
  *   - Pyramiden er spillerens Workbench-økter siste fire uker, lest innenfor
- *     delingslåsen. Plan-prosent står ikke i hodet; timene står under pyramiden.
+ *     delingslåsen. Plan-prosent står i helteflaten; søylene viser timer per akse.
  *   - Lisens, helseattest og antidoping leses fra registreringen i TN-10
  *     (Anders 27.09.2026). PlayerHQ-tilgangen vises i tillegg for trenere.
  *   - Leverte IUP-besvarelser (fireukerssjekk og utviklingssjekk) vises i sin
@@ -38,6 +39,7 @@ const NIVA: Record<TilgangsNivaa, { tekst: string; merke: string; tone: "ok" | "
 };
 const TONE: Record<"ok" | "varsel" | "ukjent", TnPilleTone> = { ok: "green", varsel: "amber", ukjent: "nøytral" };
 
+const komma = (n: number) => String(Math.round(n * 10) / 10).replace(".", ",");
 const snitt = new Intl.NumberFormat("nb-NO", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 type Statusrad = { tittel: string; tekst: string; merke: string; tone: "ok" | "varsel" | "ukjent" };
@@ -64,6 +66,7 @@ export async function TnSpillerprofilSkjerm({ spillerId }: { spillerId: string }
 
   const alder = alderFraFodselsdato(profil.fodselsdato);
   const erCollege = !!profil.skole && ER_COLLEGE.test(profil.skole);
+  const planPct = akser && akser.planlagtTimer > 0 ? Math.round((akser.gjennomfortTimer / akser.planlagtTimer) * 100) : null;
   const testrader = [...(tester?.rader ?? [])].sort((a, b) => b.sisteDato.getTime() - a.sisteDato.getTime());
 
   const status: Statusrad[] = [
@@ -100,31 +103,53 @@ export async function TnSpillerprofilSkjerm({ spillerId }: { spillerId: string }
         kanAdministrere={!kontekst.erSpiller}
         overlinje={["IUP", alder !== null ? `${alder} år` : null, profil.klubb].filter(Boolean).join(" · ")}
       >
-        <TnNokkeltall tall={[
-          { etikett: "HCP", verdi: formaterHcp(profil.hcp) },
-          { etikett: `Snitt brutto ${aar}`, verdi: profil.aaret?.bruttoSnitt != null ? snitt.format(profil.aaret.bruttoSnitt) : "—" },
-          { etikett: "Kategori", verdi: "—" },
-          { etikett: "WAGR", verdi: "—" },
-        ]} />
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-          <TnPille tone="info">{profil.erTnMedlem ? `${tnRolleNavn("PLAYER")} i ${kontekst.gruppe.name}` : "Delt med Team Norway"}</TnPille>
-          <TnPille>{erCollege ? "College" : "Skole"}: {profil.skole ?? "ikke registrert"}</TnPille>
-        </div>
       </TnSpillerFaner>
 
-      {!kontekst.erSpiller ? (
-        <TnKnapperekke>
-          <TnHandlingLenke href={`/team-norway/spiller/${spillerId}`}>Skriv til spilleren</TnHandlingLenke>
-          <TnHandlingLenke href={`/team-norway/workbench?spiller=${spillerId}`} variant="sekundar">Foreslå endring</TnHandlingLenke>
-          {kontekst.kanAdministrere && profil.erTnMedlem ? <TnAvsluttSpiller spillerId={spillerId} navn={profil.navn} /> : null}
-        </TnKnapperekke>
-      ) : null}
+      <TnHelt
+        etikett="Følger spilleren planen"
+        venstre={
+          <>
+            <TnHeltSporsmaal>Følger spilleren planen?</TnHeltSporsmaal>
+            {planPct !== null && akser ? (
+              <>
+                <TnHeltTall verdi={planPct} enhet="%">av planen siste fire uker</TnHeltTall>
+                <TnHeltTekst>{komma(akser.gjennomfortTimer)} t gjennomført av {komma(akser.planlagtTimer)} t planlagt.</TnHeltTekst>
+              </>
+            ) : (
+              <>
+                <TnHeltTall verdi="—" />
+                <TnHeltTekst>{akser ? "Ingen planlagt trening siste fire uker." : "Treningen er ikke delt med Team Norway."}</TnHeltTekst>
+              </>
+            )}
+            {!kontekst.erSpiller ? (
+              <TnHeltKnapper>
+                <TnHandlingLenke href={`/team-norway/spiller/${spillerId}`} variant="hvit">Skriv til spilleren</TnHandlingLenke>
+                <TnHandlingLenke href={`/team-norway/workbench?spiller=${spillerId}`} variant="konturHvit">Foreslå endring</TnHandlingLenke>
+              </TnHeltKnapper>
+            ) : null}
+          </>
+        }
+        hoyre={
+          <TnHeltTellere
+            tall={[
+              { verdi: formaterHcp(profil.hcp), tekst: "HCP" },
+              { verdi: profil.aaret?.bruttoSnitt != null ? snitt.format(profil.aaret.bruttoSnitt) : "—", tekst: `snitt brutto ${aar}` },
+              { verdi: "—", tekst: "WAGR" },
+            ]}
+          />
+        }
+      />
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+        <TnPille tone="info">{profil.erTnMedlem ? `${tnRolleNavn("PLAYER")} i ${kontekst.gruppe.name}` : "Delt med Team Norway"}</TnPille>
+        <TnPille>{erCollege ? "College" : "Skole"}: {profil.skole ?? "ikke registrert"}</TnPille>
+      </div>
+      {!kontekst.erSpiller && kontekst.kanAdministrere && profil.erTnMedlem ? <TnKnapperekke><TnAvsluttSpiller spillerId={spillerId} navn={profil.navn} /></TnKnapperekke> : null}
 
       <TnRutenett min={340}>
         <section style={{ display: "grid", gap: 12 }}>
           <TnFlatehode tittel="Pyramiden" merknad="Siste 4 uker" />
           <TnFlate>
-            <TnPyramide etikett="Gjennomført trening per akse" verdier={akser ? akser.gjennomfort : {}} />
+            <TnAkseSoyler etikett="Gjennomført trening per akse" timer={akser ? akser.gjennomfort : {}} />
             <TnFotnote>
               {akser ? `${String(akser.gjennomfortTimer).replace(".", ",")} t gjennomført av ${String(akser.planlagtTimer).replace(".", ",")} t planlagt. Kilde: PlayerHQ, ${datoLang(naa)}.` : "Treningen er ikke delt med Team Norway, derfor står det strek."}
             </TnFotnote>

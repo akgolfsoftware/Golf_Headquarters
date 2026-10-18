@@ -1,123 +1,166 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { hentTnSpillere, type TnSpillerRad } from "@/lib/domain/tn-arbeidsflate";
+import { hentTnGruppetrening, hentTnSpillere, type TnSpillerRad } from "@/lib/domain/tn-arbeidsflate";
+import { summerTnGruppetrening, tnDenneMandag, tnUkenummer, UTENFOR_PLAN_TERSKEL } from "@/lib/domain/tn-trenger-deg";
 import { TN } from "@/lib/v2/team-norway";
-import { TnPille } from "../core";
-import { TnFilterknapper, TnFlate, TnFotnote, TnInitialer, TnMangler, TnSkjermhode, TnTekstlenke } from "../tn-flate";
-import { TnHandlingLenke, TnKnapperekke } from "../tn-handlinger";
-import { SkjermRamme, datoLang, hentSkjermbruker, osloDag } from "./felles";
+import { initialer } from "../initialer";
+import { TnFlate, TnFotnote, TnMangler, TnSkjermhode, TnTekstlenke } from "../tn-flate";
+import type { TnAkse } from "../tn-grunnmur";
+import { TnHandlingLenke, tnKnappStil } from "../tn-handlinger";
+import { TnBaand, TnBaandListe, TnHelt, TnHeltKnapper, TnHeltSporsmaal, TnHeltTall, TnHeltTekst, TnHeltTellere, TnPlanstolpe, TnSpillerrad } from "../tn-stall";
+import { SkjermRamme, datoKort, hentSkjermbruker } from "./felles";
 import st from "./tn-spillere.module.css";
 
 /**
- * TN-12 Spillerutvikling.
+ * TN-12 Spillerutvikling. Utkast 2, retning B «Stall og helteflate» (godkjent 16.10.2026).
  * Fasit: docs/design-system/utkast-tn/spillere.html, skjerm Spillerutvikling (pakke 3).
+ * Hovedtallet er hvor mye av planen gruppa gjør, med tre bånd under:
+ * Trenger deg · Følger planen · Ikke delt.
  *
  * Avvik:
- *   - Filtrene Herrer og Damer finnes ikke: spillerprofilen har ikke kjønn.
- *     Alle og U18 (fra fødselsdato) står igjen.
- *   - Kategori A–K og «Plan %» (etterlevelse) står ikke i lista; aktiv plan og
- *     uke i planen står i stedet. «Mangler test» og «Ikke delt» som filter har
- *     ingen datakilde i lista.
- *   - Søk og filter ligger i adressen (?q=&filter=) og virker uten JavaScript.
+ *   - Kategori A–K og klasse finnes ikke i spillerprofilen; raden viser klubb og HCP.
+ *   - «Ikke delt» viser bare antallet. Spillere som ikke har delt treningen, kan ikke
+ *     leses av treneren, heller ikke nummer og klubb (delingslåsen).
+ *   - Spillere som deler, men ikke har planlagt tid siste fire uker, står i et eget
+ *     bånd «Uten plan» i stedet for å regnes som at de følger planen.
+ *   - Søket ligger i adressen (?q=) og virker uten JavaScript.
+ *   - «Mangler test» som grunn er ikke med: testdagene leses i Oversikt.
  */
 
-const DAG_MS = 86_400_000;
 const hcpTall = new Intl.NumberFormat("nb-NO", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+const komma = (n: number) => String(Math.round(n * 10) / 10).replace(".", ",");
 
 function hcp(verdi: number | null) {
-  if (verdi === null) return "—";
-  return verdi < 0 ? `+${hcpTall.format(-verdi)}` : hcpTall.format(verdi);
-}
-
-function alder(fodt: Date | null) {
-  if (!fodt) return null;
-  const f = osloDag(fodt);
-  const i = osloDag(new Date());
-  return i.aar - f.aar - (i.maned < f.maned || (i.maned === f.maned && i.dag < f.dag) ? 1 : 0);
-}
-
-/** «uke 3 av 10» når planen har både start og slutt, ellers null. */
-function planUke(s: TnSpillerRad) {
-  if (!s.planStart || !s.planSlutt) return null;
-  const antall = Math.max(1, Math.ceil((s.planSlutt.getTime() - s.planStart.getTime() + 1) / (7 * DAG_MS)));
-  const denne = Math.min(antall, Math.max(1, Math.floor((Date.now() - s.planStart.getTime()) / (7 * DAG_MS)) + 1));
-  return { denne, antall };
+  if (verdi === null) return "HCP —";
+  return `HCP ${verdi < 0 ? `+${hcpTall.format(-verdi)}` : hcpTall.format(verdi)}`;
 }
 
 export async function TnSpillerutviklingSkjerm({ sokeparametre }: { sokeparametre: Record<string, string | string[] | undefined> }) {
   const bruker = await hentSkjermbruker();
-  const data = await hentTnSpillere(bruker);
+  const naa = new Date();
+  const [data, trening] = await Promise.all([hentTnSpillere(bruker), hentTnGruppetrening(bruker, naa)]);
   if (!data || data.kontekst.erSpiller) notFound();
 
   const q = (Array.isArray(sokeparametre.q) ? sokeparametre.q[0] : sokeparametre.q)?.trim() ?? "";
-  const filter = sokeparametre.filter === "u18" ? "u18" : "alle";
-  const erU18 = (s: TnSpillerRad) => {
-    const a = alder(s.fodselsdato);
-    return a !== null && a < 18;
-  };
+  const treningPer = new Map((trening?.rader ?? []).map((r) => [r.spillerId, r.trening]));
+  const passer = (s: TnSpillerRad) => !q || `${s.navn} ${s.klubb ?? ""}`.toLowerCase().includes(q.toLowerCase());
 
-  const sortert = [...data.rader].sort((a, b) => (a.hcp ?? Infinity) - (b.hcp ?? Infinity) || a.navn.localeCompare(b.navn, "nb"));
-  const rader = sortert.filter((s) => (filter === "alle" || erU18(s)) && (!q || `${s.navn} ${s.klubb ?? ""}`.toLowerCase().includes(q.toLowerCase())));
-  const adresse = (f: string) => `/team-norway/spillere?${new URLSearchParams({ filter: f, ...(q ? { q } : {}) }).toString()}`;
+  type Rad = { s: TnSpillerRad; t: NonNullable<ReturnType<typeof treningPer.get>>; pct: number | null };
+  const delt: Rad[] = data.rader.flatMap((s) => {
+    const t = treningPer.get(s.id);
+    return t ? [{ s, t, pct: t.fireUker.planlagtMin > 0 ? Math.round((t.fireUker.gjortMin / t.fireUker.planlagtMin) * 100) : null }] : [];
+  });
+  const trenger = delt.filter((r) => r.t.underPlan).sort((a, b) => (a.t.toUker.pct ?? 101) - (b.t.toUker.pct ?? 101));
+  const folger = delt.filter((r) => !r.t.underPlan && r.pct !== null).sort((a, b) => (b.pct ?? 0) - (a.pct ?? 0));
+  const utenPlan = delt.filter((r) => !r.t.underPlan && r.pct === null);
+  const antallIkkeDelt = Math.max(0, data.rader.length - delt.length);
+
+  const gruppe = summerTnGruppetrening(delt.map((r) => r.t));
+  const gruppePct = gruppe.planlagtTimer > 0 ? Math.round((gruppe.gjortTimer / gruppe.planlagtTimer) * 100) : null;
+  const mandag = tnDenneMandag(naa);
+  const ukeA = tnUkenummer(mandag - 14 * 864e5);
+  const ukeB = tnUkenummer(mandag - 7 * 864e5);
+
+  const rad = ({ s, t, pct }: Rad, status: "trenger" | "folger" | "folgmed") => {
+    const akse = t.mestAkse as TnAkse | null;
+    return (
+      <TnSpillerrad
+        key={s.id}
+        href={`/team-norway/spiller/${s.id}/oversikt`}
+        status={status}
+        initialer={initialer(s.navn)}
+        navn={s.navn}
+        fakta={`${s.klubb ?? "Klubb ikke registrert"} · ${hcp(s.hcp)}`}
+        verdi={pct === null ? "—" : `${pct} %`}
+        verdiTekst={pct === null ? "ingen plan" : "av planen"}
+        lav={status === "trenger" && pct !== null}
+        stolpe={pct !== null ? (
+          <TnPlanstolpe
+            andel={pct / 100}
+            akse={akse}
+            etikett={`Gjennomført ${pct} prosent av planen siste fire uker`}
+            venstre={akse ? `Mest ${akse}` : "Ingen gjennomført tid"}
+            hoyre={<><b>{komma(t.fireUker.gjortMin / 60)}</b> av <b>{komma(t.fireUker.planlagtMin / 60)}</b> t</>}
+          />
+        ) : undefined}
+        grunn={status === "trenger" ? `Under ${UTENFOR_PLAN_TERSKEL} % av planen uke ${ukeA} og ${ukeB}` : undefined}
+      />
+    );
+  };
 
   return (
     <SkjermRamme aktiv="spillere" brukerNavn={bruker.name} kontekst={data.kontekst}>
-      <TnSkjermhode
-        overlinje={`${data.kontekst.gruppe.name} · ${data.rader.length} ${data.rader.length === 1 ? "spiller" : "spillere"}`}
-        tittel="Spillerutvikling"
-        ingress="Alle landslagsspillere med HCP, aktiv treningsplan og testhistorikk. Trykk på en spiller for å åpne IUP-en."
+      <TnSkjermhode overlinje={`${data.kontekst.gruppe.name} · uke ${tnUkenummer(mandag)}`} tittel="Spillerutvikling" ingress="Hvem som trenger deg, hvem som følger planen, og hvem som ikke har delt treningen." />
+
+      <TnHelt
+        etikett="Hvor mye av planen gjør gruppa"
+        venstre={
+          <>
+            <TnHeltSporsmaal>Hvor mye av planen gjør gruppa?</TnHeltSporsmaal>
+            {trening && gruppePct !== null ? (
+              <>
+                <TnHeltTall verdi={gruppePct} enhet="%">av planen gjennomført</TnHeltTall>
+                <TnHeltTekst>Siste fire uker, for {delt.length} {delt.length === 1 ? "spiller som deler" : "som deler"} treningen. {trenger.length === 1 ? "Én spiller trenger deg." : `${trenger.length} spillere trenger deg.`}</TnHeltTekst>
+              </>
+            ) : (
+              <>
+                <TnHeltTall verdi="—" />
+                <TnHeltTekst>{trening ? "Ingen planlagt trening siste fire uker i det spillerne har delt." : "Spillernes trening kan bare leses av trenere som spillerne har delt med."}</TnHeltTekst>
+              </>
+            )}
+            <TnHeltKnapper>
+              {trenger.length > 0 ? <a href="#trenger" style={tnKnappStil("hvit")}>{trenger.length === 1 ? "Se spilleren" : `Se de ${trenger.length}`}</a> : null}
+              {data.kontekst.kanAdministrere ? <TnHandlingLenke href="/team-norway/inviter" variant="konturHvit">Inviter spiller</TnHandlingLenke> : null}
+            </TnHeltKnapper>
+          </>
+        }
+        hoyre={
+          <TnHeltTellere
+            tall={[
+              { verdi: trening ? trenger.length : "—", tekst: "trenger deg" },
+              { verdi: trening ? folger.length : "—", tekst: "følger planen" },
+              { verdi: trening ? antallIkkeDelt : "—", tekst: "deler ikke" },
+            ]}
+          />
+        }
       />
 
-      <div className={st.sok}>
-        <form action="/team-norway/spillere" className={st.sok} style={{ flex: "1 1 260px" }}>
-          <input type="hidden" name="filter" value={filter} />
-          <label>
-            Søk etter spiller
-            <input type="search" name="q" defaultValue={q} placeholder="Navn eller klubb" />
-          </label>
-        </form>
-        <TnFilterknapper
-          etikett="Filtrer spillere"
-          valg={[
-            { href: adresse("alle"), label: "Alle", aktiv: filter === "alle", antall: data.rader.length },
-            { href: adresse("u18"), label: "U18", aktiv: filter === "u18", antall: data.rader.filter(erU18).length },
-          ]}
-        />
-      </div>
+      <form action="/team-norway/spillere" className={st.sok}>
+        <label>
+          Søk etter spiller
+          <input type="search" name="q" defaultValue={q} placeholder="Navn eller klubb" />
+        </label>
+      </form>
 
-      <TnFlate style={{ paddingBlock: 4 }}>
-        {rader.map((s) => {
-          const a = alder(s.fodselsdato);
-          const uke = planUke(s);
-          return (
-            <Link key={s.id} href={`/team-norway/spiller/${s.id}/oversikt`} className={st.spillerrad}>
-              <TnInitialer navn={s.navn} />
-              <span>
-                <span className={st.navn}>{s.navn}</span>
-                <span className={st.kilde}>{[s.klubb ?? "Klubb ikke registrert", a === null ? null : `${a} år`].filter(Boolean).join(" · ")}</span>
-              </span>
-              <span className={st.info}>
-                <span>HCP {hcp(s.hcp)}</span>
-                <span>{s.aktivPlan ? `${s.aktivPlan}${uke ? ` · uke ${uke.denne} av ${uke.antall}` : ""}` : "Ingen aktiv plan"}</span>
-                <span>{s.sisteTest ? `Test ${datoLang(s.sisteTest)}` : "Ingen test"}</span>
-              </span>
-              <span className={st.hoyre}><TnPille tone={s.tester > 0 ? "info" : "amber"}>{s.tester} {s.tester === 1 ? "test" : "tester"}</TnPille></span>
-            </Link>
-          );
-        })}
-        {rader.length === 0 && data.rader.length === 0 ? (
-          <TnMangler>Ingen spillere i gruppen ennå. Spillerne vises her når de er lagt inn i Team Norway-gruppen.</TnMangler>
-        ) : rader.length === 0 ? (
-          <TnMangler>Ingen spillere passer søket. <Link href="/team-norway/spillere" style={{ color: TN.navy600, fontWeight: 700 }}>Nullstill filter</Link></TnMangler>
-        ) : null}
-      </TnFlate>
+      {data.rader.length === 0 ? (
+        <TnFlate><TnMangler>Ingen spillere i gruppen ennå. Spillerne vises her når de er lagt inn i Team Norway-gruppen.</TnMangler></TnFlate>
+      ) : (
+        <>
+          <TnBaand id="trenger" status={trenger.length > 0 ? "trenger" : undefined} tittel="Trenger deg" antall={trenger.filter((r) => passer(r.s)).length} kilde={`Under ${UTENFOR_PLAN_TERSKEL} % to uker på rad`}>
+            <TnBaandListe>
+              {trenger.filter((r) => passer(r.s)).map((r) => rad(r, "trenger"))}
+              {trenger.length === 0 ? <TnFlate style={{ background: TN.ink50 }}><TnMangler>Ingen er under {UTENFOR_PLAN_TERSKEL} % av planen to uker på rad.</TnMangler></TnFlate> : null}
+            </TnBaandListe>
+          </TnBaand>
 
-      <TnFotnote>Sortert etter HCP, pluss-HCP øverst. Tester teller alle registrerte testresultater. Kjønn står ikke i spillerprofilen, derfor finnes ikke filtrene Herrer og Damer.</TnFotnote>
-      <TnKnapperekke>
-        {data.kontekst.kanAdministrere ? <TnHandlingLenke href="/team-norway/inviter" variant="sekundar">Inviter spiller</TnHandlingLenke> : null}
-        <TnTekstlenke href="/team-norway/uttak">Se uttakskriterier</TnTekstlenke>
-      </TnKnapperekke>
+          <TnBaand status="folger" tittel="Følger planen" antall={folger.filter((r) => passer(r.s)).length} kilde="Høyest først">
+            <TnBaandListe>{folger.filter((r) => passer(r.s)).map((r) => rad(r, "folger"))}</TnBaandListe>
+          </TnBaand>
+
+          {utenPlan.length > 0 ? (
+            <TnBaand status="folgmed" tittel="Uten plan" antall={utenPlan.filter((r) => passer(r.s)).length} kilde="Ingen planlagt tid siste fire uker">
+              <TnBaandListe>{utenPlan.filter((r) => passer(r.s)).map((r) => rad(r, "folgmed"))}</TnBaandListe>
+            </TnBaand>
+          ) : null}
+
+          <TnBaand status="ikkedelt" tittel="Ikke delt" antall={antallIkkeDelt} kilde="Treneren ser ingenting før spilleren deler">
+            <TnFotnote>Spilleren deler selv fra Meg i PlayerHQ. Under 16 år må en foresatt godkjenne.</TnFotnote>
+          </TnBaand>
+        </>
+      )}
+
+      <TnFotnote>Plan er gjennomført tid mot planlagt tid siste fire uker. Fargen viser aksen spilleren har trent mest. Kilde: Workbench i PlayerHQ, hentet {datoKort(naa)}.</TnFotnote>
+      <TnTekstlenke href="/team-norway/uttak">Se uttakskriterier</TnTekstlenke>
     </SkjermRamme>
   );
 }
