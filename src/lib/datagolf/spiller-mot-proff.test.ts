@@ -60,3 +60,18 @@ describe("DG-07 forslag", () => {
     assert.ok(t.length <= 120);
   });
 });
+
+describe("DG-07 dgFunn", () => {
+  it("innspill med størst gap gir øvelse med målet i meter", async () => {
+    const { dgFunn } = await import("./spiller-mot-proff");
+    const slag = Array.from({ length: 10 }, () => ({ lie: "FAIRWAY", distanceToPin: 110, endDistanceToPinM: 9.8, holed: false }));
+    const f = dgFunn(null, innspillTak(slag, [{ band: "innspill100", lie: "fairway", meter: 7.04, gir: null, slag: null }]));
+    assert.equal(f?.maalMeter, 7);
+    assert.match(f?.maalsetning ?? "", /91–137 m, fairway: snitt 7 m/);
+    assert.doesNotMatch(f?.tittel ?? "", /Hovland|Data Golf/);
+  });
+  it("uten tall finnes ikke noe funn", async () => {
+    const { dgFunn } = await import("./spiller-mot-proff");
+    assert.equal(dgFunn(null, []), null);
+  });
+});

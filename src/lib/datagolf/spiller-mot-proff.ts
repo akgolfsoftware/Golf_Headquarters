@@ -152,3 +152,23 @@ export function innspillOvelseTittel(rad: Pick<InnspillRad, "etikett" | "lie">, 
   const mal = maalMeter.toLocaleString("nb-NO", { maximumFractionDigits: 1 });
   return `Innspill ${m}, ${rad.lie === "fairway" ? "fairway" : "rough"} · mål ${mal} m · ${antallSlag} slag`;
 }
+
+/**
+ * Funnet DG-07 bygger på: største SG-gap, og når det er innspill (eller SG mangler), avstanden med
+ * størst gap i meter. Teksten spilleren ser har bare målet, aldri proffen eller gapet mot proffen.
+ */
+export function dgFunn(gap: SgGap | null, innspill: InnspillRad[]) {
+  const omraade = gap?.storst ?? null;
+  const band = storstInnspillGap(innspill);
+  if ((!omraade || omraade.key === "sgApp") && band?.proffMeter != null) {
+    const maal = Math.round(band.proffMeter * 10) / 10;
+    const m = band.etikett.split(" · ")[1] ?? band.etikett;
+    return {
+      omraade, band, maalMeter: maal,
+      tittel: innspillOvelseTittel(band, maal, 20),
+      maalsetning: `Innspill ${m}, ${band.lie}: snitt ${maal.toLocaleString("nb-NO", { maximumFractionDigits: 1 })} m fra hullet.`,
+    };
+  }
+  if (!omraade) return null;
+  return { omraade, band: null, maalMeter: null, tittel: `${omraade.label} · fokusøkt`, maalsetning: `${omraade.label}: hovedfokus i treningen de neste ukene.` };
+}
