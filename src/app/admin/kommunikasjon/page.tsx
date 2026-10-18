@@ -37,16 +37,12 @@
 
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { KommunikasjonHode } from "@/components/admin/v2/kommunikasjon/KommunikasjonHode";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { Topp } from "@/components/admin/agencyos-ny/ny";
 import { AdminEmailV2 } from "@/components/admin/v2/AdminEmailV2";
-import { KOMMUNIKASJON_FANER, velgKommunikasjonFane } from "@/lib/admin/kommunikasjon/faner";
+import { velgKommunikasjonFane } from "@/lib/admin/kommunikasjon/faner";
 import { innboksHref, lesInnboksFilter } from "@/lib/admin/innboks/filter";
-import {
-  kommunikasjonFaneTellinger,
-  lastKommunikasjonInnboks,
-  lastKommunikasjonMaler,
-} from "@/lib/admin/kommunikasjon/lastere";
+import { lastKommunikasjonMaler } from "@/lib/admin/kommunikasjon/lastere";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Kommunikasjon · AgencyOS" };
@@ -67,18 +63,14 @@ export default async function KommunikasjonPage({
   if (aktiv === "utkast") redirect(innboksHref("epost", ovrige));
   if (aktiv === "sendt") redirect(innboksHref("epost", { ...ovrige, vis: "sendt" }));
 
-  const innboksData = await lastKommunikasjonInnboks({ id: user.id, role: user.role, name: user.name });
-  const antall = await kommunikasjonFaneTellinger(innboksData.apne);
-  const hode = <KommunikasjonHode faner={KOMMUNIKASJON_FANER} aktiv={aktiv} antall={antall} />;
-
-  const innhold = <AdminEmailV2 data={await lastKommunikasjonMaler()} somFane />;
-
+  // Bare Maler står igjen: E-postmaler er en del av Oppsett (utkast-agencyos/resten.html).
   return (
-    <V2Shell bredde="full" aktiv="innboks" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} avatarUrl={user.avatarUrl}>
-      <div style={{ display: "flex", flexDirection: "column", gap: 18, minWidth: 0 }}>
-        {hode}
-        {innhold}
+    <AgencyOSSkall navn={user.name ?? "Coach"}>
+      <div className="agn-s">
+        <Topp tilbake={{ href: "/admin/oppsett?fane=mark", tekst: "Oppsett" }} dato="Oppsett · markedsføring og hjelp" tittel="E-postmaler"
+          ingress="Malene Jarvis bruker når den lager utkast i Innboks. Ingenting sendes uten at du trykker Send." />
+        <AdminEmailV2 data={await lastKommunikasjonMaler()} somFane />
       </div>
-    </V2Shell>
+    </AgencyOSSkall>
   );
 }

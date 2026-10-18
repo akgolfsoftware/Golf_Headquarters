@@ -9,10 +9,11 @@ import { requireCapability } from "@/lib/auth/requireCapability";
 import { Capability } from "@/lib/auth/cbac";
 import { aktivtTrenerMedlemskapWhere } from "@/lib/domain/grupper";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { Topp } from "@/components/admin/agencyos-ny/ny";
+import { GruppeFanerNy } from "@/components/admin/precision/AG16Gruppe";
 import { GruppeTimeplanV2, type GruppeTimeplanV2Data } from "@/components/admin/v2/GruppeTimeplanV2";
 import { opprettGruppeTrening, dupliserGruppeTime } from "../actions";
-import { TlTilbake } from "@/components/admin/v2/oppsett/tl-kit";
 import { osloLokalTilDato } from "@/lib/admin/gruppe-tid";
 
 export const dynamic = "force-dynamic";
@@ -109,9 +110,13 @@ export default async function GruppeTimeplanPage({
   }
 
   return (
-    <V2Shell bredde="kolonne" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TlTilbake href={`/admin/grupper/${id}`}>Gruppe</TlTilbake>
-      <GruppeTimeplanV2 data={data} onOpprett={opprettAction} onDupliser={dupliserAction} />
-    </V2Shell>
+    <AgencyOSSkall navn={user.name ?? "Coach"}>
+      <div className="agn-s">
+        <Topp tilbake={{ href: `/admin/grupper/${id}`, tekst: "Gruppa" }} dato="Gruppa · faste tider" tittel="Ny gruppetrening"
+          ingress="En fast økt på gruppa. Medlemmene får den i planen." />
+        <GruppeFanerNy groupId={id} aktiv="tider" />
+        <GruppeTimeplanV2 data={data} onOpprett={opprettAction} onDupliser={dupliserAction} />
+      </div>
+    </AgencyOSSkall>
   );
 }

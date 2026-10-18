@@ -21,7 +21,7 @@ import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { harCoachLesetilgangTilSpiller } from "@/lib/auth/coached";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { TL } from "@/lib/v2/train-lock";
 import { Icon } from "@/components/v2/icon";
 import { computeTrackManDispersionMap } from "@/lib/trackman/dispersion-map";
@@ -74,7 +74,8 @@ export default async function AdminTrackmanSessionPage({ params }: Props) {
   const portalDetalj = `/portal/analysere/trackman/${sesjon.id}`;
 
   return (
-    <V2Shell bredde="kolonne" aktiv="innsikt" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <AgencyOSSkall navn={user.name ?? "Coach"}>
+      <div className="agn-legacy">
       <Link
         href="/admin/trackman"
         style={{
@@ -136,6 +137,7 @@ export default async function AdminTrackmanSessionPage({ params }: Props) {
           allShotsHref="#alle-slag"
         />
       )}
-    </V2Shell>
+      </div>
+    </AgencyOSSkall>
   );
 }
