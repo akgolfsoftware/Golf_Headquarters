@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { erLysFlate, onsketTema } from "@/lib/v2/tema-default";
+import { erAltidLysFlate, erLysFlate, onsketTema } from "@/lib/v2/tema-default";
 
 // Regelen lå tidligere duplisert i layout.tsx og shell.tsx og drev fra
 // hverandre. Disse testene låser den ene kilden.
@@ -26,10 +26,25 @@ test("landingssider er alltid lyse — også med dark-cookie (ingen bryter der)"
   assert.equal(onsketTema("/", undefined, true), "light");
 });
 
+test("WANG og Team Norway er alltid lyse, også med dark-cookie", () => {
+  for (const p of ["/wang", "/teamnorway", "/team-wang", "/team-wang/coach", "/team-norway", "/team-norway/rangliste", "/team-norway/spiller/x"]) {
+    assert.equal(erAltidLysFlate(p), true, p);
+    for (const c of [undefined, "dark", "light", "tull"]) {
+      assert.equal(onsketTema(p, c, false), "light", `${p} / ${c}`);
+    }
+  }
+});
+
+test("alltid-lys-regelen treffer ikke andre flater eller liknende navn", () => {
+  for (const p of ["/portal", "/admin", "/forelder", "/stats", "/wangsomething", "/teamnorwayx"]) {
+    assert.equal(erAltidLysFlate(p), false, p);
+  }
+  assert.equal(onsketTema("/portal", "dark", false), "dark");
+});
+
 test("øvrige flater beholder mørk default og lys via cookie (uendret fra før)", () => {
   assert.equal(onsketTema("/stats", undefined, false), "dark");
   assert.equal(onsketTema("/stats", "light", false), "light");
-  assert.equal(onsketTema("/team-wang", undefined, false), "dark");
   assert.equal(onsketTema("/intern", undefined, false), "dark");
 });
 
