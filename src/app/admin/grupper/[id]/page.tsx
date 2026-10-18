@@ -10,11 +10,9 @@ import { requireCapability } from "@/lib/auth/requireCapability";
 import { Capability } from "@/lib/auth/cbac";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import {
-  GruppeDetaljV2,
-  type GruppeDetaljV2Data,
-} from "@/components/admin/v2/GruppeDetaljV2";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import type { GruppeDetaljV2Data } from "@/components/admin/v2/GruppeDetaljV2";
+import { AG16Gruppe } from "@/components/admin/precision/AG16Gruppe";
 import { RullUtMalPanel } from "@/components/admin/v2/RullUtMalPanel";
 import {
   StartOktButton,
@@ -228,8 +226,8 @@ export default async function GruppeDetaljPage({
   };
 
   return (
-    <V2Shell bredde="kolonne" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <GruppeDetaljV2
+    <AgencyOSSkall navn={user.name ?? "Coach"}>
+      <AG16Gruppe
         data={data}
         ekstra={
           <RullUtMalPanel
@@ -248,6 +246,6 @@ export default async function GruppeDetaljPage({
           SlettGruppeButton,
         }}
       />
-    </V2Shell>
+    </AgencyOSSkall>
   );
 }

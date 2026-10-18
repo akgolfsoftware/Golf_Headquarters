@@ -1,17 +1,17 @@
 {
   "schemaVersion": 1,
   "metode": "Én rad per sidefil fra kartlegg-skjermer.mjs. Precision-treff kommer fra den eksplisitte 74-listen. WANG og Team Norway treffer lokalt byggeunderlag, ikke Claude Design-fasiten. Ren redirect/notFound uten JSX er teknisk forklaring. redirectCandidate alene er ikke bevis. Ingen rad er kontrollert i appen.",
-  "kodeversjon": "372b4829898d0eb0f0cd116364e7a22049c28b27",
+  "kodeversjon": "b1b2abf04073afc64f865d5202c805cb59a19c9d",
   "inventar": {
-    "pageFiles": 551,
-    "uniqueRoutePatterns": 551,
-    "componentFiles": 926,
+    "pageFiles": 552,
+    "uniqueRoutePatterns": 552,
+    "componentFiles": 928,
     "surfaceFiles": 282,
     "byArea": {
       "interne-eksempler": 6,
       "marked-og-offentlig": 71,
       "offentlig-booking": 4,
-      "agencyos": 168,
+      "agencyos": 169,
       "inngang-og-konto": 20,
       "forelder": 16,
       "lag-og-skole": 63,
@@ -4725,7 +4725,7 @@
       "designkilde": "kode",
       "designversjon": "ikke-en-skjerm",
       "komponentmonster": null,
-      "handlinger": "Send videre til /admin/tester/tildel/${id}",
+      "handlinger": "Send videre til /admin/tester",
       "dataApi": "ikke-avlest-i-D01",
       "tilstander": [
         "videresending",
@@ -4751,11 +4751,11 @@
       "kontrollbevis": null,
       "avvik": [],
       "kobling": "videresending",
-      "forklaring": "Filen har ingen egen visning. Den sender til /admin/tester/tildel/${id}. At målet finnes, og hva brukeren ser hvis lenken er ugyldig, er ikke prøvd i denne bolken.",
+      "forklaring": "Filen har ingen egen visning. Den sender til /admin/tester. At målet finnes, og hva brukeren ser hvis lenken er ugyldig, er ikke prøvd i denne bolken.",
       "legacyGruppe": true,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
-      "videresendingMal": "/admin/tester/tildel/${id}",
+      "videresendingMal": "/admin/tester",
       "kodekommentar": null
     },
     {
@@ -4843,20 +4843,19 @@
       "kodekommentar": null
     },
     {
-      "screenId": "AG-15",
+      "screenId": "VIDERESENDING",
       "rute": "/admin/tester/benchmarks",
       "kildefil": "src/app/admin/(legacy)/tester/benchmarks/page.tsx",
       "omrade": "agencyos",
       "rolle": "trener",
-      "designkilde": "AK Golf Precision Athletics (7d7c2994-cf63-4c5f-9bdc-fdaf67655a70)",
-      "designversjon": "precision-athletics-2026-09-28",
-      "komponentmonster": "/admin/tester/benchmarks",
-      "handlinger": "Resultater, nivåstiger, tildel test",
+      "designkilde": "kode",
+      "designversjon": "ikke-en-skjerm",
+      "komponentmonster": null,
+      "handlinger": "Send videre til /admin/tester",
       "dataApi": "ikke-avlest-i-D01",
       "tilstander": [
-        "tom",
-        "laster",
-        "feil"
+        "videresending",
+        "manglende-mal"
       ],
       "formater": {
         "mobil": "ikke-kontrollert",
@@ -4867,39 +4866,38 @@
       "status": {
         "kartlagt": true,
         "wireframe": false,
-        "uiUtkast": true,
+        "uiUtkast": false,
         "prototype": false,
         "vurdert": false,
-        "valgtForBygging": true,
+        "valgtForBygging": false,
         "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
       "kontrollbevis": null,
       "avvik": [],
-      "kobling": "tegnet-skjermtype",
-      "forklaring": "AG-15 Tester (coach) er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
+      "kobling": "videresending",
+      "forklaring": "Filen har ingen egen visning. Den sender til /admin/tester. At målet finnes, og hva brukeren ser hvis lenken er ugyldig, er ikke prøvd i denne bolken.",
       "legacyGruppe": true,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
-      "videresendingMal": null,
-      "kodekommentar": null
+      "videresendingMal": "/admin/tester",
+      "kodekommentar": "AG-15"
     },
     {
-      "screenId": "AG-15",
+      "screenId": "VIDERESENDING",
       "rute": "/admin/tester/tildel/[spillerId]",
       "kildefil": "src/app/admin/(legacy)/tester/tildel/[spillerId]/page.tsx",
       "omrade": "agencyos",
       "rolle": "trener",
-      "designkilde": "AK Golf Precision Athletics (7d7c2994-cf63-4c5f-9bdc-fdaf67655a70)",
-      "designversjon": "precision-athletics-2026-09-28",
-      "komponentmonster": "/admin/tester/tildel/[spillerId]",
-      "handlinger": "Resultater, nivåstiger, tildel test",
+      "designkilde": "kode",
+      "designversjon": "ikke-en-skjerm",
+      "komponentmonster": null,
+      "handlinger": "Send videre til /admin/tester",
       "dataApi": "ikke-avlest-i-D01",
       "tilstander": [
-        "tom",
-        "laster",
-        "feil"
+        "videresending",
+        "manglende-mal"
       ],
       "formater": {
         "mobil": "ikke-kontrollert",
@@ -4910,23 +4908,23 @@
       "status": {
         "kartlagt": true,
         "wireframe": false,
-        "uiUtkast": true,
+        "uiUtkast": false,
         "prototype": false,
         "vurdert": false,
-        "valgtForBygging": true,
+        "valgtForBygging": false,
         "implementert": "ikke-verifisert",
         "kontrollertIApp": false
       },
       "eier": "D01-skjermregister",
       "kontrollbevis": null,
       "avvik": [],
-      "kobling": "tegnet-skjermtype",
-      "forklaring": "AG-15 Tester (coach) er valgt skjermtype i skjermlisten (IA 28.09.2026). Bare PH-01 er visuelt godkjent; denne er kandidat til Anders har sett den i appen. Denne ruten er ikke kontrollert i appen i D01.",
+      "kobling": "videresending",
+      "forklaring": "Filen har ingen egen visning. Den sender til /admin/tester. At målet finnes, og hva brukeren ser hvis lenken er ugyldig, er ikke prøvd i denne bolken.",
       "legacyGruppe": true,
       "naermesteSkjermtype": null,
       "sammeSidefil": [],
-      "videresendingMal": null,
-      "kodekommentar": null
+      "videresendingMal": "/admin/tester",
+      "kodekommentar": "AG-15"
     },
     {
       "screenId": "VIDERESENDING",
@@ -6759,6 +6757,49 @@
       "sammeSidefil": [],
       "videresendingMal": null,
       "kodekommentar": "AG-04"
+    },
+    {
+      "screenId": "UTEN-TEGNET-TYPE",
+      "rute": "/admin/grupper/[id]/analyse",
+      "kildefil": "src/app/admin/grupper/[id]/analyse/page.tsx",
+      "omrade": "agencyos",
+      "rolle": "trener",
+      "designkilde": "docs/design-system/skjermliste-precision-athletics.md",
+      "designversjon": "precision-athletics-2026-09-28",
+      "komponentmonster": null,
+      "handlinger": "ikke-avlest-i-D01",
+      "dataApi": "ikke-avlest-i-D01",
+      "tilstander": [
+        "tom",
+        "laster",
+        "feil"
+      ],
+      "formater": {
+        "mobil": "ikke-kontrollert",
+        "nettbrett": "ikke-kontrollert",
+        "desktop": "ikke-kontrollert",
+        "natt": "ikke-relevant"
+      },
+      "status": {
+        "kartlagt": true,
+        "wireframe": false,
+        "uiUtkast": false,
+        "prototype": false,
+        "vurdert": false,
+        "valgtForBygging": false,
+        "implementert": "ikke-verifisert",
+        "kontrollertIApp": false
+      },
+      "eier": "D01-skjermregister",
+      "kontrollbevis": null,
+      "avvik": [],
+      "kobling": "teknisk-forklaring",
+      "forklaring": "Ingen tegnet skjermtype treffer ruten eksakt. Nærmeste type er AG-16 Grupper, men det er et hint, ikke en tildeling. Ruten beholdes til D02 avgjør om den hører til typen, er et eget mønster eller er en videresending.",
+      "legacyGruppe": false,
+      "naermesteSkjermtype": "AG-16 Grupper",
+      "sammeSidefil": [],
+      "videresendingMal": null,
+      "kodekommentar": null
     },
     {
       "screenId": "AG-16",
@@ -24184,18 +24225,18 @@
     }
   ],
   "tellinger": {
-    "sidefiler": 551,
+    "sidefiler": 552,
     "medAvvik": 135,
-    "valgtForBygging": 230,
-    "utenEksaktType": 17,
+    "valgtForBygging": 228,
+    "utenEksaktType": 18,
     "implementert": 104,
     "kontrollertIApp": 0,
     "kobling": {
       "intern-flate": 7,
       "felles-monster": 22,
-      "tegnet-skjermtype": 261,
-      "videresending": 190,
-      "teknisk-forklaring": 34,
+      "tegnet-skjermtype": 259,
+      "videresending": 192,
+      "teknisk-forklaring": 35,
       "byggeunderlag": 37
     },
     "screenId": {
@@ -24216,10 +24257,9 @@
       "ST-06": 8,
       "ST-04": 3,
       "MK-BEKREFT": 1,
-      "VIDERESENDING": 190,
+      "VIDERESENDING": 192,
       "AG-05": 4,
       "AG-08": 3,
-      "AG-15": 3,
       "AG-16": 6,
       "AG-13": 2,
       "AG-20": 1,
@@ -24228,7 +24268,7 @@
       "AG-09": 2,
       "AG-24": 5,
       "AG-06": 2,
-      "UTEN-TEGNET-TYPE": 17,
+      "UTEN-TEGNET-TYPE": 18,
       "AG-04": 2,
       "AG-12": 1,
       "AG-11": 2,
@@ -24240,6 +24280,7 @@
       "AG-10": 2,
       "AG-18": 4,
       "AG-07": 2,
+      "AG-15": 1,
       "AG-17": 3,
       "AU-02": 3,
       "AU-03": 2,

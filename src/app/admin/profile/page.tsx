@@ -17,7 +17,7 @@ export default async function AdminProfilePage() {
 
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
-      <AG23Oppsett data={await lastOppsettData(user)} startFane="profil" />
+      <AG23Oppsett erHeadCoach={user.role === "ADMIN"} data={await lastOppsettData(user)} startFane="profil" />
     </AgencyOSSkall>
   );
 }

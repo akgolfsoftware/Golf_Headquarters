@@ -4,6 +4,19 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## ALT SOM ER KLART LEGGES INN I MAIN AUTOMATISK (Anders 17.10.2026, bindende)
+
+Anders 17.10: «kan du legge til regel at alt som er klart auto merges til main».
+
+- **Claude slår på auto-merge (squash) på hver PR** når den er laget. GitHub legger den inn i main når alle sjekker er grønne.
+- **Klart betyr:** `npm run verify` grønn lokalt og alle CI-sjekker grønne. Rødt legges aldri inn, og `--no-verify` brukes aldri.
+- Skjermbilder i 390 og desktop og Vercel-lenken sendes fortsatt etter push, så Anders kan se designet i etterkant og be om endring.
+- **Står fortsatt:** unntakene i AGENTS.md §Stående forhåndsgodkjenning (ekte betaling, e-post til ekte personer, sletting av produksjonsdata, brytende skjemaendring, domeneflytting, hemmeligheter).
+
+**Overstyrer:** «Merge ALDRI til main før Anders har skrevet «merge»» i `CLAUDE.md` §Push og merge, også etter at nattkjøringen er opphevet.
+
+**Arbeidet dette utløser:** `CLAUDE.md` §Push og merge er rettet i samme PR. Ferdig når regelen står der.
+
 ## NATTKJØRING 16.–17.10: CLAUDE GODKJENNER OG LEGGER INN SELV TIL ALLE FLATER ER I NYTT DESIGN (Anders 16.10.2026, bindende)
 
 Anders 16.10 kl. 22:45: «Alle sider i PlayerHQ, AgencyOS, Team Norway og WANG og nettsidene skal ha
