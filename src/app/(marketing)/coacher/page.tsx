@@ -1,10 +1,10 @@
 /**
- * /coacher — v2. Server-loader gjenbrukt 1:1 fra (mlegacy)/coacher/page.tsx
- * (kuratert liste er fasit for HVEM som vises; DB beriker kun profilbilde).
+ * /coacher i «AK Golf Precision Athletics». Kuratert liste er fasit for HVEM
+ * som vises; DB beriker kun profilbilde.
  */
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
-import { MarkedCoacherListeV2, type CoachKort } from "@/components/marketing/v2/MarkedCoacherListeV2";
+import { CoacherPrecision, type CoachKort } from "@/components/marketing/ds-sider/CoacherPrecision";
 
 export const metadata: Metadata = {
   title: "Coachene våre · AK Golf Academy",
@@ -21,7 +21,6 @@ const FALLBACK_COACHER: CoachKort[] = [
     initialer: "AK",
     foto: null,
     tags: ["Plan & struktur", "Trackman", "Mental"],
-    omrader: ["Junior", "Elite", "Nybegynner"],
   },
   {
     slug: "markus",
@@ -31,7 +30,6 @@ const FALLBACK_COACHER: CoachKort[] = [
     initialer: "MR",
     foto: null,
     tags: ["Nærspill", "Putting", "Junior"],
-    omrader: ["Junior"],
   },
 ];
 
@@ -63,5 +61,5 @@ export default async function CoacherSideV2() {
     return medFoto?.avatarUrl ? { ...f, foto: medFoto.avatarUrl } : f;
   });
 
-  return <MarkedCoacherListeV2 coacher={coacher} />;
+  return <CoacherPrecision coacher={coacher} />;
 }
