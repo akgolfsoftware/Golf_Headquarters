@@ -1,6 +1,6 @@
 /**
  * PlayerHQ · SG-hub · Coach-modus per-kølle analyse
- * (/portal/mal/sg-hub/coach/[spillerId]/[club]) — v2.
+ * (/portal/mal/sg-hub/coach/[spillerId]/[club]) — Precision Athletics (PHSgHubCoach, 19.10.2026; før v2).
  * v2-port 17. juli 2026 (Team D3): `CoachSgHubKolleV2` erstatter hybrid-
  * designet, ruten flyttet ut av (legacy). Auth (requireCoachForPlayer),
  * TrackMan-queries, extractShots og hele analyse-kjeden (computeDPlane/
@@ -17,12 +17,8 @@ import { computeDPlane, DPLANE_LABELS } from "@/lib/sg-hub/d-plane";
 import { computeStrikePattern } from "@/lib/sg-hub/strike-pattern";
 import { computeSmashCurve } from "@/lib/sg-hub/smash-curve";
 import { requireCoachForPlayer } from "@/lib/sg-hub/coach-access";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TilbakeLenke, Kort, TomTilstand } from "@/components/v2";
-import {
-  CoachSgHubKolleV2,
-  type CoachSgHubKolleV2Data,
-} from "@/components/portal/v2/CoachSgHubKolleV2";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { PHSgHubCoachKolle, type PHSgHubCoachKolleData } from "@/components/portal/precision/PHSgHubCoach";
 
 function grader(v: number): string {
   return `${v.toFixed(1).replace(".", ",")}°`;
@@ -51,16 +47,9 @@ export default async function CoachClubDetailPage({
 
   if (allShots.length === 0) {
     return (
-      <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-        <TilbakeLenke href={backHref}>Tilbake til {player.name}</TilbakeLenke>
-        <Kort>
-          <TomTilstand
-            icon="target"
-            title={`${decoded} · ingen data funnet`}
-            sub={`Ingen TrackMan-slag registrert for ${decoded} hos ${player.name}.`}
-          />
-        </Kort>
-      </V2Shell>
+      <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+        <PHSgHubCoachKolle backHref={backHref} data={{ tom: true, spillerNavn: player.name, kolle: decoded }} />
+      </PlayerHQSkall>
     );
   }
 
@@ -68,7 +57,7 @@ export default async function CoachClubDetailPage({
   const strike = computeStrikePattern(allShots);
   const smash = computeSmashCurve(allShots);
 
-  const data: CoachSgHubKolleV2Data = {
+  const data: PHSgHubCoachKolleData = {
     spillerNavn: player.name,
     kolle: decoded,
     antallSlag: allShots.length,
@@ -95,9 +84,8 @@ export default async function CoachClubDetailPage({
   };
 
   return (
-    <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href={backHref}>Tilbake til {player.name}</TilbakeLenke>
-      <CoachSgHubKolleV2 data={data} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <PHSgHubCoachKolle backHref={backHref} data={data} />
+    </PlayerHQSkall>
   );
 }

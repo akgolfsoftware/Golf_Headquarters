@@ -1,6 +1,6 @@
 /**
  * PlayerHQ · SG-hub · Coach-modus spilleroversikt
- * (/portal/mal/sg-hub/coach/[spillerId]) — v2.
+ * (/portal/mal/sg-hub/coach/[spillerId]) — Precision Athletics (PHSgHubCoach, 19.10.2026; før v2).
  * v2-port 17. juli 2026 (Team D3): `CoachSgHubSpillerV2` erstatter hybrid-
  * designet, ruten flyttet ut av (legacy). Auth (requireCoachForPlayer),
  * TrackMan-queries, extractClubs og kølle-sorteringen er uendret — kun
@@ -11,12 +11,8 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { extractClubs } from "@/lib/sg-hub/extract-shots";
 import { requireCoachForPlayer } from "@/lib/sg-hub/coach-access";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
-import {
-  CoachSgHubSpillerV2,
-  type CoachSgHubSpillerV2Data,
-} from "@/components/portal/v2/CoachSgHubSpillerV2";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { PHSgHubCoachSpiller, type PHSgHubCoachSpillerData } from "@/components/portal/precision/PHSgHubCoach";
 
 const CLUB_ORDER = [
   "Driver", "1W", "3W", "5W", "7W",
@@ -55,7 +51,7 @@ export default async function CoachHubPage({
   }
   const clubs = sortClubs([...clubSet]);
 
-  const data: CoachSgHubSpillerV2Data = {
+  const data: PHSgHubCoachSpillerData = {
     spillerNavn: player.name,
     antallOkter: sessions.length,
     // ELITE er et dødt enum — vises aldri i UI (mappes til PRO som før).
@@ -65,9 +61,8 @@ export default async function CoachHubPage({
   };
 
   return (
-    <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/mal/sg-hub">SG-hub</TilbakeLenke>
-      <CoachSgHubSpillerV2 data={data} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <PHSgHubCoachSpiller data={data} />
+    </PlayerHQSkall>
   );
 }
