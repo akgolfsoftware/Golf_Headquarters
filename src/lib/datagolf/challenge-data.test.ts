@@ -8,7 +8,7 @@ let fail = false;
 let viewer = "spiller-a";
 let invalidReference = false;
 // Data Golf er bare for coach og admin (Anders 09.10.2026) — økten lagres av en coach.
-let viewerRole: "COACH" | "ADMIN" | "PLAYER" | "PARENT" = "COACH";
+let viewerRole: "COACH" | "ADMIN" | "PLAYER" | "PARENT" = "ADMIN";
 mock.module("@/lib/auth/requirePortalUser", { namedExports: { requirePortalUser: async () => ({ id: viewer, role: viewerRole }) } });
 mock.module("next/cache", { namedExports: { revalidatePath: () => {} } });
 mock.module("@/lib/datagolf/stasjon-data", { namedExports: { hentStasjonSide: async () => ({
@@ -37,7 +37,7 @@ mock.module("@/lib/prisma", { namedExports: { prisma: {
 } } });
 let save: typeof import("@/app/portal/analysere/datagolf/actions").lagreDataGolfUtfordring;
 before(async () => { save = (await import("@/app/portal/analysere/datagolf/actions")).lagreDataGolfUtfordring; });
-beforeEach(() => { rows = new Map(); writes = 0; fail = false; viewer = "spiller-a"; viewerRole = "COACH"; invalidReference = false; });
+beforeEach(() => { rows = new Map(); writes = 0; fail = false; viewer = "spiller-a"; viewerRole = "ADMIN"; invalidReference = false; });
 const input = () => ({ attemptId: "e141256c-e12f-45a8-b018-81183a542ac7", tak: 1, slag: "innspill100", carry: 100,
   lie: "fairway", baller: [...Array(4).fill("inne"), ...Array(6).fill("ute")], target: 5,
   startedAt: new Date(Date.now() - 60_000).toISOString() });

@@ -1,7 +1,7 @@
 /**
  * TA-06: det åpne søket skal aldri levere Data Golf-tall (PgaPlayerSeason:
- * SG, Data Golf-ID) til uinnloggede, spillere eller foreldre. Bare coach og
- * admin får dem (Anders 09.10.2026). Ingen ekte database brukes.
+ * SG, Data Golf-ID) til uinnloggede, spillere eller foreldre. Bare admin
+ * får dem (Anders 19.10.2026). Ingen ekte database brukes.
  */
 import { mock, test } from "node:test";
 import assert from "node:assert/strict";
@@ -63,8 +63,8 @@ test("uinnlogget får ingen Data Golf-felt, og basen spørres ikke", async () =>
   assert.ok(!JSON.stringify(svar).includes("dgPlayerId"));
 });
 
-test("spiller og forelder får ingen Data Golf-felt", async () => {
-  for (const role of ["PLAYER", "PARENT"] as const) {
+test("coach, spiller og forelder får ingen Data Golf-felt", async () => {
+  for (const role of ["COACH", "PLAYER", "PARENT"] as const) {
     bruker = { id: "u1", role };
     pgaKall = 0;
     const svar = await sok();
@@ -73,8 +73,8 @@ test("spiller og forelder får ingen Data Golf-felt", async () => {
   }
 });
 
-test("coach og admin får PGA-spillerne med SG", async () => {
-  for (const role of ["COACH", "ADMIN"] as const) {
+test("bare admin får PGA-spillerne med SG", async () => {
+  for (const role of ["ADMIN"] as const) {
     bruker = { id: "c1", role };
     const svar = await sok();
     assert.deepEqual(svar.pgaSpillere, [PGA_RAD]);

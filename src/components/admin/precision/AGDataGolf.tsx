@@ -53,7 +53,7 @@ function ProffListe({ rader }: { rader: readonly DgProffRad[] }) {
 /* DG-01 Oversikt */
 export function DG01Oversikt({ d }: { d: { antallProffer: number; kildedato: Date | null; sistSynk: Date | null; feiletSynk: number; endepunkter: number; norske: DgProffRad[]; forsinket: boolean } }) {
   return <div className="agn-s">
-    <Topp dato="Drift · Data Golf · bare coach" tittel="Data Golf" ingress="Proffenes målte og modellerte tall, til å sette spillerens gap og trening i sammenheng." />
+    <Topp dato="Drift · Data Golf · bare admin" tittel="Data Golf" ingress="Proffenes målte og modellerte tall, til å sette spillerens gap og trening i sammenheng." />
     <DgFaner aktiv="oversikt" />
     {d.antallProffer === 0
       ? <Tom tittel="Ingen synk ennå" tekst="Data Golf-tallene hentes ukentlig. Når første synk er gjort, vises de her." />
@@ -217,7 +217,7 @@ export function DG09Kilde({ rader }: { rader: { endepunkt: string; rader: number
         </div>)}
       </div>}
     <Seksjon tittel="Lisens">
-      <p className="forklar">Data Golf-tall vises bare for coacher i AK Golf, WANG Toppidrett og Team Norway. Aldri for spillere, foreldre eller uinnloggede. Ingen eksport.</p>
+      <p className="forklar">Data Golf-tall vises bare for Anders (admin). Aldri for spillere, foreldre eller uinnloggede. Ingen eksport.</p>
     </Seksjon>
     <PoweredBy />
   </div>;

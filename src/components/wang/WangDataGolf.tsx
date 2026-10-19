@@ -509,7 +509,7 @@ function Kilde({ d }: { d: Extract<WangDataGolfData, { side: "kilde" }> }) {
       <div className="wg-kort wg-fyll">
         <b className="wg-undertittel">Lisens</b>
         <p className="wg-forklar">
-          Data Golf-tall vises bare for coacher i AK Golf, WANG Toppidrett og Team Norway. Aldri for elever, foreldre eller
+          Data Golf-tall vises bare for Anders (admin). Aldri for elever, foreldre eller
           uinnloggede. Ingen eksport.
         </p>
       </div>

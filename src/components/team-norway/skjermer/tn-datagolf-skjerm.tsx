@@ -390,7 +390,7 @@ function Kilde({ d }: { d: Extract<WangDataGolfData, { side: "kilde" }> }) {
       <TnFlate>
         <b style={{ fontSize: 15 }}>Lisens</b>
         <p style={{ margin: "6px 0 0", fontSize: 14.5, lineHeight: 1.55, color: TN.ink700 }}>
-          Data Golf-tall vises bare for coacher i AK Golf, WANG Toppidrett og Team Norway. Aldri for spillere, foreldre eller uinnloggede. Ingen eksport.
+          Data Golf-tall vises bare for Anders (admin). Aldri for spillere, foreldre eller uinnloggede. Ingen eksport.
         </p>
       </TnFlate>
     </>

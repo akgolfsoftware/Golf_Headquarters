@@ -1,6 +1,6 @@
 /**
- * Data Golf-regelen (Anders 09.10.2026): bare COACH og ADMIN ser Data Golf-tall.
- * Spiller, forelder, gjest og uinnlogget får alltid nei.
+ * Data Golf-regelen (Anders 09.10.2026): bare ADMIN ser Data Golf-tall (19.10.2026).
+ * Coach, spiller, forelder, gjest og uinnlogget får alltid nei.
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -11,12 +11,12 @@ import {
   kanSeDataGolf,
 } from "./datagolf-regel";
 
-test("COACH og ADMIN ser Data Golf", () => {
-  assert.equal(kanSeDataGolf({ role: "COACH" }), true);
+test("ADMIN ser Data Golf", () => {
   assert.equal(kanSeDataGolf({ role: "ADMIN" }), true);
 });
 
-test("PLAYER, PARENT og GUEST ser aldri Data Golf", () => {
+test("COACH, PLAYER, PARENT og GUEST ser aldri Data Golf", () => {
+  assert.equal(kanSeDataGolf({ role: "COACH" }), false);
   assert.equal(kanSeDataGolf({ role: "PLAYER" }), false);
   assert.equal(kanSeDataGolf({ role: "PARENT" }), false);
   assert.equal(kanSeDataGolf({ role: "GUEST" }), false);
@@ -27,8 +27,8 @@ test("uinnlogget ser aldri Data Golf", () => {
   assert.equal(kanSeDataGolf(undefined), false);
 });
 
-test("rollelista er nøyaktig COACH og ADMIN — ingen utvidelse uten beslutning", () => {
-  assert.deepEqual([...DATAGOLF_ROLLER].sort(), ["ADMIN", "COACH"]);
+test("rollelista er nøyaktig ADMIN — ingen utvidelse uten beslutning", () => {
+  assert.deepEqual([...DATAGOLF_ROLLER], ["ADMIN"]);
 });
 
 test("turneringsfilteret tar bort DATAGOLF, men beholder turneringer uten kilde", () => {

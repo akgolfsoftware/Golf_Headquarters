@@ -34,12 +34,12 @@ test("DG-05: en spiller (ikke coach) avvises og ingen spillerdata leses", async 
 test("DG-05: treneren får bare tall for en spiller som deler (medSpiller gir null = ingen deling)", async () => {
   roundReads = 0;
   const { hentDgSpillerVisning } = await mod();
-  const uten = await hentDgSpillerVisning({ bruker: { id: "trener", role: "COACH" }, spillere, spillerId: "spiller-a", medSpiller: async () => null });
+  const uten = await hentDgSpillerVisning({ bruker: { id: "trener", role: "ADMIN" }, spillere, spillerId: "spiller-a", medSpiller: async () => null });
   assert.equal(uten?.spiller, null); assert.equal(uten?.gap, null); assert.equal(uten?.proff?.navn, "Hovland, Viktor");
-  const ukjent = await hentDgSpillerVisning({ bruker: { id: "trener", role: "COACH" }, spillere, spillerId: "ikke-delt",
+  const ukjent = await hentDgSpillerVisning({ bruker: { id: "trener", role: "ADMIN" }, spillere, spillerId: "ikke-delt",
     medSpiller: async (_id, les) => les(tx as never) });
   assert.equal(ukjent?.spiller, null); assert.equal(roundReads, 0);
-  const med = await hentDgSpillerVisning({ bruker: { id: "trener", role: "COACH" }, spillere, spillerId: "spiller-a",
+  const med = await hentDgSpillerVisning({ bruker: { id: "trener", role: "ADMIN" }, spillere, spillerId: "spiller-a",
     medSpiller: async (_id, les) => les(tx as never) });
   assert.equal(med?.spiller?.id, "spiller-a"); assert.equal(roundReads, 1);
   assert.ok(med?.gap?.rader.every((r) => r.gap === null), "uten runder er alle gap «—»");

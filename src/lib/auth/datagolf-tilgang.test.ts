@@ -65,9 +65,13 @@ test("spiller sendes til portalen, forelder til forelderflaten, gjest til kalend
   assert.equal(await videresendtTil(() => krevDataGolfBruker("/stats/pga")), "/admin/kalender");
 });
 
-test("coach og admin slipper inn", async () => {
+test("coach sendes bort som alle andre; bare admin slipper inn", async () => {
   const { krevDataGolfBruker, hentDataGolfBruker, innloggetKanSeDataGolf } = await port();
-  for (const role of ["COACH", "ADMIN"] as const) {
+  bruker = { id: "c1", role: "COACH" };
+  assert.notEqual(await videresendtTil(() => krevDataGolfBruker("/stats/pga")), null);
+  assert.equal(await hentDataGolfBruker(), null);
+  assert.equal(await innloggetKanSeDataGolf(), false);
+  for (const role of ["ADMIN"] as const) {
     bruker = { id: "c1", role };
     assert.equal(await videresendtTil(() => krevDataGolfBruker("/stats/pga")), null);
     assert.deepEqual(await hentDataGolfBruker(), bruker);
@@ -77,7 +81,7 @@ test("coach og admin slipper inn", async () => {
 
 test("feiler brukeroppslaget, er svaret nei (fail-closed)", async () => {
   const { innloggetKanSeDataGolf } = await port();
-  bruker = { id: "c1", role: "COACH" };
+  bruker = { id: "c1", role: "ADMIN" };
   kast = true;
   assert.equal(await innloggetKanSeDataGolf(), false);
   kast = false;

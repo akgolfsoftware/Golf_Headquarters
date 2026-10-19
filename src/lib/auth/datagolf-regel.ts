@@ -3,19 +3,20 @@
  * fra både server- og klientkode). Sidevakter og oppslag på innlogget bruker
  * ligger i `datagolf-tilgang.ts`.
  *
- * Beslutning (Anders 09.10.2026, bindende, overstyrer D-19 «bare analytiker»):
- * Data Golf-tall (runder, SG, skill ratings, prognoser, odds, DFS,
- * PGA-sammenligning) vises bare for brukere med coach-rollen — COACH (også
- * head/assistant coach og WANG-/TN-trenere med COACH-rolle) og ADMIN. Aldri for
- * spillere (uansett nivå), aldri for forelder, aldri uten innlogging.
+ * Beslutning (Anders 19.10.2026, bindende, strammer inn 09.10): lisensen er
+ * personlig og ikke-kommersiell. Data Golf-tall (runder, SG, skill ratings,
+ * prognoser, odds, DFS, PGA-sammenligning) vises bare for ADMIN (Anders). Ikke
+ * for coacher (heller ikke WANG-/TN-trenere), aldri for spillere, aldri for
+ * forelder, aldri uten innlogging. Å åpne for flere roller krever ny beslutning
+ * fra Anders og en endring av lisensgrunnlaget.
  */
 
 import type { UserRole } from "@/generated/prisma/client";
 
 /** Rollene som ser Data Golf. Alt annet — også ukjente fremtidige roller — får nei. */
-export const DATAGOLF_ROLLER: readonly UserRole[] = ["COACH", "ADMIN"];
+export const DATAGOLF_ROLLER: readonly UserRole[] = ["ADMIN"];
 
-/** Ren regel: true bare for COACH og ADMIN. Uinnlogget (null) får nei. */
+/** Ren regel: true bare for ADMIN. Uinnlogget (null) får nei. */
 export function kanSeDataGolf(user: { role: UserRole } | null | undefined): boolean {
   if (!user) return false;
   return DATAGOLF_ROLLER.includes(user.role);
