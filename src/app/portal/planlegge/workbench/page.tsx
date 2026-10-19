@@ -42,6 +42,7 @@ import { PH11Nivaer } from "@/components/portal/precision/PH11Nivaer";
 import { PHMalsetninger } from "@/components/portal/precision/PHMalsetninger";
 import { hentMalsetningerSide } from "@/lib/portal-mal/maal-ny-last";
 import { harEgenIupInngang } from "@/lib/iup/oversikt";
+import { hentIupMaaltallSammendrag } from "@/lib/iup/maaltall-data";
 import { periodeForUke } from "@/lib/workbench/uke-periode";
 import "@/styles/precision-komponenter.css";
 import "@/styles/precision-athletics.css";
@@ -124,8 +125,8 @@ export default async function PlayerWorkbenchPage({ searchParams }: Props) {
   }
 
   if (visning === "mal") {
-    const [side, visIup] = await Promise.all([hentMalsetningerSide(user), harEgenIupInngang()]);
-    return <Ramme uleste={uleste}><PHMalsetninger visIup={visIup} avsluttede={side.avsluttede} data={{ goals: side.goals, milepael: side.milepael }}
+    const [side, visIup, iupMaaltall] = await Promise.all([hentMalsetningerSide(user), harEgenIupInngang(), hentIupMaaltallSammendrag()]);
+    return <Ramme uleste={uleste}><PHMalsetninger visIup={visIup} iupMaaltall={iupMaaltall} avsluttede={side.avsluttede} data={{ goals: side.goals, milepael: side.milepael }}
       nivaer={<PH11Nivaer playerId={playerId} aktiv="mal" referanse={kontekst.referanse} />} /></Ramme>;
   }
 

@@ -15,8 +15,8 @@
  *   - «Burde vært»-streken finnes bare når start, målsetning og frist er kjent. Bare SG-målsetninger
  *     lagrer start i dag, så de andre viser «—» som start og ingen strek.
  *   - Prosessmål vises med fremdriftsspor, ikke ukeprikker: appen lagrer ikke antall per uke på målsetningen.
- *   - IUP-raden lenker til utviklingssjekk og sesongevaluering (/portal/mal/evaluering). Tallet
- *     «7 av 37 med mål» finnes ikke i dataene og er utelatt.
+ *   - IUP-måltall-raden («7 av 37 med mål») lenker til /portal/mal/maaltall. Under den ligger en egen rad
+ *     til utviklingssjekk og sesongevaluering (/portal/mal/evaluering), som før.
  *   - Nivåmenyen øverst vises når siden er nivået Målsetninger i Workbench (`nivaer`). /portal/mal er
  *     fortsatt egen adresse uten nivåmenyen.
  *   - Ekstra filter «Avsluttet» viser nådde og avsluttede målsetninger, slik Avslutt-dialogen lover.
@@ -41,6 +41,8 @@ export type PHMalsetningerProps = {
   visIup?: boolean;
   state?: "data" | "tom" | "laster" | "feil";
   onRetry?: () => void;
+  /** IUP-måltall for WANG-/TN-spillere (null eller utelatt = ingen IUP). */
+  iupMaaltall?: { sesong: string; medMal: number; antall: number; org: string } | null;
   /** Nivåmenyen i spillerens Workbench (År · Periode · Måned · Uke · Målsetninger). */
   nivaer?: ReactNode;
 };
@@ -105,7 +107,7 @@ export function MaalKort({ m }: { m: MaalKortNy }) {
   );
 }
 
-export function PHMalsetninger({ data, avsluttede = [], visIup, state, onRetry, nivaer }: PHMalsetningerProps) {
+export function PHMalsetninger({ data, avsluttede = [], visIup, state, onRetry, nivaer, iupMaaltall }: PHMalsetningerProps) {
   const [filter, setFilter] = useState<Filter>("alle");
   const tilstand = state ?? (data.goals.length === 0 && avsluttede.length === 0 ? "tom" : "data");
 
@@ -146,11 +148,17 @@ export function PHMalsetninger({ data, avsluttede = [], visIup, state, onRetry, 
     utenData > 0 ? `${utenData === 1 ? "Én mangler" : `${utenData} mangler`} målinger.` : null,
   ].filter(Boolean).join(" ");
 
-  const iupRad = visIup ? (
-    <Link className="phn-m-iup" href="/portal/mal/evaluering">
-      <span><b>Utviklingssjekk og sesongevaluering</b><small>IUP · det du deler med treneren din</small></span>
-      <ChevronRight className="phn-ikon" aria-hidden />
-    </Link>
+  const iupRad = visIup || iupMaaltall ? (
+    <div className="phn-m-iuper">
+      {iupMaaltall && <Link className="phn-m-iup" href="/portal/mal/maaltall">
+        <span><b>IUP-måltall {iupMaaltall.sesong}</b><small>{iupMaaltall.medMal} av {iupMaaltall.antall} med mål · {iupMaaltall.org}</small></span>
+        <ChevronRight className="phn-ikon" aria-hidden />
+      </Link>}
+      {visIup && <Link className="phn-m-iup phn-m-iup-lys" href="/portal/mal/evaluering">
+        <span><b>Utviklingssjekk og sesongevaluering</b><small>IUP · det du deler med treneren din</small></span>
+        <ChevronRight className="phn-ikon" aria-hidden />
+      </Link>}
+    </div>
   ) : null;
 
   return (

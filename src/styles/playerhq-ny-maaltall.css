@@ -1,0 +1,34 @@
+/*
+ * PH-11-MAL-IUP IUP-måltall (plan.html, mal «iup», pakke 3 godkjent 14.10.2026).
+ * Avgrenset til .phn. Tabell på PC fra 900 px, kort med kvartalsruter på mobil.
+ */
+.phn .phn-mt-ingress { margin: 6px 0 0; max-width: 60ch; font-size: 15px; line-height: 1.5; color: var(--phn-g800); }
+.phn .phn-mt-tabell { display: grid; }
+.phn .phn-mt-hode { display: none; }
+.phn .phn-mt-gruppe { margin: 0; padding: 16px 0 8px; font: 600 15px/1.3 var(--phn-sans); border-bottom: 2px solid var(--phn-g900); }
+.phn .phn-mt-rad { display: grid; gap: 8px; padding: 12px 0; border-bottom: 1px solid var(--phn-sand-300); }
+.phn .phn-mt-topp { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.phn .phn-mt-topp b { display: block; font: 600 14.5px/1.3 var(--phn-sans); }
+.phn .phn-mt-topp small { display: block; margin-top: 2px; font-size: 12.5px; color: var(--phn-g600); }
+.phn .phn-mt-kv { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; }
+.phn .phn-mt-kv span { display: grid; gap: 3px; justify-items: center; padding: 6px 0; border-radius: 6px; background: var(--phn-sand-100); font: 500 11px/1 var(--phn-sans); color: var(--phn-g600); }
+.phn .phn-mt-kv span b { font: 600 14px/1 var(--phn-mono); color: var(--phn-g900); }
+.phn .phn-mt-sett { flex: none; min-height: 44px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--phn-g500); background: var(--phn-hvit); font: 600 13px/1 var(--phn-sans); color: var(--phn-g900); cursor: pointer; }
+.phn .phn-mt-sett:focus-visible { outline: 3px solid var(--phn-g900); outline-offset: 2px; }
+.phn .phn-mt-felt { display: flex; gap: 6px; align-items: center; flex: none; }
+.phn .phn-mt-felt input { width: 96px; min-height: 44px; padding: 0 8px; border: 1px solid var(--phn-g900); border-radius: 8px; font: 500 16px/1 var(--phn-mono); }
+
+@container (min-width: 900px) {
+  .phn .phn-mt-hode { display: grid; grid-template-columns: minmax(0, 1fr) repeat(5, 64px) 160px; gap: 6px; padding: 8px 0; border-bottom: 2px solid var(--phn-g900); font: 600 12px/1 var(--phn-sans); color: var(--phn-g800); }
+  .phn .phn-mt-hode span:not(:first-child) { text-align: center; }
+  .phn .phn-mt-gruppe { border-bottom-width: 1px; }
+  .phn .phn-mt-rad { grid-template-columns: minmax(0, 1fr) calc(5 * 64px + 4 * 6px) 160px; gap: 6px; align-items: center; }
+  .phn .phn-mt-topp { display: contents; }
+  .phn .phn-mt-topp > div { grid-column: 1; grid-row: 1; }
+  .phn .phn-mt-topp > .phn-mt-sett, .phn .phn-mt-topp > .phn-mt-felt { grid-column: 3; grid-row: 1; justify-content: center; }
+  .phn .phn-mt-sett { width: 100%; }
+  .phn .phn-mt-kv { grid-column: 2; grid-row: 1; grid-template-columns: repeat(5, 64px); gap: 6px; }
+  .phn .phn-mt-kv span { background: none; padding: 0; }
+  .phn .phn-mt-kv span > small { display: none; }
+  .phn .phn-mt-felt input { width: 90px; }
+}
