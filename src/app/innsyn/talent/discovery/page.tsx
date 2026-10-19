@@ -1,30 +1,22 @@
 /**
- * v2-preview: AgencyOS Talent-discovery (retning C). Egen top-level route-group
- * (v2preview) som IKKE arver AdminShell — kun root-layout — så V2Shell leverer
- * all chrome (IkonRail/BunnNav) i mørk v2-scope.
+ * AgencyOS — Talent · Discovery, i Precision Athletics (AgencyOSSkall + TalentDiscovery).
  *
- * Auth + data følger den ekte /admin/talent/discovery-flaten: samme
- * requirePortalUser-guard (ADMIN/COACH) og samme Prisma-spørring (PLAYER-brukere
- * uten TalentTracking). Filtrering (søk/HCP/klubb) flyttes til klienten for
- * umiddelbar respons — datakontrakten er uendret: alle kandidatene sendes ned.
- * Ingen fabrikerte tall (potensial = kun ekte HCP + spilte år).
- *
- * Server component.
+ * Auth og data er uendret: requirePortalUser (ADMIN/COACH) og samme Prisma-spørring
+ * (PLAYER-brukere i coachens stall uten TalentTracking). Filtreringen (søk/HCP/klubb)
+ * skjer i klienten; alle kandidatene sendes ned. Ingen fabrikerte tall.
  */
 
-import { TilbakeLenke } from "@/components/v2";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import {
-  AdminTalentDiscoveryV2,
-  type TalentDiscoveryV2Data,
-} from "@/components/admin/v2/AdminTalentDiscoveryV2";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { Topp } from "@/components/admin/agencyos-ny/ny";
+import { TalentDiscovery, type TalentDiscoveryData } from "@/components/admin/agencyos-ny/TalentDiscovery";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Talent-discovery · AgencyOS" };
 
-export default async function V2AdminTalentDiscoveryPage() {
+export default async function TalentDiscoveryPage() {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
 
   const alle = await prisma.user.findMany({
@@ -46,7 +38,7 @@ export default async function V2AdminTalentDiscoveryPage() {
     new Set(alle.map((u) => u.homeClub).filter((k): k is string => Boolean(k))),
   ).sort();
 
-  const data: TalentDiscoveryV2Data = {
+  const data: TalentDiscoveryData = {
     total: alle.length,
     kandidater: alle.map((u) => ({
       id: u.id,
@@ -59,9 +51,12 @@ export default async function V2AdminTalentDiscoveryPage() {
   };
 
   return (
-    <V2Shell bredde="kolonne" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <TilbakeLenke href="/innsyn/talent/radar">Talent-radar</TilbakeLenke>
-      <AdminTalentDiscoveryV2 data={data} />
-    </V2Shell>
+    <AgencyOSSkall navn={user.name ?? "Coach"}>
+      <div className="agn-s">
+        <Topp tilbake={{ href: "/innsyn/talent/radar", tekst: "Innsikt og talent" }} dato="Talent · discovery" tittel="Discovery"
+          ingress="Spillere som ennå ikke er i talent-oppfølgingen. Søk, filtrer på HCP og klubb, og legg de mest aktuelle inn." />
+        <TalentDiscovery data={data} />
+      </div>
+    </AgencyOSSkall>
   );
 }
