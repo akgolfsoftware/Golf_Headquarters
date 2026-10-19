@@ -9,7 +9,7 @@
  * Skrivesiden er den samme som før: useUkeMotor (wb-actions). Arkene for økt, ny økt, publisering,
  * ukeplan og øvelser er AG-11-arkene, så ingen funksjon forsvinner.
  *
- * Avvik fra tegningen:
+ * Avvik:
  *   - «Fordelt» er ukeplanens timer (WeekPlan.plannedHours*). Har uka ingen, brukes periodens minutter
  *     per akse (vanlig eller lett uke). Mangler begge, står «—».
  *   - Øvelsesbanken er dagens øvelsesvelger (søk i alle øvelser, mest brukt først, «Ny øvelse», 16.10).
