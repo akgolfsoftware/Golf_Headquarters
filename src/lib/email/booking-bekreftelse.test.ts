@@ -85,3 +85,11 @@ test("duo: deltaker 2 ser hvem som betalte, ikke pris eller betalingsreferanse",
   assert.ok(!html.includes("1 klipp"));
   assert.ok(!html.includes("pi_demo"));
 });
+
+test("EP-01 følger utkast-flater/epost.html: merke og tidskort i grafitt", () => {
+  const { html } = byggBekreftelse(base);
+  assert.ok(html.includes("Bekreftet og betalt"));
+  assert.ok(html.includes("background:#141413;padding:20px 20px 18px"));
+  assert.ok(html.includes(">Tir 29. sep<"));
+  assert.ok(html.includes("post@akgolf.no"));
+});

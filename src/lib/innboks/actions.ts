@@ -19,6 +19,7 @@ import { prisma } from "@/lib/prisma";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { audit } from "@/lib/audit";
 import { resendKlient, FRA_EPOST } from "@/lib/email";
+import { bookingUtkastHtml } from "@/lib/email/precision-epost";
 import { rateLimit } from "@/lib/rate-limit";
 import { genererUtkast } from "./generer-utkast";
 
@@ -45,6 +46,11 @@ export async function sendGodkjentSvar(
   const epost = await prisma.innboksEpost.findUnique({ where: { id: epostId } });
   if (!epost) throw new Error("not-found");
 
+  // EP-05 har felt coachen fyller inn i hakeparentes. Sendes aldri uutfylt.
+  if (epost.bookingId && /\[(skriv|én konkret)[^\]]*\]/i.test(redigertSvar)) {
+    return { sendtReelt: false, melding: "Fyll inn det som står i hakeparentes før du sender." };
+  }
+
   let sendtReelt = false;
   let melding = "Svaret er sendt.";
 
@@ -53,8 +59,11 @@ export async function sendGodkjentSvar(
       await resendKlient().emails.send({
         from: FRA_EPOST,
         to: epost.fraEpost,
-        subject: `Re: ${epost.emne}`,
+        // Utkast om en booking (EP-05, EP-06, avvisning) er ikke svar på en mottatt
+        // e-post: eget emne, og sendt i bookingmalen (utkast-flater/epost.html).
+        subject: epost.bookingId ? epost.emne : `Re: ${epost.emne}`,
         text: redigertSvar,
+        ...(epost.bookingId ? { html: bookingUtkastHtml(epost.emne, redigertSvar) } : {}),
       });
       sendtReelt = true;
     } catch {
