@@ -11,6 +11,7 @@
 
 import "server-only";
 
+import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import {
   KandidaterSchema,
@@ -126,8 +127,10 @@ export async function hentProfilResultater(userId: string): Promise<ProfilResult
 export async function hentSpillerprofil(
   spillerUserId: string,
   { inkluderGolfId = false }: { inkluderGolfId?: boolean } = {},
+  /** Send inn transaksjonen når delingslåsen holdes (organisasjonstrener), så lesingen skjer under låsen. */
+  db: Pick<Prisma.TransactionClient, "$queryRaw"> = prisma,
 ): Promise<Spillerprofil | null> {
-  const rader = await prisma.$queryRaw<{ r: unknown }[]>`
+  const rader = await db.$queryRaw<{ r: unknown }[]>`
     SELECT dashboard.player_profile_for_user(${spillerUserId}::text, ${inkluderGolfId}::boolean) AS r`;
   const r = rader[0]?.r;
   return r == null ? null : SpillerprofilSchema.parse(r);
