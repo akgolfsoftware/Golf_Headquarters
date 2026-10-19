@@ -23,7 +23,8 @@ import {
 
 /**
  * Opptak (WANG-31, -32) og Koordinering mellom skolene (WANG-33), bare for sportssjef.
- * Fasit: docs/design-system/utkast-wang/administrasjon.html (utkast 2). Avvik:
+ * Fasit: docs/design-system/utkast-wang/administrasjon.html (utkast 2).
+ * Avvik:
  *   - Ingen samlet poeng og ingen vurderingspunkter: punktene (D1) er ikke avgjort. Lista sorteres med
  *     stjernemerkede først, deretter navn.
  *   - Ingen notatfelt. Vurderinger av navngitte mindreårige lagres ikke før punktene er bestemt.
