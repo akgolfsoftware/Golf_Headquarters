@@ -9,6 +9,11 @@
  * barnets klipp atomisk) og videre til bekreftetBase. Kort går til opprettBookingMedKort med barnId
  * og retur til /forelder/bookinger, og videre til Stripe Checkout (kort eller Apple Pay).
  * Begge handlingene sjekker forelder–barn-koblingen på nytt før noe lagres.
+ *
+ * Avvik:
+ *   - Bekreft er egen side (sjekker at tiden fortsatt er ledig). Utkastet har steget på samme flate.
+ *   - Notat til coachen er med (som før). Utkastet har ikke feltet.
+ *   - Ingen riggrad i tests/visual/skjerm-mapping.ts; målt med tests/visual/precision/maal.mjs FO-03.
  */
 import { useState, useTransition, type FormEvent } from "react";
 import Link from "next/link";
