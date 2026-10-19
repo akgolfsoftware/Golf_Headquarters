@@ -98,6 +98,9 @@ mock.module("@/app/team-wang/_data/wang-plan-data", {
     },
   },
 });
+mock.module("@/components/wang/WangUnderside", {
+  namedExports: { WangUnderside: ({ children }: { children: unknown }) => children },
+});
 mock.module("@/app/team-wang/coach/iup/[elevId]/iup-samtale", {
   namedExports: { IupSamtale: () => null },
 });
