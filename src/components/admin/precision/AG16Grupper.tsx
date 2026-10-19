@@ -16,7 +16,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Pille, Tom, Topp } from "@/components/admin/agencyos-ny/ny";
-import type { GrupperData } from "@/components/admin/v2/GrupperV2";
+import type { GrupperData } from "@/lib/admin/grupper/typer";
 import "@/styles/agencyos-ny-mer.css";
 
 export type AG16Tilstand = "data" | "tom";

@@ -25,7 +25,7 @@ import { lastDubletter } from "@/lib/admin/ko/last-dubletter";
 import { lastModerering } from "@/lib/admin/ko/last-moderering";
 import { synligeFaner, velgFane } from "@/lib/admin/ko/faner";
 import { ukenummer } from "@/lib/uke-helpers";
-import type { AdminGodkjenningV2Row } from "@/components/admin/v2/AdminGodkjenningerV2";
+import type { AdminGodkjenningV2Row } from "@/lib/admin/ko/typer";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Kø · AgencyOS" };

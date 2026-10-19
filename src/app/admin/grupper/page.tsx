@@ -16,7 +16,7 @@ import { Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { AG16Grupper } from "@/components/admin/precision/AG16Grupper";
-import type { GrupperData, GruppeV2, FastTid } from "@/components/admin/v2/GrupperV2";
+import type { GrupperData, GruppeV2, FastTid } from "@/lib/admin/grupper/typer";
 import { GfgkBootstrapButton, NyGruppeButton } from "./grupper-actions";
 import { GFGK_BOOTSTRAP_GRUPPER } from "@/lib/gfgk-junior/bootstrap";
 import { AK_STIGEN_TRINN, VED_SIDEN_AV_STIGEN } from "@/lib/agencyos/ak-stigen-data";

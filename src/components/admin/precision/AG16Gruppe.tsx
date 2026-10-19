@@ -16,7 +16,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Avatar, KnappLenke, Nokkelverdier, Pille, Seksjon, Tom, Topp } from "@/components/admin/agencyos-ny/ny";
-import type { GruppeDetaljV2Actions, GruppeDetaljV2Data } from "@/components/admin/v2/GruppeDetaljV2";
+import type { GruppeDetaljV2Actions, GruppeDetaljV2Data } from "@/lib/admin/grupper/typer";
 import { formaterTall } from "@/lib/format-tall";
 import "@/styles/agencyos-ny-mer.css";
 

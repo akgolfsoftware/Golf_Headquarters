@@ -28,7 +28,7 @@ import {
 } from "@/lib/admin/innboks/filter";
 import { iFilter, sorterInnboks, tellFilter, type GodkjennKilde, type InnboksPost } from "@/lib/admin/innboks/bygg-innboks";
 import type { DatakvalitetData } from "@/lib/admin/innboks/last-datakvalitet";
-import type { AdminUkesrapportKort } from "@/components/admin/v2/AdminGodkjenningerV2";
+import type { AdminUkesrapportKort } from "@/lib/admin/ko/typer";
 import { avgjorInnboksSak } from "@/app/admin/innboks/actions";
 import { acceptPlanAction, rejectPlanAction } from "@/lib/agents/actions";
 import { avvisProaktivtForslag, godkjennCaddieDraft } from "@/app/admin/agencyos/caddie/dashbord/actions";

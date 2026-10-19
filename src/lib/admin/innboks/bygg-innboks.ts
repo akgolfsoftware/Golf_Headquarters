@@ -11,7 +11,7 @@
  * regelen «spillerspørsmål ubesvart over 24 timer haster».
  */
 import type { InnboksHandling, InnboksSak } from "@/lib/admin/innboks-saker";
-import type { AdminGodkjenningV2Row } from "@/components/admin/v2/AdminGodkjenningerV2";
+import type { AdminGodkjenningV2Row } from "@/lib/admin/ko/typer";
 import type { InnboksEpostVm } from "@/lib/innboks/data";
 import type { OppfolgingKort } from "@/lib/admin/oppfolging/last-oppfolging";
 import type { SporsmalVm } from "./last-sporsmal";

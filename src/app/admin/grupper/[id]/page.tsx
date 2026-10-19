@@ -11,9 +11,9 @@ import { Capability } from "@/lib/auth/cbac";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
-import type { GruppeDetaljV2Data } from "@/components/admin/v2/GruppeDetaljV2";
+import type { GruppeDetaljV2Data } from "@/lib/admin/grupper/typer";
 import { AG16Gruppe } from "@/components/admin/precision/AG16Gruppe";
-import { RullUtMalPanel } from "@/components/admin/v2/RullUtMalPanel";
+import { RullUtMalPanel } from "@/components/admin/precision/RullUtMalPanel";
 import {
   StartOktButton,
   LeggTilSpillerButton,
