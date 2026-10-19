@@ -7,7 +7,7 @@ import { lagreUtfordringForBruker } from "@/lib/datagolf/challenge-data";
 export async function lagreDataGolfUtfordring(input: unknown) {
   // Data Golf er bare for coach og admin (Anders 09.10.2026).
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
-  if (!kanSeDataGolf(user)) return { ok: false as const, message: "Data Golf er bare tilgjengelig for coacher." };
+  if (!kanSeDataGolf(user)) return { ok: false as const, message: "Data Golf er bare tilgjengelig for admin." };
   try {
     const result = await lagreUtfordringForBruker(user.id, input);
     if (result.ok) revalidatePath("/portal/analysere/datagolf");

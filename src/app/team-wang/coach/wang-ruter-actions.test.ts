@@ -399,6 +399,11 @@ test("Data Golf hentes bare på Data Golf-fanen i Konkurranse", async () => {
   const kalender = propsFra(await side({ searchParams: Promise.resolve({ omraade: "konkurranse" }) }));
   assert.equal(kalender.dataGolf, undefined);
   assert.deepEqual(dgKall, []);
+  // Coach-rollen slipper ikke inn: lisensen er personlig (bare ADMIN, 19.10.2026).
+  const coachDg = propsFra(await side({ searchParams: Promise.resolve({ omraade: "konkurranse", fane: "dg-kilde" }) }));
+  assert.equal(coachDg.dataGolf, undefined);
+  assert.deepEqual(dgKall, []);
+  bruker = { id: "admin-1", role: "ADMIN" };
   const dg = propsFra(await side({ searchParams: Promise.resolve({ omraade: "konkurranse", fane: "dg-kilde" }) }));
   assert.deepEqual(dg.dataGolf, { side: "kilde", rader: [] });
   assert.deepEqual(dgKall, ["kilde"]);

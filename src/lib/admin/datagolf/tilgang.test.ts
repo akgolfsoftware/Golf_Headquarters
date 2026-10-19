@@ -9,12 +9,12 @@ import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { kanSeDataGolf } from "@/lib/auth/datagolf-regel";
 
-test("spiller, forelder og uinnlogget ser ikke Data Golf; coach og admin gjør", () => {
+test("coach, spiller, forelder og uinnlogget ser ikke Data Golf; bare admin gjør", () => {
   assert.equal(kanSeDataGolf(null), false);
   assert.equal(kanSeDataGolf(undefined), false);
   assert.equal(kanSeDataGolf({ role: "PLAYER" }), false);
   assert.equal(kanSeDataGolf({ role: "PARENT" }), false);
-  assert.equal(kanSeDataGolf({ role: "COACH" }), true);
+  assert.equal(kanSeDataGolf({ role: "COACH" }), false);
   assert.equal(kanSeDataGolf({ role: "ADMIN" }), true);
 });
 
