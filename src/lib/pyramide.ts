@@ -42,6 +42,21 @@ export function prosentPerArea(agg: PyramideAggregat): PyramideAggregat {
 
 export const PYR_REKKEFOLGE: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
 
+/**
+ * Pyramiden tegnet loddrett: TURN øverst, FYS nederst. FYS er grunnmuren og
+ * står aldri øverst (Anders 19.10.2026). Bruk denne når lagene rendres ovenfra og ned.
+ */
+export const PYR_TOPP_TIL_BUNN: PyramidArea[] = [...PYR_REKKEFOLGE].reverse();
+
+/** Sorterer lag i pyramiderekkefølge ovenfra og ned (TURN først, FYS sist). Ukjente akser havner til slutt. */
+export function sorterPyramideOvenfra<T>(lag: readonly T[], akse: (l: T) => string): T[] {
+  const plass = (l: T) => {
+    const i = (PYR_TOPP_TIL_BUNN as string[]).indexOf(akse(l).toUpperCase());
+    return i === -1 ? PYR_TOPP_TIL_BUNN.length : i;
+  };
+  return [...lag].sort((a, b) => plass(a) - plass(b));
+}
+
 export const PYR_LABEL: Record<PyramidArea, string> = {
   FYS: "Fysisk",
   TEK: "Teknisk",

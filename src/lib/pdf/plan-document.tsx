@@ -16,6 +16,7 @@ import {
   prosentPerArea,
   totalMinutter,
   PYR_REKKEFOLGE,
+  PYR_TOPP_TIL_BUNN,
   PYR_LABEL,
 } from "@/lib/pyramide";
 
@@ -451,7 +452,7 @@ export function PlanDocument({ data }: { data: PlanPdfData }) {
         {/* Pyramide-fordeling */}
         <View style={styles.section}>
           <Text style={styles.sectionHeader}>Pyramide-fordeling</Text>
-          {PYR_REKKEFOLGE.map((omr) => (
+          {PYR_TOPP_TIL_BUNN.map((omr) => (
             <View key={omr} style={styles.pyrRow}>
               <Text style={styles.pyrLabel}>{PYR_LABEL[omr]}</Text>
               <View style={styles.pyrTrack}>

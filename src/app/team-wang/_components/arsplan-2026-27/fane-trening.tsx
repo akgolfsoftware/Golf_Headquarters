@@ -29,6 +29,7 @@ import {
   type Trinn as TrinnType,
 } from "../../_data/arsplan-fasit-2026-27";
 import { d, iso } from "../../_data/wang-plan";
+import { sorterPyramideOvenfra } from "@/lib/pyramide";
 import {
   Chip,
   FaneHero,
@@ -313,7 +314,8 @@ function Periodisering() {
       />
       <WangKort style={{ marginTop: 16 }} key={pyr}>
         <div style={{ display: "grid", gap: 12 }}>
-          {AKSER.map((ax, i) => {
+          {/* TURN øverst, FYS nederst. */}
+          {sorterPyramideOvenfra(AKSER.map((ax, i) => ({ ax, i })), (r) => r.ax.kode).map(({ ax, i }) => {
             const pct = beregnet.pct[i];
             const min = beregnet.min[AKSE_ORD[i]];
             const kilder = beregnet.kilder[AKSE_ORD[i]];
