@@ -15,8 +15,9 @@ import type { WangDgElevSide } from "@/app/team-wang/_data/wang-datagolf-visning
  * Bare for kanSeDataGolf (siden og hentDgSpillerVisning). Elevens tall leses bare når eleven har delt
  * med treneren (medWangElevData). WANG foreslår, eleven bestemmer: alt går som forslag til elevens Workbench.
  *
- * Avvik: tour-referansen (PgaApproachDistance) og «Gruppas øvelsesbank» er ikke med. «Driver» er ute:
- * elevens driverlengde er ikke koblet til TrackMan her.
+ * Avvik:
+ *   - Tour-referansen (PgaApproachDistance) og «Gruppas øvelsesbank» er ikke med.
+ *   - «Driver» er ute: elevens driverlengde er ikke koblet til TrackMan her.
  */
 
 const nb = new Intl.DateTimeFormat("nb-NO", { timeZone: "Europe/Oslo", day: "numeric", month: "short", year: "numeric" });
