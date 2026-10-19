@@ -20,6 +20,7 @@ type Tjeneste = {
 
 let tjeneste: Tjeneste;
 let bookinger: Array<{ coachId: string; serviceTypeId: string; startAt: Date; endAt: Date; plassNr: number }> = [];
+let coachBuffer = 0;
 let hendelser: Array<{ coachId: string | null; startAt: Date; endAt: Date }> = [];
 
 mock.module("@/lib/google-calendar", {
@@ -41,7 +42,7 @@ mock.module("@/lib/prisma", {
             validTo: null,
             recurrenceInterval: null,
             locationId: null,
-            coach: { id: "coach-a", name: "Coach A", role: "COACH" },
+            coach: { id: "coach-a", name: "Coach A", role: "COACH", bookingBufferMin: coachBuffer },
           },
         ],
       },
@@ -99,7 +100,16 @@ function klokkeslett(slots: Array<{ start: Date }>): string[] {
 test.beforeEach(() => {
   tjeneste = standard();
   bookinger = [];
+  coachBuffer = 0;
   hendelser = [];
+});
+
+test("coachens egen buffer (steg 3) blokkerer lukene inntil en booking", async () => {
+  const dag = dagFram(3);
+  coachBuffer = 30;
+  bookinger = [{ coachId: "coach-a", serviceTypeId: "svc", startAt: kl(dag, "10:00"), endAt: kl(dag, "11:00"), plassNr: 1 }];
+  const slots = await getAvailableSlots("svc", dag);
+  assert.deepEqual(klokkeslett(slots), ["11:30", "12:00"]);
 });
 
 test("en fridag (heldags kalenderhendelse for coachen) gir ingen luker", async () => {

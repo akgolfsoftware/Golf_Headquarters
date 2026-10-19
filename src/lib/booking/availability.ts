@@ -105,7 +105,7 @@ export async function getAvailableSlots(
   }
   const availability = await prisma.coachAvailability.findMany({
     where: { active: true, ...(service.coachUserId ? { coachId: service.coachUserId } : {}), AND: andKlausuler },
-    include: { coach: { select: { id: true, name: true, role: true } } },
+    include: { coach: { select: { id: true, name: true, role: true, bookingBufferMin: true } } },
   });
 
   if (availability.length === 0) return [];
@@ -193,8 +193,10 @@ export async function getAvailableSlots(
         // Bufferen holdes av rundt timen: en annen avtale som ligger innenfor
         // bufferen før eller etter, blokkerer luka. Deling (2-til-1) sjekkes
         // fortsatt på selve timen, så nøyaktig samme økt teller ikke som konflikt.
-        const medBufferStart = new Date(cursor.getTime() - bufferFor);
-        const medBufferEnd = new Date(slotEnd.getTime() + bufferEtter);
+        // Coachens egen buffer (bookingplanen steg 3) gjelder i tillegg; den største vinner.
+        const coachBuffer = Math.max(0, av.coach.bookingBufferMin ?? 0) * 60_000;
+        const medBufferStart = new Date(cursor.getTime() - Math.max(bufferFor, coachBuffer));
+        const medBufferEnd = new Date(slotEnd.getTime() + Math.max(bufferEtter, coachBuffer));
         // Sjekk konflikt med eksisterende bookinger ELLER Calendar-busy.
         const overlapping = existing.filter(b => b.coachId === av.coach.id && medBufferStart < b.endAt && medBufferEnd > b.startAt);
         const bookingConflict = vurderDeling(overlapping, { serviceTypeId: service.id, startAt: cursor, endAt: slotEnd }, service.maxDeltakere).utfall !== "ledig";
