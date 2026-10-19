@@ -16,7 +16,8 @@ import {
 } from "@/lib/workbench/maanedsplan-regler";
 import { byggMaanedUker, minutterFraUkeplan } from "@/lib/workbench/maaned-visning";
 import { isoUkeIdentitet } from "@/lib/workbench/ukeplan-schema";
-import type { AxisMinutes } from "@/lib/workbench/perioder";
+import { parseAxisMinutes, type AxisMinutes } from "@/lib/workbench/perioder";
+import { timerPerAksePerUke, type AkseUke } from "@/lib/workbench/timer-per-akse";
 import { fraDatoKolonne } from "@/lib/workbench/wb-map";
 import type { MaanedDetaljer } from "@/lib/domain/workbench/types";
 
@@ -184,6 +185,38 @@ export async function hentMaanedDetaljer(
     perioder: blokk.filter((b) => !HENDELSE_TYPER.has(b.type)),
     hendelser,
   };
+}
+
+/**
+ * Timer per akse per uke i måneden, lest fra spillerens perioder (PeriodBlock.axisMinutes)
+ * og månedsplanen (MonthPlan.weekAxisMinutes, vinner). Lett uke = WeekPlan.weekType
+ * VEDLIKEHOLD. Felles leser for PlayerHQ og AgencyOS. Bare lesing.
+ */
+export async function hentTimerPerAkse(userId: string, year: number, month: number): Promise<AkseUke[]> {
+  const { fra, til } = maanedGrenser(year, month);
+  const uker = alleUkerIMaaned(year, month);
+  const [blokker, maaned, lette] = await Promise.all([
+    // Én ukes margin: ukene i måneden kan starte før den 1. og slutte etter den siste.
+    prisma.periodBlock.findMany({
+      where: { seasonPlan: { userId }, startDate: { lte: new Date(til.getTime() + 7 * 86_400_000) }, endDate: { gte: new Date(fra.getTime() - 7 * 86_400_000) } },
+      orderBy: { startDate: "asc" },
+      select: { startDate: true, endDate: true, axisMinutes: true, axisMinutesLight: true },
+    }),
+    prisma.monthPlan.findUnique({ where: { userId_year_month: { userId, year, month } }, select: { weekAxisMinutes: true } }),
+    uker.length === 0 ? [] : prisma.weekPlan.findMany({
+      where: { playerId: userId, weekType: "VEDLIKEHOLD", OR: uker.map((u) => ({ isoYear: u.isoYear, weekNumber: u.weekNumber })) },
+      select: { isoYear: true, weekNumber: true },
+    }),
+  ]);
+  return timerPerAksePerUke({
+    year, month,
+    perioder: blokker.map((b) => ({
+      startDate: fraDatoKolonne(b.startDate), endDate: fraDatoKolonne(b.endDate),
+      axisMinutes: parseAxisMinutes(b.axisMinutes), axisMinutesLight: parseAxisMinutes(b.axisMinutesLight),
+    })),
+    overstyringer: parseUkeOverstyringer(maaned?.weekAxisMinutes),
+    letteUker: new Set(lette.map((w) => ukeNokkel(w.isoYear, w.weekNumber))),
+  });
 }
 
 /**
