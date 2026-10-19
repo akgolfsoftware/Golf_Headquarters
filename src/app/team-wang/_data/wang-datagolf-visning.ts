@@ -2,7 +2,11 @@
 // serveren med samme modul som AgencyOS (src/lib/admin/datagolf/coach-data.ts), og
 // bare når kanSeDataGolf slipper brukeren inn (coach og admin, aldri elever).
 
+import type { DgSpillerVisning } from "@/lib/datagolf/spiller-mot-proff-data";
+
 export type WangDgSide = "oversikt" | "proffer" | "proff" | "topp" | "norske" | "kilde";
+/** DG-05 Elev mot proff, DG-06 Innspill-tak og DG-07 Fra funn til forslag. */
+export type WangDgElevSide = "spiller" | "innspill" | "forslag";
 
 export interface WangDgProff {
   dgId: number;
@@ -87,10 +91,14 @@ export type WangDataGolfData =
       kommende: { id: string; navn: string; dato: Date; tour: string | null }[];
       live: WangDgLive[];
     }
-  | { side: "kilde"; rader: { endepunkt: string; rader: number | null; status: number | null; feil: string | null; sist: Date | null }[] };
+  | { side: "kilde"; rader: { endepunkt: string; rader: number | null; status: number | null; feil: string | null; sist: Date | null }[] }
+  | { side: WangDgElevSide; v: DgSpillerVisning; idag: string };
 
 /** Fanen i adressen (`fane=dg…`) til siden i Data Golf. */
-export function dgSideFraFane(fane?: string): WangDgSide | null {
+export function dgSideFraFane(fane?: string): WangDgSide | WangDgElevSide | null {
+  if (fane === "dg-spiller") return "spiller";
+  if (fane === "dg-innspill") return "innspill";
+  if (fane === "dg-forslag") return "forslag";
   if (fane === "dg") return "oversikt";
   if (fane === "dg-proffer") return "proffer";
   if (fane === "dg-proff") return "proff";

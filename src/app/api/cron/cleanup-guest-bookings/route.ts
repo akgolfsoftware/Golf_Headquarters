@@ -2,7 +2,8 @@
  * Cron-job: minimer gjeste-kontaktdata på gamle bookinger.
  *
  * Bookinger uten brukerkonto (guest checkout) lagrer `guestName`, `guestEmail`
- * og `guestPhone`. Selve booking-raden må bestå (regnskap — 5 år iht.
+ * og `guestPhone`, og duo-bookinger lagrer deltaker 2 (`partnerName`,
+ * `partnerEmail`). Selve booking-raden må bestå (regnskap — 5 år iht.
  * bokføringsloven), men gjeste-kontakt-PII trengs ikke ut over en rimelig
  * periode etter at timen er gjennomført. GDPR-lagringsminimering: vi vasker
  * kontaktfeltene 365 dager etter `endAt` og beholder de avidentifiserte
@@ -39,11 +40,16 @@ export async function GET(req: Request): Promise<NextResponse> {
     const res = await prisma.booking.updateMany({
       where: {
         endAt: { lt: cutoff },
-        // Kun rader som fortsatt bærer gjeste-kontakt (idempotent: allerede
-        // vaskede rader har guestEmail = null og treffes ikke igjen).
-        guestEmail: { not: null },
+        // Kun rader som fortsatt bærer gjeste-kontakt eller deltaker 2 i en duo
+        // (idempotent: vaskede rader har feltene null og treffes ikke igjen).
+        // Deltaker 2 kan også stå på bookinger gjort av innloggede brukere.
+        OR: [
+          { guestEmail: { not: null } },
+          { partnerName: { not: null } },
+          { partnerEmail: { not: null } },
+        ],
       },
-      data: { guestName: null, guestEmail: null, guestPhone: null },
+      data: { guestName: null, guestEmail: null, guestPhone: null, partnerName: null, partnerEmail: null },
     });
     return NextResponse.json({ ok: true, vasket: res.count });
   } catch (error) {

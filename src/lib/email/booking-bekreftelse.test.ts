@@ -77,3 +77,11 @@ test("øre beholdes og gratis booking lover ingen belastning", () => {
   assert.match(byggBekreftelse({ ...base, prisOre: 95050 }).html, /950,50 kr/);
   assert.doesNotMatch(byggBekreftelse({ ...base, prisOre: 0, betalingsref: null }).html, /belastes full pris/);
 });
+
+test("duo: deltaker 2 ser hvem som betalte, ikke pris eller betalingsreferanse", () => {
+  const { html } = byggBekreftelse({ ...base, fornavn: "Ola", prisOre: null, betalingsref: null, betaltAv: "Mari Hansen" });
+  assert.ok(html.includes("Betalt av Mari Hansen"));
+  assert.ok(!html.includes("Inkludert i abonnement"));
+  assert.ok(!html.includes("1 klipp"));
+  assert.ok(!html.includes("pi_demo"));
+});

@@ -14,13 +14,17 @@ import { Capability } from "@/lib/auth/cbac";
 import { WangCoachKlient } from "@/app/team-wang/coach/WangCoachKlient";
 import type { WangOmraade } from "@/components/wang/WangAppSkall";
 import { kanSeDataGolf } from "@/lib/auth/datagolf-tilgang";
-import { hentWangDataGolf } from "@/app/team-wang/_data/wang-datagolf-data";
-import { dgSideFraFane } from "@/app/team-wang/_data/wang-datagolf-visning";
+import { hentWangDataGolf, hentWangDgElev } from "@/app/team-wang/_data/wang-datagolf-data";
+import { dgSideFraFane, type WangDataGolfData } from "@/app/team-wang/_data/wang-datagolf-visning";
 import { hentWangAdminData } from "@/app/team-wang/_data/wang-admin-data";
 import {
   hentWangSamtykkeStatus,
   hentWangTesterData,
 } from "@/app/team-wang/_data/wang-tester-data";
+import {
+  hentWangElevdata,
+  hentWangFireukerssjekk,
+} from "@/app/team-wang/_data/wang-elevdata";
 import {
   byggWangTrenerData,
   osloIdagIso,
@@ -47,6 +51,8 @@ interface WangCoachPageProps {
     norske?: string;
     kat?: string;
     aar?: string;
+    spiller?: string;
+    pro?: string;
     visArsplan?: string;
   }>;
 }
@@ -106,22 +112,28 @@ export default async function WangCoachPage({ searchParams }: WangCoachPageProps
     );
   }
 
+  // Elevdata (klasse, og HCP/kategori/Fireukerssjekk bare for elever som har delt med treneren).
+  const elevIder = live.elever.filter((e) => e.rolle === "PLAYER").map((e) => e.id);
+  const elevdata = aktivtOmraade === "elever" ? await hentWangElevdata(gruppeId, elevIder) : undefined;
+  const fireukerssjekk =
+    aktivtOmraade === "elever" && params.fane === "sjekk" && params.id && elevIder.includes(params.id)
+      ? await hentWangFireukerssjekk(gruppeId, params.id)
+      : undefined;
+
   // Invitasjoner og timeplanunntak bare for sportssjef (siden har alt sendt trener bort fra admin).
   const admin = aktivtOmraade === "admin" ? await hentWangAdminData(gruppeId) : undefined;
 
   // Data Golf bare for coach-rollen (kanSeDataGolf), aldri for elever.
   const dgSide = aktivtOmraade === "konkurranse" ? dgSideFraFane(params.fane) : null;
-  const dataGolf =
-    dgSide && kanSeDataGolf(bruker)
-      ? await hentWangDataGolf(dgSide, {
-          id: params.id,
-          sok: params.sok,
-          tour: params.tour,
-          norske: params.norske,
-          kat: params.kat,
-          aar: params.aar,
-        })
-      : undefined;
+  const elevSide = dgSide === "spiller" || dgSide === "innspill" || dgSide === "forslag" ? dgSide : null;
+  let dataGolf: WangDataGolfData | undefined;
+  if (dgSide && kanSeDataGolf(bruker)) {
+    dataGolf = elevSide
+      ? (await hentWangDgElev(bruker, gruppeId, elevSide, { spiller: params.spiller, pro: params.pro })) ?? undefined
+      : dgSide !== "spiller" && dgSide !== "innspill" && dgSide !== "forslag"
+        ? await hentWangDataGolf(dgSide, { id: params.id, sok: params.sok, tour: params.tour, norske: params.norske, kat: params.kat, aar: params.aar })
+        : undefined;
+  }
 
   return (
     <WangCoachKlient
@@ -132,6 +144,8 @@ export default async function WangCoachPage({ searchParams }: WangCoachPageProps
       rolle={rolle}
       brukerNavn={bruker.name ?? undefined}
       tester={tester}
+      elevdata={elevdata}
+      fireukerssjekk={fireukerssjekk}
       admin={admin}
       dataGolf={dataGolf}
       data={byggWangTrenerData(live, osloIdagIso(), osloNaaTid())}

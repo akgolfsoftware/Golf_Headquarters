@@ -1348,6 +1348,11 @@ model Booking {
   guestName               String?
   guestEmail              String?
   guestPhone              String?
+  // Duo (bookingplanen steg 6, 18.10.2026): deltaker 2 i samme time. Den som
+  // booker betaler alt og står i userId/guest*-feltene; deltaker 2 får egen
+  // bekreftelse. Null på alle andre bookinger.
+  partnerName             String?
+  partnerEmail            String?
   // Denormalisert fra serviceType.coachUserId for ytelse og unik-indeks.
   // Settes automatisk ved opprettelse og oppdateres ved koach-bytte.
   // ON DELETE SET NULL — booking beholdes i historikk hvis coach slettes.

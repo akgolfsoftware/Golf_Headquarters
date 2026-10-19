@@ -36,6 +36,7 @@ export type TrenerforslagInn = {
   id: string; trener: string; opprettet: string;
   forslag:
     | { kind: "IUP_FOCUS"; organisasjon: "WANG"; periodName: string; etter: { akse: string; tittel: string; egentidMinUke: number }[]; begrunnelse: string }
+    | { kind: "SESSION_SERIES"; organisasjon: "WANG" | "TEAM_NORWAY"; fra: string; til: string; okter: Innslag[]; begrunnelse: string }
     | { organisasjon: "WANG" | "TEAM_NORWAY"; handling: "ADD" | "UPDATE" | "CANCEL"; for: Partial<Innslag> | null; etter: Innslag | null; begrunnelse: string };
 };
 
@@ -79,6 +80,14 @@ const ORG_NAVN = { WANG: "WANG Toppidrett", TEAM_NORWAY: "Team Norway" } as cons
 export function trenerforslagTilSak(f: TrenerforslagInn, naa: Date): InnboksForslag {
   const p = f.forslag;
   const tid = relativTid(new Date(f.opprettet), naa);
+  if ("kind" in p && p.kind === "SESSION_SERIES") {
+    const forste = p.okter[0];
+    return {
+      kilde: "trener", id: f.id, org: p.organisasjon, tid, fra: `${ORG_NAVN[p.organisasjon]} · ${f.trener}`,
+      tittel: `Forslag: ${p.okter.length} økter, ${datoKort(p.fra)}–${datoKort(p.til)}`, for: null, etter: innslagOkt(forste ?? null),
+      tekst: p.begrunnelse, linjer: p.okter.map((o) => `${datoKort(o.date)} · ${o.title ?? "—"}`),
+    };
+  }
   if ("kind" in p) {
     return {
       kilde: "trener", id: f.id, org: p.organisasjon, tid, fra: `${ORG_NAVN.WANG} · ${f.trener}`,

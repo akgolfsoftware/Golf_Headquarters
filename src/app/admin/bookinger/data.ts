@@ -93,7 +93,7 @@ export async function hentAG06Bookinger(user: User): Promise<AG06Booking[]> {
   const naa = Date.now();
   return rader.map((r) => ({
     id: r.id,
-    who: r.user?.name ?? r.guestName ?? "Gjest",
+    who: `${r.user?.name ?? r.guestName ?? "Gjest"}${r.partnerName ? ` og ${r.partnerName}` : ""}`,
     guardian: r.user ? null : (r.guestEmail ?? r.guestPhone ?? null),
     svcId: r.serviceType.id,
     svcNavn: r.serviceType.name,
@@ -115,7 +115,7 @@ export async function hentAG06Bookinger(user: User): Promise<AG06Booking[]> {
     slutt: KL_FMT.format(r.endAt),
     coach: r.coach?.name ?? null,
     startMs: r.startAt.getTime(),
-    kontaktSok: [r.user?.email, r.user?.phone, r.guestPhone].filter(Boolean).join(" "),
+    kontaktSok: [r.user?.email, r.user?.phone, r.guestPhone, r.partnerEmail].filter(Boolean).join(" "),
     datoIso: ISO_FMT.format(r.startAt),
   }));
 }

@@ -11,6 +11,7 @@ let goals: { id: string; userId: string; periodBlockId: string; akse: string; ti
   status: string; egenvurdering: number | null; trenervurdering: number | null; kommentar: string | null; updatedAt: Date }[] = [];
 let goalCreates: unknown[] = [];
 let idSequence = 0;
+let periodSessions: { id: string; updatedAt: Date }[] = [];
 
 const tx = {
   planAction: {
@@ -28,6 +29,7 @@ const tx = {
   },
   workbenchSession: {
     findFirst: async ({ where }: { where: { id: string; playerId: string } }) => session && session.id === where.id && session.playerId === where.playerId ? session : null,
+    findMany: async () => periodSessions,
     create: async ({ data }: { data: Record<string, unknown> }) => { createdSessions.push(data); return data; },
     updateMany: async ({ where, data }: { where: { id: string; playerId: string; updatedAt: Date }; data: Record<string, unknown> }) => {
       if (!session || session.id !== where.id || session.playerId !== where.playerId || session.updatedAt.getTime() !== where.updatedAt.getTime()) return { count: 0 };
@@ -45,7 +47,7 @@ const tx = {
 
 mock.module("next/cache", { namedExports: { revalidatePath: () => undefined } });
 mock.module("@/lib/auth/action-guards", { namedExports: {
-  requireCoachActionUser: async () => actor,
+  requireCoachActionUser: async () => { if (actor.role !== "COACH") throw new Error("forbidden"); return actor; },
   requireSpillerActionUser: async () => actor,
 } });
 mock.module("@/lib/domain/grupper", { namedExports: {
@@ -65,7 +67,7 @@ mock.module("@/lib/prisma", { namedExports: { prisma: {
 
 function reset() {
   actor = { id: "coach-a", role: "COACH", email: "coach@example.test" };
-  shareAllowed = true; action = null; session = null; createdSessions = []; sessionUpdates = []; goals = []; goalCreates = []; idSequence = 0;
+  shareAllowed = true; periodSessions = []; action = null; session = null; createdSessions = []; sessionUpdates = []; goals = []; goalCreates = []; idSequence = 0;
 }
 async function mod() { return import("./trenerforslag"); }
 const add = { organisasjon: "TEAM_NORWAY", spillerId: "player-a", handling: "ADD", etter: { date: "2099-01-01", startMinute: 540, durationMinutes: 60, title: "Teknikk", pyramid: "TEK", location: null }, begrunnelse: "Arbeid med presisjon." };
@@ -152,4 +154,43 @@ test("IUP-fokus kan ikke fjerne lagret oppfølging fra før-perioden", async () 
   const { svarPaTrenerforslag } = await mod();
   const result = await svarPaTrenerforslag({ actionId: "iup-proposal", beslutning: "ACCEPTED" });
   assert.equal(result.ok, false); assert.equal(goals[0]?.status, "PAA_VEI"); assert.equal(goalCreates.length, 0); assert.equal(action?.status, "CONFLICT");
+});
+
+const serie = { organisasjon: "TEAM_NORWAY", spillerId: "player-a", begrunnelse: "Innspill 91–137 m: mål 7 m innen 8 uker.",
+  okter: [
+    { date: "2099-01-06", startMinute: 960, durationMinutes: 45, title: "Innspill · mål 7 m · 20 slag", pyramid: "SLAG", location: null },
+    { date: "2099-01-08", startMinute: 960, durationMinutes: 45, title: "Innspill · mål 7 m · 20 slag", pyramid: "SLAG", location: null },
+  ] };
+
+test("Data Golf-planforslag (DG-07): en spiller kan ikke sende forslag", async () => {
+  reset(); actor = { id: "player-b", role: "PLAYER", email: "player@example.test" };
+  const { lagTrenerforslagSerie } = await mod();
+  await assert.rejects(() => lagTrenerforslagSerie(serie), /forbidden/);
+  assert.equal(action, null);
+});
+
+test("Data Golf-planforslag (DG-07): lagres uten å røre planen, legges inn én gang ved godkjenning", async () => {
+  reset(); const { lagTrenerforslagSerie, svarPaTrenerforslag } = await mod();
+  const created = await lagTrenerforslagSerie(serie);
+  assert.equal(created.ok, true); assert.equal(action?.status, "PENDING"); assert.equal(createdSessions.length, 0);
+  actor = { id: "player-a", role: "PLAYER", email: "player@example.test" };
+  const yes = await svarPaTrenerforslag({ actionId: created.ok ? created.id : "", beslutning: "ACCEPTED" });
+  assert.equal(yes.ok, true); assert.equal(createdSessions.length, 2); assert.equal(action?.status, "ACCEPTED");
+  const again = await svarPaTrenerforslag({ actionId: created.ok ? created.id : "", beslutning: "ACCEPTED" });
+  assert.equal(again.ok, false); assert.equal(createdSessions.length, 2);
+});
+
+test("Data Golf-planforslag (DG-07): nyere plan i perioden gir konflikt", async () => {
+  reset(); const { lagTrenerforslagSerie, svarPaTrenerforslag } = await mod();
+  const created = await lagTrenerforslagSerie(serie);
+  periodSessions = [{ id: "spillerens-nye", updatedAt: new Date("2026-10-19T08:00:00Z") }];
+  actor = { id: "player-a", role: "PLAYER", email: "player@example.test" };
+  const result = await svarPaTrenerforslag({ actionId: created.ok ? created.id : "", beslutning: "ACCEPTED" });
+  assert.equal(result.ok, false); assert.equal(action?.status, "CONFLICT"); assert.equal(createdSessions.length, 0);
+});
+
+test("Data Golf-planforslag (DG-07): uten aktiv deling lagres ingenting", async () => {
+  reset(); shareAllowed = false; const { lagTrenerforslagSerie } = await mod();
+  const result = await lagTrenerforslagSerie(serie);
+  assert.equal(result.ok, false); assert.equal(action, null);
 });
