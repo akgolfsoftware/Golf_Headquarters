@@ -5,11 +5,15 @@ import { WangTomTilstand } from "./WangIkkeKoblet";
 import { WangFaner, WangTopp, initialer } from "./wang-felles";
 import type { WangTrenerData } from "@/app/team-wang/_data/wang-trener-data";
 import { TOM_TESTERDATA, type WangSamtykkeStatus, type WangTesterData } from "@/app/team-wang/_data/wang-tester-visning";
+import type { WangOpptakData } from "@/app/team-wang/_data/wang-opptak-visning";
+import { WangKoordinering, WangOpptak } from "./WangAdminOpptak";
 
 interface WangAdminProps {
   data: WangTrenerData;
   /** Testsamtykket per elev (samtykke) hentes på serveren bare for sportssjef. */
   tester?: WangTesterData;
+  /** Opptak og koordinering, hentet på serveren bare for sportssjef på de to fanene. */
+  opptak?: WangOpptakData;
   /** Underside: trenere · samtykke · timeplan · opptak · skolene. */
   aktivFane?: string;
   onFaneEndret?: (fane: string) => void;
@@ -39,9 +43,9 @@ const STATUS: Record<WangSamtykkeStatus, { tekst: string; klasse: string; farge:
  *   - Samtykke viser testdelingen (TEST_RESULTATER), den eneste delingen til WANG som finnes. Utkastet sier «delt data».
  *   - Inviter trener, nytt unntak og flytt morgentrening er sperret: ingenting endres herfra.
  *   - Timeplanen viser gruppas faste økter. Skolens timeplan og kollisjoner finnes ikke i basen.
- *   - Opptak og Koordinering mellom skolene krever tabeller som ikke finnes (kandidater, stjernemerking, kontaktlogg).
+ *   - Opptak og Koordinering mellom skolene: se WangAdminOpptak.tsx (pakke W3, 18.10.2026).
  */
-export function WangAdmin({ data, tester = TOM_TESTERDATA, aktivFane }: WangAdminProps) {
+export function WangAdmin({ data, tester = TOM_TESTERDATA, opptak, aktivFane }: WangAdminProps) {
   const fane = FANER.some((f) => f.id === aktivFane) ? (aktivFane as string) : "trenere";
   return (
     <>
@@ -51,23 +55,8 @@ export function WangAdmin({ data, tester = TOM_TESTERDATA, aktivFane }: WangAdmi
       {fane === "trenere" && <Trenere data={data} />}
       {fane === "samtykke" && <Samtykke data={data} tester={tester} />}
       {fane === "timeplan" && <Timeplan data={data} />}
-      {fane === "opptak" && (
-        <>
-          <p className="wg-merknad">
-            <span>Bare du ser denne siden. Vurderinger av navngitte mindreårige skrives aldri andre steder og deles aldri.</span>
-          </p>
-          <WangTomTilstand
-            tittel="Ingen kandidater"
-            tekst="Plasser, kandidater og venteliste for neste skoleår lagres ikke i basen ennå. Samlet poeng er underlag, aldri vedtak: vedtaket tar skolen."
-          />
-        </>
-      )}
-      {fane === "skolene" && (
-        <WangTomTilstand
-          tittel="Ikke koblet ennå"
-          tekst="Den felles siden for WANG-skolene viser hvem som har stjernemerket en kandidat og hvem som har snakket med kandidaten, og når. Aldri innholdet, aldri tall. Stjernemerking og kontaktlogg finnes ikke i basen ennå."
-        />
-      )}
+      {fane === "opptak" && <WangOpptak opptak={opptak} />}
+      {fane === "skolene" && <WangKoordinering opptak={opptak} />}
     </>
   );
 }
