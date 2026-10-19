@@ -45,6 +45,8 @@ export interface BK01Props {
   tjenester: BookingTjeneste[];
   abonnement: BookingAbonnement[];
   lokasjon: string;
+  /** Forhåndsvalgt tjeneste fra `?tjeneste=` (gamle `/booking/[slug]`-lenker og avbrutt betaling). */
+  startSlug?: string | null;
   /** Kun for skjermprøven: starter flyten midt i (steg, valg og tilstand). Ikke brukt i appen. */
   forhandsvis?: { steg: number; slug: string; dager: LedigDag[]; dag?: string; kl?: string; tilstand?: "laster" | "feil"; skjema?: Partial<Felter>; feil?: Record<string, string> };
 }
@@ -78,9 +80,9 @@ function Steg({ i }: { i: number }) {
 
 type Felter = { navn: string; epost: string; tlf: string; barn: boolean; spiller: string; navn2: string; epost2: string };
 
-export function BK01Booking({ tjenester, abonnement, lokasjon, forhandsvis: f }: BK01Props) {
+export function BK01Booking({ tjenester, abonnement, lokasjon, startSlug, forhandsvis: f }: BK01Props) {
   const [steg, setSteg] = useState(f?.steg ?? 0);
-  const [slug, setSlug] = useState<string | null>(f?.slug ?? null);
+  const [slug, setSlug] = useState<string | null>(f?.slug ?? (tjenester.some((t) => t.slug === startSlug) ? startSlug! : null));
   const [visning, setVisning] = useState<"Dag" | "Uke">("Uke");
   const [dager, setDager] = useState<LedigDag[]>(f?.dager ?? []);
   const [laster, setLaster] = useState(f?.tilstand === "laster");

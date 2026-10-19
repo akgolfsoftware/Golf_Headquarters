@@ -1,76 +1,19 @@
 /**
- * /booking/[slug]/bekreft — v2-port 16. juli 2026. Datalogikk gjenbrukt 1:1
- * fra (mlegacy)/booking/[slug]/bekreft/page.tsx: param-validering (notFound),
- * tjeneste-/coach-oppslag, innlogget-bruker-prefill og Europe/Oslo-formatert
- * dato/klokkeslett. Server-action (createBookingCheckout i ./actions) er
- * flyttet 1:1 uendret. Presentasjon + skjema bor i MarkedBookingBekreftV2
- * (v2, MRamme).
+ * /booking/[slug]/bekreft — videresending (Anders 19.10.2026).
+ *
+ * Bekreft og betal er steg 4 i BK-01 (`/booking`, BK01Booking). Den gamle
+ * bekreftsiden er fjernet; adressen sender til bookingflyten med tjenesten
+ * forhåndsvalgt. Tidspunktet (`start`/`coach`) tas ikke med: BK-01 henter
+ * ledige tider på nytt, så en gammel lenke kan ikke låse en tid som er tatt.
+ *
+ * Server-handlingen `createBookingCheckout` blir liggende i ./actions — BK-01
+ * importerer den derfra.
  */
-import { notFound, redirect } from "next/navigation";
-import { prisma } from "@/lib/prisma";
-import { kanBrukeInnebygdBooking } from "@/lib/booking/offentlig-booking";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
-import { MarkedBookingBekreftV2 } from "@/components/marketing/v2/MarkedBookingBekreftV2";
+import { redirect } from "next/navigation";
 
-type Props = {
-  params: Promise<{ slug: string }>;
-  searchParams: Promise<{ start?: string; coach?: string }>;
-};
+type Props = { params: Promise<{ slug: string }> };
 
-export default async function BekreftPage({ params, searchParams }: Props) {
-  // Pauset for publikum: sperren må også stå her — siden kan nås med
-  // direktelenke utenom landing/tjenesteside.
-  if (!(await kanBrukeInnebygdBooking())) redirect("/booking");
-
+export default async function BekreftPage({ params }: Props) {
   const { slug } = await params;
-  const { start, coach } = await searchParams;
-
-  if (!start || !coach) notFound();
-
-  const service = await prisma.serviceType.findUnique({ where: { slug } });
-  if (!service) notFound();
-
-  const startAt = new Date(start);
-  if (isNaN(startAt.getTime())) notFound();
-
-  const coachUser = await prisma.user.findUnique({
-    where: { id: coach },
-    select: { id: true, name: true },
-  });
-
-  const innloggedBruker = await getCurrentUser();
-
-  const dato = startAt.toLocaleDateString("nb-NO", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-  const klokkeslett = startAt.toLocaleTimeString("nb-NO", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-  const prisTekst = new Intl.NumberFormat("nb-NO", {
-    style: "currency",
-    currency: "NOK",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(service.priceOre / 100);
-
-  return (
-    <MarkedBookingBekreftV2
-      slug={slug}
-      start={start}
-      coachId={coach}
-      tjenesteNavn={service.name}
-      datoTekst={dato}
-      klokkeslettTekst={klokkeslett}
-      durationMin={service.durationMin}
-      coachNavn={coachUser ? (coachUser.name ?? "—") : null}
-      prisTekst={prisTekst}
-      priceOre={service.priceOre}
-      innloggetEpost={innloggedBruker?.email ?? null}
-      innloggetNavn={innloggedBruker?.name ?? null}
-    />
-  );
+  redirect(`/booking?tjeneste=${encodeURIComponent(slug)}`);
 }
