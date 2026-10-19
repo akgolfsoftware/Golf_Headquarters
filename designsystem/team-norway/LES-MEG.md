@@ -2,8 +2,8 @@
 
 > **MYNDIGHET 22.09.2026 — dette speilet er IKKE lenger visuell fasit for appen.**
 > `/team-norway/*` eies av det skarpe Team Norway-språket i Claude Design-prosjektet
-> «Team Norway App»: Jost/Lato, hjørner 0 · 2 · 4, ingen skygger, kvadratisk avatar,
-> navy sidemeny. Rød er fortsatt `#D70232` og navy `#012B5D`. Se
+> «Team Norway App»: Jost/Lato, navy sidemeny. Fra 19.10.2026 retning «Skrå»: banebilde kuttet
+> på skrå, myke kort med radius og skygger, rund avatar. Rød er fortsatt `#D70232` og navy `#012B5D`. Se
 > [beslutningen](../../.claude/rules/beslutninger.md) §TEAM NORWAY-APPEN BYTTER DESIGNSPRÅK.
 > Speilet beholdes som **funksjonsinventar og historikk** — skjermregister, datamodell,
 > tilgangsmatrise og åpne beslutninger gjelder uendret. Verdiene under beskriver Claw slik

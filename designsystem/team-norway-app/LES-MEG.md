@@ -14,12 +14,12 @@ Besluttet av Anders 22.09.2026 — se [beslutninger.md](../../.claude/rules/besl
 | Skrift, overskrift | Jost, vekt 300, versaler, sperret |
 | Skrift, brødtekst | Lato |
 | Skrift, tall og etiketter | IBM Plex Mono |
-| Hjørner | 0 · 2 · 4. Ingenting annet. Ingen sirkler, ingen piller |
-| Skygger | finnes ikke. Flater skilles med én hårstrek |
+| Hjørner | Myke kort med radius, runde avatarer og piller tillatt (overstyrt 19.10, beslutninger.md §TEAM NORWAY-APPEN FÅR RETNING «SKRÅ») |
+| Skygger | lagdelte navy-skygger på kort, slik `docs/design-system/utkast-tn/nye-veier.html` retning 1 viser |
 | Navy | `#012B5D` |
 | Rød | `#D70232` — målt fra logofilen. Identitet og frist, **aldri** status |
 | Sidemeny | alltid navy, hvit tekst, rød markør foran aktiv rad. Ingen hvite streker inni |
-| Avatar | kvadratisk |
+| Avatar | rund (19.10) |
 
 Verdiene i koden bor i [`src/styles/team-norway-tokens.css`](../../src/styles/team-norway-tokens.css),
 lest fra TS gjennom [`src/lib/v2/team-norway.ts`](../../src/lib/v2/team-norway.ts) (`TN`).

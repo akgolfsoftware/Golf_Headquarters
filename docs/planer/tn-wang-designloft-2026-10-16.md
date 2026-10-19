@@ -90,7 +90,7 @@ Anders syntes AK Golf var «kjedelig». Team Norway er i dag det mest kjedelige 
 
 ## 2. Forslag til designløft
 
-Rammene er låst og endres ikke: TN-tokens (Jost, Lato, IBM Plex Mono, hjørner 0 · 2 · 4, ingen skygger, ingen sirkler,
+(For TN overstyrt 19.10: hjørner og skygger er tillatt, se beslutninger.md §TEAM NORWAY-APPEN FÅR RETNING «SKRÅ».) Rammene er låst og endres ikke: TN-tokens (Jost, Lato, IBM Plex Mono, hjørner 0 · 2 · 4, ingen skygger, ingen sirkler,
 navy `#012B5D`, rød `#D70232` aldri som status eller akse, TN-aksefargene) og WANG-tokens (Montserrat, Quattrocento Sans,
 WANG-aksefargene, mint/gul/rosa som status). Løftet handler om hvordan rammene brukes.
 
