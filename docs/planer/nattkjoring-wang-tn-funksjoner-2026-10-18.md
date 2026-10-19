@@ -44,6 +44,7 @@ funksjoner uten data. Kilden er avviksfeltene i #1402, #1406 og #1411 og filhode
 - **W1 · Elevene sorteres i Trenger deg (under 80 % av planen eller morgentreningen), Følger planen og Ikke delt.** En elev som har delt, men ikke har forfalte økter, står i Følger planen med «—».
 - **W1 · Eleven får forespørselen om å dele planen i I dag (til eleven har svart), under Personvern, og forelderen i foreldreportalen.** Grunn: samme steder som testsamtykket.
 - **W1 · Ingen skjemaendring.** `delings_samtykker.scope` er tekst, så `TRENINGSPLAN` er en ny verdi, ikke en ny kolonne.
+- **W1 · Elevradene i Trening › Per elev åpner elevens side, ikke IUP direkte.** Grunn: samme vei som i Elever; IUP-lenken står på elevens side. Målt i 390 og 1280 px (I dag, Trening, Elever, én elev; delt, ikke delt og tom): ingen sidelengs rulling, ingen konsollfeil.
 
 ## 5. Morgenrapport
 
