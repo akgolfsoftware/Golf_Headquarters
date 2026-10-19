@@ -4,17 +4,16 @@
  * Flyttet ut av (legacy) 17. juli 2026 (Team F3). Tynn wrapper: auth
  * (requirePortalUser + requireCoachForPlayer) er uendret og identisk med
  * naboruten [spillerId]/page.tsx. `EquipmentView` er flyttet hit fra spillerens
- * (legacy) equipment-side, som nå bare videresender til Meg › Utstyr. Visningen er ikke i nytt design ennå. V2Shell
- * gir chrome (naborute-mønsteret), siden ruten ikke lenger arver PortalShell
- * fra (legacy)-layouten.
+ * (legacy) equipment-side, som nå bare videresender til Meg › Utstyr. Visningen er Precision Athletics
+ * (PHSgHubCoachUtstyr, 19.10.2026) i PlayerHQ-skallet; beregningen (computeClubFit) er uendret.
  */
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { requireCoachForPlayer } from "@/lib/sg-hub/coach-access";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { prisma } from "@/lib/prisma";
 import { extractClubs, extractShots } from "@/lib/sg-hub/extract-shots";
 import { computeClubFit, type ClubFitReport } from "@/lib/sg-hub/equipment-fit";
-import { UtstyrHelseV2 } from "@/components/portal/v2/UtstyrHelseV2";
+import { PHSgHubCoachUtstyr } from "@/components/portal/precision/PHSgHubCoach";
 
 export default async function CoachEquipmentPage({
   params,
@@ -26,13 +25,13 @@ export default async function CoachEquipmentPage({
   const { player } = await requireCoachForPlayer(user, spillerId);
 
   return (
-    <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
       <EquipmentView
         userId={player.id}
         backHref={`/portal/mal/sg-hub/coach/${spillerId}`}
         spillerNavn={player.name}
       />
-    </V2Shell>
+    </PlayerHQSkall>
   );
 }
 
@@ -87,6 +86,6 @@ async function EquipmentView({
     .filter((r) => r.shotCount > 0 && r.category !== "putter");
 
   return (
-    <UtstyrHelseV2 backHref={backHref} spillerNavn={spillerNavn} reports={reports} />
+    <PHSgHubCoachUtstyr backHref={backHref} spillerNavn={spillerNavn ?? "Spilleren"} reports={reports} />
   );
 }

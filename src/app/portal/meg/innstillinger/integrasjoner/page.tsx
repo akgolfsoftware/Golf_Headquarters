@@ -1,9 +1,8 @@
-// PH25Integrasjoner — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
+// PH25Integrasjoner — Precision Athletics (19.10.2026). Data og handlinger er beholdt.
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 /**
- * v2 — PlayerHQ Innstillinger · Integrasjoner (retning C). V2Shell leverer
- * chrome-en (IkonRail/BunnNav, aktiv «meg»), InnstillingerIntegrasjonerV2
- * rendrer innholds-stacken.
+ * PlayerHQ Innstillinger · Kalender og integrasjoner. PH25Integrasjoner rendrer skjermen
+ * (erstatter InnstillingerIntegrasjonerV2).
  *
  * v2-port 17. juli 2026: auth + Prisma-oppslagene (trackManSession +
  * googleCalendarConnection) er uendret — kun presentasjonslaget er byttet.
@@ -14,10 +13,7 @@ import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import {
-  InnstillingerIntegrasjonerV2,
-  type InnstillingerIntegrasjonerData,
-} from "@/components/portal/v2/InnstillingerIntegrasjonerV2";
+import { PH25Integrasjoner, type PH25IntegrasjonerData } from "@/components/portal/precision/PH25Integrasjoner";
 
 export const dynamic = "force-dynamic";
 
@@ -51,7 +47,7 @@ export default async function IntegrasjonerPage() {
   const gcalConnected = !!gcal;
 
   // Kun ekte tilkoblinger telles. Ingen «alltid-på demo».
-  const data: InnstillingerIntegrasjonerData = {
+  const data: PH25IntegrasjonerData = {
     tm: {
       tilkoblet: tmConnected,
       sistSynket: formatSync(tmLast?.recordedAt),
@@ -62,19 +58,11 @@ export default async function IntegrasjonerPage() {
       sistSynket: formatSync(gcal?.lastSyncAt),
       status: gcal ? (gcal.status === "ACTIVE" ? "Aktiv" : (gcal.status ?? "—")) : null,
     },
-    sistSynkTid: tmLast
-      ? tmLast.recordedAt.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" })
-      : null,
-    sistSynkDato: tmLast
-      ? tmLast.recordedAt.toLocaleDateString("nb-NO", { day: "2-digit", month: "2-digit" })
-      : null,
   };
 
   return (
     <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
-      <div className="pa-side">
-      <InnstillingerIntegrasjonerV2 data={data} />
-    </div>
+      <PH25Integrasjoner data={data} />
     </PlayerHQSkall>
   );
 }

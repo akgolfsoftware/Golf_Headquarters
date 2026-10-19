@@ -1,0 +1,35 @@
+/* SG-hub for coach i PlayerHQ (PHSgHubCoach.tsx). Bygger på playerhq-ny.css. Ingen sidelengs rulling. */
+.phn .phn-sg-side { display: grid; gap: 24px; width: 100%; max-width: 960px; margin: 0 auto; min-width: 0; }
+.phn .phn-sg-tilbake { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; margin: -8px 0 -12px -2px; font: 500 15px/1 var(--phn-sans); color: var(--phn-g900); text-decoration: none; justify-self: start; }
+.phn .phn-sg-tall { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap: 12px; }
+.phn .phn-sg-tall .phn-kort { gap: 8px; }
+.phn .phn-sg-verdi { font: 600 32px/1 var(--phn-mono); letter-spacing: -.03em; overflow-wrap: anywhere; }
+.phn .phn-sg-verdi small { font: 500 15px/1 var(--phn-mono); color: var(--phn-g600); letter-spacing: 0; }
+.phn .phn-sg-ord { display: block; font: 700 20px/1.2 var(--phn-sans); overflow-wrap: anywhere; }
+.phn .phn-sg-h { margin: 0; font: 600 17px/1.3 var(--phn-sans); }
+.phn .phn-sg-graf { min-width: 0; overflow: hidden; }
+.phn .phn-sg-graf.midt { display: flex; justify-content: center; }
+.phn .phn-sg-koller { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
+.phn .phn-sg-koller a { display: flex; align-items: center; justify-content: space-between; gap: 6px; min-height: 52px; padding: 0 12px; border: 1px solid var(--phn-sand-300); border-radius: 10px; background: var(--phn-hvit); color: var(--phn-g900); text-decoration: none; font: 600 15px/1 var(--phn-mono); }
+.phn .phn-sg-koller a:focus-visible, .phn .phn-sg-tilbake:focus-visible { outline: 3px solid var(--phn-g900); outline-offset: 2px; }
+.phn .phn-sg-rad { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.phn .phn-sg-rad .phn-kilde { display: block; }
+.phn .phn-sg-slag { list-style: none; margin: 0; padding: 0; display: grid; border: 1px solid var(--phn-sand-300); border-radius: 12px; background: var(--phn-hvit); }
+.phn .phn-sg-slag li { display: flex; flex-wrap: wrap; gap: 6px 16px; padding: 10px 14px; border-top: 1px solid var(--phn-sand-300); font: 500 14px/1.3 var(--phn-mono); font-variant-numeric: tabular-nums; }
+.phn .phn-sg-slag li:first-child { border-top: 0; }
+.phn .phn-sg-slag .nr { font-weight: 600; min-width: 36px; }
+.phn .phn-sg-slag i { display: block; font: 500 11px/1.2 var(--phn-sans); font-style: normal; color: var(--phn-g600); }
+.phn .phn-sg-fit { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 12px; }
+.phn .phn-sg-fit-topp { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; flex-wrap: wrap; }
+.phn .phn-sg-metrikk { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.phn .phn-sg-metrikk li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; align-items: center; padding: 10px 12px; border-radius: 10px; background: var(--phn-sand-100); }
+.phn .phn-sg-metrikk li b { display: block; font: 600 14px/1.3 var(--phn-sans); }
+.phn .phn-sg-metrikk .v { font: 600 15px/1 var(--phn-mono); text-align: right; }
+.phn .phn-sg-metrikk .phn-pille { grid-column: 1 / -1; justify-self: start; }
+/* Spillerprofil (PHSpillerProfil.tsx) */
+.phn .phn-sp-runder { grid-template-columns: 1fr; }
+.phn .phn-sp-runder a { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 12px; min-height: 60px; padding: 8px 12px; font: inherit; }
+.phn .phn-sp-runder b { display: block; font: 600 15px/1.3 var(--phn-sans); overflow-wrap: anywhere; }
+.phn .phn-sp-runder .phn-kilde { display: block; }
+.phn .phn-sp-score { font: 600 20px/1 var(--phn-mono); text-align: right; }
+.phn .phn-sp-score small { display: block; font: 500 12px/1.2 var(--phn-mono); color: var(--phn-g600); }

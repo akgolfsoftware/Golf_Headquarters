@@ -1,5 +1,7 @@
 /**
- * PlayerHQ · Spiller-detalj (/portal/spiller/[spillerId]) — v2.
+ * PlayerHQ · Spiller-detalj (/portal/spiller/[spillerId]) — Precision Athletics (PHSpillerProfil, 19.10.2026).
+ * En coach med spilleren i stallen sendes til Spiller 360 (/admin/spillere/[id]), den ene spillerprofilen
+ * (beslutninger.md §ÉN SPILLERPROFIL, 27.09). Spilleren selv og en trener med delt profil ser siden her.
  * v2-port 17. juli 2026 (Team D3): `SpillerDetaljV2` erstatter
  * spiller-detalj-client (hybrid), ruten flyttet ut av (legacy). Auth
  * (innlogging kreves), alle Prisma-queries og snitt-utregningene
@@ -16,16 +18,12 @@
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { harCoachLesetilgangTilSpiller } from "@/lib/auth/coached";
+import { coachScopedPlayerWhere, harCoachLesetilgangTilSpiller } from "@/lib/auth/coached";
 import { kanSeSpillerprofil } from "@/lib/auth/spiller-side-tilgang";
 import { prisma } from "@/lib/prisma";
-import { notFound } from "next/navigation";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
-import {
-  SpillerDetaljV2,
-  type SpillerData,
-} from "@/components/portal/v2/SpillerDetaljV2";
+import { notFound, redirect } from "next/navigation";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { PHSpillerProfil, type PHSpillerProfilData } from "@/components/portal/precision/PHSpillerProfil";
 import { beregnGoalProgress } from "@/lib/portal/goals/progress";
 
 type Props = {
@@ -42,12 +40,16 @@ export default async function SpillerDetaljPage({ params }: Props) {
     (await harCoachLesetilgangTilSpiller(user, spillerId));
   if (!kanSeSpillerprofil(user, spillerId, erCoachMedTilgang)) notFound();
 
+  if (erCoachMedTilgang) {
+    const iStallen = await prisma.user.findFirst({ where: { AND: [{ id: spillerId }, coachScopedPlayerWhere(user)] }, select: { id: true } });
+    if (iStallen) redirect(`/admin/spillere/${spillerId}`);
+  }
+
   const spiller = await prisma.user.findFirst({
     where: { id: spillerId },
     select: {
       id: true,
       name: true,
-      avatarUrl: true,
       hcp: true,
       homeClub: true,
       playingYears: true,
@@ -123,11 +125,9 @@ export default async function SpillerDetaljPage({ params }: Props) {
       ? sgRunder.reduce((s: number, r: { sgTotal: number | null }) => s + (r.sgTotal ?? 0), 0) / sgRunder.length
       : null;
 
-  const data: SpillerData = {
+  const data: PHSpillerProfilData = {
     id: spiller.id,
     navn: spiller.name,
-    initial: (spiller.name.trim().charAt(0) ?? "?").toUpperCase(),
-    avatarUrl: spiller.avatarUrl ?? null,
     hcp: spiller.hcp ?? null,
     homeClub: spiller.homeClub ?? null,
     playingYears: spiller.playingYears ?? null,
@@ -150,7 +150,6 @@ export default async function SpillerDetaljPage({ params }: Props) {
       id: s.id,
       scheduledAt: s.createdAt.toISOString(),
       type: s.kind,
-      summary: null,
       coachNavn: s.coach.name,
     })),
     mal: await Promise.all(
@@ -159,8 +158,6 @@ export default async function SpillerDetaljPage({ params }: Props) {
         return {
           id: g.id,
           title: g.title,
-          type: g.type,
-          targetValue: g.targetValue ?? null,
           pct: progress.hasData ? progress.pct : null,
           deadline: g.targetDate?.toISOString() ?? null,
         };
@@ -174,14 +171,14 @@ export default async function SpillerDetaljPage({ params }: Props) {
     },
   };
 
-  // PS-01 (beslutning 23.09.2026): koblet med AG-03s inspektør — en coach som
-  // kom fra stallen skal tilbake dit, ikke til sin egen PlayerHQ-forside.
-  const tilbakeHref = erCoachMedTilgang ? `/admin/spillere?profil=${spillerId}` : "/portal";
+  // Trener med delt profil går tilbake til spillerne som deler med hen; spilleren selv til Meg.
+  const tilbake = erCoachMedTilgang
+    ? { href: "/portal/meg/deling/innsyn", tekst: "Spillere som deler med meg" }
+    : { href: "/portal/meg", tekst: "Meg" };
 
   return (
-    <V2Shell bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href={tilbakeHref}>{erCoachMedTilgang ? "Tilbake til stallen" : "Tilbake"}</TilbakeLenke>
-      <SpillerDetaljV2 data={data} />
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
+      <PHSpillerProfil data={data} tilbake={tilbake} />
+    </PlayerHQSkall>
   );
 }
