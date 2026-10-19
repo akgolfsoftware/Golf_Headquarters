@@ -92,6 +92,7 @@ describe("Data Golf-komponenter: bruk bare bak Data Golf-porten", () => {
   it("datalaget sjekker tilgang selv", () => {
     const kilde = readFileSync(join(rot, "src/lib/datagolf/komponent-data.ts"), "utf8");
     assert.match(kilde, /hentDataGolfBruker/);
+    assert.match(kilde, /role !== "ADMIN"/);
     assert.match(kilde, /ingen-tilgang/);
   });
 });

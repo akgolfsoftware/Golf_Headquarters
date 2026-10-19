@@ -7,7 +7,7 @@ import type { ApproachRaa, DgResultat, DgSgRunde, SpillerKortData, TourDekningRa
 
 /**
  * Datalag for Data Golf-komponentene. Lisensregel: tallene er personlig bakgrunn og vises aldri
- * til andre. Hver funksjon her sjekker derfor tilgangen selv (bare COACH og ADMIN, fail-closed)
+ * til andre. Hver funksjon her sjekker derfor tilgangen selv (bare ADMIN, fail-closed)
  * og returnerer «ingen-tilgang» uten å røre databasen. Sider skal i tillegg ha sidevakten
  * `krevDataGolfBruker`; denne sjekken er et siste bolverk, ikke en erstatning.
  */
@@ -22,7 +22,9 @@ function manglerDatasett(error: unknown, sett = new Set<object>()): boolean {
 }
 
 async function medTilgang<T>(hent: () => Promise<T | null>): Promise<DgResultat<T>> {
-  if (!(await hentDataGolfBruker())) return { tilstand: "ingen-tilgang" };
+  // Strengere enn Data Golf-porten (COACH + ADMIN): lisensen er personlig, så bare ADMIN.
+  const bruker = await hentDataGolfBruker();
+  if (bruker?.role !== "ADMIN") return { tilstand: "ingen-tilgang" };
   try {
     const data = await hent();
     const tom = data === null || (Array.isArray(data) && data.length === 0);
