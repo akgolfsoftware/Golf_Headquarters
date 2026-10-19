@@ -14,7 +14,11 @@ import {
   hentTopplister,
   type TopplisteKategori,
 } from "@/lib/admin/datagolf/coach-data";
-import type { WangDataGolfData, WangDgSide } from "./wang-datagolf-visning";
+import type { UserRole } from "@/generated/prisma/client";
+import { lesNavngitteProfiler } from "@/lib/deling/profil-lesing";
+import { hentDgSpillerVisning } from "@/lib/datagolf/spiller-mot-proff-data";
+import { medWangElevData } from "./wang-tilgang";
+import type { WangDataGolfData, WangDgElevSide, WangDgSide } from "./wang-datagolf-visning";
 
 export interface WangDgValg {
   id?: string;
@@ -105,4 +109,28 @@ export async function hentWangDataGolf(side: WangDgSide, valg: WangDgValg): Prom
   if (side === "kilde") return { side, rader: await hentKilde() };
   const d = await hentOversikt();
   return { side: "oversikt", ...d, forsinket: erForsinket(d.sistSynk ?? d.kildedato) };
+}
+
+/**
+ * DG-05–07: bare elever som har delt med treneren kan velges, og elevens tall leses bare
+ * innenfor delingslåsen (medWangElevData). Null for alle som ikke er coach eller admin.
+ */
+export async function hentWangDgElev(
+  bruker: { id: string; role: UserRole },
+  gruppeId: string,
+  side: WangDgElevSide,
+  valg: { spiller?: string; pro?: string },
+): Promise<WangDataGolfData | null> {
+  const spillere = await lesNavngitteProfiler(bruker.id, gruppeId, async (tx, id) => {
+    const u = await tx.user.findFirst({ where: { id, deletedAt: null, anonymisertAt: null }, select: { id: true, name: true } });
+    return u ? { id: u.id, navn: u.name ?? "Ukjent" } : null;
+  });
+  spillere.sort((a, b) => a.navn.localeCompare(b.navn, "nb"));
+  const proffId = Number.parseInt(valg.pro ?? "", 10);
+  const v = await hentDgSpillerVisning({
+    bruker, spillere, spillerId: valg.spiller, proffId: Number.isFinite(proffId) ? proffId : undefined,
+    medSpiller: (id, les) => medWangElevData(bruker, id, (tx) => les(tx)),
+  });
+  if (!v) return null;
+  return { side, v, idag: new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Oslo" }).format(new Date()) };
 }
