@@ -13,7 +13,7 @@
  *     lover derfor ikke det; den sier at tofaktor er registrert på kontoen. Egen oppfølging.
  *   - QR-koden og nøkkelen kommer fra Supabase når skjermen åpnes; en uferdig registrering ryddes først.
  */
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { Check, ChevronLeft } from "lucide-react";
@@ -49,7 +49,7 @@ export function PH25Tofaktor() {
   const [dialog, setDialog] = useState(false);
   const [reauth, setReauth] = useState(false);
 
-  const start = useCallback(async () => {
+  const startEn = useCallback(async () => {
     setTilstand("laster");
     setFeil(null);
     try {
@@ -72,8 +72,16 @@ export function PH25Tofaktor() {
     }
   }, []);
 
+  // Én oppstart om gangen. To samtidige kjøringer (React kjører effekten to ganger i utvikling, og
+  // «Prøv igjen» kan trykkes mens den første går) slettet samme faktor to ganger og ba om to nye med
+  // samme navn, som Supabase svarte 404 og 500 på.
+  const iGang = useRef<Promise<void> | null>(null);
+  const start = useCallback(() => {
+    if (!iGang.current) iGang.current = startEn().finally(() => { iGang.current = null; });
+    return iGang.current;
+  }, [startEn]);
+
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     void start();
   }, [start]);
 
