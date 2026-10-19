@@ -3,12 +3,14 @@
 /**
  * AG-05 fane «Tilgjengelighet» (bookingplanen steg 3): coachen oppretter, endrer,
  * slår av og sletter vinduer, setter en hel uke på én gang og legger inn fridager,
- * uten å forlate AgencyOS. Google-synk og årsoversikten ligger fortsatt på
- * /admin/availability. Coachens buffer mellom timer settes også her.
+ * uten å forlate AgencyOS. Coachens buffer mellom timer settes også her, og
+ * Google Calendar-koblingen kommer inn som `google` (AG05GoogleSynk, 19.10).
+ * Den gamle /admin/availability sender hit.
  */
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Knapp, KnappLenke, Pille, Seksjon, Tom, Varsel } from "@/components/admin/agencyos-ny/ny";
+import type { ReactNode } from "react";
+import { Knapp, Pille, Seksjon, Tom, Varsel } from "@/components/admin/agencyos-ny/ny";
 import { leggTilFridag, lagreVindu, settBuffer, settHelUke, slettFridag, slettVindu, type VinduInput } from "@/app/admin/kalender/tilgjengelighet-actions";
 import type { TilgData, TilgVindu } from "@/app/admin/kalender/tilg-data";
 import "@/styles/agencyos-ny-kalender.css";
@@ -81,7 +83,7 @@ function vinduDetaljer(v: TilgVindu): string {
   return deler.join(" · ");
 }
 
-export function AG05Tilg({ data }: { data: TilgData }) {
+export function AG05Tilg({ data, google }: { data: TilgData; google?: ReactNode }) {
   const router = useRouter();
   const [pending, start] = useTransition();
   const [feil, setFeil] = useState<string | null>(null);
@@ -228,7 +230,7 @@ export function AG05Tilg({ data }: { data: TilgData }) {
         </form>
       </Seksjon>
 
-      <div className="knapper"><KnappLenke variant="spok" href="/admin/availability">Google-synk og årsoversikt</KnappLenke></div>
+      {google}
     </div>
   );
 }
