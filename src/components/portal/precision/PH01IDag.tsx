@@ -32,7 +32,7 @@ import { formaterTall } from "@/lib/format-tall";
 import { lagreDagsform } from "@/app/portal/dagsform-actions";
 import { resolvePlayerApproval } from "@/lib/workbench/wb-actions";
 import type { OktBilde } from "@/lib/portal/okt-bilde";
-import type { Forbedringsomraade } from "@/lib/portal/ph01-forbedring";
+import { MIN_RUNDER, type Forbedringsomraade } from "@/lib/portal/ph01-forbedring";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-idag.css";
 
@@ -72,6 +72,8 @@ export type PH01Props = {
   uka: PH01Uka | null;
   maal: PH01Maal[];
   forbedring: Forbedringsomraade[];
+  /** Antall runder med Strokes Gained bak forbedringsområdene (høyst 24). */
+  sgRunder?: number;
   etterlevelse: PH01Etterlevelse | null;
   fireukerssjekk: { href: string } | null;
   dagsform: number | null; agenda: TidslinjePunkt[];
@@ -235,11 +237,13 @@ function Godkjenning({ g, onSvar }: { g: PH01Godkjenning; onSvar: (id: string, o
   </div>;
 }
 
-function Forbedring({ omr }: { omr: Forbedringsomraade[] }) {
+function Forbedring({ omr, sgRunder = 0 }: { omr: Forbedringsomraade[]; sgRunder?: number }) {
   return <section className="phn-kort a-forb" aria-label="Forbedringsområder">
     <div className="phn-sek-topp"><h2>Forbedringsområder</h2></div>
     {omr.length === 0
-      ? <p className="phn-forklar">Registrer minst fire runder med Strokes Gained, så ser du hvor du taper slag.</p>
+      ? <p className="phn-forklar">{sgRunder >= MIN_RUNDER
+        ? `Du taper ikke slag på noe område i snitt de siste ${sgRunder} rundene med Strokes Gained.`
+        : "Registrer minst fire runder med Strokes Gained, så ser du hvor du taper slag."}</p>
       : <>
         <span className="phn-kilde" style={{ marginTop: -8 }}>Strokes Gained · snitt siste {Math.max(...omr.map((o) => o.runder))} runder</span>
         <div className="forb">{omr.map((o) => {
@@ -406,7 +410,7 @@ export function PH01IDag(p: PH01Props) {
           {godkj.map((g) => <Godkjenning key={g.id} g={g} onSvar={onSvar} />)}
         </div>
       </section>}
-      <Forbedring omr={p.forbedring} />
+      <Forbedring omr={p.forbedring} sgRunder={p.sgRunder} />
       {p.etterlevelse && <Bra e={p.etterlevelse} />}
       {p.fireukerssjekk && <section className="phn-kort sjekk a-sjekk" aria-label="Fireukerssjekk">
         <div className="phn-sek-topp"><h2>Fireukerssjekk</h2></div>
