@@ -11,6 +11,7 @@ import { emailLayout } from "@/lib/email/templates/shared";
 import { prisma } from "@/lib/prisma";
 import type { DrillFasilitet } from "@/generated/prisma/client";
 import { logError } from "@/lib/error-tracking";
+import { OMRADER } from "@/lib/onboarding/oppstart";
 import { SamlingsprogramSchema } from "@/lib/workbench/samlingsinvitasjon-kontrakt";
 
 const LagreFasilitetProfilSchema = z.object({
@@ -71,6 +72,29 @@ export async function lagreFasilitetProfil(
     metadata: { fasiliteter: validerte },
   });
 
+  return { ok: true };
+}
+
+/**
+ * De 19 treningsområdene spilleren kan trene på (Meg › Fasiliteter). Lagres samme sted som oppstarten
+ * skriver dem: preferences.onboarding.fasilitetOmrader. Resten av preferences beholdes.
+ */
+export async function lagreFasilitetOmrader(omrader: string[]): Promise<{ ok: boolean; error?: string }> {
+  const lest = z.array(z.enum(OMRADER)).max(OMRADER.length).safeParse(omrader);
+  if (!lest.success) return { ok: false, error: "Ukjent treningsområde" };
+  const user = await getCurrentUser();
+  if (!user) return { ok: false, error: "unauthenticated" };
+  assertNotAwaitingConsent(user);
+
+  const rad = await prisma.user.findUnique({ where: { id: user.id }, select: { preferences: true } });
+  const prefs = rad?.preferences && typeof rad.preferences === "object" && !Array.isArray(rad.preferences) ? (rad.preferences as Record<string, unknown>) : {};
+  const onboarding = prefs.onboarding && typeof prefs.onboarding === "object" && !Array.isArray(prefs.onboarding) ? (prefs.onboarding as Record<string, unknown>) : {};
+  const unike = OMRADER.filter((o) => lest.data.includes(o));
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { preferences: { ...prefs, onboarding: { ...onboarding, fasilitetOmrader: unike } } },
+  });
+  await audit({ actorId: user.id, action: "user.fasilitet_omrader_oppdatert", target: user.id, metadata: { antall: unike.length } });
   return { ok: true };
 }
 
