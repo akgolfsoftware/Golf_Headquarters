@@ -1,17 +1,14 @@
 "use client";
-import { TL } from "@/lib/v2/train-lock";
 
 /**
- * Nytt/endre resultat — v2. Logikk bevart 1:1 fra legacy result-form.tsx —
- * kun visuelt portert til TurneringModal + skjema.tsx-primitiver.
+ * Nytt eller endret turneringsresultat i et ark — nytt design (19.10.2026).
+ * Samme server-handlinger som før (addResult, deleteResult). Sletting bekreftes
+ * i arket med rust knapp.
  */
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Inndata, Velger, TekstOmraade } from "@/components/v2/skjema";
-import { Caps } from "@/components/v2";
-import { TurneringModal, ModalFeil, ModalFooter, TekstTrigger } from "@/components/admin/v2/turnering-ui";
-import { Knapp } from "@/components/v2";
+import { Knapp, Varsel } from "@/components/admin/agencyos-ny/ny";
 import { addResult, deleteResult } from "@/app/admin/tournaments/actions";
 
 type Player = { id: string; name: string };
@@ -32,6 +29,7 @@ type Props = {
 export function ResultForm({ tournamentId, players, initial, triggerLabel }: Props) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [bekreftSlett, setBekreftSlett] = useState(false);
   const [pending, startTransition] = useTransition();
   const [slettPending, startSlettTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -41,7 +39,8 @@ export function ResultForm({ tournamentId, players, initial, triggerLabel }: Pro
   const [score, setScore] = useState<string>(initial?.score != null ? String(initial.score) : "");
   const [notes, setNotes] = useState(initial?.notes ?? "");
 
-  function lagre() {
+  function lagre(e: React.FormEvent) {
+    e.preventDefault();
     if (!userId) {
       setError("Velg en spiller.");
       return;
@@ -65,7 +64,6 @@ export function ResultForm({ tournamentId, players, initial, triggerLabel }: Pro
 
   function slett() {
     if (!initial) return;
-    if (!confirm("Slett dette resultatet?")) return;
     startSlettTransition(async () => {
       try {
         await deleteResult(tournamentId, initial.id);
@@ -77,51 +75,51 @@ export function ResultForm({ tournamentId, players, initial, triggerLabel }: Pro
     });
   }
 
+  const lukk = () => { if (!pending) { setOpen(false); setBekreftSlett(false); } };
+
   return (
     <>
-      {initial ? (
-        <TekstTrigger onClick={() => setOpen(true)}>{triggerLabel}</TekstTrigger>
-      ) : (
-        <Knapp ghost onClick={() => setOpen(true)}>
-          {triggerLabel}
-        </Knapp>
-      )}
+      <Knapp variant={initial ? "spok" : "sek"} onClick={() => setOpen(true)}>{triggerLabel}</Knapp>
 
       {open && (
-        <TurneringModal title={initial ? "Endre resultat" : "Nytt resultat"} onLukk={() => (pending ? undefined : setOpen(false))} busy={pending}>
-          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+        <div className="ark-lag" role="dialog" aria-modal="true" aria-labelledby="resultat-ark-tittel" onClick={lukk}>
+          <form className="ark" onClick={(e) => e.stopPropagation()} onSubmit={lagre}>
+            <div className="ark-topp"><h2 id="resultat-ark-tittel">{initial ? "Endre resultat" : "Nytt resultat"}</h2>
+              <Knapp variant="spok" onClick={lukk}>Lukk</Knapp></div>
             {initial ? (
-              <div>
-                <Caps size={9} style={{ marginBottom: 7 }}>Spiller</Caps>
-                <div style={{ borderRadius: 11, background: TL.dock, border: `1px solid ${TL.hair}`, padding: "10px 13px", fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute }}>
-                  {players.find((p) => p.id === userId)?.name ?? "—"}
+              <div className="felt"><span className="etikett">Spiller</span><b>{players.find((p) => p.id === userId)?.name ?? "—"}</b></div>
+            ) : (
+              <label className="felt"><span className="etikett">Spiller</span>
+                <select value={userId} onChange={(e) => setUserId(e.target.value)}>
+                  <option value="">Velg spiller</option>
+                  {players.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
+                </select></label>
+            )}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 12 }}>
+              <label className="felt"><span className="etikett">Plassering</span><input type="number" inputMode="numeric" className="mono" value={position} onChange={(e) => setPosition(e.target.value)} placeholder="1" /></label>
+              <label className="felt"><span className="etikett">Score</span><input type="number" inputMode="numeric" className="mono" value={score} onChange={(e) => setScore(e.target.value)} placeholder="72" /></label>
+            </div>
+            <label className="felt"><span className="etikett">Notater</span><textarea rows={2} value={notes} onChange={(e) => setNotes(e.target.value)} style={{ resize: "vertical" }} /></label>
+
+            {error && <Varsel tone="advarsel" tittel="Ikke lagret">{error}</Varsel>}
+
+            {bekreftSlett && initial ? (
+              <div className="kort dempet" style={{ display: "grid", gap: 10 }}>
+                <b className="undertittel">Slette resultatet?</b>
+                <div className="knapper">
+                  <Knapp variant="rust" disabled={slettPending} onClick={slett}>{slettPending ? "Sletter …" : "Slett resultatet"}</Knapp>
+                  <Knapp variant="spok" onClick={() => setBekreftSlett(false)}>Avbryt</Knapp>
                 </div>
               </div>
             ) : (
-              <Velger
-                label="Spiller"
-                value={userId}
-                onChange={setUserId}
-                options={[{ value: "", label: "— Velg —" }, ...players.map((p) => ({ value: p.id, label: p.name }))]}
-              />
+              <div className="knapper">
+                <Knapp type="submit" disabled={pending}>{pending ? "Lagrer …" : "Lagre"}</Knapp>
+                <Knapp variant="spok" onClick={lukk}>Avbryt</Knapp>
+                {initial && <Knapp variant="spok" onClick={() => setBekreftSlett(true)} style={{ marginLeft: "auto" }}>Slett</Knapp>}
+              </div>
             )}
-            <div className="grid grid-cols-2" style={{ gap: 14 }}>
-              <Inndata label="Plassering" type="number" mono value={position} onChange={setPosition} placeholder="1" />
-              <Inndata label="Score" type="number" mono value={score} onChange={setScore} placeholder="72" />
-            </div>
-            <TekstOmraade label="Notater" value={notes} onChange={setNotes} rows={2} />
-          </div>
-
-          {error && <ModalFeil>{error}</ModalFeil>}
-
-          <ModalFooter
-            onAvbryt={() => setOpen(false)}
-            onSlett={initial ? slett : undefined}
-            onLagre={lagre}
-            busy={pending}
-            slettBusy={slettPending}
-          />
-        </TurneringModal>
+          </form>
+        </div>
       )}
     </>
   );
