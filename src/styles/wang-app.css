@@ -406,6 +406,7 @@
 .wang-app .wg-sak + .wg-sak { border-top: 1px solid var(--wg-n100); }
 .wang-app .wg-sak > .wg-pille,
 .wang-app .wg-sak > .wg-avatar { justify-self: start; }
+.wang-app .wg-avatar.wg-avatar-dempet { background: var(--wg-n100); color: var(--wg-navy); }
 .wang-app .wg-sak b { font: 700 15px/1.35 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-navy-dyp); }
 .wang-app .wg-sak > p { grid-column: 1 / -1; margin: 0; font-size: 14px; color: var(--wg-tekst-2); }
 .wang-app .wg-sak .wg-knapper { grid-column: 1 / -1; margin-top: 6px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }

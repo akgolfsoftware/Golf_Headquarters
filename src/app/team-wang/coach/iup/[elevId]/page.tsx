@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 import { formaterLagretTestResultat } from "@/lib/portal-tester/resultat-visning";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
@@ -208,7 +208,14 @@ export default async function IupPage({
       </>
     );
   });
-  if (visning === null) notFound();
+  if (visning === null) {
+    // En trener som ikke har fått IUP-en delt, sendes til elevsiden. Den viser «Ikke delt»
+    // for en elev i gruppa og «Fant ikke eleven» ellers, så ingenting røpes her.
+    if (bruker.role === "COACH" || bruker.role === "ADMIN") {
+      redirect(`/team-wang/coach?omraade=elever&fane=elev&id=${encodeURIComponent(elevId)}`);
+    }
+    notFound();
+  }
   return (
     <WangUnderside bruker={bruker} omraade="elever">
       {visning}

@@ -226,7 +226,10 @@ describe('WANG Toppidrett Modul (Samtlige WANG-skjermer)', async () => {
     assert.ok(elev1.includes('62 %'));
     assert.ok(elev1.includes('Har delt planen med deg'));
     const elev2 = visMed(WangElever, { aktivFane: 'elev', id: 'e2', plan });
-    assert.ok(elev2.includes('Plan ikke delt'));
+    // Ingenting delt: låskort som «Ikke delt» i utkastet (pakke 7), ingen lenke til IUP.
+    assert.ok(elev2.includes('har ikke delt data med deg ennå'));
+    assert.ok(!elev2.includes('/team-wang/coach/iup/e2'));
+    assert.ok(elev1.includes('/team-wang/coach/iup/e1'));
     assert.ok(!/\d+\s*%/.test(elev2.replace(/<[^>]*>/g, ' ')), 'Ingen prosent for eleven som ikke har delt');
     const liste = visMed(WangElever, { plan });
     assert.ok(liste.includes('Trenger deg'));
@@ -237,7 +240,7 @@ describe('WANG Toppidrett Modul (Samtlige WANG-skjermer)', async () => {
     const html = vis(WangElever);
     assert.ok(html.includes('Elev 1 Demo'));
     assert.ok(html.includes('fane=elev&amp;id=e1'));
-    assert.ok(visMed(WangElever, { aktivFane: 'elev', id: 'e1' }).includes('/team-wang/coach/iup/e1'));
+    assert.ok(visMed(WangElever, { aktivFane: 'elev', id: 'e1' }).includes('har ikke delt data med deg ennå'));
     assert.ok(vis(WangElever, tom).includes('Ingen elever i gruppa.'));
   });
 

@@ -14,6 +14,7 @@ import { prisma } from "@/lib/prisma";
 import { kategoriFraSnittscore } from "@/lib/domain/ak-kategori";
 import { avgScoreFromHcp } from "@/lib/stats/sg-estimator";
 import { krevNavngittTrener, navngittTrenerHarTilgang } from "@/lib/deling/navngitt";
+import { PROFIL_TRANSAKSJON } from "@/lib/deling/profil-lesing";
 import { lesLeverteIupForProfil } from "@/lib/iup/trener-profil-lesing";
 import type { IupBesvarelse } from "@/lib/iup/utviklingssjekk";
 import {
@@ -110,5 +111,5 @@ export async function lesWangFireukerssjekk(
 export async function hentWangFireukerssjekk(gruppeId: string, elevId: string): Promise<WangFireukerssjekk> {
   const trener = await hentTrener();
   if (!trener) return { status: "ikke-delt" };
-  return prisma.$transaction((tx) => lesWangFireukerssjekk(tx, trener, elevId, gruppeId));
+  return prisma.$transaction((tx) => lesWangFireukerssjekk(tx, trener, elevId, gruppeId), PROFIL_TRANSAKSJON);
 }
