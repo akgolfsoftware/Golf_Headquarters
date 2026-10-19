@@ -5,10 +5,11 @@
 .tett th, .tett td { padding: 10px 14px; }
 .tabell th {
   background: var(--tn-ink-50);
-  font-family: var(--tn-font-mono);
-  font-size: var(--tn-text-micro);
-  letter-spacing: var(--tn-tracking-eyebrow);
-  font-weight: var(--tn-weight-medium);
+  font-family: var(--tn-font-body);
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  font-weight: var(--tn-weight-bold);
   color: var(--tn-ink-500);
   border-bottom: 1px solid var(--tn-border-subtle);
   white-space: nowrap;
@@ -29,10 +30,9 @@
     content: attr(data-etikett);
     flex: 0 0 42%;
     text-align: left;
-    font-family: var(--tn-font-mono);
-    font-size: var(--tn-text-micro);
-    letter-spacing: var(--tn-tracking-eyebrow);
-    text-transform: uppercase;
+    font-family: var(--tn-font-body);
+    font-weight: var(--tn-weight-bold);
+    font-size: 12.5px;
     color: var(--tn-ink-500);
   }
   .hoyre { text-align: right !important; }

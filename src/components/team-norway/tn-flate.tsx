@@ -70,7 +70,7 @@ export function TnKorttittel({ overlinje, tittel, children }: { overlinje?: Reac
   return (
     <div>
       {overlinje ? <TnEtikett>{overlinje}</TnEtikett> : null}
-      <div style={{ fontFamily: TN.font.display, fontWeight: 300, fontSize: 26, letterSpacing: "0.1em", textTransform: "uppercase", color: TN.navy900, marginTop: 6, lineHeight: 1.1, overflowWrap: "anywhere" }}>{tittel}</div>
+      <div style={{ fontFamily: TN.font.display, fontWeight: 400, fontSize: 26, letterSpacing: "0.02em", color: TN.navy900, marginTop: 6, lineHeight: 1.1, overflowWrap: "anywhere" }}>{tittel}</div>
       {children}
     </div>
   );

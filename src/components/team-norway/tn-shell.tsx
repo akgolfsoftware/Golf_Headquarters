@@ -101,6 +101,7 @@ export function tnHovedmeny({ aktiv, groupId, visTrenerflater: t, kanAdministrer
         lenke("Månedsplan", "/team-norway/manedsplan", "manedsplan", aktiv),
         ...(t
           ? [
+              lenke("Workbench", "/team-norway/workbench", "workbench", aktiv),
               lenke("Testprotokoller", "/team-norway/protokoller", "protokoller", aktiv),
               lenke("Referansenivåer", "/team-norway/referansenivaer", "referansenivaer", aktiv),
               lenke("Fagapparat", "/team-norway/fagapparat", "fagapparat", aktiv),
@@ -335,7 +336,7 @@ export function TnSpillerFaner({ spillerId, spillerNavn, aktiv, kanAdministrere,
       <div style={{ display: "flex", flexWrap: "wrap", gap: 16, alignItems: "center" }}>
         <span aria-hidden="true" style={{ display: "grid", placeItems: "center", width: 64, height: 64, flex: "none", background: TN.navy100, color: TN.navy900, fontFamily: TN.font.mono, fontSize: 20 }}>{initialer(spillerNavn)}</span>
         <div style={{ minWidth: 0 }}>
-          <p style={{ margin: 0, fontFamily: TN.font.mono, fontSize: 12, lineHeight: 1.3, letterSpacing: "0.12em", textTransform: "uppercase", color: TN.ink500 }}>{overlinje ?? "IUP"}</p>
+          <p style={{ margin: 0, fontFamily: TN.font.body, fontWeight: 700, fontSize: 13, lineHeight: 1.3, letterSpacing: "0.02em", color: TN.ink500 }}>{overlinje ?? "IUP"}</p>
           <h1 style={{ margin: 0, fontFamily: TN.font.display, fontWeight: 400, fontSize: "clamp(30px, 3vw, 38px)", lineHeight: 1.12, letterSpacing: "0.03em", color: TN.navy900, overflowWrap: "anywhere" }}>{spillerNavn}</h1>
         </div>
       </div>
@@ -351,7 +352,7 @@ export function TnNokkeltall({ tall }: { tall: Array<{ etikett: string; verdi: R
     <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 20px" }}>
       {tall.map((t) => (
         <span key={t.etikett} style={{ display: "grid", gap: 2 }}>
-          <small style={{ fontFamily: TN.font.mono, fontSize: 11, lineHeight: 1, letterSpacing: "0.12em", textTransform: "uppercase", color: TN.ink500 }}>{t.etikett}</small>
+          <small style={{ fontFamily: TN.font.body, fontWeight: 700, fontSize: 12.5, lineHeight: 1.2, color: TN.ink500 }}>{t.etikett}</small>
           <b style={{ fontFamily: TN.font.mono, fontWeight: 500, fontSize: 18, lineHeight: 1.1, color: TN.navy900 }}>{t.verdi}</b>
         </span>
       ))}

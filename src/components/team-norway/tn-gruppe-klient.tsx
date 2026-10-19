@@ -151,7 +151,7 @@ export function TnInnleggKort({ innlegg, visHvem, kvitter }: { innlegg: TnInnleg
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "4px 12px", alignItems: "baseline" }}>
             <span style={{ fontSize: 14.5, fontWeight: 700, overflowWrap: "anywhere" }}>{innlegg.forfatter}</span>
-            <span style={{ fontFamily: TN.font.mono, fontSize: 11, letterSpacing: "0.08em", color: TN.ink500, textTransform: "uppercase" }}>{innlegg.rolle} · {tid(innlegg.tidIso)}{innlegg.endret ? " · endret" : ""}</span>
+            <span style={{ fontFamily: TN.font.body, fontSize: 12.5, color: TN.ink500 }}>{innlegg.rolle} · {tid(innlegg.tidIso)}{innlegg.endret ? " · endret" : ""}</span>
           </div>
           <div style={{ marginTop: 6, display: "flex" }}>
             <span style={{ fontSize: 13, fontWeight: 700, padding: "4px 10px", background: TN.navy100, color: TN.navy900 }}>Til hele gruppen</span>

@@ -82,7 +82,7 @@ export default async function SpillerpostPage({ params }: { params: Promise<{ sp
       <TnSpillerFaner spillerId={spillerId} spillerNavn={spiller.name ?? "Ukjent"} aktiv="post" kanAdministrere={harTrenertilgang} kompakt />
 
       <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "12px 14px", borderRadius: TN.radius.sm, background: TN.white, border: `1px solid ${TN.ink200}`, flexWrap: "wrap" }}>
-        <span style={{ fontFamily: TN.font.mono, fontSize: 12, letterSpacing: "0.12em", textTransform: "uppercase", color: TN.ink500, flexShrink: 0 }}>Synlig for</span>
+        <span style={{ fontFamily: TN.font.body, fontWeight: 700, fontSize: 13, color: TN.ink500, flexShrink: 0 }}>Synlig for</span>
         <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <TnAvatarInitialer navn={spiller.name ?? "?"} size={28} />
           <span style={{ fontSize: 14, fontWeight: 700, color: TN.ink900 }}>{spiller.name}</span>

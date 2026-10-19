@@ -200,7 +200,8 @@ export async function TnOversiktSkjerm() {
               return (
                 <TnSpillerrad
                   key={t.spillerId}
-                  href={`/team-norway/spiller/${t.spillerId}/oversikt`}
+                  // Bare spillere som har delt med Team Norway har en IUP treneren kan åpne.
+                  href={t.plan ? `/team-norway/spiller/${t.spillerId}/oversikt` : undefined}
                   status="trenger"
                   initialer={initialer(t.navn)}
                   navn={t.navn}
