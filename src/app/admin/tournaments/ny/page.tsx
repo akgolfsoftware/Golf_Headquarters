@@ -1,15 +1,16 @@
 /**
- * AgencyOS · Ny turnering — v2. Server-komponent henter kursliste og
- * delegerer til klient-veiviseren. Logikk bevart 1:1 fra legacy-siden.
+ * AgencyOS · Ny turnering i nytt design (AG17TurneringNy, 19.10.2026).
+ * Server-komponent henter banelista og gir den til veiviseren.
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
-import { TurneringWizardV2 } from "@/components/admin/v2/TurneringWizardV2";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { Topp } from "@/components/admin/agencyos-ny/ny";
+import { AG17TurneringNy } from "@/components/admin/precision/AG17TurneringNy";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Ny turnering · AgencyOS" };
 
 export default async function NyTurneringPage() {
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
@@ -20,9 +21,12 @@ export default async function NyTurneringPage() {
   });
 
   return (
-    <V2Shell bredde="kolonne" aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/admin/turnering">Turneringer</TilbakeLenke>
-      <TurneringWizardV2 courses={courses} />
-    </V2Shell>
+    <AgencyOSSkall navn={user.name ?? "Coach"}>
+      <div className="agn-s">
+        <Topp tilbake={{ href: "/admin/turnering", tekst: "Turneringer" }} dato="Turneringer · ny" tittel="Ny turnering"
+          ingress="Fem steg. Detaljene kan endres fra turneringssiden etterpå." />
+        <AG17TurneringNy courses={courses} />
+      </div>
+    </AgencyOSSkall>
   );
 }

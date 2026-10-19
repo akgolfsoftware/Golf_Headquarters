@@ -10,7 +10,7 @@
 
 import { TL } from "@/lib/v2/train-lock";
 import { AgentRunPanel } from "@/app/admin/agents/[agentId]/agent-run-panel";
-import type { AgentDetaljData } from "@/components/admin/v2/AdminAgentDetaljV2";
+import type { AgentDetaljData } from "@/lib/agencyos/agent-detalj-typer";
 import { AoCaps, AoFeilKort, AoKnapp, AoKort, AoPrikk, AoRad, AoTittel, AoWarmHake } from "./tl-agenticos";
 
 export function AdminAgenticosRunDetalj({ data }: { data: AgentDetaljData }) {
