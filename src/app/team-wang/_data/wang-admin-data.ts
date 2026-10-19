@@ -8,7 +8,7 @@ import { ukenummer } from "@/lib/uke-helpers";
 import { invitasjonStatus } from "./wang-admin-regler";
 import type { WangAdminData } from "./wang-admin-visning";
 
-export async function hentWangAdminData(gruppeId: string, naa: Date = new Date()): Promise<WangAdminData> {
+export async function hentWangAdminData(gruppeId: string, megId: string, naa: Date = new Date()): Promise<WangAdminData> {
   const sistUke = new Date(naa.getTime() - 7 * 86_400_000);
   const [invitasjoner, unntak] = await Promise.all([
     prisma.wangTrenerInvitasjon.findMany({
@@ -30,6 +30,7 @@ export async function hentWangAdminData(gruppeId: string, naa: Date = new Date()
     }),
   ]);
   return {
+    megId,
     invitasjoner: invitasjoner.map((i) => ({
       id: i.id,
       epost: i.mottakerEpost,

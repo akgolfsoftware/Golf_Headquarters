@@ -4,6 +4,8 @@ import React from "react";
 import { WangTomTilstand } from "./WangIkkeKoblet";
 import {
   fjernTimeplanUnntak,
+  fjernTrenerTilgang,
+  flyttFastOkt,
   lagTimeplanUnntak,
   lagTrenerInvitasjon,
   trekkTrenerInvitasjon,
@@ -52,8 +54,9 @@ const STATUS: Record<WangSamtykkeStatus, { tekst: string; klasse: string; farge:
  * Avvik:
  *   - Samtykke viser testdelingen (TEST_RESULTATER), den eneste delingen til WANG som finnes. Utkastet sier «delt data».
  *   - Inviter trener lager en lenke som gjelder i sju dager for én e-postadresse. Ingen e-post sendes: sportssjefen
- *     kopierer lenken og sender den selv. Endre rolle og fjern tilgang er ikke med.
- *   - Nytt unntak lagrer dato og fritekst. Flytt morgentreningen er ikke med (W4, nattkjøring 18.10).
+ *     kopierer lenken og sender den selv. Fjern tilgang avslutter trenermedlemskapet i gruppa. Endre rolle er ikke med:
+ *     WANG har bare Sportssjef og Trener, og sportssjef er administratorrollen for hele AK Golf HQ.
+ *   - Nytt unntak lagrer dato og fritekst. Flytt morgentreningen endrer dag og tid for en fast økt i ukemalen.
  *   - Timeplanen viser gruppas faste økter. Skolens timeplan og kollisjoner finnes ikke i basen.
  *   - Opptak og Koordinering mellom skolene: se WangAdminOpptak.tsx (pakke W3, 18.10.2026).
  */
@@ -119,6 +122,14 @@ function Trenere({ data, admin }: { data: WangTrenerData; admin: WangAdminData }
       const svar = await trekkTrenerInvitasjon(id);
       if (!svar.ok) setFeil(svar.feil);
     });
+  const [bekreftFjern, setBekreftFjern] = React.useState<string | null>(null);
+  const fjernTilgang = (userId: string) =>
+    start(async () => {
+      setFeil(null);
+      const svar = await fjernTrenerTilgang(userId);
+      if (!svar.ok) return setFeil(svar.feil);
+      setBekreftFjern(null);
+    });
 
   return (
     <>
@@ -178,6 +189,32 @@ function Trenere({ data, admin }: { data: WangTrenerData; admin: WangAdminData }
                 </span>
               </span>
               <span className="wg-pille"><i />{t.rolle}</span>
+              {t.id !== admin.megId && bekreftFjern !== t.id && (
+                <span className="wg-knapper" style={{ gridColumn: "1 / -1" }}>
+                  <button
+                    type="button"
+                    className="wg-btn wg-btn-ghost"
+                    style={{ color: "var(--wg-rosa-tekst)" }}
+                    disabled={venter}
+                    onClick={() => setBekreftFjern(t.id)}
+                  >
+                    Fjern tilgang
+                  </button>
+                </span>
+              )}
+              {bekreftFjern === t.id && (
+                <div className="wg-kort wg-fyll" role="group" aria-label={`Fjern tilgangen til ${t.navn}`} style={{ gridColumn: "1 / -1" }}>
+                  <p className="wg-forklar" style={{ margin: 0 }}>
+                    {t.navn} mister tilgangen til gruppa med en gang. Kontoen og det treneren har skrevet, blir stående.
+                  </p>
+                  <div className="wg-knapper">
+                    <button type="button" className="wg-btn wg-btn-secondary" disabled={venter} onClick={() => fjernTilgang(t.id)}>
+                      {venter ? "Fjerner …" : "Fjern tilgang"}
+                    </button>
+                    <button type="button" className="wg-btn wg-btn-ghost" onClick={() => setBekreftFjern(null)}>Avbryt</button>
+                  </div>
+                </div>
+              )}
             </div>
           ))}
           {admin.invitasjoner.map((i) => (
@@ -263,7 +300,63 @@ function Samtykke({ data, tester }: { data: WangTrenerData; tester: WangTesterDa
   );
 }
 
+const UKEDAGER = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"];
+
+function FlyttOkt({ okter, onFerdig }: { okter: WangTrenerData["fasteOkter"]; onFerdig: () => void }) {
+  const flyttbare = okter.filter((o): o is typeof o & { id: string } => o.id !== null);
+  const forvalgt = flyttbare.find((o) => /morgen/i.test(o.tittel)) ?? flyttbare[0];
+  const [valgtId, setValgtId] = React.useState(forvalgt?.id ?? "");
+  const [feil, setFeil] = React.useState<string | null>(null);
+  const [venter, start] = React.useTransition();
+  const valgt = flyttbare.find((o) => o.id === valgtId);
+  const lagre = (form: FormData) =>
+    start(async () => {
+      setFeil(null);
+      const svar = await flyttFastOkt(form);
+      if (!svar.ok) return setFeil(svar.feil);
+      onFerdig();
+    });
+  if (!valgt) return null;
+  return (
+    <form className="wg-skjema" style={{ display: "grid" }} action={lagre}>
+      <label className="wg-lbl">
+        Økt
+        <select className="wg-field" name="id" value={valgtId} onChange={(e) => setValgtId(e.target.value)}>
+          {flyttbare.map((o) => (
+            <option key={o.id} value={o.id}>{o.dag} {o.tid} · {o.tittel}</option>
+          ))}
+        </select>
+      </label>
+      {/* key: feltene fylles på nytt når en annen økt velges. */}
+      <div key={valgt.id} style={{ display: "grid", gap: "inherit" }}>
+        <label className="wg-lbl">
+          Ny dag
+          <select className="wg-field" name="ukedag" defaultValue={String(valgt.ukedag)}>
+            {UKEDAGER.map((d, i) => <option key={d} value={i}>{d}</option>)}
+          </select>
+        </label>
+        <label className="wg-lbl">
+          Start
+          <input className="wg-field" name="start" type="time" required defaultValue={valgt.startTid} />
+        </label>
+        <label className="wg-lbl">
+          Slutt
+          <input className="wg-field" name="slutt" type="time" required defaultValue={valgt.sluttTid} />
+        </label>
+      </div>
+      <span className="wg-hjelp">Flytter økta i ukemalen, for alle uker framover. Gjelder det bare én uke, legg inn et unntak.</span>
+      <div className="wg-knapper">
+        <button type="submit" className="wg-btn wg-btn-primary" disabled={venter}>{venter ? "Lagrer …" : "Flytt økta"}</button>
+        <button type="button" className="wg-btn wg-btn-secondary" onClick={onFerdig}>Avbryt</button>
+      </div>
+      <Feilmelding feil={feil} />
+    </form>
+  );
+}
+
 function Timeplan({ data, admin }: { data: WangTrenerData; admin: WangAdminData }) {
+  const [flytter, setFlytter] = React.useState(false);
+  const kanFlytte = data.fasteOkter.some((o) => o.id !== null);
   const [aapen, setAapen] = React.useState(false);
   const [feil, setFeil] = React.useState<string | null>(null);
   const [venter, start] = React.useTransition();
@@ -300,6 +393,7 @@ function Timeplan({ data, admin }: { data: WangTrenerData; admin: WangAdminData 
             ))}
           </div>
         )}
+        {flytter && <FlyttOkt okter={data.fasteOkter} onFerdig={() => setFlytter(false)} />}
       </div>
       <div className="wg-kort wg-fyll">
         <b className="wg-undertittel">Unntak</b>
@@ -345,6 +439,9 @@ function Timeplan({ data, admin }: { data: WangTrenerData; admin: WangAdminData 
         ) : (
           <div className="wg-knapper">
             <button type="button" className="wg-btn wg-btn-primary" onClick={() => setAapen(true)}>Nytt unntak</button>
+            {kanFlytte && !flytter && (
+              <button type="button" className="wg-btn wg-btn-secondary" onClick={() => setFlytter(true)}>Flytt morgentreningen</button>
+            )}
           </div>
         )}
         <Feilmelding feil={feil} />

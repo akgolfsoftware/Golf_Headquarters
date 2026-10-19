@@ -16,9 +16,12 @@ import {
   invitasjonSti,
   invitasjonUtloper,
   lagInvitasjonToken,
+  leggTilDagerIso,
+  lesFlytting,
   lesUnntak,
   normaliserEpost,
 } from "@/app/team-wang/_data/wang-admin-regler";
+import { osloLokalTilDato } from "@/lib/admin/gruppe-tid";
 
 type Feil = { ok: false; feil: string };
 export type LagInvitasjonSvar = { ok: true; sti: string; utloper: string } | Feil;
@@ -97,6 +100,60 @@ export async function fjernTimeplanUnntak(id: string): Promise<EnkelSvar> {
   const { count } = await prisma.wangTimeplanUnntak.deleteMany({ where: { id, groupId: tilgang.gruppeId } });
   if (count === 0) return { ok: false, feil: "Unntaket finnes ikke." };
   revalidatePath(ADMIN_STI);
+  return { ok: true };
+}
+
+/**
+ * Fjern tilgang: avslutter trenermedlemskapet (endedAt) i sportssjefens egen gruppe. Kontoen og historikken
+ * blir stående. Sportssjefen kan ikke fjerne seg selv, og elever røres ikke herfra.
+ */
+export async function fjernTrenerTilgang(userId: string): Promise<EnkelSvar> {
+  const tilgang = await krevSportssjef();
+  if (!tilgang) return IKKE_SPORTSSJEF;
+  if (typeof userId !== "string" || !userId) return { ok: false, feil: "Treneren finnes ikke i gruppa." };
+  if (userId === tilgang.brukerId) return { ok: false, feil: "Du kan ikke fjerne din egen tilgang." };
+  const { count } = await prisma.groupMember.updateMany({
+    where: { groupId: tilgang.gruppeId, userId, role: { in: ["COACH", "ASSISTANT"] }, endedAt: null },
+    data: { endedAt: new Date() },
+  });
+  if (count === 0) return { ok: false, feil: "Treneren finnes ikke i gruppa." };
+  revalidatePath(ADMIN_STI);
+  return { ok: true };
+}
+
+const OSLO_DAG = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Oslo" });
+const OSLO_UKEDAG = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Oslo", weekday: "short" });
+const UKEDAG_INDEKS: Record<string, number> = { Mon: 0, Tue: 1, Wed: 2, Thu: 3, Fri: 4, Sat: 5, Sun: 6 };
+
+/**
+ * Flytt morgentreningen: ny dag og nytt klokkeslett for en fast ukentlig økt i gruppa (ukemalen).
+ * Gjelder alle uker, som ukemalen. Bare økter i sportssjefens egen gruppe med recurring WEEKLY.
+ */
+export async function flyttFastOkt(formData: FormData): Promise<EnkelSvar> {
+  const tilgang = await krevSportssjef();
+  if (!tilgang) return IKKE_SPORTSSJEF;
+  const id = formData.get("id");
+  const lest = lesFlytting({ ukedag: formData.get("ukedag"), start: formData.get("start"), slutt: formData.get("slutt") });
+  if (!lest.ok) return lest;
+  if (typeof id !== "string" || !id) return { ok: false, feil: "Velg en økt." };
+  const okt = await prisma.groupSchedule.findFirst({
+    where: { id, groupId: tilgang.gruppeId, recurring: "WEEKLY" },
+    select: { id: true, startAt: true },
+  });
+  if (!okt) return { ok: false, feil: "Økta finnes ikke i ukemalen." };
+
+  const fraUkedag = UKEDAG_INDEKS[OSLO_UKEDAG.format(okt.startAt)] ?? 0;
+  const nyDato = leggTilDagerIso(OSLO_DAG.format(okt.startAt), lest.ukedag - fraUkedag);
+  const startAt = osloLokalTilDato(nyDato, lest.start);
+  const endAt = osloLokalTilDato(nyDato, lest.slutt);
+  if (!startAt || !endAt) return { ok: false, feil: "Ugyldig tidspunkt." };
+  const { count } = await prisma.groupSchedule.updateMany({
+    where: { id: okt.id, groupId: tilgang.gruppeId },
+    data: { startAt, endAt },
+  });
+  if (count === 0) return { ok: false, feil: "Økta finnes ikke i ukemalen." };
+  revalidatePath(ADMIN_STI);
+  revalidatePath("/team-wang");
   return { ok: true };
 }
 

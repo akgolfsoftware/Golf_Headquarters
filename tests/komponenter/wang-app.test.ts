@@ -37,7 +37,7 @@ const DATA = {
     { id: 'o1', datoIso: '2026-10-13', dag: 'Tir', tittel: 'Morgentrening nærspill (demo)', tid: '08:00–10:00', startTid: '08:00', sluttTid: '10:00' as string | null, sted: 'Demo Golfklubb', beskrivelse: null as string | null, passert: true },
     { id: 'o2', datoIso: '2026-10-14', dag: 'Ons', tittel: 'Morgentrening driver (demo)', tid: '08:00–10:00', startTid: '08:00', sluttTid: '10:00' as string | null, sted: 'Demohallen', beskrivelse: null as string | null, passert: false },
   ],
-  fasteOkter: [{ dag: 'Tir', tid: '08:00–10:00', tittel: 'Morgentrening nærspill (demo)', sted: 'Demo Golfklubb' }],
+  fasteOkter: [{ id: 'fo-1', ukedag: 1, startTid: '08:00', sluttTid: '10:00', dag: 'Tir', tid: '08:00–10:00', tittel: 'Morgentrening nærspill (demo)', sted: 'Demo Golfklubb' }],
   perioder: [
     { id: 'p1', fase: 'SPESIAL', navn: 'Spesialperiode', fokus: 'Nærspill', startIso: '2026-09-01', endIso: '2026-10-31', fraUke: 36, tilUke: 44, ukevolMin: null as number | null, ukevolMax: null as number | null, status: 'naa' as const },
   ],

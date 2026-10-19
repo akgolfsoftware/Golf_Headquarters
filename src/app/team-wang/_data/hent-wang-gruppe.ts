@@ -80,6 +80,8 @@ export interface WangHendelseDb {
 }
 
 export interface WangFastOkt {
+  /** GroupSchedule-id, så sportssjef kan flytte økta (W4). Mangler i eldre testdata. */
+  id?: string;
   ukedag: number; // 0=man..6=søn (Oslo)
   startTid: string;
   sluttTid: string;
@@ -275,6 +277,7 @@ export async function hentWangGruppe(
     const fasteOkter: WangFastOkt[] = gruppe.schedules
       .filter((s) => s.recurring === "WEEKLY")
       .map((s) => ({
+        id: s.id,
         ukedag: osloUkedag(s.startAt),
         startTid: osloTid(s.startAt),
         sluttTid: osloTid(s.endAt),
