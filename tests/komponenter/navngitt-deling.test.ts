@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { AppRouterContext } from "next/dist/shared/lib/app-router-context.shared-runtime";
-for (const path of ["src/styles/navngitt-deling.css", "src/styles/precision-athletics.css"]) {
+for (const path of ["src/styles/navngitt-deling.css", "src/styles/precision-athletics.css", "src/styles/playerhq-ny.css", "src/styles/playerhq-ny-meg.css"]) {
   mock.module(new URL(`../../${path}`, import.meta.url).pathname, { defaultExport: {} });
 }
 mock.module(new URL("../../src/app/portal/meg/deling/actions.ts", import.meta.url).pathname, {
