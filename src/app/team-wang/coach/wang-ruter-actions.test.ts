@@ -239,6 +239,15 @@ test("coachruten henter elevlisten etter godkjent gruppetilgang", async () => {
 test("IUP-ruten leser ingen elevdata når den felles ressursgrensen avviser", async () => {
   const side = await iupPage();
   elevGruppeId = null;
+  // Treneren sendes til elevsiden («Ikke delt» eller «Fant ikke eleven»), uten at elevdata leses.
+  await assert.rejects(side({ params: Promise.resolve({ elevId: "elev-1" }) }), /REDIRECT:\/team-wang\/coach\?omraade=elever&fane=elev&id=elev-1$/);
+  assert.equal(elevLesinger, 0);
+});
+
+test("IUP-ruten gir 404 til en forelder som ikke slipper inn", async () => {
+  const side = await iupPage();
+  bruker = { id: "forelder-1", role: "PARENT" };
+  elevGruppeId = null;
   await assert.rejects(side({ params: Promise.resolve({ elevId: "elev-1" }) }), (error) => error === IKKE_FUNNET);
   assert.equal(elevLesinger, 0);
 });
