@@ -9,23 +9,8 @@ import { useState } from "react";
 import { TL } from "@/lib/v2/train-lock";
 import { TlBadge, TlKort, TlKnapp, TlRad, TlTittel, TlTomTilstand } from "@/components/admin/v2/oppsett/tl-kit";
 
-export interface FastTid {
-  id: string;
-  dag: string;
-  tid: string;
-  tittel: string;
-  sted: string | null;
-}
-export interface GruppeV2 {
-  id: string;
-  navn: string;
-  antallMedlemmer: number;
-  nesteOkt: string | null;
-  faste: FastTid[];
-}
-export interface GrupperData {
-  grupper: GruppeV2[];
-}
+import type { FastTid, GruppeV2, GrupperData } from "@/lib/admin/grupper/typer";
+export type { FastTid, GruppeV2, GrupperData };
 
 export interface GrupperV2Actions {
   NyGruppeButton: React.ComponentType<{ coaches: { id: string; name: string }[] }>;

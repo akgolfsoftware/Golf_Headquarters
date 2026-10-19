@@ -3,17 +3,18 @@
  * GruppeKalenderWrapper) som den offentlige /team-wang-siden, koblet inn i
  * gruppeplanleggingen. Skole/samling/kompetansemål-innhold er identisk mellom
  * flatene — ingen personlig spillerdata her heller.
+ *
+ * 19.10.2026: i AgencyOSSkall med sidehodet fra nytt design (som Skoledata),
+ * i stedet for V2Shell og GruppeFaner fra det gamle designet.
  */
 
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireCapability } from "@/lib/auth/requireCapability";
 import { Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
 import { gruppeInnsynWhere } from "@/lib/workbench/group-scope";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TlTilbake } from "@/components/admin/v2/oppsett/tl-kit";
-import { GruppeFaner } from "@/components/admin/v2/GruppeFaner";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { KnappLenke, Tom, Topp } from "@/components/admin/agencyos-ny/ny";
 import { hentGruppeKalenderData } from "@/lib/gruppe-kalender/hent-data";
 import { GruppeKalenderWrapper } from "@/components/gruppe-kalender/gruppe-kalender-wrapper";
 import { TrinnFilter } from "@/components/gruppe-kalender/trinn-filter";
@@ -41,36 +42,21 @@ export default async function GruppeArsplanPage({
   const basePath = `/admin/grupper/${id}/arsplan`;
 
   return (
-    <V2Shell bredde="kolonne" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TlTilbake href={`/admin/grupper/${id}`}>Gruppe</TlTilbake>
-
-      <div className="flex flex-col gap-4">
-        <GruppeFaner groupId={id} aktiv="arsplan" />
-
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-              {gruppe.name}
-            </p>
-            <h1 className="font-display text-2xl font-bold tracking-[-0.02em] text-foreground">Årsplan</h1>
-          </div>
-          <Link href={`${basePath}/skoledata`} className="font-mono text-[11px] font-semibold text-primary hover:underline">
-            Legg inn skoledata →
-          </Link>
-        </div>
-
+    <AgencyOSSkall navn={user.name ?? "Coach"}>
+      <div className="agn-s">
+        <Topp tilbake={{ href: `/admin/grupper/${id}`, tekst: "Gruppa" }} dato={`${gruppe.name} · årsplan`} tittel="Årsplan"
+          handlinger={<KnappLenke href={`${basePath}/skoledata`}>Legg inn skoledata</KnappLenke>} />
         {data ? (
-          <div className="space-y-4">
+          <div style={{ display: "grid", gap: 16, minWidth: 0 }}>
             <TrinnFilter basePath={basePath} aktivtTrinn={trinn ?? null} />
             <GruppeKalenderWrapper data={data} classYear={trinn ?? null} />
             <TurneringPlan turneringer={data.turneringer} />
           </div>
         ) : (
-          <p className="text-sm text-muted-foreground">
-            Fant ingen kalenderdata for «{gruppe.name}» — gruppen mangler faste treningstider/perioder i systemet.
-          </p>
+          <Tom tittel="Ingen kalenderdata" tekst={`«${gruppe.name}» mangler faste treningstider eller perioder i systemet.`}
+            handling={<KnappLenke href={`/admin/grupper/${id}/timeplan`}>Legg inn faste tider</KnappLenke>} />
         )}
       </div>
-    </V2Shell>
+    </AgencyOSSkall>
   );
 }

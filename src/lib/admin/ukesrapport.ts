@@ -21,7 +21,7 @@ import {
   NEVNER_TEKST,
   type Etterlevelse,
 } from "@/lib/domain/etterlevelse";
-import type { AdminUkesrapportKort } from "@/components/admin/v2/AdminGodkjenningerV2";
+import type { AdminUkesrapportKort } from "@/lib/admin/ko/typer";
 
 const TID_FMT = new Intl.DateTimeFormat("nb-NO", {
   weekday: "short",
