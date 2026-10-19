@@ -50,7 +50,7 @@ Team Norway skal kunne bruke trenerflatene tilnærmet gratis. Spillerlisenser ko
   gruppe-invitasjon). Utløper aldri.
 - ÅPENT: testbatteriet (CANON-protokollene), stats-/analyse-lesing, SG-/runderegistrering,
   talent-flatene, **booking av enkelttimer**, konto/abonnement.
-- DataGolf er ikke med: Data Golf vises bare for coacher (Anders 06.10.2026, `.claude/rules/beslutninger.md` §KODEGJENNOMGANGEN).
+- DataGolf er ikke med: Data Golf vises bare for ADMIN (Anders 20.10.2026, `.claude/rules/beslutninger.md` §DATA GOLF ER ANDERS' PRIVATE VERKTØY).
 - ALT annet låst med oppgraderingsvei. Håndheves FAIL-CLOSED i `requirePortalUser`
   (`kreverTilgang`); rutekontrakten står i `src/lib/auth/talent-allowlist.ts`.
 - Kjøper spilleren abonnement eller meldes inn i AK-gruppe, vinner FULL automatisk.

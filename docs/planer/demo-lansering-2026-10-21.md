@@ -19,10 +19,7 @@ inn i main før han har sett over om morgenen. Øktene lager PR uten auto-merge.
 | Team Norway `/team-norway`, `/teamnorway` | **Mangler for demo** | T1–T3 og «Skrå» TN-01 er i main. Demotreneren får «Siden finnes ikke» på alle sider. Resten av TN-skjermene i Skrå gjenstår. | T1 #1428, T2 #1421, T3 #1424, Skrå #1463; audit A2. Samme økt som WANG |
 | Pipelines (`ak-golf-pipelines`) | **Delvis** | Nøkkel = GolfBox-RID er på plass i `public_db.py`. Mandagsjobben kjører identity → sg → refresh_views, sist grønn 19.10. HQ-skraperen skriver ikke lenger resultater (`syncGolfBoxLeaderboards` fjernet). Profilkobling til PlayerHQ bygges i natt. | `junior-tours-sync.yml` 19.10 success; `golfbox-public-sync.yml` 19.10 success; `scripts/scrape-golfbox.ts:10`; økt økta «Profilside» |
 
-**Ikke ført i beslutningsloggen:** #1450 (19.10) strammet Data Golf til bare ADMIN, med grunnen at
-lisensen er personlig og ikke-kommersiell. Beslutningsloggen sier fortsatt «coacher i AK Golf, WANG og
-Team Norway» (§DATA GOLF VISES ALDRI TIL KUNDER). Koden følger #1450. Anders må bekrefte, og blokken
-føres med `/beslutning`. Til da: ingen Data Golf i demoen for WANG og TN.
+**Data Golf:** Anders 20.10 bekreftet #1450: bare ADMIN (Anders), på alle flater, aldri utad (beslutninger §DATA GOLF ER ANDERS' PRIVATE VERKTØY). Demokontoene for WANG og TN ser ikke Data Golf.
 
 ## 2. Git
 
@@ -53,7 +50,7 @@ stoppet i natt og venter.
 | 5 | `/wang` i vinrødt og firkantet (B2) | Ny økt etter punkt 1 | `/wang` følger §WANG-TRENERFLATEN FØLGER STILEN PÅ WANG.NO i 390 og 1280 |
 | 6 | Ett tokensett (forslag 1+2) | økta «Tokensett» | Ingen visuell endring, verify grønn. Ikke demo-kritisk; legges inn bare hvis grønn |
 | 7 | Profilkobling: spillerens turneringsresultater i PlayerHQ | økta «Profilside» | En demospiller med `publicPlayerId` ser egne resultater i Stats › Resultater |
-| 8 | Data Golf-regelen avklart | Anders | Svar på #1450 ført i beslutningsloggen |
+| 8 | Data Golf: bare Anders har ADMIN | Koordinatoren | Lesespørring viser at hver ADMIN-konto er Anders' egen (beslutningen punkt 1) |
 | 9 | Demomanuset gått gjennom | Koordinatoren | §5 åpnet i 390 og 1280 på Vercel, uten sidelengs rulling, konsollfeil eller demodata som utgir seg for å være ekte |
 | 10 | `npm run verify` grønn på main og Vercel-produksjon grønn | Koordinatoren | Etter at PR-ene over er lagt inn om morgenen |
 
@@ -69,7 +66,7 @@ stoppet i natt og venter.
 | 6 | WANG-trener ser elevens turneringsresultater når eleven har delt | **Før demo** (lesing) | Elevsiden i `/team-wang/coach` viser resultater fra samme leser, «—» uten deling, låst med test |
 | 7 | Komplett tilbakemelding for trener: IUP, Fireukerssjekk, tester, økter på én elevside | **Etter lansering** | Én elevside med alle fire delene, bak `navngittTrenerHarTilgang` |
 | 8 | Selvbetjent kobling «Finn deg i turneringsresultatene» i oppstarten | **Etter lansering** | Spilleren velger seg selv, coach bekrefter, låst med test |
-| 9 | Data Golf for trenere, hvis Anders åpner lisensen igjen | **Etter lansering** | Beslutningen er ført; `DATAGOLF_ROLLER` endres bare etter den |
+| 9 | Data Golf forblir Anders' private verktøy: ingen vei utad (markedslenker, eksport) | **Etter lansering** | Punkt 2 i §DATA GOLF ER ANDERS' PRIVATE VERKTØY er låst med test |
 | 10 | Vakt: HQ `sync-vaktbikkje` varsler når mandagskjeden mangler eller er rød | **Etter lansering** | Simulert rød kjøring gir varsel |
 
 ## 5. Demomanus

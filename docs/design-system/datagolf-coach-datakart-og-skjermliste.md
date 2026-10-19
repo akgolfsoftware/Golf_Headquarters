@@ -87,5 +87,5 @@ spiller uten egne runder) · ingen tilgang (ikke coach: siden finnes ikke) · fo
 ## Åpent hos Anders
 
 1. ~~**Mer får et sjette punkt «Data Golf».**~~ Avgjort 16.10: ja, Mer har seks punkter.
-2. ~~**Lisens** for WANG og TN.~~ Avgjort 16.10: bare coacher, aldri kunder. WANG og TN kan bygges etter AgencyOS.
+2. ~~**Lisens** for WANG og TN.~~ Avgjort 20.10: bare ADMIN (Anders), aldri utad (beslutninger §DATA GOLF ER ANDERS' PRIVATE VERKTØY).
 3. **Tour-snitt innspill** (`PgaApproachDistance`) er ikke per proff. DG-06 bruker proffens egne band; tour-snittet vises som referanse.
