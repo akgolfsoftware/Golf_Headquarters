@@ -51,6 +51,11 @@ export function byggPaaminnelse(d: PaaminnelseData, opts: { mork?: boolean; intr
   return { subject, html: epostSkall({
     pre: d.iMorgen ? "Påminnelse om timen i morgen." : "Påminnelse om timen din.",
     title: d.iMorgen ? "Vi ses i morgen" : "Påminnelse om timen",
+    tidskort: {
+      dag: d.iMorgen ? "I morgen" : d.dag,
+      tid: d.klokke,
+      linjer: [`${d.varighetMin ? `${d.tjeneste} ${d.varighetMin} min` : d.tjeneste}${d.coach ? ` med ${d.coach}` : ""}`, d.sted],
+    },
     body, dark: opts.mork,
     button: ["Se veibeskrivelse", d.lenker.veibeskrivelse],
     secondary: d.mottaker === "app" ? [["Se bookingen i PlayerHQ", d.lenker.bookingIApp]] : [["Endre eller avbestill", d.lenker.endre]],

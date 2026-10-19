@@ -5,7 +5,7 @@
  * Datoer er lagret som Oslo-veggklokke i UTC-feltene (se lib/booking/policy.ts),
  * derfor formateres de med timeZone "UTC".
  */
-import { avsnitt, boks, epostSkall, esc, kr, faktaRader, EPOST_LYS, EPOST_MORK, type FaktaRad } from "./precision-epost";
+import { avsnitt, boks, epostSkall, esc, kr, faktaRader, kortDag, EPOST_LYS, EPOST_MORK, type FaktaRad } from "./precision-epost";
 
 export type BekreftelseInput = {
   type: "gjest" | "app";
@@ -93,6 +93,12 @@ export function byggBekreftelse(i: BekreftelseInput): { subject: string; html: s
     html: epostSkall({
       dark: i.natt,
       title: "Timen er bekreftet",
+      merke: i.prisOre && !i.betaltAv ? "Bekreftet og betalt" : "Bekreftet",
+      tidskort: {
+        dag: kortDag(i.start, "utc"),
+        tid,
+        linjer: [`${i.tjeneste} ${i.varighetMin} min${i.coach ? ` med ${i.coach}` : ""}`, i.sted],
+      },
       pre: "Timen er bekreftet. Legg den i kalenderen.",
       body:
         (i.introHtml ?? avsnitt(`Hei${i.fornavn ? ` ${esc(i.fornavn)}` : ""}. Vi gleder oss til å se deg.`, c)) +

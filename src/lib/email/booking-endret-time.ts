@@ -14,6 +14,7 @@ import {
   epostSkall,
   esc,
   faktaRader,
+  kortDag,
   kr,
 } from "@/lib/email/precision-epost";
 
@@ -140,6 +141,12 @@ export function byggEndretTimeEpost(input: EndretTimeInput): { subject: string; 
   const html = epostSkall({
     pre: `Timen er flyttet til ${dag(input.startAt, false)} kl. ${kl(input.startAt)}.`,
     title: "Timen er flyttet",
+    tidskort: {
+      gammel: `Før: ${kortDag(input.oldStartAt, "local")} kl. ${kl(input.oldStartAt)}`,
+      dag: kortDag(input.startAt, "local"),
+      tid: tidRom(input.startAt, input.endAt),
+      linjer: [`${input.tjenesteNavn} ${input.varighetMin} min${input.coachNavn ? ` med ${input.coachNavn}` : ""}`, input.stedNavn],
+    },
     body,
     button: [
       "Legg ny tid i kalender",
