@@ -1,8 +1,7 @@
-// FO05Deling — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
+// FO05Deling — Precision Athletics (FO05Deling). Data og handlinger er beholdt.
 /**
- * TN-12 Samtykke og deling (foreldrevisning) — designfasit
- * designsystem/team-norway/templates/tn-samtykke/ er tegnet nettopp i denne
- * visningen («Marit Hovden · foresatt for Emma (16)»). Se TnSamtykkeSide.tsx.
+ * FO-05 Deling (foreldrevisning). Fasit: docs/design-system/utkast-flater/forelder.html,
+ * mal «deling». Visningen er FO05Deling; samtykkereglene er de samme som i TnSamtykkeSide.
  */
 
 import { notFound } from "next/navigation";
@@ -11,8 +10,9 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { grupperMedEksterneLesereForSpiller, hentDelingsStatus } from "@/lib/deling/samtykke";
 import { ForelderSkall } from "@/components/precision/ForelderSkall";
-import { InnstillingerHode } from "@/components/portal/v2/InnstillingerHode";
-import { TnSamtykkeSide, type TnOrganisasjon } from "@/components/portal/v2/TnSamtykkeSide";
+import { ChevronLeft } from "lucide-react";
+import { FO05Deling, type FO05Organisasjon } from "@/components/forelder/FO05Deling";
+import "@/styles/flater-ny-forelder-booking.css";
 import { settDelingsSamtykkeForBarn } from "@/app/forelder/samtykke/actions";
 import { hentWangTestdeling } from "@/lib/portal-tester/wang-resultat-tilgang";
 import { WangTestforesporsel } from "@/components/portal/precision/WangTestforesporsel";
@@ -36,7 +36,7 @@ export default async function ForelderDelingPage({ params }: { params: Promise<{
   const status = await hentDelingsStatus(childId, grupper.map((g) => g.id));
   const kart = new Map(status.map((s) => [s.gruppeId, s]));
 
-  const organisasjoner: TnOrganisasjon[] = grupper.map((g) => ({
+  const organisasjoner: FO05Organisasjon[] = grupper.map((g) => ({
     gruppeId: g.id,
     navn: g.name,
     testerOgResultater: (kart.get(g.id)?.testResultater ?? false) && (kart.get(g.id)?.stats ?? false),
@@ -48,19 +48,34 @@ export default async function ForelderDelingPage({ params }: { params: Promise<{
     return settDelingsSamtykkeForBarn(childId, scope, gruppeId, gitt);
   }
 
+  const fornavn = barn.name.split(" ")[0] ?? barn.name;
+
   return (
-        <ForelderSkall>
+    <ForelderSkall>
       <div className="pa-side">
-      <div style={{ maxWidth: 720, margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
-        <InnstillingerHode tittel={`Hvem ser ${barn.name.split(" ")[0]}s data`} undertekst="Samtykke og deling" tilbakeHref="/forelder/samtykke" />
-        <Link href={`/portal/meg/deling?barn=${encodeURIComponent(childId)}`} style={{ minHeight: 44, display: "inline-flex", alignItems: "center" }}>Navngitt trenerdeling for {barn.name.split(" ")[0]}</Link>
-        <TnSamtykkeSide organisasjoner={organisasjoner} settSamtykke={settSamtykke} krevesForesatt={barn.requiresGuardianConsent} modus="foresatt" />
-        {wangTestdeling.map((d) => <WangTestforesporsel key={d.gruppeId} {...d} modus={{ type: "foresatt", childId, barnNavn: barn.name }} />)}
-        {wangPlandeling.map((d) => (
-          <WangTestforesporsel key={`plan-${d.gruppeId}`} {...d} modus={{ type: "foresatt", childId, barnNavn: barn.name }} omfang="TRENINGSPLAN" />
-        ))}
-      </div>
+        <div className="fob">
+          <Link href="/forelder/samtykke" className="fob-tilbake"><ChevronLeft aria-hidden />Samtykke</Link>
+          <header className="fob-hode">
+            <p className="fob-kicker">Samtykke og deling</p>
+            <h1>Hvem ser {fornavn}s data</h1>
+            {barn.requiresGuardianConsent ? (
+              <p>{fornavn} er under 16 år. Deling starter først når du har godkjent den.</p>
+            ) : null}
+          </header>
+          <div className="fob-kort">
+            <div className="fob-org">
+              <strong>Navngitte trenere</strong>
+            </div>
+            <p className="fob-note">Trenere {fornavn} har sendt delingslenke til. En trener ser plan, økter, runder, tester, målsetninger, helse og meldinger, og kan bare foreslå endringer.</p>
+            <Link href={`/portal/meg/deling?barn=${encodeURIComponent(childId)}`} className="fob-lenke">Navngitt trenerdeling for {fornavn}</Link>
           </div>
+          <FO05Deling organisasjoner={organisasjoner} settSamtykke={settSamtykke} barnFornavn={fornavn} />
+          {wangTestdeling.map((d) => <WangTestforesporsel key={d.gruppeId} {...d} modus={{ type: "foresatt", childId, barnNavn: barn.name }} />)}
+          {wangPlandeling.map((d) => (
+            <WangTestforesporsel key={`plan-${d.gruppeId}`} {...d} modus={{ type: "foresatt", childId, barnNavn: barn.name }} omfang="TRENINGSPLAN" />
+          ))}
+        </div>
+      </div>
     </ForelderSkall>
   );
 }

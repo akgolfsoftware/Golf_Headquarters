@@ -1,16 +1,15 @@
 "use client";
 
 /**
- * Ny/endre turnering (kort skjema, brukt fra listetopp + detaljsidens
- * «Endre»-knapp) — v2. Logikk bevart 1:1 fra legacy tournament-form.tsx —
- * kun visuelt portert til TurneringModal + skjema.tsx-primitiver.
+ * Endre (eller opprette) turnering i et ark — nytt design (19.10.2026).
+ * Vises inni .agn-s på turneringssiden. Samme server-handlinger som før
+ * (createTournament, updateTournament, deleteTournament). Sletting bekreftes
+ * i arket med rust knapp.
  */
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Inndata, Velger, TekstOmraade } from "@/components/v2/skjema";
-import { TurneringModal, ModalFeil, ModalFooter, TekstTrigger } from "@/components/admin/v2/turnering-ui";
-import { Knapp } from "@/components/v2";
+import { Knapp, Varsel } from "@/components/admin/agencyos-ny/ny";
 import { createTournament, updateTournament, deleteTournament } from "./actions";
 
 type Course = { id: string; name: string };
@@ -30,6 +29,7 @@ type Props = {
 };
 
 const FORMATER = ["STROKE", "MATCH", "STABLEFORD", "OTHER"];
+const RAD = { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12 } as const;
 
 function toInputDate(d: Date | null): string {
   if (!d) return "";
@@ -39,6 +39,7 @@ function toInputDate(d: Date | null): string {
 export function TournamentForm({ initial, courses, triggerLabel }: Props) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [bekreftSlett, setBekreftSlett] = useState(false);
   const [pending, startTransition] = useTransition();
   const [slettPending, startSlettTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -50,9 +51,10 @@ export function TournamentForm({ initial, courses, triggerLabel }: Props) {
   const [format, setFormat] = useState(initial?.format ?? "STROKE");
   const [notes, setNotes] = useState(initial?.notes ?? "");
 
-  function lagre() {
+  function lagre(e: React.FormEvent) {
+    e.preventDefault();
     if (!name.trim() || !startDate) {
-      setError("Navn og startdato er påkrevd.");
+      setError("Navn og startdato må fylles inn.");
       return;
     }
     if (endDate && endDate < startDate) {
@@ -62,24 +64,11 @@ export function TournamentForm({ initial, courses, triggerLabel }: Props) {
     setError(null);
     startTransition(async () => {
       try {
+        const data = { name, startDate, endDate: endDate || null, courseId: courseId || null, format, notes: notes || null };
         if (initial) {
-          await updateTournament(initial.id, {
-            name,
-            startDate,
-            endDate: endDate || null,
-            courseId: courseId || null,
-            format,
-            notes: notes || null,
-          });
+          await updateTournament(initial.id, data);
         } else {
-          const id = await createTournament({
-            name,
-            startDate,
-            endDate: endDate || null,
-            courseId: courseId || null,
-            format,
-            notes: notes || null,
-          });
+          const id = await createTournament(data);
           router.push(`/admin/tournaments/${id}`);
         }
         setOpen(false);
@@ -92,7 +81,6 @@ export function TournamentForm({ initial, courses, triggerLabel }: Props) {
 
   function slett() {
     if (!initial) return;
-    if (!confirm(`Slett turneringen «${initial.name}»?`)) return;
     startSlettTransition(async () => {
       try {
         await deleteTournament(initial.id);
@@ -102,44 +90,56 @@ export function TournamentForm({ initial, courses, triggerLabel }: Props) {
     });
   }
 
+  const lukk = () => { if (!pending) { setOpen(false); setBekreftSlett(false); } };
+
   return (
     <>
-      {initial ? (
-        <TekstTrigger onClick={() => setOpen(true)}>{triggerLabel}</TekstTrigger>
-      ) : (
-        <Knapp onClick={() => setOpen(true)}>{triggerLabel}</Knapp>
-      )}
+      <Knapp variant={initial ? "sek" : "pri"} onClick={() => setOpen(true)}>{triggerLabel}</Knapp>
 
       {open && (
-        <TurneringModal title={initial ? "Endre turnering" : "Ny turnering"} onLukk={() => (pending ? undefined : setOpen(false))} busy={pending}>
-          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            <Inndata label="Navn" value={name} onChange={setName} placeholder="Klubbmesterskap 2026" />
-            <div className="grid grid-cols-2" style={{ gap: 14 }}>
-              <Inndata label="Startdato" type="date" value={startDate} onChange={setStartDate} />
-              <Inndata label="Sluttdato (valgfri)" type="date" value={endDate} onChange={setEndDate} />
+        <div className="ark-lag" role="dialog" aria-modal="true" aria-labelledby="turnering-ark-tittel" onClick={lukk}>
+          <form className="ark" onClick={(e) => e.stopPropagation()} onSubmit={lagre}>
+            <div className="ark-topp"><h2 id="turnering-ark-tittel">{initial ? "Endre turnering" : "Ny turnering"}</h2>
+              <Knapp variant="spok" onClick={lukk}>Lukk</Knapp></div>
+            <label className="felt"><span className="etikett">Navn</span><input value={name} onChange={(e) => setName(e.target.value)} placeholder="Klubbmesterskap 2026" /></label>
+            <div style={RAD}>
+              <label className="felt"><span className="etikett">Startdato</span><input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} /></label>
+              <label className="felt"><span className="etikett">Sluttdato (valgfritt)</span><input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} /></label>
             </div>
-            <div className="grid grid-cols-2" style={{ gap: 14 }}>
-              <Velger
-                label="Bane"
-                value={courseId}
-                onChange={setCourseId}
-                options={[{ value: "", label: "— Ingen —" }, ...courses.map((c) => ({ value: c.id, label: c.name }))]}
-              />
-              <Velger label="Format" value={format} onChange={setFormat} options={FORMATER.map((f) => ({ value: f, label: f }))} />
+            <div style={RAD}>
+              <label className="felt"><span className="etikett">Bane</span>
+                <select value={courseId} onChange={(e) => setCourseId(e.target.value)}>
+                  <option value="">Ingen</option>
+                  {courses.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+                </select></label>
+              <label className="felt"><span className="etikett">Format</span>
+                <select value={format} onChange={(e) => setFormat(e.target.value)}>
+                  {FORMATER.map((f) => <option key={f} value={f}>{f}</option>)}
+                </select></label>
             </div>
-            <TekstOmraade label="Notater (valgfri)" value={notes} onChange={setNotes} rows={3} placeholder="Intern info, regler, premier…" />
-          </div>
+            <label className="felt"><span className="etikett">Notater (valgfritt)</span>
+              <textarea rows={3} value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Regler, premier, intern info" style={{ resize: "vertical" }} /></label>
 
-          {error && <ModalFeil>{error}</ModalFeil>}
+            {error && <Varsel tone="advarsel" tittel="Ikke lagret">{error}</Varsel>}
 
-          <ModalFooter
-            onAvbryt={() => setOpen(false)}
-            onSlett={initial ? slett : undefined}
-            onLagre={lagre}
-            busy={pending}
-            slettBusy={slettPending}
-          />
-        </TurneringModal>
+            {bekreftSlett && initial ? (
+              <div className="kort dempet" style={{ display: "grid", gap: 10 }}>
+                <b className="undertittel">Slette «{initial.name}»?</b>
+                <p className="forklar">Turneringen fjernes. Det kan ikke angres.</p>
+                <div className="knapper">
+                  <Knapp variant="rust" disabled={slettPending} onClick={slett}>{slettPending ? "Sletter …" : "Slett turneringen"}</Knapp>
+                  <Knapp variant="spok" onClick={() => setBekreftSlett(false)}>Avbryt</Knapp>
+                </div>
+              </div>
+            ) : (
+              <div className="knapper">
+                <Knapp type="submit" disabled={pending}>{pending ? "Lagrer …" : "Lagre"}</Knapp>
+                <Knapp variant="spok" onClick={lukk}>Avbryt</Knapp>
+                {initial && <Knapp variant="spok" onClick={() => setBekreftSlett(true)} style={{ marginLeft: "auto" }}>Slett</Knapp>}
+              </div>
+            )}
+          </form>
+        </div>
       )}
     </>
   );

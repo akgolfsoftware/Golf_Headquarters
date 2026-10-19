@@ -16,7 +16,9 @@ export type BookingPolicyActor =
   | { kind: "player"; userId: string }
   | { kind: "parent"; userId: string }
   | { kind: "coach"; userId: string }
-  | { kind: "admin"; userId: string };
+  | { kind: "admin"; userId: string }
+  /** Gjest uten konto via signert e-postlenke (`gjest-lenke.ts`). Gjelder bare denne bookingen. */
+  | { kind: "guest"; bookingId: string };
 
 export type BookingPolicySnapshot = {
   id: string;
@@ -84,8 +86,9 @@ export function isStaffForBooking(
 
 export function canActOnBooking(
   actor: BookingPolicyActor,
-  booking: Pick<BookingPolicySnapshot, "userId" | "coachId" | "serviceCoachUserId">,
+  booking: Pick<BookingPolicySnapshot, "id" | "userId" | "coachId" | "serviceCoachUserId">,
 ): boolean {
+  if (actor.kind === "guest") return booking.userId === null && booking.id === actor.bookingId;
   if (booking.userId && booking.userId === actor.userId) return true;
   return isStaffForBooking(actor, booking);
 }

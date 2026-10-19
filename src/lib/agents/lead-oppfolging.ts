@@ -14,11 +14,14 @@
 
 import { prisma } from "@/lib/prisma";
 import { runAgent } from "./agent-runner";
+import { lagTakkOgOppfolgingUtkast } from "@/lib/booking/takk-utkast";
 
 const AGENT_NAME = "lead-oppfolging";
 const KILDE = "provetime-booking";
 
 type LeadOppfolgingResultat = {
+  /** EP-05 og EP-06 lagt som utkast i Innboks (ingenting sendt). */
+  utkast?: { takk: number; oppfolging: number; hoppet: number };
   kandidater: number;
   nyeLeads: number;
   hoppet: number;
@@ -30,6 +33,7 @@ export async function runLeadOppfolging(): Promise<LeadOppfolgingResultat> {
   let resultat!: LeadOppfolgingResultat;
   await runAgent(AGENT_NAME, null, async () => {
     resultat = await leadOppfolgingKjerne();
+    resultat.utkast = await lagTakkOgOppfolgingUtkast();
     return { output: resultat };
   });
   return resultat;

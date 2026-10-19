@@ -24,10 +24,10 @@ test("seks faner i utkastets rekkefølge, uke som standard", () => {
   assert.equal(KALENDER_STANDARDFANE, "uke");
 });
 
-test("stall-fanen dokumenterer adressen den erstattet", () => {
+test("stall- og tilgjengelighetsfanen dokumenterer adressen de erstattet", () => {
   assert.deepEqual(
     KALENDER_FANER.map((f) => f.gammelHref),
-    [null, null, null, null, "/admin/stall/dag", null],
+    [null, null, null, null, "/admin/stall/dag", "/admin/availability"],
   );
 });
 

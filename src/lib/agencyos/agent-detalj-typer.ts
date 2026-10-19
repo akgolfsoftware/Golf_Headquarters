@@ -1,14 +1,7 @@
 /**
- * Typer for agent-detalj (/admin/agents/[agentId]).
- *
- * Visningen selv er Train-lock AO-04 Run-detalj
- * (`@/components/admin/v2/agenticos/AdminAgenticosRunDetalj`, T12 visuell).
- * Den gamle Paper-porten (`data-paper-slug="agencyos-agent-detalj"`,
- * fasit `designsystem/paper/fase2/agencyos/agencyos-agent-detalj.html`) er
- * fjernet 29.08.2026 — Paper er historikk, aldri bygg-fasit
- * (CLAUDE.md invariant 2), og komponenten hadde null importører igjen.
- * Typene her lever videre fordi AdminAgenticosRunDetalj + siden bygger
- * `AgentDetaljData` fra Prisma-data og sender den rett inn i AO-04.
+ * Typer for agent-detalj (/admin/agents/[agentId]). Siden bygger
+ * `AgentDetaljData` fra Prisma og sender den til AG19AgentDetalj (nytt design,
+ * 19.10.2026). Flyttet hit fra components/admin/v2/AdminAgentDetaljV2.
  */
 
 export type AgentDetaljTilstand = "aktiv" | "feilet" | "manuell" | "ingen";

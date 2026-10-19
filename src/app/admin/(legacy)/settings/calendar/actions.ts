@@ -37,6 +37,7 @@ export async function disconnectGoogleCalendar() {
   });
 
   revalidatePath("/admin/settings/calendar");
+  revalidatePath("/admin/kalender");
 }
 
 const oppdaterInputSchema = z.array(
@@ -124,6 +125,7 @@ export async function oppdaterSubscriptions(input: OppdaterSubscriptionInput) {
   });
 
   revalidatePath("/admin/settings/calendar");
+  revalidatePath("/admin/kalender");
   return { ok: true as const, oppdatert };
 }
 
@@ -149,6 +151,7 @@ export async function refreshCalendarList() {
       metadata: { found: result.found, upserted: result.upserted, skipped: result.skipped },
     });
     revalidatePath("/admin/settings/calendar");
+    revalidatePath("/admin/kalender");
     return { ok: true as const, ...result };
   } catch (err) {
     const melding = err instanceof Error ? err.message : "ukjent";

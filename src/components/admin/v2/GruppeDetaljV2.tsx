@@ -10,72 +10,8 @@ import { TL } from "@/lib/v2/train-lock";
 import { TlBadge, TlKort, TlKnapp, TlRad, TlTilbake, TlTittel, TlTomTilstand } from "@/components/admin/v2/oppsett/tl-kit";
 import { GruppeFaner } from "./GruppeFaner";
 
-export type SamlingRad = {
-  id: string;
-  title: string;
-  startAt: string;
-  location: string | null;
-  recurring: string | null;
-  maxParticipants: number | null;
-};
-
-export type MedlemRad = {
-  id: string;
-  userId: string;
-  navn: string;
-  avatarUrl: string | null;
-  homeClub: string | null;
-  erHjelpetrener: boolean;
-  erTrener: boolean;
-  erPro: boolean;
-  schoolYear: string | null;
-  hcp: number | null;
-  runder90d: number;
-  planNavn: string | null;
-  planAndel: number;
-  planDone: number;
-  planTotal: number;
-};
-
-export type GruppeDetaljV2Data = {
-  id: string;
-  navn: string;
-  type: string;
-  antallMedlemmer: number;
-  antallHjelpetrenere: number;
-  snittHcp: string;
-  totalRunder: number;
-  proAndel: number;
-  antallSamlinger: number;
-  coachNavn: string | null;
-  coachEpost: string | null;
-  nesteSamling: (SamlingRad & { description: string | null }) | null;
-  kommendeSamlinger: SamlingRad[];
-  medlemmer: MedlemRad[];
-  trinnValg: string[];
-  aktivtTrinn: string | null;
-  kandidater: { id: string; name: string; hcp: number | null; homeClub: string | null }[];
-  trenerKandidater: { id: string; name: string; hcp: number | null; homeClub: string | null }[];
-};
-
-export type GruppeDetaljV2Actions = {
-  StartOktButton: React.ComponentType;
-  LeggTilSpillerButton: React.ComponentType<{
-    groupId: string;
-    kandidater: { id: string; name: string; hcp: number | null; homeClub: string | null }[];
-    trenerKandidater: { id: string; name: string; hcp: number | null; homeClub: string | null }[];
-  }>;
-  FjernMedlemButton: React.ComponentType<{ groupId: string; userId: string; navn: string }>;
-  SeAlleTimePlanButton: React.ComponentType<{ groupId: string }>;
-  DetaljerButton: React.ComponentType<{ groupId: string; scheduleId: string }>;
-  AapneButton: React.ComponentType<{ groupId: string; scheduleId: string }>;
-  SlettGruppeButton: React.ComponentType<{
-    groupId: string;
-    navn: string;
-    antallMedlemmer: number;
-    antallSamlinger: number;
-  }>;
-};
+import type { SamlingRad, MedlemRad, GruppeDetaljV2Data, GruppeDetaljV2Actions } from "@/lib/admin/grupper/typer";
+export type { SamlingRad, MedlemRad, GruppeDetaljV2Data, GruppeDetaljV2Actions };
 
 const NB_DATE = new Intl.DateTimeFormat("nb-NO", {
   timeZone: "Europe/Oslo",

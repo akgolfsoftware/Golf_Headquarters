@@ -1,7 +1,7 @@
 /**
- * AgencyOS Gruppe-timeplan — v2. Ekte data fra prisma.groupSchedule (ingen
- * fabrikering). Server actions (opprettGruppeTrening/dupliserGruppeTime)
- * bevart 1:1 fra legacy via ../actions.
+ * AgencyOS Gruppa › Faste tider (AG16Timeplan, nytt design 19.10.2026). Ekte data
+ * fra prisma.groupSchedule (ingen fabrikering). Server actions
+ * (opprettGruppeTrening/dupliserGruppeTime) bevart 1:1 via ../actions.
  */
 
 import { notFound } from "next/navigation";
@@ -12,7 +12,7 @@ import { prisma } from "@/lib/prisma";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { Topp } from "@/components/admin/agencyos-ny/ny";
 import { GruppeFanerNy } from "@/components/admin/precision/AG16Gruppe";
-import { GruppeTimeplanV2, type GruppeTimeplanV2Data } from "@/components/admin/v2/GruppeTimeplanV2";
+import { AG16Timeplan, type GruppeTimeplanData } from "@/components/admin/precision/AG16Timeplan";
 import { opprettGruppeTrening, dupliserGruppeTime } from "../actions";
 import { osloLokalTilDato } from "@/lib/admin/gruppe-tid";
 
@@ -64,7 +64,7 @@ export default async function GruppeTimeplanPage({
     maxParticipants: s.maxParticipants,
   });
 
-  const data: GruppeTimeplanV2Data = {
+  const data: GruppeTimeplanData = {
     groupId: gruppe.id,
     navn: gruppe.name,
     totaltAntall: gruppe.schedules.length,
@@ -112,10 +112,10 @@ export default async function GruppeTimeplanPage({
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
       <div className="agn-s">
-        <Topp tilbake={{ href: `/admin/grupper/${id}`, tekst: "Gruppa" }} dato="Gruppa · faste tider" tittel="Ny gruppetrening"
-          ingress="En fast økt på gruppa. Medlemmene får den i planen." />
+        <Topp tilbake={{ href: `/admin/grupper/${id}`, tekst: "Gruppa" }} dato={`${gruppe.name} · faste tider`} tittel="Faste tider"
+          ingress="Faste økter og samlinger for gruppa. Medlemmene får dem i planen." />
         <GruppeFanerNy groupId={id} aktiv="tider" />
-        <GruppeTimeplanV2 data={data} onOpprett={opprettAction} onDupliser={dupliserAction} />
+        <AG16Timeplan data={data} onOpprett={opprettAction} onDupliser={dupliserAction} />
       </div>
     </AgencyOSSkall>
   );

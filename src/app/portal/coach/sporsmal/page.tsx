@@ -3,14 +3,13 @@
 // over spillerspørsmål (egne spillere + åpen kø), slik ruten var før PR #1158.
 import { redirect } from "next/navigation";
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
-import { TilbakeLenke } from "@/components/v2";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { sporsmalListeFilter } from "@/lib/portal-okt/coach-sporsmal-tilgang";
 import { prisma } from "@/lib/prisma";
 import { getPH21Data } from "@/lib/portal-coach/ph21-queries";
 import { PH21Innboks } from "@/components/portal/precision/PH21Innboks";
-import { CoachQAV2, type CoachSporsmal } from "@/components/portal/v2/CoachQAV2";
+import { PH21CoachSporsmal, type PH21CoachSporsmalRad } from "@/components/portal/precision/PH21CoachSporsmal";
 
 export const dynamic = "force-dynamic";
 
@@ -26,7 +25,7 @@ function formatDatoTid(d: Date): string {
   });
 }
 
-async function hentCoachSporsmal(user: PortalBruker): Promise<CoachSporsmal[]> {
+async function hentCoachSporsmal(user: PortalBruker): Promise<PH21CoachSporsmalRad[]> {
   const egneSpillere =
     user.role === "ADMIN"
       ? []
@@ -72,10 +71,7 @@ export default async function CoachSporsmalPage() {
     const sporsmal = await hentCoachSporsmal(user);
     return (
       <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
-        <div className="pa-side">
-          <TilbakeLenke href="/portal/coach">Coach</TilbakeLenke>
-          <CoachQAV2 data={{ sporsmal }} />
-        </div>
+        <PH21CoachSporsmal sporsmal={sporsmal} />
       </PlayerHQSkall>
     );
   }

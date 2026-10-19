@@ -5,7 +5,7 @@
  * Mangler et tall, blir det «—».
  */
 import type { CockpitAxis, CockpitData } from "@/components/admin/cockpit/agency-cockpit";
-import type { AdminGodkjenningV2Row } from "@/components/admin/v2/AdminGodkjenningerV2";
+import type { AdminGodkjenningV2Row } from "@/lib/admin/ko/typer";
 import type { CockpitTillegg } from "./cockpit-tillegg-regler";
 
 /** Kalenderstripen går fra 05:00 til 22:00 (beslutninger.md §SKJERMENE … RUNDE 8). */

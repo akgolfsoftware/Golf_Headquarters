@@ -1,4 +1,4 @@
-// FO03BookingBekreftet — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
+// FO03BookingBekreftet — Precision Athletics (FO03Bekreftet). Data og handlinger er beholdt.
 /**
  * Foreldreportal · Booking bekreftet (STEG 9.8). Speiler
  * /portal/booking/bekreftet — eneste forskjell er eierskaps-sjekken: her må
@@ -11,7 +11,8 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentBarnForForelder } from "@/lib/forelder";
 import { prisma } from "@/lib/prisma";
 import { ForelderSkall } from "@/components/precision/ForelderSkall";
-import { BookingBekreftetV2 } from "@/components/portal/v2/BookingBekreftetV2";
+import { FO03Bekreftet } from "@/components/forelder/FO03Bekreftet";
+import { AVBESTILLING_FRIST_TIMER } from "@/lib/booking/policy";
 
 export const dynamic = "force-dynamic";
 
@@ -62,33 +63,36 @@ export default async function ForelderBekreftetPage({ searchParams }: Props) {
       })
     : null;
 
-  const dato = booking.startAt.toLocaleDateString("nb-NO", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    timeZone: "Europe/Oslo",
-  });
+  const oslo = (o: Intl.DateTimeFormatOptions) =>
+    booking.startAt.toLocaleDateString("nb-NO", { ...o, timeZone: "Europe/Oslo" });
+  const datoLang = oslo({ weekday: "long", day: "numeric", month: "long" });
   const klokkeslett = booking.startAt.toLocaleTimeString("nb-NO", {
     hour: "2-digit",
     minute: "2-digit",
     timeZone: "Europe/Oslo",
   });
+  const barnNavn = barn.find((b) => b.child.id === booking.userId)?.child.name ?? null;
 
   return (
-        <ForelderSkall>
+    <ForelderSkall>
       <div className="pa-side">
-      <BookingBekreftetV2
-        data={{
-          linje: `${booking.serviceType.name} · ${dato} · ${klokkeslett}`,
-          coachNavn: coach?.name ?? null,
-          sted: booking.location.name,
-          varighetMin: booking.serviceType.durationMin,
-          kalenderUrl: googleKalenderUrl(booking),
-          mineBookingerHref: "/forelder/bookinger",
-          merkelapp: "Foreldreportal",
-        }}
-      />
-          </div>
+        <FO03Bekreftet
+          data={{
+            barnFornavn: barnNavn?.split(" ")[0] ?? null,
+            tjeneste: booking.serviceType.name,
+            ukedagKort: oslo({ weekday: "short" }).replace(".", ""),
+            dagTall: oslo({ day: "numeric" }).replace(".", ""),
+            maanedKort: oslo({ month: "short" }).replace(".", ""),
+            datoLang: datoLang.charAt(0).toUpperCase() + datoLang.slice(1),
+            klokkeslett,
+            coachNavn: coach?.name ?? null,
+            sted: booking.location.name,
+            varighetMin: booking.serviceType.durationMin,
+            kalenderUrl: googleKalenderUrl(booking),
+            avbestillingTimer: AVBESTILLING_FRIST_TIMER,
+          }}
+        />
+      </div>
     </ForelderSkall>
   );
 }

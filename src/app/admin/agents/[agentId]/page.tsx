@@ -1,12 +1,10 @@
 /**
- * AgencyOS Agent-detalj — Train-lock AO-04 Run-detalj (T12 visuell).
- * Auth/Prisma-loader bevart; visning er AdminAgenticosRunDetalj.
- * AgentRunPanel (manuell kjøring for plan-revisjon/peaking) gjenbrukes.
+ * AgencyOS Agent-detalj i nytt design (AG19AgentDetalj, 19.10.2026).
+ * Auth/Prisma-loader bevart; visningen erstatter AgenticosRamme +
+ * AdminAgenticosRunDetalj (Train-lock AO-04). AgentRunPanel (manuell kjøring
+ * for plan-revisjon/peaking) gjenbrukes.
  *
- * FeedbackForm (tommel opp/ned per kjøring) er IKKE lenger montert her —
- * fasiten har ingen slik affordance, og Paper vinner alltid ved konflikt
- * (CLAUDE.md invariant 2). Selve komponenten og `gisFeedback`-actionen er
- * urørt i tilfelle den tas i bruk igjen et annet sted.
+ * FeedbackForm (tommel opp/ned per kjøring) er ikke montert her, som før.
  */
 
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
@@ -15,15 +13,16 @@ import { requireCapability } from "@/lib/auth/requireCapability";
 import { Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
 import { AGENT_INFO, agentNavnFor } from "@/lib/agencyos/agent-registry";
-import { AgenticosRamme } from "@/components/admin/v2/agenticos/AgenticosRamme";
-import { AdminAgenticosRunDetalj } from "@/components/admin/v2/agenticos/AdminAgenticosRunDetalj";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { Topp } from "@/components/admin/agencyos-ny/ny";
+import { AG19AgentDetalj } from "@/components/admin/precision/AG19AgentDetalj";
 import {
   type AgentDetaljData,
   type AgentDetaljKjoring,
   type AgentDetaljForslag,
   type AgentDetaljSteg,
   type AgentDetaljTilstand,
-} from "@/components/admin/v2/AdminAgentDetaljV2";
+} from "@/lib/agencyos/agent-detalj-typer";
 
 const ACTION_LABEL: Record<string, string> = {
   PYRAMID_ADJUST: "Juster pyramide",
@@ -325,8 +324,11 @@ export default async function AgentDetaljPage({
   };
 
   return (
-    <AgenticosRamme user={user}>
-      <AdminAgenticosRunDetalj data={data} />
-    </AgenticosRamme>
+    <AgencyOSSkall navn={user.name ?? "Coach"}>
+      <div className="agn-s">
+        <Topp tilbake={{ href: "/admin/jarvis", tekst: "Jarvis" }} dato={`Jarvis · agent · ${data.trigger}`} tittel={data.navn} />
+        <AG19AgentDetalj data={data} />
+      </div>
+    </AgencyOSSkall>
   );
 }

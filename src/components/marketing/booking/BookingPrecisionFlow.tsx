@@ -356,7 +356,7 @@ export function BookingPrecisionFlow({
                 Dine opplysninger
               </h1>
               <p className="font-sans text-xs text-black/60 mt-1">
-                Vi sender bekreftelse og forberedelser på e-post og SMS
+                Vi sender bekreftelse og forberedelser på e-post
               </p>
             </div>
             <button
