@@ -6,10 +6,11 @@ export const sti = "/booking";
 const base: BK01Props = {
   lokasjon: "Gamle Fredrikstad GK",
   tjenester: [
-    { slug: "pt60", navn: "Privattime", coachNavn: null, pris: 950, varighetMin: 60, sted: null, beskrivelse: "Én spiller, én coach. Studio 1 eller bane." },
-    { slug: "pt30", navn: "Privattime", coachNavn: null, pris: 550, varighetMin: 30, sted: null, beskrivelse: "Kort økt med ett fokus." },
-    { slug: "bane", navn: "Banecoaching 9 hull med et langt navn som må brytes riktig", coachNavn: "Anders", pris: 1900, varighetMin: 150, sted: null, beskrivelse: "Strategi og slagvalg på banen." },
-    { slug: "flex", navn: "Flex 20 min", coachNavn: null, pris: 350, varighetMin: 20, sted: null, beskrivelse: null },
+    { slug: "pt60", navn: "Privattime", coachNavn: null, pris: 950, varighetMin: 60, sted: null, duo: false, beskrivelse: "Én spiller, én coach. Studio 1 eller bane." },
+    { slug: "pt30", navn: "Privattime", coachNavn: null, pris: 550, varighetMin: 30, sted: null, duo: false, beskrivelse: "Kort økt med ett fokus." },
+    { slug: "bane", navn: "Banecoaching 9 hull med et langt navn som må brytes riktig", coachNavn: "Anders", pris: 1900, varighetMin: 150, sted: null, duo: false, beskrivelse: "Strategi og slagvalg på banen." },
+    { slug: "flex", navn: "Flex 20 min", coachNavn: null, pris: 350, varighetMin: 20, sted: null, duo: false, beskrivelse: null },
+    { slug: "duo50", navn: "Flex Duo 50 min", coachNavn: null, pris: 1700, varighetMin: 50, sted: null, duo: true, beskrivelse: "To spillere, én coach. Den som booker betaler." },
   ],
   abonnement: [{ slug: "perf", navn: "Performance", coachNavn: null, pris: 1490, beskrivelse: null }],
 };
@@ -29,6 +30,8 @@ Object.assign(tilstander, {
   deg: fra(2, { dag: "29.9", kl: "17:00", skjema: { navn: "Anders Kristiansen", epost: "demo@example.no", tlf: "911 22 110", barn: true, spiller: "Øyvind Rohjan" } }),
   "deg-feil": fra(2, { dag: "29.9", kl: "17:00", feil: { navn: "Skriv fullt navn.", epost: "Skriv en gyldig e-postadresse. Kvitteringen sendes dit.", tlf: "Skriv et telefonnummer vi kan nå deg på." } }),
   betal: fra(3, { dag: "29.9", kl: "17:00" }),
+  "deg-duo": <BK01Booking {...base} forhandsvis={{ steg: 2, slug: "duo50", dager, dag: "29.9", kl: "17:00", skjema: { navn: "Anders Kristiansen", epost: "demo@example.no", tlf: "911 22 110", navn2: "Kari Nordmann med et langt etternavn", epost2: "deltaker2@example.no" } }} />,
+  "deg-duo-feil": <BK01Booking {...base} forhandsvis={{ steg: 2, slug: "duo50", dager, dag: "29.9", kl: "17:00", skjema: { navn: "Anders Kristiansen", epost: "demo@example.no", tlf: "911 22 110" }, feil: { navn2: "Skriv fullt navn på deltaker 2.", epost2: "Skriv en gyldig e-postadresse. Deltaker 2 får bekreftelsen dit." } }} />,
   laster: fra(1, { tilstand: "laster" }),
   feil: fra(1, { tilstand: "feil" }),
 });
