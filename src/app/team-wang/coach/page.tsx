@@ -1,4 +1,4 @@
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
@@ -21,6 +21,8 @@ import {
   hentWangSamtykkeStatus,
   hentWangTesterData,
 } from "@/app/team-wang/_data/wang-tester-data";
+import { hentWangOpptak } from "@/app/team-wang/_data/wang-opptak";
+import { opptakSkoleaar } from "@/app/team-wang/_data/wang-opptak-visning";
 import {
   hentWangElevdata,
   hentWangFireukerssjekk,
@@ -96,16 +98,14 @@ export default async function WangCoachPage({ searchParams }: WangCoachPageProps
       ? (params.omraade as WangOmraade)
       : "idag";
 
-  // Administrasjon er bare for sportssjef. Trener sendes tilbake til I dag.
-  if (aktivtOmraade === "admin" && !kanSeWangAdministrasjon(rolle)) {
-    redirect("/team-wang/coach?omraade=idag");
-  }
+  // Administrasjon er bare for sportssjef. Trener får «Denne siden er lukket» og ingen data herfra.
+  const erAdmin = aktivtOmraade === "admin" && kanSeWangAdministrasjon(rolle);
 
   // Testresultater og testsamtykke bare der de vises. Tilgangen går gjennom delingssamtykket.
-  const tester = ["tester", "elever", "admin"].includes(aktivtOmraade)
+  const tester = ["tester", "elever"].includes(aktivtOmraade) || erAdmin
     ? await hentWangTesterData(bruker, gruppeId)
     : undefined;
-  if (tester && aktivtOmraade === "admin") {
+  if (tester && erAdmin) {
     tester.samtykke = await hentWangSamtykkeStatus(
       live.elever.filter((e) => e.rolle === "PLAYER").map((e) => e.id),
       gruppeId,
@@ -122,6 +122,12 @@ export default async function WangCoachPage({ searchParams }: WangCoachPageProps
 
   // Invitasjoner og timeplanunntak bare for sportssjef (siden har alt sendt trener bort fra admin).
   const admin = aktivtOmraade === "admin" ? await hentWangAdminData(gruppeId) : undefined;
+
+  // Opptak og koordinering (kandidater er mindreårige) bare for sportssjef, bare på de to fanene.
+  const opptak =
+    erAdmin && (params.fane === "opptak" || params.fane === "skolene")
+      ? await hentWangOpptak(gruppeId, opptakSkoleaar(osloIdagIso()))
+      : undefined;
 
   // Data Golf bare for coach-rollen (kanSeDataGolf), aldri for elever.
   const dgSide = aktivtOmraade === "konkurranse" ? dgSideFraFane(params.fane) : null;
@@ -148,6 +154,7 @@ export default async function WangCoachPage({ searchParams }: WangCoachPageProps
       fireukerssjekk={fireukerssjekk}
       admin={admin}
       dataGolf={dataGolf}
+      opptak={opptak}
       data={byggWangTrenerData(live, osloIdagIso(), osloNaaTid())}
     />
   );

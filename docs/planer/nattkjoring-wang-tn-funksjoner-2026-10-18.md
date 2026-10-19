@@ -53,6 +53,11 @@ funksjoner uten data. Kilden er avviksfeltene i #1402, #1406 og #1411 og filhode
 - **W4 · Lenken gjelder i sju dager, for én e-postadresse, og kan brukes én gang.** Bare SHA-256 av lenken lagres. Grunn: som delingslenken (beslutninger 28.09).
 - **W4 · «Endre rolle», «Fjern tilgang» og «Flytt morgentreningen» er ikke med.** Grunn: utenfor W4; rollen endres aldri fra lenken.
 - **W4 · Tabellene `wang_trener_invitasjoner` og `wang_timeplan_unntak` fantes allerede i basen** (lesespørring 19.10, RLS på). Skriptet `scripts/add-wang-trenerinvitasjon-og-unntak-2026-10-18.ts` trengte ikke kjøres på nytt.
+- W3 · Ingen samlet poeng, vurderingspunkter eller notatfelt i Opptak · vurderingspunktene (D1) er ikke avgjort, og vurderinger av navngitte mindreårige lagres ikke før de er det. Lista sorteres med stjernemerkede først, så navn.
+- W3 · Status (Søkt, Prøvespill, Venteliste, Tatt opp, Ikke tatt opp) føres av sportssjef og merkes «underlag, ikke vedtak» · opptak er skolens beslutning; appen forbereder.
+- W3 · Koordineringen viser en kandidat for de andre skolene først når en skole har stjernemerket eller logget kontakt, og viser aldri status eller innhold · utkastets regel «aldri innhold, aldri tall».
+- W3 · Kontaktloggen fører bare sportssjefens egne kontakter · bare sportssjef har tilgang til flaten.
+- W3 · Tabellene (`scripts/add-wang-opptak-2026-10-18.ts`) fantes allerede i produksjonsbasen 19.10 med RLS, sjekket med lesespørring · skriptet ble ikke kjørt på nytt.
 
 ## 5. Morgenrapport
 

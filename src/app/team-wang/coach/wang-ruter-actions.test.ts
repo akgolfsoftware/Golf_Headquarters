@@ -107,6 +107,16 @@ mock.module("@/app/team-wang/_data/wang-tilgang", {
   },
 });
 
+let opptakKall: string[] = [];
+mock.module("@/app/team-wang/_data/wang-opptak", {
+  namedExports: {
+    hentWangOpptak: async (gruppeId: string) => {
+      opptakKall.push(gruppeId);
+      return { skoleaar: "2027/28", skoleNavn: "WANG", plasser: null, kandidater: [], koordinering: [] };
+    },
+  },
+});
+
 mock.module("@/app/team-wang/_data/hent-wang-gruppe", {
   namedExports: {
     hentWangGruppe: async () => {
@@ -280,17 +290,21 @@ async function skjermerPage() {
   return (await import("../skjermer/page")).default;
 }
 
-type KlientProps = { omraade: string; rolle: string; elever?: Array<{ id: string; navn: string }>; tester?: unknown; dataGolf?: unknown };
+type KlientProps = { omraade: string; rolle: string; elever?: Array<{ id: string; navn: string }>; tester?: unknown; dataGolf?: unknown; opptak?: unknown };
 function propsFra(element: unknown): KlientProps {
   return (element as { props: KlientProps }).props;
 }
 
-test("trener kan ikke åpne Administrasjon: sendes til I dag", async () => {
+test("trener får Administrasjon lukket: ingen opptak eller samtykke hentes", async () => {
   const side = await coachPage();
-  await assert.rejects(
-    side({ searchParams: Promise.resolve({ omraade: "admin" }) }),
-    /REDIRECT:\/team-wang\/coach\?omraade=idag/,
-  );
+  opptakKall = [];
+  testerKall = [];
+  const props = propsFra(await side({ searchParams: Promise.resolve({ omraade: "admin", fane: "opptak" }) }));
+  assert.equal(props.rolle, "Trener");
+  assert.equal(props.opptak, undefined);
+  assert.equal(props.tester, undefined);
+  assert.deepEqual(opptakKall, []);
+  assert.deepEqual(testerKall, []);
 });
 
 test("sportssjef (ADMIN) får Administrasjon og rollen Sportssjef fra serveren", async () => {
@@ -299,6 +313,11 @@ test("sportssjef (ADMIN) får Administrasjon og rollen Sportssjef fra serveren",
   const props = propsFra(await side({ searchParams: Promise.resolve({ omraade: "admin" }) }));
   assert.equal(props.omraade, "admin");
   assert.equal(props.rolle, "Sportssjef");
+  assert.equal(props.opptak, undefined, "opptaket hentes bare på fanene Opptak og Skolene");
+  opptakKall = [];
+  const opptak = propsFra(await side({ searchParams: Promise.resolve({ omraade: "admin", fane: "opptak" }) }));
+  assert.ok(opptak.opptak);
+  assert.deepEqual(opptakKall, ["wang-top-id"]);
 });
 
 test("rollen kan ikke velges via adressen: trener forblir Trener", async () => {

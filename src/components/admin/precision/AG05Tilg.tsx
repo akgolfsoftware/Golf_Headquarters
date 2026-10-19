@@ -4,12 +4,12 @@
  * AG-05 fane «Tilgjengelighet» (bookingplanen steg 3): coachen oppretter, endrer,
  * slår av og sletter vinduer, setter en hel uke på én gang og legger inn fridager,
  * uten å forlate AgencyOS. Google-synk og årsoversikten ligger fortsatt på
- * /admin/availability. Buffer per coach er ikke med (krever nytt felt i basen).
+ * /admin/availability. Coachens buffer mellom timer settes også her.
  */
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Knapp, KnappLenke, Pille, Seksjon, Tom, Varsel } from "@/components/admin/agencyos-ny/ny";
-import { leggTilFridag, lagreVindu, settHelUke, slettFridag, slettVindu, type VinduInput } from "@/app/admin/kalender/tilgjengelighet-actions";
+import { leggTilFridag, lagreVindu, settBuffer, settHelUke, slettFridag, slettVindu, type VinduInput } from "@/app/admin/kalender/tilgjengelighet-actions";
 import type { TilgData, TilgVindu } from "@/app/admin/kalender/tilg-data";
 import "@/styles/agencyos-ny-kalender.css";
 
@@ -89,6 +89,7 @@ export function AG05Tilg({ data }: { data: TilgData }) {
   const [skjema, setSkjema] = useState<Skjema | null>(null);
   const [uke, setUke] = useState({ dager: [0, 1, 2, 3, 4] as number[], startTime: "15:00", endTime: "19:00", locationId: "" });
   const [fridag, setFridag] = useState({ dato: "", grunn: "" });
+  const [buffer, setBuffer] = useState(String(data.bufferMin));
 
   const kjor = (fn: () => Promise<{ ok: true; opprettet?: number } | { ok: false; feil: string }>, melding: (r: { opprettet?: number }) => string, etter?: () => void) => {
     start(async () => {
@@ -213,6 +214,18 @@ export function AG05Tilg({ data }: { data: TilgData }) {
                 <Knapp variant="spok" disabled={pending} onClick={() => kjor(() => slettFridag(f.id), () => "Fridagen er fjernet.")}>Fjern</Knapp>
               </div>
             ))}</div>}
+      </Seksjon>
+
+      <Seksjon tittel="Buffer mellom timer" kilde="Gjelder i tillegg til tjenestens buffer; den største vinner">
+        <form className="kort" style={{ display: "grid", gap: 12 }} onSubmit={(e) => {
+          e.preventDefault();
+          const min = Number(buffer);
+          kjor(() => settBuffer(min), () => (min === 0 ? "Bufferen er slått av." : `Bufferen er ${min} minutter.`));
+        }}>
+          <label className="felt"><span className="etikett">Minutter (0–120)</span>
+            <input type="number" inputMode="numeric" min={0} max={120} step={5} required value={buffer} onChange={(e) => setBuffer(e.target.value)} /></label>
+          <div className="knapper"><Knapp type="submit" disabled={pending || buffer === ""}>{pending ? "Lagrer …" : "Lagre bufferen"}</Knapp></div>
+        </form>
       </Seksjon>
 
       <div className="knapper"><KnappLenke variant="spok" href="/admin/availability">Google-synk og årsoversikt</KnappLenke></div>

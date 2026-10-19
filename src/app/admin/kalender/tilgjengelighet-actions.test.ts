@@ -9,6 +9,7 @@ type Slot = { weekday: number | null; date: string | null; startTime: string; en
 let coach: { id: string; role: string } | null = { id: "coach-a", role: "COACH" };
 let slots: Slot[] = [];
 let hendelser: Array<{ id: string; coachId: string | null; title: string; startAt: Date; endAt: Date }> = [];
+let buffer: Record<string, number> = {};
 
 mock.module("next/cache", { namedExports: { revalidatePath: () => undefined } });
 mock.module("@/lib/auth/action-guards", {
@@ -24,6 +25,7 @@ mock.module("@/app/admin/(legacy)/availability/actions", {
 mock.module("@/lib/prisma", {
   namedExports: {
     prisma: {
+      user: { update: async ({ where, data }: { where: { id: string }; data: { bookingBufferMin: number } }) => { buffer[where.id] = data.bookingBufferMin; } },
       coachAvailability: {
         findMany: async ({ where }: { where: { weekday: { in: number[] }; startTime: string; endTime: string } }) =>
           slots.filter((s) => s.weekday !== null && where.weekday.in.includes(s.weekday) && s.startTime === where.startTime && s.endTime === where.endTime),
@@ -46,6 +48,7 @@ test.beforeEach(() => {
   coach = { id: "coach-a", role: "COACH" };
   slots = [];
   hendelser = [];
+  buffer = {};
 });
 
 test("coach setter en hel uke: ett vindu per valgt ukedag", async () => {
@@ -102,4 +105,14 @@ test("fridag slettes bare av coachen som eier den", async () => {
 test("et annet coachs vindu kan ikke slettes", async () => {
   const { slettVindu } = await import("./tilgjengelighet-actions");
   assert.deepEqual(await slettVindu("annet"), { ok: false, feil: "Fant ikke tidsvinduet." });
+});
+
+test("buffer lagres på coachen, utenfor 0–120 avvises", async () => {
+  const { settBuffer } = await import("./tilgjengelighet-actions");
+  assert.deepEqual(await settBuffer(15), { ok: true });
+  assert.equal(buffer["coach-a"], 15);
+  assert.equal((await settBuffer(200)).ok, false);
+  assert.equal((await settBuffer(-5)).ok, false);
+  assert.equal((await settBuffer(2.5)).ok, false);
+  assert.equal(buffer["coach-a"], 15);
 });
