@@ -10,19 +10,26 @@
 
 import { revalidatePath } from "next/cache";
 import { requireSpillerActionUser } from "@/lib/auth/action-guards";
-import type { WangTestdelingStatus } from "@/lib/deling/samtykke-regler";
+import { WANG_PLAN_SCOPE, type WangDelingsomfang, type WangTestdelingStatus } from "@/lib/deling/samtykke-regler";
 import { registrerWangTestsvar } from "@/lib/portal-tester/wang-resultat-tilgang";
 
 export type WangTestsvarResultat = { ok: true; status: WangTestdelingStatus } | { ok: false; feil: string };
 
-export async function svarWangTestforesporsel(gruppeId: string, gitt: boolean): Promise<WangTestsvarResultat> {
+export async function svarWangTestforesporsel(
+  gruppeId: string,
+  gitt: boolean,
+  omfang: WangDelingsomfang = "TEST_RESULTATER",
+): Promise<WangTestsvarResultat> {
   const user = await requireSpillerActionUser();
+  // Klienten kan sende hva som helst: bare de to omfangene godtas.
+  if (omfang !== "TEST_RESULTATER" && omfang !== WANG_PLAN_SCOPE) return { ok: false, feil: "Ukjent deling." };
   try {
-    const deling = await registrerWangTestsvar({ userId: user.id, gruppeId, gitt, gittAvUserId: user.id, gittAvRolle: "SELV" });
+    const deling = await registrerWangTestsvar({ userId: user.id, gruppeId, gitt, gittAvUserId: user.id, gittAvRolle: "SELV", omfang });
     revalidatePath("/portal");
     revalidatePath("/portal/meg/innstillinger/personvern");
     revalidatePath("/team-norway/wang-resultater");
     revalidatePath("/team-wang/coach/tester");
+    revalidatePath("/team-wang/coach");
     return { ok: true, status: deling.status };
   } catch (err) {
     return { ok: false, feil: err instanceof Error ? err.message : "Kunne ikke lagre svaret." };

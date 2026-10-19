@@ -32,6 +32,7 @@ export default async function ForelderDelingPage({ params }: { params: Promise<{
 
   const grupper = await grupperMedEksterneLesereForSpiller(childId);
   const wangTestdeling = await hentWangTestdeling(childId);
+  const wangPlandeling = await hentWangTestdeling(childId, "TRENINGSPLAN");
   const status = await hentDelingsStatus(childId, grupper.map((g) => g.id));
   const kart = new Map(status.map((s) => [s.gruppeId, s]));
 
@@ -55,6 +56,9 @@ export default async function ForelderDelingPage({ params }: { params: Promise<{
         <Link href={`/portal/meg/deling?barn=${encodeURIComponent(childId)}`} style={{ minHeight: 44, display: "inline-flex", alignItems: "center" }}>Navngitt trenerdeling for {barn.name.split(" ")[0]}</Link>
         <TnSamtykkeSide organisasjoner={organisasjoner} settSamtykke={settSamtykke} krevesForesatt={barn.requiresGuardianConsent} modus="foresatt" />
         {wangTestdeling.map((d) => <WangTestforesporsel key={d.gruppeId} {...d} modus={{ type: "foresatt", childId, barnNavn: barn.name }} />)}
+        {wangPlandeling.map((d) => (
+          <WangTestforesporsel key={`plan-${d.gruppeId}`} {...d} modus={{ type: "foresatt", childId, barnNavn: barn.name }} omfang="TRENINGSPLAN" />
+        ))}
       </div>
           </div>
     </ForelderSkall>

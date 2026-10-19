@@ -5,6 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { WangTomTilstand } from "./WangIkkeKoblet";
+import { WangElevrad, wangHref } from "./wang-felles";
+import { TOM_PLANDATA, trengerDeg, visPct, type WangPlanData } from "@/app/team-wang/_data/wang-plan-visning";
 import {
   visDato,
   type WangTrenerData,
@@ -17,6 +19,8 @@ interface WangIdagProps {
   aktivFane?: string;
   /** Økta som Oppmøte, Økta og Meld fravær gjelder (id fra data.ukeOkter). */
   oktId?: string;
+  /** Elevenes delte plan (W1): grunnlaget for «Elever som trenger oppfølging». */
+  plan?: WangPlanData;
 }
 
 const BASE = "/team-wang/coach?omraade=idag";
@@ -36,7 +40,7 @@ const tilFravaer = (id: string) => `${BASE}&fane=fravaer&okt=${encodeURIComponen
  *   - Oppmøte, fravær og avlysning lagres ikke: basen har ingen tabell for dem. Knappene er sperret med forklaring.
  *   - Skoletimene og gruppevelgeren for sportssjef er ikke med: trenerflaten har én gruppe og ingen timeplan.
  */
-export function WangIdag({ data, aktivFane, oktId }: WangIdagProps) {
+export function WangIdag({ data, aktivFane, oktId, plan = TOM_PLANDATA }: WangIdagProps) {
   const okt = oktId ? data.ukeOkter.find((o) => o.id === oktId) : undefined;
   const dagensOkter = data.ukeOkter.filter((o) => o.datoIso === data.idagIso);
 
@@ -49,14 +53,25 @@ export function WangIdag({ data, aktivFane, oktId }: WangIdagProps) {
   if (aktivFane === "okt") {
     return <Okta data={data} okt={okt} />;
   }
-  return <IdagHoved data={data} dagensOkter={dagensOkter} />;
+  return <IdagHoved data={data} dagensOkter={dagensOkter} plan={plan} />;
 }
 
 // ---------------------------------------------------------------------------
 // I dag
 // ---------------------------------------------------------------------------
 
-function IdagHoved({ data, dagensOkter }: { data: WangTrenerData; dagensOkter: WangTrenerUkeOkt[] }) {
+function IdagHoved({
+  data,
+  dagensOkter,
+  plan,
+}: {
+  data: WangTrenerData;
+  dagensOkter: WangTrenerUkeOkt[];
+  plan: WangPlanData;
+}) {
+  const trenger = data.elever
+    .filter((e) => plan.perElev[e.id] && trengerDeg(plan.perElev[e.id]))
+    .sort((a, b) => (plan.perElev[a.id].etterlevelse.pct ?? 101) - (plan.perElev[b.id].etterlevelse.pct ?? 101));
   const naa = data.naaTid;
   const neste = dagensOkter.find((o) => !naa || (o.sluttTid ?? o.startTid) > naa);
   const aktivPeriode = data.perioder.find((p) => p.status === "naa");
@@ -213,10 +228,30 @@ function IdagHoved({ data, dagensOkter }: { data: WangTrenerData; dagensOkter: W
             <div className="wg-sek-topp">
               <h2 id="wg-oppfolging-tittel">Elever som trenger oppfølging</h2>
             </div>
-            <WangTomTilstand
-              tittel="Ikke koblet ennå"
-              tekst="Lista bygges av oppmøte, gjennomført tid mot plan siste fire uker og turneringsresultater når de er koblet til WANG-gruppa."
-            />
+            {trenger.length > 0 ? (
+              <div className="wg-baand-liste">
+                {trenger.map((e) => (
+                  <WangElevrad
+                    key={e.id}
+                    type="trenger"
+                    navn={e.navn}
+                    linje={`Morgentrening ${visPct(plan.perElev[e.id].morgen)}`}
+                    verdi={visPct(plan.perElev[e.id].etterlevelse)}
+                    prosent={plan.perElev[e.id].etterlevelse.pct}
+                    href={wangHref("elever", "elev", e.id)}
+                  />
+                ))}
+              </div>
+            ) : (
+              <WangTomTilstand
+                tittel={plan.delerIder.length > 0 ? "Ingen under 80 %" : "Ingen har delt planen"}
+                tekst={
+                  plan.delerIder.length > 0
+                    ? "Elevene som har delt planen med deg, ligger på 80 % eller mer siste fire uker."
+                    : "Lista bygges av gjennomført tid mot plan siste fire uker, for elever som har delt planen med deg."
+                }
+              />
+            )}
           </section>
         </div>
       </div>

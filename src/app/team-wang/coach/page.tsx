@@ -11,6 +11,7 @@ import {
 } from "@/app/team-wang/_data/wang-rolle";
 import { canUser } from "@/lib/auth/effective-capabilities";
 import { Capability } from "@/lib/auth/cbac";
+import { hentWangPlanData } from "@/app/team-wang/_data/wang-plan-data";
 import { WangCoachKlient } from "@/app/team-wang/coach/WangCoachKlient";
 import type { WangOmraade } from "@/components/wang/WangAppSkall";
 import { kanSeDataGolf } from "@/lib/auth/datagolf-tilgang";
@@ -111,6 +112,11 @@ export default async function WangCoachPage({ searchParams }: WangCoachPageProps
     );
   }
 
+  // Elevenes delte plan (W1): bare elever med plansamtykke mot gruppa. Andre får «—».
+  const plan = ["idag", "trening", "elever"].includes(aktivtOmraade)
+    ? await hentWangPlanData(gruppeId)
+    : undefined;
+
   // Elevdata (klasse, og HCP/kategori/Fireukerssjekk bare for elever som har delt med treneren).
   const elevIder = live.elever.filter((e) => e.rolle === "PLAYER").map((e) => e.id);
   const elevdata = aktivtOmraade === "elever" ? await hentWangElevdata(gruppeId, elevIder) : undefined;
@@ -146,6 +152,7 @@ export default async function WangCoachPage({ searchParams }: WangCoachPageProps
       rolle={rolle}
       brukerNavn={bruker.name ?? undefined}
       tester={tester}
+      plan={plan}
       elevdata={elevdata}
       fireukerssjekk={fireukerssjekk}
       dataGolf={dataGolf}

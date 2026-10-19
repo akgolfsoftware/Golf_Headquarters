@@ -151,7 +151,7 @@ describe('WANG Toppidrett Modul (Samtlige WANG-skjermer)', async () => {
     assert.ok(!/\d+\s*%/.test(html.replace(/<[^>]*>/g, ' ').replace(/80 %/g, '')), 'Ingen prosenttall utenom målet på 80 %');
     assert.ok(html.includes('Ikke delt'));
     assert.ok(html.includes('Elev 11 Demo'));
-    assert.ok(html.includes('/team-wang/coach/iup/e1'));
+    assert.ok(html.includes('fane=elev&amp;id=e1'));
     assert.ok(visTrening(undefined, undefined, tom).includes('Ingen elever i gruppa'));
   });
 
@@ -211,6 +211,26 @@ describe('WANG Toppidrett Modul (Samtlige WANG-skjermer)', async () => {
     assert.ok(html.includes('Ingen meldinger ennå'));
     assert.match(visMed(WangMeldinger, { aktivFane: 'elev', id: 'e1' }), /<button[^>]*disabled=""[^>]*>Send<\/button>/);
     assert.match(visMed(WangMeldinger, { aktivFane: 'gruppe' }), /<button[^>]*disabled=""[^>]*>Publiser<\/button>/);
+  });
+
+  test('WangElever: delt plan gir etterlevelse, ikke delt gir «—» (W1)', () => {
+    const t = (pct: number | null) => ({ pct, gjennomfortMin: pct ?? 0, planlagtMin: pct === null ? 0 : 100 });
+    const plan = {
+      delerIder: ['e1'],
+      perElev: { e1: { etterlevelse: t(62), morgen: t(50) } },
+      samlet: t(62),
+      morgen: t(50),
+      perAkse: { FYS: t(null), TEK: t(62), SLAG: t(null), SPILL: t(null), TURN: t(null) },
+    };
+    const elev1 = visMed(WangElever, { aktivFane: 'elev', id: 'e1', plan });
+    assert.ok(elev1.includes('62 %'));
+    assert.ok(elev1.includes('Har delt planen med deg'));
+    const elev2 = visMed(WangElever, { aktivFane: 'elev', id: 'e2', plan });
+    assert.ok(elev2.includes('Plan ikke delt'));
+    assert.ok(!/\d+\s*%/.test(elev2.replace(/<[^>]*>/g, ' ')), 'Ingen prosent for eleven som ikke har delt');
+    const liste = visMed(WangElever, { plan });
+    assert.ok(liste.includes('Trenger deg'));
+    assert.ok(liste.includes('1 av 11'));
   });
 
   test('WangElever: elevlista fra gruppa med lenke til IUP', () => {

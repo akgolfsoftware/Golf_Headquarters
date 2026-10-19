@@ -18,6 +18,7 @@ import {
   harGyldigSamtykke,
   type DelingSamtykkeRolle,
   type DelingScope,
+  type WangDelingsomfang,
 } from "./samtykke-regler";
 
 /**
@@ -33,7 +34,7 @@ import {
  */
 export async function registrerDelingsSamtykke(input: {
   userId: string;
-  scope: DelingScope;
+  scope: DelingScope | WangDelingsomfang;
   mottakerGruppeId: string;
   gitt: boolean;
   gittAvUserId: string;

@@ -92,7 +92,7 @@ async function PortalHjemInnhold() {
   const naa = await hentEffektivNaa(user.email);
   const iDag = OSLO_ISO.format(naa);
 
-  const [data, dag, dagITiden, fysisk, dagsform, historikk, popup, visIup, trenerforslag, wangTestdeling, periode, sgRunder, etterlevelse] = await Promise.all([
+  const [data, dag, dagITiden, fysisk, dagsform, historikk, popup, visIup, trenerforslag, wangTestdeling, periode, sgRunder, etterlevelse, wangPlandeling] = await Promise.all([
     getDashboardData(user.id, naa),
     planLaast
       ? Promise.resolve({ ok: true as const, data: { date: iDag, sessions: [] as PlayerDaySession[], nextSessionId: null } })
@@ -109,6 +109,8 @@ async function PortalHjemInnhold() {
     planLaast ? Promise.resolve(null) : hentUkePeriode(user.id, naa),
     hentSgRunder(user.id),
     planLaast ? Promise.resolve(null) : hentEtterlevelse(user.id, naa),
+    // W1: og planen, som bare deles med WANG-skolen.
+    user.role === "PLAYER" ? hentWangTestdeling(user.id, "TRENINGSPLAN") : Promise.resolve([]),
   ]);
 
   const uke = ukenummer(naa);
@@ -204,6 +206,9 @@ async function PortalHjemInnhold() {
     <PlayerHQSkall innboksHref="/portal/varsler" uleste={data.unreadCount}>
       <PH01IDag {...props}>
         {wangTestdeling.map((d) => <WangTestforesporsel key={d.gruppeId} {...d} modus={{ type: "spiller" }} bareNyForesporsel />)}
+        {wangPlandeling.map((d) => (
+          <WangTestforesporsel key={`plan-${d.gruppeId}`} {...d} modus={{ type: "spiller" }} bareNyForesporsel omfang="TRENINGSPLAN" />
+        ))}
         <PushOptInBanner />
         <TrenerforslagInnboks forslag={trenerforslag} />
       </PH01IDag>
