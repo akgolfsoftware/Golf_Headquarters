@@ -80,6 +80,15 @@ mock.module("@/app/team-wang/_data/wang-tester-data", {
     hentWangSamtykkeStatus: async () => ({}),
   },
 });
+let planKall: string[] = [];
+mock.module("@/app/team-wang/_data/wang-plan-data", {
+  namedExports: {
+    hentWangPlanData: async (gruppeId: string) => {
+      planKall.push(gruppeId);
+      return { delerIder: [], perElev: {} };
+    },
+  },
+});
 mock.module("@/app/team-wang/coach/iup/[elevId]/iup-samtale", {
   namedExports: { IupSamtale: () => null },
 });
@@ -277,7 +286,7 @@ async function skjermerPage() {
   return (await import("../skjermer/page")).default;
 }
 
-type KlientProps = { omraade: string; rolle: string; elever?: Array<{ id: string; navn: string }>; tester?: unknown; dataGolf?: unknown };
+type KlientProps = { omraade: string; rolle: string; elever?: Array<{ id: string; navn: string }>; tester?: unknown; plan?: unknown; dataGolf?: unknown };
 function propsFra(element: unknown): KlientProps {
   return (element as { props: KlientProps }).props;
 }
@@ -315,6 +324,21 @@ test("coachruten henter testresultater bare der de vises, og bare for egen grupp
   const tester = propsFra(await side({ searchParams: Promise.resolve({ omraade: "tester" }) }));
   assert.deepEqual(tester.tester, { delerIder: [], resultater: [] });
   assert.equal(testerKall.length, 1);
+});
+
+test("coachruten henter elevenes delte plan bare i I dag, Trening og Elever, og bare for egen gruppe", async () => {
+  const side = await coachPage();
+  planKall = [];
+  const tester = propsFra(await side({ searchParams: Promise.resolve({ omraade: "tester" }) }));
+  assert.equal(tester.plan, undefined);
+  assert.deepEqual(planKall, []);
+  for (const omraade of ["idag", "trening", "elever"]) {
+    const props = propsFra(await side({ searchParams: Promise.resolve({ omraade }) }));
+    assert.deepEqual(props.plan, { delerIder: [], perElev: {} });
+  }
+  assert.equal(planKall.length, 3);
+  // Bare gruppa vakten slapp treneren inn i.
+  assert.deepEqual(planKall, [coachGruppeId, coachGruppeId, coachGruppeId]);
 });
 
 test("skjermoversikten krever innlogget trener eller sportssjef", async () => {
