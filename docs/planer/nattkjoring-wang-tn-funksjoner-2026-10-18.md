@@ -72,3 +72,13 @@ funksjoner uten data. Kilden er avviksfeltene i #1402, #1406 og #1411 og filhode
 ## 5. Morgenrapport
 
 (Skrives av koordinatoren når K er ferdig.)
+
+### K Kontroll — delvis (19.10, etter at W1–W4 og T1–T3 er i main)
+
+Alle sju pakkene er lagt inn: W1 #1429 · W2 #1423 · W3 #1427 · W4 #1425 · T1 #1428 · T2 #1421 · T3 #1424.
+
+**Målt mot produksjon uten innlogging** (360, 390 og 1280 px): `/wang`, `/teamnorway` og `/team-wang` har ingen sidelengs rulling og ingen konsollfeil. `/team-wang/coach` sender til `/wang?next=…`, og `/team-norway` og `/team-norway/rangliste` sender til `/teamnorway?next=…`. Innloggingssperren virker.
+
+**Målt lokalt med testdata:** WANG I dag, Trening og Elever (liste og én elev; delt, ikke delt og tom) i 390 og 1280 px, uten funn (W1).
+
+**Gjenstår:** de innloggede rutene under `/team-wang/coach` og `/team-norway/*` med ekte data. De krever en innlogget nettleser. Chrome-koblingen svarte ikke i denne økta, og lokalt finnes ingen databasetilkobling.
