@@ -1,0 +1,431 @@
+<title>Team Norway Golf Nye veier</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500&family=Schibsted+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: forslagsside med tre retningsvalg, levende skjermscene og kort sammenligning. Scenene har egne, faste farger. */
+:root{
+  --bg:#EEF2F6; --fg:#0C1219; --muted:#55657A; --line:#D5DDE6; --surface:#FFFFFF; --soft:#F6F8FA;
+  --navy:#012B5D; --navy-text:#012B5D; --red:#D70232; --red-text:#A80126;
+  --grot:"Schibsted Grotesk",ui-sans-serif,system-ui,sans-serif;
+  --geo:"Jost",ui-sans-serif,system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --out:cubic-bezier(.23,1,.32,1); --io:cubic-bezier(.77,0,.175,1);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#07111D;--fg:#E6EDF5;--muted:#9AABBD;--line:#1F3348;--surface:#0C1B2C;--soft:#10223A;--navy-text:#8DBDF0;--red-text:#FF9CB0;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#07111D;--fg:#E6EDF5;--muted:#9AABBD;--line:#1F3348;--surface:#0C1B2C;--soft:#10223A;--navy-text:#8DBDF0;--red-text:#FF9CB0;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--grot);font-size:15px;line-height:1.55;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 64px}
+.wrap{max-width:1320px;margin:0 auto}
+h1,h2,h3{text-wrap:balance;margin:0}
+p{margin:0}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.intro{padding-block:40px 24px;display:grid;gap:14px;max-width:780px}
+.intro .logo{height:44px;width:auto;align-self:start;background:#fff;padding:6px 10px;border-radius:4px}
+.intro h1{font-size:clamp(28px,4.2vw,46px);font-weight:600;letter-spacing:-.02em;line-height:1.08}
+.intro p{color:var(--muted);font-size:16px;max-width:66ch}
+.picker{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);padding-block:10px;border-bottom:1px solid var(--line);margin-bottom:18px}
+.picker-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.pick{all:unset;cursor:pointer;display:grid;gap:2px;padding:12px 14px;background:var(--surface);border:1px solid var(--line);border-radius:8px;position:relative;overflow:hidden;transition:border-color .16s var(--out),transform .12s var(--out)}
+.pick:active{transform:scale(.97)}
+@media (hover:hover) and (pointer:fine){.pick:hover{border-color:var(--muted)}}
+.pick:focus-visible{outline:2px solid var(--navy-text);outline-offset:2px}
+.pick .k{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.08em}
+.pick .n{font-weight:600;font-size:17px}
+.pick .d{font-size:13px;color:var(--muted);line-height:1.35}
+.pick[aria-selected="true"]{border-color:var(--navy-text)}
+.pick[aria-selected="true"]::after{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--navy) 0 50%,var(--red) 50%);transform-origin:left;animation:grow .42s var(--out)}
+@keyframes grow{from{transform:scaleX(0)}}
+@media (max-width:640px){.pick .d{display:none}.pick{padding:10px}.pick .n{font-size:15px}}
+.stage-head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 20px;align-items:baseline;margin:6px 0 12px}
+.stage-head h2{font-size:24px;font-weight:600;letter-spacing:-.01em}
+.stage-head .tag{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.frame{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface)}
+.frame-bar{display:flex;gap:10px;align-items:center;padding:8px 12px;border-bottom:1px solid var(--line);background:var(--soft);font-family:var(--mono);font-size:11px;color:var(--muted)}
+.frame-bar .dots{display:flex;gap:5px}.frame-bar .dots i{width:9px;height:9px;border-radius:50%;background:var(--line);display:block}
+.frame-bar span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.why{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr);gap:24px;padding:22px 0 8px}
+.why h3{font-size:15px;font-weight:600;margin-bottom:6px}
+.why p,.why li{color:var(--muted);font-size:14px}
+.why ul{margin:0;padding-left:18px;display:grid;gap:4px}
+@media (max-width:860px){.why{grid-template-columns:1fr}}
+section.block{padding-top:52px}
+section.block>h2{font-size:clamp(24px,3vw,32px);font-weight:600;letter-spacing:-.01em;margin:6px 0 8px}
+section.block>p.lead{color:var(--muted);max-width:68ch;margin-bottom:20px}
+.dna{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.dna div{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;display:grid;gap:6px;align-content:start}
+.dna b{font-size:15px}.dna p{font-size:13px;color:var(--muted)}
+@media (max-width:860px){.dna{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.dna{grid-template-columns:1fr}}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:14px}
+th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500}
+tr:last-child td{border-bottom:0}
+td:first-child{font-weight:600;width:20%}
+.rec{background:color-mix(in srgb,var(--navy-text) 8%,transparent)}
+.recbox{margin-top:18px;padding:18px 20px;border-left:3px solid var(--red);background:var(--surface);border-radius:0 8px 8px 0;display:grid;gap:6px}
+.recbox h3{font-size:18px;font-weight:600}.recbox p{color:var(--muted)}
+.foot{margin-top:40px;font-size:13px;color:var(--muted)}
+.foot a{color:var(--navy-text)}
+
+/* ============ felles i scenene ============ */
+.mk{container-type:inline-size;font-family:var(--grot);font-size:14px;line-height:1.45}
+.mk *{min-width:0}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.in{animation:rise .5s var(--out) both;animation-delay:calc(var(--i,0)*60ms + 120ms)}
+@keyframes rise{from{opacity:.2;transform:translateY(14px)}}
+.fill{transform-origin:left;animation:fill 1s var(--out) both;animation-delay:calc(.4s + var(--i,0)*80ms)}
+@keyframes fill{from{transform:scaleX(0)}}
+.flash{animation:flash 1.2s var(--out)}
+@keyframes flash{0%{background-color:rgba(215,2,50,.22)}}
+.btn{all:unset;cursor:pointer;font-weight:600;font-size:13px;padding:10px 16px;transition:transform .12s var(--out),background-color .16s var(--out),box-shadow .2s var(--out)}
+.btn:active{transform:scale(.97)}
+.btn:focus-visible{outline:2px solid #0A5199;outline-offset:2px}
+.chip{display:inline-flex;font-size:11px;font-weight:600;letter-spacing:.03em;padding:3px 8px;white-space:nowrap}
+.c-red{background:#FBE8E6;color:#96241C}.c-amb{background:#FDF1DC;color:#8A5602}.c-grn{background:#E4F4EA;color:#076530}.c-inf{background:#E3ECF6;color:#023B76}
+.ax-fys{--ax:#0D6E6A;--axl:#6FD3C9}.ax-tek{--ax:#0A5199;--axl:#8DBDF0}.ax-slag{--ax:#4B3F9E;--axl:#B9B0F2}.ax-spill{--ax:#8A2A72;--axl:#EBA3D8}.ax-turn{--ax:#A80126;--axl:#FF9CB0}
+
+/* ============ D · Skrå ============ */
+.dD{background:#F4F6F9;color:#0C1219;min-height:820px}
+.d-top{display:flex;flex-wrap:wrap;gap:10px 24px;align-items:center;padding:14px 28px;background:#fff;border-bottom:1px solid #E6EAEF}
+.d-top img{height:34px;width:auto;display:block}
+.d-nav{display:flex;gap:4px;flex-wrap:wrap;margin-left:12px}
+.d-nav a{color:#5E6E7F;text-decoration:none;font-weight:500;font-size:14px;padding:7px 12px;border-radius:999px;transition:background-color .16s var(--out),color .16s var(--out)}
+@media (hover:hover) and (pointer:fine){.d-nav a:hover{background:#EDF1F4;color:#0C1219}}
+.d-nav a.on{background:#012B5D;color:#fff}
+.d-me{margin-left:auto;display:flex;align-items:center;gap:10px;font-size:13px;color:#33414F}
+.d-me i{width:32px;height:32px;border-radius:50%;background:#E3ECF6;color:#012B5D;display:grid;place-items:center;font-style:normal;font-weight:600;font-size:12px}
+.d-hero{position:relative;background:#D70232;clip-path:polygon(0 0,100% 0,100% 100%,0 calc(100% - 7cqw));animation:cut 1.1s var(--io) both .1s}
+@keyframes cut{from{clip-path:polygon(0 0,100% 0,100% 100%,0 100%)}}
+.d-photo{position:relative;clip-path:polygon(0 0,100% 0,100% calc(100% - 8px),0 calc(100% - 7cqw - 8px));overflow:hidden;animation:cut2 1.1s var(--io) both .1s}
+@keyframes cut2{from{clip-path:polygon(0 0,100% 0,100% calc(100% - 8px),0 calc(100% - 8px))}}
+.d-photo img{width:100%;height:440px;object-fit:cover;object-position:50% 40%;display:block;animation:kb 18s ease-in-out infinite alternate}
+@keyframes kb{to{transform:scale(1.08) translateX(-1.5%)}}
+.d-photo::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,rgba(1,43,93,.94) 0%,rgba(1,43,93,.82) 38%,rgba(1,43,93,.15) 75%)}
+.d-heroin{position:absolute;inset:0;z-index:2;padding:40px 28px 0;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-content:start;color:#fff}
+.d-heroin .eb{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#B9C4CE}
+.d-heroin h1{font-size:clamp(28px,4.4cqw,52px);font-weight:600;letter-spacing:-.025em;line-height:1.04;margin-top:10px;max-width:15ch}
+.d-heroin h1 em{font-style:normal;color:#FF9CB0}
+.d-heroin p{margin-top:12px;color:#DCE2E8;max-width:44ch}
+.d-hb{display:flex;gap:8px;margin-top:20px;flex-wrap:wrap}
+.d-b1{background:#fff;color:#012B5D;border-radius:999px}
+.d-b2{color:#fff;border-radius:999px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.45)}
+@media (hover:hover) and (pointer:fine){.d-b1:hover{background:#E3ECF6}.d-b2:hover{box-shadow:inset 0 0 0 1px #fff}}
+.d-stats{display:grid;gap:8px;align-content:start}
+.d-stat{background:rgba(255,255,255,.1);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.18);border-radius:14px;padding:12px 16px;min-width:180px}
+.d-stat b{display:block;font-family:var(--mono);font-size:28px;font-weight:500;line-height:1.1}
+.d-stat span{font-size:12px;color:#DCE2E8}
+.d-body{padding:0 28px 32px;margin-top:-90px;position:relative;z-index:3;display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:18px;align-items:start}
+.d-col{display:grid;gap:18px}
+.d-card{background:#fff;border-radius:18px;padding:20px;box-shadow:0 1px 2px rgba(1,43,93,.06),0 8px 24px -8px rgba(1,43,93,.14),0 24px 48px -24px rgba(1,43,93,.18);transition:transform .2s var(--out),box-shadow .2s var(--out)}
+@media (hover:hover) and (pointer:fine){.d-card:hover{transform:translateY(-3px);box-shadow:0 1px 2px rgba(1,43,93,.06),0 14px 32px -10px rgba(1,43,93,.22),0 30px 60px -28px rgba(1,43,93,.24)}}
+.d-card h2{font-size:17px;font-weight:600;letter-spacing:-.01em;display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.d-card h2 a{font-size:13px;font-weight:500;color:#0A5199;text-decoration:none}
+.d-row{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 10px;margin:0 -10px;border-radius:12px;transition:background-color .16s var(--out)}
+@media (hover:hover) and (pointer:fine){.d-row:hover{background:#F2F7FC}}
+.d-row .av{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-weight:600;font-size:13px;background:#E3ECF6;color:#012B5D}
+.d-row b{display:block;font-size:14px}.d-row span.r{font-size:13px;color:#5E6E7F}
+.d-row .chip{border-radius:999px}
+.d-list{margin-top:8px}
+.d-sam{padding:0;overflow:hidden}
+.d-sam .ph{position:relative;height:150px;overflow:hidden}
+.d-sam .ph img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s var(--out)}
+@media (hover:hover) and (pointer:fine){.d-sam:hover .ph img{transform:scale(1.05)}}
+.d-sam .ph::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(1,43,93,.75))}
+.d-sam .ph .t{position:absolute;left:18px;bottom:12px;z-index:1;color:#fff}
+.d-sam .ph .t b{display:block;font-size:19px;font-weight:600}
+.d-sam .ph .t span{font-size:12px;color:#DCE2E8}
+.d-sam .bd{padding:16px 20px 20px}
+.cd{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.cd div{background:#F2F7FC;border-radius:10px;padding:8px 4px;text-align:center}
+.cd b{display:block;font-family:var(--mono);font-size:22px;font-weight:500;color:#012B5D}
+.cd span{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#5E6E7F}
+.d-stack{display:flex;height:14px;border-radius:999px;overflow:hidden;gap:2px;margin:14px 0}
+.d-stack i{background:var(--ax);display:block}
+.d-leg{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:#33414F}
+.d-leg span{display:flex;gap:6px;align-items:center}.d-leg span::before{content:"";width:8px;height:8px;border-radius:2px;background:var(--ax)}
+.d-leg b{font-family:var(--mono);font-weight:500}
+.d-live .lr{display:grid;grid-template-columns:minmax(0,1fr) 48px 64px;gap:8px;padding:9px 0;border-top:1px solid #EDF1F4;font-size:13px}
+.d-live .lr:first-of-type{border-top:0;margin-top:6px}
+.d-live .lr .num{text-align:right}
+.livedot{width:8px;height:8px;border-radius:50%;background:#D70232;display:inline-block;box-shadow:0 0 0 0 rgba(215,2,50,.5);animation:ping 1.8s var(--out) infinite}
+@keyframes ping{70%{box-shadow:0 0 0 8px rgba(215,2,50,0)}100%{box-shadow:0 0 0 0 rgba(215,2,50,0)}}
+@container (max-width:900px){.d-body{grid-template-columns:1fr;margin-top:-60px}.d-heroin{grid-template-columns:1fr}.d-stats{grid-template-columns:repeat(3,minmax(0,1fr));display:none}}
+@container (max-width:560px){.d-top{padding:12px 16px}.d-nav{display:none}.d-heroin{padding:28px 16px 0}.d-body{padding:0 12px 20px;margin-top:-40px}.d-photo img{height:380px}.d-card{padding:16px}.d-heroin p{display:none}}
+
+/* ============ E · Nordisk lys ============ */
+.dE{background:#F7F9FB;color:#0C1219;min-height:820px;font-family:var(--grot)}
+.e-top{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:center;justify-content:space-between;padding:22px 40px}
+.e-top img{height:38px;width:auto;display:block}
+.e-nav{display:flex;flex-wrap:wrap;gap:6px 26px}
+.e-nav a{font-family:var(--geo);font-weight:400;font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:#5E6E7F;text-decoration:none;padding:4px 0;position:relative}
+.e-nav a::after{content:"";position:absolute;left:0;right:.32em;bottom:-2px;height:1px;background:#0C1219;transform:scaleX(0);transform-origin:left;transition:transform .28s var(--out)}
+@media (hover:hover) and (pointer:fine){.e-nav a:hover::after{transform:scaleX(1)}}
+.e-nav a.on{color:#0C1219}.e-nav a.on::after{transform:scaleX(1);background:#D70232}
+.e-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:48px;padding:12px 40px 40px;align-items:start}
+.e-date{font-family:var(--geo);font-weight:200;font-size:clamp(64px,11cqw,150px);line-height:.88;letter-spacing:-.02em;color:#012B5D;display:flex;gap:18px;align-items:flex-start}
+.e-date small{font-family:var(--geo);font-weight:400;font-size:13px;letter-spacing:.34em;text-transform:uppercase;color:#5E6E7F;line-height:1.6;padding-top:14px}
+.e-track{animation:track 1.3s var(--out) both .1s}
+@keyframes track{from{letter-spacing:.3em;opacity:.2}}
+.e-lead{font-size:22px;font-weight:400;letter-spacing:-.01em;line-height:1.35;max-width:30ch;margin-top:26px;color:#33414F}
+.e-lead b{font-weight:600;color:#0C1219}
+.e-h{font-family:var(--geo);font-weight:400;font-size:12px;letter-spacing:.34em;text-transform:uppercase;color:#5E6E7F;margin:40px 0 4px;display:flex;justify-content:space-between}
+.e-h span{letter-spacing:.1em;font-family:var(--mono)}
+.e-row{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:16px;align-items:baseline;padding:16px 0;border-bottom:1px solid #DCE2E8;position:relative;cursor:pointer}
+.e-row::before{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;background:#012B5D;transform:scaleX(0);transform-origin:left;transition:transform .42s var(--out)}
+@media (hover:hover) and (pointer:fine){.e-row:hover::before{transform:scaleX(1)}.e-row:hover .go{transform:translateX(4px);color:#012B5D}}
+.e-row .k{font-family:var(--mono);font-size:12px;color:#647280}
+.e-row b{font-weight:600;font-size:16px;display:block}
+.e-row span.r{color:#5E6E7F;font-size:14px}
+.e-row .go{font-size:13px;font-weight:600;color:#647280;transition:transform .2s var(--out),color .2s}
+.e-row .s{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:8px;background:var(--s);vertical-align:1px}
+.e-photo{position:relative;border-radius:2px;overflow:hidden;aspect-ratio:4/5;max-width:100%}
+.e-photo img{width:100%;height:100%;object-fit:cover;display:block;animation:kb2 20s ease-in-out infinite alternate}
+@keyframes kb2{from{transform:scale(1.02)}to{transform:scale(1.1)}}
+.e-photo .cap{position:absolute;left:0;right:0;bottom:0;padding:22px;background:linear-gradient(180deg,transparent,rgba(12,18,25,.7));color:#fff;display:grid;gap:4px}
+.e-photo .cap .l{font-family:var(--geo);font-size:11px;letter-spacing:.34em;text-transform:uppercase;color:#DCE2E8}
+.e-photo .cap b{font-family:var(--geo);font-weight:300;font-size:30px;letter-spacing:.02em}
+.e-cd{display:flex;gap:18px;font-family:var(--mono);font-size:14px;color:#fff}
+.e-cd span{display:grid}.e-cd span small{font-size:9px;letter-spacing:.2em;color:#B9C4CE}
+.e-nums{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin-top:22px;border-top:1px solid #0C1219}
+.e-nums div{padding:16px 16px 0 0;display:grid;gap:4px}
+.e-nums b{font-family:var(--geo);font-weight:200;font-size:46px;line-height:1;color:#012B5D}
+.e-nums b small{font-size:18px;color:#5E6E7F}
+.e-nums span{font-size:12px;color:#5E6E7F}
+.e-axes{display:grid;gap:8px;margin-top:6px}
+.e-ax{display:grid;grid-template-columns:56px minmax(0,1fr) 36px;gap:12px;align-items:center;font-size:12px}
+.e-ax b{font-family:var(--geo);font-weight:500;letter-spacing:.2em;color:var(--ax)}
+.e-ax .bar{height:2px;background:#DCE2E8;position:relative}
+.e-ax .bar i{position:absolute;inset:-1px auto -1px 0;background:var(--ax)}
+.e-ax span{font-family:var(--mono);text-align:right;color:#33414F}
+@container (max-width:900px){.e-grid{grid-template-columns:1fr;gap:28px}.e-photo{aspect-ratio:16/10}}
+@container (max-width:560px){.e-top,.e-grid{padding-left:16px;padding-right:16px}.e-nav a:not(.on){display:none}.e-lead{font-size:19px}.e-nums b{font-size:34px}}
+
+/* ============ F · Glass ============ */
+.dF{position:relative;color:#E9EFF6;min-height:820px;overflow:hidden;background:#041427;isolation:isolate}
+.f-bg{position:absolute;inset:-40px;z-index:-2;background-size:cover;background-position:center;filter:blur(26px) saturate(1.2) brightness(.55);animation:drift 30s ease-in-out infinite alternate}
+@keyframes drift{to{transform:scale(1.12) translate(-2%,1%)}}
+.dF::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(120% 80% at 0% 0%,rgba(1,43,93,.55),transparent 60%),linear-gradient(180deg,rgba(4,20,39,.55),rgba(4,20,39,.92))}
+.f-top{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center;padding:18px 28px}
+.f-top img{height:32px;width:auto;display:block}
+.f-nav{display:flex;gap:4px;padding:4px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);flex-wrap:wrap}
+.f-nav a{color:#B9C4CE;text-decoration:none;font-size:13px;font-weight:500;padding:7px 14px;border-radius:999px;transition:background-color .16s var(--out),color .16s}
+@media (hover:hover) and (pointer:fine){.f-nav a:hover{color:#fff}}
+.f-nav a.on{background:#fff;color:#012B5D}
+.f-q{margin-left:auto;font-family:var(--mono);font-size:12px;color:#B9C4CE;padding:8px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.14)}
+.f-hello{padding:20px 28px 8px;display:flex;flex-wrap:wrap;gap:12px 24px;align-items:end;justify-content:space-between}
+.f-hello h1{font-size:clamp(28px,4cqw,46px);font-weight:500;letter-spacing:-.025em;line-height:1.05;max-width:18ch}
+.f-hello h1 b{font-weight:700;background:linear-gradient(90deg,#fff,#8DBDF0);-webkit-background-clip:text;background-clip:text;color:transparent}
+.f-hello .eb{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#9AABBD;margin-bottom:8px}
+.f-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:14px;padding:18px 28px 30px}
+.g{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);border-radius:22px;padding:20px;backdrop-filter:blur(22px) saturate(1.3);-webkit-backdrop-filter:blur(22px) saturate(1.3);position:relative;overflow:hidden;transition:transform .2s var(--out),border-color .2s var(--out)}
+.g::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(400px 160px at var(--mx,30%) -20%,rgba(255,255,255,.14),transparent 70%)}
+@media (hover:hover) and (pointer:fine){.g:hover{border-color:rgba(255,255,255,.26)}}
+.g h2{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#9AABBD;display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+.g h2 .live{display:flex;gap:8px;align-items:center;color:#FF9CB0;font-family:var(--mono);letter-spacing:.1em}
+.g-live{grid-column:span 7}.g-need{grid-column:span 5}.g-k{grid-column:span 3}.g-ax{grid-column:span 6}.g-sam{grid-column:span 6}
+.f-lr{display:grid;grid-template-columns:30px minmax(0,1fr) 64px 46px;gap:12px;align-items:center;padding:11px 8px;margin:0 -8px;border-radius:12px;border-top:1px solid rgba(255,255,255,.07)}
+.f-lr .pos{font-family:var(--mono);font-size:12px;color:#9AABBD}
+.f-lr .nm{font-weight:600;font-size:15px}
+.f-lr .holes{display:flex;gap:3px;margin-top:6px;flex-wrap:wrap}
+.f-lr .holes i{width:8px;height:8px;border-radius:2px;background:rgba(255,255,255,.14);display:block}
+.f-lr .holes i.bi{background:#6FD3C9;box-shadow:0 0 8px rgba(111,211,201,.7)}.f-lr .holes i.bo{background:#FF9CB0}
+.f-lr .tp{font-family:var(--mono);font-size:24px;text-align:right}
+.f-lr .tp.u{color:#6FD3C9;text-shadow:0 0 18px rgba(111,211,201,.55)}.f-lr .tp.d{color:#FF9CB0}
+.f-lr .th{font-family:var(--mono);font-size:12px;color:#9AABBD;text-align:right}
+.f-n{display:grid;grid-template-columns:36px minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 0;border-top:1px solid rgba(255,255,255,.07)}
+.f-n:first-of-type{border-top:0}
+.f-n .av{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;font-weight:600;font-size:12px;background:rgba(141,189,240,.16);color:#DCEBFB;border:1px solid rgba(141,189,240,.25)}
+.f-n b{display:block;font-size:14px}.f-n span.r{font-size:12px;color:#9AABBD}
+.f-n button{all:unset;cursor:pointer;font-size:12px;font-weight:600;padding:6px 11px;border-radius:999px;background:rgba(255,255,255,.1);color:#fff;transition:background-color .16s var(--out),transform .12s var(--out)}
+.f-n button:active{transform:scale(.97)}
+@media (hover:hover) and (pointer:fine){.f-n button:hover{background:#fff;color:#012B5D}}
+.f-n .dot{width:8px;height:8px;border-radius:50%;background:var(--s);box-shadow:0 0 10px var(--s);margin-right:8px;display:inline-block}
+.g-k b{display:block;font-family:var(--mono);font-size:40px;font-weight:500;line-height:1;color:#fff}
+.g-k b small{font-size:16px;color:#9AABBD}
+.g-k span{font-size:12px;color:#9AABBD}
+.g-k svg{display:block;width:100%;height:36px;margin-top:10px}
+.f-axes{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;align-items:end;height:150px}
+.f-axes div{display:grid;grid-template-rows:1fr auto auto;gap:6px;height:100%;text-align:center}
+.f-axes .col{position:relative;border-radius:10px;background:rgba(255,255,255,.05);overflow:hidden}
+.f-axes .col i{position:absolute;left:0;right:0;bottom:0;border-radius:10px;background:linear-gradient(180deg,var(--axl),color-mix(in srgb,var(--axl) 35%,transparent));box-shadow:0 0 24px color-mix(in srgb,var(--axl) 60%,transparent);transform-origin:bottom;animation:up 1.1s var(--out) both;animation-delay:calc(.4s + var(--i)*90ms)}
+@keyframes up{from{transform:scaleY(0)}}
+.f-axes b{font-family:var(--mono);font-size:12px;color:var(--axl)}
+.f-axes span{font-family:var(--mono);font-size:11px;color:#9AABBD}
+.g-sam{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:center}
+.g-sam .img{border-radius:16px;overflow:hidden;aspect-ratio:4/3;max-width:100%}
+.g-sam .img img{width:100%;height:100%;object-fit:cover;display:block}
+.g-sam .t{font-size:20px;font-weight:600;letter-spacing:-.01em}
+.g-sam .m{font-size:13px;color:#9AABBD;margin:2px 0 14px}
+.g-sam .cdt{font-family:var(--mono);font-size:30px;color:#fff;letter-spacing:.02em}
+.g-sam .cdl{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:#9AABBD}
+@container (max-width:1000px){.g-live,.g-need,.g-ax,.g-sam{grid-column:span 12}.g-k{grid-column:span 4}}
+@container (max-width:560px){.f-top,.f-hello{padding-left:16px;padding-right:16px}.f-grid{padding:14px 12px 20px;gap:10px}.g-k{grid-column:span 12}.f-nav a:not(.on){display:none}.f-q{display:none}.g-sam{grid-template-columns:1fr}.f-lr{grid-template-columns:24px minmax(0,1fr) 50px 38px;gap:8px}.f-lr .tp{font-size:20px}.g{padding:16px}}
+
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="intro">
+    <img class="logo" src="../../../designsystem/team-norway/assets/logo/team-norway-golf.png" alt="Team Norway Golf">
+    <span class="eyebrow">Nye veier · trenerens hjem · bygget fra Team Norway Golf-merket</span>
+    <h1>Tre helt nye retninger, hentet fra hvordan Team Norway Golf ser ut.</h1>
+    <p>Utgangspunktet er merket selv: logoen med navy og rød strek, de tynne sperrede bokstavene i «GOLF», det skrå kuttet fra kommunikasjonssystemet og de ekte bildene fra banen. Samme innhold i alle tre. Navn og tall er eksempler.</p>
+  </header>
+
+  <nav class="picker" aria-label="Velg retning">
+    <div class="picker-row" role="tablist">
+      <button class="pick" role="tab" data-d="d" aria-selected="true"><span class="k">1</span><span class="n">Skrå</span><span class="d">Bildet kuttet på skrå, myke kort som svever over.</span></button>
+      <button class="pick" role="tab" data-d="e" aria-selected="false"><span class="k">2</span><span class="n">Nordisk lys</span><span class="d">Logoens tynne bokstaver, mye luft, ett stort bilde.</span></button>
+      <button class="pick" role="tab" data-d="f" aria-selected="false"><span class="k">3</span><span class="n">Glass</span><span class="d">Mørk bane i bakgrunnen, frostede paneler som lyser.</span></button>
+    </div>
+  </nav>
+
+  <div class="stage-head"><h2 id="st-title"></h2><span class="tag" id="st-tag"></span></div>
+  <div class="frame">
+    <div class="frame-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span>akgolf-hq.vercel.app/team-norway</span></div>
+    <div id="stage"></div>
+  </div>
+  <div class="why" id="why"></div>
+
+  <section class="block">
+    <span class="eyebrow">Hentet fra merket</span>
+    <h2>Fire ting fra Team Norway Golf som bærer alle tre</h2>
+    <div class="dna">
+      <div><b>Navy og rød</b><p>Målt fra logofilen. Rød er identitet, aldri advarsel. Varsler har egne statusfarger.</p></div>
+      <div><b>Logoen fra fil</b><p>Aldri tegnet på nytt. Hvit versjon på mørk flate.</p></div>
+      <div><b>Det skrå kuttet</b><p>4 grader nedover mot høyre, bare på store flater. Aldri på kort eller knapper.</p></div>
+      <div><b>Ekte bilder</b><p>Bildene fra Team Norway-utkastene. Ingen stockbilder.</p></div>
+    </div>
+  </section>
+
+  <section class="block">
+    <span class="eyebrow">Sammenligning</span>
+    <h2>Hvordan de skiller seg</h2>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Hva</th><th class="rec">1 · Skrå</th><th>2 · Nordisk lys</th><th>3 · Glass</th></tr></thead>
+      <tbody>
+        <tr><td>Første inntrykk</td><td class="rec">Sterkt og tydelig Team Norway</td><td>Eksklusivt og rolig, som et magasin</td><td>Mest «wow», som en premium sportsklokke</td></tr>
+        <tr><td>Arbeid i hverdagen</td><td class="rec">Godt: kortene har knappene</td><td>Godt for få saker, færre tall synlig</td><td>Godt for live, tyngre for lange lister</td></tr>
+        <tr><td>Likhet med merket</td><td class="rec">Tettest på kommunikasjonssystemet</td><td>Tettest på selve logoen</td><td>Lengst unna, bruker merket som aksent</td></tr>
+        <tr><td>Mobil</td><td class="rec">Bildet krymper, kortene stables</td><td>Best, én kolonne fra start</td><td>Godt, men glass koster batteri på eldre telefoner</td></tr>
+        <tr><td>Bryter dagens TN-regler</td><td class="rec">Ja: runde hjørner og skygger</td><td>Lite: runde prikker og tynn skrift</td><td>Mest: mørk standard, glød og blur</td></tr>
+      </tbody>
+    </table></div>
+    <div class="recbox">
+      <h3>Anbefaling: 1 · Skrå</h3>
+      <p>Den ser ut som Team Norway Golf fra første sekund, og treneren jobber like raskt som i dag. Den krever at du opphever to regler fra 22.09: hjørner på 0–4 px og ingen skygger. Velger du den, fører jeg det som ny beslutning.</p>
+    </div>
+  </section>
+
+  <p class="foot">Alle navn, resultater og tall er oppdiktede eksempler. Den første runden med retninger (Presisjon, Kampdag, Brief) ligger her: <a href="https://claude.ai/artifact/Raw7uywkQJW3tjoXmCm4qE">Team Norway Trenerhjem</a>.</p>
+</div>
+
+<script>
+(function(){
+  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const IMG={slag:'bilder/slag-utslag.jpg',bane:'bilder/spill-bane.jpg',tee:'bilder/turn-tee.jpg',logo:'../../../designsystem/team-norway/assets/logo/team-norway-golf.png',logow:'felles/logo-tn-hvit.png'};
+  const stage=document.getElementById('stage');
+  const need=[
+    {i:'SH',n:'Sander Holm',r:'Fireukerssjekk 9 dager over fristen',c:'c-red',s:'Haster',a:'Skriv',col:'#FF9CB0'},
+    {i:'EB',n:'Eline Bakke',r:'Lav energi tre uker på rad',c:'c-amb',s:'Følg med',a:'Åpne IUP',col:'#F2C46B'},
+    {i:'JV',n:'Jonas Vik',r:'Avviste planforslaget, vil snakke',c:'c-inf',s:'Svar',a:'Svar',col:'#8DBDF0'},
+    {i:'TR',n:'Tobias Rønning',r:'Delingen av IUP går ut om 2 dager',c:'c-amb',s:'Følg med',a:'Påminn',col:'#F2C46B'},
+    {i:'MS',n:'Maja Strand',r:'Ny rekord Club Speed: 112 mph',c:'c-grn',s:'Godt nytt',a:'Gratuler',col:'#6FD3C9'}
+  ];
+  const live=[{n:'Maja Strand',tp:-2,th:11,p:3,h:'pa pa bi pa pa bi pa bo pa bi pa'},{n:'Jonas Vik',tp:0,th:12,p:8,h:'pa pa pa bo pa bi pa pa pa pa pa pa'},{n:'Sander Holm',tp:1,th:9,p:14,h:'pa bo pa pa bi pa bo pa pa'},{n:'Kasper Lund',tp:3,th:8,p:27,h:'bo pa pa bo pa pa bo pa'}];
+  const axes=[['FYS','fys',22],['TEK','tek',28],['SLAG','slag',24],['SPILL','spill',18],['TURN','turn',8]];
+  const fmt=v=>v===0?'E':(v>0?'+':'−')+Math.abs(v);
+  const cls=v=>v<0?'u':v>0?'d':'';
+  const nav=(arr,on=0)=>arr.map((x,i)=>`<a href="#" class="${i===on?'on':''}">${x}</a>`).join('');
+
+  const D=()=>`<div class="mk dD">
+    <div class="d-top"><img src="${IMG.logo}" alt="Team Norway Golf"><nav class="d-nav">${nav(['Hjem','Spillere','Plan','Tester','Samlinger','Konkurranse'])}</nav><div class="d-me">Trener · Junior gutter<i>TR</i></div></div>
+    <div class="d-hero"><div class="d-photo"><img src="${IMG.slag}" alt=""></div>
+      <div class="d-heroin"><div class="in" style="--i:0"><div class="eb">Mandag 19. oktober · uke 43</div><h1>God morgen. <em>5 saker</em> venter på deg.</h1><p>Fire spillere er ute på Junior Tour Øst, og vintersamlingen starter om 21 dager.</p><div class="d-hb"><button class="btn d-b1">Ny testdag</button><button class="btn d-b2">Nytt innlegg</button></div></div>
+      <div class="d-stats"><div class="d-stat in" style="--i:2"><b><span data-count="87">87</span> %</b><span>Etterlevelse, 4 uker</span></div><div class="d-stat in" style="--i:3"><b><span data-count="16">16</span>/18</b><span>Har delt IUP</span></div><div class="d-stat in" style="--i:4"><b><span data-count="412">412</span> t</b><span>Treningstid gruppa</span></div></div></div></div>
+    <div class="d-body">
+      <div class="d-col">
+        <section class="d-card in" style="--i:4"><h2>Hvem trenger deg nå <a href="#">Alle saker</a></h2><div class="d-list">
+          ${need.map(p=>`<div class="d-row"><span class="av">${p.i}</span><div><b>${p.n}</b><span class="r">${p.r}</span></div><span class="chip ${p.c}">${p.s}</span></div>`).join('')}</div></section>
+        <section class="d-card in" style="--i:6"><h2>Gruppas trening, 4 uker <a href="#">Åpne plan</a></h2>
+          <div class="d-stack">${axes.map((a,k)=>`<i class="ax-${a[1]} fill" style="flex:${a[2]};--i:${k}"></i>`).join('')}</div>
+          <div class="d-leg">${axes.map(a=>`<span class="ax-${a[1]}">${a[0]} <b>${a[2]} %</b></span>`).join('')}</div></section>
+      </div>
+      <div class="d-col">
+        <section class="d-card d-sam in" style="--i:5"><div class="ph"><img src="${IMG.bane}" alt=""><div class="t"><b>Vintersamling 1 · Spania</b><span>9.–15. november · 18 spillere · 3 trenere</span></div></div>
+          <div class="bd"><div class="cd" data-cd><div><b data-u="d">21</b><span>dager</span></div><div><b data-u="h">00</b><span>timer</span></div><div><b data-u="m">00</b><span>min</span></div><div><b data-u="s">00</b><span>sek</span></div></div></div></section>
+        <section class="d-card d-live in" style="--i:7"><h2><span style="display:flex;gap:10px;align-items:center"><span class="livedot" aria-hidden="true"></span>I turnering nå</span><a href="#">Live</a></h2>
+          <div style="font-size:12px;color:#5E6E7F">Junior Tour Øst · runde 2</div>
+          ${live.map((p,k)=>`<div class="lr" data-live="${k}"><span>${p.n}</span><span class="num tp" style="color:${p.tp<0?'#076530':p.tp>0?'#96241C':'#0C1219'}">${fmt(p.tp)}</span><span class="num th" style="color:#5E6E7F">hull ${p.th}</span></div>`).join('')}</section>
+      </div>
+    </div></div>`;
+
+  const E=()=>`<div class="mk dE">
+    <div class="e-top"><img src="${IMG.logo}" alt="Team Norway Golf"><nav class="e-nav">${nav(['I dag','Spillere','Plan','Tester','Konkurranse'])}</nav></div>
+    <div class="e-grid">
+      <div>
+        <div class="e-date"><span class="e-track">19</span><small>Oktober<br>Mandag<br>Uke 43</small></div>
+        <p class="e-lead in" style="--i:2">God morgen. <b>Fem saker</b> venter, og <b>fire spillere</b> er ute på banen i dag.</p>
+        <div class="e-h"><b style="font-weight:400">Trenger deg</b><span>05</span></div>
+        ${need.map((p,k)=>`<div class="e-row in" style="--i:${3+k}"><span class="k">0${k+1}</span><div><b><span class="s" style="--s:${p.col}"></span>${p.n}</b><span class="r">${p.r}</span></div><span class="go">${p.a} →</span></div>`).join('')}
+      </div>
+      <div>
+        <div class="e-photo in" style="--i:1"><img src="${IMG.tee}" alt=""><div class="cap"><span class="l">Neste samling</span><b>Vintersamling · Spania</b><div class="e-cd" data-cd><span><b data-u="d">21</b><small>DAGER</small></span><span><b data-u="h">00</b><small>TIMER</small></span><span><b data-u="m">00</b><small>MIN</small></span><span><b data-u="s">00</b><small>SEK</small></span></div></div></div>
+        <div class="e-nums in" style="--i:4"><div><b><span data-count="87">87</span><small>%</small></b><span>Etterlevelse</span></div><div><b><span data-count="16">16</span><small>/18</small></b><span>Delt IUP</span></div><div><b><span data-count="16">16</span><small>d</small></b><span>Til testdag</span></div></div>
+        <div class="e-h"><b style="font-weight:400">Gruppas trening</b><span>412 t</span></div>
+        <div class="e-axes">${axes.map((a,k)=>`<div class="e-ax ax-${a[1]}"><b>${a[0]}</b><div class="bar"><i class="fill" style="width:${a[2]*3}%;--i:${k}"></i></div><span>${a[2]}%</span></div>`).join('')}</div>
+      </div>
+    </div></div>`;
+
+  function spark(pts,color){const w=200,h=36,max=Math.max(...pts),min=Math.min(...pts);const c=pts.map((p,i)=>[i/(pts.length-1)*w,h-4-(p-min)/(max-min||1)*(h-8)]);const d=c.map(x=>x.map(v=>v.toFixed(1)).join(',')).join(' L');return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true"><path d="M${d} L${w},${h} L0,${h}Z" fill="${color}" fill-opacity=".14"/><path d="M${d}" fill="none" stroke="${color}" stroke-width="1.8" vector-effect="non-scaling-stroke"/></svg>`;}
+  const F=()=>`<div class="mk dF"><div class="f-bg" style="background-image:url('${IMG.bane}')"></div>
+    <div class="f-top"><img src="${IMG.logow}" alt="Team Norway Golf"><nav class="f-nav">${nav(['Hjem','Spillere','Plan','Tester','Konkurranse'])}</nav><span class="f-q">⌘K  Søk</span></div>
+    <div class="f-hello in" style="--i:0"><div><div class="eb">Mandag 19. oktober · uke 43</div><h1>God morgen. <b>Maja leder</b> på to under.</h1></div></div>
+    <div class="f-grid">
+      <section class="g g-live in" style="--i:1"><h2>Junior Tour Øst · runde 2<span class="live"><span class="livedot" aria-hidden="true"></span>LIVE</span></h2>
+        ${live.map((p,k)=>`<div class="f-lr" data-live="${k}"><span class="pos">T${p.p}</span><div><div class="nm">${p.n}</div><div class="holes">${p.h.split(' ').map(x=>`<i class="${x}"></i>`).join('')}</div></div><span class="tp ${cls(p.tp)}">${fmt(p.tp)}</span><span class="th">${p.th}/18</span></div>`).join('')}</section>
+      <section class="g g-need in" style="--i:2"><h2>Trenger deg <span class="num" style="letter-spacing:0">5</span></h2>
+        ${need.map(p=>`<div class="f-n"><span class="av">${p.i}</span><div><b><span class="dot" style="--s:${p.col}"></span>${p.n}</b><span class="r">${p.r}</span></div><button>${p.a}</button></div>`).join('')}</section>
+      <section class="g g-k in" style="--i:3"><h2>Etterlevelse</h2><b><span data-count="87">87</span><small> %</small></b><span>Tid mot plan, 4 uker</span>${spark([78,81,79,84,83,86,87],'#8DBDF0')}</section>
+      <section class="g g-k in" style="--i:4"><h2>Delt IUP</h2><b><span data-count="16">16</span><small> / 18</small></b><span>2 mangler samtykke</span>${spark([11,12,12,14,15,15,16],'#6FD3C9')}</section>
+      <section class="g g-k in" style="--i:5"><h2>Treningstid</h2><b><span data-count="412">412</span><small> t</small></b><span>Gruppa, 4 uker</span>${spark([88,94,101,96,104,110,103],'#B9B0F2')}</section>
+      <section class="g g-k in" style="--i:6"><h2>Testdag</h2><b><span data-count="16">16</span><small> d</small></b><span>4. nov · 14 av 18 påmeldt</span>${spark([2,5,7,9,11,13,14],'#EBA3D8')}</section>
+      <section class="g g-ax in" style="--i:7"><h2>Gruppas trening <span class="num" style="letter-spacing:0">412 t</span></h2>
+        <div class="f-axes">${axes.map((a,k)=>`<div class="ax-${a[1]}"><span class="col"><i style="height:${a[2]*3.2}%;--i:${k}"></i></span><b>${a[0]}</b><span>${a[2]} %</span></div>`).join('')}</div></section>
+      <section class="g g-sam in" style="--i:8"><div class="img"><img src="${IMG.slag}" alt=""></div><div><h2>Neste samling</h2><div class="t">Vintersamling 1 · Spania</div><div class="m">9.–15. november · 18 spillere</div><div class="cdt" data-cdtext>21:00:00:00</div><div class="cdl">DAGER · TIMER · MIN · SEK</div></div></section>
+    </div></div>`;
+
+  const meta={
+    d:{t:'1 · Skrå',tag:'Lys · bilde kuttet på skrå · myke kort med dybde',why:['Bygget rett ut av Team Norway Golf sitt kommunikasjonssystem. Et ekte banebilde i navy toner, kuttet på skrå med en rød kant, og hvite kort som svever over bildet. Skjermen ser ut som en Team Norway-plakat, men jobber som et verktøy.',['Kjennes igjen som Team Norway med en gang','Arbeidsflaten under bildet er lys og rask','Gjenbruker tokens fra kommunikasjonssystemet'],['Bildet tar plass på små skjermer','Krever runde hjørner og skygger, som er forbudt i TN-appen i dag']]},
+    e:{t:'2 · Nordisk lys',tag:'Lys · logoens tynne sperrede bokstaver · hårfine linjer',why:['Tar stemmen fra selve logoen: tynne, sperrede store bokstaver og mye luft. Én stor dato, én liste med hårfine linjer og ett høyt bilde. Ingen kort og ingen bokser. Ro som premium.',['Mest eksklusiv og mest «skandinavisk»','Best på mobil og lett å lese','Svært lite å vedlikeholde'],['Færre tall synlig på én gang','Den tynne skriften krever nøye kontrastkontroll']]},
+    f:{t:'3 · Glass',tag:'Mørk · sløret banebilde · frostede paneler som lyser',why:['Banen ligger sløret i bakgrunnen og beveger seg sakte. Over den ligger frostede glasspaneler med lysende tall, live-turnering med hull for hull, og aksefarger som gløder. Føles som en premium sportsapp på storskjerm.',['Høyest premium-følelse','Live-turnering blir hovedsaken','Sterk på storskjerm under samling'],['Mørk standard bryter regelen om lys TN-app','Uskarphet koster ytelse på eldre telefoner','Lengst fra Team Norway-merket']]}
+  };
+
+  function countUp(root){root.querySelectorAll('[data-count]').forEach(el=>{const to=+el.dataset.count;if(reduce){el.textContent=to;return}const t0=performance.now();const st=t=>{const k=Math.min(1,(t-t0)/1100);el.textContent=Math.round(to*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(st)};requestAnimationFrame(st)})}
+  const target=Date.UTC(2026,10,9,7,0,0);
+  function countdown(){const ms=Math.max(0,target-Date.now());const d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5),m=Math.floor(ms%36e5/6e4),s=Math.floor(ms%6e4/1e3);const p=n=>String(n).padStart(2,'0');document.querySelectorAll('[data-cd] [data-u]').forEach(el=>el.textContent=p({d,h,m,s}[el.dataset.u]));document.querySelectorAll('[data-cdtext]').forEach(el=>el.textContent=`${p(d)}:${p(h)}:${p(m)}:${p(s)}`)}
+  let lt;
+  function startLive(){clearInterval(lt);if(reduce)return;lt=setInterval(()=>{const k=Math.floor(Math.random()*live.length),p=live[k];if(p.th>=18)return;p.th++;const r=Math.random(),ch=r<.2?-1:r>.85?1:0;p.tp+=ch;p.h+=' '+(ch<0?'bi':ch>0?'bo':'pa');
+    document.querySelectorAll(`[data-live="${k}"]`).forEach(row=>{const tp=row.querySelector('.tp'),th=row.querySelector('.th');tp.textContent=fmt(p.tp);
+      if(row.classList.contains('f-lr')){tp.className='tp '+cls(p.tp);th.textContent=p.th+'/18';const i=document.createElement('i');i.className=ch<0?'bi':ch>0?'bo':'pa';row.querySelector('.holes').appendChild(i)}
+      else{tp.style.color=p.tp<0?'#076530':p.tp>0?'#96241C':'#0C1219';th.textContent='hull '+p.th}
+      row.classList.remove('flash');void row.offsetWidth;row.classList.add('flash')})},3200)}
+  function glassLight(root){if(reduce)return;root.querySelectorAll('.g').forEach(g=>g.addEventListener('pointermove',e=>{const r=g.getBoundingClientRect();g.style.setProperty('--mx',((e.clientX-r.left)/r.width*100)+'%')}))}
+
+  function show(d){
+    document.querySelectorAll('.pick').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.d===d)));
+    stage.innerHTML=d==='d'?D():d==='e'?E():F();
+    const m=meta[d];
+    document.getElementById('st-title').textContent=m.t;document.getElementById('st-tag').textContent=m.tag;
+    document.getElementById('why').innerHTML=`<div><h3>Hva retningen er</h3><p>${m.why[0]}</p></div><div><h3>Styrker</h3><ul>${m.why[1].map(x=>`<li>${x}</li>`).join('')}</ul></div><div><h3>Svakheter</h3><ul>${m.why[2].map(x=>`<li>${x}</li>`).join('')}</ul></div>`;
+    stage.querySelectorAll('a[href="#"]').forEach(a=>a.addEventListener('click',e=>e.preventDefault()));
+    countUp(stage);countdown();startLive();glassLight(stage);
+    try{localStorage.setItem('tn-ny-vei',d)}catch(e){}
+  }
+  document.querySelectorAll('.pick').forEach(b=>b.addEventListener('click',()=>show(b.dataset.d)));
+  setInterval(countdown,1000);
+  let s='d';try{const v=localStorage.getItem('tn-ny-vei');if(v&&'def'.includes(v))s=v}catch(e){}
+  show(s);
+})();
+</script>

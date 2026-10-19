@@ -4,6 +4,28 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## TEAM NORWAY-APPEN FÅR RETNING «SKRÅ», OG HJØRNER OG SKYGGER ER IKKE LENGER FORBUDT (Anders 19.10.2026, bindende)
+
+Anders 19.10, etter tre nye retninger for trenerens hjem bygget fra Team Norway Golf-merket (`docs/design-system/utkast-tn/nye-veier.html`, https://claude.ai/artifact/KoFx3JHEDs9KvRPvUVYbwk): «Gå for 1 Skrå. Før det som beslutning, også at regelen om hjørner 0–4 px og ingen skygger oppheves for Team Norway-appen.»
+
+- **Retning 1 «Skrå» er visuell fasit for `/team-norway/*`.** Ekte banebilde i navy toner øverst, kuttet 4° nedover mot høyre med rød kant, og lyse kort som ligger over kanten.
+- **Hjørner og skygger er tillatt:** myke kort med radius og lagdelte navy-skygger, slik utkastet viser. Runde avatarer og pilleknapper følger med.
+- **Skråkuttet brukes bare på store flater** (toppen av en skjerm, seksjonsskiller), aldri på kort eller knapper. Bildene kommer fra `public/team-norway/bilder/`, ingen stockbilder.
+- **Uendret:** navy `#012B5D`, rød `#D70232` som identitet og aldri status, TN-aksefargene (14.10), logoen fra fil, IBM Plex Mono på tall, og lys arbeidsflate.
+
+**Overstyrer:** «hjørner 0 · 2 · 4, ingen skygger, ingen sirkler, kvadratisk avatar» i §TEAM NORWAY-APPEN BYTTER DESIGNSPRÅK (22.09), og «Rammene er låst» for TN i `docs/planer/tn-wang-designloft-2026-10-16.md`.
+
+**Arbeidet dette utløser:**
+
+1. **Utkastet i repoet:** `docs/design-system/utkast-tn/nye-veier.html`, retning 1. Gjort i samme PR.
+2. **Tokens:** `src/styles/team-norway-tokens.css` og speilet `src/lib/v2/team-norway.ts` får radiusskala, tre lagdelte skyggenivåer i navy og skråkuttet (4°). Ferdig når toppkommentaren ikke lenger sier 0 · 2 · 4 og ingen skygger, og verdiene finnes i begge filer.
+3. **Komponentene:** `src/components/team-norway/core.tsx`, `tn-flate.tsx`, `tn-stall.module.css`, `tn-skjerm.module.css`, `tn-skall.module.css` og `src/app/teamnorway/tn-innlogging.module.css` bruker de nye tokenene; avataren blir rund. Ferdig når et søk etter «ingen skygger» i `src/components/team-norway` gir 0 treff, og 390 og 1280 px er uten sidelengs rulling.
+4. **Trenerens hjem (TN-01):** `src/components/team-norway/skjermer/tn-oversikt-skjerm.tsx` får skråtoppen med bilde, kortene over kanten (saker som venter, neste samling med nedtelling, gruppas trening, turnering nå) og bevegelsen fra utkastet, med tidene fra TN-merket og `prefers-reduced-motion`. Ferdig når ingen tall er faste i koden og manglende data vises som «—».
+5. **Resten av skjermene** i denne rekkefølgen, én PR per pakke: spillere og IUP · samlinger og fellestesting · uttak, rangliste, turneringer og live · månedsplan og Workbench · analyse, Data Golf og administrasjon. Ferdig når ingen TN-side bruker 0 · 2 · 4-flatene.
+6. **Port 7:** Anders ser hjem og hver pakke i 390 og 1280 px på forhåndsvisningen.
+7. **Uavklart: menyen.** Utkastet viser hvit topplinje med piller; §TEAM NORWAY-APPEN BYTTER DESIGNSPRÅK sier navy sidemeny. Til Anders har svart, beholdes navy sidemeny på PC.
+8. **Uavklart: skriften.** Utkastet bruker Schibsted Grotesk fra Team Norway Golf-merket; appen bruker Jost og Lato. Til Anders har svart, beholdes Jost og Lato.
+
 ## FYS STÅR ALLTID NEDERST I PYRAMIDEN, PÅ ALLE FLATER (Anders 19.10.2026, bindende)
 
 Anders 19.10, etter å ha sett skjermgalleriet med alle tegningene: «Endre i alle visninger for pyramiden. Fysisk skal alltid vises nederst, ALDRI øverst. Gjør denne endringen over alle flater.»
@@ -1598,7 +1620,7 @@ Port 7 (Anders har sett skjermen) gjelder som for alle andre skjermer.
 
 ## TEAM NORWAY-APPEN BYTTER DESIGNSPRÅK (Anders 22.09.2026, bindende)
 
-**Det skarpe Team Norway-språket eier `/team-norway/*`. Claw er utgående for appen.** Fasit blir et nytt Claude Design-prosjekt «Team Norway App», avledet av «Team Norway Golf Design System» (`3416f258`): Jost display, Lato brødtekst, IBM Plex Mono på tall, hjørner 0 · 2 · 4, ingen skygger, ingen sirkler, kvadratisk avatar, lukket ikonsett på 20.
+**Det skarpe Team Norway-språket eier `/team-norway/*`. Claw er utgående for appen.** Fasit blir et nytt Claude Design-prosjekt «Team Norway App», avledet av «Team Norway Golf Design System» (`3416f258`): Jost display, Lato brødtekst, IBM Plex Mono på tall, ~~hjørner 0 · 2 · 4, ingen skygger, ingen sirkler, kvadratisk avatar~~ (overstyrt 19.10, §TEAM NORWAY-APPEN FÅR RETNING «SKRÅ»), lukket ikonsett på 20.
 
 - **Rød er `#D70232`** — målt fra logofilen. Kommunikasjonssystemets `#d40e3a` gjelder ikke i appen og rettes ved avledningen. Navy `#012B5D` er uendret i begge.
 - **Sidemenyen er full navy `#012B5D`**, hvit tekst, lysere navy bak aktiv rad, rød markør. Den bor bare i `TnShell`/`TnRail` — aldri bygget på nytt per side.
@@ -1719,7 +1741,7 @@ og ikke kan dras ut av syne.
 - Priser leses fra `ServiceType.priceOre`, aldri hardkodet. Kartleggingsøkt er fjernet (§KARTLEGGINGSØKT FJERNES).
 - Mulligan knyttes ikke direkte til AK Golf-merket; AK Golf promoterer bare.
 - Ingen «Vi svarer innen én virkedag» før Jarvis er i drift.
-- Team Norway: eget system, rød `#D70232`, navy `#012B5D`, kun for `/team-norway/*` — visuell fasit er §TEAM NORWAY-APPEN BYTTER DESIGNSPRÅK, ikke Claw. Team Norway får kun interne skjermer gratis mot at de promoterer appen (Anders 24.09.2026). Analyse og DataGolf for TN er delte plattformflater.
+- Team Norway: eget system, rød `#D70232`, navy `#012B5D`, kun for `/team-norway/*` — visuell fasit er §TEAM NORWAY-APPEN FÅR RETNING «SKRÅ» (19.10) og §TEAM NORWAY-APPEN BYTTER DESIGNSPRÅK, ikke Claw. Team Norway får kun interne skjermer gratis mot at de promoterer appen (Anders 24.09.2026). Analyse og DataGolf for TN er delte plattformflater.
 - WANG har eget system (`src/styles/wang-tokens.css`). Junior Academy og GFGK Junior er ulike ting.
 
 ## Data (brytes disse, blir tallene feil)
