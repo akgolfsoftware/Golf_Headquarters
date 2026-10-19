@@ -19,8 +19,21 @@ function prefiks(sel) {
   }).join(',');
 }
 
+/* Felles tokens (src/styles/ak-tokens.css, forslag 1 i analysen 20.10.2026): hex som har en
+   token blir var(--ak-*), så .fln-laget er alias og ikke en tredje kopi av fargene. */
+const TOKEN = {
+  '#faf8f3': '--ak-sand-100', '#f1eee8': '--ak-sand-150', '#ddd9d1': '--ak-sand-300', '#ffffff': '--ak-hvit',
+  '#141413': '--ak-g900', '#2a2926': '--ak-g800', '#46443f': '--ak-g600', '#686560': '--ak-g500',
+  '#9b2415': '--ak-rust-600', '#fbe9e7': '--ak-rust-100', '#8a2a1c': '--ak-rust-tekst',
+  '#2f6b3a': '--ak-green-700', '#eaf3e9': '--ak-green-50', '#7e6110': '--ak-amber-700', '#fbf4e4': '--ak-amber-50', '#1d3557': '--ak-blue-800',
+  '#788c5d': '--ak-fys', '#556740': '--ak-fys-ink-fylt', '#b8852a': '--ak-tek', '#825d15': '--ak-tek-ink-fylt',
+  '#2563eb': '--ak-slag', '#1d4fd0': '--ak-slag-ink', '#c46686': '--ak-spill', '#954661': '--ak-spill-ink-fylt', '#a32d2d': '--ak-turn',
+};
+const tilToken = (v) => v.replace(/#[0-9a-fA-F]{6}\b/g, (m) => (TOKEN[m.toLowerCase()] ? `var(${TOKEN[m.toLowerCase()]})` : m));
+
 function lag(css, medTokens) {
   const root = postcss.parse(css);
+  root.walkDecls((d) => { d.value = tilToken(d.value); });
   root.walkAtRules('keyframes', (a) => { if (KF.includes(a.params)) a.params = 'fln-' + a.params; });
   root.walkDecls(/^animation/, (d) => { for (const k of KF) d.value = d.value.replace(new RegExp('(^|\\s)' + k + '(\\s|$)'), '$1fln-' + k + '$2'); });
   root.walkAtRules('media', (a) => { if (/prefers-color-scheme/.test(a.params)) a.remove(); });
@@ -31,8 +44,8 @@ function lag(css, medTokens) {
       r.selector = '.fln';
       r.walkDecls((d) => {
         if (d.prop.startsWith('--side')) d.remove();
-        if (d.prop === '--sans') d.value = 'var(--font-ibm-plex-sans, "IBM Plex Sans"), system-ui, -apple-system, sans-serif';
-        if (d.prop === '--mono') d.value = 'var(--font-ibm-plex-mono, "IBM Plex Mono"), ui-monospace, Menlo, monospace';
+        if (d.prop === '--sans') d.value = 'var(--ak-font-sans)';
+        if (d.prop === '--mono') d.value = 'var(--ak-font-mono)';
       });
       return;
     }

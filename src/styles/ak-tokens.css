@@ -1,0 +1,99 @@
+/*
+ * AK Golf HQ — felles grunntokens for Precision Athletics (forslag 1 og 2 i
+ * docs/design-system/analyse-frontend-playerhq-agencyos-2026-10-20.md).
+ *
+ * Én blokk på :root. Verdiene er hentet ordrett fra .pa-root i
+ * src/styles/precision-athletics.css (fasit) 20.10.2026. De tre lagene
+ * (.pa-root, .phn, .agn/.agn-s/.fln) beholder sine gamle variabelnavn, men som
+ * alias som peker hit. En fargebeslutning er fra nå av én linje i denne fila.
+ *
+ * Navneregel: alt her heter --ak-<ting>. Navnene --ak-akse-* og --ak-ok er
+ * opptatt av eldre tokensett (ak-hq-tokens.css, designsystem/ak-golf) og
+ * brukes derfor ikke her: aksene heter --ak-fys osv., status --ak-status-*.
+ *
+ * Semantiske navn (--surface-*, --text-*, --primary, --signal …) bor fortsatt i
+ * .pa-root, fordi nattemaet overstyrer dem der.
+ */
+:root {
+  /* Sand (bakgrunner) og hvit */
+  --ak-sand-100: #faf8f3;
+  --ak-sand-150: #f1eee8;
+  --ak-sand-200: #e6e3dd;
+  --ak-sand-300: #ddd9d1;
+  --ak-sand-400: #c9c4ba;
+  --ak-hvit: #ffffff;
+
+  /* Grafitt (tekst, primærknapp) */
+  --ak-g900: #141413;
+  --ak-g800: #2a2926;
+  --ak-g700: #3a3935;
+  --ak-g600: #46443f;
+  --ak-g500: #686560;
+  --ak-g400: #8a8680;
+
+  /* Rust: signal, aldri handling */
+  --ak-rust-600: #9b2415;
+  --ak-rust-700: #7d1c10;
+  --ak-rust-400: #d8553f;
+  --ak-rust-100: #fbebea;
+  /* Rust som tekst på rust-tint (feilmelding, trend ned). Ikke i .pa-root;
+     utkastene 13.10 og alle tre nye lag bruker denne. */
+  --ak-rust-tekst: #8a2a1c;
+
+  /* Status: grønt og rødt er bare status, aldri identitet */
+  --ak-green-700: #2f6b3a;
+  --ak-green-50: #eaf2ea;
+  --ak-amber-700: #7e6110;
+  --ak-amber-50: #fbf4e4;
+  --ak-blue-800: #1d3557;
+  --ak-blue-50: #e8edf4;
+  --ak-status-ok: var(--ak-green-700);
+  --ak-status-ok-tint: var(--ak-green-50);
+  --ak-status-warn: var(--ak-amber-700);
+  --ak-status-warn-tint: var(--ak-amber-50);
+  --ak-status-info: var(--ak-blue-800);
+  --ak-status-info-tint: var(--ak-blue-50);
+
+  /* Aksene FYS · TEK · SLAG · SPILL · TURN. Farge betyr akse, og ingenting annet.
+     -ink: tekst og tynne streker på lys bunn. -soft: tint bak tekst i aksefargen.
+     -ink-fylt: utkastenes mørkere variant for FYLTE flater med hvit tekst
+     (øktkort, neste økt). SLAG og TURN har samme ink i begge. */
+  --ak-fys: #788c5d;
+  --ak-fys-ink: #63784a;
+  --ak-fys-soft: rgba(120, 140, 93, .13);
+  --ak-fys-ink-fylt: #556740;
+  --ak-tek: #b8852a;
+  --ak-tek-ink: #8a6316;
+  --ak-tek-soft: rgba(184, 133, 42, .13);
+  --ak-tek-ink-fylt: #825d15;
+  --ak-slag: #2563eb;
+  --ak-slag-ink: #1d4fd0;
+  --ak-slag-soft: rgba(37, 99, 235, .13);
+  --ak-slag-ink-fylt: #1d4fd0;
+  --ak-spill: #c46686;
+  --ak-spill-ink: #9e4a67;
+  --ak-spill-soft: rgba(196, 102, 134, .16);
+  --ak-spill-ink-fylt: #954661;
+  --ak-turn: #a32d2d;
+  --ak-turn-ink: #a32d2d;
+  --ak-turn-soft: rgba(163, 45, 45, .13);
+  --ak-turn-ink-fylt: #a32d2d;
+
+  /* Skrifter (next/font setter --font-ibm-plex-*; ellers systemfallback) */
+  --ak-font-sans: var(--font-ibm-plex-sans), "IBM Plex Sans", system-ui, sans-serif;
+  --ak-font-mono: var(--font-ibm-plex-mono), "IBM Plex Mono", ui-monospace, monospace;
+
+  /* Hjørner. Låst 20.10.2026 (analysen, forslag 2): kort 12, knapp 8. */
+  --ak-r-kort: 12px;
+  --ak-r-knapp: 8px;
+  --ak-r-indre: 4px;
+  --ak-r-pille: 999px;
+
+  /* Låste mål (forslag 2). CSS kan ikke lese var() i @media/@container, så
+     tallene står her som dokumentasjon og voktes av scripts/check-brytepunkt.mjs:
+     PC er 900 px containerbredde (skjerm inni skall) eller 1024 px vindusbredde
+     (skallet selv). Nye @media (min-width) i *-ny*.css får bare 600, 900 og 1024. */
+  --ak-bryt-pc-container: 900px;
+  --ak-bryt-pc-media: 1024px;
+  --ak-innhold-maks: 1200px;
+}
