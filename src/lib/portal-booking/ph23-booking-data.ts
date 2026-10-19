@@ -50,6 +50,8 @@ export type PH23MyBooking = {
   startIso?: string;
   coachId?: string | null;
   coachName?: string | null;
+  /** Dag og kort måned for datoruta i listene, f.eks. { nr: "24", mnd: "sep" }. */
+  dato?: { nr: string; mnd: string };
 };
 
 export type PH23PastBooking = {
@@ -60,6 +62,9 @@ export type PH23PastBooking = {
   t: string;
   ref: string;
   src: string;
+  /** Gjennomført eller Avbestilt, når statusen er kjent. */
+  status?: string;
+  dato?: { nr: string; mnd: string };
 };
 
 /** Ekte ledig tid: eksakt start (naiv Oslo-veggklokke, samme streng som wizarden) og coach. */
@@ -312,6 +317,14 @@ export function mapHubDataToPH23(
     };
   };
 
+  const datoRute = (iso: string) => {
+    const d = new Date(iso);
+    return {
+      nr: new Intl.DateTimeFormat("nb-NO", { day: "numeric", timeZone: "Europe/Oslo" }).formatToParts(d).find((p) => p.type === "day")?.value ?? "—",
+      mnd: d.toLocaleDateString("nb-NO", { month: "short", timeZone: "Europe/Oslo" }).replace(".", ""),
+    };
+  };
+
   const mine: PH23MyBooking[] = hub.upcoming.map((b) => ({
     id: b.id,
     svc: b.serviceName,
@@ -323,15 +336,18 @@ export function mapHubDataToPH23(
     pay: b.fromCredits ? "Klipp" : "Kort",
     startIso: b.startIso,
     coachName: b.coachName,
+    dato: datoRute(b.startIso),
   }));
 
   const past: PH23PastBooking[] = hub.past.map((b) => ({
     id: b.id,
     svc: b.serviceName,
-    svcName: `${b.serviceName} · ${b.durationMin} min${b.status === "CANCELLED" ? " · Avbestilt" : ""}`,
+    svcName: `${b.serviceName} · ${b.durationMin} min`,
     ...dagOgTid(b.startIso, true),
     ref: `BK-${b.id.slice(0, 8).toUpperCase()}`,
     src: `${b.locationName} · ${b.coachName ?? "Uten coach"}`,
+    status: b.status === "CANCELLED" ? "Avbestilt" : b.status === "COMPLETED" ? "Gjennomført" : undefined,
+    dato: datoRute(b.startIso),
   }));
 
   const { days, slots, slotDetails } = byggSlotData(slotVindu);

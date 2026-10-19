@@ -73,6 +73,13 @@ function KlippStolpe({ total, left }: { total: number; left: number }) {
   </div>;
 }
 
+/** Datoruta i listene: dagnummer over kort måned. Eldre data uten `dato` faller tilbake til dagteksten. */
+function DatoRute({ m }: { m: { day: string; dato?: { nr: string; mnd: string } } }) {
+  return m.dato
+    ? <span className="phn-k-d"><b>{m.dato.nr}</b><span>{m.dato.mnd}</span></span>
+    : <span className="phn-k-d"><b>{m.day.split(" ")[1]?.slice(0, 2) ?? "—"}</b><span>{m.day.split(" ")[0]}</span></span>;
+}
+
 function BookingKort({ m, bred = false, onClick }: { m: PH23MyBooking; bred?: boolean; onClick?: () => void }) {
   const innhold = <>
     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -535,7 +542,7 @@ export function PH23Booking({
           <div className="phn-sek-topp"><h2>Kommende</h2></div>
           <div className="phn-k-booking-liste">
             {resten.map((m) => <button key={m.id} type="button" onClick={() => apne(m)}>
-              <span className="phn-k-d"><b>{m.day.split(" ")[1]?.slice(0, 2) ?? "—"}</b><span>{m.day.split(" ")[0]}</span></span>
+              <DatoRute m={m} />
               <span className="phn-k-t"><b>{m.svcName}</b><span>{m.day} kl. {m.t || "—"} · {statusTekst(m.status)}</span></span>
               <ChevronRight className="phn-ikon" aria-hidden />
             </button>)}
@@ -545,8 +552,8 @@ export function PH23Booking({
           <div className="phn-sek-topp"><h2>Tidligere</h2></div>
           <div className="phn-k-booking-liste">
             {defaultData.past.map((m) => <div key={m.id}>
-              <span className="phn-k-d"><b>{m.day.split(" ")[1]?.slice(0, 2) ?? "—"}</b><span>{m.day.split(" ")[0]}</span></span>
-              <span className="phn-k-t"><b>{m.svcName}</b><span>{m.day} kl. {m.t} · {m.src}</span></span>
+              <DatoRute m={m} />
+              <span className="phn-k-t"><b>{m.svcName}</b><span>{m.status ? `${m.status} · ` : ""}kl. {m.t} · {m.src}</span></span>
               <span className="phn-k-kildetekst">{m.ref}</span>
             </div>)}
           </div>

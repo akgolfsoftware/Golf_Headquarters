@@ -211,7 +211,7 @@ export function PH21Innboks({ data, initialTab = "msg", tilstand = "data", feilT
         <b className="phn-k-undertittel">Coachen følger med her når du er med i AK Golf Academy</b>
         <p className="phn-forklar">Med en coaching-pakke eller plass i en AK-gruppe får du egen coach, ukeplaner laget for deg og direkte meldinger her.</p>
         <div className="phn-knapper">
-          <Link href="/portal/booking" className="phn-knapp pri">Book time</Link>
+          <Link href="/portal/booking/ny" className="phn-knapp pri">Book time</Link>
           <Link href="/portal/caddie" className="phn-knapp sek">Spør Caddie</Link>
         </div>
       </section>

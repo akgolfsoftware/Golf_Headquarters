@@ -26,7 +26,7 @@ export function PH23Anlegg({ data }: { data: PH23AnleggData }) {
   const antall = data.fasiliteter.length;
   return <div className="phn">
     <div className="phn-bm-topp">
-      <Link href="/portal/booking" className="phn-k-tilbake"><ChevronLeft className="phn-ikon" aria-hidden />Book time</Link>
+      <Link href="/portal/booking/ny" className="phn-k-tilbake"><ChevronLeft className="phn-ikon" aria-hidden />Book time</Link>
       <div><div className="phn-dato">Anlegg</div><h1 className="phn-tittel">{data.navn}</h1></div>
     </div>
     <div className="phn-bm-to-kol">
