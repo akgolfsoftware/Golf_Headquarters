@@ -16,10 +16,12 @@ import {
   KandidaterSchema,
   KoblingsstatusSchema,
   ProfilResultaterSchema,
+  SpillerprofilSchema,
   type Kandidater,
   type KoblingsMetode,
   type Koblingsstatus,
   type ProfilResultater,
+  type Spillerprofil,
 } from "./typer";
 import type { Oppslag } from "./regler";
 
@@ -111,4 +113,22 @@ export async function hentProfilResultater(userId: string): Promise<ProfilResult
     SELECT dashboard.profile_results(${userId}::text) AS r`;
   const r = rader[0]?.r;
   return r == null ? null : ProfilResultaterSchema.parse(r);
+}
+
+/**
+ * Hele profilen til én spiller, slått opp via spillerens bekreftede kobling (migrasjon 0023).
+ * Én kilde for PlayerHQ, AgencyOS, WANG og Team Norway: ingen kopi, ingen person-id fra klienten.
+ *
+ * KALLEREN må først ha kontrollert at betrakteren har lov til å se denne spilleren (eget innsyn,
+ * trener eller delingssamtykke, og mindreårigregelen). `inkluderGolfId` skal bare være true for
+ * trenere (Anders 20.10.2026); spilleren selv og andre får den ikke.
+ */
+export async function hentSpillerprofil(
+  spillerUserId: string,
+  { inkluderGolfId = false }: { inkluderGolfId?: boolean } = {},
+): Promise<Spillerprofil | null> {
+  const rader = await prisma.$queryRaw<{ r: unknown }[]>`
+    SELECT dashboard.player_profile_for_user(${spillerUserId}::text, ${inkluderGolfId}::boolean) AS r`;
+  const r = rader[0]?.r;
+  return r == null ? null : SpillerprofilSchema.parse(r);
 }
