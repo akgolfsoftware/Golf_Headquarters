@@ -42,6 +42,8 @@ export type EndretTimeInput = {
   stripePaymentIntentId: string | null;
   /** Innlogget spiller (appbruker) eller gjest uten konto. */
   harKonto: boolean;
+  /** Signert lenke der gjesten flytter eller avbestiller (`gjest-lenke.ts`). Null: kvitteringen. */
+  gjestEndreUrl?: string | null;
   dark?: boolean;
   introHtml?: string;
 };
@@ -125,7 +127,7 @@ export function byggEndretTimeEpost(input: EndretTimeInput): { subject: string; 
 
   const endreLenke = input.harKonto
     ? `${input.appUrl}/portal/meg/bookinger`
-    : `${input.appUrl}/booking/kvittering/${input.bookingId}`;
+    : input.gjestEndreUrl ?? `${input.appUrl}/booking/kvittering/${input.bookingId}`;
 
   const body =
     (input.introHtml ?? avsnitt(`Hei ${esc(input.fornavn ?? "der")}. Timen din har fått ny tid.`, c)) +
@@ -148,7 +150,7 @@ export function byggEndretTimeEpost(input: EndretTimeInput): { subject: string; 
           ["Se bookingen i PlayerHQ", `${input.appUrl}/portal/meg/bookinger`],
           ["Endre eller avbestill", endreLenke],
         ]
-      : [["Se bookingen", endreLenke]],
+      : [[input.gjestEndreUrl ? "Endre eller avbestill" : "Se bookingen", endreLenke]],
     dark: input.dark,
   });
 

@@ -174,6 +174,8 @@ export async function createBookingCheckout(
 
     const payment = await startBookingPayment(booking.id, {
       mode: "payment",
+      // Bare kort (Apple Pay vises som kortlommebok), ikke det dashbordet ellers slår på (beslutninger §INNLOGGING BARE MED GOOGLE OG PASSORD).
+      payment_method_types: ["card"],
       customer_email: user?.email ?? data.email.trim().toLowerCase(),
       line_items: [
         {

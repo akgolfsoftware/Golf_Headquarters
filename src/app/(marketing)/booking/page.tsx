@@ -5,8 +5,8 @@
  * (MarkedBookingV2) er ikke lenger i bruk.
  *
  * Acuity-pausen (kanBrukeInnebygdBooking) og Prisma-spørringen er beholdt fra
- * v2-porten 16. juli 2026. Undersidene `/booking/[slug]` består uendret —
- * de er fortsatt Stripe-flytens landingspunkt ved avbrutt betaling.
+ * v2-porten 16. juli 2026. `/booking/[slug]` og `/booking/[slug]/bekreft` sender
+ * hit med `?tjeneste=` (19.10.2026), også ved avbrutt betaling i Stripe.
  */
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
@@ -62,7 +62,11 @@ function sorterSomFasit<T extends { sorterPaa: string | null; pris: number }>(a:
 // viser sitt eget sted.
 const LOKASJON_FALLBACK = "Gamle Fredrikstad GK";
 
-export default async function BookingLanding() {
+export default async function BookingLanding({
+  searchParams,
+}: {
+  searchParams: Promise<{ tjeneste?: string }>;
+}) {
   // Pauset for publikum: alle domener sendes til Acuity. Kun ADMIN ser flyten
   // (til BOOKING_PUBLIC=true) — se src/lib/booking/offentlig-booking.ts.
   if (!(await kanBrukeInnebygdBooking())) {
@@ -121,6 +125,7 @@ export default async function BookingLanding() {
       tjenester={tjenester}
       abonnement={abonnement}
       lokasjon={lokasjonRad?.name ?? LOKASJON_FALLBACK}
+      startSlug={(await searchParams).tjeneste ?? null}
     />
   );
 }

@@ -16,6 +16,7 @@ import { byggBekreftelse, googleKalenderUrl, datoTekst, klokkeTekst } from "./bo
 
 import { byggAvbestilling, formaterKr as avbestillingKr, osloDagOgTid, refusjonTekst, type Refusjon } from "./templates/avbestilling-mal";
 import { bookingTemplateContent } from "./booking-template-content";
+import { gjestEndreUrl } from "@/lib/booking/gjest-lenke";
 import { avsnitt, epostSkall, esc, faktaRader } from "./precision-epost";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://akgolf.no";
@@ -69,6 +70,9 @@ export async function sendBookingConfirmation(bookingId: string) {
     bookingUrl: `${APP_URL}/portal/meg/bookinger`,
   };
   const endreGjest = `mailto:post@akgolf.no?subject=${encodeURIComponent(`Booking ${referanse}`)}`;
+  // Steg 5: gjesten endrer og avbestiller selv fra en signert lenke. Deltaker 2 i duo
+  // betalte ikke og får ikke lenken; hen skriver til oss.
+  const endreGjestSelv = gjestEndreUrl(APP_URL, booking.id, booking.startAt) ?? endreGjest;
   const tilbudGjest = { tekst: "plan fra coachen, økter, tester og analyse av rundene dine", manedNok: null, arNok: null };
 
   const { subject, html } = byggBekreftelse({
@@ -77,7 +81,7 @@ export async function sendBookingConfirmation(bookingId: string) {
     fornavn: navn ? navn.split(" ")[0] : null,
     prisOre: booking.subscriptionId ? null : booking.priceOre,
     betalingsref: booking.stripePaymentIntentId,
-    endreUrl: erGjest ? endreGjest : `${APP_URL}/portal/meg/bookinger`,
+    endreUrl: erGjest ? endreGjestSelv : `${APP_URL}/portal/meg/bookinger`,
     opprettKontoUrl: erGjest ? `${APP_URL}/auth/signup` : null,
     spillerhqTilbud: erGjest ? tilbudGjest : null,
   });
@@ -164,7 +168,8 @@ export async function sendBookingReminder(bookingId: string, now = new Date(), e
     lenker: {
       veibeskrivelse: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(booking.location.address || booking.location.name)}`,
       bookingIApp: `${APP_URL}/portal/booking/${encodeURIComponent(booking.id)}`,
-      endre: `mailto:post@akgolf.no?subject=${encodeURIComponent(`Booking #${booking.id.slice(-8)}`)}`,
+      endre: gjestEndreUrl(APP_URL, booking.id, booking.startAt)
+        ?? `mailto:post@akgolf.no?subject=${encodeURIComponent(`Booking #${booking.id.slice(-8)}`)}`,
     },
   }, { introHtml: content.introHtml });
   try {
@@ -266,6 +271,7 @@ export async function sendBookingRescheduled(bookingId: string, oldStartAt: Date
     erKlipp: !!booking.subscriptionId,
     stripePaymentIntentId: booking.stripePaymentIntentId,
     harKonto: !!booking.userId,
+    gjestEndreUrl: booking.userId ? null : gjestEndreUrl(APP_URL, booking.id, booking.startAt),
   });
 
   try {
