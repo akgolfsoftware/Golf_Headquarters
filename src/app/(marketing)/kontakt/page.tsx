@@ -1,19 +1,20 @@
 /**
- * Marketing Kontakt (v2, retning C). Offentlig: ingen auth-guard (markedsflate).
- * Marketing har egen chrome (MRamme) i komponenten. Skjemaets server-action
- * ligger i ./actions.ts (flyttet 1:1 fra tidligere (mlegacy)/kontakt).
+ * Kontakt (/kontakt) i «AK Golf Precision Athletics». OFFENTLIG: ingen auth-guard.
+ * Skjemaets server-handling ligger i ./actions.ts.
  */
 
 import type { Metadata } from "next";
-import { MarkedKontaktV2 } from "@/components/marketing/v2/MarkedKontaktV2";
+import { KontaktPrecision } from "@/components/marketing/ds-sider/KontaktPrecision";
+
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "Kontakt AK Golf Academy",
   description:
-    "Ta kontakt med AK Golf Academy. Personlig coaching, booking og spørsmål. Vi svarer innen 1 virkedag.",
+    "Skriv til AK Golf Academy om coaching, juniorgruppene, PlayerHQ eller et opplegg for bedriften, eller ring direkte.",
   formatDetection: { telephone: true },
 };
 
 export default function KontaktPage() {
-  return <MarkedKontaktV2 />;
+  return <KontaktPrecision />;
 }

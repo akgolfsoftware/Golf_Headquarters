@@ -14,6 +14,10 @@ const SIDER = [
   "CoachingPrecision.tsx",
   "CoacherPrecision.tsx",
   "OmOssPrecision.tsx",
+  "KontaktPrecision.tsx",
+  "FaqPrecision.tsx",
+  "JuniorPrecision.tsx",
+  "PlayerHQPrecision.tsx",
 ];
 
 /** Kildetekst uten kommentarlinjer, så dokumentasjonen kan nevne det som er utelatt. */
@@ -87,8 +91,23 @@ describe("Markedssidene: merke- og prisregler", () => {
   });
 
   it("prøveuken er én uke", () => {
-    const k = kode("PriserPrecision.tsx");
-    assert.match(k, /én uke/);
-    assert.doesNotMatch(k, /30 dager/);
+    for (const fil of ["PriserPrecision.tsx", "FaqPrecision.tsx", "PlayerHQPrecision.tsx"]) {
+      const k = kode(fil);
+      assert.match(k, /én uke/, fil);
+      assert.doesNotMatch(k, /30 dager|første måned/i, fil);
+    }
+  });
+
+  it("PlayerHQ har fanene I dag, Plan, Stats og Meg", () => {
+    const k = kode("PlayerHQPrecision.tsx");
+    for (const fane of ["I dag", "Plan", "Stats", "Meg"]) {
+      assert.match(k, new RegExp(`tittel: "${fane}"`));
+    }
+    assert.doesNotMatch(k, /tittel: "Analyse"/);
+  });
+
+  it("kontaktsiden lover ingen svartid", () => {
+    assert.doesNotMatch(kode("KontaktPrecision.tsx"), /svarer innen|samme dag/i);
+    assert.doesNotMatch(kode("FaqPrecision.tsx"), /svarer innen|samme dag/i);
   });
 });

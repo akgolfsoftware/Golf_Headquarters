@@ -1,11 +1,10 @@
 /**
- * MARKEDSSIDE Junior (/junior). OFFENTLIG: ingen auth-guard.
- * Skallet (nav/bunn) eies av `(marketing)/layout.tsx` — siden tegner aldri
- * eget chrome. Master AK Golf, MASTERPLAN 18.33 runde 2.
+ * Junior (/junior) i «AK Golf Precision Athletics». OFFENTLIG: ingen auth-guard.
+ * Skallet (nav/bunn) eies av `(marketing)/layout.tsx`.
  */
 import type { Metadata } from "next";
 
-import { JuniorAK } from "@/components/marketing/ak-sider/JuniorAK";
+import { JuniorPrecision } from "@/components/marketing/ds-sider/JuniorPrecision";
 
 export const metadata: Metadata = {
   title: "Junior · AK Golf Academy",
@@ -14,5 +13,5 @@ export const metadata: Metadata = {
 };
 
 export default function JuniorPage() {
-  return <JuniorAK />;
+  return <JuniorPrecision />;
 }
