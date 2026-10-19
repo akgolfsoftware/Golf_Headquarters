@@ -72,3 +72,14 @@ test("rescheduleOutcome: admin always", () => {
 test("AVBESTILLING_FRIST_TIMER is 24", () => {
   assert.equal(AVBESTILLING_FRIST_TIMER, 24);
 });
+
+test("gjest: bare egen booking uten konto, og 24-timersfristen gjelder", () => {
+  const gjest = { ...base, userId: null, subscriptionId: null, stripePaymentIntentId: "pi_1", priceOre: 120000 };
+  const actor = { kind: "guest", bookingId: "b1" } as const;
+  assert.equal(cancelOutcome(gjest, actor, nowFar).refundStripe, true);
+  assert.equal(cancelOutcome(gjest, actor, nowLate).refundStripe, false);
+  assert.equal(rescheduleOutcome(gjest, actor, nowLate).allowed, false);
+  assert.equal(rescheduleOutcome(gjest, actor, nowFar).allowed, true);
+  assert.equal(cancelOutcome(gjest, { kind: "guest", bookingId: "annen" }, nowFar).allowed, false);
+  assert.equal(cancelOutcome({ ...gjest, userId: "player-1" }, actor, nowFar).allowed, false);
+});
