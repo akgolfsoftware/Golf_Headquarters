@@ -10,6 +10,8 @@ import { WangKonkurranse } from '@/components/wang/WangKonkurranse';
 import { WangMeldinger } from '@/components/wang/WangMeldinger';
 import { WangElever } from '@/components/wang/WangElever';
 import { WangAdmin } from '@/components/wang/WangAdmin';
+import { WangAdminLukket } from '@/components/wang/WangAdminOpptak';
+import type { WangOpptakData } from '@/app/team-wang/_data/wang-opptak-visning';
 import { WangSkjermoversikt } from '@/components/wang/WangSkjermoversikt';
 import type { WangRolle } from '@/app/team-wang/_data/wang-rolle';
 import type { WangTrenerData } from '@/app/team-wang/_data/wang-trener-data';
@@ -39,6 +41,8 @@ interface WangCoachKlientProps {
   fireukerssjekk?: WangFireukerssjekk;
   /** Data Golf (Konkurranse › Data Golf), bare når kanSeDataGolf slapp brukeren inn. */
   dataGolf?: WangDataGolfData;
+  /** Opptak og koordinering (Administrasjon), bare for sportssjef. */
+  opptak?: WangOpptakData;
   /** Ekte gruppedata, bygget på serveren (byggWangTrenerData). */
   data: WangTrenerData;
 }
@@ -55,6 +59,7 @@ export function WangCoachKlient({
   elevdata,
   fireukerssjekk,
   dataGolf,
+  opptak,
   data,
 }: WangCoachKlientProps) {
   const router = useRouter();
@@ -133,10 +138,13 @@ export function WangCoachKlient({
         />
       )}
 
-      {omraade === 'admin' && (
+      {omraade === 'admin' && rolle !== 'Sportssjef' && <WangAdminLukket />}
+
+      {omraade === 'admin' && rolle === 'Sportssjef' && (
         <WangAdmin
           aktivFane={fane}
           tester={tester}
+          opptak={opptak}
           onFaneEndret={(nyFane) => navigerTil('admin', nyFane)}
           data={data}
         />

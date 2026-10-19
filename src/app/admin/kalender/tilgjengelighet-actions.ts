@@ -10,8 +10,8 @@
  * - En fridag er en heldags `CalendarEvent` for coachen med tittel «Fridag»
  *   (src/lib/booking/fridag.ts). Lukeberegningen fjerner tid som overlapper en
  *   hendelse for coachen, så fridagen tar bort all tid den dagen.
- * - Buffer per coach er ikke med: den krever et nytt felt i basen
- *   (`users.bookingBufferMin`), som venter på Anders' ja. Tjenestens buffer gjelder.
+ * - Bufferen lagres på coachen (`users.bookingBufferMin`) og gjelder i tillegg
+ *   til tjenestens buffer; den største vinner (src/lib/booking/availability.ts).
  */
 
 import { z } from "zod";
@@ -155,6 +155,15 @@ export async function slettFridag(id: string): Promise<TilgResultat> {
     where: { id, coachId: user.id, title: { startsWith: FRIDAG_TITTEL } },
   });
   if (res.count === 0) return { ok: false, feil: "Fant ikke fridagen." };
+  revalider();
+  return { ok: true };
+}
+
+/** Coachens buffer mellom to timer, 0–120 minutter. */
+export async function settBuffer(minutter: number): Promise<TilgResultat> {
+  const user = await requireCoachActionUser();
+  if (!Number.isInteger(minutter) || minutter < 0 || minutter > 120) return { ok: false, feil: "Bufferen må være mellom 0 og 120 minutter." };
+  await prisma.user.update({ where: { id: user.id }, data: { bookingBufferMin: minutter } });
   revalider();
   return { ok: true };
 }

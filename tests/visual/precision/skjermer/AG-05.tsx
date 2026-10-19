@@ -62,6 +62,7 @@ const tilg: TilgData = {
     { id: "s5", weekday: null, date: "2026-10-24", startTime: "09:00", endTime: "13:00", locationId: "l1", stedNavn: "Prøvestudio 1", validFrom: null, validTo: null, recurrenceInterval: null, active: true },
   ],
   fridager: [{ id: "f1", dato: "2026-12-24", grunn: "Juleaften" }, { id: "f2", dato: "2026-12-31", grunn: null }],
+  bufferMin: 15,
   steder: [{ id: "l1", navn: "Prøvestudio 1" }],
 };
 
