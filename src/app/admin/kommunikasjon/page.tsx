@@ -33,13 +33,15 @@
  * Varsler har sakene, Innboks › E-post har utkastene (bare ADMIN, som før) og
  * «Sendt og arkivert». Bare fanen Maler står igjen her — den har ingen
  * tegning i Innboks.
+ *
+ * 19.10.2026: Maler i nytt design (AG04Maler), samme handlinger som AdminEmailV2.
  */
 
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { Topp } from "@/components/admin/agencyos-ny/ny";
-import { AdminEmailV2 } from "@/components/admin/v2/AdminEmailV2";
+import { AG04Maler } from "@/components/admin/precision/AG04Maler";
 import { velgKommunikasjonFane } from "@/lib/admin/kommunikasjon/faner";
 import { innboksHref, lesInnboksFilter } from "@/lib/admin/innboks/filter";
 import { lastKommunikasjonMaler } from "@/lib/admin/kommunikasjon/lastere";
@@ -67,9 +69,9 @@ export default async function KommunikasjonPage({
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
       <div className="agn-s">
-        <Topp tilbake={{ href: "/admin/oppsett?fane=mark", tekst: "Oppsett" }} dato="Oppsett · markedsføring og hjelp" tittel="E-postmaler"
+        <Topp tilbake={{ href: "/admin/oppsett?fane=mark", tekst: "Oppsett" }} dato="Oppsett · e-post" tittel="E-postmaler"
           ingress="Malene Jarvis bruker når den lager utkast i Innboks. Ingenting sendes uten at du trykker Send." />
-        <AdminEmailV2 data={await lastKommunikasjonMaler()} somFane />
+        <AG04Maler data={await lastKommunikasjonMaler()} />
       </div>
     </AgencyOSSkall>
   );
