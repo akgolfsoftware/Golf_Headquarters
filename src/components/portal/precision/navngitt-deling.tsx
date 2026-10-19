@@ -8,7 +8,7 @@
  * Funksjonene er de samme som før (Precision 7d7c2994, deling-navngitt): velg miljø, trenerens e-post
  * med domenesjekk, samtykketekst, aktiv avkrysning, lenke som vises én gang, trekk tilbake og eldre delinger.
  *
- * Avvik fra tegningen:
+ * Avvik:
  *   - Knappen heter «Opprett delingslenke», ikke «Send lenke»: appen sender ingen e-post, spilleren kopierer lenken.
  *   - Miljøvalget står med, fordi en spiller kan være i både WANG og Team Norway.
  *   - «Venter på deg» (forespørsel fra trener) finnes ikke i datamodellen og vises ikke.
