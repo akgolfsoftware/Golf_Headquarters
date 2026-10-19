@@ -14,6 +14,9 @@ import teamNorwayLogoHvit from "../../../designsystem/team-norway/assets/logo/te
  * Precision-tokens). Retning «Skrå» (19.10.2026): myke kort med navy-skygge,
  * pilleformede merker og knapper, runde avatarer.
  * Skallet (sidemeny, topplinje, bunnmeny) bor i tn-shell.tsx og rail-mobil.tsx.
+ * Avvik:
+ *   - Formene følger retning «Skrå» (docs/design-system/utkast-tn/nye-veier.html,
+ *     19.10.2026), ikke de kantete flatene i felles/tn.css.
  */
 
 // ───────────────────────── Kort ─────────────────────────
