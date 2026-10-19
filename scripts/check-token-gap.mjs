@@ -116,11 +116,6 @@ const ALLOW_MARKUP = [
   // mappes ikke skjerm for skjerm, og skal ikke holde resten av appen som
   // gissel i gaten. Blir en demo forfremmet til prod-flate, fjern linja.
   "src/app/(internal)/demos/",
-  // Notion sin egen merkelogo (svart flate, hvitt merke). Tredjeparts
-  // merkevare skal IKKE temafarges — da er det ikke lenger deres logo.
-  // Flyttet til egen komponent i T13-restside-porten (27.08.2026, se
-  // docs/natt/T13-DETALJER-DONE.md) — samme unntak, ny fil.
-  "src/components/admin/v2/workspace/AdminWorkspaceNotionTrainLock.tsx",
   // Delekortet eksporteres som bilde og fanges utenfor tema-konteksten;
   // gradienten må derfor være faste hex-verdier (#141413 → #26241f), ikke
   // tema-tokens som kan være udefinert i eksportkonteksten.

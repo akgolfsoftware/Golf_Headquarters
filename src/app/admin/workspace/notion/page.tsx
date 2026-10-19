@@ -1,8 +1,6 @@
 /**
- * AgencyOS Workspace · Notion-tilkobling — Train-lock (T13-restside,
- * 27.08.2026). Datahenting (ensureNotionConnection/getNotionConnectionForUser)
- * er UENDRET — kun re-skinnet med AdminWorkspaceNotionTrainLock (TL-tokens)
- * i stedet for Paper-inline-JSX.
+ * AgencyOS Oppsett · Notion-tilkobling i Precision Athletics (NotionTilkobling).
+ * Datahenting (ensureNotionConnection/getNotionConnectionForUser) er uendret.
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
@@ -10,10 +8,7 @@ import { ensureNotionConnection } from "@/lib/notion/bootstrap";
 import { getNotionConnectionForUser } from "@/lib/notion/client";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { Topp } from "@/components/admin/agencyos-ny/ny";
-import {
-  AdminWorkspaceNotionTrainLock,
-  type AdminWorkspaceNotionData,
-} from "@/components/admin/v2/workspace/AdminWorkspaceNotionTrainLock";
+import { NotionTilkobling, type NotionTilkoblingData } from "@/components/admin/agencyos-ny/NotionTilkobling";
 
 export const dynamic = "force-dynamic";
 
@@ -35,7 +30,7 @@ export default async function WorkspaceNotionPage({
   const tilstand =
     process.env.NODE_ENV !== "production" && sp.state ? (sp.state === "connected" ? "connected" : "empty") : realState;
 
-  const data: AdminWorkspaceNotionData = {
+  const data: NotionTilkoblingData = {
     tilstand,
     isAdmin,
     harInternalToken: hasInternalToken,
@@ -51,7 +46,7 @@ export default async function WorkspaceNotionPage({
       <div className="agn-s">
         <Topp tilbake={{ href: "/admin/oppsett?fane=integr", tekst: "Oppsett" }} dato="Oppsett · integrasjoner" tittel="Notion"
           ingress="Oppgaver og prosjekter kommer bare fra Notion. Her ser du hvilke databaser som er koblet, og siste synk." />
-        <AdminWorkspaceNotionTrainLock data={data} />
+        <NotionTilkobling data={data} />
       </div>
     </AgencyOSSkall>
   );

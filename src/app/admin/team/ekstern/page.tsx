@@ -1,17 +1,13 @@
 /**
- * /admin/team/ekstern — administrer eksterne lesere (plan T8, funksjonelt —
- * trenger fasit-runde for endelig utseende). ADMIN-only: opprettelsen gir
- * capabilities og gruppetilganger, og det er Anders' beslutning.
+ * /admin/team/ekstern — administrer eksterne lesere (plan T8), i Precision Athletics.
+ * ADMIN-only: opprettelsen gir capabilities og gruppetilganger, og det er Anders' beslutning.
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { Topp } from "@/components/admin/agencyos-ny/ny";
-import {
-  AdminEksternLeserTrainLock,
-  type EksternLeserRad,
-} from "@/components/admin/v2/oppsett/AdminEksternLeserTrainLock";
+import { EksterneLesere, type EksternLeserRad } from "@/components/admin/agencyos-ny/EksterneLesere";
 
 export const dynamic = "force-dynamic";
 
@@ -57,8 +53,9 @@ export default async function AdminEksternLeserPage() {
   return (
     <AgencyOSSkall navn={user.name ?? "Admin"}>
       <div className="agn-s">
-        <Topp tilbake={{ href: "/admin/oppsett?fane=team", tekst: "Oppsett" }} dato="Oppsett · team og tilgang" tittel="Eksterne lesere" />
-        <AdminEksternLeserTrainLock grupper={grupper} lesere={lesere} />
+        <Topp tilbake={{ href: "/admin/oppsett?fane=team", tekst: "Oppsett" }} dato="Oppsett · team og tilgang" tittel="Eksterne lesere"
+          ingress="Eksterne lesere ser bare det spilleren selv har delt. Gruppemedlemskap alene gir ikke innsyn." />
+        <EksterneLesere grupper={grupper} lesere={lesere} />
       </div>
     </AgencyOSSkall>
   );
