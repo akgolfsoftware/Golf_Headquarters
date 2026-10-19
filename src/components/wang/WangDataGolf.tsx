@@ -7,6 +7,7 @@ import { WangFaner, WangSmaaTall, WangTilbake, WangTopp, wangHref } from "./wang
 import { formaterFortegn, formaterTall } from "@/lib/format-tall";
 import { liveRundeTekst, type WangDataGolfData, type WangDgProff } from "@/app/team-wang/_data/wang-datagolf-visning";
 import { WangDataGolfElev } from "./WangDataGolfElev";
+import { katalogLenke } from "@/lib/admin/datagolf/coach-data-regler";
 
 /**
  * Pakke 10 Data Golf for trener og sportssjef, under Konkurranse (WANG-50): DG-01 Oversikt, DG-02 Proffkatalog,
@@ -200,12 +201,26 @@ function Katalog({ d }: { d: Extract<WangDataGolfData, { side: "proffer" }> }) {
         <WangTomTilstand tittel="Ingen treff" tekst="Prøv et annet navn eller fjern filteret." />
       ) : (
         <>
-          <p className="wg-kilde">{d.rader.length} proffer · sortert på SG total (modellert)</p>
+          <p className="wg-kilde">{d.totalt} proffer · side {d.sidenr} av {d.sider} · sortert på SG total (modellert)</p>
           <ProffListe rader={d.rader} />
+          <KatalogSider d={d} />
         </>
       )}
       <PoweredBy />
     </>
+  );
+}
+
+function KatalogSider({ d }: { d: Extract<WangDataGolfData, { side: "proffer" }> }) {
+  if (d.sider <= 1) return null;
+  const lenke = (nr: number) =>
+    katalogLenke("/team-wang/coach", { omraade: "konkurranse", fane: "dg-proffer", sok: d.valg.sok, tour: d.valg.tour, norske: d.valg.norskForst ? "1" : undefined }, nr);
+  return (
+    <nav className="wg-dg-sider" aria-label="Sider i katalogen" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 12 }}>
+      {d.sidenr > 1 ? <Link className="wg-btn" href={lenke(d.sidenr - 1)}>Forrige</Link> : null}
+      <span className="wg-kilde">Side {d.sidenr} av {d.sider}</span>
+      {d.sidenr < d.sider ? <Link className="wg-btn" href={lenke(d.sidenr + 1)}>Neste</Link> : null}
+    </nav>
   );
 }
 

@@ -53,7 +53,16 @@ export type WangDataGolfData =
       forsinket: boolean;
       norske: WangDgProff[];
     }
-  | { side: "proffer"; rader: WangDgProff[]; turer: string[]; valg: { sok?: string; tour?: string; norskForst?: boolean } }
+  | {
+      side: "proffer";
+      rader: WangDgProff[];
+      turer: string[];
+      valg: { sok?: string; tour?: string; norskForst?: boolean };
+      /** Antall treff totalt, sidenummeret som vises og antall sider (DG-02 har sider). */
+      totalt: number;
+      sidenr: number;
+      sider: number;
+    }
   | {
       side: "proff";
       proff: null | {

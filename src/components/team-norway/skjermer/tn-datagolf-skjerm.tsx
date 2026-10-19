@@ -6,6 +6,7 @@ import type { WangDataGolfData, WangDgProff, WangDgSide } from "@/app/team-wang/
 import { hentTnSpillere, hentTnTrenere, medTnSpillerData } from "@/lib/domain/tn-arbeidsflate";
 import { hentDgSpillerVisning } from "@/lib/datagolf/spiller-mot-proff-data";
 import { formaterFortegn, formaterTall } from "@/lib/format-tall";
+import { katalogLenke } from "@/lib/admin/datagolf/coach-data-regler";
 import { TN } from "@/lib/v2/team-norway";
 import { TnPille } from "../core";
 import { TnFilterknapper, TnFlate, TnFlatehode, TnFotnote, TnMangler, TnSkjermhode, TnTekstlenke, TnListerad, type TnFilterValg } from "../tn-flate";
@@ -78,6 +79,7 @@ export async function TnDatagolfSkjerm({ sokeparametre }: { sokeparametre: Recor
     norske: forste(sokeparametre.norske),
     kat: forste(sokeparametre.kat),
     aar: forste(sokeparametre.aar),
+    sidenr: forste(sokeparametre.sidenr),
   };
   const d = await hentWangDataGolf(side, valg);
 
@@ -192,11 +194,25 @@ function Katalog({ d }: { d: Extract<WangDataGolfData, { side: "proffer" }> }) {
         <TnFlate><TnMangler>Ingen treff. Prøv et annet navn eller fjern filteret.</TnMangler></TnFlate>
       ) : (
         <>
-          <TnFotnote>{d.rader.length} proffer · sortert på SG total (modellert)</TnFotnote>
+          <TnFotnote>{d.totalt} proffer · side {d.sidenr} av {d.sider} · sortert på SG total (modellert)</TnFotnote>
           <ProffListe rader={d.rader} />
+          <KatalogSider d={d} />
         </>
       )}
     </>
+  );
+}
+
+function KatalogSider({ d }: { d: Extract<WangDataGolfData, { side: "proffer" }> }) {
+  if (d.sider <= 1) return null;
+  const lenke = (nr: number) =>
+    katalogLenke("/team-norway/datagolf", { side: "proffer", sok: d.valg.sok, tour: d.valg.tour, norske: d.valg.norskForst ? "1" : undefined }, nr);
+  return (
+    <nav aria-label="Sider i katalogen" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 12 }}>
+      {d.sidenr > 1 ? <TnTekstlenke href={lenke(d.sidenr - 1)}>Forrige</TnTekstlenke> : null}
+      <span style={{ fontSize: 14, color: TN.ink700 }}>Side {d.sidenr} av {d.sider}</span>
+      {d.sidenr < d.sider ? <TnTekstlenke href={lenke(d.sidenr + 1)}>Neste</TnTekstlenke> : null}
+    </nav>
   );
 }
 

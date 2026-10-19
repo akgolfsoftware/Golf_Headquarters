@@ -19,6 +19,7 @@ import { ChevronRight, Search } from "lucide-react";
 import { KnappLenke, Pille, Seksjon, Tom, Topp, Nokkelverdier } from "@/components/admin/agencyos-ny/ny";
 import type { DgProffRad } from "@/lib/admin/datagolf/coach-data";
 import { formaterFortegn, formaterTall } from "@/lib/format-tall";
+import { katalogLenke } from "@/lib/admin/datagolf/coach-data-regler";
 import "@/styles/agencyos-ny-datagolf.css";
 
 const nb = new Intl.DateTimeFormat("nb-NO", { timeZone: "Europe/Oslo", day: "numeric", month: "short", year: "numeric" });
@@ -80,7 +81,8 @@ export function DG01Oversikt({ d }: { d: { antallProffer: number; kildedato: Dat
 }
 
 /* DG-02 Proffkatalog */
-export function DG02Katalog({ rader, turer, valg }: { rader: DgProffRad[]; turer: string[]; valg: { sok?: string; tour?: string; norskForst?: boolean } }) {
+export function DG02Katalog({ rader, turer, valg, totalt, sidenr, sider }: { rader: DgProffRad[]; turer: string[]; valg: { sok?: string; tour?: string; norskForst?: boolean }; totalt: number; sidenr: number; sider: number }) {
+  const lenke = (nr: number) => katalogLenke("/admin/datagolf/proffer", { sok: valg.sok, tour: valg.tour, norske: valg.norskForst ? "1" : undefined }, nr);
   return <div className="agn-s">
     <Topp dato="Data Golf" tittel="Proffer" />
     <DgFaner aktiv="katalog" />
@@ -91,8 +93,13 @@ export function DG02Katalog({ rader, turer, valg }: { rader: DgProffRad[]; turer
       <button type="submit" className="knapp pri">Vis</button>
     </form>
     {rader.length === 0 ? <Tom tittel="Ingen treff" tekst="Prøv et annet navn eller fjern filteret." /> : <>
-      <p className="kilde">{rader.length} proffer · sortert på SG total (modellert)</p>
+      <p className="kilde">{totalt} proffer · side {sidenr} av {sider} · sortert på SG total (modellert)</p>
       <ProffListe rader={rader} />
+      {sider > 1 ? <nav className="dg-sider" aria-label="Sider i katalogen" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 12 }}>
+        {sidenr > 1 ? <KnappLenke href={lenke(sidenr - 1)}>Forrige</KnappLenke> : null}
+        <span className="kilde">Side {sidenr} av {sider}</span>
+        {sidenr < sider ? <KnappLenke href={lenke(sidenr + 1)}>Neste</KnappLenke> : null}
+      </nav> : null}
     </>}
     <PoweredBy />
   </div>;

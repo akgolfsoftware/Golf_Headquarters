@@ -68,7 +68,7 @@ export async function hentDgSpillerVisning(opts: {
   medSpiller: <T>(spillerId: string, les: (tx: Tx) => Promise<T>) => Promise<T | null>;
 }): Promise<DgSpillerVisning | null> {
   if (!kanSeDataGolf(opts.bruker)) return null;
-  const { rader: proffer } = await hentKatalog({ norskForst: true });
+  const { rader: proffer } = await hentKatalog({ norskForst: true, perSide: 200 });
   const valgtProff = proffer.find((p) => p.dgId === opts.proffId) ?? proffer[0] ?? null;
   const p = valgtProff ? await hentProff(valgtProff.dgId) : null;
   const proff: DgSpillerVisning["proff"] = p ? {
