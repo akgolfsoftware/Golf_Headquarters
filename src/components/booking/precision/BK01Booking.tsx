@@ -163,7 +163,7 @@ export function BK01Booking({ tjenester, abonnement, lokasjon, startSlug, forhan
       ["Tjeneste", tj ? tittel(tj) : null, { mono: false }],
       ["Tid", tid && valgtDag ? `${valgtDag.dw} ${valgtDag.dd} · ${tid.kl}` : null],
       ...(tj?.duo ? [["Deltakere", "2", { hint: "DU BETALER FOR BEGGE" }] as const] : []),
-      ["Pris", tj ? kr(tj.pris) : null, tj ? { hint: "FAST PRIS · SERVICETYPE" } : undefined],
+      ["Pris", tj ? kr(tj.pris) : null, tj ? { hint: "FAST PRIS" } : undefined],
     ]} />
   </>;
 
