@@ -14,7 +14,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { runAgent } from "./agent-runner";
-import { lagTakkOgOppfolgingUtkast } from "./booking-takk-utkast";
+import { lagTakkOgOppfolgingUtkast } from "@/lib/booking/takk-utkast";
 
 const AGENT_NAME = "lead-oppfolging";
 const KILDE = "provetime-booking";

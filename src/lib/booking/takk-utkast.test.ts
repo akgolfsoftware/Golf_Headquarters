@@ -47,7 +47,7 @@ test.beforeEach(() => {
 });
 
 async function kjor() {
-  return (await import("./booking-takk-utkast")).lagTakkOgOppfolgingUtkast(naa);
+  return (await import("./takk-utkast")).lagTakkOgOppfolgingUtkast(naa);
 }
 
 test("EP-05: takk legges som utkast hos coach, ikke sendt", async () => {
