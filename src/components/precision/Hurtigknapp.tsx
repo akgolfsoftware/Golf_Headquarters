@@ -44,11 +44,17 @@ export function Hurtigknapp({ app, handlinger, bunn = 0 }: { app: "aos" | "phq";
 
   useEffect(() => {
     // Posisjonen avhenger av vinduet og localStorage, som bare finnes i nettleseren.
-    const start = requestAnimationFrame(() => {
+    // Uten lagret posisjon står knappen nede til høyre, også etter at vinduet endrer størrelse.
+    // Et vindu som et øyeblikk er mindre enn knappen (helsidebilde, fane i bakgrunnen) ignoreres,
+    // ellers klemmes knappen opp i hjørnet over logoen.
+    const plasser = (p: Pos | null) => {
       const [W, H] = vp();
-      setPos(klemPosisjon(lesLagret(key) ?? { x: W - SIZE - 24, y: H - SIZE - 24 - bunn }, W, H, bunn));
-    });
-    const r = () => { const [w, h] = vp(); setPos((p) => (p ? klemPosisjon(p, w, h, bunn) : p)); };
+      if (W < SIZE + EDGE * 2 + 24 || H < SIZE + EDGE * 2 + 24 + bunn) return p;
+      const lagret = lesLagret(key);
+      return klemPosisjon(lagret ?? { x: W - SIZE - 24, y: H - SIZE - 24 - bunn }, W, H, bunn);
+    };
+    const start = requestAnimationFrame(() => setPos((p) => plasser(p)));
+    const r = () => setPos((p) => plasser(p));
     window.addEventListener("resize", r);
     return () => { cancelAnimationFrame(start); window.removeEventListener("resize", r); };
   }, [key, bunn]);

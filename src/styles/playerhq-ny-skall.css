@@ -7,6 +7,8 @@
 @media (min-width:1024px){
 .pa-skall--ny .pa-skall__skinne{width:232px;gap:4px;padding:22px 12px;background:#faf8f3;border-right:1px solid #ddd9d1}
 .pa-skall--ny .pa-skall__main{margin-left:232px}
+/* Menyflaten følger hele sidens høyde, også når siden er lengre enn vinduet (helsidebilder, overskroll) */
+.pa-skall.pa-skall--ny{background:linear-gradient(to right,#faf8f3 0 231px,#ddd9d1 231px 232px,transparent 232px) var(--surface-page)}
 .pa-skall--ny .phs-logo{display:flex;align-items:center;min-height:44px;margin:0 12px 20px}
 .pa-skall--ny .phs-lenke{position:relative;display:flex;align-items:center;gap:12px;min-height:44px;padding:0 12px;border-radius:8px;color:#2a2926;text-decoration:none;font:500 15px/1 var(--font-sans,"IBM Plex Sans",system-ui,sans-serif)}
 .pa-skall--ny .phs-lenke:hover{background:#f1eee8}
