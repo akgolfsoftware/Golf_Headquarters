@@ -14,7 +14,7 @@
  */
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowDown, ArrowUp, Check, List, Pencil, Plus, Send, Star, Trash2, Undo2, X } from "lucide-react";
+import { ArrowDown, ArrowUp, Check, List, Pencil, Plus, Repeat, Send, Star, Trash2, Undo2, X } from "lucide-react";
 import { Ark, Dialogboks, Nokkelverdi } from "@/components/precision/pa-a4";
 import { InlineVarsel } from "@/components/precision/pa-a5";
 import { Sokefelt } from "@/components/precision/pa-a2";
@@ -69,10 +69,12 @@ function Felt({ label, children, mono }: { label: string; children: React.ReactN
 
 /* ---------------- Økt (redigering) ---------------- */
 
-export function OktArk({ session, spillerNavn, motor, onLukk, onApneOkt, onNyOvelse, onRedigerOvelse }: {
+export function OktArk({ session, spillerNavn, motor, onLukk, onApneOkt, onNyOvelse, onRedigerOvelse, onGjenta }: {
   session: WorkbenchSession | null; spillerNavn: string; motor: UkeMotor;
   onLukk: () => void; onApneOkt: (id: string) => void; onNyOvelse: (s: WorkbenchSession) => void;
   onRedigerOvelse?: (s: WorkbenchSession, drill: Drill) => void;
+  /** Spillerens Workbench (PH-11-GJENTA): «Gjenta økta» åpner Gjenta-arket. */
+  onGjenta?: (s: WorkbenchSession) => void;
 }) {
   const [dag, setDag] = useState(session?.date ?? "");
   const [start, setStart] = useState(session ? formatTime(session.startMinute) : "");
@@ -121,6 +123,7 @@ export function OktArk({ session, spillerNavn, motor, onLukk, onApneOkt, onNyOve
       {merke === "gruppe" && <p className="a9-tekst">Økta kommer fra gruppeplanen og ligger i {fornavn} sin plan.</p>}
       {merke === "egen" && <p className="a9-tekst">{fornavn} har en egen versjon av gruppeøkta.</p>}
       <Knapp variant="ghost" size="sm" icon={List} onClick={() => onApneOkt(session.id)}>Åpne økta</Knapp>
+      {onGjenta && <Knapp variant="ghost" size="sm" icon={Repeat} onClick={() => onGjenta(session)}>Gjenta økta</Knapp>}
 
       <div className="a9-skjema">
         <span className="kicker">{UI.timeLabel}</span>

@@ -28,6 +28,7 @@ import {
   publishSessions,
   removeDrill,
   reorderDrills,
+  repeatSession,
   saveWeekPlan,
   setSessionTemplate,
   unpublishSession,
@@ -203,13 +204,25 @@ export function useUkeMotor({ playerId, uke }: { playerId: string; uke: WeekView
   const fjernDrill = (sessionId: string, drillId: string) =>
     kjor(() => removeDrill({ sessionId, drillId }), () => toast.success(UI.toastDrillRemoved));
 
+  /** «Gjenta økt» (PH-11-GJENTA): kopier økta til datoene, med «Angre» som sletter kopiene. */
+  const gjenta = (sessionId: string, datoer: string[], ferdig?: () => void) =>
+    kjor(() => repeatSession({ sessionId, dates: datoer }), (nye: WorkbenchSession[]) => {
+      ferdig?.();
+      toast.success(nye.length === 1 ? "1 økt lagt inn" : `${nye.length} økter lagt inn`, {
+        action: { label: "Angre", onClick: () => kjor(async () => {
+          for (const n of nye) { const r = await deleteSession(n.id); if (!r.ok) return r; }
+          return { ok: true as const, data: null };
+        }, () => toast.success("Gjentakelsen er angret")) },
+      });
+    });
+
   const oppdaterAnstrengelse = (sessionId: string, rpe: number | null, min?: number | null) =>
     kjor(() => updateSessionEffort({ sessionId, perceivedEffort: rpe, actualMinutes: min }), () => toast.success("Belastning oppdatert"));
 
   return {
     week, feil, travel, alleOkter, weeklyLoad, utkast, valideringsnotater, opptattIder,
     lastPaaNytt, lagreUkeplan, opprett, fraKilde, drillFraKilde, flytt, publiser, trekkTilbake, slett,
-    lagreSomMal, leggTilDrill, leggTilOvelse, oppdaterOvelse, lagreOktinnhold, flyttDrill, fjernDrill, oppdaterAnstrengelse,
+    lagreSomMal, leggTilDrill, leggTilOvelse, oppdaterOvelse, lagreOktinnhold, flyttDrill, fjernDrill, oppdaterAnstrengelse, gjenta,
   };
 }
 

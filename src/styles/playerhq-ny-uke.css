@@ -1,0 +1,121 @@
+/*
+ * PH-11 Workbench · Uke og PH-11-GJENTA (spilleren). Portert fra
+ * docs/design-system/utkast-playerhq/plan.html (pakke 3, godkjent 14.10.2026).
+ * Avgrenset til .phn. PC fra 900 px bredde (container-spørring på .phn).
+ */
+
+.phn .phn-ingress { margin: 6px 0 0; max-width: 46ch; font-size: 15px; line-height: 1.5; color: var(--phn-g800); }
+.phn .tekst-fys { color: var(--phn-fys-ink); }
+.phn .tekst-tek { color: var(--phn-tek-ink); }
+.phn .tekst-slag { color: var(--phn-slag); }
+.phn .tekst-spill { color: var(--phn-spill-ink); }
+.phn .tekst-turn { color: var(--phn-turn); }
+.phn .akse-ingen { background: var(--phn-g500); }
+
+/* Lagt inn mot fordelt */
+.phn .phn-wb { display: grid; gap: 24px; align-items: start; }
+.phn .phn-wb-hoved { gap: 20px; }
+.phn .phn-akserader { display: grid; gap: 10px; }
+.phn .phn-akserad { display: grid; grid-template-columns: 52px minmax(0, 1fr) auto; gap: 10px; align-items: center; font-size: 14px; }
+.phn .phn-akserad b { font: 600 12px/1 var(--phn-mono); letter-spacing: .05em; }
+.phn .phn-akserad-spor { position: relative; height: 12px; border-radius: 6px; background: var(--phn-sand-150); }
+.phn .phn-akserad-spor > span { position: absolute; inset: 0 auto 0 0; border-radius: 6px; max-width: 100%; }
+.phn .phn-akserad-spor > em { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--phn-g900); border-radius: 1px; }
+.phn .phn-akserad-v { font: 500 13px/1.2 var(--phn-mono); text-align: right; white-space: nowrap; }
+.phn .phn-akserad-v[data-over] { color: var(--phn-amber-700); }
+
+/* Dagstripe (mobil) */
+.phn .phn-dagstripe { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+.phn .phn-dagstripe button { display: grid; justify-items: center; gap: 3px; min-height: 56px; padding: 8px 0; border: 1px solid var(--phn-sand-300); border-radius: 10px; background: var(--phn-hvit); cursor: pointer; font: 500 12px/1 var(--phn-sans); color: var(--phn-g800); }
+.phn .phn-dagstripe button strong { font: 600 17px/1 var(--phn-mono); color: var(--phn-g900); }
+.phn .phn-dagstripe button[aria-pressed="true"] { background: var(--phn-g900); border-color: var(--phn-g900); color: var(--phn-hvit); }
+.phn .phn-dagstripe button[aria-pressed="true"] strong { color: var(--phn-hvit); }
+.phn .phn-prikker { display: flex; gap: 2px; height: 6px; }
+.phn .phn-prikker i { width: 6px; height: 6px; border-radius: 50%; }
+
+/* Aksebrikker å dra inn */
+.phn .phn-dra-rad { display: grid; gap: 8px; }
+.phn .phn-drakker { display: flex; flex-wrap: wrap; gap: 6px; }
+.phn .phn-dra { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px 0 10px; border: 0; border-radius: 10px; color: #fff; font: 600 13px/1 var(--phn-sans); letter-spacing: .04em; cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; }
+.phn .phn-dra[aria-pressed="true"] { outline: 3px solid var(--phn-g900); outline-offset: 2px; }
+.phn .phn-dra .phn-ikon { width: 16px; height: 16px; opacity: .85; }
+.phn .phn-dra.fys { background: var(--phn-fys-ink); }
+.phn .phn-dra.tek { background: var(--phn-tek-ink); }
+.phn .phn-dra.slag { background: var(--phn-slag); }
+.phn .phn-dra.spill { background: var(--phn-spill-ink); }
+.phn .phn-dra.turn { background: var(--phn-turn); }
+.phn .phn-spokelse { position: fixed; z-index: 1000; pointer-events: none; transform: translate(-50%, -60%) scale(1.04); box-shadow: 0 10px 30px rgba(0,0,0,.25); opacity: .95; max-width: 220px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+
+/* Kalender: mobil viser valgt dag, PC hele uka */
+.phn .phn-rutenett { display: grid; grid-template-columns: 52px minmax(0, 1fr); border-top: 1px solid var(--phn-sand-300); }
+.phn .phn-rutenett[data-dras] { cursor: grabbing; }
+.phn .phn-rut-hjorne, .phn .phn-rut-dag, .phn .phn-rut-heldag { display: none; }
+.phn .phn-tider { position: relative; }
+.phn .phn-tider span { position: absolute; right: 8px; transform: translateY(-50%); font: 500 12px/1 var(--phn-mono); color: var(--phn-g600); }
+.phn .phn-ukol { display: none; position: relative; border-left: 1px solid var(--phn-sand-150);
+  background: repeating-linear-gradient(to bottom, transparent 0 calc(var(--phn-h) - 1px), var(--phn-sand-150) calc(var(--phn-h) - 1px) var(--phn-h)); }
+.phn .phn-ukol[data-valgt] { display: block; }
+.phn .phn-ukol[data-klar] { cursor: copy; }
+.phn .phn-blokk { position: absolute; left: 3px; right: 3px; display: block; padding: 5px 8px; border: 0; border-radius: 8px; overflow: hidden; color: #fff; text-align: left; font: 400 12.5px/1.3 var(--phn-sans); cursor: pointer; background: var(--phn-g800); }
+.phn .phn-blokk b { display: block; font-weight: 600; overflow-wrap: anywhere; }
+.phn .phn-blokk small { display: block; font: 500 11px/1.25 var(--phn-mono); opacity: .92; }
+.phn .phn-blokk.fys { background: var(--phn-fys-ink); }
+.phn .phn-blokk.tek { background: var(--phn-tek-ink); }
+.phn .phn-blokk.slag { background: var(--phn-slag); }
+.phn .phn-blokk.spill { background: var(--phn-spill-ink); }
+.phn .phn-blokk.turn { background: var(--phn-turn); }
+.phn .phn-blokk.opp { background: repeating-linear-gradient(135deg, var(--phn-sand-150) 0 6px, var(--phn-sand-100) 6px 12px); color: var(--phn-g800); cursor: default; }
+.phn .phn-blokk[data-utkast] { box-shadow: inset 0 0 0 2px rgba(255,255,255,.55); }
+.phn .phn-blokk[data-dempet] { opacity: .45; }
+.phn .phn-blokk[data-dras] { opacity: .35; }
+.phn .phn-blokk:focus-visible { outline: 3px solid var(--phn-g900); outline-offset: 2px; }
+.phn .phn-blokk-serie { position: absolute; top: 5px; right: 5px; width: 14px; height: 14px; }
+.phn .phn-na { position: absolute; left: 0; right: 0; height: 2px; background: var(--phn-g900); z-index: 2; pointer-events: none; }
+.phn .phn-na::before { content: ""; position: absolute; left: -4px; top: -3px; width: 8px; height: 8px; border-radius: 50%; background: var(--phn-g900); }
+.phn .phn-mal { position: absolute; left: 0; right: 0; z-index: 3; background: rgba(37,99,235,.12); box-shadow: inset 0 0 0 2px var(--phn-slag); pointer-events: none; }
+
+/* Sidefelt */
+.phn .phn-sidefelt { display: grid; gap: 12px; align-content: start; }
+.phn .phn-sidefelt details { border: 1px solid var(--phn-sand-300); border-radius: 12px; background: var(--phn-hvit); }
+.phn .phn-sidefelt summary { list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 52px; padding: 0 14px; font: 600 15px/1.2 var(--phn-sans); cursor: pointer; }
+.phn .phn-sidefelt summary::-webkit-details-marker { display: none; }
+.phn .phn-sidefelt summary small { font: 400 13px/1.3 var(--phn-sans); color: var(--phn-g600); text-align: right; }
+.phn .phn-sidefelt summary:focus-visible { outline: 3px solid var(--phn-g900); outline-offset: 2px; border-radius: 12px; }
+.phn .phn-inni { padding: 0 14px 14px; display: grid; gap: 12px; }
+.phn .phn-kildeknapp { display: grid; grid-template-columns: 6px minmax(0, 1fr) auto; gap: 10px; align-items: center; min-height: 52px; padding: 0 10px 0 0; border: 1px solid var(--phn-sand-300); border-radius: 10px; background: var(--phn-hvit); overflow: hidden; text-align: left; font: inherit; color: var(--phn-g900); cursor: pointer; width: 100%; }
+.phn .phn-kildeknapp > i { align-self: stretch; }
+.phn .phn-kildeknapp b { display: block; font: 600 14px/1.3 var(--phn-sans); }
+.phn .phn-kildeknapp small { font-size: 12.5px; color: var(--phn-g600); }
+.phn .phn-kildeknapp[aria-pressed="true"] { border-color: var(--phn-g900); box-shadow: inset 0 0 0 1px var(--phn-g900); }
+.phn .phn-verktoy { display: grid; gap: 8px; padding-top: 4px; }
+.phn .phn-verktoy > * { width: 100%; justify-content: flex-start; }
+
+/* Gjenta-arket */
+.phn .phn-ark-innhold { display: grid; gap: 16px; }
+.phn .phn-ark-innhold input[type="date"] { min-height: 48px; padding: 10px 12px; border: 1px solid var(--phn-g500); border-radius: 8px; background: var(--phn-hvit); color: var(--phn-g900); font: 400 16px/1.4 var(--phn-sans); width: 100%; }
+.phn .phn-ukedager { display: flex; flex-wrap: wrap; gap: 4px; }
+.phn .phn-ukedager button { width: 44px; height: 44px; border-radius: 8px; border: 1px solid var(--phn-sand-300); background: var(--phn-hvit); font: 600 13px/1 var(--phn-sans); cursor: pointer; color: var(--phn-g900); }
+.phn .phn-ukedager button[aria-pressed="true"] { background: var(--phn-g900); color: var(--phn-hvit); border-color: var(--phn-g900); }
+.phn .phn-sum-linje { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.phn .phn-sum-linje strong { font: 600 34px/1 var(--phn-mono); letter-spacing: -.03em; }
+.phn .phn-knapp.phn-stor { width: 100%; min-height: 52px; font-size: 15px; }
+
+@container (min-width: 900px) {
+  .phn .phn-wb { grid-template-columns: minmax(0, 1fr) 300px; gap: 24px; }
+  .phn .phn-wb-tall { grid-template-columns: auto minmax(0, 1fr); gap: 32px; align-items: center; }
+  .phn .phn-dagstripe { display: none; }
+  .phn .phn-rutenett { grid-template-columns: 44px repeat(7, minmax(0, 1fr)); }
+  .phn .phn-rut-hjorne { display: block; border-bottom: 1px solid var(--phn-sand-300); }
+  .phn .phn-rut-dag { display: block; padding: 8px 4px; text-align: center; font: 600 13px/1.2 var(--phn-sans); border-bottom: 1px solid var(--phn-sand-300); }
+  .phn .phn-rut-dag small { display: block; margin-top: 2px; font: 500 11px/1.2 var(--phn-mono); color: var(--phn-g600); }
+  .phn .phn-rut-dag[data-idag] { background: var(--phn-g900); color: var(--phn-hvit); border-radius: 8px 8px 0 0; }
+  .phn .phn-rut-dag[data-idag] small { color: #d9d6cc; }
+  .phn .phn-rut-heldag { display: block; min-height: 30px; padding: 3px; border-bottom: 1px solid var(--phn-sand-300); }
+  .phn .phn-rut-heldag > span { display: block; padding: 5px 8px; border-radius: 6px; background: var(--phn-g900); color: #fff; font: 500 12px/1.3 var(--phn-sans); overflow-wrap: anywhere; }
+  .phn .phn-tider span { right: 6px; font-size: 11px; }
+  .phn .phn-ukol { display: block; }
+}
+
+/* Øvelsesvelgeren i sidefeltet: lista ruller i seg selv, så sidefeltet ikke blir meterlangt. */
+.phn .phn-sidefelt .wbo-liste { display: flex; flex-direction: column; max-height: 420px; overflow-y: auto; overscroll-behavior: contain; }
+.phn .phn-sidefelt .wbo-liste > * { flex: none; }

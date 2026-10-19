@@ -31,6 +31,7 @@ import {
   mondayOf,
   monthStartOf,
   createSessionSeries as createSessionSeriesPure,
+  generateId,
   moveSession as moveSessionPure,
   publishSession as publishSessionPure,
   reorderDrills as reorderDrillsPure,
@@ -54,6 +55,7 @@ import type {
   YearViewModel,
 } from "@/lib/domain/workbench/types";
 import { UI } from "@/lib/domain/workbench/labels";
+import { MAKS_GJENTATTE } from "@/lib/workbench/gjenta";
 import { vaskDetaljer } from "@/lib/domain/workbench/ovelse-detaljer";
 import { lastPlanKalenderBlokker } from "@/lib/workbench/plan-kalender-data";
 import { slaSammenLaasteBlokker, weekLockedBlocks } from "@/lib/workbench/locked-blocks";
@@ -1453,6 +1455,54 @@ export async function createSessionSeries(
 
   revalider(cmd.playerId);
   return { ok: true, data: rader.map(mapSession) };
+}
+
+const RepeatSessionSchema = z.object({
+  sessionId: z.string().min(1),
+  dates: z.array(IsoDateSchema).min(1).max(MAKS_GJENTATTE),
+});
+
+/**
+ * «Gjenta økt» (PH-11-GJENTA, 14.10.2026): kopier en eksisterende økt med
+ * øvelser til datoene spilleren valgte i arket. Kopiene blir utkast i samme
+ * serie som økta, så «Bare denne / Denne og alle framover» virker som før.
+ * Datoene regnes ut av `beregnGjentaDatoer` i klienten.
+ */
+export async function repeatSession(input: { sessionId: string; dates: string[] }): Promise<WbResultat<WorkbenchSession[]>> {
+  const parsed = RepeatSessionSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: "Ugyldige felter." };
+  const treff = await hentMedTilgang(parsed.data.sessionId);
+  if ("feil" in treff) return { ok: false, error: treff.feil };
+  const { row, viewer } = treff;
+  if (!["PLAYER", "COACH", "ADMIN"].includes(viewer.role)) return { ok: false, error: INGEN_TILGANG };
+  const orig = mapSession(row);
+  const datoer = [...new Set(parsed.data.dates)].filter((d) => d !== orig.date).sort();
+  if (datoer.length === 0) return { ok: false, error: "Ingen nye datoer å gjenta på." };
+
+  const seriesId = orig.seriesId ?? generateId("serie");
+  const startIndex = orig.seriesId ? Math.max(orig.seriesIndex ?? 0, ...(await prisma.workbenchSession.findMany({
+    where: { seriesId: orig.seriesId, playerId: orig.playerId }, select: { seriesIndex: true },
+  })).map((r) => r.seriesIndex ?? 0)) + 1 : 1;
+  const erCoach = viewer.id !== orig.playerId;
+  const kopier = datoer.map((date, i) => ({
+    ...createSessionPure({
+      playerId: orig.playerId, coachId: viewer.id, date, startMinute: orig.startMinute, durationMinutes: orig.durationMinutes,
+      title: orig.title, pyramid: orig.pyramid, blockType: orig.blockType, environment: orig.environment, notes: orig.notes,
+      rationale: orig.rationale, location: orig.location, maalsetning: orig.maalsetning,
+      drills: orig.drills.map(({ id: _id, order: _order, ...d }) => d),
+      createdBy: erCoach ? "COACH" : "PLAYER",
+    }),
+    seriesId,
+    seriesIndex: startIndex + i,
+  }));
+
+  const rader = await prisma.$transaction([
+    ...(orig.seriesId ? [] : [prisma.workbenchSession.update({ where: { id: orig.id }, data: { seriesId, seriesIndex: 0 } })]),
+    ...kopier.map((s) => prisma.workbenchSession.create({ data: sessionOpprettelseData(s), include: { drills: true } })),
+  ]);
+  revalider(orig.playerId);
+  const nye = rader.slice(orig.seriesId ? 0 : 1) as WbRow[];
+  return { ok: true, data: nye.map(mapSession) };
 }
 
 /**
