@@ -64,11 +64,11 @@ Gi målsetningen en frist og et nivå: år, periode, måned eller uke. Fremdrift
 
 All trening i PlayerHQ tilhører én av fem akser, og fargen på en økt forteller hvilken:
 
-- **FYS · Fysisk:** styrke, kraft, bevegelighet og kondisjon.
-- **TEK · Teknisk:** bevegelsen i svingen, ofte uten ball eller på lav hastighet.
-- **SLAG · Golfslag:** slag mot et mål: utslag, innspill, nærspill og putting.
-- **SPILL · Spill:** på banen, med hull, valg og scoring.
 - **TURN · Turnering:** turneringsrunder og det du gjør for å prestere der.
+- **SPILL · Spill:** på banen, med hull, valg og scoring.
+- **SLAG · Golfslag:** slag mot et mål: utslag, innspill, nærspill og putting.
+- **TEK · Teknisk:** bevegelsen i svingen, ofte uten ball eller på lav hastighet.
+- **FYS · Fysisk:** styrke, kraft, bevegelighet og kondisjon.
 
 Bunnen bærer toppen. Fordelingen endrer seg gjennom året: mer FYS og TEK i grunnperioden, mer SPILL og TURN i turneringsperioden. Plan viser timene per akse for uka, måneden og året.
 

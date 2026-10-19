@@ -4,6 +4,23 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## FYS STÅR ALLTID NEDERST I PYRAMIDEN, PÅ ALLE FLATER (Anders 19.10.2026, bindende)
+
+Anders 19.10, etter å ha sett skjermgalleriet med alle tegningene: «Endre i alle visninger for pyramiden. Fysisk skal alltid vises nederst, ALDRI øverst. Gjør denne endringen over alle flater.»
+
+- **Der pyramiden tegnes eller lagene står loddrett som en pyramide, er rekkefølgen ovenfra TURN · SPILL · SLAG · TEK · FYS.** FYS er grunnmuren og står aldri øverst.
+- Gjelder PlayerHQ, AgencyOS, forelder, Team Norway, WANG, GFGK Junior, markedssidene, PDF-eksport og tegningene i `docs/design-system/utkast-*/`.
+- **Gjelder ikke** vanlige lister, valgknapper, vannrette bånd, søyler side om side, tabeller og ukefordeling. Der står FYS først som før (`PYR_REKKEFOLGE`).
+- Felles kilde i koden: `PYR_TOPP_TIL_BUNN` og `sorterPyramideOvenfra` i `src/lib/pyramide.ts`, låst i `src/lib/pyramide.test.ts`.
+
+**Overstyrer:** ingenting. Rekkefølgen var ikke bestemt før.
+
+**Arbeidet dette utløser:**
+
+1. **Appen:** «Pyramiden mot planen» i Stats › Trening (`PH17Trening.tsx`), «Pyramiden i perioden» i WANG-årsplanen (`fane-trening.tsx`), pyramideartikkelen i Hjelp (`PHHjelpArtikkel.tsx`, `portal-hjelp/artikler.ts`), PDF-ens «Pyramide-fordeling» (`lib/pdf/plan-document.tsx`), og de delte `Pyramide` (`v2/datavis.tsx`) og `TidsPyramide` (`v2/spesialviz.tsx`) som nå sorterer selv. Gjort i samme PR.
+2. **Tegningene:** `utkast-playerhq/stats-dybde.html` og `hjelp.html`, og `hjelpeartikler.md`. Gjort i samme PR.
+3. **Nye pyramider** bruker `sorterPyramideOvenfra` eller `PYR_TOPP_TIL_BUNN`. Ferdig når hver ny pyramidevisning er laget slik.
+
 ## NATTKJØRING 18.–19.10: AUTOMATISK GODKJENNING I HELE PROSJEKTET, WANG OG TEAM NORWAY FULLFØRES (Anders 18.10.2026, bindende)
 
 Anders 18.10: «fullfør nå alle oppgaver nå. legg til at auto godkjenning i hele prosjektet i natt så alle sessions kan jobbe.»

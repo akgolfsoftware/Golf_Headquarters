@@ -117,7 +117,7 @@ export function PlayerDetailPanel({
         {/* Mini-pyramide vs plan */}
         <Section title="Pyramide — faktisk vs plan">
           <div className="space-y-1.5">
-            {AXES.map((a) => {
+            {[...AXES].reverse().map((a) => { /* TURN øverst, FYS nederst */
               const act = player.pyramid.actual[a.key];
               const plan = player.pyramid.plan[a.key];
               return (

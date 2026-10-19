@@ -19,6 +19,7 @@ import { useRef, useState } from "react";
 import { SlidersHorizontal, Target, X } from "lucide-react";
 import { TmTilbake } from "./PH17TmFelles";
 import { formaterVarighet } from "@/lib/format-tall";
+import { sorterPyramideOvenfra } from "@/lib/pyramide";
 import { byggTrening, treningSteder, TRENING_AKSER, type LoggetOkt, type TreningAkse, type TreningFilter, type TreningOkt } from "@/lib/portal-analyse/trening-stats";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-stats.css";
@@ -98,7 +99,7 @@ export function PH17Trening({ data }: { data: PH17TreningData }) {
               <section className="phn-kort">
                 <div className="phn-sek-topp"><h2>Pyramiden mot planen</h2><span className="phn-kilde">Gjennomført · plan</span></div>
                 <div className="phn-pyr">
-                  {s.akser.map((a) => {
+                  {sorterPyramideOvenfra(s.akser, (a) => a.akse).map((a) => {
                     const k = a.akse.toLowerCase();
                     return (
                       <div key={a.akse} className="phn-pyr-rad">

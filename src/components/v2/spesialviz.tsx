@@ -11,6 +11,7 @@
 
 import { TL } from "@/lib/v2/train-lock";
 import { AK } from "@/lib/v2/ak-palett";
+import { sorterPyramideOvenfra } from "@/lib/pyramide";
 
 /* AK Golf HQ v2 — SPESIALVISUALISERINGER (retning C «Presis»).
    Sammenligning, runde, køller/TrackMan, belastning, kategori-progresjon,
@@ -668,7 +669,7 @@ export function TidsPyramide({ data = TPY_DEMO, periode = "denne uken" }: TidsPy
     <Kort>
       {eyebrowRow("Treningstid per akse", periode)}
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 5 }}>
-        {data.map((d) => {
+        {sorterPyramideOvenfra(data, (d) => d.akse).map((d) => {
           const w = 28 + ((d.timer ?? 0) / max) * 72; /* % — topp aldri null-bredde */
           return (
             <div key={d.akse} style={{ width: `${w}%`, height: 30, borderRadius: 8, background: `color-mix(in srgb, ${AK.ax[d.akse] || TL.mute} 26%, ${TL.dock})`, border: `1px solid color-mix(in srgb, ${AK.ax[d.akse] || TL.mute} 45%, transparent)`, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 12px", minWidth: 150 }}>

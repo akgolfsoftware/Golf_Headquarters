@@ -12,6 +12,7 @@ import type { CSSProperties, ReactNode } from "react";
 import { Fragment, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { TL } from "@/lib/v2/train-lock";
+import { sorterPyramideOvenfra } from "@/lib/pyramide";
 import { fmtSg, type AkseKey } from "@/lib/v2/format";
 import { Icon } from "@/components/v2/icon";
 import { Kort, TallHero, Caps, TomTilstand, CTAPill, AkseChip, InnsiktChip, DeltaChip, AvatarInit, AKSE_NAVN, Rad } from "./core";
@@ -1099,7 +1100,8 @@ export interface PyramideProps {
 export function Pyramide({ data = PY_DEMO, max = 100, showValues = true }: PyramideProps) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 11 }}>
-      {data.map((d, i) => {
+      {/* TURN øverst, FYS alltid nederst, uansett rekkefølgen kalleren sender. */}
+      {sorterPyramideOvenfra(data, (d) => d.akse).map((d, i) => {
         const pct = Math.max(0, Math.min(100, (d.value / max) * 100));
         const planPct = d.plan != null ? Math.max(0, Math.min(100, (d.plan / max) * 100)) : null;
         return (

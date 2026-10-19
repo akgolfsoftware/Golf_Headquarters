@@ -80,11 +80,11 @@ export const HJELP_ARTIKLER: HjelpArtikkel[] = [
     blokker: [
       { t: "p", tekst: "All trening i PlayerHQ tilhører én av fem akser, og fargen på en økt forteller hvilken:" },
       { t: "liste", punkter: [
-        { fet: "FYS · Fysisk:", tekst: "styrke, kraft, bevegelighet og kondisjon." },
-        { fet: "TEK · Teknisk:", tekst: "bevegelsen i svingen, ofte uten ball eller på lav hastighet." },
-        { fet: "SLAG · Golfslag:", tekst: "slag mot et mål: utslag, innspill, nærspill og putting." },
-        { fet: "SPILL · Spill:", tekst: "på banen, med hull, valg og scoring." },
         { fet: "TURN · Turnering:", tekst: "turneringsrunder og det du gjør for å prestere der." },
+        { fet: "SPILL · Spill:", tekst: "på banen, med hull, valg og scoring." },
+        { fet: "SLAG · Golfslag:", tekst: "slag mot et mål: utslag, innspill, nærspill og putting." },
+        { fet: "TEK · Teknisk:", tekst: "bevegelsen i svingen, ofte uten ball eller på lav hastighet." },
+        { fet: "FYS · Fysisk:", tekst: "styrke, kraft, bevegelighet og kondisjon." },
       ] },
       { t: "p", tekst: "Bunnen bærer toppen. Fordelingen endrer seg gjennom året: mer FYS og TEK i grunnperioden, mer SPILL og TURN i turneringsperioden. Plan viser timene per akse for uka, måneden og året." },
       { t: "p", tekst: "Fordelingen er et forslag, ikke en sperre. Workbench sier fra når uka avviker fra det måneden har fordelt, men stopper ingenting." },

@@ -45,9 +45,10 @@ export function PHHjelpKategori({ kategori, artikler }: { kategori: HjelpKategor
   </div></div>;
 }
 
+/* Pyramiden ovenfra: TURN øverst, FYS nederst. Følger punktrekkefølgen i artikkelen «pyramiden». */
 const AKSER = [
-  { k: "FYS", c: "fys", n: "Fysisk" }, { k: "TEK", c: "tek", n: "Teknisk" }, { k: "SLAG", c: "slag", n: "Golfslag" },
-  { k: "SPILL", c: "spill", n: "Spill" }, { k: "TURN", c: "turn", n: "Turnering" },
+  { k: "TURN", c: "turn", n: "Turnering" }, { k: "SPILL", c: "spill", n: "Spill" }, { k: "SLAG", c: "slag", n: "Golfslag" },
+  { k: "TEK", c: "tek", n: "Teknisk" }, { k: "FYS", c: "fys", n: "Fysisk" },
 ] as const;
 
 function Blokk({ b, pyramide }: { b: HjelpBlokk; pyramide: boolean }) {
