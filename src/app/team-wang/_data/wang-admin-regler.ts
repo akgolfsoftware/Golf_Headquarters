@@ -77,3 +77,33 @@ export function lesUnntak(input: { fra: unknown; til: unknown; tekst: unknown })
   if (tekst.length > MAKS_TEGN_UNNTAK) return { ok: false, feil: `Høyst ${MAKS_TEGN_UNNTAK} tegn.` };
   return { ok: true, fraDato, tilDato: tilDato && tilDato.getTime() === fraDato.getTime() ? null : tilDato, tekst };
 }
+
+/** «HH:MM» (00:00–23:59) til minutter etter midnatt. Alt annet gir null. */
+export function lesKlokke(verdi: unknown): number | null {
+  if (typeof verdi !== "string") return null;
+  const m = /^(\d{2}):(\d{2})$/.exec(verdi.trim());
+  if (!m) return null;
+  const [t, min] = [Number(m[1]), Number(m[2])];
+  return t <= 23 && min <= 59 ? t * 60 + min : null;
+}
+
+export type FlyttInput =
+  | { ok: true; ukedag: number; start: string; slutt: string }
+  | { ok: false; feil: string };
+
+/** Ny ukedag (0 = mandag … 6 = søndag) og klokkeslett for en fast økt i ukemalen. */
+export function lesFlytting(input: { ukedag: unknown; start: unknown; slutt: unknown }): FlyttInput {
+  const ukedag = typeof input.ukedag === "string" && /^[0-6]$/.test(input.ukedag) ? Number(input.ukedag) : null;
+  if (ukedag === null) return { ok: false, feil: "Velg en dag." };
+  const start = lesKlokke(input.start);
+  const slutt = lesKlokke(input.slutt);
+  if (start === null || slutt === null) return { ok: false, feil: "Skriv klokkeslett som TT:MM." };
+  if (slutt <= start) return { ok: false, feil: "Slutt må være etter start." };
+  return { ok: true, ukedag, start: String(input.start).trim(), slutt: String(input.slutt).trim() };
+}
+
+/** «YYYY-MM-DD» flyttet `dager` dager (kalenderdager, uavhengig av sommertid). */
+export function leggTilDagerIso(iso: string, dager: number): string {
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(Date.UTC(y, m - 1, d + dager)).toISOString().slice(0, 10);
+}

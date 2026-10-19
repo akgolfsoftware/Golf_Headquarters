@@ -72,7 +72,7 @@ mock.module("@/app/team-wang/_data/wang-datagolf-data", {
   },
 });
 mock.module("@/app/team-wang/_data/wang-admin-data", {
-  namedExports: { hentWangAdminData: async () => ({ invitasjoner: [], unntak: [] }) },
+  namedExports: { hentWangAdminData: async () => ({ megId: null, invitasjoner: [], unntak: [] }) },
 });
 mock.module("@/app/team-wang/_data/wang-tester-data", {
   namedExports: {

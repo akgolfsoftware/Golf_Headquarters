@@ -66,6 +66,12 @@ export interface WangTrenerHendelse {
 }
 
 export interface WangTrenerFastOkt {
+  /** GroupSchedule-id; null når økta ikke kan flyttes herfra. */
+  id: string | null;
+  /** 0 = mandag … 6 = søndag (Oslo). */
+  ukedag: number;
+  startTid: string;
+  sluttTid: string;
   dag: string;
   tid: string;
   tittel: string;
@@ -202,6 +208,10 @@ export function byggWangTrenerData(
     fasteOkter: [...live.fasteOkter]
       .sort((a, b) => a.ukedag - b.ukedag || a.startTid.localeCompare(b.startTid))
       .map((o) => ({
+        id: o.id ?? null,
+        ukedag: o.ukedag,
+        startTid: o.startTid,
+        sluttTid: o.sluttTid,
         dag: UKEDAG_KORT[o.ukedag] ?? "—",
         tid: `${o.startTid}–${o.sluttTid}`,
         tittel: o.tittel,

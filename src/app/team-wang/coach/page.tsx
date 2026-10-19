@@ -127,7 +127,7 @@ export default async function WangCoachPage({ searchParams }: WangCoachPageProps
       : undefined;
 
   // Invitasjoner og timeplanunntak bare for sportssjef (siden har alt sendt trener bort fra admin).
-  const admin = aktivtOmraade === "admin" ? await hentWangAdminData(gruppeId) : undefined;
+  const admin = aktivtOmraade === "admin" ? await hentWangAdminData(gruppeId, bruker.id) : undefined;
 
   // Opptak og koordinering (kandidater er mindreårige) bare for sportssjef, bare på de to fanene.
   const opptak =

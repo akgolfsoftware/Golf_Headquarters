@@ -15,6 +15,9 @@ const opprettetUnntak: Array<Record<string, unknown>> = [];
 const medlemCreates: Array<Record<string, unknown>> = [];
 const updateWheres: Array<Record<string, unknown>> = [];
 const deleteWheres: Array<Record<string, unknown>> = [];
+const medlemUpdateMany: Array<{ where: Record<string, unknown>; data: Record<string, unknown> }> = [];
+const oktUpdates: Array<{ where: Record<string, unknown>; data: { startAt: Date; endAt: Date } }> = [];
+let fastOkt: { id: string; groupId: string; startAt: Date } | null = null;
 
 mock.module("server-only", { defaultExport: {} });
 mock.module("next/cache", { namedExports: { revalidatePath: () => undefined } });
@@ -70,6 +73,18 @@ const prismaMock: Record<string, unknown> = {
       medlemCreates.push({ ...data, oppdatert: true });
       return data;
     },
+    updateMany: async (args: { where: Record<string, unknown>; data: Record<string, unknown> }) => {
+      medlemUpdateMany.push(args);
+      return { count: args.where.groupId === "wang-top-id" && args.where.userId === "t-2" ? 1 : 0 };
+    },
+  },
+  groupSchedule: {
+    findFirst: async ({ where }: { where: { id: string; groupId: string; recurring: string } }) =>
+      fastOkt && fastOkt.id === where.id && fastOkt.groupId === where.groupId && where.recurring === "WEEKLY" ? fastOkt : null,
+    updateMany: async (args: { where: Record<string, unknown>; data: { startAt: Date; endAt: Date } }) => {
+      oktUpdates.push(args);
+      return { count: 1 };
+    },
   },
 };
 prismaMock.$transaction = async <T,>(fn: (tx: typeof prismaMock) => Promise<T>) => fn(prismaMock);
@@ -95,6 +110,10 @@ beforeEach(() => {
   medlemCreates.length = 0;
   updateWheres.length = 0;
   deleteWheres.length = 0;
+  medlemUpdateMany.length = 0;
+  oktUpdates.length = 0;
+  // Tirsdag 08:00–09:30 Oslo (sommertid, UTC+2).
+  fastOkt = { id: "okt-1", groupId: "wang-top-id", startAt: new Date("2026-09-01T06:00:00Z") };
 });
 
 test("sportssjef lager invitasjonslenke: bare hashen lagres, lenken gjelder i sju dager", async () => {
@@ -236,4 +255,51 @@ test("godta avvises for feil e-post, utløpt, trukket, annen gruppe, ugyldig tok
   medlem = { id: "gm-1", role: "PLAYER", endedAt: null };
   assert.equal((await actions.aksepterTrenerInvitasjon(token)).ok, false);
   assert.equal(medlemCreates.length, 0);
+});
+
+test("fjern tilgang avslutter trenermedlemskapet i egen gruppe, aldri for elever", async () => {
+  const actions = await hent();
+  assert.deepEqual(await actions.fjernTrenerTilgang("t-2"), { ok: true });
+  const { where, data } = medlemUpdateMany[0];
+  assert.equal(where.groupId, "wang-top-id");
+  assert.equal(where.userId, "t-2");
+  assert.deepEqual(where.role, { in: ["COACH", "ASSISTANT"] });
+  assert.equal(where.endedAt, null);
+  assert.ok(data.endedAt instanceof Date);
+});
+
+test("fjern tilgang: ikke seg selv, ikke ukjent trener, ikke for trener", async () => {
+  const actions = await hent();
+  assert.deepEqual(await actions.fjernTrenerTilgang("ss-1"), { ok: false, feil: "Du kan ikke fjerne din egen tilgang." });
+  assert.equal(medlemUpdateMany.length, 0);
+  assert.equal((await actions.fjernTrenerTilgang("ukjent")).ok, false);
+  bruker = { id: "t-1", role: "COACH" };
+  assert.deepEqual(await actions.fjernTrenerTilgang("t-2"), { ok: false, feil: "Bare sportssjef kan gjøre dette." });
+  assert.equal(medlemUpdateMany.length, 1);
+});
+
+test("flytt morgentreningen: ny dag og tid i Oslo, i samme uke som malen", async () => {
+  const actions = await hent();
+  // Tirsdag 08:00 -> torsdag 07:15–08:45.
+  const svar = await actions.flyttFastOkt(skjema({ id: "okt-1", ukedag: "3", start: "07:15", slutt: "08:45" }));
+  assert.deepEqual(svar, { ok: true });
+  assert.deepEqual(oktUpdates[0].where, { id: "okt-1", groupId: "wang-top-id" });
+  assert.equal(oktUpdates[0].data.startAt.toISOString(), "2026-09-03T05:15:00.000Z");
+  assert.equal(oktUpdates[0].data.endAt.toISOString(), "2026-09-03T06:45:00.000Z");
+});
+
+test("flytt morgentreningen avviser annen gruppe, ugyldig tid og trener", async () => {
+  const actions = await hent();
+  fastOkt = { id: "okt-1", groupId: "annen-gruppe", startAt: new Date("2026-09-01T06:00:00Z") };
+  assert.equal((await actions.flyttFastOkt(skjema({ id: "okt-1", ukedag: "3", start: "07:15", slutt: "08:45" }))).ok, false);
+  fastOkt = { id: "okt-1", groupId: "wang-top-id", startAt: new Date("2026-09-01T06:00:00Z") };
+  assert.equal((await actions.flyttFastOkt(skjema({ id: "okt-1", ukedag: "3", start: "09:00", slutt: "08:00" }))).ok, false);
+  assert.equal((await actions.flyttFastOkt(skjema({ id: "okt-1", ukedag: "7", start: "07:00", slutt: "08:00" }))).ok, false);
+  assert.equal((await actions.flyttFastOkt(skjema({ id: "okt-1", ukedag: "3", start: "25:00", slutt: "26:00" }))).ok, false);
+  bruker = { id: "t-1", role: "COACH" };
+  assert.deepEqual(
+    await actions.flyttFastOkt(skjema({ id: "okt-1", ukedag: "3", start: "07:15", slutt: "08:45" })),
+    { ok: false, feil: "Bare sportssjef kan gjøre dette." },
+  );
+  assert.equal(oktUpdates.length, 0);
 });
