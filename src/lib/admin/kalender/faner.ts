@@ -49,6 +49,8 @@ export type KalenderFane = {
  * ukemønsteret (i tegningens omfang); dato-unntak, flere steder og
  * årsvisningen lever videre uendret på /admin/availability, som fanen også
  * lenker videre til for «avansert».
+ * 19.10.2026: fanen har dato-vinduer, gyldighet og Google Calendar, og
+ * /admin/availability sender hit.
  */
 /**
  * Pakke 3 (natt 17.10, utkast-agencyos/kalender.html): Dag · Uke · Måned · År i
@@ -61,7 +63,7 @@ export const KALENDER_FANER: KalenderFane[] = [
   { id: "maned", label: "Måned", gammelHref: null },
   { id: "ar", label: "År", gammelHref: null },
   { id: "stall", label: "Stall-dag", gammelHref: "/admin/stall/dag" },
-  { id: "tilg", label: "Tilgjengelighet", gammelHref: null },
+  { id: "tilg", label: "Tilgjengelighet", gammelHref: "/admin/availability" },
 ];
 
 export const KALENDER_STANDARDFANE: KalenderFaneId = "uke";

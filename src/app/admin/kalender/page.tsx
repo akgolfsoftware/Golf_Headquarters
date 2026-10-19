@@ -15,12 +15,14 @@ import Link from "next/link";
 import { KnappLenke, Topp } from "@/components/admin/agencyos-ny/ny";
 import { AG05Aar, AG05Dag, AG05Uke, AG05Maned, AG05Periode } from "@/components/admin/precision/AG05Kalender";
 import { AG05Tilg } from "@/components/admin/precision/AG05Tilg";
+import { AG05GoogleSynk } from "@/components/admin/precision/AG05GoogleSynk";
 import { StallDagV2, StallDagFeil } from "@/components/workbench/StallDagV2";
 import { TL_SCOPE } from "@/components/workbench/wb-tl-scope";
 import { loadStallDag } from "@/lib/workbench/wb-actions";
 import { erKalenderLag, type KalenderLag } from "@/lib/domain/kalender-lag";
 import { hentKalenderLagManed, hentKalenderLagUke } from "./lag/data";
 import { hentTilgjengelighet } from "./tilg-data";
+import { hentGoogleSynk } from "./google-synk-data";
 import { hentKalenderAar } from "./aar-data";
 import { KALENDER_FANER, kalenderHref, velgKalenderFane } from "@/lib/admin/kalender/faner";
 
@@ -35,6 +37,8 @@ type SearchParams = Promise<{
   dato?: string;
   lag?: string;
   aar?: string;
+  ok?: string;
+  error?: string;
 }>;
 
 const ISO_DATO = /^\d{4}-\d{2}-\d{2}$/;
@@ -65,9 +69,9 @@ export default async function AgencyKalenderPage({ searchParams }: { searchParam
       </div>
     );
   } else if (fane === "tilg") {
-    const data = await hentTilgjengelighet(user);
+    const [data, google] = await Promise.all([hentTilgjengelighet(user), hentGoogleSynk(user.id)]);
     periode = "Tilgjengelighet";
-    innhold = <AG05Tilg data={data} />;
+    innhold = <AG05Tilg data={data} google={<AG05GoogleSynk data={google} ok={sp.ok} error={sp.error} />} />;
   } else if (fane === "ar") {
     const data = await hentKalenderAar(sp.aar, seer);
     periode = String(data.aar);

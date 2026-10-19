@@ -1,8 +1,9 @@
 import { redirect } from "next/navigation";
 
 /**
- * /admin/settings/calendar (gammel adresse) → /admin/oppsett?fane=kalender
- * (MASTERPLAN 15.3). `?ok=`/`?error=` fra Google OAuth-callback bevares.
+ * /admin/settings/calendar (gammel adresse, også Google OAuth-callbacken)
+ * → Kalender › Tilgjengelighet, der Google Calendar-koblingen bor fra 19.10.2026.
+ * `?ok=`/`?error=` fra callbacken bevares.
  */
 export default async function CalendarRedirect({
   searchParams,
@@ -10,8 +11,8 @@ export default async function CalendarRedirect({
   searchParams: Promise<{ ok?: string; error?: string }>;
 }): Promise<never> {
   const { ok, error } = await searchParams;
-  const qs = new URLSearchParams({ fane: "kalender" });
+  const qs = new URLSearchParams({ fane: "tilg" });
   if (ok) qs.set("ok", ok);
   if (error) qs.set("error", error);
-  redirect(`/admin/oppsett?${qs.toString()}`);
+  redirect(`/admin/kalender?${qs.toString()}`);
 }
