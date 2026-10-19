@@ -8,6 +8,7 @@ import {
   erForsinket,
   hentKatalog,
   hentKilde,
+  hentNorskeLive,
   hentNorskeResultater,
   hentOversikt,
   hentProff,
@@ -89,9 +90,10 @@ export async function hentWangDataGolf(side: WangDgSide, valg: WangDgValg): Prom
     };
   }
   if (side === "norske") {
-    const { spillere, kommende } = await hentNorskeResultater();
+    const [{ spillere, kommende }, live] = await Promise.all([hentNorskeResultater(), hentNorskeLive()]);
     return {
       side,
+      live,
       spillere: spillere.map((s) => ({
         id: s.id,
         navn: s.name,

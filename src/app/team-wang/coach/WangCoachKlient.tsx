@@ -19,6 +19,7 @@ import type { WangTesterData } from '@/app/team-wang/_data/wang-tester-visning';
 import type { WangPlanData } from '@/app/team-wang/_data/wang-plan-visning';
 import type { WangDataGolfData } from '@/app/team-wang/_data/wang-datagolf-visning';
 import type { WangElevdata, WangFireukerssjekk } from '@/app/team-wang/_data/wang-elevdata-visning';
+import type { WangAdminData } from '@/app/team-wang/_data/wang-admin-visning';
 import { WangDataGolf } from '@/components/wang/WangDataGolf';
 
 interface WangCoachKlientProps {
@@ -41,6 +42,8 @@ interface WangCoachKlientProps {
   fireukerssjekk?: WangFireukerssjekk;
   /** Data Golf (Konkurranse › Data Golf), bare når kanSeDataGolf slapp brukeren inn. */
   dataGolf?: WangDataGolfData;
+  /** Invitasjoner og timeplanunntak (Administrasjon), bare for sportssjef. */
+  admin?: WangAdminData;
   /** Opptak og koordinering (Administrasjon), bare for sportssjef. */
   opptak?: WangOpptakData;
   /** Ekte gruppedata, bygget på serveren (byggWangTrenerData). */
@@ -59,6 +62,7 @@ export function WangCoachKlient({
   elevdata,
   fireukerssjekk,
   dataGolf,
+  admin,
   opptak,
   data,
 }: WangCoachKlientProps) {
@@ -144,6 +148,7 @@ export function WangCoachKlient({
         <WangAdmin
           aktivFane={fane}
           tester={tester}
+          admin={admin}
           opptak={opptak}
           onFaneEndret={(nyFane) => navigerTil('admin', nyFane)}
           data={data}

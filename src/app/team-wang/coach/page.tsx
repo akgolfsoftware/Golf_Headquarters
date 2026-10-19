@@ -17,6 +17,7 @@ import type { WangOmraade } from "@/components/wang/WangAppSkall";
 import { kanSeDataGolf } from "@/lib/auth/datagolf-tilgang";
 import { hentWangDataGolf, hentWangDgElev } from "@/app/team-wang/_data/wang-datagolf-data";
 import { dgSideFraFane, type WangDataGolfData } from "@/app/team-wang/_data/wang-datagolf-visning";
+import { hentWangAdminData } from "@/app/team-wang/_data/wang-admin-data";
 import {
   hentWangSamtykkeStatus,
   hentWangTesterData,
@@ -125,6 +126,9 @@ export default async function WangCoachPage({ searchParams }: WangCoachPageProps
       ? await hentWangFireukerssjekk(gruppeId, params.id)
       : undefined;
 
+  // Invitasjoner og timeplanunntak bare for sportssjef (siden har alt sendt trener bort fra admin).
+  const admin = aktivtOmraade === "admin" ? await hentWangAdminData(gruppeId) : undefined;
+
   // Opptak og koordinering (kandidater er mindreårige) bare for sportssjef, bare på de to fanene.
   const opptak =
     erAdmin && (params.fane === "opptak" || params.fane === "skolene")
@@ -155,6 +159,7 @@ export default async function WangCoachPage({ searchParams }: WangCoachPageProps
       plan={plan}
       elevdata={elevdata}
       fireukerssjekk={fireukerssjekk}
+      admin={admin}
       dataGolf={dataGolf}
       opptak={opptak}
       data={byggWangTrenerData(live, osloIdagIso(), osloNaaTid())}

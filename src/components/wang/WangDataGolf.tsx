@@ -5,7 +5,7 @@ import Link from "next/link";
 import { WangTomTilstand } from "./WangIkkeKoblet";
 import { WangFaner, WangSmaaTall, WangTilbake, WangTopp, wangHref } from "./wang-felles";
 import { formaterFortegn, formaterTall } from "@/lib/format-tall";
-import type { WangDataGolfData, WangDgProff } from "@/app/team-wang/_data/wang-datagolf-visning";
+import { liveRundeTekst, type WangDataGolfData, type WangDgProff } from "@/app/team-wang/_data/wang-datagolf-visning";
 import { WangDataGolfElev } from "./WangDataGolfElev";
 
 /**
@@ -18,9 +18,10 @@ import { WangDataGolfElev } from "./WangDataGolfElev";
  * Avvik:
  *   - DG-05–07 leser elevens tall bare når eleven har delt med treneren, og forslag går som forslag til
  *     elevens Workbench (nattkjøring 18.–19.10, pakke T3).
- *   - DG-08 viser norske proffers siste resultater og kommende turneringer; live-stilling er ikke koblet.
+ *   - DG-08 viser live-stilling fra live-jobben (bare PGA Tour og opposite field, som Data Golf har live for), siste
+ *     resultater og kommende turneringer, i én visning uten faner.
  *   - Tallene er Data Golfs modellerte ferdighetstall med kildedato, merket som modell.
- *   - Live-prikk og avatar per proff er ikke med: det finnes ingen live-stilling eller proffbilder.
+ *   - Avatar per proff er ikke med: det finnes ingen proffbilder. Live-prikken pulserer ikke.
  */
 export function WangDataGolf({ d }: { d?: WangDataGolfData }) {
   if (!d) {
@@ -374,6 +375,7 @@ function Norske({ d }: { d: Extract<WangDataGolfData, { side: "norske" }> }) {
   return (
     <>
       <Hode aktiv="dg-norske" tittel="Norske proffer" />
+      <NorskeLive live={d.live} />
       <div className="wg-to-kol">
         <section className="wg-seksjon" aria-labelledby="wg-dg-res">
           <div className="wg-sek-topp">
@@ -421,6 +423,40 @@ function Norske({ d }: { d: Extract<WangDataGolfData, { side: "norske" }> }) {
       </div>
       <PoweredBy />
     </>
+  );
+}
+
+const klokke = new Intl.DateTimeFormat("nb-NO", { timeZone: "Europe/Oslo", hour: "2-digit", minute: "2-digit" });
+
+function NorskeLive({ live }: { live: Extract<WangDataGolfData, { side: "norske" }>["live"] }) {
+  const hentet = live.reduce<Date | null>((sist, r) => (r.hentet && (!sist || r.hentet > sist) ? r.hentet : sist), null);
+  return (
+    <section className="wg-seksjon" aria-labelledby="wg-dg-live">
+      <div className="wg-sek-topp">
+        <h2 id="wg-dg-live">I spill nå</h2>
+        <span className="wg-kilde">{hentet ? `Live · hentet ${dato(hentet)} ${klokke.format(hentet)}` : "Live · —"}</span>
+      </div>
+      {live.length === 0 ? (
+        <p className="wg-baand-tom">Ingen norske proffer i spill nå. Stilling: —</p>
+      ) : (
+        <div className="wg-kort wg-rader">
+          {live.map((r) => (
+            <div key={r.id} className="wg-rad wg-dg-rad">
+              <span className="wg-dg-rang">{r.plass ?? "—"}</span>
+              <span style={{ display: "grid", gap: 2, minWidth: 0 }}>
+                <b>{r.navn}</b>
+                <span className="wg-kilde">{r.turnering} · {liveRundeTekst(r)}</span>
+              </span>
+              <span className="wg-tall">{tilPar(r.tilPar)}</span>
+            </div>
+          ))}
+        </div>
+      )}
+      <p className="wg-kilde">
+        Live hentes hvert 10. minutt under PGA Tour-turneringer. Stillingen kan være eldre enn nå. DP World og Korn Ferry
+        har ikke live.
+      </p>
+    </section>
   );
 }
 

@@ -2,6 +2,14 @@
 
 import React from "react";
 import { WangTomTilstand } from "./WangIkkeKoblet";
+import {
+  fjernTimeplanUnntak,
+  lagTimeplanUnntak,
+  lagTrenerInvitasjon,
+  trekkTrenerInvitasjon,
+} from "@/app/team-wang/coach/admin-actions";
+import { TOM_ADMINDATA, type WangAdminData } from "@/app/team-wang/_data/wang-admin-visning";
+import { MAKS_TEGN_UNNTAK } from "@/app/team-wang/_data/wang-admin-grenser";
 import { WangFaner, WangTopp, initialer } from "./wang-felles";
 import type { WangTrenerData } from "@/app/team-wang/_data/wang-trener-data";
 import { TOM_TESTERDATA, type WangSamtykkeStatus, type WangTesterData } from "@/app/team-wang/_data/wang-tester-visning";
@@ -12,6 +20,8 @@ interface WangAdminProps {
   data: WangTrenerData;
   /** Testsamtykket per elev (samtykke) hentes på serveren bare for sportssjef. */
   tester?: WangTesterData;
+  /** Invitasjoner og timeplanunntak, hentet på serveren bare for sportssjef. */
+  admin?: WangAdminData;
   /** Opptak og koordinering, hentet på serveren bare for sportssjef på de to fanene. */
   opptak?: WangOpptakData;
   /** Underside: trenere · samtykke · timeplan · opptak · skolene. */
@@ -41,20 +51,22 @@ const STATUS: Record<WangSamtykkeStatus, { tekst: string; klasse: string; farge:
  * Fasit: docs/design-system/utkast-wang/administrasjon.html (utkast 2, godkjent av Anders 16.10.2026). Lett hånd.
  * Avvik:
  *   - Samtykke viser testdelingen (TEST_RESULTATER), den eneste delingen til WANG som finnes. Utkastet sier «delt data».
- *   - Inviter trener, nytt unntak og flytt morgentrening er sperret: ingenting endres herfra.
+ *   - Inviter trener lager en lenke som gjelder i sju dager for én e-postadresse. Ingen e-post sendes: sportssjefen
+ *     kopierer lenken og sender den selv. Endre rolle og fjern tilgang er ikke med.
+ *   - Nytt unntak lagrer dato og fritekst. Flytt morgentreningen er ikke med (W4, nattkjøring 18.10).
  *   - Timeplanen viser gruppas faste økter. Skolens timeplan og kollisjoner finnes ikke i basen.
  *   - Opptak og Koordinering mellom skolene: se WangAdminOpptak.tsx (pakke W3, 18.10.2026).
  */
-export function WangAdmin({ data, tester = TOM_TESTERDATA, opptak, aktivFane }: WangAdminProps) {
+export function WangAdmin({ data, tester = TOM_TESTERDATA, admin = TOM_ADMINDATA, opptak, aktivFane }: WangAdminProps) {
   const fane = FANER.some((f) => f.id === aktivFane) ? (aktivFane as string) : "trenere";
   return (
     <>
       <WangTopp dato={`${data.gruppeNavn} · golf`} tittel={TITTEL[fane]}>
         <WangFaner omraade="admin" aktiv={fane} faner={FANER} etikett="Administrasjon" />
       </WangTopp>
-      {fane === "trenere" && <Trenere data={data} />}
+      {fane === "trenere" && <Trenere data={data} admin={admin} />}
       {fane === "samtykke" && <Samtykke data={data} tester={tester} />}
-      {fane === "timeplan" && <Timeplan data={data} />}
+      {fane === "timeplan" && <Timeplan data={data} admin={admin} />}
       {fane === "opptak" && <WangOpptak opptak={opptak} />}
       {fane === "skolene" && <WangKoordinering opptak={opptak} />}
     </>
@@ -69,22 +81,96 @@ const TITTEL: Record<string, string> = {
   skolene: "Koordinering mellom skolene",
 };
 
-function Trenere({ data }: { data: WangTrenerData }) {
+const datoKort = new Intl.DateTimeFormat("nb-NO", { timeZone: "Europe/Oslo", day: "numeric", month: "short" });
+const visDato = (iso: string) => datoKort.format(new Date(iso));
+
+function Feilmelding({ feil }: { feil: string | null }) {
+  return feil ? <p className="wg-hjelp" role="alert" style={{ color: "var(--wg-rosa-tekst)" }}>{feil}</p> : null;
+}
+
+function Trenere({ data, admin }: { data: WangTrenerData; admin: WangAdminData }) {
+  const [aapen, setAapen] = React.useState(false);
+  const [feil, setFeil] = React.useState<string | null>(null);
+  const [lenke, setLenke] = React.useState<{ url: string; utloper: string } | null>(null);
+  const [kopiert, setKopiert] = React.useState(false);
+  const [venter, start] = React.useTransition();
+
+  const lag = (form: FormData) =>
+    start(async () => {
+      setFeil(null);
+      const svar = await lagTrenerInvitasjon(form);
+      if (!svar.ok) return setFeil(svar.feil);
+      setLenke({ url: `${window.location.origin}${svar.sti}`, utloper: svar.utloper });
+      setKopiert(false);
+      setAapen(false);
+    });
+  const kopier = async () => {
+    if (!lenke) return;
+    try {
+      await navigator.clipboard.writeText(lenke.url);
+      setKopiert(true);
+    } catch {
+      setFeil("Kunne ikke kopiere. Merk lenken og kopier den selv.");
+    }
+  };
+  const trekk = (id: string) =>
+    start(async () => {
+      setFeil(null);
+      const svar = await trekkTrenerInvitasjon(id);
+      if (!svar.ok) setFeil(svar.feil);
+    });
+
   return (
     <>
       <div className="wg-sek-topp">
         <h2 style={{ margin: 0 }}>Trenere og roller</h2>
-        <button type="button" className="wg-btn wg-btn-primary" disabled>Inviter trener</button>
+        {!aapen && (
+          <button type="button" className="wg-btn wg-btn-primary" onClick={() => { setAapen(true); setLenke(null); }}>
+            Inviter trener
+          </button>
+        )}
       </div>
-      {data.trenere.length === 0 ? (
+      {aapen && (
+        <form className="wg-kort wg-fyll wg-skjema" action={lag}>
+          <label className="wg-lbl">
+            E-post til treneren
+            <input className="wg-field" name="epost" type="email" required autoComplete="off" maxLength={254} />
+            <span className="wg-hjelp">
+              Lenken virker bare for en trenerkonto i AK Golf med denne e-postadressen, og gjelder i sju dager.
+            </span>
+          </label>
+          <div className="wg-knapper">
+            <button type="submit" className="wg-btn wg-btn-primary" disabled={venter}>{venter ? "Lager …" : "Lag lenke"}</button>
+            <button type="button" className="wg-btn wg-btn-secondary" onClick={() => setAapen(false)}>Avbryt</button>
+          </div>
+          <Feilmelding feil={feil} />
+        </form>
+      )}
+      {lenke && (
+        <div className="wg-kort wg-fyll wg-skjema" aria-live="polite">
+          <b className="wg-undertittel">Invitasjonslenken er laget</b>
+          <label className="wg-lbl">
+            Lenke
+            <input className="wg-field" readOnly value={lenke.url} onFocus={(e) => e.currentTarget.select()} />
+          </label>
+          <div className="wg-knapper">
+            <button type="button" className="wg-btn wg-btn-primary" onClick={kopier}>{kopiert ? "Kopiert" : "Kopier lenken"}</button>
+          </div>
+          <p className="wg-kilde">
+            Gjelder til {visDato(lenke.utloper)}. Lenken vises bare nå. Ingen e-post er sendt: send lenken til treneren selv.
+          </p>
+        </div>
+      )}
+      {!aapen && <Feilmelding feil={feil} />}
+      {data.trenere.length === 0 && admin.invitasjoner.length === 0 ? (
         <WangTomTilstand tittel="Ingen trenere" tekst="Gruppa har ingen trenere registrert ennå." />
       ) : (
         <div className="wg-kort wg-rader">
           {data.trenere.map((t) => (
             <div key={t.id} className="wg-rad">
-              <span style={{ display: "flex", gap: 10, alignItems: "center" }}>
+              <span style={{ display: "flex", gap: 10, alignItems: "center", minWidth: 0 }}>
                 <span className="wg-avatar" aria-hidden>{initialer(t.navn)}</span>
-                <span style={{ display: "grid", gap: 2 }}>
+                <span style={{ display: "grid", gap: 2, minWidth: 0 }}>
                   <b>{t.navn}</b>
                   <span className="wg-kilde">
                     {t.rolle === "Trener" ? "Når elevene i gruppa. Ser bare det elevene har delt." : "Leser gruppa. Skriver ikke i elevenes plan."}
@@ -94,11 +180,27 @@ function Trenere({ data }: { data: WangTrenerData }) {
               <span className="wg-pille"><i />{t.rolle}</span>
             </div>
           ))}
+          {admin.invitasjoner.map((i) => (
+            <div key={i.id} className="wg-rad" style={{ gridTemplateColumns: "minmax(0, 1fr)" }}>
+              <span style={{ display: "grid", gap: 2, minWidth: 0 }}>
+                <b style={{ overflowWrap: "anywhere" }}>{i.epost}</b>
+                <span className="wg-kilde">{i.utlopt ? `Utløpt ${visDato(i.utloper)}` : `Lenken gjelder til ${visDato(i.utloper)}`}</span>
+              </span>
+              <span className="wg-knapper">
+                <span className={`wg-pille ${i.utlopt ? "" : "wg-pille-vent"}`}><i />{i.utlopt ? "Utløpt" : "Invitert"}</span>
+                {!i.utlopt && (
+                  <button type="button" className="wg-btn wg-btn-ghost" disabled={venter} onClick={() => trekk(i.id)}>
+                    Trekk tilbake
+                  </button>
+                )}
+              </span>
+            </div>
+          ))}
         </div>
       )}
       <p className="wg-kilde">
-        Rollen gjelder bare ved denne skolen. Ingen trener her ser elever ved andre WANG-skoler. Invitasjon av trenere er
-        ikke koblet ennå.
+        Rollen gjelder bare ved denne skolen. Ingen trener her ser elever ved andre WANG-skoler. En invitert trener får
+        tilgang først når lenken er åpnet og godtatt.
       </p>
     </>
   );
@@ -161,7 +263,25 @@ function Samtykke({ data, tester }: { data: WangTrenerData; tester: WangTesterDa
   );
 }
 
-function Timeplan({ data }: { data: WangTrenerData }) {
+function Timeplan({ data, admin }: { data: WangTrenerData; admin: WangAdminData }) {
+  const [aapen, setAapen] = React.useState(false);
+  const [feil, setFeil] = React.useState<string | null>(null);
+  const [venter, start] = React.useTransition();
+
+  const lagre = (form: FormData) =>
+    start(async () => {
+      setFeil(null);
+      const svar = await lagTimeplanUnntak(form);
+      if (!svar.ok) return setFeil(svar.feil);
+      setAapen(false);
+    });
+  const fjern = (id: string) =>
+    start(async () => {
+      setFeil(null);
+      const svar = await fjernTimeplanUnntak(id);
+      if (!svar.ok) setFeil(svar.feil);
+    });
+
   return (
     <div className="wg-to-kol">
       <div className="wg-kort wg-fyll">
@@ -182,11 +302,53 @@ function Timeplan({ data }: { data: WangTrenerData }) {
         )}
       </div>
       <div className="wg-kort wg-fyll">
-        <b className="wg-undertittel">Unntak og kollisjoner</b>
-        <p className="wg-kilde">Skolens timeplan og prøver finnes ikke i basen, så kollisjoner kan ikke vises.</p>
-        <div className="wg-knapper">
-          <button type="button" className="wg-btn wg-btn-primary" disabled>Nytt unntak</button>
-        </div>
+        <b className="wg-undertittel">Unntak</b>
+        {admin.unntak.length === 0 ? (
+          <p className="wg-kilde">Ingen kommende unntak.</p>
+        ) : (
+          <div className="wg-rader" style={{ padding: 0 }}>
+            {admin.unntak.map((u) => (
+              <div key={u.id} className="wg-rad">
+                <span style={{ display: "grid", gap: 2, minWidth: 0 }}>
+                  <b>Uke {u.uke}</b>
+                  <span className="wg-kilde">
+                    {visDato(u.fra)}{u.til ? `–${visDato(u.til)}` : ""}: {u.tekst}
+                  </span>
+                </span>
+                <button type="button" className="wg-btn wg-btn-ghost" disabled={venter} onClick={() => fjern(u.id)}>
+                  Fjern
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+        {aapen ? (
+          <form className="wg-skjema" style={{ display: "grid" }} action={lagre}>
+            <label className="wg-lbl">
+              Fra
+              <input className="wg-field" name="fra" type="date" required />
+            </label>
+            <label className="wg-lbl">
+              Til (valgfritt)
+              <input className="wg-field" name="til" type="date" />
+            </label>
+            <label className="wg-lbl">
+              Hva gjelder det
+              <textarea className="wg-field" name="tekst" rows={3} required maxLength={MAKS_TEGN_UNNTAK} />
+              <span className="wg-hjelp">For eksempel heldagsprøve, ferie eller testuke. Skriv aldri elevnavn eller helseopplysninger her.</span>
+            </label>
+            <div className="wg-knapper">
+              <button type="submit" className="wg-btn wg-btn-primary" disabled={venter}>{venter ? "Lagrer …" : "Lagre unntak"}</button>
+              <button type="button" className="wg-btn wg-btn-secondary" onClick={() => setAapen(false)}>Avbryt</button>
+            </div>
+          </form>
+        ) : (
+          <div className="wg-knapper">
+            <button type="button" className="wg-btn wg-btn-primary" onClick={() => setAapen(true)}>Nytt unntak</button>
+          </div>
+        )}
+        <Feilmelding feil={feil} />
+        <p className="wg-kilde">Skolens timeplan og prøver finnes ikke i basen, så kollisjoner vises ikke automatisk.</p>
       </div>
     </div>
   );

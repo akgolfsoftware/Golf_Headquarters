@@ -938,6 +938,39 @@ model TrenerDelingsInvitasjon {
   @@map("trener_delings_invitasjoner")
 }
 
+// WANG Administrasjon › Trenere (W4, nattkjøring 18.10.2026): sportssjef lager en invitasjonslenke for én
+// e-postadresse. Token lagres bare som SHA-256 og vises én gang. Ingen e-post sendes herfra. Aksept krever
+// innlogget COACH-konto med samme e-post, og gir GroupMember COACH i gruppa. Ingen @relation — additiv isolasjon.
+model WangTrenerInvitasjon {
+  id               String    @id @default(cuid())
+  groupId          String
+  mottakerEpost    String
+  tokenHash        String    @unique
+  opprettetAvId    String
+  createdAt        DateTime  @default(now())
+  expiresAt        DateTime
+  acceptedAt       DateTime?
+  acceptedByUserId String?
+  revokedAt        DateTime?
+
+  @@index([groupId, createdAt], map: "wang_trener_invitasjoner_group_idx")
+  @@map("wang_trener_invitasjoner")
+}
+
+// WANG Administrasjon › Timeplan (W4): unntak fra ukemalen (prøve, ferie, testuke). Fritekst uten elevnavn.
+model WangTimeplanUnntak {
+  id            String   @id @default(cuid())
+  groupId       String
+  fraDato       DateTime @db.Date
+  tilDato       DateTime? @db.Date
+  tekst         String
+  opprettetAvId String
+  createdAt     DateTime @default(now())
+
+  @@index([groupId, fraDato], map: "wang_timeplan_unntak_group_idx")
+  @@map("wang_timeplan_unntak")
+}
+
 // Ekstern leser (Team Norway-/WANG-ansvarlig, plan T8): en GUEST-bruker med
 // lesetilgang til samtykkede data for medlemmene i tildelte grupper.
 // revokedAt = tilgangen er trukket. Ingen @relation — additiv isolasjon.
