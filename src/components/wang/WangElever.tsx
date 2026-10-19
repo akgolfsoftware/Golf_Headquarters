@@ -16,6 +16,18 @@ import {
 import type { WangTrenerData } from "@/app/team-wang/_data/wang-trener-data";
 import { TOM_TESTERDATA, type WangTesterData } from "@/app/team-wang/_data/wang-tester-visning";
 import { TOM_PLANDATA, trengerDeg, visPct, type WangPlanData } from "@/app/team-wang/_data/wang-plan-visning";
+import {
+  TOM_ELEVINFO,
+  UTEN_KLASSE,
+  elevLinje,
+  filtrerElever,
+  klasserIGruppa,
+  visHcp,
+  type WangElevdata,
+  type WangElevInfo,
+  type WangFireukerssjekk,
+} from "@/app/team-wang/_data/wang-elevdata-visning";
+import { NIVA_NAVN, PROSESS_NAVN, desimal, fireukerOmraader, snitt } from "@/lib/iup/fireukerssjekk";
 
 interface WangEleverProps {
   data: WangTrenerData;
@@ -23,6 +35,10 @@ interface WangEleverProps {
   tester?: WangTesterData;
   /** Elevenes delte plan: etterlevelse og morgentrening, bare for elever som har delt. */
   plan?: WangPlanData;
+  /** Klasse for alle elever; HCP og kategori bare for dem som har delt med treneren. */
+  elevdata?: WangElevdata;
+  /** Fireukerssjekken for eleven undersiden gjelder (bare på «sjekk»). */
+  fireukerssjekk?: WangFireukerssjekk;
   /** Underside: liste · elev · sjekk · ikke-delt. */
   aktivFane?: string;
   /** Eleven undersiden gjelder. */
@@ -41,10 +57,20 @@ const iupHref = (id: string) => `/team-wang/coach/iup/${id}`;
  *   - Etterlevelse og morgentrening leses fra elevens delte plan (W1, hentWangPlanData). Elever som ikke har delt
  *     planen, står i «Ikke delt» med «—». Morgentrening er gruppas økter i elevens plan, gjennomført mot planlagt.
  *   - IUP og Foreslå endring åpner den eksisterende IUP-siden (/team-wang/coach/iup/[elevId]), der forslagene lagres.
- *   - Fireukerssjekken finnes ikke i basen ennå. Siden viser tom tilstand.
- *   - Klasse (VG1–VG3), kategori og HCP finnes ikke på gruppemedlemmet. Klassefilteret er derfor ikke med; søk er med.
+ *   - Fireukerssjekken er elevens leverte svar fra PlayerHQ (PH-IUP-01), bare når eleven har delt profilen med
+ *     treneren (navngitt deling). Trenerens egen vurdering lagres ikke her ennå; den føres i IUP-samtalen.
+ *   - Klasse kommer fra elevens profil (VG1–VG3, ført av coach/admin). HCP og kategori A–K vises bare for elever som
+ *     har delt profilen med treneren, ellers «Ikke delt» (W2, nattkjøringen 18.10).
  */
-export function WangElever({ data, tester = TOM_TESTERDATA, plan = TOM_PLANDATA, aktivFane, id }: WangEleverProps) {
+export function WangElever({
+  data,
+  tester = TOM_TESTERDATA,
+  plan = TOM_PLANDATA,
+  elevdata = {},
+  fireukerssjekk = { status: "ikke-delt" },
+  aktivFane,
+  id,
+}: WangEleverProps) {
   const elev = id ? data.elever.find((e) => e.id === id) : undefined;
   if (aktivFane === "elev" || aktivFane === "sjekk") {
     if (!elev) {
@@ -56,23 +82,50 @@ export function WangElever({ data, tester = TOM_TESTERDATA, plan = TOM_PLANDATA,
       );
     }
     return aktivFane === "sjekk" ? (
-      <Fireukerssjekk data={data} elev={elev} />
+      <Fireukerssjekk data={data} elev={elev} sjekk={fireukerssjekk} />
     ) : (
-      <EnElev data={data} elev={elev} deler={tester.delerIder.includes(elev.id)} tester={tester} plan={plan} />
+      <EnElev
+        data={data}
+        elev={elev}
+        deler={tester.delerIder.includes(elev.id)}
+        tester={tester}
+        plan={plan}
+        info={elevdata[elev.id] ?? TOM_ELEVINFO}
+      />
     );
   }
-  return <Elevlista data={data} tester={tester} plan={plan} />;
+  return <Elevlista data={data} tester={tester} plan={plan} elevdata={elevdata} />;
 }
 
-/** Linja under navnet: planen går foran testene, fordi planen gir mest innsyn. */
-function delingTekst(id: string, tester: WangTesterData, plan: WangPlanData): string {
-  if (plan.delerIder.includes(id)) return "Har delt med deg";
-  return tester.delerIder.includes(id) ? "Deler testene" : "Deler ikke testene";
+/** Linja under navnet: klasse og profil (W2), og plantallene når planen er delt (W1). */
+function radLinje(info: WangElevInfo, tall: WangPlanData["perElev"][string] | undefined): string {
+  if (!tall) return elevLinje(info);
+  const plantekst =
+    tall.etterlevelse.pct === null ? "ingen økter er forfalt" : `morgentrening ${visPct(tall.morgen)}`;
+  return info.delt ? `${elevLinje(info)} · ${plantekst}` : `${info.klasse ?? "Klasse ikke satt"} · ${plantekst}`;
 }
 
-function Elevlista({ data, tester, plan }: { data: WangTrenerData; tester: WangTesterData; plan: WangPlanData }) {
+function Elevlista({
+  data,
+  tester,
+  plan,
+  elevdata,
+}: {
+  data: WangTrenerData;
+  tester: WangTesterData;
+  plan: WangPlanData;
+  elevdata: WangElevdata;
+}) {
   const [sok, setSok] = useState("");
-  const treff = data.elever.filter((e) => e.navn.toLowerCase().includes(sok.trim().toLowerCase()));
+  const [klasse, setKlasse] = useState("");
+  const klasser = klasserIGruppa(data.elever, elevdata);
+  const harUtenKlasse = data.elever.some((e) => !elevdata[e.id]?.klasse);
+  const klassevalg = [
+    { verdi: "", tekst: "Alle" },
+    ...klasser.map((k) => ({ verdi: k, tekst: k })),
+    ...(harUtenKlasse ? [{ verdi: UTEN_KLASSE, tekst: "Uten klasse" }] : []),
+  ];
+  const treff = filtrerElever(data.elever, elevdata, { sok, klasse });
   const tilKontroll = tester.resultater.filter((r) => !r.kontrollert && !r.avvist).length;
   const lavestFoerst = (a: { id: string }, b: { id: string }) =>
     (plan.perElev[a.id]?.etterlevelse.pct ?? 101) - (plan.perElev[b.id]?.etterlevelse.pct ?? 101);
@@ -88,13 +141,7 @@ function Elevlista({ data, tester, plan }: { data: WangTrenerData; tester: WangT
         key={e.id}
         type={type}
         navn={e.navn}
-        linje={
-          !tall
-            ? delingTekst(e.id, tester, plan)
-            : tall.etterlevelse.pct === null
-              ? "Har delt med deg · ingen økter er forfalt"
-              : `Har delt med deg · morgentrening ${visPct(tall.morgen)}`
-        }
+        linje={radLinje(elevdata[e.id] ?? TOM_ELEVINFO, tall)}
         verdi={visPct(tall?.etterlevelse)}
         prosent={tall?.etterlevelse.pct ?? null}
         href={wangHref("elever", "elev", e.id)}
@@ -141,6 +188,21 @@ function Elevlista({ data, tester, plan }: { data: WangTrenerData; tester: WangT
               onChange={(e) => setSok(e.target.value)}
             />
           </label>
+          {klassevalg.length > 2 ? (
+            <div className="wg-filter" role="group" aria-label="Klasse">
+              {klassevalg.map((k) => (
+                <button
+                  key={k.verdi || "alle"}
+                  type="button"
+                  className={`wg-chip ${klasse === k.verdi ? "wg-chip-pa" : ""}`}
+                  aria-pressed={klasse === k.verdi}
+                  onClick={() => setKlasse(k.verdi)}
+                >
+                  {k.tekst}
+                </button>
+              ))}
+            </div>
+          ) : null}
           <div className="wg-baand wg-baand-kol">
             <WangBaand type="trenger" tittel="Trenger deg" tekst="Under 80 % av planen, eller av morgentreningen." antall={trenger.length} tomTekst={delt.length > 0 ? "Ingen elever under 80 %." : "Ingen elever å vise før planen er delt."}>
               {trenger.map((e) => rad(e, "trenger"))}
@@ -153,7 +215,7 @@ function Elevlista({ data, tester, plan }: { data: WangTrenerData; tester: WangT
               tittel="Ikke delt"
               tekst="Eleven har ikke delt planen med WANG. Testene vises når eleven har samtykket til dem."
               antall={ikke.length}
-              tomTekst={treff.length === 0 ? "Ingen elever passer søket." : "Alle elevene har delt planen."}
+              tomTekst={treff.length === 0 ? "Ingen elever passer søket eller klassen." : "Alle elevene har delt planen."}
             >
               {ikke.map((e) => rad(e, "ikke"))}
             </WangBaand>
@@ -171,12 +233,14 @@ function EnElev({
   deler,
   tester,
   plan,
+  info,
 }: {
   data: WangTrenerData;
   elev: { id: string; navn: string };
   deler: boolean;
   tester: WangTesterData;
   plan: WangPlanData;
+  info: WangElevInfo;
 }) {
   const sisteTest = tester.resultater.find((r) => r.elevId === elev.id);
   const tall = plan.perElev[elev.id];
@@ -187,7 +251,7 @@ function EnElev({
         <div style={{ display: "flex", gap: 14, alignItems: "center", minWidth: 0 }}>
           <span className="wg-avatar" aria-hidden style={{ width: 56, height: 56, fontSize: 18, flex: "none" }}>{initialer(elev.navn)}</span>
           <div style={{ minWidth: 0 }}>
-            <p className="wg-dato">{data.gruppeNavn}</p>
+            <p className="wg-dato">{data.gruppeNavn}{info.klasse ? ` · ${info.klasse}` : ""}</p>
             <h1 className="wg-tittel">{elev.navn}</h1>
           </div>
         </div>
@@ -197,6 +261,10 @@ function EnElev({
             {deler ? "Deler testene med WANG" : "Deler ikke testene"}
           </span>
           <span className={`wg-pille ${tall ? "wg-pille-ok" : ""}`}><i />{tall ? "Har delt planen med deg" : "Plan ikke delt"}</span>
+          <span className={`wg-pille ${info.delt ? "wg-pille-ok" : ""}`}>
+            <i />
+            {info.delt ? "Har delt profilen med deg" : "Profilen er ikke delt"}
+          </span>
         </div>
         <nav aria-label="Elev" className="wgf-rad">
           <Link href={wangHref("elever", "elev", elev.id)} className="wgf wgf-pa" aria-current="page">Oversikt</Link>
@@ -205,6 +273,14 @@ function EnElev({
           <Link href={wangHref("tester", "elev", elev.id)} className="wgf">Tester</Link>
         </nav>
       </section>
+
+      <WangSmaaTall
+        tall={[
+          { verdi: info.klasse ?? "—", tekst: "Klasse" },
+          { verdi: info.delt ? info.kategori ?? "—" : "—", tekst: info.delt ? "Kategori A–K" : "Kategori · ikke delt" },
+          { verdi: info.delt ? visHcp(info.hcp) : "—", tekst: info.delt ? "HCP" : "HCP · ikke delt" },
+        ]}
+      />
 
       <WangSmaaTall
         fire
@@ -248,19 +324,130 @@ function EnElev({
   );
 }
 
-function Fireukerssjekk({ data, elev }: { data: WangTrenerData; elev: { id: string; navn: string } }) {
-  return (
+const datoKort = (iso: string) => `${iso.slice(8, 10)}.${iso.slice(5, 7)}.${iso.slice(0, 4)}`;
+
+function Fireukerssjekk({
+  data,
+  elev,
+  sjekk,
+}: {
+  data: WangTrenerData;
+  elev: { id: string; navn: string };
+  sjekk: WangFireukerssjekk;
+}) {
+  const topp = (
     <>
       <WangTilbake href={wangHref("elever", "elev", elev.id)} tekst={elev.navn} />
       <WangTopp dato={`${elev.navn} · ${data.gruppeNavn}`} tittel="Fireukerssjekk" />
-      <WangTomTilstand
-        tittel="Ingen fireukerssjekk delt"
-        tekst="Prosessmål, målsetninger og utviklingssjekkens spørsmål står her når eleven har svart og delt. Elevens svar og din vurdering står side om side."
+    </>
+  );
+  if (sjekk.status === "ikke-delt") {
+    return (
+      <>
+        {topp}
+        <WangTomTilstand
+          tittel="Ikke delt"
+          tekst="Eleven har ikke delt profilen med deg. Fireukerssjekken vises her når eleven (og forelder under 16) har delt fra PlayerHQ."
+        />
+        <p className="wg-kilde">Elever ved andre WANG-skoler vises aldri.</p>
+      </>
+    );
+  }
+  const [siste, ...tidligere] = sjekk.runder;
+  if (!siste) {
+    return (
+      <>
+        {topp}
+        <WangTomTilstand tittel="Ingen levert fireukerssjekk" tekst="Eleven har delt med deg, men har ikke levert en fireukerssjekk ennå. Utkast vises ikke." />
+      </>
+    );
+  }
+  return (
+    <>
+      {topp}
+      <FireukerRunde runde={siste} prosessmal={sjekk.prosessmal} />
+      {tidligere.length > 0 ? (
+        <section className="wg-seksjon" aria-labelledby="wg-tidligere-sjekk">
+          <div className="wg-sek-topp"><h2 id="wg-tidligere-sjekk">Tidligere runder</h2></div>
+          <div className="wg-kort wg-fyll">
+            {tidligere.map((r) => (
+              <div key={r.id} className="wg-rad">
+                <b>{datoKort(r.periodeStart)}–{datoKort(r.periodeSlutt)}</b>
+                <span className="wg-tall">{r.innhold ? desimal(snitt(fireukerOmraader(r.innhold.niva).flatMap((o) => o.sporsmal), r.innhold.svar)) : "—"}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+      ) : null}
+      <p className="wg-kilde">
+        Elevens leverte svar fra PlayerHQ. Din vurdering lagres ikke her; før den i IUP-samtalen.
+      </p>
+    </>
+  );
+}
+
+function FireukerRunde({
+  runde,
+  prosessmal,
+}: {
+  runde: Extract<WangFireukerssjekk, { status: "delt" }>["runder"][number];
+  prosessmal: Record<string, string>;
+}) {
+  const innhold = runde.innhold;
+  if (!innhold) {
+    return <WangTomTilstand tittel="Kan ikke vises" tekst="Besvarelsen avviker fra kilden eller formatet og vises ikke." />;
+  }
+  const omraader = fireukerOmraader(innhold.niva);
+  const mal = Object.entries(innhold.prosessmal ?? {});
+  return (
+    <>
+      <WangSmaaTall
+        tall={[
+          { verdi: desimal(snitt(omraader.flatMap((o) => o.sporsmal), innhold.svar)), tekst: "Snitt 1–5" },
+          { verdi: NIVA_NAVN[innhold.niva], tekst: "Nivå" },
+          { verdi: datoKort(runde.levert), tekst: `Levert · ${datoKort(runde.periodeStart).slice(0, 5)}–${datoKort(runde.periodeSlutt).slice(0, 5)}` },
+        ]}
       />
-      <div className="wg-knapper">
-        <button type="button" className="wg-btn wg-btn-primary" disabled>Lagre vurderingen</button>
+      <div className="wg-to-kol">
+        <section className="wg-seksjon" aria-labelledby="wg-sjekk-omr">
+          <div className="wg-sek-topp"><h2 id="wg-sjekk-omr">Utviklingssjekken</h2></div>
+          {omraader.map((o) => (
+            <details key={o.kategori} className="wg-kort wg-fyll">
+              <summary className="wg-rad" style={{ cursor: "pointer", padding: 0 }}>
+                <b>{o.kategori}</b>
+                <span className="wg-tall">{desimal(snitt(o.sporsmal, innhold.svar))}</span>
+              </summary>
+              {o.sporsmal.map((sp) => (
+                <div key={sp.id} className="wg-rad">
+                  <span className="wg-hjelp">{sp.tekst}</span>
+                  <span className="wg-tall">{innhold.svar[sp.id] ?? "—"}</span>
+                </div>
+              ))}
+            </details>
+          ))}
+        </section>
+        <section className="wg-seksjon" aria-labelledby="wg-sjekk-mal">
+          <div className="wg-sek-topp"><h2 id="wg-sjekk-mal">Prosessmål</h2></div>
+          <div className="wg-kort wg-fyll">
+            {mal.length === 0 ? (
+              <p className="wg-kilde">Ingen prosessmål i denne runden.</p>
+            ) : (
+              mal.map(([malId, svar]) => (
+                <div key={malId} className="wg-rad">
+                  <span>{prosessmal[malId] ?? "Prosessmål som er fjernet"}</span>
+                  <b>{PROSESS_NAVN[svar]}</b>
+                </div>
+              ))
+            )}
+          </div>
+          {innhold.notat ? (
+            <>
+              <div className="wg-sek-topp"><h2>Notat til trenerne</h2></div>
+              <div className="wg-kort wg-fyll"><p className="wg-forklar" style={{ overflowWrap: "anywhere" }}>{innhold.notat}</p></div>
+            </>
+          ) : null}
+        </section>
       </div>
-      <p className="wg-kilde">Fireukerssjekken finnes ikke i basen ennå. Ingenting er lagret.</p>
     </>
   );
 }

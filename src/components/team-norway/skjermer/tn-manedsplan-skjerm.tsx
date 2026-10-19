@@ -2,23 +2,28 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { hentTnManedsplan, hentTnSamlinger, hentTnTurneringer } from "@/lib/domain/tn-arbeidsflate";
-import { byggManedsplan, dagnokkel, manedsvindu, type TnHendelse, type TnPlanDag } from "@/lib/domain/tn-manedsplan";
+import { byggManedsplan, dagnokkel, manedsvindu, tnTimerPerAkse, type TnHendelse, type TnPlanDag } from "@/lib/domain/tn-manedsplan";
+import { MAANED_AKSER, sumAkser } from "@/lib/workbench/maaned-visning";
 import { TN } from "@/lib/v2/team-norway";
 import { TnEtikett, TnFilterknapper, type TnFilterValg, TnFlate, TnFotnote, TnMangler, TnSkjermhode } from "../tn-flate";
 import { TnKnapperekke } from "../tn-handlinger";
-import { TnHelt, TnHeltKnapper, TnHeltSporsmaal, TnHeltTall, TnHeltTekst, TnHeltTellere } from "../tn-stall";
+import { TnHelt, TnHeltAkser, TnHeltKnapper, TnHeltSporsmaal, TnHeltTall, TnHeltTekst, TnHeltTellere } from "../tn-stall";
 import { TnOktSkjema, TnSlettOkt, type TnOktVerdier } from "../tn-redigering-skjema";
 import { MANEDER_LANG, SkjermRamme, heltallParam, hentSkjermbruker, osloDag, medDato } from "./felles";
 import pl from "./tn-plan.module.css";
+import { UkeAkser, timer } from "./tn-uke-akser";
 
 /**
  * TN-11 Månedsplan. Utkast 2, retning B (godkjent 16.10.2026).
  * Fasit: docs/design-system/utkast-tn/plan-fag.html, skjerm Månedsplan (pakke 5).
  *
  * Avvik:
- *   - Helteflaten viser hvor mange økter, turneringsdager og samlingsdager som er lagt inn.
- *     Timer per akse per uke og lett uke finnes ikke i datamodellen, så fordelingen på
- *     aksene og de stablede ukesøylene er ikke med.
+ *   - Timer per akse per uke er arvet fra gruppas perioder (GroupPeriodBlock.axisMinutes,
+ *     plannivåene punkt 1–2). Gruppa har ingen månedsplan og ingen lette uker, så alle uker
+ *     bruker periodens vanlige uke og ingen er skravert. Uker uten timer i perioden viser «—».
+ *     Timene står i ukebåndet i stedet for stablede ukesøyler, så kalenderen beholdes.
+ *   - Helteflaten viser fordelte timer når perioden har timer, ellers økter som før.
+ *     Økter, turneringsdager og samlingsdager står fortsatt som tellere.
  *   - Frister har ingen datamodell. Tallet og forklaringen sier det, i stedet
  *     for å vise 0 som om ingen frister fantes.
  *   - Månedsvalget viser inneværende og neste måned, som i fasiten, men
@@ -137,6 +142,13 @@ export async function TnManedsplanSkjerm({ sokeparametre }: { sokeparametre: Rec
     samlinger: samlingsdata?.samlinger ?? [],
   });
 
+  const akser = tnTimerPerAkse(aar, maned, data.perioder);
+  // Timene står på ukene som hører til måneden (torsdagsregelen); kantuker får ingen linje.
+  const akserPerMandag = new Map(akser.uker.map((u) => [u.mandag, u.minutter]));
+  const akseUkenr = akser.uker.filter((u) => u.minutter).map((u) => u.weekNumber);
+  const fordeltSum = sumAkser(akser.sum);
+  const sumTimer = Object.fromEntries(MAANED_AKSER.flatMap((a) => (akser.sum[a] === undefined ? [] : [[a, Math.round((akser.sum[a]! / 60) * 10) / 10]])));
+
   const alleDager = uker.flatMap((u) => u.dager);
   const idagNokkel = dagnokkel(new Date());
   const dagParam = Array.isArray(sokeparametre.dag) ? sokeparametre.dag[0] : sokeparametre.dag;
@@ -194,6 +206,7 @@ export async function TnManedsplanSkjerm({ sokeparametre }: { sokeparametre: Rec
             <span style={{ fontFamily: TN.font.mono, fontSize: 15, color: TN.navy900, padding: "10px 8px", borderRight: `1px solid ${TN.ink200}` }}>{u.nr}</span>
             <div style={{ minWidth: 0 }}>
               <Periodebaand navn={u.periode?.navn} hoyre={u.periode ? `Uke ${u.periode.indeks} av ${u.periode.antall}` : ""} />
+              <UkeAkser minutter={akserPerMandag.get(u.fra)} />
               <div style={{ display: "grid", gridTemplateColumns: "repeat(7, minmax(0, 1fr))" }}>{u.dager.map((d) => <Dagcelle key={d.nokkel} d={d} />)}</div>
             </div>
           </div>
@@ -219,6 +232,7 @@ export async function TnManedsplanSkjerm({ sokeparametre }: { sokeparametre: Rec
           return (
             <div key={u.fra} style={{ background: TN.white, border: `1px solid ${TN.ink200}`, minWidth: 0 }}>
               <Periodebaand navn={u.periode?.navn} hoyre={`${dm(u.fra)}–${dm(u.til)}`} />
+              <UkeAkser minutter={akserPerMandag.get(u.fra)} />
               <div style={{ fontFamily: TN.font.mono, fontWeight: 500, fontSize: 13, letterSpacing: "0.12em", textTransform: "uppercase", color: TN.ink700, padding: "10px 14px 0" }}>Uke {u.nr}</div>
               <div style={{ padding: "0 14px 6px" }}>
                 {dager.map((d) => (
@@ -257,13 +271,25 @@ export async function TnManedsplanSkjerm({ sokeparametre }: { sokeparametre: Rec
         etikett="Månedsplan"
         venstre={
           <>
-            <TnHeltSporsmaal>{`Hva er lagt inn i ${MANEDER_LANG[maned - 1]!.toLowerCase()}?`}</TnHeltSporsmaal>
-            <TnHeltTall verdi={tall.okter}>{tall.okter === 1 ? "økt" : "økter"}</TnHeltTall>
-            <TnHeltTekst>Gruppens egne økter. Turneringer og samlinger kommer i tillegg. Frister kan ikke registreres i AK Golf HQ ennå.</TnHeltTekst>
+            {akser.fordelt ? (
+              <>
+                <TnHeltSporsmaal>{`Hvor mye er fordelt i ${MANEDER_LANG[maned - 1]!.toLowerCase()}?`}</TnHeltSporsmaal>
+                <TnHeltTall verdi={timer(fordeltSum)} enhet="t">{`per spiller, uke ${akseUkenr[0]}${akseUkenr.length > 1 ? `–${akseUkenr[akseUkenr.length - 1]}` : ""}`}</TnHeltTall>
+                <TnHeltTekst>Arvet fra gruppas perioder. Spillerne tilpasser sin egen plan i PlayerHQ. Frister kan ikke registreres i AK Golf HQ ennå.</TnHeltTekst>
+              </>
+            ) : (
+              <>
+                <TnHeltSporsmaal>{`Hva er lagt inn i ${MANEDER_LANG[maned - 1]!.toLowerCase()}?`}</TnHeltSporsmaal>
+                <TnHeltTall verdi={tall.okter}>{tall.okter === 1 ? "økt" : "økter"}</TnHeltTall>
+                <TnHeltTekst>Gruppens egne økter. Periodene har ikke timer per akse ennå. Frister kan ikke registreres i AK Golf HQ ennå.</TnHeltTekst>
+              </>
+            )}
             {data.kontekst.kanAdministrere ? <TnHeltKnapper><TnOktSkjema knapp="Ny økt" variant="hvit" standardDato={valgtNokkel} /></TnHeltKnapper> : null}
           </>
         }
         hoyre={
+          <>
+          {akser.fordelt ? <TnHeltAkser tittel="Fordelt på aksene" timer={sumTimer} /> : null}
           <TnHeltTellere
             tall={[
               { verdi: tall.okter, tekst: "økter" },
@@ -271,6 +297,7 @@ export async function TnManedsplanSkjerm({ sokeparametre }: { sokeparametre: Rec
               { verdi: tall.samlingsdager, tekst: "samlingsdager" },
             ]}
           />
+          </>
         }
       />
 

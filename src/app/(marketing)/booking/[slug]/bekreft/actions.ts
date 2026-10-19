@@ -9,6 +9,7 @@ import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { kanBrukeInnebygdBooking } from "@/lib/booking/offentlig-booking";
 import { isSlotStillAvailable } from "@/lib/booking/availability";
 import { finnStedForTjeneste } from "@/lib/booking/tjeneste-sted";
+import { vurderDuoDeltaker } from "@/lib/booking/duo-deltaker";
 import { acquireHold, releaseHold, DEFAULT_HOLD_TTL_MS } from "@/lib/booking/slot-hold";
 import { recordBookingMetric } from "@/lib/booking/metrics";
 import { audit } from "@/lib/audit";
@@ -26,6 +27,9 @@ export type BookingFormInput = {
   email: string;
   phone: string;
   notes: string;
+  /** Duo: deltaker 2. Påkrevd når tjenesten er duo, ignorert ellers. */
+  partnerName?: string;
+  partnerEmail?: string;
 };
 
 export type BookingResult =
@@ -40,6 +44,8 @@ const BookingCheckoutSchema = z.object({
   email: email,
   phone: phone,
   notes: z.string().max(1000).optional(),
+  partnerName: z.string().trim().max(200).optional(),
+  partnerEmail: z.string().trim().max(254).optional(),
 });
 
 export async function createBookingCheckout(
@@ -68,6 +74,9 @@ export async function createBookingCheckout(
     if (!service || !service.active) {
       return { ok: false, error: "Tjeneste ikke tilgjengelig." };
     }
+
+    const duo = vurderDuoDeltaker(service, data);
+    if (!duo.ok) return duo;
 
     const startAt = new Date(data.start);
     const user = await getCurrentUser();
@@ -137,6 +146,8 @@ export async function createBookingCheckout(
       guestEmail: user ? null : data.email.trim().toLowerCase(),
       guestPhone: data.phone.trim() || null,
       notes: data.notes?.trim() || null,
+      partnerName: duo.partner?.name ?? null,
+      partnerEmail: duo.partner?.email ?? null,
     };
 
     let booking;

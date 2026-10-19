@@ -80,6 +80,12 @@ mock.module("@/app/team-wang/_data/wang-tester-data", {
     hentWangSamtykkeStatus: async () => ({}),
   },
 });
+mock.module("@/app/team-wang/_data/wang-elevdata", {
+  namedExports: {
+    hentWangElevdata: async () => ({}),
+    hentWangFireukerssjekk: async () => ({ status: "ikke-delt" }),
+  },
+});
 let planKall: string[] = [];
 mock.module("@/app/team-wang/_data/wang-plan-data", {
   namedExports: {

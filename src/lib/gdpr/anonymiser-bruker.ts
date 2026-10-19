@@ -236,6 +236,11 @@ export async function anonymiserBruker(
         emne: "Booking for slettet bruker", brodtekst: "Personopplysninger fjernet.", utkastSvar: null,
       },
     }),
+    // Duo: brukeren kan stå som deltaker 2 på andres bookinger, uten kobling til kontoen.
+    prisma.booking.updateMany({
+      where: { partnerEmail: bruker.email.trim().toLowerCase() },
+      data: { partnerName: null, partnerEmail: null },
+    }),
     // IUP-refleksjoner beholdes ikke koblet til anonymisert bruker; revisjoner kaskadeslettes.
     prisma.iupBesvarelse.deleteMany({ where: { userId } }),
     // Trenerforslag inneholder spillerens øktdetaljer og trenerens fritekstgrunn.

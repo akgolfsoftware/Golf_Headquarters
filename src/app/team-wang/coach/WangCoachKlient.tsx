@@ -16,6 +16,7 @@ import type { WangTrenerData } from '@/app/team-wang/_data/wang-trener-data';
 import type { WangTesterData } from '@/app/team-wang/_data/wang-tester-visning';
 import type { WangPlanData } from '@/app/team-wang/_data/wang-plan-visning';
 import type { WangDataGolfData } from '@/app/team-wang/_data/wang-datagolf-visning';
+import type { WangElevdata, WangFireukerssjekk } from '@/app/team-wang/_data/wang-elevdata-visning';
 import { WangDataGolf } from '@/components/wang/WangDataGolf';
 
 interface WangCoachKlientProps {
@@ -32,6 +33,10 @@ interface WangCoachKlientProps {
   tester?: WangTesterData;
   /** Elevenes delte plan (I dag, Trening, Elever). Bare elever som har delt planen med gruppa. */
   plan?: WangPlanData;
+  /** Klasse for alle elever; HCP og kategori for dem som har delt (Elever). */
+  elevdata?: WangElevdata;
+  /** Fireukerssjekken for eleven i Elever › Fireukerssjekk, eller «ikke-delt». */
+  fireukerssjekk?: WangFireukerssjekk;
   /** Data Golf (Konkurranse › Data Golf), bare når kanSeDataGolf slapp brukeren inn. */
   dataGolf?: WangDataGolfData;
   /** Ekte gruppedata, bygget på serveren (byggWangTrenerData). */
@@ -47,6 +52,8 @@ export function WangCoachKlient({
   brukerNavn,
   tester,
   plan,
+  elevdata,
+  fireukerssjekk,
   dataGolf,
   data,
 }: WangCoachKlientProps) {
@@ -119,6 +126,8 @@ export function WangCoachKlient({
           id={id}
           tester={tester}
           plan={plan}
+          elevdata={elevdata}
+          fireukerssjekk={fireukerssjekk}
           onFaneEndret={(nyFane) => navigerTil('elever', nyFane)}
           data={data}
         />

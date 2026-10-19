@@ -55,11 +55,8 @@ export async function sendBookingConfirmation(bookingId: string) {
   const navn = booking.user?.name ?? booking.guestName ?? null;
   const referanse = `#${booking.id.slice(-8)}`;
   const sted = booking.location.name;
-
-  const { subject, html } = byggBekreftelse({
+  const felles = {
     introHtml: content.introHtml,
-    type: erGjest ? "gjest" : "app",
-    fornavn: navn ? navn.split(" ")[0] : null,
     tjeneste: booking.serviceType.name,
     varighetMin: Math.round((booking.endAt.getTime() - booking.startAt.getTime()) / 60_000),
     start: booking.startAt,
@@ -67,18 +64,22 @@ export async function sendBookingConfirmation(bookingId: string) {
     sted,
     coach: booking.coach?.name ?? null,
     frist: cancellationDeadlineFromUtcWallClock(booking.startAt),
-    prisOre: booking.subscriptionId ? null : booking.priceOre,
-    betalingsref: booking.stripePaymentIntentId,
     referanse,
     kalenderUrl: googleKalenderUrl({ tjeneste: booking.serviceType.name, start: booking.startAt, slutt: booking.endAt, sted, referanse }),
     bookingUrl: `${APP_URL}/portal/meg/bookinger`,
-    endreUrl: erGjest
-      ? `mailto:post@akgolf.no?subject=${encodeURIComponent(`Booking ${referanse}`)}`
-      : `${APP_URL}/portal/meg/bookinger`,
+  };
+  const endreGjest = `mailto:post@akgolf.no?subject=${encodeURIComponent(`Booking ${referanse}`)}`;
+  const tilbudGjest = { tekst: "plan fra coachen, økter, tester og analyse av rundene dine", manedNok: null, arNok: null };
+
+  const { subject, html } = byggBekreftelse({
+    ...felles,
+    type: erGjest ? "gjest" : "app",
+    fornavn: navn ? navn.split(" ")[0] : null,
+    prisOre: booking.subscriptionId ? null : booking.priceOre,
+    betalingsref: booking.stripePaymentIntentId,
+    endreUrl: erGjest ? endreGjest : `${APP_URL}/portal/meg/bookinger`,
     opprettKontoUrl: erGjest ? `${APP_URL}/auth/signup` : null,
-    spillerhqTilbud: erGjest
-      ? { tekst: "plan fra coachen, økter, tester og analyse av rundene dine", manedNok: null, arNok: null }
-      : null,
+    spillerhqTilbud: erGjest ? tilbudGjest : null,
   });
 
   try {
@@ -87,6 +88,32 @@ export async function sendBookingConfirmation(bookingId: string) {
   } catch (error) {
     await logError({ context: "email.booking.resend", error, meta: { bookingId } });
     throw error;
+  }
+
+  // Duo: deltaker 2 får sin egen bekreftelse, uten pris og betalingsreferanse
+  // (den som booket betalte). Egen e-post, så ingen ser den andres adresse.
+  // Feiler den, er hovedbekreftelsen alt sendt: logg, ikke kast, så webhooken
+  // ikke prøver igjen og sender den første på nytt.
+  if (booking.partnerEmail) {
+    const partner = byggBekreftelse({
+      ...felles,
+      type: "gjest",
+      fornavn: booking.partnerName ? booking.partnerName.split(" ")[0] : null,
+      prisOre: null,
+      betalingsref: null,
+      betaltAv: navn ?? "den som booket",
+      endreUrl: endreGjest,
+      opprettKontoUrl: `${APP_URL}/auth/signup`,
+      spillerhqTilbud: tilbudGjest,
+    });
+    try {
+      const result = await resendKlient().emails.send({
+        from: FRA_EPOST, to: booking.partnerEmail, subject: content.subject.trim() || partner.subject, html: partner.html,
+      });
+      if (result.error) throw new Error("E-postleverandøren avviste bekreftelsen til deltaker 2.");
+    } catch (error) {
+      await logError({ context: "email.booking.resend.duo", error, meta: { bookingId } });
+    }
   }
 }
 

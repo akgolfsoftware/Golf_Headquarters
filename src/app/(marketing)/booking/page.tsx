@@ -11,7 +11,7 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { BOOKING_ACUITY_URL, kanBrukeInnebygdBooking } from "@/lib/booking/offentlig-booking";
-import { erAbonnementTjeneste } from "@/lib/booking/tjeneste-kategori";
+import { erAbonnementTjeneste, erDuoTjeneste } from "@/lib/booking/tjeneste-kategori";
 import { MarkedBookingPauset } from "@/components/marketing/landing/MarkedBookingPauset";
 import {
   BK01Booking,
@@ -98,6 +98,7 @@ export default async function BookingLanding() {
       varighetMin: s.durationMin,
       beskrivelse: s.description,
       sted: s.location?.name ?? null,
+      duo: erDuoTjeneste(s),
     }))
     .sort(sorterSomFasit)
     .map(({ sorterPaa: _sorterPaa, ...t }) => t);
