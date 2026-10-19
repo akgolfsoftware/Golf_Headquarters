@@ -2,7 +2,7 @@
 /**
  * v2-forhåndsvisning — Foreldreportal · Økonomi (retning C). Egen top-level
  * route-group (v2preview) som IKKE arver forelder-layouten — kun root-layout.
- * V2Shell leverer chrome-en (IkonRail/BunnNav med FORELDER_NAV), ForelderOkonomiV2
+ * V2Shell leverer chrome-en (IkonRail/BunnNav med FORELDER_NAV), FO04Okonomi
  * rendrer innholds-stacken.
  *
  * Auth + dataloader gjenbrukt 1:1 fra den ekte siden
@@ -16,9 +16,9 @@ import { prisma } from "@/lib/prisma";
 import { hentBarnOkonomiSummer } from "@/lib/forelder-okonomi";
 import { ForelderSkall } from "@/components/precision/ForelderSkall";
 import {
-  ForelderOkonomiV2,
+  FO04Okonomi,
   type ForelderOkonomiData,
-} from "@/components/portal/v2/ForelderOkonomiV2";
+} from "@/components/forelder/FO04Okonomi";
 
 export const dynamic = "force-dynamic";
 
@@ -36,7 +36,7 @@ export default async function V2ForelderOkonomiPreviewPage() {
     };
     return (
       <ForelderSkall>
-        <ForelderOkonomiV2 data={tomt} />
+        <FO04Okonomi data={tomt} />
       </ForelderSkall>
     );
   }
@@ -93,7 +93,7 @@ export default async function V2ForelderOkonomiPreviewPage() {
 
   return (
     <ForelderSkall>
-      <ForelderOkonomiV2 data={data} />
+      <FO04Okonomi data={data} />
     </ForelderSkall>
   );
 }

@@ -2,7 +2,7 @@
 /**
  * v2-forhåndsvisning — Foreldreportal · Varsler (retning C). Egen top-level
  * route-group (v2preview) som IKKE arver forelder-layouten — kun root-layout.
- * V2Shell leverer chrome-en (IkonRail/BunnNav med FORELDER_NAV), ForelderVarslerV2
+ * V2Shell leverer chrome-en (IkonRail/BunnNav med FORELDER_NAV), FO06Varsler
  * rendrer innholds-stacken.
  *
  * Auth + dataloader gjenbrukt 1:1 fra den ekte siden
@@ -16,9 +16,9 @@ import { hentBarnForForelder } from "@/lib/forelder";
 import { prisma } from "@/lib/prisma";
 import { ForelderSkall } from "@/components/precision/ForelderSkall";
 import {
-  ForelderVarslerV2,
+  FO06Varsler,
   type ForelderVarslerData,
-} from "@/components/portal/v2/ForelderVarslerV2";
+} from "@/components/forelder/FO06Varsler";
 
 export const dynamic = "force-dynamic";
 
@@ -64,7 +64,7 @@ export default async function V2ForelderVarslerPreviewPage() {
 
   return (
     <ForelderSkall>
-      <ForelderVarslerV2 data={data} />
+      <FO06Varsler data={data} />
     </ForelderSkall>
   );
 }

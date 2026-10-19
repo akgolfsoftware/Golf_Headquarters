@@ -18,9 +18,9 @@ import { hentBarnForForelder } from "@/lib/forelder";
 import { prisma } from "@/lib/prisma";
 import { ForelderSkall } from "@/components/precision/ForelderSkall";
 import {
-  ForelderCoachV2,
+  FO06Coach,
   type ForelderCoachData,
-} from "@/components/portal/v2/ForelderCoachV2";
+} from "@/components/forelder/FO06Coach";
 
 export const dynamic = "force-dynamic";
 
@@ -51,7 +51,7 @@ export default async function ForelderCoachPage() {
     };
     return (
       <ForelderSkall>
-        <ForelderCoachV2 data={data} />
+        <FO06Coach data={data} />
       </ForelderSkall>
     );
   }
@@ -119,7 +119,7 @@ export default async function ForelderCoachPage() {
 
   return (
     <ForelderSkall>
-      <ForelderCoachV2 data={data} />
+      <FO06Coach data={data} />
     </ForelderSkall>
   );
 }

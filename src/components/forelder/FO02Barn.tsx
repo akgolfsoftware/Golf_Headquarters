@@ -1,21 +1,13 @@
 "use client";
 
 /**
- * Foreldreportal · Barn — pikselport PX-5.
- * Fasit: designsystem/train-lock/FO-02 Barn.dc.html
- * (+ FO-02L Barn lys.dc.html — lys/mørk gjøres av tokens).
- * Kort per koblet barn: avatar 44 + fornavn 20/700, pyramide-snapshot
- * (fasitens faste trappeform — dataene bæres av Økter-tallet), øktantall
- * 34/700, «Neste økt» og «Utestående» som 74px-etikettlinjer. Skoletid-
- * bekreftelsen (D6, ekte action) beholdes som egen seksjon i kortet —
- * tillegg utover fasiten, notert i PR-en.
+ * FO-02 Barn — Precision Athletics, i ForelderSkall.
+ * Fasit: docs/design-system/utkast-flater/forelder.html, mal «barn».
+ * Kort per barn og skoletid-bekreftelsen (bekreftSkoletidAction) er beholdt.
  *
  * Avvik:
- *   - Skoletid-bekreftelsen er beholdt. Den ligger ikke i FO-02-tegningen.
- *   - Kortet åpner barnets detaljside, som fortsatt bruker det gamle skallet.
- *   - Visningen er Precision og er ikke målt i appen.
+ *   - Viser bare ekte data. Tall og navn i utkastet er eksempler.
  */
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -139,7 +131,7 @@ function SkoletidSeksjon({ barnId, skoletid }: { barnId: string; skoletid: Skole
 
 /* ── Skjerm ────────────────────────────────────────────────────────── */
 
-export function ForelderBarnV2({ data }: { data: ForelderBarnData }) {
+export function FO02Barn({ data }: { data: ForelderBarnData }) {
   const router = useRouter();
   const { barn, parentName, dagensDato } = data;
   const fornavn = (parentName ?? "").split(" ")[0] || "deg";

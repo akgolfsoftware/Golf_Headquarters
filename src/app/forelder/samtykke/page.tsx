@@ -1,31 +1,26 @@
-// FO05Samtykke — Precision Athletics. Data og handlinger er beholdt.
 /**
- * v2-forhåndsvisning — Foreldreportal · Samtykke (retning C). Egen top-level
- * route-group (v2preview) som IKKE arver forelder-layouten — kun root-layout.
- * V2Shell leverer chrome-en (IkonRail/BunnNav med FORELDER_NAV), ForelderSamtykkeV2
- * rendrer innholds-stacken.
- *
- * Auth + dataloader gjenbrukt 1:1 fra den ekte siden (src/app/forelder/samtykke/page.tsx):
- * kun PARENT slippes inn, relasjoner + siste slette-forespørsel hentes uendret, og
- * samtykke-håndhevelsen bor uendret i server-actionene komponenten kaller.
+ * Foreldreportal · Samtykke (FO-05) i Precision Athletics, i ForelderSkall.
+ * Kun PARENT slippes inn. Relasjoner og siste slette-forespørsel hentes uendret, og
+ * samtykke-håndhevelsen bor uendret i server-handlingene komponentene kaller.
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { ForelderSkall } from "@/components/precision/ForelderSkall";
+import "@/styles/flater-ny-forelder-profil.css";
 import { hentSamtykkeStatus } from "@/lib/health/samtykke";
 import {
   grupperMedEksterneLesereForSpiller,
   hentDelingsStatus,
 } from "@/lib/deling/samtykke";
 import {
-  ForelderSamtykkeV2,
+  FO05Samtykke,
   type ForelderSamtykkeData,
-} from "@/components/portal/v2/ForelderSamtykkeV2";
+} from "@/components/forelder/FO05Samtykke";
 import {
-  DelingSamtykkeKort,
+  FO05DelingSamtykke,
   type DelingGruppeStatus,
-} from "@/components/portal/v2/DelingSamtykkeKort";
+} from "@/components/forelder/FO05DelingSamtykke";
 import { hentWangTestdeling, type WangTestdeling } from "@/lib/portal-tester/wang-resultat-tilgang";
 import { WangTestforesporsel } from "@/components/portal/precision/WangTestforesporsel";
 
@@ -52,7 +47,7 @@ export default async function V2ForelderSamtykkePreviewPage() {
 
   // Alle påkrevde samtykker aktive på alle barn. GDPR-personvern vinner:
   // manglende/udefinert samtykke-pref regnes som IKKE gitt (samme semantikk
-  // som ForelderSamtykkeV2 sin `prefs[key] ?? false`), ikke som aktiv.
+  // som FO05Samtykke sin `prefs[key] ?? false`), ikke som aktiv.
   const requiredKeys = ["dataDeling", "fotoBruk", "thirdParty"];
   const alleAktive =
     relasjoner.length > 0 &&
@@ -140,30 +135,25 @@ export default async function V2ForelderSamtykkePreviewPage() {
 
   return (
     <ForelderSkall>
-      <ForelderSamtykkeV2 data={data} />
-      {/* T8: delingssamtykke per barn — funksjonelt, merkes for fasit-runde. */}
+      <FO05Samtykke data={data} />
+      {/* T8: delingssamtykke per barn. */}
       {relasjoner.map((r) => {
         const deling = delingPerBarn.get(r.child.id);
         if (!deling || (deling.grupper.length === 0 && deling.wangTestdeling.length === 0)) return null;
         return (
-          <div key={r.child.id} style={{ maxWidth: 720, margin: "16px auto 0", width: "100%" }}>
-            <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 8 }}>
-              Deling for {deling.navn}
-            </div>
-            {deling.wangTestdeling.map((d) => (
-              <div key={d.gruppeId} style={{ marginBottom: 16 }}>
-                <WangTestforesporsel {...d} modus={{ type: "foresatt", childId: r.child.id, barnNavn: deling.navn }} />
-              </div>
-            ))}
-            {deling.wangPlandeling.map((d) => (
-              <div key={`plan-${d.gruppeId}`} style={{ marginBottom: 16 }}>
-                <WangTestforesporsel {...d} modus={{ type: "foresatt", childId: r.child.id, barnNavn: deling.navn }} omfang="TRENINGSPLAN" />
-              </div>
-            ))}
-            {deling.grupper.length > 0 && <DelingSamtykkeKort
-              grupper={deling.grupper}
-              modus={{ type: "foresatt", childId: r.child.id }}
-            />}
+          <div key={r.child.id} className="fo-side" style={{ marginTop: 16 }}>
+            <section className="fop-seksjon">
+              <h2>Deling for {deling.navn}</h2>
+              {deling.wangTestdeling.map((d) => (
+                <WangTestforesporsel key={d.gruppeId} {...d} modus={{ type: "foresatt", childId: r.child.id, barnNavn: deling.navn }} />
+              ))}
+              {deling.wangPlandeling.map((d) => (
+                <WangTestforesporsel key={`plan-${d.gruppeId}`} {...d} modus={{ type: "foresatt", childId: r.child.id, barnNavn: deling.navn }} omfang="TRENINGSPLAN" />
+              ))}
+              {deling.grupper.length > 0 && (
+                <FO05DelingSamtykke grupper={deling.grupper} modus={{ type: "foresatt", childId: r.child.id }} />
+              )}
+            </section>
           </div>
         );
       })}

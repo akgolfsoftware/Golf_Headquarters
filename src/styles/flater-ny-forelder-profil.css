@@ -1,0 +1,57 @@
+/* FO-02 Utviklingsprofil og FO-05 deling per gruppe — Precision Athletics.
+ * Fasit: docs/design-system/utkast-flater/forelder.html (malene barnet og samtykke).
+ * Virker inne i .pa-root (ForelderSkall laster precision-athletics.css). */
+.fop{max-width:720px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:16px;min-width:0}
+.fop-tilbake{display:inline-flex;align-items:center;gap:6px;min-height:44px;align-self:flex-start;color:var(--text-secondary);font:var(--type-label);text-decoration:none}
+.fop-hode{display:flex;align-items:center;gap:14px;min-width:0}
+.fop-hode > div{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.fop-hode h1{margin:0;font:600 26px/1.2 var(--font-sans);color:var(--text-primary);overflow-wrap:anywhere}
+.fop-kicker{margin:0;color:var(--text-muted);font:var(--type-meta);letter-spacing:.08em;text-transform:uppercase}
+.fop-meta{margin:0;color:var(--text-secondary);font:var(--type-body-s);overflow-wrap:anywhere}
+.fop-seksjon{display:flex;flex-direction:column;gap:10px;min-width:0}
+.fop-seksjon > h2{margin:0;font:600 17px/1.3 var(--font-sans);color:var(--text-primary)}
+.fop-sek-topp{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.fop-sek-topp h2{margin:0;font:600 17px/1.3 var(--font-sans);color:var(--text-primary)}
+.fop-kort{background:var(--surface-card);border:1px solid var(--border-hairline);border-radius:var(--radius);padding:16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.fop-note{margin:0;color:var(--text-secondary);font:var(--type-body-s);line-height:1.5}
+.fop-personvern{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:var(--radius);background:var(--surface-sunken);color:var(--text-secondary);font:var(--type-body-s);line-height:1.5}
+.fop-personvern svg{flex:none;margin-top:2px}
+.fop-tre{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.fop-tall{padding:14px;border-radius:var(--radius);background:var(--surface-card);border:1px solid var(--border-hairline);display:flex;flex-direction:column;gap:6px;min-width:0}
+.fop-tall b{font:var(--type-metric);color:var(--text-primary)}
+.fop-tall small{color:var(--text-secondary);font:var(--type-body-s)}
+.fop-uke{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.fop-uke span{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0;border-radius:6px;border:1px dashed var(--border-hairline);color:var(--text-muted);font:500 11px/1.3 var(--font-mono)}
+.fop-uke span[data-okt="true"]{border:1px solid transparent;background:var(--surface-sunken);color:var(--text-primary)}
+.fop-rad{display:flex;align-items:center;gap:12px;min-height:52px;padding:10px 0;border-top:1px solid var(--border-hairline);min-width:0}
+.fop-kort > .fop-rad:first-of-type{border-top:0}
+.fop-rad > div{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.fop-rad strong{font:600 15px/1.3 var(--font-sans);color:var(--text-primary);overflow-wrap:anywhere}
+.fop-rad small{color:var(--text-secondary);font:var(--type-body-s);overflow-wrap:anywhere}
+.fop-rad .fop-verdi{flex:none;color:var(--text-primary);font:var(--type-num);text-align:right;display:flex;align-items:center;gap:8px}
+a.fop-rad{text-decoration:none;color:inherit}
+.fop-lenkekort{display:flex;align-items:center;gap:12px;min-height:56px;padding:12px 16px;border-radius:var(--radius);background:var(--surface-card);border:1px solid var(--border-hairline);text-decoration:none;color:inherit;min-width:0}
+.fop-lenkekort > div{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.fop-lenkekort strong{font:600 15px/1.3 var(--font-sans);color:var(--text-primary);overflow-wrap:anywhere}
+.fop-lenkekort small{color:var(--text-secondary);font:var(--type-body-s)}
+.fop-akser{display:flex;flex-direction:column;gap:10px}
+.fop-akse{display:grid;grid-template-columns:64px minmax(0,1fr) 44px;gap:10px;align-items:center;font:var(--type-body-s);color:var(--text-secondary)}
+.fop-akse > span:first-child{display:flex;align-items:center;gap:6px;font:600 12px/1 var(--font-mono);color:var(--text-primary)}
+.fop-akse i{width:8px;height:8px;border-radius:50%;flex:none}
+.fop-stolpe{height:8px;border-radius:4px;background:var(--surface-sunken);overflow:hidden}
+.fop-stolpe span{display:block;height:100%;border-radius:4px}
+.fop-akse > span:last-child{text-align:right;font:var(--type-num);color:var(--text-primary)}
+.fop-fremdrift{height:7px;border-radius:4px;background:var(--surface-sunken);overflow:hidden;margin-top:6px}
+.fop-fremdrift span{display:block;height:100%;background:var(--text-primary)}
+.fop-faner{display:flex;flex-wrap:wrap;gap:8px}
+.fop-faner a{min-height:var(--control-h, 44px);display:inline-flex;align-items:center;padding:0 14px;border-radius:999px;border:1px solid var(--border-hairline);background:var(--surface-card);color:var(--text-secondary);font:var(--type-label);text-decoration:none}
+.fop-faner a[aria-current="page"]{background:var(--primary);color:var(--text-on-primary);border-color:transparent}
+.fop-knapper{display:flex;flex-wrap:wrap;gap:10px}
+.fop-gruppe{display:flex;flex-direction:column;gap:12px;padding-top:14px;border-top:1px solid var(--border-hairline)}
+.fop-gruppe strong{font:600 15px/1.3 var(--font-sans);color:var(--text-primary)}
+.fop-bryter{display:flex;align-items:center;gap:12px;min-width:0}
+.fop-bryter > div{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.fop-bryter b{font:600 14px/1.3 var(--font-sans);color:var(--text-primary)}
+.fop-bryter small{color:var(--text-secondary);font:var(--type-body-s);line-height:1.45}
+.fop-status{margin:0;padding-top:12px;border-top:1px solid var(--border-hairline);color:var(--text-secondary);font:var(--type-body-s)}
+@media (max-width:420px){.fop-tre{grid-template-columns:1fr 1fr}.fop-tre > :last-child{grid-column:1 / -1}}

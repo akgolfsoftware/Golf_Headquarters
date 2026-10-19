@@ -2,7 +2,7 @@
 /**
  * v2-forhåndsvisning — Foreldreportal · Bookinger (retning C). Egen top-level
  * route-group (v2preview) som IKKE arver forelder-layouten — kun root-layout.
- * V2Shell leverer chrome-en (IkonRail/BunnNav med FORELDER_NAV), ForelderBookingerV2
+ * V2Shell leverer chrome-en (IkonRail/BunnNav med FORELDER_NAV), FO03Bookinger
  * rendrer innholds-stacken.
  *
  * Auth + dataloader gjenbrukt 1:1 fra den ekte siden
@@ -20,10 +20,10 @@ import { prisma } from "@/lib/prisma";
 import { startOfWeek, endOfWeek, ukenummer } from "@/lib/uke-helpers";
 import { ForelderSkall } from "@/components/precision/ForelderSkall";
 import {
-  ForelderBookingerV2,
+  FO03Bookinger,
   type ForelderBookingerData,
   type ForelderBookingRad,
-} from "@/components/portal/v2/ForelderBookingerV2";
+} from "@/components/forelder/FO03Bookinger";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Bookinger · Foreldreportal (v2)" };
@@ -111,7 +111,7 @@ export default async function V2ForelderBookingerPage() {
 
   return (
     <ForelderSkall>
-      <ForelderBookingerV2 data={data} />
+      <FO03Bookinger data={data} />
     </ForelderSkall>
   );
 }

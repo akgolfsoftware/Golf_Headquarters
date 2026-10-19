@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { ForelderUkerapportV2 } from "@/components/portal/v2/ForelderUkerapportV2";
+import { FO01Ukerapport } from "@/components/forelder/FO01Ukerapport";
 import type { ForelderUkerapport } from "@/lib/forelder";
 
 const fixture: ForelderUkerapport = {
@@ -13,7 +13,7 @@ const fixture: ForelderUkerapport = {
   trend8uker: [], coachNote: null, trentTimer: 0.5, ukeSg: null, hoydepunkt: null,
 };
 function render(data: ForelderUkerapport | null) {
-  return renderToStaticMarkup(createElement(ForelderUkerapportV2, { data, okter: [], ukeSpenn: "28.09.–04.10.2026" }));
+  return renderToStaticMarkup(createElement(FO01Ukerapport, { data, okter: [], ukeSpenn: "28.09.–04.10.2026" }));
 }
 
 test("foresatt ser minuttprosenten og perioden mens eget oppmøtetall bevares", () => {

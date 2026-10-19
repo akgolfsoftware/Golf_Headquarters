@@ -14,11 +14,11 @@ mock.module("@/components/team-norway/core", {
 
 let WangTestforesporsel: typeof import("@/components/portal/precision/WangTestforesporsel").WangTestforesporsel;
 const GRUPPE = { gruppeId: "wang-a", gruppeNavn: "WANG Skole A" };
-let DelingSamtykkeKort: typeof import("@/components/portal/v2/DelingSamtykkeKort").DelingSamtykkeKort;
+let DelingSamtykkeKort: typeof import("@/components/forelder/FO05DelingSamtykke").FO05DelingSamtykke;
 let TnSamtykkeSide: typeof import("@/components/portal/v2/TnSamtykkeSide").TnSamtykkeSide;
 before(async () => {
   ({ WangTestforesporsel } = await import("@/components/portal/precision/WangTestforesporsel"));
-  ({ DelingSamtykkeKort } = await import("@/components/portal/v2/DelingSamtykkeKort"));
+  ({ FO05DelingSamtykke: DelingSamtykkeKort } = await import("@/components/forelder/FO05DelingSamtykke"));
   ({ TnSamtykkeSide } = await import("@/components/portal/v2/TnSamtykkeSide"));
 });
 

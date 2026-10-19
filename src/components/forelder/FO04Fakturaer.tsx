@@ -1,9 +1,13 @@
 "use client";
 
-/** Foreldreportal · Fakturaer. Beløp og status er beholdt. Ingen betalingsknapp er lagt til.
- * Historisk sitering: designsystem/train-lock/FO-05 Fakturaer.dc.html og FO-05L Fakturaer lys.dc.html.
+/**
+ * FO-04 Fakturaer — Precision Athletics, i ForelderSkall.
+ * Fasit: docs/design-system/utkast-flater/forelder.html, mal «okonomi».
+ * Beløp og status er beholdt. Ingen betalingsknapp er lagt til.
+ *
+ * Avvik:
+ *   - Viser bare ekte data. Tall og navn i utkastet er eksempler.
  */
-
 import { FoSkjerm, FoHode, FoCaps, FoRad, FoRadTall, FoTallKort, FoFotnote, FoTom } from "@/components/forelder/fo-presisjon";
 
 export type FakturaStatus = "SUCCEEDED" | "PENDING" | "FAILED" | "REFUNDED" | "PARTIALLY_REFUNDED";
@@ -40,7 +44,7 @@ function statusTekst(f: ForelderFakturaRad): string {
   return `Delvis refundert ${f.dato}`;
 }
 
-export function ForelderFakturaerV2({ data }: { data: ForelderFakturaerData }) {
+export function FO04Fakturaer({ data }: { data: ForelderFakturaerData }) {
   const { fakturaer, parentName } = data;
   const fornavn = (parentName ?? "").split(" ")[0] || "deg";
   const betaltIAarOre = fakturaer.filter((f) => f.status === "SUCCEEDED" && f.iAar).reduce((s, f) => s + f.belopOre, 0);

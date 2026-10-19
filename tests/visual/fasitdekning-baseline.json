@@ -1,6 +1,6 @@
 {
-  "sitert": 129,
+  "sitert": 115,
   "av": 219,
-  "sistEndret": "2026-10-18",
-  "grunn": "PlayerHQ pakke 13 Stats resten: /portal/analysere/turneringer er en videresending til Resultater › Turneringer, og den ubrukte MinKurveTrainLock er slettet. Begge siterte «designsystem/train-lock/PH-21 Min kurve.dc.html»; Turneringer er bygget i nytt design i PH16Turneringer etter utkast-playerhq/stats-resten.html. Én Train-lock-sitering faller bort, 130→129."
+  "sistEndret": "2026-10-19",
+  "grunn": "De siste 15 appsidene i gammelt design er bygget i Precision Athletics: forelder (FO-01–FO-06, utkast-flater/forelder.html), Eksterne lesere og Notion (utkast-agencyos/resten.html), og Talent-discovery og WAGR-import. Komponentene siterer nå utkastene i docs/design-system/, ikke Train-lock-tegningene, så 14 Train-lock-siteringer faller bort, 129→115. Samme verdi i alle tre PR-ene, så de legges inn uten konflikt."
 }

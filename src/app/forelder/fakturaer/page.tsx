@@ -3,7 +3,7 @@
  * v2-forhåndsvisning — Foreldreportal · Fakturaer/Økonomi (retning C).
  * Egen top-level route-group (v2preview) som IKKE arver forelder-layouten —
  * kun root-layout. V2Shell leverer chrome-en (IkonRail/BunnNav med FORELDER_NAV),
- * ForelderFakturaerV2 rendrer innholds-stacken.
+ * FO04Fakturaer rendrer innholds-stacken.
  *
  * Auth + dataloader gjenbrukt 1:1 fra den ekte siden
  * (src/app/forelder/fakturaer/page.tsx): kun PARENT slippes inn, og betalingene
@@ -15,9 +15,9 @@ import { hentBarnForForelder } from "@/lib/forelder";
 import { prisma } from "@/lib/prisma";
 import { ForelderSkall } from "@/components/precision/ForelderSkall";
 import {
-  ForelderFakturaerV2,
+  FO04Fakturaer,
   type ForelderFakturaRad,
-} from "@/components/portal/v2/ForelderFakturaerV2";
+} from "@/components/forelder/FO04Fakturaer";
 
 export const dynamic = "force-dynamic";
 
@@ -76,7 +76,7 @@ export default async function V2ForelderFakturaerPreviewPage() {
 
   return (
     <ForelderSkall>
-      <ForelderFakturaerV2 data={{ fakturaer, parentName: user.name }} />
+      <FO04Fakturaer data={{ fakturaer, parentName: user.name }} />
     </ForelderSkall>
   );
 }

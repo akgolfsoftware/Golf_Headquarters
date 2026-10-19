@@ -1,9 +1,13 @@
 "use client";
 
-/** Foreldreportal · Økonomi. Abonnement per barn er beholdt. Ingen betalingsknapp er lagt til.
- * Historisk sitering: designsystem/train-lock/FO-07 Okonomi.dc.html og FO-07L Okonomi lys.dc.html.
+/**
+ * FO-04 Økonomi — Precision Athletics, i ForelderSkall.
+ * Fasit: docs/design-system/utkast-flater/forelder.html, mal «okonomi».
+ * Abonnement og klipp per barn er beholdt. Ingen betalingsknapp er lagt til.
+ *
+ * Avvik:
+ *   - Viser bare ekte data. Tall og navn i utkastet er eksempler.
  */
-
 import { tierEtikett } from "@/lib/tier-etikett";
 import { FoSkjerm, FoHode, FoKort, FoAvatar, FoFotnote, FoTom } from "@/components/forelder/fo-presisjon";
 
@@ -35,7 +39,7 @@ function tierTekst(b: ForelderOkonomiBarn): string {
   return deler.join(" · ");
 }
 
-export function ForelderOkonomiV2({ data }: { data: ForelderOkonomiData }) {
+export function FO04Okonomi({ data }: { data: ForelderOkonomiData }) {
   const { abonnement, barnAntall, parentName } = data;
   const fornavn = (parentName ?? "").split(" ")[0] || "deg";
 
