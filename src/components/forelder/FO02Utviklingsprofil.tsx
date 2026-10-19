@@ -1,7 +1,7 @@
 /**
  * FO-02 Utviklingsprofil (/forelder/barn/[childId]) — Precision Athletics, i ForelderSkall.
  * Fasit: docs/design-system/utkast-flater/forelder.html, mal «barnet».
- * Stil: src/styles/flater-ny-forelder-profil.css.
+ * Stil: src/styles/flater-ny-forelder-profil.css (lastes av siden).
  *
  * Samme datakontrakt som før. Samtykke-sperren er uendret: uten bekreftet
  * foreldresamtykke vises ingen treningsdata. Fanene (?tab=) er lenker, så
@@ -20,7 +20,6 @@ import type { PaymentStatus, PyramidArea } from "@/generated/prisma/client";
 import { StatusPille } from "@/components/precision/pa";
 import { formaterFortegn, formaterProsent, formaterTall } from "@/lib/format-tall";
 import { FoAvatar, FoTom } from "@/components/forelder/fo-presisjon";
-import "@/styles/flater-ny-forelder-profil.css";
 
 /* ── Datakontrakt (1:1 med page.tsx-loaderen) ──────────────────────── */
 

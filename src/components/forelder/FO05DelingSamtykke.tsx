@@ -3,7 +3,7 @@
 /**
  * FO-05 Deling med eksterne miljøer, per barn — Precision Athletics, på Samtykke-siden.
  * Fasit: docs/design-system/utkast-flater/forelder.html, mal «samtykke» (raden «Deling med trener»).
- * Stil: src/styles/flater-ny-forelder-profil.css.
+ * Stil: src/styles/flater-ny-forelder-profil.css (lastes av siden).
  *
  * Delingssamtykke til tredjepart (plan T8) — Team Norway-/WANG-lesere. Teksten hentes fra
  * DELING_SAMTYKKE_TEKST, samme kilde som versjonen som lagres. Mindreårige spillere ser
@@ -20,7 +20,6 @@ import { FoToggle } from "@/components/forelder/fo-presisjon";
 import { DELING_SAMTYKKE_TEKST } from "@/lib/deling/samtykke-regler";
 import { giDelingsSamtykke, trekkDelingsSamtykke } from "@/app/portal/meg/innstillinger/personvern/deling-samtykke-actions";
 import { settDelingsSamtykkeForBarn } from "@/app/forelder/samtykke/actions";
-import "@/styles/flater-ny-forelder-profil.css";
 
 export type DelingGruppeStatus = {
   gruppeId: string;

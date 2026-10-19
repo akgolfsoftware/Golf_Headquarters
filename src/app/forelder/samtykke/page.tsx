@@ -7,6 +7,7 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { ForelderSkall } from "@/components/precision/ForelderSkall";
+import "@/styles/flater-ny-forelder-profil.css";
 import { hentSamtykkeStatus } from "@/lib/health/samtykke";
 import {
   grupperMedEksterneLesereForSpiller,

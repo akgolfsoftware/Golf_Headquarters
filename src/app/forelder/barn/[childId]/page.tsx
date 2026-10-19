@@ -9,6 +9,7 @@ import { assertBarnTilhorerForelder, alderFraFodselsdato } from "@/lib/forelder"
 import { prisma } from "@/lib/prisma";
 import { startOfWeek, endOfWeek } from "@/lib/uke-helpers";
 import { ForelderSkall } from "@/components/precision/ForelderSkall";
+import "@/styles/flater-ny-forelder-profil.css";
 import {
   FO02Utviklingsprofil,
   type BarnDetaljTab,
