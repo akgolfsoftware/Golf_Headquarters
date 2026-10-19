@@ -7,8 +7,9 @@
  *  - denne uka: planlagte økter i alle fem akser
  *  - i dag: SLAG kl. 15:30 (75 min, 4 øvelser) og FYS kl. 17:30 (45 min, 4 øvelser), som i PH-01
  *
- * SCOPE: bare WorkbenchSession-rader med playerId = screentest og notes = MERKE. Rører ingen andre
- * brukere og ingen andre økter. Idempotent: sletter egne merkede rader før de lages på nytt.
+ * SCOPE: bare WorkbenchSession-rader med playerId = screentest, coachId = coachtest og tittel og sted fra
+ * UKE under. Rører ingen andre brukere og ingen andre økter. Idempotent: sletter disse radene før de lages
+ * på nytt. Notatet er vanlig tekst, fordi appen viser det som målsetning for økta.
  *
  * Kjør: npx tsx scripts/seed-screentest-okter.ts
  */
@@ -18,17 +19,16 @@ import { prisma } from "@/lib/prisma";
 
 const SPILLER = "screentest@akgolf.test";
 const COACH = "coachtest@akgolf.test";
-const MERKE = "seed:designkontroll-2026-10-19";
 
 type Akse = "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN";
 type Ovelse = { navn: string; min: number; motorikk: "UTEN_BALL" | "LAV_HAST" | "AUTO" };
-type Okt = { dag: number; start: string; min: number; akse: Akse; tittel: string; sted: string; ovelser: Ovelse[] };
+type Okt = { dag: number; start: string; min: number; akse: Akse; tittel: string; sted: string; ovelser: Ovelse[]; notat?: string };
 
 const O = (navn: string, min: number, motorikk: Ovelse["motorikk"] = "AUTO"): Ovelse => ({ navn, min, motorikk });
 
 /** En vanlig uke: 14 t 5 min fordelt på aksene (SPILL 5 t 50, SLAG 3 t 45, TEK 3 t, FYS 1 t 30). */
 const UKE: Okt[] = [
-  { dag: 0, start: "15:30", min: 75, akse: "SLAG", tittel: "Innspill og nærspill", sted: "Range 3 · Fredrikstad GK", ovelser: [O("Innspill 100–150 m mot flagg", 25), O("Nærspill 10–20 m, lav bane", 20), O("Bunker til green", 15), O("8-ball fra 30 m", 15)] },
+  { dag: 0, start: "15:30", min: 75, akse: "SLAG", tittel: "Innspill og nærspill", sted: "Range 3 · Fredrikstad GK", notat: "68 % av slagene fra 100–150 m lander kort. Sikt på baksiden av greenen.", ovelser: [O("Innspill 100–150 m mot flagg", 25), O("Nærspill 10–20 m, lav bane", 20), O("Bunker til green", 15), O("8-ball fra 30 m", 15)] },
   { dag: 0, start: "17:30", min: 45, akse: "FYS", tittel: "Styrke bein og kjerne", sted: "Styrkerommet", ovelser: [O("Knebøy", 12, "UTEN_BALL"), O("Markløft trapbar", 12, "UTEN_BALL"), O("Utfall med rotasjon", 11, "UTEN_BALL"), O("Planke", 10, "UTEN_BALL")] },
   { dag: 1, start: "16:00", min: 90, akse: "TEK", tittel: "Teknisk blokk · P6–P7", sted: "Range 1 · Fredrikstad GK", ovelser: [O("Speil P6", 20, "UTEN_BALL"), O("Halvsving 50 %", 35, "LAV_HAST"), O("Fullsving 75 %", 35, "LAV_HAST")] },
   { dag: 2, start: "15:00", min: 150, akse: "SPILL", tittel: "Ni hull med strategi", sted: "Fredrikstad GK", ovelser: [O("Ni hull, presisjonsstrategi", 150)] },
@@ -53,7 +53,10 @@ async function main() {
   const coach = await prisma.user.findUnique({ where: { email: COACH }, select: { id: true } });
   if (!spiller || !coach) throw new Error("Fant ikke testkontoene. Kjør seed-screentest-coach.ts først.");
 
-  const slettet = await prisma.workbenchSession.deleteMany({ where: { playerId: spiller.id, notes: MERKE } });
+  const slettet = await prisma.workbenchSession.deleteMany({ where: {
+    playerId: spiller.id, coachId: coach.id,
+    OR: UKE.map((o) => ({ title: o.tittel, location: o.sted })),
+  } });
 
   const idag = osloIDag();
   const iDagUtc = Date.UTC(idag.y, idag.m - 1, idag.d);
@@ -62,12 +65,12 @@ async function main() {
   const naaMinutt = (() => { const t = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Oslo", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).format(new Date()); return minutt(t); })();
 
   let laget = 0;
-  const lag = async (o: Okt, dagerFraIDag: number, status: string, notat = MERKE) => {
+  const lag = async (o: Okt, dagerFraIDag: number, status: string) => {
     await prisma.workbenchSession.create({
       data: {
         playerId: spiller.id, coachId: coach.id, createdBy: coach.id, origin: "COACH",
         date: dato(dagerFraIDag), startMinute: minutt(o.start), durationMinutes: o.min,
-        title: o.tittel, pyramid: o.akse, status, location: o.sted, notes: notat,
+        title: o.tittel, pyramid: o.akse, status, location: o.sted, notes: o.notat ?? null,
         publishedAt: new Date(), publishedBy: coach.id,
         drills: { create: o.ovelser.map((x, i) => ({
           title: x.navn, durationMinutes: x.min, sortOrder: i,
