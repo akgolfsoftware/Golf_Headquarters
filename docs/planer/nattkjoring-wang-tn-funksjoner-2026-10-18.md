@@ -42,6 +42,7 @@ funksjoner uten data. Kilden er avviksfeltene i #1402, #1406 og #1411 og filhode
 - **T2 · TN-månedsplanen leser gruppas perioder, uten månedsoverstyring og lette uker.** Gruppa har ingen månedsplan og ingen markering av lett uke i datamodellen; utkastet sier «Arvet fra gruppas årsplan. Spillerne tilpasser sin egen plan i PlayerHQ». Alle uker bruker periodens vanlige uke. Grunn: en gruppemånedsplan ville kreve ny tabell, og utkastet ber ikke om den.
 - **T2 · Timene står som en linje under ukebåndet**, ikke som stablede ukesøyler, så kalenderen og lista beholdes. Helteflaten viser fordelte timer og aksefordelingen når periodene har timer, ellers økter som før. Grunn: minst mulig endring av en skjerm som alt er godkjent.
 - **T2 · Neste steg (ikke i pakken):** skriving nedover til `WeekPlan` når en gruppeperiode endres (punkt 3–4) og kvittering ved lagring (punkt 6); lett uke og månedsoverstyring for gruppa, hvis Anders vil ha det.
+- Booking steg 6 (duo) · en tjeneste er duo når kategorien er «duo» eller navnet inneholder ordet «duo», uansett kategori · de ekte tjenestene «Flex Duo 50/90 min — Anders» står som drop-in i basen, så kategorien alene fant dem aldri. Skriptet `scripts/add-booking-duo-deltaker-2026-10-18.ts` (to tomme felt på `bookings`) er kjørt mot produksjon 19.10 og bekreftet med lesespørring.
 
 ## 5. Morgenrapport
 
