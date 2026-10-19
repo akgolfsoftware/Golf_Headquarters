@@ -86,9 +86,14 @@ test("fire reelle flater har sine egne arbeidsområder", () => {
   assert.match(html(draw("bord", () => WorkbenchTrenerbord({ data: d }))), /Plan og registrering.*Følg opp/);
   assert.match(html(draw("stats", () => WorkbenchAnalyse({ data: d }))), /Datagrunnlag.*Fra måling til tiltak/);
 });
-test("begge faktiske ruternøkler bevarer samletflaten ved øktvalg, men skifter ved kalender-/spiller-/flatevalg", () => {
+test("spillerens Workbench viser aldri de fire flatene (§SPILLERENS WORKBENCH FÅR NIVÅENE, 14.10)", () => {
+  const source = readFileSync("src/app/portal/planlegge/workbench/page.tsx", "utf8");
+  assert.doesNotMatch(source, /<WorkbenchSamlet|components\/workbench\/WorkbenchSamlet|loadWorkbenchSamletData|brukSamletWorkbench\(/);
+  assert.match(source, /spillerNivaUrl\(sp\)/);
+});
+test("coachens ruternøkkel bevarer samletflaten ved øktvalg, men skifter ved kalender-/spiller-/flatevalg", () => {
   const base = fixture();
-  for (const file of ["src/app/admin/workbench/[playerId]/page.tsx", "src/app/portal/planlegge/workbench/page.tsx"]) {
+  for (const file of ["src/app/admin/workbench/[playerId]/page.tsx"]) {
     const source = readFileSync(file, "utf8");
     const expression = source.match(/WorkbenchSamlet key=\{(\[[^\n]+?\]\.join\(":"\))\}/)?.[1];
     assert.ok(expression, `Samletnøkkelen finnes i ${file}`);

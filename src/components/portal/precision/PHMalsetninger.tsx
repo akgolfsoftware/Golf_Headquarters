@@ -17,12 +17,13 @@
  *   - Prosessmål vises med fremdriftsspor, ikke ukeprikker: appen lagrer ikke antall per uke på målsetningen.
  *   - IUP-raden lenker til utviklingssjekk og sesongevaluering (/portal/mal/evaluering). Tallet
  *     «7 av 37 med mål» finnes ikke i dataene og er utelatt.
- *   - Nivåmenyen i Workbench øverst er ikke med; siden er fortsatt egen adresse (/portal/mal).
+ *   - Nivåmenyen øverst vises når siden er nivået Målsetninger i Workbench (`nivaer`). /portal/mal er
+ *     fortsatt egen adresse uten nivåmenyen.
  *   - Ekstra filter «Avsluttet» viser nådde og avsluttede målsetninger, slik Avslutt-dialogen lover.
  *   - Siste milepæl vises under det store tallet når den finnes.
  */
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import Link from "next/link";
 import { ChevronRight, Plus } from "lucide-react";
 import { PLAN_NIVAA_LABEL } from "@/lib/domain/maal-plannivaa";
@@ -40,6 +41,8 @@ export type PHMalsetningerProps = {
   visIup?: boolean;
   state?: "data" | "tom" | "laster" | "feil";
   onRetry?: () => void;
+  /** Nivåmenyen i spillerens Workbench (År · Periode · Måned · Uke · Målsetninger). */
+  nivaer?: ReactNode;
 };
 
 const FILTRE: { id: Filter; navn: string }[] = [
@@ -53,18 +56,19 @@ const FILTRE: { id: Filter; navn: string }[] = [
 
 const PILLE: Record<MaalKortNy["tempo"], "ok" | "vent" | "noy"> = { nadd: "ok", foran: "ok", "i-rute": "ok", bak: "vent", "ingen-data": "noy" };
 
-function Hode() {
+function Hode({ nivaer }: { nivaer?: ReactNode }) {
   return (
     <div className="phn-topp">
       <div className="phn-topp-rad">
         <div>
-          <div className="phn-dato">Plan · Workbench</div>
+          <div className="phn-dato">{nivaer ? "Workbench" : "Plan · Workbench"}</div>
           <h1 className="phn-tittel">Målsetninger</h1>
         </div>
         <div className="phn-knapper">
           <Link className="phn-knapp pri" href="/portal/mal/ny"><Plus className="phn-ikon" aria-hidden />Ny målsetning</Link>
         </div>
       </div>
+      {nivaer}
     </div>
   );
 }
@@ -101,14 +105,14 @@ export function MaalKort({ m }: { m: MaalKortNy }) {
   );
 }
 
-export function PHMalsetninger({ data, avsluttede = [], visIup, state, onRetry }: PHMalsetningerProps) {
+export function PHMalsetninger({ data, avsluttede = [], visIup, state, onRetry, nivaer }: PHMalsetningerProps) {
   const [filter, setFilter] = useState<Filter>("alle");
   const tilstand = state ?? (data.goals.length === 0 && avsluttede.length === 0 ? "tom" : "data");
 
   if (tilstand === "laster") {
     return (
       <div className="phn phn-m" aria-busy="true">
-        <Hode />
+        <Hode nivaer={nivaer} />
         <span className="phn-skjelett" style={{ height: 120 }} />
         <div className="phn-m-liste">
           <span className="phn-skjelett" style={{ height: 180 }} />
@@ -121,7 +125,7 @@ export function PHMalsetninger({ data, avsluttede = [], visIup, state, onRetry }
   if (tilstand === "feil") {
     return (
       <div className="phn phn-m">
-        <Hode />
+        <Hode nivaer={nivaer} />
         <section className="phn-kort">
           <p className="phn-k-feil" role="alert">Målsetningene kunne ikke hentes. Ingenting er endret.</p>
           {onRetry && <div className="phn-knapper"><button type="button" className="phn-knapp sek" onClick={onRetry}>Prøv igjen</button></div>}
@@ -151,7 +155,7 @@ export function PHMalsetninger({ data, avsluttede = [], visIup, state, onRetry }
 
   return (
     <div className="phn phn-m">
-      <Hode />
+      <Hode nivaer={nivaer} />
 
       {tilstand === "tom" ? (
         <section className="phn-kort phn-k-dempet phn-m-tomt">

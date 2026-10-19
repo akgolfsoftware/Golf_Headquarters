@@ -1,8 +1,9 @@
 /**
- * PlayerHQ Workbench — PH11Workbench i PlayerHQSkall.
- * Samme motor og samme sju nivåer: år, periode, måned, uke, økt, volum og mål.
+ * PlayerHQ Workbench — spillerens nivåer År · Periode · Måned · Uke · Målsetninger
+ * (§SPILLERENS WORKBENCH FÅR NIVÅENE, 14.10.2026; fasit docs/design-system/utkast-playerhq/plan.html).
+ * Spilleren ser aldri de fire flatene (WorkbenchSamlet); de er coachens. Gamle `flate=`-lenker sendes
+ * til riktig nivå. Økt og Volum (AG-11-visningene), Live og Min kalender nås fra Uke.
  * Spilleren ser bare egen plan. Øktarket på /portal/tren/wb er en annen flate.
- * Tegningen ui_kits/playerhq/screens/PH-11.jsx ligger ikke i git.
  */
 
 import { redirect } from "next/navigation";
@@ -17,6 +18,7 @@ import { type AG11Side } from "@/components/admin/precision/AG11Workbench";
 import { AG11Fysisk, AG11Turnering } from "@/components/admin/precision/AG11Moduler";
 import { PH11Aarsplan } from "@/components/portal/precision/PH11Aarsplan";
 import { OSLO_YMD_FMT } from "@/lib/jarvis/dagen";
+import { addDays } from "@/lib/domain/workbench/operations";
 import { PH11Periode } from "@/components/portal/precision/PH11Periode";
 import { PH11Maned } from "@/components/portal/precision/PH11Maned";
 import {
@@ -34,11 +36,13 @@ import { WorkbenchLastPaNytt } from "@/components/workbench/WorkbenchLastPaNytt"
 import { loadPlayerMinCalendar } from "@/lib/workbench/spiller-min-kalender";
 import { WorkbenchLive } from "@/components/workbench/WorkbenchLive";
 import { WorkbenchMinKalender } from "@/components/workbench/WorkbenchMinKalender";
-import { WorkbenchSamlet } from "@/components/workbench/WorkbenchSamlet";
-import { loadWorkbenchSamletData } from "@/lib/workbench/workbench-samlet-data";
-import { brukSamletWorkbench, parseWorkbenchFlate } from "@/lib/workbench/samlet-url";
-import { parseVisning } from "@/lib/workbench/visning-url";
-import { queryVerdi } from "@/lib/workbench/plan-kontekst";
+import { spillerNivaUrl } from "@/lib/workbench/samlet-url";
+import { PH11Uke } from "@/components/portal/precision/PH11Uke";
+import { PH11Nivaer } from "@/components/portal/precision/PH11Nivaer";
+import { PHMalsetninger } from "@/components/portal/precision/PHMalsetninger";
+import { hentMalsetningerSide } from "@/lib/portal-mal/maal-ny-last";
+import { harEgenIupInngang } from "@/lib/iup/oversikt";
+import { periodeForUke } from "@/lib/workbench/uke-periode";
 import "@/styles/precision-komponenter.css";
 import "@/styles/precision-athletics.css";
 import "@/styles/workbench-selected.css";
@@ -76,6 +80,9 @@ export default async function PlayerWorkbenchPage({ searchParams }: Props) {
   const sp = await searchParams;
   const playerId = user.id;
   const spillerNavn = user.name ?? "Spiller";
+  // Gamle lenker til de fire flatene (flate=, klassisk=1) sendes til spillerens nivå.
+  const nivaUrl = spillerNivaUrl(sp);
+  if (nivaUrl) redirect(nivaUrl);
   const uleste = (await getUnreadNotifications(user.id, 1)).count;
 
   if (sp.pille === "fys" || sp.pille === "turn") {
@@ -86,22 +93,11 @@ export default async function PlayerWorkbenchPage({ searchParams }: Props) {
       : <AG11Turnering playerId={playerId} spillerNavn={spillerNavn} data={fys} actions={actions} routeSurface="player" />}</Ramme>;
   }
 
-  // Spilleren får nivåene (§SPILLERENS WORKBENCH FÅR NIVÅENE, 14.10): År, Periode og Måned er portert.
-  const nyttNiva = ["aar", "periode", "maned"].includes(parseVisning(queryVerdi(sp, "niva") ?? queryVerdi(sp, "vis"))) && !queryVerdi(sp, "flate");
-  if (!nyttNiva && brukSamletWorkbench(sp)) {
-    const data = await loadWorkbenchSamletData({
-      playerId, routeSurface: "player", query: sp,
-      flate: parseWorkbenchFlate(queryVerdi(sp, "flate"), parseVisning(queryVerdi(sp, "niva") ?? queryVerdi(sp, "vis"))),
-    });
-    if (!data.ok) return <Feil uleste={uleste} melding={data.error} />;
-    return <Ramme uleste={uleste}><WorkbenchSamlet key={[playerId, data.data.planKontekst.weekStart, data.data.planKontekst.year, data.data.planKontekst.monthStart, data.data.planKontekst.referanse.periode, data.data.planKontekst.visning, data.data.flate].join(":")} data={data.data} /></Ramme>;
-  }
-
   const goals = await hentMaalSpor(playerId);
   const mode = { kind: "PLAYER" as const, subjectId: playerId, sources: [] };
   const now = new Date();
   let kontekst = parsePlanKontekst(sp, { now });
-  const visning = kontekst.visning;
+  const visning = kontekst.visning === "stall" ? "uke" : kontekst.visning;
   const periodRes = visning === "periode" || (!kontekst.harValgtUke && kontekst.referanse.periode)
     ? await loadPeriod({ year: kontekst.year, periodId: kontekst.referanse.periode, mode, playerId })
     : null;
@@ -127,6 +123,12 @@ export default async function PlayerWorkbenchPage({ searchParams }: Props) {
     return <Ramme uleste={uleste}><PH11Periode key={`${playerId}:${kontekst.year}:${periodRes.data.period?.id ?? "tom"}`} playerId={playerId} periode={periodRes.data} referanse={kontekst.referanse} idag={OSLO_YMD_FMT.format(now)} /></Ramme>;
   }
 
+  if (visning === "mal") {
+    const [side, visIup] = await Promise.all([hentMalsetningerSide(user), harEgenIupInngang()]);
+    return <Ramme uleste={uleste}><PHMalsetninger visIup={visIup} avsluttede={side.avsluttede} data={{ goals: side.goals, milepael: side.milepael }}
+      nivaer={<PH11Nivaer playerId={playerId} aktiv="mal" referanse={kontekst.referanse} />} /></Ramme>;
+  }
+
   if (visning === "live") {
     const live = await loadWorkbenchLive({ weekStart, playerId, sessionId: kontekst.referanse.okt });
     if (!live.ok) return <Feil uleste={uleste} melding={live.error} />;
@@ -138,13 +140,24 @@ export default async function PlayerWorkbenchPage({ searchParams }: Props) {
     return <Ramme uleste={uleste}><Arv><WorkbenchMinKalender key={`${playerId}:${weekStart}`} playerId={playerId} coachName={spillerNavn} data={kalender.data} routeSurface="player" planKontekst={kontekst.referanse} /></Arv></Ramme>;
   }
 
-  const [weekRes, kilderRes, fys] = await Promise.all([
+  const [weekRes, kilderRes, fys, aarRes] = await Promise.all([
     loadWeek({ weekStart, mode, playerId }),
     loadSources({ playerId, weekStart }),
     loadFysTurneringWorkbenchData(playerId, { viewer: "player" }),
+    visning === "uke" ? loadYear({ year: Number(addDays(weekStart, 3).slice(0, 4)), mode, playerId }) : Promise.resolve(null),
   ]);
   if (!weekRes.ok) return <Feil uleste={uleste} melding={weekRes.error} />;
 
+  if (visning === "uke") {
+    const nu = new Date();
+    const [h, m] = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Oslo", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).format(nu).split(":").map(Number);
+    return <Ramme uleste={uleste}><PH11Uke key={`${playerId}:${weekStart}`} playerId={playerId} spillerNavn={spillerNavn} uke={weekRes.data}
+      kilder={kilderRes.ok ? kilderRes.data : []} goals={goals} fys={fys} referanse={kontekst.referanse}
+      periode={aarRes?.ok ? periodeForUke(aarRes.data.periods, weekStart) : null}
+      idag={OSLO_YMD_FMT.format(nu)} naMinutt={h * 60 + m} /></Ramme>;
+  }
+
+  // Økt og Volum (AG-11-visningene) for spilleren, nådd fra øktarket og verktøyene i Uke.
   const side = SIDER.find((s) => s === sp.side);
   return <Ramme uleste={uleste}><PH11Workbench
     planKontekst={kontekst.referanse}
@@ -155,7 +168,7 @@ export default async function PlayerWorkbenchPage({ searchParams }: Props) {
     kilder={kilderRes.ok ? kilderRes.data : []}
     goals={goals}
     fys={fys}
-    niva={visning === "mal" ? "mal" : visning === "vol" ? "vol" : visning === "okt" ? "okt" : "uke"}
+    niva={visning === "vol" ? "vol" : "okt"}
     side={side}
     valgtOktId={kontekst.referanse.okt}
   /></Ramme>;
