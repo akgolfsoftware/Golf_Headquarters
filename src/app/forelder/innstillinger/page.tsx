@@ -2,7 +2,7 @@
 /**
  * v2-forhåndsvisning — Foreldreportal · Innstillinger (retning C). Egen top-level
  * route-group (v2preview) som IKKE arver forelder-layouten — kun root-layout.
- * V2Shell leverer chrome-en (IkonRail/BunnNav med FORELDER_NAV), ForelderInnstillingerV2
+ * V2Shell leverer chrome-en (IkonRail/BunnNav med FORELDER_NAV), FO06Innstillinger
  * rendrer innholds-stacken.
  *
  * Auth + dataloader gjenbrukt 1:1 fra den ekte siden
@@ -14,9 +14,9 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentBarnForForelder } from "@/lib/forelder";
 import { ForelderSkall } from "@/components/precision/ForelderSkall";
 import {
-  ForelderInnstillingerV2,
+  FO06Innstillinger,
   type ForelderInnstillingerData,
-} from "@/components/portal/v2/ForelderInnstillingerV2";
+} from "@/components/forelder/FO06Innstillinger";
 
 export const dynamic = "force-dynamic";
 
@@ -38,7 +38,7 @@ export default async function V2ForelderInnstillingerPreviewPage() {
 
   return (
     <ForelderSkall>
-      <ForelderInnstillingerV2 data={data} />
+      <FO06Innstillinger data={data} />
     </ForelderSkall>
   );
 }

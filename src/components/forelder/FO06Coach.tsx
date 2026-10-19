@@ -1,9 +1,13 @@
 "use client";
 
-/** Foreldreportal · Dialog med coach. Siste melding og mailto er beholdt. Ikke en chat.
- * Historisk sitering: designsystem/train-lock/FO-04 Coach.dc.html og FO-04L Coach lys.dc.html.
+/**
+ * FO-06 Dialog med coach — Precision Athletics, i ForelderSkall.
+ * Fasit: docs/design-system/utkast-flater/forelder.html, mal «coach».
+ * Siste melding og e-postlenke er beholdt. Ikke en chat.
+ *
+ * Avvik:
+ *   - Viser bare ekte data. Tall og navn i utkastet er eksempler.
  */
-
 import { useState } from "react";
 import {
   FoSkjerm, FoHode, FoCaps, FoKort, FoAvatar, FoCtaPrimar, FoCtaSekundar, FoFotnote, FoTom,
@@ -20,7 +24,7 @@ export interface ForelderCoachData {
   supportEpost: string;
 }
 
-export function ForelderCoachV2({ data }: { data: ForelderCoachData }) {
+export function FO06Coach({ data }: { data: ForelderCoachData }) {
   const { antallBarn, parentName, childFirstName, coachNavn, coachEpost, sisteMelding, supportEpost } = data;
   const fornavn = (parentName ?? "").split(" ")[0] || "deg";
   const [visKontakt, setVisKontakt] = useState(false);

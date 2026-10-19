@@ -1,11 +1,13 @@
 "use client";
 
 /**
- * Foreldreportal · Innstillinger.
- * Varselbryterne er fortsatt bare lokale. Det finnes ingen lagring ennå.
- * Historisk sitering: designsystem/train-lock/FO-06 Innstillinger.dc.html og FO-06L Innstillinger lys.dc.html.
+ * FO-06 Innstillinger — Precision Athletics, i ForelderSkall.
+ * Fasit: docs/design-system/utkast-flater/forelder.html, mal «innstillinger».
+ * Varselbryterne er fortsatt bare lokale; det finnes ingen lagring ennå.
+ *
+ * Avvik:
+ *   - Viser bare ekte data. Tall og navn i utkastet er eksempler.
  */
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { FoSkjerm, FoHode, FoCaps, FoRad, FoToggle, FoAvatar, FoCtaSekundar, FoFotnote, FoTom } from "@/components/forelder/fo-presisjon";
@@ -31,7 +33,7 @@ function relasjonTekst(relasjon: string): string {
   return r.length > 0 ? r : "Foresatt";
 }
 
-export function ForelderInnstillingerV2({ data }: { data: ForelderInnstillingerData }) {
+export function FO06Innstillinger({ data }: { data: ForelderInnstillingerData }) {
   const router = useRouter();
   const { navn, epost, barn } = data;
   const fornavn = navn.split(" ")[0] ?? navn;

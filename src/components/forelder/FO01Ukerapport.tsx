@@ -1,15 +1,19 @@
 "use client";
 
-/** Foreldreportal · Ukerapport. Minuttregelen og oppmøtetallet er beholdt.
- * Historisk sitering: designsystem/train-lock/FO-09 Ukerapport.dc.html og FO-09L Ukerapport lys.dc.html.
+/**
+ * FO-01 Ukerapport — Precision Athletics, i ForelderSkall.
+ * Fasit: docs/design-system/utkast-flater/forelder.html, mal «ukerapport».
+ * Minuttregelen og oppmøtetallet er beholdt.
+ *
+ * Avvik:
+ *   - Viser bare ekte data. Tall og navn i utkastet er eksempler.
  */
-
 import type { ForelderUkerapport } from "@/lib/forelder";
 import { FoSkjerm, FoHode, FoCaps, FoKort, FoRad, FoTallKort, FoFotnote, FoTom } from "@/components/forelder/fo-presisjon";
 
 export type UkerapportOktRad = { id: string; tittel: string; sub: string };
 
-export function ForelderUkerapportV2({
+export function FO01Ukerapport({
   data, okter, ukeSpenn, parentName,
 }: {
   data: ForelderUkerapport | null;

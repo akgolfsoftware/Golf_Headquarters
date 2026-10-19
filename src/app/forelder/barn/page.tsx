@@ -2,7 +2,7 @@
 /**
  * v2-forhåndsvisning — Foreldreportal · Barn (retning C). Egen top-level
  * route-group (v2preview) som IKKE arver forelder-layouten — kun root-layout.
- * V2Shell leverer chrome-en (IkonRail/BunnNav med FORELDER_NAV), ForelderBarnV2
+ * V2Shell leverer chrome-en (IkonRail/BunnNav med FORELDER_NAV), FO02Barn
  * rendrer innholds-stacken.
  *
  * Auth + dataloader gjenbrukt 1:1 fra den ekte siden (src/app/forelder/barn/page.tsx):
@@ -16,10 +16,10 @@ import { hentBarnForForelder, alderFraFodselsdato } from "@/lib/forelder";
 import { prisma } from "@/lib/prisma";
 import { ForelderSkall } from "@/components/precision/ForelderSkall";
 import {
-  ForelderBarnV2,
+  FO02Barn,
   type ForelderBarnData,
   type ForelderBarnRad,
-} from "@/components/portal/v2/ForelderBarnV2";
+} from "@/components/forelder/FO02Barn";
 import type { PyramidArea } from "@/generated/prisma/client";
 import { hentSkoletid } from "@/lib/forelder-skoletid";
 import { semesterFor } from "@/lib/domain/skoletid";
@@ -225,7 +225,7 @@ export default async function V2ForelderBarnPreviewPage() {
 
   return (
     <ForelderSkall>
-      <ForelderBarnV2 data={data} />
+      <FO02Barn data={data} />
     </ForelderSkall>
   );
 }

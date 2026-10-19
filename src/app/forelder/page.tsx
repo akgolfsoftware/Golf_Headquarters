@@ -23,10 +23,10 @@ import { tilDatoKolonne, fraDatoKolonne } from "@/lib/workbench/wb-map";
 import { klokkeslett } from "@/lib/domain/kalender-lag";
 import { ForelderSkall } from "@/components/precision/ForelderSkall";
 import {
-  ForelderV2,
+  FO01IDag,
   type ForelderIdagData,
   type ForelderIdagOktRad,
-} from "@/components/portal/v2/ForelderV2";
+} from "@/components/forelder/FO01IDag";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "I dag · Forelder" };
@@ -186,7 +186,7 @@ export default async function ForelderPage() {
 
   return (
     <ForelderSkall>
-      <ForelderV2 data={data} />
+      <FO01IDag data={data} />
     </ForelderSkall>
   );
 }

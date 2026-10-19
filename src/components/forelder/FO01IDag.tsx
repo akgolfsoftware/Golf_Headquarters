@@ -1,12 +1,13 @@
 "use client";
 
 /**
- * Foreldreportal · I dag. FO-01 i Precision Athletics.
+ * FO-01 I dag — Precision Athletics, i ForelderSkall.
+ * Fasit: docs/design-system/utkast-flater/forelder.html, mal «idag».
  * Lesing av dagens økt, ukas oppmøte, neste booking og fotnoten er beholdt.
- * Historisk sitering, ikke visuell kilde: designsystem/train-lock/FO-01 Forelder les.dc.html
- * og FO-01L Forelder les lys.dc.html. Tegningen er ikke kontrollert i appen.
+ *
+ * Avvik:
+ *   - Viser bare ekte data. Tall og navn i utkastet er eksempler.
  */
-
 import {
   FoSkjerm,
   FoHode,
@@ -34,7 +35,7 @@ export type ForelderIdagData = {
   coachNavn: string | null;
 };
 
-export function ForelderV2({ data }: { data: ForelderIdagData }) {
+export function FO01IDag({ data }: { data: ForelderIdagData }) {
   const { childFirstName, dagensOkt, ukenummer, okter, neste, coachNavn } = data;
 
   if (!childFirstName) {

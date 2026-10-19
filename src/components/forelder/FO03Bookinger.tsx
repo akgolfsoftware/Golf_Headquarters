@@ -1,24 +1,13 @@
 "use client";
 
 /**
+ * FO-03 Bookinger — Precision Athletics, i ForelderSkall.
+ * Fasit: docs/design-system/utkast-flater/forelder.html, mal «booking».
+ * Filter per barn, venter, avlyst og «Book ny time» er beholdt.
+ *
  * Avvik:
- *   - Kontrastretting fra tidligere arbeidsgren er avstemt 10.09.2026. Eldre
- *     visuelle referanser nedenfor er historikk; helskjermkontroll mot en ny
- *     valgt Claude Design-versjon gjenstår. Denne endringen justerer fargebruk,
- *     ikke skjermens funksjon eller oppsett. Se grener-og-main-2026-09-10.md
- *     under docs/beslutningsgrunnlag for faktisk kontrollomfang.
+ *   - Viser bare ekte data. Tall og navn i utkastet er eksempler.
  */
-
-/**
- * Foreldreportal · Bookinger — pikselport PX-5.
- * Fasit: designsystem/train-lock/FO-03 Bookinger.dc.html
- * (+ FO-03L Bookinger lys.dc.html — lys/mørk gjøres av tokens).
- * Sticky filterlag (Alle/barn-piller, translucent per fasit), dag-grupperte
- * agenda-kort (tid | hairline | tittel+meta), «Venter»-caps i warn på
- * PENDING, «Tidligere» som samlet kort med opacity 0.5-rader. Radene har
- * ingen detalj-side ennå — chevronen er visuell (avvik notert i PR-en).
- */
-
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import {
@@ -125,7 +114,7 @@ function BookingKort({ b }: { b: ForelderBookingRad }) {
 
 /* ── Skjerm ────────────────────────────────────────────────────────── */
 
-export function ForelderBookingerV2({ data }: { data: ForelderBookingerData }) {
+export function FO03Bookinger({ data }: { data: ForelderBookingerData }) {
   const { antallBarn, kommende, tidligere, parentName } = data;
   const fornavn = (parentName ?? "").split(" ")[0] || "deg";
   const [filter, setFilter] = useState<string>("Alle");

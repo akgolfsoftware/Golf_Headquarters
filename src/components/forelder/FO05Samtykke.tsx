@@ -1,25 +1,13 @@
 "use client";
 
 /**
+ * FO-05 Samtykke — Precision Athletics, i ForelderSkall.
+ * Fasit: docs/design-system/utkast-flater/forelder.html, mal «samtykke».
+ * lagreSamtykker, settHelseSamtykkeForBarn, beOmDataSletting og eksporten er beholdt.
+ *
  * Avvik:
- *   - Kontrastretting fra tidligere arbeidsgren er avstemt 10.09.2026. Eldre
- *     visuelle referanser nedenfor er historikk; helskjermkontroll mot en ny
- *     valgt Claude Design-versjon gjenstår. Denne endringen justerer fargebruk,
- *     ikke skjermens funksjon eller oppsett. Se grener-og-main-2026-09-10.md
- *     under docs/beslutningsgrunnlag for faktisk kontrollomfang.
+ *   - Viser bare ekte data. Tall og navn i utkastet er eksempler.
  */
-
-/**
- * Foreldreportal · Samtykke — pikselport PX-5.
- * Fasit: designsystem/train-lock/FO-08 Samtykke.dc.html
- * (+ FO-08L Samtykke lys.dc.html — lys/mørk gjøres av tokens).
- * GDPR-samtykke per relasjon (kort per barn med 51×31-toggler) + «Sletting»-
- * seksjon. Nøytral, ikke salg. Server-actionene er uendret: lagreSamtykker
- * (eksplisitt Lagre-knapp), settHelseSamtykkeForBarn (sporbar rad per klikk)
- * og beOmDataSletting. GDPR-eksporten beholdes som egen rad (tillegg utover
- * fasiten — eksisterende funksjonalitet, notert i PR-en).
- */
-
 import { useState, useTransition } from "react";
 import {
   lagreSamtykker,
@@ -327,7 +315,7 @@ function SlettingSeksjon({
 
 /* ── Skjerm ────────────────────────────────────────────────────────── */
 
-export function ForelderSamtykkeV2({ data }: { data: ForelderSamtykkeData }) {
+export function FO05Samtykke({ data }: { data: ForelderSamtykkeData }) {
   const { barn, sisteSletting, parentName } = data;
   const fornavn = (parentName ?? "").split(" ")[0] || "deg";
 

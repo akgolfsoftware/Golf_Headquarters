@@ -3,8 +3,8 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { ForelderBookingerV2 } from "@/components/portal/v2/ForelderBookingerV2";
-import type { ForelderBookingerData } from "@/components/portal/v2/ForelderBookingerV2";
+import { FO03Bookinger } from "@/components/forelder/FO03Bookinger";
+import type { ForelderBookingerData } from "@/components/forelder/FO03Bookinger";
 
 const start = new Date("2026-10-05T08:00:00Z");
 
@@ -32,7 +32,7 @@ test("bookinglisten beholder ny time, filter, venter og avlyst", () => {
     kommende: [booking({ id: "a", status: "PENDING", childName: "Ane" }), booking({ id: "b", childName: "Bo" })],
     tidligere: [booking({ id: "c", status: "CANCELLED", childName: "Ane" })],
   };
-  const html = renderToStaticMarkup(createElement(ForelderBookingerV2, { data }));
+  const html = renderToStaticMarkup(createElement(FO03Bookinger, { data }));
   assert.ok(html.includes('href="/forelder/bookinger/ny"'));
   assert.ok(html.includes("Book ny time"));
   assert.ok(html.includes("Venter"));
@@ -42,7 +42,7 @@ test("bookinglisten beholder ny time, filter, venter og avlyst", () => {
 });
 
 test("samtykkeflaten beholder lagring, sletting og eksport", () => {
-  const src = readFileSync(new URL("../../src/components/portal/v2/ForelderSamtykkeV2.tsx", import.meta.url), "utf8");
+  const src = readFileSync(new URL("../../src/components/forelder/FO05Samtykke.tsx", import.meta.url), "utf8");
   assert.match(src, /lagreSamtykker/);
   assert.match(src, /settHelseSamtykkeForBarn/);
   assert.match(src, /beOmDataSletting/);

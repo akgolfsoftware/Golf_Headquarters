@@ -1,9 +1,13 @@
 "use client";
 
-/** Foreldreportal · Varsler. Lest-status finnes ikke i modellen og er ikke lagt til.
- * Historisk sitering: designsystem/train-lock/FO-10 Varsler.dc.html og FO-10L Varsler lys.dc.html.
+/**
+ * FO-06 Varsler — Precision Athletics, i ForelderSkall.
+ * Fasit: docs/design-system/utkast-flater/forelder.html, mal «innstillinger».
+ * Lest-status finnes ikke i modellen og er ikke lagt til.
+ *
+ * Avvik:
+ *   - Viser bare ekte data. Tall og navn i utkastet er eksempler.
  */
-
 import { FoSkjerm, FoHode, FoRad, FoFotnote, FoTom } from "@/components/forelder/fo-presisjon";
 
 export type ForelderVarsel = {
@@ -22,7 +26,7 @@ export type ForelderVarslerData = {
   varsler: ForelderVarsel[];
 };
 
-export function ForelderVarslerV2({ data }: { data: ForelderVarslerData }) {
+export function FO06Varsler({ data }: { data: ForelderVarslerData }) {
   const { parentName, barn, varsler } = data;
   const fornavn = (parentName ?? "").split(" ")[0] || "deg";
 

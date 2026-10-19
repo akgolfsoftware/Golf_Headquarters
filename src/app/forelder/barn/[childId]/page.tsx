@@ -1,10 +1,7 @@
-// FO02BarnDetalj — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
-// Read-only barn-profil for forelder — v2-port 16. juli 2026.
-// V2Shell (FORELDER_NAV) + ForelderBarnDetaljV2 erstatter den rå
-// Tailwind-presentasjonen; auth (kun PARENT), assertBarnTilhorerForelder,
-// alle Prisma-queries, aggregeringene og ?tab=-navigasjonen (server-rendret
-// via lenker) er 100 % uendret. Fremdrift beregnes fortsatt KUN for
-// HCP_TARGET (ekte reise HCP 54 → mål) — aldri oppdiktede prosenter.
+// FO-02 Utviklingsprofil — Precision Athletics (FO02Utviklingsprofil), i ForelderSkall.
+// Read-only barn-profil for forelder. Auth (kun PARENT), assertBarnTilhorerForelder,
+// alle Prisma-queries, aggregeringene og ?tab=-navigasjonen er uendret. Fremdrift
+// beregnes fortsatt KUN for HCP_TARGET (ekte reise HCP 54 → mål).
 
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
@@ -13,13 +10,13 @@ import { prisma } from "@/lib/prisma";
 import { startOfWeek, endOfWeek } from "@/lib/uke-helpers";
 import { ForelderSkall } from "@/components/precision/ForelderSkall";
 import {
-  ForelderBarnDetaljV2,
+  FO02Utviklingsprofil,
   type BarnDetaljTab,
   type ForelderBarnDetaljData,
-} from "@/components/portal/v2/ForelderBarnDetaljV2";
+} from "@/components/forelder/FO02Utviklingsprofil";
 import type { PyramidArea } from "@/generated/prisma/client";
 
-// Apex→base: TURN øverst, FYS fundament (pyramide-kanon, som ForelderBarnV2).
+// Apex→base: TURN øverst, FYS fundament (pyramide-kanon, som FO02Barn).
 const AKSE_APEX: PyramidArea[] = ["TURN", "SPILL", "SLAG", "TEK", "FYS"];
 
 /**
@@ -114,7 +111,7 @@ export default async function BarnProfil({
         orderBy: { scheduledAt: "asc" },
         select: { title: true, scheduledAt: true, durationMin: true, location: true },
       }),
-      // Siste coach-melding (samme kilde som hentForelderUkerapport/ForelderCoachV2).
+      // Siste coach-melding (samme kilde som hentForelderUkerapport/FO06Coach).
       prisma.notification.findFirst({
         where: { userId: childId, type: "melding" },
         orderBy: { createdAt: "desc" },
@@ -296,10 +293,10 @@ export default async function BarnProfil({
   };
 
   return (
-        <ForelderSkall>
+    <ForelderSkall>
       <div className="pa-side">
-      <ForelderBarnDetaljV2 data={data} />
-          </div>
+        <FO02Utviklingsprofil data={data} />
+      </div>
     </ForelderSkall>
   );
 }

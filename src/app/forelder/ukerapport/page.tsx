@@ -18,9 +18,9 @@ import { prisma } from "@/lib/prisma";
 import { startOfWeek, endOfWeek } from "@/lib/uke-helpers";
 import { ForelderSkall } from "@/components/precision/ForelderSkall";
 import {
-  ForelderUkerapportV2,
+  FO01Ukerapport,
   type UkerapportOktRad,
-} from "@/components/portal/v2/ForelderUkerapportV2";
+} from "@/components/forelder/FO01Ukerapport";
 
 export const dynamic = "force-dynamic";
 
@@ -96,7 +96,7 @@ export default async function ForelderUkerapportPage() {
 
   return (
     <ForelderSkall>
-      <ForelderUkerapportV2
+      <FO01Ukerapport
         data={data}
         okter={okter}
         ukeSpenn={ukeSpenn}
