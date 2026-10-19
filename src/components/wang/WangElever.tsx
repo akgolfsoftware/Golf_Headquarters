@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { Lock } from "lucide-react";
 import { WangTomTilstand } from "./WangIkkeKoblet";
 import {
   WangBaand,
@@ -244,6 +245,35 @@ function EnElev({
 }) {
   const sisteTest = tester.resultater.find((r) => r.elevId === elev.id);
   const tall = plan.perElev[elev.id];
+  // Ingenting delt: bare navn og klasse og et låskort, som «Ikke delt» i utkastet (pakke 7).
+  if (!deler && !tall && !info.delt) {
+    return (
+      <>
+        <WangTilbake href={wangHref("elever")} tekst="Elever" />
+        <section className="wg-topp" style={{ gap: 14 }}>
+          <div style={{ display: "flex", gap: 14, alignItems: "center", minWidth: 0 }}>
+            <span className="wg-avatar wg-avatar-dempet" aria-hidden style={{ width: 56, height: 56, fontSize: 18, flex: "none" }}>{initialer(elev.navn)}</span>
+            <div style={{ minWidth: 0 }}>
+              <p className="wg-dato">{info.klasse ?? data.gruppeNavn}</p>
+              <h1 className="wg-tittel">{elev.navn}</h1>
+            </div>
+          </div>
+        </section>
+        <div className="wg-kort wg-fyll" role="status">
+          <Lock size={28} strokeWidth={1.75} aria-hidden style={{ color: "var(--wg-navy)" }} />
+          <b>{elev.navn} har ikke delt data med deg ennå</b>
+          <p className="wg-forklar">
+            Du ser bare navn og klasse. Eleven deler fra Meg i PlayerHQ med en lenke til din e-post. Er eleven under 16 år, må
+            forelder godkjenne.
+          </p>
+          <div className="wg-knapper">
+            <Link href={wangHref("meldinger", "elev", elev.id)} className="wg-btn wg-btn-secondary">Skriv melding</Link>
+          </div>
+        </div>
+        <p className="wg-kilde">Elever ved andre WANG-skoler vises aldri.</p>
+      </>
+    );
+  }
   return (
     <>
       <WangTilbake href={wangHref("elever")} tekst="Elever" />
