@@ -8,15 +8,18 @@
  * selv i Workbench. Ingen AI-planbygger. Valget lagres med sendPlanTilCoachV2: en plan uten økter med
  * fordeling per akse, og målsetningen spilleren skriver. Coachen legger inn øktene i Workbench.
  *
+ * De fem standardplanene (src/lib/plan-builder/standardplaner.ts) står øverst, anbefalt etter turneringsnivået
+ * fra oppstarten. Malene for kategorien (PlanTemplate) beholdes under «Flere maler».
+ *
  * Avvik:
- *   - Det store tallet på kortet er økter per uke, ikke timer per uke: standardplanene (PlanTemplate)
- *     har bare antall økter. Fordelingen er malens egen. Kortet merkes «Eksempel» som i utkastet,
- *     fordi innholdet i standardplanene ikke er skrevet ennå (åpent hos Anders).
+ *   - Timer per uke og fordeling er tegningens eksempler. Kortet merkes «Eksempel» som i utkastet,
+ *     fordi innholdet i standardplanene ikke er skrevet ennå (åpent hos Anders). Malene for kategorien
+ *     viser økter per uke, fordi de bare har antall økter.
  *   - «Velg» åpner et ark med start, lengde, timer per uke, fordeling og målsetning før valget lagres:
  *     planen trenger dette for å kunne lagres. Utkastet lagrer med ett trykk.
  *   - Planen lagres som utkast hos coachen (plan uten økter). Utkastet sier at planen gjelder med en
  *     gang; i appen legger coachen inn øktene først. «Send til coach» som eget steg er fjernet.
- *   - Anbefalt plan er malen appen anbefaler for kategorien og perioden, ikke ut fra turneringsnivået.
+ *   - Uten turneringsnivå fra oppstarten er ingen plan anbefalt, og Klubbspilleren er valgt først.
  *   - Ingen riggrad i tests/visual/skjerm-mapping.ts; målt med tests/visual/precision/maal.mjs PH-12.
  */
 import Link from "next/link";
@@ -34,9 +37,14 @@ import "@/styles/playerhq-ny-ovelser.css";
 
 export type VelgPlanMal = {
   id: string; navn: string; beskrivelse: string | null; uker: number; okterPerUke: number; fordeling: Fordeling; anbefalt: boolean;
+  /** Standardplanene har timer per uke og eget bilde; malene for kategorien har bare økter per uke. */
+  timerPerUke?: number; bilde?: string;
 };
 export type PH12Props = {
+  /** De fem standardplanene. */
   maler: readonly VelgPlanMal[];
+  /** Malene for spillerens kategori (PlanTemplate), under «Flere maler». */
+  kategoriMaler?: readonly VelgPlanMal[];
   /** null: spilleren har ingen kategori ennå (for få runder og ingen HCP). */
   kategori: { navn: string; snitt: number | null } | null;
   startUker: readonly StartUke[];
@@ -61,11 +69,32 @@ function Fordelingsstrek({ f }: { f: Fordeling }) {
   );
 }
 
-export function PH12VelgPlan({ maler, kategori, startUker, uleste, onSend, workbenchHref, startMedArk }: PH12Props) {
-  const [valgtId, setValgtId] = useState(maler.find((m) => m.anbefalt)?.id ?? maler[0]?.id ?? "");
+export function PH12VelgPlan({ maler, kategoriMaler = [], kategori, startUker, uleste, onSend, workbenchHref, startMedArk }: PH12Props) {
+  const [valgtId, setValgtId] = useState(maler.find((m) => m.anbefalt)?.id ?? maler.find((m) => m.id === "std-klubbspilleren")?.id ?? maler[0]?.id ?? "");
   const [ark, setArk] = useState(!!startMedArk && maler.length > 0);
   const [melding, setMelding] = useState<string | null>(null);
-  const valgt = maler.find((m) => m.id === valgtId) ?? null;
+  const valgt = [...maler, ...kategoriMaler].find((m) => m.id === valgtId) ?? null;
+
+  const kort = (m: VelgPlanMal) => {
+    const b = m.bilde ? { src: m.bilde, posisjon: "center" } : oktBilde(KODE[storsteAkse(m.fordeling)], m.navn);
+    return (
+      <button key={m.id} type="button" className="phn-ov-plankort" aria-pressed={m.id === valgtId} onClick={() => setValgtId(m.id)}>
+        {/* eslint-disable-next-line @next/next/no-img-element -- statisk bilde fra public, ingen tekst oppå */}
+        <img src={b.src} alt="" width={1400} height={933} loading="lazy" style={{ objectPosition: b.posisjon }} />
+        <span className="phn-ov-pk-tekst">
+          <span className="phn-ov-pk-rad">
+            <span><span className="phn-ov-pk-navn">{m.navn}</span>{m.anbefalt && <span className="phn-kilde" style={{ display: "block" }}>Anbefalt ut fra turneringsnivået ditt</span>}</span>
+            {m.timerPerUke != null
+              ? <span className="phn-ov-pk-tall">{m.timerPerUke}<small>t/uke</small></span>
+              : <span className="phn-ov-pk-tall">{m.okterPerUke}<small>økter/uke</small></span>}
+          </span>
+          <span className="phn-forklar">{m.beskrivelse ?? `${m.uker} uker · ${m.okterPerUke} økter i uka.`}</span>
+          <Fordelingsstrek f={m.fordeling} />
+          <span className="phn-ov-pk-rad"><span className="phn-ov-estimat">Eksempel</span><span className="phn-ov-valgt"><Check className="phn-ikon" aria-hidden />Valgt</span></span>
+        </span>
+      </button>
+    );
+  };
 
   return (
     <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
@@ -74,7 +103,7 @@ export function PH12VelgPlan({ maler, kategori, startUker, uleste, onSend, workb
           <span className="phn-dato">Plan · treningsplan</span>
           <h1 className="phn-tittel">Velg treningsplan</h1>
           <p className="phn-ov-ingress">
-            {kategori ? `Standardplaner tilpasset ${kategori.navn}. Du velger selv, og kan alltid endre øktene i Workbench.` : "Du velger selv, og kan alltid endre øktene i Workbench."}
+            {kategori ? `Fem standardplaner, tilpasset ${kategori.navn}. Du velger selv, og kan alltid endre øktene i Workbench.` : "Fem standardplaner. Du velger selv, og kan alltid endre øktene i Workbench."}
           </p>
         </div>
 
@@ -88,34 +117,24 @@ export function PH12VelgPlan({ maler, kategori, startUker, uleste, onSend, workb
           </div>
         )}
 
-        {maler.length === 0
-          ? <section className="phn-kort" style={{ background: "var(--phn-sand-100)" }}>
-              <b className="phn-ov-under">{kategori ? `Ingen standardplaner for ${kategori.navn} ennå` : "Ingen kategori ennå"}</b>
-              <p className="phn-forklar">{kategori ? "Standardplanene for kategorien er ikke klare. Bygg uka selv i Workbench så lenge." : "Kategorien settes fra brutto snittscore. Registrer minst fire runder, så tilpasses planene deg."}</p>
-              {!kategori && <div className="phn-knapper"><Link className="phn-knapp pri" href="/portal/mal/runder/ny">Registrer runde</Link></div>}
-            </section>
-          : <section className="phn-seksjon" aria-label="Standardplaner">
-              <div className="phn-ov-planer">
-                {maler.map((m) => {
-                  const b = oktBilde(KODE[storsteAkse(m.fordeling)], m.navn);
-                  return (
-                    <button key={m.id} type="button" className="phn-ov-plankort" aria-pressed={m.id === valgtId} onClick={() => setValgtId(m.id)}>
-                      {/* eslint-disable-next-line @next/next/no-img-element -- statisk bilde fra public, ingen tekst oppå */}
-                      <img src={b.src} alt="" width={1400} height={933} loading="lazy" style={{ objectPosition: b.posisjon }} />
-                      <span className="phn-ov-pk-tekst">
-                        <span className="phn-ov-pk-rad">
-                          <span><span className="phn-ov-pk-navn">{m.navn}</span>{m.anbefalt && <span className="phn-kilde" style={{ display: "block" }}>Anbefalt for kategorien din</span>}</span>
-                          <span className="phn-ov-pk-tall">{m.okterPerUke}<small>økter/uke</small></span>
-                        </span>
-                        <span className="phn-forklar">{m.beskrivelse ?? `${m.uker} uker.`}</span>
-                        <Fordelingsstrek f={m.fordeling} />
-                        <span className="phn-ov-pk-rad"><span className="phn-ov-estimat">Eksempel</span><span className="phn-ov-valgt"><Check className="phn-ikon" aria-hidden />Valgt</span></span>
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </section>}
+        <section className="phn-seksjon" aria-label="Standardplaner">
+          <div className="phn-ov-planer">{maler.map(kort)}</div>
+        </section>
+
+        {kategoriMaler.length > 0 && (
+          <details className="phn-ov-flere">
+            <summary>Flere maler for {kategori?.navn ?? "kategorien din"} ({kategoriMaler.length}) <ChevronDown className="phn-ikon" aria-hidden /></summary>
+            <div className="phn-ov-innmat"><div className="phn-ov-planer">{kategoriMaler.map(kort)}</div></div>
+          </details>
+        )}
+
+        {!kategori && (
+          <section className="phn-kort" style={{ background: "var(--phn-sand-100)" }}>
+            <b className="phn-ov-under">Ingen kategori ennå</b>
+            <p className="phn-forklar">Kategorien settes fra brutto snittscore. Registrer minst fire runder, så tilpasses planene deg.</p>
+            <div className="phn-knapper"><Link className="phn-knapp pri" href="/portal/mal/runder/ny">Registrer runde</Link></div>
+          </section>
+        )}
 
         <Link className="phn-rad-lenke" href={workbenchHref}>
           <span><b>Bygg uka selv i Workbench</b><span className="phn-kilde">Uten standardplan. Kopier forrige uke, eller legg inn øktene selv.</span></span>
@@ -137,7 +156,7 @@ function VelgArk({ mal, startUker, onSend, onLukk, onValgt }: {
   const ark = useRef<HTMLDialogElement>(null);
   const [start, setStart] = useState(startUker[0]?.verdi ?? "");
   const [uker, setUker] = useState(mal.uker);
-  const [timer, setTimer] = useState(12);
+  const [timer, setTimer] = useState(Math.min(30, Math.max(4, mal.timerPerUke ?? 12)));
   const [mix, setMix] = useState<Fordeling>(mal.fordeling);
   const [g, setG] = useState<SmartMaal>(TOM_MAAL);
   const [forsokt, setForsokt] = useState<MaalFeil | null>(null);
