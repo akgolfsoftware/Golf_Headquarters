@@ -83,7 +83,7 @@ export default async function SpillerTesterPage({ params }: { params: Promise<{ 
               kolonner={[{ key: "test", label: gruppe.label }, { key: "siste", label: "Siste", align: "right" }, { key: "dato", label: "Dato" }]}
               rader={gruppe.rows.map((row) => ({
                 test: <Link href={row.href} style={{ color: TN.navy900, fontWeight: TN.weight.bold }}>{row.name}</Link>,
-                siste: row.latest ?? "Ingen resultat",
+                siste: row.latest ?? "—",
                 dato: row.latestDate ?? "—",
               }))}
               empty="Ingen tester i denne gruppen."

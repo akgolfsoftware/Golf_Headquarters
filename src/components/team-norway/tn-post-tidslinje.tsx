@@ -278,10 +278,10 @@ export function TnPostTidslinje({
                 </div>
                 <div
                   style={{
-                    fontFamily: TN.font.mono,
-                    fontSize: TN.text.micro,
-                    letterSpacing: TN.tracking.eyebrow,
-                    textTransform: "uppercase",
+                    fontFamily: TN.font.body,
+                    fontWeight: 700,
+                    fontSize: 13,
+                    letterSpacing: "0.02em",
                     color: TN.textTertiary,
                     marginTop: 2,
                   }}

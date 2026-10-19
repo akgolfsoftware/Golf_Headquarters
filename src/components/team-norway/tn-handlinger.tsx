@@ -129,7 +129,7 @@ export function TnSkjemaArk({ knapp, knappVariant = "primar", tittel, send, lagr
       <button type="button" onClick={apne} style={tnKnappStil(knappVariant)}>{knapp}</button>
       <dialog ref={ref} aria-labelledby={tittelId} className={styles.ark} style={{ border: `1px solid ${TN.ink200}`, borderRadius: 4, padding: 0, width: "min(560px, calc(100vw - 32px))", maxHeight: "calc(100dvh - 32px)", color: TN.ink900 }}>
         <form onSubmit={lagre} style={{ display: "flex", flexDirection: "column", gap: 16, padding: "clamp(18px, 3vw, 26px)" }}>
-          <h2 id={tittelId} style={{ fontFamily: TN.font.display, fontWeight: 500, fontSize: 19, lineHeight: 1.25, letterSpacing: "0.06em", textTransform: "uppercase", color: TN.navy900, margin: 0 }}>{tittel}</h2>
+          <h2 id={tittelId} style={{ fontFamily: TN.font.display, fontWeight: 500, fontSize: 20, lineHeight: 1.25, letterSpacing: "0.02em", color: TN.navy900, margin: 0 }}>{tittel}</h2>
           {children}
           {feil ? <div role="alert" style={{ fontSize: 13.5, fontWeight: 700, color: TN.status.redText, padding: "10px 12px", background: TN.status.redBg, borderRadius: 2 }}>{feil}</div> : null}
           <TnKnapperekke>
@@ -177,7 +177,7 @@ export function TnSlettKnapp({ knapp, tittel, tekst, bekreft, handling, videre, 
       <button type="button" onClick={() => { setFeil(null); ref.current?.showModal(); }} style={tnKnappStil(variant)}>{knapp}</button>
       <dialog ref={ref} aria-labelledby={tittelId} className={styles.ark} style={{ border: `1px solid ${TN.ink200}`, borderTop: `3px solid ${TN.status.red}`, borderRadius: 4, padding: 0, width: "min(460px, calc(100vw - 32px))", color: TN.ink900 }}>
         <div style={{ display: "flex", flexDirection: "column", gap: 14, padding: "clamp(18px, 3vw, 24px)" }}>
-          <h2 id={tittelId} style={{ fontFamily: TN.font.display, fontWeight: 500, fontSize: 19, lineHeight: 1.25, letterSpacing: "0.06em", textTransform: "uppercase", color: TN.navy900, margin: 0 }}>{tittel}</h2>
+          <h2 id={tittelId} style={{ fontFamily: TN.font.display, fontWeight: 500, fontSize: 20, lineHeight: 1.25, letterSpacing: "0.02em", color: TN.navy900, margin: 0 }}>{tittel}</h2>
           <p style={{ fontSize: 14.5, lineHeight: 1.6, margin: 0 }}>{tekst}</p>
           {feil ? <div role="alert" style={{ fontSize: 13.5, color: TN.status.redText }}>{feil}</div> : null}
           <TnKnapperekke>

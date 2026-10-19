@@ -111,10 +111,10 @@ export function TnTilgangSkjema({
       <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
         <span
           style={{
-            fontFamily: TN.font.mono,
-            fontSize: TN.text.micro,
-            letterSpacing: TN.tracking.eyebrow,
-            textTransform: "uppercase",
+            fontFamily: TN.font.body,
+            fontWeight: 700,
+            fontSize: 13,
+            letterSpacing: "0.02em",
             color: TN.textSecondary,
           }}
         >
@@ -154,10 +154,10 @@ export function TnTilgangSkjema({
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         <span
           style={{
-            fontFamily: TN.font.mono,
-            fontSize: TN.text.micro,
-            letterSpacing: TN.tracking.eyebrow,
-            textTransform: "uppercase",
+            fontFamily: TN.font.body,
+            fontWeight: 700,
+            fontSize: 13,
+            letterSpacing: "0.02em",
             color: TN.textSecondary,
           }}
         >

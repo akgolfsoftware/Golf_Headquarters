@@ -66,10 +66,10 @@ export function TnPostKomponer({
           {etikett && (
             <span
               style={{
-                fontFamily: TN.font.mono,
-                fontSize: TN.text.micro,
-                letterSpacing: TN.tracking.eyebrow,
-                textTransform: "uppercase",
+                fontFamily: TN.font.body,
+                fontWeight: 700,
+                fontSize: 13,
+                letterSpacing: "0.02em",
                 color: TN.textSecondary,
               }}
             >
@@ -80,10 +80,10 @@ export function TnPostKomponer({
           {mottakerPille && (
             <span
               style={{
-                fontFamily: TN.font.mono,
-                fontSize: TN.text.micro,
-                letterSpacing: TN.tracking.eyebrow,
-                textTransform: "uppercase",
+                fontFamily: TN.font.body,
+                fontWeight: 700,
+                fontSize: 13,
+                letterSpacing: "0.02em",
                 color: TN.navy700,
                 background: TN.navy50,
                 borderRadius: TN.radius.xs,
