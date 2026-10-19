@@ -11,21 +11,24 @@ import { prisma } from "@/lib/prisma";
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { PHMalsetninger } from "@/components/portal/precision/PHMalsetninger";
 import { hentMalsetningerSide } from "@/lib/portal-mal/maal-ny-last";
+import { hentIupMaaltallSammendrag } from "@/lib/iup/maaltall-data";
 
 export const dynamic = "force-dynamic";
 
 export default async function PH19MalPage() {
   const user = await requirePortalUser();
 
-  const [side, visIup, uleste] = await Promise.all([
+  const kanIup = ["PLAYER", "COACH", "ADMIN"].includes(user.role);
+  const [side, visIup, iupMaaltall, uleste] = await Promise.all([
     hentMalsetningerSide(user),
-    ["PLAYER", "COACH", "ADMIN"].includes(user.role) ? harEgenIupInngang() : Promise.resolve(false),
+    kanIup ? harEgenIupInngang() : Promise.resolve(false),
+    kanIup ? hentIupMaaltallSammendrag() : Promise.resolve(null),
     prisma.notification.count({ where: { userId: user.id, readAt: null } }),
   ]);
 
   return (
     <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
-      <PHMalsetninger visIup={visIup} avsluttede={side.avsluttede} data={{ goals: side.goals, milepael: side.milepael }} />
+      <PHMalsetninger visIup={visIup} iupMaaltall={iupMaaltall} avsluttede={side.avsluttede} data={{ goals: side.goals, milepael: side.milepael }} />
     </PlayerHQSkall>
   );
 }

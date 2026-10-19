@@ -66,3 +66,5 @@
 @container (max-width: 380px) {
   .phn .phn-m-to-felt { grid-template-columns: minmax(0, 1fr); }
 }
+.phn .phn-m-iuper { display: grid; gap: 8px; }
+.phn .phn-m-iup-lys { background: var(--phn-hvit); color: var(--phn-g900); border: 1px solid var(--phn-sand-300); }

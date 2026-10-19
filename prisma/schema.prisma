@@ -810,6 +810,23 @@ model IupBesvarelse {
   @@map("iup_besvarelser")
 }
 
+// IUP-måltall (PH-11-MAL-IUP, 19.10.2026): spillerens eget mål per måltall og skoleår ("2026/27").
+// Tallene selv regnes ut fra runder og økter (src/lib/iup/maaltall.ts); bare målet lagres.
+// Plain userId (FK håndheves i DB-DDL; ingen @relation for å holde endringen isolert — jf. gotchas).
+model IupMaaltallMal {
+  id        String   @id @default(cuid())
+  userId    String
+  sesong    String
+  maaltall  String
+  verdi     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, sesong, maaltall])
+  @@index([userId])
+  @@map("iup_maaltall_mal")
+}
+
 // Append-only ved normal lagring. Både utkast og leveringer får egen revisjon.
 // Revisjonene slettes med besvarelsen ved autorisert sletting/anonymisering.
 model IupRevisjon {
