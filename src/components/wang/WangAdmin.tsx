@@ -9,7 +9,7 @@ import {
   trekkTrenerInvitasjon,
 } from "@/app/team-wang/coach/admin-actions";
 import { TOM_ADMINDATA, type WangAdminData } from "@/app/team-wang/_data/wang-admin-visning";
-import { WANG_UNNTAK_MAKS_TEGN } from "@/app/team-wang/_data/wang-admin-grenser";
+import { MAKS_TEGN_UNNTAK } from "@/app/team-wang/_data/wang-admin-grenser";
 import { WangFaner, WangTopp, initialer } from "./wang-felles";
 import type { WangTrenerData } from "@/app/team-wang/_data/wang-trener-data";
 import { TOM_TESTERDATA, type WangSamtykkeStatus, type WangTesterData } from "@/app/team-wang/_data/wang-tester-visning";
@@ -345,7 +345,7 @@ function Timeplan({ data, admin }: { data: WangTrenerData; admin: WangAdminData 
             </label>
             <label className="wg-lbl">
               Hva gjelder det
-              <textarea className="wg-field" name="tekst" rows={3} required maxLength={WANG_UNNTAK_MAKS_TEGN} />
+              <textarea className="wg-field" name="tekst" rows={3} required maxLength={MAKS_TEGN_UNNTAK} />
               <span className="wg-hjelp">For eksempel heldagsprøve, ferie eller testuke. Skriv aldri elevnavn eller helseopplysninger her.</span>
             </label>
             <div className="wg-knapper">

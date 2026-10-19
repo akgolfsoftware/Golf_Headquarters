@@ -2,9 +2,9 @@
 // Ingen DB, testbart uten Prisma.
 
 import { createHash, randomBytes } from "node:crypto";
-import { WANG_UNNTAK_MAKS_TEGN } from "./wang-admin-grenser";
+import { MAKS_TEGN_UNNTAK } from "./wang-admin-grenser";
 
-export { WANG_UNNTAK_MAKS_TEGN };
+export { MAKS_TEGN_UNNTAK };
 
 /** Invitasjonslenken gjelder i sju dager, som delingslenken (beslutninger 28.09.2026). */
 export const WANG_INVITASJON_DAGER = 7;
@@ -74,6 +74,6 @@ export function lesUnntak(input: { fra: unknown; til: unknown; tekst: unknown })
   if (tilDato && tilDato.getTime() < fraDato.getTime()) return { ok: false, feil: "Til-datoen kan ikke være før fra-datoen." };
   const tekst = typeof input.tekst === "string" ? input.tekst.replace(/\s+/g, " ").trim() : "";
   if (!tekst) return { ok: false, feil: "Skriv hva unntaket gjelder." };
-  if (tekst.length > WANG_UNNTAK_MAKS_TEGN) return { ok: false, feil: `Høyst ${WANG_UNNTAK_MAKS_TEGN} tegn.` };
+  if (tekst.length > MAKS_TEGN_UNNTAK) return { ok: false, feil: `Høyst ${MAKS_TEGN_UNNTAK} tegn.` };
   return { ok: true, fraDato, tilDato: tilDato && tilDato.getTime() === fraDato.getTime() ? null : tilDato, tekst };
 }

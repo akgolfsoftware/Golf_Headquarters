@@ -46,7 +46,7 @@ const inviMock = {
   findUnique: async ({ where }: { where: { tokenHash: string } }) =>
     invitasjon && invitasjon.tokenHash === where.tokenHash ? invitasjon : null,
 };
-const prismaMock = {
+const prismaMock: Record<string, unknown> = {
   wangTrenerInvitasjon: inviMock,
   wangTimeplanUnntak: {
     create: async ({ data }: { data: Record<string, unknown> }) => {
@@ -71,8 +71,8 @@ const prismaMock = {
       return data;
     },
   },
-  $transaction: async <T,>(fn: (tx: typeof prismaMock) => Promise<T>) => fn(prismaMock),
 };
+prismaMock.$transaction = async <T,>(fn: (tx: typeof prismaMock) => Promise<T>) => fn(prismaMock);
 mock.module("@/lib/prisma", { namedExports: { prisma: prismaMock } });
 
 const hent = () => import("./admin-actions");

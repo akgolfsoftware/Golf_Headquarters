@@ -42,6 +42,10 @@ funksjoner uten data. Kilden er avviksfeltene i #1402, #1406 og #1411 og filhode
 - **T2 · TN-månedsplanen leser gruppas perioder, uten månedsoverstyring og lette uker.** Gruppa har ingen månedsplan og ingen markering av lett uke i datamodellen; utkastet sier «Arvet fra gruppas årsplan. Spillerne tilpasser sin egen plan i PlayerHQ». Alle uker bruker periodens vanlige uke. Grunn: en gruppemånedsplan ville kreve ny tabell, og utkastet ber ikke om den.
 - **T2 · Timene står som en linje under ukebåndet**, ikke som stablede ukesøyler, så kalenderen og lista beholdes. Helteflaten viser fordelte timer og aksefordelingen når periodene har timer, ellers økter som før. Grunn: minst mulig endring av en skjerm som alt er godkjent.
 - **T2 · Neste steg (ikke i pakken):** skriving nedover til `WeekPlan` når en gruppeperiode endres (punkt 3–4) og kvittering ved lagring (punkt 6); lett uke og månedsoverstyring for gruppa, hvis Anders vil ha det.
+- **W4 · Invitasjonslenken sendes ikke på e-post.** Sportssjefen kopierer lenken og sender den selv. Grunn: ingen e-post til ekte personer (AGENTS.md §Stående forhåndsgodkjenning).
+- **W4 · Lenken gjelder i sju dager, for én e-postadresse, og kan brukes én gang.** Bare SHA-256 av lenken lagres. Grunn: som delingslenken (beslutninger 28.09).
+- **W4 · «Endre rolle», «Fjern tilgang» og «Flytt morgentreningen» er ikke med.** Grunn: utenfor W4; rollen endres aldri fra lenken.
+- **W4 · Tabellene `wang_trener_invitasjoner` og `wang_timeplan_unntak` fantes allerede i basen** (lesespørring 19.10, RLS på). Skriptet `scripts/add-wang-trenerinvitasjon-og-unntak-2026-10-18.ts` trengte ikke kjøres på nytt.
 
 ## 5. Morgenrapport
 
