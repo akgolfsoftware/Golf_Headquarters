@@ -30,28 +30,8 @@ import { useRouter } from "next/navigation";
 import { Caps, Kort, Rad, KpiFlis, StatusPill, CTAPill, Knapp, FilterChips, TomTilstand, Icon } from "@/components/v2";
 import { Inndata, TekstOmraade, Bryter } from "@/components/v2";
 import { createTemplate, updateTemplate, deleteTemplate } from "@/app/admin/(legacy)/email-templates/actions";
-// ── Datakontrakt (mappes fra Prisma i ruten) ────────────────────
-export interface AdminEmailV2Template {
-  id: string;
-  slug: string;
-  name: string;
-  subject: string;
-  body: string;
-  active: boolean;
-  /** slug-prefiks (heuristikk) — gruppe-etikett. */
-  gruppe: string;
-  /** formatert sist-endret (nb-NO). */
-  sistEndret: string;
-  /** formatert opprettet (nb-NO). */
-  opprettet: string;
-}
-export interface AdminEmailV2Data {
-  total: number;
-  aktive: number;
-  /** tilgjengelige gruppe-filtre (kun de med maler). */
-  grupper: string[];
-  maler: AdminEmailV2Template[];
-}
+import type { AdminEmailV2Data, AdminEmailV2Template } from "@/lib/admin/kommunikasjon/mal-typer";
+export type { AdminEmailV2Data, AdminEmailV2Template };
 
 const pl = (n: number, en: string, flere: string) => `${n} ${n === 1 ? en : flere}`;
 

@@ -15,7 +15,7 @@ import "server-only";
 import { prisma } from "@/lib/prisma";
 import { loadInnboksSaker, type InnboksData } from "@/lib/admin/innboks-saker";
 import { tellEpostVedStatus } from "@/lib/innboks/data";
-import type { AdminEmailV2Data, AdminEmailV2Template } from "@/components/admin/v2/AdminEmailV2";
+import type { AdminEmailV2Data, AdminEmailV2Template } from "./mal-typer";
 import type { KommunikasjonFaneId } from "./faner";
 
 /** Status-verdiene på InnboksEpost — se kommentar i prisma/schema.prisma. */
