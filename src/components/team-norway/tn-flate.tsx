@@ -8,7 +8,8 @@ import { TN } from "@/lib/v2/team-norway";
  * Byggeklosser for Team Norway-skjermene.
  * Fasit: docs/design-system/utkast-tn/felles/tn.css (pakke 1 grunnmur, 14.10.2026).
  * Utkast 2 (retning B, 16.10): overlinje i Lato, tittel og seksjonstittel i Jost,
- * kort med én hårstrek, IBM Plex Mono bare på tall. Hjørner 2, ingen skygger, ingen sirkler.
+ * IBM Plex Mono bare på tall. Retning «Skrå» (19.10.2026): myke kort med navy-skygge,
+ * pilleformede filterknapper og runde statusprikker.
  * Avvik:
  *   - Filterknapper og månedsvalg er lenker med valget i adressen, ikke
  *     klientstate. Da virker de uten JavaScript.
@@ -41,10 +42,10 @@ export function TnSkjermhode({ tittel, ingress, overlinje, handling }: { tittel:
   );
 }
 
-/** Kort: hvit flate med én hårstrek, aldri skygge. */
+/** Kort: hvit flate med myke hjørner og lagdelt navy-skygge. */
 export function TnFlate({ children, style }: { children: ReactNode; style?: CSSProperties }) {
   return (
-    <section style={{ background: TN.surfaceCard, border: `1px solid ${TN.ink200}`, borderRadius: TN.radius.sm, padding: "16px 18px 18px", minWidth: 0, ...style }}>
+    <section style={{ background: TN.surfaceCard, borderRadius: TN.radius.xl, boxShadow: TN.shadow.md, padding: "18px 20px 20px", minWidth: 0, ...style }}>
       {children}
     </section>
   );
@@ -110,11 +111,11 @@ export function TnInitialer({ navn, storrelse = 36, mork = false }: { navn: stri
   );
 }
 
-/** Statusord med en liten kvadratisk markør, som merkene i grunnmuren. */
+/** Statusord med en liten rund markør. */
 export function TnStatusmerke({ children, farge }: { children: ReactNode; farge: string }) {
   return (
     <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: TN.font.body, fontSize: 12, fontWeight: 700, lineHeight: 1.2, color: farge, whiteSpace: "nowrap" }}>
-      <span aria-hidden="true" style={{ width: 6, height: 6, background: farge, flex: "none" }} />
+      <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: TN.radius.round, background: farge, flex: "none" }} />
       {children}
     </span>
   );
@@ -132,7 +133,7 @@ export function TnFilterknapper({ valg, etikett }: { valg: TnFilterValg[]; etike
           href={v.href}
           scroll={false}
           aria-current={v.aktiv ? "page" : undefined}
-          style={{ minHeight: 44, padding: "0 14px", border: `1px solid ${TN.navy900}`, borderRadius: TN.radius.sm, background: v.aktiv ? TN.navy900 : TN.white, color: v.aktiv ? TN.white : TN.navy900, fontFamily: TN.font.body, fontSize: 13.5, fontWeight: 700, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 8, whiteSpace: "nowrap", maxWidth: "100%" }}
+          style={{ minHeight: 44, padding: "0 14px", border: `1px solid ${TN.navy900}`, borderRadius: TN.radius.pill, background: v.aktiv ? TN.navy900 : TN.white, color: v.aktiv ? TN.white : TN.navy900, fontFamily: TN.font.body, fontSize: 13.5, fontWeight: 700, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 8, whiteSpace: "nowrap", maxWidth: "100%" }}
         >
           {v.label}
           {v.antall !== undefined ? <span style={{ fontFamily: TN.font.mono, fontSize: 12, fontWeight: 500 }}>{v.antall}</span> : null}

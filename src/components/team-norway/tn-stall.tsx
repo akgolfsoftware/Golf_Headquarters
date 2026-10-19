@@ -130,7 +130,7 @@ export function TnKategori({ children }: { children: ReactNode }) {
 }
 
 /**
- * Spillerrad: kvadratisk avatar, navn og fakta, verdi til høyre, plan-stolpe og
+ * Spillerrad: rund avatar, navn og fakta, verdi til høyre, plan-stolpe og
  * grunnen i klartekst. Statusen er venstre kant pluss ord (grunnen eller markør).
  */
 export function TnSpillerrad({ href, status, initialer, navn, fakta, verdi, verdiTekst, lav, stolpe, grunn }: {

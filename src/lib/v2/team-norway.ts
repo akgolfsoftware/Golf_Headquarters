@@ -19,8 +19,9 @@
  *   er kanter/linjer, gjelder også 9–11px etiketter.
  * - Mørk (TN.dark.*) er en ROLLE (hero/seksjonsskille/presentasjon), ikke
  *   et tema — ingen html[data-tn-tema]-bryter finnes eller skal innføres.
- * - Diagonalen (TN.clipDiagonalB/T, 56px) kun på hero/seksjonsskille, aldri
- *   kort eller kontroller.
+ * - Skråkuttet (TN.skra, TN.clipDiagonalB/T, 4°) kun på store flater — toppen
+ *   av en skjerm eller seksjonsskille — aldri kort eller knapper (retning
+ *   «Skrå», beslutninger.md 19.10.2026).
  * - tabular-nums på alle tall. Aldri ease-in på grensesnitt.
  */
 
@@ -135,6 +136,8 @@ export const TN = {
     md: "var(--tn-radius-md)",
     lg: "var(--tn-radius-lg)",
     xl: "var(--tn-radius-xl)",
+    pill: "var(--tn-radius-pill)",
+    round: "var(--tn-radius-round)",
   },
 
   shadow: {
@@ -144,7 +147,14 @@ export const TN = {
     dark: "var(--tn-shadow-dark)",
   },
 
-  /** Kun hero/seksjonsskille — aldri kort eller kontroller. */
+  /** Skråkuttet 4°. `fall` krever `container-type: inline-size` på forelderen. */
+  skra: {
+    vinkel: "var(--tn-skra-vinkel)",
+    fall: "var(--tn-skra-fall)",
+    kant: "var(--tn-skra-kant)",
+  },
+
+  /** Kun store flater — aldri kort eller kontroller. */
   clipDiagonalB: "var(--tn-clip-diagonal-b)",
   clipDiagonalT: "var(--tn-clip-diagonal-t)",
 

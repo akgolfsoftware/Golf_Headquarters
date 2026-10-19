@@ -1,7 +1,8 @@
 /* Innholdsklasser for Team Norway. Fasit: docs/design-system/utkast-tn/felles/tn.css
    (pakke 1 grunnmur). Kun tokens fra src/styles/team-norway-tokens.css. Ingen
    sidelengs rulling: alt brekker om, tabellen stables til kort under 900 px.
-   Hjørner 0 · 2 · 4, ingen skygger. Avstand mellom blokkene eies av TnShell (gap). */
+   Former og dybde etter retning «Skrå» (19.10.2026): kort 18 med navy-skygge, piller
+   for knapper og merker. Avstand mellom blokkene eies av TnShell (gap). */
 
 .sidehode {
   display: flex;
@@ -46,7 +47,7 @@
   min-height: 44px;
   padding: 0 18px;
   border: 1px solid var(--tn-navy-900);
-  border-radius: var(--tn-radius-sm);
+  border-radius: var(--tn-radius-pill);
   background: var(--tn-white);
   color: var(--tn-navy-900);
   font-family: var(--tn-font-body);
@@ -131,14 +132,14 @@
 .tallKolonne { text-align: right; font-family: var(--tn-font-mono); font-variant-numeric: tabular-nums; }
 .ukjent { color: var(--tn-text-secondary); }
 
-/* Merke: kantete 24 px med kvadratisk prikk. Grønt og gult er bare status. */
+/* Merke: pille 24 px med rund prikk. Grønt og gult er bare status. */
 .merkelapp {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   min-height: 24px;
-  padding: 2px 8px;
-  border-radius: var(--tn-radius-sm);
+  padding: 2px 10px;
+  border-radius: var(--tn-radius-pill);
   background: var(--tn-ink-100);
   font-family: var(--tn-font-body);
   font-size: 12px;
@@ -147,7 +148,7 @@
   color: var(--tn-ink-700);
   white-space: nowrap;
 }
-.merkelapp::before { content: ""; width: 6px; height: 6px; flex: none; background: var(--tn-ink-500); }
+.merkelapp::before { content: ""; width: 6px; height: 6px; flex: none; border-radius: var(--tn-radius-round); background: var(--tn-ink-500); }
 .merkelappOk { background: var(--tn-status-green-bg); color: var(--tn-status-green-text); }
 .merkelappOk::before { background: var(--tn-status-green); }
 .merkelappVent { background: var(--tn-status-amber-bg); color: var(--tn-status-amber-text); }
@@ -162,7 +163,7 @@
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
   gap: 20px;
 }
-.panel { border: 1px solid var(--tn-ink-200); border-radius: var(--tn-radius-sm); background: var(--tn-white); padding: 16px 18px 18px; min-width: 0; }
+.panel { border-radius: var(--tn-radius-xl); box-shadow: var(--tn-shadow-md); background: var(--tn-white); padding: 18px 20px 20px; min-width: 0; }
 .panelHode {
   margin: 0;
   font-family: var(--tn-font-body);

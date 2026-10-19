@@ -217,7 +217,7 @@ export function TnShell({
  * Navy sidemeny 252 px (PC). Seks grupper som kan lukkes (utkast 2, 16.10):
  * bare gruppa du er i står åpen. `<details>` gjør det uten JavaScript, og ingen
  * menypunkter er fjernet. Aktiv rad har lysere navy bak og rød markør 3 px.
- * Brukeren står nederst med kvadratisk avatar.
+ * Brukeren står nederst med rund avatar.
  */
 function TnRail({ grupper, bruker, orgNavn, orgUndertittel }: { grupper: TnMenyGruppe[]; bruker: { navn: string; rolle: string }; orgNavn: string; orgUndertittel: string }) {
   return (
@@ -286,7 +286,7 @@ export type TnSpillerFane = "post" | "oversikt" | "tester" | "analyse" | "workbe
 
 /**
  * IUP-hodet for alle spillerscopede TN-ruter (Anders 15.10.2026: spillerprofilen
- * heter IUP i Team Norway). Kvadratisk avatar, overlinje som begynner med «IUP»,
+ * heter IUP i Team Norway). Rund avatar, overlinje som begynner med «IUP»,
  * navnet som tittel, og fanene i fast rekkefølge med rød strek under aktiv fane.
  * Fanen som i koden heter «evaluering», heter Fireukerssjekk.
  * Fasit: docs/design-system/utkast-tn/spillere.html (pakke 3).
