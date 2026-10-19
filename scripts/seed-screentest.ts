@@ -254,10 +254,13 @@ async function main() {
   });
 
   // 9. Coaching-abonnement (Performance Pro = 4 credits) → gratis app-tilgang via coaching.
+  // Fornyes 1. i neste måned, så klippekortet i Booking viser «Nye klipp <dato>».
+  const idag = new Date();
+  const nesteMaaned = new Date(Date.UTC(idag.getUTCFullYear(), idag.getUTCMonth() + 1, 1));
   await prisma.subscription.upsert({
     where: { userId_kind: { userId: player.id, kind: "COACHING" } },
-    update: { tier: "PRO", status: "ACTIVE", monthlyCredits: 4, creditsRemaining: 3, plan: "MANUELL" },
-    create: { userId: player.id, kind: "COACHING", plan: "MANUELL", tier: "PRO", status: "ACTIVE", monthlyCredits: 4, creditsRemaining: 3 },
+    update: { tier: "PRO", status: "ACTIVE", monthlyCredits: 4, creditsRemaining: 3, plan: "MANUELL", currentPeriodEnd: nesteMaaned },
+    create: { userId: player.id, kind: "COACHING", plan: "MANUELL", tier: "PRO", status: "ACTIVE", monthlyCredits: 4, creditsRemaining: 3, currentPeriodEnd: nesteMaaned },
   });
 
   // 10. Utstyrsbag (Meg → Utstyrsbag)

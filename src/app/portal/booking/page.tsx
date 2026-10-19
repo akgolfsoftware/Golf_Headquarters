@@ -1,6 +1,7 @@
 // PH23BookingHub — Precision Athletics PH-23.
 /**
- * PlayerHQ Booking — oversikt og booking (/portal/booking).
+ * PlayerHQ Booking — oversikten Bookinger (/portal/booking): klippekort, Neste time, Kommende og Tidligere.
+ * «Book time» har egen adresse, /portal/booking/ny.
  * Kilde: Claude Design Precision Athletics PH-23.
  *
  * Bare ekte data og ekte handlinger: «Bekreft booking» går til credit-flyten
@@ -41,7 +42,6 @@ export default async function BookingHubPage({ searchParams }: Props) {
       <PH23Booking
         initialData={bookingData}
         state={visningsTilstand}
-        start="ny"
         betaling={betalt === "1" ? "betalt" : avbrutt === "1" ? "avbrutt" : undefined}
         onConfirmBooking={bekreftPH23BookingAction}
         onHentSlots={hentPH23Slots}
