@@ -5,6 +5,10 @@
  * Fasit: docs/design-system/utkast-agencyos/mer.html (Gruppa) og byggeklossene i
  * agencyos-ny. Erstatter GruppeTimeplanV2 (Train-lock) med samme data og de samme
  * server-handlingene: opprett gruppetrening og dupliser en tid.
+ * Avvik:
+ *   - Utkastet tegner ikke Faste tider egen; skjemaet står til høyre på PC og
+ *     under lista på mobil.
+ *   - Dupliser åpner datofeltet først ved trykk.
  */
 import { useState, useTransition } from "react";
 import { Knapp, Pille, Seksjon, Tom, Varsel } from "@/components/admin/agencyos-ny/ny";
