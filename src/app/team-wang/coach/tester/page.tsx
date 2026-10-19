@@ -7,7 +7,8 @@ import { hentWangTestresultatSkolerForTrener } from "@/lib/portal-tester/wang-re
 import { formaterLagretTestResultat } from "@/lib/portal-tester/resultat-visning";
 import { prisma } from "@/lib/prisma";
 
-import styles from "./tester.module.css";
+import { WangUnderside } from "@/components/wang/WangUnderside";
+import { WangSmaaTall, WangTilbake, WangTopp, wangHref } from "@/components/wang/wang-felles";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -72,94 +73,78 @@ export default async function WangTestresultaterPage({
     }
   }
   return (
-    <main className={styles.side}>
-      <header className={styles.topp}>
-        <Link className={styles.tilbake} href="/team-wang/coach">
-          <span aria-hidden="true">←</span> Trenerflate
-        </Link>
-        <span className={styles.merke}>WANG GOLF</span>
-      </header>
+    <WangUnderside bruker={bruker} omraade="tester">
+      <WangTilbake href={wangHref("tester")} tekst="Tester" />
+      <WangTopp
+        dato="Måling · utvikling"
+        tittel="Testresultater"
+        ingress="Resultater for spillere i skolene du trener ved som har samtykket til å dele testene. Trekker en spiller samtykket, forsvinner resultatene med en gang."
+      >
+        <WangSmaaTall tall={[{ verdi: String(antall), tekst: antall === 1 ? "resultat" : "resultater" }]} />
+      </WangTopp>
 
-      <section className={styles.innhold}>
-        <p className={styles.overlinje}>MÅLING · UTVIKLING</p>
-        <div className={styles.tittelRad}>
-          <div>
-            <h1>Testresultater</h1>
-            <p className={styles.intro}>
-              Resultater for spillere i skolene du trener ved som har samtykket
-              til å dele testene. Trekker en spiller samtykket, forsvinner
-              resultatene med en gang.
-            </p>
-          </div>
-          <div className={styles.antall}>
-            <strong>{antall}</strong>
-            <span>{antall === 1 ? "resultat" : "resultater"}</span>
-          </div>
+      <section className="wg-seksjon" aria-label="WANG-skoler med innsyn">
+        <div className="wg-sek-topp">
+          <h2>Skoler</h2>
         </div>
-
-        <div className={styles.skoleliste} aria-label="WANG-skoler med innsyn">
+        <div className="wg-kort wg-rader">
           {skoler.map((skole) => (
-            <span className={styles.skole} key={skole.groupId}>
-              {skole.schoolName}
-              <span>{skole.players.length} deler testene</span>
-            </span>
+            <div className="wg-rad" key={skole.groupId}>
+              <b>{skole.schoolName}</b>
+              <span className="wg-kilde">{skole.players.length} deler testene</span>
+            </div>
           ))}
         </div>
+      </section>
 
+      <section className="wg-seksjon" aria-label="Resultater">
+        <div className="wg-sek-topp">
+          <h2>Siste resultater</h2>
+          {sisteSide > 1 ? <span className="wg-kilde">Side {side} av {sisteSide}</span> : null}
+        </div>
         {resultater.length ? (
-          <div className={styles.tabellRamme}>
-            <table className={styles.tabell}>
-              <thead>
-                <tr>
-                  <th scope="col">Spiller</th>
-                  <th scope="col">Test</th>
-                  <th scope="col">Resultat</th>
-                  <th scope="col">Skole</th>
-                  <th scope="col">Dato</th>
-                </tr>
-              </thead>
-              <tbody>
-                {resultater.map((resultat) => (
-                  <tr key={resultat.id}>
-                    <td data-label="Spiller">{resultat.user.name ?? "Ukjent spiller"}</td>
-                    <td data-label="Test">{resultat.test.name}</td>
-                    <td className={styles.resultat} data-label="Resultat">
-                      {formaterLagretTestResultat({
-                        testId: resultat.testId,
-                        score: resultat.score,
-                        details: resultat.details,
-                        protocol: resultat.test.protocol,
-                      })}
-                    </td>
-                    <td data-label="Skole">
-                      {(skolerForSpiller.get(resultat.userId) ?? []).join(", ")}
-                    </td>
-                    <td data-label="Dato">{formaterDato(resultat.takenAt)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="wg-kort wg-rader">
+            {resultater.map((resultat) => (
+              <div className="wg-rad wg-resultat-rad" key={resultat.id}>
+                <span style={{ display: "grid", gap: 2 }}>
+                  <b>{resultat.user.name ?? "Ukjent spiller"}</b>
+                  <span>{resultat.test.name}</span>
+                </span>
+                <span className="wg-tall">
+                  {formaterLagretTestResultat({
+                    testId: resultat.testId,
+                    score: resultat.score,
+                    details: resultat.details,
+                    protocol: resultat.test.protocol,
+                  })}
+                </span>
+                <span className="wg-kilde">
+                  {[(skolerForSpiller.get(resultat.userId) ?? []).join(", "), formaterDato(resultat.takenAt)]
+                    .filter(Boolean)
+                    .join(" · ")}
+                </span>
+              </div>
+            ))}
           </div>
         ) : (
-          <div className={styles.tom}>
-            <span className={styles.tomIkon} aria-hidden="true">—</span>
-            <h2>Ingen registrerte testresultater ennå</h2>
-            <p>Resultater vises her når spillere i gruppen har fullført en test.</p>
+          <div className="wg-kort" style={{ padding: "18px 20px", display: "grid", gap: 6 }}>
+            <b className="wg-undertittel">Ingen registrerte testresultater ennå</b>
+            <p className="wg-forklar">Resultater vises her når spillere i gruppen har fullført en test.</p>
           </div>
         )}
 
         {sisteSide > 1 && (
-          <nav className={styles.paginering} aria-label="Resultatsider">
+          <nav className="wg-sider" aria-label="Resultatsider">
             {side > 1 ? (
-              <Link href={`/team-wang/coach/tester?side=${side - 1}`}>Forrige</Link>
+              <Link className="wg-btn wg-btn-secondary" href={`/team-wang/coach/tester?side=${side - 1}`}>Forrige</Link>
             ) : <span />}
-            <span>Side {side} av {sisteSide}</span>
+            <span className="wg-kilde">Side {side} av {sisteSide}</span>
             {side < sisteSide ? (
-              <Link href={`/team-wang/coach/tester?side=${side + 1}`}>Neste</Link>
+              <Link className="wg-btn wg-btn-secondary" href={`/team-wang/coach/tester?side=${side + 1}`}>Neste</Link>
             ) : <span />}
           </nav>
         )}
       </section>
-    </main>
+    </WangUnderside>
   );
 }

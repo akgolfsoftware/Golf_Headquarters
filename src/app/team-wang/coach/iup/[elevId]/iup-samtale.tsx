@@ -14,8 +14,8 @@ import { AK } from "@/lib/v2/ak-palett";
  */
 
 import { useRef, useState, useTransition } from "react";
-import Link from "next/link";
-import { ArrowLeft, Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
+import { WangTilbake, wangHref } from "@/components/wang/wang-felles";
 
 import {
   AKSE_REKKEFOLGE,
@@ -160,45 +160,15 @@ export function IupSamtale({
   };
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "var(--bg-app)",
-        padding: "clamp(16px,4vw,32px) clamp(16px,4vw,40px) 72px",
-      }}
-    >
+    <div>
       <div
         style={{
-          maxWidth: 1120,
-          margin: "0 auto",
           display: "flex",
           flexDirection: "column",
           gap: 18,
         }}
       >
-        <Link
-          href="/team-wang/coach"
-          className="wang-pressable"
-          style={{
-            alignSelf: "flex-start",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 7,
-            minHeight: 44,
-            padding: "0 16px",
-            borderRadius: 999,
-            background: "var(--surface-card)",
-            boxShadow: "var(--shadow-card-sm)",
-            fontFamily: "var(--font-brand)",
-            fontWeight: 600,
-            fontSize: 13,
-            color: "var(--text-primary)",
-            textDecoration: "none",
-          }}
-        >
-          <ArrowLeft size={16} strokeWidth={2.2} aria-hidden /> Tilbake til
-          årsplanen
-        </Link>
+        <WangTilbake href={wangHref("elever", "elev", elevId)} tekst={elevNavn} />
 
         {/* Hero */}
         <section
@@ -254,7 +224,7 @@ export function IupSamtale({
                   gap: 7,
                   height: 28,
                   padding: "0 13px",
-                  borderRadius: 999,
+                  borderRadius: 2,
                   background: AK.farge.hvitA14,
                   fontFamily: "var(--font-brand)",
                   fontWeight: 700,
@@ -268,7 +238,7 @@ export function IupSamtale({
                     justifyContent: "center",
                     width: 18,
                     height: 18,
-                    borderRadius: 999,
+                    borderRadius: 2,
                     background: "var(--wang-mint)",
                     color: "var(--wang-navy)",
                     fontWeight: 800,
@@ -674,7 +644,7 @@ export function IupSamtale({
                 gap: 8,
                 minHeight: 44,
                 padding: "0 16px",
-                borderRadius: 999,
+                borderRadius: 0,
                 border: "1px dashed var(--neutral-300)",
                 cursor: "pointer",
                 background: "transparent",
@@ -708,23 +678,11 @@ export function IupSamtale({
                 type="button"
                 onClick={lagre}
                 disabled={lagrer || !neste}
-                className="wang-pressable"
+                className="wg-btn wg-btn-primary"
                 style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  minHeight: 44,
                   width: "100%",
-                  padding: "0 20px",
-                  borderRadius: "var(--radius-chip)",
-                  border: "none",
                   cursor: lagrer || !neste ? "default" : "pointer",
                   opacity: lagrer || !neste ? 0.6 : 1,
-                  background: "var(--wang-navy)",
-                  color: "var(--white)",
-                  fontFamily: "var(--font-brand)",
-                  fontWeight: 800,
-                  fontSize: 14,
                 }}
               >
                 {lagrer ? "Lagrer …" : `Lagre og del med ${fornavn}`}
@@ -771,7 +729,7 @@ function feltStil(bredde: number): React.CSSProperties {
     height: 40,
     width: bredde || undefined,
     padding: "0 12px",
-    borderRadius: 12,
+    borderRadius: 0,
     border: "1px solid var(--border-subtle)",
     background: "var(--neutral-50)",
     fontFamily: "var(--font-body)",

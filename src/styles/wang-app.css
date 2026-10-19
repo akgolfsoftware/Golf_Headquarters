@@ -685,3 +685,39 @@
 .wang-app .wg-fylt-slag .wg-rad-info, .wang-app .wg-fylt-slag .wg-rad-info b { color: var(--wg-navy-dyp); }
 .wang-app .wg-dg-chips .wg-chip-pa, .wang-app .wg-dg-chips .wg-chip-pa:hover { background: var(--wg-slag); border-color: var(--wg-slag); color: var(--wg-slag-paa); }
 .wang-app .wg-dg-tellere .wg-smaa-tall > * { background: #fef3eb; border-color: #f9c9a3; }
+
+/* =========================================================================
+   Undersider med egen adresse (WangUnderside): Tester, IUP, Turneringer.
+   .wg-arv oversetter de gamle WANG-variablene til wang.no-stilen, så
+   komponenter som deles med Team Norway (Trenerforslag, LeverteIupProfil)
+   og IUP-samtalen blir firkantede, uten skygger og med serif brødtekst.
+   ========================================================================= */
+.wang-app .wg-shell-uten-meny { grid-template-columns: minmax(0, 1fr); }
+.wang-app .wg-arv {
+  --text-primary: var(--wg-tekst);
+  --text-secondary: var(--wg-tekst-2);
+  --font-brand: var(--font-wang-brand, Montserrat), sans-serif;
+  --font-body: var(--font-wang-serif, "Quattrocento"), Georgia, serif;
+  --border-subtle: var(--wg-n200);
+  --surface-card: #ffffff;
+  --bg-app: var(--wg-bg);
+  --neutral-50: #ffffff;
+  --radius-card: 0;
+  --radius-card-sm: 0;
+  --radius-input: 0;
+  --radius-chip: 2px;
+  --shadow-card: none;
+  --shadow-card-sm: none;
+  --shadow-hero: none;
+  --grad-hero-line: var(--wg-grad);
+  display: grid;
+  gap: 24px;
+  align-content: start;
+  min-width: 0;
+  font-family: var(--font-wang-serif, "Quattrocento"), Georgia, serif;
+}
+.wang-app .wg-arv .wang-card { border: 1px solid var(--wg-n200); border-radius: 0; box-shadow: none; }
+.wang-app .wg-arv h2 { font-family: var(--font-wang-brand, Montserrat, sans-serif); }
+.wang-app .wg-resultat-rad { grid-template-columns: minmax(0, 1fr) auto; }
+.wang-app .wg-resultat-rad .wg-kilde { grid-column: 1 / -1; }
+.wang-app .wg-sider { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; }

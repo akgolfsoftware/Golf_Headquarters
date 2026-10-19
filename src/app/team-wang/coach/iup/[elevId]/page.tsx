@@ -11,6 +11,7 @@ import {
 import { TrenerforslagSkjema } from "@/components/workbench/Trenerforslag";
 import { LeverteIupProfil } from "@/components/iup/LeverteIupProfil";
 import { lesLeverteIupForProfil } from "@/lib/iup/trener-profil-lesing";
+import { WangUnderside } from "@/components/wang/WangUnderside";
 
 /**
  * IUP-samtalen for én elev. Åpnet uten rollesperre 15.08.2026 («pr nå»,
@@ -208,5 +209,9 @@ export default async function IupPage({
     );
   });
   if (visning === null) notFound();
-  return visning;
+  return (
+    <WangUnderside bruker={bruker} omraade="elever">
+      {visning}
+    </WangUnderside>
+  );
 }
