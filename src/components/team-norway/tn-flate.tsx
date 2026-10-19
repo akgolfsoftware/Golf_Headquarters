@@ -105,7 +105,7 @@ export function TnFotnote({ children }: { children: ReactNode }) {
 export function TnInitialer({ navn, storrelse = 36, mork = false }: { navn: string; storrelse?: number; mork?: boolean }) {
   const initialer = navn.split(/\s+/).filter(Boolean).slice(0, 2).map((del) => del[0]?.toUpperCase() ?? "").join("");
   return (
-    <span aria-hidden="true" style={{ width: storrelse, height: storrelse, flex: "none", background: mork ? TN.rail.active : TN.navy100, color: mork ? TN.white : TN.navy900, fontFamily: TN.font.mono, fontSize: storrelse >= 60 ? 20 : 13, display: "flex", alignItems: "center", justifyContent: "center" }}>
+    <span aria-hidden="true" style={{ width: storrelse, height: storrelse, flex: "none", borderRadius: TN.radius.round, background: mork ? TN.rail.active : TN.navy100, color: mork ? TN.white : TN.navy900, fontFamily: TN.font.mono, fontSize: storrelse >= 60 ? 20 : 13, display: "flex", alignItems: "center", justifyContent: "center" }}>
       {initialer || "?"}
     </span>
   );

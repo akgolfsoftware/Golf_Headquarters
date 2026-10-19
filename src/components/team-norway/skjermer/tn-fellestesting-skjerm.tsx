@@ -129,7 +129,7 @@ export async function TnFellestestingSkjerm({ dagId }: { dagId?: string }) {
             )}
           </>
         }
-        hoyre={<TnHeltBilde src="/team-norway/bilder/naerspill-wedge.jpg" alt="Wedgeslag fra kanten av greenen" />}
+        hoyre={<TnHeltBilde src="/team-norway/bilder/putting-green.jpg" alt="Baller rundt hullet på puttinggreenen" />}
       />
 
       <TnRutenett min={380}>
