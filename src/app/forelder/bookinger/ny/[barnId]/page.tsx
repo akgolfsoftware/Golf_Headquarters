@@ -1,19 +1,18 @@
-// FO03NyBarnTid — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
+// FO03NyBarnTid — Precision Athletics (FO03BookingNy). Data og handlinger er beholdt.
 /**
- * Foreldreportal · Book ny time for barnet (STEG 9.8). Samme wizard-
- * komponent (BookingNyV2) og datalogikk (byggBookingNyData) som
- * /portal/booking/ny — kun eier (barnet, ikke forelderen) og wizardBase
+ * Foreldreportal · Book ny time for barnet (STEG 9.8). Samme datalogikk
+ * (byggBookingNyData) og lenkekontrakt som /portal/booking/ny — kun eier (barnet, ikke forelderen) og wizardBase
  * (denne ruta) er forskjellig. Barnetilhørighet verifiseres her OG på nytt
  * server-side ved selve bookingen (createCreditBooking/opprettBookingMedKort).
  */
 
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { hentBarnHvisTilhoerer } from "@/lib/forelder";
+import { hentBarnForForelder, hentBarnHvisTilhoerer } from "@/lib/forelder";
 import { byggBookingNyData } from "@/lib/portal-booking/ny-wizard-data";
 import { ForelderSkall } from "@/components/precision/ForelderSkall";
-import { TilbakeLenke, Kort, TomTilstand } from "@/components/v2";
-import { BookingNyV2 } from "@/components/portal/v2/BookingNyV2";
+import { FoSkjerm, FoHode, FoTom } from "@/components/forelder/fo-presisjon";
+import { FO03BookingNy } from "@/components/forelder/FO03BookingNy";
 
 type Props = {
   params: Promise<{ barnId: string }>;
@@ -40,27 +39,24 @@ export default async function ForelderNyBookingPage({ params, searchParams }: Pr
 
   if (resultat.ingenTjenester) {
     return (
-            <ForelderSkall>
+      <ForelderSkall>
         <div className="pa-side">
-        <TilbakeLenke href="/forelder/bookinger">Bookinger</TilbakeLenke>
-        <Kort>
-          <TomTilstand
-            icon="target"
-            title="Ingen tjenester tilgjengelig"
-            sub="Ingen coaching-tjenester er aktive i øyeblikket. Kontakt support@akgolf.no."
-          />
-        </Kort>
-              </div>
+          <FoSkjerm>
+            <FoHode caps="Forelder · booking" tittel="Book time" />
+            <FoTom tittel="Ingen tjenester kan bookes nå" sub="Ingen coaching-tjenester er aktive. Skriv til post@akgolf.no." />
+          </FoSkjerm>
+        </div>
       </ForelderSkall>
     );
   }
 
+  const alleBarn = await hentBarnForForelder(user.id);
+
   return (
-        <ForelderSkall>
+    <ForelderSkall>
       <div className="pa-side">
-      <TilbakeLenke href="/forelder/bookinger">Bookinger</TilbakeLenke>
-      <BookingNyV2 data={{ ...resultat.data, merkelapp: "Foreldreportal" }} />
-          </div>
+        <FO03BookingNy data={resultat.data} barnNavn={barn.name} flereBarn={alleBarn.length > 1} />
+      </div>
     </ForelderSkall>
   );
 }
