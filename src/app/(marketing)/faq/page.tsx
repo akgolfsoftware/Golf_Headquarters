@@ -1,17 +1,16 @@
 /**
- * Marketing FAQ (v2, retning C). Offentlig: ingen auth-guard (markedsflate).
- * Marketing har egen chrome (MRamme) i komponenten.
+ * Spørsmål og svar (/faq) i «AK Golf Precision Athletics». OFFENTLIG: ingen auth-guard.
  */
 
 import type { Metadata } from "next";
-import { MarkedFaqV2 } from "@/components/marketing/v2/MarkedFaqV2";
+import { FaqPrecision } from "@/components/marketing/ds-sider/FaqPrecision";
 
 export const metadata: Metadata = {
   title: "Ofte stilte spørsmål · AK Golf Academy",
   description:
-    "Svar på de vanligste spørsmålene om coaching, booking, PlayerHQ og praktisk informasjon.",
+    "Svar på de vanligste spørsmålene om coaching, booking, betaling og PlayerHQ.",
 };
 
 export default function FaqPage() {
-  return <MarkedFaqV2 />;
+  return <FaqPrecision />;
 }
