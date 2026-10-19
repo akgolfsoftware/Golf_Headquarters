@@ -79,3 +79,4 @@
   .phn .phn-bm-helt { height: 280px; }
   .phn .phn-bm-festet { position: static; padding: 0; background: none; }
 }
+.phn .phn-bm-skala-tekst { display: flex; justify-content: space-between; gap: 8px; }

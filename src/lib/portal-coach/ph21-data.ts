@@ -41,9 +41,12 @@ export type PH21Feedback = {
   id: string;
   session: string;
   from: "me" | "coach";
-  rating: number;
+  /** Dagsform 1–5 fra spilleren; null for coachens tilbakemelding. */
+  rating: number | null;
   text: string;
   t: string;
+  /** Lesevisningen av coachens tilbakemelding. */
+  href?: string;
 };
 
 export type PH21Video = {

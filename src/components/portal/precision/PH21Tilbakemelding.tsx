@@ -12,15 +12,15 @@
  *     Uten klipp står «Ingen videoklipp fra denne økta».
  *   - «Lagt i planen din» er utelatt: dataene sier ikke hvilke økter coachen la inn etter økta.
  *     Lenken «Se planen din» står i stedet.
- *   - «Hvordan opplevde du økta?» 1–5 er utelatt: ingen handling lagrer tallet. Kommentaren sendes
- *     med «Send kommentar» (samme lagring som før, completedSummary.dineOrd).
+ *   - «Hvordan opplevde du økta?» 1–5 lagres med en gang du trykker (completedSummary.spillerOpplevd,
+ *     samme felt som dagsformen i Innboks). Kommentaren sendes med «Send kommentar» (completedSummary.dineOrd).
  *   - Venter-tilstanden lover ikke når tilbakemeldingen kommer.
  */
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Check, ChevronLeft, MessageSquare, Video } from "lucide-react";
-import { kvitterTilbakemelding, sendTilbakemeldingSvar } from "@/app/portal/coach/tilbakemelding/[oktId]/actions";
+import { kvitterTilbakemelding, lagreOpplevd, sendTilbakemeldingSvar } from "@/app/portal/coach/tilbakemelding/[oktId]/actions";
 import type { CoachTilbakemeldingData } from "@/lib/portal-okt/coach-tilbakemelding-data";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-kommunikasjon.css";
@@ -44,6 +44,7 @@ export function PH21Tilbakemelding({ data }: { data: CoachTilbakemeldingData }) 
   const [pending, startTransition] = useTransition();
   const [svar, setSvar] = useState(data.found && data.dittSvar ? data.dittSvar.tekst : "");
   const [status, setStatus] = useState<{ ok: boolean; tekst: string } | null>(null);
+  const [opplevd, setOpplevd] = useState<number | null>(data.found ? data.opplevd : null);
 
   if (!data.found) {
     return <div className="phn">
@@ -108,6 +109,13 @@ export function PH21Tilbakemelding({ data }: { data: CoachTilbakemeldingData }) 
           <b className="phn-bm-undertittel">Din side av det</b>
           {data.kvittert && <div className="phn-bm-kvittert"><Check className="phn-ikon" aria-hidden />Kvittert. {fornavn} ser at du har lest.</div>}
           {data.dittSvar && <p className="phn-kilde">{data.dittSvar.sendt}. Du kan oppdatere kommentaren under.</p>}
+          <div className="phn-felt"><span>Hvordan opplevde du økta?</span>
+            <div className="phn-k-skala" role="group" aria-label="Hvordan opplevde du økta">
+              {[1, 2, 3, 4, 5].map((r) => <button key={r} type="button" aria-pressed={opplevd === r} disabled={pending}
+                onClick={() => { setOpplevd(r); kjor(() => lagreOpplevd({ oktId: data.oktId, rating: r }), "Lagret."); }}>{r}</button>)}
+            </div>
+            <div className="phn-bm-skala-tekst"><span className="phn-kilde">Tungt</span><span className="phn-kilde">Veldig bra</span></div>
+          </div>
           <div className="phn-felt">
             <label htmlFor="tb-tekst">Kommentar til {fornavn}</label>
             <textarea id="tb-tekst" rows={3} value={svar} onChange={(e) => setSvar(e.target.value)} maxLength={2000} />

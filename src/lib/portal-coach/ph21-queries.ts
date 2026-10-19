@@ -1,6 +1,7 @@
 /**
  * Server-spørringer og actions for PH-21 Innboks & Coach-kontakt
  */
+import { byggFeedbackListe } from "./ph21-feedback";
 import "server-only";
 import { prisma } from "@/lib/prisma";
 import { hentPH21MottakerCoachId } from "./ph21-mottaker";
@@ -106,7 +107,7 @@ export async function getPH21Data(userId: string): Promise<PH21Data> {
 
   // 4. Tilbakemelding på økter
   const recentSessionsRows = await prisma.trainingSessionV2.findMany({
-    where: { studentId: userId },
+    where: { studentId: userId, status: "COMPLETED" },
     select: { id: true, title: true, startTime: true, notes: true, completedSummary: true },
     orderBy: { startTime: "desc" },
     take: 10,
@@ -117,19 +118,9 @@ export async function getPH21Data(userId: string): Promise<PH21Data> {
     label: `${s.title} · ${formatPH21Dato(s.startTime)}`,
   }));
 
-  const feedback: PH21Feedback[] = [];
-  for (const s of recentSessionsRows) {
-    if (s.notes) {
-      feedback.push({
-        id: `fb-${s.id}`,
-        session: s.title,
-        from: "me",
-        rating: 4,
-        text: s.notes,
-        t: formatPH21Dato(s.startTime, true),
-      });
-    }
-  }
+  const feedback: PH21Feedback[] = byggFeedbackListe(
+    recentSessionsRows.map((s) => ({ id: s.id, title: s.title, notes: s.notes, completedSummary: s.completedSummary, tid: formatPH21Dato(s.startTime, true) })),
+  );
 
   // 5. Videoer
   const rawVideos = await prisma.sessionVideo.findMany({

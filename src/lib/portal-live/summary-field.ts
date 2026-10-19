@@ -5,7 +5,7 @@ import { Prisma } from "@/generated/prisma/client";
  * slik at samtidig lagring av vurdering/notater beholder resten av sammendraget.
  * https://www.postgresql.org/docs/current/functions-json.html (jsonb || jsonb).
  */
-export function summaryFieldUpdate(sessionId: string, field: "dineOrd" | "spillerVurdering", value: Prisma.InputJsonObject) {
+export function summaryFieldUpdate(sessionId: string, field: "dineOrd" | "spillerVurdering" | "spillerOpplevd", value: Prisma.InputJsonObject) {
   return Prisma.sql`
     UPDATE "training_sessions_v2"
     SET "completedSummary" =

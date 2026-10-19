@@ -18,6 +18,7 @@ import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { logError } from "@/lib/error-tracking";
 import { nonEmpty } from "@/lib/validation/schemas";
+import { summaryFieldUpdate } from "@/lib/portal-live/summary-field";
 
 export type TilbakemeldingActionResult = { ok: true } | { ok: false; error: string };
 
@@ -114,6 +115,40 @@ export async function kvitterTilbakemelding(
       meta: { oktId: parsed.data.oktId },
     });
     return { ok: false, error: "Kunne ikke lagre kvitteringen" };
+  }
+
+  revalidatePath(`/portal/coach/tilbakemelding/${parsed.data.oktId}`);
+  return { ok: true };
+}
+
+const OpplevdSchema = z.object({
+  oktId: z.string().min(1, "Økt-ID er påkrevd"),
+  rating: z.number().int().min(1).max(5),
+});
+
+/** «Hvordan opplevde du økta?» 1–5 → completedSummary.spillerOpplevd. Bare spilleren økta tilhører. */
+export async function lagreOpplevd(
+  input: z.infer<typeof OpplevdSchema>,
+): Promise<TilbakemeldingActionResult> {
+  const parsed = OpplevdSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: "Velg et tall fra 1 til 5" };
+
+  const me = await getCurrentUser();
+  if (!me) return { ok: false, error: "Ikke innlogget" };
+
+  try {
+    const okt = await prisma.trainingSessionV2.findFirst({
+      where: { id: parsed.data.oktId, studentId: me.id },
+      select: { id: true },
+    });
+    if (!okt) return { ok: false, error: "Fant ikke økta" };
+    const n = await prisma.$executeRaw(summaryFieldUpdate(okt.id, "spillerOpplevd", {
+      rating: parsed.data.rating, loggedBy: me.id, loggedAt: new Date().toISOString(),
+    }));
+    if (n !== 1) return { ok: false, error: "Økta er ikke gjennomført ennå" };
+  } catch (error) {
+    await logError({ context: "portal.coach.lagreOpplevd", error, meta: { oktId: parsed.data.oktId } });
+    return { ok: false, error: "Kunne ikke lagre" };
   }
 
   revalidatePath(`/portal/coach/tilbakemelding/${parsed.data.oktId}`);

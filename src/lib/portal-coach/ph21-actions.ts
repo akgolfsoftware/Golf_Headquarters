@@ -1,5 +1,6 @@
 "use server";
 
+import { summaryFieldUpdate } from "@/lib/portal-live/summary-field";
 import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { resolveValgtCoachId } from "@/lib/domain/valgt-coach";
@@ -120,12 +121,16 @@ export async function sendPH21TilbakemeldingAction(
       return { ok: false, error: "Økt ikke funnet" };
     }
 
-    const noteText = comment?.trim() ? `[Dagsform ${rating}/5] ${comment.trim()}` : `[Dagsform ${rating}/5]`;
-
-    await prisma.trainingSessionV2.update({
-      where: { id: sessionId },
-      data: { notes: noteText },
-    });
+    if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+      return { ok: false, error: "Velg et tall fra 1 til 5" };
+    }
+    // Dagsformen lagres i completedSummary.spillerOpplevd og kommentaren i dineOrd (samme felt som
+    // «Din side av det» i tilbakemeldingen). notes er coachens tekst og røres aldri herfra.
+    const naa = new Date().toISOString();
+    const lagret = await prisma.$executeRaw(summaryFieldUpdate(sessionId, "spillerOpplevd", { rating, loggedBy: user.id, loggedAt: naa }));
+    if (lagret !== 1) return { ok: false, error: "Du kan gi tilbakemelding når økta er gjennomført" };
+    const tekst = comment?.trim();
+    if (tekst) await prisma.$executeRaw(summaryFieldUpdate(sessionId, "dineOrd", { tekst: tekst.slice(0, 2000), loggedBy: user.id, loggedAt: naa }));
 
     revalidatePath("/portal/coach");
     return { ok: true };
