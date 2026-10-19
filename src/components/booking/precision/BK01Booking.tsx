@@ -9,6 +9,8 @@
  *   - Betaling går til Stripe Checkout (omdirigering). Kortfelt finnes ikke i koden; kort og Apple Pay vises i Checkout (beslutning 15.10).
  *   - Telefon er påkrevd, som før: bookingen trenger den for å varsle ved kollisjon.
  *   - «Neste uke» finnes ikke: `hentLedigeDager` henter tjenestens maks dager fram (standard sju).
+ *   - Duo er ikke tegnet: «Deltaker 2» (navn og e-post) står under «Om deg» når tjenesten er duo,
+ *     etter bookingplanen steg 6. Den som booker betaler alt; begge får bekreftelsen.
  */
 import { useCallback, useMemo, useState } from "react";
 import { ArrowRight, CalendarX, CircleAlert, Lock, LogIn, RotateCw } from "lucide-react";
@@ -33,6 +35,8 @@ export type BookingTjeneste = {
   beskrivelse: string | null;
   /** Stedet satt på tjenesten i AgencyOS. Null = standardstedet (`lokasjon`). */
   sted: string | null;
+  /** Duo: to deltakere i samme time, den som booker betaler alt (bookingplanen steg 6). */
+  duo: boolean;
 };
 
 export type BookingAbonnement = { slug: string; navn: string; coachNavn: string | null; pris: number; beskrivelse: string | null };
@@ -72,7 +76,7 @@ function Steg({ i }: { i: number }) {
     </li>)}</ol>;
 }
 
-type Felter = { navn: string; epost: string; tlf: string; barn: boolean; spiller: string };
+type Felter = { navn: string; epost: string; tlf: string; barn: boolean; spiller: string; navn2: string; epost2: string };
 
 export function BK01Booking({ tjenester, abonnement, lokasjon, forhandsvis: f }: BK01Props) {
   const [steg, setSteg] = useState(f?.steg ?? 0);
@@ -83,7 +87,7 @@ export function BK01Booking({ tjenester, abonnement, lokasjon, forhandsvis: f }:
   const [lastefeil, setLastefeil] = useState(f?.tilstand === "feil");
   const [dag, setDag] = useState<string | null>(f?.dag ?? null);
   const [kl, setKl] = useState<string | null>(f?.kl ?? null);
-  const [meg, setMeg] = useState<Felter>({ navn: "", epost: "", tlf: "", barn: false, spiller: "", ...f?.skjema });
+  const [meg, setMeg] = useState<Felter>({ navn: "", epost: "", tlf: "", barn: false, spiller: "", navn2: "", epost2: "", ...f?.skjema });
   const [vilkar, setVilkar] = useState(false);
   const [feil, setFeil] = useState<Record<string, string>>(f?.feil ?? {});
   const [sender, setSender] = useState(false);
@@ -108,6 +112,7 @@ export function BK01Booking({ tjenester, abonnement, lokasjon, forhandsvis: f }:
       slug: tj.slug, start: tid.startIso, coachId: tid.coachId,
       name: meg.navn.trim(), email: meg.epost.trim(), phone: meg.tlf.trim(),
       notes: meg.barn ? `Booker for barn: ${meg.spiller.trim()}` : "",
+      ...(tj.duo ? { partnerName: meg.navn2.trim(), partnerEmail: meg.epost2.trim() } : {}),
     });
     if (res.ok) { window.location.href = res.url; return; }
     setSender(false); setBetalfeil(res.error);
@@ -122,6 +127,11 @@ export function BK01Booking({ tjenester, abonnement, lokasjon, forhandsvis: f }:
       if (!okMail(meg.epost)) x.epost = "Skriv en gyldig e-postadresse. Kvitteringen sendes dit.";
       if (meg.tlf.trim().length < 5) x.tlf = "Skriv et telefonnummer vi kan nå deg på.";
       if (meg.barn && !meg.spiller.trim()) x.spiller = "Skriv navnet på spilleren du booker for.";
+      if (tj?.duo) {
+        if (!meg.navn2.trim()) x.navn2 = "Skriv fullt navn på deltaker 2.";
+        if (!okMail(meg.epost2)) x.epost2 = "Skriv en gyldig e-postadresse. Deltaker 2 får bekreftelsen dit.";
+        else if (meg.epost2.trim().toLowerCase() === meg.epost.trim().toLowerCase()) x.epost2 = "Deltaker 2 trenger en annen e-postadresse enn din.";
+      }
     }
     if (steg === 3 && !vilkar) x.vilkar = "Du må godta vilkårene for å betale.";
     setFeil(x);
@@ -150,6 +160,7 @@ export function BK01Booking({ tjenester, abonnement, lokasjon, forhandsvis: f }:
     <Nokkelverdi items={[
       ["Tjeneste", tj ? tittel(tj) : null, { mono: false }],
       ["Tid", tid && valgtDag ? `${valgtDag.dw} ${valgtDag.dd} · ${tid.kl}` : null],
+      ...(tj?.duo ? [["Deltakere", "2", { hint: "DU BETALER FOR BEGGE" }] as const] : []),
       ["Pris", tj ? kr(tj.pris) : null, tj ? { hint: "FAST PRIS · SERVICETYPE" } : undefined],
     ]} />
   </>;
@@ -206,6 +217,12 @@ export function BK01Booking({ tjenester, abonnement, lokasjon, forhandsvis: f }:
         <span className="pa-check__box" aria-hidden>{meg.barn && <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden><path d="M2.5 6.2 5 8.5l4.5-5" fill="none" stroke="currentColor" strokeWidth="1.8" /></svg>}</span>
         <span>Jeg booker for et barn under 18</span></label>
       {meg.barn && <Skjemafelt label="Spillerens navn" required error={feil.spiller}><input className="a4-input bk__input" aria-label="Spillerens navn" value={meg.spiller} onChange={(e) => setMeg({ ...meg, spiller: e.target.value })} /></Skjemafelt>}
+      {tj?.duo && <>
+        <span className="kicker">Deltaker 2</span>
+        <Skjemafelt label="Fullt navn, deltaker 2" required error={feil.navn2}><input className="a4-input bk__input" aria-label="Fullt navn, deltaker 2" value={meg.navn2} autoComplete="off" onChange={(e) => setMeg({ ...meg, navn2: e.target.value })} /></Skjemafelt>
+        <Skjemafelt label="E-post, deltaker 2" required error={feil.epost2}><input className="a4-input bk__input" aria-label="E-post, deltaker 2" type="email" value={meg.epost2} autoComplete="off" onChange={(e) => setMeg({ ...meg, epost2: e.target.value })} /></Skjemafelt>
+        <Meta>DELTAKER 2 FÅR BEKREFTELSEN PÅ E-POST</Meta>
+      </>}
     </div>;
   }
   if (steg === 3) {

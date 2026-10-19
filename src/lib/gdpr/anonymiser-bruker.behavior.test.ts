@@ -43,6 +43,11 @@ mock.module("@/lib/prisma", { namedExports: { prisma: {
     assert.equal(data.brodtekst, "Personopplysninger fjernet.");
     writes.push("bookingutkast"); return { count: 1 };
   } },
+  booking: { updateMany: async ({ where, data }: { where: unknown; data: Record<string, unknown> }) => {
+    assert.deepEqual(where, { partnerEmail: "synthetic@example.test" });
+    assert.deepEqual(data, { partnerName: null, partnerEmail: null });
+    writes.push("duodeltaker"); return { count: 1 };
+  } },
   iupBesvarelse: { deleteMany: async ({ where }: { where: { userId: string } }) => {
     assert.equal(where.userId, "synthetic"); writes.push("iup"); return { count: 1 };
   } },
@@ -114,6 +119,7 @@ test("ekstern feil markerer ikke kontoen ferdig før vellykket gjenforsøk", asy
   assert.ok(writes.includes("shot"));
   assert.ok(writes.includes("roundDraft"));
   assert.ok(writes.includes("bookingutkast"));
+  assert.ok(writes.includes("duodeltaker"));
   assert.ok(writes.includes("iup"));
   assert.ok(writes.includes("trenerdeling"));
   assert.ok(writes.includes("trenerforslag"));

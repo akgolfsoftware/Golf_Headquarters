@@ -3,24 +3,27 @@ import { notFound } from "next/navigation";
 
 import { hentWangDataGolf, type WangDgValg } from "@/app/team-wang/_data/wang-datagolf-data";
 import type { WangDataGolfData, WangDgProff, WangDgSide } from "@/app/team-wang/_data/wang-datagolf-visning";
-import { hentTnTrenere } from "@/lib/domain/tn-arbeidsflate";
+import { hentTnSpillere, hentTnTrenere, medTnSpillerData } from "@/lib/domain/tn-arbeidsflate";
+import { hentDgSpillerVisning } from "@/lib/datagolf/spiller-mot-proff-data";
 import { formaterFortegn, formaterTall } from "@/lib/format-tall";
 import { TN } from "@/lib/v2/team-norway";
 import { TnPille } from "../core";
 import { TnFilterknapper, TnFlate, TnFlatehode, TnFotnote, TnMangler, TnSkjermhode, TnTekstlenke, TnListerad, type TnFilterValg } from "../tn-flate";
 import { TnHelt, TnHeltSporsmaal, TnHeltTall, TnHeltTekst, TnHeltTellere } from "../tn-stall";
 import { SkjermRamme, hentSkjermbruker } from "./felles";
+import { TnDgSpillerSide, type DgSpillerSide } from "./tn-datagolf-spiller";
 
 /**
  * TN-DG Data Golf for trener (pakke 9). Utkast 2, retning B (godkjent 16.10.2026).
  * Fasit: docs/design-system/utkast-tn/datagolf.html, DG-01 Oversikt, DG-02 Proffkatalog,
- * DG-03 Proffprofil, DG-04 Topplister, DG-08 Norske proffer og DG-09 Kilde og dekning.
+ * DG-03 Proffprofil, DG-04 Topplister, DG-05 Spiller mot proff, DG-06 Innspill-tak, DG-07 Fra funn til forslag
+ * (tn-datagolf-spiller.tsx), DG-08 Norske proffer og DG-09 Kilde og dekning.
  * Samme data og regler som AgencyOS og WANG pakke 10: bare coach og admin
  * (krevDataGolfBruker på siden), «Powered by Data Golf» på hver skjerm, ingen eksport.
  *
  * Avvik:
- *   - DG-05 Spiller mot proff, DG-06 Innspill-tak og DG-07 Fra funn til forslag er ikke med:
- *     spillernes egne tall deles ikke med Data Golf-flaten, og funn kan ikke bli forslag herfra.
+ *   - DG-05–07 leser spillerens tall bare når spilleren har delt med treneren, og forslag går som
+ *     forslag til spillerens Workbench (nattkjøring 18.–19.10, pakke T3).
  *   - DG-08 viser norske proffers siste resultater og kommende turneringer. Live-stilling er ikke koblet.
  *   - Tallene er Data Golfs modellerte ferdighetstall med kildedato og merket som modell.
  *   - Menypunktet vises på skjermene som går via SkjermRamme, tn-registrerte-skjermer og Analyse.
@@ -35,9 +38,10 @@ const tall = (v: number | null | undefined, d = 1) => formaterTall(v, d, true);
 const tilPar = (n: number | null) => (n == null ? "—" : n === 0 ? "E" : n > 0 ? `+${n}` : `−${Math.abs(n)}`);
 
 const SIDER: WangDgSide[] = ["oversikt", "proffer", "proff", "topp", "norske", "kilde"];
-const FANER: [WangDgSide, string][] = [["oversikt", "Oversikt"], ["proffer", "Proffer"], ["topp", "Topplister"], ["norske", "Norske proffer"], ["kilde", "Kilde"]];
+const SPILLER_SIDER: DgSpillerSide[] = ["spiller", "innspill", "forslag"];
+const FANER: [WangDgSide | "spiller", string][] = [["oversikt", "Oversikt"], ["proffer", "Proffer"], ["topp", "Topplister"], ["spiller", "Spiller mot proff"], ["norske", "Norske proffer"], ["kilde", "Kilde"]];
 
-const adresse = (side: WangDgSide, ekstra: Record<string, string | number> = {}) => {
+const adresse = (side: WangDgSide | DgSpillerSide, ekstra: Record<string, string | number> = {}) => {
   const p = new URLSearchParams({ side, ...Object.fromEntries(Object.entries(ekstra).map(([k, v]) => [k, String(v)])) });
   return `/team-norway/datagolf?${p.toString()}`;
 };
@@ -50,6 +54,22 @@ export async function TnDatagolfSkjerm({ sokeparametre }: { sokeparametre: Recor
   if (!kontekst || kontekst.kontekst.erSpiller) notFound();
 
   const sideParam = forste(sokeparametre.side);
+  const spillerSide = SPILLER_SIDER.find((s) => s === sideParam);
+  if (spillerSide) {
+    const spillere = (await hentTnSpillere(bruker))?.rader.map((r) => ({ id: r.id, navn: r.navn })) ?? [];
+    const proffId = Number.parseInt(forste(sokeparametre.pro) ?? "", 10);
+    const v = await hentDgSpillerVisning({
+      bruker, spillere, spillerId: forste(sokeparametre.spiller), proffId: Number.isFinite(proffId) ? proffId : undefined,
+      medSpiller: (id, les) => medTnSpillerData(bruker, id, (tx) => les(tx)),
+    });
+    if (!v) notFound();
+    return (
+      <SkjermRamme aktiv="datagolf" brukerNavn={bruker.name} kontekst={kontekst.kontekst}>
+        <TnDgSpillerSide side={spillerSide} v={v} faner={<TnFilterknapper etikett="Data Golf" valg={FANER.map(([id, label]) => ({ href: adresse(id), label, aktiv: id === "spiller" }))} />} />
+        <PoweredBy />
+      </SkjermRamme>
+    );
+  }
   const side: WangDgSide = SIDER.find((s) => s === sideParam) ?? "oversikt";
   const valg: WangDgValg = {
     id: forste(sokeparametre.id),
