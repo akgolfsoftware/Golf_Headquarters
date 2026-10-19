@@ -345,7 +345,7 @@ export async function hentTnManedsplan(bruker: TnBruker, fra: Date, til: Date) {
     }),
     prisma.groupPeriodBlock.findMany({
       where: { groupId: kontekst.gruppe.id, startDate: { lt: til }, endDate: { gte: fra } },
-      select: { id: true, lPhase: true, startDate: true, endDate: true, focus: true, weeklyVolMin: true, weeklyVolMax: true },
+      select: { id: true, lPhase: true, startDate: true, endDate: true, focus: true, weeklyVolMin: true, weeklyVolMax: true, axisMinutes: true, axisMinutesLight: true },
       orderBy: { startDate: "asc" },
     }),
   ]);
