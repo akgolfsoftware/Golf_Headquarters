@@ -8,6 +8,7 @@ import {
   lagreSamlingAction,
   lagreSpillerstatusAction,
   lagreUttakAction,
+  lagreUttaksrundeAction,
   slettCollegeAction,
   slettDokumentAction,
   slettOktAction,
@@ -151,6 +152,25 @@ export function TnUttakSkjema({ spillere, knapp, variant, standard }: { spillere
       <TnFelt etikett="Arrangement" navn="arrangement" standard={standard?.arrangement} pakrevd maks={200} plassholder="EM lag 2027" />
       <TnValg etikett="Uttak" navn="status" standard={standard?.status ?? "UTTATT"} valg={Object.entries(UTTAK_TEKST).map(([verdi, tekst]) => ({ verdi, tekst }))} />
       <TnTekstfelt etikett="Begrunnelse" navn="begrunnelse" standard={standard?.begrunnelse} />
+    </TnSkjemaArk>
+  );
+}
+
+export function TnUttaksrundeSkjema({ knapp, variant, standard }: { knapp: string; variant?: TnKnappVariant; standard?: { arrangement: string; frist: string; plasser: string; reserver: string } }) {
+  return (
+    <TnSkjemaArk
+      knapp={knapp}
+      knappVariant={variant}
+      tittel="Frist og plasser"
+      lagreTekst="Lagre"
+      send={(v) => ut(lagreUttaksrundeAction({ arrangement: v.arrangement, frist: v.frist, plasser: v.plasser, reserver: v.reserver }))}
+    >
+      <TnFelt etikett="Arrangement" navn="arrangement" standard={standard?.arrangement} pakrevd maks={200} plassholder="European Young Masters 2027" hint={standard ? "Samme navn som på uttakene." : undefined} />
+      <TnFelt etikett="Frist for uttak" navn="frist" type="date" standard={standard?.frist} />
+      <TnFeltrad>
+        <TnFelt etikett="Plasser" navn="plasser" type="number" standard={standard?.plasser} />
+        <TnFelt etikett="Reserver" navn="reserver" type="number" standard={standard?.reserver} />
+      </TnFeltrad>
     </TnSkjemaArk>
   );
 }
