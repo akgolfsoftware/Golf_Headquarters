@@ -1,5 +1,5 @@
 /**
- * AgencyOS — Talent · WAGR-import (TALENT · WAGR-IMPORT). v2-port 16. juli 2026.
+ * AgencyOS — Talent · WAGR-import, i Precision Athletics (AgencyOSSkall + WagrImport).
  *
  * Datakilde: WagrSnapshot (matchede spillere = snapshot med userId-kobling) +
  * antall PLAYER-brukere for stallen. «Sist synket» = nyeste snapshotAt.
@@ -20,9 +20,12 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { AdminWagrImportV2, type AdminWagrImportV2Data } from "@/components/admin/v2/AdminWagrImportV2";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { Topp } from "@/components/admin/agencyos-ny/ny";
+import { WagrImport, type WagrImportData } from "@/components/admin/agencyos-ny/WagrImport";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "WAGR-import · AgencyOS" };
 
 function fmtSynket(d: Date): string {
   const dato = d.toLocaleDateString("nb-NO", { day: "numeric", month: "long" });
@@ -31,7 +34,7 @@ function fmtSynket(d: Date): string {
 }
 
 export default async function WagrImportPage() {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
   const [snapshots, antallSpillere] = await Promise.all([
     prisma.wagrSnapshot.findMany({
@@ -52,11 +55,19 @@ export default async function WagrImportPage() {
     ? snapshots.reduce((maks, s) => (s.snapshotAt > maks ? s.snapshotAt : maks), snapshots[0].snapshotAt)
     : null;
 
-  const data: AdminWagrImportV2Data = {
+  const data: WagrImportData = {
     koblede: koblede.map((s) => ({ id: s.id, spillerId: s.user.id, navn: s.user.name, rank: s.rank })),
     antallSpillere,
     sistSynketLabel: sistSynket ? fmtSynket(sistSynket) : null,
   };
 
-  return <AdminWagrImportV2 data={data} />;
+  return (
+    <AgencyOSSkall navn={user.name ?? "Coach"}>
+      <div className="agn-s">
+        <Topp tilbake={{ href: "/innsyn/talent/radar", tekst: "Innsikt og talent" }} dato="Talent · WAGR" tittel="WAGR-import"
+          ingress="Hent World Amateur Golf Ranking for stallen. Vi matcher på navn og fødselsdato." />
+        <WagrImport data={data} />
+      </div>
+    </AgencyOSSkall>
+  );
 }
