@@ -400,7 +400,7 @@ export function PH01IDag(p: PH01Props) {
       <section className="phn-seksjon a-dag" aria-label="Dagens økter">
         <div className="phn-sek-topp"><h2>Dagens økter</h2></div>
         {p.okter.length === 0
-          ? <div className="phn-kort"><p className="phn-forklar">{p.tomTekst}</p><div className="phn-knapper"><Link className="phn-knapp sek" href="/portal/planlegge/workbench">Bygg økter i Workbench</Link><Link className="phn-knapp sek" href="/portal/runde/logg">Registrer runde</Link></div></div>
+          ? <div className="phn-kort"><p className="phn-forklar">{p.tomTekst}</p><div className="phn-knapper"><Link className="phn-knapp sek" href="/portal/planlegge/workbench">Bygg økter i Workbench</Link><Link className="phn-knapp sek" href="/portal/mal/runder/ny">Registrer runde</Link></div></div>
           : <div className="dagen">{p.okter.map((s) => <OktKort key={s.id} s={s} neste={s.id === p.nesteId} onAapne={() => setAapen(s.id)} />)}</div>}
       </section>
       {(godkj.length > 0 || besvart.length > 0) && <section className="phn-kort a-forslag" aria-label="Forslag og endringer">

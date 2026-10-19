@@ -341,7 +341,7 @@ export function PHRD03RedigerSlag({ roundId, baneNavn, dato, eksisterendeSlag, b
       <div className="phr-topp">
         <div className="phn-dato">Rediger slag · {baneNavn} · {dato}</div>
         <h1 className="phn-tittel">Rediger slag</h1>
-        <p className="phr-ingress">Rett enkeltslag på en lagret runde. Ny runde føres i <Link href="/portal/runde/logg">Registrer runde</Link>, slag for slag.</p>
+        <p className="phr-ingress">Rett enkeltslag på en lagret runde. Ny runde føres i <Link href="/portal/runde/live">Slag for slag</Link>.</p>
       </div>
 
       <div className="phr-hullhode">

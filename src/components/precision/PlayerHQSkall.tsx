@@ -36,7 +36,7 @@ function Bjelle({ href, antall }: { href: string; antall: number }) {
 const HURTIG: Hurtighandling[] = [
   { id: "caddie", label: "Spør Caddie", icon: Sparkles, iconName: "sparkles", href: "/portal/caddie" },
   { id: "okt", label: "Ny økt", icon: Layers, iconName: "layers", href: "/portal/planlegge/workbench" },
-  { id: "runde", label: "Registrer runde", icon: Flag, iconName: "flag", href: "/portal/runde/logg" },
+  { id: "runde", label: "Registrer runde", icon: Flag, iconName: "flag", href: "/portal/mal/runder/ny" },
   { id: "start", label: "Start økt", icon: Play, iconName: "play", href: "/portal/tren/start" },
 ];
 
