@@ -1,0 +1,52 @@
+/* Data Golf-komponenter (src/components/datagolf). Bare inni .agn-s (Precision-tokens). */
+.agn-s .dgk { display: grid; gap: var(--r4); }
+.agn-s .dgk .mono { font-variant-numeric: tabular-nums; }
+.agn-s .dgk-ikon { width: 14px; height: 14px; flex: none; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.agn-s .dgk-merke { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin: 0; font: 400 12.5px/1.45 var(--sans); color: var(--graphite-600); }
+.agn-s .dgk-merke a { color: inherit; }
+
+.agn-s .dgk-sg { display: grid; gap: 2px; }
+.agn-s .dgk-sg-rad, .agn-s .dgk-app-rad { display: grid; grid-template-columns: 112px minmax(0, 1fr) 64px; gap: 4px var(--r3); align-items: center; padding: 8px 0; border-bottom: 1px solid var(--sand-300); }
+.agn-s .dgk-sg-rad:last-child { border-bottom: 0; }
+.agn-s .dgk-sg-navn b { display: block; font: 600 15px/1.3 var(--sans); }
+.agn-s .dgk-sg-n { grid-column: 2 / 4; }
+.agn-s .dgk-sg-tall { text-align: right; font: 600 17px/1 var(--mono); }
+.agn-s .dgk-sg-spor { position: relative; height: 12px; border-radius: 6px; background: var(--sand-150); }
+.agn-s .dgk-sg-spor::before { content: ""; position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: var(--graphite-500); }
+.agn-s .dgk-sg-spor i { position: absolute; top: 0; bottom: 0; border-radius: 6px; }
+.agn-s .dgk-sg-spor i.pos { background: var(--graphite-900); }
+.agn-s .dgk-sg-spor i.neg { background: var(--graphite-500); }
+
+.agn-s .dgk-trend { width: 100%; height: auto; display: block; }
+.agn-s .dgk-trend .rutenett { stroke: var(--sand-300); stroke-width: 1; }
+.agn-s .dgk-trend .null { stroke: var(--graphite-500); stroke-width: 1; stroke-dasharray: 4 3; }
+.agn-s .dgk-trend .akse { font: 400 11px var(--mono); fill: var(--graphite-600); }
+.agn-s .dgk-trend .punkt { fill: var(--graphite-500); opacity: .55; }
+.agn-s .dgk-trend .snitt { fill: none; stroke: var(--graphite-900); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+
+.agn-s .dgk-dekning { display: grid; }
+.agn-s .dgk-dekning-rad { display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px var(--r4); padding: 12px 0; border-bottom: 1px solid var(--sand-300); }
+.agn-s .dgk-dekning-rad:last-child { border-bottom: 0; }
+.agn-s .dgk-dekning-navn b { display: block; font: 600 15px/1.3 var(--sans); }
+.agn-s .dgk-dekning-mal { display: grid; gap: 4px; }
+.agn-s .dgk-stolpe { display: block; height: 8px; border-radius: 4px; background: var(--sand-150); overflow: hidden; }
+.agn-s .dgk-stolpe i { display: block; height: 100%; background: var(--graphite-900); border-radius: 4px; }
+.agn-s .dgk-dekning-fordeling { align-self: center; }
+
+.agn-s .dgk-app-gruppe { display: grid; gap: 2px; }
+.agn-s .dgk-app-rad { grid-template-columns: minmax(0, 1fr) 64px; }
+.agn-s .dgk-app-navn { grid-column: 1 / 3; font: 600 14px/1.3 var(--sans); }
+.agn-s .dgk-app-rad .dgk-sg-spor { grid-column: 1; }
+.agn-s .dgk-app-rad > .kilde { grid-column: 1 / 3; }
+.agn-s .dgk-tynt { color: var(--amber-700); font-weight: 600; }
+
+.agn-s .dgk-kort-pille { display: flex; flex-wrap: wrap; gap: 6px; }
+
+@media (min-width: 900px) {
+  .agn-s .dgk-sg-rad { grid-template-columns: 140px minmax(0, 1fr) 72px 96px; }
+  .agn-s .dgk-sg-n { grid-column: auto; }
+  .agn-s .dgk-dekning-rad { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr) 150px; align-items: center; }
+  .agn-s .dgk-app-rad { grid-template-columns: 200px minmax(0, 1fr) 64px 130px 90px 170px; }
+  .agn-s .dgk-app-navn, .agn-s .dgk-app-rad > .kilde { grid-column: auto; }
+  .agn-s .dgk-app-rad .dgk-sg-spor { grid-column: auto; }
+}
