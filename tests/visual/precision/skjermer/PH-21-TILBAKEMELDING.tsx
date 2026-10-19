@@ -13,7 +13,7 @@ const DATA: CoachTilbakemeldingData = {
   prosa: ["Bra økt. Ballstarten ble bedre utover, og du holdt farten nede som avtalt.", "Neste uke jobber vi videre med P6.0 på 75 % av Club Speed."],
   punkter: ["Hold køllen parallell lenger i P6.0. Bruk øvelsen med pinne langs skaftet.", "Club Path gikk fra −4,1 til −1,8 grader i løpet av økta.", "Bli på 75 % av Club Speed til bevegelsen sitter."],
   klipp: [{ id: "k1", url: "https://example.invalid/klipp.mp4", label: "Ditt klipp fra økta", meta: "2. oktober 17:12" }],
-  dittSvar: null, kvittert: false, kanSvare: true,
+  dittSvar: null, kvittert: false, kanSvare: true, opplevd: 4,
 };
 
 const Vis = ({ children }: { children: React.ReactNode }) => <PlayerHQSkall innboksHref="/portal/varsler" uleste={1}>{children}</PlayerHQSkall>;

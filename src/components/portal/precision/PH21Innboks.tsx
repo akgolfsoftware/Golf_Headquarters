@@ -317,9 +317,9 @@ export function PH21Innboks({ data, initialTab = "msg", tilstand = "data", feilT
           <h2 className="phn-k-undertittel">Tidligere</h2>
           {feedbackList.length === 0 ? <p className="phn-forklar">—</p> : <div className="phn-k-liste">
             {feedbackList.map((f) => <div key={f.id}>
-              <b>{f.session}</b>
+              <b>{f.href ? <Link href={f.href}>{f.session}</Link> : f.session}</b>
               <p className="phn-forklar">{f.text}</p>
-              <span className="phn-k-kildetekst">{f.from === "me" ? `Du · dagsform ${f.rating} av 5` : coachNavn} · {f.t}</span>
+              <span className="phn-k-kildetekst">{f.from === "me" ? `Du${f.rating != null ? ` · dagsform ${f.rating} av 5` : ""}` : `Fra ${coachNavn}`} · {f.t}</span>
             </div>)}
           </div>}
         </section>

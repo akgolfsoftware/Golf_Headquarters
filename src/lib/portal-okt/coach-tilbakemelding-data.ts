@@ -19,6 +19,7 @@
  * - Spillerens svar: completedSummary.dineOrd (skrives av lagreDineOrd —
  *   samme persistens som ETTER-skjermen, coachen leser det i stallen).
  * - Kvittering («Forstått»): completedSummary.tilbakemeldingKvittert.
+ * - «Hvordan opplevde du økta?» 1–5: completedSummary.spillerOpplevd (samme felt som dagsformen i Innboks).
  */
 
 import "server-only";
@@ -55,6 +56,8 @@ export type CoachTilbakemeldingData =
       /** Spillerens eksisterende svar (dineOrd) — null uten. */
       dittSvar: { tekst: string; sendt: string } | null;
       kvittert: boolean;
+      /** Spillerens «Hvordan opplevde du økta?» 1–5 (completedSummary.spillerOpplevd), null uten. */
+      opplevd: number | null;
       /** Kun spilleren selv svarer/kvitterer. */
       kanSvare: boolean;
     };
@@ -250,6 +253,10 @@ export async function getCoachTilbakemeldingData(
     klipp,
     dittSvar,
     kvittert,
+    opplevd: (() => {
+      const r = somObjekt(summary.spillerOpplevd).rating;
+      return typeof r === "number" && r >= 1 && r <= 5 ? r : null;
+    })(),
     kanSvare: kanSvarePaOktTilbakemelding(user.id, okt.studentId),
   };
 }
