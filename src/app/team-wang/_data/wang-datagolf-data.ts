@@ -15,6 +15,7 @@ import {
   hentTopplister,
   type TopplisteKategori,
 } from "@/lib/admin/datagolf/coach-data";
+import { lesSide } from "@/lib/admin/datagolf/coach-data-regler";
 import type { UserRole } from "@/generated/prisma/client";
 import { lesNavngitteProfiler } from "@/lib/deling/profil-lesing";
 import { hentDgSpillerVisning } from "@/lib/datagolf/spiller-mot-proff-data";
@@ -28,13 +29,14 @@ export interface WangDgValg {
   norske?: string;
   kat?: string;
   aar?: string;
+  sidenr?: string;
 }
 
 export async function hentWangDataGolf(side: WangDgSide, valg: WangDgValg): Promise<WangDataGolfData> {
   if (side === "proffer") {
     const v = { sok: valg.sok, tour: valg.tour || undefined, norskForst: valg.norske === "1" };
-    const { rader, turer } = await hentKatalog(v);
-    return { side, rader, turer, valg: v };
+    const { rader, turer, totalt, side: sidenr, sider } = await hentKatalog({ ...v, side: lesSide(valg.sidenr) });
+    return { side, rader, turer, valg: v, totalt, sidenr, sider };
   }
   if (side === "proff") {
     const dgId = Number.parseInt(valg.id ?? "", 10);

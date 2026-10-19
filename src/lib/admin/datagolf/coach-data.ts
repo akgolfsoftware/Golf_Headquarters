@@ -7,6 +7,7 @@
  */
 import "server-only";
 import { prisma } from "@/lib/prisma";
+import { KATALOG_PER_SIDE, katalogSide, norskProffWhere, samleKilde } from "./coach-data-regler";
 
 export type DgProffRad = {
   dgId: number;
@@ -33,7 +34,7 @@ export function erForsinket(sist: Date | null, naa = new Date()): boolean {
 }
 
 async function norskeIder(): Promise<Set<number>> {
-  const r = await prisma.publicPlayer.findMany({ where: { dataGolfId: { not: null } }, select: { dataGolfId: true } });
+  const r = await prisma.publicPlayer.findMany({ where: norskProffWhere, select: { dataGolfId: true } });
   return new Set(r.map((p) => p.dataGolfId!).filter((n) => Number.isFinite(n)));
 }
 
@@ -59,25 +60,45 @@ export async function hentOversikt() {
   };
 }
 
-export type KatalogValg = { sok?: string; tour?: string; norskForst?: boolean };
+export type KatalogValg = { sok?: string; tour?: string; norskForst?: boolean; side?: number; perSide?: number };
 
+const KATALOG_SELECT = { dgPlayerId: true, name: true, country: true, primaryTour: true, sgTotal: true, dgRank: true, owgrRank: true } as const;
+const KATALOG_REKKEFOLGE = [{ sgTotal: { sort: "desc" as const, nulls: "last" as const } }, { dgPlayerId: "asc" as const }];
+
+/** DG-02: én side av katalogen, sortert på SG total. «Norske først» gjelder på tvers av sidene. */
 export async function hentKatalog(valg: KatalogValg) {
-  const norske = await norskeIder();
+  const norske = [...(await norskeIder())];
   const sok = valg.sok?.trim();
-  const rader = await prisma.datagolfTak.findMany({
-    where: {
-      isActive: true,
-      ...(sok ? { name: { contains: sok, mode: "insensitive" as const } } : {}),
-      ...(valg.tour ? { primaryTour: valg.tour } : {}),
-    },
-    orderBy: [{ sgTotal: { sort: "desc", nulls: "last" } }],
-    take: 200,
-    select: { dgPlayerId: true, name: true, country: true, primaryTour: true, sgTotal: true, dgRank: true, owgrRank: true },
-  });
-  const ut = rader.map((p): DgProffRad => ({ dgId: p.dgPlayerId, navn: visNavn(p.name), land: p.country, tour: p.primaryTour, sgTotal: p.sgTotal, dgRang: p.dgRank, owgr: p.owgrRank, norsk: norske.has(p.dgPlayerId) }));
-  if (valg.norskForst) ut.sort((a, b) => Number(b.norsk) - Number(a.norsk));
+  const where = {
+    isActive: true,
+    ...(sok ? { name: { contains: sok, mode: "insensitive" as const } } : {}),
+    ...(valg.tour ? { primaryTour: valg.tour } : {}),
+  };
+  const [totalt, antallNorske] = await Promise.all([
+    prisma.datagolfTak.count({ where }),
+    valg.norskForst ? prisma.datagolfTak.count({ where: { ...where, dgPlayerId: { in: norske } } }) : Promise.resolve(0),
+  ]);
+  const s = katalogSide(valg.side, totalt, valg.perSide ?? KATALOG_PER_SIDE);
+  let rader;
+  if (!valg.norskForst) {
+    rader = await prisma.datagolfTak.findMany({ where, orderBy: KATALOG_REKKEFOLGE, skip: s.skip, take: s.perSide, select: KATALOG_SELECT });
+  } else {
+    // Norske først: de norske fyller de første plassene, resten følger på samme sideregning.
+    const fraNorske = Math.max(0, Math.min(s.perSide, antallNorske - s.skip));
+    const [n, ovrige] = await Promise.all([
+      fraNorske > 0
+        ? prisma.datagolfTak.findMany({ where: { ...where, dgPlayerId: { in: norske } }, orderBy: KATALOG_REKKEFOLGE, skip: s.skip, take: fraNorske, select: KATALOG_SELECT })
+        : Promise.resolve([]),
+      s.perSide - fraNorske > 0
+        ? prisma.datagolfTak.findMany({ where: { ...where, dgPlayerId: { notIn: norske } }, orderBy: KATALOG_REKKEFOLGE, skip: Math.max(0, s.skip - antallNorske), take: s.perSide - fraNorske, select: KATALOG_SELECT })
+        : Promise.resolve([]),
+    ]);
+    rader = [...n, ...ovrige];
+  }
+  const norskSett = new Set(norske);
+  const ut = rader.map((p): DgProffRad => ({ dgId: p.dgPlayerId, navn: visNavn(p.name), land: p.country, tour: p.primaryTour, sgTotal: p.sgTotal, dgRang: p.dgRank, owgr: p.owgrRank, norsk: norskSett.has(p.dgPlayerId) }));
   const turer = await prisma.datagolfTak.findMany({ where: { isActive: true, primaryTour: { not: null } }, distinct: ["primaryTour"], select: { primaryTour: true } });
-  return { rader: ut, turer: turer.map((t) => t.primaryTour!).sort() };
+  return { rader: ut, turer: turer.map((t) => t.primaryTour!).sort(), totalt, side: s.side, sider: s.sider };
 }
 
 export async function hentProff(dgId: number) {
@@ -120,7 +141,7 @@ export async function hentTopplister(kategori: TopplisteKategori, tour: string, 
 
 export async function hentNorskeResultater() {
   const spillere = await prisma.publicPlayer.findMany({
-    where: { dataGolfId: { not: null } }, orderBy: { name: "asc" }, take: 40,
+    where: norskProffWhere, orderBy: { name: "asc" }, take: 40,
     select: { id: true, name: true, dataGolfId: true, entries: { where: { tournament: { sourceOrigin: "DATAGOLF" } }, orderBy: { createdAt: "desc" }, take: 3, select: { id: true, position: true, scoreToPar: true, tournament: { select: { name: true, startDate: true } } } } },
   }).catch(() => []);
   const kommende = await prisma.tournament.findMany({
@@ -169,6 +190,8 @@ export async function hentNorskeLive() {
 }
 
 export async function hentKilde() {
-  const synk = await prisma.datagolfSyncState.findMany({ orderBy: [{ endpoint: "asc" }] }).catch(() => []);
-  return synk.map((s) => ({ endepunkt: s.endpoint, rader: s.rowCount, status: s.lastStatus, feil: s.lastError ? "Siste synk feilet." : null, sist: s.lastSyncedAt }));
+  const synk = await prisma.datagolfSyncState.findMany({
+    select: { endpoint: true, rowCount: true, lastStatus: true, lastError: true, lastSyncedAt: true },
+  }).catch(() => []);
+  return samleKilde(synk);
 }

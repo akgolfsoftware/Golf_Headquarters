@@ -54,6 +54,7 @@ interface WangCoachPageProps {
     norske?: string;
     kat?: string;
     aar?: string;
+    sidenr?: string;
     spiller?: string;
     pro?: string;
     visArsplan?: string;
@@ -143,7 +144,7 @@ export default async function WangCoachPage({ searchParams }: WangCoachPageProps
     dataGolf = elevSide
       ? (await hentWangDgElev(bruker, gruppeId, elevSide, { spiller: params.spiller, pro: params.pro })) ?? undefined
       : dgSide !== "spiller" && dgSide !== "innspill" && dgSide !== "forslag"
-        ? await hentWangDataGolf(dgSide, { id: params.id, sok: params.sok, tour: params.tour, norske: params.norske, kat: params.kat, aar: params.aar })
+        ? await hentWangDataGolf(dgSide, { id: params.id, sok: params.sok, tour: params.tour, norske: params.norske, kat: params.kat, aar: params.aar, sidenr: params.sidenr })
         : undefined;
   }
 
