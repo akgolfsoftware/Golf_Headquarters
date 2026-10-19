@@ -11,6 +11,7 @@ Anders 19.10, etter tre nye retninger for trenerens hjem bygget fra Team Norway 
 - **Retning 1 «Skrå» er visuell fasit for `/team-norway/*`.** Ekte banebilde i navy toner øverst, kuttet 4° nedover mot høyre med rød kant, og lyse kort som ligger over kanten.
 - **Hjørner og skygger er tillatt:** myke kort med radius og lagdelte navy-skygger, slik utkastet viser. Runde avatarer og pilleknapper følger med.
 - **Skråkuttet brukes bare på store flater** (toppen av en skjerm, seksjonsskiller), aldri på kort eller knapper. Bildene kommer fra `public/team-norway/bilder/`, ingen stockbilder.
+- **Bildene er Team Norway Golf sine egne** (Anders 19.10: «du må bruke referansebilder fra Claude Design-prosjektet til Team Norway Golf»): fra «Team Norway Golf Design System» (`3416f258`, `assets/images/`), aldri kopier av PlayerHQ-bildene. De fire PlayerHQ-kopiene i `public/team-norway/bilder/` er byttet ut.
 - **Uendret:** navy `#012B5D`, rød `#D70232` som identitet og aldri status, TN-aksefargene (14.10), logoen fra fil, IBM Plex Mono på tall, og lys arbeidsflate.
 
 **Overstyrer:** «hjørner 0 · 2 · 4, ingen skygger, ingen sirkler, kvadratisk avatar» i §TEAM NORWAY-APPEN BYTTER DESIGNSPRÅK (22.09), og «Rammene er låst» for TN i `docs/planer/tn-wang-designloft-2026-10-16.md`.

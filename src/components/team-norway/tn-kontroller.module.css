@@ -1,5 +1,6 @@
 /* Knapper og felt. Fasit: docs/design-system/utkast-tn/felles/tn.css (pakke 1).
-   Navy primær, navy kontur sekundær, aldri logorød på knapper. Hjørner 2 px. */
+   Navy primær, navy kontur sekundær, aldri logorød på knapper. Knapper er piller,
+   felt har hjørner 6 (retning «Skrå», 19.10.2026). */
 .knapp {
   display: inline-flex;
   align-items: center;
@@ -9,7 +10,7 @@
   min-height: 44px;
   padding: 0 18px;
   border: 1px solid var(--tn-navy-900);
-  border-radius: var(--tn-radius-sm);
+  border-radius: var(--tn-radius-pill);
   background: var(--tn-white);
   color: var(--tn-navy-900);
   font-family: var(--tn-font-body);

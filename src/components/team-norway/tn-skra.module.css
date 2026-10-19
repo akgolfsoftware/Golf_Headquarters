@@ -1,0 +1,197 @@
+/* Retning «Skrå» (Anders 19.10.2026, beslutninger.md §TEAM NORWAY-APPEN FÅR RETNING «SKRÅ»).
+   Fasit: docs/design-system/utkast-tn/nye-veier.html, retning 1.
+   Ekte bilde fra Team Norway Golf-merket i navy toner, kuttet 4° nedover mot høyre med
+   rød kant, og lyse kort som ligger over kanten. Skråkuttet bare på store flater.
+   Bevegelse etter TN-merkets tider (120/160/200/280/420 ms, ease-out), av ved
+   prefers-reduced-motion. */
+
+/* Toppen bryter ut av innholdets luft, så bildet går helt inn til menyen og toppen. */
+.hjem {
+  position: relative;
+  container-type: inline-size;
+  display: grid;
+  margin: -24px -16px 0;
+}
+
+.topp {
+  position: relative;
+  background: var(--tn-red-600);
+  clip-path: var(--tn-clip-diagonal-b);
+  animation: kutt var(--tn-duration-sheet) var(--tn-ease-out) both;
+}
+@keyframes kutt { from { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); } }
+
+.foto {
+  position: relative;
+  height: 400px;
+  overflow: hidden;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--tn-skra-kant)), 0 calc(100% - var(--tn-skra-fall) - var(--tn-skra-kant)));
+}
+.foto img { object-fit: cover; object-position: 70% 45%; }
+.foto::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, rgba(1, 43, 93, 0.94) 0%, rgba(1, 43, 93, 0.84) 45%, rgba(1, 43, 93, 0.25) 100%);
+}
+
+/* Teksten ligger utenfor den klippede flaten, så «Ny»-menyen ikke blir kuttet av skrå kanten. */
+.toppInnhold {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+  align-content: start;
+  padding: 28px 16px 0;
+  color: var(--tn-white);
+}
+.overlinje { font-family: var(--tn-font-body); font-weight: 700; font-size: 12px; line-height: 1.3; letter-spacing: 0.12em; text-transform: uppercase; color: var(--tn-rail-text); }
+.tittel {
+  margin: 8px 0 0;
+  max-width: 16ch;
+  font-family: var(--tn-font-display);
+  font-weight: 500;
+  font-size: 30px;
+  line-height: 1.08;
+  letter-spacing: 0.01em;
+  color: var(--tn-white);
+}
+.tittel em { font-style: normal; color: var(--tn-akse-turn-lys); }
+.ingress { display: none; margin: 12px 0 0; max-width: 46ch; font-size: 15.5px; line-height: 1.55; color: var(--tn-ink-200); }
+.knapper { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+
+.tall { display: none; }
+.stat {
+  display: grid;
+  gap: 2px;
+  min-width: 180px;
+  padding: 12px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--tn-radius-lg);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.stat b { font-family: var(--tn-font-mono); font-weight: 500; font-size: 28px; line-height: 1.1; color: var(--tn-white); }
+.stat span { font-size: 12.5px; line-height: 1.3; color: var(--tn-ink-200); }
+
+/* Kortene ligger over skråkanten. */
+.kort {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+  margin-top: -64px;
+  padding: 0 16px;
+}
+.kolonne { display: grid; gap: 16px; min-width: 0; }
+
+.flate {
+  min-width: 0;
+  padding: 16px;
+  border-radius: var(--tn-radius-xl);
+  background: var(--tn-white);
+  box-shadow: var(--tn-shadow-md);
+  animation: stig var(--tn-duration-slow) var(--tn-ease-out) both;
+  animation-delay: calc(var(--i, 0) * 60ms + var(--tn-duration-base));
+  transition: transform var(--tn-duration-base) var(--tn-ease-out), box-shadow var(--tn-duration-base) var(--tn-ease-out);
+}
+@keyframes stig { from { opacity: 0; transform: translateY(14px); } }
+@media (hover: hover) and (pointer: fine) {
+  .flate:hover { transform: translateY(-3px); box-shadow: var(--tn-shadow-lg); }
+}
+
+.flateHode { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 12px; margin: 0; font-family: var(--tn-font-display); font-weight: 500; font-size: 18px; line-height: 1.25; letter-spacing: 0.01em; color: var(--tn-ink-900); }
+.flateHode a { font-family: var(--tn-font-body); font-weight: 700; font-size: 13.5px; color: var(--tn-link); text-decoration: none; min-height: 44px; display: inline-flex; align-items: center; }
+.flateHode a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.kilde { margin: 2px 0 0; font-size: 12.5px; line-height: 1.4; color: var(--tn-ink-500); }
+
+/* Rad: rund avatar, navn og grunn, status til høyre. */
+.liste { display: grid; margin-top: 8px; }
+.rad {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  margin: 0 -10px;
+  padding: 10px;
+  border-radius: var(--tn-radius-md);
+  color: inherit;
+  text-decoration: none;
+  transition: background-color var(--tn-duration-fast) var(--tn-ease-out);
+}
+a.rad:hover { background: var(--tn-navy-50); }
+a.rad:active { transform: scale(var(--tn-press-scale)); transition: transform var(--tn-duration-press) var(--tn-ease-out); }
+a.rad:focus-visible { outline: 3px solid var(--tn-navy-400); outline-offset: 0; }
+.avatar { display: grid; place-items: center; width: 40px; height: 40px; border-radius: var(--tn-radius-round); background: var(--tn-navy-100); color: var(--tn-navy-900); font-family: var(--tn-font-mono); font-size: 13px; }
+.hvem { display: grid; gap: 2px; }
+.hvem b { font-size: 14.5px; line-height: 1.3; color: var(--tn-ink-900); overflow-wrap: anywhere; }
+.hvem span { font-size: 13px; line-height: 1.4; color: var(--tn-ink-700); overflow-wrap: anywhere; }
+.verdi { display: grid; justify-items: end; gap: 2px; text-align: right; }
+.verdi b { font-family: var(--tn-font-mono); font-weight: 500; font-size: 17px; line-height: 1; color: var(--tn-navy-900); }
+.verdi b.lav { color: var(--tn-status-red-text); }
+.verdi span { font-size: 12px; color: var(--tn-ink-700); white-space: nowrap; }
+.tom { margin: 8px 0 0; font-size: 14.5px; line-height: 1.55; color: var(--tn-ink-700); }
+
+/* Gruppas trening: stablet stolpe i aksefargene, navnet står alltid ved fargen. */
+.stabel { display: flex; gap: 2px; height: 14px; margin: 14px 0; border-radius: var(--tn-radius-pill); overflow: hidden; background: var(--tn-ink-100); }
+.stabel i { display: block; transform-origin: left; animation: fyll var(--tn-duration-sheet) var(--tn-ease-out) both; animation-delay: calc(var(--tn-duration-slow) + var(--i, 0) * 60ms); }
+@keyframes fyll { from { transform: scaleX(0); } }
+.forklaring { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12.5px; color: var(--tn-ink-700); }
+.forklaring span { display: inline-flex; align-items: center; gap: 6px; }
+.forklaring i { width: 8px; height: 8px; flex: none; border-radius: var(--tn-radius-xs); }
+.forklaring b { font-family: var(--tn-font-mono); font-weight: 500; color: var(--tn-ink-900); }
+
+/* Neste samling: bilde øverst med navn, nedtelling under. */
+.samling { padding: 0; overflow: hidden; color: inherit; text-decoration: none; display: block; }
+.samling:focus-visible { outline: 3px solid var(--tn-navy-400); outline-offset: 2px; }
+.samlingBilde { position: relative; height: 150px; overflow: hidden; }
+.samlingBilde img { object-fit: cover; transition: transform 600ms var(--tn-ease-out); }
+@media (hover: hover) and (pointer: fine) { .samling:hover .samlingBilde img { transform: scale(1.05); } }
+.samlingBilde::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 35%, rgba(1, 43, 93, 0.8)); }
+.samlingTekst { position: absolute; left: 16px; right: 16px; bottom: 12px; z-index: 1; display: grid; gap: 2px; color: var(--tn-white); }
+.samlingTekst b { font-family: var(--tn-font-display); font-weight: 500; font-size: 19px; line-height: 1.2; overflow-wrap: anywhere; }
+.samlingTekst span { font-size: 12.5px; line-height: 1.35; color: var(--tn-ink-200); }
+.samlingKropp { display: grid; gap: 10px; padding: 14px 16px 16px; }
+.nedtelling { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.nedtelling div { display: grid; gap: 2px; padding: 8px 4px; border-radius: var(--tn-radius-md); background: var(--tn-navy-50); text-align: center; }
+.nedtelling b { font-family: var(--tn-font-mono); font-weight: 500; font-size: 22px; line-height: 1.1; color: var(--tn-navy-900); }
+.nedtelling span { font-size: 10.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--tn-ink-700); }
+
+/* I turnering nå */
+.livePrikk { display: inline-block; width: 8px; height: 8px; margin-right: 10px; border-radius: var(--tn-radius-round); background: var(--tn-red-600); animation: ping 1.8s var(--tn-ease-out) infinite; }
+@keyframes ping { 0% { box-shadow: 0 0 0 0 rgba(215, 2, 50, 0.5); } 70%, 100% { box-shadow: 0 0 0 8px rgba(215, 2, 50, 0); } }
+.liveRad { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; padding: 10px 0; border-top: 1px solid var(--tn-ink-100); font-size: 13.5px; }
+.liveRad:first-of-type { border-top: 0; margin-top: 6px; }
+.liveRad span { overflow-wrap: anywhere; }
+.liveRad b { font-family: var(--tn-font-mono); font-weight: 500; text-align: right; white-space: nowrap; }
+
+@container (min-width: 560px) {
+  .tittel { font-size: 40px; }
+  .ingress { display: block; }
+}
+
+@media (min-width: 900px) {
+  .hjem { margin: -32px -44px 0; }
+  .foto { height: 440px; }
+  .toppInnhold { grid-template-columns: minmax(0, 1fr) auto; gap: 24px; padding: 40px 44px 0; }
+  .tittel { font-size: 48px; }
+  .tall { display: grid; gap: 8px; align-content: start; }
+  .kort { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 18px; margin-top: -96px; padding: 0 44px; }
+  .kolonne { gap: 18px; }
+  .flate { padding: 20px; }
+  .samling { padding: 0; }
+  .samlingKropp { padding: 16px 20px 20px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .topp, .flate, .stabel i, .livePrikk { animation: none; }
+  .flate, .rad, .samlingBilde img { transition: none; }
+  .flate:hover { transform: none; }
+}

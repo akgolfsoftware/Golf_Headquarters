@@ -50,7 +50,7 @@ export async function TnTurneringSkjerm({ id }: { id: string }) {
         ingress={`Kilde: ${resultatKilde(t.sourceOrigin)}. Resultater er brutto.`}
       />
 
-      <TnBildekort bilde="/team-norway/bilder/turn-tee.jpg" alt="Spiller på teestedet før utslag" side>
+      <TnBildekort bilde="/team-norway/bilder/tee-hand.jpg" alt="Ballen legges på tee før utslag" side>
         <TnBildekortKilde>Beste landslagsspiller</TnBildekortKilde>
         <TnStortTall verdi={beste?.resultat?.position ?? "—"}>
           <span style={{ fontSize: 14.5, color: TN.ink700, overflowWrap: "anywhere" }}>{beste ? `plass · ${beste.navn}${beste.resultat?.score != null ? `, ${beste.resultat.score} slag` : ""}` : "Ingen plassering er registrert ennå"}</span>

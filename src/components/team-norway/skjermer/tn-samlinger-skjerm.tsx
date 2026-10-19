@@ -192,7 +192,7 @@ async function TnSamlingSkjerm({ id }: { id: string }) {
         }
         hoyre={
           <>
-            <TnHeltBilde src="/team-norway/bilder/slag-utslag.jpg" alt="Spiller i utslag på rangen" />
+            <TnHeltBilde src="/team-norway/bilder/spiller-ved-vannet.jpg" alt="Spiller i utslag på banen ved sjøen" />
             <TnHeltTellere
               tall={[
                 { verdi: okter.length ? `${timer} t` : "—", tekst: "program" },

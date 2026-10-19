@@ -11,7 +11,7 @@ import { TN } from "@/lib/v2/team-norway";
 const knappGrunn: CSSProperties = {
   minHeight: 44,
   padding: "0 18px",
-  borderRadius: 2,
+  borderRadius: TN.radius.pill,
   fontFamily: TN.font.body,
   fontSize: 14,
   fontWeight: 700,

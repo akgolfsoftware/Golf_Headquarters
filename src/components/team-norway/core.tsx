@@ -11,11 +11,12 @@ import teamNorwayLogoHvit from "../../../designsystem/team-norway/assets/logo/te
 /**
  * Team Norway — delte primitiver. Fasit: docs/design-system/utkast-tn/felles/tn.css
  * (pakke 1 grunnmur, 14.10.2026). Bruker KUN TN.* (aldri AK-, Train-lock- eller
- * Precision-tokens). Hjørner 0 · 2 · 4, ingen skygger, ingen sirkler.
+ * Precision-tokens). Retning «Skrå» (19.10.2026): myke kort med navy-skygge,
+ * pilleformede merker og knapper, runde avatarer.
  * Skallet (sidemeny, topplinje, bunnmeny) bor i tn-shell.tsx og rail-mobil.tsx.
  * Avvik:
- *   - TnPille heter fortsatt «pille» i koden, men tegnes som grunnmurens merke:
- *     kantete 24 px med kvadratisk prikk, aldri runde ender.
+ *   - Formene følger retning «Skrå» (docs/design-system/utkast-tn/nye-veier.html,
+ *     19.10.2026), ikke de kantete flatene i felles/tn.css.
  */
 
 // ───────────────────────── Kort ─────────────────────────
@@ -68,9 +69,8 @@ export function TnKort({
     <div
       style={{
         background: TN.surfaceCard,
-        borderRadius: TN.radius.sm,
-        // Systemet har ingen skygger. Flater skilles med én hårstrek.
-        border: `1px solid ${TN.borderSubtle}`,
+        borderRadius: TN.radius.xl,
+        boxShadow: TN.shadow.md,
         padding,
         fontFamily: TN.font.body,
         ...style,
@@ -85,7 +85,7 @@ export function TnKort({
 
 export type TnPilleTone = "navy" | "green" | "amber" | "red" | "info" | "nøytral" | "invers";
 
-/** Merke: kantete 24 px med kvadratisk prikk. Grønt, gult og rødt er bare status. */
+/** Merke: pille 24 px med rund prikk. Grønt, gult og rødt er bare status. */
 const PILLE_TONE: Record<TnPilleTone, { bg: string; fg: string; prikk: string }> = {
   navy: { bg: TN.status.infoBg, fg: TN.status.infoText, prikk: TN.navy600 },
   green: { bg: TN.status.greenBg, fg: TN.status.greenText, prikk: TN.status.green },
@@ -105,8 +105,8 @@ export function TnPille({ children, tone = "nøytral" }: { children: ReactNode; 
         alignItems: "center",
         gap: 6,
         minHeight: 24,
-        padding: "2px 8px",
-        borderRadius: TN.radius.sm,
+        padding: "2px 10px",
+        borderRadius: TN.radius.pill,
         background: t.bg,
         color: t.fg,
         fontFamily: TN.font.body,
@@ -117,7 +117,7 @@ export function TnPille({ children, tone = "nøytral" }: { children: ReactNode; 
         flex: "none",
       }}
     >
-      <span aria-hidden="true" style={{ width: 6, height: 6, flex: "none", background: t.prikk }} />
+      <span aria-hidden="true" style={{ width: 6, height: 6, flex: "none", borderRadius: TN.radius.round, background: t.prikk }} />
       {children}
     </span>
   );
@@ -146,6 +146,7 @@ export function TnAvatarInitialer({
       style={{
         width: size,
         height: size,
+        borderRadius: TN.radius.round,
         background: paaMork ? TN.rail.active : TN.navy100,
         color: paaMork ? TN.rail.on : TN.navy900,
         fontFamily: TN.font.mono,

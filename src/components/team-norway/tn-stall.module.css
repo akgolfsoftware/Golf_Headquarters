@@ -1,5 +1,6 @@
 /* Utkast 2, retning B «Stall og helteflate» (16.10.2026).
-   Fasit: docs/design-system/utkast-tn/felles/tn.css §Utkast 2. Hjørner 2, ingen skygger, ingen sirkler. */
+   Fasit: docs/design-system/utkast-tn/felles/tn.css §Utkast 2. Former og dybde etter retning «Skrå»
+   (19.10.2026, utkast-tn/nye-veier.html): kort 18, navy-skygge, runde avatarer og prikker. */
 
 /* Helteflate: navy, ett stort hovedtall i hvitt, kort forklaring, én knapp, flaggstreken som kant nederst. */
 .helt {
@@ -9,7 +10,8 @@
   padding: 24px 16px 30px;
   background: var(--tn-navy-900);
   color: var(--tn-white);
-  border-radius: var(--tn-radius-sm);
+  border-radius: var(--tn-radius-xl);
+  box-shadow: var(--tn-shadow-md);
   overflow: hidden;
 }
 .helt::after {
@@ -29,7 +31,7 @@
 .heltTall span { font-family: var(--tn-font-display); font-weight: 500; font-size: 22px; line-height: 1.2; letter-spacing: 0.02em; color: var(--tn-white); overflow-wrap: anywhere; }
 .heltTekst { margin: 0; max-width: 52ch; font-size: 15px; line-height: 1.55; color: var(--tn-rail-text); }
 .heltKnapper { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-.heltBilde { display: block; width: 100%; height: 160px; object-fit: cover; border-radius: var(--tn-radius-sm); }
+.heltBilde { display: block; width: 100%; height: 160px; object-fit: cover; border-radius: var(--tn-radius-lg); }
 
 .akser { display: grid; gap: 8px; }
 .fordelingLys { display: flex; height: 14px; gap: 2px; }
@@ -46,7 +48,7 @@
 
 /* Status som bilde: farget markør, alltid med ord ved siden */
 .markor { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: 13px; line-height: 1.2; white-space: nowrap; }
-.markor i { width: 10px; height: 10px; flex: none; }
+.markor i { width: 10px; height: 10px; flex: none; border-radius: var(--tn-radius-round); }
 .trenger { color: var(--tn-status-red-text); }
 .trenger i { background: var(--tn-status-red); }
 .folger { color: var(--tn-status-green-text); }
@@ -60,7 +62,7 @@
 .baand { display: grid; gap: 8px; }
 .baandHode { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; padding-bottom: 8px; border-bottom: 3px solid var(--tn-ink-300); }
 .baandHode h2 { margin: 0; font-family: var(--tn-font-display); font-weight: 500; font-size: 20px; line-height: 1.2; letter-spacing: 0.02em; color: var(--tn-navy-900); }
-.teller { display: grid; place-items: center; min-width: 36px; height: 32px; padding: 0 8px; font-family: var(--tn-font-mono); font-weight: 500; font-size: 18px; line-height: 1; background: var(--tn-ink-100); color: var(--tn-ink-900); }
+.teller { display: grid; place-items: center; min-width: 36px; height: 32px; padding: 0 8px; font-family: var(--tn-font-mono); font-weight: 500; font-size: 18px; line-height: 1; background: var(--tn-ink-100); color: var(--tn-ink-900); border-radius: var(--tn-radius-pill); }
 .baandKilde { margin-left: auto; font-size: 12.5px; line-height: 1.45; color: var(--tn-ink-500); }
 .baand.trenger .baandHode { border-color: var(--tn-status-red); }
 .baand.trenger .teller { background: var(--tn-status-red-text); color: var(--tn-white); }
@@ -78,7 +80,8 @@
   background: var(--tn-white);
   border: 1px solid var(--tn-ink-200);
   border-left: 6px solid var(--tn-ink-400);
-  border-radius: var(--tn-radius-sm);
+  border-radius: var(--tn-radius-md);
+  box-shadow: var(--tn-shadow-sm);
   color: inherit;
   text-decoration: none;
 }
@@ -86,7 +89,7 @@
 .sprad.folger { border-left-color: var(--tn-status-green); color: inherit; }
 .sprad.folgmed { border-left-color: var(--tn-status-amber); color: inherit; }
 .sprad:focus-visible { outline: 3px solid var(--tn-navy-400); outline-offset: 2px; }
-.avatar { display: grid; place-items: center; width: 40px; height: 40px; flex: none; background: var(--tn-navy-100); color: var(--tn-navy-900); font-family: var(--tn-font-mono); font-size: 13px; }
+.avatar { display: grid; place-items: center; width: 40px; height: 40px; flex: none; border-radius: var(--tn-radius-round); background: var(--tn-navy-100); color: var(--tn-navy-900); font-family: var(--tn-font-mono); font-size: 13px; }
 .hvem { display: grid; gap: 4px; }
 .hvem b { font-size: 15.5px; line-height: 1.25; color: var(--tn-ink-900); overflow-wrap: anywhere; }
 .fakta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; font-size: 13.5px; color: var(--tn-ink-700); }
@@ -99,26 +102,26 @@
 
 /* Plan-stolpe: gjennomført mot planlagt, fylt i aksefargen som trenes mest (eller navy) */
 .planstolpe { display: grid; gap: 4px; }
-.spor { position: relative; height: 10px; background: var(--tn-ink-100); }
+.spor { position: relative; height: 10px; background: var(--tn-ink-100); border-radius: var(--tn-radius-pill); overflow: hidden; }
 .spor span { position: absolute; inset: 0 auto 0 0; background: var(--tn-navy-900); }
 .stolpeTekst { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 2px 8px; font-size: 12.5px; color: var(--tn-ink-700); }
 .stolpeTekst b { font-family: var(--tn-font-mono); font-weight: 500; font-size: 12.5px; line-height: 1.2; color: var(--tn-ink-900); }
 
-/* Kategori A–K: navy fylt, kantete. En kategori, ikke en akse. */
-.kat { display: inline-flex; align-items: center; justify-content: center; height: 22px; min-width: 24px; padding: 0 6px; background: var(--tn-navy-900); color: var(--tn-white); font-weight: 700; font-size: 12px; line-height: 1; border-radius: var(--tn-radius-sm); }
+/* Kategori A–K: navy fylt. En kategori, ikke en akse. */
+.kat { display: inline-flex; align-items: center; justify-content: center; height: 22px; min-width: 24px; padding: 0 6px; background: var(--tn-navy-900); color: var(--tn-white); font-weight: 700; font-size: 12px; line-height: 1; border-radius: var(--tn-radius-xs); }
 
 /* Bildekort: bilde øverst, tekst i eget felt under. Aldri tekst oppå bildet. */
-.bildekort { display: grid; border: 1px solid var(--tn-ink-200); border-radius: var(--tn-radius-sm); background: var(--tn-white); overflow: hidden; color: inherit; text-decoration: none; align-content: start; }
+.bildekort { display: grid; border-radius: var(--tn-radius-xl); box-shadow: var(--tn-shadow-md); background: var(--tn-white); overflow: hidden; color: inherit; text-decoration: none; align-content: start; }
 .bildekort img { display: block; width: 100%; height: 150px; object-fit: cover; }
 .bkTekst { display: grid; gap: 12px; padding: 16px 18px 18px; align-content: start; }
-.bildekort.navy { background: var(--tn-navy-900); border-color: var(--tn-navy-900); color: var(--tn-white); }
+.bildekort.navy { background: var(--tn-navy-900); color: var(--tn-white); }
 .bildekort.navy .bkKilde { color: var(--tn-rail-text); }
 .bkKilde { font-size: 12.5px; line-height: 1.45; color: var(--tn-ink-500); }
 a.bildekort:focus-visible { outline: 3px solid var(--tn-navy-400); outline-offset: 2px; }
 
 /* Én primærknapp, resten i en meny («Ny» / «Mer») */
 .flere { position: relative; display: inline-block; }
-.flereListe { position: absolute; z-index: 5; top: calc(100% + 4px); left: 0; min-width: 220px; display: grid; background: var(--tn-white); border: 1px solid var(--tn-navy-900); border-radius: var(--tn-radius-sm); }
+.flereListe { position: absolute; z-index: 5; top: calc(100% + 4px); left: 0; min-width: 220px; display: grid; background: var(--tn-white); border: 1px solid var(--tn-ink-200); border-radius: var(--tn-radius-md); box-shadow: var(--tn-shadow-lg); overflow: hidden; }
 .flereListe[hidden] { display: none; }
 
 @media (min-width: 900px) {
@@ -137,5 +140,5 @@ a.bildekort:focus-visible { outline: 3px solid var(--tn-navy-400); outline-offse
 .soyle { display: grid; gap: 6px; text-align: center; min-width: 0; }
 .soyle b { font-family: var(--tn-font-mono); font-weight: 500; font-size: 16px; line-height: 1; color: var(--tn-ink-900); }
 .soyle > span { font-weight: 700; font-size: 12px; line-height: 1.2; letter-spacing: 0.04em; color: var(--tn-ink-700); }
-.soyleFelt { height: 140px; display: flex; align-items: flex-end; background: var(--tn-ink-50); border-bottom: 2px solid var(--tn-ink-300); }
+.soyleFelt { height: 140px; display: flex; align-items: flex-end; background: var(--tn-ink-50); border-bottom: 2px solid var(--tn-ink-300); border-radius: var(--tn-radius-md) var(--tn-radius-md) 0 0; overflow: hidden; }
 .soyleFelt i { display: block; width: 100%; }

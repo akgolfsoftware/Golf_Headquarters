@@ -7,9 +7,13 @@
    visuell fasit. Verdiene her er hentet fra prosjektets tokens, aldri fra
    hukommelse.
 
-   Kjernen i språket: Jost/Lato, hjørner 0 · 2 · 4, ingen skygger, ingen
-   sirkler, kvadratisk avatar, navy skinne. Rød er #D70232 — målt fra
+   Kjernen i språket (retning «Skrå», Anders 19.10.2026, beslutninger.md
+   §TEAM NORWAY-APPEN FÅR RETNING «SKRÅ»): Jost/Lato, myke kort med radius
+   og lagdelte navy-skygger, runde avatarer og pilleknapper, navy skinne.
+   Store flater (toppen av en skjerm, seksjonsskiller) kuttes 4° nedover mot
+   høyre med rød kant; aldri kort eller knapper. Rød er #D70232 — målt fra
    logofilen, identitet og frist, ALDRI statusfarge.
+   Fasit for utseendet: docs/design-system/utkast-tn/nye-veier.html, retning 1.
 
    Train-lock (--tl-*) og disse tokenene er to parallelle, ikke-konkurrerende
    systemer — en skjerm bruker ALLTID bare ett sett. Analyse/DataGolf under
@@ -150,29 +154,35 @@
   --tn-link-hover: var(--tn-navy-900);
   --tn-focus-ring: 0 0 0 3px rgba(10, 81, 153, 0.28);
 
-  /* ── Geometri — 0, 2 eller 4. Ingenting annet.
-         Ordmerket er geometrisk og tett; myke hjørner over 4 px gjør flatene
-         runde på en måte merket ikke er. Sirkler og piller finnes ikke i
-         systemet — derfor er også avataren kvadratisk. ── */
-  --tn-radius-xs: 0;
-  --tn-radius-sm: 2px;
-  --tn-radius-md: 2px;
-  --tn-radius-lg: 4px;
-  --tn-radius-xl: 4px;
+  /* ── Geometri (retning «Skrå», 19.10.2026). Kort 18, statflater 14,
+         indre bokser 10, kontroller 6, merker 2. Pille og rund for
+         knapper, piller og avatarer. ── */
+  --tn-radius-xs: 2px;
+  --tn-radius-sm: 6px;
+  --tn-radius-md: 10px;
+  --tn-radius-lg: 14px;
+  --tn-radius-xl: 18px;
+  --tn-radius-pill: 999px;
+  --tn-radius-round: 50%;
 
-  /* ── Skygger finnes ikke. Flater skilles med én hårstrek, ikke med dybde.
-         Navnene står igjen så kallsteder ikke må skrives om; verdien er
-         `none`, og den som trenger avgrensning setter en 1 px kant. ── */
-  --tn-shadow-sm: none;
-  --tn-shadow-md: none;
-  --tn-shadow-lg: none;
-  --tn-shadow-dark: none;
+  /* ── Skygger: tre lagdelte nivåer i navy (#012B5D), fra utkastet.
+         sm = hårfin løft (rad, kontroll), md = kort som ligger over
+         skråkanten, lg = kort ved hover og ark. --tn-shadow-dark er for
+         flater som ligger på bilde eller navy. ── */
+  --tn-shadow-sm: 0 1px 2px rgba(1, 43, 93, 0.06), 0 1px 1px rgba(1, 43, 93, 0.04);
+  --tn-shadow-md: 0 1px 2px rgba(1, 43, 93, 0.06), 0 8px 24px -8px rgba(1, 43, 93, 0.14), 0 24px 48px -24px rgba(1, 43, 93, 0.18);
+  --tn-shadow-lg: 0 1px 2px rgba(1, 43, 93, 0.06), 0 14px 32px -10px rgba(1, 43, 93, 0.22), 0 30px 60px -28px rgba(1, 43, 93, 0.24);
+  --tn-shadow-dark: 0 24px 60px rgba(1, 43, 93, 0.32);
 
-  /* Diagonalen var Claws ene bevegelse. Det nye systemet har ingen mønstre
-     eller motiver utenom flaggstreken, så den er slått av. Ingen kallsteder
-     i src/ bruker den (kontrollert 22.09.2026). */
-  --tn-clip-diagonal-b: none;
-  --tn-clip-diagonal-t: none;
+  /* ── Skråkuttet: 4° nedover mot høyre. tan(4°) ≈ 0,07, så fallet er 7 %
+         av bredden. Bruk bare på store flater, og bare inne i en beholder
+         med `container-type: inline-size` (cqw måler den). Den røde kanten
+         er 8 px rød bunn bak bildet. ── */
+  --tn-skra-vinkel: 4deg;
+  --tn-skra-fall: 7cqw;
+  --tn-skra-kant: 8px;
+  --tn-clip-diagonal-b: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - var(--tn-skra-fall)));
+  --tn-clip-diagonal-t: polygon(0 0, 100% var(--tn-skra-fall), 100% 100%, 0 100%);
 
   /* ── Bevegelse — alt trykkbart under 300ms. Aldri ease-in på grensesnitt. ── */
   --tn-duration-press: 120ms;

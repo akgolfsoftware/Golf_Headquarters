@@ -12,7 +12,9 @@ import s from "./tn-stall.module.css";
  * Helteflate med ett hovedtall, bånd med teller, spillerrad med plan-stolpe,
  * statusmarkør med ord og bildekort. Status har alltid ord ved fargen.
  * Avvik:
- *   - Bildene er next/image fra public/team-norway/bilder, ikke <img>.
+ *   - Bildene er next/image fra public/team-norway/bilder, ikke <img>. De kommer fra
+ *     Claude Design «Team Norway Golf Design System» (3416f258, assets/images), aldri
+ *     fra PlayerHQ eller stockbilder (Anders 19.10.2026).
  *   - Svar-stolpen (ja / venter / kan ikke) er ikke med: svar på samlinger har ingen datamodell.
  */
 
@@ -130,7 +132,7 @@ export function TnKategori({ children }: { children: ReactNode }) {
 }
 
 /**
- * Spillerrad: kvadratisk avatar, navn og fakta, verdi til høyre, plan-stolpe og
+ * Spillerrad: rund avatar, navn og fakta, verdi til høyre, plan-stolpe og
  * grunnen i klartekst. Statusen er venstre kant pluss ord (grunnen eller markør).
  */
 export function TnSpillerrad({ href, status, initialer, navn, fakta, verdi, verdiTekst, lav, stolpe, grunn }: {
