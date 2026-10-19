@@ -1,30 +1,22 @@
-// PH25Personvern — Precision Athletics. Data og handlinger er beholdt. Ikke målt i appen.
-import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+// PH25Personvern — Precision Athletics (PH-25, meg.html). Data og server-handlinger er beholdt.
 /**
  * /portal/meg/innstillinger/personvern — Samtykker.
- * Fasit: designsystem/train-lock/PH-18 Meg samtykke.dc.html
- * Avvik:
+ * Historisk Train-lock-tegning (ikke fasit): designsystem/train-lock/PH-18 Meg samtykke.dc.html
  * - D-55: kortet «Del testresultatene med WANG og Team Norway» for WANG-elever vises over frivillig deling.
- * Én setning per bryter, av/på, ingen mørke mønstre. Eksport/sletting nederst.
+ * Én setning per bryter, av/på, ingen mørke mønstre. Eksport og sletting til høyre (nederst på mobil).
  */
-
-import Link from "next/link";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { TL } from "@/lib/v2/train-lock";
-
-import { Kort, StatusPill, Icon } from "@/components/v2";
-import { InnstillingerHode } from "@/components/portal/v2/InnstillingerHode";
 import { hentSamtykkeStatus } from "@/lib/health/samtykke";
-import { maaHaForesattSamtykke } from "@/lib/health/samtykke-regler";
-import { HelseSamtykkeKort } from "@/components/portal/v2/HelseSamtykkeKort";
-import { DelingSamtykkeKort } from "@/components/portal/v2/DelingSamtykkeKort";
+import { HELSE_SAMTYKKE_TEKST, maaHaForesattSamtykke } from "@/lib/health/samtykke-regler";
+import { DELING_SAMTYKKE_TEKST } from "@/lib/deling/samtykke-regler";
 import {
   grupperMedEksterneLesereForSpiller,
   hentDelingsStatus,
 } from "@/lib/deling/samtykke";
-import { PersonvernActions } from "./personvern-actions";
 import { hentWangTestdeling } from "@/lib/portal-tester/wang-resultat-tilgang";
 import { WangTestforesporsel } from "@/components/portal/precision/WangTestforesporsel";
+import { PH25Personvern } from "@/components/portal/precision/PH25Personvern";
 
 export const dynamic = "force-dynamic";
 
@@ -46,157 +38,50 @@ export default async function PersonvernPage() {
 
   return (
     <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>
-      <div className="pa-side">
-    <div
-      data-paper-slug="playerhq-innstillinger"
-      data-paper-portal-innstillinger-personvern
-      style={{
-        maxWidth: 720,
-        margin: "0 auto",
-        display: "flex",
-        flexDirection: "column",
-        gap: 16,
-      }}
-    >
-      <InnstillingerHode
-        tittel="Samtykker"
-        undertekst="Meg"
-        tilbakeHref="/portal/meg/innstillinger"
-        action={<StatusPill tone="info">GDPR</StatusPill>}
-      />
-      {/* PH-18: trygghetssetningen — aldri mørke mønstre. */}
-      <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: 0, lineHeight: 1.45, maxWidth: "42ch" }}>
-        Du kan endre frivillig deling her, når som helst. Ingenting deles uten at du eller foresatt godkjenner det.
-      </p>
-
-      <HelseSamtykkeKort
+      <PH25Personvern
         data={{
-          wearable: samtykke.wearable,
-          manuell: samtykke.manuell,
-          coachInnsyn: samtykke.coachInnsyn,
-          coachDetalj: samtykke.coachDetalj,
-          // Nyeste av de to innsamlings-samtykkene — det er det kvitteringen
-          // gjelder («samtykke gitt <dato>»).
-          sistGittAt:
-            [samtykke.wearableGittAt, samtykke.manuellGittAt]
-              .filter((d): d is Date => d !== null)
-              .sort((a, b) => b.getTime() - a.getTime())[0]
-              ?.toISOString() ?? null,
-          krevesForesatt,
+          helse: {
+            wearable: samtykke.wearable,
+            manuell: samtykke.manuell,
+            coachInnsyn: samtykke.coachInnsyn,
+            coachDetalj: samtykke.coachDetalj,
+            // Nyeste av de to innsamlings-samtykkene — det er det kvitteringen
+            // gjelder («samtykke gitt <dato>»).
+            sistGittAt:
+              [samtykke.wearableGittAt, samtykke.manuellGittAt]
+                .filter((d): d is Date => d !== null)
+                .sort((a, b) => b.getTime() - a.getTime())[0]
+                ?.toISOString() ?? null,
+            krevesForesatt,
+          },
+          grupper: delingGrupper.map((g) => ({
+            gruppeId: g.id,
+            gruppeNavn: g.name,
+            testResultater: delingKart.get(g.id)?.testResultater ?? false,
+            stats: delingKart.get(g.id)?.stats ?? false,
+          })),
+          delingKrevesForesatt: user.requiresGuardianConsent,
+          tekst: {
+            helse: HELSE_SAMTYKKE_TEKST,
+            deling: {
+              TEST_RESULTATER: DELING_SAMTYKKE_TEKST.TEST_RESULTATER,
+              STATS: DELING_SAMTYKKE_TEKST.STATS,
+            },
+          },
         }}
+        ekstra={
+          wangTestdeling.length + wangPlandeling.length > 0 ? (
+            <>
+              {wangTestdeling.map((d) => (
+                <WangTestforesporsel key={d.gruppeId} {...d} modus={{ type: "spiller" }} />
+              ))}
+              {wangPlandeling.map((d) => (
+                <WangTestforesporsel key={`plan-${d.gruppeId}`} {...d} modus={{ type: "spiller" }} omfang="TRENINGSPLAN" />
+              ))}
+            </>
+          ) : undefined
+        }
       />
-
-      {wangTestdeling.map((d) => (
-        <WangTestforesporsel key={d.gruppeId} {...d} modus={{ type: "spiller" }} />
-      ))}
-      {wangPlandeling.map((d) => (
-        <WangTestforesporsel key={`plan-${d.gruppeId}`} {...d} modus={{ type: "spiller" }} omfang="TRENINGSPLAN" />
-      ))}
-
-      <DelingSamtykkeKort
-        grupper={delingGrupper.map((g) => ({
-          gruppeId: g.id,
-          gruppeNavn: g.name,
-          testResultater: delingKart.get(g.id)?.testResultater ?? false,
-          stats: delingKart.get(g.id)?.stats ?? false,
-        }))}
-        krevesForesatt={user.requiresGuardianConsent}
-        modus={{ type: "spiller" }}
-      />
-
-      <Kort>
-        <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
-          <span
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: 12,
-              background: TL.dim,
-              border: `1px solid ${TL.hair}`,
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flex: "none",
-            }}
-          >
-            <Icon name="download" size={16} style={{ color: TL.mute }} />
-          </span>
-          <div style={{ minWidth: 0, flex: 1 }}>
-            <div style={{ fontFamily: TL.font.sans, fontSize: 16, fontWeight: 700, color: TL.text, letterSpacing: "-0.02em" }}>
-              Last ned dine data
-            </div>
-            <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: "6px 0 0", lineHeight: 1.5 }}>
-              Få en fil med profil, runder, økter, mål, betalinger, varsler og meldinger.
-            </p>
-            <PersonvernActions kind="export" />
-          </div>
-        </div>
-      </Kort>
-
-      <Kort>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-          <Icon name="shield" size={14} style={{ color: TL.mute }} />
-          <span style={{ fontFamily: TL.font.sans, fontSize: 14, fontWeight: 700, color: TL.text }}>
-            Hvordan vi behandler dataene dine
-          </span>
-        </div>
-        <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 10 }}>
-          {[
-            { t: "Lagring", d: "Alle data lagres kryptert i EU (Supabase)." },
-            { t: "Betaling", d: "Kortdata håndteres kun av Stripe. Vi lagrer aldri kortnummer." },
-            { t: "E-post", d: "Kun nødvendige e-poster (booking, plan, varsler) — ikke reklame uten samtykke." },
-          ].map((r) => (
-            <li key={r.t} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
-              <Icon name="lock" size={13} style={{ color: TL.mute, marginTop: 2, flex: "none" }} />
-              <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.5 }}>
-                <strong style={{ color: TL.text, fontWeight: 600 }}>{r.t}:</strong> {r.d}
-              </span>
-            </li>
-          ))}
-        </ul>
-        <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, margin: "14px 0 0", lineHeight: 1.5 }}>
-          Mer i{" "}
-          <Link href="/personvern" style={{ color: TL.fill, fontWeight: 600, textDecoration: "none" }}>
-            personvernerklæringen
-          </Link>
-          . Spørsmål?{" "}
-          <a href="mailto:post@akgolf.no" style={{ color: TL.fill, fontWeight: 600, textDecoration: "none" }}>
-            post@akgolf.no
-          </a>
-        </p>
-      </Kort>
-
-      <Kort style={{ borderColor: `color-mix(in srgb, ${TL.danger} 28%, ${TL.hair})` }}>
-        <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
-          <span
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: 12,
-              background: `color-mix(in srgb, ${TL.danger} 12%, ${TL.elev})`,
-              border: `1px solid color-mix(in srgb, ${TL.danger} 30%, transparent)`,
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flex: "none",
-            }}
-          >
-            <Icon name="trash-2" size={16} style={{ color: TL.danger }} />
-          </span>
-          <div style={{ minWidth: 0, flex: 1 }}>
-            <div style={{ fontFamily: TL.font.sans, fontSize: 16, fontWeight: 700, color: TL.text, letterSpacing: "-0.02em" }}>
-              Slett kontoen din
-            </div>
-            <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: "6px 0 0", lineHeight: 1.5 }}>
-              Forespørselen vurderes av coach/admin. Ved godkjenning anonymiseres navn, e-post, telefon og bilde.
-              Avidentifisert treningshistorikk beholdes.
-            </p>
-            <PersonvernActions kind="delete" />
-          </div>
-        </div>
-      </Kort>
-    </div>
-    </div>
     </PlayerHQSkall>
   );
 }
