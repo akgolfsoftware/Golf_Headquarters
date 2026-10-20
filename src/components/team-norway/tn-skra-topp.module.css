@@ -18,7 +18,7 @@
 }
 .kant { background: var(--tn-red-600); }
 .foto { bottom: var(--tn-skra-kant); overflow: hidden; background: var(--tn-navy-900); }
-.foto img { object-fit: cover; object-position: 60% 45%; }
+.foto img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 60% 45%; }
 .foto::after {
   content: "";
   position: absolute;
