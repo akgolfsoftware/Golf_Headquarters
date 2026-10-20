@@ -779,6 +779,112 @@
   .wang-app .wg-neste:hover { translate: none; }
 }
 
+/* Designløft 20.10.2026 — elevens sider: elevprofil og turneringer (canvas rad 8–9). */
+.wang-app .wg-elevtopp { display: grid; gap: 14px; padding: 6px 16px 20px; background: var(--wg-grad); color: #ffffff; }
+.wang-app .wg-elevtopp-tilbake { justify-self: start; min-height: 44px; display: inline-flex; align-items: center; color: #ffffff; font: 700 13px/1 var(--font-wang-brand, Montserrat, sans-serif); text-decoration: none; }
+.wang-app .wg-elevtopp-tilbake:hover { color: #ffffff; text-decoration: underline; }
+.wang-app .wg-elevtopp-tilbake:focus-visible, .wang-app .wg-elevtopp .wg-btn:focus-visible { outline: 3px solid #ffffff; outline-offset: 2px; }
+.wang-app .wg-elevtopp-rad { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 18px 40px; }
+.wang-app .wg-elevtopp-hvem { display: flex; align-items: center; gap: 16px; min-width: 0; }
+.wang-app .wg-elevtopp-avatar { width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: #ffffff; color: var(--wg-navy); font: 700 17px/1 var(--font-wang-brand, Montserrat, sans-serif); }
+.wang-app .wg-elevtopp-navn { display: grid; gap: 6px; min-width: 0; }
+.wang-app .wg-elevtopp-navn h1 { margin: 0; font: 800 30px/1.05 var(--font-wang-brand, Montserrat, sans-serif); letter-spacing: -0.03em; color: #ffffff; overflow-wrap: anywhere; }
+.wang-app .wg-elevtopp-over { font: 700 11px/1 var(--font-wang-brand, Montserrat, sans-serif); letter-spacing: 0.08em; text-transform: uppercase; color: #dcebee; }
+.wang-app .wg-elevtopp-under { font-size: 15px; line-height: 1.3; color: #e6f0f2; }
+.wang-app .wg-elevtopp-tall { margin: 0; width: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 16px; }
+.wang-app .wg-elevtopp-tall > div { display: flex; flex-direction: column-reverse; gap: 4px; justify-content: flex-end; }
+.wang-app .wg-elevtopp-tall dd { margin: 0; font: 300 34px/1 var(--font-wang-brand, Montserrat, sans-serif); letter-spacing: -0.03em; white-space: nowrap; }
+.wang-app .wg-elevtopp-tall dt { font-size: 15px; line-height: 1.3; color: #e6f0f2; }
+.wang-app .wg-elevtopp-knapper { display: flex; flex-wrap: wrap; gap: 10px; }
+.wang-app .wg-btn-kant-lys { background-color: transparent; color: #ffffff; border-color: #ffffff; }
+.wang-app .wg-btn-kant-lys:hover { background-color: rgba(255, 255, 255, 0.12); color: #ffffff; text-decoration: none; }
+.wang-app .wg-les-mer { justify-self: start; min-height: 44px; display: inline-flex; align-items: center; color: var(--wg-rosa-tekst); font-weight: 700; font-size: 15px; text-decoration: none; }
+.wang-app .wg-les-mer:hover { text-decoration: underline; color: var(--wg-vinrod-mork); }
+.wang-app .wg-profil-grid { display: grid; gap: 28px; }
+.wang-app .wg-profil-kol { display: grid; gap: 28px; align-content: start; min-width: 0; }
+.wang-app .wg-profil-aar { display: grid; gap: 6px; }
+.wang-app .wg-profil-etikett { font: 700 11px/1.3 var(--font-wang-brand, Montserrat, sans-serif); letter-spacing: 0.08em; text-transform: uppercase; color: var(--wg-tekst-2); }
+.wang-app .wg-profil-res { grid-template-columns: minmax(0, 1fr) 56px; }
+.wang-app .wg-profil-res .wg-kilde { grid-column: 1; }
+.wang-app .wg-profil-plass { grid-row: span 2; text-align: right; font: 300 28px/1 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-tekst); }
+.wang-app .wg-profil-levert { padding: 4px 6px; background: var(--wg-tint-mint); font: 700 11px/1 var(--font-wang-brand, Montserrat, sans-serif); letter-spacing: 0.04em; color: var(--wg-tekst); white-space: nowrap; }
+.wang-app .wg-profil-runder { padding: 14px 16px; display: grid; gap: 14px; }
+.wang-app .wg-profil-smaa { margin: 0; display: flex; flex-wrap: wrap; gap: 14px 28px; }
+.wang-app .wg-profil-smaa > div { display: flex; flex-direction: column-reverse; gap: 4px; }
+.wang-app .wg-profil-smaa dd { margin: 0; font: 300 32px/1 var(--font-wang-brand, Montserrat, sans-serif); letter-spacing: -0.02em; }
+.wang-app .wg-profil-smaa dt { font-size: 13px; color: var(--wg-tekst-2); }
+.wang-app .wg-sg { display: grid; gap: 2px; }
+.wang-app .wg-sg-tittel { margin: 0 0 6px; font: 700 11px/1.3 var(--font-wang-brand, Montserrat, sans-serif); letter-spacing: 0.08em; text-transform: uppercase; color: var(--wg-tekst-2); }
+.wang-app .wg-sg-rad { display: grid; grid-template-columns: 76px minmax(0, 1fr) 96px; gap: 10px; align-items: center; min-height: 40px; }
+.wang-app .wg-sg-rad b { font: 700 13px/1.2 var(--font-wang-brand, Montserrat, sans-serif); }
+.wang-app .wg-sg-spor { position: relative; height: 20px; display: block; }
+.wang-app .wg-sg-null { position: absolute; left: 50%; top: -4px; bottom: -4px; width: 1px; background: #8a93a0; }
+.wang-app .wg-sg-pluss, .wang-app .wg-sg-minus { position: absolute; top: 2px; height: 16px; display: block; animation: wg-sg-vokse 620ms var(--wg-ut) both; }
+.wang-app .wg-sg-pluss { left: 50%; background: var(--wg-navy); transform-origin: 0 50%; }
+.wang-app .wg-sg-minus { right: 50%; background: var(--wg-rosa-tekst); transform-origin: 100% 50%; }
+.wang-app .wg-sg-verdi { text-align: right; white-space: nowrap; font: 700 13px/1.2 var(--font-wang-brand, Montserrat, sans-serif); }
+.wang-app .wg-sg-verdi small { font: 400 13px/1.2 var(--font-wang-body, "Quattrocento", serif); color: var(--wg-tekst-2); }
+.wang-app .wg-sg-akse { min-height: 20px; }
+.wang-app .wg-sg-akse-tall { display: flex; justify-content: space-between; font-size: 13px; color: var(--wg-tekst-2); }
+.wang-app .wg-sg-akse-tall span:first-child { transform: translateX(-50%); }
+.wang-app .wg-sg-akse-tall span:last-child { transform: translateX(50%); }
+@keyframes wg-sg-vokse { from { transform: scaleX(0); } }
+.wang-app .wg-profil-tabell { width: 100%; border-collapse: collapse; font-size: 13px; }
+.wang-app .wg-profil-tabell thead th { padding: 10px 6px; font: 700 11px/1 var(--font-wang-brand, Montserrat, sans-serif); letter-spacing: 0.08em; text-transform: uppercase; color: var(--wg-tekst-2); text-align: right; }
+.wang-app .wg-profil-tabell thead th:first-child, .wang-app .wg-profil-tabell tbody th { text-align: left; padding-left: 12px; }
+.wang-app .wg-profil-tabell tbody tr { border-top: 1px solid var(--wg-n100); }
+.wang-app .wg-profil-tabell tbody th { padding: 10px 6px 10px 12px; font: 700 13px/1.25 var(--font-wang-brand, Montserrat, sans-serif); }
+.wang-app .wg-profil-tabell tbody th small { display: block; font: 400 13px/1.3 var(--font-wang-body, "Quattrocento", serif); color: var(--wg-tekst-2); }
+.wang-app .wg-profil-tabell td { padding: 10px 6px; text-align: right; font: 700 13px/1 var(--font-wang-brand, Montserrat, sans-serif); white-space: nowrap; }
+.wang-app .wg-profil-tabell td:last-child { padding-right: 12px; }
+.wang-app .wg-turn-grid { display: grid; gap: 24px; }
+.wang-app .wg-turn-graf, .wang-app .wg-turn-liste { display: grid; gap: 14px; align-content: start; min-width: 0; }
+.wang-app .wg-turn-valg { display: flex; flex-wrap: wrap; gap: 8px; }
+.wang-app .wg-turn-valg-knapp { min-height: 44px; padding: 0 16px; display: inline-flex; align-items: center; border: 1px solid #c9ced6; background: #ffffff; color: var(--wg-tekst); font: 700 13px/1 var(--font-wang-brand, Montserrat, sans-serif); text-transform: uppercase; letter-spacing: 0.04em; text-decoration: none; }
+.wang-app .wg-turn-valg-knapp:hover { background: var(--wg-tint-graa); text-decoration: none; color: var(--wg-tekst); }
+.wang-app .wg-turn-valg-knapp[aria-current="page"] { border: 2px solid var(--wg-vinrod); background: var(--wg-tint-rosa); color: var(--wg-vinrod); }
+.wang-app .wg-turn-rad { display: grid; grid-template-columns: 52px minmax(0, 1fr) 60px; gap: 12px; align-items: center; min-height: 64px; padding: 8px 14px; }
+.wang-app .wg-turn-rad + .wg-turn-rad { border-top: 1px solid var(--wg-n100); }
+.wang-app .wg-turn-dato { height: 48px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--wg-tint-graa); }
+.wang-app .wg-turn-dato b { font: 300 22px/1 var(--font-wang-brand, Montserrat, sans-serif); }
+.wang-app .wg-turn-dato span { font: 700 11px/1.2 var(--font-wang-brand, Montserrat, sans-serif); letter-spacing: 0.08em; text-transform: uppercase; color: var(--wg-tekst-2); }
+.wang-app .wg-turn-hva { display: grid; gap: 4px; min-width: 0; }
+.wang-app .wg-turn-hva b { font: 700 15px/1.25 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-tekst); }
+.wang-app .wg-turn-plass { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+.wang-app .wg-turn-plass strong { font: 300 26px/1 var(--font-wang-brand, Montserrat, sans-serif); white-space: nowrap; }
+.wang-app .wg-turn-plass span { font-size: 13px; color: var(--wg-tekst-2); }
+.wang-app .wg-tilpar { padding: 16px 18px; display: grid; gap: 10px; min-width: 0; }
+.wang-app .wg-tilpar-plott { display: grid; gap: 6px; padding-left: 36px; }
+.wang-app .wg-tilpar-flate { position: relative; height: 150px; margin-top: 18px; }
+.wang-app .wg-tilpar-linje, .wang-app .wg-tilpar-null { position: absolute; left: 0; right: 0; height: 0; border-top: 1px solid var(--wg-n100); }
+.wang-app .wg-tilpar-null { border-top-color: #8a93a0; }
+.wang-app .wg-tilpar-linje em, .wang-app .wg-tilpar-null em { position: absolute; right: calc(100% + 6px); top: -8px; font: 400 12px/1 var(--font-wang-body, "Quattrocento", serif); font-style: normal; color: var(--wg-tekst-2); white-space: nowrap; }
+.wang-app .wg-tilpar-soyler { position: absolute; inset: 0; display: flex; gap: 6px; }
+.wang-app .wg-tilpar-kol { position: relative; flex: 1 1 0; min-width: 0; }
+.wang-app .wg-tilpar-kol > i { position: absolute; left: 50%; width: min(28px, 70%); transform: translateX(-50%); display: block; transform-origin: 50% 100%; animation: wg-tilpar-vokse 520ms var(--wg-ut) both; }
+.wang-app .wg-tilpar-soyle { background: var(--wg-navy); }
+.wang-app .wg-tilpar-siste { background: var(--wg-vinrod); }
+.wang-app .wg-tilpar-tall { position: absolute; left: 0; right: 0; transform: translateY(calc(-100% - 4px)); text-align: center; font: 700 12px/1 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-tekst); }
+.wang-app .wg-tilpar-datoer { display: flex; gap: 6px; }
+.wang-app .wg-tilpar-datoer span { flex: 1 1 0; min-width: 0; text-align: center; font-size: 12px; color: var(--wg-tekst-2); overflow-wrap: normal; white-space: nowrap; overflow: hidden; text-overflow: clip; }
+@keyframes wg-tilpar-vokse { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .wang-app .wg-tilpar-kol > i { animation: none; } }
+.wang-app .wg-tilpar-tegn { display: flex; align-items: center; gap: 6px; }
+.wang-app .wg-tilpar-tegn i { width: 12px; height: 12px; background: var(--wg-vinrod); display: block; flex-shrink: 0; }
+@media (prefers-reduced-motion: reduce) { .wang-app .wg-sg-pluss, .wang-app .wg-sg-minus { animation: none; } }
+@media (min-width: 900px) {
+  .wang-app .wg-elevtopp { padding: 10px 32px 24px; }
+  .wang-app .wg-elevtopp-avatar { width: 64px; height: 64px; font-size: 20px; }
+  .wang-app .wg-elevtopp-navn h1 { font-size: 40px; }
+  .wang-app .wg-elevtopp-tall { width: auto; margin-left: auto; display: flex; gap: 32px; }
+  .wang-app .wg-elevtopp-tall dd { font-size: 44px; }
+}
+@media (min-width: 1100px) {
+  .wang-app .wg-profil-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .wang-app .wg-turn-grid { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); align-items: start; }
+  .wang-app .wg-turn-graf { order: 2; position: sticky; top: calc(var(--ak-topbar-h, 0px) + 16px); }
+}
+
 /* Designløft 20.10.2026 — I dag: toppfelt med tre store tall, ukestripe og Krever handling gruppert etter frist. */
 .wang-app .wg-helt2 { display: grid; background: var(--wg-grad); color: #ffffff; overflow: hidden; }
 .wang-app .wg-helt2-tekst { display: grid; gap: 10px; padding: 18px 16px 18px; align-content: start; }
