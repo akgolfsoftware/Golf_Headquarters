@@ -570,12 +570,12 @@ Anders 14.10, etter utkast 1 av pakke 6 Stats i dybden (`docs/design-system/utka
    Lagrede 8-ball-resultater med gammel skala beholdes og merkes med regelversjon.
 2. **PEI-testene** (`pei-*` i `src/lib/portal-tester/tn-catalog.ts`) bruker allerede carry og side; kontroller at
    alle viser avstand fra hullet og PEI rett etter hvert slag.
-3. **Ordet «Godkjent»** i stedet for «Treff» / «Ja» i gate-testene (`tn-catalog.ts`, `choice("ok", …)`) og
-   skjermtekst. Ferdig når ingen gate-test viser «treff» som resultatord.
-4. **Nærspill Gate og VISA Express føres også som godkjent eller bom** (Anders 14.10: «Ja»), ikke med poeng for hånd.
+3. ~~**Ordet «Godkjent»** i stedet for «Treff» / «Ja» i gate-testene (`tn-catalog.ts`, `choice("ok", …)`) og
+   skjermtekst. Ferdig når ingen gate-test viser «treff» som resultatord.~~ Overstyrt 20.10: gate-testene føres med poeng.
+4. ~~**Nærspill Gate og VISA Express føres også som godkjent eller bom** (Anders 14.10: «Ja»), ikke med poeng for hånd.
    Overstyrer «poeng føres for hånd per slag og appen summerer» (§Åpne punkter etter runde 19–26) og runde 29 i
    skjermlista PH-15. `tn-catalog.ts` får `kind: "gate"` med `choice("ok", …)` for begge. Ferdig når
-   `tn-scoring.test.ts` låser «X / 9 godkjent» for begge.
+   `tn-scoring.test.ts` låser «X / 9 godkjent» for begge.~~ Overstyrt 20.10: gate-testene føres med poeng.
 
 ## LIVE-ØKTENE ER ALLTID LYSE, INGEN MØRK MODUS (Anders 14.10.2026, bindende)
 
