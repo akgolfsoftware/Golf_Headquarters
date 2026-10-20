@@ -8,7 +8,8 @@
   background: var(--tn-surface-page);
   color: var(--tn-text-primary);
   font-family: var(--tn-font-body);
-  font-variant-numeric: tabular-nums;
+  /* Ikke tabular-nums her: i Schibsted Grotesk gir det komma og punktum fast bredde i
+     løpende tekst («deg , hvem»). Tall som skal stå i kolonner bruker IBM Plex Mono. */
   -webkit-font-smoothing: antialiased;
 }
 .skall * { min-width: 0; }
