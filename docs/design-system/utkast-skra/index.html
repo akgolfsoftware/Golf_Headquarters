@@ -123,7 +123,8 @@ button { font: inherit; color: inherit; }
 .stat span { display: block; margin-top: 6px; font: 500 11px/1.3 var(--mono); letter-spacing: .07em; text-transform: uppercase; color: rgba(255,255,255,.72); }
 
 /* Kortene over kanten */
-.flyt { display: grid; gap: 16px; padding: 0 16px 112px; margin-top: -64px; position: relative; z-index: 2; }
+.kolonne { display: grid; gap: 20px; align-content: start; min-width: 0; }
+.flyt { display: grid; gap: 20px; padding: 0 16px 112px; margin-top: -64px; position: relative; z-index: 2; }
 .kort { background: var(--kort); border-radius: var(--r-kort); box-shadow: var(--skygge-md); padding: 18px; display: grid; gap: 14px; min-width: 0; }
 .kort-topp { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 .kort h2 { margin: 0; font: 600 17px/1.25 var(--sans); letter-spacing: -.01em; }
@@ -276,6 +277,42 @@ button { font: inherit; color: inherit; }
 .oppgave span { font-size: 12.5px; color: var(--g600); }
 .oppgave input:checked + div b { text-decoration: line-through; color: var(--g500); }
 
+
+/* ---------- Bevegelse ----------
+   Alt starter synlig og ender i ro; ingen løkker. Fjernes ved «reduser bevegelse». */
+@keyframes inn-opp { from { transform: translateY(14px); opacity: .35; } to { transform: none; opacity: 1; } }
+@keyframes bilde-ro { from { transform: scale(1.08); } to { transform: scale(1); } }
+@keyframes kant-tegn { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes merke-pop { 0% { transform: scale(.4); } 70% { transform: scale(1.15); } 100% { transform: scale(1); } }
+@keyframes skjerm-inn { from { opacity: .25; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.skjerm:not([hidden]) { animation: skjerm-inn 320ms var(--ut) both; }
+.topp::before { animation: bilde-ro 1.6s var(--ut) both; }
+.topp-innhold > div:first-child { animation: inn-opp 600ms var(--ut) backwards 60ms; }
+.stat { animation: inn-opp 560ms var(--ut) backwards; }
+.stat:nth-child(1) { animation-delay: 140ms; } .stat:nth-child(2) { animation-delay: 200ms; }
+.stat:nth-child(3) { animation-delay: 260ms; } .stat:nth-child(4) { animation-delay: 320ms; }
+.kant::before { transform-origin: left; animation: kant-tegn 700ms var(--ut) both 220ms; }
+.flyt .kort { animation: inn-opp 620ms var(--ut) backwards; }
+.kolonne:first-child .kort:nth-child(1) { animation-delay: 260ms; }
+.kolonne:first-child .kort:nth-child(2) { animation-delay: 360ms; }
+.kolonne:last-child .kort:nth-child(1) { animation-delay: 320ms; }
+.kolonne:last-child .kort:nth-child(2) { animation-delay: 420ms; }
+.ikonknapp .tall { animation: merke-pop 420ms var(--ut) both 700ms; }
+.kort { transition: transform var(--t-base) var(--ut), box-shadow var(--t-base) var(--ut); }
+@media (hover: hover) {
+  .kort:hover { transform: translateY(-2px); box-shadow: var(--skygge-lg); }
+  .okt:hover { transform: translateY(-1px); }
+}
+.sak, .spiller, .oppgave, .maal-rad { transition: background var(--t-base) var(--ut), transform var(--t-trykk) var(--ut); }
+.sak:active, .spiller:active, .oppgave:active { transform: scale(.985); }
+.oppgave b { transition: color var(--t-base) var(--ut); background: linear-gradient(currentColor, currentColor) left 55% / 0 1px no-repeat; }
+.oppgave input:checked + div b { text-decoration: none; background-size: 100% 1px; transition: color var(--t-base) var(--ut), background-size 300ms var(--ut); }
+.ovelser li { animation: inn-opp 420ms var(--ut) backwards; }
+.ovelser li:nth-child(2) { animation-delay: 50ms; } .ovelser li:nth-child(3) { animation-delay: 100ms; }
+.ovelser li:nth-child(4) { animation-delay: 150ms; } .ovelser li:nth-child(5) { animation-delay: 200ms; }
+.kal-okt { transition: transform var(--t-trykk) var(--ut), filter var(--t-base); }
+.kal-okt:hover { filter: brightness(1.08); }
+
 /* ---------- PC (container fra 900 px) ---------- */
 @container (min-width: 900px) {
   .skjerm { --kutt: 4cqw; }
@@ -284,7 +321,8 @@ button { font: inherit; color: inherit; }
   .statrad { margin-top: 0; }
   .stat strong { font-size: 34px; }
   .flyt { padding: 0 40px 48px; margin-top: -88px; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); align-items: start; }
-  .flyt > .kolonne { display: grid; gap: 16px; min-width: 0; }
+  .flyt { column-gap: 24px; }
+  .kolonne { gap: 24px; }
   .kort { padding: 22px; }
   .fanemeny { display: none; }
   .toppmeny { display: flex; gap: 4px; padding: 4px; border-radius: var(--r-pille); background: rgba(255,255,255,.1); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
@@ -601,6 +639,30 @@ button { font: inherit; color: inherit; }
     h.querySelectorAll('.hurtigmeny button').forEach(function (m) {
       m.addEventListener('click', function () { h.dataset.apen = 'false'; knapp.setAttribute('aria-expanded', 'false'); });
     });
+  });
+
+  // Tallene i toppen teller opp fra null (hopper rett til målet ved «reduser bevegelse»)
+  var rolig = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function tell(el) {
+    var tekst = el.firstChild && el.firstChild.nodeType === 3 ? el.firstChild : null;
+    if (!tekst) return;
+    var mal = tekst.nodeValue, m = mal.match(/^(−?)(\d+)(?:([:,])(\d+))?$/);
+    if (!m || rolig) return;
+    var fortegn = m[1], a = +m[2], sep = m[3], b = m[4] ? +m[4] : 0, des = m[4] ? m[4].length : 0;
+    var start = performance.now(), varighet = 900;
+    (function steg(t) {
+      var k = Math.min(1, (t - start) / varighet), e = 1 - Math.pow(1 - k, 3);
+      var helt = sep === ':' ? Math.round((a * 60 + b) * e) : null;
+      if (sep === ':') tekst.nodeValue = fortegn + Math.floor(helt / 60) + ':' + String(helt % 60).padStart(2, '0');
+      else if (sep === ',') { var v = (a + b / Math.pow(10, des)) * e; tekst.nodeValue = fortegn + v.toFixed(des).replace('.', ','); }
+      else tekst.nodeValue = fortegn + Math.round(a * e);
+      if (k < 1) requestAnimationFrame(steg); else tekst.nodeValue = mal;
+    })(start);
+  }
+  function tellSkjerm(id) { document.querySelectorAll('#' + id + ' .stat strong, #' + id + ' .uke-hoved strong').forEach(tell); }
+  tellSkjerm('skjerm-idag');
+  document.querySelectorAll('button[data-skjerm]').forEach(function (b) {
+    b.addEventListener('click', function () { tellSkjerm('skjerm-' + b.dataset.skjerm); });
   });
 
   var okter = {
