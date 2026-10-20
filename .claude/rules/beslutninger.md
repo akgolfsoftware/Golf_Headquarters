@@ -14,9 +14,10 @@ Anders 20.10, med Team Norways testbeskrivelse og scorekort-arket som vedlegg: �
   - **Fysisk:** benkpress · markløft trapbar · lengdehopp · rotasjonskast · Club Speed. Fysisk test hver sjette uke i grunnperioden (uendret fra 28.09).
 - **Fem prioriterte tester** med minsteantall: Driver Basic (1) · Inspill Basic (2) · Wedge Variation (2) · 8-balls variation (2) · Putt 1–3 m (4). Skjermene viser fremdrift som «1 av 2».
 - **Fasit for protokoll, slag og poeng:** «Team Norway Golf – Tester» (`beskrivelse-av-tester-2026.pdf`) og scorekort-arket `team-norway-treningsprotokoll-og-tester-for-spillerv3`, arkene Scorekort GolfslagTester, Scorekort TeknikTester og Referens. Filene ligger hos Anders (Desktop/Team Norway) og må legges i repoet før koden endres.
-- Uendret: PEI med carry og side, gate-testene som Godkjent/Bom (§PEI-TESTER FØRES MED CARRY OG SIDE, 14.10), en test teller bare med alle slag, Egenført/Kontrollert, nivå A–K.
+- **Gate-testene føres med poeng som i PDF-en** (Anders 20.10, i PlayerHQ-økta): «1 poeng gjennom porten, 4 poeng gjennom porten og i sonen.» Gjelder Nærspill Gate, Wedge Gate og VISA Express (maks 36 hver). Driver Gate og Putt Gate har bare OK per slag i PDF-en og vises som «X / 6 OK» og «X / 10 OK» til Anders har bekreftet det.
+- Uendret: PEI med carry og side (§PEI-TESTER FØRES MED CARRY OG SIDE, 14.10), en test teller bare med alle slag, Egenført/Kontrollert, nivå A–K.
 
-**Overstyrer:** «alle NGF-testene fra 6-årsløpet» i §ÉN IUP OG ETT TESTBATTERI (28.09) for golfdelen. Fysisk-delen derfra står.
+**Overstyrer:** «alle NGF-testene fra 6-årsløpet» i §ÉN IUP OG ETT TESTBATTERI (28.09) for golfdelen (fysisk-delen derfra står), og «Godkjent» eller «Bom» for gate-testene i §PEI-TESTER FØRES MED CARRY OG SIDE (14.10) med punkt 3 og 4 i den blokken.
 
 **Arbeidet dette utløser:**
 
@@ -25,7 +26,9 @@ Anders 20.10, med Team Norways testbeskrivelse og scorekort-arket som vedlegg: �
 3. **Katalogen i koden:** `src/lib/portal-tester/tn-catalog.ts` har i dag flere tester enn batteriet (bl.a. PEI-variantene, 8-ball blocked, Standard sving) og egne varianter per lengde og kjønn (Driver basic 220/270 m, Innspill Basis gutter/jenter). Batteriet vises som de 19 testene; varianter blir oppsett inne i én test, og tester utenfor batteriet flyttes ut av batterivisningen uten at lagrede resultater slettes. Ferdig når testoversikten på alle flater leser én felles liste, låst med test som sjekker antall og rekkefølge.
 4. **Prioriterte tester med minsteantall** i datamodellen eller som konstant i koden, og fremdrift «X av N» per spiller. Ferdig når en test låser at Inspill Basic tatt én gang gir «1 av 2».
 5. **Fysisk-delen:** de fem fysiske testene finnes i `src/lib/domain/fys-score.ts` og `src/lib/portal-fysisk/`. De kobles inn som tredje del i samme testoversikt. Ferdig når testoversikten viser Fysisk med siste resultat per test.
-6. **Uavklart:** avvikene designøktene fant mellom PDF-en/arket og beslutningene (Team Norway-økta: seks, i den oransje lappen på canvaset https://claude.ai/artifact/5uuJLVhHxsmMpV44Eakid2; AgencyOS-økta: tre, i rapporten sin). Legges fram for Anders samlet, og hvert svar føres inn her før katalogen endres.
+6. **Gate-poeng i koden:** `tn-catalog.ts` fører i dag gate-testene som `choice("ok", …)`. Nærspill Gate, Wedge Gate og VISA Express får poeng 0/1/4 per slag og sum maks 36. Ferdig når `tn-scoring.test.ts` låser 1 poeng gjennom porten, 4 i sonen og maks 36.
+7. **Uavklart:** Driver Gate og Putt Gate som «X / 6 OK» og «X / 10 OK» (bare OK per slag i PDF-en). Avstandene i Wedge Gate: teksten sier 30/40/50 m, scorekortet 40/50/60 m. Spørres Anders om.
+8. **Uavklart:** avvikene designøktene fant mellom PDF-en/arket og beslutningene (Team Norway-økta: seks, i den oransje lappen på canvaset https://claude.ai/artifact/5uuJLVhHxsmMpV44Eakid2; AgencyOS-økta: tre, i rapporten sin). Legges fram for Anders samlet, og hvert svar føres inn her før katalogen endres.
 
 ## TEAM NORWAY-APPEN BEHOLDER NAVY SIDEMENY OG BYTTER TIL SCHIBSTED GROTESK (Anders 20.10.2026, bindende)
 
@@ -553,7 +556,7 @@ Anders 14.10, etter utkast 1 av pakke 6 Stats i dybden (`docs/design-system/utka
 - **8-ball-poeng:** i hull på ett slag 5 · innenfor 1 m 3 · innenfor 2 m 2 · innenfor 3 m 1 · lenger unna 0.
 - **Alle PEI-tester føres med carry og side.** Appen regner selv ut avstand fra hullet og feilprosenten
   (PEI = avstand fra hullet / slaglengde). Eksempel: riktig lengde, 5 m til høyre, gir 5 m fra hullet.
-- **Tester med treff eller ikke føres som «Godkjent» eller «Bom»**, og resultatet heter «X / 9 godkjent».
+- ~~**Tester med treff eller ikke føres som «Godkjent» eller «Bom»**, og resultatet heter «X / 9 godkjent».~~ Overstyrt 20.10: gate-testene føres med poeng (§TESTBATTERIET ER TEAM NORWAYS 14 TESTER PLUSS FYSISK).
 
 **Overstyrer:** 8-ball-skalaen (under 0,1 m = 4 · 0,1–0,99 = 3 · 1–1,99 = 2 · 2–2,99 = 1 · 3 m+ = 0) i
 §Åpne punkter etter runde 19–26, og «Treff eller Bom» / «X / 9 treff» for Wedge Gate (skjermlista PH-15 og
