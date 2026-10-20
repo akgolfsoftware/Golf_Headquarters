@@ -827,3 +827,8 @@
   .wang-app .wg-ukedag { padding: 8px 6px; }
   .wang-app .wg-ukedag-tall { display: none; }
 }
+
+/* Designløft 20.10.2026 — Meldinger: sending er sperret ved lansering og står grå med «Kommer» (Anders 20.10). */
+.wang-app .wg-btn.wg-btn-kommer,
+.wang-app .wg-btn.wg-btn-kommer:hover { flex-direction: column; gap: 3px; background-color: #d2d2d2; border-color: #d2d2d2; color: var(--wg-tekst-2); cursor: not-allowed; }
+.wang-app .wg-btn-kommer small { font: 700 11px/1 var(--font-wang-brand, Montserrat, sans-serif); text-transform: none; letter-spacing: 0; }
