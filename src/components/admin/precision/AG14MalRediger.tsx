@@ -16,17 +16,18 @@
  */
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Check, Clock, Copy, Plus, Trash2 } from "lucide-react";
-import { AkseMerke, Knapp, KnappLenke, Meta, StatusPille } from "@/components/precision/pa";
-import { SideHode } from "@/components/precision/pa-a4";
+import { Check, Clock, Copy, Plus, Trash2 } from "lucide-react";
+import { AkseMerke, Knapp as PaKnapp, Meta } from "@/components/precision/pa";
 import { IkonKnapp, Sokefelt } from "@/components/precision/pa-a2";
-import { Ark, Avkrysning, Dialog, Etikett, Felt, Inndata, Liste, Listerad, Nedtrekk, Seksjon, Tekstboks, Varsel } from "@/components/precision/pa-planhub";
+import { Ark, Avkrysning, Dialog, Etikett, Felt, Inndata, Liste, Listerad, Nedtrekk, Tekstboks, Varsel as PaVarsel } from "@/components/precision/pa-planhub";
+import { Knapp, Pille, Seksjon, Topp } from "@/components/admin/agencyos-ny/ny";
 import type { LPhase, NgfKategori, PyramidArea, SessionEnvironment, SkillArea } from "@/generated/prisma/enums";
 import { addTemplateSession, copyTemplateWeek, deleteTemplateSession, setWeekDuration, updateTemplate, updateTemplateSession, type SessionInput, type TemplateUpdateInput } from "@/app/admin/(legacy)/plan-templates/actions";
 import { DAG_LABEL, ENV_LABEL, SKILL_LABEL, type DisciplinFordeling, type DrillEntry } from "@/components/admin/plan-templates/shared";
 import { beregnTemplateVolum } from "@/lib/plan-templates/beregn-volum";
 import { formaterTall } from "@/lib/format-tall";
 import { FordelingGlidere, MalMetadata, PYR_ALLE, UkeRutenett, akseAv, fordelingSum, type MalMetadataVerdier } from "./AG14MalFelles";
+import "@/styles/agencyos-ny-mer.css";
 
 export type RedigerDrillValg = { id: string; name: string; pyramidArea: PyramidArea; skillArea: SkillArea | null };
 
@@ -164,68 +165,65 @@ export function AG14MalRediger({ template, drillOptions }: { template: RedigerMa
 
   const planlagte = varighetUker * meta.ukentligOktAntall;
 
-  return <div className="pa-side">
-    <div><KnappLenke href={`/admin/plan-templates/${template.id}`} variant="ghost" icon={ArrowLeft} iconName="arrow-left">Mal-detalj</KnappLenke></div>
-    <SideHode kicker="Planmal · rediger" title={template.name}
-      sub="Innstillingene lagres med «Lagre innstillinger». En økt lagres når du lagrer den i økt-arket." />
-    <div className="a10-knapperad">
-      <StatusPille tone={isPending ? "warn" : "neutral"}>{isPending ? "Lagrer …" : `${drillOptions.length} øvelser i banken`}</StatusPille>
-    </div>
+  return <div className="agn-s">
+    <Topp tilbake={{ href: `/admin/plan-templates/${template.id}`, tekst: "Mal-detalj" }} dato="Planmal · rediger" tittel={template.name}
+      ingress="Innstillingene lagres med «Lagre innstillinger». En økt lagres når du lagrer den i økt-arket."
+      handlinger={<Pille tone={isPending ? "vent" : "noy"}>{isPending ? "Lagrer …" : `${drillOptions.length} øvelser i banken`}</Pille>} />
 
-    <div className="a10-to">
-      <Seksjon tittel="Økter uke for uke" meta={`${sessions.length} AV ${planlagte} PLANLAGTE`}>
+    <div className="to-del bred-v">
+      <Seksjon tittel="Økter uke for uke" kilde={`${sessions.length} av ${planlagte} planlagte`}>
         <UkeRutenett
           varighetUker={varighetUker}
           okter={sessions.map((s) => ({ ...s, drillAntall: s.drills.length }))}
           deaktivert={isPending}
           onVelg={(id) => { const s = sessions.find((x) => x.id === id); if (s) setModal({ kind: "edit", session: s }); }}
           onNy={(uke, dag) => setModal({ kind: "create", ukeNr: uke, dagNr: dag })}
-          ukeMeta={(uke) => { const min = volum.minPerUke[uke - 1] ?? 0; return min > 0 ? <Meta>{formaterTall(min / 60, 1, true)} T</Meta> : null; }}
-          ukeHandlinger={(uke) => <span className="a10-knapperad" style={{ gap: 4 }}>
+          ukeMeta={(uke) => { const min = volum.minPerUke[uke - 1] ?? 0; return min > 0 ? <span className="kilde mono">{formaterTall(min / 60, 1, true)} t</span> : null; }}
+          ukeHandlinger={(uke) => <>
             <IkonKnapp icon={Clock} name="clock" aria-label={`Sett varighet for hele uke ${uke}`} title="Sett varighet for hele uka" disabled={isPending} onClick={() => aapneUkeDialog({ kind: "varighet", ukeNr: uke })} />
             <IkonKnapp icon={Copy} name="copy" aria-label={`Kopier uke ${uke} til …`} title="Kopier uka til …" disabled={isPending} onClick={() => aapneUkeDialog({ kind: "kopier", fraUke: uke, konflikt: null })} />
-          </span>}
+          </>}
         />
       </Seksjon>
 
-      <div className="a10-stabel">
+      <div style={{ display: "grid", gap: "var(--r5)", alignContent: "start", minWidth: 0 }}>
         <Seksjon tittel="Innstillinger">
           <MalMetadata v={meta} onEndre={(p) => setMeta((x) => ({ ...x, ...p }))} />
           <div className="a10-stabel a10-stabel--tett">
-            <div className="a10-seksjon__hode"><span className="kicker">Fordeling</span><StatusPille tone={sum === 100 ? "ok" : "warn"}>{sum} %</StatusPille></div>
+            <div className="sek-topp"><b>Fordeling</b><Pille tone={sum === 100 ? "ok" : "vent"}>{sum} %</Pille></div>
             <FordelingGlidere fordeling={fordeling} onEndre={setFordeling} />
           </div>
-          <div className="pa-card pa-card--sunken a10-seksjon" style={{ gap: 8 }}>
-            <div className="a10-seksjon__hode"><span className="kicker">Volum</span><Meta>{volum.timerLabel}</Meta></div>
+          <div className="kort dempet" style={{ gap: 8 }}>
+            <div className="sek-topp"><b>Volum</b><span className="kilde mono">{volum.timerLabel}</span></div>
             {sessions.length > 0 && <div className="a10-aksenokler">{PYR_ALLE.map((p) => <span key={p} className="a10-aksenokkel"><AkseMerke axis={akseAv(p)} size="sm" /><Meta>{volum.realisertProsent[p]} %</Meta></span>)}</div>}
-            {sum !== 100 && <Meta>FORDELINGEN SUMMERER TIL {sum} % · MÅ VÆRE 100 %</Meta>}
-            {volum.storsteAvvik && volum.storsteAvvik.diffPp > AVVIK_TERSKEL_PP && <Meta>
-              ØKTENE GIR {volum.storsteAvvik.omrade} {volum.realisertProsent[volum.storsteAvvik.omrade]} % · GLIDEREN SIER {Math.round(fordeling[volum.storsteAvvik.omrade] * 100)} %
-            </Meta>}
+            {sum !== 100 && <p className="kilde">Fordelingen summerer til {sum} %. Den må være 100 %.</p>}
+            {volum.storsteAvvik && volum.storsteAvvik.diffPp > AVVIK_TERSKEL_PP && <p className="kilde">
+              Øktene gir {volum.storsteAvvik.omrade} {volum.realisertProsent[volum.storsteAvvik.omrade]} % · glideren sier {Math.round(fordeling[volum.storsteAvvik.omrade] * 100)} %
+            </p>}
           </div>
           <Avkrysning checked={approved} onChange={setApproved} label="Godkjent (tilgjengelig for AI)" />
         </Seksjon>
 
         <Seksjon tittel={`Øvelsesbank (${drillOptions.length})`}>
           <div className="a10-knapperad"><Sokefelt value={drillSok} onChange={setDrillSok} placeholder="Søk øvelse" label="Søk øvelse" /></div>
-          <Meta>OPPSLAG. ØVELSER LEGGES TIL I ØKT-ARKET</Meta>
+          <p className="kilde">Oppslag. Øvelser legges til i økt-arket.</p>
           {filtrerteDrills.length === 0
-            ? <Meta>{drillOptions.length === 0 ? "INGEN ØVELSER I BANKEN" : "INGEN ØVELSER MATCHER SØKET"}</Meta>
+            ? <p className="kilde">{drillOptions.length === 0 ? "Ingen øvelser i banken" : "Ingen øvelser matcher søket"}</p>
             : <Liste label="Øvelsesbank">
               {filtrerteDrills.slice(0, 50).map((d) => <Listerad key={d.id} mal="auto minmax(0,1fr)" min={40}>
                 <AkseMerke axis={akseAv(d.pyramidArea)} size="sm" /><Etikett a={d.name} />
               </Listerad>)}
             </Liste>}
-          {filtrerteDrills.length > 50 && <Meta>+{filtrerteDrills.length - 50} FLERE · AVGRENS SØKET</Meta>}
+          {filtrerteDrills.length > 50 && <p className="kilde">+{filtrerteDrills.length - 50} flere · avgrens søket</p>}
         </Seksjon>
       </div>
     </div>
 
-    <div className="a10-lagrelinje">
-      {lagreMelding && <span role={lagreMelding.type === "feil" ? "alert" : "status"} className="a10-ev__tekst" style={{ color: "var(--text-primary)", fontWeight: 600 }}>
+    <div className="mal-lagre">
+      {lagreMelding && <span role={lagreMelding.type === "feil" ? "alert" : "status"}>
         {lagreMelding.type === "feil" ? "Ikke lagret · " : ""}{lagreMelding.tekst}
       </span>}
-      <Knapp icon={Check} iconName="check" onClick={onSaveSettings} loading={isPending}>Lagre innstillinger</Knapp>
+      <Knapp variant="pri" onClick={onSaveSettings} disabled={isPending}>{isPending ? "Lagrer …" : "Lagre innstillinger"}</Knapp>
     </div>
 
     {modal.kind !== "closed" && <OktArk
@@ -250,11 +248,11 @@ export function AG14MalRediger({ template, drillOptions }: { template: RedigerMa
     {ukeDialog.kind === "kopier" && <KopierDialog fraUke={ukeDialog.fraUke} maxUke={varighetUker} konflikt={ukeDialog.konflikt} isPending={isPending} feil={dialogFeil} onClose={lukkUkeDialog} onKopier={(til, over) => kopierUke(ukeDialog.fraUke, til, over)} />}
     <Dialog open={ukeDialog.kind === "slett-okt"} onClose={lukkUkeDialog} tittel="Slette denne økta?"
       footer={<>
-        <Knapp variant="signal" icon={Trash2} iconName="trash-2" onClick={() => ukeDialog.kind === "slett-okt" && slettBekreftet(ukeDialog.sessionId)} loading={isPending} loadingText="Sletter …">Slett økt</Knapp>
-        <Knapp variant="ghost" onClick={lukkUkeDialog} disabled={isPending}>Avbryt</Knapp>
+        <PaKnapp variant="signal" icon={Trash2} iconName="trash-2" onClick={() => ukeDialog.kind === "slett-okt" && slettBekreftet(ukeDialog.sessionId)} loading={isPending} loadingText="Sletter …">Slett økt</PaKnapp>
+        <PaKnapp variant="ghost" onClick={lukkUkeDialog} disabled={isPending}>Avbryt</PaKnapp>
       </>}>
       <p className="a10-ev__tekst" style={{ margin: 0 }}>Økta fjernes fra malen. Dette kan ikke angres.</p>
-      {dialogFeil && <Varsel tone="warn">{dialogFeil}</Varsel>}
+      {dialogFeil && <PaVarsel tone="warn">{dialogFeil}</PaVarsel>}
     </Dialog>
   </div>;
 }
@@ -266,13 +264,13 @@ function VarighetDialog({ ukeNr, isPending, feil, onClose, onLagre }: { ukeNr: n
   const parsed = parseInt(minutter, 10);
   return <Dialog open onClose={onClose} tittel={`Sett varighet for hele uke ${ukeNr}`}
     footer={<>
-      <Knapp icon={Check} iconName="check" disabled={!Number.isFinite(parsed)} loading={isPending} onClick={() => onLagre(parsed)}>Lagre</Knapp>
-      <Knapp variant="ghost" onClick={onClose} disabled={isPending}>Avbryt</Knapp>
+      <PaKnapp icon={Check} iconName="check" disabled={!Number.isFinite(parsed)} loading={isPending} onClick={() => onLagre(parsed)}>Lagre</PaKnapp>
+      <PaKnapp variant="ghost" onClick={onClose} disabled={isPending}>Avbryt</PaKnapp>
     </>}>
     <Felt label="Ny varighet (minutter)" hint={`Gjelder alle økter i uke ${ukeNr}. Mellom 5 og 480 minutter.`}>
       <Inndata mono type="number" inputMode="numeric" placeholder="60" value={minutter} onChange={(e) => setMinutter(e.target.value)} />
     </Felt>
-    {feil && <Varsel tone="warn">{feil}</Varsel>}
+    {feil && <PaVarsel tone="warn">{feil}</PaVarsel>}
   </Dialog>;
 }
 
@@ -285,21 +283,21 @@ function KopierDialog({ fraUke, maxUke, konflikt, isPending, feil, onClose, onKo
   const parsed = parseInt(tilUke, 10);
   if (konflikt) return <Dialog open onClose={onClose} tittel={`Kopier uke ${fraUke}`}
     footer={<>
-      <Knapp variant="signal" icon={Copy} iconName="copy" loading={isPending} loadingText="Kopierer …" onClick={() => onKopier(konflikt.tilUke, true)}>Overskriv</Knapp>
-      <Knapp variant="ghost" onClick={onClose} disabled={isPending}>Avbryt</Knapp>
+      <PaKnapp variant="signal" icon={Copy} iconName="copy" loading={isPending} loadingText="Kopierer …" onClick={() => onKopier(konflikt.tilUke, true)}>Overskriv</PaKnapp>
+      <PaKnapp variant="ghost" onClick={onClose} disabled={isPending}>Avbryt</PaKnapp>
     </>}>
     <p className="a10-ev__tekst" style={{ margin: 0 }}>Uke {konflikt.tilUke} har {konflikt.antallIMaal} økter fra før. Erstatte dem?</p>
-    {feil && <Varsel tone="warn">{feil}</Varsel>}
+    {feil && <PaVarsel tone="warn">{feil}</PaVarsel>}
   </Dialog>;
   return <Dialog open onClose={onClose} tittel={`Kopier uke ${fraUke} til …`}
     footer={<>
-      <Knapp icon={Copy} iconName="copy" disabled={!Number.isFinite(parsed)} loading={isPending} loadingText="Kopierer …" onClick={() => onKopier(parsed, false)}>Kopier</Knapp>
-      <Knapp variant="ghost" onClick={onClose} disabled={isPending}>Avbryt</Knapp>
+      <PaKnapp icon={Copy} iconName="copy" disabled={!Number.isFinite(parsed)} loading={isPending} loadingText="Kopierer …" onClick={() => onKopier(parsed, false)}>Kopier</PaKnapp>
+      <PaKnapp variant="ghost" onClick={onClose} disabled={isPending}>Avbryt</PaKnapp>
     </>}>
     {valg.length > 0
       ? <Felt label="Kopier til uke"><Nedtrekk value={tilUke} onChange={(e) => setTilUke(e.target.value)} options={valg} /></Felt>
       : <p className="a10-ev__tekst" style={{ margin: 0 }}>Malen har ingen andre uker å kopiere til.</p>}
-    {feil && <Varsel tone="warn">{feil}</Varsel>}
+    {feil && <PaVarsel tone="warn">{feil}</PaVarsel>}
   </Dialog>;
 }
 
@@ -351,10 +349,10 @@ function OktArk({ state, drillOptions, maxUke, isPending, serverFeil, onClose, o
   const erEdit = state.kind === "edit";
   return <Ark open onClose={onClose} kicker={`Uke ${ukeNr} · ${DAG_LABEL[dagNr - 1] ?? "—"}`} tittel={erEdit ? "Rediger økt" : "Ny økt"}
     footer={<>
-      <Knapp fullWidth icon={Check} iconName="check" onClick={submit} loading={isPending}>{erEdit ? "Lagre endring" : "Opprett økt"}</Knapp>
-      <Knapp fullWidth variant="ghost" onClick={onClose} disabled={isPending}>Avbryt</Knapp>
+      <PaKnapp fullWidth icon={Check} iconName="check" onClick={submit} loading={isPending}>{erEdit ? "Lagre endring" : "Opprett økt"}</PaKnapp>
+      <PaKnapp fullWidth variant="ghost" onClick={onClose} disabled={isPending}>Avbryt</PaKnapp>
     </>}>
-    {(lokalFeil ?? serverFeil) && <Varsel tone="warn" tittel="Økta er ikke lagret">{lokalFeil ?? serverFeil}</Varsel>}
+    {(lokalFeil ?? serverFeil) && <PaVarsel tone="warn" tittel="Økta er ikke lagret">{lokalFeil ?? serverFeil}</PaVarsel>}
     <div className="a10-felt2">
       <Felt label="Uke"><Inndata mono type="number" min={1} max={maxUke} value={ukeNr} onChange={(e) => setUkeNr(parseInt(e.target.value || "0", 10))} /></Felt>
       <Felt label="Dag"><Nedtrekk value={String(dagNr)} onChange={(e) => setDagNr(parseInt(e.target.value, 10))} options={[1, 2, 3, 4, 5, 6, 7].map((d) => ({ value: String(d), label: DAG_LABEL[d - 1]! }))} /></Felt>
@@ -395,6 +393,6 @@ function OktArk({ state, drillOptions, maxUke, isPending, serverFeil, onClose, o
       </div>}
     </div>
 
-    {onDelete && <div><Knapp variant="ghost" icon={Trash2} iconName="trash-2" onClick={onDelete} disabled={isPending}>Slett økt</Knapp></div>}
+    {onDelete && <div><PaKnapp variant="ghost" icon={Trash2} iconName="trash-2" onClick={onDelete} disabled={isPending}>Slett økt</PaKnapp></div>}
   </Ark>;
 }
