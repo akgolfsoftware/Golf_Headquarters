@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "kildevalg-reload-korrigert-ag-native-13",
+  "export": {
+    "zip": "/Users/anderskristiansen/Downloads/AK Golf Precision Athletics (42).zip",
+    "root": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-kildevalg-reload",
+    "sha256": "3ed52c7a7a3baf1e5153995c92f65644071b1f51a872988fc964ee1d2794553b",
+    "files": 611,
+    "exportedAt": "2026-10-01T04:41:06.124414+00:00"
+  },
+  "syntax": {
+    "scripts": 310,
+    "inline": 67,
+    "inlineIncludedInScripts": true,
+    "syntax_errors": 0,
+    "errors": []
+  },
+  "model": {
+    "total": 99,
+    "pass": 94,
+    "fail": 4,
+    "skip": 1,
+    "error": 0,
+    "modelSha256": "49ae1930240bf0829a019a02535a72bfa613b5b39374703a682764a3548d22c1",
+    "runnerSha256": "9bede65a3fa635b3f706aa67a4fe79003266e7b1f8e18c5f0e6836465dfabc39",
+    "reusedFrom41": "IdentiskmodellSHA41–42; ikke nykjøring. Fireårsfeil/rammekontraktgjenstår."
+  },
+  "ownNative": {
+    "checks": 13,
+    "failures": 0,
+    "proofSha256": "540900607e4cf9c1d090cd59629ed00a532be8caee245e298abf8c05b26e9db2",
+    "newCoverage": "Nyvert rett etterTEK/taskvalg førantall/importwrite, A→P1/Btomt→P2fail/retryP2, synligtek-feil/tp-feil ogplanvalg; nativeimport/planbytte/resetfail fulldisk.",
+    "limits": [
+      "Antallwrites erikke målt; plansfør/etterradio sammenlignet.",
+      "P2-intent fra TOMTBvalg, ikke allerede valgtP1→P2. Manglendebyttknapp bestilt.",
+      "ReturnContextmetadata førimport, ikke faktiskskjermretur.",
+      "Skjermverdier vedresetfail leses fra modellen.",
+      "Vellykketreset/reload delvisassertert, ikke alleukeakser/min/rev; A/Bmarkørbaseline tasetterreset så urørtpåstandforsterkesikke.",
+      "Grunnoppsettmerketdirektefixtures; PH/flereperioderikkeprøvd."
+    ]
+  },
+  "correctionTo41": "Den gamle umiddelbarreloadlinjenetterantallwrite er fjernet somdekning; rawAG10bevart. Førsteoms krevetprøve6+exceptionpånulltek-rad var testfeil; metadatalestførpanelHent nå.",
+  "active": "Byttoppgavekildeknapp+ekteP1→P2failretry, så dedicatedPHreise. Deretterfireårsmodellfeil førgruppe, fullåravhengeråpentårsrammevalg. Hele øvrigscopegjenstår.",
+  "resources": "Egenfane1416028670/server24310lukket.",
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false
+}

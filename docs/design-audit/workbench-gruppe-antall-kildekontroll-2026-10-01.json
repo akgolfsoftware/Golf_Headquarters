@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "gruppekobling-bygget-konkrete-kilderester-bestilt",
+  "export": {
+    "archive": "AK Golf Precision Athletics (46).zip",
+    "sha256": "37d68c87fde140a4a4b69d7cd6115bdaa334db6dbf38b56bd807baa453075ef3",
+    "files": 613,
+    "exportedAt": "2026-10-01T05:20:24.155870+00:00",
+    "root": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-gruppe-antall"
+  },
+  "syntax": {
+    "scripts": 312,
+    "inline": 69,
+    "inlineIncludedInScripts": true,
+    "syntax_errors": 0,
+    "errors": []
+  },
+  "modelBaseline": {
+    "total": 99,
+    "pass": 98,
+    "fail": 0,
+    "skip": 1,
+    "error": 0,
+    "evidence": "Samme99 kjørt av kodekart-agent. Utvidet gruppeprøve pågår; ingen ny kontraktgodkjenning."
+  },
+  "sourceFindings": [
+    {
+      "file": "ui_kits/_shared/wb-model.js",
+      "line": 136,
+      "finding": "PH-medlemsguard finnes. Lokale gruppeantall concat med shared; samme countID kan skygge publisertrev og vise lokalhistorikk. Legacy/persistert rollebyttedata, ikke dokumentert ny PH-UI-oppretting. Rett til bare publisert tpsTek-gruppegren."
+    },
+    {
+      "file": "ui_kits/_shared/wb-model.js",
+      "line": 183,
+      "finding": "Ingen ekte kilder gir automatisk eksempelfallback. Fjern standardvalg, behold uttrykkelig merket eksempelvalg."
+    },
+    {
+      "file": "ui_kits/_shared/wb-model.js",
+      "line": 179,
+      "finding": "Ny antallliste fra publisert metadata; oppgaveliste adskilt. Direkte wrong-owner/namespace/writegrense undersøkes."
+    }
+  ],
+  "hashes": {
+    "ui_kits/_shared/wb-model.js": "f5deb65189ca4e2cc20bce753e405caae17622123d1ed18abc4dc85a8a81d887",
+    "ui_kits/_shared/WB3-tek.jsx": "92b22d0e75701f8e96d15defd9c1947ed77ade8c127163cd137449be8eff8469"
+  },
+  "nativeGroupJourney": false,
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false,
+  "extendedModel": {
+    "total": 109,
+    "pass": 103,
+    "fail": 5,
+    "skip": 1,
+    "error": 0,
+    "modelSha256": "f5deb65189ca4e2cc20bce753e405caae17622123d1ed18abc4dc85a8a81d887",
+    "runnerSha256": "448249f67cfdb3d9f4f8dcb7294cbe9f004e816aa43d9eb84b021746ed29e0fd",
+    "fixtureSha256": "3c471fbe40f48f12f87894582dbad74574aea585591255b5d094ab4c55b91949",
+    "proof": "egen46-gruppe-utvidet-modellkontroll.json",
+    "failures": [
+      "PH kan læse lokale gruppeutkast/historikk i samme modell uten reload.",
+      "Aktørnamespace avviker fra aktiv URLns, men gruppekilde leses/velges.",
+      "PH direkte gruppeplan-ID kan skrive gruppeantall før mål-eiervakt.",
+      "Uvalgt tom kilde får automatisk eksempel.",
+      "PH nytt lokalt lager kan lese publisertcount, men tekShared krever feilaktig lokal grupperekord."
+    ],
+    "repairs": "Alle fem konkrete rettinger bestilt; to siste namespace/skrivevakt-jobb pågår. Ingen ny eksportkontroll hevdet."
+  }
+}

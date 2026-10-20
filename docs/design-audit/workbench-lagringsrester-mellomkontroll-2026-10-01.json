@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "aktiv-lagringsrestjobb-mellomversjon-ikke-fryst",
+  "export": {
+    "zipName": "AK Golf Precision Athletics (21).zip",
+    "zipSha256": "61bf7165e9fdb934bbecd590dcd5e14a15cfbad2022516015b76607417574508",
+    "fileCount": 598,
+    "exportRoot": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-lagring-rester",
+    "exportedAt": "2026-10-01T00:00:23.390059+00:00",
+    "status": "aktiv-lagringsrestjobb-mellomversjon-ikke-fryst-ikke-godkjent"
+  },
+  "syntax": {
+    "scripts": 298,
+    "inline": 55,
+    "inlineIncludedInScripts": true,
+    "syntax_errors": 0,
+    "errors": []
+  },
+  "ownStorageUi": {
+    "checks": 24,
+    "failures": 1,
+    "origin": "http://127.0.0.1:8784",
+    "privateProofFile": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-lagring-rester/egen-lagringsrester-reise-24-1.txt",
+    "proofSha256": "cf71c8a1ffa60b720d62d77b4064cf6d9e816585ba5df30fc8b84c011eb77889",
+    "failure": "Global vakt: ulagret AG-TP-01 viser ikke forventet ConfirmDialog med Lagre og gå videre.",
+    "limitation": "Avgrenset eksportreise, ikke komplett Workbench eller appbevis."
+  },
+  "sourceDelta": {
+    "corrected": [
+      "Editorens pending-lagring kan avbrytes",
+      "Lokal ulagret-vakt og faktisk async formsave-handler",
+      "Publisert TP-planmetadata og tasksnapshot",
+      "Publisering validerer bundet publisert kilde-revisjon",
+      "PH-valg låser publicationId og rev",
+      "Foreldet publiseringsutvalg",
+      "Tilbaketrekking uten gammel-rev-fallback",
+      "Øktpublikasjonslesefeil med backup og avgrensning",
+      "Falsk regel egen årsplan=gruppeavvik fjernet"
+    ],
+    "remaining": [
+      "TPN mangler global nav-vakt ved eier-/planbytte",
+      "Utkastpersist krever lagre=1; skrivefeil sperrer retry og formsave kan allerede vise ok",
+      "Nullstill eget eksempel sletter alle eiere i samme namespace/rolle mot teksten",
+      "TP-lageret skjuler korrupt/lesefeil som tomt lager og kan overskrive gammel publikasjon",
+      "Plan/I dag/PH03/Live-kobling fortsatt uendret",
+      "Faktisk koblet gruppeavvik ikke implementert"
+    ],
+    "draftIsolation": "Separate lager per namespace+rolle; PH-planvelger deler ikke rå coachutkast.",
+    "publishedSessionApi": "WB.publishedSession(pubId,sid,ownerType,ownerId)"
+  },
+  "modelCheck": {
+    "counts": {
+      "PASS": 46,
+      "FAIL": 4,
+      "SKIPPED": 0,
+      "ERROR": 0
+    },
+    "attestation": {
+      "exportRoot": "/Users/anderskristiansen/My Drive/claude-cowork/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-lagring-rester",
+      "modelPath": "/Users/anderskristiansen/My Drive/claude-cowork/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-lagring-rester/ui_kits/_shared/wb-model.js",
+      "sha256": "3a57d7a713ed448da3ce4d3e2489be41874c15772ebbd5953c81a558c3af3afd",
+      "modelBytes": 86931,
+      "runnerSha256": "66c72a229ab386e053b73ab1b489d2b87c9a781464892d66bed1968b0122f5a2",
+      "suppliedBy": "eksportrot-fra-CLI",
+      "scope": "kun-ui_kits/_shared/wb-model.js",
+      "vmTimeoutMs": 500,
+      "browserGlobalAlias": "window === globalThis; window.location === location",
+      "roleChecks": "AgencyOS må være coach; PH-test må være spiller og avvise upublisert revisjon",
+      "vmStorage": "VM-native Map med localStorage-strengkontrakt; ingen disk eller vertsfunksjoner",
+      "vmURLSearchParams": "VM-native shim for strenginput/get; query-namespacet verifiseres i publikasjonstesten"
+    },
+    "privateResult": "egen21-modellkontroll.json",
+    "scope": "Opprinnelige40 består; ti nye avgrensede persist/reload/rev/withdraw/korrupt/request/gruppeprøver. VM-native syntetisk lager, ingen app/DB eller ekte nettleserlagring.",
+    "technicalPlanReadContract": "Faktisk techPlans/techPlan via publisert TPK-metadata/tasks. Etterfølgende privat navn/gyldighet endrer ikke PH-kopien; tidligere SKIP er avklart og testet.",
+    "failures": [
+      {
+        "id": "technical-corrupt-shared-storage-does-not-overwrite",
+        "status": "FAIL",
+        "error": "TP-publisering overskrev korrupt rådata eller endret tidligere publisering"
+      },
+      {
+        "id": "publication-request-key-cannot-reuse-another-plan-context",
+        "status": "FAIL",
+        "error": "Publiseringsbekreftelse for plan B returnerte gammel plan A"
+      },
+      {
+        "id": "draft-persist-retry-recovers-after-write-failure",
+        "status": "FAIL",
+        "error": "Retry persist ble permanent sperret av forrige skrivefeil"
+      },
+      {
+        "id": "technical-corrupt-shared-storage-read-not-empty-success",
+        "status": "FAIL",
+        "error": "PH-TP-lesing skjulte korrupt lager som tom vellykket liste"
+      }
+    ]
+  },
+  "cloudJob": "10-punktsjobben avbrutt før lang WB1-regresjon på grunn av kjente modellfeil/ufullført flyt. Filendringer bevart; konkret oppfølging aktiv.",
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false,
+  "nextFollowup": "claude-design-workbench-lagring-siste-rester-bestilling.txt sendt; 9 konkrete rester og testisolation etter50modelltilfeller.",
+  "cloudPartialObservation": {
+    "technicalTaskUi": {
+      "checks": 70,
+      "failures": 0,
+      "scope": "Siste synlige prøve etter to tidligere70/5 med gjenbrukte PH-fixtureplaner; ny testisolation skal bekreftes i kilden."
+    },
+    "longRegression": "stoppet-ingen-ny-full-bestått-kontroll",
+    "privateProof": "sky-lagringsrester-foer-langregresjon-stopp.txt"
+  }
+}

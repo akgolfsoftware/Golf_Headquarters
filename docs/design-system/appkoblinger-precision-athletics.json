@@ -1,0 +1,916 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "gitCommit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+  "status": "separate-kodeobservasjoner-ikke-frosset-navigasjonskontrakt",
+  "authenticatedJourneyTested": false,
+  "observations": [
+    {
+      "id": "app-nav-idag",
+      "relatedControlIds": [
+        "ph-nav-idag"
+      ],
+      "observedAppRoute": "/portal",
+      "observedCodeAction": "Lenke i PLAYERHQ_NAV: I dag",
+      "requiredContext": [],
+      "limitation": "Skjermens nye designversjon og alle tilstander er ikke appprøvd.",
+      "evidence": "kildeverifisert-ikke-innlogget-provd",
+      "selectedForNewDesign": false,
+      "sources": [
+        {
+          "file": "src/components/v2/shell.tsx",
+          "line": 84,
+          "sha256": "4272c33a5ae591e61d524fd5834f7990f0066ef120b2829980e9b4dc6197c634",
+          "gitCommit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "workingFileMatchesCommit": true,
+          "sourceLine": "{ id: \"hjem\", label: \"I dag\", icon: \"home\", href: \"/portal\" },"
+        }
+      ]
+    },
+    {
+      "id": "app-nav-plan",
+      "relatedControlIds": [
+        "ph-nav-plan"
+      ],
+      "observedAppRoute": "/portal/planlegge",
+      "observedCodeAction": "Lenke i PLAYERHQ_NAV: Plan",
+      "requiredContext": [],
+      "limitation": "Skjermens nye designversjon og alle tilstander er ikke appprøvd.",
+      "evidence": "kildeverifisert-ikke-innlogget-provd",
+      "selectedForNewDesign": false,
+      "sources": [
+        {
+          "file": "src/components/v2/shell.tsx",
+          "line": 85,
+          "sha256": "4272c33a5ae591e61d524fd5834f7990f0066ef120b2829980e9b4dc6197c634",
+          "gitCommit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "workingFileMatchesCommit": true,
+          "sourceLine": "{ id: \"plan\", label: \"Plan\", icon: \"calendar\", href: \"/portal/planlegge\" },"
+        }
+      ]
+    },
+    {
+      "id": "app-nav-stats",
+      "relatedControlIds": [
+        "ph-nav-stats"
+      ],
+      "observedAppRoute": "/portal/analysere",
+      "observedCodeAction": "Lenke i PLAYERHQ_NAV: Analyse",
+      "requiredContext": [],
+      "limitation": "Stats heter Analyse i nåværende kode; ruten er ikke bevis på valgt ny skjermversjon.",
+      "evidence": "kildeverifisert-ikke-innlogget-provd",
+      "selectedForNewDesign": false,
+      "sources": [
+        {
+          "file": "src/components/v2/shell.tsx",
+          "line": 86,
+          "sha256": "4272c33a5ae591e61d524fd5834f7990f0066ef120b2829980e9b4dc6197c634",
+          "gitCommit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "workingFileMatchesCommit": true,
+          "sourceLine": "{ id: \"analyse\", label: \"Analyse\", icon: \"bar-chart\", href: \"/portal/analysere\" },"
+        }
+      ]
+    },
+    {
+      "id": "app-nav-meg",
+      "relatedControlIds": [
+        "ph-nav-meg"
+      ],
+      "observedAppRoute": "/portal/meg",
+      "observedCodeAction": "Lenke i PLAYERHQ_NAV: Meg",
+      "requiredContext": [],
+      "limitation": "Skjermens nye designversjon og alle tilstander er ikke appprøvd.",
+      "evidence": "kildeverifisert-ikke-innlogget-provd",
+      "selectedForNewDesign": false,
+      "sources": [
+        {
+          "file": "src/components/v2/shell.tsx",
+          "line": 87,
+          "sha256": "4272c33a5ae591e61d524fd5834f7990f0066ef120b2829980e9b4dc6197c634",
+          "gitCommit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "workingFileMatchesCommit": true,
+          "sourceLine": "{ id: \"meg\", label: \"Meg\", icon: \"user\", href: \"/portal/meg\" },"
+        }
+      ]
+    },
+    {
+      "id": "app-live-inngang",
+      "relatedControlIds": [
+        "ph-01-okt-start",
+        "ph-01-okt-se"
+      ],
+      "observedAppRoute": "/portal/live/{sessionId}",
+      "observedCodeAction": "liveHrefForStatus / liveRouteForResolved",
+      "requiredContext": [
+        "sessionId",
+        "sessionKind",
+        "status",
+        "playerId"
+      ],
+      "limitation": "Tre øktmodeller: v2, plan og wb. Status avgjør brief/active/tapper/summary/Workbench. FYS-variant må kobles eksplisitt; ikke opprett en antatt /fysisk-rute.",
+      "evidence": "kildeverifisert-ikke-innlogget-provd",
+      "selectedForNewDesign": false,
+      "sources": [
+        {
+          "file": "src/lib/portal-live/live-route.ts",
+          "line": 41,
+          "sha256": "572736b3e89e2a2dd691fa4628738b96ceec9b258eb2dd9e31f62f26f3952977",
+          "gitCommit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "workingFileMatchesCommit": true,
+          "sourceLine": "export function liveHrefForStatus("
+        },
+        {
+          "file": "src/app/portal/(fullscreen)/live/[sessionId]/page.tsx",
+          "line": 1,
+          "sha256": "0a4362f89ca68f53dfd6ca82f2e1fca5ca8b4bc7b6ba25c3a11cc0e3f842443c",
+          "gitCommit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "workingFileMatchesCommit": true,
+          "sourceLine": "import { canAccessPlayer } from \"@/lib/auth/own-or-coached\";"
+        }
+      ]
+    },
+    {
+      "id": "app-live-start-v2",
+      "relatedControlIds": [
+        "ph-04-start"
+      ],
+      "observedAppRoute": "/portal/live/{sessionId}/active",
+      "observedCodeAction": "LiveBrief lenke; useLiveSession → startSession",
+      "requiredContext": [
+        "sessionId",
+        "sessionKind=v2"
+      ],
+      "limitation": "Start/fortsett/fullført/låst har ulike grener. Ny fysisk variant er ikke verifisert.",
+      "evidence": "kildeverifisert-ikke-innlogget-provd",
+      "selectedForNewDesign": false,
+      "sources": [
+        {
+          "file": "src/components/portal/live/LiveBrief.tsx",
+          "line": 23,
+          "sha256": "53b6c5ae5f191d8c4ebb7ea151acb6548fab0fac532faa54ffe51444d008c284",
+          "gitCommit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "workingFileMatchesCommit": true,
+          "sourceLine": "const href = choice.kind === \"summary\" ? `/portal/live/${data.sessionId}/summary` : [\"start\", \"continue\"].includes(choice.kind) ? `/portal/live/${data.sessionId}/active` : blockReason === \"tier\" ? \"/portal/meg/abonnement\" : null;"
+        },
+        {
+          "file": "src/components/portal/live/use-live-session.ts",
+          "line": 4,
+          "sha256": "c11e0bfdbdb6d9f072cffbe4efcb6e01279ac1b9f16dbceb8f5e9e8d85f0a6d8",
+          "gitCommit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "workingFileMatchesCommit": true,
+          "sourceLine": "import { startSession, logDrillReps, completeSession } from \"@/app/portal/(fullscreen)/live/[sessionId]/actions\";"
+        },
+        {
+          "file": "src/app/portal/(fullscreen)/live/[sessionId]/actions.ts",
+          "line": 282,
+          "sha256": "1b8c84d46d5a740ea2d09c02b8d61892570bf777cac25b099978ca0ca947473d",
+          "gitCommit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "workingFileMatchesCommit": true,
+          "sourceLine": "export async function startSession(sessionId: string): Promise<StartSessionResult> {"
+        }
+      ]
+    },
+    {
+      "id": "app-live-start-plan-wb",
+      "relatedControlIds": [
+        "ph-04-start"
+      ],
+      "observedAppRoute": "/portal/live/{sessionId}/tapper",
+      "observedCodeAction": "PlanSessionBrief → startPlanSession",
+      "requiredContext": [
+        "sessionId",
+        "sessionKind=plan|wb"
+      ],
+      "limitation": "Egen PLAYER, Full og gyldig status kreves. Kan ikke bruke v2-start som universell handling.",
+      "evidence": "kildeverifisert-ikke-innlogget-provd",
+      "selectedForNewDesign": false,
+      "sources": [
+        {
+          "file": "src/components/portal/live/PlanSessionBrief.tsx",
+          "line": 15,
+          "sha256": "2dfc6de73e8792d793d262ffcca6a139ffcd125413b97c578622d50330e52d1a",
+          "gitCommit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "workingFileMatchesCommit": true,
+          "sourceLine": "const href = choice.kind === \"summary\" ? `/portal/live/${data.sessionId}/summary` : choice.kind === \"continue\" ? `/portal/live/${data.sessionId}/tapper` : blockReason === \"tier\" ? \"/portal/meg/abonnement\" : null;"
+        },
+        {
+          "file": "src/lib/portal-live/actions.ts",
+          "line": 15,
+          "sha256": "32aa73f24e69edac60de4bd87b106240413ce773db5b1d1cba2faf5e54862f58",
+          "gitCommit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "workingFileMatchesCommit": true,
+          "sourceLine": "export async function startPlanSession(sessionId: string): Promise<void> {"
+        }
+      ]
+    },
+    {
+      "id": "app-live-avslutt-v2",
+      "relatedControlIds": [
+        "ph-05-avslutt-lagre"
+      ],
+      "observedAppRoute": "/portal/live/{sessionId}/summary",
+      "observedCodeAction": "useLiveSession.finish → completeSession → router.replace(result.href)",
+      "requiredContext": [
+        "sessionId",
+        "drillIds",
+        "faktiske reps",
+        "varighet"
+      ],
+      "limitation": "Fullføring og ettervurdering er separate handlinger. Plan/wb bruker andre handlingsløp.",
+      "evidence": "kildeverifisert-ikke-innlogget-provd",
+      "selectedForNewDesign": false,
+      "sources": [
+        {
+          "file": "src/components/portal/live/use-live-session.ts",
+          "line": 112,
+          "sha256": "c11e0bfdbdb6d9f072cffbe4efcb6e01279ac1b9f16dbceb8f5e9e8d85f0a6d8",
+          "gitCommit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "workingFileMatchesCommit": true,
+          "sourceLine": "const result = await completeSession(data.sessionId, snapshot.totalSec, snapshot.drills.filter((d) => d.status === \"done\").map((d) => d.id));"
+        },
+        {
+          "file": "src/app/portal/(fullscreen)/live/[sessionId]/actions.ts",
+          "line": 408,
+          "sha256": "1b8c84d46d5a740ea2d09c02b8d61892570bf777cac25b099978ca0ca947473d",
+          "gitCommit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "workingFileMatchesCommit": true,
+          "sourceLine": "export async function completeSession(sessionId: string, clientDurationSec?: number, completedDrillIds?: string[]): Promise<{ href: string }> {"
+        }
+      ]
+    },
+    {
+      "id": "app-live-ettervurdering",
+      "relatedControlIds": [
+        "ph-07-lagre"
+      ],
+      "observedAppRoute": "/portal/live/{sessionId}/summary",
+      "observedCodeAction": "SessionSummary → lagreDineOrd; separat serverhandling lagreSpillerVurdering finnes",
+      "requiredContext": [
+        "sessionId",
+        "kvalitet",
+        "nesteFokus",
+        "rpe",
+        "folelse"
+      ],
+      "limitation": "Synlig Save lagrer tekst, ikke hele den nye vurderingen. lagreSpillerVurdering krever kvalitet 1–5 og valgfri RPE 1–10. Designets felt/skala og nødvendig kodekobling må avstemmes; serveren beregner sRPE.",
+      "evidence": "kildeverifisert-ikke-innlogget-provd",
+      "selectedForNewDesign": false,
+      "sources": [
+        {
+          "file": "src/components/portal/live/SessionSummary.tsx",
+          "line": 151,
+          "sha256": "130a2693acd3e5f7359812a79a860f45b03ea0f7a03370b37c667e860decf8ad",
+          "gitCommit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "workingFileMatchesCommit": true,
+          "sourceLine": "const res = await lagreDineOrd(data.sessionId, tekst);"
+        },
+        {
+          "file": "src/app/portal/(fullscreen)/live/[sessionId]/actions.ts",
+          "line": 538,
+          "sha256": "1b8c84d46d5a740ea2d09c02b8d61892570bf777cac25b099978ca0ca947473d",
+          "gitCommit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "workingFileMatchesCommit": true,
+          "sourceLine": "export async function lagreSpillerVurdering("
+        }
+      ]
+    },
+    {
+      "id": "app-tp-ny",
+      "relatedControlIds": [],
+      "observedAppRoute": "/admin/spillere/{playerId}/plan/{planId}?oppgave=ny",
+      "observedCodeAction": "AG10TekniskPlan lenke → TOMT_SKJEMA",
+      "requiredContext": [
+        "playerId",
+        "planId"
+      ],
+      "limitation": "COACH/ADMIN og tilgang til samme spiller/plan; ny forhåndsvisning skal være tom.",
+      "evidence": "kildeverifisert-ikke-innlogget-provd",
+      "selectedForNewDesign": false,
+      "sources": [
+        {
+          "file": "src/components/admin/precision/AG10TekniskPlan.tsx",
+          "line": 75,
+          "sha256": "75f7379f28721794464108ab28f13a9a7d968d675188a515d376de02b80fcbef",
+          "gitCommit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "workingFileMatchesCommit": true,
+          "sourceLine": "<KnappLenke icon={Plus} iconName=\"plus\" href={`${planHref}?oppgave=ny`}>Ny oppgave</KnappLenke>"
+        },
+        {
+          "file": "src/app/admin/spillere/[id]/plan/[planId]/page.tsx",
+          "line": 42,
+          "sha256": "878551a263321b73a318df71f79e85af1bc13d1ce20e1fa0c9b5a95bcc8d73bb",
+          "gitCommit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "workingFileMatchesCommit": true,
+          "sourceLine": "skjema = { skjema: TOMT_SKJEMA, base: null };"
+        }
+      ]
+    },
+    {
+      "id": "app-tp-rediger",
+      "relatedControlIds": [],
+      "observedAppRoute": "/admin/spillere/{playerId}/plan/{planId}?oppgave={taskId}",
+      "observedCodeAction": "AG10TekniskPlan lenke → skjemaFraOppgave",
+      "requiredContext": [
+        "playerId",
+        "planId",
+        "taskId"
+      ],
+      "limitation": "Oppgaven må høre til planen. Tilbake og ulagrede endringer er ikke prøvd i innlogget reise.",
+      "evidence": "kildeverifisert-ikke-innlogget-provd",
+      "selectedForNewDesign": false,
+      "sources": [
+        {
+          "file": "src/components/admin/precision/AG10TekniskPlan.tsx",
+          "line": 107,
+          "sha256": "75f7379f28721794464108ab28f13a9a7d968d675188a515d376de02b80fcbef",
+          "gitCommit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "workingFileMatchesCommit": true,
+          "sourceLine": "<KnappLenke size=\"sm\" variant=\"ghost\" icon={Pencil} iconName=\"pencil\" href={`${planHref}?oppgave=${o.id}`}>Rediger</KnappLenke>"
+        },
+        {
+          "file": "src/app/admin/spillere/[id]/plan/[planId]/page.tsx",
+          "line": 44,
+          "sha256": "878551a263321b73a318df71f79e85af1bc13d1ce20e1fa0c9b5a95bcc8d73bb",
+          "gitCommit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "workingFileMatchesCommit": true,
+          "sourceLine": "const pos = rad.positions.find((p) => p.tasks.some((t) => t.id === oppgave));"
+        }
+      ]
+    },
+    {
+      "id": "app-tp-lagre",
+      "relatedControlIds": [
+        "ag-tp-01-lagre"
+      ],
+      "observedAppRoute": "Samme skjerm; ny oppgave får ?oppgave={taskId}",
+      "observedCodeAction": "AGTP01OppgaveSkjema → lagreOppgave(planId,f)",
+      "requiredContext": [
+        "playerId",
+        "planId",
+        "taskId etter første lagring"
+      ],
+      "limitation": "Kode beholder taskId etter første lagring, i motsetning til kontrollert mellomprototype som dupliserte. Rep- og TrackMan-mål lagres; ny designflyt er ikke appprøvd.",
+      "evidence": "kildeverifisert-ikke-innlogget-provd",
+      "selectedForNewDesign": false,
+      "sources": [
+        {
+          "file": "src/components/admin/precision/AGTP01Oppgaveskjema.tsx",
+          "line": 141,
+          "sha256": "cd566d09416ca6cce8f98811cc3df9a8b5ba405ec3b9c7d00ab526912178f770",
+          "historicalSourcePath": "src/components/admin/precision/AGTP01OppgaveSkjema.tsx",
+          "gitCommit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "workingFileMatchesCommit": true,
+          "sourceLine": "if (!svar.ok) { setFeil(svar.feil); setSt(\"endret\"); return; }"
+        },
+        {
+          "file": "src/components/admin/precision/AGTP01Oppgaveskjema.tsx",
+          "line": 145,
+          "sha256": "cd566d09416ca6cce8f98811cc3df9a8b5ba405ec3b9c7d00ab526912178f770",
+          "historicalSourcePath": "src/components/admin/precision/AGTP01OppgaveSkjema.tsx",
+          "gitCommit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "workingFileMatchesCommit": true,
+          "sourceLine": "if (!f.id) { setF((o) => ({ ...o, id: svar.taskId })); router.replace(`${planHref}?oppgave=${svar.taskId}`); }"
+        },
+        {
+          "file": "src/app/admin/spillere/[id]/plan/[planId]/oppgave-actions.ts",
+          "line": 47,
+          "sha256": "9e563259de7bc95cdb0939240ecc2a6edb05b225f14a769919a1ca4722ca69d0",
+          "gitCommit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "workingFileMatchesCommit": true,
+          "sourceLine": ""
+        }
+      ]
+    },
+    {
+      "id": "app-tp-publiser",
+      "relatedControlIds": [
+        "ag-tp-01-publiser"
+      ],
+      "observedAppRoute": "Samme skjerm",
+      "observedCodeAction": "AGTP01OppgaveSkjema → publiserTekniskPlan(planId)",
+      "requiredContext": [
+        "playerId",
+        "planId"
+      ],
+      "limitation": "Handlingen setter hele TechnicalPlan.status=ACTIVE. Ingen taskId eller revisjon inngår. Dette oppfyller ikke kontrakten om publisering av eksakt lagret oppgaverevisjon.",
+      "evidence": "kildeverifisert-ikke-innlogget-provd",
+      "selectedForNewDesign": false,
+      "sources": [
+        {
+          "file": "src/components/admin/precision/AGTP01Oppgaveskjema.tsx",
+          "line": 154,
+          "sha256": "cd566d09416ca6cce8f98811cc3df9a8b5ba405ec3b9c7d00ab526912178f770",
+          "historicalSourcePath": "src/components/admin/precision/AGTP01OppgaveSkjema.tsx",
+          "gitCommit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "workingFileMatchesCommit": true,
+          "sourceLine": "try { await publiserTekniskPlan(planId); setSt(\"publisert\"); setFeil(null); router.refresh(); }"
+        },
+        {
+          "file": "src/app/admin/spillere/[id]/plan/[planId]/plan-actions.ts",
+          "line": 46,
+          "sha256": "209014b947428946c2b0101b1786c07f214613d5717a8432abf3d83d3356976b",
+          "gitCommit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "workingFileMatchesCommit": true,
+          "sourceLine": "IdSchema.parse(planId);"
+        }
+      ]
+    },
+    {
+      "id": "app-tp-legg-i-okt",
+      "relatedControlIds": [],
+      "observedAppRoute": "/admin/workbench/{playerId}",
+      "observedCodeAction": "AG10TekniskPlan lenke; mulig videre koblingspunkt addDrillFromSource({sessionId,sourceId})",
+      "requiredContext": [
+        "playerId",
+        "planId",
+        "taskId",
+        "valgt sessionId",
+        "uke/utkast"
+      ],
+      "limitation": "Lenken sender bare playerId. Bevar taskId til mottakeren; sourceId-format tek:{taskId} finnes, men automatisk overføring fra denne knappen er ikke implementert.",
+      "evidence": "kildeverifisert-ikke-innlogget-provd",
+      "selectedForNewDesign": false,
+      "sources": [
+        {
+          "file": "src/components/admin/precision/AG10TekniskPlan.tsx",
+          "line": 106,
+          "sha256": "75f7379f28721794464108ab28f13a9a7d968d675188a515d376de02b80fcbef",
+          "gitCommit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "workingFileMatchesCommit": true,
+          "sourceLine": "<KnappLenke size=\"sm\" variant=\"secondary\" icon={CalendarPlus} iconName=\"calendar-plus\" href={`/admin/workbench/${spiller.id}`}>Legg i økt</KnappLenke>"
+        },
+        {
+          "file": "src/lib/workbench/wb-actions.ts",
+          "line": 1326,
+          "sha256": "f332a0633c052872a14017f1ac31d21d5111e16db397a98807a02160c5330e90",
+          "gitCommit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "workingFileMatchesCommit": true,
+          "sourceLine": "export async function addDrillFromSource(input: {"
+        },
+        {
+          "file": "src/lib/workbench/sources-map.ts",
+          "line": 37,
+          "sha256": "2a017dc1ae973eb88c82dfec08b75b4093229bf206932da1eb6fae412aaa0d56",
+          "gitCommit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "workingFileMatchesCommit": true,
+          "sourceLine": "export function parseSourceId(sourceId: string): ParsedSourceId {"
+        }
+      ]
+    },
+    {
+      "id": "app-tp-medievalg",
+      "relatedControlIds": [
+        "ag-tp-02-upload"
+      ],
+      "observedAppRoute": "/admin/spillere/{playerId}/plan/{planId}/for-og-na?oppgave={taskId}",
+      "observedCodeAction": "AGTP02ForOgNaa oppgavevalg; vert leser bildeUrl/videoUrl",
+      "requiredContext": [
+        "playerId",
+        "planId",
+        "taskId",
+        "for|etter",
+        "medieId/dato"
+      ],
+      "limitation": "Eksisterende enkeltfelter er ikke to daterte mediespor. Ingen ferdig før/etter-opplasting eller lagringskobling bekreftet.",
+      "evidence": "kildeverifisert-ikke-innlogget-provd",
+      "selectedForNewDesign": false,
+      "sources": [
+        {
+          "file": "src/components/admin/precision/AGTP02ForOgNaa.tsx",
+          "line": 54,
+          "sha256": "37cad05b14b40eb360abf2f6007f0821fdeb5b724a902f96a574152b446f6d92",
+          "gitCommit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "workingFileMatchesCommit": true,
+          "sourceLine": "{oppgaver.map((o) => <Link key={o.id} href={`?oppgave=${o.id}`} className=\"pa-choice a8-valg\" aria-current={o.id === t.id ? \"page\" : undefined} aria-pressed={o.id === t.id}>{`${o.p} · ${o.tittel}`}</Link>)}"
+        },
+        {
+          "file": "src/app/admin/spillere/[id]/plan/[planId]/for-og-na/page.tsx",
+          "line": 39,
+          "sha256": "2655171138a7c114a53d6bf30dcbb99842d42bb70eaa6b013f00dedb111ad394",
+          "gitCommit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "workingFileMatchesCommit": true,
+          "sourceLine": "select: { pNummer: true, tasks: { orderBy: { sortOrder: \"asc\" }, select: { id: true, tittel: true, bildeUrl: true, videoUrl: true } } },"
+        }
+      ]
+    }
+  ],
+  "historicalBaseline": {
+    "gitCommit": "110b4ec8f7d960fd1748b8f87babebde80cd764b",
+    "date": "2026-09-30",
+    "status": "historisk-kildereferanse-ikke-gjeldende-kjøreordre",
+    "observations": [
+      {
+        "id": "app-nav-idag",
+        "relatedControlIds": [
+          "ph-nav-idag"
+        ],
+        "observedAppRoute": "/portal",
+        "observedCodeAction": "Lenke i PLAYERHQ_NAV: I dag",
+        "requiredContext": [],
+        "limitation": "Skjermens nye designversjon og alle tilstander er ikke appprøvd.",
+        "evidence": "kildeverifisert-ikke-innlogget-provd",
+        "selectedForNewDesign": false,
+        "sources": [
+          {
+            "file": "src/components/v2/shell.tsx",
+            "line": 84,
+            "sha256": "4272c33a5ae591e61d524fd5834f7990f0066ef120b2829980e9b4dc6197c634"
+          }
+        ]
+      },
+      {
+        "id": "app-nav-plan",
+        "relatedControlIds": [
+          "ph-nav-plan"
+        ],
+        "observedAppRoute": "/portal/planlegge",
+        "observedCodeAction": "Lenke i PLAYERHQ_NAV: Plan",
+        "requiredContext": [],
+        "limitation": "Skjermens nye designversjon og alle tilstander er ikke appprøvd.",
+        "evidence": "kildeverifisert-ikke-innlogget-provd",
+        "selectedForNewDesign": false,
+        "sources": [
+          {
+            "file": "src/components/v2/shell.tsx",
+            "line": 85,
+            "sha256": "4272c33a5ae591e61d524fd5834f7990f0066ef120b2829980e9b4dc6197c634"
+          }
+        ]
+      },
+      {
+        "id": "app-nav-stats",
+        "relatedControlIds": [
+          "ph-nav-stats"
+        ],
+        "observedAppRoute": "/portal/analysere",
+        "observedCodeAction": "Lenke i PLAYERHQ_NAV: Analyse",
+        "requiredContext": [],
+        "limitation": "Stats heter Analyse i nåværende kode; ruten er ikke bevis på valgt ny skjermversjon.",
+        "evidence": "kildeverifisert-ikke-innlogget-provd",
+        "selectedForNewDesign": false,
+        "sources": [
+          {
+            "file": "src/components/v2/shell.tsx",
+            "line": 86,
+            "sha256": "4272c33a5ae591e61d524fd5834f7990f0066ef120b2829980e9b4dc6197c634"
+          }
+        ]
+      },
+      {
+        "id": "app-nav-meg",
+        "relatedControlIds": [
+          "ph-nav-meg"
+        ],
+        "observedAppRoute": "/portal/meg",
+        "observedCodeAction": "Lenke i PLAYERHQ_NAV: Meg",
+        "requiredContext": [],
+        "limitation": "Skjermens nye designversjon og alle tilstander er ikke appprøvd.",
+        "evidence": "kildeverifisert-ikke-innlogget-provd",
+        "selectedForNewDesign": false,
+        "sources": [
+          {
+            "file": "src/components/v2/shell.tsx",
+            "line": 87,
+            "sha256": "4272c33a5ae591e61d524fd5834f7990f0066ef120b2829980e9b4dc6197c634"
+          }
+        ]
+      },
+      {
+        "id": "app-live-inngang",
+        "relatedControlIds": [
+          "ph-01-okt-start",
+          "ph-01-okt-se"
+        ],
+        "observedAppRoute": "/portal/live/{sessionId}",
+        "observedCodeAction": "liveHrefForStatus / liveRouteForResolved",
+        "requiredContext": [
+          "sessionId",
+          "sessionKind",
+          "status",
+          "playerId"
+        ],
+        "limitation": "Tre øktmodeller: v2, plan og wb. Status avgjør brief/active/tapper/summary/Workbench. FYS-variant må kobles eksplisitt; ikke opprett en antatt /fysisk-rute.",
+        "evidence": "kildeverifisert-ikke-innlogget-provd",
+        "selectedForNewDesign": false,
+        "sources": [
+          {
+            "file": "src/lib/portal-live/live-route.ts",
+            "line": 41,
+            "sha256": "572736b3e89e2a2dd691fa4628738b96ceec9b258eb2dd9e31f62f26f3952977"
+          },
+          {
+            "file": "src/app/portal/(fullscreen)/live/[sessionId]/page.tsx",
+            "line": 1,
+            "sha256": "0a4362f89ca68f53dfd6ca82f2e1fca5ca8b4bc7b6ba25c3a11cc0e3f842443c"
+          }
+        ]
+      },
+      {
+        "id": "app-live-start-v2",
+        "relatedControlIds": [
+          "ph-04-start"
+        ],
+        "observedAppRoute": "/portal/live/{sessionId}/active",
+        "observedCodeAction": "LiveBrief lenke; useLiveSession → startSession",
+        "requiredContext": [
+          "sessionId",
+          "sessionKind=v2"
+        ],
+        "limitation": "Start/fortsett/fullført/låst har ulike grener. Ny fysisk variant er ikke verifisert.",
+        "evidence": "kildeverifisert-ikke-innlogget-provd",
+        "selectedForNewDesign": false,
+        "sources": [
+          {
+            "file": "src/components/portal/live/LiveBrief.tsx",
+            "line": 23,
+            "sha256": "53b6c5ae5f191d8c4ebb7ea151acb6548fab0fac532faa54ffe51444d008c284"
+          },
+          {
+            "file": "src/components/portal/live/use-live-session.ts",
+            "line": 4,
+            "sha256": "c11e0bfdbdb6d9f072cffbe4efcb6e01279ac1b9f16dbceb8f5e9e8d85f0a6d8"
+          },
+          {
+            "file": "src/app/portal/(fullscreen)/live/[sessionId]/actions.ts",
+            "line": 282,
+            "sha256": "1b8c84d46d5a740ea2d09c02b8d61892570bf777cac25b099978ca0ca947473d"
+          }
+        ]
+      },
+      {
+        "id": "app-live-start-plan-wb",
+        "relatedControlIds": [
+          "ph-04-start"
+        ],
+        "observedAppRoute": "/portal/live/{sessionId}/tapper",
+        "observedCodeAction": "PlanSessionBrief → startPlanSession",
+        "requiredContext": [
+          "sessionId",
+          "sessionKind=plan|wb"
+        ],
+        "limitation": "Egen PLAYER, Full og gyldig status kreves. Kan ikke bruke v2-start som universell handling.",
+        "evidence": "kildeverifisert-ikke-innlogget-provd",
+        "selectedForNewDesign": false,
+        "sources": [
+          {
+            "file": "src/components/portal/live/PlanSessionBrief.tsx",
+            "line": 15,
+            "sha256": "2dfc6de73e8792d793d262ffcca6a139ffcd125413b97c578622d50330e52d1a"
+          },
+          {
+            "file": "src/lib/portal-live/actions.ts",
+            "line": 15,
+            "sha256": "32aa73f24e69edac60de4bd87b106240413ce773db5b1d1cba2faf5e54862f58"
+          }
+        ]
+      },
+      {
+        "id": "app-live-avslutt-v2",
+        "relatedControlIds": [
+          "ph-05-avslutt-lagre"
+        ],
+        "observedAppRoute": "/portal/live/{sessionId}/summary",
+        "observedCodeAction": "useLiveSession.finish → completeSession → router.replace(result.href)",
+        "requiredContext": [
+          "sessionId",
+          "drillIds",
+          "faktiske reps",
+          "varighet"
+        ],
+        "limitation": "Fullføring og ettervurdering er separate handlinger. Plan/wb bruker andre handlingsløp.",
+        "evidence": "kildeverifisert-ikke-innlogget-provd",
+        "selectedForNewDesign": false,
+        "sources": [
+          {
+            "file": "src/components/portal/live/use-live-session.ts",
+            "line": 112,
+            "sha256": "c11e0bfdbdb6d9f072cffbe4efcb6e01279ac1b9f16dbceb8f5e9e8d85f0a6d8"
+          },
+          {
+            "file": "src/app/portal/(fullscreen)/live/[sessionId]/actions.ts",
+            "line": 408,
+            "sha256": "1b8c84d46d5a740ea2d09c02b8d61892570bf777cac25b099978ca0ca947473d"
+          }
+        ]
+      },
+      {
+        "id": "app-live-ettervurdering",
+        "relatedControlIds": [
+          "ph-07-lagre"
+        ],
+        "observedAppRoute": "/portal/live/{sessionId}/summary",
+        "observedCodeAction": "SessionSummary → lagreDineOrd; separat serverhandling lagreSpillerVurdering finnes",
+        "requiredContext": [
+          "sessionId",
+          "kvalitet",
+          "nesteFokus",
+          "rpe",
+          "folelse"
+        ],
+        "limitation": "Synlig Save lagrer tekst, ikke hele den nye vurderingen. lagreSpillerVurdering krever kvalitet 1–5 og valgfri RPE 1–10. Designets felt/skala og nødvendig kodekobling må avstemmes; serveren beregner sRPE.",
+        "evidence": "kildeverifisert-ikke-innlogget-provd",
+        "selectedForNewDesign": false,
+        "sources": [
+          {
+            "file": "src/components/portal/live/SessionSummary.tsx",
+            "line": 151,
+            "sha256": "130a2693acd3e5f7359812a79a860f45b03ea0f7a03370b37c667e860decf8ad"
+          },
+          {
+            "file": "src/app/portal/(fullscreen)/live/[sessionId]/actions.ts",
+            "line": 538,
+            "sha256": "1b8c84d46d5a740ea2d09c02b8d61892570bf777cac25b099978ca0ca947473d"
+          }
+        ]
+      },
+      {
+        "id": "app-tp-ny",
+        "relatedControlIds": [],
+        "observedAppRoute": "/admin/spillere/{playerId}/plan/{planId}?oppgave=ny",
+        "observedCodeAction": "AG10TekniskPlan lenke → TOMT_SKJEMA",
+        "requiredContext": [
+          "playerId",
+          "planId"
+        ],
+        "limitation": "COACH/ADMIN og tilgang til samme spiller/plan; ny forhåndsvisning skal være tom.",
+        "evidence": "kildeverifisert-ikke-innlogget-provd",
+        "selectedForNewDesign": false,
+        "sources": [
+          {
+            "file": "src/components/admin/precision/AG10TekniskPlan.tsx",
+            "line": 75,
+            "sha256": "75f7379f28721794464108ab28f13a9a7d968d675188a515d376de02b80fcbef"
+          },
+          {
+            "file": "src/app/admin/spillere/[id]/plan/[planId]/page.tsx",
+            "line": 42,
+            "sha256": "878551a263321b73a318df71f79e85af1bc13d1ce20e1fa0c9b5a95bcc8d73bb"
+          }
+        ]
+      },
+      {
+        "id": "app-tp-rediger",
+        "relatedControlIds": [],
+        "observedAppRoute": "/admin/spillere/{playerId}/plan/{planId}?oppgave={taskId}",
+        "observedCodeAction": "AG10TekniskPlan lenke → skjemaFraOppgave",
+        "requiredContext": [
+          "playerId",
+          "planId",
+          "taskId"
+        ],
+        "limitation": "Oppgaven må høre til planen. Tilbake og ulagrede endringer er ikke prøvd i innlogget reise.",
+        "evidence": "kildeverifisert-ikke-innlogget-provd",
+        "selectedForNewDesign": false,
+        "sources": [
+          {
+            "file": "src/components/admin/precision/AG10TekniskPlan.tsx",
+            "line": 107,
+            "sha256": "75f7379f28721794464108ab28f13a9a7d968d675188a515d376de02b80fcbef"
+          },
+          {
+            "file": "src/app/admin/spillere/[id]/plan/[planId]/page.tsx",
+            "line": 44,
+            "sha256": "878551a263321b73a318df71f79e85af1bc13d1ce20e1fa0c9b5a95bcc8d73bb"
+          }
+        ]
+      },
+      {
+        "id": "app-tp-lagre",
+        "relatedControlIds": [
+          "ag-tp-01-lagre"
+        ],
+        "observedAppRoute": "Samme skjerm; ny oppgave får ?oppgave={taskId}",
+        "observedCodeAction": "AGTP01OppgaveSkjema → lagreOppgave(planId,f)",
+        "requiredContext": [
+          "playerId",
+          "planId",
+          "taskId etter første lagring"
+        ],
+        "limitation": "Kode beholder taskId etter første lagring, i motsetning til kontrollert mellomprototype som dupliserte. Rep- og TrackMan-mål lagres; ny designflyt er ikke appprøvd.",
+        "evidence": "kildeverifisert-ikke-innlogget-provd",
+        "selectedForNewDesign": false,
+        "sources": [
+          {
+            "file": "src/components/admin/precision/AGTP01OppgaveSkjema.tsx",
+            "line": 141,
+            "sha256": "cd566d09416ca6cce8f98811cc3df9a8b5ba405ec3b9c7d00ab526912178f770"
+          },
+          {
+            "file": "src/components/admin/precision/AGTP01OppgaveSkjema.tsx",
+            "line": 145,
+            "sha256": "cd566d09416ca6cce8f98811cc3df9a8b5ba405ec3b9c7d00ab526912178f770"
+          },
+          {
+            "file": "src/app/admin/spillere/[id]/plan/[planId]/oppgave-actions.ts",
+            "line": 47,
+            "sha256": "9e563259de7bc95cdb0939240ecc2a6edb05b225f14a769919a1ca4722ca69d0"
+          }
+        ]
+      },
+      {
+        "id": "app-tp-publiser",
+        "relatedControlIds": [
+          "ag-tp-01-publiser"
+        ],
+        "observedAppRoute": "Samme skjerm",
+        "observedCodeAction": "AGTP01OppgaveSkjema → publiserTekniskPlan(planId)",
+        "requiredContext": [
+          "playerId",
+          "planId"
+        ],
+        "limitation": "Handlingen setter hele TechnicalPlan.status=ACTIVE. Ingen taskId eller revisjon inngår. Dette oppfyller ikke kontrakten om publisering av eksakt lagret oppgaverevisjon.",
+        "evidence": "kildeverifisert-ikke-innlogget-provd",
+        "selectedForNewDesign": false,
+        "sources": [
+          {
+            "file": "src/components/admin/precision/AGTP01OppgaveSkjema.tsx",
+            "line": 154,
+            "sha256": "cd566d09416ca6cce8f98811cc3df9a8b5ba405ec3b9c7d00ab526912178f770"
+          },
+          {
+            "file": "src/app/admin/spillere/[id]/plan/[planId]/plan-actions.ts",
+            "line": 46,
+            "sha256": "209014b947428946c2b0101b1786c07f214613d5717a8432abf3d83d3356976b"
+          }
+        ]
+      },
+      {
+        "id": "app-tp-legg-i-okt",
+        "relatedControlIds": [],
+        "observedAppRoute": "/admin/workbench/{playerId}",
+        "observedCodeAction": "AG10TekniskPlan lenke; mulig videre koblingspunkt addDrillFromSource({sessionId,sourceId})",
+        "requiredContext": [
+          "playerId",
+          "planId",
+          "taskId",
+          "valgt sessionId",
+          "uke/utkast"
+        ],
+        "limitation": "Lenken sender bare playerId. Bevar taskId til mottakeren; sourceId-format tek:{taskId} finnes, men automatisk overføring fra denne knappen er ikke implementert.",
+        "evidence": "kildeverifisert-ikke-innlogget-provd",
+        "selectedForNewDesign": false,
+        "sources": [
+          {
+            "file": "src/components/admin/precision/AG10TekniskPlan.tsx",
+            "line": 106,
+            "sha256": "75f7379f28721794464108ab28f13a9a7d968d675188a515d376de02b80fcbef"
+          },
+          {
+            "file": "src/lib/workbench/wb-actions.ts",
+            "line": 1326,
+            "sha256": "f332a0633c052872a14017f1ac31d21d5111e16db397a98807a02160c5330e90"
+          },
+          {
+            "file": "src/lib/workbench/sources-map.ts",
+            "line": 37,
+            "sha256": "2a017dc1ae973eb88c82dfec08b75b4093229bf206932da1eb6fae412aaa0d56"
+          }
+        ]
+      },
+      {
+        "id": "app-tp-medievalg",
+        "relatedControlIds": [
+          "ag-tp-02-upload"
+        ],
+        "observedAppRoute": "/admin/spillere/{playerId}/plan/{planId}/for-og-na?oppgave={taskId}",
+        "observedCodeAction": "AGTP02ForOgNaa oppgavevalg; vert leser bildeUrl/videoUrl",
+        "requiredContext": [
+          "playerId",
+          "planId",
+          "taskId",
+          "for|etter",
+          "medieId/dato"
+        ],
+        "limitation": "Eksisterende enkeltfelter er ikke to daterte mediespor. Ingen ferdig før/etter-opplasting eller lagringskobling bekreftet.",
+        "evidence": "kildeverifisert-ikke-innlogget-provd",
+        "selectedForNewDesign": false,
+        "sources": [
+          {
+            "file": "src/components/admin/precision/AGTP02ForOgNaa.tsx",
+            "line": 54,
+            "sha256": "37cad05b14b40eb360abf2f6007f0821fdeb5b724a902f96a574152b446f6d92"
+          },
+          {
+            "file": "src/app/admin/spillere/[id]/plan/[planId]/for-og-na/page.tsx",
+            "line": 39,
+            "sha256": "2655171138a7c114a53d6bf30dcbb99842d42bb70eaa6b013f00dedb111ad394"
+          }
+        ]
+      }
+    ]
+  },
+  "workingCopyHead": "110b4ec8f7d960fd1748b8f87babebde80cd764b",
+  "sourceCheckout": "/Users/anderskristiansen/Developer/akgolf-hq",
+  "languageMasterSha256": "baca89953dcf8e0fb61a39483dd931b9067f73a4304e1c0003b535dcb228f094",
+  "reverification": {
+    "originalObservations": 15,
+    "uniqueSourceFiles": 18,
+    "matchingSourceHashes": 18,
+    "workingFilesMatchCommit": true,
+    "bindingBytesChangedSinceBaseline": false,
+    "correctedSourcePathReferences": 3,
+    "sourcePathCorrection": "AGTP01Oppgaveskjema.tsx er faktisk Git-bane; gammel baseline brukte AGTP01OppgaveSkjema.tsx.",
+    "authenticatedJourneyTested": false,
+    "scope": "Bare oppførte kilder og kodekoblinger; ingen runtime-, backend- eller visuell godkjenning."
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "manedsgrunnlagsvalg-native-kontrollert-kildevisning-og-fra-maned-feil-gjenstar",
+  "export": {
+    "zipName": "AK Golf Precision Athletics (35).zip",
+    "zipSha256": "210b179fbc9f5993e385154e57dc6e1a23fe844b5bb613f4a5017d3794ec8a4d",
+    "fileCount": 608,
+    "exportedAt": "2026-10-01T03:42:51.957584+00:00",
+    "exportRoot": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-manedsgrunnlag",
+    "status": "manedsgrunnlag-avgrenset-mellomkontroll"
+  },
+  "syntax": {
+    "scripts": 307,
+    "inline": 64,
+    "inlineIncludedInScripts": true,
+    "syntax_errors": 0,
+    "errors": []
+  },
+  "modelEvidenceReused": {
+    "modelSha256": "536f94e4e28fea326bcdc68cf90c90943695ef4b6f1b022d71df16ecab588295",
+    "sameAsExport": 33,
+    "total": 77,
+    "pass": 77,
+    "fail": 0,
+    "skip": 0,
+    "error": 0,
+    "runnerSha256": "71afc9739ac3d82c01c86e9e0cc5803442160dcf01f5c05f1a5ad7a7ccd030f7",
+    "boundary": "Identiske modellbytes; avgrenset modellbevis."
+  },
+  "ownNative": {
+    "checks": 22,
+    "failures": 0,
+    "proofSha256": "cc7b9a00e3c2ded66f05508f4de1a6d1aa69754ea67d1c3d495bfb0c2d1b0379",
+    "scope": "AG/PH U53 over nyttår, synlig desember/januar/Eget før Ovr, null/0/min, kvotefeil/rollback/retry, valgt måned beholdt ved inngang fra annen måned, U53→U52→U53 og reload.",
+    "limits": [
+      "Månedsbudsjett etablert som merket direkte fixture, ikke separat publisert coach→PH-kilde.",
+      "Planbytte og gruppe→egenversjon/andre årsplan/retur ikke prøvd.",
+      "Førstegangs fromYm kvotefeil ikke i denne prøven.",
+      "Bare Ovr skjult før grunnlagsvalg; TEK-budgettimport var fortsatt mulig.",
+      "Månedskandidater viser egne overstyringer, ikke hele arvede periode-/kilderekken."
+    ]
+  },
+  "sourceRemaining35": [
+    {
+      "file": "ui_kits/_shared/WB3-lokal.jsx",
+      "line": 108,
+      "issue": "Førstegangs fromYm ignorerer setManedGrunnlag.ok og navigerer uten valglagringsfeil."
+    },
+    {
+      "file": "ui_kits/_shared/WB3-lokal.jsx",
+      "line": 100,
+      "issue": "Ingen arvet periode-/kildemerking i månedskandidatene."
+    },
+    {
+      "file": "ui_kits/_shared/WB3-lokal.jsx",
+      "lines": [
+        102,
+        104
+      ],
+      "issue": "Kildevisning/øktoppretting tilgjengelig; avhengig TEK-ukebudsjettimport må følge førvalg-regelen, uavhengige handlinger beholdes."
+    }
+  ],
+  "fixesSentToActiveJob": true,
+  "active": "Native AG→PH antall/import til periode/måned, gruppe/to planer/valgt grunnlag og imported-ref-reset, med konkret fra-måned/visningsdelta35.",
+  "resources": "Egen fane1416028654 og server45153 lukket.",
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false
+}

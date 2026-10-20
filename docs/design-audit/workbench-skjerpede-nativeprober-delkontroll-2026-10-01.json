@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "skjerpede-lokale-prober-bestatt-skyintegrering-gjenstar",
+  "sourceExport": 61,
+  "ownChecks": [
+    {
+      "name": "periode",
+      "file": "wb-antall-repro.html",
+      "checks": 34,
+      "failures": 0,
+      "probeSha256": "4f777ebbf17357fa9b3701732119b32b4dbbe8170212571dd70cbad30a441dc2",
+      "proofSha256": "b5bde5ece5e04de05ec70928639678cae7aa26177998fe7896a8d9d44fe06b88"
+    },
+    {
+      "name": "gruppe",
+      "file": "wb-gruppeantall-repro.html",
+      "checks": 20,
+      "failures": 0,
+      "probeSha256": "3bd637b5057a9b78e31610c27fcd7fc7c5c1c6a3382d3de247df1bf812bcfeba",
+      "proofSha256": "33cbd7bf2036de3de25593e1875128889c50b5337639c12e6a981958ef070c2e"
+    },
+    {
+      "name": "kilde",
+      "file": "wb-kildevalg-ph-repro.html",
+      "checks": 22,
+      "failures": 0,
+      "probeSha256": "83971d6d1b7d8268b3287b3fc832b9b5cac29ee712ce4bc23d32a2851f88a273",
+      "proofSha256": "93a792a94dc08dacc88bd6db1963cd74aa4d6d9445bc2e8c4ada294ecc42774e"
+    }
+  ],
+  "total": 76,
+  "failures": 0,
+  "coverage": [
+    "Periodeskjema: full plan/minne/disk, fem akser, null ulik0, avbryt, ny åpning, lagringsfeil/retry, annen periode, reload",
+    "Gruppeantall: publisert gruppereferanse, måned og uke, feil/retry, én lagring og sekvensøkning, full plan/master/annen plan/disk, faktisk retur",
+    "PH kildevalg: samme radio beholder avkryssing, full P2-oppgavebinding, obligatorisk retur til A/U50, uke-reset mot baselines tatt før feil og etter reload"
+  ],
+  "limits": [
+    "Tre testfiler er styrket i separat ignorert kontrollkopi61. App/model/prototypeproduktfiler er uendret. Patcher er ennå ikke integrert i Claude Design.",
+    "Grunnoppsett og identitet er merkede modellfixtures, ikke innlogging eller native planoppretting.",
+    "Skrivefeil injiseres via setItem; ingen virkelig full disk.",
+    "Modell-/lagerbevis ved reload er eksplisitt merket, ikke påstått native retur.",
+    "Ingen visuell skjermgodkjenning eller produksjonsfunksjon er bevist."
+  ],
+  "resources": "Egenfaner1416028702/03/04 og lokalserver27380 lukket.",
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false,
+  "next": "Integrer de tre presise testpatchene etter pågående kilde/tid-jobb, kontroller samme prober i ny eksport."
+}

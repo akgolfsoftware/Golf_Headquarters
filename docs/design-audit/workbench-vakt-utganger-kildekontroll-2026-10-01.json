@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "export": 32,
+  "evidence": "Avgrenset kildekontroll, ingen egen UI-prøve av disse utgangene.",
+  "bypasses": [
+    {
+      "file": "ui_kits/_shared/WB3-lokal.jsx",
+      "line": 86,
+      "control": "mnd-velger",
+      "target": "goMonth; måned-Ovr remount"
+    },
+    {
+      "file": "ui_kits/_shared/WB3-lokal.jsx",
+      "line": 87,
+      "control": "rediger-uke-{weekKey}",
+      "target": "goWeek; valgt uke"
+    },
+    {
+      "file": "ui_kits/_shared/WB3-lokal.jsx",
+      "line": 97,
+      "control": "uke-velger",
+      "target": "openWeekFor; også synlig ved dirty SessForm"
+    },
+    {
+      "file": "ui_kits/_shared/WB3-lokal.jsx",
+      "line": 127,
+      "control": "opprett",
+      "target": "Årsplanveiviser; editor unmount"
+    },
+    {
+      "file": "ui_kits/_shared/WB3-turn.jsx",
+      "line": 63,
+      "control": "turn-okt-{sessionId}/turn-apne-{tournamentEntryId}",
+      "target": "Uke/turneringspanel uten vakt"
+    },
+    {
+      "file": "ui_kits/_shared/WB3-lokal.jsx",
+      "lines": [
+        117,
+        121
+      ],
+      "control": "innsetting-plan/uke/okt/avbryt",
+      "target": "Endrer/fjerner dirty nested SessForm uten ytre vakt"
+    },
+    {
+      "file": "ui_kits/_shared/WB3-lokal.jsx",
+      "lines": [
+        98,
+        100
+      ],
+      "control": "grunn-{periodId}/grunn-eget/maaned-{ym}/maaned-eget",
+      "target": "Endrer Ovr-id og resetter dirty ved kildegrunnlagbytte"
+    }
+  ],
+  "fixJob": "Egen native-utgangsjobb før eksplisitt månedsgrunnlag",
+  "appChanged": false,
+  "confirmedGuarded": [
+    "planvelger",
+    "eiervalg/søk/sist brukt",
+    "nivåfaner",
+    "uke-/månedspiler",
+    "vanlige sidefeltkommandoer",
+    "egen-retur",
+    "SessForms egen Avbryt"
+  ]
+}

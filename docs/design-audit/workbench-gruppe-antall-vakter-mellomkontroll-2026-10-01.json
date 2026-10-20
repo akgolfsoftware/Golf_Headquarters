@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "fem-gruppefeil-rettet-native-reise-bestilt",
+  "export": {
+    "archive": "AK Golf Precision Athletics (47).zip",
+    "sha256": "a74943c4329e3fa69b0b02a2cfe1f84a7c3eeac9b6eb6eb55315745bb24202a1",
+    "files": 613,
+    "exportedAt": "2026-10-01T05:28:25.043952+00:00",
+    "root": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-gruppe-antall-vakter"
+  },
+  "syntax": {
+    "scripts": 312,
+    "inline": 69,
+    "inlineIncludedInScripts": true,
+    "syntax_errors": 0,
+    "errors": []
+  },
+  "model": {
+    "total": 109,
+    "pass": 108,
+    "fail": 0,
+    "skip": 1,
+    "error": 0,
+    "modelSha256": "3a43afbe7543b0467faddc3c5452f4eefdbab81d61cc46fe2ae19b60063874fc",
+    "runnerSha256": "448249f67cfdb3d9f4f8dcb7294cbe9f004e816aa43d9eb84b021746ed29e0fd",
+    "membershipFixtureSha256": "3c471fbe40f48f12f87894582dbad74574aea585591255b5d094ab4c55b91949",
+    "original99Preserved": true,
+    "resolved": [
+      "PHgruppe bare publiserte count-snapshots, ingen loc/historikk-skygge",
+      "Medlemsnamespace matcher aktiv URLns; legitim tom ns bevart",
+      "PHdirekte gruppemål-ID kan ikke skrive antall; AG egen gruppe beholdt",
+      "Ingen automatisk eksempelvalg; uttrykkelig eksempelkompatibilitet bevart",
+      "PHpubliseringsstatus trenger ikke lokal grupperekord"
+    ],
+    "remainingSkip": "Rammeforkorting over budsjett/mål/basis avventer Anders produktvalg, ikke bestått."
+  },
+  "nativeGroupJourney": {
+    "status": "Claude rapporterer18/0 etter datofixture, nyegeneksport avventer importguard",
+    "verified": false,
+    "notOwnEvidenceYet": true
+  },
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false,
+  "additionalImportCheck": {
+    "total": 111,
+    "pass": 108,
+    "fail": 2,
+    "skip": 1,
+    "error": 0,
+    "runnerSha256": "7ab5b56b54ddc0d9775dd126f65c6b6dba5415972ff2222e68928231f935a887",
+    "proof": "egen47-extra-import-vakt.json",
+    "failures": [
+      "Lovlig PHgroupcount kan importeres til annen spillers plan-ID.",
+      "Lovlig PHgroupcount kan importeres til gruppeplan-ID."
+    ],
+    "repair": "authOk(p) før hentAntall scope/tekBox/fail/mutasjon, bestilt. Samme eier/eksplisitt andre årsplan fortsatt tillatt.",
+    "original109Unchanged": true
+  }
+}

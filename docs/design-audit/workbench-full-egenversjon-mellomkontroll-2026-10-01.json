@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "aktiv-full-egenversjonsretting-mellomversjon-ikke-fryst",
+  "export": {
+    "zipName": "AK Golf Precision Athletics (24).zip",
+    "zipSha256": "aedd139587f367dd24ab6532b1c53e32f4f959d5cc0fae7c030b44691422fc1c",
+    "fileCount": 598,
+    "exportRoot": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-full-egenversjon",
+    "exportedAt": "2026-10-01T01:10:23.471682+00:00",
+    "status": "aktiv-full-egenversjonsretting-mellomversjon"
+  },
+  "syntax": {
+    "scripts": 298,
+    "inline": 55,
+    "inlineIncludedInScripts": true,
+    "syntax_errors": 0,
+    "errors": []
+  },
+  "model": {
+    "initialCases": 61,
+    "initialPass": 61,
+    "initialFail": 0,
+    "extendedCases": 63,
+    "pass": 61,
+    "fail": 2,
+    "skip": 0,
+    "error": 0,
+    "proofSha256": "b5c6977c732c1ced7bf5d44b5c19c8f789ca13f60b9ac5ac200b6acbe70a4ebc",
+    "runnerSha256": "e933c0faa2f1473553a49f66d17292bb96fb67f0b81439a15d7654c534ae87d7",
+    "sourceModelSha256": "a11a20ecc919f65fc075179f095e4d7d2dab79d311eff8fea7633ccefaa0b11a"
+  },
+  "corrected": [
+    "Én rollewrite i TP/TEK-publisering; tidligere andrewrite-feilpunkt eliminert med konsistente positive og negative prøver",
+    "Full egenversjon til eksplisitt andre målplan med samme kildeidentitet og nye session/drillIDs; førsteplan urørt",
+    "Retry gir samme kopierte økt, ny målplan med samme key avvises",
+    "Nested øktkopieringspersistensfeil gir ingen ghost",
+    "Forkast rydder globaldirty og søk/Sist brukt er guarded"
+  ],
+  "actualApi": [
+    "WB.createOwnVersion(groupPlanId,sid,memberId,targetPlanId,requestId)"
+  ],
+  "remaining": {
+    "recoveryFailure": "Delt TPwrite + SKEYrollback feil, deretter reload + retry: retryOk/localDraftMatch=true men sharedMatch/phConsistent=false. Samme tidlige idempotente retur i oppgave og TEK-antall.",
+    "observedCloudUi": "71 kontroller med først6/senere3 feil; åpne egen økt/retur/undefinedrecipients under aktiv retting etter eksport. Ingen ny samlet bestått UI-kontroll.",
+    "notDone": [
+      "Publisert Plan/I dag→riktig PH03/golf/FYS/PH07",
+      "TEK-konflikt/AG→PH antall/month/period/årsredigering",
+      "Modernisert eldre TP-reise",
+      "Visuell konsistens/oppryddet aktiv gammel demo",
+      "Sluttregister og frosset kodepakke"
+    ]
+  },
+  "followup": "Liten konkret recoveryretting sendt som styring i samme aktive chat etter modell61PASS; ingen Stop eller full WB1.",
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false,
+  "conditionalNextJob": "Publisert økt Plan/I dag→PH03→golf/FYS→PH07 bestilling sendt i samme chat som betinget neste steg. Aktiv egenversjon/UI/recovery skal fullføres og delkvitteres først. Ikke implementasjonsbevis."
+}

@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "navigasjonsretry-kontrollert-nullperiode-ref-rettet",
+  "export": {
+    "zipName": "AK Golf Precision Athletics (33).zip",
+    "zipSha256": "64e7a0f484533e697fb1c51d2a4c6164605c3a709f80f138fdf4c58b22658d20",
+    "fileCount": 606,
+    "exportedAt": "2026-10-01T03:26:24.690337+00:00",
+    "exportRoot": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-retry-referanse",
+    "status": "retry-referanse-mellomkontroll"
+  },
+  "syntax": {
+    "scripts": 305,
+    "inline": 62,
+    "inlineIncludedInScripts": true,
+    "syntax_errors": 0,
+    "errors": []
+  },
+  "ownNativeVakt": {
+    "checks": 24,
+    "failures": 0,
+    "proofSha256": "f305e05e7c8c9a3bac10049735c237656d622d3a44755a640844ea8ce57641b2",
+    "scope": "AG/PH dirty uke→piler→Bli/Forkast/fail/retry→faktisk U51; SessForm Avbryt→vakt/fail/retry uten dobbelt økt; ingen stille månedsgrunnlag.",
+    "limits": [
+      "Øvrige selects/grunnlag/innsetting/ytre avbryt under egen retting.",
+      "Ingen bygget eksplisitt månedsgrunnlagvisning i denne eksporten.",
+      "Månedslistereset har kildebevis, ikke egen UI-prøve ennå."
+    ]
+  },
+  "modelRaw76": {
+    "pass": 75,
+    "fail": 1,
+    "skip": 0,
+    "error": 0,
+    "modelSha256": "536f94e4e28fea326bcdc68cf90c90943695ef4b6f1b022d71df16ecab588295",
+    "runnerSha256": "3899156dd741e1e07f99e2e0b187532179dc8e2104b4012b4d57ce831f66f6d1",
+    "failureClassification": "Foreldet prøve forventer tekManuell=true ved null TEK. Gjeldende regel er false ved arvet/usatt, true ved eksplisitt0. Råresultat bevart; rettet assert + faktisk0/null/undefined-regresjon under kontroll.",
+    "original63Pass": true
+  },
+  "sourceCorrected": [
+    "SEL rollback gjenoppretter objekter på plass; ventende nav har gyldig referanse.",
+    "Null periodebudsjett rydder tekKilde/manuell-flagg atomisk.",
+    "Månedsliste bruker nå én clearOverrides og konkret feilmelding."
+  ],
+  "cloudBoundedEvidence": {
+    "vakt": [
+      24,
+      0
+    ],
+    "grenser": [
+      12,
+      0
+    ],
+    "grenserIndependentlyReproduced": false
+  },
+  "active": "Native utgangsrester med select/opprett/grundlag/innsetting/ytreavbryt/turnering og faktisk månedsliste-feil/retry. Eksplisitt månedsgrunnlag følger.",
+  "resources": "Egen fane1416028650 og server17605 lukket.",
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false,
+  "modelContractCorrected": {
+    "total": 77,
+    "pass": 77,
+    "fail": 0,
+    "skip": 0,
+    "error": 0,
+    "modelSha256": "536f94e4e28fea326bcdc68cf90c90943695ef4b6f1b022d71df16ecab588295",
+    "runnerSha256": "71afc9739ac3d82c01c86e9e0cc5803442160dcf01f5c05f1a5ad7a7ccd030f7",
+    "correction": "Foreldet periode-null-assert rettet tekManuell true→false etter fastlagt null/arv-regel; rå76 bevart.",
+    "newRegression": "Uten budsjettparameter beholdes TEK2/ref/minutter; eksplisitt0 blir manuelttrue/refnull; null/undefined i budsjett blir usatt/manueltfalse/refnull. Øvrige4akser/minutter/importmarkør og diskverdi bevares.",
+    "boundary": "Avgrenset modellbevis, ikke UI/app/DB eller designgodkjenning."
+  }
+}

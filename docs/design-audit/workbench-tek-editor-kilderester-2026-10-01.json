@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "export": 26,
+  "status": "kildebekreftet-betinget-retting-sendttil-samme-designprosjekt",
+  "scope": "WB3-lokal-editor og wb-tek-repro; ingen PH/Live eller ny modellprøve",
+  "findings": [
+    {
+      "id": "keep-mine-new-import",
+      "source": "ui_kits/_shared/WB3-lokal.jsx:60",
+      "actual": "kf skjuler alle senere konflikter og manuell endring blir konflikt uten ny import",
+      "required": "Konfliktavgjørelse bundet konkret import/kilderevisjon/baseline/scope"
+    },
+    {
+      "id": "unresolved-save",
+      "source": "ui_kits/_shared/WB3-lokal.jsx:65",
+      "actual": "Lagre er aktiv uten konfliktavgjørelse",
+      "required": "Native knapp og save-handler avviser uløst konflikt"
+    },
+    {
+      "id": "failed-multifield-save",
+      "source": "ui_kits/_shared/WB3-lokal.jsx:72",
+      "actual": "clearOverrideKey-resultat ignoreres og flere metoder kan delvis skrive",
+      "required": "Én brukerhandling er atomisk og beholder draft/alle akser/minutter/kilder ved feil"
+    },
+    {
+      "id": "failed-reset",
+      "source": "ui_kits/_shared/WB3-lokal.jsx:66",
+      "actual": "Editor blankes før onReset og foreldre ignorerer resultat",
+      "required": "Bevar felter/dirty/baseline/konflikt til bekreftet reset; feil/retry samme kontekst"
+    },
+    {
+      "id": "dirty-navigation",
+      "source": "ui_kits/_shared/WB3-lokal.jsx:73",
+      "actual": "Ovr deltar ikke i global dirty/save-vakt; uke/månedsbytte remounter bort draft",
+      "required": "Bli/Forkast/Lagre/feil fra uke/måned/plan/eier/global sidebar"
+    }
+  ],
+  "existingTestLimits": [
+    "Behold mitt-test klikker ikke Behold mitt",
+    "Ingen andre import/uløst-save/persistfeil/dirty kontekstbytte",
+    "Host mangler lagre=1, dermed intet persistfeilbevis"
+  ],
+  "nativeUiVerified": false,
+  "appChanged": false,
+  "additionalWorkbenchFindings": [
+    {
+      "id": "session-editor-cancel",
+      "source": "ui_kits/_shared/WB3-okt.jsx:30",
+      "required": "Ulagret-vakt ved faktisk Avbryt/X/Tilbake og navigasjon; bevart draft ved feil"
+    },
+    {
+      "id": "month-basis-cross-week",
+      "source": "ui_kits/_shared/WB3-lokal.jsx:103",
+      "actual": "Fallback velger st.mks eller første måned automatisk uten dialog; egenversjonsretur bevarer ikke månedsgrunnlag",
+      "required": "Eksisterende uttrykkelig grunnlag/konkret opprinnelsesmåned bevares; ellers native grunnlagsvalg/Eget med avbryt og bekreft"
+    }
+  ],
+  "executionOrder": "Fullfør aktiv publisert PH/Live-restretting og delkvittering først, deretter TEK/antall/år/vakter/grunnlag. Ingen app/DB."
+}

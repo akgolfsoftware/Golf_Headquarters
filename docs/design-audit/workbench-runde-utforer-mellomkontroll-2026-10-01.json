@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "rd-utforer-modell-bestatt-nativeforventning-under-retting",
+  "export": {
+    "archive": "AK Golf Precision Athletics (57).zip",
+    "sha256": "807ba486d989a7da55ccc751d60a34971b1a457d2c869ae886d020e985e381b1",
+    "files": 620,
+    "exportedAt": "2026-10-01T07:35:42.370674+00:00",
+    "partial": true
+  },
+  "syntax": {
+    "scripts": 319,
+    "inline": 75,
+    "inlineIncludedInScripts": true,
+    "errors": 0
+  },
+  "model": {
+    "total": 121,
+    "pass": 120,
+    "fail": 0,
+    "skip": 1,
+    "error": 0,
+    "modelSha256": "03487138b25330468ecb4715e70bdbb8f0d60d800ad2b5c8849ad29db6f3ca9c",
+    "runnerSha256": "3bc876f491559abd0a56aef98b2a687dca3504d0a1cca2e1a8cd33838243f7a6",
+    "evidenceType": "isolert-modellkontroll-med-syntetiske-data",
+    "fixed": "Utførerbundet rundekladd/resultat; personlig feilrecipient kan ikke lese eller avslutte. Egenhistorikk og legitim Finish etter withdrawal består."
+  },
+  "nativeCloudObserved": {
+    "checks": 33,
+    "failures": 1,
+    "ownReplay": false,
+    "diagnosis": "Siste test antar at p1s fulle historikk bare har gruppebrutto5, men tidligere personlig brutto9 er bevart. p2 er faktisk gruppemedlem og egen Finish legitimt. Filtrert gruppehistorikk og separat personlig negativcase er bestilt; ikke redusert funksjon."
+  },
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false,
+  "next": "Endelig RD-kvittering, ny eksport og egen nativeprøve."
+}

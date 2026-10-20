@@ -1,0 +1,89 @@
+{
+  "status": "mellomkontroll-ikke-frosset-ikke-godkjent",
+  "checked_at": "2026-09-30T21:18:00.055363+02:00",
+  "zip_sha256": "5d3df35881bc5b49f9f87e0febac40a557b843bac7e17ef10a5f34c8ac3b0c6a",
+  "export_file_count": 587,
+  "syntax": {
+    "scripts": 286,
+    "inline": 49,
+    "errors": 0
+  },
+  "local_journey": {
+    "checks": 293,
+    "errors": 0,
+    "limitation": "Disse grønne kontrollene dekker ikke de nye kildebekreftede avvikene."
+  },
+  "sources": [
+    {
+      "file": "ui_kits/_shared/wb-model.js",
+      "sha256": "c4c6f2c01d730ef8e69b56c8cc0be81caff774bd90182355eea9f79953255c08"
+    },
+    {
+      "file": "ui_kits/_shared/WB3-turn.jsx",
+      "sha256": "6ad1bf1c53b8ee3ee1aa16408c37ca93a5fd596740f35ffaf79e09f5d59fd6fa"
+    },
+    {
+      "file": "ui_kits/_shared/WB3-okt.jsx",
+      "sha256": "0ca68d12a89996e4f314ef3f583d403abb6987f5109f1b0f8f4592ce8e737de8"
+    },
+    {
+      "file": "ui_kits/playerhq/screens/PH-01.jsx",
+      "sha256": "92b069bbade2733c4520fa605e3cf98782751e54cb1cafcb1253b2228755befc"
+    },
+    {
+      "file": "ui_kits/playerhq/screens/PH-WB.jsx",
+      "sha256": "a767c2961a19088cdabb1d8d8d9c8fbbf197893bc58b49ad0f6a70abdafadbcf"
+    }
+  ],
+  "issues": [
+    {
+      "id": "undo-after-replan",
+      "file": "wb-model.js",
+      "line": 88,
+      "finding": "Fjern → planlegg samme runde på nytt → angre gir to aktive økter for samme roundId.",
+      "status": "bestilt-WB3-ikke-verifisert"
+    },
+    {
+      "id": "null-start-mismatch",
+      "file": "wb-model.js",
+      "line": 85,
+      "finding": "Blank starttid kan bevare gammel rundetid mens øktens tid blir null.",
+      "status": "bestilt-WB3-ikke-verifisert"
+    },
+    {
+      "id": "round-guard-bypass",
+      "file": "wb-model.js",
+      "line": 62,
+      "finding": "Øktredigering kan endre dominantakse TURN og flytte runden utenfor deltakelsens datoer.",
+      "status": "bestilt-WB3-ikke-verifisert"
+    },
+    {
+      "id": "entry-update-stale",
+      "file": "wb-model.js",
+      "line": 82,
+      "finding": "Navn/bane blir stale i økter; innsnevret datointervall kan etterlate runder utenfor.",
+      "status": "bestilt-WB3-ikke-verifisert"
+    },
+    {
+      "id": "entry-session-count",
+      "file": "WB3-turn.jsx",
+      "line": 41,
+      "finding": "ØKTER teller bare forberedelseslisten og utelater planlagte rundeøkter.",
+      "status": "bestilt-WB3-ikke-verifisert"
+    },
+    {
+      "id": "travel-crud-calendar",
+      "file": "WB3-turn.jsx",
+      "line": 49,
+      "finding": "Reise mangler rediger/fjern/angre og kalenderflater; forberedelse mangler frakobling.",
+      "status": "bestilt-WB3-ikke-verifisert"
+    },
+    {
+      "id": "ph-entry-binding",
+      "file": "PH-01.jsx",
+      "line": 80,
+      "finding": "cmd:turn mangler owner/plan/entry; testen benytter sist huskede tEntry.",
+      "status": "bestilt-WB3-ikke-verifisert"
+    }
+  ]
+}

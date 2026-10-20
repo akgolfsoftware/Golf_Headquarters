@@ -35,4 +35,4 @@ Lever én hovedprompt/startfil, manifest med aktive versjoner, kildegrunnlag, fe
 
 Bruk syntetiske data. Kontroller også skjulte data, JavaScript, filnavn, bilder og metadata før skyeksport. Originalkilder med ukontrollert personinnhold erstattes av tydelig merkede, bearbeidede referanser. En statisk referanse må ikke omtales som en bevart fungerende prototype.
 
-Kontroller som ikke er utført, merkes som utestet. Ny samlet kandidat forblir uvalgt inntil Anders velger den; allerede valgte delomfang, som Team Norway Claw, beholder sin særskilte status.
+Kontroller som ikke er utført, merkes som utestet. Precision Athletics er valgt designsystem. Anders velger konkrete skjermversjoner for bygging; Team Norway følger sin egen gjeldende autoritet, ikke det utgåtte Claw-valget.

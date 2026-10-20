@@ -1,0 +1,236 @@
+{
+  "date": "2026-10-01",
+  "status": "skjema-regresjon-rettet-delkontroll-med-aapen-sporadisk-oektfeil",
+  "export": {
+    "file": "AK Golf Precision Athletics (72).zip",
+    "sha256": "e2f881713575cf54b6bad7600385f03c497d09f31a6179b87359f15eb8b348c4",
+    "fileCount": 635,
+    "archiveFileCount": 636,
+    "extractedFileCount": 635,
+    "exportedAt": "2026-10-01T12:44:14.411836+00:00",
+    "caseInsensitiveCollisions": [
+      [
+        "ui_kits/Workbench-gjennomgang.html",
+        "ui_kits/workbench-gjennomgang.html"
+      ]
+    ],
+    "portable": false,
+    "final": false,
+    "limit": "636 ZIP-oppføringer blir 635 utpakkede filer på filsystem som ikke skiller store/små bokstaver. Den gamle gjennomgangsaliasen må få unikt recoverable arkivnavn før portabel sluttpakke.",
+    "evidence": "privat-bevis:eksport72-kvittering",
+    "rawPrivateNamesIncluded": false
+  },
+  "syntax": {
+    "scripts": 334,
+    "inline": 86,
+    "inlineIncludedInScripts": true,
+    "errors": 0,
+    "evidence": "privat-bevis:eksport72-syntaks",
+    "sha256": "f6c97c99a972c84940c802b21703ecb46b0bebdf7a86b4e4188d3c8308104552",
+    "rawPrivateNamesIncluded": false
+  },
+  "scope": "Eksport72 etter modelltilbakeføring og TEK-returretting. Egen korrigert skjemaprøve og sterk antallsprøve er kjørt. Gruppe/kildevalg er skyrapporterte; en sporadisk øktinngangsfeil og pågående fokus-/handlingsjobb er fortsatt åpne. Eksport71-historikken endres ikke. Ingen samlet godkjenning eller appimplementering.",
+  "ownChecks": {
+    "skjema": {
+      "result": "32/0",
+      "total": 32,
+      "passed": 32,
+      "failed": 0,
+      "exceptions": 0,
+      "completed": true,
+      "evidence": "privat-bevis:skjema-korrigert72",
+      "sha256": "adda5c373f4c203105ad7affc627933ba5c3c6d99b8e1a45b03de9df931550e5",
+      "rawPrivateNamesIncluded": false,
+      "testFile": "ui_kits/wb-skjema-repro.html",
+      "testSha256": "062ae3cb6726cc31a0136d4fb457cf595f907c5f1681d31f0d350d53a92e3fef",
+      "widths": [
+        1440
+      ],
+      "themes": [
+        "lyst"
+      ],
+      "limit": "Én egen fullført native kjøring består. Det utelukker ikke skyens rapporterte sporadiske feil eller gir full visuell/tema-/breddegodkjenning."
+    },
+    "antall": {
+      "result": "34/0",
+      "total": 34,
+      "passed": 34,
+      "failed": 0,
+      "exceptions": 0,
+      "completed": true,
+      "evidence": "privat-bevis:antall-sterk72",
+      "sha256": "bb8a699e56825ff97fe275734ad371a2ed1f252fd9ea231713611d1e656c5d90",
+      "rawPrivateNamesIncluded": false,
+      "testFile": "ui_kits/wb-antall-repro.html",
+      "testSha256": "4f10cc5e1a2829ab6ec417d1022224e88f974a37a8b1fbbbc55f161a000028f2",
+      "limit": "Sterk periode-/månedsprøve med full minne-/disk-/kilderef-kontroll. Merkede modellfixtures og feilinjeksjon er skilt fra native målhandlinger."
+    }
+  },
+  "nativeCoverage": [
+    {
+      "source": "privat-bevis:skjema-korrigert72",
+      "lines": [
+        7,
+        30
+      ],
+      "verified": "Native årsplan/periode/økt/tekniskplan-dato-/tidsfelt, norske datoer/etiketter, per-uke-antall/minutter og null/0. Avbryt, lagringsfeil/retry og valg beholder plan/eier/session og andre planer. Lagrede datoer er ISO; tom tid/varighet fabrikeres ikke."
+    },
+    {
+      "source": "privat-bevis:skjema-korrigert72",
+      "lines": [
+        31,
+        38
+      ],
+      "verified": "TEK Save0 når riktig kilde/ID/gyldighet og retur; 0 er kjent og skilt fra ukjent. Foreldet valgt plan gir ærlig velg-plan-tilstand uten fallback eller planskriving. Native gjenvalg/redigering/Avbryt gjelder akkurat valgt plan. Alle 32 kontrollpunkter nås."
+    },
+    {
+      "source": "privat-bevis:antall-sterk72",
+      "lines": [
+        6,
+        17
+      ],
+      "verified": "Native antallsutkast/publisering, PH-draftskjuling, uttrykkelig kildevalg uten standardeksempel, import til riktig måned med ref, nyere revisjon/sammenligning/Behold samt kvotefeil/retry bevarer økter og øvrige akser."
+    },
+    {
+      "source": "privat-bevis:antall-sterk72",
+      "lines": [
+        19,
+        39
+      ],
+      "verified": "Periodeimport og sammenligning prøves mot full femakset count/min/null/0/ref/markør-basis. Native Behold, Oppdater/kvotefeil/retry med én sekvensøkning, Avbryt/gjenåpning, Save/kvotefeil/retry, annen periode og reload bevarer hele planen/disk og TEK-kilde mens bare valgt annenakse endres. Sluttkontrollen nås."
+    }
+  ],
+  "setupFixtures": [
+    {
+      "source": "privat-bevis:skjema-korrigert72",
+      "kind": "merket-isolasjonsoppsett",
+      "detail": "To ekstra isolasjonsplaner og foreldet valgtplan-ID er direkte modellfixtures. Hovedskjemaene betjenes med UI-felt/knapper; direkte getter-/diskkontroll er resultatmåling."
+    },
+    {
+      "source": "privat-bevis:antall-sterk72",
+      "lines": [
+        18,
+        18
+      ],
+      "kind": "merket-periodeoppsett",
+      "detail": "To syntetiske perioder med full femakset count/min/null0-basis opprettes med modellfixture. Native import, sammenligning, redigering, Avbryt, Save, feil/retry og reload utføres etterpå. Dette beviser ikke native oppretting av grunnperiodene."
+    },
+    {
+      "source": "privat-bevis:antall-sterk72",
+      "kind": "negativ-lagringsfeilinjeksjon",
+      "detail": "Lagerskriving blokkeres målrettet for feilsteg. Native knapper utfører målhandling/retry; hele plan/ref/sekvens/disk brukes til kontroll av tilbakeføring og isolasjon."
+    }
+  ],
+  "modelAttestation": {
+    "source": "ui_kits/_shared/wb-model.js",
+    "sha256": "03487138b25330468ecb4715e70bdbb8f0d60d800ad2b5c8849ad29db6f3ca9c",
+    "restoredExactBytes": true,
+    "restoredToSha256": "03487138b25330468ecb4715e70bdbb8f0d60d800ad2b5c8849ad29db6f3ca9c",
+    "hiddenFallbackHelpersFrom71RemovedByByteRestoration": true,
+    "fresh121CaseRunAfterRestore": false,
+    "result": null,
+    "limit": "Beviset gjelder byteidentitet etter tilbakeføring. Ingen ny 121-tilfellers modellkjøring på disse eksport72-bytene er utført i denne delkontrollen.",
+    "previousDifferentModelRun": {
+      "export": 71,
+      "modelSha256": "0188f58ee0b45317c3dfd8cbfb257b0fd83f38045b961ed6c6b49c06968057ee",
+      "runnerSha256": "3bc876f491559abd0a56aef98b2a687dca3504d0a1cca2e1a8cd33838243f7a6",
+      "counts": {
+        "PASS": 120,
+        "FAIL": 0,
+        "SKIPPED": 1,
+        "ERROR": 0
+      },
+      "exitCodeReportedByCoordinator": 1,
+      "exitMeaning": "Ett åpent årsrammevalg ga SKIPPED og exit1; ikke modell-FAIL.",
+      "appliesToCurrentBytes": false,
+      "limit": "120PASS/0FAIL/1SKIP/0ERROR gjaldt eksport71 med andre0188-bytes. Resultatet flyttes ikke til eksport72."
+    }
+  },
+  "cloudChecks": {
+    "receipt": {
+      "evidence": "privat-bevis:sky-regresjon72-kvittering",
+      "sha256": "dd365d1bc0b4c0fa42be15c0d08a9bbf6343847603fa3c23cd87ea461f76db35",
+      "rawPrivateNamesIncluded": false
+    },
+    "schemaReportedResult": "32/0",
+    "antallReportedResult": "34/0",
+    "gruppeReportedResult": "20/0",
+    "kildevalgReportedResult": "19/0",
+    "ownGroupRunOnExport72": false,
+    "ownSourceChoiceRunOnExport72": false,
+    "sporadicSessionEntry": {
+      "reportedFailures": 2,
+      "reportedRuns": 7,
+      "trigger": "Etter Save av økt åpner Ny økt fra sidefeltet av og til uten at feltet okt-navn finnes.",
+      "causeKnown": false,
+      "reproducedWithCloudDiagnostic": false,
+      "sourceLines": [
+        488,
+        488
+      ],
+      "ownSingleSchemaPassDisprovesFlakiness": false,
+      "limit": "Skyen rapporterer to av sju kjøringer med denne feilen. Den er ikke avklart, ikke en egen root-frekvensmåling og ikke lukket av én bestått egen32-kjøring."
+    },
+    "visual": "Full natt-/320/768/1024- og øvrig visuell kontroll er ikke dokumentert ferdig; ingen ny Anders-godkjenning."
+  },
+  "sourceLimits": [
+    {
+      "source": "ui_kits/_shared/WB3-tek.jsx",
+      "sha256": "6d43334c0c7c3d7c3b1e050dd911cbe152f9771cc223fa40ecb2582160725898",
+      "limit": "TEK-returrettet kilde har nye bytes sammenlignet med71. Den egne32-prøven når TEK Save0/retur, og antall34 når nyere publisering/importevaluering. Dette er avgrensede native bevis; ingen backendpåstand."
+    },
+    {
+      "source": "ui_kits/wb-skjema-repro.html",
+      "sha256": "062ae3cb6726cc31a0136d4fb457cf595f907c5f1681d31f0d350d53a92e3fef",
+      "limit": "Dette er nøyaktig korrigert062ae3-prøve; tidligere24aff-forventninger om rådisk/navigasjon/legitim autoretur forblir historikk i71-auditen. Ingen forventning er svekket for å lukke den reelle71-regresjonen."
+    },
+    {
+      "source": "ui_kits/wb-antall-repro.html",
+      "sha256": "4f10cc5e1a2829ab6ec417d1022224e88f974a37a8b1fbbbc55f161a000028f2",
+      "limit": "Nøyaktig4f10 sterk prøve er eksportert og fullført med egen34/0. Periode-setup er fortsatt direkte fixture, ikke native opprettingsbevis."
+    }
+  ],
+  "pending": [
+    "Sporadisk Ny økt-fra-sidefeltet etter Save må diagnostiseres; årsaken er ukjent. Egen enkeltkjøring32/0 utelukker ikke problemet.",
+    "Skjema/fokus/ActionBar-jobben er sendt og pågår. Ingen egen eksportert ny kilde eller sluttkontroll av denne jobben registreres her.",
+    "Den skjerpede reviewpatch45 er fortsatt en lokal del; den er ikke bekreftet integrert i skyprosjektet.",
+    "Egne gruppe20/kilde19-prøver er ikke kjørt på eksport72; de registreres bare som skyrapportert.",
+    "Ingen ny121-modellkjøring etter tilbakeføring; det åpne årsrammevalget er fortsatt uavklart.",
+    "Gjennomgangsfilenes casealias må få unikt arkivnavn før portabel sluttpakke.",
+    "Ingen samlet ferdig-/frys-/godkjenningspåstand, app-/DB-/deployendring, commit eller push."
+  ],
+  "documentChecks": {
+    "json": "Gyldig JSON; fire kildekontrollsummer matcher faktisk eksport72, og private bevis-/kildekontrollsummer er beregnet. Rå privatnavn og rå feillogger er ikke kopiert.",
+    "prosjektSjekk": "npm run prosjekt:sjekk bestått: prosjektstruktur og lokale Markdown-lenker i 186 vedlikeholdte dokumenter. Daterte underlag er unntatt fra den generelle lenkekontrollen."
+  },
+  "focusedNyAfterSave": {
+    "result": "27/0",
+    "total": 27,
+    "passed": 27,
+    "failed": 0,
+    "completed": true,
+    "successfulCycles": 8,
+    "attemptedCycles": 8,
+    "reloadBetweenCycles": false,
+    "evidence": "privat-bevis:ny-oekt-etter-lagring72",
+    "evidenceSha256": "600d58f8200b55a6f92a2b3550857c3ddbed76de0327e14f63c4db6c2e8cb106",
+    "rawPrivateNamesIncluded": false,
+    "testFile": ".claude/local-design/wb-skjema-regresjon-kontroll-72/ui_kits/wb-ny-okt-etter-lagring-repro.html",
+    "testSha256": "39efeebaf56c1525b07c1304d3b007d2711037871fca550803e55c764ea5eeaf",
+    "includedInOriginalExport72": false,
+    "integratedInCloud": false,
+    "kind": "egen-ny-maalrettet-native-kontroll",
+    "nativeCoverage": "Faktisk Save av økt, første målrettede kvotefeil og samme retry, retur til valgt økt, Ny økt fra sidefeltet og native Avbryt/Forkast av nytt draft. Åtte sykluser i samme vert uten reload beholder rett eier/plan/uke/session, hele planen/disk og count/min/null/0; ingen autoøkt eller datatap.",
+    "setupFixture": {
+      "kind": "minimal-periode-modellfixture",
+      "detail": "Egen plan/periode og count TEK2/FYS0, min FYS0/SLAG30 og øvrige usatte akser settes direkte i oppsettet. Dette er ikke samme fullstendige native årsplan-/periode-/skjemaforløp som skyens 32-prøve."
+    },
+    "comparisonWithCloudReport": {
+      "sporadicIssueReproduced": false,
+      "rootCauseVerified": false,
+      "fixVerified": false,
+      "generalFlakinessResolved": false,
+      "limit": "Skyens 2/7-rapport blir stående som åpen. Den avgrensede 8/8-prøven gjenskapte ikke feilen og verifiserer verken årsak eller en generell retting."
+    }
+  }
+}

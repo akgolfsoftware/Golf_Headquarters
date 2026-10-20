@@ -1,0 +1,673 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-09-30",
+  "status": "WB1-mellomkontroll-ikke-ferdigmelding",
+  "scope": "Avgrenset kilde- og modellkontroll mens WB2 skrives separat; ingen endring av eksport, app, browser eller database.",
+  "sourceLabel": "mellomversjon-wb1",
+  "readFiles": [
+    {
+      "file": "ui_kits/_shared/wb-model.js",
+      "sha256": "95ecbeff06cc248381aa8c70b56bf3e1274b90ff0ed0e0f26cec65db8ca5e6b6",
+      "lines": 54
+    },
+    {
+      "file": "ui_kits/_shared/WB3-lokal.jsx",
+      "sha256": "d6a468075a764e109bd2d3fe5315221a0c865fbfa00b1a604d8c8010c33d5817",
+      "lines": 89
+    },
+    {
+      "file": "ui_kits/_shared/WB3-ar.jsx",
+      "sha256": "3a5e092babcb1063f3e01cc5f30b54c5a2311176e32e74f8fcd34d89c02e894a",
+      "lines": 272
+    },
+    {
+      "file": "ui_kits/wb1-reise.html",
+      "sha256": "cd3e15d8884d472ed66d241b083498cda345cada0ff4e3097ee191bd399ca2f2",
+      "lines": 53
+    },
+    {
+      "file": "ui_kits/playerhq/screen.html",
+      "sha256": "c6db9e7923c071bc4b2e7f6e9a81f605bb4f672a0f3c04a60b47d5101c3be2cc",
+      "lines": 86
+    },
+    {
+      "file": "ui_kits/agencyos/screen.html",
+      "sha256": "00c1ea0d8faf29fb25ab7e8b6a6b9b649432c7a949b9395f4d2edc6cb536b117",
+      "lines": 77
+    }
+  ],
+  "testExecution": {
+    "browserRunExecuted": false,
+    "reportedBrowserCountsVerified": false,
+    "method": "Leste UI-reisetestens kode; kjørte bare wb-model.js i isolert Node-vm med syntetiske verdier, ingen app/import/nettverk.",
+    "modelReplay": {
+      "ownerReadIsolated": true,
+      "periodNullVsZeroPreserved": true,
+      "week53AndYear1Present": true,
+      "editPeriodOutsideFrameAccepted": true,
+      "planFrameUnchangedAfterOutsideEdit": true,
+      "addSessionOutsideFrameAndNegativeMinutesAccepted": true
+    }
+  },
+  "positiveSourceObservations": [
+    {
+      "id": "local-source-order",
+      "finding": "Begge verter laster wb-model før data-wb3, WB3-lokal før WB3-ar og før WB3. Mid-wrapperen bruker lokal Panel på År/Periode/Måned/Uke. Ingen eldre effective-funksjon må leses som gjeldende: WB.effective overstyres på wb-model:52.",
+      "sourceEvidence": [
+        {
+          "file": "ui_kits/playerhq/screen.html",
+          "line": 28,
+          "sha256": "c6db9e7923c071bc4b2e7f6e9a81f605bb4f672a0f3c04a60b47d5101c3be2cc"
+        },
+        {
+          "file": "ui_kits/playerhq/screen.html",
+          "line": 75,
+          "sha256": "c6db9e7923c071bc4b2e7f6e9a81f605bb4f672a0f3c04a60b47d5101c3be2cc"
+        },
+        {
+          "file": "ui_kits/agencyos/screen.html",
+          "line": 31,
+          "sha256": "00c1ea0d8faf29fb25ab7e8b6a6b9b649432c7a949b9395f4d2edc6cb536b117"
+        },
+        {
+          "file": "ui_kits/agencyos/screen.html",
+          "line": 60,
+          "sha256": "00c1ea0d8faf29fb25ab7e8b6a6b9b649432c7a949b9395f4d2edc6cb536b117"
+        },
+        {
+          "file": "ui_kits/_shared/WB3-ar.jsx",
+          "line": 270,
+          "sha256": "3a5e092babcb1063f3e01cc5f30b54c5a2311176e32e74f8fcd34d89c02e894a"
+        },
+        {
+          "file": "ui_kits/_shared/wb-model.js",
+          "line": 52,
+          "sha256": "95ecbeff06cc248381aa8c70b56bf3e1274b90ff0ed0e0f26cec65db8ca5e6b6"
+        }
+      ]
+    },
+    {
+      "id": "period-null-zero",
+      "finding": "PerForm sine blanke antall/tid-felt blir null, eksplisitt0 blir0; Cnt viser — versus0. Måned/uke-UI fjerner blanke overstyringsnøkler før lagring slik at de arver. Dette ble kildekontrollert; isolert modellreplay bekreftet periode-null/0.",
+      "sourceEvidence": [
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 6,
+          "sha256": "d6a468075a764e109bd2d3fe5315221a0c865fbfa00b1a604d8c8010c33d5817"
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 7,
+          "sha256": "d6a468075a764e109bd2d3fe5315221a0c865fbfa00b1a604d8c8010c33d5817"
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 26,
+          "sha256": "d6a468075a764e109bd2d3fe5315221a0c865fbfa00b1a604d8c8010c33d5817"
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 43,
+          "sha256": "d6a468075a764e109bd2d3fe5315221a0c865fbfa00b1a604d8c8010c33d5817"
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 78,
+          "sha256": "d6a468075a764e109bd2d3fe5315221a0c865fbfa00b1a604d8c8010c33d5817"
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 83,
+          "sha256": "d6a468075a764e109bd2d3fe5315221a0c865fbfa00b1a604d8c8010c33d5817"
+        },
+        {
+          "file": "ui_kits/_shared/wb-model.js",
+          "line": 30,
+          "sha256": "95ecbeff06cc248381aa8c70b56bf3e1274b90ff0ed0e0f26cec65db8ca5e6b6"
+        }
+      ]
+    },
+    {
+      "id": "week-identity-basis",
+      "finding": "weeksInSeason bruker egne ISO-år/uke-nøkler og beregner alle uker. WeekPeriods viser alle overlappende perioder; periode→uke gir konkret grunnlag, og flere perioder uten valgt grunnlag blir velg. Eget grunnlag skiller periodearv. Replay bekreftet U53-2026 og U01-2027 som ulike nøkler.",
+      "sourceEvidence": [
+        {
+          "file": "ui_kits/_shared/wb-model.js",
+          "line": 8,
+          "sha256": "95ecbeff06cc248381aa8c70b56bf3e1274b90ff0ed0e0f26cec65db8ca5e6b6"
+        },
+        {
+          "file": "ui_kits/_shared/wb-model.js",
+          "line": 36,
+          "sha256": "95ecbeff06cc248381aa8c70b56bf3e1274b90ff0ed0e0f26cec65db8ca5e6b6"
+        },
+        {
+          "file": "ui_kits/_shared/wb-model.js",
+          "line": 47,
+          "sha256": "95ecbeff06cc248381aa8c70b56bf3e1274b90ff0ed0e0f26cec65db8ca5e6b6"
+        },
+        {
+          "file": "ui_kits/_shared/wb-model.js",
+          "line": 49,
+          "sha256": "95ecbeff06cc248381aa8c70b56bf3e1274b90ff0ed0e0f26cec65db8ca5e6b6"
+        },
+        {
+          "file": "ui_kits/_shared/wb-model.js",
+          "line": 51,
+          "sha256": "95ecbeff06cc248381aa8c70b56bf3e1274b90ff0ed0e0f26cec65db8ca5e6b6"
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 67,
+          "sha256": "d6a468075a764e109bd2d3fe5315221a0c865fbfa00b1a604d8c8010c33d5817"
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 73,
+          "sha256": "d6a468075a764e109bd2d3fe5315221a0c865fbfa00b1a604d8c8010c33d5817"
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 82,
+          "sha256": "d6a468075a764e109bd2d3fe5315221a0c865fbfa00b1a604d8c8010c33d5817"
+        }
+      ]
+    },
+    {
+      "id": "test-ui-scope",
+      "finding": "Mange teststeg klikker faktiske DOM-knapper og setter React-input med native setter + input/change-event. Opprett plan, periodeskjema, mål og overstyringsknapper er reelle UI-steg i testkilden. Dette er ikke en ny kjøring eller resultatbekreftelse av testen.",
+      "sourceEvidence": [
+        {
+          "file": "ui_kits/wb1-reise.html",
+          "line": 3,
+          "sha256": "cd3e15d8884d472ed66d241b083498cda345cada0ff4e3097ee191bd399ca2f2"
+        },
+        {
+          "file": "ui_kits/wb1-reise.html",
+          "line": 5,
+          "sha256": "cd3e15d8884d472ed66d241b083498cda345cada0ff4e3097ee191bd399ca2f2"
+        },
+        {
+          "file": "ui_kits/wb1-reise.html",
+          "line": 8,
+          "sha256": "cd3e15d8884d472ed66d241b083498cda345cada0ff4e3097ee191bd399ca2f2"
+        },
+        {
+          "file": "ui_kits/wb1-reise.html",
+          "line": 13,
+          "sha256": "cd3e15d8884d472ed66d241b083498cda345cada0ff4e3097ee191bd399ca2f2"
+        },
+        {
+          "file": "ui_kits/wb1-reise.html",
+          "line": 19,
+          "sha256": "cd3e15d8884d472ed66d241b083498cda345cada0ff4e3097ee191bd399ca2f2"
+        },
+        {
+          "file": "ui_kits/wb1-reise.html",
+          "line": 33,
+          "sha256": "cd3e15d8884d472ed66d241b083498cda345cada0ff4e3097ee191bd399ca2f2"
+        },
+        {
+          "file": "ui_kits/wb1-reise.html",
+          "line": 46,
+          "sha256": "cd3e15d8884d472ed66d241b083498cda345cada0ff4e3097ee191bd399ca2f2"
+        }
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "id": "wb1-test-direct-session",
+      "severity": "P1",
+      "title": "Reisetesten oppretter økta direkte uten brukerknapp",
+      "finding": "wb1-reise:31 kaller WB.addSession på modellen og trigger så rerender med uke-knapper. Ukevisningen viser bare tekstspan for økter, uten Ny økt-knapp/editor i denne WB1-kilden. Kontrollteksten om faktisk lokal økt dokumenterer beregning på injisert testdata, ikke brukerreise for øktoppretting.",
+      "sourceEvidence": [
+        {
+          "file": "ui_kits/wb1-reise.html",
+          "line": 31,
+          "sha256": "cd3e15d8884d472ed66d241b083498cda345cada0ff4e3097ee191bd399ca2f2"
+        },
+        {
+          "file": "ui_kits/wb1-reise.html",
+          "line": 32,
+          "sha256": "cd3e15d8884d472ed66d241b083498cda345cada0ff4e3097ee191bd399ca2f2"
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 85,
+          "sha256": "d6a468075a764e109bd2d3fe5315221a0c865fbfa00b1a604d8c8010c33d5817"
+        }
+      ],
+      "reproduction": "Følg testen: modellinnsetting skjer før neste/forrige uke. Økta kommer ikke fra et UI-skjema.",
+      "evidenceScope": "WB1-eksport-kilde",
+      "implementationFixVerified": false
+    },
+    {
+      "id": "wb1-test-reset-assert",
+      "severity": "P1",
+      "title": "Tilbakestill-test kan bli grønn uten riktig UI-resultat",
+      "finding": "assert på linje35 har formen (UI-arvet4 && !budsjett) || Object.keys(budsjett||{}).length===0. Et tomt budsjettobjekt gjør hele kontrollen sann selv om UI ikke viser arvet4. Teksten hevder kontroll av periodearv; uttrykket kan hoppe over den.",
+      "sourceEvidence": [
+        {
+          "file": "ui_kits/wb1-reise.html",
+          "line": 35,
+          "sha256": "cd3e15d8884d472ed66d241b083498cda345cada0ff4e3097ee191bd399ca2f2"
+        }
+      ],
+      "reproduction": "La UI-vilkåret være false og budsjettobjektet være {}; sluttdelen blir true. Dette er en logisk kildekontroll, ikke browsermutasjon.",
+      "evidenceScope": "WB1-eksport-kilde",
+      "implementationFixVerified": false
+    },
+    {
+      "id": "wb1-test-week-or-true",
+      "severity": "P1",
+      "title": "Uke50-test har ubetinget true i ventebetingelsen",
+      "finding": "until-betingelsen på linje37 slutter med ||true. Den venter dermed ikke på modellbetingelsen, og kontrollen bekrefter kun U50=5 etterpå. At U41 er urørt, som uttrykket forsøker å sjekke, er ikke et krav for grønt resultat.",
+      "sourceEvidence": [
+        {
+          "file": "ui_kits/wb1-reise.html",
+          "line": 37,
+          "sha256": "cd3e15d8884d472ed66d241b083498cda345cada0ff4e3097ee191bd399ca2f2"
+        }
+      ],
+      "reproduction": "Etter await until(...||true) sjekkes bare P().uker[U50].budsjett.tek===5. Sett egen kontroll av U41 og fjern tautologien.",
+      "evidenceScope": "WB1-eksport-kilde",
+      "implementationFixVerified": false
+    },
+    {
+      "id": "wb1-demo-level-test",
+      "severity": "P1",
+      "title": "Test hevder beholdt nivå selv om planbytte velger År",
+      "finding": "Panel.pick setter setLevel(ar) ved valg demo fra måned/uke. Testlinje48 sier valgt nivå beholdt, men sjekker bare valgt planId og uker/måneder i modellen. Den kontrollerer aldri aria-selected nivå eller aktiv måned/uke, og er derfor misvisende.",
+      "sourceEvidence": [
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 47,
+          "sha256": "d6a468075a764e109bd2d3fe5315221a0c865fbfa00b1a604d8c8010c33d5817"
+        },
+        {
+          "file": "ui_kits/wb1-reise.html",
+          "line": 47,
+          "sha256": "cd3e15d8884d472ed66d241b083498cda345cada0ff4e3097ee191bd399ca2f2"
+        },
+        {
+          "file": "ui_kits/wb1-reise.html",
+          "line": 48,
+          "sha256": "cd3e15d8884d472ed66d241b083498cda345cada0ff4e3097ee191bd399ca2f2"
+        }
+      ],
+      "reproduction": "Åpne måned → velg Demo → velg egen plan. Kildekontroll: pick endrer nivå til ar; testen kontrollerer ikke nivået.",
+      "evidenceScope": "WB1-eksport-kilde",
+      "implementationFixVerified": false
+    },
+    {
+      "id": "wb1-override-plan-id",
+      "severity": "P1",
+      "title": "Overstyringseditor identifiseres uten eier/plan-ID",
+      "finding": "Ovr sin React-state initieres fra ov/ovM og oppdateres bare når id endres. Måneds-id er m+ym; ukes-id er u+wk.key+grunnlagskind+eventuell periodId. To planer på samme måned har dermed samme editor-id, og ved planbytte på samme mnd-nivå kan editorfeltene fra forrige plan beholdes mens onSave nå skriver til ny pid. Ukefelter kan tilsvarende kollidere ved eget/ingen grunnlag. Dette krever UI-kontroll, men følger av kilde uten key eller planId/owner i resetavhengighet.",
+      "sourceEvidence": [
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 46,
+          "sha256": "d6a468075a764e109bd2d3fe5315221a0c865fbfa00b1a604d8c8010c33d5817"
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 47,
+          "sha256": "d6a468075a764e109bd2d3fe5315221a0c865fbfa00b1a604d8c8010c33d5817"
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 57,
+          "sha256": "d6a468075a764e109bd2d3fe5315221a0c865fbfa00b1a604d8c8010c33d5817"
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 58,
+          "sha256": "d6a468075a764e109bd2d3fe5315221a0c865fbfa00b1a604d8c8010c33d5817"
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 78,
+          "sha256": "d6a468075a764e109bd2d3fe5315221a0c865fbfa00b1a604d8c8010c33d5817"
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 83,
+          "sha256": "d6a468075a764e109bd2d3fe5315221a0c865fbfa00b1a604d8c8010c33d5817"
+        }
+      ],
+      "reproduction": "Lag planA og planB med samme sesong. Åpne samme måned, fyll et eget utkast i A, bytt til B uten unmount. Kontroller at feltene resettes eller bevares som utkast eid av A, aldri lagres i B.",
+      "evidenceScope": "kildebasert-React-risiko-ikke-nettleserprøvd",
+      "implementationFixVerified": false
+    },
+    {
+      "id": "wb1-edit-period-outside",
+      "severity": "P1",
+      "title": "Redigert periode kan havne utenfor årsplan uten rammevalg",
+      "finding": "addPeriod krever utvidAar eller avviser utenfor rammen. editPeriod validerer datoorden og tall, men kontrollerer ikke planens fra/til og bruker ikke patch.utvidAar. Samme PerForm sender dette feltet, men redigering godtar en dato utenfor rammen uten å utvide planen. Replay av den isolerte modellen bekreftet dette.",
+      "sourceEvidence": [
+        {
+          "file": "ui_kits/_shared/wb-model.js",
+          "line": 29,
+          "sha256": "95ecbeff06cc248381aa8c70b56bf3e1274b90ff0ed0e0f26cec65db8ca5e6b6"
+        },
+        {
+          "file": "ui_kits/_shared/wb-model.js",
+          "line": 32,
+          "sha256": "95ecbeff06cc248381aa8c70b56bf3e1274b90ff0ed0e0f26cec65db8ca5e6b6"
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 26,
+          "sha256": "d6a468075a764e109bd2d3fe5315221a0c865fbfa00b1a604d8c8010c33d5817"
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 38,
+          "sha256": "d6a468075a764e109bd2d3fe5315221a0c865fbfa00b1a604d8c8010c33d5817"
+        }
+      ],
+      "reproduction": "Plan 2026-10-01–2027-03-31, lag periode innenfor. editPeriod(fra=2026-09-01,til=2027-05-31) gir ok:true, mens planrammen er uendret.",
+      "evidenceScope": "kilde-og-isolert-modellreplay-ingen-app-eller-browser",
+      "implementationFixVerified": false
+    },
+    {
+      "id": "wb1-week-select-month-context",
+      "severity": "P2",
+      "title": "Ukevelger oppdaterer ikke valgt måned",
+      "finding": "goWeek og uke-forrige/neste oppdaterer st.mks[pid] til valgt ukes måned, men uke-select oppdaterer bare st.wks[pid]. Etter direkte ukevalg og deretter nivå Måned kan en gammel måned åpnes, forskjellig fra uken brukeren nettopp valgte.",
+      "sourceEvidence": [
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 67,
+          "sha256": "d6a468075a764e109bd2d3fe5315221a0c865fbfa00b1a604d8c8010c33d5817"
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 81,
+          "sha256": "d6a468075a764e109bd2d3fe5315221a0c865fbfa00b1a604d8c8010c33d5817"
+        }
+      ],
+      "reproduction": "Åpne oktober, velg U50 via ukevelger, åpne Måned. st.mks er fortsatt oktober med mindre annen navigasjon oppdaterte den.",
+      "evidenceScope": "WB1-eksport-kilde",
+      "implementationFixVerified": false
+    },
+    {
+      "id": "wb1-month-week-budget-gap",
+      "severity": "P2",
+      "title": "Måned har ett flatt budsjett fremfor redigering per uke",
+      "finding": "Månedens Planlegg måned inneholder bare én Ovr for ym; setOverride lagrer én maaneder[ym]-verdi som alle ukene med torsdag i denne måneden bruker. Uker i måneden er knapper, uten hver ukes antall/tid-editor i månedsflaten. Uker som vises i både måneder, får kilde fra torsdagens måned, uten at UI forklarer denne regelen.",
+      "sourceEvidence": [
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 74,
+          "sha256": "d6a468075a764e109bd2d3fe5315221a0c865fbfa00b1a604d8c8010c33d5817"
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 76,
+          "sha256": "d6a468075a764e109bd2d3fe5315221a0c865fbfa00b1a604d8c8010c33d5817"
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 78,
+          "sha256": "d6a468075a764e109bd2d3fe5315221a0c865fbfa00b1a604d8c8010c33d5817"
+        },
+        {
+          "file": "ui_kits/_shared/wb-model.js",
+          "line": 37,
+          "sha256": "95ecbeff06cc248381aa8c70b56bf3e1274b90ff0ed0e0f26cec65db8ca5e6b6"
+        },
+        {
+          "file": "ui_kits/_shared/wb-model.js",
+          "line": 46,
+          "sha256": "95ecbeff06cc248381aa8c70b56bf3e1274b90ff0ed0e0f26cec65db8ca5e6b6"
+        },
+        {
+          "file": "ui_kits/_shared/wb-model.js",
+          "line": 52,
+          "sha256": "95ecbeff06cc248381aa8c70b56bf3e1274b90ff0ed0e0f26cec65db8ca5e6b6"
+        }
+      ],
+      "reproduction": "Januar kan vise U53-2026 fordi den overlapper januar, men effective bruker desember når torsdag ligger i desember. Et januarbudsjett gjelder da ikke denne synlige uka; vis faktisk kilde og avklar per-uke-fordeling.",
+      "evidenceScope": "WB1-eksport-kilde",
+      "implementationFixVerified": false
+    },
+    {
+      "id": "wb1-unset-duration-to-zero",
+      "severity": "P2",
+      "title": "Manglende øktvarighet blir0 i tidsoppsummeringen",
+      "finding": "addSession tillater minutter=null. weekStatus summerer (s.minutter||0) og rapporterer tid_plassert=0 også når en plassert økt mangler varighet. Øktraden skjuler dessuten både null og eksplisitt0 via sannhetsverdi. Dette skiller ikke ukjent tid fra faktisk0 selv om budsjettfeltene gjør det.",
+      "sourceEvidence": [
+        {
+          "file": "ui_kits/_shared/wb-model.js",
+          "line": 42,
+          "sha256": "95ecbeff06cc248381aa8c70b56bf3e1274b90ff0ed0e0f26cec65db8ca5e6b6"
+        },
+        {
+          "file": "ui_kits/_shared/wb-model.js",
+          "line": 43,
+          "sha256": "95ecbeff06cc248381aa8c70b56bf3e1274b90ff0ed0e0f26cec65db8ca5e6b6"
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 85,
+          "sha256": "d6a468075a764e109bd2d3fe5315221a0c865fbfa00b1a604d8c8010c33d5817"
+        }
+      ],
+      "reproduction": "Opprett lokal modelløkt uten minutter. Antall plassert blir1, tid_plassert0; den manglende varigheten er ikke synlig i summeringen.",
+      "evidenceScope": "WB1-eksport-kilde",
+      "implementationFixVerified": false
+    },
+    {
+      "id": "wb1-template-summary",
+      "severity": "P2",
+      "title": "Veiledersammendrag sier ingen perioder også når malen oppretter dem",
+      "finding": "Create steg3 viser alltid Ingen perioder, økter eller mengder legges inn automatisk. createPlan kopierer derimot de valgte malperiodene. Testlinje50 forventer nettopp3 opprettede perioder for sesong-malen. Sammendraget må skille Tom plan fra valgt mal.",
+      "sourceEvidence": [
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 19,
+          "sha256": "d6a468075a764e109bd2d3fe5315221a0c865fbfa00b1a604d8c8010c33d5817"
+        },
+        {
+          "file": "ui_kits/_shared/wb-model.js",
+          "line": 20,
+          "sha256": "95ecbeff06cc248381aa8c70b56bf3e1274b90ff0ed0e0f26cec65db8ca5e6b6"
+        },
+        {
+          "file": "ui_kits/wb1-reise.html",
+          "line": 49,
+          "sha256": "cd3e15d8884d472ed66d241b083498cda345cada0ff4e3097ee191bd399ca2f2"
+        },
+        {
+          "file": "ui_kits/wb1-reise.html",
+          "line": 50,
+          "sha256": "cd3e15d8884d472ed66d241b083498cda345cada0ff4e3097ee191bd399ca2f2"
+        }
+      ],
+      "reproduction": "Velg Standard sesong og gyldig hel sesong. Sammendraget sier ingen perioder; etter lagring har planen3.",
+      "evidenceScope": "WB1-eksport-kilde",
+      "implementationFixVerified": false
+    },
+    {
+      "id": "wb1-owner-reset-not-covered",
+      "severity": "P2",
+      "title": "Eierbytte og to forskjellige planer er ikke kontrollert av testen",
+      "finding": "Modellen har korrekt plansFor(owner)/getPlan(owner,planId) for lesing, men testen bruker første WB_SEL-nøkkel og én aktiv eier per vert, og bytter bare mellom demo og egen plan. Panel-state view/perId og Create/PerForm initialiseres ved mount uten owner/plan-key eller reset på eierbytte. Det må testes med samme monterte flate før owner-isolasjon kan ferdigmeldes.",
+      "sourceEvidence": [
+        {
+          "file": "ui_kits/_shared/wb-model.js",
+          "line": 23,
+          "sha256": "95ecbeff06cc248381aa8c70b56bf3e1274b90ff0ed0e0f26cec65db8ca5e6b6"
+        },
+        {
+          "file": "ui_kits/_shared/wb-model.js",
+          "line": 24,
+          "sha256": "95ecbeff06cc248381aa8c70b56bf3e1274b90ff0ed0e0f26cec65db8ca5e6b6"
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 12,
+          "sha256": "d6a468075a764e109bd2d3fe5315221a0c865fbfa00b1a604d8c8010c33d5817"
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 25,
+          "sha256": "d6a468075a764e109bd2d3fe5315221a0c865fbfa00b1a604d8c8010c33d5817"
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 45,
+          "sha256": "d6a468075a764e109bd2d3fe5315221a0c865fbfa00b1a604d8c8010c33d5817"
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 46,
+          "sha256": "d6a468075a764e109bd2d3fe5315221a0c865fbfa00b1a604d8c8010c33d5817"
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 49,
+          "sha256": "d6a468075a764e109bd2d3fe5315221a0c865fbfa00b1a604d8c8010c33d5817"
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 51,
+          "sha256": "d6a468075a764e109bd2d3fe5315221a0c865fbfa00b1a604d8c8010c33d5817"
+        },
+        {
+          "file": "ui_kits/wb1-reise.html",
+          "line": 15,
+          "sha256": "cd3e15d8884d472ed66d241b083498cda345cada0ff4e3097ee191bd399ca2f2"
+        },
+        {
+          "file": "ui_kits/wb1-reise.html",
+          "line": 48,
+          "sha256": "cd3e15d8884d472ed66d241b083498cda345cada0ff4e3097ee191bd399ca2f2"
+        }
+      ],
+      "reproduction": "Åpne ulagret periode/årsplanutkast for eierA, bytt eier via vertens faktiske velger, og prøv lagre/avbryt. Dette er foreslått kontroll, ikke utført browserprøve.",
+      "evidenceScope": "kildemangel-og-ukontrollert-React-kontekst",
+      "implementationFixVerified": false
+    },
+    {
+      "id": "wb1-period-control-id",
+      "severity": "P2",
+      "title": "Periodekontroll bruker type fremfor periodId som instansidentitet",
+      "finding": "Listeknappens handler binder riktig p.id, men data-wb er per-+p.type. Flere perioder av samme type får samme kontroll-ID, og testens querySelector klikker første match. Et eksakt knappkart må binde periodId og samme type med flere forekomster.",
+      "sourceEvidence": [
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 70,
+          "sha256": "d6a468075a764e109bd2d3fe5315221a0c865fbfa00b1a604d8c8010c33d5817"
+        },
+        {
+          "file": "ui_kits/wb1-reise.html",
+          "line": 28,
+          "sha256": "cd3e15d8884d472ed66d241b083498cda345cada0ff4e3097ee191bd399ca2f2"
+        }
+      ],
+      "reproduction": "Lag to Grunnperioder i samme plan og kontroller hver av de to konkrete periodId-ene med unik instansbinding.",
+      "evidenceScope": "WB1-eksport-kilde",
+      "implementationFixVerified": false
+    },
+    {
+      "id": "wb1-button-role-listitem",
+      "severity": "P1",
+      "title": "Navigasjonsknapper mister knappesemantikk",
+      "finding": "Perioder er HTML-button med role=listitem; måned- og ukevalg har Button role=listitem. Dette overstyrer button-rollen i tilgjengelighetstreet selv om onClick virker. Primærens manuelle UI viser listitem/generic fremfor knapp. Listitem hører til omslaget, mens selve kontrollen skal beholde knappesemantikk.",
+      "sourceEvidence": [
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 70,
+          "sha256": "d6a468075a764e109bd2d3fe5315221a0c865fbfa00b1a604d8c8010c33d5817"
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 72,
+          "sha256": "d6a468075a764e109bd2d3fe5315221a0c865fbfa00b1a604d8c8010c33d5817"
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 73,
+          "sha256": "d6a468075a764e109bd2d3fe5315221a0c865fbfa00b1a604d8c8010c33d5817"
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 76,
+          "sha256": "d6a468075a764e109bd2d3fe5315221a0c865fbfa00b1a604d8c8010c33d5817"
+        }
+      ],
+      "evidenceScope": "egen-kildekontroll-og-primærens-rapporterte-manuelle-UI",
+      "implementationFixVerified": false
+    },
+    {
+      "id": "wb1-duplicate-create-demo",
+      "severity": "P1",
+      "title": "Demo har to Opprett årsplan som åpner forskjellige modeller",
+      "finding": "Lokal Panel viser planvelger og Opprett årsplan, og ved valgt demo viser den også MidDemo. MidDemo har sin egen Opprett årsplan som setter yp.wiz, mens den lokale knappen åpner Create og WB.createPlan. Samme etikett gir dermed to parallelle opprettingsveier/modeller. Primærens UI bekrefter de to knappene.",
+      "sourceEvidence": [
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 48,
+          "sha256": "d6a468075a764e109bd2d3fe5315221a0c865fbfa00b1a604d8c8010c33d5817"
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 49,
+          "sha256": "d6a468075a764e109bd2d3fe5315221a0c865fbfa00b1a604d8c8010c33d5817"
+        },
+        {
+          "file": "ui_kits/_shared/WB3-lokal.jsx",
+          "line": 50,
+          "sha256": "d6a468075a764e109bd2d3fe5315221a0c865fbfa00b1a604d8c8010c33d5817"
+        },
+        {
+          "file": "ui_kits/_shared/WB3-ar.jsx",
+          "line": 100,
+          "sha256": "3a5e092babcb1063f3e01cc5f30b54c5a2311176e32e74f8fcd34d89c02e894a"
+        },
+        {
+          "file": "ui_kits/_shared/WB3-ar.jsx",
+          "line": 118,
+          "sha256": "3a5e092babcb1063f3e01cc5f30b54c5a2311176e32e74f8fcd34d89c02e894a"
+        }
+      ],
+      "evidenceScope": "egen-kildekontroll-og-primærens-rapporterte-manuelle-UI",
+      "implementationFixVerified": false
+    },
+    {
+      "id": "wb1-group-banner-report",
+      "severity": "P1",
+      "title": "Gruppeautomatikkbanner er rapportert synlig i egen tom plan",
+      "finding": "Primæragentens manuelle UI viste fortsatt WANG-gruppeautomatikkbanner i egen tom plan. Bannerets kilde ligger utenfor de seks filene i denne avgrensede lesekontrollen, og er derfor ikke kildebekreftet her. Det må skilles fra at faktisk gruppeøkter finnes i den valgte planen.",
+      "sourceEvidence": [],
+      "reportedEvidence": {
+        "actor": "primæragent /root",
+        "method": "manuell UI",
+        "observation": "WANG-gruppeautomatikkbanner fortsatt synlig i egen tom plan",
+        "screenshotOrSourceReference": "Ikke oversendt til denne deloppgaven"
+      },
+      "evidenceScope": "primærens-rapporterte-UI-ikke-egen-browser-eller-kildebekreftelse",
+      "implementationFixVerified": false
+    }
+  ],
+  "coverageLimits": [
+    "WB3.jsx, rolle-skjermer og øvrige moduler ble ikke undersøkt i denne avgrensede oppgaven; faktisk caller/remount ved ownerbytte er derfor ikke runtimeverifisert.",
+    "WB2/endringer etter denne eksporten er ikke vurdert.",
+    "Ingen full ende-til-ende-øktoppretting, PII, autentisert appprøve eller visuell godkjenning.",
+    "En lokal modelltest og UI-testkilde er ikke bevis på appens lagring/tilgang."
+  ],
+  "nextChecks": [
+    "Reparer de tre misvisende assert/nav-påstandene og merk direkte modellfixture som fixture, eller erstatt med ekte øktoppretting i WB2.",
+    "Gjør owner/plan del av editoridentiteten og kontroller utkast ved samme-måned/samme-uke planbytte.",
+    "Kontroller redigert perioderamme med samme utvid/endre-valg som ved oppretting.",
+    "Kontroller direkte ukevalg→Måned og per-ukebudsjett med synlig faktisk månedskilde.",
+    "Ta fersk eksport av WB2 og prøv reisen via faktiske kontroller; bevar denne WB1-rapporten som datert observasjon.",
+    "Behold button-rolle på periode/måned/uke-kontroller; listitem brukes på omslag.",
+    "Fjern den parallelle gamle Opprettårsplan-veien fra aktiv demo, eller gi én eksplisitt opprettingskilde.",
+    "Kontroller gruppeautomatikkbanner og øvrig sidefelt mot valgt lokal eier/årsplan, inklusive tom plan uten gruppeøkter."
+  ]
+}

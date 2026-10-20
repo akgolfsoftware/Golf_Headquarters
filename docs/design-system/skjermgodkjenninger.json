@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "design_project_id": "7d7c2994-cf63-4c5f-9bdc-fdaf67655a70",
+  "godkjenninger": [
+    {
+      "id": "ph-01-390-lyst-endring-plan-2026-09-30",
+      "skjerm_id": "PH-01",
+      "navn": "I dag",
+      "status": "design-godkjent-i-vist-tilstand",
+      "godkjent_av": "Anders Kristiansen",
+      "registrert": "2026-09-30T11:36:05+02:00",
+      "brukerens_beskjed": "Skjerm i screen shot er godkjent",
+      "referanse": {
+        "type": "skjermbilde",
+        "privat_fil": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/godkjent-ph-01-390-lyst-endring-plan-2026-09-30.png",
+        "sha256": "c94cf4471c08437103ac8ffca4d85558cc3b8f0e6fabb8813000e25783efb926",
+        "bildebredde_px": 1905,
+        "bildehoyde_px": 1020,
+        "katalog": "ui_kits/playerhq/index.html",
+        "css_bredde_px": 390,
+        "tema": "lyst",
+        "tilstand": "data",
+        "overlegg": "Endring i dagens plan",
+        "overlegg_status": "åpent",
+        "canvas_zoom_prosent": 75
+      },
+      "omfang": "Synlig utforming i det godkjente skjermbildet, inkludert åpen dialog og synlig bakgrunn.",
+      "andre_visninger": "ikke-vurdert",
+      "appfunksjon": "ikke-verifisert-av-denne-godkjenningen",
+      "kildeeksport_for_bygging": "må knyttes til den godkjente bildereferansen; dagens levende prosjekt er ikke frosset av denne registreringen",
+      "kodegrunnlag_analyse": "110b4ec8f"
+    }
+  ]
+}

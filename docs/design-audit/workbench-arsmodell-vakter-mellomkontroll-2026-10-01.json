@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "fire-arsmodellfeil-rettet-98-pass-rammevalg-apent",
+  "export": {
+    "zip": "/Users/anderskristiansen/Downloads/AK Golf Precision Athletics (45).zip",
+    "root": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-arsmodell-vakter",
+    "sha256": "86fe3f3a2efb0971b434668fc193108366b2abdce262484c7dd6842b54077581",
+    "files": 613,
+    "exportedAt": "2026-10-01T05:03:05.059685+00:00"
+  },
+  "syntax": {
+    "scripts": 312,
+    "inline": 69,
+    "inlineIncludedInScripts": true,
+    "syntax_errors": 0,
+    "errors": []
+  },
+  "model": {
+    "total": 99,
+    "pass": 98,
+    "fail": 0,
+    "skip": 1,
+    "error": 0,
+    "modelSha256": "a8653f9347dd84aef30225f4c3c167cfe12d950640d57e9754bd784a39835328",
+    "runnerSha256": "9bede65a3fa635b3f706aa67a4fe79003266e7b1f8e18c5f0e6836465dfabc39",
+    "same99Unchanged": true,
+    "fourYearFailuresResolved": true,
+    "sourceSevenPass": true,
+    "remainingSkip": "Årsrammeforkorting med budsjett/mål/basis utenforramme avventer Anders valg: synlig historikk/restore eller stopp. Ikke bestått, ingen nykontrakt/bygging."
+  },
+  "ownProbe": {
+    "checks": 7,
+    "failures": 0,
+    "proofSha256": "bbb4fac09c6467b5e7e6268eb02528a1c2dcf8450156f96fdb702d666e08fe73",
+    "nativeUI": "To kontroller: faktisk år-redigeringsskjema navn+til-dato failbevarerfelt/plan/minne/disk/perioder; retry lagrer endring og SPILL0 står.",
+    "model": "Fire modellkontroller: identiskreqretry/nyintent avvist/nyID, tre fremmede eier-IDavvisninger, egenremove+undo. Ingen oppfunnetUIknapp.",
+    "reload": "Nyvert beholder siste navnedato og periode.",
+    "limits": [
+      "Ikke fullårsreise, rammekrymp over innhold, nativeperiodefjerning/angre/mål eller PHårsedit.",
+      "ReqID/eierbevisene er modellkontroller, ikke syv nativeknapper."
+    ]
+  },
+  "active": "Gruppens publiserte antall til personligplan, deretter gruppeøkt→egenversjon i eksplisittandre egenårsplan med separatgrunnlag; fullår senere med produktvalget. Resten av godkjent designscope fortsetter.",
+  "resources": "Egenfane1416028676/server87769lukket.",
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false
+}

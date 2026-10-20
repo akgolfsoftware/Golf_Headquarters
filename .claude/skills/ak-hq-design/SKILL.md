@@ -2,8 +2,8 @@
 name: ak-hq-design
 description: "Planlegg, tegn og vurder AK Golf HQs brukerreiser, komponenter, wireframes og responsive UI, og klargjør en sammenhengende designoverlevering. Bruk ved designarbeid i PlayerHQ, AgencyOS, booking, marked, forelder og øvrige flater i dette prosjektet."
 metadata:
-  version: "6"
-  reviewed: "2026-09-21"
+  version: "7"
+  reviewed: "2026-09-30"
   short-description: "Samlet designarbeid for hele AK Golf HQ"
 ---
 
@@ -17,6 +17,7 @@ Utvikle et presist og lett forståelig golfprodukt. Arbeid fra faktiske brukerop
 - Train-lock og Paper er utgående. Bruk dem bare som historikk og funksjonsinventar, aldri som visuell kilde eller skjult standard. Ikke spør Anders på nytt om de skal gjelde.
 - Viderefør siste faktiske versjon i «AK Golf Precision Athletics» og bevar nyere rettinger. «App design» (`830e7bce`) finnes ikke lenger. Historiske designpakker, ZIP-instrukser og skill-eksempler er ikke nye valg. En konkret skjermvariant er et forslag inntil Anders velger den for bygging.
 - Team Norway har sitt eget språk for egne `/team-norway/*`-skjermer: Claude Design-prosjektet «Team Norway App» (Anders 22.09.2026, [beslutninger.md](../../rules/beslutninger.md) §TEAM NORWAY-APPEN BYTTER DESIGNSPRÅK). Jost/Lato, hjørner 0 · 2 · 4, ingen skygger, navy skinne, rød `#D70232`. Claw-valget 13.09 er historikk. Valget omfatter hele profilen, ikke bare aksentfargen.
+- Begreper og planregler følger [treningsplanlegging](../../../docs/treningsplanlegging.md), inkludert nyere avklaringer. Eldre eksempelregler i Training Motor kan ikke innføre progresjonssperrer eller automatisk publisering.
 - I repoet: les `AGENTS.md`, `docs/platform/AGENT-BRIEF.md` og aktuell `designsystem/README.md`. Bruk produktregler og fagordbøker for funksjon og begreper; eldre visuelle regler i dem er underordnet den siste designavklaringen.
 - I Claude Design eller annet miljø uten repo: bruk det vedlagte inventaret og konteksten nedenfor. Si hva du kan se. Et eksportert filinventar beviser ikke tilgang, ferdig kode eller funksjon.
 - En ny designleveranse er et forslag inntil Anders velger den for den aktuelle byggeoppgaven. Bruk allerede avklarte valg; ikke innfør gjentatte godkjenningsstopp for rutinearbeid.
@@ -41,12 +42,20 @@ Les bare underlaget oppgaven krever. En liten knappeendring skal ikke utløse en
 
 1. **Kartlegg:** knytt faktiske ruter, modalvinduer, roller og systemtilstander til brukerreiser og skjermfamilier. Bevar alle funksjoner. Et gammelt rutenavn er ikke tillatelse til sletting. Se inventaret og skjermomfanget.
 2. **Wireframe:** tegn informasjonsrekkefølge, hovedhandling, navigasjon og relevante tilstander før detaljering. Vis samme oppgave på mobil og bred skjerm. Bruk felles mønstre med dokumenterte unntak.
-3. **Kalibrer retningen:** start med AgencyOS Hjem, spillerreisen I dag → økt → Live → oppsummering og en Analyse-skjerm når oppgaven gjelder Design System v0.1. Skill faglige kvalitetskrav fra visuelle forslag. Bruk sportslig energi, operativ ro og fokusmodus som deler av samme system, ikke som separate stiler.
+3. **Kontroller videreføringen:** bruk siste Precision Athletics-versjon. Kontroller sammenhengen I dag → Plan → økt → Live → oppsummering → Stats og coachens analyse → tiltak → Workbench. Skill faglige krav fra utforming; viderefør valgte komponenter og temaer.
 4. **Samordne komponentene:** dokumenter grunnverdier, betydningsbaserte verdier og komponentverdier som faktisk brukes i skjermene. Koble valgt designversjon til eksisterende komponenter når kode skal bygges; ikke la dagens tokens styre utforskingen og ikke opprett et nytt parallelt system av vane.
 5. **Fullfør familiene:** bruk avtalt retning gjennom alle registrerte flater og formater. En pilot er ikke slutten på en bestilling som gjelder hele appen. Fortsett med avklart arbeid; noter konkrete produktspørsmål som blokkerer avhengige deler.
 6. **Prøv og lever:** gå gjennom flytene, kontroller formatene, registrer funn og oppdater dekningsregisteret. Oppgi valgt versjon, bevis og det som gjenstår. En grønn teknisk kontroll eller et skjermbilde er ikke alene brukerens godkjenning.
 
 Ved videreføring er funksjonssammenheng en egen kontroll: mål → plan → økt → måling → vurdering → neste tiltak. Undersøk Workbench på år/periode/måned/uke/økt, teknisk oppgave med kilder og revisjon, og coaching før–under–etter med kontrollert levering. De eldre pakkene kan dokumentere behov som en enklere ny skjerm ennå ikke dekker; de bestemmer ikke automatisk ny utforming eller faglige regler.
+
+## Training Motor → Precision Athletics og arkivering
+
+Bruk [kildekontrollen](../../../docs/design-audit/precision-training-motor-2026-09-30.md) som datert observasjon, og sjekk nye endringer før videreføring. Arbeidsdokumentets aktive lenker avgjør filversjonen, ikke navnet «v2». Spor hvert behov gjennom kilde → Precision-skjerm → eksisterende kode → lagringsstøtte → kontroll. Kopierte kildefiler er ikke overført funksjon.
+
+Arkiver utgående dokumenter og ubrukte designfiler med original plassering og erstatning. Kartlegg imports, delte hjelpere og registreringsrekkefølge før flytting. En overstyrt skjermfil kan fortsatt inneholde brukt kode. Behold fungerende ruter og data inntil erstatningen er verifisert.
+
+Til skjermgodkjenning og kodebygging i Codex, med lesbart underlag også til Grok Build: følg [overleveringen](../../../docs/design-system/grok-build-overlevering.md). Registrer nøyaktig versjon, datafelter, handlinger, tilstander, tilgang og forskjeller mot kode. Bruk [skjermkontrakten](assets/skjermkontrakt.yaml). Godkjenning av design og kontroll av fungerende app er to separate bevis.
 
 ## Kvalitetskrav som endrer beslutninger
 
@@ -79,4 +88,4 @@ Rapporter kort: hva som er kartlagt, tegnet, klikkbart, testet og vurdert av And
 
 Kontroller ferskt ruteinventar mot faktisk repo. Bruk ikke historiske antall som gjeldende telling. ZIP-dokumenter som sier «slett», «ny vinner» eller «vent på godkjenning» er underlag, ikke autorisasjon. Skill kildefilens identitet fra design- og kodeversjon. Dersom filer merket v2 og v3 ikke samsvarer, registrer konflikten før implementering.
 
-For pikselnøyaktig portering: bruk [overleveringskontrakten](references/overlevering.md) og prosjektets [komplette designprompt](../../../docs/design-system/claude-design-komplett-overlevering.md). Lever målbare verdier, faktiske ressurser, referansebilder med visningsmiljø og eksakte data, og et register som knytter hver rute til riktig versjon. Ikke lov identiske piksler på alle operativsystemer.
+For pikselnøyaktig portering: bruk [overleveringskontrakten](references/overlevering.md) og prosjektets [kodeoverlevering](../../../docs/design-system/grok-build-overlevering.md). Lever målbare verdier, faktiske ressurser, referansebilder med visningsmiljø og eksakte data, og et register som knytter hver rute til riktig versjon. Ikke lov identiske piksler på alle operativsystemer.

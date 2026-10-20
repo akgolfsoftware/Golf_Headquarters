@@ -6,11 +6,11 @@ AK Golf HQ samler spillerutvikling, coachingarbeid, booking, betaling og offentl
 
 Funksjoner beskrives av prosjektets produkt- og fagkilder. Filinventaret beskriver hvor kode finnes. Denne pakken bestemmer ikke nye priser, tilgangsrettigheter eller faglige beregninger. Dersom full kontekst mangler i Claude Design, tegn et merket utkast og registrer det konkrete spørsmålet før avhengig endelig detaljering.
 
-## Aktiv retning — under utprøving
+## Gjeldende retning
 
-**Atletisk intelligens.** PlayerHQ kan være sportslig, oppslukende og fotografisk i utvalgte øyeblikk. AgencyOS er operativt rolig og presist. Tid, rekkefølge og neste handling bærer hverdagsflytene. Mørk fokusmodus brukes når Live, fordypning eller synlig AI-arbeid krever konsentrasjon.
+**Precision Athletics** er valgt designsystem; siste konkrete skjermversjon velges innen systemet. Les [designautoriteten](../../../../docs/design-system/design-autoritet.md). Training Motor bidrar funksjoner og arbeidsflyter, ikke en konkurrerende visuell profil. Ord og planregler følger [treningsplanlegging](../../../../docs/treningsplanlegging.md).
 
-Dette er arbeidsretningen Anders valgte som utgangspunkt 11.09.2026 etter å ha delt egne smaksreferanser. Les [den fulle retningskontrakten](atletisk-intelligens.md). Arbeidet startet blankt med Design System v0.1. Ved videreføring fullføres siste faktiske kandidat, og nyere rettinger bevares. Valg for bygging gjelder konkret versjon og omfang; Team Norway Claw er valgt for egne `/team-norway/*`-skjermer 13.09.2026 og overstyres ikke av den generelle utforskingen.
+PlayerHQ viser I dag, Plan, Stats og Meg. AgencyOS viser Cockpit, Innboks, Stall, Kalender, Workbench og Mer i den undersøkte Precision-versjonen. Nye skjermvalg dokumenteres mot faktisk prosjektversjon. Team Norway og WANG følger egne systemer; markedssidene er ikke valgt inn i Precision.
 
 | Brukerflate | Viktigste utfall | Designhensyn |
 |---|---|---|
@@ -30,9 +30,9 @@ Disse er behovsprofiler, ikke en ferdig tilgangsmatrise. Lesing/skriving og data
 - Typografi: familie, vekter, brødtekst, metadata, overskrifter og tabellariske tall. Prøv 16 px brødtekst og 13–14 px metadata i daglige spillerflater; tett kalender har andre behov. Små versaler brukes sparsomt.
 - Flater: bakgrunn, panel, aktivt valg, felt og overlegg. Kort skal gruppere en oppgave, ikke ramme inn alt.
 - Geometri: felles avstandsskala, radrytme, hjørner og hovedhandlinger. Ingen kvote på antall moduler i skjermbildet.
-- Navigasjon: stabile destinasjoner, tilbakevei, rollebytte og aktive valg. Nåværende fire spillerfaner er et utgangspunkt som skal prøves mot coachkontakt og booking, ikke en universell lås.
+- Navigasjon: stabile destinasjoner, tilbakevei, rollebytte og aktive valg. Viderefør gjeldende navigasjon og dokumenter plasseringen av coachkontakt og booking.
 - Bevegelse: forklar endring, behold brukerens posisjon og respekter redusert bevegelse. Ingen treg inngangsanimasjon hver gang en hyppig brukt skjerm åpnes.
-- Modi: dokumenter hva som utløser sportslig energi, operativ ro og mørk fokusmodus, og hvordan de deler samme typografi-, geometri- og komponentgrammatikk.
+- Modi: dokumenter hva som utløser sportslige oppgaver, operativ ro og avtalt nattema, og hvordan de deler samme typografi-, geometri- og komponentgrammatikk.
 - Foto: bruk det som meningsbærende innhold i utvalgte spillerøyeblikk. Beskytt alltid tekst, data og handlinger mot urolig bakgrunn.
 
 Skriv hvert valg med hensikt, berørte flater, versjon og status. Skill `forslag`, `valgt for utprøving` og `valgt for bygging`. Brukerens siste beskjed kan endre alle visuelle valg.

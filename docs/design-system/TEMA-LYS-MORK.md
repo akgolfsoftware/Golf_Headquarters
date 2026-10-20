@@ -1,6 +1,8 @@
-# Tema: lys og mørk
+# Tema: eldre implementasjonsbeskrivelse
 
-Samordnet med `src/lib/v2/tema-default.ts`, `src/app/layout.tsx` og de låste beslutningene 10.09.2026. Dette beskriver temaoppførselen; [designkartet](../../designsystem/README.md) velger den visuelle fasiten.
+**Status 30.09.2026:** Dette er en datert beskrivelse av den eldre temaimplementasjonen, ikke nye skjermers temaautoritet. [Precision Athletics](design-autoritet.md) bruker lyst standardtema og avtalt nattema. Ved portering kontrolleres hver faktisk montert flate; gamle defaults videreføres ikke automatisk.
+
+Historisk grunnlag: samordnet med `src/lib/v2/tema-default.ts`, `src/app/layout.tsx` og de låste beslutningene 10.09.2026. Dette beskriver temaoppførselen; [designkartet](../../designsystem/README.md) velger den visuelle fasiten.
 
 | Flate | Standard uten lagret valg | Lagret valg |
 |---|---|---|

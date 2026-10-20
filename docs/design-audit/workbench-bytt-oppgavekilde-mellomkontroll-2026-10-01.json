@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "bytt-oppgavekilde-native-ag-19-mindre-utvalgsknappfeil",
+  "export": {
+    "zip": "/Users/anderskristiansen/Downloads/AK Golf Precision Athletics (43).zip",
+    "root": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-bytt-oppgavekilde",
+    "sha256": "8f3a1ded678d3d2911354b68b567143296ebe66c7f2e47cc93eaaa2da4b9e3c9",
+    "files": 611,
+    "exportedAt": "2026-10-01T04:47:16.492032+00:00"
+  },
+  "syntax": {
+    "scripts": 310,
+    "inline": 67,
+    "inlineIncludedInScripts": true,
+    "syntax_errors": 0,
+    "errors": []
+  },
+  "model": {
+    "total": 99,
+    "pass": 94,
+    "fail": 4,
+    "skip": 1,
+    "error": 0,
+    "modelSha256": "49ae1930240bf0829a019a02535a72bfa613b5b39374703a682764a3548d22c1",
+    "runnerSha256": "9bede65a3fa635b3f706aa67a4fe79003266e7b1f8e18c5f0e6836465dfabc39",
+    "reusedFrom41": "Modell identisk 41–43; fire årsfeil og rammeforkortingskontrakt gjenstår."
+  },
+  "ownNative": {
+    "checks": 19,
+    "failures": 0,
+    "proofSha256": "1eece1cb693176213fa938d1b261b5c8e1aaa264310e58359423a9b243b446c1",
+    "newCoverage": "Faktisk tp-bytt-kilde åpner P1, P1→P2 lagringsfeil beholder radio/disk/økt/TEK; retry P2 og reload, Lukk beholdtvalg.",
+    "limits": [
+      "Planene har ingen oppgaver; faktisk oppgaveavkrysning/innsetting ikke prøvd.",
+      "Andre42-grenser om faktiskretur/full suksessreset/flereperioder/PH gjelder fortsatt.",
+      "Modellevakt er eget99bevis, ikke nativeknapp."
+    ]
+  },
+  "sourceFindings": [
+    {
+      "file": "WB3-okt.jsx",
+      "lines": [
+        68,
+        71,
+        72,
+        73,
+        74
+      ],
+      "detail": "bytt=true holder kildevelger åpen til eksplisitt tp-kilde-lukk."
+    },
+    {
+      "file": "WB3-lokal.jsx",
+      "line": 56,
+      "detail": "PlanView key={plan.id} avmonterer lokal velgertilstand ved planbytte, ingen lekkasje funnet."
+    },
+    {
+      "file": "WB3-okt.jsx",
+      "lines": [
+        68,
+        72,
+        78,
+        80,
+        82
+      ],
+      "status": "mindre-UI-feil",
+      "detail": "Gamle P1 avkryssede task-IDer i sel står etter vellykket P2. Ingen P2 valgt men Legg til aktiv; filter+modell avviser tomliste, ingen feilinnsetting. Dedikert delta til PHjobb sendt; nullstillbarevedvellykketannen-kilde, failbevar/samme-kildebevar."
+    }
+  ],
+  "cloudRawBoundary": "Cloud rapporterte19/1 fra gammel sluttexpect taskSelA=P1 etter ektebytte tilP2; forventning korrigert. Original13 beholdt i privat eksport42.",
+  "active": "PH publisertcoachkilde/toårsplaner/import/reset/return og gammeloppgaveutvalg-riktigknappstatus; deretterfireårsmodellfeil, gruppe/fullår/RD/FYS/TP/visuelt/knapprest/sluttfrys.",
+  "resources": "Egenfane1416028672/server6916lukket.",
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false
+}

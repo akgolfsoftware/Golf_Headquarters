@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "fys-delkontroll-bestatt-restarbeid-pagar",
+  "export": {
+    "archive": "AK Golf Precision Athletics (56).zip",
+    "sha256": "67ff4d460e2924b20e601b80c293c2c52ff93027baf7e59b1192fc117b81e34c",
+    "files": 620,
+    "exportedAt": "2026-10-01T07:19:07.528394+00:00"
+  },
+  "syntax": {
+    "scripts": 319,
+    "inline": 75,
+    "inlineIncludedInScripts": true,
+    "syntaxErrors": 0
+  },
+  "model": {
+    "total": 121,
+    "pass": 118,
+    "fail": 2,
+    "skip": 1,
+    "error": 0,
+    "report": "Privat eksport56/egen56-modellkontroll.json",
+    "remaining": "De samme to RD-utførerfeilene som eksport55; konkret retting sendt etter ferdig FYS-jobb."
+  },
+  "ownProbe": {
+    "checks": 10,
+    "failures": 0,
+    "proofSha256": "6ae9b370469bc0c5982f4443758beb8486831ae9a2564c5d200e4c3b483e396d",
+    "coverage": [
+      "FYS via faktiske programknapper, AG-publisering og PH-start",
+      "To tidsavlesninger: 2s ved +2.1s og 5s ved +5.0s; tidsstempelbasert klokke",
+      "Ulike reps2/1 og kg50/null bevares, samme drillId/sessionId",
+      "Simulert PHQ_SAVEFAIL med retry gir ett executionId",
+      "Faktisk saved-reader fra Plan før og etter tilbaketrekking",
+      "Åpent WB-panel avviser start etter tilbaketrekking uten remount",
+      "Ny vert/reload viser ærlig manglende resultat"
+    ],
+    "limits": [
+      "Tidsavlesning ved visningsendring, toleranse1.3s pga. skjult rammes intervallstrupping.",
+      "Historikk kun i PHQ_RESULTS-minne; ikke varig etter reload.",
+      "PH07-lagringsfeil simuleres med eksisterende flagg, ikke faktisk diskfeil.",
+      "FYS-bankøvelser lagt til valgt programøkt i prøven; ikke full uendret programøvelseskopi bevist.",
+      "Golf-tid/start0/pause, ulik programrev/pubrev og ny publisering med åpen saved-reader gjenstår.",
+      "Manglende resultat åpnes med innsprøytet savedView-kontekst.",
+      "Media og kamera gjenstår."
+    ]
+  },
+  "resources": "Egenfane1416028694 og lokalserver20240 lukket.",
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false
+}

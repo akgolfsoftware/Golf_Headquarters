@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "aktiv-lagringsjobb-mellemversjon-ikke-fryst",
+  "export": {
+    "zipName": "AK Golf Precision Athletics (20).zip",
+    "zipSha256": "bcde4e94d596f5003e7a2c12a7be4158c7a30d2f939cdfa96c8207dcef84ad9a",
+    "fileCount": 597,
+    "exportRoot": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-lagring-pub",
+    "exportedAt": "2026-09-30T23:44:13.916883+00:00",
+    "status": "aktiv-lagringsjobb-mellomversjon-ikke-fryst-ikke-godkjent"
+  },
+  "syntax": {
+    "scripts": 297,
+    "inline": 54,
+    "inlineIncludedInScripts": true,
+    "syntax_errors": 0,
+    "errors": []
+  },
+  "ownFiveFindingsUi": {
+    "checks": 24,
+    "failures": 0,
+    "origin": "http://127.0.0.1:8783",
+    "privateProofFile": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-lagring-pub/egen-fem-funn-reise-24.txt",
+    "proofSha256": "20b0ca5c5a4699d140d637d2adfcfa0464d862a637d138cff4f2a2b18dcaf69f",
+    "limitation": "Eksportens avgrensede A–E-reproduksjon; delvis modellfixture. Lagring/publisering/dirty/retur/PHLive er ikke ferdigkontrollert."
+  },
+  "modelCheck": {
+    "counts": {
+      "PASS": 38,
+      "FAIL": 1,
+      "SKIPPED": 1,
+      "ERROR": 0
+    },
+    "attestation": {
+      "exportRoot": "/Users/anderskristiansen/My Drive/claude-cowork/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-lagring-pub",
+      "modelPath": "/Users/anderskristiansen/My Drive/claude-cowork/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-lagring-pub/ui_kits/_shared/wb-model.js",
+      "sha256": "3a9a949e7d3a8b9ce2d959bb5ed0273e7aa04d9a957b72af1bfc7a67be9e4364",
+      "modelBytes": 79713,
+      "runnerSha256": "b604112569f6792e299dad99ed71a22d0e87d2c12d06082c118d3988104ba6c4",
+      "suppliedBy": "eksportrot-fra-CLI",
+      "scope": "kun-ui_kits/_shared/wb-model.js",
+      "vmTimeoutMs": 500,
+      "browserGlobalAlias": "window === globalThis; window.location === location",
+      "roleChecks": "AgencyOS må være coach; PH-test må være spiller og avvise upublisert revisjon",
+      "vmStorage": "VM-native Map med localStorage-strengkontrakt; ingen disk eller vertsfunksjoner",
+      "vmURLSearchParams": "VM-native shim for strenginput/get; query-namespacet verifiseres i publikasjonstesten"
+    },
+    "privateResult": "egen20-modellkontroll.json",
+    "limitation": "40 avgrensede modelltilfeller. Øktpublikasjon-reload prøvd med VM-native lager; egne utkast og TP-lagring ikke kontrollert. Ingen UI/app/tilgangsbevis.",
+    "failure": "Publisert coachbundet TP-oppgave får tp.publisert=false ved innsetting og øktpublisering avvises.",
+    "skipped": "Immutable publisert tekniskplanmetadata er ikke definert; PH-getter viderefører privat plan.navn/status."
+  },
+  "sourceAudit": {
+    "fivePreviousFindings": "rettet i kilde og avgrenset UI24/0",
+    "remaining": [
+      "TaskEditor kan lagre etter avbryt via ukansellert timer; toast+navigasjon erstatter ekte formsave i gamle ulagretvalg.",
+      "Bare øktpublikasjoner persisteres; eget WB/TP-utkast ligger i minne.",
+      "Spillervisning låser sessionId uten publicationId/rev; stille bytte til ny revisjon.",
+      "Tilbaketrekking gjenoppliver gammel publisering mot bekreftelsens tekst.",
+      "PH-getter filtrerer oppgaver/media men sprer rå planmetadata.",
+      "Publisert coachbundet tekniskoppgave avvises som utkast.",
+      "Lesefeil blir tom liste, med fare for å overskrive tidligere lokalt lager.",
+      "Publiseringspanelet følger levende planvalg uten å fryse original kontekst.",
+      "Enhver egen årsplan, også tom/annen, regnes som egen versjon av gruppeøkt.",
+      "Plan/I dag/PH03/Live er ikke koblet til ny publikasjonsvisning."
+    ],
+    "sourceEvidence": "Kildegjennomgang av eksport20 mens pågående skyretting; må kontrolleres på ny eksport.",
+    "apiScopes": {
+      "publishedForPlayer(ownerType,ownerId)": "årsplan-/øktpublikasjoner",
+      "techPlans(ownerType,ownerId),techPlan(technicalPlanId)": "rollefiltrerte publiserte oppgaver/medier, rå planmetadata fortsatt videreført"
+    }
+  },
+  "cloudJob": "rettinger-lagring-publisering-aktiv",
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false,
+  "followupPrompt": "claude-design-workbench-lagring-pub-rester-bestilling.txt sendt etter delkvittering; 10 konkrete rester i samme autoriserte designprosjekt.",
+  "cloudPartialReceipt": {
+    "privateFile": "sky-lagring-pub-delkvittering.txt",
+    "fiveFindings": {
+      "checks": 24,
+      "failures": 0
+    },
+    "sessionsPublication": {
+      "checks": 16,
+      "failures": 0
+    },
+    "technicalPlan": {
+      "checks": 70,
+      "failures": 0
+    },
+    "ownFullExportAfterReceipt": false,
+    "notDone": [
+      "TEK-konfliktbinding",
+      "Ulagret-vakt og egne planer ved reload",
+      "Plan/I dag→PH03→Live→PH07",
+      "Grunnredigering med to planer/årsskifte/periode-/målfjerning",
+      "AG→PH TEK-antall og innhenting til måned/periode",
+      "Visuell TPN-editor/forhåndsvisning"
+    ],
+    "legacyTpRegressionRenewed": false,
+    "longWbRegressionRenewed": false
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "avgrenset-editor-kontroll-ikke-komplett-ikke-fryst",
+  "export": {
+    "zipName": "AK Golf Precision Athletics (17).zip",
+    "zipSha256": "9cd586812e974affd2f1216d621fca5e53bc777c7237534486ee952072f2923b",
+    "fileCount": 591,
+    "exportRoot": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-editor",
+    "exportedAt": "2026-09-30T22:30:55.281343+00:00",
+    "status": "mellomversjon-ikke-fryst-ikke-godkjent"
+  },
+  "syntax": {
+    "scripts": 291,
+    "inline": 51,
+    "inlineIncludedInScripts": true,
+    "syntax_errors": 0,
+    "errors": []
+  },
+  "independentModel": {
+    "counts": {
+      "PASS": 21,
+      "FAIL": 0,
+      "SKIPPED": 0,
+      "ERROR": 0
+    },
+    "attestation": {
+      "exportRoot": "/Users/anderskristiansen/My Drive/claude-cowork/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-editor",
+      "modelPath": "/Users/anderskristiansen/My Drive/claude-cowork/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-editor/ui_kits/_shared/wb-model.js",
+      "sha256": "eda40303c06a3d91ca707efaad0eae80d109f6dda373b881b5e23342bfc5cb5b",
+      "modelBytes": 67990,
+      "runnerSha256": "6f4605914055542eb47cf9444b99fb604dadaa2bce9a3029f2e6803aa3521911",
+      "suppliedBy": "eksportrot-fra-CLI",
+      "scope": "kun-ui_kits/_shared/wb-model.js",
+      "vmTimeoutMs": 500,
+      "browserGlobalAlias": "window === globalThis; window.location === location",
+      "roleChecks": "AgencyOS må være coach; PH-test må være spiller og avvise upublisert revisjon"
+    },
+    "limitation": "Ingen UI-, app-, tilgangs-, lagrings- eller databasekontroll. PASS gjelder bare oppgitte tilfeller, ikke komplett Workbench."
+  },
+  "ownExportUi": {
+    "checks": 48,
+    "failures": 0,
+    "hosts": [
+      "PH",
+      "AG"
+    ],
+    "freshLocalOrigin": "http://127.0.0.1:8780",
+    "namespaces": [
+      "wbR1",
+      "wbR2"
+    ],
+    "privateProofFile": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-editor/egen-editorreise-48.txt",
+    "proofSha256": "f94cbe0d79a6fcc4603842ae45a2e7ddb5ac41cfee9a365e1d787f8d35f10ec6",
+    "scope": "12 prøver per vert og namespace; faktisk manuell3→save→hent2→SLAG/min→save og Bruk hentet. Ingen Behold mitt-klikk/cancel/failure/retry/resetfailure."
+  },
+  "closed": [
+    "invalid-planview-declaration",
+    "old-dirty-axis-after-successful-save"
+  ],
+  "open": [
+    {
+      "id": "conflict-acknowledgement-not-scoped",
+      "finding": "kf=true etter Behold mitt beholdes ved senere import/baseline/id og skjuler ny konflikt."
+    },
+    {
+      "id": "save-unresolved-conflict",
+      "finding": "Lagre er tillatt uten valg av uløst konflikt."
+    },
+    {
+      "id": "save-reset-confirmation",
+      "finding": "Savefalse viser ikke feil; reset tømmer felter før svar og kontrollerer ikke feil."
+    }
+  ],
+  "nextCorrection": "lagt i wb3-lagring-bestilling, ikke sendt ennå",
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false
+}

@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "gruppeantall-delreise-18-bestatt-110-modeller-bestatt-rammevalg-apent",
+  "export": {
+    "archive": "AK Golf Precision Athletics (49).zip",
+    "sha256": "36b2ba5626766897cf22f69a74fbad9d56c9eb148124ecd45fff329fc583d045",
+    "files": 614,
+    "exportedAt": "2026-10-01T05:45:58.397844+00:00",
+    "root": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-gruppe-antall-slutt"
+  },
+  "syntax": {
+    "scripts": 313,
+    "inline": 70,
+    "inlineIncludedInScripts": true,
+    "syntax_errors": 0,
+    "errors": []
+  },
+  "model": {
+    "total": 111,
+    "pass": 110,
+    "fail": 0,
+    "skip": 1,
+    "error": 0,
+    "modelSha256": "bd2a7d5bde59987e71b978a261d2630c28bd0784fd1d36c9171202312482e73f",
+    "runnerSha256": "7ab5b56b54ddc0d9775dd126f65c6b6dba5415972ff2222e68928231f935a887",
+    "original109Preserved": true,
+    "hentAntallWrongTargetPlayerAndGroupRejected": true,
+    "remainingSkip": "Rammeforkorting over eldre budsjett/mål/basis avventer Anders valg."
+  },
+  "ownProbe": {
+    "checks": 18,
+    "failures": 0,
+    "proofSha256": "89a5a0361cbd00aac2385d0437189e1b9632f3d64e32730b6a402aca9ee90c08",
+    "proof": "egen-gruppe-antall-18.txt",
+    "coverage": "Faktisk AGgruppe/tekniskplan/countutkast/pub1, PHg1medlem velger/importmåned/fullmålplanstrip/planB/kildeliste; lokal3beholderpub2, SAMME countID/dato/rev2, compare/keep/fail/retry, auto-lukking tilsammeplan/måned, nyPHvert refrev2/kildevalg.",
+    "fixtures": "Budgets/medlemsdata merket syntetisk. Negative direktetekKilder/tekShared er modellbevis; ikke18nativeknapper.",
+    "limits": [
+      "p1motg2 kildevelger/negativdirektelesing; ingen separatp3vert.",
+      "Failassert minne, ikke disk; retryverdi/ref prøvd, men ikke eksplisitt énwrite/importSeq-delta.",
+      "Kildeliste uendret vedimport; ikke fullgruppemasterdiskassert.",
+      "Retur er faktisk lukking etterhandling til samme plan/mnd, ikke separatTilbakeklikk.",
+      "Noen optionale open.catch finnes; ikke tell dem som egne beståttkontroller."
+    ]
+  },
+  "active": "Gruppens publiserte økt→egenversjon i eksplisitt andre personligårsplan/separat måndedsgrunnlag bestilt. Fullår/RD/FYS/TP/visuell/knapp/finalpakke fortsetter.",
+  "resources": "Egenfane1416028680 ogserver85360 lukket.",
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false
+}

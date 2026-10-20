@@ -1,0 +1,160 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "felles-editor-delvis-kontrollert-ikke-fryst",
+  "export": {
+    "zipName": "AK Golf Precision Athletics (19).zip",
+    "zipSha256": "c5ab76d40c6244397f6fb80a4ae4c5204f1b875848bc8b6a3ee843279eab4d3d",
+    "fileCount": 594,
+    "exportRoot": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-full-oppgave",
+    "exportedAt": "2026-09-30T23:24:09.081378+00:00",
+    "status": "mellomversjon-ikke-fryst-ikke-godkjent"
+  },
+  "syntax": {
+    "scripts": 294,
+    "inline": 52,
+    "inlineIncludedInScripts": true,
+    "syntax_errors": 0,
+    "errors": []
+  },
+  "independentModel": {
+    "counts": {
+      "PASS": 28,
+      "FAIL": 0,
+      "SKIPPED": 1,
+      "ERROR": 0
+    },
+    "attestation": {
+      "exportRoot": "/Users/anderskristiansen/My Drive/claude-cowork/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-full-oppgave",
+      "modelPath": "/Users/anderskristiansen/My Drive/claude-cowork/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-full-oppgave/ui_kits/_shared/wb-model.js",
+      "sha256": "a77e2df80e42e14fbf93e8118cf20e200949de7690da20aff6e38fecca137b5e",
+      "modelBytes": 74096,
+      "runnerSha256": "0f0791293431511497eaf3e789653227f05db636dc695484bcba342cfebe35fa",
+      "suppliedBy": "eksportrot-fra-CLI",
+      "scope": "kun-ui_kits/_shared/wb-model.js",
+      "vmTimeoutMs": 500,
+      "browserGlobalAlias": "window === globalThis; window.location === location",
+      "roleChecks": "AgencyOS må være coach; PH-test må være spiller og avvise upublisert revisjon"
+    },
+    "privateResult": "egen-full-oppgave-modellkontroll.json",
+    "limitation": "Ingen UI-, app-, tilgangs-, lagrings- eller databasekontroll. PASS gjelder bare oppgitte tilfeller, ikke komplett Workbench.",
+    "skipped": "nytp-ph-published-plan-getter-contract: eksplisitt rolleavgrenset PH-lesekontrakt ikke identifisert"
+  },
+  "sourceAudit": {
+    "sharedEditor": [
+      "AG-TP.jsx:14",
+      "WB3-tpn.jsx:23"
+    ],
+    "corrected": [
+      "Gruppe-ownerType i kildeoppslag",
+      "Fullt innhold og medier i innsetting",
+      "Uforanderlig publisert oppgavesnapshot"
+    ],
+    "remaining": [
+      {
+        "source": "tp-editor.jsx:9,76–77",
+        "finding": "Valgt miljø uten repetisjonsmål forsvinner ved gjenåpning; 0 blir null."
+      },
+      {
+        "source": "WB3-tpn.jsx:21; tp-editor.jsx:8–10,30,75",
+        "finding": "Valgfritt fokus lagres som visningsplassholder og hindrer senere lagring."
+      },
+      {
+        "source": "wb-model.js:68; WB3-okt.jsx:109",
+        "finding": "Revisjonsbytte beholder gamle sammendragsverdier for område/posisjon/veiledende reps."
+      },
+      {
+        "source": "wb-model.js:152,158; WB3-tek.jsx:18",
+        "finding": "PH-kildeetikett teller private oppgaveutkast."
+      },
+      {
+        "source": "WB3-okt.jsx:101",
+        "finding": "Revisjonssammenligning viser mediefilnavn uten delt-kontroll."
+      }
+    ]
+  },
+  "ownExportUi": {
+    "status": "fullført-avgrenset",
+    "testPage": "ui_kits/wb-tpn-repro.html",
+    "origin": "http://127.0.0.1:8782",
+    "checks": 70,
+    "failures": 0,
+    "hosts": [
+      "AG",
+      "PH"
+    ],
+    "namespaces": [
+      "wbT1",
+      "wbT2",
+      "wbT3"
+    ],
+    "privateProofFile": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-full-oppgave/egen-full-oppgave-reise-70.txt",
+    "proofSha256": "b33b90f3b5b4e06b84b942b34c4e0d556ea8870f1ab178a9ca4d6754750e2f22",
+    "limitation": "Eksportens egen UI-reise kjørt separat lokalt. PH har merket syntetisk kildeoppsett; ingen faktisk AG→PH-persistens. Fem kildefunn er fortsatt åpne."
+  },
+  "nextCorrection": "Fem kildefunn, tidligere TP-regresjon, konfliktvakter, lagring/publisering og faktisk AG→PH-reise sendt til samme designprosjekt.",
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false,
+  "extendedRevisionModel": {
+    "counts": {
+      "PASS": 30,
+      "FAIL": 1,
+      "SKIPPED": 1,
+      "ERROR": 0
+    },
+    "attestation": {
+      "exportRoot": "/Users/anderskristiansen/My Drive/claude-cowork/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-full-oppgave",
+      "modelPath": "/Users/anderskristiansen/My Drive/claude-cowork/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-full-oppgave/ui_kits/_shared/wb-model.js",
+      "sha256": "a77e2df80e42e14fbf93e8118cf20e200949de7690da20aff6e38fecca137b5e",
+      "modelBytes": 74096,
+      "runnerSha256": "12e6d69899978c06a65c81ef0e1cd3d6ab255b35e0713020e5d84fa6dde1ce75",
+      "suppliedBy": "eksportrot-fra-CLI",
+      "scope": "kun-ui_kits/_shared/wb-model.js",
+      "vmTimeoutMs": 500,
+      "browserGlobalAlias": "window === globalThis; window.location === location",
+      "roleChecks": "AgencyOS må være coach; PH-test må være spiller og avvise upublisert revisjon"
+    },
+    "privateResult": "egen19-revisjonsutvidet-modellkontroll.json",
+    "scope": "Tre nye revisjonsprøver; gammelt sammendrag under ny snapshotrevisjon er FAIL, manuelle utførelsesfelt og tidligere bundet kopi bevares. PH-lesekontrakt fortsatt SKIPPED."
+  },
+  "ownEditorRegression": {
+    "checks": 48,
+    "failures": 0,
+    "privateProofFile": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-full-oppgave/egen-editor-reise-48.txt",
+    "proofSha256": "0f5ba78656e92f648d12c04bfa1c9c8a24835fd8f18cfcb5b2a5da70ff0ebb39",
+    "limitation": "Tidligere avgrensede prøver; de tre kjente konflikt-/feilrestene er fortsatt åpne."
+  },
+  "cloudReceipt": {
+    "privateFile": "sky-full-oppgave-sluttkvittering.txt",
+    "taskUi": {
+      "checks": 70,
+      "failures": 0
+    },
+    "editorUi": {
+      "checks": 48,
+      "failures": 0
+    },
+    "wb1": {
+      "checks": 935,
+      "failures": 1,
+      "limitation": "MUT pub-anker rettet etter kjøring, ingen ny full bestått kontroll."
+    },
+    "oldTp": {
+      "checks": 152,
+      "failures": 12,
+      "limitation": "Legg i økt-avvik gjenstår; eldre egen eksport180/0, årsak ikke bekreftet."
+    }
+  },
+  "ownOldTpRegression": {
+    "checks": 152,
+    "failures": 12,
+    "runs": 2,
+    "privateProofFile": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-full-oppgave/egen-gammel-tp-reise-152-12.txt",
+    "proofSha256": "1f0e4c9c2f888967f4cea7442c030afcfe06d18229a2e4f9d7eac31959dcade8",
+    "firstFailure": "Legg i økt åpner ikke forventet AG-11-økt med koblet taskId; videre prøver stopper før full dekning.",
+    "expectedChecksPerRunBeforeCoverageMarker": 89,
+    "actualChecksPerRunBeforeCoverageMarker": 75,
+    "correction": "Reproduser faktisk gammel inngang og kanonisk Workbench-erstatning; funksjon/ID/revisjon/media/retur må bevares før arkivering."
+  }
+}

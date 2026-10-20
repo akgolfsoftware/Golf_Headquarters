@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "leser-kilde-min-grener-delkontroll-bestatt",
+  "export": {
+    "archive": "AK Golf Precision Athletics (65).zip",
+    "sha256": "427c5476d45ef1346f0d5376df50eec4ead9f3c49854da0b435bbea997db8a8f",
+    "files": 621,
+    "exportedAt": "2026-10-01T10:00:16.074770+00:00"
+  },
+  "syntax": {
+    "scripts": 320,
+    "inline": 76,
+    "inlineIncludedInScripts": true,
+    "errors": 0
+  },
+  "changedSince64": [
+    "ui_kits/wb-tid-kilde-repro.html"
+  ],
+  "ownProbe": {
+    "checks": 43,
+    "failures": 0,
+    "proofSha256": "0535ef703b7888aa69418acff6d5c4adeb79d795f9ecfce8077afc2596cebb2c",
+    "coverage": [
+      "21tidligerebevart+22nye kontroller",
+      "Oppgaveutkast-rev4, TPpublisertrev1, WBpublisertrev3: treulike tall; fulltpRef/snapshot, distinctpublicationIDer/drillinstans/actualsessionID iPH03/Live/resultatkopi",
+      "NativeTPinnsetting, WBpubliseringsavvisningupublisertoppgave, WBpubliseringtre ganger; spillervert/getter",
+      "FYSusattnull oguttrykkelig0 etterpublisering/PHstart/resultat/reader, fullprogramRef; synlig—ulik0",
+      "ÅpenGOLFreader underAGnyrev5/gammelrev3withdraw/cachetømming: identiskmainnode/tekst/execution, faktiskPlanretur/gjenåpning",
+      "ÅpenFYS-nullreader undernyrev6/gammelrev4withdraw/cachetømming: identiskmainnode/tekst/execution og faktiskPlanretur/gjenåpning",
+      "FYS0reader etterrevisjonendringbeholder0/egenøkt",
+      "NyPHvert medsavedView ogutenPHQ_RESULTS gir ærligIngen gjennomføring registrert, faktiskTilbakePH10 og bevart pub/session/eierctx, gammelvertsresultaterurørt"
+    ],
+    "limits": [
+      "Oppgaveoppretting/flereutkastrevisjoner og TPpublishTechPlanTask er eksplisittmerket modellfixture; bareWBinnsetting/WBpublisering ernativeher.",
+      "FYSnull/0øktinstanser ermerkede fixtures førnativepublisering/gjennomføring.",
+      "Livecachetømming ogsavedViewctx i negativefreshhost ermerkettestinjeksjon, ikkeproduktknapper.",
+      "Golf/FYSresultat liggerkun iPHQ_RESULTS-minne, ingenvarigserverlagring.",
+      "Utfører ogkildeeier er sammepersonlige spiller i fixture; executionmangler egetperformer-felt. GruppeFYS/golf/adskilteutførere og innlogging/produksjonsrettigheter erikkebevist. Appbyggekontraktenmå bindefaktiskutfører separat.",
+      "Eksplisitt0-FYSreader prøves etterrevisjonsendring; åpennode-identitet vednyPublisering prøvd forFYSnull oggolf.",
+      "43kontroller erikkeskjermer ellerAnders-godkjenning."
+    ]
+  },
+  "modelEvidence": "M+data-wb3 identisk59/64,121modellprøve ikke gjentatt.",
+  "resources": "Egenfane1416028714 og server32688/8795 lukket.",
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false,
+  "next": "WBvisuelljobb er nå sendt i nyfokusertchat i sammeprosjekt, med bekreftetårsdekning17/4 ogbyteeksakttest. Deretter øvrigeknapper/sluttregister/frossenegenkontroll390desktop. Årsforkortingsvalget fortsattubesvart."
+}

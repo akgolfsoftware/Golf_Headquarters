@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "native-runde-delbestatt-modellrester-bekreftet",
+  "export": {
+    "archive": "AK Golf Precision Athletics (55).zip",
+    "sha256": "a2d28f17cb8c17231f808a0d8d6adcb5077ec8e281f778d2f9eb13c68172c20a",
+    "files": 619,
+    "exportedAt": "2026-10-01T06:57:42.641699+00:00",
+    "root": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-runde-rd-kontroll",
+    "status": "Egen22/0 avgrenset RD-reise utført; to nye modellfeil bekreftet."
+  },
+  "syntax": {
+    "scripts": 318,
+    "inline": 74,
+    "inlineIncludedInScripts": true,
+    "syntax_errors": 0,
+    "errors": []
+  },
+  "model": {
+    "total": 116,
+    "pass": 115,
+    "fail": 0,
+    "skip": 1,
+    "error": 0,
+    "modelSha256": "09b9276d1cb82454fe1057b67cc19e71462dc9264e4153e3b1e89f39593e5a4a",
+    "runnerSha256": "3beac85063a6112c3c461da488cc2af0bd34b93d966f83fc4f6de2287003afe6"
+  },
+  "ownProbe": {
+    "checks": 22,
+    "failures": 0,
+    "proofSha256": "9b68f1fe9a917af26203f391ad0f24e387b85f62caafd6e9d8d3a0f5e16ca8c8",
+    "coverage": "Faktisk Planlegg runder/twoTURN+FYS/SLAGforberedelse/pub→PH03→RDoppsett manuell9/par36/date10.10→tomLive→brutto5+4 med lagringsfeil/retry→deloppsummering9på2/9→Planretur; separat ikke-startetRunde2; faktiskAGwithdraw førmountRD02; savedresult viaRD01knapp etter innsprøytet kontekst; nyverts modelldraft.",
+    "limits": [
+      "Kalenderforekomst og runder er merket modellfixture; planning/pub/start/hole/result/return UI.",
+      "Historikkåpning bruker innsprøytet PHQ_RUND-kontekst; ingen faktisk historikkknapp fra Plan etter withdrawal.",
+      "Withdraw before mountRD02 prøvd, ikke withdrawal mens oppsett allerede åpent før faktisk Start.",
+      "Runde2 åpnes tom, men startes ikke og har ingen ny resultatreise.",
+      "Ingen pubpanel-startprøve, full uendretpub-snapshotassert eller saveRoundFinish-lagringsfeil/retry.",
+      "Reload sjekker modelldraft, ikke gjenåpnet resultatskjerm.",
+      "UtdatertINFO i prøven sier AGwithdraw ikke prøvd; råbevis/begrensninger skiller dette.",
+      "Ingen p1/p2 gruppemedlemsresultatisolasjon."
+    ]
+  },
+  "sourceControl": {
+    "registeredLast": "PH-RD-live.jsx96–98 har nå valgtpub-gren for RD03/04/08, tidligere feil54 uendret i historikk.",
+    "manualUnsetGap": "WB3-rund.jsx19/26 gir ny manuell18hull default ved ukjent; særskilt retting gjenstår.",
+    "modelScopeQuestion": "Bekreftet av121: begge utførerfeil; egne riktige historikkregler etter withdrawal består."
+  },
+  "resources": "Egenfane1416028692/server85337 lukket.",
+  "active": "Dedikert RD-retting sendt etter fullført FYS56-deljobb.",
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false,
+  "extendedModel": {
+    "total": 121,
+    "pass": 118,
+    "fail": 2,
+    "skip": 1,
+    "error": 0,
+    "modelSha256": "09b9276d1cb82454fe1057b67cc19e71462dc9264e4153e3b1e89f39593e5a4a",
+    "runnerSha256": "3bc876f491559abd0a56aef98b2a687dca3504d0a1cca2e1a8cd33838243f7a6",
+    "failures": [
+      "p1/p2-medlemmer av sammegruppepub deler rundekladd, p2 ser p1brutto5 før egenoppsett",
+      "personlig feilrecipient p2: published=false/draft=true/setupOK=false/holeOK=false/finishOK=true, kan avslutte p1draft"
+    ],
+    "passed": "Ferskpub førStart, egen started/savedhistory etterwithdraw/reload, atomisk setup/hole/finishfailretry, fullpublageruendret",
+    "report": "Privat egen55-rd-eier-historikk-modellkontroll.json; rå strengere feilforventning bevart og korrigert kun for egenhistorikk."
+  },
+  "next": "Egen ny eksportkontroll av rettet modell og utvidet native RD-reise."
+}

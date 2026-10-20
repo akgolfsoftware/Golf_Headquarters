@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "delvis-tekniskplan-kobling-ikke-fryst",
+  "export": {
+    "zipName": "AK Golf Precision Athletics (18).zip",
+    "zipSha256": "fd2fa76c9016f6ca5f9d9babb967535f0409c478931583baf932b800e1beb604",
+    "fileCount": 593,
+    "exportRoot": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-ny-tekniskplan",
+    "exportedAt": "2026-09-30T22:50:21.462632+00:00",
+    "status": "mellomversjon-ikke-fryst-ikke-godkjent"
+  },
+  "syntax": {
+    "scripts": 293,
+    "inline": 52,
+    "inlineIncludedInScripts": true,
+    "syntax_errors": 0,
+    "errors": []
+  },
+  "independentModel": {
+    "counts": {
+      "PASS": 21,
+      "FAIL": 0,
+      "SKIPPED": 0,
+      "ERROR": 0
+    },
+    "attestation": {
+      "exportRoot": "/Users/anderskristiansen/My Drive/claude-cowork/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-ny-tekniskplan",
+      "modelPath": "/Users/anderskristiansen/My Drive/claude-cowork/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-ny-tekniskplan/ui_kits/_shared/wb-model.js",
+      "sha256": "c616f9eb137f162a148349347b725705e2548fca3e0c638cfc5caa3d5c6ccb3e",
+      "modelBytes": 71773,
+      "runnerSha256": "6f4605914055542eb47cf9444b99fb604dadaa2bce9a3029f2e6803aa3521911",
+      "suppliedBy": "eksportrot-fra-CLI",
+      "scope": "kun-ui_kits/_shared/wb-model.js",
+      "vmTimeoutMs": 500,
+      "browserGlobalAlias": "window === globalThis; window.location === location",
+      "roleChecks": "AgencyOS må være coach; PH-test må være spiller og avvise upublisert revisjon"
+    },
+    "limitation": "21 tidligere prøver; ny tekniskplan-gruppe/fulltaskpublisering ikke dekket."
+  },
+  "ownExportUi": {
+    "checks": 60,
+    "failures": 0,
+    "hosts": [
+      "AG",
+      "PH"
+    ],
+    "namespaces": [
+      "wbT1",
+      "wbT2",
+      "wbT3",
+      "wbT4"
+    ],
+    "freshLocalOrigin": "http://127.0.0.1:8781",
+    "privateProofFile": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-ny-tekniskplan/egen-ny-tekniskplan-reise-60.txt",
+    "proofSha256": "73bd679a5ba3805d359317717d95bd716b041833aa5303bade247f6b56b6a730",
+    "scope": "Ny plan/tomoppgave/eier/feilretry/retur/sammenavn/kildegjenbruk og PHcomposer. PHkilde/publisering har merket modellfixture; ingen faktisk AG→PHpersist."
+  },
+  "newSource": "ui_kits/_shared/WB3-tpn.jsx",
+  "sourceFindings": [
+    {
+      "id": "group-tek-source-lookup",
+      "source": "wb-model.js:142,144",
+      "finding": "ownerType mangler i applyTek/tekNyere; gruppeantall lagret som gruppe finnes ikke ved lookup med spillerfallback. Syntetisk modellrepro bekreftet."
+    },
+    {
+      "id": "partial-task-editor-and-adapter",
+      "source": "WB3-tpn.jsx:9; WB3-okt.jsx:9; wb-model.js:151",
+      "finding": "MiniForm barefemfelt, adapter nullstiller steg/miljø/press/media/protokoll/TM/høyde/skru. Kompakt fallback skjuler feil i TaskCard."
+    },
+    {
+      "id": "task-publication-revision-flag",
+      "source": "wb-model.js:152; WB3-okt.jsx:70",
+      "finding": "Publisering lagrer bare rev, ikke uforanderlig innhold/media. PH leser dagens objekt."
+    }
+  ],
+  "activeCorrection": "claude-design-full-tekniskoppgave-gruppe-og-pubsnapshot-bestilling.txt sendt",
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false,
+  "extendedIndependentModel": {
+    "counts": {
+      "PASS": 25,
+      "FAIL": 3,
+      "SKIPPED": 1,
+      "ERROR": 0
+    },
+    "attestation": {
+      "exportRoot": "/Users/anderskristiansen/My Drive/claude-cowork/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-ny-tekniskplan",
+      "modelPath": "/Users/anderskristiansen/My Drive/claude-cowork/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-ny-tekniskplan/ui_kits/_shared/wb-model.js",
+      "sha256": "c616f9eb137f162a148349347b725705e2548fca3e0c638cfc5caa3d5c6ccb3e",
+      "modelBytes": 71773,
+      "runnerSha256": "0f0791293431511497eaf3e789653227f05db636dc695484bcba342cfebe35fa",
+      "suppliedBy": "eksportrot-fra-CLI",
+      "scope": "kun-ui_kits/_shared/wb-model.js",
+      "vmTimeoutMs": 500,
+      "browserGlobalAlias": "window === globalThis; window.location === location",
+      "roleChecks": "AgencyOS må være coach; PH-test må være spiller og avvise upublisert revisjon"
+    },
+    "privateResult": "egen18-nytp-utvidet-modellkontroll.json",
+    "scope": "21 tidligere +8nyeTPprøver; PHlesegetteravtaleuavklart=SKIPPED, ingenUI/appbevis"
+  }
+}

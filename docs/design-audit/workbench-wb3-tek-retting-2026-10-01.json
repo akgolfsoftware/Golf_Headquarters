@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "mellomkontroll-med-parser-og-editoravvik-ikke-fryst",
+  "export": {
+    "zipName": "AK Golf Precision Athletics (16).zip",
+    "zipSha256": "e204b5d956ccbf7fc0d375168bacc526612a459dce2381d57d8d8bdfe1a5dc06",
+    "fileCount": 590,
+    "exportRoot": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-tek-rettet",
+    "exportedAt": "2026-09-30T22:19:07.259826+00:00",
+    "status": "mellomversjon-ikke-fryst-ikke-godkjent"
+  },
+  "independentModel": {
+    "counts": {
+      "PASS": 21,
+      "FAIL": 0,
+      "SKIPPED": 0,
+      "ERROR": 0
+    },
+    "attestation": {
+      "exportRoot": "/Users/anderskristiansen/My Drive/claude-cowork/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-tek-rettet",
+      "modelPath": "/Users/anderskristiansen/My Drive/claude-cowork/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-tek-rettet/ui_kits/_shared/wb-model.js",
+      "sha256": "eda40303c06a3d91ca707efaad0eae80d109f6dda373b881b5e23342bfc5cb5b",
+      "modelBytes": 67990,
+      "runnerSha256": "6f4605914055542eb47cf9444b99fb604dadaa2bce9a3029f2e6803aa3521911",
+      "suppliedBy": "eksportrot-fra-CLI",
+      "scope": "kun-ui_kits/_shared/wb-model.js",
+      "vmTimeoutMs": 500,
+      "browserGlobalAlias": "window === globalThis; window.location === location",
+      "roleChecks": "AgencyOS må være coach; PH-test må være spiller og avvise upublisert revisjon"
+    },
+    "scope": "Ingen UI-, app-, tilgangs-, lagrings- eller databasekontroll. PASS gjelder bare oppgitte tilfeller, ikke komplett Workbench."
+  },
+  "syntax": {
+    "scripts": 290,
+    "inline": 50,
+    "inlineIncludedInScripts": true,
+    "syntax_errors": 1,
+    "errors": [
+      {
+        "file": "ui_kits/_shared/WB3-lokal.jsx",
+        "error": "Unexpected keyword 'const'. (72:71)"
+      }
+    ]
+  },
+  "cloudObservedUi": {
+    "checks": 471,
+    "failures": 5,
+    "privateProofFile": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/sky-tek-retting-reise-for-parserretting.txt",
+    "proofSha256": "48d215ae6a37f12dfc2689f243df33cd8317b8d4ea2ad14974b6bc99661cf086",
+    "notIndependentLocalUi": true,
+    "passedBoundedSeriesProof": "AG[wbB] BEVIS3a/b/c/d; ikke alle verter/namespace"
+  },
+  "remainingFindings": [
+    {
+      "id": "invalid-planview-declaration",
+      "source": "ui_kits/_shared/WB3-lokal.jsx:72",
+      "finding": "Ny const-deklarasjon etter komma gir syntaksfeil. PH/GRID-host feiler ved lasting.",
+      "status": "aktiv-skyretting"
+    },
+    {
+      "id": "editor-dirty-after-save",
+      "source": "ui_kits/_shared/WB3-lokal.jsx:61",
+      "finding": "Dirty-akse-sett resettes ikke etter lagring/tilbakestilling. Ny import kan overskrives ved endring av andre felt.",
+      "status": "aktiv-skyretting-kildekontroll-pågår"
+    }
+  ],
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false
+}

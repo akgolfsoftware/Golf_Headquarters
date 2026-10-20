@@ -1,0 +1,2111 @@
+{
+  "skjema_versjon": 1,
+  "dato": "2026-09-30",
+  "formål": "Read-only appkoblinger for Workbench fra scratch; kildeobservasjoner, ikke implementerings- eller brukerreisegodkjenning.",
+  "observert_hovedcheckout": "/Users/anderskristiansen/Developer/akgolf-hq",
+  "git_head": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+  "opprinnelig_designanalysereferanse": "110b4ec8f7d960fd1748b8f87babebde80cd764b",
+  "arbeidskopiens_head": "110b4ec8f7d960fd1748b8f87babebde80cd764b",
+  "kildekontroll": {
+    "nåværende_kildefiler": 20,
+    "nåværende_arbeidsfiler_lik_commit": true,
+    "kontrollmetode": "SHA-256 og bytevis sammenligning av alle 20 aktuelle filer mot git show HEAD:path; alle 47 oppdaterte kildeankre samsvarer med linjetekst.",
+    "runtime_eller_innlogget_qa": false,
+    "database_skriving": false,
+    "app_endret": false,
+    "kildelinje_og_sha_egenkontroll": true
+  },
+  "enheter": {
+    "antall_økter": "weeklySessionBudget: heltall per pyramide per uke; mål, ikke økter",
+    "tid": "weeklyVolMin/Max og durationMinutes i minutter; plannedHours* i timer",
+    "reps": "teknisk restmål/planReps* og WeekPlan.repTarget*; ingen automatisk omregning til øktantall",
+    "turnering": "TournamentEntry.id og runder, atskilt fra treningsøkter"
+  },
+  "avgrensning": [
+    "Eksisterende appkoblinger-precision-athletics.json beholdes som baseline med egne 15 observasjoner.",
+    "Ingen selvstendig månedsplanskriving, fem ukeantallsmål eller øktgenerering fra års-/periodebudsjett hevdes.",
+    "Gjeldende kode og språk-master må kontrolleres på nytt ved Grok-bygging.",
+    "Ingen gamle handler skal gjeninnføres automatisk."
+  ],
+  "kilderegister": {
+    "nåværende:src/lib/workbench/periode-core.ts": {
+      "fil": "src/lib/workbench/periode-core.ts",
+      "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+      "sha256": "aab9cee4e30b2120c53ee3fb976f487f071041e50b26e9a832dc27cfb20e888b",
+      "linjer": 96,
+      "kilde": "hovedcheckout arbeidsfil",
+      "arbeidsfil_lik_commit": true,
+      "historisk": false
+    },
+    "nåværende:src/app/admin/workbench/[playerId]/page.tsx": {
+      "fil": "src/app/admin/workbench/[playerId]/page.tsx",
+      "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+      "sha256": "0ae36d7e02e33bb4afaf208fc940b400fb187846fb179fc1fdf7670e01636194",
+      "linjer": 232,
+      "kilde": "hovedcheckout arbeidsfil",
+      "arbeidsfil_lik_commit": true,
+      "historisk": false
+    },
+    "nåværende:src/lib/workbench/perioder.ts": {
+      "fil": "src/lib/workbench/perioder.ts",
+      "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+      "sha256": "790a89bf5dbee110040f89e9f251837d9e947515681c184addc2163da081e81a",
+      "linjer": 54,
+      "kilde": "hovedcheckout arbeidsfil",
+      "arbeidsfil_lik_commit": true,
+      "historisk": false
+    },
+    "nåværende:src/app/portal/planlegge/workbench/actions.ts": {
+      "fil": "src/app/portal/planlegge/workbench/actions.ts",
+      "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+      "sha256": "7b5230303f38c5000b850ebc20c8fd82ba566cad0ea1dca5915b7ae382a642c8",
+      "linjer": 627,
+      "kilde": "hovedcheckout arbeidsfil",
+      "arbeidsfil_lik_commit": true,
+      "historisk": false
+    },
+    "nåværende:src/lib/workbench/session-actions.ts": {
+      "fil": "src/lib/workbench/session-actions.ts",
+      "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+      "sha256": "e4a4b9178f1915b1b07cc310cf41a90d075f62cd8782cbfa4aeccace7519f50c",
+      "linjer": 354,
+      "kilde": "hovedcheckout arbeidsfil",
+      "arbeidsfil_lik_commit": true,
+      "historisk": false
+    },
+    "nåværende:src/components/portal/v2/WorkbenchAarsplan.tsx": {
+      "fil": "src/components/portal/v2/WorkbenchAarsplan.tsx",
+      "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+      "sha256": "69c018dc4f7811524e31525935bec22f79797b531ba52ab05d2186c5ae9c6ab5",
+      "linjer": 620,
+      "kilde": "hovedcheckout arbeidsfil",
+      "arbeidsfil_lik_commit": true,
+      "historisk": false
+    },
+    "nåværende:src/lib/workbench/wb-actions.ts": {
+      "fil": "src/lib/workbench/wb-actions.ts",
+      "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+      "sha256": "f332a0633c052872a14017f1ac31d21d5111e16db397a98807a02160c5330e90",
+      "linjer": 1941,
+      "kilde": "hovedcheckout arbeidsfil",
+      "arbeidsfil_lik_commit": true,
+      "historisk": false
+    },
+    "nåværende:src/components/workbench/WorkbenchAar.tsx": {
+      "fil": "src/components/workbench/WorkbenchAar.tsx",
+      "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+      "sha256": "f00cdd299a412de005d34f8ccf542d8ed9548fc2e48c6d1ccdb8f4153888d796",
+      "linjer": 105,
+      "kilde": "hovedcheckout arbeidsfil",
+      "arbeidsfil_lik_commit": true,
+      "historisk": false
+    },
+    "nåværende:src/components/workbench/WorkbenchManed.tsx": {
+      "fil": "src/components/workbench/WorkbenchManed.tsx",
+      "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+      "sha256": "10672ba00aa15cabbe9f10b0afa2a6c4e01759056158201125dc399c379a56e3",
+      "linjer": 85,
+      "kilde": "hovedcheckout arbeidsfil",
+      "arbeidsfil_lik_commit": true,
+      "historisk": false
+    },
+    "nåværende:src/components/workbench/WorkbenchUke.tsx": {
+      "fil": "src/components/workbench/WorkbenchUke.tsx",
+      "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+      "sha256": "cab258e77c84eb07ee6952b3b3c6783783a76abd1243b138e3a06aa24da5bc9d",
+      "linjer": 301,
+      "kilde": "hovedcheckout arbeidsfil",
+      "arbeidsfil_lik_commit": true,
+      "historisk": false
+    },
+    "nåværende:src/components/workbench/WeekPlanEditor.tsx": {
+      "fil": "src/components/workbench/WeekPlanEditor.tsx",
+      "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+      "sha256": "3773361e9c8f8ded968a29fd19cf7a5eee2aa2b86fd3c6d29cdfb50a15e7d2a5",
+      "linjer": 378,
+      "kilde": "hovedcheckout arbeidsfil",
+      "arbeidsfil_lik_commit": true,
+      "historisk": false
+    },
+    "nåværende:src/app/portal/planlegge/workbench/page.tsx": {
+      "fil": "src/app/portal/planlegge/workbench/page.tsx",
+      "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+      "sha256": "0b4a5c03dfd8127d45c3d177479a18bbbb8c3f019941aeaa23386ac4a5b7111f",
+      "linjer": 85,
+      "kilde": "hovedcheckout arbeidsfil",
+      "arbeidsfil_lik_commit": true,
+      "historisk": false
+    },
+    "nåværende:src/lib/workbench/session-update.ts": {
+      "fil": "src/lib/workbench/session-update.ts",
+      "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+      "sha256": "512a3a5be5b59ecb5d85f67c61c77d271a64ae2fe34346d4de267178e979fce6",
+      "linjer": 247,
+      "kilde": "hovedcheckout arbeidsfil",
+      "arbeidsfil_lik_commit": true,
+      "historisk": false
+    },
+    "nåværende:src/components/portal/v2/WorkbenchV2.tsx": {
+      "fil": "src/components/portal/v2/WorkbenchV2.tsx",
+      "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+      "sha256": "165169b8eb92a6f31f41ba1cf514c177d8393b118159d7321bda89f5285b0fdd",
+      "linjer": 3904,
+      "kilde": "hovedcheckout arbeidsfil",
+      "arbeidsfil_lik_commit": true,
+      "historisk": false
+    },
+    "nåværende:src/lib/workbench/teknisk-plan-panel-typer.ts": {
+      "fil": "src/lib/workbench/teknisk-plan-panel-typer.ts",
+      "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+      "sha256": "9ef47cdf86a67ae36601c076b6ffff1bc76ad27a9e1c011e85bb1e1e5553ec6e",
+      "linjer": 159,
+      "kilde": "hovedcheckout arbeidsfil",
+      "arbeidsfil_lik_commit": true,
+      "historisk": false
+    },
+    "nåværende:src/lib/workbench/sources-map.ts": {
+      "fil": "src/lib/workbench/sources-map.ts",
+      "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+      "sha256": "2a017dc1ae973eb88c82dfec08b75b4093229bf206932da1eb6fae412aaa0d56",
+      "linjer": 187,
+      "kilde": "hovedcheckout arbeidsfil",
+      "arbeidsfil_lik_commit": true,
+      "historisk": false
+    },
+    "nåværende:src/lib/workbench/load-workbench.ts": {
+      "fil": "src/lib/workbench/load-workbench.ts",
+      "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+      "sha256": "94e8f79396fbec7038ea7929527ade97edbbcef187930303dc3a527d16fb1ec0",
+      "linjer": 1157,
+      "kilde": "hovedcheckout arbeidsfil",
+      "arbeidsfil_lik_commit": true,
+      "historisk": false
+    },
+    "nåværende:src/lib/workbench/turnering-plan.ts": {
+      "fil": "src/lib/workbench/turnering-plan.ts",
+      "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+      "sha256": "bea689b01e8e1c22e0bd7f60054597cdac1257e8274e38e4ff39d484f62e8ee5",
+      "linjer": 135,
+      "kilde": "hovedcheckout arbeidsfil",
+      "arbeidsfil_lik_commit": true,
+      "historisk": false
+    },
+    "nåværende:prisma/schema.prisma": {
+      "fil": "prisma/schema.prisma",
+      "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+      "sha256": "5f823001a981f09ad75dfcb045245d0a3965919b403fe037c51bf92d69291c77",
+      "linjer": 6941,
+      "kilde": "hovedcheckout arbeidsfil",
+      "arbeidsfil_lik_commit": true,
+      "historisk": false
+    },
+    "nåværende:src/lib/workbench/publish-actions.ts": {
+      "fil": "src/lib/workbench/publish-actions.ts",
+      "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+      "sha256": "cb4864d23a13edacf8c4900099698007b90edd8d8ad5260b1cadfc7941a3e3e4",
+      "linjer": 283,
+      "kilde": "hovedcheckout arbeidsfil",
+      "arbeidsfil_lik_commit": true,
+      "historisk": false
+    },
+    "historisk:src/lib/workbench/fys-turnering-actions.ts": {
+      "fil": "src/lib/workbench/fys-turnering-actions.ts",
+      "git_commit": "110b4ec8f7d960fd1748b8f87babebde80cd764b",
+      "sha256": "892f336355c2492f6eaea1e202159d755b7a014f6b12145a53dcde5824b22fb6",
+      "linjer": 423,
+      "kilde": "historisk Git-objekt",
+      "arbeidsfil_lik_commit": null,
+      "historisk": true
+    },
+    "historisk:src/components/admin/precision/AG11Moduler.tsx": {
+      "fil": "src/components/admin/precision/AG11Moduler.tsx",
+      "git_commit": "110b4ec8f7d960fd1748b8f87babebde80cd764b",
+      "sha256": "b56a550b523da011a2386b91e254b170c8d2aedffc88ddce0b309ec5c861ba17",
+      "linjer": 325,
+      "kilde": "historisk Git-objekt",
+      "arbeidsfil_lik_commit": null,
+      "historisk": true
+    },
+    "historisk:src/lib/workbench/wb-session-write.ts": {
+      "fil": "src/lib/workbench/wb-session-write.ts",
+      "git_commit": "110b4ec8f7d960fd1748b8f87babebde80cd764b",
+      "sha256": "26f04b6ba04e0d97965f26b4520e6c7ee01ff3f4e87a49b850d5ab90c1b0331b",
+      "linjer": 338,
+      "kilde": "historisk Git-objekt",
+      "arbeidsfil_lik_commit": null,
+      "historisk": true
+    },
+    "historisk:src/components/admin/precision/AG11Workbench.tsx": {
+      "fil": "src/components/admin/precision/AG11Workbench.tsx",
+      "git_commit": "110b4ec8f7d960fd1748b8f87babebde80cd764b",
+      "sha256": "11c6bf6615db5a5b0c6f2d3ddab074c15d80a4a3e6f92d23daaa71f223b8d486",
+      "linjer": 439,
+      "kilde": "historisk Git-objekt",
+      "arbeidsfil_lik_commit": null,
+      "historisk": true
+    }
+  },
+  "observasjoner": [
+    {
+      "id": "WB-K01",
+      "handling": "Årsplan oppstår ved første periode",
+      "status": "eksisterende_kode",
+      "kilder": [
+        {
+          "kilde": "nåværende:src/lib/workbench/periode-core.ts",
+          "linje": 36,
+          "symbol": "opprettPeriodeCore",
+          "kildelinje": "export async function opprettPeriodeCore(",
+          "fil": "src/lib/workbench/periode-core.ts",
+          "sha256": "aab9cee4e30b2120c53ee3fb976f487f071041e50b26e9a832dc27cfb20e888b",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        },
+        {
+          "kilde": "nåværende:src/lib/workbench/periode-core.ts",
+          "linje": 47,
+          "symbol": "seasonPlan.create",
+          "kildelinje": "plan = await prisma.seasonPlan.create({",
+          "fil": "src/lib/workbench/periode-core.ts",
+          "sha256": "aab9cee4e30b2120c53ee3fb976f487f071041e50b26e9a832dc27cfb20e888b",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        },
+        {
+          "kilde": "nåværende:src/app/admin/workbench/[playerId]/page.tsx",
+          "linje": 120,
+          "symbol": "visning === aar",
+          "kildelinje": "if (visning === \"aar\") {",
+          "fil": "src/app/admin/workbench/[playerId]/page.tsx",
+          "sha256": "0ae36d7e02e33bb4afaf208fc940b400fb187846fb179fc1fdf7670e01636194",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        }
+      ],
+      "støttede_felt_og_id": [
+        "userId",
+        "year fra startDato",
+        "SeasonPlan.id",
+        "name = Sesong {year}",
+        "startDate 1. januar",
+        "endDate 31. desember",
+        "PeriodBlock.seasonPlanId"
+      ],
+      "tom_null_0": "Ingen plan → opprett SeasonPlan; ingen selvstendig opprett-årsplan-input dokumentert.",
+      "design_og_byggegjenstand": "Designets Opprett årsplan fra scratch trenger uttrykkelig handling for navn/år/sesong; dagens automatikk er ikke en slik kontrakt. Ikke anta at ny årsplan samtidig oppretter økter.",
+      "kodeendring_siden_4b": "Admin-ruten viser nå AG11Workbench for Uke/Økt/Mål; År/Periode/Måned beholder egne komponenter i AgencyOSSkall. Ankeret for årsgren er flyttet til linje 120."
+    },
+    {
+      "id": "WB-K02",
+      "handling": "Opprette/redigere/slette periode",
+      "status": "eksisterende_kode",
+      "kilder": [
+        {
+          "kilde": "nåværende:src/lib/workbench/perioder.ts",
+          "linje": 41,
+          "symbol": "PeriodeInputSchema",
+          "kildelinje": "export const PeriodeInputSchema = z",
+          "fil": "src/lib/workbench/perioder.ts",
+          "sha256": "790a89bf5dbee110040f89e9f251837d9e947515681c184addc2163da081e81a",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        },
+        {
+          "kilde": "nåværende:src/lib/workbench/periode-core.ts",
+          "linje": 66,
+          "symbol": "oppdaterPeriodeCore",
+          "kildelinje": "export async function oppdaterPeriodeCore(",
+          "fil": "src/lib/workbench/periode-core.ts",
+          "sha256": "aab9cee4e30b2120c53ee3fb976f487f071041e50b26e9a832dc27cfb20e888b",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        },
+        {
+          "kilde": "nåværende:src/lib/workbench/periode-core.ts",
+          "linje": 85,
+          "symbol": "slettPeriodeCore",
+          "kildelinje": "export async function slettPeriodeCore(",
+          "fil": "src/lib/workbench/periode-core.ts",
+          "sha256": "aab9cee4e30b2120c53ee3fb976f487f071041e50b26e9a832dc27cfb20e888b",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        },
+        {
+          "kilde": "nåværende:src/app/portal/planlegge/workbench/actions.ts",
+          "linje": 596,
+          "symbol": "lagreWorkbenchPeriode",
+          "kildelinje": "export async function lagreWorkbenchPeriode(",
+          "fil": "src/app/portal/planlegge/workbench/actions.ts",
+          "sha256": "7b5230303f38c5000b850ebc20c8fd82ba566cad0ea1dca5915b7ae382a642c8",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        },
+        {
+          "kilde": "nåværende:src/lib/workbench/session-actions.ts",
+          "linje": 275,
+          "symbol": "coachLagrePeriode",
+          "kildelinje": "export async function coachLagrePeriode(",
+          "fil": "src/lib/workbench/session-actions.ts",
+          "sha256": "e4a4b9178f1915b1b07cc310cf41a90d075f62cd8782cbfa4aeccace7519f50c",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        }
+      ],
+      "støttede_felt_og_id": [
+        "periodeId ved redigering",
+        "playerId/userId fra autorisert wrapper",
+        "lPhase: GRUNN/SPESIAL/TURNERING/EVALUERING/TESTUKE/FERIE/TRENINGSSAMLING/HELDAGSSAMLING/RESTITUSJON",
+        "startDato/sluttDato YYYY-MM-DD",
+        "fokus maks 200",
+        "ukevolumMin/Max minutter 0–3000",
+        "budsjett"
+      ],
+      "tom_null_0": "fokus tom → null; ukevolum null/undefined → null; 0 minutter bevares; budsjett tomt/absent → Prisma.DbNull.",
+      "design_og_byggegjenstand": "Coach År/Periode-skjermene mangler opprett/rediger-periode-knapper; eksisterende portal-canvas kan brukes som funksjonsinventar. Periodemål og notater støttes ikke av PeriodeInputSchema selv om andre DB-felt finnes.",
+      "kodeendring_siden_4b": "PeriodeInputSchema støtter nå også RESTITUSJON. Dette er en kodeobservasjon; gjeldende språk-master må styre produktvalget."
+    },
+    {
+      "id": "WB-K03",
+      "handling": "Fem øktantall per uke",
+      "status": "eksisterende_kode",
+      "kilder": [
+        {
+          "kilde": "nåværende:src/lib/workbench/perioder.ts",
+          "linje": 11,
+          "symbol": "antall",
+          "kildelinje": "const antall = z.number().int().min(0).max(21);",
+          "fil": "src/lib/workbench/perioder.ts",
+          "sha256": "790a89bf5dbee110040f89e9f251837d9e947515681c184addc2163da081e81a",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        },
+        {
+          "kilde": "nåværende:src/lib/workbench/perioder.ts",
+          "linje": 13,
+          "symbol": "SessionBudgetSchema",
+          "kildelinje": "export const SessionBudgetSchema = z",
+          "fil": "src/lib/workbench/perioder.ts",
+          "sha256": "790a89bf5dbee110040f89e9f251837d9e947515681c184addc2163da081e81a",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        },
+        {
+          "kilde": "nåværende:src/lib/workbench/perioder.ts",
+          "linje": 26,
+          "symbol": "parseSessionBudget",
+          "kildelinje": "export function parseSessionBudget(json: unknown): SessionBudget | null {",
+          "fil": "src/lib/workbench/perioder.ts",
+          "sha256": "790a89bf5dbee110040f89e9f251837d9e947515681c184addc2163da081e81a",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        },
+        {
+          "kilde": "nåværende:src/components/portal/v2/WorkbenchAarsplan.tsx",
+          "linje": 469,
+          "symbol": "Økter per uke / stepper",
+          "kildelinje": "{/* Øktbudsjett per pyramideområde (Anders: «4 FYS-økter i uka») */}",
+          "fil": "src/components/portal/v2/WorkbenchAarsplan.tsx",
+          "sha256": "69c018dc4f7811524e31525935bec22f79797b531ba52ab05d2186c5ae9c6ab5",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        }
+      ],
+      "støttede_felt_og_id": [
+        "weeklySessionBudget.FYS/TEK/SLAG/SPILL/TURN",
+        "hver nøkkel valgfri; heltall 0–21",
+        "budsjettSum"
+      ],
+      "tom_null_0": "null/undefined/ugyldig JSON eller {} leses som null; {FYS:0} er gyldig. Canvas-stepper sletter nøkkelen når verdi <=0: valgt 0 skilles derfor ikke fra ikke satt i denne UI-en.",
+      "design_og_byggegjenstand": "Antallsbudsjett er mål, ikke opprettede økter. Ny design må skille ikke satt, eksplisitt 0, ønsket antall og faktisk plassert antall. Ingen automatisk reps/timer→økter-omregning er verifisert."
+    },
+    {
+      "id": "WB-K04",
+      "handling": "Coach År/Periode viser bare del av lagrede periodefelt",
+      "status": "eksisterende_kode",
+      "kilder": [
+        {
+          "kilde": "nåværende:src/lib/workbench/wb-actions.ts",
+          "linje": 781,
+          "symbol": "periodInput",
+          "kildelinje": "const periodInput = (seasonPlan?.periodBlocks ?? []).map((b) => ({",
+          "fil": "src/lib/workbench/wb-actions.ts",
+          "sha256": "f332a0633c052872a14017f1ac31d21d5111e16db397a98807a02160c5330e90",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        },
+        {
+          "kilde": "nåværende:src/lib/workbench/wb-actions.ts",
+          "linje": 854,
+          "symbol": "loadPeriod periodInput",
+          "kildelinje": "const periodInput = (seasonPlan?.periodBlocks ?? []).map((block) => ({",
+          "fil": "src/lib/workbench/wb-actions.ts",
+          "sha256": "f332a0633c052872a14017f1ac31d21d5111e16db397a98807a02160c5330e90",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        },
+        {
+          "kilde": "nåværende:src/components/workbench/WorkbenchAar.tsx",
+          "linje": 82,
+          "symbol": "årsfordeling",
+          "kildelinje": "<section className=\"wb-year-distribution\"><span className=\"wb-kicker\">{UI.periodDistribution}</span><div>{PYRAMIDER.map((pyramid) => <span key={pyramid} className=\"wb-month-tag\"><i data-lag={pyramid} />{pyramid}<b>{timer(aar.completedByPyramid[pyramid])} av {timer(aar.budget.byPyramid[pyramid])}</b></span>)}</div></section>",
+          "fil": "src/components/workbench/WorkbenchAar.tsx",
+          "sha256": "f00cdd299a412de005d34f8ccf542d8ed9548fc2e48c6d1ccdb8f4153888d796",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        }
+      ],
+      "støttede_felt_og_id": [
+        "id",
+        "type",
+        "startDate",
+        "endDate",
+        "focus",
+        "faktiske økters minutter"
+      ],
+      "tom_null_0": "Ingen periode → tom visning. Fordelingstall beregnes fra økter; 0 er ikke bevis på et eksplisitt valgt antallsmål.",
+      "design_og_byggegjenstand": "weeklySessionBudget og weeklyVolMin/Max føres ikke inn i periodInput. Nye antallsknapper/visning må ha reell lesekobling til de lagrede feltene."
+    },
+    {
+      "id": "WB-K05",
+      "handling": "Måned er sammenstilt oversikt",
+      "status": "eksisterende_kode",
+      "kilder": [
+        {
+          "kilde": "nåværende:src/lib/workbench/wb-actions.ts",
+          "linje": 704,
+          "symbol": "loadMonth",
+          "kildelinje": "export async function loadMonth(params: {",
+          "fil": "src/lib/workbench/wb-actions.ts",
+          "sha256": "f332a0633c052872a14017f1ac31d21d5111e16db397a98807a02160c5330e90",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        },
+        {
+          "kilde": "nåværende:src/components/workbench/WorkbenchManed.tsx",
+          "linje": 62,
+          "symbol": "tom måned / openWeek",
+          "kildelinje": "{maned.empty ? <section className=\"wb-period-empty\"><span className=\"wb-kicker\">{UI.emptyMonthTitle}</span><p>{UI.emptyMonthBody}</p><Link className=\"wb-quiet\" href={workbenchUrl(playerId, \"uke\", { uke: maned.weeks[0]?.weekStart })}>{UI.openWeek}</Link></section> : <MonthCalendar playerId={playerId} maned={maned} idag={idag} />}",
+          "fil": "src/components/workbench/WorkbenchManed.tsx",
+          "sha256": "10672ba00aa15cabbe9f10b0afa2a6c4e01759056158201125dc399c379a56e3",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        },
+        {
+          "kilde": "nåværende:src/components/workbench/WorkbenchManed.tsx",
+          "linje": 84,
+          "symbol": "MonthSummary",
+          "kildelinje": "return <section className=\"wb-week-summary wb-month-summary\"><span className=\"wb-kicker\">Valgt måned</span><h2>{maned.label}</h2><p>{maned.sessionCount} økter · {timer(maned.budget.plannedMinutes)}</p>{!compact && <><span className=\"wb-kicker\">Uker</span><div className=\"wb-month-week-list\">{maned.weekSummaries.map((uke) => <Link key={uke.weekStart} href={workbenchUrl(playerId, \"uke\", { uke: uke.weekStart })}><b>Uke {uke.weekNumber}</b><span>{uke.sessionCount} økter · {timer(uke.minutes)}</span></Link>)}</div><p>{UI.monthHint}</p></>}<div className=\"wb-mobile-actions\"><Link className=\"wb-quiet\" href={workbenchUrl(playerId, \"uke\", { uke: første?.weekStart })}>{UI.openWeek}</Link></div></section>;",
+          "fil": "src/components/workbench/WorkbenchManed.tsx",
+          "sha256": "10672ba00aa15cabbe9f10b0afa2a6c4e01759056158201125dc399c379a56e3",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        }
+      ],
+      "støttede_felt_og_id": [
+        "playerId",
+        "monthStart",
+        "mode",
+        "faktiske økter",
+        "weekStart ved åpne uke"
+      ],
+      "tom_null_0": "Tom måned har lenke til uke; målminutter defaults 0 når ikke levert.",
+      "design_og_byggegjenstand": "Ingen selvstendig månedsplan-skrivehandling eller månedsantallsbudsjett er funnet i disse monterte flatene. Design ny måned→ukefordeling uten å hevde at lagring/automatisk øktoppretting allerede finnes."
+    },
+    {
+      "id": "WB-K06",
+      "handling": "Opprette/oppdatere ukeplan",
+      "status": "eksisterende_kode",
+      "kilder": [
+        {
+          "kilde": "nåværende:src/lib/workbench/wb-actions.ts",
+          "linje": 360,
+          "symbol": "SaveWeekPlanInput",
+          "kildelinje": "export type SaveWeekPlanInput = {",
+          "fil": "src/lib/workbench/wb-actions.ts",
+          "sha256": "f332a0633c052872a14017f1ac31d21d5111e16db397a98807a02160c5330e90",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        },
+        {
+          "kilde": "nåværende:src/lib/workbench/wb-actions.ts",
+          "linje": 380,
+          "symbol": "saveWeekPlan",
+          "kildelinje": "export async function saveWeekPlan(",
+          "fil": "src/lib/workbench/wb-actions.ts",
+          "sha256": "f332a0633c052872a14017f1ac31d21d5111e16db397a98807a02160c5330e90",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        },
+        {
+          "kilde": "nåværende:src/components/workbench/WorkbenchUke.tsx",
+          "linje": 44,
+          "symbol": "motor.lagreUkeplan",
+          "kildelinje": "const onLagreUkeplan = motor.lagreUkeplan;",
+          "fil": "src/components/workbench/WorkbenchUke.tsx",
+          "sha256": "cab258e77c84eb07ee6952b3b3c6783783a76abd1243b138e3a06aa24da5bc9d",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true,
+          "historisk_anker": {
+            "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+            "linje": 74,
+            "symbol": "onLagreUkeplan",
+            "kildelinje": "saveWeekPlan({"
+          }
+        },
+        {
+          "kilde": "nåværende:src/components/workbench/WeekPlanEditor.tsx",
+          "linje": 59,
+          "symbol": "handleSave",
+          "kildelinje": "function handleSave() {",
+          "fil": "src/components/workbench/WeekPlanEditor.tsx",
+          "sha256": "3773361e9c8f8ded968a29fd19cf7a5eee2aa2b86fd3c6d29cdfb50a15e7d2a5",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        }
+      ],
+      "støttede_felt_og_id": [
+        "playerId",
+        "isoYear",
+        "weekNumber",
+        "weekType",
+        "notes",
+        "plannedHoursFys/Tek/Slag/Spill/Turn",
+        "repTargetDry/LowSpeed/FullSpeed/Putting/ShortGame",
+        "loadCeiling",
+        "customNotes",
+        "WeekPlan.id",
+        "unik playerId/isoYear/weekNumber"
+      ],
+      "tom_null_0": "Tomt input i editor → null; numerisk 0 → 0. seasonPlanId null ved manglende årsplan. Upsert oppretter ukeplan uten automatisk å opprette årsplan eller økter.",
+      "design_og_byggegjenstand": "Fem antallsmål for økter og arvet periodens antallsbudsjett er ikke del av SaveWeekPlanInput. Tid, antall og reps skal fortsatt være separate.",
+      "kodeendring_siden_4b": "WorkbenchUke delegerer onLagreUkeplan til useUkeMotor.lagreUkeplan; tidligere inline saveWeekPlan-anker er erstattet. Direkte kobling/feilretur i ny motor og den nå aktive AG11-flaten må kontrolleres før bygging."
+    },
+    {
+      "id": "WB-K07",
+      "handling": "Coach oppretter ordinær Workbench-økt eller serie",
+      "status": "eksisterende_kode",
+      "kilder": [
+        {
+          "kilde": "nåværende:src/lib/workbench/wb-actions.ts",
+          "linje": 180,
+          "symbol": "CreateSessionSchema",
+          "kildelinje": "const CreateSessionSchema = z.object({",
+          "fil": "src/lib/workbench/wb-actions.ts",
+          "sha256": "f332a0633c052872a14017f1ac31d21d5111e16db397a98807a02160c5330e90",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        },
+        {
+          "kilde": "nåværende:src/lib/workbench/wb-actions.ts",
+          "linje": 1117,
+          "symbol": "createSession",
+          "kildelinje": "export async function createSession(",
+          "fil": "src/lib/workbench/wb-actions.ts",
+          "sha256": "f332a0633c052872a14017f1ac31d21d5111e16db397a98807a02160c5330e90",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        },
+        {
+          "kilde": "nåværende:src/lib/workbench/wb-actions.ts",
+          "linje": 1159,
+          "symbol": "createSessionSeries",
+          "kildelinje": "export async function createSessionSeries(",
+          "fil": "src/lib/workbench/wb-actions.ts",
+          "sha256": "f332a0633c052872a14017f1ac31d21d5111e16db397a98807a02160c5330e90",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        },
+        {
+          "kilde": "nåværende:src/components/workbench/WorkbenchUke.tsx",
+          "linje": 94,
+          "symbol": "motor.opprett / onOpprett",
+          "kildelinje": "<CreateSessionModal key={nyOkt ? `${nyOkt.dato}:${nyOkt.startMinutt}` : \"lukket\"} open={nyOkt !== null} dato={nyOkt?.dato ?? idag} startMinutt={nyOkt?.startMinutt ?? 16 * 60} lagrer={travel} onLukk={() => setNyOkt(null)} onOpprett={(v: NyOktVerdier) => motor.opprett(v, (id) => { setNyOkt(null); setValgtId(id); })} />",
+          "fil": "src/components/workbench/WorkbenchUke.tsx",
+          "sha256": "cab258e77c84eb07ee6952b3b3c6783783a76abd1243b138e3a06aa24da5bc9d",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true,
+          "historisk_anker": {
+            "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+            "linje": 198,
+            "symbol": "onOpprett",
+            "kildelinje": "if (repeatWeeks > 1) { kjor(() => createSessionSeries({ playerId, ...felter, repeatWeeks }), (okter: WorkbenchSession[]) => { setNyOkt(null); setValgtId(okter[0]?.id ?? null); toast.success(UI.toastSeriesCreated(okter.length)); }); return; }"
+          }
+        }
+      ],
+      "støttede_felt_og_id": [
+        "playerId",
+        "date",
+        "startMinute 0–1439",
+        "durationMinutes 15–720",
+        "title",
+        "pyramid FYS/TEK/SLAG/SPILL/TURN",
+        "blockType",
+        "environment",
+        "notes",
+        "groupId",
+        "drills",
+        "repeatWeeks ved serie",
+        "session.id/seriesId"
+      ],
+      "tom_null_0": "Valgfrie felt mangler → null/default etter domenet; tittel kreves. Oppretting gir utkast.",
+      "design_og_byggegjenstand": "Design må gi både Ny økt og kalendertrykk/valg uten drag. Count-budgett alene oppretter ingen økt; serie er eksplisitt valgt.",
+      "kodeendring_siden_4b": "WorkbenchUke-delegaten motor.opprett erstatter inline createSession/createSessionSeries. APIene i wb-actions finnes fortsatt; aktiv adminflate er AG11Workbench, ikke direkte WorkbenchUke-render."
+    },
+    {
+      "id": "WB-K08",
+      "handling": "Spiller delegerer øktoppretting til createWbSession",
+      "status": "eksisterende_kode",
+      "kilder": [
+        {
+          "kilde": "nåværende:src/app/portal/planlegge/workbench/page.tsx",
+          "linje": 47,
+          "symbol": "actions.addSession",
+          "kildelinje": "addSession: addWorkbenchSession,",
+          "fil": "src/app/portal/planlegge/workbench/page.tsx",
+          "sha256": "0b4a5c03dfd8127d45c3d177479a18bbbb8c3f019941aeaa23386ac4a5b7111f",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        },
+        {
+          "kilde": "nåværende:src/app/portal/planlegge/workbench/actions.ts",
+          "linje": 524,
+          "symbol": "addWorkbenchSession",
+          "kildelinje": "export async function addWorkbenchSession(input: {",
+          "fil": "src/app/portal/planlegge/workbench/actions.ts",
+          "sha256": "7b5230303f38c5000b850ebc20c8fd82ba566cad0ea1dca5915b7ae382a642c8",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        },
+        {
+          "kilde": "nåværende:src/app/portal/planlegge/workbench/actions.ts",
+          "linje": 547,
+          "symbol": "createWbSession delegert oppretting",
+          "kildelinje": "const created = await createWbSession(prisma, {",
+          "fil": "src/app/portal/planlegge/workbench/actions.ts",
+          "sha256": "7b5230303f38c5000b850ebc20c8fd82ba566cad0ea1dca5915b7ae382a642c8",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true,
+          "historisk_anker": {
+            "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+            "linje": 595,
+            "symbol": "trainingPlanSession.create",
+            "kildelinje": "const created = await prisma.trainingPlanSession.create({"
+          }
+        },
+        {
+          "kilde": "nåværende:src/app/portal/planlegge/workbench/actions.ts",
+          "linje": 565,
+          "symbol": "created.sessionId retur fra delegert oppretting",
+          "kildelinje": "return { ok: true, sessionId: created.sessionId };",
+          "fil": "src/app/portal/planlegge/workbench/actions.ts",
+          "sha256": "7b5230303f38c5000b850ebc20c8fd82ba566cad0ea1dca5915b7ae382a642c8",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true,
+          "historisk_anker": {
+            "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+            "linje": 629,
+            "symbol": "skrivSessionDrills",
+            "kildelinje": "await skrivSessionDrills(prisma, {"
+          }
+        },
+        {
+          "kilde": "nåværende:src/lib/workbench/session-update.ts",
+          "linje": 242,
+          "symbol": "positionTaskId",
+          "kildelinje": "positionTaskId: d.positionTaskId ?? null,",
+          "fil": "src/lib/workbench/session-update.ts",
+          "sha256": "512a3a5be5b59ecb5d85f67c61c77d271a64ae2fe34346d4de267178e979fce6",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        }
+      ],
+      "støttede_felt_og_id": [
+        "playerId fra innlogget user.id",
+        "dayIndex",
+        "title",
+        "durMin → durationMin",
+        "area → pyramidArea",
+        "hour/minute",
+        "weekOffset",
+        "akFormel",
+        "drills med OktDrillSchema",
+        "location",
+        "maalsetning",
+        "created.sessionId"
+      ],
+      "tom_null_0": "Wrapperen validerer dayIndex 0–6 og drill-liste maks 20; ugyldig area → TEK; manglende weekOffset → 0; createWbSession sin feil returneres. Øvrige defaults/skrivemodell må verifiseres i den aktuelle delegaten; gamle inline TrainingPlan-defaults er historikk.",
+      "design_og_byggegjenstand": "actions.addSession → addWorkbenchSession → createWbSession(prisma, input) → created.sessionId. Gamle direkte TrainingPlanSession-/drill-skriveankre er erstattet. session-update.ts er fortsatt en eksisterende schemas-/ID-kilde, men er ikke bevis på at denne delegaten bruker den gamle skrivekjeden. Koble valgt taskId og øktmodell på nytt ved bygging.",
+      "kodeendring_siden_4b": "To tidligere direkte skriveankre er erstattet av delegert oppretting og retur-ID. Ikke bruk 4b-modellen som gjeldende implementeringsregel."
+    },
+    {
+      "id": "WB-K09",
+      "handling": "Teknisk oppgave → forhåndsutfylt spillerøkt",
+      "status": "eksisterende_kode",
+      "kilder": [
+        {
+          "kilde": "nåværende:src/components/portal/v2/WorkbenchV2.tsx",
+          "linje": 2815,
+          "symbol": "tekniskOppgaveTilPrefill",
+          "kildelinje": "const tekniskOppgaveTilPrefill = (o: TekniskPanelOppgave) => {",
+          "fil": "src/components/portal/v2/WorkbenchV2.tsx",
+          "sha256": "165169b8eb92a6f31f41ba1cf514c177d8393b118159d7321bda89f5285b0fdd",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        },
+        {
+          "kilde": "nåværende:src/lib/workbench/teknisk-plan-panel-typer.ts",
+          "linje": 136,
+          "symbol": "tekniskOppgaveTilDrill",
+          "kildelinje": "export function tekniskOppgaveTilDrill(o: TekniskPanelOppgave): TekniskDrillForslag {",
+          "fil": "src/lib/workbench/teknisk-plan-panel-typer.ts",
+          "sha256": "9ef47cdf86a67ae36601c076b6ffff1bc76ad27a9e1c011e85bb1e1e5553ec6e",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        },
+        {
+          "kilde": "nåværende:src/lib/workbench/session-update.ts",
+          "linje": 37,
+          "symbol": "OktDrillSchema.positionTaskId",
+          "kildelinje": "positionTaskId: z.string().min(1).optional(),",
+          "fil": "src/lib/workbench/session-update.ts",
+          "sha256": "512a3a5be5b59ecb5d85f67c61c77d271a64ae2fe34346d4de267178e979fce6",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        }
+      ],
+      "støttede_felt_og_id": [
+        "task.id som positionTaskId",
+        "planId i oppgavegrunnlag",
+        "område/pyramide/læringssteg",
+        "planRepsUtenBall/LavFart/Auto",
+        "restTotalt"
+      ],
+      "tom_null_0": "Restreps <=0 → null planmål; positive reps klemmes maks 2000; læringssteg foreslås fra motorikk.",
+      "design_og_byggegjenstand": "Ingen dokumentert antall-teknikkøkter fra restreps. Bevar task-ID; ny revisjonsbinding må konkretiseres dersom krevd. Rep-restmål er redigerbart forslag."
+    },
+    {
+      "id": "WB-K10",
+      "handling": "Coach kilde tek:{taskId} → økt/øvelse",
+      "status": "eksisterende_kode",
+      "kilder": [
+        {
+          "kilde": "nåværende:src/lib/workbench/sources-map.ts",
+          "linje": 27,
+          "symbol": "tekSourceId",
+          "kildelinje": "export function tekSourceId(taskId: string): string {",
+          "fil": "src/lib/workbench/sources-map.ts",
+          "sha256": "2a017dc1ae973eb88c82dfec08b75b4093229bf206932da1eb6fae412aaa0d56",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        },
+        {
+          "kilde": "nåværende:src/lib/workbench/wb-actions.ts",
+          "linje": 1246,
+          "symbol": "createSessionFromSource TEK",
+          "kildelinje": "} else if (kilde.kind === \"TEK\") {",
+          "fil": "src/lib/workbench/wb-actions.ts",
+          "sha256": "f332a0633c052872a14017f1ac31d21d5111e16db397a98807a02160c5330e90",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        },
+        {
+          "kilde": "nåværende:src/lib/workbench/wb-actions.ts",
+          "linje": 1347,
+          "symbol": "addDrillFromSource TEK",
+          "kildelinje": "} else if (kilde.kind === \"TEK\") {",
+          "fil": "src/lib/workbench/wb-actions.ts",
+          "sha256": "f332a0633c052872a14017f1ac31d21d5111e16db397a98807a02160c5330e90",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        }
+      ],
+      "støttede_felt_og_id": [
+        "sourceId tek:{taskId}",
+        "task.id → drill.sourceId",
+        "position.pNummer → techniqueFocus",
+        "task.omraadeKode",
+        "motorikk",
+        "TEK",
+        "sessionId ved legg til øvelse"
+      ],
+      "tom_null_0": "Ukjent sourceId/manglende oppgave → feil. Standardvarighet 20 minutter.",
+      "design_og_byggegjenstand": "Dette sporet beholder sourceId, men har ikke spiller-prefillens samme positionTaskId/restrep-felter i drill-objektet. Ikke hevde samme reps-tilbakeføring uten kildebevis."
+    },
+    {
+      "id": "WB-K11",
+      "handling": "Turneringskalender og påmeldings-ID",
+      "status": "eksisterende_kode",
+      "kilder": [
+        {
+          "kilde": "nåværende:src/lib/workbench/load-workbench.ts",
+          "linje": 1030,
+          "symbol": "tournamentCalendar",
+          "kildelinje": "const tournamentCalendar = yearTournaments",
+          "fil": "src/lib/workbench/load-workbench.ts",
+          "sha256": "94e8f79396fbec7038ea7929527ade97edbbcef187930303dc3a527d16fb1ec0",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        },
+        {
+          "kilde": "nåværende:src/lib/workbench/load-workbench.ts",
+          "linje": 1042,
+          "symbol": "calendar mapping",
+          "kildelinje": "return { title, startDate: date.toISOString(), daysUntil, priority };",
+          "fil": "src/lib/workbench/load-workbench.ts",
+          "sha256": "94e8f79396fbec7038ea7929527ade97edbbcef187930303dc3a527d16fb1ec0",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        },
+        {
+          "kilde": "nåværende:src/lib/workbench/turnering-plan.ts",
+          "linje": 15,
+          "symbol": "TurneringPaamelding",
+          "kildelinje": "export type TurneringPaamelding = {",
+          "fil": "src/lib/workbench/turnering-plan.ts",
+          "sha256": "bea689b01e8e1c22e0bd7f60054597cdac1257e8274e38e4ff39d484f62e8ee5",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        },
+        {
+          "kilde": "nåværende:prisma/schema.prisma",
+          "linje": 3500,
+          "symbol": "TournamentEntry",
+          "kildelinje": "model TournamentEntry {",
+          "fil": "prisma/schema.prisma",
+          "sha256": "5f823001a981f09ad75dfcb045245d0a3965919b403fe037c51bf92d69291c77",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        }
+      ],
+      "støttede_felt_og_id": [
+        "kalendervisning: title/startDate/daysUntil/priority",
+        "eget turneringPlan-spor: TournamentEntry.id/fra/til/status/prioritet",
+        "TournamentEntry.tournamentId eller manuelle felter",
+        "seasonPlanId valgfri"
+      ],
+      "tom_null_0": "Mangler dato → utelatt kalenderpost; manuell tittel/dato brukes uten katalogturnering; kalenderlista kan være tom.",
+      "design_og_byggegjenstand": "tournamentCalendar mister TournamentEntry.id og sluttdato. Ny Velg fra turneringskalender må bevare entry-ID/datoer/tilstand og ikke lage løs navnekopi. TURN-økter og turneringsdeltakelse er forskjellige objekter."
+    },
+    {
+      "id": "WB-K12",
+      "handling": "Publiser utvalgte ordinære økter",
+      "status": "eksisterende_kode",
+      "kilder": [
+        {
+          "kilde": "nåværende:src/lib/workbench/wb-actions.ts",
+          "linje": 1412,
+          "symbol": "publishSessions",
+          "kildelinje": "export async function publishSessions(",
+          "fil": "src/lib/workbench/wb-actions.ts",
+          "sha256": "f332a0633c052872a14017f1ac31d21d5111e16db397a98807a02160c5330e90",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        },
+        {
+          "kilde": "nåværende:src/components/workbench/WorkbenchUke.tsx",
+          "linje": 72,
+          "symbol": "åpne publiseringsutvalg",
+          "kildelinje": "<Topplinje playerId={playerId} spillerNavn={spillerNavn} week={week} weeklyLoad={weeklyLoad} antallUtkast={utkast.length} travel={travel} onForrige={() => byttUke(-1)} onNeste={() => byttUke(1)} onIdag={() => router.push(`/admin/workbench/${playerId}?uke=${mondayOf(idag)}`)} onNyOkt={() => setNyOkt({ dato: week.days[0]?.date ?? idag, startMinutt: 16 * 60 })} onPubliser={() => { setValgtePubliser(new Set(utkast.filter((s) => !opptattIder.has(s.id)).map((s) => s.id))); setPubliserApen(true); }} />",
+          "fil": "src/components/workbench/WorkbenchUke.tsx",
+          "sha256": "cab258e77c84eb07ee6952b3b3c6783783a76abd1243b138e3a06aa24da5bc9d",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        }
+      ],
+      "støttede_felt_og_id": [
+        "sessionIds[]",
+        "publishedAt",
+        "publishedBy",
+        "status"
+      ],
+      "tom_null_0": "[] → ok med []; duplikater fjernes; en ugyldig/uautorisert/endret økt → hele transaksjonen avbrytes.",
+      "design_og_byggegjenstand": "Publiseringsdialog skal vise nøyaktig valgte session-ID-er og mottaker; Uke/Periode er filtre for utvalg, ikke egen årsplan-publisering.",
+      "kodeendring_siden_4b": "WorkbenchUke sin publiseringsdialog delegerer nå motor.publiser; adminruten monterer AG11Workbench. publishSessions er uendret i de undersøkte kildene. Den aktive skjermreisen er ikke kjørt."
+    },
+    {
+      "id": "WB-K13",
+      "handling": "Publiser TrainingPlan til spillerens godkjenning",
+      "status": "eksisterende_kode",
+      "kilder": [
+        {
+          "kilde": "nåværende:src/app/portal/planlegge/workbench/page.tsx",
+          "linje": 54,
+          "symbol": "actions.publish",
+          "kildelinje": "publish: publishWorkbenchPlan.bind(null, undefined),",
+          "fil": "src/app/portal/planlegge/workbench/page.tsx",
+          "sha256": "0b4a5c03dfd8127d45c3d177479a18bbbb8c3f019941aeaa23386ac4a5b7111f",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        },
+        {
+          "kilde": "nåværende:src/lib/workbench/publish-actions.ts",
+          "linje": 137,
+          "symbol": "publishWorkbenchPlan",
+          "kildelinje": "export async function publishWorkbenchPlan(",
+          "fil": "src/lib/workbench/publish-actions.ts",
+          "sha256": "cb4864d23a13edacf8c4900099698007b90edd8d8ad5260b1cadfc7941a3e3e4",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        },
+        {
+          "kilde": "nåværende:src/lib/workbench/publish-actions.ts",
+          "linje": 165,
+          "symbol": "trainingPlan status",
+          "kildelinje": "if (!PUBLISHABLE.includes(plan.status)) {",
+          "fil": "src/lib/workbench/publish-actions.ts",
+          "sha256": "cb4864d23a13edacf8c4900099698007b90edd8d8ad5260b1cadfc7941a3e3e4",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        },
+        {
+          "kilde": "nåværende:src/lib/workbench/publish-actions.ts",
+          "linje": 180,
+          "symbol": "publishedSnapshot",
+          "kildelinje": "publishedSnapshot: tilSnapshot(snapshotPlan?.sessions ?? []),",
+          "fil": "src/lib/workbench/publish-actions.ts",
+          "sha256": "cb4864d23a13edacf8c4900099698007b90edd8d8ad5260b1cadfc7941a3e3e4",
+          "git_commit": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+          "arbeidsfil_lik_commit": true
+        }
+      ],
+      "støttede_felt_og_id": [
+        "valgfri playerId ellers innlogget bruker",
+        "melding maks 500 i varseltekst",
+        "TrainingPlan.id funnet som aktiv/nyeste",
+        "PENDING_PLAYER",
+        "publishedSnapshot fra kommende økter"
+      ],
+      "tom_null_0": "Ingen plan/ikke publiserbar status → feil; tom melding → ingen begrunnelse.",
+      "design_og_byggegjenstand": "Dette omfanget er TrainingPlan, ikke SeasonPlan/PeriodBlock eller vilkårlig valgte Workbench-session-ID-er. Dialog og Grok må ikke blande de to publiseringene."
+    },
+    {
+      "id": "WB-H01",
+      "handling": "Historisk fjerning i 4b; FYS-/TURN-importer finnes igjen i c8",
+      "status": "historisk_fjerningsobservasjon_erstattet_av_ny_kilde",
+      "kilder": [
+        {
+          "kilde": "historisk:src/lib/workbench/fys-turnering-actions.ts",
+          "linje": 118,
+          "symbol": "opprettFysiskBlokk",
+          "kildelinje": "export async function opprettFysiskBlokk(input: unknown): Promise<{ ok: boolean; blockId?: string; error?: string }> {",
+          "fil": "src/lib/workbench/fys-turnering-actions.ts",
+          "sha256": "892f336355c2492f6eaea1e202159d755b7a014f6b12145a53dcde5824b22fb6",
+          "git_commit": "110b4ec8f7d960fd1748b8f87babebde80cd764b",
+          "arbeidsfil_lik_commit": null
+        },
+        {
+          "kilde": "historisk:src/lib/workbench/fys-turnering-actions.ts",
+          "linje": 176,
+          "symbol": "opprettFysiskOkt",
+          "kildelinje": "export async function opprettFysiskOkt(input: unknown): Promise<{ ok: boolean; sessionId?: string; error?: string }> {",
+          "fil": "src/lib/workbench/fys-turnering-actions.ts",
+          "sha256": "892f336355c2492f6eaea1e202159d755b7a014f6b12145a53dcde5824b22fb6",
+          "git_commit": "110b4ec8f7d960fd1748b8f87babebde80cd764b",
+          "arbeidsfil_lik_commit": null
+        },
+        {
+          "kilde": "historisk:src/lib/workbench/fys-turnering-actions.ts",
+          "linje": 317,
+          "symbol": "opprettTurneringsplan",
+          "kildelinje": "export async function opprettTurneringsplan(input: unknown): Promise<{ ok: boolean; planId?: string; error?: string }> {",
+          "fil": "src/lib/workbench/fys-turnering-actions.ts",
+          "sha256": "892f336355c2492f6eaea1e202159d755b7a014f6b12145a53dcde5824b22fb6",
+          "git_commit": "110b4ec8f7d960fd1748b8f87babebde80cd764b",
+          "arbeidsfil_lik_commit": null
+        },
+        {
+          "kilde": "historisk:src/components/admin/precision/AG11Moduler.tsx",
+          "linje": 312,
+          "symbol": "opprettTurneringsplan-dialog",
+          "kildelinje": "footer={<><Knapp fullWidth icon={Check} loading={pending} disabled={!tf.title.trim()} onClick={() => actions.opprettTurneringsplan && kjor(() => actions.opprettTurneringsplan!({ playerId, title: tf.title.trim(), startDate: tf.startDate, endDate: tf.endDate, travelStartDate: tf.travelStartDate || null, travelEndDate: tf.travelEndDate || null, focus: tf.focus }), () => setNy(false))}>Opprett som utkast</Knapp><Knapp variant=\"ghost\" fullWidth onClick={() => setNy(false)}>Avbryt</Knapp></>}>",
+          "fil": "src/components/admin/precision/AG11Moduler.tsx",
+          "sha256": "b56a550b523da011a2386b91e254b170c8d2aedffc88ddce0b309ec5c861ba17",
+          "git_commit": "110b4ec8f7d960fd1748b8f87babebde80cd764b",
+          "arbeidsfil_lik_commit": null
+        }
+      ],
+      "støttede_felt_og_id": [
+        "historisk: blockId/weekId/sessionId",
+        "historisk: tournamentEntryId støttet av action men utelatt i dialog",
+        "historisk: fysisk blokk-/turneringsplan-ID ved publisering"
+      ],
+      "tom_null_0": "Historiske runder auto-opprettet én per kalenderdag maks åtte; dette er ikke en valgt rundeplan.",
+      "design_og_byggegjenstand": "Fjerningen gjaldt bare 4b553524. I c8e97c66 importerer admin/page.tsx:23 AG11Fysisk/AG11Turnering og :32 seks FYS-/TURN-handlinger; :97–108 velger og renderer disse. Dette viser aktuell innkobling, ikke full funksjon eller likhet med 110-koden. Gamle 110-ankre nedenfor forblir historisk inventar."
+    },
+    {
+      "id": "WB-H02",
+      "handling": "Historisk fjerning i 4b; coachflate og øktdelegate finnes igjen i c8",
+      "status": "historisk_fjerningsobservasjon_erstattet_av_ny_kilde",
+      "kilder": [
+        {
+          "kilde": "historisk:src/lib/workbench/wb-session-write.ts",
+          "linje": 66,
+          "symbol": "createWbSession",
+          "kildelinje": "export async function createWbSession(",
+          "fil": "src/lib/workbench/wb-session-write.ts",
+          "sha256": "26f04b6ba04e0d97965f26b4520e6c7ee01ff3f4e87a49b850d5ab90c1b0331b",
+          "git_commit": "110b4ec8f7d960fd1748b8f87babebde80cd764b",
+          "arbeidsfil_lik_commit": null
+        },
+        {
+          "kilde": "historisk:src/components/admin/precision/AG11Workbench.tsx",
+          "linje": 432,
+          "symbol": "UkeplanArk",
+          "kildelinje": "{ukeplan && <UkeplanArk weekPlan={week.weekPlan} ukeNr={ukeNr} travel={travel} onLukk={() => setUkeplan(false)} onLagre={(d) => { motor.lagreUkeplan(d); setUkeplan(false); }} />}",
+          "fil": "src/components/admin/precision/AG11Workbench.tsx",
+          "sha256": "11c6bf6615db5a5b0c6f2d3ddab074c15d80a4a3e6f92d23daaa71f223b8d486",
+          "git_commit": "110b4ec8f7d960fd1748b8f87babebde80cd764b",
+          "arbeidsfil_lik_commit": null
+        }
+      ],
+      "støttede_felt_og_id": [
+        "historisk WorkbenchSession.id",
+        "historisk useUkeMotor→wb-actions"
+      ],
+      "tom_null_0": "Ingen antagelse om historiske handlinger fortsatt er montert.",
+      "design_og_byggegjenstand": "Fjerningen gjaldt bare 4b553524. I c8e97c66 monterer admin/page.tsx:216 AG11Workbench med nivå/side/valgt økt :226–228; portal/actions.ts:547 bruker createWbSession, og WorkbenchUke.tsx:30/44/94 bruker useUkeMotor. Gjeldende implementering skal undersøkes; historiske 110-kilder er ingen ordre om gjeninnføring."
+    }
+  ],
+  "antall_observasjoner": 15,
+  "reverifiedOn": "2026-10-01",
+  "reverifiedMainHead": "c8e97c66be98e09c6707381f17cefbcdc8451ddb",
+  "reverification": {
+    "activeSourceHashes": 20,
+    "matchingSourceHashes": 20,
+    "sourceAnchors": 47,
+    "validSourceAnchors": 47,
+    "changedSourceFilesSince4b": 10,
+    "relocatedAnchorsSince4b": 11,
+    "replacedAnchorsSince4b": 4,
+    "missingSourceFiles": 0,
+    "worktreeBytesEqualHead": true,
+    "scope": "Bare oppførte referanser/kildeankre; ingen runtime-, innlogget-, backend- eller visuell godkjenning."
+  },
+  "historiske_kildekontroller": [
+    {
+      "git_head": "4b553524585f6eec26037930800f355e78caba89",
+      "status": "historisk-kildekontroll-ikke-gjeldende-regel",
+      "kilderegister": {
+        "nåværende:src/lib/workbench/periode-core.ts": {
+          "fil": "src/lib/workbench/periode-core.ts",
+          "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+          "sha256": "aab9cee4e30b2120c53ee3fb976f487f071041e50b26e9a832dc27cfb20e888b",
+          "linjer": 96,
+          "kilde": "hovedcheckout arbeidsfil",
+          "arbeidsfil_lik_commit": true,
+          "historisk": false
+        },
+        "nåværende:src/app/admin/workbench/[playerId]/page.tsx": {
+          "fil": "src/app/admin/workbench/[playerId]/page.tsx",
+          "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+          "sha256": "e8c014cae87cc8009fc4f666747f2a74a8c8b6e59c5ed2e4c2a79a910b7223bd",
+          "linjer": 248,
+          "kilde": "hovedcheckout arbeidsfil",
+          "arbeidsfil_lik_commit": true,
+          "historisk": false
+        },
+        "nåværende:src/lib/workbench/perioder.ts": {
+          "fil": "src/lib/workbench/perioder.ts",
+          "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+          "sha256": "dcdc0f4f890fcbb7e83cbf6cc983c0bf528423cb879237d1888ba421bdfc703a",
+          "linjer": 54,
+          "kilde": "hovedcheckout arbeidsfil",
+          "arbeidsfil_lik_commit": true,
+          "historisk": false
+        },
+        "nåværende:src/app/portal/planlegge/workbench/actions.ts": {
+          "fil": "src/app/portal/planlegge/workbench/actions.ts",
+          "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+          "sha256": "3779e153e3425d0ee6b08c1a17a990f62f58cf6dfac6f7d02407f327e65f8ae7",
+          "linjer": 720,
+          "kilde": "hovedcheckout arbeidsfil",
+          "arbeidsfil_lik_commit": true,
+          "historisk": false
+        },
+        "nåværende:src/lib/workbench/session-actions.ts": {
+          "fil": "src/lib/workbench/session-actions.ts",
+          "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+          "sha256": "e4a4b9178f1915b1b07cc310cf41a90d075f62cd8782cbfa4aeccace7519f50c",
+          "linjer": 354,
+          "kilde": "hovedcheckout arbeidsfil",
+          "arbeidsfil_lik_commit": true,
+          "historisk": false
+        },
+        "nåværende:src/components/portal/v2/WorkbenchAarsplan.tsx": {
+          "fil": "src/components/portal/v2/WorkbenchAarsplan.tsx",
+          "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+          "sha256": "1f821a7d84a2c3182f464e632fb8477b406b8b508794088fb3d56cf7fb62b739",
+          "linjer": 620,
+          "kilde": "hovedcheckout arbeidsfil",
+          "arbeidsfil_lik_commit": true,
+          "historisk": false
+        },
+        "nåværende:src/lib/workbench/wb-actions.ts": {
+          "fil": "src/lib/workbench/wb-actions.ts",
+          "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+          "sha256": "f332a0633c052872a14017f1ac31d21d5111e16db397a98807a02160c5330e90",
+          "linjer": 1941,
+          "kilde": "hovedcheckout arbeidsfil",
+          "arbeidsfil_lik_commit": true,
+          "historisk": false
+        },
+        "nåværende:src/components/workbench/WorkbenchAar.tsx": {
+          "fil": "src/components/workbench/WorkbenchAar.tsx",
+          "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+          "sha256": "244c73df7415f0f4983fd01896cc46e28982a43520808fde4166713214d0ddf6",
+          "linjer": 104,
+          "kilde": "hovedcheckout arbeidsfil",
+          "arbeidsfil_lik_commit": true,
+          "historisk": false
+        },
+        "nåværende:src/components/workbench/WorkbenchManed.tsx": {
+          "fil": "src/components/workbench/WorkbenchManed.tsx",
+          "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+          "sha256": "10672ba00aa15cabbe9f10b0afa2a6c4e01759056158201125dc399c379a56e3",
+          "linjer": 85,
+          "kilde": "hovedcheckout arbeidsfil",
+          "arbeidsfil_lik_commit": true,
+          "historisk": false
+        },
+        "nåværende:src/components/workbench/WorkbenchUke.tsx": {
+          "fil": "src/components/workbench/WorkbenchUke.tsx",
+          "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+          "sha256": "a5cee4fa95e85d9b4c9c73b853ace346e91436fc991eec1b8251e66f5ea4977f",
+          "linjer": 407,
+          "kilde": "hovedcheckout arbeidsfil",
+          "arbeidsfil_lik_commit": true,
+          "historisk": false
+        },
+        "nåværende:src/components/workbench/WeekPlanEditor.tsx": {
+          "fil": "src/components/workbench/WeekPlanEditor.tsx",
+          "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+          "sha256": "3773361e9c8f8ded968a29fd19cf7a5eee2aa2b86fd3c6d29cdfb50a15e7d2a5",
+          "linjer": 378,
+          "kilde": "hovedcheckout arbeidsfil",
+          "arbeidsfil_lik_commit": true,
+          "historisk": false
+        },
+        "nåværende:src/app/portal/planlegge/workbench/page.tsx": {
+          "fil": "src/app/portal/planlegge/workbench/page.tsx",
+          "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+          "sha256": "cbbbbdccf5f911c493c7fed8ea4e97e1069ac38c888867629c70231a9dfec4f6",
+          "linjer": 82,
+          "kilde": "hovedcheckout arbeidsfil",
+          "arbeidsfil_lik_commit": true,
+          "historisk": false
+        },
+        "nåværende:src/lib/workbench/session-update.ts": {
+          "fil": "src/lib/workbench/session-update.ts",
+          "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+          "sha256": "512a3a5be5b59ecb5d85f67c61c77d271a64ae2fe34346d4de267178e979fce6",
+          "linjer": 247,
+          "kilde": "hovedcheckout arbeidsfil",
+          "arbeidsfil_lik_commit": true,
+          "historisk": false
+        },
+        "nåværende:src/components/portal/v2/WorkbenchV2.tsx": {
+          "fil": "src/components/portal/v2/WorkbenchV2.tsx",
+          "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+          "sha256": "3a2bed1457455d94656b43e1ddbbe675009e839fcc1f0d7c1ad5aad1eed1f93f",
+          "linjer": 3654,
+          "kilde": "hovedcheckout arbeidsfil",
+          "arbeidsfil_lik_commit": true,
+          "historisk": false
+        },
+        "nåværende:src/lib/workbench/teknisk-plan-panel-typer.ts": {
+          "fil": "src/lib/workbench/teknisk-plan-panel-typer.ts",
+          "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+          "sha256": "9ef47cdf86a67ae36601c076b6ffff1bc76ad27a9e1c011e85bb1e1e5553ec6e",
+          "linjer": 159,
+          "kilde": "hovedcheckout arbeidsfil",
+          "arbeidsfil_lik_commit": true,
+          "historisk": false
+        },
+        "nåværende:src/lib/workbench/sources-map.ts": {
+          "fil": "src/lib/workbench/sources-map.ts",
+          "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+          "sha256": "2a017dc1ae973eb88c82dfec08b75b4093229bf206932da1eb6fae412aaa0d56",
+          "linjer": 187,
+          "kilde": "hovedcheckout arbeidsfil",
+          "arbeidsfil_lik_commit": true,
+          "historisk": false
+        },
+        "nåværende:src/lib/workbench/load-workbench.ts": {
+          "fil": "src/lib/workbench/load-workbench.ts",
+          "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+          "sha256": "50b03539b9b5602dff5d2ae408f68d9bafc727cb3e6bb9f5243b21d939bfee8e",
+          "linjer": 1058,
+          "kilde": "hovedcheckout arbeidsfil",
+          "arbeidsfil_lik_commit": true,
+          "historisk": false
+        },
+        "nåværende:src/lib/workbench/turnering-plan.ts": {
+          "fil": "src/lib/workbench/turnering-plan.ts",
+          "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+          "sha256": "bea689b01e8e1c22e0bd7f60054597cdac1257e8274e38e4ff39d484f62e8ee5",
+          "linjer": 135,
+          "kilde": "hovedcheckout arbeidsfil",
+          "arbeidsfil_lik_commit": true,
+          "historisk": false
+        },
+        "nåværende:prisma/schema.prisma": {
+          "fil": "prisma/schema.prisma",
+          "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+          "sha256": "3a2ee4f57d77896f20149736d1fb76d1daaa1ec570fe1cb0ae10b491371ba3fa",
+          "linjer": 6618,
+          "kilde": "hovedcheckout arbeidsfil",
+          "arbeidsfil_lik_commit": true,
+          "historisk": false
+        },
+        "nåværende:src/lib/workbench/publish-actions.ts": {
+          "fil": "src/lib/workbench/publish-actions.ts",
+          "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+          "sha256": "cb4864d23a13edacf8c4900099698007b90edd8d8ad5260b1cadfc7941a3e3e4",
+          "linjer": 283,
+          "kilde": "hovedcheckout arbeidsfil",
+          "arbeidsfil_lik_commit": true,
+          "historisk": false
+        },
+        "historisk:src/lib/workbench/fys-turnering-actions.ts": {
+          "fil": "src/lib/workbench/fys-turnering-actions.ts",
+          "git_commit": "110b4ec8f7d960fd1748b8f87babebde80cd764b",
+          "sha256": "892f336355c2492f6eaea1e202159d755b7a014f6b12145a53dcde5824b22fb6",
+          "linjer": 423,
+          "kilde": "historisk Git-objekt",
+          "arbeidsfil_lik_commit": null,
+          "historisk": true
+        },
+        "historisk:src/components/admin/precision/AG11Moduler.tsx": {
+          "fil": "src/components/admin/precision/AG11Moduler.tsx",
+          "git_commit": "110b4ec8f7d960fd1748b8f87babebde80cd764b",
+          "sha256": "b56a550b523da011a2386b91e254b170c8d2aedffc88ddce0b309ec5c861ba17",
+          "linjer": 325,
+          "kilde": "historisk Git-objekt",
+          "arbeidsfil_lik_commit": null,
+          "historisk": true
+        },
+        "historisk:src/lib/workbench/wb-session-write.ts": {
+          "fil": "src/lib/workbench/wb-session-write.ts",
+          "git_commit": "110b4ec8f7d960fd1748b8f87babebde80cd764b",
+          "sha256": "26f04b6ba04e0d97965f26b4520e6c7ee01ff3f4e87a49b850d5ab90c1b0331b",
+          "linjer": 338,
+          "kilde": "historisk Git-objekt",
+          "arbeidsfil_lik_commit": null,
+          "historisk": true
+        },
+        "historisk:src/components/admin/precision/AG11Workbench.tsx": {
+          "fil": "src/components/admin/precision/AG11Workbench.tsx",
+          "git_commit": "110b4ec8f7d960fd1748b8f87babebde80cd764b",
+          "sha256": "11c6bf6615db5a5b0c6f2d3ddab074c15d80a4a3e6f92d23daaa71f223b8d486",
+          "linjer": 439,
+          "kilde": "historisk Git-objekt",
+          "arbeidsfil_lik_commit": null,
+          "historisk": true
+        }
+      },
+      "observasjoner": [
+        {
+          "id": "WB-K01",
+          "handling": "Årsplan oppstår ved første periode",
+          "status": "eksisterende_kode",
+          "kilder": [
+            {
+              "kilde": "nåværende:src/lib/workbench/periode-core.ts",
+              "linje": 36,
+              "symbol": "opprettPeriodeCore",
+              "kildelinje": "export async function opprettPeriodeCore(",
+              "fil": "src/lib/workbench/periode-core.ts",
+              "sha256": "aab9cee4e30b2120c53ee3fb976f487f071041e50b26e9a832dc27cfb20e888b",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            },
+            {
+              "kilde": "nåværende:src/lib/workbench/periode-core.ts",
+              "linje": 47,
+              "symbol": "seasonPlan.create",
+              "kildelinje": "plan = await prisma.seasonPlan.create({",
+              "fil": "src/lib/workbench/periode-core.ts",
+              "sha256": "aab9cee4e30b2120c53ee3fb976f487f071041e50b26e9a832dc27cfb20e888b",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            },
+            {
+              "kilde": "nåværende:src/app/admin/workbench/[playerId]/page.tsx",
+              "linje": 71,
+              "symbol": "visning === aar",
+              "kildelinje": "if (visning === \"aar\") {",
+              "fil": "src/app/admin/workbench/[playerId]/page.tsx",
+              "sha256": "e8c014cae87cc8009fc4f666747f2a74a8c8b6e59c5ed2e4c2a79a910b7223bd",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            }
+          ],
+          "støttede_felt_og_id": [
+            "userId",
+            "year fra startDato",
+            "SeasonPlan.id",
+            "name = Sesong {year}",
+            "startDate 1. januar",
+            "endDate 31. desember",
+            "PeriodBlock.seasonPlanId"
+          ],
+          "tom_null_0": "Ingen plan → opprett SeasonPlan; ingen selvstendig opprett-årsplan-input dokumentert.",
+          "design_og_byggegjenstand": "Designets Opprett årsplan fra scratch trenger uttrykkelig handling for navn/år/sesong; dagens automatikk er ikke en slik kontrakt. Ikke anta at ny årsplan samtidig oppretter økter."
+        },
+        {
+          "id": "WB-K02",
+          "handling": "Opprette/redigere/slette periode",
+          "status": "eksisterende_kode",
+          "kilder": [
+            {
+              "kilde": "nåværende:src/lib/workbench/perioder.ts",
+              "linje": 41,
+              "symbol": "PeriodeInputSchema",
+              "kildelinje": "export const PeriodeInputSchema = z",
+              "fil": "src/lib/workbench/perioder.ts",
+              "sha256": "dcdc0f4f890fcbb7e83cbf6cc983c0bf528423cb879237d1888ba421bdfc703a",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            },
+            {
+              "kilde": "nåværende:src/lib/workbench/periode-core.ts",
+              "linje": 66,
+              "symbol": "oppdaterPeriodeCore",
+              "kildelinje": "export async function oppdaterPeriodeCore(",
+              "fil": "src/lib/workbench/periode-core.ts",
+              "sha256": "aab9cee4e30b2120c53ee3fb976f487f071041e50b26e9a832dc27cfb20e888b",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            },
+            {
+              "kilde": "nåværende:src/lib/workbench/periode-core.ts",
+              "linje": 85,
+              "symbol": "slettPeriodeCore",
+              "kildelinje": "export async function slettPeriodeCore(",
+              "fil": "src/lib/workbench/periode-core.ts",
+              "sha256": "aab9cee4e30b2120c53ee3fb976f487f071041e50b26e9a832dc27cfb20e888b",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            },
+            {
+              "kilde": "nåværende:src/app/portal/planlegge/workbench/actions.ts",
+              "linje": 689,
+              "symbol": "lagreWorkbenchPeriode",
+              "kildelinje": "export async function lagreWorkbenchPeriode(",
+              "fil": "src/app/portal/planlegge/workbench/actions.ts",
+              "sha256": "3779e153e3425d0ee6b08c1a17a990f62f58cf6dfac6f7d02407f327e65f8ae7",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            },
+            {
+              "kilde": "nåværende:src/lib/workbench/session-actions.ts",
+              "linje": 275,
+              "symbol": "coachLagrePeriode",
+              "kildelinje": "export async function coachLagrePeriode(",
+              "fil": "src/lib/workbench/session-actions.ts",
+              "sha256": "e4a4b9178f1915b1b07cc310cf41a90d075f62cd8782cbfa4aeccace7519f50c",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            }
+          ],
+          "støttede_felt_og_id": [
+            "periodeId ved redigering",
+            "playerId/userId fra autorisert wrapper",
+            "lPhase: GRUNN/SPESIAL/TURNERING/EVALUERING/TESTUKE/FERIE/TRENINGSSAMLING/HELDAGSSAMLING",
+            "startDato/sluttDato YYYY-MM-DD",
+            "fokus maks 200",
+            "ukevolumMin/Max minutter 0–3000",
+            "budsjett"
+          ],
+          "tom_null_0": "fokus tom → null; ukevolum null/undefined → null; 0 minutter bevares; budsjett tomt/absent → Prisma.DbNull.",
+          "design_og_byggegjenstand": "Coach År/Periode-skjermene mangler opprett/rediger-periode-knapper; eksisterende portal-canvas kan brukes som funksjonsinventar. Periodemål og notater støttes ikke av PeriodeInputSchema selv om andre DB-felt finnes."
+        },
+        {
+          "id": "WB-K03",
+          "handling": "Fem øktantall per uke",
+          "status": "eksisterende_kode",
+          "kilder": [
+            {
+              "kilde": "nåværende:src/lib/workbench/perioder.ts",
+              "linje": 11,
+              "symbol": "antall",
+              "kildelinje": "const antall = z.number().int().min(0).max(21);",
+              "fil": "src/lib/workbench/perioder.ts",
+              "sha256": "dcdc0f4f890fcbb7e83cbf6cc983c0bf528423cb879237d1888ba421bdfc703a",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            },
+            {
+              "kilde": "nåværende:src/lib/workbench/perioder.ts",
+              "linje": 13,
+              "symbol": "SessionBudgetSchema",
+              "kildelinje": "export const SessionBudgetSchema = z",
+              "fil": "src/lib/workbench/perioder.ts",
+              "sha256": "dcdc0f4f890fcbb7e83cbf6cc983c0bf528423cb879237d1888ba421bdfc703a",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            },
+            {
+              "kilde": "nåværende:src/lib/workbench/perioder.ts",
+              "linje": 26,
+              "symbol": "parseSessionBudget",
+              "kildelinje": "export function parseSessionBudget(json: unknown): SessionBudget | null {",
+              "fil": "src/lib/workbench/perioder.ts",
+              "sha256": "dcdc0f4f890fcbb7e83cbf6cc983c0bf528423cb879237d1888ba421bdfc703a",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            },
+            {
+              "kilde": "nåværende:src/components/portal/v2/WorkbenchAarsplan.tsx",
+              "linje": 469,
+              "symbol": "Økter per uke / stepper",
+              "kildelinje": "{/* Øktbudsjett per pyramideområde (Anders: «4 FYS-økter i uka») */}",
+              "fil": "src/components/portal/v2/WorkbenchAarsplan.tsx",
+              "sha256": "1f821a7d84a2c3182f464e632fb8477b406b8b508794088fb3d56cf7fb62b739",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            }
+          ],
+          "støttede_felt_og_id": [
+            "weeklySessionBudget.FYS/TEK/SLAG/SPILL/TURN",
+            "hver nøkkel valgfri; heltall 0–21",
+            "budsjettSum"
+          ],
+          "tom_null_0": "null/undefined/ugyldig JSON eller {} leses som null; {FYS:0} er gyldig. Canvas-stepper sletter nøkkelen når verdi <=0: valgt 0 skilles derfor ikke fra ikke satt i denne UI-en.",
+          "design_og_byggegjenstand": "Antallsbudsjett er mål, ikke opprettede økter. Ny design må skille ikke satt, eksplisitt 0, ønsket antall og faktisk plassert antall. Ingen automatisk reps/timer→økter-omregning er verifisert."
+        },
+        {
+          "id": "WB-K04",
+          "handling": "Coach År/Periode viser bare del av lagrede periodefelt",
+          "status": "eksisterende_kode",
+          "kilder": [
+            {
+              "kilde": "nåværende:src/lib/workbench/wb-actions.ts",
+              "linje": 781,
+              "symbol": "periodInput",
+              "kildelinje": "const periodInput = (seasonPlan?.periodBlocks ?? []).map((b) => ({",
+              "fil": "src/lib/workbench/wb-actions.ts",
+              "sha256": "f332a0633c052872a14017f1ac31d21d5111e16db397a98807a02160c5330e90",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            },
+            {
+              "kilde": "nåværende:src/lib/workbench/wb-actions.ts",
+              "linje": 854,
+              "symbol": "loadPeriod periodInput",
+              "kildelinje": "const periodInput = (seasonPlan?.periodBlocks ?? []).map((block) => ({",
+              "fil": "src/lib/workbench/wb-actions.ts",
+              "sha256": "f332a0633c052872a14017f1ac31d21d5111e16db397a98807a02160c5330e90",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            },
+            {
+              "kilde": "nåværende:src/components/workbench/WorkbenchAar.tsx",
+              "linje": 81,
+              "symbol": "årsfordeling",
+              "kildelinje": "<section className=\"wb-year-distribution\"><span className=\"wb-kicker\">{UI.periodDistribution}</span><div>{PYRAMIDER.map((pyramid) => <span key={pyramid} className=\"wb-month-tag\"><i data-lag={pyramid} />{pyramid}<b>{timer(aar.completedByPyramid[pyramid])} av {timer(aar.budget.byPyramid[pyramid])}</b></span>)}</div></section>",
+              "fil": "src/components/workbench/WorkbenchAar.tsx",
+              "sha256": "244c73df7415f0f4983fd01896cc46e28982a43520808fde4166713214d0ddf6",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            }
+          ],
+          "støttede_felt_og_id": [
+            "id",
+            "type",
+            "startDate",
+            "endDate",
+            "focus",
+            "faktiske økters minutter"
+          ],
+          "tom_null_0": "Ingen periode → tom visning. Fordelingstall beregnes fra økter; 0 er ikke bevis på et eksplisitt valgt antallsmål.",
+          "design_og_byggegjenstand": "weeklySessionBudget og weeklyVolMin/Max føres ikke inn i periodInput. Nye antallsknapper/visning må ha reell lesekobling til de lagrede feltene."
+        },
+        {
+          "id": "WB-K05",
+          "handling": "Måned er sammenstilt oversikt",
+          "status": "eksisterende_kode",
+          "kilder": [
+            {
+              "kilde": "nåværende:src/lib/workbench/wb-actions.ts",
+              "linje": 704,
+              "symbol": "loadMonth",
+              "kildelinje": "export async function loadMonth(params: {",
+              "fil": "src/lib/workbench/wb-actions.ts",
+              "sha256": "f332a0633c052872a14017f1ac31d21d5111e16db397a98807a02160c5330e90",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            },
+            {
+              "kilde": "nåværende:src/components/workbench/WorkbenchManed.tsx",
+              "linje": 62,
+              "symbol": "tom måned / openWeek",
+              "kildelinje": "{maned.empty ? <section className=\"wb-period-empty\"><span className=\"wb-kicker\">{UI.emptyMonthTitle}</span><p>{UI.emptyMonthBody}</p><Link className=\"wb-quiet\" href={workbenchUrl(playerId, \"uke\", { uke: maned.weeks[0]?.weekStart })}>{UI.openWeek}</Link></section> : <MonthCalendar playerId={playerId} maned={maned} idag={idag} />}",
+              "fil": "src/components/workbench/WorkbenchManed.tsx",
+              "sha256": "10672ba00aa15cabbe9f10b0afa2a6c4e01759056158201125dc399c379a56e3",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            },
+            {
+              "kilde": "nåværende:src/components/workbench/WorkbenchManed.tsx",
+              "linje": 84,
+              "symbol": "MonthSummary",
+              "kildelinje": "return <section className=\"wb-week-summary wb-month-summary\"><span className=\"wb-kicker\">Valgt måned</span><h2>{maned.label}</h2><p>{maned.sessionCount} økter · {timer(maned.budget.plannedMinutes)}</p>{!compact && <><span className=\"wb-kicker\">Uker</span><div className=\"wb-month-week-list\">{maned.weekSummaries.map((uke) => <Link key={uke.weekStart} href={workbenchUrl(playerId, \"uke\", { uke: uke.weekStart })}><b>Uke {uke.weekNumber}</b><span>{uke.sessionCount} økter · {timer(uke.minutes)}</span></Link>)}</div><p>{UI.monthHint}</p></>}<div className=\"wb-mobile-actions\"><Link className=\"wb-quiet\" href={workbenchUrl(playerId, \"uke\", { uke: første?.weekStart })}>{UI.openWeek}</Link></div></section>;",
+              "fil": "src/components/workbench/WorkbenchManed.tsx",
+              "sha256": "10672ba00aa15cabbe9f10b0afa2a6c4e01759056158201125dc399c379a56e3",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            }
+          ],
+          "støttede_felt_og_id": [
+            "playerId",
+            "monthStart",
+            "mode",
+            "faktiske økter",
+            "weekStart ved åpne uke"
+          ],
+          "tom_null_0": "Tom måned har lenke til uke; målminutter defaults 0 når ikke levert.",
+          "design_og_byggegjenstand": "Ingen selvstendig månedsplan-skrivehandling eller månedsantallsbudsjett er funnet i disse monterte flatene. Design ny måned→ukefordeling uten å hevde at lagring/automatisk øktoppretting allerede finnes."
+        },
+        {
+          "id": "WB-K06",
+          "handling": "Opprette/oppdatere ukeplan",
+          "status": "eksisterende_kode",
+          "kilder": [
+            {
+              "kilde": "nåværende:src/lib/workbench/wb-actions.ts",
+              "linje": 360,
+              "symbol": "SaveWeekPlanInput",
+              "kildelinje": "export type SaveWeekPlanInput = {",
+              "fil": "src/lib/workbench/wb-actions.ts",
+              "sha256": "f332a0633c052872a14017f1ac31d21d5111e16db397a98807a02160c5330e90",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            },
+            {
+              "kilde": "nåværende:src/lib/workbench/wb-actions.ts",
+              "linje": 380,
+              "symbol": "saveWeekPlan",
+              "kildelinje": "export async function saveWeekPlan(",
+              "fil": "src/lib/workbench/wb-actions.ts",
+              "sha256": "f332a0633c052872a14017f1ac31d21d5111e16db397a98807a02160c5330e90",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            },
+            {
+              "kilde": "nåværende:src/components/workbench/WorkbenchUke.tsx",
+              "linje": 74,
+              "symbol": "onLagreUkeplan",
+              "kildelinje": "saveWeekPlan({",
+              "fil": "src/components/workbench/WorkbenchUke.tsx",
+              "sha256": "a5cee4fa95e85d9b4c9c73b853ace346e91436fc991eec1b8251e66f5ea4977f",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            },
+            {
+              "kilde": "nåværende:src/components/workbench/WeekPlanEditor.tsx",
+              "linje": 59,
+              "symbol": "handleSave",
+              "kildelinje": "function handleSave() {",
+              "fil": "src/components/workbench/WeekPlanEditor.tsx",
+              "sha256": "3773361e9c8f8ded968a29fd19cf7a5eee2aa2b86fd3c6d29cdfb50a15e7d2a5",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            }
+          ],
+          "støttede_felt_og_id": [
+            "playerId",
+            "isoYear",
+            "weekNumber",
+            "weekType",
+            "notes",
+            "plannedHoursFys/Tek/Slag/Spill/Turn",
+            "repTargetDry/LowSpeed/FullSpeed/Putting/ShortGame",
+            "loadCeiling",
+            "customNotes",
+            "WeekPlan.id",
+            "unik playerId/isoYear/weekNumber"
+          ],
+          "tom_null_0": "Tomt input i editor → null; numerisk 0 → 0. seasonPlanId null ved manglende årsplan. Upsert oppretter ukeplan uten automatisk å opprette årsplan eller økter.",
+          "design_og_byggegjenstand": "Fem antallsmål for økter og arvet periodens antallsbudsjett er ikke del av SaveWeekPlanInput. Tid, antall og reps skal fortsatt være separate."
+        },
+        {
+          "id": "WB-K07",
+          "handling": "Coach oppretter ordinær Workbench-økt eller serie",
+          "status": "eksisterende_kode",
+          "kilder": [
+            {
+              "kilde": "nåværende:src/lib/workbench/wb-actions.ts",
+              "linje": 180,
+              "symbol": "CreateSessionSchema",
+              "kildelinje": "const CreateSessionSchema = z.object({",
+              "fil": "src/lib/workbench/wb-actions.ts",
+              "sha256": "f332a0633c052872a14017f1ac31d21d5111e16db397a98807a02160c5330e90",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            },
+            {
+              "kilde": "nåværende:src/lib/workbench/wb-actions.ts",
+              "linje": 1117,
+              "symbol": "createSession",
+              "kildelinje": "export async function createSession(",
+              "fil": "src/lib/workbench/wb-actions.ts",
+              "sha256": "f332a0633c052872a14017f1ac31d21d5111e16db397a98807a02160c5330e90",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            },
+            {
+              "kilde": "nåværende:src/lib/workbench/wb-actions.ts",
+              "linje": 1159,
+              "symbol": "createSessionSeries",
+              "kildelinje": "export async function createSessionSeries(",
+              "fil": "src/lib/workbench/wb-actions.ts",
+              "sha256": "f332a0633c052872a14017f1ac31d21d5111e16db397a98807a02160c5330e90",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            },
+            {
+              "kilde": "nåværende:src/components/workbench/WorkbenchUke.tsx",
+              "linje": 198,
+              "symbol": "onOpprett",
+              "kildelinje": "if (repeatWeeks > 1) { kjor(() => createSessionSeries({ playerId, ...felter, repeatWeeks }), (okter: WorkbenchSession[]) => { setNyOkt(null); setValgtId(okter[0]?.id ?? null); toast.success(UI.toastSeriesCreated(okter.length)); }); return; }",
+              "fil": "src/components/workbench/WorkbenchUke.tsx",
+              "sha256": "a5cee4fa95e85d9b4c9c73b853ace346e91436fc991eec1b8251e66f5ea4977f",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            }
+          ],
+          "støttede_felt_og_id": [
+            "playerId",
+            "date",
+            "startMinute 0–1439",
+            "durationMinutes 15–720",
+            "title",
+            "pyramid FYS/TEK/SLAG/SPILL/TURN",
+            "blockType",
+            "environment",
+            "notes",
+            "groupId",
+            "drills",
+            "repeatWeeks ved serie",
+            "session.id/seriesId"
+          ],
+          "tom_null_0": "Valgfrie felt mangler → null/default etter domenet; tittel kreves. Oppretting gir utkast.",
+          "design_og_byggegjenstand": "Design må gi både Ny økt og kalendertrykk/valg uten drag. Count-budgett alene oppretter ingen økt; serie er eksplisitt valgt."
+        },
+        {
+          "id": "WB-K08",
+          "handling": "Spiller oppretter TrainingPlanSession og V2-speil",
+          "status": "eksisterende_kode",
+          "kilder": [
+            {
+              "kilde": "nåværende:src/app/portal/planlegge/workbench/page.tsx",
+              "linje": 46,
+              "symbol": "actions.addSession",
+              "kildelinje": "addSession: addWorkbenchSession,",
+              "fil": "src/app/portal/planlegge/workbench/page.tsx",
+              "sha256": "cbbbbdccf5f911c493c7fed8ea4e97e1069ac38c888867629c70231a9dfec4f6",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            },
+            {
+              "kilde": "nåværende:src/app/portal/planlegge/workbench/actions.ts",
+              "linje": 552,
+              "symbol": "addWorkbenchSession",
+              "kildelinje": "export async function addWorkbenchSession(input: {",
+              "fil": "src/app/portal/planlegge/workbench/actions.ts",
+              "sha256": "3779e153e3425d0ee6b08c1a17a990f62f58cf6dfac6f7d02407f327e65f8ae7",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            },
+            {
+              "kilde": "nåværende:src/app/portal/planlegge/workbench/actions.ts",
+              "linje": 595,
+              "symbol": "trainingPlanSession.create",
+              "kildelinje": "const created = await prisma.trainingPlanSession.create({",
+              "fil": "src/app/portal/planlegge/workbench/actions.ts",
+              "sha256": "3779e153e3425d0ee6b08c1a17a990f62f58cf6dfac6f7d02407f327e65f8ae7",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            },
+            {
+              "kilde": "nåværende:src/app/portal/planlegge/workbench/actions.ts",
+              "linje": 629,
+              "symbol": "skrivSessionDrills",
+              "kildelinje": "await skrivSessionDrills(prisma, {",
+              "fil": "src/app/portal/planlegge/workbench/actions.ts",
+              "sha256": "3779e153e3425d0ee6b08c1a17a990f62f58cf6dfac6f7d02407f327e65f8ae7",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            },
+            {
+              "kilde": "nåværende:src/lib/workbench/session-update.ts",
+              "linje": 242,
+              "symbol": "positionTaskId",
+              "kildelinje": "positionTaskId: d.positionTaskId ?? null,",
+              "fil": "src/lib/workbench/session-update.ts",
+              "sha256": "512a3a5be5b59ecb5d85f67c61c77d271a64ae2fe34346d4de267178e979fce6",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            }
+          ],
+          "støttede_felt_og_id": [
+            "dayIndex",
+            "title",
+            "durMin",
+            "area",
+            "hour/minute",
+            "weekOffset",
+            "akFormel",
+            "drills",
+            "location",
+            "maalsetning",
+            "TrainingPlan.id",
+            "TrainingPlanSession.id",
+            "drills.positionTaskId"
+          ],
+          "tom_null_0": "Ingen TrainingPlan → opprett Min plan; tom tittel → Ny økt; varighet klemmes 5–480; tom location/maalsetning → null. Ingen drills → ingen drill-liste skrives.",
+          "design_og_byggegjenstand": "Nyere spillerflyt skriver TrainingPlanSession, ikke 110s createWbSession. Flere øktmodeller må ikke antas identiske; valider valgt modell ved bygging."
+        },
+        {
+          "id": "WB-K09",
+          "handling": "Teknisk oppgave → forhåndsutfylt spillerøkt",
+          "status": "eksisterende_kode",
+          "kilder": [
+            {
+              "kilde": "nåværende:src/components/portal/v2/WorkbenchV2.tsx",
+              "linje": 2568,
+              "symbol": "tekniskOppgaveTilPrefill",
+              "kildelinje": "const tekniskOppgaveTilPrefill = (o: TekniskPanelOppgave) => {",
+              "fil": "src/components/portal/v2/WorkbenchV2.tsx",
+              "sha256": "3a2bed1457455d94656b43e1ddbbe675009e839fcc1f0d7c1ad5aad1eed1f93f",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            },
+            {
+              "kilde": "nåværende:src/lib/workbench/teknisk-plan-panel-typer.ts",
+              "linje": 136,
+              "symbol": "tekniskOppgaveTilDrill",
+              "kildelinje": "export function tekniskOppgaveTilDrill(o: TekniskPanelOppgave): TekniskDrillForslag {",
+              "fil": "src/lib/workbench/teknisk-plan-panel-typer.ts",
+              "sha256": "9ef47cdf86a67ae36601c076b6ffff1bc76ad27a9e1c011e85bb1e1e5553ec6e",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            },
+            {
+              "kilde": "nåværende:src/lib/workbench/session-update.ts",
+              "linje": 37,
+              "symbol": "OktDrillSchema.positionTaskId",
+              "kildelinje": "positionTaskId: z.string().min(1).optional(),",
+              "fil": "src/lib/workbench/session-update.ts",
+              "sha256": "512a3a5be5b59ecb5d85f67c61c77d271a64ae2fe34346d4de267178e979fce6",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            }
+          ],
+          "støttede_felt_og_id": [
+            "task.id som positionTaskId",
+            "planId i oppgavegrunnlag",
+            "område/pyramide/læringssteg",
+            "planRepsUtenBall/LavFart/Auto",
+            "restTotalt"
+          ],
+          "tom_null_0": "Restreps <=0 → null planmål; positive reps klemmes maks 2000; læringssteg foreslås fra motorikk.",
+          "design_og_byggegjenstand": "Ingen dokumentert antall-teknikkøkter fra restreps. Bevar task-ID; ny revisjonsbinding må konkretiseres dersom krevd. Rep-restmål er redigerbart forslag."
+        },
+        {
+          "id": "WB-K10",
+          "handling": "Coach kilde tek:{taskId} → økt/øvelse",
+          "status": "eksisterende_kode",
+          "kilder": [
+            {
+              "kilde": "nåværende:src/lib/workbench/sources-map.ts",
+              "linje": 27,
+              "symbol": "tekSourceId",
+              "kildelinje": "export function tekSourceId(taskId: string): string {",
+              "fil": "src/lib/workbench/sources-map.ts",
+              "sha256": "2a017dc1ae973eb88c82dfec08b75b4093229bf206932da1eb6fae412aaa0d56",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            },
+            {
+              "kilde": "nåværende:src/lib/workbench/wb-actions.ts",
+              "linje": 1246,
+              "symbol": "createSessionFromSource TEK",
+              "kildelinje": "} else if (kilde.kind === \"TEK\") {",
+              "fil": "src/lib/workbench/wb-actions.ts",
+              "sha256": "f332a0633c052872a14017f1ac31d21d5111e16db397a98807a02160c5330e90",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            },
+            {
+              "kilde": "nåværende:src/lib/workbench/wb-actions.ts",
+              "linje": 1347,
+              "symbol": "addDrillFromSource TEK",
+              "kildelinje": "} else if (kilde.kind === \"TEK\") {",
+              "fil": "src/lib/workbench/wb-actions.ts",
+              "sha256": "f332a0633c052872a14017f1ac31d21d5111e16db397a98807a02160c5330e90",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            }
+          ],
+          "støttede_felt_og_id": [
+            "sourceId tek:{taskId}",
+            "task.id → drill.sourceId",
+            "position.pNummer → techniqueFocus",
+            "task.omraadeKode",
+            "motorikk",
+            "TEK",
+            "sessionId ved legg til øvelse"
+          ],
+          "tom_null_0": "Ukjent sourceId/manglende oppgave → feil. Standardvarighet 20 minutter.",
+          "design_og_byggegjenstand": "Dette sporet beholder sourceId, men har ikke spiller-prefillens samme positionTaskId/restrep-felter i drill-objektet. Ikke hevde samme reps-tilbakeføring uten kildebevis."
+        },
+        {
+          "id": "WB-K11",
+          "handling": "Turneringskalender og påmeldings-ID",
+          "status": "eksisterende_kode",
+          "kilder": [
+            {
+              "kilde": "nåværende:src/lib/workbench/load-workbench.ts",
+              "linje": 932,
+              "symbol": "tournamentCalendar",
+              "kildelinje": "const tournamentCalendar = yearTournaments",
+              "fil": "src/lib/workbench/load-workbench.ts",
+              "sha256": "50b03539b9b5602dff5d2ae408f68d9bafc727cb3e6bb9f5243b21d939bfee8e",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            },
+            {
+              "kilde": "nåværende:src/lib/workbench/load-workbench.ts",
+              "linje": 944,
+              "symbol": "calendar mapping",
+              "kildelinje": "return { title, startDate: date.toISOString(), daysUntil, priority };",
+              "fil": "src/lib/workbench/load-workbench.ts",
+              "sha256": "50b03539b9b5602dff5d2ae408f68d9bafc727cb3e6bb9f5243b21d939bfee8e",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            },
+            {
+              "kilde": "nåværende:src/lib/workbench/turnering-plan.ts",
+              "linje": 15,
+              "symbol": "TurneringPaamelding",
+              "kildelinje": "export type TurneringPaamelding = {",
+              "fil": "src/lib/workbench/turnering-plan.ts",
+              "sha256": "bea689b01e8e1c22e0bd7f60054597cdac1257e8274e38e4ff39d484f62e8ee5",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            },
+            {
+              "kilde": "nåværende:prisma/schema.prisma",
+              "linje": 3479,
+              "symbol": "TournamentEntry",
+              "kildelinje": "model TournamentEntry {",
+              "fil": "prisma/schema.prisma",
+              "sha256": "3a2ee4f57d77896f20149736d1fb76d1daaa1ec570fe1cb0ae10b491371ba3fa",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            }
+          ],
+          "støttede_felt_og_id": [
+            "kalendervisning: title/startDate/daysUntil/priority",
+            "eget turneringPlan-spor: TournamentEntry.id/fra/til/status/prioritet",
+            "TournamentEntry.tournamentId eller manuelle felter",
+            "seasonPlanId valgfri"
+          ],
+          "tom_null_0": "Mangler dato → utelatt kalenderpost; manuell tittel/dato brukes uten katalogturnering; kalenderlista kan være tom.",
+          "design_og_byggegjenstand": "tournamentCalendar mister TournamentEntry.id og sluttdato. Ny Velg fra turneringskalender må bevare entry-ID/datoer/tilstand og ikke lage løs navnekopi. TURN-økter og turneringsdeltakelse er forskjellige objekter."
+        },
+        {
+          "id": "WB-K12",
+          "handling": "Publiser utvalgte ordinære økter",
+          "status": "eksisterende_kode",
+          "kilder": [
+            {
+              "kilde": "nåværende:src/lib/workbench/wb-actions.ts",
+              "linje": 1412,
+              "symbol": "publishSessions",
+              "kildelinje": "export async function publishSessions(",
+              "fil": "src/lib/workbench/wb-actions.ts",
+              "sha256": "f332a0633c052872a14017f1ac31d21d5111e16db397a98807a02160c5330e90",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            },
+            {
+              "kilde": "nåværende:src/components/workbench/WorkbenchUke.tsx",
+              "linje": 174,
+              "symbol": "åpne publiseringsutvalg",
+              "kildelinje": "<Topplinje playerId={playerId} spillerNavn={spillerNavn} week={week} weeklyLoad={weeklyLoad} antallUtkast={utkast.length} travel={travel} onForrige={() => byttUke(-1)} onNeste={() => byttUke(1)} onIdag={() => router.push(`/admin/workbench/${playerId}?uke=${mondayOf(idag)}`)} onNyOkt={() => setNyOkt({ dato: week.days[0]?.date ?? idag, startMinutt: 16 * 60 })} onPubliser={() => { setValgtePubliser(new Set(utkast.filter((s) => !opptattIder.has(s.id)).map((s) => s.id))); setPubliserApen(true); }} />",
+              "fil": "src/components/workbench/WorkbenchUke.tsx",
+              "sha256": "a5cee4fa95e85d9b4c9c73b853ace346e91436fc991eec1b8251e66f5ea4977f",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            }
+          ],
+          "støttede_felt_og_id": [
+            "sessionIds[]",
+            "publishedAt",
+            "publishedBy",
+            "status"
+          ],
+          "tom_null_0": "[] → ok med []; duplikater fjernes; en ugyldig/uautorisert/endret økt → hele transaksjonen avbrytes.",
+          "design_og_byggegjenstand": "Publiseringsdialog skal vise nøyaktig valgte session-ID-er og mottaker; Uke/Periode er filtre for utvalg, ikke egen årsplan-publisering."
+        },
+        {
+          "id": "WB-K13",
+          "handling": "Publiser TrainingPlan til spillerens godkjenning",
+          "status": "eksisterende_kode",
+          "kilder": [
+            {
+              "kilde": "nåværende:src/app/portal/planlegge/workbench/page.tsx",
+              "linje": 53,
+              "symbol": "actions.publish",
+              "kildelinje": "publish: publishWorkbenchPlan.bind(null, undefined),",
+              "fil": "src/app/portal/planlegge/workbench/page.tsx",
+              "sha256": "cbbbbdccf5f911c493c7fed8ea4e97e1069ac38c888867629c70231a9dfec4f6",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            },
+            {
+              "kilde": "nåværende:src/lib/workbench/publish-actions.ts",
+              "linje": 137,
+              "symbol": "publishWorkbenchPlan",
+              "kildelinje": "export async function publishWorkbenchPlan(",
+              "fil": "src/lib/workbench/publish-actions.ts",
+              "sha256": "cb4864d23a13edacf8c4900099698007b90edd8d8ad5260b1cadfc7941a3e3e4",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            },
+            {
+              "kilde": "nåværende:src/lib/workbench/publish-actions.ts",
+              "linje": 165,
+              "symbol": "trainingPlan status",
+              "kildelinje": "if (!PUBLISHABLE.includes(plan.status)) {",
+              "fil": "src/lib/workbench/publish-actions.ts",
+              "sha256": "cb4864d23a13edacf8c4900099698007b90edd8d8ad5260b1cadfc7941a3e3e4",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            },
+            {
+              "kilde": "nåværende:src/lib/workbench/publish-actions.ts",
+              "linje": 180,
+              "symbol": "publishedSnapshot",
+              "kildelinje": "publishedSnapshot: tilSnapshot(snapshotPlan?.sessions ?? []),",
+              "fil": "src/lib/workbench/publish-actions.ts",
+              "sha256": "cb4864d23a13edacf8c4900099698007b90edd8d8ad5260b1cadfc7941a3e3e4",
+              "git_commit": "4b553524585f6eec26037930800f355e78caba89",
+              "arbeidsfil_lik_commit": true
+            }
+          ],
+          "støttede_felt_og_id": [
+            "valgfri playerId ellers innlogget bruker",
+            "melding maks 500 i varseltekst",
+            "TrainingPlan.id funnet som aktiv/nyeste",
+            "PENDING_PLAYER",
+            "publishedSnapshot fra kommende økter"
+          ],
+          "tom_null_0": "Ingen plan/ikke publiserbar status → feil; tom melding → ingen begrunnelse.",
+          "design_og_byggegjenstand": "Dette omfanget er TrainingPlan, ikke SeasonPlan/PeriodBlock eller vilkårlig valgte Workbench-session-ID-er. Dialog og Grok må ikke blande de to publiseringene."
+        },
+        {
+          "id": "WB-H01",
+          "handling": "FYS-/TURN-handlinger fjernet fra nyere checkout",
+          "status": "historisk_fjernet_ikke_appbinding",
+          "kilder": [
+            {
+              "kilde": "historisk:src/lib/workbench/fys-turnering-actions.ts",
+              "linje": 118,
+              "symbol": "opprettFysiskBlokk",
+              "kildelinje": "export async function opprettFysiskBlokk(input: unknown): Promise<{ ok: boolean; blockId?: string; error?: string }> {",
+              "fil": "src/lib/workbench/fys-turnering-actions.ts",
+              "sha256": "892f336355c2492f6eaea1e202159d755b7a014f6b12145a53dcde5824b22fb6",
+              "git_commit": "110b4ec8f7d960fd1748b8f87babebde80cd764b",
+              "arbeidsfil_lik_commit": null
+            },
+            {
+              "kilde": "historisk:src/lib/workbench/fys-turnering-actions.ts",
+              "linje": 176,
+              "symbol": "opprettFysiskOkt",
+              "kildelinje": "export async function opprettFysiskOkt(input: unknown): Promise<{ ok: boolean; sessionId?: string; error?: string }> {",
+              "fil": "src/lib/workbench/fys-turnering-actions.ts",
+              "sha256": "892f336355c2492f6eaea1e202159d755b7a014f6b12145a53dcde5824b22fb6",
+              "git_commit": "110b4ec8f7d960fd1748b8f87babebde80cd764b",
+              "arbeidsfil_lik_commit": null
+            },
+            {
+              "kilde": "historisk:src/lib/workbench/fys-turnering-actions.ts",
+              "linje": 317,
+              "symbol": "opprettTurneringsplan",
+              "kildelinje": "export async function opprettTurneringsplan(input: unknown): Promise<{ ok: boolean; planId?: string; error?: string }> {",
+              "fil": "src/lib/workbench/fys-turnering-actions.ts",
+              "sha256": "892f336355c2492f6eaea1e202159d755b7a014f6b12145a53dcde5824b22fb6",
+              "git_commit": "110b4ec8f7d960fd1748b8f87babebde80cd764b",
+              "arbeidsfil_lik_commit": null
+            },
+            {
+              "kilde": "historisk:src/components/admin/precision/AG11Moduler.tsx",
+              "linje": 312,
+              "symbol": "opprettTurneringsplan-dialog",
+              "kildelinje": "footer={<><Knapp fullWidth icon={Check} loading={pending} disabled={!tf.title.trim()} onClick={() => actions.opprettTurneringsplan && kjor(() => actions.opprettTurneringsplan!({ playerId, title: tf.title.trim(), startDate: tf.startDate, endDate: tf.endDate, travelStartDate: tf.travelStartDate || null, travelEndDate: tf.travelEndDate || null, focus: tf.focus }), () => setNy(false))}>Opprett som utkast</Knapp><Knapp variant=\"ghost\" fullWidth onClick={() => setNy(false)}>Avbryt</Knapp></>}>",
+              "fil": "src/components/admin/precision/AG11Moduler.tsx",
+              "sha256": "b56a550b523da011a2386b91e254b170c8d2aedffc88ddce0b309ec5c861ba17",
+              "git_commit": "110b4ec8f7d960fd1748b8f87babebde80cd764b",
+              "arbeidsfil_lik_commit": null
+            }
+          ],
+          "støttede_felt_og_id": [
+            "historisk: blockId/weekId/sessionId",
+            "historisk: tournamentEntryId støttet av action men utelatt i dialog",
+            "historisk: fysisk blokk-/turneringsplan-ID ved publisering"
+          ],
+          "tom_null_0": "Historiske runder auto-opprettet én per kalenderdag maks åtte; dette er ikke en valgt rundeplan.",
+          "design_og_byggegjenstand": "Fys-turnering-actions/data/kontrakt, AG11Moduler og useUkeMotor finnes ikke i 4b55352. Undersøk nye src/app/admin/workbench/[playerId]/page.tsx, src/components/workbench/WorkbenchUke.tsx, src/lib/workbench/wb-actions.ts, spillerens actions.ts og TournamentEntry-rutene før eventuell gjenimplementering. Historikken er funksjonsinventar, ingen instruks om å gjeninnføre."
+        },
+        {
+          "id": "WB-H02",
+          "handling": "createWbSession / Precision coachflate er historikk",
+          "status": "historisk_fjernet_ikke_appbinding",
+          "kilder": [
+            {
+              "kilde": "historisk:src/lib/workbench/wb-session-write.ts",
+              "linje": 66,
+              "symbol": "createWbSession",
+              "kildelinje": "export async function createWbSession(",
+              "fil": "src/lib/workbench/wb-session-write.ts",
+              "sha256": "26f04b6ba04e0d97965f26b4520e6c7ee01ff3f4e87a49b850d5ab90c1b0331b",
+              "git_commit": "110b4ec8f7d960fd1748b8f87babebde80cd764b",
+              "arbeidsfil_lik_commit": null
+            },
+            {
+              "kilde": "historisk:src/components/admin/precision/AG11Workbench.tsx",
+              "linje": 432,
+              "symbol": "UkeplanArk",
+              "kildelinje": "{ukeplan && <UkeplanArk weekPlan={week.weekPlan} ukeNr={ukeNr} travel={travel} onLukk={() => setUkeplan(false)} onLagre={(d) => { motor.lagreUkeplan(d); setUkeplan(false); }} />}",
+              "fil": "src/components/admin/precision/AG11Workbench.tsx",
+              "sha256": "11c6bf6615db5a5b0c6f2d3ddab074c15d80a4a3e6f92d23daaa71f223b8d486",
+              "git_commit": "110b4ec8f7d960fd1748b8f87babebde80cd764b",
+              "arbeidsfil_lik_commit": null
+            }
+          ],
+          "støttede_felt_og_id": [
+            "historisk WorkbenchSession.id",
+            "historisk useUkeMotor→wb-actions"
+          ],
+          "tom_null_0": "Ingen antagelse om historiske handlinger fortsatt er montert.",
+          "design_og_byggegjenstand": "createWbSession/wb-session-write, wb-drill-write, AG11Workbench/useUkeMotor er fjernet i 4b55352. Nåværende coach WorkbenchUke→wb-actions og spiller addWorkbenchSession→TrainingPlanSession er de stedene som skal undersøkes."
+        }
+      ],
+      "reverification": {
+        "activeSourceHashes": 20,
+        "matchingSourceHashes": 20,
+        "sourceAnchors": 47,
+        "validSourceAnchors": 47,
+        "changedSourceFiles": 0,
+        "missingSourceFiles": 0,
+        "worktreeBytesEqualHead": true,
+        "scope": "Bare oppførte referanser/kildeankre, ikke nettleserfunksjon eller full Workbench-implementasjon."
+      }
+    }
+  ],
+  "språk_master_sha256": "baca89953dcf8e0fb61a39483dd931b9067f73a4304e1c0003b535dcb228f094"
+}

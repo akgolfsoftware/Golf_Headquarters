@@ -1,0 +1,51 @@
+{
+  "date": "2026-10-01",
+  "status": "tomstart-egen-nativekontroll-bestatt-visuell-gjennomgang-gjenstar",
+  "export": {
+    "file": "AK Golf Precision Athletics (67).zip",
+    "sha256": "560cd53f3a718589c0b95c325c5846248c59b7e9117d9cbb58bdfb9280875b78",
+    "fileCount": 625,
+    "exportedAt": "2026-10-01T10:36:12.694462+00:00"
+  },
+  "syntax": {
+    "scripts": 324,
+    "inline": 80,
+    "errors": 0
+  },
+  "ownProbe": {
+    "file": "ui_kits/wb-tomstart-repro.html",
+    "checks": 26,
+    "failures": 0,
+    "evidence": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/egen67-tomstart.txt",
+    "fixture": "Kun eksempelplanens grunnoppsett er direkte modellfixture; opprett/avbryt/save/feilretry/valg/nivå/reload er reell UI."
+  },
+  "cloudRegression": {
+    "arsdekning": "17/0",
+    "periode": "34/0",
+    "gruppeantall": "20/0",
+    "phKildevalg": "22/0",
+    "ownRerun67": false
+  },
+  "sourceDelta": [
+    "ui_kits/_shared/WB3.jsx",
+    "ui_kits/_shared/WB3-lokal.jsx",
+    "_ds_bundle.js",
+    "ui_kits/wb-tomstart-repro.html",
+    "ui_kits/Workbench-gjennomgang.html"
+  ],
+  "reviewEntry": "ui_kits/Workbench-gjennomgang.html",
+  "coverage": [
+    "Tomstart på alle7nivåer, ingen gammel demo/uke40-plan velges.",
+    "Avbryt uten plan; lagringsfeil/retry nøyaktigén ny plan; faktiske fratil-datoer uten autoøkter/budsjett.",
+    "Plan A/B bytte og reload beholder riktig plan/nivå.",
+    "Uttrykkelig eksempelplan bruker samme modell; annet ns fortsatt tomt."
+  ],
+  "limits": [
+    "De gamle reisetest-tp/reisetest/wb1-reise er ikke oppdatert eller kjørt etter tomstart. Gammel demokode ennå ikke flyttet til arkiv.",
+    "Egen kontroll av ren gjennomgang fant at Tom start ennå bruker gammel profiltekst og synlig teknisk lagringsstripe. Den er ikke en ferdig anonym/visuelt godkjent inngang.",
+    "Desktop1440/Mobil390-valg må kontrolleres mot faktisk iframebredde: max-width100% kan krympe rammen. Ingen skjermbreddebevis i26/0.",
+    "Visuell planflatejobb er sendt og pågår; snarveier/annen modulknappjobb/sluttregister gjenstår.",
+    "Kun godkjent originalPH01 er godkjent; ingen nyAndersgodkjenning.",
+    "Ingen appkode/DB/commit/push/deploy."
+  ]
+}

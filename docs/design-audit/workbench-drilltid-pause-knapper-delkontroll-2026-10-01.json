@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "drilltid-pause-readonly-delkontroll-bestatt-fire-restkontroller-bestilt",
+  "export": {
+    "archive": "AK Golf Precision Athletics (64).zip",
+    "sha256": "7e76a34281134d3ce43c8f93bd907d55cd2f29019d3ef14b89f0583fbc3b460a",
+    "files": 621,
+    "exportedAt": "2026-10-01T09:44:40.064925+00:00"
+  },
+  "syntax": {
+    "scripts": 320,
+    "inline": 76,
+    "inlineIncludedInScripts": true,
+    "errors": 0
+  },
+  "ownProbe": {
+    "checks": 21,
+    "failures": 0,
+    "proofSha256": "757003ee861c36fdfcf06e9c3884dcf800784f14695f786e9cc1f789f32903ca",
+    "coverage": [
+      "Alle12tidligere kilde/tid-kontroller og9nye",
+      "Samme aktivfane no-op, Pause→B→A beholder pause, Fortsett→B→Avslutt",
+      "Delvis A5s mot5.5målt, B0mot0.2, total5,pause2mot3.0; tolerance1.3sekund for avlesningsavrunding",
+      "Begge øvelsesinstanser og eksisterende tpRef-felter bevart, delvis/ikke gjennomført status",
+      "PH07 saved-reader vurdering3/4 readonly, celletrykk endrer verken visning eller lager, korrekt Til Plan/returPH10",
+      "Utvalg av nye stabile data-control-id faktisk funnet i UI"
+    ],
+    "limits": [
+      "TPref-felt på bankfixture ikke verdikontroll av full TPbinding/differentrevs.",
+      "FYS valgt minutter45, ikke null/0-gren.",
+      "Åpen reader under ny pub/withdraw, golf Plan-reader og nyvert uten minneresultat er ennå ikke prøvd her.",
+      "EmptyState-knappers ID, enkelte drawerknapper/FYS-IDer og medie-toast gjenstår.",
+      "21 er kontrollpunkter, ikke21skjermer eller godkjenning."
+    ]
+  },
+  "sourceCheck": {
+    "file": "PH-live.jsx",
+    "confirmedFixed": [
+      "flush under gammel paused/drilltilstand før endring (17–22/78)",
+      "per-instansakkumulering ved bytte,retur,sammefane,skip/fullfør/resultat (71/74–76/84)"
+    ],
+    "method": "avgrenset separat agent-kildekontroll; ingen UI av agent"
+  },
+  "threeIntegratedProbes": {
+    "exactByteMatchToOwnPassed61": true,
+    "ownRerunFor64": false,
+    "cloud": {
+      "periode": {
+        "checks": 34,
+        "failures": 0
+      },
+      "gruppe": {
+        "checks": 20,
+        "failures": 0
+      },
+      "kilde": {
+        "checks": 22,
+        "failures": 0
+      }
+    }
+  },
+  "modelEvidence": "M+data-wb3 uendret59;121prøve ikke gjentatt.",
+  "resources": "Egenfane1416028710 og server72762/8793 lukket.",
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false,
+  "next": "Fire eksplisitte source/reader/min-restkontroller nå egen Claude-jobb. Parallelt målrettet årsdelsum-dekningstest. Deretter WBvisuelt/øvrigeknapper/sluttregister/frossenegenkontroll."
+}

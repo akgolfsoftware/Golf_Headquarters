@@ -1,0 +1,228 @@
+{
+  "date": "2026-10-01",
+  "status": "skjema-delkontroll-med-teknikkretur-regresjon-og-aapent-aarsvalg",
+  "export": {
+    "file": "AK Golf Precision Athletics (71).zip",
+    "sha256": "f8b724a506da49d81e3dc4d8171be1a47a6820fa6701dcc918cc31f6fd09969a",
+    "fileCount": 633,
+    "archiveFileCount": 634,
+    "extractedFileCount": 633,
+    "exportedAt": "2026-10-01T12:07:08.033165+00:00",
+    "portable": false,
+    "final": false,
+    "caseInsensitiveCollisions": [
+      [
+        "ui_kits/Workbench-gjennomgang.html",
+        "ui_kits/workbench-gjennomgang.html"
+      ]
+    ],
+    "limit": "634 ZIP-oppføringer blir 633 utpakkede filer. Gjennomgangsaliasene med forskjellig store/små bokstaver må få unikt recoverable arkivnavn før portabel sluttpakke.",
+    "evidence": "privat-bevis:eksport71-kvittering",
+    "rawPrivateNamesIncluded": false
+  },
+  "syntax": {
+    "scripts": 332,
+    "inline": 85,
+    "inlineIncludedInScripts": true,
+    "errors": 0,
+    "evidence": "privat-bevis:eksport71-syntaks",
+    "sha256": "c2c14d6caad2821cdb4c43eab34f6b1a7e395988884dacc6e161cf2a1d90dcdb",
+    "rawPrivateNamesIncluded": false,
+    "scope": "Avsluttet syntakskontroll; ingen native skjermreise eller visuell godkjenning."
+  },
+  "scope": "Eksport71: dato-/tidsfelt, norske datoer/etiketter, antall/minutter per uke og deres regresjonskontroller. Skjemarettinger er delvis bevist, men native TEK-publiseringsreise stopper. Ingen app-/DB-/backendkontroll eller samlet ferdigmelding.",
+  "ownChecks": {
+    "modell": {
+      "counts": {
+        "PASS": 120,
+        "FAIL": 0,
+        "SKIPPED": 1,
+        "ERROR": 0
+      },
+      "total": 121,
+      "completeForListedCases": false,
+      "evidence": "privat-bevis:modell71",
+      "sha256": "d93e2da89236c8b4ac54dffc84efa33483b7ddd40a5556080c930f009c32dcf4",
+      "rawPrivateNamesIncluded": false,
+      "modelSha256": "0188f58ee0b45317c3dfd8cbfb257b0fd83f38045b961ed6c6b49c06968057ee",
+      "runnerSha256": "3bc876f491559abd0a56aef98b2a687dca3504d0a1cca2e1a8cd33838243f7a6",
+      "fixtureSha256": "3c471fbe40f48f12f87894582dbad74574aea585591255b5d094ab4c55b91949",
+      "vmTimeoutMs": 500,
+      "exitCodeReportedByCoordinator": 1,
+      "exitMeaning": "Exit 1 skyldes én SKIPPED produktkontrakt, ikke FAIL eller ERROR.",
+      "skipped": {
+        "id": "year-shrink-budget-goals-basis-contract-unresolved",
+        "reason": "Årsrammeforkorting med budsjett/minutter/mål/grunnlag utenfor ny aktiv ramme: avvisning, arkiv eller gjenbruk er fortsatt uavklart."
+      },
+      "limit": "Isolert VM med syntetiske data; ingen UI-, app-, produksjonstilgangs- eller databasekontroll. 120 PASS gjør ikke native regresjoner grønne."
+    },
+    "antall": {
+      "result": "7 kontroller / 1 feil",
+      "total": 7,
+      "passed": 6,
+      "failed": 1,
+      "exceptions": 1,
+      "completed": false,
+      "evidence": "privat-bevis:antall71",
+      "sha256": "e340b09ea9c6ef883dc2386bf808b8afc10865f142512f97b6f4ff231e192d7b",
+      "rawPrivateNamesIncluded": false,
+      "failure": "Etter retur og redigering kan prøven ikke nå den konkrete tek-publiser-{planningCountId}-knappen.",
+      "passedScope": "Før stopp: native oppretting/lagring av antall 2-utkast, PH-draftskjuling, første publisering, uttrykkelig PH-kildevalg og import til valgt måned med ref/øvrige akser bevart."
+    },
+    "gruppeantall": {
+      "result": "11 kontroller / 1 feil",
+      "total": 11,
+      "passed": 10,
+      "failed": 1,
+      "exceptions": 1,
+      "completed": false,
+      "evidence": "privat-bevis:gruppeantall71",
+      "sha256": "0ea53050f7e0edd8a9d1c7ae0d79da02045dab6c693dc18a5b953651a6477db3",
+      "rawPrivateNamesIncluded": false,
+      "failure": "Etter gruppens antall 3-utkast kan prøven ikke nå knappen som publiserer denne revisjonen.",
+      "passedScope": "Før stopp: gruppens utkast skjules, publisert medlemssynlig kilde velges uten forvalg, import lukker til riktig plan/måned med én importsekvens/full ref og kilde-/annenplan-isolasjon, senere privat utkast skjules. Direkte negative medlems-/navneromsgettere er separate modellkontroller."
+    },
+    "kildevalg": {
+      "result": "1 kontroll / 1 feil",
+      "total": 1,
+      "passed": 0,
+      "failed": 1,
+      "exceptions": 1,
+      "completed": false,
+      "evidence": "privat-bevis:kildevalg71",
+      "sha256": "200353cbdc380f8fa5c1ece4bfbf2ddc95a0db373a245eb1bcc63a6404e22a9d",
+      "rawPrivateNamesIncluded": false,
+      "failure": "Prøven stopper før første fullførte målassert fordi den konkrete antall-publiserknappen mangler."
+    },
+    "skjemaSterk": {
+      "result": "25 kontroller / 1 feil",
+      "total": 25,
+      "passed": 24,
+      "failed": 1,
+      "exceptions": 1,
+      "completed": false,
+      "exceptionIncludedInFailedCount": true,
+      "evidence": "privat-bevis:skjema-korrigert71",
+      "sha256": "7ce0549048dee6d6d01b753d3bb014124dd5bfbdb777bc7d03192a2be2985675",
+      "rawPrivateNamesIncluded": false,
+      "testSha256": "062ae3cb6726cc31a0136d4fb457cf595f907c5f1681d31f0d350d53a92e3fef",
+      "expectedFullProbeControls": 32,
+      "fullProbeCompleted": false,
+      "firstTwentyFourPassed": true,
+      "failure": "Prøven kunne ikke lese native TEK-antall som lagret/vist i den forventede editoren etter retur; den stopper. Dette alene er ikke bevis på at modellpersistens mangler.",
+      "widths": [
+        1440
+      ],
+      "themes": [
+        "lyst"
+      ],
+      "limit": "24 kontroller består før exception. De resterende kontrollene er ikke kjørt og er ikke PASS; dette er ikke 32/0 eller visuell godkjenning."
+    }
+  },
+  "nativeCoverage": [
+    {
+      "source": "privat-bevis:skjema-korrigert71",
+      "lines": [
+        7,
+        18
+      ],
+      "verified": "Faktiske native dato-/tekstfelt og norsk datovisning for opprett/rediger årsplan/periode. Avbryt og årsplan-lagringsfeil/retry bevarer plan/eier/budsjett/min/null0 og øvrige planer; lagrede datoer er ISO. Tom plan oppretter ikke økter."
+    },
+    {
+      "source": "privat-bevis:skjema-korrigert71",
+      "lines": [
+        19,
+        26
+      ],
+      "verified": "Måneds-/ukeetiketter sier per uke; antall er atskilt fra minutter. Øktens date/time og tom tid/varighet, Avbryt/Forkast, lagringsfeil/retry, valgt sessionId og senere faktisk HH:mm-lagring består før TEK-stopp."
+    },
+    {
+      "source": "privat-bevis:skjema-korrigert71",
+      "lines": [
+        27,
+        31
+      ],
+      "verified": "Ny teknisk plan har native datofelt, norske gyldighetsdatoer, rette kilde-ID-er og retur; TEK-antallfeltets dato/per-uke-etikett består. Videre lagring/publisering stoppes av exception og er ikke ferdig bevist."
+    },
+    {
+      "source": "privat-bevis:gruppeantall71",
+      "lines": [
+        6,
+        16
+      ],
+      "verified": "Bare de ti kontrollene før publiseringsstopp består. Importens native auto-lukking til riktig plan/måned er faktisk kontrollert; grupperevisjonens nye publisering er ikke fullført."
+    }
+  ],
+  "setupFixtures": [
+    {
+      "source": "privat-bevis:skjema-korrigert71",
+      "kind": "merket-isolasjonsoppsett",
+      "detail": "To ekstra isolasjonsplaner og foreldet valgtplan-ID er direkte modellfixtures. Målhandlingene skjer gjennom UI-felt/knapper; getter/diskmålinger er kontroll av resultatet."
+    },
+    {
+      "source": "privat-bevis:gruppeantall71",
+      "kind": "direkte-negative-modellkontroller",
+      "detail": "Ikke-medlem, ukjent gruppe og feil navnerom prøves også via direkte gettere. Dette er ikke egne native knapper eller bevis på backendtilgang."
+    },
+    {
+      "source": "privat-bevis:modell71",
+      "kind": "isolert-VM-med-syntetiske-data",
+      "detail": "Modellpersistens og publiseringslagre prøves i VM-native lager uten nettverk/import/vertsfunksjoner. Faste rolle-/navneromsfixtures erstatter ikke ekte innlogging."
+    }
+  ],
+  "probeContractCorrection": {
+    "currentTestSha256": "062ae3cb6726cc31a0136d4fb457cf595f907c5f1681d31f0d350d53a92e3fef",
+    "historicalTestSha256": "24aff102290af3f92986117c16acc7ec06ee902511e917d73b047f3c6140fef4",
+    "historicalStatus": "historiske-foreldede-testforventninger",
+    "corrections": [
+      "Gamle rådisk-/navigasjonsforventninger var ikke riktig mål for den faktiske save-/returkonteksten.",
+      "Legitim automatisk retur etter bekreftet lagring skal ikke telles som produktfeil alene.",
+      "Korrigert prøve beholder hard kontroll av rett plan/eier, data, isolasjon, null/0, Avbryt/feil/retry og faktisk neste handling."
+    ],
+    "limit": "Den gamle 24aff-prøvens slike avvik registreres ikke som nye, feilaktige produktfeil. Den korrigerte 062ae3-prøvens TEK-stopp og de tre faktiske publiseringsstoppene er fortsatt røde."
+  },
+  "cloudChecks": {
+    "schemaReportedResult": "32/0",
+    "sameAsOwnCorrectedProbe": false,
+    "ownFinalControl": false,
+    "limit": "Skyens rapporterte 32/0 bygger på en annen og svakere prøvefasit. Egen korrigert prøve mot eksport71 stopper på 25/1; ingen samlet sluttkontroll registreres."
+  },
+  "sourceLimits": [
+    {
+      "source": "ui_kits/_shared/wb-model.js",
+      "sha256": "0188f58ee0b45317c3dfd8cbfb257b0fd83f38045b961ed6c6b49c06968057ee",
+      "lines": [
+        235,
+        238
+      ],
+      "symbols": [
+        "selClean",
+        "selTop",
+        "lastPlan",
+        "WB.persist"
+      ],
+      "limit": "Ny selClean fjerner cmd og null/undefined/tomme objektfelt. selTop bruker lastPlan som skjult fallback når valgt plan-ID ikke finnes. Disse nye modellhjelperne er konkrete kodeendringer; de 120 isolerte PASS beviser ikke at editor-/returkonteksten er riktig."
+    },
+    {
+      "source": "ui_kits/_shared/WB3-tek.jsx",
+      "sha256": "8f0cc46ce79aa04c634878c5b51a5293b483c7788886ed889fb68d56efd8c54f",
+      "lines": [
+        26,
+        27
+      ],
+      "limit": "Antallskjema/publiserknapper eksisterer i kode, men den faktiske auto-save-/returkjeden gjør den nødvendige publiserknappen utilgjengelig i antall-, gruppe- og kildevalgprøven. Ingen korrigering eller nytt native resultat utføres i denne dokumentoppgaven."
+    }
+  ],
+  "pending": [
+    "Tilbakeføring av de nye skjulte modellfallback-hjelperne til kontrollert modell SHA03487138b25330468ecb4715e70bdbb8f0d60d800ad2b5c8849ad29db6f3ca9c er bestilt i sky sammen med korrigert 32-prøve; ikke dokumentert gjennomført her.",
+    "Native TEK-editor lagring/retur/gjenåpning/publisering må gjøres tilgjengelig og antall/gruppe/kildevalg samt alle 32 korrigerte skjemaasserts kjøres på nytt.",
+    "Ved retting skal native dato/tid, norske enheter/etiketter, sticky-valg, eksplisitt stale-kontekst og tidligere års44-bevaring videreføres; dette er regresjonskrav, ikke ny års44-kjøring i denne delkontrollen.",
+    "Årsrammeforkortingens produktvalg er fortsatt åpent. Ingen avhengig regel velges og SKIPPED omtolkes ikke til PASS eller FAIL.",
+    "ZIP-casealiasene krever unikt arkivnavn før portabel sluttpakke.",
+    "Ingen samlet designferdigmelding, Anders-godkjenning, app-/DB-/deployendring, commit eller push."
+  ],
+  "documentChecks": {
+    "json": "Gyldig JSON; konkrete bevis-/kilde-/prøvekontrollsummer er lest fra de aktuelle filene. Rå privatnavn og rå feillogger er ikke kopiert.",
+    "prosjektSjekk": "npm run prosjekt:sjekk bestått: prosjektstruktur og lokale Markdown-lenker i 186 vedlikeholdte dokumenter. Daterte underlag er unntatt fra den generelle lenkekontrollen."
+  }
+}

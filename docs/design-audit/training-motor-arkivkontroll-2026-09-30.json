@@ -1,0 +1,73 @@
+{
+  "status": "historikk-bevart-kontrollert",
+  "projectName": "AK Golf Training Motor – historikk",
+  "files": 61,
+  "zipSha256": "e8f5335557115f343939c9cedb32aeae9195a123907fb10ad89e177ec034d215",
+  "relativeRefs": 85,
+  "missingRefs": [],
+  "archiveFiles": [
+    {
+      "file": "Teknisk Plan.dc.html",
+      "shaBefore": "f70dfb8410cb613c58117b9520b5d3b927b72c20641a1efa616d66c6cbe78c43",
+      "shaAfter": "3574693e7d3abc662ba2cdfe718fa5a50f058a334bee519547a89045efaf65f3",
+      "matchesRegister": true
+    },
+    {
+      "file": "Spilleranalyse.dc.html",
+      "shaBefore": "bc250d3b1bf5a26b1569f3d1103b4933dd4370c93044f0e36d8b93c5a40cf712",
+      "shaAfter": "8049543c704615fecb4b7691eb52022724ba9555ca7260023c7f966802126372",
+      "matchesRegister": true
+    },
+    {
+      "file": "AK Masterutforsker.dc.html",
+      "shaBefore": "e47d92c34eb5370bca1efe91a0edbeea1baeb0a4cabe07abaf1bda0afc7e0b84",
+      "shaAfter": "c97fdfcaba71b9b6c77195c081312391017a5510d7a97c0fbdb16177a53ac580",
+      "matchesRegister": true
+    },
+    {
+      "file": "AK Treningsmotor v2.dc.html",
+      "shaBefore": "0ba89601e77573b163e50bd55bc12ed5f9c61740ee56af258e45535223a0fdf2",
+      "shaAfter": "1f5efadc3f66090b9ce2087e990022a3addf0942c1857ea094daa023971886d6",
+      "matchesRegister": true
+    }
+  ],
+  "preservedSources": [
+    {
+      "file": "AK Treningsmotor.dc.html",
+      "hasHistoricalMarker": true,
+      "linksPrecision": true
+    },
+    {
+      "file": "Teknisk Plan v2.dc.html",
+      "hasHistoricalMarker": true,
+      "linksPrecision": true
+    },
+    {
+      "file": "Spilleranalyse v2.dc.html",
+      "hasHistoricalMarker": true,
+      "linksPrecision": true
+    },
+    {
+      "file": "Teknisk Progresjon.dc.html",
+      "hasHistoricalMarker": true,
+      "linksPrecision": true
+    },
+    {
+      "file": "AK Systemkart.dc.html",
+      "hasHistoricalMarker": true,
+      "linksPrecision": true
+    },
+    {
+      "file": "AK-formelen.dc.html",
+      "hasHistoricalMarker": true,
+      "linksPrecision": true
+    }
+  ],
+  "functionalTransferStatus": "Sluttkontroll i Precision pågår; historikkstatus er ikke påstand om overført eller godkjent app",
+  "browserProof": {
+    "openedArchivedFiles": 4,
+    "motorBackLinkToHistory": "prøvd",
+    "projectTitle": "observert etter navneendring",
+    "sharing": "uendret"
+  }
+}

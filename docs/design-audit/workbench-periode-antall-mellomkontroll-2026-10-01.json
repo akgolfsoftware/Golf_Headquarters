@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "status": "periodevalg-prove-korrigert-native-antallsimport-kontrollert",
+  "export": {
+    "zipName": "AK Golf Precision Athletics (37).zip",
+    "zipSha256": "c522b4be625eb1df655b3e355356e9fbfc93ec057b06bb996ee64296d5e1a22d",
+    "fileCount": 609,
+    "exportedAt": "2026-10-01T03:59:45.429425+00:00",
+    "exportRoot": "/Users/anderskristiansen/Documents/Claude/akgolf-hq/designanalyse-2026-09-30/mellomversjon-wb3-periode-antall",
+    "status": "periodevalg-korrigert-avgrenset-mellomkontroll"
+  },
+  "syntax": {
+    "scripts": 308,
+    "inline": 65,
+    "inlineIncludedInScripts": true,
+    "syntax_errors": 0,
+    "errors": []
+  },
+  "model": {
+    "total": 83,
+    "pass": 83,
+    "fail": 0,
+    "skip": 0,
+    "error": 0,
+    "original82Pass": true,
+    "modelSha256": "8830ebcb963f26e67317752f626aa44f5ba2456995730696aff5f6854a98e264",
+    "runnerSha256": "0ddd97f5cc2ef6c9ac233364f42ad11ca16a23e4bfa20b893ea04f22e1d37335",
+    "newCase": "Full periodeskjemapatch med uendret importert TEK bevarer ref/markør/manueltfalse ved endring av SLAG/minutter; writefail/retry énwrite og null0 i andre akser bevares.",
+    "boundary": "Avgrenset modellbevis; skjemaets nativehandling er egen pågående jobb."
+  },
+  "ownNative": {
+    "checks": 15,
+    "failures": 0,
+    "proofSha256": "0f1f5e899280a446a0b8f83c435dfbeef1ee46971199f3fe154608549907c5ce",
+    "scope": "Forrige AG→PH månedsflyt/rev2/fail/retry og faktisk perioderute per-{periodId}→Hent→Bekreft til periode3/rev2, samme kilderef, ingen nye økter/oppgaver.",
+    "limits": [
+      "Periode først importeres rev2; ingen periodens rev1→rev2/Behold/fail/retry i denne prøven.",
+      "Periode opprettet som merket direkte fixture.",
+      "Native periodeskjemaredigering av andre akser under egen jobb.",
+      "Plan-/gruppegrunnlag, imported-ref månedsliste-reset og delta35-retting gjenstår."
+    ]
+  },
+  "correctionTo36": "Den mangler-periodeknapp-konklusjonen var feil: prøven klikket ikke riktig per-{periodId}. Panelet var der. Faktisk periode valgt i37 og regexforventningen korrigert. Rå13/2 bevart; ingen automatisk godkjenning.",
+  "active": "Egen periode Sammenlign/Behold/Oppdater/fail/retry og native andre-felt-redigering. Deretter månedsgrunnlagsrester, to planer/kildevalg/refreset og gruppegrunnlag.",
+  "resources": "Egen fane1416028658 og server20318 lukket.",
+  "appChanged": false,
+  "databaseChanged": false,
+  "visualApproval": false
+}

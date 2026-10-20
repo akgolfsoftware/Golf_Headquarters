@@ -1,0 +1,134 @@
+{
+  "status": "mellomversjon-under-aktiv-skyredigering",
+  "sourceExportSha256": "c6bd087257130f40a2e625fc05bdbeab2147673abd734f9e9f459ca1a641d916",
+  "files": 559,
+  "checks": [
+    {
+      "type": "original-bevart",
+      "fra": "ui_kits/agencyos/screens/AG-23.jsx",
+      "til": "arkiv/2026-09-30/agencyos/AG-23.jsx",
+      "identisk": true
+    },
+    {
+      "type": "original-bevart",
+      "fra": "ui_kits/agencyos/screens/AG-24.jsx",
+      "til": "arkiv/2026-09-30/agencyos/AG-24.jsx",
+      "identisk": true
+    },
+    {
+      "type": "original-bevart",
+      "fra": "ui_kits/agencyos/screens/AG-24-drift.jsx",
+      "til": "arkiv/2026-09-30/agencyos/AG-24-drift.jsx",
+      "identisk": true
+    },
+    {
+      "type": "riktig-aktiv-kilde",
+      "fra": "AK Arbeidsdokument.dc.html",
+      "til": "_kilde/Arbeidsdokument.html",
+      "identisk": true
+    },
+    {
+      "type": "riktig-aktiv-kilde",
+      "fra": "Teknisk Plan v2.dc.html",
+      "til": "_kilde/TekniskPlan-v2.html",
+      "identisk": true
+    },
+    {
+      "type": "riktig-aktiv-kilde",
+      "fra": "AK Treningsmotor.dc.html",
+      "til": "_kilde/Treningsmotor-aktiv.html",
+      "identisk": true
+    }
+  ],
+  "findings": [
+    {
+      "id": "M01",
+      "file": "ui_kits/agencyos/screens/AG-10.jsx",
+      "line": 12,
+      "status": "bekreftet-kilde",
+      "finding": "Valg av ny mellomposisjon genererer bare .5. Eksisterende kode kan .1–.9. Funksjonen er innsnevret.",
+      "sourceSha256": "ae00c39171461832031a712dfdb75fe16662843e7d6c2edb18c8d2d4dc10dd7c"
+    },
+    {
+      "id": "M02",
+      "file": "ui_kits/agencyos/screens/AG-10.jsx",
+      "line": 38,
+      "status": "bekreftet-lokal-nettleserproeve",
+      "finding": "Legg i økt viser bare toast; intet go(AG-11) og intet observerbart utkast med taskId.",
+      "sourceSha256": "ae00c39171461832031a712dfdb75fe16662843e7d6c2edb18c8d2d4dc10dd7c",
+      "proof": "Klikket Legg i økt på t1: samme AG-10, bare toast, ingen synlig Workbench-overgang."
+    },
+    {
+      "id": "M03",
+      "file": "ui_kits/_shared/tp-v2.jsx",
+      "line": 85,
+      "status": "bekreftet-kilde",
+      "finding": "Lagringsmodell og bildeURL/videoURL står i produktvisningen. Flytt teknisk forklaring til overlevering.",
+      "sourceSha256": "0d431b77cdfc3e2614a2ad6f7548faecbdcda895392f355df46ca16d6ccd5d29"
+    },
+    {
+      "id": "M04",
+      "file": "ui_kits/reisetest-tp.html",
+      "line": 50,
+      "status": "bekreftet-kilde",
+      "finding": "Testen for sperret lagring gir ok(...,true) uten å prøve sperren.",
+      "sourceSha256": "a3bf9e3fa86d4fbbf02c3b8b49aca83123792141d25f204899db24d1c54223bc"
+    },
+    {
+      "id": "M05",
+      "file": "ui_kits/agencyos/screens/AG-TP.jsx",
+      "line": 30,
+      "status": "bekreftet-lokal-nettleserproeve",
+      "finding": "Ny oppgave → lagre → endre tittel → lagre → Teknisk plan opprettet to oppgaver. Listen gikk fra 6 til 8, skulle vært 7. Kjent ny-id-feil bekreftet i mellomversjon.",
+      "sourceSha256": "b95f6055d24e45baf6753c3dfad9d7611b772610416ac4bc7d2b5e76253fc27f",
+      "proof": "Privat avvik-ny-oppgave-dobbellagring-2026-09-30.txt/.png"
+    },
+    {
+      "id": "M06",
+      "file": "ui_kits/_shared/tp-v2.jsx",
+      "line": 67,
+      "status": "risiko-krever-reiseproeve",
+      "finding": "Asynkrone medieoppdateringer sprer innfanget m. Prøv før og etter samtidig og ved oppgavebytte; ingen side eller oppgave skal miste medie.",
+      "sourceSha256": "0d431b77cdfc3e2614a2ad6f7548faecbdcda895392f355df46ca16d6ccd5d29"
+    },
+    {
+      "id": "M07",
+      "file": "ui_kits/playerhq/screens/PH-01.jsx",
+      "line": 27,
+      "status": "bekreftet-kilde-kontekst-begrenset",
+      "finding": "Start bevarer sessionId/kind, men PH-live bruker fortsatt én fast LIVE_DATA-head/drill-liste. Prøv to forskjellige golføkter; ID og faktisk innhold skal følge samme valgte objekt.",
+      "sourceSha256": "a996e0c8631af139093ad2054107a440136af06cb86555e03939be7c4e8187c6"
+    },
+    {
+      "id": "M08",
+      "file": "ui_kits/audit-tp.html",
+      "line": 4,
+      "status": "bekreftet-kilde",
+      "finding": "ready-resultatet brukes fortsatt ikke til å feile testen, og type=file unntas samlet. Aktiv audit og tilgjengelig filvalg må kontrolleres separat.",
+      "sourceSha256": "15c889b88ac3f42548e6e5af532dae077a508f86a24afd057e180a2ab9a8ce14"
+    },
+    {
+      "id": "M09",
+      "file": "ui_kits/_shared/tp-parts.jsx",
+      "line": 102,
+      "sourceSha256": "54ab1ffb40a2c081b8a9b090ae99c4b8ee1c44cd693b2230672e1889bfc2ace1",
+      "status": "bekreftet-kilde",
+      "finding": "Sammenligningsfigur rendrer bilde-URL, men video blir bare VIDEO-tekst selv med URL. Prøv video/video og video/bilde; faktisk medie og tilgjengelige avspillingskontroller må vises."
+    },
+    {
+      "id": "M10",
+      "file": "ui_kits/agencyos/screens/AG-TP.jsx",
+      "line": 73,
+      "sourceSha256": "b95f6055d24e45baf6753c3dfad9d7611b772610416ac4bc7d2b5e76253fc27f",
+      "status": "bekreftet-lokal-nettleserproeve",
+      "finding": "Ny oppgave-forhåndsvisning arver D.tasks[0] gjennom spread og viser kvalitetssjekk 7/10 fra eksisterende oppgave. Bekreftet i lokal ny-oppgave-visning; nye oppgaver skal vise manglende registrering, ikke arvet måling."
+    }
+  ],
+  "notApproval": true,
+  "syntaxCheck": {
+    "jsFiles": 278,
+    "inlineScripts": 47,
+    "errors": 0,
+    "method": "@babel/parser, JS/JSX og ikke-eksterne JavaScript/Babel/module-script; statisk mellomversjon"
+  }
+}
