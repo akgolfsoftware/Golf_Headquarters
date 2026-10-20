@@ -352,3 +352,85 @@
 }
 /* Rekkefølgen følger markeringen; de gamle order-reglene for .idag gjelder ikke her. */
 .phn-idag2 .idag2 > * { order: 0; }
+
+/*
+ * §Skrå 20.10.2026 (beslutninger.md §PLAYERHQ OG AGENCYOS FÅR SKRÅ-DRAKTEN). Fasit: docs/design-system/utkast-skra/index.html.
+ * Toppen, kortene og tallene i glass er felles byggeklosser (src/components/precision/skra/). Her står bare
+ * innholdet i kortene og oppsettet av kolonnene. Flaten er lysegrå, så de hvite kortene løfter seg.
+ */
+.pa-skall__main:has(.phn-skra) { background: var(--ak-flate); }
+.phn-skra { --skra-ut-top: 24px; --skra-ut-x: 16px; background: var(--ak-flate); gap: 0; }
+.phn-skra .skra-idag { gap: 20px; }
+.phn-skra .skra-kol { display: grid; gap: 20px; align-content: start; min-width: 0; }
+.phn-skra .a-ekstra { display: grid; gap: 16px; }
+.phn-skra .a-ekstra:empty { display: none; }
+
+/* Snarvei til neste økt, i glass på bildet */
+.phn-skra .snarvei-skra { display: inline-flex; align-items: center; gap: 8px; max-width: 100%; min-height: 44px; margin-top: 6px; padding: 0 12px 0 12px; border: 1px solid rgba(255,255,255,.18); border-radius: var(--ak-r-pille); background: rgba(255,255,255,.12); color: #fff; font: 600 13.5px/1.3 var(--phn-sans); text-align: left; cursor: pointer; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); transition: background var(--ak-t-base) var(--ak-ut), transform var(--ak-t-trykk) var(--ak-ut); }
+.phn-skra .snarvei-skra:hover { background: rgba(255,255,255,.2); }
+.phn-skra .snarvei-skra:active { transform: scale(.97); }
+.phn-skra .snarvei-skra > i { width: 8px; height: 8px; border-radius: 4px; flex-shrink: 0; box-shadow: 0 0 0 2px rgba(255,255,255,.5); }
+
+/* Dagens økter: fylte kort i aksefargen, tid til venstre */
+.phn-skra .okter-skra { display: grid; gap: 10px; }
+.phn-skra .okt-skra { --fylt: var(--phn-slag-ink); display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 14px; width: 100%; padding: 14px 14px 14px 16px; border: 0; border-radius: var(--ak-r-stat); background: var(--fylt); color: #fff; text-align: left; font: inherit; cursor: pointer; box-shadow: 0 1px 2px rgba(20,20,19,.08), 0 10px 22px -12px var(--fylt); transition: transform var(--ak-t-trykk) var(--ak-ut), box-shadow var(--ak-t-base) var(--ak-ut); }
+.phn-skra .okt-skra.fys { --fylt: var(--phn-fys-ink); } .phn-skra .okt-skra.tek { --fylt: var(--phn-tek-ink); }
+.phn-skra .okt-skra.slag { --fylt: var(--phn-slag-ink); } .phn-skra .okt-skra.spill { --fylt: var(--phn-spill-ink); } .phn-skra .okt-skra.turn { --fylt: var(--phn-turn); }
+.phn-skra .okt-skra:active { transform: scale(.98); }
+.phn-skra .okt-skra-tid { font: 600 22px/1 var(--phn-sans); letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.phn-skra .okt-skra-tid small { display: block; margin-top: 4px; font: 500 11px/1 var(--phn-mono); letter-spacing: .06em; opacity: .82; white-space: nowrap; }
+.phn-skra .okt-skra-tekst { display: grid; gap: 2px; }
+.phn-skra .okt-skra-tekst > b { font: 600 16px/1.25 var(--phn-sans); }
+.phn-skra .okt-skra-tekst > span { font-size: 13px; line-height: 1.4; opacity: .88; }
+.phn-skra .okt-skra-maal { margin-top: 2px; opacity: 1; }
+.phn-skra .okter-skra .okt-ferdig { padding: 0 6px; border-radius: 10px; background: var(--ak-sunket); }
+.phn-skra .start2 { margin-top: 2px; }
+
+/* Uka: stort tall, så per akse, så per dag */
+.phn-skra .uke-hoved { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.phn-skra .uke-hoved strong { font: 600 44px/1 var(--phn-sans); letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
+.phn-skra .uke-hoved strong small { margin-left: 6px; font-size: 18px; font-weight: 500; letter-spacing: 0; color: var(--ak-g500); }
+.phn-skra .uke-hoved > span { font-size: 13px; color: var(--ak-g600); }
+.phn-skra .akserader { display: grid; gap: 10px; }
+.phn-skra .akserad { display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; align-items: center; gap: 10px; }
+.phn-skra .akserad-navn { font: 600 11px/1 var(--phn-mono); letter-spacing: .06em; color: var(--ak-g600); }
+.phn-skra .akserad-spor { display: block; height: 10px; border-radius: 5px; background: var(--ak-sunket); overflow: hidden; }
+.phn-skra .akserad-spor i { display: block; height: 100%; border-radius: 5px; }
+.phn-skra .akserad-verdi { min-width: 96px; font: 500 12.5px/1.2 var(--phn-sans); text-align: right; white-space: nowrap; color: var(--ak-g800); font-variant-numeric: tabular-nums; }
+.phn-skra .uke { padding-top: 14px; border-top: 1px solid var(--ak-strek); }
+
+/* Målsetninger: rader på senket flate */
+.phn-skra .maal { display: grid; gap: 10px; margin: 0; padding: 0; border: 0; grid-template-columns: minmax(0, 1fr); }
+.phn-skra .maal-rad { display: grid; gap: 6px; min-height: 0; padding: 12px 14px; border: 0; border-radius: 12px; background: var(--ak-sunket); transition: background var(--ak-t-base) var(--ak-ut), transform var(--ak-t-trykk) var(--ak-ut); }
+.phn-skra .maal-rad:hover { background: var(--ak-sand-150); }
+.phn-skra .maal-rad:active { transform: scale(.985); }
+.phn-skra .maal-topp { align-items: baseline; flex-wrap: wrap; }
+.phn-skra .maal-topp .maal-navn { font: 600 14.5px/1.3 var(--phn-sans); }
+.phn-skra .maal-topp .maal-pst { font: 600 15px/1 var(--phn-mono); white-space: nowrap; }
+.phn-skra .maal-spor { height: 6px; border-radius: 3px; background: var(--ak-hvit); }
+.phn-skra .maal-meta { font: 500 12px/1.3 var(--phn-mono); color: var(--ak-g500); }
+
+/* Ny melding */
+.phn-skra .melding-skra { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: start; padding: 4px; margin: -4px; border-radius: 12px; color: inherit; text-decoration: none; transition: background var(--ak-t-base) var(--ak-ut); }
+.phn-skra .melding-skra:hover { background: var(--ak-sunket); }
+.phn-skra .melding-skra-avatar { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--ak-g900); color: #fff; font: 600 13px/1 var(--phn-sans); }
+.phn-skra .melding-skra-fra { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; align-items: baseline; }
+.phn-skra .melding-skra-fra b { font: 600 14.5px/1.3 var(--phn-sans); }
+.phn-skra .melding-skra-fra span { font: 500 12px/1.3 var(--phn-mono); color: var(--ak-g500); }
+.phn-skra .melding-skra-tekst { display: block; margin-top: 2px; font-size: 14.5px; line-height: 1.5; color: var(--ak-g800); }
+
+/* Neste økt og Strokes Gained bruker radene fra §Designløft; «Mer om dagen» får kortdrakten. */
+.phn-skra .phn-seksjon.a-mer { margin-top: 12px; }
+.phn-skra .phn-kort { border: 0; border-radius: var(--ak-r-skra-kort); box-shadow: var(--ak-skygge-md); }
+.phn-skra .forslag .fs { border-radius: 12px; }
+
+@container (min-width: 900px) {
+  .phn-skra { --skra-ut-top: 32px; --skra-ut-x: 40px; }
+  .phn-skra .skra-idag { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); column-gap: 24px; row-gap: 24px; align-items: start; }
+  .phn-skra .skra-kol { gap: 24px; }
+  .phn-skra .skra-idag > .a-mer { grid-column: 1 / -1; }
+  .phn-skra .start2 { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .phn-skra .okt-skra, .phn-skra .snarvei-skra, .phn-skra .maal-rad { transition: none; }
+}

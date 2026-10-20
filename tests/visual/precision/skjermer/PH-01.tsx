@@ -9,6 +9,7 @@ export const sti = "/portal";
 const base: PH01Props = {
   tilstand: "data",
   dato: "Mandag 5. oktober · Grunnperiode, uke 3 av 8",
+  fornavn: "Øyvind",
   ingress: "2 økter, 2 t totalt.",
   tomTekst: "Du har ingen økter mandag 5. oktober.",
   feilKode: "Feil · I dag · 14:20",

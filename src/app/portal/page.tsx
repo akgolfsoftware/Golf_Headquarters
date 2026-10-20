@@ -230,6 +230,7 @@ async function PortalHjemInnhold() {
   const props: PH01Props = {
     tilstand: feil ? "feil" : tom ? "tom" : "data",
     dato,
+    fornavn: user.name?.trim().split(/\s+/)[0] ?? null,
     ingress: okter.length === 0 ? "Ingen økter i dag." : `${okter.length} ${okter.length === 1 ? "økt" : "økter"}, ${varighet(totalMin)} totalt.${igjen > 0 && igjen < okter.length ? ` ${igjen} igjen.` : ""}`,
     tomTekst: `Du har ingen økter ${dagLabel.toLowerCase()} ${OSLO_D_MND.format(naa)}${wp.plannedMin === 0 ? " og ingen treningsplan ennå" : ""}.`,
     feilKode: `Feil · I dag · ${tid(naa)}`,
