@@ -151,8 +151,9 @@ describe('WANG Toppidrett Modul (Samtlige WANG-skjermer)', async () => {
 
   test('WangTrening › Oversikt: ingen oppdiktet etterlevelse, alle elever står som ikke delt', () => {
     const html = visTrening();
-    assert.ok(html.includes('av planen gjennomført siste fire uker'));
-    assert.ok(!/\d+\s*%/.test(html.replace(/<[^>]*>/g, ' ').replace(/80 %/g, '')), 'Ingen prosenttall utenom målet på 80 %');
+    assert.ok(html.includes('av planen gjennomført'));
+    assert.ok(html.includes('Ingen har delt planen ennå'));
+    assert.ok(!/\d+\s*%/.test(html.replace(/<[^>]*>/g, ' ').replace(/80\s%/g, '')), 'Ingen prosenttall utenom målet på 80 %');
     assert.ok(html.includes('Ikke delt'));
     assert.ok(html.includes('Elev 11 Demo'));
     assert.ok(html.includes('fane=elev&amp;id=e1'));
