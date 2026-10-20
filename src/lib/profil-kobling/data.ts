@@ -11,15 +11,18 @@
 
 import "server-only";
 
+import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import {
   KandidaterSchema,
   KoblingsstatusSchema,
   ProfilResultaterSchema,
+  SpillerprofilSchema,
   type Kandidater,
   type KoblingsMetode,
   type Koblingsstatus,
   type ProfilResultater,
+  type Spillerprofil,
 } from "./typer";
 import type { Oppslag } from "./regler";
 
@@ -111,4 +114,24 @@ export async function hentProfilResultater(userId: string): Promise<ProfilResult
     SELECT dashboard.profile_results(${userId}::text) AS r`;
   const r = rader[0]?.r;
   return r == null ? null : ProfilResultaterSchema.parse(r);
+}
+
+/**
+ * Hele profilen til én spiller, slått opp via spillerens bekreftede kobling (migrasjon 0026).
+ * Én kilde for PlayerHQ, AgencyOS, WANG og Team Norway: ingen kopi, ingen person-id fra klienten.
+ *
+ * KALLEREN må først ha kontrollert at betrakteren har lov til å se denne spilleren (eget innsyn,
+ * trener eller delingssamtykke, og mindreårigregelen). `inkluderGolfId` skal bare være true for
+ * trenere (Anders 20.10.2026); spilleren selv og andre får den ikke.
+ */
+export async function hentSpillerprofil(
+  spillerUserId: string,
+  { inkluderGolfId = false }: { inkluderGolfId?: boolean } = {},
+  /** Send inn transaksjonen når delingslåsen holdes (organisasjonstrener), så lesingen skjer under låsen. */
+  db: Pick<Prisma.TransactionClient, "$queryRaw"> = prisma,
+): Promise<Spillerprofil | null> {
+  const rader = await db.$queryRaw<{ r: unknown }[]>`
+    SELECT dashboard.player_profile_for_user(${spillerUserId}::text, ${inkluderGolfId}::boolean) AS r`;
+  const r = rader[0]?.r;
+  return r == null ? null : SpillerprofilSchema.parse(r);
 }

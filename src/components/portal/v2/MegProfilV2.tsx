@@ -51,7 +51,7 @@ export type MegProfilData = {
   spillerSiden: string;
   stallNavn: string | null;
   runderIAar: number;
-  ngfId: string | null;
+  resultatKoblet: boolean;
   /** Ferdig formatert visningstekst for aktivt HCP-mål, eller null. */
   hcpMaalTekst: string | null;
   /** Manglende felter (ufullstendig-tilstanden), f.eks. ["fødselsdato", "klubb"]. */
@@ -395,10 +395,10 @@ export function MegProfilV2({ data, lagre }: { data: MegProfilData; lagre: Lagre
             />
             <LesRad navn="Registrerte runder i år" sub="Logget i appen" verdi={String(data.runderIAar)} />
             <LesRad
-              navn="Golfbox-ID"
-              sub={data.ngfId ? "Koblet til turneringshistorikk" : "Ikke koblet ennå"}
-              verdi={data.ngfId ?? "—"}
-              tom={!data.ngfId}
+              navn="Turneringsresultater"
+              sub={data.resultatKoblet ? "Koblet til turneringshistorikk" : "Ikke koblet ennå"}
+              verdi={data.resultatKoblet ? "Koblet" : "—"}
+              tom={!data.resultatKoblet}
               last
             />
             <Hjelp>

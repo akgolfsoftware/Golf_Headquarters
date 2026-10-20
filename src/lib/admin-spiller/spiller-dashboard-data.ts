@@ -12,6 +12,7 @@
  */
 
 import { prisma } from "@/lib/prisma";
+import { hentTurneringshistorikk } from "@/lib/portal/turneringshistorikk-data";
 import { hentSamtykkeStatus } from "@/lib/health/samtykke";
 import { hentRestitusjonsstatus, type Restitusjonsstatus } from "@/lib/health/restitusjonsstatus";
 import { innsynsNivaaFra, maskerLeaves, type SettLeave } from "@/lib/health/leave-innsyn";
@@ -185,16 +186,10 @@ export async function loadSpillerDashboardEkstra(playerId: string): Promise<Spil
       take: 3,
       select: { startAt: true, status: true, serviceType: { select: { name: true } } },
     }),
-    prisma.tournamentResult.findMany({
-      where: { userId: playerId },
-      orderBy: { createdAt: "desc" },
-      take: 5,
-      select: {
-        position: true,
-        score: true,
-        tournament: { select: { name: true, startDate: true } },
-      },
-    }),
+    // Siste fem resultater fra den felles profilen. Ingen kopi i TournamentResult.
+    hentTurneringshistorikk(playerId).then((h) =>
+      h.aar.flatMap((a) => a.turneringer).filter((t) => t.plassering != null || t.brutto != null).slice(0, 5),
+    ),
     prisma.wagrSnapshot.findUnique({
       where: { userId: playerId },
       select: { rank: true, moveDelta: true, ptsAvg: true },
@@ -320,10 +315,10 @@ export async function loadSpillerDashboardEkstra(playerId: string): Promise<Spil
       tjeneste: b.serviceType.name,
     })),
     turneringsResultater: turneringsResultater.map((r) => ({
-      navn: r.tournament.name,
-      dato: r.tournament.startDate,
-      position: r.position,
-      score: r.score,
+      navn: r.navn,
+      dato: r.startDato,
+      position: r.plassering,
+      score: r.brutto ?? null,
     })),
     wagr,
     trackman,

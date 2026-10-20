@@ -17,7 +17,7 @@ const demoData: PH24ProfilData = {
   spillerSiden: "august 2025",
   stallNavn: "WANG Toppidrett Fredrikstad",
   runderIAar: 42,
-  ngfId: "123-4567",
+  resultatKoblet: true,
   hcpMaalTekst: "2,0 innen november 2026",
   turneringer: {
     koblet: true, tomGrunn: "",
@@ -30,7 +30,7 @@ const demoData: PH24ProfilData = {
 
 const tomData: PH24ProfilData = {
   navn: "Ny Spiller", avatarUrl: null, epost: "spiller@eksempel.no", mobil: null, hcp: null, homeClub: null, fodselsdatoISO: null,
-  ambition: null, spillerSiden: "oktober 2026", stallNavn: null, runderIAar: 0, ngfId: null, hcpMaalTekst: null,
+  ambition: null, spillerSiden: "oktober 2026", stallNavn: null, runderIAar: 0, resultatKoblet: false, hcpMaalTekst: null,
   turneringer: { koblet: false, rader: [], tomGrunn: "Profilen din er ikke koblet til turneringsresultatene ennå. Coachen din kobler den." },
 };
 

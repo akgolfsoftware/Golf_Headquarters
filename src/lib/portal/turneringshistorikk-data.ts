@@ -3,7 +3,8 @@ import "server-only";
 import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { lesTurneringsresultat } from "@/lib/domain/turneringsresultat";
-import { UTEN_DATAGOLF_TURNERING } from "@/lib/auth/datagolf-regel";
+import { hentSpillerprofil } from "@/lib/profil-kobling/data";
+import { tilTurneringer } from "@/lib/profil-kobling/til-turneringer";
 import {
   byggTurneringshistorikk,
   type Turneringshistorikk,
@@ -11,73 +12,68 @@ import {
 } from "@/lib/domain/turneringshistorikk";
 
 /**
- * Henter spillerens egen turneringshistorikk fra den offentlige
- * turneringsbasen, via koblingen `User.publicPlayerId`.
+ * Henter spillerens turneringshistorikk fra den felles spillerprofilen (dashboard.profile_links,
+ * migrasjon 0026). Det er ÉN kilde for PlayerHQ, AgencyOS, WANG og Team Norway: ingen kopi
+ * per miljø, så ingen dobbeltrader. Uten bekreftet kobling vises ingenting fra offisielle kilder.
  *
- * Dette er offentlige resultater spilleren selv har spilt — ingen ny
- * personopplysning oppstår ved å vise dem tilbake til eieren.
+ * KALLEREN må ha kontrollert at betrakteren har lov til å se spilleren (se
+ * profil-kobling/tilgang.ts). Ligger kalleren i en delingslås (WANG/TN), send transaksjonen
+ * som `db` så lesingen skjer under låsen.
  *
- * Formingen ligger i `byggTurneringshistorikk` (ren, testet). Denne funksjonen
- * gjør kun oppslaget, og skiller de to tomme tilstandene: ikke koblet, eller
- * koblet uten turneringer.
+ * Spillerens egne planlagte og manuelle turneringer (TournamentEntry) tas fortsatt med. De
+ * automatiske speilradene ("Automatisk fra turneringsresultat") hoppes over: de er kopier av
+ * resultatene som nå kommer fra profilen.
+ *
+ * Data Golf-turneringer (public.*) tas bare med når kalleren har sjekket kanSeDataGolf (ADMIN).
+ * De er disjunkte fra profilens turneringer, som aldri inneholder Data Golf.
+ *
+ * Formingen ligger i `byggTurneringshistorikk` (ren, testet).
  */
 export async function hentTurneringshistorikk(
   userId: string,
-  db: Pick<Prisma.TransactionClient, "user" | "publicPlayerEntry" | "tournamentEntry"> = prisma,
-  /**
-   * Resultater fra turneringer synket fra Data Golf er Data Golf-tall og tas
-   * bare med når kalleren har sjekket kanSeDataGolf (coach/admin, Anders
-   * 09.10.2026). Standard er nei.
-   */
+  db: Pick<Prisma.TransactionClient, "user" | "publicPlayerEntry" | "tournamentEntry" | "$queryRaw"> = prisma,
   { medDataGolf = false }: { medDataGolf?: boolean } = {},
 ): Promise<Turneringshistorikk> {
-  const bruker = await db.user.findUnique({
-    where: { id: userId },
-    select: { publicPlayerId: true },
-  });
-
-  const [entries, manuelle] = await Promise.all([bruker?.publicPlayerId ? db.publicPlayerEntry.findMany({
-    where: {
-      playerId: bruker.publicPlayerId,
-      // Sammenslåtte dubletter skal ikke dukke opp to ganger.
-      tournament: { mergedIntoId: null, ...(medDataGolf ? {} : UTEN_DATAGOLF_TURNERING) },
-    },
-    orderBy: { tournament: { startDate: "desc" } },
-    select: {
-      status: true,
-      position: true,
-      scoreToPar: true,
-      totalScore: true, rounds: true, klasseNavn: true, updatedAt: true,
-      roundDetails: { select: { roundNumber: true, score: true, toPar: true, source: true }, orderBy: { roundNumber: "asc" } },
-      tournament: {
-        select: {
-          id: true,
-          name: true,
-          sourceOrigin: true,
-          tour: true,
-          startDate: true,
-          officialUrl: true,
-        },
+  const [profil, dataGolfEntries, manuelle] = await Promise.all([
+    hentSpillerprofil(userId, {}, db),
+    medDataGolf ? hentDataGolfEntries(userId, db) : Promise.resolve([]),
+    db.tournamentEntry.findMany({
+      where: {
+        userId,
+        withdrawnAt: null,
+        OR: [{ tournamentId: null }, { tournament: { mergedIntoId: null } }],
+        AND: [{ OR: [{ notes: null }, { notes: { not: AUTOMATISK_NOTAT } }] }],
       },
-    },
-  }) : Promise.resolve([]), db.tournamentEntry.findMany({
-    where: { userId, withdrawnAt: null, OR: [{ tournamentId: null }, { tournament: { mergedIntoId: null } }] },
-    select: { id: true, manualName: true, manualDate: true, entryStatus: true, category: true,
-      tournament: { select: { id: true, name: true, sourceOrigin: true, tour: true, startDate: true, officialUrl: true } } },
-    orderBy: { createdAt: "desc" },
-  })]);
+      select: { id: true, manualName: true, manualDate: true, entryStatus: true, category: true,
+        tournament: { select: { id: true, name: true, sourceOrigin: true, tour: true, startDate: true, officialUrl: true } } },
+      orderBy: { createdAt: "desc" },
+    }),
+  ]);
 
-  const rader: TurneringsRad[] = entries.map((e) => ({
-    turneringId: e.tournament.id,
-    navn: e.tournament.name,
-    kilde: e.tournament.sourceOrigin,
-    tour: e.tournament.tour,
-    startDato: e.tournament.startDate,
-    ...lesTurneringsresultat(e),
-    klasse: e.klasseNavn,
-    kildeUrl: e.tournament.officialUrl,
-    status: e.status,
-  }));
+  const rader: TurneringsRad[] = [
+    ...tilTurneringer(profil?.turneringer ?? []).map((t) => ({
+      turneringId: t.id,
+      navn: t.navn,
+      kilde: t.kilde,
+      tour: null,
+      startDato: t.start,
+      ...lesTurneringsresultat(t.resultat),
+      klasse: t.klasse,
+      kildeUrl: null,
+      status: t.resultat.status,
+    })),
+    ...dataGolfEntries.map((e) => ({
+      turneringId: e.tournament.id,
+      navn: e.tournament.name,
+      kilde: e.tournament.sourceOrigin,
+      tour: e.tournament.tour,
+      startDato: e.tournament.startDate,
+      ...lesTurneringsresultat(e),
+      klasse: e.klasseNavn,
+      kildeUrl: e.tournament.officialUrl,
+      status: e.status,
+    })),
+  ];
   const seen = new Set(rader.map(r => r.turneringId));
   for (const e of manuelle) {
     const t = e.tournament;
@@ -89,5 +85,23 @@ export async function hentTurneringshistorikk(
       plassering: null, motPar: null, brutto: null, runder: [], klasse: e.category, kildeUrl: t?.officialUrl ?? null });
     seen.add(id);
   }
-  return byggTurneringshistorikk(rader, !!bruker?.publicPlayerId || rader.length > 0);
+  return byggTurneringshistorikk(rader, profil != null || rader.length > 0);
+}
+
+/** Notatet speilingen skrev på TournamentEntry (materialize-entry.ts). Disse radene er kopier. */
+const AUTOMATISK_NOTAT = "Automatisk fra turneringsresultat";
+
+/** Bare Data Golf-turneringer fra public.* (gamle koblingen). Brukes aldri uten kanSeDataGolf. */
+async function hentDataGolfEntries(userId: string, db: Pick<Prisma.TransactionClient, "user" | "publicPlayerEntry">) {
+  const bruker = await db.user.findUnique({ where: { id: userId }, select: { publicPlayerId: true } });
+  if (!bruker?.publicPlayerId) return [];
+  return db.publicPlayerEntry.findMany({
+    where: { playerId: bruker.publicPlayerId, tournament: { mergedIntoId: null, sourceOrigin: "DATAGOLF" } },
+    orderBy: { tournament: { startDate: "desc" } },
+    select: {
+      status: true, position: true, scoreToPar: true, totalScore: true, rounds: true, klasseNavn: true, updatedAt: true,
+      roundDetails: { select: { roundNumber: true, score: true, toPar: true, source: true }, orderBy: { roundNumber: "asc" } },
+      tournament: { select: { id: true, name: true, sourceOrigin: true, tour: true, startDate: true, officialUrl: true } },
+    },
+  });
 }

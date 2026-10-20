@@ -104,3 +104,33 @@ export const ProfilResultaterSchema = z.object({
 export type ProfilResultater = z.infer<typeof ProfilResultaterSchema>;
 export type ProfilSesong = z.infer<typeof SesongSchema>;
 export type ProfilMonster = z.infer<typeof MonsterSchema>;
+
+const TurneringRundeSchema = z.object({
+  runde: z.number().int(),
+  score: z.number().int().nullable(),
+  til_par: Tall,
+  mot_felt: Tall,
+});
+
+/** Én turnering i den offisielle historikken (migrasjon 0026). Kilden er navnet i databasen, f.eks. `olyo`. */
+const TurneringSchema = z.object({
+  tournament_id: z.number().int(),
+  turnering: z.string(),
+  start_date: z.string().nullable(),
+  year: z.number().int().nullable(),
+  kilde: z.string().nullable(),
+  series: z.string().nullable(),
+  klasse: z.string().nullable(),
+  plassering: z.number().int().nullable(),
+  total_score: z.number().int().nullable(),
+  to_par: z.number().int().nullable(),
+  runder: z.array(TurneringRundeSchema).nullable(),
+});
+export type ProfilTurnering = z.infer<typeof TurneringSchema>;
+
+/** Hele profilen for en spiller med bekreftet kobling. `golf_id` finnes bare når den ble bedt om. */
+export const SpillerprofilSchema = ProfilResultaterSchema.extend({
+  turneringer: z.array(TurneringSchema),
+  golf_id: z.array(z.string()).optional(),
+});
+export type Spillerprofil = z.infer<typeof SpillerprofilSchema>;

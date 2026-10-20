@@ -18,8 +18,9 @@ import { parseProtocol, type ScorekortForsok } from "@/lib/portal-tester/protoco
 import { parseForScoring, lavereErBedre, ScoringDetailsSchema } from "@/lib/portal-tester/test-scoring";
 import { testTilgangWhere } from "@/lib/portal-tester/test-tilgang";
 import { aggregerRangliste } from "./tn-rangliste";
-import { kanSeDataGolf, UTEN_DATAGOLF_TURNERING } from "@/lib/auth/datagolf-regel";
 import { lesTurneringsresultat } from "./turneringsresultat";
+import { hentSpillerprofil } from "@/lib/profil-kobling/data";
+import { tilTurneringer } from "@/lib/profil-kobling/til-turneringer";
 import { lesLeverteIupForProfil } from "@/lib/iup/trener-profil-lesing";
 import { summerAksefordeling } from "./tn-aksefordeling";
 import { tnDenneMandag, vurderTnTrening, type TnSpillerTrening } from "./tn-trenger-deg";
@@ -32,11 +33,6 @@ import { tnDenneMandag, vurderTnTrening, type TnSpillerTrening } from "./tn-tren
  */
 
 export type TnBruker = { id: string; role: UserRole; name: string | null };
-
-/** Data Golf-resultater er bare for coacher og admin (Anders 09.10.2026); alle andre får dem filtrert bort. */
-function utenDataGolfForBruker(bruker: TnBruker): typeof UTEN_DATAGOLF_TURNERING | Record<string, never> {
-  return kanSeDataGolf(bruker) ? {} : UTEN_DATAGOLF_TURNERING;
-}
 
 export type TnArbeidskontekst = {
   gruppe: { id: string; name: string };
@@ -256,7 +252,7 @@ async function lesTnTurneringer(tx: Prisma.TransactionClient, spillerId: string)
  */
 export async function hentTnRangliste(bruker: TnBruker, aar?: number) {
   return lesTnProfiler(bruker, async (tx, spillerId) => {
-    const data = await lesTnRanglisteRad(tx, spillerId, aar, utenDataGolfForBruker(bruker));
+    const data = await lesTnRanglisteRad(tx, spillerId, aar);
     return data.rader[0] ?? null;
   });
 }
@@ -265,37 +261,20 @@ async function lesTnRanglisteRad(
   tx: Prisma.TransactionClient,
   spillerId: string,
   aar: number | undefined,
-  datagolfFilter: ReturnType<typeof utenDataGolfForBruker>,
 ) {
   const rader = await lesTnSpillerRader(tx, spillerId);
   const spillerside = { rader };
-  const koblinger = await tx.user.findMany({
-    where: { id: { in: spillerside.rader.map((spiller) => spiller.id) }, publicPlayerId: { not: null } },
-    select: { id: true, publicPlayerId: true },
-  });
-  const entries = await tx.publicPlayerEntry.findMany({
-    where: {
-      playerId: { in: koblinger.map((k) => k.publicPlayerId!) },
-      tournament: { mergedIntoId: null, ...datagolfFilter, ...(aar ? { startDate: { gte: new Date(Date.UTC(aar - 1, 11, 31, 12)), lt: new Date(Date.UTC(aar, 11, 31, 12)) } } : {}) },
-    },
-    select: {
-      playerId: true, status: true, position: true, scoreToPar: true, totalScore: true, rounds: true, klasseNavn: true,
-      roundDetails: { select: { roundNumber: true, score: true, toPar: true, source: true } },
-      tournament: { select: { startDate: true } },
-    },
-  });
-  const perSpiller = new Map<string, typeof entries>();
-  for (const entry of entries) {
-    if (aar && osloAar(entry.tournament.startDate) !== aar) continue;
-    perSpiller.set(entry.playerId, [...(perSpiller.get(entry.playerId) ?? []), entry]);
-  }
-  const publicId = new Map(koblinger.map((k) => [k.id, k.publicPlayerId!]));
-  return {
-    rader: spillerside.rader.map((spiller) => {
-      const tall = aggregerRangliste(perSpiller.get(publicId.get(spiller.id) ?? "") ?? []);
-      return { ...spiller, ...tall, bruttoScore: tall.bruttoSnitt, koblet: publicId.has(spiller.id) };
-    }),
-  };
+  // Én kilde: spillerens bekreftede profilkobling (dashboard.profile_links). Raden er allerede
+  // tilgangskontrollert av lesTnProfiler, og profilen inneholder aldri Data Golf.
+  const medTall = await Promise.all(spillerside.rader.map(async (spiller) => {
+    const profil = await hentSpillerprofil(spiller.id, {}, tx);
+    const resultater = tilTurneringer(profil?.turneringer ?? [])
+      .filter((t) => !aar || osloAar(t.start) === aar)
+      .map((t) => t.resultat);
+    const tall = aggregerRangliste(resultater);
+    return { ...spiller, ...tall, bruttoScore: tall.bruttoSnitt, koblet: profil != null };
+  }));
+  return { rader: medTall };
 }
 
 const osloAarFormat = new Intl.DateTimeFormat("en-GB", { year: "numeric", timeZone: "Europe/Oslo" });
@@ -1397,39 +1376,27 @@ export async function hentTnSpillerProfil(bruker: TnBruker, spillerId: string, a
   return medTnSpillerData(bruker, spillerId, async (tx, tilgang) => {
     const spiller = await tx.user.findFirst({
       where: { id: tilgang.spillerId, deletedAt: null },
-      select: { name: true, dateOfBirth: true, homeClub: true, school: true, hcp: true, publicPlayerId: true, groupMemberships: { where: { groupId: tilgang.kontekst.gruppe.id, ...aktivtSpillerMedlemskapWhere() }, select: { id: true } } },
+      select: { name: true, dateOfBirth: true, homeClub: true, school: true, hcp: true, groupMemberships: { where: { groupId: tilgang.kontekst.gruppe.id, ...aktivtSpillerMedlemskapWhere() }, select: { id: true } } },
     });
     if (!spiller) return null;
     const grunn = { navn: spiller.name ?? tilgang.spillerNavn, erTnMedlem: spiller.groupMemberships.length > 0, fodselsdato: spiller.dateOfBirth, klubb: spiller.homeClub, skole: spiller.school, hcp: spiller.hcp };
-    if (!spiller.publicPlayerId) return { ...grunn, turneringer: null, aaret: null };
-
-    const entries = await tx.publicPlayerEntry.findMany({
-      where: {
-        playerId: spiller.publicPlayerId,
-        tournament: { mergedIntoId: null, ...utenDataGolfForBruker(bruker), startDate: { gte: new Date(Date.UTC(aar - 1, 11, 31, 12)), lt: new Date(Date.UTC(aar, 11, 31, 12)) } },
-      },
-      select: {
-        status: true, position: true, scoreToPar: true, totalScore: true, rounds: true, klasseNavn: true,
-        roundDetails: { select: { roundNumber: true, score: true, toPar: true, source: true } },
-        tournament: { select: { name: true, startDate: true, endDate: true } },
-      },
-      orderBy: { tournament: { startDate: "desc" } },
-    });
-    const iAaret = entries.filter((e) => osloAar(e.tournament.startDate) === aar);
-    const turneringer = iAaret.map((e) => {
-      const tall = aggregerRangliste([e]);
-      const resultat = lesTurneringsresultat(e);
+    const profil = await hentSpillerprofil(tilgang.spillerId, {}, tx);
+    if (!profil) return { ...grunn, turneringer: null, aaret: null };
+    const iAaret = tilTurneringer(profil.turneringer).filter((t) => osloAar(t.start) === aar);
+    const turneringer = iAaret.map((t) => {
+      const tall = aggregerRangliste([t.resultat]);
+      const resultat = lesTurneringsresultat(t.resultat);
       return {
-        navn: e.tournament.name,
-        start: e.tournament.startDate,
-        slutt: e.tournament.endDate,
-        status: e.status,
+        navn: t.navn,
+        start: t.start,
+        slutt: null,
+        status: t.resultat.status,
         runder: tall.runder,
         bruttoSnitt: tall.bruttoSnitt,
         plassering: resultat.plasseringTekst,
       };
     });
-    const sum = aggregerRangliste(iAaret);
+    const sum = aggregerRangliste(iAaret.map((t) => t.resultat));
     return { ...grunn, turneringer, aaret: { runder: sum.runder, bruttoSnitt: sum.bruttoSnitt } };
   });
 }

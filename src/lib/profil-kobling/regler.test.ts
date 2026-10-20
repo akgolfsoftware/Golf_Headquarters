@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { byggOppslag, filtrerKandidater, normaliserGolfId, stemmerMedProfil } from "./regler";
+import { byggOppslag, byggOppslagForTrener, filtrerKandidater, normaliserGolfId, stemmerMedProfil } from "./regler";
 import type { Kandidat } from "./typer";
 
 // Kun fiktive personer (AGENTS.md §Data og sikkerhet).
@@ -95,5 +95,27 @@ describe("filtrerKandidater", () => {
       kandidat({ person_id: 3, birth_year: 2005 }),
     ]);
     assert.deepEqual(ut.map((k) => k.person_id), [1]);
+  });
+});
+
+describe("byggOppslagForTrener", () => {
+  const BARN = { name: "Ola Barnesen", dateOfBirth: new Date("2013-03-02T00:00:00Z") };
+  it("bygger oppslaget fra profilen til en spiller under 16", () => {
+    const r = byggOppslagForTrener(BARN, undefined, NAA);
+    assert.deepEqual(r, { ok: true, oppslag: { golfId: null, navn: "Ola Barnesen", fodselsaar: 2013 } });
+  });
+  it("sender spillere på 16 eller eldre tilbake til selvkobling", () => {
+    const r = byggOppslagForTrener(PIA, undefined, NAA);
+    assert.equal(r.ok, false);
+  });
+  it("krever fødselsdato i profilen", () => {
+    assert.equal(byggOppslagForTrener({ name: "Ola Barnesen", dateOfBirth: null }, undefined, NAA).ok, false);
+  });
+  it("tar imot golf-ID, men avviser et ugyldig nummer", () => {
+    assert.equal(byggOppslagForTrener(BARN, "303-579", NAA).ok, true);
+    assert.equal(byggOppslagForTrener(BARN, "12", NAA).ok, false);
+  });
+  it("spilleren selv kan fortsatt ikke koble som under 16", () => {
+    assert.equal(byggOppslag(BARN, undefined, NAA).ok, false);
   });
 });

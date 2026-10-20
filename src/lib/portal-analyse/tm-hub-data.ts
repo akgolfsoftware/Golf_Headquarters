@@ -2,6 +2,8 @@
  * TM-04 Analyse-hub — Broadie-SG og TrackMan side om side, aldri blandet
  * i samme tall. Mangler data → ærlig tom, aldri fabrikk.
  */
+import { hentSpillerprofil } from "@/lib/profil-kobling/data";
+import { tilTurneringer } from "@/lib/profil-kobling/til-turneringer";
 import { prisma } from "@/lib/prisma";
 import { loadMinGolf } from "@/lib/min-golf/load-min-golf";
 import { fmtSg, SG_KLARSPRAK } from "@/lib/min-golf/format";
@@ -66,23 +68,16 @@ export async function hentAnalyseHub(userId: string): Promise<TmHubData> {
   const manedStart = new Date(Date.UTC(aar, (maned ?? 1) - 1, 1));
 
   const minGolf = await loadMinGolf(userId);
-  const [runderIManed, tmAntall, bruker] = await Promise.all([
+  const [runderIManed, tmAntall, profil] = await Promise.all([
     prisma.round.count({ where: { userId, playedAt: { gte: manedStart } } }),
     prisma.trackManSession.count({ where: { userId } }),
-    prisma.user.findUnique({ where: { id: userId }, select: { publicPlayerId: true } }),
+    hentSpillerprofil(userId),
   ]);
 
   // Turneringsraden: tell kun når spilleren faktisk er koblet. Er hen ikke
   // koblet, sier meta det i stedet for å vise «0 turneringer», som ville
   // lest som om spilleren aldri har spilt.
-  const turneringsAntall = bruker?.publicPlayerId
-    ? await prisma.publicPlayerEntry.count({
-        where: {
-          playerId: bruker.publicPlayerId,
-          tournament: { mergedIntoId: null },
-        },
-      })
-    : null;
+  const turneringsAntall = profil ? tilTurneringer(profil.turneringer).length : null;
   const turneringsMeta =
     turneringsAntall == null
       ? "Ikke koblet ennå"

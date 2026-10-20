@@ -23,11 +23,16 @@ export type OffentligResultat = {
   roundDetails: { roundNumber: number; score: number | null; toPar: number | null; source: string | null }[];
 };
 
+/** Netto-klasser har ingen bruttoplassering. Brutto score er den eneste vi viser (Anders). */
+export function erNettoklasse(klasseNavn: string | null | undefined): boolean {
+  return /\bnetto?\b|(?:\s|-)N$|\(N\)$/i.test(klasseNavn ?? "");
+}
+
 /** Kildeformatet eier betydningen. Gamle rader får ikke oppdiktet fullføringsbevis. */
 export function lesTurneringsresultat(entry: OffentligResultat) {
   const parsed = blobSchema.safeParse(entry.rounds);
   const blob = parsed.success ? parsed.data : null;
-  const nettoklasse = /\bnetto?\b|(?:\s|-)N$|\(N\)$/i.test(entry.klasseNavn ?? "");
+  const nettoklasse = erNettoklasse(entry.klasseNavn);
   const runder: Resultatrunde[] = blob ? blob.roundScores.map((brutto, i) => ({
     nummer: i + 1, brutto, motPar: blob.roundToPar[i] ?? null,
     hull: blob.roundHoles[i] ?? null, fullfort: blob.roundCompleted[i] ?? false,
@@ -57,5 +62,9 @@ export function resultatStatus(status: string | null): string {
 
 export function resultatKilde(kilde: string | null): string {
   if (["GOLFBOX", "SRIXON", "NORGESCUP", "OLYO", "NARVESEN", "MIDAM", "SENIOR", "NM", "OSTLANDS", "REGIONTOUR"].includes(kilde ?? "")) return "GolfBox";
+  if (kilde === "NORDIC_LEAGUE") return "Nordic League (GolfBox)";
+  if (kilde === "WAGR") return "WAGR";
+  if (["OSTLANDS_TITLEIST", "OSTLANDS_CALLAWAY", "REGIONS_TOUR"].includes(kilde ?? "")) return "Regionstour";
+  if (["CLIPPD", "GOLF6", "COLLEGE"].includes(kilde ?? "")) return "College";
   return kilde === "DATAGOLF" ? "DataGolf" : kilde === "MANUAL" ? "Egen registrering" : kilde ?? "Kilde mangler";
 }

@@ -54,7 +54,7 @@ export function TurneringKoblingKlient({ spillerId, spillerNavn, current, initia
     startTransition(async () => {
       const r = await koblePublicPlayer(spillerId, publicPlayerId);
       if (!r.ok) { setFeil(r.error); return; }
-      setMelding(`Koblet til ${navn}. ${r.mirrored} resultat${r.mirrored === 1 ? "" : "er"} speilet til profilen.`);
+      setMelding(`Koblet til ${navn}. Offisielle resultater leses fra spillerens bekreftede profil, ikke herfra.`);
       // Full refresh så server-data oppdateres
       window.location.reload();
     });

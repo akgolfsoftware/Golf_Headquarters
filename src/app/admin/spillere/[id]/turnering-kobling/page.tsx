@@ -13,6 +13,8 @@ import { notFound } from "next/navigation";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { calculateAge } from "@/lib/auth/minor";
+import { hentKoblingsstatus } from "@/lib/profil-kobling/data";
 import { ArrowLeft } from "lucide-react";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { KnappLenke } from "@/components/precision/pa";
@@ -21,6 +23,7 @@ import "@/styles/precision-a8.css";
 
 import { foreslaPublicPlayers } from "./actions";
 import { TurneringKoblingKlient } from "./kobling-klient";
+import { ResultatprofilKlient } from "./resultatprofil-klient";
 
 export const dynamic = "force-dynamic";
 
@@ -39,6 +42,7 @@ export default async function TurneringKoblingPage({
       name: true,
       role: true,
       publicPlayerId: true,
+      dateOfBirth: true,
       publicPlayer: {
         select: {
           id: true,
@@ -52,6 +56,10 @@ export default async function TurneringKoblingPage({
     },
   });
   if (!player || player.role !== "PLAYER") notFound();
+
+  const resultatStatus = await hentKoblingsstatus(player.id);
+  const alder = calculateAge(player.dateOfBirth);
+  const under16 = alder != null && alder < 16;
 
   const forslagRes = await foreslaPublicPlayers(player.id);
   const forslag = forslagRes.ok ? forslagRes.treff : [];
@@ -73,8 +81,14 @@ export default async function TurneringKoblingPage({
         <SideHode
           kicker="Stall · Spiller 360 · Turneringsprofil"
           title={player.name}
-          sub="Koble denne PlayerHQ-kontoen til en person i turneringsbasen. Da speiles GolfBox-resultater automatisk til spillerens profil."
+          sub="Resultatprofilen er kilden til offisielle resultater for alle miljøer. Den eldre koblingen lenger ned brukes fortsatt av noen få verktøy og erstatter ikke resultatprofilen."
           actions={<KnappLenke variant="secondary" icon={ArrowLeft} iconName="arrow-left" href={`/admin/spillere/${player.id}`}>Spiller 360</KnappLenke>}
+        />
+        <ResultatprofilKlient
+          spillerId={player.id}
+          spillerNavn={player.name}
+          under16={under16}
+          status={resultatStatus.status === "none" ? { status: "none" } : { status: resultatStatus.status, kandidat: resultatStatus.candidate }}
         />
         <TurneringKoblingKlient
           spillerId={player.id}
