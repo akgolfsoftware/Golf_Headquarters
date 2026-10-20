@@ -16,6 +16,8 @@ for (const css of [
   "precision-a21.css",
   "precision-a22.css",
   "precision-komponenter.css",
+  "agencyos-ny-mer.css",
+  "agencyos-ny-liste.css",
   "precision-athletics.css",
 ]) {
   mock.module(`@/styles/${css}`, { namedExports: {} });
@@ -66,7 +68,7 @@ describe("AG22InnsiktTalent (Innsikt og talent)", async () => {
 
   test("WAGR uten importert fil viser ingen oppdiktet fil", () => {
     const html = vis({ tilstand: "data", startFane: "wagr", data });
-    assert.match(html, /INGEN FIL IMPORTERT/);
+    assert.match(html, /Ingen fil importert/);
     assert.doesNotMatch(html, /wagr-export|Emil Strand/);
   });
 

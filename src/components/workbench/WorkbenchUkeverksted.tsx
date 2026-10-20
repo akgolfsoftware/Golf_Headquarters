@@ -21,6 +21,8 @@ import { WorkbenchPlanHandlinger } from "./WorkbenchPlanHandlinger";
 import { WorkbenchTreukerssyklus } from "./WorkbenchTreukerssyklus";
 import { UKEPLAN_TYPER } from "@/lib/workbench/ukeplan-schema";
 import { NyOvelseArk, OktOvelser, OvelseVelger } from "./OvelseVelger";
+import { AG11Budsjett } from "@/components/admin/precision/AG11Budsjett";
+import { gruppeMerke } from "@/lib/agencyos/workbench-budsjett";
 
 const KILDER: Record<SourceItem["kind"], string> = { DRILL: "Øvelser", TEMPLATE: "Øktmaler", PROGRAM: "Program", PREVIOUS_WEEK: "Tidligere uker", TEK: "Teknisk plan" };
 
@@ -84,6 +86,7 @@ export function WorkbenchUkeverksted({ data }: { data: WorkbenchSamletData }) {
     draggable={!travel} onDragStart={e => e.dataTransfer.setData("application/x-workbench-session", s.id)}
     onClick={() => { velgOkt(s.id); setDag(s.date); if (mobil) setMobilPanel("detaljer"); }}>
     <small className="ws-num">{mobil ? `${klokke(s.startMinute)}–${klokke(s.startMinute + s.durationMinutes)} · ${STATUS_LABEL[s.status]}` : `${klokke(s.startMinute)} · ${s.durationMinutes} min · ${s.pyramid}`}</small><strong>{s.title}</strong>
+    {(() => { const m = gruppeMerke(s); return m === "gruppe" || m === "egen" ? <span className="ws-merke" data-merke={m}>{m === "egen" ? "Egen" : "Fra gruppa"}</span> : null; })()}
     {!mobil && <><small>{STATUS_LABEL[s.status]}{s.needsPlayerApproval ? " · Venter på svar" : ""}{s.seriesId ? " · Serie" : ""}</small>
     <small>Registrert {s.actualMinutes == null ? "—" : `${s.actualMinutes} min`}</small></>}
   </button>;
@@ -138,6 +141,7 @@ export function WorkbenchUkeverksted({ data }: { data: WorkbenchSamletData }) {
     </div>
     {week.legacyWeekPlanCandidate && <div className="ws-pad"><InlineVarsel tone="warn" tittel="Eldre ukeplan må gjennomgås">En eldre plan finnes med originalåret {week.legacyWeekPlanCandidate.isoYear} og uke {week.legacyWeekPlanCandidate.weekNumber}. {week.legacyWeekPlanCandidate.warning}</InlineVarsel></div>}
     {motor.feil && <div className="ws-pad"><InlineVarsel tone="warn" tittel="Endringen kunne ikke fullføres">{motor.feil}</InlineVarsel><Knapp variant="ghost" onClick={() => void motor.lastPaaNytt()}>Prøv igjen</Knapp></div>}
+    <AG11Budsjett uke={week} okter={motor.alleOkter} periodeTekst={typeNavn === "Ingen uketype valgt" ? undefined : `ukeplanen (${typeNavn})`} />
     <div className="ws-week" aria-busy={travel}>
       <aside className="ws-library" aria-label="Bibliotek">{bibliotek}</aside>
       <main className="ws-panel" aria-label="Ukekalender">

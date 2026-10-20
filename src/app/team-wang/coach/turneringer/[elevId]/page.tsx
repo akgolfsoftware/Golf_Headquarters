@@ -1,13 +1,16 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { medWangElevData } from "@/app/team-wang/_data/wang-tilgang";
 import { hentTurneringshistorikk } from "@/lib/portal/turneringshistorikk-data";
+import { formaterFortegn } from "@/lib/format-tall";
 import { kanSeDataGolf } from "@/lib/auth/datagolf-regel";
 import { resultatKilde, resultatStatus } from "@/lib/domain/turneringsresultat";
 import { WangUnderside } from "@/components/wang/WangUnderside";
-import { WangSmaaTall, WangTilbake, WangTopp, wangHref } from "@/components/wang/wang-felles";
+import { WangElevTopp } from "@/components/wang/WangElevTopp";
+import { WangTilParGraf, type WangTilParPunkt } from "@/components/wang/WangTilParGraf";
 
 /**
  * Turneringsresultater for én WANG-elev (beslutninger.md §PIPELINES ER ENESTE
@@ -44,10 +47,13 @@ function motPar(n: number | null): string {
 
 export default async function WangTurneringerPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ elevId: string }>;
+  searchParams?: Promise<{ aar?: string }>;
 }) {
   const { elevId } = await params;
+  const valgtAar = (searchParams ? await searchParams : {}).aar ?? "alle";
 
   const bruker = await requirePortalUser({
     tillatDemo: true,
@@ -66,61 +72,99 @@ export default async function WangTurneringerPage({
 
     const historikk = await hentTurneringshistorikk(elevId, tx, { medDataGolf: kanSeDataGolf(bruker) });
     const elevNavn = elev.name?.trim() || elev.email;
+    const enc = encodeURIComponent(elevId);
+    const iAar = Number(new Intl.DateTimeFormat("en-GB", { year: "numeric", timeZone: "Europe/Oslo" }).format(new Date()));
+    const aaret = historikk.aar.find((a) => a.aar === iAar)?.turneringer ?? [];
+    const fullfortIAar = aaret.filter((t) => t.status === "FINISHED" && t.motPar != null);
+    const snitt = fullfortIAar.length
+      ? fullfortIAar.reduce((sum, t) => sum + (t.motPar ?? 0), 0) / fullfortIAar.length
+      : null;
+    const punkter: WangTilParPunkt[] = [...fullfortIAar].reverse().map((t) => ({
+      id: t.turneringId,
+      dato: fmtDato(t.startDato),
+      navn: t.navn,
+      motPar: t.motPar ?? 0,
+      tekst: `${fmtDato(t.startDato)} · ${t.navn}: ${t.brutto ?? "—"} slag (${motPar(t.motPar)}), plass ${t.plasseringTekst ?? t.plassering ?? "—"}`,
+    }));
+    const aarSomVises = valgtAar === "alle" ? historikk.aar : historikk.aar.filter((a) => String(a.aar) === valgtAar);
+    const valg = [...historikk.aar.slice(0, 2).map((a) => String(a.aar)), "alle"];
 
     return (
       <>
-        <WangTilbake href={wangHref("elever", "elev", elevId)} tekst={elevNavn} />
-        <WangTopp dato={elevNavn} tittel="Turneringer" />
+        <WangElevTopp
+          tilbake={{ href: `/team-wang/coach/profil/${enc}`, tekst: elevNavn }}
+          navn={elevNavn}
+          overtittel={elevNavn}
+          tittel="Turneringer"
+          tall={[
+            { verdi: String(historikk.antall), tekst: "turneringsstarter" },
+            { verdi: historikk.bestePlassering != null ? `${historikk.bestePlassering}.` : "—", tekst: "beste plass" },
+            { verdi: formaterFortegn(snitt, 1), tekst: `snitt til par i ${iAar}` },
+          ]}
+        />
 
         {!historikk.harHistorikk ? (
           <div className="wg-kort" style={{ padding: "18px 20px" }}>
             <p className="wg-forklar">{historikk.tomGrunn}</p>
           </div>
         ) : (
-          <>
-            <WangSmaaTall
-              tall={[
-                { verdi: String(historikk.antall), tekst: "turneringsstarter" },
-                {
-                  verdi: historikk.bestePlassering != null ? `${historikk.bestePlassering}.` : "—",
-                  tekst: "beste plassering",
-                },
-              ]}
-            />
-
-            {historikk.aar.map((aar) => (
-              <section key={aar.aar} className="wg-seksjon" aria-label={`Turneringer ${aar.aar}`}>
-                <div className="wg-sek-topp">
-                  <h2>{aar.aar}</h2>
-                  <span className="wg-kilde">
-                    {aar.turneringer.length} {aar.turneringer.length === 1 ? "turnering" : "turneringer"}
-                  </span>
-                </div>
-                <div className="wg-kort wg-rader">
-                  {aar.turneringer.map((t) => (
-                    <div key={t.turneringId} className="wg-rad wg-resultat-rad">
-                      <b>{t.navn}</b>
-                      <span className="wg-tall">
-                        {t.plassering != null && t.status === "FINISHED"
-                          ? t.plasseringTekst ?? `${t.plassering}.`
-                          : "—"}
-                      </span>
-                      <span className="wg-kilde">
-                        {[
-                          fmtDato(t.startDato),
-                          resultatKilde(t.kilde),
-                          resultatStatus(t.status),
-                          t.brutto != null ? `${t.brutto} slag (${motPar(t.motPar)})` : null,
-                        ]
-                          .filter(Boolean)
-                          .join(" · ")}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            ))}
-          </>
+          <div className="wg-turn-grid">
+            <div className="wg-turn-graf">
+              <WangTilParGraf aar={iAar} punkter={punkter} />
+              <p className="wg-kilde">Kilde: offisielle resultater, hentet hver mandag. Plassering er plass i feltet, aldri prosent. Netto score er ikke med.</p>
+            </div>
+            <div className="wg-turn-liste">
+              <nav className="wg-turn-valg" aria-label="Vis sesong">
+                {valg.map((a) => (
+                  <Link
+                    key={a}
+                    href={a === "alle" ? `/team-wang/coach/turneringer/${enc}` : `/team-wang/coach/turneringer/${enc}?aar=${a}`}
+                    aria-current={valgtAar === a ? "page" : undefined}
+                    className="wg-turn-valg-knapp"
+                  >
+                    {a === "alle" ? "Alle" : a}
+                  </Link>
+                ))}
+              </nav>
+              {aarSomVises.map((aar) => (
+                <section key={aar.aar} className="wg-seksjon" aria-label={`Turneringer ${aar.aar}`}>
+                  <div className="wg-sek-topp">
+                    <h2>{aar.aar}</h2>
+                    <span className="wg-kilde">
+                      {aar.turneringer.length} {aar.turneringer.length === 1 ? "turnering" : "turneringer"}
+                    </span>
+                  </div>
+                  <div className="wg-kort">
+                    {aar.turneringer.map((t) => {
+                      const [dag, mnd] = fmtDato(t.startDato).split(". ");
+                      return (
+                        <div key={t.turneringId} className="wg-turn-rad">
+                          <span className="wg-turn-dato" aria-hidden="true"><b>{dag}</b><span>{mnd}</span></span>
+                          <span className="wg-turn-hva">
+                            <b>{t.navn}</b>
+                            <span className="wg-kilde">
+                              {[
+                                fmtDato(t.startDato),
+                                resultatKilde(t.kilde),
+                                resultatStatus(t.status),
+                                t.brutto != null ? `${t.brutto} slag (${motPar(t.motPar)})` : null,
+                              ].filter(Boolean).join(" · ")}
+                            </span>
+                          </span>
+                          <span className="wg-turn-plass">
+                            <strong>
+                              {t.plassering != null && t.status === "FINISHED" ? t.plasseringTekst ?? `${t.plassering}.` : "—"}
+                            </strong>
+                            <span>plass</span>
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </section>
+              ))}
+            </div>
+          </div>
         )}
       </>
     );

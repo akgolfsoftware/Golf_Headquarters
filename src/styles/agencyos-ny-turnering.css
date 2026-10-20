@@ -1,0 +1,13 @@
+/* AgencyOS Turneringer (AG-17). Gjelder bare inni .agn-s. */
+.agn-s .drift-rad { cursor: pointer; }
+.agn-s .liste > .drift-rad[aria-pressed="true"] { background: var(--sand-100); box-shadow: inset 4px 0 0 var(--graphite-900); }
+.agn-s .agn-s-stack { display: grid; gap: var(--r5); align-content: start; }
+.agn-s .tur-kart { position: relative; width: 100%; aspect-ratio: 4 / 3; border-radius: 12px; background: var(--sand-100); border: 1px solid var(--sand-300); overflow: hidden; }
+.agn-s .tur-punkt { position: absolute; width: 44px; height: 44px; display: grid; place-items: center; border: 0; background: transparent; cursor: pointer; padding: 0; }
+.agn-s .tur-prikk { display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: var(--graphite-500); }
+.agn-s .tur-prikk.mine { background: var(--graphite-900); }
+.agn-s .tur-prikk.liten { width: 10px; height: 10px; }
+.agn-s .tur-punkt[aria-pressed="true"] .tur-prikk { width: 18px; height: 18px; box-shadow: 0 0 0 3px var(--white), 0 0 0 5px var(--graphite-900); }
+.agn-s .tur-par { display: grid; gap: var(--r4); grid-template-columns: minmax(0, 1fr); }
+.agn-s .tur-par > div { display: grid; gap: 4px; min-width: 0; }
+@media (min-width: 600px) { .agn-s .tur-par { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

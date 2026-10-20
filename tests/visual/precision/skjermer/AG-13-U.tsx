@@ -25,6 +25,7 @@ const Vis = (d: LiveOktData, samtykke: LiveSamtykke = GITT, oppgave = OPPGAVE) =
 
 export const tilstander = {
   utenOpptak: Vis(base),
+  etter: Vis({ ...base, startTime: new Date(Date.now() - 200 * 60_000).toISOString(), opptak: { status: "DONE", durationSec: 3480, transcript: "Coach: Bra tempo …", coachAnalyse: "Jobbet med avstandskontroll 50–90 m. 13 av 20 innenfor 3 m." }, coachRating: 4 }),
   medOpptak: Vis({ ...base, opptak: { status: "RECORDING", durationSec: 754, transcript: "Coach: Bra tempo på den siste …", coachAnalyse: "Jevnt over god avstandskontroll, litt kort på 90 m." }, coachBrief: "Tenk rytme, ikke fart.", coachRating: 4 }),
   utenSamtykke: Vis(base, { tillatt: false, status: "MANGLER" }),
   trukket: Vis(base, { tillatt: false, status: "TRUKKET" }),

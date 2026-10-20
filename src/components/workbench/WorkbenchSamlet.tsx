@@ -12,7 +12,7 @@ import { WorkbenchSesongkart } from "./WorkbenchSesongkart";
 import { WorkbenchUkeverksted } from "./WorkbenchUkeverksted";
 import { WorkbenchTrenerbord } from "./WorkbenchTrenerbord";
 import { WorkbenchAnalyse } from "./WorkbenchAnalyse";
-import "./workbench-samlet.css";
+import "@/styles/agencyos-ny-wb-samlet.css";
 
 const FLATER: readonly [WorkbenchFlate, string][] = [["sesong", "Sesongkart"], ["uke", "Ukeverksted"], ["bord", "Trenerbord"], ["analyse", "Stats"]];
 type MerId = "X01" | "X02" | "X03" | "X04" | "X05" | "X06" | "X07" | "X08" | "X09" | "X10" | "X11" | "X12" | "X13" | "X14" | "X15" | "X16" | "X17" | "X18";

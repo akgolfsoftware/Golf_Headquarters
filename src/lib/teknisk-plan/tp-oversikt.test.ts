@@ -14,7 +14,7 @@ test("aktiv plan vinner over nyere utkast", () => {
 
 test("spiller uten plan får tom rad med «—», aldri tall", () => {
   assert.deepEqual(oversiktRad({ id: "s", name: "Spiller" }, []), {
-    id: "s", navn: "Spiller", planId: null, planNavn: null, status: null, oppgaver: 0, gjort: 0, maal: 0, sistRegistrert: "—", antallPlaner: 0,
+    id: "s", navn: "Spiller", planId: null, planNavn: null, status: null, oppgaver: 0, gjort: 0, maal: 0, sistRegistrert: "—", antallPlaner: 0, perPosisjon: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   });
 });
 
@@ -29,4 +29,13 @@ test("summerer reps og siste registrering, uten arkiverte oppgaver", () => {
   assert.equal(r.maal, 60);
   assert.equal(r.sistRegistrert, "26.09.2026");
   assert.equal(r.status, "Aktiv");
+});
+
+test("oppgaver telles per posisjon P1.0–P10.0, uten arkiverte", () => {
+  const r = oversiktRad({ id: "s", name: "S" }, [plan({ status: "ACTIVE", positions: [
+    { pNummer: "P7.0", tasks: [oppg(), oppg(), oppg({ status: "ARCHIVED" })] },
+    { pNummer: "P2.0", tasks: [oppg()] },
+    { pNummer: "P10.0", tasks: [oppg()] },
+  ] })]);
+  assert.deepEqual(r.perPosisjon, [0, 1, 0, 0, 0, 0, 2, 0, 0, 1]);
 });

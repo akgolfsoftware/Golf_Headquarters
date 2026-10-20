@@ -15,6 +15,8 @@ for (const css of [
   "precision-a19.css",
   "precision-a21.css",
   "precision-komponenter.css",
+  "agencyos-ny-mer.css",
+  "agencyos-ny-liste.css",
   "precision-athletics.css",
 ]) {
   mock.module(`@/styles/${css}`, { namedExports: {} });
@@ -39,10 +41,11 @@ describe("AG21Oppgaver (Oppgaver og rutiner)", async () => {
     notion: null,
   };
 
-  test("viser oppgaver den får, og Ny oppgave er deaktivert", () => {
+  test("viser oppgaver den får, og kan ikke opprette noe (Notion er eneste kilde)", () => {
     const html = vis({ tilstand: "data", startFane: "mine", data });
     assert.match(html, /Testoppgave/);
-    assert.match(html, /IKKE KOBLET ENNÅ/);
+    assert.match(html, /eneste kilde/);
+    assert.doesNotMatch(html, /Ny oppgave/);
     assert.doesNotMatch(html, /Kari Demo|Tobias|Sesongslutt/);
   });
 
@@ -56,7 +59,7 @@ describe("AG21Oppgaver (Oppgaver og rutiner)", async () => {
     assert.match(html, /Ingen oppgaver å vise/);
     assert.doesNotMatch(html, /Kari Demo|Sesongslutt|Tobias/);
     const notion = vis({ tilstand: "data", startFane: "notion" });
-    assert.match(notion, /IKKE KOBLET/);
+    assert.match(notion, /Ikke koblet/);
     assert.doesNotMatch(notion, /simulert|Coach-arbeidsflate/);
   });
 

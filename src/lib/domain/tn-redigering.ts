@@ -243,11 +243,18 @@ export async function slettDokument(bruker: TnBruker, attachmentId: string): Pro
 
 export const UTTAK_STATUS = ["UTTATT", "RESERVE", "IKKE_UTTATT"] as const;
 
+/** Kriterium 3 «Prosess og adferd»: helt tall 1–5, eller tomt (ikke vurdert). Anders 20.10.2026. */
+export const ProsessAdferdSchema = z
+  .union([z.literal(""), z.null(), z.coerce.number().int("Prosess og adferd må være et helt tall fra 1 til 5.").min(1, "Prosess og adferd må være et helt tall fra 1 til 5.").max(5, "Prosess og adferd må være et helt tall fra 1 til 5.")])
+  .optional()
+  .transform((v) => (v === "" || v === null || v === undefined ? null : v));
+
 export const UttakSchema = z.object({
   spillerId: z.string().min(1).max(64),
   arrangement: tekst(200).min(1, "Skriv hvilket arrangement uttaket gjelder."),
   status: z.enum(UTTAK_STATUS),
   begrunnelse: tekst(2000).optional(),
+  prosessAdferd: ProsessAdferdSchema,
 });
 
 export async function lagreUttak(bruker: TnBruker, input: unknown): Promise<TnSkrivResultat> {
@@ -259,8 +266,8 @@ export async function lagreUttak(bruker: TnBruker, input: unknown): Promise<TnSk
     await krevSpillerIGruppe(kontekst.gruppe.id, d.spillerId);
     await prisma.tnUttak.upsert({
       where: { groupId_userId_arrangement: { groupId: kontekst.gruppe.id, userId: d.spillerId, arrangement: d.arrangement } },
-      create: { groupId: kontekst.gruppe.id, userId: d.spillerId, arrangement: d.arrangement, status: d.status, begrunnelse: d.begrunnelse || null, decidedById: bruker.id },
-      update: { status: d.status, begrunnelse: d.begrunnelse || null, decidedById: bruker.id, decidedAt: new Date() },
+      create: { groupId: kontekst.gruppe.id, userId: d.spillerId, arrangement: d.arrangement, status: d.status, begrunnelse: d.begrunnelse || null, prosessAdferd: d.prosessAdferd, decidedById: bruker.id },
+      update: { status: d.status, begrunnelse: d.begrunnelse || null, prosessAdferd: d.prosessAdferd, decidedById: bruker.id, decidedAt: new Date() },
     });
     return undefined;
   }, "Kunne ikke lagre uttaket.");

@@ -1,0 +1,7 @@
+/* AgencyOS Drift (AG-24). Gjelder bare inni .agn-s. */
+.agn-s .drift-rad { cursor: pointer; }
+.agn-s .liste > .drift-rad[aria-pressed="true"] { background: var(--sand-100); box-shadow: inset 4px 0 0 var(--graphite-900); }
+.agn-s .drift-melding { display: flex; align-items: center; justify-content: space-between; gap: var(--r3); flex-wrap: wrap; }
+.agn-s .drift-kode { margin: var(--r3) 0 0; padding: 12px; border-radius: 8px; background: var(--sand-100); font-size: 12.5px; line-height: 1.55; overflow-wrap: anywhere; white-space: pre-wrap; }
+.agn-s .detaljer { border-bottom: 1px solid var(--sand-300); }
+.agn-s .detaljer:last-child { border-bottom: 0; }

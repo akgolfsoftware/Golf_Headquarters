@@ -23,7 +23,7 @@ import "@/styles/agencyos-ny-mer.css";
 const NB_DATO = new Intl.DateTimeFormat("nb-NO", { timeZone: "Europe/Oslo", weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 const fmtHcp = (h: number | null) => formaterTall(h, 1, true);
 
-export type GruppeFane = "medlemmer" | "tider" | "skoledata" | "stats";
+export type GruppeFane = "medlemmer" | "tider" | "skoledata" | "stats" | "arsplan";
 
 /** Fanene i Gruppa. Hver er en egen adresse. */
 export function GruppeFanerNy({ groupId, aktiv }: { groupId: string; aktiv: GruppeFane }) {
@@ -32,6 +32,7 @@ export function GruppeFanerNy({ groupId, aktiv }: { groupId: string; aktiv: Grup
     ["tider", "Faste tider", `/admin/grupper/${groupId}/timeplan`],
     ["skoledata", "Skoledata", `/admin/grupper/${groupId}/arsplan/skoledata`],
     ["stats", "Stats", `/admin/grupper/${groupId}/analyse`],
+    ["arsplan", "Årsplan", `/admin/grupper/${groupId}/arsplan`],
   ];
   return <nav className="faner" aria-label="Gruppa">
     {faner.map(([id, label, href]) => <Link key={id} href={href} aria-current={aktiv === id ? "page" : undefined}>{label}</Link>)}
@@ -54,7 +55,7 @@ export function AG16Gruppe({ data, actions: A, ekstra }: { data: GruppeDetaljV2D
       <div className="teller"><span className="e">Medlemmer</span><b className="t">{data.antallMedlemmer}</b><span className="s">{data.antallHjelpetrenere} assist coach</span></div>
       <div className="teller"><span className="e">Snitt-HCP</span><b className="t">{data.snittHcp}</b></div>
       <div className="teller"><span className="e">Runder · 90 d</span><b className="t">{data.totalRunder}</b></div>
-      <div className="teller"><span className="e">Samlinger</span><b className="t">{data.antallSamlinger}</b></div>
+      <div className="teller"><span className="e">Mot plan</span><b className="t">{data.etterlevelsePct == null ? "—" : `${data.etterlevelsePct} %`}</b><span className="s">siste fire uker</span></div>
     </div>
 
     <div className="to-del bred-v">

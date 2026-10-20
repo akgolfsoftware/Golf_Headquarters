@@ -11,7 +11,7 @@ export type OversiktPlanInn = {
   navn: string;
   status: "DRAFT" | "ACTIVE" | "ARCHIVED";
   startDato: Date;
-  positions: { tasks: { status: string; repsMaalDry: number; repsMaalLav: number; repsMaalFull: number; repsGjortDry: number; repsGjortLav: number; repsGjortFull: number; lastRepLoggedAt: Date | null }[] }[];
+  positions: { pNummer?: string; tasks: { status: string; repsMaalDry: number; repsMaalLav: number; repsMaalFull: number; repsGjortDry: number; repsGjortLav: number; repsGjortFull: number; lastRepLoggedAt: Date | null }[] }[];
 };
 
 export type OversiktRad = {
@@ -25,6 +25,8 @@ export type OversiktRad = {
   maal: number;
   sistRegistrert: string;
   antallPlaner: number;
+  /** Antall oppgaver (uten arkiverte) per posisjon P1.0–P10.0, i den rekkefølgen. */
+  perPosisjon: number[];
 };
 
 const STATUS = { ACTIVE: "Aktiv", DRAFT: "Utkast", ARCHIVED: "Arkivert" } as const;
@@ -34,6 +36,8 @@ export function velgPlan<T extends Pick<OversiktPlanInn, "status" | "startDato">
   const rang = { ACTIVE: 0, DRAFT: 1, ARCHIVED: 2 } as const;
   return [...planer].sort((a, b) => rang[a.status] - rang[b.status] || b.startDato.getTime() - a.startDato.getTime())[0] ?? null;
 }
+
+const P_NUMRE = ["P1.0", "P2.0", "P3.0", "P4.0", "P5.0", "P6.0", "P7.0", "P8.0", "P9.0", "P10.0"] as const;
 
 export function oversiktRad(spiller: { id: string; name: string | null }, planer: readonly OversiktPlanInn[]): OversiktRad {
   const p = velgPlan(planer);
@@ -50,5 +54,6 @@ export function oversiktRad(spiller: { id: string; name: string | null }, planer
     maal: oppgaver.reduce((s, t) => s + t.repsMaalDry + t.repsMaalLav + t.repsMaalFull, 0),
     sistRegistrert: dato(siste),
     antallPlaner: planer.length,
+    perPosisjon: P_NUMRE.map((n) => (p ? p.positions.filter((x) => x.pNummer === n).flatMap((x) => x.tasks).filter((t) => t.status !== "ARCHIVED").length : 0)),
   };
 }

@@ -1,6 +1,5 @@
 /**
- * PH-14 Tester i nytt design (pakke 6, godkjent av Anders 14.10.2026).
- * Fasit: docs/design-system/utkast-playerhq/stats-dybde.html, malen «tester».
+ * PH-14 Tester-oversikt: testbatteriet i designløftet 20.10.2026 (se PH14Tester.tsx).
  * Avvik:
  *   - Avvikene mot utkastet står øverst i PH14Tester.tsx.
  * Samme data som før: loadTesterScreen (spillerens testunivers, resultater og tildelinger).
@@ -10,7 +9,7 @@ import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getUnreadNotifications } from "@/app/portal/actions";
 import { loadTesterScreen } from "@/lib/portal-tester/tester-data";
-import { byggPH14 } from "@/lib/portal-tester/ph14-tester-data";
+import { byggBatteri } from "@/lib/portal-tester/ph14-batteri-data";
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { PH14Tester } from "@/components/portal/precision/PH14Tester";
 
@@ -29,7 +28,7 @@ export default async function TesterHubPage() {
 
   return (
     <PlayerHQSkall innboksHref="/portal/varsler" uleste={ulest.count}>
-      <PH14Tester data={byggPH14(screen.groups.flatMap((g) => g.rows), new Date())} />
+      <PH14Tester data={byggBatteri(screen.groups.flatMap((g) => g.rows))} />
     </PlayerHQSkall>
   );
 }

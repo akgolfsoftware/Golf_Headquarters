@@ -304,6 +304,7 @@ export function TnDokumentSkjema({ groupId, maksMb, kategorier }: { groupId: str
               type="file"
               accept=".pdf,.jpg,.jpeg,.png,.webp,.xlsx"
               aria-label="Velg fil"
+              data-sr=""
               disabled={pending}
               onChange={(e) => (setFil(e.target.files?.[0] ?? null), setFeil(null), setMelding(null))}
               style={{ position: "absolute", width: 1, height: 1, opacity: 0, pointerEvents: "none" }}
