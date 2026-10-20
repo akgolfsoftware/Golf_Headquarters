@@ -1,10 +1,18 @@
 /**
- * PH-16 Stats i nytt design (designbrevet 13.10.2026): fire deler på én flate, ett stort tall per del.
- * Fasit: docs/design-system/utkast-playerhq/stats.html. Stil: src/styles/playerhq-ny-statshub.css.
+ * PH-16 Stats-oversikt i designløftet 20.10.2026: faner øverst, tre nøkkeltall, snittscore til venstre og
+ * Strokes Gained, Trening og Tester til høyre. Fasit: Claude Design-canvaset «PlayerHQ nøkkelskjermer»
+ * (https://claude.ai/artifact/XdsbBEHwJhdrD4YJMMpdK1), «4 Stats · mobil 390» og «PC 1280».
+ * Stil: src/styles/playerhq-ny-statshub.css (§Designløft Stats). Dybden (PH-16 faner) er uendret.
  * «Per område» åpner dybden (PH16Stats med ?del=sg). «Alle runder» åpner Resultater, «Mot planen» Trening (PH-17)
  * og «Alle tester» Tester (PH-14), alle fra pakke 6 (stats-dybde.html).
  *
- * Avvik:
+ * Avvik (20.10):
+ *   - Tiger 5 per runde og «Snittscore over tid» med 20 runder og hover er ikke med: oversiktsdataene har ikke slag for
+ *     slag og bare de siste 10 rundene. Linja viser de siste rundene brutto med snittlinje.
+ *   - «Beste runde» og «Runder i år» er erstattet av «Siste runde» og «Runder i snittet»: sesongtall finnes ikke i oversikten.
+ *   - Sesongvelgeren er ikke med.
+ *
+ * Eldre avvik:
  *   - Periodevalget (Siste 5 runder · Siste 20 · Sesong) er ikke med: snittet regnes alltid av siste 10 runder.
  *   - Kategori og «snitt under X gir Kategori Y» leses fra A–K-tabellen i koden (src/lib/domain/ak-kategori.ts,
  *     Anders 22.06), samme som Spiller 360. Under 4 runder ingen kategori; 4–7 runder står «Foreløpig».
@@ -81,23 +89,33 @@ export function PH16StatsOversikt({ data, trening, tester: testData = null }: { 
   const andre = tatt.filter((r) => r.navn !== topp?.navn).slice(0, 3);
   const forer = (k: boolean | null) => (k == null ? null : k ? "Kontrollert" : "Egenført");
 
-  return <div className="phn phn-statshub"><div className="hub">
-    <div className="s-hode">
+  return <div className="phn phn-statshub phn-sh2"><div className="hub">
+    <nav className="sh-fane" aria-label="Stats">
+      <Link href="/portal/analysere" aria-current="page">Snittscore</Link>
+      <Link href="/portal/analysere?del=sg">Strokes Gained</Link>
+      <Link href="/portal/analysere?del=tren">Trening</Link>
+      <Link href="/portal/analysere?del=test">Tester</Link>
+    </nav>
+    <header className="s-hode sh-hode">
       <div><div className="phn-dato">Stats · siste {SNITT_TEKST(s.antallSnittRunder)}{band ? ` · Kategori ${band.kategori}` : ""}</div><h1 className="phn-tittel">Stats</h1></div>
-      {/* eslint-disable-next-line @next/next/no-img-element -- statisk bilde fra public, ingen tekst oppå */}
-      <img src="/images/playerhq/stats-topp.jpg" alt="" width={1600} height={1067} />
-    </div>
+      <dl className="sh-tall">
+        <div><dt>Snitt {s.antallSnittRunder} {s.antallSnittRunder === 1 ? "runde" : "runder"}</dt><dd><b>{s.snittBrutto != null ? formaterDesimal(s.snittBrutto, 1) : "—"}</b>{endring != null && endring !== 0 && <small className={endring > 0 ? "bedre" : ""}>{endring > 0 ? "↓" : "↑"} {formaterDesimal(Math.abs(endring), 1)} slag</small>}</dd></div>
+        <div><dt>Beste av de siste</dt><dd><b>{s.trend.length ? Math.min(...s.trend) : "—"}</b><small>Brutto</small></dd></div>
+        <div><dt>Runder i snittet</dt><dd><b>{s.antallSnittRunder}</b><small>Registrert</small></dd></div>
+      </dl>
+    </header>
 
-    <div className="deler">
-      <Del tittel="Snittscore" lenke="Alle runder" href="/portal/analysere/resultater">
+    <div className="deler sh-kol">
+      <div className="sh-venstre"><Del tittel="Snittscore" lenke="Alle runder" href="/portal/analysere/resultater">
         <div className="phn-hoved"><strong>{s.snittBrutto != null ? formaterDesimal(s.snittBrutto, 1) : "—"}</strong>
           {endring != null && endring !== 0 && <span className={`phn-trend ${endring > 0 ? "opp" : "ned"}`}><Ikon icon={endring > 0 ? TrendingUp : TrendingDown} size={16} name="trend" />{formaterDesimal(Math.abs(endring), 1)} {endring > 0 ? "bedre" : "dårligere"} enn de 10 før</span>}</div>
         <p className="phn-forklar">{s.antallSnittRunder < MIN_RUNDER_FOR_KONKLUSJON ? `Registrer minst ${MIN_RUNDER_FOR_KONKLUSJON} runder, så regnes snittet ut.` : `Snitt av siste ${s.antallSnittRunder} runder, brutto.`}{forelopig && <> <span className="forelopig">Foreløpig</span></>}</p>
         {band && <p className="phn-forklar"><b>Kategori {band.kategori}</b> · {band.niva}.{bedre && band.min != null ? ` Snitt under ${formaterDesimal(band.min, 0)} gir Kategori ${bedre.kategori}.` : ""}</p>}
         <Linje verdier={s.trend} />
         <p className="phn-kilde">Brutto · 18-hullsrunder · GolfBox og egne registreringer</p>
-      </Del>
+      </Del></div>
 
+      <aside className="sh-hoyre">
       <Del tittel="Strokes Gained" lenke="Per område" href="/portal/analysere?del=sg">
         <div className="phn-hoved"><strong>{total != null ? formaterSg(total) : "—"}</strong></div>
         <p className="phn-forklar">Slag per runde mot PGA Tour. <span className="estimat">Estimat</span></p>
@@ -136,6 +154,7 @@ export function PH16StatsOversikt({ data, trening, tester: testData = null }: { 
         </>}
         <p className="phn-kilde">Testbatteri AK Golf{testData ? ` · ${testData.tatt} av ${testData.totalt} tatt` : ""}{testData?.nesteTestdag ? ` · neste test ${testData.nesteTestdag.dato}` : ""}</p>
       </Del>
+      </aside>
     </div>
   </div></div>;
 }
