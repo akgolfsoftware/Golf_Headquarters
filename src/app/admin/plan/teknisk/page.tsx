@@ -26,6 +26,7 @@ export default async function AdminTekniskPlanPage() {
           id: true, navn: true, status: true, startDato: true,
           positions: {
             select: {
+              pNummer: true,
               tasks: {
                 select: {
                   status: true, repsMaalDry: true, repsMaalLav: true, repsMaalFull: true,

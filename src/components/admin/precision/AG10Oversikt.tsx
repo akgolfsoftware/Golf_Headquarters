@@ -1,59 +1,63 @@
 "use client";
 
 /**
- * Teknisk plan · oversikt (/admin/plan/teknisk) i Precision Athletics. Én rad
- * per spiller i stallen med spillerens tekniske plan (TechnicalPlan). Ingen
- * egen tegning: rute nevnt under AG-10 i Claude Design 7d7c2994
- * (overlevering/teknisk-plan-progresjon-2026-09-27.md), bygget av tegningens
- * tabell og tilstander. Plan-maler (PlanTemplate) hører til treningsplanen og
- * ligger under /admin/plan/maler.
+ * Teknisk plan · oversikt (/admin/plan/teknisk) i nytt design (bølge 2, 20.10.2026).
+ * Fasit: canvas «Teknisk plan · oversikt» (AG-10). Én rad per spiller i stallen med spillerens tekniske plan
+ * (TechnicalPlan): status, oppgaver per posisjon P1.0–P10.0, oppgaver, repetisjoner og sist registrert.
+ * Stil: src/styles/agencyos-ny-teknisk.css (.agn-s).
+ *
+ * Avvik: «Venter på deg» teller spillere med plan i utkast; planer venter ikke på noe annet i basen.
  */
 import Link from "next/link";
-import { ListChecks } from "lucide-react";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
-import { KnappLenke, StatusPille, TomTilstand } from "@/components/precision/pa";
-import { Tabell, type TabellKolonne } from "@/components/precision/pa-a4";
-import { Meta, Strek, brok } from "@/components/precision/teknisk-plan/tp-deler";
+import { KnappLenke, Pille, Seksjon, Tom, Topp, type PilleTone } from "@/components/admin/agencyos-ny/ny";
+import { brok } from "@/components/precision/teknisk-plan/tp-deler";
 import type { OversiktRad } from "@/lib/teknisk-plan/tp-oversikt";
-import "@/styles/precision-a4.css";
+import "@/styles/agencyos-ny-mer.css";
+import "@/styles/agencyos-ny-teknisk.css";
 
-const TONE = { Aktiv: "ok", Utkast: "neutral", Arkivert: "warn" } as const;
+const TONE: Record<NonNullable<OversiktRad["status"]>, PilleTone> = { Aktiv: "ok", Utkast: "vent", Arkivert: "noy" };
+const tall = (n: number) => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+
+function PosStrip({ ant }: { ant: number[] }) {
+  const maks = Math.max(1, ...ant);
+  return <span className="pos-strip" role="img" aria-label={`Oppgaver per posisjon P1.0 til P10.0: ${ant.join(", ")}`}>
+    {ant.map((a, i) => <i key={i} className={a ? "har" : ""} style={{ height: `${a ? 8 + Math.round((a / maks) * 18) : 6}px` }} />)}
+  </span>;
+}
 
 export function AG10Oversikt({ coachNavn, rader }: { coachNavn: string; rader: OversiktRad[] }) {
-  const medPlan = rader.filter((r) => r.planId).length;
-  const kolonner: TabellKolonne<OversiktRad>[] = [
-    {
-      key: "spiller", label: "Spiller", render: (r) => <span style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0 }}>
-        <Link href={r.planId ? `/admin/spillere/${r.id}/plan/${r.planId}` : `/admin/spillere/${r.id}/plan`} style={{ color: "var(--text-primary)", fontWeight: 600, display: "flex", alignItems: "center", minHeight: 44 }}>{r.navn}</Link>
-        <Meta>{r.planNavn ? r.planNavn.toUpperCase() : "INGEN TEKNISK PLAN"}{r.antallPlaner > 1 ? ` · ${r.antallPlaner} PLANER` : ""}</Meta>
-      </span>,
-    },
-    { key: "status", label: "Status", render: (r) => (r.status ? <StatusPille tone={TONE[r.status]}>{r.status}</StatusPille> : <Meta>—</Meta>) },
-    { key: "oppgaver", label: "Oppgaver", mono: true, align: "right", render: (r) => (r.planId ? String(r.oppgaver) : "—") },
-    {
-      key: "fremdrift", label: "Repetisjoner", render: (r) => r.maal > 0
-        ? <span style={{ display: "flex", flexDirection: "column", gap: 4, minWidth: 96 }}><span style={{ font: "500 13px/1.3 var(--font-mono)" }}>{brok(r.gjort, r.maal)}</span><Strek v={r.gjort} av={r.maal} tynn /></span>
-        : <Meta>{r.gjort > 0 ? `${r.gjort} · INGEN MÅL` : "—"}</Meta>,
-    },
-    { key: "sist", label: "Sist registrert", mono: true, render: (r) => r.sistRegistrert },
-  ];
+  const medPlan = rader.filter((r) => r.planId);
+  const utkast = medPlan.filter((r) => r.status === "Utkast").length;
+  const oppgaver = rader.reduce((s, r) => s + r.oppgaver, 0);
+  const gjort = rader.reduce((s, r) => s + r.gjort, 0);
   return <AgencyOSSkall navn={coachNavn}>
-    <div className="pa-side">
-      <header className="pa-pagehead">
-        <div className="pa-pagehead__row">
-          <div className="pa-pagehead__text">
-            <span className="kicker pa-pagehead__kicker">Plan · Teknisk plan</span>
-            <h1 className="pa-pagehead__title">Teknisk plan</h1>
-            <p className="pa-pagehead__sub">Oppgaver per posisjon P1.0–P10.0 for hver spiller i stallen. Åpne en spiller for å se og endre planen.</p>
-          </div>
-          <div className="pa-pagehead__actions"><KnappLenke variant="secondary" href="/admin/plan">Plan</KnappLenke></div>
-        </div>
-      </header>
+    <div className="agn-s">
+      <Topp dato="Plan · teknisk plan" tittel="Teknisk plan"
+        ingress="Oppgaver per posisjon P1.0–P10.0 for hver spiller i stallen. Åpne en spiller for å se og endre planen."
+        handlinger={<KnappLenke href="/admin/plan">Plan</KnappLenke>} />
       {rader.length === 0
-        ? <TomTilstand icon={ListChecks} title="Ingen spillere i stallen" text="Spillere du coacher, vises her med sin tekniske plan." />
+        ? <Tom tittel="Ingen spillere i stallen" tekst="Spillere du coacher, vises her med sin tekniske plan." />
         : <>
-          <Meta>{rader.length} {rader.length === 1 ? "SPILLER" : "SPILLERE"} · {medPlan} MED TEKNISK PLAN</Meta>
-          <Tabell columns={kolonner} rows={rader} />
+          <div className="teller-rad">
+            <div className="teller"><span className="e">Spillere med plan</span><b className="t">{medPlan.length} av {rader.length}</b><span className="s">{utkast > 0 ? `${utkast} utkast venter` : "ingen utkast venter"}</span></div>
+            <div className="teller"><span className="e">Oppgaver</span><b className="t">{tall(oppgaver)}</b><span className="s">i alle planer</span></div>
+            <div className="teller"><span className="e">Repetisjoner</span><b className="t">{tall(gjort)}</b><span className="s">alle kilder</span></div>
+            <div className="teller"><span className="e">Venter på deg</span><b className="t">{utkast}</b><span className="s">utkast å publisere</span></div>
+          </div>
+          <Seksjon tittel="Spillere" kilde={`${rader.length} ${rader.length === 1 ? "spiller" : "spillere"}`}>
+            <div className="tp-liste">
+              <div className="tp-rad tp-topp" aria-hidden><span>Spiller</span><span>Status</span><span>Oppgaver P1.0–P10.0</span><span>Oppgaver</span><span>Repetisjoner</span><span>Sist registrert</span></div>
+              {rader.map((r) => <Link key={r.id} className="tp-rad" href={r.planId ? `/admin/spillere/${r.id}/plan/${r.planId}` : `/admin/spillere/${r.id}/plan`}>
+                <span className="tp-navn"><b>{r.navn}</b><span className="kilde">{r.planNavn ?? "Ingen teknisk plan"}{r.antallPlaner > 1 ? ` · ${r.antallPlaner} planer` : ""}</span></span>
+                <span>{r.status ? <Pille tone={TONE[r.status]}>{r.status}</Pille> : <Pille tone="noy">Ingen plan</Pille>}</span>
+                <PosStrip ant={r.perPosisjon} />
+                <b className="num tp-tall">{r.planId ? r.oppgaver : "—"}</b>
+                <span className="num tp-tall">{r.maal > 0 ? brok(r.gjort, r.maal) : r.gjort > 0 ? `${r.gjort} · ingen mål` : "—"}</span>
+                <span className="num kilde">{r.sistRegistrert}</span>
+              </Link>)}
+            </div>
+          </Seksjon>
         </>}
     </div>
   </AgencyOSSkall>;
