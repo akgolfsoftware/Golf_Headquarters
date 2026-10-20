@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   type PH23BekreftResultat,
@@ -11,9 +11,9 @@ import {
   type PH23SlotDetalj,
   formatKr,
   beregnTjenestePris,
-  getSyntheticPH23Data,
   slotNokkel,
 } from "@/lib/portal-booking/ph23-booking-data";
+import { AVBESTILLING_FRIST_TIMER } from "@/lib/booking/policy";
 
 type PH23SlotData = Pick<PH23BookingData, "days" | "slots"> & { slotDetails?: PH23BookingData["slotDetails"] };
 
@@ -34,6 +34,9 @@ export type PH23BookingProps = {
 const STEPS = ["Tjeneste", "Tid", "Bekreft"];
 
 const TOM_SLOTDATA: PH23SlotData = { days: [], slots: {}, slotDetails: {} };
+const EMPTY_BOOKING: PH23BookingData = { rate: null, cancelHours: AVBESTILLING_FRIST_TIMER,
+  card: { pkg: "Ingen registrert pakke", total: 0, left: 0, valid: "—", resets: "—", covers: "" },
+  services: [], ...TOM_SLOTDATA, mine: [], past: [], playerEmail: "" };
 
 export function PH23Booking({
   initialData,
@@ -46,7 +49,9 @@ export function PH23Booking({
 }: PH23BookingProps) {
   const router = useRouter();
   const isTom = state === "tom";
-  const defaultData = initialData ?? getSyntheticPH23Data(isTom);
+  const defaultData = initialData ?? EMPTY_BOOKING;
+  const slotRequest = useRef(0);
+  const confirming = useRef(false);
 
   const [step, setStep] = useState(0);
   const [svcId, setSvcId] = useState<string | null>(defaultData.services[0]?.id ?? null);
@@ -97,19 +102,24 @@ export function PH23Booking({
     setSlot(null);
     setDayIndex(0);
     if (!onHentSlots || id === svcId) return;
+    const request = ++slotRequest.current;
     setHenterSlots(true);
+    setSlotData(TOM_SLOTDATA);
     try {
-      setSlotData(await onHentSlots(id));
+      const result = await onHentSlots(id);
+      if (request === slotRequest.current) setSlotData(result);
     } catch {
+      if (request !== slotRequest.current) return;
       setSlotData(TOM_SLOTDATA);
       showToast("Ledige tider kunne ikke hentes", "Prøv igjen senere.");
     } finally {
-      setHenterSlots(false);
+      if (request === slotRequest.current) setHenterSlots(false);
     }
   };
 
   const handleConfirm = async () => {
-    if (!selectedService || !slot || !valgtSlot || !onConfirmBooking) return;
+    if (!selectedService || !slot || !valgtSlot || !onConfirmBooking || confirming.current) return;
+    confirming.current = true;
     setIsConfirming(true);
     setConfirmError(null);
     const dayStr = slotData.days[dayIndex] ? slotData.days[dayIndex].join(" ") : "—";
@@ -147,6 +157,7 @@ export function PH23Booking({
       setConfirmError(err instanceof Error ? err.message : "Booking feilet. Prøv igjen.");
     } finally {
       setIsConfirming(false);
+      confirming.current = false;
     }
   };
 
@@ -202,9 +213,10 @@ export function PH23Booking({
     setIsCancelling(true);
 
     try {
-      await onCancelBooking(cxBooking.id);
+      const confirmed = await onCancelBooking(cxBooking.id);
+      if (!confirmed) { showToast("Avbestillingen ble ikke bekreftet", "Timen er fortsatt beholdt. Prøv igjen."); return; }
       setLokaleEndringer((prev) => ({ ...prev, [cxBooking.id]: { status: "Avbestilt" } }));
-      showToast("Timen er avbestilt", "Detaljer om klipp og refusjon kommer på e-post");
+      showToast("Timen er avbestilt", "Avbestillingen er bekreftet.");
       setCxBooking(null);
       router.refresh();
     } catch (err) {

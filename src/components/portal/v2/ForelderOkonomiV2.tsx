@@ -5,6 +5,7 @@
  */
 
 import { tierEtikett } from "@/lib/tier-etikett";
+import Link from "next/link";
 import { FoSkjerm, FoHode, FoKort, FoAvatar, FoFotnote, FoTom } from "@/components/forelder/fo-presisjon";
 
 export interface ForelderOkonomiBarn {
@@ -17,6 +18,7 @@ export interface ForelderOkonomiBarn {
   creditsRemaining: number;
   betaltIAarOre: number;
   utestaaendeOre: number;
+  appAbonnement?: { navn: string; status: string; periodeTil: string | null } | null;
 }
 
 export interface ForelderOkonomiData {
@@ -30,7 +32,7 @@ function belop(ore: number): string {
 }
 
 function tierTekst(b: ForelderOkonomiBarn): string {
-  const deler: string[] = [b.tier === "GRATIS" ? "Uten abonnement" : tierEtikett(b.tier)];
+  const deler: string[] = [b.tier === "GRATIS" ? "Uten coachingpakke" : tierEtikett(b.tier)];
   if (b.monthlyCredits > 0) deler.push(`${b.creditsRemaining} av ${b.monthlyCredits} timer igjen`);
   return deler.join(" · ");
 }
@@ -55,17 +57,20 @@ export function ForelderOkonomiV2({ data }: { data: ForelderOkonomiData }) {
               </div>
             </div>
             <div className="fo-skille">
-              {b.nesteTrekk && <p className="fo-linje"><span>Neste trekk</span><span>{b.nesteTrekk}</span></p>}
+              {b.nesteTrekk && <p className="fo-linje"><span>Coachingperiode til</span><span>{b.nesteTrekk}</span></p>}
+              {b.appAbonnement && <><p className="fo-linje"><span>App-abonnement</span><span>{b.appAbonnement.navn}</span></p>
+                <p className="fo-meta">{b.appAbonnement.status === "CANCELLED" ? "Oppsagt" : b.appAbonnement.status === "TRIALING" ? "Prøveperiode" : b.appAbonnement.status === "ACTIVE" ? "Aktivt" : "Avventer avklaring"}{b.appAbonnement.periodeTil ? ` · periode til ${b.appAbonnement.periodeTil}` : ""}</p></>}
               <p className="fo-linje"><span>Betalt i år</span><span>{belop(b.betaltIAarOre)}</span></p>
               <p className="fo-linje" data-tone={b.utestaaendeOre > 0 ? "signal" : undefined}>
-                <span>{b.utestaaendeOre > 0 ? "Forfalt" : "Utestående"}</span>
+                <span>Registrert utestående</span>
                 <span>{belop(b.utestaaendeOre)}</span>
               </p>
             </div>
+            <Link className="pa-btn pa-btn--secondary" href={`/forelder/fakturaer?barn=${encodeURIComponent(b.childId)}`}>Se betalinger</Link>
           </FoKort>
         ))
       )}
-      <FoFotnote>Abonnement endres av klubben. Ta kontakt med coachen hvis noe ser feil ut.</FoFotnote>
+      <FoFotnote>Tallene viser registrerte betalinger for valgt barn. Kontakt coachen hvis noe ser feil ut.</FoFotnote>
     </FoSkjerm>
   );
 }

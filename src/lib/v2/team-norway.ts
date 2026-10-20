@@ -1,27 +1,6 @@
-/**
- * AK Golf HQ · Team Norway — TS-speil av --tn-* (Claw batch 3, 01.09.2026).
- *
- * Verdiene bor som CSS-variabler i src/styles/team-norway-tokens.css. Denne
- * fila peker BARE på var(--tn-*) — ingen hex duplisert, fasiten har nøyaktig
- * ett sted å endres. Mønster: src/lib/v2/train-lock.ts (TL).
- *
- * FASIT: designsystem/team-norway/ (readme.md · tokens/ · templates/).
- * Claw-brandingen er designfasit for `/team-norway/*` ALENE — Train-lock og
- * TN er to parallelle systemer, en skjerm bruker aldri begge samtidig
- * (.claude/rules/beslutninger.md §TEAM NORWAY-SKJERMENE DESIGNES I CLAUDE-
- * BRANDINGEN). Unntak: Analyse/DataGolf under /team-norway/* er Train-lock
- * med TN-skinn — de importerer TL, ikke TN.
- *
- * REGLER SOM FØLGER MED TOKENENE:
- * - Merkevarerød (TN.red600) er identitet — logo, skinne, "denne utøveren"
- *   i data. ALDRI status. Status bruker TN.status.* (egen rød, #C2352B).
- * - TN.ink400 er lyseste gråtone som får bære tekst — TN.ink300 og lysere
- *   er kanter/linjer, gjelder også 9–11px etiketter.
- * - Mørk (TN.dark.*) er en ROLLE (hero/seksjonsskille/presentasjon), ikke
- *   et tema — ingen html[data-tn-tema]-bryter finnes eller skal innføres.
- * - Diagonalen (TN.clipDiagonalB/T, 56px) kun på hero/seksjonsskille, aldri
- *   kort eller kontroller.
- * - tabular-nums på alle tall. Aldri ease-in på grensesnitt.
+/** Precision D-47 (eksport 34, 3.1.0-l): organisasjonens egne ord, flater og geometri.
+ * Tall, fagakser, status, avstander og kontrolloppførsel følger felles kontrakt.
+ * CSS-variablene er eneste sted for eksakte fargeverdier.
  */
 
 export const TN = {

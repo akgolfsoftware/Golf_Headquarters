@@ -1,369 +1,156 @@
-/**
- * Kilde: ui_kits/playerhq/screens/PH-04.jsx, PH-05.jsx, PH-06.jsx, PH-07.jsx.
- * Server-loader for PH 04–07 Live-økt gjennomføring i Precision Athletics.
- *
- * Støtter:
- * - WorkbenchSession (dagens og fremtidige økter)
- * - TrainingPlanSession (eldre plan-økter)
- * - TrainingSessionV2
- * - Syntetisk fallback for demo, tomme tilstander og frakoblede tester
- */
-
+/** Live-lesere: ekte økt, tilgang og registreringer. Ingen demonstrasjonsreserve. */
+import "server-only";
 import { prisma } from "@/lib/prisma";
 import { AkFormelLeseSchema } from "@/lib/domain/workbench/schemas";
-import { executionSeconds, readSessionExecution } from "@/lib/workbench/wb-session-life";
+import { executionSeconds, jsonObject, readSessionExecution } from "@/lib/workbench/wb-session-life";
 import { planlagtMengde } from "./wb-ovelse-logg";
-import {
-  type LiveBriefData,
-  type LiveAktivData,
-  type SlagtellerData,
-  type OktoppsummeringData,
-  type DrillItem,
-  type TrackManShot,
-  DEFAULT_BAG_CLUBS,
-  formatTimerOgMinutter,
-} from "./ph04-07-data";
+import { parsePlannedReps } from "./data";
+import { wbScheduledAtISO } from "./wb-live-map";
+import { loadAuthorizedLiveSource, type LiveSource } from "./session-source";
+import { readPlanProgress, readPrecisionProgress, readLiveReflection } from "./session-progress";
+import { fysVisningsrader, lesFysRegistrering } from "./fys-registrering";
+import { type LiveBriefData, type LiveAktivData, type SlagtellerData, type OktoppsummeringData, type DrillItem, type AkseType, type FysDrillPlan, DEFAULT_BAG_CLUBS, formatTimerOgMinutter } from "./ph04-07-data";
 
-// FORELDRELØS ved Workbench-økt i gang (09.10.2026): loadWbLiveAktiv viser aldri
-// demoøvelser. Brukes fortsatt som reserve for de gamle økttypene; fjernes med dem.
-const DEFAULT_DRILLS: DrillItem[] = [
-  {
-    id: "drill-1",
-    code: "DR-01",
-    name: "Innspill 100–150 m · Lengdekontroll",
-    club: "PW",
-    param: "50 % trykk",
-    quantity: 30,
-    unit: "slag",
-    minutes: 25,
-    axis: "slag",
-    repsCompleted: 18,
-    hits: 15,
-  },
-  {
-    id: "drill-2",
-    code: "DR-02",
-    name: "Pitching 30–60 m · Landingssone",
-    club: "54",
-    param: "3 soner",
-    quantity: 25,
-    unit: "slag",
-    minutes: 20,
-    axis: "slag",
-    repsCompleted: 0,
-    hits: 0,
-  },
-  {
-    id: "drill-3",
-    code: "DR-03",
-    name: "Putterulling 3–6 m · Portøvelse",
-    club: "P",
-    param: "2 porter",
-    quantity: 20,
-    unit: "putter",
-    minutes: 15,
-    axis: "spill",
-    repsCompleted: 0,
-    hits: 0,
-  },
-  {
-    id: "drill-4",
-    code: "DR-04",
-    name: "Driver · Senterballhastighet",
-    club: "Dr",
-    param: "Tee 45 mm",
-    quantity: 15,
-    unit: "slag",
-    minutes: 15,
-    axis: "slag",
-    repsCompleted: 0,
-    hits: 0,
-  },
-];
-
-const DEFAULT_TRACKMAN: TrackManShot = {
-  carry: 114.2,
-  clubSpeed: 82.4,
-  ballSpeed: 108.6,
-  smashFactor: 1.32,
-  launchAngle: 18.4,
-  clubPath: 1.8,
-  timestamp: "14:41",
-  bay: "BAY 3",
-};
-
-/** Laster data for PH-04 Live brief */
-export async function loadPH04BriefData(
-  sessionId: string,
-  userId: string,
-  userTier = "FULL",
-  isCoach = false,
-): Promise<LiveBriefData> {
-  // Sjekk WorkbenchSession
-  const wb = await prisma.workbenchSession.findUnique({
-    where: { id: sessionId },
-    include: { drills: { orderBy: { sortOrder: "asc" } } },
-  });
-
-  if (wb) {
-    const drills: DrillItem[] = wb.drills.map((d, i) => ({
-      id: d.id,
-      code: `DR-${String(i + 1).padStart(2, "0")}`,
-      name: d.title,
-      club: "PW",
-      param: d.description || undefined,
-      quantity: d.repAntall || d.repReps || 20,
-      unit: "slag",
-      minutes: d.durationMinutes || 15,
-      axis: (wb.pyramid?.toLowerCase() as DrillItem["axis"]) || "slag",
-      repsCompleted: 0,
-    }));
-
-    const canStart =
-      !isCoach &&
-      wb.playerId === userId &&
-      userTier !== "GRATIS" &&
-      wb.status !== "COMPLETED";
-
-    return {
-      sessionId: wb.id,
-      title: wb.title || "Slagøkt · Range",
-      scheduledTime: `${wb.date} · ${Math.floor(wb.startMinute / 60)}:${String(wb.startMinute % 60).padStart(2, "0")}`,
-      location: wb.location || "RANGE 3",
-      totalMinutes: wb.durationMinutes || 75,
-      belastning: "moderat",
-      press: "middels",
-      goal: wb.notes || "Stabil ballbane og lengdekontroll med wedger.",
-      focus: "Senterballtreff og jevn svingbane.",
-      axis: (wb.pyramid?.toLowerCase() as DrillItem["axis"]) || "slag",
-      trackmanBay: "BAY 3",
-      drills: drills.length > 0 ? drills : DEFAULT_DRILLS,
-      canStart,
-      blockReason: wb.status === "COMPLETED" ? "completed" : isCoach ? "coach" : userTier === "GRATIS" ? "tier" : null,
-    };
-  }
-
-  // Sjekk TrainingPlanSession
-  const plan = await prisma.trainingPlanSession.findUnique({
-    where: { id: sessionId },
-    include: {
-      plan: { select: { userId: true, name: true } },
-      drills: { include: { exercise: true }, orderBy: { orderIndex: "asc" } },
-    },
-  });
-
-  if (plan) {
-    const drills: DrillItem[] = plan.drills.map((d, i) => ({
-      id: d.id,
-      code: `DR-${String(i + 1).padStart(2, "0")}`,
-      name: d.exercise.name,
-      club: "PW",
-      param: d.notes || undefined,
-      quantity: 20,
-      unit: "slag",
-      minutes: d.exercise.durationMin || 15,
-      axis: (plan.pyramidArea?.toLowerCase() as DrillItem["axis"]) || "slag",
-      repsCompleted: 0,
-    }));
-
-    const canStart =
-      !isCoach &&
-      plan.plan.userId === userId &&
-      userTier !== "GRATIS" &&
-      plan.status !== "COMPLETED";
-
-    return {
-      sessionId: plan.id,
-      title: plan.title || plan.plan.name || "Treningsøkt",
-      scheduledTime: `${plan.scheduledAt.toLocaleDateString("nb-NO", { weekday: "short", day: "numeric", month: "numeric" })} · ${plan.scheduledAt.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" })}`,
-      location: plan.location || "RANGE 3",
-      totalMinutes: plan.durationMin || 75,
-      belastning: "moderat",
-      press: "middels",
-      goal: plan.rationale || "Teknisk stabilitet og jevn rytme.",
-      focus: "Posisjon i baksving og timing.",
-      axis: (plan.pyramidArea?.toLowerCase() as DrillItem["axis"]) || "slag",
-      trackmanBay: "BAY 3",
-      drills: drills.length > 0 ? drills : DEFAULT_DRILLS,
-      canStart,
-      blockReason: plan.status === "COMPLETED" ? "completed" : isCoach ? "coach" : userTier === "GRATIS" ? "tier" : null,
-    };
-  }
-
-  // Syntetisk fallback
-  return {
-    sessionId,
-    title: "Slagøkt · Range og nærspill",
-    scheduledTime: "I dag · 14:30",
-    location: "RANGE 3",
-    totalMinutes: 75,
-    belastning: "moderat",
-    press: "middels",
-    goal: "Høyere ballhastighet og senterballtreff på wedger.",
-    focus: "Svingbane og kontaktflate.",
-    axis: "slag",
-    trackmanBay: "BAY 3",
-    drills: DEFAULT_DRILLS,
-    canStart: !isCoach && userTier !== "GRATIS",
-    blockReason: isCoach ? "coach" : userTier === "GRATIS" ? "tier" : null,
-  };
+function axis(value: string | null | undefined): AkseType {
+  const v = value?.toLowerCase();
+  return v === "fys" || v === "tek" || v === "slag" || v === "spill" || v === "turn" ? v : "tek";
 }
+const clock = (value: Date) => value.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Oslo" });
+const date = (value: Date) => value.toLocaleDateString("nb-NO", { weekday: "short", day: "numeric", month: "numeric", timeZone: "Europe/Oslo" });
+function finite(value: unknown): number | null { return typeof value === "number" && Number.isFinite(value) && value >= 0 ? value : null; }
+function snapshot(source: LiveSource) { return source.kind === "v2" ? source.row.completedSummary : source.row.liveSnapshot; }
 
-/** Laster data for PH-05 Live aktiv */
-export async function loadPH05ActiveData(
-  sessionId: string,
-  userId: string,
-): Promise<LiveAktivData> {
-  const brief = await loadPH04BriefData(sessionId, userId);
-  return {
-    sessionId,
-    title: brief.title,
-    totalMinutes: brief.totalMinutes,
-    // Ingen lagret starttid for disse økttypene: klokka starter på null.
-    initialSeconds: 0,
-    drills: brief.drills,
-    currentDrillIndex: 0,
-  };
-}
-
-/**
- * PH-05 for en WorkbenchSession som er i gang: ekte øvelser, lagrede reps,
- * kommentarer og videoer, og klokke fra økt-gjennomføringen. Ingen
- * demoøvelser. Kalleren har allerede sjekket at spilleren eier økta.
- */
-export async function loadWbLiveAktiv(sessionId: string): Promise<LiveAktivData | null> {
-  const wb = await prisma.workbenchSession.findUnique({
-    where: { id: sessionId },
-    select: {
-      id: true, title: true, pyramid: true, durationMinutes: true, liveSnapshot: true,
-      drills: { orderBy: { sortOrder: "asc" }, select: { id: true, title: true, description: true, durationMinutes: true, repAntall: true, repSett: true, repReps: true, akFormel: true } },
-      drillLogs: { select: { drillId: true, reps: true, kommentar: true } },
-    },
-  });
-  if (!wb) return null;
-  const videoer = await prisma.playerSwingVideo.groupBy({
-    by: ["drillId"],
-    where: { liveSessionId: sessionId, liveSessionKind: "workbench" },
-    _count: { _all: true },
-  });
-  const execution = readSessionExecution(wb.liveSnapshot);
-  const akse = (p: string | null): DrillItem["axis"] => {
-    const a = p?.toLowerCase();
-    return a === "fys" || a === "tek" || a === "slag" || a === "spill" || a === "turn" ? a : "slag";
-  };
-  return {
-    sessionId: wb.id,
-    title: wb.title,
-    totalMinutes: wb.durationMinutes,
-    initialSeconds: execution ? executionSeconds(execution) : 0,
-    pauset: execution?.phase === "PAUSED",
-    lagring: "workbench",
-    currentDrillIndex: 0,
-    drills: wb.drills.map((d, i) => {
-      const logg = wb.drillLogs.find((l) => l.drillId === d.id);
+async function view(source: LiveSource) {
+  const videos = await prisma.playerSwingVideo.groupBy({ by: ["drillId"], where: { userId: source.viewer.role === "PLAYER" ? source.viewer.id : source.ownerId,
+    liveSessionId: source.row.id, liveSessionKind: source.kind === "v2" ? "session-v2" : source.kind === "plan" ? "plan-session" : "workbench" }, _count: { _all: true } });
+  const rawProgress = jsonObject(snapshot(source));
+  const snapshotProgress = rawProgress?.precisionLive !== undefined ? readPrecisionProgress(rawProgress) : readPlanProgress(rawProgress?.drills);
+  const progress = source.kind === "plan" && source.row.status === "COMPLETED" && source.row.log?.drillAggregates != null
+    ? readPlanProgress(source.row.log.drillAggregates) : snapshotProgress;
+  let drills: DrillItem[];
+  let scheduled: Date;
+  let totalMinutes: number;
+  let area: AkseType;
+  let goal: string;
+  let focus: string;
+  if (source.kind === "workbench") {
+    const wb = source.row;
+    scheduled = new Date(wbScheduledAtISO(wb.date, wb.startMinute)); totalMinutes = wb.durationMinutes; area = axis(wb.pyramid);
+    goal = wb.maalsetning ?? wb.rationale ?? ""; focus = wb.notes ?? "";
+    drills = wb.drills.map((d) => {
+      const log = wb.drillLogs.find((l) => l.drillId === d.id);
       const formel = AkFormelLeseSchema.safeParse(d.akFormel);
-      return {
-        id: d.id,
-        code: `DR-${String(i + 1).padStart(2, "0")}`,
-        name: d.title,
-        club: "",
-        param: d.description ?? undefined,
-        quantity: planlagtMengde(d) ?? 0,
-        unit: "reps",
-        minutes: d.durationMinutes,
-        axis: akse(formel.success ? formel.data.pyramid : wb.pyramid),
-        repsCompleted: logg?.reps ?? 0,
-        kommentar: logg?.kommentar ?? undefined,
-        videoer: videoer.find((v) => v.drillId === d.id)?._count._all ?? 0,
-      };
-    }),
-  };
+      const saved = progress.find((p) => p.drillId === d.id);
+      const f = formel.success ? formel.data : null;
+      const fys: FysDrillPlan | undefined = f?.pyramid === "FYS" ? {
+        type: f.area === "STYRKE" ? "styrke" : f.area === "KONDISJON" ? "kondisjon" : f.area === "BEVEGELIGHET" ? "reps" : undefined,
+        sett: d.repSett ?? undefined, reps: d.repReps ?? f.detaljer?.mengde?.reps, vektKg: f.detaljer?.mengde?.vektKg,
+        minutter: d.repMinutter ?? undefined, segmenter: f.detaljer?.kondisjonssegmenter,
+      } : undefined;
+      return { id: d.id, code: "", name: d.title, club: "", param: d.description ?? undefined,
+        quantity: planlagtMengde(d) ?? 0, unit: d.repType === "TID" ? "min" : "reps", minutes: d.durationMinutes,
+        axis: axis(formel.success ? formel.data.pyramid : wb.pyramid), repsCompleted: log?.reps ?? saved?.reps ?? 0,
+        kommentar: log?.kommentar ?? saved?.kommentar ?? undefined, videoer: videos.find((v) => v.drillId === d.id)?._count._all ?? 0,
+        elapsedSec: saved?.elapsedSec, status: saved?.status, fys };
+    });
+  } else if (source.kind === "v2") {
+    const row = source.row;
+    const logs = await prisma.drillLogV2.findMany({ where: { drill: { sessionId: row.id }, loggedBy: source.viewer.role === "PLAYER" ? source.viewer.id : source.ownerId }, orderBy: { loggedAt: "desc" } });
+    scheduled = row.startTime; totalMinutes = Math.max(0, Math.round((row.endTime.getTime() - row.startTime.getTime()) / 60000));
+    area = axis(row.drills[0]?.pyramide); goal = row.maalsetning ?? ""; focus = row.notes ?? "";
+    drills = row.drills.map((d) => {
+      const log = logs.find((l) => l.drillId === d.id); const saved = progress.find((p) => p.drillId === d.id);
+      const quantity = d.repType === "TID" ? d.repMinutter ?? 0 : d.repAntall ?? (d.repSett != null && d.repReps != null ? d.repSett * d.repReps : d.repetitions ?? 0);
+      const fys: FysDrillPlan | undefined = d.pyramide === "FYS" ? {
+        type: d.fysBevegelighetType === "hold" ? "hold" : d.fysTreningstype === "kondisjon" || d.fysAktivitet || d.repType === "TID" ? "kondisjon"
+          : d.fysTreningstype === "bevegelighet" || d.fysBevegelighetType ? "reps" : d.fysTreningstype === "styrke" || d.fysSett != null || d.repSett != null ? "styrke" : undefined,
+        sett: d.fysSett ?? d.repSett ?? undefined, reps: d.fysReps ?? d.repReps ?? undefined, vektKg: d.fysVektKg ?? undefined,
+        minutter: d.fysVarighetMin ?? d.repMinutter ?? undefined, holdSek: d.fysHoldSek ?? undefined,
+        pulssone: d.fysIntensitetsSone != null ? `S${d.fysIntensitetsSone}` : undefined,
+      } : undefined;
+      return { id: d.id, code: "", name: d.name, club: "", param: d.description ?? undefined,
+        quantity, unit: d.repType === "TID" ? "min" : "reps", minutes: d.durationMinutes, axis: axis(d.pyramide),
+        repsCompleted: log?.repsTotal ?? saved?.reps ?? 0, hits: log?.repsHit, kommentar: log?.notes ?? saved?.kommentar ?? undefined,
+        elapsedSec: saved?.elapsedSec ?? d.actualDurationSec ?? undefined, status: saved?.status, videoer: videos.find((v) => v.drillId === d.id)?._count._all ?? 0, fys };
+    });
+  } else {
+    const row = source.row;
+    scheduled = row.scheduledAt; totalMinutes = row.durationMin; area = axis(row.pyramidArea); goal = row.maalsetning ?? ""; focus = row.rationale ?? "";
+    drills = row.drills.map((d) => {
+      const saved = progress.find((p) => p.drillId === d.id);
+      const fys: FysDrillPlan | undefined = (d.pyramidArea ?? row.pyramidArea) === "FYS" ? { type: d.repType === "TID" ? "kondisjon" : d.repSett != null ? "styrke" : undefined,
+        sett: d.repSett ?? undefined, reps: d.repReps ?? undefined, minutter: d.repMinutter ?? undefined } : undefined;
+      return { id: d.id, code: "", name: d.exercise.name, club: "", param: d.notes ?? undefined,
+        quantity: d.repType === "TID" ? d.repMinutter ?? 0 : d.repAntall ?? (d.repSett != null && d.repReps != null ? d.repSett * d.repReps : parsePlannedReps(d)),
+        unit: d.repType === "TID" ? "min" : "reps", minutes: d.repType === "TID" ? d.repMinutter ?? 0 : d.exercise.durationMin ?? 0,
+        axis: axis(d.pyramidArea ?? row.pyramidArea), repsCompleted: saved?.reps ?? 0, kommentar: saved?.kommentar,
+        elapsedSec: saved?.elapsedSec, status: saved?.status, videoer: videos.find((v) => v.drillId === d.id)?._count._all ?? 0, fys };
+    });
+  }
+  const ownPlayer = source.viewer.role === "PLAYER" && source.viewer.id === source.ownerId;
+  const blocked = source.row.status === "COMPLETED" ? "completed" : !ownPlayer ? "coach" : source.kind === "workbench" && source.row.needsPlayerApproval ? "approval" : null;
+  const brief: LiveBriefData = { sessionId: source.row.id, title: source.row.title, scheduledTime: `${date(scheduled)} · ${clock(scheduled)}`,
+    location: source.row.location ?? "", totalMinutes, belastning: null, press: null, goal, focus, axis: area, drills,
+    canStart: blocked === null && (source.kind === "workbench" ? ["PUBLISHED", "IN_PROGRESS"].includes(source.row.status) : ["PLANNED", "ACTIVE", "PAUSED", "IN_PROGRESS"].includes(source.row.status)), blockReason: blocked };
+  return { brief, scheduled, source };
 }
 
-/** Laster data for PH-06 Slagteller */
-export async function loadPH06TapperData(
-  sessionId: string,
-  userId: string,
-): Promise<SlagtellerData> {
-  const brief = await loadPH04BriefData(sessionId, userId);
-
-  // Hent bagen til spilleren
-  const bag = await prisma.equipmentBag.findUnique({
-    where: { userId },
-  });
-
-  const bagClubs = bag
-    ? [
-        bag.driver ? "Dr" : null,
-        bag.fairwayWoods ? "3W" : null,
-        bag.hybrids ? "3H" : null,
-        bag.irons ? "7I" : null,
-        bag.wedges ? "PW" : null,
-        bag.wedges ? "54" : null,
-        bag.wedges ? "58" : null,
-        bag.putter ? "P" : null,
-      ].filter((c): c is string => Boolean(c))
-    : [];
-
-  const activeClubs = bagClubs.length > 0 ? bagClubs : DEFAULT_BAG_CLUBS;
-  const activeDrill = brief.drills[0] || DEFAULT_DRILLS[0];
-
-  return {
-    sessionId,
-    title: brief.title,
-    activeDrill,
-    drillIndex: 0,
-    totalDrills: brief.drills.length,
-    bagClubs: activeClubs,
-    selectedClub: "PW",
-    totalShotsGoal: activeDrill.quantity || 30,
-    currentShots: 18,
-    trackmanShot: DEFAULT_TRACKMAN,
-    isPutterSelected: false,
-  };
+/** Parametrene fra gamle sider beholdes, men innloggingen er eneste identitetskilde. */
+export async function loadPH04BriefData(sessionId: string, _userId?: string, _userTier?: string, _isCoach?: boolean): Promise<LiveBriefData> {
+  return (await view(await loadAuthorizedLiveSource(sessionId))).brief;
 }
-
-/** Laster data for PH-07 Øktoppsummering */
-export async function loadPH07SummaryData(
-  sessionId: string,
-  userId: string,
-  playerName = "Anders",
-): Promise<OktoppsummeringData> {
-  const brief = await loadPH04BriefData(sessionId, userId);
-
-  // Les lagrede session_ball_logs
-  const ballLogs = await prisma.sessionBallLog.findMany({
-    where: { planSessionId: sessionId },
-    select: { count: true },
-  });
-  const totalRepsFromLogs = ballLogs.reduce((sum, b) => sum + (b.count || 0), 0);
-  const totalShots = totalRepsFromLogs > 0 ? totalRepsFromLogs : 112;
-
-  return {
-    sessionId,
-    title: brief.title,
-    playerName,
-    dateStr: "LØR 26.09",
-    timeRangeStr: "14:30–15:42",
-    totalShots,
-    actualMinutes: 72,
-    plannedMinutes: brief.totalMinutes || 75,
-    completedDrillsCount: brief.drills.length,
-    totalDrillsCount: brief.drills.length,
-    dagsform: "8 / 10",
-    axes: [
-      { axis: "fys", actualMin: 15, plannedMin: 15 },
-      { axis: "tek", actualMin: 20, plannedMin: 20 },
-      { axis: "slag", actualMin: 30, plannedMin: 25 },
-      { axis: "spill", actualMin: 15, plannedMin: 15 },
-      { axis: "turn", actualMin: 0, plannedMin: 0 },
-    ],
-    drillRows: brief.drills.map((d, _i) => ({
-      id: d.id,
-      name: d.name,
-      quantityText: `${d.quantity} ${d.unit}`,
-      timeText: formatTimerOgMinutter(d.minutes),
-      hitsText: `${d.hits ?? Math.round(d.quantity * 0.8)} / ${d.quantity}`,
-    })),
-  };
+export async function loadPH05ActiveData(sessionId: string, _userId?: string): Promise<LiveAktivData> {
+  const source = await loadAuthorizedLiveSource(sessionId);
+  const { brief } = await view(source);
+  const execution = readSessionExecution(snapshot(source));
+  const current = brief.drills.findIndex((d) => d.status === "active");
+  return { sessionId, title: brief.title, totalMinutes: brief.totalMinutes, initialSeconds: execution ? executionSeconds(execution) : finite(jsonObject(snapshot(source))?.totalSec) ?? 0,
+    drills: brief.drills, currentDrillIndex: current >= 0 ? current : Math.max(0, brief.drills.findIndex((d) => d.status !== "done")),
+    lagring: source.kind, eierUserId: source.viewer.id, pauset: execution?.phase === "PAUSED" || source.row.status === "PAUSED" };
+}
+export async function loadWbLiveAktiv(sessionId: string): Promise<LiveAktivData | null> {
+  return loadPH05ActiveData(sessionId);
+}
+export async function loadPH06TapperData(sessionId: string, _userId?: string): Promise<SlagtellerData> {
+  const source = await loadAuthorizedLiveSource(sessionId);
+  const { brief } = await view(source);
+  const counts = await prisma.sessionBallLog.findMany({ where: { planSessionId: sessionId }, select: { club: true, count: true } });
+  const activeDrill = brief.drills.find((d) => d.status === "active") ?? brief.drills[0] ?? null;
+  const selectedClub = DEFAULT_BAG_CLUBS[0];
+  return { sessionId, title: brief.title, activeDrill, drillIndex: activeDrill ? brief.drills.indexOf(activeDrill) : 0, totalDrills: brief.drills.length,
+    bagClubs: [...new Set([...DEFAULT_BAG_CLUBS, ...counts.map((c) => c.club)])], selectedClub, totalShotsGoal: activeDrill?.quantity ?? 0,
+    currentShots: counts.reduce((sum, c) => sum + c.count, 0), trackmanShot: null, isPutterSelected: selectedClub === "P", counts, countsByClub: Object.fromEntries(counts.map((c) => [c.club, c.count])), eierUserId: source.viewer.id };
+}
+export async function loadPH07SummaryData(sessionId: string, _userId?: string, _playerName?: string): Promise<OktoppsummeringData> {
+  const source = await loadAuthorizedLiveSource(sessionId);
+  const { brief, scheduled } = await view(source);
+  const [ballLogs, player] = await Promise.all([
+    prisma.sessionBallLog.findMany({ where: { planSessionId: sessionId }, select: { count: true } }),
+    prisma.user.findUnique({ where: { id: source.ownerId }, select: { name: true } }),
+  ]);
+  const raw = jsonObject(snapshot(source)); const liveSummary = jsonObject(raw?.liveSummary);
+  const execution = readSessionExecution(raw);
+  const measuredSeconds = execution && (typeof raw?.startedAtISO === "string" || execution.accumulatedSec > 0) ? executionSeconds(execution)
+    : source.kind === "v2" ? finite(liveSummary?.durationSec) : typeof raw?.startedAtISO === "string" ? finite(raw?.totalSec) : null;
+  const logDuration = source.kind === "plan" && source.row.log?.completedAt && source.row.log.completedAt > source.row.log.startedAt ? (source.row.log.completedAt.getTime() - source.row.log.startedAt.getTime()) / 60000 : null;
+  const actualMinutes = source.kind === "workbench" && source.row.actualMinutes != null ? source.row.actualMinutes : measuredSeconds != null ? Math.round(measuredSeconds / 60) : logDuration;
+  const loggedReps = brief.drills.filter((d) => d.axis !== "fys").reduce((sum, d) => sum + (d.repsCompleted ?? 0), 0);
+  const totalShots = ballLogs.length ? ballLogs.reduce((sum, b) => sum + b.count, 0) : finite(raw?.tapperTotalShots) ?? loggedReps;
+  const completedIds = Array.isArray(liveSummary?.completedDrillIds) ? liveSummary.completedDrillIds.filter((id): id is string => typeof id === "string") : [];
+  const reflection = readLiveReflection(raw, source.viewer.id === source.ownerId);
+  const start = typeof raw?.startedAtISO === "string" ? raw.startedAtISO : typeof liveSummary?.startedAt === "string" ? liveSummary.startedAt : null;
+  const end = typeof liveSummary?.completedAt === "string" ? liveSummary.completedAt : source.kind === "plan" ? source.row.log?.completedAt?.toISOString() : null;
+  return { sessionId, eierUserId: source.viewer.id, title: brief.title, playerName: player?.name?.split(" ")[0] ?? "Spiller", dateStr: date(scheduled),
+    timeRangeStr: start && end && Number.isFinite(Date.parse(start)) && Number.isFinite(Date.parse(end)) ? `${clock(new Date(start))}–${clock(new Date(end))}` : "Tidspunkt ikke registrert",
+    totalShots, actualMinutes, plannedMinutes: brief.totalMinutes, completedDrillsCount: brief.drills.filter((d) => d.status === "done" || completedIds.includes(d.id)).length,
+    totalDrillsCount: brief.drills.length, dagsform: "", axes: (["fys", "tek", "slag", "spill", "turn"] as const).map((a) => {
+      const matching = brief.drills.filter((d) => d.axis === a);
+      return { axis: a, actualMin: matching.length && matching.every((d) => d.elapsedSec != null) ? matching.reduce((sum, d) => sum + (d.elapsedSec ?? 0), 0) / 60 : null,
+        plannedMin: matching.reduce((sum, d) => sum + d.minutes, 0) };
+    }), drillRows: brief.drills.map((d) => {
+      const physical = d.axis === "fys" ? lesFysRegistrering(d.kommentar) : null;
+      return { id: d.id, name: d.name, quantityText: physical ? fysVisningsrader(physical).map((r) => r.verdi).join(" · ") : `${d.repsCompleted ?? 0} ${d.unit}`,
+        timeText: d.elapsedSec == null ? physical?.type === "kondisjon" ? formatTimerOgMinutter(physical.minutter) : "Ikke registrert" : formatTimerOgMinutter(d.elapsedSec / 60),
+        hitsText: d.axis === "fys" ? "Ikke aktuelt" : d.hits == null ? "Ikke registrert" : `${d.hits} / ${d.repsCompleted ?? 0}` };
+    }), ...reflection };
 }

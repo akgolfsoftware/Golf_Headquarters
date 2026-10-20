@@ -11,7 +11,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { loadPH07SummaryData } from "@/lib/portal-live/load-ph04-07";
 import { PH07Oktoppsummering } from "@/components/portal/precision/PH07Oktoppsummering";
-import { lagreDineOrd } from "@/app/portal/(fullscreen)/live/[sessionId]/actions";
+import { lagreLiveOppsummering } from "@/lib/portal-live/session-actions";
 
 export default async function LiveSummaryPage({
   params,
@@ -46,15 +46,9 @@ export default async function LiveSummaryPage({
   const fornavn = user.name?.split(" ")[0] || "spiller";
   const data = await loadPH07SummaryData(sessionId, user.id, fornavn);
 
-  async function handleSave(note: string, _shareWithCoach: boolean) {
+  async function handleSave(note: string, shareWithCoach: boolean) {
     "use server";
-    try {
-      if (note.trim().length > 0) {
-        await lagreDineOrd(sessionId, note);
-      }
-    } catch {
-      // Ignorer
-    }
+    return lagreLiveOppsummering(sessionId, { note, shareWithCoach });
   }
 
   return (

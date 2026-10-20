@@ -1,3 +1,4 @@
+import { publicEntrySourceWhere } from "@/lib/datagolf/public-sources";
 /**
  * /stats/wrapped/[slug] — Spotify Wrapped-stil golfsesong-rapport
  * Server-side rendering + Client Component for slide-navigasjon.
@@ -47,7 +48,7 @@ async function getPlayer(slug: string) {
 async function getEntries(playerId: string, aar: number) {
   try {
     const rader = await prisma.publicPlayerEntry.findMany({
-      where: {
+      where: { AND: [publicEntrySourceWhere(), {
         playerId,
         tournament: {
           startDate: {
@@ -55,7 +56,7 @@ async function getEntries(playerId: string, aar: number) {
             lt: new Date(`${aar + 1}-01-01`),
           },
         },
-      },
+      }] },
       include: { tournament: true },
       orderBy: { tournament: { startDate: "asc" } },
     });
@@ -189,7 +190,7 @@ export default async function WrappedPage({ params }: Props) {
     <main
       style={{
         minHeight: "100svh",
-        // Legacy brukte hsl(var(--foreground)) for et alltid-mørkt scenebakgrunn
+        // Legacy brukte var(--s-fg) for et alltid-mørkt scenebakgrunn
         // (i lys modus er --foreground nesten svart). I v2-scopet er --foreground
         // lys tekstfarge (riktig for Tailwind-utilities ellers på siden), så det
         // uttrykket ville gitt hvit bakgrunn her — bruk var(--bg) (alltid mørk i

@@ -28,12 +28,16 @@ const ikonStr = (size: Size) => (size === "sm" ? 16 : size === "xl" ? 22 : 18);
 
 type Felles = { variant?: Variant; size?: Size; fullWidth?: boolean; icon?: LucideIcon; iconName?: string; iconRight?: LucideIcon; children: ReactNode };
 
-export function Knapp({ variant = "primary", size = "md", fullWidth, icon, iconName, iconRight, children, loading, loadingText = "Lagrer …", ...rest }:
+export function Knapp({ variant = "primary", size = "md", fullWidth, icon, iconName, iconRight, children, loading, loadingText = "Lagrer …", disabled, className, type = "button", ...rest }:
   Felles & { loading?: boolean; loadingText?: string } & Omit<ComponentProps<"button">, "children">) {
-  return <button type="button" className={btnClass(variant, size, fullWidth, !loading && !!icon, !loading && !!iconRight)} disabled={rest.disabled || loading} aria-busy={loading || undefined} {...rest}>
-    {loading ? <span className="pa-btn__loading">{loadingText}</span> : <>
-      {icon && <Ikon icon={icon} name={iconName} size={ikonStr(size)} />}{children}{iconRight && <Ikon icon={iconRight} size={ikonStr(size)} />}
-    </>}
+  return <button {...rest} type={type} className={cx(btnClass(variant, size, fullWidth, !!icon, !!iconRight), className)} disabled={disabled || loading} aria-busy={loading || rest["aria-busy"]} data-loading={loading || undefined}>
+    {/* Begge tekster bestemmer bredden; bare den synlige er tilgjengelig navn. */}
+    <span className="pa-btn__labels">
+      <span className="pa-btn__content" aria-hidden={loading || undefined}>
+        {icon && <Ikon icon={icon} name={iconName} size={ikonStr(size)} />}{children}{iconRight && <Ikon icon={iconRight} size={ikonStr(size)} />}
+      </span>
+      {loading !== undefined && <span className="pa-btn__loading" aria-hidden={!loading}>{loadingText}</span>}
+    </span>
   </button>;
 }
 
@@ -52,7 +56,7 @@ export function StatusPille({ tone = "neutral", children }: { tone?: "neutral" |
 }
 
 export function Meta({ children, style }: { children: ReactNode; style?: React.CSSProperties }) {
-  return <span style={{ font: "var(--type-meta)", letterSpacing: ".04em", color: "var(--text-muted)", fontVariantNumeric: "tabular-nums", ...style }}>{children}</span>;
+  return <span style={{ font: "var(--type-source)", color: "var(--text-secondary)", fontVariantNumeric: "tabular-nums", ...style }}>{children}</span>;
 }
 export function Tall({ children, style }: { children: ReactNode; style?: React.CSSProperties }) {
   return <span style={{ font: "var(--type-num)", fontVariantNumeric: "tabular-nums", color: "var(--text-primary)", ...style }}>{children}</span>;

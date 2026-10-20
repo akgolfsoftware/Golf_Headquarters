@@ -1,3 +1,4 @@
+import { withoutDataGolfRoundSg } from '@/lib/datagolf/round-provenance';
 import { SG_DETALJFELT } from "@/lib/portal-runder/manuell-sg";
 // «Min golf»-loaderen — komponerer EKSISTERENDE datakilder til golfdata-
 // komponentenes props (masterplan bølge 1). Kun visning og aggregering av
@@ -134,15 +135,15 @@ export async function loadMinGolf(
   overstyrNivaa?: Nivaa,
 ): Promise<MinGolfData> {
   const [runder, innsikter, trackmanOkter, puttSlag, bruker] = await Promise.all([
-    prisma.round.findMany({
+    (prisma.round.findMany({
       where: { userId },
       orderBy: { playedAt: "desc" },
       take: 20,
-      include: {
+      include: {sgReferenceSet: {select:{source:true,sourceVersion:true}},
         course: { select: { par: true } },
         holeScores: { orderBy: { holeNumber: "asc" } },
       },
-    }),
+    })).then(rows => rows.map(withoutDataGolfRoundSg)),
     prisma.sgInsight.findMany({
       where: { userId, resolvedAt: null },
       orderBy: [{ severity: "desc" }, { createdAt: "desc" }],

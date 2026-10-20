@@ -14,10 +14,15 @@ import {
   type RecordingChunkMeta,
 } from "./recording-chunk-kladd";
 import { erGyldigEierId, filtrerEideRader } from "./eier-scope";
+import { z } from "zod";
 
 const DB_NAVN = "akgolf-recording-chunks";
-const DB_VERSJON = 2;
+const DB_VERSJON = 3;
 const BUTIKK = "chunks-v2";
+const META_BUTIKK = "recording-meta";
+const MetaSchema = z.object({ key: z.string(), eierId: z.string().min(1), recordingId: z.string().min(1),
+  expectedChunks: z.number().int().min(0).max(1441), durationSec: z.number().int().min(0).max(43200), mimeType: z.string().min(1) });
+export type RecordingDraftMeta = z.infer<typeof MetaSchema>;
 
 export type RecordingChunkRad = RecordingChunkMeta & {
   /** Base64 av chunk — Blob er ikke alltid stabilt på tvers av IDB-browsere. */
@@ -30,6 +35,7 @@ function apneDb(): Promise<IDBDatabase | null> {
   return new Promise((resolve) => {
     const req = indexedDB.open(DB_NAVN, DB_VERSJON);
     req.onupgradeneeded = () => {
+      if (!req.result.objectStoreNames.contains(META_BUTIKK)) req.result.createObjectStore(META_BUTIKK, { keyPath: "key" });
       if (!req.result.objectStoreNames.contains(BUTIKK)) {
         const store = req.result.createObjectStore(BUTIKK, { keyPath: "key" });
         store.createIndex("recordingId", "recordingId", { unique: false });
@@ -44,19 +50,42 @@ function apneDb(): Promise<IDBDatabase | null> {
 async function medButikk<T>(
   modus: IDBTransactionMode,
   gjor: (butikk: IDBObjectStore) => IDBRequest<T>,
+  butikknavn = BUTIKK,
 ): Promise<T | null> {
   const db = await apneDb();
   if (!db) return null;
   return new Promise((resolve) => {
     try {
-      const tx = db.transaction(BUTIKK, modus);
-      const req = gjor(tx.objectStore(BUTIKK));
-      req.onsuccess = () => resolve(req.result);
-      req.onerror = () => resolve(null);
+      const tx = db.transaction(butikknavn, modus);
+      const req = gjor(tx.objectStore(butikknavn)); let result: T | null = null;
+      req.onsuccess = () => { result = req.result; };
+      tx.oncomplete = () => { db.close(); resolve(result); };
+      tx.onabort = () => { db.close(); resolve(null); };
+      tx.onerror = () => { db.close(); resolve(null); };
     } catch {
       resolve(null);
     }
   });
+}
+
+export async function readRecordingDraftMeta(eierId: string, recordingId: string): Promise<RecordingDraftMeta | null> {
+  if (!erGyldigEierId(eierId)) return null;
+  const value = await medButikk("readonly", b => b.get(`${encodeURIComponent(eierId)}:${recordingId}`), META_BUTIKK);
+  const parsed = MetaSchema.safeParse(value);
+  return parsed.success && parsed.data.eierId === eierId && parsed.data.recordingId === recordingId ? parsed.data : null;
+}
+export async function saveRecordingDraftMeta(eierId: string, recordingId: string, input: { expectedChunks: number; durationSec: number; mimeType: string }): Promise<boolean> {
+  if (!erGyldigEierId(eierId)) return false;
+  const old = await readRecordingDraftMeta(eierId, recordingId);
+  const value = MetaSchema.parse({ key: `${encodeURIComponent(eierId)}:${recordingId}`, eierId, recordingId, ...input,
+    expectedChunks: Math.max(input.expectedChunks, old?.expectedChunks ?? 0), durationSec: Math.max(input.durationSec, old?.durationSec ?? 0) });
+  return (await medButikk("readwrite", b => b.put(value), META_BUTIKK)) !== null;
+}
+export async function verifiedPendingRecordingChunks(eierId: string, recordingId: string): Promise<number[]> {
+  if (!erGyldigEierId(eierId)) throw new Error("Mangler lokal eier.");
+  const rows = await medButikk<RecordingChunkRad[]>("readonly", b => b.getAll());
+  if (rows === null) throw new Error("Kunne ikke kontrollere lokale lydbiter.");
+  return filtrerEideRader(rows, eierId).filter(r => r.recordingId === recordingId).map(r => r.index);
 }
 
 function blobTilBase64(blob: Blob): Promise<string> {

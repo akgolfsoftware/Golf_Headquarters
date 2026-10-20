@@ -14,7 +14,8 @@
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { hentBarnForForelder } from "@/lib/forelder";
+import { velgGodkjentBarn } from "@/lib/forelder";
+import { ForelderBarnValg, ForelderBarnAvvist } from "@/components/forelder/ForelderBarnValg";
 import { prisma } from "@/lib/prisma";
 import { ForelderSkall } from "@/components/precision/ForelderSkall";
 import {
@@ -26,19 +27,14 @@ export const dynamic = "force-dynamic";
 
 const SUPPORT_EPOST = "support@akgolf.no";
 
-/* FO-04-fasitens datoformat: «22.08.2026». */
-const NB_DATO = new Intl.DateTimeFormat("nb-NO", {
-  timeZone: "Europe/Oslo",
-  day: "2-digit",
-  month: "2-digit",
-  year: "numeric",
-});
-
-export default async function ForelderCoachPage() {
+export default async function ForelderCoachPage({ searchParams }: { searchParams?: Promise<{ barn?: string }> } = {}) {
   const user = await requirePortalUser({ allow: ["PARENT"] });
-  const barn = await hentBarnForForelder(user.id);
+  const valgt = (await searchParams)?.barn;
+  const { alle: barn, fokus } = await velgGodkjentBarn(user.id, valgt);
+  const valgListe = barn.map((b) => ({ id: b.child.id, navn: b.child.name }));
+  if (valgt && !fokus) return <ForelderSkall><ForelderBarnAvvist barn={valgListe} /></ForelderSkall>;
 
-  if (barn.length === 0) {
+  if (!fokus) {
     const data: ForelderCoachData = {
       antallBarn: 0,
       parentName: user.name,
@@ -56,12 +52,12 @@ export default async function ForelderCoachPage() {
     );
   }
 
-  const childId = barn[0].child.id;
-  const childName = barn[0].child.name;
+  const childId = fokus.child.id;
+  const childName = fokus.child.name;
   const childFirstName = childName.split(" ")[0] ?? childName;
   const now = new Date();
 
-  const [nesteBookingRad, sisteBookingMedCoachRad, sisteMeldingRad] =
+  const [nesteBookingRad, sisteBookingMedCoachRad] =
     await Promise.all([
       // Neste kommende booking med tildelt coach.
       prisma.booking.findFirst({
@@ -89,13 +85,6 @@ export default async function ForelderCoachPage() {
           coach: { select: { name: true, avatarUrl: true, email: true } },
         },
       }),
-      // Siste faktiske melding coachen har sendt (samme kilde som
-      // coachNote i hentForelderUkerapport).
-      prisma.notification.findFirst({
-        where: { userId: childId, type: "melding" },
-        orderBy: { createdAt: "desc" },
-        select: { title: true, body: true, createdAt: true },
-      }),
     ]);
 
   const coach = nesteBookingRad?.coach ?? sisteBookingMedCoachRad?.coach ?? null;
@@ -107,18 +96,15 @@ export default async function ForelderCoachPage() {
     coachNavn: coach?.name ?? null,
     coachAvatarUrl: coach?.avatarUrl ?? null,
     coachEpost: coach?.email ?? null,
-    sisteMelding: sisteMeldingRad
-      ? {
-          title: sisteMeldingRad.title,
-          body: sisteMeldingRad.body,
-          dato: NB_DATO.format(sisteMeldingRad.createdAt),
-        }
-      : null,
+    // Barnets egne innboksvarsler er ikke en forelderdialog. Meldinger til
+    // forelder vises på /forelder/varsler med forelder som faktisk mottaker.
+    sisteMelding: null,
     supportEpost: SUPPORT_EPOST,
   };
 
   return (
-    <ForelderSkall>
+    <ForelderSkall barnId={fokus.child.id}>
+      <ForelderBarnValg barn={valgListe} valgt={fokus.child.id} />
       <ForelderCoachV2 data={data} />
     </ForelderSkall>
   );

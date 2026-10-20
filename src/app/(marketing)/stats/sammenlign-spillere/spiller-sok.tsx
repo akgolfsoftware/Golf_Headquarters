@@ -29,7 +29,7 @@ export function SpillerSok({ name, label, suggested, currentSlug }: SpillerSokPr
           fontSize: 10,
           letterSpacing: "0.18em",
           textTransform: "uppercase",
-          color: "hsl(var(--muted-foreground))",
+          color: "var(--s-muted-fg)",
           marginBottom: 14,
         }}
       >
@@ -48,8 +48,8 @@ export function SpillerSok({ name, label, suggested, currentSlug }: SpillerSokPr
           padding: "10px 14px",
           fontSize: 14,
           fontFamily: "var(--font-sans)",
-          background: "hsl(var(--background))",
-          color: "hsl(var(--foreground))",
+          background: "var(--s-bg)",
+          color: "var(--s-fg)",
           outline: "none",
           boxSizing: "border-box",
         }}
@@ -97,13 +97,13 @@ export function SpillerSok({ name, label, suggested, currentSlug }: SpillerSokPr
                 width: 30,
                 height: 30,
                 borderRadius: "50%",
-                background: "hsl(var(--secondary))",
+                background: "var(--s-secondary)",
                 display: "grid",
                 placeItems: "center",
                 fontFamily: "var(--font-mono)",
                 fontSize: 10,
                 fontWeight: 700,
-                color: "hsl(var(--primary))",
+                color: "var(--s-primary)",
                 flexShrink: 0,
               }}
             >
@@ -120,7 +120,7 @@ export function SpillerSok({ name, label, suggested, currentSlug }: SpillerSokPr
                   fontFamily: "var(--font-display)",
                   fontSize: 13,
                   fontWeight: 600,
-                  color: "hsl(var(--foreground))",
+                  color: "var(--s-fg)",
                 }}
               >
                 {s.name}
@@ -128,7 +128,7 @@ export function SpillerSok({ name, label, suggested, currentSlug }: SpillerSokPr
               <div
                 style={{
                   fontSize: 11,
-                  color: "hsl(var(--muted-foreground))",
+                  color: "var(--s-muted-fg)",
                   fontFamily: "var(--font-mono)",
                 }}
               >

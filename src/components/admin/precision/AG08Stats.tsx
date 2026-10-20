@@ -145,7 +145,9 @@ function Treningsfilter({ spillerId }: { spillerId: string }) {
   const [akser, setAkser] = useState<string[]>([]);
   const [miljo, setMiljo] = useState<MiljoGruppe[]>([]);
   const [hist, setHist] = useState<Historikk | null>(null);
+  const [histKey, setHistKey] = useState("");
   const [status, setStatus] = useState<"laster" | "klar" | "feil">("laster");
+  const queryKey = JSON.stringify([spillerId, periode, kilde, akser, miljo]);
 
   useEffect(() => {
     let aktiv = true;
@@ -154,23 +156,26 @@ function Treningsfilter({ spillerId }: { spillerId: string }) {
       periode,
       filtre: { kilde, pyramide: akser.length ? akser : undefined, miljoGrupper: miljo.length ? miljo : undefined },
     })
-      .then((r) => { if (!aktiv) return; setHist(r && "oppsummering" in r ? (r as Historikk) : null); setStatus("klar"); })
+      .then((r) => { if (!aktiv) return; setHist(r && "oppsummering" in r ? (r as Historikk) : null); setHistKey(queryKey); setStatus("klar"); })
       .catch(() => { if (aktiv) setStatus("feil"); });
     return () => { aktiv = false; };
-  }, [spillerId, periode, kilde, akser, miljo]);
+  }, [spillerId, periode, kilde, akser, miljo, queryKey]);
 
   const veksle = <T,>(liste: T[], v: T) => (liste.includes(v) ? liste.filter((x) => x !== v) : [...liste, v]);
-  const o = hist?.oppsummering;
+  const currentHist = histKey === queryKey ? hist : null;
+  const o = currentHist?.oppsummering;
   const maks = Math.max(1, ...(o?.perPyramide.map((p) => p.minutter) ?? [1]));
   return (
-    <Seksjon k="Treningshistorikk" meta={hist?.vinduLabel ? `${hist.vinduLabel}`.toUpperCase() : "—"} gap={12}>
+    <Seksjon k="Treningshistorikk" meta={currentHist?.vinduLabel ?? "Henter valgt grunnlag …"} gap={12}>
       <div className="a8-faner" role="group" aria-label="Periode">{PERIODE_VALG.map((p) => <Valg key={p} valgt={periode === p} onClick={() => setPeriode(p)}>{PERIODE_LABEL[p]}</Valg>)}</div>
+      <details className="a9-informasjon"><summary>Kilde, akse og miljø</summary>
       <div className="a8-faner" role="group" aria-label="Kilde">{([["ALLE", "Alt"], ["GOLF", "Golf"], ["FYS", "Fysisk"]] as const).map(([k, l]) => <Valg key={k} valgt={kilde === k} onClick={() => setKilde(k)}>{l}</Valg>)}</div>
       <div className="a8-faner" role="group" aria-label="Akse">{(["FYS", "TEK", "SLAG", "SPILL", "TURN"] as const).map((a) => <Valg key={a} valgt={akser.includes(a)} onClick={() => setAkser((l) => veksle(l, a))}>{a}</Valg>)}</div>
       <div className="a8-faner" role="group" aria-label="Miljø">{MILJO_GRUPPER.map((m) => <Valg key={m} valgt={miljo.includes(m)} onClick={() => setMiljo((l) => veksle(l, m))}>{MILJO_GRUPPE_LABEL[m]}</Valg>)}</div>
-      {hist?.ingenAktivPeriode && <Meta>INGEN AKTIV PERIODE I ÅRSPLANEN · VISER MÅNED</Meta>}
+      </details>
+      {currentHist?.ingenAktivPeriode && <Meta>INGEN AKTIV PERIODE I ÅRSPLANEN · VISER MÅNED</Meta>}
       {status === "feil" ? <Dempet>Treningshistorikken kunne ikke hentes. Prøv igjen.</Dempet>
-        : status === "laster" && !hist ? <Dempet>Henter trening …</Dempet>
+        : histKey !== queryKey || status === "laster" && !currentHist ? <Dempet>Henter valgt treningsgrunnlag …</Dempet>
         : !o || o.antallRader === 0 ? <Dempet>Ingen gjennomført trening med dette filteret.</Dempet>
         : <>
           <div className="a8-tall-rutenett">

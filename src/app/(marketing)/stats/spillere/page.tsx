@@ -1,3 +1,5 @@
+import { publicEntrySourceWhere } from "@/lib/datagolf/public-sources";
+import { publicTournamentSourceWhere } from "@/lib/datagolf/public-sources";
 /**
  * /stats/spillere — Norsk spillerdatabase (v2, retning C)
  * Swap av (mlegacy)/stats/spillere/page.tsx → v2-utseende. Data-lag
@@ -37,8 +39,8 @@ async function hentSideData(q: string | undefined, aar: string | undefined, tier
 
   const [totalSpillere, totalTurneringer, totalResultater] = await Promise.all([
     prisma.publicPlayer.count({ where: { country: "NO", isActive: true, ...offentligSpillerFilter() } }),
-    prisma.tournament.count({ where: { mergedIntoId: null } }),
-    prisma.publicPlayerEntry.count(),
+    prisma.tournament.count({ where: { ...publicTournamentSourceWhere(),  mergedIntoId: null } }),
+    prisma.publicPlayerEntry.count({ where: publicEntrySourceWhere() }),
   ]);
 
   const navnFilter = q && q.trim().length > 0 ? { name: { contains: q.trim(), mode: "insensitive" as const } } : {};

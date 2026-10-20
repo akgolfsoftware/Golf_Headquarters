@@ -61,7 +61,7 @@ const TABS = [
   { value: "virks", label: "Virksomhet" },
 ];
 
-const SUB = "Profil, team, tilgang, varsler og integrasjoner.";
+const SUB = "Kontroller din profil, hvem som har tilgang og hvilke tjenester som er koblet til.";
 
 function IkkeKoblet({ tittel, tekst, href, lenke }: { tittel: string; tekst: string; href?: string; lenke?: string }) {
   return (

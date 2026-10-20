@@ -36,9 +36,10 @@ test("bookinglisten beholder ny time, filter, venter og avlyst", () => {
   assert.ok(html.includes('href="/forelder/bookinger/ny"'));
   assert.ok(html.includes("Book ny time"));
   assert.ok(html.includes("Venter"));
-  assert.ok(html.includes("Avlyst av coach"));
-  assert.ok(html.includes(">Alle<"));
-  assert.ok(html.includes('aria-pressed="true"'));
+  assert.ok(html.includes("Avlyst"));
+  assert.ok(!html.includes("Avlyst av coach"));
+  assert.ok(html.includes('href="/forelder/bookinger/a"'));
+  assert.ok(!html.includes('aria-label="Filtrer på barn"'));
 });
 
 test("samtykkeflaten beholder lagring, sletting og eksport", () => {

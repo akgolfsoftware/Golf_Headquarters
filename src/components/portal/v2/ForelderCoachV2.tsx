@@ -52,7 +52,7 @@ export function ForelderCoachV2({ data }: { data: ForelderCoachData }) {
           <FoCtaSekundar onClick={() => setVisKontakt((v) => !v)}>{visKontakt ? epost : "Se kontaktinfo"}</FoCtaSekundar>
         </FoKort>
       )}
-      <FoFotnote>Dette er ikke en samtaletråd. Meldinger fra coachen vises her når de sendes; svar går på e-post eller telefon.</FoFotnote>
+      <FoFotnote>Kontaktinformasjonen følger barnets bookinger. Meldinger adressert til deg finner du under Varsler.</FoFotnote>
     </FoSkjerm>
   );
 }

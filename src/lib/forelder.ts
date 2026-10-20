@@ -1,3 +1,4 @@
+import { withoutDataGolfRoundSg } from '@/lib/datagolf/round-provenance';
 // Helpers for Foreldreportal — henter koblede barn for en innlogget forelder.
 
 import { hentEtterlevelse } from "@/lib/portal/etterlevelse-data";
@@ -120,7 +121,7 @@ export type KommendeBooking = {
   locationName: string;
   durationMin: number;
   coachName: string | null;
-  status: "BETALT" | "VENT";
+  status: "BEKREFTET" | "VENT";
 };
 
 export type ForelderFaktura = {
@@ -267,9 +268,9 @@ export async function hentForelderOversikt(
       orderBy: { createdAt: "desc" },
       take: 10,
     }),
-    // Siste aktivitet — barnets varsler.
+    // Aktivitet adressert til forelder med eksplisitt barnekontekst.
     prisma.notification.findMany({
-      where: { userId: childId },
+      where: { userId: parentUserId, link: `/forelder/barn/${childId}` },
       orderBy: { createdAt: "desc" },
       take: 6,
     }),
@@ -286,7 +287,7 @@ export async function hentForelderOversikt(
         locationName: nesteBookingRad.location.name,
         durationMin: nesteBookingRad.serviceType.durationMin,
         coachName: nesteBookingRad.coach?.name ?? null,
-        status: nesteBookingRad.status === "CONFIRMED" ? "BETALT" : "VENT",
+        status: nesteBookingRad.status === "CONFIRMED" ? "BEKREFTET" : "VENT",
       }
     : null;
 
@@ -317,7 +318,7 @@ export async function hentForelderOversikt(
       locationName: b.location.name,
       durationMin: b.serviceType.durationMin,
       coachName: b.coach?.name ?? null,
-      status: b.status === "CONFIRMED" ? "BETALT" : "VENT",
+      status: b.status === "CONFIRMED" ? "BEKREFTET" : "VENT",
     })),
     kommendeOkter: kommendeOkterRad.map((s) => ({
       id: s.id,
@@ -437,14 +438,15 @@ export async function hentForelderUkerapport(
       select: { startTime: true },
     }),
     // Runder siste 8 uker (for SG-trend + delta).
-    prisma.round.findMany({
+    (prisma.round.findMany({
       where: { userId: childId, playedAt: { gte: for8uker } },
-      select: { playedAt: true, sgTotal: true },
+      select: {source: true, sgSource: true, sgReferenceSet: {select:{source:true,sourceVersion:true}},  playedAt: true, sgTotal: true },
       orderBy: { playedAt: "asc" },
-    }),
-    // Siste coach-melding (varsel type «melding»).
+    })).then(rows => rows.map(withoutDataGolfRoundSg)),
+    // Bare en melding til den innloggede forelderen med eksplisitt
+    // barnekontekst. Barnets private spiller/coach-innboks deles ikke her.
     prisma.notification.findFirst({
-      where: { userId: childId, type: "melding" },
+      where: { userId: parentUserId, type: "melding", link: `/forelder/barn/${childId}` },
       orderBy: { createdAt: "desc" },
       select: { title: true, body: true },
     }),

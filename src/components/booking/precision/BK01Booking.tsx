@@ -10,7 +10,7 @@
  *   - Telefon er påkrevd, som før: bookingen trenger den for å varsle ved kollisjon.
  *   - «Neste uke» finnes ikke: `hentLedigeDager` henter sju dager fram.
  */
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { ArrowRight, CalendarX, CircleAlert, Lock, LogIn, RotateCw } from "lucide-react";
 import { hentLedigeDager, type LedigDag } from "@/app/(marketing)/booking/ledige-tider";
 import { createBookingCheckout } from "@/app/(marketing)/booking/[slug]/bekreft/actions";
@@ -19,10 +19,12 @@ import { Knapp } from "@/components/precision/pa";
 import { SegmentertValg } from "@/components/precision/pa-a2";
 import { Nokkelverdi, Skjemafelt } from "@/components/precision/pa-a4";
 import { InlineVarsel } from "@/components/precision/pa-a5";
+import { formaterTall } from "@/lib/format-tall";
 import "@/styles/precision-athletics.css";
 import "@/styles/precision-komponenter.css";
 import "@/styles/precision-a4.css";
 import "@/styles/precision-bk.css";
+import "@/styles/precision-support-upgrade.css";
 
 export type BookingTjeneste = {
   slug: string;
@@ -47,7 +49,7 @@ const STEG = ["Tjeneste", "Tid", "Deg", "Bekreft og betal"] as const;
 const TITTEL = ["Velg tjeneste", "Velg tid", "Om deg", "Bekreft og betal"] as const;
 
 /** Samme tallformat som tegningen: mellomrom som tusenskille. */
-const kr = (v: number) => `${Math.round(v).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} kr`;
+const kr = (v: number) => `${formaterTall(v, 2)} kr`;
 /** «Privattime» + 60 gir «Privattime 60 min». Navn som allerede bærer minuttene beholdes. */
 const tittel = (t: BookingTjeneste) => (/\bmin\b/i.test(t.navn) ? t.navn : `${t.navn} ${t.varighetMin} min`);
 const okMail = (v: string) => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v);
@@ -86,6 +88,7 @@ export function BK01Booking({ tjenester, abonnement, lokasjon, forhandsvis: f }:
   const [feil, setFeil] = useState<Record<string, string>>(f?.feil ?? {});
   const [sender, setSender] = useState(false);
   const [betalfeil, setBetalfeil] = useState<string | null>(null);
+  const senderVakt = useRef(false);
 
   const tj = useMemo(() => tjenester.find((t) => t.slug === slug) ?? null, [tjenester, slug]);
   const valgtDag = useMemo(() => dager.find((d) => d.dd === dag) ?? null, [dager, dag]);
@@ -100,15 +103,16 @@ export function BK01Booking({ tjenester, abonnement, lokasjon, forhandsvis: f }:
   const velg = (s: string) => { setSlug(s); setDag(null); setKl(null); setFeil({}); };
 
   const send = async () => {
-    if (!tj || !tid) return;
+    if (sender || senderVakt.current || !tj || !tid) return;
+    senderVakt.current = true;
     setSender(true); setBetalfeil(null);
-    const res = await createBookingCheckout({
-      slug: tj.slug, start: tid.startIso, coachId: tid.coachId,
-      name: meg.navn.trim(), email: meg.epost.trim(), phone: meg.tlf.trim(),
-      notes: meg.barn ? `Booker for barn: ${meg.spiller.trim()}` : "",
-    });
-    if (res.ok) { window.location.href = res.url; return; }
-    setSender(false); setBetalfeil(res.error);
+    try {
+      const res = await createBookingCheckout({ slug: tj.slug, start: tid.startIso, coachId: tid.coachId,
+        name: meg.navn.trim(), email: meg.epost.trim(), phone: meg.tlf.trim(), notes: meg.barn ? `Booker for barn: ${meg.spiller.trim()}` : "" });
+      if (res.ok) { window.location.href = res.url; return; }
+      setBetalfeil(res.error);
+    } catch { setBetalfeil("Betalingen kunne ikke åpnes. Kontroller nettet og prøv igjen. Ingen booking er bekreftet her."); }
+    finally { senderVakt.current = false; setSender(false); }
   };
 
   const neste = async () => {

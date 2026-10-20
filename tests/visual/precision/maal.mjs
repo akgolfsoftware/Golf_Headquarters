@@ -37,8 +37,8 @@ const SERVER_ONLY = /^(server-only|@\/lib\/prisma|@\/lib\/auth\/.*|next\/headers
 const stubbePlugin = {
   name: "prove-grenser",
   setup(b) {
-    b.onResolve({ filter: SERVER_ONLY }, ({ path }) => ({ path, namespace: "stub-tom" }));
-    b.onLoad({ filter: /.*/, namespace: "stub-tom" }, () => ({ loader: "js", contents: "export const prisma=new Proxy({},{get(){throw new Error('Ingen database i prøven')}});export default {};export const cookies=()=>({get(){}});export const headers=()=>new Map();export const revalidatePath=()=>{};export const revalidateTag=()=>{};" }));
+    b.onResolve({ filter: SERVER_ONLY }, ({ path }) => path === "@/lib/auth/minor" ? undefined : ({ path, namespace: "stub-tom" }));
+    b.onLoad({ filter: /.*/, namespace: "stub-tom" }, () => ({ loader: "js", contents: "export const prisma=new Proxy({},{get(){throw new Error('Ingen database i prøven')}});export default {};export const cookies=()=>({get(){}});export const headers=()=>new Map();export const revalidatePath=()=>{};export const revalidateTag=()=>{};export async function logout(){throw new Error('Ingen ekte innlogging i prøven')}" }));
     b.onResolve({ filter: /^next\/(link|navigation|image|dynamic)$/ }, ({ path }) => ({ path, namespace: "next-stub" }));
     b.onLoad({ filter: /.*/, namespace: "next-stub" }, ({ path }) => ({
       resolveDir: root, loader: "js",
@@ -66,12 +66,12 @@ const t = new URLSearchParams(location.search).get("t");
 window.__PROVE_PATH__ = P.sti ?? "/";
 const natt = (P.natt ?? []).includes(t);
 document.documentElement.dataset.theme = natt ? "night" : "light";
-createRoot(document.getElementById("root")).render(P.tilstander[t]);
+createRoot(document.getElementById("root")).render(P.tilstander[t] ?? (t ? null : Object.values(P.tilstander)[0]));
 window.__TILSTANDER__ = Object.keys(P.tilstander);`;
 
 await build({
   stdin: { contents: tsx, loader: "tsx", resolveDir: root, sourcefile: "inngang.tsx" }, outfile: resolve(out, "prove.js"), bundle: true, format: "iife",
-  jsx: "automatic", loader: { ".css": "empty", ".svg": "dataurl", ".png": "dataurl" },
+  jsx: "automatic", loader: { ".css": "css", ".svg": "dataurl", ".png": "dataurl" },
   tsconfig: resolve(root, "tsconfig.json"), define: { "process.env.NODE_ENV": '"development"' },
   plugins: [stubbePlugin], logLevel: "error",
 });
@@ -81,14 +81,16 @@ await build({
 // bolkene legger i src/styles/ ved siden av sin egen visning.
 import { readdirSync } from "node:fs";
 const bolkCss = readdirSync(resolve(root, "src/styles")).filter((f) => /^precision-(a\d+|tp|iup|bk)\.css$/.test(f)).sort();
-const css = ["precision-komponenter.css", "precision-athletics.css", ...bolkCss].map((f) => readFileSync(resolve(root, "src/styles", f), "utf8")).join("\n");
+const globalCss = process.env.PRECISION_GLOBAL_CSS ? readFileSync(process.env.PRECISION_GLOBAL_CSS, "utf8") : "";
+const css = globalCss + "\n" + ["precision-komponenter.css", "precision-athletics.css", ...bolkCss].map((f) => readFileSync(resolve(root, "src/styles", f), "utf8")).join("\n");
 const html = (t) => `<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=block" rel="stylesheet">
-<style>:root{--font-ibm-plex-sans:"IBM Plex Sans";--font-ibm-plex-mono:"IBM Plex Mono"}\n${css}\nhtml,body{margin:0}</style><title>${id} · ${t}</title></head><body><div id="root"></div><script src="/prove.js"></script></body></html>`;
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Jost:wght@300;400;500;600&family=Lato:wght@300;400;700&family=Montserrat:wght@300;500;600;700;800&family=Quattrocento+Sans:wght@400;700&display=block" rel="stylesheet">
+<style>:root{--font-ibm-plex-sans:"IBM Plex Sans";--font-ibm-plex-mono:"IBM Plex Mono";--font-jost:"Jost";--font-lato:"Lato";--font-wang-brand:"Montserrat";--font-wang-body:"Quattrocento Sans"}\n${css}\nhtml,body{margin:0}</style><link rel="stylesheet" href="/prove.css"><title>${id} · ${t}</title></head><body><div id="root"></div><script src="/prove.js"></script></body></html>`;
 const TYPER = { ".svg": "image/svg+xml", ".png": "image/png", ".jpg": "image/jpeg", ".webp": "image/webp", ".ico": "image/x-icon" };
 const server = createServer((req, res) => {
   const u = new URL(req.url, "http://127.0.0.1");
   if (u.pathname === "/prove.js") { res.setHeader("Content-Type", "text/javascript"); res.end(readFileSync(resolve(out, "prove.js"))); return; }
+  if (u.pathname === "/prove.css") { res.setHeader("Content-Type", "text/css"); res.end(existsSync(resolve(out, "prove.css")) ? readFileSync(resolve(out, "prove.css")) : ""); return; }
   if (u.pathname === "/") { res.setHeader("Content-Type", "text/html; charset=utf-8"); res.end(html(u.searchParams.get("t"))); return; }
   const fil = resolve(root, "public", "." + u.pathname);
   if (fil.startsWith(resolve(root, "public")) && existsSync(fil)) { res.setHeader("Content-Type", TYPER[extname(fil)] ?? "application/octet-stream"); res.end(readFileSync(fil)); return; }
@@ -97,7 +99,13 @@ const server = createServer((req, res) => {
 await new Promise((r) => server.listen(0, "127.0.0.1", r));
 const origin = `http://127.0.0.1:${server.address().port}`;
 
-const browser = await chromium.launch();
+if (process.argv.includes("--serve")) {
+  console.log(`Syntetisk skjermkontroll ${id}: ${origin}`);
+  console.log("Ingen innlogging, persondata eller databasekall. Avslutt med Ctrl+C.");
+  await new Promise(() => {});
+}
+
+const browser = await chromium.launch({ executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || undefined });
 const resultat = [];
 try {
   const forste = await browser.newPage();
@@ -125,12 +133,21 @@ try {
           if (r.right > vw + 0.5 || r.left < -0.5) {
             // Innhold inni en beholder som selv klipper, teller ikke.
             let p = el.parentElement, klippet = false;
-            while (p && p !== document.body) { const o = getComputedStyle(p).overflowX; if (o === "hidden" || o === "clip") { const pr = p.getBoundingClientRect(); if (pr.right <= vw + 0.5 && pr.left >= -0.5) { klippet = true; break; } } p = p.parentElement; }
+            while (p && p !== document.body) {
+              const o = getComputedStyle(p).overflowX;
+              if (["hidden", "clip", "auto", "scroll"].includes(o)) {
+                const pr = p.getBoundingClientRect();
+                if (pr.right <= vw + 0.5 && pr.left >= -0.5) { klippet = true; break; }
+              }
+              p = p.parentElement;
+            }
             if (!klippet && el.closest(".pa-sr") == null) utenfor.push(`${el.tagName.toLowerCase()}.${String(el.className).slice(0, 40)} (${Math.round(r.left)}–${Math.round(r.right)})`);
           }
           if (el.matches("a[href],button,[role=button],input,select,textarea,[role=tab]") && el.closest(".pa-sr") == null && (r.height < min || r.width < min)) {
             // Tekstlenker inne i løpende tekst er unntatt; alt annet skal ha 44 px.
-            if (!(el.tagName === "A" && cs.display === "inline")) smaa.push(`${el.tagName.toLowerCase()} «${(el.getAttribute("aria-label") || el.textContent || "").trim().slice(0, 30)}» ${Math.round(r.width)}×${Math.round(r.height)}`);
+            const labelTarget = el instanceof HTMLInputElement && ["checkbox", "radio"].includes(el.type)
+              && Array.from(el.labels ?? []).some((label) => { const box = label.getBoundingClientRect(); return box.width >= min && box.height >= min; });
+            if (!(el.tagName === "A" && cs.display === "inline") && !labelTarget) smaa.push(`${el.tagName.toLowerCase()} «${(el.getAttribute("aria-label") || el.textContent || "").trim().slice(0, 30)}» ${Math.round(r.width)}×${Math.round(r.height)}`);
           }
         }
         return { scrollWidth: d.scrollWidth, clientWidth: vw, utenfor: utenfor.slice(0, 10), smaa: smaa.slice(0, 10), tekst: document.body.innerText.length };

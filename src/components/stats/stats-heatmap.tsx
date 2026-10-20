@@ -20,7 +20,7 @@ function getHeatColor(value: number): string {
 }
 
 function getTextColor(value: number): string {
-  return value >= 50 ? "hsl(var(--background))" : "var(--foreground)";
+  return value >= 50 ? "var(--s-card)" : "var(--s-fg)";
 }
 
 export function StatsHeatmap({ rows, cols, data }: StatsHeatmapProps) {

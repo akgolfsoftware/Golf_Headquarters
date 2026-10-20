@@ -16,7 +16,7 @@
 .overlinje {
   margin: 0;
   font-family: var(--tn-font-display);
-  font-size: 10px;
+  font-size: .8125rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--tn-text-secondary);
@@ -51,8 +51,8 @@
   border-radius: var(--tn-radius-sm);
   background: var(--tn-white);
   color: var(--tn-navy-900);
-  font-family: var(--tn-font-body);
-  font-size: 14px;
+  font-family: var(--tn-font-display);
+  font-size: .875rem;
   font-weight: var(--tn-weight-bold);
   text-decoration: none;
   cursor: pointer;
@@ -108,7 +108,7 @@
   text-transform: uppercase;
   color: var(--tn-navy-900);
 }
-.seksjonAntall { font-family: var(--tn-font-mono); font-size: 12px; color: var(--tn-text-secondary); }
+.seksjonAntall { font-family: var(--tn-font-mono); font-size: .875rem; color: var(--tn-text-secondary); }
 .seksjonForklaring { margin: 0; font-size: 14px; line-height: 1.6; color: var(--tn-text-secondary); }
 
 .tabell { width: 100%; border-collapse: collapse; font-size: 14px; }
@@ -121,7 +121,7 @@
 }
 .tabell th {
   font-family: var(--tn-font-mono);
-  font-size: 11px;
+  font-size: .8125rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--tn-text-secondary);
@@ -176,7 +176,7 @@
 .kilde {
   margin: 0;
   font-family: var(--tn-font-mono);
-  font-size: 11px;
+  font-size: .8125rem;
   line-height: 1.7;
   letter-spacing: 0.04em;
   color: var(--tn-text-secondary);
@@ -193,7 +193,7 @@
     content: attr(data-etikett);
     flex: 0 0 42%;
     font-family: var(--tn-font-mono);
-    font-size: 11px;
+    font-size: .8125rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--tn-text-secondary);

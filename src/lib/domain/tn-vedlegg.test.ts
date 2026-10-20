@@ -15,7 +15,11 @@ mock.module("@/lib/prisma", { namedExports: { prisma: {
     id: where.id, path: "privat-lagringssti", fileName: "treningsplan.pdf", fileType: "application/pdf", fileSize: 100,
     post: { id: "post-1", groupId: mottaker ? null : "gruppe-tn", mottakerUserId: mottaker },
   } : null },
-  group: { findUnique: async () => ({ slug, id: "gruppe-tn" }) },
+  group: { findUnique: async () => ({ slug, id: "gruppe-tn" }),
+    findFirst: async ({ where }: { where: { id: string; arkivertAt: null } }) => {
+      assert.equal(where.id, "gruppe-tn"); assert.equal(where.arkivertAt, null);
+      return slug === "team-norway" ? { id: "gruppe-tn" } : null;
+    } },
   groupMember: {
     // To ulike kallformer skilles på where-formen: hentViewerRolleIGruppe
     // spør etter { groupId, userId, endedAt: null } uten nestet `group`,

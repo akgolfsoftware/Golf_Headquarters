@@ -28,7 +28,7 @@ export function useMobile(): boolean {
 export function BookingRamme({ children, waveId }: { children: ReactNode; waveId: string }) {
   return (
     <div
-      className="bkp"
+      className="pa-root support-booking bkp"
       data-paper-wave-i={waveId}
       style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}
     >

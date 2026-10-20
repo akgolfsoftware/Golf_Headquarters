@@ -14,7 +14,7 @@ import { toast } from "sonner";
 import { tomKo, listTapperKo } from "@/lib/offline-queue/tapper-queue";
 import { synkLiveDrillKo, listLiveDrillKo } from "@/lib/offline-queue/live-drill-queue";
 import { saveTapperCounts } from "@/app/portal/(fullscreen)/live/[sessionId]/tapper/actions";
-import { logDrillReps } from "@/app/portal/(fullscreen)/live/[sessionId]/actions";
+import { lagreLiveDrillSnapshot } from "@/lib/portal-live/session-actions";
 
 async function flushAll(eierId: string): Promise<{ remaining: number; synced: number }> {
   if (typeof navigator !== "undefined" && !navigator.onLine) {
@@ -36,23 +36,7 @@ async function flushAll(eierId: string): Promise<{ remaining: number; synced: nu
   const drills = await listLiveDrillKo(eierId).catch(() => []);
   for (const rad of drills) {
     try {
-      const status = await synkLiveDrillKo(eierId, rad.sessionId, async (sessionId, items) => {
-        for (const d of items) {
-          const r = await logDrillReps({
-            sessionId,
-            drillId: d.drillId,
-            repsTotal: d.repsTotal,
-            repsWithoutBall: d.repsWithoutBall,
-            repsLowSpeed: d.repsLowSpeed,
-            repsAutomatic: d.repsAutomatic,
-            repsHit: d.repsHit,
-            notes: d.notes,
-            actualDurationSec: d.actualDurationSec,
-          }).catch(() => ({ ok: false as const }));
-          if (!r.ok) return { ok: false as const };
-        }
-        return { ok: true as const };
-      });
+      const status = await synkLiveDrillKo(eierId, rad.sessionId, (sessionId, items, snapshot) => lagreLiveDrillSnapshot(sessionId, items, snapshot.totalSec, snapshot.paused));
       if (status === "synket") synced += 1;
     } catch {
       /* keep */

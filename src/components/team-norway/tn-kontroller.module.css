@@ -12,11 +12,12 @@
   background: var(--tn-white);
   color: var(--tn-navy-900);
   box-shadow: var(--tn-shadow-sm);
-  font-family: var(--tn-font-body);
+  font-family: var(--tn-font-display);
   font-size: var(--tn-text-sm);
   font-weight: var(--tn-weight-semibold);
   line-height: 1.4;
-  letter-spacing: -0.005em;
+  letter-spacing: .06em;
+  text-transform: uppercase;
   text-align: center;
   cursor: pointer;
   transition: background-color var(--tn-duration-fast) var(--tn-ease-hover),
@@ -36,7 +37,7 @@
   box-shadow: none;
 }
 .knapp:disabled { opacity: 0.45; cursor: not-allowed; }
-.knapp:focus-visible { outline: 2px solid var(--tn-navy-600); outline-offset: 3px; }
+.knapp:focus-visible { outline: 2px solid var(--tn-red-600); outline-offset: 3px; }
 .knapp[data-variant="mork"]:focus-visible { outline-color: var(--tn-white); }
 .ikon { display: inline-flex; flex-shrink: 0; }
 

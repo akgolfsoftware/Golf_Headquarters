@@ -4,6 +4,9 @@ import Link from 'next/link';
 export interface WangKobletElev {
   id: string;
   navn: string;
+  trinn?: string | null;
+  kanSeProfil?: boolean;
+  delerTester?: boolean;
 }
 
 interface WangKobledeVisningerProps {

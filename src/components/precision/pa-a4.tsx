@@ -8,12 +8,37 @@
  * (åpen/lukk, tastatur, aria) oppå dem. Egne A4-spesifikke stiler ligger i
  * precision-a4.css.
  */
-import { useEffect, useId, type ReactNode } from "react";
+import { useEffect, useId, useRef, type ReactNode } from "react";
 import Link from "next/link";
 import { X } from "lucide-react";
 import { Ikon, Knapp } from "./pa";
 
 const cx = (...a: Array<string | false | null | undefined>) => a.filter(Boolean).join(" ");
+
+function useModalFocus(open: boolean, onClose: () => void) {
+  const ref = useRef<HTMLDivElement>(null);
+  const close = useRef(onClose);
+  useEffect(() => { close.current = onClose; }, [onClose]);
+  useEffect(() => {
+    if (!open || !ref.current) return;
+    const panel = ref.current;
+    const previous = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const controls = () => Array.from(panel.querySelectorAll<HTMLElement>('button:not(:disabled),a[href],input:not(:disabled),select:not(:disabled),textarea:not(:disabled),[tabindex]:not([tabindex="-1"])')).filter((el) => el.getClientRects().length > 0);
+    (controls()[0] ?? panel).focus();
+    const key = (event: KeyboardEvent) => {
+      if (event.key === "Escape") { event.preventDefault(); close.current(); }
+      if (event.key !== "Tab") return;
+      const items = controls();
+      const first = items[0], last = items[items.length - 1];
+      if (!first) { event.preventDefault(); panel.focus(); }
+      else if (event.shiftKey && (document.activeElement === first || document.activeElement === panel)) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    };
+    panel.addEventListener("keydown", key);
+    return () => { panel.removeEventListener("keydown", key); if (previous?.isConnected) previous.focus(); };
+  }, [open]);
+  return ref;
+}
 
 /* ---------- Faner (klient-state) ---------- */
 
@@ -23,9 +48,9 @@ export function Faner({ faner, valgt, onEndre }: {
   onEndre: (v: string) => void;
 }) {
   return (
-    <div className="pa-tabs" role="tablist">
+    <div className="pa-tabs" role="group" aria-label="Velg visning">
       {faner.map((f) => (
-        <button key={f.verdi} type="button" role="tab" aria-selected={f.verdi === valgt} className="pa-tab" onClick={() => onEndre(f.verdi)}>
+        <button key={f.verdi} type="button" aria-pressed={f.verdi === valgt} className="pa-tab" onClick={() => onEndre(f.verdi)}>
           {f.navn}
           {f.antall != null && <span className="pa-tab__count">{f.antall}</span>}
         </button>
@@ -53,22 +78,18 @@ export function FanerLenker({ faner }: { faner: ReadonlyArray<{ href: string; na
 export function Ark({ open, onClose, kicker, title, footer, children }: {
   open: boolean; onClose: () => void; kicker?: ReactNode; title?: ReactNode; footer?: ReactNode; children?: ReactNode;
 }) {
-  useEffect(() => {
-    if (!open) return;
-    const k = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
-    window.addEventListener("keydown", k);
-    return () => window.removeEventListener("keydown", k);
-  }, [open, onClose]);
+  const ref = useModalFocus(open, onClose);
+  const titleId = useId();
   if (!open) return null;
   return (
     <div className="pa-sheet-layer">
       <div className="pa-sheet-scrim" onClick={onClose} />
-      <div className="pa-sheet pa-sheet--auto" role="dialog" aria-modal="true">
+      <div ref={ref} tabIndex={-1} className="pa-sheet pa-sheet--auto" role="dialog" aria-modal="true" aria-labelledby={title ? titleId : undefined} aria-label={title ? undefined : "Valg"}>
         <span className="pa-sheet__grip" aria-hidden />
         <div className="pa-sheet__head">
           <div className="pa-sheet__titles">
             {kicker && <span className="kicker">{kicker}</span>}
-            {title && <span className="pa-sheet__title">{title}</span>}
+            {title && <span id={titleId} className="pa-sheet__title">{title}</span>}
           </div>
           <button type="button" className="pa-iconbtn" aria-label="Lukk" onClick={onClose}><Ikon icon={X} size={20} name="x" /></button>
         </div>
@@ -84,13 +105,15 @@ export function Ark({ open, onClose, kicker, title, footer, children }: {
 export function Dialogboks({ open, onClose, title, footer, children }: {
   open: boolean; onClose: () => void; title?: ReactNode; footer?: ReactNode; children?: ReactNode;
 }) {
+  const ref = useModalFocus(open, onClose);
+  const titleId = useId();
   if (!open) return null;
   return (
     <div className="pa-sheet-layer" style={{ width: "100dvw", height: "100dvh" }}>
       <div className="pa-sheet-scrim" onClick={onClose} />
       <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
-        <div className="pa-dialog" style={{ maxWidth: "min(440px, calc(100dvw - 32px))", minWidth: 0, maxHeight: "calc(100dvh - 32px)", overflowY: "auto" }} role="alertdialog" aria-modal="true">
-          <div className="pa-dialog__head"><span className="pa-dialog__title">{title}</span></div>
+        <div ref={ref} tabIndex={-1} className="pa-dialog" style={{ maxWidth: "min(440px, calc(100dvw - 32px))", minWidth: 0, maxHeight: "calc(100dvh - 32px)", overflowY: "auto" }} role="alertdialog" aria-modal="true" aria-labelledby={title ? titleId : undefined} aria-label={title ? undefined : "Bekreft handling"}>
+          <div className="pa-dialog__head"><span id={titleId} className="pa-dialog__title">{title}</span></div>
           <div className="pa-dialog__body">{children}</div>
           {footer && <div className="pa-dialog__foot">{footer}</div>}
         </div>

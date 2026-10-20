@@ -1,3 +1,4 @@
+import { publicTournamentSourceWhere } from "@/lib/datagolf/public-sources";
 /**
  * /stats/klubber/[slug] — Klubb-detalj (v2, retning C)
  * Swap av (mlegacy)/stats/klubber/[slug]/page.tsx → v2-utseende. Data
@@ -77,7 +78,7 @@ export default async function KlubbDetaljPage({
   if (!klubb) notFound();
 
   const turneringer = await prisma.tournament.findMany({
-    where: {
+    where: { ...publicTournamentSourceWhere(),
       location: { contains: klubb.kommune, mode: "insensitive" },
       mergedIntoId: null,
     },

@@ -88,14 +88,14 @@ export function PH03Oktark({
         {data.deltakere.map((p) => <div key={p.id} className="ph03-rad"><span>{p.navn}</span><Meta>{p.statusLabel}</Meta></div>)}
         {data.invite && <InviteFriendTrigger sessionId={data.id} hostId={userId} maxParticipants={data.invite.maxParticipants} currentParticipants={data.invite.currentParticipants} spillere={data.invite.spillere} label="Inviter en kompis" variant="ghost" />}
       </section>}
-      <p className="ph02-meta">Økta er din. Du kan endre målet, hoppe over øvelser eller droppe økta. Treneren får beskjed.</p>
+      <p className="ph02-meta">Økta er din. Endre planen i Workbench, eller hopp over øvelser i Live-økt når du trenger det.</p>
     </>}
   </div>;
 }
 
 function MetaRader({ tittel, rader }: { tittel: string; rader: [string, string][] }) {
   return <section className="pa-card ph03-kort" aria-label={tittel}>
-    <Meta>{tittel}</Meta>
+    <h2 className="ph03-detaljhode">Øktdetaljer</h2>
     <dl className="ph03-meta">{rader.map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}</dl>
   </section>;
 }
@@ -117,7 +117,7 @@ function Drills({ drills, medHaker }: { drills: OktDrill[]; medHaker: boolean })
       <div>
         <strong>{d.navn}</strong>
         {(d.volum || d.tidMin != null) && <Meta>{[d.volum, d.tidMin != null ? `${d.tidMin} min` : null].filter(Boolean).join(" · ")}</Meta>}
-        {d.formel && <span className="ph03-formel">{d.formel}</span>}
+        {d.formel && <details className="ph03-formeldetalj"><summary>AK-formel</summary><span className="ph03-formel">{d.formel}</span></details>}
       </div>
     </div>)}
   </section>;

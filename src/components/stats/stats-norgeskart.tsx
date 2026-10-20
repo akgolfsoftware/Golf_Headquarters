@@ -59,7 +59,7 @@ const REGIONER: RegionPath[] = [
 ];
 
 const REGION_COLORS: Record<RegionSlug, { base: string; hover: string; active: string }> = {
-  ost:  { base: "rgba(20, 20, 19, 0.18)",   hover: "rgba(20, 20, 19, 0.35)",   active: "hsl(var(--primary))" },
+  ost:  { base: "rgba(20, 20, 19, 0.18)",   hover: "rgba(20, 20, 19, 0.35)",   active: "var(--s-primary)" },
   vest: { base: "rgba(99, 120, 74, 0.30)", hover: "rgba(99, 120, 74, 0.55)", active: "#8CA015" },
   midt: { base: "rgba(30, 100, 200, 0.15)", hover: "rgba(30, 100, 200, 0.30)", active: "#1E64C8" },
   nord: { base: "rgba(120, 60, 180, 0.15)", hover: "rgba(120, 60, 180, 0.30)", active: "#783CB4" },
@@ -115,10 +115,15 @@ export function StatsNorgeskart({
         return (
           <g
             key={r.slug}
+            role={onRegionClick ? "button" : undefined}
+            tabIndex={onRegionClick ? 0 : undefined}
+            aria-label={onRegionClick ? `Vis ${r.label}` : undefined}
+            aria-pressed={onRegionClick ? isAktiv : undefined}
+            onKeyDown={(event) => { if (onRegionClick && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); onRegionClick(r.slug); } }}
             onClick={() => onRegionClick?.(r.slug)}
             onMouseEnter={() => setHovered(r.slug)}
             onMouseLeave={() => setHovered(null)}
-            style={{ cursor: "pointer" }}
+            style={{ cursor: onRegionClick ? "pointer" : "default" }}
           >
             <path
               d={r.d}
@@ -134,7 +139,7 @@ export function StatsNorgeskart({
               fontFamily="var(--font-mono)"
               fontSize={11}
               fontWeight={isAktiv || isHovered ? 700 : 500}
-              fill={isAktiv ? "hsl(var(--background))" : "var(--s-fg)"}
+              fill={isAktiv ? "var(--s-card)" : "var(--s-fg)"}
               style={{ transition: "fill .15s, font-weight .1s", userSelect: "none" }}
             >
               {r.label}

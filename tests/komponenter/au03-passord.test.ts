@@ -73,7 +73,7 @@ describe("AU-03 passord beholder eksisterende Auth-regler", async () => {
     const form = nodes(renderReset()).find(node => node.type === "form");
     await (form!.props.onSubmit as (event: { preventDefault(): void }) => Promise<void>)({ preventDefault() {} });
     assert.deepEqual(mottatt, ["uten-tall"]);
-    assert.deepEqual(pushet, ["/portal"]);
+    assert.deepEqual(pushet, ["/auth/etter-innlogging"]);
     assert.equal(oppfrisket.length, 1);
   });
 
@@ -102,5 +102,31 @@ describe("AU-03 passord beholder eksisterende Auth-regler", async () => {
     await (form!.props.onSubmit as (event: { preventDefault(): void }) => Promise<void>)({ preventDefault() {} });
     assert.deepEqual(mottatt, [{ email: "syntetisk@example.invalid", redirectTo: "https://syntetisk.example/auth/reset-password" }]);
     assert.match(text(renderGlemt()), /Sjekk e-posten/);
+  });
+
+  test("transportfeil ved nytt passord beholder feltene og åpner ingen portal", async () => {
+    oppdater = async () => { throw new Error("syntetisk nettfeil"); };
+    fyll(renderReset(), "nok-langt", 0);
+    fyll(renderReset(), "nok-langt", 1);
+    const form = nodes(renderReset()).find(node => node.type === "form");
+    await (form!.props.onSubmit as (event: { preventDefault(): void }) => Promise<void>)({ preventDefault() {} });
+    const tree = renderReset();
+    assert.match(text(tree), /Kontroller nettet/);
+    assert.deepEqual(pushet, []);
+    const fields = nodes(tree).filter(node => node.type === "input" && node.props.type === "password");
+    assert.deepEqual(fields.map(node => node.props.value), ["nok-langt", "nok-langt"]);
+    assert.equal(nodes(tree).find(node => node.type === "button" && node.props.type === "submit")?.props.disabled, false);
+  });
+
+  test("transportfeil ved glemt passord kvitterer ikke for sendt e-post", async () => {
+    reset = async () => { throw new Error("syntetisk nettfeil"); };
+    const input = nodes(renderGlemt()).find(node => node.type === "input" && node.props.type === "email");
+    (input!.props.onChange as (event: { target: { value: string } }) => void)({ target: { value: "behold@example.invalid" } });
+    const form = nodes(renderGlemt()).find(node => node.type === "form");
+    await (form!.props.onSubmit as (event: { preventDefault(): void }) => Promise<void>)({ preventDefault() {} });
+    const tree = renderGlemt();
+    assert.match(text(tree), /Kontroller nettet/);
+    assert.doesNotMatch(text(tree), /Sjekk e-posten/);
+    assert.equal(nodes(tree).find(node => node.type === "input" && node.props.type === "email")?.props.value, "behold@example.invalid");
   });
 });

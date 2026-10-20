@@ -1,4 +1,5 @@
 "use server";
+import { publicPgaSourceWhere } from "@/lib/datagolf/public-sources";
 
 import { z } from "zod";
 import { redirect } from "next/navigation";
@@ -45,7 +46,7 @@ export async function startSammenligning(
 
   // Hent referansespiller fra PgaPlayerSeason
   const ref = await prisma.pgaPlayerSeason.findFirst({
-    where: { dgPlayerId: data.refDgPlayerId, tour: "pga" },
+    where: { ...publicPgaSourceWhere(),  dgPlayerId: data.refDgPlayerId, tour: "pga" },
     orderBy: { year: "desc" },
     select: {
       dgPlayerId: true,

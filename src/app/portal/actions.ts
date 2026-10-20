@@ -1,3 +1,5 @@
+"use server";
+import { withoutDataGolfRoundSg } from '@/lib/datagolf/round-provenance';
 /**
  * PlayerHQ Dashboard — server actions for /portal (Oversikt).
  *
@@ -8,7 +10,7 @@
  * RSC i portalen.
  */
 
-"use server";
+
 
 import "server-only";
 import { ukenummer } from "@/lib/uke-helpers";
@@ -42,7 +44,7 @@ export type TodaySession = {
   practiceType: PracticeType;
   pyramidArea: PyramidArea;
   durationMin: number;
-  /** Treningsmiljø (Sted) — null hvis ikke satt på økten. */
+  /** Faktisk navngitt treningssted — aldri utledet fra et eldre M-felt. */
   sted: string | null;
   /** Hva økten skal oppnå — null hvis ikke satt av coach/spiller. */
   maalsetning: string | null;
@@ -516,12 +518,12 @@ export async function getKpiStats(userId: string, naa: Date = new Date()): Promi
   const since90 = new Date(now.getTime() - 90 * 86_400_000);
 
   const [rounds, weekSessions, roundsCount] = await Promise.all([
-    prisma.round.findMany({
+    (prisma.round.findMany({
       where: { userId },
       orderBy: { playedAt: "desc" },
       take: 10,
-      select: { score: true, sgTotal: true, sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
-    }),
+      select: {source: true, sgSource: true, sgReferenceSet: {select:{source:true,sourceVersion:true}},  score: true, sgTotal: true, sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
+    })).then(rows => rows.map(withoutDataGolfRoundSg)),
     loadVisibleSessionRange(userId, weekStart.toISOString(), now.toISOString()),
     prisma.round.count({ where: { userId, playedAt: { gte: since90 } } }),
   ]);

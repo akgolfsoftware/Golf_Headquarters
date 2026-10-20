@@ -1,3 +1,5 @@
+import { publicEntrySourceWhere } from "@/lib/datagolf/public-sources";
+import { publicPgaSourceWhere } from "@/lib/datagolf/public-sources";
 /**
  * /stats/leaderboards — Tverrkategori topp-10 aggregat
  * Pixel-perfect port of design-handoff-stats-2026-05-25/project/js/pages-c.jsx#Leaderboards
@@ -45,7 +47,7 @@ export const metadata: Metadata = {
 async function hentLeaderboardData() {
   const [pgaSpillere, norskeSpillere] = await Promise.all([
     prisma.pgaPlayerSeason.findMany({
-      where: { year: 2026, tour: "pga" },
+      where: { ...publicPgaSourceWhere(),  year: 2026, tour: "pga" },
       orderBy: { sgTotal: "desc" },
       take: 20,
       select: { playerName: true, driveDist: true, fairwayPct: true, girPct: true, puttsPerRound: true, avgScore: true, sgTotal: true },
@@ -54,7 +56,7 @@ async function hentLeaderboardData() {
       where: { country: "NO", isActive: true },
       include: {
         entries: {
-          where: { status: "FINISHED" },
+          where: { AND: [publicEntrySourceWhere(), { status: "FINISHED" }] },
           include: { tournament: { select: { startDate: true } } },
         },
       },

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { IBM_Plex_Mono, Source_Sans_3 } from "next/font/google";
 
 import "@/styles/gfgk-junior-tokens.css";
+import "@/styles/gfgk-support-upgrade.css";
 
 // GFGK-merkevarens fonter — scoped til micrositen (gfgkjunior.no), lastes ikke
 // i resten av appen. Kanon: Claude Design-prosjektet «GFGK Junior og Elite».

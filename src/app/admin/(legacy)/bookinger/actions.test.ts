@@ -103,6 +103,13 @@ function matches(b: Booking, where: Record<string, unknown>): boolean {
 }
 
 mock.module("next/cache", { namedExports: { revalidatePath: () => undefined } });
+mock.module("@/lib/email/coaching-oppfolging-queue", { namedExports: { fullforBookingerMedUtkast: async (actor: { id: string; role: string }) => {
+  let completed = 0;
+  for (const booking of Object.values(bookings)) {
+    if (booking.status === "CONFIRMED" && (actor.role === "ADMIN" || booking.coachId === actor.id || booking.serviceType?.coachUserId === actor.id)) { booking.status = "COMPLETED"; completed++; }
+  }
+  return { completed, drafts: completed };
+} } });
 mock.module("@/lib/auth/action-guards", {
   namedExports: {
     requireCoachActionUser: async () => {

@@ -1,3 +1,4 @@
+import { publicPgaSourceWhere } from "@/lib/datagolf/public-sources";
 import { AK } from "@/lib/v2/ak-palett";
 
 /**
@@ -69,7 +70,7 @@ export default async function SgResultatPage({ params }: Props) {
   if (!sammenligning) notFound();
 
   const ref = await prisma.pgaPlayerSeason.findFirst({
-    where: {
+    where: { ...publicPgaSourceWhere(),
       dgPlayerId: sammenligning.refDgPlayerId,
       tour: sammenligning.refTour,
     },
@@ -84,6 +85,8 @@ export default async function SgResultatPage({ params }: Props) {
       driveDist: true,
     },
   });
+
+  if (!ref) return <main style={{ padding: "clamp(20px,4vw,48px)" }}><h1>Referansegrunnlaget er ikke tilgjengelig</h1><p>Dine egne registreringer er bevart. Sammenligning vises når en tillatt, uavhengig referanse er tilgjengelig.</p></main>;
 
   const sg = sammenligning.sgInput;
   const cmp = sammenlignMedReferanse(
@@ -157,7 +160,7 @@ export default async function SgResultatPage({ params }: Props) {
             alignItems: "center",
             gap: 6,
             fontSize: 13,
-            color: "hsl(var(--muted-foreground))",
+            color: "var(--s-muted-fg)",
             textDecoration: "none",
           }}
         >
@@ -199,7 +202,7 @@ export default async function SgResultatPage({ params }: Props) {
                     fontStyle: "italic",
                     fontWeight: 500,
                     lineHeight: 1,
-                    color: "hsl(var(--primary))",
+                    color: "var(--s-primary)",
                   }}
                 >
                   {user.name?.split(" ")[0] ?? "Du"}
@@ -210,7 +213,7 @@ export default async function SgResultatPage({ params }: Props) {
                     fontSize: "clamp(18px, 2.5vw, 32px)",
                     fontWeight: 500,
                     marginTop: 8,
-                    color: "hsl(var(--muted-foreground))",
+                    color: "var(--s-muted-fg)",
                   }}
                 >
                   SG: {fmtSg(sg.sgTotal)}
@@ -220,7 +223,7 @@ export default async function SgResultatPage({ params }: Props) {
                     width: 10,
                     height: 10,
                     borderRadius: "50%",
-                    background: "hsl(var(--primary))",
+                    background: "var(--s-primary)",
                     marginLeft: "auto",
                     marginTop: 12,
                   }}
@@ -233,8 +236,8 @@ export default async function SgResultatPage({ params }: Props) {
                   fontFamily: "var(--font-display)",
                   fontSize: 28,
                   fontStyle: "italic",
-                  color: "hsl(var(--foreground))",
-                  background: "hsl(var(--accent))",
+                  color: "var(--s-fg)",
+                  background: "var(--s-accent)",
                   padding: "12px 20px",
                   borderRadius: 12,
                   textAlign: "center",
@@ -263,7 +266,7 @@ export default async function SgResultatPage({ params }: Props) {
                     fontSize: "clamp(18px, 2.5vw, 32px)",
                     fontWeight: 500,
                     marginTop: 8,
-                    color: "hsl(var(--primary))",
+                    color: "var(--s-primary)",
                   }}
                 >
                   SG: {fmtSg(ref?.sgTotal)}
@@ -273,7 +276,7 @@ export default async function SgResultatPage({ params }: Props) {
                     width: 10,
                     height: 10,
                     borderRadius: "50%",
-                    background: "hsl(var(--accent))",
+                    background: "var(--s-accent)",
                     marginTop: 12,
                   }}
                 />
@@ -290,7 +293,7 @@ export default async function SgResultatPage({ params }: Props) {
                 fontSize: 10,
                 letterSpacing: "0.18em",
                 textTransform: "uppercase",
-                color: "hsl(var(--muted-foreground))",
+                color: "var(--s-muted-fg)",
               }}
             >
               SESONG {sammenligning.refYear} · PGA TOUR
@@ -314,21 +317,21 @@ export default async function SgResultatPage({ params }: Props) {
             <div className="stats-kpi-eyebrow">
               {refEtternavn.toUpperCase()}S SG TOTAL
             </div>
-            <div className="stats-kpi-value" style={{ color: "hsl(var(--primary))" }}>
+            <div className="stats-kpi-value" style={{ color: "var(--s-primary)" }}>
               {fmtSg(ref?.sgTotal)}
             </div>
             <div className="stats-kpi-sub">sesong {sammenligning.refYear}</div>
           </div>
           <div
             className="stats-kpi"
-            style={{ background: "hsl(var(--accent))" }}
+            style={{ background: "var(--s-accent)" }}
           >
-            <div className="stats-kpi-eyebrow" style={{ color: "hsl(var(--primary))" }}>
+            <div className="stats-kpi-eyebrow" style={{ color: "var(--s-primary)" }}>
               Differanse
             </div>
             <div
               className="stats-kpi-value"
-              style={{ color: "hsl(var(--primary))" }}
+              style={{ color: "var(--s-primary)" }}
             >
               {cmp.diff.total !== null
                 ? fmtSg(-(Math.abs(cmp.diff.total)))
@@ -368,7 +371,7 @@ export default async function SgResultatPage({ params }: Props) {
                   style={{
                     fontStyle: "italic",
                     fontWeight: 400,
-                    color: "hsl(var(--primary))",
+                    color: "var(--s-primary)",
                   }}
                 >
                   vs
@@ -407,7 +410,7 @@ export default async function SgResultatPage({ params }: Props) {
                       display: "inline-block",
                       width: 14,
                       height: 14,
-                      background: "hsl(var(--primary))",
+                      background: "var(--s-primary)",
                       borderRadius: 3,
                     }}
                   />
@@ -419,7 +422,7 @@ export default async function SgResultatPage({ params }: Props) {
                       display: "inline-block",
                       width: 14,
                       height: 14,
-                      background: "hsl(var(--accent))",
+                      background: "var(--s-accent)",
                       borderRadius: 3,
                     }}
                   />
@@ -432,7 +435,7 @@ export default async function SgResultatPage({ params }: Props) {
                   fontSize: 10,
                   letterSpacing: "0.14em",
                   textTransform: "uppercase",
-                  color: "hsl(var(--muted-foreground))",
+                  color: "var(--s-muted-fg)",
                   marginTop: 12,
                 }}
               >
@@ -458,8 +461,8 @@ export default async function SgResultatPage({ params }: Props) {
               {/* Største gap */}
               <div
                 style={{
-                  background: "hsl(var(--accent))",
-                  color: "hsl(var(--primary))",
+                  background: "var(--s-accent)",
+                  color: "var(--s-primary)",
                   borderRadius: 16,
                   padding: 40,
                 }}
@@ -526,7 +529,7 @@ export default async function SgResultatPage({ params }: Props) {
                   href="/playerhq"
                   style={{
                     fontSize: 13,
-                    color: "hsl(var(--primary))",
+                    color: "var(--s-primary)",
                     fontWeight: 600,
                     marginTop: 24,
                     display: "inline-block",
@@ -542,7 +545,7 @@ export default async function SgResultatPage({ params }: Props) {
               {snittScore && sammenligning.estPgaTourScore ? (
                 <div
                   style={{
-                    background: "hsl(var(--secondary))",
+                    background: "var(--s-secondary)",
                     borderRadius: 16,
                     padding: 40,
                   }}
@@ -553,7 +556,7 @@ export default async function SgResultatPage({ params }: Props) {
                       fontSize: 10,
                       letterSpacing: "0.18em",
                       textTransform: "uppercase",
-                      color: "hsl(var(--muted-foreground))",
+                      color: "var(--s-muted-fg)",
                     }}
                   >
                     DIN NORSKE SNITTSCORE
@@ -582,7 +585,7 @@ export default async function SgResultatPage({ params }: Props) {
                       fontSize: 10,
                       letterSpacing: "0.18em",
                       textTransform: "uppercase",
-                      color: "hsl(var(--primary))",
+                      color: "var(--s-primary)",
                     }}
                   >
                     ESTIMERT PÅ PGA TOUR-BANE
@@ -594,7 +597,7 @@ export default async function SgResultatPage({ params }: Props) {
                       fontWeight: 500,
                       lineHeight: 1,
                       marginTop: 12,
-                      color: "hsl(var(--primary))",
+                      color: "var(--s-primary)",
                       letterSpacing: "-0.02em",
                     }}
                   >
@@ -604,7 +607,7 @@ export default async function SgResultatPage({ params }: Props) {
                     <div
                       style={{
                         fontSize: 14,
-                        color: "hsl(var(--muted-foreground))",
+                        color: "var(--s-muted-fg)",
                         marginTop: 8,
                       }}
                     >
@@ -616,7 +619,7 @@ export default async function SgResultatPage({ params }: Props) {
                       fontFamily: "var(--font-mono)",
                       fontSize: 10,
                       letterSpacing: "0.12em",
-                      color: "hsl(var(--muted-foreground))",
+                      color: "var(--s-muted-fg)",
                       marginTop: 20,
                       lineHeight: 1.5,
                     }}
@@ -627,7 +630,7 @@ export default async function SgResultatPage({ params }: Props) {
               ) : (
                 <div
                   style={{
-                    background: "hsl(var(--secondary))",
+                    background: "var(--s-secondary)",
                     borderRadius: 16,
                     padding: 40,
                     display: "flex",
@@ -635,7 +638,7 @@ export default async function SgResultatPage({ params }: Props) {
                     justifyContent: "center",
                   }}
                 >
-                  <p style={{ color: "hsl(var(--muted-foreground))", fontSize: 14, textAlign: "center" }}>
+                  <p style={{ color: "var(--s-muted-fg)", fontSize: 14, textAlign: "center" }}>
                     Tour-ekvivalent krever at du oppgav en snittscore i onboarding.
                   </p>
                 </div>
@@ -667,7 +670,7 @@ export default async function SgResultatPage({ params }: Props) {
                     style={{
                       fontStyle: "italic",
                       fontWeight: 400,
-                      color: "hsl(var(--primary))",
+                      color: "var(--s-primary)",
                     }}
                   >
                     veier
@@ -731,22 +734,22 @@ export default async function SgResultatPage({ params }: Props) {
                           fontFamily: "var(--font-mono)",
                           fontSize: 12,
                           fontWeight: 600,
-                          color: "hsl(var(--primary-foreground))",
-                          background: "hsl(var(--primary))",
+                          color: "var(--s-primary-fg)",
+                          background: "var(--s-primary)",
                           padding: "3px 9px",
                           borderRadius: 5,
                         }}
                       >
                         {s.n}
                       </span>
-                      <span style={{ color: "hsl(var(--primary))" }}>{s.icon}</span>
+                      <span style={{ color: "var(--s-primary)" }}>{s.icon}</span>
                     </div>
                     <h3
                       style={{
                         fontFamily: "var(--font-display)",
                         fontSize: 18,
                         fontWeight: 600,
-                        color: "hsl(var(--foreground))",
+                        color: "var(--s-fg)",
                       }}
                     >
                       {s.t}
@@ -754,7 +757,7 @@ export default async function SgResultatPage({ params }: Props) {
                     <p
                       style={{
                         fontSize: 13,
-                        color: "hsl(var(--muted-foreground))",
+                        color: "var(--s-muted-fg)",
                         lineHeight: 1.5,
                         marginTop: 8,
                       }}
@@ -777,8 +780,8 @@ export default async function SgResultatPage({ params }: Props) {
         // --tl-ok (#9DB284) og lander på 2,2:1 mot papir.
         style={
           {
-            background: "hsl(var(--primary))",
-            color: "hsl(var(--background))",
+            background: "var(--s-primary)",
+            color: "var(--s-bg)",
             "--accent": "87 24% 38%",
           } as React.CSSProperties
         }
@@ -804,12 +807,12 @@ export default async function SgResultatPage({ params }: Props) {
                 fontWeight: 600,
                 letterSpacing: "-0.025em",
                 marginTop: 12,
-                color: "hsl(var(--background))",
+                color: "var(--s-bg)",
                 lineHeight: 1.1,
               }}
             >
               Vil du følge{" "}
-              <em style={{ fontStyle: "italic", fontWeight: 400, color: "hsl(var(--accent))" }}>
+              <em style={{ fontStyle: "italic", fontWeight: 400, color: "var(--s-accent)" }}>
                 utviklingen
               </em>
               ?
@@ -876,7 +879,7 @@ export default async function SgResultatPage({ params }: Props) {
                     width: 5,
                     height: 5,
                     borderRadius: "50%",
-                    background: "hsl(var(--accent))",
+                    background: "var(--s-accent)",
                     marginTop: 6,
                     flexShrink: 0,
                   }}
@@ -890,7 +893,7 @@ export default async function SgResultatPage({ params }: Props) {
                 fontSize: 10,
                 letterSpacing: "0.14em",
                 textTransform: "uppercase",
-                color: "hsl(var(--accent))",
+                color: "var(--s-accent)",
                 marginTop: 12,
               }}
             >
@@ -909,7 +912,7 @@ export default async function SgResultatPage({ params }: Props) {
           justifyContent: "space-between",
           alignItems: "center",
           fontSize: 12,
-          color: "hsl(var(--muted-foreground))",
+          color: "var(--s-muted-fg)",
           fontFamily: "var(--font-mono)",
         }}
       >
@@ -920,7 +923,7 @@ export default async function SgResultatPage({ params }: Props) {
         <Link
           href="/stats/sg-sammenlign"
           style={{
-            color: "hsl(var(--primary))",
+            color: "var(--s-primary)",
             textDecoration: "none",
             fontWeight: 600,
           }}

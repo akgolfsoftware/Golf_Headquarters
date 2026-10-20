@@ -71,14 +71,18 @@ describe("live-route", () => {
     );
   });
 
-  it("v2 IN_PROGRESS → active, plan ACTIVE → tapper", () => {
+  it("v2 IN_PROGRESS og plan ACTIVE fortsetter i øvelsesvisningen", () => {
     assert.equal(
       liveHrefForStatus("v2", "IN_PROGRESS", "v2-1"),
       "/portal/live/v2-1/active",
     );
     assert.equal(
       liveHrefForStatus("plan", "ACTIVE", "p-1"),
-      "/portal/live/p-1/tapper",
+      "/portal/live/p-1/active",
     );
+  });
+
+  it("pauset plan fortsetter uten å bytte registreringsmåte", () => {
+    assert.equal(liveHrefForStatus("plan", "PAUSED", "p-1"), "/portal/live/p-1/active");
   });
 });

@@ -13,6 +13,7 @@
  * (samme tilgangssjekk som stallens melding-knapp).
  */
 import Link from "next/link";
+import { SportsCover } from "@/components/precision/SportsCover";
 import { useState, useTransition } from "react";
 import { ClipboardList, Layers, Link2, MessagesSquare, Pencil, Play, Send } from "lucide-react";
 import { FeilTilstand, Knapp, KnappLenke, LasterTilstand, Meta, Sidehode } from "@/components/precision/pa";
@@ -44,18 +45,20 @@ function SendMelding({ spillerId, navn, open, onClose }: { spillerId: string; na
   const [pending, start] = useTransition();
   const lukk = () => { setSvar(null); onClose(); };
   const send = () => start(async () => {
-    const r = await sendMeldingTilSpiller(spillerId, tekst);
-    if (r?.ok) { setTekst(""); setSvar({ ok: true, tekst: "Meldingen er sendt." }); }
-    else setSvar({ ok: false, tekst: r?.error ?? "Meldingen ble ikke sendt. Prøv igjen." });
+    try {
+      const r = await sendMeldingTilSpiller(spillerId, tekst);
+      if (r?.ok) { setTekst(""); setSvar({ ok: true, tekst: "Meldingen er sendt." }); }
+      else setSvar({ ok: false, tekst: r?.error ?? "Meldingen ble ikke sendt. Prøv igjen." });
+    } catch { setSvar({ ok: false, tekst: "Sendingen kunne ikke bekreftes. Meldingen er beholdt her." }); }
   });
   return (
     <Ark open={open} onClose={lukk} kicker="Melding" title={`Til ${navn}`}
       footer={<><Knapp fullWidth icon={Send} iconName="send" loading={pending} loadingText="Sender …" disabled={!tekst.trim()} onClick={send}>Send</Knapp><Knapp variant="ghost" fullWidth onClick={lukk}>Lukk</Knapp></>}>
       <label className="a8-etikett">Melding
-        <textarea className="a8-felt" value={tekst} onChange={(e) => { setTekst(e.target.value); setSvar(null); }} maxLength={4000} />
+        <textarea className="a8-felt" disabled={pending} value={tekst} onChange={(e) => { setTekst(e.target.value); setSvar(null); }} maxLength={4000} />
       </label>
       {svar && <p role="status" className="a8-dempet" style={{ color: svar.ok ? "var(--text-primary)" : "var(--text-secondary)" }}>{svar.tekst}</p>}
-      <Meta>MELDINGEN GÅR I DIREKTETRÅDEN MELLOM DEG OG SPILLEREN</Meta>
+      <p className="a8-dempet">Meldingen går i direktetråden mellom deg og spilleren.</p>
     </Ark>
   );
 }
@@ -77,7 +80,7 @@ function Spillerkort({ h, tom, onMelding, vis }: { h: S360Hode; tom: boolean; on
       <div className="a8-knapper">
         <Knapp size="sm" icon={Send} iconName="send" onClick={onMelding}>Send melding</Knapp>
         <KnappLenke size="sm" variant="secondary" icon={Layers} iconName="layers" href={`/admin/workbench/${h.id}`}>Åpne Workbench</KnappLenke>
-        <KnappLenke size="sm" variant="secondary" icon={Play} iconName="play" href="/admin/agencyos/live">Start live</KnappLenke>
+        <KnappLenke size="sm" variant="secondary" icon={Play} iconName="play" href={`/admin/agencyos/live?playerId=${encodeURIComponent(h.id)}`}>Start live</KnappLenke>
         <KnappLenke size="sm" variant="secondary" icon={MessagesSquare} iconName="messages-square" href={`/admin/spillere/${h.id}?fane=iup${vis}`}>IUP-samtale</KnappLenke>
       </div>
       <div className="a8-knapper">
@@ -157,6 +160,7 @@ export function AG08Spiller360({ tilstand, hode, fane, faneData, rail, statsDel 
   const side = (
     <div className="a8-stabel">
       <Sidehode kicker="Stall · Spiller 360" title={navn} />
+      {hode && tilstand === "data" && <SportsCover compact />}
       {innhold}
     </div>
   );

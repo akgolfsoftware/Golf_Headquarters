@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import "@/styles/precision-athletics.css";
+import "@/styles/precision-support-upgrade.css";
 
 /**
  * Felles Precision-ramme for SY-01. Tegningens demokoder (klokkeslett,

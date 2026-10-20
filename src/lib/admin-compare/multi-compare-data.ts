@@ -1,3 +1,4 @@
+import { independentSgInputWhere } from "@/lib/datagolf/round-provenance";
 /**
  * Data-loader for B10 Multi-spiller sammenligning (/admin/talent/sammenligning).
  *
@@ -118,7 +119,7 @@ export async function loadMultiCompare(
             hcp: true,
             homeClub: true,
             talentTracking: { select: { niva: true, klubb: true, region: true } },
-            sgInputs: {
+            sgInputs: { where: independentSgInputWhere(),
               orderBy: { dato: "desc" },
               take: 1,
               select: { sgTotal: true, sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
@@ -243,7 +244,7 @@ export async function loadMultiCompare(
       hcp: true,
       homeClub: true,
       talentTracking: { select: { niva: true, klubb: true, region: true } },
-      sgInputs: { orderBy: { dato: "desc" }, take: 1, select: { sgTotal: true } },
+      sgInputs: { where: independentSgInputWhere(), orderBy: { dato: "desc" }, take: 1, select: { sgTotal: true } },
     },
   });
 

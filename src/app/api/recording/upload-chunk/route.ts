@@ -1,145 +1,62 @@
-// POST /api/recording/upload-chunk
-// Multipart: recordingId, chunkIdx, chunk (Blob). Lagrer chunk i Supabase
-// Storage og oppdaterer SessionRecording.chunks JSON-arrayen.
-
+// POST /api/recording/upload-chunk — bare egne, samtykkede opptak.
 import { NextResponse } from "next/server";
+import { createHash } from "node:crypto";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { supabaseAdmin } from "@/lib/supabase/admin";
-import type { Prisma } from "@/generated/prisma/client";
+import { Prisma } from "@/generated/prisma/client";
 import { logError } from "@/lib/error-tracking";
 import { rateLimit } from "@/lib/rate-limit";
-
+import { hentLydSamtykkeStatus } from "@/lib/recording/lyd-samtykke";
+import { RecordingChunkSchema, hasAudioHeader, recordingFormat } from "@/lib/recording/chunk-contract";
 const BUCKET = "coaching-recordings";
-
-type ChunkEntry = {
-  idx: number;
-  path: string;
-  size: number;
-};
-
-function isChunkArray(value: unknown): value is ChunkEntry[] {
-  if (!Array.isArray(value)) return false;
-  return value.every(
-    (v) =>
-      v !== null &&
-      typeof v === "object" &&
-      typeof (v as { idx?: unknown }).idx === "number" &&
-      typeof (v as { path?: unknown }).path === "string" &&
-      typeof (v as { size?: unknown }).size === "number",
-  );
-}
-
 export async function POST(req: Request) {
   const user = await getCurrentUser();
-  if (!user) {
-    return NextResponse.json({ error: "Ikke innlogget" }, { status: 401 });
-  }
-  const rl = await rateLimit({ key: `recording-upload-chunk:${user.id}`, max: 60, windowMs: 60_000 });
-  if (!rl.ok) {
-    return NextResponse.json(
-      { error: "rate-limited" },
-      { status: 429, headers: { "x-ratelimit-reset": String(rl.resetAt) } },
-    );
-  }
-
-
-  let form: FormData;
+  if (!user) return NextResponse.json({ error: "Ikke innlogget" }, { status: 401 });
+  if (user.role !== "COACH" && user.role !== "ADMIN") return NextResponse.json({ error: "Mangler tilgang" }, { status: 403 });
+  const limit = await rateLimit({ key: `recording-upload-chunk:${user.id}`, max: 60, windowMs: 60_000 });
+  if (!limit.ok) return NextResponse.json({ error: "rate-limited" }, { status: 429 });
+  const form = await req.formData().catch(() => null);
+  const recordingId = form?.get("recordingId"), rawIdx = form?.get("chunkIdx"), chunk = form?.get("chunk");
+  if (typeof recordingId !== "string" || recordingId.length > 200 || typeof rawIdx !== "string" || !/^(0|[1-9]\d{0,3})$/.test(rawIdx) || !(chunk instanceof Blob))
+    return NextResponse.json({ error: "Ugyldig lyddata" }, { status: 400 });
+  const idx = Number(rawIdx), format = recordingFormat(chunk.type);
+  if (idx > 1440 || !format || chunk.size < 1 || chunk.size > 10 * 1024 * 1024)
+    return NextResponse.json({ error: "Ugyldig format eller størrelse" }, { status: 415 });
+  const recording = await prisma.sessionRecording.findUnique({ where: { id: recordingId },
+    select: { id: true, uploadedById: true, playerId: true, status: true } });
+  if (!recording) return NextResponse.json({ error: "Opptaket finnes ikke" }, { status: 404 });
+  if ((recording.uploadedById !== user.id && user.role !== "ADMIN") || !recording.playerId
+    || !(await harCoachTilgangTilSpiller(user, recording.playerId))) return NextResponse.json({ error: "Mangler tilgang" }, { status: 403 });
+  if (!(await hentLydSamtykkeStatus(recording.playerId)).tillatt) return NextResponse.json({ error: "lyd-samtykke-mangler" }, { status: 403 });
+  const bytes = Buffer.from(await chunk.arrayBuffer()), hash = createHash("sha256").update(bytes).digest("hex");
+  if (idx === 0 && !hasAudioHeader(bytes, format.mime)) return NextResponse.json({ error: "Ugyldig lydfilhode" }, { status: 415 });
   try {
-    form = await req.formData();
+    const result = await prisma.$transaction(async tx => {
+      await tx.$queryRaw(Prisma.sql`SELECT "id" FROM "session_recordings" WHERE "id" = ${recordingId} FOR UPDATE`);
+      const current = await tx.sessionRecording.findUnique({ where: { id: recordingId }, select: { status: true, chunks: true, uploadedById: true } });
+      if (!current || current.status !== "RECORDING") return { ok: false, status: 409 };
+      const existing = Array.isArray(current.chunks) ? current.chunks.flatMap(value => {
+        const parsed = RecordingChunkSchema.safeParse(value); return parsed.success ? [parsed.data] : [];
+      }) : [];
+      const first = existing.find(part => part.idx === 0);
+      // MediaRecorder sender ett filhode, deretter fragmenter av samme lydstrøm.
+      if (idx > 0 && (!first || (first.mimeType ?? "audio/webm") !== format.mime)) return { ok: false, status: 409 };
+      const previous = existing.find(part => part.idx === idx);
+      if (previous?.sha256 === hash) return { ok: true, status: 200 };
+      if (previous) return { ok: false, status: 409 };
+      const path = `${current.uploadedById}/${recordingId}/chunk-${String(idx).padStart(5, "0")}.${format.extension}`;
+      const uploaded = await supabaseAdmin().storage.from(BUCKET).upload(path, bytes, { contentType: format.mime, upsert: true });
+      if (uploaded.error) throw new Error("Lydopplasting mislyktes");
+      await tx.sessionRecording.update({ where: { id: recordingId }, data: {
+        chunks: [...existing, { idx, path, size: bytes.length, mimeType: format.mime, sha256: hash }].sort((a,b) => a.idx-b.idx),
+      } });
+      return { ok: true, status: 200 };
+    }, { timeout: 15000 });
+    return NextResponse.json({ ok: result.ok, ...(result.ok ? {} : { error: "Lyddata eller opptaksstatus er endret. Prøv igjen." }) }, { status: result.status });
   } catch {
-    return NextResponse.json({ error: "Ugyldig form-data" }, { status: 400 });
+    await logError({ context: "recording.upload-chunk", error: new Error("Lydopplasting mislyktes"), meta: { recordingId } });
+    return NextResponse.json({ error: "Lydopplasting er ikke bekreftet. Prøv igjen." }, { status: 500 });
   }
-
-  const recordingId = form.get("recordingId");
-  const chunkIdxRaw = form.get("chunkIdx");
-  const chunk = form.get("chunk");
-
-  if (typeof recordingId !== "string" || typeof chunkIdxRaw !== "string") {
-    return NextResponse.json(
-      { error: "Mangler recordingId/chunkIdx" },
-      { status: 400 },
-    );
-  }
-  const chunkIdx = Number.parseInt(chunkIdxRaw, 10);
-  if (!Number.isFinite(chunkIdx) || chunkIdx < 0) {
-    return NextResponse.json({ error: "Ugyldig chunkIdx" }, { status: 400 });
-  }
-  if (!(chunk instanceof Blob)) {
-    return NextResponse.json({ error: "Mangler chunk-blob" }, { status: 400 });
-  }
-
-  // S-15: Chunk-størrelsesbegrensning (10 MB)
-  const MAX_CHUNK_BYTES = 10 * 1024 * 1024;
-  if (chunk.size > MAX_CHUNK_BYTES) {
-    return NextResponse.json(
-      { error: "Chunk er for stor (maks 10 MB per chunk)." },
-      { status: 413 },
-    );
-  }
-
-  // S-15: MIME magic bytes — WebM/EBML: 1A 45 DF A3
-  const chunkBuffer = Buffer.from(await chunk.arrayBuffer());
-  const isWebM =
-    chunkBuffer[0] === 0x1a &&
-    chunkBuffer[1] === 0x45 &&
-    chunkBuffer[2] === 0xdf &&
-    chunkBuffer[3] === 0xa3;
-  if (!isWebM) {
-    return NextResponse.json(
-      { error: "Ugyldig filformat. Kun WebM-lyd støttes." },
-      { status: 415 },
-    );
-  }
-
-  const recording = await prisma.sessionRecording.findUnique({
-    where: { id: recordingId },
-    select: { id: true, uploadedById: true, status: true, chunks: true },
-  });
-  if (!recording) {
-    return NextResponse.json({ error: "Recording finnes ikke" }, { status: 404 });
-  }
-  if (recording.uploadedById !== user.id && user.role !== "ADMIN") {
-    return NextResponse.json({ error: "Mangler tilgang" }, { status: 403 });
-  }
-  if (recording.status !== "RECORDING") {
-    return NextResponse.json(
-      { error: `Recording har status ${recording.status} — chunks tillates ikke` },
-      { status: 409 },
-    );
-  }
-
-  const path = `${recording.uploadedById}/${recording.id}/chunk-${String(
-    chunkIdx,
-  ).padStart(5, "0")}.webm`;
-
-  const { error: uploadErr } = await supabaseAdmin()
-    .storage.from(BUCKET)
-    .upload(path, chunkBuffer, {
-      contentType: "audio/webm",
-      upsert: true,
-    });
-  if (uploadErr) {
-    await logError({ context: "recording.upload-chunk", error: uploadErr, meta: { recordingId: recording.id, chunkIdx } });
-    return NextResponse.json(
-      { error: "Noe gikk galt under opplasting. Prøv igjen." },
-      { status: 500 },
-    );
-  }
-
-  // Append chunk-entry til JSON-arrayen
-  const existing = isChunkArray(recording.chunks) ? recording.chunks : [];
-  const filtered = existing.filter((c) => c.idx !== chunkIdx);
-  const next: ChunkEntry[] = [...filtered, { idx: chunkIdx, path, size: chunkBuffer.length }];
-  next.sort((a, b) => a.idx - b.idx);
-
-  // #10: serialiser via JSON for Prisma Json uten as unknown as
-  const chunksJson = JSON.parse(JSON.stringify(next)) as Prisma.InputJsonValue;
-
-  await prisma.sessionRecording.update({
-    where: { id: recording.id },
-    data: { chunks: chunksJson },
-  });
-
-  return NextResponse.json({ ok: true, path });
 }

@@ -16,6 +16,9 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentBarnForForelder } from "@/lib/forelder";
+import { velgBarnFraGodkjente } from "@/lib/forelder-kontekst";
+import { lesForelderBookingRetur } from "@/lib/portal-booking/forelder-retur";
+import { ForelderBarnValg, ForelderBarnAvvist } from "@/components/forelder/ForelderBarnValg";
 import { prisma } from "@/lib/prisma";
 import { startOfWeek, endOfWeek, ukenummer } from "@/lib/uke-helpers";
 import { ForelderSkall } from "@/components/precision/ForelderSkall";
@@ -28,10 +31,15 @@ import {
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Bookinger · Foreldreportal (v2)" };
 
-export default async function V2ForelderBookingerPage() {
+export default async function V2ForelderBookingerPage({ searchParams }: { searchParams?: Promise<{ barn?: string; retur?: string }> } = {}) {
   const user = await requirePortalUser({ allow: ["PARENT"] });
   const barn = await hentBarnForForelder(user.id);
-  const childIds = barn.map((b) => b.child.id);
+  const query = await searchParams;
+  const valgt = query?.barn ?? await lesForelderBookingRetur(query?.retur, user.id, barn.map((b) => b.child.id));
+  const utvalg = velgBarnFraGodkjente(barn, valgt);
+  const valgListe = barn.map((b) => ({ id: b.child.id, navn: b.child.name }));
+  if (!utvalg.gyldig) return <ForelderSkall><ForelderBarnAvvist barn={valgListe} /></ForelderSkall>;
+  const childIds = utvalg.barn.map((b) => b.child.id);
   const fornavnPerBarn = new Map(
     barn.map((b) => [b.child.id, b.child.name.split(" ")[0] ?? b.child.name]),
   );
@@ -107,10 +115,12 @@ export default async function V2ForelderBookingerPage() {
     kommende,
     tidligere,
     parentName: user.name,
+    fokusBarnId: valgt ?? null,
   };
 
   return (
-    <ForelderSkall>
+    <ForelderSkall barnId={valgt}>
+      <ForelderBarnValg barn={valgListe} valgt={valgt ?? null} alle />
       <ForelderBookingerV2 data={data} />
     </ForelderSkall>
   );

@@ -18,6 +18,7 @@ import {
   kanBekrefteUtenStripeLeak,
 } from "@/lib/auth/booking-scope";
 import { prisma } from "@/lib/prisma";
+import { fullforBookingerMedUtkast } from "@/lib/email/coaching-oppfolging-queue";
 
 function revalidateBookingFlater() {
   revalidatePath("/admin/bookinger");
@@ -91,9 +92,8 @@ export async function avvisAllePending() {
 
 export async function markerAlleConfirmedSomCompleted() {
   const user = await requireCoachActionUser();
-  await prisma.booking.updateMany({
-    where: { status: "CONFIRMED", ...coachBookingScope(user) },
-    data: { status: "COMPLETED" },
-  });
+  const resultat = await fullforBookingerMedUtkast(user);
   revalidateBookingFlater();
+  revalidatePath("/admin/innboks");
+  return resultat;
 }

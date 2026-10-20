@@ -9,6 +9,7 @@
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { computeDelta, type PlanContext } from "@/lib/agents/plan-action-executor";
+import { COACHING_EMAIL_DRAFT, CoachingEmailDraft } from "@/lib/email/coaching-oppfolging-kontrakt";
 
 /** Handlingstyper som ikke tåler å ligge og vente. */
 export function erHasterHandling(actionType: string): boolean {
@@ -53,6 +54,10 @@ export async function buildDiffPreview(
   userId: string,
   planId: string | null,
 ): Promise<string | null> {
+  if (actionType === COACHING_EMAIL_DRAFT) {
+    const draft = CoachingEmailDraft.safeParse(suggestion);
+    return draft.success ? `E-postutkast: ${draft.data.subject}. Klargjøres ved godkjenning; ingenting sendes.` : null;
+  }
   // B2: churn-melding er ikke en plan-endring — forhåndsvis meldingsutkastet.
   if (actionType === "CHURN_MESSAGE") {
     const m = z

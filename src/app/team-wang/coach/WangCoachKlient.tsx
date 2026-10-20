@@ -3,15 +3,13 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { WangAppSkall, type WangOmraade } from '@/components/wang/WangAppSkall';
-import { WangIdag } from '@/components/wang/WangIdag';
-import { WangTrening } from '@/components/wang/WangTrening';
-import { WangTester } from '@/components/wang/WangTester';
-import { WangKonkurranse } from '@/components/wang/WangKonkurranse';
-import { WangMeldinger } from '@/components/wang/WangMeldinger';
-import { WangElever } from '@/components/wang/WangElever';
-import { WangAdmin } from '@/components/wang/WangAdmin';
-import { WangSkjermoversikt } from '@/components/wang/WangSkjermoversikt';
-import { WangKobledeVisninger, type WangKobletElev } from '@/components/wang/WangKobledeVisninger';
+import { WangArbeidsflate } from '@/components/wang/WangArbeidsflate';
+import type { OrgGruppeOppgaverData } from '@/lib/domain/org-gruppeoppgaver-kontrakt';
+import type { WangGruppePost } from '@/components/wang/WangGruppeMeldinger';
+import type { WangLiveData } from '../_data/hent-wang-gruppe';
+import type { GruppeKalenderData } from '@/lib/gruppe-kalender/types';
+import { WangAktivtRegister } from '@/components/wang/WangAktivtRegister';
+import type { WangKobletElev } from '@/components/wang/WangKobledeVisninger';
 import type { WangRolle } from '@/app/team-wang/_data/wang-rolle';
 
 interface WangCoachKlientProps {
@@ -23,6 +21,13 @@ interface WangCoachKlientProps {
   /** PLAYER-medlemmer i WANG-gruppa, til lenkene mot ekte data. */
   elever?: WangKobletElev[];
   campus?: string;
+  live?: WangLiveData;
+  kalender?: GruppeKalenderData;
+  kanPublisere?: boolean;
+  gruppeOppgaver?: OrgGruppeOppgaverData | null;
+  oppgaveFeil?: string;
+  innlegg?: WangGruppePost[];
+  meldingsTilgang?: boolean;
 }
 
 export function WangCoachKlient({
@@ -32,6 +37,13 @@ export function WangCoachKlient({
   brukerNavn,
   elever = [],
   campus = 'Fredrikstad',
+  live,
+  kalender,
+  kanPublisere = false,
+  gruppeOppgaver,
+  oppgaveFeil,
+  innlegg = [],
+  meldingsTilgang = false,
 }: WangCoachKlientProps) {
   const router = useRouter();
 
@@ -52,78 +64,12 @@ export function WangCoachKlient({
         navigerTil(omraade, valgtFane);
       }}
     >
-      {omraade === 'idag' && (
-        <WangIdag
-          aktivFane={fane}
-          onFaneEndret={(nyFane) => navigerTil('idag', nyFane)}
-          campus={campus}
-        />
+      {omraade !== 'system' && live && kalender && (
+        <WangArbeidsflate omraade={omraade} fane={fane} live={live} kalender={kalender} elever={elever} campus={campus} kanPublisere={kanPublisere} onNaviger={navigerTil} gruppeOppgaver={gruppeOppgaver} oppgaveFeil={oppgaveFeil} innlegg={innlegg} meldingsTilgang={meldingsTilgang} />
       )}
+      {omraade !== 'system' && (!live || !kalender) && <p role="status">Gruppedata er ikke tilgjengelige. Åpne trenerflaten på nytt.</p>}
 
-      {omraade === 'trening' && (
-        <WangTrening
-          aktivFane={fane}
-          onFaneEndret={(nyFane) => navigerTil('trening', nyFane)}
-          campus={campus}
-        />
-      )}
-
-      {omraade === 'tester' && (
-        <WangKobledeVisninger elever={elever} visning="tester" />
-      )}
-      {omraade === 'tester' && (
-        <WangTester
-          aktivFane={fane}
-          onFaneEndret={(nyFane) => navigerTil('tester', nyFane)}
-          campus={campus}
-        />
-      )}
-
-      {omraade === 'konkurranse' && (
-        <WangKobledeVisninger elever={elever} visning="turneringer" />
-      )}
-      {omraade === 'konkurranse' && (
-        <WangKonkurranse
-          aktivFane={fane}
-          onFaneEndret={(nyFane) => navigerTil('konkurranse', nyFane)}
-          campus={campus}
-        />
-      )}
-
-      {omraade === 'meldinger' && (
-        <WangMeldinger
-          aktivFane={fane}
-          onFaneEndret={(nyFane) => navigerTil('meldinger', nyFane)}
-          campus={campus}
-        />
-      )}
-
-      {omraade === 'elever' && (
-        <WangKobledeVisninger elever={elever} visning="iup" />
-      )}
-      {omraade === 'elever' && (
-        <WangElever
-          aktivFane={fane}
-          onFaneEndret={(nyFane) => navigerTil('elever', nyFane)}
-          campus={campus}
-        />
-      )}
-
-      {omraade === 'admin' && (
-        <WangAdmin
-          aktivFane={fane}
-          onFaneEndret={(nyFane) => navigerTil('admin', nyFane)}
-          campus={campus}
-        />
-      )}
-
-      {omraade === 'system' && (
-        <WangSkjermoversikt
-          onNaviger={(nyttOmraade, nyFane) => {
-            navigerTil(nyttOmraade as WangOmraade, nyFane);
-          }}
-        />
-      )}
+      {omraade === 'system' && <WangAktivtRegister sportssjef={rolle === 'Sportssjef'} />}
     </WangAppSkall>
   );
 }

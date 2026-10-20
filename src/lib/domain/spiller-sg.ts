@@ -1,3 +1,4 @@
+import { withoutDataGolfRoundSg, independentSgInputWhere } from '@/lib/datagolf/round-provenance';
 /**
  * Én SG-sannhet — kanonisk kilde for «spillerens SG nå».
  *
@@ -139,12 +140,12 @@ export async function hentSpillerSg(userId: string): Promise<SpillerSg | null> {
   // Ingen OR-filter på sg-feltene her — se SPILLER_SG_RUNDER: vinduet skal
   // være de N nyeste rundene, samme som Hjem/Analysere. byggSpillerSgFraRunder
   // filtrerer bort de uten tall når snittet regnes.
-  const runder = await prisma.round.findMany({
+  const runder = await (prisma.round.findMany({
     where: { userId },
     orderBy: { playedAt: "desc" },
     take: SPILLER_SG_RUNDER,
-    select: { sgTotal: true, sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
-  });
+    select: {source: true, sgSource: true, sgReferenceSet: {select:{source:true,sourceVersion:true}},  sgTotal: true, sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
+  })).then(rows => rows.map(withoutDataGolfRoundSg));
 
   const fraRunder = byggSpillerSgFraRunder(runder);
   if (fraRunder) return fraRunder;
@@ -160,7 +161,7 @@ export async function hentSpillerSg(userId: string): Promise<SpillerSg | null> {
  */
 export async function hentSelvrapportertSg(userId: string): Promise<SpillerSg | null> {
   const registreringer = await prisma.brukerSgInput.findMany({
-    where: {
+    where: { ...independentSgInputWhere(),
       userId,
       OR: FELTER.map((f) => ({ [f]: { not: null } })),
     },

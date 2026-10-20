@@ -16,9 +16,7 @@ import {
   type SpillerKontekst,
 } from "@/lib/coaching-analysis";
 import {
-  finnSpillerSideId,
   opprettCoachingSesjon,
-  appendTilSpillerprofil,
   NOTION_COACHING_DB_ID,
 } from "@/lib/notion";
 import {
@@ -27,6 +25,8 @@ import {
   PYR_REKKEFOLGE,
 } from "@/lib/pyramide";
 import { logError } from "@/lib/error-tracking";
+import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
+import { hentLydSamtykkeStatus } from "@/lib/recording/lyd-samtykke";
 
 const Body = z.object({
   recordingId: z.string().min(1),
@@ -103,6 +103,7 @@ export async function POST(req: Request) {
   if (!user) {
     return NextResponse.json({ error: "Ikke innlogget" }, { status: 401 });
   }
+  if (user.role !== "COACH" && user.role !== "ADMIN") return NextResponse.json({ error: "Mangler tilgang" }, { status: 403 });
 
   // Rate-limit: 15 Claude-analyser per time per bruker (#12 demo-vennlig).
   const rl = await rateLimit({ key: `recording-analyze:${user.id}`, max: 15, windowMs: 3_600_000 });
@@ -137,6 +138,9 @@ export async function POST(req: Request) {
   if (recording.uploadedById !== user.id && user.role !== "ADMIN") {
     return NextResponse.json({ error: "Mangler tilgang" }, { status: 403 });
   }
+  if (!recording.playerId || !(await harCoachTilgangTilSpiller(user, recording.playerId))
+    || !(await hentLydSamtykkeStatus(recording.playerId)).tillatt)
+    return NextResponse.json({ error: "Mangler gjeldende tilgang eller lydsamtykke" }, { status: 403 });
   if (!recording.transcript || !recording.transcript.trim()) {
     return NextResponse.json(
       { error: "Mangler transkripsjon - kan ikke analysere" },
@@ -150,7 +154,7 @@ export async function POST(req: Request) {
 
   // Bygg spiller-kontekst. Hvis recording mangler playerId, bruker vi
   // uploadedBy som fallback (egen-okt) men markerer alder som null.
-  const spillerId = recording.playerId ?? recording.uploadedById;
+  const spillerId = recording.playerId;
   const spillerKontekst = await byggSpillerKontekst(spillerId);
 
   // 1) Kjor Claude
@@ -229,7 +233,9 @@ export async function POST(req: Request) {
   let notionUrl: string | null = null;
   if (NOTION_COACHING_DB_ID) {
     try {
-      const spillerSideId = await finnSpillerSideId(spillerKontekst.navn);
+      // Navnet alene kan ikke bevise hvilken Notion-profil som tilhører spiller-ID-en.
+      // Appens spillerbundne sjekkpunkt kommer gjennom den eksplisitte godkjenningskøen.
+      const spillerSideId = null;
       const dato = recording.completedAt ?? new Date();
       const res = await opprettCoachingSesjon({
         spillerNavn: spillerKontekst.navn,
@@ -254,15 +260,6 @@ export async function POST(req: Request) {
         where: { id: recording.id },
         data: { notionPageId },
       });
-
-      if (spillerSideId) {
-        const datoStr = dato.toISOString().split("T")[0];
-        await appendTilSpillerprofil(
-          spillerSideId,
-          datoStr,
-          analyse.oppsummering,
-        );
-      }
 
       await audit({
         actorId: user.id,

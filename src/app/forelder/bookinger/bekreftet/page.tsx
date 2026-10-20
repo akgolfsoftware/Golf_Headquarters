@@ -6,12 +6,14 @@
  * selv (booking.userId !== user.id ville alltid feilet for en forelder).
  */
 
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentBarnForForelder } from "@/lib/forelder";
 import { prisma } from "@/lib/prisma";
 import { ForelderSkall } from "@/components/precision/ForelderSkall";
 import { BookingBekreftetV2 } from "@/components/portal/v2/BookingBekreftetV2";
+import { forelderKontekstHref } from "@/lib/forelder-kontekst";
+import { datoTekst, klokkeTekst, googleKalenderUrl as lagKalenderUrl } from "@/lib/email/booking-bekreftelse";
 
 export const dynamic = "force-dynamic";
 
@@ -25,16 +27,7 @@ function googleKalenderUrl(booking: {
   serviceType: { name: string };
   location: { name: string };
 }): string {
-  const fmt = (d: Date) =>
-    d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
-  const params = new URLSearchParams({
-    action: "TEMPLATE",
-    text: `AK Golf — ${booking.serviceType.name}`,
-    dates: `${fmt(booking.startAt)}/${fmt(booking.endAt)}`,
-    location: booking.location.name,
-    details: "Booking via AK Golf HQ",
-  });
-  return `https://calendar.google.com/calendar/render?${params.toString()}`;
+  return lagKalenderUrl({ tjeneste: booking.serviceType.name, start: booking.startAt, slutt: booking.endAt, sted: booking.location.name, referanse: "Booking via AK Golf HQ" });
 }
 
 export default async function ForelderBekreftetPage({ searchParams }: Props) {
@@ -54,6 +47,7 @@ export default async function ForelderBekreftetPage({ searchParams }: Props) {
   });
 
   if (!booking || !barnIder.has(booking.userId ?? "")) notFound();
+  if (booking.status !== "CONFIRMED") redirect(forelderKontekstHref(`/forelder/bookinger/${booking.id}`, booking.userId));
 
   const coach = booking.serviceType.coachUserId
     ? await prisma.user.findUnique({
@@ -62,29 +56,20 @@ export default async function ForelderBekreftetPage({ searchParams }: Props) {
       })
     : null;
 
-  const dato = booking.startAt.toLocaleDateString("nb-NO", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    timeZone: "Europe/Oslo",
-  });
-  const klokkeslett = booking.startAt.toLocaleTimeString("nb-NO", {
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZone: "Europe/Oslo",
-  });
+  const dato = datoTekst(booking.startAt);
+  const klokkeslett = klokkeTekst(booking.startAt);
 
   return (
-        <ForelderSkall>
+        <ForelderSkall barnId={booking.userId}>
       <div className="pa-side">
       <BookingBekreftetV2
         data={{
           linje: `${booking.serviceType.name} · ${dato} · ${klokkeslett}`,
           coachNavn: coach?.name ?? null,
           sted: booking.location.name,
-          varighetMin: booking.serviceType.durationMin,
+          varighetMin: Math.round((booking.endAt.getTime() - booking.startAt.getTime()) / 60000),
           kalenderUrl: googleKalenderUrl(booking),
-          mineBookingerHref: "/forelder/bookinger",
+          mineBookingerHref: forelderKontekstHref("/forelder/bookinger", booking.userId),
           merkelapp: "Foreldreportal",
         }}
       />

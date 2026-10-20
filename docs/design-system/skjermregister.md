@@ -10,22 +10,22 @@ Rader: [JSON](skjermregister.json) og [CSV](skjermregister.csv). Regenerer med `
 
 ## Inventar
 
-Sidefiler med rute: **532**. Unike rutemønstre i skanningen: 532. Komponentfiler: 885. Ramme- og tilstandsfiler: 253.
+Sidefiler med rute: **547**. Unike rutemønstre i skanningen: 547. Komponentfiler: 901. Ramme- og tilstandsfiler: 255.
 
 Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kodeversjonen over og kan være høyere. Interne eksempler inngår. Ingen rute er slettet.
 
 | Område | Sidefiler |
 |---|---:|
-| agencyos | 166 |
+| agencyos | 168 |
 | delt-innsyn | 11 |
-| forelder | 16 |
+| forelder | 17 |
 | inngang-og-konto | 19 |
 | interne-eksempler | 6 |
-| lag-og-skole | 52 |
+| lag-og-skole | 59 |
 | marked-og-offentlig | 70 |
 | offentlig-booking | 4 |
 | personlig-arbeidsflate | 3 |
-| playerhq | 183 |
+| playerhq | 188 |
 | systemtilstand | 2 |
 
 ## Kobling
@@ -33,13 +33,13 @@ Porteringsplanen talte 520 da den ble skrevet. Denne skanningen er tatt på kode
 | Kobling | Rader |
 |---|---:|
 | tegnet-skjermtype | 285 |
-| videresending | 164 |
-| teknisk-forklaring | 31 |
+| videresending | 169 |
+| teknisk-forklaring | 41 |
 | byggeunderlag | 23 |
 | felles-monster | 22 |
 | intern-flate | 7 |
 
-250 rader treffer en av de 77 Precision-typene og er derfor merket valgt for bygging som design. 11 rader har ingen eksakt type. 166 rader har et registrert avvik. 140 rader har en Precision-visning i koden. 0 er kontrollert i appen.
+250 rader treffer en av de 77 Precision-typene og er derfor merket valgt for bygging som design. 14 rader har ingen eksakt type. 164 rader har et registrert avvik. 138 rader har en Precision-visning i koden. 0 er kontrollert i appen.
 
 ## Uten eksakt type
 
@@ -49,8 +49,11 @@ Tabellen er Precision-ruter uten treff i 74-listen, pluss WANG- og Team Norway-r
 |---|---|---|
 | `/admin/bookinger` | UTEN-TEGNET-TYPE | AG-06 Booking (coach) |
 | `/admin/innboks` | UTEN-TEGNET-TYPE | — |
+| `/admin/plan-templates/[id]/rull-ut` | UTEN-TEGNET-TYPE | AG-14 Plan-hub, maler og øvelser |
+| `/admin/recording/coaching` | UTEN-TEGNET-TYPE | AG-18 TrackMan og video |
 | `/admin/spillere/[id]/plan/[planId]/for-og-na` | UTEN-TEGNET-TYPE | AG-10 Teknisk plan |
 | `/auth/trenerdeling` | UTEN-TEGNET-TYPE | — |
+| `/portal/formel` | UTEN-TEGNET-TYPE | — |
 | `/portal/mal/evaluering` | UTEN-TEGNET-TYPE | PH-19 Workbench › Målsetninger |
 | `/portal/mal/sg-hub/coach/[spillerId]/[club]` | UTEN-TEGNET-TYPE | PH-19 Workbench › Målsetninger |
 | `/portal/mal/sg-hub/coach/[spillerId]/equipment` | UTEN-TEGNET-TYPE | PH-19 Workbench › Målsetninger |
@@ -59,14 +62,19 @@ Tabellen er Precision-ruter uten treff i 74-listen, pluss WANG- og Team Norway-r
 | `/portal/samlinger` | UTEN-TEGNET-TYPE | — |
 | `/portal/tren/teknisk-plan` | UTEN-TEGNET-TYPE | PH-19 Workbench › Målsetninger |
 | `/team-norway/analyse` | TN-UTEN-RAD | — |
+| `/team-norway/belastning` | TN-UTEN-RAD | — |
+| `/team-norway/deling` | TN-UTEN-RAD | — |
 | `/team-norway/fagapparat` | TN-UTEN-RAD | — |
 | `/team-norway/fellestesting/[deltakerId]` | TN-UTEN-RAD | — |
 | `/team-norway/lisens-okonomi` | TN-UTEN-RAD | — |
 | `/team-norway/live-watch` | TN-UTEN-RAD | — |
+| `/team-norway/oppgaver` | TN-UTEN-RAD | — |
+| `/team-norway/oppsett` | TN-UTEN-RAD | — |
 | `/team-norway/samlinger` | TN-UTEN-RAD | — |
 | `/team-norway/spiller/[spillerId]/analyse` | TN-UTEN-RAD | — |
 | `/team-norway/spiller/[spillerId]/evaluering` | TN-UTEN-RAD | — |
 | `/team-norway/spiller/[spillerId]/oversikt` | TN-UTEN-RAD | — |
+| `/team-norway/spiller/[spillerId]/samtale` | TN-UTEN-RAD | — |
 | `/team-norway/spiller/[spillerId]/teknisk-plan/[planId]` | TN-UTEN-RAD | — |
 | `/team-norway/spiller/[spillerId]/teknisk-plan` | TN-UTEN-RAD | — |
 | `/team-norway/spiller/[spillerId]/tester/[testId]` | TN-UTEN-RAD | — |
@@ -74,8 +82,10 @@ Tabellen er Precision-ruter uten treff i 74-listen, pluss WANG- og Team Norway-r
 | `/team-norway/turneringer/[id]` | TN-UTEN-RAD | — |
 | `/team-norway/wang-resultater` | TN-UTEN-RAD | — |
 | `/team-norway/workbench` | TN-UTEN-RAD | — |
+| `/team-wang/coach/spiller/[elevId]` | WANG-UTEN-RAD | — |
 | `/team-wang/coach/tester` | WANG-UTEN-RAD | — |
 | `/team-wang/coach/turneringer/[elevId]` | WANG-UTEN-RAD | — |
+| `/team-wang/meldinger` | WANG-UTEN-RAD | — |
 | `/team-wang/skjermer` | WANG-UTEN-RAD | — |
 
 ## Kommentar mot liste
@@ -88,7 +98,6 @@ Tabellen er Precision-ruter uten treff i 74-listen, pluss WANG- og Team Norway-r
 | `/auth/forgot-password` | AU-03 | Kodekommentaren sier AU-01. Skjermlisten sier AU-03. Kommentaren er opphav, ikke en ny godkjenning. |
 | `/auth/reset-password` | AU-03 | Kodekommentaren sier AU-01. Skjermlisten sier AU-03. Kommentaren er opphav, ikke en ny godkjenning. |
 | `/forelder/bookinger/ny` | FO-03 | Kodekommentaren sier FO-01. Skjermlisten sier FO-03. Kommentaren er opphav, ikke en ny godkjenning. |
-| `/forelder/coach` | FO-06 | Kodekommentaren sier FO-04. Skjermlisten sier FO-06. Kommentaren er opphav, ikke en ny godkjenning. |
 | `/forelder/fakturaer` | FO-04 | Kodekommentaren sier FO-05. Skjermlisten sier FO-04. Kommentaren er opphav, ikke en ny godkjenning. |
 | `/forelder/ukerapport` | FO-01 | Kodekommentaren sier FO-09. Skjermlisten sier FO-01. Kommentaren er opphav, ikke en ny godkjenning. |
 | `/forelder/varsler` | FO-01 | Kodekommentaren sier FO-10. Skjermlisten sier FO-01. Kommentaren er opphav, ikke en ny godkjenning. |

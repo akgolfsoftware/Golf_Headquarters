@@ -1,4 +1,12 @@
 import type { DrillRepState, LiveV2Drill, LiveV2DrillLog } from "@/components/portal/live/types";
+import { z } from "zod";
+
+export const FysRegistreringSchema = z.discriminatedUnion("type", [
+  z.object({ type: z.literal("styrke"), sett: z.array(z.object({ vekt: z.number().min(0).max(1000), reps: z.number().int().min(1).max(1000) })).min(1).max(20), notat: z.string().max(700) }),
+  z.object({ type: z.literal("kondisjon"), minutter: z.number().int().min(0).max(180), sone: z.enum(["S1", "S2", "S3", "S4", "S5"]), notat: z.string().max(700) }),
+  z.object({ type: z.literal("hold"), sekunder: z.number().int().min(0).max(300), notat: z.string().max(700) }),
+  z.object({ type: z.literal("reps"), repetisjoner: z.number().int().min(0).max(200), notat: z.string().max(700) }),
+]);
 
 export type FysRegistrering =
   | { type: "styrke"; sett: { vekt: number; reps: number }[]; notat: string }

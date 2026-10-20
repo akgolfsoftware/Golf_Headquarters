@@ -114,9 +114,9 @@ export default async function BarnProfil({
         orderBy: { scheduledAt: "asc" },
         select: { title: true, scheduledAt: true, durationMin: true, location: true },
       }),
-      // Siste coach-melding (samme kilde som hentForelderUkerapport/ForelderCoachV2).
+      // Siste melding til forelder om dette barnet, aldri barnets private innboks.
       prisma.notification.findFirst({
-        where: { userId: childId, type: "melding" },
+        where: { userId: user.id, type: "melding", link: `/forelder/barn/${childId}` },
         orderBy: { createdAt: "desc" },
         select: { title: true, body: true, createdAt: true },
       }),

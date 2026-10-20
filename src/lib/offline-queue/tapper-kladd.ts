@@ -18,6 +18,8 @@ export type TapperKoRad = {
   sistOppdatert: string;
   /** Antall mislykkede synk-forsøk siden raden ble lagt i køen. */
   forsokAntall: number;
+  /** Versjonen av tellingene. Gamle enhetskladder leses som versjon 0. */
+  revision?: number;
 };
 
 const MAKS_STILLE_FORSOK = 5;
@@ -35,6 +37,7 @@ export function byggKoRad(
     counts,
     sistOppdatert: naa.toISOString(),
     forsokAntall: 0,
+    revision: 0,
   };
 }
 
@@ -51,4 +54,10 @@ export function registrerMislykketForsok(rad: TapperKoRad, naa: Date): TapperKoR
  */
 export function trengerManuellHandling(rad: TapperKoRad): boolean {
   return rad.forsokAntall >= MAKS_STILLE_FORSOK;
+}
+
+/** En kvittering gjelder bare tellingene som faktisk ble sendt. */
+export function sammeTapperSnapshot(current: TapperKoRad, sent: TapperKoRad): boolean {
+  return current.key === sent.key && (current.revision ?? 0) === (sent.revision ?? 0)
+    && JSON.stringify(current.counts) === JSON.stringify(sent.counts);
 }

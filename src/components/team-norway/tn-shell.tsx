@@ -38,7 +38,9 @@ export type TnAktivSide =
   | "lisens"
   | "apparatet"
   | "analyse"
-  | "workbench";
+  | "workbench"
+  | "oppgaver"
+  | "belastning";
 
 function lenke(label: string, href: string, id: TnAktivSide, aktiv: TnAktivSide): TnMenyLenke {
   return { label, href, aktiv: aktiv === id };
@@ -83,7 +85,7 @@ export function tnHovedmeny({ aktiv, groupId, visTrenerflater: t, kanAdministrer
         ? [
             lenke("Uttak og kriterier", "/team-norway/uttak", "uttak", aktiv),
             lenke("Rangliste", "/team-norway/rangliste", "rangliste", aktiv),
-            { label: "DataGolf", href: "/portal/analysere/datagolf", aktiv: false },
+
           ]
         : [],
     },
@@ -95,6 +97,11 @@ export function tnHovedmeny({ aktiv, groupId, visTrenerflater: t, kanAdministrer
         lenke("Månedsplan", "/team-norway/manedsplan", "manedsplan", aktiv),
         ...(t
           ? [
+              lenke("Individuelle oppgaver", "/team-norway/oppgaver", "oppgaver", aktiv),
+              lenke("Gruppebelastning", "/team-norway/belastning", "belastning", aktiv),
+              { label: "Delingsoversikt", href: "/team-norway/deling", aktiv: false },
+              { label: "Organisasjonsoppsett", href: "/team-norway/oppsett", aktiv: false },
+              { label: "Nasjonal testoversikt", href: "/team-norway/wang-resultater", aktiv: false },
               lenke("Testprotokoller", "/team-norway/protokoller", "protokoller", aktiv),
               lenke("Referansenivåer", "/team-norway/referansenivaer", "referansenivaer", aktiv),
               lenke("Fagapparat", "/team-norway/fagapparat", "fagapparat", aktiv),
@@ -239,7 +246,7 @@ export function TnLenke({ href, children, fremhevet = false }: { href: string; c
   );
 }
 
-export type TnSpillerFane = "post" | "oversikt" | "tester" | "analyse" | "workbench" | "teknisk-plan" | "evaluering";
+export type TnSpillerFane = "post" | "oversikt" | "tester" | "analyse" | "workbench" | "teknisk-plan" | "evaluering" | "samtale";
 
 /**
  * Fast spillerhode + fanebar — brukes på ALLE spillerscopede TN-ruter
@@ -274,13 +281,14 @@ export function TnSpillerFaner({ spillerId, spillerNavn, aktiv, kanAdministrere 
         { id: "workbench", label: "Plan (Workbench)", href: `/team-norway/workbench?spiller=${spillerId}` },
         { id: "teknisk-plan", label: "Teknisk plan", href: `/team-norway/spiller/${spillerId}/teknisk-plan` },
         { id: "evaluering", label: "Evaluering", href: `/team-norway/spiller/${spillerId}/evaluering` },
+        { id: "samtale", label: "Utviklingssamtale", href: `/team-norway/spiller/${spillerId}/samtale` },
       ]
     : [];
   const faner = [...kjernefaner, ...planfaner];
   return (
     <header style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       <div>
-        <p style={{ margin: 0, fontFamily: TN.font.mono, fontSize: TN.text.micro, letterSpacing: TN.tracking.eyebrow, textTransform: "uppercase", color: TN.textSecondary }}>Spiller</p>
+        <p style={{ margin: 0, fontFamily: TN.font.body, fontSize: TN.text.xs, color: TN.textSecondary }}>Spiller</p>
         <h1 style={{ margin: "6px 0 0", fontFamily: TN.font.display, fontSize: "clamp(1.75rem, 4vw, 2.25rem)", lineHeight: TN.leading.tight, color: TN.navy900 }}>{spillerNavn}</h1>
       </div>
       <nav aria-label="Spillerfaner" style={{ display: "flex", gap: 4, flexWrap: "wrap", borderBottom: `1px solid ${TN.borderSubtle}` }}>
@@ -292,7 +300,9 @@ export function TnSpillerFaner({ spillerId, spillerNavn, aktiv, kanAdministrere 
             style={{
               minHeight: 44, display: "inline-flex", alignItems: "center", padding: "0 14px",
               fontSize: TN.text.sm, fontWeight: aktiv === f.id ? TN.weight.bold : TN.weight.semibold,
-              color: aktiv === f.id ? TN.navy900 : TN.textSecondary,
+              color: aktiv === f.id ? TN.white : TN.textSecondary,
+              background: aktiv === f.id ? TN.navy900 : "transparent",
+              borderRadius: TN.radius.sm,
               borderBottom: aktiv === f.id ? `2px solid ${TN.navy900}` : "2px solid transparent",
               textDecoration: "none",
             }}

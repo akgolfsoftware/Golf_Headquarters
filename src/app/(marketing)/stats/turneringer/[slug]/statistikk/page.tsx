@@ -1,3 +1,5 @@
+import { publicTournamentSourceWhere } from "@/lib/datagolf/public-sources";
+import { publicEntrySourceWhere } from "@/lib/datagolf/public-sources";
 /**
  * /stats/turneringer/[slug]/statistikk — Scorefordeling i feltet.
  *
@@ -48,7 +50,7 @@ function median(sorted: number[]): number | null {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const t = await prisma.tournament.findUnique({ where: { slug }, select: { name: true } });
+  const t = await prisma.tournament.findFirst({ where: { slug, ...publicTournamentSourceWhere() }, select: { name: true } });
   if (!t) return { title: "Turnering ikke funnet | AK Golf Stats" };
   return {
     title: `${t.name} · statistikk | AK Golf Stats`,
@@ -60,10 +62,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function TurneringStatistikk({ params }: Props) {
   const { slug } = await params;
 
-  const t = await prisma.tournament.findUnique({
-    where: { slug },
+  const t = await prisma.tournament.findFirst({
+    where: { slug, ...publicTournamentSourceWhere() },
     include: {
-      publicEntries: {
+      publicEntries: { where: publicEntrySourceWhere(),
         select: {
           rounds: true,
           status: true,

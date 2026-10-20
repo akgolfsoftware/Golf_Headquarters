@@ -12,7 +12,11 @@ mock.module("@/lib/prisma", { namedExports: { prisma: {
   } },
   tournamentEntry: { findMany: async ({ where }: { where: { userId: string; withdrawnAt: null; OR: unknown[] } }) => {
     assert.equal(where.userId, "user-a"); assert.equal(where.withdrawnAt, null);
-    assert.deepEqual(where.OR, [{ tournamentId: null }, { tournament: { mergedIntoId: null } }]);
+    assert.deepEqual(where.OR[0], { tournamentId: null });
+    const linked = where.OR[1] as { tournament: { mergedIntoId: null; sourceOrigin: { in: string[] } } };
+    assert.equal(linked.tournament.mergedIntoId, null);
+    assert.ok(linked.tournament.sourceOrigin.in.includes("GOLFBOX"));
+    assert.equal(linked.tournament.sourceOrigin.in.includes("DATAGOLF"), false);
     return [{ id: "linked-a", tournament: event, entryStatus: "COMPLETED", category: null },
       { id: "manual-b", tournament: null, manualName: "Egen cup", manualDate: new Date("2026-10-01"), entryStatus: "PLANNED", category: "Junior" }];
   } },

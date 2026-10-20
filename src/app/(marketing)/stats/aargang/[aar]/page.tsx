@@ -1,3 +1,4 @@
+import { publicEntrySourceWhere } from "@/lib/datagolf/public-sources";
 /**
  * /stats/aargang/[aar] — Kohort-detalj
  * Pixel-perfect port of design-handoff-stats-2026-05-25/project/js/pages-c.jsx#ArgangKohort
@@ -68,7 +69,7 @@ async function hentKohortData(aar: number): Promise<KohortData> {
       where: { country: "NO", birthYear: aar, isActive: true },
       include: {
         entries: {
-          where: { status: "FINISHED" },
+          where: { AND: [publicEntrySourceWhere(), { status: "FINISHED" }] },
           include: {
             tournament: { select: { startDate: true, tour: true, name: true } },
           },
@@ -261,7 +262,7 @@ export default async function AargangDetalj({
   const kohortLinjer = [
     {
       label: `${aarNum}-kohorten`,
-      color: "hsl(var(--primary))",
+      color: "var(--s-primary)",
       data: [14, 15, 16, 17].map((alder) => ({
         alder,
         snitt: 78.5 - (alder - 14) * 1.2 - (aarNum - 2007) * 0.3,
@@ -269,7 +270,7 @@ export default async function AargangDetalj({
     },
     {
       label: `${aarNum - 1}-kohorten`,
-      color: "hsl(var(--accent))",
+      color: "var(--s-accent)",
       dashed: true,
       data: [14, 15, 16, 17].map((alder) => ({
         alder,
@@ -278,7 +279,7 @@ export default async function AargangDetalj({
     },
     {
       label: `${aarNum - 2}-kohorten`,
-      color: "hsl(var(--muted-foreground))",
+      color: "var(--s-muted-fg)",
       dashed: true,
       data: [14, 15, 16, 17].map((alder) => ({
         alder,

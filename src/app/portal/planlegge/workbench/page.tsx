@@ -37,7 +37,7 @@ import { WorkbenchSamlet } from "@/components/workbench/WorkbenchSamlet";
 import { loadWorkbenchSamletData } from "@/lib/workbench/workbench-samlet-data";
 import { brukSamletWorkbench, parseWorkbenchFlate } from "@/lib/workbench/samlet-url";
 import { parseVisning } from "@/lib/workbench/visning-url";
-import { queryVerdi } from "@/lib/workbench/plan-kontekst";
+import { gyldigPlanDato, queryVerdi } from "@/lib/workbench/plan-kontekst";
 import "@/styles/precision-komponenter.css";
 import "@/styles/precision-athletics.css";
 import "@/styles/workbench-selected.css";
@@ -91,7 +91,7 @@ export default async function PlayerWorkbenchPage({ searchParams }: Props) {
       flate: parseWorkbenchFlate(queryVerdi(sp, "flate"), parseVisning(queryVerdi(sp, "niva") ?? queryVerdi(sp, "vis"))),
     });
     if (!data.ok) return <Feil uleste={uleste} melding={data.error} />;
-    return <Ramme uleste={uleste}><WorkbenchSamlet key={[playerId, data.data.planKontekst.weekStart, data.data.planKontekst.year, data.data.planKontekst.monthStart, data.data.planKontekst.referanse.periode, data.data.planKontekst.visning, data.data.flate].join(":")} data={data.data} /></Ramme>;
+    return <Ramme uleste={uleste}><WorkbenchSamlet key={[playerId, data.data.planKontekst.weekStart, data.data.planKontekst.year, data.data.planKontekst.monthStart, data.data.planKontekst.referanse.periode, data.data.planKontekst.visning, data.data.flate].join(":")} data={data.data} initialDayView={queryVerdi(sp, "dag") === "1" || queryVerdi(sp, "niva") === "dag"} initialLibraryOpen={queryVerdi(sp, "bibliotek") === "1"} initialDate={gyldigPlanDato(queryVerdi(sp, "uke"))} /></Ramme>;
   }
 
   const goals = await hentMaalSpor(playerId);

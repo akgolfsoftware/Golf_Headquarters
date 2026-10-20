@@ -47,7 +47,7 @@ test("sg-broen — aggregering og synk", async (t) => {
           findMany: async (args: Record<string, unknown>) => {
             if (findManyKaster) throw new Error("db nede");
             sisteFindManyArgs = args;
-            return runderIDb;
+            return runderIDb.map(row => ({ sgSource: "manual", sgReferenceSet: null, ...row }));
           },
         },
         brukerSgInput: {

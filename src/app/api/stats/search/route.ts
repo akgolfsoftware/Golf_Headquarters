@@ -1,3 +1,4 @@
+import { publicPgaSourceWhere, publicTournamentSourceWhere } from "@/lib/datagolf/public-sources";
 /**
  * GET /api/stats/search?q=hovland
  *
@@ -29,6 +30,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ norskeSpillere: [], pgaSpillere: [], turneringer: [] });
   }
 
+  try {
   const [norskeSpillere, pgaSpillere, turneringer] = await Promise.all([
     prisma.publicPlayer
       .findMany({
@@ -42,31 +44,31 @@ export async function GET(req: NextRequest) {
         orderBy: { name: "asc" },
         select: { slug: true, name: true, tier: true, bio: true },
       })
-      .catch(() => []),
+      ,
 
     prisma.pgaPlayerSeason
       .findMany({
         where: {
-          playerName: { contains: q, mode: "insensitive" },
+          ...publicPgaSourceWhere(), playerName: { contains: q, mode: "insensitive" },
           year: 2026,
         },
         take: 10,
         orderBy: { sgTotal: "desc" },
         select: { playerName: true, sgTotal: true, dgPlayerId: true },
       })
-      .catch(() => []),
+      ,
 
     prisma.tournament
       .findMany({
         where: {
-          name: { contains: q, mode: "insensitive" },
+          ...publicTournamentSourceWhere(), name: { contains: q, mode: "insensitive" },
           mergedIntoId: null,
         },
         orderBy: { startDate: "desc" },
         take: 10,
         select: { slug: true, name: true, startDate: true, tour: true },
       })
-      .catch(() => []),
+      ,
   ]);
 
   return NextResponse.json(
@@ -77,4 +79,7 @@ export async function GET(req: NextRequest) {
       },
     },
   );
+  } catch {
+    return NextResponse.json({ error: "Søkekilden kunne ikke leses. Prøv igjen." }, { status: 503, headers: { "Cache-Control": "no-store" } });
+  }
 }

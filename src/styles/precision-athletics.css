@@ -10,19 +10,30 @@
  * Skriftene lastes av next/font i src/app/layout.tsx.
  */
 
-/* ---- Farger (lyst tema er standard) ---- */
+/* Precision 3.1.0-l, D-47/D-78/D-79. Kilden er eksport 34; kun .pa-root. */
+/* AK Golf — Precision Athletics. Lyst tema er standard (planlegging, admin). */
 .pa-root{
+/* Sand — flater */
 --sand-100:#faf8f3;--sand-150:#f1eee8;--sand-200:#e6e3dd;--sand-300:#ddd9d1;--sand-400:#c9c4ba;--white:#ffffff;
+/* Grafitt — blekk og primærhandling. Ingen ren svart. */
 --graphite-900:#141413;--graphite-800:#2a2926;--graphite-700:#3a3935;--graphite-600:#46443f;--graphite-500:#686560;--graphite-400:#8a8680;
+/* Rust — KUN viktige handlingssignaler */
 --rust-600:#9b2415;--rust-700:#7d1c10;--rust-400:#d8553f;--rust-100:#fbebea;
+/* Natt — mørkt tema for utendørs gjennomføring */
 --night-950:#0c0d0c;--night-900:#141513;--night-850:#1b1c1a;--night-800:#232421;--night-700:#2f302c;--night-500:#6e6c66;--night-300:#a9a59d;--night-200:#cfcbc2;
+/* Semantisk rå */
 --green-700:#2f6b3a;--green-50:#eaf2ea;--amber-700:#7e6110;--amber-50:#fbf4e4;--blue-800:#1d3557;--blue-50:#e8edf4;
---axis-fys:#788c5d;--axis-fys-ink:#63784a;--axis-fys-soft:rgba(120,140,93,.13);
---axis-tek:#b8852a;--axis-tek-ink:#8a6316;--axis-tek-soft:rgba(184,133,42,.13);
+/* Banekart (nattkart) — terreng, aldri signal */
+--course-rough:#1f2a22;--course-rough-2:#233026;--course-green:#2b4a33;--course-green-edge:#3f6a4a;--course-bunker:#2a2823;
+/* Fem treningsakser — offisielle verdier fra appens kodebase. Base (fyll/prikk), tekst (på myk bakgrunn), myk bakgrunn */
+--axis-fys:#788c5d;--axis-fys-ink:#556740;--axis-fys-soft:rgba(120,140,93,.13);
+--axis-tek:#b8852a;--axis-tek-ink:#825d15;--axis-tek-soft:rgba(184,133,42,.13);
 --axis-slag:#2563eb;--axis-slag-ink:#1d4fd0;--axis-slag-soft:rgba(37,99,235,.13);
---axis-spill:#c46686;--axis-spill-ink:#9e4a67;--axis-spill-soft:rgba(196,102,134,.16);
+--axis-spill:#c46686;--axis-spill-ink:#954661;--axis-spill-soft:rgba(196,102,134,.16);
 --axis-turn:#a32d2d;--axis-turn-ink:#a32d2d;--axis-turn-soft:rgba(163,45,45,.13);
---surface-page:var(--sand-200);
+
+/* ---- Semantiske alias — komponentene bruker bare disse ---- */
+--surface-page:var(--white)/* 3.0.0 retning A (D-78 R11): nesten hvit grunnflate. Var sand-200 */;
 --surface-flat:var(--sand-100);
 --surface-card:var(--white);
 --surface-sunken:var(--sand-150);
@@ -32,7 +43,7 @@
 --text-body:var(--graphite-800);
 --text-secondary:var(--graphite-600);
 --text-muted:var(--graphite-500);
---text-faint:var(--graphite-400);
+--text-faint:var(--graphite-500);
 --text-on-primary:var(--white);
 --text-inverse:var(--sand-100);
 --border-hairline:var(--sand-300);
@@ -42,6 +53,9 @@
 --primary:var(--graphite-900);
 --primary-hover:var(--graphite-700);
 --primary-press:var(--graphite-800);
+/* --action = alias for primærhandling (porterte flater). Grafitt, aldri rust. */
+--action:var(--primary);--action-hover:var(--primary-hover);--action-press:var(--primary-press);--action-tint:var(--sand-200);--action-text:var(--white);--border-action:var(--border-ink);
+--surface-raised:var(--surface-card);--surface-ink:var(--graphite-900);--surface-ink-hover:var(--graphite-800);--text-inverse-soft:var(--sand-150);--border-warn:#e4d5a8;
 --signal:var(--rust-600);
 --signal-hover:var(--rust-700);
 --signal-tint:var(--rust-100);
@@ -50,13 +64,33 @@
 --warn:var(--amber-700);--warn-tint:var(--amber-50);
 --info:var(--blue-800);--info-tint:var(--blue-50);
 --link:var(--blue-800);
---focus-ring:var(--graphite-900);
+--focus-ring:var(--blue-800)/* 3.0.0 (D-78 R12): fokus har egen farge, så den skilles fra valgt (grafitt fyll). Var graphite-900 */;
+/* Semantiske alias for komponenter (05.10.2026, samme verdier som før, ingen nye farger) */
+--text-on-signal:var(--white);--control-knob:var(--white);--surface-selected:var(--surface-card);
+/* Bildekontur: nøytral 1 px, aldri tonet (flyttet fra components.css 05.10.2026, samme verdi) */
+--outline-photo:rgba(0,0,0,.1);
+/* Periodetyper i årsplanen — grafitt-trinn, aldri kulør (aksene eier kulørene) */
 --period-grunn:var(--graphite-600);--period-spesial:var(--graphite-500);--period-turnering:var(--graphite-900);--period-evaluering:var(--graphite-400);--period-ferie:var(--sand-400);--period-restitusjon:var(--sand-300);
+/* Domener = de fem aksene. Alias for porterte flater (Systemkart, AK-formelen, Masterutforsker). Aldri handling. */
+--domene-fys:var(--axis-fys);--domene-tek:var(--axis-tek);--domene-slag:var(--axis-slag);--domene-spill:var(--axis-spill);--domene-turn:var(--axis-turn);
+--data-k1:var(--axis-fys);--data-k2:var(--axis-tek);--data-k3:var(--axis-slag);--data-k4:var(--axis-spill);--data-k5:var(--axis-turn);
+/* Fortegn i grafer: over/under null. Aldri feiltilstand. Fortegnet står alltid i tallet. */
+--data-over:#13662b;--data-under:#863359;--data-felt:var(--graphite-500);--data-status-1:#5b8b03;--data-status-2:#ae4f17;
+/* Periodeblokker, fyll/blekk/kant (grafitt- og sandtrinn, aldri kulør) */
+--plan-periode-grunn-fill:var(--graphite-600);--plan-periode-grunn-ink:var(--sand-100);--plan-periode-grunn-kant:var(--graphite-600);
+--plan-periode-spesial-fill:var(--graphite-500);--plan-periode-spesial-ink:var(--sand-100);--plan-periode-spesial-kant:var(--graphite-500);
+--plan-periode-turnering-fill:var(--graphite-900);--plan-periode-turnering-ink:var(--sand-100);--plan-periode-turnering-kant:var(--graphite-900);
+--plan-periode-evaluering-fill:var(--graphite-400);--plan-periode-evaluering-ink:var(--graphite-900);--plan-periode-evaluering-kant:var(--graphite-400);
+--plan-periode-testuke-fill:var(--sand-200);--plan-periode-testuke-ink:var(--graphite-900);--plan-periode-testuke-kant:var(--graphite-500);
+--plan-periode-samling-fill:var(--sand-200);--plan-periode-samling-ink:var(--graphite-900);--plan-periode-samling-kant:var(--sand-400);
+--plan-periode-ferie-fill:var(--white);--plan-periode-ferie-ink:var(--graphite-900);--plan-periode-ferie-kant:var(--graphite-500);
 --scrim-modal:rgba(20,20,19,.44);
+--scrim-photo:linear-gradient(to bottom,rgba(20,20,19,.5) 0%,rgba(20,20,19,0) 24%,rgba(20,20,19,0) 40%,rgba(20,20,19,.8) 100%);/* @kind other */
 --axis-fys-fg:var(--axis-fys-ink);--axis-tek-fg:var(--axis-tek-ink);--axis-slag-fg:var(--axis-slag-ink);--axis-spill-fg:var(--axis-spill-ink);--axis-turn-fg:var(--axis-turn-ink);
 --axis-fys-bg:var(--axis-fys-soft);--axis-tek-bg:var(--axis-tek-soft);--axis-slag-bg:var(--axis-slag-soft);--axis-spill-bg:var(--axis-spill-soft);--axis-turn-bg:var(--axis-turn-soft);
 color-scheme:light;
 }
+/* Mørkt tema — dyp natt-flate. Live-økt og slagregistrering utendørs. */
 .pa-root[data-theme="night"]{
 --surface-page:var(--night-950);
 --surface-flat:var(--night-900);
@@ -68,7 +102,7 @@ color-scheme:light;
 --text-body:var(--night-200);
 --text-secondary:var(--night-300);
 --text-muted:var(--night-300);
---text-faint:var(--night-500);
+--text-faint:#928e86;
 --text-on-primary:var(--graphite-900);
 --text-inverse:var(--graphite-900);
 --border-hairline:var(--night-700);
@@ -78,6 +112,9 @@ color-scheme:light;
 --primary:var(--sand-100);
 --primary-hover:var(--white);
 --primary-press:var(--night-200);
+--action:var(--primary);--action-hover:var(--primary-hover);--action-press:var(--primary-press);--action-text:var(--graphite-900);--action-tint:var(--night-700);--border-action:var(--night-700);
+--surface-raised:var(--surface-card);--surface-ink:var(--sand-100);--surface-ink-hover:var(--white);--text-inverse-soft:var(--night-300);--border-warn:var(--night-500);
+--data-over:#6cb177;--data-under:#d481a2;--data-felt:var(--night-300);
 --signal:var(--rust-600);
 --signal-hover:#b12a19;
 --signal-tint:rgba(216,85,63,.16);
@@ -87,6 +124,8 @@ color-scheme:light;
 --info:#8fb0e6;--info-tint:rgba(143,176,230,.14);
 --link:var(--sand-100);
 --focus-ring:var(--sand-100);
+--surface-selected:var(--night-700);
+--outline-photo:rgba(255,255,255,.1);
 --scrim-modal:rgba(0,0,0,.6);
 --axis-fys:#56c59a;--axis-tek:#e8a33d;--axis-slag:#84a9ff;--axis-spill:#d98aa3;--axis-turn:#f2908c;
 --axis-fys-fg:var(--axis-fys);--axis-tek-fg:var(--axis-tek);--axis-slag-fg:var(--axis-slag);--axis-spill-fg:var(--axis-spill);--axis-turn-fg:var(--axis-turn);
@@ -94,51 +133,124 @@ color-scheme:light;
 color-scheme:dark;
 }
 
-/* ---- Typografi ---- */
+/* ---- Typografi fra Precision 3.1.0-l, koblet til appens lokale skrifter ---- */
 .pa-root{
---font-sans:var(--font-ibm-plex-sans),"IBM Plex Sans",system-ui,sans-serif;
---font-mono:var(--font-ibm-plex-mono),"IBM Plex Mono",ui-monospace,monospace;
---fs-10:10px;--fs-11:11px;--fs-13:13px;--fs-14:14px;--fs-15:15px;--fs-17:17px;--fs-21:21px;--fs-26:26px;--fs-28:28px;--fs-40:40px;--fs-56:56px;--fs-72:72px;
---fw-regular:400;--fw-medium:500;--fw-semibold:600;
---lh-tight:1.05;--lh-snug:1.25;--lh-normal:1.45;
+--font-sans:var(--font-ibm-plex-sans),"IBM Plex Sans","IBM Plex Sans Fallback",system-ui,sans-serif;
+--font-display:var(--font-sans);/* 2.19.0: titler. AK = IBM Plex Sans. Organisasjonene setter egen i tokens/org.css */
+--font-mono:var(--font-ibm-plex-mono),"IBM Plex Mono","IBM Plex Mono Fallback",ui-monospace,monospace;
+--fs-10:0.625rem;--fs-11:0.6875rem;--fs-13:0.8125rem;--fs-14:0.875rem;--fs-15:0.9375rem;--fs-17:1.0625rem;--fs-21:1.3125rem;--fs-26:1.625rem;--fs-28:1.75rem;--fs-40:2.5rem;--fs-56:3.5rem;--fs-64:4rem;--fs-72:4.5rem;--fs-88:5.5rem;
+--fw-regular:400;/* @kind font */
+--fw-medium:500;/* @kind font */
+--fw-semibold:600;/* @kind font */
+
+--lh-tight:1.05;/* @kind font */
+--lh-snug:1.25;/* @kind font */
+--lh-normal:1.45;/* @kind font */
+
 --tracking-kicker:.08em;--tracking-display:-.015em;--tracking-mono:.01em;
---type-display:600 var(--fs-40)/var(--lh-tight) var(--font-sans);
---type-title-l:600 var(--fs-28)/1.15 var(--font-sans);
---type-title-m:600 var(--fs-21)/var(--lh-snug) var(--font-sans);
---type-title-s:600 var(--fs-17)/var(--lh-snug) var(--font-sans);
+/* 3.0.0 (D-78 R14): skriftstørrelsene er i rem (1rem = 16 px som standard), så brukerens standard skriftstørrelse virker. Ved 16 px er pikslene de samme som før. Avstand, radius og treffflater er fortsatt i px. */
+/* Roller */
+--type-display:600 var(--fs-40)/var(--lh-tight) var(--font-display);
+--type-title-l:600 var(--fs-28)/1.15 var(--font-display);
+--type-title-m:600 var(--fs-21)/var(--lh-snug) var(--font-display);
+--type-title-s:600 var(--fs-17)/var(--lh-snug) var(--font-display);
 --type-body:400 var(--fs-14)/1.5 var(--font-sans);
 --type-body-s:400 var(--fs-14)/var(--lh-normal) var(--font-sans);
 --type-label:500 var(--fs-13)/var(--lh-snug) var(--font-sans);
 --type-button:500 var(--fs-14)/1 var(--font-sans);
 --type-kicker:600 var(--fs-11)/var(--lh-snug) var(--font-sans);
 --type-meta:400 var(--fs-11)/var(--lh-snug) var(--font-mono);
+--font-meta:var(--font-mono);--type-meta-xs:400 var(--fs-10)/var(--lh-snug) var(--font-mono);
 --type-num-s:500 var(--fs-13)/1.2 var(--font-mono);
 --type-num:500 var(--fs-15)/1.2 var(--font-mono);
 --type-metric:600 var(--fs-26)/1 var(--font-mono);
 --type-metric-l:600 var(--fs-40)/1 var(--font-mono);
 --type-clock:500 var(--fs-72)/1 var(--font-mono);
+/* 3.1.0-f: total tid i LiveRun. Samme piksler som før ved 16 px rot (64 smal, 88 bred), nå i rem (R14). Tallrolle: temaene rører den ikke (D-47). */
+--type-clock-run-s:600 var(--fs-64)/1 var(--font-mono);
+--type-clock-run:600 var(--fs-88)/1 var(--font-mono);
+/* 2.34.0 (D-77 R2): semantiske roller etter funksjon. Bruk disse i stedet for --type-meta når informasjonen krever handling eller skal leses.
+   Handlingstid og frist: 17 px mono (tall stilles opp). Instruksjon og forklaring: 15 px i tekstfonten. Kilde, sammenligning og oppdatert: 13 px.
+   --type-meta (11 px) er bare for mindre viktig metadata og tekniske ID-er. */
+--type-time-action:600 var(--fs-17)/1.25 var(--font-mono);
+--type-deadline:500 var(--fs-15)/1.3 var(--font-mono);
+--type-instruction:400 var(--fs-15)/1.5 var(--font-sans);
+--type-source:400 var(--fs-13)/1.4 var(--font-sans);
+--type-place:500 var(--fs-15)/1.35 var(--font-sans);
 }
 
-/* ---- Avstand, hjørner, skygger, rammer, bevegelse ---- */
+/* ---- Avstand, form, bevegelse og layout fra Precision 3.1.0-l ---- */
 .pa-root{
+/* 4/8-rutenett */
 --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:20px;--space-6:24px;--space-8:32px;--space-10:40px;--space-12:48px;--space-16:64px;--space-20:80px;
---radius:8px;--radius-modal:12px;--radius-pill:999px;--radius-mark:0;--radius-inner:4px;
---shadow-card:none;
+/* Radius: 8 kort/knapp/felt · 12 modal · 999 badge/status · 0 datamerker · 4 indre flate i tett nesting (konsentrisk: ytre 8 − 4 px luft) */
+--radius:8px;--radius-card:var(--radius);/* 2.19.0: kort. Organisasjonene setter egen */--radius-modal:12px;--radius-pill:999px;--radius-mark:0;--radius-inner:4px;
+/* 2.31.0: egen semantisk radius for statusmerket. Standard = pille (uendret). Forslaget til Anders er var(--radius-inner) (4 px), vist i galleri-2310.card. Organisasjonene arver --radius-pill. */
+--radius-status:var(--radius-pill);
+/* Skygger — nesten fraværende */
+--shadow-card:none;/* 27.09: kort er struktur, ikke elevation — bare hairline */
 --shadow-raised:0 1px 2px rgba(20,20,19,.08);
 --shadow-pop:0 8px 24px rgba(20,20,19,.12),0 1px 2px rgba(20,20,19,.08);
 --shadow-modal:0 24px 64px rgba(20,20,19,.24);
 --border-w:1px;
+}
+.pa-root[data-theme="night"]{--shadow-card:none;--shadow-raised:none;--shadow-pop:0 8px 24px rgba(0,0,0,.5);--shadow-modal:0 24px 64px rgba(0,0,0,.6)}
+
+.pa-root{
+--dur-feedback:70ms;/* @kind other */
+/* 2.24.0 (D-71): alias for skalaen, fjernes etter én release */
+--dur-press:var(--dur-2);/* @kind other */
+--dur-swap:var(--dur-3);/* @kind other */
+/* 2.21.0: fast skala 120 · 160 · 200 · 240 ms og én kurve (--ease-out) for alt som kommer inn. Ut er raskere enn inn. */
+--dur-1:120ms;/* @kind other */
+--dur-2:160ms;/* @kind other */
+--dur-3:200ms;/* @kind other */
+--dur-4:240ms;/* @kind other */
+--dur-exit:160ms;/* @kind other */
+--dur-row:200ms;/* @kind other */
+--dur-dialog:200ms;/* @kind other */
+--ease-standard:var(--ease-out);/* @kind other */
+--dialog-scale:.97;/* @kind other */
+--dur-fast:var(--dur-2);/* @kind other */
+--dur-base:var(--dur-3);/* @kind other */
+--dur-sheet:250ms;/* @kind other */
+
+--ease-out:cubic-bezier(.23,1,.32,1);/* @kind other */
+--ease-in-out:cubic-bezier(.77,0,.175,1);/* @kind other */
+--ease-drawer:cubic-bezier(.32,.72,0,1);/* @kind other */
+--ease-color:ease;/* @kind other */
+--ease-swap:cubic-bezier(.2,0,0,1);/* @kind other */
+
+--press-scale:.96;/* @kind other */
+--press-scale-card:.99;/* @kind other */
+/* 2.24.0 (D-71 Signatur): gjeldende verdier fra motion-kontrakten. --dur-travel brukes ikke i Signatur (A15: høyst 250 ms). */
+--dur-travel:280ms;/* @kind other */
+--ease-exit:cubic-bezier(.4,0,1,1);/* @kind other */
+--spring-snap:220ms cubic-bezier(.34,1.04,.64,1);/* @kind other */
+--ring-scale:1.6;/* @kind other */
+
+}
+/* Live og utendørs (natt): statisk trykk */
+.pa-root[data-theme="night"]{--press-scale:1;/* @kind other */
+--press-scale-card:1;/* @kind other */}
+@media (prefers-reduced-motion:reduce){.pa-root{--press-scale:1;/* @kind other */
+--press-scale-card:1;/* @kind other */
+--dur-swap:0ms;/* @kind other */
+--dur-row:0ms;/* @kind other */
+--dialog-scale:1;/* @kind other */
+--dur-sheet:120ms;/* @kind other */
+--dur-base:120ms;/* @kind other */
+--dur-travel:120ms;/* @kind other */
+--ring-scale:1;/* @kind other */}}
+
+/* 2.24.0: [data-motion]-blokken fra oppdrag 61 er flyttet til .pa-root over (D-71). */
+
+.pa-root{
 --topbar-h:56px;--tabbar-h:64px;--sidenav-w:236px;--inspector-w:340px;--content-max:1200px;
 --hit-min:44px;--hit-outdoor:56px;
---control-h-sm:32px;--control-h:40px;--control-h-lg:48px;--control-h-xl:56px;
---dur-press:150ms;--dur-swap:300ms;--dur-fast:150ms;--dur-base:200ms;--dur-sheet:250ms;
---ease-out:cubic-bezier(.23,1,.32,1);--ease-in-out:cubic-bezier(.77,0,.175,1);--ease-drawer:cubic-bezier(.32,.72,0,1);--ease-color:ease;--ease-swap:cubic-bezier(.2,0,0,1);
---press-scale:.96;--press-scale-card:.99;
+--toast-offset:calc(var(--tabbar-h) + 16px);--toast-offset-sticky:calc(var(--tabbar-h) + 96px);
+--control-h-sm:44px;--control-h:44px;--control-h-lg:48px;--control-h-xl:56px;
 }
-.pa-root[data-theme="night"]{--shadow-raised:none;--shadow-pop:0 8px 24px rgba(0,0,0,.5);--shadow-modal:0 24px 64px rgba(0,0,0,.6);--press-scale:1;--press-scale-card:1}
-@media (prefers-reduced-motion:reduce){.pa-root{--press-scale:1;--press-scale-card:1;--dur-swap:0ms;--dur-sheet:120ms;--dur-base:120ms}}
-/* Touch — mobil og nettbrett: minst 44 × 44 px treffflate */
-@media (pointer:coarse),(max-width:1024px){.pa-root{--control-h:44px;--control-h-sm:44px}}
 
 /* ---- Grunnlag (tokens/base.css, avgrenset) ---- */
 .pa-root{font:var(--type-body);color:var(--text-body);background:var(--surface-page);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;font-variant-numeric:tabular-nums}
@@ -170,7 +282,12 @@ color-scheme:dark;
 .pa-iconbtn:hover:not(:disabled){background:var(--surface-hover)}
 .pa-rail__item:hover{background:var(--surface-hover);color:var(--text-primary)}
 }
-.pa-btn__loading{font-family:var(--font-mono);font-size:var(--fs-13)}
+/* Precision 3.1.0-l: behold bredde, ikonplass og én lesbar etikett under lagring. */
+.pa-btn__labels{display:grid;min-width:0;gap:inherit}
+.pa-btn__content,.pa-btn__loading{grid-area:1/1;display:inline-flex;align-items:center;justify-content:center;gap:inherit}
+.pa-btn__loading{visibility:hidden;font:inherit}
+.pa-btn[data-loading="true"] .pa-btn__content{visibility:hidden}
+.pa-btn[data-loading="true"] .pa-btn__loading{visibility:visible}
 .pa-btn--icon-l{padding-left:14px}.pa-btn--icon-r{padding-right:14px}
 .pa-btn--lg.pa-btn--icon-l,.pa-btn--xl.pa-btn--icon-l{padding-left:18px}.pa-btn--lg.pa-btn--icon-r,.pa-btn--xl.pa-btn--icon-r{padding-right:18px}
 
@@ -1105,3 +1222,6 @@ button.fo-person:not(.fo-kort){background:transparent;border:0;padding:0}
 .ph26l-submit:disabled{opacity:0.6;cursor:not-allowed}
 .ph26l-avbryt{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 16px;color:var(--text-secondary);font:600 14px/1 var(--font-sans);text-decoration:none}
 .ph26l-avbryt:hover{color:var(--text-primary)}
+.pa-root .pa-sports-cover{position:relative;overflow:hidden;min-width:0;height:180px;border-radius:var(--radius-card)}
+.pa-root .pa-sports-cover[data-compact="true"]{height:120px}
+.pa-root .pa-sports-cover img{display:block;width:100%;height:100%;object-fit:cover}

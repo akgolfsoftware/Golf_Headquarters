@@ -2,11 +2,11 @@
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getAbonnementData } from "@/lib/portal-abonnement/abonnement-data";
+import { prisma } from "@/lib/prisma";
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { PH25Abonnement } from "@/components/portal/precision/PH25Abonnement";
 import {
   PH25_PLANER,
-  PH25_STANDARD_DATA,
   PH25_STANDARD_HJELP,
   type PH25AbonnementData,
   type PlanId,
@@ -43,16 +43,20 @@ export default async function AbonnementPage({
   if (user.role === "PARENT") redirect("/forelder");
   if (user.role === "GUEST") redirect("/admin/kalender");
 
-  const abo = await getAbonnementData(user.id);
+  const [abo, appSubscription] = await Promise.all([
+    getAbonnementData(user.id),
+    prisma.subscription.findUnique({ where: { userId_kind: { userId: user.id, kind: "PLAYERHQ" } },
+      select: { status: true, interval: true, plan: true, currentPeriodEnd: true, cancelAtPeriodEnd: true } }),
+  ]);
 
   const planId: PlanId = abo.erPro ? "FULL" : "TALENT";
-  const fornyesDato = formatDato(abo.nesteTrekk) ?? "26.10.2026";
-  const endsDato = formatDato(abo.nesteTrekk) ?? "25.10.2026";
-  const erAvbestilt = abo.status === "CANCELLED" || sp.avbestilt === "1";
+  const fornyesDato = formatDato(appSubscription?.currentPeriodEnd ?? null) ?? "—";
+  const endsDato = fornyesDato;
+  const erAvbestilt = appSubscription?.status === "CANCELLED" || appSubscription?.cancelAtPeriodEnd === true;
 
   const maskertTelefon = user.phone
     ? `+47 ••• •• ${user.phone.slice(-3)}`
-    : "+47 ••• •• 412";
+    : "—";
 
   const fakturaer = abo.fakturaer.length > 0
     ? abo.fakturaer.map((f) => ({
@@ -62,22 +66,18 @@ export default async function AbonnementPage({
         belop: Math.round(f.amountOre / 100),
         status: "Betalt",
       }))
-    : planId === "FULL"
-    ? PH25_STANDARD_DATA.invoices
     : [];
 
   const initialData: PH25AbonnementData = {
     current: {
       plan: planId,
-      period: "mnd",
+      period: appSubscription?.interval === "year" || appSubscription?.plan === "PLAYERHQ_AAR" ? "ar" : "mnd",
       renews: fornyesDato,
       ends: endsDato,
       cancelled: erAvbestilt,
     },
     plans: PH25_PLANER,
-    card: planId === "FULL" || abo.monthlyCredits > 0
-      ? { brand: "Visa", last4: "4821", exp: "08/28" }
-      : null,
+    card: null,
     invoices: fakturaer,
     samtykker: {
       coach: true,
@@ -93,9 +93,9 @@ export default async function AbonnementPage({
       caddie: false,
     },
     sikkerhet: {
-      tofaktor: true,
+      tofaktor: false,
       telefonMaskert: maskertTelefon,
-      sidenDato: "12.01.2026",
+      sidenDato: "—",
     },
     hjelp: PH25_STANDARD_HJELP,
   };
@@ -112,6 +112,7 @@ export default async function AbonnementPage({
         onTilbakeHref="/portal/meg"
         onOppgraderHref="/portal/meg/abonnement/oppgrader/flyt"
         onKortHref="/portal/meg/abonnement/kort/ny"
+        paymentFailed={appSubscription?.status === "PAST_DUE"}
       />
     </PlayerHQSkall>
   );

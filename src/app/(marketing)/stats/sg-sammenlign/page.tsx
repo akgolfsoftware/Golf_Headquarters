@@ -56,7 +56,7 @@ export default async function SgSammenlignLanding() {
               <h1 style={{ fontSize: "clamp(52px, 6vw, 84px)", lineHeight: 0.95, fontWeight: 600, fontFamily: "var(--font-display)", letterSpacing: "-0.03em", marginTop: 20 }}>
                 Sammenligna deg<br/>
                 med{" "}
-                <em style={{ fontStyle: "italic", fontWeight: 400, color: "hsl(var(--accent))" }}>
+                <em style={{ fontStyle: "italic", fontWeight: 400, color: "var(--s-accent)" }}>
                   Rory McIlroy
                 </em>.
               </h1>
@@ -85,7 +85,7 @@ export default async function SgSammenlignLanding() {
               </div>
               <div
                 className="stats-eyebrow"
-                style={{ marginTop: 20, color: "hsl(var(--muted-foreground))" }}
+                style={{ marginTop: 20, color: "var(--s-muted-fg)" }}
               >
                 KREVER GRATIS KONTO · INGEN KREDITTKORT · 60 SEK
               </div>
@@ -95,7 +95,7 @@ export default async function SgSammenlignLanding() {
             <Reveal delay={150}>
               <div
                 style={{
-                  background: "hsl(var(--secondary))",
+                  background: "var(--s-secondary)",
                   borderRadius: 20,
                   padding: 32,
                   display: "grid",
@@ -158,7 +158,7 @@ export default async function SgSammenlignLanding() {
               <StatsEyebrow>Slik fungerer det</StatsEyebrow>
               <h2 style={{ fontFamily: "var(--font-display)", fontSize: 36, fontWeight: 600, letterSpacing: "-0.025em", marginTop: 12, lineHeight: 1.05 }}>
                 Tre steg.{" "}
-                <em style={{ fontStyle: "italic", fontWeight: 400, color: "hsl(var(--primary))" }}>
+                <em style={{ fontStyle: "italic", fontWeight: 400, color: "var(--s-primary)" }}>
                   Tre minutter.
                 </em>
               </h2>
@@ -196,8 +196,8 @@ export default async function SgSammenlignLanding() {
             <Reveal key={i} delay={i * 100}>
               <div
                 style={{
-                  background: "hsl(var(--card))",
-                  border: "1px solid hsl(var(--border))",
+                  background: "var(--s-card)",
+                  border: "1px solid var(--s-border)",
                   borderRadius: 16,
                   padding: 28,
                   display: "flex",
@@ -211,8 +211,8 @@ export default async function SgSammenlignLanding() {
                       fontFamily: "var(--font-mono)",
                       fontSize: 13,
                       fontWeight: 600,
-                      color: "hsl(var(--primary-foreground))",
-                      background: "hsl(var(--primary))",
+                      color: "var(--s-primary-fg)",
+                      background: "var(--s-primary)",
                       padding: "4px 10px",
                       borderRadius: 6,
                       letterSpacing: "0.06em",
@@ -220,7 +220,7 @@ export default async function SgSammenlignLanding() {
                   >
                     {s.n}
                   </span>
-                  <span style={{ color: "hsl(var(--primary))" }}>{s.icon}</span>
+                  <span style={{ color: "var(--s-primary)" }}>{s.icon}</span>
                 </div>
                 <h3
                   style={{
@@ -232,7 +232,7 @@ export default async function SgSammenlignLanding() {
                 >
                   {s.t}
                 </h3>
-                <p style={{ fontSize: 14, color: "hsl(var(--muted-foreground))", lineHeight: 1.55 }}>
+                <p style={{ fontSize: 14, color: "var(--s-muted-fg)", lineHeight: 1.55 }}>
                   {s.d}
                 </p>
               </div>
@@ -244,7 +244,7 @@ export default async function SgSammenlignLanding() {
       {/* ── EKSEMPLER ───────────────────────────────────────────────── */}
       <section
         className="stats-section stats-section-divider"
-        style={{ background: "hsl(var(--secondary))" }}
+        style={{ background: "var(--s-secondary)" }}
       >
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <Reveal>
@@ -253,7 +253,7 @@ export default async function SgSammenlignLanding() {
                 <StatsEyebrow>Eksempler</StatsEyebrow>
                 <h2 style={{ fontFamily: "var(--font-display)", fontSize: 36, fontWeight: 600, letterSpacing: "-0.025em", marginTop: 12, lineHeight: 1.05 }}>
                   Hva du kan{" "}
-                  <em style={{ fontStyle: "italic", fontWeight: 400, color: "hsl(var(--primary))" }}>
+                  <em style={{ fontStyle: "italic", fontWeight: 400, color: "var(--s-primary)" }}>
                     finne ut
                   </em>
                   .
@@ -289,8 +289,8 @@ export default async function SgSammenlignLanding() {
               <Reveal key={i} delay={i * 100}>
                 <div
                   style={{
-                    background: "hsl(var(--card))",
-                    border: "1px solid hsl(var(--border))",
+                    background: "var(--s-card)",
+                    border: "1px solid var(--s-border)",
                     borderRadius: 16,
                     padding: 28,
                   }}
@@ -301,7 +301,7 @@ export default async function SgSammenlignLanding() {
                       fontSize: 10,
                       letterSpacing: "0.16em",
                       textTransform: "uppercase",
-                      color: "hsl(var(--muted-foreground))",
+                      color: "var(--s-muted-fg)",
                       marginBottom: 16,
                     }}
                   >
@@ -314,7 +314,7 @@ export default async function SgSammenlignLanding() {
                       size={140}
                     />
                   </div>
-                  <p style={{ fontSize: 14, color: "hsl(var(--muted-foreground))", lineHeight: 1.5 }}>
+                  <p style={{ fontSize: 14, color: "var(--s-muted-fg)", lineHeight: 1.5 }}>
                     {c.txt}
                   </p>
                 </div>
@@ -335,7 +335,7 @@ export default async function SgSammenlignLanding() {
               <StatsEyebrow>Intro</StatsEyebrow>
               <h2 style={{ fontFamily: "var(--font-display)", fontSize: 36, fontWeight: 600, letterSpacing: "-0.025em", marginTop: 12, lineHeight: 1.05 }}>
                 Hva er{" "}
-                <em style={{ fontStyle: "italic", fontWeight: 400, color: "hsl(var(--primary))" }}>
+                <em style={{ fontStyle: "italic", fontWeight: 400, color: "var(--s-primary)" }}>
                   Strokes Gained
                 </em>
                 ?
@@ -376,13 +376,13 @@ export default async function SgSammenlignLanding() {
             <Reveal key={i} delay={i * 60}>
               <div
                 style={{
-                  background: "hsl(var(--secondary))",
+                  background: "var(--s-secondary)",
                   borderRadius: 12,
                   padding: 24,
                   transition: "transform 0.2s, box-shadow 0.2s",
                 }}
               >
-                <span style={{ color: "hsl(var(--primary))" }}>{sg.icon}</span>
+                <span style={{ color: "var(--s-primary)" }}>{sg.icon}</span>
                 <div
                   style={{
                     fontFamily: "var(--font-mono)",
@@ -390,7 +390,7 @@ export default async function SgSammenlignLanding() {
                     fontSize: 16,
                     marginTop: 12,
                     letterSpacing: "0.04em",
-                    color: "hsl(var(--foreground))",
+                    color: "var(--s-fg)",
                   }}
                 >
                   {sg.tag}
@@ -398,7 +398,7 @@ export default async function SgSammenlignLanding() {
                 <p
                   style={{
                     fontSize: 13,
-                    color: "hsl(var(--muted-foreground))",
+                    color: "var(--s-muted-fg)",
                     lineHeight: 1.5,
                     marginTop: 8,
                   }}
@@ -417,11 +417,11 @@ export default async function SgSammenlignLanding() {
               lineHeight: 1.7,
               marginTop: 32,
               maxWidth: 720,
-              color: "hsl(var(--muted-foreground))",
+              color: "var(--s-muted-fg)",
             }}
           >
             Strokes Gained ble utviklet av{" "}
-            <strong style={{ color: "hsl(var(--foreground))" }}>Mark Broadie</strong> ved
+            <strong style={{ color: "var(--s-fg)" }}>Mark Broadie</strong> ved
             Columbia Business School. Tour-snittet er definert som 0: et
             positivt tall betyr at du vinner strokes mot snittet, et negativt at
             du taper.
@@ -437,8 +437,8 @@ export default async function SgSammenlignLanding() {
         // --tl-ok (#9DB284) og lander på 2,2:1 mot papir.
         style={
           {
-            background: "hsl(var(--primary))",
-            color: "hsl(var(--background))",
+            background: "var(--s-primary)",
+            color: "var(--s-bg)",
             "--accent": "87 24% 38%",
           } as React.CSSProperties
         }
@@ -464,11 +464,11 @@ export default async function SgSammenlignLanding() {
                   letterSpacing: "-0.025em",
                   marginTop: 12,
                   lineHeight: 1.1,
-                  color: "hsl(var(--background))",
+                  color: "var(--s-bg)",
                 }}
               >
                 Når du ser{" "}
-                <em style={{ fontStyle: "italic", fontWeight: 400, color: "hsl(var(--accent))" }}>
+                <em style={{ fontStyle: "italic", fontWeight: 400, color: "var(--s-accent)" }}>
                   gapet
                 </em>
                 , vil du lukke det.
@@ -529,7 +529,7 @@ export default async function SgSammenlignLanding() {
                       width: 6,
                       height: 6,
                       borderRadius: "50%",
-                      background: "hsl(var(--accent))",
+                      background: "var(--s-accent)",
                       marginTop: 5,
                       flexShrink: 0,
                     }}
@@ -543,7 +543,7 @@ export default async function SgSammenlignLanding() {
                   fontSize: 10,
                   letterSpacing: "0.16em",
                   textTransform: "uppercase",
-                  color: "hsl(var(--accent))",
+                  color: "var(--s-accent)",
                   marginTop: 8,
                 }}
               >
@@ -575,7 +575,7 @@ export default async function SgSammenlignLanding() {
               }}
             >
               Det tar{" "}
-              <em style={{ fontStyle: "italic", fontWeight: 400, color: "hsl(var(--primary))" }}>
+              <em style={{ fontStyle: "italic", fontWeight: 400, color: "var(--s-primary)" }}>
                 60 sekunder
               </em>
               .
@@ -583,7 +583,7 @@ export default async function SgSammenlignLanding() {
             <p
               style={{
                 fontSize: 17,
-                color: "hsl(var(--muted-foreground))",
+                color: "var(--s-muted-fg)",
                 marginTop: 20,
                 lineHeight: 1.55,
               }}
@@ -607,7 +607,7 @@ export default async function SgSammenlignLanding() {
                 fontSize: 11,
                 letterSpacing: "0.14em",
                 textTransform: "uppercase",
-                color: "hsl(var(--muted-foreground))",
+                color: "var(--s-muted-fg)",
                 marginTop: 20,
               }}
             >

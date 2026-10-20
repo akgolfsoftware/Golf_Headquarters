@@ -530,7 +530,7 @@ export function PgaKategoriDetaljPage({
                   alignItems: "center",
                   gap: 8,
                   background: "var(--accent)",
-                  color: "hsl(var(--foreground))",
+                  color: "var(--s-fg)",
                   padding: "12px 24px",
                   borderRadius: 999,
                   fontSize: 14,

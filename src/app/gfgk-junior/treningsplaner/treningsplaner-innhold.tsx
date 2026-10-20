@@ -50,9 +50,11 @@ function klientMnd(): number {
 export function TreningsplanerInnhold({
   startGruppe,
   ukeplaner,
+  kilder,
 }: {
   startGruppe: GruppeKey;
   ukeplaner: Record<GruppeKey, UkeOkt[]>;
+  kilder?: Partial<Record<GruppeKey, "agencyos" | "fallback">>;
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -100,12 +102,12 @@ export function TreningsplanerInnhold({
             Fra årsplan til den enkelte økten. Velg gruppe – hele siden oppdaterer seg etter
             alder og nivå.
           </p>
-          <div className="flex flex-wrap gap-2 pb-8 pt-7" role="tablist" aria-label="Velg gruppe">
+          <div className="flex flex-wrap gap-2 pb-8 pt-7" role="group" aria-label="Velg gruppe">
             {GRUPPE_KEYS.map((k) => (
               <button
                 key={k}
-                role="tab"
-                aria-selected={k === gKey}
+                type="button"
+                aria-pressed={k === gKey}
                 onClick={() => velgGruppe(k)}
                 className="cursor-pointer rounded-full px-4 py-2.5 text-[15px] font-bold transition-all sm:px-5"
                 style={{
@@ -401,6 +403,7 @@ export function TreningsplanerInnhold({
 
       {/* 04 Ukeplan */}
       <section id="ukeplan" className="mx-auto max-w-[1200px] scroll-mt-20 px-5 pt-20 sm:px-7">
+        <p className="jr-kilde" role="status">{kilder?.[gKey] === "agencyos" ? "Faste uketider fra klubbens gjeldende gruppeplan." : "Uketidene er foreløpige. Bekreft dag, tidspunkt og sted med treneren før oppmøte."}</p>
         <div className="flex items-baseline gap-3.5">
           <span className="text-sm font-medium" style={{ fontFamily: "var(--font-jr-mono)", color: "var(--fg-3)" }}>04</span>
           <span className="text-[13px] font-bold uppercase tracking-[0.14em]" style={{ color: "var(--teal-600)" }}>Ukeplan</span>

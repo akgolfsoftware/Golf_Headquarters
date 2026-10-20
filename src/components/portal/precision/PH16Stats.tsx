@@ -76,6 +76,23 @@ export function PH16Stats({
   const manglerRunder = Math.max(0, MIN_RUNDER_FOR_KONKLUSJON - antallSnitt);
 
   const curFane = FANER.find((f) => f.id === fane) ?? FANER[0];
+  const grunnlag = fane === "snitt" ? {
+    label: "Snitt brutto", value: formaterDesimal(d.spiller.snittBrutto),
+    periode: "Siste 10 registrerte 18-hullsrunder", mengde: `${antallSnitt} runder i grunnlaget`,
+    kilde: "Egne registrerte runder · minimum 4 for en konklusjon",
+  } : fane === "sg" ? {
+    label: "Strokes Gained", value: pgaTour ? "PGA Tour" : "Neste kategori",
+    periode: "Siste 10 runder med målt SG", mengde: `Opptil ${Math.max(0, ...alleSgRader.map((r) => r.n))} runder per område`,
+    kilde: pgaTour ? "PGA Tour-referanse · bare målte slag" : "Kategorireferansen er ikke satt. Ingen sammenligning beregnes.",
+  } : fane === "tren" ? {
+    label: "Registrert trening", value: `${formaterDesimal(d.trening.pyramide.totalHours)} t`,
+    periode: d.trening.pyramide.src, mengde: `${Object.keys(d.trening.trackman.data).length} køller med TrackMan-data`,
+    kilde: "Registrert trening og importerte målinger",
+  } : {
+    label: "Testresultater", value: String(d.tester.length),
+    periode: "Siste registrerte resultat per test", mengde: `${d.tester.length} tester med resultater`,
+    kilde: "Kontrollert og egenregistrert vises hver for seg",
+  };
 
   return (
     <div className="pa-side" style={{ maxWidth: 1200, margin: "0 auto", padding: "16px 20px" }}>
@@ -110,7 +127,7 @@ export function PH16Stats({
 
       {/* 4 Faner (Tablist) */}
       <div
-        role="tablist"
+        role="group"
         aria-label="Stats faner"
         style={{
           display: "grid",
@@ -125,8 +142,7 @@ export function PH16Stats({
             <button
               key={it.id}
               type="button"
-              role="tab"
-              aria-selected={erAktiv}
+              aria-pressed={erAktiv}
               onClick={() => setFane(it.id)}
               style={{
                 minHeight: 48,
@@ -151,8 +167,13 @@ export function PH16Stats({
         })}
       </div>
 
+      <section className="ph16-grunnlag" aria-label="Resultat og datagrunnlag">
+        <div><Meta>{grunnlag.label}</Meta><strong className="ph16-grunnlag__verdi">{grunnlag.value}</strong><p>{grunnlag.mengde}</p></div>
+        <div className="ph16-grunnlag__metadata"><p><strong>Periode:</strong> {grunnlag.periode || "Ikke oppgitt"}</p><p><strong>Kilde:</strong> {grunnlag.kilde}</p></div>
+      </section>
+
       {/* Øverst nå: Positiv trend og flest tapte slag */}
-      <div
+      {(fane === "snitt" || fane === "sg") && <div
         className="pa-card"
         style={{
           padding: 16,
@@ -278,7 +299,7 @@ export function PH16Stats({
             })}
           </div>
         </div>
-      </div>
+      </div>}
 
       {/* Sammenligningsvelger (vises for relevante faner) */}
       {(fane === "snitt" || fane === "sg") && (

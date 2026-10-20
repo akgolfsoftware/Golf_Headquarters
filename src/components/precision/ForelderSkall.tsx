@@ -8,11 +8,13 @@
  */
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useState, type ReactNode } from "react";
 import { Bell, Ellipsis, MessagesSquare, ShieldCheck, Sun, Wallet } from "lucide-react";
 import { Ikon } from "./pa";
 import "@/styles/precision-athletics.css";
+import "@/styles/precision-support-upgrade.css";
+import { forelderKontekstHref } from "@/lib/forelder-kontekst";
 
 const FANER = [
   { href: "/forelder", label: "I dag", icon: Sun, name: "sun" },
@@ -37,8 +39,12 @@ function erAktiv(path: string, href: string) {
   return path === href || path.startsWith(href + "/");
 }
 
-export function ForelderSkall({ children }: { children: ReactNode; navn?: string | null }) {
+export function ForelderSkall({ children, barnId: kjentBarnId }: { children: ReactNode; navn?: string | null; barnId?: string | null }) {
   const path = usePathname() ?? "/forelder";
+  const searchParams = useSearchParams();
+  const pathBarn = /^\/forelder\/barn\/([^/]+)$/.exec(path)?.[1] ?? /^\/forelder\/bookinger\/ny\/([^/]+)/.exec(path)?.[1];
+  const barnId = kjentBarnId ?? pathBarn ?? searchParams.get("barn");
+  const href = (target: string) => forelderKontekstHref(target, barnId);
   const [mer, setMer] = useState(false);
 
   return (
@@ -46,16 +52,16 @@ export function ForelderSkall({ children }: { children: ReactNode; navn?: string
       <a className="pa-sr pa-skip" href="#pa-innhold">Hopp til innhold</a>
       <nav className="pa-skall__skinne" aria-label="Hovedmeny">
         <div className="pa-skall__bjellecelle">
-          <Link href="/forelder/varsler" className="pa-iconbtn" aria-label="Varsler">
+          <Link href={href("/forelder/varsler")} className="pa-iconbtn" aria-label="Varsler">
             <Ikon icon={Bell} size={20} name="bell" />
           </Link>
         </div>
         <div className="pa-rail">
-          <Link href="/forelder" aria-label="Forelder hjem" style={{ display: "grid", placeItems: "center", width: 44, height: 44, marginBottom: 8 }}>
+          <Link href={href("/forelder")} aria-label="Forelder hjem" style={{ display: "grid", placeItems: "center", width: 44, height: 44, marginBottom: 8 }}>
             <Image src="/logos/ak-golf-logo-ink.svg" alt="AK Golf HQ" width={28} height={28} />
           </Link>
           {FANER.map((f) => (
-            <Link key={f.href} href={f.href} className="pa-rail__item" aria-label={f.label} aria-current={erAktiv(path, f.href) ? "page" : undefined}>
+            <Link key={f.href} href={href(f.href)} className="pa-rail__item" aria-label={f.label} aria-current={erAktiv(path, f.href) ? "page" : undefined}>
               <Ikon icon={f.icon} size={20} name={f.name} />
             </Link>
           ))}
@@ -65,26 +71,26 @@ export function ForelderSkall({ children }: { children: ReactNode; navn?: string
         </div>
       </nav>
       <header className="pa-skall__topp">
-        <Link href="/forelder" aria-label="Forelder hjem" style={{ display: "flex", alignItems: "center", minHeight: 44, minWidth: 0 }}>
+        <Link href={href("/forelder")} aria-label="Forelder hjem" style={{ display: "flex", alignItems: "center", minHeight: 44, minWidth: 0 }}>
           <Image src="/logos/logo-ak-golf-hq.svg" alt="AK Golf HQ" width={91} height={20} style={{ height: 20, width: "auto" }} priority />
         </Link>
         <span style={{ flex: 1 }} />
         <button type="button" className="pa-btn pa-btn--ghost pa-btn--sm" aria-expanded={mer} onClick={() => setMer((v) => !v)}>Mer</button>
-        <Link href="/forelder/varsler" className="pa-iconbtn" aria-label="Varsler">
+        <Link href={href("/forelder/varsler")} className="pa-iconbtn" aria-label="Varsler">
           <Ikon icon={Bell} size={20} name="bell" />
         </Link>
       </header>
       {mer ? (
         <nav className="fo-mer" aria-label="Flere sider">
           {MER.map((m) => (
-            <Link key={m.href} href={m.href} aria-current={erAktiv(path, m.href) ? "page" : undefined} onClick={() => setMer(false)}>{m.label}</Link>
+            <Link key={m.href} href={href(m.href)} aria-current={erAktiv(path, m.href) ? "page" : undefined} onClick={() => setMer(false)}>{m.label}</Link>
           ))}
         </nav>
       ) : null}
       <main id="pa-innhold" className="pa-skall__main fo-ramme">{children}</main>
       <nav className="pa-tabbar pa-skall__faner" aria-label="Hovedmeny">
         {FANER.map((f) => (
-          <Link key={f.href} href={f.href} className="pa-tabbar__item" aria-current={erAktiv(path, f.href) ? "page" : undefined}>
+          <Link key={f.href} href={href(f.href)} className="pa-tabbar__item" aria-current={erAktiv(path, f.href) ? "page" : undefined}>
             <Ikon icon={f.icon} size={22} name={f.name} />{f.label}
           </Link>
         ))}
