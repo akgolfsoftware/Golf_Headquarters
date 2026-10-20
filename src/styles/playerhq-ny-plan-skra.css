@@ -1,0 +1,34 @@
+/*
+ * Plan i Skrå-drakten (alternativ C). Toppen, kortene og kolonnene deler byggeklosser og kolonneoppsett med I dag
+ * (playerhq-ny-idag.css §Skrå). Her står bare verktøylinjen i toppen og innholdet i ukekortet.
+ */
+.phn-plan-skra .plan-verktoy { display: grid; gap: 10px; justify-items: start; }
+/* Verktøylinjen står på bildet: glass og hvit tekst. */
+.phn-plan-skra .plan-verktoy .phn-valg { display: inline-flex; flex-wrap: wrap; gap: 6px; }
+.phn-plan-skra .plan-verktoy .phn-valg > * { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 14px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .34); background: rgba(20, 20, 19, .34); color: #fff; font: 500 14px/1 var(--phn-sans); text-decoration: none; cursor: pointer; }
+.phn-plan-skra .plan-verktoy .phn-valg > [aria-pressed="true"] { background: #fff; color: var(--ak-g900); border-color: #fff; }
+.phn-plan-skra .plan-verktoy .phn-pil > * { display: inline-grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, .34); background: rgba(20, 20, 19, .34); color: #fff; }
+.phn-plan-skra .plan-verktoy .phn-knapp.sek { background: rgba(255, 255, 255, .16); color: #fff; border: 1px solid rgba(255, 255, 255, .34); }
+.phn-plan-skra .plan-verktoy .phn-knapp.pri { background: #fff; color: var(--ak-g900); border-color: #fff; }
+
+/* Ukekortet: dagene i en liste som brekker seg etter plassen, aldri sidelengs rulling. */
+.phn-plan-skra .phn-dager:not(.kun-dag) { grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 1fr)); gap: 16px; }
+.phn-plan-skra .plan-forslag { display: grid; gap: 14px; }
+.phn-plan-skra .plan-forslag-rad { display: grid; gap: 8px; padding-bottom: 14px; border-bottom: 1px solid var(--ak-strek); }
+.phn-plan-skra .plan-forslag-rad:last-child { padding-bottom: 0; border-bottom: 0; }
+.phn-plan-skra .skra-plass:empty { display: none; }
+.phn-plan-skra .plan-verktoy .phn-knapp { min-height: 48px; }
+.phn-plan-skra :is(.phn-opptatt, .phn-heldag, .phn-okt) { min-height: 48px; }
+.phn-plan-skra .phn-knapp { min-height: 48px; }
+
+/* Valgknappene: ingen lys ramme rundt, de står rett på bildet. */
+.phn-plan-skra .plan-verktoy .phn-valg { padding: 0; background: none; border: 0; box-shadow: none; }
+.phn-plan-skra .phn-lag button[aria-pressed="true"] i { box-shadow: 0 0 0 1.5px #fff; }
+/* «Nå»-kortet står i den smale kolonnen: knappene under teksten, og tallene litt mindre. */
+@container (min-width: 900px) {
+  .phn-plan-skra .skra-h > .skra-plass > section:first-child { grid-template-columns: minmax(0, 1fr); align-items: start; }
+}
+.phn-plan-skra .skra-h section:first-child strong { font-size: 34px; }
+.phn-plan-skra .skra-h section:first-child h2 { font-size: 20px; }
+.phn-plan-skra .phn-plan-fot { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+.phn-plan-skra .phn-lag button { min-height: 48px; }
