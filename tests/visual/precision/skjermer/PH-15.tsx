@@ -11,6 +11,12 @@ export const sti = "/portal/tren/tester/team-norway";
 const wedge = tnProtocol("wedge-gate")!;
 const naer = tnProtocol("naerspill-gate")!;
 const ball = tnProtocol("8-ball-blocked")!;
+const inspill = tnProtocol("inspill-gutter-145")!;
+const putt = tnProtocol("putt-1-3m")!;
+const speed = tnProtocol("putt-speed-1x5")!;
+const bane = tnProtocol("golfslag-bane-gutter")!;
+const puttGate = tnProtocol("putt-gate")!;
+const ni = tnProtocol("9-hull-lengde")!;
 
 const PSVAR = ["I sonen", "Gjennom porten", "Bom"] as const;
 /** Poeng-gate: sant = I sonen (4), usant = Bom (0); hver tredje er «Gjennom porten» (1). */
@@ -19,7 +25,7 @@ const gate = (svar: boolean[]): TnValues => Object.fromEntries(svar.map((ok, i) 
 const SLAG: ([number, number] | null)[] = [[9.6, 0.3], null, [8.9, -0.8], [28.6, 0.9], [31.2, -0.6], [30.4, 2.3], [19.3, 0.4], [20.5, 0.3], [21.2, -0.6], [39.2, 0.5]];
 const ballVerdier: TnValues = Object.fromEntries(SLAG.map((s, i) => [String(i + 1), (s ? { carry: s[0], side: s[1] } : { holed: "I hull" }) as Record<string, string | number>]));
 
-const uuid = (n: number) => `00000000-0000-4000-8000-00000000000${n}`;
+const uuid = (n: number) => `00000000-0000-4000-8000-${String(n).padStart(12, "0")}`;
 const vis = (n: React.ReactNode) => (
   <LokalDataEierProvider eierId="prove-spiller"><PlayerHQSkall innboksHref="/portal/varsler" uleste={2}>{n}</PlayerHQSkall></LokalDataEierProvider>
 );
@@ -31,5 +37,11 @@ export const tilstander = {
   hand: vis(<PH15TnTest protocol={naer} initial={init(3, gate([true, false, false, true]))} />),
   tn8: vis(<PH15TnTest protocol={ball} initial={init(4, ballVerdier)} />),
   "tn8-tom": vis(<PH15TnTest protocol={ball} localSessionId={uuid(5)} />),
+  carry: vis(<PH15TnTest protocol={inspill} initial={init(6, { "1": { carry: 141, side: -3.2 }, "2": { carry: 150.5, side: 6.2 } })} />),
+  putt: vis(<PH15TnTest protocol={putt} initial={init(7, { "1": { strokes: 1 }, "2": { strokes: 2 }, "3": { strokes: 1 } })} />),
+  speed: vis(<PH15TnTest protocol={speed} initial={init(8, { "1": { distance: 0.5, distanceUnit: "m", longShort: "Lang" }, "2": { distance: 0.25, distanceUnit: "m", longShort: "Kort" } })} />),
+  bane: vis(<PH15TnTest protocol={bane} initial={init(9, { "1": { hole: 1, result: 11.5, lie: "Green" } })} />),
+  puttgate: vis(<PH15TnTest protocol={puttGate} initial={init(10, { "1": { ok: "Godkjent" }, "2": { ok: "Bom" }, "3": { ok: "Godkjent", speedZone: "Ja" } })} />),
+  niHull: vis(<PH15TnTest protocol={ni} initial={init(11, { "1": { klasse: "I hull" }, "2": { klasse: "Under 1 fot" }, "3": { klasse: "1–2 fot" } })} />),
   laster: vis(<TmLaster tekst="Henter testen" />),
 };

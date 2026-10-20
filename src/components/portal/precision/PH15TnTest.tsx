@@ -30,18 +30,20 @@ import { useTnDraft, type TnInitial } from "@/lib/portal-tester/use-tn-draft";
 import { tnDefinitionId } from "@/lib/portal-tester/tn-integration";
 import { GATE_POENG_VALG } from "@/lib/portal-tester/tn-catalog";
 import type { TnSaveInput } from "@/lib/portal-tester/tn-session";
+import { GenerellInn, GenerellListe, GenerellTopp, erGenerell } from "./PH15TnGenerell";
 import { saveTnTest } from "@/app/portal/tren/tester/team-norway/actions";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-stats.css";
 import "@/styles/playerhq-ny-statsdybde.css";
 import "@/styles/playerhq-ny-tester.css";
 
-export type PH15TnType = "gate" | "ball8";
+export type PH15TnType = "gate" | "ball8" | "generell";
 
 /** Hvilken ny skjerm en Team Norway-protokoll får. null = det generelle scorekortet. */
 export function ph15TnType(p: TnProtocol): PH15TnType | null {
   if (p.points8Ball && p.rows.every((r) => r.target !== undefined)) return "ball8";
-  if (p.kind === "gate" && p.rows.every((r) => r.fields.length === 1 && (r.fields[0]!.choices?.length === 2 || erPoengValg(r.fields[0]!.choices)))) return "gate";
+  if (p.kind === "gate" && p.rows.every((r) => (r.fields[0]!.choices?.length === 2 || erPoengValg(r.fields[0]!.choices)) && r.fields.slice(1).every((f) => f.optional))) return "gate";
+  if (erGenerell(p)) return "generell";
   return null;
 }
 
@@ -62,6 +64,8 @@ function erPoengValg(choices: readonly string[] | undefined): boolean {
   return !!choices && choices.length === Object.keys(GATE_POENG_VALG).length && choices.every((c) => c in GATE_POENG_VALG);
 }
 const erPoengGate = (p: TnProtocol) => erPoengValg(p.rows[0]?.fields[0]?.choices);
+/** Driver Gate og Putt Gate telles som OK («X / 6 OK», «X / 10 OK», Anders 20.10). */
+const erOkGate = (p: TnProtocol) => p.id === "driver-gate" || p.id === "putt-gate";
 const poengFor = (v: string | number | null | undefined) => (typeof v === "string" && v in GATE_POENG_VALG ? GATE_POENG_VALG[v as keyof typeof GATE_POENG_VALG] : null);
 const GATE_SVAR: { verdi: keyof typeof GATE_POENG_VALG; tittel: string; tekst: string }[] = [
   { verdi: "I sonen", tittel: "Porten og sonen", tekst: "Gjennom porten, og i sonen" },
@@ -69,7 +73,7 @@ const GATE_SVAR: { verdi: keyof typeof GATE_POENG_VALG; tittel: string; tekst: s
   { verdi: "Bom", tittel: "Bom", tekst: "Ikke gjennom porten" },
 ];
 
-const AKSE = (p: TnProtocol) => (p.points8Ball ? { k: "slag", t: "SLAG", o: "Golfslag" } : { k: "tek", t: "TEK", o: "Teknikk" });
+const AKSE = (p: TnProtocol) => (p.points8Ball || ["carry", "putts", "course", "free-course"].includes(p.kind) ? { k: "slag", t: "SLAG", o: "Golfslag" } : { k: "tek", t: "TEK", o: "Teknikk" });
 const slagNavn = (label: string) => label.replace(/^([A-Za-zÆØÅæøå]+)(\d+)$/, "$1 $2 m");
 const tall = (v: number, d = 1) => (Math.round(v * 10 ** d) / 10 ** d).toLocaleString("nb-NO", { minimumFractionDigits: d, maximumFractionDigits: d });
 
@@ -141,15 +145,21 @@ export function PH15TnTest(props: Props) {
       <div className="phn-motor">
         {type === "gate"
           ? <GateTopp p={p} godkjent={godkjenteAv(p, values)} igjen={igjen} closed={closed} resultat={resultat} />
-          : <BallTopp p={p} values={values} n={antallFerdige} igjen={igjen} closed={closed} resultat={resultat} />}
+          : type === "generell"
+            ? <GenerellTopp p={p} values={values} n={antallFerdige} igjen={igjen} closed={closed} resultat={resultat} />
+            : <BallTopp p={p} values={values} n={antallFerdige} igjen={igjen} closed={closed} resultat={resultat} />}
 
         {!closed && (type === "gate"
           ? <GateInn p={p} n={n} laast={laast} alle={alle} raw={draft.raw} sett={settRad} angre={() => { const i = sisteFort(); if (i >= 0) settRad(i, null); }} kanAngre={sisteFort() >= 0} />
-          : <BallInn key={n} p={p} n={n} laast={laast} alle={alle} raw={draft.raw} sett={settRad} angre={() => { const i = sisteFort(); if (i >= 0) settRad(i, null); }} kanAngre={sisteFort() >= 0} />)}
+          : type === "generell"
+            ? <GenerellInn p={p} n={n} laast={laast} alle={alle} raw={draft.raw} sett={settRad} angre={() => { const i = sisteFort(); if (i >= 0) settRad(i, null); }} kanAngre={sisteFort() >= 0} />
+            : <BallInn key={n} p={p} n={n} laast={laast} alle={alle} raw={draft.raw} sett={settRad} angre={() => { const i = sisteFort(); if (i >= 0) settRad(i, null); }} kanAngre={sisteFort() >= 0} />)}
 
         {type === "gate"
           ? <GateRutenett p={p} n={closed ? -1 : n} raw={draft.raw} laast={laast} sett={settRad} />
-          : <BallListe p={p} n={closed ? -1 : n} values={values} />}
+          : type === "generell"
+            ? <GenerellListe p={p} n={antallFerdige} values={values} />
+            : <BallListe p={p} n={closed ? -1 : n} values={values} />}
 
         <div className="phn-lagre-felt full">
           <div className="phn-hvem">
@@ -222,9 +232,9 @@ function GateTopp({ p, godkjent, igjen, closed, resultat }: { p: TnProtocol; god
   const poeng = erPoengGate(p);
   return (
     <div className="phn-fylt tek full">
-      <span className="phn-akse-tekst">{poeng ? "TEK · POENG PER SLAG" : "TEK · GODKJENT ELLER BOM"}</span>
+      <span className="phn-akse-tekst">{poeng ? "TEK · POENG PER SLAG" : erOkGate(p) ? "TEK · OK ELLER IKKE OK" : "TEK · GODKJENT ELLER BOM"}</span>
       <div className="phn-rad">
-        <span className="phn-stor">{closed && !resultat ? "—" : godkjent}<small>{poeng ? `/ ${p.rows.length * 4} p` : `/ ${p.rows.length} godkjent`}</small></span>
+        <span className="phn-stor">{closed && !resultat ? "—" : godkjent}<small>{poeng ? `/ ${p.rows.length * 4} p` : erOkGate(p) ? `/ ${p.rows.length} OK` : `/ ${p.rows.length} godkjent`}</small></span>
         <span className="phn-trend">{closed ? (resultat ? "Lagret" : "Ikke lagret") : igjen ? `${igjen} slag igjen` : "Alle slag ført"}</span>
       </div>
       <p>{p.rows[0]?.fields[0]?.label ?? "Godkjent eller bom"}.</p>
@@ -259,8 +269,8 @@ function GateInn({ p, n, laast, alle, raw, sett, angre, kanAngre }: {
         </div>
       ) : (
         <div className="phn-tb">
-          <button type="button" className="godkjent" disabled={laast || alle} onClick={() => r && fort(godkjentVerdi(r))}><Check className="phn-ikon" aria-hidden />Godkjent</button>
-          <button type="button" className="bom" disabled={laast || alle} onClick={() => r && fort(bomVerdi(r))}><X className="phn-ikon" aria-hidden />Bom</button>
+          <button type="button" className="godkjent" disabled={laast || alle} onClick={() => r && fort(godkjentVerdi(r))}><Check className="phn-ikon" aria-hidden />{erOkGate(p) ? "OK" : "Godkjent"}</button>
+          <button type="button" className="bom" disabled={laast || alle} onClick={() => r && fort(bomVerdi(r))}><X className="phn-ikon" aria-hidden />{erOkGate(p) ? "Ikke OK" : "Bom"}</button>
         </div>
       )}
       <button type="button" className="phn-angre" disabled={laast || !kanAngre} onClick={angre}><Undo2 className="phn-ikon" aria-hidden />Angre siste</button>
