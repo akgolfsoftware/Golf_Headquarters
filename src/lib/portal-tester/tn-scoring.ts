@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { forventedePutter, gronnePutter, sgFraLengde } from "@/lib/domain/pei/broadie-sg-tabeller";
 import { poeng8Ball, poeng8BallExcelV3 } from "@/lib/domain/pei/poeng-tabeller";
-import { TN_GODKJENT_VERSION, TN_VERSIONS, tnVersion, type TnVersion, type TnProtocol, type TnRow } from "./tn-catalog";
+import { GATE_POENG_IDS, GATE_POENG_VALG, TN_GODKJENT_VERSION, TN_POENG_VERSION, TN_VERSIONS, tnVersion, type TnVersion, type TnProtocol, type TnRow } from "./tn-catalog";
 import { formaterTestMetrikk } from "./format-verdi";
 
 export const TnValuesSchema = z.record(z.string().regex(/^[1-9]\d*$/), z.record(z.string().max(60), z.union([z.number().finite(), z.string().max(80), z.null()])));
@@ -106,12 +106,23 @@ export function tnScore(p: TnProtocol, values: TnValues): TnResult {
   };
   if (p.kind === "points") {
     metric("Totalt antall poeng", sum(p.rows.map((_, i) => get(i, "points"))), "poeng", false);
+  } else if (p.kind === "gate" && tnVersion(p) === TN_POENG_VERSION && (GATE_POENG_IDS as readonly string[]).includes(p.id)) {
+    // 1 poeng gjennom porten, 4 også i sonen, maks 4 per slag (Anders 20.10.2026).
+    const poeng = p.rows.map((_, i) => GATE_POENG_VALG[values[String(i + 1)].ok as keyof typeof GATE_POENG_VALG]);
+    const maks = 4 * p.rows.length;
+    metric("Poeng", sum(poeng), `/ ${maks} p`, false);
+    metric("Gjennom porten", poeng.filter(x => x > 0).length, `/ ${p.rows.length}`, false);
+    metric("I sonen", poeng.filter(x => x === 4).length, `/ ${p.rows.length}`, false);
   } else if (p.kind === "gate") {
     const hits = p.rows.filter((_, i) => {
       const row = values[String(i + 1)];
       return godkjent(row.ok) && (p.id !== "putt-gate" || row.speedZone === "Ja");
     }).length;
-    if (tnVersion(p) === TN_GODKJENT_VERSION) {
+    if (tnVersion(p) === TN_POENG_VERSION) {
+      // «X / 6 OK» og «X / 10 OK» (Anders 20.10.2026).
+      metric("OK", hits, `/ ${p.rows.length} OK`, false);
+      metric("Andel OK", 100 * hits / p.rows.length, "%", false);
+    } else if (tnVersion(p) === TN_GODKJENT_VERSION) {
       // Vises som «X / 9 godkjent» (Anders 14.10.2026).
       metric("Godkjent", hits, `/ ${p.rows.length} godkjent`, false);
       metric("Andel godkjent", 100 * hits / p.rows.length, "%", false);

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { TN_VERSION, TN_RULES_VERSION, TN_GODKJENT_VERSION, tnProtocol, tnVersion } from "./tn-catalog";
+import { TN_VERSION, TN_RULES_VERSION, TN_GODKJENT_VERSION, TN_POENG_VERSION, tnProtocol, tnVersion } from "./tn-catalog";
 import { tnScore, tnValidate, tnFormat, tnSameScore, tnSameValues, type TnValues } from "./tn-scoring";
 import { tnDefinitionId, tnFromDefinitionId, tnComparableResult } from "./tn-integration";
 import { TnSessionSchema } from "./tn-session";
@@ -13,14 +13,17 @@ function gate(id: string, hits: number): TnValues {
   }]));
 }
 
-for (const [id, hits, count] of [["driver-gate", 3, 6], ["wedge-gate", 6, 9], ["putt-gate", 5, 10]] as const) {
+// Driver Gate og Putt Gate telles som OK (20.10); Wedge Gate med Godkjent/Bom leses fortsatt med 14.10-utgaven.
+for (const [id, hits, count, version, unit] of [
+  ["driver-gate", 3, 6, TN_POENG_VERSION, "OK"], ["wedge-gate", 6, 9, TN_GODKJENT_VERSION, "godkjent"], ["putt-gate", 5, 10, TN_POENG_VERSION, "OK"],
+] as const) {
   test(`${id}: teller bare godkjente forsøk, også ved null treff`, () => {
-    const p = tnProtocol(id)!;
+    const p = tnProtocol(id, undefined, version)!;
     assert.equal(p.rows.length, count);
     const r = tnScore(p, gate(id, hits));
     assert.equal(r.score, hits);
-    assert.equal(r.unit, `/ ${count} godkjent`);
-    assert.equal(r.version, TN_GODKJENT_VERSION);
+    assert.equal(r.unit, `/ ${count} ${unit}`);
+    assert.equal(r.version, version);
     assert.equal(tnFormat(r.metrics[1]), `${(100 * hits / count).toLocaleString("nb-NO", { maximumFractionDigits: 2 })} %`);
     assert.equal(tnScore(p, gate(id, 0)).score, 0);
     assert.equal(tnScore(p, gate(id, count)).score, count);
@@ -68,7 +71,7 @@ test("ny regelidentitet bevarer gamle gateutkast og skiller historikken", () => 
   assert.equal(tnVersion(legacy), TN_VERSION);
   assert.equal(tnFromDefinitionId(tnDefinitionId(legacy)), legacy);
   assert.equal(tnFromDefinitionId(tnDefinitionId(current)), current);
-  const result = tnScore(current, gate(current.id, 6));
+  const result = tnScore(current, Object.fromEntries(current.rows.map((_, i) => [String(i + 1), { ok: i < 6 ? "Gjennom porten" : "Bom" }])));
   assert.ok(tnComparableResult(tnDefinitionId(current), 6, result));
   assert.equal(tnComparableResult(tnDefinitionId(legacy), 6, result), null);
   assert.equal(tnComparableResult(tnDefinitionId(current), 6, { ...result, version: TN_VERSION }), null);
