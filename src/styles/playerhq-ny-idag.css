@@ -358,10 +358,16 @@
  * Toppen, kortene og tallene i glass er felles byggeklosser (src/components/precision/skra/). Her står bare
  * innholdet i kortene og oppsettet av kolonnene. Flaten er lysegrå, så de hvite kortene løfter seg.
  */
+/* Hele siden får flaten, også under kortene og bak menyen nederst. */
+.pa-skall:has(.phn-skra) { --surface-page: var(--ak-flate); }
 .pa-skall__main:has(.phn-skra) { background: var(--ak-flate); }
-.phn-skra { --skra-ut-top: 24px; --skra-ut-x: 16px; background: var(--ak-flate); gap: 0; }
+/* Bunnpolstringen holder det nederste kortet fri av hurtigknappen (56 px + avstand) og fanelinja på mobil. */
+.phn-skra { --skra-ut-top: 24px; --skra-ut-x: 16px; background: var(--ak-flate); gap: 0; padding-bottom: calc(160px + env(safe-area-inset-bottom)); }
 .phn-skra .skra-idag { gap: 20px; }
-.phn-skra .skra-kol { display: grid; gap: 20px; align-content: start; min-width: 0; }
+/* Mobil: én kolonne, kortene sortert etter plassnummeret (Plass i PH01IDag). PC: to kolonner. */
+.phn-skra .skra-kol { display: contents; }
+.phn-skra .skra-plass { min-width: 0; }
+.phn-skra .skra-plass:has(> .a-ekstra:empty) { display: none; }
 .phn-skra .a-ekstra { display: grid; gap: 16px; }
 .phn-skra .a-ekstra:empty { display: none; }
 
@@ -419,16 +425,16 @@
 .phn-skra .melding-skra-fra span { font: 500 12px/1.3 var(--phn-mono); color: var(--ak-g500); }
 .phn-skra .melding-skra-tekst { display: block; margin-top: 2px; font-size: 14.5px; line-height: 1.5; color: var(--ak-g800); }
 
-/* Neste økt og Strokes Gained bruker radene fra §Designløft; «Mer om dagen» får kortdrakten. */
-.phn-skra .phn-seksjon.a-mer { margin-top: 12px; }
+/* Neste økt og Strokes Gained bruker radene fra §Designløft; de tidligere «Mer om dagen»-kortene får kortdrakten. */
 .phn-skra .phn-kort { border: 0; border-radius: var(--ak-r-skra-kort); box-shadow: var(--ak-skygge-md); }
 .phn-skra .forslag .fs { border-radius: 12px; }
 
 @container (min-width: 900px) {
-  .phn-skra { --skra-ut-top: 32px; --skra-ut-x: 40px; }
+  .phn-skra { --skra-ut-top: 32px; --skra-ut-x: 40px; padding-bottom: 120px; }
+  /* Stripe til hurtigknappen: den står 24 px fra høyre kant og er 56 px bred, så kortene slutter 92 px fra kanten. */
+  .phn-skra .skra-idag { margin-right: 52px; }
   .phn-skra .skra-idag { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); column-gap: 24px; row-gap: 24px; align-items: start; }
-  .phn-skra .skra-kol { gap: 24px; }
-  .phn-skra .skra-idag > .a-mer { grid-column: 1 / -1; }
+  .phn-skra .skra-kol { display: grid; gap: 24px; align-content: start; min-width: 0; }
   .phn-skra .start2 { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {

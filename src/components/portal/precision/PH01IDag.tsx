@@ -8,8 +8,9 @@
  * Toppen: bilde fra dagens viktigste økt, dato og periode, «I dag, <fornavn>», ingress, snarvei til neste økt
  * og fire tall i glass (uka, tid mot plan, svakeste Strokes Gained, snittscore brutto). Kanten under kuttet har
  * aksefargen til neste økt. Kortene under ligger over kanten.
- * Venstre: dagens økter · uka per akse og per dag · neste økt. Høyre: målsetninger · forslag som venter ·
- * nye meldinger · Strokes Gained · fireukerssjekk. Til slutt: mer om dagen. Mobil: én kolonne i samme rekkefølge.
+ * Venstre: dagens økter · uka per akse og per dag · neste økt · dagsform · neste fysiske økt · fullførte økter.
+ * Høyre: forslag som venter · målsetninger · nye meldinger · Strokes Gained · fireukerssjekk · agenda · neste turnering.
+ * Kolonnene er fordelt så de blir omtrent like lange. Mobil: én kolonne, sortert etter plassnummeret (Plass).
  *
  * Avvik:
  *   - Treffbildet rundt flagget vises ikke: I dag-dataene har ingen slagplassering fra forrige økt.
@@ -318,33 +319,32 @@ function Dagsform({ start, toast }: { start: number | null; toast: (t: string) =
   </section>;
 }
 
-function Mer({ p, toast }: { p: PH01Props; toast: (t: string) => void }) {
+/** Kortene som før lå under «Mer om dagen». De fordeles i de to kolonnene, så ingen kolonne står tom. */
+function merKort({ p, toast }: { p: PH01Props; toast: (t: string) => void }) {
   const f = p.fullfort;
-  return <section className="phn-seksjon a-mer" aria-label="Mer om dagen">
-    <div className="phn-sek-topp"><h2>Mer om dagen</h2></div>
-    <div className="mer">
-      <Dagsform start={p.dagsform} toast={toast} />
-      <section className="phn-kort" aria-label="Agenda i dag">
+  return {
+    dagsform: <Dagsform start={p.dagsform} toast={toast} />,
+    agenda: <section className="phn-kort" aria-label="Agenda i dag">
         <div className="phn-sek-topp"><h2>Agenda i dag</h2><span className="phn-kilde">{p.agenda.length ? `${p.agenda.length} hendelser` : "—"}</span></div>
         {p.agenda.length ? <Tidslinje items={p.agenda} dense /> : <p className="phn-forklar">Ingenting planlagt i dag.</p>}
-      </section>
-      <section className="phn-kort" aria-label="Neste fysiske økt">
+      </section>,
+    fys: <section className="phn-kort" aria-label="Neste fysiske økt">
         <div className="phn-sek-topp"><h2>Neste fysiske økt</h2></div>
         {!p.fys ? <p className="phn-forklar">Ingen fysisk plan ennå. Fysiske økter kommer med treningsplanen.</p> : <>
           <div><strong className="blokk">{p.fys.tittel}</strong><span className="phn-kilde">{p.fys.meta}</span></div>
           {p.fys.rader.length > 0 && <div className="rader" role="list">{p.fys.rader.map(([n, q, r], i) => <div role="listitem" key={`${n}-${i}`}><span>{n}</span><span className="mono">{q}</span><span className="mono">{r}</span></div>)}</div>}
           <div><Link className="phn-knapp sek" href={p.fys.href}>Registrer sett</Link></div>
         </>}
-      </section>
-      <section className="phn-kort" aria-label="Neste turnering">
+      </section>,
+    turn: <section className="phn-kort" aria-label="Neste turnering">
         <div className="phn-sek-topp"><h2>Neste turnering</h2></div>
         {!p.turn ? <><p className="phn-forklar">Ingen turnering i planen.</p><div><Link className="phn-knapp sek" href="/portal/tren/turneringer">Legg til turnering</Link></div></> : <>
           <div className="phn-hoved"><span className="stort">{p.turn.dager}</span><span>{p.turn.dager === 1 ? "dag igjen" : "dager igjen"}</span></div>
           <div><strong className="blokk">{[p.turn.tittel, p.turn.sted].filter(Boolean).join(" · ")}</strong><span className="phn-kilde">{p.turn.meta}</span></div>
           <div><Link className="phn-knapp sek" href={p.turn.href}>Se forberedelser</Link></div>
         </>}
-      </section>
-      <section className="phn-kort" aria-label="Fullførte økter">
+      </section>,
+    fullfort: <section className="phn-kort" aria-label="Fullførte økter">
         <div className="phn-sek-topp"><h2>Fullførte økter{f ? ` uke ${f.uke}` : ""}</h2><span className="phn-kilde">{f && f.totalt > 0 ? `${f.igjen} igjen · ${f.hoppetOver} hoppet over` : "—"}</span></div>
         <div className="phn-hoved"><span className="stort">{f && f.totalt > 0 ? f.gjennomfort : "—"}</span><span>av {f && f.totalt > 0 ? f.totalt : "—"} økter</span></div>
         <div className="milepael" role="list">{(f?.milepaeler ?? [{ antall: 10, naadd: null }, { antall: 50, naadd: null }, { antall: 100, naadd: null }]).map((m) => {
@@ -352,9 +352,16 @@ function Mer({ p, toast }: { p: PH01Props; toast: (t: string) => void }) {
           return <div role="listitem" key={m.antall} data-naadd={naadd}><b>{m.antall}</b><span>{!f ? "—" : naadd ? `Nådd ${m.naadd ?? ""}`.trim() : `${m.antall - f.total} igjen`}</span></div>;
         })}</div>
         <span className="phn-kilde">{f ? f.totalKilde : "—"}</span>
-      </section>
-    </div>
-  </section>;
+      </section>,
+  };
+}
+
+/**
+ * Plass i rekkefølgen. På mobil er alt én kolonne sortert etter tallet; på PC står hvert kort i sin kolonne,
+ * og tallene stiger nedover i begge, så rekkefølgen blir den samme.
+ */
+function Plass({ n, children }: { n: number; children: React.ReactNode }) {
+  return <div className="skra-plass" style={{ order: n }}>{children}</div>;
 }
 
 const ingenAbonnement = () => () => {};
@@ -403,6 +410,7 @@ export function PH01IDag(p: PH01Props) {
   const aktive = p.okter.filter((o) => o.status !== "Gjennomført");
 
   const forsteOkt = neste ?? aktive[0] ?? p.okter[0] ?? null;
+  const mer = merKort({ p, toast });
 
   return <div className="phn phn-idag phn-idag2 phn-skra">
     <SkraTopp
@@ -425,7 +433,7 @@ export function PH01IDag(p: PH01Props) {
     </SkraKort></div></SkraFlyt> : <SkraFlyt className="skra-idag">
       {p.popup && <Popup p={p.popup} toast={toast} />}
       <div className="skra-kol skra-v">
-        <SkraKort tittel="Dagens økter" meta={p.okter.length ? `${p.okter.length} · ${tidKort(p.okter.reduce((a, o) => a + o.min, 0))}` : undefined} lenke={p.okter.length ? undefined : { href: "/portal/planlegge", tekst: "Åpne Plan" }}>
+        <Plass n={1}><SkraKort tittel="Dagens økter" meta={p.okter.length ? `${p.okter.length} · ${tidKort(p.okter.reduce((a, o) => a + o.min, 0))}` : undefined} lenke={p.okter.length ? undefined : { href: "/portal/planlegge", tekst: "Åpne Plan" }}>
           {p.okter.length === 0
             ? <SkraTom handling={<div className="phn-knapper"><Link className="phn-knapp sek" href="/portal/planlegge/workbench">Bygg økter i Workbench</Link><Link className="phn-knapp sek" href="/portal/mal/runder/ny">Registrer runde</Link></div>}>{p.tomTekst}</SkraTom>
             : <div className="okter-skra">{ferdige.map((s) => <OktKort key={s.id} s={s} onAapne={() => setAapen(s.id)} />)}{aktive.map((s) => <OktKort key={s.id} s={s} onAapne={() => setAapen(s.id)} />)}</div>}
@@ -433,39 +441,43 @@ export function PH01IDag(p: PH01Props) {
             <span><b>{neste.status === "Pågår" ? "Fortsett økt" : "Start økt"}</b><span>{neste.tittel} · {neste.tid}</span></span>
             <Ikon icon={Play} size={20} name="play" />
           </Link>}
-        </SkraKort>
-        {p.uka && <UkaKort uka={p.uka} dager={p.dager} />}
-        {p.nesteOkt && <SkraKort tittel="Neste økt">
+        </SkraKort></Plass>
+        {p.uka && <Plass n={3}><UkaKort uka={p.uka} dager={p.dager} /></Plass>}
+        {p.nesteOkt && <Plass n={6}><SkraKort tittel="Neste økt">
           <Link href={p.nesteOkt.href} className="rad2">
             <span className="rad2-tid mono"><span>{p.nesteOkt.dag}</span><b>{p.nesteOkt.tid}</b></span>
             <i className="rad2-strek" style={{ background: `var(--phn-${p.nesteOkt.akse})` }} aria-hidden />
             <span className="rad2-tekst"><b>{p.nesteOkt.tittel}</b><span>{[AKSE_KODE[p.nesteOkt.akse], `${p.nesteOkt.min} min`, p.nesteOkt.sted, `${p.nesteOkt.antallOvelser} ${p.nesteOkt.antallOvelser === 1 ? "øvelse" : "øvelser"}`].filter(Boolean).join(" · ")}</span></span>
           </Link>
-        </SkraKort>}
+        </SkraKort></Plass>}
+        <Plass n={9}>{mer.dagsform}</Plass>
+        <Plass n={11}>{mer.fys}</Plass>
+        <Plass n={13}>{mer.fullfort}</Plass>
       </div>
       <div className="skra-kol skra-h">
-        <div className="a-ekstra">{p.children}</div>
-        <Maalsetninger maal={p.maal} />
-        {(godkj.length > 0 || besvart.length > 0) && <SkraKort tittel="Forslag som venter" meta={godkj.length > 0 ? String(godkj.length) : undefined}>
+        <Plass n={0}><div className="a-ekstra">{p.children}</div></Plass>
+        {(godkj.length > 0 || besvart.length > 0) && <Plass n={2}><SkraKort tittel="Forslag som venter" meta={godkj.length > 0 ? String(godkj.length) : undefined}>
           <div className="forslag">
             {besvart.map((b) => <div key={b.id} className="kvittering" role="status"><Ikon icon={Check} size={20} name="check" /><span>{b.tekst}</span></div>)}
             {godkj.map((g) => <Godkjenning key={g.id} g={g} onSvar={onSvar} />)}
           </div>
-        </SkraKort>}
-        {p.melding && <SkraKort tittel="Nye meldinger" lenke={{ href: "/portal/varsler", tekst: "Innboks" }}>
+        </SkraKort></Plass>}
+        <Plass n={4}><Maalsetninger maal={p.maal} /></Plass>
+        {p.melding && <Plass n={5}><SkraKort tittel="Nye meldinger" lenke={{ href: "/portal/varsler", tekst: "Innboks" }}>
           <Link href={p.melding.href} className="melding-skra">
             <span className="melding-skra-avatar" aria-hidden>{initialer(p.melding.fra)}</span>
             <span><span className="melding-skra-fra"><b>{p.melding.fra}</b><span>{p.melding.tid}</span></span><span className="melding-skra-tekst">{p.melding.tekst}</span></span>
           </Link>
-        </SkraKort>}
-        {p.sg && <Sg sg={p.sg} />}
-        {p.fireukerssjekk && <SkraKort tittel="Fireukerssjekk">
+        </SkraKort></Plass>}
+        {p.sg && <Plass n={7}><Sg sg={p.sg} /></Plass>}
+        {p.fireukerssjekk && <Plass n={8}><SkraKort tittel="Fireukerssjekk">
           <SkraTom handling={<Link className="phn-knapp sek" href={p.fireukerssjekk.href}><Ikon icon={ClipboardCheck} size={20} name="clipboard-check" />Start sjekken</Link>}>
             Prosessmål, målsetninger og utviklingssjekken på ditt nivå. Tar rundt 10 minutter.
           </SkraTom>
-        </SkraKort>}
+        </SkraKort></Plass>}
+        <Plass n={10}>{mer.agenda}</Plass>
+        <Plass n={12}>{mer.turn}</Plass>
       </div>
-      <Mer p={p} toast={toast} />
     </SkraFlyt>}
     {visOkt && <Oktvisning s={visOkt} onLukk={() => setAapen(null)} />}
     {toastEl}

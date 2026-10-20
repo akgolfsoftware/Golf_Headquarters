@@ -198,7 +198,8 @@
 .pa-tabbar{display:flex;height:var(--tabbar-h);background:var(--surface-flat);border-top:1px solid var(--border-hairline);flex:none;padding:0 4px}
 .pa-tabbar__item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:0;background:transparent;color:var(--text-muted);font:500 var(--fs-11)/1 var(--font-sans);cursor:pointer;min-width:var(--hit-min);transition:color var(--dur-fast) var(--ease-color)}
 .pa-tabbar__item[aria-current="page"]{color:var(--text-primary)}
-.pa-tabbar__item[aria-current="page"] .pa-icon{background:var(--text-primary)}
+/* Bare maske-ikoner fylles; et SVG-ikon (Ikon) ble en svart firkant når dette stilarket var lastet. */
+.pa-tabbar__item[aria-current="page"] .pa-icon:not(svg){background:var(--text-primary)}
 
 /* SideNav (desktop) */
 .pa-sidenav{width:var(--sidenav-w);flex:none;display:flex;flex-direction:column;gap:2px;padding:16px 12px;background:var(--surface-flat);border-right:1px solid var(--border-hairline);height:100%}

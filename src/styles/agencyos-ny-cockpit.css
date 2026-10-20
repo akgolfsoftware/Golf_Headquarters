@@ -189,7 +189,8 @@
  * bare oppsettet av kolonnene og innholdet i kortene. Flaten er lysegrå, så de hvite kortene løfter seg.
  */
 .agn-hoved:has(.agn-skra) { position: relative; background: var(--ak-flate); }
-.agn-skra { --skra-ut-top: var(--r5); --skra-ut-x: var(--r4); container-type: inline-size; background: var(--ak-flate); gap: 0; }
+/* Bunnpolstringen holder det nederste kortet fri av hurtigknappen (56 px + avstand). */
+.agn-skra { --skra-ut-top: var(--r5); --skra-ut-x: var(--r4); container-type: inline-size; background: var(--ak-flate); gap: 0; padding-bottom: calc(120px + env(safe-area-inset-bottom)); }
 .agn-skra .skra-cockpit { gap: 20px; }
 .agn-skra .skra-kol { display: grid; gap: 20px; align-content: start; min-width: 0; }
 .agn-skra .skra-anker { min-width: 0; scroll-margin-top: 72px; }
@@ -216,9 +217,11 @@
   .agn-hoved:has(.agn-skra) .agn-pc-topp .agn-ikonknapp { background: rgba(255, 255, 255, .92); box-shadow: var(--ak-skygge-sm); }
 }
 @media (min-width: 900px) {
-  .agn-skra { --skra-ut-top: var(--r4); --skra-ut-x: 40px; }
+  .agn-skra { --skra-ut-top: var(--r4); --skra-ut-x: 40px; padding-bottom: 120px; }
 }
 @container (min-width: 900px) {
+  /* Stripe til hurtigknappen: den står 24 px fra høyre kant og er 56 px bred, så kortene slutter 92 px fra kanten. */
+  .agn-skra .skra-cockpit { margin-right: 52px; }
   .agn-skra .skra-cockpit { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 24px; align-items: start; }
   .agn-skra .skra-kol { gap: 24px; }
   .agn-skra .skra-kpi { grid-template-columns: repeat(2, minmax(0, 1fr)); }

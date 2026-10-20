@@ -149,6 +149,11 @@ try {
         return { scrollWidth: d.scrollWidth, clientWidth: vw, utenfor: utenfor.slice(0, 10), smaa: smaa.slice(0, 10), tekst: document.body.innerText.length };
       }, w <= 1024 ? 44 : 32);
       await page.screenshot({ path: resolve(out, `${t}-${w}.png`), fullPage: true });
+      // Slik brukeren ser skjermen: faste elementer (hurtigknapp, fanelinje) på sin plass, øverst og helt nederst.
+      await page.screenshot({ path: resolve(out, `${t}-${w}-vindu-topp.png`) });
+      await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+      await page.waitForTimeout(150);
+      await page.screenshot({ path: resolve(out, `${t}-${w}-vindu-bunn.png`) });
       const ok = m.scrollWidth === m.clientWidth && m.utenfor.length === 0 && m.smaa.length === 0 && feil.length === 0 && m.tekst > 0;
       resultat.push({ tilstand: t, bredde: w, ok, ...m, konsollfeil: feil.slice(0, 5) });
       await page.close();

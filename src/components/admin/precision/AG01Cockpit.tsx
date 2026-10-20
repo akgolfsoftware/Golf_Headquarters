@@ -8,8 +8,8 @@
  *
  * Toppen: banebilde i grafitt, dato og klokke, hilsen, kort oppsummering av dagen og fire tall i glass
  * (økter i dag, venter på deg, følger ikke planen, aktive spillere). Kortene under ligger over kanten.
- * Venstre: venter på svar · dagens kalender · Jarvis. Høyre: følger ikke planen · å gjøre · turneringer ·
- * stallen · etterlevelse og stallens uke.
+ * Venstre: krever deg nå · dagens kalender · Jarvis · uka i tall. Høyre: følger ikke planen · å gjøre ·
+ * turneringer · stallen.
  *
  * Data som før (byggAG01Data): køen fra lastGodkjenninger, dagens økter fra
  * loadDailyBrief, oppgaver fra Notion-cachen, «Følger ikke planen» (to siste
@@ -240,6 +240,7 @@ export function AG01Cockpit({ tilstand, data, dispatch = null, stall = null }: {
           </> : <Tom>Ingen coaching- eller gruppeøkter i dag.</Tom>}
         </Seksjon>
         {dispatch && !tom && <Dispatch d={dispatch} />}
+        <Seksjon tittel="Uka i tall"><Nokkeltall d={d} /></Seksjon>
       </div>
       <div className="skra-kol">
         <Seksjon tittel="Følger ikke planen" kilde={d.utenforPlanUker ? `2 siste uker · ${d.utenforPlanUker.toLowerCase()}` : "2 siste uker"} id="folger-ikke">
@@ -274,7 +275,6 @@ export function AG01Cockpit({ tilstand, data, dispatch = null, stall = null }: {
           {stall && !tom ? <Suspense fallback={<i className="skjelett" style={{ height: 96 }} aria-label="Henter stallen" />}><StallRor stall={stall} /></Suspense> : null}
           <div className="nokkel">{d.nokkeltall.filter((k) => k.label !== "Aktive spillere" && k.label !== "Økter i dag").map((k) => <div key={k.label}><b>{tom ? "—" : k.verdi}</b><span>{k.label}</span></div>)}</div>
         </Seksjon>
-        <Seksjon tittel="Uka i tall"><Nokkeltall d={d} /></Seksjon>
       </div>
     </SkraFlyt>
   </div>;
