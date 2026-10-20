@@ -7,17 +7,25 @@ import type { TodaySession } from "@/app/portal/actions";
 /** Intern leser etter kallerens spiller-/coach-/foresattvakt. Samme
  * synlighet og speildeduplisering som I dag/Plan. Ingen skriver eller cache
  * på tvers av forespørsler. */
-export function somEtterlevelseOkt(session: TodaySession) {
+export function somEtterlevelseOkt(session: Pick<TodaySession, "startTime" | "durationMin" | "status">) {
   return { scheduledAt: session.startTime, durationMin: session.durationMin, status: session.status };
+}
+
+type MedAkseOkt = Pick<TodaySession, "startTime" | "durationMin" | "status" | "pyramidArea">;
+
+/** Ren del av hentEtterlevelseMedAkser (testet): samme felt som `etterlevelse`,
+ * pluss `perAkse` og `okter`. `okter` følger med så AgencyOS Stall kan dele de
+ * fire ukene opp per uke uten nytt oppslag; ingen eksisterende felt endres. */
+export function etterlevelseMedAkser(sessions: readonly MedAkseOkt[], now: Date) {
+  const perAkse = new Map((["FYS", "TEK", "SLAG", "SPILL", "TURN"] as PyramidArea[]).map(axis =>
+    [axis, etterlevelse(sessions.filter(s => s.pyramidArea === axis).map(somEtterlevelseOkt), now)]));
+  const okter = sessions.map(somEtterlevelseOkt);
+  return { ...etterlevelse(okter, now), perAkse, okter };
 }
 
 async function hentEtterlevelseMedAkser(userId: string, now: Date) {
   const sessions = await loadVisibleSessionRange(userId, etterlevelseFra(now).toISOString(), now.toISOString());
-  const perAkse = new Map((["FYS", "TEK", "SLAG", "SPILL", "TURN"] as PyramidArea[]).map(axis =>
-    [axis, etterlevelse(sessions.filter(s => s.pyramidArea === axis).map(somEtterlevelseOkt), now)]));
-  const okter = sessions.map(somEtterlevelseOkt);
-  // `okter` følger med så AgencyOS Stall kan dele de fire ukene opp per uke uten nytt oppslag.
-  return { ...etterlevelse(okter, now), perAkse, okter };
+  return etterlevelseMedAkser(sessions, now);
 }
 
 export async function hentEtterlevelse(userId: string, now = new Date()) {
