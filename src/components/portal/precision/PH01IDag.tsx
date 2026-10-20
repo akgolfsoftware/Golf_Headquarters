@@ -1,14 +1,16 @@
 "use client";
 
 /**
- * PH-01 I dag i nytt design (designløftet 20.10.2026, godkjent av Anders samme dag).
- * Fasit: Claude Design-canvaset «PlayerHQ nøkkelskjermer» (https://claude.ai/artifact/XdsbBEHwJhdrD4YJMMpdK1),
- * tegningene «1 I dag · mobil 390» og «1 I dag · PC 1280». Stil: src/styles/playerhq-ny-idag.css (§Designløft).
+ * PH-01 I dag i Skrå-drakten (beslutninger.md §PLAYERHQ OG AGENCYOS FÅR SKRÅ-DRAKTEN, godkjent av Anders 20.10.2026).
+ * Fasit: docs/design-system/utkast-skra/index.html, skjermen «PlayerHQ · I dag». Byggeklosser:
+ * src/components/precision/skra/. Stil for innholdet: src/styles/playerhq-ny-idag.css (§Skrå).
  *
- * Rekkefølge: dato og snarvei til neste økt · tre tall (uka, snitt 10 runder, etter plan) · målsetninger ·
- * dagens økter (små fylte kort i aksefargen, trykk åpner hele økta) · forslag som venter · neste økt ·
- * nye meldinger · uka per dag · Strokes Gained · fireukerssjekk · mer om dagen.
- * PC fra 900 px: tallene står ved tittelen, og innholdet går i to kolonner.
+ * Toppen: bilde fra dagens viktigste økt, dato og periode, «I dag, <fornavn>», ingress, snarvei til neste økt
+ * og fire tall i glass (uka, tid mot plan, svakeste Strokes Gained, snittscore brutto). Kanten under kuttet har
+ * aksefargen til neste økt. Kortene under ligger over kanten.
+ * Venstre: dagens økter · uka per akse og per dag · neste økt · dagsform · neste fysiske økt · fullførte økter.
+ * Høyre: forslag som venter · målsetninger · nye meldinger · Strokes Gained · fireukerssjekk · agenda · neste turnering.
+ * Kolonnene er fordelt så de blir omtrent like lange. Mobil: én kolonne, sortert etter plassnummeret (Plass).
  *
  * Avvik:
  *   - Treffbildet rundt flagget vises ikke: I dag-dataene har ingen slagplassering fra forrige økt.
@@ -27,6 +29,7 @@ import { lagreDagsform } from "@/app/portal/dagsform-actions";
 import { resolvePlayerApproval } from "@/lib/workbench/wb-actions";
 import type { OktBilde } from "@/lib/portal/okt-bilde";
 import { MIN_RUNDER, type Forbedringsomraade } from "@/lib/portal/ph01-forbedring";
+import { SkraFlyt, SkraKort, SkraStat, SkraTom, SkraTopp } from "@/components/precision/skra/Skra";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-idag.css";
 
@@ -73,6 +76,8 @@ export type PH01Sg = { runder: number; dato: string | null; verdier: { navn: str
 export type PH01Props = {
   tilstand: "data" | "tom" | "feil";
   dato: string; ingress: string; tomTekst: string; feilKode: string;
+  /** Fornavnet i tittelen («I dag, Øyvind»). Uten navn står det bare «I dag». */
+  fornavn?: string | null;
   okter: PH01Okt[]; nesteId: string | null; godkjenninger: PH01Godkjenning[];
   uka: PH01Uka | null;
   maal: PH01Maal[];
@@ -107,66 +112,47 @@ function useToast() {
 /** Minutter som timer med én desimal: 845 → «14,1», 120 → «2». */
 const timerTekst = (min: number) => formaterTall(Math.round(min / 6) / 10, 1).replace(/,0$/, "");
 
-/* ---------- Tre tall øverst ---------- */
-
-function UkeBand({ uka }: { uka: PH01Uka }) {
-  const plan = Math.max(1, uka.planMin);
-  const gjort = uka.akser.filter((a) => a.gjortMin > 0);
-  return <span className="tall-band" role="img" aria-label={`Gjennomført: ${gjort.map((a) => `${AKSE_KODE[a.akse]} ${a.gjortMin} minutter`).join(", ") || "ingenting ennå"}`}>
-    {gjort.map((a, i) => <i key={a.akse} className="bred" style={{ width: `${a.gjortMin / plan * 100}%`, background: `var(--phn-${a.akse})`, animationDelay: `${300 + i * 40}ms` }} />)}
-  </span>;
+/**
+ * Tid slik Skrå-utkastet skriver den: «2 t 10», «3 t», «45 min», «0».
+ * Brukes i toppen og i Uka-kortet («2 t 10 av 3 t»).
+ */
+export function tidKort(min: number): string {
+  const m = Math.max(0, Math.round(min)), t = Math.floor(m / 60), r = m % 60;
+  if (m === 0) return "0";
+  if (t === 0) return `${r} min`;
+  return r === 0 ? `${t} t` : `${t} t ${r}`;
 }
 
-function Trend({ verdier }: { verdier: number[] }) {
-  if (verdier.length < 2) return null;
-  const min = Math.min(...verdier), maks = Math.max(...verdier), spenn = maks - min || 1;
-  const pkt = verdier.map((v, i) => `${Math.round(1 + i / (verdier.length - 1) * 90)},${Math.round(4 + (v - min) / spenn * 20)}`).join(" ");
-  const sist = pkt.split(" ").pop()!.split(",");
-  return <svg className="tall-trend" viewBox="0 0 92 28" role="img" aria-label={`Bruttoscore siste ${verdier.length} runder: ${verdier.join(", ")}`}>
-    <polyline className="tegn" points={pkt} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" pathLength={100} />
-    <circle cx={sist[0]} cy={sist[1]} r="2.5" fill="currentColor" />
-  </svg>;
-}
+/* ---------- Fire tall i toppen ---------- */
 
-function TreTall({ uka, snitt, e }: { uka: PH01Uka | null; snitt: PH01Snitt | null; e: PH01Etterlevelse | null }) {
-  const timer = timerTekst;
-  return <section className="tre-tall a-tall" aria-label="Slik ligger du an">
-    <Link href="/portal/planlegge" className="tall">
-      <span className="tall-etikett">Uka så langt</span>
-      <b className="tall-verdi">{uka ? timer(uka.gjortMin) : "—"}<small> / {uka ? `${timer(uka.planMin)} t` : "— t"}</small></b>
-      {uka && <UkeBand uka={uka} />}
-      <span className="tall-kilde">Plan · uke {uka?.uke ?? "—"}</span>
-    </Link>
-    <Link href="/portal/analysere" className="tall">
-      <span className="tall-etikett">Snitt 10 runder</span>
-      <span className="tall-rad"><b className="tall-verdi">{snitt ? formaterTall(snitt.verdi, 1) : "—"}</b>{snitt && <Trend verdier={snitt.trend} />}</span>
-      {snitt?.endring != null && snitt.endring !== 0 && <span className={`tall-endring ${snitt.endring < 0 ? "bedre" : ""}`}>{snitt.endring < 0 ? "↓" : "↑"} {formaterTall(Math.abs(snitt.endring), 1)} slag</span>}
-      <span className="tall-kilde">Brutto · mot forrige 10{snitt?.dato ? ` · ${snitt.dato}` : ""}</span>
-    </Link>
-    <Link href="/portal/analysere/trening" className="tall">
-      <span className="tall-etikett">Etter plan, 4 uker</span>
-      <b className="tall-verdi">{e ? e.pct : "—"}<small> %</small></b>
-      {e && <span className={`tall-endring ${e.pct >= 70 ? "bedre" : ""}`}>{e.pct >= 70 ? "→ i rute" : "Under 70 % av planen"}</span>}
-      <span className="tall-kilde">Tid mot plan</span>
-    </Link>
-  </section>;
+function ToppTall({ uka, snitt, e, sg }: { uka: PH01Uka | null; snitt: PH01Snitt | null; e: PH01Etterlevelse | null; sg: PH01Sg | null }) {
+  const svakest = sg && sg.runder >= MIN_RUNDER
+    ? sg.verdier.reduce<{ navn: string; verdi: number } | null>((a, v) => v.verdi != null && (a == null || v.verdi < a.verdi) ? { navn: v.navn, verdi: v.verdi } : a, null)
+    : null;
+  return <>
+    <SkraStat href="/portal/planlegge" verdi={uka ? tidKort(uka.gjortMin) : "—"} enhet={uka ? `av ${tidKort(uka.planMin)}` : undefined} etikett="Uka så langt"
+      ariaLabel={uka ? `Uka så langt: ${tidKort(uka.gjortMin)} av ${tidKort(uka.planMin)}` : "Uka så langt: ingen plan"} />
+    <SkraStat href="/portal/analysere/trening" verdi={e ? e.pct : "—"} enhet={e ? "%" : undefined} etikett="Tid mot plan, 4 uker" />
+    <SkraStat href="/portal/analysere" verdi={svakest ? formaterTall(svakest.verdi, 1, true) : "—"} etikett={svakest ? `SG ${svakest.navn.toLocaleLowerCase("nb-NO")}` : "Strokes Gained"} />
+    <SkraStat href="/portal/analysere" verdi={snitt ? formaterTall(snitt.verdi, 1) : "—"} etikett="Snittscore, brutto" />
+  </>;
 }
 
 const MAAL_STATUS: Record<PH01Maal["status"], string> = { "on-track": "på vei", behind: "bak planen", achieved: "oppnådd", "no-data": "ingen data ennå" };
 
 function Maalsetninger({ maal }: { maal: PH01Maal[] }) {
-  if (maal.length === 0) return <section className="maal a-maal" aria-label="Målsetninger">
-    <Link href="/portal/mal" className="maal-rad tom">Ingen målsetninger ennå. Sett en, så ser du fremdriften her.</Link>
-  </section>;
-  return <section className="maal a-maal" aria-label="Målsetninger">
-    {maal.map((m, i) => {
-      const pct = m.pct == null || m.status === "no-data" ? null : Math.max(0, Math.min(100, Math.round(m.pct)));
-      return <Link key={m.id} href={m.href} className="maal-rad">
-        <span className="maal-topp"><span>{m.tittel} <small>· {m.kategori === "Prosessmål" ? "prosessmål" : m.frist ? `innen ${m.frist}` : "resultatmål"}</small></span><b>{pct == null ? "—" : `${pct} %`}</b></span>
-        <span className="maal-spor" aria-label={`${pct == null ? "Ingen fremdrift registrert" : `${pct} prosent`}, ${MAAL_STATUS[m.status]}`}><i className="bred" style={{ width: `${pct ?? 0}%`, animationDelay: `${500 + i * 60}ms` }} /></span>
-      </Link>;
-    })}
-  </section>;
+  return <SkraKort tittel="Målsetninger" lenke={{ href: "/portal/mal", tekst: maal.length ? "Alle" : "Sett en" }}>
+    {maal.length === 0
+      ? <SkraTom>Ingen målsetninger ennå. Sett en, så ser du fremdriften her.</SkraTom>
+      : <div className="maal">{maal.map((m, i) => {
+        const pct = m.pct == null || m.status === "no-data" ? null : Math.max(0, Math.min(100, Math.round(m.pct)));
+        return <Link key={m.id} href={m.href} className="maal-rad">
+          <span className="maal-topp"><b className="maal-navn">{m.tittel}</b><b className="maal-pst">{pct == null ? "—" : `${pct} %`}</b></span>
+          <span className="maal-spor" aria-label={`${pct == null ? "Ingen fremdrift registrert" : `${pct} prosent`}, ${MAAL_STATUS[m.status]}`}><i className="bred" style={{ width: `${pct ?? 0}%`, animationDelay: `${500 + i * 60}ms` }} /></span>
+          <span className="maal-meta">{m.kategori}{m.frist ? ` · innen ${m.frist}` : ""} · {MAAL_STATUS[m.status]}</span>
+        </Link>;
+      })}</div>}
+  </SkraKort>;
 }
 
 /* ---------- Dagens økter ---------- */
@@ -175,23 +161,43 @@ function OktKort({ s, onAapne }: { s: PH01Okt; onAapne: () => void }) {
   if (s.status === "Gjennomført") return <button type="button" className="okt-ferdig" onClick={onAapne} aria-label={`Se økta kl. ${s.tid}, ${s.tittel}, gjennomført`}>
     <span className="mono">{s.tid}</span><span className="okt-ferdig-navn">{s.tittel} · {AKSE_KODE[s.akse]} · {s.min} min</span><span className="phn-pille ok">Gjennomført</span>
   </button>;
-  return <button type="button" className={`okt-fylt ${s.akse}`} onClick={onAapne} aria-label={`Åpne økta kl. ${s.tid}, ${s.tittel}`}>
-    <span className="okt-fylt-topp"><b className="mono">{s.tid}</b><span className="okt-fylt-akse">{AKSE_KODE[s.akse]} · {s.min} MIN{s.status === "Pågår" ? " · PÅGÅR" : ""}</span></span>
-    <b className="okt-fylt-navn">{s.tittel}</b>
-    <span className="okt-fylt-meta">{[s.sted, `${s.antallOvelser} ${s.antallOvelser === 1 ? "øvelse" : "øvelser"}`, s.status === "Planlagt" ? s.om?.toLowerCase() : null].filter(Boolean).join(" · ")}</span>
-    {s.fokus && <span className="okt-fylt-maal">Mål i dag: <b>{s.fokus}</b></span>}
+  return <button type="button" className={`okt-skra ${s.akse}`} onClick={onAapne} aria-label={`Åpne økta kl. ${s.tid}, ${s.tittel}`}>
+    <span className="okt-skra-tid">{s.tid}<small>{s.min} MIN{s.status === "Pågår" ? " · PÅGÅR" : ""}</small></span>
+    <span className="okt-skra-tekst">
+      <b>{s.tittel}</b>
+      <span>{[AKSE_KODE[s.akse], s.sted, `${s.antallOvelser} ${s.antallOvelser === 1 ? "øvelse" : "øvelser"}`, s.status === "Planlagt" ? s.om?.toLowerCase() : null].filter(Boolean).join(" · ")}</span>
+      {s.fokus && <span className="okt-skra-maal">Mål i dag: <b>{s.fokus}</b></span>}
+    </span>
+    <Ikon icon={ChevronRight} size={20} name="chevron-right" />
   </button>;
 }
 
-/* ---------- Uka per dag ---------- */
+/* ---------- Uka: per akse og per dag ---------- */
+
+const AKSER: Akse[] = ["fys", "tek", "slag", "spill", "turn"];
+
+function UkaKort({ uka, dager }: { uka: PH01Uka; dager: PH01Dag[] | undefined }) {
+  return <SkraKort tittel={`Uka · uke ${uka.uke}`} lenke={{ href: "/portal/planlegge", tekst: "Åpne planen" }}>
+    <div className="uke-hoved"><strong>{tidKort(uka.gjortMin)}<small>av {tidKort(uka.planMin)}</small></strong><span>gjennomført mot planen</span></div>
+    <div className="akserader">{AKSER.map((a, i) => {
+      const r = uka.akser.find((x) => x.akse === a) ?? { gjortMin: 0, planMin: 0 };
+      const pst = r.planMin > 0 ? Math.min(100, Math.round(r.gjortMin / r.planMin * 100)) : 0;
+      return <div key={a} className="akserad">
+        <span className="akserad-navn">{AKSE_KODE[a]}</span>
+        <span className="akserad-spor" aria-hidden><i className="bred" style={{ width: `${pst}%`, background: `var(--phn-${a})`, animationDelay: `${400 + i * 50}ms` }} /></span>
+        <span className="akserad-verdi">{r.planMin === 0 && r.gjortMin === 0 ? "—" : `${tidKort(r.gjortMin)} av ${tidKort(r.planMin)}`}</span>
+      </div>;
+    })}</div>
+    {dager && dager.length === 7 && <Uke uke={uka.uke} dager={dager} />}
+  </SkraKort>;
+}
 
 function Uke({ uke, dager }: { uke: number; dager: PH01Dag[] }) {
   const maks = Math.max(120, ...dager.map((d) => d.segmenter.reduce((a, x) => a + x.min, 0)));
   const hoyde = 96, pxm = hoyde / maks;
   const t = (min: number) => min === 0 ? "—" : timerTekst(min);
-  return <section className="uke a-uke" aria-label={`Uke ${uke}`}>
-    <div className="sek-topp"><h2>Uke {uke}</h2>
-      <span className="uke-forklar"><span><i className="gjort" />Gjennomført</span><span><i className="plan" />Planlagt</span></span></div>
+  return <div className="uke" aria-label={`Uke ${uke} per dag`}>
+    <span className="uke-forklar"><span><i className="gjort" />Gjennomført</span><span><i className="plan" />Planlagt</span></span>
     <div className="uke-graf" role="img" aria-label={`Uke ${uke}, timer per dag: ${dager.map((d) => `${d.kort} ${t(d.segmenter.reduce((a, x) => a + x.min, 0))}`).join(", ")}`} style={{ height: hoyde + 30 }}>
       {[60, 120].filter((m) => m <= maks).map((m) => <span key={m} className="uke-linje" aria-hidden style={{ bottom: Math.round(m * pxm) }}><span>{m / 60} t</span></span>)}
       <div className="uke-dager">{dager.map((d, di) => {
@@ -207,20 +213,18 @@ function Uke({ uke, dager }: { uke: number; dager: PH01Dag[] }) {
       })}</div>
     </div>
     <div className="uke-navn" aria-hidden>{dager.map((d) => <span key={d.kort} className={d.iDag ? "i-dag" : ""}>{d.iDag ? "I dag" : d.kort}</span>)}</div>
-  </section>;
+  </div>;
 }
 
 /* ---------- Strokes Gained ---------- */
 
 function Sg({ sg }: { sg: PH01Sg }) {
-  if (sg.runder < MIN_RUNDER) return <section className="sg a-sg" aria-label="Strokes Gained">
-    <div className="sek-topp"><h2>Strokes Gained</h2></div>
-    <p className="phn-forklar">Registrer minst {MIN_RUNDER} runder med Strokes Gained, så ser du hvor du tjener og taper slag.</p>
-  </section>;
+  if (sg.runder < MIN_RUNDER) return <SkraKort tittel="Strokes Gained">
+    <SkraTom>Registrer minst {MIN_RUNDER} runder med Strokes Gained, så ser du hvor du tjener og taper slag.</SkraTom>
+  </SkraKort>;
   const maks = Math.max(0.5, ...sg.verdier.map((v) => Math.abs(v.verdi ?? 0)));
   const svakest = sg.verdier.reduce<{ navn: string; verdi: number } | null>((a, v) => v.verdi != null && (a == null || v.verdi < a.verdi) ? { navn: v.navn, verdi: v.verdi } : a, null);
-  return <section className="sg a-sg" aria-label="Strokes Gained">
-    <div className="sek-topp"><h2>Strokes Gained</h2></div>
+  return <SkraKort tittel="Strokes Gained" meta={`Siste ${sg.runder} runder${sg.dato ? ` · ${sg.dato}` : ""}`} className="sg">
     <div className="sg-rader">{sg.verdier.map((v, i) => {
       const b = v.verdi == null ? 0 : Math.abs(v.verdi) / maks * 50;
       const neg = (v.verdi ?? 0) < 0, sterk = svakest?.navn === v.navn && neg;
@@ -230,8 +234,7 @@ function Sg({ sg }: { sg: PH01Sg }) {
         <b className="mono">{formaterTall(v.verdi, 1, true)}</b>
       </div>;
     })}</div>
-    <span className="tall-kilde">Siste {sg.runder} runder{sg.dato ? ` · ${sg.dato}` : ""}</span>
-  </section>;
+  </SkraKort>;
 }
 
 function Oktvisning({ s, onLukk }: { s: PH01Okt; onLukk: () => void }) {
@@ -316,33 +319,32 @@ function Dagsform({ start, toast }: { start: number | null; toast: (t: string) =
   </section>;
 }
 
-function Mer({ p, toast }: { p: PH01Props; toast: (t: string) => void }) {
+/** Kortene som før lå under «Mer om dagen». De fordeles i de to kolonnene, så ingen kolonne står tom. */
+function merKort({ p, toast }: { p: PH01Props; toast: (t: string) => void }) {
   const f = p.fullfort;
-  return <section className="phn-seksjon a-mer" aria-label="Mer om dagen">
-    <div className="phn-sek-topp"><h2>Mer om dagen</h2></div>
-    <div className="mer">
-      <Dagsform start={p.dagsform} toast={toast} />
-      <section className="phn-kort" aria-label="Agenda i dag">
+  return {
+    dagsform: <Dagsform start={p.dagsform} toast={toast} />,
+    agenda: <section className="phn-kort" aria-label="Agenda i dag">
         <div className="phn-sek-topp"><h2>Agenda i dag</h2><span className="phn-kilde">{p.agenda.length ? `${p.agenda.length} hendelser` : "—"}</span></div>
         {p.agenda.length ? <Tidslinje items={p.agenda} dense /> : <p className="phn-forklar">Ingenting planlagt i dag.</p>}
-      </section>
-      <section className="phn-kort" aria-label="Neste fysiske økt">
+      </section>,
+    fys: <section className="phn-kort" aria-label="Neste fysiske økt">
         <div className="phn-sek-topp"><h2>Neste fysiske økt</h2></div>
         {!p.fys ? <p className="phn-forklar">Ingen fysisk plan ennå. Fysiske økter kommer med treningsplanen.</p> : <>
           <div><strong className="blokk">{p.fys.tittel}</strong><span className="phn-kilde">{p.fys.meta}</span></div>
           {p.fys.rader.length > 0 && <div className="rader" role="list">{p.fys.rader.map(([n, q, r], i) => <div role="listitem" key={`${n}-${i}`}><span>{n}</span><span className="mono">{q}</span><span className="mono">{r}</span></div>)}</div>}
           <div><Link className="phn-knapp sek" href={p.fys.href}>Registrer sett</Link></div>
         </>}
-      </section>
-      <section className="phn-kort" aria-label="Neste turnering">
+      </section>,
+    turn: <section className="phn-kort" aria-label="Neste turnering">
         <div className="phn-sek-topp"><h2>Neste turnering</h2></div>
         {!p.turn ? <><p className="phn-forklar">Ingen turnering i planen.</p><div><Link className="phn-knapp sek" href="/portal/tren/turneringer">Legg til turnering</Link></div></> : <>
           <div className="phn-hoved"><span className="stort">{p.turn.dager}</span><span>{p.turn.dager === 1 ? "dag igjen" : "dager igjen"}</span></div>
           <div><strong className="blokk">{[p.turn.tittel, p.turn.sted].filter(Boolean).join(" · ")}</strong><span className="phn-kilde">{p.turn.meta}</span></div>
           <div><Link className="phn-knapp sek" href={p.turn.href}>Se forberedelser</Link></div>
         </>}
-      </section>
-      <section className="phn-kort" aria-label="Fullførte økter">
+      </section>,
+    fullfort: <section className="phn-kort" aria-label="Fullførte økter">
         <div className="phn-sek-topp"><h2>Fullførte økter{f ? ` uke ${f.uke}` : ""}</h2><span className="phn-kilde">{f && f.totalt > 0 ? `${f.igjen} igjen · ${f.hoppetOver} hoppet over` : "—"}</span></div>
         <div className="phn-hoved"><span className="stort">{f && f.totalt > 0 ? f.gjennomfort : "—"}</span><span>av {f && f.totalt > 0 ? f.totalt : "—"} økter</span></div>
         <div className="milepael" role="list">{(f?.milepaeler ?? [{ antall: 10, naadd: null }, { antall: 50, naadd: null }, { antall: 100, naadd: null }]).map((m) => {
@@ -350,9 +352,16 @@ function Mer({ p, toast }: { p: PH01Props; toast: (t: string) => void }) {
           return <div role="listitem" key={m.antall} data-naadd={naadd}><b>{m.antall}</b><span>{!f ? "—" : naadd ? `Nådd ${m.naadd ?? ""}`.trim() : `${m.antall - f.total} igjen`}</span></div>;
         })}</div>
         <span className="phn-kilde">{f ? f.totalKilde : "—"}</span>
-      </section>
-    </div>
-  </section>;
+      </section>,
+  };
+}
+
+/**
+ * Plass i rekkefølgen. På mobil er alt én kolonne sortert etter tallet; på PC står hvert kort i sin kolonne,
+ * og tallene stiger nedover i begge, så rekkefølgen blir den samme.
+ */
+function Plass({ n, children }: { n: number; children: React.ReactNode }) {
+  return <div className="skra-plass" style={{ order: n }}>{children}</div>;
 }
 
 const ingenAbonnement = () => () => {};
@@ -400,69 +409,81 @@ export function PH01IDag(p: PH01Props) {
   const ferdige = p.okter.filter((o) => o.status === "Gjennomført");
   const aktive = p.okter.filter((o) => o.status !== "Gjennomført");
 
-  return <div className="phn phn-idag phn-idag2"><div className="idag2">
-    <header className="a-over idag2-hode">
-      <div className="phn-dato">{p.dato}</div>
-      <h1 className="phn-tittel">I dag</h1>
-      {p.tilstand !== "feil" && neste && <button type="button" className="snarvei2" onClick={() => setAapen(neste.id)}>
-        <i aria-hidden />{neste.status === "Pågår" ? "Pågår nå" : "Neste"}: {neste.tid} {neste.tittel}{neste.om ? ` · ${neste.om.toLowerCase()}` : ""}
+  const forsteOkt = neste ?? aktive[0] ?? p.okter[0] ?? null;
+  const mer = merKort({ p, toast });
+
+  return <div className="phn phn-idag phn-idag2 phn-skra">
+    <SkraTopp
+      etikett="I dag"
+      bilde={forsteOkt?.bilde.src ?? "/images/playerhq/naerspill-wedge.jpg"}
+      kantfarge={neste && neste.status !== "Gjennomført" ? `var(--phn-${neste.akse})` : undefined}
+      overlinje={p.dato}
+      tittel={p.fornavn ? `I dag, ${p.fornavn}` : "I dag"}
+      ingress={p.tilstand === "feil" ? undefined : p.ingress}
+      handling={p.tilstand !== "feil" && neste ? <button type="button" className="snarvei-skra" onClick={() => setAapen(neste.id)}>
+        <i aria-hidden style={{ background: `var(--phn-${neste.akse})` }} />{neste.status === "Pågår" ? "Pågår nå" : "Neste"}: {neste.tid} {neste.tittel}{neste.om ? ` · ${neste.om.toLowerCase()}` : ""}
         <Ikon icon={ChevronRight} size={16} name="chevron-right" />
-      </button>}
-    </header>
-    {p.tilstand === "feil" ? <section className="phn-kort a-tall" role="alert" aria-label="Feil">
-      <h2 className="phn-h2">Kunne ikke hente dagens plan</h2>
-      <p className="phn-forklar">Tilkoblingen ble brutt. Ingenting er endret i planen din.</p>
-      <span className="phn-kilde">{p.feilKode}</span>
-      <div><button type="button" className="phn-knapp sek" onClick={() => router.refresh()}><Ikon icon={RotateCw} size={20} name="rotate-cw" />Prøv igjen</button></div>
-    </section> : <>
+      </button> : undefined}
+      tall={p.tilstand === "feil" ? undefined : <ToppTall uka={p.uka} snitt={p.snitt ?? null} e={p.etterlevelse} sg={p.sg ?? null} />}
+    />
+    {p.tilstand === "feil" ? <SkraFlyt><div role="alert"><SkraKort tittel="Kunne ikke hente dagens plan" meta={p.feilKode}>
+      <SkraTom handling={<button type="button" className="phn-knapp sek" onClick={() => router.refresh()}><Ikon icon={RotateCw} size={20} name="rotate-cw" />Prøv igjen</button>}>
+        Tilkoblingen ble brutt. Ingenting er endret i planen din.
+      </SkraTom>
+    </SkraKort></div></SkraFlyt> : <SkraFlyt className="skra-idag">
       {p.popup && <Popup p={p.popup} toast={toast} />}
-      <TreTall uka={p.uka} snitt={p.snitt ?? null} e={p.etterlevelse} />
-      <Maalsetninger maal={p.maal} />
-      <div className="a-ekstra">{p.children}</div>
-      <div className="idag2-kol idag2-v">
-        <section className="dag2" aria-label="Dagens økter">
-          <div className="sek-topp"><h2>Dagens økter</h2><Link className="phn-lenke" href="/portal/planlegge">Åpne Plan</Link></div>
+      <div className="skra-kol skra-v">
+        <Plass n={1}><SkraKort tittel="Dagens økter" meta={p.okter.length ? `${p.okter.length} · ${tidKort(p.okter.reduce((a, o) => a + o.min, 0))}` : undefined} lenke={p.okter.length ? undefined : { href: "/portal/planlegge", tekst: "Åpne Plan" }}>
           {p.okter.length === 0
-            ? <div className="tom2"><p className="phn-forklar">{p.tomTekst}</p><div className="phn-knapper"><Link className="phn-knapp sek" href="/portal/planlegge/workbench">Bygg økter i Workbench</Link><Link className="phn-knapp sek" href="/portal/mal/runder/ny">Registrer runde</Link></div></div>
-            : <div className="dag2-liste">{ferdige.map((s) => <OktKort key={s.id} s={s} onAapne={() => setAapen(s.id)} />)}{aktive.map((s) => <OktKort key={s.id} s={s} onAapne={() => setAapen(s.id)} />)}</div>}
-        </section>
-        {neste && neste.status !== "Gjennomført" && <Link href={neste.href} className="start2 phn-mobil">
-        <span><b>{neste.status === "Pågår" ? "Fortsett økt" : "Start økt"}</b><span>{neste.tittel} · {neste.tid}</span></span>
-        <Ikon icon={Play} size={20} name="play" />
-      </Link>}
-        {p.nesteOkt && <section className="neste2" aria-label="Neste økt">
-          <div className="sek-topp"><h2>Neste økt</h2></div>
+            ? <SkraTom handling={<div className="phn-knapper"><Link className="phn-knapp sek" href="/portal/planlegge/workbench">Bygg økter i Workbench</Link><Link className="phn-knapp sek" href="/portal/mal/runder/ny">Registrer runde</Link></div>}>{p.tomTekst}</SkraTom>
+            : <div className="okter-skra">{ferdige.map((s) => <OktKort key={s.id} s={s} onAapne={() => setAapen(s.id)} />)}{aktive.map((s) => <OktKort key={s.id} s={s} onAapne={() => setAapen(s.id)} />)}</div>}
+          {neste && neste.status !== "Gjennomført" && <Link href={neste.href} className="start2 phn-mobil">
+            <span><b>{neste.status === "Pågår" ? "Fortsett økt" : "Start økt"}</b><span>{neste.tittel} · {neste.tid}</span></span>
+            <Ikon icon={Play} size={20} name="play" />
+          </Link>}
+        </SkraKort></Plass>
+        {p.uka && <Plass n={3}><UkaKort uka={p.uka} dager={p.dager} /></Plass>}
+        {p.nesteOkt && <Plass n={6}><SkraKort tittel="Neste økt">
           <Link href={p.nesteOkt.href} className="rad2">
             <span className="rad2-tid mono"><span>{p.nesteOkt.dag}</span><b>{p.nesteOkt.tid}</b></span>
             <i className="rad2-strek" style={{ background: `var(--phn-${p.nesteOkt.akse})` }} aria-hidden />
             <span className="rad2-tekst"><b>{p.nesteOkt.tittel}</b><span>{[AKSE_KODE[p.nesteOkt.akse], `${p.nesteOkt.min} min`, p.nesteOkt.sted, `${p.nesteOkt.antallOvelser} ${p.nesteOkt.antallOvelser === 1 ? "øvelse" : "øvelser"}`].filter(Boolean).join(" · ")}</span></span>
           </Link>
-        </section>}
+        </SkraKort></Plass>}
+        <Plass n={9}>{mer.dagsform}</Plass>
+        <Plass n={11}>{mer.fys}</Plass>
+        <Plass n={13}>{mer.fullfort}</Plass>
       </div>
-      <div className="idag2-kol idag2-h">
-        {(godkj.length > 0 || besvart.length > 0) && <section className="forslag2" aria-label="Forslag som venter">
-          <div className="sek-topp"><h2>Forslag som venter</h2>{godkj.length > 0 && <span className="mono">{godkj.length}</span>}</div>
+      <div className="skra-kol skra-h">
+        <Plass n={0}><div className="a-ekstra">{p.children}</div></Plass>
+        {(godkj.length > 0 || besvart.length > 0) && <Plass n={2}><SkraKort tittel="Forslag som venter" meta={godkj.length > 0 ? String(godkj.length) : undefined}>
           <div className="forslag">
             {besvart.map((b) => <div key={b.id} className="kvittering" role="status"><Ikon icon={Check} size={20} name="check" /><span>{b.tekst}</span></div>)}
             {godkj.map((g) => <Godkjenning key={g.id} g={g} onSvar={onSvar} />)}
           </div>
-        </section>}
-        {p.melding && <section className="melding2" aria-label="Nye meldinger">
-          <div className="sek-topp"><h2>Nye meldinger</h2><Link className="phn-lenke" href="/portal/varsler">Innboks</Link></div>
-          <Link href={p.melding.href} className="melding2-rad"><span>«{p.melding.tekst}»</span><span className="tall-kilde">{p.melding.fra} · {p.melding.tid}</span></Link>
-        </section>}
-        {p.uka && p.dager && p.dager.length === 7 && <Uke uke={p.uka.uke} dager={p.dager} />}
-        {p.sg && <Sg sg={p.sg} />}
+        </SkraKort></Plass>}
+        <Plass n={4}><Maalsetninger maal={p.maal} /></Plass>
+        {p.melding && <Plass n={5}><SkraKort tittel="Nye meldinger" lenke={{ href: "/portal/varsler", tekst: "Innboks" }}>
+          <Link href={p.melding.href} className="melding-skra">
+            <span className="melding-skra-avatar" aria-hidden>{initialer(p.melding.fra)}</span>
+            <span><span className="melding-skra-fra"><b>{p.melding.fra}</b><span>{p.melding.tid}</span></span><span className="melding-skra-tekst">{p.melding.tekst}</span></span>
+          </Link>
+        </SkraKort></Plass>}
+        {p.sg && <Plass n={7}><Sg sg={p.sg} /></Plass>}
+        {p.fireukerssjekk && <Plass n={8}><SkraKort tittel="Fireukerssjekk">
+          <SkraTom handling={<Link className="phn-knapp sek" href={p.fireukerssjekk.href}><Ikon icon={ClipboardCheck} size={20} name="clipboard-check" />Start sjekken</Link>}>
+            Prosessmål, målsetninger og utviklingssjekken på ditt nivå. Tar rundt 10 minutter.
+          </SkraTom>
+        </SkraKort></Plass>}
+        <Plass n={10}>{mer.agenda}</Plass>
+        <Plass n={12}>{mer.turn}</Plass>
       </div>
-      {p.fireukerssjekk && <section className="phn-kort sjekk a-sjekk" aria-label="Fireukerssjekk">
-        <div className="phn-sek-topp"><h2>Fireukerssjekk</h2></div>
-        <p className="phn-forklar">Prosessmål, målsetninger og utviklingssjekken på ditt nivå. Tar rundt 10 minutter.</p>
-        <div><Link className="phn-knapp sek" href={p.fireukerssjekk.href}><Ikon icon={ClipboardCheck} size={20} name="clipboard-check" />Start sjekken</Link></div>
-      </section>}
-      <Mer p={p} toast={toast} />
-    </>}
-    </div>
+    </SkraFlyt>}
     {visOkt && <Oktvisning s={visOkt} onLukk={() => setAapen(null)} />}
     {toastEl}
   </div>;
+}
+
+function initialer(navn: string) {
+  return navn.split(/\s+/).filter(Boolean).slice(0, 2).map((d) => d[0]!.toUpperCase()).join("") || "—";
 }

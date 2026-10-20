@@ -71,7 +71,8 @@ window.__TILSTANDER__ = Object.keys(P.tilstander);`;
 
 await build({
   stdin: { contents: tsx, loader: "tsx", resolveDir: root, sourcefile: "inngang.tsx" }, outfile: resolve(out, "prove.js"), bundle: true, format: "iife",
-  jsx: "automatic", loader: { ".css": "empty", ".svg": "dataurl", ".png": "dataurl" },
+  // Globale stilark legges inn under; CSS-moduler (Skrå-klossene) bygges av esbuild til prove.css.
+  jsx: "automatic", loader: { ".css": "empty", ".module.css": "local-css", ".svg": "dataurl", ".png": "dataurl" },
   tsconfig: resolve(root, "tsconfig.json"), define: { "process.env.NODE_ENV": '"development"' },
   plugins: [stubbePlugin], logLevel: "error",
 });
@@ -86,7 +87,8 @@ const phnCss = readdirSync(resolve(root, "src/styles")).filter((f) => /^playerhq
 const agnCss = readdirSync(resolve(root, "src/styles")).filter((f) => /^agencyos-ny.*\.css$/.test(f)).sort();
 // Øvrige flater i nytt design (utkast-flater): flater-ny.css først (tokens), så flater-ny-*.css per gruppe.
 const flnCss = ["flater-ny.css", ...readdirSync(resolve(root, "src/styles")).filter((f) => /^flater-ny-[a-z0-9-]+\.css$/.test(f)).sort()];
-const css = ["ak-tokens.css", "precision-komponenter.css", "precision-athletics.css", ...bolkCss, "playerhq-ny.css", ...phnCss, ...agnCss, ...flnCss].map((f) => readFileSync(resolve(root, "src/styles", f), "utf8")).join("\n");
+const css = ["ak-tokens.css", "precision-komponenter.css", "precision-athletics.css", ...bolkCss, "playerhq-ny.css", ...phnCss, ...agnCss, ...flnCss].map((f) => readFileSync(resolve(root, "src/styles", f), "utf8")).join("\n")
+  + (existsSync(resolve(out, "prove.css")) ? "\n" + readFileSync(resolve(out, "prove.css"), "utf8") : "");
 const html = (t) => `<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=block" rel="stylesheet">
 <style>:root{--font-ibm-plex-sans:"IBM Plex Sans";--font-ibm-plex-mono:"IBM Plex Mono"}\n${css}\nhtml,body{margin:0}</style><title>${id} · ${t}</title></head><body><div id="root"></div><script src="/prove.js"></script></body></html>`;
@@ -147,6 +149,11 @@ try {
         return { scrollWidth: d.scrollWidth, clientWidth: vw, utenfor: utenfor.slice(0, 10), smaa: smaa.slice(0, 10), tekst: document.body.innerText.length };
       }, w <= 1024 ? 44 : 32);
       await page.screenshot({ path: resolve(out, `${t}-${w}.png`), fullPage: true });
+      // Slik brukeren ser skjermen: faste elementer (hurtigknapp, fanelinje) på sin plass, øverst og helt nederst.
+      await page.screenshot({ path: resolve(out, `${t}-${w}-vindu-topp.png`) });
+      await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+      await page.waitForTimeout(150);
+      await page.screenshot({ path: resolve(out, `${t}-${w}-vindu-bunn.png`) });
       const ok = m.scrollWidth === m.clientWidth && m.utenfor.length === 0 && m.smaa.length === 0 && feil.length === 0 && m.tekst > 0;
       resultat.push({ tilstand: t, bredde: w, ok, ...m, konsollfeil: feil.slice(0, 5) });
       await page.close();

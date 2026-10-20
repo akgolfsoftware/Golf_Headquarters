@@ -182,3 +182,48 @@
   .agn-s .fremdrift i, .agn-s .akse-stripe i { transform-origin: 0 50%; animation: kpi-bred 620ms cubic-bezier(.23, 1, .32, 1) both; }
   .agn-s .soyle i, .agn-s .etl-soyler i { transform-origin: 50% 100%; animation: kpi-hoy 620ms cubic-bezier(.23, 1, .32, 1) both; }
 }
+
+/*
+ * §Skrå 20.10.2026 (beslutninger.md §PLAYERHQ OG AGENCYOS FÅR SKRÅ-DRAKTEN). Fasit: docs/design-system/utkast-skra/index.html.
+ * Toppen, kortene og tallene i glass er felles byggeklosser (src/components/precision/skra/). Her står
+ * bare oppsettet av kolonnene og innholdet i kortene. Flaten er lysegrå, så de hvite kortene løfter seg.
+ */
+.agn-hoved:has(.agn-skra) { position: relative; background: var(--ak-flate); }
+/* Bunnpolstringen holder det nederste kortet fri av hurtigknappen (56 px + avstand). */
+.agn-skra { --skra-ut-top: var(--r5); --skra-ut-x: var(--r4); container-type: inline-size; background: var(--ak-flate); gap: 0; padding-bottom: calc(120px + env(safe-area-inset-bottom)); }
+.agn-skra .skra-cockpit { gap: 20px; }
+.agn-skra .skra-kol { display: grid; gap: 20px; align-content: start; min-width: 0; }
+.agn-skra .skra-anker { min-width: 0; scroll-margin-top: 72px; }
+.agn-skra .skra-liste { display: grid; }
+.agn-skra .skra-knapper { margin-top: 8px; }
+.agn-skra .skra-knapper .knapp { min-height: 48px; }
+.agn-skra .skra-knapper .knapp.sek { background: rgba(255, 255, 255, .12); color: #fff; border-color: rgba(255, 255, 255, .28); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+.agn-skra .skra-knapper .knapp.sek:hover { background: rgba(255, 255, 255, .2); }
+.agn-skra .skra-knapper .knapp:focus-visible { outline-color: #fff; }
+.agn-skra .skra-laster { display: grid; gap: 20px; }
+.agn-skra .skra-laster .skjelett { border-radius: var(--ak-r-skra-kort); }
+/* Radene inni kortene: tynne skiller i drakten sin strekfarge */
+.agn-skra .svar-rad, .agn-skra .etl-rad, .agn-skra .oppgave, .agn-skra .dispatch-rad { border-bottom-color: var(--ak-strek); }
+.agn-skra .dag { border-color: var(--ak-strek); border-radius: var(--ak-r-stat); }
+.agn-skra .turn-kort { border-radius: var(--ak-r-stat); }
+.agn-skra .nokkel div { background: var(--ak-sunket); border-radius: 12px; }
+/* Etterlevelse og stallens uke: to ruter på senket flate */
+.agn-skra .skra-kpi { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; border: 0; }
+.agn-skra .skra-kpi .kpi { padding: 12px 14px; border: 0; border-radius: 12px; background: var(--ak-sunket); }
+.agn-skra .skra-kpi .kpi b.t { font-family: var(--ak-font-sans); }
+/* Bjella på PC ligger over bildet, ikke i en egen stripe over det */
+@media (min-width: 1024px) {
+  .agn-hoved:has(.agn-skra) .agn-pc-topp { position: absolute; top: 0; right: 0; z-index: 5; }
+  .agn-hoved:has(.agn-skra) .agn-pc-topp .agn-ikonknapp { background: rgba(255, 255, 255, .92); box-shadow: var(--ak-skygge-sm); }
+}
+@media (min-width: 900px) {
+  .agn-skra { --skra-ut-top: var(--r4); --skra-ut-x: 40px; padding-bottom: 120px; }
+}
+@container (min-width: 900px) {
+  /* Stripe til hurtigknappen: den står 24 px fra høyre kant og er 56 px bred, så kortene slutter 92 px fra kanten. */
+  .agn-skra .skra-cockpit { margin-right: 52px; }
+  .agn-skra .skra-cockpit { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+  .agn-skra .skra-kol { gap: 24px; }
+  .agn-skra .skra-kpi { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .agn-skra .skra-kpi .kpi { border-left: 0; }
+}

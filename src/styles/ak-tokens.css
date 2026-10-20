@@ -96,4 +96,24 @@
   --ak-bryt-pc-container: 900px;
   --ak-bryt-pc-media: 1024px;
   --ak-innhold-maks: 1200px;
+
+  /* Skrå-drakten (beslutninger.md §PLAYERHQ OG AGENCYOS FÅR SKRÅ-DRAKTEN, 20.10.2026).
+     Verdiene er hentet ordrett fra fasiten docs/design-system/utkast-skra/index.html.
+     Brukes av src/components/precision/skra/ og skjermene som er portert til drakten.
+     --ak-r-kort (12) over står til alle skjermer er portert; Skrå-kort bruker --ak-r-skra-kort. */
+  --ak-flate: #efede8;
+  --ak-sunket: #f6f4f0;
+  --ak-strek: #e3dfd7;
+  --ak-r-skra-kort: 18px;
+  --ak-r-stat: 14px;
+  --ak-skygge-sm: 0 1px 2px rgba(20, 20, 19, .06), 0 1px 1px rgba(20, 20, 19, .04);
+  --ak-skygge-md: 0 1px 2px rgba(20, 20, 19, .06), 0 8px 24px -8px rgba(20, 20, 19, .14), 0 24px 48px -24px rgba(20, 20, 19, .18);
+  --ak-skygge-lg: 0 1px 2px rgba(20, 20, 19, .06), 0 14px 32px -10px rgba(20, 20, 19, .22), 0 30px 60px -28px rgba(20, 20, 19, .26);
+  /* Kanten under skråkuttet. Fallet er 7 % av toppens bredde på mobil og 4 % på PC (i skra.module.css). */
+  --ak-kutt-kant: 6px;
+  /* Bevegelse: respons straks man trykker, ark og menyer glir samme vei inn og ut. */
+  --ak-t-trykk: 120ms;
+  --ak-t-base: 200ms;
+  --ak-t-ark: 420ms;
+  --ak-ut: cubic-bezier(.23, 1, .32, 1);
 }
