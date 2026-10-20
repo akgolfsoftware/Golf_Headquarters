@@ -18,6 +18,8 @@ for (const css of [
   "precision-a23.css",
   "precision-a24.css",
   "precision-komponenter.css",
+  "agencyos-ny-mer.css",
+  "agencyos-ny-drift.css",
   "precision-athletics.css",
 ]) {
   mock.module(`@/styles/${css}`, { namedExports: {} });
@@ -48,7 +50,10 @@ describe("AG24Drift (Drift)", async () => {
     const html = vis({ tilstand: "data", startFane: "gdpr", data, onGodkjenn: async () => ({ ok: true }), onSlettData: async () => ({ ok: true }) });
     assert.match(html, /Testbruker A/);
     assert.match(html, /Godkjenn forespørselen/);
-    assert.match(html, /Slett data/);
+    assert.doesNotMatch(html, /Slett data/);
+    const godkjent = vis({ tilstand: "data", startFane: "gdpr", data: { ...data, gdpr: [data.gdpr[1]] }, onGodkjenn: async () => ({ ok: true }), onSlettData: async () => ({ ok: true }) });
+    assert.match(godkjent, /Slett data/);
+    assert.doesNotMatch(godkjent, /Godkjenn forespørselen/);
     assert.doesNotMatch(html, /Mia Fjell|Siv Fjell|Lag innsynskopi først/);
   });
 
