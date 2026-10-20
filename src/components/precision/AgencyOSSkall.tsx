@@ -106,12 +106,12 @@ function NesteOkt({ okt, onVelg }: { okt: NesteOktKort | null | undefined; onVel
   if (okt === null) {
     return <div className="agn-neste tom" title="Ingen flere økter i dag">
       <span className="kort-tid" aria-hidden><span className="tt">—</span></span>
-      <span className="lang"><span className="etk">Neste økt i dag</span><b>—</b></span>
+      <span className="lang"><span className="etk">Neste økt i dag</span><strong className="stor-tid">—</strong><small>Ingen flere økter i dag</small></span>
     </div>;
   }
   return <Link href={okt.href} onClick={onVelg} className={`agn-neste${okt.akse ? ` ${okt.akse}` : ""}`} title={`Neste økt ${okt.tid} ${okt.spiller}`} data-ikon-lenke="">
     <span className="kort-tid" aria-hidden><span className="tt">{okt.time}</span><span className="mm">:{okt.minutt}</span></span>
-    <span className="lang"><span className="etk">Neste økt</span><b>{okt.tid} {okt.spiller}</b>{okt.meta && <small>{okt.meta}</small>}</span>
+    <span className="lang"><span className="etk">Neste økt</span><strong className="stor-tid">{okt.tid}</strong><b>{okt.spiller}</b>{okt.meta && <small>{okt.meta}</small>}</span>
   </Link>;
 }
 
