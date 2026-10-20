@@ -139,3 +139,76 @@
 @media (prefers-reduced-motion: reduce) { .phn-okt .fys-ov-topp .pil { transition: none; } }
 /* Handlingsraden står i flyten: i PlayerHQ-skallet ligger bunnmenyen der en klebende rad ville lagt seg. */
 .phn-okt .fys-handling { display: grid; gap: 8px; }
+
+/* Designløftet 20.10: Live-økt (alltid lys). Topplinje, fremdrift i minutter, repetisjoner mot plan, aside med klokke og øvelser. */
+.phn-lv { padding: 0 0 24px; gap: 0; }
+.phn-lv .lv-hode { display: grid; grid-template-columns: 88px minmax(0, 1fr) 96px; align-items: center; padding: 6px 8px; border-bottom: 1px solid var(--phn-sand-150); }
+.phn-lv .lv-tekstknapp { min-height: 44px; border: 0; background: transparent; font: 500 15px/1 var(--phn-sans); color: var(--phn-g900); text-align: left; padding: 0 8px; cursor: pointer; }
+.phn-lv .lv-midt { display: grid; justify-items: center; gap: 2px; text-align: center; }
+.phn-lv .lv-midt b { font: 600 15px/1.2 var(--phn-sans); }
+.phn-lv .lv-midt small { font: 500 11px/1 var(--phn-mono); color: var(--phn-g600); }
+.phn-lv .lv-klokke { display: grid; justify-items: end; padding-right: 8px; }
+.phn-lv .lv-klokke b { font: 600 16px/1 var(--phn-mono); }
+.phn-lv .lv-klokke small { font: 500 10px/1.4 var(--phn-mono); color: var(--phn-g600); }
+.phn-lv .lv-fremdrift { display: flex; gap: 3px; padding: 10px 16px 0; }
+.phn-lv .lv-fremdrift i { display: block; height: 5px; border-radius: 3px; background: var(--phn-sand-150); }
+.phn-lv .lv-fremdrift i.ok { background: var(--phn-slag); }
+.phn-lv .lv-fremdrift i.na { background: var(--phn-g900); }
+.phn-lv .lv-side { display: grid; gap: 20px; padding: 16px; align-content: start; width: 100%; max-width: 1240px; margin-inline: auto; }
+.phn-lv .lv-hoved { display: grid; gap: 16px; align-content: start; }
+.phn-lv .lv-ovelse { display: grid; gap: 6px; }
+.phn-lv .lv-eyebrow { font: 600 11px/1 var(--phn-mono); letter-spacing: .06em; text-transform: uppercase; }
+.phn-lv .lv-eyebrow.lv-ak-slag { color: var(--phn-slag-ink); } .phn-lv .lv-eyebrow.lv-ak-tek { color: var(--phn-tek-ink); } .phn-lv .lv-eyebrow.lv-ak-fys { color: var(--phn-fys-ink); } .phn-lv .lv-eyebrow.lv-ak-spill { color: var(--phn-spill-ink); } .phn-lv .lv-eyebrow.lv-ak-turn { color: var(--phn-turn); }
+.phn-lv .lv-ovelse h1 { margin: 0; font: 700 24px/1.15 var(--phn-sans); letter-spacing: -.02em; text-wrap: balance; }
+.phn-lv .lv-merker { display: flex; flex-wrap: wrap; gap: 6px; }
+.phn-lv .lv-merker span { font: 500 11px/1 var(--phn-mono); padding: 5px 7px; border-radius: 6px; background: var(--phn-sand-150); color: var(--phn-g800); }
+.phn-lv .lv-reps { display: grid; gap: 10px; }
+.phn-lv .lv-reps-topp { display: flex; justify-content: space-between; font-size: 15px; }
+.phn-lv .lv-reps-topp span { font: 500 13px/1 var(--phn-mono); color: var(--phn-g800); }
+.phn-lv .lv-teller { display: grid; gap: 8px; padding: 12px; border-radius: 12px; box-shadow: inset 0 0 0 1px var(--phn-sand-300); max-width: 360px; }
+.phn-lv .lv-etikett { font-size: 13px; color: var(--phn-g800); }
+.phn-lv .lv-teller .teller-tall { font: 600 44px/1 var(--phn-mono); letter-spacing: -.03em; }
+.phn-lv .lv-spor { display: block; height: 4px; border-radius: 2px; background: var(--phn-sand-100); overflow: hidden; }
+.phn-lv .lv-spor i { display: block; height: 100%; background: var(--phn-slag); transform-origin: 0 50%; transition: width 240ms var(--phn-ut); }
+.phn-lv .lv-spor i.ok { background: var(--phn-green-700); }
+.phn-lv .lv-status { font-size: 12px; color: var(--phn-g800); }
+.phn-lv .lv-status.ok { color: var(--phn-green-700); }
+.phn-lv .lv-trinn { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.phn-lv .lv-trinn button { min-height: 52px; border: 0; border-radius: 8px; background: var(--phn-sand-150); color: var(--phn-g900); font: 600 16px/1 var(--phn-mono); cursor: pointer; transition: transform 100ms var(--phn-ut), background-color 120ms ease; }
+.phn-lv .lv-trinn button:active { transform: scale(.94); background: var(--phn-sand-300); }
+.phn-lv .lv-trinn button.pluss { background: var(--phn-g900); color: #fff; }
+.phn-lv .lv-handling { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 8px; }
+.phn-lv .lv-pause { min-height: 56px; border: 1px solid var(--phn-sand-300); border-radius: 10px; background: var(--phn-hvit); font: 600 15px/1 var(--phn-sans); color: var(--phn-g900); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+.phn-lv .lv-neste { min-height: 56px; border: 0; border-radius: 10px; background: var(--phn-g900); color: #fff; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 18px; cursor: pointer; font-family: inherit; text-align: left; }
+.phn-lv .lv-neste span { display: grid; gap: 2px; min-width: 0; }
+.phn-lv .lv-neste b { font: 600 16px/1.2 var(--phn-sans); }
+.phn-lv .lv-neste small { font-size: 12px; color: var(--phn-sand-300); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.phn-lv .lv-neste:disabled { opacity: .6; }
+.phn-lv :is(.lv-pause, .lv-neste, .lv-trinn button, .lv-tekstknapp, .lv-liste button):focus-visible { outline: 3px solid var(--phn-g900); outline-offset: 2px; }
+.phn-lv .lv-pause:active, .phn-lv .lv-neste:active { transform: scale(.97); }
+.phn-lv .lv-aside { display: grid; gap: 16px; align-content: start; }
+.phn-lv .lv-klokke-kort { display: grid; gap: 6px; padding: 12px 14px; border-radius: 12px; background: var(--phn-sand-100); }
+.phn-lv .lv-klokke-kort > span:first-child { display: flex; justify-content: space-between; align-items: baseline; font-size: 13px; color: var(--phn-g800); }
+.phn-lv .lv-klokke-kort b { font: 600 28px/1 var(--phn-mono); color: var(--phn-g900); }
+.phn-lv .lv-klokke-kort b small { font: 500 13px/1 var(--phn-mono); color: var(--phn-g600); }
+.phn-lv .lv-klokke-kort .lv-spor { height: 6px; background: var(--phn-sand-150); }
+.phn-lv .lv-klokke-kort .lv-spor i { background: var(--phn-g900); }
+.phn-lv .lv-klokke-kort > small { font-size: 12px; color: var(--phn-g800); }
+.phn-lv .lv-liste { display: grid; gap: 2px; }
+.phn-lv .lv-liste > b { font: 600 15px/1.3 var(--phn-sans); padding-bottom: 6px; border-bottom: 1px solid var(--phn-sand-300); margin-bottom: 4px; }
+.phn-lv .lv-liste button { display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 4px 8px; border: 0; border-radius: 8px; background: transparent; text-align: left; font: 400 14px/1.3 var(--phn-sans); color: var(--phn-g900); cursor: pointer; }
+.phn-lv .lv-liste button.na { background: var(--phn-sand-150); font-weight: 600; }
+.phn-lv .lv-liste button span { flex: 1; }
+.phn-lv .lv-liste button small { font: 500 12px/1 var(--phn-mono); color: var(--phn-g800); }
+.phn-lv .lv-liste button i { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 12px; box-shadow: inset 0 0 0 1.5px var(--phn-sand-300); font: 600 12px/1 var(--phn-mono); font-style: normal; color: var(--phn-g800); flex: none; }
+.phn-lv .lv-liste button.na i { background: var(--phn-g900); color: #fff; box-shadow: none; }
+.phn-lv .lv-liste button i.ok { background: var(--phn-slag); color: #fff; box-shadow: none; }
+.phn-lv .lv-bunn { display: grid; }
+@container (min-width: 900px) {
+  .phn-lv .lv-hode { grid-template-columns: 120px minmax(0, 1fr) 160px; }
+  .phn-lv .lv-fremdrift { padding: 12px 36px 0; }
+  .phn-lv .lv-side { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 36px; padding: 22px 36px; }
+  .phn-lv .lv-ovelse h1 { font-size: 34px; }
+  .phn-lv .lv-handling { grid-template-columns: 140px minmax(0, 360px); }
+}
+@media (prefers-reduced-motion: reduce) { .phn-lv .lv-spor i, .phn-lv .lv-trinn button { transition: none; } }
