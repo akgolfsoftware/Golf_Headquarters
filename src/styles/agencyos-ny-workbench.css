@@ -184,3 +184,8 @@
   .agn-s .wb { grid-template-columns: minmax(0, 1fr) 340px; }
 }
 .agn-s .faner .fane-ant { margin-left: 6px; font: 600 12px/1 var(--mono); color: var(--graphite-600); }
+
+/* Bølge 2: timer per akse på gruppas perioder (aksefarger bare på timer). */
+.agn-s .periode-akser { grid-column: 1 / -1; display: flex; gap: 2px; height: 8px; }
+.agn-s .periode-akser u { display: block; border-radius: 2px; min-width: 2px; text-decoration: none; }
+.agn-s .periode-akser u.fys { background: var(--fys-ink); } .agn-s .periode-akser u.tek { background: var(--tek-ink); } .agn-s .periode-akser u.slag { background: var(--slag); } .agn-s .periode-akser u.spill { background: var(--spill-ink); } .agn-s .periode-akser u.turn { background: var(--turn); }

@@ -12,6 +12,8 @@
  * velgeren mellom grupper. Nytt: periodene legges inn, endres og slettes i
  * samme skjema som spillerens (PeriodeArk).
  *
+ * Bølge 2 (20.10.2026, canvas «Gruppeplan i Workbench»): timer per akse som stripe i aksefarger på hver periode.
+ *
  * Avvik:
  *   - Kurven «timer per uke per akse» er utelatt: gruppa har ingen ukeplan,
  *     bare perioder med timer per akse, så kurven ville bare gjentatt periodene.
@@ -126,6 +128,9 @@ export function AG11GruppeNy({ gruppe, grupper, perioder, medlemmer, faste, kanR
             ? <div className="kort dempet"><b className="undertittel">Ingen perioder</b><p className="forklar">Legg inn Grunnperiode, Spesialperiode og Turneringsperiode med timer per akse. Medlemmene arver dem når du ruller ut.</p></div>
             : <div className="periodeliste">{sortert.map((p) => <button key={p.id} type="button" className="periode" onClick={() => setArk({ periode: p })}>
               <i className={PERIODE_KLASSE[p.type]} aria-hidden /><span><b>{PERIODE_NAVN[p.type]}{p.focus ? ` · ${p.focus}` : ""}</b><span className="kilde">{kort(p.startDate)}–{kort(p.endDate)} · {p.axisMinutes ? `${formaterVarighet(AKSER.reduce((s, a) => s + (p.axisMinutes?.[a] ?? 0), 0))} per uke` : "ingen timer fordelt"}</span></span><ChevronRight className="ikon" aria-hidden />
+              {p.axisMinutes && AKSER.some((a) => (p.axisMinutes?.[a] ?? 0) > 0) && <span className="periode-akser" role="img" aria-label={`Timer per akse per uke: ${AKSER.filter((a) => (p.axisMinutes?.[a] ?? 0) > 0).map((a) => `${a} ${formaterVarighet(p.axisMinutes?.[a] ?? 0)}`).join(", ")}`}>
+                {AKSER.filter((a) => (p.axisMinutes?.[a] ?? 0) > 0).map((a) => <u key={a} className={a.toLowerCase()} style={{ flex: p.axisMinutes?.[a] ?? 0 }} />)}
+              </span>}
             </button>)}</div>}
         </section>
         <section className="seksjon" aria-label="Faste gruppetider">
