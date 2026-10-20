@@ -27,6 +27,12 @@ export type S360Hode = {
   nesteTurnering: { navn: string; dato: string } | null;
   sisteBooking: { dato: string; tjeneste: string } | null;
   kreverDeg: { id: string; tittel: string; sub: string }[];
+  /** Brutto snitt av de 10 siste tellende rundene, de 10 før, og kurven (eldst først). */
+  snitt: { siste10: number | null; forrige10: number | null; antall: number; kurve: number[] };
+  /** Dager til neste turnering (Oslo-dato). null uten påmelding. */
+  turneringOmDager: number | null;
+  /** Aktiv i en WANG- eller Team Norway-gruppe: bare da finnes IUP-fanen (beslutninger 04.10). */
+  iup: boolean;
 };
 
 export type S360RailSpiller = { id: string; navn: string; sub: string };
