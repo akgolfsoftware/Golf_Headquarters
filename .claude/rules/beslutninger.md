@@ -4,6 +4,22 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## TEAM NORWAY-APPEN BEHOLDER NAVY SIDEMENY OG BYTTER TIL SCHIBSTED GROTESK (Anders 20.10.2026, bindende)
+
+Anders 20.10 valgte anbefalingen på begge de uavklarte punktene i §TEAM NORWAY-APPEN FÅR RETNING «SKRÅ» (punkt 7 og 8): navy sidemeny på PC, og Schibsted Grotesk fra Team Norway Golf-merket. Begrunnelse: sidemenyen har plass til alle menypunktene TN trenger, og skriften gjør appen lik resten av Team Norway sitt materiell.
+
+- **PC: navy sidemeny** (`TnShell`/`TnRail`, `src/components/team-norway/tn-shell.tsx`), ikke hvit topplinje med piller fra Skrå-utkastet. Mobil er uendret (navy topplinje og meny som hel flate, `rail-mobil.tsx`).
+- **Skrift: Schibsted Grotesk** i overskrifter og tekst under `/team-norway/*` og `/teamnorway`. IBM Plex Mono står på tall som før. Jost og Lato brukes ikke lenger i Team Norway.
+- Resten av Skrå (bilde, skråkutt, myke kort, navy-skygger, farger) er uendret.
+
+**Overstyrer:** «Jost display, Lato brødtekst» i §TEAM NORWAY-APPEN BYTTER DESIGNSPRÅK (22.09), og menyen i Skrå-utkastet `docs/design-system/utkast-tn/nye-veier.html`.
+
+**Arbeidet dette utløser:**
+
+1. **Skriften i koden:** `src/app/team-norway/layout.tsx` og `src/app/teamnorway/layout.tsx` laster `Schibsted_Grotesk` fra `next/font/google` i stedet for `Jost` og `Lato`; `--tn-font-display` og `--tn-font-body` i `src/styles/team-norway-tokens.css` peker dit. Kommentarene som sier Jost/Lato (`tn-flate.tsx`, `tn-handlinger.tsx`, `tn-innlogging.module.css`, `tn-oversikt-skjerm.tsx`) rettes. Ferdig når et søk etter «Jost» og «Lato» i `src/app/team-norway`, `src/app/teamnorway`, `src/components/team-norway` og `team-norway-tokens.css` gir 0 treff, og 390 og 1280 px er målt uten sidelengs rulling.
+2. **Utkastene:** `docs/design-system/utkast-tn/felles/tn.css` og `README.md` bytter til Schibsted Grotesk. Ferdig når README ikke lenger sier Jost/Lato.
+3. **Pakkene i Skrå starter** (lanseringsplanen A6, punkt 5 i §SKRÅ): spillere og IUP først, med navy sidemeny og ny skrift. Ingen pakke venter lenger på Anders' svar.
+
 ## DATA GOLF ER ANDERS' PRIVATE VERKTØY: BARE ADMIN, PÅ ALLE FLATER, ALDRI UTAD (Anders 20.10.2026, bindende)
 
 Anders 20.10, om #1450 (Data Golf bare for ADMIN, 19.10): «Jeg jobber både for Wang Toppidrett, Team Norway og AK Golf. Så dette er privat. Dette bruker vi i privat regi. Jeg godkjenner at det skal brukes, men ikke noe utover å publisere det og bruke det utad.»
@@ -30,7 +46,7 @@ Anders 19.10, etter tre nye retninger for trenerens hjem bygget fra Team Norway 
 - **Hjørner og skygger er tillatt:** myke kort med radius og lagdelte navy-skygger, slik utkastet viser. Runde avatarer og pilleknapper følger med.
 - **Skråkuttet brukes bare på store flater** (toppen av en skjerm, seksjonsskiller), aldri på kort eller knapper. Bildene kommer fra `public/team-norway/bilder/`, ingen stockbilder.
 - **Bildene er Team Norway Golf sine egne** (Anders 19.10: «du må bruke referansebilder fra Claude Design-prosjektet til Team Norway Golf»): fra «Team Norway Golf Design System» (`3416f258`, `assets/images/`), aldri kopier av PlayerHQ-bildene. De fire PlayerHQ-kopiene i `public/team-norway/bilder/` er byttet ut.
-- **Uendret:** navy `#012B5D`, rød `#D70232` som identitet og aldri status, TN-aksefargene (14.10), logoen fra fil, IBM Plex Mono på tall, og lys arbeidsflate.
+- **Uendret:** navy `#012B5D`, rød `#D70232` som identitet og aldri status, TN-aksefargene (14.10), logoen fra fil, IBM Plex Mono på tall, og lys arbeidsflate. Meny og skrift: §TEAM NORWAY-APPEN BEHOLDER NAVY SIDEMENY (20.10).
 
 **Overstyrer:** «hjørner 0 · 2 · 4, ingen skygger, ingen sirkler, kvadratisk avatar» i §TEAM NORWAY-APPEN BYTTER DESIGNSPRÅK (22.09), og «Rammene er låst» for TN i `docs/planer/tn-wang-designloft-2026-10-16.md`.
 
@@ -42,8 +58,8 @@ Anders 19.10, etter tre nye retninger for trenerens hjem bygget fra Team Norway 
 4. **Trenerens hjem (TN-01):** `src/components/team-norway/skjermer/tn-oversikt-skjerm.tsx` får skråtoppen med bilde, kortene over kanten (saker som venter, neste samling med nedtelling, gruppas trening, turnering nå) og bevegelsen fra utkastet, med tidene fra TN-merket og `prefers-reduced-motion`. Ferdig når ingen tall er faste i koden og manglende data vises som «—».
 5. **Resten av skjermene** i denne rekkefølgen, én PR per pakke: spillere og IUP · samlinger og fellestesting · uttak, rangliste, turneringer og live · månedsplan og Workbench · analyse, Data Golf og administrasjon. Ferdig når ingen TN-side bruker 0 · 2 · 4-flatene.
 6. **Port 7:** Anders ser hjem og hver pakke i 390 og 1280 px på forhåndsvisningen.
-7. **Uavklart: menyen.** Utkastet viser hvit topplinje med piller; §TEAM NORWAY-APPEN BYTTER DESIGNSPRÅK sier navy sidemeny. Til Anders har svart, beholdes navy sidemeny på PC.
-8. **Uavklart: skriften.** Utkastet bruker Schibsted Grotesk fra Team Norway Golf-merket; appen bruker Jost og Lato. Til Anders har svart, beholdes Jost og Lato.
+7. **Menyen:** avgjort 20.10, navy sidemeny på PC (§TEAM NORWAY-APPEN BEHOLDER NAVY SIDEMENY).
+8. **Skriften:** avgjort 20.10, Schibsted Grotesk (§TEAM NORWAY-APPEN BEHOLDER NAVY SIDEMENY).
 
 ## FYS STÅR ALLTID NEDERST I PYRAMIDEN, PÅ ALLE FLATER (Anders 19.10.2026, bindende)
 
@@ -1638,7 +1654,7 @@ Port 7 (Anders har sett skjermen) gjelder som for alle andre skjermer.
 
 ## TEAM NORWAY-APPEN BYTTER DESIGNSPRÅK (Anders 22.09.2026, bindende)
 
-**Det skarpe Team Norway-språket eier `/team-norway/*`. Claw er utgående for appen.** Fasit blir et nytt Claude Design-prosjekt «Team Norway App», avledet av «Team Norway Golf Design System» (`3416f258`): Jost display, Lato brødtekst, IBM Plex Mono på tall, ~~hjørner 0 · 2 · 4, ingen skygger, ingen sirkler, kvadratisk avatar~~ (overstyrt 19.10, §TEAM NORWAY-APPEN FÅR RETNING «SKRÅ»), lukket ikonsett på 20.
+**Det skarpe Team Norway-språket eier `/team-norway/*`. Claw er utgående for appen.** Fasit blir et nytt Claude Design-prosjekt «Team Norway App», avledet av «Team Norway Golf Design System» (`3416f258`): ~~Jost display, Lato brødtekst~~ (overstyrt 20.10: Schibsted Grotesk), IBM Plex Mono på tall, ~~hjørner 0 · 2 · 4, ingen skygger, ingen sirkler, kvadratisk avatar~~ (overstyrt 19.10, §TEAM NORWAY-APPEN FÅR RETNING «SKRÅ»), lukket ikonsett på 20.
 
 - **Rød er `#D70232`** — målt fra logofilen. Kommunikasjonssystemets `#d40e3a` gjelder ikke i appen og rettes ved avledningen. Navy `#012B5D` er uendret i begge.
 - **Sidemenyen er full navy `#012B5D`**, hvit tekst, lysere navy bak aktiv rad, rød markør. Den bor bare i `TnShell`/`TnRail` — aldri bygget på nytt per side.
@@ -1651,7 +1667,7 @@ Port 7 (Anders har sett skjermen) gjelder som for alle andre skjermer.
 
 1. Nytt prosjekt «Team Norway App»: tokens avledet av `3416f258` med rød rettet, skall TN-01 med navy sidemeny, mobil 390 px.
 2. De fire internskjermene (Venter på meg, Analyse, Lisens og økonomi, Organisasjonsoppsett) tegnes om mot skallet — tokens i stedet for ~150 hardkodede farger, responsiv i stedet for fast 1440 px, menypunkter som matcher `tnHovedmeny`.
-3. `src/styles/team-norway-tokens.css`: skrifter, hjørner, skygger, farger. Jost og Lato lastes i `src/app/team-norway/layout.tsx` i stedet for Schibsted Grotesk.
+3. `src/styles/team-norway-tokens.css`: skrifter, hjørner, skygger, farger. ~~Jost og Lato lastes i stedet for Schibsted Grotesk.~~ Overstyrt 20.10: Schibsted Grotesk.
 4. `src/components/team-norway/core.tsx`: de 18 `radius.full`-formene blir firkantede, avataren kvadratisk, `TnRail` navy.
 5. Fem skjermer bygger skallet for hånd og spriker — `/team-norway`, `[groupId]`, `[groupId]/dokumenter`, `spiller/[spillerId]`, `tilgang`: to organisasjonsnavn, fire undertitler, tre innholdsbredder. Alle over på `TnShell`.
 6. Maskinell måling av alle 21 TN-ruter i 390 px og desktop, tom/laster/feil: ingen sidelengs rulling, ingen node utenfor rammen, treffmål minst 44 px, kontrast godkjent på navy.
