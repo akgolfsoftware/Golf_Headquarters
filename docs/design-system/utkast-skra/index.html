@@ -164,11 +164,11 @@ button { font: inherit; color: inherit; }
 .uke-hoved strong { font: 600 44px/1 var(--sans); letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
 .uke-hoved strong small { font-size: 18px; font-weight: 500; color: var(--g500); letter-spacing: 0; margin-left: 4px; }
 .akserader { display: grid; gap: 10px; }
-.akserad { display: grid; grid-template-columns: 52px minmax(0, 1fr) 82px; align-items: center; gap: 10px; }
+.akserad { display: grid; grid-template-columns: 48px minmax(0, 1fr) 104px; align-items: center; gap: 10px; }
 .akserad .navn { font: 600 11px/1 var(--mono); letter-spacing: .06em; color: var(--g600); }
 .spor { height: 10px; border-radius: 5px; background: var(--sunket); overflow: hidden; }
 .spor i { display: block; height: 100%; border-radius: 5px; background: var(--c); width: var(--p); transform-origin: left; animation: fyll .9s var(--ut) both; }
-.akserad .verdi { font: 500 12.5px/1 var(--mono); color: var(--g800); text-align: right; font-variant-numeric: tabular-nums; }
+.akserad .verdi { font: 500 12.5px/1.2 var(--sans); white-space: nowrap; color: var(--g800); text-align: right; font-variant-numeric: tabular-nums; }
 @keyframes fyll { from { transform: scaleX(.35); } to { transform: scaleX(1); } }
 
 /* Målsetninger */
@@ -408,10 +408,10 @@ button { font: inherit; color: inherit; }
         <div>
           <div class="overlinje">Mandag 5. oktober · Grunnperiode · uke 3 av 8</div>
           <h2 class="tittel">I dag, Øyvind</h2>
-          <p class="ingress">2 økter, 2 t totalt. Økta kl. 15:30 trener innspill, ditt største forbedringsområde.</p>
+          <p class="ingress">2 økter, 2 t totalt i dag. Økta kl. 15:30 trener innspill, ditt største forbedringsområde.</p>
         </div>
         <div class="statrad">
-          <div class="stat"><strong>6:40<small>/ 9 t</small></strong><span>Uka så langt</span></div>
+          <div class="stat"><strong>6 t 40<small>av 9 t</small></strong><span>Uka så langt</span></div>
           <div class="stat"><strong>82<small>%</small></strong><span>Tid mot plan, 4 uker</span></div>
           <div class="stat"><strong>−0,9</strong><span>SG innspill</span></div>
           <div class="stat"><strong>74,2</strong><span>Snittscore, brutto</span></div>
@@ -440,13 +440,13 @@ button { font: inherit; color: inherit; }
 
         <article class="kort">
           <div class="kort-topp"><h2>Uka</h2><a class="lenke" href="#">Åpne planen <svg class="ikon" style="width:16px;height:16px"><use href="#i-pil"/></svg></a></div>
-          <div class="uke-hoved"><strong>6:40<small>av 9:00 t</small></strong><span class="liten">lagt inn mot fordelt fra perioden</span></div>
+          <div class="uke-hoved"><strong>6 t 40 min<small>av 9 t</small></strong><span class="liten">lagt inn mot fordelt fra perioden</span></div>
           <div class="akserader">
-            <div class="akserad"><span class="navn">FYS</span><div class="spor"><i style="--c:var(--fys);--p:67%"></i></div><span class="verdi">1:20 / 2:00</span></div>
-            <div class="akserad"><span class="navn">TEK</span><div class="spor"><i style="--c:var(--tek);--p:80%"></i></div><span class="verdi">2:00 / 2:30</span></div>
-            <div class="akserad"><span class="navn">SLAG</span><div class="spor"><i style="--c:var(--slag);--p:72%"></i></div><span class="verdi">2:10 / 3:00</span></div>
-            <div class="akserad"><span class="navn">SPILL</span><div class="spor"><i style="--c:var(--spill);--p:100%"></i></div><span class="verdi">1:10 / 1:00</span></div>
-            <div class="akserad"><span class="navn">TURN</span><div class="spor"><i style="--c:var(--turn);--p:0%"></i></div><span class="verdi">0:00 / 0:30</span></div>
+            <div class="akserad"><span class="navn">FYS</span><div class="spor"><i style="--c:var(--fys);--p:67%"></i></div><span class="verdi">1 t 20 av 2 t</span></div>
+            <div class="akserad"><span class="navn">TEK</span><div class="spor"><i style="--c:var(--tek);--p:80%"></i></div><span class="verdi">2 t av 2 t 30</span></div>
+            <div class="akserad"><span class="navn">SLAG</span><div class="spor"><i style="--c:var(--slag);--p:72%"></i></div><span class="verdi">2 t 10 av 3 t</span></div>
+            <div class="akserad"><span class="navn">SPILL</span><div class="spor"><i style="--c:var(--spill);--p:100%"></i></div><span class="verdi">1 t 10 av 1 t</span></div>
+            <div class="akserad"><span class="navn">TURN</span><div class="spor"><i style="--c:var(--turn);--p:0%"></i></div><span class="verdi">0 av 30 min</span></div>
           </div>
         </article>
       </div>
@@ -503,7 +503,7 @@ button { font: inherit; color: inherit; }
     <aside class="sidemeny" aria-label="AgencyOS-meny">
       <div class="merke" style="color:var(--g900)"><b style="background:var(--g900);color:#fff">AK</b> AgencyOS</div>
       <div class="sok"><svg class="ikon" style="width:16px;height:16px"><use href="#i-sok"/></svg>Søk<kbd>⌘K</kbd></div>
-      <div class="neste"><div class="meta">Neste økt · om 40 min</div><strong>09:00</strong><span>Øyvind Rohjan · Innspill</span></div>
+      <div class="neste"><div class="meta">Neste økt · om 40 min</div><strong>09:00</strong><span>Magnus Aasheim · Teknikk</span></div>
       <div class="gruppe"><div class="meta">Daglig</div><a href="#" aria-current="page">Cockpit</a><a href="#">Innboks <span class="t">2</span></a><a href="#">Kalender</a></div>
       <div class="gruppe"><div class="meta">Spillere</div><a href="#">Stall</a><a href="#">Workbench</a><a href="#">Grupper</a><a href="#">Tester</a></div>
       <div class="gruppe"><div class="meta">Drift</div><a href="#">Booking</a><a href="#">Økonomi</a><a href="#">Oppsett</a></div>
@@ -520,10 +520,10 @@ button { font: inherit; color: inherit; }
           <div>
             <div class="overlinje">Mandag 5. oktober · kl. 08:20</div>
             <h2 class="tittel">God morgen, Anders</h2>
-            <p class="ingress">6 økter i dag, første kl. 09:00. Ett spørsmål har ventet i over et døgn.</p>
+            <p class="ingress">4 økter i dag, første kl. 09:00. Ett spørsmål har ventet i over et døgn.</p>
           </div>
           <div class="statrad">
-            <div class="stat"><strong>6</strong><span>Økter i dag</span></div>
+            <div class="stat"><strong>4</strong><span>Økter i dag</span></div>
             <div class="stat"><strong>2</strong><span>Venter på deg</span></div>
             <div class="stat"><strong>3</strong><span>Følger ikke planen</span></div>
             <div class="stat"><strong>24</strong><span>Aktive spillere</span></div>
@@ -538,18 +538,18 @@ button { font: inherit; color: inherit; }
             <div class="kort-topp"><h2>Krever deg nå</h2><a class="lenke" href="#">Innboks <svg class="ikon" style="width:16px;height:16px"><use href="#i-pil"/></svg></a></div>
             <div class="saker">
               <div class="sak"><div><b>Magnus Aasheim spør om turneringsplanen</b><span>Spørsmål · ventet 26 t · ingen utkast ennå</span></div><span class="pille haster">HASTER</span></div>
-              <div class="sak"><div><b>Lettere uke for Øyvind Rohjan</b><span>Forslag · over 130 % to uker på rad</span></div><span class="pille venter">GODKJENN</span></div>
+              <div class="sak"><div><b>Lettere uke for Emil Berg</b><span>Forslag · over 130 % av plan to uker på rad</span></div><span class="pille venter">GODKJENN</span></div>
             </div>
           </article>
 
           <article class="kort">
-            <div class="kort-topp"><h2>Dagens kalender</h2><span class="meta">05–22 · 6 økter</span></div>
+            <div class="kort-topp"><h2>Dagens kalender</h2><span class="meta">05–22 · 4 økter</span></div>
             <div class="kalender">
               <div class="naa" aria-hidden="true"></div>
-              <div class="kal-rad"><span class="kl">09:00</span><div class="kal-okt slag"><b>Øyvind Rohjan</b><span>INNSPILL · 60 MIN</span></div></div>
-              <div class="kal-rad"><span class="kl">10:30</span><div class="kal-okt tek"><b>Magnus Aasheim</b><span>TEKNIKK · P6.0 · 60 MIN</span></div></div>
+              <div class="kal-rad"><span class="kl">09:00</span><div class="kal-okt tek"><b>Magnus Aasheim</b><span>TEKNIKK · P6.0 · 60 MIN</span></div></div>
               <div class="kal-rad"><span class="kl">13:00</span><div class="kal-okt spill"><b>Gruppe Utvikling</b><span>BANESPILL · 6 SPILLERE · 90 MIN</span></div></div>
-              <div class="kal-rad"><span class="kl">16:00</span><div class="kal-okt fys"><b>Ingrid Solberg</b><span>FYSISK TEST · 45 MIN</span></div></div>
+              <div class="kal-rad"><span class="kl">15:30</span><div class="kal-okt slag"><b>Øyvind Rohjan</b><span>INNSPILL OG NÆRSPILL · 75 MIN</span></div></div>
+              <div class="kal-rad"><span class="kl">17:15</span><div class="kal-okt fys"><b>Ingrid Solberg</b><span>FYSISK TEST · 45 MIN</span></div></div>
             </div>
           </article>
         </div>
