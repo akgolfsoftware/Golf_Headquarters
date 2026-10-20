@@ -16,13 +16,14 @@ import s from "./skra.module.css";
  * - SkraFlyt: innholdet under toppen. Første rad ligger over den skrå kanten.
  * - SkraKort: hvitt kort med skygge, tittel og valgfri lenke eller meta.
  * - SkraTom: tom tilstand inni et kort.
- * - SkraHelt: hovedkortet over begge kolonnene, med bilde og fylt i aksefargen (det som gjelder nå).
+ * - SkraHelt: hovedkortet over begge kolonnene, fylt i aksefargen (det som gjelder nå). Uten bilde.
  *
  * Bildene er AK Golfs egne (public/images/playerhq), aldri Team Norway-bildene.
  */
 
 export function SkraTopp({
   bilde,
+  bildePosisjon,
   overlinje,
   tittel,
   ingress,
@@ -33,6 +34,8 @@ export function SkraTopp({
 }: {
   /** Sti under public, f.eks. «/images/playerhq/spill-bane.jpg». */
   bilde: string;
+  /** Hvor i bildet utsnittet skal ligge, som CSS object-position. */
+  bildePosisjon?: string;
   overlinje?: ReactNode;
   tittel: ReactNode;
   ingress?: ReactNode;
@@ -49,7 +52,7 @@ export function SkraTopp({
     <section className={s.topp} style={stil} aria-label={etikett}>
       <div className={s.kant} aria-hidden="true" />
       <div className={s.foto} aria-hidden="true">
-        <Image src={bilde} alt="" fill priority sizes="100vw" />
+        <Image src={bilde} alt="" fill priority sizes="100vw" style={bildePosisjon ? { objectPosition: bildePosisjon } : undefined} />
       </div>
       <div className={`${s.innhold}${tall ? "" : ` ${s.utenTall}`}`}>
         <div className={s.hode}>
@@ -109,8 +112,6 @@ export function SkraKort({
 export type SkraHandling = { tekst: string; href?: string; onClick?: () => void; ikon?: ReactNode; sekundaer?: boolean };
 
 export function SkraHelt({
-  bilde,
-  bildePosisjon,
   farge,
   overlinje,
   tid,
@@ -120,8 +121,6 @@ export function SkraHelt({
   handlinger = [],
   etikett,
 }: {
-  bilde: string;
-  bildePosisjon?: string;
   /** Aksefargen (mørk variant, så hvit tekst leses). */
   farge?: string;
   overlinje: ReactNode;
@@ -135,15 +134,13 @@ export function SkraHelt({
   const stil = farge ? ({ "--helt-farge": farge } as CSSProperties) : undefined;
   return (
     <section className={s.helt} style={stil} aria-label={etikett}>
-      <div className={s.heltBilde} aria-hidden="true">
-        <Image src={bilde} alt="" fill sizes="(min-width: 900px) 40vw, 100vw" style={{ objectPosition: bildePosisjon }} />
-      </div>
       <div className={s.heltTekst}>
         <span className={s.heltOver}>{overlinje}</span>
         <strong className={s.heltTid}>{tid}{tidEtter ? <small>{tidEtter}</small> : null}</strong>
         <h2>{tittel}</h2>
         {meta ? <p className={s.heltMeta}>{meta}</p> : null}
-        {handlinger.length > 0 ? (
+      </div>
+      {handlinger.length > 0 ? (
           <div className={s.heltKnapper}>
             {handlinger.map((h) => {
               const kl = `${s.heltKnapp}${h.sekundaer ? ` ${s.sek}` : ""}`;
@@ -153,7 +150,6 @@ export function SkraHelt({
             })}
           </div>
         ) : null}
-      </div>
     </section>
   );
 }

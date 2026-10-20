@@ -33,7 +33,6 @@ import { EksportTrigger } from "@/components/shared/eksport-trigger";
 import { KAL_START_MIN, KAL_SLUTT_MIN, hhmm, type AG01Data, type CockpitKalenderRad } from "@/lib/agencyos/cockpit-precision";
 import type { StallRorledning } from "@/lib/agencyos/cockpit-tillegg-regler";
 import { SkraFlyt, SkraHelt, SkraKort, SkraStat, SkraTom, SkraTopp } from "@/components/precision/skra/Skra";
-import { oktBilde } from "@/lib/portal/okt-bilde";
 import "@/styles/agencyos-ny-cockpit.css";
 
 export type AG01Tilstand = "data" | "tom" | "laster" | "feil";
@@ -167,7 +166,7 @@ function StallRor({ stall }: { stall: Promise<StallRorledning | null> }) {
   </div>;
 }
 
-const COCKPIT_BILDE = "/images/playerhq/spill-bane.jpg";
+const COCKPIT_BILDE = "/images/playerhq/tek-video.jpg";
 /** Mørk aksefarge for hovedkortet (hvit tekst må leses). Ukjent akse: grafitt. */
 const HELT_FARGE: Record<string, string> = { fys: "var(--fys-ink)", tek: "var(--tek-ink)", slag: "var(--slag)", spill: "var(--spill-ink)", turn: "var(--turn)" };
 const AKSE_LANG: Record<string, string> = { fys: "Fysisk", tek: "Teknisk", slag: "Golfslag", spill: "Spill", turn: "Turnering" };
@@ -177,10 +176,9 @@ function NesteHelt({ d }: { d: AG01Data }) {
   const r = d.kalender.find((x) => x.status === "pagar") ?? d.kalender.find((x) => x.status !== "ferdig" && x.sluttMin > d.naaMin);
   if (!r) return null;
   const pagar = r.status === "pagar";
-  const bilde = oktBilde(r.akse?.toUpperCase(), `${r.tittel} ${r.sted ?? ""}`);
   return <div className="skra-helt-plass"><SkraHelt
     etikett={`${pagar ? "Pågår nå" : "Neste økt"}: ${r.hvem}`}
-    bilde={bilde.src} bildePosisjon={bilde.posisjon} farge={r.akse ? HELT_FARGE[r.akse] : undefined}
+    farge={r.akse ? HELT_FARGE[r.akse] : undefined}
     overlinje={`${pagar ? "Pågår nå" : "Neste økt i dag"}${r.akse ? ` · ${AKSE_LANG[r.akse]}` : ""}`}
     tid={r.start} tidEtter={`–${r.slutt}`} tittel={r.hvem}
     meta={[r.tittel, r.sted].filter(Boolean).join(" · ")}
@@ -208,13 +206,13 @@ export function AG01Cockpit({ tilstand, data, dispatch = null, stall = null }: {
   const overlinje = `${data.kicker} · kl. ${data.klokke}`;
 
   if (tilstand === "laster") return <div className="agn-s agn-skra">
-    <SkraTopp etikett="Cockpit" bilde={COCKPIT_BILDE} overlinje={overlinje} tittel={data.hilsen} ingress="Henter dagen …" />
+    <SkraTopp etikett="Cockpit" bilde={COCKPIT_BILDE} bildePosisjon="50% 42%" overlinje={overlinje} tittel={data.hilsen} ingress="Henter dagen …" />
     <SkraFlyt><div className="skra-laster" aria-busy="true">
       <i className="skjelett" style={{ height: 160 }} /><i className="skjelett" style={{ height: 320 }} />
     </div></SkraFlyt>
   </div>;
   if (tilstand === "feil" || !paaNett) return <div className="agn-s agn-skra">
-    <SkraTopp etikett="Cockpit" bilde={COCKPIT_BILDE} overlinje={overlinje} tittel={data.hilsen} />
+    <SkraTopp etikett="Cockpit" bilde={COCKPIT_BILDE} bildePosisjon="50% 42%" overlinje={overlinje} tittel={data.hilsen} />
     <SkraFlyt><div role="alert"><SkraKort tittel={paaNett ? "Cockpit kunne ikke lastes" : "Ingen forbindelse"}>
       <SkraTom handling={<button type="button" className="knapp pri" onClick={() => window.location.reload()}>Prøv igjen</button>}>
         {paaNett ? "Ingenting er endret. Kalender, innboks og oppgaver hentes på nytt når du prøver igjen." : `Nettet er nede. Sist hentet ${data.klokke}.`}
@@ -232,6 +230,7 @@ export function AG01Cockpit({ tilstand, data, dispatch = null, stall = null }: {
     <SkraTopp
       etikett="Cockpit"
       bilde={COCKPIT_BILDE}
+      bildePosisjon="50% 42%"
       overlinje={overlinje}
       tittel={d.hilsen}
       ingress={oppsummering(d)}

@@ -105,27 +105,24 @@ a.stat:active { transform: scale(.97); }
 .helt {
   --helt-farge: var(--ak-g900);
   display: grid;
-  grid-template-rows: 132px auto;
+  gap: 18px;
   min-width: 0;
-  overflow: hidden;
+  padding: 20px 18px;
   border-radius: var(--ak-r-skra-kort);
   background: var(--helt-farge);
   color: #fff;
   box-shadow: 0 1px 2px rgba(20, 20, 19, .08), 0 22px 40px -22px var(--helt-farge), 0 10px 24px -12px rgba(20, 20, 19, .24);
   animation: inn 620ms var(--ak-ut) backwards 200ms;
 }
-.heltBilde { position: relative; min-height: 132px; overflow: hidden; }
-/* Bildet fyller ruta uansett hvordan det lastes (next/image fill setter det samme). */
-.heltBilde img, .foto img { position: absolute; inset: 0; width: 100%; height: 100%; }
-.heltBilde img { object-fit: cover; }
-.heltBilde::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, var(--helt-farge) 0%, transparent 70%); }
-.heltTekst { display: grid; gap: 6px; align-content: center; justify-items: start; padding: 4px 18px 18px; min-width: 0; }
+/* Bildet i toppen fyller flaten uansett hvordan det lastes (next/image fill setter det samme). */
+.foto img { position: absolute; inset: 0; width: 100%; height: 100%; }
+.heltTekst { display: grid; gap: 6px; align-content: center; justify-items: start; min-width: 0; }
 .heltOver { font: 500 11.5px/1.3 var(--ak-font-mono); letter-spacing: .08em; text-transform: uppercase; opacity: .82; }
 .heltTid { font: 600 40px/1 var(--ak-font-sans); letter-spacing: -.035em; font-variant-numeric: tabular-nums; }
 .heltTid small { margin-left: 6px; font: 500 16px/1 var(--ak-font-sans); letter-spacing: 0; opacity: .78; }
 .heltTekst h2 { margin: 2px 0 0; font: 700 22px/1.2 var(--ak-font-sans); letter-spacing: -.02em; text-wrap: balance; color: #fff; }
 .heltMeta { margin: 0; font-size: 14px; line-height: 1.45; opacity: .9; }
-.heltKnapper { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.heltKnapper { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .heltKnapp { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 18px; border: 0; border-radius: var(--ak-r-knapp); background: #fff; color: var(--ak-g900); font: 600 15px/1 var(--ak-font-sans); text-decoration: none; cursor: pointer; transition: transform var(--ak-t-trykk) var(--ak-ut), background var(--ak-t-base) var(--ak-ut); }
 .heltKnapp:active { transform: scale(.97); }
 .heltKnapp.sek { background: rgba(255, 255, 255, .16); color: #fff; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .32); }
@@ -158,10 +155,7 @@ a.stat:active { transform: scale(.97); }
 @container (min-width: 900px) {
   .flyt { margin-top: -88px; gap: 24px; }
   .kort { padding: 22px; }
-  .helt { grid-template-rows: none; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); min-height: 220px; }
-  .heltBilde { min-height: 220px; }
-  .heltBilde::after { background: linear-gradient(to left, var(--helt-farge) 0%, transparent 55%); }
-  .heltTekst { padding: 24px 28px; }
+  .helt { grid-template-columns: minmax(0, 1fr) auto; align-items: end; padding: 26px 28px; }
   .heltTid { font-size: 48px; }
   .heltTekst h2 { font-size: 26px; }
 }

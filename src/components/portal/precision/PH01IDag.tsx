@@ -7,7 +7,7 @@
  *
  * Toppen: banebilde, dato og periode, «I dag, <fornavn>», ingress og fire tall i glass (uka, tid mot plan,
  * svakeste Strokes Gained, snittscore brutto). Kanten under kuttet har aksefargen til neste økt.
- * Hovedkortet over kanten er neste økt med bilde, fylt i aksefargen, med Start økt og Se hele økta.
+ * Hovedkortet over kanten er neste økt, fylt i aksefargen, med Start økt og Se hele økta.
  * Resten av dagens økter står i kortet under.
  * Venstre: dagens økter · uka per akse og per dag · neste økt · dagsform · neste fysiske økt · fullførte økter.
  * Høyre: forslag som venter · målsetninger · nye meldinger · Strokes Gained · fireukerssjekk · agenda · neste turnering.
@@ -418,7 +418,7 @@ export function PH01IDag(p: PH01Props) {
   return <div className="phn phn-idag phn-idag2 phn-skra">
     <SkraTopp
       etikett="I dag"
-      bilde="/images/playerhq/green-25m.jpg"
+      bilde="/images/playerhq/slag-utslag.jpg" bildePosisjon="50% 38%"
       kantfarge={helt ? `var(--phn-${helt.akse})` : undefined}
       overlinje={p.dato}
       tittel={p.fornavn ? `I dag, ${p.fornavn}` : "I dag"}
@@ -433,7 +433,7 @@ export function PH01IDag(p: PH01Props) {
       {p.popup && <Popup p={p.popup} toast={toast} />}
       {helt && <div className="skra-helt-plass"><SkraHelt
         etikett={`${helt.status === "Pågår" ? "Pågår nå" : "Neste økt"}: ${helt.tittel}`}
-        bilde={helt.bilde.src} bildePosisjon={helt.bilde.posisjon} farge={FYLL[helt.akse]}
+        farge={FYLL[helt.akse]}
         overlinje={helt.status === "Pågår" ? `Pågår nå · ${AKSE_NAVN[helt.akse]}` : `Neste økt${helt.om ? ` · ${helt.om.toLowerCase()}` : ""} · ${AKSE_NAVN[helt.akse]}`}
         tid={helt.tid} tidEtter={`–${helt.slutt}`} tittel={helt.tittel}
         meta={[helt.sted, `${helt.antallOvelser} ${helt.antallOvelser === 1 ? "øvelse" : "øvelser"}`, helt.fokus ? `Mål i dag: ${helt.fokus}` : null].filter(Boolean).join(" · ")}
