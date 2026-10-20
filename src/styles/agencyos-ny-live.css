@@ -73,3 +73,21 @@
   .agn-s .opptak { grid-template-columns: auto minmax(0, 1fr) auto; }
   .agn-s .opptak .knapp { grid-column: auto; }
 }
+
+/* Designløftet 20.10 (canvas rad 7 Live): lys topp, Live-pillen er skjermens eneste rust,
+   fanene «Under økta» og «Etter økta», og fremdriftsstrek for øvelsene. */
+.agn-s .live-topp { background: transparent; color: var(--graphite-900); padding: 4px 0 16px; border-radius: 0; border-bottom: 1px solid var(--sand-300); }
+.agn-s .live-topp .rad { justify-content: flex-start; }
+.agn-s .live-topp .meta { opacity: 1; color: var(--graphite-700, var(--graphite-800)); }
+.agn-s .live-topp .navn { margin: 0; font: 700 34px/1.05 var(--sans); letter-spacing: -.03em; overflow-wrap: anywhere; }
+.agn-s .live-topp .klokke { font-size: 18px; letter-spacing: 0; }
+.agn-s .live-topp .klokke small { font-size: 13px; color: var(--graphite-600); opacity: 1; }
+.agn-s .live-topp .knapp.sek { background: var(--white); color: var(--graphite-900); border-color: var(--sand-300); }
+.agn-s .live-topp .knapper { display: flex; flex-wrap: wrap; gap: var(--r2); align-items: center; }
+.agn-s .live-pille.stille { background: var(--sand-150); color: var(--graphite-900); }
+.agn-s .live-pille.stille i { background: var(--graphite-600); }
+.agn-s .live-fremdrift { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 3px; }
+.agn-s .live-fremdrift i { height: 6px; border-radius: 3px; background: var(--sand-300); display: block; }
+.agn-s .live-fremdrift i.ferdig { background: var(--graphite-900); }
+@media (min-width: 900px) { .agn-s .live-topp .navn { font-size: 44px; } }
+.agn-s .live-topp .valg > [aria-selected="true"] { background: var(--graphite-900); color: var(--white); }
