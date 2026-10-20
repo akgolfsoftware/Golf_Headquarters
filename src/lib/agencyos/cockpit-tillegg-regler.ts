@@ -28,11 +28,20 @@ export type CockpitTurnering = {
   dagerTil: number;
 };
 
+/** Stallens etterlevelse én uke: gjennomført tid mot planlagt, bare forfalte økter. */
+export type UkeEtterlevelse = { uke: number; pct: number | null };
+
+/** Øktene denne uka: gjennomført mot planlagt (avlyste teller ikke). */
+export type StallensUke = { uke: number; gjennomfort: number; planlagt: number };
+
 export type CockpitTillegg = {
   utenforPlan: UtenforPlanRad[];
   /** «UKE 38–39» — ukene tallene gjelder. */
   utenforPlanUker: string;
   turneringer: CockpitTurnering[];
+  /** De tre siste hele ukene og denne uka, eldste først. */
+  etterlevelse: UkeEtterlevelse[];
+  stallensUke: StallensUke;
 };
 
 export type Okt = { userId: string; navn: string; scheduledAt: Date; durationMin: number; status: SessionStatus };
@@ -67,4 +76,51 @@ export function velgUtenforPlan(okter: readonly Okt[], forrigeUkeStart: Date, na
 /** Hele kalenderdager fra `fra` til `til` (lokal midnatt, samme konvensjon som uke-helpers). */
 export function dagerMellom(fra: Date, til: Date): number {
   return Math.round((startOfDay(til).getTime() - startOfDay(fra).getTime()) / DAG_MS);
+}
+
+/**
+ * Stallens etterlevelse per uke (testet): alle øktene i coachens stall samlet,
+ * samme regel som «Følger ikke planen» (adherencePct, bare forfalte økter).
+ * En uke uten forfalte økter gir null, aldri 0.
+ */
+export function etterlevelsePerUke(okter: readonly Okt[], uker: readonly { start: Date; uke: number }[], naa: Date): UkeEtterlevelse[] {
+  return uker.map(({ start, uke }) => {
+    const fra = start.getTime(), til = fra + 7 * DAG_MS;
+    const iUka = okter.filter((o) => o.scheduledAt.getTime() >= fra && o.scheduledAt.getTime() < til);
+    return { uke, pct: adherencePct(iUka, naa) };
+  });
+}
+
+/** Øktene denne uka (testet): planlagt = alle unntatt avlyste, gjennomført = COMPLETED. */
+export function stallensUke(okter: readonly Okt[], ukeStart: Date, uke: number): StallensUke {
+  const fra = ukeStart.getTime(), til = fra + 7 * DAG_MS;
+  const iUka = okter.filter((o) => o.scheduledAt.getTime() >= fra && o.scheduledAt.getTime() < til && o.status !== "CANCELLED");
+  return { uke, planlagt: iUka.length, gjennomfort: iUka.filter((o) => o.status === "COMPLETED").length };
+}
+
+/** Stallen som rørledning i Cockpit: samme status som AG-07 Stall (stall-status.ts). */
+export type StallRorledning = {
+  total: number;
+  trenger: { antall: number; grunner: { label: string; antall: number }[] };
+  folger: { antall: number; ingenPlan: number };
+  hviler: { antall: number; grunner: { label: string; antall: number }[] };
+};
+
+function tellLabels(rader: readonly { statusLabel: string }[]) {
+  const m = new Map<string, number>();
+  for (const r of rader) m.set(r.statusLabel, (m.get(r.statusLabel) ?? 0) + 1);
+  return [...m].map(([label, antall]) => ({ label, antall })).sort((a, b) => b.antall - a.antall || a.label.localeCompare(b.label, "nb"));
+}
+
+/** Ren gruppering (testet): bak/inaktiv/veil = Trenger deg, aktiv = Følger planen, hviler = Hviler. */
+export function stallRorledning(rader: readonly { status: string; statusLabel: string }[]): StallRorledning {
+  const trenger = rader.filter((r) => r.status === "bak" || r.status === "inaktiv" || r.status === "veil");
+  const folger = rader.filter((r) => r.status === "aktiv");
+  const hviler = rader.filter((r) => r.status === "hviler");
+  return {
+    total: rader.length,
+    trenger: { antall: trenger.length, grunner: tellLabels(trenger) },
+    folger: { antall: folger.length, ingenPlan: folger.filter((r) => r.statusLabel === "Ingen plandata").length },
+    hviler: { antall: hviler.length, grunner: tellLabels(hviler) },
+  };
 }

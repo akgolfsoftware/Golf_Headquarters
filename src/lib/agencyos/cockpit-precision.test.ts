@@ -21,7 +21,7 @@ const brief = {
   dagensVerdiKr: 2400,
 } as unknown as CockpitData;
 
-const tillegg = { utenforPlan: [], utenforPlanUker: "UKE 38–39", turneringer: [] };
+const tillegg = { utenforPlan: [], utenforPlanUker: "UKE 38–39", turneringer: [], etterlevelse: [], stallensUke: { uke: 40, gjennomfort: 0, planlagt: 0 } };
 
 test("kalenderen sorteres og får ferdig · pågår · neste · planlagt", () => {
   const rader = kalenderRader(brief.timeline, brief.now);

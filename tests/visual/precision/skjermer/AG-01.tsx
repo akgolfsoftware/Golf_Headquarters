@@ -4,6 +4,7 @@ import { AdminRolleProvider } from "@/components/v2/rolle";
 import { AG01Cockpit, type AG01Tilstand } from "@/components/admin/precision/AG01Cockpit";
 import type { AG01Data } from "@/lib/agencyos/cockpit-precision";
 import { byggAiDispatch } from "@/lib/agencyos/ai-dispatch-build";
+import { stallRorledning } from "@/lib/agencyos/cockpit-tillegg-regler";
 
 export const sti = "/admin/agencyos";
 
@@ -47,14 +48,26 @@ const data: AG01Data = {
     { label: "Strokes Gained, snitt", verdi: "+0,4", kilde: "RUNDER SISTE 30 DAGER · EGEN STALL" },
     { label: "Planøkter gjennomført", verdi: "83 %", kilde: "FULLFØRTE AV PLANLAGTE · ALLE PLANER · 30 DAGER" },
   ],
+  aktiveSpillere: 31,
+  etterlevelse: [{ uke: 37, pct: 86 }, { uke: 38, pct: 88 }, { uke: 39, pct: 84 }, { uke: 40, pct: 83 }],
+  stallensUke: { uke: 40, gjennomfort: 61, planlagt: 148 },
 };
 
 const dispatch = byggAiDispatch({ isAdmin: true, planActions: 3, caddieDrafts: 1, sessionRequests: 0, agentRunsRunning: 0, innboksNye: 2 });
 
+const stall = Promise.resolve(stallRorledning([
+  ...Array.from({ length: 2 }, () => ({ status: "bak", statusLabel: "Bak plan" })),
+  { status: "veil", statusLabel: "Ubesvart over 24 t" },
+  ...Array.from({ length: 44 }, () => ({ status: "aktiv", statusLabel: "Aktiv" })),
+  ...Array.from({ length: 7 }, () => ({ status: "aktiv", statusLabel: "Ingen plandata" })),
+  ...Array.from({ length: 4 }, () => ({ status: "hviler", statusLabel: "Planlagt pause" })),
+  ...Array.from({ length: 3 }, () => ({ status: "hviler", statusLabel: "Retur til spill" })),
+]));
+
 const Vis = (t: AG01Tilstand, erAdmin = true, d: AG01Data = data) => (
   <AdminRolleProvider erAdmin={erAdmin}>
     <AgencyOSSkall navn="Test Coach">
-      <AG01Cockpit tilstand={t} data={d} dispatch={dispatch} />
+      <AG01Cockpit tilstand={t} data={d} dispatch={dispatch} stall={stall} />
     </AgencyOSSkall>
   </AdminRolleProvider>
 );
