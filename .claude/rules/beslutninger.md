@@ -4,6 +4,27 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## DESIGNLØFTET: HURTIGKNAPP PÅ ALLE TRENERFLATER, SEND I WANG VENTER, «PROSESS OG ADFERD» 1–5 (Anders 20.10.2026, bindende)
+
+Anders 20.10 i hovedøkta for designløftet: «ja, godkjent og dine anbefalinger», som svar på avvik og spørsmål fra flate-øktene.
+
+- **Lage noe nytt** gjøres med den flytende +-hurtigknappen i både AgencyOS og WANG. «Opprett» i AgencyOS-menyen tas bort (§Hurtigknappen gjelder alle AgencyOS-skjermer).
+- **Mobilmenyen er ulik per flate:** AgencyOS har menyknapp øverst (variant C), WANG har bunnmeny.
+- **«Til kontroll»-panelet** ved registrering av tester finnes i både AgencyOS og WANG.
+- **WANG-skjermene** tegnes videre på canvaset `NfmxzMDu51FgUBeA3N3j7h`, med stil og bilder fra «WANG Toppidrett Designsystem» (`3580374e`).
+- **Send i WANG Meldinger forblir sperret ved lansering.** Knappen vises deaktivert med «Kommer». Å åpne den er en egen beslutning, fordi mottakerne er mindreårige og foresatte.
+- **Team Norway-aksefargene beholdes** (14.10). TEK og SLAG skilles med forkortelse, mellomrom og tall, ikke bare farge (ΔE 0,8 for fargesvake).
+- **«Prosess og adferd»** (kriterium 3 i TN-uttaket) vurderes av treneren på skalaen 1–5, som fireukerssjekken.
+- **Reise og overnatting** på TN-samlinger får ikke egne felt før etter lansering; «—» vises.
+
+**Overstyrer:** ingenting.
+
+**Arbeidet dette utløser:**
+
+1. **Tegningene:** flate-øktene retter AgencyOS (hurtigknapp), WANG (kontrollpanel, deaktivert Send, bilder fra `3580374e`) og TN (kriterium 3). Ferdig når canvasene viser det.
+2. **Ved portering:** `/team-wang` meldinger beholder sperren for sending; TN-uttaket lagrer kriterium 3 som tall 1–5 (additivt felt via `db execute`, gotchas §Database, om det ikke finnes). Ferdig når en test låser at WANG-trener ikke kan sende, og at kriterium 3 bare godtar 1–5.
+3. **Uavklart:** når Send i WANG åpnes, og med hvilket samtykke for elever under 16.
+
 ## TURNERINGSPLANLEGGEREN MED WAGR-ANSLAG FÅR SKRÅ-DESIGNET PÅ ALLE FLATER (Anders 20.10.2026, bindende)
 
 Anders 20.10, etter skissen i «Referansespillere Norden»-designet (https://claude.ai/artifact/1BqwXq9kebjftzie3cSy9V): «Designet er riktig. Kjør planen på 9 steg med dette designet. TN-trener foreslår, AK-coach endrer direkte.»
@@ -32,7 +53,8 @@ Anders 20.10, med Team Norways testbeskrivelse og scorekort-arket som vedlegg: �
   - **Fysisk:** benkpress · markløft trapbar · lengdehopp · rotasjonskast · Club Speed. Fysisk test hver sjette uke i grunnperioden (uendret fra 28.09).
 - **Fem prioriterte tester** med minsteantall: Driver Basic (1) · Inspill Basic (2) · Wedge Variation (2) · 8-balls variation (2) · Putt 1–3 m (4). Skjermene viser fremdrift som «1 av 2».
 - **Fasit for protokoll, slag og poeng:** «Team Norway Golf – Tester» (`beskrivelse-av-tester-2026.pdf`) og scorekort-arket `team-norway-treningsprotokoll-og-tester-for-spillerv3`, arkene Scorekort GolfslagTester, Scorekort TeknikTester og Referens. Filene ligger hos Anders (Desktop/Team Norway) og må legges i repoet før koden endres.
-- **Gate-testene føres med poeng som i PDF-en** (Anders 20.10, i PlayerHQ-økta): «1 poeng gjennom porten, 4 poeng gjennom porten og i sonen.» Gjelder Nærspill Gate, Wedge Gate og VISA Express (maks 36 hver). Driver Gate og Putt Gate har bare OK per slag i PDF-en og vises som «X / 6 OK» og «X / 10 OK» til Anders har bekreftet det.
+- **Gate-testene føres med poeng som i PDF-en** (Anders 20.10, i PlayerHQ-økta): «1 poeng gjennom porten, 4 poeng gjennom porten og i sonen.» Gjelder Nærspill Gate, Wedge Gate og VISA Express (maks 36 hver). Driver Gate og Putt Gate har bare OK per slag i PDF-en og vises som «X / 6 OK» og «X / 10 OK» (bekreftet av Anders 20.10: «ja til alt»).
+- **Hvem fører testene, på alle flater** (Anders 20.10): «eneste trener skal kunne føre er teknikk og pei tester» (i WANG-økta), og samme dag i hovedøkta: «Alle trenere og coacher, også Team Norway og AgencyOS, fører bare teknikk- og PEI-tester. Resten fører spilleren selv i PlayerHQ.» Det treneren eller coachen fører er «Kontrollert» med en gang. Resten (bl.a. Putt 1–3 m, 9 hull lengde og Fysisk) fører spilleren som «Egenført», og treneren kan merke det kontrollert.
 - Uendret: PEI med carry og side (§PEI-TESTER FØRES MED CARRY OG SIDE, 14.10), en test teller bare med alle slag, Egenført/Kontrollert, nivå A–K.
 
 **Overstyrer:** «alle NGF-testene fra 6-årsløpet» i §ÉN IUP OG ETT TESTBATTERI (28.09) for golfdelen (fysisk-delen derfra står), og «Godkjent» eller «Bom» for gate-testene i §PEI-TESTER FØRES MED CARRY OG SIDE (14.10) med punkt 3 og 4 i den blokken.
@@ -45,8 +67,9 @@ Anders 20.10, med Team Norways testbeskrivelse og scorekort-arket som vedlegg: �
 4. **Prioriterte tester med minsteantall** i datamodellen eller som konstant i koden, og fremdrift «X av N» per spiller. Ferdig når en test låser at Inspill Basic tatt én gang gir «1 av 2».
 5. **Fysisk-delen:** de fem fysiske testene finnes i `src/lib/domain/fys-score.ts` og `src/lib/portal-fysisk/`. De kobles inn som tredje del i samme testoversikt. Ferdig når testoversikten viser Fysisk med siste resultat per test.
 6. **Gate-poeng i koden:** `tn-catalog.ts` fører i dag gate-testene som `choice("ok", …)`. Nærspill Gate, Wedge Gate og VISA Express får poeng 0/1/4 per slag og sum maks 36. Ferdig når `tn-scoring.test.ts` låser 1 poeng gjennom porten, 4 i sonen og maks 36.
-7. **Uavklart:** Driver Gate og Putt Gate som «X / 6 OK» og «X / 10 OK» (bare OK per slag i PDF-en). Avstandene i Wedge Gate: teksten sier 30/40/50 m, scorekortet 40/50/60 m. Spørres Anders om.
-8. **Uavklart:** avvikene designøktene fant mellom PDF-en/arket og beslutningene (Team Norway-økta: seks, i den oransje lappen på canvaset https://claude.ai/artifact/5uuJLVhHxsmMpV44Eakid2; AgencyOS-økta: tre, i rapporten sin). Legges fram for Anders samlet, og hvert svar føres inn her før katalogen endres.
+7. **Wedge Gate bruker 40/50/60 m**, som i poengarket (Anders 20.10). Teksten i PDF-en sier 30/40/50 m; poengarket gjelder. Ferdig når `tn-catalog.ts` og skjermene viser 40, 50 og 60 m.
+8. **Føring for trener og coach:** registreringen i `/team-wang`, `/team-norway` og `/admin` viser bare teknikk- og PEI-testene; PlayerHQ har registrering for alle 19 testene. Ferdig når en test låser at en trener eller coach ikke kan føre Putt 1–3 m, på alle tre flatene.
+9. **Uavklart:** avvikene designøktene fant mellom PDF-en/arket og beslutningene (Team Norway-økta: seks, i den oransje lappen på canvaset https://claude.ai/artifact/5uuJLVhHxsmMpV44Eakid2; AgencyOS-økta: tre, i rapporten sin). Legges fram for Anders samlet, og hvert svar føres inn her før katalogen endres.
 
 ## TEAM NORWAY-APPEN BEHOLDER NAVY SIDEMENY OG BYTTER TIL SCHIBSTED GROTESK (Anders 20.10.2026, bindende)
 
