@@ -28,18 +28,20 @@ import { tnFormat, tnRowError, tnRowPreview, tnScore, tnValidate, type TnResult 
 import { tnReadRaw, type TnRaw } from "@/lib/portal-tester/tn-draft";
 import { useTnDraft, type TnInitial } from "@/lib/portal-tester/use-tn-draft";
 import { tnDefinitionId } from "@/lib/portal-tester/tn-integration";
+import { GATE_POENG_VALG } from "@/lib/portal-tester/tn-catalog";
 import type { TnSaveInput } from "@/lib/portal-tester/tn-session";
 import { saveTnTest } from "@/app/portal/tren/tester/team-norway/actions";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-stats.css";
 import "@/styles/playerhq-ny-statsdybde.css";
+import "@/styles/playerhq-ny-tester.css";
 
 export type PH15TnType = "gate" | "ball8";
 
 /** Hvilken ny skjerm en Team Norway-protokoll får. null = det generelle scorekortet. */
 export function ph15TnType(p: TnProtocol): PH15TnType | null {
   if (p.points8Ball && p.rows.every((r) => r.target !== undefined)) return "ball8";
-  if (p.kind === "gate" && p.rows.every((r) => r.fields.length === 1 && r.fields[0]!.choices?.length === 2)) return "gate";
+  if (p.kind === "gate" && p.rows.every((r) => r.fields.length === 1 && (r.fields[0]!.choices?.length === 2 || erPoengValg(r.fields[0]!.choices)))) return "gate";
   return null;
 }
 
@@ -54,6 +56,18 @@ type Props = {
   /** Innhold under testen, f.eks. øvelsesforslag etter et lagret resultat. */
   etter?: React.ReactNode;
 };
+
+/** Gate-testene med poeng (Nærspill, Wedge, VISA): Bom 0 · Gjennom porten 1 · I sonen 4 (beslutninger.md §TESTBATTERIET, punkt 6). */
+function erPoengValg(choices: readonly string[] | undefined): boolean {
+  return !!choices && choices.length === Object.keys(GATE_POENG_VALG).length && choices.every((c) => c in GATE_POENG_VALG);
+}
+const erPoengGate = (p: TnProtocol) => erPoengValg(p.rows[0]?.fields[0]?.choices);
+const poengFor = (v: string | number | null | undefined) => (typeof v === "string" && v in GATE_POENG_VALG ? GATE_POENG_VALG[v as keyof typeof GATE_POENG_VALG] : null);
+const GATE_SVAR: { verdi: keyof typeof GATE_POENG_VALG; tittel: string; tekst: string }[] = [
+  { verdi: "I sonen", tittel: "Porten og sonen", tekst: "Gjennom porten, og i sonen" },
+  { verdi: "Gjennom porten", tittel: "Bare porten", tekst: "Gjennom porten, men utenfor sonen" },
+  { verdi: "Bom", tittel: "Bom", tekst: "Ikke gjennom porten" },
+];
 
 const AKSE = (p: TnProtocol) => (p.points8Ball ? { k: "slag", t: "SLAG", o: "Golfslag" } : { k: "tek", t: "TEK", o: "Teknikk" });
 const slagNavn = (label: string) => label.replace(/^([A-Za-zÆØÅæøå]+)(\d+)$/, "$1 $2 m");
@@ -200,15 +214,17 @@ export function PH15TnTest(props: Props) {
 function godkjentVerdi(r: TnRow) { return r.fields[0]!.choices![0]!; }
 function bomVerdi(r: TnRow) { return r.fields[0]!.choices![1]!; }
 function godkjenteAv(p: TnProtocol, values: ReturnType<typeof tnReadRaw>["values"]) {
+  if (erPoengGate(p)) return p.rows.reduce((sum, r, i) => sum + (poengFor(values[String(i + 1)]?.[r.fields[0]!.key]) ?? 0), 0);
   return p.rows.filter((r, i) => values[String(i + 1)]?.[r.fields[0]!.key] === godkjentVerdi(r)).length;
 }
 
 function GateTopp({ p, godkjent, igjen, closed, resultat }: { p: TnProtocol; godkjent: number; igjen: number; closed: boolean; resultat: TnResult | null }) {
+  const poeng = erPoengGate(p);
   return (
     <div className="phn-fylt tek full">
-      <span className="phn-akse-tekst">TEK · GODKJENT ELLER BOM</span>
+      <span className="phn-akse-tekst">{poeng ? "TEK · POENG PER SLAG" : "TEK · GODKJENT ELLER BOM"}</span>
       <div className="phn-rad">
-        <span className="phn-stor">{closed && !resultat ? "—" : godkjent}<small>/ {p.rows.length} godkjent</small></span>
+        <span className="phn-stor">{closed && !resultat ? "—" : godkjent}<small>{poeng ? `/ ${p.rows.length * 4} p` : `/ ${p.rows.length} godkjent`}</small></span>
         <span className="phn-trend">{closed ? (resultat ? "Lagret" : "Ikke lagret") : igjen ? `${igjen} slag igjen` : "Alle slag ført"}</span>
       </div>
       <p>{p.rows[0]?.fields[0]?.label ?? "Godkjent eller bom"}.</p>
@@ -232,10 +248,21 @@ function GateInn({ p, n, laast, alle, raw, sett, angre, kanAngre }: {
           <><span className="phn-nr">Slag {n + 1} av {p.rows.length}</span><span className="phn-hva">{deler.length > 1 ? deler.slice(1).join(" · ") : r.label}{deler.length > 1 && <small>Launch {deler[0]!.toLowerCase()}</small>}</span></>
         )}
       </div>
-      <div className="phn-tb">
-        <button type="button" className="godkjent" disabled={laast || alle} onClick={() => r && fort(godkjentVerdi(r))}><Check className="phn-ikon" aria-hidden />Godkjent</button>
-        <button type="button" className="bom" disabled={laast || alle} onClick={() => r && fort(bomVerdi(r))}><X className="phn-ikon" aria-hidden />Bom</button>
-      </div>
+      {erPoengGate(p) ? (
+        <div className="phn-tb tre" role="group" aria-label="Resultat for slaget">
+          {GATE_SVAR.map((sv) => (
+            <button key={sv.verdi} type="button" className={`svar p${GATE_POENG_VALG[sv.verdi]}`} disabled={laast || alle} onClick={() => fort(sv.verdi)}>
+              <span><b>{sv.tittel}</b><small>{sv.tekst}</small></span>
+              <strong>{GATE_POENG_VALG[sv.verdi]}</strong>
+            </button>
+          ))}
+        </div>
+      ) : (
+        <div className="phn-tb">
+          <button type="button" className="godkjent" disabled={laast || alle} onClick={() => r && fort(godkjentVerdi(r))}><Check className="phn-ikon" aria-hidden />Godkjent</button>
+          <button type="button" className="bom" disabled={laast || alle} onClick={() => r && fort(bomVerdi(r))}><X className="phn-ikon" aria-hidden />Bom</button>
+        </div>
+      )}
       <button type="button" className="phn-angre" disabled={laast || !kanAngre} onClick={angre}><Undo2 className="phn-ikon" aria-hidden />Angre siste</button>
     </div>
   );
@@ -255,6 +282,15 @@ function GateRutenett({ p, n, raw, laast, sett }: { p: TnProtocol; n: number; ra
   const nett = rutenett(p);
   const celle = (i: number) => {
     const r = p.rows[i]!, key = r.fields[0]!.key, v = raw[String(i + 1)]?.[key];
+    const poeng = erPoengGate(p) ? poengFor(v) : null;
+    if (poeng !== null) {
+      const rekke = GATE_SVAR.map((x) => x.verdi as string), neste = rekke[(rekke.indexOf(v!) + 1) % rekke.length]!;
+      return (
+        <button key={i} type="button" className={`phn-celle p${poeng}`} disabled={laast}
+          onClick={() => sett(i, { ...raw[String(i + 1)], [key]: neste })}
+          aria-label={`Slag ${i + 1}, ${poeng} poeng. Trykk for å endre`}>{poeng}</button>
+      );
+    }
     const ok = v === godkjentVerdi(r), bom = v === bomVerdi(r);
     const status = ok ? "godkjent" : bom ? "bom" : i === n ? "naa" : "";
     // Et ført slag kan rettes: trykk bytter mellom godkjent og bom.

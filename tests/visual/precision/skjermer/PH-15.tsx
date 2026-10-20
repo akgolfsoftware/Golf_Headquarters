@@ -12,7 +12,9 @@ const wedge = tnProtocol("wedge-gate")!;
 const naer = tnProtocol("naerspill-gate")!;
 const ball = tnProtocol("8-ball-blocked")!;
 
-const gate = (svar: boolean[]): TnValues => Object.fromEntries(svar.map((ok, i) => [String(i + 1), { ok: ok ? "Godkjent" : "Bom" }]));
+const PSVAR = ["I sonen", "Gjennom porten", "Bom"] as const;
+/** Poeng-gate: sant = I sonen (4), usant = Bom (0); hver tredje er «Gjennom porten» (1). */
+const gate = (svar: boolean[]): TnValues => Object.fromEntries(svar.map((ok, i) => [String(i + 1), { ok: ok ? (i % 3 === 2 ? PSVAR[1] : PSVAR[0]) : PSVAR[2] }]));
 /* 8-ball: [carry, side] eller null for «I hull» */
 const SLAG: ([number, number] | null)[] = [[9.6, 0.3], null, [8.9, -0.8], [28.6, 0.9], [31.2, -0.6], [30.4, 2.3], [19.3, 0.4], [20.5, 0.3], [21.2, -0.6], [39.2, 0.5]];
 const ballVerdier: TnValues = Object.fromEntries(SLAG.map((s, i) => [String(i + 1), (s ? { carry: s[0], side: s[1] } : { holed: "I hull" }) as Record<string, string | number>]));
