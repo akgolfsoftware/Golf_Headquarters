@@ -1,0 +1,4 @@
+{"rute":"/booking/[slug]/bekreft","sti":"/booking/X/bekreft","kobling":"tegnet-skjermtype","screenId":"BK-02","omrade":"offentlig-booking","bredde":390,"rolle":"anon","ikkeTestet":"mangler id: slug"}
+{"rute":"/booking/[slug]/bekreft","sti":"/booking/X/bekreft","kobling":"tegnet-skjermtype","screenId":"BK-02","omrade":"offentlig-booking","bredde":1440,"rolle":"anon","ikkeTestet":"mangler id: slug"}
+{"rute":"/booking/[slug]","sti":"/booking/X","kobling":"tegnet-skjermtype","screenId":"BK-02","omrade":"offentlig-booking","bredde":390,"rolle":"anon","ikkeTestet":"mangler id: slug"}
+{"rute":"/booking/[slug]","sti":"/booking/X","kobling":"tegnet-skjermtype","screenId":"BK-02","omrade":"offentlig-booking","bredde":1440,"rolle":"anon","ikkeTestet":"mangler id: slug"}
