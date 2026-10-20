@@ -3,13 +3,12 @@ import { notFound } from "next/navigation";
 import { hentSkjermbruker } from "./felles";
 import { hentGruppepostSide, hentPaaminnelser } from "@/lib/domain/tn-post";
 import { opprettGruppepostAction } from "@/app/team-norway/tn-post-actions";
-import { TN } from "@/lib/v2/team-norway";
-import { TnShell } from "../tn-shell";
-import { TnSkjermhode } from "../tn-flate";
-import { TnInnleggKort, TnInnleggSkjema, type TnInnlegg } from "../tn-gruppe-klient";
+import type { TnInnlegg } from "../tn-gruppe-klient";
+import { TnGruppeposterVisning } from "./tn-gruppe-visning";
 
 /**
  * TN-13 Gruppeposter. Beskjeder fra trenerteamet til gruppen, med lesekvittering.
+ * Visningen (retning «Skrå», tavle D1) ligger i tn-gruppe-visning.tsx.
  * Fasit: docs/design-system/utkast-tn/gruppe.html, skjerm Gruppeposter (pakke 6).
  *
  * Avvik:
@@ -52,34 +51,18 @@ export async function TnGruppeposterSkjerm({ groupId }: { groupId: string }) {
       paaminnelse: paaminnelser.has(p.id) ? { sendtAtIso: paaminnelser.get(p.id)!.sendtAt.toISOString(), antall: paaminnelser.get(p.id)!.antall } : null,
     }));
 
-  const mottakere = side.under18 > 0 ? `Hele gruppen · ${side.utovere} spillere + foresatte` : `Hele gruppen · ${side.utovere} spillere`;
-
   return (
-    <TnShell aktiv="gruppeposter" brukerNavn={bruker.name ?? "Ukjent"} rolle={rolleEtikett} groupId={groupId} visTrenerflater={harTrenertilgang} kanAdministrere={harTrenertilgang}>
-      <TnSkjermhode overlinje={`${side.gruppeNavn} · ${side.utovere} spillere`} tittel="Gruppeposter" ingress={`Beskjeder til hele gruppa. Spillerne og foresatte ser dem i PlayerHQ. ${erTrener ? "Du ser hvem som har lest hva." : ""}`} />
-
-      <div style={{ maxWidth: 860, width: "100%", display: "flex", flexDirection: "column", gap: 14, minWidth: 0 }}>
-        {erTrener ? <TnInnleggSkjema send={opprettGruppepostAction.bind(null, groupId)} forfatterNavn={bruker.name ?? "Ukjent"} mottakere={mottakere} /> : null}
-
-        {innlegg.map((p) => (
-          <TnInnleggKort key={p.id} innlegg={p} visHvem={erTrener} kvitter={!erTrener} />
-        ))}
-
-        {innlegg.length === 0 ? (
-          <section style={{ background: TN.ink50, border: `1px solid ${TN.ink200}`, borderRadius: TN.radius.sm, padding: "16px 18px 18px" }}>
-            <div style={{ fontSize: 15, fontWeight: 700, color: TN.ink900 }}>Ingen innlegg ennå</div>
-            <p style={{ fontSize: 14.5, lineHeight: 1.55, color: TN.ink700, margin: "8px 0 0", maxWidth: "60ch" }}>
-              {erTrener ? "Skriv det første innlegget til gruppen i feltet over. Du ser hvem som har lest det her." : "Trenerteamet har ikke skrevet noe til gruppen ennå."}
-            </p>
-          </section>
-        ) : null}
-
-        {side.under18 > 0 ? (
-          <p style={{ fontSize: 12.5, lineHeight: 1.45, color: TN.ink500, margin: 0, maxWidth: "70ch" }}>
-            Mindreårige står med fornavn og forbokstav i lesekvitteringen. Fullt navn finnes bare i spillerprofilen.
-          </p>
-        ) : null}
-      </div>
-    </TnShell>
+    <TnGruppeposterVisning
+      brukerNavn={bruker.name ?? "Ukjent"}
+      rolleEtikett={rolleEtikett}
+      groupId={groupId}
+      harTrenertilgang={harTrenertilgang}
+      erTrener={erTrener}
+      gruppeNavn={side.gruppeNavn}
+      utovere={side.utovere}
+      under18={side.under18}
+      innlegg={innlegg}
+      send={opprettGruppepostAction.bind(null, groupId)}
+    />
   );
 }
