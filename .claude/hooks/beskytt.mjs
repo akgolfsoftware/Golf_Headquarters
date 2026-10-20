@@ -7,11 +7,14 @@
  * Leser tool-kallet som JSON på stdin, svarer med permissionDecision på stdout.
  */
 
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
+import os from "node:os";
 import { execFileSync } from "node:child_process";
 import path from "node:path";
 
 function svar(decision, reason) {
+  // Nattmodus (Anders 20.10): «ask» blir stille godkjent mens fila finnes. «deny» står.
+  if (decision === "ask" && existsSync(path.join(os.homedir(), ".claude", "nattmodus-akgolf-hq"))) process.exit(0);
   process.stdout.write(
     JSON.stringify({
       hookSpecificOutput: {
