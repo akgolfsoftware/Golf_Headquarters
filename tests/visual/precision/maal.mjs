@@ -54,7 +54,7 @@ const stubbePlugin = {
     b.onLoad({ filter: /\.(ts|tsx)$/ }, ({ path }) => {
       const src = readFileSync(path, "utf8");
       if (!/^\s*["']use server["']/.test(src)) return undefined;
-      const navn = [...src.matchAll(/export\s+(?:async\s+)?(?:function|const)\s+(\w+)/g)].map((m) => m[1]);
+      const navn = [...src.matchAll(/export\s+(?:async\s+)?(?:function|const)\s+([\p{L}\p{N}_$]+)/gu)].map((m) => m[1]);
       return { loader: "js", contents: navn.map((n) => `export async function ${n}(){return {ok:true}}`).join("\n") };
     });
   },

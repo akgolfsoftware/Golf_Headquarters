@@ -1,43 +1,18 @@
 "use client";
 
 /**
- * AG-02 Kø i Precision Athletics (Claude Design 7d7c2994,
- * arkiv/2026-09-30/agencyos/screens/AG-02.jsx, med utvidelser for
- * agentkø, tester, dubletter, moderering og godkjenninger).
- *
- * Én samlet kø for alle saker som krever beslutning fra trener/admin.
- * Ingenting sendes eller publiseres før det godkjennes.
+ * Kø (AG-02) i nytt design: /admin/ko. Én samlet kø for alt som krever beslutning fra coach/admin.
+ * Ingenting sendes eller publiseres før det godkjennes. Hver knapp kaller en ekte server action
+ * (ag02-handlinger.ts); handlinger uten action finnes ikke på skjermen.
+ * Tegning: canvaset «AgencyOS nøkkelskjermer», raden «Kø, oppgaver, innsikt, Jarvis …».
  */
 import { useMemo, useState, useTransition } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  Check,
-  CheckCircle2,
-  GitMerge,
-  House,
-  Send,
-  ShieldCheck,
-  Sparkles,
-  Trash2,
-  TriangleAlert,
-  X,
-} from "lucide-react";
-import {
-  AkseMerke,
-  FeilTilstand,
-  Ikon,
-  Knapp,
-  LasterTilstand,
-  Meta,
-  Sidehode,
-  StatusPille,
-  TomTilstand,
-  type Akse,
-} from "@/components/precision/pa";
-import { Ark, Faner, Felt, Nokkelverdi } from "@/components/precision/pa-a5";
+import { Feil, Knapp, KnappLenke, Laster, Nokkelverdier, Pille, Seksjon, Tom, Topp, Varsel } from "@/components/admin/agencyos-ny/ny";
+import type { Akse } from "@/components/precision/pa";
 import { utforKoHandling, type KoHandling, type KoResultat } from "./ag02-handlinger";
-import "@/styles/precision-a2.css";
+import "@/styles/agencyos-ny-mer.css";
+import "@/styles/agencyos-ny-ko.css";
 
 export type AG02Tilstand = "data" | "tom" | "laster" | "feil";
 
@@ -233,31 +208,20 @@ export function AG02Ko({
     return sakerForFane.find((s) => s.id === valgtId) || sakerForFane[0];
   }, [sakerForFane, valgtId]);
 
-  if (tilstand === "laster") {
-    return <LasterTilstand text="Henter køen …" />;
-  }
+  const topp = <Topp dato={`Daglig · ${dagLabel}`} tittel="Kø" ingress="Alt som venter på en beslutning fra deg. Ingenting sendes før du godkjenner." />;
 
+  if (tilstand === "laster") return <div className="agn-s">{topp}<Laster tekst="Henter køen …" /></div>;
   if (tilstand === "feil") {
-    return (
-      <FeilTilstand
-        icon={TriangleAlert}
-        title="Køen kunne ikke hentes"
-        text="Ingen saker er godkjent eller avvist. Kontroller forbindelsen og prøv igjen."
-        code="FEIL 502 · KØ"
-      />
-    );
+    return <div className="agn-s">{topp}<Feil tittel="Køen kunne ikke hentes" tekst="Ingen saker er godkjent eller avvist. Kontroller forbindelsen og prøv igjen." kode="FEIL 502 · KØ" /></div>;
   }
 
-  /**
-   * Kjører handlingen mot serveren. Saken lukkes og suksess vises FØRST når
-   * serveren har svart ok; ellers står saken og feilen vises.
-   */
+  /** Saken lukkes og suksess vises FØRST når serveren har svart ok; ellers står saken og feilen vises. */
   const kjor = (id: string, handling: KoHandling, melding: string) => {
     setVarselTekst(null);
     startTransition(async () => {
       const res = await utfor(handling);
       if (!res.ok) {
-        setVarselTekst({ tittel: res.feil, meta: "INGENTING ER LAGRET", feil: true });
+        setVarselTekst({ tittel: res.feil, meta: "Ingenting er lagret", feil: true });
         return;
       }
       setBehandlede((prev) => ({ ...prev, [id]: melding }));
@@ -275,44 +239,23 @@ export function AG02Ko({
     moderering: "Moderering",
     epost: "E-postutkast",
   };
-  const fanerKonfig = faner.map((f) => ({
-    value: f,
-    label: FANE_LABEL[f],
-    count: data[f].filter((x) => !behandlede[x.id]).length,
-  }));
-
+  const antallPer = (f: keyof AG02Data) => data[f].filter((x) => !behandlede[x.id]).length;
+  const venterTotalt = tilstand === "tom" ? 0 : faner.reduce((n, f) => n + antallPer(f), 0);
   const aktivInfo = aktivSak ? hentSakInfo(aktivSak, fane) : null;
 
-  /* Detalj-rendering etter fane */
-  function renderDetaljInnhold(sak: KoSak | null) {
+  function detaljInnhold(sak: KoSak | null) {
     if (!sak) return null;
 
     if (fane === "godkjenninger") {
       const g = sak as GodkjenningSak;
       return (
         <>
-          <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-            {g.axis && <AkseMerke axis={g.axis} />}
-            <StatusPille tone={g.status === "Signert" ? "ok" : "warn"}>{g.status}</StatusPille>
-            <Meta>{g.from.toUpperCase()} · {g.at.toUpperCase()}</Meta>
-          </div>
-          <Nokkelverdi
-            items={[
-              ["Spiller", g.who],
-              ["Gruppe", g.grp ?? "—"],
-              ["Kilde", g.from],
-              ["Frist", g.due ?? "I dag"],
-              ["Sammendrag", g.sum ?? "—"],
-            ]}
-          />
+          <p className="kilde mono">{g.from} · {g.at}{g.axis ? ` · ${g.axis.toUpperCase()}` : ""}</p>
+          <Nokkelverdier rader={[["Spiller", g.who], ["Gruppe", g.grp ?? "—"], ["Kilde", g.from], ["Frist", g.due ?? "I dag"], ["Sammendrag", g.sum ?? "—"]]} />
           {g.lines && g.lines.length > 0 && (
-            <div className="pa-a2-linjer">
+            <div className="liste">
               {g.lines.map(([dag, tek, min], idx) => (
-                <div key={idx} className="pa-a2-linje">
-                  <Meta>{dag.toUpperCase()}</Meta>
-                  <span style={{ font: "var(--type-body-s)", color: "var(--text-primary)" }}>{tek}</span>
-                  <span style={{ font: "var(--type-num-s)" }}>{min}</span>
-                </div>
+                <div key={idx} className="ko-linje"><span className="mono kilde">{dag}</span><span>{tek}</span><span className="mono">{min}</span></div>
               ))}
             </div>
           )}
@@ -324,22 +267,10 @@ export function AG02Ko({
       const a = sak as AgentSak;
       return (
         <>
-          <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-            <Ikon icon={Sparkles} size={16} />
-            <span style={{ font: "600 11px/1 var(--font-mono)", letterSpacing: ".06em", color: "var(--text-secondary)", textTransform: "uppercase" }}>
-              {a.agent} · {a.t}
-            </span>
-            <span style={{ border: "1px dashed var(--border-control)", borderRadius: 4, padding: "2px 6px", font: "600 10px/1 var(--font-mono)", textTransform: "uppercase", color: "var(--text-secondary)" }}>
-              Utkast
-            </span>
-          </div>
-          <p style={{ margin: 0, font: "var(--type-body)", color: "var(--text-primary)", lineHeight: 1.5 }}>
-            {a.body}
-          </p>
-          <Nokkelverdi items={a.facts.map(([k, v, h]) => [k, v, h])} />
-          <div style={{ padding: "8px 12px", background: "var(--surface-sunken)", borderRadius: "var(--radius)" }}>
-            <Meta>GÅR UT SOM · {a.out.toUpperCase()}</Meta>
-          </div>
+          <p className="kilde mono">{a.agent} · {a.t} · Utkast</p>
+          <p className="forklar">{a.body}</p>
+          <Nokkelverdier rader={a.facts.map(([k, v, h]) => [k, v, h] as const)} />
+          <p className="ko-boks">Går ut som: {a.out}</p>
         </>
       );
     }
@@ -348,18 +279,8 @@ export function AG02Ko({
       const t = sak as TestSak;
       return (
         <>
-          <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-            <StatusPille tone="warn">Venter på godkjenning</StatusPille>
-            <Meta>{t.src.toUpperCase()} · {t.at.toUpperCase()}</Meta>
-          </div>
-          <Nokkelverdi
-            items={[
-              ["Foreslått av", t.who],
-              ["Test", t.test],
-              ["Poengregel", t.scoring ?? "—"],
-              ["Beskrivelse", t.beskrivelse ?? "—"],
-            ]}
-          />
+          <p className="kilde mono">{t.src} · {t.at} · Venter på godkjenning</p>
+          <Nokkelverdier rader={[["Foreslått av", t.who], ["Test", t.test], ["Poengregel", t.scoring ?? "—"], ["Beskrivelse", t.beskrivelse ?? "—"]]} />
         </>
       );
     }
@@ -368,18 +289,16 @@ export function AG02Ko({
       const d = sak as DublettSak;
       return (
         <>
-          <p style={{ margin: 0, font: "var(--type-body-s)", color: "var(--text-secondary)" }}>
+          <p className="forklar">
             {d.malId
               ? "Påmeldinger, resultater og deltakere flyttes fra den manuelle turneringen (A) til turneringen fra kilden (B). A markeres som dublett."
               : "Ingen automatisk match. Sammenslåing gjøres fra Turnering."}
           </p>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12, minWidth: 0 }}>
+          <div className="ko-par">
             {(["a", "b"] as const).map((side) => (
-              <div key={side} style={{ display: "flex", flexDirection: "column", gap: 6, minWidth: 0 }}>
-                <Meta>
-                  {side === "a" ? "A · SLÅS INN" : "B · BEHOLDES"} · {(d[side].src ?? "—").toUpperCase()}
-                </Meta>
-                <Nokkelverdi items={DUBLETT_FELTER.map(([nokkel, etikett]) => [etikett, d[side][nokkel] || "—"])} />
+              <div key={side}>
+                <p className="kilde mono">{side === "a" ? "A · slås inn" : "B · beholdes"} · {d[side].src ?? "—"}</p>
+                <Nokkelverdier rader={DUBLETT_FELTER.map(([nokkel, etikett]) => [etikett, d[side][nokkel] || "—"] as const)} />
               </div>
             ))}
           </div>
@@ -391,22 +310,12 @@ export function AG02Ko({
       const m = sak as ModereringSak;
       return (
         <>
-          <Nokkelverdi
-            items={[
-              ["Type", m.type === "GDPR_SLETTING" ? "Slettforespørsel (GDPR)" : "Rapportert innhold"],
-              ["Gjelder", m.where],
-              ["Spiller", m.who],
-              ["Begrunnelse", m.reason],
-              ["Tidspunkt", m.at],
-            ]}
-          />
-          {m.text && <div className="pa-a2-sunken">{m.text}</div>}
+          <Nokkelverdier rader={[["Type", m.type === "GDPR_SLETTING" ? "Slettforespørsel (GDPR)" : "Rapportert innhold"], ["Gjelder", m.where], ["Spiller", m.who], ["Begrunnelse", m.reason], ["Tidspunkt", m.at]]} />
+          {m.text && <p className="ko-boks">{m.text}</p>}
           {m.type === "GDPR_SLETTING" && (
-            <Meta>
-              {m.status === "APPROVED"
-                ? "GODKJENT · SLETTINGEN MÅ BEKREFTES"
-                : "TO STEG: GODKJENNING FØRST, SELVE SLETTINGEN BEKREFTES ETTERPÅ"}
-            </Meta>
+            <p className="kilde">
+              {m.status === "APPROVED" ? "Godkjent. Slettingen må bekreftes." : "To steg: godkjenning først, selve slettingen bekreftes etterpå."}
+            </p>
           )}
         </>
       );
@@ -417,31 +326,19 @@ export function AG02Ko({
       const notat = epostNotat[ep.id] ?? ep.note ?? "";
       return (
         <>
-          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-            <StatusPille tone="neutral">Utkast</StatusPille>
-            <Meta>{ep.tpl} · LAGET AV {ep.by.toUpperCase()} {ep.at.toUpperCase()}</Meta>
-          </div>
-          <Nokkelverdi
-            items={[
-              ["Mottaker", `${ep.to} (${ep.email})`],
-              ["Gjelder", ep.svc],
-              ["Mal", `${ep.tpl} · Takk etter coachingtime`],
-            ]}
-          />
-          <Felt label="Dine linjer til eleven" hint="To–tre personlige linjer om hva dere trente på i dag.">
-            <textarea
-              aria-label="Dine linjer til eleven"
-              className="pa-a7-textarea"
-              value={notat}
-              onChange={(e) => setEpostNotat((prev) => ({ ...prev, [ep.id]: e.target.value }))}
-            />
-          </Felt>
-          <div className="pa-a2-sunken" style={{ whiteSpace: "pre-wrap" }}>
+          <p className="kilde mono">{ep.tpl} · laget av {ep.by} {ep.at} · Utkast</p>
+          <Nokkelverdier rader={[["Mottaker", `${ep.to} (${ep.email})`], ["Gjelder", ep.svc], ["Mal", `${ep.tpl} · Takk etter coachingtime`]]} />
+          <label className="felt">
+            <span className="etikett">Dine linjer til eleven</span>
+            <textarea aria-label="Dine linjer til eleven" rows={4} value={notat} onChange={(e) => setEpostNotat((prev) => ({ ...prev, [ep.id]: e.target.value }))} />
+            <span className="hjelp">To–tre personlige linjer om hva dere trente på i dag.</span>
+          </label>
+          <p className="ko-boks" style={{ whiteSpace: "pre-wrap" }}>
             <strong>Forhåndsvisning:</strong>
             {"\n\n"}Hei {ep.to}!{"\n"}Takk for god innsats under økten «{ep.svc}».{"\n\n"}
             {notat}
             {"\n\nHilsen Anders Kristiansen · AK Golf"}
-          </div>
+          </p>
         </>
       );
     }
@@ -449,9 +346,8 @@ export function AG02Ko({
     return null;
   }
 
-  /* Handlingsknapper — hver knapp kaller en ekte server action (ag02-handlinger.ts).
-     Handlinger uten action finnes ikke på skjermen. */
-  function renderHandlinger(sak: KoSak | null) {
+  /* Hver knapp kaller en ekte server action. E-postutkast har ingen sende-action ennå: ingen knapp som later som. */
+  function handlinger(sak: KoSak | null) {
     if (!sak) return null;
 
     if (fane === "godkjenninger") {
@@ -459,36 +355,24 @@ export function AG02Ko({
       const kilde = g.kilde ?? "agent";
       if (kilde === "caddie") {
         return (
-          <div className="pa-a2-handling">
-            <Knapp fullWidth icon={Send} disabled={pending} onClick={() => kjor(g.id, { type: "caddie-send", id: g.id }, "Utkastet er godkjent og utført")}>
-              Send
-            </Knapp>
-            <Knapp variant="ghost" fullWidth disabled={pending} onClick={() => kjor(g.id, { type: "caddie-forkast", id: g.id }, "Utkastet er forkastet")}>
-              Forkast
-            </Knapp>
+          <div className="knapper">
+            <Knapp disabled={pending} onClick={() => kjor(g.id, { type: "caddie-send", id: g.id }, "Utkastet er godkjent og utført")}>Send</Knapp>
+            <Knapp variant="sek" disabled={pending} onClick={() => kjor(g.id, { type: "caddie-forkast", id: g.id }, "Utkastet er forkastet")}>Forkast</Knapp>
           </div>
         );
       }
       if (kilde === "forespørsel") {
         return (
-          <div className="pa-a2-handling">
-            <Knapp fullWidth icon={Check} disabled={pending} onClick={() => kjor(g.id, { type: "foresporsel-planlagt", id: g.id }, "Forespørselen er markert som planlagt")}>
-              Legg i kalenderen
-            </Knapp>
-            <Knapp variant="ghost" fullWidth disabled={pending} onClick={() => kjor(g.id, { type: "foresporsel-avslaa", id: g.id }, "Forespørselen er avslått")}>
-              Kan ikke
-            </Knapp>
+          <div className="knapper">
+            <Knapp disabled={pending} onClick={() => kjor(g.id, { type: "foresporsel-planlagt", id: g.id }, "Forespørselen er markert som planlagt")}>Legg i kalenderen</Knapp>
+            <Knapp variant="sek" disabled={pending} onClick={() => kjor(g.id, { type: "foresporsel-avslaa", id: g.id }, "Forespørselen er avslått")}>Kan ikke</Knapp>
           </div>
         );
       }
       return (
-        <div className="pa-a2-handling">
-          <Knapp fullWidth icon={Check} disabled={pending} onClick={() => kjor(g.id, { type: "plan-godkjenn", id: g.id }, "Forslaget er godkjent")}>
-            Godkjenn
-          </Knapp>
-          <Knapp variant="ghost" fullWidth disabled={pending} onClick={() => kjor(g.id, { type: "plan-avvis", id: g.id }, "Forslaget er avvist")}>
-            Avvis
-          </Knapp>
+        <div className="knapper">
+          <Knapp disabled={pending} onClick={() => kjor(g.id, { type: "plan-godkjenn", id: g.id }, "Forslaget er godkjent")}>Godkjenn</Knapp>
+          <Knapp variant="sek" disabled={pending} onClick={() => kjor(g.id, { type: "plan-avvis", id: g.id }, "Forslaget er avvist")}>Avvis</Knapp>
         </div>
       );
     }
@@ -496,13 +380,9 @@ export function AG02Ko({
     if (fane === "agentko") {
       const a = sak as AgentSak;
       return (
-        <div className="pa-a2-handling">
-          <Knapp fullWidth icon={Check} disabled={pending} onClick={() => kjor(a.id, { type: "plan-godkjenn", id: a.id }, "Forslaget er godkjent")}>
-            Godkjenn
-          </Knapp>
-          <Knapp variant="ghost" fullWidth disabled={pending} onClick={() => kjor(a.id, { type: "plan-avvis", id: a.id }, "Forslaget er avvist")}>
-            Avvis
-          </Knapp>
+        <div className="knapper">
+          <Knapp disabled={pending} onClick={() => kjor(a.id, { type: "plan-godkjenn", id: a.id }, "Forslaget er godkjent")}>Godkjenn</Knapp>
+          <Knapp variant="sek" disabled={pending} onClick={() => kjor(a.id, { type: "plan-avvis", id: a.id }, "Forslaget er avvist")}>Avvis</Knapp>
         </div>
       );
     }
@@ -510,14 +390,10 @@ export function AG02Ko({
     if (fane === "tester") {
       const t = sak as TestSak;
       return (
-        <div className="pa-a2-handling">
-          <Knapp fullWidth icon={ShieldCheck} disabled={pending} onClick={() => kjor(t.id, { type: "test-godkjenn", id: t.id }, "Testen er godkjent")}>
-            Godkjenn testen
-          </Knapp>
+        <div className="knapper">
+          <Knapp disabled={pending} onClick={() => kjor(t.id, { type: "test-godkjenn", id: t.id }, "Testen er godkjent")}>Godkjenn testen</Knapp>
           <Knapp
-            variant="ghost"
-            fullWidth
-            icon={Trash2}
+            variant="sek"
             disabled={pending}
             onClick={() =>
               setBekreft({
@@ -541,15 +417,8 @@ export function AG02Ko({
       if (!d.malId) return null;
       const malId = d.malId;
       return (
-        <div className="pa-a2-handling">
-          <Knapp
-            fullWidth
-            icon={GitMerge}
-            disabled={pending}
-            onClick={() => kjor(d.id, { type: "dublett-slaa-sammen", kildeId: d.kildeId, malId }, "Turneringene er slått sammen")}
-          >
-            Slå sammen
-          </Knapp>
+        <div className="knapper">
+          <Knapp disabled={pending} onClick={() => kjor(d.id, { type: "dublett-slaa-sammen", kildeId: d.kildeId, malId }, "Turneringene er slått sammen")}>Slå sammen</Knapp>
         </div>
       );
     }
@@ -558,11 +427,9 @@ export function AG02Ko({
       const m = sak as ModereringSak;
       if (m.type === "GDPR_SLETTING" && m.status === "APPROVED") {
         return (
-          <div className="pa-a2-handling">
+          <div className="knapper">
             <Knapp
-              variant="signal"
-              fullWidth
-              icon={Trash2}
+              variant="rust"
               disabled={pending}
               onClick={() =>
                 setBekreft({
@@ -582,176 +449,83 @@ export function AG02Ko({
       }
       const gdpr = m.type === "GDPR_SLETTING";
       return (
-        <div className="pa-a2-handling">
-          <Knapp fullWidth icon={Check} disabled={pending} onClick={() => kjor(m.id, { type: "moderering-godkjenn", id: m.id }, "Saken er godkjent")}>
-            {gdpr ? "Godkjenn forespørselen" : "Godkjenn rapporten"}
-          </Knapp>
-          <Knapp variant="ghost" fullWidth disabled={pending} onClick={() => kjor(m.id, { type: "moderering-avvis", id: m.id }, "Saken er avvist")}>
-            Avvis
-          </Knapp>
+        <div className="knapper">
+          <Knapp disabled={pending} onClick={() => kjor(m.id, { type: "moderering-godkjenn", id: m.id }, "Saken er godkjent")}>{gdpr ? "Godkjenn forespørselen" : "Godkjenn rapporten"}</Knapp>
+          <Knapp variant="sek" disabled={pending} onClick={() => kjor(m.id, { type: "moderering-avvis", id: m.id }, "Saken er avvist")}>Avvis</Knapp>
         </div>
       );
     }
 
-    // E-postutkast har ingen sende-action ennå: ingen knapp som later som.
     return null;
   }
 
   return (
-    <div className="pa-a2-side">
-      <Sidehode
-        kicker={`Kø · ${dagLabel}`}
-        title="Kø"
-        sub="Alt som venter på en beslutning fra deg. Ingenting sendes før du godkjenner."
-      />
+    <div className="agn-s" data-testid="ag02-ko">
+      {topp}
 
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-        <Faner faner={fanerKonfig} value={fane} onChange={(f) => { setFane(f as keyof AG02Data); setValgtId(null); }} />
+      <div className="teller-rad">
+        <div className="teller"><span className="e">Venter på deg</span><b className="t">{venterTotalt}</b><span className="s">Alle faner</span></div>
+        <div className="teller"><span className="e">I denne fanen</span><b className="t">{tilstand === "tom" ? 0 : sakerForFane.length}</b><span className="s">{FANE_LABEL[fane]}</span></div>
+        <div className="teller"><span className="e">Behandlet nå</span><b className="t">{Object.keys(behandlede).length}</b></div>
       </div>
 
+      <nav className="valg" aria-label="Kø">
+        {faner.map((f) => {
+          const n = antallPer(f);
+          return <button key={f} type="button" aria-pressed={fane === f} onClick={() => { setFane(f); setValgtId(null); }}>{n > 0 ? `${FANE_LABEL[f]} · ${n}` : FANE_LABEL[f]}</button>;
+        })}
+      </nav>
+
       {varselTekst && (
-        <div
-          role={varselTekst.feil ? "alert" : "status"}
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: "10px 16px",
-            borderRadius: "var(--radius)",
-            background: "var(--surface-sunken)",
-            border: "1px solid var(--border-hairline)",
-          }}
-        >
-          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-            <Ikon icon={varselTekst.feil ? TriangleAlert : CheckCircle2} size={18} />
-            <span style={{ font: "var(--type-body-s)", color: "var(--text-primary)" }}>{varselTekst.tittel}</span>
-            {varselTekst.meta && <Meta>· {varselTekst.meta}</Meta>}
-          </div>
-          <button
-            type="button"
-            className="pa-iconbtn"
-            style={{ width: 44, height: 44 }}
-            aria-label="Lukk varsel"
-            onClick={() => setVarselTekst(null)}
-          >
-            <Ikon icon={X} size={16} />
-          </button>
-        </div>
+        <Varsel tone={varselTekst.feil ? "advarsel" : "ok"} tittel={varselTekst.tittel}>
+          {varselTekst.meta}
+          <span className="ko-lukk"><Knapp variant="sek" aria-label="Lukk varsel" onClick={() => setVarselTekst(null)}>Lukk</Knapp></span>
+        </Varsel>
       )}
 
       {sakerForFane.length === 0 ? (
-        <TomTilstand
-          icon={Check}
-          title={`Ingen saker venter`}
-          text="Alt i denne fanen er ferdig behandlet. Nye saker kommer fra utøvere, foreldre og agentene."
-          actions={
-            <Link
-              href="/admin/agencyos"
-              className="pa-btn pa-btn--secondary pa-btn--icon-l"
-              style={{ minHeight: 44, minWidth: 44, display: "inline-flex", alignItems: "center" }}
-            >
-              <Ikon icon={House} size={18} />
-              Til Cockpit
-            </Link>
-          }
+        <Tom
+          tittel="Ingen saker venter"
+          tekst="Alt i denne fanen er ferdig behandlet. Nye saker kommer fra utøvere, foreldre og agentene."
+          handling={<KnappLenke href="/admin/agencyos">Til Cockpit</KnappLenke>}
         />
       ) : (
-        <div className="pa-a2-layout">
-          {/* Venstre kolonne: Liste med saker */}
-          <div className="pa-a2-liste" aria-label="Liste over ventende saker">
-            {sakerForFane.map((sak: KoSak) => {
-              const erValgt = aktivSak?.id === sak.id;
-              const sakInfo = hentSakInfo(sak, fane);
-
-              return (
-                <button
-                  key={sak.id}
-                  type="button"
-                  aria-pressed={erValgt}
-                  onClick={() => setValgtId(sak.id)}
-                  className="pa-a2-item"
-                >
-                  {sakInfo.akse && <span className={`pa-a2-stripe pa-a2-stripe--${sakInfo.akse}`} aria-hidden />}
-                  <div className="pa-a2-item__tekst">
-                    <span className="pa-a2-item__tittel">
-                      {sakInfo.hvem} · {sakInfo.tittel}
-                    </span>
-                    <Meta>{sakInfo.kilde.toUpperCase()}</Meta>
-                  </div>
-                  {sakInfo.status && (
-                    <StatusPille tone={sakInfo.status === "Signert" ? "ok" : "neutral"}>
-                      {sakInfo.status}
-                    </StatusPille>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Høyre kolonne: Detaljpanel på desktop */}
-          {aktivSak && aktivInfo && (
-            <div className="pa-a2-detalj" aria-label="Detaljvisning av sak">
-              <div>
-                <span className="kicker">
-                  {fanerKonfig.find((f) => f.value === fane)?.label.toUpperCase()}
-                </span>
-                <h2 style={{ font: "var(--type-title-s)", color: "var(--text-primary)", margin: "4px 0 0" }}>
-                  {aktivInfo.hvem} · {aktivInfo.tittel}
-                </h2>
-              </div>
-
-              {renderDetaljInnhold(aktivSak)}
-              {renderHandlinger(aktivSak)}
+        <div className="to-del bred-v">
+          <Seksjon tittel={FANE_LABEL[fane]} kilde={`${sakerForFane.length} ${sakerForFane.length === 1 ? "sak" : "saker"}`}>
+            <div className="liste" aria-label="Liste over ventende saker">
+              {sakerForFane.map((sak: KoSak) => {
+                const info = hentSakInfo(sak, fane);
+                return (
+                  <button key={sak.id} type="button" className="drift-rad" aria-pressed={aktivSak?.id === sak.id} onClick={() => setValgtId(sak.id)}>
+                    <span><b>{info.hvem} · {info.tittel}</b><span className="kilde">{info.kilde}{info.akse ? ` · ${info.akse.toUpperCase()}` : ""}</span></span>
+                    <span aria-hidden />
+                    {info.status ? <Pille tone={info.status === "Signert" ? "ok" : "noy"}>{info.status}</Pille> : <span aria-hidden />}
+                  </button>
+                );
+              })}
             </div>
+          </Seksjon>
+
+          {aktivSak && aktivInfo && (
+            <Seksjon tittel={`${aktivInfo.hvem} · ${aktivInfo.tittel}`} kilde={FANE_LABEL[fane]}>
+              <div className="kort" aria-label="Detaljvisning av sak">
+                {detaljInnhold(aktivSak)}
+                {handlinger(aktivSak)}
+              </div>
+            </Seksjon>
           )}
         </div>
       )}
 
-      {/* Skuff for mobil (Sheet) */}
-      {aktivSak && aktivInfo && (
-        <Ark
-          open={!!valgtId}
-          onClose={() => setValgtId(null)}
-          kicker={fanerKonfig.find((f) => f.value === fane)?.label}
-          tittel={`${aktivInfo.hvem} · ${aktivInfo.tittel}`}
-          footer={renderHandlinger(aktivSak)}
-        >
-          {renderDetaljInnhold(aktivSak)}
-        </Ark>
-      )}
-
-      {/* Bekreftelsesdialog for destruktive handlinger */}
       {bekreft && (
-        <div className="pa-sheet-layer" role="presentation">
-          <div className="pa-sheet-scrim" onClick={() => setBekreft(null)} />
-          <div
-            className="pa-card"
-            role="alertdialog"
-            aria-modal="true"
-            aria-label={bekreft.tittel}
-            style={{
-              position: "fixed",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              width: "min(420px, calc(100vw - 32px))",
-              background: "var(--surface-card)",
-              padding: 24,
-              display: "flex",
-              flexDirection: "column",
-              gap: 16,
-              zIndex: 110,
-              boxShadow: "var(--shadow-modal)",
-            }}
-          >
-            <h3 style={{ margin: 0, font: "var(--type-title-s)", color: "var(--text-primary)" }}>{bekreft.tittel}</h3>
-            <p style={{ margin: 0, font: "var(--type-body)", color: "var(--text-secondary)" }}>{bekreft.tekst}</p>
-            <div style={{ display: "flex", gap: 12, justifyContent: "flex-end", flexWrap: "wrap" }}>
-              <Knapp variant="ghost" onClick={() => setBekreft(null)}>
-                Avbryt
-              </Knapp>
+        <div className="dialog-lag">
+          <div role="alertdialog" aria-modal="true" aria-label={bekreft.tittel} className="dialog">
+            <h2>{bekreft.tittel}</h2>
+            <p className="forklar">{bekreft.tekst}</p>
+            <div className="knapper">
               <Knapp
-                variant="signal"
+                variant="rust"
+                stor
                 disabled={pending}
                 onClick={() => {
                   const b = bekreft;
@@ -761,6 +535,7 @@ export function AG02Ko({
               >
                 {bekreft.knapp}
               </Knapp>
+              <Knapp variant="sek" stor onClick={() => setBekreft(null)}>Avbryt</Knapp>
             </div>
           </div>
         </div>
