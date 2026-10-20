@@ -152,7 +152,7 @@ export async function opprettBookingMedKort(
 
   const service = await prisma.serviceType.findUnique({
     where: { id: input.serviceTypeId },
-    select: { id: true, name: true, slug: true, active: true, priceOre: true, durationMin: true, coachUserId: true, locationId: true },
+    select: { id: true, name: true, slug: true, active: true, priceOre: true, durationMin: true, coachUserId: true, locationId: true, facilityType: true },
   });
   if (!service?.active) return { ok: false, grunn: "Tjenesten er ikke tilgjengelig." };
   if (service.priceOre < 300) return { ok: false, grunn: "Tjenesten mangler gyldig pris — kontakt oss." };
@@ -191,10 +191,12 @@ export async function opprettBookingMedKort(
         serviceTypeId: service.id,
         startAt,
         endAt,
+        romKrav: service.facilityType ? { locationId: lokasjon.id, facilityType: service.facilityType } : null,
       });
       return tx.booking.create({
         data: {
           plassNr: vern.plassNr,
+          facilityId: vern.facilityId ?? null,
           userId: eierId,
           serviceTypeId: service.id,
           locationId: lokasjon.id,

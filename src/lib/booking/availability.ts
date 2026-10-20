@@ -10,6 +10,7 @@
  */
 
 import { vurderDeling } from "@/lib/booking/deling";
+import { forsteLedigeRom } from "@/lib/booking/rom";
 import { tilNaivVeggklokke } from "@/lib/google-calendar-tid";
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@/generated/prisma/client";
@@ -135,8 +136,22 @@ export async function getAvailableSlots(
       endAt: { gt: dayStart },
       status: { in: ["PENDING", "CONFIRMED", "COMPLETED"] },
     },
-    select: { coachId: true, serviceTypeId: true, startAt: true, endAt: true, plassNr: true },
+    select: { coachId: true, serviceTypeId: true, startAt: true, endAt: true, plassNr: true, facilityId: true },
   });
+
+  // Steg 2: krever tjenesten en romtype på stedet, tilbys tiden bare når et rom av typen er ledig.
+  // Mangler stedet eller rommene, tilbys ingenting (fail-closed, som kalenderen).
+  const romStedId = service.locationId ?? locationId ?? null;
+  const rom = service.facilityType
+    ? romStedId
+      ? await prisma.facility.findMany({
+          where: { locationId: romStedId, type: service.facilityType, active: true },
+          select: { id: true, capacity: true },
+          orderBy: [{ name: "asc" }, { id: "asc" }],
+        })
+      : []
+    : null;
+  if (rom && rom.length === 0) return [];
 
   // I3: kalenderhendelser (ferie, stengt anlegg, møte) som overlapper dagen.
   // coachId=null blokkerer alle coacher, ellers kun den aktuelle coachen.
@@ -207,7 +222,8 @@ export async function getAvailableSlots(
             medBufferEnd.getTime() > h.startAt.getTime(),
         );
         const calendarConflict = kalenderBlokkererSlot(kalender, medBufferStart, medBufferEnd);
-        const conflict = bookingConflict || hendelseConflict || calendarConflict;
+        const romConflict = rom !== null && forsteLedigeRom(rom, existing, cursor, slotEnd) === null;
+        const conflict = bookingConflict || hendelseConflict || calendarConflict || romConflict;
         if (!conflict) {
           slots.push({
             start: new Date(cursor),

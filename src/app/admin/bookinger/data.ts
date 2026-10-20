@@ -134,6 +134,7 @@ export type AG06Tjeneste = {
   locationId: string | null;
   stedNavn: string | null;
   kategori: string | null;
+  facilityType: string | null;
   bufferForMin: number;
   bufferEtterMin: number;
   minVarselTimer: number;
@@ -184,6 +185,7 @@ export async function hentAG06Tjenester(): Promise<{ tjenester: AG06Tjeneste[]; 
       locationId: r.locationId,
       stedNavn: r.location?.name ?? null,
       kategori: r.kategori,
+      facilityType: r.facilityType,
       bufferForMin: r.bufferForMin,
       bufferEtterMin: r.bufferEtterMin,
       minVarselTimer: r.minVarselTimer,

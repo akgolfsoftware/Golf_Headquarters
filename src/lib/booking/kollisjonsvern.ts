@@ -16,8 +16,9 @@
  * skal alltid gjennom denne — aldri egen ad-hoc-sjekk.
  */
 
-import { Prisma } from "@/generated/prisma/client";
+import { Prisma, type FacilityType } from "@/generated/prisma/client";
 import { vurderDeling, velgPlassNr } from "@/lib/booking/deling";
+import { forsteLedigeRom } from "@/lib/booking/rom";
 
 /** Transaksjonsklient (prisma.$transaction-callback). */
 type Tx = Prisma.TransactionClient;
@@ -43,6 +44,11 @@ export interface KollisjonsResultat {
    * gjøre dobbeltbooking fysisk umulig.
    */
   plassNr: number;
+  /**
+   * Rommet som er tildelt når `romKrav` ble oppgitt. MÅ skrives til Booking.facilityId.
+   * Ellers: samme `facilityId` som kalleren ga inn (eller undefined).
+   */
+  facilityId?: string;
 }
 
 /**
@@ -65,6 +71,11 @@ export async function sjekkKollisjon(
      * kapasitet 1 — samme oppførsel som før steg 5.
      */
     serviceTypeId?: string | null;
+    /**
+     * Tjenesten krever en romtype på stedet (ServiceType.facilityType). Da velges første
+     * ledige rom av typen, og valget returneres i `facilityId`. Ignoreres når `facilityId` er gitt.
+     */
+    romKrav?: { locationId: string; facilityType: FacilityType } | null;
   },
 ): Promise<KollisjonsResultat> {
   const {
@@ -74,6 +85,7 @@ export async function sjekkKollisjon(
     endAt,
     ekskluderBookingId,
     serviceTypeId,
+    romKrav,
   } = input;
 
   // Plass 1 med mindre en delt økt sier noe annet (se velgPlassNr).
@@ -153,7 +165,32 @@ export async function sjekkKollisjon(
     if (belegg >= kapasitet) throw new BookingKollisjon(FULLT_MELDING);
   }
 
-  return { plassNr };
+  if (romKrav && !facilityId) {
+    const kandidater = await tx.facility.findMany({
+      where: { locationId: romKrav.locationId, type: romKrav.facilityType, active: true },
+      select: { id: true, capacity: true },
+      orderBy: [{ name: "asc" }, { id: "asc" }],
+    });
+    // Lås i fast rekkefølge (id) så to samtidige bookinger aldri låser i motsatt rekkefølge.
+    for (const id of kandidater.map((k) => k.id).sort()) {
+      await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${"fasilitet:" + id}))`;
+    }
+    const belegg = await tx.booking.findMany({
+      where: {
+        facilityId: { in: kandidater.map((k) => k.id) },
+        status: { not: "CANCELLED" },
+        startAt: { lt: endAt },
+        endAt: { gt: startAt },
+        ...(ekskluderBookingId ? { id: { not: ekskluderBookingId } } : {}),
+      },
+      select: { facilityId: true, startAt: true, endAt: true },
+    });
+    const valgt = forsteLedigeRom(kandidater, belegg, startAt, endAt);
+    if (!valgt) throw new BookingKollisjon(FULLT_MELDING);
+    return { plassNr, facilityId: valgt };
+  }
+
+  return { plassNr, ...(facilityId ? { facilityId } : {}) };
 }
 
 /**

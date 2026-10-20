@@ -118,6 +118,7 @@ export async function createCreditBooking(
         serviceTypeId: service.id,
         startAt,
         endAt,
+        romKrav: service.facilityType ? { locationId: lokasjon.id, facilityType: service.facilityType } : null,
       });
       const updated = await tx.subscription.updateMany({
         where: { id: subscription.id, creditsRemaining: { gt: 0 } },
@@ -134,6 +135,7 @@ export async function createCreditBooking(
       const booking = await tx.booking.create({
         data: {
           plassNr: vern.plassNr,
+          facilityId: vern.facilityId ?? null,
           userId: eierId,
           serviceTypeId: service.id,
           coachId: coachForSlot,
