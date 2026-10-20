@@ -8,7 +8,7 @@
    hukommelse.
 
    Kjernen i språket (retning «Skrå», Anders 19.10.2026, beslutninger.md
-   §TEAM NORWAY-APPEN FÅR RETNING «SKRÅ»): Jost/Lato, myke kort med radius
+   §TEAM NORWAY-APPEN FÅR RETNING «SKRÅ»): Schibsted Grotesk (20.10), myke kort med radius
    og lagdelte navy-skygger, runde avatarer og pilleknapper, navy skinne.
    Store flater (toppen av en skjerm, seksjonsskiller) kuttes 4° nedover mot
    høyre med rød kant; aldri kort eller knapper. Rød er #D70232 — målt fra
@@ -212,17 +212,17 @@
   --tn-gutter-section: 64px;
   --tn-max-content: 1160px;
 
-  /* ── Typografi — Jost (display), Lato (brødtekst), IBM Plex Mono (alt som
-         måles: tall, etiketter, tidsstempler). rem, ikke px.
-         Jost er Futura-slekt og ligger nærmest ordmerkets tynne, sperrede
-         versaler; Lato bærer teksten uten å konkurrere. Begge lastes av
-         src/app/team-norway/layout.tsx (next/font, scoped til
-         /team-norway/*) — fallback til navngitt font utenfor det skallet,
-         aldri en tom var(). --font-ibm-plex-mono er allerede lastet globalt
-         (src/app/layout.tsx) — gjenbrukes, lastes ikke på nytt.
-         Schibsted Grotesk er ute av systemet (Anders 22.09.2026). ── */
-  --tn-font-display: var(--font-jost, "Jost"), "Futura", system-ui, sans-serif;
-  --tn-font-body: var(--font-lato, "Lato"), system-ui, sans-serif;
+  /* ── Typografi — Schibsted Grotesk (overskrifter og tekst), IBM Plex Mono
+         (alt som måles: tall, etiketter, tidsstempler). rem, ikke px.
+         Schibsted Grotesk er skriften i Team Norway Golf-merket (Anders
+         20.10.2026, beslutninger.md §TEAM NORWAY-APPEN BEHOLDER NAVY SIDEMENY).
+         Lastes av src/app/team-norway/layout.tsx (next/font, scoped til
+         /team-norway/* og /teamnorway) — fallback til navngitt font utenfor
+         det skallet, aldri en tom var(). Skriften har vekter fra 400; lettere
+         vekter vises som 400. --font-ibm-plex-mono er allerede lastet globalt
+         (src/app/layout.tsx) — gjenbrukes, lastes ikke på nytt. ── */
+  --tn-font-display: var(--font-schibsted-grotesk, "Schibsted Grotesk"), system-ui, sans-serif;
+  --tn-font-body: var(--font-schibsted-grotesk, "Schibsted Grotesk"), system-ui, sans-serif;
   --tn-font-mono: var(--font-ibm-plex-mono, "IBM Plex Mono"), ui-monospace, monospace;
 
   --tn-text-display-xl: 4.75rem;

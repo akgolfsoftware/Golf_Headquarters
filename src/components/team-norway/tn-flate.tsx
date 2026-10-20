@@ -7,7 +7,7 @@ import { TN } from "@/lib/v2/team-norway";
 /**
  * Byggeklosser for Team Norway-skjermene.
  * Fasit: docs/design-system/utkast-tn/felles/tn.css (pakke 1 grunnmur, 14.10.2026).
- * Utkast 2 (retning B, 16.10): overlinje i Lato, tittel og seksjonstittel i Jost,
+ * Utkast 2 (retning B, 16.10): overlinje, tittel og seksjonstittel i Schibsted Grotesk (20.10),
  * IBM Plex Mono bare på tall. Retning «Skrå» (19.10.2026): myke kort med navy-skygge,
  * pilleformede filterknapper og runde statusprikker.
  * Avvik:
@@ -15,7 +15,7 @@ import { TN } from "@/lib/v2/team-norway";
  *     klientstate. Da virker de uten JavaScript.
  */
 
-/** Utkast 2 (16.10): datolinje og etiketter i Lato. IBM Plex Mono bare på tall. */
+/** Utkast 2 (16.10): datolinje og etiketter i brødskriften. IBM Plex Mono bare på tall. */
 const etikettStil: CSSProperties = {
   fontFamily: TN.font.body,
   fontWeight: 700,
@@ -27,7 +27,7 @@ const etikettStil: CSSProperties = {
 
 const dagFormat = new Intl.DateTimeFormat("nb-NO", { weekday: "long", day: "numeric", month: "long", timeZone: "Europe/Oslo" });
 
-/** Sidehodet: datolinja i Lato, tittel i Jost, ingress, og handlinger under. */
+/** Sidehodet: datolinja, tittel, ingress, og handlinger under. */
 export function TnSkjermhode({ tittel, ingress, overlinje, handling }: { tittel: string; ingress: string; overlinje?: string; handling?: ReactNode }) {
   const naa = new Date();
   return (
@@ -51,7 +51,7 @@ export function TnFlate({ children, style }: { children: ReactNode; style?: CSSP
   );
 }
 
-/** Seksjonstittel i Jost, med valgfri merknad til høyre. */
+/** Seksjonstittel, med valgfri merknad til høyre. */
 export function TnFlatehode({ tittel, merknad, children }: { tittel: string; merknad?: ReactNode; children?: ReactNode }) {
   return (
     <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: "8px 12px", alignItems: "baseline", paddingBottom: 12 }}>

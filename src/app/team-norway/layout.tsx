@@ -1,34 +1,25 @@
 import type { ReactNode } from "react";
-import { Jost, Lato } from "next/font/google";
+import { Schibsted_Grotesk } from "next/font/google";
 
 /**
  * Team Norway — egen flate, egen designfasit.
  *
- * Jost (display) og Lato (brødtekst) lastes KUN her, scoped til
- * `/team-norway/*`, ikke i root-layout. CLAUDE.md invariant 2
- * («Poppins/Lora/IBM Plex Mono er de ENESTE fontene») gjelder PlayerHQ og
- * AgencyOS — Team Norway er et eget, sideordnet system med egen fasit
- * (Anders 22.09.2026, se .claude/rules/beslutninger.md §TEAM NORWAY-APPEN
- * BYTTER DESIGNSPRÅK). Jost er Futura-slekt og ligger nærmest ordmerkets
- * tynne, sperrede versaler; vekt 300 er displayvekten.
+ * Schibsted Grotesk (overskrifter og tekst) lastes KUN her, scoped til
+ * `/team-norway/*` og `/teamnorway`, ikke i root-layout. Team Norway er et
+ * eget, sideordnet system med egen fasit. Skriften er fra Team Norway
+ * Golf-merket (Anders 20.10.2026, .claude/rules/beslutninger.md §TEAM
+ * NORWAY-APPEN BEHOLDER NAVY SIDEMENY OG BYTTER TIL SCHIBSTED GROTESK).
  *
- * Schibsted Grotesk er ute av systemet. IBM Plex Mono gjenbrukes fra
- * root-layout — se src/styles/team-norway-tokens.css for begrunnelsen.
+ * IBM Plex Mono gjenbrukes fra root-layout — se
+ * src/styles/team-norway-tokens.css for begrunnelsen.
  */
-const jost = Jost({
-  variable: "--font-jost",
-  weight: ["300", "400", "500", "600"],
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const lato = Lato({
-  variable: "--font-lato",
-  weight: ["300", "400", "700"],
+const schibstedGrotesk = Schibsted_Grotesk({
+  variable: "--font-schibsted-grotesk",
+  weight: ["400", "500", "600", "700", "800"],
   subsets: ["latin"],
   display: "swap",
 });
 
 export default function TeamNorwayLayout({ children }: { children: ReactNode }) {
-  return <div className={`${jost.variable} ${lato.variable}`}>{children}</div>;
+  return <div className={schibstedGrotesk.variable}>{children}</div>;
 }

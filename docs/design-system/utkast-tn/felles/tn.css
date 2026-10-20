@@ -1,6 +1,6 @@
 /* Felles grunnmur for Team Norway-utkastene (trenerskjermene under /team-norway/*).
    Språket: §TEAM NORWAY-APPEN BYTTER DESIGNSPRÅK (Anders 22.09.2026) og src/styles/team-norway-tokens.css.
-   Jost display, Lato brødtekst, IBM Plex Mono på tall. Hjørner 0 · 2 · 4. Ingen skygger, ingen sirkler.
+   Schibsted Grotesk i overskrifter og tekst (Anders 20.10.2026), IBM Plex Mono på tall. Hjørner og skygger: retning «Skrå» (19.10).
    Navy sidemeny #012B5D med hvit tekst og rød markør. Rød #D70232 er identitet, aldri status.
    To lag: .ytre = siden rundt skjermen (velgere, notater), .app = selve skjermen.
    PC fra 900 px containerbredde. Ingen AK Golf-farger (rust, sand, AK-aksefarger) i denne mappen. */
@@ -29,8 +29,8 @@
   --spill:#8A2A72;--spill-lys:#EBA3D8;--spill-tint:#F6E6F1;
   --turn:#A80126; --turn-lys:#FF9CB0; --turn-tint:#FCE3E8;
 
-  --display:"Jost","Futura",system-ui,sans-serif;
-  --tekst:"Lato",system-ui,-apple-system,sans-serif;
+  --display:"Schibsted Grotesk",system-ui,sans-serif;
+  --tekst:"Schibsted Grotesk",system-ui,-apple-system,sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
   --r1:4px; --r2:8px; --r3:12px; --r4:16px; --r5:24px; --r6:32px;
   --ut:cubic-bezier(.23,1,.32,1);
@@ -87,7 +87,7 @@ body{margin:0;background:var(--side-bg);color:var(--side-tekst);font:400 16px/1.
 .tilbake{display:inline-flex;align-items:center;gap:6px;height:44px;padding:0 10px;font:700 15px/1 var(--tekst);color:var(--navy-900);text-decoration:none}
 
 /* Tekst */
-/* Utkast 2: datolinja står høyst én gang per skjerm, i Lato. Mono bare på tall. */
+/* Utkast 2: datolinja står høyst én gang per skjerm, i brødskriften. Mono bare på tall. */
 .overlinje{font:700 13px/1.3 var(--tekst);letter-spacing:.02em;color:var(--ink-500)}
 .tittel{margin:var(--r1) 0 0;font:400 30px/1.12 var(--display);letter-spacing:.03em;color:var(--navy-900)}
 .ingress{margin-top:var(--r2)!important;font-size:15.5px;line-height:1.6;color:var(--ink-700);max-width:52ch}
