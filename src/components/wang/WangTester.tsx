@@ -3,13 +3,13 @@
 import React, { useState } from "react";
 import { hentProtokoll } from "@/lib/domain/pei/protokoll-definisjoner";
 import { formaterTall } from "@/lib/format-tall";
-import Image from "next/image";
 import Link from "next/link";
 import { WangTomTilstand } from "./WangIkkeKoblet";
 import {
   WangFaner,
   WangTilbake,
   WangTopp,
+  WangToppfelt,
   initialer,
   kortDato,
   langDato,
@@ -138,42 +138,29 @@ function Batteri({ data, tester }: { data: WangTrenerData; tester: WangTesterDat
 
   return (
     <>
-      <section className="wg-helt2" aria-label="Tester">
-        <div className="wg-helt2-tekst">
-          <p className="wg-helt2-dato">
-            {data.gruppeNavn} · {nesteTest ? `neste testdag ${visDato(nesteTest.startIso)}` : "skoleåret"}
-          </p>
-          <h1 className="wg-helt2-tittel">Tester</h1>
-          <p className="wg-helt2-ingress">
-            19 tester: 8 golfslag og 6 teknikk fra Team Norway, og 5 fysiske. Fem er prioritert.
-          </p>
-          <div className="wg-helt2-tall">
-            <div>
-              <strong>
-                {dekning === null ? "—" : dekning}
-                {dekning === null ? null : <span className="wg-helt2-enhet"> %</span>}
-              </strong>
-              <span>testdekning dette skoleåret</span>
-              <small>{mulige > 0 ? `${tattTotalt} av ${mulige} tester tatt` : "Ingen elever deler testene"}</small>
-            </div>
-            <Link className="wg-helt2-lenke" href={wangHref("tester", "ko")}>
-              <strong>{ko.length}</strong>
-              <span>venter på kontroll →</span>
-              <small>Egenført av elevene</small>
-            </Link>
-            <a className="wg-helt2-lenke" href="#mangler">
-              <strong>
-                {delere.length > 0 ? klare : "—"}
-                {delere.length > 0 ? <span className="wg-helt2-enhet"> av {delere.length}</span> : null}
-              </strong>
-              <span>har alle prioriterte →</span>
-              <small>Klare til Team Norway-testing</small>
-            </a>
-          </div>
-          <p className="wg-helt2-kilde">Kontrollerte resultater deles med Team Norway. Bare elever som deler testene med WANG, vises.</p>
-        </div>
-        <Image className="wg-helt2-bilde" src="/team-wang/hero/golf-putt.jpg" alt="" width={480} height={300} sizes="(min-width: 1100px) 320px, 100vw" />
-      </section>
+      <WangToppfelt
+        dato={`${data.gruppeNavn} · ${nesteTest ? `neste testdag ${visDato(nesteTest.startIso)}` : "skoleåret"}`}
+        tittel="Tester"
+        ingress="19 tester: 8 golfslag og 6 teknikk fra Team Norway, og 5 fysiske. Fem er prioritert."
+        tall={[
+          {
+            verdi: dekning === null ? "—" : String(dekning),
+            enhet: "%",
+            tekst: "testdekning dette skoleåret",
+            under: mulige > 0 ? `${tattTotalt} av ${mulige} tester tatt` : "Ingen elever deler testene",
+          },
+          { verdi: String(ko.length), tekst: "venter på kontroll", under: "Egenført av elevene", href: wangHref("tester", "ko") },
+          {
+            verdi: delere.length > 0 ? String(klare) : "—",
+            enhet: delere.length > 0 ? `av ${delere.length}` : undefined,
+            tekst: "har alle prioriterte",
+            under: "Klare til Team Norway-testing",
+            href: "#mangler",
+          },
+        ]}
+        kilde="Kontrollerte resultater deles med Team Norway. Bare elever som deler testene med WANG, vises."
+        bilde="/team-wang/hero/golf-putt.jpg"
+      />
 
       <div className="wg-verktoy">
         <Faner aktiv="batteri" antall={ko.length} />
