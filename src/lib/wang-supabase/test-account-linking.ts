@@ -168,11 +168,18 @@ export function assertWangTestAccountTarget(env: Readonly<Record<string, string 
 
 export function assertSyntheticWangAuthIdentity(
   profile: WangTestAccountPlan["profiles"][number],
-  authUser: { id: string; email?: string; user_metadata?: Record<string, unknown> },
+  authUser: {
+    id: string;
+    email?: string;
+    app_metadata?: Record<string, unknown>;
+    user_metadata?: Record<string, unknown>;
+  },
 ): void {
   if (
     authUser.id !== profile.id ||
     authUser.email !== profile.expectedEmail ||
+    authUser.app_metadata?.wang_synthetic !== true ||
+    authUser.app_metadata?.wang_synthetic_profile_key !== profile.profileKey ||
     authUser.user_metadata?.wang_synthetic_profile_key !== profile.profileKey
   ) {
     throw new Error(`Auth-brukeren for ${profile.profileKey} er ikke en godkjent syntetisk WANG-konto.`);

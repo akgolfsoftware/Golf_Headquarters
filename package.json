@@ -60,7 +60,9 @@
     "check:workbench-handover": "node scripts/check-workbench-handover.mjs",
     "repo:status": "node scripts/repo-status.mjs",
     "test:repo-status": "node --test scripts/repo-status.test.mjs",
-    "wang:testprofiler:koble": "tsx scripts/wang-koble-testprofiler.ts"
+    "wang:testprofiler:opprett": "tsx scripts/wang-opprett-testkontoer.ts",
+    "wang:testprofiler:koble": "tsx scripts/wang-koble-testprofiler.ts",
+    "wang:testprofiler:kontroller": "playwright test -c tests/visual/wang-auth-final/playwright.config.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.85",

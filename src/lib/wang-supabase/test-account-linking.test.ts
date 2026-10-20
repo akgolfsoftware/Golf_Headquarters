@@ -89,11 +89,25 @@ describe("sikker kobling av WANG-testkontoer", () => {
     assert.doesNotThrow(() => assertSyntheticWangAuthIdentity(profile, {
       id: profile.id,
       email: expectedWangTestEmail(profile.profileKey),
+      app_metadata: {
+        wang_synthetic: true,
+        wang_synthetic_profile_key: profile.profileKey,
+      },
       user_metadata: { wang_synthetic_profile_key: profile.profileKey },
     }));
     assert.throws(() => assertSyntheticWangAuthIdentity(profile, {
       id: profile.id,
       email: "person@example.com",
+      app_metadata: {
+        wang_synthetic: true,
+        wang_synthetic_profile_key: profile.profileKey,
+      },
+      user_metadata: { wang_synthetic_profile_key: profile.profileKey },
+    }), /ikke en godkjent syntetisk/);
+    assert.throws(() => assertSyntheticWangAuthIdentity(profile, {
+      id: profile.id,
+      email: profile.expectedEmail,
+      app_metadata: { wang_synthetic: false },
       user_metadata: { wang_synthetic_profile_key: profile.profileKey },
     }), /ikke en godkjent syntetisk/);
   });
