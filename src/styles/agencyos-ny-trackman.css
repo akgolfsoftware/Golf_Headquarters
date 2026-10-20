@@ -5,4 +5,4 @@
 .agn-s .tm-metrikker { display: grid; gap: var(--r2); grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .agn-s .tm-metrikker .teller { cursor: default; min-height: 80px; }
 .agn-s .tm-metrikker .teller b.t { font-size: 24px; }
-@media (min-width: 700px) { .agn-s .tm-metrikker { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 600px) { .agn-s .tm-metrikker { grid-template-columns: repeat(3, minmax(0, 1fr)); } }

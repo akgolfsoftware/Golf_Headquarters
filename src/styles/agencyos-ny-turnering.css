@@ -10,4 +10,4 @@
 .agn-s .tur-punkt[aria-pressed="true"] .tur-prikk { width: 18px; height: 18px; box-shadow: 0 0 0 3px var(--white), 0 0 0 5px var(--graphite-900); }
 .agn-s .tur-par { display: grid; gap: var(--r4); grid-template-columns: minmax(0, 1fr); }
 .agn-s .tur-par > div { display: grid; gap: 4px; min-width: 0; }
-@media (min-width: 700px) { .agn-s .tur-par { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 600px) { .agn-s .tur-par { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
