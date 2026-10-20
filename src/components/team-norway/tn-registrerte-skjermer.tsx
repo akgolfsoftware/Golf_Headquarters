@@ -44,8 +44,8 @@ export const UTTAKSKRITERIER = [
   {
     nummer: "Kriterium 3",
     tittel: "Prosess og adferd",
-    tekst: "Trenerens vurdering av arbeid, oppmøte og holdning. Ikke registrert i noen modell i dag — feltet står tomt framfor å gjette.",
-    kilde: "Kilde: ingen — krever godkjent vurderingsmodell",
+    tekst: "Trenerens vurdering av arbeid, oppmøte og holdning, på skalaen 1–5 som fireukerssjekken (Anders 20.10.2026).",
+    kilde: "Kilde: trenerens vurdering 1–5",
   },
 ] as const;
 
