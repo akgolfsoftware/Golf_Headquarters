@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import source from "./fixtures/tn-excel-v3.json";
-import { TN_CATALOG, TN_GODKJENT_VERSION, TN_RULES_VERSION, TN_VERSION, tnProtocol } from "./tn-catalog";
+import { GATE_POENG_IDS, TN_CATALOG, TN_GODKJENT_VERSION, TN_POENG_VERSION, TN_RULES_VERSION, TN_VERSION, tnProtocol } from "./tn-catalog";
 import { tnScore, tnValidate, tnFormat, tnRowPreview, type TnValues } from "./tn-scoring";
 import { validateCompletion } from "./validate-completion";
 import { scoreTest } from "./test-scoring";
@@ -100,33 +100,55 @@ test("PEI-testene viser avstand fra hullet og PEI rett etter hvert slag", () => 
   }
 });
 
-const gate = (id: string, hits: number): TnValues => {
-  const p = tnProtocol(id)!;
+const gate = (id: string, hits: number, version?: string): TnValues => {
+  const p = tnProtocol(id, undefined, version)!;
   return Object.fromEntries(p.rows.map((_, i) => [String(i + 1), {
     ok: i < hits ? "Godkjent" : "Bom",
     ...(id === "putt-gate" ? { speedZone: "Ja", ...(i >= hits ? { miss: "Venstre" } : {}) } : {}),
   }]));
 };
-for (const id of ["wedge-gate", "naerspill-gate", "visa-express"]) test(`${id} føres som godkjent eller bom: «X / 9 godkjent»`, () => {
+/** Gate med poeng: `porten` slag gjennom porten, av dem `sonen` også i sonen. */
+const poeng = (id: string, porten: number, sonen: number): TnValues => Object.fromEntries(tnProtocol(id)!.rows.map((_, i) => [String(i + 1), {
+  ok: i < sonen ? "I sonen" : i < porten ? "Gjennom porten" : "Bom",
+}]));
+for (const id of GATE_POENG_IDS) test(`${id}: 1 poeng gjennom porten, 4 i sonen, maks 36 (Anders 20.10)`, () => {
   const p = tnProtocol(id)!;
   assert.equal(p.kind, "gate");
-  assert.equal(p.version, TN_GODKJENT_VERSION);
+  assert.equal(p.version, TN_POENG_VERSION);
   assert.equal(p.blocked, undefined);
   assert.equal(p.rows.length, 9);
-  assert.ok(p.rows.every(r => r.fields.length === 1 && r.fields[0].key === "ok" && r.fields[0].choices!.join() === "Godkjent,Bom"));
-  const r = tnScore(p, gate(id, 3));
-  assert.equal(r.score, 3);
-  assert.equal(tnFormat(r.metrics[0]), "3 / 9 godkjent");
-  assert.equal(tnFormat(tnScore(p, gate(id, 0)).metrics[0]), "0 / 9 godkjent");
-  assert.equal(tnFormat(tnScore(p, gate(id, 9)).metrics[0]), "9 / 9 godkjent");
-  assert.match(tnValidate(p, { "1": { ok: "Ja" } }, false)!, /gyldig verdi/);
+  assert.ok(p.rows.every(r => r.fields.length === 1 && r.fields[0].key === "ok" && r.fields[0].choices!.join() === "Bom,Gjennom porten,I sonen"));
+  assert.equal(tnScore(p, poeng(id, 1, 0)).score, 1);
+  assert.equal(tnScore(p, poeng(id, 1, 1)).score, 4);
+  const r = tnScore(p, poeng(id, 6, 2));
+  assert.equal(r.score, 2 * 4 + 4 * 1);
+  assert.equal(tnFormat(r.metrics[0]), "12 / 36 p");
+  assert.equal(tnFormat(tnScore(p, poeng(id, 0, 0)).metrics[0]), "0 / 36 p");
+  assert.equal(tnFormat(tnScore(p, poeng(id, 9, 9)).metrics[0]), "36 / 36 p");
+  assert.match(tnValidate(p, { "1": { ok: "Godkjent" } }, false)!, /gyldig verdi/);
+});
+test("Wedge Gate bruker 40, 50 og 60 m (poengarket, Anders 20.10)", () => {
+  assert.deepEqual([...new Set(tnProtocol("wedge-gate")!.rows.map(r => r.label.match(/(\d+) m/)?.[1]))], ["40", "50", "60"]);
+});
+test("Driver Gate og Putt Gate vises som «X / 6 OK» og «X / 10 OK»", () => {
+  for (const [id, n] of [["driver-gate", 6], ["putt-gate", 10]] as const) {
+    const p = tnProtocol(id)!;
+    assert.equal(p.version, TN_POENG_VERSION);
+    assert.equal(tnFormat(tnScore(p, gate(id, 4)).metrics[0]), `4 / ${n} OK`);
+  }
 });
 test("ingen gate-test viser treff som resultatord", () => {
   for (const p of TN_CATALOG.filter(p => p.kind === "gate")) {
     assert.ok(p.rows.every(r => r.fields.every(f => !f.label.toLowerCase().includes("treff") && !(f.choices ?? []).includes("Ja") || f.key === "speedZone")), p.id);
-    const r = tnScore(p, gate(p.id, 1));
+    const r = tnScore(p, (GATE_POENG_IDS as readonly string[]).includes(p.id) ? poeng(p.id, 1, 0) : gate(p.id, 1));
     assert.ok(r.metrics.every(m => !`${m.label} ${m.unit}`.toLowerCase().includes("treff")), p.id);
-    assert.equal(tnFormat(r.metrics[0]), `1 / ${p.rows.length} godkjent`);
+  }
+});
+test("lagrede gateresultater leses med sin egen regelversjon", () => {
+  // Godkjent/Bom fra 14.10 gir fortsatt «X / 9 godkjent».
+  for (const id of GATE_POENG_IDS) {
+    const p = tnProtocol(id, undefined, TN_GODKJENT_VERSION)!;
+    assert.equal(tnFormat(tnScore(p, gate(id, 3, TN_GODKJENT_VERSION)).metrics[0]), "3 / 9 godkjent");
   }
   // Utkast og resultater ført med «Ja» før 14.10 leses fortsatt med sin egen regelversjon.
   const old = tnProtocol("naerspill-gate", undefined, TN_RULES_VERSION)!;

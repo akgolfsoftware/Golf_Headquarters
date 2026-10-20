@@ -3,9 +3,15 @@ import { TEST_PROTOKOLLER, hentProtokoll } from "@/lib/domain/pei/protokoll-defi
 
 export const TN_VERSION = "tn-excel-v3-2026-09-10";
 export const TN_RULES_VERSION = "tn-excel-v3-2026-10-02";
-/** Anders 14.10.2026: 8-ball med carry og side og 5 poeng i hull; gate-testene føres som Godkjent eller Bom. */
+/** Anders 14.10.2026: 8-ball med carry og side og 5 poeng i hull; gate-testene førtes som Godkjent eller Bom til 20.10. */
 export const TN_GODKJENT_VERSION = "tn-excel-v3-2026-10-14";
-export const TN_VERSIONS = [TN_VERSION, TN_RULES_VERSION, TN_GODKJENT_VERSION] as const;
+/**
+ * Anders 20.10.2026 (beslutninger.md §TESTBATTERIET): Nærspill Gate, Wedge Gate og VISA Express gir
+ * 1 poeng gjennom porten og 4 poeng gjennom porten og i sonen, maks 36. Driver Gate og Putt Gate
+ * telles som OK («X / 6 OK», «X / 10 OK»).
+ */
+export const TN_POENG_VERSION = "tn-excel-v3-2026-10-20";
+export const TN_VERSIONS = [TN_VERSION, TN_RULES_VERSION, TN_GODKJENT_VERSION, TN_POENG_VERSION] as const;
 export type TnVersion = typeof TN_VERSIONS[number];
 export const tnVersion = (p: TnProtocol): TnVersion => p.version ?? TN_VERSION;
 /** `requiredUnless`: feltet kreves bare når det andre feltet står tomt (8-ball: carry og side, eller «I hull»). */
@@ -144,8 +150,8 @@ export const TN_RULES_CATALOG: readonly TnProtocol[] = protocols.map(p => {
 });
 const godkjentEllerBom = (key: string, label: string): TnField => choice(key, label, ["Godkjent", "Bom"]);
 const GATE_IDS = ["naerspill-gate", "visa-express", "wedge-gate", "driver-gate", "putt-gate"];
-/** Gjeldende katalog: 8-ball med carry og side, gate-testene med Godkjent eller Bom (Anders 14.10.2026). */
-export const TN_CATALOG: readonly TnProtocol[] = TN_RULES_CATALOG.map(p => {
+/** Katalogen 14.10.2026: 8-ball med carry og side, gate-testene med Godkjent eller Bom. Eldre utkast og resultater regnes mot den. */
+export const TN_GODKJENT_CATALOG: readonly TnProtocol[] = TN_RULES_CATALOG.map(p => {
   if (p.points8Ball) {
     return { ...p, version: TN_GODKJENT_VERSION, name: from(p.id).name, rows: p.rows.map(r => ({ ...r, fields: [
       { ...carry, requiredUnless: "holed" }, { ...side, requiredUnless: "holed" },
@@ -160,7 +166,18 @@ export const TN_CATALOG: readonly TnProtocol[] = TN_RULES_CATALOG.map(p => {
     rows: p.rows.map(r => ({ ...r, fields: label ? [godkjentEllerBom("ok", label)]
       : r.fields.map(f => f.key === "ok" ? godkjentEllerBom("ok", f.label) : f) })) };
 });
-const CATALOGS = [LEGACY_CATALOG, TN_RULES_CATALOG, TN_CATALOG];
+/** Valgene per slag i gate-testene med poeng, og poengene de gir. */
+export const GATE_POENG_VALG = { Bom: 0, "Gjennom porten": 1, "I sonen": 4 } as const;
+export const GATE_POENG_IDS = ["naerspill-gate", "visa-express", "wedge-gate"] as const;
+const gatePoeng = (label: string): TnField => choice("ok", label, Object.keys(GATE_POENG_VALG));
+/** Gjeldende katalog (20.10.2026): gate-testene med poeng 0/1/4, Driver Gate og Putt Gate med OK. */
+export const TN_CATALOG: readonly TnProtocol[] = TN_GODKJENT_CATALOG.map(p => {
+  if (!GATE_IDS.includes(p.id)) return p;
+  if (!(GATE_POENG_IDS as readonly string[]).includes(p.id)) return { ...p, version: TN_POENG_VERSION };
+  const label = p.id === "visa-express" ? "Gjennom porten, og i speedsonen" : "Gjennom porten, og carry i sonen";
+  return { ...p, version: TN_POENG_VERSION, rows: p.rows.map(r => ({ ...r, fields: [gatePoeng(label)] })) };
+});
+const CATALOGS = [LEGACY_CATALOG, TN_RULES_CATALOG, TN_GODKJENT_CATALOG, TN_CATALOG];
 export function tnProtocol(id: string, count?: number, version?: string): TnProtocol | null {
   if (version !== undefined && !(TN_VERSIONS as readonly string[]).includes(version)) return null;
   const p = version === undefined ? TN_CATALOG.find(p => p.id === id)

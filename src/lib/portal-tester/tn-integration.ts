@@ -1,9 +1,10 @@
-import { TN_CATALOG, TN_VERSION, TN_RULES_VERSION, TN_GODKJENT_VERSION, tnVersion, tnProtocol, isTnTestName, type TnProtocol } from "./tn-catalog";
+import { TN_CATALOG, TN_VERSION, TN_RULES_VERSION, TN_GODKJENT_VERSION, TN_POENG_VERSION, tnVersion, tnProtocol, isTnTestName, type TnProtocol } from "./tn-catalog";
 import { TnResultSchema, tnScore, tnSameScore } from "./tn-scoring";
 
-const DEFINITION_PREFIX = { [TN_VERSION]: "", [TN_RULES_VERSION]: "20261002-", [TN_GODKJENT_VERSION]: "20261014-" } as const;
+const DEFINITION_PREFIX = { [TN_VERSION]: "", [TN_RULES_VERSION]: "20261002-", [TN_GODKJENT_VERSION]: "20261014-", [TN_POENG_VERSION]: "20261020-" } as const;
 export const tnDefinitionId = (p: TnProtocol) => `tn-v3-${DEFINITION_PREFIX[tnVersion(p)]}${p.id}`;
 export function tnFromDefinitionId(id: string) {
+  if (id.startsWith("tn-v3-20261020-")) return tnProtocol(id.slice(15), undefined, TN_POENG_VERSION);
   if (id.startsWith("tn-v3-20261014-")) return tnProtocol(id.slice(15), undefined, TN_GODKJENT_VERSION);
   if (id.startsWith("tn-v3-20261002-")) return tnProtocol(id.slice(15), undefined, TN_RULES_VERSION);
   return id.startsWith("tn-v3-") ? tnProtocol(id.slice(6), undefined, TN_VERSION) : undefined;
