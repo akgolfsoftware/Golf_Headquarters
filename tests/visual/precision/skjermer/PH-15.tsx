@@ -11,6 +11,10 @@ export const sti = "/portal/tren/tester/team-norway";
 const wedge = tnProtocol("wedge-gate")!;
 const naer = tnProtocol("naerspill-gate")!;
 const ball = tnProtocol("8-ball-blocked")!;
+const inspill = tnProtocol("inspill-gutter-145")!;
+const putt = tnProtocol("putt-1-3m")!;
+const speed = tnProtocol("putt-speed-1x5")!;
+const bane = tnProtocol("golfslag-bane-gutter")!;
 
 const PSVAR = ["I sonen", "Gjennom porten", "Bom"] as const;
 /** Poeng-gate: sant = I sonen (4), usant = Bom (0); hver tredje er «Gjennom porten» (1). */
@@ -31,5 +35,9 @@ export const tilstander = {
   hand: vis(<PH15TnTest protocol={naer} initial={init(3, gate([true, false, false, true]))} />),
   tn8: vis(<PH15TnTest protocol={ball} initial={init(4, ballVerdier)} />),
   "tn8-tom": vis(<PH15TnTest protocol={ball} localSessionId={uuid(5)} />),
+  carry: vis(<PH15TnTest protocol={inspill} initial={init(6, { "1": { carry: 141, side: -3.2 }, "2": { carry: 150.5, side: 6.2 } })} />),
+  putt: vis(<PH15TnTest protocol={putt} initial={init(7, { "1": { strokes: 1 }, "2": { strokes: 2 }, "3": { strokes: 1 } })} />),
+  speed: vis(<PH15TnTest protocol={speed} initial={init(8, { "1": { distance: 0.5, distanceUnit: "m", longShort: "Lang" }, "2": { distance: 0.25, distanceUnit: "m", longShort: "Kort" } })} />),
+  bane: vis(<PH15TnTest protocol={bane} initial={init(9, { "1": { hole: 1, result: 11.5, lie: "Green" } })} />),
   laster: vis(<TmLaster tekst="Henter testen" />),
 };
