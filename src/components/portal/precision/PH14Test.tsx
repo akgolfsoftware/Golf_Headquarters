@@ -1,8 +1,15 @@
 /**
- * PH-14 Én test i nytt design (pakke 6, godkjent av Anders 14.10.2026).
- * Fasit: docs/design-system/utkast-playerhq/stats-dybde.html, malen «test». Stil: playerhq-ny-statsdybde.css.
+ * PH-14 Én test / Resultat i designløftet 20.10.2026 (godkjent av Anders samme dag).
+ * Fasit: Claude Design-canvaset «PlayerHQ nøkkelskjermer» (https://claude.ai/artifact/XdsbBEHwJhdrD4YJMMpdK1),
+ * «Resultat · mobil 390» og «PC 1280». Stil: playerhq-ny-statsdybde.css og playerhq-ny-tester.css (§Resultat).
  *
- * Avvik:
+ * Avvik (20.10):
+ *   - «Be coach kontrollere» er ikke med: appen har ingen forespørsel om kontroll. «Del med coach» ligger i lagret-meldingen.
+ *   - «Prioritert · 2 av 2» står ikke i resultatet: tellingen over alle varianter av testen hentes bare i oversikten.
+ *   - «Per slagtype» viser PEI (lavere er best) med best og svakest merket; poeng av 15 per slagtype lagres ikke.
+ *   - Over tid har stiplet rekordlinje når retningen er kjent og testen er tatt minst to ganger.
+ *
+ * Eldre avvik:
  *   - Grafen viser testens hovedtall over tid. Utkastets bryter mellom Poeng og PEI krever to lagrede serier;
  *     for 8-ball står PEI per slagkategori under, fra siste måling.
  *   - «Per slagtype» viser PEI per kategori (Chip, Wedge, Lobb, Bunker) slik resultatet lagrer det.
@@ -15,13 +22,13 @@
  * Ingen "use client": rendres på serveren.
  */
 import Link from "next/link";
-import { Check, X } from "lucide-react";
-import { TmTilbake } from "./PH17TmFelles";
-import { SD_AKSE_KODE, type SdAkse } from "./PHStatsDybdeFelles";
+import { Check, ChevronLeft, X } from "lucide-react";
+import { type SdAkse } from "./PHStatsDybdeFelles";
 import { ResultatKontekst } from "@/components/tester/ResultatKontekst";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-stats.css";
 import "@/styles/playerhq-ny-statsdybde.css";
+import "@/styles/playerhq-ny-tester.css";
 
 export type PH14Maaling = {
   id: string;
@@ -66,11 +73,26 @@ export function PH14Test({ data }: { data: PH14TestData }) {
 
   return (
     <div className="phn">
-      <TmTilbake href="/portal/tren/tester" tekst="Tester" />
-      <div className="phn-topp">
-        <div className="phn-dato">Stats · Tester · {data.omraade}</div>
-        <h1 className="phn-tittel">{data.navn}</h1>
-      </div>
+      <header className="phn-res-hode phn-inn">
+        <div>
+          <Link className="phn-res-tilbake" href="/portal/tren/tester"><ChevronLeft className="phn-ikon" aria-hidden />Stats · Tester</Link>
+          <span className="phn-dato">{data.lagret ? "Alle slag registrert · lagret" : `Stats · Tester · ${data.omraade}`}</span>
+          <h1 className="phn-tittel">{data.navn}</h1>
+          {siste && <p className="phn-forklar">{[siste.dato, fortTekst(siste)].join(" · ")}</p>}
+        </div>
+        <div className="phn-knapper">
+          <Link className="phn-knapp pri" href="/portal/tren/tester">Ferdig</Link>
+        </div>
+      </header>
+
+      {siste && (
+        <dl className="phn-res-tall phn-inn">
+          <div><dt>Siste måling</dt><dd><b>{siste.vis}</b><small>{data.endring ?? (rekord ? "Personlig rekord" : "Første måling")}</small></dd></div>
+          <div><dt>Beste</dt><dd><b>{data.beste ?? "—"}</b><small>{rekord ? "Ny rekord" : "Rekorden din"}</small></dd></div>
+          <div><dt>Snitt, {m.length} {m.length === 1 ? "måling" : "målinger"}</dt><dd><b>{data.snitt ?? "—"}</b><small>{data.lavereErBedre == null ? "Retning ikke satt" : data.lavereErBedre ? "Lavere er bedre" : "Høyere er bedre"}</small></dd></div>
+          <div><dt>Nivå</dt><dd><b>—</b><small>A–K ikke vedtatt</small></dd></div>
+        </dl>
+      )}
 
       {data.lagret && (
         <div className="phn-lagret" role="status">
@@ -85,16 +107,7 @@ export function PH14Test({ data }: { data: PH14TestData }) {
 
       <div className="phn-to-kol">
         <div className="phn-kol">
-          {siste ? (
-            <div className={`phn-fylt ${data.akse}`}>
-              <span className="phn-akse-tekst">{SD_AKSE_KODE[data.akse]} · SISTE MÅLING</span>
-              <div className="phn-rad">
-                <span className="phn-stor">{siste.vis}</span>
-                {data.endring && <span className="phn-trend">{data.endring}</span>}
-              </div>
-              <p>{[rekord ? "Personlig rekord" : null, siste.dato, fortTekst(siste)].filter(Boolean).join(" · ")}</p>
-            </div>
-          ) : (
+          {!siste && (
             <section className="phn-kort dempet">
               <h2>Ingen målinger ennå</h2>
               <p className="phn-forklar">Første måling blir referansen din. Protokollen står under.</p>
@@ -104,7 +117,7 @@ export function PH14Test({ data }: { data: PH14TestData }) {
           {m.length > 0 && (
             <section className="phn-kort">
               <div className="phn-sek-topp"><h2>Over tid</h2><span className="phn-kilde">{m.length} {m.length === 1 ? "måling" : "målinger"}</span></div>
-              <Graf maalinger={m.slice(-8)} />
+              <Graf maalinger={m.slice(-8)} rekord={data.lavereErBedre == null || m.length < 2 ? null : (data.lavereErBedre ? Math.min(...m.map((x) => x.verdi)) : Math.max(...m.map((x) => x.verdi)))} />
               <p className="phn-kilde">{data.lavereErBedre == null ? "Retningen er ikke satt for denne testen." : data.lavereErBedre ? "Lavere er bedre." : "Høyere er bedre."}</p>
               <div className="phn-nokkel">
                 <div><b>{data.snitt ?? "—"}</b><span>Snitt, {m.length} {m.length === 1 ? "måling" : "målinger"}</span></div>
@@ -118,8 +131,19 @@ export function PH14Test({ data }: { data: PH14TestData }) {
           {data.perSlagtype.length > 0 && (
             <section className="phn-kort">
               <div className="phn-sek-topp"><h2>Per slagtype</h2><span className="phn-kilde">PEI · siste måling</span></div>
-              <ul className="phn-skala-liste">
-                {data.perSlagtype.map((s) => <li key={s.navn} className="phn-skala-rad"><span>{s.navn}</span><b>{s.vis}</b></li>)}
+              <ul className="phn-skala-liste phn-res-slagtype">
+                {(() => {
+                  const tallAv = (v: string) => Number(v.replace(/[^0-9,.-]/g, "").replace(",", "."));
+                  const verdier = data.perSlagtype.map((x) => tallAv(x.vis));
+                  const maks = Math.max(...verdier, 0.0001), best = Math.min(...verdier), verst = Math.max(...verdier);
+                  return data.perSlagtype.map((x, i) => (
+                    <li key={x.navn} className="phn-skala-rad">
+                      <span>{x.navn}{data.perSlagtype.length > 2 && verdier[i] === best && <em className="best">best</em>}{data.perSlagtype.length > 2 && verdier[i] === verst && <em className="svak">svakest</em>}</span>
+                      <i aria-hidden><u className={`akse-${data.akse}`} style={{ width: `${Math.max(4, (verdier[i]! / maks) * 100)}%` }} /></i>
+                      <b>{x.vis}</b>
+                    </li>
+                  ));
+                })()}
               </ul>
               <p className="phn-kilde">PEI er avstanden fra hullet delt på slaglengden. Lavere er bedre.</p>
             </section>
@@ -167,6 +191,11 @@ export function PH14Test({ data }: { data: PH14TestData }) {
             </section>
           )}
 
+          <Link href="/portal/meg/deling" className="phn-res-deling">
+            <span><b>Coach ser resultatet</b><small>Trenere i WANG og Team Norway ser det bare når du har delt.</small></span>
+            <span>Deling</span>
+          </Link>
+
           <div className="phn-niva">
             <span className="phn-undertittel">Landslagsnivå for klassen</span>
             <b>—</b>
@@ -201,8 +230,8 @@ export function PH14Test({ data }: { data: PH14TestData }) {
 }
 
 /** Hovedtallet over tid som fylt linje, i blått som i utkastet. */
-function Graf({ maalinger }: { maalinger: PH14Maaling[] }) {
-  const v = maalinger.map((x) => x.verdi);
+function Graf({ maalinger, rekord }: { maalinger: PH14Maaling[]; rekord: number | null }) {
+  const v = [...maalinger.map((x) => x.verdi), ...(rekord != null ? [rekord] : [])];
   const lo = Math.min(...v), hi = Math.max(...v), pad = (hi - lo) * 0.15 || Math.abs(hi) * 0.1 || 1;
   const min = lo - pad, max = hi + pad;
   const n = maalinger.length;
@@ -214,6 +243,7 @@ function Graf({ maalinger }: { maalinger: PH14Maaling[] }) {
     <svg className="phn-graf" viewBox="0 0 320 150" role="img" aria-label={`Målinger: ${maalinger.map((x) => `${x.dato} ${x.vis}`).join(", ")}`}>
       <line x1="28" x2="312" y1="128" y2="128" stroke="var(--phn-sand-300)" />
       <line x1="28" x2="312" y1="20" y2="20" stroke="var(--phn-sand-300)" />
+      {rekord != null && <line x1="28" x2="312" y1={y(rekord)} y2={y(rekord)} stroke="var(--phn-g600)" strokeDasharray="4 4" />}
       {n > 1 && <path d={`M${pts.join(" L")} L${sisteX},128 L${forsteX},128 Z`} fill="var(--phn-slag)" opacity=".18" />}
       {n > 1 && <path className="phn-tegn" d={`M${pts.join(" L")}`} fill="none" stroke="var(--phn-slag)" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" />}
       {maalinger.map((x, i) => <circle key={x.id} cx={xs[i]} cy={y(x.verdi)} r={i === n - 1 ? 5.5 : 4} fill="var(--phn-slag)" />)}

@@ -30,18 +30,20 @@ import { useTnDraft, type TnInitial } from "@/lib/portal-tester/use-tn-draft";
 import { tnDefinitionId } from "@/lib/portal-tester/tn-integration";
 import { GATE_POENG_VALG } from "@/lib/portal-tester/tn-catalog";
 import type { TnSaveInput } from "@/lib/portal-tester/tn-session";
+import { GenerellInn, GenerellListe, GenerellTopp, erGenerell } from "./PH15TnGenerell";
 import { saveTnTest } from "@/app/portal/tren/tester/team-norway/actions";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-stats.css";
 import "@/styles/playerhq-ny-statsdybde.css";
 import "@/styles/playerhq-ny-tester.css";
 
-export type PH15TnType = "gate" | "ball8";
+export type PH15TnType = "gate" | "ball8" | "generell";
 
 /** Hvilken ny skjerm en Team Norway-protokoll får. null = det generelle scorekortet. */
 export function ph15TnType(p: TnProtocol): PH15TnType | null {
   if (p.points8Ball && p.rows.every((r) => r.target !== undefined)) return "ball8";
   if (p.kind === "gate" && p.rows.every((r) => r.fields.length === 1 && (r.fields[0]!.choices?.length === 2 || erPoengValg(r.fields[0]!.choices)))) return "gate";
+  if (erGenerell(p)) return "generell";
   return null;
 }
 
@@ -69,7 +71,7 @@ const GATE_SVAR: { verdi: keyof typeof GATE_POENG_VALG; tittel: string; tekst: s
   { verdi: "Bom", tittel: "Bom", tekst: "Ikke gjennom porten" },
 ];
 
-const AKSE = (p: TnProtocol) => (p.points8Ball ? { k: "slag", t: "SLAG", o: "Golfslag" } : { k: "tek", t: "TEK", o: "Teknikk" });
+const AKSE = (p: TnProtocol) => (p.points8Ball || ["carry", "putts", "course", "free-course"].includes(p.kind) ? { k: "slag", t: "SLAG", o: "Golfslag" } : { k: "tek", t: "TEK", o: "Teknikk" });
 const slagNavn = (label: string) => label.replace(/^([A-Za-zÆØÅæøå]+)(\d+)$/, "$1 $2 m");
 const tall = (v: number, d = 1) => (Math.round(v * 10 ** d) / 10 ** d).toLocaleString("nb-NO", { minimumFractionDigits: d, maximumFractionDigits: d });
 
@@ -141,15 +143,21 @@ export function PH15TnTest(props: Props) {
       <div className="phn-motor">
         {type === "gate"
           ? <GateTopp p={p} godkjent={godkjenteAv(p, values)} igjen={igjen} closed={closed} resultat={resultat} />
-          : <BallTopp p={p} values={values} n={antallFerdige} igjen={igjen} closed={closed} resultat={resultat} />}
+          : type === "generell"
+            ? <GenerellTopp p={p} values={values} n={antallFerdige} igjen={igjen} closed={closed} resultat={resultat} />
+            : <BallTopp p={p} values={values} n={antallFerdige} igjen={igjen} closed={closed} resultat={resultat} />}
 
         {!closed && (type === "gate"
           ? <GateInn p={p} n={n} laast={laast} alle={alle} raw={draft.raw} sett={settRad} angre={() => { const i = sisteFort(); if (i >= 0) settRad(i, null); }} kanAngre={sisteFort() >= 0} />
-          : <BallInn key={n} p={p} n={n} laast={laast} alle={alle} raw={draft.raw} sett={settRad} angre={() => { const i = sisteFort(); if (i >= 0) settRad(i, null); }} kanAngre={sisteFort() >= 0} />)}
+          : type === "generell"
+            ? <GenerellInn p={p} n={n} laast={laast} alle={alle} raw={draft.raw} sett={settRad} angre={() => { const i = sisteFort(); if (i >= 0) settRad(i, null); }} kanAngre={sisteFort() >= 0} />
+            : <BallInn key={n} p={p} n={n} laast={laast} alle={alle} raw={draft.raw} sett={settRad} angre={() => { const i = sisteFort(); if (i >= 0) settRad(i, null); }} kanAngre={sisteFort() >= 0} />)}
 
         {type === "gate"
           ? <GateRutenett p={p} n={closed ? -1 : n} raw={draft.raw} laast={laast} sett={settRad} />
-          : <BallListe p={p} n={closed ? -1 : n} values={values} />}
+          : type === "generell"
+            ? <GenerellListe p={p} n={antallFerdige} values={values} />
+            : <BallListe p={p} n={closed ? -1 : n} values={values} />}
 
         <div className="phn-lagre-felt full">
           <div className="phn-hvem">

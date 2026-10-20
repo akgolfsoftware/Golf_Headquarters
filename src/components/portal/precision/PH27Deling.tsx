@@ -10,7 +10,10 @@
  * «Komplett profil». Samme server-handlinger og samme kaskade: Komplett profil løfter testene med
  * seg, og av på testene slår alt av. Under 16 kan spilleren trekke, men ikke slå på selv.
  *
- * Avvik:
+ * Avvik (20.10): tegningens kolonner er byttet (Hvem har tilgang til venstre, Del med en trener og Det treneren ser til høyre).
+ *   Skjemaet for trenerens e-post ligger fortsatt på /portal/meg/deling; «Send på nytt» og «Trekk tilbake» for navngitte trenere finnes ikke som handling.
+ *
+ * Eldre avvik:
  *   - «Innsyn er alt» stemmer ikke med datamodellen: deling har to nivåer per organisasjon. Skjermen
  *     viser nivåene og hva hvert nivå gir.
  *   - «Del med trener» åpner den navngitte trenerdelingen (/portal/meg/deling), som eier lenken og
@@ -86,7 +89,7 @@ export function PH27Deling({ data, settSamtykke, ekstra }: { data: PH27Data; set
   return <div className="phn phn-meg"><div className={`side${data.krevesForesatt ? " smal" : ""}`}>
     <div className="topp">
       <Link className="tilbake" href="/portal/meg"><ChevronLeft size={18} aria-hidden />Meg</Link>
-      <div><div className="phn-dato">Meg · deling</div><h1 className="phn-tittel">Deling</h1></div>
+      <div><div className="phn-dato">Meg · deling</div><h1 className="phn-tittel">Deling</h1><p className="phn-forklar">Du bestemmer hvem som ser testene og resten av PlayerHQ.</p></div>
     </div>
 
     {data.venter && <>
@@ -103,35 +106,8 @@ export function PH27Deling({ data, settSamtykke, ekstra }: { data: PH27Data; set
 
     <div className="to-del">
       <div>
-        <div className="phn-kort">
-          <div className="phn-hoved"><strong>{antall}</strong><span className="phn-forklar">ser profilen din</span></div>
-          <p className="phn-kilde">{data.foreldre > 0 ? `Pluss ${data.foreldre === 1 ? "forelderen" : "foreldrene"} din${data.foreldre === 1 ? "" : "e"}.` : "Ingen forelder er koblet til."}</p>
-        </div>
-        <div className="innsyn-alt">
-          <b>Dette ser den du deler med</b>
-          <ul>
-            <li><b>Tester og resultater:</b> testresultater, turneringer og rundestatistikk</li>
-            <li><b>Komplett profil:</b> i tillegg treningsplan og økter, TrackMan, analyse og fremgang</li>
-          </ul>
-        </div>
-        {data.navngitte.length > 0 && <section className="phn-seksjon" aria-labelledby="del-navngitt">
-          <div className="phn-sek-topp"><h2 id="del-navngitt">Navngitte trenere</h2></div>
-          {data.navngitte.map((n) => <article key={n.id} className="tilgang">
-            <div className="tilgang-topp">
-              <span className={`avatar ${erTn(n.gruppeNavn) ? "tn" : "wang"}`} aria-hidden>{initialer(n.epost.split("@")[0]?.replace(/[._-]/g, " ") ?? "")}</span>
-              <span><b>{n.epost}</b><span className="phn-kilde">{n.gruppeNavn} · {n.status === "AKTIV" ? `delt ${n.dato}` : `lenken gjelder til ${n.dato}`}</span></span>
-              <span className={`phn-pille ${n.status === "AKTIV" ? "ok" : "noy"}`}><i />{n.status === "AKTIV" ? "Ser profilen" : "Ikke åpnet"}</span>
-            </div>
-          </article>)}
-        </section>}
-        {data.venter
-          ? <><button type="button" className="phn-knapp pri stor" disabled>Del med trener</button><p className="phn-kilde">Du kan dele med en trener når forelderen din har godkjent.</p></>
-          : <Link className="phn-knapp pri stor" href="/portal/meg/deling">Del med trener</Link>}
-      </div>
-
-      <div>
         <section className="phn-seksjon" aria-labelledby="del-tilgang">
-          <div className="phn-sek-topp"><h2 id="del-tilgang">Har tilgang</h2></div>
+          <div className="phn-sek-topp"><h2 id="del-tilgang">Hvem har tilgang</h2></div>
           {data.coach && <article className="tilgang">
             <div className="tilgang-topp">
               <span className="avatar" aria-hidden>{initialer(data.coach.navn)}</span>
@@ -160,6 +136,37 @@ export function PH27Deling({ data, settSamtykke, ekstra }: { data: PH27Data; set
           <div className="phn-meldinger" aria-live="polite">{(pending || feil) && <p className="phn-melding" role={feil ? "alert" : "status"}>{feil ?? "Lagrer …"}</p>}</div>
         </section>
         {ekstra}
+      </div>
+
+      <div>
+        <div className="phn-kort">
+          <div className="phn-hoved"><strong>{antall}</strong><span className="phn-forklar">ser profilen din</span></div>
+          <p className="phn-kilde">{data.foreldre > 0 ? `Pluss ${data.foreldre === 1 ? "forelderen" : "foreldrene"} din${data.foreldre === 1 ? "" : "e"}.` : "Ingen forelder er koblet til."}</p>
+        </div>
+        <section className="del-trener" aria-labelledby="del-trener-t">
+          <h2 id="del-trener-t">Del med en trener</h2>
+          <p className="phn-forklar">Bare adresser som slutter på @wang.no eller @golfforbundet.no. Lenken gjelder i sju dager. Er du under 16, må en forelder godkjenne først.</p>
+          {data.venter
+            ? <><button type="button" className="phn-knapp pri stor" disabled>Del med trener</button><p className="phn-kilde">Du kan dele med en trener når forelderen din har godkjent.</p></>
+            : <Link className="phn-knapp pri stor" href="/portal/meg/deling">Del med trener</Link>}
+        </section>
+        <div className="innsyn-alt">
+          <b>Det treneren ser</b>
+          <ul>
+            <li><b>Tester og resultater:</b> testresultater, turneringer og rundestatistikk</li>
+            <li><b>Komplett profil:</b> i tillegg treningsplan og økter, TrackMan, analyse og fremgang</li>
+          </ul>
+        </div>
+        {data.navngitte.length > 0 && <section className="phn-seksjon" aria-labelledby="del-navngitt">
+          <div className="phn-sek-topp"><h2 id="del-navngitt">Navngitte trenere</h2></div>
+          {data.navngitte.map((n) => <article key={n.id} className="tilgang">
+            <div className="tilgang-topp">
+              <span className={`avatar ${erTn(n.gruppeNavn) ? "tn" : "wang"}`} aria-hidden>{initialer(n.epost.split("@")[0]?.replace(/[._-]/g, " ") ?? "")}</span>
+              <span><b>{n.epost}</b><span className="phn-kilde">{n.gruppeNavn} · {n.status === "AKTIV" ? `delt ${n.dato}` : `lenken gjelder til ${n.dato}`}</span></span>
+              <span className={`phn-pille ${n.status === "AKTIV" ? "ok" : "noy"}`}><i />{n.status === "AKTIV" ? "Ser profilen" : "Ikke åpnet"}</span>
+            </div>
+          </article>)}
+        </section>}
       </div>
     </div>
 
