@@ -80,7 +80,8 @@ function SgKurve({ trend }: { trend: readonly number[] }) {
   if (trend.length < 2) return <span className="sp-sg-tom">—</span>;
   const mn = Math.min(...trend, -0.1), mx = Math.max(...trend, 0.1), W = 64, H = 22;
   const y = (v: number) => 2 + (H - 4) * (1 - (v - mn) / (mx - mn));
-  const pts = trend.map((v, i) => `${(i * W / (trend.length - 1)).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
+  const r1 = (x: number) => Math.round(x * 10) / 10;
+  const pts = trend.map((v, i) => `${r1(i * W / (trend.length - 1))},${r1(y(v))}`).join(" ");
   return <svg className="sp-sg" width={W} height={H} viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`SG siste ${trend.length} målinger: ${trend.map((v) => fmtSg(v)).join(", ")}`}>
     <line x1="0" x2={W} y1={y(0)} y2={y(0)} stroke="var(--sand-300)" strokeWidth="1" />
     <polyline points={pts} fill="none" stroke="var(--graphite-900)" strokeWidth="1.6" strokeLinejoin="round" />
