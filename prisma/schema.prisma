@@ -1303,6 +1303,9 @@ model ServiceType {
   // Gruppering på BK-01 og i AgencyOS (src/lib/booking/tjeneste-kategori.ts).
   // Null = ikke satt; da gjettes «abonnement» fra navnet (Performance).
   kategori       String?
+  // Bookingplanen steg 2: romtypen tjenesten krever på stedet (f.eks. STUDIO for
+  // simulatorrom). Null = tjenesten trenger ikke noe bestemt rom. Se src/lib/booking/rom.ts.
+  facilityType   FacilityType?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 

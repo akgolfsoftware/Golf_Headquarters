@@ -158,9 +158,10 @@ export async function createBookingCheckout(
           serviceTypeId: bookingData.serviceTypeId,
           startAt,
           endAt,
+          romKrav: service.facilityType ? { locationId: lokasjon.id, facilityType: service.facilityType } : null,
         });
         return tx.booking.create({
-          data: { ...bookingData, plassNr: vern.plassNr },
+          data: { ...bookingData, plassNr: vern.plassNr, facilityId: vern.facilityId ?? null },
         });
       });
     } catch (e) {

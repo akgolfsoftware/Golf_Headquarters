@@ -11,6 +11,7 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { FacilityType } from "@/generated/prisma/client";
 import { requireCoachActionUser } from "@/lib/auth/action-guards";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
@@ -29,6 +30,8 @@ export type TjenesteInput = {
   /** Null = ikke satt; da gjettes stedet fra navnet (tjeneste-sted.ts). */
   locationId?: string | null;
   kategori?: string | null;
+  /** Romtype tjenesten krever på stedet (f.eks. STUDIO). Null = ingen bestemt romtype; utelatt = uendret. */
+  facilityType?: FacilityType | null;
   bufferForMin: number;
   bufferEtterMin: number;
   minVarselTimer: number;
@@ -54,6 +57,7 @@ const TjenesteSchema = z.object({
     .nullish()
     .transform((v) => v || null)
     .refine((v) => v === null || erTjenesteKategori(v), "Ukjent kategori."),
+  facilityType: z.enum(Object.values(FacilityType) as [FacilityType, ...FacilityType[]]).nullish(),
   bufferForMin: heltall(0, 240),
   bufferEtterMin: heltall(0, 240),
   minVarselTimer: heltall(0, 24 * 30),

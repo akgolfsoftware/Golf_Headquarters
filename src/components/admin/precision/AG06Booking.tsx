@@ -36,6 +36,7 @@ import { bookIKalender, type BookingValg } from "@/app/admin/kalender/booking-ac
 import type { AG06Booking, AG06Tjeneste, AG06TjenesteValg } from "@/app/admin/bookinger/data";
 import { opprettTjeneste, oppdaterTjeneste, settTjenesteAktiv, slettTjeneste, type TjenesteInput } from "@/app/admin/bookinger/tjeneste-actions";
 import { TJENESTE_KATEGORIER, kategoriNavn } from "@/lib/booking/tjeneste-kategori";
+import { ROMTYPER, romtypeNavn } from "@/lib/booking/rom-typer";
 import "@/styles/agencyos-ny-kalender.css";
 
 export const STATUS_TONE: Record<AG06Booking["st"], PilleTone> = { Venter: "vent", Bekreftet: "ok", Avlyst: "noy", Gjennomført: "noy" };
@@ -282,13 +283,13 @@ export function NyBooking({ valg, onOpprettet }: { valg: BookingValg; onOpprette
 
 const NY_TJENESTE: TjenesteInput = {
   name: "", description: "", priceOre: 0, durationMin: 50, maxDeltakere: 1, coachUserId: null, locationId: null,
-  kategori: "drop-in", bufferForMin: 0, bufferEtterMin: 0, minVarselTimer: 24, maksDagerFram: 7, active: true,
+  kategori: "drop-in", facilityType: null, bufferForMin: 0, bufferEtterMin: 0, minVarselTimer: 24, maksDagerFram: 7, active: true,
 };
 
 function tilInput(t: AG06Tjeneste): TjenesteInput {
   return {
     name: t.navn, description: t.beskrivelse ?? "", priceOre: t.prisOre, durationMin: t.varighetMin, maxDeltakere: t.maxDeltakere,
-    coachUserId: t.coachUserId, locationId: t.locationId, kategori: t.kategori, bufferForMin: t.bufferForMin,
+    coachUserId: t.coachUserId, locationId: t.locationId, kategori: t.kategori, facilityType: t.facilityType as TjenesteInput["facilityType"], bufferForMin: t.bufferForMin,
     bufferEtterMin: t.bufferEtterMin, minVarselTimer: t.minVarselTimer, maksDagerFram: t.maksDagerFram, active: t.aktiv,
   };
 }
@@ -322,7 +323,7 @@ function TjenestePanel({ tjenester, valg }: { tjenester: AG06Tjeneste[]; valg: A
   const rad = (t: AG06Tjeneste) => <button key={t.id} type="button" className="bk-rad" onClick={() => { setRedigerer(t); setFeil(null); }}>
     <span className="ikonboks" aria-hidden>{t.varighetMin}</span>
     <span><b>{t.navn}</b><span className="kilde">
-      {t.varighetMin} min · maks {t.maxDeltakere} {t.maxDeltakere === 1 ? "deltaker" : "deltakere"} · {t.coachNavn ?? "Felles"} · {t.stedNavn ?? "Sted ikke satt"} · {kategoriNavn(t.kategori)}
+      {t.varighetMin} min · maks {t.maxDeltakere} {t.maxDeltakere === 1 ? "deltaker" : "deltakere"} · {t.coachNavn ?? "Felles"} · {t.stedNavn ?? "Sted ikke satt"} · {kategoriNavn(t.kategori)}{t.facilityType ? ` · ${romtypeNavn(t.facilityType)}` : ""}
     </span></span>
     <b className="mono">{kr(t.prisOre)}</b>
   </button>;
@@ -417,6 +418,11 @@ export function TjenesteArk({ tjeneste, valg, feil, pending, onClose, onLagre, o
       <select value={f.locationId ?? ""} onChange={(e) => sett("locationId", e.target.value || null)}>
         <option value="">Ikke satt (gjettes fra navnet)</option>
         {valg.steder.map((s) => <option key={s.id} value={s.id}>{s.navn}</option>)}
+      </select></label>
+    <label className="felt"><span className="etikett">Krever rom</span>
+      <select value={f.facilityType ?? ""} onChange={(e) => sett("facilityType", (e.target.value || null) as TjenesteInput["facilityType"])}>
+        <option value="">Ingen bestemt romtype</option>
+        {ROMTYPER.map((r) => <option key={r.verdi} value={r.verdi}>{r.navn}</option>)}
       </select></label>
     <div className="to-felt">
       <label className="felt"><span className="etikett">Maks deltakere</span>

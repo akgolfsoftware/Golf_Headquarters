@@ -31,9 +31,9 @@ const valg: BookingValg = {
 };
 
 const tjenester: AG06Tjeneste[] = [
-  { id: "s1", slug: "privattime-60-min", navn: "Privattime 60 min", beskrivelse: "Én spiller, én coach.", prisOre: 80000, varighetMin: 60, maxDeltakere: 1, coachUserId: "c1", coachNavn: "Test Coach", locationId: "l1", stedNavn: "Fredrikstad", kategori: "drop-in", bufferForMin: 0, bufferEtterMin: 15, minVarselTimer: 24, maksDagerFram: 14, aktiv: true, antallBookinger: 3 },
-  { id: "s2", slug: "drop-in-range", navn: "Drop-in range", beskrivelse: null, prisOre: 25000, varighetMin: 30, maxDeltakere: 4, coachUserId: null, coachNavn: null, locationId: null, stedNavn: null, kategori: null, bufferForMin: 0, bufferEtterMin: 0, minVarselTimer: 24, maksDagerFram: 7, aktiv: true, antallBookinger: 0 },
-  { id: "s3", slug: "gammel-pakke", navn: "Gammel pakke", beskrivelse: null, prisOre: 120000, varighetMin: 90, maxDeltakere: 1, coachUserId: null, coachNavn: null, locationId: "l1", stedNavn: "Fredrikstad", kategori: "abonnement", bufferForMin: 0, bufferEtterMin: 0, minVarselTimer: 24, maksDagerFram: 7, aktiv: false, antallBookinger: 12 },
+  { id: "s1", slug: "privattime-60-min", navn: "Privattime 60 min", beskrivelse: "Én spiller, én coach.", prisOre: 80000, varighetMin: 60, facilityType: null, maxDeltakere: 1, coachUserId: "c1", coachNavn: "Test Coach", locationId: "l1", stedNavn: "Fredrikstad", kategori: "drop-in", bufferForMin: 0, bufferEtterMin: 15, minVarselTimer: 24, maksDagerFram: 14, aktiv: true, antallBookinger: 3 },
+  { id: "s2", slug: "drop-in-range", navn: "Drop-in range", beskrivelse: null, prisOre: 25000, varighetMin: 30, facilityType: null, maxDeltakere: 4, coachUserId: null, coachNavn: null, locationId: null, stedNavn: null, kategori: null, bufferForMin: 0, bufferEtterMin: 0, minVarselTimer: 24, maksDagerFram: 7, aktiv: true, antallBookinger: 0 },
+  { id: "s3", slug: "gammel-pakke", navn: "Gammel pakke", beskrivelse: null, prisOre: 120000, varighetMin: 90, facilityType: null, maxDeltakere: 1, coachUserId: null, coachNavn: null, locationId: "l1", stedNavn: "Fredrikstad", kategori: "abonnement", bufferForMin: 0, bufferEtterMin: 0, minVarselTimer: 24, maksDagerFram: 7, aktiv: false, antallBookinger: 12 },
 ];
 const tjenesteValg: AG06TjenesteValg = { coacher: [{ id: "c1", navn: "Test Coach" }], steder: [{ id: "l1", navn: "Fredrikstad" }] };
 const felles = { navn: "Test Coach", bookinger, valg, tjenester, tjenesteValg, naaMs: N } as const;
