@@ -1,10 +1,9 @@
 /**
- * Prøvefil for Øvelsesbanken i AgencyOS (/admin/ovelser, beslutning 16.10.2026): samme bank-side som
- * spillerens PH-13, i AgencyOS-skallet, for coachens tilgang. Syntetiske data.
+ * Prøvefil for Øvelsesbanken i AgencyOS (/admin/ovelser, AG11Ovelsesbank, bølge 2). Syntetiske data.
  */
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { AdminRolleProvider } from "@/components/v2/rolle";
-import { PH13DrillBank } from "@/components/portal/precision/PH13DrillBank";
+import { AG11Ovelsesbank } from "@/components/admin/precision/AG11Ovelsesbank";
 import Loading from "@/app/admin/ovelser/loading";
 import Feil from "@/app/admin/ovelser/error";
 import { ovelseVisning, type OvelseRad } from "@/lib/portal-drills/ovelser-visning";
@@ -26,8 +25,8 @@ const ovelser = [
 const skall = (n: React.ReactNode) => <AdminRolleProvider erAdmin><AgencyOSSkall navn="Test Coach">{n}</AgencyOSSkall></AdminRolleProvider>;
 
 export const tilstander = {
-  bank: skall(<PH13DrillBank ovelser={ovelser} caddie={null} coach />),
-  tom: skall(<PH13DrillBank ovelser={[]} caddie={null} coach />),
+  bank: skall(<AG11Ovelsesbank ovelser={ovelser.map((o, i) => ({ ...o, brukt: 30 - i * 4 }))} />),
+  tom: skall(<AG11Ovelsesbank ovelser={[]} />),
   laster: skall(<Loading />),
   feil: skall(<Feil error={Object.assign(new Error("prøve"), { digest: "prove" })} reset={() => undefined} />),
 };
