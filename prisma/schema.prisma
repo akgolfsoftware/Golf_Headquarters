@@ -7563,6 +7563,9 @@ model TnUttak {
   // UTTATT | RESERVE | IKKE_UTTATT
   status      String
   begrunnelse String?
+  // Kriterium 3 «Prosess og adferd», trenerens vurdering 1–5 (Anders 20.10.2026). Tom = ikke vurdert.
+  // Kolonnen legges til av scripts/add-tn-uttak-prosess-2026-10-20.ts (CHECK 1–5 i basen).
+  prosessAdferd Int?
   decidedById String
   decidedAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

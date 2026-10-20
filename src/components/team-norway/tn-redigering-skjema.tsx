@@ -139,18 +139,19 @@ export function TnSlettTestdag({ id, navn }: { id: string; navn: string }) {
 
 export const UTTAK_TEKST: Record<string, string> = { UTTATT: "Tatt ut", RESERVE: "Reserve", IKKE_UTTATT: "Ikke tatt ut" };
 
-export function TnUttakSkjema({ spillere, knapp, variant, standard }: { spillere: { id: string; navn: string }[]; knapp: string; variant?: TnKnappVariant; standard?: { spillerId: string; arrangement: string; status: string; begrunnelse: string } }) {
+export function TnUttakSkjema({ spillere, knapp, variant, standard }: { spillere: { id: string; navn: string }[]; knapp: string; variant?: TnKnappVariant; standard?: { spillerId: string; arrangement: string; status: string; begrunnelse: string; prosessAdferd?: string } }) {
   return (
     <TnSkjemaArk
       knapp={knapp}
       knappVariant={variant}
       tittel={standard ? "Endre uttak" : "Registrer uttak"}
       lagreTekst="Lagre uttak"
-      send={(v) => ut(lagreUttakAction({ spillerId: v.spillerId, arrangement: v.arrangement, status: v.status, begrunnelse: v.begrunnelse }))}
+      send={(v) => ut(lagreUttakAction({ spillerId: v.spillerId, arrangement: v.arrangement, status: v.status, begrunnelse: v.begrunnelse, prosessAdferd: v.prosessAdferd }))}
     >
       <TnValg etikett="Spiller" navn="spillerId" standard={standard?.spillerId} pakrevd valg={spillere.map((s) => ({ verdi: s.id, tekst: s.navn }))} />
       <TnFelt etikett="Arrangement" navn="arrangement" standard={standard?.arrangement} pakrevd maks={200} plassholder="EM lag 2027" />
       <TnValg etikett="Uttak" navn="status" standard={standard?.status ?? "UTTATT"} valg={Object.entries(UTTAK_TEKST).map(([verdi, tekst]) => ({ verdi, tekst }))} />
+      <TnValg etikett="Prosess og adferd (1–5)" navn="prosessAdferd" standard={standard?.prosessAdferd ?? ""} valg={[{ verdi: "", tekst: "— Ikke vurdert" }, ...["1", "2", "3", "4", "5"].map((n) => ({ verdi: n, tekst: n }))]} />
       <TnTekstfelt etikett="Begrunnelse" navn="begrunnelse" standard={standard?.begrunnelse} />
     </TnSkjemaArk>
   );
