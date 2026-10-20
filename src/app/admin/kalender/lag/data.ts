@@ -312,6 +312,9 @@ async function hentHendelserIVindu(
       href: `/admin/bookinger/${r.id}`,
       coachId: r.coachId,
       akse: akseFraTekst(`${r.serviceType.name} ${r.notes ?? ""}`),
+      betaling: r.paymentMethod ?? null,
+      gjennomfort: r.status === "COMPLETED",
+      nyTidForeslatt: r.proposedStartAt != null,
     });
     if (r.facility) {
       kapasitetPerFasilitet[r.facility.id] = r.facility.capacity;

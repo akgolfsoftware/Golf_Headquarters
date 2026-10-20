@@ -2,6 +2,7 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import {
   akseFraPyramide,
+  betalingTekst,
   erKalenderLag,
   filtrerCoach,
   iCoachKolonne,
@@ -183,4 +184,25 @@ it("akseFraPyramide: kjente akser, ellers null", () => {
   assert.equal(akseFraPyramide("turn"), "turn");
   assert.equal(akseFraPyramide("TULL"), null);
   assert.equal(akseFraPyramide(null), null);
+});
+
+describe("betalingTekst (designløftet 20.10)", () => {
+  it("viser betalingsmåten med norsk etikett", () => {
+    assert.equal(betalingTekst("STRIPE"), "Stripe");
+    assert.equal(betalingTekst("KLIPP"), "Klipp");
+    assert.equal(betalingTekst("FAKTURA"), "Faktura");
+    assert.equal(betalingTekst("GRATIS"), "Gratis");
+    assert.equal(betalingTekst("GAVEKORT"), "Gavekort");
+  });
+  it("mangler betalingsmåten, står «—»", () => {
+    assert.equal(betalingTekst(null), "—");
+    assert.equal(betalingTekst(undefined), "—");
+  });
+  it("de nye feltene er valgfrie: en hendelse uten dem er uendret for gamle kallere", () => {
+    const e = hendelse("h1", "BOOKING", "2026-10-22", 960);
+    assert.equal(e.betaling, undefined);
+    assert.equal(e.gjennomfort, undefined);
+    assert.equal(e.nyTidForeslatt, undefined);
+    assert.deepEqual(synlige([e], new Set<KalenderLag>(["BOOKING"])), [e]);
+  });
 });

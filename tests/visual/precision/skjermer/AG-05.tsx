@@ -23,7 +23,9 @@ const ukeData: KalenderLagUkeData = {
   coacher: [{ id: "c1", navn: "Test Coach" }, { id: "c2", navn: "Prøve Assistent" }],
   hendelser: [
     { id: "okt-1", lag: "OEKTER", dato: "2026-09-29", tittel: "Wedge 50–90 m", undertekst: "Ola Testesen", startMin: 9 * 60, sluttMin: 10 * 60, heldag: false, href: "/admin/workbench/p1", coachId: "c1", akse: "slag", flyttOktId: "o1" },
-    { id: "booking-1", lag: "BOOKING", dato: "2026-09-29", tittel: "Ola Testesen", undertekst: "Privattime 60 min", startMin: 17 * 60, sluttMin: 18 * 60, heldag: false, href: "/admin/bookinger/b1", coachId: "c1", akse: "tek" },
+    { id: "booking-1", lag: "BOOKING", dato: "2026-09-29", tittel: "Ola Testesen", undertekst: "Privattime 60 min", startMin: 17 * 60, sluttMin: 18 * 60, heldag: false, href: "/admin/bookinger/b1", coachId: "c1", akse: "tek", betaling: "KLIPP", nyTidForeslatt: true },
+    { id: "booking-3", lag: "BOOKING", dato: "2026-09-28", tittel: "Per Prøve", undertekst: "Privattime 60 min", startMin: 9 * 60, sluttMin: 10 * 60, heldag: false, href: "/admin/bookinger/b3", coachId: "c1", akse: "tek", betaling: "STRIPE", gjennomfort: true },
+    { id: "test-1", lag: "TESTER", dato: "2026-10-02", tittel: "Testdag", undertekst: "9 spillere", startMin: 14 * 60, sluttMin: 17 * 60, heldag: false, href: "/admin/tester", coachId: "c1", akse: null },
     { id: "booking-2", lag: "BOOKING", dato: "2026-09-29", tittel: "Kari Prøvesen med et langt navn", undertekst: "Flex 50 min · Simulator 1", startMin: 10 * 60, sluttMin: 10 * 60 + 50, heldag: false, href: "/admin/bookinger/b2", coachId: "c2", akse: null },
     { id: "gruppe-1", lag: "OEKTER", dato: "2026-09-29", tittel: "Juniorgruppe Utvikling", undertekst: "Ni hull", startMin: 15 * 60 + 30, sluttMin: 17 * 60, heldag: false, href: "/admin/grupper/g1", coachId: "c2", akse: "spill", gruppe: true, antallSpillere: 8 },
     { id: "skole-1", lag: "SKOLE", dato: "2026-09-30", tittel: "Heldagsprøve", undertekst: "VG2", startMin: null, sluttMin: null, heldag: true, lesevisning: true },
