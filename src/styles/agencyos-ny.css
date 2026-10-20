@@ -41,19 +41,23 @@
 @media (hover: hover) and (pointer: fine) { .agn-ikonknapp:hover { background: var(--sand-150); } }
 
 /* Søk: åpner det felles søket (⌘K) */
-.agn-sok { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 12px; border: 1px solid var(--sand-300); border-radius: 8px; background: var(--white); color: var(--graphite-600); font: 400 14px/1 var(--sans); cursor: pointer; text-align: left; white-space: nowrap; overflow: hidden; }
+.agn-sok { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 12px; border: 1px solid transparent; border-radius: 10px; background: var(--ak-sunket); color: var(--graphite-600); font: 400 14px/1 var(--sans); cursor: pointer; text-align: left; white-space: nowrap; overflow: hidden; }
 .agn-sok .tx { overflow: hidden; text-overflow: ellipsis; }
-.agn-sok kbd { margin-left: auto; font: 500 12px/1 var(--mono); padding: 4px 6px; border: 1px solid var(--sand-300); border-radius: 4px; background: var(--sand-100); color: var(--graphite-600); }
+.agn-sok kbd { margin-left: auto; font: 500 11px/1 var(--mono); padding: 4px 6px; border: 0; border-radius: 6px; background: var(--white); color: var(--graphite-600); }
 
 /* Neste økt: fylt kort i aksefargen, grafitt når aksen ikke er kjent */
-.agn-neste { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; padding: 12px; border-radius: 10px; background: var(--graphite-900); color: #fff; text-decoration: none; flex: none; }
-.agn-neste.fys { background: var(--fys-ink); } .agn-neste.tek { background: var(--tek-ink); } .agn-neste.slag { background: var(--slag); }
-.agn-neste.spill { background: var(--spill-ink); } .agn-neste.turn { background: var(--turn); }
-.agn-neste.tom { background: var(--sand-150); color: var(--graphite-900); }
-.agn-neste.laster { min-height: 76px; background: var(--sand-150); }
+/* Neste økt i Skrå-drakten (utkast-skra): fylt i aksefargen, stort klokkeslett, myk skygge i samme farge. */
+.agn-neste { --neste: var(--graphite-900); display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; padding: 12px 14px; border-radius: 14px; background: var(--neste); color: #fff; text-decoration: none; flex: none; box-shadow: 0 10px 22px -12px var(--neste); transition: transform var(--ak-t-trykk) var(--ak-ut); }
+a.agn-neste:active { transform: scale(.97); }
+.agn-neste .stor-tid { display: block; margin: 2px 0 0; font: 600 28px/1.05 var(--sans); letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+.agn-neste.fys { --neste: var(--fys-ink); } .agn-neste.tek { --neste: var(--tek-ink); } .agn-neste.slag { --neste: var(--slag); }
+.agn-neste.spill { --neste: var(--spill-ink); } .agn-neste.turn { --neste: var(--turn); }
+.agn-neste.tom { background: var(--ak-sunket); color: var(--graphite-900); box-shadow: none; }
+.agn-neste.tom small { color: var(--graphite-600); opacity: 1; }
+.agn-neste.laster { min-height: 96px; background: var(--ak-sunket); box-shadow: none; }
 .agn-neste .lang { display: grid; gap: 2px; min-width: 0; }
 .agn-neste .etk { font: 500 12px/1.3 var(--mono); letter-spacing: .06em; text-transform: uppercase; opacity: .85; }
-.agn-neste b { font: 600 15px/1.25 var(--sans); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.agn-neste b { font: 600 14px/1.25 var(--sans); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .agn-neste small { font-size: 13px; line-height: 1.35; opacity: .92; }
 .agn-neste .kort-tid { display: none; text-align: center; }
 .agn-neste .kort-tid .tt { display: block; font: 600 22px/1 var(--mono); letter-spacing: -.02em; }
@@ -61,8 +65,8 @@
 
 /* Gruppene */
 .agn-gruppe { display: grid; gap: 1px; }
-.agn-gruppe .etk { font: 500 11.5px/1.4 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--graphite-600); padding: 0 12px 4px; }
-.agn-lenke { display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 0 12px; border-radius: 8px; color: var(--graphite-800); text-decoration: none; font: 500 15px/1.2 var(--sans); border: 0; background: transparent; cursor: pointer; width: 100%; text-align: left; position: relative; }
+.agn-gruppe .etk { font: 500 10.5px/1.4 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--graphite-600); padding: 0 12px 4px; }
+.agn-lenke { display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 0 12px; border-radius: 10px; transition: background var(--ak-t-base) var(--ak-ut), transform var(--ak-t-trykk) var(--ak-ut); color: var(--graphite-800); text-decoration: none; font: 500 15px/1.2 var(--sans); border: 0; background: transparent; cursor: pointer; width: 100%; text-align: left; position: relative; }
 .agn-lenke .agn-ikon { color: var(--graphite-600); }
 .agn-lenke .tx { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .agn-lenke .lite { margin-left: auto; font: 500 11px/1 var(--sans); color: var(--graphite-600); white-space: nowrap; }
@@ -72,9 +76,10 @@
 .agn-lenke[aria-current="page"] .agn-ikon, .agn-lenke[aria-current="page"] .lite { color: var(--white); }
 .agn-lenke[aria-current="page"] .tall:not(.haster) { background: var(--white); color: var(--graphite-900); }
 .agn-lenke:focus-visible { outline: 3px solid var(--graphite-900); outline-offset: 2px; }
-@media (hover: hover) and (pointer: fine) { .agn-lenke:not([aria-current="page"]):hover { background: var(--sand-150); } }
+.agn-lenke:active { transform: scale(.98); }
+@media (hover: hover) and (pointer: fine) { .agn-lenke:not([aria-current="page"]):hover { background: var(--ak-sunket); } }
 
-.agn-coach { display: flex; align-items: center; gap: 10px; padding: 12px; margin-top: auto; border-top: 1px solid var(--sand-300); min-width: 0; }
+.agn-coach { display: flex; align-items: center; gap: 10px; padding: 12px; margin-top: auto; border-top: 1px solid var(--ak-strek); min-width: 0; }
 .agn-coach .av { width: 36px; height: 36px; border-radius: 50%; background: var(--graphite-900); color: var(--white); display: grid; place-items: center; font: 600 13px/1 var(--sans); flex: none; }
 .agn-coach .navn { min-width: 0; }
 .agn-coach b { display: block; font: 600 14px/1.25 var(--sans); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -104,7 +109,8 @@
   .agn-skall { display: grid; grid-template-columns: 264px minmax(0, 1fr); min-height: 100dvh; }
   .agn[data-meny="smal"] .agn-skall { grid-template-columns: 72px minmax(0, 1fr); }
   .agn-meny-plass { display: block; position: relative; }
-  .agn-meny { display: flex; flex-direction: column; gap: 16px; width: 264px; padding: 18px 14px 12px; background: var(--sand-100); border-right: 1px solid var(--sand-300); position: sticky; top: 0; height: 100dvh; overflow-y: auto; z-index: 35; }
+  /* Skrå-drakten: hvit meny som løfter seg med en myk skygge mot den lysegrå flaten, ingen hard kant. */
+  .agn-meny { display: flex; flex-direction: column; gap: 18px; width: 264px; padding: 18px 14px 12px; background: var(--white); border-right: 0; box-shadow: 1px 0 0 var(--ak-strek), 8px 0 24px -18px rgba(20, 20, 19, .22); position: sticky; top: 0; height: 100dvh; overflow-y: auto; z-index: 35; }
   .agn-meny .agn-sok { flex: none; }
   .agn-meny-topp { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
   .agn-logo-lenke { display: flex; align-items: center; min-height: 44px; padding-left: 10px; }
@@ -123,7 +129,7 @@
   .agn-meny.smal .agn-neste { width: 48px; height: 60px; padding: 0; place-items: center; align-content: center; }
   .agn-meny.smal .agn-neste .kort-tid { display: block; }
   .agn-meny.smal .agn-gruppe { width: 100%; justify-items: center; gap: 2px; }
-  .agn-meny.smal .agn-gruppe .etk { font-size: 0; line-height: 0; padding: 0; margin: 2px 0 6px; width: 28px; border-top: 1px solid var(--sand-300); }
+  .agn-meny.smal .agn-gruppe .etk { font-size: 0; line-height: 0; padding: 0; margin: 2px 0 6px; width: 28px; border-top: 1px solid var(--ak-strek); }
   .agn-meny.smal .agn-lenke { width: 44px; padding: 0; justify-content: center; }
   .agn-meny.smal .agn-lenke .tall { position: absolute; top: 2px; right: 0; min-width: 16px; height: 16px; font-size: 10px; padding: 0 4px; }
   .agn-meny.smal .agn-coach { padding: 12px 0 0; justify-content: center; width: 100%; }
