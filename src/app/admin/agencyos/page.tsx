@@ -11,6 +11,9 @@
  *    nyeste radene (A1, audit 20.10.2026: hele køen ga 30 s lastetid).
  *  - lastCockpitTillegg: «Følger ikke planen» (to siste uker) og turneringer
  *    denne uka, i coachens spillerskop.
+ *  - loadStallen: stallen som rørledning (Trenger deg · Følger planen · Hviler),
+ *    samme status som AG-07 Stall. Strømmes for seg (Suspense), så den ikke
+ *    gjør resten av Cockpit tregere. Feiler den, vises «—».
  *  - loadAiDispatch: AI-dispatch («Én ting nå» og hvilken AI-flate som eier
  *    køen), skill agenticos-cockpit. Nye e-poster telles bare for ADMIN.
  *
@@ -30,6 +33,8 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { loadDailyBrief } from "@/lib/agencyos/daily-brief-data";
 import { lastGodkjenninger } from "@/lib/admin/ko/last-godkjenninger";
 import { lastCockpitTillegg } from "@/lib/agencyos/cockpit-tillegg";
+import { stallRorledning } from "@/lib/agencyos/cockpit-tillegg-regler";
+import { loadStallen } from "@/lib/admin/stallen-data";
 import { byggAG01Data } from "@/lib/agencyos/cockpit-precision";
 import { loadAiDispatch } from "@/lib/agencyos/ai-dispatch-data";
 import { prisma } from "@/lib/prisma";
@@ -59,10 +64,12 @@ export default async function CockpitPage() {
   const kicker = `${dag.charAt(0).toUpperCase()}${dag.slice(1)} · uke ${ukenummer(naa)}`;
 
   const data = byggAG01Data({ brief, ko, tillegg, kicker, klokke });
+  // Ikke ventet på: strømmes inn i Stallen-kortet når den er klar.
+  const stall = loadStallen(coach, {}).then((s) => stallRorledning(s.rows)).catch(() => null);
 
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
-      <AG01Cockpit tilstand="data" data={data} dispatch={dispatch} />
+      <AG01Cockpit tilstand="data" data={data} dispatch={dispatch} stall={stall} />
     </AgencyOSSkall>
   );
 }

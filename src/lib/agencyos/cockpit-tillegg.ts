@@ -5,6 +5,9 @@
  * Bare lesing av eksisterende felt, i coachens spillerskop
  * (coachScopedPlayerWhere). Ingen nye tabeller, ingen skjemaendring.
  *
+ * Etterlevelse per uke (tre siste hele uker og denne) og stallens uke leses fra
+ * de samme øktene.
+ *
  * «Følger ikke planen» (beslutninger.md §SKJERMENE … RUNDE 8, 28.09.2026):
  * de to siste hele ukene, gjennomført tid mot planlagt tid (adherencePct —
  * minutter, bare forfalte økter). Med når begge ukene er under 70 %
@@ -17,9 +20,9 @@ import { prisma } from "@/lib/prisma";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { startOfWeek, endOfWeek, ukenummer } from "@/lib/uke-helpers";
 import type { UserRole } from "@/generated/prisma/client";
-import { velgUtenforPlan, dagerMellom, type CockpitTillegg, type CockpitTurnering } from "./cockpit-tillegg-regler";
+import { velgUtenforPlan, dagerMellom, etterlevelsePerUke, stallensUke, type CockpitTillegg, type CockpitTurnering } from "./cockpit-tillegg-regler";
 
-export type { CockpitTillegg, CockpitTurnering, UtenforPlanRad } from "./cockpit-tillegg-regler";
+export type { CockpitTillegg, CockpitTurnering, UtenforPlanRad, UkeEtterlevelse, StallensUke } from "./cockpit-tillegg-regler";
 
 const DAG_MS = 86_400_000;
 
@@ -29,11 +32,13 @@ export async function lastCockpitTillegg(coach: { id: string; role: UserRole }):
   const ukeSlutt = endOfWeek(naa);
   const forrigeUke = new Date(denneUka.getTime() - 7 * DAG_MS);
   const ukeFor = new Date(denneUka.getTime() - 14 * DAG_MS);
+  // Etterlevelse i Cockpit: de tre siste hele ukene og denne uka.
+  const fireUkerSiden = new Date(denneUka.getTime() - 21 * DAG_MS);
   const scope = coachScopedPlayerWhere(coach);
 
   const [okter, entries] = await Promise.all([
     prisma.trainingPlanSession.findMany({
-      where: { scheduledAt: { gte: ukeFor, lt: denneUka }, plan: { user: scope } },
+      where: { scheduledAt: { gte: fireUkerSiden, lt: ukeSlutt }, plan: { user: scope } },
       select: {
         scheduledAt: true,
         durationMin: true,
@@ -62,14 +67,20 @@ export async function lastCockpitTillegg(coach: { id: string; role: UserRole }):
     }),
   ]);
 
+  const alle = okter.map((o) => ({
+    userId: o.plan.userId,
+    navn: o.plan.user.name ?? "Spiller",
+    scheduledAt: o.scheduledAt,
+    durationMin: o.durationMin,
+    status: o.status,
+  }));
+  const ukeStarter = [3, 2, 1, 0].map((n) => {
+    const start = new Date(denneUka.getTime() - n * 7 * DAG_MS);
+    return { start, uke: ukenummer(start) };
+  });
+
   const utenforPlan = velgUtenforPlan(
-    okter.map((o) => ({
-      userId: o.plan.userId,
-      navn: o.plan.user.name ?? "Spiller",
-      scheduledAt: o.scheduledAt,
-      durationMin: o.durationMin,
-      status: o.status,
-    })),
+    alle.filter((o) => o.scheduledAt >= ukeFor && o.scheduledAt < denneUka),
     forrigeUke,
     naa,
   );
@@ -93,5 +104,7 @@ export async function lastCockpitTillegg(coach: { id: string; role: UserRole }):
     utenforPlan,
     utenforPlanUker: `UKE ${ukenummer(ukeFor)}–${ukenummer(forrigeUke)}`,
     turneringer,
+    etterlevelse: etterlevelsePerUke(alle, ukeStarter, naa),
+    stallensUke: stallensUke(alle, denneUka, ukenummer(denneUka)),
   };
 }

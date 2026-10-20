@@ -23,12 +23,12 @@
 .agn-s .na-linje::before { content: attr(data-klokke); position: absolute; left: -44px; top: -9px; width: 40px; text-align: center; font: 600 11px/16px var(--mono); background: var(--graphite-900); color: var(--white); border-radius: 4px; }
 
 /* Følger ikke planen */
-.agn-s .etl-rad { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: var(--r3); align-items: center; padding: 10px 0; border-bottom: 1px solid var(--sand-300); text-decoration: none; color: inherit; min-height: 56px; }
+.agn-s .etl-rad { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; gap: var(--r3); align-items: center; padding: 10px 0; border-bottom: 1px solid var(--sand-300); text-decoration: none; color: inherit; min-height: 56px; }
 .agn-s .etl-rad:last-child { border-bottom: 0; }
 .agn-s .etl-rad b { display: block; font: 600 15px/1.3 var(--sans); }
 .agn-s .etl-uker { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
-.agn-s .etl-uker span { display: inline-flex; align-items: center; height: 22px; padding: 0 7px; border-radius: 5px; font: 600 12px/1 var(--mono); background: var(--rust-50); color: var(--rust-tekst); white-space: nowrap; }
-.agn-s .etl-prosent { font: 600 22px/1 var(--mono); color: var(--rust-tekst); }
+.agn-s .etl-uker span { display: inline-flex; align-items: center; height: 22px; padding: 0 7px; border-radius: 5px; font: 600 12px/1 var(--mono); background: var(--sand-150); color: var(--graphite-800); white-space: nowrap; }
+.agn-s .etl-prosent { font: 600 22px/1 var(--mono); color: var(--graphite-900); }
 
 /* Oppgaver fra Notion */
 .agn-s .oppgave { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: start; padding: 10px 0; border-bottom: 1px solid var(--sand-300); }
@@ -127,3 +127,58 @@
 .agn-s .dispatch-rad b { display: block; font: 500 15px/1.35 var(--sans); }
 .agn-s .dispatch-rad .type { justify-self: end; }
 .agn-s .dispatch-rad.hoy .type { background: var(--graphite-900); color: var(--white); }
+
+/* Designløft 20.10.2026: nøkkeltall som grafikk (canvas «AgencyOS nøkkelskjermer», AG-01) */
+.agn-s .kpi-rad { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--graphite-900); border-bottom: 1px solid var(--sand-300); }
+.agn-s .kpi { display: grid; gap: 6px; align-content: start; padding: 14px 12px 14px 0; text-decoration: none; color: inherit; min-width: 0; }
+.agn-s .kpi:nth-child(2n) { padding-left: 12px; border-left: 1px solid var(--sand-300); }
+.agn-s .kpi:nth-child(n + 3) { border-top: 1px solid var(--sand-300); }
+.agn-s .kpi .e { font-size: 13px; color: var(--graphite-600); }
+.agn-s .kpi b.t { font: 600 32px/1 var(--mono); letter-spacing: -.03em; }
+.agn-s .kpi b.t small { font-size: 16px; }
+.agn-s .kpi .s { font-size: 13px; color: var(--graphite-800); }
+.agn-s .kpi .kilde { font: 500 11px/1.2 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--graphite-600); }
+.agn-s .akse-stripe { display: flex; gap: 2px; height: 8px; }
+.agn-s .akse-stripe i { display: block; min-width: 6px; border-radius: 0 2px 2px 0; }
+.agn-s .akse-stripe.tom { background: var(--sand-150); }
+.agn-s .soyler { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; height: 32px; align-items: end; margin-bottom: 14px; }
+.agn-s .soyle { position: relative; height: 32px; display: flex; align-items: flex-end; background: var(--sand-150); }
+.agn-s .soyle i { display: block; width: 100%; background: var(--sand-400); }
+.agn-s .soyle i.na { background: var(--graphite-900); }
+.agn-s .soyle em { position: absolute; top: 100%; left: 0; right: 0; text-align: center; font: 500 10px/12px var(--mono); font-style: normal; color: var(--graphite-600); }
+.agn-s .fremdrift { display: block; height: 8px; background: var(--sand-150); }
+.agn-s .fremdrift i { display: block; height: 100%; background: var(--graphite-900); }
+@media (hover: hover) and (pointer: fine) { .agn-s .kpi:hover b.t { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 2px; } }
+@media (min-width: 900px) {
+  .agn-s .kpi-rad { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .agn-s .kpi { padding: 14px 20px; border-left: 1px solid var(--sand-300); }
+  .agn-s .kpi:first-child { padding-left: 0; border-left: 0; }
+  .agn-s .kpi:nth-child(n + 3) { border-top: 0; }
+}
+
+/* Følger ikke planen: to søyler per spiller mot 70 %-streken */
+.agn-s .etl-soyler { position: relative; display: flex; gap: 3px; align-items: flex-end; width: 26px; height: 32px; background: linear-gradient(to top, transparent calc(70% - 1px), var(--graphite-600) calc(70% - 1px), var(--graphite-600) 70%, transparent 70%); }
+.agn-s .etl-soyler i { display: block; flex: 1; background: var(--sand-400); }
+.agn-s .etl-soyler i.siste { background: var(--graphite-900); }
+
+/* Stallen som rørledning */
+.agn-s .ror { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; margin-bottom: var(--r2); }
+.agn-s .ror-steg { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; align-items: center; padding: 12px 14px; border-radius: 10px; background: var(--sand-100); text-decoration: none; color: inherit; min-height: 56px; }
+.agn-s .ror-steg .e { font: 600 14px/1.2 var(--sans); }
+.agn-s .ror-steg b { grid-row: 1 / span 2; grid-column: 2; font: 600 26px/1 var(--mono); }
+.agn-s .ror-steg .s { font-size: 12.5px; color: var(--graphite-600); }
+.agn-s .ror-steg:first-child { background: var(--graphite-900); color: var(--white); }
+.agn-s .ror-steg:first-child .s { color: var(--sand-300); }
+
+/* Turneringer med nedtelling */
+.agn-s .turn-kort.med-nedtelling { grid-template-columns: auto minmax(0, 1fr); gap: 14px; align-items: center; }
+.agn-s .turn-kort .nedtelling { display: grid; justify-items: center; min-width: 52px; }
+.agn-s .turn-kort .nedtelling b { font: 600 30px/1 var(--mono); }
+.agn-s .turn-kort .nedtelling small { font: 600 10px/1.2 var(--mono); letter-spacing: .08em; opacity: .85; }
+.agn-s .turn-kort .turn-tekst { display: grid; gap: 2px; min-width: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes kpi-bred { from { scale: 0 1; } }
+  @keyframes kpi-hoy { from { scale: 1 0; } }
+  .agn-s .fremdrift i, .agn-s .akse-stripe i { transform-origin: 0 50%; animation: kpi-bred 620ms cubic-bezier(.23, 1, .32, 1) both; }
+  .agn-s .soyle i, .agn-s .etl-soyler i { transform-origin: 50% 100%; animation: kpi-hoy 620ms cubic-bezier(.23, 1, .32, 1) both; }
+}

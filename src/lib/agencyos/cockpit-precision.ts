@@ -44,6 +44,10 @@ export type AG01Data = {
   utenforPlan: CockpitTillegg["utenforPlan"];
   utenforPlanUker: string;
   nokkeltall: CockpitNokkel[];
+  /** Innlogget siste 30 dager, egen stall. */
+  aktiveSpillere: number;
+  etterlevelse: CockpitTillegg["etterlevelse"];
+  stallensUke: CockpitTillegg["stallensUke"];
 };
 
 export function hhmm(min: number): string {
@@ -136,5 +140,8 @@ export function byggAG01Data(inn: {
     utenforPlan: tillegg.utenforPlan,
     utenforPlanUker: tillegg.utenforPlanUker,
     nokkeltall,
+    aktiveSpillere: brief.activePlayersCount,
+    etterlevelse: tillegg.etterlevelse,
+    stallensUke: tillegg.stallensUke,
   };
 }
