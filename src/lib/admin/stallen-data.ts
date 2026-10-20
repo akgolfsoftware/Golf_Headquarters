@@ -10,10 +10,11 @@
  */
 
 import { prisma } from "@/lib/prisma";
-import type { Tier, UserStatus, PyramidArea } from "@/generated/prisma/client";
+import type { Tier, PyramidArea } from "@/generated/prisma/client";
 import { hentStallEtterlevelse } from "@/lib/portal/etterlevelse-data";
 import { erOktGjennomfort } from "@/lib/workbench/compliance";
 import { stallenPlayerWhere } from "./stallen-scope";
+import { stallStatus } from "./stall-status";
 
 // ── Typer eksponert til komponenten ─────────────────────────────
 import { bucketFraEnrollments, type GroupBucket } from "@/lib/domain/program-bucket";
@@ -166,28 +167,6 @@ function isoWeek(d: Date): number {
   return 1 + Math.round((date.getTime() - firstThursday.getTime()) / 604_800_000);
 }
 
-function statusFrom(
-  userStatus: UserStatus,
-  daysSinceLogin: number | null,
-  oktDone: number,
-  oktPlanned: number,
-  wantsGuidance: boolean,
-): { status: StatusKind; label: string } {
-  if (wantsGuidance) return { status: "veil", label: "Ønsker veil." };
-  if (userStatus === "INAKTIV") return { status: "inaktiv", label: "Inaktiv" };
-  // Hviler FØR stillhets-sjekken: en avtalt pause skal ikke leses som stillhet.
-  // SKADET = retur-til-spill-protokoll, PERMISJON = planlagt pause.
-  if (userStatus === "SKADET") return { status: "hviler", label: "Retur til spill" };
-  if (userStatus === "PERMISJON") return { status: "hviler", label: "Planlagt pause" };
-  if (daysSinceLogin == null || daysSinceLogin >= 14)
-    return { status: "inaktiv", label: "Inaktiv" };
-  // Bak plan: planlagte økter denne uka, men under halvparten gjennomført
-  // og uka er kommet et stykke (>=3 dager inn).
-  if (oktPlanned > 0 && oktDone < oktPlanned * 0.5)
-    return { status: "bak", label: "Bak plan" };
-  return { status: "aktiv", label: "Aktiv" };
-}
-
 // ── Hoved-loader ────────────────────────────────────────────────
 export async function loadStallen(
   coach: { id: string; role: string },
@@ -248,7 +227,8 @@ export async function loadStallen(
       // Pending session-request → "Ønsker veiledning".
       sessionRequestsAsPlayer: {
         where: { status: "PENDING" },
-        select: { id: true },
+        select: { createdAt: true },
+        orderBy: { createdAt: "asc" },
         take: 1,
       },
       // Pakke + «skylder» (B2): abonnement og feilede betalinger.
@@ -329,14 +309,14 @@ export async function loadStallen(
     });
     const adhPct = e.pct;
 
-    const wantsGuidance = p.sessionRequestsAsPlayer.length > 0;
-    const { status, label: statusLabel } = statusFrom(
-      p.userStatus,
-      days,
-      oktDone,
-      oktPlanned,
-      wantsGuidance,
-    );
+    const eldsteForesp = p.sessionRequestsAsPlayer[0]?.createdAt;
+    const { status, label: statusLabel } = stallStatus({
+      userStatus: p.userStatus,
+      etterlevelsePct: adhPct,
+      eldsteUbesvartTimer: eldsteForesp
+        ? (now.getTime() - eldsteForesp.getTime()) / 3_600_000
+        : null,
+    });
 
     const tierInfo = TIER_MAP[p.tier];
 
