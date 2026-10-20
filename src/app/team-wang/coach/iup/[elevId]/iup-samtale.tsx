@@ -1,5 +1,4 @@
 "use client";
-import { AK } from "@/lib/v2/ak-palett";
 
 /**
  * IUP-samtalen — tre steg i én skjerm.
@@ -13,14 +12,13 @@ import { AK } from "@/lib/v2/ak-palett";
  * visning. Én primær handling: «Lagre og del med eleven».
  */
 
-import { useRef, useState, useTransition } from "react";
+import { useRef, useState, useTransition, type ReactNode } from "react";
 import { Plus, Trash2 } from "lucide-react";
-import { WangTilbake, wangHref } from "@/components/wang/wang-felles";
+import { wangHref } from "@/components/wang/wang-felles";
+import { WangElevTopp } from "@/components/wang/WangElevTopp";
 
 import {
   AKSE_REKKEFOLGE,
-  AkseChip,
-  MaalStatusChip,
   STATUS_TEKST,
   formaterEgentid,
   type AkAkse,
@@ -68,7 +66,7 @@ interface NyRad {
   maalemetode: string | null;
 }
 
-const STEG = ["Evaluering", "Nye fokusområder", "Del med eleven"];
+const STEG = ["Evaluer perioden", "Målt i perioden", "Neste periode"];
 const STATUSER: MaalStatus[] = ["IKKE_STARTET", "PAA_VEI", "NAADD"];
 
 function kortDato(iso: string): string {
@@ -98,6 +96,7 @@ export function IupSamtale({
   evalueringer: startEval,
   nyeStart,
   maalinger,
+  sideinnhold,
 }: {
   elevId: string;
   elevNavn: string;
@@ -106,6 +105,8 @@ export function IupSamtale({
   evalueringer: EvalRad[];
   nyeStart: NyRad[];
   maalinger: IupMaaling[];
+  /** Leverte IUP-svar og trenerforslaget, i høyre kolonne under målingene (canvas rad 10). */
+  sideinnhold?: ReactNode;
 }) {
   const [rader, setRader] = useState<EvalRad[]>(startEval);
   const [nye, setNye] = useState<NyRad[]>(nyeStart);
@@ -159,563 +160,190 @@ export function IupSamtale({
     });
   };
 
+  const akseKlasse = (a: AkAkse) => `wg-akse wg-akse-${a.toLowerCase()}`;
+
   return (
-    <div>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 18,
-        }}
-      >
-        <WangTilbake href={wangHref("elever", "elev", elevId)} tekst={elevNavn} />
+    <div className="wg-iup">
+      <WangElevTopp
+        tilbake={{ href: wangHref("elever", "elev", elevId), tekst: elevNavn }}
+        navn={elevNavn}
+        overtittel={`IUP-samtale · ${elevNavn}`}
+        tittel={`${avsluttende?.navn ?? "Ingen periode"} → ${neste?.navn ?? "ingen neste periode"}`}
+        undertekst={
+          avsluttende
+            ? `Perioden ${kortDato(avsluttende.startIso)}–${kortDato(avsluttende.sluttIso)} evalueres.${neste ? ` Neste periode starter ${kortDato(neste.startIso)}.` : ""}`
+            : undefined
+        }
+        tall={[]}
+      />
+      <ol className="wg-iup-steg" aria-label="Tre steg">
+        {STEG.map((s, i) => (
+          <li key={s}><b>{i + 1}</b>{s}</li>
+        ))}
+      </ol>
 
-        {/* Hero */}
-        <section
-          style={{
-            background: "var(--grad-hero-line)",
-            boxShadow: "var(--shadow-hero)",
-            borderRadius: "var(--radius-card)",
-            padding: "clamp(20px,4vw,26px)",
-            color: "var(--text-on-dark)",
-          }}
-        >
-          <span
-            className="t-label"
-            style={{ display: "block", color: "var(--wang-mint)" }}
-          >
-            IUP-samtale · {elevNavn}
-          </span>
-          <span
-            style={{
-              display: "block",
-              fontFamily: "var(--font-brand)",
-              fontWeight: 800,
-              fontSize: "clamp(21px,4vw,28px)",
-              letterSpacing: "-0.015em",
-              marginTop: 6,
-            }}
-          >
-            {avsluttende?.navn ?? "Ingen periode"} →{" "}
-            {neste?.navn ?? "ingen neste periode"}
-          </span>
-          <p
-            style={{
-              margin: "7px 0 0",
-              fontSize: 14,
-              lineHeight: 1.55,
-              color: "var(--text-on-dark-dim)",
-              maxWidth: 620,
-            }}
-          >
-            Evaluer perioden som avsluttes, les tallene som faktisk er målt, og
-            foreslå fokusområder for {fornavn}. De legges i årsplanen først når eleven godkjenner.
-          </p>
-
-          <div
-            style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 16 }}
-          >
-            {STEG.map((s, i) => (
-              <span
-                key={s}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 7,
-                  height: 28,
-                  padding: "0 13px",
-                  borderRadius: 2,
-                  background: AK.farge.hvitA14,
-                  fontFamily: "var(--font-brand)",
-                  fontWeight: 700,
-                  fontSize: 12,
-                }}
-              >
-                <span
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    width: 18,
-                    height: 18,
-                    borderRadius: 2,
-                    background: "var(--wang-mint)",
-                    color: "var(--wang-navy)",
-                    fontWeight: 800,
-                    fontSize: 10,
-                  }}
-                >
-                  {i + 1}
-                </span>
-                {s}
-              </span>
-            ))}
-          </div>
-        </section>
-
-        <div className="wang-okt-kolonner" style={{ display: "grid", gap: 18 }}>
-          {/* Steg 1 og 2: evaluering + målte tall */}
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 18,
-              minWidth: 0,
-            }}
-          >
-            <section className="wang-card" style={{ padding: "16px 18px" }}>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  gap: 10,
-                  flexWrap: "wrap",
-                  marginBottom: 6,
-                }}
-              >
-                <span
-                  className="t-label"
-                  style={{ color: "var(--text-secondary)" }}
-                >
-                  {avsluttende?.navn ?? "Perioden"} · slik gikk det
-                </span>
-                <span style={{ display: "flex", gap: 12 }}>
-                  <Nokkel farge="var(--wang-teal)" tekst="Egenvurdering" />
-                  <Nokkel farge="var(--wang-navy)" tekst="Trener" />
-                </span>
-              </div>
-
-              {rader.length === 0 ? (
-                <p
-                  style={{
-                    margin: "8px 0 0",
-                    fontSize: 13,
-                    color: "var(--text-secondary)",
-                  }}
-                >
-                  Ingen fokusområder å evaluere i denne perioden. Avtal de
-                  første under.
-                </p>
-              ) : (
-                rader.map((r, i) => (
-                  <div
-                    key={r.id}
-                    style={{
-                      padding: "12px 0",
-                      borderBottom:
-                        i === rader.length - 1
-                          ? "none"
-                          : "1px solid var(--border-subtle)",
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "flex-start",
-                        gap: 10,
-                        minWidth: 0,
-                      }}
-                    >
-                      <AkseChip akse={r.akse} />
-                      <span
-                        style={{
-                          flex: 1,
-                          minWidth: 0,
-                          fontFamily: "var(--font-brand)",
-                          fontWeight: 700,
-                          fontSize: 13,
-                          color: "var(--text-primary)",
-                          lineHeight: 1.4,
-                        }}
-                      >
-                        {r.tittel}
-                      </span>
-                      <MaalStatusChip status={r.status} />
-                    </div>
-
-                    <div
-                      style={{
-                        display: "flex",
-                        flexWrap: "wrap",
-                        gap: "10px 20px",
-                        marginTop: 10,
-                        alignItems: "center",
-                      }}
-                    >
-                      <Skala
-                        label="Egenvurdering"
-                        verdi={r.egenvurdering}
-                        farge="var(--wang-teal)"
-                        onVelg={(v) => settEval(r.id, { egenvurdering: v })}
-                      />
-                      <Skala
-                        label="Trener"
-                        verdi={r.trenervurdering}
-                        farge="var(--wang-navy)"
-                        onVelg={(v) => settEval(r.id, { trenervurdering: v })}
-                      />
-                      <label
-                        style={{
-                          display: "inline-flex",
-                          alignItems: "center",
-                          gap: 7,
-                          fontSize: 11.5,
-                          color: "var(--text-secondary)",
-                        }}
-                      >
-                        Status
-                        <select
-                          value={r.status}
-                          onChange={(e) =>
-                            settEval(r.id, {
-                              status: e.target.value as MaalStatus,
-                            })
-                          }
-                          style={feltStil(150)}
-                        >
-                          {STATUSER.map((s) => (
-                            <option key={s} value={s}>
-                              {STATUS_TEKST[s]}
-                            </option>
-                          ))}
-                        </select>
-                      </label>
-                    </div>
-                  </div>
-                ))
-              )}
-            </section>
-
-            <section className="wang-card" style={{ padding: "16px 18px" }}>
-              <span
-                className="t-label"
-                style={{
-                  display: "block",
-                  color: "var(--text-secondary)",
-                  marginBottom: 4,
-                }}
-              >
-                Målt i perioden
-              </span>
-              {maalinger.length === 0 ? (
-                <p
-                  style={{
-                    margin: "8px 0 0",
-                    fontSize: 13,
-                    color: "var(--text-secondary)",
-                  }}
-                >
-                  Ingen testresultater registrert i denne perioden. Vurderingen
-                  hviler da på observasjon alene — noter gjerne hvorfor.
-                </p>
-              ) : (
-                maalinger.map((m, i) => (
-                  <div
-                    key={m.id}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 10,
-                      minHeight: 44,
-                      padding: "9px 0",
-                      borderBottom:
-                        i === maalinger.length - 1
-                          ? "none"
-                          : "1px solid var(--border-subtle)",
-                      minWidth: 0,
-                    }}
-                  >
-                    <AkseChip akse={m.akse} />
-                    <span style={{ flex: 1, minWidth: 0 }}>
-                      <b
-                        style={{
-                          display: "block",
-                          fontFamily: "var(--font-brand)",
-                          fontWeight: 700,
-                          fontSize: 13,
-                          color: "var(--text-primary)",
-                        }}
-                      >
-                        {m.navn}
-                      </b>
-                      <span
-                        className="wang-num"
-                        style={{
-                          display: "block",
-                          fontSize: 11.5,
-                          color: "var(--text-secondary)",
-                        }}
-                      >
-                        {kortDato(m.datoIso)}
+      <div className="wg-iup-grid">
+        <div className="wg-iup-kol">
+          {/* Steg 1: evaluering */}
+          <section className="wg-seksjon wg-iup-r1" aria-label="Steg 1, evaluer perioden">
+            <div className="wg-sek-topp">
+              <h2>1 · Evaluer {avsluttende?.navn.toLowerCase() ?? "perioden"}</h2>
+              <span className="wg-kilde">{rader.length} {rader.length === 1 ? "målsetning" : "målsetninger"}</span>
+            </div>
+            {rader.length === 0 ? (
+              <div className="wg-kort wg-iup-tom"><p className="wg-forklar">Ingen fokusområder å evaluere i denne perioden. Avtal de første i steg 3.</p></div>
+            ) : (
+              rader.map((r) => (
+                <article key={r.id} className="wg-kort wg-iup-maal" style={{ borderTopColor: `var(--wg-${r.akse.toLowerCase()})` }}>
+                  <div className="wg-iup-maal-topp">
+                    <span className={akseKlasse(r.akse)}>{r.akse}</span>
+                    <span className="wg-iup-maal-tekst">
+                      <b>{r.tittel}</b>
+                      <span className="wg-kilde">
+                        {[`Egentid ${formaterEgentid(r.egentidMinUke)}/uke`, r.maalemetode ? `måles med ${r.maalemetode}` : null].filter(Boolean).join(" · ")}
                       </span>
                     </span>
-                    <b
-                      className="wang-num"
-                      style={{
-                        flex: "none",
-                        fontFamily: "var(--font-brand)",
-                        fontWeight: 800,
-                        fontSize: 15,
-                        color: "var(--wang-teal-text)",
-                      }}
-                    >
-                      {m.verdi}
-                    </b>
                   </div>
-                ))
-              )}
-            </section>
-          </div>
+                  <div className="wg-iup-skalaer">
+                    <Skala label="Eleven" verdi={r.egenvurdering} onVelg={(v) => settEval(r.id, { egenvurdering: v })} />
+                    <Skala label="Din vurdering" verdi={r.trenervurdering} onVelg={(v) => settEval(r.id, { trenervurdering: v })} />
+                  </div>
+                  <div className="wg-iup-felt">
+                    <span className="wg-iup-etikett">Status</span>
+                    <span role="group" aria-label={`Status for ${r.tittel}`} className="wg-iup-valg">
+                      {STATUSER.map((st) => (
+                        <button
+                          key={st}
+                          type="button"
+                          aria-pressed={r.status === st}
+                          onClick={() => settEval(r.id, { status: st })}
+                          className="wg-iup-valgknapp"
+                        >
+                          {STATUS_TEKST[st]}
+                        </button>
+                      ))}
+                    </span>
+                  </div>
+                  <label className="wg-iup-felt">
+                    <span className="wg-iup-etikett">Kommentar til eleven</span>
+                    <textarea
+                      rows={2}
+                      maxLength={2000}
+                      value={r.kommentar ?? ""}
+                      onChange={(e) => settEval(r.id, { kommentar: e.target.value || null })}
+                      placeholder="Hva gikk bra, og hva tar dere med videre?"
+                      className="wg-iup-input"
+                    />
+                  </label>
+                </article>
+              ))
+            )}
+          </section>
 
           {/* Steg 3: nye fokusområder + den ene primære handlingen */}
-          <section
-            className="wang-card"
-            style={{ padding: "16px 18px", alignSelf: "start", minWidth: 0 }}
-          >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "baseline",
-                justifyContent: "space-between",
-                gap: 10,
-                flexWrap: "wrap",
-              }}
-            >
-              <span
-                className="t-label"
-                style={{ color: "var(--text-secondary)" }}
-              >
-                Fokusområder for {neste?.navn.toLowerCase() ?? "neste periode"}
-              </span>
-              <span
-                className="wang-num"
-                style={{
-                  fontFamily: "var(--font-brand)",
-                  fontWeight: 700,
-                  fontSize: 12,
-                  color: "var(--wang-teal-text)",
-                }}
-              >
-                {formaterEgentid(sumEgentid)} egentid/uke
-              </span>
+          <section className="wg-seksjon wg-iup-r3" aria-label="Steg 3, neste periode">
+            <div className="wg-sek-topp">
+              <h2>3 · {neste?.navn ?? "Neste periode"}, fokus</h2>
+              <span className="wg-kilde">{formaterEgentid(sumEgentid)} egentid/uke</span>
             </div>
-
             {nye.map((n, i) => (
-              <div
-                key={i}
-                style={{
-                  padding: "12px 0",
-                  borderBottom: "1px solid var(--border-subtle)",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 8,
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    gap: 8,
-                    alignItems: "center",
-                    minWidth: 0,
-                  }}
-                >
+              <div key={i} className="wg-kort wg-iup-ny" style={{ borderTopColor: `var(--wg-${n.akse.toLowerCase()})` }}>
+                <label className="wg-iup-felt">
+                  <span className="wg-iup-etikett">Akse</span>
                   <select
                     value={n.akse}
-                    onChange={(e) =>
-                      setNye((v) =>
-                        v.map((x, j) =>
-                          j === i
-                            ? { ...x, akse: e.target.value as AkAkse }
-                            : x,
-                        ),
-                      )
-                    }
+                    onChange={(e) => setNye((v) => v.map((x, j) => (j === i ? { ...x, akse: e.target.value as AkAkse } : x)))}
                     aria-label="Pyramideakse"
-                    style={feltStil(84)}
+                    className="wg-iup-input"
                   >
-                    {AKSE_REKKEFOLGE.map((a) => (
-                      <option key={a} value={a}>
-                        {a}
-                      </option>
-                    ))}
+                    {AKSE_REKKEFOLGE.map((a) => <option key={a} value={a}>{a}</option>)}
                   </select>
+                </label>
+                <label className="wg-iup-felt wg-iup-bred">
+                  <span className="wg-iup-etikett">Fokusområde</span>
                   <input
                     value={n.tittel}
-                    onChange={(e) =>
-                      setNye((v) =>
-                        v.map((x, j) =>
-                          j === i ? { ...x, tittel: e.target.value } : x,
-                        ),
-                      )
-                    }
+                    onChange={(e) => setNye((v) => v.map((x, j) => (j === i ? { ...x, tittel: e.target.value } : x)))}
                     placeholder="Hva skal eleven jobbe med?"
                     aria-label="Fokusområde"
-                    style={{ ...feltStil(0), flex: 1, minWidth: 0 }}
+                    className="wg-iup-input"
                   />
-                  <button
-                    type="button"
-                    onClick={() => setNye((v) => v.filter((_, j) => j !== i))}
-                    aria-label="Fjern fokusområde"
-                    className="wang-pressable"
-                    style={{
-                      flex: "none",
-                      display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: 44,
-                      height: 44,
-                      borderRadius: 999,
-                      border: "none",
-                      cursor: "pointer",
-                      background: "transparent",
-                      color: "var(--text-secondary)",
-                    }}
+                </label>
+                <label className="wg-iup-felt">
+                  <span className="wg-iup-etikett">Egentid</span>
+                  <select
+                    value={n.egentidMinUke}
+                    onChange={(e) => setNye((v) => v.map((x, j) => (j === i ? { ...x, egentidMinUke: Number(e.target.value) } : x)))}
+                    className="wg-iup-input"
                   >
-                    <Trash2 size={16} strokeWidth={2} aria-hidden />
-                  </button>
-                </div>
-                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                  <label
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: 6,
-                      fontSize: 11.5,
-                      color: "var(--text-secondary)",
-                    }}
-                  >
-                    Egentid
-                    <select
-                      value={n.egentidMinUke}
-                      onChange={(e) =>
-                        setNye((v) =>
-                          v.map((x, j) =>
-                            j === i
-                              ? { ...x, egentidMinUke: Number(e.target.value) }
-                              : x,
-                          ),
-                        )
-                      }
-                      style={feltStil(112)}
-                    >
-                      {[30, 60, 90, 120, 150, 180, 240].map((m) => (
-                        <option key={m} value={m}>
-                          {formaterEgentid(m)}/uke
-                        </option>
-                      ))}
-                    </select>
-                  </label>
+                    {[30, 60, 90, 120, 150, 180, 240].map((m) => <option key={m} value={m}>{formaterEgentid(m)}/uke</option>)}
+                  </select>
+                </label>
+                <label className="wg-iup-felt wg-iup-bred">
+                  <span className="wg-iup-etikett">Måles med</span>
                   <input
                     value={n.maalemetode ?? ""}
-                    onChange={(e) =>
-                      setNye((v) =>
-                        v.map((x, j) =>
-                          j === i ? { ...x, maalemetode: e.target.value } : x,
-                        ),
-                      )
-                    }
+                    onChange={(e) => setNye((v) => v.map((x, j) => (j === i ? { ...x, maalemetode: e.target.value } : x)))}
                     placeholder="Hvordan måles det?"
                     aria-label="Målemetode"
-                    style={{ ...feltStil(0), flex: 1, minWidth: 140 }}
+                    className="wg-iup-input"
                   />
-                </div>
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setNye((v) => v.filter((_, j) => j !== i))}
+                  aria-label="Fjern fokusområde"
+                  className="wg-iup-fjern"
+                >
+                  <Trash2 size={18} strokeWidth={1.8} aria-hidden />
+                </button>
               </div>
             ))}
-
             <button
               type="button"
-              onClick={() =>
-                setNye((v) => [
-                  ...v,
-                  {
-                    akse: "TEK",
-                    tittel: "",
-                    egentidMinUke: 120,
-                    maalemetode: null,
-                  },
-                ])
-              }
-              className="wang-pressable"
-              style={{
-                marginTop: 12,
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 8,
-                minHeight: 44,
-                padding: "0 16px",
-                borderRadius: 0,
-                border: "1px dashed var(--neutral-300)",
-                cursor: "pointer",
-                background: "transparent",
-                fontFamily: "var(--font-brand)",
-                fontWeight: 700,
-                fontSize: 13,
-                color: "var(--text-secondary)",
-              }}
+              onClick={() => setNye((v) => [...v, { akse: "TEK", tittel: "", egentidMinUke: 120, maalemetode: null }])}
+              className="wg-btn wg-btn-secondary wg-iup-legg-til"
             >
-              <Plus size={16} strokeWidth={2.2} aria-hidden /> Legg til
-              fokusområde
+              <Plus size={16} strokeWidth={2.2} aria-hidden /> Legg til fokusområde
             </button>
-
-            <div
-              style={{
-                marginTop: 14,
-                paddingTop: 14,
-                borderTop: "1px solid var(--border-subtle)",
-              }}
-            >
-              <p
-                style={{
-                  margin: "0 0 10px",
-                  fontSize: 12,
-                  color: "var(--text-secondary)",
-                }}
-              >
-                Spilleren får se før og etter i PlayerHQ og velger selv om forslaget skal inn i årsplanen.
-              </p>
+            <div className="wg-iup-lagre">
               <button
                 type="button"
                 onClick={lagre}
                 disabled={lagrer || !neste}
                 className="wg-btn wg-btn-primary"
-                style={{
-                  width: "100%",
-                  cursor: lagrer || !neste ? "default" : "pointer",
-                  opacity: lagrer || !neste ? 0.6 : 1,
-                }}
               >
                 {lagrer ? "Lagrer …" : `Lagre og del med ${fornavn}`}
               </button>
-
-              {melding ? (
-                <p
-                  role="status"
-                  style={{
-                    margin: "10px 0 0",
-                    fontSize: 12.5,
-                    color: "var(--wang-teal-text)",
-                    fontWeight: 700,
-                  }}
-                >
-                  {melding}
-                </p>
-              ) : null}
-              {feil ? (
-                <p
-                  role="alert"
-                  style={{
-                    margin: "10px 0 0",
-                    fontSize: 12.5,
-                    color: "var(--cat-pink)",
-                    fontWeight: 700,
-                  }}
-                >
-                  {feil}
-                </p>
-              ) : null}
+              <span className="wg-kilde">Spilleren får se før og etter i PlayerHQ og velger selv om forslaget skal inn i årsplanen.</span>
             </div>
+            {melding ? <p role="status" className="wg-iup-kvittering">{melding}</p> : null}
+            {feil ? <p role="alert" className="wg-iup-feil">{feil}</p> : null}
           </section>
+        </div>
+
+        <div className="wg-iup-kol">
+          {/* Steg 2: målte tall */}
+          <section className="wg-seksjon wg-iup-r2" aria-label="Steg 2, målt i perioden">
+            <div className="wg-sek-topp"><h2>2 · Målt i perioden</h2><span className="wg-kilde">Ekte testresultater</span></div>
+            {maalinger.length === 0 ? (
+              <div className="wg-kort wg-iup-tom">
+                <p className="wg-forklar">Ingen testresultater registrert i denne perioden. Vurderingen hviler da på observasjon alene. Noter gjerne hvorfor.</p>
+              </div>
+            ) : (
+              <div className="wg-kort">
+                {maalinger.map((m) => (
+                  <div key={m.id} className="wg-iup-maaling">
+                    <span className={akseKlasse(m.akse)}>{m.akse}</span>
+                    <span className="wg-iup-maal-tekst"><b>{m.navn}</b><span className="wg-kilde">{kortDato(m.datoIso)}</span></span>
+                    <b className="wg-iup-verdi">{m.verdi}</b>
+                  </div>
+                ))}
+              </div>
+            )}
+            {avsluttende ? <span className="wg-kilde">Bare tester tatt mellom {kortDato(avsluttende.startIso)} og {kortDato(avsluttende.sluttIso)}.</span> : null}
+          </section>
+          <div className="wg-iup-r4">{sideinnhold}</div>
         </div>
       </div>
     </div>
@@ -724,58 +352,12 @@ export function IupSamtale({
 
 // ---- Deler -------------------------------------------------------------
 
-function feltStil(bredde: number): React.CSSProperties {
-  return {
-    height: 40,
-    width: bredde || undefined,
-    padding: "0 12px",
-    borderRadius: 0,
-    border: "1px solid var(--border-subtle)",
-    background: "var(--neutral-50)",
-    fontFamily: "var(--font-body)",
-    fontSize: 13,
-    color: "var(--text-primary)",
-    outline: "none",
-  };
-}
-
-function Nokkel({ farge, tekst }: { farge: string; tekst: string }) {
+/** 1–5 som firkantede knapper på 44 px. Trykk på valgt verdi igjen nullstiller den. */
+function Skala({ label, verdi, onVelg }: { label: string; verdi: number | null; onVelg: (v: number | null) => void }) {
   return (
-    <span
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        gap: 6,
-        fontSize: 11,
-        color: "var(--text-secondary)",
-      }}
-    >
-      <span
-        style={{ width: 8, height: 8, borderRadius: 999, background: farge }}
-      />
-      {tekst}
-    </span>
-  );
-}
-
-/** 1–5 som trykkbare prikker. Samme visning som elevens, men redigerbar. */
-function Skala({
-  label,
-  verdi,
-  farge,
-  onVelg,
-}: {
-  label: string;
-  verdi: number | null;
-  farge: string;
-  onVelg: (v: number | null) => void;
-}) {
-  return (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-      <span style={{ fontSize: 11.5, color: "var(--text-secondary)" }}>
-        {label}
-      </span>
-      <span style={{ display: "inline-flex", gap: 4 }}>
+    <span className="wg-iup-felt">
+      <span className="wg-iup-etikett">{label}</span>
+      <span role="group" aria-label={label} className="wg-iup-skala">
         {[1, 2, 3, 4, 5].map((i) => (
           <button
             key={i}
@@ -783,29 +365,8 @@ function Skala({
             onClick={() => onVelg(verdi === i ? null : i)}
             aria-label={`${label} ${i} av 5`}
             aria-pressed={verdi === i}
-            className="wang-pressable"
-            style={{
-              width: 26,
-              height: 26,
-              borderRadius: 999,
-              border: "none",
-              cursor: "pointer",
-              padding: 0,
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              background: "transparent",
-            }}
           >
-            <span
-              style={{
-                width: 13,
-                height: 13,
-                borderRadius: 999,
-                background:
-                  verdi !== null && i <= verdi ? farge : "var(--neutral-200)",
-              }}
-            />
+            {i}
           </button>
         ))}
       </span>
