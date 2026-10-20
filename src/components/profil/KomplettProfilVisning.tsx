@@ -14,6 +14,7 @@ const dato = new Intl.DateTimeFormat("nb-NO", { day: "2-digit", month: "short", 
 const aarFmt = new Intl.DateTimeFormat("en-GB", { year: "numeric", timeZone: "Europe/Oslo" });
 const tall1 = (n: number | null, d = 1) => (n == null ? "—" : n.toFixed(d).replace(".", ","));
 const sg = (n: number | null) => (n == null ? "—" : `${n > 0 ? "+" : ""}${n.toFixed(2).replace(".", ",")}`);
+const signert1 = (n: number | null) => (n == null ? "—" : `${n > 0 ? "+" : ""}${n.toFixed(1).replace(".", ",")}`);
 const motPar = (n: number | null) => (n == null ? "—" : n > 0 ? `+${n}` : String(n));
 
 const IUP_TYPE: Record<LevertIupProfilrad["type"], string> = {
@@ -57,7 +58,8 @@ export function KomplettProfilVisning({ profil, lenkeTester }: {
             <div key={aar}>
               <p className={s.aar}>{aar}</p>
               <div className={s.rullbar}>
-                <table className={s.tabell}>
+                <table className={`${s.tabell} ${s.fast}`}>
+                  <colgroup><col style={{ width: "14%" }} /><col style={{ width: "30%" }} /><col style={{ width: "12%" }} /><col style={{ width: "9%" }} /><col style={{ width: "15%" }} /><col style={{ width: "20%" }} /></colgroup>
                   <thead>
                     <tr><th>Dato</th><th>Turnering</th><th>Klasse</th><th className={s.tall}>Plass</th><th className={s.tall}>Slag</th><th>Kilde</th></tr>
                   </thead>
@@ -88,7 +90,7 @@ export function KomplettProfilVisning({ profil, lenkeTester }: {
               <thead><tr><th>Sesong</th><th className={s.tall}>Runder</th><th className={s.tall}>Snitt</th><th className={s.tall}>Mot par</th></tr></thead>
               <tbody>
                 {r.sesonger.map((x) => (
-                  <tr key={x.year}><td>{x.year}</td><td className={s.tall}>{x.runder}</td><td className={s.tall}>{tall1(x.snitt_score)}</td><td className={s.tall}>{tall1(x.snitt_til_par)}</td></tr>
+                  <tr key={x.year}><td>{x.year}</td><td className={s.tall}>{x.runder}</td><td className={s.tall}>{tall1(x.snitt_score)}</td><td className={s.tall}>{signert1(x.snitt_til_par)}</td></tr>
                 ))}
               </tbody>
             </table>
