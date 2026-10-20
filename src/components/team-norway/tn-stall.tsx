@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
+import { PYR_TOPP_TIL_BUNN } from "@/lib/pyramide";
 import { TN } from "@/lib/v2/team-norway";
 import { TN_AKSER, type TnAkse } from "./tn-grunnmur";
 import s from "./tn-stall.module.css";
@@ -186,6 +187,29 @@ export function TnAkseSoyler({ timer, etikett }: { timer: Partial<Record<TnAkse,
           <b>{timer[k] === undefined ? "—" : komma(timer[k] ?? 0)}</b>
           <div className={s.soyleFelt}><i style={{ height: maks > 0 ? `${((timer[k] ?? 0) / maks) * 100}%` : 0, background: TN.akse[k].fyll }} /></div>
           <span>{k}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/**
+ * Pyramiden ovenfra: TURN · SPILL · SLAG · TEK · FYS. FYS står alltid nederst (Anders 19.10.2026,
+ * beslutninger.md §FYS STÅR ALLTID NEDERST I PYRAMIDEN). Bredden er timer mot aksen med mest tid.
+ * Aksenavnet står ved fargen. Manglende tall vises som «—».
+ */
+export function TnPyramide({ timer, etikett }: { timer: Partial<Record<TnAkse, number>>; etikett: string }) {
+  const lag = PYR_TOPP_TIL_BUNN as TnAkse[];
+  const maks = Math.max(0, ...lag.map((k) => timer[k] ?? 0));
+  return (
+    <div className={s.pyramide} role="img" aria-label={`${etikett}, ovenfra: ${lag.map((k) => `${k} ${timer[k] === undefined ? "—" : `${komma(timer[k] ?? 0)} t`}`).join(", ")}`}>
+      {lag.map((k, i) => (
+        <div key={k} className={s.pyramideLag}>
+          <span style={{ color: TN.akse[k].fyll }}>{k}</span>
+          <div className={s.pyramideFelt}>
+            <i style={{ width: maks > 0 ? `${Math.max(4, ((timer[k] ?? 0) / maks) * 100)}%` : 0, background: TN.akse[k].fyll, animationDelay: `${i * 60}ms` }} />
+          </div>
+          <b>{timer[k] === undefined ? "—" : `${komma(timer[k] ?? 0)} t`}</b>
         </div>
       ))}
     </div>

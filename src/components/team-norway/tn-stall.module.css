@@ -142,3 +142,13 @@ a.bildekort:focus-visible { outline: 3px solid var(--tn-navy-400); outline-offse
 .soyle > span { font-weight: 700; font-size: 12px; line-height: 1.2; letter-spacing: 0.04em; color: var(--tn-ink-700); }
 .soyleFelt { height: 140px; display: flex; align-items: flex-end; background: var(--tn-ink-50); border-bottom: 2px solid var(--tn-ink-300); border-radius: var(--tn-radius-md) var(--tn-radius-md) 0 0; overflow: hidden; }
 .soyleFelt i { display: block; width: 100%; }
+
+/* Pyramiden ovenfra, FYS nederst. Stolpene er sentrert så formen leses som en pyramide. */
+.pyramide { display: grid; gap: 6px; }
+.pyramideLag { display: grid; grid-template-columns: 48px minmax(0, 1fr) 56px; gap: 10px; align-items: center; min-height: 28px; }
+.pyramideLag > span { font-weight: 700; font-size: 12px; letter-spacing: 0.04em; }
+.pyramideLag > b { font-family: var(--tn-font-mono); font-weight: 500; font-size: 13px; text-align: right; color: var(--tn-ink-900); white-space: nowrap; }
+.pyramideFelt { display: flex; justify-content: center; height: 22px; }
+.pyramideFelt i { display: block; height: 100%; border-radius: var(--tn-radius-sm); transform-origin: center; animation: pyrVoks var(--tn-duration-sheet) var(--tn-ease-out) both; }
+@keyframes pyrVoks { from { transform: scaleX(0); } }
+@media (prefers-reduced-motion: reduce) { .pyramideFelt i { animation: none; } }

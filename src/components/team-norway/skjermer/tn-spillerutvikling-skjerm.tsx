@@ -4,22 +4,26 @@ import { hentTnGruppetrening, hentTnSamlinger, hentTnSpillere, type TnSpillerRad
 import { summerTnGruppetrening, tnDenneMandag, tnUkenummer, UTENFOR_PLAN_TERSKEL } from "@/lib/domain/tn-trenger-deg";
 import { TN } from "@/lib/v2/team-norway";
 import { initialer } from "../initialer";
-import { TnFlate, TnFotnote, TnMangler, TnSkjermhode, TnTekstlenke } from "../tn-flate";
+import { TnFlate, TnFotnote, TnMangler, TnTekstlenke } from "../tn-flate";
 import type { TnAkse } from "../tn-grunnmur";
 import { TnHandlingLenke } from "../tn-handlinger";
 import { tnKnappStil } from "../tn-knapp-stil";
-import { TnBaand, TnBaandListe, TnHelt, TnHeltKnapper, TnHeltSporsmaal, TnHeltTall, TnHeltTekst, TnHeltTellere, TnPlanstolpe, TnSpillerrad } from "../tn-stall";
+import { TnSkraKort, TnSkraTopp } from "../tn-skra-topp";
+import { TnBaand, TnBaandListe, TnHeltKnapper, TnHeltTall, TnHeltTekst, TnHeltTellere, TnPlanstolpe, TnSpillerrad } from "../tn-stall";
 import { SkjermRamme, datoKort, hentSkjermbruker } from "./felles";
 import st from "./tn-spillere.module.css";
 
 /**
- * TN-12 Spillerutvikling. Utkast 2, retning B «Stall og helteflate» (godkjent 16.10.2026).
- * Fasit: docs/design-system/utkast-tn/spillere.html, skjerm Spillerutvikling (pakke 3).
+ * TN-12 Spillerutvikling. Retning «Skrå» (godkjent 20.10.2026, canvaset «Team Norway
+ * nøkkelskjermer», tavle 2 Spillere): bildetopp med skrått kutt, hovedtall og tellere i toppen,
+ * og båndene som kort over kanten. Tidligere fasit: docs/design-system/utkast-tn/spillere.html.
  * Hovedtallet er hvor mye av planen gruppa gjør, med tre bånd under:
  * Trenger deg · Følger planen · Ikke delt.
  *
  * Avvik:
- *   - Kategori A–K og klasse finnes ikke i spillerprofilen; raden viser klubb og HCP.
+ *   - Kategori A–K og klasse finnes ikke i spillerprofilen; raden viser skole (ellers klubb) og HCP.
+ *   - Formkurve, snittscore og prioriterte tester per rad (tegningen) er ikke med ennå: radene
+ *     leses fra treningen spilleren har delt, ikke fra turneringsrunder og tester.
  *   - «Ikke delt» viser bare antallet. Spillere som ikke har delt treningen, kan ikke
  *     leses av treneren, heller ikke nummer og klubb (delingslåsen).
  *   - Spillere som deler, men ikke har planlagt tid siste fire uker, står i et eget
@@ -72,7 +76,7 @@ export async function TnSpillerutviklingSkjerm({ sokeparametre }: { sokeparametr
         status={status}
         initialer={initialer(s.navn)}
         navn={s.navn}
-        fakta={`${s.klubb ?? "Klubb ikke registrert"} · ${hcp(s.hcp)}`}
+        fakta={`${s.skole ?? s.klubb ?? "Skole ikke registrert"} · ${hcp(s.hcp)}`}
         verdi={pct === null ? "—" : `${pct} %`}
         verdiTekst={pct === null ? "ingen plan" : "av planen"}
         lav={status === "trenger" && pct !== null}
@@ -92,13 +96,14 @@ export async function TnSpillerutviklingSkjerm({ sokeparametre }: { sokeparametr
 
   return (
     <SkjermRamme aktiv="spillere" brukerNavn={bruker.name} kontekst={data.kontekst}>
-      <TnSkjermhode overlinje={`${data.kontekst.gruppe.name} · uke ${tnUkenummer(mandag)}`} tittel="Spillerutvikling" ingress="Hvem som trenger deg, hvem som følger planen, og hvem som ikke har delt treningen." />
-
-      <TnHelt
-        etikett="Hvor mye av planen gjør gruppa"
+      <TnSkraTopp
+        bilde="spiller-ved-vannet"
+        etikett="Spillere"
+        overlinje={`${data.kontekst.gruppe.name} · uke ${tnUkenummer(mandag)}`}
+        tittel="Spillere"
+        ingress="Hvem som trenger deg, hvem som følger planen, og hvem som ikke har delt treningen."
         venstre={
           <>
-            <TnHeltSporsmaal>Hvor mye av planen gjør gruppa?</TnHeltSporsmaal>
             {trening && gruppePct !== null ? (
               <>
                 <TnHeltTall verdi={gruppePct} enhet="%">av planen gjennomført</TnHeltTall>
@@ -127,6 +132,7 @@ export async function TnSpillerutviklingSkjerm({ sokeparametre }: { sokeparametr
         }
       />
 
+      <TnSkraKort>
       <form action="/team-norway/spillere" className={st.sok}>
         <label>
           Søk etter spiller
@@ -163,6 +169,7 @@ export async function TnSpillerutviklingSkjerm({ sokeparametre }: { sokeparametr
 
       <TnFotnote>Plan er gjennomført tid mot planlagt tid siste fire uker. Fargen viser aksen spilleren har trent mest. Kilde: Workbench i PlayerHQ, hentet {datoKort(naa)}</TnFotnote>
       <TnTekstlenke href="/team-norway/uttak">Se uttakskriterier</TnTekstlenke>
+      </TnSkraKort>
     </SkjermRamme>
   );
 }

@@ -11,21 +11,25 @@ import { TnPille, type TnPilleTone } from "../core";
 import { TnShell, TnSpillerFaner, tnRolleNavn } from "../tn-shell";
 import { TnFlate, TnFlatehode, TnFotnote, TnListerad, TnMangler, TnRutenett, TnTekstlenke } from "../tn-flate";
 import { TnHandlingLenke, TnKnapperekke } from "../tn-handlinger";
-import { TnAkseSoyler, TnHelt, TnHeltKnapper, TnHeltSporsmaal, TnHeltTall, TnHeltTekst, TnHeltTellere } from "../tn-stall";
+import { TnSkraKort, TnSkraTopp } from "../tn-skra-topp";
+import { TnHeltKnapper, TnHeltTall, TnHeltTekst, TnHeltTellere, TnPyramide } from "../tn-stall";
 import { LISENS_TEKST, TnAvsluttSpiller } from "../tn-redigering-skjema";
 import { ER_COLLEGE, datoKort, datoLang, osloDag, periode } from "./felles";
 
 /**
  * TN-02 Spillerprofil, som heter IUP i Team Norway (Anders 15.10.2026). Fanen Oversikt.
- * Utkast 2, retning B (godkjent 16.10.2026). Hovedtallet er plan siste fire uker.
- * Fasit: docs/design-system/utkast-tn/spillere.html, skjerm IUP (pakke 3).
+ * Retning «Skrå» (godkjent 20.10.2026, canvaset «Team Norway nøkkelskjermer», tavle 3 IUP):
+ * bildetopp med navnet, plan siste fire uker som hovedtall og HCP, snitt og WAGR ved siden av.
+ * Fanene ligger i et kort over den skrå kanten. Tidligere fasit: utkast-tn/spillere.html.
  *
  * Avvik:
  *   - Adressen er /team-norway/spiller/[id]/oversikt. /team-norway/spiller/[id]
  *     er Post-fanen.
  *   - Kategori A–K og WAGR har ingen datakilde her og står med strek.
  *   - Pyramiden er spillerens Workbench-økter siste fire uker, lest innenfor
- *     delingslåsen. Plan-prosent står i helteflaten; søylene viser timer per akse.
+ *     delingslåsen, ovenfra TURN til FYS. Den viser gjennomførte timer per akse; planlagt
+ *     tid per akse finnes ikke i økt-dataene, så tegningens lyse plandel er ikke med.
+ *   - Målsetninger, NGF-ranking og teknisk plan (tegningen) har egne faner og vises ikke her ennå.
  *   - Lisens, helseattest og antidoping leses fra registreringen i TN-10
  *     (Anders 27.09.2026). PlayerHQ-tilgangen vises i tillegg for trenere.
  *   - Leverte IUP-besvarelser (fireukerssjekk og utviklingssjekk) vises i sin
@@ -96,20 +100,13 @@ export async function TnSpillerprofilSkjerm({ spillerId }: { spillerId: string }
 
   return (
     <TnShell aktiv="spillere" brukerNavn={bruker.name ?? "Ukjent"} rolle={tnRolleNavn(kontekst.rolle)} groupId={kontekst.gruppe.id} visTrenerflater={!kontekst.erSpiller} kanAdministrere={kontekst.kanAdministrere} tilbake={{ href: "/team-norway/spillere", label: "Spillere" }}>
-      <TnSpillerFaner
-        spillerId={spillerId}
-        spillerNavn={profil.navn}
-        aktiv="oversikt"
-        kanAdministrere={!kontekst.erSpiller}
+      <TnSkraTopp
+        bilde="tee-hand"
+        etikett={`IUP for ${profil.navn}`}
         overlinje={["IUP", alder !== null ? `${alder} år` : null, profil.klubb].filter(Boolean).join(" · ")}
-      >
-      </TnSpillerFaner>
-
-      <TnHelt
-        etikett="Følger spilleren planen"
+        tittel={profil.navn}
         venstre={
           <>
-            <TnHeltSporsmaal>Følger spilleren planen?</TnHeltSporsmaal>
             {planPct !== null && akser ? (
               <>
                 <TnHeltTall verdi={planPct} enhet="%">av planen siste fire uker</TnHeltTall>
@@ -139,17 +136,21 @@ export async function TnSpillerprofilSkjerm({ spillerId }: { spillerId: string }
           />
         }
       />
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-        <TnPille tone="info">{profil.erTnMedlem ? `${tnRolleNavn("PLAYER")} i ${kontekst.gruppe.name}` : "Delt med Team Norway"}</TnPille>
-        <TnPille>{erCollege ? "College" : "Skole"}: {profil.skole ?? "ikke registrert"}</TnPille>
-      </div>
+      <TnSkraKort>
+      <TnFlate style={{ display: "grid", gap: 12 }}>
+        <TnSpillerFaner spillerId={spillerId} spillerNavn={profil.navn} aktiv="oversikt" kanAdministrere={!kontekst.erSpiller} kompakt />
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+          <TnPille tone="info">{profil.erTnMedlem ? `${tnRolleNavn("PLAYER")} i ${kontekst.gruppe.name}` : "Delt med Team Norway"}</TnPille>
+          <TnPille>{erCollege ? "College" : "Skole"}: {profil.skole ?? "ikke registrert"}</TnPille>
+        </div>
+      </TnFlate>
       {!kontekst.erSpiller && kontekst.kanAdministrere && profil.erTnMedlem ? <TnKnapperekke><TnAvsluttSpiller spillerId={spillerId} navn={profil.navn} /></TnKnapperekke> : null}
 
       <TnRutenett min={340}>
         <section style={{ display: "grid", gap: 12 }}>
           <TnFlatehode tittel="Pyramiden" merknad="Siste 4 uker" />
           <TnFlate>
-            <TnAkseSoyler etikett="Gjennomført trening per akse" timer={akser ? akser.gjennomfort : {}} />
+            <TnPyramide etikett="Gjennomført trening per akse" timer={akser ? akser.gjennomfort : {}} />
             <TnFotnote>
               {akser ? `${String(akser.gjennomfortTimer).replace(".", ",")} t gjennomført av ${String(akser.planlagtTimer).replace(".", ",")} t planlagt. Kilde: PlayerHQ, ${datoLang(naa)}.` : "Treningen er ikke delt med Team Norway, derfor står det strek."}
             </TnFotnote>
@@ -206,6 +207,7 @@ export async function TnSpillerprofilSkjerm({ spillerId }: { spillerId: string }
         </TnFlate>
         <TnFotnote>Brutto snitt er ekte slag per fullført runde. Plassering står bare der den gjelder bruttoklassen.</TnFotnote>
       </section>
+      </TnSkraKort>
     </TnShell>
   );
 }
