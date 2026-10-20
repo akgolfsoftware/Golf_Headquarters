@@ -238,7 +238,7 @@ describe('WANG Toppidrett Modul (Samtlige WANG-skjermer)', async () => {
     assert.ok(!/\d+\s*%/.test(elev2.replace(/<[^>]*>/g, ' ')), 'Ingen prosent for eleven som ikke har delt');
     const liste = visMed(WangElever, { plan });
     assert.ok(liste.includes('Trenger deg'));
-    assert.ok(liste.includes('1 av 11'));
+    assert.match(liste, /1<span class="wg-helt2-enhet"> av 11<\/span>/, 'Én av elleve har delt planen');
   });
 
   test('WangElever: elevlista fra gruppa med lenke til IUP', () => {
