@@ -4,12 +4,11 @@ import { PH14Tester } from "@/components/portal/precision/PH14Tester";
 import { PH14Test, type PH14TestData } from "@/components/portal/precision/PH14Test";
 import { TmLaster } from "@/components/portal/precision/PH17TmFelles";
 import { SdFeil } from "@/components/portal/precision/PHStatsDybdeFelles";
-import { byggPH14 } from "@/lib/portal-tester/ph14-tester-data";
+import { byggBatteri } from "@/lib/portal-tester/ph14-batteri-data";
 import type { TestRow } from "@/lib/portal-tester/tester-data";
 
 export const sti = "/portal/tren/tester";
 
-const NAA = new Date("2026-10-05T12:20:00Z");
 function rad(id: string, name: string, axis: TestRow["axis"], history: number[], vis: string | null, o: Partial<TestRow> = {}): TestRow {
   const n = history.length;
   const lower = o.lowerIsBetter ?? false;
@@ -24,7 +23,7 @@ function rad(id: string, name: string, axis: TestRow["axis"], history: number[],
   };
 }
 const RADER: TestRow[] = [
-  rad("8b", "8-ball blocked", "slag", [52, 55, 58, 61], "61 poeng", { latestKontrollert: true }),
+  rad("tn-v3-8-ball-variation", "8-balls variation", "slag", [52, 55, 58, 61], "61 poeng", { latestKontrollert: true }),
   rad("ib", "Innspill Basis · gutter 145 m", "slag", [], null),
   rad("wv", "Wedge Variation", "slag", [], null),
   rad("wg", "Wedge Gate", "tek", [4], "4 / 9 godkjent", { latestAt: "2026-08-24T10:00:00Z" }),
@@ -64,8 +63,8 @@ const GATE: PH14TestData = {
 
 const skall = (n: React.ReactNode) => <PlayerHQSkall innboksHref="/portal/varsler" uleste={2}>{n}</PlayerHQSkall>;
 export const tilstander = {
-  tester: skall(<PH14Tester data={byggPH14(RADER, NAA)} />),
-  "tester-tom": skall(<PH14Tester data={byggPH14([], NAA)} />),
+  tester: skall(<PH14Tester data={byggBatteri(RADER)} />),
+  "tester-tom": skall(<PH14Tester data={byggBatteri([])} />),
   "tester-laster": skall(<TmLaster tekst="Henter testene" />),
   "tester-feil": skall(<SdFeil tittel="Testene kunne ikke hentes" tekst="Resultatene dine er trygge. Prøv igjen om litt." reset={() => {}} />),
   test: skall(<PH14Test data={TEST} />),
