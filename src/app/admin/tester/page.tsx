@@ -22,6 +22,7 @@ import { AG15Tester, type AG15Fane } from "@/components/admin/precision/AG15Test
 import { prisma } from "@/lib/prisma";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { withTnAssignments } from "@/lib/portal-tester/tn-integration";
+import { lastTesterOversikt } from "@/lib/admin/tester/oversikt-data";
 
 import type {
   AdminTesterV2Data,
@@ -49,10 +50,10 @@ function erUbetydelig(diff: number, forrige: number): boolean {
 
 const FANER: readonly AG15Fane[] = ["resultater", "tildelt", "normer", "skala"];
 
-export default async function V2AdminTesterPage({ searchParams }: { searchParams: Promise<{ fane?: string; tildel?: string }> }) {
+export default async function V2AdminTesterPage({ searchParams }: { searchParams: Promise<{ fane?: string; tildel?: string; gruppe?: string }> }) {
   // G6: MANAGE_TESTS ligger i COACH-defaulten — kan trekkes per trener.
   const user = await requireCapability(Capability.MANAGE_TESTS);
-  const { fane, tildel } = await searchParams;
+  const { fane, tildel, gruppe } = await searchParams;
   const startFane = FANER.find((f) => f === fane) ?? "resultater";
 
   // Tildelte tester som ikke er tatt, og valgene i «Tildel test»-arket. Samme
@@ -75,7 +76,10 @@ export default async function V2AdminTesterPage({ searchParams }: { searchParams
       .catch(() => []),
   ]);
 
-  const { paagaaende, resultater, antall30, antall7, d30 } = await hentAdminTestData(user);
+  const [{ paagaaende, resultater, antall30, antall7, d30 }, oversikt] = await Promise.all([
+    hentAdminTestData(user),
+    lastTesterOversikt(user, gruppe ?? null),
+  ]);
 
   // Antall ULIKE tester i bruk siste 30 d. Her sto tidligere en «Snitt-score»
   // som summerte score på tvers av alle tester og delte på antallet — den
@@ -151,6 +155,7 @@ export default async function V2AdminTesterPage({ searchParams }: { searchParams
     <AgencyOSSkall navn={user.name ?? "Coach"}>
       <AG15Tester
         data={data}
+        oversikt={oversikt}
         startFane={startFane}
         tildelSpillerId={tildel && spillereRaw.some((s) => s.id === tildel) ? tildel : null}
         tildelt={tildeltRaw.map((t) => ({

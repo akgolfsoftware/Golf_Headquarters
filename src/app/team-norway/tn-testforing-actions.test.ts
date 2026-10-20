@@ -216,3 +216,59 @@ test("ADMIN uten eget gruppemedlemskap kan likevel føre (samme unntak som reste
   const svar = await saveTnTestSomCoach({ testDayParticipantId: "deltaker-1", revision: 0, values: verdierForAlleForsok(2), notes: "", intent: "draft" });
   assert.equal(svar.ok, true);
 });
+
+/* Andre grupper enn Team Norway (AgencyOS, WANG, GFGK), 20.10.2026. */
+function annenGruppe(protokoll: { protocolId: string; scoringRule: string }, gruppe: Record<string, unknown> = {}) {
+  return basisDeltaker({
+    testDay: {
+      ...((basisDeltaker().testDay) as Record<string, unknown>),
+      groupId: "group-gfgk",
+      group: { slug: "gfgk-junior-utvikling", coachId: "annen-coach", ...gruppe },
+      event: null,
+      testDefinition: { id: `tn-v3-20261020-${protokoll.protocolId}`, name: protokoll.protocolId, scoringRule: protokoll.scoringRule, protocol: { protocolId: protokoll.protocolId, version: protokoll.scoringRule } },
+    },
+  });
+}
+const DRIVER_GATE = { protocolId: "driver-gate", scoringRule: "tn-excel-v3-2026-10-20" };
+const PUTT = { protocolId: "putt-1-3m", scoringRule: "tn-excel-v3-2026-09-10" };
+
+test("annen gruppe: aktiv COACH-medlem kan føre en Teknikk-test", async () => {
+  deltakerRad = annenGruppe(DRIVER_GATE);
+  const { saveTnTestSomCoach } = await import("./tn-testforing-actions");
+  const svar = await saveTnTestSomCoach({ testDayParticipantId: "deltaker-1", revision: 0, values: { "1": { ok: "Godkjent" } }, notes: "", intent: "draft" });
+  assert.equal(svar.ok, true);
+});
+
+test("annen gruppe: eieren av gruppa kan føre uten eget medlemskap", async () => {
+  deltakerRad = annenGruppe(DRIVER_GATE, { coachId: COACH.id });
+  coachMedlem = null;
+  const { saveTnTestSomCoach } = await import("./tn-testforing-actions");
+  const svar = await saveTnTestSomCoach({ testDayParticipantId: "deltaker-1", revision: 0, values: { "1": { ok: "Godkjent" } }, notes: "", intent: "draft" });
+  assert.equal(svar.ok, true);
+});
+
+test("annen gruppe: coach som verken er COACH-medlem eller eier avvises", async () => {
+  deltakerRad = annenGruppe(DRIVER_GATE);
+  coachMedlem = null;
+  const { saveTnTestSomCoach } = await import("./tn-testforing-actions");
+  const svar = await saveTnTestSomCoach({ testDayParticipantId: "deltaker-1", revision: 0, values: { "1": { ok: "Godkjent" } }, notes: "", intent: "draft" });
+  assert.equal(svar.ok, false);
+  if (!svar.ok) assert.match(svar.error, /ikke trener for gruppen/i);
+});
+
+test("annen gruppe: trener kan ikke føre Putt 1–3 m — spilleren fører den selv", async () => {
+  deltakerRad = annenGruppe(PUTT);
+  const { saveTnTestSomCoach } = await import("./tn-testforing-actions");
+  const svar = await saveTnTestSomCoach({ testDayParticipantId: "deltaker-1", revision: 0, values: verdierForAlleForsok(2), notes: "", intent: "draft" });
+  assert.equal(svar.ok, false);
+  if (!svar.ok) assert.match(svar.error, /spilleren selv/i);
+});
+
+test("annen gruppe: utmeldt spiller avvises som før", async () => {
+  deltakerRad = annenGruppe(DRIVER_GATE);
+  spillerMedlem = null;
+  const { saveTnTestSomCoach } = await import("./tn-testforing-actions");
+  const svar = await saveTnTestSomCoach({ testDayParticipantId: "deltaker-1", revision: 0, values: { "1": { ok: "Godkjent" } }, notes: "", intent: "draft" });
+  assert.equal(svar.ok, false);
+  if (!svar.ok) assert.match(svar.error, /ikke lenger et aktivt medlem/i);
+});
