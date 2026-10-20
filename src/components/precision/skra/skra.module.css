@@ -46,6 +46,10 @@
 .ingress { margin: 0; max-width: 46ch; font-size: 15px; line-height: 1.5; color: rgba(255, 255, 255, .82); }
 .handling:empty { display: none; }
 
+/* Lav topp: undersider og detaljsider. Ingen tall; kortene ligger fortsatt over kanten. */
+.lav .innhold { gap: 12px; padding: 16px 16px calc(40px + var(--kutt) + var(--ak-kutt-kant)); }
+.lav .tittel { font-size: clamp(26px, 7cqw, 38px); }
+
 /* Tallene i glass */
 .statrad { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; min-width: 0; }
 .stat {
@@ -81,6 +85,8 @@ a.stat:active { transform: scale(.97); }
   margin-top: -64px;
   min-width: 0;
 }
+
+.flytLav { margin-top: -40px; }
 
 /* Hvitt kort som svever over den lysegrå flaten */
 .kort {
@@ -150,10 +156,12 @@ a.stat:active { transform: scale(.97); }
   }
   .innhold.utenTall { grid-template-columns: minmax(0, 1fr); }
   .statVerdi { font-size: 34px; }
+  .lav .innhold { padding: 20px 40px calc(56px + var(--kutt) + var(--ak-kutt-kant)); }
 }
 /* Flyten følger skjermens egen container (skjermen er container fra før). */
 @container (min-width: 900px) {
   .flyt { margin-top: -88px; gap: 24px; }
+  .flytLav { margin-top: -56px; }
   .kort { padding: 22px; }
   .helt { grid-template-columns: minmax(0, 1fr) auto; align-items: end; padding: 26px 28px; }
   .heltTid { font-size: 48px; }
