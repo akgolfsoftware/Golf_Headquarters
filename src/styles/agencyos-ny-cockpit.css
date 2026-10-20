@@ -194,6 +194,7 @@
 .agn-skra .skra-cockpit { gap: 20px; }
 .agn-skra .skra-kol { display: grid; gap: 20px; align-content: start; min-width: 0; }
 .agn-skra .skra-anker { min-width: 0; scroll-margin-top: 72px; }
+.agn-skra .skra-helt-plass { min-width: 0; }
 .agn-skra .skra-liste { display: grid; }
 .agn-skra .skra-knapper { margin-top: 8px; }
 .agn-skra .skra-knapper .knapp { min-height: 48px; }
@@ -224,6 +225,7 @@
   .agn-skra .skra-cockpit { margin-right: 52px; }
   .agn-skra .skra-cockpit { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 24px; align-items: start; }
   .agn-skra .skra-kol { gap: 24px; }
+  .agn-skra .skra-helt-plass { grid-column: 1 / -1; }
   .agn-skra .skra-kpi { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .agn-skra .skra-kpi .kpi { border-left: 0; }
 }

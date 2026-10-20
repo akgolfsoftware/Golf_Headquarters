@@ -16,6 +16,7 @@ import s from "./skra.module.css";
  * - SkraFlyt: innholdet under toppen. Første rad ligger over den skrå kanten.
  * - SkraKort: hvitt kort med skygge, tittel og valgfri lenke eller meta.
  * - SkraTom: tom tilstand inni et kort.
+ * - SkraHelt: hovedkortet over begge kolonnene, med bilde og fylt i aksefargen (det som gjelder nå).
  *
  * Bildene er AK Golfs egne (public/images/playerhq), aldri Team Norway-bildene.
  */
@@ -101,6 +102,58 @@ export function SkraKort({
         </div>
       ) : null}
       {children}
+    </section>
+  );
+}
+
+export type SkraHandling = { tekst: string; href?: string; onClick?: () => void; ikon?: ReactNode; sekundaer?: boolean };
+
+export function SkraHelt({
+  bilde,
+  bildePosisjon,
+  farge,
+  overlinje,
+  tid,
+  tidEtter,
+  tittel,
+  meta,
+  handlinger = [],
+  etikett,
+}: {
+  bilde: string;
+  bildePosisjon?: string;
+  /** Aksefargen (mørk variant, så hvit tekst leses). */
+  farge?: string;
+  overlinje: ReactNode;
+  tid: ReactNode;
+  tidEtter?: ReactNode;
+  tittel: ReactNode;
+  meta?: ReactNode;
+  handlinger?: SkraHandling[];
+  etikett: string;
+}) {
+  const stil = farge ? ({ "--helt-farge": farge } as CSSProperties) : undefined;
+  return (
+    <section className={s.helt} style={stil} aria-label={etikett}>
+      <div className={s.heltBilde} aria-hidden="true">
+        <Image src={bilde} alt="" fill sizes="(min-width: 900px) 40vw, 100vw" style={{ objectPosition: bildePosisjon }} />
+      </div>
+      <div className={s.heltTekst}>
+        <span className={s.heltOver}>{overlinje}</span>
+        <strong className={s.heltTid}>{tid}{tidEtter ? <small>{tidEtter}</small> : null}</strong>
+        <h2>{tittel}</h2>
+        {meta ? <p className={s.heltMeta}>{meta}</p> : null}
+        {handlinger.length > 0 ? (
+          <div className={s.heltKnapper}>
+            {handlinger.map((h) => {
+              const kl = `${s.heltKnapp}${h.sekundaer ? ` ${s.sek}` : ""}`;
+              return h.href
+                ? <Link key={h.tekst} href={h.href} className={kl}>{h.ikon}{h.tekst}</Link>
+                : <button key={h.tekst} type="button" className={kl} onClick={h.onClick}>{h.ikon}{h.tekst}</button>;
+            })}
+          </div>
+        ) : null}
+      </div>
     </section>
   );
 }

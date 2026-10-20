@@ -6,8 +6,9 @@
  * src/components/precision/skra/. Startskjerm i AgencyOS med dagens kalender 05–22
  * (beslutninger.md §SKJERMENE … RUNDE 8).
  *
- * Toppen: banebilde i grafitt, dato og klokke, hilsen, kort oppsummering av dagen og fire tall i glass
- * (økter i dag, venter på deg, følger ikke planen, aktive spillere). Kortene under ligger over kanten.
+ * Toppen: banebilde, dato og klokke, hilsen, kort oppsummering av dagen og fire tall i glass
+ * (økter i dag, venter på deg, følger ikke planen, aktive spillere). Hovedkortet over kanten er økta som
+ * pågår, ellers neste økt i dag, fylt i aksefargen. Kortene under ligger i to kolonner.
  * Venstre: krever deg nå · dagens kalender · Jarvis · uka i tall. Høyre: følger ikke planen · å gjøre ·
  * turneringer · stallen.
  *
@@ -31,7 +32,8 @@ import { PrintButton } from "@/components/shared/print-button";
 import { EksportTrigger } from "@/components/shared/eksport-trigger";
 import { KAL_START_MIN, KAL_SLUTT_MIN, hhmm, type AG01Data, type CockpitKalenderRad } from "@/lib/agencyos/cockpit-precision";
 import type { StallRorledning } from "@/lib/agencyos/cockpit-tillegg-regler";
-import { SkraFlyt, SkraKort, SkraStat, SkraTom, SkraTopp } from "@/components/precision/skra/Skra";
+import { SkraFlyt, SkraHelt, SkraKort, SkraStat, SkraTom, SkraTopp } from "@/components/precision/skra/Skra";
+import { oktBilde } from "@/lib/portal/okt-bilde";
 import "@/styles/agencyos-ny-cockpit.css";
 
 export type AG01Tilstand = "data" | "tom" | "laster" | "feil";
@@ -166,6 +168,28 @@ function StallRor({ stall }: { stall: Promise<StallRorledning | null> }) {
 }
 
 const COCKPIT_BILDE = "/images/playerhq/spill-bane.jpg";
+/** Mørk aksefarge for hovedkortet (hvit tekst må leses). Ukjent akse: grafitt. */
+const HELT_FARGE: Record<string, string> = { fys: "var(--fys-ink)", tek: "var(--tek-ink)", slag: "var(--slag)", spill: "var(--spill-ink)", turn: "var(--turn)" };
+const AKSE_LANG: Record<string, string> = { fys: "Fysisk", tek: "Teknisk", slag: "Golfslag", spill: "Spill", turn: "Turnering" };
+
+/** Hovedkortet: økta som pågår, ellers neste økt i dag. Ingen igjen: ingen hovedkort. */
+function NesteHelt({ d }: { d: AG01Data }) {
+  const r = d.kalender.find((x) => x.status === "pagar") ?? d.kalender.find((x) => x.status !== "ferdig" && x.sluttMin > d.naaMin);
+  if (!r) return null;
+  const pagar = r.status === "pagar";
+  const bilde = oktBilde(r.akse?.toUpperCase(), `${r.tittel} ${r.sted ?? ""}`);
+  return <div className="skra-helt-plass"><SkraHelt
+    etikett={`${pagar ? "Pågår nå" : "Neste økt"}: ${r.hvem}`}
+    bilde={bilde.src} bildePosisjon={bilde.posisjon} farge={r.akse ? HELT_FARGE[r.akse] : undefined}
+    overlinje={`${pagar ? "Pågår nå" : "Neste økt i dag"}${r.akse ? ` · ${AKSE_LANG[r.akse]}` : ""}`}
+    tid={r.start} tidEtter={`–${r.slutt}`} tittel={r.hvem}
+    meta={[r.tittel, r.sted].filter(Boolean).join(" · ")}
+    handlinger={[
+      ...(r.href ? [{ tekst: pagar ? "Åpne live" : "Åpne økta", href: r.href }] : []),
+      { tekst: "Se kalenderen", href: "/admin/kalender", sekundaer: true },
+    ]}
+  /></div>;
+}
 
 /** «4 økter i dag, første kl. 09:00. 1 sak haster.» Bare det som finnes i dataene. */
 function oppsummering(d: AG01Data): string {
@@ -223,6 +247,7 @@ export function AG01Cockpit({ tilstand, data, dispatch = null, stall = null }: {
       </>}
     />
     <SkraFlyt className="skra-cockpit">
+      <NesteHelt d={d} />
       <div className="skra-kol">
         <Seksjon tittel={d.venter.totalt ? `Krever deg nå · ${d.venter.totalt}${haster ? `, ${haster} haster` : ""}` : "Krever deg nå"} lenke={{ href: "/admin/innboks", tekst: "Innboks" }}>
           {d.venter.rader.length === 0 ? <Tom>Ingenting venter på deg. Godkjenninger, forespørsler og utkast dukker opp her.</Tom> : <div className="skra-liste">
