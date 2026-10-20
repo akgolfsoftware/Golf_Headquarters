@@ -8,8 +8,8 @@
  *   i Tripletex av Anders; appen sender ingen faktura.
  * - GRATIS: pris 0.
  * - STRIPE (natt 17.10): tjenestens pris, merket STRIPE («betales med kort»).
- *   Bookingen står som «Ikke betalt» til en Stripe-betaling er koblet på; AgencyOS
- *   sender ingen betalingslenke ennå.
+ *   Coachen får en Stripe-betalingslenke (coach-betalingslenke.ts); bookingen står som
+ *   «Ikke betalt» til webhooken melder betalingen.
  * - Ikke valgt: som før — tjenestens pris, ingen betalingsmåte.
  */
 import type { BookingPaymentMethod } from "@/generated/prisma/enums";

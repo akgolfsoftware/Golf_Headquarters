@@ -25,6 +25,8 @@ import { Knapp, KnappLenke, Pille, Topp, Varsel, type PilleTone } from "@/compon
 import { bekreftBooking } from "@/app/admin/(legacy)/bookinger/actions";
 import { avlysBookingSomCoach, avvisBookingMedBegrunnelse } from "@/app/admin/bookinger/actions";
 import { foreslaaNyBookingtid, trekkTilbakeForslag } from "@/app/admin/kalender/flytt-actions";
+import { lagBetalingslenkeForBooking } from "@/app/admin/kalender/booking-actions";
+import { BetalingsLenke } from "./BetalingsLenke";
 import { lagreNotat, merkGjennomfort } from "@/app/admin/bookinger/oppfolging-actions";
 import "@/styles/agencyos-ny-kalender.css";
 
@@ -49,6 +51,8 @@ export type AG06BookingenData = {
   forslag: string | null;
   kommende: boolean;
   harKonto: boolean;
+  /** Merket Stripe, bekreftet, ikke betalt: coachen kan lage en betalingslenke. */
+  kanLageBetalingslenke: boolean;
 };
 
 const STATUS: Record<AG06BookingenData["status"], { tekst: string; tone: PilleTone }> = {
@@ -67,7 +71,14 @@ export function AG06Bookingen({ navn, b }: { navn: string; b: AG06BookingenData 
   const [feil, setFeil] = useState<string | null>(null);
   const [notat, setNotat] = useState(b.notat ?? "");
   const [melding, setMelding] = useState<string | null>(null);
+  const [lenke, setLenke] = useState<string | null>(null);
   const [pending, start] = useTransition();
+  const lagLenke = () => start(async () => {
+    const res = await lagBetalingslenkeForBooking(b.id);
+    if (!res.ok) { setFeil(res.feil); return; }
+    setFeil(null);
+    setLenke(res.url);
+  });
   const fornavn = b.hvem.split(" ")[0];
 
   const ferdig = (m: string) => { setFeil(null); setMelding(m); setDialog(null); setTekst(""); router.refresh(); };
@@ -125,8 +136,10 @@ export function AG06Bookingen({ navn, b }: { navn: string; b: AG06BookingenData 
               : <Knapp variant="sek" onClick={() => { setDialog("flytt"); setFeil(null); }}>Foreslå ny tid</Knapp>)}
             {b.status === "CONFIRMED" && b.kommende && <Knapp variant="sek" onClick={() => { setDialog("avlys"); setTekst(""); setFeil(null); }}>Avlys</Knapp>}
             {b.status === "CONFIRMED" && !b.kommende && <Knapp disabled={pending} onClick={() => kjor(() => merkGjennomfort(b.id), "Timen er merket gjennomført.")}>Merk gjennomført</Knapp>}
+            {b.kanLageBetalingslenke && <Knapp variant="sek" disabled={pending} onClick={lagLenke}>{lenke ? "Lag ny betalingslenke" : "Lag betalingslenke"}</Knapp>}
             {b.spillerHref && <KnappLenke href={b.spillerHref}>Åpne spilleren</KnappLenke>}
           </div>
+          {lenke && <><BetalingsLenke url={lenke} /><p className="kildetekst">Ny lenke gjør den forrige ugyldig. Lenken virker i 23 timer.</p></>}
           <form style={{ display: "grid", gap: 8 }} onSubmit={(e) => { e.preventDefault(); kjor(() => lagreNotat({ bookingId: b.id, notat }), "Notatet er lagret."); }}>
             <label className="felt"><span className="etikett">Notat</span>
               <textarea rows={3} maxLength={2000} value={notat} onChange={(e) => setNotat(e.target.value)} /></label>

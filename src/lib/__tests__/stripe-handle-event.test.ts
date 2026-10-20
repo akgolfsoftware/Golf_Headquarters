@@ -279,7 +279,9 @@ test("stripe handle-event — dedup og sideeffekter", async (t) => {
 
   // --- 6. Bookingen oppdateres alltid med PENDING-guard (aldri blind overskriving).
   for (const u of bookingUpdates) {
-    const where = u.where as { status?: string };
-    assert.equal(where.status, "PENDING", "updateMany skal kreve status PENDING");
+    const where = u.where as { status?: string; paymentMethod?: string; stripePaymentIntentId?: null };
+    // Unntak: coach-booking betalt via lenke (CONFIRMED + STRIPE + ikke betalt fra før), også guardet.
+    const coachBetalt = where.status === "CONFIRMED" && where.paymentMethod === "STRIPE" && where.stripePaymentIntentId === null;
+    assert.ok(where.status === "PENDING" || coachBetalt, "updateMany skal kreve status PENDING (eller ubetalt coach-booking)");
   }
 });

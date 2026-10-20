@@ -69,6 +69,8 @@ export default async function AdminBookingDetaljPage({ params }: { params: Promi
     forslag: r.proposedStartAt ? `${DATO_KORT.format(r.proposedStartAt)} kl. ${KL.format(r.proposedStartAt)}` : null,
     kommende: r.startAt.getTime() > naaMs(),
     harKonto: r.userId != null,
+    kanLageBetalingslenke:
+      r.status === "CONFIRMED" && r.paymentMethod === "STRIPE" && r.priceOre > 0 && !r.stripePaymentIntentId,
   };
 
   return <AG06Bookingen navn={user.name ?? "Coach"} b={b} />;

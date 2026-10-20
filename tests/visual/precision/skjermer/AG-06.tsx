@@ -38,7 +38,7 @@ const tjenester: AG06Tjeneste[] = [
 const tjenesteValg: AG06TjenesteValg = { coacher: [{ id: "c1", navn: "Test Coach" }], steder: [{ id: "l1", navn: "Fredrikstad" }] };
 const felles = { navn: "Test Coach", bookinger, valg, tjenester, tjenesteValg, naaMs: N } as const;
 
-const detalj: AG06BookingenData = { id: "b4", hvem: "Per Prøve", tjeneste: "Performance Pro", status: "CONFIRMED", datoLang: "Fredag 9. oktober", tid: "16:00", datoIso: "2026-10-09", varighetMin: 90, sted: "Simulator 2, Fredrikstad", coach: "Test Coach", betaling: "Klipp", pris: "0 kr", kontakt: null, spillerHref: "/admin/spillere/p1", notat: "Jobber med P7.0.", bestilt: "20. sep.", forslag: null, kommende: true, harKonto: true };
+const detalj: AG06BookingenData = { id: "b4", hvem: "Per Prøve", tjeneste: "Performance Pro", status: "CONFIRMED", datoLang: "Fredag 9. oktober", tid: "16:00", datoIso: "2026-10-09", varighetMin: 90, sted: "Simulator 2, Fredrikstad", coach: "Test Coach", betaling: "Klipp", pris: "0 kr", kontakt: null, spillerHref: "/admin/spillere/p1", notat: "Jobber med P7.0.", bestilt: "20. sep.", forslag: null, kommende: true, harKonto: true, kanLageBetalingslenke: false };
 
 export const tilstander = {
   data: <AG06Booking {...felles} fane="bookinger" />,

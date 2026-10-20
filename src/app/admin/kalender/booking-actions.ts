@@ -12,6 +12,9 @@ import { requireCoachActionUser } from "@/lib/auth/action-guards";
 import { prisma } from "@/lib/prisma";
 import { coachScopedPlayerWhere, coachedPlayerWhere } from "@/lib/auth/coached";
 import { opprettOktPaaTid } from "@/app/admin/(legacy)/calendar/actions";
+import { coachBookingScope } from "@/lib/auth/booking-scope";
+import { lagBetalingslenke } from "@/lib/booking/coach-betalingslenke";
+import { logError } from "@/lib/error-tracking";
 
 export interface BookingValg {
   tjenester: Array<{
@@ -77,7 +80,14 @@ export async function hentBookingValg(): Promise<BookingValg> {
 }
 
 export type BookResultat =
-  | { ok: true; bookingId: string }
+  | {
+      ok: true;
+      bookingId: string;
+      /** Stripe-betalingslenke (kort og Apple Pay) når betaling = Stripe. */
+      betalingsUrl?: string | null;
+      /** Satt når bookingen ble lagret, men lenken ikke kunne lages. */
+      betalingsFeil?: string;
+    }
   | { ok: false; feil: string };
 
 export async function bookIKalender(input: {
@@ -121,11 +131,36 @@ export async function bookIKalender(input: {
       notater: input.notater,
       betaling: input.betaling,
     });
-    return { ok: true, bookingId: res.bookingId };
+    if (input.betaling !== "STRIPE") return { ok: true, bookingId: res.bookingId };
+
+    // Stripe: lag lenken og send den til kunden i bekreftelsen. Feiler det, er bookingen lagret;
+    // coachen kan lage lenken på nytt fra bookingen.
+    const lenke = await lagBetalingslenke(res.bookingId);
+    if (!lenke.ok) return { ok: true, bookingId: res.bookingId, betalingsUrl: null, betalingsFeil: lenke.feil };
+    try {
+      const { sendBookingConfirmation } = await import("@/lib/email/booking-emails");
+      await sendBookingConfirmation(res.bookingId, { betalingsUrl: lenke.url });
+    } catch (error) {
+      await logError({ context: "admin.kalender.betalingslenke.epost", error, meta: { bookingId: res.bookingId }, severity: "warn" });
+    }
+    return { ok: true, bookingId: res.bookingId, betalingsUrl: lenke.url };
   } catch (err) {
     // opprettOktPaaTid kaster med ferdig norsk melding ved kollisjon.
     const melding =
       err instanceof Error ? err.message : "Kunne ikke opprette bookingen";
     return { ok: false, feil: melding };
   }
+}
+
+/** Ny Stripe-betalingslenke for en booking coachen har tilgang til. Den forrige lenken utløper. */
+export async function lagBetalingslenkeForBooking(
+  bookingId: string,
+): Promise<{ ok: true; url: string } | { ok: false; feil: string }> {
+  const aktor = await requireCoachActionUser();
+  const finnes = await prisma.booking.findFirst({
+    where: { id: bookingId, ...coachBookingScope(aktor) },
+    select: { id: true },
+  });
+  if (!finnes) return { ok: false, feil: "Booking ikke funnet" };
+  return lagBetalingslenke(bookingId);
 }

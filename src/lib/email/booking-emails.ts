@@ -17,6 +17,7 @@ import { byggBekreftelse, googleKalenderUrl, datoTekst, klokkeTekst } from "./bo
 import { byggAvbestilling, formaterKr as avbestillingKr, osloDagOgTid, refusjonTekst, type Refusjon } from "./templates/avbestilling-mal";
 import { bookingTemplateContent } from "./booking-template-content";
 import { gjestEndreUrl } from "@/lib/booking/gjest-lenke";
+import { deltaker2Url } from "@/lib/booking/deltaker2-lenke";
 import { avsnitt, epostSkall, esc, faktaRader } from "./precision-epost";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://akgolf.no";
@@ -33,7 +34,7 @@ async function hentTemplate(slug: string) {
  * EP-01. Faktarader fra bookingdata, emne og innledning fra lagret EmailTemplate.
  * Gjest = booking uten bruker.
  */
-export async function sendBookingConfirmation(bookingId: string) {
+export async function sendBookingConfirmation(bookingId: string, opts: { betalingsUrl?: string | null } = {}) {
   const booking = await prisma.booking.findUnique({
     where: { id: bookingId },
     include: {
@@ -71,7 +72,7 @@ export async function sendBookingConfirmation(bookingId: string) {
   };
   const endreGjest = `mailto:post@akgolf.no?subject=${encodeURIComponent(`Booking ${referanse}`)}`;
   // Steg 5: gjesten endrer og avbestiller selv fra en signert lenke. Deltaker 2 i duo
-  // betalte ikke og får ikke lenken; hen skriver til oss.
+  // får en egen lenke (deltaker2-lenke.ts) som bare kan melde hen av.
   const endreGjestSelv = gjestEndreUrl(APP_URL, booking.id, booking.startAt) ?? endreGjest;
   const tilbudGjest = { tekst: "plan fra coachen, økter, tester og analyse av rundene dine", manedNok: null, arNok: null };
 
@@ -84,6 +85,7 @@ export async function sendBookingConfirmation(bookingId: string) {
     endreUrl: erGjest ? endreGjestSelv : `${APP_URL}/portal/meg/bookinger`,
     opprettKontoUrl: erGjest ? `${APP_URL}/auth/signup` : null,
     spillerhqTilbud: erGjest ? tilbudGjest : null,
+    betalingsUrl: opts.betalingsUrl ?? null,
   });
 
   try {
@@ -106,7 +108,9 @@ export async function sendBookingConfirmation(bookingId: string) {
       prisOre: null,
       betalingsref: null,
       betaltAv: navn ?? "den som booket",
-      endreUrl: endreGjest,
+      // Egen signert lenke: deltaker 2 kan bare melde seg selv av, aldri avbestille betalerens time.
+      endreUrl: deltaker2Url(APP_URL, booking.id, booking.startAt) ?? endreGjest,
+      endreEtikett: "Meld deg av timen",
       opprettKontoUrl: `${APP_URL}/auth/signup`,
       spillerhqTilbud: tilbudGjest,
     });
