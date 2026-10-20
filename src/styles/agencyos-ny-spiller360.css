@@ -118,3 +118,37 @@
   .agn-s .s3-uke { gap: 4px; }
   .agn-s .s3-okt { min-height: 72px; }
 }
+
+/* Fanene Stats, Teknisk plan, Samtaler, Talent og IUP: samme seksjonsspråk som Plan
+   (tavlene Spiller360-stats/-teknisk/-samtaler/-talent/-iup). Kortene blir åpne
+   seksjoner med tittel i setningsform og rader med strek over. */
+.agn-s .s3 .s360-fane .a8-sek { border: 0; border-radius: 0; background: transparent; padding: 0; box-shadow: none; }
+.agn-s .s3 .s360-fane .a8-sek__hode { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding-bottom: 6px; }
+.agn-s .s3 .s360-fane .a8-sek__hode .kicker { font: 600 20px/1.2 var(--sans); letter-spacing: 0; text-transform: none; color: var(--graphite-900); }
+.agn-s .s3 .s360-fane .a8-liste { border-bottom: 1px solid var(--sand-300); }
+.agn-s .s3 .s360-fane .a8-rad { border-top: 1px solid var(--sand-300); border-bottom: 0; min-height: 52px; }
+.agn-s .s3 .s360-fane .a8-to, .agn-s .s3 .s360-fane .a8-stabel { gap: 26px; }
+.agn-s .s3-bare-coach { padding: 12px 14px; border-radius: 8px; background: #faf8f3; font-size: 14px; color: var(--graphite-800); }
+
+/* Stats: brutto-kurve og SG per område (dataviz: én serie, tynne merker, lik skala begge veier) */
+.agn-s .s3-stats-topp { display: grid; gap: 26px; }
+.agn-s .s3-kurve-boks { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 6px 8px; }
+.agn-s .s3-kurve-akse { display: flex; flex-direction: column; justify-content: space-between; font-size: 11px; color: var(--graphite-800); }
+.agn-s .s3-kurve-stor { width: 100%; height: 160px; overflow: visible; }
+.agn-s .s3-kurve-stor polyline { fill: none; stroke: var(--graphite-900); stroke-width: 2; stroke-linejoin: round; }
+.agn-s .s3-kurve-stor circle { fill: var(--white); stroke: var(--graphite-900); stroke-width: 2; }
+.agn-s .s3-kurve-stor circle.turn { fill: var(--graphite-900); }
+.agn-s .s3-kurve-stor line.snitt { stroke: var(--graphite-500); stroke-width: 1; stroke-dasharray: 4 4; }
+.agn-s .s3-kurve-boks .s3-forklar { grid-column: 1 / -1; }
+.agn-s .s3-sg { display: grid; gap: 8px; }
+.agn-s .s3-sg-rad { display: grid; grid-template-columns: 64px minmax(0, 1fr) 44px; gap: 8px; align-items: center; font-size: 13px; }
+.agn-s .s3-sg-rad > b { text-align: right; font-size: 13px; }
+.agn-s .s3-sg-spor { position: relative; height: 14px; }
+.agn-s .s3-sg-spor em { position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: var(--graphite-500); }
+.agn-s .s3-sg-spor i { position: absolute; top: 0; bottom: 0; display: block; background: var(--graphite-900); }
+.agn-s .s3-sg-spor i.neg { right: 50%; border-radius: 4px 0 0 4px; }
+.agn-s .s3-sg-spor i.pos { left: 50%; border-radius: 0 4px 4px 0; }
+.agn-s .s3-sg-rad.akse > .num { display: flex; justify-content: space-between; font-size: 10px; color: var(--graphite-800); }
+@media (min-width: 900px) {
+  .agn-s .s3-stats-topp { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 32px; align-items: start; }
+}

@@ -73,6 +73,28 @@ export interface KalenderHendelse {
   opptatt?: boolean;
   /** Workbench-økt som kan flyttes fra kalenderen (id på én rad i økta). */
   flyttOktId?: string;
+  /** Booking: betalingsmåten (`Booking.paymentMethod`). null = ikke satt. */
+  betaling?: KalenderBetaling | null;
+  /** Booking: gjennomført (status COMPLETED). Tegnes lysere i kalenderen. */
+  gjennomfort?: boolean;
+  /** Booking: coachen har foreslått ny tid som venter på spilleren. */
+  nyTidForeslatt?: boolean;
+}
+
+export type KalenderBetaling = "STRIPE" | "KLIPP" | "FAKTURA" | "GRATIS" | "GAVEKORT";
+
+/** Betalingsmåten slik den står på skjerm. */
+export const BETALING_LABEL: Record<KalenderBetaling, string> = {
+  STRIPE: "Stripe",
+  KLIPP: "Klipp",
+  FAKTURA: "Faktura",
+  GRATIS: "Gratis",
+  GAVEKORT: "Gavekort",
+};
+
+/** Betalingsmåten på skjerm; mangler den, står «—», aldri en gjettet verdi. */
+export function betalingTekst(b: KalenderBetaling | null | undefined): string {
+  return b ? BETALING_LABEL[b] : "—";
 }
 
 export type KalenderAkse = "fys" | "tek" | "slag" | "spill" | "turn";

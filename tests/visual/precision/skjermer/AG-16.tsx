@@ -8,10 +8,10 @@ export const sti = "/admin/grupper";
 
 const data: GrupperData = {
   grupper: [
-    { id: "g1", navn: "GFGK Junior Mini U10", antallMedlemmer: 8, nesteOkt: "Tor 16:00 · Range", faste: [{ id: "f1", dag: "Tor", tid: "16:00–17:00", tittel: "Fast trening", sted: "Range" }] },
+    { id: "g1", navn: "GFGK Junior Mini U10", antallMedlemmer: 8, nesteOkt: "Tor 16:00 · Range", coachNavn: "Mari Dahl", etterlevelsePct: 91, faste: [{ id: "f1", dag: "Tor", tid: "16:00–17:00", tittel: "Fast trening", sted: "Range" }] },
     { id: "g2", navn: "GFGK Junior Basis U13", antallMedlemmer: 6, nesteOkt: "Man 16:30 · Driving Range med et langt navn som må brytes", faste: [] },
     { id: "g3", navn: "GFGK Junior Knøtt U12", antallMedlemmer: 4, nesteOkt: null, faste: [] },
-    { id: "g4", navn: "WANG Toppidrett Fredrikstad med et svært langt gruppenavn som må kuttes", antallMedlemmer: 0, nesteOkt: null, faste: [] },
+    { id: "g4", navn: "Junior Academy med et svært langt gruppenavn som må kuttes", antallMedlemmer: 0, nesteOkt: null, faste: [] },
   ],
 };
 
@@ -23,6 +23,15 @@ const Vis = (t: AG16Tilstand, d: GrupperData = data) => (
         data={d}
         nyGruppeKnapp={<button type="button" className="pa-btn pa-btn--secondary">Ny gruppe</button>}
         gfgkBootstrapKnapp={null}
+        stigen={{
+          trinn: [
+            { navn: "Mini", gruppeNavn: "GFGK Junior Mini U10" },
+            { navn: "Basis", gruppeNavn: "GFGK Junior Basis U13" },
+            { navn: "Utvikling", gruppeNavn: "GFGK Junior Utvikling U15" },
+            { navn: "Elite", gruppeNavn: "GFGK Junior Elite U19" },
+          ],
+          vedSiden: ["WANG Toppidrett Fredrikstad", "GFGK Junior Knøtt U12"],
+        }}
       />
     </AgencyOSSkall>
   </AdminRolleProvider>

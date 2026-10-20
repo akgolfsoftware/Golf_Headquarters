@@ -6,13 +6,10 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentTnArbeidskontekst, type TnArbeidskontekst } from "@/lib/domain/tn-arbeidsflate";
 import { TnInviterSpiller } from "./tn-inviter-spiller";
 import { TnSkraKort, TnSkraTopp } from "./tn-skra-topp";
-import { TnManuellTurnering } from "./tn-manuell-turnering";
-import { TnShell, TnSidehode, tnRolleNavn, type TnAktivSide } from "./tn-shell";
+import { TnShell, tnRolleNavn, type TnAktivSide } from "./tn-shell";
 import { TnKort } from "./core";
 
-type Skjerm =
-  | "turnering-ny"
-  | "inviter";
+type Skjerm = "inviter";
 
 
 async function Chrome({ aktiv, brukerNavn, kontekst, tilbake, children }: { aktiv: TnAktivSide; brukerNavn: string; kontekst: TnArbeidskontekst; tilbake?: { href: string; label: string }; children: ReactNode }) {
@@ -45,20 +42,14 @@ export const UTTAKSKRITERIER = [
   {
     nummer: "Kriterium 3",
     tittel: "Prosess og adferd",
-    tekst: "Trenerens vurdering av arbeid, oppmøte og holdning. Ikke registrert i noen modell i dag — feltet står tomt framfor å gjette.",
-    kilde: "Kilde: ingen — krever godkjent vurderingsmodell",
+    tekst: "Trenerens vurdering av arbeid, oppmøte og holdning, på skalaen 1–5 som fireukerssjekken (Anders 20.10.2026).",
+    kilde: "Kilde: trenerens vurdering 1–5",
   },
 ] as const;
 
 export async function TnRegistrertSkjerm({ skjerm }: { skjerm: Skjerm }) {
   const bruker = await requirePortalUser({ tillatDemo: true, kreverTilgang: "INGEN" });
   const brukerNavn = bruker.name ?? "Ukjent";
-
-  if (skjerm === "turnering-ny") {
-    const kontekst = await hentTnArbeidskontekst(bruker);
-    if (!kontekst || !kontekst.erSpiller) notFound();
-    return <Chrome aktiv="turneringer" brukerNavn={brukerNavn} kontekst={kontekst} tilbake={{ href: "/team-norway/turneringer", label: "Turneringer" }}><TnSidehode overlinje="Manuell kilde" tittel="Legg inn turnering selv" ingress="Brukes når turneringen ikke finnes i GolfBox. Resultater føres brutto." /><TnKort><TnManuellTurnering /></TnKort></Chrome>;
-  }
 
   if (skjerm === "inviter") {
     const kontekst = await hentTnArbeidskontekst(bruker);

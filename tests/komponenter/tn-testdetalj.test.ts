@@ -30,6 +30,11 @@ const TABELL_CSS = new URL("../../src/components/team-norway/tn-data-table.modul
 mock.module(TABELL_CSS, { defaultExport: {} });
 const SKALL_CSS = new URL("../../src/components/team-norway/tn-skall.module.css", import.meta.url).pathname;
 mock.module(SKALL_CSS, { defaultExport: {} });
+// Skrå-toppen og helteflaten (retning «Skrå», 20.10.2026) har egne CSS-moduler.
+for (const fil of ["tn-skra-topp.module.css", "tn-stall.module.css", "tn-grunnmur.module.css"]) {
+  const sti = new URL(`../../src/components/team-norway/${fil}`, import.meta.url).pathname;
+  mock.module(sti, { defaultExport: {} });
+}
 const LOGO_HVIT_PNG = new URL("../../designsystem/team-norway/assets/logo/team-norway-golf-knockout-white.png", import.meta.url).pathname;
 mock.module(LOGO_PNG, { defaultExport: { src: "/logo.png", width: 1, height: 1 } });
 mock.module(LOGO_HVIT_PNG, { defaultExport: { src: "/logo-hvit.png", width: 1, height: 1 } });

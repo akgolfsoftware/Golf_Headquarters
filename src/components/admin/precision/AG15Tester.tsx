@@ -24,6 +24,8 @@ import { Nedtrekk } from "@/components/precision/Nedtrekk";
 import type { AdminTesterV2Data, AdminTesterStatus } from "@/components/admin/v2/AdminTesterV2";
 import { tildelTest } from "@/app/admin/(legacy)/tester/tildel/[spillerId]/actions";
 import "@/styles/agencyos-ny-mer.css";
+import { AG15Oversikt } from "./AG15Oversikt";
+import type { TesterOversiktSide } from "@/lib/admin/tester/oversikt-data";
 
 export type AG15Tildelt = { id: string; spillerId: string; spillerNavn: string; testNavn: string; frist: string | null; tildelt: string };
 export type AG15Valg = { tester: ReadonlyArray<{ id: string; navn: string }>; spillere: ReadonlyArray<{ id: string; navn: string }> };
@@ -36,6 +38,8 @@ export type AG15Props = {
   startFane?: AG15Fane;
   /** Åpner arket med spilleren valgt (fra /admin/tester/tildel/[spillerId]). */
   tildelSpillerId?: string | null;
+  /** Spillerne mot de 19 testene, til kontroll og neste testdag (designløftet 20.10). */
+  oversikt?: TesterOversiktSide | null;
 };
 
 const FANER: ReadonlyArray<[AG15Fane, string]> = [["resultater", "Resultater"], ["tildelt", "Tildelt"], ["normer", "Normer"], ["skala", "Poengskala"]];
@@ -76,19 +80,23 @@ function TildelArk({ valg, spillerId, onLukk }: { valg: AG15Valg; spillerId: str
   </div>;
 }
 
-export function AG15Tester({ data, tildelt = [], valg, startFane = "resultater", tildelSpillerId = null }: AG15Props) {
+export function AG15Tester({ data, tildelt = [], valg, startFane = "resultater", tildelSpillerId = null, oversikt = null }: AG15Props) {
   const [fane, setFane] = useState<AG15Fane>(startFane);
   const [ark, setArk] = useState<boolean>(!!tildelSpillerId && !!valg);
   const [filter, setFilter] = useState("alle");
   const rader = useMemo(() => filter === "alle" ? data.rader : data.rader.filter((r) => r.test === filter), [data.rader, filter]);
 
   return <div className="agn-s">
-    <Topp dato="Mer · tester" tittel="Tester" ingress="En test teller først når spilleren har registrert alle forsøk."
-      handlinger={valg ? <Knapp onClick={() => setArk(true)}>Tildel test</Knapp> : undefined} />
-
-    <div className="teller-rad">
-      {data.kpis.map((k) => <div key={k.label} className={k.varsle ? "teller signal" : "teller"}><span className="e">{k.label}</span><b className="t">{k.value}</b></div>)}
-    </div>
+    {oversikt ? <>
+      <AG15Oversikt d={oversikt} handling={valg ? <Knapp variant="sek" onClick={() => setArk(true)}>Tildel test</Knapp> : undefined} />
+      <div className="sek-topp"><h2>Alle resultater</h2><span className="kilde">{data.kpis.map((k) => `${k.label} ${k.value}`).join(" · ")}</span></div>
+    </> : <>
+      <Topp dato="Mer · tester" tittel="Tester" ingress="En test teller først når spilleren har registrert alle forsøk."
+        handlinger={valg ? <Knapp onClick={() => setArk(true)}>Tildel test</Knapp> : undefined} />
+      <div className="teller-rad">
+        {data.kpis.map((k) => <div key={k.label} className={k.varsle ? "teller signal" : "teller"}><span className="e">{k.label}</span><b className="t">{k.value}</b></div>)}
+      </div>
+    </>}
 
     <div className="faner" role="group" aria-label="Del">
       {FANER.map(([id, label]) => <button key={id} type="button" aria-pressed={fane === id} onClick={() => setFane(id)}>{label}{id === "tildelt" && tildelt.length > 0 ? <span className="antall">{tildelt.length}</span> : null}</button>)}
@@ -144,8 +152,8 @@ export function AG15Tester({ data, tildelt = [], valg, startFane = "resultater",
           {([["5", "i hull"], ["3", "innen 1 m"], ["2", "innen 2 m"], ["1", "innen 3 m"], ["0", "lenger unna"]] as const).map(([p, t]) => <div key={t}><b>{p}</b><span>{t}</span></div>)}
         </div>
       </section>
-      <Varsel tittel="Gate-testene">Wedge Gate, Nærspill Gate og VISA Express føres som godkjent eller bom. Resultatet er antall godkjent av 9.</Varsel>
-      <p className="kilde">Kilde: Team Norways scorekort-ark (fanen Referens) og vedtakene 14.10 og 28.09.</p>
+      <Varsel tittel="Gate-testene">Nærspill Gate, Wedge Gate og VISA Express: 1 poeng gjennom porten, 4 poeng gjennom porten og i sonen, maks 36. Driver Gate og Putt Gate telles som OK: «X / 6 OK» og «X / 10 OK».</Varsel>
+      <p className="kilde">Kilde: Team Norways scorekort-ark (fanen Referens), testbeskrivelsen 2026 og vedtakene 28.09, 14.10 og 20.10.</p>
     </div>}
 
     {ark && valg && <TildelArk valg={valg} spillerId={tildelSpillerId} onLukk={() => setArk(false)} />}

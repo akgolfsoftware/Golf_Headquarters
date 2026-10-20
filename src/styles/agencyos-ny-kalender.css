@@ -139,3 +139,49 @@
   .agn-s .mnd { gap: 2px; }
   .agn-s .mnd .d { padding: 4px 3px; }
 }
+
+/* Designløftet 20.10 (canvas rad 5 Kalender): verktøyrad, lagprikker, gjennomført lyst,
+   test med ramme, dagshode med dato og timer, og kortet ved siden av timen på PC. */
+.agn-s .kal-verktoy { display: flex; flex-wrap: wrap; align-items: center; gap: var(--r2) var(--r3); min-width: 0; }
+.agn-s .kal-sum { margin-left: auto; font: 500 13px/1.2 var(--mono); color: var(--graphite-700, var(--graphite-800)); white-space: nowrap; }
+.agn-s .kal-lag { align-items: center; min-width: 0; }
+.agn-s .kal-lag-etikett { font: 500 13px/1 var(--sans); color: var(--graphite-600); margin-right: 2px; }
+.agn-s .kal-lag > button { min-height: 40px; font-size: 13px; }
+.agn-s .kal-lag > button[aria-pressed="true"] { background: var(--white); color: var(--graphite-900); border-color: var(--graphite-900); }
+.agn-s .kal-lag > button[aria-pressed="false"] { border-style: dashed; color: var(--graphite-600); }
+.agn-s .lag-prikk { width: 8px; height: 8px; border-radius: 4px; flex-shrink: 0; background: var(--graphite-900); }
+.agn-s .lag-prikk.lag-turnering { background: var(--turn); }
+.agn-s .lag-prikk.lag-skole { background: var(--graphite-500, #8a8680); }
+.agn-s .lag-prikk.lag-booking { background: var(--slag); }
+.agn-s .kal-lag > button[aria-pressed="false"] .lag-prikk { background: transparent; box-shadow: inset 0 0 0 1.5px var(--graphite-500, #8a8680); }
+
+.agn-s .uke-rutenett { --time: 40px; }
+.agn-s .uke-rutenett .hd.dag-hd { display: grid; gap: 1px; align-content: center; justify-items: start; padding: 8px; }
+.agn-s .uke-rutenett .hd.dag-hd .ukd { font: 500 12px/1 var(--sans); color: var(--graphite-600); }
+.agn-s .uke-rutenett .hd.dag-hd b { font: 600 20px/1.05 var(--mono); letter-spacing: -.02em; }
+.agn-s .uke-rutenett .hd.dag-hd .sum { font: 500 11px/1 var(--mono); color: var(--graphite-600); }
+.agn-s .uke-rutenett .hd.idag { background: var(--sand-150); color: var(--graphite-900); box-shadow: inset 0 -2px 0 var(--graphite-900); }
+.agn-s .k-okt .k-coach { margin-left: 6px; font: 600 10px/1 var(--mono); opacity: .85; }
+
+.agn-s .k-okt.ferdig, .agn-s .u-okt.ferdig { color: var(--graphite-900); }
+.agn-s .k-okt.ferdig.fys, .agn-s .u-okt.ferdig.fys { background: color-mix(in srgb, var(--fys) 16%, var(--white)); }
+.agn-s .k-okt.ferdig.tek, .agn-s .u-okt.ferdig.tek { background: color-mix(in srgb, var(--tek) 16%, var(--white)); }
+.agn-s .k-okt.ferdig.slag, .agn-s .u-okt.ferdig.slag { background: color-mix(in srgb, var(--slag) 12%, var(--white)); }
+.agn-s .k-okt.ferdig.spill, .agn-s .u-okt.ferdig.spill { background: color-mix(in srgb, var(--spill) 14%, var(--white)); }
+.agn-s .k-okt.ferdig.turn, .agn-s .u-okt.ferdig.turn { background: color-mix(in srgb, var(--turn) 12%, var(--white)); }
+.agn-s .k-okt.ferdig.noy, .agn-s .u-okt.ferdig.noy { background: var(--sand-150); }
+.agn-s .k-okt.ferdig span, .agn-s .u-okt.ferdig span { opacity: 1; color: var(--graphite-800); }
+.agn-s .k-okt.test, .agn-s .u-okt.test { background: var(--white); color: var(--graphite-900); box-shadow: inset 0 0 0 1.5px var(--graphite-900); }
+.agn-s .k-okt.opptatt, .agn-s .u-okt.opptatt { background: repeating-linear-gradient(135deg, var(--sand-150) 0 6px, var(--sand-300) 6px 7px); }
+.agn-s .heldag .heldag-okt.turn { background: var(--turn); color: #fff; border-color: var(--turn); }
+
+.agn-s .kal-kort-lag { position: fixed; inset: 0; z-index: 130; background: transparent; }
+.agn-s .kal-kort { position: fixed; width: 316px; max-height: calc(100dvh - 24px); overflow-y: auto; box-sizing: border-box; display: grid; gap: var(--r3); padding: 16px; border-radius: 12px; background: var(--white); box-shadow: 0 14px 36px rgba(20, 20, 19, .18), 0 0 0 1px var(--sand-300); }
+.agn-s .kal-kort .ark-topp { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.agn-s .kal-kort h2 { margin: 0; font: 600 17px/1.25 var(--sans); }
+.agn-s .kal-kort .knapper { display: grid; gap: 8px; }
+.agn-s .kal-kort-to { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes kal-kort-inn { from { opacity: 0; scale: .96; } }
+  .agn-s .kal-kort { animation: kal-kort-inn 180ms cubic-bezier(.23, 1, .32, 1) both; }
+}

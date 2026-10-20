@@ -33,6 +33,15 @@ mock.module("next/navigation", {
   },
 });
 
+// «Ingen tilgang» erstatter 404 når kontoen mangler WANG-rolle (designløftet 20.10). Byttes ut her fordi
+// next/image ikke kan lastes under react-server-betingelsen testene kjører med.
+function TestWangIngenTilgang(props: { epost?: string | null }) {
+  return { type: "WangIngenTilgang", props };
+}
+mock.module("@/components/wang/WangSystemside", {
+  namedExports: { WangIngenTilgang: TestWangIngenTilgang, WangSystemside: () => null },
+});
+
 mock.module("next/cache", {
   namedExports: { revalidatePath: () => undefined },
 });
@@ -222,10 +231,11 @@ test.beforeEach(() => {
   periodeWheres.length = 0;
 });
 
-test("coachruten henter aldri elevlisten når gruppetilgang mangler", async () => {
+test("coachruten henter aldri elevlisten når gruppetilgang mangler, og viser «Ingen tilgang»", async () => {
   const side = await coachPage();
   coachGruppeId = null;
-  await assert.rejects(side(), (error) => error === IKKE_FUNNET);
+  const svar = (await side()) as { type: unknown };
+  assert.equal(svar.type, TestWangIngenTilgang);
   assert.equal(liveKall, 0);
 });
 
@@ -394,7 +404,7 @@ test("skjermoversikten krever innlogget trener eller sportssjef", async () => {
 test("skjermoversikten kaller vakten med ADMIN/COACH og krever WANG-gruppe", async () => {
   const side = await skjermerPage();
   coachGruppeId = null;
-  await assert.rejects(side(), (error) => error === IKKE_FUNNET);
+  assert.equal(((await side()) as { type: unknown }).type, TestWangIngenTilgang);
   assert.deepEqual(sisteAllow, ["ADMIN", "COACH"]);
   coachGruppeId = "wang-top-id";
   const props = propsFra(await side());

@@ -272,3 +272,15 @@
 .phn .phr-hullhode h2 small { font: 500 16px/1.3 var(--phn-sans); letter-spacing: 0; opacity: .92; }
 .phn .phr-slagliste [aria-pressed="true"] { background: var(--phr-spill-50); }
 .phn .phr-ingress a { color: var(--phn-g900); font-weight: 600; text-underline-offset: 3px; }
+
+/* Designløftet 20.10: Registrer runde er nøytral (grafitt og sand), ikke spillfarget. Hullhodet er en lys flate med hullstripe. */
+.phn.phr-fullskjerm { --phn-spill-ink: var(--phn-g900); --phr-spill-50: var(--phn-sand-100); --phr-spill-100: var(--phn-sand-300); }
+.phn.phr-fullskjerm .phr-hullhode { background: transparent; color: var(--phn-g900); padding: 0; gap: 12px; }
+.phn.phr-fullskjerm .phr-hullhode .phr-hode-tekst { opacity: 1; color: var(--phn-g800); }
+.phn.phr-fullskjerm .phr-hullhode h1 { font-size: 40px; letter-spacing: -.035em; }
+.phn.phr-fullskjerm .phr-hullhode h1 small { color: var(--phn-g800); opacity: 1; }
+.phn.phr-fullskjerm .phr-hullhode .phn-pille { background: var(--phn-sand-150); color: var(--phn-g900); }
+.phn.phr-fullskjerm .phr-stripe button { border: 1px solid var(--phn-sand-300); background: var(--phn-sand-100); color: var(--phn-g900); }
+.phn.phr-fullskjerm .phr-stripe .naa { background: var(--phn-g900); border-color: var(--phn-g900); color: #fff; }
+.phn.phr-fullskjerm .phr-stripe .ikke { background: var(--phn-hvit); }
+.phn.phr-fullskjerm .phr-valg > [aria-pressed="true"], .phn.phr-fullskjerm .phr-ruter button[aria-pressed="true"], .phn.phr-fullskjerm .phr-chips button[aria-pressed="true"] { background: var(--phn-g900); border-color: var(--phn-g900); color: #fff; }

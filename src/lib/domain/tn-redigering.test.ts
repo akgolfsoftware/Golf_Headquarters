@@ -174,3 +174,19 @@ test("TO-04: helse- og lisensdata skrives bare når spilleren har delt profilen 
   assert.equal((await lagreSpillerstatus({ ...bruker, role: "ADMIN" as const }, input)).ok, true);
   erMedlem = false;
 });
+
+test("Prosess og adferd godtar bare hele tall 1–5, og tomt er ikke vurdert", async () => {
+  const { UttakSchema } = await skriv();
+  const les = (prosessAdferd: unknown) => UttakSchema.safeParse({ spillerId: "s1", arrangement: "EM 2027", status: "UTTATT", prosessAdferd });
+  for (const ok of ["1", "3", "5", 4]) {
+    const r = les(ok);
+    assert.equal(r.success, true);
+    if (r.success) assert.equal(r.data.prosessAdferd, Number(ok));
+  }
+  for (const tom of ["", undefined, null]) {
+    const r = les(tom);
+    assert.equal(r.success, true);
+    if (r.success) assert.equal(r.data.prosessAdferd, null);
+  }
+  for (const feil of ["0", "6", "2.5", "x", -1]) assert.equal(les(feil).success, false);
+});

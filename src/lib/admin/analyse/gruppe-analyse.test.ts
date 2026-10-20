@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { byggEnGruppeAnalyse, oktFraWorkbench, type OktInn } from "./gruppe-analyse";
+import { byggEnGruppeAnalyse, byggEtterlevelsePerGruppe, oktFraWorkbench, type OktInn } from "./gruppe-analyse";
 
 const now = new Date("2026-09-30T12:00:00Z");
 const okt = (userId: string, dagerSiden: number, min: number, status: OktInn["status"], akse = "TEK"): OktInn => ({
@@ -35,4 +35,13 @@ test("Workbench-status og dato oversettes riktig", () => {
   assert.equal(o.status, "PLANNED");
   assert.equal(o.scheduledAt.toISOString(), "2026-09-28T10:00:00.000Z");
   assert.equal(o.akse, "SLAG");
+});
+
+test("etterlevelse per gruppe regnes hver for seg, og tom gruppe gir null", () => {
+  const per = byggEtterlevelsePerGruppe(
+    [{ id: "a", spillerIds: ["p1"] }, { id: "b", spillerIds: ["p2"] }, { id: "c", spillerIds: [] }],
+    [okt("p1", 3, 60, "COMPLETED"), okt("p1", 2, 60, "PLANNED"), okt("p2", 4, 40, "COMPLETED")],
+    now,
+  );
+  assert.deepEqual(per, { a: 50, b: 100, c: null });
 });

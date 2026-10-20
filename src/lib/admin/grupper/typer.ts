@@ -18,6 +18,10 @@ export interface GruppeV2 {
   antallMedlemmer: number;
   nesteOkt: string | null;
   faste: FastTid[];
+  /** Hovedcoachens navn (Group.coach). */
+  coachNavn?: string | null;
+  /** Gjennomført mot planlagt tid, siste fire uker. «null» = ingen forfalte økter (vises som «—»). */
+  etterlevelsePct?: number | null;
 }
 export interface GrupperData {
   grupper: GruppeV2[];
@@ -60,6 +64,8 @@ export type GruppeDetaljV2Data = {
   totalRunder: number;
   proAndel: number;
   antallSamlinger: number;
+  /** Gjennomført mot planlagt, siste fire uker (samme tall som Gruppeanalysen). */
+  etterlevelsePct?: number | null;
   coachNavn: string | null;
   coachEpost: string | null;
   nesteSamling: (SamlingRad & { description: string | null }) | null;

@@ -1403,7 +1403,7 @@ export async function hentTnSpillerProfil(bruker: TnBruker, spillerId: string, a
 
 // ── Uttak, spillerstatus og college (Anders 27.09.2026) ──
 
-export type TnUttakRad = { id: string; spillerId: string; arrangement: string; status: string; begrunnelse: string | null; decidedAt: Date };
+export type TnUttakRad = { id: string; spillerId: string; arrangement: string; status: string; begrunnelse: string | null; prosessAdferd: number | null; decidedAt: Date };
 
 export async function hentTnUttak(bruker: TnBruker, kontekst: TnArbeidskontekst): Promise<TnUttakRad[]> {
   const aktuell = await hentTnArbeidskontekst(bruker);
@@ -1411,7 +1411,7 @@ export async function hentTnUttak(bruker: TnBruker, kontekst: TnArbeidskontekst)
   const data = await lesTnProfiler(bruker, (tx, spillerId) => tx.tnUttak.findMany({ where: { groupId: kontekst.gruppe.id, userId: spillerId }, orderBy: [{ arrangement: "asc" }, { decidedAt: "desc" }] }));
   if (!data || data.kontekst.gruppe.id !== kontekst.gruppe.id) return [];
   const rader = data.rader.flat().sort((a, b) => a.arrangement.localeCompare(b.arrangement, "nb") || b.decidedAt.getTime() - a.decidedAt.getTime());
-  return rader.map((r) => ({ id: r.id, spillerId: r.userId, arrangement: r.arrangement, status: r.status, begrunnelse: r.begrunnelse, decidedAt: r.decidedAt }));
+  return rader.map((r) => ({ id: r.id, spillerId: r.userId, arrangement: r.arrangement, status: r.status, begrunnelse: r.begrunnelse, prosessAdferd: r.prosessAdferd, decidedAt: r.decidedAt }));
 }
 
 export type TnUttaksrundeRad = { arrangement: string; frist: Date | null; plasser: number | null; reserver: number | null };

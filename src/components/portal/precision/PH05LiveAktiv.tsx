@@ -1,13 +1,15 @@
 "use client";
 
 /**
- * PH-05 Live aktiv i nytt design (pakke 2 Treningsøkten). Alltid lyst tema (Anders 14.10).
- * Fasit: docs/design-system/utkast-playerhq/treningsokt.html, skjerm «aktiv». Stil: src/styles/playerhq-ny-okt.css.
+ * PH-05 Live aktiv i designløftet 20.10.2026. Alltid lyst tema (Anders 14.10).
+ * Fasit: Claude Design-canvaset «PlayerHQ nøkkelskjermer» (https://claude.ai/artifact/XdsbBEHwJhdrD4YJMMpdK1),
+ * «3 Live-økt · mobil 390» og «PC 1280». Stil: src/styles/playerhq-ny-okt.css (§Designløft Live).
  *
  * Avvik:
  *   - Én teller per øvelse (slag eller putter) i stedet for fire (Uten ball, Lav hastighet, Automatikk, Slag):
- *     økta lagrer bare ett repetisjonstall per øvelse.
- *   - Egen klokke per øvelse og dra for å endre rekkefølge er ikke med; økta har én klokke.
+ *     økta lagrer bare ett repetisjonstall per øvelse. Fire tellere krever et tillegg i datamodellen (venter).
+ *   - Øvelsesklokka er lokal (teller mens økta ikke er på pause) og lagres ikke; den viser tid mot øvelsens planlagte minutter.
+ *   - Teknisk oppgave med video og dra for å endre rekkefølge er ikke med; økta har én rekkefølge.
  *   - Ingen riggrad i tests/visual/skjerm-mapping.ts; målt med tests/visual/precision/maal.mjs PH-05.
  *
  *
@@ -20,8 +22,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Play, Pause, Undo2, ArrowRight, Check, Video } from "lucide-react";
-import { AkseMerke } from "@/components/precision/pa";
+import { Play, Pause, ArrowRight, Check, Video } from "lucide-react";
 import {
   type LiveAktivData,
   formatClock,
@@ -32,6 +33,19 @@ import { STORAGE_BUCKETS } from "@/lib/storage/buckets";
 import "@/styles/precision-athletics.css";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-okt.css";
+
+const MOTORIKK: Record<string, string> = { UTEN_BALL: "Uten ball", LAV_HAST: "Lav hastighet", AUTO: "Automatikk" };
+/** «SLAG_INNSPILL_AUTO» gir merkene «SLAG», «Innspill» og «Automatikk». Ukjente koder gir færre merker, aldri gjetting. */
+function lagMerker(code: string | undefined): string[] {
+  if (!code) return [];
+  const deler = code.split("_");
+  const ut: string[] = [];
+  if (deler[0]) ut.push(deler[0]);
+  if (deler[1]) ut.push(deler[1].charAt(0) + deler[1].slice(1).toLowerCase());
+  const motor = deler.slice(2).join("_");
+  if (MOTORIKK[motor]) ut.push(MOTORIKK[motor]!);
+  return ut;
+}
 
 interface PH05LiveAktivProps {
   data: LiveAktivData;
@@ -50,6 +64,7 @@ export function PH05LiveAktiv({ data, onFinish }: PH05LiveAktivProps) {
   const [pause, setPause] = useState(data.pauset ?? false);
   const [endOpen, setEndOpen] = useState(false);
   const [seconds, setSeconds] = useState(data.initialSeconds || 0);
+  const [drillSek, setDrillSek] = useState<number[]>(() => drills.map(() => 0));
 
   // Workbench-økt: reps, kommentar og video lagres per øvelse (krav 2).
   const lagrer = data.lagring === "workbench";
@@ -144,9 +159,10 @@ export function PH05LiveAktiv({ data, onFinish }: PH05LiveAktivProps) {
     if (pause || empty) return;
     const interval = setInterval(() => {
       setSeconds((s) => s + 1);
+      setDrillSek((d) => d.map((v, i) => (i === cur ? v + 1 : v)));
     }, 1000);
     return () => clearInterval(interval);
-  }, [pause, empty]);
+  }, [pause, empty, cur]);
 
   const add = (n: number) => {
     const neste = Math.max(0, (reps[cur] || 0) + n);
@@ -193,69 +209,98 @@ export function PH05LiveAktiv({ data, onFinish }: PH05LiveAktivProps) {
   };
 
   const pct = beregnProsent(curReps, activeDrill.quantity);
-  return <div className="pa-root phn phn-okt" data-theme="light" data-od-id="playerhq-live-aktiv" style={{ minHeight: "100dvh" }}>
-    <div className="smal">
-      <div className="hode-okt">
-        <div className="okt-rad"><span className="pille-live"><i />Live</span>
-          <span className="phn-knapper">
-            <button type="button" className="phn-knapp sek" onClick={() => setPause(!pause)} aria-pressed={pause}>{pause ? <Play size={18} /> : <Pause size={18} />}{pause ? "Fortsett" : "Pause"}</button>
-            <button type="button" className="phn-knapp sek" onClick={() => setEndOpen(true)}>Avslutt</button>
-          </span>
-        </div>
-        <h1>{data.title}</h1>
-        <div className="klokkerad"><span className="oktklokke" aria-label={`Tid ${formatClock(seconds)}`}><span>ØKTEN</span>{formatClock(seconds)}</span><span className="sub">{pause ? "Pause" : `av ${data.totalMinutes} min`}</span></div>
+  const igjenReps = Math.max(0, activeDrill.quantity - curReps);
+  const naadd = activeDrill.quantity > 0 && curReps >= activeDrill.quantity;
+  const planSum = drills.reduce((n, d) => n + d.quantity, 0);
+  const planMin = drills.reduce((n, d) => n + d.minutes, 0);
+  const neste = drills[cur + 1];
+  const drillMin = Math.floor((drillSek[cur] ?? 0) / 60);
+  const drillPct = activeDrill.minutes > 0 ? Math.min(100, ((drillSek[cur] ?? 0) / (activeDrill.minutes * 60)) * 100) : 0;
+  const merker = lagMerker(activeDrill.code);
+  const naesteTekst = isLast ? "Fullfør økta" : `Neste: ${neste?.name ?? ""}`;
+  return <div className="pa-root phn phn-okt phn-lv" data-theme="light" data-od-id="playerhq-live-aktiv" style={{ minHeight: "100dvh" }}>
+    <header className="lv-hode">
+      <button type="button" className="lv-tekstknapp" onClick={() => setEndOpen(true)}>Avslutt</button>
+      <span className="lv-midt"><b>{data.title}</b><small>{pause ? "På pause" : "Pågår"}</small></span>
+      <span className="lv-klokke" aria-label={`Tid ${formatClock(seconds)}`}><b>{formatClock(seconds)}</b><small>av {formatClock(data.totalMinutes * 60)}</small></span>
+    </header>
+
+    {empty ? <div className="lv-side"><section className="phn-kort dempet"><b className="undertittel">Ingen øvelser i økten</b><p className="phn-forklar">Økten har ingen øvelser å registrere. Du kan avslutte og lagre den.</p></section>
+      <div className="lv-bunn"><button type="button" className="phn-knapp pri stor" onClick={() => setEndOpen(true)}>Avslutt økten</button></div></div> : <>
+      <div className="lv-fremdrift" role="img" aria-label={`Øvelse ${cur + 1} av ${drills.length}`}>
+        {drills.map((d, i) => <i key={d.id || i} className={i === cur ? "na" : i < cur || ((reps[i] || 0) >= d.quantity && d.quantity > 0) ? "ok" : ""} style={{ flex: Math.max(1, d.minutes) }} />)}
       </div>
 
-      {empty ? <section className="phn-kort dempet"><b className="undertittel">Ingen øvelser i økten</b><p className="phn-forklar">Økten har ingen øvelser å registrere. Du kan avslutte og lagre den.</p></section> : <>
-        <div className="stripe" role="list" aria-label="Øvelser">
-          {drills.map((drill, idx) => {
-            const ferdig = (reps[idx] || 0) >= drill.quantity && drill.quantity > 0;
-            return <button key={drill.id || idx} role="listitem" type="button" className="fan" onClick={() => setCur(idx)} aria-current={idx === cur ? "step" : undefined} aria-label={`Øvelse ${idx + 1}: ${drill.name}${ferdig ? ", gjennomført" : ""}`}>
-              <i className={idx === cur ? "na" : ferdig ? "ok" : ""}>{ferdig && idx !== cur ? <Check size={16} /> : idx + 1}</i>
-            </button>;
-          })}
-        </div>
+      <div className="lv-side">
+        <div className="lv-hoved">
+          <div className="lv-ovelse">
+            <span className={`lv-eyebrow lv-ak-${activeDrill.axis}`}>Øvelse {cur + 1} av {drills.length}{activeDrill.minutes ? ` · ${activeDrill.minutes} min` : ""}</span>
+            <h1>{activeDrill.name}</h1>
+            <span className="lv-merker">{merker.map((m) => <span key={m}>{m}</span>)}</span>
+          </div>
 
-        <section className="phn-kort" aria-label="Aktiv øvelse">
-          <div className="okt-rad"><span className="phn-dato">Øvelse {cur + 1} av {drills.length}</span><AkseMerke axis={activeDrill.axis} /></div>
-          <b className="undertittel" style={{ fontSize: 20 }}>{activeDrill.name}</b>
-          {activeDrill.code && <span className="sub">{activeDrill.code}</span>}
-          <div className="teller">
-            <div className="teller-topp"><b>{activeDrill.unit === "putter" ? "Putter" : "Slag"}</b><span className="teller-tall" aria-live="polite">{curReps}<small>av {activeDrill.quantity > 0 ? activeDrill.quantity : "—"}</small></span></div>
-            <div className="phn-stolpe-lys" aria-hidden><span style={{ width: `${pct}%` }} /></div>
-            <div className="trinn">
-              <button type="button" aria-label="Angre én" onClick={() => add(-1)}><Undo2 size={18} /> −1</button>
-              <button type="button" onClick={() => add(1)}>+1</button>
-              <button type="button" onClick={() => add(5)}>+5</button>
+          <section className="lv-reps" aria-label="Repetisjoner mot planen">
+            <div className="lv-reps-topp"><b>Repetisjoner mot planen</b><span>{totalRepsSum} av {planSum || "—"}</span></div>
+            <div className="lv-teller">
+              <span className="lv-etikett"><span>{activeDrill.unit === "putter" ? "Putter" : "Slag"}</span></span>
+              <b className="teller-tall" aria-live="polite">{curReps}<small>av {activeDrill.quantity > 0 ? activeDrill.quantity : "—"}</small></b>
+              <span className="lv-spor" aria-hidden><i className={naadd ? "ok" : ""} style={{ width: `${pct}%` }} /></span>
+              <span className={`lv-status${naadd ? " ok" : ""}`}>{activeDrill.quantity <= 0 ? "Ingen plan satt" : naadd ? "Nådd planen" : `${igjenReps} igjen`}</span>
+              <span className="lv-trinn">
+                <button type="button" aria-label="Minus 1" onClick={() => add(-1)}>−1</button>
+                <button type="button" className="pluss" aria-label="Pluss 1" onClick={() => add(1)}>+1</button>
+                <button type="button" aria-label="Pluss 5" onClick={() => add(5)}>+5</button>
+              </span>
             </div>
+          </section>
+
+          <div className="lv-handling">
+            <button type="button" className="lv-pause" onClick={() => setPause(!pause)} aria-pressed={pause}>{pause ? <Play size={18} aria-hidden /> : <Pause size={18} aria-hidden />}{pause ? "Fortsett" : "Pause"}</button>
+            <button type="button" className="lv-neste" onClick={handleNextOrFinish} disabled={fullforer}>
+              <span><b>{isLast ? "Fullfør økta" : "Ferdig med øvelsen"}</b><small>{naesteTekst}</small></span>
+              {isLast ? <Check size={20} aria-hidden /> : <ArrowRight size={20} aria-hidden />}
+            </button>
           </div>
-        </section>
+          {!lagrer && feil && <p role="status" className="sub">{feil}</p>}
+        </div>
 
-        {lagrer && drills[cur] && <section className="phn-kort" aria-label="Kommentar og video">
-          <label className="phn-felt" htmlFor="ph05-kommentar">Kommentar til øvelsen
-            <textarea id="ph05-kommentar" rows={3} maxLength={1000} value={kommentarer[cur] ?? ""}
-              onChange={(e) => { const verdi = e.target.value; setKommentarer((prev) => prev.map((k, i) => (i === cur ? verdi : k))); }}
-              onBlur={() => void lagreOvelse(cur, { reps: reps[cur] || 0, kommentar: kommentarer[cur] ?? "" })} />
-          </label>
-          <input ref={videoInput} type="file" accept="video/*" capture="environment" hidden
-            onChange={(e) => { const fil = e.target.files?.[0]; e.target.value = ""; if (fil) void lastOppVideo(fil); }} />
-          <div className="phn-knapper">
-            <button type="button" className="phn-knapp sek" disabled={videoBusy} onClick={() => videoInput.current?.click()}><Video size={18} />{videoBusy ? "Laster opp …" : "Legg til video"}</button>
-            {(videoer[cur] ?? 0) > 0 && <span className="sub">{videoer[cur]} lagret</span>}
-          </div>
-          <p role="status" aria-live="polite" className="sub" style={{ minHeight: 20 }}>{feil ?? (lagreStatus === "lagrer" ? "Lagrer …" : lagreStatus === "lagret" ? "Lagret" : "")}</p>
-        </section>}
+        <aside className="lv-aside">
+          <section className="lv-klokke-kort" aria-label="Øvelsen">
+            <span><span>Øvelsen</span><b>{formatClock(drillSek[cur] ?? 0)}<small> / {formatClock(activeDrill.minutes * 60)}</small></b></span>
+            <span className="lv-spor" aria-hidden><i style={{ width: `${drillPct}%` }} /></span>
+            <small>{drillMin} av {activeDrill.minutes} min · planlagt tid for øvelsen</small>
+          </section>
 
-        <Link href={`/portal/live/${data.sessionId}/tapper`} className="phn-knapp sek" style={{ justifySelf: "start" }}>Åpne slagtelleren med kølle og TrackMan</Link>
-      </>}
+          {lagrer && drills[cur] && <section className="phn-kort" aria-label="Kommentar og video">
+            <label className="phn-felt" htmlFor="ph05-kommentar">Kommentar til øvelsen
+              <textarea id="ph05-kommentar" rows={3} maxLength={1000} value={kommentarer[cur] ?? ""}
+                onChange={(e) => { const verdi = e.target.value; setKommentarer((prev) => prev.map((k, i) => (i === cur ? verdi : k))); }}
+                onBlur={() => void lagreOvelse(cur, { reps: reps[cur] || 0, kommentar: kommentarer[cur] ?? "" })} />
+            </label>
+            <input ref={videoInput} type="file" accept="video/*" capture="environment" hidden
+              onChange={(e) => { const fil = e.target.files?.[0]; e.target.value = ""; if (fil) void lastOppVideo(fil); }} />
+            <div className="phn-knapper">
+              <button type="button" className="phn-knapp sek" disabled={videoBusy} onClick={() => videoInput.current?.click()}><Video size={18} />{videoBusy ? "Laster opp …" : "Legg til video"}</button>
+              {(videoer[cur] ?? 0) > 0 && <span className="sub">{videoer[cur]} lagret</span>}
+            </div>
+            <p role="status" aria-live="polite" className="sub" style={{ minHeight: 20 }}>{feil ?? (lagreStatus === "lagrer" ? "Lagrer …" : lagreStatus === "lagret" ? "Lagret" : "")}</p>
+          </section>}
 
-      <div className="startbar">
-        {!lagrer && feil && <p role="status" className="sub">{feil}</p>}
-        <button type="button" className="phn-knapp pri stor" onClick={empty ? () => setEndOpen(true) : handleNextOrFinish} disabled={fullforer}>
-          {empty ? "Avslutt økten" : isLast ? "Fullfør økt" : "Neste øvelse"}{!empty && (isLast ? <Check size={20} /> : <ArrowRight size={20} />)}
-        </button>
+          <section className="lv-liste" aria-label="Øvelsene">
+            <b>Øvelsene · {planMin} min</b>
+            {drills.map((d, i) => {
+              const ferdig = i < cur || ((reps[i] || 0) >= d.quantity && d.quantity > 0 && i !== cur);
+              return <button key={d.id || i} type="button" className={i === cur ? "na" : ""} aria-current={i === cur ? "step" : undefined} onClick={() => setCur(i)}
+                aria-label={`Øvelse ${i + 1}: ${d.name}${ferdig ? ", gjennomført" : ""}`}>
+                <i className={ferdig ? "ok" : ""}>{ferdig ? <Check size={14} aria-hidden /> : i + 1}</i>
+                <span>{d.name}</span><small>{d.minutes} min</small>
+              </button>;
+            })}
+          </section>
+          <Link href={`/portal/live/${data.sessionId}/tapper`} className="phn-knapp sek">Åpne slagtelleren med kølle og TrackMan</Link>
+        </aside>
       </div>
-    </div>
+    </>}
 
     {endOpen && <div className="pa-scrim" onClick={() => setEndOpen(false)}>
       <div className="pa-dialog" role="dialog" aria-modal="true" aria-label="Avslutte økta?" style={{ maxWidth: 440 }} onClick={(e) => e.stopPropagation()}>
