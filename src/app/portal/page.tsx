@@ -16,7 +16,6 @@ import { LAG_LABEL } from "@/lib/domain/kalender-lag";
 import { hentEffektivNaa } from "@/lib/testing/dato-override";
 import { getFysiskData } from "@/lib/portal-fysisk/fysisk-data";
 import { hentDagsform, hentFullfortHistorikk, hentIDagPopup, hentSgRunder } from "@/lib/portal/ph01-data";
-import { forbedringsomraader } from "@/lib/portal/ph01-forbedring";
 import { oktBilde } from "@/lib/portal/okt-bilde";
 import { hentEtterlevelse } from "@/lib/portal/etterlevelse-data";
 import { etterlevelseFra } from "@/lib/domain/etterlevelse";
@@ -51,6 +50,7 @@ const tid = (d: Date) => OSLO_TID.format(d).replace(".", ":");
 const minTilTid = (m: number) => `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
 const AKSE: Record<string, Akse> = { FYS: "fys", TEK: "tek", SLAG: "slag", SPILL: "spill", TURN: "turn" };
 const akse = (p: string | null | undefined): Akse => AKSE[p ?? ""] ?? "tek";
+const KORT_DAG = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"] as const;
 const STATUS: Partial<Record<string, PH01Okt["status"]>> = { PLANNED: "Planlagt", IN_PROGRESS: "Pågår", COMPLETED: "Gjennomført" };
 
 function varighet(min: number): string {
@@ -186,6 +186,44 @@ async function PortalHjemInnhold() {
     periode: `siste fire uker, ${OSLO_D_MND_KORT.format(etterlevelseFra(naa))}–${OSLO_D_MND_KORT.format(naa)}`,
   } : null;
 
+  const kpi = data.kpiStats;
+  const snitt: PH01Props["snitt"] = kpi.avgScore == null ? null : {
+    verdi: kpi.avgScore,
+    endring: kpi.avgScorePrev == null ? null : Math.round((kpi.avgScore - kpi.avgScorePrev) * 10) / 10,
+    trend: kpi.scoreTrend,
+    dato: kpi.lastRoundAt ? OSLO_DM.format(kpi.lastRoundAt) : null,
+  };
+
+  const dager: PH01Props["dager"] = planLaast ? [] : data.week.map((d, i) => ({
+    kort: KORT_DAG[i] ?? d.dayLabel,
+    iDag: d.isToday,
+    segmenter: d.sessions.filter((s) => s.status !== "SKIPPED" && s.status !== "CANCELLED").map((s) => ({ akse: akse(s.pyramidArea), min: s.durationMin, gjort: s.status === "COMPLETED" })),
+  }));
+
+  const iDagIndeks = data.week.findIndex((d) => d.isToday);
+  const nesteDag = iDagIndeks < 0 ? null : data.week.slice(iDagIndeks + 1).map((d) => ({ d, s: d.sessions.filter((x) => x.status === "PLANNED").sort((a, b) => a.startTime.getTime() - b.startTime.getTime())[0] })).find((x) => x.s);
+  const nesteOkt: PH01Props["nesteOkt"] = planLaast || !nesteDag?.s ? null : {
+    dag: `${KORT_DAG[data.week.indexOf(nesteDag.d)] ?? nesteDag.d.dayLabel} ${nesteDag.d.dayNumber}`,
+    tid: tid(nesteDag.s.startTime), tittel: nesteDag.s.title, akse: akse(nesteDag.s.pyramidArea), min: nesteDag.s.durationMin,
+    sted: nesteDag.s.sted, antallOvelser: nesteDag.s.drills.length, href: nesteDag.s.href,
+  };
+
+  const cm = data.coachMessage;
+  const melding: PH01Props["melding"] = cm && cm.from === "coach" ? {
+    fra: cm.coachName, tekst: cm.preview || cm.subject, tid: `${OSLO_DM.format(cm.createdAt)} ${tid(cm.createdAt)}`, href: cm.href,
+  } : null;
+
+  const sg: PH01Props["sg"] = {
+    runder: sgRunder.length,
+    dato: kpi.lastRoundAt ? OSLO_DM.format(kpi.lastRoundAt) : null,
+    verdier: [
+      { navn: "Utslag", verdi: kpi.sgBreakdown.ott },
+      { navn: "Innspill", verdi: kpi.sgBreakdown.app },
+      { navn: "Nærspill", verdi: kpi.sgBreakdown.arg },
+      { navn: "Putting", verdi: kpi.sgBreakdown.putt },
+    ],
+  };
+
   const feil = !dag.ok;
   const tom = !feil && okter.length === 0 && godkjenninger.length === 0 && wp.plannedMin === 0 && historikk.total === 0;
 
@@ -196,7 +234,8 @@ async function PortalHjemInnhold() {
     tomTekst: `Du har ingen økter ${dagLabel.toLowerCase()} ${OSLO_D_MND.format(naa)}${wp.plannedMin === 0 ? " og ingen treningsplan ennå" : ""}.`,
     feilKode: `Feil · I dag · ${tid(naa)}`,
     okter, nesteId: neste?.id ?? null, godkjenninger,
-    uka, maal, forbedring: forbedringsomraader(sgRunder), sgRunder: sgRunder.length, etterlevelse: ett,
+    uka, maal, sgRunder: sgRunder.length, etterlevelse: ett,
+    snitt, dager, nesteOkt, melding, sg,
     fireukerssjekk: visIup ? { href: "/portal/mal/evaluering" } : null,
     dagsform, agenda, fys, turn, fullfort,
     popup: popup && { id: popup.id, kind: popup.kind, title: popup.title, body: popup.body, tid: `I dag · ${tid(popup.createdAt)}`, href: popup.href },
