@@ -58,7 +58,8 @@
    Rosa haster. Status bruker aldri aksefargene.
    Fellessiden /team-wang bruker ingen wg-klasser og påvirkes ikke.
    ========================================================================= */
-.wang-app .wg-shell {
+.wang-app .wg-shell,
+.wang-app .wg-system {
   --wg-navy: #17446f;
   --wg-navy-dyp: #0f172a;
   --wg-navy-dyp-tekst: #0d3050;
