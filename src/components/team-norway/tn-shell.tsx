@@ -282,7 +282,7 @@ export function TnLenke({ href, children, fremhevet = false }: { href: string; c
   );
 }
 
-export type TnSpillerFane = "post" | "oversikt" | "profil" | "tester" | "analyse" | "workbench" | "teknisk-plan" | "evaluering";
+export type TnSpillerFane = "post" | "oversikt" | "profil" | "tester" | "analyse" | "workbench" | "teknisk-plan" | "evaluering" | "turneringsplan";
 
 /**
  * IUP-hodet for alle spillerscopede TN-ruter (Anders 15.10.2026: spillerprofilen
@@ -301,6 +301,7 @@ export function TnSpillerFaner({ spillerId, spillerNavn, aktiv, kanAdministrere,
     { id: "post", label: "Post", href: `/team-norway/spiller/${spillerId}` },
     { id: "tester", label: "Tester", href: `/team-norway/spiller/${spillerId}/tester` },
     { id: "analyse", label: "Analyse", href: `/team-norway/spiller/${spillerId}/analyse` },
+    { id: "turneringsplan", label: "Turneringsplan", href: `/team-norway/spiller/${spillerId}/turneringsplan` },
   ];
   const planfaner: { id: TnSpillerFane; label: string; href: string }[] = kanAdministrere
     ? [
