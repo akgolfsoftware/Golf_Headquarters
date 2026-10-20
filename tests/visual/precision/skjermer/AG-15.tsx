@@ -3,6 +3,8 @@ import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { AdminRolleProvider } from "@/components/v2/rolle";
 import { AG15Tester } from "@/components/admin/precision/AG15Tester";
 import type { AdminTesterV2Data } from "@/components/admin/v2/AdminTesterV2";
+import { byggTesterOversikt, type OversiktResultat } from "@/lib/admin/tester/oversikt-bygg";
+import type { TesterOversiktSide } from "@/lib/admin/tester/oversikt-data";
 
 export const sti = "/admin/tester";
 
@@ -24,10 +26,34 @@ const data: AdminTesterV2Data = {
 
 const tom: AdminTesterV2Data = { ...data, rader: [] };
 
-const Vis = (d: AdminTesterV2Data = data) => (
+/** Syntetisk stall: oppdiktede navn, bygget med den ekte byggefunksjonen. */
+const now = new Date("2026-10-20T10:00:00Z");
+const navnListe = ["Henrik Aas", "Emma Berg", "Mats Lie", "Ida Strand", "Øyvind Rohjan", "Tobias Lindvik med et langt etternavn", "Jonas Bakke", "Sara Holm"];
+const testNavn = ["Driver Basic", "Inspill Basis", "Wedge Variation", "8-ball Variation", "Putt 1-3m", "Golfslag på banen", "18 hulls inspill", "9 hull lengde", "Driver Gate", "Wedge Gate", "TN Putt Gate", "TN Nærspill Gate", "TN VISA Express", "Putt Speed 1x5", "Benkpress", "Trapbar Deadlift", "Standing Long Jump", "Ball Throw", "Clubhead Speed (CHS)"];
+let n = 0;
+const res: OversiktResultat[] = navnListe.flatMap((_, s) => testNavn.flatMap((t, i): OversiktResultat[] => {
+  const k = (s * 7 + i * 3) % 11;
+  if (k === 0 || k === 5) return [];
+  const dagerSiden = k === 3 ? 60 : 2 + ((s + i) % 30);
+  const ganger = i < 5 ? 1 + ((s + i) % 3) : 1;
+  return Array.from({ length: ganger }, (_, g) => ({
+    id: `r${++n}`, userId: `p${s}`, takenAt: new Date(now.getTime() - (dagerSiden + g * 3) * 86_400_000), test: { id: `d${i}`, name: t },
+    recordedById: k % 2 ? "coach" : null, witnessStatus: k === 4 ? "ATTESTED" : "PENDING", visning: i === 10 ? "7 / 10 OK" : "PEI 3,1 %",
+  }));
+}));
+const oversikt: TesterOversiktSide = {
+  ...byggTesterOversikt(navnListe.map((navn, i) => ({ id: `p${i}`, navn })), res, now),
+  grupper: [{ id: "g1", navn: "GFGK Junior Utvikling", antall: 8 }, { id: "g2", navn: "WANG Toppidrett", antall: 11 }],
+  gruppeId: "g1",
+  spillerValg: navnListe.map((navn, i) => ({ id: `p${i}`, navn })),
+  nesteTestdag: { dato: "29.10", ukedag: "torsdag", sted: "Mulligan", tittel: "Testdag", gruppe: "GFGK Junior Utvikling", deltakere: 8, dagerTil: 9 },
+};
+const oversiktTom: TesterOversiktSide = { ...byggTesterOversikt([], [], now), grupper: [], gruppeId: null, spillerValg: [], nesteTestdag: null };
+
+const Vis = (d: AdminTesterV2Data = data, o: TesterOversiktSide | null = oversikt) => (
   <AdminRolleProvider erAdmin>
     <AgencyOSSkall navn="Test Coach">
-      <AG15Tester data={d} />
+      <AG15Tester data={d} oversikt={o} />
     </AgencyOSSkall>
   </AdminRolleProvider>
 );
@@ -39,11 +65,11 @@ const valg = {
 
 export const tilstander = {
   data: Vis(),
-  tom: Vis(tom),
+  tom: Vis(tom, oversiktTom),
   tildel: (
     <AdminRolleProvider erAdmin>
       <AgencyOSSkall navn="Test Coach">
-        <AG15Tester data={data} valg={valg} tildelSpillerId="p1" />
+        <AG15Tester data={data} valg={valg} tildelSpillerId="p1" oversikt={oversikt} />
       </AgencyOSSkall>
     </AdminRolleProvider>
   ),
