@@ -23,10 +23,20 @@ test("demokontoene får bare egen demogruppe, uansett store bokstaver og mellomr
   assert.equal(erDemokonto("DEMO@wang.no"), true);
 });
 
+test("demotrenerne fra 28.09 (kontoene i .env.local) er også demokontoer", () => {
+  assert.equal(gruppeSlugForEpost("demo.sportssjef@wang.no", "WANG"), WANG_DEMO_SLUG);
+  assert.equal(gruppeSlugForEpost("demo.trener@golfforbundet.no", "TEAM_NORWAY"), TN_DEMO_SLUG);
+  assert.equal(gruppeSlugForEpost("demo.sportssjef@wang.no", "TEAM_NORWAY"), null);
+  assert.equal(gruppeSlugForEpost("demo.trener@golfforbundet.no", "WANG"), null);
+  assert.equal(startsideForDemokonto("demo.sportssjef@wang.no"), "/team-wang/coach");
+  assert.equal(startsideForDemokonto("demo.trener@golfforbundet.no"), "/team-norway");
+  assert.equal(erDemokonto("Demo.Trener@golfforbundet.no"), true);
+});
+
 test("en demokonto når aldri den andre flaten eller en ekte gruppe", () => {
   assert.equal(gruppeSlugForEpost("demo@wang.no", "TEAM_NORWAY"), null);
   assert.equal(gruppeSlugForEpost("demo@golfforbundet.no", "WANG"), null);
-  for (const epost of ["demo@wang.no", "demo@golfforbundet.no"]) {
+  for (const epost of ["demo@wang.no", "demo@golfforbundet.no", "demo.sportssjef@wang.no", "demo.trener@golfforbundet.no"]) {
     for (const flate of ["WANG", "TEAM_NORWAY"] as const) {
       const slug = gruppeSlugForEpost(epost, flate);
       assert.ok(slug === null || slug.endsWith("-demo"), `${epost} på ${flate} ga ${slug}`);
