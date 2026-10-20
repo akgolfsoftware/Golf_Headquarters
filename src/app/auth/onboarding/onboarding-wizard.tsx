@@ -53,6 +53,10 @@ export function OnboardingWizard({
   const [tilstand, setTilstand] = useState<"data" | "laster" | "feil">("data");
   const sisteForsok = useRef<() => void>(() => {});
   const invitertEpost = useRef<string | null>(null);
+  // Automatisk søk skjer én gang per fødselsdato (oppslag er begrenset til 10 i timen), og et sent
+  // svar skal aldri overskrive et søk spilleren selv startet etterpå.
+  const autoSoktFor = useRef<string | null>(null);
+  const sokNr = useRef(0);
 
   const endre = (patch: Partial<OppstartVerdier>) => setV((x) => ({ ...x, ...patch }));
 
@@ -105,6 +109,7 @@ export function OnboardingWizard({
             setMelding(r.error ?? "Fødselsdatoen kunne ikke lagres.");
             return;
           }
+          autoSok();
         }
       }
       // Steg 6, under 16: datoen og forelderens e-post sendes sammen, og invitasjonen går ut.
@@ -161,10 +166,29 @@ export function OnboardingWizard({
     });
   }
 
+  /** Søk på navn og fødselsår rett etter at datoen er lagret, så treffene står klare i steg 4. Spilleren bekrefter selv. */
+  function autoSok() {
+    if (autoSoktFor.current === fodt) return;
+    autoSoktFor.current = fodt;
+    const nr = ++sokNr.current;
+    setKobling((k) => ({ ...k, feil: null, kandidater: null, fodselsaar }));
+    sokKandidater({})
+      .then((svar) => {
+        if (nr !== sokNr.current) return;
+        if (!svar.ok) return setKobling((k) => ({ ...k, feil: svar.feil }));
+        setKobling((k) => ({ ...k, kandidater: (svar.kandidater ?? []) as Kandidat[] }));
+      })
+      .catch(() => {
+        // Stille: steg 4 har det manuelle søket som reserve.
+      });
+  }
+
   function sok() {
+    const nr = ++sokNr.current;
     setKobling((k) => ({ ...k, feil: null, kandidater: null, fodselsaar }));
     startTransition(async () => {
       const svar = await sokKandidater({ golfId: v.golfId.trim() || undefined });
+      if (nr !== sokNr.current) return;
       if (!svar.ok) return setKobling((k) => ({ ...k, feil: svar.feil }));
       setKobling((k) => ({ ...k, kandidater: (svar.kandidater ?? []) as Kandidat[] }));
     });
