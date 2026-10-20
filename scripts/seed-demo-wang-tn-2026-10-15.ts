@@ -9,7 +9,9 @@
  * så de ser aldri ekte trenere, kalender eller elever.
  *
  * Passordene leses fra miljøet (DEMO_WANG_EMAIL, DEMO_WANG_PASSWORD,
- * DEMO_TN_EMAIL, DEMO_TN_PASSWORD i .env.local) og skrives aldri ut.
+ * DEMO_TN_EMAIL, DEMO_TN_PASSWORD i .env.local, eller de norske navnene
+ * DEMO_WANG_EPOST / DEMO_WANG_PASSORD / DEMO_TN_EPOST / DEMO_TN_PASSORD) og
+ * skrives aldri ut.
  * Kontoene opprettes med email_confirm: true, så ingen e-post sendes.
  *
  * Bare rader, ingen skjemaendring. Kan kjøres flere ganger uten dubletter.
@@ -25,8 +27,15 @@ import { PrismaClient } from "../src/generated/prisma/client";
 import { TN_DEMO_SLUG, WANG_DEMO_SLUG } from "../src/lib/domain/demo-grupper";
 import { NAVNGITT_PROFIL_SCOPE, NAVNGITT_PROFIL_TEKST_VERSJON } from "../src/lib/deling/navngitt-regler";
 
+const NORSKE_NAVN: Record<string, string> = {
+  DEMO_WANG_EMAIL: "DEMO_WANG_EPOST",
+  DEMO_WANG_PASSWORD: "DEMO_WANG_PASSORD",
+  DEMO_TN_EMAIL: "DEMO_TN_EPOST",
+  DEMO_TN_PASSWORD: "DEMO_TN_PASSORD",
+};
+
 function krev(navn: string): string {
-  const verdi = process.env[navn]?.trim();
+  const verdi = process.env[navn]?.trim() || process.env[NORSKE_NAVN[navn] ?? ""]?.trim();
   if (!verdi) throw new Error(`${navn} mangler i .env.local`);
   return verdi;
 }
