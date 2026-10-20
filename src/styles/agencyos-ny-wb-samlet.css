@@ -27,3 +27,29 @@ body:has(.wb-samlet) [data-fab]{top:clamp(8px,var(--ws-fab-top,8px),calc(100dvh 
 }
 .ws-continuous-calendar{grid-template-columns:50px repeat(7,minmax(100px,1fr));align-items:start}.ws-week-hours{position:relative;background:var(--surface-card)}.ws-week-hours>span{position:absolute;left:4px;font:var(--type-meta);color:var(--text-secondary)}.ws-desktop-day{border-width:0 0 0 1px;border-radius:0;min-height:0}.ws-desktop-day .ws-day-hour{left:0;right:0}.ws-desktop-day .ws-day-hour>span{display:none}.ws-desktop-day .ws-day-hour:after{left:0}.ws-desktop-day .ws-day-events{left:0;right:0;pointer-events:none}.ws-desktop-day .ws-day-block{pointer-events:auto;min-width:0}.ws-desktop-day .ws-session{padding:4px;gap:1px;border-radius:var(--radius)}.ws-desktop-day .ws-session strong{font:var(--type-meta)}.ws-desktop-day .ws-session small{font-size:9px}.ws-time-place{position:absolute;left:0;right:0;height:48px;min-height:44px;border:0;background:transparent;text-align:left;padding:4px;color:var(--text-secondary);cursor:pointer}.ws-time-place:hover{background:var(--surface-flat)}.ws-time-place:focus-visible{outline-offset:-3px}
 @media(max-width:760px){body:has(.wb-samlet):has([data-tl-player-island]){--ws-app-nav-offset:calc(84px + env(safe-area-inset-bottom) + var(--ak-cookie-h,0px));--ws-bottom-stack:calc(56px + var(--ws-app-nav-offset))}body:has([data-tl-player-island]) .wb-samlet .ws-nav{padding-bottom:0}}
+
+/* Designløftet 20.10 (canvas rad 6 Workbench, godkjent av Anders): øktkort fylt i aksefargen,
+   utkast stiplet i aksefargen, gjennomført lyst, merke for gruppeøkter, og «Lagt inn mot fordelt». */
+.wb-samlet .ws-session{--ws-fyll:var(--ak-graphite-800,#3a3935);border:0;border-left:0;border-radius:8px;color:#fff;background:var(--ws-fyll)}
+.wb-samlet .ws-session[style*="axis-fys"]{--ws-fyll:var(--ak-fys-ink-fylt)}.wb-samlet .ws-session[style*="axis-tek"]{--ws-fyll:var(--ak-tek-ink-fylt)}.wb-samlet .ws-session[style*="axis-slag"]{--ws-fyll:var(--ak-slag)}.wb-samlet .ws-session[style*="axis-spill"]{--ws-fyll:var(--ak-spill-ink-fylt)}.wb-samlet .ws-session[style*="axis-turn"]{--ws-fyll:var(--ak-turn)}
+.wb-samlet .ws-session[data-status=PUBLISHED],.wb-samlet .ws-session[data-status=SCHEDULED]{background:var(--ws-fyll)}
+.wb-samlet .ws-session small{color:rgba(255,255,255,.9)}
+.wb-samlet .ws-session[data-status=DRAFT]{background:var(--surface-card);color:var(--text-primary);box-shadow:inset 0 0 0 1.5px var(--ws-fyll);background-image:none;border:1.5px dashed var(--ws-fyll)}
+.wb-samlet .ws-session[data-status=DRAFT] small{color:var(--text-secondary)}
+.wb-samlet .ws-session[data-status=COMPLETED]{background:color-mix(in srgb,var(--ws-axis) 16%,var(--surface-card));color:var(--text-primary)}
+.wb-samlet .ws-session[data-status=COMPLETED] small{color:var(--text-secondary)}
+.wb-samlet .ws-session[aria-pressed=true]{box-shadow:0 0 0 2px var(--surface-card),0 0 0 4px var(--text-primary)}
+.wb-samlet .ws-merke{align-self:flex-start;font:600 10px/1 var(--font-sans);padding:3px 6px;border-radius:4px;background:rgba(255,255,255,.2);color:#fff}
+.wb-samlet .ws-session[data-status=DRAFT] .ws-merke,.wb-samlet .ws-session[data-status=COMPLETED] .ws-merke{background:var(--surface-flat);color:var(--text-primary)}
+.wb-samlet .ws-merke[data-merke=egen]{background:#fff;color:#141413}
+.ws-budsjett-blokk{display:flex;flex-direction:column;gap:10px;padding:14px 20px 12px;min-width:0}
+.ws-budsjett{display:flex;flex-direction:column;gap:10px;padding:14px 16px;border-radius:12px;background:var(--surface-flat);min-width:0}
+.ws-budsjett-topp{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}.ws-budsjett-topp h2{font:600 16px/1.25 var(--font-sans)}.ws-budsjett-topp h2 .ws-num{font-weight:500;color:var(--text-secondary);font-size:14px}
+.ws-budsjett-akser{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
+.ws-budsjett-akse{display:flex;flex-direction:column;gap:6px;min-width:0}.ws-budsjett-navn{display:flex;justify-content:space-between;align-items:baseline;gap:4px;font-size:12px}.ws-budsjett-navn b{letter-spacing:.04em}.ws-budsjett-navn .ws-num{color:var(--text-secondary)}
+.ws-budsjett-spor{position:relative;height:8px;border-radius:4px;background:var(--border-hairline);overflow:hidden;display:block}.ws-budsjett-fyll{position:absolute;inset:0 auto 0 0;display:block;border-radius:4px;background:var(--text-primary)}
+.ws-budsjett-fyll.a-fys{background:var(--ak-fys-ink-fylt)}.ws-budsjett-fyll.a-tek{background:var(--ak-tek-ink-fylt)}.ws-budsjett-fyll.a-slag{background:var(--ak-slag)}.ws-budsjett-fyll.a-spill{background:var(--ak-spill-ink-fylt)}.ws-budsjett-fyll.a-turn{background:var(--ak-turn)}
+.ws-gruppelinje{font-size:13px;color:var(--text-secondary)}.ws-gruppelinje b{color:var(--text-primary);font-weight:600}
+@media (prefers-reduced-motion:no-preference){@keyframes ws-fyll-inn{from{scale:0 1}}.ws-budsjett-fyll{transform-origin:0 50%;animation:ws-fyll-inn 620ms cubic-bezier(.23,1,.32,1) both}}
+@media(max-width:760px){.ws-budsjett-blokk{padding:12px}.ws-budsjett-akser{grid-template-columns:1fr;gap:8px}.ws-budsjett-akse{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);align-items:center;gap:10px}}
+.ws-desktop-day .ws-session{position:relative}.ws-desktop-day .ws-merke{position:absolute;right:3px;bottom:3px;font-size:9px;padding:2px 4px}

@@ -27,7 +27,7 @@ mock.module("next/navigation", { namedExports: { useRouter: () => ({ push() {}, 
 mock.module("next/link", { defaultExport: "a" });
 mock.module("sonner", { namedExports: { toast: { success() {}, error() {} } } });
 for (const css of ["precision-a4.css", "precision-a8.css"]) mock.module(`@/styles/${css}`, { namedExports: {} });
-mock.module("@/components/workbench/workbench-samlet.css", { namedExports: {} });
+mock.module("@/styles/agencyos-ny-wb-samlet.css", { namedExports: {} });
 mock.module("@/components/precision/pa-a4", { namedExports: { Ark: "sheet", Dialogboks: "dialog" } });
 mock.module("@/components/admin/precision/AG11Ark", { namedExports: {
   NyOktArk: "new-session", OktArk: "session-sheet", OvelseArk: "exercise-sheet", PubliserArk: "publish-sheet", UkeplanArk: "week-sheet", CoachnotatArk: "note-sheet", UKETYPE_NAVN: { UTVIKLING: "Utvikling" },
