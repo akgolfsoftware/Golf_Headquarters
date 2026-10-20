@@ -1,52 +1,19 @@
 "use client";
 
 /**
- * Precision Athletics — Turneringer (AG-17).
- *
- * Kilde: Claude Design AG-17 (arkiv/2026-09-30/agencyos/screens/AG-17.jsx).
- * Rute: /admin/turnering og /admin/turneringer.
- *
- * 5 faner:
- * 1. alle: Alle turneringer med DataTable og detaljpanel
- * 2. mine: Mine spillere
- * 3. kart: Skjematisk kart over Sør-Norge med interaktive prikker
- * 4. dup: Dubletter med sammenligning A vs B
- * 5. ny: Opprett turnering skjema med validering
+ * Turneringer (AG-17) i nytt design: /admin/turnering (og /admin/turneringer).
+ * Faner: Alle, Mine spillere, Kart (skjematisk, Sør-Norge), Dubletter og Ny turnering.
+ * Tegning: canvaset «AgencyOS nøkkelskjermer», raden «Turnering, TrackMan og runder».
+ * Alle felt som ikke finnes i basen er null og vises som «—». Aldri oppdiktet.
  */
 
-import { useState, useMemo } from "react";
-import {
-  Calendar,
-  Check,
-  GitMerge,
-  Plus,
-  Trophy,
-  X,
-} from "lucide-react";
-import {
-  FeilTilstand,
-  Knapp,
-  KnappLenke,
-  LasterTilstand,
-  Meta,
-  Sidehode,
-  StatusPille,
-  TomTilstand,
-} from "@/components/precision/pa";
-import {
-  Ark,
-  Faner,
-  Kort,
-  KortHode,
-  Nokkelverdi,
-  Tabell,
-  type Kolonne,
-} from "@/components/precision/pa-a5";
-import "@/styles/precision-a17.css";
+import { useMemo, useState } from "react";
+import { Feil, KnappLenke, Knapp, Laster, Nokkelverdier, Pille, Seksjon, Tom, Topp } from "@/components/admin/agencyos-ny/ny";
+import "@/styles/agencyos-ny-mer.css";
+import "@/styles/agencyos-ny-turnering.css";
 
 export type TurneringStatus = "Påmeldt" | "Åpen" | "Spilt";
 
-/** Alle felt som ikke finnes i basen er null og vises som «—». Aldri oppdiktet. */
 export type TurneringRad = {
   id: string;
   name: string;
@@ -82,342 +49,189 @@ export type AG17TurneringerProps = {
 
 const TOM_DATA: AG17Data = { tournaments: [], tDups: [] };
 
-export function AG17Turneringer({
-  tilstand = "data",
-  data = TOM_DATA,
-  startFane = "alle",
-}: AG17TurneringerProps) {
-  const [fane, setFane] = useState(startFane);
+type FaneId = "alle" | "mine" | "kart" | "dup" | "ny";
+const FANER: FaneId[] = ["alle", "mine", "kart", "dup", "ny"];
+
+/** Adressene bruker «mine-spillere» og «dubletter»; komponenten bruker «mine» og «dup». */
+function normaliserFane(raw?: string): FaneId {
+  if (raw === "mine-spillere") return "mine";
+  if (raw === "dubletter") return "dup";
+  return FANER.includes(raw as FaneId) ? (raw as FaneId) : "alle";
+}
+
+const INGRESS = "Kun brutto score. Dato, bane og påmeldte står slik de ligger i basen.";
+
+export function AG17Turneringer({ tilstand = "data", data = TOM_DATA, startFane = "alle" }: AG17TurneringerProps) {
+  const [fane, setFane] = useState<FaneId>(normaliserFane(startFane));
+  const [valgtId, setValgtId] = useState<string | null>(null);
   const turneringer = data.tournaments;
   const dubletter = data.tDups;
-  const [valgtId, setValgtId] = useState<string | null>(null);
-
   const erTom = tilstand === "tom";
 
-  const synligeTurneringer = useMemo(() => {
+  const synlige = useMemo(() => {
     if (erTom) return [];
-    if (fane === "mine") {
-      return turneringer.filter((t) => (t.paameldte ?? 0) > 0);
-    }
-    return turneringer;
+    return fane === "mine" ? turneringer.filter((t) => (t.paameldte ?? 0) > 0) : turneringer;
   }, [turneringer, fane, erTom]);
 
-  const aktivTurnering = useMemo(() => {
-    if (!turneringer.length || !valgtId) return null;
-    return turneringer.find((t) => t.id === valgtId) || null;
-  }, [turneringer, valgtId]);
+  const aktiv = turneringer.find((t) => t.id === valgtId) ?? null;
+  const mineAntall = turneringer.filter((t) => (t.paameldte ?? 0) > 0).length;
 
-  const faner = [
-    { value: "alle", label: "Alle", count: erTom ? undefined : turneringer.length },
-    {
-      value: "mine",
-      label: "Mine spillere",
-      count: erTom ? undefined : turneringer.filter((t) => (t.paameldte ?? 0) > 0).length,
-    },
-    { value: "kart", label: "Kart" },
-    { value: "dup", label: "Dubletter", count: erTom ? undefined : dubletter.length },
-    { value: "ny", label: "Ny turnering" },
-  ];
+  const topp = (
+    <Topp
+      dato="Spillere · fra GolfBox og manuelt"
+      tittel="Turneringer"
+      ingress={INGRESS}
+      handlinger={fane !== "ny" ? <Knapp onClick={() => setFane("ny")}>Ny turnering</Knapp> : undefined}
+    />
+  );
 
-  /* Kolonner for DataTable */
-  const kolonner: Kolonne<TurneringRad>[] = [
-    {
-      key: "date",
-      label: "Dato",
-      mono: true,
-      render: (r) => r.date,
-    },
-    {
-      key: "name",
-      label: "Turnering",
-      render: (r) => (
-        <span style={{ fontWeight: 600, color: "var(--text-primary)" }}>{r.name}</span>
-      ),
-    },
-    {
-      key: "course",
-      label: "Bane",
-      render: (r) => r.course ?? "—",
-    },
-    {
-      key: "mine",
-      label: "Påmeldte",
-      align: "right",
-      mono: true,
-      render: (r) => (r.paameldte != null && r.paameldte > 0 ? r.paameldte : "—"),
-    },
-    {
-      key: "st",
-      label: "Status",
-      render: (r) => (r.st ? <StatusPille tone={r.st === "Spilt" ? "ok" : "neutral"}>{r.st}</StatusPille> : "—"),
-    },
-  ];
-
-  /* Detaljpanel innhold */
-  function renderDetaljPanel(turnering: TurneringRad) {
+  if (tilstand === "laster") return <div className="agn-s">{topp}<Laster tekst="Henter turneringer …" /></div>;
+  if (tilstand === "feil") {
     return (
-      <div className="pa-a17-detalj" aria-label={`Detaljer for ${turnering.name}`}>
-        <div style={{ display: "flex", gap: 8, alignItems: "baseline", flexWrap: "wrap", justifyContent: "space-between" }}>
-          <span style={{ font: "var(--type-title-s, 600 16px/1.3 var(--font-sans))", flex: "1 1 200px" }}>
-            {turnering.name}
-          </span>
-          {turnering.st && (
-            <StatusPille tone={turnering.st === "Spilt" ? "ok" : "neutral"}>{turnering.st}</StatusPille>
-          )}
-        </div>
+      <div className="agn-s">
+        {topp}
+        <Feil tittel="Turneringene kunne ikke hentes" tekst="Prøv igjen om litt." kode="TURNERINGER" onProv={() => window.location.reload()} />
+      </div>
+    );
+  }
 
-        <Nokkelverdi
-          items={[
-            ["Dato", turnering.date],
-            ["Bane", turnering.course ?? "—"],
-            [
-              "Påmeldte spillere",
-              turnering.paameldte != null && turnering.paameldte > 0 ? String(turnering.paameldte) : "—",
-            ],
+  const navn: Record<FaneId, string> = {
+    alle: erTom ? "Alle" : `Alle · ${turneringer.length}`,
+    mine: erTom ? "Mine spillere" : `Mine spillere · ${mineAntall}`,
+    kart: "Kart",
+    dup: erTom ? "Dubletter" : `Dubletter · ${dubletter.length}`,
+    ny: "Ny turnering",
+  };
+
+  const detalj = (t: TurneringRad) => (
+    <Seksjon tittel={t.name} kilde={t.st ?? undefined}>
+      <div className="kort" aria-label={`Detaljer for ${t.name}`}>
+        <Nokkelverdier
+          rader={[
+            ["Dato", t.date],
+            ["Bane", t.course ?? "—"],
+            ["Påmeldte spillere", t.paameldte != null && t.paameldte > 0 ? String(t.paameldte) : "—"],
           ]}
         />
-
-        <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 8 }}>
-          <Knapp variant="ghost" size="sm" onClick={() => setValgtId(null)} icon={X}>
-            Lukk
-          </Knapp>
+        <div className="knapper">
+          <KnappLenke href={`/admin/tournaments/${t.id}`}>Åpne turneringen</KnappLenke>
+          <Knapp variant="sek" onClick={() => setValgtId(null)}>Lukk</Knapp>
         </div>
       </div>
-    );
-  }
+    </Seksjon>
+  );
 
-  /* Kart rendering */
-  function renderKart() {
+  const liste = (
+    <Seksjon tittel="Turneringsliste" kilde="Brutto score">
+      <div className="liste">
+        {synlige.map((t) => (
+          <button key={t.id} type="button" className="drift-rad" aria-pressed={valgtId === t.id} onClick={() => setValgtId(t.id)}>
+            <span><b>{t.name}</b><span className="kilde">{t.date} · {t.course ?? "—"}</span></span>
+            <span className="mono kilde">{t.paameldte != null && t.paameldte > 0 ? `${t.paameldte} påmeldt` : "—"}</span>
+            {t.st ? <Pille tone={t.st === "Spilt" ? "ok" : "noy"}>{t.st}</Pille> : <span className="kilde">—</span>}
+          </button>
+        ))}
+      </div>
+    </Seksjon>
+  );
+
+  function kart() {
     const la = [58, 60.2];
     const lo = [7.6, 11.6];
-    const medKoordinat = turneringer.filter(
-      (t) =>
-        t.lat != null && t.lon != null && t.lat >= la[0] && t.lat <= la[1] && t.lon >= lo[0] && t.lon <= lo[1],
-    );
-
+    const medKoordinat = turneringer.filter((t) => t.lat != null && t.lon != null && t.lat >= la[0] && t.lat <= la[1] && t.lon >= lo[0] && t.lon <= lo[1]);
     return (
-      <div className="pa-a17-layout">
-        <Kort>
-          <KortHode tittel="Kart · Sør-Norge" aside="SKJEMATISK · IKKE MÅLESTOKK" />
-          <div className="pa-a17-kart-beholder" role="region" aria-label="Geografisk kart over turneringer i Sør-Norge">
-            {medKoordinat.map((t) => {
-              const x = (((t.lon as number) - lo[0]) / (lo[1] - lo[0])) * 100;
-              const y = (1 - ((t.lat as number) - la[0]) / (la[1] - la[0])) * 100;
-              const erValgt = t.id === valgtId;
-              const harMine = (t.paameldte ?? 0) > 0;
-
-              return (
-                <button
-                  key={t.id}
-                  type="button"
-                  aria-label={`${t.name} på ${t.course ?? "ukjent bane"}`}
-                  aria-pressed={erValgt}
-                  onClick={() => setValgtId(t.id)}
-                  className="pa-a17-kart-punkt"
-                  style={{
-                    left: `calc(${x}% - 22px)`,
-                    top: `calc(${y}% - 22px)`,
-                  }}
-                >
-                  <span
-                    className={`pa-a17-kart-prikk ${harMine ? "pa-a17-kart-prikk--mine" : "pa-a17-kart-prikk--andre"}`}
-                    style={{
-                      width: erValgt ? 16 : 12,
-                      height: erValgt ? 16 : 12,
-                    }}
-                  />
-                </button>
-              );
-            })}
+      <div className="to-del bred-v">
+        <Seksjon tittel="Kart · Sør-Norge" kilde="Skjematisk, ikke målestokk">
+          <div className="kort">
+            <div className="tur-kart" role="region" aria-label="Geografisk kart over turneringer i Sør-Norge">
+              {medKoordinat.map((t) => {
+                const x = (((t.lon as number) - lo[0]) / (lo[1] - lo[0])) * 100;
+                const y = (1 - ((t.lat as number) - la[0]) / (la[1] - la[0])) * 100;
+                const harMine = (t.paameldte ?? 0) > 0;
+                return (
+                  <button key={t.id} type="button" aria-label={`${t.name} på ${t.course ?? "ukjent bane"}`} aria-pressed={t.id === valgtId} onClick={() => setValgtId(t.id)} className="tur-punkt" style={{ left: `calc(${x}% - 22px)`, top: `calc(${y}% - 22px)` }}>
+                    <span className={harMine ? "tur-prikk mine" : "tur-prikk"} />
+                  </button>
+                );
+              })}
+            </div>
+            {medKoordinat.length === 0 && <p className="kilde">Ingen turneringer har koordinater ennå.</p>}
+            <p className="kilde"><span className="tur-prikk mine liten" /> Med påmeldte &nbsp; <span className="tur-prikk liten" /> Ingen påmeldte</p>
           </div>
-
-          {medKoordinat.length === 0 && (
-            <Meta>INGEN TURNERINGER HAR KOORDINATER ENNÅ</Meta>
-          )}
-
-          <div className="pa-a17-kart-forklaring">
-            <span className="pa-a17-kart-tegn">
-              <span className="pa-a17-kart-prikk pa-a17-kart-prikk--mine" style={{ width: 10, height: 10 }} />
-              <Meta>MED PÅMELDTE</Meta>
-            </span>
-            <span className="pa-a17-kart-tegn">
-              <span className="pa-a17-kart-prikk pa-a17-kart-prikk--andre" style={{ width: 10, height: 10 }} />
-              <Meta>INGEN PÅMELDTE</Meta>
-            </span>
-          </div>
-        </Kort>
-
-        {aktivTurnering ? (
-          renderDetaljPanel(aktivTurnering)
-        ) : (
-          <Kort>
-            <p style={{ margin: 0, font: "var(--type-body-s, 14px/1.4 var(--font-sans))", color: "var(--text-secondary)" }}>
-              Trykk på et punkt i kartet for å se detaljer om turneringen.
-            </p>
-          </Kort>
-        )}
+        </Seksjon>
+        {aktiv ? detalj(aktiv) : <div className="kort"><p className="forklar">Trykk på et punkt i kartet for å se detaljer om turneringen.</p></div>}
       </div>
     );
   }
 
-  /* Dubletter rendering */
-  function renderDubletter() {
+  function dublettvisning() {
     if (!dubletter.length || erTom) {
-      return (
-        <TomTilstand
-          icon={Check}
-          title="Ingen dubletter"
-          text="Manuelle oppføringer som ligner en turnering fra en kilde, vises her."
-        />
-      );
+      return <Tom tittel="Ingen dubletter" tekst="Manuelle oppføringer som ligner en turnering fra en kilde, vises her." />;
     }
-
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+      <div className="agn-s-stack">
         {dubletter.map((d) => (
-          <Kort key={d.id}>
-            <KortHode tittel="Mulig dublett" aside={d.match.toUpperCase()} />
-            <div className="pa-a17-dup-par">
+          <Seksjon key={d.id} tittel="Mulig dublett" kilde={d.match}>
+            <div className="kort tur-par">
               {(["a", "b"] as const).map((side) => (
-                <div key={side} className="pa-a17-dup-boks">
-                  <Meta>{side.toUpperCase()} · {d[side].src.toUpperCase()}</Meta>
-                  <span style={{ fontWeight: 600, fontSize: 14 }}>{d[side].name}</span>
-                  <span style={{ font: "var(--type-num-s, 13px tabular-nums)" }}>
-                    {d[side].date} · {d[side].course}
-                  </span>
+                <div key={side}>
+                  <span className="kilde mono">{side.toUpperCase()} · {d[side].src}</span>
+                  <b className="undertittel">{d[side].name}</b>
+                  <span className="kilde mono">{d[side].date} · {d[side].course}</span>
                 </div>
               ))}
             </div>
-          </Kort>
+          </Seksjon>
         ))}
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", minHeight: 44, alignItems: "center" }}>
-          <KnappLenke href="/admin/tournaments/dubletter" icon={GitMerge}>
-            Slå sammen i dubletter-lista
-          </KnappLenke>
-        </div>
+        <div className="knapper"><KnappLenke href="/admin/tournaments/dubletter">Slå sammen i dubletter-lista</KnappLenke></div>
       </div>
-    );
-  }
-
-  /* Ny turnering rendering */
-  function renderNyTurnering() {
-    return (
-      <Kort style={{ maxWidth: 640 }}>
-        <KortHode tittel="Ny turnering" aside="/ADMIN/TOURNAMENTS/NY" />
-        <p style={{ margin: 0, fontSize: 14, color: "var(--text-secondary)" }}>
-          Turneringer legges inn i skjemaet for ny turnering. Det lagrer i basen.
-        </p>
-        <div style={{ paddingTop: 8 }}>
-          <KnappLenke href="/admin/tournaments/ny" icon={Plus}>
-            Åpne skjema for ny turnering
-          </KnappLenke>
-        </div>
-      </Kort>
     );
   }
 
   return (
-    <div className="pa-a17-side">
-      {/* Topphode */}
-      <Sidehode
-        kicker="Turneringer"
-        title="Turneringer"
-        sub="Kun brutto score. Dato, bane og påmeldte står slik de ligger i basen."
-      />
+    <div className="agn-s" data-testid="ag17-turneringer">
+      {topp}
 
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
-        <Faner faner={faner} value={fane} onChange={(v) => { setFane(v); setValgtId(null); }} />
-        {fane !== "ny" && (
-          <Knapp
-            variant="secondary"
-            size="sm"
-            icon={Plus}
-            onClick={() => setFane("ny")}
-            style={{ minHeight: 44, minWidth: 44 }}
-          >
-            Ny turnering
-          </Knapp>
-        )}
+      <div className="teller-rad">
+        <div className="teller"><span className="e">Turneringer</span><b className="t">{erTom ? "—" : turneringer.length}</b></div>
+        <div className="teller"><span className="e">Med mine spillere</span><b className="t">{erTom ? "—" : mineAntall}</b></div>
+        <div className="teller"><span className="e">Mulige dubletter</span><b className="t">{erTom ? "—" : dubletter.length}</b></div>
       </div>
 
-      {/* Tilstandshåndtering */}
-      {tilstand === "laster" && <LasterTilstand text="Henter turneringer …" />}
-
-      {tilstand === "feil" && (
-        <FeilTilstand
-          icon={Calendar}
-          title="Turneringene kunne ikke hentes"
-          text="Prøv igjen om litt."
-          code="TURNERINGER"
-          retry={<Knapp variant="secondary" onClick={() => window.location.reload()}>Prøv igjen</Knapp>}
-        />
-      )}
+      <nav className="valg" aria-label="Turneringer">
+        {FANER.map((f) => <button key={f} type="button" aria-pressed={fane === f} onClick={() => { setFane(f); setValgtId(null); }}>{navn[f]}</button>)}
+      </nav>
 
       {tilstand === "tom" && fane !== "ny" && fane !== "dup" && (
-        <TomTilstand
-          icon={Trophy}
-          title="Ingen turneringer"
-          text="Legg inn en turnering, eller vent på nattlig henting fra GolfBox."
-          actions={
-            <Knapp variant="primary" icon={Plus} onClick={() => setFane("ny")} style={{ minHeight: 44, minWidth: 44 }}>
-              Ny turnering
-            </Knapp>
-          }
-        />
+        <Tom tittel="Ingen turneringer" tekst="Legg inn en turnering, eller vent på nattlig henting fra GolfBox." handling={<Knapp onClick={() => setFane("ny")}>Ny turnering</Knapp>} />
       )}
 
       {tilstand === "data" && (
         <>
           {(fane === "alle" || fane === "mine") && (
-            synligeTurneringer.length === 0 ? (
-              <TomTilstand
-                icon={Trophy}
-                title="Ingen turneringer funnet"
-                text={fane === "mine" ? "Ingen av spillerne dine er meldt på en turnering." : "Ingen turneringer registrert."}
-                actions={
-                  <Knapp variant="primary" icon={Plus} onClick={() => setFane("ny")} style={{ minHeight: 44, minWidth: 44 }}>
-                    Ny turnering
-                  </Knapp>
-                }
-              />
+            synlige.length === 0 ? (
+              <Tom tittel="Ingen turneringer funnet" tekst={fane === "mine" ? "Ingen av spillerne dine er meldt på en turnering." : "Ingen turneringer registrert."} handling={<Knapp onClick={() => setFane("ny")}>Ny turnering</Knapp>} />
             ) : (
-              <div className="pa-a17-layout">
-                <div>
-                  <Tabell
-                    caption="Turneringsliste · Brutto score"
-                    columns={kolonner}
-                    rows={synligeTurneringer}
-                    selected={valgtId}
-                    onSelect={(r) => setValgtId(r.id)}
-                  />
-                </div>
-                {aktivTurnering && (
-                  <div className="pa-desktop-only">
-                    {renderDetaljPanel(aktivTurnering)}
-                  </div>
-                )}
+              <div className="to-del bred-v">
+                {liste}
+                {aktiv ? detalj(aktiv) : <span aria-hidden />}
               </div>
             )
           )}
-
-          {fane === "kart" && renderKart()}
-          {fane === "dup" && renderDubletter()}
-          {fane === "ny" && renderNyTurnering()}
+          {fane === "kart" && kart()}
+          {fane === "dup" && dublettvisning()}
         </>
       )}
 
-      {/* Mobil Ark / Sheet for detaljvisning */}
-      {aktivTurnering && (
-        <div className="pa-mobile-only">
-          <Ark
-            open={!!aktivTurnering}
-            onClose={() => setValgtId(null)}
-            kicker="Turnering"
-            tittel={aktivTurnering.name}
-          >
-            {renderDetaljPanel(aktivTurnering)}
-          </Ark>
-        </div>
+      {tilstand === "tom" && fane === "dup" && dublettvisning()}
+
+      {fane === "ny" && (
+        <Seksjon tittel="Ny turnering" kilde="/admin/tournaments/ny">
+          <div className="kort">
+            <p className="forklar">Turneringer legges inn i skjemaet for ny turnering. Det lagrer i basen.</p>
+            <div className="knapper"><KnappLenke href="/admin/tournaments/ny">Åpne skjema for ny turnering</KnappLenke></div>
+          </div>
+        </Seksjon>
       )}
     </div>
   );

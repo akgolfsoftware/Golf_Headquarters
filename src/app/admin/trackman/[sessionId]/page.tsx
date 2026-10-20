@@ -16,15 +16,14 @@
  *   - Tilgang: økten åpnes bare for coach med tilgang til spilleren (05.10.2026).
  */
 
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { harCoachLesetilgangTilSpiller } from "@/lib/auth/coached";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
-import { TL } from "@/lib/v2/train-lock";
-import { Icon } from "@/components/v2/icon";
+import { KnappLenke, Tom, Topp } from "@/components/admin/agencyos-ny/ny";
 import { computeTrackManDispersionMap } from "@/lib/trackman/dispersion-map";
+import "@/styles/agencyos-ny-mer.css";
 import { TrackManSessionDetail } from "@/components/trackman/TrackManSessionDetail";
 
 export const dynamic = "force-dynamic";
@@ -75,68 +74,31 @@ export default async function AdminTrackmanSessionPage({ params }: Props) {
 
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
-      <div className="agn-legacy">
-      <Link
-        href="/admin/trackman"
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          gap: 6,
-          fontFamily: TL.font.sans,
-          fontSize: 13,
-          color: TL.mute,
-          textDecoration: "none",
-          marginBottom: 12,
-        }}
-      >
-        <Icon name="arrow-left" size={15} />
-        TrackMan
-      </Link>
-
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap", maxWidth: 720, margin: "0 auto 4px" }}>
-        <span style={{ fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute }}>
-          {sesjon.user.name}
-          {sesjon.user.hcp != null ? ` · HCP ${sesjon.user.hcp.toFixed(1).replace(".", ",")}` : ""}
-        </span>
-        <div style={{ display: "flex", gap: 12 }}>
-          <Link href={spillerHref} style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute, textDecoration: "none" }}>
-            Åpne spiller →
-          </Link>
-          <Link href={portalDetalj} style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute, textDecoration: "none" }}>
-            Full detalj (plot) →
-          </Link>
-        </div>
-      </div>
-
-      {kolleShots.length === 0 ? (
-        <div
-          style={{
-            maxWidth: 720,
-            margin: "0 auto",
-            background: TL.elev,
-            border: `1px solid ${TL.hair}`,
-            borderRadius: TL.radius.card,
-            padding: "28px 20px",
-            textAlign: "center",
-          }}
-        >
-          <Icon name="crosshair" size={22} style={{ color: TL.mute }} />
-          <p style={{ margin: "10px 0 0", fontFamily: TL.font.sans, fontSize: 14, color: TL.text }}>
-            Ingen slag med side og carry i denne økta.
-          </p>
-          <p style={{ margin: "4px 0 0", fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute }}>
-            Kartet er aldri blankt av seg selv — importer en økt med begge feltene, så tegnes spredningen her.
-          </p>
-        </div>
-      ) : (
-        <TrackManSessionDetail
-          club={valgtKolle}
-          dateText={datoTekst}
-          sourceLabel={kilde}
-          result={computeTrackManDispersionMap(kolleShots)}
-          allShotsHref="#alle-slag"
+      <div className="agn-s">
+        <Topp
+          tilbake={{ href: "/admin/trackman", tekst: "TrackMan og video" }}
+          dato={`TrackMan · ${datoTekst} · ${kilde}`}
+          tittel={sesjon.user.name ?? "Spiller"}
+          ingress={sesjon.user.hcp != null ? `HCP ${sesjon.user.hcp.toFixed(1).replace(".", ",")} · ${valgtKolle}` : valgtKolle}
+          handlinger={<>
+            <KnappLenke href={spillerHref}>Åpne spiller</KnappLenke>
+            <KnappLenke href={portalDetalj}>Full detalj (plot)</KnappLenke>
+          </>}
         />
-      )}
+
+        {kolleShots.length === 0 ? (
+          <Tom tittel="Ingen slag med side og carry i denne økta" tekst="Kartet er aldri blankt av seg selv. Importer en økt med begge feltene, så tegnes spredningen her." />
+        ) : (
+          <div className="agn-legacy">
+            <TrackManSessionDetail
+              club={valgtKolle}
+              dateText={datoTekst}
+              sourceLabel={kilde}
+              result={computeTrackManDispersionMap(kolleShots)}
+              allShotsHref="#alle-slag"
+            />
+          </div>
+        )}
       </div>
     </AgencyOSSkall>
   );

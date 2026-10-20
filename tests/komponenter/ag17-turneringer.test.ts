@@ -12,6 +12,8 @@ for (const css of [
   "precision-a7.css",
   "precision-a17.css",
   "precision-komponenter.css",
+  "agencyos-ny-mer.css",
+  "agencyos-ny-turnering.css",
   "precision-athletics.css",
 ]) {
   mock.module(`@/styles/${css}`, { namedExports: {} });

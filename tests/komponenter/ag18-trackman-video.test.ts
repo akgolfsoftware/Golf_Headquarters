@@ -13,6 +13,8 @@ for (const css of [
   "precision-a17.css",
   "precision-a18.css",
   "precision-komponenter.css",
+  "agencyos-ny-mer.css",
+  "agencyos-ny-trackman.css",
   "precision-athletics.css",
 ]) {
   mock.module(`@/styles/${css}`, { namedExports: {} });
@@ -55,7 +57,7 @@ describe("AG18TrackManVideo (TrackMan og video)", async () => {
     const html = vis({ tilstand: "data", startFane: "okter", data });
     assert.match(html, /Testspiller A/);
     assert.match(html, /100,5/);
-    assert.match(html, /MILJØ IKKE REGISTRERT/);
+    assert.match(html, /Miljø ikke registrert/);
     assert.doesNotMatch(html, /7-jern|91,4|158,4|hoftevinkel|Studio 1/);
   });
 
@@ -67,7 +69,7 @@ describe("AG18TrackManVideo (TrackMan og video)", async () => {
 
   test("opptak er ikke koblet og har ingen oppdiktet spiller eller samtykke", () => {
     const html = vis({ tilstand: "data", startFane: "opptak", data });
-    assert.match(html, /IKKE KOBLET ENNÅ/);
+    assert.match(html, /Ikke koblet ennå/);
     assert.doesNotMatch(html, /Tobias|Lindvik|BANKID/);
   });
 
