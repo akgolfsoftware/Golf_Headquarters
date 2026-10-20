@@ -19,7 +19,7 @@ export type MinKurveData = MinKurve & {
 
 /**
  * Henter grunnlaget for «Min kurve» (PH-21) fra den felles spillerprofilen (dashboard.profile_links,
- * migrasjon 0025). Samme kilde som resten av HQ, ingen kopi. Uten bekreftet kobling vises kurven
+ * migrasjon 0026). Samme kilde som resten av HQ, ingen kopi. Uten bekreftet kobling vises kurven
  * som «ikke koblet».
  *
  * Filtrene er de samme som før (konstantene i domenet): til-par for turneringen må ligge mellom

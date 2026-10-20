@@ -112,7 +112,7 @@ const TurneringRundeSchema = z.object({
   mot_felt: Tall,
 });
 
-/** Én turnering i den offisielle historikken (migrasjon 0025). Kilden er navnet i databasen, f.eks. `olyo`. */
+/** Én turnering i den offisielle historikken (migrasjon 0026). Kilden er navnet i databasen, f.eks. `olyo`. */
 const TurneringSchema = z.object({
   tournament_id: z.number().int(),
   turnering: z.string(),

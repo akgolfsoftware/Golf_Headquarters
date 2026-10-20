@@ -1,5 +1,5 @@
 /**
- * Gjør turneringene i spillerprofilen (dashboard, migrasjon 0025) om til formen resten av HQ
+ * Gjør turneringene i spillerprofilen (dashboard, migrasjon 0026) om til formen resten av HQ
  * allerede leser: `OffentligResultat`. Da deler Spiller 360, Team Norway og WANG samme
  * brutto- og plasseringsregler (lesTurneringsresultat) som før, bare med én felles kilde.
  *
