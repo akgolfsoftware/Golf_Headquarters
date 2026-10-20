@@ -12,45 +12,78 @@ import { Dempet, Etikett, Liste, Rad, Seksjon, Stolpe, Talentradar, Verdi } from
 import { AKSE_NAVN } from "@/components/precision/pa";
 import { oktStatus } from "@/lib/admin-spiller/spiller360-visning";
 import type { S360Iup, S360Plan, S360Samtaler, S360Talent, S360Tp } from "@/lib/admin-spiller/spiller360-typer";
+import type { AkseKode } from "@/lib/admin-spiller/spiller360-visning";
 import { TreningsvolumVisning } from "./TreningsvolumVisning";
 
 /* ───────────────────────────── Plan ───────────────────────────── */
 
+const UKEDAGER = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"] as const;
+const AKSE_REKKE: AkseKode[] = ["fys", "tek", "slag", "spill", "turn"];
+const timer = (min: number) => {
+  const t = Math.floor(min / 60), m = Math.round(min % 60);
+  return t && m ? `${t} t ${m}` : t ? `${t} t` : `${m} min`;
+};
+const GJORT = new Set(["COMPLETED"]);
+const HOPPET = new Set(["SKIPPED", "CANCELLED"]);
+
 export function AG08Plan({ d, tom, spillerId }: { d: S360Plan; tom: boolean; spillerId: string }) {
   const uke = tom ? [] : d.uke;
+  const dager = UKEDAGER.map((dag) => ({ dag, okter: uke.filter((o) => o.dag.slice(0, 3).toLocaleLowerCase("nb-NO") === dag.toLocaleLowerCase("nb-NO")) }));
+  const plan = uke.filter((o) => !HOPPET.has(o.status)).reduce((a, o) => a + o.minutter, 0);
+  const gjort = uke.filter((o) => GJORT.has(o.status)).reduce((a, o) => a + o.minutter, 0);
+  const perAkse = AKSE_REKKE.map((a) => ({
+    a,
+    plan: uke.filter((o) => o.akse === a && !HOPPET.has(o.status)).reduce((x, o) => x + o.minutter, 0),
+    gjort: uke.filter((o) => o.akse === a && GJORT.has(o.status)).reduce((x, o) => x + o.minutter, 0),
+  })).filter((x) => x.plan > 0 || x.gjort > 0);
+  const maks = Math.max(1, ...perAkse.map((x) => Math.max(x.plan, x.gjort)));
+  const turneringer = tom ? [] : [...d.kommende.map((t) => ({ ...t, status: "Meldt på", res: null as string | null })), ...d.resultater.map((t) => ({ navn: t.navn, dato: t.dato, status: "Spilt", res: [t.score != null ? String(t.score) : null, t.plassering != null ? `${t.plassering}. plass` : null].filter(Boolean).join(" · ") || null }))];
   return (
-    <div className="a8-to">
-      <div className="a8-stabel">
-        <Seksjon k={d.ukeLabel} meta="PLAN · WORKBENCH">
-          {!uke.length ? <Dempet>Ingen plan ennå.</Dempet> : (
-            <Liste>{uke.map((o) => {
-              const [st, tone] = oktStatus(o.status);
-              return <Rad key={o.id} variant="dag"><Meta>{o.dag.toUpperCase()}</Meta><Etikett a={o.tittel} sub={`${o.akse ? AKSE_NAVN[o.akse] : "—"} · ${o.minutter} MIN`} /><StatusPille tone={tone}>{st}</StatusPille></Rad>;
-            })}</Liste>
+    <div className="s3-plan">
+      <div className="s3-hoved">
+        <section aria-label={d.ukeLabel} className="s3-seksjon">
+          <div className="s3-sek-topp"><h2>{d.ukeLabel}</h2><span className="num">{uke.length ? `${timer(gjort)} av ${timer(plan)} gjennomført` : "—"}</span></div>
+          {!uke.length ? <p className="s3-dempet">Ingen plan denne uka. <Link href={`/admin/workbench/${spillerId}`}>Legg inn i Workbench</Link></p> : (
+            <div className="s3-uke" role="list" aria-label={`${d.ukeLabel}: ${uke.map((o) => `${o.dag} ${o.akse ? AKSE_NAVN[o.akse] : ""} ${o.tittel} ${o.minutter} min, ${oktStatus(o.status)[0]}`).join("; ")}`}>
+              {dager.map((x) => <div key={x.dag} role="listitem" className="s3-dag">
+                <span className="num">{x.dag}</span>
+                {x.okter.length ? x.okter.map((o) => <span key={o.id} className={`s3-okt${o.akse ? ` a-${o.akse}` : " a-noy"}${GJORT.has(o.status) ? " gjort" : ""}${HOPPET.has(o.status) ? " hoppet" : ""}`} title={o.tittel}>
+                  <b>{o.akse ? AKSE_NAVN[o.akse] : "—"}</b><span>{o.minutter} min</span>
+                </span>) : <span className="s3-okt tom">—</span>}
+              </div>)}
+            </div>
           )}
-          <div><KnappLenke size="sm" variant="secondary" icon={Layers} iconName="layers" href={`/admin/workbench/${spillerId}`}>Åpne hele planen i Workbench</KnappLenke></div>
-        </Seksjon>
-        <Seksjon k="I dag" meta={d.naa ? `NÅ · ${d.naa.tidspunkt}`.toUpperCase() : "ØKTLOGG"}>
-          {d.naa && <Etikett a={d.naa.tittel} sub={d.naa.sted?.toUpperCase()} />}
-          {tom || !d.iDag.length ? <Dempet>Ingen økter i dag.</Dempet> : (
-            <Liste>{d.iDag.map((o) => <Rad key={o.id} variant="dag"><Meta>{o.klokke}</Meta><Etikett a={o.tittel} sub={[o.omrade, o.sted].filter(Boolean).join(" · ").toUpperCase()} /><span /></Rad>)}</Liste>
-          )}
-        </Seksjon>
-        <Seksjon k="Hvilken standardplan virker" meta="ESTIMAT TIL NOK DATA">
-          <Dempet>—</Dempet>
-          <Meta>STANDARDPLANENE ER IKKE SKREVET INN I APPEN ENNÅ</Meta>
-        </Seksjon>
+          {uke.length > 0 && <span className="s3-forklar">Fylt = planlagt · lys = gjennomført · stiplet = hoppet over eller avlyst.</span>}
+          <div><Link className="s3-lenke" href={`/admin/workbench/${spillerId}`}>Åpne hele planen i Workbench →</Link></div>
+        </section>
+
+        {perAkse.length > 0 && <section aria-label="Uka per akse" className="s3-seksjon">
+          <div className="s3-sek-topp"><h2>Uka per akse</h2><span className="meta">Timer · denne uka</span></div>
+          {perAkse.map((x) => <div key={x.a} className="s3-akse" role="img" aria-label={`${AKSE_NAVN[x.a]}: ${timer(x.gjort)} gjennomført av ${timer(x.plan)} planlagt`}>
+            <b>{AKSE_NAVN[x.a]}</b>
+            <span className="s3-akse-spor"><i className={`a-${x.a}`} style={{ width: `${(x.gjort / maks) * 100}%` }} /><em style={{ left: `calc(${(x.plan / maks) * 100}% - 1px)` }} /></span>
+            <span className="num">{timer(x.gjort)} / {timer(x.plan)}</span>
+          </div>)}
+          <span className="s3-forklar">Fylt = gjennomført · strek = planlagt.</span>
+        </section>}
+
+        {(d.naa || (!tom && d.iDag.length > 0)) && <section aria-label="I dag" className="s3-seksjon">
+          <div className="s3-sek-topp"><h2>I dag</h2>{d.naa && <span className="meta">Nå · {d.naa.tidspunkt}</span>}</div>
+          {d.naa && <p className="s3-dempet">{d.naa.tittel}{d.naa.sted ? ` · ${d.naa.sted}` : ""}</p>}
+          <div className="s3-rader">{d.iDag.map((o) => <div key={o.id} className="s3-rad"><b className="num">{o.klokke}</b><span><b>{o.tittel}</b><span>{[o.omrade, o.sted].filter(Boolean).join(" · ")}</span></span><span /></div>)}</div>
+        </section>}
+
+        <section aria-label="Turneringer" className="s3-seksjon">
+          <div className="s3-sek-topp"><h2>Turneringer</h2><span className="meta">Påmelding bekreftes ikke her</span></div>
+          {!turneringer.length ? <p className="s3-dempet">Ingen turneringer.</p> : <div className="s3-rader">
+            {turneringer.map((t, i) => <div key={i} className="s3-rad"><b className="num">{t.dato.slice(0, 5)}</b><span><b>{t.navn}</b><span>{t.res ?? t.dato}</span></span><span className="s3-status">{t.status}</span></div>)}
+          </div>}
+        </section>
       </div>
-      <div className="a8-stabel">
-        <Seksjon k="Turneringer" meta="PÅMELDINGER BEKREFTES IKKE HER">
-          {tom || (!d.kommende.length && !d.resultater.length) ? <Dempet>Ingen turneringer.</Dempet> : (
-            <Liste>
-              {d.kommende.map((t, i) => <Rad key={`k${i}`}><Etikett a={t.navn} sub={t.dato} /><Verdi>Påmeldt</Verdi></Rad>)}
-              {d.resultater.map((t, i) => <Rad key={`r${i}`}><Etikett a={t.navn} sub={t.dato} /><Verdi>{[t.score ?? null, t.plassering != null ? `${t.plassering}. plass` : null].filter((x) => x != null).join(" · ") || "—"}</Verdi></Rad>)}
-            </Liste>
-          )}
-        </Seksjon>
-        <Seksjon k="Treningsplan og sesong" meta="TRAININGPLAN · SEASONPLAN">
+
+      <aside className="s3-side">
+        <section aria-label="Treningsplan og sesong" className="s3-boks">
+          <b>Treningsplan og sesong</b>
           <Nokkelverdi items={[
             ["Aktiv plan", d.aktivPlan?.navn ?? null],
             ["Periode", d.aktivPlan?.periode ?? null, { mono: true }],
@@ -60,13 +93,20 @@ export function AG08Plan({ d, tom, spillerId }: { d: S360Plan; tom: boolean; spi
             ["Nå", d.sesong?.naa ? d.sesong.naa.navn : null, { hint: d.sesong?.naa ? `TIL ${d.sesong.naa.til}` : undefined }],
             ["Neste", d.sesong?.neste ? d.sesong.neste.navn : null, { hint: d.sesong?.neste ? `FRA ${d.sesong.neste.fra}` : undefined }],
           ]} />
-        </Seksjon>
-        <Seksjon k="Permisjoner og fravær" meta="HELSEDETALJER BARE MED SAMTYKKE">
-          {!d.permisjoner.length ? <Dempet>Ingen permisjoner registrert.</Dempet> : (
-            <Liste>{d.permisjoner.map((p) => <Rad key={p.id} variant="3"><Etikett a={p.aarsak} sub={`${p.fra} – ${p.til}`} /><Meta>{p.beskrivelse.toUpperCase()}</Meta><StatusPille tone={p.status === "Pågående" ? "warn" : "neutral"}>{p.status}</StatusPille></Rad>)}</Liste>
-          )}
-        </Seksjon>
-      </div>
+        </section>
+        <section aria-label="Hvilken standardplan virker" className="s3-seksjon">
+          <b className="s3-b">Hvilken standardplan virker</b>
+          <p className="s3-dempet">—</p>
+          <span className="meta">Standardplanene er ikke skrevet inn i appen ennå</span>
+        </section>
+        <section aria-label="Permisjoner og fravær" className="s3-seksjon">
+          <b className="s3-b">Permisjoner og fravær</b>
+          {!d.permisjoner.length ? <p className="s3-dempet">Ingen permisjoner registrert.</p> : <div className="s3-rader">
+            {d.permisjoner.map((p) => <div key={p.id} className="s3-rad"><b className="num">{p.fra.slice(0, 5)}</b><span><b>{p.aarsak}</b><span>{p.fra} – {p.til} · {p.beskrivelse}</span></span><span className="s3-status">{p.status}</span></div>)}
+          </div>}
+          <span className="meta">Helsedetaljer bare med samtykke</span>
+        </section>
+      </aside>
     </div>
   );
 }
@@ -186,6 +226,7 @@ export function AG08Iup({ d, tom }: { d: S360Iup; tom: boolean }) {
       <div className="a8-stabel">{seksjoner.slice(0, halv)}</div>
       <div className="a8-stabel">{seksjoner.slice(halv)}</div>
     </div>
+    <p className="s3-forklar">IUP-fanen vises bare for spillere som er aktive i en WANG- eller Team Norway-gruppe. Trenerne der foreslår, spilleren bestemmer. Du endrer direkte, og spilleren kan angre.</p>
   </>;
 }
 
@@ -226,7 +267,8 @@ export function AG08Samtaler({ d, tom }: { d: S360Samtaler; tom: boolean }) {
 /* ───────────────────────────── Talent ───────────────────────────── */
 
 export function AG08Talent({ d, tom }: { d: S360Talent; tom: boolean }) {
-  return (
+  return (<>
+    <p className="s3-bare-coach">Bare coach. Spilleren ser aldri denne fanen, og ingen tall herfra deles.</p>
     <div className="a8-to">
       <Seksjon k="Talentradar · 1–10" meta="BARE COACH · SPILLEREN SER ALDRI DETTE" gap={12}>
         {tom || !d.radar ? <Dempet>For lite data til talentradar.</Dempet> : <>
@@ -245,5 +287,5 @@ export function AG08Talent({ d, tom }: { d: S360Talent; tom: boolean }) {
         )}
       </Seksjon>
     </div>
-  );
+  </>);
 }

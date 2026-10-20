@@ -102,3 +102,33 @@
 .agn-s .chips-lite .pille { white-space: normal; height: auto; min-height: 24px; padding: 4px 10px; line-height: 1.3; }
 .agn-s .fakta-rad b { font-size: 18px; overflow-wrap: anywhere; }
 @media (min-width: 900px) { .agn-s .fakta-rad b { font-size: 22px; } }
+
+/* Designløft 20.10.2026: mot plan per uke, SG-kurve og neste turnering i raden (canvas AG-07) */
+.agn-s .sp-rad { grid-template-columns: auto minmax(0, 1fr) auto; }
+.agn-s .sp-graf { grid-column: 1 / -1; grid-row: 2; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--r3); padding-top: 8px; border-top: 1px solid var(--sand-150); }
+.agn-s .sp-col { display: grid; gap: 4px; align-content: start; min-width: 0; }
+.agn-s .sp-col > span:last-child { font-size: 11.5px; color: var(--graphite-600); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.agn-s .sp-uker { display: grid; grid-template-columns: repeat(4, 8px); gap: 3px; height: 22px; align-items: end; }
+.agn-s .sp-uker i { display: block; background: var(--graphite-900); }
+.agn-s .sp-uker i.lav { background: var(--graphite-500); }
+.agn-s .sp-uker i.tom { background: var(--sand-300); }
+.agn-s .sp-sg { display: block; }
+.agn-s .sp-sg-tom { font: 600 14px/22px var(--mono); color: var(--graphite-600); }
+.agn-s .sp-tur b { font: 600 14px/22px var(--mono); }
+.agn-s .valg-rad { display: flex; flex-wrap: wrap; gap: var(--r2); }
+@media (min-width: 900px) {
+  .agn-s .sp-rad { grid-template-columns: auto minmax(0, 1fr) minmax(0, 300px) auto; }
+  .agn-s .sp-graf { grid-column: auto; grid-row: auto; padding-top: 0; border-top: 0; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes sp-hoy { from { scale: 1 0; } }
+  .agn-s .sp-uker i { transform-origin: 50% 100%; animation: sp-hoy 620ms cubic-bezier(.23, 1, .32, 1) both; }
+}
+/* I dag og Trener nå side om side øverst, Hele stallen i full bredde under (canvas AG-07). */
+.agn-s .stall-stabel { display: grid; gap: var(--r5); }
+.agn-s .stall-topp { display: grid; gap: var(--r5); }
+@media (min-width: 900px) {
+  .agn-s .stall-topp { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+  .agn-s .sp-rad { grid-template-columns: auto minmax(0, 1fr) minmax(0, 360px) auto; }
+}
+.agn-s .sp-etl { min-width: 64px; }

@@ -123,7 +123,9 @@ export async function lastSpiller360Hode(viewer: Viewer, id: string): Promise<S3
     }),
   ]);
 
-  const snitt = snittscore(runder.map((r) => ({ score: r.score, playedAt: r.playedAt, hull: hullFra(r._count.holeScores) })));
+  const rundeInn = runder.map((r) => ({ score: r.score, playedAt: r.playedAt, hull: hullFra(r._count.holeScores) }));
+  const snitt = snittscore(rundeInn);
+  const kurve = tellendeRunder(rundeInn).slice(0, 10).map((r) => r.score).reverse();
   const grupper = spiller.groupMemberships.map((m) => m.group.name);
   const wangTn = erWangEllerTn(spiller.groupMemberships.map((m) => m.group.program), grupper);
   const pct = okter.pct;
@@ -154,7 +156,16 @@ export async function lastSpiller360Hode(viewer: Viewer, id: string): Promise<S3
       tittel: `Forslag til godkjenning · ${f.actionType.toLowerCase().replace(/_/g, " ")}`,
       sub: `${f.agentName} · ${dato(f.createdAt)}`.toUpperCase(),
     })),
+    snitt: { siste10: snitt.siste10, forrige10: snitt.forrige10, antall: snitt.antall, kurve },
+    turneringOmDager: turnDato ? dagerMellom(naa, turnDato) : null,
+    iup: wangTn,
   };
+}
+
+/** Hele dager fra i dag til datoen, i Oslo-tid. */
+function dagerMellom(fra: Date, til: Date): number {
+  const dag = (d: Date) => Date.parse(`${d.toLocaleDateString("sv-SE", { timeZone: "Europe/Oslo" })}T00:00:00Z`);
+  return Math.round((dag(til) - dag(fra)) / DAG);
 }
 
 /* ─────────────────────── Arbeidsvisning (?vis=360) ─────────────────────── */

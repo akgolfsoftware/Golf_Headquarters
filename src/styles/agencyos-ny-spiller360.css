@@ -1,0 +1,154 @@
+/* AG-08 Spiller 360, designløftet 20.10.2026. Fasit: canvaset «AgencyOS nøkkelskjermer»,
+   tavlene Spiller360 og Spiller360-mobil. Gjelder bare inni .agn-s .s3.
+   Farge betyr akse. Rust brukes ikke her. */
+
+.agn-s .meta { font: 500 11px/1.25 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--graphite-600); }
+.agn-s .num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.agn-s .s3 { gap: 22px; }
+
+/* Hode */
+.agn-s .s3-hode { display: grid; gap: 14px; }
+.agn-s .s3-hvem { display: flex; gap: 14px; align-items: center; }
+.agn-s .s3-hvem .avatar { background: var(--graphite-900); color: var(--white); }
+.agn-s .s3-navn { display: grid; gap: 6px; }
+.agn-s .s3-navn .meta { color: var(--graphite-800); overflow-wrap: anywhere; }
+.agn-s .s3-navn h1 { font: 700 30px/1.05 var(--sans); letter-spacing: -.035em; overflow-wrap: anywhere; }
+.agn-s .s3-under { font-size: 14px; color: var(--graphite-800); }
+.agn-s .s3-handlinger { display: flex; flex-wrap: wrap; gap: 8px; }
+.agn-s .s3-handlinger .knapp.sek { border-color: var(--sand-300); font-weight: 500; }
+.agn-s .s3-lenker { display: flex; flex-wrap: wrap; column-gap: 16px; }
+.agn-s .s3-lenker a { min-height: 44px; display: inline-flex; align-items: center; font-size: 14px; color: var(--graphite-800); text-underline-offset: 3px; }
+
+/* Nøkkeltall */
+.agn-s .s3-kpi { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--graphite-900); border-bottom: 1px solid var(--sand-300); }
+.agn-s .s3-k { display: grid; gap: 8px; align-content: start; padding: 14px 12px 14px 0; }
+.agn-s .s3-k:nth-child(2n) { padding-left: 12px; border-left: 1px solid var(--sand-300); }
+.agn-s .s3-k:nth-child(n + 3) { border-top: 1px solid var(--sand-300); }
+.agn-s .s3-k .e { font-size: 13px; color: var(--graphite-800); }
+.agn-s .s3-k .t { font: 600 30px/1 var(--mono); letter-spacing: -.03em; }
+.agn-s .s3-k .t small { font-size: 16px; }
+.agn-s .s3-k .s { font-size: 13px; color: var(--graphite-800); overflow-wrap: anywhere; }
+.agn-s .s3-k-rad { display: flex; align-items: flex-end; justify-content: space-between; gap: 8px; }
+.agn-s .s3-kurve { color: var(--graphite-900); flex: none; }
+.agn-s .s3-bar { display: block; height: 6px; background: var(--sand-150); }
+.agn-s .s3-bar i { display: block; height: 100%; background: var(--graphite-900); }
+
+/* Dette krever deg nå */
+.agn-s .s3-krever { display: grid; gap: 12px; }
+.agn-s .s3-krav { display: grid; gap: 6px; padding: 14px 16px; border-radius: 12px; background: #faf8f3; color: var(--graphite-900); text-decoration: none; transition: scale 150ms var(--ut); }
+.agn-s .s3-krav:active { scale: .99; }
+.agn-s .s3-krav.forst { background: var(--graphite-900); color: var(--white); }
+.agn-s .s3-krav .e { font-size: 12px; color: var(--graphite-800); }
+.agn-s .s3-krav.forst .e { color: #c9c4ba; }
+.agn-s .s3-krav b { font: 600 16px/1.3 var(--sans); overflow-wrap: anywhere; }
+.agn-s .s3-krav .s { font-size: 13px; color: var(--graphite-800); }
+.agn-s .s3-krav.forst .s { color: #ddd9d1; }
+.agn-s .s3-flere { font-size: 14px; color: var(--graphite-900); min-height: 44px; display: inline-flex; align-items: center; }
+.agn-s .s3-ingen { font-size: 14px; color: var(--graphite-800); }
+
+/* Faner: PC understrek, mobil nedtrekk */
+.agn-s .s3-faner { display: none; flex-wrap: wrap; border-bottom: 1px solid var(--sand-300); }
+.agn-s .s3-faner a { min-height: 44px; display: inline-flex; align-items: center; gap: 6px; padding: 0 14px; font-size: 14px; color: var(--graphite-800); text-decoration: none; }
+.agn-s .s3-faner a[aria-current="page"] { color: var(--graphite-900); font-weight: 600; box-shadow: inset 0 -2px 0 var(--graphite-900); }
+.agn-s .s3-faner .meta { font-size: 10px; }
+
+/* Plan-fanen */
+.agn-s .s3-plan, .agn-s .s3-hoved, .agn-s .s3-side { display: grid; gap: 26px; align-content: start; }
+.agn-s .s3-side { gap: 22px; }
+.agn-s .s3-seksjon { display: grid; gap: 10px; align-content: start; }
+.agn-s .s3-sek-topp { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.agn-s .s3-sek-topp h2 { font: 600 20px/1.2 var(--sans); }
+.agn-s .s3-sek-topp .num { font-size: 13px; color: var(--graphite-800); }
+.agn-s .s3-b { font: 600 16px/1.3 var(--sans); }
+.agn-s .s3-dempet { font-size: 14px; color: var(--graphite-800); }
+.agn-s .s3-dempet a { color: var(--graphite-900); }
+.agn-s .s3-forklar { font-size: 12px; color: var(--graphite-800); }
+.agn-s .s3-lenke { display: inline-flex; align-items: center; min-height: 44px; font-size: 14px; color: var(--graphite-900); }
+
+.agn-s .s3-uke { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; }
+.agn-s .s3-dag { display: grid; gap: 4px; align-content: start; }
+.agn-s .s3-dag > .num { font-size: 11px; color: var(--graphite-800); }
+.agn-s .s3-okt { min-height: 64px; display: flex; flex-direction: column; justify-content: flex-end; gap: 2px; padding: 6px; border-radius: 6px; font-size: 11px; line-height: 1.3; color: #fff; overflow-wrap: anywhere; }
+.agn-s .s3-okt b { font-weight: 600; }
+.agn-s .s3-okt.gjort { background-image: linear-gradient(rgba(255, 255, 255, .78), rgba(255, 255, 255, .78)); color: var(--graphite-900); }
+.agn-s .s3-okt.hoppet { background: var(--white); color: var(--graphite-800); border: 1.5px dashed var(--graphite-500); }
+.agn-s .s3-okt.tom { background: #faf8f3; color: var(--graphite-800); }
+
+.agn-s .s3-akse { display: grid; grid-template-columns: 52px minmax(0, 1fr) auto; gap: 12px; align-items: center; min-height: 32px; }
+.agn-s .s3-akse > b { font: 600 13px/1 var(--sans); }
+.agn-s .s3-akse > .num { font-size: 13px; text-align: right; white-space: nowrap; }
+.agn-s .s3-akse-spor { position: relative; height: 14px; background: var(--sand-150); border-radius: 0 4px 4px 0; }
+.agn-s .s3-akse-spor i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 0 4px 4px 0; display: block; }
+.agn-s .s3-akse-spor em { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--graphite-900); display: block; }
+
+.agn-s .s3-rader { display: grid; border-bottom: 1px solid var(--sand-300); }
+.agn-s .s3-rad { display: grid; grid-template-columns: 52px minmax(0, 1fr) auto; gap: 12px; align-items: center; min-height: 52px; padding: 6px 0; border-top: 1px solid var(--sand-300); }
+.agn-s .s3-rad > .num { font-size: 14px; }
+.agn-s .s3-rad > span:nth-child(2) { display: grid; }
+.agn-s .s3-rad > span:nth-child(2) b { font: 600 14px/1.35 var(--sans); overflow-wrap: anywhere; }
+.agn-s .s3-rad > span:nth-child(2) span { font-size: 12px; color: var(--graphite-800); overflow-wrap: anywhere; }
+.agn-s .s3-status { font-size: 12px; color: var(--graphite-800); white-space: nowrap; }
+.agn-s .s3-boks { display: grid; gap: 10px; padding: 18px; border-radius: 12px; background: #faf8f3; }
+.agn-s .s3-boks > b { font: 600 16px/1.3 var(--sans); }
+
+@media (max-width: 899px) {
+  .agn-s .s3-uke { gap: 2px; }
+  .agn-s .s3-okt { padding: 4px; font-size: 10px; }
+}
+
+@media (min-width: 900px) {
+  .agn-s .s3-hode { grid-template-columns: minmax(0, 1fr) auto; align-items: end; column-gap: 24px; }
+  .agn-s .s3-hvem { gap: 18px; }
+  .agn-s .s3-hvem .avatar { width: 72px; height: 72px; font-size: 24px; }
+  .agn-s .s3-navn h1 { font-size: 44px; line-height: 1; }
+  .agn-s .s3-handlinger { justify-content: flex-end; }
+  .agn-s .s3-handlinger .knapp.pri { order: 2; }
+  .agn-s .s3-lenker { grid-column: 1 / -1; }
+  .agn-s .s3-kpi { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .agn-s .s3-k { padding: 14px 20px; border-top: 0 !important; }
+  .agn-s .s3-k:first-child { padding-left: 0; }
+  .agn-s .s3-k:last-child { padding-right: 0; }
+  .agn-s .s3-k + .s3-k { border-left: 1px solid var(--sand-300); }
+  .agn-s .s3-k .t { font-size: 36px; }
+  .agn-s .s3-krever { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .agn-s .s3-flere { grid-column: 1 / -1; }
+  .agn-s .s3-faner { display: flex; }
+  .agn-s .s3-fane-velger { display: none; }
+  .agn-s .s3-plan { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 32px; align-items: start; }
+  .agn-s .s3-uke { gap: 4px; }
+  .agn-s .s3-okt { min-height: 72px; }
+}
+
+/* Fanene Stats, Teknisk plan, Samtaler, Talent og IUP: samme seksjonsspråk som Plan
+   (tavlene Spiller360-stats/-teknisk/-samtaler/-talent/-iup). Kortene blir åpne
+   seksjoner med tittel i setningsform og rader med strek over. */
+.agn-s .s3 .s360-fane .a8-sek { border: 0; border-radius: 0; background: transparent; padding: 0; box-shadow: none; }
+.agn-s .s3 .s360-fane .a8-sek__hode { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding-bottom: 6px; }
+.agn-s .s3 .s360-fane .a8-sek__hode .kicker { font: 600 20px/1.2 var(--sans); letter-spacing: 0; text-transform: none; color: var(--graphite-900); }
+.agn-s .s3 .s360-fane .a8-liste { border-bottom: 1px solid var(--sand-300); }
+.agn-s .s3 .s360-fane .a8-rad { border-top: 1px solid var(--sand-300); border-bottom: 0; min-height: 52px; }
+.agn-s .s3 .s360-fane .a8-to, .agn-s .s3 .s360-fane .a8-stabel { gap: 26px; }
+.agn-s .s3-bare-coach { padding: 12px 14px; border-radius: 8px; background: #faf8f3; font-size: 14px; color: var(--graphite-800); }
+
+/* Stats: brutto-kurve og SG per område (dataviz: én serie, tynne merker, lik skala begge veier) */
+.agn-s .s3-stats-topp { display: grid; gap: 26px; }
+.agn-s .s3-kurve-boks { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 6px 8px; }
+.agn-s .s3-kurve-akse { display: flex; flex-direction: column; justify-content: space-between; font-size: 11px; color: var(--graphite-800); }
+.agn-s .s3-kurve-stor { width: 100%; height: 160px; overflow: visible; }
+.agn-s .s3-kurve-stor polyline { fill: none; stroke: var(--graphite-900); stroke-width: 2; stroke-linejoin: round; }
+.agn-s .s3-kurve-stor circle { fill: var(--white); stroke: var(--graphite-900); stroke-width: 2; }
+.agn-s .s3-kurve-stor circle.turn { fill: var(--graphite-900); }
+.agn-s .s3-kurve-stor line.snitt { stroke: var(--graphite-500); stroke-width: 1; stroke-dasharray: 4 4; }
+.agn-s .s3-kurve-boks .s3-forklar { grid-column: 1 / -1; }
+.agn-s .s3-sg { display: grid; gap: 8px; }
+.agn-s .s3-sg-rad { display: grid; grid-template-columns: 64px minmax(0, 1fr) 44px; gap: 8px; align-items: center; font-size: 13px; }
+.agn-s .s3-sg-rad > b { text-align: right; font-size: 13px; }
+.agn-s .s3-sg-spor { position: relative; height: 14px; }
+.agn-s .s3-sg-spor em { position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: var(--graphite-500); }
+.agn-s .s3-sg-spor i { position: absolute; top: 0; bottom: 0; display: block; background: var(--graphite-900); }
+.agn-s .s3-sg-spor i.neg { right: 50%; border-radius: 4px 0 0 4px; }
+.agn-s .s3-sg-spor i.pos { left: 50%; border-radius: 0 4px 4px 0; }
+.agn-s .s3-sg-rad.akse > .num { display: flex; justify-content: space-between; font-size: 10px; color: var(--graphite-800); }
+@media (min-width: 900px) {
+  .agn-s .s3-stats-topp { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 32px; align-items: start; }
+}

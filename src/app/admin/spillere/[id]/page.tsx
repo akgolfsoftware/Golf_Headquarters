@@ -36,10 +36,12 @@ export default async function Spiller360Page({
   const { id } = await params;
   const { fane: faneParam, vis, del } = await searchParams;
   const viewer = { id: user.id, role: user.role };
-  const fane = tilFane(faneParam);
+  let fane = tilFane(faneParam);
 
   const hode = await lastSpiller360Hode(viewer, id);
   if (!hode) notFound();
+  // IUP finnes bare for aktive WANG- og Team Norway-medlemmer (beslutninger 04.10).
+  if (fane === "iup" && !hode.iup) fane = "plan";
 
   const [faneData, rail] = await Promise.all([
     lastSpiller360Fane(viewer, id, fane),

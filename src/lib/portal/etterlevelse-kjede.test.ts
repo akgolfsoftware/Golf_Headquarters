@@ -13,7 +13,7 @@ const player = {
   id: "player-test", name: "Testspiller", avatarUrl: null, hcp: null, dateOfBirth: null,
   guardianConsentGivenAt: NOW, homeClub: null, preferences: null, userStatus: "AKTIV", tier: "PRO",
   lastLoginAt: NOW, groupMemberships: [], enrollmentsAsPlayer: [], sgInputs: [], rounds: [],
-  sessionRequestsAsPlayer: [], subscriptions: [], _count: { payments: 0 }, trainingPlans: [],
+  sessionRequestsAsPlayer: [], subscriptions: [], _count: { payments: 0 }, trainingPlans: [], tournamentEntries: [],
 };
 const emptyModel = { findMany: async () => [], findFirst: async () => null, findUnique: async () => null,
   groupBy: async () => [], count: async () => 0 };

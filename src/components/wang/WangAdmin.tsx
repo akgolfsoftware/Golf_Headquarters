@@ -12,7 +12,7 @@ import {
 } from "@/app/team-wang/coach/admin-actions";
 import { TOM_ADMINDATA, type WangAdminData } from "@/app/team-wang/_data/wang-admin-visning";
 import { MAKS_TEGN_UNNTAK } from "@/app/team-wang/_data/wang-admin-grenser";
-import { WangFaner, WangTopp, initialer } from "./wang-felles";
+import { WangFaner, WangToppfelt, initialer } from "./wang-felles";
 import type { WangTrenerData } from "@/app/team-wang/_data/wang-trener-data";
 import { TOM_TESTERDATA, type WangSamtykkeStatus, type WangTesterData } from "@/app/team-wang/_data/wang-tester-visning";
 import type { WangOpptakData } from "@/app/team-wang/_data/wang-opptak-visning";
@@ -64,9 +64,29 @@ export function WangAdmin({ data, tester = TOM_TESTERDATA, admin = TOM_ADMINDATA
   const fane = FANER.some((f) => f.id === aktivFane) ? (aktivFane as string) : "trenere";
   return (
     <>
-      <WangTopp dato={`${data.gruppeNavn} · golf`} tittel={TITTEL[fane]}>
-        <WangFaner omraade="admin" aktiv={fane} faner={FANER} etikett="Administrasjon" />
-      </WangTopp>
+      <WangToppfelt
+        dato={`${data.gruppeNavn} · bare for sportssjef`}
+        tittel={TITTEL[fane]}
+        tall={[
+          { verdi: String(data.trenere.length), tekst: data.trenere.length === 1 ? "trener med tilgang" : "trenere med tilgang", under: "To roller: Sportssjef og Trener" },
+          {
+            verdi: String(tester.delerIder.length),
+            enhet: `av ${data.elever.length}`,
+            tekst: "elever deler testene med WANG",
+            under: "Under 16 år godkjenner forelderen",
+            href: "/team-wang/coach?omraade=admin&fane=samtykke",
+          },
+          {
+            verdi: String(admin.invitasjoner.filter((i) => !i.utlopt).length),
+            tekst: "invitasjoner venter",
+            under: "Lenken gjelder i sju dager",
+            href: "/team-wang/coach?omraade=admin&fane=trenere",
+          },
+        ]}
+        kilde="Bare sportssjef ser Administrasjon. Ingen e-post sendes herfra: du sender invitasjonslenken selv."
+        bilde="/team-wang/hero/styrke-eleiko.jpg"
+      />
+      <WangFaner omraade="admin" aktiv={fane} faner={FANER} etikett="Administrasjon" />
       {fane === "trenere" && <Trenere data={data} admin={admin} />}
       {fane === "samtykke" && <Samtykke data={data} tester={tester} />}
       {fane === "timeplan" && <Timeplan data={data} admin={admin} />}

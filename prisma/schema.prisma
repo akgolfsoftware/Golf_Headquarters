@@ -774,6 +774,7 @@ model User {
 
   // Coach-notater — privat notat-system om spillere
   coachNotesAuthored CoachNote[] @relation("CoachNoteCoach")
+  wagrReferencePlans WagrReferencePlan[] @relation("WagrReferencePlanUpdatedBy")
   coachNotesAbout    CoachNote[] @relation("CoachNotePlayer")
 
   // Egen-test — TestDefinition opprettet av spiller
@@ -7750,4 +7751,25 @@ model WagrPlayerStrength {
   @@unique([modelRunId, wagrPlayerId])
   @@index([wagrPlayerId])
   @@map("wagr_player_strengths")
+}
+
+/// Turneringsplan for en WAGR-referansespiller, delt mellom trenerne (teamnorwayref.vercel.app).
+/// Skrives direkte med Supabase-klienten; låsen (RLS) og stemplingen ligger i
+/// prisma/migrations/20261020140000_wagr_reference_plans. updatedBy* settes av databasen.
+model WagrReferencePlan {
+  id              String   @id @default(dbgenerated("(gen_random_uuid())::text"))
+  wagrPlayerId    Int
+  season          Int
+  playerName      String
+  // WAGR-turnerings-ID-er i planen, f.eks. [12345, 12400]
+  events          Json     @default("[]")
+  updatedByUserId String?
+  updatedByName   String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now())
+
+  updatedBy User? @relation("WagrReferencePlanUpdatedBy", fields: [updatedByUserId], references: [id], onDelete: SetNull)
+
+  @@unique([wagrPlayerId, season])
+  @@map("wagr_reference_plans")
 }
