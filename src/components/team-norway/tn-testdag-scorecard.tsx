@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { saveTnTestSomCoach } from "@/app/team-norway/tn-testforing-actions";
 import { tnFormat, tnRowError, tnScore, tnValidate, type TnValues, type TnResult } from "@/lib/portal-tester/tn-scoring";
+import { GATE_POENG_VALG } from "@/lib/portal-tester/tn-catalog";
 import type { TnProtocol } from "@/lib/portal-tester/tn-catalog";
 import { TnKnapp, TnKort, TnPille, TnInput } from "./core";
 import styles from "./tn-kontroller.module.css";
@@ -17,19 +18,35 @@ import type { TnTestdagDeltakerDetalj } from "@/lib/domain/tn-arbeidsflate";
  * to store knapper (vedtak 14.10: «Godkjent» og «Bom»). Verdien lagres slik
  * protokollen definerer den.
  */
-type Gate = { key: string; ok: string; bom: string };
+type GateValg = { verdi: string; kort: string; tekst: string; tone: "ok" | "delvis" | "bom" };
+type Gate = { key: string; valg: GateValg[]; poeng: Record<string, number> | null };
 function gatefelt(p: TnProtocol): Gate | null {
   const per = p.rows.map((r): Gate | null => {
     const pakrevd = r.fields.filter((f) => !f.optional);
     const c = pakrevd.length === 1 ? pakrevd[0]?.choices : undefined;
-    if (!c || c.length !== 2 || !pakrevd[0]) return null;
-    if (c.includes("Godkjent") && c.includes("Bom")) return { key: pakrevd[0].key, ok: "Godkjent", bom: "Bom" };
-    if (c.includes("Ja") && c.includes("Nei")) return { key: pakrevd[0].key, ok: "Ja", bom: "Nei" };
+    if (!c || !pakrevd[0]) return null;
+    const key = pakrevd[0].key;
+    // Poeng-gate (Wedge Gate, Nærspill Gate, VISA Express): 4 i sonen, 1 gjennom porten, 0 bom (Anders 20.10.2026).
+    const poengValg = Object.keys(GATE_POENG_VALG);
+    if (c.length === poengValg.length && poengValg.every((v) => c.includes(v))) {
+      const poeng: Record<string, number> = { ...GATE_POENG_VALG };
+      const valg = [...poengValg].sort((a, b) => (poeng[b] ?? 0) - (poeng[a] ?? 0)).map((v): GateValg => ({ verdi: v, kort: String(poeng[v]), tekst: `${poeng[v]} · ${v}`, tone: poeng[v] === 0 ? "bom" : poeng[v] === Math.max(...Object.values(poeng)) ? "ok" : "delvis" }));
+      return { key, valg, poeng };
+    }
+    if (c.length !== 2) return null;
+    if (c.includes("Godkjent") && c.includes("Bom")) return { key, valg: [{ verdi: "Godkjent", kort: "G", tekst: "Godkjent", tone: "ok" }, { verdi: "Bom", kort: "B", tekst: "Bom", tone: "bom" }], poeng: null };
+    if (c.includes("Ja") && c.includes("Nei")) return { key, valg: [{ verdi: "Ja", kort: "J", tekst: "Ja", tone: "ok" }, { verdi: "Nei", kort: "N", tekst: "Nei", tone: "bom" }], poeng: null };
     return null;
   });
   const forste = per[0];
-  return forste && per.every((g) => g && g.key === forste.key && g.ok === forste.ok) ? forste : null;
+  return forste && per.every((g) => g && g.key === forste.key && g.valg.map((v) => v.verdi).join() === forste.valg.map((v) => v.verdi).join()) ? forste : null;
 }
+
+const GATE_TONE = {
+  ok: { kant: TN.status.green, bak: TN.status.greenBg, tekst: TN.status.greenText },
+  delvis: { kant: TN.navy600, bak: TN.navy50, tekst: TN.navy900 },
+  bom: { kant: TN.status.red, bak: TN.status.redBg, tekst: TN.status.redText },
+} as const;
 
 /**
  * TN-03 — trenerførings-scorecard for ÉN deltaker i en testdag. Bevisst
@@ -127,6 +144,8 @@ export function TnTestdagScorecard({ deltaker, protocol: p, testDagId }: { delta
   const gate = gatefelt(p);
   const nesteGate = gate ? p.rows.findIndex((_, i) => !raw[String(i + 1)]?.[gate.key]) : -1;
   const sisteGate = gate ? p.rows.reduce((siste, _, i) => (raw[String(i + 1)]?.[gate.key] ? i : siste), -1) : -1;
+  const gatePoengSum = gate?.poeng ? p.rows.reduce((sum, _, i) => sum + (gate.poeng?.[raw[String(i + 1)]?.[gate.key] ?? ""] ?? 0), 0) : 0;
+  const gatePoengMaks = gate?.poeng ? p.rows.length * Math.max(...Object.values(gate.poeng)) : 0;
   const settGate = (i: number, verdi: string) => {
     if (!gate || i < 0) return;
     setRaw((v) => ({ ...v, [String(i + 1)]: { ...v[String(i + 1)], [gate.key]: verdi } }));
@@ -145,7 +164,7 @@ export function TnTestdagScorecard({ deltaker, protocol: p, testDagId }: { delta
           <h1 style={{ margin: 0, fontFamily: TN.font.display, fontWeight: 400, fontSize: "clamp(30px, 3vw, 38px)", lineHeight: 1.12, letterSpacing: "0.03em", color: TN.navy900, overflowWrap: "anywhere" }}>{deltaker.spillerNavn}</h1>
           <TnPille tone={statusPilleTone}>{statusEtikett}</TnPille>
         </div>
-        {gate && deltaker.status === "PENDING" ? <p style={{ margin: "4px 0 0", fontSize: 15.5, lineHeight: 1.6, color: TN.ink700, maxWidth: "52ch" }}>Trykk Godkjent eller Bom etter hvert slag. Testen teller bare når alle {p.rows.length} er ført.</p> : null}
+        {gate && deltaker.status === "PENDING" ? <p style={{ margin: "4px 0 0", fontSize: 15.5, lineHeight: 1.6, color: TN.ink700, maxWidth: "52ch" }}>{gate.poeng ? "Trykk 4, 1 eller 0 etter hvert slag." : `Trykk ${gate.valg.map((v) => v.tekst).join(" eller ")} etter hvert slag.`} Testen teller bare når alle {p.rows.length} er ført.</p> : null}
       </header>
 
       {deltaker.utkastFeil && <p role="alert" style={{ margin: 0, color: TN.status.redText, fontSize: TN.text.sm }}>{deltaker.utkastFeil}</p>}
@@ -160,32 +179,37 @@ export function TnTestdagScorecard({ deltaker, protocol: p, testDagId }: { delta
         <>
           {gate ? (
             <TnKort style={{ display: "grid", gap: 16 }}>
-              <span style={{ fontFamily: TN.font.mono, fontWeight: 500, fontSize: 30, lineHeight: 1.05, color: TN.navy900 }}>
-                {nesteGate === -1 ? `Alle ${p.rows.length} ført` : `Slag ${nesteGate + 1} av ${p.rows.length}`}
-              </span>
-              <div aria-label="Ført så langt" style={{ display: "grid", gridTemplateColumns: `repeat(${Math.min(p.rows.length, 9)}, minmax(0, 1fr))`, gap: 4 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12, flexWrap: "wrap" }}>
+                <span style={{ fontFamily: TN.font.mono, fontWeight: 500, fontSize: 30, lineHeight: 1.05, color: TN.navy900 }}>
+                  {nesteGate === -1 ? `Alle ${p.rows.length} ført` : `Slag ${nesteGate + 1} av ${p.rows.length}`}
+                </span>
+                {gate.poeng ? <span style={{ fontFamily: TN.font.mono, fontWeight: 600, fontSize: 20, color: TN.navy900 }}>{gatePoengSum} / {gatePoengMaks} p</span> : null}
+              </div>
+              <div aria-label="Ført så langt" style={{ display: "grid", gridTemplateColumns: `repeat(${Math.min(p.rows.length, 10)}, minmax(0, 1fr))`, gap: 4 }}>
                 {p.rows.map((_, i) => {
                   const v = raw[String(i + 1)]?.[gate.key];
-                  const stil = v === gate.ok
-                    ? { background: TN.status.greenBg, color: TN.status.greenText }
-                    : v === gate.bom
-                      ? { background: TN.status.redBg, color: TN.status.redText }
-                      : i === nesteGate
-                        ? { border: `2px solid ${TN.navy900}`, background: TN.white, color: TN.navy900 }
-                        : { background: TN.ink100, color: TN.ink700 };
-                  return <span key={i} aria-label={`Slag ${i + 1}: ${v === gate.ok ? "Godkjent" : v === gate.bom ? "Bom" : "ikke ført"}`} style={{ display: "grid", placeItems: "center", height: 40, fontFamily: TN.font.mono, fontWeight: 500, fontSize: 13, ...stil }}>{v === gate.ok ? "G" : v === gate.bom ? "B" : i + 1}</span>;
+                  const valgt = gate.valg.find((g) => g.verdi === v);
+                  const stil = valgt
+                    ? { background: GATE_TONE[valgt.tone].bak, color: GATE_TONE[valgt.tone].tekst }
+                    : i === nesteGate
+                      ? { border: `2px solid ${TN.navy900}`, background: TN.white, color: TN.navy900 }
+                      : { background: TN.ink100, color: TN.ink700 };
+                  return <span key={i} aria-label={`Slag ${i + 1}: ${valgt ? valgt.tekst : "ikke ført"}`} style={{ display: "grid", placeItems: "center", height: 40, borderRadius: 8, fontFamily: TN.font.mono, fontWeight: 600, fontSize: 13, ...stil }}>{valgt ? valgt.kort : i + 1}</span>;
                 })}
               </div>
               {deltaker.status === "PENDING" && deltaker.kanSkrive ? (
                 <>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-                    <button type="button" disabled={felterDisabled || nesteGate === -1} onClick={() => settGate(nesteGate, gate.ok)} style={{ minHeight: 88, border: `2px solid ${TN.status.green}`, borderRadius: TN.radius.sm, background: TN.status.greenBg, color: TN.status.greenText, fontFamily: TN.font.body, fontSize: 20, fontWeight: 700, cursor: "pointer" }}>Godkjent</button>
-                    <button type="button" disabled={felterDisabled || nesteGate === -1} onClick={() => settGate(nesteGate, gate.bom)} style={{ minHeight: 88, border: `2px solid ${TN.status.red}`, borderRadius: TN.radius.sm, background: TN.status.redBg, color: TN.status.redText, fontFamily: TN.font.body, fontSize: 20, fontWeight: 700, cursor: "pointer" }}>Bom</button>
+                  <div style={{ display: "grid", gridTemplateColumns: `repeat(${gate.valg.length}, minmax(0, 1fr))`, gap: 8 }}>
+                    {gate.valg.map((g) => (
+                      <button key={g.verdi} type="button" disabled={felterDisabled || nesteGate === -1} onClick={() => settGate(nesteGate, g.verdi)} style={{ minHeight: 76, padding: "0 8px", border: `2px solid ${GATE_TONE[g.tone].kant}`, borderRadius: 14, background: GATE_TONE[g.tone].bak, color: GATE_TONE[g.tone].tekst, fontFamily: TN.font.body, fontSize: 20, fontWeight: 700, lineHeight: 1.15, cursor: "pointer", display: "grid", placeContent: "center", gap: 2 }}>
+                        {gate.poeng ? <><span style={{ fontFamily: TN.font.mono, fontSize: 26, fontWeight: 600 }}>{g.kort}</span><span style={{ fontSize: 13, fontWeight: 600 }}>{g.verdi}</span></> : g.tekst}
+                      </button>
+                    ))}
                   </div>
                   <div><TnKnapp variant="tekst" disabled={felterDisabled || sisteGate === -1} onClick={() => settGate(sisteGate, "")}>Angre siste</TnKnapp></div>
                 </>
               ) : null}
-              <p style={{ margin: 0, fontSize: 12.5, color: TN.ink500 }}>Føres som «Kontrollert», fordi en trener fører. G er Godkjent, B er Bom.</p>
+              <p style={{ margin: 0, fontSize: 12.5, color: TN.ink500 }}>Føres som «Kontrollert», fordi en trener fører. {gate.poeng ? "4 er gjennom porten og i sonen, 1 bare gjennom porten, 0 bom." : "G er Godkjent, B er Bom."} Testen teller først når alle {p.rows.length} slag er ført.</p>
             </TnKort>
           ) : null}
           <details open={!gate}>
