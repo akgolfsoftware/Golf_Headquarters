@@ -253,6 +253,8 @@ describe('WANG Toppidrett Modul (Samtlige WANG-skjermer)', async () => {
     const html = vis(WangAdmin);
     assert.ok(html.includes('Trenere og roller'));
     assert.ok(html.includes('Demotrener WANG'));
+    assert.ok(html.includes('trener med tilgang') || html.includes('trenere med tilgang'), 'Toppfeltet teller trenerne');
+    assert.ok(html.includes('invitasjoner venter'));
     const samtykke = visMed(WangAdmin, { aktivFane: 'samtykke', tester: { ...TESTER, samtykke: { e1: 'DELT', e3: 'VENTER_PA_FORELDER' } } });
     assert.ok(samtykke.includes('Venter på forelder'));
     assert.ok(samtykke.includes('av 11 deler testene med WANG'));
