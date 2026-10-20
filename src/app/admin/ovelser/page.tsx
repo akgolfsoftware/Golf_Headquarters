@@ -2,7 +2,10 @@
  * Øvelsesbanken i AgencyOS (beslutning 16.10.2026, punkt 5), nå som egen coach-visning (AG11Ovelsesbank,
  * bølge 2, 20.10.2026): søk i alle øvelser, mest brukt først og «Ny øvelse». Lenken «Hele øvelsesbanken»
  * i coachens Workbench fører hit. Spillerens bank (/portal/drills, PH-13) er uendret.
- * Fasit: canvas «Øvelsesbank». Rader åpner Øvelser i Plan-hub, der coachen endrer øvelsen.
+ * Fasit: canvas «Øvelsesbank».
+ * Avvik:
+ *   - Rader åpner Øvelser i Plan-hub, der coachen endrer øvelsen.
+ *   - Caddie-forslaget og break-tabellen er spillerens og er ikke med.
  * Øvelsene: AK Golf-banken, coachens egne og spillernes egne for spillerne coachen har tilgang til.
  */
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
