@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Button } from "@/components/ui/button";
+import { Knapp, Varsel } from "@/components/admin/agencyos-ny/ny";
 import { importerSkoledata } from "./actions";
 
 const EKSEMPEL = `# YYYY-MM-DD|TRINN(valgfritt)|KATEGORI|Tittel|Notat(valgfritt)
@@ -26,46 +26,31 @@ export function SkoledataForm({ groupId }: { groupId: string }) {
   }
 
   return (
-    <form action={send} className="space-y-4">
-      <div>
-        <label className="mb-1 block font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
-          Skoleår
-        </label>
-        <input
-          name="schoolYear"
-          defaultValue="2026/2027"
-          className="w-40 rounded-lg border border-border bg-background px-3 py-1.5 text-sm text-foreground"
-        />
+    <form action={send} className="kort" style={{ display: "grid", gap: 16 }}>
+      <label className="felt" style={{ maxWidth: 220 }}>
+        <span className="etikett">Skoleår</span>
+        <input name="schoolYear" defaultValue="2026/2027" />
+      </label>
+
+      <div className="kort dempet" style={{ gap: 6 }}>
+        <b className="undertittel">Slik leses det</b>
+        <p className="forklar">Én rad per linje: dato, trinn (valgfritt), kategori, tittel og notat (valgfritt), skilt med loddrett strek. Skoleferier og prøveuker legges inn som merker i årsplanen. Samlinger flyttes aldri av seg selv.</p>
+        <p className="kilde mono">Kategori: TIME · PROVE · HELDAGSPROVE · EKSAMEN · FERIE · SKOLETUR · ANNET</p>
       </div>
 
-      <div>
-        <label className="mb-1 block font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
-          Data — ett rad per linje
-        </label>
-        <textarea
-          name="data"
-          rows={14}
-          defaultValue={EKSEMPEL}
-          spellCheck={false}
-          className="w-full rounded-lg border border-border bg-background p-3 font-mono text-[12px] text-foreground"
-        />
-      </div>
+      <label className="felt">
+        <span className="etikett">Data, én rad per linje</span>
+        <textarea name="data" rows={14} defaultValue={EKSEMPEL} spellCheck={false} style={{ font: "500 13px/1.5 var(--mono)", minHeight: 240 }} />
+      </label>
 
-      <Button type="submit" disabled={pending}>
-        {pending ? "Importerer …" : "Importer"}
-      </Button>
+      <div className="knapper">
+        <Knapp type="submit" disabled={pending}>{pending ? "Importerer …" : "Importer"}</Knapp>
+      </div>
 
       {resultat && (
-        <div className={`rounded-lg border p-3 text-[13px] ${resultat.ok ? "border-emerald-600/40 bg-emerald-600/10" : "border-destructive/40 bg-destructive/10"}`}>
-          <p className="font-semibold text-foreground">{resultat.melding}</p>
-          {resultat.feil.length > 0 && (
-            <ul className="mt-1.5 list-disc space-y-0.5 pl-4 text-muted-foreground">
-              {resultat.feil.map((f, i) => (
-                <li key={i}>{f}</li>
-              ))}
-            </ul>
-          )}
-        </div>
+        <Varsel tone={resultat.ok ? "ok" : "advarsel"} tittel={resultat.melding}>
+          {resultat.feil.length > 0 && <span style={{ display: "grid", gap: 2 }}>{resultat.feil.map((f, i) => <span key={i}>{f}</span>)}</span>}
+        </Varsel>
       )}
     </form>
   );

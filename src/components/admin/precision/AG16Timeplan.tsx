@@ -11,6 +11,7 @@
  *   - Dupliser åpner datofeltet først ved trykk.
  */
 import { useState, useTransition } from "react";
+import "@/styles/agencyos-ny-gruppe-resten.css";
 import { Knapp, Pille, Seksjon, Tom, Varsel } from "@/components/admin/agencyos-ny/ny";
 import { datoTilOsloLokal } from "@/lib/admin/gruppe-tid";
 import "@/styles/agencyos-ny-mer.css";
@@ -56,27 +57,26 @@ function Rad({ s, fast, fokus, onDupliser }: { s: TimeplanRad; fast: boolean; fo
   const forslag = datoTilOsloLokal(new Date(new Date(s.startAt).getTime() + 7 * 86_400_000));
   const start0 = new Date(s.startAt);
   return (
-    <div id={`s-${s.id}`} style={{ display: "grid", gap: 8, padding: "12px 14px", borderBottom: "1px solid var(--sand-300)", outline: fokus ? "2px solid var(--graphite-900)" : undefined, outlineOffset: -2 }}>
-      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8, minWidth: 0 }}>
-        <b className="undertittel" style={{ overflowWrap: "anywhere" }}>{s.title}</b>
-        {fast && s.recurring && <Pille>{s.recurring === "WEEKLY" ? "Ukentlig" : s.recurring}</Pille>}
+    <div id={`s-${s.id}`} className={`tp-okt${fokus ? " fokus" : ""}`}>
+      <div className="tp-tid">
+        <b>{stor(UKEDAG.format(start0))}</b>
+        <span className="mono">{KL.format(start0)}–{KL.format(new Date(s.endAt))}</span>
+        {!fast && <span className="kilde mono">{DATO.format(start0)}</span>}
       </div>
-      <p className="kilde mono" style={{ margin: 0 }}>
-        {stor(UKEDAG.format(start0))} · {KL.format(start0)}–{KL.format(new Date(s.endAt))} · {varighet(s.startAt, s.endAt)}
-        {!fast && ` · ${DATO.format(start0)}`}
-        {s.location && ` · ${s.location}`}
-        {s.maxParticipants != null && ` · maks ${s.maxParticipants}`}
-      </p>
-      {s.description && <p className="forklar" style={{ margin: 0 }}>{s.description}</p>}
+      <div className="tp-info">
+        <span className="tp-tittel"><b className="undertittel">{s.title}</b>{fast && s.recurring && <Pille>{s.recurring === "WEEKLY" ? "Ukentlig" : s.recurring}</Pille>}</span>
+        <span className="kilde mono">{[varighet(s.startAt, s.endAt), s.location, s.maxParticipants != null ? `maks ${s.maxParticipants}` : null].filter(Boolean).join(" · ")}</span>
+        {s.description && <span className="forklar">{s.description}</span>}
+      </div>
       {!apen ? (
         <div className="knapper"><Knapp variant="spok" onClick={() => setApen(true)}>Dupliser</Knapp></div>
       ) : (
-        <form style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", gap: 8 }} onSubmit={(e) => {
+        <form className="tp-dupliser" onSubmit={(e) => {
           e.preventDefault();
           const ny = new FormData(e.currentTarget).get("newStart") as string;
           start(async () => { await onDupliser(s.id, ny); setApen(false); });
         }}>
-          <label className="felt" style={{ flex: "1 1 220px", minWidth: 0 }}><span className="etikett">Ny start</span>
+          <label className="felt"><span className="etikett">Ny start</span>
             <input type="datetime-local" name="newStart" required defaultValue={forslag} /></label>
           <div className="knapper">
             <Knapp type="submit" disabled={pending}>{pending ? "Dupliserer …" : "Dupliser"}</Knapp>
@@ -92,7 +92,7 @@ function Liste({ tittel, rader, fast, dempet, focusId, onDupliser }: { tittel: s
   if (rader.length === 0) return null;
   return (
     <Seksjon tittel={`${tittel} · ${rader.length}`}>
-      <div className="kort rader" style={{ padding: 0, gap: 0, overflow: "hidden", opacity: dempet ? 0.75 : 1 }}>
+      <div className="tp-liste2" style={{ opacity: dempet ? 0.75 : 1 }}>
         {rader.map((s) => <Rad key={s.id} s={s} fast={!!fast} fokus={s.id === focusId} onDupliser={onDupliser} />)}
       </div>
     </Seksjon>

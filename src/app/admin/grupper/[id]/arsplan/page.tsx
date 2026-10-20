@@ -17,9 +17,7 @@ import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { KnappLenke, Tom, Topp } from "@/components/admin/agencyos-ny/ny";
 import { GruppeFanerNy } from "@/components/admin/precision/AG16Gruppe";
 import { hentGruppeKalenderData } from "@/lib/gruppe-kalender/hent-data";
-import { GruppeKalenderWrapper } from "@/components/gruppe-kalender/gruppe-kalender-wrapper";
-import { TrinnFilter } from "@/components/gruppe-kalender/trinn-filter";
-import { TurneringPlan } from "@/components/gruppe-kalender/turnering-plan";
+import { AG16Arsplan } from "@/components/admin/precision/AG16Arsplan";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Årsplan · Grupper · AgencyOS" };
@@ -49,11 +47,7 @@ export default async function GruppeArsplanPage({
           handlinger={<KnappLenke href={`${basePath}/skoledata`}>Legg inn skoledata</KnappLenke>} />
         <GruppeFanerNy groupId={id} aktiv="arsplan" />
         {data ? (
-          <div style={{ display: "grid", gap: 16, minWidth: 0 }}>
-            <TrinnFilter basePath={basePath} aktivtTrinn={trinn ?? null} />
-            <GruppeKalenderWrapper data={data} classYear={trinn ?? null} />
-            <TurneringPlan turneringer={data.turneringer} />
-          </div>
+          <AG16Arsplan groupId={id} data={data} trinn={trinn ?? null} />
         ) : (
           <Tom tittel="Ingen kalenderdata" tekst={`«${gruppe.name}» mangler faste treningstider eller perioder i systemet.`}
             handling={<KnappLenke href={`/admin/grupper/${id}/timeplan`}>Legg inn faste tider</KnappLenke>} />

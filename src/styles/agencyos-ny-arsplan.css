@@ -1,0 +1,57 @@
+/* AgencyOS bølge 2: Gruppe · Årsplan (AG-16). Fasit: canvas «Gruppe · årsplan». Gjelder bare inni .agn-s. */
+.agn-s .ars-lenke { display: inline-flex; align-items: center; min-height: 44px; font-size: 14px; font-weight: 500; color: inherit; }
+.agn-s .ars-band { width: 100%; display: none; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 3px; }
+.agn-s .ars-band > .ars-seg { display: flex; align-items: center; min-height: 44px; padding: 0 10px; border-radius: 6px; min-width: 0; color: #fff; }
+.agn-s .ars-band > .ars-seg.mork { background: var(--graphite-900); }
+.agn-s .ars-band > .ars-seg.mid { background: var(--graphite-600); }
+.agn-s .ars-band b { font: 600 13px/1.2 var(--sans); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.agn-s .ars-maaneder { width: 100%; display: none; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 3px; font: 500 11px/1 var(--mono); color: var(--graphite-600); }
+.agn-s .ars-perioder { list-style: none; margin: 0; padding: 0; display: grid; }
+.agn-s .ars-perioder li { display: grid; gap: 2px; padding: 12px 0; border-top: 1px solid var(--sand-300); }
+.agn-s .ars-perioder b { font: 600 15px/1.3 var(--sans); }
+.agn-s .ars-kal { display: grid; gap: var(--r5); align-items: start; }
+.agn-s .ars-maaned { display: grid; gap: var(--r2); min-width: 0; }
+.agn-s .ars-maaned-topp { display: flex; align-items: center; justify-content: space-between; gap: var(--r2); }
+.agn-s .ars-maaned-topp h3 { margin: 0; font: 600 17px/1.2 var(--sans); }
+.agn-s .ars-navigasjon { display: inline-flex; gap: 4px; }
+.agn-s .ars-navigasjon button { width: 44px; height: 44px; border: 1px solid var(--sand-300); border-radius: 8px; background: var(--white); color: var(--graphite-900); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+.agn-s .ars-rutenett { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+.agn-s .ars-rutenett .meta { text-align: center; padding-bottom: 2px; }
+.agn-s .ars-dag { display: flex; flex-direction: column; justify-content: space-between; min-height: 48px; padding: 6px; border: 0; border-radius: 6px; background: var(--white); box-shadow: inset 0 0 0 1px var(--sand-300); font: inherit; color: var(--graphite-900); cursor: pointer; text-align: left; min-width: 0; }
+.agn-s .ars-dag .num { font: 600 12px/1 var(--mono); }
+.agn-s .ars-dag.idag { box-shadow: inset 0 0 0 2px var(--graphite-900); }
+.agn-s .ars-dag[aria-pressed="true"] { background: var(--graphite-900); color: #fff; }
+.agn-s .ars-merker { display: flex; gap: 3px; min-height: 5px; }
+.agn-s .ars-merker i { display: block; flex: 1 1 0; min-width: 0; height: 4px; border-radius: 2px; }
+.agn-s .ars-tegn i { display: inline-block; height: 4px; border-radius: 2px; }
+.agn-s .ars-tegn i { width: 10px; height: 10px; border-radius: 3px; vertical-align: -1px; }
+.agn-s i.samling { background: var(--graphite-900); }
+.agn-s i.heldag { background: var(--graphite-600); }
+.agn-s i.turnering { background: var(--slag); }
+.agn-s i.skole { background: var(--sand-300); box-shadow: inset 0 0 0 1px var(--graphite-500); }
+.agn-s .ars-dag[aria-pressed="true"] i.samling { background: #fff; }
+.agn-s .ars-dagpanel { gap: var(--r3); }
+.agn-s .ars-hendelser { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--r3); }
+.agn-s .ars-hendelser li { display: grid; gap: 2px; }
+.agn-s .ars-hendelser li > .pille { justify-self: start; }
+.agn-s .ars-mal { display: grid; gap: 6px; padding-top: var(--r3); border-top: 1px solid var(--sand-300); }
+.agn-s .ars-mal ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; font-size: 14px; }
+.agn-s .ars-turn { display: grid; }
+.agn-s .ars-turn-rad { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 2px 14px; align-items: baseline; padding: 12px 0; border-top: 1px solid var(--sand-300); }
+.agn-s .ars-turn-rad b { font: 600 15px/1.3 var(--sans); }
+.agn-s .ars-turn-rad b a { color: inherit; }
+.agn-s .ars-turn-rad .kilde { grid-column: 2; }
+.agn-s .ars-turn-dato { font: 600 13px/1.3 var(--mono); }
+@media (min-width: 900px) {
+  .agn-s .ars-band, .agn-s .ars-maaneder { display: grid; }
+  .agn-s .ars-perioder { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--r4); }
+  .agn-s .ars-perioder li { border-top: 2px solid var(--graphite-900); }
+  .agn-s .ars-kal { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: var(--r6); }
+  .agn-s .ars-dag { min-height: 56px; }
+  .agn-s .ars-turn-rad { grid-template-columns: 120px minmax(0, 1.4fr) minmax(0, 1fr); }
+  .agn-s .ars-turn-rad .kilde { grid-column: auto; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes ars-bred { from { scale: 0 1; } }
+  .agn-s .ars-band > .ars-seg { transform-origin: 0 50%; animation: ars-bred 620ms cubic-bezier(.23, 1, .32, 1) both; }
+}
