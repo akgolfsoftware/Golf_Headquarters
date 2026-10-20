@@ -42,7 +42,7 @@ export type PH15TnType = "gate" | "ball8" | "generell";
 /** Hvilken ny skjerm en Team Norway-protokoll får. null = det generelle scorekortet. */
 export function ph15TnType(p: TnProtocol): PH15TnType | null {
   if (p.points8Ball && p.rows.every((r) => r.target !== undefined)) return "ball8";
-  if (p.kind === "gate" && p.rows.every((r) => r.fields.length === 1 && (r.fields[0]!.choices?.length === 2 || erPoengValg(r.fields[0]!.choices)))) return "gate";
+  if (p.kind === "gate" && p.rows.every((r) => (r.fields[0]!.choices?.length === 2 || erPoengValg(r.fields[0]!.choices)) && r.fields.slice(1).every((f) => f.optional))) return "gate";
   if (erGenerell(p)) return "generell";
   return null;
 }
@@ -64,6 +64,8 @@ function erPoengValg(choices: readonly string[] | undefined): boolean {
   return !!choices && choices.length === Object.keys(GATE_POENG_VALG).length && choices.every((c) => c in GATE_POENG_VALG);
 }
 const erPoengGate = (p: TnProtocol) => erPoengValg(p.rows[0]?.fields[0]?.choices);
+/** Driver Gate og Putt Gate telles som OK («X / 6 OK», «X / 10 OK», Anders 20.10). */
+const erOkGate = (p: TnProtocol) => p.id === "driver-gate" || p.id === "putt-gate";
 const poengFor = (v: string | number | null | undefined) => (typeof v === "string" && v in GATE_POENG_VALG ? GATE_POENG_VALG[v as keyof typeof GATE_POENG_VALG] : null);
 const GATE_SVAR: { verdi: keyof typeof GATE_POENG_VALG; tittel: string; tekst: string }[] = [
   { verdi: "I sonen", tittel: "Porten og sonen", tekst: "Gjennom porten, og i sonen" },
@@ -230,9 +232,9 @@ function GateTopp({ p, godkjent, igjen, closed, resultat }: { p: TnProtocol; god
   const poeng = erPoengGate(p);
   return (
     <div className="phn-fylt tek full">
-      <span className="phn-akse-tekst">{poeng ? "TEK · POENG PER SLAG" : "TEK · GODKJENT ELLER BOM"}</span>
+      <span className="phn-akse-tekst">{poeng ? "TEK · POENG PER SLAG" : erOkGate(p) ? "TEK · OK ELLER IKKE OK" : "TEK · GODKJENT ELLER BOM"}</span>
       <div className="phn-rad">
-        <span className="phn-stor">{closed && !resultat ? "—" : godkjent}<small>{poeng ? `/ ${p.rows.length * 4} p` : `/ ${p.rows.length} godkjent`}</small></span>
+        <span className="phn-stor">{closed && !resultat ? "—" : godkjent}<small>{poeng ? `/ ${p.rows.length * 4} p` : erOkGate(p) ? `/ ${p.rows.length} OK` : `/ ${p.rows.length} godkjent`}</small></span>
         <span className="phn-trend">{closed ? (resultat ? "Lagret" : "Ikke lagret") : igjen ? `${igjen} slag igjen` : "Alle slag ført"}</span>
       </div>
       <p>{p.rows[0]?.fields[0]?.label ?? "Godkjent eller bom"}.</p>
@@ -267,8 +269,8 @@ function GateInn({ p, n, laast, alle, raw, sett, angre, kanAngre }: {
         </div>
       ) : (
         <div className="phn-tb">
-          <button type="button" className="godkjent" disabled={laast || alle} onClick={() => r && fort(godkjentVerdi(r))}><Check className="phn-ikon" aria-hidden />Godkjent</button>
-          <button type="button" className="bom" disabled={laast || alle} onClick={() => r && fort(bomVerdi(r))}><X className="phn-ikon" aria-hidden />Bom</button>
+          <button type="button" className="godkjent" disabled={laast || alle} onClick={() => r && fort(godkjentVerdi(r))}><Check className="phn-ikon" aria-hidden />{erOkGate(p) ? "OK" : "Godkjent"}</button>
+          <button type="button" className="bom" disabled={laast || alle} onClick={() => r && fort(bomVerdi(r))}><X className="phn-ikon" aria-hidden />{erOkGate(p) ? "Ikke OK" : "Bom"}</button>
         </div>
       )}
       <button type="button" className="phn-angre" disabled={laast || !kanAngre} onClick={angre}><Undo2 className="phn-ikon" aria-hidden />Angre siste</button>

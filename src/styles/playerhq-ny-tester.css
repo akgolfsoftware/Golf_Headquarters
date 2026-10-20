@@ -154,3 +154,12 @@
 .phn .phn-res-deling span:first-child { display: grid; gap: 2px; }
 .phn .phn-res-deling small { font: 400 12.5px/1.4 var(--phn-sans); color: var(--phn-g800); }
 .phn .phn-res-deling span:last-child { font: 500 13px/1 var(--phn-sans); text-decoration: underline; text-underline-offset: 3px; }
+
+/* 9 hull lengde: fem klasser med poeng, ett trykk registrerer. */
+.phn .phn-gen-klasser { display: grid; gap: 8px; }
+.phn .phn-gen-klasser button { display: flex; align-items: center; justify-content: space-between; min-height: 58px; padding: 0 16px; border: 0; border-radius: 12px; background: var(--phn-hvit); box-shadow: inset 0 0 0 1.5px var(--phn-sand-300); color: var(--phn-g900); cursor: pointer; font-family: inherit; transition: transform 100ms var(--phn-ut); }
+.phn .phn-gen-klasser button.hull { background: var(--phn-g900); color: #fff; box-shadow: none; }
+.phn .phn-gen-klasser button:active { transform: scale(.97); }
+.phn .phn-gen-klasser b { font: 600 16px/1.2 var(--phn-sans); }
+.phn .phn-gen-klasser strong { font: 600 18px/1 var(--phn-mono); }
+.phn .phn-gen-klasser button:focus-visible { outline: 3px solid var(--phn-g900); outline-offset: 2px; }

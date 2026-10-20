@@ -6,13 +6,14 @@
  * Brukes av PH15TnTest for protokollene av typene carry, putts, speed, course og free-course.
  *
  * Avvik:
+ *   - 9 hull lengde føres med fem klasser og poeng (katalogen 20.10, TN_OK_VERSION); feet-feltet fra eldre utgaver er sperret og vises ikke her.
  *   - «4+» i putteantall lagres som 4 (katalogen har ett heltall per forsøk).
  *   - Hastighet (valgfritt felt på carry-testene) ligger bak «Hastighet (valgfritt)», ikke på tastaturet.
  *   - Fysiske tester (benkpress m.fl.) er ikke TN-protokoller og føres i den vanlige testflyten.
  */
 import { useState } from "react";
 import { Delete, Undo2 } from "lucide-react";
-import type { TnField, TnProtocol, TnRow } from "@/lib/portal-tester/tn-catalog";
+import { LENGDE_POENG, type TnField, type TnProtocol, type TnRow } from "@/lib/portal-tester/tn-catalog";
 import { tnRowError, tnRowPreview, type TnResult } from "@/lib/portal-tester/tn-scoring";
 import { tnReadRaw, type TnRaw } from "@/lib/portal-tester/tn-draft";
 
@@ -23,16 +24,30 @@ const tall = (v: number, d = 1) => (Math.round(v * 10 ** d) / 10 ** d).toLocaleS
 
 /** Hvilke protokoller som får denne skjermen: ingen sperrede, og felt vi kan tegne (tall og valg, uten flere obligatoriske valg etter hverandre). */
 export function erGenerell(p: TnProtocol): boolean {
-  if (p.blocked || !["carry", "putts", "speed", "course", "free-course"].includes(p.kind)) return false;
-  return p.rows.every((r) => r.fields.every((f) => f.optional || !f.choices || f.choices.length <= 4));
+  if (p.blocked || !["carry", "putts", "speed", "course", "free-course", "length-putt"].includes(p.kind)) return false;
+  return p.rows.every((r) => r.fields.every((f) => f.optional || !f.choices || f.choices.length <= 4 || f.key === "klasse"));
 }
 
+const erLengde = (p: TnProtocol) => p.kind === "length-putt" && p.rows[0]?.fields[0]?.key === "klasse";
 const erPutteAntall = (p: TnProtocol) => p.kind === "putts" && p.rows[0]?.fields.length === 1 && !p.rows[0].fields[0]!.choices;
 const kreverVisning = (f: TnField) => !f.optional;
 
 export function GenerellTopp({ p, values, n, igjen, closed, resultat }: { p: TnProtocol; values: Values; n: number; igjen: number; closed: boolean; resultat: TnResult | null }) {
   const pv = p.rows.map((_, i) => tnRowPreview(p, i, values[String(i + 1)])).filter((x): x is NonNullable<typeof x> => x != null);
   const pei = pv.length ? pv.reduce((a, x) => a + x.pei, 0) / pv.length : null;
+  if (erLengde(p)) {
+    const poeng: number[] = p.rows.flatMap((_, i) => { const k = values[String(i + 1)]?.klasse; return typeof k === "string" && k in LENGDE_POENG ? [LENGDE_POENG[k as keyof typeof LENGDE_POENG]] : []; });
+    return (
+      <div className="phn-fylt slag full">
+        <span className="phn-akse-tekst">SLAG · {p.name.toUpperCase()}</span>
+        <div className="phn-to-tall">
+          <div><span className="phn-stor">{poeng.reduce((a, x) => a + x, 0).toLocaleString("nb-NO")}<small>/ {6 * p.rows.length} p</small></span><span className="phn-tall-etikett">Poeng så langt</span></div>
+          <div><span className="phn-stor">{n}<small>/ {p.rows.length}</small></span><span className="phn-tall-etikett">Putter ført</span></div>
+        </div>
+        <span className="phn-trend">{closed ? (resultat ? "Lagret" : "Ikke lagret") : igjen ? `${igjen} putter igjen` : "Alle putter ført"}</span>
+      </div>
+    );
+  }
   return (
     <div className={`phn-fylt ${p.kind === "speed" ? "tek" : "slag"} full`}>
       <span className="phn-akse-tekst">{p.kind === "speed" ? "TEK" : "SLAG"} · {p.name.toUpperCase()}</span>
@@ -108,6 +123,28 @@ function Slag({ p, n, r, laast, raw, sett, angre, kanAngre }: { p: TnProtocol; n
   }
 
   const [navn, ...rest] = r.label.split(" · ");
+
+  // 9 hull lengde: ett trykk registrerer klassen og går videre.
+  if (erLengde(p)) {
+    const f = r.fields[0]!;
+    return (
+      <div className="phn-gen">
+        <div className="phn-slag-naa" aria-live="polite">
+          <span className="phn-nr">Putt {n + 1} av {p.rows.length}</span>
+          <span className="phn-hva">{rest.join(" · ") || navn}<small>Slå putten, og velg hvor langt fra hullet den ble liggende. Varier hellingen.</small></span>
+        </div>
+        <div className="phn-gen-klasser" role="group" aria-label="Restavstand">
+          {f.choices!.map((v, i) => (
+            <button key={v} type="button" className={i === 0 ? "hull" : ""} disabled={laast} onClick={() => registrer({ [f.key]: v })}>
+              <b>{v}</b><strong>{LENGDE_POENG[v as keyof typeof LENGDE_POENG].toLocaleString("nb-NO")} p</strong>
+            </button>
+          ))}
+        </div>
+        <span className="phn-hjelp">Ett trykk registrerer og går videre.</span>
+        <button type="button" className="phn-angre" disabled={laast || !kanAngre} onClick={angre}><Undo2 className="phn-ikon" aria-hidden />Angre siste</button>
+      </div>
+    );
+  }
 
   // Putt 1–3 m: ett trykk registrerer antall slag og går videre.
   if (erPutteAntall(p)) {
