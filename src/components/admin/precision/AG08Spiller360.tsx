@@ -93,6 +93,7 @@ function Toppkort({ h, tom, onMelding, vis }: { h: S360Hode; tom: boolean; onMel
       <div className="knapper">
         <KnappLenke variant="spok" href={`/admin/spillere/${h.id}/rediger`}>Rediger profil</KnappLenke>
         <KnappLenke variant="spok" href={`/admin/spillere/${h.id}/profil-komplett`}>Komplett profil</KnappLenke>
+        <KnappLenke variant="spok" href={`/admin/spillere/${h.id}/turneringsplan`}>Turneringsplan</KnappLenke>
         <KnappLenke variant="spok" href={`/admin/spillere/${h.id}/turnering-kobling`}>Turneringsprofil</KnappLenke>
         <KnappLenke variant="spok" href={`/admin/tester/tildel/${h.id}`}>Tildel test</KnappLenke>
       </div>
