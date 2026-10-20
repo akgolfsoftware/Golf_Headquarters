@@ -56,7 +56,7 @@ export default async function Kvittering({ params }: Props) {
     currency: "NOK",
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
-  }).format(booking.priceOre / 100);
+  }).format((booking.priceOre + booking.giftCardOre) / 100);
   const frist = cancellationDeadline(booking.startAt);
   const bekreftet = booking.status === "CONFIRMED";
 

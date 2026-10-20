@@ -25,7 +25,11 @@ const ISO = new Intl.DateTimeFormat("sv-SE", OSLO);
 const stor = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 const kr = (ore: number) => `${(ore / 100).toLocaleString("nb-NO", { maximumFractionDigits: 0 })} kr`;
 
-function betaling(b: { priceOre: number; stripePaymentIntentId: string | null; subscriptionId: string | null; paymentMethod: string | null }): string {
+function betaling(b: { priceOre: number; giftCardOre: number; stripePaymentIntentId: string | null; subscriptionId: string | null; paymentMethod: string | null }): string {
+  if (b.giftCardOre > 0) {
+    const rest = b.priceOre > 0 ? (b.stripePaymentIntentId ? " + betalt med kort" : " + resten ikke betalt") : "";
+    return `Gavekort ${kr(b.giftCardOre)}${rest}`;
+  }
   if (b.stripePaymentIntentId) return "Betalt";
   if (b.subscriptionId) return "Klipp";
   if (b.paymentMethod === "FAKTURA") return "Faktura";
@@ -61,7 +65,7 @@ export default async function AdminBookingDetaljPage({ params }: { params: Promi
     sted: [r.facility?.name, r.location?.name].filter(Boolean).join(", ") || "—",
     coach: r.coach?.name ?? null,
     betaling: betaling(r),
-    pris: kr(r.priceOre),
+    pris: kr(r.priceOre + r.giftCardOre),
     kontakt: r.user ? null : ([r.guestEmail, r.guestPhone].filter(Boolean).join(" · ") || null),
     spillerHref: r.user ? `/admin/spillere/${r.user.id}` : null,
     notat: r.notes,

@@ -2,6 +2,7 @@ import type Stripe from "stripe";
 import { prisma } from "@/lib/prisma";
 import { stripeKlient } from "@/lib/stripe";
 import { logError } from "@/lib/error-tracking";
+import { tilbakeforGavekortForBooking } from "@/lib/booking/gavekort-retur";
 
 type Result = { ok: true; url: string } | { ok: false; error: string; releaseHold: boolean };
 const RETRY = "Betalingssiden kunne ikke åpnes. Ingen bestilling er bekreftet. Prøv igjen.";
@@ -48,7 +49,10 @@ export async function startBookingPayment(
           where: { id: bookingId, status: "PENDING", ...(session ? { OR: [{ stripeCheckoutSessionId: null }, { stripeCheckoutSessionId: session.id }] } : { stripeCheckoutSessionId: null }) },
           data: { status: "CANCELLED" },
         });
-        if (cancelled.count === 1) return { ok: false, error: RETRY, releaseHold: true };
+        if (cancelled.count === 1) {
+          await tilbakeforGavekortForBooking(bookingId);
+          return { ok: false, error: RETRY, releaseHold: true };
+        }
       } catch { /* Preserve uncertain state for the existing stuck-booking alert. */ }
     }
     return { ok: false, error: UNCERTAIN, releaseHold: false };

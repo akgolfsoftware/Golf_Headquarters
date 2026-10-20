@@ -15,7 +15,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { ArrowRight, CalendarX, CircleAlert, Lock, LogIn, RotateCw } from "lucide-react";
 import { hentLedigeDager, type LedigDag } from "@/app/(marketing)/booking/ledige-tider";
-import { createBookingCheckout } from "@/app/(marketing)/booking/[slug]/bekreft/actions";
+import { createBookingCheckout, sjekkGavekode } from "@/app/(marketing)/booking/[slug]/bekreft/actions";
 import { FeilTilstand, KnappLenke, LasterTilstand, Meta, TomTilstand } from "@/components/precision/pa";
 import { Knapp } from "@/components/precision/pa";
 import { SegmentertValg } from "@/components/precision/pa-a2";
@@ -94,6 +94,11 @@ export function BK01Booking({ tjenester, abonnement, lokasjon, startSlug, forhan
   const [feil, setFeil] = useState<Record<string, string>>(f?.feil ?? {});
   const [sender, setSender] = useState(false);
   const [betalfeil, setBetalfeil] = useState<string | null>(null);
+  // Gavekort (bookingplanen steg 7): forhåndsvisning av hva kortet dekker. Trekkes først ved betaling.
+  const [gaveKode, setGaveKode] = useState("");
+  const [gaveInfo, setGaveInfo] = useState<{ dekketOre: number; restOre: number } | null>(null);
+  const [gaveFeil, setGaveFeil] = useState<string | null>(null);
+  const [gaveSjekker, setGaveSjekker] = useState(false);
 
   const tj = useMemo(() => tjenester.find((t) => t.slug === slug) ?? null, [tjenester, slug]);
   const valgtDag = useMemo(() => dager.find((d) => d.dd === dag) ?? null, [dager, dag]);
@@ -105,6 +110,15 @@ export function BK01Booking({ tjenester, abonnement, lokasjon, startSlug, forhan
     try { setDager(await hentLedigeDager(s)); } catch { setDager([]); setLastefeil(true); } finally { setLaster(false); }
   }, []);
 
+  const sjekkGave = async () => {
+    if (!tj || !gaveKode.trim()) return;
+    setGaveSjekker(true); setGaveFeil(null); setGaveInfo(null);
+    try {
+      const r = await sjekkGavekode(gaveKode.trim(), Math.round(tj.pris * 100));
+      if (r.ok) setGaveInfo({ dekketOre: r.dekketOre, restOre: r.restOre }); else setGaveFeil(r.error);
+    } catch { setGaveFeil("Koden kunne ikke sjekkes. Prøv igjen."); } finally { setGaveSjekker(false); }
+  };
+
   const velg = (s: string) => { setSlug(s); setDag(null); setKl(null); setFeil({}); };
 
   const send = async () => {
@@ -114,6 +128,7 @@ export function BK01Booking({ tjenester, abonnement, lokasjon, startSlug, forhan
       slug: tj.slug, start: tid.startIso, coachId: tid.coachId,
       name: meg.navn.trim(), email: meg.epost.trim(), phone: meg.tlf.trim(),
       notes: meg.barn ? `Booker for barn: ${meg.spiller.trim()}` : "",
+      ...(gaveKode.trim() ? { giftCode: gaveKode.trim() } : {}),
       ...(tj.duo ? { partnerName: meg.navn2.trim(), partnerEmail: meg.epost2.trim() } : {}),
     });
     if (res.ok) { window.location.href = res.url; return; }
@@ -229,7 +244,13 @@ export function BK01Booking({ tjenester, abonnement, lokasjon, startSlug, forhan
   }
   if (steg === 3) {
     innhold = <div className="bk__skjema">
-      <Meta>DU SENDES TIL STRIPE FOR Å BETALE MED KORT</Meta>
+      <Skjemafelt label="Gavekort (valgfritt)" error={gaveFeil ?? undefined}>
+        <input className="a4-input a4-input--mono bk__input" aria-label="Gavekode" value={gaveKode} autoComplete="off" spellCheck={false} placeholder="XXXX-XXXX-XXXX-XXXX"
+          onChange={(e) => { setGaveKode(e.target.value); setGaveInfo(null); setGaveFeil(null); }} />
+      </Skjemafelt>
+      {gaveKode.trim() && !gaveInfo && <Knapp variant="ghost" loading={gaveSjekker} loadingText="Sjekker …" onClick={() => void sjekkGave()}>Bruk gavekortet</Knapp>}
+      {gaveInfo && <InlineVarsel tone="ok">{gaveInfo.restOre === 0 ? `Gavekortet dekker hele timen (${kr(gaveInfo.dekketOre / 100)}).` : `Gavekortet dekker ${kr(gaveInfo.dekketOre / 100)}. Resten, ${kr(gaveInfo.restOre / 100)}, betaler du med kort.`}</InlineVarsel>}
+      <Meta>{gaveInfo?.restOre === 0 ? "INGEN KORTBETALING NØDVENDIG" : "DU SENDES TIL STRIPE FOR Å BETALE MED KORT"}</Meta>
       <label className="pa-check"><input type="checkbox" checked={vilkar} onChange={(e) => setVilkar(e.target.checked)} />
         <span className="pa-check__box" aria-hidden>{vilkar && <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden><path d="M2.5 6.2 5 8.5l4.5-5" fill="none" stroke="currentColor" strokeWidth="1.8" /></svg>}</span>
         <span>Jeg godtar vilkårene. Gratis avbestilling fram til 24 timer før.</span></label>
@@ -248,7 +269,7 @@ export function BK01Booking({ tjenester, abonnement, lokasjon, startSlug, forhan
     <div className="bk__knapper">
       {steg > 0 && <Knapp variant="ghost" onClick={tilbake}>Tilbake</Knapp>}
       <Knapp icon={steg === 3 ? Lock : ArrowRight} loading={sender || (steg === 0 && laster)} loadingText="Sender deg til betaling …" onClick={() => void neste()}>
-        {steg === 3 && tj ? `Betal ${kr(tj.pris)}` : "Fortsett"}
+        {steg === 3 && tj ? (gaveInfo?.restOre === 0 ? "Bekreft med gavekort" : `Betal ${kr(gaveInfo ? gaveInfo.restOre / 100 : tj.pris)}`) : "Fortsett"}
       </Knapp>
     </div>
   </Ramme>;

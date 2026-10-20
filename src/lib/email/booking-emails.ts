@@ -80,7 +80,7 @@ export async function sendBookingConfirmation(bookingId: string, opts: { betalin
     ...felles,
     type: erGjest ? "gjest" : "app",
     fornavn: navn ? navn.split(" ")[0] : null,
-    prisOre: booking.subscriptionId ? null : booking.priceOre,
+    prisOre: booking.subscriptionId ? null : booking.priceOre + booking.giftCardOre,
     betalingsref: booking.stripePaymentIntentId,
     endreUrl: erGjest ? endreGjestSelv : `${APP_URL}/portal/meg/bookinger`,
     opprettKontoUrl: erGjest ? `${APP_URL}/auth/signup` : null,

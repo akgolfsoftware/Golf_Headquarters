@@ -11,6 +11,7 @@
  * - Bulk treffer kun coachens scope — aldri hele systemet for COACH
  */
 
+import { tilbakeforGavekortForBooking } from "@/lib/booking/gavekort-retur";
 import { revalidatePath } from "next/cache";
 import { requireCoachActionUser } from "@/lib/auth/action-guards";
 import {
@@ -50,10 +51,11 @@ export async function bekreftBooking(id: string) {
 
 export async function avvisBooking(id: string) {
   const user = await requireCoachActionUser();
-  await prisma.booking.updateMany({
+  const avvist = await prisma.booking.updateMany({
     where: { id, status: "PENDING", ...coachBookingScope(user) },
     data: { status: "CANCELLED" },
   });
+  if (avvist.count > 0) await tilbakeforGavekortForBooking(id);
   revalidateBookingFlater();
 }
 
@@ -82,10 +84,15 @@ export async function bekreftAllePending() {
 
 export async function avvisAllePending() {
   const user = await requireCoachActionUser();
+  const medGavekort = await prisma.booking.findMany({
+    where: { status: "PENDING", giftCardOre: { gt: 0 }, ...coachBookingScope(user) },
+    select: { id: true },
+  });
   await prisma.booking.updateMany({
     where: { status: "PENDING", ...coachBookingScope(user) },
     data: { status: "CANCELLED" },
   });
+  for (const b of medGavekort) await tilbakeforGavekortForBooking(b.id);
   revalidateBookingFlater();
 }
 

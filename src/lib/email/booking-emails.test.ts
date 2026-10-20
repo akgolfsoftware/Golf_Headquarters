@@ -17,7 +17,7 @@ mock.module("@/lib/prisma", { namedExports: { prisma: {
   auditLog: { findFirst: async () => cancellationAt ? { createdAt: cancellationAt } : null },
   booking: { findUnique: async () => ({
     id: "synthetic", status: "CONFIRMED", userId: null, user: null, guestName: '<img src="x">', guestEmail: "synthetic@akgolf.test",
-    startAt: new Date("2026-10-10T10:30:00Z"), endAt: new Date("2026-10-10T11:30:00Z"), priceOre: 10000, subscriptionId: null,
+    startAt: new Date("2026-10-10T10:30:00Z"), endAt: new Date("2026-10-10T11:30:00Z"), priceOre: 10000, giftCardOre: 0, subscriptionId: null,
     serviceType: { name: "Syntetisk time", durationMin: 60 }, location: { name: "Testlokale" },
     ...bookingOverride,
   }) },

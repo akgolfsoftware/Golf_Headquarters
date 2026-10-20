@@ -14,6 +14,7 @@ let ledig = true;
 let oppdateringer: unknown[] = [];
 let refusjoner = 0;
 let epost: string[] = [];
+let gavekortRetur: unknown[] = [];
 
 function lagRad(overstyr: Partial<Rad> = {}): Rad {
   return {
@@ -35,6 +36,11 @@ mock.module("@/lib/prisma", {
         fn({
           booking: { updateMany: async (args: unknown) => { oppdateringer.push(args); return { count: 1 }; } },
           webhookFailure: { upsert: async () => undefined },
+          giftCardTransaction: {
+            findMany: async () => [{ giftCardId: "gk-1", amountOre: 50_000 }],
+            createMany: async () => { gavekortRetur.push("retur"); return { count: 1 }; },
+          },
+          giftCard: { update: async (a: { data: { balanceOre: { increment: number } } }) => { gavekortRetur.push(a.data.balanceOre.increment); } },
         }),
     },
   },
@@ -74,6 +80,7 @@ test.beforeEach(() => {
   oppdateringer = [];
   refusjoner = 0;
   epost = [];
+  gavekortRetur = [];
 });
 
 test("utløpt eller endret lenke avvises uten endring", async () => {
@@ -148,4 +155,22 @@ test("avbestilling 24 timer eller mindre før gir ingen refusjon", async () => {
   assert.equal(svar.ok, true);
   assert.equal(refusjoner, 0);
   assert.match(svar.melding, /refunderes ikke/);
+});
+
+test("gavekort: avbestilling mer enn 24 timer før fører beløpet tilbake til kortet", async () => {
+  const m = await moduler();
+  rad = lagRad({ stripePaymentIntentId: null, priceOre: 0, giftCardOre: 50_000 });
+  const token = m.signerGjestLenke("booking-1", rad.startAt)!;
+  const svar = await m.gjestAvbestillTime(token, lang);
+  assert.equal(svar.ok, true);
+  assert.deepEqual(gavekortRetur, ["retur", 50_000]);
+});
+
+test("gavekort: avbestilling 24 timer eller mindre før gir ikke gavekortet tilbake", async () => {
+  const m = await moduler();
+  rad = lagRad({ stripePaymentIntentId: null, priceOre: 0, giftCardOre: 50_000 });
+  const token = m.signerGjestLenke("booking-1", rad.startAt)!;
+  const svar = await m.gjestAvbestillTime(token, kort);
+  assert.equal(svar.ok, true);
+  assert.deepEqual(gavekortRetur, []);
 });

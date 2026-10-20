@@ -98,7 +98,9 @@ export async function bookIKalender(input: {
   start: string;
   notater?: string;
   /** Utelatt = pris fra tjenesten, som før. */
-  betaling?: "STRIPE" | "KLIPP" | "FAKTURA" | "GRATIS";
+  betaling?: "STRIPE" | "KLIPP" | "FAKTURA" | "GRATIS" | "GAVEKORT";
+  /** Påkrevd når betaling = GAVEKORT. */
+  gavekode?: string;
 }): Promise<BookResultat> {
   // Auth gjøres også i opprettOktPaaTid; her for tidlig og tydelig avvisning.
   await requireCoachActionUser();
@@ -130,8 +132,11 @@ export async function bookIKalender(input: {
       varighetMin: tjeneste.durationMin,
       notater: input.notater,
       betaling: input.betaling,
+      gavekode: input.gavekode,
     });
-    if (input.betaling !== "STRIPE") return { ok: true, bookingId: res.bookingId };
+    // Gavekort som dekker alt trenger ingen betalingslenke; delvis dekning gir lenke for resten.
+    const trengerLenke = input.betaling === "STRIPE" || (input.betaling === "GAVEKORT" && res.restOre > 0);
+    if (!trengerLenke) return { ok: true, bookingId: res.bookingId };
 
     // Stripe: lag lenken og send den til kunden i bekreftelsen. Feiler det, er bookingen lagret;
     // coachen kan lage lenken på nytt fra bookingen.

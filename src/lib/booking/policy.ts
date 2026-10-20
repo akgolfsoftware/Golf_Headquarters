@@ -32,6 +32,8 @@ export type BookingPolicySnapshot = {
   /** Betalt booking hvis Stripe PI finnes. */
   stripePaymentIntentId: string | null;
   priceOre: number;
+  /** Del av prisen dekket av gavekort (øre). Utelatt = 0. */
+  giftCardOre?: number;
 };
 
 export type CancelOutcome = {
@@ -41,6 +43,8 @@ export type CancelOutcome = {
   restoreCredit: boolean;
   /** Staff eller >24t, og det finnes PaymentIntent. */
   refundStripe: boolean;
+  /** Staff eller >24t, og gavekort er brukt: beløpet føres tilbake til gavekortet. */
+  restoreGiftCard: boolean;
   /** Under 24t for spiller — avbestilling tillatt men uten kompensasjon. */
   lateCancelNoRefund: boolean;
   /** Menneskelig kort tekst (nb). */
@@ -111,6 +115,7 @@ export function cancelOutcome(
       reasonIfDenied: "Timen er merket som uteblitt. Kontakt coachen.",
       restoreCredit: false,
       refundStripe: false,
+      restoreGiftCard: false,
       lateCancelNoRefund: false,
       playerMessage: "Timen er merket som uteblitt.",
       hoursUntilStart: h,
@@ -123,6 +128,7 @@ export function cancelOutcome(
       reasonIfDenied: "Bookingen er allerede avbestilt.",
       restoreCredit: false,
       refundStripe: false,
+      restoreGiftCard: false,
       lateCancelNoRefund: false,
       playerMessage: "Allerede avbestilt.",
       hoursUntilStart: h,
@@ -135,6 +141,7 @@ export function cancelOutcome(
       reasonIfDenied: "Du har ikke tilgang til denne bookingen.",
       restoreCredit: false,
       refundStripe: false,
+      restoreGiftCard: false,
       lateCancelNoRefund: false,
       playerMessage: "Ingen tilgang.",
       hoursUntilStart: h,
@@ -147,6 +154,7 @@ export function cancelOutcome(
 
   const restoreCredit = Boolean(booking.subscriptionId && kanKompenseres);
   const refundStripe = Boolean(booking.stripePaymentIntentId && kanKompenseres);
+  const restoreGiftCard = Boolean((booking.giftCardOre ?? 0) > 0 && kanKompenseres);
   const lateCancelNoRefund = !kanKompenseres;
 
   let playerMessage: string;
@@ -156,6 +164,8 @@ export function cancelOutcome(
     playerMessage = "En coaching-time føres tilbake til pakken.";
   } else if (refundStripe) {
     playerMessage = "Refusjon via betaling — vanligvis 5–10 bankdager.";
+  } else if (restoreGiftCard) {
+    playerMessage = "Beløpet føres tilbake til gavekortet.";
   } else if (lateCancelNoRefund) {
     playerMessage = `${AVBESTILLING_FRIST_TIMER} timer eller mindre til start — ingen tilbakeføring eller refusjon.`;
   } else {
@@ -167,6 +177,7 @@ export function cancelOutcome(
     reasonIfDenied: null,
     restoreCredit,
     refundStripe,
+    restoreGiftCard,
     lateCancelNoRefund,
     playerMessage,
     hoursUntilStart: h,

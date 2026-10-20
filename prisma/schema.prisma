@@ -43,6 +43,8 @@ enum BookingPaymentMethod {
   KLIPP
   FAKTURA
   GRATIS
+  // Betalt helt med gavekort (delvis dekning står som STRIPE med giftCardOre > 0).
+  GAVEKORT
 }
 
 // PlayerHQ-domenet (Fase 1.5)
@@ -1393,6 +1395,8 @@ model Booking {
   // Betalingsmåte (Anders 29.09.2026). Null = eldre booking: betalingen leses fra
   // Stripe-feltene og subscriptionId som før.
   paymentMethod           BookingPaymentMethod?
+  // Del av prisen dekket av gavekort (øre). priceOre er det som betales med kort.
+  giftCardOre             Int           @default(0)
   // Coach foreslår ny tid på en betalt time; spilleren må godta før startAt/endAt
   // endres (Anders 29.09.2026). proposedById er coachens id (plain id).
   proposedStartAt         DateTime?
@@ -7615,4 +7619,43 @@ model TnCollege {
 
   @@unique([groupId, userId])
   @@map("tn_college")
+}
+
+// Gavekort (bookingplanen steg 7). Koden lagres aldri i klartekst: codeHash er SHA-256 av
+// den normaliserte koden, og kodene kan ikke listes opp. Restverdien trekkes atomisk
+// (se src/lib/booking/gavekort.ts).
+model GiftCard {
+  id                      String   @id @default(cuid())
+  codeHash                String   @unique
+  /// Siste fire tegn av koden, bare for support («slutter på …»).
+  codeEnd                 String
+  initialOre              Int
+  balanceOre              Int
+  purchaserUserId         String?
+  purchaserEmail          String
+  purchaserName           String?
+  recipientEmail          String?
+  message                 String?
+  expiresAt               DateTime
+  stripeCheckoutSessionId String   @unique
+  emailSentAt             DateTime?
+  createdAt               DateTime @default(now())
+  transactions            GiftCardTransaction[]
+
+  @@map("gift_cards")
+}
+
+model GiftCardTransaction {
+  id         String   @id @default(cuid())
+  giftCardId String
+  giftCard   GiftCard @relation(fields: [giftCardId], references: [id], onDelete: Cascade)
+  bookingId  String?
+  /// REDEEM (trukket for en booking) eller RETURN (ført tilbake ved avbestilling).
+  kind       String
+  amountOre  Int
+  createdAt  DateTime @default(now())
+
+  @@unique([giftCardId, bookingId, kind])
+  @@index([bookingId])
+  @@map("gift_card_transactions")
 }

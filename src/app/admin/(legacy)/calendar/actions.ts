@@ -13,6 +13,8 @@ import { audit } from "@/lib/audit";
 import { logError } from "@/lib/error-tracking";
 import { kanBrukeCredits } from "@/lib/booking/credits-tilgang";
 import { bookingBetaling } from "@/lib/booking/betalingsvalg";
+import { GavekortFeil, knyttGavekortTilBooking, losInnGavekort, slaaOppGavekort } from "@/lib/booking/gavekort";
+import { tilbakeforGavekortForBooking } from "@/lib/booking/gavekort-retur";
 
 
 export type OpprettOktInput = {
@@ -30,13 +32,18 @@ export type OpprettOktInput = {
    *   trekk som createCreditBooking), pris 0, subscriptionId settes.
    * - FAKTURA: tjenestens pris, merket «skal faktureres» (fakturaen lages i Tripletex).
    * - GRATIS: pris 0.
+   * - GAVEKORT: trekker gavekortet (`gavekode`) atomisk i samme transaksjon. Dekker det ikke alt,
+   *   står resten som en Stripe-betaling (betalingslenke).
    */
-  betaling?: "STRIPE" | "KLIPP" | "FAKTURA" | "GRATIS";
+  betaling?: "STRIPE" | "KLIPP" | "FAKTURA" | "GRATIS" | "GAVEKORT";
+  gavekode?: string;
 };
 
 export type OpprettOktResult = {
   ok: true;
   bookingId: string;
+  /** Det som gjenstår å betale med kort (øre). */
+  restOre: number;
 };
 
 export async function opprettOktPaaTid(
@@ -55,7 +62,8 @@ export async function opprettOktPaaTid(
     spillerId: z.string().min(1).max(200), serviceTypeId: z.string().min(1).max(200), locationId: z.string().min(1).max(200),
     facilityId: z.string().min(1).max(200).optional(), startAt: z.union([z.date(), z.string().min(1).max(40)]),
     varighetMin: z.number().int().min(1).max(1440), notater: z.string().max(2000).optional(),
-    betaling: z.enum(["STRIPE", "KLIPP", "FAKTURA", "GRATIS"]).optional(),
+    betaling: z.enum(["STRIPE", "KLIPP", "FAKTURA", "GRATIS", "GAVEKORT"]).optional(),
+    gavekode: z.string().trim().max(40).optional(),
   }).safeParse(data);
   if (!parsed.success) throw new Error("Kontroller bookingfeltene, varighet og betalingsmåte.");
   // Datetime-local sender Oslo-veggklokke. Bevar sifrene i databasens naive
@@ -124,7 +132,18 @@ export async function opprettOktPaaTid(
     if (pakke.creditsRemaining <= 0) throw new Error("Spilleren har ingen klipp igjen denne måneden.");
     klippAbonnementId = pakke.id;
   }
-  const betaling = bookingBetaling(data.betaling, serviceType.priceOre, klippAbonnementId);
+  // Gavekort: koden sjekkes før noe lagres. Selve trekket skjer atomisk i transaksjonen under.
+  if (data.betaling === "GAVEKORT") {
+    if (!data.gavekode) throw new Error("Skriv inn gavekortets kode.");
+    try {
+      await slaaOppGavekort(prisma, data.gavekode);
+    } catch (e) {
+      if (e instanceof GavekortFeil) throw new Error(e.message);
+      throw e;
+    }
+  }
+  const betalingUtenGave = data.betaling === "GAVEKORT" ? null : bookingBetaling(data.betaling, serviceType.priceOre, klippAbonnementId);
+  let betaling = betalingUtenGave ?? { priceOre: serviceType.priceOre, paymentMethod: null, subscriptionId: null, giftCardOre: 0 };
 
   let booking: { id: string };
   try {
@@ -149,7 +168,12 @@ export async function opprettOktPaaTid(
         });
         if (trukket.count === 0) throw new Error("Spilleren har ingen klipp igjen denne måneden.");
       }
-      return tx.booking.create({
+      let gave: Awaited<ReturnType<typeof losInnGavekort>> | null = null;
+      if (data.betaling === "GAVEKORT" && data.gavekode) {
+        gave = await losInnGavekort(tx, data.gavekode, serviceType.priceOre);
+        betaling = bookingBetaling("GAVEKORT", serviceType.priceOre, null, gave.dekketOre);
+      }
+      const lagret = await tx.booking.create({
         data: {
           plassNr: vern.plassNr,
           userId: spiller.id,
@@ -160,6 +184,7 @@ export async function opprettOktPaaTid(
           endAt,
           status: "CONFIRMED",
           priceOre: betaling.priceOre,
+          giftCardOre: betaling.giftCardOre,
           ...(betaling.paymentMethod ? { paymentMethod: betaling.paymentMethod } : {}),
           ...(betaling.subscriptionId ? { subscriptionId: betaling.subscriptionId } : {}),
           coachId: serviceType.coachUserId ?? null,
@@ -167,11 +192,14 @@ export async function opprettOktPaaTid(
         },
         select: { id: true },
       });
+      if (gave) await knyttGavekortTilBooking(tx, gave.transaksjonId, lagret.id);
+      return lagret;
     });
   } catch (e) {
     if (erKollisjonsfeil(e)) {
       throw new Error(kollisjonsmelding(e));
     }
+    if (e instanceof GavekortFeil) throw new Error(e.message);
     throw e;
   }
 
@@ -198,13 +226,14 @@ export async function opprettOktPaaTid(
       startAt: startAt.toISOString(),
       varighetMin: data.varighetMin,
       betaling: data.betaling ?? null,
+      giftCardOre: betaling.giftCardOre,
     },
   });
 
   revalidatePath("/admin/kalender");
   revalidatePath("/admin/bookinger");
 
-  return { ok: true, bookingId: booking.id };
+  return { ok: true, bookingId: booking.id, restOre: betaling.priceOre };
 }
 
 /**
@@ -306,6 +335,8 @@ export async function cancelSession(
     where: { id: bookingId },
     data: { status: "CANCELLED" },
   });
+  // Coach som avlyser gir alltid alt tilbake, også gavekortbeløpet.
+  await tilbakeforGavekortForBooking(bookingId);
 
   await audit({
     actorId: aktor.id,

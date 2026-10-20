@@ -92,3 +92,11 @@ test("NO_SHOW kan ikke avbestilles eller ombookes av kunden (klipp og betaling b
   assert.equal(c.refundStripe, false);
   assert.equal(rescheduleOutcome(ns, { kind: "player", userId: "player-1" }, nowFar).allowed, false);
 });
+
+test("gavekort: beløpet føres tilbake ved avbestilling over 24 timer før, og alltid for coach", () => {
+  const gave = { ...base, subscriptionId: null, giftCardOre: 50_000 };
+  assert.equal(cancelOutcome(gave, { kind: "player", userId: "player-1" }, nowFar).restoreGiftCard, true);
+  assert.equal(cancelOutcome(gave, { kind: "player", userId: "player-1" }, nowLate).restoreGiftCard, false);
+  assert.equal(cancelOutcome(gave, { kind: "coach", userId: "coach-1" }, nowLate).restoreGiftCard, true);
+  assert.equal(cancelOutcome({ ...base, giftCardOre: 0 }, { kind: "player", userId: "player-1" }, nowFar).restoreGiftCard, false);
+});
