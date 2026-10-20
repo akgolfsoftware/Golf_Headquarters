@@ -60,10 +60,10 @@ fargen, så fargen er aldri eneste bærer. TURN blir i mørk rød (Anders 14.10)
 - Kilde og dato der appen påstår noe om en spiller. Estimat merkes (`.merke.kontur`).
 - Aldri sidelengs rulling. Ord fra `docs/treningsplanlegging.md`.
 - Spillere heter «Spiller 01» … «Spiller 14» og trenere «Sportssjef», «Trener 1», «Trener 2». Ingen realistiske navn (spillerne er mindreårige).
-- Fagregler som skjermene må følge: Wedge Gate og gate-testene føres som Godkjent eller Bom; 8-ball føres med
-  meter fra hullet og «I hull» (5 / 3 / 2 / 1 / 0 poeng), andre PEI-tester med carry og side (vedtak 14.10); Data Golf
-  vises bare for coacher, og Data Golf-lenken i Analyse vises bare for trenere med coach-rollen
-  (§DATA GOLF VISES ALDRI TIL KUNDER, 16.10).
+- Fagregler som skjermene må følge: de 14 testene i Team Norways testbeskrivelse 2026 (§TESTBATTERIET FØLGER TEAM
+  NORWAYS TESTBESKRIVELSE 2026, 20.10): 8-balls variation i PEI, Nærspill Gate, Wedge Gate og VISA Express med 1 eller
+  4 poeng per slag (maks 36), Driver Gate og Putt Gate som antall OK, alle PEI-tester med carry og side. Data Golf
+  vises bare for ADMIN (§DATA GOLF ER ANDERS' PRIVATE VERKTØY, 20.10). Utkastene i denne mappa er tegnet før dette.
 
 ## Utkast 2: retning B (16.10.2026)
 

@@ -4,6 +4,27 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## TESTBATTERIET FØLGER TEAM NORWAYS TESTBESKRIVELSE 2026: 14 TESTER, PEI PÅ 8-BALL, 1 ELLER 4 POENG PÅ GATE-TESTENE (Anders 20.10.2026, bindende)
+
+Anders 20.10 ga Team Norways «Tester»-dokument (`beskrivelse-av-tester-2026.pdf`) og scorekort-arket (`team-norway-treningsprotokoll-og-tester-for-spillerv3`) som fasit: «Dette er testene som gjelder». På de seks avvikene mot eldre vedtak: «Følg Team Norways testbeskrivelse på alle seks punktene: PEI på 8-ball, 1 og 4 poeng på gate-testene, og slagantall og lengder slik beskrivelsen sier.»
+
+- **14 tester, i denne rekkefølgen.** Golfslag: Driver Basic · Inspill Basic · Wedge Variation · 8-balls variation · Putt 1–3 m · Golfslag på banen · 18 hulls inspill · 9 hull lengde. Teknikk: Driver Gate · Wedge Gate · Putt Gate · Nærspill Gate · VISA Express · Putt Speed 1 × 5. Samme navn, rekkefølge og gruppering på alle flater.
+- **Fem prioriterte med minstekrav:** Driver Basic 1 · Inspill Basic 2 · Wedge Variation 2 · 8-balls variation 2 · Putt 1–3 m 4. Skjermene viser hvor mange ganger spilleren har tatt dem («1 av 2»).
+- **8-balls variation:** 24 slag, meter fra hullet og PEI per slag. Resultatet er PEI, ikke poeng.
+- **Nærspill Gate, Wedge Gate og VISA Express:** 1 poeng gjennom gaten, 4 poeng gjennom gaten og innenfor sonen. 9 slag, maks 36.
+- **Driver Gate (6 slag) og Putt Gate (10 putter):** antall OK. Putt Gate krever rent gjennom gaten og stopp innenfor 50 cm-sonen.
+- **Slagantall og lengder følger beskrivelsen:** Inspill Basic 10 slag på to lengder (gutter 145 og 160 m, jenter 125 og 145 m) · Putt 1–3 m 25 putter, resultat antall slag · Putt Speed 1 × 5 snitt avstand til mållinjen · Wedge Gate 40, 50 og 60 m (scorekortet).
+- **Uendret:** alle PEI-tester føres med carry og side, og en test teller bare når alle slag er ført.
+
+**Overstyrer:** 8-ball-poengene og «X / 9 godkjent» i §PEI-TESTER FØRES MED CARRY OG SIDE (14.10), punkt 4 der (Nærspill Gate og VISA Express som godkjent eller bom), og «Wedge Gate teller treff» i §ØKONOMI BARE FOR HEAD COACH (28.09).
+
+**Arbeidet dette utløser:**
+
+1. **Uavklart (spør Anders først):** skal de fysiske testene fra §ÉN IUP OG ETT TESTBATTERI (benkpress, markløft trapbar, lengdehopp, rotasjonskast, Club Speed) stå i batteriet? De står ikke i Team Norways beskrivelse. Til svaret kommer, tegnes de ikke.
+2. **Katalogen** (`src/lib/portal-tester/tn-catalog.ts`, `src/lib/domain/pei/protokoll-definisjoner.ts`, `poeng-tabeller.ts`): 8-ball gir PEI uten poeng; Nærspill Gate, Wedge Gate og VISA Express gir 1 eller 4 poeng per slag; Driver Gate og Putt Gate teller OK; Inspill Basic får 10 slag på to lengder og navnet «Inspill Basic»; Driver basic heter «Driver Basic». Lagrede resultater beholdes og merkes med regelversjon. Ferdig når `tn-scoring.test.ts` låser formatet for hver av de 14, og katalogen ikke har tester utenfor lista uten at Anders har sagt ja.
+3. **Prioritert og minstekrav** i datamodellen eller katalogen, så skjermene kan vise «1 av 2». Ferdig når en test låser minstekravet for de fem.
+4. **Testskjermene** i PlayerHQ, AgencyOS, WANG og Team Norway bruker de 14 testene, gruppene og formatene over. Team Norway-tegningene: «Team Norway nøkkelskjermer» (https://claude.ai/artifact/5uuJLVhHxsmMpV44Eakid2).
+
 ## TEAM NORWAY-APPEN BEHOLDER NAVY SIDEMENY OG BYTTER TIL SCHIBSTED GROTESK (Anders 20.10.2026, bindende)
 
 Anders 20.10 valgte anbefalingen på begge de uavklarte punktene i §TEAM NORWAY-APPEN FÅR RETNING «SKRÅ» (punkt 7 og 8): navy sidemeny på PC, og Schibsted Grotesk fra Team Norway Golf-merket. Begrunnelse: sidemenyen har plass til alle menypunktene TN trenger, og skriften gjør appen lik resten av Team Norway sitt materiell.
@@ -527,10 +548,10 @@ Anders 14.10, etter utkast 1 av pakke 6 Stats i dybden (`docs/design-system/utka
 - **8-ball føres med meter fra hullet**, for eksempel 2,4, og «I hull» når ballen går i på ett slag. Ingen høyre eller
   venstre (Anders 14.10, kommentar på utkastet: «Kun PEI på hvor langt unna hullet i avstand»). Feltet godtar alltid både
   komma og punktum («2,4» og «2.4»). Appen regner PEI = meter fra hullet / slaglengde, og poeng.
-- **8-ball-poeng:** i hull på ett slag 5 · innenfor 1 m 3 · innenfor 2 m 2 · innenfor 3 m 1 · lenger unna 0.
+- ~~**8-ball-poeng:** i hull på ett slag 5 · innenfor 1 m 3 · innenfor 2 m 2 · innenfor 3 m 1 · lenger unna 0.~~ Overstyrt 20.10 (§TESTBATTERIET FØLGER TEAM NORWAYS TESTBESKRIVELSE 2026).
 - **Alle PEI-tester føres med carry og side.** Appen regner selv ut avstand fra hullet og feilprosenten
   (PEI = avstand fra hullet / slaglengde). Eksempel: riktig lengde, 5 m til høyre, gir 5 m fra hullet.
-- **Tester med treff eller ikke føres som «Godkjent» eller «Bom»**, og resultatet heter «X / 9 godkjent».
+- ~~**Tester med treff eller ikke føres som «Godkjent» eller «Bom»**, og resultatet heter «X / 9 godkjent».~~ Overstyrt 20.10 (§TESTBATTERIET FØLGER TEAM NORWAYS TESTBESKRIVELSE 2026).
 
 **Overstyrer:** 8-ball-skalaen (under 0,1 m = 4 · 0,1–0,99 = 3 · 1–1,99 = 2 · 2–2,99 = 1 · 3 m+ = 0) i
 §Åpne punkter etter runde 19–26, og «Treff eller Bom» / «X / 9 treff» for Wedge Gate (skjermlista PH-15 og
@@ -546,7 +567,7 @@ Anders 14.10, etter utkast 1 av pakke 6 Stats i dybden (`docs/design-system/utka
    alle viser avstand fra hullet og PEI rett etter hvert slag.
 3. **Ordet «Godkjent»** i stedet for «Treff» / «Ja» i gate-testene (`tn-catalog.ts`, `choice("ok", …)`) og
    skjermtekst. Ferdig når ingen gate-test viser «treff» som resultatord.
-4. **Nærspill Gate og VISA Express føres også som godkjent eller bom** (Anders 14.10: «Ja»), ikke med poeng for hånd.
+4. ~~**Nærspill Gate og VISA Express føres også som godkjent eller bom**~~ (overstyrt 20.10: 1 eller 4 poeng) (Anders 14.10: «Ja»), ikke med poeng for hånd.
    Overstyrer «poeng føres for hånd per slag og appen summerer» (§Åpne punkter etter runde 19–26) og runde 29 i
    skjermlista PH-15. `tn-catalog.ts` får `kind: "gate"` med `choice("ok", …)` for begge. Ferdig når
    `tn-scoring.test.ts` låser «X / 9 godkjent» for begge.
@@ -870,7 +891,7 @@ I dag lages en årsplan bare i det skjulte ved første periode (`opprettPeriodeC
 Svar på de sju åpne spørsmålene etter fase 4 (runde 27–30 i Precision).
 
 - **Økonomi (AG-20) vises bare for head coach.** Assistant coach ser verken menypunktet eller siden.
-- **Wedge Gate teller treff.** Hvert forsøk føres som treff eller bom; resultatet er antall treff.
+- ~~**Wedge Gate teller treff.** Hvert forsøk føres som treff eller bom; resultatet er antall treff.~~ Overstyrt 20.10 (§TESTBATTERIET FØLGER TEAM NORWAYS TESTBESKRIVELSE 2026).
 - **Stall-matrisen** Trenger deg · Følger planen · Hviler: bekreftet.
 - **Talentradaren** får stiplet linje for Kategori C: bekreftet (bare coach, §Data).
 - **Hurtigmeldingene** OK · Spørsmål · Ikke nå: bekreftet.
