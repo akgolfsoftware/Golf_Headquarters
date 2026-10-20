@@ -35,13 +35,13 @@ const out = resolve(process.env.TN_PROVE_UT ?? resolve(tmpdir(), "tn-prove"), id
 mkdirSync(out, { recursive: true, mode: 0o700 });
 
 // Serverkode erstattes med tomme stubber: prøven skal aldri nå database eller nett.
-const SERVER_ONLY = /^(server-only|@\/lib\/prisma|@\/lib\/auth\/.*|next\/headers|next\/cache)$/;
+const SERVER_ONLY = /^(server-only|@\/lib\/prisma|@\/lib\/auth\/.*|@\/lib\/domain\/tn-arbeidsflate|next\/headers|next\/cache)$/;
 const stubbePlugin = {
   name: "prove-grenser",
   setup(b) {
     b.onResolve({ filter: SERVER_ONLY }, ({ path }) => ({ path, namespace: "stub-tom" }));
-    b.onLoad({ filter: /^@\/lib\/auth\//, namespace: "stub-tom" }, ({ path }) => {
-      // Behold eksportnavnene fra auth-modulen, men gjør dem ufarlige: prøven er aldri innlogget.
+    b.onLoad({ filter: /^@\/lib\/(auth\/|domain\/tn-arbeidsflate$)/, namespace: "stub-tom" }, ({ path }) => {
+      // Behold eksportnavnene fra auth-modulen og TN-datamodulen, men gjør dem ufarlige: prøven er aldri innlogget og har ingen database.
       const fil = ["ts", "tsx"].map((e) => resolve(root, "src", path.slice(2) + "." + e)).find((p) => existsSync(p));
       const navn = fil ? [...readFileSync(fil, "utf8").matchAll(/export\s+(?:async\s+)?(?:function|const|let|class)\s+(\w+)/g)].map((m) => m[1]) : [];
       return { loader: "js", contents: navn.map((n) => `export async function ${n}(){return null}`).join("\n") || "export {}" };
