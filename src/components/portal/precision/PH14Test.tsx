@@ -3,13 +3,12 @@
  * Fasit: Claude Design-canvaset «PlayerHQ nøkkelskjermer» (https://claude.ai/artifact/XdsbBEHwJhdrD4YJMMpdK1),
  * «Resultat · mobil 390» og «PC 1280». Stil: playerhq-ny-statsdybde.css og playerhq-ny-tester.css (§Resultat).
  *
- * Avvik (20.10):
+ * Avvik:
  *   - «Be coach kontrollere» er ikke med: appen har ingen forespørsel om kontroll. «Del med coach» ligger i lagret-meldingen.
  *   - «Prioritert · 2 av 2» står ikke i resultatet: tellingen over alle varianter av testen hentes bare i oversikten.
  *   - «Per slagtype» viser PEI (lavere er best) med best og svakest merket; poeng av 15 per slagtype lagres ikke.
  *   - Over tid har stiplet rekordlinje når retningen er kjent og testen er tatt minst to ganger.
- *
- * Eldre avvik:
+ *   - Eldre avvik, fra 14.10:
  *   - Grafen viser testens hovedtall over tid. Utkastets bryter mellom Poeng og PEI krever to lagrede serier;
  *     for 8-ball står PEI per slagkategori under, fra siste måling.
  *   - «Per slagtype» viser PEI per kategori (Chip, Wedge, Lobb, Bunker) slik resultatet lagrer det.

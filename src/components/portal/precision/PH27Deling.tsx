@@ -10,10 +10,10 @@
  * «Komplett profil». Samme server-handlinger og samme kaskade: Komplett profil løfter testene med
  * seg, og av på testene slår alt av. Under 16 kan spilleren trekke, men ikke slå på selv.
  *
- * Avvik (20.10): tegningens kolonner er byttet (Hvem har tilgang til venstre, Del med en trener og Det treneren ser til høyre).
- *   Skjemaet for trenerens e-post ligger fortsatt på /portal/meg/deling; «Send på nytt» og «Trekk tilbake» for navngitte trenere finnes ikke som handling.
- *
- * Eldre avvik:
+ * Avvik:
+ *   - 20.10: tegningens kolonner er byttet (Hvem har tilgang til venstre, Del med en trener og Det treneren ser til høyre).
+ *   - 20.10: skjemaet for trenerens e-post ligger fortsatt på /portal/meg/deling; «Send på nytt» og «Trekk tilbake» for navngitte trenere finnes ikke som handling.
+ *   - Eldre avvik, fra 14.10:
  *   - «Innsyn er alt» stemmer ikke med datamodellen: deling har to nivåer per organisasjon. Skjermen
  *     viser nivåene og hva hvert nivå gir.
  *   - «Del med trener» åpner den navngitte trenerdelingen (/portal/meg/deling), som eier lenken og
