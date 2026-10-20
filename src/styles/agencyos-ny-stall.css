@@ -124,3 +124,11 @@
   @keyframes sp-hoy { from { scale: 1 0; } }
   .agn-s .sp-uker i { transform-origin: 50% 100%; animation: sp-hoy 620ms cubic-bezier(.23, 1, .32, 1) both; }
 }
+/* I dag og Trener nå side om side øverst, Hele stallen i full bredde under (canvas AG-07). */
+.agn-s .stall-stabel { display: grid; gap: var(--r5); }
+.agn-s .stall-topp { display: grid; gap: var(--r5); }
+@media (min-width: 900px) {
+  .agn-s .stall-topp { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+  .agn-s .sp-rad { grid-template-columns: auto minmax(0, 1fr) minmax(0, 360px) auto; }
+}
+.agn-s .sp-etl { min-width: 64px; }

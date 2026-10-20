@@ -185,8 +185,8 @@ export function AG07Stall({ tilstand = "data", total, iDag, trenerNaa, heleStall
 
   return <div className="agn-s">
     <Topp dato={`${total} ${total === 1 ? "spiller" : "spillere"}`} tittel="Stall" handlinger={handlinger} />
-    <div className="stall-grid">
-      <div>
+    <div className="stall-stabel">
+      <div className="stall-topp">
         <section className="baand" aria-label="I dag">
           <div className="sek-topp"><h2>I dag</h2><span className="kilde">{iDag.length ? `${iDag.length} ${iDag.length === 1 ? "økt" : "økter"} resten av dagen` : "Ingen"}</span></div>
           {iDag.length === 0 ? <p className="forklar">Ingen av spillerne dine har flere økter i dag.</p>
