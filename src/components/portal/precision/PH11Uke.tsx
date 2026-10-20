@@ -133,6 +133,8 @@ export function PH11Uke({ playerId, spillerNavn, uke, kilder, goals, fys, refera
   const harFordelt = akser.some((x) => x.fordelt != null);
   const sumFordelt = akser.reduce((n, x) => n + (x.fordelt ?? 0), 0);
   const sumLagt = akser.reduce((n, x) => n + x.lagt, 0);
+  const gjortMin = tellende.filter((s) => s.status === "COMPLETED").reduce((n, s) => n + s.durationMinutes, 0);
+  const timerT = (min: number) => (Math.round((min / 60) * 10) / 10).toLocaleString("nb-NO");
   const viste = akser.filter((x) => (x.fordelt ?? 0) > 0 || x.lagt > 0);
   const maks = Math.max(1, ...viste.map((x) => Math.max(x.fordelt ?? 0, x.lagt)));
 
@@ -278,22 +280,21 @@ export function PH11Uke({ playerId, spillerNavn, uke, kilder, goals, fys, refera
   const arkSession = arkOkt ? alle.find((s) => s.id === arkOkt) ?? null : null;
 
   return <div className="phn phn-uke">
-    <header className="phn-topp">
-      <div className="phn-topp-rad">
-        <div>
-          <div className="phn-dato">Workbench{periode ? ` · ${periode.navn} · uke ${periode.ukeIPerioden} av ${periode.antallUker}` : ""}</div>
-          <h1 className="phn-tittel">Uke {ukeNr}</h1>
-          <p className="phn-ingress">{ukeSpenn(week.weekStart)}. Dra en akse eller en øvelse inn på et klokkeslett.</p>
-        </div>
-        <div className="phn-knapper">
-          <span className="phn-pil">
-            <Link href={url("uke", { uke: flyttPlanUke(week.weekStart, -1) })} aria-label="Forrige uke"><ChevronLeft className="phn-ikon" aria-hidden /></Link>
-            <Link href={url("uke", { uke: flyttPlanUke(week.weekStart, 1) })} aria-label="Neste uke"><ChevronRight className="phn-ikon" aria-hidden /></Link>
-          </span>
-          <Link className="phn-knapp sek" href="/portal/planlegge">Ferdig</Link>
-        </div>
-      </div>
+    <div className="phn-uke-verktoy">
       <PH11Nivaer playerId={playerId} aktiv="uke" referanse={kontekst} />
+      <div className="phn-knapper">
+        <button type="button" className="phn-knapp sek" onClick={() => setNyOkt({ dato: week.days[dag]?.date ?? week.weekStart, startMinutt: 16 * 60, pyramide: null })}><Plus className="phn-ikon" aria-hidden />Ny økt</button>
+        <Link className="phn-knapp sek" href="/portal/planlegge">Ferdig</Link>
+      </div>
+    </div>
+    <header className="phn-topp phn-uke-topp">
+      <div className="phn-dato">Workbench{periode ? ` · ${periode.navn} · uke ${periode.ukeIPerioden} av ${periode.antallUker}` : ""}</div>
+      <div className="phn-uke-tittel">
+        <Link href={url("uke", { uke: flyttPlanUke(week.weekStart, -1) })} aria-label="Forrige uke"><ChevronLeft className="phn-ikon" aria-hidden /></Link>
+        <h1 className="phn-tittel">Uke {ukeNr}</h1>
+        <Link href={url("uke", { uke: flyttPlanUke(week.weekStart, 1) })} aria-label="Neste uke"><ChevronRight className="phn-ikon" aria-hidden /></Link>
+      </div>
+      <p className="phn-ingress">{ukeSpenn(week.weekStart)} · {tellende.length} {tellende.length === 1 ? "økt" : "økter"} · {tid(gjortMin)} gjennomført</p>
     </header>
 
     {motor.feil && <p className="phn-melding" role="alert">{motor.feil} <button type="button" className="phn-lenke" onClick={() => void motor.lastPaaNytt()}>Prøv igjen</button></p>}
@@ -301,19 +302,23 @@ export function PH11Uke({ playerId, spillerNavn, uke, kilder, goals, fys, refera
     <div className="phn-wb">
       <div className="phn-seksjon phn-wb-hoved">
         <section className="phn-kort phn-wb-tall" aria-label="Lagt inn mot fordelt">
-          <div className="phn-seksjon">
-            <div className="phn-hoved"><strong>{Math.floor(sumLagt / 60)}<small>t{sumLagt % 60 ? ` ${sumLagt % 60} min` : ""}</small></strong></div>
-            <p className="phn-forklar">{harFordelt ? `Lagt inn av ${tid(sumFordelt)} fordelt fra ${week.weekPlan && akser.some((x) => week.weekPlan?.[PLAN_KEY[x.p]] != null) ? "ukeplanen" : "perioden"}.` : "Lagt inn denne uka. Ingen tid er fordelt fra perioden ennå."}</p>
+          <div className="phn-wb-tall-topp">
+            <b>Lagt inn mot fordelt</b>
+            <span>{harFordelt ? `${timerT(sumLagt)} / ${timerT(sumFordelt)} t · fra ${week.weekPlan && akser.some((x) => week.weekPlan?.[PLAN_KEY[x.p]] != null) ? "ukeplanen" : "perioden"}` : `${timerT(sumLagt)} t lagt inn · ingen tid fordelt ennå`}</span>
           </div>
           {viste.length > 0 && <div className="phn-akserader">
-            {viste.map((x) => <div key={x.a} className="phn-akserad">
-              <b className={`tekst-${x.a}`}>{AKSE_NAVN[x.a]}</b>
-              <span className="phn-akserad-spor" role="img" aria-label={`${AKSE_NAVN[x.a]} ${tid(x.lagt)} av ${x.fordelt != null ? tid(x.fordelt) : "ikke fordelt"}`}>
-                <span className={`akse-${x.a}`} style={{ width: `${(x.lagt / maks) * 100}%` }} />
-                {x.fordelt != null && <em style={{ left: `calc(${(x.fordelt / maks) * 100}% - 1px)` }} />}
-              </span>
-              <span className="phn-akserad-v" data-over={x.fordelt != null && x.lagt > x.fordelt || undefined}>{tid(x.lagt)} av {x.fordelt != null ? tid(x.fordelt) : "—"}</span>
-            </div>)}
+            {viste.map((x) => {
+              const igjen = x.fordelt != null ? x.fordelt - x.lagt : null;
+              return <div key={x.a} className="phn-akserad">
+                <b className={`tekst-${x.a}`}>{AKSE_NAVN[x.a]}</b>
+                <span className="phn-akserad-spor" role="img" aria-label={`${AKSE_NAVN[x.a]} ${tid(x.lagt)} av ${x.fordelt != null ? tid(x.fordelt) : "ikke fordelt"}`}>
+                  <span className={`akse-${x.a}`} style={{ width: `${(x.lagt / maks) * 100}%` }} />
+                  {x.fordelt != null && <em style={{ left: `calc(${(x.fordelt / maks) * 100}% - 1px)` }} />}
+                </span>
+                <span className="phn-akserad-v" data-over={x.fordelt != null && x.lagt > x.fordelt || undefined}>{x.lagt || x.fordelt ? `${timerT(x.lagt)} / ${x.fordelt != null ? timerT(x.fordelt) : "—"} t` : "— / — t"}</span>
+                <span className="phn-akserad-igjen">{igjen == null ? "—" : igjen > 0 ? `${timerT(igjen)} t igjen` : igjen === 0 ? "i rute" : `${timerT(-igjen)} t over`}</span>
+              </div>;
+            })}
           </div>}
         </section>
 

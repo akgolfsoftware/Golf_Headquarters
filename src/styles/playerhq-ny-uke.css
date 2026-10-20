@@ -16,7 +16,7 @@
 .phn .phn-wb { display: grid; gap: 24px; align-items: start; }
 .phn .phn-wb-hoved { gap: 20px; }
 .phn .phn-akserader { display: grid; gap: 10px; }
-.phn .phn-akserad { display: grid; grid-template-columns: 52px minmax(0, 1fr) auto; gap: 10px; align-items: center; font-size: 14px; }
+.phn .phn-akserad { display: grid; grid-template-columns: 52px minmax(0, 1fr) auto auto; gap: 10px; align-items: center; font-size: 14px; }
 .phn .phn-akserad b { font: 600 12px/1 var(--phn-mono); letter-spacing: .05em; }
 .phn .phn-akserad-spor { position: relative; height: 12px; border-radius: 6px; background: var(--phn-sand-150); }
 .phn .phn-akserad-spor > span { position: absolute; inset: 0 auto 0 0; border-radius: 6px; max-width: 100%; }
@@ -102,7 +102,6 @@
 
 @container (min-width: 900px) {
   .phn .phn-wb { grid-template-columns: minmax(0, 1fr) 300px; gap: 24px; }
-  .phn .phn-wb-tall { grid-template-columns: auto minmax(0, 1fr); gap: 32px; align-items: center; }
   .phn .phn-dagstripe { display: none; }
   .phn .phn-rutenett { grid-template-columns: 44px repeat(7, minmax(0, 1fr)); }
   .phn .phn-rut-hjorne { display: block; border-bottom: 1px solid var(--phn-sand-300); }
@@ -119,3 +118,19 @@
 /* Øvelsesvelgeren i sidefeltet: lista ruller i seg selv, så sidefeltet ikke blir meterlangt. */
 .phn .phn-sidefelt .wbo-liste { display: flex; flex-direction: column; max-height: 420px; overflow-y: auto; overscroll-behavior: contain; }
 .phn .phn-sidefelt .wbo-liste > * { flex: none; }
+
+/* Designløftet 20.10: nivåvelger og Ny økt øverst, uketittel med piler, lagt inn mot fordelt med «igjen». */
+.phn .phn-uke-verktoy { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.phn .phn-uke-topp { display: grid; gap: 6px; }
+.phn .phn-uke-tittel { display: flex; align-items: center; gap: 8px; }
+.phn .phn-uke-tittel .phn-tittel { margin: 0; font-size: 36px; }
+.phn .phn-uke-tittel a { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 8px; border: 1px solid var(--phn-sand-300); color: var(--phn-g900); transition: transform 100ms var(--phn-ut), background-color 140ms ease; }
+.phn .phn-uke-tittel a:hover { background: var(--phn-sand-100); }
+.phn .phn-uke-tittel a:active { transform: scale(.95); }
+.phn .phn-wb-tall-topp { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; }
+.phn .phn-wb-tall-topp b { font: 600 15px/1.3 var(--phn-sans); }
+.phn .phn-wb-tall-topp span { font: 500 13px/1.3 var(--phn-mono); color: var(--phn-g800); }
+.phn .phn-akserad-igjen { min-width: 76px; text-align: right; font: 400 12px/1.2 var(--phn-sans); color: var(--phn-g800); white-space: nowrap; }
+@container (max-width: 640px) { .phn .phn-akserad { grid-template-columns: 52px minmax(0, 1fr) auto; } .phn .phn-akserad-igjen { grid-column: 2 / -1; text-align: left; } }
+@media (prefers-reduced-motion: reduce) { .phn .phn-uke-tittel a { transition: none; } }
+@container (max-width: 899px) { .phn .phn-ukol .phn-blokk:not(.opp) { min-height: 44px; } }
