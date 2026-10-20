@@ -885,6 +885,59 @@
   .wang-app .wg-turn-graf { order: 2; position: sticky; top: calc(var(--ak-topbar-h, 0px) + 16px); }
 }
 
+/* Designløft 20.10.2026 — IUP-samtalen (canvas rad 10): tre steg, vurdering 1–5 og status som knapper. */
+.wang-app .wg-iup { display: grid; gap: 20px; }
+.wang-app .wg-iup-steg { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 8px; }
+.wang-app .wg-iup-steg li { display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 12px; background: #ffffff; border: 1px solid var(--wg-n100); font: 700 13px/1 var(--font-wang-brand, Montserrat, sans-serif); }
+.wang-app .wg-iup-steg b { font: 300 20px/1 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-vinrod); }
+.wang-app .wg-iup-grid { display: grid; gap: 28px; }
+.wang-app .wg-iup-kol { display: contents; }
+.wang-app .wg-iup-r1 { order: 1; } .wang-app .wg-iup-r2 { order: 2; } .wang-app .wg-iup-r3 { order: 3; }
+.wang-app .wg-iup-r4 { order: 4; display: grid; gap: 28px; min-width: 0; }
+.wang-app .wg-iup-tom { padding: 16px 18px; }
+.wang-app .wg-iup-maal { padding: 14px 16px; display: grid; gap: 14px; border-top: 3px solid var(--wg-navy); }
+.wang-app .wg-iup-maal-topp { display: flex; align-items: flex-start; gap: 10px; min-width: 0; }
+.wang-app .wg-iup-maal-tekst { display: grid; gap: 4px; min-width: 0; flex: 1; }
+.wang-app .wg-iup-maal-tekst b { font: 700 15px/1.25 var(--font-wang-brand, Montserrat, sans-serif); color: var(--wg-tekst); }
+.wang-app .wg-iup-skalaer { display: flex; flex-wrap: wrap; gap: 14px 28px; }
+.wang-app .wg-iup-felt { display: grid; gap: 6px; min-width: 0; }
+.wang-app .wg-iup-etikett { font: 700 11px/1.2 var(--font-wang-brand, Montserrat, sans-serif); letter-spacing: 0.08em; text-transform: uppercase; color: var(--wg-tekst-2); }
+.wang-app .wg-iup-skala, .wang-app .wg-iup-valg { display: flex; flex-wrap: wrap; gap: 4px; }
+.wang-app .wg-iup-skala button, .wang-app .wg-iup-valgknapp { min-width: 44px; min-height: 44px; padding: 0 12px; border: 1px solid #c9ced6; background: #ffffff; color: var(--wg-tekst); font: 700 15px/1 var(--font-wang-brand, Montserrat, sans-serif); cursor: pointer; transition: background-color 140ms ease, transform 140ms var(--wg-ut); }
+.wang-app .wg-iup-valgknapp { font-size: 13px; text-transform: uppercase; letter-spacing: 0.04em; }
+.wang-app .wg-iup-skala button:hover, .wang-app .wg-iup-valgknapp:hover { background: var(--wg-tint-rosa); }
+.wang-app .wg-iup-skala button:active, .wang-app .wg-iup-valgknapp:active { transform: scale(0.97); }
+.wang-app .wg-iup-skala button[aria-pressed="true"] { background: var(--wg-vinrod); border-color: var(--wg-vinrod); color: #ffffff; }
+.wang-app .wg-iup-valgknapp[aria-pressed="true"] { border: 2px solid var(--wg-vinrod); background: var(--wg-tint-rosa); color: var(--wg-vinrod); }
+.wang-app .wg-iup-skala button:focus-visible, .wang-app .wg-iup-valgknapp:focus-visible, .wang-app .wg-iup-fjern:focus-visible { outline: 3px solid var(--wg-mint); outline-offset: 2px; }
+.wang-app .wg-iup-input { width: 100%; min-height: 44px; box-sizing: border-box; padding: 0 10px; border: 1px solid #c9ced6; border-radius: 0; background: #ffffff; font: 400 15px/1.4 var(--font-wang-body, "Quattrocento", serif); color: var(--wg-tekst); min-width: 0; }
+.wang-app textarea.wg-iup-input { padding: 10px 12px; min-height: 64px; resize: vertical; }
+.wang-app .wg-iup-ny { padding: 12px 14px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; align-items: end; border-top: 3px solid var(--wg-navy); }
+.wang-app .wg-iup-ny .wg-iup-bred { grid-column: 1 / -1; }
+.wang-app .wg-iup-fjern { justify-self: end; grid-column: 1 / -1; width: 44px; height: 44px; border: 1px solid #c9ced6; background: #ffffff; color: var(--wg-tekst-2); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+.wang-app .wg-iup-fjern:hover { background: var(--wg-tint-graa); }
+.wang-app .wg-iup-legg-til { justify-self: start; }
+.wang-app .wg-iup-lagre { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.wang-app .wg-iup-lagre .wg-btn { flex: 0 0 auto; }
+.wang-app .wg-iup-lagre .wg-kilde { flex: 1 1 220px; }
+.wang-app .wg-iup-kvittering { margin: 0; padding: 12px 14px; background: var(--wg-navy); color: #ffffff; font-size: 15px; line-height: 1.35; }
+.wang-app .wg-iup-feil { margin: 0; font-size: 15px; font-weight: 700; color: var(--wg-rosa-tekst); }
+.wang-app .wg-iup-maaling { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 10px; align-items: center; min-height: 56px; padding: 8px 14px; }
+.wang-app .wg-iup-maaling + .wg-iup-maaling { border-top: 1px solid var(--wg-n100); }
+.wang-app .wg-iup-verdi { font: 700 15px/1 var(--font-wang-brand, Montserrat, sans-serif); white-space: nowrap; }
+@media (min-width: 720px) {
+  .wang-app .wg-iup-ny { grid-template-columns: 110px minmax(0, 1fr) 150px minmax(0, 1fr) 44px; }
+  .wang-app .wg-iup-ny .wg-iup-bred { grid-column: auto; }
+  .wang-app .wg-iup-fjern { grid-column: auto; }
+}
+@media (min-width: 1100px) {
+  .wang-app .wg-iup-grid { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); align-items: start; }
+  .wang-app .wg-iup-kol { display: grid; gap: 28px; align-content: start; min-width: 0; }
+  .wang-app .wg-iup-ny { grid-template-columns: 150px minmax(0, 1fr); }
+  .wang-app .wg-iup-fjern { grid-column: 1 / -1; }
+}
+@media (prefers-reduced-motion: reduce) { .wang-app .wg-iup-skala button, .wang-app .wg-iup-valgknapp { transition: none; } }
+
 /* Designløft 20.10.2026 — I dag: toppfelt med tre store tall, ukestripe og Krever handling gruppert etter frist. */
 .wang-app .wg-helt2 { display: grid; background: var(--wg-grad); color: #ffffff; overflow: hidden; }
 .wang-app .wg-helt2-tekst { display: grid; gap: 10px; padding: 18px 16px 18px; align-content: start; }

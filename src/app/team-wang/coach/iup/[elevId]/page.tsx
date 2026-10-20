@@ -198,13 +198,27 @@ export default async function IupPage({
             : []
         }
         maalinger={maalinger}
+        sideinnhold={
+          <>
+            <section className="wg-seksjon" aria-label="Leverte IUP-svar">
+              <div className="wg-sek-topp"><h2>Leverte IUP-svar</h2><span className="wg-kilde">Utkast vises aldri</span></div>
+              <div className="wg-kort" style={{ padding: "14px 16px" }}>
+                <LeverteIupProfil rader={leverteIup} />
+              </div>
+            </section>
+            {bruker.role === "COACH" ? (
+              <section id="forslag" className="wg-seksjon" aria-label="Foreslå endring i planen">
+                <div className="wg-sek-topp"><h2>Foreslå endring i planen</h2></div>
+                <div className="wg-kort" style={{ padding: "14px 16px" }}>
+                  <TrenerforslagSkjema organisasjon="WANG" spillerId={elevId} sessions={trenerOkter.map(s => ({
+                    id: s.id, label: `${s.date.toISOString().slice(0, 10)} ${String(Math.floor(s.startMinute / 60)).padStart(2, "0")}:${String(s.startMinute % 60).padStart(2, "0")} · ${s.title}`,
+                  }))} />
+                </div>
+              </section>
+            ) : null}
+          </>
+        }
       />
-      <section className="wang-card" style={{ padding: "18px 20px" }}>
-        <LeverteIupProfil rader={leverteIup} />
-      </section>
-      {bruker.role === "COACH" ? <TrenerforslagSkjema organisasjon="WANG" spillerId={elevId} sessions={trenerOkter.map(s => ({
-        id: s.id, label: `${s.date.toISOString().slice(0, 10)} ${String(Math.floor(s.startMinute / 60)).padStart(2, "0")}:${String(s.startMinute % 60).padStart(2, "0")} · ${s.title}`,
-      }))} /> : null}
       </>
     );
   });
