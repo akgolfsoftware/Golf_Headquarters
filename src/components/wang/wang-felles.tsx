@@ -89,6 +89,70 @@ export function WangTilbake({ href, tekst }: { href: string; tekst: string }) {
 }
 
 /** Helteflaten: ett hovedtall, kort forklaring og én hvit knapp. «—» når tallet mangler. */
+export interface WangHelteTall {
+  /** Ferdig formatert, eller «—» når tallet mangler. */
+  verdi: string;
+  /** Vises etter tallet bare når det finnes et tall. */
+  enhet?: string;
+  tekst: string;
+  under?: string;
+  /** Gjør tallet til en lenke (til lista eller siden det gjelder). */
+  href?: string;
+}
+
+/**
+ * Toppfeltet fra designløftet 20.10.2026 (canvas «WANG nøkkelskjermer»): wang.no-gradient, sidetittel,
+ * inntil tre store tynne tall med forklaring, kilde og et eget bilde ved siden av (aldri tekst oppå bildet).
+ */
+export function WangToppfelt({
+  dato,
+  tittel,
+  ingress,
+  tall,
+  kilde,
+  bilde,
+}: {
+  dato: string;
+  tittel: string;
+  ingress?: string;
+  tall: WangHelteTall[];
+  kilde?: string;
+  bilde: string;
+}) {
+  return (
+    <section className="wg-helt2" aria-label={tittel}>
+      <div className="wg-helt2-tekst">
+        <p className="wg-helt2-dato">{dato}</p>
+        <h1 className="wg-helt2-tittel">{tittel}</h1>
+        {ingress ? <p className="wg-helt2-ingress">{ingress}</p> : null}
+        <div className="wg-helt2-tall">
+          {tall.map((t) => {
+            const innhold = (
+              <>
+                <strong>
+                  {t.verdi}
+                  {t.enhet && t.verdi !== "—" ? <span className="wg-helt2-enhet"> {t.enhet}</span> : null}
+                </strong>
+                <span>{t.href ? `${t.tekst} →` : t.tekst}</span>
+                {t.under ? <small>{t.under}</small> : null}
+              </>
+            );
+            return t.href ? (
+              <Link key={t.tekst} className="wg-helt2-lenke" href={t.href}>
+                {innhold}
+              </Link>
+            ) : (
+              <div key={t.tekst}>{innhold}</div>
+            );
+          })}
+        </div>
+        {kilde ? <p className="wg-helt2-kilde">{kilde}</p> : null}
+      </div>
+      <Image className="wg-helt2-bilde" src={bilde} alt="" width={480} height={300} sizes="(min-width: 1100px) 320px, 100vw" />
+    </section>
+  );
+}
+
 export function WangHelt({
   merke,
   tall,

@@ -9,10 +9,9 @@ import {
   WangBaand,
   WangElevrad,
   WangFaner,
-  WangHelt,
-  WangSmaaTall,
   WangTilbake,
   WangTopp,
+  WangToppfelt,
   dagerMellom,
   visMinutter,
   wangHref,
@@ -115,32 +114,28 @@ function Oversikt({ data, plan }: { data: WangTrenerData; plan: WangPlanData }) 
 
   return (
     <>
-      <WangTopp dato={`${data.gruppeNavn} · ${fireUker}`} tittel="Trening">
-        <WangFaner omraade="trening" aktiv="oversikt" faner={FANER} etikett="Trening" />
-      </WangTopp>
-
-      <WangHelt
-        etikett="Etterlevelse"
-        merke="Mål 80 % av planen"
-        tall={samlet === null ? "—" : String(samlet)}
-        enhet="%"
-        tekst="av planen gjennomført siste fire uker"
-        forklar={
-          antallDelt > 0
-            ? `Gjennomført mot planlagt tid for ${antallDelt} av ${data.elever.length} elever som har delt planen med deg.`
-            : "Ingen elever har delt planen med deg ennå. Eleven deler i PlayerHQ, og under 16 år godkjenner forelderen."
-        }
-        knapp={{ tekst: "Se uka", href: wangHref("trening", "uke") }}
+      <WangToppfelt
+        dato={`${data.gruppeNavn} · ${fireUker}`}
+        tittel="Trening"
+        tall={[
+          {
+            verdi: samlet === null ? "—" : String(samlet),
+            enhet: "%",
+            tekst: "av planen gjennomført",
+            under: antallDelt > 0 ? `${antallDelt} av ${data.elever.length} har delt planen · mål 80 %` : "Ingen har delt planen ennå",
+          },
+          { verdi: plan.morgen.pct === null ? "—" : String(plan.morgen.pct), enhet: "%", tekst: "morgentrening gjennomført", under: "Siste fire uker" },
+          {
+            verdi: antallDelt > 0 ? String(trenger.length) : "—",
+            tekst: trenger.length === 1 ? "elev under 80\u00a0%" : "elever under 80\u00a0%",
+            under: perElevMin === null ? "Gjennomført per elev: —" : `Gjennomført per elev: ${visMinutter(perElevMin)}`,
+            href: "#wg-elev-tittel",
+          },
+        ]}
+        kilde="Kilde: elevenes plan i PlayerHQ, når den er delt med WANG. Etterlevelse er gjennomført tid delt på planlagt tid."
         bilde="/team-wang/hero/golf-putt.jpg"
       />
-
-      <WangSmaaTall
-        tall={[
-          { verdi: perElevMin === null ? "—" : visMinutter(perElevMin), tekst: "Gjennomført per elev" },
-          { verdi: visPct(plan.morgen), tekst: "Morgen\u00ADtrening" },
-          { verdi: "—", tekst: "Fravær meldt" },
-        ]}
-      />
+      <WangFaner omraade="trening" aktiv="oversikt" faner={FANER} etikett="Trening" />
 
       <div className="wg-to-kol">
         <section className="wg-seksjon" aria-labelledby="wg-akse-tittel">
