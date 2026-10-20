@@ -1,10 +1,16 @@
 /**
- * PH-24 Meg i nytt design (designbrevet 13.10.2026): én oversikt med bilde, navn, fire ruter
- * og resten i fire grupper (Deg · Coaching · Familie og deling · Konto).
- * Fasit: docs/design-system/utkast-playerhq/meg.html (utkast 1, skjermen «PH-24 Meg»).
- * Stil: src/styles/playerhq-ny-meg.css. Ingen "use client": oversikten er bare lenker og ett skjema (Logg ut).
+ * PH-24 Meg i designløftet 20.10.2026: avatar og navn, tre nøkkeltall (Kategori, HCP, Nivå) og lenkene i tre grupper
+ * (Spiller · Coach og deling · Konto). Fasit: Claude Design-canvaset «PlayerHQ nøkkelskjermer»
+ * (https://claude.ai/artifact/XdsbBEHwJhdrD4YJMMpdK1), «6 Meg · mobil 390» og «PC 1280».
+ * Stil: src/styles/playerhq-ny-meg.css (§Designløft Meg). Ingen "use client": oversikten er bare lenker og ett skjema (Logg ut).
  *
- * Avvik:
+ * Avvik (20.10):
+ *   - Min coach, Foreldre og Målsetninger står i gruppa «Coach og deling» (tegningen har bare Deling, Bookinger og Utfordringer):
+ *     funksjonene beholdes. «Sikkerhet» er slått sammen med «Innstillinger og samtykker», som i dag.
+ *   - Fasiliteter viser «N av 10» (anlegg og utstyr), ikke «14 av 19 områder»: dekningen av de 19 områdene kan ikke regnes.
+ *   - Nivåtallet viser prøveuke og trekkdato bare når appen kjenner dem; ellers står forklaringen fra abonnementet.
+ *
+ * Eldre avvik:
  *   - Kategori (A–K) vises som «—»: kategorien er ikke lagret på spilleren ennå.
  *   - HCP-ruten viser HCP fra profilen uten dato: appen lagrer ikke når HCP sist ble hentet fra NGF.
  *   - Fasilitet-ruten viser hvor mange anlegg og utstyr spilleren har krysset av (av 10), ikke dekning av
@@ -68,77 +74,57 @@ export function PH24Meg(p: PH24Props) {
   const h = p.hrefs;
   const flertall = (n: number, en: string, fler: string) => `${n} ${n === 1 ? en : fler}`;
 
-  return <div className="phn phn-meg"><div className="side">
-    <div className="topp"><div><div className="phn-dato">Meg</div><h1 className="phn-tittel">Meg</h1></div></div>
-
-    <div className="hub-grid">
+  return <div className="phn phn-meg phn-meg2"><div className="side">
+    <header className="m2-hode">
+      <span className="avatar stor" aria-hidden>{initialer(p.navn)}</span>
       <div>
-        <div className="meg-topp">
-          {/* eslint-disable-next-line @next/next/no-img-element -- statisk bilde fra public, ingen tekst oppå */}
-          <img src="/images/playerhq/spill-bane.jpg" alt="" width={1600} height={1067} />
-          <div className="mt">
-            <span className="avatar stor" aria-hidden>{initialer(p.navn)}</span>
-            <div>
-              <b className="navn">{p.navn}</b>
-              <div className="rad">
-                <span className="kat">Kategori {p.kategori ?? "—"}</span>
-                {p.gruppe && <span className="phn-pille noy"><i />{p.gruppe}</span>}
-              </div>
-              {p.undertekst && <p className="phn-kilde" style={{ marginTop: 8 }}>{p.undertekst}</p>}
-            </div>
-          </div>
-        </div>
+        <h1 className="phn-tittel">{p.navn}</h1>
+        <p className="phn-forklar">{p.undertekst ?? "Meg"}{p.gruppe ? ` · ${p.gruppe}` : ""}</p>
+      </div>
+      <dl className="m2-tall">
+        <div><dt>Kategori</dt><dd><b>{p.kategori ?? "—"}</b><small>AK A–K</small></dd></div>
+        <div><dt>HCP</dt><dd><b>{p.hcp ?? "—"}</b><small>Fra profilen</small></dd></div>
+        <div><dt>Nivå</dt><dd><b>{p.niva.navn}</b><small>{p.pakke ? `${p.pakke.igjen} klipp igjen av ${p.pakke.totalt}` : p.niva.tekst}</small></dd></div>
+      </dl>
+    </header>
 
-        <div className="ruter">
-          <Link className="rute" href={h.profil}><span className="e">HCP</span><b className="t">{p.hcp ?? "—"}</b><span className="s">Fra profilen din</span></Link>
-          {p.pakke
-            ? <Link className="rute" href={h.abo}><span className="e">{p.pakke.navn}</span><b className="t">{p.pakke.igjen}<small>klipp</small></b><span className="s">igjen av {p.pakke.totalt} denne perioden</span></Link>
-            : <Link className="rute" href={h.abo}><span className="e">Abonnement</span><b className="t">{p.niva.navn}</b><span className="s">{p.niva.tekst}</span></Link>}
-          <Link className="rute" href={h.deling}><span className="e">Deling</span><b className="t">{p.deling ?? "—"}</b><span className="s">{p.deling === 1 ? "organisasjon ser profilen din" : "organisasjoner ser profilen din"}</span></Link>
-          <Link className="rute fylt" href={h.fasiliteter}><span className="e">Fasiliteter</span><b className="t">{p.fasiliteter.valgte}<small>av {p.fasiliteter.totalt}</small></b><span className="s">anlegg og utstyr</span></Link>
-        </div>
-
-        <section className="phn-seksjon" aria-labelledby="meg-deg">
-          <div className="phn-sek-topp"><h2 id="meg-deg">Deg</h2></div>
+    <div className="m2-kol">
+      <div>
+        <section className="m2-gruppe" aria-labelledby="meg-spiller">
+          <h2 id="meg-spiller">Spiller</h2>
           <div className="liste">
             <Rad href={h.profil} ikon={<Boks><User size={18} /></Boks>} tittel="Profil" kilde="Personalia, HCP, klubb og turneringsresultater" />
-            <Rad href={h.fasiliteter} ikon={<Boks><Building2 size={18} /></Boks>} tittel="Fasiliteter" kilde={`Hvor du kan trene · ${flertall(p.fasiliteter.steder, "sted", "steder")} registrert`} />
+            <Rad href={h.fasiliteter} ikon={<Boks><Building2 size={18} /></Boks>} tittel="Fasiliteter" kilde={`Hvor du kan trene · ${flertall(p.fasiliteter.steder, "sted", "steder")} registrert`} hoyre={<span className="hoyre">{p.fasiliteter.valgte} av {p.fasiliteter.totalt}<Pil /></span>} />
             <Rad href={h.utstyr} ikon={<Boks><Wrench size={18} /></Boks>} tittel="Utstyr" kilde={p.utstyr > 0 ? `${flertall(p.utstyr, "post", "poster")} i bagen` : "Bagen er ikke registrert"} />
             <Rad href={h.helse} ikon={<Boks><HeartPulse size={18} /></Boks>} tittel="Helse og fravær" kilde={p.helse} />
-          </div>
-        </section>
-
-        <section className="phn-seksjon" aria-labelledby="meg-coaching">
-          <div className="phn-sek-topp"><h2 id="meg-coaching">Coaching</h2></div>
-          <div className="liste">
-            {p.coach
-              ? <Rad href={h.coach} ikon={<span className="avatar" aria-hidden>{initialer(p.coach.navn)}</span>} tittel={`Min coach: ${p.coach.navn}`} kilde={p.coach.program} />
-              : <Rad href={h.coach} ikon={<Boks><User size={18} /></Boks>} tittel="Min coach" kilde="Ingen coach ennå. Book en time for å komme i gang." />}
-            <Rad href={h.bookinger} ikon={<Boks><CalendarDays size={18} /></Boks>} tittel="Bookinger" kilde={p.nesteBooking ? `Neste: ${p.nesteBooking}` : "Ingen kommende bookinger"} />
-            <Rad href={h.mal} ikon={<Boks><Target size={18} /></Boks>} tittel="Målsetninger" kilde="Ligger i Plan › Workbench" hoyre={<span className="hoyre">Plan<Pil /></span>} />
           </div>
         </section>
       </div>
 
       <div>
-        <section className="phn-seksjon" aria-labelledby="meg-familie">
-          <div className="phn-sek-topp"><h2 id="meg-familie">Familie og deling</h2></div>
+        <section className="m2-gruppe" aria-labelledby="meg-coach">
+          <h2 id="meg-coach">Coach og deling</h2>
           <div className="liste">
+            {p.coach
+              ? <Rad href={h.coach} ikon={<span className="avatar" aria-hidden>{initialer(p.coach.navn)}</span>} tittel={`Min coach: ${p.coach.navn}`} kilde={p.coach.program} />
+              : <Rad href={h.coach} ikon={<Boks><User size={18} /></Boks>} tittel="Min coach" kilde="Ingen coach ennå. Book en time for å komme i gang." />}
+            <Rad href={h.deling} ikon={<Boks><Share2 size={18} /></Boks>} tittel="Deling" kilde="Hvem ser testene og planen" hoyre={p.deling != null ? <span className="hoyre">{p.deling} {p.deling === 1 ? "har" : "har"} tilgang<Pil /></span> : undefined} />
+            <Rad href={h.bookinger} ikon={<Boks><CalendarDays size={18} /></Boks>} tittel="Bookinger" kilde="Timer med coach" hoyre={<span className="hoyre">{p.nesteBooking ? `Neste: ${p.nesteBooking}` : "Ingen kommende"}<Pil /></span>} />
+            <Rad href={h.utfordringer} ikon={<Boks><Users size={18} /></Boks>} tittel="Utfordringer" kilde="Med gruppa" hoyre={<span className="hoyre">{p.utfordringer} pågår<Pil /></span>} />
             <Rad href={h.foreldre}
               ikon={p.foreldre.navn ? <span className="avatar lys" aria-hidden>{initialer(p.foreldre.navn)}</span> : <Boks><Users size={18} /></Boks>}
               tittel="Foreldre"
               kilde={p.foreldre.antall === 0 ? "Ingen forelder er koblet til" : p.foreldre.antall === 1 && p.foreldre.navn ? `${p.foreldre.navn} er koblet til profilen din` : `${p.foreldre.antall} foreldre er koblet til`} />
-            <Rad href={h.deling} ikon={<Boks><Share2 size={18} /></Boks>} tittel="Deling" kilde="Hvem ser profilen din, og del med trener" />
-            <Rad href={h.utfordringer} ikon={<Boks><Users size={18} /></Boks>} tittel="Utfordringer" kilde={`${flertall(p.utfordringer, "utfordring", "utfordringer")} pågår`} />
+            <Rad href={h.mal} ikon={<Boks><Target size={18} /></Boks>} tittel="Målsetninger" kilde="Ligger i Plan › Workbench" hoyre={<span className="hoyre">Plan<Pil /></span>} />
           </div>
         </section>
 
-        <section className="phn-seksjon" aria-labelledby="meg-konto">
-          <div className="phn-sek-topp"><h2 id="meg-konto">Konto</h2></div>
+        <section className="m2-gruppe" aria-labelledby="meg-konto">
+          <h2 id="meg-konto">Konto</h2>
           <div className="liste">
             <Rad href={h.abo} ikon={<Boks><CreditCard size={18} /></Boks>} tittel="Abonnement" kilde={`${p.niva.navn} · ${p.niva.tekst}`} />
             <Rad href={h.innstillinger} ikon={<Boks><Settings size={18} /></Boks>} tittel="Innstillinger og samtykker" kilde="Varsler, kalender, samtykker og sikkerhet" />
-            <Rad href={h.hjelp} ikon={<Boks><CircleHelp size={18} /></Boks>} tittel="Hjelp og tilbakemelding" kilde="Spørsmål og svar, skriv til oss" />
+            <Rad href={h.hjelp} ikon={<Boks><CircleHelp size={18} /></Boks>} tittel="Hjelp og kontakt" kilde="Artikler og skriv til oss" />
           </div>
           <form action={logout}>
             <button type="submit" className="phn-knapp sek"><LogOut size={18} aria-hidden />Logg ut</button>

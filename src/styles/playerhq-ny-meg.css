@@ -179,3 +179,24 @@
   .phn-meg .meg-topp img { height: 100%; min-height: 180px; }
   .phn-meg .omr-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
+
+/* Designløftet 20.10: avatar og navn med tre nøkkeltall, to kolonner med grupper. */
+.phn-meg2 .m2-hode { display: grid; gap: 16px; align-items: center; }
+.phn-meg2 .m2-hode > div:not(.m2-tall) { min-width: 0; }
+.phn-meg2 .m2-hode .avatar.stor { width: 64px; height: 64px; font-size: 20px; }
+.phn-meg2 .m2-tall { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 0; }
+.phn-meg2 .m2-tall > div { display: grid; gap: 5px; align-content: start; padding: 6px 12px; border-left: 1px solid var(--phn-sand-150); }
+.phn-meg2 .m2-tall dt { font: 400 12px/1.3 var(--phn-sans); color: var(--phn-g600); }
+.phn-meg2 .m2-tall dd { margin: 0; display: grid; gap: 4px; }
+.phn-meg2 .m2-tall dd b { font: 600 26px/1 var(--phn-mono); }
+.phn-meg2 .m2-tall dd small { font: 500 11px/1.3 var(--phn-mono); color: var(--phn-g600); }
+.phn-meg2 .m2-kol { display: grid; gap: 24px; align-items: start; }
+.phn-meg2 .m2-kol > div { display: grid; gap: 24px; align-content: start; min-width: 0; }
+.phn-meg2 .m2-gruppe { display: grid; gap: 8px; }
+.phn-meg2 .m2-gruppe h2 { margin: 0; padding-bottom: 8px; border-bottom: 1px solid var(--phn-sand-300); font: 600 16px/1.3 var(--phn-sans); }
+@container (min-width: 900px) {
+  .phn-meg2 .m2-hode { grid-template-columns: auto minmax(0, 1fr) auto; gap: 20px; }
+  .phn-meg2 .m2-tall > div { padding: 6px 18px; }
+  .phn-meg2 .m2-kol { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 36px; }
+}
+@container (max-width: 899px) { .phn-meg2 .m2-hode { grid-template-columns: auto minmax(0, 1fr); } .phn-meg2 .m2-tall { grid-column: 1 / -1; } }
