@@ -4,6 +4,27 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## DESIGNLØFTET: HURTIGKNAPP PÅ ALLE TRENERFLATER, SEND I WANG VENTER, «PROSESS OG ADFERD» 1–5 (Anders 20.10.2026, bindende)
+
+Anders 20.10 i hovedøkta for designløftet: «ja, godkjent og dine anbefalinger», som svar på avvik og spørsmål fra flate-øktene.
+
+- **Lage noe nytt** gjøres med den flytende +-hurtigknappen i både AgencyOS og WANG. «Opprett» i AgencyOS-menyen tas bort (§Hurtigknappen gjelder alle AgencyOS-skjermer).
+- **Mobilmenyen er ulik per flate:** AgencyOS har menyknapp øverst (variant C), WANG har bunnmeny.
+- **«Til kontroll»-panelet** ved registrering av tester finnes i både AgencyOS og WANG.
+- **WANG-skjermene** tegnes videre på canvaset `NfmxzMDu51FgUBeA3N3j7h`, med stil og bilder fra «WANG Toppidrett Designsystem» (`3580374e`).
+- **Send i WANG Meldinger forblir sperret ved lansering.** Knappen vises deaktivert med «Kommer». Å åpne den er en egen beslutning, fordi mottakerne er mindreårige og foresatte.
+- **Team Norway-aksefargene beholdes** (14.10). TEK og SLAG skilles med forkortelse, mellomrom og tall, ikke bare farge (ΔE 0,8 for fargesvake).
+- **«Prosess og adferd»** (kriterium 3 i TN-uttaket) vurderes av treneren på skalaen 1–5, som fireukerssjekken.
+- **Reise og overnatting** på TN-samlinger får ikke egne felt før etter lansering; «—» vises.
+
+**Overstyrer:** ingenting.
+
+**Arbeidet dette utløser:**
+
+1. **Tegningene:** flate-øktene retter AgencyOS (hurtigknapp), WANG (kontrollpanel, deaktivert Send, bilder fra `3580374e`) og TN (kriterium 3). Ferdig når canvasene viser det.
+2. **Ved portering:** `/team-wang` meldinger beholder sperren for sending; TN-uttaket lagrer kriterium 3 som tall 1–5 (additivt felt via `db execute`, gotchas §Database, om det ikke finnes). Ferdig når en test låser at WANG-trener ikke kan sende, og at kriterium 3 bare godtar 1–5.
+3. **Uavklart:** når Send i WANG åpnes, og med hvilket samtykke for elever under 16.
+
 ## TESTBATTERIET ER TEAM NORWAYS 14 TESTER PLUSS FYSISK, PÅ ALLE FLATER (Anders 20.10.2026, bindende)
 
 Anders 20.10, med Team Norways testbeskrivelse og scorekort-arket som vedlegg: «Dette er testene som gjelder.» Og om de fysiske testene: «Ja. Behold de fysiske testene (benkpress, markløft trapbar, lengdehopp, rotasjonskast, Club Speed) som en egen del Fysisk ved siden av Golfslag og Teknikk.» Svar på at designøktene viste ulikt antall tester (15 og 18) for det som skal være ett batteri.
