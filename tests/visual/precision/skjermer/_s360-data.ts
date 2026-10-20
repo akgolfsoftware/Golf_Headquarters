@@ -22,8 +22,13 @@ export const hode: S360Hode = {
     { id: "k1", tittel: "Forslag til godkjenning · lettere uke", sub: "PLAN-VAKTEN · 28.09.2026" },
     { id: "k2", tittel: "Forslag til godkjenning · bytt økt", sub: "RUNDE-AGENT · 27.09.2026" },
   ],
+  snitt: { siste10: 75.8, forrige10: 77.4, antall: 14, kurve: [78, 77, 76, 79, 75, 76, 74, 75, 74, 74] },
+  turneringOmDager: 4,
+  iup: false,
 };
-export const hodeTom: S360Hode = { ...hode, kategori: null, hcp: "—", etterlevelse: { pct: null, kilde: "WORKBENCH · 4 UKER · 29.09.2026" }, avtale: null, nesteTurnering: null, sisteBooking: null, kreverDeg: [] };
+/** WANG-spiller: IUP-fanen og IUP-samtale vises. */
+export const hodeWang: S360Hode = { ...hode, id: "u2", navn: "Sara Hauge", tilhorighet: "WANG · TEAM NORWAY", grupper: ["WANG Toppidrett"], iup: true, kreverDeg: hode.kreverDeg.slice(0, 1) };
+export const hodeTom: S360Hode = { ...hode, kategori: null, hcp: "—", etterlevelse: { pct: null, kilde: "WORKBENCH · 4 UKER · 29.09.2026" }, avtale: null, nesteTurnering: null, sisteBooking: null, kreverDeg: [], snitt: { siste10: null, forrige10: null, antall: 0, kurve: [] }, turneringOmDager: null };
 
 export const rail: S360RailSpiller[] = [
   { id: "u1", navn: "Eira Solvang", sub: "HCP 6,1 · Konkurransegruppe junior" },
