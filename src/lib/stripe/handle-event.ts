@@ -363,6 +363,21 @@ export async function handleStripeEvent(
         });
         bookingBleBekreftet = result.count > 0;
         if (!bookingBleBekreftet) {
+          // Coach-booking (allerede CONFIRMED, merket STRIPE) som kunden betaler via lenke:
+          // bare merk den som betalt. Ingen ny bekreftelse eller coach-varsel.
+          await prisma.booking.updateMany({
+            where: {
+              id: bookingId,
+              priceOre: booking.priceOre,
+              status: "CONFIRMED",
+              paymentMethod: "STRIPE",
+              stripePaymentIntentId: null,
+              stripeCheckoutSessionId: session.id,
+            },
+            data: { stripePaymentIntentId: paymentIntentId },
+          });
+        }
+        if (!bookingBleBekreftet) {
           const existing = await prisma.booking.findUnique({ where: { id: bookingId }, select: { status: true, stripeCheckoutSessionId: true } });
           if (!existing || !["CONFIRMED", "COMPLETED"].includes(existing.status) || existing.stripeCheckoutSessionId !== session.id) {
             // Paid but cancelled/mismatched: keep the actual payment and queue manual reconciliation.

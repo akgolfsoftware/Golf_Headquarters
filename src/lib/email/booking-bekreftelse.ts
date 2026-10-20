@@ -32,6 +32,10 @@ export type BekreftelseInput = {
   introHtml?: string;
   /** Duo: deltaker 2 betalte ikke. Navnet på den som booket og betalte, i stedet for pris og betaling. */
   betaltAv?: string | null;
+  /** Tekst på endre-lenken. Deltaker 2 i duo kan bare melde seg av. */
+  endreEtikett?: string;
+  /** Stripe-betalingslenke (kort og Apple Pay) når coachen har booket og kunden ikke har betalt. */
+  betalingsUrl?: string | null;
 };
 
 const DATO = new Intl.DateTimeFormat("nb-NO", { weekday: "long", day: "2-digit", month: "2-digit", year: "numeric", timeZone: "UTC" });
@@ -84,16 +88,17 @@ export function byggBekreftelse(i: BekreftelseInput): { subject: string; html: s
     i.type === "app"
       ? [
           ["Se bookingen i PlayerHQ", i.bookingUrl],
-          ["Endre eller avbestill", i.endreUrl],
+          [i.endreEtikett ?? "Endre eller avbestill", i.endreUrl],
         ]
-      : [["Endre eller avbestill", i.endreUrl]];
+      : [[i.endreEtikett ?? "Endre eller avbestill", i.endreUrl]];
 
+  const skalBetale = !!i.betalingsUrl;
   return {
     subject: `Bekreftet: ${i.tjeneste.toLowerCase()} ${dag.toLowerCase()} kl. ${klokkeTekst(i.start)}`,
     html: epostSkall({
       dark: i.natt,
       title: "Timen er bekreftet",
-      merke: i.prisOre && !i.betaltAv ? "Bekreftet og betalt" : "Bekreftet",
+      merke: skalBetale ? "Bekreftet, venter på betaling" : i.prisOre && !i.betaltAv ? "Bekreftet og betalt" : "Bekreftet",
       tidskort: {
         dag: kortDag(i.start, "utc"),
         tid,
@@ -119,8 +124,8 @@ export function byggBekreftelse(i: BekreftelseInput): { subject: string; html: s
               c,
             )
           : ""),
-      button: ["Legg i kalender", i.kalenderUrl],
-      secondary: sekundaere,
+      button: skalBetale ? ["Betal med kort eller Apple Pay", i.betalingsUrl as string] : ["Legg i kalender", i.kalenderUrl],
+      secondary: skalBetale ? [["Legg i kalender", i.kalenderUrl], ...sekundaere] : sekundaere,
     }),
   };
 }

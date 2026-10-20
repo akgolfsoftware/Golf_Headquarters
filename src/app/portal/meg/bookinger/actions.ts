@@ -22,7 +22,8 @@ const CancelBookingSchema = z.object({
 const RescheduleBookingSchema = z.object({
   bookingId: z.string().min(1, "Booking-ID er påkrevd"),
   newStartIso: isoDate,
-  newCoachId: z.string().min(1, "Coach er påkrevd"),
+  // Ignoreres: tiden sjekkes alltid mot bookingens egen coach.
+  newCoachId: z.string().optional(),
 });
 
 export async function cancelBooking(bookingId: string) {
@@ -199,7 +200,8 @@ export async function cancelBooking(bookingId: string) {
 export async function rescheduleBooking(input: {
   bookingId: string;
   newStartIso: string;
-  newCoachId: string;
+  /** Ignoreres. Coachen kan ikke endres ved flytting; bookingens egen coach brukes. */
+  newCoachId?: string;
 }): Promise<{ ok: true }> {
   RescheduleBookingSchema.parse(input);
   const user = await requireConsentingUser();
@@ -247,11 +249,15 @@ export async function rescheduleBooking(input: {
     throw new Error("Ny tid må være i framtiden.");
   }
 
+  // Coachen styres av bookingen, aldri av klienten.
+  const coachId = booking.coachId ?? booking.serviceType.coachUserId;
+  if (!coachId) throw new Error("Bookingen mangler coach.");
+
   // Sjekk slot ledig (inkludert Calendar busy-times)
   const ok = await isSlotStillAvailable(
     booking.serviceType.id,
     newStart,
-    input.newCoachId,
+    coachId,
   );
   if (!ok) {
     throw new Error(
@@ -266,7 +272,7 @@ export async function rescheduleBooking(input: {
   try {
     await prisma.$transaction(async (tx) => {
       const vern = await sjekkKollisjon(tx, {
-        coachId: input.newCoachId ?? booking.coachId,
+        coachId,
         serviceTypeId: booking.serviceTypeId,
         facilityId: booking.facilityId,
         startAt: newStart,
@@ -310,7 +316,7 @@ export async function rescheduleBooking(input: {
     metadata: {
       gammelStart: booking.startAt.toISOString(),
       nyStart: newStart.toISOString(),
-      coachId: input.newCoachId,
+      coachId,
     },
   });
 

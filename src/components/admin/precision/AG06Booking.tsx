@@ -13,8 +13,8 @@
  * Avvik mot utkastet:
  *   - Tid-steget har dato og klokkeslett, ikke ferdige ledige tider; serveren
  *     avviser en tid som kolliderer (kollisjonsvernet i opprettOktPaaTid).
- *   - «Send betalingslenke» finnes ikke: Stripe merker bookingen med tjenestens
- *     pris og «Ikke betalt». Knappen heter «Bekreft booking» for alle betalingsmåter.
+ *   - Stripe lager en betalingslenke (kort og Apple Pay) som vises med kopier-knapp
+ *     og sendes i bekreftelsen. Bookingen står «Ikke betalt» til betalt. Knappen heter «Bekreft booking» for alle betalingsmåter.
  *   - Testtime som tildeler testen automatisk finnes ikke i koden.
  *   - Tjenestelista er egen fane (med redigering, bookingplanen steg 2), ikke en
  *     seksjon under bookingene.
@@ -32,6 +32,7 @@ import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { Avatar, Knapp, Pille, Tom, Topp, Varsel, type PilleTone } from "@/components/admin/agencyos-ny/ny";
+import { BetalingsLenke } from "./BetalingsLenke";
 import { bookIKalender, type BookingValg } from "@/app/admin/kalender/booking-actions";
 import type { AG06Booking, AG06Tjeneste, AG06TjenesteValg } from "@/app/admin/bookinger/data";
 import { opprettTjeneste, oppdaterTjeneste, settTjenesteAktiv, slettTjeneste, type TjenesteInput } from "@/app/admin/bookinger/tjeneste-actions";
@@ -211,6 +212,7 @@ export function NyBooking({ valg, onOpprettet }: { valg: BookingValg; onOpprette
   const [betaling, setBetaling] = useState<Betaling>("STRIPE");
   const [notater, setNotater] = useState("");
   const [feil, setFeil] = useState<string | null>(null);
+  const [lenke, setLenke] = useState<string | null>(null);
   const [pending, start] = useTransition();
 
   const spiller = valg.spillere.find((s) => s.id === spillerId);
@@ -224,13 +226,23 @@ export function NyBooking({ valg, onOpprettet }: { valg: BookingValg; onOpprette
     start(async () => {
       const res = await bookIKalender({ spillerId: spiller.id, serviceTypeId: tjeneste.id, locationId, start: `${dato}T${tid}`, notater: notater.trim() || undefined, betaling });
       if (!res.ok) { setFeil(res.feil); return; }
-      setFeil(null);
       router.refresh();
+      // Stripe: vis lenken så coachen kan kopiere den. Kunden har også fått den på e-post.
+      if (res.betalingsUrl) { setFeil(null); setLenke(res.betalingsUrl); return; }
+      if (res.betalingsFeil) { setFeil(`Bookingen er lagret, men betalingslenken kunne ikke lages: ${res.betalingsFeil} Lag den fra bookingen.`); return; }
+      setFeil(null);
       onOpprettet();
     });
   };
 
   const datoTekst = dato ? new Intl.DateTimeFormat("nb-NO", { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" }).format(new Date(`${dato}T12:00:00Z`)) : "—";
+
+  if (lenke) return <div className="smal-innhold">
+    <Varsel tone="ok">Bookingen er bekreftet. Kunden har fått bekreftelse og betalingslenke på e-post.</Varsel>
+    <BetalingsLenke url={lenke} />
+    <p className="kildetekst">Bookingen står som «Ikke betalt» til kunden har betalt med kort eller Apple Pay.</p>
+    <div className="knapper"><Knapp onClick={onOpprettet}>Ferdig</Knapp></div>
+  </div>;
 
   return <div className="smal-innhold">
     <div className="steg-liste" aria-label="Steg">{STEG.map((s, i) => <span key={s} className={i < steg ? "ferdig" : i === steg ? "aktiv" : ""} aria-current={i === steg ? "step" : undefined}>{s}</span>)}</div>
@@ -269,7 +281,7 @@ export function NyBooking({ valg, onOpprettet }: { valg: BookingValg; onOpprette
         <li><span>Betaling</span><b>{BETALING.find((b) => b.id === betaling)?.navn}</b></li>
       </ul>
       <label className="felt"><span className="etikett">Notat (valgfritt)</span><textarea rows={2} value={notater} onChange={(e) => setNotater(e.target.value)} /></label>
-      <p className="kildetekst">Bekreftes med en gang. Spilleren får beskjed.</p>
+      <p className="kildetekst">Bekreftes med en gang. Spilleren får beskjed.{betaling === "STRIPE" ? " Kunden får en betalingslenke (kort og Apple Pay) på e-post, og du får lenken her." : ""}</p>
     </>}
     {feil && <Varsel tone="advarsel">{feil}</Varsel>}
     <div className="knapper">
