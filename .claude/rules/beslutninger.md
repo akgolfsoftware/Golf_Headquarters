@@ -8,7 +8,7 @@ Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved kon
 
 Anders 20.10 i hovedøkta for designløftet: «ja, godkjent og dine anbefalinger», som svar på avvik og spørsmål fra flate-øktene.
 
-- **Lage noe nytt** gjøres med den flytende +-hurtigknappen i både AgencyOS og WANG. «Opprett» i AgencyOS-menyen tas bort (§Hurtigknappen gjelder alle AgencyOS-skjermer).
+- **Lage noe nytt** gjøres med den flytende +-hurtigknappen i både AgencyOS og WANG. «Opprett» i AgencyOS-menyen tas bort (§Hurtigknappen gjelder alle AgencyOS-skjermer). Knappen har 8 px hjørner, som den godkjente Cockpit (Anders 20.10: «alt dette skal bygges inn i hovedversjonen», anbefalingen).
 - **Mobilmenyen er ulik per flate:** AgencyOS har menyknapp øverst (variant C), WANG har bunnmeny.
 - **«Til kontroll»-panelet** ved registrering av tester finnes i både AgencyOS og WANG.
 - **WANG-skjermene** tegnes videre på canvaset `NfmxzMDu51FgUBeA3N3j7h`, med stil og bilder fra «WANG Toppidrett Designsystem» (`3580374e`).
@@ -16,8 +16,11 @@ Anders 20.10 i hovedøkta for designløftet: «ja, godkjent og dine anbefalinger
 - **Team Norway-aksefargene beholdes** (14.10). TEK og SLAG skilles med forkortelse, mellomrom og tall, ikke bare farge (ΔE 0,8 for fargesvake).
 - **«Prosess og adferd»** (kriterium 3 i TN-uttaket) vurderes av treneren på skalaen 1–5, som fireukerssjekken.
 - **Reise og overnatting** på TN-samlinger får ikke egne felt før etter lansering; «—» vises.
+- **Stats i PlayerHQ** viser sammenligning mot neste kategori merket ESTIMAT (som 28.09). I dag viser bare spillerens egne tall.
+- **WANG-logoen** er appens SVG (`public/team-wang/wang-logo-horizontal.svg`).
+- **Alt i designløftet porteres til main** (Anders 20.10: «alt dette skal bygges inn i hovedversjonen»), én PR per pakke med auto-merge, koordinert fra hovedøkta.
 
-**Overstyrer:** ingenting.
+**Overstyrer:** «radius 2» for hurtigknappen i §Hurtigknappen gjelder alle AgencyOS-skjermer (22.09).
 
 **Arbeidet dette utløser:**
 
@@ -1795,7 +1798,7 @@ Jarvis · ny booking (§SKJERMENE … RUNDE 8).
 - Den bor i **én delt modul**, ikke som kopiert kode per skjerm: i designprosjektet
   `agencyos-handover/ag-hurtigknapp.css` og `.js`. Bygges den i appen, skal den være én
   komponent brukt av skallet — ikke én per side.
-- Faste regler: 56 × 56 px grafitt, radius 2 · kan dras hvor som helst og klemmes 8 px fra
+- Faste regler: 56 × 56 px grafitt, ~~radius 2~~ radius 8 (overstyrt 20.10, §DESIGNLØFTET) · kan dras hvor som helst og klemmes 8 px fra
   hver kant · drag åpner ikke menyen (under fem piksler er et trykk) · menyen snur når den
   ellers ville gått utenfor flaten.
 - **Gjelder også PlayerHQ** (28.09): Spør Caddie · Ny økt · Registrer runde · Start økt.
