@@ -32,7 +32,19 @@ const Vis = (d: AdminTesterV2Data = data) => (
   </AdminRolleProvider>
 );
 
+const valg = {
+  tester: [{ id: "t1", navn: "Nærspill Gate" }, { id: "t2", navn: "Driver Basic" }, { id: "t3", navn: "Putt 1–3 m" }],
+  spillere: [{ id: "p1", navn: "Test Spiller A" }, { id: "p2", navn: "Test Spiller B" }],
+};
+
 export const tilstander = {
   data: Vis(),
   tom: Vis(tom),
+  tildel: (
+    <AdminRolleProvider erAdmin>
+      <AgencyOSSkall navn="Test Coach">
+        <AG15Tester data={data} valg={valg} tildelSpillerId="p1" />
+      </AgencyOSSkall>
+    </AdminRolleProvider>
+  ),
 };

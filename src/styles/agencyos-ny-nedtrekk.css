@@ -1,0 +1,69 @@
+/* Felles nedtrekksmeny i AgencyOS (Nedtrekk.tsx). Farger fra ak-tokens.css.
+   Globalt stilark med prefiks ndt-, så prøveriggen (tests/visual/precision) måler den. */
+.ndt-rot { position: relative; min-width: 0; display: inline-flex; }
+.ndt-bred { display: flex; width: 100%; }
+
+.ndt-knapp {
+  min-height: 44px; min-width: 0; width: 100%; display: flex; align-items: center; gap: 8px; padding: 0 12px;
+  border: 1px solid var(--ak-sand-300); border-radius: 8px; background: var(--ak-hvit); color: var(--ak-g900);
+  font: 500 14px/1.2 var(--ak-font-sans); cursor: pointer; text-align: left;
+}
+.ndt-knapp:focus-visible { outline: 3px solid var(--ak-g900); outline-offset: 2px; }
+.ndt-etikett { color: var(--ak-g600); flex: none; }
+.ndt-verdi { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; flex: 1; }
+.ndt-bred .ndt-verdi { text-align: right; }
+@media (hover: hover) and (pointer: fine) { .ndt-knapp:hover { background: var(--ak-sand-100); } }
+
+.ndt-meny {
+  position: absolute; top: calc(100% + 6px); left: 0; z-index: 40; width: max(100%, 300px); max-height: 420px;
+  display: flex; flex-direction: column; padding: 6px; background: var(--ak-hvit); border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(20, 20, 19, .16), 0 0 0 1px var(--ak-sand-200); transform-origin: top left;
+}
+.ndt-hoyre { left: auto; right: 0; transform-origin: top right; }
+
+.ndt-sok {
+  height: 40px; flex: none; display: flex; align-items: center; gap: 8px; padding: 0 10px; margin-bottom: 4px;
+  background: var(--ak-sand-150); border-radius: 8px; color: var(--ak-g600); font-size: 14px;
+}
+.ndt-sok input { border: 0; background: transparent; font: inherit; color: var(--ak-g900); width: 100%; min-width: 0; outline: none; }
+.ndt-sok:focus-within { box-shadow: 0 0 0 2px var(--ak-g900); }
+
+.ndt-liste { overflow-y: auto; min-height: 0; display: flex; flex-direction: column; }
+.ndt-gruppe { display: flex; flex-direction: column; }
+.ndt-gruppetittel { padding: 10px 10px 4px; font: 500 11px/1.2 var(--ak-font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ak-g600); }
+
+.ndt-valg {
+  min-height: 44px; width: 100%; display: flex; align-items: center; gap: 10px; padding: 0 10px; border: 0; border-radius: 8px;
+  background: transparent; color: var(--ak-g900); font: 400 15px/1.3 var(--ak-font-sans); cursor: pointer; text-align: left;
+}
+.ndt-valg[aria-selected="true"] { font-weight: 600; background: var(--ak-sand-150); }
+.ndt-valg:focus-visible { outline: 2px solid var(--ak-g900); outline-offset: -2px; }
+@media (hover: hover) and (pointer: fine) { .ndt-valg:hover { background: var(--ak-sand-100); } .ndt-valg[aria-selected="true"]:hover { background: var(--ak-sand-150); } }
+.ndt-hake { width: 18px; display: flex; flex: none; }
+.ndt-navn { flex: 1; min-width: 0; }
+.ndt-antall { font: 400 12px/1 var(--ak-font-mono); color: var(--ak-g600); }
+.ndt-ingen { margin: 0; padding: 12px 10px; font-size: 14px; color: var(--ak-g600); }
+
+/* Mobil: ark nedenfra */
+.ndt-slor { position: fixed; inset: 0; z-index: 60; border: 0; padding: 0; background: rgba(20, 20, 19, .4); cursor: pointer; }
+.ndt-ark {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 61; max-height: 80dvh; display: flex; flex-direction: column; gap: 6px;
+  padding: 8px 16px calc(24px + env(safe-area-inset-bottom)); background: var(--ak-hvit); border-radius: 16px 16px 0 0;
+  box-shadow: 0 -8px 32px rgba(20, 20, 19, .18);
+}
+.ndt-hank { width: 36px; height: 5px; border-radius: 3px; background: var(--ak-sand-400); align-self: center; display: block; margin-bottom: 6px; flex: none; }
+.ndt-ark-topp { display: flex; align-items: center; justify-content: space-between; flex: none; }
+.ndt-ark-topp b { font: 600 17px/1.2 var(--ak-font-sans); }
+.ndt-ferdig { min-height: 44px; padding: 0 4px; border: 0; background: transparent; font: 600 15px/1 var(--ak-font-sans); color: var(--ak-g900); cursor: pointer; }
+.ndt-ark-liste .ndt-valg { min-height: 52px; }
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes ndt-inn-meny { from { opacity: 0; scale: .96; translate: 0 -4px; } }
+  @keyframes ndt-inn-ark { from { opacity: 0; translate: 0 24px; } }
+  @keyframes ndt-inn-tone { from { opacity: 0; } }
+  .ndt-meny { animation: ndt-inn-meny 180ms cubic-bezier(.23, 1, .32, 1) both; }
+  .ndt-ark { animation: ndt-inn-ark 280ms cubic-bezier(.23, 1, .32, 1) both; }
+  .ndt-slor { animation: ndt-inn-tone 200ms ease both; }
+  .ndt-knapp { transition: scale 150ms cubic-bezier(.23, 1, .32, 1), background-color 150ms ease; }
+  .ndt-knapp:active { scale: .97; }
+}

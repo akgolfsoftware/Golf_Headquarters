@@ -8,6 +8,8 @@
  * og kaller samme handling som før (tildelTest: TestAssignment + varsel til spilleren).
  * En test teller først når alle forsøk er registrert (testResult finnes da).
  *
+ * Test og spiller velges med den felles nedtrekksmenyen (søk på PC, ark på mobil).
+ *
  * Avvik:
  *   - Arket tildeler til én spiller. Tildeling til en hel gruppe har ingen handling i appen.
  *   - Normene viser «Referanse ikke satt» for A–K: nivåtallene er ikke vedtatt (beslutninger.md §Åpent).
@@ -18,6 +20,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ChevronRight, X } from "lucide-react";
 import { Avatar, Knapp, Pille, Tom, Topp, Varsel, type PilleTone } from "@/components/admin/agencyos-ny/ny";
+import { Nedtrekk } from "@/components/precision/Nedtrekk";
 import type { AdminTesterV2Data, AdminTesterStatus } from "@/components/admin/v2/AdminTesterV2";
 import { tildelTest } from "@/app/admin/(legacy)/tester/tildel/[spillerId]/actions";
 import "@/styles/agencyos-ny-mer.css";
@@ -63,8 +66,8 @@ function TildelArk({ valg, spillerId, onLukk }: { valg: AG15Valg; spillerId: str
     <div className="ark" role="dialog" aria-modal="true" aria-label="Tildel test">
       <div className="ark-topp"><h2>Tildel test</h2><button type="button" className="lukk" aria-label="Lukk" onClick={onLukk}><X className="ikon" aria-hidden /></button></div>
       {valg.tester.length === 0 || valg.spillere.length === 0 ? <p className="forklar">{valg.spillere.length === 0 ? "Du har ingen spillere å tildele til." : "Ingen tester finnes i katalogen."}</p> : <>
-        <div className="felt"><label htmlFor="td-test">Test</label><select id="td-test" value={test} onChange={(e) => setTest(e.target.value)}>{valg.tester.map((t) => <option key={t.id} value={t.id}>{t.navn}</option>)}</select></div>
-        <div className="felt"><label htmlFor="td-spiller">Spiller</label><select id="td-spiller" value={spiller} onChange={(e) => setSpiller(e.target.value)}>{valg.spillere.map((s) => <option key={s.id} value={s.id}>{s.navn}</option>)}</select></div>
+        <div className="felt"><Nedtrekk etikett="Test" bred valg={valg.tester.map((t) => ({ verdi: t.id, navn: t.navn }))} verdi={test} onVelg={setTest} /></div>
+        <div className="felt"><Nedtrekk etikett="Spiller" bred valg={valg.spillere.map((s) => ({ verdi: s.id, navn: s.navn }))} verdi={spiller} onVelg={setSpiller} /></div>
         <div className="felt"><label htmlFor="td-frist">Frist</label><input id="td-frist" type="date" value={frist} onChange={(e) => setFrist(e.target.value)} /><span className="hjelp">Valgfri. Spilleren får varsel om testen.</span></div>
         {feil && <p className="feiltekst" role="alert">{feil}</p>}
         <Knapp stor disabled={venter || !test || !spiller} onClick={send}>{venter ? "Tildeler …" : "Tildel"}</Knapp>
