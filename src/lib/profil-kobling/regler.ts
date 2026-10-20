@@ -51,6 +51,32 @@ export function byggOppslag(
   if (alder(bruker.dateOfBirth, naa) < MIN_ALDER_SELVKOBLING) {
     return { ok: false, feil: "Spillere under 16 år kobles av treneren sin. Snakk med treneren din." };
   }
+  return lagOppslag(bruker, golfIdInput);
+}
+
+/**
+ * Oppslag som treneren kjører for en spiller under 16 (Anders 20.10.2026: treneren kobler).
+ * Samme regler som for spilleren selv, men motsatt aldersgrense: 16 år og eldre kobler seg selv.
+ * Navn og fødselsår kommer fra spillerens profil på serveren, aldri fra klienten.
+ */
+export function byggOppslagForTrener(
+  spiller: ProfilGrunnlag,
+  golfIdInput?: string | null,
+  naa: Date = new Date(),
+): { ok: true; oppslag: Oppslag } | { ok: false; feil: string } {
+  if (!spiller.dateOfBirth) {
+    return { ok: false, feil: "Spilleren mangler fødselsdato i profilen. Legg den inn først." };
+  }
+  if (alder(spiller.dateOfBirth, naa) >= MIN_ALDER_SELVKOBLING) {
+    return { ok: false, feil: "Spilleren er 16 år eller eldre og kobler seg selv under Meg › Resultater." };
+  }
+  return lagOppslag(spiller, golfIdInput);
+}
+
+function lagOppslag(
+  bruker: ProfilGrunnlag,
+  golfIdInput?: string | null,
+): { ok: true; oppslag: Oppslag } | { ok: false; feil: string } {
   const oppgitt = (golfIdInput ?? "").trim();
   const golfId = oppgitt ? normaliserGolfId(oppgitt) : null;
   if (oppgitt && !golfId) {
