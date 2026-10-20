@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
-import { TnDataTable } from "@/components/team-norway/tn-data-table";
-import { TnShell, TnSidehode, TnSeksjon, TnTomtilstand, tnRolleNavn } from "@/components/team-norway/tn-shell";
-import { TnPille } from "@/components/team-norway/core";
+import { tnRolleNavn } from "@/components/team-norway/tn-shell";
+import { TnWangResultaterVisning } from "@/components/team-norway/skjermer/tn-nettverk-visning";
 import { hentTnGruppeanalyseValg } from "@/lib/domain/tn-arbeidsflate";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { formaterLagretTestResultat } from "@/lib/portal-tester/resultat-visning";
@@ -72,61 +70,25 @@ export default async function WangTestresultaterForTnPage({
   }
 
   return (
-    <TnShell
-      aktiv="spillere"
+    <TnWangResultaterVisning
       brukerNavn={bruker.name ?? "Ukjent"}
       rolle={valg.kontekst.rolle === "COACH" || valg.kontekst.rolle === "ASSISTANT" ? tnRolleNavn(valg.kontekst.rolle) : "Administrator"}
       groupId={valg.kontekst.gruppe.id}
-      visTrenerflater
       kanAdministrere={valg.kontekst.kanAdministrere}
-    >
-      <TnSidehode
-        overlinje="Delte WANG-resultater"
-        tittel="WANG-testresultater"
-        ingress="Fullførte testresultater fra WANG-elever som har samtykket til å dele testene med WANG-skolen og Team Norway. Under 16 år har også forelder godkjent. Tilgangen gjelder bare testresultater."
-      />
-
-      <TnSeksjon tittel="WANG-skoler" forklaring="Tallet er elever som deler testene sine nå. Trekker en elev delingen, forsvinner resultatene med en gang.">
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-          {skoler.map((skole) => (
-            <TnPille key={skole.groupId} tone="info">{skole.schoolName} · {skole.players.length} deler</TnPille>
-          ))}
-        </div>
-      </TnSeksjon>
-
-      <TnSeksjon tittel={`Resultathistorikk · ${antall}`}>
-        {resultater.length ? (
-          <TnDataTable
-            caption="Fullførte WANG-testresultater"
-            kolonner={[
-              { key: "skole", label: "Skole" },
-              { key: "spiller", label: "Spiller" },
-              { key: "test", label: "Test" },
-              { key: "resultat", label: "Resultat", align: "right" },
-              { key: "dato", label: "Dato" },
-            ]}
-            rader={resultater.map((rad) => ({
-              skole: (skolerForSpiller.get(rad.userId) ?? []).join(", "),
-              // Bare testene er delt: ingen lenke til profilen.
-              spiller: rad.user.name ?? "Ukjent spiller",
-              test: rad.test.name,
-              resultat: formaterLagretTestResultat({ testId: rad.testId, score: rad.score, details: rad.details, protocol: rad.test.protocol }),
-              dato: dato.format(rad.takenAt),
-            }))}
-            empty="Ingen delte WANG-resultater ennå."
-          />
-        ) : (
-          <TnTomtilstand tittel="Ingen delte testresultater ennå" tekst="Testene vises her når en WANG-elev har samtykket til å dele dem." />
-        )}
-        {sisteSide > 1 && (
-          <nav aria-label="Resultatsider" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 16, color: TN.textSecondary, fontSize: TN.text.sm }}>
-            {side > 1 ? <Link href={`/team-norway/wang-resultater?side=${side - 1}`} style={{ color: TN.navy600, fontWeight: 700, minHeight: 44, display: "inline-flex", alignItems: "center" }}>Forrige</Link> : <span />}
-            <span>Side {side} av {sisteSide}</span>
-            {side < sisteSide ? <Link href={`/team-norway/wang-resultater?side=${side + 1}`} style={{ color: TN.navy600, fontWeight: 700, minHeight: 44, display: "inline-flex", alignItems: "center" }}>Neste</Link> : <span />}
-          </nav>
-        )}
-      </TnSeksjon>
-    </TnShell>
+      skoler={skoler.map((skole) => ({ groupId: skole.groupId, schoolName: skole.schoolName, antall: skole.players.length }))}
+      antall={antall}
+      side={side}
+      sisteSide={sisteSide}
+      rader={resultater.map((rad) => ({
+        id: rad.id,
+        skole: (skolerForSpiller.get(rad.userId) ?? []).join(", "),
+        // Bare testene er delt: ingen lenke til profilen.
+        spiller: rad.user.name ?? "Ukjent spiller",
+        test: rad.test.name,
+        resultat: formaterLagretTestResultat({ testId: rad.testId, score: rad.score, details: rad.details, protocol: rad.test.protocol }),
+        dato: dato.format(rad.takenAt),
+      }))}
+    />
   );
 }
 
