@@ -220,7 +220,7 @@ function PlanKort({ visning, rolle, ny, foreslatt, venter, onPrio, onFjern, onFo
   return (
     <article className="kort stig" style={vars({ "--i": 2 })}>
       <div className="kortHode"><h2>Plan 2027</h2><span className="forklaring">{visning.plan.length} turneringer{visning.stadium ? ` · nivå: ${visning.stadium.navn.toLowerCase()}` : ""}</span></div>
-      <div className="tabell-ramme"><div className="plan turneringer">
+      <div className="tabell-ramme plan-ramme"><div className="plan turneringer">
         <div className="t-hode"><span>Dato</span><span>Turnering</span><span className="h">Power</span><span className="h">Seier</span><span className="h">Topp 10</span><span className="h">Poeng</span><span>Prioritet</span><span className="skjult">Handling</span></div>
         {visning.plan.length === 0 ? <p className="tomt">Planen er tom. {kanEndre ? "Legg til turneringer eller lag et forslag." : "Spilleren har ikke lagt inn turneringer ennå."}</p> : null}
         {visning.plan.map((p, i) => {
@@ -402,7 +402,7 @@ function Kalender({ plan, i }: { plan: PlanRad[]; i: number }) {
                 const u = k + 1; const l = rad.get(m)!.get(u);
                 if (!l) return <span key={u} className={`uke tom${u % 2 ? "" : " partall"}`} />;
                 return (
-                  <button key={u} type="button" className={`uke full treff ${MERKE[m].kal}${l.length > 1 ? " flere" : ""}`} style={vars({ "--i": MERKER.indexOf(m) * 8 + Math.floor(u / 7), border: 0, padding: 0, font: "inherit" })}
+                  <button key={u} type="button" className={`uke fylt treff ${MERKE[m].kal}${l.length > 1 ? " flere" : ""}`} style={vars({ "--i": MERKER.indexOf(m) * 8 + Math.floor(u / 7), border: 0, padding: 0, font: "inherit" })}
                     aria-pressed={aapen === u} aria-label={`Uke ${u}: ${l.map((p) => p.navn).join(", ")}`} onClick={() => setAapen(aapen === u ? null : u)}>{l[0].tier}</button>
                 );
               })}

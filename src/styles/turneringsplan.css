@@ -157,7 +157,7 @@
 .tpl .uke{height:28px;border-radius:5px;background:var(--ink-100);display:grid;place-items:center;font-size:11px;font-weight:700;color:var(--hvit);animation:tpl-stig 360ms var(--ut) both;animation-delay:calc(min(var(--i),60)*8ms + 300ms)}
 .tpl .uke.tom{animation:none}
 .tpl .uke.tom.partall{background:var(--ink-50);box-shadow:inset 0 0 0 1px var(--ink-100)}
-.tpl .uke.full{cursor:pointer}
+.tpl .uke.fylt{cursor:pointer}
 .tpl .uke.seier{box-shadow:inset 0 0 0 2.5px var(--rod)}
 .tpl .uke.idag{outline:2px dashed var(--rod);outline-offset:1px}
 .tpl .uke.treff:focus-visible{outline:2px solid var(--navy-600);outline-offset:2px}
@@ -205,10 +205,10 @@
 .tpl .forklaringer i.stiplet{background:none;border:2px solid var(--f)}
 .tpl .kilde{font-size:12.5px;color:var(--ink-500);max-width:90ch;padding-block:4px 32px}
 .tpl .kilde a{color:var(--navy-600)}
-@container (max-width:960px){.tpl .toppInnhold .bredde{grid-template-columns:minmax(0,1fr)}
+@container (max-width:899px){.tpl .toppInnhold .bredde{grid-template-columns:minmax(0,1fr)}
 .tpl .stats{min-width:0}}
-@media (max-width:960px){.tpl .kortflate .bredde{grid-template-columns:minmax(0,1fr)}}
-@media (max-width:620px){.tpl .topplinje .bredde{flex-wrap:wrap;padding-block:8px 0;gap:4px 16px}
+@media (max-width:899px){.tpl .kortflate .bredde{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:599px){.tpl .topplinje .bredde{flex-wrap:wrap;padding-block:8px 0;gap:4px 16px}
 .tpl .topplinje img{height:30px}
 .tpl .faner{margin-left:-8px;width:calc(100% + 8px)}
 .tpl .fane{padding:0 10px;font-size:13.5px}
@@ -246,7 +246,9 @@
 @media (prefers-reduced-motion:reduce){.tpl *,.tpl *::before,.tpl *::after{animation:none!important;transition:none!important}}
 .tpl .rollelinje{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:space-between;margin-bottom:6px}
 .tpl .rolle-tekst{font-size:13px;color:var(--ink-500);max-width:70ch}
-.tpl .plan{display:grid;margin-top:10px;--kol:58px minmax(180px,1fr) 64px 58px 64px 56px 112px 40px;min-width:700px}
+.tpl .plan{display:grid;margin-top:10px;--kol:52px minmax(120px,1fr) 46px 44px 50px 44px 96px 34px;min-width:0}
+.tpl .plan .t-hode,.tpl .plan .t-rad{gap:0 6px}
+.tpl .plan-ramme{container-type:inline-size}
 .tpl .plan .t-rad .prio{display:flex;justify-content:flex-start}
 .tpl .plan .t-rad.ny{animation:tpl-ny 900ms var(--ut) both}
 @keyframes tpl-ny{from{background:var(--navy-100)}}
@@ -254,7 +256,7 @@
 .tpl .plan .t-rad.fjernes .navn{text-decoration:line-through;color:var(--ink-500)}
 .tpl .mndskille{grid-column:1/-1;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-500);padding:14px 0 4px;border-bottom:1px solid var(--ink-200)}
 .tpl .velger.liten{padding:3px;gap:2px}
-.tpl .velger.liten .velg{min-height:28px;min-width:28px;padding:0 8px;justify-content:center;font-size:12.5px}
+.tpl .velger.liten .velg{min-height:28px;min-width:26px;padding:0 4px;justify-content:center;font-size:12.5px}
 .tpl .ikon{all:unset;cursor:pointer;width:36px;height:36px;display:grid;place-items:center;border-radius:var(--r-boks);color:var(--ink-500);transition:background-color var(--t-rask) var(--ut),color var(--t-rask) var(--ut),transform var(--t-trykk) var(--ut)}
 .tpl .ikon:active{transform:scale(.94)}
 .tpl .ikon:focus-visible{outline:2px solid var(--navy-600);outline-offset:1px}
@@ -302,13 +304,13 @@
 .tpl .tomt{padding:18px 0;color:var(--ink-500);font-size:14px}
 .tpl .melding{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,12px);z-index:40;max-width:min(520px,calc(100vw - 32px));background:var(--navy);color:var(--hvit);border-radius:var(--r-pille);padding:10px 18px;font-size:13.5px;box-shadow:var(--skygge-lg);opacity:0;pointer-events:none;transition:opacity var(--t-base) var(--ut),transform var(--t-base) var(--ut)}
 .tpl .melding.vis{opacity:1;transform:translate(-50%,0)}
-@media (max-width:620px){.tpl .nokkel{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (max-width:599px){.tpl .nokkel{grid-template-columns:repeat(2,minmax(0,1fr))}
 .tpl .anslag b{font-size:36px}
 .tpl .rollelinje{flex-direction:column;align-items:flex-start}}
 .tpl .kun-mobil{display:none}
 .tpl .topplinje{position:relative;top:auto;z-index:4}
 .tpl .melding{display:block}
-@media (max-width:620px){.tpl .plan{min-width:0;--kol:50px minmax(0,1fr) 36px}
+@container (max-width:520px){.tpl .plan{min-width:0;--kol:50px minmax(0,1fr) 36px}
 .tpl .plan .t-hode{display:none}
 .tpl .plan .t-rad .tall{display:none}
 .tpl .plan .t-rad .prio{grid-column:2;grid-row:2;margin-top:6px}
