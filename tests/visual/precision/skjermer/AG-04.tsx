@@ -12,4 +12,7 @@ export const tilstander = {
   spillere: <Vis filter="spillere" />,
   epost: <Vis filter="epost" />,
   varsler: <Vis filter="varsler" />,
+  sak: <Vis startSak="epost:e1" />,
+  sporsmal: <Vis startSak="sporsmal:q1" />,
+  plan: <Vis filter="godkjenn" startSak="plan:p1" />,
 };

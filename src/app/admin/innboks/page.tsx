@@ -17,7 +17,7 @@
  *
  * Fanene: ?filter=spillere|epost|godkjenn|oppfolging|varsler|caddie|datakvalitet.
  * ?o=risk|watch|check|ok|leads velger kolonne under Oppfølging, ?vis=sendt viser
- * sendt og arkivert e-post.
+ * sendt og arkivert e-post. ?sak=<nøkkel> åpner én sak med en gang.
  */
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { canUser } from "@/lib/auth/effective-capabilities";
@@ -151,6 +151,7 @@ export default async function InnboksPage({
         sok={sok}
         leads={leads}
         startLeads={filter === "oppfolging" && forste(sp.o) === "leads"}
+        startSak={forste(sp.sak) ?? null}
       />
     </AgencyOSSkall>
   );
