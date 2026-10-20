@@ -17,6 +17,10 @@ PlayerHQ er den flaten som er ferdigst: I dag, Plan, Stats og Meg henger sammen,
 | A3 | WANG | **Trenerflaten gir AK Golf-404** («Til forsiden · Til PlayerHQ») for demotreneren, lokalt og i produksjon. `/team-wang/demo` sier «Golf-demoen er ikke tilgjengelig». Trenerflaten viser bare fellessiden. | `prod-wang-pc-team-wang_coach.png` |
 | A4 | AgencyOS | **Innboksen har 3 766 saker, 3 692 av dem «Godkjenn»**, alle fra «Anders Skarpnord Kristiansen · Forslag fra motoren» med tom tekst («—»). Cockpit sier «Tøm godkjenningskøen (3643)». En coach kan ikke bruke innboksen før motoren slutter å produsere tomme forslag hvert 20. minutt. | `coach-pc-admin_innboks.png`, `coach-pc-admin_agencyos-2.png` |
 
+**A1+A4: gjort 20.10 i PR #1466** (lagt inn i main). Cockpit målt til 1,0–1,1 s applikasjonskode (fra 30,9–33,4 s). Vakten mot tomme forslag er låst med test; ryddeskriptet `scripts/avvis-tomme-proactive-booking-2026-10-20.ts` er kjørt mot produksjon: 3 498 forslag merket avvist, ingenting slettet, 148 ventende saker igjen.
+
+**A2+A3: gjort 20.10 i PR #1465** (lagt inn i main). Demotrenerne slipper inn på WANG og Team Norway, TN-404 er nøytral med ekte meny, og `/team-wang` har WANG-stilet 404.
+
 A2 og A3 har samme rot: demokontoene er koblet til `wang-toppidrett-demo` og `team-norway-demo` (PR #1347 og #1359), og tilgangssjekkene finner ikke gruppa. Det er ikke undersøkt om gruppene mangler i basen eller om medlemskapet mangler. Uansett er det disse kontoene Anders og eksterne skal vise flatene med.
 
 ## B. Designbrudd mot egne regler
