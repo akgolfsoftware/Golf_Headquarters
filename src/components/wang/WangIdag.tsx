@@ -113,7 +113,7 @@ function IdagHoved({
                   : "Ingen har delt planen ennå"}
               </small>
             </div>
-            <a href="#oppfolging">
+            <a className="wg-helt2-lenke" href="#oppfolging">
               <strong>{plan.delerIder.length > 0 ? trenger.length : "—"}</strong>
               <span>{trenger.length === 1 ? "elev trenger oppfølging →" : "elever trenger oppfølging →"}</span>
               <small>{trenger.length > 0 ? trenger.slice(0, 2).map((e) => `${e.navn} under plan`).join(" · ") : "Under 80 % av planen"}</small>
