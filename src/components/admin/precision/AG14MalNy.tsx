@@ -8,13 +8,11 @@
  */
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Check } from "lucide-react";
-import { Knapp, KnappLenke, Meta, StatusPille } from "@/components/precision/pa";
-import { SideHode } from "@/components/precision/pa-a4";
-import { Seksjon, Varsel } from "@/components/precision/pa-planhub";
+import { Knapp, KnappLenke, Pille, Seksjon, Topp, Varsel } from "@/components/admin/agencyos-ny/ny";
 import { createTemplate, type TemplateCreateInput } from "@/app/admin/(legacy)/plan-templates/actions";
 import { ANBEFALT_FORDELING_PER_KATEGORI, type DisciplinFordeling } from "@/components/admin/plan-templates/shared";
 import { FordelingGlidere, MalMetadata, fordelingSum, type MalMetadataVerdier } from "./AG14MalFelles";
+import "@/styles/agencyos-ny-mer.css";
 
 export function AG14MalNy() {
   const router = useRouter();
@@ -54,19 +52,20 @@ export function AG14MalNy() {
     });
   }
 
-  return <div className="pa-side" style={{ maxWidth: 960 }}>
-    <div><KnappLenke href="/admin/plan?fane=ukemaler" variant="ghost" icon={ArrowLeft} iconName="arrow-left">Plan-hub</KnappLenke></div>
-    <SideHode kicker="Plan · ny mal" title="Ny planmal" sub="Fyll inn metadata og opprett. Du legger inn økter uke for uke etterpå." />
+  return <div className="agn-s">
+    <Topp tilbake={{ href: "/admin/plan?fane=ukemaler", tekst: "Plan-hub" }} dato="Plan · ny mal" tittel="Ny planmal"
+      ingress="Fyll inn metadata og opprett. Du legger inn økter uke for uke etterpå." />
     <Seksjon tittel="Metadata">
       <MalMetadata v={v} onEndre={endre} navnFeil={navnFeil} />
     </Seksjon>
-    <Seksjon tittel="Fordeling · starter fra anbefalt" meta={<StatusPille tone={sum === 100 ? "ok" : "warn"}>{sum} %</StatusPille>}>
+    <Seksjon tittel="Fordeling · starter fra anbefalt" hoyre={<Pille tone={sum === 100 ? "ok" : "vent"}>{sum} %</Pille>}>
       <FordelingGlidere fordeling={fordeling} onEndre={setFordeling} />
-      {sum !== 100 && <Meta>FORDELINGEN SUMMERER TIL {sum} % · MÅ VÆRE 100 % FØR MALEN KAN OPPRETTES</Meta>}
+      {sum !== 100 && <p className="kilde">Fordelingen summerer til {sum} %. Den må være 100 % før malen kan opprettes.</p>}
     </Seksjon>
-    {feil && <Varsel tone="warn" tittel="Malen er ikke opprettet">{feil}</Varsel>}
-    <div className="a10-knapperad" style={{ justifyContent: "flex-end" }}>
-      <Knapp icon={Check} iconName="check" onClick={opprett} loading={lagrer} loadingText="Oppretter …">Opprett og gå til editoren</Knapp>
+    {feil && <Varsel tone="advarsel" tittel="Malen er ikke opprettet">{feil}</Varsel>}
+    <div className="mal-lagre">
+      <Knapp variant="pri" onClick={opprett} disabled={lagrer}>{lagrer ? "Oppretter …" : "Opprett og gå til editoren"}</Knapp>
+      <KnappLenke variant="sek" href="/admin/plan?fane=ukemaler">Avbryt</KnappLenke>
     </div>
   </div>;
 }

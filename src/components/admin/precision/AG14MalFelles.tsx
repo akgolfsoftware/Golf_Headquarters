@@ -10,11 +10,12 @@
  */
 import type { ReactNode } from "react";
 import { Plus } from "lucide-react";
-import { AkseMerke, Ikon, Meta } from "@/components/precision/pa";
-import { Felt, Glider, Hendelseskort, Inndata, Nedtrekk, Tekstboks, type PaAkse } from "@/components/precision/pa-planhub";
+import { AkseMerke, Meta } from "@/components/precision/pa";
+import { Felt, Glider, Inndata, Nedtrekk, Tekstboks, type PaAkse } from "@/components/precision/pa-planhub";
 import type { LPhase, NgfKategori, PyramidArea } from "@/generated/prisma/enums";
 import { DAG_LABEL, FASE_ALLE, KATEGORI_ALLE, KATEGORI_LABEL, type DisciplinFordeling } from "@/components/admin/plan-templates/shared";
 import { LPHASE_LABEL } from "@/lib/labels/taxonomy";
+import "@/styles/agencyos-ny-mal.css";
 
 export const PYR_ALLE: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
 export const akseAv = (p: PyramidArea) => p.toLowerCase() as PaAkse;
@@ -27,6 +28,8 @@ export function fordelingSum(f: DisciplinFordeling): number {
 
 export type RutenettOkt = { id: string; ukeNr: number; dagNr: number; title: string; varighetMin: number; pyramidArea: PyramidArea; drillAntall: number };
 
+const AKSE_VAR: Record<PyramidArea, string> = { FYS: "var(--fys-ink)", TEK: "var(--tek-ink)", SLAG: "var(--slag)", SPILL: "var(--spill-ink)", TURN: "var(--turn)" };
+
 export function UkeRutenett({ varighetUker, okter, onVelg, onNy, ukeMeta, ukeHandlinger, deaktivert }: {
   varighetUker: number;
   okter: readonly RutenettOkt[];
@@ -38,27 +41,27 @@ export function UkeRutenett({ varighetUker, okter, onVelg, onNy, ukeMeta, ukeHan
   deaktivert?: boolean;
 }) {
   const uker = Array.from({ length: Math.max(0, varighetUker) }, (_, i) => i + 1);
-  return <div className="a10-stabel">
-    {uker.map((uke) => <section key={uke} className="a10-uke" aria-label={`Uke ${uke}`}>
-      <div className="a10-uke__hode">
-        <span className="kicker">Uke {uke}</span>
+  return <div className="mal-uker">
+    {uker.map((uke) => <section key={uke} className="mal-uke" aria-label={`Uke ${uke}`}>
+      <div className="mal-uke-hode">
+        <b>Uke {uke}</b>
         {ukeMeta?.(uke)}
-        {ukeHandlinger?.(uke)}
+        <span className="mal-uke-handl">{ukeHandlinger?.(uke)}</span>
       </div>
-      <div className="a10-dager">
+      <div className="mal-dager">
         {[1, 2, 3, 4, 5, 6, 7].map((dag) => {
           const s = okter.find((o) => o.ukeNr === uke && o.dagNr === dag);
           const navn = DAG_LABEL[dag - 1];
-          return <div key={dag} className="a10-dag">
-            <span className="a10-dag__navn">{navn}</span>
+          return <div key={dag} className="mal-dag">
+            <span className="mal-dag-navn">{navn}</span>
             {s
-              ? <Hendelseskort akser={[akseAv(s.pyramidArea)]} onClick={() => onVelg(s.id)} label={`${s.title}, uke ${uke} ${navn}`}>
-                <span className="a10-ev__tittel" style={{ fontSize: 13 }}>{s.title}</span>
-                <Meta>{s.varighetMin} MIN · {s.drillAntall} ØV.</Meta>
-              </Hendelseskort>
+              ? <button type="button" className="mal-okt" onClick={() => onVelg(s.id)} aria-label={`${s.title}, uke ${uke} ${navn}`}>
+                <i aria-hidden style={{ background: AKSE_VAR[s.pyramidArea] }} />
+                <span className="mal-okt-tekst"><b>{s.title}</b><span className="kilde mono">{s.pyramidArea} · {s.varighetMin} min · {s.drillAntall} øv.</span></span>
+              </button>
               : onNy
-                ? <button type="button" className="a10-dag__tom" disabled={deaktivert} onClick={() => onNy(uke, dag)} aria-label={`Ny økt uke ${uke}, ${navn}`}><Ikon icon={Plus} size={16} name="plus" /></button>
-                : <div className="a10-dag__tom" aria-label={`Ingen økt uke ${uke}, ${navn}`}>—</div>}
+                ? <button type="button" className="mal-tom" disabled={deaktivert} onClick={() => onNy(uke, dag)} aria-label={`Ny økt uke ${uke}, ${navn}`}><Plus size={16} aria-hidden /></button>
+                : <span className="mal-tom" aria-label={`Ingen økt uke ${uke}, ${navn}`}>—</span>}
           </div>;
         })}
       </div>
