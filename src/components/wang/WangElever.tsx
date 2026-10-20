@@ -7,10 +7,10 @@ import { WangTomTilstand } from "./WangIkkeKoblet";
 import {
   WangBaand,
   WangElevrad,
-  WangHelt,
   WangSmaaTall,
   WangTilbake,
   WangTopp,
+  WangToppfelt,
   initialer,
   wangHref,
 } from "./wang-felles";
@@ -152,27 +152,20 @@ function Elevlista({
 
   return (
     <>
-      <WangTopp dato={`${data.gruppeNavn} · ${data.ukeTekst.split(" · ")[0].toLowerCase()}`} tittel="Elever" />
-
-      <WangHelt
-        etikett="Elever som trenger deg"
-        merke="Siste fire uker"
-        tall={plan.delerIder.length > 0 ? String(alleTrenger) : "—"}
-        tekst="elever trenger deg"
-        forklar={
-          plan.delerIder.length > 0
-            ? "Under 80 % av planen eller av morgentreningen siste fire uker. Bare elever som har delt planen med deg teller."
-            : "Oppfølging bygges av gjennomført tid mot plan. Ingen elever har delt planen med deg ennå."
-        }
-        bilde="/team-wang/hero/trening-golf.jpg"
-      />
-
-      <WangSmaaTall
+      <WangToppfelt
+        dato={`${data.gruppeNavn} · ${data.ukeTekst.split(" · ")[0].toLowerCase()}`}
+        tittel="Elever"
         tall={[
-          { verdi: String(data.elever.length), tekst: "Elever i gruppa" },
-          { verdi: `${plan.delerIder.length} av ${data.elever.length}`, tekst: "Har delt med deg" },
-          { verdi: String(tilKontroll), tekst: "Test til kontroll" },
+          {
+            verdi: plan.delerIder.length > 0 ? String(alleTrenger) : "—",
+            tekst: alleTrenger === 1 ? "elev trenger deg" : "elever trenger deg",
+            under: plan.delerIder.length > 0 ? "Under 80 % av planen siste fire uker" : "Ingen har delt planen ennå",
+          },
+          { verdi: String(plan.delerIder.length), enhet: `av ${data.elever.length}`, tekst: "har delt planen med deg", under: "Under 16 år godkjenner forelderen" },
+          { verdi: String(tilKontroll), tekst: "tester til kontroll", under: "Egenført i PlayerHQ", href: wangHref("tester", "ko") },
         ]}
+        kilde="Kilde: elevenes plan og tester i PlayerHQ, når de er delt med WANG. Uten deling ser du bare navn og klasse."
+        bilde="/team-wang/hero/trening-golf.jpg"
       />
 
       {data.elever.length === 0 ? (
