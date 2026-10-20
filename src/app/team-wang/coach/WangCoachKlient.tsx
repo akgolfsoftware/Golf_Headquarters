@@ -2,7 +2,8 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { WangAppSkall, type WangOmraade } from '@/components/wang/WangAppSkall';
+import { WangAppSkall, type WangNesteOkt, type WangOmraade, type WangSokTreff } from '@/components/wang/WangAppSkall';
+import { wangHref } from '@/components/wang/wang-felles';
 import { WangIdag } from '@/components/wang/WangIdag';
 import { WangTrening } from '@/components/wang/WangTrening';
 import { WangTester } from '@/components/wang/WangTester';
@@ -50,6 +51,47 @@ interface WangCoachKlientProps {
   data: WangTrenerData;
 }
 
+const minutter = (hhmm: string) => {
+  const [t, m] = hhmm.split(':').map(Number);
+  return t * 60 + m;
+};
+
+const iMorgenIso = (iso: string) => {
+  const [y, m, d] = iso.split('-').map(Number);
+  return new Date(Date.UTC(y, m - 1, d + 1)).toISOString().slice(0, 10);
+};
+
+const tilOkt = (id: string) => `/team-wang/coach?omraade=idag&fane=okt&okt=${encodeURIComponent(id)}`;
+
+/** Neste økt i ukas kalender. Bare ekte økter; ingen økt gir ikke noe kort. */
+export function finnNesteOkt(data: WangTrenerData): WangNesteOkt | null {
+  const naa = data.naaTid ? minutter(data.naaTid) : null;
+  const neste = data.ukeOkter.find((o) => {
+    if (o.passert) return false;
+    if (o.datoIso > data.idagIso) return true;
+    return o.datoIso === data.idagIso && naa !== null && minutter(o.startTid) > naa;
+  });
+  if (!neste) return null;
+  let naar = neste.dag;
+  if (neste.datoIso === data.idagIso && naa !== null) {
+    const diff = minutter(neste.startTid) - naa;
+    const t = Math.floor(diff / 60);
+    const m = diff % 60;
+    naar = t > 0 ? `om ${t} t ${m} min` : `om ${m} min`;
+  } else if (neste.datoIso === iMorgenIso(data.idagIso)) {
+    naar = 'i morgen';
+  }
+  return { tid: neste.startTid, tittel: neste.tittel, naar, info: neste.sted, href: tilOkt(neste.id) };
+}
+
+/** Det søket i skallet kan finne: gruppas elever og ukas økter. */
+export function byggSokbart(data: WangTrenerData): WangSokTreff[] {
+  return [
+    ...data.elever.map((e) => ({ id: `e-${e.id}`, tekst: e.navn, under: `Elev · ${data.gruppeNavn}`, href: wangHref('elever', 'elev', e.id) })),
+    ...data.ukeOkter.map((o) => ({ id: `o-${o.id}`, tekst: o.tittel, under: `${o.dag} ${o.tid}${o.sted ? ` · ${o.sted}` : ''}`, href: tilOkt(o.id) })),
+  ];
+}
+
 export function WangCoachKlient({
   omraade,
   fane,
@@ -81,6 +123,8 @@ export function WangCoachKlient({
       brukerNavn={brukerNavn}
       aktivtOmraade={omraade}
       aktivFane={fane}
+      neste={finnNesteOkt(data)}
+      sokbart={byggSokbart(data)}
       onFaneEndring={(valgtFane) => {
         navigerTil(omraade, valgtFane);
       }}

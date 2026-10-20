@@ -76,69 +76,88 @@ function IdagHoved({
   const neste = dagensOkter.find((o) => !naa || (o.sluttTid ?? o.startTid) > naa);
   const aktivPeriode = data.perioder.find((p) => p.status === "naa");
   const antall = dagensOkter.length;
-  const oppmoteOkt = neste ?? dagensOkter[0];
+
+  const morgenPct = plan.morgen.pct;
+  const uke = ukeStripe(data);
 
   return (
     <>
-      <section className="wg-topp">
-        <p className="wg-dato">
-          {langDato(data.idagIso)} · {data.ukeTekst.split(" · ")[0].toLowerCase()}
-          {naa ? ` · kl. ${naa}` : ""}
-        </p>
-        <h1 className="wg-tittel">I dag</h1>
-      </section>
-
-      <section className="wg-helteflate" aria-label="Dagen">
-        <div className="wg-helt-tekst">
-          <span className="wg-helt-merke">
-            <i />
-            {neste ? `Neste økt kl. ${neste.startTid}` : antall > 0 ? "Dagens økter er ferdige" : data.gruppeNavn}
-          </span>
-          <p className="wg-helt-hoved">
-            <strong>{antall}</strong>
-            <span>{antall === 1 ? "økt i dag" : "økter i dag"}</span>
+      <section className="wg-helt2" aria-label="I dag">
+        <div className="wg-helt2-tekst">
+          <p className="wg-helt2-dato">
+            {langDato(data.idagIso)} · {data.ukeTekst.split(" · ")[0].toLowerCase()}
+            {naa ? ` · kl. ${naa}` : ""}
           </p>
-          <p className="wg-helt-forklar">
-            {neste
-              ? `${neste.tittel}, ${neste.tid}${neste.sted ? `, ${neste.sted}` : ""}.`
-              : antall > 0
-                ? "Alle økter i gruppas kalender i dag er passert."
-                : "Ingen økter i gruppas kalender i dag."}
-          </p>
-          {oppmoteOkt ? (
-            <Link href={tilOppmote(oppmoteOkt.id)} className="wg-btn wg-btn-lys">
-              Før oppmøte
-            </Link>
-          ) : (
-            <Link href="/team-wang/coach?omraade=trening" className="wg-btn wg-btn-lys">
-              Se treningen
-            </Link>
-          )}
+          <h1 className="wg-helt2-tittel">I dag</h1>
+          <div className="wg-helt2-tall">
+            <div>
+              <strong>{antall}</strong>
+              <span>{antall === 1 ? "økt i dag" : "økter i dag"}</span>
+              <small>
+                {neste
+                  ? `Neste: ${neste.tittel} kl. ${neste.startTid}`
+                  : antall > 0
+                    ? "Dagens økter er ferdige"
+                    : "Ingen økter i kalenderen"}
+              </small>
+            </div>
+            <div>
+              <strong>
+                {morgenPct === null ? "—" : morgenPct}
+                {morgenPct === null ? null : <span className="wg-helt2-enhet"> %</span>}
+              </strong>
+              <span>morgentrening gjennomført</span>
+              <small>
+                {plan.delerIder.length > 0
+                  ? `Siste fire uker, ${plan.delerIder.length} av ${data.elever.length} har delt planen`
+                  : "Ingen har delt planen ennå"}
+              </small>
+            </div>
+            <a href="#oppfolging">
+              <strong>{plan.delerIder.length > 0 ? trenger.length : "—"}</strong>
+              <span>{trenger.length === 1 ? "elev trenger oppfølging →" : "elever trenger oppfølging →"}</span>
+              <small>{trenger.length > 0 ? trenger.slice(0, 2).map((e) => `${e.navn} under plan`).join(" · ") : "Under 80 % av planen"}</small>
+            </a>
+          </div>
+          <p className="wg-helt2-kilde">Kilde: gruppas kalender og elevenes plan i PlayerHQ, når den er delt med WANG.</p>
         </div>
         <Image
-          className="wg-helt-bilde"
+          className="wg-helt2-bilde"
           src="/team-wang/hero/trening-golf.jpg"
           alt=""
           width={480}
-          height={230}
-          sizes="(min-width: 1100px) 420px, 100vw"
+          height={300}
+          sizes="(min-width: 1100px) 360px, 100vw"
         />
       </section>
 
-      <div className="wg-smaa-tall">
-        <div>
-          <strong>{data.elever.length}</strong>
-          <span>Elever i gruppa</span>
+      <section className="wg-seksjon" aria-labelledby="wg-ukestripe-tittel">
+        <div className="wg-sek-topp">
+          <h2 id="wg-ukestripe-tittel">{data.ukeTekst.split(" · ")[0]}</h2>
+          <Link className="wg-lenke" href="/team-wang/coach?omraade=trening">
+            Hele uka
+          </Link>
         </div>
-        <div>
-          <strong>{data.ukeOkter.length}</strong>
-          <span>Økter i uka</span>
+        <div className="wg-ukestripe">
+          {uke.map((d) => (
+            <Link
+              key={d.iso}
+              href={d.forsteOkt ? tilOkt(d.forsteOkt) : "/team-wang/coach?omraade=trening"}
+              className={`wg-ukedag ${d.iDag ? "wg-ukedag-idag" : ""}`}
+              aria-current={d.iDag ? "date" : undefined}
+              aria-label={`${d.navn}: ${d.antall === 0 ? "ingen økter" : d.antall === 1 ? "1 økt" : `${d.antall} økter`}`}
+            >
+              <span className="wg-ukedag-navn">{d.iDag ? `I dag ${d.dato}` : `${d.navn} ${d.dato}`}</span>
+              <span className="wg-ukedag-prikker" aria-hidden>
+                {Array.from({ length: d.antall }, (_, i) => (
+                  <i key={i} />
+                ))}
+              </span>
+              <span className="wg-ukedag-tall">{d.antall === 0 ? "—" : d.antall === 1 ? "1 økt" : `${d.antall} økter`}</span>
+            </Link>
+          ))}
         </div>
-        <div>
-          <strong>—</strong>
-          <span>Krever handling</span>
-        </div>
-      </div>
+      </section>
 
       <div className="wg-idag-kol">
         <div>
@@ -183,34 +202,6 @@ function IdagHoved({
             )}
           </section>
 
-          <section className="wg-seksjon wg-r5" aria-labelledby="wg-uka-tittel">
-            <div className="wg-sek-topp">
-              <h2 id="wg-uka-tittel">Uka</h2>
-              <span className="wg-kilde">{data.ukeTekst}</span>
-            </div>
-            {data.ukeOkter.length === 0 ? (
-              <WangTomTilstand tittel="Ingen økter denne uka" tekst="Gruppas kalender har ingen økter denne uka." />
-            ) : (
-              <div className="wg-kort wg-fyll" style={{ gap: 4 }}>
-                {data.ukeOkter.map((o) => {
-                  const iDag = o.datoIso === data.idagIso;
-                  return (
-                    <div key={o.id} className={`wg-ukerad ${iDag ? "wg-ukerad-idag" : ""}`}>
-                      <span className="wg-dg">{o.dag}</span>
-                      <Link href={tilOkt(o.id)} className="wg-okt wg-okt-lenke">
-                        <span className="wg-navn">{o.tittel}</span>
-                        <span className="wg-okt-info">
-                          <span>{o.tid}</span>
-                          <span>{o.passert ? "Passert" : iDag ? "I dag" : "Planlagt"}</span>
-                          {o.sted ? <span>{o.sted}</span> : null}
-                        </span>
-                      </Link>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </section>
         </div>
 
         <div>
@@ -218,13 +209,51 @@ function IdagHoved({
             <div className="wg-sek-topp">
               <h2 id="wg-handling-tittel">Krever handling</h2>
             </div>
-            <WangTomTilstand
-              tittel="Ikke koblet ennå"
-              tekst="Her samles oppmøte som ikke er ført, fravær flere dager på rad, egenførte tester til kontroll, delte fireukerssjekker og svar på forslag, gruppert etter frist."
-            />
+            {trenger.length > 0 || neste ? (
+              <div className="wg-kort wg-krever">
+                {neste ? (
+                  <>
+                    <span className="wg-krever-frist wg-krever-haster">Før {neste.startTid}</span>
+                    <div className="wg-krever-sak">
+                      <span>
+                        <b>Oppmøte {neste.tittel.toLowerCase()}</b>
+                        <small>{neste.tid}{neste.sted ? ` · ${neste.sted}` : ""}</small>
+                      </span>
+                      <Link href={tilOppmote(neste.id)} className="wg-btn wg-btn-primary">
+                        Før oppmøte
+                      </Link>
+                    </div>
+                  </>
+                ) : null}
+                {trenger.length > 0 ? (
+                  <>
+                    <span className="wg-krever-frist">Denne uka</span>
+                    {trenger.map((e) => (
+                      <div key={e.id} className="wg-krever-sak">
+                        <span>
+                          <b>{e.navn} under planen</b>
+                          <small>
+                            {visPct(plan.perElev[e.id].etterlevelse)} av planen siste fire uker · morgentrening {visPct(plan.perElev[e.id].morgen)}
+                          </small>
+                        </span>
+                        <Link href={wangHref("elever", "elev", e.id)} className="wg-btn wg-btn-secondary">
+                          Se eleven
+                        </Link>
+                      </div>
+                    ))}
+                  </>
+                ) : null}
+                <p className="wg-kilde">Fravær flere dager på rad, tester til kontroll og svar på forslag kommer hit når de er koblet.</p>
+              </div>
+            ) : (
+              <WangTomTilstand
+                tittel="Ingenting venter på deg"
+                tekst="Her samles oppmøte før neste økt og elever under 80 % av planen. Tester til kontroll og svar på forslag kommer hit når de er koblet."
+              />
+            )}
           </section>
 
-          <section className="wg-seksjon wg-r4" aria-labelledby="wg-oppfolging-tittel">
+          <section className="wg-seksjon wg-r4" id="oppfolging" aria-labelledby="wg-oppfolging-tittel">
             <div className="wg-sek-topp">
               <h2 id="wg-oppfolging-tittel">Elever som trenger oppfølging</h2>
             </div>
@@ -257,6 +286,23 @@ function IdagHoved({
       </div>
     </>
   );
+}
+
+const UKEDAGER = ["Man", "Tir", "Ons", "Tor", "Fre"];
+
+/** Mandag til fredag i uka som vises, med antall økter fra gruppas kalender. */
+function ukeStripe(data: WangTrenerData) {
+  const [y, m, d] = data.idagIso.split("-").map(Number);
+  const idag = new Date(Date.UTC(y, m - 1, d));
+  const mandag = new Date(idag);
+  mandag.setUTCDate(idag.getUTCDate() - ((idag.getUTCDay() + 6) % 7));
+  return UKEDAGER.map((navn, i) => {
+    const dag = new Date(mandag);
+    dag.setUTCDate(mandag.getUTCDate() + i);
+    const iso = dag.toISOString().slice(0, 10);
+    const okter = data.ukeOkter.filter((o) => o.datoIso === iso);
+    return { navn, iso, dato: dag.getUTCDate(), iDag: iso === data.idagIso, antall: okter.length, forsteOkt: okter[0]?.id ?? null };
+  });
 }
 
 const TIME_H = 52;
