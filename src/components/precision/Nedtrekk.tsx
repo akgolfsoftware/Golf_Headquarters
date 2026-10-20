@@ -12,7 +12,7 @@
 import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { Check, ChevronDown, Search } from "lucide-react";
 import { filtrerValg, grupperValg, type NedtrekkValg } from "./nedtrekk-filter";
-import s from "./Nedtrekk.module.css";
+import "@/styles/agencyos-ny-nedtrekk.css";
 
 export type { NedtrekkValg };
 
@@ -111,8 +111,8 @@ export function Nedtrekk({ etikett, valg, verdi, onVelg, sokFra = 7, sokPlasshol
   const rader = (
     <>
       {grupper.map((g) => (
-        <div key={g.gruppe || "_"} role="group" aria-label={g.gruppe || undefined} className={s.gruppe}>
-          {g.gruppe ? <span className={s.gruppetittel}>{g.gruppe}</span> : null}
+        <div key={g.gruppe || "_"} role="group" aria-label={g.gruppe || undefined} className="ndt-gruppe">
+          {g.gruppe ? <span className="ndt-gruppetittel">{g.gruppe}</span> : null}
           {g.valg.map((v) => {
             const er = v.verdi === verdi;
             return (
@@ -121,23 +121,23 @@ export function Nedtrekk({ etikett, valg, verdi, onVelg, sokFra = 7, sokPlasshol
                 type="button"
                 role="option"
                 aria-selected={er}
-                className={s.valg}
+                className="ndt-valg"
                 onClick={() => velg(v)}
               >
-                <span className={s.hake}>{er ? <Check size={16} strokeWidth={2.4} aria-hidden /> : null}</span>
-                <span className={s.navn}>{v.navn}</span>
-                {v.antall ? <span className={s.antall}>{v.antall}</span> : null}
+                <span className="ndt-hake">{er ? <Check size={16} strokeWidth={2.4} aria-hidden /> : null}</span>
+                <span className="ndt-navn">{v.navn}</span>
+                {v.antall ? <span className="ndt-antall">{v.antall}</span> : null}
               </button>
             );
           })}
         </div>
       ))}
-      {treff.length === 0 ? <p className={s.ingen}>Ingen treff på «{sok}»</p> : null}
+      {treff.length === 0 ? <p className="ndt-ingen">Ingen treff på «{sok}»</p> : null}
     </>
   );
 
   const sokFeltet = visSok ? (
-    <label className={s.sok}>
+    <label className="ndt-sok">
       <Search size={15} aria-hidden />
       <input
         ref={sokFelt}
@@ -155,25 +155,25 @@ export function Nedtrekk({ etikett, valg, verdi, onVelg, sokFra = 7, sokPlasshol
   ) : null;
 
   return (
-    <div className={`${s.rot} ${bred ? s.bred : ""}`}>
+    <div className={`ndt-rot ${bred ? "ndt-bred" : ""}`}>
       <button
         ref={knapp}
         type="button"
-        className={s.knapp}
+        className="ndt-knapp"
         aria-haspopup="listbox"
         aria-expanded={aapen}
         aria-controls={aapen ? listeId : undefined}
         onClick={() => (aapen ? lukk() : aapne())}
       >
-        <span className={s.etikett}>{etikett}</span>
-        <b className={s.verdi}>{valgt?.navn ?? tom}</b>
+        <span className="ndt-etikett">{etikett}</span>
+        <b className="ndt-verdi">{valgt?.navn ?? tom}</b>
         <ChevronDown size={14} aria-hidden />
       </button>
 
       {aapen && pc ? (
-        <div ref={boks} className={`${s.meny} ${hoyre ? s.hoyre : ""}`} onKeyDown={tast}>
+        <div ref={boks} className={`ndt-meny ${hoyre ? "ndt-hoyre" : ""}`} onKeyDown={tast}>
           {sokFeltet}
-          <div id={listeId} role="listbox" aria-label={etikett} className={s.liste}>
+          <div id={listeId} role="listbox" aria-label={etikett} className="ndt-liste">
             {rader}
           </div>
         </div>
@@ -181,17 +181,17 @@ export function Nedtrekk({ etikett, valg, verdi, onVelg, sokFra = 7, sokPlasshol
 
       {aapen && !pc ? (
         <>
-          <button type="button" aria-label="Lukk" className={s.slor} onClick={() => lukk()} />
-          <div ref={boks} role="dialog" aria-modal="true" aria-label={`Velg ${etikett.toLocaleLowerCase("nb-NO")}`} className={s.ark} onKeyDown={tast}>
-            <i className={s.hank} aria-hidden />
-            <div className={s.arkTopp}>
+          <button type="button" aria-label="Lukk" className="ndt-slor" onClick={() => lukk()} />
+          <div ref={boks} role="dialog" aria-modal="true" aria-label={`Velg ${etikett.toLocaleLowerCase("nb-NO")}`} className="ndt-ark" onKeyDown={tast}>
+            <i className="ndt-hank" aria-hidden />
+            <div className="ndt-ark-topp">
               <b>Velg {etikett.toLocaleLowerCase("nb-NO")}</b>
-              <button type="button" className={s.ferdig} onClick={() => lukk()}>
+              <button type="button" className="ndt-ferdig" onClick={() => lukk()}>
                 Ferdig
               </button>
             </div>
             {sokFeltet}
-            <div id={listeId} role="listbox" aria-label={etikett} className={`${s.liste} ${s.arkListe}`}>
+            <div id={listeId} role="listbox" aria-label={etikett} className={`ndt-liste ndt-ark-liste`}>
               {rader}
             </div>
           </div>
