@@ -48,7 +48,8 @@ export default async function WangElevProfilPage({ params }: { params: Promise<{
           tall={toppTall(v)}
           handlinger={erTrener ? [
             { tekst: "Åpne IUP-samtale", href: `/team-wang/coach/iup/${enc}`, primar: true },
-            { tekst: "Foreslå endring", href: `/team-wang/coach/iup/${enc}#forslag` },
+            // Trenerforslaget vises bare for COACH på IUP-siden.
+            ...(bruker.role === "COACH" ? [{ tekst: "Foreslå endring", href: `/team-wang/coach/iup/${enc}#forslag` }] : []),
           ] : []}
         />
         <KomplettProfilWang
