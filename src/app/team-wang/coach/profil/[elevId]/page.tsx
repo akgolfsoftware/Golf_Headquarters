@@ -6,7 +6,8 @@ import { medWangElevData } from "@/app/team-wang/_data/wang-tilgang";
 import { byggKomplettProfil } from "@/lib/profil-kobling/komplett";
 import { WangUnderside } from "@/components/wang/WangUnderside";
 import { WangTilbake, WangTopp, wangHref } from "@/components/wang/wang-felles";
-import { KomplettProfilVisning } from "@/components/profil/KomplettProfilVisning";
+import { KomplettProfilWang } from "@/components/profil/KomplettProfilWang";
+import { byggProfilVisning } from "@/lib/profil-kobling/visning";
 
 /**
  * Komplett profil for én WANG-elev: offisielle resultater, tester og IUP. Samme data som AgencyOS og
@@ -37,7 +38,7 @@ export default async function WangElevProfilPage({ params }: { params: Promise<{
       <>
         <WangTilbake href={wangHref("elever", "elev", elevId)} tekst={profil.navn} />
         <WangTopp dato={profil.navn} tittel="Elevprofil" />
-        <KomplettProfilVisning profil={{ relasjon: kanSeGolfId ? "ORG_TRENER" : "SELV", ...profil }} />
+        <KomplettProfilWang v={byggProfilVisning({ relasjon: kanSeGolfId ? "ORG_TRENER" : "SELV", ...profil })} />
       </>
     );
   });

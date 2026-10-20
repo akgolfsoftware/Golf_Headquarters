@@ -11,7 +11,8 @@ import { lesKomplettProfil } from "@/lib/profil-kobling/komplett";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { KnappLenke } from "@/components/precision/pa";
 import { SideHode } from "@/components/precision/pa-a4";
-import { KomplettProfilVisning } from "@/components/profil/KomplettProfilVisning";
+import { KomplettProfilAgencyOS } from "@/components/profil/KomplettProfilAgencyOS";
+import { byggProfilVisning } from "@/lib/profil-kobling/visning";
 import "@/styles/precision-a8.css";
 
 export const dynamic = "force-dynamic";
@@ -31,7 +32,7 @@ export default async function KomplettProfilPage({ params }: { params: Promise<{
           sub="Offisielle resultater, tester og IUP. Samme data som Team Norway og WANG ser."
           actions={<KnappLenke variant="secondary" icon={ArrowLeft} iconName="arrow-left" href={`/admin/spillere/${id}`}>Spiller 360</KnappLenke>}
         />
-        <KomplettProfilVisning profil={profil} />
+        <KomplettProfilAgencyOS v={byggProfilVisning(profil)} />
       </div>
     </AgencyOSSkall>
   );
