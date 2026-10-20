@@ -13,6 +13,7 @@ import { TnSkraKort, TnSkraTopp } from "../tn-skra-topp";
 import { TnHeltKnapper, TnHeltTall, TnHeltTekst, TnHeltTellere } from "../tn-stall";
 import { TnSlettTestdag, TnTestdagEndre } from "../tn-redigering-skjema";
 import { datoKort, datoLang, osloDag } from "./felles";
+import { TnTestoversikt } from "./tn-testoversikt";
 
 /**
  * TN-03 Fellestesting. Minstekrav per klasse og føring av resultater på testdagen.
@@ -66,6 +67,7 @@ export function TnFellestestingVisning({
   fellesgrupper,
   protokoller,
   protokollbibliotek,
+  testoversikt,
 }: {
   brukerNavn: string | null;
   visDataGolf: boolean;
@@ -74,6 +76,8 @@ export function TnFellestestingVisning({
   fellesgrupper: Hentet<typeof hentTnFellesTestdagGrupper>;
   protokoller: { id: string; navn: string }[];
   protokollbibliotek: ReturnType<typeof hentTnProtokollbibliotek>;
+  /** T1 Testoversikt (Anders 20.10.2026: øverst på Fellestesting). */
+  testoversikt?: Parameters<typeof TnTestoversikt>[0];
 }) {
   const { versjon, rader: bibliotek } = protokollbibliotek;
   const klare = bibliotek.filter((r) => r.status === "KLAR");
@@ -116,6 +120,7 @@ export function TnFellestestingVisning({
         }
       />
       <TnSkraKort>
+      {testoversikt ? <TnTestoversikt {...testoversikt} /> : null}
 
       <TnRutenett min={380}>
         <TnFlate>
