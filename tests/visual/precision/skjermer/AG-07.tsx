@@ -29,6 +29,8 @@ function rad(over: Partial<StallBaandRad> & { id: string; name: string }): Stall
     sgTone: "pos",
     adherence: [],
     adhPct: 78,
+    adhUker: [82, 74, 80, 76],
+    nesteTurnering: { navn: "Prøvetour 7", startIso: new Date(naa.getTime() + 8 * 86_400_000).toISOString() },
     status: "aktiv",
     statusLabel: "Aktiv",
     neverLoggedIn: false,
@@ -47,7 +49,7 @@ function rad(over: Partial<StallBaandRad> & { id: string; name: string }): Stall
 }
 
 const spiller1 = rad({ id: "p1", name: "Test Spiller A med et navn som er langt nok til å teste brekk", nesteOkt: iDag, nesteOktLabel: "Neste: i dag 14.30" });
-const spiller2 = rad({ id: "p2", name: "Test Spiller B", group: "GFGK", status: "bak", statusLabel: "Bak plan", adhPct: 32, paagaaende: { id: "s1", tittel: "Wedge 50–90 m", startMinute: 780, durationMinutes: 60 } });
+const spiller2 = rad({ id: "p2", name: "Test Spiller B", group: "GFGK", status: "bak", statusLabel: "Bak plan", adhPct: 32, adhUker: [48, 40, 28, null], nesteTurnering: null, paagaaende: { id: "s1", tittel: "Wedge 50–90 m", startMinute: 780, durationMinutes: 60 } });
 const spiller3 = rad({ id: "p3", name: "Test Spiller C", group: "AKA", status: "hviler", statusLabel: "Planlagt pause", adhPct: null, sgTrend: [], sisteOkt: igaar, sisteAktivitetLabel: "økt i går", avtaleUtlopIso: new Date(naa.getFullYear(), naa.getMonth() + 1, 15).toISOString() });
 
 const spiller4 = rad({ id: "p4", name: "Test Spiller D", status: "inaktiv", statusLabel: "Inaktiv", neverLoggedIn: true, dagerSiden: null, adhPct: null, sgTrend: [] });
