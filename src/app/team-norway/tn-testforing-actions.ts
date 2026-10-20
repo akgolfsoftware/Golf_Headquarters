@@ -16,8 +16,8 @@
  *     Norway-gruppen (`slug === "team-norway"`) og TN-fellesarrangement følger
  *     punkt 3 som før. Andre grupper (AgencyOS, WANG, GFGK, 20.10.2026): coachen
  *     eier gruppa (`Group.coachId`) eller er aktivt COACH-medlem i stasjonens
- *     gruppe, og testen må være en trener kan føre (`trenerKanFore`: Teknikk og
- *     PEI, aldri Putt 1–3 m, 9 hull lengde eller Fysisk).
+ *     gruppe. For alle grupper, også Team Norway, må testen være en trener kan føre
+ *     (`trenerKanFore`: Teknikk og PEI, aldri Putt 1–3 m, 9 hull lengde eller Fysisk).
  *  3. Coachen må selv ha et AKTIVT `GroupMember.role = "COACH"`-medlemskap
  *     (samme kanon som resten av appen: `endedAt: null`, gjenbrukt fra
  *     `aktivtMedlemskapWhere`/`aktivtSpillerMedlemskapWhere` — ASSISTANT gir
@@ -117,9 +117,8 @@ export async function saveTnTestSomCoach(input: unknown): Promise<TnSaveResult> 
       const protokollJson = deltaker.testDay.testDefinition.protocol as { protocolId?: string } | null;
       const p = protokollJson?.protocolId ? tnProtocol(protokollJson.protocolId, undefined, deltaker.testDay.testDefinition.scoringRule ?? "") : null;
       if (!p) throw new Error("Testdagens protokoll finnes ikke i katalogen.");
-      // Trenere og coacher fører bare Teknikk og PEI-tester (Anders 20.10.2026). Team Norway-
-      // testdagene beholder sin regel her til TN-flaten tar den i bruk selv.
-      if (!erTN && !trenerKanFore({ protokollId: p.id })) throw new Error("Denne testen fører spilleren selv i PlayerHQ.");
+      // Trenere og coacher fører bare Teknikk og PEI-tester, også i Team Norway (Anders 20.10.2026).
+      if (!trenerKanFore({ protokollId: p.id })) throw new Error("Denne testen fører spilleren selv i PlayerHQ.");
       const count = p.rows.length; // låst til protokollen på opprettelsestidspunktet, ikke klienten
 
       if (deltaker.status === "DONE") {

@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { beforeEach, mock, test } from "node:test";
 import { TN_CATALOG } from "@/lib/portal-tester/tn-catalog";
+import { trenerKanFore } from "@/lib/portal-tester/testbatteri";
 
 const TN_GROUP_ID = "tn-group";
 const WANG_GROUP_ID = "wang-school-a";
@@ -62,7 +63,8 @@ beforeEach(() => {
 });
 
 const action = import("./tn-testdag-actions");
-const protocol = TN_CATALOG.find((item) => !item.blocked && !item.variableCount)!;
+// En test treneren kan føre (Teknikk eller PEI): testdag gjelder bare dem (Anders 20.10.2026).
+const protocol = TN_CATALOG.find((item) => !item.blocked && !item.variableCount && trenerKanFore({ protokollId: item.id }))!;
 const input = {
   title: "Felles testdag",
   location: "Treningsanlegg",
@@ -87,6 +89,14 @@ test("oppretter ett arrangement med egne protokollstasjoner og kun eksisterende 
   assert.deepEqual(createdStations[0].participants, { create: [{ playerId: "tn-player", order: 0 }] });
   assert.deepEqual(createdStations[1].participants, { create: [{ playerId: "wang-player", order: 0 }] });
   assert.deepEqual(createdStations[2].participants, { create: [{ playerId: "wang-player-b", order: 0 }] });
+});
+
+test("avviser en stasjon med en test spilleren fører selv (Putt 1–3 m)", async () => {
+  const { opprettFellesTestdag } = await action;
+  const result = await opprettFellesTestdag({ ...input, stations: [{ ...input.stations[0]!, protocolId: "putt-1-3m" }, ...input.stations.slice(1)] });
+  assert.equal(result.ok, false);
+  if (!result.ok) assert.match(result.error, /spilleren fører selv/i);
+  assert.equal(createdInput, null);
 });
 
 test("avviser fremmed gruppetype selv om en TN- og WANG-stasjon ellers finnes", async () => {
