@@ -82,7 +82,23 @@ export function CookieBanner() {
   // monopol på «Én ting nå» (monsterdokument-paper.md §2 + §7). Blekk snur seg
   // selv i mørkt tema, så den gamle primary/accent-kollisjonen kan ikke
   // gjenoppstå her. Train-lock-drakten følger samme regel med TL.warm.
-  const farger = gfgk
+  // WANG-flatene (/wang, /team-wang) følger wang.no: firkantet, vinrød knapp, Montserrat.
+  const wang = pathname === "/wang" || pathname?.startsWith("/wang/") || pathname?.startsWith("/team-wang") || false;
+  const farger = wang
+    ? {
+        kortBg: "#ffffff",
+        kortBorder: "#e6e1e1",
+        tittel: "#222222",
+        tittelFont: 'var(--font-wang-brand), "Montserrat", sans-serif',
+        tekst: "#444444",
+        ikon: "#ae0034",
+        lenke: "#a81f49",
+        knappBg: "#ae0034",
+        knappFg: "#ffffff",
+        knapp2Fg: "#ae0034",
+        knapp2Border: "#ae0034",
+      }
+    : gfgk
     ? {
         kortBg: "var(--gfgk-white)",
         kortBorder: "var(--hairline)",
@@ -125,7 +141,7 @@ export function CookieBanner() {
         };
   // Brødtekst er Lora i Paper (prosa-serif), sans i Train-lock (fasiten har
   // ingen serif) — GFGK-micrositen har egen prosa-font.
-  const brodFont = gfgk ? "var(--font-jr-sans)" : trainLock ? "var(--tl-font-sans)" : "var(--tl-font-sans)";
+  const brodFont = wang ? 'var(--font-wang-serif), "Quattrocento", Georgia, serif' : gfgk ? "var(--font-jr-sans)" : trainLock ? "var(--tl-font-sans)" : "var(--tl-font-sans)";
 
   useEffect(() => {
     const stored = getStoredConsent();
@@ -199,7 +215,7 @@ export function CookieBanner() {
           background: farger.kortBg,
           border: `1px solid ${farger.kortBorder}`,
           borderBottom: "none",
-          borderRadius: "var(--tl-r-field) var(--tl-r-field) 0 0",
+          borderRadius: wang ? 0 : "var(--tl-r-field) var(--tl-r-field) 0 0",
           padding: "24px 24px calc(24px + env(safe-area-inset-bottom, 0px))",
           boxShadow: AK.skygge,
           display: "flex",
@@ -286,13 +302,14 @@ export function CookieBanner() {
               minWidth: 140,
               minHeight: "44px",
               padding: "0 16px",
-              borderRadius: "var(--tl-r-card)",
+              borderRadius: wang ? 0 : "var(--tl-r-card)",
               background: farger.knappBg,
               color: farger.knappFg,
               border: `1px solid ${farger.knappBg}`,
               fontFamily: farger.tittelFont,
               fontSize: 13,
-              fontWeight: 500,
+              fontWeight: wang ? 700 : 500,
+              textTransform: wang ? "uppercase" : undefined,
               lineHeight: 1,
               cursor: "pointer",
             }}
@@ -307,7 +324,7 @@ export function CookieBanner() {
               minWidth: 140,
               minHeight: "44px",
               padding: "0 16px",
-              borderRadius: "var(--tl-r-card)",
+              borderRadius: wang ? 0 : "var(--tl-r-card)",
               background: "transparent",
               color: farger.knapp2Fg,
               border: `1px solid ${farger.knapp2Border}`,

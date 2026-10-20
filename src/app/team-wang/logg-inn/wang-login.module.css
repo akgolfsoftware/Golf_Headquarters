@@ -1,41 +1,40 @@
 /* wang.no-stil (Anders 16.10.2026, beslutninger.md §WANG-TRENERFLATEN FØLGER STILEN PÅ WANG.NO):
-   firkantede hjørner, vinrød hovedknapp, Quattrocento-brødtekst, bakgrunn #FCFAFA. */
+   firkantede hjørner, vinrød hovedknapp, Quattrocento-brødtekst, bakgrunn #FCFAFA.
+   Én samlet flate: helteflate med bilde og skjema ved siden av (PC) eller under (mobil). */
 .side { --vinrod: #ae0034; --vinrod-mork: #8a0029; --rosa-tekst: #a81f49; --bg-app: #fcfafa; --text-primary: #222222; --text-secondary: #444444; --font-body: var(--font-wang-serif), "Quattrocento", Georgia, serif;
-  min-height: 100dvh; background: var(--bg-app); color: var(--text-primary); font-family: var(--font-body); }
-.hode { background: var(--surface-card); border-bottom: 1px solid var(--border-subtle); padding: 14px max(20px, calc((100vw - 1040px) / 2)); }
-.merke { display: inline-flex; align-items: center; gap: 12px; min-height: 44px; color: inherit; text-decoration: none; }
-.merke img { width: 34px; height: 44px; flex: none; }
-.merke strong { display: block; font-family: var(--font-brand); font-size: 14px; font-weight: 800; line-height: 1.3; }
-.merke span span { display: block; font-size: 12px; color: var(--text-secondary); margin-top: 3px; }
-.innhold { max-width: 1080px; margin: 0 auto; padding: 24px 20px calc(32px + env(safe-area-inset-bottom)); display: grid; gap: 24px; align-items: start; }
-.kolonne { display: grid; gap: 14px; min-width: 0; }
-.hero { background: linear-gradient(132deg, #17446f 46%, #2e857d 102%); color: var(--white); border-radius: 0; padding: 22px; }
-.hero h1 { margin: 0; font-family: var(--font-brand); font-size: 26px; font-weight: 600; line-height: 1.2; }
-.hero p { margin: 10px 0 0; color: var(--text-on-dark-85); font-size: 15px; line-height: 1.6; }
-.kort { background: var(--surface-card); border-radius: 0; padding: 22px; border: 1px solid var(--border-subtle); min-width: 0; }
-form.kort { display: grid; gap: 16px; }
-.kort h2 { font-family: var(--font-brand); color: var(--vinrod); font-size: 19px; margin: 0 0 18px; }
+  min-height: 100dvh; display: grid; align-items: start; background: var(--bg-app); color: var(--text-primary); font-family: var(--font-body);
+  padding: 0 0 env(safe-area-inset-bottom); }
+.flate { width: 100%; max-width: 1040px; margin: 0 auto; display: grid; background: #fff; min-width: 0; }
+.hero { position: relative; isolation: isolate; min-height: 280px; color: #fff; overflow: hidden; background: #17446f; }
+.bilde { object-fit: cover; z-index: -2; }
+.hero::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(132deg, rgb(23 68 111 / .93) 46%, rgb(46 133 125 / .82) 102%); }
+.heroInnhold { position: relative; display: flex; flex-direction: column; justify-content: flex-end; gap: 6px; height: 100%; min-height: 280px; padding: 28px 24px; }
+.logo { width: 51px; height: auto; margin-bottom: 14px; }
+.kicker { margin: 0; font-family: var(--font-brand); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: rgb(255 255 255 / .85); }
+.hero h1 { margin: 0; font-family: var(--font-brand); font-size: 34px; font-weight: 600; line-height: 1.15; }
+.ingress { margin: 4px 0 0; max-width: 34ch; font-size: 18px; line-height: 1.5; color: rgb(255 255 255 / .92); }
+.skjema { display: grid; gap: 18px; align-content: center; padding: 28px 24px; min-width: 0; }
 .felt { display: grid; gap: 7px; }
 .felt label { font-family: var(--font-brand); font-size: 13px; font-weight: 700; }
-.felt input { width: 100%; min-width: 0; min-height: 48px; padding: 10px 13px; border: 1px solid var(--border-subtle); border-radius: 0; background: #fff; color: var(--text-primary); font-family: var(--font-body); font-size: 16px; }
+.felt input { width: 100%; min-width: 0; min-height: 48px; padding: 10px 13px; border: 1px solid #8c8c8c; border-radius: 0; background: #fff; color: var(--text-primary); font-family: var(--font-body); font-size: 17px; }
+.felt input:hover:not(:disabled) { border-color: #444; }
+.felt input:focus { outline: 2px solid var(--vinrod); outline-offset: 0; border-color: var(--vinrod); }
 .passord { position: relative; }
 .passord input { padding-right: 52px; }
-.visPassord { position: absolute; right: 2px; top: 2px; width: 44px; height: 44px; display: grid; place-items: center; background: transparent; color: var(--wang-navy); border: 0; border-radius: 0; cursor: pointer; }
-.primaer, .sekundaer { min-height: 48px; width: 100%; padding: 12px 18px; border: 1px solid transparent; border-radius: 0; display: flex; justify-content: center; align-items: center; font-family: var(--font-brand); font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; line-height: 1.5; cursor: pointer; text-align: center; text-decoration: none; }
-.primaer { background: var(--vinrod); color: var(--white); }
+.visPassord { position: absolute; right: 2px; top: 2px; width: 44px; height: 44px; display: grid; place-items: center; background: transparent; color: var(--text-secondary); border: 0; border-radius: 0; cursor: pointer; }
+.primaer { min-height: 48px; width: 100%; padding: 12px 18px; border: 1px solid transparent; border-radius: 0; display: flex; justify-content: center; align-items: center; background: var(--vinrod); color: #fff; font-family: var(--font-brand); font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; line-height: 1.5; cursor: pointer; text-align: center; }
 .primaer:hover:not(:disabled) { background: var(--vinrod-mork); }
 .primaer:disabled { opacity: .65; cursor: wait; }
-.sekundaer { background: #fff; color: var(--vinrod); border-color: var(--vinrod); }
-.tekstlenke { display: flex; min-height: 44px; justify-content: center; align-items: center; color: var(--rosa-tekst); font-weight: 600; font-size: 14px; text-underline-offset: 3px; }
-.hjelp { margin: 0; padding: 6px 4px; color: var(--text-secondary); font-size: 15px; line-height: 1.6; }
-.passordhjelp { margin: 0; color: var(--text-secondary); font-size: 14px; line-height: 1.5; text-align: center; }
-.roller { margin: 0; }
-.roller > div { padding: 14px 0; border-bottom: 1px solid var(--border-subtle); }
-.roller > div:first-child { padding-top: 0; }
-.roller dt { font-family: var(--font-brand); font-size: 13px; font-weight: 700; }
-.roller dd { margin: 5px 0 0; color: var(--text-secondary); font-size: 15px; line-height: 1.6; }
-.feil { margin: 0; padding: 12px 14px; border-radius: 0; color: var(--text-primary); background: var(--tint-pink); font-size: 15px; line-height: 1.5; }
+.tekstlenke { display: flex; min-height: 44px; justify-content: center; align-items: center; color: var(--rosa-tekst); font-weight: 600; font-size: 15px; text-underline-offset: 3px; }
+.passordhjelp { margin: 0; color: var(--text-secondary); font-size: 15px; line-height: 1.5; text-align: center; }
+.feil { margin: 0; padding: 12px 14px; border-left: 3px solid var(--vinrod); color: var(--text-primary); background: #fbeaee; font-size: 15px; line-height: 1.5; }
 .status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
-.side :is(a, button, input):focus-visible { outline: 2px solid var(--vinrod); outline-offset: 3px; }
-@media (min-width: 860px) { .innhold { grid-template-columns: minmax(0, 420px) minmax(0, 1fr); gap: 32px; padding-top: 40px; } }
-@media (prefers-reduced-motion: no-preference) { .primaer:active:not(:disabled), .sekundaer:active { transform: scale(.98); } }
+.side :is(a, button):focus-visible { outline: 2px solid var(--vinrod); outline-offset: 3px; }
+@media (min-width: 860px) {
+  .side { padding: 40px 20px; align-items: center; }
+  .flate { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); min-height: 520px; box-shadow: 0 0 0 1px #e6e1e1; }
+  .hero, .heroInnhold { min-height: 520px; }
+  .heroInnhold { padding: 40px; }
+  .skjema { padding: 40px 48px; }
+}
+@media (prefers-reduced-motion: no-preference) { .primaer:active:not(:disabled) { transform: scale(.98); } }
