@@ -266,7 +266,8 @@ describe('WANG Toppidrett Modul (Samtlige WANG-skjermer)', async () => {
     assert.ok(oversikt.includes('Powered by'));
     const proff = renderToStaticMarkup(React.createElement(WangDataGolf, { d: { side: 'proff', proff: null } }));
     assert.ok(proff.includes('Fant ikke proffen'));
-    assert.ok(vis(WangKonkurranse).includes('fane=dg'), 'Konkurranse har fanen Data Golf');
+    assert.ok(!vis(WangKonkurranse).includes('fane=dg'), 'Trenere ser ikke fanen Data Golf');
+    assert.ok(visMed(WangKonkurranse, { visDataGolf: true }).includes('fane=dg'), 'Fanen vises når serveren slipper inn (bare ADMIN)');
   });
 
   test('WangSkjermoversikt (WANG-00): lister alle 63 skjermer med søk og filter', () => {

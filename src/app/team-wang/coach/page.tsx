@@ -162,6 +162,7 @@ export default async function WangCoachPage({ searchParams }: WangCoachPageProps
       fireukerssjekk={fireukerssjekk}
       admin={admin}
       dataGolf={dataGolf}
+      visDataGolf={kanSeDataGolf(bruker)}
       opptak={opptak}
       data={byggWangTrenerData(live, osloIdagIso(), osloNaaTid())}
     />
