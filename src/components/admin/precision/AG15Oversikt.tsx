@@ -53,6 +53,7 @@ export function AG15Oversikt({ d, handling }: { d: TesterOversiktSide; handling?
       <h1>Tester</h1>
       <div className="tst-valg">
         <Nedtrekk etikett="Gruppe" valg={gruppeValg} verdi={d.gruppeId ?? ALLE} onVelg={(v) => router.push(v === ALLE ? "/admin/tester" : `/admin/tester?gruppe=${encodeURIComponent(v)}`)} />
+        <Link href={`/admin/tester/testdag${d.gruppeId ? `?gruppe=${encodeURIComponent(d.gruppeId)}` : ""}`} className="knapp pri">Planlegg testdag</Link>
         {handling}
       </div>
     </header>

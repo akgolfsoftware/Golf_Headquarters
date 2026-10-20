@@ -1,0 +1,64 @@
+/* AG-15 Planlegg testdag, testdagen og Registrer test (designløftet 20.10.2026). Fasit: canvaset
+   «AgencyOS nøkkelskjermer», tavlene Testdag, Registrer og mobilvariantene. Gjelder bare .agn-s.tdg. */
+
+.agn-s.tdg .meta { font: 500 11px/1.25 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--graphite-800); }
+.agn-s.tdg .num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.agn-s.tdg { gap: 22px; }
+.agn-s .tdg-topp { display: grid; gap: 6px; }
+.agn-s .tdg-topp h1 { font: 700 34px/1.05 var(--sans); letter-spacing: -.035em; overflow-wrap: anywhere; }
+.agn-s .tdg-ingress { font-size: 15px; color: var(--graphite-800); }
+.agn-s .tdg-dempet, .agn-s .tdg-forklar { font-size: 13px; color: var(--graphite-800); }
+.agn-s .tdg-to { display: grid; gap: 24px; align-items: start; }
+.agn-s .tdg-skjema { display: grid; gap: 16px; }
+.agn-s .tdg-felt { display: grid; gap: 6px; }
+.agn-s .tdg-felt .etikett { font: 600 14px/1.3 var(--sans); }
+.agn-s .tdg-felt input, .agn-s .tdg-felt textarea { min-height: 48px; padding: 10px 12px; border: 1px solid var(--graphite-500); border-radius: 8px; background: var(--white); font: 400 16px/1.4 var(--sans); color: var(--graphite-900); width: 100%; }
+.agn-s .tdg-rad { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.agn-s .tdg-tester { border: 0; padding: 0; margin: 0; display: grid; gap: 12px; }
+.agn-s .tdg-tester legend { font: 600 20px/1.2 var(--sans); padding: 0; margin-bottom: 6px; }
+.agn-s .tdg-del { display: grid; }
+.agn-s .tdg-del-navn { display: grid; gap: 4px; font-size: 13px; padding-bottom: 4px; }
+.agn-s .tdg-del-navn i { height: 3px; display: block; }
+.agn-s .del-golfslag i { background: var(--slag); } .agn-s .del-teknikk i { background: var(--tek); } .agn-s .del-fysisk i { background: var(--fys); }
+.agn-s .tdg-valg { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: center; min-height: 48px; border-top: 1px solid var(--sand-300); cursor: pointer; font-size: 14px; }
+.agn-s .tdg-valg input { width: 20px; height: 20px; margin: 0; accent-color: var(--graphite-900); }
+.agn-s .tdg-valg .num { font-size: 12px; color: var(--graphite-800); }
+.agn-s .tdg-oppsummering { display: grid; gap: 10px; padding: 18px; border-radius: 12px; background: #faf8f3; font-size: 14px; }
+.agn-s .tdg-klokke { font-size: 32px; line-height: 1; font-weight: 600; letter-spacing: -.03em; }
+.agn-s .tdg-oppsummering .knapp.stor { width: 100%; }
+
+.agn-s .tdg-stasjoner { display: grid; gap: 26px; }
+.agn-s .tdg-stasjon { display: grid; gap: 8px; }
+.agn-s .tdg-sek-topp { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.agn-s .tdg-sek-topp h2 { font: 600 20px/1.2 var(--sans); overflow-wrap: anywhere; }
+.agn-s .tdg-sek-topp .num { font-size: 13px; color: var(--graphite-800); }
+.agn-s .tdg-liste { display: grid; border-bottom: 1px solid var(--sand-300); }
+.agn-s .tdg-linje { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 48px; border-top: 1px solid var(--sand-300); color: inherit; text-decoration: none; font-size: 14px; }
+.agn-s .tdg-linje b { font-weight: 600; overflow-wrap: anywhere; }
+.agn-s .tdg-linje .num { font-size: 12px; color: var(--graphite-800); white-space: nowrap; }
+.agn-s .tdg-linje[aria-current="true"] { box-shadow: inset 3px 0 0 var(--graphite-900); padding-left: 10px; background: var(--white); }
+
+.agn-s .tdg-slag { display: grid; gap: 12px; }
+.agn-s .tdg-sum { font-size: 28px; font-weight: 600; letter-spacing: -.02em; }
+.agn-s .tdg-rader { list-style: none; margin: 0; padding: 0; display: grid; border-bottom: 1px solid var(--sand-300); }
+.agn-s .tdg-slagrad { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 4px 10px; align-items: center; padding: 10px 0; border-top: 1px solid var(--sand-300); }
+.agn-s .tdg-slag-nr { font-size: 14px; font-weight: 600; }
+.agn-s .tdg-slag-tekst { font-size: 13px; color: var(--graphite-800); overflow-wrap: anywhere; }
+.agn-s .tdg-felter { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; }
+.agn-s .tdg-knapper { display: flex; flex-wrap: wrap; gap: 6px; }
+.agn-s .tdg-knapper button { min-height: 44px; padding: 0 14px; border: 1px solid var(--sand-300); border-radius: 8px; background: var(--white); font: 500 14px/1 var(--sans); color: var(--graphite-900); cursor: pointer; }
+.agn-s .tdg-knapper button[aria-pressed="true"] { background: var(--graphite-900); border-color: var(--graphite-900); color: var(--white); }
+.agn-s .tdg-knapper button:disabled { opacity: .6; cursor: not-allowed; }
+.agn-s .tdg-tall { display: grid; gap: 4px; font-size: 12px; color: var(--graphite-800); }
+.agn-s .tdg-tall input { width: 110px; min-height: 44px; padding: 8px 10px; border: 1px solid var(--graphite-500); border-radius: 8px; font: 400 16px/1 var(--mono); }
+.agn-s .tdg-handlinger { display: flex; flex-wrap: wrap; gap: 8px; position: sticky; bottom: 0; padding: 12px 0; background: var(--white); }
+.agn-s .tdg-handlinger .knapp.stor { width: auto; flex: 1; min-width: 200px; }
+
+@media (min-width: 900px) {
+  .agn-s .tdg-topp h1 { font-size: 44px; }
+  .agn-s .tdg-to { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 32px; }
+  .agn-s .tdg-oppsummering { position: sticky; top: 24px; }
+  .agn-s .tdg-stasjoner { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; }
+  .agn-s .tdg-slagrad { grid-template-columns: 28px minmax(0, 180px) minmax(0, 1fr); }
+  .agn-s .tdg-felter { grid-column: auto; }
+}
