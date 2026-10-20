@@ -20,6 +20,7 @@ import type { GrupperData, GruppeV2, FastTid } from "@/lib/admin/grupper/typer";
 import { GfgkBootstrapButton, NyGruppeButton } from "./grupper-actions";
 import { GFGK_BOOTSTRAP_GRUPPER } from "@/lib/gfgk-junior/bootstrap";
 import { AK_STIGEN_TRINN, VED_SIDEN_AV_STIGEN } from "@/lib/agencyos/ak-stigen-data";
+import { lastEtterlevelsePerGruppe } from "@/lib/admin/analyse/gruppe-analyse";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Grupper · AgencyOS" };
@@ -64,6 +65,8 @@ export default async function V2GrupperPage() {
     select: {
       id: true,
       name: true,
+      coach: { select: { name: true } },
+      members: { where: { endedAt: null, role: "PLAYER" }, select: { userId: true } },
       _count: { select: { members: { where: { endedAt: null } } } },
       schedules: {
         where: { recurring: "WEEKLY" },
@@ -74,6 +77,7 @@ export default async function V2GrupperPage() {
   });
 
   const now = new Date();
+  const etterlevelse = await lastEtterlevelsePerGruppe(groups.map((g) => ({ id: g.id, spillerIds: g.members.map((m) => m.userId) })), now);
   const naaUkedag = osloUkedag(now);
   const naaMin = minutter(osloTid(now));
 
@@ -116,6 +120,8 @@ export default async function V2GrupperPage() {
       navn: g.name,
       antallMedlemmer: g._count.members,
       nesteOkt,
+      coachNavn: g.coach?.name ?? null,
+      etterlevelsePct: etterlevelse[g.id] ?? null,
       faste: faste.map(({ _ukedag, _min, ...rest }) => rest),
     };
   });
@@ -134,7 +140,7 @@ export default async function V2GrupperPage() {
         data={data}
         nyGruppeKnapp={<NyGruppeButton coaches={coaches} />}
         gfgkBootstrapKnapp={manglerGfgk ? <GfgkBootstrapButton /> : null}
-        stigen={{ trinn: AK_STIGEN_TRINN.map((t) => t.navn), vedSiden: VED_SIDEN_AV_STIGEN }}
+        stigen={{ trinn: AK_STIGEN_TRINN.map((t) => ({ navn: t.navn, gruppeNavn: t.gruppeNavn })), vedSiden: VED_SIDEN_AV_STIGEN }}
       />
     </AgencyOSSkall>
   );

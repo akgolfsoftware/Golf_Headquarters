@@ -92,3 +92,30 @@ export async function lastEnGruppeAnalyse(spillerIds: readonly string[], now = n
   });
   return byggEnGruppeAnalyse(spillerIds, okter.map(oktFraWorkbench), now);
 }
+
+/**
+ * Etterlevelse siste fire uker per gruppe, i én spørring (Grupper-lista, AG-16).
+ * Samme regel som gruppeanalysen: gjennomført mot planlagt, bare forfalte økter; «null» når det mangler.
+ */
+export function byggEtterlevelsePerGruppe(
+  grupper: ReadonlyArray<{ id: string; spillerIds: readonly string[] }>,
+  okter: readonly OktInn[],
+  now: Date,
+): Record<string, number | null> {
+  return Object.fromEntries(grupper.map((g) => [g.id, byggEnGruppeAnalyse(g.spillerIds, okter, now).etterlevelsePct]));
+}
+
+export async function lastEtterlevelsePerGruppe(
+  grupper: ReadonlyArray<{ id: string; spillerIds: readonly string[] }>,
+  now = new Date(),
+): Promise<Record<string, number | null>> {
+  const alle = [...new Set(grupper.flatMap((g) => g.spillerIds))];
+  if (alle.length === 0) return byggEtterlevelsePerGruppe(grupper, [], now);
+  const idag = osloDagSomDbDato(now);
+  const fra = new Date(idag.getTime() - ETTERLEVELSE_UKER * 7 * DAG_MS);
+  const okter = await prisma.workbenchSession.findMany({
+    where: { playerId: { in: alle }, date: { gte: fra, lte: idag }, status: { not: "DRAFT" }, isTemplate: false },
+    select: { playerId: true, date: true, startMinute: true, durationMinutes: true, status: true, pyramid: true },
+  });
+  return byggEtterlevelsePerGruppe(grupper, okter.map(oktFraWorkbench), now);
+}

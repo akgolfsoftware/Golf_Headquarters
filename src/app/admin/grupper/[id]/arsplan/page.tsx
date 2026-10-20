@@ -15,6 +15,7 @@ import { prisma } from "@/lib/prisma";
 import { gruppeInnsynWhere } from "@/lib/workbench/group-scope";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { KnappLenke, Tom, Topp } from "@/components/admin/agencyos-ny/ny";
+import { GruppeFanerNy } from "@/components/admin/precision/AG16Gruppe";
 import { hentGruppeKalenderData } from "@/lib/gruppe-kalender/hent-data";
 import { GruppeKalenderWrapper } from "@/components/gruppe-kalender/gruppe-kalender-wrapper";
 import { TrinnFilter } from "@/components/gruppe-kalender/trinn-filter";
@@ -46,6 +47,7 @@ export default async function GruppeArsplanPage({
       <div className="agn-s">
         <Topp tilbake={{ href: `/admin/grupper/${id}`, tekst: "Gruppa" }} dato={`${gruppe.name} · årsplan`} tittel="Årsplan"
           handlinger={<KnappLenke href={`${basePath}/skoledata`}>Legg inn skoledata</KnappLenke>} />
+        <GruppeFanerNy groupId={id} aktiv="arsplan" />
         {data ? (
           <div style={{ display: "grid", gap: 16, minWidth: 0 }}>
             <TrinnFilter basePath={basePath} aktivtTrinn={trinn ?? null} />

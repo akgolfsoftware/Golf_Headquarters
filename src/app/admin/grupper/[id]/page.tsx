@@ -13,6 +13,7 @@ import { prisma } from "@/lib/prisma";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import type { GruppeDetaljV2Data } from "@/lib/admin/grupper/typer";
 import { AG16Gruppe } from "@/components/admin/precision/AG16Gruppe";
+import { lastEnGruppeAnalyse } from "@/lib/admin/analyse/gruppe-analyse";
 import { RullUtMalPanel } from "@/components/admin/precision/RullUtMalPanel";
 import {
   StartOktButton,
@@ -164,6 +165,8 @@ export default async function GruppeDetaljPage({
     select: { id: true, name: true, varighetUker: true, _count: { select: { sessions: true } } },
   });
 
+  const analyse = await lastEnGruppeAnalyse(gruppe.members.filter((m) => m.role === "PLAYER").map((m) => m.userId));
+
   const data: GruppeDetaljV2Data = {
     id: gruppe.id,
     navn: gruppe.name,
@@ -174,6 +177,7 @@ export default async function GruppeDetaljPage({
     totalRunder,
     proAndel,
     antallSamlinger: gruppe._count.schedules,
+    etterlevelsePct: analyse.etterlevelsePct,
     coachNavn: gruppe.coach?.name ?? null,
     coachEpost: gruppe.coach?.email ?? null,
     nesteSamling: nesteSamling
