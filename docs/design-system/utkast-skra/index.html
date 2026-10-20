@@ -1,0 +1,707 @@
+<title>Skrå for AK Golf</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Skrå-drakten for AK Golf: bildetopp i grafitt med skråkutt, hvite kort som svever over kanten,
+   lysegrå flate, store tall. Oppskrift fra teamnorwayref.vercel.app, farger og skrift fra AK Golf.
+   Lyst tema alltid (beslutning: lyst er standard i /portal og /admin). */
+:root {
+  color-scheme: light;
+  /* Flater */
+  --flate: #efede8;
+  --kort: #ffffff;
+  --sunket: #f6f4f0;
+  --strek: #e3dfd7;
+  /* Tekst (grafitt) */
+  --g900: #141413; --g800: #2a2926; --g600: #46443f; --g500: #686560; --g400: #8a8680;
+  /* Signal og status */
+  --rust: #9b2415; --rust-tint: #fbebea;
+  --ok: #2f6b3a; --ok-tint: #eaf2ea;
+  --warn: #7e6110; --warn-tint: #fbf4e4;
+  /* Aksene: farge betyr akse */
+  --fys: #788c5d; --fys-fylt: #556740; --fys-soft: rgba(120,140,93,.16);
+  --tek: #b8852a; --tek-fylt: #825d15; --tek-soft: rgba(184,133,42,.16);
+  --slag: #2563eb; --slag-fylt: #1d4fd0; --slag-soft: rgba(37,99,235,.14);
+  --spill: #c46686; --spill-fylt: #954661; --spill-soft: rgba(196,102,134,.18);
+  --turn: #a32d2d; --turn-fylt: #a32d2d; --turn-soft: rgba(163,45,45,.14);
+  /* Skrift */
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  /* Form */
+  --r-kort: 18px; --r-stat: 14px; --r-knapp: 8px; --r-pille: 999px;
+  --skygge-sm: 0 1px 2px rgba(20,20,19,.06), 0 1px 1px rgba(20,20,19,.04);
+  --skygge-md: 0 1px 2px rgba(20,20,19,.06), 0 8px 24px -8px rgba(20,20,19,.14), 0 24px 48px -24px rgba(20,20,19,.18);
+  --skygge-lg: 0 1px 2px rgba(20,20,19,.06), 0 14px 32px -10px rgba(20,20,19,.22), 0 30px 60px -28px rgba(20,20,19,.26);
+  /* Bevegelse */
+  --t-trykk: 120ms; --t-base: 200ms; --t-ark: 420ms;
+  --ut: cubic-bezier(.23,1,.32,1);
+  /* Ramme rundt prøven (ikke en del av appen) */
+  --ramme-bg: #dedad2;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--ramme-bg); color: var(--g900);
+  font: 400 15px/1.5 var(--sans); -webkit-font-smoothing: antialiased;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 20px 48px;
+}
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--g900); outline-offset: 2px; }
+
+/* ---------- Styring av prøven ---------- */
+.styring { max-width: 1280px; margin: 0 auto 20px; display: grid; gap: 12px; }
+.styring h1 { margin: 0; font: 600 22px/1.2 var(--sans); letter-spacing: -.02em; text-wrap: balance; }
+.styring p { margin: 0; color: var(--g600); max-width: 68ch; font-size: 14px; }
+.velgere { display: flex; flex-wrap: wrap; gap: 8px; }
+.segment { display: inline-flex; padding: 3px; gap: 2px; background: var(--kort); border-radius: var(--r-pille); box-shadow: var(--skygge-sm); }
+.segment button { border: 0; background: transparent; padding: 8px 14px; min-height: 40px; border-radius: var(--r-pille); font-weight: 500; font-size: 14px; cursor: pointer; transition: background var(--t-base) var(--ut), color var(--t-base) var(--ut); }
+.segment button[aria-pressed="true"] { background: var(--g900); color: #fff; }
+.segment button:active { transform: scale(.97); }
+
+.scene { display: flex; justify-content: center; }
+.app {
+  container-type: inline-size; position: relative;
+  width: 100%; max-width: 1280px; background: var(--flate);
+  border-radius: 20px; overflow: hidden; box-shadow: var(--skygge-lg);
+  transition: max-width var(--t-ark) var(--ut);
+}
+.scene[data-bredde="mobil"] .app { max-width: 390px; border-radius: 32px; }
+
+/* ---------- Felles appdeler ---------- */
+.skjerm { display: grid; min-width: 0; --kutt: 7cqw; }
+.skjerm[hidden] { display: none; }
+.innhold { display: grid; grid-template-columns: minmax(0, 1fr); }
+
+/* Bildetoppen med skråkutt */
+.topp {
+  position: relative; color: #fff; isolation: isolate;
+  padding: 20px 16px calc(64px + var(--kutt));
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--kutt)), 0 100%);
+  background: var(--g900);
+}
+.topp::before {
+  content: ""; position: absolute; inset: 0; z-index: -2;
+  background: var(--bilde) center 40% / cover no-repeat;
+  filter: grayscale(.55) contrast(1.05);
+}
+.topp::after {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background: linear-gradient(100deg, rgba(20,20,19,.94) 0%, rgba(20,20,19,.78) 45%, rgba(20,20,19,.45) 100%);
+}
+/* Kanten under kuttet: aksefargen for dagens viktigste økt (I dag), nøytral sand i Cockpit */
+.kant {
+  position: relative; height: 0; z-index: 1;
+}
+.kant::before {
+  content: ""; position: absolute; left: 0; right: 0; top: calc(-1 * var(--kutt) - 1px); height: calc(var(--kutt) + 6px);
+  background: var(--kantfarge, #c9c4ba);
+  clip-path: polygon(0 calc(100% - 6px), 100% 0, 100% 6px, 0 100%);
+}
+.topp-linje { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 28px; }
+.merke { font: 700 15px/1 var(--sans); letter-spacing: .02em; display: flex; align-items: center; gap: 8px; }
+.merke b { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 8px; background: #fff; color: var(--g900); font-size: 12px; letter-spacing: 0; }
+.ikonknapp { position: relative; display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; border: 0; background: rgba(255,255,255,.12); color: #fff; cursor: pointer; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); transition: transform var(--t-trykk) var(--ut), background var(--t-base); }
+.ikonknapp:active { transform: scale(.94); background: rgba(255,255,255,.2); }
+.ikonknapp .tall { position: absolute; top: 6px; right: 6px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 8px; background: #fff; color: var(--g900); font: 600 10px/16px var(--mono); }
+.ikon { width: 20px; height: 20px; flex: none; }
+
+.overlinje { font: 500 12px/1.3 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: rgba(255,255,255,.72); }
+.tittel { margin: 6px 0 8px; font: 700 clamp(34px, 9cqw, 56px)/1.02 var(--sans); letter-spacing: -.035em; text-wrap: balance; }
+.ingress { margin: 0; max-width: 46ch; color: rgba(255,255,255,.82); font-size: 15px; }
+
+.statrad { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 22px; }
+.stat {
+  border-radius: var(--r-stat); padding: 12px 14px 13px;
+  background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.16);
+  backdrop-filter: blur(14px) saturate(140%); -webkit-backdrop-filter: blur(14px) saturate(140%);
+}
+.stat strong { display: block; font: 600 30px/1 var(--sans); letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+.stat strong small { font: 500 14px/1 var(--sans); letter-spacing: 0; color: rgba(255,255,255,.7); margin-left: 3px; }
+.stat span { display: block; margin-top: 6px; font: 500 11px/1.3 var(--mono); letter-spacing: .07em; text-transform: uppercase; color: rgba(255,255,255,.72); }
+
+/* Kortene over kanten */
+.kolonne { display: grid; gap: 20px; align-content: start; min-width: 0; }
+.flyt { display: grid; gap: 20px; padding: 0 16px 112px; margin-top: -64px; position: relative; z-index: 2; }
+.kort { background: var(--kort); border-radius: var(--r-kort); box-shadow: var(--skygge-md); padding: 18px; display: grid; gap: 14px; min-width: 0; }
+.kort-topp { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.kort h2 { margin: 0; font: 600 17px/1.25 var(--sans); letter-spacing: -.01em; }
+.lenke { font-size: 13.5px; font-weight: 500; color: var(--g600); text-decoration: none; display: inline-flex; align-items: center; gap: 2px; }
+.lenke:hover { color: var(--g900); }
+.liten { font-size: 13px; color: var(--g600); }
+.meta { font: 500 12px/1.3 var(--mono); letter-spacing: .02em; color: var(--g500); }
+
+/* Pyramide-akser som merker */
+.akse { display: inline-flex; align-items: center; gap: 6px; padding: 3px 9px; border-radius: var(--r-pille); font: 600 11px/1.4 var(--mono); letter-spacing: .06em; }
+.akse.fys { background: var(--fys-soft); color: var(--fys-fylt); }
+.akse.tek { background: var(--tek-soft); color: var(--tek-fylt); }
+.akse.slag { background: var(--slag-soft); color: var(--slag-fylt); }
+.akse.spill { background: var(--spill-soft); color: var(--spill-fylt); }
+.akse.turn { background: var(--turn-soft); color: var(--turn-fylt); }
+
+/* Fylte øktkort */
+.okter { display: grid; gap: 10px; }
+.okt {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 14px;
+  width: 100%; text-align: left; border: 0; cursor: pointer; color: #fff;
+  border-radius: 14px; padding: 14px 14px 14px 16px; background: var(--fylt);
+  box-shadow: 0 1px 2px rgba(20,20,19,.08), 0 10px 22px -12px var(--fylt);
+  transition: transform var(--t-trykk) var(--ut), box-shadow var(--t-base) var(--ut);
+}
+.okt:hover { box-shadow: 0 1px 2px rgba(20,20,19,.08), 0 16px 30px -14px var(--fylt); }
+.okt:active { transform: scale(.98); }
+.okt .tid { font: 600 22px/1 var(--sans); letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.okt .tid small { display: block; margin-top: 4px; font: 500 11px/1 var(--mono); letter-spacing: .06em; opacity: .78; }
+.okt b { display: block; font: 600 16px/1.25 var(--sans); }
+.okt span { display: block; margin-top: 2px; font-size: 13px; opacity: .84; }
+.okt.slag { --fylt: var(--slag-fylt); }
+.okt.fys { --fylt: var(--fys-fylt); }
+
+/* Uka: lagt inn mot fordelt per akse */
+.uke-hoved { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.uke-hoved strong { font: 600 44px/1 var(--sans); letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
+.uke-hoved strong small { font-size: 18px; font-weight: 500; color: var(--g500); letter-spacing: 0; margin-left: 4px; }
+.akserader { display: grid; gap: 10px; }
+.akserad { display: grid; grid-template-columns: 48px minmax(0, 1fr) 104px; align-items: center; gap: 10px; }
+.akserad .navn { font: 600 11px/1 var(--mono); letter-spacing: .06em; color: var(--g600); }
+.spor { height: 10px; border-radius: 5px; background: var(--sunket); overflow: hidden; }
+.spor i { display: block; height: 100%; border-radius: 5px; background: var(--c); width: var(--p); transform-origin: left; animation: fyll .9s var(--ut) both; }
+.akserad .verdi { font: 500 12.5px/1.2 var(--sans); white-space: nowrap; color: var(--g800); text-align: right; font-variant-numeric: tabular-nums; }
+@keyframes fyll { from { transform: scaleX(.35); } to { transform: scaleX(1); } }
+
+/* Målsetninger */
+.maal { display: grid; gap: 12px; }
+.maal-rad { display: grid; gap: 6px; padding: 12px 14px; border-radius: 12px; background: var(--sunket); }
+.maal-rad .linje { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+.maal-rad b { font-weight: 600; font-size: 14.5px; }
+.maal-rad .tallet { font: 600 15px/1 var(--mono); font-variant-numeric: tabular-nums; }
+.maal-rad .spor { height: 6px; }
+.maal-rad .spor i { background: var(--g900); }
+
+/* Melding fra coach */
+.melding { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: start; }
+.avatar { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--g900); color: #fff; font: 600 13px/1 var(--sans); }
+.melding p { margin: 2px 0 0; font-size: 14.5px; color: var(--g800); }
+
+/* Knapper */
+.knapp { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 16px; border-radius: var(--r-knapp); border: 0; background: var(--g900); color: #fff; font-weight: 600; font-size: 14px; cursor: pointer; transition: transform var(--t-trykk) var(--ut), background var(--t-base); }
+.knapp:hover { background: var(--g800); }
+.knapp:active { transform: scale(.97); }
+.knapp.sekundar { background: var(--sunket); color: var(--g900); }
+
+/* Bunnmeny i glass (mobil) */
+.fanemeny {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 5;
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  padding: 8px 8px calc(10px + env(safe-area-inset-bottom, 0px));
+  background: rgba(255,255,255,.72); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-top: 1px solid rgba(255,255,255,.6); box-shadow: 0 -10px 30px -18px rgba(20,20,19,.3);
+}
+.fanemeny a { display: grid; justify-items: center; gap: 3px; padding: 6px 0; text-decoration: none; color: var(--g500); font: 500 11.5px/1 var(--sans); border-radius: 10px; }
+.fanemeny a[aria-current="page"] { color: var(--g900); font-weight: 600; }
+.fanemeny a:active { background: rgba(20,20,19,.06); }
+.toppmeny { display: none; }
+
+/* Hurtigknappen */
+.hurtig { position: absolute; right: 16px; bottom: 88px; z-index: 6; }
+.hurtig > button { width: 56px; height: 56px; border-radius: 8px; border: 0; background: var(--g900); color: #fff; display: grid; place-items: center; cursor: pointer; box-shadow: var(--skygge-lg); transition: transform var(--t-trykk) var(--ut); }
+.hurtig > button:active { transform: scale(.94); }
+.hurtig > button .ikon { transition: transform var(--t-base) var(--ut); }
+.hurtig[data-apen="true"] > button .ikon { transform: rotate(45deg); }
+.hurtigmeny {
+  position: absolute; right: 0; bottom: 66px; width: 230px; padding: 6px; display: grid; gap: 2px;
+  background: rgba(255,255,255,.86); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-radius: 14px; box-shadow: var(--skygge-lg);
+  transform-origin: bottom right; transform: scale(.6) translateY(8px); opacity: 0; pointer-events: none;
+  transition: transform 280ms var(--ut), opacity 180ms var(--ut);
+}
+.hurtig[data-apen="true"] .hurtigmeny { transform: none; opacity: 1; pointer-events: auto; }
+.hurtigmeny button { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px; border: 0; background: transparent; border-radius: 10px; text-align: left; font-size: 14.5px; font-weight: 500; cursor: pointer; }
+.hurtigmeny button:hover { background: rgba(20,20,19,.06); }
+.hurtigmeny button:active { transform: scale(.98); }
+
+/* Arket (detalj på økt) */
+.slor { position: absolute; inset: 0; z-index: 20; background: rgba(20,20,19,.44); opacity: 0; pointer-events: none; transition: opacity 280ms var(--ut); }
+.ark {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 21; max-height: 86%; overflow: auto;
+  background: var(--kort); border-radius: 22px 22px 0 0; padding: 10px 18px calc(24px + env(safe-area-inset-bottom, 0px));
+  box-shadow: var(--skygge-lg); transform: translateY(104%); transition: transform var(--t-ark) var(--ut);
+  display: grid; gap: 14px;
+}
+.app[data-ark="apen"] .slor { opacity: 1; pointer-events: auto; }
+.app[data-ark="apen"] .ark { transform: translateY(0); }
+.grep { width: 40px; height: 5px; border-radius: 3px; background: var(--strek); justify-self: center; }
+.ark h3 { margin: 0; font: 700 24px/1.15 var(--sans); letter-spacing: -.02em; }
+.ovelser { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.ovelser li { display: grid; grid-template-columns: 28px minmax(0,1fr) auto; gap: 10px; align-items: center; padding: 12px; border-radius: 12px; background: var(--sunket); }
+.ovelser .nr { font: 600 13px/1 var(--mono); color: var(--g500); }
+.ovelser b { font-weight: 600; font-size: 14.5px; display: block; }
+.ovelser span { font-size: 12.5px; color: var(--g600); }
+
+/* ---------- Cockpit ---------- */
+.sidemeny { display: none; }
+.saker { display: grid; gap: 8px; }
+.sak { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 12px 14px; border-radius: 12px; background: var(--sunket); }
+.sak b { display: block; font-weight: 600; font-size: 14.5px; }
+.sak span { display: block; font-size: 13px; color: var(--g600); }
+.pille { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: var(--r-pille); font: 600 11px/1.5 var(--mono); letter-spacing: .05em; white-space: nowrap; }
+.pille.haster { background: var(--rust); color: #fff; }
+.pille.venter { background: var(--kort); color: var(--g800); box-shadow: inset 0 0 0 1px var(--strek); }
+
+.kalender { display: grid; gap: 6px; }
+.kal-rad { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 10px; align-items: stretch; }
+.kal-rad .kl { font: 500 12px/1 var(--mono); color: var(--g500); padding-top: 12px; font-variant-numeric: tabular-nums; }
+.kal-okt { border-radius: 12px; padding: 10px 12px; color: #fff; background: var(--fylt); display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; align-items: baseline; }
+.kal-okt b { font-weight: 600; font-size: 14.5px; }
+.kal-okt span { font: 500 12px/1.3 var(--mono); opacity: .85; }
+.kal-okt.slag { --fylt: var(--slag-fylt); } .kal-okt.tek { --fylt: var(--tek-fylt); } .kal-okt.fys { --fylt: var(--fys-fylt); } .kal-okt.spill { --fylt: var(--spill-fylt); }
+.naa { position: relative; height: 0; margin: 2px 0 2px 54px; }
+.naa::before { content: ""; position: absolute; left: 0; right: 0; top: -1px; height: 2px; background: var(--g900); border-radius: 1px; }
+.naa::after { content: "08:20"; position: absolute; left: -54px; top: -8px; font: 600 11px/16px var(--mono); color: var(--g900); }
+
+.spillerliste { display: grid; gap: 4px; }
+.spiller { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 8px 6px; border-radius: 12px; }
+.spiller:hover { background: var(--sunket); }
+.spiller .avatar { background: var(--sunket); color: var(--g800); }
+.spiller b { display: block; font-weight: 600; font-size: 14.5px; }
+.spiller span { display: block; font-size: 12.5px; color: var(--g600); }
+.spiller .pst { font: 600 20px/1 var(--sans); letter-spacing: -.02em; font-variant-numeric: tabular-nums; text-align: right; }
+.spiller .pst small { display: block; margin-top: 3px; font: 500 10.5px/1 var(--mono); letter-spacing: .05em; color: var(--g500); }
+
+.oppgaver { display: grid; gap: 2px; }
+.oppgave { display: grid; grid-template-columns: 24px minmax(0, 1fr); gap: 10px; align-items: start; padding: 10px 6px; border-radius: 10px; cursor: pointer; }
+.oppgave input { width: 20px; height: 20px; margin: 1px 0 0; accent-color: var(--g900); }
+.oppgave b { font-weight: 500; font-size: 14.5px; display: block; }
+.oppgave span { font-size: 12.5px; color: var(--g600); }
+.oppgave input:checked + div b { text-decoration: line-through; color: var(--g500); }
+
+
+/* ---------- Bevegelse ----------
+   Alt starter synlig og ender i ro; ingen løkker. Fjernes ved «reduser bevegelse». */
+@keyframes inn-opp { from { transform: translateY(14px); opacity: .35; } to { transform: none; opacity: 1; } }
+@keyframes bilde-ro { from { transform: scale(1.08); } to { transform: scale(1); } }
+@keyframes kant-tegn { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes merke-pop { 0% { transform: scale(.4); } 70% { transform: scale(1.15); } 100% { transform: scale(1); } }
+@keyframes skjerm-inn { from { opacity: .25; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.skjerm:not([hidden]) { animation: skjerm-inn 320ms var(--ut) both; }
+.topp::before { animation: bilde-ro 1.6s var(--ut) both; }
+.topp-innhold > div:first-child { animation: inn-opp 600ms var(--ut) backwards 60ms; }
+.stat { animation: inn-opp 560ms var(--ut) backwards; }
+.stat:nth-child(1) { animation-delay: 140ms; } .stat:nth-child(2) { animation-delay: 200ms; }
+.stat:nth-child(3) { animation-delay: 260ms; } .stat:nth-child(4) { animation-delay: 320ms; }
+.kant::before { transform-origin: left; animation: kant-tegn 700ms var(--ut) both 220ms; }
+.flyt .kort { animation: inn-opp 620ms var(--ut) backwards; }
+.kolonne:first-child .kort:nth-child(1) { animation-delay: 260ms; }
+.kolonne:first-child .kort:nth-child(2) { animation-delay: 360ms; }
+.kolonne:last-child .kort:nth-child(1) { animation-delay: 320ms; }
+.kolonne:last-child .kort:nth-child(2) { animation-delay: 420ms; }
+.ikonknapp .tall { animation: merke-pop 420ms var(--ut) both 700ms; }
+.kort { transition: transform var(--t-base) var(--ut), box-shadow var(--t-base) var(--ut); }
+@media (hover: hover) {
+  .kort:hover { transform: translateY(-2px); box-shadow: var(--skygge-lg); }
+  .okt:hover { transform: translateY(-1px); }
+}
+.sak, .spiller, .oppgave, .maal-rad { transition: background var(--t-base) var(--ut), transform var(--t-trykk) var(--ut); }
+.sak:active, .spiller:active, .oppgave:active { transform: scale(.985); }
+.oppgave b { transition: color var(--t-base) var(--ut); background: linear-gradient(currentColor, currentColor) left 55% / 0 1px no-repeat; }
+.oppgave input:checked + div b { text-decoration: none; background-size: 100% 1px; transition: color var(--t-base) var(--ut), background-size 300ms var(--ut); }
+.ovelser li { animation: inn-opp 420ms var(--ut) backwards; }
+.ovelser li:nth-child(2) { animation-delay: 50ms; } .ovelser li:nth-child(3) { animation-delay: 100ms; }
+.ovelser li:nth-child(4) { animation-delay: 150ms; } .ovelser li:nth-child(5) { animation-delay: 200ms; }
+.kal-okt { transition: transform var(--t-trykk) var(--ut), filter var(--t-base); }
+.kal-okt:hover { filter: brightness(1.08); }
+
+/* ---------- PC (container fra 900 px) ---------- */
+@container (min-width: 900px) {
+  .skjerm { --kutt: 4cqw; }
+  .topp { padding: 24px 40px calc(96px + var(--kutt)); }
+  .topp-innhold { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 460px); gap: 32px; align-items: end; }
+  .statrad { margin-top: 0; }
+  .stat strong { font-size: 34px; }
+  .flyt { padding: 0 40px 48px; margin-top: -88px; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); align-items: start; }
+  .flyt { column-gap: 24px; }
+  .kolonne { gap: 24px; }
+  .kort { padding: 22px; }
+  .fanemeny { display: none; }
+  .toppmeny { display: flex; gap: 4px; padding: 4px; border-radius: var(--r-pille); background: rgba(255,255,255,.1); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+  .toppmeny a { color: rgba(255,255,255,.78); text-decoration: none; padding: 8px 16px; border-radius: var(--r-pille); font-weight: 500; font-size: 14px; }
+  .toppmeny a[aria-current="page"] { background: #fff; color: var(--g900); }
+  .hurtig { bottom: 28px; right: 28px; }
+  .ark { left: auto; right: 24px; bottom: 24px; top: 24px; width: 440px; max-height: none; border-radius: 22px; transform: translateX(calc(100% + 32px)); }
+  .app[data-ark="apen"] .ark { transform: translateX(0); }
+
+  /* Cockpit på PC: sidemeny variant C */
+  .cockpit { grid-template-columns: 248px minmax(0, 1fr); }
+  .sidemeny { display: grid; align-content: start; gap: 18px; padding: 18px 14px; background: var(--kort); box-shadow: var(--skygge-sm); position: relative; z-index: 3; }
+  .sok { display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 12px; border-radius: 10px; background: var(--sunket); color: var(--g500); font-size: 14px; }
+  .sok kbd { margin-left: auto; font: 500 11px/1 var(--mono); color: var(--g400); }
+  .neste { border-radius: 14px; padding: 12px 14px; color: #fff; background: var(--slag-fylt); box-shadow: 0 10px 22px -12px var(--slag-fylt); }
+  .neste .meta { color: rgba(255,255,255,.75); }
+  .neste strong { display: block; font: 600 28px/1.05 var(--sans); letter-spacing: -.03em; margin: 4px 0 2px; }
+  .neste span { font-size: 13px; opacity: .88; }
+  .gruppe { display: grid; gap: 2px; }
+  .gruppe .meta { padding: 0 10px 4px; text-transform: uppercase; letter-spacing: .08em; font-size: 10.5px; }
+  .gruppe a { display: flex; align-items: center; justify-content: space-between; min-height: 38px; padding: 0 10px; border-radius: 10px; color: var(--g800); text-decoration: none; font-weight: 500; font-size: 14px; }
+  .gruppe a:hover { background: var(--sunket); }
+  .gruppe a[aria-current="page"] { background: var(--g900); color: #fff; }
+  .gruppe a .t { font: 600 11px/1 var(--mono); color: var(--g500); }
+  .gruppe a[aria-current="page"] .t { color: rgba(255,255,255,.7); }
+  .cockpit .mobilmeny { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition-property: opacity !important; transition-duration: 150ms !important; }
+  .ark { transition: opacity 150ms !important; }
+  .app:not([data-ark="apen"]) .ark { opacity: 0; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .stat, .fanemeny, .hurtigmeny, .toppmeny, .ikonknapp { backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .fanemeny, .hurtigmeny { background: #fff; }
+  .stat { background: rgba(255,255,255,.16); }
+}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-bjelle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+  <symbol id="i-pil" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></symbol>
+  <symbol id="i-pluss" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-hjem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></symbol>
+  <symbol id="i-kal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+  <symbol id="i-graf" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></symbol>
+  <symbol id="i-meg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+  <symbol id="i-meny" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-sok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></symbol>
+  <symbol id="i-start" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></symbol>
+</svg>
+
+<div class="styring">
+  <h1>Skrå for AK Golf: to prøveskjermer</h1>
+  <p>I dag i PlayerHQ og Cockpit i AgencyOS, i drakten fra teamnorwayref. Demodata. Trykk på en økt for å åpne den, og på plussknappen for hurtigvalgene. Bytt mellom mobil og PC.</p>
+  <div class="velgere">
+    <div class="segment" role="group" aria-label="Skjerm">
+      <button type="button" id="velg-idag" data-skjerm="idag" aria-pressed="true">PlayerHQ · I dag</button>
+      <button type="button" id="velg-cockpit" data-skjerm="cockpit" aria-pressed="false">AgencyOS · Cockpit</button>
+    </div>
+    <div class="segment" role="group" aria-label="Bredde">
+      <button type="button" id="velg-mobil" data-bredde="mobil" aria-pressed="true">Mobil 390</button>
+      <button type="button" id="velg-pc" data-bredde="pc" aria-pressed="false">PC 1280</button>
+    </div>
+  </div>
+</div>
+
+<div class="scene" id="scene" data-bredde="mobil">
+<div class="app" id="app">
+
+  <!-- ================= PlayerHQ · I dag ================= -->
+  <section class="skjerm" id="skjerm-idag" aria-label="PlayerHQ I dag">
+    <header class="topp" style="--bilde: url('bilder/naerspill-wedge.jpg')">
+      <div class="topp-linje">
+        <div class="merke"><b>AK</b> PlayerHQ</div>
+        <nav class="toppmeny" aria-label="Hovedmeny">
+          <a href="#" aria-current="page">I dag</a><a href="#">Plan</a><a href="#">Stats</a><a href="#">Meg</a>
+        </nav>
+        <button class="ikonknapp" type="button" aria-label="Innboks, 2 nye"><svg class="ikon"><use href="#i-bjelle"/></svg><span class="tall">2</span></button>
+      </div>
+      <div class="topp-innhold">
+        <div>
+          <div class="overlinje">Mandag 5. oktober · Grunnperiode · uke 3 av 8</div>
+          <h2 class="tittel">I dag, Øyvind</h2>
+          <p class="ingress">2 økter, 2 t totalt i dag. Økta kl. 15:30 trener innspill, ditt største forbedringsområde.</p>
+        </div>
+        <div class="statrad">
+          <div class="stat"><strong>6 t 40<small>av 9 t</small></strong><span>Uka så langt</span></div>
+          <div class="stat"><strong>82<small>%</small></strong><span>Tid mot plan, 4 uker</span></div>
+          <div class="stat"><strong>−0,9</strong><span>SG innspill</span></div>
+          <div class="stat"><strong>74,2</strong><span>Snittscore, brutto</span></div>
+        </div>
+      </div>
+    </header>
+    <div class="kant" style="--kantfarge: var(--slag)"></div>
+
+    <div class="flyt">
+      <div class="kolonne">
+        <article class="kort">
+          <div class="kort-topp"><h2>Dagens økter</h2><span class="meta">2 · 2 t</span></div>
+          <div class="okter">
+            <button class="okt slag" type="button" data-okt="innspill">
+              <div class="tid">15:30<small>75 MIN</small></div>
+              <div><b>Innspill og nærspill</b><span>Bossum range · 4 øvelser</span></div>
+              <svg class="ikon"><use href="#i-pil"/></svg>
+            </button>
+            <button class="okt fys" type="button" data-okt="styrke">
+              <div class="tid">18:00<small>45 MIN</small></div>
+              <div><b>Styrke bein og kjerne</b><span>Treningssenter · 5 øvelser</span></div>
+              <svg class="ikon"><use href="#i-pil"/></svg>
+            </button>
+          </div>
+        </article>
+
+        <article class="kort">
+          <div class="kort-topp"><h2>Uka</h2><a class="lenke" href="#">Åpne planen <svg class="ikon" style="width:16px;height:16px"><use href="#i-pil"/></svg></a></div>
+          <div class="uke-hoved"><strong>6 t 40 min<small>av 9 t</small></strong><span class="liten">lagt inn mot fordelt fra perioden</span></div>
+          <div class="akserader">
+            <div class="akserad"><span class="navn">FYS</span><div class="spor"><i style="--c:var(--fys);--p:67%"></i></div><span class="verdi">1 t 20 av 2 t</span></div>
+            <div class="akserad"><span class="navn">TEK</span><div class="spor"><i style="--c:var(--tek);--p:80%"></i></div><span class="verdi">2 t av 2 t 30</span></div>
+            <div class="akserad"><span class="navn">SLAG</span><div class="spor"><i style="--c:var(--slag);--p:72%"></i></div><span class="verdi">2 t 10 av 3 t</span></div>
+            <div class="akserad"><span class="navn">SPILL</span><div class="spor"><i style="--c:var(--spill);--p:100%"></i></div><span class="verdi">1 t 10 av 1 t</span></div>
+            <div class="akserad"><span class="navn">TURN</span><div class="spor"><i style="--c:var(--turn);--p:0%"></i></div><span class="verdi">0 av 30 min</span></div>
+          </div>
+        </article>
+      </div>
+
+      <div class="kolonne">
+        <article class="kort">
+          <div class="kort-topp"><h2>Målsetninger</h2><a class="lenke" href="#">Alle <svg class="ikon" style="width:16px;height:16px"><use href="#i-pil"/></svg></a></div>
+          <div class="maal">
+            <div class="maal-rad">
+              <div class="linje"><b>Rutine før hvert innspill</b><span class="tallet">18 / 24</span></div>
+              <div class="spor"><i style="--p:75%"></i></div>
+              <span class="meta">Prosessmål · ut oktober</span>
+            </div>
+            <div class="maal-rad">
+              <div class="linje"><b>Snittscore under 73</b><span class="tallet">74,2</span></div>
+              <div class="spor"><i style="--p:58%"></i></div>
+              <span class="meta">Resultatmål · innen juni · 10 siste tellende</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="kort">
+          <div class="melding">
+            <div class="avatar">AK</div>
+            <div>
+              <div class="kort-topp"><h2>Anders Kristiansen</h2><span class="meta">i går 21:14</span></div>
+              <p>Bra uke så langt. Hold 50 % fart på de første tre seriene i dag, så øker vi til 75 % på torsdag.</p>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="knapp sekundar" type="button">Svar</button></div>
+        </article>
+      </div>
+    </div>
+
+    <nav class="fanemeny" aria-label="Hovedmeny">
+      <a href="#" aria-current="page"><svg class="ikon"><use href="#i-hjem"/></svg>I dag</a>
+      <a href="#"><svg class="ikon"><use href="#i-kal"/></svg>Plan</a>
+      <a href="#"><svg class="ikon"><use href="#i-graf"/></svg>Stats</a>
+      <a href="#"><svg class="ikon"><use href="#i-meg"/></svg>Meg</a>
+    </nav>
+    <div class="hurtig" data-apen="false">
+      <div class="hurtigmeny" role="menu" aria-label="Hurtigvalg">
+        <button type="button" role="menuitem"><svg class="ikon"><use href="#i-start"/></svg>Start økt</button>
+        <button type="button" role="menuitem"><svg class="ikon"><use href="#i-pluss"/></svg>Ny økt</button>
+        <button type="button" role="menuitem"><svg class="ikon"><use href="#i-graf"/></svg>Registrer runde</button>
+        <button type="button" role="menuitem"><svg class="ikon"><use href="#i-sok"/></svg>Spør Caddie</button>
+      </div>
+      <button type="button" aria-label="Hurtigvalg" aria-expanded="false"><svg class="ikon"><use href="#i-pluss"/></svg></button>
+    </div>
+  </section>
+
+  <!-- ================= AgencyOS · Cockpit ================= -->
+  <section class="skjerm cockpit" id="skjerm-cockpit" aria-label="AgencyOS Cockpit" hidden>
+    <aside class="sidemeny" aria-label="AgencyOS-meny">
+      <div class="merke" style="color:var(--g900)"><b style="background:var(--g900);color:#fff">AK</b> AgencyOS</div>
+      <div class="sok"><svg class="ikon" style="width:16px;height:16px"><use href="#i-sok"/></svg>Søk<kbd>⌘K</kbd></div>
+      <div class="neste"><div class="meta">Neste økt · om 40 min</div><strong>09:00</strong><span>Magnus Aasheim · Teknikk</span></div>
+      <div class="gruppe"><div class="meta">Daglig</div><a href="#" aria-current="page">Cockpit</a><a href="#">Innboks <span class="t">2</span></a><a href="#">Kalender</a></div>
+      <div class="gruppe"><div class="meta">Spillere</div><a href="#">Stall</a><a href="#">Workbench</a><a href="#">Grupper</a><a href="#">Tester</a></div>
+      <div class="gruppe"><div class="meta">Drift</div><a href="#">Booking</a><a href="#">Økonomi</a><a href="#">Oppsett</a></div>
+    </aside>
+    <div class="innhold">
+      <header class="topp" style="--bilde: url('bilder/spill-bane.jpg')">
+        <div class="topp-linje">
+          <button class="ikonknapp mobilmeny" type="button" aria-label="Meny"><svg class="ikon"><use href="#i-meny"/></svg></button>
+          <div class="merke mobilmeny"><b>AK</b> AgencyOS</div>
+          <span class="overlinje" style="margin-left:auto">Uke 41</span>
+          <button class="ikonknapp" type="button" aria-label="Innboks, 2 saker"><svg class="ikon"><use href="#i-bjelle"/></svg><span class="tall">2</span></button>
+        </div>
+        <div class="topp-innhold">
+          <div>
+            <div class="overlinje">Mandag 5. oktober · kl. 08:20</div>
+            <h2 class="tittel">God morgen, Anders</h2>
+            <p class="ingress">4 økter i dag, første kl. 09:00. Ett spørsmål har ventet i over et døgn.</p>
+          </div>
+          <div class="statrad">
+            <div class="stat"><strong>4</strong><span>Økter i dag</span></div>
+            <div class="stat"><strong>2</strong><span>Venter på deg</span></div>
+            <div class="stat"><strong>3</strong><span>Følger ikke planen</span></div>
+            <div class="stat"><strong>24</strong><span>Aktive spillere</span></div>
+          </div>
+        </div>
+      </header>
+      <div class="kant"></div>
+
+      <div class="flyt">
+        <div class="kolonne">
+          <article class="kort">
+            <div class="kort-topp"><h2>Krever deg nå</h2><a class="lenke" href="#">Innboks <svg class="ikon" style="width:16px;height:16px"><use href="#i-pil"/></svg></a></div>
+            <div class="saker">
+              <div class="sak"><div><b>Magnus Aasheim spør om turneringsplanen</b><span>Spørsmål · ventet 26 t · ingen utkast ennå</span></div><span class="pille haster">HASTER</span></div>
+              <div class="sak"><div><b>Lettere uke for Emil Berg</b><span>Forslag · over 130 % av plan to uker på rad</span></div><span class="pille venter">GODKJENN</span></div>
+            </div>
+          </article>
+
+          <article class="kort">
+            <div class="kort-topp"><h2>Dagens kalender</h2><span class="meta">05–22 · 4 økter</span></div>
+            <div class="kalender">
+              <div class="naa" aria-hidden="true"></div>
+              <div class="kal-rad"><span class="kl">09:00</span><div class="kal-okt tek"><b>Magnus Aasheim</b><span>TEKNIKK · P6.0 · 60 MIN</span></div></div>
+              <div class="kal-rad"><span class="kl">13:00</span><div class="kal-okt spill"><b>Gruppe Utvikling</b><span>BANESPILL · 6 SPILLERE · 90 MIN</span></div></div>
+              <div class="kal-rad"><span class="kl">15:30</span><div class="kal-okt slag"><b>Øyvind Rohjan</b><span>INNSPILL OG NÆRSPILL · 75 MIN</span></div></div>
+              <div class="kal-rad"><span class="kl">17:15</span><div class="kal-okt fys"><b>Ingrid Solberg</b><span>FYSISK TEST · 45 MIN</span></div></div>
+            </div>
+          </article>
+        </div>
+
+        <div class="kolonne">
+          <article class="kort">
+            <div class="kort-topp"><h2>Følger ikke planen</h2><span class="meta">2 siste uker</span></div>
+            <div class="spillerliste">
+              <div class="spiller"><div class="avatar">IS</div><div><b>Ingrid Solberg</b><span>Ingen økter logget siden onsdag</span></div><div class="pst">41%<small>AV PLAN</small></div></div>
+              <div class="spiller"><div class="avatar">JH</div><div><b>Jonas Hagen</b><span>Hoppet over to TEK-økter</span></div><div class="pst">58%<small>AV PLAN</small></div></div>
+              <div class="spiller"><div class="avatar">SL</div><div><b>Sara Lunde</b><span>Turnering i helgen, lite trening</span></div><div class="pst">64%<small>AV PLAN</small></div></div>
+            </div>
+          </article>
+
+          <article class="kort">
+            <div class="kort-topp"><h2>Oppgaver</h2><span class="meta">Fra Notion</span></div>
+            <div class="oppgaver">
+              <label class="oppgave" for="o1"><input type="checkbox" id="o1"><div><b>Send sesongevaluering til WANG</b><span>Forfalt i går</span></div></label>
+              <label class="oppgave" for="o2"><input type="checkbox" id="o2"><div><b>Book bane til samling 24. oktober</b><span>Frist fredag</span></div></label>
+              <label class="oppgave" for="o3"><input type="checkbox" id="o3"><div><b>Oppdater teknisk plan for Magnus</b><span>Frist neste uke</span></div></label>
+            </div>
+          </article>
+        </div>
+      </div>
+      <div class="hurtig" data-apen="false">
+        <div class="hurtigmeny" role="menu" aria-label="Hurtigvalg">
+          <button type="button" role="menuitem"><svg class="ikon"><use href="#i-pluss"/></svg>Ny økt i Workbench</button>
+          <button type="button" role="menuitem"><svg class="ikon"><use href="#i-meg"/></svg>Ny melding til spiller</button>
+          <button type="button" role="menuitem"><svg class="ikon"><use href="#i-graf"/></svg>Registrer runde</button>
+          <button type="button" role="menuitem"><svg class="ikon"><use href="#i-sok"/></svg>Spør Jarvis</button>
+          <button type="button" role="menuitem"><svg class="ikon"><use href="#i-kal"/></svg>Ny booking</button>
+        </div>
+        <button type="button" aria-label="Hurtigvalg" aria-expanded="false"><svg class="ikon"><use href="#i-pluss"/></svg></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Arket for en økt -->
+  <div class="slor" id="slor"></div>
+  <div class="ark" id="ark" role="dialog" aria-modal="true" aria-labelledby="ark-tittel">
+    <div class="grep" aria-hidden="true"></div>
+    <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap"><span class="akse slag" id="ark-akse">SLAG</span><span class="meta" id="ark-meta">15:30 · 75 min · Bossum range</span></div>
+    <h3 id="ark-tittel">Innspill og nærspill</h3>
+    <p class="liten" id="ark-hvorfor" style="margin:0">Innspill (APP) er −0,9 og ditt største gap. Økta trener lengdekontroll fra 50 til 150 m.</p>
+    <ol class="ovelser" id="ark-ovelser"></ol>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="knapp" type="button"><svg class="ikon"><use href="#i-start"/></svg>Start økta</button>
+      <button class="knapp sekundar" type="button" id="ark-lukk">Lukk</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+(function () {
+  var scene = document.getElementById('scene');
+  var app = document.getElementById('app');
+
+  function velg(gruppe, attr, verdi) {
+    document.querySelectorAll('[data-' + attr + ']').forEach(function (b) {
+      if (b.tagName === 'BUTTON') b.setAttribute('aria-pressed', String(b.dataset[attr] === verdi));
+    });
+  }
+  document.querySelectorAll('button[data-skjerm]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      velg('skjerm', 'skjerm', b.dataset.skjerm);
+      document.getElementById('skjerm-idag').hidden = b.dataset.skjerm !== 'idag';
+      document.getElementById('skjerm-cockpit').hidden = b.dataset.skjerm !== 'cockpit';
+      lukkArk();
+    });
+  });
+  document.querySelectorAll('button[data-bredde]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      velg('bredde', 'bredde', b.dataset.bredde);
+      scene.dataset.bredde = b.dataset.bredde;
+    });
+  });
+
+  // Hurtigknappen: menyen vokser ut fra knappen og går tilbake samme vei
+  document.querySelectorAll('.hurtig').forEach(function (h) {
+    var knapp = h.querySelector(':scope > button');
+    knapp.addEventListener('click', function () {
+      var apen = h.dataset.apen !== 'true';
+      h.dataset.apen = String(apen);
+      knapp.setAttribute('aria-expanded', String(apen));
+    });
+    h.querySelectorAll('.hurtigmeny button').forEach(function (m) {
+      m.addEventListener('click', function () { h.dataset.apen = 'false'; knapp.setAttribute('aria-expanded', 'false'); });
+    });
+  });
+
+  // Tallene i toppen teller opp fra null (hopper rett til målet ved «reduser bevegelse»)
+  var rolig = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function tell(el) {
+    var tekst = el.firstChild && el.firstChild.nodeType === 3 ? el.firstChild : null;
+    if (!tekst) return;
+    var mal = tekst.nodeValue, m = mal.match(/^(−?)(\d+)(?:([:,])(\d+))?$/);
+    if (!m || rolig) return;
+    var fortegn = m[1], a = +m[2], sep = m[3], b = m[4] ? +m[4] : 0, des = m[4] ? m[4].length : 0;
+    var start = performance.now(), varighet = 900;
+    (function steg(t) {
+      var k = Math.min(1, (t - start) / varighet), e = 1 - Math.pow(1 - k, 3);
+      var helt = sep === ':' ? Math.round((a * 60 + b) * e) : null;
+      if (sep === ':') tekst.nodeValue = fortegn + Math.floor(helt / 60) + ':' + String(helt % 60).padStart(2, '0');
+      else if (sep === ',') { var v = (a + b / Math.pow(10, des)) * e; tekst.nodeValue = fortegn + v.toFixed(des).replace('.', ','); }
+      else tekst.nodeValue = fortegn + Math.round(a * e);
+      if (k < 1) requestAnimationFrame(steg); else tekst.nodeValue = mal;
+    })(start);
+  }
+  function tellSkjerm(id) { document.querySelectorAll('#' + id + ' .stat strong, #' + id + ' .uke-hoved strong').forEach(tell); }
+  tellSkjerm('skjerm-idag');
+  document.querySelectorAll('button[data-skjerm]').forEach(function (b) {
+    b.addEventListener('click', function () { tellSkjerm('skjerm-' + b.dataset.skjerm); });
+  });
+
+  var okter = {
+    innspill: { akse: 'slag', navn: 'SLAG', tittel: 'Innspill og nærspill', meta: '15:30 · 75 min · Bossum range',
+      hvorfor: 'Innspill (APP) er −0,9 og ditt største gap. Økta trener lengdekontroll fra 50 til 150 m.',
+      ovelser: [['Innspill 50–100 m', 'Lav hastighet, 50 % av Club Speed · 30 slag'], ['Innspill 100–150 m', 'Automatikk · 24 slag · TrackMan: Carry'], ['8-ball variation', 'Test · 2 av 2 denne perioden'], ['Up and down fra fringe', 'Observert · 15 forsøk']] },
+    styrke: { akse: 'fys', navn: 'FYS', tittel: 'Styrke bein og kjerne', meta: '18:00 · 45 min · Treningssenter',
+      hvorfor: 'Grunnperiode: bygger kraft for Club Speed. Lett uke neste uke.',
+      ovelser: [['Markløft trapbar', '4 × 6 @ 90 kg · RIR 2'], ['Bulgarsk utfall', '3 × 8 per bein'], ['Rotasjonskast', '4 × 5 per side · 4 kg'], ['Pallof press', '3 × 10 per side'], ['Hoftehev', '3 × 12']] }
+  };
+  var ark = document.getElementById('ark');
+  var sistFokus = null;
+  function apneArk(id, fra) {
+    var o = okter[id]; if (!o) return;
+    var akse = document.getElementById('ark-akse');
+    akse.className = 'akse ' + o.akse; akse.textContent = o.navn;
+    document.getElementById('ark-tittel').textContent = o.tittel;
+    document.getElementById('ark-meta').textContent = o.meta;
+    document.getElementById('ark-hvorfor').textContent = o.hvorfor;
+    var ol = document.getElementById('ark-ovelser'); ol.innerHTML = '';
+    o.ovelser.forEach(function (ov, i) {
+      var li = document.createElement('li');
+      li.innerHTML = '<span class="nr">' + (i + 1) + '</span><div><b></b><span></span></div>';
+      li.querySelector('b').textContent = ov[0]; li.querySelector('div span').textContent = ov[1];
+      ol.appendChild(li);
+    });
+    sistFokus = fra; app.dataset.ark = 'apen';
+    document.getElementById('ark-lukk').focus({ preventScroll: true });
+  }
+  function lukkArk() {
+    if (app.dataset.ark !== 'apen') return;
+    app.dataset.ark = '';
+    if (sistFokus) sistFokus.focus({ preventScroll: true });
+  }
+  document.querySelectorAll('[data-okt]').forEach(function (b) {
+    b.addEventListener('click', function () { apneArk(b.dataset.okt, b); });
+  });
+  document.getElementById('slor').addEventListener('click', lukkArk);
+  document.getElementById('ark-lukk').addEventListener('click', lukkArk);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') lukkArk(); });
+})();
+</script>

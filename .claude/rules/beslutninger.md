@@ -4,6 +4,28 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## PLAYERHQ OG AGENCYOS FÅR SKRÅ-DRAKTEN FRA TEAMNORWAYREF, TILPASSET AK GOLF (Anders 20.10.2026, bindende)
+
+Anders 20.10 om PlayerHQ og AgencyOS: «Jeg er fortsatt ikke fornøyd … Det ser veldig kjedelig ut», 3 av 10. Han valgte alternativ A av tre: full Skrå-drakt etter https://teamnorwayref.vercel.app, ikke bare dybde og skrift (B) eller å vente (C).
+
+- **Oppskriften fra teamnorwayref:** ekte banebilde øverst med skråkutt, lyse kort som ligger over kanten, lysegrå flate under hvite kort med lagdelte myke skygger, større hjørner (kort 18 px, statkort 14 px) og store, tette tall. Ett hovedtall per flate.
+- **Tilpasset AK Golf:** grafitt-toner i bildetoppen i stedet for navy, IBM Plex Sans og Mono beholdes, farge betyr fortsatt akse, rust er fortsatt bare signal, primærknappen er fortsatt grafitt. Bildene er AK Golf sine egne (`public/images/playerhq/`), aldri Team Norway-bildene.
+- **Bevegelse:** respons straks man trykker, ark og menyer glir inn og ut samme vei, og alt følger «reduser bevegelse».
+- **To prøveskjermer først:** I dag (PlayerHQ) og Cockpit (AgencyOS). Ingen annen skjerm endres før Anders har sett dem.
+- Team Norway gjør resten av sine skjermer ferdig i Skrå (§TEAM NORWAY-APPEN FÅR RETNING «SKRÅ»).
+
+**Overstyrer:** «ingen skygge på kort» (`--shadow-card: none` i `src/styles/precision-athletics.css`), kort-hjørner 12 px låst i `src/styles/ak-tokens.css` (analysen 20.10, forslag 2), og «8 px for kort» i `docs/design-system/design-autoritet.md` §Typografi- og presisjonsbeslutning (24.09). Radius for knapp (8 px) og pille står.
+
+**Arbeidet dette utløser:**
+
+1. **Prøveskjermene:** I dag og Cockpit som klikkbare utkast i 390 og 1280 px, i `docs/design-system/utkast-skra/`, publisert på https://claude.ai/artifact/7qVqP9D1E4xYCFx3cKx1gk. **Godkjent 20.10** etter at luften mellom kortene ble rettet og bevegelse lagt til (Anders: «Dette var mye bedre!»). Fasit for punkt 2–5 er `docs/design-system/utkast-skra/index.html`.
+2. **Tokens:** `src/styles/ak-tokens.css` får flate, skyggenivåer, radius 18/14, skråkutt og bevegelsestider fra utkastet; aliasene i `.pa-root`, `.phn` og `.agn` peker dit. Ferdig når `--shadow-card` ikke lenger er `none` og verdiene står bare ett sted. Først etter punkt 1.
+3. **Felles byggeklosser:** én bildetopp med skråkutt (gjenbruk av `src/components/team-norway/tn-skra-topp.tsx` som mønster), ett kort, én knapp, én tom-tilstand. Ferdig når I dag og Cockpit bruker dem.
+4. **PlayerHQ skjerm for skjerm:** I dag, Plan, Stats, Meg, deretter resten, én PR per pakke. Ferdig når hver skjerm er målt i 390 og 1280 px uten sidelengs rulling.
+5. **AgencyOS skjerm for skjerm:** Cockpit, Innboks, Stall, Kalender, Workbench, deretter de eldre `.pa-card`-sidene (Grupper, Tester). Samme ferdigkrav.
+6. **Team Norway resten:** skjermene uten `TnSkraTopp` (bl.a. college, Data Golf, dokumenter, fagapparat, lisens, live, referansenivåer, skoler, testprotokoller, turneringer, analyse, tilgang, workbench). Ferdig når hver TN-hovedside har bildetoppen.
+7. **Uavklart:** om IBM Plex Sans skal byttes til en skrift med mer karakter i overskrifter. Prøveskjermene bruker IBM Plex; Anders avgjør etter punkt 1.
+
 ## DESIGNLØFTET: HURTIGKNAPP PÅ ALLE TRENERFLATER, SEND I WANG VENTER, «PROSESS OG ADFERD» 1–5 (Anders 20.10.2026, bindende)
 
 Anders 20.10 i hovedøkta for designløftet: «ja, godkjent og dine anbefalinger», som svar på avvik og spørsmål fra flate-øktene.
