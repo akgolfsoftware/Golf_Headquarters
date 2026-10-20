@@ -102,6 +102,7 @@ function matches(b: Booking, where: Record<string, unknown>): boolean {
   return true;
 }
 
+mock.module("@/lib/booking/gavekort-retur", { namedExports: { tilbakeforGavekortForBooking: async () => 0 } });
 mock.module("next/cache", { namedExports: { revalidatePath: () => undefined } });
 mock.module("@/lib/auth/action-guards", {
   namedExports: {
@@ -116,6 +117,7 @@ mock.module("@/lib/prisma", {
   namedExports: {
     prisma: {
       booking: {
+        findMany: async () => [],
         findFirst: async ({ where, select }: { where: Record<string, unknown>; select?: Record<string, boolean> }) => {
           const funnet = Object.values(bookings).find((b) => matches(b, where));
           if (!funnet) return null;

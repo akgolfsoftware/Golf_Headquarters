@@ -190,12 +190,13 @@ export function AG06Booking({ navn, bookinger, valg, tjenester, tjenesteValg, fa
   );
 }
 
-type Betaling = "STRIPE" | "KLIPP" | "FAKTURA" | "GRATIS";
+type Betaling = "STRIPE" | "KLIPP" | "FAKTURA" | "GRATIS" | "GAVEKORT";
 const BETALING: Array<{ id: Betaling; navn: string; tekst: string }> = [
   { id: "STRIPE", navn: "Stripe", tekst: "Tjenestens pris, betales med kort" },
   { id: "KLIPP", navn: "Klipp", tekst: "Ett klipp fra Performance-pakken" },
   { id: "FAKTURA", navn: "Faktura", tekst: "Merkes, fakturaen lages i Tripletex" },
   { id: "GRATIS", navn: "Gratis", tekst: "Ingen betaling" },
+  { id: "GAVEKORT", navn: "Gavekort", tekst: "Kode fra kunden. Er kortet mindre enn prisen, betales resten med kort" },
 ];
 const STEG = ["Spiller", "Tjeneste", "Tid", "Bekreft"] as const;
 
@@ -211,6 +212,7 @@ export function NyBooking({ valg, onOpprettet }: { valg: BookingValg; onOpprette
   const [tid, setTid] = useState("16:00");
   const [betaling, setBetaling] = useState<Betaling>("STRIPE");
   const [notater, setNotater] = useState("");
+  const [gavekode, setGavekode] = useState("");
   const [feil, setFeil] = useState<string | null>(null);
   const [lenke, setLenke] = useState<string | null>(null);
   const [pending, start] = useTransition();
@@ -224,7 +226,7 @@ export function NyBooking({ valg, onOpprettet }: { valg: BookingValg; onOpprette
   const opprett = () => {
     if (!spiller || !tjeneste || !locationId) return;
     start(async () => {
-      const res = await bookIKalender({ spillerId: spiller.id, serviceTypeId: tjeneste.id, locationId, start: `${dato}T${tid}`, notater: notater.trim() || undefined, betaling });
+      const res = await bookIKalender({ spillerId: spiller.id, serviceTypeId: tjeneste.id, locationId, start: `${dato}T${tid}`, notater: notater.trim() || undefined, betaling, ...(betaling === "GAVEKORT" ? { gavekode: gavekode.trim() } : {}) });
       if (!res.ok) { setFeil(res.feil); return; }
       router.refresh();
       // Stripe: vis lenken så coachen kan kopiere den. Kunden har også fått den på e-post.
@@ -273,6 +275,8 @@ export function NyBooking({ valg, onOpprettet }: { valg: BookingValg; onOpprette
         {BETALING.map((b) => <button key={b.id} type="button" aria-pressed={betaling === b.id} onClick={() => setBetaling(b.id)}>
           <span className="akse-prikk" style={{ background: "var(--graphite-900)" }} aria-hidden /><span><b>{b.navn}</b><span className="kilde">{b.tekst}</span></span><span className="pris">{tjeneste ? (b.id === "KLIPP" || b.id === "GRATIS" ? kr(0) : kr(tjeneste.prisOre)) : "—"}</span></button>)}
       </div>
+      {betaling === "GAVEKORT" && <label className="felt"><span className="etikett">Gavekode</span>
+        <input value={gavekode} onChange={(e) => setGavekode(e.target.value)} placeholder="XXXX-XXXX-XXXX-XXXX" autoComplete="off" spellCheck={false} className="a4-input a4-input--mono" /></label>}
       <ul className="oppsummering">
         <li><span>Spiller</span><b>{spiller?.navn ?? "—"}</b></li>
         <li><span>Tjeneste</span><b>{tjeneste ? `${tjeneste.navn} · ${tjeneste.varighetMin} min` : "—"}</b></li>
@@ -281,14 +285,14 @@ export function NyBooking({ valg, onOpprettet }: { valg: BookingValg; onOpprette
         <li><span>Betaling</span><b>{BETALING.find((b) => b.id === betaling)?.navn}</b></li>
       </ul>
       <label className="felt"><span className="etikett">Notat (valgfritt)</span><textarea rows={2} value={notater} onChange={(e) => setNotater(e.target.value)} /></label>
-      <p className="kildetekst">Bekreftes med en gang. Spilleren får beskjed.{betaling === "STRIPE" ? " Kunden får en betalingslenke (kort og Apple Pay) på e-post, og du får lenken her." : ""}</p>
+      <p className="kildetekst">Bekreftes med en gang. Spilleren får beskjed.{betaling === "STRIPE" ? " Kunden får en betalingslenke (kort og Apple Pay) på e-post, og du får lenken her." : ""}{betaling === "GAVEKORT" ? " Gavekortet trekkes nå. Dekker det ikke hele prisen, får kunden en betalingslenke for resten." : ""}</p>
     </>}
     {feil && <Varsel tone="advarsel">{feil}</Varsel>}
     <div className="knapper">
       {steg > 0 && <Knapp variant="sek" onClick={() => { setSteg(steg - 1); setFeil(null); }}>Tilbake</Knapp>}
       {steg < 3
         ? <Knapp disabled={!kanVidere} onClick={() => setSteg(steg + 1)}>Neste</Knapp>
-        : <Knapp disabled={pending} onClick={opprett}>{pending ? "Booker …" : "Bekreft booking"}</Knapp>}
+        : <Knapp disabled={pending || (betaling === "GAVEKORT" && !gavekode.trim())} onClick={opprett}>{pending ? "Booker …" : "Bekreft booking"}</Knapp>}
     </div>
   </div>;
 }

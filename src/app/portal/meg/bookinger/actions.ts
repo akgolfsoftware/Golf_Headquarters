@@ -7,6 +7,7 @@ import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
 import { bookingRefundKey, refundCancelledBooking } from "@/lib/booking/refund";
 import { audit } from "@/lib/audit";
+import { tilbakeforGavekort } from "@/lib/booking/gavekort";
 import { pushBooking, fjernBooking } from "@/lib/google-calendar-kilder";
 import { isSlotStillAvailable } from "@/lib/booking/availability";
 import { notify } from "@/lib/notifications";
@@ -48,6 +49,7 @@ export async function cancelBooking(bookingId: string) {
       subscriptionId: booking.subscriptionId,
       stripePaymentIntentId: booking.stripePaymentIntentId,
       priceOre: booking.priceOre,
+      giftCardOre: booking.giftCardOre,
     },
     actor,
   );
@@ -65,6 +67,7 @@ export async function cancelBooking(bookingId: string) {
       data: { status: "CANCELLED" },
     });
     if (claimed.count !== 1) return false;
+    if (outcome.restoreGiftCard) await tilbakeforGavekort(tx, bookingId);
     if (booking.subscriptionId && outcome.restoreCredit) {
       await tx.subscription.update({
         where: { id: booking.subscriptionId },
@@ -236,6 +239,7 @@ export async function rescheduleBooking(input: {
       subscriptionId: booking.subscriptionId,
       stripePaymentIntentId: booking.stripePaymentIntentId,
       priceOre: booking.priceOre,
+      giftCardOre: booking.giftCardOre,
     },
     actorR,
   );

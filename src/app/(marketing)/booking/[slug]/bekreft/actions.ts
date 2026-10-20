@@ -13,6 +13,17 @@ import { vurderDuoDeltaker } from "@/lib/booking/duo-deltaker";
 import { acquireHold, releaseHold, DEFAULT_HOLD_TTL_MS } from "@/lib/booking/slot-hold";
 import { recordBookingMetric } from "@/lib/booking/metrics";
 import { audit } from "@/lib/audit";
+import { headers } from "next/headers";
+import { rateLimit } from "@/lib/rate-limit";
+import { pushBooking } from "@/lib/google-calendar-kilder";
+import { varsleNyBooking } from "@/lib/booking/varsle-ny-booking";
+import {
+  GavekortFeil,
+  gavekortDekning,
+  knyttGavekortTilBooking,
+  losInnGavekort,
+  slaaOppGavekort,
+} from "@/lib/booking/gavekort";
 
 
 import { nonEmpty, isoDate, email, phone } from "@/lib/validation/schemas";
@@ -30,6 +41,8 @@ export type BookingFormInput = {
   /** Duo: deltaker 2. Påkrevd når tjenesten er duo, ignorert ellers. */
   partnerName?: string;
   partnerEmail?: string;
+  /** Gavekode (valgfri). Kortet dekker hele eller deler av prisen; resten betales med kort. */
+  giftCode?: string;
 };
 
 export type BookingResult =
@@ -46,7 +59,28 @@ const BookingCheckoutSchema = z.object({
   notes: z.string().max(1000).optional(),
   partnerName: z.string().trim().max(200).optional(),
   partnerEmail: z.string().trim().max(254).optional(),
+  giftCode: z.string().trim().max(40).optional(),
 });
+
+/** Forhåndsvisning av hva et gavekort dekker, før kunden betaler. Ingenting trekkes. */
+export async function sjekkGavekode(
+  kode: string,
+  prisOre: number,
+): Promise<{ ok: true; dekketOre: number; restOre: number } | { ok: false; error: string }> {
+  const h = await headers();
+  const ip = h.get("x-vercel-forwarded-for") ?? h.get("x-real-ip") ?? "unknown";
+  const rl = await rateLimit({ key: `gavekort-sjekk:${ip}`, max: 10, windowMs: 60_000 });
+  if (!rl.ok) return { ok: false, error: "For mange forsøk. Vent litt og prøv igjen." };
+  try {
+    const kort = await slaaOppGavekort(prisma, kode);
+    const { dekketOre, restOre } = gavekortDekning(Math.max(0, Math.round(prisOre)), kort.saldoOre);
+    if (dekketOre <= 0) return { ok: false, error: "Gavekortet kan ikke brukes på dette beløpet." };
+    return { ok: true, dekketOre, restOre };
+  } catch (e) {
+    if (e instanceof GavekortFeil) return { ok: false, error: e.message };
+    throw e;
+  }
+}
 
 export async function createBookingCheckout(
   input: BookingFormInput,
@@ -77,6 +111,16 @@ export async function createBookingCheckout(
 
     const duo = vurderDuoDeltaker(service, data);
     if (!duo.ok) return duo;
+
+    const giftCode = data.giftCode || null;
+    if (giftCode) {
+      try {
+        await slaaOppGavekort(prisma, giftCode);
+      } catch (e) {
+        if (e instanceof GavekortFeil) return { ok: false, error: e.message };
+        throw e;
+      }
+    }
 
     const startAt = new Date(data.start);
     const user = await getCurrentUser();
@@ -160,15 +204,52 @@ export async function createBookingCheckout(
           endAt,
           romKrav: service.facilityType ? { locationId: lokasjon.id, facilityType: service.facilityType } : null,
         });
-        return tx.booking.create({
-          data: { ...bookingData, plassNr: vern.plassNr, facilityId: vern.facilityId ?? null },
+        // Gavekortet trekkes i samme transaksjon som bookingen: feiler noe, står kortet urørt.
+        const gave = giftCode ? await losInnGavekort(tx, giftCode, service.priceOre) : null;
+        const dekket = gave?.dekketOre ?? 0;
+        const heltDekket = dekket >= service.priceOre;
+        const lagret = await tx.booking.create({
+          data: {
+            ...bookingData,
+            plassNr: vern.plassNr,
+            facilityId: vern.facilityId ?? null,
+            priceOre: service.priceOre - dekket,
+            giftCardOre: dekket,
+            ...(heltDekket ? { status: "CONFIRMED" as const, paymentMethod: "GAVEKORT" as const } : {}),
+          },
         });
+        if (gave) await knyttGavekortTilBooking(tx, gave.transaksjonId, lagret.id);
+        return lagret;
       });
     } catch (e) {
       if (erKollisjonsfeil(e)) {
         return { ok: false, error: kollisjonsmelding(e) };
       }
+      if (e instanceof GavekortFeil) return { ok: false, error: e.message };
       throw e;
+    }
+
+    // Gavekortet dekker alt: ingen Stripe-betaling. Bekreft som webhooken ville gjort.
+    if (booking.status === "CONFIRMED") {
+      await audit({
+        actorId: user?.id ?? null,
+        action: "booking.created.gift-card",
+        target: `Booking:${booking.id}`,
+        metadata: { serviceSlug: service.slug, giftCardOre: booking.giftCardOre },
+      }).catch((error) => logError({ context: "booking.gavekort-audit", error }).catch(() => undefined));
+      try {
+        const { sendBookingConfirmation } = await import("@/lib/email/booking-emails");
+        await sendBookingConfirmation(booking.id);
+      } catch (error) {
+        await logError({ context: "booking.gavekort.epost", error, meta: { bookingId: booking.id }, severity: "warn" });
+      }
+      try {
+        await pushBooking(booking.id);
+      } catch (error) {
+        await logError({ context: "booking.gavekort.kalender", error, meta: { bookingId: booking.id }, severity: "warn" });
+      }
+      await varsleNyBooking(booking.id, "gavekort").catch(() => undefined);
+      return { ok: true, url: `${APP_URL}/booking/kvittering/${booking.id}` };
     }
 
     const appUrl = APP_URL;
@@ -186,12 +267,13 @@ export async function createBookingCheckout(
               name: service.name,
               description: `${startAt.toLocaleString("nb-NO", { dateStyle: "full", timeStyle: "short" })} hos ${lokasjon.name}`,
             },
-            unit_amount: service.priceOre,
+            unit_amount: booking.priceOre,
           },
           quantity: 1,
         },
       ],
       metadata: {
+        ...(booking.giftCardOre > 0 ? { giftCardOre: String(booking.giftCardOre) } : {}),
         bookingId: booking.id,
         coachId,
         serviceSlug: service.slug,

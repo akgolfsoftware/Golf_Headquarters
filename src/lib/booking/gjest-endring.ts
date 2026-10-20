@@ -11,6 +11,7 @@
  * Tilgang er bare den signerte lenken (`gjest-lenke.ts`), og bare for bookinger
  * uten konto. Lenken er bundet til starttiden, så en flyttet time krever ny lenke.
  */
+import { tilbakeforGavekort } from "@/lib/booking/gavekort";
 import "server-only";
 
 import { prisma } from "@/lib/prisma";
@@ -63,6 +64,7 @@ export async function hentGjestBooking(token: string, naa: Date = new Date()): P
       subscriptionId: booking.subscriptionId,
       stripePaymentIntentId: booking.stripePaymentIntentId,
       priceOre: booking.priceOre,
+      giftCardOre: booking.giftCardOre,
     },
   };
 }
@@ -164,6 +166,7 @@ export async function gjestAvbestillTime(token: string, naa: Date = new Date()):
       data: { status: "CANCELLED" },
     });
     if (r.count !== 1) return false;
+    if (utfall.restoreGiftCard) await tilbakeforGavekort(tx, booking.id);
     if (utfall.refundStripe && booking.stripePaymentIntentId) {
       await tx.webhookFailure.upsert({
         where: { eventId: bookingRefundKey(booking.id) },

@@ -18,7 +18,8 @@ export type BookingKilde =
   | "abonnement"
   | "gjest"
   | "manuell"
-  | "caddie";
+  | "caddie"
+  | "gavekort";
 
 const KILDE_TEKST: Record<BookingKilde, string> = {
   stripe: "Betalt på nett",
@@ -26,6 +27,7 @@ const KILDE_TEKST: Record<BookingKilde, string> = {
   gjest: "Gjestebooking",
   manuell: "Lagt inn manuelt",
   caddie: "Foreslått av Caddie",
+  gavekort: "Betalt med gavekort",
 };
 
 const OSLO_TID = new Intl.DateTimeFormat("nb-NO", {

@@ -339,6 +339,14 @@ export async function handleStripeEvent(
 
       // Payment recording is durable before acknowledgement; failures enter the existing retry queue.
       await recordCheckoutSession(session);
+      // Gavekort (bookingplanen steg 7): ingen booking, kortet opprettes og koden sendes når betalt.
+      {
+        const { erGavekortSession, opprettGavekortFraSession } = await import("@/lib/booking/gavekort-kjop");
+        if (erGavekortSession(session)) {
+          await opprettGavekortFraSession(session);
+          break;
+        }
+      }
       let bookingBleBekreftet = false;
       if (bookingId && (session.payment_status === "paid" || (session.payment_status === "no_payment_required" && session.amount_total === 0))) {
         const booking = await prisma.booking.findUnique({ where: { id: bookingId }, select: { priceOre: true } });
@@ -468,6 +476,10 @@ export async function handleStripeEvent(
             "[stripe-webhook] checkout.session.expired: ukjent/ikke-PENDING bookingId",
             bookingId,
           );
+        } else {
+          // Utløpt eller feilet betaling: gavekortbeløpet bookingen reserverte, går tilbake til kortet.
+          const { tilbakeforGavekortForBooking } = await import("@/lib/booking/gavekort-retur");
+          await tilbakeforGavekortForBooking(bookingId);
         }
       }
       break;

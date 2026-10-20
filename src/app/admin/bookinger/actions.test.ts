@@ -77,6 +77,8 @@ mock.module("@/lib/google-calendar-kilder", { namedExports: { fjernBooking: asyn
 mock.module("@/lib/email/booking-emails", {
   namedExports: { sendBookingCancellation: async (...a: unknown[]) => { eposter.push(a); } },
 });
+let gaveTrekk: Array<{ giftCardId: string; amountOre: number }> = [];
+let gaveTilbake: number[] = [];
 const prismaMock: Record<string, unknown> = {
   booking: {
     findFirst: async () => booking,
@@ -93,6 +95,8 @@ const prismaMock: Record<string, unknown> = {
   subscription: { update: async (args: unknown) => { if (klippFeiler) throw Error("klippfeil"); klippTilbake.push(args); return {}; } },
   innboksEpost: { create: async ({ data }: { data: Record<string, unknown> }) => { if (utkastFeiler) throw Error("utkastfeil"); innboks.push(data); return { id: "e1" }; } },
   serviceType: { findUnique: async () => null },
+  giftCardTransaction: { findMany: async () => gaveTrekk, createMany: async () => ({ count: 1 }) },
+  giftCard: { update: async (a: { data: { balanceOre: { increment: number } } }) => { gaveTilbake.push(a.data.balanceOre.increment); return {}; } },
   webhookFailure: { upsert: async (args: unknown) => { rekkefolge.push("jobb"); jobber.push(args); } },
   $transaction: async (fn: (tx: unknown) => Promise<unknown>) => {
     const before = structuredClone(booking);
@@ -105,7 +109,7 @@ mock.module("@/lib/prisma", { namedExports: { prisma: prismaMock } });
 
 const actions = () => import("./actions");
 
-test.beforeEach(nullstill);
+test.beforeEach(() => { nullstill(); gaveTrekk = []; gaveTilbake = []; });
 
 test("coach avlyser 1 time før start: avlysning og varig refusjonsjobb kommer før refusjonsforsøket", async () => {
   const { avlysBookingSomCoach } = await actions();
@@ -194,4 +198,12 @@ test("betalt eller klippdekket forespørsel kan ikke avvises uten tilbakeføring
     assert.equal((await (await actions()).avvisBookingMedBegrunnelse({ bookingId: "b1", begrunnelse: "Syntetisk begrunnelse" })).ok, false);
   }
   assert.equal(bookingOppdateringer.length, 0); assert.equal(innboks.length, 0);
+});
+
+test("coach som avlyser fører gavekortbeløpet tilbake til kortet, uansett hvor nær timen er", async () => {
+  gaveTrekk = [{ giftCardId: "gk-1", amountOre: 40_000 }];
+  const { avlysBookingSomCoach } = await actions();
+  const res = await avlysBookingSomCoach({ bookingId: "b1" });
+  assert.equal(res.ok, true);
+  assert.deepEqual(gaveTilbake, [40_000]);
 });

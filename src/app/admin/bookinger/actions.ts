@@ -20,6 +20,7 @@ import { coachBookingScope } from "@/lib/auth/booking-scope";
 import { prisma } from "@/lib/prisma";
 import { bookingRefundKey, refundCancelledBooking } from "@/lib/booking/refund";
 import { audit } from "@/lib/audit";
+import { tilbakeforGavekort } from "@/lib/booking/gavekort";
 import { logError } from "@/lib/error-tracking";
 import { notify } from "@/lib/notifications";
 import { fjernBooking } from "@/lib/google-calendar-kilder";
@@ -89,6 +90,8 @@ export async function avlysBookingSomCoach(input: { bookingId: string; begrunnel
       },
     });
     if (claimed.count !== 1) return false;
+    // Coach som avlyser gir alltid alt tilbake, også gavekortbeløpet.
+    await tilbakeforGavekort(tx, booking.id);
     if (plan.klippTilbake && booking.subscriptionId) {
       await tx.subscription.update({
         where: { id: booking.subscriptionId },
@@ -207,6 +210,7 @@ export async function avvisBookingMedBegrunnelse(input: { bookingId: string; beg
       data: { status: "CANCELLED" },
     });
     if (res.count !== 1) return false;
+    await tilbakeforGavekort(tx, booking.id);
     if (epost) {
       const tid = TID(booking.startAt);
       await tx.innboksEpost.create({
