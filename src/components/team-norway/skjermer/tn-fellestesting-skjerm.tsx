@@ -2,9 +2,8 @@ import { notFound } from "next/navigation";
 
 import { innloggetKanSeDataGolf } from "@/lib/auth/datagolf-tilgang";
 import { hentTnFellesTestdagGrupper, hentTnGruppeanalyseResultat, hentTnProtokollbibliotek, hentTnSpillere, hentTnTestdag, hentTnTestdager, type TnGruppeanalyseRad } from "@/lib/domain/tn-arbeidsflate";
-import { TESTBATTERI } from "@/lib/portal-tester/testbatteri";
 import { TN_CATALOG } from "@/lib/portal-tester/tn-catalog";
-import { trenerKanFore } from "@/lib/portal-tester/testbatteri";
+import { TESTBATTERI, trenerKanFore } from "@/lib/portal-tester/testbatteri";
 import { hentSkjermbruker } from "./felles";
 import { TnFellestestingVisning, TnTestdagVisning } from "./tn-fellestesting-visning";
 import type { TnTestoversiktRad } from "./tn-testoversikt";
