@@ -15,7 +15,9 @@ async function hentEtterlevelseMedAkser(userId: string, now: Date) {
   const sessions = await loadVisibleSessionRange(userId, etterlevelseFra(now).toISOString(), now.toISOString());
   const perAkse = new Map((["FYS", "TEK", "SLAG", "SPILL", "TURN"] as PyramidArea[]).map(axis =>
     [axis, etterlevelse(sessions.filter(s => s.pyramidArea === axis).map(somEtterlevelseOkt), now)]));
-  return { ...etterlevelse(sessions.map(somEtterlevelseOkt), now), perAkse };
+  const okter = sessions.map(somEtterlevelseOkt);
+  // `okter` følger med så AgencyOS Stall kan dele de fire ukene opp per uke uten nytt oppslag.
+  return { ...etterlevelse(okter, now), perAkse, okter };
 }
 
 export async function hentEtterlevelse(userId: string, now = new Date()) {

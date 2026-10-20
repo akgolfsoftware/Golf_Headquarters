@@ -15,6 +15,7 @@ import { hentStallEtterlevelse } from "@/lib/portal/etterlevelse-data";
 import { erOktGjennomfort } from "@/lib/workbench/compliance";
 import { stallenPlayerWhere } from "./stallen-scope";
 import { stallStatus } from "./stall-status";
+import { etterlevelseUker } from "./stall-uker";
 
 // ── Typer eksponert til komponenten ─────────────────────────────
 import { bucketFraEnrollments, type GroupBucket } from "@/lib/domain/program-bucket";
@@ -65,6 +66,10 @@ export type StallenRow = {
   adherence: AxisAdh[];
   /** Etterlevelse siste fire uker. null = ingen forfalte minutter. */
   adhPct: number | null;
+  /** Etterlevelse per uke de samme fire ukene, eldste først (stall-uker.ts). */
+  adhUker?: (number | null)[];
+  /** Neste påmeldte turnering. null = ingen kjent. */
+  nesteTurnering?: { navn: string; startIso: string } | null;
   status: StatusKind;
   statusLabel: string;
   /** Aldri logget inn (lastLoginAt mangler) — bulk-importert plassholderprofil
@@ -235,6 +240,13 @@ export async function loadStallen(
       // A1: COACHING først — stallen viser coaching-pakken når den finnes.
       subscriptions: { select: { tier: true, status: true }, orderBy: { kind: "asc" as const }, take: 1 },
       _count: { select: { payments: { where: { status: "FAILED" } } } },
+      // Neste påmeldte turnering (AG-07, designløft 20.10.2026).
+      tournamentEntries: {
+        where: { entryStatus: { not: "WITHDRAWN" }, tournament: { startDate: { gte: now } } },
+        select: { tournament: { select: { name: true, startDate: true } } },
+        orderBy: { tournament: { startDate: "asc" } },
+        take: 1,
+      },
       // Treningsplan-økter for uke (adherence + økter) og 30 d (timer).
       trainingPlans: {
         select: {
@@ -308,6 +320,9 @@ export async function loadStallen(
       return { axis, pct: result.pct ?? 0, alarm: result.pct !== null && result.pct < 40 };
     });
     const adhPct = e.pct;
+    const adhUker = etterlevelseUker(e.okter, now);
+    const tur = p.tournamentEntries[0]?.tournament ?? null;
+    const nesteTurnering = tur ? { navn: tur.name, startIso: tur.startDate.toISOString() } : null;
 
     const eldsteForesp = p.sessionRequestsAsPlayer[0]?.createdAt;
     const { status, label: statusLabel } = stallStatus({
@@ -348,6 +363,8 @@ export async function loadStallen(
       sgTone,
       adherence,
       adhPct,
+      adhUker,
+      nesteTurnering,
       status,
       statusLabel,
       neverLoggedIn: days == null,

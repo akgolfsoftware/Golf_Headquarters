@@ -11,15 +11,20 @@
  * Bare ekte data: det appen ikke har (neste turnering, planens sluttdato, ACWR,
  * drill-for-drill-repetisjoner) vises som «—» eller er utelatt.
  *
+ * Designløft 20.10.2026 (canvas «AgencyOS nøkkelskjermer», AG-07, godkjent av Anders):
+ *   - Raden viser mot plan per uke de siste fire ukene (søyler), SG-kurven og neste turnering.
+ *   - Gruppe velges med den felles nedtrekksmenyen «Vis».
+ *
  * Avvik:
  *   - I dag og Trener nå er nøytrale (grafitt): raden har ingen akse å farge etter.
  *   - Trener nå viser ikke tellere per drill; repetisjonene finnes ikke i stalldataene.
- *   - Neste turnering, plan slutter og ACWR mangler i stalldataene og er utelatt.
+ *   - Plan slutter og ACWR mangler i stalldataene; ACWR står som «—».
  */
 import { useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import { X } from "lucide-react";
 import { Avatar, Knapp, KnappLenke, Tom, Topp, Varsel } from "@/components/admin/agencyos-ny/ny";
+import { Nedtrekk } from "@/components/precision/Nedtrekk";
 import type { StallBaandRad } from "@/lib/admin/stall-precision-data";
 import { fmtSg } from "@/lib/v2/format";
 import { sendMeldingTilSpiller } from "@/app/admin/(legacy)/messages/actions";
@@ -64,6 +69,24 @@ const OSLO_DATO = new Intl.DateTimeFormat("nb-NO", { day: "numeric", month: "sho
 const klokke = (minutt: number) => `${String(Math.floor(minutt / 60)).padStart(2, "0")}:${String(minutt % 60).padStart(2, "0")}`;
 const KLASSE: Record<Matrise, string> = { trenger: "trenger", planen: "folger", hviler: "hviler" };
 
+function UkeSoyler({ uker }: { uker: readonly (number | null)[] }) {
+  const tekst = uker.map((u, i) => `uke ${i + 1}: ${u == null ? "ingen plan" : `${u} %`}`).join(", ");
+  return <span className="sp-uker" role="img" aria-label={`Mot plan siste fire uker, eldste først: ${tekst}`}>
+    {uker.map((u, i) => <i key={i} className={u == null ? "tom" : u < 70 ? "lav" : undefined} style={{ height: `${Math.max(u ?? 0, 4)}%` }} />)}
+  </span>;
+}
+
+function SgKurve({ trend }: { trend: readonly number[] }) {
+  if (trend.length < 2) return <span className="sp-sg-tom">—</span>;
+  const mn = Math.min(...trend, -0.1), mx = Math.max(...trend, 0.1), W = 64, H = 22;
+  const y = (v: number) => 2 + (H - 4) * (1 - (v - mn) / (mx - mn));
+  const pts = trend.map((v, i) => `${(i * W / (trend.length - 1)).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
+  return <svg className="sp-sg" width={W} height={H} viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`SG siste ${trend.length} målinger: ${trend.map((v) => fmtSg(v)).join(", ")}`}>
+    <line x1="0" x2={W} y1={y(0)} y2={y(0)} stroke="var(--sand-300)" strokeWidth="1" />
+    <polyline points={pts} fill="none" stroke="var(--graphite-900)" strokeWidth="1.6" strokeLinejoin="round" />
+  </svg>;
+}
+
 function SpillerRad({ r }: { r: StallBaandRad }) {
   const m = MATRISE[r.status];
   const sgNaa = r.sgTrend.length ? fmtSg(r.sgTrend[r.sgTrend.length - 1]!) : "—";
@@ -80,6 +103,11 @@ function SpillerRad({ r }: { r: StallBaandRad }) {
       </span>
       {m !== "planen" && <span className={`sp-grunn${m === "hviler" ? " hvil" : ""}`}>{m === "hviler" ? "Hviler" : "Trenger deg"} · {r.statusLabel}</span>}
       {r.skylder && <span className="sp-grunn">Betaling feilet</span>}
+    </span>
+    <span className="sp-graf">
+      <span className="sp-col"><UkeSoyler uker={r.adhUker ?? [null, null, null, null]} /><span>Mot plan</span></span>
+      <span className="sp-col"><SgKurve trend={r.sgTrend} /><span>SG {sgNaa}</span></span>
+      <span className="sp-col sp-tur"><b>{r.nesteTurnering ? OSLO_DATO.format(new Date(r.nesteTurnering.startIso)) : "—"}</b><span>{r.nesteTurnering ? r.nesteTurnering.navn : "Ingen turnering"}</span></span>
     </span>
     <span className="sp-etl"><b className={lav ? "lav" : undefined}>{r.adhPct == null ? "—" : `${r.adhPct} %`}</b><span>4 uker</span></span>
   </Link>;
@@ -191,8 +219,8 @@ export function AG07Stall({ tilstand = "data", total, iDag, trenerNaa, heleStall
           <div className="sok">
             <input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Søk spiller eller gruppe" aria-label="Søk spiller eller gruppe" />
           </div>
-          <div className="valg" role="group" aria-label="Gruppe">
-            {nyttGruppeFilter.map((g) => <button key={g.id} type="button" aria-pressed={grp === g.id} onClick={() => setGrp(g.id)}>{g.label}</button>)}
+          <div className="valg-rad">
+            <Nedtrekk etikett="Vis" valg={nyttGruppeFilter.map((g) => ({ verdi: g.id, navn: g.label }))} verdi={grp} onVelg={setGrp} />
           </div>
           {vist.length === 0
             ? <Tom tittel="Ingen treff" tekst="Ingen spillere passer søket og filteret." handling={<Knapp variant="sek" onClick={() => { setQ(""); setGrp("alle"); setMat("alle"); }}>Nullstill</Knapp>} />
