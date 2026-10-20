@@ -43,6 +43,8 @@ interface WangCoachKlientProps {
   fireukerssjekk?: WangFireukerssjekk;
   /** Data Golf (Konkurranse › Data Golf), bare når kanSeDataGolf slapp brukeren inn. */
   dataGolf?: WangDataGolfData;
+  /** Om fanen Data Golf skal vises (kanSeDataGolf, bare ADMIN fra 20.10.2026). */
+  visDataGolf?: boolean;
   /** Invitasjoner og timeplanunntak (Administrasjon), bare for sportssjef. */
   admin?: WangAdminData;
   /** Opptak og koordinering (Administrasjon), bare for sportssjef. */
@@ -104,6 +106,7 @@ export function WangCoachKlient({
   elevdata,
   fireukerssjekk,
   dataGolf,
+  visDataGolf = false,
   admin,
   opptak,
   data,
@@ -158,6 +161,7 @@ export function WangCoachKlient({
       {omraade === 'konkurranse' && !fane?.startsWith('dg') && (
         <WangKonkurranse
           aktivFane={fane}
+          visDataGolf={visDataGolf}
           id={id}
           onFaneEndret={(nyFane) => navigerTil('konkurranse', nyFane)}
           data={data}

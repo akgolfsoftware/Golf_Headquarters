@@ -5,10 +5,10 @@ import Link from "next/link";
 import { WangTomTilstand } from "./WangIkkeKoblet";
 import {
   WangFaner,
-  WangHelt,
   WangSmaaTall,
   WangTilbake,
   WangTopp,
+  WangToppfelt,
   dagerMellom,
   initialer,
   wangHref,
@@ -22,14 +22,18 @@ interface WangKonkurranseProps {
   /** Turneringen eller samlingen undersiden gjelder. */
   id?: string;
   onFaneEndret?: (fane: string) => void;
+  /** Fanen Data Golf vises bare når kanSeDataGolf slipper brukeren inn (bare ADMIN, beslutninger 20.10.2026). */
+  visDataGolf?: boolean;
 }
 
-const FANER = [
+const ALLE_FANER = [
   { id: "kalender", tittel: "Kalender" },
   { id: "sesong", tittel: "Sesongen" },
   { id: "samling", tittel: "Samlinger" },
   { id: "dg", tittel: "Data Golf" },
 ];
+
+type Fane = (typeof ALLE_FANER)[number];
 
 const datoSpenn = (h: WangTrenerHendelse) =>
   h.sluttIso && h.sluttIso !== h.startIso ? `${visDato(h.startIso)}–${visDato(h.sluttIso)}` : visDato(h.startIso);
@@ -46,18 +50,19 @@ const datoSpenn = (h: WangTrenerHendelse) =>
  *   - Sesongen: snitt brutto, GIR, fairway, putter og Strokes Gained for gruppa er ikke regnet ut og viser «—».
  *   - Samling: program og kriterium finnes ikke på samlingen, og uttak kan ikke lagres. Uttaket er sperret.
  */
-export function WangKonkurranse({ data, aktivFane, id }: WangKonkurranseProps) {
+export function WangKonkurranse({ data, aktivFane, id, visDataGolf = false }: WangKonkurranseProps) {
+  const faner = visDataGolf ? ALLE_FANER : ALLE_FANER.filter((f) => f.id !== "dg");
   if (aktivFane === "turnering") return <EnTurnering turnering={data.turneringer.find((t) => t.id === id)} />;
-  if (aktivFane === "sesong") return <Sesongen data={data} />;
-  if (aktivFane === "samling") return <Samling data={data} samling={data.samlinger.find((s) => s.id === id)} />;
-  return <Kalender data={data} />;
+  if (aktivFane === "sesong") return <Sesongen data={data} faner={faner} />;
+  if (aktivFane === "samling") return <Samling data={data} faner={faner} samling={data.samlinger.find((s) => s.id === id)} />;
+  return <Kalender data={data} faner={faner} />;
 }
 
 // ---------------------------------------------------------------------------
 // Kalender
 // ---------------------------------------------------------------------------
 
-function Kalender({ data }: { data: WangTrenerData }) {
+function Kalender({ data, faner }: { data: WangTrenerData; faner: Fane[] }) {
   const kommende = data.turneringer.filter((t) => !t.passert);
   const spilt = data.turneringer.filter((t) => t.passert).reverse();
   const neste = kommende[0];
@@ -65,31 +70,23 @@ function Kalender({ data }: { data: WangTrenerData }) {
 
   return (
     <>
-      <WangTopp dato={`${data.gruppeNavn} · turneringer`} tittel="Konkurranse">
-        <WangFaner omraade="konkurranse" aktiv="kalender" faner={FANER} etikett="Konkurranse" />
-      </WangTopp>
-
-      <WangHelt
-        etikett="Neste turnering"
-        merke={neste ? datoSpenn(neste) : "Ingen kommende turneringer"}
-        tall={dager === null ? "—" : String(dager)}
-        tekst={neste ? `${dager === 1 ? "dag" : "dager"} til ${neste.tittel}` : "dager til neste turnering"}
-        forklar={
-          neste
-            ? `${neste.sted ? `${neste.sted}. ` : ""}Påmeldingen skjer hos arrangøren. Påmeldte elever vises ikke her ennå.`
-            : "Legg turneringene inn i gruppas kalender, så står de her."
-        }
-        knapp={neste ? { tekst: "Se turneringen", href: wangHref("konkurranse", "turnering", neste.id) } : undefined}
+      <WangToppfelt
+        dato={`${data.gruppeNavn} · turneringer`}
+        tittel="Konkurranse"
+        tall={[
+          {
+            verdi: dager === null ? "—" : String(dager),
+            tekst: neste ? `${dager === 1 ? "dag" : "dager"} til ${neste.tittel}` : "dager til neste turnering",
+            under: neste ? `${datoSpenn(neste)}${neste.sted ? ` · ${neste.sted}` : ""}` : "Ingen kommende turneringer",
+            href: neste ? wangHref("konkurranse", "turnering", neste.id) : undefined,
+          },
+          { verdi: String(kommende.length), tekst: kommende.length === 1 ? "kommende turnering" : "kommende turneringer", under: "I gruppas kalender" },
+          { verdi: String(spilt.length), tekst: "spilt i kalenderen", under: "Resultater per elev ligger i Sesongen", href: wangHref("konkurranse", "sesong") },
+        ]}
+        kilde="Kilde: gruppas kalender. Påmeldingen skjer hos arrangøren, og påmeldte elever vises ikke her ennå."
         bilde="/team-wang/hero/trening-golf.jpg"
       />
-
-      <WangSmaaTall
-        tall={[
-          { verdi: String(kommende.length), tekst: "Kommende turneringer" },
-          { verdi: "—", tekst: "Påmeldinger totalt" },
-          { verdi: String(spilt.length), tekst: "Spilt i kalenderen" },
-        ]}
-      />
+      <WangFaner omraade="konkurranse" aktiv="kalender" faner={faner} etikett="Konkurranse" />
 
       <Liste tittel="Kommende" kilde="Kilde: gruppas kalender" turneringer={kommende} tom="Ingen kommende turneringer i kalenderen." />
       <Liste tittel="Spilt" turneringer={spilt} tom="Ingen spilte turneringer i kalenderen." />
@@ -181,12 +178,12 @@ function EnTurnering({ turnering }: { turnering?: WangTrenerHendelse }) {
 // Sesongen
 // ---------------------------------------------------------------------------
 
-function Sesongen({ data }: { data: WangTrenerData }) {
+function Sesongen({ data, faner }: { data: WangTrenerData; faner: Fane[] }) {
   const aar = data.idagIso.slice(0, 4);
   return (
     <>
       <WangTopp dato={`${data.gruppeNavn} · sesongen ${aar}`} tittel="Sesongen">
-        <WangFaner omraade="konkurranse" aktiv="sesong" faner={FANER} etikett="Konkurranse" />
+        <WangFaner omraade="konkurranse" aktiv="sesong" faner={faner} etikett="Konkurranse" />
       </WangTopp>
 
       <WangSmaaTall
@@ -254,7 +251,7 @@ function Sesongen({ data }: { data: WangTrenerData }) {
 // Samling og uttak
 // ---------------------------------------------------------------------------
 
-function Samling({ data, samling }: { data: WangTrenerData; samling?: WangTrenerHendelse }) {
+function Samling({ data, faner, samling }: { data: WangTrenerData; faner: Fane[]; samling?: WangTrenerHendelse }) {
   const valgt = samling ?? data.samlinger.find((s) => !s.passert) ?? data.samlinger[data.samlinger.length - 1];
 
   return (
@@ -263,7 +260,7 @@ function Samling({ data, samling }: { data: WangTrenerData; samling?: WangTrener
         dato={valgt ? `${datoSpenn(valgt)}${valgt.sted ? ` · ${valgt.sted}` : ""}` : data.gruppeNavn}
         tittel={valgt ? valgt.tittel : "Samlinger"}
       >
-        <WangFaner omraade="konkurranse" aktiv="samling" faner={FANER} etikett="Konkurranse" />
+        <WangFaner omraade="konkurranse" aktiv="samling" faner={faner} etikett="Konkurranse" />
         {data.samlinger.length > 1 ? (
           <div className="wg-filter">
             {data.samlinger.map((s) => (
