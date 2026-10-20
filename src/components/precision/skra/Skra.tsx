@@ -8,6 +8,8 @@ import s from "./skra.module.css";
  * Felles byggeklosser for Skrå-drakten i PlayerHQ og AgencyOS
  * (beslutninger.md §PLAYERHQ OG AGENCYOS FÅR SKRÅ-DRAKTEN, 20.10.2026).
  * Fasit: docs/design-system/utkast-skra/index.html.
+ * Avvik:
+ *   - Ingen Train-lock-skjerm. Klossene måles gjennom PH-01 og AG-01 i tests/visual/precision/maal.mjs (390 og 1280 px).
  *
  * - SkraTopp: ekte AK Golf-bilde i grafitt øverst, kuttet nedover mot høyre, med tittel og tall i glass.
  * - SkraStat: ett tall i glass (lenke når `href` er satt). Mangler tallet, sendes «—».
