@@ -6,7 +6,8 @@
  * (TechnicalPlan): status, oppgaver per posisjon P1.0–P10.0, oppgaver, repetisjoner og sist registrert.
  * Stil: src/styles/agencyos-ny-teknisk.css (.agn-s).
  *
- * Avvik: «Venter på deg» teller spillere med plan i utkast; planer venter ikke på noe annet i basen.
+ * Avvik:
+ *   - «Venter på deg» teller spillere med plan i utkast; planer venter ikke på noe annet i basen.
  */
 import Link from "next/link";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
