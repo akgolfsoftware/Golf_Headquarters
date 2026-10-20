@@ -34,7 +34,10 @@ import { mondayOf, monthStartOf, lastDayOfMonth, addDays } from "@/lib/domain/wo
 import { PYRAMID_LABEL, STATUS_LABEL, BLOCK_LABEL } from "@/lib/domain/workbench/labels";
 import type { PyramidArea, RecurrencePolicy, WorkbenchMode, SourceItem } from "@/lib/domain/workbench/types";
 import { TN } from "@/lib/v2/team-norway";
-import { TnShell, TnSidehode, TnSeksjon, TnSpillerFaner } from "@/components/team-norway/tn-shell";
+import { TnShell, TnSeksjon, TnSpillerFaner } from "@/components/team-norway/tn-shell";
+import { TnSkraKort, TnSkraTopp } from "@/components/team-norway/tn-skra-topp";
+import { TnHeltTall, TnHeltTekst } from "@/components/team-norway/tn-stall";
+import { TnFlate } from "@/components/team-norway/tn-flate";
 import { TnOktkort, erTnAkse } from "@/components/team-norway/tn-grunnmur";
 import { TnKort, TnPille, TnKnapp } from "@/components/team-norway/core";
 import { TrenerforslagSkjema } from "@/components/workbench/Trenerforslag";
@@ -52,6 +55,8 @@ export const dynamic = "force-dynamic";
  * gatede side i stedet for å få en parallell redigeringsflate her (unngår å
  * la et gratisnivå bruke en FULL-funksjon via en TN-omvei).
  *
+ * Retning «Skrå» (pakke 5, 20.10.2026): bildetopp og velgerne i et kort over kanten.
+ * Innholdet under er uendret.
  */
 
 const VISNINGER = ["periode", "aar", "maned", "uke", "dag"] as const;
@@ -297,11 +302,45 @@ export default async function TeamNorwayWorkbenchPage({ searchParams }: Props) {
       visTrenerflater={kontekst.erTrener}
       kanAdministrere={kontekst.kanAdministrere}
     >
-      <TnSidehode
+      <TnSkraTopp
+        bilde="tee-hand"
+        etikett={spillerId ? "Plan" : "Workbench"}
         overlinje={spillerId ? `IUP · ${kontekst.spillere.find((s) => s.id === spillerId)?.navn ?? ""} · Plan` : `Workbench · ${kontekst.gruppeNavn}`}
         tittel={spillerId ? "Plan" : "Workbench"}
         ingress={spillerId ? "Du ser det spilleren har delt. Direkte endring er slått av: endringer blir forslag spilleren godtar eller avviser." : "Gruppens årsplan og faste tider, og spillernes plan når du har personlig trener-tilgang."}
+        venstre={
+          spillerId ? null : (
+            <>
+              <TnHeltTall verdi={kontekst.spillere.length}>{kontekst.spillere.length === 1 ? "spiller i gruppa" : "spillere i gruppa"}</TnHeltTall>
+              <TnHeltTekst>Velg gruppa for årsplanen, eller en spiller for planen spilleren har delt.</TnHeltTekst>
+            </>
+          )
+        }
       />
+      <TnSkraKort>
+
+      <TnFlate style={{ display: "grid", gap: 14 }}>
+        <TnSeksjon tittel="Velg spiller">
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            <Link href={tnWorkbenchHref({ visning: "periode" })} style={pilleLenkeStil(!spillerId)}>
+              Gruppe · {kontekst.gruppeNavn}
+            </Link>
+            {kontekst.spillere.map((s) => (
+              <Link key={s.id} href={tnWorkbenchHref({ spiller: s.id, visning: "uke" })} style={pilleLenkeStil(spillerId === s.id)}>
+                {s.navn}
+              </Link>
+            ))}
+          </div>
+        </TnSeksjon>
+
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          {(spillerId ? (["aar", "maned", "uke", "dag"] as Visning[]) : (["periode", "aar", "maned", "uke"] as Visning[])).map((v) => (
+            <Link key={v} href={tnWorkbenchHref({ spiller: spillerId, visning: v, dato: datoRaw })} style={pilleLenkeStil(visning === v)}>
+              {VISNING_LABEL[v]}
+            </Link>
+          ))}
+        </div>
+      </TnFlate>
 
       {spillerId && (
         <TnSpillerFaner
@@ -319,32 +358,12 @@ export default async function TeamNorwayWorkbenchPage({ searchParams }: Props) {
         </p>
       )}
 
-      <TnSeksjon tittel="Velg spiller">
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          <Link href={tnWorkbenchHref({ visning: "periode" })} style={pilleLenkeStil(!spillerId)}>
-            Gruppe · {kontekst.gruppeNavn}
-          </Link>
-          {kontekst.spillere.map((s) => (
-            <Link key={s.id} href={tnWorkbenchHref({ spiller: s.id, visning: "uke" })} style={pilleLenkeStil(spillerId === s.id)}>
-              {s.navn}
-            </Link>
-          ))}
-        </div>
-      </TnSeksjon>
-
-      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-        {(spillerId ? (["aar", "maned", "uke", "dag"] as Visning[]) : (["periode", "aar", "maned", "uke"] as Visning[])).map((v) => (
-          <Link key={v} href={tnWorkbenchHref({ spiller: spillerId, visning: v, dato: datoRaw })} style={pilleLenkeStil(visning === v)}>
-            {VISNING_LABEL[v]}
-          </Link>
-        ))}
-      </div>
-
       {spillerId ? (
         (await medNavngittProfil(bruker.id, spillerId, gruppeId, () => renderPersonligPlan({ bruker, kontekst, spillerId, visning, datoRaw, idag, flyttOkt, slettOkt, kopierOkt, settMal, redigerOktInnhold, opprettFraKilde, leggTilOvelse, okt: sp.okt }))) ?? <TnKort>Spilleren har ikke delt profilen med deg.</TnKort>
       ) : (
         await renderGruppeplan({ bruker, kontekst, visning, datoRaw, idag, opprettPeriode, slettPeriode, rullUtAarsplan })
       )}
+      </TnSkraKort>
     </TnShell>
   );
 }
