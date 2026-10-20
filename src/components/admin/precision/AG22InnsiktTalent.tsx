@@ -1,44 +1,18 @@
 "use client";
 
 /**
- * Precision Athletics — Innsikt og talent (AG-22).
- *
- * Kilde: Claude Design AG-22 (designsystem/precision-athletics/ui_kits/agencyos/screens/AG-22.jsx).
- * Ruter: /admin/innsikt, /innsyn/talent/radar, /innsyn/talent/discovery, /innsyn/talent/wagr-import.
- *
- * 3 faner:
- * 1. radar: Talentradar mot peer-snitt. Velg opptil 4 spillere side ved side.
- * 2. disc: Discovery (talentdager, søknader, samtykkestatus).
- * 3. wagr: WAGR-import (CSV-opplasting og matching).
- *
- * Personvernregel:
- * Spillere født 2008 eller senere uten samtykke vises aldri. Spillere uten fødselsår vises ikke.
+ * Innsikt og talent (AG-22) i nytt design: /admin/innsikt, /innsyn/talent/radar,
+ * /innsyn/talent/discovery, /innsyn/talent/wagr-import. Bare coach.
+ * Personvern: spillere født 2008 eller senere uten samtykke vises aldri, og spillere uten
+ * fødselsår vises ikke (filtrerSynligeTalenter / filtrerSynligeDiscovery).
+ * Tegning: canvaset «AgencyOS nøkkelskjermer», raden «Kø, oppgaver, innsikt, Jarvis …».
  */
 
 import { useState } from "react";
-import {
-  ClipboardList,
-  Radar as RadarIcon,
-  Upload,
-} from "lucide-react";
-import {
-  FeilTilstand,
-  KnappLenke,
-  LasterTilstand,
-  Meta,
-  Sidehode,
-  StatusPille,
-  TomTilstand,
-} from "@/components/precision/pa";
-import {
-  Faner,
-  Kort,
-  KortHode,
-  Tabell,
-  type Kolonne,
-} from "@/components/precision/pa-a5";
+import { Feil, KnappLenke, Laster, Pille, Seksjon, Tom, Topp, Varsel } from "@/components/admin/agencyos-ny/ny";
 import { filtrerSynligeDiscovery, filtrerSynligeTalenter } from "@/lib/talent/personvern-filter";
-import "@/styles/precision-a22.css";
+import "@/styles/agencyos-ny-mer.css";
+import "@/styles/agencyos-ny-liste.css";
 
 export type SpillerTalent = {
   id: string;
@@ -193,262 +167,115 @@ function RadarDiagram({
   );
 }
 
-export function AG22InnsiktTalent({
-  tilstand = "data",
-  data = TOM_DATA,
-  startFane = "radar",
-}: AG22InnsiktTalentProps) {
-  const [aktivFane, setAktivFane] = useState(startFane);
-  const [valgteSpillere, setValgteSpillere] = useState<string[]>(() =>
-    data.players.slice(0, 2).map((p) => p.id),
-  );
+const INGRESS = "Talentradar mot peer-snitt, discovery og WAGR. Kohortsammenligning er bare for coach.";
+type FaneId = "radar" | "disc" | "wagr";
+const FANER: FaneId[] = ["radar", "disc", "wagr"];
+const FANE_NAVN: Record<FaneId, string> = { radar: "Radar", disc: "Discovery", wagr: "WAGR-import" };
 
-  if (tilstand === "laster") {
-    return (
-      <div className="pa-a22" data-testid="ag22-laster">
-        <Sidehode
-          kicker="Innsikt og talent"
-          title="Innsikt og talent"
-          sub="Talentradar mot peer-snitt, discovery og WAGR. Kohortsammenligning er bare for coach."
-        />
-        <LasterTilstand text="Henter talentprofiler …" />
-      </div>
-    );
-  }
+export function AG22InnsiktTalent({ tilstand = "data", data = TOM_DATA, startFane = "radar" }: AG22InnsiktTalentProps) {
+  const [aktivFane, setAktivFane] = useState<FaneId>(FANER.includes(startFane as FaneId) ? (startFane as FaneId) : "radar");
+  const [valgteSpillere, setValgteSpillere] = useState<string[]>(() => data.players.slice(0, 2).map((p) => p.id));
+  const topp = <Topp dato="Spillere · bare coach" tittel="Innsikt og talent" ingress={INGRESS} />;
 
-  if (tilstand === "feil") {
-    return (
-      <div className="pa-a22" data-testid="ag22-feil">
-        <Sidehode
-          kicker="Innsikt og talent"
-          title="Innsikt og talent"
-          sub="Talentradar mot peer-snitt, discovery og WAGR. Kohortsammenligning er bare for coach."
-        />
-        <FeilTilstand
-          icon={RadarIcon}
-          title="Talentdata kunne ikke hentes"
-          text="Ingen profiler er endret. Prøv igjen."
-          code="FEIL 503 · TALENT"
-        />
-      </div>
-    );
-  }
+  if (tilstand === "laster") return <div className="agn-s" data-testid="ag22-laster">{topp}<Laster tekst="Henter talentprofiler …" /></div>;
+  if (tilstand === "feil") return <div className="agn-s" data-testid="ag22-feil">{topp}<Feil tittel="Talentdata kunne ikke hentes" tekst="Ingen profiler er endret. Prøv igjen." kode="FEIL 503 · TALENT" /></div>;
 
-  // Filtrer spillere i henhold til personvernregel:
-  // born != null && (born < 2008 || consent)
-  const synligeSpillere =
-    tilstand === "tom"
-      ? []
-      : filtrerSynligeTalenter(data.players);
-  const skjulteAntall =
-    tilstand === "tom" ? 0 : data.players.length - synligeSpillere.length;
+  // Personvernregel: born != null && (born < 2008 || consent)
+  const synligeSpillere = tilstand === "tom" ? [] : filtrerSynligeTalenter(data.players);
+  const skjulteAntall = tilstand === "tom" ? 0 : data.players.length - synligeSpillere.length;
+  const synligeDiscovery = tilstand === "tom" ? [] : filtrerSynligeDiscovery(data.discovery);
 
   const toggleSpiller = (id: string) => {
-    setValgteSpillere((prev) =>
-      prev.includes(id)
-        ? prev.filter((x) => x !== id)
-        : prev.length >= 4
-        ? prev
-        : [...prev, id]
-    );
+    setValgteSpillere((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : prev.length >= 4 ? prev : [...prev, id]));
   };
-
-  const valgteObjekter = synligeSpillere.filter((p) =>
-    valgteSpillere.includes(p.id)
-  );
-
-  const faner = [
-    { value: "radar", label: "Radar" },
-    { value: "disc", label: "Discovery" },
-    { value: "wagr", label: "WAGR-import" },
-  ];
-
-  const discoveryKolonner: Kolonne<DiscoveryRad>[] = [
-    { key: "kilde", label: "Kilde", render: (r) => r.kilde, lead: true },
-    { key: "spiller", label: "Spiller", render: (r) => r.spiller },
-    { key: "fodt", label: "Født", render: (r) => (r.fodt != null ? String(r.fodt) : "—"), mono: true },
-    { key: "resultat", label: "Resultat", render: (r) => r.resultat, mono: true },
-    {
-      key: "samtykke",
-      label: "Samtykke",
-      render: (r) =>
-        r.samtykke ? (
-          <StatusPille tone="ok">Ja</StatusPille>
-        ) : (
-          <StatusPille tone="neutral">Mangler</StatusPille>
-        ),
-    },
-  ];
-
-  const synligeDiscovery =
-    tilstand === "tom"
-      ? []
-      : filtrerSynligeDiscovery(data.discovery);
+  const valgteObjekter = synligeSpillere.filter((p) => valgteSpillere.includes(p.id));
+  const peerSnitt = Math.round(data.peer.v.reduce((a, b) => a + b, 0) / (data.peer.v.length || 1));
 
   return (
-    <div className="pa-a22" data-testid="ag22-innsikt-talent">
-      <Sidehode
-        kicker="Innsikt og talent"
-        title="Innsikt og talent"
-        sub="Talentradar mot peer-snitt, discovery og WAGR. Kohortsammenligning er bare for coach."
-      />
+    <div className="agn-s" data-testid="ag22-innsikt-talent">
+      {topp}
 
-      <div
-        role="region"
-        aria-label="Tilgangsinformasjon"
-        style={{
-          padding: "12px 16px",
-          borderRadius: "var(--radius)",
-          background: "var(--surface-sunken)",
-          border: "1px solid var(--border-hairline)",
-          fontSize: "13px",
-          color: "var(--text-secondary)",
-          lineHeight: 1.45,
-        }}
-      >
-        <strong
-          style={{
-            color: "var(--text-primary)",
-            display: "block",
-            marginBottom: 2,
-          }}
-        >
-          Bare for coach
-        </strong>
-        Spillere født 2008 eller senere uten samtykke vises aldri. Spillere uten
-        fødselsår vises ikke.
-        {skjulteAntall > 0 &&
-          ` ${skjulteAntall} ${
-            skjulteAntall === 1 ? "spiller er" : "spillere er"
-          } skjult.`}
+      <div className="teller-rad">
+        <div className="teller"><span className="e">Spillere i utvalget</span><b className="t">{tilstand === "tom" ? "—" : synligeSpillere.length}</b><span className="s">{skjulteAntall > 0 ? `${skjulteAntall} skjult av personvernregelen` : "Synlige for coach"}</span></div>
+        <div className="teller"><span className="e">Discovery</span><b className="t">{tilstand === "tom" ? "—" : synligeDiscovery.length}</b></div>
+        <div className="teller"><span className="e">Kilde</span><b className="t" style={{ fontSize: 20 }}>{data.src || "—"}</b></div>
       </div>
 
-      <Faner faner={faner} value={aktivFane} onChange={setAktivFane} />
+      <Varsel tone="info" tittel="Bare for coach">
+        Spillere født 2008 eller senere uten samtykke vises aldri. Spillere uten fødselsår vises ikke.
+        {skjulteAntall > 0 ? ` ${skjulteAntall} ${skjulteAntall === 1 ? "spiller er" : "spillere er"} skjult.` : ""}
+      </Varsel>
+
+      <nav className="valg" aria-label="Innsikt og talent">
+        {FANER.map((f) => <button key={f} type="button" aria-pressed={aktivFane === f} onClick={() => setAktivFane(f)}>{FANE_NAVN[f]}</button>)}
+      </nav>
 
       {tilstand === "tom" && aktivFane !== "wagr" ? (
-        <TomTilstand
-          icon={RadarIcon}
-          title="Ingen talentprofiler"
-          text="Talentradaren bygges fra tester og runder. Tildel testbatteriet i Tester."
-          actions={
-            <KnappLenke href="/admin/tester" icon={ClipboardList}>
-              Åpne Tester
-            </KnappLenke>
-          }
-        />
+        <Tom tittel="Ingen talentprofiler" tekst="Talentradaren bygges fra tester og runder. Tildel testbatteriet i Tester." handling={<KnappLenke href="/admin/tester">Åpne Tester</KnappLenke>} />
       ) : (
         <>
-          {/* Fane 1: Radar */}
           {aktivFane === "radar" && (
-            <div
-              style={{ display: "flex", flexDirection: "column", gap: 16 }}
-              data-testid="ag22-fane-radar"
-            >
-              <div className="pa-a22__picker">
-                <Meta>
-                  VELG OPPTIL FIRE SPILLERE · {valgteSpillere.length} AV 4
-                </Meta>
-                <div className="pa-a22__pills">
+            <div className="agn-s-stack" data-testid="ag22-fane-radar">
+              <Seksjon tittel="Velg spillere" kilde={`${valgteSpillere.length} av 4`}>
+                <div className="valg" role="group" aria-label="Velg opptil fire spillere">
                   {synligeSpillere.map((p) => {
                     const erValgt = valgteSpillere.includes(p.id);
                     const kanVelges = erValgt || valgteSpillere.length < 4;
-                    return (
-                      <button
-                        type="button"
-                        key={p.id}
-                        className="pa-choice"
-                        aria-pressed={erValgt}
-                        disabled={!kanVelges}
-                        onClick={() => toggleSpiller(p.id)}
-                      >
-                        {p.name}
-                      </button>
-                    );
+                    return <button type="button" key={p.id} aria-pressed={erValgt} disabled={!kanVelges} onClick={() => toggleSpiller(p.id)}>{p.name}</button>;
                   })}
                 </div>
-              </div>
+              </Seksjon>
 
               {valgteObjekter.length > 0 ? (
-                <div className="pa-a22__radar-grid">
+                <div className="radar-grid">
                   {valgteObjekter.map((p) => {
-                    const snitt = Math.round(
-                      p.v.reduce((a, b) => a + b, 0) / p.v.length
-                    );
-                    const peerSnitt = Math.round(
-                      data.peer.v.reduce((a, b) => a + b, 0) / data.peer.v.length
-                    );
+                    const snitt = Math.round(p.v.reduce((a, b) => a + b, 0) / (p.v.length || 1));
                     return (
-                      <div key={p.id} className="pa-a22__radar-card">
-                        <div className="pa-a22__radar-card-header">
-                          <span className="pa-a22__radar-player-name">
-                            {p.name}
-                          </span>
-                          <Meta>FØDT {p.born}</Meta>
-                        </div>
-                        <RadarDiagram
-                          axes={data.axes}
-                          v={p.v}
-                          peer={data.peer.v}
-                        />
-                        <Meta>
-                          SNITT {snitt} · PEER {peerSnitt}
-                        </Meta>
+                      <div key={p.id} className="kort">
+                        <div className="radar-hode"><b className="undertittel">{p.name}</b><span className="kilde mono">Født {p.born}</span></div>
+                        <RadarDiagram axes={data.axes} v={p.v} peer={data.peer.v} />
+                        <p className="kilde mono">Snitt {snitt} · peer {peerSnitt}</p>
                       </div>
                     );
                   })}
                 </div>
               ) : (
-                <p
-                  style={{
-                    margin: 0,
-                    fontSize: "14px",
-                    color: "var(--text-secondary)",
-                  }}
-                >
-                  Velg minst én spiller.
-                </p>
+                <p className="forklar">Velg minst én spiller.</p>
               )}
-
-              <div className="pa-a22__legend">
-                <span className="pa-a22__legend-item">
-                  <span className="pa-a22__legend-solid" />
-                  <Meta>SPILLER</Meta>
-                </span>
-                <span className="pa-a22__legend-item">
-                  <span className="pa-a22__legend-dashed" />
-                  <Meta>{data.peer.label.toUpperCase()}</Meta>
-                </span>
-                <Meta>INDEKS 0–100 · {data.src}</Meta>
-              </div>
+              <p className="kilde">Heltrukket linje er spilleren, stiplet er {data.peer.label}. Indeks 0–100 · {data.src}</p>
             </div>
           )}
 
-          {/* Fane 2: Discovery */}
           {aktivFane === "disc" && (
             <div data-testid="ag22-fane-discovery">
-              <Tabell
-                caption="Discovery · talentdager og søknader"
-                columns={discoveryKolonner}
-                rows={synligeDiscovery}
-                tomTekst="Ingen talentdager eller søknader registrert."
-              />
+              {synligeDiscovery.length === 0 ? (
+                <Tom tittel="Ingen talentdager eller søknader" tekst="Ingen er registrert ennå." />
+              ) : (
+                <Seksjon tittel="Discovery" kilde="Talentdager og søknader">
+                  <div className="liste">
+                    {synligeDiscovery.map((r) => (
+                      <div key={r.id} className="drift-rad">
+                        <span><b>{r.spiller}</b><span className="kilde">{r.kilde} · født {r.fodt != null ? r.fodt : "—"} · {r.resultat}</span></span>
+                        <span aria-hidden />
+                        <Pille tone={r.samtykke ? "ok" : "vent"}>{r.samtykke ? "Samtykke" : "Mangler"}</Pille>
+                      </div>
+                    ))}
+                  </div>
+                </Seksjon>
+              )}
             </div>
           )}
 
-          {/* Fane 3: WAGR-import */}
           {aktivFane === "wagr" && (
-            <div className="pa-a22__wagr-card" data-testid="ag22-fane-wagr">
-              <Kort>
-                <KortHode tittel="WAGR-import" aside={data.wagr ? data.wagr.src : "INGEN FIL IMPORTERT"} />
-                <p style={{ margin: 0, fontSize: "14px", color: "var(--text-secondary)", lineHeight: 1.45 }}>
-                  {data.wagr
-                    ? `${data.wagr.file} · ${data.wagr.match} av ${data.wagr.rows} rader matchet.`
-                    : "Ingen WAGR-fil er importert. Import gjøres i WAGR-importen."}
-                </p>
-                <KnappLenke href="/innsyn/talent/wagr-import" variant="secondary" icon={Upload}>
-                  Åpne WAGR-import
-                </KnappLenke>
-              </Kort>
+            <div data-testid="ag22-fane-wagr">
+              <Seksjon tittel="WAGR-import" kilde={data.wagr ? data.wagr.src : "Ingen fil importert"}>
+                <div className="kort">
+                  <p className="forklar">
+                    {data.wagr ? `${data.wagr.file} · ${data.wagr.match} av ${data.wagr.rows} rader matchet.` : "Ingen WAGR-fil er importert. Import gjøres i WAGR-importen."}
+                  </p>
+                  <div className="knapper"><KnappLenke href="/innsyn/talent/wagr-import">Åpne WAGR-import</KnappLenke></div>
+                </div>
+              </Seksjon>
             </div>
           )}
         </>

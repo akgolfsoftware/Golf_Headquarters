@@ -1,0 +1,8 @@
+/* AgencyOS lister med rader og radar (Oppgaver, Innsikt og talent). Gjelder bare inni .agn-s. */
+.agn-s .drift-rad { cursor: default; }
+.agn-s .agn-s-stack { display: grid; gap: var(--r5); align-content: start; }
+.agn-s .radar-grid { display: grid; gap: var(--r3); grid-template-columns: minmax(0, 1fr); }
+.agn-s .radar-grid .kort { display: grid; gap: var(--r2); }
+.agn-s .radar-hode { display: flex; align-items: baseline; justify-content: space-between; gap: var(--r2); flex-wrap: wrap; }
+@media (min-width: 900px) { .agn-s .radar-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.agn-s .detaljer { border-bottom: 1px solid var(--sand-300); }
