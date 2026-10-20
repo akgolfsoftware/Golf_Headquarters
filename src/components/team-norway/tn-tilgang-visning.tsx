@@ -3,13 +3,16 @@ import type { ReactNode } from "react";
 import type { TnAvsluttResultat, TnLeggTilResultat, TnTilgangRad, TnTilgangStatus, TnTrenerRolle } from "@/lib/domain/tn-tilgang";
 import { TnPille } from "./core";
 import { TN } from "@/lib/v2/team-norway";
-import { TnEtikett, TnFlate, TnFlatehode, TnFotnote, TnInitialer, TnMangler, TnSkjermhode } from "./tn-flate";
+import { TnEtikett, TnFlate, TnFlatehode, TnFotnote, TnInitialer, TnMangler } from "./tn-flate";
 import { TnAvsluttTilgang, TnLeggTilTrener } from "./tn-tilgang-handlinger";
 import { TnShell } from "./tn-shell";
+import { TnSkraKort, TnSkraTopp } from "./tn-skra-topp";
+import { TnHeltTall, TnHeltTekst, TnHeltTellere } from "./tn-stall";
 
 /**
- * TN-19 Trenere og tilgang.
- * Fasit: Claude Design «Team Norway App delivery» (bc3e41fc), skjerm TN-19.
+ * TN-19 Trenere og tilgang. Retning «Skrå» (pakke 6, 20.10.2026): bildetopp med antall som har
+ * tilgang, og lista som kort over kanten.
+ * Innholdet følger Claude Design «Team Norway App delivery» (bc3e41fc), skjerm TN-19.
  *
  * Avvik:
  *   - «Legg til trener» gir tilgang til en eksisterende AK Golf-konto, slått
@@ -49,7 +52,29 @@ export function TnTilgangVisning({ brukerNavn, gruppeId, gruppeNavn, rader, valg
 
   return (
     <TnShell aktiv="tilgang" brukerNavn={brukerNavn} rolle="Trener" groupId={gruppeId} visTrenerflater kanAdministrere>
-      <TnSkjermhode overlinje={`Administrasjon · ${gruppeNavn}`} tittel="Trenere og tilgang" ingress="Hvem som er trener eller Assist Coach i gruppen. Legg til nye, og avslutt tilgang for dem som ikke lenger er med." />
+      <TnSkraTopp
+        bilde="spiller-ved-vannet"
+        etikett="Trenere og tilgang"
+        overlinje={`Administrasjon · ${gruppeNavn}`}
+        tittel="Trenere og tilgang"
+        ingress="Hvem som er trener eller Assist Coach i gruppen. Legg til nye, og avslutt tilgang for dem som ikke lenger er med."
+        venstre={
+          <>
+            <TnHeltTall verdi={aktive.length}>har tilgang nå</TnHeltTall>
+            <TnHeltTekst>Tilgang gis til en eksisterende AK Golf-konto og gjelder med en gang.</TnHeltTekst>
+          </>
+        }
+        hoyre={
+          <TnHeltTellere
+            tall={[
+              { verdi: trenere, tekst: trenere === 1 ? "trener" : "trenere" },
+              { verdi: aktive.length - trenere, tekst: "Assist Coach" },
+              { verdi: avsluttede.length, tekst: "avsluttet" },
+            ]}
+          />
+        }
+      />
+      <TnSkraKort>
 
       <TnFlate>
         <TnFlatehode tittel={`Tilgang til ${gruppeNavn}`} merknad={`Trener ${trenere} · Assist Coach ${aktive.length - trenere}`} />
@@ -69,7 +94,7 @@ export function TnTilgangVisning({ brukerNavn, gruppeId, gruppeNavn, rader, valg
               </div>
             </div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
-              <Link href={`/team-norway/tilgang?valgt=${encodeURIComponent(r.userId)}`} style={{ minHeight: 44, display: "inline-flex", alignItems: "center", padding: "0 6px", color: TN.navy600, fontSize: 14, fontWeight: 700 }}>Endre</Link>
+              <Link href={`/team-norway/tilgang?valgt=${encodeURIComponent(r.userId)}`} style={{ minHeight: 44, minWidth: 44, display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "0 6px", color: TN.navy600, fontSize: 14, fontWeight: 700 }}>Endre</Link>
               {r.userId === egenId ? <TnEtikett style={{ padding: "0 6px" }}>Deg</TnEtikett> : avslutt ? <TnAvsluttTilgang navn={r.navn} avslutt={avslutt.bind(null, r.userId)} /> : null}
             </div>
           </div>
@@ -94,7 +119,7 @@ export function TnTilgangVisning({ brukerNavn, gruppeId, gruppeNavn, rader, valg
               <span style={{ minWidth: 0, overflowWrap: "anywhere" }}>{r.navn} · {rolleNavn(r.rolle)}</span>
               <span style={{ display: "inline-flex", gap: 12, alignItems: "center" }}>
                 <span style={{ fontFamily: TN.font.body, fontSize: 13, color: TN.ink500 }}>Avsluttet {r.endedAt ? dato.format(r.endedAt) : "—"}</span>
-                <Link href={`/team-norway/tilgang?valgt=${encodeURIComponent(r.userId)}`} style={{ minHeight: 44, display: "inline-flex", alignItems: "center", color: TN.navy600, fontWeight: 700 }}>Endre</Link>
+                <Link href={`/team-norway/tilgang?valgt=${encodeURIComponent(r.userId)}`} style={{ minHeight: 44, minWidth: 44, display: "inline-flex", alignItems: "center", justifyContent: "center", color: TN.navy600, fontWeight: 700 }}>Endre</Link>
               </span>
             </div>
           ))}
@@ -118,6 +143,7 @@ export function TnTilgangVisning({ brukerNavn, gruppeId, gruppeNavn, rader, valg
           </div>
         ))}
       </TnFlate>
+      </TnSkraKort>
     </TnShell>
   );
 }
