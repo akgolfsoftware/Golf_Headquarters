@@ -337,7 +337,6 @@ export default async function LeaderboardsPage() {
               rows={data.pga.drive}
               format="decimal1"
               icon="Crosshair"
-              seeAllHref="/stats/pga?kategori=drive"
             />
           </Reveal>
           <Reveal delay={60}>
@@ -347,7 +346,6 @@ export default async function LeaderboardsPage() {
               rows={data.pga.fairway}
               format="pct1"
               icon="Target"
-              seeAllHref="/stats/pga?kategori=fairway"
             />
           </Reveal>
           <Reveal delay={120}>
@@ -357,7 +355,6 @@ export default async function LeaderboardsPage() {
               rows={data.pga.gir}
               format="pct1"
               icon="Flag"
-              seeAllHref="/stats/pga?kategori=gir"
             />
           </Reveal>
           <Reveal delay={180}>
@@ -367,7 +364,6 @@ export default async function LeaderboardsPage() {
               rows={data.pga.putts}
               format="decimal1"
               icon="Circle"
-              seeAllHref="/stats/pga?kategori=putter"
             />
           </Reveal>
           <Reveal delay={240}>
@@ -377,7 +373,6 @@ export default async function LeaderboardsPage() {
               rows={data.pga.scoring}
               format="decimal2"
               icon="LineChart"
-              seeAllHref="/stats/pga?kategori=scoring"
             />
           </Reveal>
           <Reveal delay={300}>
@@ -387,7 +382,6 @@ export default async function LeaderboardsPage() {
               rows={data.pga.sgTotal}
               format="signed2"
               icon="Sparkles"
-              seeAllHref="/stats/pga?kategori=sg-total"
             />
           </Reveal>
         </div>

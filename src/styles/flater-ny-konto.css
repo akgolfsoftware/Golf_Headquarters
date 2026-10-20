@@ -12,8 +12,8 @@
 .fln .knapp.hel{width:100%}
 .fln .knapp.google{background:var(--white);color:var(--graphite-900);border:1px solid var(--graphite-500)}
 .fln .knapp:disabled{opacity:.55;cursor:not-allowed}
-.fln .feilmelding{display:flex;gap:8px;align-items:flex-start;font-size:13.5px;color:#8a2a1c}
-.fln .felt input[aria-invalid="true"]{border-color:#8a2a1c;border-width:2px}
+.fln .feilmelding{display:flex;gap:8px;align-items:flex-start;font-size:13.5px;color:var(--ak-rust-tekst)}
+.fln .felt input[aria-invalid="true"]{border-color:var(--ak-rust-tekst);border-width:2px}
 .fln .pakker{display:grid;gap:var(--r2)}
 .fln .pakke{display:grid;gap:6px;padding:14px 16px;border:1px solid var(--sand-300);border-radius:12px;background:var(--white);text-align:left;font:inherit;color:inherit;cursor:pointer}
 .fln .pakke[aria-pressed="true"]{border:2px solid var(--graphite-900);padding:13px 15px;background:var(--sand-100)}

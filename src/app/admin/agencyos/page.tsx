@@ -7,7 +7,8 @@
  * Lastere (alle fra før, ingen skjemaendring):
  *  - loadDailyBrief: dagens økter (kalender 05–22), oppgaver fra Notion-
  *    cachen og nøkkeltall.
- *  - lastGodkjenninger: køen, samme tall og rader som /admin/ko.
+ *  - lastGodkjenninger: køen, samme tall som /admin/ko, men bare de åtte
+ *    nyeste radene (A1, audit 20.10.2026: hele køen ga 30 s lastetid).
  *  - lastCockpitTillegg: «Følger ikke planen» (to siste uker) og turneringer
  *    denne uka, i coachens spillerskop.
  *  - loadAiDispatch: AI-dispatch («Én ting nå» og hvilken AI-flate som eier
@@ -46,7 +47,8 @@ export default async function CockpitPage() {
   const innboksNye = user.role === "ADMIN" ? prisma.innboksEpost.count({ where: { status: "NY" } }) : Promise.resolve(0);
   const [brief, ko, tillegg, dispatch] = await Promise.all([
     loadDailyBrief({ id: user.id, name: user.name, avatarUrl: user.avatarUrl, role: user.role }),
-    lastGodkjenninger(coach),
+    // Cockpit viser fire saker og ingen ukesrapport; køen i sin helhet lastes aldri (audit 20.10, A1).
+    lastGodkjenninger(coach, { maksRader: 8, medUkesrapport: false }),
     lastCockpitTillegg(coach),
     innboksNye.then((n) => loadAiDispatch({ id: user.id, role: user.role, innboksNye: n })),
   ]);

@@ -14,14 +14,14 @@
  */
 
 .agn, .agn-s {
-  --sand-100: #faf8f3; --sand-150: #f1eee8; --sand-300: #ddd9d1; --white: #ffffff;
-  --graphite-900: #141413; --graphite-800: #2a2926; --graphite-600: #46443f; --graphite-500: #686560;
-  --amber-700: #7e6110; --amber-50: #fbf4e4; --green-700: #2f6b3a; --green-50: #eaf3e9;
-  --rust: #9b2415; --rust-50: #fbe9e7; --rust-tekst: #8a2a1c;
-  --fys: #788c5d; --fys-ink: #556740; --tek: #b8852a; --tek-ink: #825d15;
-  --slag: #2563eb; --slag-ink: #1d4fd0; --spill: #c46686; --spill-ink: #954661; --turn: #a32d2d;
-  --sans: var(--font-ibm-plex-sans, "IBM Plex Sans"), system-ui, -apple-system, sans-serif;
-  --mono: var(--font-ibm-plex-mono, "IBM Plex Mono"), ui-monospace, Menlo, monospace;
+  --sand-100: var(--ak-sand-100); --sand-150: var(--ak-sand-150); --sand-300: var(--ak-sand-300); --white: var(--ak-hvit);
+  --graphite-900: var(--ak-g900); --graphite-800: var(--ak-g800); --graphite-600: var(--ak-g600); --graphite-500: var(--ak-g500);
+  --amber-700: var(--ak-amber-700); --amber-50: var(--ak-amber-50); --green-700: var(--ak-green-700); --green-50: var(--ak-green-50);
+  --rust: var(--ak-rust-600); --rust-50: var(--ak-rust-100); --rust-tekst: var(--ak-rust-tekst);
+  --fys: var(--ak-fys); --fys-ink: var(--ak-fys-ink-fylt); --tek: var(--ak-tek); --tek-ink: var(--ak-tek-ink-fylt);
+  --slag: var(--ak-slag); --slag-ink: var(--ak-slag-ink); --spill: var(--ak-spill); --spill-ink: var(--ak-spill-ink-fylt); --turn: var(--ak-turn);
+  --sans: var(--ak-font-sans);
+  --mono: var(--ak-font-mono);
   --r1: 4px; --r2: 8px; --r3: 12px; --r4: 16px; --r5: 24px; --r6: 32px;
   --ut: cubic-bezier(.23, 1, .32, 1);
 }

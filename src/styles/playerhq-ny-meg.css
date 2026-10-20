@@ -24,7 +24,7 @@
 
 /* Avatar */
 .phn-meg .avatar { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; font: 600 14px/1 var(--phn-sans); flex: none; background: var(--phn-g900); color: #fff; }
-.phn-meg .avatar.wang { background: #1d3557; }
+.phn-meg .avatar.wang { background: var(--ak-blue-800); }
 .phn-meg .avatar.tn { background: #012b5d; }
 .phn-meg .avatar.lys { background: var(--phn-sand-150); color: var(--phn-g900); }
 .phn-meg .avatar.stor { width: 72px; height: 72px; font-size: 24px; }
@@ -159,8 +159,8 @@
 .phn-meg .phn-ark.dialog { margin: auto; border-radius: 16px; width: min(520px, calc(100% - 32px)); padding: 24px 16px 16px; }
 .phn-meg .phn-ark h2 { margin: 0; font: 600 19px/1.25 var(--phn-sans); }
 .phn-meg .phn-ark .phn-ark-kropp .phn-knapper { display: grid; gap: 8px; }
-.phn-meg .feltfeil { font: 500 13.5px/1.4 var(--phn-sans); color: #8a2a1c; }
-.phn-meg .phn-felt input[aria-invalid="true"] { border: 2px solid #8a2a1c; }
+.phn-meg .feltfeil { font: 500 13.5px/1.4 var(--phn-sans); color: var(--ak-rust-tekst); }
+.phn-meg .phn-felt input[aria-invalid="true"] { border: 2px solid var(--ak-rust-tekst); }
 .phn-meg .avkryss { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: start; font: 400 15px/1.45 var(--phn-sans); cursor: pointer; }
 .phn-meg .avkryss input { width: 24px; height: 24px; margin: 0; accent-color: var(--phn-g900); }
 .phn-meg .kvittering { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 10px; background: var(--phn-g900); color: #fff; font: 500 14px/1.4 var(--phn-sans); }

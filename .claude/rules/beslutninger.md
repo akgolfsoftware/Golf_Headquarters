@@ -4,6 +4,24 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## DATA GOLF ER ANDERS' PRIVATE VERKTØY: BARE ADMIN, PÅ ALLE FLATER, ALDRI UTAD (Anders 20.10.2026, bindende)
+
+Anders 20.10, om #1450 (Data Golf bare for ADMIN, 19.10): «Jeg jobber både for Wang Toppidrett, Team Norway og AK Golf. Så dette er privat. Dette bruker vi i privat regi. Jeg godkjenner at det skal brukes, men ikke noe utover å publisere det og bruke det utad.»
+
+- **Data Golf vises bare for ADMIN (Anders)**, i AgencyOS, `/team-wang` og `/team-norway`. Anders bruker det i alle tre rollene sine.
+- **Ingen andre ser det:** ikke AK Golf-coacher, ikke WANG- eller Team Norway-trenere, ikke spillere, foreldre eller uinnloggede.
+- **Aldri utad:** ingen publisering, ingen eksport, ingen Data Golf-tall i rapporter, e-post eller materiell som går ut av huset. «Powered by Data Golf» står der tallene vises.
+
+**Overstyrer:** «Coacher ser dem» i §DATA GOLF VISES ALDRI TIL KUNDER (16.10) og «Data Golf er bare for coacher» i §KODEGJENNOMGANGEN 06.10.
+
+Krever ingen kodeendring for tilgangen — bekrefter dagens tilstand: `DATAGOLF_ROLLER = ["ADMIN"]` (`src/lib/auth/datagolf-regel.ts:17`, #1450).
+
+**Arbeidet dette utløser:**
+
+1. **(haster, lisens) Bare Anders har ADMIN:** lesespørring mot `users` der `role = 'ADMIN'`. Ferdig når hver ADMIN-konto er Anders' egen, eller de andre er lagt fram for Anders.
+2. **Ingen vei utad:** markedssidene lenker ikke til `/stats/pga` (punkt 12 i §KODEGJENNOMGANGEN 06.10), og ingen eksport, PDF eller e-post tar med Data Golf-tall. Ferdig når et søk i `src/app/(marketing)` etter `/stats/pga` gir 0 treff og en test låser at eksportene ikke leser `dg_`-data.
+3. **Demoen 21.10:** Data Golf vises bare innlogget som Anders, aldri med demokontoene for WANG og Team Norway (`docs/planer/demo-lansering-2026-10-21.md` §5).
+
 ## TEAM NORWAY-APPEN FÅR RETNING «SKRÅ», OG HJØRNER OG SKYGGER ER IKKE LENGER FORBUDT (Anders 19.10.2026, bindende)
 
 Anders 19.10, etter tre nye retninger for trenerens hjem bygget fra Team Norway Golf-merket (`docs/design-system/utkast-tn/nye-veier.html`, https://claude.ai/artifact/KoFx3JHEDs9KvRPvUVYbwk): «Gå for 1 Skrå. Før det som beslutning, også at regelen om hjørner 0–4 px og ingen skygger oppheves for Team Norway-appen.»
@@ -331,9 +349,8 @@ Svar på punkt 2 (lisens) i `docs/design-system/datagolf-coach-datakart-og-skjer
 «nei ikke til kunder, men kun coacher i team norway og wang toppidrett».
 
 - **Data Golf-tall vises aldri til kunder:** ikke spillere, foreldre, uinnloggede eller markedssidene.
-- **Coacher ser dem:** AK Golf-coacher i AgencyOS, og trenerne i WANG Toppidrett og Team Norway.
-- Bekrefter §KODEGJENNOMGANGEN 06.10 (Data Golf bare for coacher, `kanSeDataGolf`) og avgjør at WANG- og TN-trenere
-  kan få Data Golf-skjermene. Uendret: «Powered by Data Golf» der tallene vises, og ingen eksport (DG-09).
+- ~~**Coacher ser dem:** AK Golf-coacher i AgencyOS, og trenerne i WANG Toppidrett og Team Norway.~~ Overstyrt 20.10: bare ADMIN (§DATA GOLF ER ANDERS' PRIVATE VERKTØY).
+- Uendret: «Powered by Data Golf» der tallene vises, og ingen eksport (DG-09).
 
 **Arbeidet dette utløser:**
 
@@ -638,8 +655,8 @@ Svar på funnene og spørsmålene i `docs/review/kodegjennomgang-2026-10-06.md` 
   bruke appen fullt ut de sju dagene. Er forelder ikke godkjent innen da, låses kontoen til
   godkjenningen kommer. Deling og opptak er alltid sperret til forelder har godkjent. Fødselsdato
   kreves for spillere og kan ikke skrives om av spilleren selv.
-- **Data Golf er bare for coacher**: alle med coach-rollen, også WANG- og Team Norway-trenere, og
-  ADMIN. Spillere ser det aldri, heller ikke Talent-profilen. `/stats/pga` og annen Data Golf-visning
+- ~~**Data Golf er bare for coacher**: alle med coach-rollen, også WANG- og Team Norway-trenere, og
+  ADMIN.~~ Overstyrt 20.10: bare ADMIN (§DATA GOLF ER ANDERS' PRIVATE VERKTØY). Spillere ser det aldri, heller ikke Talent-profilen. `/stats/pga` og annen Data Golf-visning
   flyttes bak innlogging for coacher; det åpne søket viser ikke Data Golf-tall.
 - **Forelderens innsyn fortsetter etter 16 år**, til spilleren selv fjerner forelderen.
 - **Gamle filer som ingen levende kode bruker, slettes** (432 filer, liste i
@@ -668,7 +685,7 @@ nivåtegningene som Workbench-ramme i `docs/workbench-handover.md` og handoff 04
    spilleren, lås etter sju dager uten godkjent forelder, lydsamtykke for under 16 bare via forelder.
    Ferdig når en 13-åring uten godkjenning låses dag 8, og coach ikke kan registrere «SELV» for et barn
    (TA-03, TA-04, TP-02). Krever additivt felt eller bruk av `createdAt`; avklares i PR-en.
-4. **Data Golf-port `kanSeDataGolf`** (PR 2): coach-rolle eller ADMIN. Brukes på
+4. **Data Golf-port `kanSeDataGolf`** (PR 2): bare ADMIN fra 20.10 (#1450). Brukes på
    `/portal/analysere/datagolf*`, `/stats/pga*`, `/api/stats/search` og inngangene i Analyse og
    TN-menyen. Ferdig når en spiller og en uinnlogget avvises, låst med test (TO-07, TO-08, TA-06).
 5. **Forelderinnsyn etter 16:** krever ingen kodeendring — bekrefter dagens tilstand (TA-08).
@@ -1752,7 +1769,7 @@ og ikke kan dras ut av syne.
 - `position` er aldri persentil. Aldersstige bare fra 16 år.
 - Barnevern: spillere født 2008 eller senere uten samtykke vises aldri åpent; manglende fødselsår vises ikke.
 - Alt appen sier om en spiller skal ha måling, dato og kilde (TruthLayer); estimat merkes.
-- Kohortsammenligning er kun coachens verktøy. «Powered by Data Golf» der Data Golf-tall vises; de vises bare for coacher (§KODEGJENNOMGANGEN 06.10).
+- Kohortsammenligning er kun coachens verktøy. «Powered by Data Golf» der Data Golf-tall vises; de vises bare for ADMIN (§DATA GOLF ER ANDERS' PRIVATE VERKTØY, 20.10).
 - Økonomitall leses fra Tripletex-eksport, aldri estimert.
 
 ## Åpent (ikke besluttet, ikke bygg som fasit)

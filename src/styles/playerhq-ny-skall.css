@@ -5,17 +5,17 @@
  * Avgrenset til .pa-skall--ny, slik at forelderskallet ikke endres.
  */
 @media (min-width:1024px){
-.pa-skall--ny .pa-skall__skinne{width:232px;gap:4px;padding:22px 12px;background:#faf8f3;border-right:1px solid #ddd9d1}
+.pa-skall--ny .pa-skall__skinne{width:232px;gap:4px;padding:22px 12px;background:var(--ak-sand-100);border-right:1px solid var(--ak-sand-300)}
 .pa-skall--ny .pa-skall__main{margin-left:232px}
 /* Menyflaten følger hele sidens høyde, også når siden er lengre enn vinduet (helsidebilder, overskroll) */
-.pa-skall.pa-skall--ny{background:linear-gradient(to right,#faf8f3 0 231px,#ddd9d1 231px 232px,transparent 232px) var(--surface-page)}
+.pa-skall.pa-skall--ny{background:linear-gradient(to right,var(--ak-sand-100) 0 231px,var(--ak-sand-300) 231px 232px,transparent 232px) var(--surface-page)}
 .pa-skall--ny .phs-logo{display:flex;align-items:center;min-height:44px;margin:0 12px 20px}
-.pa-skall--ny .phs-lenke{position:relative;display:flex;align-items:center;gap:12px;min-height:44px;padding:0 12px;border-radius:8px;color:#2a2926;text-decoration:none;font:500 15px/1 var(--font-sans,"IBM Plex Sans",system-ui,sans-serif)}
-.pa-skall--ny .phs-lenke:hover{background:#f1eee8}
-.pa-skall--ny .phs-lenke[aria-current="page"]{background:#141413;color:#fff}
-.pa-skall--ny .phs-lenke:focus-visible{outline:3px solid #141413;outline-offset:2px}
-.pa-skall--ny .phs-skille{height:1px;margin:12px 12px;background:#ddd9d1}
-.pa-skall--ny .phs-teller{margin-left:auto;min-width:22px;height:22px;padding:0 7px;border-radius:11px;background:#141413;color:#fff;font:600 12px/22px var(--font-mono,"IBM Plex Mono",monospace);text-align:center}
+.pa-skall--ny .phs-lenke{position:relative;display:flex;align-items:center;gap:12px;min-height:44px;padding:0 12px;border-radius:8px;color:var(--ak-g800);text-decoration:none;font:500 15px/1 var(--ak-font-sans)}
+.pa-skall--ny .phs-lenke:hover{background:var(--ak-sand-150)}
+.pa-skall--ny .phs-lenke[aria-current="page"]{background:var(--ak-g900);color:var(--ak-hvit)}
+.pa-skall--ny .phs-lenke:focus-visible{outline:3px solid var(--ak-g900);outline-offset:2px}
+.pa-skall--ny .phs-skille{height:1px;margin:12px 12px;background:var(--ak-sand-300)}
+.pa-skall--ny .phs-teller{margin-left:auto;min-width:22px;height:22px;padding:0 7px;border-radius:11px;background:var(--ak-g900);color:var(--ak-hvit);font:600 12px/22px var(--ak-font-mono);text-align:center}
 }
 
 /* Sider som ikke er portert ennå (V2Shell med PlayerHQ-menyen): gammelt innhold i nytt skall. */

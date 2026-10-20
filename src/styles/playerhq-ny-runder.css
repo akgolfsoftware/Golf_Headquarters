@@ -32,7 +32,7 @@
 .phn .phr-laast { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; line-height: 1.45; color: var(--phn-g800); }
 .phn .phr-laast .phn-ikon { flex: none; margin-top: 1px; }
 .phn .phr-melding { font-size: 14px; }
-.phn .phr-melding[role="alert"] { color: #8a2a1c; }
+.phn .phr-melding[role="alert"] { color: var(--ak-rust-tekst); }
 
 /* Valg i aksefargen */
 .phn .phr-valg > [aria-pressed="true"] { background: var(--phn-spill-ink); color: #fff; }

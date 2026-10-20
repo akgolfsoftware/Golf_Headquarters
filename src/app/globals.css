@@ -713,6 +713,13 @@ html[data-v2-tema="dark"] ::selection {
  */
 @import "../styles/ak-hq-tokens.css";
 
+/* ---------- Felles grunntokens for Precision Athletics ----------
+ * src/styles/ak-tokens.css: én blokk på :root (--ak-*) som .pa-root, .phn og
+ * .agn/.agn-s/.fln peker til med sine gamle variabelnavn (alias). Verdiene er
+ * .pa-root sine; importen endrer null piksler. Analysen 20.10.2026, forslag 1–2.
+ */
+@import "../styles/ak-tokens.css";
+
 /* ---------- AK Golf type helpers ----------
  * Speilet fra .claude/skills/ak-golf-hq-design/colors_and_type.css.
  * Tilpasset prosjektets HSL-trippel-konvensjon (hsl(var(--token))).
