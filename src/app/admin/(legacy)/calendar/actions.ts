@@ -223,8 +223,8 @@ export async function moveSession(
     select: { id: true, startAt: true, endAt: true, status: true, coachId: true, facilityId: true, serviceTypeId: true },
   });
   if (!booking) return { ok: false, feil: "Booking ikke funnet" };
-  if (booking.status === "CANCELLED") {
-    return { ok: false, feil: "Booking er allerede kansellert" };
+  if (booking.status === "CANCELLED" || booking.status === "NO_SHOW") {
+    return { ok: false, feil: "Booking er allerede kansellert eller merket no-show" };
   }
 
   const start =

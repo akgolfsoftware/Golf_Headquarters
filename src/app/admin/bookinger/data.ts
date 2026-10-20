@@ -26,7 +26,7 @@ export type AG06Booking = {
   src: string | null;
   note: string | null;
   at: string;
-  st: "Venter" | "Bekreftet" | "Avlyst" | "Gjennomført";
+  st: "Venter" | "Bekreftet" | "Avlyst" | "Gjennomført" | "No-show";
   /** Dagnummer og kort ukedag for datoboksen i lista («5», «man»). */
   dag: string;
   ukedag: string;
@@ -66,6 +66,7 @@ function status(s: string): AG06Booking["st"] {
   if (s === "PENDING") return "Venter";
   if (s === "CANCELLED") return "Avlyst";
   if (s === "COMPLETED") return "Gjennomført";
+  if (s === "NO_SHOW") return "No-show";
   return "Bekreftet";
 }
 

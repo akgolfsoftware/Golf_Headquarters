@@ -83,3 +83,12 @@ test("gjest: bare egen booking uten konto, og 24-timersfristen gjelder", () => {
   assert.equal(cancelOutcome(gjest, { kind: "guest", bookingId: "annen" }, nowFar).allowed, false);
   assert.equal(cancelOutcome({ ...gjest, userId: "player-1" }, actor, nowFar).allowed, false);
 });
+
+test("NO_SHOW kan ikke avbestilles eller ombookes av kunden (klipp og betaling beholdes)", () => {
+  const ns = { ...base, status: "NO_SHOW" as const };
+  const c = cancelOutcome(ns, { kind: "player", userId: "player-1" }, nowFar);
+  assert.equal(c.allowed, false);
+  assert.equal(c.restoreCredit, false);
+  assert.equal(c.refundStripe, false);
+  assert.equal(rescheduleOutcome(ns, { kind: "player", userId: "player-1" }, nowFar).allowed, false);
+});

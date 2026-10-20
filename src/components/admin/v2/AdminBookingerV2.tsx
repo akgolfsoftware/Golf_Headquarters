@@ -29,7 +29,7 @@ import Link from "next/link";
 import { Kort, Rad, KpiFlis, StatusPill, CTAPill, Knapp, AvatarInit, VarmeKart, TomTilstand, Inspektorpanel, InspektorBlokk, InspektorLinje, InspektorTom, MasterDetalj, useInspektorSynlig, type StatusTone } from "@/components/v2";
 import { bekreftBooking, avvisBooking } from "@/app/admin/(legacy)/bookinger/actions";
 // ── Datakontrakt (mappes fra Prisma i ruten) ────────────────────
-export type BookingStatusKey = "PENDING" | "CONFIRMED" | "CANCELLED" | "COMPLETED";
+export type BookingStatusKey = "PENDING" | "CONFIRMED" | "CANCELLED" | "COMPLETED" | "NO_SHOW";
 
 export interface AdminBookingV2Row {
   id: string;
@@ -83,6 +83,7 @@ const STATUS: Record<BookingStatusKey, { label: string; tone: StatusTone }> = {
   CONFIRMED: { label: "Bekreftet", tone: "up" },
   COMPLETED: { label: "Fullført", tone: "info" },
   CANCELLED: { label: "Avlyst", tone: "down" },
+  NO_SHOW: { label: "No-show", tone: "down" },
 };
 
 const pl = (n: number, en: string, flere: string) => `${n} ${n === 1 ? en : flere}`;

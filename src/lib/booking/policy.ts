@@ -105,6 +105,18 @@ export function cancelOutcome(
 ): CancelOutcome {
   const h = hoursUntil(booking.startAt, now);
 
+  if (booking.status === "NO_SHOW") {
+    return {
+      allowed: false,
+      reasonIfDenied: "Timen er merket som uteblitt. Kontakt coachen.",
+      restoreCredit: false,
+      refundStripe: false,
+      lateCancelNoRefund: false,
+      playerMessage: "Timen er merket som uteblitt.",
+      hoursUntilStart: h,
+    };
+  }
+
   if (booking.status === "CANCELLED") {
     return {
       allowed: false,
@@ -172,7 +184,7 @@ export function rescheduleOutcome(
 ): RescheduleOutcome {
   const h = hoursUntil(booking.startAt, now);
 
-  if (booking.status === "CANCELLED" || booking.status === "COMPLETED") {
+  if (booking.status === "CANCELLED" || booking.status === "COMPLETED" || booking.status === "NO_SHOW") {
     return {
       allowed: false,
       reasonIfDenied: "Kan ikke ombooke avbestilt eller fullført time.",

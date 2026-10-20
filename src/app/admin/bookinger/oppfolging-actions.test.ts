@@ -5,7 +5,7 @@
 import assert from "node:assert/strict";
 import { mock, test } from "node:test";
 
-type B = { id: string; coachId: string; status: string; startAt: Date; notes: string | null };
+type B = { id: string; coachId: string; status: string; startAt: Date; notes: string | null; subscriptionId?: string | null; stripePaymentIntentId?: string | null };
 let bruker = { id: "coach-a", role: "COACH" };
 let bookinger: B[] = [];
 let auditer: string[] = [];
@@ -75,4 +75,27 @@ test("notat lagres trimmet, tomt notat nullstiller", async () => {
   await lagreNotat({ bookingId: "b2", notat: "   " });
   assert.equal(bookinger[1].notes, null);
   assert.equal((await lagreNotat({ bookingId: "b2", notat: "x".repeat(2001) })).ok, false);
+});
+
+test("no-show: en bekreftet time som har startet, merkes, og klipp og betaling røres ikke", async () => {
+  const { merkNoShow } = await import("./oppfolging-actions");
+  bookinger[0].subscriptionId = "sub-1";
+  bookinger[0].stripePaymentIntentId = "pi_1";
+  assert.deepEqual(await merkNoShow("b1"), { ok: true });
+  assert.equal(bookinger[0].status, "NO_SHOW");
+  assert.equal(bookinger[0].subscriptionId, "sub-1");
+  assert.equal(bookinger[0].stripePaymentIntentId, "pi_1");
+  assert.deepEqual(auditer, ["booking.no-show.by-coach"]);
+});
+
+test("no-show: en time fram i tid kan ikke merkes", async () => {
+  const { merkNoShow } = await import("./oppfolging-actions");
+  assert.equal((await merkNoShow("b2")).ok, false);
+  assert.equal(bookinger[1].status, "CONFIRMED");
+});
+
+test("no-show: en coach kan ikke merke en annen coachs booking", async () => {
+  const { merkNoShow } = await import("./oppfolging-actions");
+  assert.equal((await merkNoShow("b3")).ok, false);
+  assert.equal(bookinger[2].status, "CONFIRMED");
 });

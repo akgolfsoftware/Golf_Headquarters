@@ -263,7 +263,7 @@ export function mapHubDataToPH23(
       startIso: string;
       durationMin: number;
       fromCredits: boolean;
-      status: "PENDING" | "CONFIRMED" | "COMPLETED" | "CANCELLED";
+      status: "PENDING" | "CONFIRMED" | "COMPLETED" | "CANCELLED" | "NO_SHOW";
     }[];
     past: {
       id: string;
@@ -272,7 +272,7 @@ export function mapHubDataToPH23(
       coachName: string | null;
       startIso: string;
       durationMin: number;
-      status?: "PENDING" | "CONFIRMED" | "COMPLETED" | "CANCELLED";
+      status?: "PENDING" | "CONFIRMED" | "COMPLETED" | "CANCELLED" | "NO_SHOW";
     }[];
   },
   playerEmail: string,

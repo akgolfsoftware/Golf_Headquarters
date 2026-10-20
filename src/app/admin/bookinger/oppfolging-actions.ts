@@ -6,9 +6,14 @@
  * - merkGjennomfort: en bekreftet booking som har startet, settes til COMPLETED.
  * - lagreNotat: coachens notat på bookingen (`Booking.notes`), maks 2000 tegn.
  *
- * Begge går gjennom `coachBookingScope`, så coachen når bare egne bookinger
- * (admin alle). «No-show» er ikke med: den krever ny status `NO_SHOW` i basen,
- * som venter på Anders' ja.
+ * - merkNoShow: en bekreftet booking som har startet, settes til NO_SHOW. Kunden mister
+ *   klippet og en Stripe-betalt time refunderes ikke (24-timersregelen: timen er alt
+ *   betalt). Ingenting trekkes på nytt.
+ * - overstyrNoShow (no-show-overstyr-actions.ts): coachen angrer belastningen. Går samme vei som avlysning:
+ *   klippet føres tilbake, eller hele beløpet refunderes. Bookingen blir «Avlyst».
+ *
+ * Alle går gjennom `coachBookingScope`, så coachen når bare egne bookinger
+ * (admin alle).
  */
 
 import { z } from "zod";
@@ -35,6 +40,19 @@ export async function merkGjennomfort(bookingId: string): Promise<OppfolgingResu
   });
   if (res.count === 0) return { ok: false, feil: "Bare en bekreftet time som har startet, kan merkes gjennomført." };
   await audit({ actorId: user.id, action: "booking.completed.by-coach", target: `Booking:${bookingId}` });
+  revalider(bookingId);
+  return { ok: true };
+}
+
+export async function merkNoShow(bookingId: string): Promise<OppfolgingResultat> {
+  const user = await requireCoachActionUser();
+  if (!bookingId) return { ok: false, feil: "Ugyldig booking." };
+  const res = await prisma.booking.updateMany({
+    where: { id: bookingId, ...coachBookingScope(user), status: "CONFIRMED", startAt: { lte: new Date() } },
+    data: { status: "NO_SHOW" },
+  });
+  if (res.count === 0) return { ok: false, feil: "Bare en bekreftet time som har startet, kan merkes no-show." };
+  await audit({ actorId: user.id, action: "booking.no-show.by-coach", target: `Booking:${bookingId}` });
   revalider(bookingId);
   return { ok: true };
 }

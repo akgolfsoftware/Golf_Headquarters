@@ -204,7 +204,7 @@ export function FO03Bookinger({ data }: { data: ForelderBookingerData }) {
                     <span className="fo-dato">{dato(b.startAt)}</span>
                     <div>
                       <strong>{b.serviceName} · {b.childName}</strong>
-                      <small>{b.status === "CANCELLED" ? "Avlyst av coach" : "Gjennomført"}</small>
+                      <small>{b.status === "CANCELLED" ? "Avlyst av coach" : b.status === "NO_SHOW" ? "Uteblitt" : "Gjennomført"}</small>
                     </div>
                     <FoChevron />
                   </div>

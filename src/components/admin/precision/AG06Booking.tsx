@@ -40,7 +40,7 @@ import { TJENESTE_KATEGORIER, kategoriNavn } from "@/lib/booking/tjeneste-katego
 import { ROMTYPER, romtypeNavn } from "@/lib/booking/rom-typer";
 import "@/styles/agencyos-ny-kalender.css";
 
-export const STATUS_TONE: Record<AG06Booking["st"], PilleTone> = { Venter: "vent", Bekreftet: "ok", Avlyst: "noy", Gjennomført: "noy" };
+export const STATUS_TONE: Record<AG06Booking["st"], PilleTone> = { Venter: "vent", Bekreftet: "ok", Avlyst: "noy", Gjennomført: "noy", "No-show": "noy" };
 
 function kr(ore: number): string {
   return (ore / 100).toLocaleString("nb-NO", { maximumFractionDigits: 0 }) + " kr";

@@ -27,14 +27,15 @@ import { avlysBookingSomCoach, avvisBookingMedBegrunnelse } from "@/app/admin/bo
 import { foreslaaNyBookingtid, trekkTilbakeForslag } from "@/app/admin/kalender/flytt-actions";
 import { lagBetalingslenkeForBooking } from "@/app/admin/kalender/booking-actions";
 import { BetalingsLenke } from "./BetalingsLenke";
-import { lagreNotat, merkGjennomfort } from "@/app/admin/bookinger/oppfolging-actions";
+import { lagreNotat, merkGjennomfort, merkNoShow } from "@/app/admin/bookinger/oppfolging-actions";
+import { overstyrNoShow } from "@/app/admin/bookinger/no-show-overstyr-actions";
 import "@/styles/agencyos-ny-kalender.css";
 
 export type AG06BookingenData = {
   id: string;
   hvem: string;
   tjeneste: string;
-  status: "PENDING" | "CONFIRMED" | "CANCELLED" | "COMPLETED";
+  status: "PENDING" | "CONFIRMED" | "CANCELLED" | "COMPLETED" | "NO_SHOW";
   datoLang: string;
   tid: string;
   /** Til flytteforslaget: «YYYY-MM-DD». */
@@ -60,6 +61,7 @@ const STATUS: Record<AG06BookingenData["status"], { tekst: string; tone: PilleTo
   CONFIRMED: { tekst: "Bekreftet", tone: "ok" },
   COMPLETED: { tekst: "Gjennomført", tone: "noy" },
   CANCELLED: { tekst: "Avlyst", tone: "noy" },
+  NO_SHOW: { tekst: "No-show", tone: "noy" },
 };
 
 export function AG06Bookingen({ navn, b }: { navn: string; b: AG06BookingenData }) {
@@ -136,6 +138,14 @@ export function AG06Bookingen({ navn, b }: { navn: string; b: AG06BookingenData 
               : <Knapp variant="sek" onClick={() => { setDialog("flytt"); setFeil(null); }}>Foreslå ny tid</Knapp>)}
             {b.status === "CONFIRMED" && b.kommende && <Knapp variant="sek" onClick={() => { setDialog("avlys"); setTekst(""); setFeil(null); }}>Avlys</Knapp>}
             {b.status === "CONFIRMED" && !b.kommende && <Knapp disabled={pending} onClick={() => kjor(() => merkGjennomfort(b.id), "Timen er merket gjennomført.")}>Merk gjennomført</Knapp>}
+            {b.status === "CONFIRMED" && !b.kommende && <Knapp variant="sek" disabled={pending} onClick={() => kjor(() => merkNoShow(b.id), "Timen er merket no-show. Kunden beholder ikke klippet, og betalingen refunderes ikke.")}>No-show</Knapp>}
+            {b.status === "NO_SHOW" && <Knapp variant="sek" disabled={pending} onClick={() => start(async () => {
+              const res = await overstyrNoShow(b.id);
+              if (!res.ok) { setFeil(res.feil); return; }
+              ferdig(res.refusjonVenter ? "No-show er overstyrt. Refusjonen venter hos Stripe og følges opp."
+                : res.refundert ? "No-show er overstyrt og hele beløpet er refundert."
+                : res.klippTilbake ? "No-show er overstyrt og klippet er ført tilbake." : "No-show er overstyrt.");
+            })}>Overstyr: gi tilbake</Knapp>}
             {b.kanLageBetalingslenke && <Knapp variant="sek" disabled={pending} onClick={lagLenke}>{lenke ? "Lag ny betalingslenke" : "Lag betalingslenke"}</Knapp>}
             {b.spillerHref && <KnappLenke href={b.spillerHref}>Åpne spilleren</KnappLenke>}
           </div>

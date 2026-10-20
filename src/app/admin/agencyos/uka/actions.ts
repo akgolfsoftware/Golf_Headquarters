@@ -34,7 +34,7 @@ export async function flyttBookingTilDag(
     select: { id: true, startAt: true, endAt: true, status: true, coachId: true, facilityId: true, serviceTypeId: true },
   });
   if (!booking) return { ok: false, error: "Booking ikke funnet." };
-  if (booking.status === "COMPLETED" || booking.status === "CANCELLED") {
+  if (booking.status === "COMPLETED" || booking.status === "CANCELLED" || booking.status === "NO_SHOW") {
     return { ok: false, error: "Denne bookingen er fullført eller kansellert — opprett en ny booking i stedet." };
   }
 
@@ -111,7 +111,7 @@ export async function flyttBookingTilTid(
     select: { id: true, startAt: true, endAt: true, status: true, coachId: true, facilityId: true, serviceTypeId: true },
   });
   if (!booking) return { ok: false, error: "Booking ikke funnet." };
-  if (booking.status === "COMPLETED" || booking.status === "CANCELLED") {
+  if (booking.status === "COMPLETED" || booking.status === "CANCELLED" || booking.status === "NO_SHOW") {
     return { ok: false, error: "Denne bookingen er fullført eller kansellert — opprett en ny booking i stedet." };
   }
 

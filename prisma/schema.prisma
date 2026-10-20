@@ -32,6 +32,8 @@ enum BookingStatus {
   CONFIRMED
   CANCELLED
   COMPLETED
+  // Kunden møtte ikke opp (coach merker etter at timen har startet). Beholder klipp og betaling.
+  NO_SHOW
 }
 
 // Betalingsmåte på booking (Anders 29.09.2026). FAKTURA er bare et merke: selve

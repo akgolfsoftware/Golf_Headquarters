@@ -58,6 +58,7 @@ const STATUS_LABEL: Record<HubBooking["status"], string> = {
   PENDING: "Behandler",
   CONFIRMED: "Bekreftet",
   COMPLETED: "Gjennomført",
+  NO_SHOW: "Uteblitt",
   CANCELLED: "Avbestilt",
 };
 
