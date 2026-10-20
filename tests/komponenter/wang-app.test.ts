@@ -186,19 +186,26 @@ describe('WANG Toppidrett Modul (Samtlige WANG-skjermer)', async () => {
   const visMed = (komponent: React.ComponentType<never>, props: Record<string, unknown>) =>
     renderToStaticMarkup(React.createElement(komponent, { data: DATA, ...props } as never));
 
-  test('WangTester: testbatteriet uten oppdiktede resultater, og bare delte elever', () => {
+  test('WangTester: 19 tester, ingen oppdiktede resultater, og bare delte elever', () => {
     const html = vis(WangTester);
-    assert.ok(html.includes('Markløft trapbar'));
-    assert.ok(html.includes('0 av 11'), 'Ingen deler testene uten samtykke');
+    assert.ok(html.includes('19 tester: 8 golfslag og 6 teknikk fra Team Norway, og 5 fysiske'));
+    assert.ok(html.includes('Ingen elever deler testene'), 'Ingen deler testene uten samtykke');
+    assert.ok(html.includes('Deler ikke'), 'Elever uten samtykke vises uten resultater');
     const med = visMed(WangTester, { tester: TESTER });
-    assert.ok(med.includes('2 av 11'));
-    assert.ok(med.includes('/team-wang/coach/tester'));
+    assert.ok(med.includes('52 kg'), 'Siste resultat i matrisen');
+    assert.ok(med.includes('wg-celle-egen'), 'Egenført resultat er merket');
+    assert.ok(med.includes('Driver Basic 0 av 1'), 'Manglende prioriterte tester står per elev');
     const ko = visMed(WangTester, { tester: TESTER, aktivFane: 'ko' });
     assert.ok(ko.includes('52 kg'), 'Egenført resultat står til kontroll');
     assert.ok(!ko.includes('58 kg'), 'Kontrollert resultat står ikke til kontroll');
     assert.match(ko, /<button[^>]*disabled=""[^>]*>Kontroller<\/button>/);
     assert.ok(visMed(WangTester, { tester: TESTER, aktivFane: 'elev', id: 'e3' }).includes('Ikke delt'));
-    assert.match(visMed(WangTester, { aktivFane: 'foring' }), /<button[^>]*disabled=""[^>]*>Lagre og neste elev<\/button>/);
+    const foring = visMed(WangTester, { tester: TESTER, aktivFane: 'foring' });
+    assert.ok(foring.includes('Slag 1 av 24'), '8-balls variation føres med 24 slag');
+    assert.ok(foring.includes('Chip 10 m'), 'Slagene kommer fra protokollen');
+    assert.ok(foring.includes('Meter til hullet'));
+    assert.ok(foring.includes('aria-label="Til kontroll"'), 'Til kontroll står ved siden av registreringen');
+    assert.ok(!foring.includes('Putt 1–3 m · Golfslag'), 'Eleven fører Putt 1–3 m selv');
   });
 
   test('WangKonkurranse: turneringer fra gruppas kalender', () => {
