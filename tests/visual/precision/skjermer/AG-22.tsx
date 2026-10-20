@@ -6,10 +6,28 @@ import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { AdminRolleProvider } from "@/components/v2/rolle";
 import {
   AG22InnsiktTalent,
+  type AG22Data,
   type AG22Tilstand,
 } from "@/components/admin/precision/AG22InnsiktTalent";
 
 export const sti = "/admin/innsikt";
+
+const DATA: AG22Data = {
+  src: "Tester og runder siste 12 uker",
+  axes: ["FYS", "TEK", "SLAG", "SPILL", "TURN"],
+  peer: { label: "Peer-snitt", v: [55, 52, 50, 48, 45] },
+  players: [
+    { id: "p1", name: "Spiller A", born: 2006, consent: true, v: [62, 58, 64, 55, 50] },
+    { id: "p2", name: "Spiller B", born: 2005, consent: true, v: [48, 66, 60, 52, 58] },
+    { id: "p3", name: "Spiller C", born: 2009, consent: true, v: [70, 61, 55, 59, 47] },
+    { id: "p4", name: "Spiller D", born: 2010, consent: false, v: [50, 50, 50, 50, 50] },
+  ],
+  discovery: [
+    { id: "d1", kilde: "Talentdag høst", spiller: "Spiller E", fodt: 2006, resultat: "74", samtykke: true },
+    { id: "d2", kilde: "Søknad", spiller: "Spiller F", fodt: 2009, resultat: "76", samtykke: false },
+  ],
+  wagr: { file: "wagr-oktober.csv", rows: 120, match: 96, src: "WAGR" },
+};
 
 function Vis({
   tilstand = "data",
@@ -21,7 +39,7 @@ function Vis({
   return (
     <AdminRolleProvider erAdmin>
       <AgencyOSSkall navn="Jonas Brekke" uleste={3} haster={false}>
-        <AG22InnsiktTalent tilstand={tilstand} startFane={fane} />
+        <AG22InnsiktTalent tilstand={tilstand} startFane={fane} data={DATA} />
       </AgencyOSSkall>
     </AdminRolleProvider>
   );
