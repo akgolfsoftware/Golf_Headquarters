@@ -25,6 +25,11 @@
  * Fanen «Tjenester og pris» (bookingplanen steg 2, 15.10.2026): opprett, endre,
  * slå av og på, og slett tjenester, med sted, coach, kategori, buffer, minste
  * varsel og maks dager fram. Den gamle siden /admin/services sender hit.
+ *
+ * Designløftet 20.10 (canvas «AgencyOS nøkkelskjermer», rad 8 Booking, godkjent av Anders):
+ * uka øverst (bookinger per dag og fordeling på betalingsmåte), og lista som rader med
+ * når · kunde · tjeneste · coach · betaling · status på PC. Ny booking beholder de fire
+ * stegene (avvik: tegningen viser ett skjema), med oppsummeringen ved siden av på PC.
  */
 import Link from "next/link";
 import { useMemo, useState, useTransition } from "react";
@@ -35,6 +40,7 @@ import { Avatar, Knapp, Pille, Tom, Topp, Varsel, type PilleTone } from "@/compo
 import { BetalingsLenke } from "./BetalingsLenke";
 import { bookIKalender, type BookingValg } from "@/app/admin/kalender/booking-actions";
 import type { AG06Booking, AG06Tjeneste, AG06TjenesteValg } from "@/app/admin/bookinger/data";
+import { ukeOversikt } from "@/app/admin/bookinger/uke-oversikt";
 import { opprettTjeneste, oppdaterTjeneste, settTjenesteAktiv, slettTjeneste, type TjenesteInput } from "@/app/admin/bookinger/tjeneste-actions";
 import { TJENESTE_KATEGORIER, kategoriNavn } from "@/lib/booking/tjeneste-kategori";
 import { ROMTYPER, romtypeNavn } from "@/lib/booking/rom-typer";
@@ -84,12 +90,35 @@ export function grupperBookinger(bookinger: readonly AG06Booking[], naaMs: numbe
 }
 
 export function BookingRad({ b }: { b: AG06Booking }) {
-  return <Link href={`/admin/bookinger/${b.id}`} className="bk-rad">
+  return <Link href={`/admin/bookinger/${b.id}`} className="bk-rad bk-rad2">
     <span className="d"><b>{b.dag}</b><span>{b.ukedag}</span></span>
-    <span><b className="n">{b.who} · {b.svcNavn}</b>
-      <span className="kilde">{b.t}–{b.slutt} · {b.where} · {b.coach ?? "—"} · {b.pay === "Klipp" ? "1 klipp" : b.pay === "Betalt" ? "betalt" : b.pay.toLowerCase()}</span></span>
+    <span className="bk-hvem"><b className="n">{b.who}</b><span className="kilde">{b.guardian ? `${b.guardian} betaler` : `${b.t}–${b.slutt}`}</span></span>
+    <span className="bk-tj">{b.svcNavn}<span className="kilde"> · {b.where}</span></span>
+    <span className="bk-coach kilde">{b.coach ?? "—"}</span>
+    <span className="bk-bet"><b>{b.pay === "Betalt" ? "Stripe" : b.pay}</b><span className="kilde">{b.pay === "Betalt" ? kr(b.priceOre) : b.pay === "Klipp" ? "1 klipp" : b.pay === "Ikke betalt" ? `${kr(b.priceOre)} venter` : ""}</span></span>
     <Pille tone={STATUS_TONE[b.st]}>{b.st === "Venter" ? "Venter på deg" : b.st}</Pille>
   </Link>;
+}
+
+function UkeOversikt({ bookinger, naaMs }: { bookinger: readonly AG06Booking[]; naaMs: number }) {
+  const u = ukeOversikt(bookinger, naaMs);
+  const maks = Math.max(1, ...u.dager.map((d) => d.antall));
+  const sumBet = u.betaling.reduce((s, b) => s + b.antall, 0);
+  return <section className="bk-uka" aria-label="De neste sju dagene">
+    <div className="bk-uka-del">
+      <span className="kilde">Bookinger de neste sju dagene <b className="mono">{u.totalt}</b></span>
+      <div className="bk-soyler" role="img" aria-label={u.dager.map((d, i) => `${i === 0 ? "i dag" : `dag ${i + 1}`}: ${d.antall}`).join(", ")}>
+        {u.dager.map((d, i) => <span key={d.fra} className="bk-soyle"><i className={i === 0 ? "idag" : ""} style={{ height: d.antall ? `${Math.max(8, (d.antall / maks) * 100)}%` : "2px" }} /><span className="mono">{d.antall || "—"}</span></span>)}
+      </div>
+    </div>
+    <div className="bk-uka-del">
+      <span className="kilde">Betaling</span>
+      {sumBet === 0 ? <b className="mono">—</b> : <>
+        <div className="bk-stripe" role="img" aria-label={u.betaling.map((b) => `${b.navn} ${b.antall}`).join(", ")}>{u.betaling.map((b, i) => <i key={b.navn} className={`b${i}`} style={{ flex: b.antall }} />)}</div>
+        <span className="mono bk-bet-tekst">{u.betaling.map((b) => `${b.navn} ${b.antall}`).join(" · ")}</span>
+      </>}
+    </div>
+  </section>;
 }
 
 type Filter = { sok: string; coach: string; tjeneste: string; sted: string; fra: string; til: string };
@@ -125,8 +154,6 @@ export function AG06Booking({ navn, bookinger, valg, tjenester, tjenesteValg, fa
   const antallFilter = (["coach", "tjeneste", "sted", "fra", "til"] as const).filter((k) => filter[k] !== "").length;
   const settF = (k: keyof Filter, v: string) => setFilter((f) => ({ ...f, [k]: v }));
   const [gruppe, setGruppe] = useState<Gruppe>(grupper.venter.length > 0 ? "venter" : "kommende");
-  const uke = naa + 7 * 86_400_000;
-  const denneUka = grupper.kommende.filter((b) => b.startMs < uke).length;
 
   const GRUPPER: Array<{ id: Gruppe; navn: string }> = [
     ...(grupper.venter.length > 0 ? [{ id: "venter" as const, navn: "Venter på deg" }] : []),
@@ -139,7 +166,7 @@ export function AG06Booking({ navn, bookinger, valg, tjenester, tjenesteValg, fa
   let body: React.ReactNode;
   if (fane === "bookinger") {
     body = <>
-      <div className="hoved"><strong>{denneUka}</strong><span className="forklar">kommende bookinger de neste sju dagene</span></div>
+      <UkeOversikt bookinger={bookinger} naaMs={naa} />
       <div className="bk-filter" role="search" aria-label="Søk og filter">
         <label className="felt"><span className="etikett">Søk</span><input type="search" value={filter.sok} onChange={(e) => settF("sok", e.target.value)} placeholder="Navn, e-post eller telefon" autoComplete="off" /></label>
         <div className="knapper"><Knapp variant="sek" aria-expanded={visFilter} onClick={() => setVisFilter((v) => !v)}>{antallFilter > 0 ? `Filter (${antallFilter})` : "Filter"}</Knapp>
@@ -160,7 +187,10 @@ export function AG06Booking({ navn, bookinger, valg, tjenester, tjenesteValg, fa
         ? harFilter
           ? <Tom tittel="Ingen treff" tekst="Ingen bookinger i denne gruppen passer søket og filtrene." handling={<Knapp variant="sek" onClick={() => setFilter(TOMT_FILTER)}>Nullstill filter</Knapp>} />
           : <Tom tittel="Ingen bookinger her" tekst="Bookinger fra spillere, flexkunder og deg selv kommer hit." handling={<Knapp onClick={() => setFane("ny")}>Ny booking</Knapp>} />
-        : <div className="bk-liste">{rader.map((b) => <BookingRad key={b.id} b={b} />)}</div>}
+        : <div className="bk-liste">
+          <div className="bk-hode bare-pc" aria-hidden><span>Når</span><span>Kunde</span><span>Tjeneste</span><span>Coach</span><span>Betaling</span><span>Status</span></div>
+          {rader.map((b) => <BookingRad key={b.id} b={b} />)}
+        </div>}
     </>;
   } else if (fane === "ny") {
     body = <NyBooking valg={valg} onOpprettet={() => { setMelding("Booket og bekreftet. Spilleren har fått beskjed."); setFane("bookinger"); setGruppe("kommende"); }} />;
@@ -246,7 +276,8 @@ export function NyBooking({ valg, onOpprettet }: { valg: BookingValg; onOpprette
     <div className="knapper"><Knapp onClick={onOpprettet}>Ferdig</Knapp></div>
   </div>;
 
-  return <div className="smal-innhold">
+  return <div className="bk-ny">
+  <div className="smal-innhold">
     <div className="steg-liste" aria-label="Steg">{STEG.map((s, i) => <span key={s} className={i < steg ? "ferdig" : i === steg ? "aktiv" : ""} aria-current={i === steg ? "step" : undefined}>{s}</span>)}</div>
     {steg === 0 && <>
       <label className="felt"><span className="etikett">Søk spiller</span><input type="search" value={sok} onChange={(e) => setSok(e.target.value)} placeholder="Navn" autoComplete="off" /></label>
@@ -294,6 +325,17 @@ export function NyBooking({ valg, onOpprettet }: { valg: BookingValg; onOpprette
         ? <Knapp disabled={!kanVidere} onClick={() => setSteg(steg + 1)}>Neste</Knapp>
         : <Knapp disabled={pending || (betaling === "GAVEKORT" && !gavekode.trim())} onClick={opprett}>{pending ? "Booker …" : "Bekreft booking"}</Knapp>}
     </div>
+  </div>
+  {steg < 3 && <aside className="bk-ny-opps bare-pc" aria-label="Oppsummering">
+    <h2>Oppsummering</h2>
+    <ul className="oppsummering">
+      <li><span>Spiller</span><b>{spiller?.navn ?? "—"}</b></li>
+      <li><span>Tjeneste</span><b>{tjeneste ? `${tjeneste.navn} · ${kr(tjeneste.prisOre)}` : "—"}</b></li>
+      <li><span>Tid</span><b>{dato ? `${datoTekst} kl. ${tid}` : "—"}</b></li>
+      <li><span>Sted</span><b>{sted?.navn ?? "—"}</b></li>
+    </ul>
+    <p className="kildetekst">Betalingsmåten velges i siste steg: Stripe · Klipp · Faktura · Gratis · Gavekort.</p>
+  </aside>}
   </div>;
 }
 
