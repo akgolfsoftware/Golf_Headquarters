@@ -17,8 +17,14 @@
  *     trekkes tilbake, så dialogen er bekreftelsen.
  *   - «Start live» står ikke her; live-økta startes fra Cockpit og Kalender.
  *   - Bildet øverst i utkastet er tatt ut (ingen bilde per tjeneste i basen).
+ *
+ * Designløftet 20.10 (canvas rad 8 Booking, godkjent av Anders): to kolonner på PC.
+ * Til venstre timen, betalingen og notatet; til høyre handlingene hver i sitt kort
+ * (Venter på deg · Foreslå ny tid · Avlys timen · Etter timen). Lenkene #ny-tid og
+ * #avlys fra Kalender åpner riktig dialog. Betalingsmåten vises, men endres ikke her:
+ * appen har ingen handling for å bytte betalingsmåte på en lagret booking.
  */
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { Knapp, KnappLenke, Pille, Topp, Varsel, type PilleTone } from "@/components/admin/agencyos-ny/ny";
@@ -82,6 +88,16 @@ export function AG06Bookingen({ navn, b }: { navn: string; b: AG06BookingenData 
     setLenke(res.url);
   });
   const fornavn = b.hvem.split(" ")[0];
+  const kanFlytte = b.status === "CONFIRMED" && b.kommende && b.harKonto && !b.forslag;
+  const kanAvlyse = b.status === "CONFIRMED" && b.kommende;
+  // Lenker fra Kalender: /admin/bookinger/[id]#ny-tid og #avlys åpner dialogen med en gang.
+  useEffect(() => {
+    const h = window.location.hash;
+    const valgt = h === "#avlys" && kanAvlyse ? "avlys" : h === "#ny-tid" && kanFlytte ? "flytt" : null;
+    if (!valgt) return;
+    const t = setTimeout(() => setDialog(valgt), 0);
+    return () => clearTimeout(t);
+  }, [kanAvlyse, kanFlytte]);
 
   const ferdig = (m: string) => { setFeil(null); setMelding(m); setDialog(null); setTekst(""); router.refresh(); };
   const kjor = (fn: () => Promise<{ ok: true } | { ok: false; feil: string } | void>, m: string) => start(async () => {
@@ -112,50 +128,73 @@ export function AG06Bookingen({ navn, b }: { navn: string; b: AG06BookingenData 
     <AgencyOSSkall navn={navn}>
       <div className="agn-s">
         <Topp tilbake={{ href: "/admin/bookinger", tekst: "Booking" }} dato="Booking" tittel={`${b.hvem} · ${b.tjeneste}`} />
-        <div className="smal-innhold">
-          {feil && <Varsel tone="advarsel">{feil}</Varsel>}
-          {melding && !feil && <Varsel tone="ok">{melding}</Varsel>}
-          <div className="booking-helt">
-            <Pille tone={st.tone}>{st.tekst}</Pille>
-            <span style={{ font: "600 15px/1.2 var(--sans)", opacity: 0.9 }}>{b.datoLang}</span>
-            <span className="bt-tid">{b.tid}<small>{b.varighetMin} min</small></span>
-            <span style={{ fontSize: 14, opacity: 0.92 }}>{b.sted}</span>
+        {feil && <Varsel tone="advarsel">{feil}</Varsel>}
+        {melding && !feil && <Varsel tone="ok">{melding}</Varsel>}
+        <div className="bk-detalj">
+          <div className="bk-detalj-hoved">
+            <div className="booking-helt">
+              <Pille tone={st.tone}>{st.tekst}</Pille>
+              <span style={{ font: "600 15px/1.2 var(--sans)" }}>{b.datoLang}</span>
+              <span className="bt-tid">{b.tid}<small>{b.varighetMin} min</small></span>
+              <span style={{ fontSize: 14 }}>{b.sted}</span>
+            </div>
+            <ul className="oppsummering">
+              <li><span>Coach</span><b>{b.coach ?? "—"}</b></li>
+              <li><span>Betaling</span><b>{b.betaling} · {b.pris}</b></li>
+              <li><span>Kontakt</span><b>{b.kontakt ?? "—"}</b></li>
+              <li><span>Bestilt</span><b>{b.bestilt}</b></li>
+              {b.forslag && <li><span>Ny tid</span><b>{b.forslag} · venter på {fornavn}</b></li>}
+            </ul>
+            {b.kanLageBetalingslenke && <div className="knapper"><Knapp variant="sek" disabled={pending} onClick={lagLenke}>{lenke ? "Lag ny betalingslenke" : "Lag betalingslenke"}</Knapp></div>}
+            {lenke && <><BetalingsLenke url={lenke} /><p className="kildetekst">Ny lenke gjør den forrige ugyldig. Lenken virker i 23 timer.</p></>}
+            <form style={{ display: "grid", gap: 8 }} onSubmit={(e) => { e.preventDefault(); kjor(() => lagreNotat({ bookingId: b.id, notat }), "Notatet er lagret."); }}>
+              <label className="felt"><span className="etikett">Notat (bare coacher ser det)</span>
+                <textarea rows={3} maxLength={2000} value={notat} onChange={(e) => setNotat(e.target.value)} /></label>
+              <div className="knapper"><Knapp type="submit" variant="sek" disabled={pending || notat === (b.notat ?? "")}>Lagre notatet</Knapp></div>
+            </form>
           </div>
-          <ul className="oppsummering">
-            <li><span>Coach</span><b>{b.coach ?? "—"}</b></li>
-            <li><span>Betaling</span><b>{b.betaling} · {b.pris}</b></li>
-            <li><span>Kontakt</span><b>{b.kontakt ?? "—"}</b></li>
-            <li><span>Bestilt</span><b>{b.bestilt}</b></li>
-            {b.forslag && <li><span>Ny tid</span><b>{b.forslag} · venter på {fornavn}</b></li>}
-          </ul>
-          <div className="knapper">
-            {b.status === "PENDING" && <>
-              <Knapp disabled={pending} onClick={() => kjor(() => bekreftBooking(b.id), "Bookingen er bekreftet.")}>Bekreft booking</Knapp>
-              <Knapp variant="sek" onClick={() => { setDialog("avvis"); setTekst(""); setFeil(null); }}>Avvis</Knapp>
-            </>}
-            {b.status === "CONFIRMED" && b.kommende && b.harKonto && (b.forslag
-              ? <Knapp variant="sek" disabled={pending} onClick={() => kjor(() => trekkTilbakeForslag(b.id), "Forslaget er trukket tilbake.")}>Trekk tilbake forslaget</Knapp>
-              : <Knapp variant="sek" onClick={() => { setDialog("flytt"); setFeil(null); }}>Foreslå ny tid</Knapp>)}
-            {b.status === "CONFIRMED" && b.kommende && <Knapp variant="sek" onClick={() => { setDialog("avlys"); setTekst(""); setFeil(null); }}>Avlys</Knapp>}
-            {b.status === "CONFIRMED" && !b.kommende && <Knapp disabled={pending} onClick={() => kjor(() => merkGjennomfort(b.id), "Timen er merket gjennomført.")}>Merk gjennomført</Knapp>}
-            {b.status === "CONFIRMED" && !b.kommende && <Knapp variant="sek" disabled={pending} onClick={() => kjor(() => merkNoShow(b.id), "Timen er merket no-show. Kunden beholder ikke klippet, og betalingen refunderes ikke.")}>No-show</Knapp>}
-            {b.status === "NO_SHOW" && <Knapp variant="sek" disabled={pending} onClick={() => start(async () => {
-              const res = await overstyrNoShow(b.id);
-              if (!res.ok) { setFeil(res.feil); return; }
-              ferdig(res.refusjonVenter ? "No-show er overstyrt. Refusjonen venter hos Stripe og følges opp."
-                : res.refundert ? "No-show er overstyrt og hele beløpet er refundert."
-                : res.klippTilbake ? "No-show er overstyrt og klippet er ført tilbake." : "No-show er overstyrt.");
-            })}>Overstyr: gi tilbake</Knapp>}
-            {b.kanLageBetalingslenke && <Knapp variant="sek" disabled={pending} onClick={lagLenke}>{lenke ? "Lag ny betalingslenke" : "Lag betalingslenke"}</Knapp>}
-            {b.spillerHref && <KnappLenke href={b.spillerHref}>Åpne spilleren</KnappLenke>}
+
+          <div className="bk-detalj-side">
+            {b.status === "PENDING" && <section className="bk-handling" aria-label="Venter på deg">
+              <h2>Venter på deg</h2>
+              <p className="forklar">Bookingen har ingen betaling og må bekreftes av deg.</p>
+              <div className="knapper">
+                <Knapp disabled={pending} onClick={() => kjor(() => bekreftBooking(b.id), "Bookingen er bekreftet.")}>Bekreft booking</Knapp>
+                <Knapp variant="sek" onClick={() => { setDialog("avvis"); setTekst(""); setFeil(null); }}>Avvis</Knapp>
+              </div>
+            </section>}
+            {b.status === "CONFIRMED" && b.kommende && <section id="ny-tid" className="bk-handling" aria-label="Foreslå ny tid">
+              <h2>Foreslå ny tid</h2>
+              {b.forslag
+                ? <><p className="forklar">Venter på {fornavn}: {b.forslag}. Timen står på den gamle tiden til {fornavn} godtar i PlayerHQ.</p>
+                  <div className="knapper"><Knapp variant="sek" disabled={pending} onClick={() => kjor(() => trekkTilbakeForslag(b.id), "Forslaget er trukket tilbake.")}>Trekk tilbake forslaget</Knapp></div></>
+                : b.harKonto
+                  ? <><p className="forklar">Tiden endres først når {fornavn} godtar i PlayerHQ. {fornavn} kan også flytte selv til en ledig tid, senest 24 timer før.</p>
+                    <div className="knapper"><Knapp variant="sek" onClick={() => { setDialog("flytt"); setFeil(null); }}>Foreslå ny tid</Knapp></div></>
+                  : <p className="kildetekst">Gjesten har ingen PlayerHQ-konto å godta ny tid i. Avtal ny tid direkte, eller avlys.</p>}
+            </section>}
+            {kanAvlyse && <section id="avlys" className="bk-handling" aria-label="Avlys timen">
+              <h2>Avlys timen</h2>
+              <p className="forklar">Når du avlyser, får {fornavn} alltid alt tilbake, også under 24 timer før. {b.betaling === "Betalt" ? "Hele beløpet refunderes til kortet." : b.betaling === "Klipp" ? "Klippet føres tilbake til pakken." : b.betaling === "Faktura" ? "Er fakturaen sendt, krediter den i Tripletex." : "Det er ingen betaling å føre tilbake."}</p>
+              <div className="knapper"><Knapp variant="sek" onClick={() => { setDialog("avlys"); setTekst(""); setFeil(null); }}>Avlys …</Knapp></div>
+            </section>}
+            {(b.status === "NO_SHOW" || (b.status === "CONFIRMED" && !b.kommende)) && <section className="bk-handling" aria-label="Etter timen">
+              <h2>Etter timen</h2>
+              <p className="forklar">Ikke møtt belastes etter 24-timersregelen. Du kan overstyre og gi tilbake.</p>
+              <div className="knapper">
+                {b.status === "CONFIRMED" && <Knapp disabled={pending} onClick={() => kjor(() => merkGjennomfort(b.id), "Timen er merket gjennomført.")}>Merk gjennomført</Knapp>}
+                {b.status === "CONFIRMED" && <Knapp variant="sek" disabled={pending} onClick={() => kjor(() => merkNoShow(b.id), "Timen er merket no-show. Kunden beholder ikke klippet, og betalingen refunderes ikke.")}>No-show</Knapp>}
+                {b.status === "NO_SHOW" && <Knapp variant="sek" disabled={pending} onClick={() => start(async () => {
+                  const res = await overstyrNoShow(b.id);
+                  if (!res.ok) { setFeil(res.feil); return; }
+                  ferdig(res.refusjonVenter ? "No-show er overstyrt. Refusjonen venter hos Stripe og følges opp."
+                    : res.refundert ? "No-show er overstyrt og hele beløpet er refundert."
+                    : res.klippTilbake ? "No-show er overstyrt og klippet er ført tilbake." : "No-show er overstyrt.");
+                })}>Overstyr: gi tilbake</Knapp>}
+              </div>
+            </section>}
+            {b.spillerHref && <section className="bk-handling dempet" aria-label="Spilleren"><div className="knapper"><KnappLenke href={b.spillerHref}>Åpne spilleren</KnappLenke></div></section>}
           </div>
-          {lenke && <><BetalingsLenke url={lenke} /><p className="kildetekst">Ny lenke gjør den forrige ugyldig. Lenken virker i 23 timer.</p></>}
-          <form style={{ display: "grid", gap: 8 }} onSubmit={(e) => { e.preventDefault(); kjor(() => lagreNotat({ bookingId: b.id, notat }), "Notatet er lagret."); }}>
-            <label className="felt"><span className="etikett">Notat</span>
-              <textarea rows={3} maxLength={2000} value={notat} onChange={(e) => setNotat(e.target.value)} /></label>
-            <div className="knapper"><Knapp type="submit" variant="sek" disabled={pending || notat === (b.notat ?? "")}>Lagre notatet</Knapp></div>
-          </form>
-          {b.status === "CONFIRMED" && b.kommende && !b.harKonto && <p className="kildetekst">Gjesten har ingen PlayerHQ-konto å godta ny tid i. Avtal ny tid direkte, eller avlys.</p>}
         </div>
 
         {dialog === "avlys" && <div className="dialog-lag"><div role="alertdialog" aria-modal="true" aria-labelledby="av-tittel" className="dialog">

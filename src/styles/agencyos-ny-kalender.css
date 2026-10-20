@@ -140,6 +140,57 @@
   .agn-s .mnd .d { padding: 4px 3px; }
 }
 
+/* Designløftet 20.10 (canvas rad 8 Booking): uka øverst, rader med kolonner på PC,
+   oppsummering ved siden av ny booking, og bookingen i to kolonner. */
+.agn-s .bk-uka { display: grid; gap: var(--r4); padding: var(--r3) 0; border-top: 1px solid var(--sand-300); border-bottom: 1px solid var(--sand-300); min-width: 0; }
+.agn-s .bk-uka-del { display: grid; gap: 8px; align-content: start; min-width: 0; }
+.agn-s .bk-uka-del .mono, .agn-s .bk-soyle .mono { font: 500 12px/1 var(--mono); }
+.agn-s .bk-soyler { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; height: 72px; align-items: end; }
+.agn-s .bk-soyle { display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: 4px; justify-items: center; height: 100%; }
+.agn-s .bk-soyle i { align-self: end; width: 100%; max-width: 28px; border-radius: 4px 4px 0 0; background: var(--graphite-500, #8a8680); display: block; }
+.agn-s .bk-soyle i.idag { background: var(--graphite-900); }
+.agn-s .bk-soyle .mono { color: var(--graphite-600); }
+.agn-s .bk-stripe { display: flex; gap: 2px; height: 10px; }
+.agn-s .bk-stripe i { display: block; height: 100%; }
+.agn-s .bk-stripe i:first-child { border-radius: 4px 0 0 4px; } .agn-s .bk-stripe i:last-child { border-radius: 0 4px 4px 0; }
+.agn-s .bk-stripe .b0 { background: var(--graphite-900); } .agn-s .bk-stripe .b1 { background: var(--graphite-500, #8a8680); } .agn-s .bk-stripe .b2 { background: var(--sand-300); } .agn-s .bk-stripe .b3, .agn-s .bk-stripe .b4 { background: var(--sand-150); box-shadow: inset 0 0 0 1px var(--sand-300); }
+.agn-s .bk-bet-tekst { color: var(--graphite-800); line-height: 1.5; }
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes bk-opp { from { scale: 1 0; } }
+  .agn-s .bk-soyle i { transform-origin: 50% 100%; animation: bk-opp 620ms cubic-bezier(.23, 1, .32, 1) both; }
+}
+
+.agn-s a.bk-rad.bk-rad2 { grid-template-columns: 52px minmax(0, 1fr) auto; grid-template-areas: "d hvem pille" "d tj tj" "d bet bet"; gap: 2px var(--r3); }
+.agn-s .bk-rad2 .d { grid-area: d; align-self: start; }
+.agn-s .bk-rad2 .bk-hvem { grid-area: hvem; display: grid; min-width: 0; }
+.agn-s .bk-rad2 .bk-tj { grid-area: tj; font-size: 13.5px; min-width: 0; overflow-wrap: anywhere; }
+.agn-s .bk-rad2 .bk-coach { display: none; }
+.agn-s .bk-rad2 .bk-bet { grid-area: bet; display: flex; gap: 6px; font-size: 13px; min-width: 0; }
+.agn-s .bk-rad2 > .pille { grid-area: pille; justify-self: end; }
+.agn-s .bk-hode { display: none; }
+@media (min-width: 900px) {
+  .agn-s a.bk-rad.bk-rad2 { grid-template-columns: 52px minmax(0, 1.2fr) minmax(0, 1.2fr) 120px minmax(0, 1fr) 150px; grid-template-areas: none; gap: 0 var(--r3); align-items: center; min-height: 60px; }
+  .agn-s .bk-rad2 .d, .agn-s .bk-rad2 .bk-hvem, .agn-s .bk-rad2 .bk-tj, .agn-s .bk-rad2 .bk-bet, .agn-s .bk-rad2 > .pille { grid-area: auto; }
+  .agn-s .bk-rad2 .d { align-self: center; }
+  .agn-s .bk-rad2 .bk-coach { display: block; }
+  .agn-s .bk-rad2 .bk-bet { display: grid; gap: 2px; }
+  .agn-s .bk-rad2 > .pille { justify-self: start; }
+  .agn-s .bk-hode { display: grid; grid-template-columns: 52px minmax(0, 1.2fr) minmax(0, 1.2fr) 120px minmax(0, 1fr) 150px; gap: 0 var(--r3); padding-bottom: 6px; font: 500 11px/1.2 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--graphite-600); }
+  .agn-s .bk-hode span:first-child { visibility: hidden; }
+  .agn-s .bk-uka { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: var(--r6, 28px); }
+  .agn-s .bk-ny { display: grid; grid-template-columns: minmax(0, 640px) minmax(0, 320px); gap: var(--r6, 28px); align-items: start; }
+  .agn-s .bk-ny-opps { display: grid; gap: var(--r3); padding: var(--r4); border-radius: 14px; background: var(--sand-100); position: sticky; top: 24px; }
+  .agn-s .bk-ny-opps h2 { margin: 0; font: 600 17px/1.25 var(--sans); }
+}
+
+.agn-s .bk-detalj { display: grid; gap: var(--r5); min-width: 0; }
+.agn-s .bk-detalj-hoved, .agn-s .bk-detalj-side { display: grid; gap: var(--r4); align-content: start; min-width: 0; }
+.agn-s .bk-handling { display: grid; gap: var(--r2); padding: var(--r4); border-radius: 12px; box-shadow: 0 0 0 1px var(--sand-300); background: var(--white); scroll-margin-top: 80px; }
+.agn-s .bk-handling.dempet { background: var(--sand-100); box-shadow: none; }
+.agn-s .bk-handling h2 { margin: 0; font: 600 17px/1.25 var(--sans); }
+.agn-s .bk-detalj .booking-helt { background: var(--white); color: var(--graphite-900); box-shadow: 0 0 0 1px var(--sand-300); }
+.agn-s .bk-detalj .booking-helt .bt-tid small { opacity: 1; color: var(--graphite-600); }
+@media (min-width: 900px) { .agn-s .bk-detalj { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: var(--r6, 28px); align-items: start; } }
 /* Designløftet 20.10 (canvas rad 5 Kalender): verktøyrad, lagprikker, gjennomført lyst,
    test med ramme, dagshode med dato og timer, og kortet ved siden av timen på PC. */
 .agn-s .kal-verktoy { display: flex; flex-wrap: wrap; align-items: center; gap: var(--r2) var(--r3); min-width: 0; }
