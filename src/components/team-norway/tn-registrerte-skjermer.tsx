@@ -5,6 +5,7 @@ import { innloggetKanSeDataGolf } from "@/lib/auth/datagolf-tilgang";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentTnArbeidskontekst, type TnArbeidskontekst } from "@/lib/domain/tn-arbeidsflate";
 import { TnInviterSpiller } from "./tn-inviter-spiller";
+import { TnSkraKort, TnSkraTopp } from "./tn-skra-topp";
 import { TnManuellTurnering } from "./tn-manuell-turnering";
 import { TnShell, TnSidehode, tnRolleNavn, type TnAktivSide } from "./tn-shell";
 import { TnKort } from "./core";
@@ -62,7 +63,7 @@ export async function TnRegistrertSkjerm({ skjerm }: { skjerm: Skjerm }) {
   if (skjerm === "inviter") {
     const kontekst = await hentTnArbeidskontekst(bruker);
     if (!kontekst?.kanAdministrere) notFound();
-    return <Chrome aktiv="inviter" brukerNavn={brukerNavn} kontekst={kontekst}><TnSidehode overlinje="Administrasjon · Medlemmer" tittel="Inviter spiller" ingress="Inviter spillere til Team Norway og følg status for hver invitasjon." /><TnKort><TnInviterSpiller groupId={kontekst.gruppe.id} /></TnKort></Chrome>;
+    return <Chrome aktiv="inviter" brukerNavn={brukerNavn} kontekst={kontekst}><TnSkraTopp bilde="spiller-ved-vannet" etikett="Inviter spiller" overlinje={`Administrasjon · ${kontekst.gruppe.name}`} tittel="Inviter spiller" ingress="Inviter spillere til Team Norway og følg status for hver invitasjon." /><TnSkraKort><TnKort><TnInviterSpiller groupId={kontekst.gruppe.id} /></TnKort></TnSkraKort></Chrome>;
   }
 
   notFound();
