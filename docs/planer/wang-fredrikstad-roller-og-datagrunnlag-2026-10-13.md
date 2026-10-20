@@ -192,7 +192,9 @@ Sikkerhetsgrenser:
 - koblingen er additiv og kan ikke opprette Auth-brukere, sende e-post, slette data eller koble over en elev som allerede tilhører en annen profil
 - foresatt og klubbtrener får tidsbegrenset lesetilgang uten søvn og dagsform
 
-Ingen kontoer eller databasekoblinger er opprettet i denne arbeidsbolken. Neste handling krever en eksplisitt bekreftelse mens de syntetiske Auth-kontoene opprettes.
+Ingen kontoer eller databasekoblinger er opprettet i denne arbeidsbolken. Opprettingen ble eksplisitt
+godkjent 20. oktober 2026, men den faktiske kjøringen er sperret fordi tilgjengelig Supabase-konto
+ikke har tilgang til WANG-prosjektet `uwuhkgkaqnuerlkqvrpw`.
 
 ## 14. Rolleavgrenset utøveroversikt bygget 14. oktober 2026
 
@@ -299,4 +301,25 @@ Alle ti fiktive rollevisninger under `/team-wang/demo/roller` er kontrollert på
 - kontrollen bruker bare fiktive rolledata og oppretter ingen bruker, elev, tilgang eller databaserad
 
 Dette bekrefter de offentlige rolleforhåndsvisningene, ikke de innloggede rolleskjermene. Full rolle- og
-databasetest krever fortsatt eksplisitt godkjenning til å opprette de syntetiske Auth-kontoene.
+databasetest krever fortsatt at de godkjente syntetiske Auth-kontoene faktisk opprettes og kobles.
+
+## 22. Sikker innlogget sluttkontroll klargjort 20. oktober 2026
+
+Punkt 8 er godkjent og den tekniske kontrolløypen er ferdig klargjort uten å opprette kontoer.
+
+- `wang:testprofiler:opprett` oppretter eller roterer ti tydelig syntetiske kontoer med
+  `example.invalid`-adresser, tilfeldig passord og serverstyrt syntetisk markør
+- standardkjøringen er bare en kontrollrapport; oppretting krever det eksplisitte valget `--apply`
+- verktøyet er hardlåst til den godkjente WANG-databasen og nekter å lagre passord i kodebasen
+- verktøyet velger bare en ukoblet demo-elev i Golf ved WANG Fredrikstad 2026/2027
+- `wang:testprofiler:koble` beholder egen kontroll før profiler, sportsteam og ekstern lesetilgang kobles
+- `wang:testprofiler:kontroller` kontrollerer alle ti roller på desktop og mobil, synlige appskjermer,
+  tilgang og avvisning, vannrett overflyt, trykkflater, tastaturfokus, alvorlige
+  tilgjengelighetsbrudd og feil i nettleserkonsollen
+- passord, e-postadresser og tjenestenøkkel skrives aldri til loggen
+- enhetstestene for konto- og koblingsreglene er grønne
+
+Produksjonskjøringen er ikke utført. Supabase-kontoen som er tilgjengelig i denne arbeidsøkten har
+ikke tilgang til prosjektet `uwuhkgkaqnuerlkqvrpw`, og nødvendig servernøkkel er ikke tilgjengelig.
+Ingen Auth-konto, profilkobling eller annen databaserad er opprettet. Punkt 8 er derfor godkjent og
+klargjort, men ikke sluttkontrollert.

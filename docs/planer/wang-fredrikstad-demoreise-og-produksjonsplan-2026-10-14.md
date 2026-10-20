@@ -94,7 +94,8 @@ Forhåndsvisningen gir ingen virkelig tilgang og bruker ingen personopplysninger
 Åpne `/team-wang/app` i en ren nettleserøkt.
 
 Forventet resultat er videresending til separat WANG-innlogging med returadresse. Ikke logg inn med
-en ekte person. Innlogget ende-til-ende-kontroll venter på eksplisitt godkjenning av syntetiske Auth-kontoer.
+en ekte person. Oppretting av syntetiske Auth-kontoer ble godkjent 20. oktober 2026, men er ikke
+gjennomført fordi den innloggede Supabase-kontoen ikke har tilgang til den faktiske WANG-databasen.
 
 ## 3. Kontrollbevis for demoen
 
@@ -105,6 +106,8 @@ en ekte person. Innlogget ende-til-ende-kontroll venter på eksplisitt godkjenni
 - Tastaturfokus er synlig og minst tre piksler bredt.
 - Automatisk tilgjengelighetskontroll har ingen alvorlige eller kritiske funn.
 - Produksjonskontroll er automatisert i `tests/e2e/wang-role-preview-accessibility.spec.ts`.
+- Innlogget sluttkontroll er klargjort separat i `tests/visual/wang-auth-final/roles.spec.ts`, men kan
+  ikke kjøres før de godkjente syntetiske kontoene faktisk er opprettet og koblet.
 
 ## 4. Produksjonsstatus
 
@@ -133,7 +136,7 @@ en ekte person. Innlogget ende-til-ende-kontroll venter på eksplisitt godkjenni
 
 Krav:
 
-- eksplisitt godkjenning til å opprette ti syntetiske Auth-kontoer
+- eksplisitt godkjenning til å opprette ti syntetiske Auth-kontoer — godkjent 20. oktober 2026
 - fast `example.invalid`-adresse og tydelig syntetisk markør
 - én eksisterende fiktiv Golf-elev kobles til elev-, foresatt- og klubbtrenerrollene
 - ingen e-post sendes
@@ -190,6 +193,10 @@ Ferdigbevis: én idrett åpnes om gangen etter samme kontroll som Golf.
 
 ## 6. Neste handling
 
-Neste avhengige steg er Port 1. Det krever eksplisitt godkjenning i handlingen som oppretter de ti
-syntetiske Auth-kontoene. Inntil da kan dokumentasjon og visuell kobling forbedres, men innlogget
-rolle- og databasetilgang skal ikke omtales som sluttkontrollert.
+Neste avhengige steg er fortsatt Port 1. Godkjenningen er gitt, og sikker konto-oppretting,
+rolle-kobling og nettleserkontroll er klargjort. Den faktiske WANG-databasen har prosjektreferanse
+`uwuhkgkaqnuerlkqvrpw`, men Supabase-kontoen som er tilgjengelig i denne arbeidsøkten får svaret
+«Du har ikke tilgang til dette prosjektet». Ingen konto eller databaserad er derfor opprettet.
+
+Når tilgangen er gjenopprettet, kjøres konto-oppretting, rolle-kobling og sluttkontroll samlet. Før
+det er gjort, skal innlogget rolle- og databasetilgang ikke omtales som sluttkontrollert.
