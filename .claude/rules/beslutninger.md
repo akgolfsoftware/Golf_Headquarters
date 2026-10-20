@@ -18,7 +18,7 @@ Anders 20.10 om PlayerHQ og AgencyOS: «Jeg er fortsatt ikke fornøyd … Det se
 
 **Arbeidet dette utløser:**
 
-1. **Prøveskjermene:** I dag og Cockpit som klikkbare utkast i 390 og 1280 px, i `docs/design-system/utkast-skra/`, publisert som lenke til Anders. Ferdig når Anders har sagt ja eller bedt om endring (port 7).
+1. **Prøveskjermene:** I dag og Cockpit som klikkbare utkast i 390 og 1280 px, i `docs/design-system/utkast-skra/`, publisert på https://claude.ai/artifact/7qVqP9D1E4xYCFx3cKx1gk. **Godkjent 20.10** etter at luften mellom kortene ble rettet og bevegelse lagt til (Anders: «Dette var mye bedre!»). Fasit for punkt 2–5 er `docs/design-system/utkast-skra/index.html`.
 2. **Tokens:** `src/styles/ak-tokens.css` får flate, skyggenivåer, radius 18/14, skråkutt og bevegelsestider fra utkastet; aliasene i `.pa-root`, `.phn` og `.agn` peker dit. Ferdig når `--shadow-card` ikke lenger er `none` og verdiene står bare ett sted. Først etter punkt 1.
 3. **Felles byggeklosser:** én bildetopp med skråkutt (gjenbruk av `src/components/team-norway/tn-skra-topp.tsx` som mønster), ett kort, én knapp, én tom-tilstand. Ferdig når I dag og Cockpit bruker dem.
 4. **PlayerHQ skjerm for skjerm:** I dag, Plan, Stats, Meg, deretter resten, én PR per pakke. Ferdig når hver skjerm er målt i 390 og 1280 px uten sidelengs rulling.
