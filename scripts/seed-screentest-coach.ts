@@ -1,5 +1,5 @@
 /**
- * Seed en innloggbar test-COACH (ADMIN) for AgencyOS skjerm-paritet —
+ * Seed en innloggbar test-COACH (rolle COACH, ikke ADMIN: 20.10.2026) for AgencyOS skjerm-paritet —
  * MED komplett demo-stall som matcher Claude Design-fasiten.
  *
  * Login: coachtest@akgolf.test / SCREENTEST_PASSWORD i .env.local  (Anders Kristiansen, kanon coach)
@@ -150,7 +150,7 @@ const DEMO_AGENTS = ["kalender-agent", "plan-agent", "turnerings-agent"];
 async function ensureAuthUser(): Promise<string> {
   const created = await admin.auth.admin.createUser({
     email: EMAIL, password: PASSWORD, email_confirm: true,
-    user_metadata: { role: "ADMIN", tier: "PRO", firstName: "Anders", lastName: "Kristiansen" },
+    user_metadata: { role: "COACH", tier: "PRO", firstName: "Anders", lastName: "Kristiansen" },
   });
   if (created.data.user) { console.log(`Auth-bruker opprettet: ${created.data.user.id}`); return created.data.user.id; }
   const list = await admin.auth.admin.listUsers({ page: 1, perPage: 200 });
@@ -158,7 +158,7 @@ async function ensureAuthUser(): Promise<string> {
   if (!existing) throw new Error(`Kunne ikke opprette/finne auth-bruker: ${created.error?.message}`);
   await admin.auth.admin.updateUserById(existing.id, {
     password: PASSWORD, email_confirm: true,
-    user_metadata: { role: "ADMIN", tier: "PRO", firstName: "Anders", lastName: "Kristiansen" },
+    user_metadata: { role: "COACH", tier: "PRO", firstName: "Anders", lastName: "Kristiansen" },
   });
   console.log(`Auth-bruker fantes — passord resatt: ${existing.id}`);
   return existing.id;
@@ -190,12 +190,12 @@ async function seedEnrolleringer(coachId: string): Promise<number> {
 }
 
 async function main() {
-  console.log("Seeder skjermtest-coach (Anders Kristiansen, ADMIN) + demo-stall...");
+  console.log("Seeder skjermtest-coach (Anders Kristiansen, COACH) + demo-stall...");
   const authId = await ensureAuthUser();
   const coach = await prisma.user.upsert({
     where: { email: EMAIL },
-    update: { authId, name: NAME, role: "ADMIN", tier: "PRO", homeClub: "Oslo GK" },
-    create: { authId, email: EMAIL, name: NAME, role: "ADMIN", tier: "PRO", homeClub: "Oslo GK" },
+    update: { authId, name: NAME, role: "COACH", tier: "PRO", homeClub: "Oslo GK" },
+    create: { authId, email: EMAIL, name: NAME, role: "COACH", tier: "PRO", homeClub: "Oslo GK" },
   });
   console.log(`Coach-User: ${coach.id}`);
 
