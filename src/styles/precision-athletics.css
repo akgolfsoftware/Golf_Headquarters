@@ -12,16 +12,16 @@
 
 /* ---- Farger (lyst tema er standard) ---- */
 .pa-root{
---sand-100:#faf8f3;--sand-150:#f1eee8;--sand-200:#e6e3dd;--sand-300:#ddd9d1;--sand-400:#c9c4ba;--white:#ffffff;
---graphite-900:#141413;--graphite-800:#2a2926;--graphite-700:#3a3935;--graphite-600:#46443f;--graphite-500:#686560;--graphite-400:#8a8680;
---rust-600:#9b2415;--rust-700:#7d1c10;--rust-400:#d8553f;--rust-100:#fbebea;
+--sand-100:var(--ak-sand-100);--sand-150:var(--ak-sand-150);--sand-200:var(--ak-sand-200);--sand-300:var(--ak-sand-300);--sand-400:var(--ak-sand-400);--white:var(--ak-hvit);
+--graphite-900:var(--ak-g900);--graphite-800:var(--ak-g800);--graphite-700:var(--ak-g700);--graphite-600:var(--ak-g600);--graphite-500:var(--ak-g500);--graphite-400:var(--ak-g400);
+--rust-600:var(--ak-rust-600);--rust-700:var(--ak-rust-700);--rust-400:var(--ak-rust-400);--rust-100:var(--ak-rust-100);
 --night-950:#0c0d0c;--night-900:#141513;--night-850:#1b1c1a;--night-800:#232421;--night-700:#2f302c;--night-500:#6e6c66;--night-300:#a9a59d;--night-200:#cfcbc2;
---green-700:#2f6b3a;--green-50:#eaf2ea;--amber-700:#7e6110;--amber-50:#fbf4e4;--blue-800:#1d3557;--blue-50:#e8edf4;
---axis-fys:#788c5d;--axis-fys-ink:#63784a;--axis-fys-soft:rgba(120,140,93,.13);
---axis-tek:#b8852a;--axis-tek-ink:#8a6316;--axis-tek-soft:rgba(184,133,42,.13);
---axis-slag:#2563eb;--axis-slag-ink:#1d4fd0;--axis-slag-soft:rgba(37,99,235,.13);
---axis-spill:#c46686;--axis-spill-ink:#9e4a67;--axis-spill-soft:rgba(196,102,134,.16);
---axis-turn:#a32d2d;--axis-turn-ink:#a32d2d;--axis-turn-soft:rgba(163,45,45,.13);
+--green-700:var(--ak-green-700);--green-50:var(--ak-green-50);--amber-700:var(--ak-amber-700);--amber-50:var(--ak-amber-50);--blue-800:var(--ak-blue-800);--blue-50:var(--ak-blue-50);
+--axis-fys:var(--ak-fys);--axis-fys-ink:var(--ak-fys-ink);--axis-fys-soft:var(--ak-fys-soft);
+--axis-tek:var(--ak-tek);--axis-tek-ink:var(--ak-tek-ink);--axis-tek-soft:var(--ak-tek-soft);
+--axis-slag:var(--ak-slag);--axis-slag-ink:var(--ak-slag-ink);--axis-slag-soft:var(--ak-slag-soft);
+--axis-spill:var(--ak-spill);--axis-spill-ink:var(--ak-spill-ink);--axis-spill-soft:var(--ak-spill-soft);
+--axis-turn:var(--ak-turn);--axis-turn-ink:var(--ak-turn);--axis-turn-soft:var(--ak-turn-soft);
 --surface-page:var(--sand-200);
 --surface-flat:var(--sand-100);
 --surface-card:var(--white);
@@ -96,8 +96,8 @@ color-scheme:dark;
 
 /* ---- Typografi ---- */
 .pa-root{
---font-sans:var(--font-ibm-plex-sans),"IBM Plex Sans",system-ui,sans-serif;
---font-mono:var(--font-ibm-plex-mono),"IBM Plex Mono",ui-monospace,monospace;
+--font-sans:var(--ak-font-sans);
+--font-mono:var(--ak-font-mono);
 --fs-10:10px;--fs-11:11px;--fs-13:13px;--fs-14:14px;--fs-15:15px;--fs-17:17px;--fs-21:21px;--fs-26:26px;--fs-28:28px;--fs-40:40px;--fs-56:56px;--fs-72:72px;
 --fw-regular:400;--fw-medium:500;--fw-semibold:600;
 --lh-tight:1.05;--lh-snug:1.25;--lh-normal:1.45;
@@ -122,13 +122,13 @@ color-scheme:dark;
 /* ---- Avstand, hjørner, skygger, rammer, bevegelse ---- */
 .pa-root{
 --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:20px;--space-6:24px;--space-8:32px;--space-10:40px;--space-12:48px;--space-16:64px;--space-20:80px;
---radius:8px;--radius-modal:12px;--radius-pill:999px;--radius-mark:0;--radius-inner:4px;
+--radius:var(--ak-r-knapp);--radius-modal:12px;--radius-pill:var(--ak-r-pille);--radius-mark:0;--radius-inner:var(--ak-r-indre);
 --shadow-card:none;
 --shadow-raised:0 1px 2px rgba(20,20,19,.08);
 --shadow-pop:0 8px 24px rgba(20,20,19,.12),0 1px 2px rgba(20,20,19,.08);
 --shadow-modal:0 24px 64px rgba(20,20,19,.24);
 --border-w:1px;
---topbar-h:56px;--tabbar-h:64px;--sidenav-w:236px;--inspector-w:340px;--content-max:1200px;
+--topbar-h:56px;--tabbar-h:64px;--sidenav-w:236px;--inspector-w:340px;--content-max:var(--ak-innhold-maks);
 --hit-min:44px;--hit-outdoor:56px;
 --control-h-sm:32px;--control-h:40px;--control-h-lg:48px;--control-h-xl:56px;
 --dur-press:150ms;--dur-swap:300ms;--dur-fast:150ms;--dur-base:200ms;--dur-sheet:250ms;

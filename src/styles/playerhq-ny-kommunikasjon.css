@@ -14,7 +14,7 @@
 .phn .phn-kort.phn-k-dempet { background: var(--phn-sand-100); }
 .phn .phn-knapp.phn-k-stor { min-height: 52px; font-size: 16px; width: 100%; }
 .phn .phn-k-toast { position: sticky; bottom: 16px; z-index: 5; display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 10px; background: var(--phn-g900); color: var(--phn-hvit); font: 500 14px/1.4 var(--phn-sans); box-shadow: 0 8px 24px rgba(0, 0, 0, .2); }
-.phn .phn-k-feil { padding: 12px 14px; border-radius: 10px; background: var(--phn-rust-50); color: #8a2a1c; font: 500 14px/1.45 var(--phn-sans); }
+.phn .phn-k-feil { padding: 12px 14px; border-radius: 10px; background: var(--phn-rust-50); color: var(--ak-rust-tekst); font: 500 14px/1.45 var(--phn-sans); }
 
 /* Brikker (filter og valg) */
 .phn .phn-k-chips { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -25,7 +25,7 @@
 /* Avatar og merker */
 .phn .phn-k-avatar { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; font: 600 14px/1 var(--phn-sans); flex: none; background: var(--phn-g900); color: var(--phn-hvit); }
 .phn .phn-k-avatar.caddie { border-radius: 10px; }
-.phn .phn-k-avatar.wang { background: #1d3557; }
+.phn .phn-k-avatar.wang { background: var(--ak-blue-800); }
 .phn .phn-k-avatar.tn { background: #012b5d; }
 .phn .phn-k-avatar.lys { background: var(--phn-sand-150); color: var(--phn-g900); }
 .phn .phn-k-avatar .phn-ikon { width: 20px; height: 20px; }

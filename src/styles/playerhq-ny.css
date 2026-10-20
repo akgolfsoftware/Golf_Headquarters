@@ -9,17 +9,17 @@
 
 .phn {
   /* Utkastets mørkere aksefarger: hvit tekst på fylte øktkort må leses. */
-  --phn-fys: #788c5d; --phn-fys-ink: #556740;
-  --phn-tek: #b8852a; --phn-tek-ink: #825d15;
-  --phn-slag: #2563eb; --phn-slag-ink: #1d4fd0;
-  --phn-spill: #c46686; --phn-spill-ink: #954661;
-  --phn-turn: #a32d2d; --phn-turn-ink: #a32d2d;
-  --phn-sand-100: #faf8f3; --phn-sand-150: #f1eee8; --phn-sand-300: #ddd9d1; --phn-hvit: #ffffff;
-  --phn-g900: #141413; --phn-g800: #2a2926; --phn-g600: #46443f; --phn-g500: #686560;
-  --phn-amber-700: #7e6110; --phn-amber-50: #fbf4e4; --phn-green-700: #2f6b3a; --phn-green-50: #eaf3e9;
-  --phn-rust: #9b2415; --phn-rust-50: #fbe9e7;
-  --phn-sans: var(--font-sans, "IBM Plex Sans", system-ui, sans-serif);
-  --phn-mono: var(--font-mono, "IBM Plex Mono", ui-monospace, monospace);
+  --phn-fys: var(--ak-fys); --phn-fys-ink: var(--ak-fys-ink-fylt);
+  --phn-tek: var(--ak-tek); --phn-tek-ink: var(--ak-tek-ink-fylt);
+  --phn-slag: var(--ak-slag); --phn-slag-ink: var(--ak-slag-ink);
+  --phn-spill: var(--ak-spill); --phn-spill-ink: var(--ak-spill-ink-fylt);
+  --phn-turn: var(--ak-turn); --phn-turn-ink: var(--ak-turn);
+  --phn-sand-100: var(--ak-sand-100); --phn-sand-150: var(--ak-sand-150); --phn-sand-300: var(--ak-sand-300); --phn-hvit: var(--ak-hvit);
+  --phn-g900: var(--ak-g900); --phn-g800: var(--ak-g800); --phn-g600: var(--ak-g600); --phn-g500: var(--ak-g500);
+  --phn-amber-700: var(--ak-amber-700); --phn-amber-50: var(--ak-amber-50); --phn-green-700: var(--ak-green-700); --phn-green-50: var(--ak-green-50);
+  --phn-rust: var(--ak-rust-600); --phn-rust-50: var(--ak-rust-100);
+  --phn-sans: var(--ak-font-sans);
+  --phn-mono: var(--ak-font-mono);
   --phn-ut: cubic-bezier(.23, 1, .32, 1);
 
   container-type: inline-size;
@@ -117,7 +117,7 @@
 .phn .phn-melding { font-size: 14px; }
 /* Tom melding-sone skal ikke gi et tomt mellomrom i rutenettet, men må finnes for skjermleser. */
 .phn .phn-meldinger:empty { position: absolute; width: 1px; height: 1px; overflow: hidden; }
-.phn .phn-melding[role="alert"] { color: #8a2a1c; }
+.phn .phn-melding[role="alert"] { color: var(--ak-rust-tekst); }
 
 /* Tom, laster og feil */
 .phn .phn-skjelett { display: block; border-radius: 12px; background: linear-gradient(90deg, var(--phn-sand-150) 0%, var(--phn-sand-100) 50%, var(--phn-sand-150) 100%); background-size: 200% 100%; animation: phn-skjelett 1.4s linear infinite; }
@@ -223,7 +223,7 @@
 .phn .phn-uketab b i { width: 10px; height: 10px; border-radius: 50%; flex: none; }
 .phn .phn-uketab input { min-height: 44px; width: 100%; min-width: 0; padding: 0 2px; border: 1px solid var(--phn-g500); border-radius: 8px; font: 500 14px/1 var(--phn-mono); text-align: center; background: var(--phn-hvit); color: var(--phn-g900); }
 .phn .phn-uketab input:disabled { background: var(--phn-sand-100); color: var(--phn-g600); border-color: var(--phn-sand-300); }
-.phn .phn-uketab input[aria-invalid="true"] { border-color: #8a2a1c; border-width: 2px; }
+.phn .phn-uketab input[aria-invalid="true"] { border-color: var(--ak-rust-tekst); border-width: 2px; }
 .phn .phn-uketab-s { font: 600 13px/1.2 var(--phn-mono); text-align: center; }
 .phn .phn-sjekk { display: flex; align-items: center; gap: 10px; min-height: 44px; font-size: 14px; }
 .phn .phn-sjekk input { width: 20px; height: 20px; }

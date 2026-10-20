@@ -72,6 +72,8 @@ Ingen skjerm endres, ingen visuell endring, men fra nå av er en fargebeslutning
 
 Mål på ferdig: `grep -c "#[0-9a-f]\{6\}" src/styles/playerhq-ny*.css src/styles/agencyos-ny*.css` går fra 300+ til under 20 (bare `#fff` i fylte kort).
 
+**Gjort 20.10 i PR #1467.** Målt: 109 hex-forekomster på 78 linjer før, 32 forekomster på 20 linjer etter; resten mangler token (banekart, diagramtinter, TN-navy). Skjermbilder før/etter er pikselidentiske.
+
 ### Forslag 2: Lås fire tall som regel (ca. 20 linjer + vakt)
 
 Velg én verdi for hver og legg dem som token i steg 1:
@@ -84,6 +86,8 @@ Velg én verdi for hver og legg dem som token i steg 1:
 | Maks innholdsbredde | 1 200 px | Precision `--content-max` |
 
 Legg en liten vakt i `npm run verify` som feiler på nye `@media (min-width:` med andre verdier enn de to. Det hindrer at tallet 15 dukker opp.
+
+**Gjort 20.10 i PR #1467.** Tokenene heter `--ak-r-kort`, `--ak-r-knapp`, `--ak-bryt-pc-container`, `--ak-bryt-pc-media`, `--ak-innhold-maks` i `src/styles/ak-tokens.css`; vakten er `scripts/check-brytepunkt.mjs` (600, 900 og 1024 px tillatt, dagens 1280 i `agencyos-ny-workbench.css` hvitelistet). Ingen eksisterende skjerm har fått nytt brytepunkt.
 
 ### Forslag 3: Fem delte byggeklosser som alle tre lag bruker (ca. 200 linjer)
 

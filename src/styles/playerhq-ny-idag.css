@@ -117,7 +117,7 @@
 .phn-idag .milepael b { font: 600 17px/1 var(--phn-mono); }
 
 /* Hele økta: ark på mobil, panel fra høyre på PC */
-.phn-oktvisning { position: fixed; inset: 0; z-index: 60; display: grid; align-content: start; overflow: auto; background: #fff; color: var(--phn-g900, #141413); }
+.phn-oktvisning { position: fixed; inset: 0; z-index: 60; display: grid; align-content: start; overflow: auto; background: #fff; color: var(--phn-g900, var(--ak-g900)); }
 .phn-oktvisning .ov-topp { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px; background: #fff; border-bottom: 1px solid var(--phn-sand-300); }
 .phn-oktvisning .tilbake { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 10px; border: 0; background: transparent; font: 500 15px/1 var(--phn-sans); color: var(--phn-g900); cursor: pointer; border-radius: 8px; }
 .phn-oktvisning .tilbake:focus-visible, .phn-oktvisning .start:focus-visible { outline: 3px solid var(--phn-g900); outline-offset: 2px; }

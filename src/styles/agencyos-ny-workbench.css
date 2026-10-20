@@ -82,7 +82,7 @@
 /* Perioder og gruppas årsplan */
 .agn-s .periodebaand { display: flex; gap: 2px; height: 44px; }
 .agn-s .periodebaand span { display: grid; place-items: center; border-radius: 4px; font: 600 10.5px/1.1 var(--sans); color: #fff; overflow: hidden; text-align: center; padding: 0 2px; min-width: 0; }
-.agn-s .p-grunn { background: #46443f; } .agn-s .p-spes { background: #2a2926; } .agn-s .p-turn { background: #141413; } .agn-s .p-eval { background: #8a877e; } .agn-s .p-ferie { background: var(--sand-300); color: var(--graphite-800) !important; } .agn-s .p-rest { background: #686560; } .agn-s .p-hend { background: var(--sand-150); color: var(--graphite-800) !important; border: 1px dashed var(--graphite-500); }
+.agn-s .p-grunn { background: var(--ak-g600); } .agn-s .p-spes { background: var(--ak-g800); } .agn-s .p-turn { background: var(--ak-g900); } .agn-s .p-eval { background: #8a877e; } .agn-s .p-ferie { background: var(--sand-300); color: var(--graphite-800) !important; } .agn-s .p-rest { background: var(--ak-g500); } .agn-s .p-hend { background: var(--sand-150); color: var(--graphite-800) !important; border: 1px dashed var(--graphite-500); }
 .agn-s .kurve { display: block; width: 100%; height: auto; }
 .agn-s .periodeliste { display: grid; gap: 6px; }
 .agn-s .periode { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: var(--r3); align-items: center; padding: 10px 12px; border: 1px solid var(--sand-300); border-radius: 10px; background: var(--white); text-align: left; font: inherit; color: inherit; width: 100%; cursor: pointer; }
