@@ -5,7 +5,8 @@ import { formaterFortegn, formaterTall } from "@/lib/format-tall";
 import type { ReactNode } from "react";
 import { TN } from "@/lib/v2/team-norway";
 import { TnPille } from "../core";
-import { TnFilterknapper, TnFlate, TnFlatehode, TnFotnote, TnListerad, TnMangler, TnSkjermhode, TnTekstlenke } from "../tn-flate";
+import { TnSkraKort, TnSkraTopp } from "../tn-skra-topp";
+import { TnFilterknapper, TnFlate, TnFlatehode, TnFotnote, TnListerad, TnMangler, TnTekstlenke } from "../tn-flate";
 import { TnHelt, TnHeltSporsmaal, TnHeltTall, TnHeltTekst, TnHeltTellere } from "../tn-stall";
 
 /**
@@ -63,10 +64,14 @@ function Velger({ side, v }: { side: DgSpillerSide; v: DgSpillerVisning }) {
 function Hode({ side, v, tittel, ingress, faner }: { side: DgSpillerSide; v: DgSpillerVisning; tittel: string; ingress: string; faner: ReactNode }) {
   return (
     <>
-      <TnSkjermhode overlinje={`Analyse · Data Golf${v.spiller && v.proff ? ` · ${v.spiller.navn} mot ${v.proff.navn}` : ""}`} tittel={tittel} ingress={ingress} />
-      {faner}
-      <Undermeny aktiv={side} v={v} />
-      <Velger side={side} v={v} />
+      <TnSkraTopp bilde="spiller-ved-vannet" etikett={tittel} overlinje={`Analyse · Data Golf · bare ADMIN${v.spiller && v.proff ? ` · ${v.spiller.navn} mot ${v.proff.navn}` : ""}`} tittel={tittel} ingress={ingress} />
+      <TnSkraKort>
+        <TnFlate style={{ display: "grid", gap: 12 }}>
+          {faner}
+          <Undermeny aktiv={side} v={v} />
+          <Velger side={side} v={v} />
+        </TnFlate>
+      </TnSkraKort>
     </>
   );
 }
