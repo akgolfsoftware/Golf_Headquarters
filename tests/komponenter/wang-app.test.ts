@@ -89,29 +89,33 @@ describe('WANG Toppidrett Modul (Samtlige WANG-skjermer)', async () => {
     }
   });
 
-  test('WangIdag: teller elevene i gruppa, ikke en fast liste', () => {
+  test('WangIdag: ukestripen teller ukas økter fra gruppa, ingen fast liste', () => {
     const html = vis(WangIdag);
     assert.ok(html.includes('I dag'));
-    assert.ok(html.includes('<strong>11</strong>'), 'Demogruppa har 11 elever');
-    assert.ok(html.includes('Morgentrening nærspill (demo)'), 'Skal vise ukas økter fra gruppa');
+    assert.ok(html.includes('aria-label="Tir: 1 økt"'), 'Tirsdagens økt telles i stripen');
+    assert.ok(html.includes('aria-label="Ons: 1 økt"'), 'Dagens økt telles i stripen');
+    assert.ok(html.includes('aria-label="Man: ingen økter"'));
+    assert.ok(html.includes('Morgentrening driver (demo)'), 'Dagens økt står i tidslinjen');
     assert.ok(html.includes('Nærspill'), 'Skal vise periodens fokus');
     assert.ok(!html.includes('112 mph'), 'Ingen oppdiktede måltall');
   });
 
   test('WangIdag: tom gruppe gir tom tilstand', () => {
     const html = vis(WangIdag, tom);
-    assert.ok(html.includes('Ingen økter denne uka'));
+    assert.ok(html.includes('Ingen økter i kalenderen'));
     assert.ok(html.includes('Ingen økter i dag'));
     assert.ok(html.includes('Ingen aktiv periode'));
+    assert.ok(html.includes('Ingenting venter på deg'));
   });
 
-  test('WangIdag: helteflaten teller dagens økter, og det som ikke er koblet viser —', () => {
+  test('WangIdag: toppfeltet teller dagens økter, og det som ikke er delt viser —', () => {
     const html = vis(WangIdag);
     assert.ok(html.includes('økt i dag'), 'Én økt i dag i demogruppa');
-    assert.ok(html.includes('Neste økt kl. 08:00'));
+    assert.ok(html.includes('Neste: Morgentrening driver (demo) kl. 08:00'));
     assert.ok(html.includes('kl. 07:40'), 'Klokka fra serveren');
+    assert.ok(html.includes('Ingen har delt planen ennå'), 'Morgentrening uten delte planer viser —');
     assert.ok(html.includes('Krever handling'));
-    assert.ok(html.includes('Ikke koblet ennå'));
+    assert.ok(html.includes('Før 08:00'), 'Oppmøte før neste økt er en sak');
   });
 
   const visFane = (aktivFane: string, oktId?: string, data = DATA) =>
