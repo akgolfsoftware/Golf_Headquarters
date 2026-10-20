@@ -66,14 +66,14 @@ test("an unlinked account cannot mirror another player's matching-name results",
   assert.deepEqual(result, { linked: false, mirrored: 0, needsVerifiedLink: true });
 });
 
-test("an existing PublicPlayer link continues to mirror results", async () => {
+test("an existing PublicPlayer link no longer copies results (single source: confirmed profile)", async () => {
   const { linkAndSyncUserTournamentResults } = await import("./link-public-players");
   const mockUser = { id: "synthetic-user", publicPlayerId: "public-player-1" };
   const mockEntries = [
     { tournamentId: "t-1", position: 1, scoreToPar: -12, totalScore: 276, status: "FINISHED" },
     { tournamentId: "t-2", position: 3, scoreToPar: -8, totalScore: 280, status: "FINISHED" },
   ];
-  const mirroredTournaments: string[] = [];
+  let kopiert = 0;
   const mockPrisma = {
     user: {
       findUnique: async () => mockUser,
@@ -83,15 +83,15 @@ test("an existing PublicPlayer link continues to mirror results", async () => {
     publicPlayerEntry: { findMany: async () => mockEntries },
     $transaction: async <T>(fn: (tx: unknown) => Promise<T>) => fn(mockPrisma),
     tournamentResult: {
-      upsert: async ({ create }: { create: { tournamentId: string } }) => {
-        mirroredTournaments.push(create.tournamentId);
+      upsert: async () => {
+        kopiert++;
         return {};
       },
     },
     tournamentEntry: {
       findFirst: async () => null,
-      create: async () => ({}),
-      update: async () => ({}),
+      create: async () => { kopiert++; return {}; },
+      update: async () => { kopiert++; return {}; },
     },
   };
   const result = await linkAndSyncUserTournamentResults(
@@ -100,6 +100,6 @@ test("an existing PublicPlayer link continues to mirror results", async () => {
   );
   assert.equal(result.linked, true);
   assert.equal(result.publicPlayerId, "public-player-1");
-  assert.equal(result.mirrored, 2);
-  assert.deepEqual(mirroredTournaments, ["t-1", "t-2"]);
+  assert.equal(result.mirrored, 0);
+  assert.equal(kopiert, 0);
 });

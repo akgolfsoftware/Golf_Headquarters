@@ -18,7 +18,7 @@ test("GolfBox → atomisk lagring → egen historikk beholder brutto og kildever
   t.mock.method(globalThis, "fetch", async () => new Response(JSON.stringify(response())));
   let stored: Record<string, unknown> | null = null;
   const persistedRounds: { roundNumber: number; score: number; toPar: number }[] = [];
-  let mirroredScore: number | null = null;
+  let kopiSkrevet = false;
   let transactions = 0;
   const prisma = {
     publicPlayer: { findMany: async () => [{ id: "public-a", name: "Test Spiller", birthYear: 2005, country: "NO", slug: "test-spiller" }] },
@@ -28,17 +28,16 @@ test("GolfBox → atomisk lagring → egen historikk beholder brutto og kildever
       return fn({
         publicPlayerEntry: { upsert: async ({ create }: { create: Record<string, unknown> }) => { stored = create; return { id: "entry-a" }; } },
         publicPlayerRound: { deleteMany: async () => ({}), upsert: async ({ create }: { create: typeof persistedRounds[number] }) => { persistedRounds.push(create); } },
-        user: { findFirst: async ({ where }: { where: { publicPlayerId: string; deletedAt: null; anonymisertAt: null } }) => {
-          assert.equal(where.publicPlayerId, "public-a"); assert.equal(where.deletedAt, null); assert.equal(where.anonymisertAt, null); return { id: "user-a" };
-        } },
-        tournamentResult: { upsert: async ({ create }: { create: { score: number; userId: string } }) => { assert.equal(create.userId, "user-a"); mirroredScore = create.score; } },
-        tournamentEntry: { findFirst: async () => ({ id: "my-entry" }), update: async () => ({}) },
+        user: { findFirst: async () => ({ id: "user-a" }) },
+        tournamentResult: { upsert: async () => { kopiSkrevet = true; } },
+        tournamentEntry: { findFirst: async () => ({ id: "my-entry" }), update: async () => { kopiSkrevet = true; return {}; }, create: async () => { kopiSkrevet = true; return {}; } },
       });
     },
   } as unknown as PrismaClient;
   const result = await processLeaderboardForTournament(prisma, tournament, new Date("2026-09-10T12:00:00Z"));
   assert.equal(result.entries, 1); assert.equal(transactions, 1);
-  assert.equal(mirroredScore, 146); // +2 skal aldri havne i bruttofeltet.
+  assert.equal(kopiSkrevet, false); // Resultatet kopieres ikke lenger til TournamentResult/TournamentEntry.
+  assert.equal(result.resultsMirrored, 0);
   assert.deepEqual(persistedRounds.map(r => [r.roundNumber, r.score, r.toPar]), [[1, 72, 0], [2, 74, 2]]);
   const own = lesTurneringsresultat({ ...(stored as unknown as Record<string, unknown>), roundDetails: [] } as unknown as Parameters<typeof lesTurneringsresultat>[0]);
   assert.equal(own.brutto, 146); assert.equal(own.plasseringTekst, "T2"); assert.equal(own.fullstendig, true);

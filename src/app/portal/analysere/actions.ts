@@ -16,6 +16,7 @@ import type {
 } from "@/generated/prisma/client";
 import { assertCanViewPlayerData } from "@/lib/auth/assert-own-or-coached";
 import { loadVisibleSessionRange } from "@/lib/portal/visible-session-range";
+import { hentTurneringshistorikk } from "@/lib/portal/turneringshistorikk-data";
 import { hentTreningsanalyse } from "@/lib/portal-analyse/treningsanalyse-data";
 import {
   hentTreningsHistorikk,
@@ -379,72 +380,21 @@ export async function getTournamentResults(
   await assertCanViewPlayerData(userId);
   const from = startOfPeriod(period);
 
-  // 1) Påmeldinger (sesongplan / manuell / auto fra resultat-sync)
-  const entries = await prisma.tournamentEntry.findMany({
-    where: {
-      userId,
-      ...(from && { createdAt: { gte: from } }),
-    },
-    include: {
-      tournament: {
-        select: { id: true, name: true, startDate: true },
-      },
-    },
-    orderBy: { createdAt: "desc" },
-  });
-
-  // 2) Alle speilede resultater (inkl. de uten entry — legacy / race)
-  const allResults = await prisma.tournamentResult.findMany({
-    where: {
-      userId,
-      ...(from
-        ? {
-            OR: [
-              { createdAt: { gte: from } },
-              { tournament: { startDate: { gte: from } } },
-            ],
-          }
-        : {}),
-    },
-    select: {
-      id: true,
-      tournamentId: true,
-      position: true,
-      score: true,
-      createdAt: true,
-      tournament: { select: { id: true, name: true, startDate: true } },
-    },
-  });
-
-  const resultMap = new Map(allResults.map((r) => [r.tournamentId, r]));
-  const entryTournamentIds = new Set(
-    entries.map((e) => e.tournamentId).filter((id): id is string => Boolean(id)),
-  );
-
-  const fromEntries: TournamentListItem[] = entries.map((e) => ({
-    id: e.id,
-    name: e.tournament?.name ?? e.manualName ?? "Ukjent turnering",
-    startDate: e.tournament?.startDate ?? e.manualDate ?? e.createdAt,
-    position: resultMap.get(e.tournamentId ?? "")?.position ?? null,
-    score: resultMap.get(e.tournamentId ?? "")?.score ?? null,
-    status: e.entryStatus,
-  }));
-
-  // Resultater uten TournamentEntry (skal ikke skje etter sync-fix, men vis dem likevel)
-  const fromResultsOnly: TournamentListItem[] = allResults
-    .filter((r) => !entryTournamentIds.has(r.tournamentId))
-    .map((r) => ({
-      id: r.id,
-      name: r.tournament?.name ?? "Ukjent turnering",
-      startDate: r.tournament?.startDate ?? r.createdAt,
-      position: r.position,
-      score: r.score,
-      status: "COMPLETED",
-    }));
-
-  return [...fromEntries, ...fromResultsOnly].sort(
-    (a, b) => b.startDate.getTime() - a.startDate.getTime(),
-  );
+  // Én kilde: spillerens bekreftede profil (offisielle resultater) pluss egne planer og manuelle
+  // turneringer. Ingen kopi i TournamentResult, så ingen dobbeltrader. Uten Data Golf.
+  const historikk = await hentTurneringshistorikk(userId);
+  return historikk.aar
+    .flatMap((a) => a.turneringer)
+    .filter((t) => !from || t.startDato >= from)
+    .map((t) => ({
+      id: t.turneringId,
+      name: t.navn,
+      startDate: t.startDato,
+      position: t.plassering,
+      score: t.brutto ?? null,
+      status: t.status === "FINISHED" ? "COMPLETED" : (t.status ?? "COMPLETED"),
+    }))
+    .sort((a, b) => b.startDate.getTime() - a.startDate.getTime());
 }
 
 // ── Test results ────────────────────────────────────────────────────────────
