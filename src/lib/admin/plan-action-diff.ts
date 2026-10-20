@@ -27,6 +27,8 @@ export const planActionSuggestionSchema = z
     tittel: z.string().optional(),
     forklaring: z.string().optional(),
     detail: z.string().optional(),
+    /** Eldre driftsagenter skrev teksten sin i `note`. */
+    note: z.string().optional(),
     signalSnapshot: z
       .object({
         kind: z.string(),

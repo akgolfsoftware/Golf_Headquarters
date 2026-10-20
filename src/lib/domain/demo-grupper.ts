@@ -19,9 +19,18 @@ export const WANG_DEMO_SLUG = "wang-toppidrett-demo";
 
 export type DemoFlate = "TEAM_NORWAY" | "WANG";
 
+/**
+ * To generasjoner demotrenere, begge aktive COACH i demogruppene:
+ * `demo.sportssjef@wang.no` og `demo.trener@golfforbundet.no` fra 28.09.2026
+ * (kontoene i `.env.local`, DEMO_WANG_EPOST / DEMO_TN_EPOST), og `demo@wang.no`
+ * og `demo@golfforbundet.no` fra seed-skriptet 15.10. Manglet de første her,
+ * ble de sendt til de ekte gruppene og fikk feilside (auditen 20.10.2026).
+ */
 const DEMOKONTOER: Record<string, string> = {
   "demo@golfforbundet.no": TN_DEMO_SLUG,
+  "demo.trener@golfforbundet.no": TN_DEMO_SLUG,
   "demo@wang.no": WANG_DEMO_SLUG,
+  "demo.sportssjef@wang.no": WANG_DEMO_SLUG,
 };
 
 const KANONISK: Record<DemoFlate, string> = { TEAM_NORWAY: TEAM_NORWAY_SLUG, WANG: WANG_SLUG };
