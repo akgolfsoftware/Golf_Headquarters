@@ -53,7 +53,7 @@ export default async function ProfilPage() {
     spillerSiden: ekstra.spillerSiden,
     stallNavn: ekstra.stallNavn,
     runderIAar: ekstra.runderIAar,
-    ngfId: ekstra.ngfId,
+    resultatKoblet: ekstra.resultatKoblet,
     hcpMaalTekst: ekstra.hcpMaal ? formatHcpMaal(ekstra.hcpMaal) : null,
     turneringer: historikk
       ? {

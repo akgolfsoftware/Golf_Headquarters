@@ -12,6 +12,7 @@
  * håndhever bare at det ikke redigeres her.
  */
 
+import { hentKoblingsstatus } from "@/lib/profil-kobling/data";
 import { prisma } from "@/lib/prisma";
 
 export type ProfilEkstra = {
@@ -22,7 +23,8 @@ export type ProfilEkstra = {
   /** Runder logget i appen i inneværende år. */
   runderIAar: number;
   /** NGF/Golfbox-ID fra PublicPlayer-koblingen, eller null (ikke koblet). */
-  ngfId: string | null;
+  /** Har spilleren en bekreftet resultatkobling? Golf-ID (MemberID) vises ikke for spilleren selv, bare for trenere. */
+  resultatKoblet: boolean;
   /** Aktivt handicap-mål (Goal type HCP_TARGET) — vises, redigeres i Workbench. */
   hcpMaal: { verdi: number | null; tittel: string; innen: string | null } | null;
 };
@@ -44,7 +46,7 @@ export async function hentProfilEkstra(
   const [bruker, medlem, runderIAar, hcpGoal] = await Promise.all([
     prisma.user.findUnique({
       where: { id: userId },
-      select: { createdAt: true, publicPlayerId: true },
+      select: { createdAt: true },
     }),
     prisma.groupMember.findFirst({
       where: { userId },
@@ -61,18 +63,13 @@ export async function hentProfilEkstra(
     }),
   ]);
 
-  const publicPlayer = bruker?.publicPlayerId
-    ? await prisma.publicPlayer.findUnique({
-        where: { id: bruker.publicPlayerId },
-        select: { ngfId: true },
-      })
-    : null;
+  const resultatKoblet = (await hentKoblingsstatus(userId)).status === "confirmed";
 
   return {
     spillerSiden: bruker ? MND_FMT.format(bruker.createdAt) : "",
     stallNavn: medlem?.group.name ?? null,
     runderIAar,
-    ngfId: publicPlayer?.ngfId ?? null,
+    resultatKoblet,
     hcpMaal: hcpGoal
       ? {
           verdi: hcpGoal.targetValue,

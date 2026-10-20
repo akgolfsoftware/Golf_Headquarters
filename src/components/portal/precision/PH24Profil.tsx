@@ -39,7 +39,7 @@ export type PH24ProfilData = {
   spillerSiden: string;
   stallNavn: string | null;
   runderIAar: number;
-  ngfId: string | null;
+  resultatKoblet: boolean;
   hcpMaalTekst: string | null;
   /** Turneringsresultatene fra koblingen til den offentlige turneringsbasen. Valgfritt for eldre kallere. */
   turneringer?: { koblet: boolean; rader: PH24ProfilTurnering[]; tomGrunn: string } | null;
@@ -132,7 +132,7 @@ export function PH24Profil({ data, onLagre }: PH24ProfilProps) {
         </section>
 
         <dl className="nokkel">
-          <div><dt>Golf-ID</dt><dd>{data.ngfId ?? "—"}</dd></div>
+          <div><dt>Turneringsresultater</dt><dd>{data.resultatKoblet ? "Koblet" : "—"}</dd></div>
           <div><dt>Runder i år</dt><dd className="tall">{data.runderIAar}</dd></div>
           <div><dt>Gruppe</dt><dd>{data.stallNavn ?? "—"}</dd></div>
           <div><dt>Spiller siden</dt><dd>{data.spillerSiden || "—"}</dd></div>
