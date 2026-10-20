@@ -7,7 +7,7 @@ import { byggKomplettProfil } from "@/lib/profil-kobling/komplett";
 import { WangUnderside } from "@/components/wang/WangUnderside";
 import { wangHref } from "@/components/wang/wang-felles";
 import { WangElevTopp } from "@/components/wang/WangElevTopp";
-import { KomplettProfilWang } from "@/components/profil/KomplettProfilWang";
+import { WangElevprofil } from "@/components/wang/WangElevprofil";
 import { byggProfilVisning, type ProfilVisning } from "@/lib/profil-kobling/visning";
 
 /**
@@ -52,7 +52,7 @@ export default async function WangElevProfilPage({ params }: { params: Promise<{
             ...(bruker.role === "COACH" ? [{ tekst: "Foreslå endring", href: `/team-wang/coach/iup/${enc}#forslag` }] : []),
           ] : []}
         />
-        <KomplettProfilWang
+        <WangElevprofil
           v={v}
           sg={[
             { navn: "Utslag", verdi: profil.runder.sgOtt },

@@ -19,11 +19,11 @@ const V = {
 };
 
 describe('WANG elevprofil og turneringer (designløftet 20.10)', async () => {
-  const { KomplettProfilWang } = await import('../../src/components/profil/KomplettProfilWang');
+  const { WangElevprofil } = await import('../../src/components/wang/WangElevprofil');
   const { WangTilParGraf } = await import('../../src/components/wang/WangTilParGraf');
 
   test('SG tegnes rundt null: tapt til venstre, vunnet til høyre, manglende som «—»', () => {
-    const html = renderToStaticMarkup(React.createElement(KomplettProfilWang, {
+    const html = renderToStaticMarkup(React.createElement(WangElevprofil, {
       v: V, sg: [{ navn: 'Utslag', verdi: 0.31 }, { navn: 'Innspill', verdi: -0.18 }, { navn: 'Putting', verdi: null }],
     }));
     assert.match(html, /wg-sg-pluss/);
@@ -35,7 +35,7 @@ describe('WANG elevprofil og turneringer (designløftet 20.10)', async () => {
   });
 
   test('plassering: tall får punktum, delt plass (T11) står som den er', () => {
-    const html = renderToStaticMarkup(React.createElement(KomplettProfilWang, { v: V, lenker: { turneringer: '/t' } }));
+    const html = renderToStaticMarkup(React.createElement(WangElevprofil, { v: V, lenker: { turneringer: '/t' } }));
     assert.match(html, />3\.</);
     assert.match(html, />T11</);
     assert.doesNotMatch(html, /T11\./);
