@@ -32,6 +32,21 @@ import type {
 
 export type KoBruker = { id: string; role: string };
 
+/**
+ * A1 (audit 20.10.2026): køen hentes aldri i sin helhet. Hver rad koster
+ * to spørringer i buildDiffPreview, og 3 500 ventende forslag ga Cockpit
+ * 30 sekunders lastetid. Lista viser de nyeste; `totalt`, `lowRiskCount`
+ * og `eldste` telles og slås opp i basen, så tallene er riktige uansett.
+ */
+export const KO_MAKS_RADER = 60;
+
+export type KoValg = {
+  /** Høyst så mange PlanAction-rader i lista (Cockpit viser bare fire). */
+  maksRader?: number;
+  /** Ukesrapporten (D3) teller etterlevelse for hele stallen og koster 3–4 s. Bare Innboks viser den. */
+  medUkesrapport?: boolean;
+};
+
 /** KPI-panelets «Eldste» — kompakt dager-etikett (fasit: «3 dg»), ikke narTekst()s «3 dg siden». */
 function dagerSidenLabel(d: Date): string {
   const dager = Math.floor((Date.now() - d.getTime()) / 86_400_000);
@@ -45,7 +60,9 @@ function syvDagerSidenGrense(): Date {
 
 export async function lastGodkjenninger(
   user: KoBruker,
+  valg: KoValg = {},
 ): Promise<AdminGodkjenningerV2Data> {
+  const maksRader = valg.maksRader ?? KO_MAKS_RADER;
 
   // A1: ÉN kø — fire kilder (PlanAction + CaddieDraft + SessionRequest;
   // e-postutkast bor i innboks-epost-flaten med egen godkjenning der).
@@ -57,6 +74,8 @@ export async function lastGodkjenninger(
     caddieDrafts,
     sessionRequests,
     ko,
+    lowRiskCount,
+    eldstePlanAction,
     planGodkjent7d,
     planAvvist7d,
     caddieGodkjent7d,
@@ -71,6 +90,7 @@ export async function lastGodkjenninger(
         plan: { select: { id: true, name: true } },
       },
       orderBy: { createdAt: "desc" },
+      take: maksRader,
     }),
     prisma.caddieDraft.findMany({
       where: caddieDraftKoWhere(user.id),
@@ -90,6 +110,16 @@ export async function lastGodkjenninger(
     }).catch(() => []),
     // FUNN 4: kanonisk kø-telling — samme tall i hodet som på innboks/varsler.
     koTelling(user.id, user.role),
+    // Lav risiko telles i basen, ikke blant de lastede radene.
+    prisma.planAction.count({
+      where: { ...planActionKoWhere(user), actionType: { in: [...LOW_RISK_ACTION_TYPES] } },
+    }),
+    // Eldste ventende forslag — lista er nyeste først og avkortet.
+    prisma.planAction.findFirst({
+      where: planActionKoWhere(user),
+      orderBy: { createdAt: "asc" },
+      select: { createdAt: true, user: { select: { name: true } } },
+    }),
     // Køen i tall (høyrekolonne) — «Godkjent 7 dg»/«N avvist», ærlig telt per kilde.
     prisma.planAction.count({
       where: { status: "ACCEPTED", actionType: { not: "WORKBENCH_GATHERING_INVITE" }, decidedAt: { gte: syvDagerSiden }, OR: [{ coachId: user.id }, { coachId: null }], user: spillerScope },
@@ -133,10 +163,6 @@ export async function lastGodkjenninger(
     })).map((u) => [u.id, u.name] as const),
   );
 
-  const lowRiskCount = actions.filter((a) =>
-    LOW_RISK_ACTION_TYPES.has(a.actionType),
-  ).length;
-
   const rows: AdminGodkjenningV2Row[] = await Promise.all(
     actions.map(async (a) => {
       const parsed = planActionSuggestionSchema.safeParse(a.suggestion);
@@ -160,6 +186,7 @@ export async function lastGodkjenninger(
           const base =
             sugg?.forklaring ??
             sugg?.detail ??
+            sugg?.note ??
             (a.plan ? `Gjelder planen «${a.plan.name}».` : "");
           // Foreslått sjekkpunkt i suggestion (skrives til PlanAction.sjekkpunkt ved godkjenning).
           const sp =
@@ -264,7 +291,7 @@ export async function lastGodkjenninger(
 
   // Køen i tall — «Eldste»: ærlig eldste rad i køen (ikke bare PlanAction).
   const eldsteKandidat = [
-    ...actions.map((a) => ({ createdAt: a.createdAt, who: a.user.name ?? "Spiller" })),
+    ...(eldstePlanAction ? [{ createdAt: eldstePlanAction.createdAt, who: eldstePlanAction.user.name ?? "Spiller" }] : []),
     ...caddieDrafts.map((d) => ({
       createdAt: d.createdAt,
       who: caddieBrukere.get(draftSpillerId(d.toolInput) ?? d.userId) ?? "Spiller",
@@ -276,7 +303,7 @@ export async function lastGodkjenninger(
   );
 
   // D3: ukesrapporten er et leseelement i køen — den leses, ikke godkjennes.
-  const ukesrapport = await hentUkesrapport(spillerScope);
+  const ukesrapport = valg.medUkesrapport === false ? null : await hentUkesrapport(spillerScope);
 
   const data: AdminGodkjenningerV2Data = {
     rows: alleRows,
