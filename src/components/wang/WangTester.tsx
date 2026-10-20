@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
-import { hentProtokoll } from "@/lib/domain/pei/protokoll-definisjoner";
-import { formaterTall } from "@/lib/format-tall";
+import React, { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { kontrollerWangTest } from "@/app/team-wang/coach/tester-actions";
 import Link from "next/link";
 import { WangTomTilstand } from "./WangIkkeKoblet";
 import {
@@ -19,7 +19,6 @@ import { visDato, type WangTrenerData } from "@/app/team-wang/_data/wang-trener-
 import {
   TOM_TESTERDATA,
   TESTBATTERI,
-  TEST_DEL_NAVN,
   hoererTil,
   sistePerElev,
   skoleaarStart,
@@ -342,15 +341,14 @@ function TilKontroll({ data, tester }: { data: WangTrenerData; tester: WangTeste
                 </b>
                 <p>Ført av eleven {langDato(r.datoIso).toLowerCase()}. Egenført, uten vitne.</p>
                 <div className="wg-knapper">
-                  <button type="button" className="wg-btn wg-btn-primary" disabled>Kontroller</button>
-                  <button type="button" className="wg-btn wg-btn-secondary" disabled>Avvis</button>
+                  <KontrollKnapper resultatId={r.id} />
                   <Link className="wg-lenke" href={wangHref("tester", "elev", r.elevId)}>Testprofilen</Link>
                 </div>
               </div>
             );
           })}
           <p className="wg-kilde">
-            Kontroll fra trenerflaten er ikke koblet ennå. Resultatene står som egenført til de er kontrollert.
+            Kontrollert teller i IUP og deles med Team Norway. Avvist står igjen hos eleven som egenført og avvist.
           </p>
         </div>
       )}
@@ -359,192 +357,86 @@ function TilKontroll({ data, tester }: { data: WangTrenerData; tester: WangTeste
 }
 
 // ---------------------------------------------------------------------------
-// Før test: 8-ball slag for slag
+// Registrer: treneren fører på en testdag
 // ---------------------------------------------------------------------------
 
-const ATTE_BALL = (hentProtokoll("8-ball-variation")?.rows ?? []).map((r) => ({
-  navn: String(r.slag ?? "").replace(/(\d+)$/, " $1 m"),
-  lengde: Number(r.lengde ?? 0),
-}));
 const TRENER_TESTER = TESTBATTERI.filter((t) => t.trenerForer);
-const tallTekst = (v: number) => formaterTall(v, 1, true);
 
+/**
+ * Registrering skjer på en testdag (stasjon per test), så resultatet lagres med den felles
+ * saveTnTestSomCoach og er kontrollert med en gang. Fanen viser hvilke tester treneren fører, veien til
+ * testdagene og det som venter på kontroll.
+ */
 function ForTest({ data, tester }: { data: WangTrenerData; tester: WangTesterData }) {
-  const [elevId, setElevId] = useState(data.elever[0]?.id ?? "");
-  const [testNavn, setTestNavn] = useState("8-balls variation");
-  const [meter, setMeter] = useState<(number | null)[]>(() => ATTE_BALL.map(() => null));
-  const [inn, setInn] = useState("");
-  const testdag = data.testdager.find((t) => t.startIso === data.idagIso);
   const ko = tilKontroll(tester);
-  const nr = meter.findIndex((m) => m === null);
-  const ferdig = nr === -1;
-  const naa = ATTE_BALL[ferdig ? ATTE_BALL.length - 1 : nr];
-  const fort = meter.filter((m) => m !== null) as number[];
-  const pei = (m: number, l: number) => (l > 0 ? (m / l) * 100 : 0);
-  const snitt = fort.length
-    ? meter.reduce<number>((s, m, i) => s + (m === null ? 0 : pei(m, ATTE_BALL[i].lengde)), 0) / fort.length
-    : null;
-  const lest = inn.trim() === "" ? null : Number(inn.replace(",", "."));
-  const gyldig = lest !== null && Number.isFinite(lest) && lest >= 0 && lest < 100;
-  const lagre = (m: number) => {
-    if (ferdig) return;
-    setMeter((x) => x.map((v, i) => (i === nr ? m : v)));
-    setInn("");
-  };
-  const angre = () => {
-    const sist = ferdig ? ATTE_BALL.length - 1 : nr - 1;
-    if (sist < 0) return;
-    setMeter((x) => x.map((v, i) => (i === sist ? null : v)));
-  };
-  const test = TESTBATTERI.find((t) => t.navn === testNavn);
-
   return (
     <>
       <WangTilbake href={wangHref("tester")} tekst="Tester" />
       <WangTopp
-        dato={`${test ? `${TEST_DEL_NAVN[test.del]} · ${test.enhet}` : "Test"} · ${langDato(testdag?.startIso ?? data.idagIso).toLowerCase()}${testdag?.sted ? ` · ${testdag.sted}` : ""}`}
-        tittel={testNavn}
+        dato={`${data.gruppeNavn} · Teknikk og PEI`}
+        tittel="Registrer"
+        ingress="Du fører testene på en testdag, stasjon for stasjon. Det du fører er kontrollert med en gang og teller i IUP."
       >
-        <span className="wg-pille wg-pille-ok"><i />Kontrollert · du fører</span>
+        <Faner aktiv="foring" antall={ko.length} />
       </WangTopp>
 
-      {data.elever.length === 0 ? (
-        <WangTomTilstand tittel="Ingen elever i gruppa" tekst="Legg til elever i gruppa før testdagen." />
-      ) : (
-        <div className="wg-reg">
-          <div className="wg-reg-valg">
-            <label className="wg-lbl">
-              Test
-              <select className="wg-field" value={testNavn} onChange={(e) => setTestNavn(e.target.value)}>
-                {TRENER_TESTER.map((t) => (
-                  <option key={t.navn} value={t.navn}>{t.navn} · {TEST_DEL_NAVN[t.del]}</option>
-                ))}
-              </select>
-            </label>
-            <label className="wg-lbl">
-              Elev
-              <select className="wg-field" value={elevId} onChange={(e) => setElevId(e.target.value)}>
-                {data.elever.map((e) => (
-                  <option key={e.id} value={e.id}>{e.navn}</option>
-                ))}
-              </select>
-            </label>
-            <p className="wg-hjelp">
-              Du fører PEI- og teknikktestene, og de blir kontrollert med en gang. Putt 1–3 m, 9 hull lengde og de fysiske
-              testene fører eleven selv i PlayerHQ.
-            </p>
+      <div className="wg-reg wg-reg-to">
+        <section className="wg-kort wg-fyll wg-reg-hoved" aria-label="Testdag">
+          <b className="wg-undertittel">Før på en testdag</b>
+          <p className="wg-forklar">
+            Velg testene og tidspunktet. Hver test blir én stasjon med elevene som deler testene med WANG.
+          </p>
+          <div className="wg-knapper">
+            <Link className="wg-btn wg-btn-primary" href="/team-wang/coach/tester/testdag">Planlegg testdag</Link>
+            <Link className="wg-btn wg-btn-secondary" href="/team-wang/coach/tester/testdag#testdager">Åpne testdager</Link>
           </div>
+          <p className="wg-hjelp">
+            Du fører: {TRENER_TESTER.map((t) => t.navn).join(", ")}. Putt 1–3 m, 9 hull lengde og de fysiske testene
+            fører eleven selv i PlayerHQ.
+          </p>
+        </section>
 
-          {testNavn !== "8-balls variation" ? (
-            <div className="wg-reg-hoved">
-              <WangTomTilstand
-                tittel={`Føring av ${testNavn} kommer`}
-                tekst="8-balls variation kan føres slag for slag nå. De andre testene får samme føring i neste steg."
-              />
-            </div>
+        <aside className="wg-kort wg-krever wg-reg-kontroll" aria-label="Til kontroll">
+          <div className="wg-sek-topp" style={{ paddingTop: 12 }}>
+            <b className="wg-undertittel">Til kontroll <span className="wg-kilde">{ko.length}</span></b>
+            <Link className="wg-lenke" href={wangHref("tester", "ko")}>Alle</Link>
+          </div>
+          {ko.length === 0 ? (
+            <p className="wg-kilde" style={{ paddingBottom: 12 }}>Ingen egenførte resultater venter.</p>
           ) : (
-            <>
-              <section className="wg-reg-hoved" aria-label="Før slaget">
-                {!ferdig ? (
-                  <>
-                    <div className="wg-reg-slag">
-                      <span>
-                        <small>Slag {nr + 1} av {ATTE_BALL.length} · runde {Math.floor(nr / 8) + 1} av {Math.ceil(ATTE_BALL.length / 8)}</small>
-                        <b>{naa?.navn}</b>
-                      </span>
-                    </div>
-                    <div className="wg-reg-inn">
-                      <label className="wg-lbl">
-                        Meter til hullet
-                        <input
-                          className="wg-field wg-reg-felt"
-                          inputMode="decimal"
-                          value={inn}
-                          onChange={(e) => setInn(e.target.value)}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter" && gyldig && lest !== null) lagre(lest);
-                          }}
-                          placeholder="—"
-                          aria-describedby="wg-reg-pei"
-                        />
-                      </label>
-                      <span id="wg-reg-pei" className="wg-reg-pei">
-                        <small>PEI</small>
-                        <b>{gyldig && lest !== null && naa ? `${tallTekst(pei(lest, naa.lengde))} %` : "—"}</b>
-                      </span>
-                    </div>
-                    <div className="wg-knapper">
-                      <button type="button" className="wg-btn wg-btn-secondary" onClick={() => lagre(0)}>I hull</button>
-                      <button type="button" className="wg-btn wg-btn-primary" disabled={!gyldig} onClick={() => lest !== null && lagre(lest)}>
-                        Neste slag →
-                      </button>
-                      <button type="button" className="wg-btn wg-btn-ghost" onClick={angre} disabled={fort.length === 0}>Angre forrige</button>
-                    </div>
-                    <p className="wg-kilde">Testen teller når alle {ATTE_BALL.length} slag er ført. {ATTE_BALL.length - fort.length} igjen. Komma og punktum virker begge.</p>
-                  </>
-                ) : (
-                  <div className="wg-kort wg-fyll">
-                    <span className="wg-pille wg-pille-ok"><i />Alle {ATTE_BALL.length} slag er ført</span>
-                    <p className="wg-hoved"><strong>{snitt === null ? "—" : `${tallTekst(snitt)} %`}</strong><span>snitt PEI</span></p>
-                    <div className="wg-knapper">
-                      <button type="button" className="wg-btn wg-btn-primary" disabled>Lagre testen</button>
-                      <button type="button" className="wg-btn wg-btn-ghost" onClick={angre}>Angre forrige</button>
-                    </div>
-                    <p className="wg-kilde">Lagring fra trenerflaten er ikke koblet ennå. Ingenting er lagret, og eleven ser ikke noe i PlayerHQ.</p>
-                  </div>
-                )}
-              </section>
-
-              <section className="wg-kort wg-reg-kort" aria-label="Scorekort">
-                <div className="wg-sek-topp">
-                  <b className="wg-undertittel">Scorekort · {elevNavn(data, elevId)}</b>
-                  <span className="wg-kilde">Snitt PEI {snitt === null ? "—" : `${tallTekst(snitt)} %`}</span>
-                </div>
-                <span className="wg-reg-stripe" role="img" aria-label={`${fort.length} av ${ATTE_BALL.length} slag ført`}>
-                  {ATTE_BALL.map((_, i) => (
-                    <i key={i} className={meter[i] !== null ? "wg-reg-fort" : i === nr ? "wg-reg-naa" : ""} />
-                  ))}
+            ko.slice(0, 4).map((r) => (
+              <div key={r.id} className="wg-krever-sak">
+                <span>
+                  <b>{elevNavn(data, r.elevId)} · {r.testNavn}</b>
+                  <small>{r.verdi} · {kortDato(r.datoIso)} · egenført i PlayerHQ</small>
                 </span>
-                <ol className="wg-reg-liste">
-                  {meter.map((m, i) =>
-                    m === null ? null : (
-                      <li key={i}>
-                        <b>{i + 1}</b>
-                        <span>{ATTE_BALL[i].navn}</span>
-                        <span>{m === 0 ? "I hull" : `${tallTekst(m)} m`}</span>
-                        <b>{tallTekst(pei(m, ATTE_BALL[i].lengde))} %</b>
-                      </li>
-                    ),
-                  )}
-                </ol>
-                {fort.length === 0 ? <p className="wg-kilde">Ingen slag ført ennå.</p> : null}
-                <p className="wg-kilde">PEI = meter til hullet delt på slaglengden. Lavere er bedre. Team Norway Golf – Tester 2026.</p>
-              </section>
-            </>
+                <KontrollKnapper resultatId={r.id} />
+              </div>
+            ))
           )}
-
-          <aside className="wg-kort wg-krever wg-reg-kontroll" aria-label="Til kontroll">
-            <div className="wg-sek-topp" style={{ paddingTop: 12 }}>
-              <b className="wg-undertittel">Til kontroll <span className="wg-kilde">{ko.length}</span></b>
-              <Link className="wg-lenke" href={wangHref("tester", "ko")}>Alle</Link>
-            </div>
-            {ko.length === 0 ? (
-              <p className="wg-kilde" style={{ paddingBottom: 12 }}>Ingen egenførte resultater venter.</p>
-            ) : (
-              ko.slice(0, 4).map((r) => (
-                <div key={r.id} className="wg-krever-sak">
-                  <span>
-                    <b>{elevNavn(data, r.elevId)} · {r.testNavn}</b>
-                    <small>{r.verdi} · {kortDato(r.datoIso)} · egenført i PlayerHQ</small>
-                  </span>
-                </div>
-              ))
-            )}
-            <p className="wg-kilde">Kontrollen er ikke koblet fra trenerflaten ennå. Eleven ser merket når den er det.</p>
-          </aside>
-        </div>
-      )}
+        </aside>
+      </div>
     </>
+  );
+}
+
+/** «Kontroller» og «Avvis» for ett egenført resultat. Bare WANG-elever som deler testene kan treffes. */
+function KontrollKnapper({ resultatId }: { resultatId: string }) {
+  const router = useRouter();
+  const [venter, start] = useTransition();
+  const [feil, setFeil] = useState<string | null>(null);
+  const svar = (utfall: "KONTROLLERT" | "AVVIST") => start(async () => {
+    setFeil(null);
+    const r = await kontrollerWangTest({ resultatId, utfall });
+    if (!r.ok) { setFeil(r.feil); return; }
+    router.refresh();
+  });
+  return (
+    <span className="wg-knapper">
+      <button type="button" className="wg-btn wg-btn-primary" disabled={venter} onClick={() => svar("KONTROLLERT")}>Kontroller</button>
+      <button type="button" className="wg-btn wg-btn-secondary" disabled={venter} onClick={() => svar("AVVIST")}>Avvis</button>
+      {feil ? <span role="alert" className="wg-kilde" style={{ color: "var(--wg-rosa-tekst)" }}>{feil}</span> : null}
+    </span>
   );
 }
 

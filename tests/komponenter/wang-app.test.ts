@@ -24,6 +24,7 @@ mock.module('next/navigation', {
   },
 });
 mock.module('next/link', { defaultExport: 'a' });
+mock.module('@/app/team-wang/coach/tester-actions', { namedExports: { kontrollerWangTest: async () => ({ ok: true }) } });
 
 // Syntetisk gruppe til komponenttestene. Ingen realistiske navn på mindreårige.
 const DATA = {
@@ -199,12 +200,13 @@ describe('WANG Toppidrett Modul (Samtlige WANG-skjermer)', async () => {
     const ko = visMed(WangTester, { tester: TESTER, aktivFane: 'ko' });
     assert.ok(ko.includes('52 kg'), 'Egenført resultat står til kontroll');
     assert.ok(!ko.includes('58 kg'), 'Kontrollert resultat står ikke til kontroll');
-    assert.match(ko, /<button[^>]*disabled=""[^>]*>Kontroller<\/button>/);
+    assert.match(ko, /<button[^>]*>Kontroller<\/button>/);
+    assert.doesNotMatch(ko, /<button[^>]*disabled=""[^>]*>Kontroller<\/button>/, 'Kontroller er koblet');
+    assert.ok(ko.includes('>Avvis</button>'));
     assert.ok(visMed(WangTester, { tester: TESTER, aktivFane: 'elev', id: 'e3' }).includes('Ikke delt'));
     const foring = visMed(WangTester, { tester: TESTER, aktivFane: 'foring' });
-    assert.ok(foring.includes('Slag 1 av 24'), '8-balls variation føres med 24 slag');
-    assert.ok(foring.includes('Chip 10 m'), 'Slagene kommer fra protokollen');
-    assert.ok(foring.includes('Meter til hullet'));
+    assert.ok(foring.includes('href="/team-wang/coach/tester/testdag"'), 'Føringen skjer på en testdag');
+    assert.ok(foring.includes('8-balls variation'), 'PEI-testene treneren fører står listet');
     assert.ok(foring.includes('aria-label="Til kontroll"'), 'Til kontroll står ved siden av registreringen');
     assert.ok(!foring.includes('Putt 1–3 m · Golfslag'), 'Eleven fører Putt 1–3 m selv');
   });
