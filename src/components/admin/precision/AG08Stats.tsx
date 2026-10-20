@@ -254,6 +254,64 @@ function Tester({ d }: { d: S360Stats }) {
   );
 }
 
+/** Brutto for de siste tellende rundene som linje (eldst til venstre). Lavere score står høyere. */
+function BruttoKurve({ d }: { d: S360Stats }) {
+  const runder = d.runder.filter((r) => r.hull == null || r.hull >= 18).slice(0, 20).reverse();
+  if (runder.length < 2) return <p className="s3-dempet">For få 18-hullsrunder til en kurve.</p>;
+  const verdier = runder.map((r) => r.brutto);
+  const min = Math.min(...verdier) - 1, maks = Math.max(...verdier) + 1;
+  const B = 600, H = 160;
+  const x = (i: number) => (i / (runder.length - 1)) * B;
+  const y = (v: number) => ((v - min) / (maks - min)) * H;
+  const snitt = d.snitt.siste10;
+  return <div className="s3-kurve-boks">
+    <div className="s3-kurve-akse num" aria-hidden><span>{min + 1}</span><span>{maks - 1}</span></div>
+    <svg viewBox={`0 0 ${B} ${H}`} preserveAspectRatio="none" role="img" className="s3-kurve-stor"
+      aria-label={`Brutto siste ${runder.length} runder: ${runder.map((r) => `${r.dato} ${r.brutto}`).join(", ")}`}>
+      {snitt != null && <line x1="0" x2={B} y1={y(snitt)} y2={y(snitt)} className="snitt" vectorEffect="non-scaling-stroke" />}
+      <polyline points={runder.map((r, i) => `${x(i)},${y(r.brutto)}`).join(" ")} vectorEffect="non-scaling-stroke" />
+      {runder.map((r, i) => <circle key={r.id} cx={x(i)} cy={y(r.brutto)} r="5" className={r.type === "Turnering" ? "turn" : undefined} vectorEffect="non-scaling-stroke">
+        <title>{`${r.dato} · ${r.bane} · ${r.brutto} (${r.tilPar}) · ${r.type}`}</title>
+      </circle>)}
+    </svg>
+    <span className="s3-forklar">Fylt prikk = turnering, åpen = trening{snitt != null ? ` · strek = snitt siste 10 (${desimal(snitt)})` : ""} · bare brutto, ni hull teller ikke.</span>
+  </div>;
+}
+
+/** SG per område på samme skala begge veier fra null. */
+function SgStolper({ d }: { d: S360Stats }) {
+  const g = d.sg;
+  const verdier = g.omrader.map((o) => o.sg).filter((v): v is number => v != null);
+  if (g.datagrunnlag === "ingen" || !verdier.length) return <p className="s3-dempet">Ingen runder med slag ført ennå.</p>;
+  const skala = Math.max(1.5, ...verdier.map((v) => Math.abs(v)));
+  return <div className="s3-sg" role="list" aria-label="Strokes Gained per område">
+    {g.omrader.map((o) => {
+      const v = o.sg;
+      const bredde = v == null ? 0 : (Math.abs(v) / skala) * 50;
+      return <div key={o.kode} role="listitem" className="s3-sg-rad" aria-label={`${o.navn}: ${sg(v)}`}>
+        <span>{o.navn}</span>
+        <span className="s3-sg-spor"><em aria-hidden /><i className={v != null && v < 0 ? "neg" : "pos"} style={{ width: `${bredde}%` }} /></span>
+        <b className="num">{sg(v)}</b>
+      </div>;
+    })}
+    <div className="s3-sg-rad akse" aria-hidden><span /><span className="num"><span>{sg(-skala)}</span><span>0</span><span>{sg(skala)}</span></span><span /></div>
+  </div>;
+}
+
+function StatsTopp({ d }: { d: S360Stats }) {
+  return <div className="s3-stats-topp">
+    <section aria-label="Snittscore" className="s3-seksjon">
+      <div className="s3-sek-topp"><h2>Brutto, siste runder</h2><span className="num">{d.snitt.siste10 != null ? `Snitt ${desimal(d.snitt.siste10)}` : "—"}</span></div>
+      <BruttoKurve d={d} />
+    </section>
+    <section aria-label="Strokes Gained" className="s3-seksjon s3-boks">
+      <div className="s3-sek-topp"><b>Strokes Gained per runde</b><span className="meta">{`${d.sg.baseline} · ${d.sg.runder} runder`}</span></div>
+      <SgStolper d={d} />
+      <span className="meta">{DATAGRUNNLAG_TEKST[d.sg.datagrunnlag]} · {d.sg.kilde ?? "—"}</span>
+    </section>
+  </div>;
+}
+
 export function tilStatsDel(v: string | null | undefined): Del {
   return DELER.some(([k]) => k === v) ? (v as Del) : "sg";
 }
@@ -262,6 +320,7 @@ export function AG08Stats({ d, tom, spillerId, start }: { d: S360Stats; tom: boo
   const [del, setDel] = useState<Del>(() => tilStatsDel(start));
   if (tom) return <Seksjon k="Stats"><Dempet>Ingen runder registrert ennå.</Dempet></Seksjon>;
   return <>
+    <StatsTopp d={d} />
     <div role="group" aria-label="Stats-del" className="a8-faner">
       {DELER.map(([k, l]) => <Valg key={k} valgt={del === k} onClick={() => setDel(k)}>{l}</Valg>)}
     </div>

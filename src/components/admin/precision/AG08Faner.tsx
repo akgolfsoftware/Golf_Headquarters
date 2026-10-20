@@ -226,6 +226,7 @@ export function AG08Iup({ d, tom }: { d: S360Iup; tom: boolean }) {
       <div className="a8-stabel">{seksjoner.slice(0, halv)}</div>
       <div className="a8-stabel">{seksjoner.slice(halv)}</div>
     </div>
+    <p className="s3-forklar">IUP-fanen vises bare for spillere som er aktive i en WANG- eller Team Norway-gruppe. Trenerne der foreslår, spilleren bestemmer. Du endrer direkte, og spilleren kan angre.</p>
   </>;
 }
 
@@ -266,7 +267,8 @@ export function AG08Samtaler({ d, tom }: { d: S360Samtaler; tom: boolean }) {
 /* ───────────────────────────── Talent ───────────────────────────── */
 
 export function AG08Talent({ d, tom }: { d: S360Talent; tom: boolean }) {
-  return (
+  return (<>
+    <p className="s3-bare-coach">Bare coach. Spilleren ser aldri denne fanen, og ingen tall herfra deles.</p>
     <div className="a8-to">
       <Seksjon k="Talentradar · 1–10" meta="BARE COACH · SPILLEREN SER ALDRI DETTE" gap={12}>
         {tom || !d.radar ? <Dempet>For lite data til talentradar.</Dempet> : <>
@@ -285,5 +287,5 @@ export function AG08Talent({ d, tom }: { d: S360Talent; tom: boolean }) {
         )}
       </Seksjon>
     </div>
-  );
+  </>);
 }
