@@ -27,7 +27,7 @@ import "@/styles/playerhq-ny-kommunikasjon.css";
 export type PH23BookingDetaljData = {
   bookingId: string;
   tjeneste: string;
-  status: "Bekreftet" | "Venter på betaling" | "Avbestilt" | "Gjennomført";
+  status: "Bekreftet" | "Venter på betaling" | "Avbestilt" | "Gjennomført" | "Uteblitt";
   /** «Fredag 9. oktober» (Oslo). */
   dag: string;
   /** «16:00» */
@@ -49,7 +49,7 @@ export type PH23BookingDetaljData = {
   flytteforslag: string | null;
 };
 
-const pille = (s: PH23BookingDetaljData["status"]) => (s === "Bekreftet" || s === "Gjennomført" ? "ok" : s === "Avbestilt" ? "noy" : "vent");
+const pille = (s: PH23BookingDetaljData["status"]) => (s === "Bekreftet" || s === "Gjennomført" ? "ok" : s === "Avbestilt" || s === "Uteblitt" ? "noy" : "vent");
 
 export function PH23BookingDetalj({ data }: { data: PH23BookingDetaljData }) {
   const router = useRouter();

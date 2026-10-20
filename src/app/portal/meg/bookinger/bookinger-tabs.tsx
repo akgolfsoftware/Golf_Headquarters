@@ -203,6 +203,7 @@ function StatusBadge({ status }: { status: string }) {
       klasser: "bg-destructive/10 text-destructive",
     },
     COMPLETED: { tekst: "Gjennomført", klasser: "bg-muted text-foreground" },
+    NO_SHOW: { tekst: "Uteblitt", klasser: "bg-muted text-muted-foreground" },
   };
   const c = config[status] ?? config.PENDING;
   return (

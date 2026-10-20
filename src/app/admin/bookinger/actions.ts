@@ -69,7 +69,7 @@ export async function avlysBookingSomCoach(input: { bookingId: string; begrunnel
     },
   });
   if (!booking) return { ok: false, feil: "Fant ikke bookingen." };
-  if (booking.status !== "CONFIRMED" && booking.status !== "PENDING") {
+  if (booking.status !== "CONFIRMED" && booking.status !== "PENDING" && booking.status !== "NO_SHOW") {
     return { ok: false, feil: "Bookingen er allerede avlyst eller gjennomført." };
   }
 

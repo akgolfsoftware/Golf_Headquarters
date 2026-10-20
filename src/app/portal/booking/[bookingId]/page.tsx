@@ -25,6 +25,7 @@ const STATUS: Record<string, PH23BookingDetaljData["status"]> = {
   CONFIRMED: "Bekreftet",
   CANCELLED: "Avbestilt",
   COMPLETED: "Gjennomført",
+  NO_SHOW: "Uteblitt",
 };
 
 const tidFmt = new Intl.DateTimeFormat("nb-NO", { hour: "2-digit", minute: "2-digit" });

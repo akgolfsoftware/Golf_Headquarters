@@ -62,7 +62,7 @@ export default async function V2ForelderBookingerPage() {
           userId: { in: childIds },
           OR: [
             { startAt: { lt: now } },
-            { status: { in: ["COMPLETED", "CANCELLED"] } },
+            { status: { in: ["COMPLETED", "CANCELLED", "NO_SHOW"] } },
           ],
         },
         orderBy: { startAt: "desc" },

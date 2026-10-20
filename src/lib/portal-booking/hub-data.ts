@@ -41,7 +41,7 @@ export type HubBooking = {
   durationMin: number;
   /** True hvis trukket fra abonnement (credit-booking), false = betalt. */
   fromCredits: boolean;
-  status: "PENDING" | "CONFIRMED" | "COMPLETED" | "CANCELLED";
+  status: "PENDING" | "CONFIRMED" | "COMPLETED" | "CANCELLED" | "NO_SHOW";
 };
 
 export type HubCoach = {
@@ -112,7 +112,7 @@ export async function getBookingHubData(userId: string): Promise<BookingHubData>
     prisma.booking.findMany({
       where: {
         userId,
-        status: { in: ["COMPLETED", "CANCELLED"] },
+        status: { in: ["COMPLETED", "CANCELLED", "NO_SHOW"] },
       },
       orderBy: { startAt: "desc" },
       take: 10,

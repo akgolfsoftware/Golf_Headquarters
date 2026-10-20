@@ -134,7 +134,7 @@ export async function getAvailableSlots(
     where: {
       startAt: { lt: dayEnd },
       endAt: { gt: dayStart },
-      status: { in: ["PENDING", "CONFIRMED", "COMPLETED"] },
+      status: { in: ["PENDING", "CONFIRMED", "COMPLETED", "NO_SHOW"] },
     },
     select: { coachId: true, serviceTypeId: true, startAt: true, endAt: true, plassNr: true, facilityId: true },
   });
