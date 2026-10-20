@@ -37,13 +37,8 @@
     "ask": [
       "Bash(git checkout main)",
       "Bash(git checkout master)",
-      "Bash(git reset*)",
       "Bash(gh pr merge*)",
-      "Bash(rm -rf*)",
-      "Bash(gh pr merge *)",
-      "Bash(git merge *)",
-      "Bash(npx prisma db *)",
-      "Bash(npx prisma migrate *)"
+      "Bash(gh pr merge *)"
     ]
   },
   "hooks": {
