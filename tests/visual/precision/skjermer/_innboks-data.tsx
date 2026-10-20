@@ -68,8 +68,8 @@ const leads = [
   { id: "l2", navn: null, epost: "en-veldig-lang-epostadresse-som-maa-brytes@example.com", kilde: "for-klubber", status: "CONTACTED", dato: "21. sep." },
 ];
 
-export function Vis({ tilstand = "data", filter = "alle", oppf = null, haster = false, tom = false, startLeads = false }: {
-  tilstand?: AG04Tilstand; filter?: InnboksFilterId; oppf?: OppfStatus | null; haster?: boolean; tom?: boolean; startLeads?: boolean;
+export function Vis({ tilstand = "data", filter = "alle", oppf = null, haster = false, tom = false, startLeads = false, startSak = null }: {
+  tilstand?: AG04Tilstand; filter?: InnboksFilterId; oppf?: OppfStatus | null; haster?: boolean; tom?: boolean; startLeads?: boolean; startSak?: string | null;
 }) {
   const poster = byggInnboks(tom ? tomKilder : kilder(haster));
   return <AdminRolleProvider erAdmin>
@@ -77,7 +77,7 @@ export function Vis({ tilstand = "data", filter = "alle", oppf = null, haster = 
       <AG04Innboks tilstand={tilstand} poster={poster} startFilter={filter} startOppf={oppf} dagLabel="tirsdag 29. september"
         visSendt={false} harEpost godkjenn={tom ? tomGodkjenn : godkjenn} oppfolgingSpillere={tom ? 0 : 12}
         datakvalitet={tom ? { sjekket: 0, muligeDubletter: 0, runder: [] } : datakvalitet}
-        leads={tom ? [] : leads} startLeads={startLeads} />
+        leads={tom ? [] : leads} startLeads={startLeads} startSak={startSak} />
     </AgencyOSSkall>
   </AdminRolleProvider>;
 }

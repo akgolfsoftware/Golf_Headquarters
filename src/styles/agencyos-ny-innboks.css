@@ -1,0 +1,94 @@
+/* AG-04 Innboks, designløftet 20.10.2026. Fasit: canvaset «AgencyOS nøkkelskjermer»,
+   tavlene Innboks (PC, to ruter), Innboks-mobil (lista) og Innboks-sak-mobil (åpen sak).
+   PC fra 900 px: liste 440 px til venstre, valgt sak til høyre. Mobil: lista, og saken
+   som egen flate med «← Innboks». Rust bare på «Haster». Gjelder bare inni .agn-s.ibx. */
+
+.agn-s.ibx { gap: 0; padding: 0 0 calc(104px + env(safe-area-inset-bottom)); }
+.agn-s .meta { font: 500 11px/1.25 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--graphite-600); }
+.agn-s .num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+.agn-s .ibx-liste { display: grid; gap: 14px; align-content: start; padding: 18px 16px 0; min-width: 0; }
+.agn-s .ibx-topp { display: grid; gap: 6px; }
+.agn-s .ibx-topp-rad { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.agn-s .ibx-topp h1 { font: 700 34px/1 var(--sans); letter-spacing: -.035em; }
+.agn-s .ibx-topp-rad .num { font-size: 14px; color: var(--graphite-800); white-space: nowrap; }
+.agn-s .ibx-filter > button { min-height: 36px; font-size: 13px; }
+.agn-s .ibx-filter > button b { font-size: 11px; opacity: .75; }
+
+/* Gruppene Haster · I dag · Tidligere */
+.agn-s .ibx-grupper { display: grid; }
+.agn-s .ibx-gruppe { display: grid; }
+.agn-s .ibx-gruppe-topp { display: flex; align-items: center; gap: 8px; padding: 14px 0 6px; }
+.agn-s .ibx-gruppe-topp .haster-pille { height: 22px; padding: 0 8px; font-size: 11px; font-weight: 700; }
+.agn-s .ibx-gruppe-navn { font: 600 12px/1 var(--sans); }
+.agn-s .ibx-gruppe-topp .num { font-size: 12px; color: var(--graphite-800); }
+
+/* Én rad */
+.agn-s .ibx-rad { display: grid; gap: 4px; width: 100%; padding: 12px 8px; border: 0; border-top: 1px solid var(--sand-300); background: transparent; color: var(--graphite-900); font: inherit; text-align: left; cursor: pointer; min-height: 44px; transition: scale 150ms var(--ut), background-color 150ms ease; }
+.agn-s .ibx-rad:active { scale: .99; }
+.agn-s .ibx-rad[aria-pressed="true"] { background: #faf8f3; box-shadow: inset 3px 0 0 var(--graphite-900); }
+.agn-s .ibx-rad.lost { color: var(--graphite-800); }
+.agn-s .ibx-rad[draggable="true"] { cursor: grab; }
+.agn-s .ibx-rad-meta { display: flex; align-items: center; gap: 8px; }
+.agn-s .ibx-rad-meta .meta { flex: 1; color: var(--graphite-800); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.agn-s .ibx-rad-meta time { font: 400 12px/1 var(--mono); color: var(--graphite-800); white-space: nowrap; max-width: 50%; overflow: hidden; text-overflow: ellipsis; }
+.agn-s .ibx-rad-emne { display: flex; align-items: baseline; gap: 8px; }
+.agn-s .ibx-rad-emne b { font: 600 14px/1.35 var(--sans); white-space: nowrap; flex: none; max-width: 55%; overflow: hidden; text-overflow: ellipsis; }
+.agn-s .ibx-rad-emne span { font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.agn-s .ibx-rad-tekst { display: flex; align-items: center; gap: 8px; }
+.agn-s .ibx-rad-tekst > span:first-child { flex: 1; font-size: 13px; color: var(--graphite-800); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.agn-s .ibx-utkast-pille { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 999px; background: var(--sand-150); font: 600 11px/1 var(--sans); white-space: nowrap; flex: none; }
+@media (hover: hover) and (pointer: fine) { .agn-s .ibx-rad:not([aria-pressed="true"]):hover { background: var(--sand-100); } }
+.agn-s .ibx-tom { margin: 24px 0; font-size: 15px; color: var(--graphite-800); }
+.agn-s .ibx-leads { display: grid; gap: 8px; }
+.agn-s .ibx-hint { padding-top: 8px; }
+
+/* Den åpne saken */
+.agn-s .ibx-rute { display: none; min-width: 0; }
+.agn-s .ibx-ingen { margin: 48px 36px; font-size: 15px; color: var(--graphite-800); }
+.agn-s .ibx-sak { display: grid; gap: 20px; align-content: start; padding: 8px 16px 0; min-width: 0; }
+.agn-s .ibx-sak-topp { display: grid; gap: 10px; }
+.agn-s .ibx-sak-tittel { display: grid; gap: 6px; }
+.agn-s .ibx-sak-tittel .meta { color: var(--graphite-800); }
+.agn-s .ibx-sak-tittel h2 { font: 700 24px/1.2 var(--sans); letter-spacing: -.02em; overflow-wrap: anywhere; }
+.agn-s .ibx-profil { display: inline-flex; align-items: center; gap: 6px; justify-self: start; min-height: 44px; font-size: 14px; color: var(--graphite-900); }
+.agn-s .ibx-profil .ikon { width: 16px; height: 16px; }
+.agn-s .ibx-fra { font-size: 14px; color: var(--graphite-800); overflow-wrap: anywhere; }
+.agn-s .ibx-ferdig { justify-self: start; min-height: 44px; font-weight: 500; border-color: var(--sand-300); }
+.agn-s .ibx-ferdig .ikon { width: 16px; height: 16px; }
+.agn-s .ibx-melding { display: flex; gap: 12px; align-items: flex-start; }
+.agn-s .ibx-boble { display: grid; gap: 4px; padding: 12px 14px; border-radius: 4px 12px 12px 12px; background: var(--sand-150); max-width: 520px; }
+.agn-s .ibx-boble p { font-size: 15px; line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere; }
+.agn-s .ibx-boble .num { font-size: 11px; color: var(--graphite-800); }
+
+.agn-s .ibx-utkast { display: grid; gap: 12px; padding: 18px; border: 1px solid var(--graphite-900); border-radius: 12px; background: var(--white); }
+.agn-s .ibx-utkast-hode { display: flex; align-items: center; gap: 8px; font-size: 13px; line-height: 1.4; color: var(--graphite-800); }
+.agn-s .ibx-utkast-hode .ikon { width: 16px; height: 16px; }
+.agn-s .ibx-utkast textarea { min-height: 104px; resize: vertical; width: 100%; padding: 12px; border: 1px solid var(--sand-300); border-radius: 8px; font: 400 15px/1.5 var(--sans); color: var(--graphite-900); background: var(--white); }
+.agn-s .ibx-utkast-tekst { font-size: 15px; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; }
+.agn-s .ibx-utkast-knapper { display: flex; flex-wrap: wrap; gap: 8px; }
+.agn-s .ibx-utkast-knapper .knapp.stor { width: auto; flex: 1; min-width: 140px; }
+.agn-s .ibx-utkast-knapper .knapp.sek { border-color: var(--sand-300); font-weight: 500; }
+
+/* Mobil: lista eller saken, aldri begge */
+@media (max-width: 899px) {
+  .agn-s.ibx[data-mobil-aapen] .ibx-liste { display: none; }
+  .agn-s.ibx[data-mobil-aapen] .ibx-rute { display: block; }
+  .agn-s .ibx-utkast-knapper { position: sticky; bottom: 0; margin: 0 -18px -18px; padding: 12px 18px 18px; background: var(--white); border-top: 1px solid var(--sand-300); border-radius: 0 0 12px 12px; }
+}
+
+@media (min-width: 900px) {
+  .agn-s.ibx:not(.hel) { grid-template-columns: 440px minmax(0, 1fr); align-items: stretch; min-height: 100dvh; }
+  .agn-s.ibx .ibx-liste { padding: 28px 0 24px; border-right: 1px solid var(--sand-300); }
+  .agn-s.ibx.hel .ibx-liste { padding: 28px 40px 24px; border-right: 0; }
+  .agn-s.ibx .ibx-liste > :not(.ibx-grupper):not(.ibx-gruppe) { margin-inline: 24px; }
+  .agn-s.ibx.hel .ibx-liste > * { margin-inline: 0; }
+  .agn-s .ibx-topp h1 { font-size: 40px; }
+  .agn-s .ibx-gruppe-topp { padding-inline: 24px; }
+  .agn-s .ibx-rad { padding: 12px 24px; }
+  .agn-s .ibx-rute { display: block; }
+  .agn-s.ibx .ibx-tilbake { display: none; }
+  .agn-s .ibx-sak { padding: 28px 36px 32px; }
+  .agn-s .ibx-sak-topp { grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 16px; }
+  .agn-s .ibx-sak-tittel h2 { font-size: 28px; line-height: 1.15; }
+}
