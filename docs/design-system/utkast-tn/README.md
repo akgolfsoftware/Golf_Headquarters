@@ -9,7 +9,7 @@ Team Norway tegnes i repoet som HTML-utkast publisert som private Artifacts, sam
 [PlayerHQ-utkastene](../utkast-playerhq/README.md). Anders går gjennom alt samlet til slutt (port 7).
 
 Designspråket: `.claude/rules/beslutninger.md` §TEAM NORWAY-APPEN BYTTER DESIGNSPRÅK og
-`src/styles/team-norway-tokens.css`. Schibsted Grotesk i overskrifter og tekst (Anders 20.10; før Jost og Lato), IBM Plex Mono på tall. Fra 19.10.2026 gjelder retning «Skrå»
+`src/styles/team-norway-tokens.css`. Schibsted Grotesk i overskrifter og tekst (Anders 20.10), IBM Plex Mono på tall. Fra 19.10.2026 gjelder retning «Skrå»
 ([nye-veier.html](nye-veier.html), retning 1): banebilde kuttet 4° med rød kant, myke kort med radius og navy-skygger, rund avatar. Utkastene under er tegnet før dette og tegnes om pakke for pakke. Navy sidemeny `#012B5D` med hvit tekst og rød markør.
 Rød `#D70232` er identitet, aldri status og aldri akse.
 
@@ -36,7 +36,7 @@ fargen, så fargen er aldri eneste bærer. TURN blir i mørk rød (Anders 14.10)
 
 1. Ny fil i denne mappen, f.eks. `oversikt.html`. Mal: `grunnmur.html`.
 2. `felles/tn.css` (tokens, skall, byggeklosser) og egen `<style>` bare for det skjermen trenger.
-   Fontene lastes fra Google Fonts i `<head>` (Jost, Lato, IBM Plex Mono).
+   Fontene lastes fra Google Fonts i `<head>` (Schibsted Grotesk, IBM Plex Mono).
 3. Skjermen ligger i `<template id="skjerm"><div class="app" data-aktiv="oversikt"><main class="innhold">…</main></div></template>`.
    `felles/tn.js` bygger navy sidemeny (PC, 252 px, seks grupper fra `tnHovedmeny`), navy topplinje og bunnmeny
    (mobil: Oversikt · Samlinger · Uttak · Spillere · Mer). Undersider: `data-skall="tilbake" data-tilbake="Spillere"`.
@@ -56,7 +56,7 @@ fargen, så fargen er aldri eneste bærer. TURN blir i mørk rød (Anders 14.10)
 - Merker er kantete (2 px), aldri piller med runde ender. Avatar er kvadratisk. Kategori A–K er et navy merke (`.kat`), ikke en akse.
 - Flaggstreken er kanten nederst på helteflaten (`.helt`) og brukes ellers sparsomt (`.flaggstrek`).
 - Golfbilder (`bilder/`) bare i bildekort og helteflater, aldri med tekst oppå (`.bildekort`, tekst i `.bk-tekst`).
-- Datolinja (`.overlinje`) høyst én gang per skjerm, i Lato. IBM Plex Mono bare på tall.
+- Datolinja (`.overlinje`) høyst én gang per skjerm, i Schibsted Grotesk. IBM Plex Mono bare på tall.
 - Kilde og dato der appen påstår noe om en spiller. Estimat merkes (`.merke.kontur`).
 - Aldri sidelengs rulling. Ord fra `docs/treningsplanlegging.md`.
 - Spillere heter «Spiller 01» … «Spiller 14» og trenere «Sportssjef», «Trener 1», «Trener 2». Ingen realistiske navn (spillerne er mindreårige).
@@ -68,7 +68,7 @@ fargen, så fargen er aldri eneste bærer. TURN blir i mørk rød (Anders 14.10)
 ## Utkast 2: retning B (16.10.2026)
 
 Anders valgte retning B «Stall og helteflate» fra `../../planer/tn-wang-designloft-2026-10-16.md` §4. Rammene er
-uendret (Jost, Lato, Mono bare på tall, hjørner 0 · 2 · 4, ingen skygger eller sirkler, navy, logorød bare identitet,
+uendret (skriften da, Mono bare på tall, hjørner 0 · 2 · 4, ingen skygger eller sirkler, navy, logorød bare identitet,
 TN-aksefargene). Nytt:
 
 - **Grunnmuren** (`felles/tn.css`, `felles/tn.js`) har nye byggeklosser: `.helt` (navy helteflate med hovedtall, én
@@ -76,7 +76,7 @@ TN-aksefargene). Nytt:
   (spillerrad med `.planstolpe` og statusmarkør), `.akse-soyler` (fylte søyler), `.graf .areal` (fylt graf),
   `.bildekort`, `.flere` (meny for resten av handlingene), `.nedtelling` og `.markor`. De gamle klassene er beholdt.
 - **Sidemenyen** har seks grupper som kan lukkes. Bare gruppa du er i står åpen. Ingen menypunkter er fjernet.
-- **Mindre grå mono**: datolinja, akse-merker, menygrupper og metadata i lister står i Lato.
+- **Mindre grå mono**: datolinja, akse-merker, menygrupper og metadata i lister står i brødskriften.
 - **Oversikt**: «N spillere trenger deg» som hovedtall, Trenger deg-bånd, neste samling med golfbilde, fellestesten som stolpe.
 - **Spillerutvikling** i tre bånd (Trenger deg · Følger planen · Ikke delt). **IUP-hodet** med hovedtall (plan siste
   fire uker) og pyramiden som fylte søyler. Fellestesting, College, Skoler og WANG-resultater i samme språk.

@@ -13,7 +13,7 @@ export type { TnKnappVariant };
 /**
  * Knapper, felt og ark for handlingene på Team Norway-skjermene.
  * Fasit: docs/design-system/utkast-tn/felles/tn.css (pakke 1 grunnmur): navy
- * primærknapp, navy kontur sekundær, Lato 14 px, hjørner 2 px, minst 44 px høy.
+ * primærknapp, navy kontur sekundær, Schibsted Grotesk 14 px, hjørner 2 px, minst 44 px høy.
  * Sletting er mørk statusrød. Aldri logorød på knapper.
  *
  * Avvik:

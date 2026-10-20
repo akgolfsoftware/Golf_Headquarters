@@ -38,8 +38,8 @@ import { SkjermRamme, datoKort, hentSkjermbruker, osloDag, periode } from "./fel
  *   - Gruppepostene viser rollen i gruppen, ikke stillingstittel.
  *   - «I turnering nå» viser plass og brutto slik resultatkildene har dem; score per
  *     hull og til par finnes ikke i turneringsdataene her.
- *   - Menyen (hvit topplinje med piller i utkastet) og skriften (Schibsted Grotesk) er
- *     uavklart; navy sidemeny og Jost/Lato står til Anders har svart.
+ *   - Menyen er navy sidemeny, ikke hvit topplinje med piller som i utkastet, og skriften
+ *     er Schibsted Grotesk (Anders 20.10.2026).
  */
 
 const klokke = new Intl.DateTimeFormat("nb-NO", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Oslo" });
