@@ -304,6 +304,7 @@ function Batteri({ data, tester }: { data: WangTrenerData; tester: WangTesterDat
         Bare elever som har samtykket til å dele testene med WANG, vises (forelder under 16). Formatene følger Team Norway
         Golf – Tester 2026.
       </p>
+      <Link className="wg-lenke" href="/team-wang/coach/tester">Alle testresultater</Link>
     </>
   );
 }
