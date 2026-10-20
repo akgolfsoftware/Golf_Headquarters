@@ -1,8 +1,0 @@
-/* GENERERT fra tokens.json av tokens/build.mjs. IKKE REDIGER — endringer overskrives. */
-/* IBM Plex Sans — DISPLAY og BODY — alt arbeid: titler, chrome, pills, knapper, felt, inspektør, brød, tabbar
-   IBM Plex Mono — META — bare målt data: kl. 16:00, +1,2, 3–5 fot, kilde, SG-kode, klokkeslett
-   Ingen fjerde familie i ds-core. Vekter styres i tokens.json. */
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap");
-/* Fallback-familier med målte metrikker — holder layouten i ro mens webfonten lastes (CLS 0). */
-@font-face{font-family:"IBM Plex Sans Fallback";src:local("Arial");size-adjust:100%;ascent-override:100%;descent-override:25%;line-gap-override:0%}
-@font-face{font-family:"IBM Plex Mono Fallback";src:local("Courier New");size-adjust:99.7%;ascent-override:102.3%;descent-override:27.1%;line-gap-override:0%}
