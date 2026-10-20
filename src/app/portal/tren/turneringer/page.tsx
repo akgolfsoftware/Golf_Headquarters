@@ -1,6 +1,6 @@
-// PlayerHQ Turneringer — Precision Athletics, pakke 17 (utkast plan-hjelpere.html, 16.10.2026).
+// PlayerHQ Turneringer: turneringsplanleggeren med WAGR-anslag (Anders 20.10.2026, design
+// «Referansespillere Norden»). Kalenderen fra GolfBox (pakke 17) ligger på ?vis=golfbox.
 /**
- * Neste offisielle turnering, spillerens turneringer i planen og kalenderen fra GolfBox.
  * Påmelding skjer aldri fra lista; den bor på siden for én turnering (spilleransvar).
  */
 import { redirect } from "next/navigation";
@@ -9,6 +9,10 @@ import { getUnreadNotifications } from "@/app/portal/actions";
 import { loadMinTurneringsplan, loadPlanleggerKatalog, type PlanleggerTurnering } from "@/lib/portal-turnering/planlegger-data";
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { PHTurneringer, type PHTurneringRad } from "@/components/portal/precision/PHTurneringer";
+import { medSpillerTilgang } from "@/lib/profil-kobling/tilgang";
+import { byggPlanvisning } from "@/lib/turneringsplan/data";
+import { Turneringsplanlegger } from "@/components/turneringsplan/Turneringsplanlegger";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Turneringer · PlayerHQ" };
@@ -27,10 +31,25 @@ function tilRad(t: PlanleggerTurnering): PHTurneringRad {
   };
 }
 
-export default async function TurneringerPage() {
+export default async function TurneringerPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const user = await requirePortalUser();
   if (user.role === "GUEST") redirect("/admin/kalender");
   if (user.role === "PARENT") redirect("/forelder");
+
+  if ((await searchParams).vis !== "golfbox") {
+    const [svar, uleste] = await Promise.all([
+      medSpillerTilgang(user, user.id, {}, (k) => byggPlanvisning(k.db, user.id)),
+      getUnreadNotifications(user.id, 1),
+    ]);
+    return (
+      <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste.count}>
+        {svar?.data ? <Turneringsplanlegger visning={svar.data} rolle="spiller" /> : null}
+        <p style={{ padding: "0 16px 32px", maxWidth: 1240, margin: "0 auto", fontSize: 14 }}>
+          <Link href="/portal/tren/turneringer?vis=golfbox">Norske turneringer og påmelding i GolfBox-kalenderen</Link>
+        </p>
+      </PlayerHQSkall>
+    );
+  }
 
   const [katalog, minPlan, uleste] = await Promise.all([
     loadPlanleggerKatalog(user.id),

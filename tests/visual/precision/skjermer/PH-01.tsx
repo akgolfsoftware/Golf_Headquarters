@@ -1,4 +1,4 @@
-/** Prøvefil for PH-01 I dag i nytt design (utkast 4). Syntetiske data fra utkastet: mandag 5. oktober 2026, uke 41. */
+/** Prøvefil for PH-01 I dag i nytt design (designløftet 20.10, canvaset «PlayerHQ nøkkelskjermer»). Syntetiske data fra utkastet: mandag 5. oktober 2026, uke 41. */
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { PH01IDag, type PH01Props } from "@/components/portal/precision/PH01IDag";
 import { PH01IDagLaster } from "@/components/portal/precision/PH01IDagLaster";
@@ -40,6 +40,19 @@ const base: PH01Props = {
   turn: { dager: 12, tittel: "Srixon Tour 6", sted: "Larvik GK", meta: "17.10.2026", href: "#" },
   fullfort: { uke: 41, gjennomfort: 0, totalt: 11, igjen: 11, hoppetOver: 0, total: 64, totalKilde: "Øktlogg · 64 økter siden 03.08.2026", milepaeler: [{ antall: 10, naadd: "14.08" }, { antall: 50, naadd: "22.09" }, { antall: 100, naadd: null }] },
   popup: null,
+  snitt: { verdi: 76.4, endring: -0.8, trend: [78, 77, 75, 79, 76, 77, 74, 76, 77, 75], dato: "03.10" },
+  dager: [
+    { kort: "Man", iDag: true, segmenter: [{ akse: "slag", min: 75, gjort: false }, { akse: "fys", min: 45, gjort: false }] },
+    { kort: "Tir", iDag: false, segmenter: [{ akse: "tek", min: 60, gjort: false }, { akse: "fys", min: 45, gjort: false }] },
+    { kort: "Ons", iDag: false, segmenter: [{ akse: "tek", min: 60, gjort: false }] },
+    { kort: "Tor", iDag: false, segmenter: [{ akse: "tek", min: 60, gjort: false }, { akse: "slag", min: 60, gjort: false }] },
+    { kort: "Fre", iDag: false, segmenter: [{ akse: "slag", min: 90, gjort: false }] },
+    { kort: "Lør", iDag: false, segmenter: [{ akse: "spill", min: 350, gjort: false }] },
+    { kort: "Søn", iDag: false, segmenter: [] },
+  ],
+  nesteOkt: { dag: "Tir 6", tid: "16:00", tittel: "Svingplan P6.0", akse: "tek", min: 60, sted: "Mulligan", antallOvelser: 4, href: "#" },
+  melding: { fra: "Anders Kristiansen", tekst: "Last opp TrackMan-fila etter økta i dag, så ser jeg på spredningen.", tid: "05.10 09:40", href: "#" },
+  sg: { runder: 12, dato: "03.10", verdier: [{ navn: "Utslag", verdi: 0.3 }, { navn: "Innspill", verdi: -0.9 }, { navn: "Nærspill", verdi: -0.4 }, { navn: "Putting", verdi: 0.1 }] },
 };
 
 const Vis = (p: Partial<PH01Props>) => <PlayerHQSkall innboksHref="#" uleste={2}><PH01IDag {...base} {...p} /></PlayerHQSkall>;
@@ -47,7 +60,7 @@ const Vis = (p: Partial<PH01Props>) => <PlayerHQSkall innboksHref="#" uleste={2}
 export const tilstander = {
   data: <Vis />,
   utenForslag: <Vis godkjenninger={[]} />,
-  tom: <Vis tilstand="tom" ingress="Ingen økter i dag." okter={[]} nesteId={null} godkjenninger={[]} uka={null} maal={[]} forbedring={[]} etterlevelse={null} fireukerssjekk={null} agenda={[]} fys={null} turn={null} fullfort={null} dagsform={null} />,
+  tom: <Vis tilstand="tom" ingress="Ingen økter i dag." okter={[]} nesteId={null} godkjenninger={[]} uka={null} maal={[]} forbedring={[]} etterlevelse={null} fireukerssjekk={null} agenda={[]} fys={null} turn={null} fullfort={null} dagsform={null} snitt={null} dager={[]} nesteOkt={null} melding={null} sg={null} />,
   laster: <PlayerHQSkall innboksHref="#" uleste={0}><PH01IDagLaster /></PlayerHQSkall>,
   feil: <Vis tilstand="feil" />,
 };

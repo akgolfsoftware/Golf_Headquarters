@@ -512,6 +512,12 @@ export type KpiStats = {
   };
   /** SG total per runde, eldst→nyest (siste 10 runder) — for hero-sparkline. Ekte tall, ikke interpolert. */
   sgTrend: number[];
+  /** Bruttoscore per runde, eldst→nyest (siste 10 runder med score). */
+  scoreTrend: number[];
+  /** Snitt bruttoscore for de ti rundene før de siste ti; null uten slike runder. */
+  avgScorePrev: number | null;
+  /** Dato for siste runde med score. */
+  lastRoundAt: Date | null;
 };
 
 export async function getKpiStats(userId: string, naa: Date = new Date()): Promise<KpiStats> {
@@ -520,18 +526,24 @@ export async function getKpiStats(userId: string, naa: Date = new Date()): Promi
   const weekStart = startOfWeek(now);
   const since90 = new Date(now.getTime() - 90 * 86_400_000);
 
-  const [rounds, weekSessions, roundsCount] = await Promise.all([
+  const [rounds20, weekSessions, roundsCount] = await Promise.all([
     prisma.round.findMany({
       where: { userId },
       orderBy: { playedAt: "desc" },
-      take: 10,
-      select: { score: true, sgTotal: true, sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
+      take: 20,
+      select: { score: true, playedAt: true, sgTotal: true, sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
     }),
     loadVisibleSessionRange(userId, weekStart.toISOString(), now.toISOString()),
     prisma.round.count({ where: { userId, playedAt: { gte: since90 } } }),
   ]);
 
+  // De ti siste rundene styrer alle tallene som før; de ti før gir bare sammenligningen for snittscoren.
+  const rounds = rounds20.slice(0, 10);
   const scoresWithValue = rounds.filter((r) => r.score > 0);
+  const forrige = rounds20.slice(10).filter((r) => r.score > 0);
+  const avgScorePrev = forrige.length > 0
+    ? Math.round((forrige.reduce((s, r) => s + r.score, 0) / forrige.length) * 10) / 10
+    : null;
   const avgScore =
     scoresWithValue.length > 0
       ? Math.round((scoresWithValue.reduce((s, r) => s + r.score, 0) / scoresWithValue.length) * 10) / 10
@@ -556,6 +568,9 @@ export async function getKpiStats(userId: string, naa: Date = new Date()): Promi
     roundsCount,
     sgBreakdown: { ott: avg("sgOtt"), app: avg("sgApp"), arg: avg("sgArg"), putt: avg("sgPutt") },
     sgTrend,
+    scoreTrend: scoresWithValue.map((r) => r.score).reverse(),
+    avgScorePrev,
+    lastRoundAt: scoresWithValue[0]?.playedAt ?? null,
   };
 }
 

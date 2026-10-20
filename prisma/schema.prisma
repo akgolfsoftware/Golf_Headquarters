@@ -4046,6 +4046,8 @@ model TournamentEntry {
   seasonPlanId                String?
   // Linket til Tournament-katalogen (null = manuell)
   tournamentId                String?
+  // Turnering fra WAGR-katalogen for planleggeren (null = vanlig katalog eller manuell)
+  wagrPlanEventId             String?
   // Manuelle felter (brukes kun når tournamentId er null)
   manualName                  String?
   manualDate                  DateTime?
@@ -4068,11 +4070,13 @@ model TournamentEntry {
   user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   tournament Tournament? @relation(fields: [tournamentId], references: [id], onDelete: SetNull)
   seasonPlan SeasonPlan? @relation(fields: [seasonPlanId], references: [id], onDelete: SetNull)
+  wagrPlanEvent WagrPlanEvent? @relation(fields: [wagrPlanEventId], references: [id], onDelete: SetNull)
 
   @@index([userId])
   @@index([seasonPlanId])
   @@index([tournamentId])
   @@index([userId, entryStatus])
+  @@index([wagrPlanEventId])
   @@map("tournament_entries")
 }
 
@@ -7658,4 +7662,89 @@ model GiftCardTransaction {
   @@unique([giftCardId, bookingId, kind])
   @@index([bookingId])
   @@map("gift_card_transactions")
+}
+
+// Turneringsplanleggeren med WAGR-anslag (Anders 20.10.2026). Pipelines
+// (ak-golf-pipelines, pipelines/turneringsplan) skriver radene; HQ eier skjemaet.
+// Bare WAGR-data: GolfBox og DataGolf brukes ikke. Kilde vises alltid:
+// «World Amateur Golf Ranking (WAGR), The R&A».
+model WagrModelRun {
+  id            String   @id @default(cuid())
+  // Sesongen planen gjelder (2027)
+  season        Int
+  // Dagen dataene ble hentet fra WAGR
+  builtAt       DateTime @db.Date
+  // Støy per runde (slag) og form (slag) fra tilbaketesten
+  sigma         Float
+  form          Float
+  // {plasser, a, b}: log(poeng) = a + b·log(Power) per plass
+  pointsCurve   Json
+  powerEdges    Json
+  // Typisk felt per kjønn og Power-intervall: {"M3": {q, n, r}}
+  fieldProfiles Json
+  // [plass, snitt] per kjønn, for å slå opp plass fra WAGR-snitt
+  rankingCurves Json
+  createdAt     DateTime @default(now())
+
+  events    WagrPlanEvent[]
+  strengths WagrPlayerStrength[]
+
+  @@index([season, builtAt])
+  @@map("wagr_model_runs")
+}
+
+model WagrPlanEvent {
+  id            String   @id @default(cuid())
+  season        Int
+  wagrEventId   Int
+  modelRunId    String
+  name          String
+  startDate     DateTime @db.Date
+  days          Int
+  // true = samme uke og ukedag som året før; arrangøren har ikke publisert datoen
+  dateEstimated Boolean  @default(true)
+  country       String?
+  region        String?
+  course        String?
+  power         Float?
+  // Junior · Åpen amatør · Med proffer · Annet
+  eventType     String?
+  // «U18», «U21» eller «Junior (sjekk reglementet)»
+  ageLimit      String?
+  series        String?
+  // "M", "K" eller "KM"
+  genders       String
+  // Feltet fra WAGRs resultatliste: {q: kvantiler av styrke, n: antall, r: runder}
+  field         Json?
+  wagrUrl       String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  modelRun WagrModelRun      @relation(fields: [modelRunId], references: [id], onDelete: Restrict)
+  entries  TournamentEntry[]
+
+  @@unique([season, wagrEventId])
+  @@index([season, startDate])
+  @@index([modelRunId])
+  @@map("wagr_plan_events")
+}
+
+model WagrPlayerStrength {
+  id           String  @id @default(cuid())
+  modelRunId   String
+  wagrPlayerId Int
+  gender       String
+  // Nivå i slag per runde mot et felles nullpunkt (lavere er bedre); null = for få WAGR-runder
+  theta        Float?
+  rounds       Int
+  rank         Int?
+  pointsAvg    Float?
+  // Tellende WAGR-resultater: [[poeng, søndag i rankinguka, divisor], ...]
+  counting     Json
+
+  modelRun WagrModelRun @relation(fields: [modelRunId], references: [id], onDelete: Cascade)
+
+  @@unique([modelRunId, wagrPlayerId])
+  @@index([wagrPlayerId])
+  @@map("wagr_player_strengths")
 }

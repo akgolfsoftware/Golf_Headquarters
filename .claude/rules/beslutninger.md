@@ -25,6 +25,24 @@ Anders 20.10 i hovedøkta for designløftet: «ja, godkjent og dine anbefalinger
 2. **Ved portering:** `/team-wang` meldinger beholder sperren for sending; TN-uttaket lagrer kriterium 3 som tall 1–5 (additivt felt via `db execute`, gotchas §Database, om det ikke finnes). Ferdig når en test låser at WANG-trener ikke kan sende, og at kriterium 3 bare godtar 1–5.
 3. **Uavklart:** når Send i WANG åpnes, og med hvilket samtykke for elever under 16.
 
+## TURNERINGSPLANLEGGEREN MED WAGR-ANSLAG FÅR SKRÅ-DESIGNET PÅ ALLE FLATER (Anders 20.10.2026, bindende)
+
+Anders 20.10, etter skissen i «Referansespillere Norden»-designet (https://claude.ai/artifact/1BqwXq9kebjftzie3cSy9V): «Designet er riktig. Kjør planen på 9 steg med dette designet. TN-trener foreslår, AK-coach endrer direkte.»
+
+- **Turneringsplanleggeren bruker Team Norway-retningen «Skrå»** (Schibsted Grotesk, navy, skråkutt med bilde) i PlayerHQ (`/portal/tren/turneringer`), AgencyOS (`/admin/spillere/[id]/turneringsplan`) og Team Norway (`/team-norway/spiller/[id]/turneringsplan`). Fasit er «Referansespillere Norden».
+- **Spilleren og AK Golf-coachen endrer planen direkte.** Coachen varsler spilleren, som kan angre.
+- **Team Norway-treneren foreslår.** Forslaget lagres separat, og planen endres først når spilleren godtar (som §KODEGJENNOMGANGEN 06.10).
+- **WAGR-tall vises for spilleren** med «Kilde: World Amateur Golf Ranking (WAGR), The R&A». GolfBox-score og DataGolf brukes ikke i planleggeren.
+- **Pipelines skriver katalogen og modellen** (`ak-golf-pipelines` `pipelines/turneringsplan/skriv_db.py`); HQ eier skjemaet (`scripts/add-wagr-turneringsplan-2026-10-20.ts`).
+
+**Overstyrer:** Precision Athletics som design for denne ene skjermen i PlayerHQ og AgencyOS (§PRECISION ATHLETICS).
+
+**Arbeidet dette utløser:**
+
+1. **Skjermen og datamodellen** er bygget i samme PR. Ferdig når PR-en er i main.
+2. **Kobling av spillere til WAGR:** nivået hentes via `public_players."wagrId"`, og ingen PlayerHQ-bruker er koblet ennå. Ferdig når de aktive WAGR-spillerne har koblingen og ser sjanser og anslag.
+3. **Ukentlig oppdatering:** `skriv_db` kjøres i dag for hånd etter `hent` og `bygg`. Ferdig når mandagsjobben i pipelines kjører de tre stegene.
+4. **Uavklart:** målene for nivåblandingen per stadium og grensene for «Kan vinne» (15 %) og «Topp 10» (40 %) er utkast fra pipelines-siden.
 ## TESTBATTERIET ER TEAM NORWAYS 14 TESTER PLUSS FYSISK, PÅ ALLE FLATER (Anders 20.10.2026, bindende)
 
 Anders 20.10, med Team Norways testbeskrivelse og scorekort-arket som vedlegg: «Dette er testene som gjelder.» Og om de fysiske testene: «Ja. Behold de fysiske testene (benkpress, markløft trapbar, lengdehopp, rotasjonskast, Club Speed) som en egen del Fysisk ved siden av Golfslag og Teknikk.» Svar på at designøktene viste ulikt antall tester (15 og 18) for det som skal være ett batteri.

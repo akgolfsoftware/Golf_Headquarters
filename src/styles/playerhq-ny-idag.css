@@ -194,3 +194,161 @@
 .phn-idag .endring { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 14px; line-height: 1.45; }
 .phn-idag .blokk { display: block; font-size: 15px; }
 .phn-idag .phn-h2 { margin: 0; font: 600 18px/1.25 var(--phn-sans); }
+
+/* ===================================================================================
+ * §Designløft 20.10.2026 (godkjent av Anders). Fasit: canvaset «PlayerHQ nøkkelskjermer»,
+ * tegningene «1 I dag · mobil 390» og «1 I dag · PC 1280». Mobil: én kolonne.
+ * PC fra 900 px: tallene ved tittelen, innholdet i to kolonner. Bevegelse bare med
+ * opacity, translate og scale, tider fra src/styles/bevegelse.css, inne i prefers-reduced-motion.
+ * =================================================================================== */
+.phn-idag2 .idag2 { display: grid; gap: 22px; align-content: start; min-width: 0; }
+.phn-idag2 .idag2-hode { display: grid; gap: 10px; justify-items: start; }
+.phn-idag2 .phn-tittel { letter-spacing: -.03em; }
+.phn-idag2 .snarvei2 { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 12px 0 10px; border: 0; border-radius: var(--ak-r-pille); background: var(--ak-blue-50, #e8eefc); color: var(--phn-slag-ink); font: 600 13px/1.3 var(--phn-sans); text-align: left; cursor: pointer; max-width: 100%; }
+.phn-idag2 .snarvei2 > i { width: 8px; height: 8px; border-radius: 4px; background: var(--phn-slag-ink); flex-shrink: 0; }
+.phn-idag2 .sek-topp { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-bottom: 6px; border-bottom: 1px solid var(--phn-sand-150); }
+.phn-idag2 .sek-topp h2 { margin: 0; font: 600 15px/1.3 var(--phn-sans); }
+.phn-idag2 .sek-topp .phn-lenke { min-height: 44px; min-width: 44px; justify-content: flex-end; margin: -12px 0 -6px; font-size: 13px; color: var(--phn-g800); }
+.phn-idag2 .mono { font-family: var(--phn-mono); }
+.phn-idag2 .tall-kilde { font: 500 11px/1.3 var(--phn-mono); color: var(--phn-g600); }
+
+/* Tre tall */
+.phn-idag2 .tre-tall { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--phn-sand-150); border-bottom: 1px solid var(--phn-sand-150); }
+.phn-idag2 .tall { display: flex; flex-direction: column; gap: 5px; padding: 10px 8px 10px 0; color: inherit; text-decoration: none; border-radius: 4px; transition: background-color 140ms ease; }
+.phn-idag2 .tall + .tall { padding-left: 10px; border-left: 1px solid var(--phn-sand-150); }
+.phn-idag2 .tall:hover { background: var(--phn-sand-100); }
+.phn-idag2 .tall-etikett { font-size: 12px; color: var(--phn-g600); }
+.phn-idag2 .tall-verdi { font: 600 22px/1 var(--phn-mono); letter-spacing: -.02em; }
+.phn-idag2 .tall-verdi small { font-size: 12px; font-weight: 500; color: var(--phn-g600); letter-spacing: 0; }
+.phn-idag2 .tall-rad { display: flex; align-items: flex-end; gap: 6px; }
+.phn-idag2 .tall-trend { width: 40px; height: 18px; color: var(--phn-g900); flex-shrink: 0; }
+.phn-idag2 .tall-trend polyline { stroke-dasharray: 100; }
+.phn-idag2 .tall-band { display: flex; gap: 2px; width: 100%; height: 4px; border-radius: 2px; background: var(--phn-sand-150); overflow: hidden; }
+.phn-idag2 .tall-band i { display: block; }
+.phn-idag2 .tall-endring { font-size: 12px; color: var(--phn-g800); }
+.phn-idag2 .tall-endring.bedre { color: var(--phn-green-700); }
+
+/* Målsetninger */
+.phn-idag2 .maal { display: grid; gap: 4px; margin-top: -10px; }
+.phn-idag2 .maal-rad { display: grid; gap: 5px; min-height: 48px; align-content: center; padding: 8px 0; color: inherit; text-decoration: none; border-bottom: 1px solid var(--phn-sand-100); }
+.phn-idag2 .maal-rad.tom { font-size: 13px; color: var(--phn-g800); }
+.phn-idag2 .maal-topp { display: flex; justify-content: space-between; gap: 8px; font-size: 14px; }
+.phn-idag2 .maal-topp small { font-size: 12px; color: var(--phn-g600); }
+.phn-idag2 .maal-topp b { font: 600 14px/1 var(--phn-mono); white-space: nowrap; }
+.phn-idag2 .maal-spor { display: block; height: 4px; border-radius: 2px; background: var(--phn-sand-150); overflow: hidden; }
+.phn-idag2 .maal-spor i { display: block; height: 100%; background: var(--phn-g900); }
+
+/* Kolonner */
+.phn-idag2 .idag2-kol { display: grid; gap: 22px; align-content: start; min-width: 0; }
+
+/* Dagens økter */
+.phn-idag2 .dag2, .phn-idag2 .neste2, .phn-idag2 .forslag2, .phn-idag2 .melding2 { display: grid; gap: 8px; }
+.phn-idag2 .dag2-liste { display: grid; gap: 8px; }
+.phn-idag2 .okt-ferdig { display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 0 2px; border: 0; background: transparent; color: var(--phn-g800); font: 400 13px/1.3 var(--phn-sans); text-align: left; cursor: pointer; }
+.phn-idag2 .okt-ferdig .mono { width: 42px; flex-shrink: 0; }
+.phn-idag2 .okt-ferdig-navn { flex: 1; }
+.phn-idag2 .okt-fylt { display: grid; gap: 5px; padding: 12px 14px; border: 0; border-radius: var(--ak-r-kort); color: #fff; text-align: left; font: inherit; cursor: pointer; }
+.phn-idag2 .okt-fylt.fys { background: var(--phn-fys-ink); } .phn-idag2 .okt-fylt.tek { background: var(--phn-tek-ink); }
+.phn-idag2 .okt-fylt.slag { background: var(--phn-slag-ink); } .phn-idag2 .okt-fylt.spill { background: var(--phn-spill-ink); } .phn-idag2 .okt-fylt.turn { background: var(--phn-turn); }
+.phn-idag2 .okt-fylt-topp { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.phn-idag2 .okt-fylt-topp b { font: 600 20px/1 var(--phn-mono); }
+.phn-idag2 .okt-fylt-akse { font: 600 11px/1 var(--phn-mono); letter-spacing: .06em; opacity: .9; }
+.phn-idag2 .okt-fylt-navn { font: 700 16px/1.25 var(--phn-sans); }
+.phn-idag2 .okt-fylt-meta { font-size: 12px; opacity: .9; }
+.phn-idag2 .okt-fylt-maal { font-size: 12px; }
+.phn-idag2 .start2 { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 54px; padding: 0 18px; border-radius: var(--ak-r-knapp); background: var(--phn-g900); color: #fff; text-decoration: none; }
+.phn-idag2 .start2 > span { display: grid; gap: 2px; }
+.phn-idag2 .start2 b { font: 600 16px/1.2 var(--phn-sans); }
+.phn-idag2 .start2 > span > span { font-size: 12px; color: var(--phn-sand-300); }
+.phn-idag2 .tom2 { display: grid; gap: 12px; padding: 4px 0; }
+
+/* Neste økt og meldinger */
+.phn-idag2 .rad2 { display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 4px 2px; color: inherit; text-decoration: none; border-radius: 4px; }
+.phn-idag2 .rad2:hover, .phn-idag2 .melding2-rad:hover { background: var(--phn-sand-100); }
+.phn-idag2 .rad2-tid { display: grid; width: 48px; font-size: 12px; line-height: 1.3; color: var(--phn-g800); flex-shrink: 0; }
+.phn-idag2 .rad2-tid b { color: var(--phn-g900); }
+.phn-idag2 .rad2-strek { width: 4px; height: 30px; border-radius: 2px; flex-shrink: 0; }
+.phn-idag2 .rad2-tekst { display: grid; gap: 2px; }
+.phn-idag2 .rad2-tekst b { font: 600 14px/1.3 var(--phn-sans); }
+.phn-idag2 .rad2-tekst span { font-size: 12px; color: var(--phn-g600); }
+.phn-idag2 .melding2-rad { display: grid; gap: 4px; padding: 8px 2px; color: inherit; text-decoration: none; font-size: 14px; line-height: 1.45; border-radius: 4px; }
+
+/* Uka per dag */
+.phn-idag2 .uke { display: grid; gap: 8px; }
+.phn-idag2 .uke-forklar { display: flex; gap: 10px; font-size: 12px; color: var(--phn-g800); }
+.phn-idag2 .uke-forklar span { display: inline-flex; align-items: center; gap: 4px; }
+.phn-idag2 .uke-forklar i { width: 10px; height: 10px; border-radius: 2px; }
+.phn-idag2 .uke-forklar i.gjort { background: var(--phn-g800); }
+.phn-idag2 .uke-forklar i.plan { background: repeating-linear-gradient(135deg, var(--phn-g800) 0 2px, transparent 2px 5px); box-shadow: inset 0 0 0 1.5px var(--phn-g800); }
+.phn-idag2 .uke-graf { position: relative; padding-left: 26px; }
+.phn-idag2 .uke-linje { position: absolute; left: 26px; right: 0; border-top: 1px dashed var(--phn-sand-150); }
+.phn-idag2 .uke-linje span { position: absolute; left: -26px; top: -6px; font: 500 10px/1 var(--phn-mono); color: var(--phn-g600); }
+.phn-idag2 .uke-dager { position: relative; height: 100%; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; align-items: end; }
+.phn-idag2 .uke-dag { position: relative; display: flex; flex-direction: column; justify-content: flex-end; gap: 2px; height: 100%; padding: 4px 3px 0; border-radius: 6px; outline-offset: 2px; transition: opacity 160ms ease, translate 200ms var(--phn-ut); }
+.phn-idag2 .uke-dag.i-dag { background: var(--phn-sand-100); }
+.phn-idag2 .uke-dager:hover .uke-dag { opacity: .45; }
+.phn-idag2 .uke-dager .uke-dag:hover, .phn-idag2 .uke-dag:focus-visible { opacity: 1; translate: 0 -2px; }
+.phn-idag2 .uke-tall { font-size: 12px; text-align: center; margin-bottom: 4px; }
+.phn-idag2 .uke-seg { display: block; border-radius: 2px; background: var(--seg-ink); }
+.phn-idag2 .uke-seg:first-of-type { border-radius: 4px 4px 2px 2px; }
+.phn-idag2 .uke-seg.plan { background: repeating-linear-gradient(135deg, var(--seg) 0 2px, transparent 2px 6px); box-shadow: inset 0 0 0 1.5px var(--seg); }
+.phn-idag2 .uke-seg.hvile { height: 12px; border: 1px dashed var(--phn-sand-300); background: transparent; }
+.phn-idag2 .uke-tips { position: absolute; left: 50%; bottom: calc(100% + 6px); z-index: 3; display: grid; gap: 2px; min-width: 150px; padding: 8px 10px; border-radius: 8px; background: var(--phn-g900); color: #fff; font: 500 12px/1.45 var(--phn-sans); white-space: nowrap; opacity: 0; translate: -50% 4px; pointer-events: none; transition: opacity 140ms ease, translate 200ms var(--phn-ut); }
+.phn-idag2 .uke-tips-rad { display: flex; justify-content: space-between; gap: 12px; }
+.phn-idag2 .uke-dag:hover .uke-tips, .phn-idag2 .uke-dag:focus-visible .uke-tips { opacity: 1; translate: -50% 0; }
+.phn-idag2 .uke-dag:nth-child(-n+2) .uke-tips { left: 0; translate: 0 4px; }
+.phn-idag2 .uke-dag:nth-child(-n+2):hover .uke-tips, .phn-idag2 .uke-dag:nth-child(-n+2):focus-visible .uke-tips { translate: 0 0; }
+.phn-idag2 .uke-dag:nth-last-child(-n+2) .uke-tips { left: auto; right: 0; translate: 0 4px; }
+.phn-idag2 .uke-dag:nth-last-child(-n+2):hover .uke-tips, .phn-idag2 .uke-dag:nth-last-child(-n+2):focus-visible .uke-tips { translate: 0 0; }
+.phn-idag2 .uke-navn { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; padding: 6px 0 0 26px; border-top: 1px solid var(--phn-sand-300); text-align: center; font-size: 11px; color: var(--phn-g800); }
+.phn-idag2 .uke-navn .i-dag { font-weight: 600; color: #fff; background: var(--phn-g900); border-radius: 4px; padding: 3px 0; }
+
+/* Strokes Gained */
+.phn-idag2 .sg { display: grid; gap: 10px; }
+.phn-idag2 .sg-rader { display: grid; gap: 8px; }
+.phn-idag2 .sg-rad { display: grid; grid-template-columns: 64px minmax(0, 1fr) 44px; gap: 8px; align-items: center; font-size: 13px; }
+.phn-idag2 .sg-rad .sterk { font-weight: 600; }
+.phn-idag2 .sg-rad b { font-size: 13px; text-align: right; }
+.phn-idag2 .sg-spor { position: relative; height: 10px; background: linear-gradient(90deg, transparent calc(50% - .5px), var(--phn-sand-300) calc(50% - .5px), var(--phn-sand-300) calc(50% + .5px), transparent calc(50% + .5px)); }
+.phn-idag2 .sg-spor i { position: absolute; top: 0; bottom: 0; left: 50%; background: var(--phn-sand-300); border-radius: 0 2px 2px 0; }
+.phn-idag2 .sg-spor i.neg { left: auto; right: 50%; background: var(--phn-g600); border-radius: 2px 0 0 2px; transform-origin: 100% 50%; }
+.phn-idag2 .sg-spor i.neg.sterk { background: var(--phn-g900); }
+
+/* Bevegelse */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes idag2-loft { from { opacity: 0; translate: 0 var(--bv-loft, 8px); } }
+  @keyframes idag2-bred { from { scale: 0 1; } }
+  @keyframes idag2-reis { from { scale: 1 0; } }
+  @keyframes idag2-tegn { from { stroke-dashoffset: 100; } }
+  .phn-idag2 .idag2 > * { animation: idag2-loft var(--bv-inn, 360ms) var(--bv-ease, cubic-bezier(.23,1,.32,1)) both; }
+  .phn-idag2 .idag2 > :nth-child(2) { animation-delay: 40ms; } .phn-idag2 .idag2 > :nth-child(3) { animation-delay: 80ms; }
+  .phn-idag2 .idag2 > :nth-child(4) { animation-delay: 120ms; } .phn-idag2 .idag2 > :nth-child(5) { animation-delay: 160ms; }
+  .phn-idag2 .idag2 > :nth-child(n+6) { animation-delay: 200ms; }
+  .phn-idag2 .bred { transform-origin: 0 50%; animation: idag2-bred 620ms var(--bv-ease, cubic-bezier(.23,1,.32,1)) both; }
+  .phn-idag2 .sg-spor i.neg.bred { transform-origin: 100% 50%; }
+  .phn-idag2 .uke-seg { transform-origin: 50% 100%; animation: idag2-reis 560ms var(--bv-ease, cubic-bezier(.23,1,.32,1)) both; }
+  .phn-idag2 .uke-tall { animation: idag2-loft 360ms var(--bv-ease, cubic-bezier(.23,1,.32,1)) both; }
+  .phn-idag2 .tall-trend polyline { animation: idag2-tegn 1200ms var(--bv-ease, cubic-bezier(.23,1,.32,1)) 300ms both; }
+  .phn-idag2 .okt-fylt, .phn-idag2 .start2 { transition: scale 140ms var(--bv-ease, cubic-bezier(.23,1,.32,1)); }
+  .phn-idag2 .okt-fylt:active, .phn-idag2 .start2:active { scale: .97; transition-duration: 100ms; }
+}
+
+/* PC fra 900 px: tallene ved tittelen og to kolonner */
+@container (min-width: 900px) {
+  .phn-idag2 .idag2 { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); column-gap: 32px; row-gap: 20px; }
+  .phn-idag2 .idag2 > * { grid-area: auto; grid-column: 1 / -1; }
+  .phn-idag2 .idag2-hode { grid-column: 1; }
+  .phn-idag2 .tre-tall { grid-column: 2; grid-row: 1; align-self: end; border: 0; }
+  .phn-idag2 .tall { padding: 6px 18px; border-left: 1px solid var(--phn-sand-150); }
+  .phn-idag2 .tall + .tall { padding-left: 18px; }
+  .phn-idag2 .tall-verdi { font-size: 26px; }
+  .phn-idag2 .tall-trend { width: 64px; height: 24px; }
+  .phn-idag2 .maal { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 28px; margin-top: 0; padding: 8px 0; border-top: 1px solid var(--phn-sand-150); border-bottom: 1px solid var(--phn-sand-150); }
+  .phn-idag2 .maal-rad { border-bottom: 0; }
+  .phn-idag2 .idag2-v { grid-column: 1; }
+  .phn-idag2 .idag2-h { grid-column: 2; }
+  .phn-idag2 .start2 { display: none; }
+  .phn-idag2 .sek-topp h2 { font-size: 16px; }
+}
+/* Rekkefølgen følger markeringen; de gamle order-reglene for .idag gjelder ikke her. */
+.phn-idag2 .idag2 > * { order: 0; }
