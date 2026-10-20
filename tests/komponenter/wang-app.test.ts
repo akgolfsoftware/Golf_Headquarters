@@ -214,8 +214,8 @@ describe('WANG Toppidrett Modul (Samtlige WANG-skjermer)', async () => {
   test('WangMeldinger: tom tilstand uten meldinger i basen, ingenting sendes', () => {
     const html = vis(WangMeldinger);
     assert.ok(html.includes('Ingen meldinger ennå'));
-    assert.match(visMed(WangMeldinger, { aktivFane: 'elev', id: 'e1' }), /<button[^>]*disabled=""[^>]*>Send<\/button>/);
-    assert.match(visMed(WangMeldinger, { aktivFane: 'gruppe' }), /<button[^>]*disabled=""[^>]*>Publiser<\/button>/);
+    assert.match(visMed(WangMeldinger, { aktivFane: 'elev', id: 'e1' }), /<button[^>]*disabled=""[^>]*>Send<small>Kommer<\/small><\/button>/);
+    assert.match(visMed(WangMeldinger, { aktivFane: 'gruppe' }), /<button[^>]*disabled=""[^>]*>Publiser<small>Kommer<\/small><\/button>/);
   });
 
   test('WangElever: delt plan gir etterlevelse, ikke delt gir «—» (W1)', () => {
