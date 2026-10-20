@@ -11,7 +11,13 @@ export const TN_GODKJENT_VERSION = "tn-excel-v3-2026-10-14";
  * telles som OK («X / 6 OK», «X / 10 OK»).
  */
 export const TN_POENG_VERSION = "tn-excel-v3-2026-10-20";
-export const TN_VERSIONS = [TN_VERSION, TN_RULES_VERSION, TN_GODKJENT_VERSION, TN_POENG_VERSION] as const;
+/**
+ * Anders 20.10.2026 (hovedøkta): Putt Gate føres med ett trykk «OK / Ikke OK», der OK betyr gjennom porten og i
+ * fartssonen (TN-PDF-en); fartssone og bomretning er valgfrie. 9 hull lengde er ikke lenger sperret: hvert putt
+ * føres i en av fem klasser med poeng (beslutninger.md 28.09). Eldre utgaver leses som før.
+ */
+export const TN_OK_VERSION = "tn-excel-v3-2026-10-20-ok";
+export const TN_VERSIONS = [TN_VERSION, TN_RULES_VERSION, TN_GODKJENT_VERSION, TN_POENG_VERSION, TN_OK_VERSION] as const;
 export type TnVersion = typeof TN_VERSIONS[number];
 export const tnVersion = (p: TnProtocol): TnVersion => p.version ?? TN_VERSION;
 /** `requiredUnless`: feltet kreves bare når det andre feltet står tomt (8-ball: carry og side, eller «I hull»). */
@@ -170,14 +176,31 @@ export const TN_GODKJENT_CATALOG: readonly TnProtocol[] = TN_RULES_CATALOG.map(p
 export const GATE_POENG_VALG = { Bom: 0, "Gjennom porten": 1, "I sonen": 4 } as const;
 export const GATE_POENG_IDS = ["naerspill-gate", "visa-express", "wedge-gate"] as const;
 const gatePoeng = (label: string): TnField => choice("ok", label, Object.keys(GATE_POENG_VALG));
-/** Gjeldende katalog (20.10.2026): gate-testene med poeng 0/1/4, Driver Gate og Putt Gate med OK. */
-export const TN_CATALOG: readonly TnProtocol[] = TN_GODKJENT_CATALOG.map(p => {
+/** Katalogen 20.10.2026 (første utgave): gate-testene med poeng 0/1/4, Driver Gate og Putt Gate med OK. */
+export const TN_POENG_CATALOG: readonly TnProtocol[] = TN_GODKJENT_CATALOG.map(p => {
   if (!GATE_IDS.includes(p.id)) return p;
   if (!(GATE_POENG_IDS as readonly string[]).includes(p.id)) return { ...p, version: TN_POENG_VERSION };
   const label = p.id === "visa-express" ? "Gjennom porten, og i speedsonen" : "Gjennom porten, og carry i sonen";
   return { ...p, version: TN_POENG_VERSION, rows: p.rows.map(r => ({ ...r, fields: [gatePoeng(label)] })) };
 });
-const CATALOGS = [LEGACY_CATALOG, TN_RULES_CATALOG, TN_GODKJENT_CATALOG, TN_CATALOG];
+/** Poeng per klasse i 9 hull lengde (Referens!E11:G15, beslutninger.md 28.09): putten føres i én av fem klasser. */
+export const LENGDE_POENG = { "I hull": 6, "Under 1 fot": 3, "1–2 fot": 1, "2–4 fot": 0.5, "Over 4 fot": 0 } as const;
+/** Gjeldende katalog (20.10.2026): Putt Gate med ett trykk OK / Ikke OK, 9 hull lengde med fem klasser og poeng. */
+export const TN_CATALOG: readonly TnProtocol[] = TN_POENG_CATALOG.map(p => {
+  if (p.id === "putt-gate") {
+    return { ...p, version: TN_OK_VERSION, rows: p.rows.map(r => ({ ...r, fields: [
+      choice("ok", "Gjennom porten og i fartssonen", ["Godkjent", "Bom"]),
+      { ...choice("speedZone", "Innenfor lengdesonen på 50 cm", ["Ja", "Nei"]), optional: true },
+      { ...choice("miss", "Bomretning ved gate", ["Venstre", "Høyre"]), optional: true },
+    ] })) };
+  }
+  if (p.id === "9-hull-lengde") {
+    return { ...p, version: TN_OK_VERSION, blocked: undefined,
+      rows: p.rows.map(r => ({ ...r, fields: [choice("klasse", "Hvor endte putten?", Object.keys(LENGDE_POENG))] })) };
+  }
+  return p;
+});
+const CATALOGS = [LEGACY_CATALOG, TN_RULES_CATALOG, TN_GODKJENT_CATALOG, TN_POENG_CATALOG, TN_CATALOG];
 export function tnProtocol(id: string, count?: number, version?: string): TnProtocol | null {
   if (version !== undefined && !(TN_VERSIONS as readonly string[]).includes(version)) return null;
   const p = version === undefined ? TN_CATALOG.find(p => p.id === id)

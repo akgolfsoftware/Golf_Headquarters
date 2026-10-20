@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { forventedePutter, gronnePutter, sgFraLengde } from "@/lib/domain/pei/broadie-sg-tabeller";
 import { poeng8Ball, poeng8BallExcelV3 } from "@/lib/domain/pei/poeng-tabeller";
-import { GATE_POENG_IDS, GATE_POENG_VALG, TN_GODKJENT_VERSION, TN_POENG_VERSION, TN_VERSIONS, tnVersion, type TnVersion, type TnProtocol, type TnRow } from "./tn-catalog";
+import { GATE_POENG_IDS, GATE_POENG_VALG, LENGDE_POENG, TN_GODKJENT_VERSION, TN_OK_VERSION, TN_POENG_VERSION, TN_VERSIONS, tnVersion, type TnVersion, type TnProtocol, type TnRow } from "./tn-catalog";
 import { formaterTestMetrikk } from "./format-verdi";
 
 export const TnValuesSchema = z.record(z.string().regex(/^[1-9]\d*$/), z.record(z.string().max(60), z.union([z.number().finite(), z.string().max(80), z.null()])));
@@ -37,7 +37,7 @@ export function tnRowError(row: TnRow, values: TnValues[string], complete: boole
   if (complete && present(values.speed) && (!present(values.speedUnit) || !present(values.speedType))) return "Oppgi enhet og hva hastigheten måler.";
   if (complete && !present(values.speed) && (present(values.speedUnit) || present(values.speedType))) return "Oppgi den målte hastigheten, eller tøm hastighetsfeltene.";
   if (present(values.holed) && (present(values.carry) || present(values.side))) return "Fjern carry og side når ballen gikk i hull.";
-  if (complete && bom(values.ok) && allowed.has("miss") && !present(values.miss)) return "Oppgi bomretning.";
+  if (complete && bom(values.ok) && allowed.has("miss") && !row.fields.find(f => f.key === "speedZone")?.optional && !present(values.miss)) return "Oppgi bomretning.";
   if (complete && allowed.has("speedZone") && godkjent(values.ok) && present(values.miss)) return "Fjern bomretning når ballen gikk rent gjennom gaten.";
   if (complete && allowed.has("longShort")) {
     if (values.distance === 0 && values.longShort !== "På mål") return "Velg på mål når restavstanden er null.";
@@ -116,9 +116,9 @@ export function tnScore(p: TnProtocol, values: TnValues): TnResult {
   } else if (p.kind === "gate") {
     const hits = p.rows.filter((_, i) => {
       const row = values[String(i + 1)];
-      return godkjent(row.ok) && (p.id !== "putt-gate" || row.speedZone === "Ja");
+      return godkjent(row.ok) && (p.id !== "putt-gate" || tnVersion(p) === TN_OK_VERSION || row.speedZone === "Ja");
     }).length;
-    if (tnVersion(p) === TN_POENG_VERSION) {
+    if (tnVersion(p) === TN_POENG_VERSION || tnVersion(p) === TN_OK_VERSION) {
       // «X / 6 OK» og «X / 10 OK» (Anders 20.10.2026).
       metric("OK", hits, `/ ${p.rows.length} OK`, false);
       metric("Andel OK", 100 * hits / p.rows.length, "%", false);
@@ -130,6 +130,11 @@ export function tnScore(p: TnProtocol, values: TnValues): TnResult {
       metric("Godkjente forsøk", hits, "treff", false);
       metric("Treffandel", 100 * hits / p.rows.length, "%", false);
     }
+  } else if (p.kind === "length-putt") {
+    // Fem klasser per putt: I hull 6 · under 1 fot 3 · 1–2 fot 1 · 2–4 fot 0,5 · over 4 fot 0.
+    const poeng = p.rows.map((_, i) => LENGDE_POENG[values[String(i + 1)].klasse as keyof typeof LENGDE_POENG]);
+    metric("Poeng", sum(poeng), `/ ${6 * p.rows.length} p`, false);
+    metric("I hull", poeng.filter(x => x === 6).length, `/ ${p.rows.length}`, false);
   } else if (p.kind === "speed") {
     const feet = p.rows.map((_, i) => {
       const row = values[String(i + 1)];

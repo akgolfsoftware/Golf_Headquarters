@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { TN_VERSION, TN_RULES_VERSION, TN_GODKJENT_VERSION, TN_POENG_VERSION, tnProtocol, tnVersion } from "./tn-catalog";
+import { TN_VERSION, TN_RULES_VERSION, TN_GODKJENT_VERSION, TN_POENG_VERSION, TN_OK_VERSION, tnProtocol, tnVersion } from "./tn-catalog";
 import { tnScore, tnValidate, tnFormat, tnSameScore, tnSameValues, type TnValues } from "./tn-scoring";
 import { tnDefinitionId, tnFromDefinitionId, tnComparableResult } from "./tn-integration";
 import { TnSessionSchema } from "./tn-session";
@@ -15,7 +15,7 @@ function gate(id: string, hits: number): TnValues {
 
 // Driver Gate og Putt Gate telles som OK (20.10); Wedge Gate med Godkjent/Bom leses fortsatt med 14.10-utgaven.
 for (const [id, hits, count, version, unit] of [
-  ["driver-gate", 3, 6, TN_POENG_VERSION, "OK"], ["wedge-gate", 6, 9, TN_GODKJENT_VERSION, "godkjent"], ["putt-gate", 5, 10, TN_POENG_VERSION, "OK"],
+  ["driver-gate", 3, 6, TN_POENG_VERSION, "OK"], ["wedge-gate", 6, 9, TN_GODKJENT_VERSION, "godkjent"], ["putt-gate", 5, 10, TN_OK_VERSION, "OK"],
 ] as const) {
   test(`${id}: teller bare godkjente forsøk, også ved null treff`, () => {
     const p = tnProtocol(id, undefined, version)!;
@@ -32,7 +32,7 @@ for (const [id, hits, count, version, unit] of [
 }
 
 test("rett putt utenfor lengdesonen er et gyldig, mislykket forsøk uten sidebom", () => {
-  const p = tnProtocol("putt-gate")!;
+  const p = tnProtocol("putt-gate", undefined, TN_POENG_VERSION)!;
   const values = gate(p.id, 10);
   values["1"] = { ok: "Godkjent", speedZone: "Nei" };
   assert.equal(tnValidate(p, values, true), null);
@@ -96,4 +96,18 @@ test("teknikk C har fem pluss fem i ny utgave og bevarer gamle 15-radersutkast",
   assert.equal(tnProtocol("teknikktest-c")!.rows.length, 10);
   assert.equal(tnProtocol("teknikktest-c", undefined, TN_VERSION)!.rows.length, 15);
   assert.ok(tnProtocol("teknikktest-c")!.blocked);
+});
+
+test("definisjons-ID-en for Putt Gate og 9 hull lengde (ok-utgaven) gir tilbake samme protokoll", () => {
+  for (const id of ["putt-gate", "9-hull-lengde"]) {
+    const p = tnProtocol(id)!;
+    assert.equal(tnVersion(p), TN_OK_VERSION);
+    assert.match(tnDefinitionId(p), /^tn-v3-20261020ok-/);
+    const igjen = tnFromDefinitionId(tnDefinitionId(p))!;
+    assert.equal(igjen.id, id);
+    assert.equal(tnVersion(igjen), TN_OK_VERSION);
+  }
+  // Lagrede resultater fra første 20.10-utgave beholder sin ID og regel.
+  const gammel = tnProtocol("putt-gate", undefined, TN_POENG_VERSION)!;
+  assert.equal(tnVersion(tnFromDefinitionId(tnDefinitionId(gammel))!), TN_POENG_VERSION);
 });

@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import source from "./fixtures/tn-excel-v3.json";
-import { GATE_POENG_IDS, TN_CATALOG, TN_GODKJENT_VERSION, TN_POENG_VERSION, TN_RULES_VERSION, TN_VERSION, tnProtocol } from "./tn-catalog";
+import { GATE_POENG_IDS, LENGDE_POENG, TN_CATALOG, TN_GODKJENT_VERSION, TN_OK_VERSION, TN_POENG_VERSION, TN_RULES_VERSION, TN_VERSION, tnProtocol } from "./tn-catalog";
 import { tnScore, tnValidate, tnFormat, tnRowPreview, type TnValues } from "./tn-scoring";
 import { validateCompletion } from "./validate-completion";
 import { scoreTest } from "./test-scoring";
@@ -133,7 +133,7 @@ test("Wedge Gate bruker 40, 50 og 60 m (poengarket, Anders 20.10)", () => {
 test("Driver Gate og Putt Gate vises som «X / 6 OK» og «X / 10 OK»", () => {
   for (const [id, n] of [["driver-gate", 6], ["putt-gate", 10]] as const) {
     const p = tnProtocol(id)!;
-    assert.equal(p.version, TN_POENG_VERSION);
+    assert.equal(p.version, id === "putt-gate" ? TN_OK_VERSION : TN_POENG_VERSION);
     assert.equal(tnFormat(tnScore(p, gate(id, 4)).metrics[0]), `4 / ${n} OK`);
   }
 });
@@ -186,4 +186,40 @@ test("alle brukte forventningsreferanser samsvarer celle for celle med arbeidsbo
     assert.equal(actual.length, lookupRows.length);
     actual.forEach((row, i) => row.forEach((value, j) => assert.ok(Math.abs(value - lookupRows[i][j]) < 1e-12, `Rad ${i}, kolonne ${j}: ${value} != ${lookupRows[i][j]}`)));
   }
+});
+
+test("Putt Gate føres med ett trykk: fartssone og bomretning er valgfrie, OK teller bare OK", () => {
+  const p = tnProtocol("putt-gate")!;
+  assert.equal(p.version, TN_OK_VERSION);
+  const values: TnValues = Object.fromEntries(p.rows.map((_, i) => [String(i + 1), { ok: i < 7 ? "Godkjent" : "Bom" }]));
+  assert.equal(tnValidate(p, values, true), null);
+  const r = tnScore(p, values);
+  assert.equal(r.score, 7);
+  assert.equal(tnFormat(r.metrics[0]), "7 / 10 OK");
+  // Valgfri bomretning godtas, men er ikke påkrevd.
+  values["10"] = { ok: "Bom", miss: "Høyre" };
+  assert.equal(tnValidate(p, values, true), null);
+});
+test("Putt Gate fra 20.10 (første utgave) krever fortsatt fartssone og bomretning", () => {
+  const p = tnProtocol("putt-gate", undefined, TN_POENG_VERSION)!;
+  assert.match(tnValidate(p, { "1": { ok: "Bom", speedZone: "Ja" } }, true)!, /bomretning/);
+});
+test("9 hull lengde er ikke sperret: fem klasser gir 6, 3, 1, 0,5 og 0 poeng", () => {
+  const p = tnProtocol("9-hull-lengde")!;
+  assert.equal(p.version, TN_OK_VERSION);
+  assert.equal(p.blocked, undefined);
+  assert.deepEqual(Object.values(LENGDE_POENG), [6, 3, 1, 0.5, 0]);
+  const klasser = Object.keys(LENGDE_POENG);
+  const values: TnValues = Object.fromEntries(p.rows.map((_, i) => [String(i + 1), { klasse: klasser[i % 5]! }]));
+  assert.equal(tnValidate(p, values, true), null);
+  const r = tnScore(p, values);
+  // 9 forsøk: klassene 0..4 én gang hver (10,5) pluss de fire første igjen (6 + 3 + 1 + 0,5).
+  assert.equal(r.score, 10.5 + 10.5);
+  assert.equal(tnFormat(r.metrics[0]), `21 / ${6 * p.rows.length} p`);
+  assert.throws(() => tnScore(p, { ...values, "1": { klasse: "Langt unna" } }));
+  assert.ok(tnValidate(p, { ...values, "1": { klasse: "Langt unna" } }, true));
+});
+test("eldre utgave av 9 hull lengde er fortsatt sperret og kan ikke gi resultat", () => {
+  const gammel = tnProtocol("9-hull-lengde", undefined, TN_VERSION)!;
+  assert.ok(gammel.blocked);
 });
