@@ -9,7 +9,7 @@ Team Norway tegnes i repoet som HTML-utkast publisert som private Artifacts, sam
 [PlayerHQ-utkastene](../utkast-playerhq/README.md). Anders går gjennom alt samlet til slutt (port 7).
 
 Designspråket: `.claude/rules/beslutninger.md` §TEAM NORWAY-APPEN BYTTER DESIGNSPRÅK og
-`src/styles/team-norway-tokens.css`. Jost i overskrifter, Lato i tekst, IBM Plex Mono på tall. Fra 19.10.2026 gjelder retning «Skrå»
+`src/styles/team-norway-tokens.css`. Schibsted Grotesk i overskrifter og tekst (Anders 20.10; før Jost og Lato), IBM Plex Mono på tall. Fra 19.10.2026 gjelder retning «Skrå»
 ([nye-veier.html](nye-veier.html), retning 1): banebilde kuttet 4° med rød kant, myke kort med radius og navy-skygger, rund avatar. Utkastene under er tegnet før dette og tegnes om pakke for pakke. Navy sidemeny `#012B5D` med hvit tekst og rød markør.
 Rød `#D70232` er identitet, aldri status og aldri akse.
 
