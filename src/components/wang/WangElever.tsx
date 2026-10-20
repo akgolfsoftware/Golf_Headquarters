@@ -334,6 +334,7 @@ function EnElev({
           <div className="wg-sek-topp">
             <h2>Siste turneringer</h2>
             <Link className="wg-lenke" href={`/team-wang/coach/turneringer/${elev.id}`}>Turneringene</Link>
+            <Link className="wg-lenke" href={`/team-wang/coach/profil/${elev.id}`}>Komplett profil</Link>
           </div>
           <div className="wg-kort wg-fyll">
             <p className="wg-kilde">Brutto. Kilde: GolfBox. Eleven må ha delt med deg.</p>

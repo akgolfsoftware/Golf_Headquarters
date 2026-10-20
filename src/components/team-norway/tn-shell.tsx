@@ -282,7 +282,7 @@ export function TnLenke({ href, children, fremhevet = false }: { href: string; c
   );
 }
 
-export type TnSpillerFane = "post" | "oversikt" | "tester" | "analyse" | "workbench" | "teknisk-plan" | "evaluering";
+export type TnSpillerFane = "post" | "oversikt" | "profil" | "tester" | "analyse" | "workbench" | "teknisk-plan" | "evaluering";
 
 /**
  * IUP-hodet for alle spillerscopede TN-ruter (Anders 15.10.2026: spillerprofilen
@@ -297,6 +297,7 @@ export type TnSpillerFane = "post" | "oversikt" | "tester" | "analyse" | "workbe
 export function TnSpillerFaner({ spillerId, spillerNavn, aktiv, kanAdministrere, overlinje, kompakt = false, children }: { spillerId: string; spillerNavn: string; aktiv: TnSpillerFane; kanAdministrere: boolean; overlinje?: string; kompakt?: boolean; children?: ReactNode }) {
   const kjernefaner: { id: TnSpillerFane; label: string; href: string }[] = [
     { id: "oversikt", label: "Oversikt", href: `/team-norway/spiller/${spillerId}/oversikt` },
+    { id: "profil", label: "Profil", href: `/team-norway/spiller/${spillerId}/profil` },
     { id: "post", label: "Post", href: `/team-norway/spiller/${spillerId}` },
     { id: "tester", label: "Tester", href: `/team-norway/spiller/${spillerId}/tester` },
     { id: "analyse", label: "Analyse", href: `/team-norway/spiller/${spillerId}/analyse` },

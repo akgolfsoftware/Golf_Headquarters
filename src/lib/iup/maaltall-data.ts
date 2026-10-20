@@ -1,4 +1,5 @@
 import "server-only";
+import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requireSpillerActionUser } from "@/lib/auth/action-guards";
 import { OSLO_YMD_FMT } from "@/lib/jarvis/dagen";
@@ -21,8 +22,22 @@ function orgNavn(grupper: { program: string | null }[]): string {
  */
 export async function hentIupMaaltall(): Promise<IupMaaltallData | null> {
   const bruker = await requireSpillerActionUser();
-  const eier = await prisma.user.findFirst({
-    where: iupSynligForSpillerWhere(bruker.id),
+  return hentIupMaaltallForSpiller(bruker.id);
+}
+
+/**
+ * Samme måltall for en gitt spiller. Ingen innlogging sjekkes her: KALLEREN må ha kontrollert at
+ * betrakteren har lov til å se spilleren (src/lib/profil-kobling/tilgang.ts). Send transaksjonen som
+ * `db` når kalleren holder en delingslås, så lesingen skjer under låsen. Null uten aktiv IUP.
+ * `kunDelteRunder`: for trenere. Runder merket «Bare deg» (sharedWithCoach = false) teller ikke.
+ */
+export async function hentIupMaaltallForSpiller(
+  spillerId: string,
+  db: Pick<Prisma.TransactionClient, "user" | "round" | "workbenchSession" | "iupMaaltallMal"> = prisma,
+  { kunDelteRunder = false }: { kunDelteRunder?: boolean } = {},
+): Promise<IupMaaltallData | null> {
+  const eier = await db.user.findFirst({
+    where: iupSynligForSpillerWhere(spillerId),
     select: { id: true, groupMemberships: { where: aktivIupTilknytningWhere(), select: { group: { select: { program: true } } } } },
   });
   if (!eier) return null;
@@ -30,18 +45,18 @@ export async function hentIupMaaltall(): Promise<IupMaaltallData | null> {
   const sesong = sesongFor(idag);
   const fra = new Date(`${sesong.start}T00:00:00Z`), til = new Date(`${sesong.slutt}T00:00:00Z`);
   const [runder, okter, mal] = await Promise.all([
-    prisma.round.findMany({
-      where: { userId: eier.id, playedAt: { gte: fra, lt: til }, playStatus: "COMPLETED" },
+    db.round.findMany({
+      where: { userId: eier.id, playedAt: { gte: fra, lt: til }, playStatus: "COMPLETED", ...(kunDelteRunder ? { sharedWithCoach: true } : {}) },
       select: {
         playedAt: true, score: true, roundType: true, tournamentEntryId: true, sgTotal: true, sgOtt: true, sgApp: true, sgArg: true, sgPutt: true,
         holeScores: { select: { par: true, strokes: true, firstPuttFt: true, putts: true, fairway: true, gir: true } },
       },
     }),
-    prisma.workbenchSession.findMany({
+    db.workbenchSession.findMany({
       where: { playerId: eier.id, status: "COMPLETED", date: { gte: fra, lt: til } },
       select: { date: true, pyramid: true, actualMinutes: true, durationMinutes: true },
     }),
-    prisma.iupMaaltallMal.findMany({ where: { userId: eier.id, sesong: sesong.navn }, select: { maaltall: true, verdi: true } }),
+    db.iupMaaltallMal.findMany({ where: { userId: eier.id, sesong: sesong.navn }, select: { maaltall: true, verdi: true } }),
   ]);
   const runderUt: MaaltallRunde[] = runder.map((r) => ({
     dato: OSLO_YMD_FMT.format(r.playedAt), score: r.score, turnering: r.roundType === "turnering", konkurranseId: r.tournamentEntryId,
