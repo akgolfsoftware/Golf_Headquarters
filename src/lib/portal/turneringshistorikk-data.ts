@@ -13,7 +13,7 @@ import {
 
 /**
  * Henter spillerens turneringshistorikk fra den felles spillerprofilen (dashboard.profile_links,
- * migrasjon 0023). Det er ÉN kilde for PlayerHQ, AgencyOS, WANG og Team Norway: ingen kopi
+ * migrasjon 0025). Det er ÉN kilde for PlayerHQ, AgencyOS, WANG og Team Norway: ingen kopi
  * per miljø, så ingen dobbeltrader. Uten bekreftet kobling vises ingenting fra offisielle kilder.
  *
  * KALLEREN må ha kontrollert at betrakteren har lov til å se spilleren (se

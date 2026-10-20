@@ -117,7 +117,7 @@ export async function hentProfilResultater(userId: string): Promise<ProfilResult
 }
 
 /**
- * Hele profilen til én spiller, slått opp via spillerens bekreftede kobling (migrasjon 0023).
+ * Hele profilen til én spiller, slått opp via spillerens bekreftede kobling (migrasjon 0025).
  * Én kilde for PlayerHQ, AgencyOS, WANG og Team Norway: ingen kopi, ingen person-id fra klienten.
  *
  * KALLEREN må først ha kontrollert at betrakteren har lov til å se denne spilleren (eget innsyn,
