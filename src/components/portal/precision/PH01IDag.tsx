@@ -10,7 +10,7 @@
  * nye meldinger · uka per dag · Strokes Gained · fireukerssjekk · mer om dagen.
  * PC fra 900 px: tallene står ved tittelen, og innholdet går i to kolonner.
  *
- * Avvik fra tegningen:
+ * Avvik:
  *   - Treffbildet rundt flagget vises ikke: I dag-dataene har ingen slagplassering fra forrige økt.
  *     Målsetningen for økta står bare når den er satt (Anders 20.10).
  *   - «Etter plan» viser ikke utviklingen per uke: etterlevelsen regnes bare for hele fireukersvinduet.
