@@ -43,3 +43,22 @@
 }
 .phn-statshub a.tr { color: inherit; text-decoration: none; min-height: 44px; }
 .phn-statshub .test-topp .phn-pille { justify-self: start; margin-top: 6px; }
+
+/* Designløftet 20.10: faner øverst, tre nøkkeltall, snittscore til venstre og SG, trening og tester til høyre. */
+.phn-sh2 .sh-fane { display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid var(--phn-sand-150); }
+.phn-sh2 .sh-fane a { display: flex; align-items: center; min-height: 44px; padding: 0 12px; font: 400 14px/1 var(--phn-sans); color: var(--phn-g800); text-decoration: none; }
+.phn-sh2 .sh-fane a[aria-current="page"] { font-weight: 600; color: var(--phn-g900); box-shadow: inset 0 -2px 0 var(--phn-g900); }
+.phn-sh2 .sh-hode { grid-template-columns: minmax(0, 1fr); align-items: end; }
+.phn-sh2 .sh-tall { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 0; }
+.phn-sh2 .sh-tall > div { display: grid; gap: 5px; align-content: start; padding: 6px 12px; border-left: 1px solid var(--phn-sand-150); }
+.phn-sh2 .sh-tall dt { font: 400 12px/1.3 var(--phn-sans); color: var(--phn-g600); }
+.phn-sh2 .sh-tall dd { margin: 0; display: grid; gap: 4px; }
+.phn-sh2 .sh-tall dd b { font: 600 26px/1 var(--phn-mono); }
+.phn-sh2 .sh-tall dd small { font: 500 11px/1.2 var(--phn-mono); color: var(--phn-g600); }
+.phn-sh2 .sh-tall dd small.bedre { color: var(--phn-green-700); }
+.phn-sh2 .sh-venstre, .phn-sh2 .sh-hoyre { display: grid; gap: 16px; align-content: start; min-width: 0; }
+@container (min-width: 900px) {
+  .phn-sh2 .s-hode { grid-template-columns: minmax(0, 1fr) auto; }
+  .phn-sh2 .deler.sh-kol { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 36px; }
+  .phn-sh2 .sh-tall > div { padding: 6px 18px; }
+}
