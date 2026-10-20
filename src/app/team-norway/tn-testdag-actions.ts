@@ -19,6 +19,7 @@ import { TEAM_NORWAY_SLUG, aktivtMedlemskapWhere, aktivtSpillerMedlemskapWhere }
 import { medSerialisertTestdagTransaksjon } from "@/lib/domain/tn-testdag-lock";
 import { tnDefinitionData, tnDefinitionId } from "@/lib/portal-tester/tn-integration";
 import { tnProtocol } from "@/lib/portal-tester/tn-catalog";
+import { trenerKanFore } from "@/lib/portal-tester/testbatteri";
 
 const OpprettTestdagSchema = z.object({
   title: z.string().trim().min(1).max(200),
@@ -71,6 +72,10 @@ export async function opprettFellesTestdag(input: unknown): Promise<
   const stationProtocols = data.stations.map((station) => tnProtocol(station.protocolId));
   if (stationProtocols.some((protocol) => !protocol || protocol.blocked || protocol.variableCount)) {
     return { ok: false, error: "En stasjon bruker en ukjent eller ikke støttet protokoll." };
+  }
+  // Trenere fører bare Teknikk og PEI-tester på testdag (Anders 20.10.2026). Resten fører spilleren selv i PlayerHQ.
+  if (stationProtocols.some((protocol) => protocol && !trenerKanFore({ protokollId: protocol.id }))) {
+    return { ok: false, error: "En stasjon bruker en test spilleren fører selv i PlayerHQ. Testdag gjelder bare Teknikk og PEI-tester." };
   }
 
   try {
@@ -176,6 +181,8 @@ export async function opprettTestdag(input: unknown): Promise<{ ok: true; testDa
 
   const protokoll = tnProtocol(data.protocolId);
   if (!protokoll || protokoll.blocked) return { ok: false, error: "Ukjent eller ikke klar protokoll." };
+  // Trenere fører bare Teknikk og PEI-tester på testdag (Anders 20.10.2026). Resten fører spilleren selv i PlayerHQ.
+  if (!trenerKanFore({ protokollId: protokoll.id })) return { ok: false, error: "Denne testen fører spilleren selv i PlayerHQ. Testdag gjelder bare Teknikk og PEI-tester." };
   if (protokoll.variableCount) return { ok: false, error: "Protokoller med valgfritt antall forsøk støttes ikke i testdag ennå." };
   const scheduledAt = new Date(data.scheduledAt);
   if (Number.isNaN(scheduledAt.getTime())) return { ok: false, error: "Ugyldig tidspunkt." };

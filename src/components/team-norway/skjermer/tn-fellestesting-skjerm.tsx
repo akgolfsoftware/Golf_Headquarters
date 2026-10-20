@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { innloggetKanSeDataGolf } from "@/lib/auth/datagolf-tilgang";
 import { hentTnFellesTestdagGrupper, hentTnProtokollbibliotek, hentTnSpillere, hentTnTestdag, hentTnTestdager } from "@/lib/domain/tn-arbeidsflate";
 import { TN_CATALOG } from "@/lib/portal-tester/tn-catalog";
+import { trenerKanFore } from "@/lib/portal-tester/testbatteri";
 import { hentSkjermbruker } from "./felles";
 import { TnFellestestingVisning, TnTestdagVisning } from "./tn-fellestesting-visning";
 
@@ -20,7 +21,8 @@ export async function TnFellestestingSkjerm({ dagId }: { dagId?: string }) {
   }
 
   const [testdager, fellesgrupper] = await Promise.all([hentTnTestdager(bruker), hentTnFellesTestdagGrupper(bruker)]);
-  const protokoller = TN_CATALOG.filter((p) => !p.blocked && !p.variableCount).map((p) => ({ id: p.id, navn: p.name }));
+  // Testdag gjelder bare tester treneren fører: Teknikk og PEI (Anders 20.10.2026). Resten fører spilleren selv i PlayerHQ.
+  const protokoller = TN_CATALOG.filter((p) => !p.blocked && !p.variableCount && trenerKanFore({ protokollId: p.id })).map((p) => ({ id: p.id, navn: p.name }));
   return (
     <TnFellestestingVisning
       brukerNavn={bruker.name}
