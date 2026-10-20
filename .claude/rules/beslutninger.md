@@ -28,7 +28,7 @@ Anders 20.10, med Team Norways testbeskrivelse og scorekort-arket som vedlegg: �
 4. **Prioriterte tester med minsteantall** i datamodellen eller som konstant i koden, og fremdrift «X av N» per spiller. Ferdig når en test låser at Inspill Basic tatt én gang gir «1 av 2».
 5. **Fysisk-delen:** de fem fysiske testene finnes i `src/lib/domain/fys-score.ts` og `src/lib/portal-fysisk/`. De kobles inn som tredje del i samme testoversikt. Ferdig når testoversikten viser Fysisk med siste resultat per test.
 6. **Gate-poeng i koden:** `tn-catalog.ts` fører i dag gate-testene som `choice("ok", …)`. Nærspill Gate, Wedge Gate og VISA Express får poeng 0/1/4 per slag og sum maks 36. Ferdig når `tn-scoring.test.ts` låser 1 poeng gjennom porten, 4 i sonen og maks 36.
-7. **Uavklart:** avstandene i Wedge Gate: teksten sier 30/40/50 m, scorekortet 40/50/60 m. Spørres Anders om.
+7. **Wedge Gate bruker 40/50/60 m**, som i poengarket (Anders 20.10). Teksten i PDF-en sier 30/40/50 m; poengarket gjelder. Ferdig når `tn-catalog.ts` og skjermene viser 40, 50 og 60 m.
 8. **Føring for trener og coach:** registreringen i `/team-wang`, `/team-norway` og `/admin` viser bare teknikk- og PEI-testene; PlayerHQ har registrering for alle 19 testene. Ferdig når en test låser at en trener eller coach ikke kan føre Putt 1–3 m, på alle tre flatene.
 9. **Uavklart:** avvikene designøktene fant mellom PDF-en/arket og beslutningene (Team Norway-økta: seks, i den oransje lappen på canvaset https://claude.ai/artifact/5uuJLVhHxsmMpV44Eakid2; AgencyOS-økta: tre, i rapporten sin). Legges fram for Anders samlet, og hvert svar føres inn her før katalogen endres.
 
