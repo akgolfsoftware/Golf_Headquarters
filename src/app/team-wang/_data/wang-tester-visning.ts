@@ -79,6 +79,11 @@ export const TESTBATTERI: WangBatteriTest[] = [
   { navn: "Club Speed", kort: "Club Speed", del: "fysisk", akse: "FYS", beskrivelse: "Driver, snitt av tre, radar", enhet: "mph", fysisk: true, prioritertMin: null, trenerForer: false, dbNavn: ["Club Speed"] },
 ];
 
+/** Minste antall per skoleår for de prioriterte testene, etter testnavn. */
+export const PRIORITERTE_ANTALL_FOR_TEST: Record<string, number> = Object.fromEntries(
+  TESTBATTERI.filter((t) => t.prioritertMin !== null).map((t) => [t.navn, t.prioritertMin as number]),
+);
+
 export const TEST_DEL_NAVN: Record<WangTestDel, string> = { golfslag: "Golfslag", teknikk: "Teknikk", fysisk: "Fysisk" };
 
 const normaliser = (s: string) => s.toLowerCase().replace(/[^a-z0-9æøå]/g, "");

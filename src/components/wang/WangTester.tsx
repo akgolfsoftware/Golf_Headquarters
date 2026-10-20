@@ -204,10 +204,10 @@ function Batteri({ data, tester }: { data: WangTrenerData; tester: WangTesterDat
               <div role="row" className="wg-matrise-rad wg-matrise-hode">
                 <span role="columnheader">Elev</span>
                 {synlige.map((t) => (
-                  <span key={t.navn} role="columnheader" title={t.navn}>
+                  <span key={t.navn} role="columnheader" title={`${t.navn} · ${t.enhet}`}>
                     <i className={`wg-del-merke wg-del-${t.del}`} aria-hidden />
                     <b>{t.kort}</b>
-                    {t.prioritertMin !== null ? <small>Min. {t.prioritertMin}</small> : <small>{t.enhet}</small>}
+                    {t.prioritertMin !== null ? <small>Min. {t.prioritertMin}</small> : null}
                   </span>
                 ))}
                 <span role="columnheader">Dekning</span>
@@ -461,10 +461,9 @@ function ForTest({ data, tester }: { data: WangTrenerData; tester: WangTesterDat
                   <>
                     <div className="wg-reg-slag">
                       <span>
-                        <small>Slag {nr + 1} av {ATTE_BALL.length} · runde {Math.floor(nr / 8) + 1} av 3</small>
+                        <small>Slag {nr + 1} av {ATTE_BALL.length} · runde {Math.floor(nr / 8) + 1} av {Math.ceil(ATTE_BALL.length / 8)}</small>
                         <b>{naa?.navn}</b>
                       </span>
-                      <span className="wg-reg-slag-tekst">Ballen droppes, unntatt i bunker</span>
                     </div>
                     <div className="wg-reg-inn">
                       <label className="wg-lbl">
