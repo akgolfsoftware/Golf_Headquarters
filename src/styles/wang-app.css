@@ -58,7 +58,8 @@
    Rosa haster. Status bruker aldri aksefargene.
    Fellessiden /team-wang bruker ingen wg-klasser og påvirkes ikke.
    ========================================================================= */
-.wang-app .wg-shell {
+.wang-app .wg-shell,
+.wang-app .wg-system {
   --wg-navy: #17446f;
   --wg-navy-dyp: #0f172a;
   --wg-navy-dyp-tekst: #0d3050;
@@ -913,3 +914,36 @@
 .wang-app .wg-matrise-hode > :not(:first-child):not(:last-child) b { writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; margin: 0 auto; min-height: 64px; overflow-wrap: normal; }
 .wang-app .wg-matrise-hode > :not(:first-child):not(:last-child) small { white-space: nowrap; overflow-wrap: normal; font-size: 10px; }
 .wang-app .wg-matrise-rad > * { overflow-wrap: normal; word-break: normal; }
+
+/* Designløft 20.10.2026 — systemsider uten trenermeny: ingen tilgang, 404 og invitasjon (canvas rad 11–14). */
+.wang-app .wg-system { min-height: 100vh; display: flex; flex-direction: column; background: var(--wg-bg); }
+.wang-app .wg-system-topp { height: 56px; display: flex; align-items: center; padding: 0 16px; background: #ffffff; border-bottom: 1px solid var(--wg-n100); }
+.wang-app .wg-system-topp img { height: 40px; width: auto; display: block; }
+.wang-app .wg-system-flate { display: grid; gap: 10px; padding: 28px 16px 72px; background: var(--wg-grad); color: #ffffff; }
+.wang-app .wg-system-merke { font: 700 11px/1 var(--font-wang-brand, Montserrat, sans-serif); letter-spacing: 0.08em; text-transform: uppercase; color: #dcebee; }
+.wang-app .wg-system-stort { font: 300 64px/0.95 var(--font-wang-brand, Montserrat, sans-serif); letter-spacing: -0.04em; overflow-wrap: anywhere; }
+.wang-app .wg-system-innhold { flex: 1; display: flex; justify-content: center; padding: 0 16px 40px; margin-top: -48px; min-width: 0; }
+.wang-app .wg-system-kort { width: 100%; max-width: 620px; align-self: flex-start; display: grid; gap: 16px; padding: 20px 18px; background: #ffffff; border: 1px solid var(--wg-n100); box-shadow: 0 16px 40px rgba(15, 23, 42, 0.1); box-sizing: border-box; animation: wg-system-inn 360ms var(--wg-ut) both; }
+.wang-app .wg-system-kort h1 { margin: 0; font: 800 24px/1.15 var(--font-wang-brand, Montserrat, sans-serif); letter-spacing: -0.02em; color: var(--wg-vinrod); }
+.wang-app .wg-system-tekst { margin: 0; font-size: 18px; line-height: 1.45; color: var(--wg-tekst); overflow-wrap: anywhere; }
+.wang-app .wg-system-fakta { display: grid; gap: 4px; padding: 12px 14px; background: var(--wg-tint-graa); }
+.wang-app .wg-system-fakta > span, .wang-app .wg-system-fakta dt { font: 700 11px/1 var(--font-wang-brand, Montserrat, sans-serif); letter-spacing: 0.08em; text-transform: uppercase; color: var(--wg-tekst-2); }
+.wang-app .wg-system-fakta > p { margin: 0; font-size: 15px; line-height: 1.4; overflow-wrap: anywhere; }
+.wang-app .wg-system-fakta dd { margin: 0; font: 700 15px/1.3 var(--font-wang-brand, Montserrat, sans-serif); overflow-wrap: anywhere; }
+.wang-app .wg-system-fakta-rad { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2px; margin: 0; }
+.wang-app .wg-system-knapper { display: flex; flex-direction: column; gap: 10px; }
+.wang-app .wg-system-knapper .wg-btn { justify-content: center; }
+.wang-app .wg-system-lagt-til { justify-self: start; display: inline-flex; align-items: center; gap: 8px; padding: 5px 8px; background: var(--wg-tint-mint); font: 700 11px/1 var(--font-wang-brand, Montserrat, sans-serif); letter-spacing: 0.06em; text-transform: uppercase; color: var(--wg-teal-tekst); }
+@keyframes wg-system-inn { from { opacity: 0; transform: translateY(8px); } }
+@media (prefers-reduced-motion: reduce) { .wang-app .wg-system-kort { animation: none; } }
+@media (min-width: 720px) {
+  .wang-app .wg-system-topp { height: 72px; padding: 0 40px; }
+  .wang-app .wg-system-topp img { height: 46px; }
+  .wang-app .wg-system-flate { padding: 48px 40px 112px; }
+  .wang-app .wg-system-stort { font-size: 112px; }
+  .wang-app .wg-system-innhold { padding: 0 40px 48px; margin-top: -72px; }
+  .wang-app .wg-system-kort { padding: 28px 32px; }
+  .wang-app .wg-system-kort h1 { font-size: 28px; }
+  .wang-app .wg-system-knapper { flex-direction: row; flex-wrap: wrap; }
+  .wang-app .wg-system-fakta-rad { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

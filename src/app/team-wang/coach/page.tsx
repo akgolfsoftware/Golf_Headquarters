@@ -1,4 +1,6 @@
 import { notFound } from "next/navigation";
+
+import { WangIngenTilgang } from "@/components/wang/WangSystemside";
 import type { Metadata } from "next";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
@@ -81,7 +83,8 @@ export default async function WangCoachPage({ searchParams }: WangCoachPageProps
     redirectTo: "/team-wang/logg-inn?next=%2Fteam-wang%2Fcoach",
   });
   const gruppeId = await hentWangCoachGruppeId(bruker);
-  if (!gruppeId) notFound();
+  // Innlogget konto uten WANG-rolle får beskjed om tilgang, ikke «Siden finnes ikke» (designløftet 20.10).
+  if (!gruppeId) return <WangIngenTilgang epost={bruker.email} />;
 
   const live = await hentWangGruppe({ gruppeId, medElevnavn: true });
   if (!live || live.gruppeId !== gruppeId) notFound();
