@@ -169,13 +169,13 @@ export function TnUttakVisning({
                     key={x.id}
                     foran={<TnInitialer navn={navn} />}
                     tittel={navn}
-                    tekst={<>{datoLang(x.decidedAt)}{x.begrunnelse ? <span style={{ display: "block", whiteSpace: "pre-line", color: TN.ink700 }}>{x.begrunnelse}</span> : null}</>}
+                    tekst={<>{datoLang(x.decidedAt)} · Prosess og adferd {x.prosessAdferd === null ? "—" : `${x.prosessAdferd} av 5`}{x.begrunnelse ? <span style={{ display: "block", whiteSpace: "pre-line", color: TN.ink700 }}>{x.begrunnelse}</span> : null}</>}
                     hoyre={
                       <span style={{ display: "grid", justifyItems: "end", gap: 4 }}>
                         <TnPille tone={x.status === "UTTATT" ? "green" : x.status === "RESERVE" ? "amber" : "nøytral"}>{UTTAK_TEKST[x.status] ?? x.status}</TnPille>
                         {kanAdministrere ? (
                           <TnKnapperekke>
-                            <TnUttakSkjema spillere={spillervalg} knapp="Endre" variant="tekst" standard={{ spillerId: x.spillerId, arrangement: x.arrangement, status: x.status, begrunnelse: x.begrunnelse ?? "" }} />
+                            <TnUttakSkjema spillere={spillervalg} knapp="Endre" variant="tekst" standard={{ spillerId: x.spillerId, arrangement: x.arrangement, status: x.status, begrunnelse: x.begrunnelse ?? "", prosessAdferd: x.prosessAdferd === null ? "" : String(x.prosessAdferd) }} />
                             <TnSlettUttak id={x.id} beskrivelse={`Uttaket av ${navn} til ${x.arrangement}`} />
                           </TnKnapperekke>
                         ) : null}

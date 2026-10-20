@@ -15,9 +15,9 @@ const data = {
 
 const NM = "Nordisk mesterskap junior";
 const uttak: TnUttakRad[] = [
-  { id: "u1", spillerId: "s0", arrangement: NM, status: "UTTATT", begrunnelse: "Best på kriterium 1 og 2.", decidedAt: new Date(Date.UTC(2026, 9, 15)) },
-  { id: "u2", spillerId: "s1", arrangement: NM, status: "UTTATT", begrunnelse: null, decidedAt: new Date(Date.UTC(2026, 9, 15)) },
-  { id: "u3", spillerId: "s4", arrangement: NM, status: "RESERVE", begrunnelse: null, decidedAt: new Date(Date.UTC(2026, 9, 15)) },
+  { id: "u1", spillerId: "s0", arrangement: NM, status: "UTTATT", begrunnelse: "Best på kriterium 1 og 2.", prosessAdferd: 5, decidedAt: new Date(Date.UTC(2026, 9, 15)) },
+  { id: "u2", spillerId: "s1", arrangement: NM, status: "UTTATT", begrunnelse: null, prosessAdferd: 4, decidedAt: new Date(Date.UTC(2026, 9, 15)) },
+  { id: "u3", spillerId: "s4", arrangement: NM, status: "RESERVE", begrunnelse: null, prosessAdferd: null, decidedAt: new Date(Date.UTC(2026, 9, 15)) },
 ];
 const rundeData: TnUttaksrundeRad[] = [{ arrangement: NM, frist: new Date(Date.UTC(2026, 10, 3)), plasser: 4, reserver: 2 }];
 
