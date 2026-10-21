@@ -14,6 +14,11 @@ Datagrunnlag: Bare fiktive demonstrasjonsdata
 
 Dette er demo- og teknisk kontrollnivå. Løsningen er ikke godkjent for ekte elevdata.
 
+Den separate, selvstendige Claude Design-demoen for åtte roller og tre idretter har
+[egen historisk kontrollrapport](../design-audit/wang-komplett-demo-2026-10-14.md) og
+[ni minutters visningsrekkefølge](wang-komplett-demo-visningsrekkefolge-2026-10-14.md).
+Den kontrollen gjelder demonstrasjonen med fiktive data og endrer ikke produksjonsportene nedenfor.
+
 ## 2. Demoreise — 12 minutter
 
 ### Steg 1 — Start og avgrensning
