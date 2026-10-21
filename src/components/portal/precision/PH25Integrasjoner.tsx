@@ -15,6 +15,10 @@ import { CalendarDays, ChevronLeft, Radar } from "lucide-react";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-meg.css";
 import "@/styles/playerhq-ny-sghub.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke5-skra.css";
 
 export type PH25IntegrasjonerData = {
   tm: { tilkoblet: boolean; sistSynket: string; sisteOkt: string | null };
@@ -55,11 +59,16 @@ export function PH25Integrasjoner({ data }: { data: PH25IntegrasjonerData }) {
   const tilkoblet = [data.tm.tilkoblet && <Tilgang key="tm" k={trackman} tilkoblet ikon={<Radar size={18} />} />, data.gcal.tilkoblet && <Tilgang key="gc" k={kalender} tilkoblet ikon={<CalendarDays size={18} />} />].filter(Boolean);
   const ledige = [!data.tm.tilkoblet && <Tilgang key="tm" k={trackman} tilkoblet={false} ikon={<Radar size={18} />} />, !data.gcal.tilkoblet && <Tilgang key="gc" k={kalender} tilkoblet={false} ikon={<CalendarDays size={18} />} />, ...UTEN_KOBLING.map((k) => <Tilgang key={k.navn} k={k} tilkoblet={false} />)].filter(Boolean);
 
-  return <div className="phn phn-meg"><div className="side">
-    <div className="topp">
-      <Link className="tilbake" href="/portal/meg/innstillinger"><ChevronLeft size={18} aria-hidden />Innstillinger</Link>
-      <div><div className="phn-dato">Meg · innstillinger</div><h1 className="phn-tittel">Kalender og integrasjoner</h1></div>
-    </div>
+  return <div className="phn phn-meg phn-skra">
+    <SkraTopp
+      lav
+      etikett="Meg"
+      bilde="/images/playerhq/stats-topp.jpg" bildePosisjon="50% 50%"
+      overlinje={<>Meg · innstillinger</>}
+      tittel={<>Kalender og integrasjoner</>}
+      handling={<span className="skra-tilbake"><Link className="tilbake" href="/portal/meg/innstillinger"><ChevronLeft size={18} aria-hidden />Innstillinger</Link></span>}
+    />
+    <SkraFlyt lav><div className="side">
     <div className="phn-kort">
       <div className="phn-hoved"><strong>{antall}</strong><span className="phn-forklar">{antall === 1 ? "kilde er tilkoblet" : "kilder er tilkoblet"}</span></div>
       <p className="phn-kilde">Bare det som faktisk er koblet til, står som tilkoblet.</p>
@@ -83,5 +92,5 @@ export function PH25Integrasjoner({ data }: { data: PH25IntegrasjonerData }) {
         </div>
       </div>
     </div>
-  </div></div>;
+  </div></SkraFlyt></div>;
 }

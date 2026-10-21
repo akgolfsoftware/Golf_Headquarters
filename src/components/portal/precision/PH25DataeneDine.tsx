@@ -18,6 +18,10 @@ import { exportUserData } from "@/app/portal/meg/innstillinger/actions";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-meg.css";
 import "@/styles/playerhq-ny-meg-resten.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke5-skra.css";
 
 export type PH25DataRad = { navn: string; antall: string; farge: "g9" | "tek" | "spill" | "slag" | "g6" };
 export type PH25DataeneDineData = { totalt: number; rader: PH25DataRad[]; talt: string; filnavn: string };
@@ -43,12 +47,17 @@ export function PH25DataeneDine({ data }: { data: PH25DataeneDineData }) {
     });
   }
 
-  return <div className="phn phn-meg"><div className="side">
-    <div className="topp">
-      <Link className="tilbake" href="/portal/meg/innstillinger"><ChevronLeft size={18} aria-hidden />Innstillinger</Link>
-      <div><div className="phn-dato">Meg · innstillinger · personvern</div><h1 className="phn-tittel">Dataene dine</h1></div>
-      <p className="mr-ingress">Alt som er lagret om deg i PlayerHQ. Du kan laste det ned som én fil, når du vil.</p>
-    </div>
+  return <div className="phn phn-meg phn-skra">
+    <SkraTopp
+      lav
+      etikett="Meg"
+      bilde="/images/playerhq/stats-topp.jpg" bildePosisjon="50% 50%"
+      overlinje={<>Meg · innstillinger · personvern</>}
+      tittel={<>Dataene dine</>}
+      handling={<span className="skra-tilbake"><Link className="tilbake" href="/portal/meg/innstillinger"><ChevronLeft size={18} aria-hidden />Innstillinger</Link></span>}
+    />
+    <SkraFlyt lav><div className="side">
+    <p className="mr-ingress">Alt som er lagret om deg i PlayerHQ. Du kan laste det ned som én fil, når du vil.</p>
     <div className="to-del">
       <section className="phn-kort" aria-label="Lagret om deg">
         <div className="phn-hoved"><strong>{data.totalt.toLocaleString("nb-NO")}</strong><span className="phn-forklar">registreringer lagret</span></div>
@@ -71,5 +80,5 @@ export function PH25DataeneDine({ data }: { data: PH25DataeneDineData }) {
         </div>
       </div>
     </div>
-  </div></div>;
+  </div></SkraFlyt></div>;
 }

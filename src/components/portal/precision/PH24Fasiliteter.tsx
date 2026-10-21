@@ -25,6 +25,10 @@ import { ANTALL_FASILITETER, FASILITET_FAMILIER } from "@/lib/portal/fasilitet-k
 import type { Omrade } from "@/lib/onboarding/oppstart";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-meg.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke5-skra.css";
 
 export type PH24FasiliteterData = {
   tilgjengelig: DrillFasilitet[];
@@ -84,11 +88,16 @@ export function PH24Fasiliteter({ data, lagre = lagreFasilitetProfil, lagreOmrad
     });
   }
 
-  return <div className="phn phn-meg"><div className="side smal">
-    <div className="topp">
-      <Link className="tilbake" href="/portal/meg"><ChevronLeft size={18} aria-hidden />Meg</Link>
-      <div><div className="phn-dato">Meg · fasiliteter</div><h1 className="phn-tittel">Fasiliteter</h1></div>
-    </div>
+  return <div className="phn phn-meg phn-skra">
+    <SkraTopp
+      lav
+      etikett="Meg"
+      bilde="/images/playerhq/stats-topp.jpg" bildePosisjon="50% 50%"
+      overlinje={<>Meg · fasiliteter</>}
+      tittel={<>Fasiliteter</>}
+      handling={<span className="skra-tilbake"><Link className="tilbake" href="/portal/meg"><ChevronLeft size={18} aria-hidden />Meg</Link></span>}
+    />
+    <SkraFlyt lav><div className="side smal">
 
     <div className="phn-kort">
       <div className="phn-hoved"><strong>{harSvart || omr.size > 0 ? omr.size : "—"}</strong><span className="phn-forklar">av {ANTALL_OMRADER} treningsområder kan du trene der du er</span></div>
@@ -142,5 +151,5 @@ export function PH24Fasiliteter({ data, lagre = lagreFasilitetProfil, lagreOmrad
 
     <div className="phn-meldinger" aria-live="polite">{melding && <p className="phn-melding" role={melding.ok ? "status" : "alert"}>{melding.tekst}</p>}</div>
     <button type="button" className="phn-knapp pri stor" onClick={lagreValg} disabled={pending || !endret}>{pending ? "Lagrer …" : "Lagre"}</button>
-  </div></div>;
+  </div></SkraFlyt></div>;
 }

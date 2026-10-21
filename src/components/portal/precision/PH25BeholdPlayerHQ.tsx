@@ -19,6 +19,10 @@ import { avslaaWinback } from "@/app/portal/meg/abonnement/fortsett/actions";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-meg.css";
 import "@/styles/playerhq-ny-meg-resten.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke5-skra.css";
 
 export type PH25BeholdData = {
   tilbudId: string;
@@ -62,12 +66,17 @@ export function PH25BeholdPlayerHQ({ data }: { data: PH25BeholdData }) {
     }
   }
 
-  return <div className="phn phn-meg"><div className="side">
-    <div className="topp">
-      <Link className="tilbake" href="/portal/meg/abonnement"><ChevronLeft size={18} aria-hidden />Abonnement</Link>
-      <div><div className="phn-dato">Meg · abonnement{data.slutt ? ` · coaching-pakken avsluttes ${data.slutt}` : ""}</div><h1 className="phn-tittel">Behold PlayerHQ</h1></div>
-      <p className="mr-ingress">Coaching-pakken avsluttes, men planen og treningen din blir liggende. Velg Full for å fortsette som i dag, eller gå over til Gratis.</p>
-    </div>
+  return <div className="phn phn-meg phn-skra">
+    <SkraTopp
+      lav
+      etikett="Meg"
+      bilde="/images/playerhq/spill-bane.jpg" bildePosisjon="50% 50%"
+      overlinje={<>Meg · abonnement{data.slutt ? ` · coaching-pakken avsluttes ${data.slutt}` : ""}</>}
+      tittel={<>Behold PlayerHQ</>}
+      handling={<span className="skra-tilbake"><Link className="tilbake" href="/portal/meg/abonnement"><ChevronLeft size={18} aria-hidden />Abonnement</Link></span>}
+    />
+    <SkraFlyt lav><div className="side">
+    <p className="mr-ingress">Coaching-pakken avsluttes, men planen og treningen din blir liggende. Velg Full for å fortsette som i dag, eller gå over til Gratis.</p>
     <div className="to-del">
       <div>
         <section className="phn-kort" aria-label="Det du har bygget opp">
@@ -104,5 +113,5 @@ export function PH25BeholdPlayerHQ({ data }: { data: PH25BeholdData }) {
         <p className="phn-kilde">Ingenting trekkes før {data.fraDato ?? "coaching-pakken slutter"}. Betaling hos Stripe med kort eller Apple Pay.</p>
       </div>
     </div>
-  </div></div>;
+  </div></SkraFlyt></div>;
 }

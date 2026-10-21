@@ -1,0 +1,6 @@
+/* Pakke 5 (Meg: abonnement, innstillinger, hjelp): første rad under det skrå kuttet, full bredde på desktop. */
+.phn-meg.phn-skra .side { padding-top: 28px; }
+@container (min-width: 900px) {
+  .phn-meg.phn-skra .side { padding-top: 44px; margin-right: 52px; }
+  .phn-meg.phn-skra .side.smal { margin-right: auto; }
+}

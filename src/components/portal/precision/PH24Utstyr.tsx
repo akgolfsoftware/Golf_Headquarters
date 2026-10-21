@@ -22,6 +22,10 @@ import type { UtstyrFlateData } from "@/lib/portal/utstyr-data";
 import { analyserGap } from "@/lib/portal/ph24-data";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-meg.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke5-skra.css";
 
 export type PH24UtstyrProps = {
   data: UtstyrFlateData;
@@ -64,11 +68,16 @@ export function PH24Utstyr({ data, initialBag, onLagreBag }: PH24UtstyrProps) {
     });
   }
 
-  return <div className="phn phn-meg"><div className="side">
-    <div className="topp">
-      <Link className="tilbake" href="/portal/meg"><ChevronLeft size={18} aria-hidden />Meg</Link>
-      <div><div className="phn-dato">Meg · utstyr</div><h1 className="phn-tittel">Utstyr</h1></div>
-    </div>
+  return <div className="phn phn-meg phn-skra">
+    <SkraTopp
+      lav
+      etikett="Meg"
+      bilde="/images/playerhq/slag-simulator.jpg" bildePosisjon="50% 50%"
+      overlinje={<>Meg · utstyr</>}
+      tittel={<>Utstyr</>}
+      handling={<span className="skra-tilbake"><Link className="tilbake" href="/portal/meg"><ChevronLeft size={18} aria-hidden />Meg</Link></span>}
+    />
+    <SkraFlyt lav><div className="side">
 
     <div className="to-del">
       <div>
@@ -118,5 +127,5 @@ export function PH24Utstyr({ data, initialBag, onLagreBag }: PH24UtstyrProps) {
         <div className="phn-ark-fot"><button type="submit" className="phn-knapp pri stor" disabled={pending}>{pending ? "Lagrer …" : "Lagre bagen"}</button></div>
       </form>
     </dialog>
-  </div></div>;
+  </div></SkraFlyt></div>;
 }

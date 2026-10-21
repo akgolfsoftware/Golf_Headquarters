@@ -23,6 +23,10 @@ import { VAPID_PUBLIC_KEY } from "@/lib/push/vapid";
 import { detectPushStatus, aktiverPush, deaktiverPush, type PushStatus } from "@/components/portal/push-toggle";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-meg.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke5-skra.css";
 
 type Notif = UserPreferences["notif"];
 export type PH25VarslerData = { notif: Notif };
@@ -101,14 +105,19 @@ export function PH25Varsler({ data, startPush }: { data: PH25VarslerData; /** Ba
   const antallPaa = Object.values(notif).filter(Boolean).length;
   const antall = Object.values(notif).length;
 
-  return <div className="phn phn-meg"><div className="side smal">
-    <div className="topp">
-      <Link className="tilbake" href="/portal/meg/innstillinger"><ChevronLeft size={18} aria-hidden />Innstillinger</Link>
-      <div className="topp-rad">
-        <div><div className="phn-dato">Meg · innstillinger</div><h1 className="phn-tittel">Varsler</h1></div>
+  return <div className="phn phn-meg phn-skra">
+    <SkraTopp
+      lav
+      etikett="Meg"
+      bilde="/images/playerhq/stats-topp.jpg" bildePosisjon="50% 50%"
+      overlinje={<>Meg · innstillinger</>}
+      tittel={<>Varsler</>}
+      handling={<span className="skra-tilbake"><Link className="tilbake" href="/portal/meg/innstillinger"><ChevronLeft size={18} aria-hidden />Innstillinger</Link></span>}
+    />
+    <SkraFlyt lav><div className="side smal">
+    <div className="topp-rad">
         <span aria-live="polite">{lagret && <span className="phn-pille ok"><i />Lagret</span>}</span>
       </div>
-    </div>
 
     <div className="ruter">
       <div className="rute"><span className="e">Slått på</span><b className="t">{antallPaa}<small>av {antall}</small></b></div>
@@ -132,5 +141,5 @@ export function PH25Varsler({ data, startPush }: { data: PH25VarslerData; /** Ba
       </section>
     </div>
     <div aria-live="polite">{feil && <p className="phn-melding" role="alert">{feil}</p>}</div>
-  </div></div>;
+  </div></SkraFlyt></div>;
 }

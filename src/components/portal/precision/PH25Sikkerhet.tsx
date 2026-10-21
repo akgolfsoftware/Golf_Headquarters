@@ -21,6 +21,10 @@ import { ChevronLeft, ChevronRight, Lock, Mail, Smartphone, X } from "lucide-rea
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-meg.css";
 import "@/styles/playerhq-ny-meg-resten.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke5-skra.css";
 
 // Lastes først når de trengs: Supabase-klienten leser miljøet ved import.
 const ReauthModal = dynamic(() => import("@/components/auth/reauth-modal").then((m) => m.ReauthModal), { ssr: false });
@@ -88,11 +92,16 @@ export function PH25Sikkerhet({ data, loggUt }: { data: PH25SikkerhetData; loggU
     lukk();
   }
 
-  return <div className="phn phn-meg"><div className="side">
-    <div className="topp">
-      <Link className="tilbake" href="/portal/meg/innstillinger"><ChevronLeft size={18} aria-hidden />Innstillinger</Link>
-      <div><div className="phn-dato">Meg · innstillinger</div><h1 className="phn-tittel">Sikkerhet</h1></div>
-    </div>
+  return <div className="phn phn-meg phn-skra">
+    <SkraTopp
+      lav
+      etikett="Meg"
+      bilde="/images/playerhq/stats-topp.jpg" bildePosisjon="50% 50%"
+      overlinje={<>Meg · innstillinger</>}
+      tittel={<>Sikkerhet</>}
+      handling={<span className="skra-tilbake"><Link className="tilbake" href="/portal/meg/innstillinger"><ChevronLeft size={18} aria-hidden />Innstillinger</Link></span>}
+    />
+    <SkraFlyt lav><div className="side">
     {kvittering && <div className="mr-melding ok" role="status">{kvittering}</div>}
     <div className="to-del">
       <div>
@@ -151,5 +160,5 @@ export function PH25Sikkerhet({ data, loggUt }: { data: PH25SikkerhetData; loggU
       reason="Du er i ferd med å endre innloggingen din. Bekreft at det er deg."
       bekreftTekst="Bekreft og fortsett"
     />}
-  </div></div>;
+  </div></SkraFlyt></div>;
 }

@@ -19,6 +19,10 @@ import type { SkrivTilOssType } from "@/lib/portal-hjelp/saksnummer";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-meg.css";
 import "@/styles/playerhq-ny-hjelp.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke5-skra.css";
 
 const TYPER: { t: SkrivTilOssType; navn: string; hint: string }[] = [
   { t: "sporsmal", navn: "Spørsmål", hint: "Noe du lurer på" },
@@ -87,12 +91,17 @@ export function PHSkrivTilOss({ data }: { data: PHSkrivTilOssData }) {
 export type PHSendtData = { tid: string; type: string; emne: string; epost: string; saksnummer: string };
 
 export function PHSendt({ data }: { data: PHSendtData }) {
-  return <div className="phn phn-meg phn-hjelp"><div className="side smal">
-    <div className="topp">
-      <Link className="tilbake" href="/portal/meg/help"><ChevronLeft size={18} aria-hidden />Hjelp</Link>
-      <span className="hj-hake" aria-hidden><Check size={32} strokeWidth={2.5} /></span>
-      <div><div className="phn-dato">Sendt {data.tid}</div><h1 className="phn-tittel">Takk, vi har fått meldingen</h1></div>
-    </div>
+  return <div className="phn phn-meg phn-hjelp phn-skra">
+    <SkraTopp
+      lav
+      etikett="Meg"
+      bilde="/images/playerhq/tek-video.jpg" bildePosisjon="50% 50%"
+      overlinje={<>Sendt {data.tid}</>}
+      tittel={<>Takk, vi har fått meldingen</>}
+      handling={<span className="skra-tilbake"><Link className="tilbake" href="/portal/meg/help"><ChevronLeft size={18} aria-hidden />Hjelp</Link></span>}
+    />
+    <SkraFlyt lav><div className="side smal">
+    <span className="hj-hake" aria-hidden><Check size={32} strokeWidth={2.5} /></span>
     <div className="phn-kort">
       <ul className="hj-oppsummering">
         <li><span>Type</span><b>{data.type}</b></li>
@@ -103,5 +112,5 @@ export function PHSendt({ data }: { data: PHSendtData }) {
       <p className="phn-forklar">Meldingen ligger hos AK Golf. Svaret kommer på e-post. Oppgi saksnummeret hvis du skriver om det samme igjen.</p>
     </div>
     <div className="phn-knapper"><Link className="phn-knapp pri" href="/portal/meg/help">Til Hjelp</Link><Link className="phn-knapp sek" href="/portal/meg">Til Meg</Link></div>
-  </div></div>;
+  </div></SkraFlyt></div>;
 }

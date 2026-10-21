@@ -25,6 +25,10 @@ import { exportUserData } from "@/app/portal/meg/innstillinger/actions";
 import { opprettGdprForesporsel } from "@/lib/moderering/actions";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-meg.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke5-skra.css";
 
 export type PH25PersonvernHelse = {
   wearable: boolean;
@@ -242,12 +246,17 @@ function Slett() {
 }
 
 export function PH25Personvern({ data, ekstra }: { data: PH25PersonvernData; ekstra?: ReactNode }) {
-  return <div className="phn phn-meg"><div className="side">
-    <div className="topp">
-      <Link className="tilbake" href="/portal/meg/innstillinger"><ChevronLeft size={18} aria-hidden />Innstillinger</Link>
-      <div><div className="phn-dato">Meg · innstillinger</div><h1 className="phn-tittel">Samtykker</h1></div>
-      <p className="phn-forklar">Du kan endre frivillig deling her, når som helst. Ingenting deles uten at du eller foresatt godkjenner det.</p>
-    </div>
+  return <div className="phn phn-meg phn-skra">
+    <SkraTopp
+      lav
+      etikett="Meg"
+      bilde="/images/playerhq/stats-topp.jpg" bildePosisjon="50% 50%"
+      overlinje={<>Meg · innstillinger</>}
+      tittel={<>Samtykker</>}
+      handling={<span className="skra-tilbake"><Link className="tilbake" href="/portal/meg/innstillinger"><ChevronLeft size={18} aria-hidden />Innstillinger</Link></span>}
+    />
+    <SkraFlyt lav><div className="side">
+    <p className="phn-forklar">Du kan endre frivillig deling her, når som helst. Ingenting deles uten at du eller foresatt godkjenner det.</p>
 
     <div className="to-del">
       <div>
@@ -269,5 +278,5 @@ export function PH25Personvern({ data, ekstra }: { data: PH25PersonvernData; eks
         <Slett />
       </div>
     </div>
-  </div></div>;
+  </div></SkraFlyt></div>;
 }
