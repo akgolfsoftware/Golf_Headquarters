@@ -42,9 +42,9 @@ Hvert steg er en PR med auto-merge når `npm run verify` og CI er grønne. Hver 
 7. **Type 6 Skjema og type 7 Arbeidsflate (B: verktøylinje over flaten).** Ny turnering, ny samling, testdag opprett/føring, tilgang og invitasjon (skjema). Workbench og månedsplan (lav topp, ingen bilde).
 8. **Type 9 Kø, type 11 Drift og type 12 Tom/laster/feil.** Uttak/godkjenninger som kø med én sak åpen, Lisens og økonomi, Data Golf (ADMIN), live-watch, `loading.tsx`, `error.tsx`, `not-found.tsx`. Ferdig når alle tre tilstander finnes i samme kortform.
 9. **Bilder, kontroll og port 7.** Bytt plassholderbilder til Anders sine referansebilder fra Team Norway Golf (`public/team-norway/bilder/`). Maskinell måling av alle TN-ruter i 390 og 1280 (skjermprøve-skriptene fra T1/T4), Vercel-lenke og skjermbilder til Anders. Rydd bort ubrukte 0·2·4-stiler. Ferdig når et søk etter «Jost», «Lato» og «ingen skygger» i TN-mappene gir 0 treff.
-10. **Referansespillere Norden i Team Norway** (lagt til 21.10 etter skissen https://teamnorwayref.vercel.app, bak innlogging). Ny flate «Referansespillere» for trenere i Skrå: leaderboard «Norske herrer på WAGR» (35 spillere, plass nå, endring siden nyttår, snittscore, snittplassering, Power, poeng, turneringer, seire), graf over WAGR-plass år for år, og senere Sammenlign, Søk alle norske, Søk HCP-juniorer og Junior/Amatør. Starter med datakartleggingen i §6. Ferdig når leaderboardet viser ekte tall med kilde og dato, og spillere under 18 uten samtykke ikke vises med navn.
+10. **Referansespillere: menypunkt som lenker til teamnorwayref** (rettet 21.10, beslutninger.md §REFERANSESPILLERE NORDEN BOR PÅ TEAMNORWAYREF). Leaderboard, graf og samlede tall bor på https://teamnorwayref.vercel.app, bygget i `ak-golf-pipelines`. HQ får bare menypunktet «Referansespillere» som siste punkt under Spillere i `tnHovedmeny` (`src/components/team-norway/tn-shell.tsx`), som lenker til teamnorwayref. Ingen egen rute og ingen WAGR-lesing i HQ. Ferdig når punktet står i menyen i 390 og 1280 px uten sidelengs rulling, og en test låser lenkemålet.
 
-Rekkefølge: 1–2 først (alt annet hviler på dem), så 3, deretter 4–8 i den rekkefølgen, 9 til slutt. Steg 10 kan ikke starte før de uavklarte punktene i §6 er avgjort; steg 4 og 5 er i hovedsak gjort (se kartleggingen 21.10). Steg 4–8 kan gå som egne PR-er per gruppe og ikke i parallell mot samme filer.
+Rekkefølge: 1–2 først (alt annet hviler på dem), så 3, deretter 4–8 i den rekkefølgen, 9 til slutt. Steg 10 (menypunktet) kan gjøres når som helst; det venter ikke på pipelines; steg 4 og 5 er i hovedsak gjort (se kartleggingen 21.10). Steg 4–8 kan gå som egne PR-er per gruppe og ikke i parallell mot samme filer.
 
 ## 3. Risiko og avgrensning
 
@@ -68,33 +68,14 @@ Rekkefølge: 1–2 først (alt annet hviler på dem), så 3, deretter 4–8 i de
 - Tegninger: `docs/design-system/utkast-skra/`, `docs/design-system/utkast-tn/nye-veier.html`.
 - Tokens: `src/styles/team-norway-tokens.css` (TN) og `src/styles/ak-tokens.css` (AK, ikke blandet inn i TN).
 
-## 6. Steg 10: hva vi har i basen (lesespørringer mot produksjonsbasen 21.10.2026, kun telling)
+## 6. Steg 10: Referansespillere bor på teamnorwayref
 
-Skissen viser «Norske herrer på WAGR pr. 20.10.2026» med 35 spillere, 280 som beste plass, 444 turneringer og 27 seire i 2026.
+**Avgjort av Anders 21.10** (beslutninger.md §REFERANSESPILLERE NORDEN BOR PÅ TEAMNORWAYREF): «teamnorwayref eier de offentlige og samlede tallene, og HQ-flaten blir en lenke dit.»
 
-| Behov i skissen | I basen i dag | Dekning |
-|---|---|---|
-| Spillere | `dashboard.wagr_players`: 31 norske herrer og 24 norske damer, alle med sporing | 31 av 35 herrer |
-| Plass nå, forrige uke, endring | Samme tabell, `wagr_rank`, `wagr_rank_last_week`, `wagr_change` fylt for alle 31 | Gammel: siste snapshot 19.07.2026, skissen er 20.10 |
-| Turneringer og seire 2026 | `dashboard.wagr_events`: 428 turneringer og 21 seire for de 31 herrene i 2026, siste uke 202641 | Nesten: skissen har 444 og 27 |
-| Score (slag per runde) | `dashboard.wagr_event_scores.round_scores`: fylt for 422 av 428 turneringer i 2026 | God |
-| Snittplassering | `wagr_events.finish_position` fylt | God |
-| Power | `public.wagr_player_strengths`: 45 spillere i siste modellkjøring (19.10.2026, sesong 2027) | Må sammenlignes med skissens tall |
-| Poeng | `wagr_players.wagr_points` og `wagr_counting_events` | Finnes |
-| WAGR-plass år for år (2024, 2025, nå) | `wagr_events.rank_after` er tom for alle 2 388 rader | **Mangler**. Plass ved årsslutt kan ikke bygges fra basen |
-| Kobling til appens spillere | 105 `public_players` har `wagrId`; 30 av de 31 herrene er koblet | God |
-| Junior, Amatør og andre land | Basen har bare norske spillere | **Mangler** |
-| Turneringskatalog til Planlegger | `public.wagr_plan_events`: 3 764 turneringer til 31.12.2027 | Finnes (brukt av turneringsplanleggeren) |
-
-**Funn som må avgjøres før bygging**
-1. **Snapshotet er 3 måneder gammelt** (19.07). Plassene må hentes på nytt i mandagsjobben i `ak-golf-pipelines`, ellers viser vi gamle tall under overskriften «pr. 20.10.2026».
-2. **Fire herrer mangler** (35 mot 31), og to hundre turneringer er ikke med (27 mot 21 seire). Pipelines må utvide listen før tallene stemmer med skissen.
-3. **Plass år for år** finnes ikke. Enten fylles `rank_after` fra pipelines (uke 52 hvert år), eller grafen utgår til dataene finnes.
-4. **15 spillere med `wagrId` er født 2008 eller senere.** Regelen om barnevern gjelder: de vises ikke med navn uten samtykke. Skissen sier «alle aldre».
-5. **Data Golf** vises bare for ADMIN (20.10). Leaderboardet bruker WAGR og er ikke Data Golf, men ingen Data Golf-tall skal inn her.
-6. **Adresse og meny:** foreslått `/team-norway/referansespillere`, i gruppen Spillere. Ikke avgjort.
-7. **Skissens egne data kommer fra et annet sted enn basen** (siden ligger i eget Vercel-prosjekt). Hvor den henter dem fra, er ikke kartlagt.
-
-**Avgjort av Anders 21.10** (beslutninger.md §REFERANSESPILLERE NORDEN): pipelines oppdaterer plassene ukentlig · hele steg 10 venter til årsslutt-plassene (uke 52, 2024 og 2025) er fylt ut · alle spillere vises med navn, også født 2008 eller senere · adresse `/team-norway/referansespillere` under Spillere. Skissens data kommer fra `ak-golf-pipelines` (`pipelines/turneringsplan/hent.py`, `bygg.py`, `power_historikk.py`). **Steg 10 er derfor blokkert av pipelines** (beslutningens punkt 1).
+- **teamnorwayref.vercel.app** eier leaderboard «Norske herrer på WAGR», graf over WAGR-plass år for år og alle samlede tall. Siden bygges i `ak-golf-pipelines` (`scripts/referansespillere_html.py`) bak felles passord, etter `docs/plan-teamnorwayref-komplett.md` der.
+- **HQ** får bare menypunktet «Referansespillere» under Spillere, som lenker dit. Ingen rute `/team-norway/referansespillere`.
+- **Personopplysninger** (testresultater og annet om enkeltspillere) blir i HQ bak innlogging; teamnorwayref lenker til HQ for slikt.
+- **Datahullene** fra kartleggingen 21.10 (gammelt snapshot fra 19.07, 31 av 35 herrer, tom `dashboard.wagr_events.rank_after`, bare norske spillere i basen) løses i pipelines og blokkerer ikke HQ-steget lenger.
+- **Ikke avgjort:** om Data Golf skal vises på teamnorwayref. Ligger hos Anders.
 
 Ingen skjemaendring er gjort eller foreslått ennå. Alt over er lesing.
