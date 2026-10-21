@@ -22,12 +22,15 @@
 }
 .kant { background: var(--skra-kantfarge, var(--ak-sand-400)); }
 .foto { bottom: var(--ak-kutt-kant); overflow: hidden; background: var(--ak-g900); }
-.foto img { object-fit: cover; object-position: 50% 40%; filter: grayscale(.55) contrast(1.05); animation: ro 1.6s var(--ak-ut) both; }
+/* Bildet i ekte farger. Hinnen er mørk bak teksten til venstre og nederst, og slipper banen fram til høyre. */
+.foto img { object-fit: cover; object-position: 50% 40%; filter: saturate(.95) contrast(1.03); animation: ro 1.6s var(--ak-ut) both; }
 .foto::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(100deg, rgba(20, 20, 19, .94) 0%, rgba(20, 20, 19, .78) 45%, rgba(20, 20, 19, .45) 100%);
+  background:
+    linear-gradient(to top, rgba(20, 20, 19, .62) 0%, rgba(20, 20, 19, 0) 58%),
+    linear-gradient(100deg, rgba(20, 20, 19, .84) 0%, rgba(20, 20, 19, .58) 42%, rgba(20, 20, 19, .18) 100%);
 }
 
 .innhold {
@@ -43,6 +46,10 @@
 .ingress { margin: 0; max-width: 46ch; font-size: 15px; line-height: 1.5; color: rgba(255, 255, 255, .82); }
 .handling:empty { display: none; }
 
+/* Lav topp: undersider og detaljsider. Ingen tall; kortene ligger fortsatt over kanten. */
+.lav .innhold { gap: 12px; padding: 16px 16px calc(40px + var(--kutt) + var(--ak-kutt-kant)); }
+.lav .tittel { font-size: clamp(26px, 7cqw, 38px); }
+
 /* Tallene i glass */
 .statrad { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; min-width: 0; }
 .stat {
@@ -52,8 +59,8 @@
   min-width: 0;
   padding: 12px 14px 13px;
   border-radius: var(--ak-r-stat);
-  background: rgba(255, 255, 255, .1);
-  border: 1px solid rgba(255, 255, 255, .16);
+  background: rgba(20, 20, 19, .34);
+  border: 1px solid rgba(255, 255, 255, .2);
   backdrop-filter: blur(14px) saturate(140%);
   -webkit-backdrop-filter: blur(14px) saturate(140%);
   color: #fff;
@@ -61,7 +68,7 @@
   animation: inn 560ms var(--ak-ut) backwards;
   transition: background var(--ak-t-base) var(--ak-ut), transform var(--ak-t-trykk) var(--ak-ut);
 }
-a.stat:hover { background: rgba(255, 255, 255, .16); }
+a.stat:hover { background: rgba(20, 20, 19, .46); }
 a.stat:active { transform: scale(.97); }
 .stat:nth-child(1) { animation-delay: 140ms; } .stat:nth-child(2) { animation-delay: 200ms; }
 .stat:nth-child(3) { animation-delay: 260ms; } .stat:nth-child(4) { animation-delay: 320ms; }
@@ -78,6 +85,8 @@ a.stat:active { transform: scale(.97); }
   margin-top: -64px;
   min-width: 0;
 }
+
+.flytLav { margin-top: -40px; }
 
 /* Hvitt kort som svever over den lysegrå flaten */
 .kort {
@@ -97,6 +106,34 @@ a.stat:active { transform: scale(.97); }
 .kortMeta { font: 500 12px/1.3 var(--ak-font-mono); letter-spacing: .02em; color: var(--ak-g500); }
 .kortLenke { display: inline-flex; align-items: center; justify-content: flex-end; gap: 2px; min-width: 48px; min-height: 48px; margin: -14px 0; font-size: 13.5px; font-weight: 500; color: var(--ak-g600); text-decoration: none; }
 .kortLenke:hover { color: var(--ak-g900); }
+
+/* Hovedkortet: det som gjelder nå, med bilde og fylt i aksefargen. Står over begge kolonnene. */
+.helt {
+  --helt-farge: var(--ak-g900);
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+  padding: 20px 18px;
+  border-radius: var(--ak-r-skra-kort);
+  background: var(--helt-farge);
+  color: #fff;
+  box-shadow: 0 1px 2px rgba(20, 20, 19, .08), 0 22px 40px -22px var(--helt-farge), 0 10px 24px -12px rgba(20, 20, 19, .24);
+  animation: inn 620ms var(--ak-ut) backwards 200ms;
+}
+/* Bildet i toppen fyller flaten uansett hvordan det lastes (next/image fill setter det samme). */
+.foto img { position: absolute; inset: 0; width: 100%; height: 100%; }
+.heltTekst { display: grid; gap: 6px; align-content: center; justify-items: start; min-width: 0; }
+.heltOver { font: 500 11.5px/1.3 var(--ak-font-mono); letter-spacing: .08em; text-transform: uppercase; opacity: .82; }
+.heltTid { font: 600 40px/1 var(--ak-font-sans); letter-spacing: -.035em; font-variant-numeric: tabular-nums; }
+.heltTid small { margin-left: 6px; font: 500 16px/1 var(--ak-font-sans); letter-spacing: 0; opacity: .78; }
+.heltTekst h2 { margin: 2px 0 0; font: 700 22px/1.2 var(--ak-font-sans); letter-spacing: -.02em; text-wrap: balance; color: #fff; }
+.heltMeta { margin: 0; font-size: 14px; line-height: 1.45; opacity: .9; }
+.heltKnapper { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.heltKnapp { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 18px; border: 0; border-radius: var(--ak-r-knapp); background: #fff; color: var(--ak-g900); font: 600 15px/1 var(--ak-font-sans); text-decoration: none; cursor: pointer; transition: transform var(--ak-t-trykk) var(--ak-ut), background var(--ak-t-base) var(--ak-ut); }
+.heltKnapp:active { transform: scale(.97); }
+.heltKnapp.sek { background: rgba(255, 255, 255, .16); color: #fff; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .32); }
+.heltKnapp.sek:hover { background: rgba(255, 255, 255, .24); }
+.heltKnapp:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
 
 /* Tom tilstand inni et kort */
 .tom { display: grid; gap: 12px; justify-items: start; padding: 4px 0; }
@@ -119,15 +156,20 @@ a.stat:active { transform: scale(.97); }
   }
   .innhold.utenTall { grid-template-columns: minmax(0, 1fr); }
   .statVerdi { font-size: 34px; }
+  .lav .innhold { padding: 20px 40px calc(56px + var(--kutt) + var(--ak-kutt-kant)); }
 }
 /* Flyten følger skjermens egen container (skjermen er container fra før). */
 @container (min-width: 900px) {
   .flyt { margin-top: -88px; gap: 24px; }
+  .flytLav { margin-top: -56px; }
   .kort { padding: 22px; }
+  .helt { grid-template-columns: minmax(0, 1fr) auto; align-items: end; padding: 26px 28px; }
+  .heltTid { font-size: 48px; }
+  .heltTekst h2 { font-size: 26px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .foto img, .hode, .stat, .kort { animation: none; }
+  .foto img, .hode, .stat, .kort, .helt { animation: none; }
   .kort, .stat { transition-property: opacity; transition-duration: 150ms; }
   .kort:hover { transform: none; }
 }

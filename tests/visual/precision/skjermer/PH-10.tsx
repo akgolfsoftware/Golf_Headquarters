@@ -55,10 +55,15 @@ const OPPTATT: PlanOpptatt[] = [{ id: "tannlege", dato: dato(3), startMin: min("
 const PERIODE = { navn: "Grunnperiode", fokus: null, uke: 3, antallUker: 8 };
 const FORSLAG = [{ coachName: "Anders Kristiansen", session: { ...okt(5), id: "f1", title: "Bunkerslag 20–40 m", startTime: tidspunkt(2, "18:00"), endTime: tidspunkt(2, "18:45"), durationMin: 45, pyramidArea: "SLAG" as const, sted: "Bunker · Fredrikstad GK" } }];
 
+const MAAL = [
+  { id: "m1", tittel: "Handicap under 4,0", kategori: "Resultatmål" as const, frist: "1. juni 2027", pct: 62, status: "on-track" as const, href: "/portal/mal/goal/m1" },
+  { id: "m2", tittel: "Fire putteøkter i uka", kategori: "Prosessmål" as const, frist: null, pct: 40, status: "behind" as const, href: "/portal/mal/goal/m2" },
+];
+
 const Vis = ({ tom = false, feil = false, forslag = false, uke: offset = 0 }: { tom?: boolean; feil?: boolean; forslag?: boolean; uke?: number }) => (
   <PlayerHQSkall innboksHref="/portal/varsler" uleste={2}>
     <PH10Plan data={{ weekNumber: 41, week: uke(tom) }} kalender={tom ? [] : KALENDER} opptatt={tom ? [] : OPPTATT}
-      forslag={forslag ? FORSLAG : []} periode={tom ? null : PERIODE} harTekniskPlan={!tom} ukeOffset={offset} tilstand={feil ? "feil" : "data"} />
+      forslag={forslag ? FORSLAG : []} periode={tom ? null : PERIODE} harTekniskPlan={!tom} maal={tom ? [] : MAAL} ukeOffset={offset} tilstand={feil ? "feil" : "data"} />
   </PlayerHQSkall>
 );
 

@@ -5,9 +5,10 @@
  * Fasit: docs/design-system/utkast-skra/index.html, skjermen «PlayerHQ · I dag». Byggeklosser:
  * src/components/precision/skra/. Stil for innholdet: src/styles/playerhq-ny-idag.css (§Skrå).
  *
- * Toppen: bilde fra dagens viktigste økt, dato og periode, «I dag, <fornavn>», ingress, snarvei til neste økt
- * og fire tall i glass (uka, tid mot plan, svakeste Strokes Gained, snittscore brutto). Kanten under kuttet har
- * aksefargen til neste økt. Kortene under ligger over kanten.
+ * Toppen: banebilde, dato og periode, «I dag, <fornavn>», ingress og fire tall i glass (uka, tid mot plan,
+ * svakeste Strokes Gained, snittscore brutto). Kanten under kuttet har aksefargen til neste økt.
+ * Hovedkortet over kanten er neste økt, fylt i aksefargen, med Start økt og Se hele økta.
+ * Resten av dagens økter står i kortet under.
  * Venstre: dagens økter · uka per akse og per dag · neste økt · dagsform · neste fysiske økt · fullførte økter.
  * Høyre: forslag som venter · målsetninger · nye meldinger · Strokes Gained · fireukerssjekk · agenda · neste turnering.
  * Kolonnene er fordelt så de blir omtrent like lange. Mobil: én kolonne, sortert etter plassnummeret (Plass).
@@ -29,7 +30,7 @@ import { lagreDagsform } from "@/app/portal/dagsform-actions";
 import { resolvePlayerApproval } from "@/lib/workbench/wb-actions";
 import type { OktBilde } from "@/lib/portal/okt-bilde";
 import { MIN_RUNDER, type Forbedringsomraade } from "@/lib/portal/ph01-forbedring";
-import { SkraFlyt, SkraKort, SkraStat, SkraTom, SkraTopp } from "@/components/precision/skra/Skra";
+import { SkraFlyt, SkraHelt, SkraKort, SkraStat, SkraTom, SkraTopp } from "@/components/precision/skra/Skra";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-idag.css";
 
@@ -140,7 +141,7 @@ function ToppTall({ uka, snitt, e, sg }: { uka: PH01Uka | null; snitt: PH01Snitt
 
 const MAAL_STATUS: Record<PH01Maal["status"], string> = { "on-track": "på vei", behind: "bak planen", achieved: "oppnådd", "no-data": "ingen data ennå" };
 
-function Maalsetninger({ maal }: { maal: PH01Maal[] }) {
+export function Maalsetninger({ maal }: { maal: PH01Maal[] }) {
   return <SkraKort tittel="Målsetninger" lenke={{ href: "/portal/mal", tekst: maal.length ? "Alle" : "Sett en" }}>
     {maal.length === 0
       ? <SkraTom>Ingen målsetninger ennå. Sett en, så ser du fremdriften her.</SkraTom>
@@ -183,7 +184,7 @@ function UkaKort({ uka, dager }: { uka: PH01Uka; dager: PH01Dag[] | undefined })
       const r = uka.akser.find((x) => x.akse === a) ?? { gjortMin: 0, planMin: 0 };
       const pst = r.planMin > 0 ? Math.min(100, Math.round(r.gjortMin / r.planMin * 100)) : 0;
       return <div key={a} className="akserad">
-        <span className="akserad-navn">{AKSE_KODE[a]}</span>
+        <span className={`akserad-navn ${a}`}>{AKSE_KODE[a]}</span>
         <span className="akserad-spor" aria-hidden><i className="bred" style={{ width: `${pst}%`, background: `var(--phn-${a})`, animationDelay: `${400 + i * 50}ms` }} /></span>
         <span className="akserad-verdi">{r.planMin === 0 && r.gjortMin === 0 ? "—" : `${tidKort(r.gjortMin)} av ${tidKort(r.planMin)}`}</span>
       </div>;
@@ -409,21 +410,19 @@ export function PH01IDag(p: PH01Props) {
   const ferdige = p.okter.filter((o) => o.status === "Gjennomført");
   const aktive = p.okter.filter((o) => o.status !== "Gjennomført");
 
-  const forsteOkt = neste ?? aktive[0] ?? p.okter[0] ?? null;
+  /** Hovedkortet øverst: neste økt som ikke er gjennomført. Resten står i «Dagens økter». */
+  const helt = neste && neste.status !== "Gjennomført" ? neste : null;
+  const resten = [...ferdige, ...aktive.filter((o) => o.id !== helt?.id)];
   const mer = merKort({ p, toast });
 
   return <div className="phn phn-idag phn-idag2 phn-skra">
     <SkraTopp
       etikett="I dag"
-      bilde={forsteOkt?.bilde.src ?? "/images/playerhq/naerspill-wedge.jpg"}
-      kantfarge={neste && neste.status !== "Gjennomført" ? `var(--phn-${neste.akse})` : undefined}
+      bilde="/images/playerhq/slag-utslag.jpg" bildePosisjon="50% 38%"
+      kantfarge={helt ? `var(--phn-${helt.akse})` : undefined}
       overlinje={p.dato}
       tittel={p.fornavn ? `I dag, ${p.fornavn}` : "I dag"}
       ingress={p.tilstand === "feil" ? undefined : p.ingress}
-      handling={p.tilstand !== "feil" && neste ? <button type="button" className="snarvei-skra" onClick={() => setAapen(neste.id)}>
-        <i aria-hidden style={{ background: `var(--phn-${neste.akse})` }} />{neste.status === "Pågår" ? "Pågår nå" : "Neste"}: {neste.tid} {neste.tittel}{neste.om ? ` · ${neste.om.toLowerCase()}` : ""}
-        <Ikon icon={ChevronRight} size={16} name="chevron-right" />
-      </button> : undefined}
       tall={p.tilstand === "feil" ? undefined : <ToppTall uka={p.uka} snitt={p.snitt ?? null} e={p.etterlevelse} sg={p.sg ?? null} />}
     />
     {p.tilstand === "feil" ? <SkraFlyt><div role="alert"><SkraKort tittel="Kunne ikke hente dagens plan" meta={p.feilKode}>
@@ -432,15 +431,24 @@ export function PH01IDag(p: PH01Props) {
       </SkraTom>
     </SkraKort></div></SkraFlyt> : <SkraFlyt className="skra-idag">
       {p.popup && <Popup p={p.popup} toast={toast} />}
+      {helt && <div className="skra-helt-plass"><SkraHelt
+        etikett={`${helt.status === "Pågår" ? "Pågår nå" : "Neste økt"}: ${helt.tittel}`}
+        farge={FYLL[helt.akse]}
+        overlinje={helt.status === "Pågår" ? `Pågår nå · ${AKSE_NAVN[helt.akse]}` : `Neste økt${helt.om ? ` · ${helt.om.toLowerCase()}` : ""} · ${AKSE_NAVN[helt.akse]}`}
+        tid={helt.tid} tidEtter={`–${helt.slutt}`} tittel={helt.tittel}
+        meta={[helt.sted, `${helt.antallOvelser} ${helt.antallOvelser === 1 ? "øvelse" : "øvelser"}`, helt.fokus ? `Mål i dag: ${helt.fokus}` : null].filter(Boolean).join(" · ")}
+        handlinger={[
+          { tekst: helt.status === "Pågår" ? "Fortsett økt" : "Start økt", href: helt.href, ikon: <Ikon icon={Play} size={20} name="play" /> },
+          { tekst: "Se hele økta", onClick: () => setAapen(helt.id), sekundaer: true },
+        ]}
+      /></div>}
       <div className="skra-kol skra-v">
-        <Plass n={1}><SkraKort tittel="Dagens økter" meta={p.okter.length ? `${p.okter.length} · ${tidKort(p.okter.reduce((a, o) => a + o.min, 0))}` : undefined} lenke={p.okter.length ? undefined : { href: "/portal/planlegge", tekst: "Åpne Plan" }}>
+        <Plass n={1}><SkraKort tittel={helt ? "Resten av dagen" : "Dagens økter"} meta={p.okter.length ? `${p.okter.length} · ${tidKort(p.okter.reduce((a, o) => a + o.min, 0))}` : undefined} lenke={p.okter.length ? undefined : { href: "/portal/planlegge", tekst: "Åpne Plan" }}>
           {p.okter.length === 0
             ? <SkraTom handling={<div className="phn-knapper"><Link className="phn-knapp sek" href="/portal/planlegge/workbench">Bygg økter i Workbench</Link><Link className="phn-knapp sek" href="/portal/mal/runder/ny">Registrer runde</Link></div>}>{p.tomTekst}</SkraTom>
-            : <div className="okter-skra">{ferdige.map((s) => <OktKort key={s.id} s={s} onAapne={() => setAapen(s.id)} />)}{aktive.map((s) => <OktKort key={s.id} s={s} onAapne={() => setAapen(s.id)} />)}</div>}
-          {neste && neste.status !== "Gjennomført" && <Link href={neste.href} className="start2 phn-mobil">
-            <span><b>{neste.status === "Pågår" ? "Fortsett økt" : "Start økt"}</b><span>{neste.tittel} · {neste.tid}</span></span>
-            <Ikon icon={Play} size={20} name="play" />
-          </Link>}
+            : resten.length === 0
+              ? <SkraTom>Ingen flere økter i dag.</SkraTom>
+              : <div className="okter-skra">{resten.map((s) => <OktKort key={s.id} s={s} onAapne={() => setAapen(s.id)} />)}</div>}
         </SkraKort></Plass>
         {p.uka && <Plass n={3}><UkaKort uka={p.uka} dager={p.dager} /></Plass>}
         {p.nesteOkt && <Plass n={6}><SkraKort tittel="Neste økt">
