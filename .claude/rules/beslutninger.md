@@ -25,6 +25,8 @@ Anders 21.10, etter funksjonsregisteret og wireframes for trenerflaten (`docs/pl
 5. **Uavklart:** navngitte juniorprofiler i HCP-søket og Norsk golf (teamnorwayref viser i dag navn fra 8 år bak felles passord). Bygges ikke før Anders har sagt ja.
 6. **Uavklart:** hvor PlayerHQ-lenken går (punkt 8 i blokken under) og om «beste» per test skal bort i Referanse › Tester (uavklart 4 i registeret).
 
+**Status 21.10 (punkt 3):** Anders sa ja til at pipelines skriver WAGR-tallene til nye tabeller i HQ-basen. Tabellene `wagr_ref_*` er laget (`scripts/add-wagr-ref-tabeller-2026-10-21.ts`), og `/team-norway/referanse` viser leaderboardet, med «—» og lenke til teamnorwayref til pipelines har fylt dem. Hva pipelines skriver: `docs/planer/wagr-ref-tabeller-kontrakt-2026-10-21.md`. Gjenstår: pipelines-skrivingen, graf, Sammenlign og Søk.
+
 ## TEAM NORWAY-TRENERFLATEN BYGGES I HQ ETTER TEAMNORWAYREF, MED EGEN TRENERPROFIL OG KOMPLETT SPILLERPROFIL (Anders 21.10.2026, bindende)
 
 Anders 21.10: den nye Team Norway-siden (teamnorwayref) «skal nå erstatte internsidene for Team Norway-trenere. Hver trener skal ha sin egen profil», og trykk på spillerens navn skal åpne «den komplette spillerprofilen med komplett IUP, turneringsplanlegger, ranking, spillerens progresjon i turneringer, trening, tester». Han valgte alternativ A: flaten bygges i HQ, fordi teamnorwayref er en statisk side med ett felles passord og ikke kan gi egen trenerinnlogging eller vise delte spillerdata bare til trenerne spilleren har delt med.
