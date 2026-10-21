@@ -23,7 +23,8 @@
 import { useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import { X } from "lucide-react";
-import { Avatar, Knapp, KnappLenke, Tom, Topp, Varsel } from "@/components/admin/agencyos-ny/ny";
+import { Avatar, HasterPille, Knapp, KnappLenke, Tom, Topp, Varsel } from "@/components/admin/agencyos-ny/ny";
+import { SkraFlyt, SkraKort } from "@/components/precision/skra/Skra";
 import { Nedtrekk } from "@/components/precision/Nedtrekk";
 import type { StallBaandRad } from "@/lib/admin/stall-precision-data";
 import { fmtSg } from "@/lib/v2/format";
@@ -179,25 +180,34 @@ export function AG07Stall({ tilstand = "data", total, iDag, trenerNaa, heleStall
     {!tom && <KnappLenke href="/admin/spillere/ny">Ny spiller</KnappLenke>}
   </>;
 
-  if (tom) return <div className="agn-s">
+  if (tom) return <div className="agn-s agn-stall-skra">
     <Topp dato="0 spillere" tittel="Stall" handlinger={handlinger} />
     <Tom tittel="Ingen spillere i stallen" tekst="Legg til første spiller for å se tilstand, plan og oppfølging her." handling={<KnappLenke variant="pri" href="/admin/spillere/ny">Ny spiller</KnappLenke>} />
   </div>;
 
-  return <div className="agn-s">
+  // Haster: de som trenger deg mest (bak planen, inaktive, veiledning) og betalinger som feilet.
+  const haster = sortert.filter((r) => MATRISE[r.status] === "trenger" || r.skylder).slice(0, 4);
+  const hasterTotalt = sortert.filter((r) => MATRISE[r.status] === "trenger" || r.skylder).length;
+
+  return <div className="agn-s agn-stall-skra">
     <Topp dato={`${total} ${total === 1 ? "spiller" : "spillere"}`} tittel="Stall" handlinger={handlinger} />
-    <div className="stall-stabel">
+    <SkraFlyt className="stall-stabel" lav>
+      {haster.length > 0 && <SkraKort className="haster-kort" tittel="Haster" meta={hasterTotalt > haster.length ? `${haster.length} av ${hasterTotalt}` : `${hasterTotalt}`}>
+        <div className="haster-liste" role="list">{haster.map((r) => <Link key={r.id} role="listitem" href={`/admin/spillere/${r.id}`} className="haster-rad">
+          <Avatar navn={r.name} />
+          <span><b className="n">{r.name}</b><span className="sp-grunn">{r.skylder ? "Betaling feilet" : r.statusLabel}</span></span>
+          <HasterPille />
+        </Link>)}</div>
+      </SkraKort>}
       <div className="stall-topp">
-        <section className="baand" aria-label="I dag">
-          <div className="sek-topp"><h2>I dag</h2><span className="kilde">{iDag.length ? `${iDag.length} ${iDag.length === 1 ? "økt" : "økter"} resten av dagen` : "Ingen"}</span></div>
+        <SkraKort tittel="I dag" meta={iDag.length ? `${iDag.length} ${iDag.length === 1 ? "økt" : "økter"} resten av dagen` : "Ingen"}>
           {iDag.length === 0 ? <p className="forklar">Ingen av spillerne dine har flere økter i dag.</p>
             : <div className="idag-rad" role="list">{iDag.map((r) => <Link key={r.id} role="listitem" href={`/admin/spillere/${r.id}`} className="idag-kort">
               <span className="kl">{r.nesteOkt ? OSLO_KLOKKE.format(new Date(r.nesteOkt)) : "—"}</span>
               <span><b>{r.name}</b><span className="i">{gruppeNavn(r)}</span></span>
             </Link>)}</div>}
-        </section>
-        <section className="baand" aria-label="Trener nå">
-          <div className="sek-topp"><h2>Trener nå</h2><span className="kilde">{trenerNaa.length ? `${trenerNaa.length} ${trenerNaa.length === 1 ? "spiller" : "spillere"}` : "Ingen"}</span></div>
+        </SkraKort>
+        <SkraKort tittel="Trener nå" meta={trenerNaa.length ? `${trenerNaa.length} ${trenerNaa.length === 1 ? "spiller" : "spillere"}` : "Ingen"}>
           {trenerNaa.length === 0 ? <p className="forklar">Ingen er i gang med en økt.</p>
             : trenerNaa.map((r) => <div key={r.id} className="naa-kort">
               <div className="topp-rad">
@@ -208,11 +218,10 @@ export function AG07Stall({ tilstand = "data", total, iDag, trenerNaa, heleStall
               <div className="hurtigsvar"><button type="button" className="pri" onClick={() => setMelding(r)}>Send melding</button></div>
               <span className="naa-sub dempet">Du følger økta, men endrer den ikke.</span>
             </div>)}
-        </section>
+        </SkraKort>
       </div>
       <div>
-        <section className="baand" aria-label="Hele stallen">
-          <div className="sek-topp"><h2>Hele stallen</h2><span className="kilde">Sortert etter hvem som trenger deg</span></div>
+        <SkraKort tittel="Hele stallen" meta="Sortert etter hvem som trenger deg">
           <div className="matrise" role="group" aria-label="Stall-matrise">
             {MATRISE_VALG.map((v) => <button key={v.id} type="button" className={KLASSE[v.id]} aria-pressed={mat === v.id} onClick={() => setMat(mat === v.id ? "alle" : v.id)}>
               <b>{etterSok.filter((r) => MATRISE[r.status] === v.id).length}</b><span>{v.label}</span></button>)}
@@ -231,9 +240,9 @@ export function AG07Stall({ tilstand = "data", total, iDag, trenerNaa, heleStall
             <div className="baand" role="list">{venterVist.map((r) => <SpillerRad key={r.id} r={r} />)}</div>
           </details>}
           <p className="kilde">Etterlevelse: gjennomført tid mot planlagt, siste fire uker. ACWR vises når tallet regnes ut.</p>
-        </section>
+        </SkraKort>
       </div>
-    </div>
+    </SkraFlyt>
     {melding && <MeldingArk r={melding} onClose={() => setMelding(null)} />}
   </div>;
 }
