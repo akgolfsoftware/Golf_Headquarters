@@ -1,0 +1,11 @@
+/*
+ * Lister i Skrå-drakten (type 4): Tester, TrackMan, Innboks, Booking, Utfordringer og Historikk.
+ * Toppen, kortene og kolonnene deler byggeklosser med I dag (playerhq-ny-idag.css §Skrå).
+ * Her står bare treffmål og avstander som listene trenger oppå det.
+ */
+.phn-skra .phn-tst-fane a, .phn-skra .phn-lister-rad a, .phn-skra .phn-lister-rad button { min-height: 48px; display: inline-flex; align-items: center; }
+/* Testlista ligger i et hvitt kort, og høyre kolonne stopper før hurtigknappen. */
+.phn-skra .phn-tst-liste { background: var(--ak-hvit, #fff); border-radius: var(--ak-r-skra-kort); box-shadow: var(--ak-skygge-md); padding: 8px 20px 12px; }
+@container (min-width: 900px) {
+  .phn-skra .phn-tst-kol { margin-right: 52px; }
+}
