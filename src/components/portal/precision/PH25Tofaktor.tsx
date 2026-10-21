@@ -20,6 +20,10 @@ import { Check, ChevronLeft } from "lucide-react";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-meg.css";
 import "@/styles/playerhq-ny-meg-resten.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke5-skra.css";
 
 // Lastes først når de trengs: Supabase-klienten leser miljøet ved import.
 const ReauthModal = dynamic(() => import("@/components/auth/reauth-modal").then((m) => m.ReauthModal), { ssr: false });
@@ -112,15 +116,17 @@ export function PH25Tofaktor() {
 
   const visSteg: Steg = tilstand === "paa" ? 3 : steg;
 
-  return <div className="phn phn-meg"><div className="side smal">
-    <div className="topp">
-      <Link className="tilbake" href="/portal/meg/innstillinger/sikkerhet"><ChevronLeft size={18} aria-hidden />Sikkerhet</Link>
-      <div>
-        <div className="phn-dato">{tilstand === "paa" ? "Tofaktor" : `Tofaktor · steg ${visSteg} av 3`}</div>
-        <h1 className="phn-tittel">{TITTEL[visSteg]}</h1>
-      </div>
-      <div className="mr-stegrad" aria-hidden>{[1, 2, 3].map((n) => <i key={n} className={n <= visSteg ? "paa" : ""} />)}</div>
-    </div>
+  return <div className="phn phn-meg phn-skra">
+    <SkraTopp
+      lav
+      etikett="Meg"
+      bilde="/images/playerhq/stats-topp.jpg" bildePosisjon="50% 50%"
+      overlinje={<>{tilstand === "paa" ? "Tofaktor" : `Tofaktor · steg ${visSteg} av 3`}</>}
+      tittel={<>{TITTEL[visSteg]}</>}
+      handling={<span className="skra-tilbake"><Link className="tilbake" href="/portal/meg/innstillinger/sikkerhet"><ChevronLeft size={18} aria-hidden />Sikkerhet</Link></span>}
+    />
+    <SkraFlyt lav><div className="side smal">
+    <div className="mr-stegrad" aria-hidden>{[1, 2, 3].map((n) => <i key={n} className={n <= visSteg ? "paa" : ""} />)}</div>
 
     {tilstand === "laster" && <div className="phn-kort" role="status"><p className="phn-forklar">Lager koden …</p><div className="phn-skjelett" style={{ width: 180, height: 180 }} /></div>}
     {tilstand === "feil" && <div className="phn-kort" role="alert">
@@ -176,5 +182,5 @@ export function PH25Tofaktor() {
       reason="Du er i ferd med å slå av tofaktor. Kontoen blir mindre beskyttet."
       bekreftTekst="Bekreft og slå av"
     />}
-  </div></div>;
+  </div></SkraFlyt></div>;
 }

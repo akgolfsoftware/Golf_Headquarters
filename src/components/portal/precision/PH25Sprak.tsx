@@ -19,6 +19,10 @@ import { Check, ChevronLeft } from "lucide-react";
 import { oppdaterPreferences } from "@/app/portal/meg/actions";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-meg.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke5-skra.css";
 
 export type PH25SprakData = { spraak: "nb" | "en" };
 
@@ -43,14 +47,19 @@ export function PH25Sprak({ data }: { data: PH25SprakData }) {
     });
   }
 
-  return <div className="phn phn-meg"><div className="side smal">
-    <div className="topp">
-      <Link className="tilbake" href="/portal/meg/innstillinger"><ChevronLeft size={18} aria-hidden />Innstillinger</Link>
-      <div className="topp-rad">
-        <div><div className="phn-dato">Meg · innstillinger</div><h1 className="phn-tittel">Språk</h1></div>
+  return <div className="phn phn-meg phn-skra">
+    <SkraTopp
+      lav
+      etikett="Meg"
+      bilde="/images/playerhq/stats-topp.jpg" bildePosisjon="50% 50%"
+      overlinje={<>Meg · innstillinger</>}
+      tittel={<>Språk</>}
+      handling={<span className="skra-tilbake"><Link className="tilbake" href="/portal/meg/innstillinger"><ChevronLeft size={18} aria-hidden />Innstillinger</Link></span>}
+    />
+    <SkraFlyt lav><div className="side smal">
+    <div className="topp-rad">
         <span aria-live="polite">{lagret && <span className="phn-pille ok"><i />Lagret</span>}</span>
       </div>
-    </div>
 
     <div className="phn-kort">
       <div className="phn-hoved"><strong>{valgt === "nb" ? "Norsk bokmål" : "English"}</strong><span className="phn-forklar">er språket i appen nå</span></div>
@@ -77,5 +86,5 @@ export function PH25Sprak({ data }: { data: PH25SprakData }) {
       <div className="phn-sek-topp"><h2 id="sp-format">Region og format</h2></div>
       <p className="phn-forklar">Datoer, tidssone og tallformat følger valgt språk. Appen bruker norsk tid (Europe/Oslo).</p>
     </section>
-  </div></div>;
+  </div></SkraFlyt></div>;
 }

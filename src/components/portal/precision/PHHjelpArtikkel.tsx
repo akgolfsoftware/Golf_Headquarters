@@ -19,6 +19,10 @@ import { vurderArtikkel } from "@/app/portal/meg/help/kontakt/actions";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-meg.css";
 import "@/styles/playerhq-ny-hjelp.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke5-skra.css";
 
 function SkrivKort({ tekst }: { tekst: string }) {
   return <div className="phn-kort dempet">
@@ -68,11 +72,16 @@ export function PHHjelpArtikkel({ artikkel, kategori }: { artikkel: HjelpArtikke
     start(async () => { await vurderArtikkel({ slug: artikkel.slug, nyttig }); });
   }
 
-  return <div className="phn phn-meg phn-hjelp"><div className="side">
-    <div className="topp">
-      <Link className="tilbake" href={`/portal/meg/help/kategori/${kategori.slug}`}><ChevronLeft size={18} aria-hidden />{kategori.tittel}</Link>
-      <div><div className="phn-dato">Hjelp · {kategori.tittel.toLowerCase()} · {artikkel.lesetid} min lesing</div><h1 className="phn-tittel">{artikkel.tittel}</h1></div>
-    </div>
+  return <div className="phn phn-meg phn-hjelp phn-skra">
+    <SkraTopp
+      lav
+      etikett="Meg"
+      bilde="/images/playerhq/tek-video.jpg" bildePosisjon="50% 50%"
+      overlinje={<>Hjelp · {kategori.tittel.toLowerCase()} · {artikkel.lesetid} min lesing</>}
+      tittel={<>{artikkel.tittel}</>}
+      handling={<span className="skra-tilbake"><Link className="tilbake" href={`/portal/meg/help/kategori/${kategori.slug}`}><ChevronLeft size={18} aria-hidden />{kategori.tittel}</Link></span>}
+    />
+    <SkraFlyt lav><div className="side">
     <div className="hj-grid artikkel">
       <article className="hj-artikkel">
         {artikkel.blokker.map((b, i) => <Blokk key={i} b={b} pyramide={pyramide} />)}
@@ -91,5 +100,5 @@ export function PHHjelpArtikkel({ artikkel, kategori }: { artikkel: HjelpArtikke
         <SkrivKort tekst="Gjelder det appen? Skriv til oss, så kommer svaret på e-post." />
       </aside>
     </div>
-  </div></div>;
+  </div></SkraFlyt></div>;
 }

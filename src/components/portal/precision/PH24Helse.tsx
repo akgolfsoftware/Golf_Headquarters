@@ -22,6 +22,10 @@ import { ChevronLeft, HeartPulse, Plane, Thermometer, X } from "lucide-react";
 import { formaterTall } from "@/lib/format-tall";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-meg.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke5-skra.css";
 
 export type PH24Fravaer = { id: string; tittel: string; periode: string; type: "skade" | "sykdom" | "annet"; status: "Pågår" | "Over" | "Planlagt" };
 
@@ -87,11 +91,16 @@ export function PH24Helse({ data, lagre }: { data: PH24HelseData; lagre: Lagre }
     });
   }
 
-  return <div className="phn phn-meg"><div className="side">
-    <div className="topp">
-      <Link className="tilbake" href="/portal/meg"><ChevronLeft size={18} aria-hidden />Meg</Link>
-      <div><div className="phn-dato">Meg · helse og fravær</div><h1 className="phn-tittel">Helse og fravær</h1></div>
-    </div>
+  return <div className="phn phn-meg phn-skra">
+    <SkraTopp
+      lav
+      etikett="Meg"
+      bilde="/images/playerhq/fys-styrke.jpg" bildePosisjon="50% 50%"
+      overlinje={<>Meg · helse og fravær</>}
+      tittel={<>Helse og fravær</>}
+      handling={<span className="skra-tilbake"><Link className="tilbake" href="/portal/meg"><ChevronLeft size={18} aria-hidden />Meg</Link></span>}
+    />
+    <SkraFlyt lav><div className="side">
 
     <div className="to-del">
       <div>
@@ -150,5 +159,5 @@ export function PH24Helse({ data, lagre }: { data: PH24HelseData; lagre: Lagre }
         <div className="phn-ark-fot"><button type="submit" className="phn-knapp pri stor" disabled={pending}>{pending ? "Lagrer …" : "Lagre"}</button></div>
       </form>
     </dialog>
-  </div></div>;
+  </div></SkraFlyt></div>;
 }

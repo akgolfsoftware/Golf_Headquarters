@@ -19,6 +19,10 @@ import { HJELP_FAQ, HJELP_KATEGORIER, artikkelTekst, publiserteArtikler, type Hj
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-meg.css";
 import "@/styles/playerhq-ny-hjelp.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke5-skra.css";
 
 const IKON: Record<HjelpKategoriSlug, ReactNode> = {
   "komme-i-gang": <Rocket size={18} />, trening: <Dumbbell size={18} />, coaching: <MessageSquare size={18} />,
@@ -36,12 +40,17 @@ export function PHHjelp() {
     return [...a, ...f];
   }, [q, artikler]);
 
-  return <div className="phn phn-meg phn-hjelp"><div className="side">
-    <div className="topp">
-      <Link className="tilbake" href="/portal/meg"><ChevronLeft size={18} aria-hidden />Meg</Link>
-      <div><div className="phn-dato">Meg · hjelp</div><h1 className="phn-tittel">Hjelp</h1></div>
-      <label className="hj-sok"><Search size={20} aria-hidden /><input type="search" placeholder="Søk i hjelpen, f.eks. «klipp»" aria-label="Søk i hjelpen" value={sok} onChange={(e) => setSok(e.target.value)} /></label>
-    </div>
+  return <div className="phn phn-meg phn-hjelp phn-skra">
+    <SkraTopp
+      lav
+      etikett="Meg"
+      bilde="/images/playerhq/tek-video.jpg" bildePosisjon="50% 50%"
+      overlinje={<>Meg · hjelp</>}
+      tittel={<>Hjelp</>}
+      handling={<span className="skra-tilbake"><Link className="tilbake" href="/portal/meg"><ChevronLeft size={18} aria-hidden />Meg</Link></span>}
+    />
+    <SkraFlyt lav><div className="side">
+    <label className="hj-sok"><Search size={20} aria-hidden /><input type="search" placeholder="Søk i hjelpen, f.eks. «klipp»" aria-label="Søk i hjelpen" value={sok} onChange={(e) => setSok(e.target.value)} /></label>
     <div className="hj-grid">
       <div>
         {treff
@@ -74,5 +83,5 @@ export function PHHjelp() {
         </div>
       </div>
     </div>
-  </div></div>;
+  </div></SkraFlyt></div>;
 }

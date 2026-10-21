@@ -24,6 +24,10 @@ import { cancelPro } from "@/app/portal/meg/abonnement/avbestill/actions";
 import { PH25_PLANER, formaterKroner } from "@/lib/portal-abonnement/ph25-abonnement-data";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-meg.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke5-skra.css";
 
 export type PH25Faktura = { id: string; dato: string; gjelder: string; belop: number };
 export type PH25Data = {
@@ -69,11 +73,16 @@ export function PH25Abonnement({ data, avslutt = cancelPro }: { data: PH25Data; 
     ? "Du bruker PlayerHQ gratis. Full gir Plan, Workbench og Caddie."
     : p ? `Inkludert i coaching-pakken ${p.navn}. Du betaler ikke ekstra for appen.` : "Du betaler for PlayerHQ selv.";
 
-  return <div className="phn phn-meg"><div className="side">
-    <div className="topp">
-      <Link className="tilbake" href="/portal/meg"><ChevronLeft size={18} aria-hidden />Meg</Link>
-      <div><div className="phn-dato">Meg · abonnement</div><h1 className="phn-tittel">Abonnement</h1></div>
-    </div>
+  return <div className="phn phn-meg phn-skra">
+    <SkraTopp
+      lav
+      etikett="Meg"
+      bilde="/images/playerhq/spill-bane.jpg" bildePosisjon="50% 50%"
+      overlinje={<>Meg · abonnement</>}
+      tittel={<>Abonnement</>}
+      handling={<span className="skra-tilbake"><Link className="tilbake" href="/portal/meg"><ChevronLeft size={18} aria-hidden />Meg</Link></span>}
+    />
+    <SkraFlyt lav><div className="side">
 
     {data.fraLaast && <div className="phn-kort dempet" role="status">
       <b className="phn-undertittel">Denne delen krever Full</b>
@@ -152,5 +161,5 @@ export function PH25Abonnement({ data, avslutt = cancelPro }: { data: PH25Data; 
         </div>
       </div>
     </dialog>
-  </div></div>;
+  </div></SkraFlyt></div>;
 }

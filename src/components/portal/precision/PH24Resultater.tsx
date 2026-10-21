@@ -23,6 +23,10 @@ import { angreKobling, avvisVentende, bekreftKandidat, bekreftVentende, sokKandi
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-meg.css";
 import "@/styles/playerhq-ny-meg-resten.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke5-skra.css";
 
 export type PH24ResultaterData =
   | { koblet: true; resultater: ProfilResultater }
@@ -153,11 +157,16 @@ function Resultater({ data }: { data: ProfilResultater }) {
 }
 
 export function PH24Resultater({ data }: { data: PH24ResultaterData }) {
-  return <div className="phn phn-meg"><div className="side">
-    <div className="topp">
-      <Link className="tilbake" href="/portal/meg/profil"><ChevronLeft size={18} aria-hidden />Profil</Link>
-      <div><div className="phn-dato">Meg · profil</div><h1 className="phn-tittel">Turneringsresultater</h1></div>
-    </div>
+  return <div className="phn phn-meg phn-skra">
+    <SkraTopp
+      lav
+      etikett="Meg"
+      bilde="/images/playerhq/spill-bane.jpg" bildePosisjon="50% 50%"
+      overlinje={<>Meg · profil</>}
+      tittel={<>Turneringsresultater</>}
+      handling={<span className="skra-tilbake"><Link className="tilbake" href="/portal/meg/profil"><ChevronLeft size={18} aria-hidden />Profil</Link></span>}
+    />
+    <SkraFlyt lav><div className="side">
     {data.koblet ? <Resultater data={data.resultater} /> : <Koble ventende={data.ventende} />}
-  </div></div>;
+  </div></SkraFlyt></div>;
 }

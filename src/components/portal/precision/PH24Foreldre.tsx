@@ -17,16 +17,25 @@ import { ChevronLeft } from "lucide-react";
 import { initialer } from "@/lib/portal/initialer";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-meg.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke5-skra.css";
 
 export type PH24ForelderRad = { id: string; navn: string; relasjon: string; epost: string; godkjent: boolean; siden: string };
 export type PH24ForeldreData = { foreldre: PH24ForelderRad[]; under16: boolean; venterPaaForelder: boolean };
 
 export function PH24Foreldre({ data }: { data: PH24ForeldreData }) {
-  return <div className="phn phn-meg"><div className="side smal">
-    <div className="topp">
-      <Link className="tilbake" href="/portal/meg"><ChevronLeft size={18} aria-hidden />Meg</Link>
-      <div><div className="phn-dato">Meg · foreldre</div><h1 className="phn-tittel">Foreldre</h1></div>
-    </div>
+  return <div className="phn phn-meg phn-skra">
+    <SkraTopp
+      lav
+      etikett="Meg"
+      bilde="/images/playerhq/stats-topp.jpg" bildePosisjon="50% 50%"
+      overlinje={<>Meg · foreldre</>}
+      tittel={<>Foreldre</>}
+      handling={<span className="skra-tilbake"><Link className="tilbake" href="/portal/meg"><ChevronLeft size={18} aria-hidden />Meg</Link></span>}
+    />
+    <SkraFlyt lav><div className="side smal">
 
     {data.foreldre.length === 0
       ? <div className="phn-kort dempet">
@@ -60,5 +69,5 @@ export function PH24Foreldre({ data }: { data: PH24ForeldreData }) {
       </div>}
 
     <Link className="phn-knapp sek" href="/portal/meg/innstillinger/personvern/deling" style={{ justifySelf: "start" }}>Se hvem som ser profilen din</Link>
-  </div></div>;
+  </div></SkraFlyt></div>;
 }

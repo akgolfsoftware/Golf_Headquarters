@@ -21,6 +21,10 @@ import type { ReactNode } from "react";
 import { opprettGdprForesporsel } from "@/lib/moderering/actions";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-meg.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke5-skra.css";
 
 export type PH25InnstillingerData = {
   helseLogg: boolean;
@@ -59,11 +63,16 @@ export function PH25Innstillinger({ data, slett = opprettGdprForesporsel }: { da
     });
   }
 
-  return <div className="phn phn-meg"><div className="side">
-    <div className="topp">
-      <Link className="tilbake" href="/portal/meg"><ChevronLeft size={18} aria-hidden />Meg</Link>
-      <div><div className="phn-dato">Meg · innstillinger</div><h1 className="phn-tittel">Innstillinger</h1></div>
-    </div>
+  return <div className="phn phn-meg phn-skra">
+    <SkraTopp
+      lav
+      etikett="Meg"
+      bilde="/images/playerhq/stats-topp.jpg" bildePosisjon="50% 50%"
+      overlinje={<>Meg · innstillinger</>}
+      tittel={<>Innstillinger</>}
+      handling={<span className="skra-tilbake"><Link className="tilbake" href="/portal/meg"><ChevronLeft size={18} aria-hidden />Meg</Link></span>}
+    />
+    <SkraFlyt lav><div className="side">
 
     <div className="to-del">
       <div>
@@ -134,5 +143,5 @@ export function PH25Innstillinger({ data, slett = opprettGdprForesporsel }: { da
         </div>
       </div>
     </dialog>
-  </div></div>;
+  </div></SkraFlyt></div>;
 }

@@ -20,6 +20,10 @@ import { Check, ChevronLeft } from "lucide-react";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-meg.css";
 import "@/styles/playerhq-ny-meg-resten.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke5-skra.css";
 
 export type PH25VelgFullData = {
   /** Spilleren har ikke hatt PlayerHQ-abonnement før, og får én uke Full før første trekk. */
@@ -54,11 +58,16 @@ export function PH25VelgFull({ data }: { data: PH25VelgFullData }) {
     }
   }
 
-  return <div className="phn phn-meg"><div className="side">
-    <div className="topp">
-      <Link className="tilbake" href="/portal/meg/abonnement"><ChevronLeft size={18} aria-hidden />Abonnement</Link>
-      <div><div className="phn-dato">Meg · abonnement</div><h1 className="phn-tittel">Velg Full</h1></div>
-    </div>
+  return <div className="phn phn-meg phn-skra">
+    <SkraTopp
+      lav
+      etikett="Meg"
+      bilde="/images/playerhq/spill-bane.jpg" bildePosisjon="50% 50%"
+      overlinje={<>Meg · abonnement</>}
+      tittel={<>Velg Full</>}
+      handling={<span className="skra-tilbake"><Link className="tilbake" href="/portal/meg/abonnement"><ChevronLeft size={18} aria-hidden />Abonnement</Link></span>}
+    />
+    <SkraFlyt lav><div className="side">
     <div className="to-del">
       <div>
         <div className="mr-full-topp">
@@ -94,5 +103,5 @@ export function PH25VelgFull({ data }: { data: PH25VelgFullData }) {
         <p className="phn-kilde">Er du med i coaching-pakken Performance eller Performance Pro, er Full inkludert, og du betaler ikke for appen.</p>
       </div>
     </div>
-  </div></div>;
+  </div></SkraFlyt></div>;
 }
