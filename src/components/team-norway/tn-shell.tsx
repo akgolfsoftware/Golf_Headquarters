@@ -13,7 +13,7 @@ import { TN } from "@/lib/v2/team-norway";
 /**
  * TN-01 Organisasjonsskall — felles skall for alle Team Norway-ruter.
  * Fasit: docs/design-system/utkast-tn/grunnmur.html og felles/tn.css (pakke 1).
- * Navy sidemeny 252 px fra 900 px med seks grupper, ellers navy topplinje og
+ * Navy sidemeny 252 px fra 900 px med seks hovedpunkter, ellers navy topplinje og
  * hvit bunnmeny med fire valg pluss «Mer».
  * Avvik:
  *   - Menypunkter uten egen datamodell åpner en ærlig tomtilstand, ikke demo-data.
@@ -51,25 +51,24 @@ function lenke(label: string, href: string, id: TnAktivSide, aktiv: TnAktivSide)
   return { label, href, aktiv: aktiv === id };
 }
 
-type MenyValg = { aktiv: TnAktivSide; groupId?: string; visTrenerflater: boolean; kanAdministrere: boolean; visDataGolf?: boolean };
+type MenyValg = { aktiv: TnAktivSide; groupId?: string; kanAdministrere: boolean; visDataGolf?: boolean };
 
 /**
- * Sidemenyen i seks grupper (fasit: «Team Norway App delivery», runde 26.09).
- * Spilleren ser bare ti skjermer og aldri uttak, fellestesting, fagapparat
- * eller admin. Tomme grupper tas bort. Spillerprofil står ikke i menyen:
- * den krever en valgt spiller og nås fra Spillerutvikling.
+ * Sidemenyen i seks hovedpunkter (Anders 21.10.2026, beslutninger.md §TEAM NORWAY
+ * ER BARE FOR TRENERE; fasit docs/design-system/utkast-tn/trenerflate/README.md):
+ * Hjem · Spillere · Samlinger og testing · Turneringer · Referanse · Fag og
+ * administrasjon. Flaten er bare for trenere, så menyen har ingen spillervariant.
+ * Tomme grupper tas bort. IUP står ikke i menyen: den nås fra Spillere.
  */
-export function tnHovedmeny({ aktiv, groupId, visTrenerflater: t, kanAdministrere, visDataGolf }: MenyValg): TnMenyGruppe[] {
+export function tnHovedmeny({ aktiv, groupId, kanAdministrere, visDataGolf }: MenyValg): TnMenyGruppe[] {
   const grupper: Omit<TnMenyGruppe, "aktiv">[] = [
     {
-      id: "daglig",
-      label: "Daglig",
-      ikon: "kalender",
+      id: "hjem",
+      label: "Hjem",
+      ikon: "oversikt",
       punkter: [
-        lenke("Oversikt", "/team-norway", "oversikt", aktiv),
-        lenke("Samlinger", "/team-norway/samlinger", "samlinger", aktiv),
-        lenke("Turneringer og reise", "/team-norway/turneringer", "turneringer", aktiv),
-        lenke("Live Watch", "/team-norway/live-watch", "live-watch", aktiv),
+        lenke("I dag", "/team-norway", "oversikt", aktiv),
+        ...(groupId ? [lenke("Gruppeposter", `/team-norway/${groupId}`, "gruppeposter", aktiv), lenke("Dokumenter", `/team-norway/${groupId}/dokumenter`, "dokumenter", aktiv)] : []),
       ],
     },
     {
@@ -77,60 +76,56 @@ export function tnHovedmeny({ aktiv, groupId, visTrenerflater: t, kanAdministrer
       label: "Spillere",
       ikon: "spillere",
       punkter: [
-        ...(t ? [lenke("Spillerutvikling", "/team-norway/spillere", "spillere", aktiv), lenke("Fellestesting", "/team-norway/fellestesting", "fellestesting", aktiv)] : []),
+        lenke("Spillere", "/team-norway/spillere", "spillere", aktiv),
+        lenke("Skoler", "/team-norway/skoler", "skoler", aktiv),
         lenke("College og USA", "/team-norway/college", "college", aktiv),
-        ...(t ? [lenke("Skoleoversikt", "/team-norway/skoler", "skoler", aktiv)] : []),
-        // Leaderboard og samlede tall bor på teamnorwayref; HQ lenker bare dit (Anders 21.10.2026).
-        ...(t ? [{ label: "Referansespillere", href: TN_REFERANSESPILLERE_URL, aktiv: false }] : []),
       ],
     },
     {
-      id: "uttak",
-      label: "Uttak",
-      ikon: "uttak",
-      punkter: t
-        ? [
-            lenke("Uttak og kriterier", "/team-norway/uttak", "uttak", aktiv),
-            lenke("Rangliste", "/team-norway/rangliste", "rangliste", aktiv),
-            // Data Golf ligger under Plan og fag, og vises bare for coach og admin (Anders 09.10.2026).
-          ]
-        : [],
+      id: "samlinger",
+      label: "Samlinger og testing",
+      ikon: "kalender",
+      punkter: [
+        lenke("Samlinger", "/team-norway/samlinger", "samlinger", aktiv),
+        lenke("Månedsplan", "/team-norway/manedsplan", "manedsplan", aktiv),
+        lenke("Fellestesting", "/team-norway/fellestesting", "fellestesting", aktiv),
+        lenke("Gruppeanalyse", "/team-norway/analyse", "analyse", aktiv),
+        { label: "WANG-tester", href: "/team-norway/wang-resultater", aktiv: false },
+      ],
     },
     {
-      id: "plan",
-      label: "Plan og fag",
+      id: "turneringer",
+      label: "Turneringer",
+      ikon: "uttak",
+      punkter: [
+        lenke("Turneringer", "/team-norway/turneringer", "turneringer", aktiv),
+        lenke("Live Watch", "/team-norway/live-watch", "live-watch", aktiv),
+        lenke("Uttak", "/team-norway/uttak", "uttak", aktiv),
+        lenke("Rangliste", "/team-norway/rangliste", "rangliste", aktiv),
+      ],
+    },
+    {
+      id: "referanse",
+      label: "Referanse",
+      ikon: "gruppe",
+      punkter: [
+        // Til Referanse › WAGR er bygget i HQ, åpner punktet teamnorwayref (beslutninger.md §TEAM NORWAY ER BARE FOR TRENERE, punkt 3).
+        { label: "Referansespillere", href: TN_REFERANSESPILLERE_URL, aktiv: false },
+        lenke("Referansenivåer", "/team-norway/referansenivaer", "referansenivaer", aktiv),
+      ],
+    },
+    {
+      id: "fag",
+      label: "Fag og administrasjon",
       ikon: "plan",
       punkter: [
-        lenke("Månedsplan", "/team-norway/manedsplan", "manedsplan", aktiv),
-        ...(t
-          ? [
-              lenke("Workbench", "/team-norway/workbench", "workbench", aktiv),
-              lenke("Testprotokoller", "/team-norway/protokoller", "protokoller", aktiv),
-              lenke("Referansenivåer", "/team-norway/referansenivaer", "referansenivaer", aktiv),
-              lenke("Fagapparat", "/team-norway/fagapparat", "fagapparat", aktiv),
-              lenke("Analyse", "/team-norway/analyse", "analyse", aktiv),
-              // Data Golf er bare for coach og admin (Anders 09.10.2026), ikke alle TN-trenere.
-              ...(visDataGolf ? [lenke("Data Golf", "/team-norway/datagolf", "datagolf", aktiv)] : []),
-            ]
-          : []),
-      ],
-    },
-    {
-      id: "gruppe",
-      label: "Gruppe",
-      ikon: "gruppe",
-      punkter: groupId
-        ? [lenke("Gruppeposter", `/team-norway/${groupId}`, "gruppeposter", aktiv), lenke("Dokumenter", `/team-norway/${groupId}/dokumenter`, "dokumenter", aktiv)]
-        : [],
-    },
-    {
-      id: "admin",
-      label: t ? "Meg og admin" : "Meg",
-      ikon: "meg",
-      punkter: [
-        lenke("Lisens og økonomi", "/team-norway/lisens-okonomi", "lisens", aktiv),
-        { label: "Samtykke", href: "/portal/meg/innstillinger/personvern/deling", aktiv: false },
+        lenke("Årsplan", "/team-norway/workbench", "workbench", aktiv),
+        lenke("Testprotokoller", "/team-norway/protokoller", "protokoller", aktiv),
+        lenke("Fagapparat", "/team-norway/fagapparat", "fagapparat", aktiv),
+        lenke("Lisens og status", "/team-norway/lisens-okonomi", "lisens", aktiv),
         ...(kanAdministrere ? [lenke("Trenere og tilgang", "/team-norway/tilgang", "tilgang", aktiv), lenke("Inviter spiller", "/team-norway/inviter", "inviter", aktiv)] : []),
+        // Data Golf er bare for ADMIN (beslutninger.md §DATA GOLF ER ANDERS' PRIVATE VERKTØY).
+        ...(visDataGolf ? [lenke("Data Golf", "/team-norway/datagolf", "datagolf", aktiv)] : []),
       ],
     },
   ];
@@ -138,20 +133,13 @@ export function tnHovedmeny({ aktiv, groupId, visTrenerflater: t, kanAdministrer
 }
 
 /** Fire faste valg i mobilens bunnlinje. Resten ligger under «Mer». */
-export function tnBunnmeny({ aktiv, visTrenerflater }: MenyValg): TnBunnValg[] {
-  return visTrenerflater
-    ? [
-        { ...lenke("Oversikt", "/team-norway", "oversikt", aktiv), ikon: "oversikt" },
-        { ...lenke("Samlinger", "/team-norway/samlinger", "samlinger", aktiv), ikon: "kalender" },
-        { label: "Uttak", href: "/team-norway/uttak", aktiv: aktiv === "uttak" || aktiv === "rangliste", ikon: "uttak" },
-        { label: "Spillere", href: "/team-norway/spillere", aktiv: aktiv === "spillere" || aktiv === "fellestesting" || aktiv === "skoler", ikon: "spillere" },
-      ]
-    : [
-        { ...lenke("Oversikt", "/team-norway", "oversikt", aktiv), ikon: "oversikt" },
-        { ...lenke("Samlinger", "/team-norway/samlinger", "samlinger", aktiv), ikon: "kalender" },
-        { ...lenke("Turneringer", "/team-norway/turneringer", "turneringer", aktiv), ikon: "plan" },
-        { ...lenke("Lisens", "/team-norway/lisens-okonomi", "lisens", aktiv), ikon: "meg" },
-      ];
+export function tnBunnmeny({ aktiv }: MenyValg): TnBunnValg[] {
+  return [
+    { ...lenke("Hjem", "/team-norway", "oversikt", aktiv), ikon: "oversikt" },
+    { label: "Spillere", href: "/team-norway/spillere", aktiv: aktiv === "spillere" || aktiv === "skoler" || aktiv === "college", ikon: "spillere" },
+    { label: "Samlinger", href: "/team-norway/samlinger", aktiv: aktiv === "samlinger" || aktiv === "manedsplan" || aktiv === "fellestesting" || aktiv === "analyse", ikon: "kalender" },
+    { label: "Turneringer", href: "/team-norway/turneringer", aktiv: aktiv === "turneringer" || aktiv === "live-watch" || aktiv === "uttak" || aktiv === "rangliste", ikon: "uttak" },
+  ];
 }
 
 /**
@@ -196,7 +184,7 @@ export function TnShell({
   tilbake?: { href: string; label: string };
   children: ReactNode;
 }) {
-  const valg = { aktiv, groupId, visTrenerflater, kanAdministrere, visDataGolf: visTrenerflater && visDataGolf };
+  const valg = { aktiv, groupId, kanAdministrere, visDataGolf: visTrenerflater && visDataGolf };
   const grupper = tnHovedmeny(valg);
   return (
     <div className={s.skall}>

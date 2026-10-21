@@ -64,6 +64,17 @@ async function krevIkkeDemokonto(brukerId: string): Promise<void> {
   if (erDemokonto(bruker?.email)) throw new Error("Demokontoen kan ikke endre tilganger");
 }
 
+/** Brukerens aktive rolle i TN-gruppa (PLAYER, COACH, ASSISTANT), eller null. */
+export async function hentTnGrupperolle(brukerId: string): Promise<string | null> {
+  const gruppe = await hentTeamNorwayGruppe(brukerId);
+  if (!gruppe) return null;
+  const medlemskap = await prisma.groupMember.findFirst({
+    where: { groupId: gruppe.id, userId: brukerId, ...aktivtMedlemskapWhere() },
+    select: { role: true },
+  });
+  return medlemskap?.role ?? null;
+}
+
 async function hentTeamNorwayGruppe(brukerId: string): Promise<{ id: string; name: string } | null> {
   const gruppe = await hentTnGruppeForBruker(brukerId);
   return gruppe ? { id: gruppe.id, name: gruppe.name } : null;

@@ -1,5 +1,10 @@
 import type { ReactNode } from "react";
 import { Schibsted_Grotesk } from "next/font/google";
+import { redirect } from "next/navigation";
+
+import { getCurrentUserRaw } from "@/lib/auth/getCurrentUser";
+import { hentTnGrupperolle } from "@/lib/domain/tn-tilgang";
+import { tnIkkeTrenerMaal } from "@/lib/domain/tn-trenerport";
 
 /**
  * Team Norway — egen flate, egen designfasit.
@@ -20,6 +25,17 @@ const schibstedGrotesk = Schibsted_Grotesk({
   display: "swap",
 });
 
-export default function TeamNorwayLayout({ children }: { children: ReactNode }) {
+/**
+ * Team Norway er bare for trenere (Anders 21.10.2026, beslutninger.md §TEAM NORWAY
+ * ER BARE FOR TRENERE): spillere sendes til PlayerHQ, foreldre til forelderflaten.
+ * Uinnloggede håndteres av proxyen. Spillerens egen visning i sidene og datalaget
+ * (`erSpiller`) står til sidene portes; den viser bare spillerens egne data.
+ */
+export default async function TeamNorwayLayout({ children }: { children: ReactNode }) {
+  const bruker = await getCurrentUserRaw();
+  if (bruker) {
+    const maal = tnIkkeTrenerMaal(bruker.role, bruker.role === "ADMIN" ? null : await hentTnGrupperolle(bruker.id));
+    if (maal) redirect(maal);
+  }
   return <div className={schibstedGrotesk.variable}>{children}</div>;
 }
