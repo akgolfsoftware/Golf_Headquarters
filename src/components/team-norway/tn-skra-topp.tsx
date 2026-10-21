@@ -10,6 +10,8 @@ export type TnToppBilde = "spiller-ved-vannet" | "putting-green" | "tee-hand";
  * Skrå-toppen for underskjermene: bilde i navy toner, kuttet nedover mot høyre med rød kant.
  * `venstre` og `hoyre` tar de samme delene som helteflaten (TnHeltTall, TnHeltTekst,
  * TnHeltKnapper, TnHeltTellere). Innholdet som skal ligge over kanten, legges i `TnSkraKort`.
+ * `lav` er toppen for lister, detaljer og arbeidsflater: mindre tittel og luft, kortene ligger
+ * mindre over kanten, og bildet er valgfritt (uten bilde er flaten navy med samme skråkutt og kant).
  */
 export function TnSkraTopp({
   bilde,
@@ -19,20 +21,22 @@ export function TnSkraTopp({
   venstre,
   hoyre,
   etikett,
+  lav = false,
 }: {
-  bilde: TnToppBilde;
+  bilde?: TnToppBilde;
   overlinje?: ReactNode;
   tittel: ReactNode;
   ingress?: ReactNode;
   venstre?: ReactNode;
   hoyre?: ReactNode;
   etikett?: string;
+  lav?: boolean;
 }) {
   return (
-    <section className={s.topp} aria-label={etikett}>
+    <section className={lav ? `${s.topp} ${s.lav}` : s.topp} aria-label={etikett}>
       <div className={s.kant} aria-hidden="true" />
       <div className={s.foto} aria-hidden="true">
-        <Image src={`/team-norway/bilder/${bilde}.jpg`} alt="" fill priority sizes="100vw" />
+        {bilde ? <Image src={`/team-norway/bilder/${bilde}.jpg`} alt="" fill priority sizes="100vw" /> : null}
       </div>
       <div className={s.innhold}>
         <div className={s.hode}>
@@ -52,6 +56,6 @@ export function TnSkraTopp({
 }
 
 /** Innholdet rett under Skrå-toppen. Første kort ligger over den skrå kanten. */
-export function TnSkraKort({ children }: { children: ReactNode }) {
-  return <div className={s.kort}>{children}</div>;
+export function TnSkraKort({ children, lav = false }: { children: ReactNode; lav?: boolean }) {
+  return <div className={lav ? `${s.kort} ${s.kortLav}` : s.kort}>{children}</div>;
 }

@@ -52,3 +52,16 @@ export function TnFeilkort({ tittel, tekst = "Ingenting er endret. Sjekk nettet 
 export function TnProvIgjen({ onClick }: { onClick: () => void }) {
   return <button type="button" className={t.knapp} onClick={onClick}>Prøv igjen</button>;
 }
+
+/** Tom tilstand: sier hva som mangler, og det neste steget. Samme kort som Feilkort. */
+export function TnTomtilstand({ tittel, tekst, handling }: { tittel: string; tekst: string; handling?: ReactNode }) {
+  return (
+    <div className={t.blokk}>
+      <div className={t.kort}>
+        <b className={t.undertittel}>{tittel}</b>
+        <p className={t.forklar}>{tekst}</p>
+        {handling ? <div>{handling}</div> : null}
+      </div>
+    </div>
+  );
+}
