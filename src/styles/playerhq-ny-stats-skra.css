@@ -1,0 +1,12 @@
+/*
+ * Stats i Skrå-drakten (alternativ B). Toppen, kortene og kolonnene deler byggeklosser og kolonneoppsett med I dag
+ * (playerhq-ny-idag.css §Skrå). Her står bare delvalget i toppen og det store tallet.
+ */
+.phn-stats-skra .stats-deler { display: inline-flex; flex-wrap: wrap; gap: 6px; }
+.phn-stats-skra .stats-deler a { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 14px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .34); background: rgba(20, 20, 19, .34); color: #fff; font: 500 14px/1 var(--phn-sans); text-decoration: none; }
+.phn-stats-skra .stats-deler a[aria-current="page"] { background: #fff; color: var(--ak-g900); border-color: #fff; }
+.phn-stats-skra .stats-stor { display: inline-flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; }
+.phn-stats-skra .stats-stor strong { font: 700 34px/1 var(--phn-sans); letter-spacing: -.03em; }
+.phn-stats-skra .stats-stor span { font: 500 12px/1.3 var(--phn-mono); letter-spacing: .06em; text-transform: uppercase; opacity: .85; }
+.phn-stats-skra .skra-plass:empty { display: none; }
+.phn-stats-skra .tr { min-height: 48px; }
