@@ -302,7 +302,7 @@ a.agn-neste:active { transform: scale(.97); }
   .agn-s .to-del { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--r6); align-items: start; }
   .agn-s .to-del.bred-v { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); }
   .agn-s .tre-del { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--r5); align-items: start; }
-  .agn-s .smal { max-width: 820px; }
+  .agn-s .smal { max-width: 720px; }
 }
 
 /* Mer: innganger til Booking, Grupper, Tester, Økonomi (bare head coach) og Oppsett */
