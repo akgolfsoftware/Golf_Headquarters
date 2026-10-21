@@ -23,3 +23,11 @@ test("menyen har seks hovedpunkter i fast rekkefølge, uten spillervariant", () 
   assert.deepEqual(etiketter, ["Hjem", "Spillere", "Samlinger og testing", "Turneringer", "Referanse", "Fag og administrasjon"]);
   assert.doesNotMatch(meny, /visTrenerflater/);
 });
+
+// Referanse › WAGR er bygget i HQ (beslutninger.md §TEAM NORWAY ER BARE FOR TRENERE, punkt 3).
+test("WAGR står først under Referanse og åpner siden i HQ", () => {
+  const kilde = readFileSync(new URL("./tn-shell.tsx", import.meta.url), "utf8");
+  const referanse = kilde.slice(kilde.indexOf('id: "referanse"'), kilde.indexOf('id: "fag"'));
+  const forste = referanse.match(/lenke\("([^"]+)", "([^"]+)"/);
+  assert.deepEqual(forste?.slice(1), ["WAGR", "/team-norway/referanse"]);
+});

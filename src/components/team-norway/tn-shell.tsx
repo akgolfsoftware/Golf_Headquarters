@@ -36,6 +36,7 @@ export type TnAktivSide =
   | "dokumenter"
   | "protokoller"
   | "turneringer"
+  | "referanse"
   | "referansenivaer"
   | "tilgang"
   | "inviter"
@@ -109,7 +110,9 @@ export function tnHovedmeny({ aktiv, groupId, kanAdministrere, visDataGolf }: Me
       label: "Referanse",
       ikon: "gruppe",
       punkter: [
-        // Til Referanse › WAGR er bygget i HQ, åpner punktet teamnorwayref (beslutninger.md §TEAM NORWAY ER BARE FOR TRENERE, punkt 3).
+        lenke("WAGR", "/team-norway/referanse", "referanse", aktiv),
+        // HCP Norge, Norsk golf, Sammenlign og Søk ligger fortsatt på teamnorwayref til de er bygget i HQ
+        // (beslutninger.md §TEAM NORWAY ER BARE FOR TRENERE, punkt 4).
         { label: "Referansespillere", href: TN_REFERANSESPILLERE_URL, aktiv: false },
         lenke("Referansenivåer", "/team-norway/referansenivaer", "referansenivaer", aktiv),
       ],

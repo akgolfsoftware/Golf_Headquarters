@@ -7773,3 +7773,98 @@ model WagrReferencePlan {
   @@unique([wagrPlayerId, season])
   @@map("wagr_reference_plans")
 }
+
+// Referanse › WAGR i Team Norway-trenerflaten (Anders 21.10.2026, beslutninger.md
+// §TEAM NORWAY-TRENERFLATEN BYGGES I HQ, punkt 5). Pipelines (ak-golf-pipelines,
+// mandagsjobben) skriver radene; HQ eier skjemaet og leser. Samme tall som
+// teamnorwayref: gruppene, plass, Power per turnering og plass før og etter.
+// Kilde vises alltid: «World Amateur Golf Ranking (WAGR), The R&A».
+model WagrRefGroup {
+  // «junior», «amator», «norge»
+  id        String   @id
+  name      String
+  title     String?
+  // Hvordan spillerne er valgt ut, vist under tabellen
+  selection String?
+  // «herrer» eller «damer»; null = begge
+  gender    String?
+  // Bare turneringene i dette året (Amatør: 2026); null = alle år
+  onlyYear  Int?
+  sortOrder Int      @default(0)
+  // Rankinguka tallene gjelder
+  wagrDate  DateTime @db.Date
+  updatedAt DateTime @default(now()) @updatedAt
+
+  members WagrRefGroupMember[]
+
+  @@map("wagr_ref_groups")
+}
+
+model WagrRefGroupMember {
+  groupId      String
+  wagrPlayerId Int
+  // WAGR-nivået spilleren står for (Amatør: 25, 50 … 1000); null ellers
+  level        Int?
+  sortOrder    Int    @default(0)
+
+  group  WagrRefGroup  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  player WagrRefPlayer @relation(fields: [wagrPlayerId], references: [wagrPlayerId], onDelete: Cascade)
+
+  @@id([groupId, wagrPlayerId])
+  @@index([wagrPlayerId])
+  @@map("wagr_ref_group_members")
+}
+
+model WagrRefPlayer {
+  wagrPlayerId Int      @id
+  name         String
+  country      String
+  gender       String?
+  rank         Int?
+  pointsAvg    Float?
+  divisor      Float?
+  bestRank     Int?
+  wins         Int?
+  // Plass ved årsslutt: {"2024": 2239, "2025": 846}
+  yearEndRanks Json     @default("{}")
+  // Per år: {score, plass, plass_median, power, poeng, antall, med_score}
+  yearStats    Json     @default("{}")
+  wagrDate     DateTime @db.Date
+  updatedAt    DateTime @default(now()) @updatedAt
+
+  groups  WagrRefGroupMember[]
+  results WagrRefResult[]
+
+  @@map("wagr_ref_players")
+}
+
+model WagrRefResult {
+  id           String    @id @default(cuid())
+  wagrPlayerId Int
+  wagrEventId  Int
+  name         String
+  year         Int
+  // WAGR-uka resultatet teller i
+  week         Int?
+  date         DateTime? @db.Date
+  country      String?
+  city         String?
+  // Plassering som WAGR skriver den («T9», «Participant»)
+  finish       String?
+  power        Float?
+  points       Float?
+  eventType    String?
+  format       String?
+  // Score per runde
+  rounds       Json      @default("[]")
+  fieldSize    Int?
+  // WAGR-plass uka før og uka etter turneringen
+  rankBefore   Int?
+  rankAfter    Int?
+
+  player WagrRefPlayer @relation(fields: [wagrPlayerId], references: [wagrPlayerId], onDelete: Cascade)
+
+  @@unique([wagrPlayerId, wagrEventId])
+  @@index([wagrPlayerId, year])
+  @@map("wagr_ref_results")
+}
