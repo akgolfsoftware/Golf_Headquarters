@@ -1,0 +1,20 @@
+/*
+ * Øvelsesbank i Skrå-drakten (type 4, liste). Toppen, kortene og kolonnene deler byggeklosser og kolonneoppsett
+ * med I dag (playerhq-ny-idag.css §Skrå). Her står bare det som er særegent for banken.
+ * Listen er bred kolonne, filteret og Caddie-forslaget smal kolonne; på mobil kommer Caddie, filter, liste.
+ */
+.phn-ov-skra .skra-plass:empty { display: none; }
+.phn-ov-skra .phn-ov-liste { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 12px; }
+.phn-ov-skra .phn-ov-filterkol { gap: 16px; }
+.phn-ov-skra .phn-knapp, .phn-ov-skra .phn-ov-chips button { min-height: 48px; }
+/* Caddie-kortet står i den smale kolonnen: knappen under teksten, og tallet litt mindre (som «Nå» i Plan). */
+@container (min-width: 900px) {
+  .phn-ov-skra .skra-h > .skra-plass > section:first-child { grid-template-columns: minmax(0, 1fr); align-items: start; }
+}
+.phn-ov-skra .skra-h section:first-child strong { font-size: 34px; }
+.phn-ov-skra .skra-h section:first-child h2 { font-size: 20px; }
+/* Mobil: pyramiden som valgknapper på rad i stedet for fem stablede trinn, så listen kommer høyere opp. */
+@container (max-width: 899px) {
+  .phn.phn-ov-skra .phn-ov-pyramide { display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 6px; }
+  .phn.phn-ov-skra .phn-ov-pyramide button { width: auto !important; padding: 0 14px; min-height: 48px; }
+}
