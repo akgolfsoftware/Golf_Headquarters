@@ -21,7 +21,7 @@ Gjelder `/team-norway/*` og `/teamnorway` (innlogging). Samme metode som PlayerH
 
 | Gruppe | Skjermer uten `TnSkraTopp` |
 |---|---|
-| Hjem og inngang | `/team-norway` (`tn-oversikt-skjerm`, egen helteflate), `/teamnorway` innlogging (`tn-innlogging.tsx`) |
+| Hjem og inngang | `/teamnorway` innlogging (`tn-innlogging.tsx`, flat navy skinne uten bilde). Rettet i steg 3: `/team-norway` (`tn-oversikt-skjerm`) var allerede i Skrå fra #1463 med egen bildetopp, ikke «uten topp» |
 | Spiller (IUP) | `spiller/[id]` (innlegg og tidslinje), `evaluering` (Fireukerssjekk), `profil`, `turneringsplan`, `analyse`, `oversikt` bruker eget uttrykk |
 | Detalj | `turneringer/[id]`, `samlinger/[id]`, `protokoller/[id]`, `fellestesting/[deltakerId]`, `tester/[testId]` (har topp i visning, må kontrolleres) |
 | Lister og drift | `[groupId]` (gruppeposter), `[groupId]/dokumenter`, `live-watch`, `apparatet`, `inviter`, `tilgang`, `turneringer/ny` |
