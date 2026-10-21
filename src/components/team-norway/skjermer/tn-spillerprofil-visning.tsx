@@ -145,7 +145,7 @@ export function TnSpillerprofilVisning({
       />
       <TnSkraKort>
       <TnFlate style={{ display: "grid", gap: 12 }}>
-        <TnSpillerFaner spillerId={spillerId} spillerNavn={profil.navn} aktiv="oversikt" kanAdministrere={!kontekst.erSpiller} kompakt />
+        <TnSpillerFaner spillerId={spillerId} spillerNavn={profil.navn} aktiv="oversikt" kanAdministrere={!kontekst.erSpiller} />
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
           <TnPille tone="info">{profil.erTnMedlem ? `${tnRolleNavn("PLAYER")} i ${kontekst.gruppe.name}` : "Delt med Team Norway"}</TnPille>
           <TnPille>{erCollege ? "College" : "Skole"}: {profil.skole ?? "ikke registrert"}</TnPille>

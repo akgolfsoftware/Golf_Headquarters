@@ -33,7 +33,7 @@ export function TnIupTopp({
       <TnSkraTopp lav bilde="tee-hand" etikett={`${tittel} for ${spillerNavn}`} overlinje={overlinje} tittel={tittel} ingress={ingress} />
       <TnSkraKort lav>
         <TnFlate>
-          <TnSpillerFaner spillerId={spillerId} spillerNavn={spillerNavn} aktiv={aktiv} kanAdministrere={kanAdministrere} kompakt />
+          <TnSpillerFaner spillerId={spillerId} spillerNavn={spillerNavn} aktiv={aktiv} kanAdministrere={kanAdministrere} />
         </TnFlate>
         {children}
       </TnSkraKort>

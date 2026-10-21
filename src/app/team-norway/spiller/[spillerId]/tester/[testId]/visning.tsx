@@ -39,7 +39,7 @@ function Ramme({ spillerId, tilgang, brukerNavn, overlinje, tittel, ingress, ven
       <TnSkraTopp bilde="spiller-ved-vannet" etikett={tittel} overlinje={overlinje} tittel={tittel} ingress={ingress} venstre={venstre} hoyre={hoyre} />
       <TnSkraKort>
         <TnFlate>
-          <TnSpillerFaner spillerId={spillerId} spillerNavn={tilgang.spillerNavn} aktiv="tester" kanAdministrere={!tilgang.kontekst.erSpiller} kompakt />
+          <TnSpillerFaner spillerId={spillerId} spillerNavn={tilgang.spillerNavn} aktiv="tester" kanAdministrere={!tilgang.kontekst.erSpiller} />
         </TnFlate>
         {children}
       </TnSkraKort>

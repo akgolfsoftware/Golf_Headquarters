@@ -6,7 +6,7 @@ import { initialer } from "./initialer";
 import { TnRailMobil } from "./rail-mobil";
 import { TnIkon } from "./tn-ikon";
 import s from "./tn-skall.module.css";
-import { TnSeksjonDS, TnSidehodeDS } from "./tn-skjerm";
+import { TnSeksjonDS } from "./tn-skjerm";
 import { TN } from "@/lib/v2/team-norway";
 
 /**
@@ -242,10 +242,6 @@ function TnRail({ grupper, bruker, orgNavn, orgUndertittel }: { grupper: TnMenyG
   );
 }
 
-export function TnSidehode({ overlinje, tittel, ingress, handling }: { overlinje: string; tittel: string; ingress: string; handling?: ReactNode }) {
-  return <TnSidehodeDS overlinje={overlinje} tittel={tittel} ingress={ingress} handling={handling} />;
-}
-
 export function TnMetrikk({ etikett, verdi, forklaring, tone = "navy" }: { etikett: string; verdi: ReactNode; forklaring?: string; tone?: TnPilleTone }) {
   return (
     <TnKort>
@@ -294,7 +290,7 @@ export type TnSpillerFane = "post" | "oversikt" | "profil" | "tester" | "analyse
  * `kanAdministrere` betyr her LESETILGANG til planfanene (COACH/ASSISTANT/ADMIN,
  * dvs. `!erSpiller`), ikke skrivetilgang. De underliggende rutene har egen skrivevakt.
  */
-export function TnSpillerFaner({ spillerId, spillerNavn, aktiv, kanAdministrere, overlinje, kompakt = false, children }: { spillerId: string; spillerNavn: string; aktiv: TnSpillerFane; kanAdministrere: boolean; overlinje?: string; kompakt?: boolean; children?: ReactNode }) {
+export function TnSpillerFaner({ spillerId, kanAdministrere, aktiv }: { spillerId: string; spillerNavn?: string; aktiv: TnSpillerFane; kanAdministrere: boolean }) {
   const kjernefaner: { id: TnSpillerFane; label: string; href: string }[] = [
     { id: "oversikt", label: "Oversikt", href: `/team-norway/spiller/${spillerId}/oversikt` },
     { id: "profil", label: "Profil", href: `/team-norway/spiller/${spillerId}/profil` },
@@ -331,21 +327,7 @@ export function TnSpillerFaner({ spillerId, spillerNavn, aktiv, kanAdministrere,
       ))}
     </nav>
   );
-  // Underfanene har sitt eget sidehode («IUP · navn» over sidetittelen); da vises bare fanene.
-  if (kompakt) return nav;
-  return (
-    <header style={{ display: "grid", gap: 12 }}>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 16, alignItems: "center" }}>
-        <span aria-hidden="true" style={{ display: "grid", placeItems: "center", width: 64, height: 64, flex: "none", background: TN.navy100, color: TN.navy900, fontFamily: TN.font.mono, fontSize: 20 }}>{initialer(spillerNavn)}</span>
-        <div style={{ minWidth: 0 }}>
-          <p style={{ margin: 0, fontFamily: TN.font.body, fontWeight: 700, fontSize: 13, lineHeight: 1.3, letterSpacing: "0.02em", color: TN.ink500 }}>{overlinje ?? "IUP"}</p>
-          <h1 style={{ margin: 0, fontFamily: TN.font.display, fontWeight: 400, fontSize: "clamp(30px, 3vw, 38px)", lineHeight: 1.12, letterSpacing: "0.03em", color: TN.navy900, overflowWrap: "anywhere" }}>{spillerNavn}</h1>
-        </div>
-      </div>
-      {children}
-      {nav}
-    </header>
-  );
+  return nav;
 }
 
 /** Nøkkeltall i IUP-hodet: liten etikett i mono over verdien. Manglende verdi er «—». */

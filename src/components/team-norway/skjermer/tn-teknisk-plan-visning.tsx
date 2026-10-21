@@ -76,7 +76,7 @@ export function TnTekniskPlanVisning({ brukerNavn, kontekst, spillerId, spillerN
       />
       <TnSkraKort>
       <TnFlate>
-        <TnSpillerFaner spillerId={spillerId} spillerNavn={spillerNavn} aktiv="teknisk-plan" kanAdministrere={!kontekst.erSpiller} kompakt />
+        <TnSpillerFaner spillerId={spillerId} spillerNavn={spillerNavn} aktiv="teknisk-plan" kanAdministrere={!kontekst.erSpiller} />
       </TnFlate>
       <Link href={`/team-norway/spiller/${spillerId}/teknisk-plan`} style={{ color: TN.navy600, fontSize: 14, fontWeight: 700, minHeight: 44, display: "inline-flex", alignItems: "center", textDecoration: "underline", textUnderlineOffset: 4 }}>Alle planer</Link>
 
@@ -249,7 +249,7 @@ export function TnTekniskPlanerVisning({ brukerNavn, kontekst, spillerId, spille
       />
       <TnSkraKort>
       <TnFlate>
-        <TnSpillerFaner spillerId={spillerId} spillerNavn={spillerNavn} aktiv="teknisk-plan" kanAdministrere={!kontekst.erSpiller} kompakt />
+        <TnSpillerFaner spillerId={spillerId} spillerNavn={spillerNavn} aktiv="teknisk-plan" kanAdministrere={!kontekst.erSpiller} />
       </TnFlate>
 
       {!harTilgang ? (

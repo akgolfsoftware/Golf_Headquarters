@@ -4,41 +4,6 @@
    Former og dybde etter retning «Skrå» (19.10.2026): kort 18 med navy-skygge, piller
    for knapper og merker. Avstand mellom blokkene eies av TnShell (gap). */
 
-.sidehode {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 16px 24px;
-  flex-wrap: wrap;
-}
-.sidehodeTekst { min-width: 0; flex: 1 1 320px; }
-.overlinje {
-  margin: 0;
-  font-family: var(--tn-font-body);
-  font-weight: var(--tn-weight-bold);
-  font-size: 13px;
-  line-height: 1.3;
-  letter-spacing: 0.02em;
-  color: var(--tn-ink-500);
-}
-.tittel {
-  margin: 4px 0 0;
-  font-family: var(--tn-font-display);
-  font-weight: var(--tn-weight-regular);
-  font-size: clamp(30px, 3vw, 38px);
-  line-height: 1.12;
-  letter-spacing: 0.03em;
-  color: var(--tn-navy-900);
-}
-.ingress {
-  margin: 8px 0 0;
-  max-width: 52ch;
-  font-size: 15.5px;
-  line-height: 1.6;
-  color: var(--tn-ink-700);
-}
-.handling { display: flex; gap: 8px; flex-wrap: wrap; }
-
 .knapp {
   display: inline-flex;
   align-items: center;
@@ -193,8 +158,6 @@
 .knapperad { display: flex; flex-wrap: wrap; gap: 8px; }
 
 @media (max-width: 900px) {
-  .handling { width: 100%; }
-  .handling .knapp { flex: 1 1 auto; }
   .tabell thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
   .tabell tr { display: block; border-bottom: 1px solid var(--tn-border-subtle); padding: 12px 0; }
   .tabell td { display: flex; gap: 12px; border: 0; padding: 4px 0; }
