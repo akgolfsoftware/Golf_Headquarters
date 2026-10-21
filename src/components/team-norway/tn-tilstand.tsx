@@ -18,7 +18,11 @@ export function TnSkallSkjelett({ children }: { children: ReactNode }) {
       </div>
       <div className={s.kolonne}>
         <div className={s.topplinje} aria-hidden="true"><span className={t.toppStrek} /></div>
-        <main className={s.innhold}>{children}</main>
+        <main className={s.innhold}>
+          {/* Skrå-toppen som skjelett: navy flate med skråkutt og rød kant, og innholdet over kanten. */}
+          <div className={t.toppSkjelett} aria-hidden="true" />
+          <div className={t.overKanten}>{children}</div>
+        </main>
       </div>
     </div>
   );
@@ -27,8 +31,10 @@ export function TnSkallSkjelett({ children }: { children: ReactNode }) {
 export function TnLaster({ tekst }: { tekst: string }) {
   return (
     <div className={t.blokk} aria-busy="true" aria-live="polite">
-      <p className={t.forklar}>{tekst}</p>
-      <i className={t.skjelett} style={{ height: 120 }} />
+      <div className={t.lasterKort}>
+        <p className={t.forklar}>{tekst}</p>
+        <i className={t.skjelett} style={{ height: 96 }} />
+      </div>
       <i className={t.skjelett} style={{ height: 64 }} />
       <i className={t.skjelett} style={{ height: 64 }} />
     </div>
