@@ -13,3 +13,7 @@
 }
 /* Tilbakelenken står i toppen, på bildet: hvit tekst. */
 .phn-skra .skra-tilbake :is(.phn-tilbake, .phn-k-tilbake) { color: #fff; margin: 0; }
+/* Tilbakelenke og hovedknapp på rad i toppen. Knappen er hvit på bildet. */
+.phn-skra .skra-topp-rad { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.phn-skra .skra-topp-knapp.pri { background: #fff; color: var(--ak-g900); border-color: #fff; min-height: 48px; }
+.phn-skra .skra-tilbake .tilbake { color: #fff; }

@@ -20,9 +20,12 @@ import { useMemo, useRef, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowDown, ArrowUp, Check, ChevronLeft, ChevronRight, X } from "lucide-react";
+import { SkraFlyt, SkraKort, SkraTopp } from "@/components/precision/skra/Skra";
 import "@/styles/playerhq-ny.css";
+import "@/styles/playerhq-ny-idag.css";
 import "@/styles/playerhq-ny-meg.css";
 import "@/styles/playerhq-ny-utfordringer.css";
+import "@/styles/playerhq-ny-lister-skra.css";
 
 export type UtfAkse = "fys" | "tek" | "slag" | "spill" | "turn" | null;
 const BILDE: Record<Exclude<UtfAkse, null>, string> = {
@@ -40,18 +43,24 @@ export type UtfKort = {
 };
 
 export function PHUtfordringer({ aktive, avsluttede, kanOpprette }: { aktive: UtfKort[]; avsluttede: UtfKort[]; kanOpprette: boolean }) {
-  return <div className="phn phn-meg phn-utf"><div className="side">
-    <div className="topp">
-      <Link className="tilbake" href="/portal/meg"><ChevronLeft size={18} aria-hidden />Meg</Link>
-      <div className="topp-rad"><div><div className="phn-dato">Meg · utfordringer</div><h1 className="phn-tittel">Utfordringer</h1></div>
-        {kanOpprette && <Link className="phn-knapp pri" href="/portal/utfordringer/ny">Ny utfordring</Link>}</div>
-    </div>
+  return <div className="phn phn-meg phn-utf phn-skra">
+    <SkraTopp
+      lav
+      etikett="Utfordringer"
+      bilde="/images/playerhq/turn-tee.jpg" bildePosisjon="50% 50%"
+      overlinje="Meg · utfordringer"
+      tittel="Utfordringer"
+      handling={<span className="skra-topp-rad">
+        <span className="skra-tilbake"><Link className="tilbake" href="/portal/meg"><ChevronLeft size={18} aria-hidden />Meg</Link></span>
+        {kanOpprette && <Link className="phn-knapp pri skra-topp-knapp" href="/portal/utfordringer/ny">Ny utfordring</Link>}
+      </span>}
+    />
+    <SkraFlyt lav>
     {aktive.length === 0 && avsluttede.length === 0
-      ? <div className="phn-kort dempet"><b className="phn-undertittel">Ingen utfordringer ennå</b><p className="phn-forklar">Lag en utfordring med en øvelse, og velg hvem i gruppa di som skal være med. De får varsel i appen.</p>
-        {kanOpprette ? <div className="phn-knapper"><Link className="phn-knapp pri" href="/portal/utfordringer/ny">Ny utfordring</Link></div> : <p className="phn-kilde">Å lage utfordringer krever nivået Full. <Link href="/portal/meg/abonnement">Se abonnement</Link></p>}</div>
+      ? <SkraKort tittel="Ingen utfordringer ennå"><p className="phn-forklar">Lag en utfordring med en øvelse, og velg hvem i gruppa di som skal være med. De får varsel i appen.</p>
+        {kanOpprette ? <div className="phn-knapper"><Link className="phn-knapp pri" href="/portal/utfordringer/ny">Ny utfordring</Link></div> : <p className="phn-kilde">Å lage utfordringer krever nivået Full. <Link href="/portal/meg/abonnement">Se abonnement</Link></p>}</SkraKort>
       : <>
-        {aktive.length > 0 && <section className="phn-seksjon" aria-labelledby="utf-aktive">
-          <div className="phn-sek-topp"><h2 id="utf-aktive">Aktive</h2><span className="phn-kilde">{aktive.length}</span></div>
+        {aktive.length > 0 && <SkraKort tittel="Aktive" meta={String(aktive.length)}>
           <div className="utf-liste aktive">{aktive.map((u) => <Link key={u.id} href={`/portal/utfordringer/${u.id}`} className={`utf ${u.akse ?? "fri"}`}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             {u.akse && <img src={BILDE[u.akse]} alt="" />}
@@ -62,17 +71,17 @@ export function PHUtfordringer({ aktive, avsluttede, kanOpprette }: { aktive: Ut
               {u.slutter && <span className="slutter">Slutter {u.slutter}</span>}
             </span>
           </Link>)}</div>
-        </section>}
-        {avsluttede.length > 0 && <section className="phn-seksjon" aria-labelledby="utf-avsl">
-          <div className="phn-sek-topp"><h2 id="utf-avsl">Avsluttet</h2><span className="phn-kilde">{avsluttede.length}</span></div>
+        </SkraKort>}
+        {avsluttede.length > 0 && <SkraKort tittel="Avsluttet" meta={String(avsluttede.length)}>
           <div className="utf-liste">{avsluttede.map((u) => <Link key={u.id} href={`/portal/utfordringer/${u.id}`} className="utf avsluttet">
             <span className="t"><b>{u.navn}</b><span className="phn-kilde">Avsluttet{u.avsluttetDato ? ` ${u.avsluttetDato}` : ""} · {u.antall} {u.antall === 1 ? "deltaker" : "deltakere"}</span></span>
             <span className="plass"><strong>{u.minPlass != null ? `${u.minPlass}.` : "—"}</strong></span>
           </Link>)}</div>
-        </section>}
+        </SkraKort>}
       </>}
     <p className="phn-kilde">Utfordringer teller ikke som trening og vises ikke i planen eller Stats.</p>
-  </div></div>;
+    </SkraFlyt>
+  </div>;
 }
 
 /* ---------- Én utfordring ---------- */
