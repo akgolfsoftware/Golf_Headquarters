@@ -31,6 +31,10 @@ import { erIRute, NIVA_FILTER, TEMPO_TEKST, type MaalKortNy, type MaalListeData,
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-kommunikasjon.css";
 import "@/styles/playerhq-ny-maal.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke10-skra.css";
 
 type Filter = MaalNivaFilter | "avsluttet";
 
@@ -60,18 +64,16 @@ const PILLE: Record<MaalKortNy["tempo"], "ok" | "vent" | "noy"> = { nadd: "ok", 
 
 function Hode({ nivaer }: { nivaer?: ReactNode }) {
   return (
-    <div className="phn-topp">
-      <div className="phn-topp-rad">
-        <div>
-          <div className="phn-dato">{nivaer ? "Workbench" : "Plan · Workbench"}</div>
-          <h1 className="phn-tittel">Målsetninger</h1>
-        </div>
-        <div className="phn-knapper">
-          <Link className="phn-knapp pri" href="/portal/mal/ny"><Plus className="phn-ikon" aria-hidden />Ny målsetning</Link>
-        </div>
-      </div>
-      {nivaer}
-    </div>
+    <SkraTopp
+      lav
+      etikett="Målsetninger"
+      bilde="/images/playerhq/stats-topp.jpg" bildePosisjon="50% 50%"
+      overlinje={nivaer ? "Workbench" : "Plan · Workbench"}
+      tittel="Målsetninger"
+      handling={<span className="skra-topp-rad">
+        <Link className="phn-knapp pri skra-topp-knapp" href="/portal/mal/ny"><Plus className="phn-ikon" aria-hidden />Ny målsetning</Link>
+      </span>}
+    />
   );
 }
 
@@ -113,25 +115,31 @@ export function PHMalsetninger({ data, avsluttede = [], visIup, state, onRetry, 
 
   if (tilstand === "laster") {
     return (
-      <div className="phn phn-m" aria-busy="true">
+      <div className="phn phn-m phn-skra" aria-busy="true">
         <Hode nivaer={nivaer} />
+        <SkraFlyt lav>
+        {nivaer}
         <span className="phn-skjelett" style={{ height: 120 }} />
         <div className="phn-m-liste">
           <span className="phn-skjelett" style={{ height: 180 }} />
           <span className="phn-skjelett" style={{ height: 180 }} />
         </div>
+        </SkraFlyt>
       </div>
     );
   }
 
   if (tilstand === "feil") {
     return (
-      <div className="phn phn-m">
+      <div className="phn phn-m phn-skra">
         <Hode nivaer={nivaer} />
+        <SkraFlyt lav>
+        {nivaer}
         <section className="phn-kort">
           <p className="phn-k-feil" role="alert">Målsetningene kunne ikke hentes. Ingenting er endret.</p>
           {onRetry && <div className="phn-knapper"><button type="button" className="phn-knapp sek" onClick={onRetry}>Prøv igjen</button></div>}
         </section>
+        </SkraFlyt>
       </div>
     );
   }
@@ -162,8 +170,10 @@ export function PHMalsetninger({ data, avsluttede = [], visIup, state, onRetry, 
   ) : null;
 
   return (
-    <div className="phn phn-m">
+    <div className="phn phn-m phn-skra">
       <Hode nivaer={nivaer} />
+      <SkraFlyt lav>
+      {nivaer}
 
       {tilstand === "tom" ? (
         <section className="phn-kort phn-k-dempet phn-m-tomt">
@@ -203,6 +213,7 @@ export function PHMalsetninger({ data, avsluttede = [], visIup, state, onRetry, 
           )}
         </>
       )}
+      </SkraFlyt>
     </div>
   );
 }

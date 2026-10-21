@@ -1,0 +1,4 @@
+/* Pakke 10 (Workbench og målsetninger): topp med bilde, første rad under det skrå kuttet. */
+.phn-skra .skra-topp-rad .phn-pil { display: inline-flex; gap: 4px; }
+.phn-skra .skra-topp-rad .skra-topp-knapp.sek { background: rgba(255, 255, 255, .14); color: #fff; border-color: rgba(255, 255, 255, .5); }
+.phn-skra > div > .phn-valg, .phn-skra .phn-valg[aria-label="Nivå"] { margin-top: 0; }
