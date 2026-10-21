@@ -24,6 +24,10 @@ import { byggTrening, treningSteder, TRENING_AKSER, type LoggetOkt, type Trening
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-stats.css";
 import "@/styles/playerhq-ny-statsdybde.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke7-skra.css";
 
 export type PH17TreningData = {
   okter: TreningOkt[];
@@ -55,20 +59,22 @@ export function PH17Trening({ data }: { data: PH17TreningData }) {
   const harData = data.okter.length > 0 || logget.length > 0;
 
   return (
-    <div className="phn">
-      <TmTilbake href="/portal/analysere" tekst="Stats" />
-      <div className="phn-sd-topp med-bilde">
-        <div>
-          <div className="phn-dato">Stats · Trening</div>
-          <h1 className="phn-tittel">Trening</h1>
-        </div>
-        {/* eslint-disable-next-line @next/next/no-img-element -- statisk bilde fra public, ingen tekst oppå */}
-        <img src="/images/playerhq/slag-simulator.jpg" alt="" width={1600} height={1067} />
+    <div className="phn phn-skra">
+    <SkraTopp
+      lav
+      etikett="Stats"
+      bilde="/images/playerhq/slag-simulator.jpg" bildePosisjon="50% 50%"
+      overlinje={<>Stats · Trening</>}
+      tittel={<>Trening</>}
+      handling={<span className="skra-tilbake"><TmTilbake href="/portal/analysere" tekst="Stats" /></span>}
+    />
+    <SkraFlyt lav>
+      <section className="phn-kort">
         <div className="phn-hoved">
           <strong>{s.planMin || s.loggetMin ? <Tid min={s.gjortMin} /> : "—"}</strong>
           {s.pct != null && <span className="phn-trend">{s.pct} % av plan</span>}
         </div>
-      </div>
+      </section>
 
       {!harData ? (
         <section className="phn-kort dempet">
@@ -186,6 +192,7 @@ export function PH17Trening({ data }: { data: PH17TreningData }) {
           </div>
         </div>
       </dialog>
+    </SkraFlyt>
     </div>
   );
 }

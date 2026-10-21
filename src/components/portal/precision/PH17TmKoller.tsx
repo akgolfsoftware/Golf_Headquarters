@@ -17,6 +17,10 @@ import { TmFilterLinje } from "./PH17TmFilter";
 import { TmAlleTall, TmTilbake, tmKortDag } from "./PH17TmFelles";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-stats.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke7-skra.css";
 
 export type PH17TmKollerData = {
   filter: TmFilter;
@@ -34,16 +38,22 @@ export function PH17TmKoller({ data }: { data: PH17TmKollerData }) {
   const maks = Math.max(1, ...gapping.rader.map((g) => g.carry));
 
   return (
-    <div className="phn">
-      <TmTilbake href={`${STI}${tmFilterSok(filter)}`} tekst="TrackMan" />
-      <div className="phn-topp">
-        <div className="phn-dato">Stats · TrackMan</div>
-        <h1 className="phn-tittel">Alle køller</h1>
+    <div className="phn phn-skra">
+    <SkraTopp
+      lav
+      etikett="Stats"
+      bilde="/images/playerhq/slag-simulator.jpg" bildePosisjon="50% 50%"
+      overlinje={<>Stats · TrackMan</>}
+      tittel={<>Alle køller</>}
+      handling={<span className="skra-tilbake"><TmTilbake href={`${STI}${tmFilterSok(filter)}`} tekst="TrackMan" /></span>}
+    />
+    <SkraFlyt lav>
+      <section className="phn-kort">
         <div className="phn-hoved">
           <strong>{rader.length || "—"}</strong>
           <span className="phn-forklar">køller med slag · {TM_PERIODE_NAVN[filter.periode].toLowerCase()} · {hast}</span>
         </div>
-      </div>
+      </section>
       <TmFilterLinje filter={filter} sti={`${STI}/koller`} koller={data.kolleValg} />
       <div className="phn-to-kol">
         <div className="phn-kol">
@@ -119,6 +129,7 @@ export function PH17TmKoller({ data }: { data: PH17TmKollerData }) {
           </section>
         </div>
       </div>
+    </SkraFlyt>
     </div>
   );
 }

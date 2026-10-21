@@ -27,6 +27,10 @@ import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-stats.css";
 import "@/styles/playerhq-ny-statsdybde.css";
 import "@/styles/playerhq-ny-statsresten-omrade.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke7-skra.css";
 
 export type PH16cOmradeData =
   | { type: "sg"; sg: OmradeSgData; fokusHref: string }
@@ -41,14 +45,6 @@ function StorTid({ min }: { min: number }) {
   const m = Math.max(0, Math.round(min)), t = Math.floor(m / 60), r = m % 60;
   if (t === 0) return <>{r}<small>min</small></>;
   return <>{t}<small>{r ? `t ${r} min` : "t"}</small></>;
-}
-
-function Topp({ dato, tittel }: { dato: string; tittel: string }) {
-  return (
-    <div className="phn-om-topp">
-      <div><div className="phn-dato">{dato}</div><h1 className="phn-tittel">{tittel}</h1></div>
-    </div>
-  );
 }
 
 /* ───────────── SG-område ───────────── */
@@ -67,9 +63,16 @@ function SgOmrade({ d, fokusHref }: { d: OmradeSgData; fokusHref: string }) {
   else tekst = `${info.navn} gir deg ${formaterDesimal(d.verdi, 1)} slag per runde.`;
 
   return (
-    <div className="phn">
-      <TmTilbake href="/portal/analysere?del=sg" tekst="Stats" />
-      <Topp dato="Strokes Gained · område" tittel={info.navn} />
+    <div className="phn phn-skra">
+    <SkraTopp
+      lav
+      etikett="Stats"
+      bilde="/images/playerhq/stats-topp.jpg" bildePosisjon="50% 50%"
+      overlinje="Strokes Gained · område"
+      tittel={info.navn}
+      handling={<span className="skra-tilbake"><TmTilbake href="/portal/analysere?del=sg" tekst="Stats" /></span>}
+    />
+    <SkraFlyt lav>
       <div className="phn-to-kol">
         <div className="phn-om-kol">
           <section className="phn-fylt slag" aria-label={`${info.navn}, slag per runde`}>
@@ -129,6 +132,7 @@ function SgOmrade({ d, fokusHref }: { d: OmradeSgData; fokusHref: string }) {
           </div>
         </aside>
       </div>
+    </SkraFlyt>
     </div>
   );
 }
@@ -165,9 +169,16 @@ function AkseOmrade({ d }: { d: OmradeAkseData }) {
   const maks = Math.max(60, ...d.uker.flatMap((u) => [u.gjort, u.plan]));
   const W = 320, H = 130, b = 44;
   return (
-    <div className="phn">
-      <TmTilbake href="/portal/analysere?del=tren" tekst="Stats" />
-      <Topp dato="Trening · akse" tittel={`${info.kode} ${info.navn}`} />
+    <div className="phn phn-skra">
+    <SkraTopp
+      lav
+      etikett="Stats"
+      bilde="/images/playerhq/stats-topp.jpg" bildePosisjon="50% 50%"
+      overlinje="Trening · akse"
+      tittel={`${info.kode} ${info.navn}`}
+      handling={<span className="skra-tilbake"><TmTilbake href="/portal/analysere?del=tren" tekst="Stats" /></span>}
+    />
+    <SkraFlyt lav>
       <div className="phn-to-kol">
         <div className="phn-om-kol">
           <section className={`phn-fylt ${d.akse}`} aria-label={`${info.kode}, gjennomført siste fire uker`}>
@@ -215,6 +226,7 @@ function AkseOmrade({ d }: { d: OmradeAkseData }) {
           <div className="phn-om-knapper"><Link className="phn-knapp pri" href="/portal/planlegge">Til Plan</Link></div>
         </aside>
       </div>
+    </SkraFlyt>
     </div>
   );
 }

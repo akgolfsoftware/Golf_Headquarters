@@ -26,6 +26,10 @@ import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-stats.css";
 import "@/styles/playerhq-ny-statsdybde.css";
 import "@/styles/playerhq-ny-statsresten-omrade.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke7-skra.css";
 
 export interface PH16bSkillMapProps {
   data: PH16StatsData;
@@ -121,18 +125,20 @@ export function PH16bSkillMap({ data, grunnlag, pgaTour = false }: PH16bSkillMap
   const ringer = rader.filter((r) => FORM[r.id] && "ring" in FORM[r.id]!).sort((a, b) => (FORM[b.id] as { ring: number }).ring - (FORM[a.id] as { ring: number }).ring);
 
   return (
-    <div className="phn">
-      <TmTilbake href="/portal/analysere?del=sg" tekst="Stats" />
-      <div className="phn-om-topp">
-        <div>
-          <div className="phn-dato">Strokes Gained · {antallRunder} {antallRunder === 1 ? "runde" : "runder"} slag for slag</div>
-          <h1 className="phn-tittel">Skill map</h1>
-        </div>
-        <div className="phn-om-sammenlign" role="group" aria-label="Sammenlign med">
+    <div className="phn phn-skra">
+    <SkraTopp
+      lav
+      etikett="Stats"
+      bilde="/images/playerhq/stats-topp.jpg" bildePosisjon="50% 50%"
+      overlinje={<>Strokes Gained · {antallRunder} {antallRunder === 1 ? "runde" : "runder"} slag for slag</>}
+      tittel={<>Skill map</>}
+      handling={<span className="skra-tilbake"><TmTilbake href="/portal/analysere?del=sg" tekst="Stats" /></span>}
+    />
+    <SkraFlyt lav>
+      <div className="phn-om-sammenlign" role="group" aria-label="Sammenlign med">
           <button type="button" aria-pressed={mot === "b"} onClick={() => setMot("b")}>Kategori B</button>
           <button type="button" aria-pressed={mot === "pga"} onClick={() => setMot("pga")}>PGA Tour</button>
         </div>
-      </div>
 
       <div className="phn-om-kart-grid">
         <div className="phn-seksjon">
@@ -149,6 +155,7 @@ export function PH16bSkillMap({ data, grunnlag, pgaTour = false }: PH16bSkillMap
         {valgt ? <Detalj r={valgt} mot={mot} harB={harB} grunnlag={grunnlag[valgt.g]} /> : <section className="phn-kort phn-om-detalj"><p className="phn-forklar">Ingen soner å vise ennå.</p></section>}
       </div>
       <Link className="phn-lenke" href="/portal/analysere?del=sg" style={{ justifySelf: "start" }}>Se som liste i Stats</Link>
+    </SkraFlyt>
     </div>
   );
 }

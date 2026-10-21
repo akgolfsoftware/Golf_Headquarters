@@ -26,6 +26,10 @@ import { PH16Turneringer } from "./PH16Turneringer";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-stats.css";
 import "@/styles/playerhq-ny-statsdybde.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke7-skra.css";
 
 export type Valg = "alle" | "turn" | "egen";
 const VALG: { id: Valg; navn: string }[] = [{ id: "alle", navn: "Alle runder" }, { id: "turn", navn: "Turneringer" }, { id: "egen", navn: "Egne runder" }];
@@ -38,15 +42,17 @@ export function PH16Resultater({ data, koblet, kurve, startVis = "alle" }: { dat
   const tom = data.runder.length === 0 && data.turneringer.length === 0;
 
   return (
-    <div className="phn">
-      <TmTilbake href="/portal/analysere" tekst="Stats" />
-      <div className="phn-sd-topp med-bilde">
-        <div>
-          <div className="phn-dato">Stats · Resultater</div>
-          <h1 className="phn-tittel">Resultater</h1>
-        </div>
-        {/* eslint-disable-next-line @next/next/no-img-element -- statisk bilde fra public, ingen tekst oppå */}
-        <img src="/images/playerhq/turn-tee.jpg" alt="" width={1600} height={1067} />
+    <div className="phn phn-skra">
+    <SkraTopp
+      lav
+      etikett="Stats"
+      bilde="/images/playerhq/turn-tee.jpg" bildePosisjon="50% 50%"
+      overlinje={<>Stats · Resultater</>}
+      tittel={<>Resultater</>}
+      handling={<span className="skra-tilbake"><TmTilbake href="/portal/analysere" tekst="Stats" /></span>}
+    />
+    <SkraFlyt lav>
+      <section className="phn-kort">
         <div className="phn-hoved">
           <strong>{data.snitt != null ? formaterDesimal(data.snitt, 1) : "—"}<small>brutto</small></strong>
           {endring != null && endring !== 0 && (
@@ -56,7 +62,7 @@ export function PH16Resultater({ data, koblet, kurve, startVis = "alle" }: { dat
             </span>
           )}
         </div>
-      </div>
+      </section>
       <p className="phn-forklar">
         {data.snitt != null
           ? `Snitt av siste ${data.antallSnittRunder} runder, brutto, som i Stats.`
@@ -95,6 +101,7 @@ export function PH16Resultater({ data, koblet, kurve, startVis = "alle" }: { dat
           )}
         </>
       )}
+    </SkraFlyt>
     </div>
   );
 }
