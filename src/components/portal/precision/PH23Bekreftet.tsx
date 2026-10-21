@@ -10,9 +10,11 @@
  *   - Ingen riggrad i tests/visual/skjerm-mapping.ts; målt med tests/visual/precision/maal.mjs PH-23-BEKREFTET.
  */
 import Link from "next/link";
-import { Check } from "lucide-react";
 import "@/styles/playerhq-ny.css";
+import "@/styles/playerhq-ny-idag.css";
 import "@/styles/playerhq-ny-kommunikasjon.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import { SkraFlyt, SkraKort, SkraTopp } from "@/components/precision/skra/Skra";
 
 export type PH23BekreftetData = {
   tjeneste: string;
@@ -26,19 +28,19 @@ export type PH23BekreftetData = {
 };
 
 export function PH23Bekreftet({ data }: { data: PH23BekreftetData }) {
-  return <div className="phn">
-    <div className="phn-k-smal">
-      <div className="phn-k-bekreftet-topp">
-        <span className="phn-k-hake"><Check className="phn-ikon" aria-hidden /></span>
-        <div>
-          <div className="phn-dato">Booking · bekreftet</div>
-          <h1 className="phn-tittel">Timen er bekreftet</h1>
-          <p className="phn-k-ingress">Du får påminnelse på e-post før timen.</p>
-        </div>
-      </div>
-      <div className="phn-k-booking-helt bred">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/images/playerhq/slag-simulator.jpg" alt="" />
+  return <div className="phn phn-skra">
+    <SkraTopp
+      lav
+      etikett="Booking bekreftet"
+      bilde="/images/playerhq/slag-simulator.jpg" bildePosisjon="50% 50%"
+      overlinje="Booking · bekreftet"
+      tittel="Timen er bekreftet"
+      ingress="Du får påminnelse på e-post før timen."
+    />
+    <SkraFlyt lav>
+    <div className="phn-k-skra-grid">
+      <div>
+      <div className="phn-k-booking-helt">
         <div className="phn-k-bt">
           <span className="phn-k-bt-dag">{data.dag}</span>
           <span className="phn-k-bt-tid">{data.klokkeslett}<small>{data.varighetMin} min</small></span>
@@ -46,11 +48,17 @@ export function PH23Bekreftet({ data }: { data: PH23BekreftetData }) {
           <span className="phn-k-info"><span>{data.sted || "—"}</span><span>{data.coachNavn ?? "—"}</span></span>
         </div>
       </div>
-      <div className="phn-k-vilkaar"><b>Gratis avbestilling inntil {data.avbestillingTimer} timer før</b><span>Etter det trekkes klippet, eller du får ikke betalingen tilbake.</span></div>
+      </div>
+      <div>
+      <SkraKort etikett="Avbestilling" tittel="Avbestilling">
+        <div className="phn-k-vilkaar"><b>Gratis avbestilling inntil {data.avbestillingTimer} timer før</b><span>Etter det trekkes klippet, eller du får ikke betalingen tilbake.</span></div>
+      </SkraKort>
       <div className="phn-knapper">
         <a href={data.kalenderUrl} target="_blank" rel="noopener noreferrer" className="phn-knapp pri">Legg i kalender</a>
         <Link href="/portal/meg/bookinger" className="phn-knapp sek">Mine bookinger</Link>
       </div>
+      </div>
     </div>
+    </SkraFlyt>
   </div>;
 }
