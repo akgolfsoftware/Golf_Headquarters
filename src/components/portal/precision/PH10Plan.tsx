@@ -8,7 +8,7 @@
  * ny økt og redigering i Workbench.
  *
  * Skrå-drakt 20.10.2026 (alternativ C, valgt av Anders): lav topp med bilde, uka til venstre og «Nå» til høyre.
- * Avvik fra skissen: «Målsetninger» og «dager til turnering» er ikke med, fordi Plan ikke henter dem i dag;
+ * Avvik fra skissen: «dager til turnering» er ikke med, fordi Plan ikke henter dem i dag (Målsetninger er med, som i I dag);
  * «lagt inn mot fordelt» er «planlagt», siden perioden ikke har timer per akse ennå (beslutninger.md §PLANNIVÅENE).
  *
  * Avvik:
@@ -33,6 +33,7 @@ import {
   type PlanBlokk, type PlanForslag, type PlanOpptatt,
 } from "@/lib/portal/plan-visning";
 import { moveSession, resolvePlayerApproval } from "@/lib/workbench/wb-actions";
+import { Maalsetninger, type PH01Maal } from "@/components/portal/precision/PH01IDag";
 import { SkraFlyt, SkraHelt, SkraKort, SkraTom, SkraTopp } from "@/components/precision/skra/Skra";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-idag.css";
@@ -83,10 +84,11 @@ export type PH10Props = {
   depthMode?: "simple" | "deep";
   periode?: UkePeriode | null;
   harTekniskPlan?: boolean;
+  maal?: PH01Maal[];
   tilstand?: "data" | "feil";
 };
 
-export function PH10Plan({ data, kalender = [], forslag = [], opptatt = [], ukeOffset = 0, depthMode = "simple", periode = null, harTekniskPlan = false, tilstand = "data" }: PH10Props) {
+export function PH10Plan({ data, kalender = [], forslag = [], opptatt = [], ukeOffset = 0, depthMode = "simple", periode = null, harTekniskPlan = false, maal = [], tilstand = "data" }: PH10Props) {
   const router = useRouter();
   const [endringer, setEndringer] = useState<Record<string, TodaySession | null>>({});
   const [besvart, setBesvart] = useState<string[]>([]);
@@ -313,6 +315,7 @@ export function PH10Plan({ data, kalender = [], forslag = [], opptatt = [], ukeO
           <div className="phn-lg-rad">{perAkse.map((x) => <span key={x.akse} className="phn-lg"><i className={`akse-${AKSE_KLASSE[x.akse]}`} />{x.akse} {formaterVarighet(x.min)}</span>)}</div>
           {depthMode === "deep" && periode?.fokus && <p className="phn-kilde">Fokus i perioden: {periode.fokus}</p>}
         </SkraKort></Plass>}
+        <Plass n={5}><Maalsetninger maal={maal} /></Plass>
         <Plass n={6}><SkraKort tittel="Mer i Plan"><nav className="phn-plan-fot" aria-label="Mer i Plan">
           {harTekniskPlan && <Link className="phn-rad-lenke" href="/portal/tren/teknisk-plan"><span><b>Teknisk plan</b><span className="phn-kilde">Oppgavene fra coachen din</span></span><ChevronRight className="phn-ikon" aria-hidden /></Link>}
           <Link className="phn-rad-lenke" href="/portal/kalender"><span><b>Kalender</b><span className="phn-kilde">Alle avtaler, dag for dag</span></span><ChevronRight className="phn-ikon" aria-hidden /></Link>

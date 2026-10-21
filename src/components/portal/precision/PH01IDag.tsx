@@ -141,7 +141,7 @@ function ToppTall({ uka, snitt, e, sg }: { uka: PH01Uka | null; snitt: PH01Snitt
 
 const MAAL_STATUS: Record<PH01Maal["status"], string> = { "on-track": "på vei", behind: "bak planen", achieved: "oppnådd", "no-data": "ingen data ennå" };
 
-function Maalsetninger({ maal }: { maal: PH01Maal[] }) {
+export function Maalsetninger({ maal }: { maal: PH01Maal[] }) {
   return <SkraKort tittel="Målsetninger" lenke={{ href: "/portal/mal", tekst: maal.length ? "Alle" : "Sett en" }}>
     {maal.length === 0
       ? <SkraTom>Ingen målsetninger ennå. Sett en, så ser du fremdriften her.</SkraTom>
