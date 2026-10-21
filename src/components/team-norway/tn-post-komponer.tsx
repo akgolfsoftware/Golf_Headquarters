@@ -53,8 +53,8 @@ export function TnPostKomponer({
       id="ny-post"
       style={{
         background: TN.surfaceCard,
-        border: `1px solid ${TN.ink200}`,
-        borderRadius: TN.radius.sm,
+        boxShadow: TN.shadow.md,
+        borderRadius: TN.radius.xl,
         padding: "12px 14px",
         display: "flex",
         flexDirection: "column",
@@ -103,7 +103,7 @@ export function TnPostKomponer({
         style={{
           minHeight: 44,
           border: `1px solid ${TN.borderDefault}`,
-          borderRadius: TN.radius.sm,
+          borderRadius: TN.radius.md,
           padding: "10px 14px",
           fontFamily: TN.font.body,
           fontSize: TN.text.sm,

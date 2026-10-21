@@ -21,8 +21,8 @@ function statusTekst(status: "PENDING" | "SKIPPED" | "ABSENT" | "DONE" | "IKKE_T
 
 // minWidth:0 hindrer <select> med lange protokollnavn fra å presse raden
 // utenfor 390px — uten den vinner selectens egen innholdsbredde over flex.
-const feltStil: React.CSSProperties = { minHeight: 48, minWidth: 0, maxWidth: "100%", padding: "0 12px", border: `1px solid ${TN.ink500}`, borderRadius: TN.radius.sm, background: TN.white, color: TN.ink900, fontSize: 16 };
-const visKnapp: React.CSSProperties = { minHeight: 48, padding: "0 18px", border: `1px solid ${TN.navy900}`, borderRadius: TN.radius.sm, background: TN.navy900, color: TN.white, fontSize: 14, fontWeight: 700, cursor: "pointer", alignSelf: "flex-end" };
+const feltStil: React.CSSProperties = { minHeight: 48, minWidth: 0, maxWidth: "100%", padding: "0 12px", border: `1px solid ${TN.ink500}`, borderRadius: TN.radius.md, background: TN.white, color: TN.ink900, fontSize: 16 };
+const visKnapp: React.CSSProperties = { minHeight: 48, padding: "0 18px", border: `1px solid ${TN.navy900}`, borderRadius: TN.radius.pill, background: TN.navy900, color: TN.white, fontSize: 14, fontWeight: 700, cursor: "pointer", alignSelf: "flex-end" };
 const komma = (n: number) => (Math.round(n * 10) / 10).toString().replace(".", ",");
 
 /**

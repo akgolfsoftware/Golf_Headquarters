@@ -63,7 +63,7 @@
   padding: 0 12px;
   background: var(--tn-white);
   border: 1px solid var(--tn-ink-500);
-  border-radius: var(--tn-radius-sm);
+  border-radius: var(--tn-radius-md);
   transition: border-color var(--tn-duration-fast) var(--tn-ease-out), box-shadow var(--tn-duration-base) var(--tn-ease-out);
 }
 .feltramme:focus-within { border-color: var(--tn-navy-600); box-shadow: var(--tn-focus-ring); }

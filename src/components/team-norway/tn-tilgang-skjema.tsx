@@ -83,7 +83,7 @@ export function TnTilgangSkjema({
           role="alert"
           style={{
             background: TN.status.redBg,
-            borderRadius: TN.radius.sm,
+            borderRadius: TN.radius.md,
             padding: "12px 16px",
             display: "flex",
             alignItems: "flex-start",

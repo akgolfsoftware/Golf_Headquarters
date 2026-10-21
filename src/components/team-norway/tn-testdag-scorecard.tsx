@@ -301,7 +301,7 @@ export function TnTestdagScorecard({ deltaker, protocol: p, testDagId }: { delta
               value={notes}
               disabled={felterDisabled}
               onChange={(e) => setNotes(e.target.value)}
-              style={{ minHeight: 72, width: "100%", padding: 10, border: `1px solid ${TN.borderSubtle}`, borderRadius: TN.radius.sm, background: TN.white, color: TN.navy900, fontSize: 16, fontFamily: TN.font.body, resize: "vertical" }}
+              style={{ minHeight: 72, width: "100%", padding: 10, border: `1px solid ${TN.borderSubtle}`, borderRadius: TN.radius.md, background: TN.white, color: TN.navy900, fontSize: 16, fontFamily: TN.font.body, resize: "vertical" }}
             />
           </label>
         </>

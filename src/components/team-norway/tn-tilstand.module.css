@@ -10,7 +10,7 @@
 @keyframes skjelett { to { background-position: -200% 0; } }
 @media (prefers-reduced-motion: reduce) { .skjelett { animation: none; } }
 .kort { display: grid; gap: 12px; align-content: start; justify-items: start; padding: 16px 18px 18px; border-radius: var(--tn-radius-xl); background: var(--tn-white); box-shadow: var(--tn-shadow-md); }
-.merke { display: inline-flex; align-items: center; gap: 6px; min-height: 24px; padding: 2px 8px; border-radius: var(--tn-radius-sm); background: var(--tn-status-red-bg); color: var(--tn-status-red-text); font-size: 12px; font-weight: 700; }
+.merke { display: inline-flex; align-items: center; gap: 6px; min-height: 24px; padding: 2px 8px; border-radius: var(--tn-radius-pill); background: var(--tn-status-red-bg); color: var(--tn-status-red-text); font-size: 12px; font-weight: 700; }
 .merke i { width: 6px; height: 6px; background: var(--tn-status-red); }
 .undertittel { font-size: 15px; line-height: 1.3; font-weight: 700; color: var(--tn-ink-900); }
 .knapp { min-height: 44px; padding: 0 18px; border: 1px solid var(--tn-navy-900); border-radius: var(--tn-radius-pill); background: var(--tn-navy-900); color: var(--tn-white); font-family: var(--tn-font-body); font-size: 14px; font-weight: 700; letter-spacing: 0.02em; cursor: pointer; }

@@ -22,8 +22,8 @@ const MAKS_TEGN = 2000;
 
 const seksjonstittel: CSSProperties = { fontFamily: TN.font.body, fontWeight: 700, fontSize: 15, lineHeight: 1.3, color: TN.ink900, margin: 0 };
 const etikett: CSSProperties = { fontFamily: TN.font.body, fontSize: 14, fontWeight: 700, color: TN.ink900 };
-const sekundaerKnapp: CSSProperties = { minHeight: 44, padding: "0 14px", border: `1px solid ${TN.navy900}`, borderRadius: TN.radius.sm, background: TN.white, color: TN.navy900, fontFamily: TN.font.body, fontSize: 14, fontWeight: 700, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6 };
-const primaerKnapp: CSSProperties = { minHeight: 44, padding: "0 18px", border: `1px solid ${TN.navy900}`, borderRadius: TN.radius.sm, background: TN.navy900, color: TN.white, fontFamily: TN.font.body, fontSize: 14, fontWeight: 700, cursor: "pointer" };
+const sekundaerKnapp: CSSProperties = { minHeight: 44, padding: "0 14px", border: `1px solid ${TN.navy900}`, borderRadius: TN.radius.pill, background: TN.white, color: TN.navy900, fontFamily: TN.font.body, fontSize: 14, fontWeight: 700, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6 };
+const primaerKnapp: CSSProperties = { minHeight: 44, padding: "0 18px", border: `1px solid ${TN.navy900}`, borderRadius: TN.radius.pill, background: TN.navy900, color: TN.white, fontFamily: TN.font.body, fontSize: 14, fontWeight: 700, cursor: "pointer" };
 const feilboks: CSSProperties = { marginTop: 12, padding: "10px 12px", borderLeft: `3px solid ${TN.status.redText}`, background: TN.status.redBg, color: TN.status.redText, fontSize: 14 };
 
 const OSLO = { timeZone: "Europe/Oslo" } as const;
@@ -53,7 +53,7 @@ export function TnInnleggSkjema({ send, forfatterNavn, mottakere }: { send: (inp
   }
 
   return (
-    <section id="ny-post" style={{ background: TN.white, border: `1px solid ${TN.ink200}`, borderRadius: TN.radius.sm, padding: "16px 18px 18px", minWidth: 0 }}>
+    <section id="ny-post" style={{ background: TN.white, borderRadius: TN.radius.xl, boxShadow: TN.shadow.md, padding: "16px 18px 18px", minWidth: 0 }}>
       <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: 8, alignItems: "baseline" }}>
         <h2 style={seksjonstittel}>Nytt innlegg</h2>
         <span style={{ fontSize: 12.5, color: TN.ink500, overflowWrap: "anywhere" }}>Som {forfatterNavn}</span>
@@ -144,7 +144,7 @@ export function TnInnleggKort({ innlegg, visHvem, kvitter }: { innlegg: TnInnleg
   }
 
   return (
-    <article style={{ background: TN.white, border: `1px solid ${TN.ink200}`, borderRadius: TN.radius.sm, padding: "16px 18px 18px", minWidth: 0 }}>
+    <article style={{ background: TN.white, borderRadius: TN.radius.xl, boxShadow: TN.shadow.md, padding: "16px 18px 18px", minWidth: 0 }}>
       {kvitter ? <KvitterVedVisning postId={innlegg.id} /> : null}
       <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
         <Initialer navn={innlegg.forfatter} />
@@ -176,7 +176,7 @@ export function TnInnleggKort({ innlegg, visHvem, kvitter }: { innlegg: TnInnleg
       {innlegg.vedlegg.length > 0 ? (
         <div style={{ marginTop: 12, display: "flex", flexWrap: "wrap", gap: 8 }}>
           {innlegg.vedlegg.map((v) => (
-            <a key={v.id} href={`/api/team-norway/vedlegg/${encodeURIComponent(v.id)}`} style={{ minHeight: 44, display: "inline-flex", alignItems: "center", gap: 8, padding: "0 12px", border: `1px solid ${TN.ink200}`, borderRadius: TN.radius.sm, color: TN.navy900, fontSize: 14, textDecoration: "none", maxWidth: "100%", minWidth: 0 }}>
+            <a key={v.id} href={`/api/team-norway/vedlegg/${encodeURIComponent(v.id)}`} style={{ minHeight: 44, display: "inline-flex", alignItems: "center", gap: 8, padding: "0 12px", borderRadius: TN.radius.xl, boxShadow: TN.shadow.md, color: TN.navy900, fontSize: 14, textDecoration: "none", maxWidth: "100%", minWidth: 0 }}>
               
               <span style={{ overflowWrap: "anywhere" }}>{v.fileName}</span>
             </a>
@@ -288,7 +288,7 @@ export function TnDokumentSkjema({ groupId, maksMb, kategorier }: { groupId: str
   }
 
   return (
-    <section style={{ background: TN.white, border: `1px solid ${TN.ink200}`, borderRadius: TN.radius.sm, padding: "16px 18px 18px", minWidth: 0 }}>
+    <section style={{ background: TN.white, borderRadius: TN.radius.xl, boxShadow: TN.shadow.md, padding: "16px 18px 18px", minWidth: 0 }}>
       <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: 8, alignItems: "baseline" }}>
         <h2 style={seksjonstittel}>Last opp dokument</h2>
         <span style={{ fontSize: 12.5, color: TN.ink500 }}>PDF, XLSX, JPG, PNG · høyst {maksMb} MB</span>

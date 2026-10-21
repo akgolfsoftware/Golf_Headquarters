@@ -73,13 +73,13 @@ export function TnInviterSpiller({ groupId }: { groupId: string }) {
         rows={5}
         required
         disabled={venter}
-        style={{ width: "100%", resize: "vertical", padding: 14, border: `1px solid ${TN.borderDefault}`, borderRadius: TN.radius.sm, background: TN.white, color: TN.textPrimary, fontFamily: TN.font.body, fontSize: 16, lineHeight: TN.leading.normal }}
+        style={{ width: "100%", resize: "vertical", padding: 14, border: `1px solid ${TN.borderDefault}`, borderRadius: TN.radius.md, background: TN.white, color: TN.textPrimary, fontFamily: TN.font.body, fontSize: 16, lineHeight: TN.leading.normal }}
       />
       <p style={{ margin: 0, color: TN.textSecondary, fontSize: TN.text.sm, lineHeight: TN.leading.normal }}>
         Én adresse per linje. Eksisterende spillere meldes inn; nye får invitasjon til en gratis testprofil.
       </p>
       {feilmelding ? (
-        <p role="alert" style={{ margin: 0, padding: 12, borderRadius: TN.radius.sm, background: TN.status.redBg, color: TN.status.redText }}>
+        <p role="alert" style={{ margin: 0, padding: 12, borderRadius: TN.radius.md, background: TN.status.redBg, color: TN.status.redText }}>
           {feilmelding}
         </p>
       ) : null}
@@ -97,7 +97,7 @@ function TnInvitasjonResultat({ resultat }: { resultat: VisningResultat }) {
   const sendefeil = feilet.filter((f) => !ALLEREDE_MEDLEM_MØNSTER.test(f.feil));
 
   return (
-    <div role="status" style={{ display: "flex", flexDirection: "column", gap: 8, padding: 12, borderRadius: TN.radius.sm, background: TN.navy50, color: TN.navy900, fontSize: TN.text.sm }}>
+    <div role="status" style={{ display: "flex", flexDirection: "column", gap: 8, padding: 12, borderRadius: TN.radius.md, background: TN.navy50, color: TN.navy900, fontSize: TN.text.sm }}>
       {invitert.length > 0 ? (
         <p style={{ margin: 0 }}>
           {invitert.length} {invitert.length === 1 ? "invitasjon sendt" : "invitasjoner sendt"}: {invitert.join(", ")}

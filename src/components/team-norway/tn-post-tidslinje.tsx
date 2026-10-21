@@ -86,7 +86,7 @@ export function TnSeHvem({ postId }: { postId: string }) {
           style={{
             marginTop: 8,
             padding: 10,
-            borderRadius: TN.radius.sm,
+            borderRadius: TN.radius.md,
             background: TN.surfaceSunken,
             display: "flex",
             flexDirection: "column",
@@ -137,8 +137,8 @@ function VedleggChip({
         display: "flex",
         alignItems: "center",
         gap: 10,
-        border: `1px solid ${TN.ink200}`,
-        borderRadius: TN.radius.sm,
+        boxShadow: TN.shadow.md,
+        borderRadius: TN.radius.xl,
         padding: "8px 14px 8px 8px",
         minWidth: 210,
         background: TN.surfacePage,
@@ -219,8 +219,8 @@ export function TnPostTidslinje({
       <div
         style={{
           background: TN.surfaceCard,
-          borderRadius: TN.radius.sm,
-          border: `1px solid ${TN.ink200}`,
+          borderRadius: TN.radius.xl,
+          boxShadow: TN.shadow.md,
           padding: 20,
           display: "flex",
           flexDirection: "column",
@@ -261,8 +261,8 @@ export function TnPostTidslinje({
             key={p.id}
             style={{
               background: TN.surfaceCard,
-              borderRadius: TN.radius.sm,
-              border: `1px solid ${TN.ink200}`,
+              borderRadius: TN.radius.xl,
+              boxShadow: TN.shadow.md,
               padding: "14px 18px",
               display: "flex",
               flexDirection: "column",

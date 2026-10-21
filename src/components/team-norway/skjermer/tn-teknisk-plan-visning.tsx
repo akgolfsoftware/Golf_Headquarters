@@ -81,7 +81,7 @@ export function TnTekniskPlanVisning({ brukerNavn, kontekst, spillerId, spillerN
       <Link href={`/team-norway/spiller/${spillerId}/teknisk-plan`} style={{ color: TN.navy600, fontSize: 14, fontWeight: 700, minHeight: 44, display: "inline-flex", alignItems: "center", textDecoration: "underline", textUnderlineOffset: 4 }}>Alle planer</Link>
 
       {feil && (
-        <p role="alert" style={{ margin: 0, padding: 12, borderRadius: TN.radius.sm, background: TN.status.redBg, color: TN.status.redText, fontSize: TN.text.sm }}>{feil}</p>
+        <p role="alert" style={{ margin: 0, padding: 12, borderRadius: TN.radius.md, background: TN.status.redBg, color: TN.status.redText, fontSize: TN.text.sm }}>{feil}</p>
       )}
 
       {plan.posisjoner.length === 0 ? (
@@ -115,7 +115,7 @@ export function TnTekniskPlanVisning({ brukerNavn, kontekst, spillerId, spillerN
                         <input type="hidden" name="taskId" value={t.id} />
                         <label style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: TN.text.xs, color: TN.ink700 }}>
                           Motorikk
-                          <select name="felt" style={{ minHeight: 44, borderRadius: TN.radius.sm, border: `1px solid ${TN.ink500}`, background: TN.white, padding: "0 8px" }}>
+                          <select name="felt" style={{ minHeight: 44, borderRadius: TN.radius.md, border: `1px solid ${TN.ink500}`, background: TN.white, padding: "0 8px" }}>
                             <option value="dry">Uten ball</option>
                             <option value="lav">Lav hastighet</option>
                             <option value="full">Automatikk</option>
@@ -123,7 +123,7 @@ export function TnTekniskPlanVisning({ brukerNavn, kontekst, spillerId, spillerN
                         </label>
                         <label style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: TN.text.xs, color: TN.ink700 }}>
                           Reps
-                          <input type="number" name="antall" min={1} defaultValue={10} style={{ width: 76, minHeight: 44, borderRadius: TN.radius.sm, border: `1px solid ${TN.ink500}`, padding: "0 8px", fontFamily: TN.font.mono }} />
+                          <input type="number" name="antall" min={1} defaultValue={10} style={{ width: 76, minHeight: 44, borderRadius: TN.radius.md, border: `1px solid ${TN.ink500}`, padding: "0 8px", fontFamily: TN.font.mono }} />
                         </label>
                         <TnKnapp type="submit" variant="sekundaer" size="sm">Logg</TnKnapp>
                       </form>
@@ -214,7 +214,7 @@ export function TnTekniskPlanVisning({ brukerNavn, kontekst, spillerId, spillerN
 
 
 const feltLabelStil = { display: "flex", flexDirection: "column" as const, gap: 6, fontSize: 14, fontWeight: 700, color: TN.ink900 };
-const feltInputStil = { minHeight: 48, padding: "10px 12px", border: `1px solid ${TN.ink500}`, borderRadius: TN.radius.sm, fontSize: 16, fontWeight: 400, background: TN.white, color: TN.ink900 };
+const feltInputStil = { minHeight: 48, padding: "10px 12px", border: `1px solid ${TN.ink500}`, borderRadius: TN.radius.md, fontSize: 16, fontWeight: 400, background: TN.white, color: TN.ink900 };
 
 const PLAN_STATUS_LABEL: Record<string, string> = { DRAFT: "Utkast", ACTIVE: "Aktiv", ARCHIVED: "Arkivert" };
 
