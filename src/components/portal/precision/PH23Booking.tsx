@@ -36,8 +36,11 @@ import {
   getSyntheticPH23Data,
   slotNokkel,
 } from "@/lib/portal-booking/ph23-booking-data";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
 import "@/styles/playerhq-ny.css";
+import "@/styles/playerhq-ny-idag.css";
 import "@/styles/playerhq-ny-kommunikasjon.css";
+import "@/styles/playerhq-ny-lister-skra.css";
 
 type PH23SlotData = Pick<PH23BookingData, "days" | "slots"> & { slotDetails?: PH23BookingData["slotDetails"] };
 type Visning = "oversikt" | "ny" | "detalj";
@@ -304,25 +307,39 @@ export function PH23Booking({
     <div><div className="phn-dato">{dato}</div><h1 className="phn-tittel">{tittel}</h1></div>
   </div>;
 
+  /** Oversikten, laster og feil står i Skrå-drakten: bilde i toppen, tilbakelenke på bildet. */
+  const skraHode = () => <SkraTopp
+    lav
+    etikett="Bookinger"
+    bilde="/images/playerhq/green-25m.jpg" bildePosisjon="50% 50%"
+    overlinje="Meg · booking"
+    tittel="Bookinger"
+    handling={<span className="skra-tilbake">{tilbake("Meg", undefined, "/portal/meg")}</span>}
+  />;
+
   if (state === "laster") {
-    return <div className="phn" aria-busy="true">
-      {hode("Meg · booking", "Bookinger", tilbake("Meg", undefined, "/portal/meg"))}
+    return <div className="phn phn-skra" aria-busy="true">
+      {skraHode()}
+      <SkraFlyt lav>
       <div className="phn-k-booking-grid">
         <div><span className="phn-skjelett" style={{ height: 180 }} /><span className="phn-skjelett" style={{ height: 52 }} /></div>
         <div><span className="phn-skjelett" style={{ height: 260 }} /></div>
       </div>
       <p className="phn-kilde" role="status">Henter bookingene og ledige tider …</p>
+      </SkraFlyt>
     </div>;
   }
 
   if (state === "feil") {
-    return <div className="phn">
-      {hode("Meg · booking", "Bookinger", tilbake("Meg", undefined, "/portal/meg"))}
+    return <div className="phn phn-skra">
+      {skraHode()}
+      <SkraFlyt lav>
       <section className="phn-kort" role="alert">
         <h2 className="phn-k-undertittel">Ledige tider kunne ikke hentes</h2>
         <p className="phn-forklar">Ingen timer er booket eller endret. Prøv igjen senere.</p>
         <div className="phn-knapper"><button type="button" className="phn-knapp sek" onClick={() => router.refresh()}>Prøv igjen</button></div>
       </section>
+      </SkraFlyt>
     </div>;
   }
 
@@ -508,8 +525,9 @@ export function PH23Booking({
   const harPakke = currentCard.total > 0;
   const apne = (m: PH23MyBooking) => { setDetaljId(m.id); setVisning("detalj"); };
 
-  return <div className="phn">
-    {hode("Meg · booking", "Bookinger", tilbake("Meg", undefined, "/portal/meg"))}
+  return <div className="phn phn-skra">
+    {skraHode()}
+    <SkraFlyt lav>
     {betaling && <p className={betaling === "betalt" ? "phn-k-vilkaar" : "phn-k-feil"} role="status">
       {betaling === "betalt"
         ? "Betalingen er mottatt. Timen bekreftes når betalingen er registrert, og bekreftelsen kommer på e-post."
@@ -561,6 +579,7 @@ export function PH23Booking({
       </div>
     </div>
     {flyttOgAvbestill}
+    </SkraFlyt>
     {toastEl}
   </div>;
 }

@@ -7,7 +7,9 @@
 /* Testlista ligger i et hvitt kort, og høyre kolonne stopper før hurtigknappen. */
 .phn-skra .phn-tst-liste { background: var(--ak-hvit, #fff); border-radius: var(--ak-r-skra-kort); box-shadow: var(--ak-skygge-md); padding: 8px 20px 12px; }
 @container (min-width: 900px) {
-  .phn-skra :is(.phn-tst-kol, .phn-to-kol) { margin-right: 52px; }
+  .phn-skra :is(.phn-tst-kol, .phn-to-kol, .phn-k-booking-grid) { margin-right: 52px; }
+  /* Høyre kolonne starter under den skrå kanten, så overskriften ikke havner på bildet. */
+  .phn-skra .phn-k-booking-grid > div:nth-child(2) { padding-top: 40px; }
 }
 /* Tilbakelenken står i toppen, på bildet: hvit tekst. */
 .phn-skra .skra-tilbake :is(.phn-tilbake, .phn-k-tilbake) { color: #fff; margin: 0; }
