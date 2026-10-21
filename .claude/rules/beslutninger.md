@@ -4,6 +4,27 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## TEAM NORWAY ER BARE FOR TRENERE, SPILLERE BRUKER BARE PLAYERHQ, OG REFERANSE BYGGES MED WAGR FØRST (Anders 21.10.2026, bindende)
+
+Anders 21.10, etter funksjonsregisteret og wireframes for trenerflaten (`docs/planer/tn-trenerflate-register-2026-10-21.md`, https://claude.ai/artifact/DJHq9dKNNs8iCoyHZDptbF): «Team Norway er kun for coach. Alle spiller bruker kun PlayerHQ. Bygg WAGR og deretter de ulike nivå og spiller fordelingene.» Svar på uavklart 1 og 3 i registeret, og klarsignal til bygging etter wireframes (menyen i `docs/design-system/utkast-tn/trenerflate/README.md`).
+
+- **`/team-norway/*` er bare for trenere** (gruppe-rolle COACH eller ASSISTANT i TN-gruppa) og ADMIN. En innlogget spiller eller forelder som åpner en TN-adresse, sendes til PlayerHQ (`/portal`). Ingen spillervisning i TN-flaten.
+- **Spilleren gjør alt i PlayerHQ:** turneringer, samlinger, lisens og deling. `/team-norway/turneringer/ny` sender til `/portal/tren/turneringer`.
+- **Referanse bygges i denne rekkefølgen:** (1) WAGR: leaderboard, graf, turneringer, sesong og Sammenlign; (2) nivå- og spillerfordelingene: HCP Norge (normkurve, klubber, regioner) og Norsk golf (nivå A–K, klubber, regioner, tourer).
+- **Fordelingene er samlede tall.** Navngitte juniorprofiler (HCP-søket og Norsk golf-registeret med navn under 18 år) er ikke avgjort, se punkt 5.
+- Menyen og sidekartet i wireframes gjelder som byggefasit (seks hovedpunkter: Hjem · Spillere · Samlinger og testing · Turneringer · Referanse · Fag og administrasjon).
+
+**Overstyrer:** spillervisningen i dagens TN-sider (`erSpiller`-grenene i `src/components/team-norway/tn-shell.tsx`, `tnBunnmeny` for spillere, og sider som åpner for gruppe-rolle PLAYER), og «Til da vises «—» […] spillere ser egen rad» i Lisens og College. Uavklart 1 og 3 i registeret.
+
+**Arbeidet dette utløser:**
+
+1. **(haster, personvern) Spillere ut av TN-flaten:** en sentral vakt (f.eks. i `hentTnArbeidskontekst` eller `src/lib/auth/team-norway-sperre.ts`) sender PLAYER og PARENT til `/portal`; `erSpiller`-grenene og spillermenyen i `tn-shell.tsx` fjernes. Ferdig når en test låser at en spiller i TN-gruppa ikke får TN-innhold på noen `/team-norway`-adresse.
+2. **Skall og meny** (pakke a): seks hovedpunkter med faner etter wireframes, Min profil fra navnet nederst. Ferdig når menyen er målt i 390, 1280 og 1920 px uten sidelengs rulling.
+3. **Referanse › WAGR** (`/team-norway/referanse`): leaderboard, graf, turneringer, sesong og Sammenlign, med «World Amateur Golf Ranking (WAGR), The R&A» og dato. Kolonnene kartlegges mot basen før første spørring. Ferdig når tallene er de samme som på teamnorwayref for samme uke.
+4. **Referanse › HCP Norge og Norsk golf** etter WAGR: samlede fordelinger (nivå, klubb, region, tour), aldri en celle som peker ut én junior. Ferdig når tallene stemmer med teamnorwayref og ingen navngitt spiller under 18 vises.
+5. **Uavklart:** navngitte juniorprofiler i HCP-søket og Norsk golf (teamnorwayref viser i dag navn fra 8 år bak felles passord). Bygges ikke før Anders har sagt ja.
+6. **Uavklart:** hvor PlayerHQ-lenken går (punkt 8 i blokken under) og om «beste» per test skal bort i Referanse › Tester (uavklart 4 i registeret).
+
 ## TEAM NORWAY-TRENERFLATEN BYGGES I HQ ETTER TEAMNORWAYREF, MED EGEN TRENERPROFIL OG KOMPLETT SPILLERPROFIL (Anders 21.10.2026, bindende)
 
 Anders 21.10: den nye Team Norway-siden (teamnorwayref) «skal nå erstatte internsidene for Team Norway-trenere. Hver trener skal ha sin egen profil», og trykk på spillerens navn skal åpne «den komplette spillerprofilen med komplett IUP, turneringsplanlegger, ranking, spillerens progresjon i turneringer, trening, tester». Han valgte alternativ A: flaten bygges i HQ, fordi teamnorwayref er en statisk side med ett felles passord og ikke kan gi egen trenerinnlogging eller vise delte spillerdata bare til trenerne spilleren har delt med.

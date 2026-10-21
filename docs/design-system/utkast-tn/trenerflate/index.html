@@ -1,0 +1,338 @@
+<title>Team Norway trenerflate</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Wireframe: svart-hvitt papir. Hver skjerm vises som to rammer (1280 og 390) med samme innhold; rammene bruker container queries. */
+:root {
+  --papir: #FFFFFF; --flate: #F3F3F3; --linje: #CFCFCF; --svak: #6B6B6B; --blekk: #111111; --mork: #2A2A2A;
+  --f-tekst: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --f-tall: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  color-scheme: light;
+}
+body { background: #E9E9E9; color: var(--blekk); font-family: var(--f-tekst); font-size: 14px; line-height: 1.45; }
+.side { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 24px 64px; max-width: 1760px; margin: 0 auto; }
+h1 { font-size: 26px; margin: 0 0 4px; text-wrap: balance; }
+.ingress { color: var(--svak); max-width: 68ch; margin: 0 0 16px; }
+.velger { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+.velger button { font: inherit; font-weight: 600; border: 1.5px solid var(--blekk); background: var(--papir); color: var(--blekk); padding: 7px 12px; border-radius: 999px; cursor: pointer; }
+.velger button[aria-pressed="true"] { background: var(--blekk); color: var(--papir); }
+.velger button:focus-visible, a:focus-visible { outline: 3px solid #000; outline-offset: 2px; }
+.skjermtittel { font-size: 18px; margin: 0 0 4px; }
+.notat { color: var(--svak); margin: 0 0 14px; max-width: 80ch; }
+.rammer { display: grid; grid-template-columns: minmax(0, 1fr) 390px; gap: 24px; align-items: start; }
+@media (max-width: 900px) { .rammer { grid-template-columns: minmax(0, 1fr); } }
+.rammeboks { min-width: 0; }
+.rammeetikett { font-family: var(--f-tall); font-size: 12px; color: var(--svak); margin-bottom: 6px; }
+.skalering { width: 100%; overflow: hidden; }
+.ramme { background: var(--papir); border: 1.5px solid var(--blekk); container-type: inline-size; transform-origin: 0 0; }
+.ramme.pc { width: 1280px; }
+.ramme.mob { width: 390px; max-width: 100%; }
+@media (max-width: 900px) { .rammeboks.mobboks { order: -1; } }
+
+/* ---------- Skall ---------- */
+.app { display: grid; grid-template-columns: 232px minmax(0, 1fr); min-height: 720px; }
+.meny { background: var(--mork); color: #fff; padding: 18px 14px; display: flex; flex-direction: column; gap: 4px; }
+.logo { font-weight: 700; letter-spacing: .02em; margin-bottom: 14px; display: flex; gap: 8px; align-items: center; }
+.logo i { width: 26px; height: 26px; border: 2px solid #fff; display: inline-block; }
+.mp { padding: 8px 10px; border-radius: 6px; font-weight: 500; display: flex; gap: 8px; align-items: center; color: #DDD; }
+.mp::before { content: ""; width: 14px; height: 14px; border: 1.5px solid currentColor; border-radius: 3px; flex: none; }
+.mp.aktiv { background: #fff; color: var(--blekk); font-weight: 700; }
+.meny .fot { margin-top: auto; border-top: 1px solid #555; padding-top: 12px; display: flex; gap: 8px; align-items: center; }
+.meny .fot b { display: block; color: #fff; }
+.meny .fot span { font-size: 12px; color: #BBB; }
+.meny .fot .lenke { font-size: 11px; text-decoration: underline; color: #fff; }
+.topp { display: none; }
+.innhold { min-width: 0; display: flex; flex-direction: column; }
+.helt { background: #D6D6D6; padding: 22px 28px 26px; position: relative; display: flex; flex-direction: column; gap: 6px; clip-path: polygon(0 0, 100% 0, 100% 82%, 0 100%); padding-bottom: 46px; }
+.helt .bildemerke { position: absolute; right: 12px; top: 10px; font-family: var(--f-tall); font-size: 10px; color: var(--svak); border: 1px dashed var(--svak); padding: 2px 6px; }
+.overlinje { font-size: 12px; color: var(--mork); text-transform: uppercase; letter-spacing: .06em; }
+.helt h2 { margin: 0; font-size: 28px; line-height: 1.15; text-wrap: balance; }
+.hovedtall { font-family: var(--f-tall); font-size: 44px; font-weight: 500; line-height: 1; }
+.hovedtall small { font-family: var(--f-tekst); font-size: 14px; font-weight: 500; margin-left: 8px; }
+.faner { display: flex; gap: 4px; flex-wrap: wrap; padding: 0 28px; margin-top: -14px; position: relative; }
+.fane { background: var(--papir); border: 1.5px solid var(--blekk); border-radius: 999px; padding: 5px 12px; font-weight: 600; font-size: 13px; white-space: nowrap; }
+.fane.aktiv { background: var(--blekk); color: var(--papir); }
+.flate { padding: 18px 28px 28px; display: grid; gap: 16px; grid-template-columns: repeat(12, minmax(0, 1fr)); align-content: start; }
+.kort { background: var(--papir); border: 1.5px solid var(--blekk); border-radius: 10px; padding: 14px 16px; min-width: 0; display: flex; flex-direction: column; gap: 8px; box-shadow: 3px 3px 0 var(--linje); }
+.kort h3 { margin: 0; font-size: 15px; display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.kort h3 a, .lenke { font-size: 12px; font-weight: 600; text-decoration: underline; color: inherit; }
+.k12 { grid-column: span 12; } .k8 { grid-column: span 8; } .k6 { grid-column: span 6; } .k4 { grid-column: span 4; } .k3 { grid-column: span 3; }
+.rad { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; padding: 6px 0; border-top: 1px solid var(--linje); min-width: 0; }
+.rad:first-of-type { border-top: 0; }
+.rad > span:first-child { min-width: 0; overflow-wrap: anywhere; }
+.tall { font-family: var(--f-tall); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.svak { color: var(--svak); }
+.merke { font-size: 11px; font-weight: 700; border: 1.5px solid var(--blekk); padding: 1px 6px; border-radius: 2px; white-space: nowrap; }
+.merke.fylt { background: var(--blekk); color: var(--papir); }
+.merke.strek { border-style: dashed; }
+.knapp { align-self: flex-start; font-weight: 700; font-size: 13px; background: var(--blekk); color: var(--papir); padding: 8px 14px; border-radius: 999px; }
+.knapp.kontur { background: var(--papir); color: var(--blekk); border: 1.5px solid var(--blekk); }
+.kilde { font-size: 11px; color: var(--svak); }
+.felt { border: 1.5px solid var(--blekk); border-radius: 8px; padding: 8px 10px; color: var(--svak); }
+.filtre { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border: 1.5px solid var(--blekk); border-radius: 999px; padding: 3px 10px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+.chip.paa { background: var(--blekk); color: var(--papir); }
+.tabell { width: 100%; border-collapse: collapse; font-size: 13px; }
+.tabell th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--svak); padding: 6px 8px; border-bottom: 1.5px solid var(--blekk); }
+.tabell td { padding: 8px; border-bottom: 1px solid var(--linje); vertical-align: top; }
+.tabell td.t { font-family: var(--f-tall); white-space: nowrap; }
+.tabell a { color: inherit; font-weight: 700; }
+.tabellboks { overflow-x: auto; min-width: 0; }
+.mobliste { display: none; }
+.stripe { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.stripe div { border-top: 1.5px solid var(--blekk); padding-top: 6px; min-width: 0; }
+.stripe b { display: block; font-family: var(--f-tall); font-size: 20px; font-weight: 500; }
+.stripe span { font-size: 11px; color: var(--svak); }
+.graf { width: 100%; height: auto; display: block; }
+.avatar { width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--blekk); background: var(--flate); flex: none; display: grid; place-items: center; font-weight: 700; font-size: 13px; }
+.avatar.stor { width: 64px; height: 64px; font-size: 20px; }
+.lås { border: 1.5px dashed var(--blekk); border-radius: 10px; padding: 14px 16px; background: var(--flate); display: flex; flex-direction: column; gap: 8px; }
+.steg { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.seksjonsnavn { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--svak); font-weight: 700; }
+
+/* ---------- Mobil (rammen under 600 px) ---------- */
+@container (max-width: 600px) {
+  .app { display: block; min-height: 0; }
+  .meny { display: none; }
+  .topp { display: flex; background: var(--mork); color: #fff; padding: 12px 16px; align-items: center; justify-content: space-between; font-weight: 700; }
+  .topp span { font-size: 12px; border: 1.5px solid #fff; border-radius: 999px; padding: 3px 10px; }
+  .helt { padding: 16px 16px 38px; }
+  .helt h2 { font-size: 22px; }
+  .hovedtall { font-size: 36px; }
+  .faner { padding: 0 16px; overflow-x: auto; flex-wrap: nowrap; scrollbar-width: none; }
+  .flate { padding: 14px 16px 22px; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .k12, .k8, .k6, .k4, .k3 { grid-column: span 1; }
+  .stripe { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pc-tabell { display: none; }
+  .mobliste { display: block; }
+}
+
+/* ---------- Sidekart ---------- */
+.kart { background: var(--papir); border: 1.5px solid var(--blekk); padding: 18px; display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.kart section { border: 1.5px solid var(--blekk); border-radius: 10px; padding: 12px 14px; min-width: 0; }
+.kart h3 { margin: 0 0 6px; font-size: 15px; }
+.kart ul { margin: 0; padding-left: 16px; display: grid; gap: 3px; }
+.kart code, .vid code { font-family: var(--f-tall); font-size: 11.5px; overflow-wrap: anywhere; }
+.vid { background: var(--papir); border: 1.5px solid var(--blekk); padding: 18px; margin-top: 16px; }
+.vid h3 { margin: 0 0 8px; font-size: 15px; }
+.vid table { border-collapse: collapse; width: 100%; font-size: 13px; }
+.vid td, .vid th { text-align: left; border-bottom: 1px solid var(--linje); padding: 6px 8px; vertical-align: top; }
+.vidboks { overflow-x: auto; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="side">
+  <h1>Team Norway trenerflate</h1>
+  <p class="ingress">Wireframes for den nye trenerflaten i AK Golf HQ (etappe 2). Svart-hvitt, syntetiske spillere og trenere. Hver skjerm vises i 1280 og 390 px med samme innhold. Farger, bilder og Skrå-drakten kommer i byggingen.</p>
+  <div class="velger" role="group" aria-label="Velg skjerm" id="velger"></div>
+  <div id="visning"></div>
+</div>
+
+<script>
+const SKALL = (aktiv, tittel, innhold) => `
+<div class="app">
+  <nav class="meny" aria-label="Hovedmeny">
+    <div class="logo"><i></i>Team Norway Golf</div>
+    ${["Hjem","Spillere","Samlinger og testing","Turneringer","Referanse","Fag og administrasjon"].map(m => `<div class="mp${m===aktiv?" aktiv":""}">${m}</div>`).join("")}
+    <div class="fot"><div class="avatar" style="background:#444;color:#fff;border-color:#fff">EL</div><div><b>Eva Lie</b><span>Trener · Team Norway</span><br><span class="lenke">Min profil</span></div></div>
+  </nav>
+  <div class="topp"><span>Meny</span>${tittel}<span>EL</span></div>
+  <div class="innhold">${innhold}</div>
+</div>`;
+
+const IUP_FANER = (aktiv) => `<div class="faner">${["Oversikt","Turneringsplan","Ranking","Turneringer","Trening","Tester","Teknisk plan","Fireukerssjekk"].map(f => `<span class="fane${f===aktiv?" aktiv":""}">${f}</span>`).join("")}</div>`;
+
+const spillere = [
+  ["Sigrid Holm", "2006", "Damer", "Bærum GK", "J1", "Komplett profil", "412", "3", "Trenger deg"],
+  ["Mathias Berg", "2005", "Herrer", "Oslo GK", "Elite", "Komplett profil", "188", "—", "Følger planen"],
+  ["Ella Strand", "2007", "Damer", "Stavanger GK", "J1", "Tester og resultater", "905", "7", "Følger planen"],
+  ["Jonas Lunde", "2006", "Herrer", "Miklagard GK", "J1", "Ikke delt", "1 240", "—", "Ikke delt"],
+  ["Henrik Aas", "2005", "Herrer", "Trondheim GK", "Elite", "Komplett profil", "326", "—", "Trenger deg"],
+  ["Ingrid Vik", "2006", "Damer", "Kristiansand GK", "J1", "Venter på svar", "—", "12", "Ikke delt"],
+];
+
+const S = {
+hjem: { navn: "Trenerens hjem", notat: "Hovedtall: saker som venter. Rekkefølge: saker som venter, neste samling, turnering nå, gruppas trening, siste gruppeposter. Fanene Gruppeposter og Dokumenter ligger her fordi de er kommunikasjon med gruppa.",
+  html: () => SKALL("Hjem", "Hjem", `
+  <div class="helt"><span class="bildemerke">BANEBILDE</span><span class="overlinje">Tirsdag 21. oktober · Uke 43</span><h2>God morgen, Eva</h2><div class="hovedtall">5<small>saker venter på deg</small></div></div>
+  <div class="faner"><span class="fane aktiv">I dag</span><span class="fane">Gruppeposter</span><span class="fane">Dokumenter</span></div>
+  <div class="flate">
+    <div class="kort k6"><h3>Saker som venter <a href="#">Alle</a></h3>
+      <div class="rad"><span><b>Sigrid Holm</b> godtok ikke forslaget til turneringsplan</span><span class="merke">Svar</span></div>
+      <div class="rad"><span><b>Henrik Aas</b> har levert fireukerssjekk</span><span class="merke">Les</span></div>
+      <div class="rad"><span>Uttak Junior-NM: frist fredag 24.10</span><span class="merke">Frist</span></div>
+      <div class="rad"><span>2 testresultater egenført, ikke kontrollert</span><span class="merke">Kontroller</span></div>
+      <div class="rad"><span><b>Ingrid Vik</b> har ikke svart på deling</span><span class="merke strek">Venter</span></div>
+    </div>
+    <div class="kort k6"><h3>Neste samling</h3><div><b>Høstsamling Oslo</b><div class="svak">Fre 7.–søn 9. november · Oslo GK</div></div><div class="hovedtall" style="font-size:30px">17<small>dager igjen</small></div><div class="stripe"><div><b>14</b><span>påmeldt</span></div><div><b>2</b><span>testdager</span></div><div><b>3</b><span>trenere</span></div><div><b>—</b><span>overnatting</span></div></div><span class="knapp kontur">Åpne samlingen</span></div>
+    <div class="kort k4"><h3>Turnering nå</h3><div><b>Titleist Junior Open</b><div class="svak">Runde 2 av 3 · Hvaler</div></div><div class="rad"><span>Mathias Berg</span><span class="tall">−3 · T4</span></div><div class="rad"><span>Ella Strand</span><span class="tall">+2 · T18</span></div><span class="lenke">Live Watch</span></div>
+    <div class="kort k4"><h3>Gruppas trening denne uka</h3><div class="stripe" style="grid-template-columns:repeat(2,minmax(0,1fr))"><div><b>9 av 14</b><span>fulgte planen</span></div><div><b>62 %</b><span>av planlagt tid</span></div></div><span class="kilde">Kilde: Workbench-øktene spillerne har delt. Uke 43.</span></div>
+    <div class="kort k4"><h3>Siste gruppepost <a href="#">Gruppeposter</a></h3><div><b>Pakkeliste høstsamling</b><div class="svak">Eva Lie · i går</div></div><div class="rad"><span>Lest</span><span class="tall">11 av 14</span></div></div>
+  </div>`) },
+
+profil: { navn: "Trenerprofil", notat: "Nås fra navnet nederst i menyen (mobil: fra «Meny»). Hovedtall: spillere som deler med deg. Rekkefølge: kontakt, grupper, spillere med delingsnivå, egne saker. Treneren endrer telefon selv; rolle og gruppe endres av sportssjef under Fag og administrasjon › Trenere og tilgang.",
+  html: () => SKALL("", "Min profil", `
+  <div class="helt"><span class="bildemerke">BANEBILDE</span><span class="overlinje">Min profil</span><div style="display:flex;gap:14px;align-items:center"><div class="avatar stor">EL</div><div><h2>Eva Lie</h2><div>Trener · Team Norway Golf · siden mars 2025</div></div></div></div>
+  <div class="flate">
+    <div class="kort k4"><h3>Kontakt <a href="#">Endre</a></h3><div class="rad"><span>E-post</span><span>eva.lie@golfforbundet.no</span></div><div class="rad"><span>Telefon</span><span class="tall">—</span></div><div class="rad"><span>Rolle</span><span>Trener</span></div><span class="kilde">E-posten må være @golfforbundet.no for at spillere kan dele med deg.</span></div>
+    <div class="kort k8"><h3>Spillere som deler med deg</h3><div class="hovedtall" style="font-size:30px">11<small>av 14 i gruppa</small></div>
+      <div class="rad"><span><b>Sigrid Holm</b> · Team Norway Junior</span><span class="merke fylt">Komplett profil</span></div>
+      <div class="rad"><span><b>Mathias Berg</b> · Team Norway Elite</span><span class="merke fylt">Komplett profil</span></div>
+      <div class="rad"><span><b>Ella Strand</b> · Team Norway Junior</span><span class="merke">Tester og resultater</span></div>
+      <div class="rad"><span>3 har ikke delt</span><span class="lenke">Se hvem</span></div>
+    </div>
+    <div class="kort k4"><h3>Mine grupper</h3><div class="rad"><span>Team Norway Junior</span><span class="tall">9</span></div><div class="rad"><span>Team Norway Elite</span><span class="tall">5</span></div><span class="kilde">Gruppemedlemskap gir ikke innsyn alene. Spilleren deler selv.</span></div>
+    <div class="kort k8"><h3>Mine saker</h3><div class="rad"><span>Forslag til turneringsplan, Sigrid Holm</span><span class="merke strek">Venter på spilleren</span></div><div class="rad"><span>Forslag til teknisk plan, Henrik Aas</span><span class="merke">Godtatt 18.10</span></div><div class="rad"><span>Uttak Junior-NM, ansvarlig</span><span class="merke">Frist 24.10</span></div></div>
+  </div>`) },
+
+spillere: { navn: "Spillere", notat: "Hovedtall: spillere i gruppa. Søk og filter (gruppe, klasse, kjønn, delingsstatus) øverst. Trykk på navnet åpner IUP. Spillere som ikke har delt vises med navn og offentlig WAGR-plass, aldri med tester eller trening. Fanene Skoler, College og USA beholdes.",
+  html: () => SKALL("Spillere", "Spillere", `
+  <div class="helt"><span class="bildemerke">BANEBILDE</span><span class="overlinje">Spillere</span><div class="hovedtall">14<small>spillere · 11 deler med deg</small></div></div>
+  <div class="faner"><span class="fane aktiv">Spillere</span><span class="fane">Skoler</span><span class="fane">College og USA</span></div>
+  <div class="flate">
+    <div class="kort k12"><div class="felt">Søk på navn eller klubb</div>
+      <div class="filtre"><span class="seksjonsnavn" style="align-self:center">Gruppe</span><span class="chip paa">Alle</span><span class="chip">Junior</span><span class="chip">Elite</span><span class="seksjonsnavn" style="align-self:center">Klasse</span><span class="chip">J1</span><span class="chip">Elite</span><span class="seksjonsnavn" style="align-self:center">Kjønn</span><span class="chip">Damer</span><span class="chip">Herrer</span><span class="seksjonsnavn" style="align-self:center">Deling</span><span class="chip">Komplett profil</span><span class="chip">Tester og resultater</span><span class="chip">Ikke delt</span></div>
+    </div>
+    <div class="kort k12">
+      <div class="tabellboks pc-tabell"><table class="tabell"><thead><tr><th>Navn</th><th>Født</th><th>Klasse</th><th>Klubb</th><th>WAGR</th><th>NGF junior</th><th>Deling</th><th>Status</th></tr></thead><tbody>
+      ${spillere.map(s => `<tr><td><a href="#">${s[0]}</a></td><td class="t">${s[1]}</td><td>${s[4]} · ${s[2]}</td><td>${s[3]}</td><td class="t">${s[6]}</td><td class="t">—</td><td><span class="merke${s[5]==="Komplett profil"?" fylt":s[5]==="Ikke delt"||s[5]==="Venter på svar"?" strek":""}">${s[5]}</span></td><td>${s[8]}</td></tr>`).join("")}
+      </tbody></table></div>
+      <div class="mobliste">${spillere.map(s => `<div class="rad"><span><b style="text-decoration:underline">${s[0]}</b><br><span class="svak">${s[4]} · ${s[3]} · WAGR <span class="tall">${s[6]}</span></span></span><span class="merke${s[5]==="Komplett profil"?" fylt":s[5]==="Ikke delt"||s[5]==="Venter på svar"?" strek":""}">${s[5]==="Tester og resultater"?"Tester":s[5]==="Komplett profil"?"Komplett":s[5]}</span></div>`).join("")}</div>
+      <span class="kilde">WAGR: World Amateur Golf Ranking (WAGR), The R&amp;A, uke 43. NGF-juniorranking finnes ikke i appen ennå og vises «—».</span>
+    </div>
+  </div>`) },
+
+iup: { navn: "Spillerprofil (IUP) · Oversikt", notat: "Topp: navn, klasse, klubb, WAGR-plass og NGF-juniorranking. Fanene følger IUP-arket fra Team Norway. Oversikt har én stripe med tall, så det som haster, så siste tester, neste turneringer, poster. Treneren foreslår; knappen sier «Foreslå endring», aldri «Endre». Fanene Teknisk plan og Fireukerssjekk krever «Komplett profil».",
+  html: () => SKALL("Spillere", "IUP", `
+  <div class="helt"><span class="bildemerke">BANEBILDE</span><span class="overlinje">IUP · Spillere</span><div style="display:flex;gap:14px;align-items:center"><div class="avatar stor">SH</div><div><h2>Sigrid Holm</h2><div>J1 · Damer · Bærum GK · født 2006</div></div></div><div class="stripe" style="max-width:640px"><div><b>412</b><span>WAGR-plass</span></div><div><b>—</b><span>NGF juniorranking</span></div><div><b>73,4</b><span>brutto snitt 2026</span></div><div><b>C</b><span>kategori</span></div></div></div>
+  ${IUP_FANER("Oversikt")}
+  <div class="flate">
+    <div class="kort k4"><h3>Haster</h3><div class="rad"><span>Forslag til turneringsplan avslått 19.10</span><span class="merke">Svar</span></div><div class="rad"><span>Wedge Variation: 1 av 2 tatt</span><span class="merke strek">Mangler 1</span></div><span class="knapp">Foreslå endring</span></div>
+    <div class="kort k4"><h3>Siste tester <a href="#">Tester</a></h3><div class="rad"><span>Driver Basic</span><span class="tall">42 p · 14.10</span></div><div class="rad"><span>Inspill Basic</span><span class="tall">38 p · 02.10</span></div><div class="rad"><span>Putt 1–3 m</span><span class="tall">— </span></div><span class="kilde">Egenført i PlayerHQ, kontrollert av trener der det står.</span></div>
+    <div class="kort k4"><h3>Neste turneringer <a href="#">Turneringsplan</a></h3><div class="rad"><span>Srixon Tour finale</span><span class="tall">01.11</span></div><div class="rad"><span>Spanish Junior Open</span><span class="tall">ESTIMAT topp 10: 22 %</span></div><span class="kilde">Kilde: World Amateur Golf Ranking (WAGR), The R&amp;A. Anslag er merket ESTIMAT.</span></div>
+    <div class="kort k8"><h3>Trening siste fire uker <a href="#">Trening</a></h3><div class="stripe"><div><b>18 t</b><span>gjennomført</span></div><div><b>81 %</b><span>av plan</span></div><div><b>24 %</b><span>TEK</span></div><div><b>—</b><span>TrackMan</span></div></div><div class="seksjonsnavn">Fordeling TURN · SPILL · SLAG · TEK · FYS</div><div style="display:flex;gap:4px;height:14px"><span style="flex:8;background:#222"></span><span style="flex:14;background:#555"></span><span style="flex:30;background:#888"></span><span style="flex:24;background:#AAA"></span><span style="flex:24;background:#CCC"></span></div></div>
+    <div class="kort k4"><h3>Poster til Sigrid <a href="#">Skriv post</a></h3><div class="rad"><span>Plan for vinterperioden</span><span class="tall">16.10</span></div><div class="rad"><span>Lest av spiller og foresatt</span><span class="tall">2 av 2</span></div></div>
+  </div>`) },
+
+turneringer: { navn: "IUP · Turneringer", notat: "Progresjon over tid. Hovedtall: brutto snitt i år mot i fjor. Graf over til-par per turnering, så tabell. Bare brutto. Kilde og dato under.",
+  html: () => SKALL("Spillere", "IUP", `
+  <div class="helt"><span class="bildemerke">BANEBILDE</span><span class="overlinje">IUP · Sigrid Holm</span><div class="hovedtall">73,4<small>brutto snitt 2026 · 2025: 75,1</small></div></div>
+  ${IUP_FANER("Turneringer")}
+  <div class="flate">
+    <div class="kort k8"><h3>Til par per turnering, 2024–2026</h3>
+      <svg class="graf" viewBox="0 0 640 200" role="img" aria-label="Til par per turnering, synker fra +9 til +1">
+        <g stroke="#CFCFCF" stroke-width="1"><line x1="40" y1="30" x2="630" y2="30"/><line x1="40" y1="80" x2="630" y2="80"/><line x1="40" y1="130" x2="630" y2="130"/><line x1="40" y1="180" x2="630" y2="180"/></g>
+        <g font-family="IBM Plex Mono, monospace" font-size="11" fill="#6B6B6B"><text x="8" y="34">+12</text><text x="14" y="84">+8</text><text x="14" y="134">+4</text><text x="20" y="184">0</text><text x="60" y="198">2024</text><text x="290" y="198">2025</text><text x="520" y="198">2026</text></g>
+        <polyline fill="none" stroke="#111" stroke-width="2" points="60,68 110,92 160,55 210,105 260,92 310,118 360,105 410,130 460,118 510,142 560,155 610,168"/>
+        <g fill="#111"><circle cx="610" cy="168" r="4"/></g>
+      </svg>
+      <span class="kilde">Kilde: NGF og GolfBox via AK Golf HQ (public_player_entries), bare brutto, hentet 20.10.2026.</span></div>
+    <div class="kort k4"><h3>Sesong for sesong</h3><div class="rad"><span>2026</span><span class="tall">73,4 · 14 starter</span></div><div class="rad"><span>2025</span><span class="tall">75,1 · 17 starter</span></div><div class="rad"><span>2024</span><span class="tall">76,8 · 11 starter</span></div><div class="rad"><span>Beste plass 2026</span><span class="tall">2</span></div></div>
+    <div class="kort k12"><div class="tabellboks"><table class="tabell"><thead><tr><th>Dato</th><th>Turnering</th><th>Runder</th><th>Til par</th><th>Plass</th><th>WAGR-poeng</th></tr></thead><tbody>
+      <tr><td class="t">12.10.26</td><td>Srixon Tour 6</td><td class="t">2</td><td class="t">+1</td><td class="t">2</td><td class="t">—</td></tr>
+      <tr><td class="t">21.09.26</td><td>Titleist Junior Open</td><td class="t">3</td><td class="t">+4</td><td class="t">T9</td><td class="t">14,2</td></tr>
+      <tr><td class="t">30.08.26</td><td>Junior-NM</td><td class="t">3</td><td class="t">+7</td><td class="t">T15</td><td class="t">8,1</td></tr>
+    </tbody></table></div></div>
+  </div>`) },
+
+utendeling: { navn: "Spiller uten deling", notat: "Treneren ser navn, klubb og offentlig WAGR-plass. Alle IUP-fanene viser samme lås. Ingen tester, trening, plan eller poster. Knappen sender ikke noe til spilleren; den viser hvordan spilleren deler, så treneren kan si det muntlig eller i en gruppepost.",
+  html: () => SKALL("Spillere", "IUP", `
+  <div class="helt"><span class="bildemerke">BANEBILDE</span><span class="overlinje">IUP · Spillere</span><div style="display:flex;gap:14px;align-items:center"><div class="avatar stor">JL</div><div><h2>Jonas Lunde</h2><div>J1 · Herrer · Miklagard GK</div></div></div><div class="stripe" style="max-width:640px"><div><b>1 240</b><span>WAGR-plass</span></div><div><b>—</b><span>NGF juniorranking</span></div><div><b>—</b><span>brutto snitt</span></div><div><b>—</b><span>kategori</span></div></div></div>
+  ${IUP_FANER("Oversikt")}
+  <div class="flate">
+    <div class="lås k8"><b>Jonas har ikke delt IUP-en med deg</b><span>Du ser bare det som er offentlig: navn, klubb og WAGR-plass. Tester, trening, turneringsplan, teknisk plan og fireukerssjekk vises når Jonas deler.</span>
+      <div class="seksjonsnavn">Slik deler spilleren</div>
+      <ol class="steg"><li>PlayerHQ › Meg › Personvern › Deling</li><li>Velg «Del med trener» og skriv inn eva.lie@golfforbundet.no</li><li>Under 16 år: foresatt godkjenner</li><li>Du åpner lenken innen sju dager</li></ol>
+      <span class="knapp kontur">Kopier forklaringen</span></div>
+    <div class="kort k4"><h3>Offentlig ranking</h3><div class="rad"><span>WAGR-plass</span><span class="tall">1 240</span></div><div class="rad"><span>WAGR uke 52, 2025</span><span class="tall">1 512</span></div><span class="kilde">Kilde: World Amateur Golf Ranking (WAGR), The R&amp;A, uke 43.</span></div>
+  </div>`) },
+
+referanse: { navn: "Referanse", notat: "Det som i dag ligger på teamnorwayref, bak HQ-innloggingen. Fanene: WAGR (leaderboard, graf, turneringer, sesong) · Sammenlign · Søk · Planlegger · Norsk golf · HCP Norge · Tester (samlede testtall uten navn). Hovedtall: norske herrer på WAGR. Kilde og dato ved hvert tall.",
+  html: () => SKALL("Referanse", "Referanse", `
+  <div class="helt"><span class="bildemerke">BANEBILDE</span><span class="overlinje">Referanse · WAGR uke 43</span><div class="hovedtall">35<small>norske herrer på WAGR</small></div></div>
+  <div class="faner"><span class="fane aktiv">WAGR</span><span class="fane">Sammenlign</span><span class="fane">Søk</span><span class="fane">Planlegger</span><span class="fane">Norsk golf</span><span class="fane">HCP Norge</span><span class="fane">Tester</span></div>
+  <div class="flate">
+    <div class="kort k12"><div class="filtre"><span class="chip">Junior Norden</span><span class="chip">Amatør Norden</span><span class="chip paa">Norge</span><span class="seksjonsnavn" style="align-self:center;margin-left:8px">Visning</span><span class="chip paa">Leaderboard</span><span class="chip">Turneringer</span><span class="chip">Sesong</span></div></div>
+    <div class="kort k6"><h3>Norske herrer på WAGR</h3>
+      <div class="rad"><span><span class="tall">1</span> · <b>Spiller A Nordvik</b></span><span class="tall">48</span></div>
+      <div class="rad"><span><span class="tall">2</span> · <b>Spiller B Fjeld</b></span><span class="tall">131</span></div>
+      <div class="rad"><span><span class="tall">3</span> · <b>Mathias Berg</b></span><span class="tall">188</span></div>
+      <div class="rad"><span><span class="tall">4</span> · <b>Spiller C Moe</b></span><span class="tall">240</span></div>
+      <div class="rad"><span><span class="tall">5</span> · <b>Henrik Aas</b></span><span class="tall">326</span></div>
+      <span class="lenke">Vis alle 35</span></div>
+    <div class="kort k6"><h3>WAGR-plass år for år</h3>
+      <svg class="graf" viewBox="0 0 520 220" role="img" aria-label="WAGR-plass år for år for tre spillere">
+        <g stroke="#CFCFCF"><line x1="44" y1="20" x2="510" y2="20"/><line x1="44" y1="80" x2="510" y2="80"/><line x1="44" y1="140" x2="510" y2="140"/><line x1="44" y1="200" x2="510" y2="200"/></g>
+        <g font-family="IBM Plex Mono, monospace" font-size="11" fill="#6B6B6B"><text x="18" y="24">1</text><text x="8" y="84">200</text><text x="8" y="144">400</text><text x="8" y="204">600</text><text x="60" y="216">2023</text><text x="210" y="216">2024</text><text x="360" y="216">2025</text><text x="480" y="216">2026</text></g>
+        <polyline fill="none" stroke="#111" stroke-width="2" points="70,120 220,80 370,48 490,34"/>
+        <polyline fill="none" stroke="#666" stroke-width="2" stroke-dasharray="6 4" points="70,190 220,150 370,110 490,76"/>
+        <polyline fill="none" stroke="#999" stroke-width="2" stroke-dasharray="2 3" points="70,176 220,168 370,140 490,118"/>
+      </svg>
+      <div class="filtre"><span class="chip">— Spiller A Nordvik</span><span class="chip">- - Mathias Berg</span><span class="chip">··· Henrik Aas</span></div></div>
+    <div class="kort k6"><h3>Sammenlign</h3><div class="felt">Spiller 1: Mathias Berg</div><div class="felt">Spiller 2: Henrik Aas</div><div class="rad"><span>WAGR</span><span class="tall">188 · 326</span></div><div class="rad"><span>Score 2026</span><span class="tall">72,1 · 72,9</span></div><div class="rad"><span>Felles turneringer</span><span class="tall">6</span></div></div>
+    <div class="kort k6"><h3>Søk alle norske</h3><div class="felt">Navn (minst to bokstaver)</div><div class="filtre"><span class="chip">Klubb</span><span class="chip">Født 2005 og eldre</span><span class="chip">Tour</span></div><span class="kilde">Kilde: AK Golf HQ, resultater fra NGF, GolfBox-tourene og Junior Tour, bare brutto. Spillere født 2006 og senere vises ikke i søket.</span></div>
+    <div class="kort k12"><span class="kilde">Kilde: World Amateur Golf Ranking (WAGR), The R&amp;A. Datagrunnlag 20.10.2026. WAGR-plass for tidligere år er plassen i uke 52. Navn fra WAGR vises for alle aldre bak trenerinnloggingen fordi WAGR er offentlig.</span></div>
+  </div>`) },
+};
+
+const visning = document.getElementById("visning");
+const velger = document.getElementById("velger");
+const ALLE = [["kart", "Meny og sidekart"], ...Object.entries(S).map(([k, v]) => [k, v.navn])];
+
+function sidekart() {
+  return `<h2 class="skjermtittel">Meny og sidekart</h2>
+  <p class="notat">Seks hovedpunkter med faner inni. Navy sidemeny på PC, navy topplinje og meny som hel flate på mobil (uendret fra 20.10). Min profil fra navnet nederst. Gamle adresser sender videre (tabellen under).</p>
+  <div class="kart">
+    <section><h3>1 Hjem</h3><ul><li>I dag <code>/team-norway</code></li><li>Gruppeposter <code>/team-norway/[gruppe]</code></li><li>Dokumenter <code>/[gruppe]/dokumenter</code></li></ul></section>
+    <section><h3>2 Spillere</h3><ul><li>Spillere <code>/spillere</code></li><li>Skoler <code>/skoler</code></li><li>College og USA <code>/college</code></li><li><b>IUP</b> <code>/spiller/[id]</code>: Oversikt · Turneringsplan · Ranking · Turneringer · Trening · Tester · Teknisk plan · Fireukerssjekk</li></ul></section>
+    <section><h3>3 Samlinger og testing</h3><ul><li>Samlinger <code>/samlinger</code></li><li>Månedsplan <code>/manedsplan</code></li><li>Fellestesting <code>/fellestesting</code></li><li>Gruppeanalyse <code>/analyse</code></li><li>WANG-tester <code>/wang-resultater</code></li></ul></section>
+    <section><h3>4 Turneringer</h3><ul><li>Turneringer <code>/turneringer</code></li><li>Live Watch <code>/live-watch</code></li><li>Uttak <code>/uttak</code></li><li>Rangliste <code>/rangliste</code></li></ul></section>
+    <section><h3>5 Referanse</h3><ul><li>WAGR <code>/referanse</code></li><li>Sammenlign <code>/referanse/sammenlign</code></li><li>Søk <code>/referanse/sok</code></li><li>Planlegger <code>/referanse/planlegger</code></li><li>Norsk golf <code>/referanse/norsk-golf</code></li><li>HCP Norge <code>/referanse/hcp</code></li><li>Tester <code>/referanse/tester</code></li></ul></section>
+    <section><h3>6 Fag og administrasjon</h3><ul><li>Årsplan <code>/workbench</code></li><li>Testprotokoller <code>/protokoller</code></li><li>Fagapparat <code>/fagapparat</code></li><li>Lisens og status <code>/lisens-okonomi</code></li><li>Trenere og tilgang <code>/tilgang</code> (sportssjef)</li><li>Inviter spiller <code>/inviter</code> (sportssjef)</li><li>Data Golf <code>/datagolf</code> (bare ADMIN)</li></ul></section>
+    <section><h3>Navnet nederst</h3><ul><li>Min profil <code>/team-norway/profil</code> (ny)</li><li>Logg ut</li></ul></section>
+  </div>
+  <div class="vid"><h3>Gamle adresser som sender videre</h3><div class="vidboks"><table>
+    <tr><th>Gammel</th><th>Ny</th></tr>
+    <tr><td><code>/spiller/[id]/oversikt</code></td><td><code>/spiller/[id]</code> (Oversikt)</td></tr>
+    <tr><td><code>/spiller/[id]/profil</code></td><td><code>/spiller/[id]</code> (Oversikt; resultatene under Turneringer)</td></tr>
+    <tr><td><code>/spiller/[id]/analyse</code></td><td><code>/spiller/[id]/tester?visning=utvikling</code></td></tr>
+    <tr><td><code>/workbench?spiller=[id]</code></td><td><code>/spiller/[id]/trening</code></td></tr>
+    <tr><td><code>/referansenivaer</code></td><td><code>/referanse/tester</code></td></tr>
+    <tr><td><code>/apparatet</code></td><td><code>/fagapparat</code> (som i dag)</td></tr>
+    <tr><td><code>/turneringer/ny</code></td><td>PlayerHQ <code>/portal/tren/turneringer</code> (venter på svar)</td></tr>
+    <tr><td>teamnorwayref.vercel.app</td><td><code>/team-norway/referanse</code> når Anders sier fra</td></tr>
+  </table></div></div>`;
+}
+
+function tegn(id) {
+  for (const b of velger.children) b.setAttribute("aria-pressed", b.dataset.id === id ? "true" : "false");
+  if (id === "kart") { visning.innerHTML = sidekart(); return; }
+  const s = S[id];
+  const h = s.html();
+  visning.innerHTML = `<h2 class="skjermtittel">${s.navn}</h2><p class="notat">${s.notat}</p>
+  <div class="rammer"><div class="rammeboks"><div class="rammeetikett">1280 px (skalert)</div><div class="skalering"><div class="ramme pc">${h}</div></div></div>
+  <div class="rammeboks mobboks"><div class="rammeetikett">390 px</div><div class="ramme mob">${h}</div></div></div>`;
+  tilpass();
+}
+
+function tilpass() {
+  document.querySelectorAll(".skalering").forEach(boks => {
+    const r = boks.querySelector(".ramme");
+    const skala = Math.min(1, boks.clientWidth / 1280);
+    r.style.transform = `scale(${skala})`;
+    boks.style.height = (r.offsetHeight * skala) + "px";
+  });
+}
+
+ALLE.forEach(([id, navn]) => {
+  const b = document.createElement("button");
+  b.type = "button"; b.textContent = navn; b.dataset.id = id;
+  b.addEventListener("click", () => { tegn(id); try { history.replaceState(null, "", "#" + id); } catch (e) {} });
+  velger.appendChild(b);
+});
+window.addEventListener("resize", tilpass);
+window.addEventListener("hashchange", () => { const id = location.hash.slice(1); if (ALLE.some(a => a[0] === id)) tegn(id); });
+const start = (location.hash || "").slice(1);
+tegn(ALLE.some(a => a[0] === start) ? start : "kart");
+</script>
