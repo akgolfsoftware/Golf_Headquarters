@@ -101,7 +101,7 @@ export function TnFotnote({ children }: { children: ReactNode }) {
   return <p style={{ fontSize: 12.5, lineHeight: 1.45, color: TN.ink500, margin: "12px 0 0", maxWidth: "70ch" }}>{children}</p>;
 }
 
-/** Kvadratisk initialplate. Aldri sirkel. */
+/** Initialplate, rund (Skrå, 19.10.2026: runde avatarer). */
 export function TnInitialer({ navn, storrelse = 36, mork = false }: { navn: string; storrelse?: number; mork?: boolean }) {
   const initialer = navn.split(/\s+/).filter(Boolean).slice(0, 2).map((del) => del[0]?.toUpperCase() ?? "").join("");
   return (
