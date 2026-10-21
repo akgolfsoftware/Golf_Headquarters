@@ -95,4 +95,6 @@ Skissen viser «Norske herrer på WAGR pr. 20.10.2026» med 35 spillere, 280 som
 6. **Adresse og meny:** foreslått `/team-norway/referansespillere`, i gruppen Spillere. Ikke avgjort.
 7. **Skissens egne data kommer fra et annet sted enn basen** (siden ligger i eget Vercel-prosjekt). Hvor den henter dem fra, er ikke kartlagt.
 
+**Avgjort av Anders 21.10** (beslutninger.md §REFERANSESPILLERE NORDEN): pipelines oppdaterer plassene ukentlig · hele steg 10 venter til årsslutt-plassene (uke 52, 2024 og 2025) er fylt ut · alle spillere vises med navn, også født 2008 eller senere · adresse `/team-norway/referansespillere` under Spillere. Skissens data kommer fra `ak-golf-pipelines` (`pipelines/turneringsplan/hent.py`, `bygg.py`, `power_historikk.py`). **Steg 10 er derfor blokkert av pipelines** (beslutningens punkt 1).
+
 Ingen skjemaendring er gjort eller foreslått ennå. Alt over er lesing.
