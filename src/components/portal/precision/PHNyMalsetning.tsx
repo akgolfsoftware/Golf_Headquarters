@@ -25,6 +25,9 @@ import "@/styles/playerhq-ny-meg.css";
 import "@/styles/playerhq-ny-kommunikasjon.css";
 import "@/styles/playerhq-ny-maal.css";
 import "@/styles/playerhq-ny-plan-hjelpere.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
 
 const TYPER = [
   { value: "HCP_TARGET", label: "Handicap", kategori: "OUTCOME", hjelp: "Et tydelig resultatmål gir retning til treningen.", eksempel: "Senke handicapet til 4,5", verdi: "Mål-handicap" },
@@ -85,11 +88,17 @@ export function PHNyMalsetning({ testOptions }: PHNyMalsetningProps) {
     });
   }
 
-  return <div className="phn phn-meg phn-ph"><div className="side smal">
-    <div className="topp">
-      <Link className="tilbake" href="/portal/mal"><ChevronLeft size={18} aria-hidden />Målsetninger</Link>
-      <div><div className="phn-dato">Plan · målsetninger</div><h1 className="phn-tittel">Ny målsetning</h1></div>
-    </div>
+  return <div className="phn phn-meg phn-ph phn-skra">
+    <SkraTopp
+      lav
+      etikett="Ny målsetning"
+      bilde="/images/playerhq/stats-topp.jpg" bildePosisjon="50% 50%"
+      overlinje="Plan · målsetninger"
+      tittel="Ny målsetning"
+      handling={<span className="skra-tilbake"><Link className="tilbake" href="/portal/mal"><ChevronLeft size={18} aria-hidden />Målsetninger</Link></span>}
+    />
+    <SkraFlyt lav>
+    <div className="side smal">
     <section className="phn-seksjon" aria-labelledby="ph-nm-type">
       <div className="phn-sek-topp"><h2 id="ph-nm-type">Hva måles</h2></div>
       <div className="phn-k-typer" role="group" aria-label="Type målsetning">
@@ -139,5 +148,5 @@ export function PHNyMalsetning({ testOptions }: PHNyMalsetningProps) {
     <div className="phn-knapper">
       <button type="button" className="phn-knapp pri stor" disabled={jobber} onClick={lagre}>{jobber ? "Lagrer …" : "Lagre målsetningen"}</button>
     </div>
-  </div></div>;
+  </div></SkraFlyt></div>;
 }

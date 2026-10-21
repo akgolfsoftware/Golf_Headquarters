@@ -27,6 +27,9 @@ import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { SG_NAVN, Scorekort, SgListe, Tilbake, sgEn, tilParTekst } from "./PHRunderFelles";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-runder.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
 
 export type PHRD08Hull = { nr: number; par: number; score: number; putter?: number | null };
 export type PHRD08Data = {
@@ -106,16 +109,16 @@ export function PHRD08RundeFerdig({ data: d, uleste = 0 }: { data: PHRD08Data; u
 
   return (
     <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
-      <div className="phn">
-        <div className="phr-hode-rad">
-          <Tilbake href="/portal/mal/runder" tekst="Runder" />
-          {d.erEier && harHull && <Link className="phn-knapp sek" href={`/portal/mal/runder/${d.id}/hull`}>Rediger</Link>}
-        </div>
-        <div className="phr-topp">
-          <div className="phn-dato">Runde gjennomført · {d.datoKort}</div>
-          <h1 className="phn-tittel">{d.baneNavn}</h1>
-        </div>
-
+      <div className="phn phn-skra">
+      <SkraTopp
+        lav
+        etikett="Runde"
+        bilde="/images/playerhq/spill-bane.jpg" bildePosisjon="50% 50%"
+        overlinje={`Runde gjennomført · ${d.datoKort}`}
+        tittel={d.baneNavn}
+        handling={<span className="skra-topp-rad"><span className="skra-tilbake"><Tilbake href="/portal/mal/runder" tekst="Runder" /></span>{d.erEier && harHull && <Link className="phn-knapp pri skra-topp-knapp" href={`/portal/mal/runder/${d.id}/hull`}>Rediger</Link>}</span>}
+      />
+      <SkraFlyt lav>
         {d.nettoppLagret && d.erEier && (
           <div className="phr-sjekk ok" role="status">
             <span><b>Runden er lagret.</b> {d.sgSource === RUNDE_SG_KILDE.MANUAL ? "SG-tallene dine er lagret." : d.sgTotal != null ? "Strokes Gained er klar." : "Før slag for slag for å få Strokes Gained."}</span>
@@ -214,6 +217,7 @@ export function PHRD08RundeFerdig({ data: d, uleste = 0 }: { data: PHRD08Data; u
             </div>
           </div>
         </div>
+      </SkraFlyt>
       </div>
     </PlayerHQSkall>
   );

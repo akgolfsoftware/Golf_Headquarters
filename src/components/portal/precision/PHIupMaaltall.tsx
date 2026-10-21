@@ -22,6 +22,9 @@ import { settIupMaal } from "@/lib/iup/maaltall-actions";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-stats.css";
 import "@/styles/playerhq-ny-maaltall.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
 
 type Filter = "alle" | "med" | "uten";
 const KV = ["K1", "K2", "K3", "K4"];
@@ -32,16 +35,16 @@ export function PHIupMaaltall({ data, tilbake }: { data: IupMaaltallData; tilbak
   const synlige = filter === "alle" ? data.rader : filter === "med" ? med : data.rader.filter((r) => !r.mal);
   const grupper = [...new Set(synlige.map((r) => r.gruppe))] as MaaltallGruppe[];
 
-  return <div className="phn phn-mt">
-    <Link className="phn-tilbake" href={tilbake}><ChevronLeft className="phn-ikon" aria-hidden />Målsetninger</Link>
-    <header className="phn-topp">
-      <div>
-        <div className="phn-dato">Målsetninger · {data.org}</div>
-        <h1 className="phn-tittel">IUP-måltall {data.sesong.navn}</h1>
-        <p className="phn-mt-ingress">Måltallene i IUP-en din. Der det finnes data, hentes tallet automatisk. Ellers står det «—». K1 er august–oktober, K2 november–januar, K3 februar–april og K4 mai–juli.</p>
-      </div>
-    </header>
-
+  return <div className="phn phn-mt phn-skra">
+    <SkraTopp
+      lav
+      etikett="IUP-måltall"
+      bilde="/images/playerhq/stats-topp.jpg" bildePosisjon="50% 50%"
+      overlinje={`Målsetninger · ${data.org}`}
+      tittel={`IUP-måltall ${data.sesong.navn}`}
+      handling={<span className="skra-tilbake"><Link className="tilbake" href={tilbake}><ChevronLeft className="phn-ikon" aria-hidden />Målsetninger</Link></span>}
+    />
+    <SkraFlyt lav>
     <section className="phn-kort" aria-label="Måltall med mål">
       <div className="phn-hoved"><strong>{med.length}<small>av {data.rader.length}</small></strong><span className="phn-trend">med mål</span></div>
       <p className="phn-forklar">Året regnes ut først når alle fire kvartaler er målt.</p>
@@ -60,7 +63,7 @@ export function PHIupMaaltall({ data, tilbake }: { data: IupMaaltallData; tilbak
       </div>)}
       {synlige.length === 0 && <p className="phn-forklar">{filter === "med" ? "Ingen måltall har mål ennå. Trykk «Sett mål» på et måltall." : "Alle måltall har mål."}</p>}
     </section>
-  </div>;
+  </SkraFlyt></div>;
 }
 
 function Rad({ rad, sesong }: { rad: MaaltallRad; sesong: string }) {

@@ -27,6 +27,9 @@ import { PH18MerStatistikk } from "./PH18RunderMer";
 import { RunderFeil, Tilbake } from "./PHRunderFelles";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-runder.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
 
 export type PH18Props = {
   tilstand: "data" | "tom" | "feil";
@@ -187,13 +190,16 @@ export function PH18Runder(p: PH18Props) {
   const o = p.modell.oversikt;
 
   return (
-    <div className="phn">
-      <Tilbake href="/portal/analysere" tekst="Stats" />
-      <div className="phr-topp">
-        <div className="phn-dato">Stats · snittscore</div>
-        <h1 className="phn-tittel">Runder</h1>
-      </div>
-
+    <div className="phn phn-skra">
+    <SkraTopp
+      lav
+      etikett="Runder"
+      bilde="/images/playerhq/spill-bane.jpg" bildePosisjon="50% 50%"
+      overlinje="Stats · snittscore"
+      tittel="Runder"
+      handling={<span className="skra-tilbake"><Tilbake href="/portal/analysere" tekst="Stats" /></span>}
+    />
+    <SkraFlyt lav>
       {harKladd && p.tilstand !== "feil" && (
         <section className="phr-kladd" aria-label="Runde som ikke er ferdig">
           <div className="phr-kladd-topp">
@@ -227,6 +233,7 @@ export function PH18Runder(p: PH18Props) {
           <PH18MerStatistikk modell={p.modell} />
         </>
       )}
+    </SkraFlyt>
     </div>
   );
 }

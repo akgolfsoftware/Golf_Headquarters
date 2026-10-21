@@ -37,6 +37,9 @@ import { formatTall, kurveKoordinater, type MaalEnNy } from "@/lib/portal-mal/ma
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-kommunikasjon.css";
 import "@/styles/playerhq-ny-maal.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
 
 export type PHMalsetningProps = {
   data: MaalEnNy | null;
@@ -252,17 +255,19 @@ export function PHMalsetning({ data, testOptions = [], state = "data", onRetry }
   }
 
   return (
-    <div className="phn phn-m">
-      <Tilbake />
-      <div className="phn-topp">
-        <div>
-          <div className="phn-dato">{d.overlinje}</div>
-          <h1 className="phn-tittel">{d.navn}</h1>
-        </div>
-        <div className="phn-m-merker">
-          <span className="phn-pille noy">{d.kategori === "OUTCOME" ? "Resultatmål" : "Prosessmål"}</span>
-          {d.akseTekst && <span className="phn-m-akse"><i className={d.akse ? `akse-${d.akse}` : undefined} />{d.akseTekst}</span>}
-        </div>
+    <div className="phn phn-m phn-skra">
+    <SkraTopp
+      lav
+      etikett="Målsetning"
+      bilde="/images/playerhq/stats-topp.jpg" bildePosisjon="50% 50%"
+      overlinje={d.overlinje}
+      tittel={d.navn}
+      handling={<span className="skra-tilbake"><Tilbake /></span>}
+    />
+    <SkraFlyt lav>
+      <div className="phn-m-merker">
+        <span className="phn-pille noy">{d.kategori === "OUTCOME" ? "Resultatmål" : "Prosessmål"}</span>
+        {d.akseTekst && <span className="phn-m-akse"><i className={d.akse ? `akse-${d.akse}` : undefined} />{d.akseTekst}</span>}
       </div>
 
       <div className="phn-m-grid">
@@ -341,6 +346,7 @@ export function PHMalsetning({ data, testOptions = [], state = "data", onRetry }
 
       {toast && <div className="phn-k-toast" role="status">{toast}</div>}
 
+    </SkraFlyt>
       <dialog ref={endreRef} className="phn-ark" aria-labelledby="phn-m-endre-tittel" onClose={() => setVisEndre(false)}>
         {visEndre && <EndreArk data={d} testOptions={testOptions} pending={pending} feil={feil} onLagre={lagre} onLukk={() => setVisEndre(false)} />}
       </dialog>
