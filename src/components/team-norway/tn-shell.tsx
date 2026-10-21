@@ -45,7 +45,8 @@ export type TnAktivSide =
   | "apparatet"
   | "analyse"
   | "datagolf"
-  | "workbench";
+  | "workbench"
+  | "profil";
 
 function lenke(label: string, href: string, id: TnAktivSide, aktiv: TnAktivSide): TnMenyLenke {
   return { label, href, aktiv: aktiv === id };
@@ -225,10 +226,10 @@ function TnRail({ grupper, bruker, orgNavn, orgUndertittel }: { grupper: TnMenyG
           </div>
         </details>
       ))}
-      <div className={s.bruker}>
+      <Link href="/team-norway/profil" className={s.bruker} aria-label={`Min profil, ${bruker.navn}`}>
         <span className={s.avatar} aria-hidden="true">{initialer(bruker.navn)}</span>
         <span><span className={s.brukerNavn}>{bruker.navn}</span><span className={s.brukerRolle}>{bruker.rolle}</span></span>
-      </div>
+      </Link>
     </nav>
   );
 }
