@@ -32,6 +32,10 @@ import { AKSE_FARGE, HeltKort, HendelseListe, MiniRing, SoyleForklaring, tempoSe
 import { AarsplanOppretter } from "@/components/workbench/WorkbenchAar";
 import { PH11PeriodeSkjema } from "@/components/portal/precision/PH11Periode";
 import "@/styles/playerhq-ny.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke10-skra.css";
 
 const PERIODE_NAVN: Record<YearPeriodBand["type"], string> = {
   GRUNN: "Grunnperiode", SPESIAL: "Spesialperiode", TURNERING: "Turneringsperiode", EVALUERING: "Evaluering",
@@ -86,26 +90,26 @@ export function PH11Aarsplan({ playerId, aar, referanse, idag }: PH11AarsplanPro
   const naUke = uker.find((u) => ukeErNa(u.weekStart, idag));
   const tom = aar.periods.length === 0 && uker.every((u) => sum(u.plannedByPyramid) === 0 && sum(u.fordelt) === 0);
 
-  return <div className="phn">
-    <header className="phn-topp">
-      <div className="phn-topp-rad">
-        <div>
-          <div className="phn-dato">Workbench · {dato(`${aar.year}-01-01`, langDato).replace(` ${aar.year}`, "")}–{dato(`${aar.year}-12-31`, langDato)} · {uker.length} uker</div>
-          <h1 className="phn-tittel">Årsplan {aar.year}</h1>
-        </div>
-        <div className="phn-knapper">
+  return <div className="phn phn-skra">
+    <SkraTopp
+      lav
+      etikett="Workbench"
+      bilde="/images/playerhq/spill-bane.jpg" bildePosisjon="50% 50%"
+      overlinje={<>Workbench · {dato(`${aar.year}-01-01`, langDato).replace(` ${aar.year}`, "")}–{dato(`${aar.year}-12-31`, langDato)} · {uker.length} uker</>}
+      tittel={<>Årsplan {aar.year}</>}
+      handling={<span className="skra-topp-rad">
           <span className="phn-pil">
             <Link href={url("aar", { aar: String(aar.year - 1), periode: undefined })} aria-label={UI.yearNavPrev}><ChevronLeft className="phn-ikon" aria-hidden /></Link>
             <Link href={url("aar", { aar: String(aar.year + 1), periode: undefined })} aria-label={UI.yearNavNext}><ChevronRight className="phn-ikon" aria-hidden /></Link>
           </span>
-          {aar.periods.length > 0 && <button type="button" className="phn-knapp pri" onClick={() => setSkjema("periode")}><Plus className="phn-ikon" aria-hidden />Ny periode</button>}
-          <button type="button" className="phn-knapp sek" onClick={() => setSkjema("aarsplan")}>Ny årsplan</button>
-        </div>
-      </div>
-      <nav className="phn-valg" aria-label="Nivå">
+          {aar.periods.length > 0 && <button type="button" className="phn-knapp pri skra-topp-knapp" onClick={() => setSkjema("periode")}><Plus className="phn-ikon" aria-hidden />Ny periode</button>}
+          <button type="button" className="phn-knapp sek skra-topp-knapp" onClick={() => setSkjema("aarsplan")}>Ny årsplan</button>
+      </span>}
+    />
+    <SkraFlyt lav>
+    <nav className="phn-valg" aria-label="Nivå">
         {NIVAER.map((n) => <Link key={n.id} href={url(n.id)} aria-current={n.id === "aar" ? "page" : undefined}>{n.navn}</Link>)}
       </nav>
-    </header>
 
     {tom
       ? <section className="phn-kort" aria-label="Ingen årsplan">
@@ -181,6 +185,7 @@ export function PH11Aarsplan({ playerId, aar, referanse, idag }: PH11AarsplanPro
 
     {skjema === "periode" && <PH11PeriodeSkjema playerId={playerId} year={aar.year} periode={null} onLukk={() => setSkjema(null)} onLagret={() => { setSkjema(null); router.refresh(); }} />}
     {skjema === "aarsplan" && <AarsplanOppretter playerId={playerId} year={aar.year} onClose={() => setSkjema(null)} />}
+    </SkraFlyt>
   </div>;
 }
 

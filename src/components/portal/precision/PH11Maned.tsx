@@ -35,6 +35,10 @@ import { oktBilde } from "@/lib/portal/okt-bilde";
 import { AKSE_INK, HeltKort, HendelseListe, SoyleForklaring, UkeSoyler, tempoSetning, varighet, type SoyleUke } from "@/components/portal/precision/PlanProgresjon";
 import { PERIODE_NAVN } from "@/components/portal/precision/PH11Periode";
 import "@/styles/playerhq-ny.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke10-skra.css";
 
 const AKSE_KLASSE: Record<PyramidArea, string> = { FYS: "akse-fys", TEK: "akse-tek", SLAG: "akse-slag", SPILL: "akse-spill", TURN: "akse-turn" };
 const MAL_STATUS: Record<PlanningGoalSummary["fremdrift"]["status"], { tekst: string; klasse: string }> = {
@@ -104,25 +108,25 @@ export function PH11Maned({ playerId, maned, goals, referanse, idag }: PH11Maned
   }));
   const bilde = akse ? oktBilde(akse, plan?.fokus ?? periodeFokus ?? "") : null;
 
-  return <div className="phn">
-    <header className="phn-topp">
-      <div className="phn-topp-rad">
-        <div>
-          <div className="phn-dato">Workbench{d.perioder.length ? ` · ${d.perioder.map((p) => PERIODE_NAVN[p.type]).filter((x, i, l) => l.indexOf(x) === i).join(" og ")}` : ""}{d.uker.length ? ` · ${ukeSpenn(d.uker)}` : ""}</div>
-          <h1 className="phn-tittel">{navn}{aar !== Number(idag.slice(0, 4)) ? ` ${aar}` : ""}</h1>
-        </div>
-        <div className="phn-knapper">
+  return <div className="phn phn-skra">
+    <SkraTopp
+      lav
+      etikett="Workbench"
+      bilde="/images/playerhq/spill-bane.jpg" bildePosisjon="50% 50%"
+      overlinje={<>Workbench{d.perioder.length ? ` · ${d.perioder.map((p) => PERIODE_NAVN[p.type]).filter((x, i, l) => l.indexOf(x) === i).join(" og ")}` : ""}{d.uker.length ? ` · ${ukeSpenn(d.uker)}` : ""}</>}
+      tittel={<>{navn}{aar !== Number(idag.slice(0, 4)) ? ` ${aar}` : ""}</>}
+      handling={<span className="skra-topp-rad">
           <span className="phn-pil">
             <Link href={url("maned", { maned: addMonths(maned.monthStart, -1).slice(0, 7) })} aria-label="Forrige måned"><ChevronLeft className="phn-ikon" aria-hidden /></Link>
             <Link href={url("maned", { maned: nesteManed.slice(0, 7) })} aria-label="Neste måned"><ChevronRight className="phn-ikon" aria-hidden /></Link>
           </span>
-          {plan && <button type="button" className="phn-knapp sek" onClick={() => setSkjema(true)}><Pencil className="phn-ikon" aria-hidden />Endre måned</button>}
-        </div>
-      </div>
-      <nav className="phn-valg" aria-label="Nivå">
+          {plan && <button type="button" className="phn-knapp sek skra-topp-knapp" onClick={() => setSkjema(true)}><Pencil className="phn-ikon" aria-hidden />Endre måned</button>}
+      </span>}
+    />
+    <SkraFlyt lav>
+    <nav className="phn-valg" aria-label="Nivå">
         {NIVAER.map((n) => <Link key={n.id} href={url(n.id)} aria-current={n.id === "maned" ? "page" : undefined}>{n.navn}</Link>)}
       </nav>
-    </header>
 
     <div className="phn-to-kol">
       <div className="phn-kol">
@@ -178,6 +182,7 @@ export function PH11Maned({ playerId, maned, goals, referanse, idag }: PH11Maned
 
     {skjema && <PH11ManedSkjema playerId={playerId} maned={maned} idag={idag} fase={fase} maal={maal} url={url}
       onLukk={() => setSkjema(false)} onLagret={() => { setSkjema(false); router.refresh(); }} />}
+    </SkraFlyt>
   </div>;
 }
 

@@ -39,6 +39,10 @@ import { beregnGjentaDatoer, ukedag, type GjentaModus } from "@/lib/workbench/gj
 import "@/styles/precision-a9.css";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-uke.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke10-skra.css";
 
 export type PH11UkePeriode = {
   navn: string;
@@ -279,7 +283,17 @@ export function PH11Uke({ playerId, spillerNavn, uke, kilder, goals, fys, refera
   const gjentaOkt = gjentaId ? alle.find((s) => s.id === gjentaId) ?? null : null;
   const arkSession = arkOkt ? alle.find((s) => s.id === arkOkt) ?? null : null;
 
-  return <div className="phn phn-uke">
+  return <div className="phn phn-uke phn-skra">
+    <SkraTopp
+      lav
+      etikett="Workbench"
+      bilde="/images/playerhq/spill-bane.jpg" bildePosisjon="50% 50%"
+      overlinje={<>Workbench{periode ? ` · ${periode.navn} · uke ${periode.ukeIPerioden} av ${periode.antallUker}` : ""}</>}
+      tittel={<>Uke {ukeNr}</>}
+      ingress={<>{ukeSpenn(week.weekStart)} · {tellende.length} {tellende.length === 1 ? "økt" : "økter"} · {tid(gjortMin)} gjennomført</>}
+      handling={<span className="skra-topp-rad"><span className="phn-pil"><Link href={url("uke", { uke: flyttPlanUke(week.weekStart, -1) })} aria-label="Forrige uke"><ChevronLeft className="phn-ikon" aria-hidden /></Link><Link href={url("uke", { uke: flyttPlanUke(week.weekStart, 1) })} aria-label="Neste uke"><ChevronRight className="phn-ikon" aria-hidden /></Link></span></span>}
+    />
+    <SkraFlyt lav>
     <div className="phn-uke-verktoy">
       <PH11Nivaer playerId={playerId} aktiv="uke" referanse={kontekst} />
       <div className="phn-knapper">
@@ -287,15 +301,6 @@ export function PH11Uke({ playerId, spillerNavn, uke, kilder, goals, fys, refera
         <Link className="phn-knapp sek" href="/portal/planlegge">Ferdig</Link>
       </div>
     </div>
-    <header className="phn-topp phn-uke-topp">
-      <div className="phn-dato">Workbench{periode ? ` · ${periode.navn} · uke ${periode.ukeIPerioden} av ${periode.antallUker}` : ""}</div>
-      <div className="phn-uke-tittel">
-        <Link href={url("uke", { uke: flyttPlanUke(week.weekStart, -1) })} aria-label="Forrige uke"><ChevronLeft className="phn-ikon" aria-hidden /></Link>
-        <h1 className="phn-tittel">Uke {ukeNr}</h1>
-        <Link href={url("uke", { uke: flyttPlanUke(week.weekStart, 1) })} aria-label="Neste uke"><ChevronRight className="phn-ikon" aria-hidden /></Link>
-      </div>
-      <p className="phn-ingress">{ukeSpenn(week.weekStart)} · {tellende.length} {tellende.length === 1 ? "økt" : "økter"} · {tid(gjortMin)} gjennomført</p>
-    </header>
 
     {motor.feil && <p className="phn-melding" role="alert">{motor.feil} <button type="button" className="phn-lenke" onClick={() => void motor.lastPaaNytt()}>Prøv igjen</button></p>}
 
@@ -426,6 +431,7 @@ export function PH11Uke({ playerId, spillerNavn, uke, kilder, goals, fys, refera
     {nyOvelse && <NyOvelseArk key={nyOvelse.okt?.id ?? "bank"} playerId={playerId} rolle="player" okt={nyOvelse.okt} startNavn={nyOvelse.navn}
       standardPyramide={velgerAkse ?? nyOvelse.okt?.pyramid ?? "SLAG"} onLukk={() => setNyOvelse(null)}
       onLagret={() => { setNyOvelse(null); setVelgerQ(""); setVelgerVersjon((v) => v + 1); void motor.lastPaaNytt(); }} />}
+    </SkraFlyt>
   </div>;
 }
 

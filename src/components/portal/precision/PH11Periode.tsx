@@ -34,6 +34,10 @@ import { FordelingStolper, HeltKort, HendelseListe, SoyleForklaring, UkeSoyler, 
 import { PublishConfirmDialog } from "@/components/workbench/PublishConfirmDialog";
 import { periodeFerdigHref } from "@/lib/portal/plan-hjelpere-videresending";
 import "@/styles/playerhq-ny.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke10-skra.css";
 
 const AKSER: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
 const AKSE_KLASSE: Record<PyramidArea, string> = { FYS: "akse-fys", TEK: "akse-tek", SLAG: "akse-slag", SPILL: "akse-spill", TURN: "akse-turn" };
@@ -99,17 +103,23 @@ export function PH11Periode({ playerId, periode, referanse, idag }: PH11PeriodeP
   </nav>;
 
   if (!p) {
-    return <div className="phn">
-      <header className="phn-topp">
-        <div className="phn-topp-rad"><div><div className="phn-dato">Workbench · {periode.year}</div><h1 className="phn-tittel">Periode</h1></div></div>
-        {nivaer}
-      </header>
+    return <div className="phn phn-skra">
+      <SkraTopp
+        lav
+        etikett="Workbench"
+        bilde="/images/playerhq/spill-bane.jpg" bildePosisjon="50% 50%"
+        overlinje={<>Workbench · {periode.year}</>}
+        tittel={<>Periode</>}
+      />
+      <SkraFlyt lav>
+      {nivaer}
       <section className="phn-kort" aria-label="Ingen perioder">
         <div className="phn-sek-topp"><h2>Ingen perioder i {periode.year}</h2></div>
         <p className="phn-forklar">En periode fordeler timer per akse på ukene. Lag den første, så får ukene timene sine herfra.</p>
         <div className="phn-knapper"><button type="button" className="phn-knapp pri" onClick={() => setSkjema("ny")}><Plus className="phn-ikon" aria-hidden />Ny periode</button></div>
       </section>
       {skjema && <PH11PeriodeSkjema playerId={playerId} year={periode.year} periode={null} onLukk={() => setSkjema(null)} onLagret={() => { setSkjema(null); router.refresh(); }} />}
+      </SkraFlyt>
     </div>;
   }
 
@@ -141,26 +151,26 @@ export function PH11Periode({ playerId, periode, referanse, idag }: PH11PeriodeP
     ...p.turneringer.map((x): PlanHendelse & { s: string } => ({ type: "turn", navn: x.navn, tekst: `uke ${isoWeekNumber(x.dato)} · konkurransedag`, dato: dato(x.dato), s: x.dato })),
   ].sort((a, b) => a.s.localeCompare(b.s));
 
-  return <div className="phn">
-    <header className="phn-topp">
-      <div className="phn-topp-rad">
-        <div>
-          <div className="phn-dato">Workbench · {ukeSpenn(p)} · {p.fraGruppe ? "Fra gruppa" : "Egen"}</div>
-          <h1 className="phn-tittel">{PERIODE_NAVN[p.type]}</h1>
-          <p className="phn-forklar">{dato(p.startDate, langDato).replace(` ${p.startDate.slice(0, 4)}`, p.startDate.slice(0, 4) === p.endDate.slice(0, 4) ? "" : ` ${p.startDate.slice(0, 4)}`)}–{dato(p.endDate, langDato)}.</p>
-        </div>
-        <div className="phn-knapper">
+  return <div className="phn phn-skra">
+    <SkraTopp
+      lav
+      etikett="Workbench"
+      bilde="/images/playerhq/spill-bane.jpg" bildePosisjon="50% 50%"
+      overlinje={<>Workbench · {ukeSpenn(p)} · {p.fraGruppe ? "Fra gruppa" : "Egen"}</>}
+      tittel={<>{PERIODE_NAVN[p.type]}</>}
+      ingress={<>{dato(p.startDate, langDato).replace(` ${p.startDate.slice(0, 4)}`, p.startDate.slice(0, 4) === p.endDate.slice(0, 4) ? "" : ` ${p.startDate.slice(0, 4)}`)}–{dato(p.endDate, langDato)}.</>}
+      handling={<span className="skra-topp-rad">
           <span className="phn-pil">
             {indeks > 0 ? <Link href={url("periode", { periode: perioder[indeks - 1].id })} aria-label="Forrige periode"><ChevronLeft className="phn-ikon" aria-hidden /></Link> : <span aria-hidden className="phn-pil-av"><ChevronLeft className="phn-ikon" /></span>}
             {indeks >= 0 && indeks < perioder.length - 1 ? <Link href={url("periode", { periode: perioder[indeks + 1].id })} aria-label="Neste periode"><ChevronRight className="phn-ikon" aria-hidden /></Link> : <span aria-hidden className="phn-pil-av"><ChevronRight className="phn-ikon" /></span>}
           </span>
-          <button type="button" className="phn-knapp sek" onClick={() => setSkjema("rediger")}><Pencil className="phn-ikon" aria-hidden />Endre periode</button>
-          <button type="button" className="phn-knapp sek" onClick={() => setSkjema("ny")}><Plus className="phn-ikon" aria-hidden />Ny periode</button>
-          {utkast.length > 0 && <button type="button" className="phn-knapp pri" disabled={publiserer} onClick={() => { setValgte(new Set(utkast.filter((s) => !opptatt.has(s.id)).map((s) => s.id))); setPubliserApen(true); }}>{UI.publishPeriod} ({utkast.length})</button>}
-        </div>
-      </div>
-      {nivaer}
-    </header>
+          <button type="button" className="phn-knapp sek skra-topp-knapp" onClick={() => setSkjema("rediger")}><Pencil className="phn-ikon" aria-hidden />Endre periode</button>
+          <button type="button" className="phn-knapp sek skra-topp-knapp" onClick={() => setSkjema("ny")}><Plus className="phn-ikon" aria-hidden />Ny periode</button>
+          {utkast.length > 0 && <button type="button" className="phn-knapp pri skra-topp-knapp" disabled={publiserer} onClick={() => { setValgte(new Set(utkast.filter((s) => !opptatt.has(s.id)).map((s) => s.id))); setPubliserApen(true); }}>{UI.publishPeriod} ({utkast.length})</button>}
+      </span>}
+    />
+    <SkraFlyt lav>
+    {nivaer}
 
     <div className="phn-to-kol">
       <div className="phn-kol">
@@ -209,6 +219,7 @@ export function PH11Periode({ playerId, periode, referanse, idag }: PH11PeriodeP
       onPubliserValgte={() => publiser(utkast.filter((s) => valgte.has(s.id)).map((s) => s.id))}
       onPubliserAlle={() => publiser(utkast.map((s) => s.id))}
     />
+    </SkraFlyt>
   </div>;
 }
 
