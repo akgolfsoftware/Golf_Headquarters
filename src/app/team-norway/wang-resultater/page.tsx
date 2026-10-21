@@ -95,7 +95,7 @@ export default async function WangTestresultaterForTnPage({
 function IngenTilgang() {
   return (
     <main style={{ maxWidth: 560, margin: "64px auto", padding: "0 16px", color: TN.ink900, fontFamily: TN.font.body }}>
-      <h1 style={{ fontFamily: TN.font.display, fontWeight: 400, fontSize: 30, letterSpacing: "0.03em", color: TN.navy900, margin: 0 }}>Ingen tilgang</h1>
+      <h1 style={{ fontFamily: TN.font.display, fontWeight: 800, fontSize: 30, letterSpacing: "-0.03em", color: TN.navy900, margin: 0 }}>Ingen tilgang</h1>
       <p style={{ marginTop: 12, color: TN.textSecondary }}>Du har ikke tilgang til disse testresultatene.</p>
     </main>
   );

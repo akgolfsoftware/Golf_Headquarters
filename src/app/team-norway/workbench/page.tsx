@@ -348,7 +348,6 @@ export default async function TeamNorwayWorkbenchPage({ searchParams }: Props) {
           spillerNavn={kontekst.spillere.find((s) => s.id === spillerId)?.navn ?? spillerId}
           aktiv="workbench"
           kanAdministrere={!kontekst.erSpiller}
-          kompakt
         />
       )}
 

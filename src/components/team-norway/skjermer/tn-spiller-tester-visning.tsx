@@ -106,7 +106,7 @@ export function TnSpillerTesterVisning({ brukerNavn, spillerId, tilgang, tnRader
       />
       <TnSkraKort>
         <TnFlate>
-          <TnSpillerFaner spillerId={spillerId} spillerNavn={tilgang.spillerNavn} aktiv="tester" kanAdministrere={!tilgang.kontekst.erSpiller} kompakt />
+          <TnSpillerFaner spillerId={spillerId} spillerNavn={tilgang.spillerNavn} aktiv="tester" kanAdministrere={!tilgang.kontekst.erSpiller} />
         </TnFlate>
 
         {BATTERI_DELER.map((del) => (

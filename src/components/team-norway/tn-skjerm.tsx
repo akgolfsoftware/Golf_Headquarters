@@ -9,19 +9,6 @@ import s from "./tn-skjerm.module.css";
  * inn her — ingen egne farger eller mål.
  */
 
-export function TnSidehodeDS({ overlinje, tittel, ingress, handling }: { overlinje: string; tittel: string; ingress?: string; handling?: ReactNode }) {
-  return (
-    <header className={s.sidehode}>
-      <div className={s.sidehodeTekst}>
-        <p className={s.overlinje}>{overlinje}</p>
-        <h1 className={s.tittel}>{tittel}</h1>
-        {ingress ? <p className={s.ingress}>{ingress}</p> : null}
-      </div>
-      {handling ? <div className={s.handling}>{handling}</div> : null}
-    </header>
-  );
-}
-
 export function TnKnapp({ href, children, primar = false }: { href: string; children: ReactNode; primar?: boolean }) {
   return (
     <Link href={href} className={primar ? `${s.knapp} ${s.knappPrimar}` : s.knapp}>

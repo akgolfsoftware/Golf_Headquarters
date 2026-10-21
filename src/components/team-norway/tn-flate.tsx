@@ -1,7 +1,6 @@
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 
-import { ukenummer } from "@/lib/uke-helpers";
 import { TN } from "@/lib/v2/team-norway";
 
 /**
@@ -25,23 +24,6 @@ const etikettStil: CSSProperties = {
   color: TN.ink500,
 };
 
-const dagFormat = new Intl.DateTimeFormat("nb-NO", { weekday: "long", day: "numeric", month: "long", timeZone: "Europe/Oslo" });
-
-/** Sidehodet: datolinja, tittel, ingress, og handlinger under. */
-export function TnSkjermhode({ tittel, ingress, overlinje, handling }: { tittel: string; ingress: string; overlinje?: string; handling?: ReactNode }) {
-  const naa = new Date();
-  return (
-    <header style={{ display: "grid", gap: 16 }}>
-      <div style={{ minWidth: 0 }}>
-        <span style={etikettStil}>{overlinje ?? `${dagFormat.format(naa)} · uke ${ukenummer(naa)}`}</span>
-        <h1 style={{ margin: "4px 0 0", fontFamily: TN.font.display, fontWeight: 400, fontSize: "clamp(30px, 3vw, 38px)", lineHeight: 1.12, letterSpacing: "0.03em", color: TN.navy900, overflowWrap: "anywhere" }}>{tittel}</h1>
-        <p style={{ margin: "8px 0 0", fontSize: 15.5, lineHeight: 1.6, color: TN.ink700, maxWidth: "52ch" }}>{ingress}</p>
-      </div>
-      {handling ? <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>{handling}</div> : null}
-    </header>
-  );
-}
-
 /** Kort: hvit flate med myke hjørner og lagdelt navy-skygge. */
 export function TnFlate({ children, style }: { children: ReactNode; style?: CSSProperties }) {
   return (
@@ -55,7 +37,7 @@ export function TnFlate({ children, style }: { children: ReactNode; style?: CSSP
 export function TnFlatehode({ tittel, merknad, children }: { tittel: string; merknad?: ReactNode; children?: ReactNode }) {
   return (
     <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: "8px 12px", alignItems: "baseline", paddingBottom: 12 }}>
-      <h2 style={{ fontFamily: TN.font.display, fontWeight: 500, fontSize: 20, lineHeight: 1.25, letterSpacing: "0.02em", color: TN.navy900, margin: 0 }}>{tittel}</h2>
+      <h2 style={{ fontFamily: TN.font.display, fontWeight: 700, fontSize: 20, lineHeight: 1.25, letterSpacing: "-0.01em", color: TN.navy900, margin: 0 }}>{tittel}</h2>
       {merknad !== undefined ? <span style={{ fontSize: 12.5, lineHeight: 1.45, color: TN.ink500 }}>{merknad}</span> : null}
       {children}
     </div>
@@ -71,7 +53,7 @@ export function TnKorttittel({ overlinje, tittel, children }: { overlinje?: Reac
   return (
     <div>
       {overlinje ? <TnEtikett>{overlinje}</TnEtikett> : null}
-      <div style={{ fontFamily: TN.font.display, fontWeight: 400, fontSize: 26, letterSpacing: "0.02em", color: TN.navy900, marginTop: 6, lineHeight: 1.1, overflowWrap: "anywhere" }}>{tittel}</div>
+      <div style={{ fontFamily: TN.font.display, fontWeight: 700, fontSize: 26, letterSpacing: "-0.02em", color: TN.navy900, marginTop: 6, lineHeight: 1.1, overflowWrap: "anywhere" }}>{tittel}</div>
       {children}
     </div>
   );

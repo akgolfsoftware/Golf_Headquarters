@@ -228,9 +228,9 @@ export function TnManedsplanVisning({
           </div>
         ))}
       </div>
-      <aside style={{ background: TN.white, border: `1px solid ${TN.ink200}`, padding: 20, minWidth: 0 }}>
+      <aside style={{ background: TN.white, borderRadius: TN.radius.xl, boxShadow: TN.shadow.md, padding: 20, minWidth: 0 }}>
         <TnEtikett>{`Uke ${valgtUke.nr} · ${valgtUke.periode?.navn ?? "Periode ikke satt"}`}</TnEtikett>
-        <div style={{ fontFamily: TN.font.display, fontWeight: 400, fontSize: 24, letterSpacing: "0.02em", color: TN.navy900, marginTop: 8 }}>{DAGER_LANG[ukedag(valgtNokkel)]}</div>
+        <div style={{ fontFamily: TN.font.display, fontWeight: 700, fontSize: 24, letterSpacing: "-0.02em", color: TN.navy900, marginTop: 8 }}>{DAGER_LANG[ukedag(valgtNokkel)]}</div>
         <div style={{ fontFamily: TN.font.mono, fontSize: 13, color: TN.textSecondary, marginTop: 4 }}>{`${dm(valgtNokkel)}.${valgtNokkel.slice(0, 4)}`}</div>
         <div style={{ marginTop: 14 }}>
           {valgtDag.hendelser.map(rad)}
@@ -246,7 +246,7 @@ export function TnManedsplanVisning({
         {uker.map((u) => {
           const dager = u.dager.filter((d) => d.iManed && d.hendelser.length > 0);
           return (
-            <div key={u.fra} style={{ background: TN.white, border: `1px solid ${TN.ink200}`, minWidth: 0 }}>
+            <div key={u.fra} style={{ background: TN.white, borderRadius: TN.radius.xl, boxShadow: TN.shadow.md, overflow: "hidden", minWidth: 0 }}>
               <Periodebaand navn={u.periode?.navn} hoyre={`${dm(u.fra)}–${dm(u.til)}`} />
               <UkeAkser minutter={akserPerMandag.get(u.fra)} />
               <div style={{ fontFamily: TN.font.body, fontWeight: 700, fontSize: 14, color: TN.ink900, padding: "10px 14px 0" }}>Uke {u.nr}</div>
