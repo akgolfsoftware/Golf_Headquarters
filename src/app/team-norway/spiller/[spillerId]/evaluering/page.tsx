@@ -7,7 +7,8 @@ import { hentTnWorkbenchKontekst } from "@/lib/domain/tn-workbench";
 import { krevFullForEgenTekniskPlan } from "@/lib/domain/tn-teknisk-plan";
 import { hentTnEvalueringGrunnlag } from "@/lib/domain/tn-evaluering";
 import { TN } from "@/lib/v2/team-norway";
-import { TnShell, TnSidehode, TnSeksjon, TnSpillerFaner } from "@/components/team-norway/tn-shell";
+import { TnIupTopp } from "@/components/team-norway/tn-iup-topp";
+import { TnShell, TnSeksjon } from "@/components/team-norway/tn-shell";
 import { TnKort, TnPille } from "@/components/team-norway/core";
 import { LeverteIupProfil } from "@/components/iup/LeverteIupProfil";
 
@@ -43,12 +44,7 @@ export default async function TeamNorwaySpillerEvalueringPage({ params }: { para
       kanAdministrere={kontekst.kanAdministrere}
       tilbake={{ href: "/team-norway/spillere", label: "Spillere" }}
     >
-      <TnSidehode
-        overlinje={`IUP · ${spillerNavn}`}
-        tittel="Fireukerssjekk"
-        ingress="Det spilleren har levert fra PlayerHQ, og grunnlaget for neste tiltak: nyeste tester og status på den tekniske planen."
-      />
-      <TnSpillerFaner spillerId={spillerId} spillerNavn={spillerNavn} aktiv="evaluering" kanAdministrere={!kontekst.erSpiller} kompakt />
+      <TnIupTopp spillerId={spillerId} spillerNavn={spillerNavn} aktiv="evaluering" kanAdministrere={!kontekst.erSpiller} overlinje={`IUP · ${spillerNavn}`} tittel="Fireukerssjekk" ingress="Det spilleren har levert fra PlayerHQ, og grunnlaget for neste tiltak: nyeste tester og status på den tekniske planen.">
 
       <TnKort>
         <LeverteIupProfil rader={iup ?? []} tittel="Levert fra PlayerHQ" />
@@ -105,6 +101,7 @@ export default async function TeamNorwaySpillerEvalueringPage({ params }: { para
           </TnSeksjon>
         </>
       )}
+    </TnIupTopp>
     </TnShell>
   );
 }

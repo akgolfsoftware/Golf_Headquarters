@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { medTnSpillerData } from "@/lib/domain/tn-arbeidsflate";
 import { byggKomplettProfil } from "@/lib/profil-kobling/komplett";
-import { TnShell, TnSidehode, TnSpillerFaner, tnRolleNavn } from "@/components/team-norway/tn-shell";
+import { TnIupTopp } from "@/components/team-norway/tn-iup-topp";
+import { TnShell, tnRolleNavn } from "@/components/team-norway/tn-shell";
 import { KomplettProfilTn } from "@/components/profil/KomplettProfilTn";
 import { byggProfilVisning } from "@/lib/profil-kobling/visning";
 
@@ -26,9 +27,9 @@ export default async function SpillerProfilPage({ params }: { params: Promise<{ 
 
   return (
     <TnShell aktiv="spillere" brukerNavn={bruker.name ?? "Ukjent"} rolle={tnRolleNavn(tilgang.kontekst.rolle)} groupId={tilgang.kontekst.gruppe.id} visTrenerflater={!tilgang.kontekst.erSpiller} kanAdministrere={tilgang.kontekst.kanAdministrere} tilbake={{ href: "/team-norway/spillere", label: "Spillere" }}>
-      <TnSidehode overlinje={`Komplett profil · ${tilgang.spillerNavn}`} tittel="Spillerprofil" ingress="Offisielle resultater, tester og IUP. Brutto score. Samme data som AgencyOS og WANG ser." />
-      <TnSpillerFaner spillerId={spillerId} spillerNavn={tilgang.spillerNavn} aktiv="profil" kanAdministrere={!tilgang.kontekst.erSpiller} kompakt />
+      <TnIupTopp spillerId={spillerId} spillerNavn={tilgang.spillerNavn} aktiv="profil" kanAdministrere={!tilgang.kontekst.erSpiller} overlinje={`Komplett profil · ${tilgang.spillerNavn}`} tittel="Spillerprofil" ingress="Offisielle resultater, tester og IUP. Brutto score. Samme data som AgencyOS og WANG ser.">
       <KomplettProfilTn v={byggProfilVisning({ relasjon: tilgang.kontekst.erSpiller ? "SELV" : "ORG_TRENER", ...profil })} testerHref={`/team-norway/spiller/${spillerId}/tester`} />
+    </TnIupTopp>
     </TnShell>
   );
 }

@@ -1,22 +1,45 @@
-/* Team Norway-språket, retning «Skrå» (19.10.2026), Schibsted Grotesk (20.10.2026): myke kort med navy-skygge, pilleknapper, navy skinne, rød kun identitet. */
+/* Team Norway-språket, retning «Skrå» (19.10.2026), Schibsted Grotesk (20.10.2026): bilde i navy toner
+   kuttet 4° med rød kant, kortet over kanten, myke kort med navy-skygge, pilleknapp. Rød er kun identitet.
+   Samme oppbygging som TnSkraTopp (src/components/team-norway/tn-skra-topp.module.css). */
 .side { min-height: 100dvh; background: var(--tn-surface-page); color: var(--tn-text-primary); font-family: var(--tn-font-body); }
-.skinne { background: var(--tn-navy-900); border-bottom: 3px solid var(--tn-red-600); padding: 0 max(20px, calc((100vw - 460px) / 2)); min-height: 56px; display: flex; align-items: center; }
-.ordmerke { font-family: var(--tn-font-display); font-weight: 300; font-size: 15px; letter-spacing: .28em; color: var(--tn-text-on-dark); }
-.innhold { max-width: 460px; margin: 0 auto; padding: 24px 20px calc(32px + env(safe-area-inset-bottom)); display: grid; gap: 14px; }
-.hero { background: var(--tn-navy-900); color: var(--tn-text-on-dark); border-radius: var(--tn-radius-xl); box-shadow: var(--tn-shadow-md); padding: 22px; }
-.hero h1 { margin: 0; font-family: var(--tn-font-display); font-size: 28px; font-weight: 300; line-height: 1.2; }
-.hero p { margin: 10px 0 0; font-size: 15px; line-height: 1.6; color: var(--tn-navy-100); }
+
+.topp { position: relative; container-type: inline-size; color: var(--tn-white); }
+.kant, .foto { position: absolute; inset: 0; clip-path: var(--tn-clip-diagonal-b); }
+.kant { background: var(--tn-red-600); }
+.foto { bottom: var(--tn-skra-kant); overflow: hidden; background: var(--tn-navy-900); }
+.foto img { object-fit: cover; object-position: 60% 45%; }
+.foto::after { content: ""; position: absolute; inset: 0; background: linear-gradient(100deg, rgba(1, 43, 93, 0.96) 0%, rgba(1, 43, 93, 0.86) 55%, rgba(1, 43, 93, 0.5) 100%); }
+.toppInnhold {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  max-width: 460px;
+  margin: 0 auto;
+  padding: 20px 20px calc(var(--tn-skra-fall) + var(--tn-skra-kant) + 88px);
+  animation: loft var(--tn-duration-sheet) var(--tn-ease-out) both;
+}
+@keyframes loft { from { opacity: 0; transform: translateY(8px); } }
+
+.innhold { position: relative; z-index: 2; max-width: 460px; margin: -64px auto 0; padding: 0 20px calc(32px + env(safe-area-inset-bottom)); display: grid; gap: 14px; }
 .kort { background: var(--tn-surface-card); border-radius: var(--tn-radius-xl); box-shadow: var(--tn-shadow-md); padding: 22px; display: grid; gap: 16px; }
+.kortHode h1 { margin: 0; font-family: var(--tn-font-display); font-weight: 800; font-size: 30px; line-height: 1.05; letter-spacing: -0.03em; color: var(--tn-navy-900); }
+.kortHode p { margin: 8px 0 0; font-size: 15px; line-height: 1.5; color: var(--tn-text-secondary); }
 .felt { display: grid; gap: 7px; }
-.felt label { font-family: var(--tn-font-display); font-size: 13px; font-weight: 500; }
-.felt input { width: 100%; min-width: 0; min-height: 48px; padding: 10px 13px; border: 1px solid var(--tn-border-default); border-radius: var(--tn-radius-sm); background: var(--tn-white); color: var(--tn-text-primary); font-family: inherit; font-size: 16px; }
+.felt label { font-family: var(--tn-font-body); font-size: 13px; font-weight: 700; letter-spacing: 0.02em; }
+.felt input { width: 100%; min-width: 0; min-height: 48px; padding: 10px 13px; border: 1px solid var(--tn-border-default); border-radius: var(--tn-radius-md); background: var(--tn-white); color: var(--tn-text-primary); font-family: inherit; font-size: 16px; }
 .passord { position: relative; }
 .passord input { padding-right: 52px; }
 .visPassord { position: absolute; right: 2px; top: 2px; width: 44px; height: 44px; display: grid; place-items: center; background: transparent; color: var(--tn-navy-900); border: 0; border-radius: var(--tn-radius-round); cursor: pointer; }
-.primaer { min-height: 48px; width: 100%; padding: 12px 18px; border: 0; border-radius: var(--tn-radius-pill); background: var(--tn-navy-900); color: var(--tn-text-on-dark); font-family: var(--tn-font-display); font-size: 15px; font-weight: 500; letter-spacing: .04em; cursor: pointer; }
+.primaer { min-height: 48px; width: 100%; padding: 12px 18px; border: 0; border-radius: var(--tn-radius-pill); background: var(--tn-navy-900); color: var(--tn-text-on-dark); font-family: var(--tn-font-body); font-size: 15px; font-weight: 700; letter-spacing: 0.02em; cursor: pointer; transition: transform var(--tn-duration-press) var(--tn-ease-out); }
+.primaer:active:not(:disabled) { transform: scale(0.97); }
 .primaer:disabled { opacity: .65; cursor: wait; }
 .tekstlenke { display: flex; min-height: 44px; justify-content: center; align-items: center; color: var(--tn-navy-700); font-size: 14px; text-underline-offset: 3px; }
 .hjelp { margin: 0; padding: 4px; color: var(--tn-text-secondary); font-size: 15px; line-height: 1.6; }
-.feil { margin: 0; padding: 12px 14px; border-radius: var(--tn-radius-sm); border-left: 3px solid var(--tn-red-600); background: var(--tn-ink-100); font-size: 15px; line-height: 1.5; }
+.feil { margin: 0; padding: 12px 14px; border-radius: var(--tn-radius-md); border-left: 3px solid var(--tn-red-600); background: var(--tn-ink-100); font-size: 15px; line-height: 1.5; }
 .status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 .side :is(a, button, input):focus-visible { outline: 2px solid var(--tn-navy-700); outline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .toppInnhold { animation: none; }
+  .primaer { transition: none; }
+}

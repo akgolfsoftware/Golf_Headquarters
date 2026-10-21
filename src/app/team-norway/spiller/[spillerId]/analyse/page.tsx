@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentTnSpillerTester, hentTnSpillerAnalyseHub } from "@/lib/domain/tn-arbeidsflate";
-import { TnShell, TnSidehode, TnSpillerFaner, TnSeksjon, TnTomtilstand, TnMetrikk, TnMetrikkRutenett, tnRolleNavn } from "@/components/team-norway/tn-shell";
+import { TnIupTopp } from "@/components/team-norway/tn-iup-topp";
+import { TnShell, TnSeksjon, TnTomtilstand, TnMetrikk, TnMetrikkRutenett, tnRolleNavn } from "@/components/team-norway/tn-shell";
 import { TnKort, TnPille } from "@/components/team-norway/core";
 import { TN } from "@/lib/v2/team-norway";
 
@@ -36,8 +37,7 @@ export default async function SpillerAnalysePage({ params }: { params: Promise<{
 
   return (
     <TnShell aktiv="spillere" brukerNavn={bruker.name ?? "Ukjent"} rolle={tnRolleNavn(data.tilgang.kontekst.rolle)} groupId={data.tilgang.kontekst.gruppe.id} visTrenerflater={!data.tilgang.kontekst.erSpiller} kanAdministrere={data.tilgang.kontekst.kanAdministrere} tilbake={{ href: "/team-norway/spillere", label: "Spillere" }}>
-      <TnSidehode overlinje={`IUP · ${data.tilgang.spillerNavn} · Analyse`} tittel="Utvikling per protokoll" ingress="Hver protokoll vises for seg. Ingen sammenslått totalscore på tvers av ulike måleenheter." />
-      <TnSpillerFaner spillerId={spillerId} spillerNavn={data.tilgang.spillerNavn} aktiv="analyse" kanAdministrere={!data.tilgang.kontekst.erSpiller} kompakt />
+      <TnIupTopp spillerId={spillerId} spillerNavn={data.tilgang.spillerNavn} aktiv="analyse" kanAdministrere={!data.tilgang.kontekst.erSpiller} overlinje={`IUP · ${data.tilgang.spillerNavn} · Analyse`} tittel="Utvikling per protokoll" ingress="Hver protokoll vises for seg. Ingen sammenslått totalscore på tvers av ulike måleenheter.">
 
       {(hub.sgAkser.some((a) => a.verdi !== null) || hub.trackman) && (
         <TnSeksjon tittel="Strokes Gained / TrackMan">
@@ -77,6 +77,7 @@ export default async function SpillerAnalysePage({ params }: { params: Promise<{
           })}
         </div>
       )}
+    </TnIupTopp>
     </TnShell>
   );
 }
