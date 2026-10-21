@@ -132,3 +132,14 @@
   .agn-s .sp-rad { grid-template-columns: auto minmax(0, 1fr) minmax(0, 360px) auto; }
 }
 .agn-s .sp-etl { min-width: 64px; }
+
+/* Skrå-drakten (type 4): hvite kort på lysegrå flate, Haster øverst. Hurtigknappen skal ikke dekke siste kort. */
+.agn-s.agn-stall-skra { padding-bottom: calc(120px + env(safe-area-inset-bottom)); }
+.agn-stall-skra .stall-stabel { gap: 20px; }
+.agn-stall-skra .stall-topp { gap: 20px; }
+.agn-stall-skra .sp-rad, .agn-stall-skra .matrise button { border-color: var(--ak-strek, var(--sand-300)); }
+.agn-stall-skra .haster-liste { display: grid; gap: var(--r2); }
+.agn-stall-skra .haster-rad { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: var(--r3); align-items: center; min-height: 56px; padding: 8px 4px; border-bottom: 1px solid var(--ak-strek, var(--sand-300)); color: inherit; text-decoration: none; }
+.agn-stall-skra .haster-rad:last-child { border-bottom: 0; }
+.agn-stall-skra .haster-rad b.n { display: block; font: 600 15.5px/1.3 var(--sans); }
+@media (min-width: 900px) { .agn-stall-skra .stall-stabel { margin-right: 52px; } }
