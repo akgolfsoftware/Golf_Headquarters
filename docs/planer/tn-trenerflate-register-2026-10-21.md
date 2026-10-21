@@ -119,12 +119,14 @@ Målestokk · I HQ. Alt ligger i dag bak ett felles passord (`scripts/maler/team
 
 ## Uavklart (spørsmål til Anders sammen med wireframes)
 
-1. **Spillere i `/team-norway`.** I dag åpner spillere i TN-gruppa en egen spillervisning (Oversikt, Samlinger,
+1. **Avgjort 21.10 (§TEAM NORWAY ER BARE FOR TRENERE): spillere sendes til PlayerHQ.** Tidligere spørsmål:
+   **Spillere i `/team-norway`.** I dag åpner spillere i TN-gruppa en egen spillervisning (Oversikt, Samlinger,
    Turneringer, Lisens, «Ny turnering»). Ny flate er for trenere. Anbefaling: spillere sendes til PlayerHQ
    (`/portal`), og samlinger og månedsplan vises der. Krever et ja før pakke (a).
 2. **Lenken fra PlayerHQ** (etappe 4): spilleren kan ikke åpne trenerdelen. Anbefaling: «Se hva Team Norway ser»
    (`/portal/meg/deling/innsyn`, i dag en trenerside, må få en spillervisning) og Referanse-delen.
-3. **Barnevern i Referanse.** teamnorwayref viser navngitte juniorer fra 8 år (HCP Norge) og alle aldre (Norsk golf)
+3. **Delvis avgjort 21.10: WAGR først, så fordelingene som samlede tall; navngitte juniorprofiler venter.** Tidligere spørsmål:
+   **Barnevern i Referanse.** teamnorwayref viser navngitte juniorer fra 8 år (HCP Norge) og alle aldre (Norsk golf)
    fordi siden er bak passord. §Data i beslutningene sier at spillere født 2008 eller senere uten samtykke aldri vises
    åpent. Bak trenerinnloggingen er ikke åpent, men det er flere personer enn i dag (alle TN-trenere med HQ-konto).
    Anbefaling: navn bak innlogging som i dag på teamnorwayref, men WAGR-delen først, HCP Norge og Norsk golf etter

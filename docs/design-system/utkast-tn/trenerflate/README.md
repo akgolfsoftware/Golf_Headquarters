@@ -4,7 +4,7 @@ Etappe 2 i [prompt-tn-trenerflate-2026-10-21.md](../../../planer/prompt-tn-trene
 Beslutning: `.claude/rules/beslutninger.md` §TEAM NORWAY-TRENERFLATEN BYGGES I HQ ETTER TEAMNORWAYREF.
 Registeret med én rad per side: [tn-trenerflate-register-2026-10-21.md](../../../planer/tn-trenerflate-register-2026-10-21.md).
 
-Status: **venter på Anders' ja (port 7).** Ingenting bygges før det.
+Status: **klarsignal til bygging 21.10** (§TEAM NORWAY ER BARE FOR TRENERE).
 
 Wireframes: [index.html](index.html) (privat artifact: https://claude.ai/artifact/DJHq9dKNNs8iCoyHZDptbF), svart-hvitt, syntetiske spillere og trenere. Hver skjerm i 1280 og 390 px med
 samme innhold. Målt 21.10 i 390, 1280 og 1920 px: ingen sidelengs rulling, ingen konsollfeil.
