@@ -4,15 +4,22 @@ import { readFileSync } from "node:fs";
 
 import { TN_REFERANSESPILLERE_URL } from "./tn-referansespillere";
 
-// Anders 21.10.2026: teamnorwayref eier tallene, HQ-menyen lenker bare dit.
+// Til Referanse › WAGR er bygget i HQ, lenker menypunktet til teamnorwayref (Anders 21.10.2026).
 test("Referansespillere lenker til teamnorwayref", () => {
   assert.equal(TN_REFERANSESPILLERE_URL, "https://teamnorwayref.vercel.app");
 });
 
-test("Referansespillere står siste under Spillere i tnHovedmeny, uten egen rute i HQ", () => {
+test("Referansespillere står under Referanse i tnHovedmeny", () => {
   const kilde = readFileSync(new URL("./tn-shell.tsx", import.meta.url), "utf8");
-  const spillere = kilde.slice(kilde.indexOf('id: "spillere"'), kilde.indexOf('id: "uttak"'));
-  assert.match(spillere, /label: "Referansespillere", href: TN_REFERANSESPILLERE_URL/);
-  assert.ok(spillere.indexOf("Referansespillere") > spillere.indexOf("Skoleoversikt"));
-  assert.doesNotMatch(kilde, /\/team-norway\/referansespillere/);
+  const referanse = kilde.slice(kilde.indexOf('id: "referanse"'), kilde.indexOf('id: "fag"'));
+  assert.match(referanse, /label: "Referansespillere", href: TN_REFERANSESPILLERE_URL/);
+});
+
+// Anders 21.10.2026: seks hovedpunkter, og Team Norway er bare for trenere.
+test("menyen har seks hovedpunkter i fast rekkefølge, uten spillervariant", () => {
+  const kilde = readFileSync(new URL("./tn-shell.tsx", import.meta.url), "utf8");
+  const meny = kilde.slice(kilde.indexOf("export function tnHovedmeny"), kilde.indexOf("export function tnBunnmeny"));
+  const etiketter = [...meny.matchAll(/^      label: "([^"]+)",$/gm)].map((m) => m[1]);
+  assert.deepEqual(etiketter, ["Hjem", "Spillere", "Samlinger og testing", "Turneringer", "Referanse", "Fag og administrasjon"]);
+  assert.doesNotMatch(meny, /visTrenerflater/);
 });
