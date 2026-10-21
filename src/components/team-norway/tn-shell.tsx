@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { TnKort, TnLogo, TnPille, type TnBunnValg, type TnMenyGruppe, type TnMenyLenke, type TnPilleTone } from "./core";
 import { initialer } from "./initialer";
 import { TnRailMobil } from "./rail-mobil";
+import { TN_REFERANSESPILLERE_URL } from "./tn-referansespillere";
 import { TnIkon } from "./tn-ikon";
 import s from "./tn-skall.module.css";
 import { TnSeksjonDS } from "./tn-skjerm";
@@ -79,6 +80,8 @@ export function tnHovedmeny({ aktiv, groupId, visTrenerflater: t, kanAdministrer
         ...(t ? [lenke("Spillerutvikling", "/team-norway/spillere", "spillere", aktiv), lenke("Fellestesting", "/team-norway/fellestesting", "fellestesting", aktiv)] : []),
         lenke("College og USA", "/team-norway/college", "college", aktiv),
         ...(t ? [lenke("Skoleoversikt", "/team-norway/skoler", "skoler", aktiv)] : []),
+        // Leaderboard og samlede tall bor på teamnorwayref; HQ lenker bare dit (Anders 21.10.2026).
+        ...(t ? [{ label: "Referansespillere", href: TN_REFERANSESPILLERE_URL, aktiv: false }] : []),
       ],
     },
     {
