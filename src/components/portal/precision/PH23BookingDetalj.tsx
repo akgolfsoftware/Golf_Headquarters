@@ -19,10 +19,13 @@ import { useEffect, useRef, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, ChevronLeft } from "lucide-react";
+import { SkraFlyt, SkraKort, SkraTopp } from "@/components/precision/skra/Skra";
 import { cancelBooking } from "@/app/portal/meg/bookinger/actions";
 import { avslaaFlytteforslag, godtaFlytteforslag } from "@/app/portal/booking/[bookingId]/actions";
 import "@/styles/playerhq-ny.css";
+import "@/styles/playerhq-ny-idag.css";
 import "@/styles/playerhq-ny-kommunikasjon.css";
+import "@/styles/playerhq-ny-lister-skra.css";
 
 export type PH23BookingDetaljData = {
   bookingId: string;
@@ -85,17 +88,19 @@ export function PH23BookingDetalj({ data }: { data: PH23BookingDetaljData }) {
     } catch { setFeil("Svaret kunne ikke lagres. Prøv igjen."); }
   });
 
-  return <div className="phn">
-    <div className="phn-k-smal">
-      <div className="phn-k-topp">
-        <Link href="/portal/meg/bookinger" className="phn-k-tilbake"><ChevronLeft className="phn-ikon" aria-hidden />Bookinger</Link>
-        <div><div className="phn-dato">Booking</div>
-          <h1 className="phn-tittel">{data.tjeneste}{data.coachNavn ? ` med ${coachFornavn}` : ""}</h1></div>
-      </div>
-
-      <div className="phn-k-booking-helt bred">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/images/playerhq/slag-simulator.jpg" alt="" />
+  return <div className="phn phn-skra">
+    <SkraTopp
+      lav
+      etikett="Booking"
+      bilde="/images/playerhq/slag-simulator.jpg" bildePosisjon="50% 50%"
+      overlinje="Booking"
+      tittel={`${data.tjeneste}${data.coachNavn ? ` med ${coachFornavn}` : ""}`}
+      handling={<span className="skra-tilbake"><Link href="/portal/meg/bookinger" className="phn-k-tilbake"><ChevronLeft className="phn-ikon" aria-hidden />Bookinger</Link></span>}
+    />
+    <SkraFlyt lav>
+    <div className="phn-k-skra-grid">
+      <div>
+      <div className="phn-k-booking-helt">
         <div className="phn-k-bt">
           <span className={`phn-pille ${pille(data.status)}`}>{data.status}</span>
           <span className="phn-k-bt-dag">{data.dag}</span>
@@ -103,7 +108,6 @@ export function PH23BookingDetalj({ data }: { data: PH23BookingDetaljData }) {
           <span className="phn-k-info"><span>{data.sted ?? "—"}</span><span>{data.betaling ?? "—"}</span></span>
         </div>
       </div>
-
       {data.flytteforslag && <section className="phn-k-forslagskort" aria-label="Coachen foreslår ny tid">
         <div className="phn-k-fk-topp"><b>{data.coachNavn ?? "Coachen"} foreslår ny tid</b><span className="phn-pille vent">Venter på deg</span></div>
         <div className="phn-k-fra-til">
@@ -118,6 +122,9 @@ export function PH23BookingDetalj({ data }: { data: PH23BookingDetaljData }) {
         </div>
       </section>}
 
+      </div>
+      <div>
+      <SkraKort etikett="Oppsummering" tittel="Om timen">
       <ul className="phn-k-oppsummering">
         <li><span>Coach</span><b>{data.coachNavn && data.coachId ? <Link href={`/portal/booking/coach/${data.coachId}`} style={{ color: "inherit" }}>{data.coachNavn}</Link> : data.coachNavn ?? "—"}</b></li>
         <li><span>Sted</span><b>{data.sted && data.stedId ? <Link href={`/portal/booking/anlegg/${data.stedId}`} style={{ color: "inherit" }}>{data.sted}</Link> : data.sted ?? "—"}</b></li>
@@ -126,6 +133,7 @@ export function PH23BookingDetalj({ data }: { data: PH23BookingDetaljData }) {
         <li><span>Avbestilling</span><b>Gratis inntil {data.avbestillingTimer} timer før</b></li>
         {data.notat && <li><span>Notat</span><b style={{ fontWeight: 400, whiteSpace: "pre-line" }}>{data.notat}</b></li>}
       </ul>
+      </SkraKort>
 
       {feil && <p className="phn-k-feil" role="alert">{feil}</p>}
 
@@ -134,7 +142,9 @@ export function PH23BookingDetalj({ data }: { data: PH23BookingDetaljData }) {
         {data.kanAvbestille && <button type="button" className="phn-knapp sek" onClick={() => setAvbApen(true)}>Avbestill</button>}
         <Link href="/portal/coach/melding" className="phn-knapp sek">Skriv til {coachFornavn}</Link>
       </div>}
+      </div>
     </div>
+    </SkraFlyt>
 
     <dialog ref={dialog} className="phn-k-dialog" role="alertdialog" aria-labelledby="ph23d-avb" aria-describedby="ph23d-avb-tekst" onClose={() => setAvbApen(false)}>
       {avbApen && <div className="phn-k-dialog-kropp">

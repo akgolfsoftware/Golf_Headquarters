@@ -18,11 +18,14 @@ import { useState, useTransition, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
+import { SkraFlyt, SkraKort, SkraTopp } from "@/components/precision/skra/Skra";
 import { createCreditBooking } from "@/lib/booking/credit-booking";
 import { opprettBookingMedKort } from "@/app/portal/booking/actions";
 import type { BookingBekreftData } from "@/lib/portal-booking/bekreft-typer";
 import "@/styles/playerhq-ny.css";
+import "@/styles/playerhq-ny-idag.css";
 import "@/styles/playerhq-ny-kommunikasjon.css";
+import "@/styles/playerhq-ny-lister-skra.css";
 
 export function PH23NyBekreft({ data, avbestillingTimer }: { data: BookingBekreftData; avbestillingTimer: number }) {
   const { bekreftetBase = "/portal/booking/bekreftet", modus, serviceTypeId, coachId, startIso, backHref, ledig, rader, creditsRemaining, saldoEtter } = data;
@@ -51,23 +54,31 @@ export function PH23NyBekreft({ data, avbestillingTimer }: { data: BookingBekref
     });
   }
 
-  return <div className="phn">
-    <div className="phn-k-smal">
-      <div className="phn-k-topp">
-        <Link href={backHref} className="phn-k-tilbake"><ChevronLeft className="phn-ikon" aria-hidden />Velg annen tid</Link>
-        <div><div className="phn-dato">Booking · ny time</div><h1 className="phn-tittel">Bekreft booking</h1></div>
-      </div>
-      {!ledig && <p className="phn-k-feil" role="alert">Tiden er ikke ledig lenger. Gå tilbake og velg en annen tid.</p>}
-      <div className="phn-kort">
-        <b className="phn-k-undertittel">Din booking</b>
+  return <div className="phn phn-skra">
+    <SkraTopp
+      lav
+      etikett="Bekreft booking"
+      bilde="/images/playerhq/slag-simulator.jpg" bildePosisjon="50% 50%"
+      overlinje="Booking · ny time"
+      tittel="Bekreft booking"
+      handling={<span className="skra-tilbake"><Link href={backHref} className="phn-k-tilbake"><ChevronLeft className="phn-ikon" aria-hidden />Velg annen tid</Link></span>}
+    />
+    <SkraFlyt lav>
+    {!ledig && <p className="phn-k-feil" role="alert">Tiden er ikke ledig lenger. Gå tilbake og velg en annen tid.</p>}
+    <div className="phn-k-skra-grid">
+      <div>
+      <SkraKort etikett="Din booking" tittel="Din booking">
         <ul className="phn-k-oppsummering">
           {rader.map((r) => <li key={r.label}><span>{r.label}</span><b>{r.verdi || "—"}</b></li>)}
           {!erBetaling && <li><span>Klipp</span><b>{creditsRemaining} → {Math.max(0, saldoEtter)} igjen</b></li>}
         </ul>
         <div className="phn-k-vilkaar"><b>Gratis avbestilling inntil {avbestillingTimer} timer før</b>
           <span>{erBetaling ? "Du betaler med kort før timen, i en sikker betaling." : "Etter det trekkes klippet."}</span></div>
+      </SkraKort>
       </div>
-      {ledig && <form className="phn-seksjon" onSubmit={send}>
+      <div>
+      {ledig && <SkraKort etikett="Bekreft" tittel="Bekreft">
+      <form className="phn-seksjon" onSubmit={send}>
         <label className="phn-felt"><span>Notat til coachen (valgfritt)</span>
           <textarea rows={3} value={notat} onChange={(e) => setNotat(e.target.value)} placeholder="Hva vil du jobbe med?" />
         </label>
@@ -77,7 +88,10 @@ export function PH23NyBekreft({ data, avbestillingTimer }: { data: BookingBekref
             {pending ? (erBetaling ? "Åpner betaling …" : "Booker …") : erBetaling ? "Gå til betaling" : "Bekreft booking"}
           </button>
         </div>
-      </form>}
+      </form>
+      </SkraKort>}
+      </div>
     </div>
+    </SkraFlyt>
   </div>;
 }

@@ -23,7 +23,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Check, ChevronLeft, ChevronRight, X } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, X } from "lucide-react";
 import {
   type PH23BekreftResultat,
   type PH23BekreftValg,
@@ -302,19 +302,14 @@ export function PH23Booking({
     ? <Link href={href} className="phn-k-tilbake"><ChevronLeft className="phn-ikon" aria-hidden />{tekst}</Link>
     : <button type="button" className="phn-k-tilbake" style={{ border: 0, background: "none", cursor: "pointer" }} onClick={onClick}><ChevronLeft className="phn-ikon" aria-hidden />{tekst}</button>;
 
-  const hode = (dato: string, tittel: string, tilbakeLenke: ReactNode) => <div className="phn-k-topp">
-    {tilbakeLenke}
-    <div><div className="phn-dato">{dato}</div><h1 className="phn-tittel">{tittel}</h1></div>
-  </div>;
-
   /** Oversikten, laster og feil står i Skrå-drakten: bilde i toppen, tilbakelenke på bildet. */
-  const skraHode = () => <SkraTopp
+  const skraHode = (overlinje = "Meg · booking", tittel = "Bookinger", tilbakeLenke: ReactNode = tilbake("Meg", undefined, "/portal/meg")) => <SkraTopp
     lav
-    etikett="Bookinger"
+    etikett={tittel}
     bilde="/images/playerhq/green-25m.jpg" bildePosisjon="50% 50%"
-    overlinje="Meg · booking"
-    tittel="Bookinger"
-    handling={<span className="skra-tilbake">{tilbake("Meg", undefined, "/portal/meg")}</span>}
+    overlinje={overlinje}
+    tittel={tittel}
+    handling={<span className="skra-tilbake">{tilbakeLenke}</span>}
   />;
 
   if (state === "laster") {
@@ -347,17 +342,21 @@ export function PH23Booking({
 
   /* ---------- Bekreftet ---------- */
   if (doneBooking) {
-    return <div className="phn">
-      <div className="phn-k-smal">
-        <div className="phn-k-bekreftet-topp">
-          <span className="phn-k-hake"><Check className="phn-ikon" aria-hidden /></span>
-          <div>
-            <div className="phn-dato">Booking · bekreftet</div>
-            <h1 className="phn-tittel">Timen er bekreftet</h1>
-            <p className="phn-k-ingress">Bekreftelsen er sendt til {defaultData.playerEmail || "e-posten din"}.</p>
-          </div>
+    return <div className="phn phn-skra">
+      <SkraTopp
+        lav
+        etikett="Booking bekreftet"
+        bilde="/images/playerhq/green-25m.jpg" bildePosisjon="50% 50%"
+        overlinje="Booking · bekreftet"
+        tittel="Timen er bekreftet"
+        ingress={`Bekreftelsen er sendt til ${defaultData.playerEmail || "e-posten din"}.`}
+      />
+      <SkraFlyt lav>
+      <div className="phn-k-skra-grid">
+        <div>
+        <BookingKort m={doneBooking} />
         </div>
-        <BookingKort m={doneBooking} bred />
+        <div>
         <div className="phn-kort">
           {currentCard.total > 0 && <>
             <div className="phn-hoved"><strong>{Math.max(0, currentCard.left - 1)}</strong><span className="phn-forklar">av {currentCard.total} klipp igjen etter timen</span></div>
@@ -370,7 +369,9 @@ export function PH23Booking({
           <button type="button" className="phn-knapp sek" onClick={() => { setDoneBooking(null); setVisning("oversikt"); }}>Mine bookinger</button>
           <button type="button" className="phn-knapp sek" onClick={nyBooking}>Book en til</button>
         </div>
+        </div>
       </div>
+      </SkraFlyt>
       {toastEl}
     </div>;
   }
@@ -379,8 +380,9 @@ export function PH23Booking({
   if (visning === "ny") {
     const dagSlots = slotData.slots[dayIndex] || [];
     const pris = (x: PH23Service) => (x.clip && currentCard.left > 0 ? "1 klipp" : formatKr(beregnTjenestePris(x, defaultData.rate)));
-    return <div className="phn">
-      {hode("Booking · ny time", "Book time", tilbake("Bookinger", () => setVisning("oversikt")))}
+    return <div className="phn phn-skra">
+      {skraHode("Booking · ny time", "Book time", tilbake("Bookinger", () => setVisning("oversikt")))}
+      <SkraFlyt lav>
       {betaling === "avbrutt" && <p className="phn-k-feil" role="status">Betalingen ble avbrutt. Ingen time er booket.</p>}
       <div className="phn-k-ny-grid">
         <div style={{ display: "grid", gap: 24, alignContent: "start" }}>
@@ -439,6 +441,7 @@ export function PH23Booking({
           </div>
         </aside>
       </div>
+      </SkraFlyt>
       {toastEl}
     </div>;
   }
@@ -497,10 +500,14 @@ export function PH23Booking({
   /* ---------- Bookingen ---------- */
   if (visning === "detalj" && detalj) {
     const aktiv = detalj.status !== "Avbestilt";
-    return <div className="phn">
-      <div className="phn-k-smal">
-        {hode("Booking", detalj.svcName, tilbake("Bookinger", () => setVisning("oversikt")))}
-        <BookingKort m={detalj} bred />
+    return <div className="phn phn-skra">
+      {skraHode("Booking", detalj.svcName, tilbake("Bookinger", () => setVisning("oversikt")))}
+      <SkraFlyt lav>
+      <div className="phn-k-skra-grid">
+        <div>
+        <BookingKort m={detalj} />
+        </div>
+        <div>
         <ul className="phn-k-oppsummering">
           <li><span>Coach</span><b>{detalj.coachName ?? "—"}</b></li>
           <li><span>Sted</span><b>{detalj.place || "—"}</b></li>
@@ -512,7 +519,9 @@ export function PH23Booking({
           {onCancelBooking && <button type="button" className="phn-knapp sek" onClick={() => apneAvbestill(detalj)}>Avbestill</button>}
           <Link href="/portal/coach" className="phn-knapp sek">Skriv til {coachFornavn(detalj)}</Link>
         </div>}
+        </div>
       </div>
+      </SkraFlyt>
       {flyttOgAvbestill}
       {toastEl}
     </div>;

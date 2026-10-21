@@ -17,3 +17,15 @@
 .phn-skra .skra-topp-rad { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
 .phn-skra .skra-topp-knapp.pri { background: #fff; color: var(--ak-g900); border-color: #fff; min-height: 48px; }
 .phn-skra .skra-tilbake .tilbake { color: #fff; }
+
+/* Detalj og skjema (type 5 og 6): hovedinnhold og handlinger i to kolonner på desktop, full bredde. */
+.phn-skra .phn-k-skra-grid { display: grid; gap: 20px; align-content: start; }
+.phn-skra .phn-k-skra-grid > div { display: grid; gap: 20px; align-content: start; min-width: 0; }
+/* Første rad under det skrå kuttet: overskriften skal ikke havne på bildet. */
+.phn-skra .phn-k-ny-grid { padding-top: 28px; }
+.phn-skra .phn-k-booking-helt { border-radius: var(--ak-r-skra-kort); box-shadow: var(--ak-skygge-md); }
+@container (min-width: 900px) {
+  .phn-skra .phn-k-skra-grid { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 24px; margin-right: 52px; }
+  .phn-skra .phn-k-skra-grid > div:nth-child(2) { padding-top: 40px; }
+  .phn-skra .phn-k-ny-grid { margin-right: 52px; padding-top: 44px; }
+}
