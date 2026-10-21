@@ -29,7 +29,7 @@ Gjelder `/team-norway/*` og `/teamnorway` (innlogging). Samme metode som PlayerH
 
 Skjermer som har topp (rangliste, uttak, turneringer, spillerutvikling, samlinger, testprotokoller, månedsplan, Data Golf, College m.fl.) regnes som portert, men går gjennom kontrollen i steg 9.
 
-## 2. Plan (9 steg)
+## 2. Plan (10 steg)
 
 Hvert steg er en PR med auto-merge når `npm run verify` og CI er grønne. Hver skjerm måles i 390 og 1280 px: ingen sidelengs rulling, ingen konsollfeil, tom/laster/feil.
 
@@ -42,8 +42,9 @@ Hvert steg er en PR med auto-merge når `npm run verify` og CI er grønne. Hver 
 7. **Type 6 Skjema og type 7 Arbeidsflate (B: verktøylinje over flaten).** Ny turnering, ny samling, testdag opprett/føring, tilgang og invitasjon (skjema). Workbench og månedsplan (lav topp, ingen bilde).
 8. **Type 9 Kø, type 11 Drift og type 12 Tom/laster/feil.** Uttak/godkjenninger som kø med én sak åpen, Lisens og økonomi, Data Golf (ADMIN), live-watch, `loading.tsx`, `error.tsx`, `not-found.tsx`. Ferdig når alle tre tilstander finnes i samme kortform.
 9. **Bilder, kontroll og port 7.** Bytt plassholderbilder til Anders sine referansebilder fra Team Norway Golf (`public/team-norway/bilder/`). Maskinell måling av alle TN-ruter i 390 og 1280 (skjermprøve-skriptene fra T1/T4), Vercel-lenke og skjermbilder til Anders. Rydd bort ubrukte 0·2·4-stiler. Ferdig når et søk etter «Jost», «Lato» og «ingen skygger» i TN-mappene gir 0 treff.
+10. **Referansespillere: menypunkt som lenker til teamnorwayref** (rettet 21.10, beslutninger.md §REFERANSESPILLERE NORDEN BOR PÅ TEAMNORWAYREF). Leaderboard, graf og samlede tall bor på https://teamnorwayref.vercel.app, bygget i `ak-golf-pipelines`. HQ får bare menypunktet «Referansespillere» som siste punkt under Spillere i `tnHovedmeny` (`src/components/team-norway/tn-shell.tsx`), som lenker til teamnorwayref. Ingen egen rute og ingen WAGR-lesing i HQ. Ferdig når punktet står i menyen i 390 og 1280 px uten sidelengs rulling, og en test låser lenkemålet.
 
-Rekkefølge: 1–2 først (alt annet hviler på dem), så 3, deretter 4–8 i den rekkefølgen, 9 til slutt. Steg 4–8 kan gå som egne PR-er per gruppe og ikke i parallell mot samme filer.
+Rekkefølge: 1–2 først (alt annet hviler på dem), så 3, deretter 4–8 i den rekkefølgen, 9 til slutt. Steg 10 (menypunktet) kan gjøres når som helst; det venter ikke på pipelines; steg 4 og 5 er i hovedsak gjort (se kartleggingen 21.10). Steg 4–8 kan gå som egne PR-er per gruppe og ikke i parallell mot samme filer.
 
 ## 3. Risiko og avgrensning
 
@@ -66,3 +67,15 @@ Rekkefølge: 1–2 først (alt annet hviler på dem), så 3, deretter 4–8 i de
 - Skissen over skjermtyper: https://claude.ai/artifact/CFWLRivbevoeKAnVr1x43B.
 - Tegninger: `docs/design-system/utkast-skra/`, `docs/design-system/utkast-tn/nye-veier.html`.
 - Tokens: `src/styles/team-norway-tokens.css` (TN) og `src/styles/ak-tokens.css` (AK, ikke blandet inn i TN).
+
+## 6. Steg 10: Referansespillere bor på teamnorwayref
+
+**Avgjort av Anders 21.10** (beslutninger.md §REFERANSESPILLERE NORDEN BOR PÅ TEAMNORWAYREF): «teamnorwayref eier de offentlige og samlede tallene, og HQ-flaten blir en lenke dit.»
+
+- **teamnorwayref.vercel.app** eier leaderboard «Norske herrer på WAGR», graf over WAGR-plass år for år og alle samlede tall. Siden bygges i `ak-golf-pipelines` (`scripts/referansespillere_html.py`) bak felles passord, etter `docs/plan-teamnorwayref-komplett.md` der.
+- **HQ** får bare menypunktet «Referansespillere» under Spillere, som lenker dit. Ingen rute `/team-norway/referansespillere`.
+- **Personopplysninger** (testresultater og annet om enkeltspillere) blir i HQ bak innlogging; teamnorwayref lenker til HQ for slikt.
+- **Datahullene** fra kartleggingen 21.10 (gammelt snapshot fra 19.07, 31 av 35 herrer, tom `dashboard.wagr_events.rank_after`, bare norske spillere i basen) løses i pipelines og blokkerer ikke HQ-steget lenger.
+- **Ikke avgjort:** om Data Golf skal vises på teamnorwayref. Ligger hos Anders.
+
+Ingen skjemaendring er gjort eller foreslått ennå. Alt over er lesing.

@@ -4,6 +4,27 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## REFERANSESPILLERE NORDEN BOR PÅ TEAMNORWAYREF, OG TEAM NORWAY I HQ LENKER DIT (Anders 21.10.2026, bindende)
+
+Anders 21.10, etter skissen https://teamnorwayref.vercel.app («Referansespillere Norden», bak felles passord): «teamnorwayref eier de offentlige og samlede tallene, og HQ-flaten blir en lenke dit.» Erstatter samme dags første svar («All data under denne siden som vi bygger nå integreres også inn i Team Norway sidene»), som ga en egen flate i HQ.
+
+- **teamnorwayref.vercel.app eier leaderboard, graf og samlede tall:** «Norske herrer på WAGR», WAGR-plass år for år, Sammenlign, Søk og de øvrige sidene i skissen. Siden bygges i `ak-golf-pipelines` (`scripts/referansespillere_html.py`), plan i `docs/plan-teamnorwayref-komplett.md` der.
+- **HQ får ingen egen referanseflate.** Team Norway i HQ får bare menypunktet «Referansespillere» under Spillere i `tnHovedmeny`, som åpner teamnorwayref.vercel.app. Ingen rute `/team-norway/referansespillere`, ingen WAGR-tabeller lest av HQ for dette.
+- **Personopplysninger blir i HQ.** Testresultater og annet om enkeltspillere vises bare i HQ, bak innlogging; teamnorwayref lenker til HQ for slikt (f.eks. IUP og turneringsplan per spiller).
+- **Pipelines oppdaterer WAGR-plassene** (mandagsjobben), og teamnorwayref leser dem. Kilde og dato står ved tallene: «World Amateur Golf Ranking (WAGR), The R&A».
+- **Navn på alle spillere, også født 2008 eller senere,** gjelder på teamnorwayref fordi WAGR er offentlig. HQ viser ingen ny liste, så barnevernsregelen i §Data står uendret i HQ.
+- **Ikke avgjort her:** om Data Golf skal vises på teamnorwayref. Spørsmålet ligger hos Anders. I HQ gjelder fortsatt bare ADMIN (§DATA GOLF ER ANDERS' PRIVATE VERKTØY).
+
+**Overstyrer:** egen flate `/team-norway/referansespillere` i HQ (første svar 21.10, PR #1574 før retting), og unntaket fra barnevernsregelen i §Data for den flaten.
+
+**Arbeidet dette utløser:**
+
+1. **Pipelines (egen økt i `ak-golf-pipelines`):** (a) mandagsjobben `wagr-sync.yml` oppdaterer `dashboard.wagr_players` med plass nå, forrige uke og endring; (b) de fire manglende norske herrene tas med (35), så turneringer og seire 2026 (444 og 27) dekkes; (c) `rank_after` fylles for uke 52 i 2024 og 2025. Ferdig når en lesespørring mot `dashboard.wagr_players` viser snapshot nyere enn en uke og 35 norske herrer, og `rank_after` er satt for alle 35 i begge årene.
+2. **teamnorwayref bygger leaderboard og graf** fra pipelines' egne kilder (`pipelines/turneringsplan/hent.py`, `bygg.py`, `power_historikk.py`) etter `docs/plan-teamnorwayref-komplett.md` i `ak-golf-pipelines`. HQ kartlegger ikke kolonnene. Ferdig når teamnorwayref viser ekte tall med kilde og dato, og lenkene til enkeltspillere peker til HQ.
+3. **Menypunkt i HQ** (steg 10 i `docs/planer/team-norway-komplett-redesign-skra-2026-10-21.md`): «Referansespillere» som siste punkt under Spillere i `tnHovedmeny` (`src/components/team-norway/tn-shell.tsx`), som lenker til https://teamnorwayref.vercel.app. Venter ikke på punkt 1. Ferdig når punktet står i menyen i 390 og 1280 px uten sidelengs rulling, og en test låser lenkemålet.
+4. **Uavklart (teamnorwayref):** Junior, Amatør og andre land (Sammenlign, Søk alle norske, Søk HCP-juniorer) finnes ikke i basen; bare norske spillere er der. Avgjøres i teamnorwayref-planen.
+5. **Skissens egne sider** (Turneringer, Planlegger, Målestokk) blir på teamnorwayref og bygges ikke i HQ. Planlegging for én spiller finnes allerede i HQ som `/team-norway/spiller/[id]/turneringsplan`; teamnorwayref lenker dit.
+
 ## DESKTOP-SKJERMER BRUKER FULL BREDDE (Anders 21.10.2026, bindende)
 
 Anders 21.10: «Desktop versjon skal ha full bredde til skjermen.» Gjelder alle skjermer som bygges eller portes i Skrå-drakten, i PlayerHQ, AgencyOS og Team Norway.
