@@ -19,9 +19,12 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import { SlidersHorizontal, X } from "lucide-react";
 import { TmTilbake } from "./PH17TmFelles";
+import { SkraFlyt, SkraKort, SkraTom, SkraTopp } from "@/components/precision/skra/Skra";
 import "@/styles/playerhq-ny.css";
+import "@/styles/playerhq-ny-idag.css";
 import "@/styles/playerhq-ny-stats.css";
 import "@/styles/playerhq-ny-statsresten-historikk.css";
+import "@/styles/playerhq-ny-lister-skra.css";
 
 export type HistorikkType = "runde" | "okt" | "test" | "trackman";
 export type HistorikkAkse = "fys" | "tek" | "slag" | "spill" | "turn";
@@ -108,14 +111,24 @@ export function PH16eHistorikk({ rader }: { rader: HistorikkRad[] }) {
   ];
 
   return (
-    <div className="phn">
-      <TmTilbake href="/portal/analysere" tekst="Stats" />
-      <div className="phn-topp">
-        <div>
-          <div className="phn-dato">Stats · alle økter, runder og tester</div>
-          <h1 className="phn-tittel">Historikk</h1>
-        </div>
-        {rader.length > 0 && (
+    <div className="phn phn-skra">
+      <SkraTopp
+        lav
+        etikett="Historikk"
+        bilde="/images/playerhq/stats-topp.jpg" bildePosisjon="50% 50%"
+        overlinje="Stats · alle økter, runder og tester"
+        tittel="Historikk"
+        handling={<span className="skra-tilbake"><TmTilbake href="/portal/analysere" tekst="Stats" /></span>}
+      />
+      <SkraFlyt lav>
+      {rader.length === 0 ? (
+        <SkraKort tittel="Ingenting her ennå">
+          <SkraTom handling={<Link className="phn-knapp pri" href="/portal">Til I dag</Link>}>
+            Gjennomførte økter, runder, tester og TrackMan-økter samles her.
+          </SkraTom>
+        </SkraKort>
+      ) : (
+        <SkraKort tittel="Alle økter, runder og tester" meta={`${liste.length} av ${rader.length}`}>
           <div className="phn-hi-filter">
             <span className="phn-brikke fast">{periodeNavn(filter.periode)}</span>
             {brikker.map((b) => (
@@ -129,31 +142,20 @@ export function PH16eHistorikk({ rader }: { rader: HistorikkRad[] }) {
               Filter
             </button>
           </div>
-        )}
-      </div>
-
-      {rader.length === 0 ? (
-        <section className="phn-kort dempet">
-          <h2>Ingenting her ennå</h2>
-          <p className="phn-forklar">Gjennomførte økter, runder, tester og TrackMan-økter samles her.</p>
-          <div className="phn-knapper"><Link className="phn-knapp pri" href="/portal">Til I dag</Link></div>
-        </section>
-      ) : (
-        <div className="phn-hist">
-          <p className="phn-kilde">{liste.length} av {rader.length} · runder, økter, tester og TrackMan</p>
-          {liste.length === 0 && (
-            <section className="phn-kort dempet">
-              <h2>Ingen treff på dette filteret</h2>
-              <p className="phn-forklar">Prøv en lengre periode eller flere typer.</p>
-              <div className="phn-knapper"><button type="button" className="phn-knapp pri" onClick={() => setFilter(STANDARD)}>Nullstill filteret</button></div>
-            </section>
-          )}
-          {liste.map((r, i) => {
-            const ny = filter.sort !== "sg" && r.maaned !== liste[i - 1]?.maaned;
-            return <HistorikkRadVis key={`${r.type}-${r.id}`} r={r} overskrift={ny ? r.maaned : null} />;
-          })}
-        </div>
+          <div className="phn-hist">
+            {liste.length === 0 && (
+              <SkraTom handling={<button type="button" className="phn-knapp pri" onClick={() => setFilter(STANDARD)}>Nullstill filteret</button>}>
+                Ingen treff på dette filteret. Prøv en lengre periode eller flere typer.
+              </SkraTom>
+            )}
+            {liste.map((r, i) => {
+              const ny = filter.sort !== "sg" && r.maaned !== liste[i - 1]?.maaned;
+              return <HistorikkRadVis key={`${r.type}-${r.id}`} r={r} overskrift={ny ? r.maaned : null} />;
+            })}
+          </div>
+        </SkraKort>
       )}
+      </SkraFlyt>
 
       <dialog ref={ark} className="phn-ark" aria-labelledby="hi-filter-tittel">
         <div className="phn-ark-kropp">

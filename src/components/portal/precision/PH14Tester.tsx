@@ -17,8 +17,11 @@ import Link from "next/link";
 import { useState } from "react";
 import { ChevronDown, Play } from "lucide-react";
 import type { BatteriData, BatteriRad } from "@/lib/portal-tester/ph14-batteri-data";
+import { SkraFlyt, SkraKort, SkraTopp } from "@/components/precision/skra/Skra";
 import "@/styles/playerhq-ny.css";
+import "@/styles/playerhq-ny-idag.css";
 import "@/styles/playerhq-ny-tester.css";
+import "@/styles/playerhq-ny-lister-skra.css";
 
 const STATS_FANER = [
   { id: "snitt", tittel: "Snittscore" }, { id: "sg", tittel: "Strokes Gained" },
@@ -32,25 +35,28 @@ export function PH14Tester({ data }: { data: BatteriData }) {
   const mangler = data.prioriterte.filter((p) => !p.ok).length;
 
   return (
-    <div className="phn phn-tst">
-      <nav className="phn-tst-fane" aria-label="Stats">
-        {STATS_FANER.map((f) => (
-          <Link key={f.id} href={`/portal/analysere?del=${f.id}`} aria-current={f.id === "test" ? "page" : undefined}>{f.tittel}</Link>
-        ))}
-      </nav>
-
-      <header className="phn-tst-topp phn-inn">
-        <div>
-          <span className="phn-dato">Stats · Testbatteri · {data.totalt} tester</span>
-          <h1 className="phn-tittel">Tester</h1>
-          <p className="phn-forklar">Team Norways testbatteri, likt for AK Golf, WANG og Team Norway.</p>
-        </div>
+    <div className="phn phn-tst phn-skra">
+      <SkraTopp
+        lav
+        etikett="Tester"
+        bilde="/images/playerhq/stats-topp.jpg" bildePosisjon="50% 50%"
+        overlinje={`Stats · Testbatteri · ${data.totalt} tester`}
+        tittel="Tester"
+        ingress="Team Norways testbatteri, likt for AK Golf, WANG og Team Norway."
+      />
+      <SkraFlyt lav>
+      <SkraKort etikett="Testoversikt">
+        <nav className="phn-tst-fane" aria-label="Stats">
+          {STATS_FANER.map((f) => (
+            <Link key={f.id} href={`/portal/analysere?del=${f.id}`} aria-current={f.id === "test" ? "page" : undefined}>{f.tittel}</Link>
+          ))}
+        </nav>
         <dl className="phn-tst-tall">
           <div><dt>Prioriterte, nok ganger</dt><dd><b>{data.prioriterteOk}</b> av {data.prioriterte.length}</dd></div>
           <div><dt>Tatt</dt><dd><b>{data.tatt}</b> av {data.totalt}</dd></div>
           <div><dt>Nivå mot neste kategori</dt><dd><b>—</b><small>A–K ikke vedtatt</small></dd></div>
         </dl>
-      </header>
+      </SkraKort>
 
       <div className="phn-tst-kol">
         <div className="phn-tst-liste">
@@ -102,6 +108,7 @@ export function PH14Tester({ data }: { data: BatteriData }) {
           </section>
         </aside>
       </div>
+      </SkraFlyt>
     </div>
   );
 }

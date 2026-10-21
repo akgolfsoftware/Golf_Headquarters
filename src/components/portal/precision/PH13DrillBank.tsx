@@ -22,15 +22,18 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { ChevronDown, ChevronRight, Plus, Sparkles, X } from "lucide-react";
+import { ChevronDown, ChevronRight, Plus, X } from "lucide-react";
 import { formaterFortegn } from "@/lib/format-tall";
 import {
   OV_AKSE_KODE, OV_PYRAMIDE, TOMT_FILTER, antallPerAkse, filterAktivt, omraadeValgFor, omraaderFor, passer, verdierI,
   type OvAkse, type OvFilter, type OvelseVisning,
 } from "@/lib/portal-drills/ovelser-visning";
 import { opprettEgenOvelse } from "@/app/portal/drills/actions";
+import { SkraFlyt, SkraHelt, SkraKort, SkraTom, SkraTopp } from "@/components/precision/skra/Skra";
 import "@/styles/playerhq-ny.css";
+import "@/styles/playerhq-ny-idag.css";
 import "@/styles/playerhq-ny-ovelser.css";
+import "@/styles/playerhq-ny-ovelser-skra.css";
 
 export type PH13Caddie = { ovelseId: string; omraade: string; sg: number };
 export type PH13BankProps = {
@@ -84,97 +87,118 @@ export function PH13DrillBank({ ovelser, caddie, startMedNy, coach = false }: PH
 
   const velgAkse = (a: OvAkse) => setF((x) => ({ ...x, akse: x.akse === a ? null : a, omraade: null }));
 
-  const hode = (
-    <div className="phn-ov-topp">
-      <span className="phn-dato">{coach ? "Workbench · øvelsesbank" : "Plan · øvelsesbank"}</span>
-      <h1 className="phn-tittel">Øvelsesbank</h1>
-    </div>
+  const topp = (
+    <SkraTopp
+      lav
+      etikett="Øvelsesbank"
+      bilde="/images/playerhq/slag-putting.jpg" bildePosisjon="50% 60%"
+      overlinje={coach ? "Workbench · øvelsesbank" : "Plan · øvelsesbank"}
+      tittel="Øvelsesbank"
+      ingress={`${treff.length} ${aktivt ? (treff.length === 1 ? "øvelse passer" : "øvelser passer") : "øvelser i banken"}`}
+    />
+  );
+
+  const arkOgMelding = (
+    <>
+      {melding && <p className="phn-ov-status" role="status">{melding}</p>}
+      {ny && <NyOvelseArk onLukk={() => setNy(false)} onLagret={(navn) => { setNy(false); setMelding(`${navn} er lagret. Den ligger først i banken.`); }} />}
+    </>
   );
 
   if (ovelser.length === 0) {
     return (
-      <div className="phn">
-        {hode}
-        <section className="phn-kort" style={{ background: "var(--phn-sand-100)" }}>
-          <b className="phn-ov-under">Ingen øvelser ennå</b>
-          {coach
-            ? <><p className="phn-forklar">Lag øvelser i Plan-hub eller med pluss i Workbench.</p>
-                <div className="phn-knapper"><Link className="phn-knapp pri" href={COACH_OVELSE_HREF}>Til Plan-hub</Link></div></>
-            : <><p className="phn-forklar">Lag din første øvelse, eller be coachen dele sine.</p>
-                <div className="phn-knapper"><button type="button" className="phn-knapp pri" onClick={() => setNy(true)}><Plus className="phn-ikon" aria-hidden />Ny egen øvelse</button></div></>}
-        </section>
-        {melding && <p className="phn-ov-status" role="status">{melding}</p>}
-        {ny && <NyOvelseArk onLukk={() => setNy(false)} onLagret={(navn) => { setNy(false); setMelding(`${navn} er lagret. Den ligger først i banken.`); }} />}
+      <div className="phn phn-skra phn-ov-skra">
+        {topp}
+        <SkraFlyt lav>
+          <SkraKort tittel="Ingen øvelser ennå">
+            {coach
+              ? <SkraTom handling={<Link className="phn-knapp pri" href={COACH_OVELSE_HREF}>Til Plan-hub</Link>}>
+                  Lag øvelser i Plan-hub eller med pluss i Workbench.
+                </SkraTom>
+              : <SkraTom handling={<button type="button" className="phn-knapp pri" onClick={() => setNy(true)}><Plus className="phn-ikon" aria-hidden />Ny egen øvelse</button>}>
+                  Lag din første øvelse, eller be coachen dele sine.
+                </SkraTom>}
+          </SkraKort>
+          {arkOgMelding}
+        </SkraFlyt>
       </div>
     );
   }
 
   return (
-    <div className="phn">
-      {hode}
-      {melding && <p className="phn-ov-status" role="status">{melding}</p>}
-      <div className="phn-ov-bank">
-        <div className="phn-ov-filterkol">
-          <div className="phn-hoved"><strong>{treff.length}</strong><span className="phn-forklar">{aktivt ? (treff.length === 1 ? "øvelse passer" : "øvelser passer") : "øvelser i banken"}</span></div>
-          <label className="phn-felt">Søk<input type="search" value={f.sok} placeholder="Navn eller treningsområde" onChange={(e) => setF((x) => ({ ...x, sok: e.target.value }))} /></label>
-          <section className="phn-seksjon" aria-label="Pyramiden">
-            <div className="phn-sek-topp"><h2>1 Velg i pyramiden</h2></div>
-            <div className="phn-ov-pyramide">
-              {OV_PYRAMIDE.map((a) => <button key={a} type="button" data-akse={a} aria-pressed={f.akse === a} onClick={() => velgAkse(a)}>{OV_AKSE_KODE[a]} <b>{perAkse[a]}</b></button>)}
-            </div>
-          </section>
-          {f.akse && (
-            <section className="phn-seksjon" aria-label="Treningsområde">
-              <div className="phn-sek-topp"><h2>2 Treningsområde</h2></div>
-              {omraader.length > 0
-                ? <div className="phn-ov-chips" role="group" aria-label="Treningsområde">
-                    <button type="button" aria-pressed={!f.omraade} onClick={() => setF((x) => ({ ...x, omraade: null }))}>Alle</button>
-                    {omraader.map((o) => <button key={o} type="button" aria-pressed={f.omraade === o} onClick={() => setF((x) => ({ ...x, omraade: o }))}>{o}</button>)}
-                  </div>
-                : <p className="phn-kilde">Øvelsene i {OV_AKSE_KODE[f.akse]} har ikke treningsområde ennå.</p>}
-            </section>
-          )}
-          {(miljoValg.length > 0 || pressValg.length > 0) && (
-            <details className="phn-ov-flere">
-              <summary>Flere filter <ChevronDown className="phn-ikon" aria-hidden /></summary>
-              <div className="phn-ov-innmat">
-                {miljoValg.length > 0 && <div className="phn-felt"><span>Treningsmiljø</span><Chips navn="Treningsmiljø" valg={miljoValg} verdi={f.miljo} onVelg={(v) => setF((x) => ({ ...x, miljo: v }))} /></div>}
-                {pressValg.length > 0 && <div className="phn-felt"><span>Press</span><Chips navn="Press" valg={pressValg} verdi={f.press} onVelg={(v) => setF((x) => ({ ...x, press: v }))} /></div>}
-              </div>
-            </details>
-          )}
-          {coach
-            ? <Link className="phn-knapp sek" href={COACH_OVELSE_HREF}>Lag og endre øvelser i Plan-hub</Link>
-            : <button type="button" className="phn-knapp sek" onClick={() => setNy(true)}><Plus className="phn-ikon" aria-hidden />Ny egen øvelse</button>}
-        </div>
-
-        <div className="phn-seksjon" style={{ gap: 24 }}>
-          {caddie && caddieOvelse && !aktivt && (
-            <section className="phn-ov-caddie" aria-label="Caddie foreslår">
-              <div className="phn-ov-caddie-topp"><span className="phn-ov-caddie-ikon"><Sparkles className="phn-ikon" aria-hidden /></span>Caddie foreslår</div>
-              <p className="phn-forklar">{caddie.omraade} er det svakeste området ditt: <b>{formaterFortegn(caddie.sg, 1)} slag per runde</b> i Strokes Gained. {caddieOvelse.navn} trener {caddieOvelse.omraade ? caddieOvelse.omraade.toLowerCase() : "dette området"}.</p>
-              <p className="phn-kilde">Snitt av rundene dine med Strokes Gained.</p>
-              <div className="phn-knapper"><Link className="phn-knapp pri" href={`/portal/drills/${caddieOvelse.id}`}>Se øvelsen</Link></div>
-            </section>
-          )}
-          <section className="phn-seksjon" aria-label="Øvelser">
-            <div className="phn-sek-topp">
-              <h2>{listeTittel}</h2>
+    <div className="phn phn-skra phn-ov-skra">
+      {topp}
+      <SkraFlyt lav className="skra-idag skra-ovelser">
+        <div className="skra-kol skra-v">
+          <div className="skra-plass" style={{ order: 3 }}>
+            <SkraKort tittel={listeTittel} meta={aktivt ? undefined : String(treff.length)} etikett="Øvelser">
               {aktivt && <button type="button" className="phn-ov-lenke" onClick={() => setF(TOMT_FILTER)}>Nullstill filter</button>}
-            </div>
-            {treff.length > 0
-              ? <div className="phn-ov-liste">{treff.map((o) => <OvelseKort key={o.id} o={o} href={coach ? COACH_OVELSE_HREF : undefined} />)}</div>
-              : <div className="phn-kort" style={{ background: "var(--phn-sand-100)" }}><b className="phn-ov-under">Ingen øvelser passer filteret</b><p className="phn-forklar">{coach ? "Ta bort et filter." : "Ta bort et filter, eller lag en egen øvelse."}</p></div>}
-          </section>
+              {treff.length > 0
+                ? <div className="phn-ov-liste">{treff.map((o) => <OvelseKort key={o.id} o={o} href={coach ? COACH_OVELSE_HREF : undefined} />)}</div>
+                : <SkraTom>{coach ? "Ingen øvelser passer filteret. Ta bort et filter." : "Ingen øvelser passer filteret. Ta bort et filter, eller lag en egen øvelse."}</SkraTom>}
+            </SkraKort>
+          </div>
           {visBreak && (
-            <Link className="phn-rad-lenke" href="/portal/drills/break-tabell">
-              <span><span className="phn-ov-akse-tekst" style={{ color: "var(--phn-slag-ink)" }}>PUTTING</span><b>Break-tabell</b><span className="phn-kilde">Hvor mye du sikter utenfor hullet, etter avstand og helling</span></span>
-              <ChevronRight className="phn-ikon" aria-hidden />
-            </Link>
+            <div className="skra-plass" style={{ order: 4 }}>
+              <Link className="phn-rad-lenke" href="/portal/drills/break-tabell">
+                <span><span className="phn-ov-akse-tekst" style={{ color: "var(--phn-slag-ink)" }}>PUTTING</span><b>Break-tabell</b><span className="phn-kilde">Hvor mye du sikter utenfor hullet, etter avstand og helling</span></span>
+                <ChevronRight className="phn-ikon" aria-hidden />
+              </Link>
+            </div>
           )}
         </div>
-      </div>
-      {ny && <NyOvelseArk onLukk={() => setNy(false)} onLagret={(navn) => { setNy(false); setMelding(`${navn} er lagret. Den ligger først i banken.`); }} />}
+        <div className="skra-kol skra-h">
+          {caddie && caddieOvelse && !aktivt && (
+            <div className="skra-plass" style={{ order: 1 }}>
+              <SkraHelt
+                etikett="Caddie foreslår"
+                overlinje={`Caddie foreslår · ${caddie.omraade}`}
+                tid={formaterFortegn(caddie.sg, 1)} tidEtter="slag per runde"
+                tittel={caddieOvelse.navn}
+                meta={`Svakeste område i Strokes Gained. Trener ${caddieOvelse.omraade ? caddieOvelse.omraade.toLowerCase() : "dette området"}.`}
+                handlinger={[{ tekst: "Se øvelsen", href: `/portal/drills/${caddieOvelse.id}` }]}
+              />
+            </div>
+          )}
+          <div className="skra-plass" style={{ order: 2 }}>
+            <SkraKort tittel="Finn øvelse" etikett="Filter">
+              <div className="phn-ov-filterkol">
+                <label className="phn-felt">Søk<input type="search" value={f.sok} placeholder="Navn eller treningsområde" onChange={(e) => setF((x) => ({ ...x, sok: e.target.value }))} /></label>
+                <section className="phn-seksjon" aria-label="Pyramiden">
+                  <div className="phn-sek-topp"><h2>1 Velg i pyramiden</h2></div>
+                  <div className="phn-ov-pyramide">
+                    {OV_PYRAMIDE.map((a) => <button key={a} type="button" data-akse={a} aria-pressed={f.akse === a} onClick={() => velgAkse(a)}>{OV_AKSE_KODE[a]} <b>{perAkse[a]}</b></button>)}
+                  </div>
+                </section>
+                {f.akse && (
+                  <section className="phn-seksjon" aria-label="Treningsområde">
+                    <div className="phn-sek-topp"><h2>2 Treningsområde</h2></div>
+                    {omraader.length > 0
+                      ? <div className="phn-ov-chips" role="group" aria-label="Treningsområde">
+                          <button type="button" aria-pressed={!f.omraade} onClick={() => setF((x) => ({ ...x, omraade: null }))}>Alle</button>
+                          {omraader.map((o) => <button key={o} type="button" aria-pressed={f.omraade === o} onClick={() => setF((x) => ({ ...x, omraade: o }))}>{o}</button>)}
+                        </div>
+                      : <p className="phn-kilde">Øvelsene i {OV_AKSE_KODE[f.akse]} har ikke treningsområde ennå.</p>}
+                  </section>
+                )}
+                {(miljoValg.length > 0 || pressValg.length > 0) && (
+                  <details className="phn-ov-flere">
+                    <summary>Flere filter <ChevronDown className="phn-ikon" aria-hidden /></summary>
+                    <div className="phn-ov-innmat">
+                      {miljoValg.length > 0 && <div className="phn-felt"><span>Treningsmiljø</span><Chips navn="Treningsmiljø" valg={miljoValg} verdi={f.miljo} onVelg={(v) => setF((x) => ({ ...x, miljo: v }))} /></div>}
+                      {pressValg.length > 0 && <div className="phn-felt"><span>Press</span><Chips navn="Press" valg={pressValg} verdi={f.press} onVelg={(v) => setF((x) => ({ ...x, press: v }))} /></div>}
+                    </div>
+                  </details>
+                )}
+                {coach
+                  ? <Link className="phn-knapp sek" href={COACH_OVELSE_HREF}>Lag og endre øvelser i Plan-hub</Link>
+                  : <button type="button" className="phn-knapp sek" onClick={() => setNy(true)}><Plus className="phn-ikon" aria-hidden />Ny egen øvelse</button>}
+              </div>
+            </SkraKort>
+          </div>
+        </div>
+        {arkOgMelding}
+      </SkraFlyt>
     </div>
   );
 }

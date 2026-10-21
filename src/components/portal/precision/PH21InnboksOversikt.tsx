@@ -29,8 +29,11 @@ import { resolvePlayerApproval } from "@/lib/workbench/wb-actions";
 import { respondPH21PlanAction } from "@/lib/portal-coach/ph21-actions";
 import { markNotificationsRead } from "@/app/portal/(legacy)/varsler/actions";
 import { tellInnboks, type InnboksForslag, type InnboksOkt, type InnboksVarsel, type PH21InnboksData } from "@/lib/portal/ph21-innboks";
+import { SkraFlyt, SkraHelt, SkraTopp } from "@/components/precision/skra/Skra";
 import "@/styles/playerhq-ny.css";
+import "@/styles/playerhq-ny-idag.css";
 import "@/styles/playerhq-ny-kommunikasjon.css";
+import "@/styles/playerhq-ny-lister-skra.css";
 
 type Filter = "alle" | "forslag" | "melding" | "varsel";
 const FILTER: { id: Filter; navn: string }[] = [
@@ -114,20 +117,23 @@ export function PH21InnboksOversikt({ data, tilstand = "data" }: { data: PH21Inn
     });
   }
 
-  const hode = <div className="phn-k-topp">
-    <div>
-      <div className="phn-dato">Innboks · forslag, meldinger og varsler</div>
-      <h1 className="phn-tittel">Innboks</h1>
-    </div>
-  </div>;
+  const hode = <SkraTopp
+    lav
+    etikett="Innboks"
+    bilde="/images/playerhq/slag-simulator.jpg" bildePosisjon="50% 40%"
+    overlinje="Innboks · forslag, meldinger og varsler"
+    tittel="Innboks"
+  />;
 
   if (tilstand === "feil") {
-    return <div className="phn">{hode}
+    return <div className="phn phn-skra">{hode}
+      <SkraFlyt lav>
       <section className="phn-kort" role="alert">
         <h2 className="phn-k-undertittel">Fikk ikke hentet innboksen</h2>
         <p className="phn-forklar">Sjekk nettet og prøv igjen. Ingen forslag er besvart.</p>
         <div className="phn-knapper"><button type="button" className="phn-knapp sek" onClick={() => router.refresh()}><RefreshCw className="phn-ikon" aria-hidden />Prøv igjen</button></div>
       </section>
+      </SkraFlyt>
     </div>;
   }
 
@@ -141,18 +147,18 @@ export function PH21InnboksOversikt({ data, tilstand = "data" }: { data: PH21Inn
     {data.harCoach && <Link href="/portal/coach?ny=1" className="phn-knapp pri phn-k-stor">Ny melding</Link>}
   </aside>;
 
-  return <div className="phn">
+  return <div className="phn phn-skra">
     {hode}
+    <SkraFlyt lav>
     <div className="phn-k-innboks-grid">
       <div className="phn-k-saker">
-        <div className="phn-kort">
-          <div className="phn-hoved"><strong>{antall.venter}</strong><span className="phn-forklar">{antall.venter === 1 ? "sak venter på deg" : "saker venter på deg"}</span></div>
-          <div className="phn-k-oversikt-rad">
-            <span>Forslag<b>{antall.forslag}</b></span>
-            <span>Meldinger<b>{antall.meldinger}</b></span>
-            <span>Varsler<b>{antall.varsler}</b></span>
-          </div>
-        </div>
+        <SkraHelt
+          etikett="Venter på deg"
+          overlinje="Venter på deg"
+          tid={antall.venter}
+          tittel={antall.venter === 1 ? "sak venter på deg" : "saker venter på deg"}
+          meta={`Forslag ${antall.forslag} · Meldinger ${antall.meldinger} · Varsler ${antall.varsler}`}
+        />
         {tom ? <div className="phn-kort">
           <b className="phn-k-undertittel">Ingen saker</b>
           <p className="phn-forklar">Forslag fra coach og trener, meldinger og varsler kommer hit.</p>
@@ -210,6 +216,7 @@ export function PH21InnboksOversikt({ data, tilstand = "data" }: { data: PH21Inn
       </div>
       {hvem}
     </div>
+    </SkraFlyt>
     {toast && <div className="phn-k-toast" role="status">{toast}</div>}
   </div>;
 }

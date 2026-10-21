@@ -20,8 +20,11 @@ import {
 } from "@/lib/portal-analyse/trackman-stats";
 import { TmFilterLinje } from "./PH17TmFilter";
 import { TmTilbake, tmDag, tmKortDag } from "./PH17TmFelles";
+import { SkraFlyt, SkraKort, SkraTom, SkraTopp } from "@/components/precision/skra/Skra";
 import "@/styles/playerhq-ny.css";
+import "@/styles/playerhq-ny-idag.css";
 import "@/styles/playerhq-ny-stats.css";
+import "@/styles/playerhq-ny-lister-skra.css";
 
 export type TmOktKort = {
   id: string;
@@ -56,24 +59,23 @@ export function PH17TmOkter({ data }: { data: PH17TmOkterData }) {
   const sok = tmFilterSok(filter);
 
   return (
-    <div className="phn">
-      <TmTilbake href="/portal/analysere?del=tren" tekst="Trening" />
-      <div className="phn-topp">
-        <div className="phn-dato">Stats · Trening · TrackMan</div>
-        <h1 className="phn-tittel">TrackMan</h1>
-        <div className="phn-hoved">
-          <strong>{data.okter.length ? tusen(data.slag) : "—"}</strong>
-          <span className="phn-forklar">slag · {TM_PERIODE_NAVN[filter.periode].toLowerCase()}{filter.ekstreme ? "" : ", uten ekstreme slag"}</span>
-        </div>
-      </div>
-
+    <div className="phn phn-skra">
+      <SkraTopp
+        lav
+        etikett="TrackMan"
+        bilde="/images/playerhq/slag-simulator.jpg" bildePosisjon="50% 50%"
+        overlinje="Stats · Trening · TrackMan"
+        tittel="TrackMan"
+        ingress={`${data.okter.length ? tusen(data.slag) : "—"} slag · ${TM_PERIODE_NAVN[filter.periode].toLowerCase()}${filter.ekstreme ? "" : ", uten ekstreme slag"}`}
+        handling={<span className="skra-tilbake"><TmTilbake href="/portal/analysere?del=tren" tekst="Trening" /></span>}
+      />
+      <SkraFlyt lav>
       {data.harOkter ? (
         <>
           <TmFilterLinje filter={filter} sti={STI} koller={data.kolleValg} />
           <div className="phn-to-kol">
             <div className="phn-kol">
-              <section className="phn-seksjon">
-                <div className="phn-sek-topp"><h2>Økter</h2><span className="phn-kilde">{data.okter.length} {data.okter.length === 1 ? "økt" : "økter"}</span></div>
+              <SkraKort tittel="Økter" meta={`${data.okter.length} ${data.okter.length === 1 ? "økt" : "økter"}`}>
                 <div className="phn-okt-liste">
                   {data.okter.length ? data.okter.map((o, i) => (
                     <Link key={o.id} href={`${STI}/${o.id}${sok}`} className={`phn-okt ${o.akse} phn-inn`} style={{ animationDelay: `${i * 40}ms` }}>
@@ -95,7 +97,7 @@ export function PH17TmOkter({ data }: { data: PH17TmOkterData }) {
                     </div>
                   )}
                 </div>
-              </section>
+              </SkraKort>
             </div>
             <div className="phn-kol">
               <Link className="phn-tm-kort" href={`${STI}/koller${sok}`}>
@@ -107,11 +109,11 @@ export function PH17TmOkter({ data }: { data: PH17TmOkterData }) {
           </div>
         </>
       ) : (
-        <section className="phn-kort dempet">
-          <h2>Ingen TrackMan-økter ennå</h2>
-          <p className="phn-forklar">Når en TrackMan-økt er lagt inn, ser du slagene, spredningen og alle tallene her.</p>
-        </section>
+        <SkraKort tittel="Ingen TrackMan-økter ennå">
+          <SkraTom>Når en TrackMan-økt er lagt inn, ser du slagene, spredningen og alle tallene her.</SkraTom>
+        </SkraKort>
       )}
+      </SkraFlyt>
     </div>
   );
 }
