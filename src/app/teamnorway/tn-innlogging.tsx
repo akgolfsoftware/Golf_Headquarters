@@ -48,21 +48,21 @@ export function TnInnlogging({ retursti }: { retursti: string }) {
 
   return (
     <main className={styles.side}>
-      <section className={styles.topp} aria-labelledby={`${id}-tittel`}>
+      <section className={styles.topp}>
         <div className={styles.kant} aria-hidden="true" />
         <div className={styles.foto} aria-hidden="true">
           <Image src="/team-norway/bilder/spiller-ved-vannet.jpg" alt="" fill priority sizes="100vw" />
         </div>
         <div className={styles.toppInnhold}>
           <TnLogo hoyde={48} prioritet paaMork />
-          <div>
-            <h1 id={`${id}-tittel`}>Logg inn</h1>
-            <p>Bruk AK Golf-kontoen din. Rollen på kontoen avgjør hva du ser.</p>
-          </div>
         </div>
       </section>
       <div className={styles.innhold}>
         <form onSubmit={send} className={styles.kort} aria-busy={opptatt} aria-labelledby={`${id}-tittel`}>
+          <div className={styles.kortHode}>
+            <h1 id={`${id}-tittel`}>Logg inn</h1>
+            <p>Bruk AK Golf-kontoen din. Rollen på kontoen avgjør hva du ser.</p>
+          </div>
           {harFeil && (
             <p id={`${id}-feil`} role="alert" className={styles.feil}>
               {status === "nettfeil"
