@@ -104,8 +104,12 @@ Schibsted Grotesk, IBM Plex Mono på tall, navy #012B5D, rød #D70232 bare som i
 bilder fra public/team-norway/bilder/, full bredde på desktop. Gjenbruk det som finnes: turneringsplanleggeren
 (/team-norway/spiller/[id]/turneringsplan), testene, teknisk plan, fireukerssjekken og analysen. Ikke bygg
 dem på nytt.
-Referanse-delen leser de samme tallene som teamnorwayref fra pipelines' tabeller; kartlegg kolonnene mot
-basen før du skriver en spørring, og vis kilde og dato: «World Amateur Golf Ranking (WAGR), The R&A».
+Referanse-delen kan ikke bygges med ekte tall ennå: det meste teamnorwayref viser (Power per turnering,
+WAGR-plass før turneringen, plass per uke, gruppelistene Junior Norden og Amatør Norden) ligger bare i
+JSON-filer i ak-golf-pipelines, ikke i basen. Det skrives til basen i en egen økt i ak-golf-pipelines
+(oppgave 5 i beslutningsblokken). Bygg Referanse-delen sist, les bare det som finnes i basen, vis «—» for
+resten og lenk til teamnorwayref. Kartlegg kolonnene mot basen før du skriver en spørring, og vis kilde og
+dato: «World Amateur Golf Ranking (WAGR), The R&A».
 </etappe>
 
 <etappe nr="4" navn="Lenke fra PlayerHQ">
