@@ -13,8 +13,3 @@
 }
 .phn-ov-skra .skra-h section:first-child strong { font-size: 34px; }
 .phn-ov-skra .skra-h section:first-child h2 { font-size: 20px; }
-/* Mobil: pyramiden som valgknapper på rad i stedet for fem stablede trinn, så listen kommer høyere opp. */
-@container (max-width: 899px) {
-  .phn.phn-ov-skra .phn-ov-pyramide { display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 6px; }
-  .phn.phn-ov-skra .phn-ov-pyramide button { width: auto !important; padding: 0 14px; min-height: 48px; }
-}
