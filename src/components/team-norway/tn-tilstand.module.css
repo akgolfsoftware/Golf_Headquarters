@@ -18,3 +18,16 @@
 .menyStrek { display: block; height: 12px; margin: 14px 20px; background: var(--tn-rail-active); }
 .menyStrek:first-child { height: 40px; width: 80px; margin-bottom: 24px; }
 .toppStrek { display: block; width: 90px; height: 24px; background: var(--tn-rail-active); }
+
+/* Skrå-toppen som skjelett (laster, feil og ikke funnet). Samme form som TnSkraTopp lav uten bilde. */
+.toppSkjelett { position: relative; container-type: inline-size; height: 150px; margin: -24px -16px 0; }
+.toppSkjelett::before,
+.toppSkjelett::after { content: ""; position: absolute; inset: 0; clip-path: var(--tn-clip-diagonal-b); }
+.toppSkjelett::before { background: var(--tn-red-600); }
+.toppSkjelett::after { bottom: var(--tn-skra-kant); background: var(--tn-navy-900); }
+.overKanten { position: relative; z-index: 1; margin-top: -88px; min-width: 0; }
+@media (min-width: 900px) {
+  .toppSkjelett { margin: -32px -44px 0; height: 170px; }
+  .overKanten { margin-top: -100px; }
+}
+.lasterKort { display: grid; gap: 12px; padding: 16px 18px 18px; border-radius: var(--tn-radius-xl); background: var(--tn-white); box-shadow: var(--tn-shadow-md); }
