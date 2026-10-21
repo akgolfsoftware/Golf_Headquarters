@@ -19,6 +19,10 @@ import {
 import { TmAlleTall, TmTilbake, tmLangDag } from "./PH17TmFelles";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-stats.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke4-skra.css";
 
 const STI = "/portal/analysere/trackman";
 const harPunkt = (s: TmSlag): s is TmSlag & { carry: number; side: number } => s.carry != null && s.side != null;
@@ -43,12 +47,16 @@ export function PH17TmOkt({ okt, filter }: { okt: TmOkt; filter: TmFilter }) {
   const midtX = treff.length ? treff.reduce((a, s) => a + (s.sx as number), 0) / treff.length : null;
 
   return (
-    <div className="phn">
-      <TmTilbake href={`${STI}${tmFilterSok(filter)}`} tekst="TrackMan" />
-      <div className="phn-topp">
-        <div className="phn-dato">TrackMan · {tmLangDag(okt.dato)}</div>
-        <h1 className="phn-tittel">{oktNavn(okt)}</h1>
-      </div>
+    <div className="phn phn-skra">
+    <SkraTopp
+      lav
+      etikett="TrackMan-økt"
+      bilde="/images/playerhq/slag-simulator.jpg" bildePosisjon="50% 50%"
+      overlinje={`TrackMan · ${tmLangDag(okt.dato)}`}
+      tittel={oktNavn(okt)}
+      handling={<span className="skra-topp-rad"><span className="skra-tilbake"><TmTilbake href={`${STI}${tmFilterSok(filter)}`} tekst="TrackMan" /></span></span>}
+    />
+    <SkraFlyt lav>
       <div className={`phn-fylt ${akse}`}>
         <span className="phn-akse-tekst">{[akse.toUpperCase(), okt.sted, hast && TM_HAST_NAVN[hast]].filter(Boolean).join(" · ").toUpperCase()}</span>
         <div className="phn-rad">
@@ -143,6 +151,7 @@ export function PH17TmOkt({ okt, filter }: { okt: TmOkt; filter: TmFilter }) {
           </section>
         </div>
       </div>
+    </SkraFlyt>
     </div>
   );
 }

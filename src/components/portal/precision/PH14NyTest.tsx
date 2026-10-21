@@ -34,6 +34,10 @@ import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-stats.css";
 import "@/styles/playerhq-ny-statsdybde.css";
 import "@/styles/playerhq-ny-statsresten-test.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke4-skra.css";
 
 const LS_GRUNNNOKKEL = "akgolf:nytest:draft:v3";
 const STEDER = ["Performance Studio", "Bossum", "Annet"] as const;
@@ -203,11 +207,18 @@ export function PH14NyTest({ tester, coachNavn, startSteg = 1, startUtkast }: {
   }
 
   return (
-    <div className="phn phn-nt">
+    <div className="phn phn-nt phn-skra">
+    <SkraTopp
+      lav
+      etikett="Ny test"
+      bilde="/images/playerhq/stats-topp.jpg" bildePosisjon="50% 50%"
+      overlinje="Testbatteri AK Golf"
+      tittel="Ny test"
+      handling={<span className="skra-topp-rad"><span className="skra-tilbake"><TmTilbake href="/portal/tren/tester" tekst="Tester" /></span></span>}
+    />
+    <SkraFlyt lav>
       <div className="phn-nt-smal">
-        <TmTilbake href="/portal/tren/tester" tekst="Tester" />
         <div className="phn-nt-topp" ref={toppRef}>
-          <div><div className="phn-dato">Testbatteri AK Golf</div><h1 className="phn-tittel">Ny test</h1></div>
           <div className="phn-nt-stegtopp">
             <small>Steg {steg} av 4 · {STEG_NAVN[steg - 1]}</small>
             <div className="phn-nt-spor" role="progressbar" aria-valuemin={1} aria-valuemax={4} aria-valuenow={steg} aria-label="Fremdrift">
@@ -331,6 +342,7 @@ export function PH14NyTest({ tester, coachNavn, startSteg = 1, startUtkast }: {
         </div>
       </div>
 
+    </SkraFlyt>
       <dialog ref={avbrytRef} className="phn-sd-dialog" aria-labelledby="ph14ny-avbryt">
         <div className="phn-ark-kropp">
           <h2 id="ph14ny-avbryt" style={{ margin: 0, font: "600 19px/1.25 var(--phn-sans)" }}>Forkaste testen?</h2>

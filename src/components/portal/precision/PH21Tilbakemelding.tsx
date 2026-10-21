@@ -25,6 +25,10 @@ import type { CoachTilbakemeldingData } from "@/lib/portal-okt/coach-tilbakemeld
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-kommunikasjon.css";
 import "@/styles/playerhq-ny-booking-meldinger.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke4-skra.css";
 
 const TRAAD = "/portal/coach/melding";
 
@@ -74,16 +78,17 @@ export function PH21Tilbakemelding({ data }: { data: CoachTilbakemeldingData }) 
     });
   };
 
-  return <div className="phn">
-    <div className="phn-bm-topp">
-      <Tilbake />
-      <div>
-        <div className="phn-dato">Tilbakemelding · fra {data.coach?.navn ?? "coachen"}{naar ? ` · ${naar}` : ""}</div>
-        <h1 className="phn-tittel">{tittel}</h1>
-      </div>
-      <p className="phn-bm-kildetekst">{data.kildeMeta}</p>
-    </div>
-
+  return <div className="phn phn-skra">
+    <SkraTopp
+      lav
+      etikett="Tilbakemelding"
+      bilde="/images/playerhq/tek-video.jpg" bildePosisjon="50% 50%"
+      overlinje={`Tilbakemelding · fra ${data.coach?.navn ?? "coachen"}${naar ? ` · ${naar}` : ""}`}
+      tittel={tittel}
+      ingress={data.kildeMeta}
+      handling={<span className="skra-topp-rad"><span className="skra-tilbake"><Tilbake /></span></span>}
+    />
+    <SkraFlyt lav>
     {skrevet ? <div className="phn-bm-grid">
       <div>
         <section className="phn-seksjon">
@@ -138,5 +143,5 @@ export function PH21Tilbakemelding({ data }: { data: CoachTilbakemeldingData }) 
         <Link href={TRAAD} className="phn-knapp sek"><MessageSquare className="phn-ikon" aria-hidden />Åpne tråden med {fornavn}</Link>
       </div>
     </section>}
-  </div>;
+  </SkraFlyt></div>;
 }

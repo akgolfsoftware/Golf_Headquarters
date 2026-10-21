@@ -1,0 +1,7 @@
+/* Pakke 4 (Test, TrackMan, Coach): første rad under det skrå kuttet og full bredde på desktop. */
+.phn.phn-skra .phn-nt-smal, .phn.phn-skra .phn-sr-smal, .phn.phn-skra .phn-k-smal { padding-top: 28px; max-width: none; margin-inline: 0; }
+.phn-skra .phn-bm-grid { padding-top: 28px; }
+@container (min-width: 900px) {
+  .phn.phn-skra .phn-nt-smal, .phn.phn-skra .phn-sr-smal, .phn.phn-skra .phn-k-smal { padding-top: 44px; margin-right: 52px; max-width: 760px; }
+  .phn-skra .phn-bm-grid { padding-top: 44px; margin-right: 52px; }
+}

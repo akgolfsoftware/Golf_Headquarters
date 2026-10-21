@@ -17,6 +17,10 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { initialer } from "@/lib/portal/initialer";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-meg.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke4-skra.css";
 
 export type PH21CoachSporsmalRad = {
   id: string;
@@ -36,12 +40,17 @@ export function PH21CoachSporsmal({ sporsmal }: { sporsmal: PH21CoachSporsmalRad
   const apne = sporsmal.filter((s) => !s.besvart).length;
   const vist = sporsmal.filter((s) => filter === "apne" ? !s.besvart : filter === "besvart" ? s.besvart : true);
 
-  return <div className="phn phn-meg"><div className="side smal">
-    <div className="topp">
-      <Link className="tilbake" href="/portal/coach"><ChevronLeft size={18} aria-hidden />Coach</Link>
-      <div><div className="phn-dato">Coach · spørsmål</div><h1 className="phn-tittel">Spørsmål</h1></div>
-    </div>
-
+  return <div className="phn phn-meg phn-skra">
+    <SkraTopp
+      lav
+      etikett="Spørsmål"
+      bilde="/images/playerhq/tek-video.jpg" bildePosisjon="50% 50%"
+      overlinje="Coach · spørsmål"
+      tittel="Spørsmål"
+      handling={<span className="skra-topp-rad"><span className="skra-tilbake"><Link className="tilbake" href="/portal/coach"><ChevronLeft size={18} aria-hidden />Coach</Link></span></span>}
+    />
+    <SkraFlyt lav>
+    <div className="side smal">
     <div className="ruter" style={{ gridTemplateColumns: "repeat(3, minmax(0, 1fr))" }}>
       <div className="rute"><span className="e">Åpne</span><b className="t">{apne}</b></div>
       <div className="rute"><span className="e">Besvart</span><b className="t">{sporsmal.length - apne}</b></div>
@@ -72,5 +81,5 @@ export function PH21CoachSporsmal({ sporsmal }: { sporsmal: PH21CoachSporsmalRad
             </Link>)}
           </div>}
     </section>
-  </div></div>;
+  </div></SkraFlyt></div>;
 }
