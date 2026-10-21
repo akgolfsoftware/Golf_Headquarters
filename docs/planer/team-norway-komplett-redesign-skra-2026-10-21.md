@@ -79,3 +79,26 @@ Rekkefølge: 1–2 først (alt annet hviler på dem), så 3, deretter 4–8 i de
 - **Ikke avgjort:** om Data Golf skal vises på teamnorwayref. Ligger hos Anders.
 
 Ingen skjemaendring er gjort eller foreslått ennå. Alt over er lesing.
+
+## 7. Steg 15: Ny trenerflate etter teamnorwayref (bestilt av Anders 21.10)
+
+Anders 21.10: den nye Team Norway-siden (teamnorwayref) skal erstatte de interne sidene for Team
+Norway-trenere, og skal lenkes fra PlayerHQ der Team Norway-spillere registrerer deling med Team Norway.
+
+- **Ny struktur:** wireframes, menypunkter og fordeling på nytt, med teamnorwayref som utgangspunkt.
+- **Trenerprofil:** hver trener har sin egen profil.
+- **Spillere:** treneren velger en spiller, og trykk på navnet åpner den komplette spillerprofilen:
+  komplett IUP, turneringsplanlegger, ranking, progresjon i turneringer, trening, tester, teknisk plan og
+  fireukerssjekk.
+- **Lenke fra PlayerHQ:** fra delingen med Team Norway (`/portal/meg/innstillinger/personvern/deling` og
+  `/portal/meg/deling`), bare for spillere i en Team Norway-gruppe.
+
+**Krever en beslutning før bygging.** teamnorwayref er en statisk side bak ett felles passord. Den kan ikke gi
+hver trener egen profil, og kan ikke vise en spillers IUP, tester eller trening bare til trenerne spilleren
+har delt med. Anbefaling: den nye trenerflaten bygges i HQ under `/team-norway` med teamnorwayrefs struktur,
+innhold og utseende, og teamnorwayref.vercel.app sender videre dit når Anders sier det. Valget overstyrer
+«HQ får ingen egen referanseflate» i §6 og i beslutninger.md §REFERANSESPILLERE NORDEN.
+
+Prompten for jobben: [prompt-tn-trenerflate-2026-10-21.md](prompt-tn-trenerflate-2026-10-21.md). Etappene er
+funksjonsregister, struktur og wireframes (stopp for Anders' ja), bygging i pakker og PlayerHQ-lenken.
+Ferdig når kravene i promptens `<ferdig_nar>` er oppfylt.
