@@ -20,7 +20,10 @@ import { useEffect, useRef, useState, useTransition } from "react";
 import { X } from "lucide-react";
 import { createSessionFromSource } from "@/lib/workbench/wb-actions";
 import { OV_AKSE_KODE, OV_AKSE_NAVN, type OvelseVisning, type UkeDag } from "@/lib/portal-drills/ovelser-visning";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
 import { OvTilbake } from "./PH13Felles";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-ovelser.css";
 
@@ -51,17 +54,20 @@ export function PH13DrillDetalj({ ovelse: o, playerId, uke, startMedArk }: PH13D
   const brukt = o.brukt > 0 ? `brukt i ${o.brukt} ${o.brukt === 1 ? "økt" : "økter"} siste 30 dager` : "ny for deg";
 
   return (
-    <div className="phn">
-      <OvTilbake href="/portal/drills" tekst="Øvelsesbank" />
-      <div className="phn-ov-topp">
-        <span className="phn-dato">Øvelsesbank · {OV_AKSE_KODE[o.akse]}{o.omraade ? ` · ${o.omraade}` : ""}</span>
-        <h1 className="phn-tittel">{o.navn}</h1>
-      </div>
+    <div className="phn phn-skra">
+      <SkraTopp
+        lav
+        etikett="Øvelse"
+        bilde={o.bilde.src.startsWith("/") ? o.bilde.src : "/images/playerhq/spill-bane.jpg"}
+        bildePosisjon={o.bilde.posisjon}
+        overlinje={`Øvelsesbank · ${OV_AKSE_KODE[o.akse]}${o.omraade ? ` · ${o.omraade}` : ""}`}
+        tittel={o.navn}
+        handling={<span className="skra-tilbake"><OvTilbake href="/portal/drills" tekst="Øvelsesbank" /></span>}
+      />
+      <SkraFlyt lav>
       {melding && <p className="phn-ov-status" role="status">{melding}</p>}
       <div className="phn-ov-ovgrid">
         <div className="phn-seksjon" style={{ gap: 24 }}>
-          {/* eslint-disable-next-line @next/next/no-img-element -- statisk bilde fra public eller øvelsens eget bilde */}
-          <img className="phn-ov-helt" src={o.bilde.src} alt="" width={1400} height={933} style={{ objectPosition: o.bilde.posisjon }} />
           <div className="phn-hoved"><strong>{stort}</strong>{stortTekst && <span className="phn-forklar">{stortTekst}</span>}</div>
           <div className="phn-knapper">
             {playerId && <button type="button" className="phn-knapp pri" onClick={() => setArk(true)}>Legg i plan</button>}
@@ -80,6 +86,7 @@ export function PH13DrillDetalj({ ovelse: o, playerId, uke, startMedArk }: PH13D
           </dl>
         </section>
       </div>
+      </SkraFlyt>
       {ark && playerId && <LeggIPlanArk o={o} playerId={playerId} uke={uke} onLukk={() => setArk(false)} onLagt={(t) => { setArk(false); setMelding(t); }} />}
     </div>
   );
