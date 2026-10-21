@@ -27,17 +27,17 @@ scripts/bygg_teamnorwayref.sh, maler i scripts/maler/teamnorwayref/) bak ETT fel
 En statisk side med felles passord kan ikke gi hver trener egen profil, og kan ikke vise en spillers IUP,
 tester eller trening bare til trenere spilleren har delt med. De fleste spillerne er mindreårige.
 
-Arkitekturen Anders har valgt (fyll inn før start, se beslutninger.md):
-  A (anbefalt): Den nye trenerflaten bygges i AK Golf HQ under /team-norway med HQ-innloggingen
+Arkitekturen er avgjort av Anders 21.10: alternativ A (beslutninger.md §TEAM NORWAY-TRENERFLATEN BYGGES I
+HQ). Til sammenligning:
+  A (valgt): Den nye trenerflaten bygges i AK Golf HQ under /team-norway med HQ-innloggingen
      (/teamnorway), med teamnorwayrefs menystruktur, innhold og utseende. De samlede, offentlige delene
      (WAGR-leaderboard, Sammenlign, Søk «Alle norske», HCP Norge, Norsk golf, samlede testtall uten navn)
      blir en del av samme flate. teamnorwayref.vercel.app sender videre til den nye flaten når Anders
      sier at den kan erstattes.
-  B: teamnorwayref blir en egen app med innlogging mot HQ-basen. Mer arbeid, to steder å sikre.
+  B (valgt bort): teamnorwayref blir en egen app med innlogging mot HQ-basen.
 
-Valget overstyrer §REFERANSESPILLERE NORDEN BOR PÅ TEAMNORWAYREF (21.10) i .claude/rules/beslutninger.md
-(«HQ får ingen egen referanseflate»). Står valget ikke registrert der når du starter: stopp, still Anders
-dette ene spørsmålet, og registrer svaret med /beslutning før etappe 2.
+Valget overstyrer «HQ får ingen egen referanseflate» i §REFERANSESPILLERE NORDEN BOR PÅ TEAMNORWAYREF.
+Arbeidslisten står i beslutningsblokken; følg den.
 </forutsetning>
 
 <les_forst>
@@ -65,7 +65,7 @@ Påstå ingenting om en fil du ikke har åpnet.
 </les_forst>
 
 <etappe nr="0" navn="Avklaring">
-Sjekk at arkitekturvalget står i beslutninger.md (se forutsetning). Sjekk origin/main og åpne PR-er for
+Les beslutningsblokken §TEAM NORWAY-TRENERFLATEN BYGGES I HQ. Sjekk origin/main og åpne PR-er for
 TN-filer før du starter; ta ikke filer en annen økt jobber i.
 </etappe>
 

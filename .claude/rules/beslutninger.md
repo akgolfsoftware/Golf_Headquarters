@@ -4,12 +4,36 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## TEAM NORWAY-TRENERFLATEN BYGGES I HQ ETTER TEAMNORWAYREF, MED EGEN TRENERPROFIL OG KOMPLETT SPILLERPROFIL (Anders 21.10.2026, bindende)
+
+Anders 21.10: den nye Team Norway-siden (teamnorwayref) «skal nå erstatte internsidene for Team Norway-trenere. Hver trener skal ha sin egen profil», og trykk på spillerens navn skal åpne «den komplette spillerprofilen med komplett IUP, turneringsplanlegger, ranking, spillerens progresjon i turneringer, trening, tester». Han valgte alternativ A: flaten bygges i HQ, fordi teamnorwayref er en statisk side med ett felles passord og ikke kan gi egen trenerinnlogging eller vise delte spillerdata bare til trenerne spilleren har delt med.
+
+- **Den nye trenerflaten er `/team-norway` i HQ**, med teamnorwayrefs struktur, innhold og utseende, bak HQ-innloggingen (`/teamnorway`). Den erstatter dagens interne TN-sider; gamle adresser sender videre.
+- **Hver trener har egen profil.** Spillere → trykk på navnet → spillerprofilen («IUP», §SPILLERPROFILEN HETER IUP) med Oversikt, Turneringsplan, Ranking, Turneringer (progresjon), Trening, Tester, Teknisk plan og Fireukerssjekk.
+- **De samlede delene fra teamnorwayref blir del av flaten:** WAGR-leaderboard og graf, Sammenlign, Søk, HCP Norge, Norsk golf og samlede testtall uten navn. Kilde og dato ved tallene. Navn fra WAGR vises for alle aldre bak trenerinnloggingen, fordi WAGR er offentlig.
+- **Innsyn i enkeltspillere krever delingssamtykke** på nivået spilleren har gitt; treneren foreslår, spilleren bestemmer (uendret fra §KODEGJENNOMGANGEN 06.10). Data Golf bare ADMIN.
+- **teamnorwayref.vercel.app** står som i dag og sender videre til HQ først når Anders sier fra.
+- **PlayerHQ lenker til flaten** fra delingen med Team Norway, bare for spillere i en Team Norway-gruppe.
+
+**Overstyrer:** «HQ får ingen egen referanseflate» og «teamnorwayref eier leaderboard, graf og samlede tall» i §REFERANSESPILLERE NORDEN BOR PÅ TEAMNORWAYREF (21.10, samme dag).
+
+**Arbeidet dette utløser** (prompt: `docs/planer/prompt-tn-trenerflate-2026-10-21.md`, steg 15 i `docs/planer/team-norway-komplett-redesign-skra-2026-10-21.md`):
+
+1. **Funksjonsregister:** én rad per side under `src/app/team-norway` (39) og per teamnorwayref-del, med ny plass og utfall. Ferdig når ingen rad mangler utfall.
+2. **Struktur og wireframes** i 390 og 1280 px: meny (høyst seks hovedpunkter), trenerhjem, trenerprofil, spillerliste, spillerprofil med alle faner, Referanse-delen, spiller uten deling. I `docs/design-system/utkast-tn/trenerflate/`. Ferdig når Anders har sagt ja (port 7).
+3. **Bygging i pakker:** skall og meny (`tn-shell.tsx`) · trenerprofil · spillerliste · spillerprofil, én PR per fane · Referanse-delen · videresendinger. Gjenbruk turneringsplanlegger, tester, teknisk plan og fireukerssjekk. Ferdig når ingen gammel `/team-norway`-adresse gir 404, og alle nye skjermer er målt i 390, 1280 og 1920 px uten sidelengs rulling.
+4. **(haster, personvern) Tilgangstest:** en trener uten delingssamtykke ser ikke spillerens IUP, tester eller trening (`hentTnSpillerTilgang`, `src/lib/domain/tn-arbeidsflate.ts`). Ferdig når testen låser det før spillerprofilen legges inn.
+5. **Referanse-delen leser pipelines' tabeller:** kolonnene kartlegges mot basen før første spørring; teamnorwayrefs kilder er `pipelines/turneringsplan/` i `ak-golf-pipelines`. Ferdig når tallene er de samme som på teamnorwayref, med kilde og dato.
+6. **PlayerHQ-lenken** på `/portal/meg/innstillinger/personvern/deling` (PH27Deling) og `/portal/meg/deling`. Ferdig når en test låser at bare Team Norway-spillere ser den.
+7. **Menypunktet «Referansespillere»** (`TN_REFERANSESPILLERE_URL`, `src/components/team-norway/tn-referansespillere.ts`) peker til den nye Referanse-delen når den finnes.
+8. **Uavklart:** hvor PlayerHQ-lenken skal gå, siden spilleren ikke kan åpne trenerdelen. Anbefaling: «Se hva Team Norway ser» (`/portal/meg/deling/innsyn`) og den åpne rankingdelen.
+9. **Uavklart:** når teamnorwayref.vercel.app skal sende videre til HQ. Anders sier fra.
+
 ## REFERANSESPILLERE NORDEN BOR PÅ TEAMNORWAYREF, OG TEAM NORWAY I HQ LENKER DIT (Anders 21.10.2026, bindende)
 
 Anders 21.10, etter skissen https://teamnorwayref.vercel.app («Referansespillere Norden», bak felles passord): «teamnorwayref eier de offentlige og samlede tallene, og HQ-flaten blir en lenke dit.» Erstatter samme dags første svar («All data under denne siden som vi bygger nå integreres også inn i Team Norway sidene»), som ga en egen flate i HQ.
 
-- **teamnorwayref.vercel.app eier leaderboard, graf og samlede tall:** «Norske herrer på WAGR», WAGR-plass år for år, Sammenlign, Søk og de øvrige sidene i skissen. Siden bygges i `ak-golf-pipelines` (`scripts/referansespillere_html.py`), plan i `docs/plan-teamnorwayref-komplett.md` der.
-- **HQ får ingen egen referanseflate.** Team Norway i HQ får bare menypunktet «Referansespillere» under Spillere i `tnHovedmeny`, som åpner teamnorwayref.vercel.app. Ingen rute `/team-norway/referansespillere`, ingen WAGR-tabeller lest av HQ for dette.
+- ~~**teamnorwayref.vercel.app eier leaderboard, graf og samlede tall**~~ og ~~**HQ får ingen egen referanseflate**~~ Overstyrt 21.10: trenerflaten med de samlede delene bygges i HQ (§TEAM NORWAY-TRENERFLATEN BYGGES I HQ). Til den er ferdig lenker menypunktet «Referansespillere» til teamnorwayref.vercel.app, som bygges i `ak-golf-pipelines` (`scripts/referansespillere_html.py`).
 - **Personopplysninger blir i HQ.** Testresultater og annet om enkeltspillere vises bare i HQ, bak innlogging; teamnorwayref lenker til HQ for slikt (f.eks. IUP og turneringsplan per spiller).
 - **Pipelines oppdaterer WAGR-plassene** (mandagsjobben), og teamnorwayref leser dem. Kilde og dato står ved tallene: «World Amateur Golf Ranking (WAGR), The R&A».
 - **Navn på alle spillere, også født 2008 eller senere,** gjelder på teamnorwayref fordi WAGR er offentlig. HQ viser ingen ny liste, så barnevernsregelen i §Data står uendret i HQ.

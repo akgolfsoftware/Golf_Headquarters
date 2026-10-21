@@ -73,7 +73,7 @@ Rekkefølge: 1–2 først (alt annet hviler på dem), så 3, deretter 4–8 i de
 **Avgjort av Anders 21.10** (beslutninger.md §REFERANSESPILLERE NORDEN BOR PÅ TEAMNORWAYREF): «teamnorwayref eier de offentlige og samlede tallene, og HQ-flaten blir en lenke dit.»
 
 - **teamnorwayref.vercel.app** eier leaderboard «Norske herrer på WAGR», graf over WAGR-plass år for år og alle samlede tall. Siden bygges i `ak-golf-pipelines` (`scripts/referansespillere_html.py`) bak felles passord, etter `docs/plan-teamnorwayref-komplett.md` der.
-- **HQ** får bare menypunktet «Referansespillere» under Spillere, som lenker dit. Ingen rute `/team-norway/referansespillere`.
+- ~~**HQ** får bare menypunktet «Referansespillere» under Spillere, som lenker dit.~~ Overstyrt 21.10: trenerflaten med de samlede delene bygges i HQ (§7).
 - **Personopplysninger** (testresultater og annet om enkeltspillere) blir i HQ bak innlogging; teamnorwayref lenker til HQ for slikt.
 - **Datahullene** fra kartleggingen 21.10 (gammelt snapshot fra 19.07, 31 av 35 herrer, tom `dashboard.wagr_events.rank_after`, bare norske spillere i basen) løses i pipelines og blokkerer ikke HQ-steget lenger.
 - **Ikke avgjort:** om Data Golf skal vises på teamnorwayref. Ligger hos Anders.
@@ -93,11 +93,11 @@ Norway-trenere, og skal lenkes fra PlayerHQ der Team Norway-spillere registrerer
 - **Lenke fra PlayerHQ:** fra delingen med Team Norway (`/portal/meg/innstillinger/personvern/deling` og
   `/portal/meg/deling`), bare for spillere i en Team Norway-gruppe.
 
-**Krever en beslutning før bygging.** teamnorwayref er en statisk side bak ett felles passord. Den kan ikke gi
-hver trener egen profil, og kan ikke vise en spillers IUP, tester eller trening bare til trenerne spilleren
-har delt med. Anbefaling: den nye trenerflaten bygges i HQ under `/team-norway` med teamnorwayrefs struktur,
-innhold og utseende, og teamnorwayref.vercel.app sender videre dit når Anders sier det. Valget overstyrer
-«HQ får ingen egen referanseflate» i §6 og i beslutninger.md §REFERANSESPILLERE NORDEN.
+**Avgjort av Anders 21.10: alternativ A** (beslutninger.md §TEAM NORWAY-TRENERFLATEN BYGGES I HQ).
+teamnorwayref er en statisk side bak ett felles passord og kan ikke gi hver trener egen profil eller vise
+delte spillerdata bare til trenerne spilleren har delt med. Den nye trenerflaten bygges derfor i HQ under
+`/team-norway` med teamnorwayrefs struktur, innhold og utseende, og teamnorwayref.vercel.app sender videre
+dit når Anders sier det. Dette overstyrer «HQ får ingen egen referanseflate» i §6.
 
 Prompten for jobben: [prompt-tn-trenerflate-2026-10-21.md](prompt-tn-trenerflate-2026-10-21.md). Etappene er
 funksjonsregister, struktur og wireframes (stopp for Anders' ja), bygging i pakker og PlayerHQ-lenken.
