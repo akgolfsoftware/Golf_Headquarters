@@ -26,6 +26,9 @@ import { formaterFortegn } from "@/lib/format-tall";
 import { Tilbake, tilParTekst } from "./PHRunderFelles";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-runder.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
 
 type Valg = "18" | "ut" | "inn";
 type Fort = Omit<RaskHull, "nr" | "lengde">;
@@ -140,12 +143,16 @@ export function PH09RegistrerRunde({ data, tilbakeHref = "/portal/mal/runder/ny"
   }
 
   return (
-    <div className={rot}>
-      <Tilbake href={tilbakeHref} tekst="Velg nivå" />
-      <div className="phr-topp phr-smal">
-        <div className="phn-dato">Rask score{bane ? ` · ${bane.navn}` : ""}</div>
-        <h1 className="phn-tittel">Før scoren</h1>
-      </div>
+    <div className={`${rot} phn-skra`}>
+    <SkraTopp
+      lav
+      etikett="Før scoren"
+      bilde="/images/playerhq/spill-bane.jpg" bildePosisjon="50% 50%"
+      overlinje={`Rask score${bane ? ` · ${bane.navn}` : ""}`}
+      tittel="Før scoren"
+      handling={<span className="skra-tilbake"><Tilbake href={tilbakeHref} tekst="Velg nivå" /></span>}
+    />
+    <SkraFlyt lav>
 
       <div className="phr-grid phr-smal">
         <section className="phr-fylt" aria-label="Brutto score">
@@ -283,6 +290,7 @@ export function PH09RegistrerRunde({ data, tilbakeHref = "/portal/mal/runder/ny"
         <div className="phn-meldinger" aria-live="polite">{feil && <p className="phr-melding" role="alert">{feil}</p>}</div>
         <div className="phr-festet"><button type="button" className="phn-knapp pri phr-knapp-stor" disabled={lagrer} onClick={lagre}>{lagrer ? "Lagrer …" : "Lagre runden"}</button></div>
       </div>
+    </SkraFlyt>
     </div>
   );
 }

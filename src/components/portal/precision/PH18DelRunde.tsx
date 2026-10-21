@@ -24,6 +24,9 @@ import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-stats.css";
 import "@/styles/playerhq-ny-statsdybde.css";
 import "@/styles/playerhq-ny-statsresten.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
 
 const BILDE = "/images/playerhq/spill-bane.jpg";
 const LOGO = "/logos/logo-ak-golf-hq-negative.svg";
@@ -167,11 +170,16 @@ export function PH18DelRunde({ d, spiller }: { d: DelRundeData; spiller: string 
   }
 
   return (
-    <div className="phn">
-      <TmTilbake href={`/portal/mal/runder/${d.id}`} tekst="Runden" />
-      <div className="phn-topp">
-        <div><div className="phn-dato">Runde · {d.bane} · {d.dato}</div><h1 className="phn-tittel">Del runden</h1></div>
-      </div>
+    <div className="phn phn-skra">
+    <SkraTopp
+      lav
+      etikett="Del runden"
+      bilde="/images/playerhq/spill-bane.jpg" bildePosisjon="50% 50%"
+      overlinje={`Runde · ${d.bane} · ${d.dato}`}
+      tittel="Del runden"
+      handling={<span className="skra-tilbake"><TmTilbake href={`/portal/mal/runder/${d.id}`} tekst="Runden" /></span>}
+    />
+    <SkraFlyt lav>
       <div className="phn-to-kol">
         <div className="phn-kol">
           <div className={`phn-dk ${format}`} ref={kort} aria-label="Forhåndsvisning av bildet">
@@ -217,6 +225,7 @@ export function PH18DelRunde({ d, spiller }: { d: DelRundeData; spiller: string 
           </div>
         </div>
       </div>
+    </SkraFlyt>
     </div>
   );
 }
