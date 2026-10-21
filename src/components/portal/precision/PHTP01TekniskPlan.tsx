@@ -35,6 +35,10 @@ import {
 } from "@/lib/domain/ak-formel-v2";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-ovelser.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke9-skra.css";
 
 export type PHTP01Props = {
   /** null = spilleren har ingen teknisk plan. */
@@ -52,11 +56,14 @@ const stegKode = (navn: string | null): MotorikkKode | null => MOTORIKK_KODER.fi
 
 function Hode({ plan }: { plan: TpPlan | null }) {
   return (
-    <div className="phn-ov-topp">
-      <span className="phn-dato">Plan · teknisk plan</span>
-      <h1 className="phn-tittel">Teknisk plan</h1>
-      <p className="phn-ov-ingress">{plan ? `${plan.navn}. Fra ${plan.coach ?? "coachen din"}.` : "Coachen din lager planen sammen med deg."}</p>
-    </div>
+    <SkraTopp
+      lav
+      etikett="Teknisk plan"
+      bilde="/images/playerhq/tek-video.jpg" bildePosisjon="50% 50%"
+      overlinje="Plan · teknisk plan"
+      tittel="Teknisk plan"
+      ingress={plan ? `${plan.navn}. Fra ${plan.coach ?? "coachen din"}.` : "Coachen din lager planen sammen med deg."}
+    />
   );
 }
 
@@ -64,13 +71,15 @@ export function PHTP01TekniskPlan({ plan, uleste, okt, startMedArk }: PHTP01Prop
   return (
     <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
       {!plan
-        ? <div className="phn">
+        ? <div className="phn phn-skra">
             <Hode plan={null} />
-            <section className="phn-kort" style={{ background: "var(--phn-sand-100)" }}>
-              <b className="phn-ov-under">Ingen teknisk plan ennå</b>
-              <p className="phn-forklar">Coachen din lager planen sammen med deg. Spør når dere skal starte.</p>
-              <div className="phn-knapper"><Link className="phn-knapp pri" href={MELDING_HREF}>Skriv til coachen</Link></div>
-            </section>
+            <SkraFlyt lav>
+              <section className="phn-kort" style={{ background: "var(--phn-sand-100)" }}>
+                <b className="phn-ov-under">Ingen teknisk plan ennå</b>
+                <p className="phn-forklar">Coachen din lager planen sammen med deg. Spør når dere skal starte.</p>
+                <div className="phn-knapper"><Link className="phn-knapp pri" href={MELDING_HREF}>Skriv til coachen</Link></div>
+              </section>
+            </SkraFlyt>
           </div>
         : plan.status === "Utkast"
           ? <Utkast plan={plan} />
@@ -83,9 +92,10 @@ function Utkast({ plan }: { plan: TpPlan }) {
   const coach = plan.coach ?? "coachen";
   const p = [...new Set(plan.oppgaver.map((o) => o.hovedP))];
   return (
-    <div className="phn">
+    <div className="phn phn-skra">
+      <Hode plan={plan} />
+      <SkraFlyt lav>
       <div className="phn-ov-smal phn-seksjon" style={{ gap: 32 }}>
-        <Hode plan={plan} />
         <div className="phn-ov-utkast">
           <Pencil className="phn-ikon" aria-hidden />
           <span><b className="phn-ov-under">Utkast fra {coach}</b><span className="phn-forklar" style={{ display: "block" }}>{coach} jobber med planen. Du kan lese den nå. Du kan starte økter og registrere når planen er publisert.</span></span>
@@ -103,6 +113,7 @@ function Utkast({ plan }: { plan: TpPlan }) {
         </section>
         <div className="phn-knapper"><Link className="phn-knapp sek" href={MELDING_HREF}>Skriv til {coach}</Link></div>
       </div>
+      </SkraFlyt>
     </div>
   );
 }
@@ -122,8 +133,9 @@ function Aktiv({ plan, okt, startMedArk }: { plan: TpPlan; okt: PHTP01Props["okt
   const siste = hoved?.protokoll?.siste ?? null;
 
   return (
-    <div className="phn">
+    <div className="phn phn-skra">
       <Hode plan={plan} />
+      <SkraFlyt lav>
       {kvittering && <p className="phn-ov-status" role="status"><Check className="phn-ikon" aria-hidden /><span>{kvittering}</span></p>}
       <div className="phn-ov-tphelt">
         {/* eslint-disable-next-line @next/next/no-img-element -- statisk bilde fra public, ingen tekst oppå */}
@@ -192,6 +204,7 @@ function Aktiv({ plan, okt, startMedArk }: { plan: TpPlan; okt: PHTP01Props["okt
         </div>
       </div>
       {ark && <RegistrerArk plan={plan} start={hoved} onLukk={() => setArk(false)} onLagret={(t) => { setArk(false); setKvittering(t); }} />}
+      </SkraFlyt>
     </div>
   );
 }

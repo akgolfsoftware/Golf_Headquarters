@@ -1,0 +1,14 @@
+/* Pakke 9 (siste PlayerHQ-skjermer): første rad under det skrå kuttet, full bredde på desktop. */
+.phn-skra .side, .phn-skra .phn-sg-side { padding-top: 28px; }
+@container (min-width: 900px) {
+  .phn-skra .side, .phn-skra .phn-sg-side { padding-top: 44px; margin-right: 52px; }
+}
+.phn-skra .phn-ov-smal { padding-top: 28px; }
+.phn-skra .phn-ov-tphelt { margin-top: 0; }
+@container (min-width: 900px) {
+  .phn-skra .phn-ov-smal { padding-top: 44px; max-width: 760px; }
+}
+.phn-skra .phn-k-chips { padding-top: 28px; }
+@container (min-width: 900px) {
+  .phn-skra .phn-k-chips { padding-top: 44px; }
+}

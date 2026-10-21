@@ -15,6 +15,10 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { formaterTall } from "@/lib/format-tall";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-sghub.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke9-skra.css";
 
 export type PHSpillerProfilData = {
   id: string;
@@ -57,21 +61,17 @@ export function PHSpillerProfil({ data, tilbake }: { data: PHSpillerProfilData; 
     ["Medlem siden", dato(data.memberSince)],
   ];
 
-  return <div className="phn phn-sg"><div className="phn-sg-side">
-    <div className="phn-topp">
-      <Link className="phn-sg-tilbake" href={tilbake.href}><ChevronLeft size={18} aria-hidden />{tilbake.tekst}</Link>
-      <div className="phn-topp-rad">
-        <div>
-          <div className="phn-dato">Spiller{data.homeClub ? ` · ${data.homeClub}` : ""}</div>
-          <h1 className="phn-tittel">{data.navn}</h1>
-          <p className="phn-kilde">{data.hcp !== null ? `HCP ${formaterTall(data.hcp, 1, true)}` : "HCP —"}{data.aktivPlan ? ` · ${data.aktivPlan.name}` : ""}</p>
-        </div>
-        <div className="phn-knapper">
-          <Link className="phn-knapp pri" href={`/portal/coach?spillerId=${data.id}`}>Send melding</Link>
-          <Link className="phn-knapp sek" href={`/portal/booking?spillerId=${data.id}`}>Book økt</Link>
-        </div>
-      </div>
-    </div>
+  return <div className="phn phn-sg phn-skra">
+    <SkraTopp
+      lav
+      etikett="Spiller"
+      bilde="/images/playerhq/stats-topp.jpg" bildePosisjon="50% 50%"
+      overlinje={<>Spiller{data.homeClub ? ` · ${data.homeClub}` : ""}</>}
+      tittel={<>{data.navn}</>}
+      ingress={<>{data.hcp !== null ? `HCP ${formaterTall(data.hcp, 1, true)}` : "HCP —"}{data.aktivPlan ? ` · ${data.aktivPlan.name}` : ""}</>}
+      handling={<span className="skra-topp-rad"><span className="skra-tilbake"><Link className="phn-sg-tilbake" href={tilbake.href}><ChevronLeft size={18} aria-hidden />{tilbake.tekst}</Link></span><Link className="phn-knapp pri skra-topp-knapp" href={`/portal/coach?spillerId=${data.id}`}>Send melding</Link><Link className="phn-knapp sek skra-topp-knapp" href={`/portal/booking?spillerId=${data.id}`}>Book økt</Link></span>}
+    />
+    <SkraFlyt lav><div className="phn-sg-side">
 
     <div className="phn-sg-tall">
       <div className="phn-kort"><span className="phn-dato">Runder</span><strong className="phn-sg-verdi">{data.stats.antallRunder || "—"}</strong></div>
@@ -123,5 +123,5 @@ export function PHSpillerProfil({ data, tilbake }: { data: PHSpillerProfilData; 
         <ul className="phn-sg-metrikk">{profil.map(([k, v]) => <li key={k}><span><b>{k}</b></span><span className="v" style={{ fontFamily: "var(--phn-sans)" }}>{v}</span></li>)}</ul>
       </section>
     </div>
-  </div></div>;
+  </div></SkraFlyt></div>;
 }
