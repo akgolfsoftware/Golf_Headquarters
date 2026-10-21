@@ -23,6 +23,9 @@ import {
   avbrytTestSession,
 } from "@/app/portal/(fullscreen)/tren/tester/[testId]/gjennomfor/actions";
 import { usePaToast } from "@/components/precision/pa-toast";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
 
 interface PH15TestGjennomforProps {
   testId: string;
@@ -191,6 +194,7 @@ export function PH15TestGjennomfor({
 
   return (
     <div
+      className="phn phn-skra"
       data-theme="light"
       style={{
         minHeight: "100dvh",
@@ -200,58 +204,24 @@ export function PH15TestGjennomfor({
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
-        padding: "calc(12px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom))",
+        padding: "0 0 calc(24px + env(safe-area-inset-bottom))",
         boxSizing: "border-box",
       }}
     >
-      <div style={{ maxWidth: 640, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
+      <div>
+      <SkraTopp
+        lav
+        etikett="Test"
+        bilde="/images/playerhq/stats-topp.jpg" bildePosisjon="50% 50%"
+        overlinje={`Test · ${testNavn} · ${N} slag`}
+        tittel={testNavn}
+        ingress={`${omraade} · ${N} slag mot flagg · innenfor ${LIM} m teller${sist ? ` · forrige ${sist.score} av ${N}` : ""}`}
+        handling={<span className="skra-topp-rad"><button type="button" className="phn-knapp sek skra-topp-knapp" onClick={() => setEndOpen(true)}>Avslutt</button></span>}
+      />
+      <SkraFlyt lav>
+      <div style={{ maxWidth: "none", width: "100%", margin: 0, padding: "44px 16px 0", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: 16 }}>
         {/* Toast */}
         {paToast.el}
-
-        {/* Topplinje */}
-        <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-          <span
-            style={{
-              font: "600 11px/1 var(--font-mono)",
-              letterSpacing: "0.06em",
-              textTransform: "uppercase",
-              padding: "6px 10px",
-              borderRadius: 4,
-              background: "var(--surface-card)",
-              color: "var(--signal)",
-              border: "1px solid var(--border-hairline)",
-            }}
-          >
-            Test
-          </span>
-          <span
-            style={{
-              font: "500 11px/1.2 var(--font-mono)",
-              color: "var(--text-muted)",
-              letterSpacing: "0.06em",
-              textTransform: "uppercase",
-            }}
-          >
-            {testNavn.toUpperCase()} · {N} SLAG
-          </span>
-          <span style={{ flex: 1 }} />
-          <button
-            type="button"
-            onClick={() => setEndOpen(true)}
-            style={{
-              height: 56,
-              padding: "0 16px",
-              background: "transparent",
-              border: "none",
-              color: "var(--text-secondary)",
-              font: "600 15px/1 var(--font-sans)",
-              cursor: "pointer",
-              borderRadius: 8,
-            }}
-          >
-            Avslutt
-          </button>
-        </div>
 
         {/* Feilmelding */}
         {feil && (
@@ -269,23 +239,6 @@ export function PH15TestGjennomfor({
             {feil}
           </div>
         )}
-
-        {/* Tittel */}
-        <div>
-          <h1 style={{ margin: 0, font: "var(--type-title-l)", color: "var(--text-primary)" }}>{testNavn}</h1>
-          <div
-            style={{
-              font: "500 11px/1.4 var(--font-mono)",
-              color: "var(--text-muted)",
-              letterSpacing: "0.04em",
-              textTransform: "uppercase",
-              marginTop: 6,
-            }}
-          >
-            {omraade.toUpperCase()} · {N} SLAG MOT FLAGG · INNENFOR {LIM} M TELLER
-            {sist ? ` · FORRIGE ${sist.score} AV ${N}` : ""}
-          </div>
-        </div>
 
         {/* Nøkkeltall / KPI-grid */}
         <div
@@ -551,8 +504,11 @@ export function PH15TestGjennomfor({
         )}
       </div>
 
+      </SkraFlyt>
+      </div>
+
       {/* Bunn-aksjon (fast i bunn) */}
-      <div style={{ maxWidth: 640, width: "100%", margin: "24px auto 0" }}>
+      <div style={{ maxWidth: "none", width: "100%", margin: "24px 0 0", padding: "0 16px", boxSizing: "border-box" }}>
         {!done ? (
           <button
             type="button"

@@ -36,6 +36,10 @@ import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-stats.css";
 import "@/styles/playerhq-ny-statsdybde.css";
 import "@/styles/playerhq-ny-tester.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke11-skra.css";
 
 export type PH15TnType = "gate" | "ball8" | "generell";
 
@@ -122,13 +126,16 @@ export function PH15TnTest(props: Props) {
   const foto = Math.min(n, p.rows.length - 1);
 
   return (
-    <div className="phn">
-      <TmTilbake href="/portal/tren/tester" tekst="Tester" />
-      <div className="phn-topp">
-        <div className="phn-dato">{props.kontekst ?? `Stats · Tester · ${akse.o}`}</div>
-        <h1 className="phn-tittel">{p.name}</h1>
-      </div>
-
+    <div className="phn phn-skra">
+      <SkraTopp
+        lav
+        etikett="Test"
+        bilde="/images/playerhq/stats-topp.jpg" bildePosisjon="50% 50%"
+        overlinje={props.kontekst ?? `Stats · Tester · ${akse.o}`}
+        tittel={p.name}
+        handling={<span className="skra-tilbake"><TmTilbake href="/portal/tren/tester" tekst="Tester" /></span>}
+      />
+      <SkraFlyt lav>
       {p.blocked && <p className="phn-sd-varsel" role="note">{p.blocked} Slagene kan lagres som utkast.</p>}
       {draft.error && (
         <div className="phn-sd-varsel" role="alert">
@@ -215,6 +222,7 @@ export function PH15TnTest(props: Props) {
           </div>
         </div>
       </dialog>
+      </SkraFlyt>
     </div>
   );
 }
