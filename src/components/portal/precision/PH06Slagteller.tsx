@@ -13,7 +13,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Undo2, Radar } from "lucide-react";
-import { StatusPille, Meta, Tall } from "@/components/precision/pa";
+import { Meta, Tall } from "@/components/precision/pa";
 import {
   type SlagtellerData,
   erPutter,
@@ -21,6 +21,10 @@ import {
   beregnProsent,
 } from "@/lib/portal-live/ph04-07-data";
 import "@/styles/precision-athletics.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke11-skra.css";
 
 interface PH06SlagtellerProps {
   data: SlagtellerData;
@@ -75,7 +79,7 @@ export function PH06Slagteller({
 
   return (
     <div
-      className="pa-root ph06"
+      className="pa-root ph06 phn phn-skra"
       data-theme="light"
       style={{
         minHeight: "100dvh",
@@ -85,57 +89,24 @@ export function PH06Slagteller({
         flexDirection: "column",
       }}
     >
-      {/* Fokus-topp */}
-      <header
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-          padding: "12px 16px",
-          borderBottom: "1px solid var(--border-hairline)",
-          background: "var(--surface-card)",
-          position: "sticky",
-          top: 0,
-          zIndex: 20,
-        }}
-      >
-        <StatusPille tone="live">Live</StatusPille>
-        <Meta
-          style={{
-            color: "var(--text-primary)",
-            fontWeight: 600,
-            letterSpacing: ".04em",
-          }}
-        >
-          SLAGTELLER · ØVELSE {data.drillIndex + 1} AV {data.totalDrills}
-        </Meta>
-        <span style={{ flex: 1 }} />
-        <button
-          type="button"
-          onClick={() => setEndOpen(true)}
-          style={{
-            height: 56,
-            padding: "0 16px",
-            borderRadius: 8,
-            border: "none",
-            background: "transparent",
-            color: "var(--text-secondary)",
-            font: "600 15px/1 var(--font-sans)",
-            cursor: "pointer",
-          }}
-        >
-          Avslutt
-        </button>
-      </header>
+      <SkraTopp
+        lav
+        etikett="Slagteller"
+        bilde="/images/playerhq/slag-simulator.jpg" bildePosisjon="50% 50%"
+        overlinje={`Live-økt · øvelse ${data.drillIndex + 1} av ${data.totalDrills}`}
+        tittel="Slagteller"
+        handling={<span className="skra-topp-rad"><button type="button" className="phn-knapp sek skra-topp-knapp" onClick={() => setEndOpen(true)}>Avslutt</button></span>}
+      />
+      <SkraFlyt lav>
 
       {/* Hovedinnhold */}
       <main
         style={{
           flex: 1,
           width: "100%",
-          maxWidth: 640,
-          margin: "0 auto",
-          padding: "20px 16px 200px",
+          maxWidth: "none",
+          margin: 0,
+          padding: "44px 16px 200px",
           display: "flex",
           flexDirection: "column",
           gap: 16,
@@ -362,6 +333,7 @@ export function PH06Slagteller({
           )}
         </div>
       </main>
+      </SkraFlyt>
 
       {/* Toast-melding */}
       {toastText && (

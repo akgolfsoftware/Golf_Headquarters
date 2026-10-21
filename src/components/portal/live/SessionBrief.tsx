@@ -19,6 +19,9 @@ import { Ikon } from "@/components/precision/pa";
 import "@/styles/precision-athletics.css";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-okt.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
 
 export type BriefDrill = {
   id: string;
@@ -52,14 +55,17 @@ export function SessionBrief({ title, durationMin, scheduledAtISO, location, con
   const tid = gyldig ? `${kl(start)}${durationMin > 0 ? `–${kl(slutt)}` : ""}` : "—";
   const t = Math.floor(Math.max(0, durationMin) / 60), m = Math.max(0, durationMin) % 60;
 
-  return <div className="pa-root phn phn-okt" data-theme="light" data-od-id={odId} style={{ minHeight: "100dvh" }}>
-    <div className="smal">
-      <Link href="/portal/planlegge" className="phn-knapp sek" style={{ justifySelf: "start" }} aria-label="Lukk briefen og gå til Plan"><Ikon icon={ChevronLeft} size={20} name="chevron-left" />Plan</Link>
-      <div className="hode-okt">
-        <span className="phn-dato">Live · Før start · {tid} · {location || "—"}</span>
-        <h1>{title}</h1>
-        <span className="sub">{context}</span>
-      </div>
+  return <div className="pa-root phn phn-okt phn-skra" data-theme="light" data-od-id={odId} style={{ minHeight: "100dvh" }}>
+    <SkraTopp
+      lav
+      etikett="Live-økt"
+      bilde="/images/playerhq/slag-simulator.jpg" bildePosisjon="50% 50%"
+      overlinje={<>Live · Før start · {tid} · {location || "—"}</>}
+      tittel={title}
+      ingress={context}
+      handling={<span className="skra-topp-rad"><Link href="/portal/planlegge" className="phn-knapp sek skra-topp-knapp" aria-label="Lukk briefen og gå til Plan"><Ikon icon={ChevronLeft} size={20} name="chevron-left" />Plan</Link></span>}
+    />
+    <SkraFlyt lav><div className="smal">
 
       <section className="phn-kort" aria-label="Lengde">
         <span className="phn-dato">Økten varer</span>
@@ -93,5 +99,5 @@ export function SessionBrief({ title, durationMin, scheduledAtISO, location, con
         {action}
       </div>
     </div>
-  </div>;
+  </SkraFlyt></div>;
 }
