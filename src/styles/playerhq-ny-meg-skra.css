@@ -1,0 +1,13 @@
+/*
+ * Meg i Skrå-drakten (alternativ B): lav topp med avatar og navn, tallene i én stripe og én rolig liste i smal, sentrert kolonne.
+ * Toppen og kortene deler byggeklosser med I dag (playerhq-ny-idag.css §Skrå).
+ */
+.phn-meg-skra .meg-navn { display: inline-flex; align-items: center; gap: 12px; }
+.phn-meg-skra .meg-navn .avatar.stor { width: 48px; height: 48px; font-size: 17px; background: rgba(255, 255, 255, .2); border: 1px solid rgba(255, 255, 255, .4); color: #fff; }
+.phn-meg-skra .meg-flyt { display: grid; gap: 16px; max-width: 640px; margin-inline: auto; }
+.phn-meg-skra .meg-stripe { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 0; }
+.phn-meg-skra .meg-stripe > div { display: grid; gap: 4px; align-content: start; padding: 12px 10px; border-radius: 14px; background: var(--ak-hvit, #fff); box-shadow: var(--ak-skygge-1, 0 1px 3px rgba(20, 20, 19, .12)); }
+.phn-meg-skra .meg-stripe dd { order: 1; margin: 0; font: 600 20px/1 var(--phn-mono); overflow-wrap: anywhere; }
+.phn-meg-skra .meg-stripe dt { order: 2; font: 500 11px/1.3 var(--phn-sans); color: var(--phn-g600); }
+.phn-meg-skra .liste a { min-height: 48px; }
+@media (max-width: 420px) { .phn-meg-skra .meg-stripe dd { font-size: 17px; } }
