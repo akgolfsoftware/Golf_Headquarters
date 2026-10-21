@@ -65,15 +65,16 @@ export function TnGruppeposterVisning({ brukerNavn, rolleEtikett, groupId, harTr
         hoyre={erTrener ? <TnHeltTellere tall={[{ verdi: innlegg.length, tekst: "innlegg" }, { verdi: alleLest, tekst: "lest av alle" }, { verdi: paaminnelser, tekst: paaminnelser === 1 ? "påminnelse sendt" : "påminnelser sendt" }]} /> : undefined}
       />
       <TnSkraKort>
-        <div style={{ maxWidth: 860, width: "100%", display: "flex", flexDirection: "column", gap: 14, minWidth: 0 }}>
-          {erTrener ? <TnInnleggSkjema send={send} forfatterNavn={brukerNavn} mottakere={mottakere} /> : null}
+        {/* Full bredde på desktop (beslutning 21.10): skjemaet over hele raden, innleggene i kolonner under. */}
+        <div style={{ width: "100%", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 420px), 1fr))", gap: 14, alignItems: "start", minWidth: 0 }}>
+          {erTrener ? <div style={{ gridColumn: "1 / -1", minWidth: 0 }}><TnInnleggSkjema send={send} forfatterNavn={brukerNavn} mottakere={mottakere} /></div> : null}
 
           {innlegg.map((p) => (
             <TnInnleggKort key={p.id} innlegg={p} visHvem={erTrener} kvitter={!erTrener} />
           ))}
 
           {innlegg.length === 0 ? (
-            <TnFlate style={{ background: TN.ink50 }}>
+            <TnFlate style={{ gridColumn: "1 / -1", background: TN.ink50 }}>
               <div style={{ fontSize: 15, fontWeight: 700, color: TN.ink900 }}>Ingen innlegg ennå</div>
               <p style={{ fontSize: 14.5, lineHeight: 1.55, color: TN.ink700, margin: "8px 0 0", maxWidth: "60ch" }}>
                 {erTrener ? "Skriv det første innlegget til gruppen i feltet over. Du ser hvem som har lest det her." : "Trenerteamet har ikke skrevet noe til gruppen ennå."}
@@ -81,7 +82,7 @@ export function TnGruppeposterVisning({ brukerNavn, rolleEtikett, groupId, harTr
             </TnFlate>
           ) : null}
 
-          {under18 > 0 ? <TnFotnote>Mindreårige står med fornavn og forbokstav i lesekvitteringen. Fullt navn finnes bare i spillerprofilen.</TnFotnote> : null}
+          {under18 > 0 ? <div style={{ gridColumn: "1 / -1" }}><TnFotnote>Mindreårige står med fornavn og forbokstav i lesekvitteringen. Fullt navn finnes bare i spillerprofilen.</TnFotnote></div> : null}
         </div>
       </TnSkraKort>
     </TnShell>
