@@ -15,6 +15,10 @@ import { ChevronLeft } from "lucide-react";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-kommunikasjon.css";
 import "@/styles/playerhq-ny-booking-meldinger.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke5-skra.css";
 
 export type PH23AnleggData = {
   navn: string;
@@ -24,17 +28,18 @@ export type PH23AnleggData = {
 
 export function PH23Anlegg({ data }: { data: PH23AnleggData }) {
   const antall = data.fasiliteter.length;
-  return <div className="phn">
-    <div className="phn-bm-topp">
-      <Link href="/portal/booking/ny" className="phn-k-tilbake"><ChevronLeft className="phn-ikon" aria-hidden />Book time</Link>
-      <div><div className="phn-dato">Anlegg</div><h1 className="phn-tittel">{data.navn}</h1></div>
-    </div>
+  return <div className="phn phn-skra">
+    <SkraTopp
+      lav
+      etikett="Anlegg"
+      bilde="/images/playerhq/slag-utslag.jpg" bildePosisjon="50% 50%"
+      overlinje="Anlegg"
+      tittel={data.navn}
+      ingress={data.adresse?.trim() || undefined}
+      handling={<span className="skra-tilbake"><Link href="/portal/booking/ny" className="phn-k-tilbake"><ChevronLeft className="phn-ikon" aria-hidden />Book time</Link></span>}
+    />
+    <SkraFlyt lav>
     <div className="phn-bm-to-kol">
-      <div>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img className="phn-bm-helt" src="/images/playerhq/slag-utslag.jpg" alt="" />
-        <p className="phn-k-ingress">{data.adresse?.trim() || "—"}</p>
-      </div>
       <section className="phn-seksjon">
         <div className="phn-sek-topp"><h2>Fasiliteter</h2><span className="phn-kilde">{antall} registrert</span></div>
         {antall > 0
@@ -51,5 +56,5 @@ export function PH23Anlegg({ data }: { data: PH23AnleggData }) {
         <div className="phn-bm-knapper"><Link href="/portal/booking/ny" className="phn-knapp pri phn-k-stor">{antall > 0 ? "Book på dette anlegget" : "Til Book time"}</Link></div>
       </section>
     </div>
-  </div>;
+  </SkraFlyt></div>;
 }
