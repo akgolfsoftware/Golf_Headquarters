@@ -21,6 +21,10 @@ import { leggTilTurnering } from "@/app/portal/(legacy)/tren/turneringer/actions
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-meg.css";
 import "@/styles/playerhq-ny-plan-hjelpere.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke5-skra.css";
 
 export type PHTurneringRad = {
   id: string; navn: string; dag: string; mnd: string; dato: string; sted: string | null; tour: string | null;
@@ -61,11 +65,16 @@ export function PHTurneringer({ data }: { data: PHTurneringerData }) {
     });
   }
 
-  return <div className="phn phn-meg phn-ph"><div className="side">
-    <div className="topp">
-      <Link className="tilbake" href="/portal/planlegge"><ChevronLeft size={18} aria-hidden />Plan</Link>
-      <div><div className="phn-dato">Plan · turneringer</div><h1 className="phn-tittel">Turneringer</h1></div>
-    </div>
+  return <div className="phn phn-meg phn-ph phn-skra">
+    <SkraTopp
+      lav
+      etikett="Plan"
+      bilde="/images/playerhq/turn-tee.jpg" bildePosisjon="50% 50%"
+      overlinje={<>Plan · turneringer</>}
+      tittel={<>Turneringer</>}
+      handling={<span className="skra-tilbake"><Link className="tilbake" href="/portal/planlegge"><ChevronLeft size={18} aria-hidden />Plan</Link></span>}
+    />
+    <SkraFlyt lav><div className="side">
     <div className="to-del">
       <div>
         <section className="phn-kort" aria-label="Neste turnering">
@@ -102,5 +111,5 @@ export function PHTurneringer({ data }: { data: PHTurneringerData }) {
         </section>
       </div>
     </div>
-  </div></div>;
+  </div></SkraFlyt></div>;
 }

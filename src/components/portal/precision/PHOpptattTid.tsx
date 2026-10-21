@@ -23,6 +23,10 @@ import type { FastAvtale, UkeDag } from "@/lib/portal-plan/opptatt-uke";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-meg.css";
 import "@/styles/playerhq-ny-plan-hjelpere.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke5-skra.css";
 
 export type PHOpptattAvtale = FastAvtale & { startISO: string; sluttISO: string; kind: string };
 export type PHOpptattData = {
@@ -109,12 +113,17 @@ export function PHOpptattTid({ data }: { data: PHOpptattData }) {
   const lukk = () => ark.current?.close();
   const g = data.google;
 
-  return <div className="phn phn-meg phn-ph"><div className="side">
-    <div className="topp">
-      <Link className="tilbake" href="/portal/planlegge"><ChevronLeft size={18} aria-hidden />Plan</Link>
-      <div><div className="phn-dato">Plan · uke {data.ukeNr}</div><h1 className="phn-tittel">Opptatt tid</h1></div>
-      <p className="ingress">Når du ikke kan trene. Coachen ser at tiden er opptatt, aldri hva det er når avtalen er privat.</p>
-    </div>
+  return <div className="phn phn-meg phn-ph phn-skra">
+    <SkraTopp
+      lav
+      etikett="Plan"
+      bilde="/images/playerhq/spill-bane.jpg" bildePosisjon="50% 50%"
+      overlinje={<>Plan · uke {data.ukeNr}</>}
+      tittel={<>Opptatt tid</>}
+      handling={<span className="skra-tilbake"><Link className="tilbake" href="/portal/planlegge"><ChevronLeft size={18} aria-hidden />Plan</Link></span>}
+    />
+    <SkraFlyt lav><div className="side">
+    <p className="ingress">Når du ikke kan trene. Coachen ser at tiden er opptatt, aldri hva det er når avtalen er privat.</p>
     <div className="to-del">
       <section className="phn-seksjon" aria-labelledby="ph-opp-uka">
         <div className="phn-sek-topp">
@@ -165,5 +174,5 @@ export function PHOpptattTid({ data }: { data: PHOpptattData }) {
     <dialog ref={ark} className="phn-ark" aria-labelledby="ph-opp-t">
       <Skjema key={nokkel} avtale={valgt} lukk={lukk} />
     </dialog>
-  </div></div>;
+  </div></SkraFlyt></div>;
 }

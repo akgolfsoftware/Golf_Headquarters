@@ -29,6 +29,10 @@ import { ChevronLeft, ShieldAlert, Users } from "lucide-react";
 import { initialer } from "@/lib/portal/initialer";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-meg.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke5-skra.css";
 
 export type PH27Organisasjon = { gruppeId: string; navn: string; testerOgResultater: boolean; komplettProfil: boolean };
 export type PH27Navngitt = { id: string; epost: string; gruppeNavn: string; status: "AKTIV" | "VENTER"; dato: string };
@@ -86,11 +90,17 @@ export function PH27Deling({ data, settSamtykke, ekstra }: { data: PH27Data; set
     });
   }
 
-  return <div className="phn phn-meg"><div className={`side${data.krevesForesatt ? " smal" : ""}`}>
-    <div className="topp">
-      <Link className="tilbake" href="/portal/meg"><ChevronLeft size={18} aria-hidden />Meg</Link>
-      <div><div className="phn-dato">Meg · deling</div><h1 className="phn-tittel">Deling</h1><p className="phn-forklar">Du bestemmer hvem som ser testene og resten av PlayerHQ.</p></div>
-    </div>
+  return <div className="phn phn-meg phn-skra">
+    <SkraTopp
+      lav
+      etikett="Plan"
+      bilde="/images/playerhq/tek-video.jpg" bildePosisjon="50% 50%"
+      overlinje={<>Meg · deling</>}
+      tittel={<>Deling</>}
+      handling={<span className="skra-tilbake"><Link className="tilbake" href="/portal/meg"><ChevronLeft size={18} aria-hidden />Meg</Link></span>}
+    />
+    <SkraFlyt lav><div className={`side${data.krevesForesatt ? " smal" : ""}`}>
+    <p className="phn-forklar">Du bestemmer hvem som ser testene og resten av PlayerHQ.</p>
 
     {data.venter && <>
       <div className="u16-merke" role="status">
@@ -180,5 +190,5 @@ export function PH27Deling({ data, settSamtykke, ekstra }: { data: PH27Data; set
         </div>
       </div>
     </dialog>
-  </div></div>;
+  </div></SkraFlyt></div>;
 }

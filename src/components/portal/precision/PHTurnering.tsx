@@ -22,6 +22,10 @@ import { claimPaamelding, confirmPaamelding, leggTilTurnering, settPlanTier } fr
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-meg.css";
 import "@/styles/playerhq-ny-plan-hjelpere.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke5-skra.css";
 
 type Tier = "A" | "B" | "C";
 export type PHTurneringData = {
@@ -55,11 +59,16 @@ export function PHTurnering({ data, handlinger }: { data: PHTurneringData; handl
 
   const iPlanen = data.entry != null && data.entry.status !== "ANNEN";
 
-  return <div className="phn phn-meg phn-ph"><div className="side">
-    <div className="topp">
-      <Link className="tilbake" href="/portal/tren/turneringer"><ChevronLeft size={18} aria-hidden />Turneringer</Link>
-      <div><div className="phn-dato">{data.undertittel}</div><h1 className="phn-tittel">{data.navn}</h1></div>
-    </div>
+  return <div className="phn phn-meg phn-ph phn-skra">
+    <SkraTopp
+      lav
+      etikett="Plan"
+      bilde="/images/playerhq/turn-tee.jpg" bildePosisjon="50% 50%"
+      overlinje={<>{data.undertittel}</>}
+      tittel={<>{data.navn}</>}
+      handling={<span className="skra-tilbake"><Link className="tilbake" href="/portal/tren/turneringer"><ChevronLeft size={18} aria-hidden />Turneringer</Link></span>}
+    />
+    <SkraFlyt lav><div className="side">
     <div className="to-del">
       <div>
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -115,5 +124,5 @@ export function PHTurnering({ data, handlinger }: { data: PHTurneringData; handl
         <div className="phn-ark-fot"><button type="button" className="phn-knapp rust stor" disabled={jobber} onClick={() => kjor(() => handlinger.taUt(), () => dialog.current?.close())}>Ta ut av planen</button><button type="button" className="phn-knapp sek stor" onClick={() => dialog.current?.close()}>Behold</button></div>
       </div>
     </dialog>
-  </div></div>;
+  </div></SkraFlyt></div>;
 }
