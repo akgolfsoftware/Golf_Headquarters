@@ -4,6 +4,23 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## DESKTOP-SKJERMER BRUKER FULL BREDDE (Anders 21.10.2026, bindende)
+
+Anders 21.10: «Desktop versjon skal ha full bredde til skjermen.» Gjelder alle skjermer som bygges eller portes i Skrå-drakten, i PlayerHQ, AgencyOS og Team Norway.
+
+- **Innholdet fyller hele vinduet på desktop.** Ingen smal, sentrert kolonne som lar tomrom stå på sidene. Toppbildet går ut til kantene (som i dag), og kortene under bruker hele bredden ved siden av menyen.
+- **Brede flater får flere kolonner,** ikke bredere linjer: kort side om side, liste og detalj ved siden av hverandre.
+- **Unntak:** dialoger og ark (maks 560 px), og løpende tekst (maks ca. 46–60 tegn per linje, så den er lesbar).
+- Mobil er uendret (390 px, én kolonne, aldri sidelengs rulling).
+
+**Overstyrer:** ingenting som er skrevet som regel. Dagens kode har tak på innholdsbredden (se under).
+
+**Arbeidet dette utløser:**
+
+1. **Nye skjermer** bygges uten bredde-tak på desktop. Ferdig når en skjerm målt i 1280 og 1920 px fyller vinduet ved siden av menyen, uten sidelengs rulling.
+2. **Dagens tak fjernes:** `.phn` har `max-width: 1320px` (`src/styles/playerhq-ny.css:30`), `.phn.tn-oversikt` har 1120 px (samme fil, linje 374), og `.agn-s .smal` har 820 px (`src/styles/agencyos-ny.css:305`). Ferdig når alle tre er fjernet eller begrenset til tekst, og de ferdige Skrå-skjermene er målt på nytt i 1280 og 1920 px.
+3. **Uavklart:** hvor bredt løpende tekst og skjemaer skal få være på svært brede skjermer (over 1920 px). Foreslått: skjemafelt og tekst maks ca. 720 px, kortene fyller resten.
+
 ## PLAYERHQ OG AGENCYOS FÅR SKRÅ-DRAKTEN FRA TEAMNORWAYREF, TILPASSET AK GOLF (Anders 20.10.2026, bindende)
 
 Anders 20.10 om PlayerHQ og AgencyOS: «Jeg er fortsatt ikke fornøyd … Det ser veldig kjedelig ut», 3 av 10. Han valgte alternativ A av tre: full Skrå-drakt etter https://teamnorwayref.vercel.app, ikke bare dybde og skrift (B) eller å vente (C).
