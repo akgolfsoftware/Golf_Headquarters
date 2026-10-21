@@ -119,7 +119,7 @@ export function Oversikt({ d }: { d: Extract<WangDataGolfData, { side: "oversikt
 }
 
 export function Katalog({ d }: { d: Extract<WangDataGolfData, { side: "proffer" }> }) {
-  const felt = { minHeight: 44, padding: "0 12px", border: `1px solid ${TN.ink200}`, borderRadius: TN.radius.sm, background: TN.white, font: "inherit", minWidth: 0, width: "100%" } as const;
+  const felt = { minHeight: 44, padding: "0 12px", border: `1px solid ${TN.ink200}`, borderRadius: TN.radius.md, background: TN.white, font: "inherit", minWidth: 0, width: "100%" } as const;
   return (
     <>
       <Hode aktiv="proffer" tittel="Proffer" ingress="Søk og filtrer på tour." />
@@ -138,7 +138,7 @@ export function Katalog({ d }: { d: Extract<WangDataGolfData, { side: "proffer" 
             <option value="1">Norske først</option>
           </select>
         </label>
-        <button type="submit" style={{ minHeight: 44, border: `1px solid ${TN.navy900}`, background: TN.navy900, color: TN.white, fontWeight: 700, fontFamily: "inherit", borderRadius: TN.radius.sm, cursor: "pointer" }}>Vis</button>
+        <button type="submit" style={{ minHeight: 44, border: `1px solid ${TN.navy900}`, background: TN.navy900, color: TN.white, fontWeight: 700, fontFamily: "inherit", borderRadius: TN.radius.pill, cursor: "pointer" }}>Vis</button>
       </form>
       {d.rader.length === 0 ? (
         <TnFlate><TnMangler>Ingen treff. Prøv et annet navn eller fjern filteret.</TnMangler></TnFlate>

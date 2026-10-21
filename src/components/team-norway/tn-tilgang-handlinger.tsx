@@ -12,7 +12,7 @@ import { TN } from "@/lib/v2/team-norway";
 const knapp = (fylt: boolean): CSSProperties => ({
   minHeight: 44,
   padding: "0 16px",
-  borderRadius: TN.radius.sm,
+  borderRadius: TN.radius.pill,
   border: `1px solid ${TN.navy900}`,
   background: fylt ? TN.navy900 : TN.white,
   color: fylt ? TN.white : TN.navy900,
@@ -33,7 +33,7 @@ export function TnAvsluttTilgang({ navn, avslutt }: { navn: string; avslutt: () 
     return <button type="button" onClick={() => setApen(true)} style={knapp(false)}>Avslutt tilgang</button>;
   }
   return (
-    <div role="group" aria-label={`Avslutt tilgang for ${navn}`} style={{ flexBasis: "100%", border: `1px solid ${TN.red600}`, borderRadius: TN.radius.sm, padding: 16, background: TN.white }}>
+    <div role="group" aria-label={`Avslutt tilgang for ${navn}`} style={{ flexBasis: "100%", border: `1px solid ${TN.red600}`, borderRadius: TN.radius.md, padding: 16, background: TN.white }}>
       <div style={{ fontSize: 15, fontWeight: 700 }}>Avslutt tilgang for {navn}?</div>
       <p style={{ margin: "6px 0 0", fontSize: 14, lineHeight: 1.6, color: TN.textSecondary }}>{navn} mister tilgangen til gruppen med en gang. Innlegg, økter og testresultater som er registrert, blir liggende.</p>
       {feil ? <p role="alert" style={{ margin: "10px 0 0", fontSize: 14, lineHeight: 1.6 }}>{feil}</p> : null}
@@ -73,7 +73,7 @@ export function TnLeggTilTrener({ leggTil }: { leggTil: (epost: string, rolle: T
   const [melding, setMelding] = useState<{ ok: boolean; tekst: string } | null>(null);
   const [venter, start] = useTransition();
 
-  const felt: CSSProperties = { width: "100%", minHeight: 44, padding: "0 12px", border: `1px solid ${TN.navy300}`, borderRadius: TN.radius.sm, background: TN.white, fontFamily: TN.font.body, fontSize: 15, color: TN.textPrimary };
+  const felt: CSSProperties = { width: "100%", minHeight: 44, padding: "0 12px", border: `1px solid ${TN.navy300}`, borderRadius: TN.radius.md, background: TN.white, fontFamily: TN.font.body, fontSize: 15, color: TN.textPrimary };
   const etikett: CSSProperties = { display: "block", fontFamily: TN.font.body, fontWeight: 700, fontSize: 14, color: TN.ink900, marginBottom: 6 };
 
   return (

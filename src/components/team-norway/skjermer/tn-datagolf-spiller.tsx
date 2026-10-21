@@ -41,7 +41,7 @@ function Undermeny({ aktiv, v }: { aktiv: DgSpillerSide; v: DgSpillerVisning }) 
 }
 
 function Velger({ side, v }: { side: DgSpillerSide; v: DgSpillerVisning }) {
-  const felt = { minHeight: 44, padding: "0 12px", border: `1px solid ${TN.ink200}`, borderRadius: TN.radius.sm, background: TN.white, font: "inherit", minWidth: 0, width: "100%" } as const;
+  const felt = { minHeight: 44, padding: "0 12px", borderRadius: TN.radius.xl, boxShadow: TN.shadow.md, background: TN.white, font: "inherit", minWidth: 0, width: "100%" } as const;
   return (
     <form action="/team-norway/datagolf" style={{ display: "grid", gap: 12, gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 200px), 1fr))", alignItems: "end" }}>
       <input type="hidden" name="side" value={side} />
@@ -56,7 +56,7 @@ function Velger({ side, v }: { side: DgSpillerSide; v: DgSpillerVisning }) {
           {v.proffer.map((p) => <option key={p.dgId} value={p.dgId}>{p.navn}{p.norsk ? " (norsk)" : ""}</option>)}
         </select>
       </label>
-      <button type="submit" style={{ minHeight: 44, border: `1px solid ${TN.navy900}`, background: TN.navy900, color: TN.white, fontWeight: 700, fontFamily: "inherit", borderRadius: TN.radius.sm, cursor: "pointer" }}>Vis</button>
+      <button type="submit" style={{ minHeight: 44, border: `1px solid ${TN.navy900}`, background: TN.navy900, color: TN.white, fontWeight: 700, fontFamily: "inherit", borderRadius: TN.radius.pill, cursor: "pointer" }}>Vis</button>
     </form>
   );
 }

@@ -276,7 +276,7 @@ export function TnTomtilstand({ tittel, tekst, handling }: { tittel: string; tek
 
 export function TnLenke({ href, children, fremhevet = false }: { href: string; children: ReactNode; fremhevet?: boolean }) {
   return (
-    <Link href={href} style={{ minHeight: 44, display: "inline-flex", alignItems: "center", padding: fremhevet ? "0 18px" : 0, borderRadius: TN.radius.sm, border: fremhevet ? `1px solid ${TN.navy900}` : "none", background: fremhevet ? TN.navy900 : "transparent", color: fremhevet ? TN.white : TN.navy600, fontWeight: TN.weight.bold, fontSize: 14, textDecoration: fremhevet ? "none" : "underline", textUnderlineOffset: 4 }}>
+    <Link href={href} style={{ minHeight: 44, display: "inline-flex", alignItems: "center", padding: fremhevet ? "0 18px" : 0, borderRadius: TN.radius.pill, border: fremhevet ? `1px solid ${TN.navy900}` : "none", background: fremhevet ? TN.navy900 : "transparent", color: fremhevet ? TN.white : TN.navy600, fontWeight: TN.weight.bold, fontSize: 14, textDecoration: fremhevet ? "none" : "underline", textUnderlineOffset: 4 }}>
       {children}
     </Link>
   );

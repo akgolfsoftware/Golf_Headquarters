@@ -353,7 +353,7 @@ export default async function TeamNorwayWorkbenchPage({ searchParams }: Props) {
       )}
 
       {sp.feil && (
-        <p role="alert" style={{ margin: 0, padding: 12, borderRadius: TN.radius.sm, background: TN.status.redBg, color: TN.status.redText, fontSize: TN.text.sm }}>
+        <p role="alert" style={{ margin: 0, padding: 12, borderRadius: TN.radius.md, background: TN.status.redBg, color: TN.status.redText, fontSize: TN.text.sm }}>
           {sp.feil}
         </p>
       )}
@@ -376,7 +376,7 @@ function pilleLenkeStil(aktiv: boolean): CSSProperties {
     alignItems: "center",
     minHeight: 44,
     padding: "0 14px",
-    borderRadius: TN.radius.sm,
+    borderRadius: TN.radius.pill,
     fontSize: 13.5,
     fontWeight: 700,
     textDecoration: "none",
@@ -892,4 +892,4 @@ async function renderLeggTilOvelse(args: {
 }
 
 const feltLabelStil: CSSProperties = { display: "flex", flexDirection: "column", gap: 6, fontSize: 14, fontWeight: 700, color: TN.ink900 };
-const feltInputStil: CSSProperties = { minHeight: 48, padding: "10px 12px", border: `1px solid ${TN.ink500}`, borderRadius: TN.radius.sm, fontSize: 16, fontWeight: 400, background: TN.white, color: TN.ink900 };
+const feltInputStil: CSSProperties = { minHeight: 48, padding: "10px 12px", border: `1px solid ${TN.ink500}`, borderRadius: TN.radius.md, fontSize: 16, fontWeight: 400, background: TN.white, color: TN.ink900 };

@@ -53,8 +53,8 @@ export function TnPostKomponer({
       id="ny-post"
       style={{
         background: TN.surfaceCard,
-        border: `1px solid ${TN.ink200}`,
-        borderRadius: TN.radius.sm,
+        boxShadow: TN.shadow.md,
+        borderRadius: TN.radius.xl,
         padding: "12px 14px",
         display: "flex",
         flexDirection: "column",
@@ -86,7 +86,7 @@ export function TnPostKomponer({
                 letterSpacing: "0.02em",
                 color: TN.navy700,
                 background: TN.navy50,
-                borderRadius: TN.radius.xs,
+                borderRadius: TN.radius.pill,
                 padding: "3px 8px",
               }}
             >
@@ -103,7 +103,7 @@ export function TnPostKomponer({
         style={{
           minHeight: 44,
           border: `1px solid ${TN.borderDefault}`,
-          borderRadius: TN.radius.sm,
+          borderRadius: TN.radius.md,
           padding: "10px 14px",
           fontFamily: TN.font.body,
           fontSize: TN.text.sm,
@@ -123,7 +123,7 @@ export function TnPostKomponer({
               style={{
                 height: 32,
                 padding: "0 12px",
-                borderRadius: TN.radius.xs,
+                borderRadius: TN.radius.pill,
                 border: `1px solid ${aktiv ? TN.navy100 : TN.borderDefault}`,
                 background: aktiv ? TN.navy50 : "transparent",
                 fontFamily: TN.font.body,

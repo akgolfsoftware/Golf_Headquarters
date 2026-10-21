@@ -234,7 +234,7 @@ export function TnTestdagVisning({ brukerNavn, visDataGolf, valgt }: { brukerNav
           {dag.eventId && dag.stations.length > 1 ? (
             <nav aria-label="Stasjoner i felles testdag" style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 18 }}>
               {dag.stations.map((station) => (
-                <Link key={station.id} href={`/team-norway/fellestesting?dag=${station.id}`} aria-current={station.id === dag.id ? "page" : undefined} style={{ minHeight: 44, display: "inline-flex", alignItems: "center", padding: "0 14px", borderRadius: TN.radius.sm, border: `1px solid ${TN.navy900}`, background: station.id === dag.id ? TN.navy900 : TN.white, color: station.id === dag.id ? TN.white : TN.navy900, fontFamily: TN.font.body, fontSize: 13.5, fontWeight: 700, textDecoration: "none" }}>
+                <Link key={station.id} href={`/team-norway/fellestesting?dag=${station.id}`} aria-current={station.id === dag.id ? "page" : undefined} style={{ minHeight: 44, display: "inline-flex", alignItems: "center", padding: "0 14px", borderRadius: TN.radius.pill, border: `1px solid ${TN.navy900}`, background: station.id === dag.id ? TN.navy900 : TN.white, color: station.id === dag.id ? TN.white : TN.navy900, fontFamily: TN.font.body, fontSize: 13.5, fontWeight: 700, textDecoration: "none" }}>
                   {station.groupName}
                 </Link>
               ))}

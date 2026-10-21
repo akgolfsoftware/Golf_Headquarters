@@ -77,7 +77,7 @@ export default async function SpillerpostPage({ params }: { params: Promise<{ sp
     >
       <TnIupTopp spillerId={spillerId} spillerNavn={spiller.name ?? "Ukjent"} aktiv="post" kanAdministrere={harTrenertilgang} overlinje={`IUP · ${spiller.name ?? "Ukjent"}`} tittel="Post" ingress="Poster til utøveren og foresatte, i én tidslinje med lesekvittering.">
 
-      <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "12px 14px", borderRadius: TN.radius.sm, background: TN.white, border: `1px solid ${TN.ink200}`, flexWrap: "wrap" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "12px 14px", borderRadius: TN.radius.xl, boxShadow: TN.shadow.md, background: TN.white, flexWrap: "wrap" }}>
         <span style={{ fontFamily: TN.font.body, fontWeight: 700, fontSize: 13, color: TN.ink500, flexShrink: 0 }}>Synlig for</span>
         <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <TnAvatarInitialer navn={spiller.name ?? "?"} size={28} />

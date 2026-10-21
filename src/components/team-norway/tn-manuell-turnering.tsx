@@ -40,7 +40,7 @@ export function TnManuellTurnering() {
       <TnInput label="Turneringsnavn" value={navn} onChange={setNavn} required />
       <TnInput label="Startdato" type="date" value={dato} onChange={setDato} required />
       <TnInput label="Kategori" value={kategori} onChange={setKategori} placeholder="For eksempel internasjonal amatør" />
-      <div style={{ padding: "12px 14px", borderRadius: TN.radius.sm, background: TN.ink50, border: `1px solid ${TN.ink200}`, color: TN.ink700, fontSize: 14.5, lineHeight: 1.55 }}>
+      <div style={{ padding: "12px 14px", borderRadius: TN.radius.md, background: TN.ink50, border: `1px solid ${TN.ink200}`, color: TN.ink700, fontSize: 14.5, lineHeight: 1.55 }}>
         Kilde: manuelt registrert av spilleren. AK Golf HQ verifiserer ikke påmeldingen hos arrangøren.
       </div>
       {feil ? <p role="alert" style={{ margin: 0, color: TN.status.redText, fontSize: 13.5, fontWeight: 700 }}>{feil}</p> : null}

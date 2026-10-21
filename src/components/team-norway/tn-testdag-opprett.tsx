@@ -71,7 +71,7 @@ export function TnOpprettTestdag({ spillere, protokoller }: { spillere: TnOppret
         <select
           value={protocolId}
           onChange={(e) => setProtocolId(e.target.value)}
-          style={{ minHeight: 44, borderRadius: TN.radius.sm, border: `1px solid ${TN.borderSubtle}`, padding: "0 12px", fontSize: TN.text.sm }}
+          style={{ minHeight: 44, borderRadius: TN.radius.md, border: `1px solid ${TN.borderSubtle}`, padding: "0 12px", fontSize: TN.text.sm }}
         >
           {protokoller.map((p) => (
             <option key={p.id} value={p.id}>{p.navn}</option>
@@ -79,7 +79,7 @@ export function TnOpprettTestdag({ spillere, protokoller }: { spillere: TnOppret
         </select>
       </label>
 
-      <fieldset style={{ border: `1px solid ${TN.borderSubtle}`, borderRadius: TN.radius.sm, padding: 14 }}>
+      <fieldset style={{ border: `1px solid ${TN.borderSubtle}`, borderRadius: TN.radius.md, padding: 14 }}>
         <legend style={{ fontFamily: TN.font.body, fontSize: TN.text.sm, fontWeight: TN.weight.semibold, color: TN.navy900, padding: "0 4px" }}>
           Deltakere ({valgte.size} valgt)
         </legend>

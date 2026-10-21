@@ -1,6 +1,6 @@
 /* Pakke 4 Uttak. Fasit: docs/design-system/utkast-tn/uttak.html. */
 .kriterier { display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
-.kriterium { display: grid; gap: 8px; align-content: start; padding: 16px 18px 18px; border: 1px solid var(--tn-ink-200); border-radius: var(--tn-radius-sm); background: var(--tn-white); }
+.kriterium { display: grid; gap: 8px; align-content: start; padding: 16px 18px 18px; border-radius: var(--tn-radius-xl); background: var(--tn-white); box-shadow: var(--tn-shadow-md); }
 .nr { font-family: var(--tn-font-body); font-weight: var(--tn-weight-bold); font-size: 13px; line-height: 1.2; letter-spacing: 0.02em; color: var(--tn-ink-500); }
 .kriterium h3 { margin: 0; font-family: var(--tn-font-display); font-weight: 500; font-size: 20px; line-height: 1.2; letter-spacing: 0.03em; color: var(--tn-navy-900); }
 
