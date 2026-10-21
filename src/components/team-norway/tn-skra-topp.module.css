@@ -63,8 +63,15 @@
   min-width: 0;
 }
 
+/* Lav topp (lister, detaljer, arbeidsflater). Uten bilde: navy flate med samme skråkutt og rød kant. */
+.lav .innhold { gap: 12px; padding: 14px 16px calc(var(--tn-skra-fall) + var(--tn-skra-kant) + 36px); }
+.lav .tittel { font-size: 26px; }
+.lav .foto:empty { background: linear-gradient(100deg, var(--tn-navy-900) 0%, var(--tn-navy-800) 100%); }
+.kortLav { margin-top: -36px; }
+
 @container (min-width: 640px) {
   .tittel { font-size: 44px; }
+  .lav .tittel { font-size: 34px; }
   .deler { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); align-items: start; gap: 24px; }
 }
 
@@ -73,6 +80,9 @@
   .innhold { padding: 28px 44px calc(var(--tn-skra-fall) + var(--tn-skra-kant) + 72px); }
   .tittel { font-size: 50px; letter-spacing: -0.035em; }
   .kort { margin-top: -72px; gap: 18px; }
+  .lav .innhold { padding: 18px 44px calc(var(--tn-skra-fall) + var(--tn-skra-kant) + 44px); }
+  .lav .tittel { font-size: 38px; }
+  .kortLav { margin-top: -44px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
