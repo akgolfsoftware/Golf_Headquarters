@@ -23,6 +23,10 @@ import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
 import { RunderFeil, Tilbake } from "./PHRunderFelles";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-runder.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke9-skra.css";
 
 export type Niva = "rask" | "import" | "slag";
 export type PHRD01Kladd = { bane: string; ferdige: number; av: number; dato: string };
@@ -68,13 +72,17 @@ export function PHRD01VelgNiva({ tilstand = "data", kladd = null, uleste = 0, fe
 
   return (
     <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
-      <div className="phn">
-        <Tilbake href="/portal/mal/runder" tekst="Runder" />
-        <div className="phr-topp">
-          <div className="phn-dato">Registrer runde · steg 1 av 2</div>
-          <h1 className="phn-tittel">Hvor mye vil du føre?</h1>
-          <p className="phr-ingress">Jo mer du fører, jo mer kan appen si om spillet ditt. Du kan alltid føre mindre på neste runde.</p>
-        </div>
+      <div className="phn phn-skra">
+      <SkraTopp
+        lav
+        etikett="Registrer runde"
+        bilde="/images/playerhq/spill-bane.jpg" bildePosisjon="50% 50%"
+        overlinje="Registrer runde · steg 1 av 2"
+        tittel="Hvor mye vil du føre?"
+        ingress="Jo mer du fører, jo mer kan appen si om spillet ditt. Du kan alltid føre mindre på neste runde."
+        handling={<span className="skra-topp-rad"><span className="skra-tilbake"><Tilbake href="/portal/mal/runder" tekst="Runder" /></span></span>}
+      />
+      <SkraFlyt lav>
 
         {tilstand === "feil" ? (
           <RunderFeil tittel="Siden kunne ikke hentes" tekst="Noe gikk galt da banene skulle hentes. Prøv igjen om litt." href="/portal/mal/runder/ny" kode={feilKode} />
@@ -120,6 +128,7 @@ export function PHRD01VelgNiva({ tilstand = "data", kladd = null, uleste = 0, fe
             <div className="phr-festet"><Link className="phn-knapp pri phr-knapp-stor" href={gjeldende.href}>Videre med {gjeldende.navn}</Link></div>
           </>
         )}
+      </SkraFlyt>
       </div>
     </PlayerHQSkall>
   );

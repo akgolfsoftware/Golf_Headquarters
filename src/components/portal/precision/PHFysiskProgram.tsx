@@ -21,6 +21,10 @@ import { fysOktHref } from "@/lib/portal-plan/fysisk-okt";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-meg.css";
 import "@/styles/playerhq-ny-plan-hjelpere.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke9-skra.css";
 
 export type PHFysiskProgramData = {
   program: FysProgram | null;
@@ -28,13 +32,6 @@ export type PHFysiskProgramData = {
 };
 
 const SONER: [string, string][] = [["S1", "rolig"], ["S2", "lett"], ["S3", "moderat"], ["S4", "hardt"], ["S5", "maks"]];
-
-function Topp({ tittel, dato }: { tittel: string; dato: string }) {
-  return <div className="topp">
-    <Link className="tilbake" href="/portal/planlegge"><ChevronLeft size={18} aria-hidden />Plan</Link>
-    <div><div className="phn-dato">{dato}</div><h1 className="phn-tittel">{tittel}</h1></div>
-  </div>;
-}
 
 function Tester({ tester }: { tester: PHFysiskProgramData["tester"] }) {
   return <section className="phn-seksjon" aria-labelledby="ph-fys-test">
@@ -56,8 +53,16 @@ export function PHFysiskProgram({ data }: { data: PHFysiskProgramData }) {
   const [valgt, setValgt] = useState(0);
 
   if (!p) {
-    return <div className="phn phn-meg phn-ph"><div className="side">
-      <Topp tittel="Fysisk program" dato="Plan · fysisk program" />
+    return <div className="phn phn-meg phn-ph phn-skra">
+      <SkraTopp
+        lav
+        etikett="Fysisk program"
+        bilde="/images/playerhq/fys-styrke.jpg" bildePosisjon="50% 50%"
+        overlinje="Plan · fysisk program"
+        tittel="Fysisk program"
+        handling={<span className="skra-topp-rad"><span className="skra-tilbake"><Link className="tilbake" href="/portal/planlegge"><ChevronLeft size={18} aria-hidden />Plan</Link></span></span>}
+      />
+      <SkraFlyt lav><div className="side">
       <div className="to-del">
         <div className="phn-kort dempet">
           <b className="phn-undertittel">Ingen fysisk program ennå</b>
@@ -66,12 +71,20 @@ export function PHFysiskProgram({ data }: { data: PHFysiskProgramData }) {
         </div>
         <Tester tester={data.tester} />
       </div>
-    </div></div>;
+    </div></SkraFlyt></div>;
   }
 
   const okt = p.okter[Math.min(valgt, p.okter.length - 1)];
-  return <div className="phn phn-meg phn-ph"><div className="side">
-    <Topp tittel={p.navn} dato={`Plan · fysisk program${p.fra ? ` · fra ${p.fra}` : ""}`} />
+  return <div className="phn phn-meg phn-ph phn-skra">
+    <SkraTopp
+      lav
+      etikett="Fysisk program"
+      bilde="/images/playerhq/fys-styrke.jpg" bildePosisjon="50% 50%"
+      overlinje={`Plan · fysisk program${p.fra ? ` · fra ${p.fra}` : ""}`}
+      tittel={p.navn}
+      handling={<span className="skra-topp-rad"><span className="skra-tilbake"><Link className="tilbake" href="/portal/planlegge"><ChevronLeft size={18} aria-hidden />Plan</Link></span></span>}
+    />
+    <SkraFlyt lav><div className="side">
     <div className="to-del">
       <div>
         <div className="ph-fys-topp">
@@ -122,5 +135,5 @@ export function PHFysiskProgram({ data }: { data: PHFysiskProgramData }) {
         <Link className="phn-knapp sek" href="/portal/coach/melding/ny" style={{ justifySelf: "start" }}>Skriv til {p.fra ?? "coach"} om programmet</Link>
       </div>
     </div>
-  </div></div>;
+  </div></SkraFlyt></div>;
 }

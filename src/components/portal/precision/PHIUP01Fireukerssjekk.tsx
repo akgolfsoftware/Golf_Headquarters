@@ -32,6 +32,10 @@ import { UTVIKLINGSSJEKK_SKALA, type IupBesvarelse } from "@/lib/iup/utviklingss
 import type { FireukerData } from "@/lib/iup/fireukerssjekk-data";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-iup.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke9-skra.css";
 
 type Forespørsel = {
   type: "UTVIKLINGSSJEKK"; periodeStart: string; periodeSlutt: string;
@@ -46,14 +50,14 @@ const retning = (naa: number | null, forrige: number | null) =>
   naa == null || forrige == null ? "" : naa - forrige > 0.04 ? " opp" : naa - forrige < -0.04 ? " ned" : "";
 
 function Topp({ niva, ukeFra, ukeTil, tittel }: { niva: string; ukeFra: number; ukeTil: number; tittel: string }) {
-  return <div className="topp">
-    <Link href="/portal" className="tilbake"><ChevronLeft size={20} aria-hidden />I dag</Link>
-    <div>
-      <span className="iup-merke">IUP · {niva}</span>
-      <h1 className="phn-tittel">{tittel}</h1>
-      <span className="phn-dato">Uke {ukeFra}–{ukeTil}</span>
-    </div>
-  </div>;
+  return <SkraTopp
+    lav
+    etikett="Fireukerssjekk"
+    bilde="/images/playerhq/stats-topp.jpg" bildePosisjon="50% 50%"
+    overlinje={`IUP · ${niva} · uke ${ukeFra}–${ukeTil}`}
+    tittel={tittel}
+    handling={<span className="skra-tilbake"><Link href="/portal" className="tilbake"><ChevronLeft size={20} aria-hidden />I dag</Link></span>}
+  />;
 }
 
 function Lagrestatus({ st }: { st: Lagring }) {
@@ -207,8 +211,9 @@ export function PHIUP01Fireukerssjekk({ data, uleste, startSteg = 0 }: { data: F
     const totalForrige = snitt(alleSporsmal, forrigeSvar);
     const tr = retning(totalNaa, totalForrige);
     return <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
-      <div className="phn phn-iup" data-od-id="playerhq-iup-fireuker-levert">
+      <div className="phn phn-iup phn-skra" data-od-id="playerhq-iup-fireuker-levert">
         <Topp niva={NIVA_NAVN[niva]} ukeFra={runde.ukeFra} ukeTil={runde.ukeTil} tittel="Fireukerssjekk levert" />
+        <SkraFlyt lav>
         <div className="to-del">
           <div>
             <section className="phn-kort" aria-label="Levert">
@@ -259,6 +264,7 @@ export function PHIUP01Fireukerssjekk({ data, uleste, startSteg = 0 }: { data: F
             </div>
           </div>
         </div>
+        </SkraFlyt>
       </div>
       {toast.el}
     </PlayerHQSkall>;
@@ -308,9 +314,10 @@ export function PHIUP01Fireukerssjekk({ data, uleste, startSteg = 0 }: { data: F
   </>;
 
   return <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
-    <div className="phn phn-iup" data-od-id="playerhq-iup-fireuker">
+    <div className="phn phn-iup phn-skra" data-od-id="playerhq-iup-fireuker">
+      <Topp niva={NIVA_NAVN[niva]} ukeFra={runde.ukeFra} ukeTil={runde.ukeTil} tittel="Fireukerssjekk" />
+      <SkraFlyt lav>
       <div className="smal">
-        <Topp niva={NIVA_NAVN[niva]} ukeFra={runde.ukeFra} ukeTil={runde.ukeTil} tittel="Fireukerssjekk" />
         <div className="flyt">
           <div className="steg-topp">
             <div className="rad">
@@ -331,6 +338,7 @@ export function PHIUP01Fireukerssjekk({ data, uleste, startSteg = 0 }: { data: F
           </div>
         </div>
       </div>
+      </SkraFlyt>
     </div>
     {toast.el}
   </PlayerHQSkall>;

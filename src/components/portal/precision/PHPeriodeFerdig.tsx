@@ -16,6 +16,10 @@ import { PERIODE_AKSER, timerTekst, type PeriodeTall } from "@/lib/portal-plan/p
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-meg.css";
 import "@/styles/playerhq-ny-plan-hjelpere.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke9-skra.css";
 
 export type PHPeriodeFerdigData = {
   navn: string; tidsrom: string; ferdig: string;
@@ -26,28 +30,37 @@ export type PHPeriodeFerdigData = {
   periodeHref: string;
 };
 
-function Topp() {
-  return <div className="topp">
-    <Link className="tilbake" href="/portal/planlegge"><ChevronLeft size={18} aria-hidden />Plan</Link>
-  </div>;
-}
-
 export function PHPeriodeFerdig({ data }: { data: PHPeriodeFerdigData | null }) {
   if (!data) {
-    return <div className="phn phn-meg phn-ph"><div className="side">
-      <Topp />
-      <div><div className="phn-dato">Plan · perioder</div><h1 className="phn-tittel">Perioden er ferdig</h1></div>
+    return <div className="phn phn-meg phn-ph phn-skra">
+      <SkraTopp
+        lav
+        etikett="Perioden er ferdig"
+        bilde="/images/playerhq/spill-bane.jpg" bildePosisjon="50% 50%"
+        overlinje="Plan · perioder"
+        tittel="Perioden er ferdig"
+        handling={<span className="skra-topp-rad"><span className="skra-tilbake"><Link className="tilbake" href="/portal/planlegge"><ChevronLeft size={18} aria-hidden />Plan</Link></span></span>}
+      />
+      <SkraFlyt lav><div className="side">
       <div className="phn-kort dempet">
         <b className="phn-undertittel">Ingen periode er ferdig ennå</b>
         <p className="phn-forklar">Når en periode i årsplanen er over, ser du her hvor mye av planlagt tid du gjennomførte.</p>
         <div className="phn-knapper"><Link className="phn-knapp sek" href="/portal/planlegge">Til Plan</Link></div>
       </div>
-    </div></div>;
+    </div></SkraFlyt></div>;
   }
 
   const t = data.tall;
-  return <div className="phn phn-meg phn-ph"><div className="side">
-    <Topp />
+  return <div className="phn phn-meg phn-ph phn-skra">
+    <SkraTopp
+      lav
+      etikett="Perioden er ferdig"
+      bilde="/images/playerhq/spill-bane.jpg" bildePosisjon="50% 50%"
+      overlinje="Plan · perioder"
+      tittel={data.navn}
+      handling={<span className="skra-topp-rad"><span className="skra-tilbake"><Link className="tilbake" href="/portal/planlegge"><ChevronLeft size={18} aria-hidden />Plan</Link></span></span>}
+    />
+    <SkraFlyt lav><div className="side">
     <section className="ph-ferdig-topp" aria-label={`${data.navn} er ferdig`}>
       <div className="phn-dato">{data.navn} · {data.tidsrom} · ferdig {data.ferdig}</div>
       <div className="phn-hoved"><strong>{t.pct == null ? "—" : `${t.pct} %`}</strong><span className="phn-forklar">av planlagt tid gjennomført</span></div>
@@ -92,5 +105,5 @@ export function PHPeriodeFerdig({ data }: { data: PHPeriodeFerdigData | null }) 
           : <Link className="phn-knapp pri stor" href={data.periodeHref}>Åpne perioden i Plan</Link>}
       </div>
     </div>
-  </div></div>;
+  </div></SkraFlyt></div>;
 }

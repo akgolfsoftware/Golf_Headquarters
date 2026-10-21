@@ -18,6 +18,10 @@ import { Check, ChevronDown, ChevronLeft, Copy, Minus, Plus, RotateCcw } from "l
 import { gjortTekst, kgTekst, lesTall, tilLoggRader, type FysLoggRad, type FysOktFor, type FysSett, type FysStyrkeFor } from "@/lib/portal-plan/fysisk-okt";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-okt.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke9-skra.css";
 
 type Svar = { ok: boolean; error?: string };
 export type PHFysiskOktProps = {
@@ -82,12 +86,16 @@ export function PHFysiskOkt({ okt, lagre, angre }: PHFysiskOktProps) {
   const avslutt = () => kjor(() => lagre({ oktId: okt.id, rader: tilLoggRader(styrke) }), () => setFerdig("i dag"));
   const angreGjort = () => kjor(() => angre(okt.id), () => setFerdig(null));
 
-  return <div className="phn phn-okt" data-od-id="playerhq-fys-okt"><div className="smal">
-    <Link className="phn-knapp sek" href="/portal/planlegge/fysisk" style={{ justifySelf: "start" }}><ChevronLeft size={18} aria-hidden />Fysisk program</Link>
-    <div className="hode-okt">
-      <span className="phn-dato">{[ferdig ? "Etter økten" : "Fysisk økt", okt.under, okt.planNavn].join(" · ")}</span>
-      <h1>{okt.navn}</h1>
-    </div>
+  return <div className="phn phn-okt phn-skra" data-od-id="playerhq-fys-okt">
+    <SkraTopp
+      lav
+      etikett="Fysisk økt"
+      bilde="/images/playerhq/fys-styrke.jpg" bildePosisjon="50% 50%"
+      overlinje={<>{[ferdig ? "Etter økten" : "Fysisk økt", okt.under, okt.planNavn].join(" · ")}</>}
+      tittel={<>{okt.navn}</>}
+      handling={<span className="skra-topp-rad"><span className="skra-tilbake"><Link className="tilbake" href="/portal/planlegge/fysisk"><ChevronLeft size={18} aria-hidden />Fysisk program</Link></span></span>}
+    />
+    <SkraFlyt lav><div className="smal">
 
     {ferdig ? <>
       <section className="phn-kort" aria-label="Gjennomført">
@@ -165,5 +173,5 @@ export function PHFysiskOkt({ okt, lagre, angre }: PHFysiskOktProps) {
         {alle > 0 && gjort === 0 && <span className="sub">Ingen serier er hakt av. Øvelsene lagres som hoppet over.</span>}
       </div>
     </>}
-  </div></div>;
+  </div></SkraFlyt></div>;
 }

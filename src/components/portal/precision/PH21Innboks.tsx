@@ -38,6 +38,10 @@ import {
 } from "@/lib/portal-coach/ph21-actions";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-kommunikasjon.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke9-skra.css";
 
 export type PH21InnboksProps = {
   data: PH21Data;
@@ -179,34 +183,35 @@ export function PH21Innboks({ data, initialTab = "msg", tilstand = "data", feilT
     ark.current?.close();
   }
 
-  const hode = <div className="phn-k-topp">
-    <Link href="/portal/varsler" className="phn-k-tilbake"><ChevronLeft className="phn-ikon" aria-hidden />Innboks</Link>
-    <div>
-      <div className="phn-dato">Innboks · meldinger</div>
-      <h1 className="phn-tittel">Meldinger</h1>
-    </div>
-  </div>;
+  const hode = <SkraTopp
+    lav
+    etikett="Meldinger"
+    bilde="/images/playerhq/tek-video.jpg" bildePosisjon="50% 50%"
+    overlinje="Innboks · meldinger"
+    tittel="Meldinger"
+    handling={<span className="skra-tilbake"><Link href="/portal/varsler" className="phn-k-tilbake"><ChevronLeft className="phn-ikon" aria-hidden />Innboks</Link></span>}
+  />;
 
   if (tilstand === "feil") {
-    return <div className="phn">{hode}
+    return <div className="phn phn-skra">{hode}<SkraFlyt lav>
       <section className="phn-kort" role="alert">
         <h2 className="phn-k-undertittel">Meldingene kunne ikke hentes</h2>
         <p className="phn-forklar">{feilTekst || "Sjekk nettet og prøv igjen. Ingenting er sendt."}</p>
         <div className="phn-knapper"><button type="button" className="phn-knapp sek" onClick={() => router.refresh()}><RefreshCw className="phn-ikon" aria-hidden />Prøv igjen</button></div>
       </section>
-    </div>;
+    </SkraFlyt></div>;
   }
 
   if (tilstand === "laster") {
-    return <div className="phn" aria-busy="true">{hode}
+    return <div className="phn phn-skra" aria-busy="true">{hode}<SkraFlyt lav>
       <span className="phn-skjelett" style={{ height: 64 }} />
       <span className="phn-skjelett" style={{ height: 240 }} />
       <p className="phn-kilde" role="status">Henter samtalen …</p>
-    </div>;
+    </SkraFlyt></div>;
   }
 
   if (!data.isCoached && tilstand !== "tom") {
-    return <div className="phn">{hode}
+    return <div className="phn phn-skra">{hode}<SkraFlyt lav>
       <section className="phn-kort">
         <b className="phn-k-undertittel">Coachen følger med her når du er med i AK Golf Academy</b>
         <p className="phn-forklar">Med en coaching-pakke eller plass i en AK-gruppe får du egen coach, ukeplaner laget for deg og direkte meldinger her.</p>
@@ -215,7 +220,7 @@ export function PH21Innboks({ data, initialTab = "msg", tilstand = "data", feilT
           <Link href="/portal/caddie" className="phn-knapp sek">Spør Caddie</Link>
         </div>
       </section>
-    </div>;
+    </SkraFlyt></div>;
   }
 
   const samtaler = <div className="phn-k-samtaler" aria-label="Samtaler">
@@ -227,8 +232,9 @@ export function PH21Innboks({ data, initialTab = "msg", tilstand = "data", feilT
     {data.coach && <button type="button" className="phn-knapp sek" onClick={() => ark.current?.showModal()}>Ny melding</button>}
   </div>;
 
-  return <div className="phn">
+  return <div className="phn phn-skra">
     {hode}
+    <SkraFlyt lav>
     <div className="phn-k-chips" role="group" aria-label="Vis">
       {PH21_TABS.map((t) => {
         const n = t.value === "plan" ? counts.plan : t.value === "vid" ? counts.vid : undefined;
@@ -391,5 +397,6 @@ export function PH21Innboks({ data, initialTab = "msg", tilstand = "data", feilT
       </div>
     </dialog>
     {toast && <div className="phn-k-toast" role="status">{toast}</div>}
+    </SkraFlyt>
   </div>;
 }
