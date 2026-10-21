@@ -86,7 +86,7 @@ export function TnPostKomponer({
                 letterSpacing: "0.02em",
                 color: TN.navy700,
                 background: TN.navy50,
-                borderRadius: TN.radius.xs,
+                borderRadius: TN.radius.pill,
                 padding: "3px 8px",
               }}
             >
@@ -123,7 +123,7 @@ export function TnPostKomponer({
               style={{
                 height: 32,
                 padding: "0 12px",
-                borderRadius: TN.radius.xs,
+                borderRadius: TN.radius.pill,
                 border: `1px solid ${aktiv ? TN.navy100 : TN.borderDefault}`,
                 background: aktiv ? TN.navy50 : "transparent",
                 fontFamily: TN.font.body,

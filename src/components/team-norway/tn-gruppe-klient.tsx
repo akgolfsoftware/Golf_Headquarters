@@ -65,11 +65,11 @@ export function TnInnleggSkjema({ send, forfatterNavn, mottakere }: { send: (inp
         placeholder="Skriv til gruppen. Kort og konkret."
         aria-label="Nytt innlegg"
         aria-invalid={feil ? true : undefined}
-        style={{ width: "100%", marginTop: 14, padding: 12, border: `1px solid ${feil ? TN.status.redText : TN.borderDefault}`, borderRadius: TN.radius.xs, fontSize: 16, lineHeight: 1.55, resize: "vertical", color: TN.textPrimary, background: TN.white, fontFamily: TN.font.body, display: "block" }}
+        style={{ width: "100%", marginTop: 14, padding: 12, border: `1px solid ${feil ? TN.status.redText : TN.borderDefault}`, borderRadius: TN.radius.md, fontSize: 16, lineHeight: 1.55, resize: "vertical", color: TN.textPrimary, background: TN.white, fontFamily: TN.font.body, display: "block" }}
       />
       <div style={{ ...etikett, marginTop: 14 }}>Mottakere</div>
       <div style={{ marginTop: 8, display: "flex", flexWrap: "wrap", gap: 6 }}>
-        <span style={{ minHeight: 30, padding: "4px 10px", background: TN.navy100, color: TN.navy900, fontFamily: TN.font.body, fontSize: 13, fontWeight: 700, display: "inline-flex", alignItems: "center", maxWidth: "100%", overflowWrap: "anywhere" }}>
+        <span style={{ minHeight: 30, padding: "4px 10px", borderRadius: TN.radius.pill, background: TN.navy100, color: TN.navy900, fontFamily: TN.font.body, fontSize: 13, fontWeight: 700, display: "inline-flex", alignItems: "center", maxWidth: "100%", overflowWrap: "anywhere" }}>
           {mottakere}
         </span>
       </div>
@@ -296,7 +296,7 @@ export function TnDokumentSkjema({ groupId, maksMb, kategorier }: { groupId: str
       <div style={{ marginTop: 14, display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-end" }}>
         <div style={{ flex: "1 1 260px", minWidth: 0 }}>
           <span style={etikett}>Fil</span>
-          <label style={{ marginTop: 6, minHeight: 44, display: "flex", alignItems: "center", gap: 8, padding: "0 12px", border: `1px dashed ${TN.ink500}`, borderRadius: TN.radius.xs, cursor: "pointer", color: fil ? TN.textPrimary : TN.textSecondary, fontSize: 14, minWidth: 0 }}>
+          <label style={{ marginTop: 6, minHeight: 44, display: "flex", alignItems: "center", gap: 8, padding: "0 12px", border: `1px dashed ${TN.ink500}`, borderRadius: TN.radius.md, cursor: "pointer", color: fil ? TN.textPrimary : TN.textSecondary, fontSize: 14, minWidth: 0 }}>
             
             <span style={{ minWidth: 0, overflowWrap: "anywhere" }}>{fil ? fil.name : "Velg fil"}</span>
             <input
@@ -313,7 +313,7 @@ export function TnDokumentSkjema({ groupId, maksMb, kategorier }: { groupId: str
         </div>
         <label style={{ flex: "0 1 200px", minWidth: 0 }}>
           <span style={etikett}>Kategori</span>
-          <select value={kategori} onChange={(e) => setKategori(e.target.value)} disabled={pending} style={{ marginTop: 6, width: "100%", minHeight: 44, padding: "0 12px", border: `1px solid ${TN.ink500}`, borderRadius: TN.radius.xs, background: TN.white, color: TN.textPrimary, fontFamily: TN.font.body, fontSize: 16 }}>
+          <select value={kategori} onChange={(e) => setKategori(e.target.value)} disabled={pending} style={{ marginTop: 6, width: "100%", minHeight: 44, padding: "0 12px", border: `1px solid ${TN.ink500}`, borderRadius: TN.radius.md, background: TN.white, color: TN.textPrimary, fontFamily: TN.font.body, fontSize: 16 }}>
             {kategorier.map((k) => <option key={k} value={k}>{k}</option>)}
           </select>
         </label>
