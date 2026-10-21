@@ -1,0 +1,6 @@
+/* Pakke 8 (resten av PlayerHQ): første rad under det skrå kuttet, full bredde på desktop. */
+.phn-skra .phn-ov-smal, .phn-skra .phn-k-smal { padding-top: 28px; }
+.phn-skra .phn-ov-topp ~ *:first-child { padding-top: 0; }
+@container (min-width: 900px) {
+  .phn-skra .phn-ov-smal, .phn-skra .phn-k-smal { padding-top: 44px; margin-right: 52px; max-width: 760px; }
+}

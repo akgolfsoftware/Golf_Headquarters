@@ -26,6 +26,10 @@ import type { QVals, StageKey } from "@/lib/putt-core";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-stats.css";
 import "@/styles/playerhq-ny-statsresten-historikk.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke8-skra.css";
 
 export type PuttelabFane = "kjeden" | "greenen" | "kontroll";
 const FANER: { id: PuttelabFane; navn: string }[] = [{ id: "kjeden", navn: "Kjeden" }, { id: "greenen", navn: "Greenen" }, { id: "kontroll", navn: "Kontroll" }];
@@ -50,21 +54,24 @@ const prosent = (v: number) => `${Math.round(v * 100)} %`;
 export function PH13Puttelab({ startFane = "kjeden" }: { startFane?: PuttelabFane }) {
   const [fane, setFane] = useState<PuttelabFane>(startFane);
   return (
-    <div className="phn">
-      <TmTilbake href="/portal/drills" tekst="Øvelsesbank" />
-      <div className="phn-topp">
-        <div>
-          <div className="phn-dato">Putting · seks ledd</div>
-          <h1 className="phn-tittel">Puttelaboratoriet</h1>
-        </div>
-        <p className="phn-pl-ingress">En putt går i hullet når seks ledd holder: lesing, sikte, ballstart, lengde, flaks og aksept. Prøv hvor mye hvert ledd betyr.</p>
+    <div className="phn phn-skra">
+    <SkraTopp
+      lav
+      etikett="Puttelaboratoriet"
+      bilde="/images/playerhq/slag-putting.jpg" bildePosisjon="50% 50%"
+      overlinje="Putting · seks ledd"
+      tittel="Puttelaboratoriet"
+      ingress="En putt går i hullet når seks ledd holder: lesing, sikte, ballstart, lengde, flaks og aksept. Prøv hvor mye hvert ledd betyr."
+      handling={<span className="skra-tilbake"><TmTilbake href="/portal/drills" tekst="Øvelsesbank" /></span>}
+    />
+    <SkraFlyt lav>
         <div className="phn-valg" role="group" aria-label="Fane">
           {FANER.map((f) => <button key={f.id} type="button" aria-pressed={fane === f.id} onClick={() => setFane(f.id)}>{f.navn}</button>)}
         </div>
-      </div>
       {fane === "kjeden" && <Kjeden />}
       {fane === "greenen" && <Greenen />}
       {fane === "kontroll" && <Kontroll />}
+    </SkraFlyt>
     </div>
   );
 }

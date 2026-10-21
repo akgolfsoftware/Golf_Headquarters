@@ -34,6 +34,10 @@ import {
 import type { SendPlanInput } from "@/lib/plan-builder/velg-plan-lagre";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-ovelser.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke8-skra.css";
 
 export type VelgPlanMal = {
   id: string; navn: string; beskrivelse: string | null; uker: number; okterPerUke: number; fordeling: Fordeling; anbefalt: boolean;
@@ -98,14 +102,16 @@ export function PH12VelgPlan({ maler, kategoriMaler = [], kategori, startUker, u
 
   return (
     <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
-      <div className="phn">
-        <div className="phn-ov-topp">
-          <span className="phn-dato">Plan · treningsplan</span>
-          <h1 className="phn-tittel">Velg treningsplan</h1>
-          <p className="phn-ov-ingress">
-            {kategori ? `Fem standardplaner, tilpasset ${kategori.navn}. Du velger selv, og kan alltid endre øktene i Workbench.` : "Fem standardplaner. Du velger selv, og kan alltid endre øktene i Workbench."}
-          </p>
-        </div>
+      <div className="phn phn-skra">
+      <SkraTopp
+        lav
+        etikett="Treningsplan"
+        bilde="/images/playerhq/spill-bane.jpg" bildePosisjon="50% 50%"
+        overlinje="Plan · treningsplan"
+        tittel="Velg treningsplan"
+        ingress={kategori ? `Fem standardplaner, tilpasset ${kategori.navn}. Du velger selv, og kan alltid endre øktene i Workbench.` : "Fem standardplaner. Du velger selv, og kan alltid endre øktene i Workbench."}
+      />
+      <SkraFlyt lav>
 
         {melding && <p className="phn-ov-status" role="status"><Check className="phn-ikon" aria-hidden /><span>{melding} <Link href={workbenchHref}>Åpne Workbench</Link></span></p>}
 
@@ -143,6 +149,7 @@ export function PH12VelgPlan({ maler, kategoriMaler = [], kategori, startUker, u
 
         {valgt && <div className="phn-ov-festet"><button type="button" className="phn-knapp pri phn-ov-knapp-stor" onClick={() => setArk(true)}>Velg {valgt.navn}</button></div>}
         {ark && valgt && <VelgArk mal={valgt} startUker={startUker} onSend={onSend} onLukk={() => setArk(false)} onValgt={(t) => { setArk(false); setMelding(t); }} />}
+      </SkraFlyt>
       </div>
     </PlayerHQSkall>
   );

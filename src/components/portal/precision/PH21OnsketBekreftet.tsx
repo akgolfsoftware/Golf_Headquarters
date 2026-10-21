@@ -15,6 +15,10 @@ import { Check, Clock, X } from "lucide-react";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-kommunikasjon.css";
 import "@/styles/playerhq-ny-booking-meldinger.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke8-skra.css";
 
 export type PH21OnsketStatus = "PENDING" | "APPROVED" | "DECLINED" | "CANCELLED";
 
@@ -56,12 +60,20 @@ export function PH21OnsketBekreftet({ data }: { data: PH21OnsketData }) {
     : `${fornavn.charAt(0).toUpperCase()}${fornavn.slice(1)} har fått ønsket ditt`;
   const venter = data.status === "PENDING";
 
-  return <div className="phn"><div className="phn-k-smal">
+  return <div className="phn phn-skra">
+    <SkraTopp
+      lav
+      etikett="Ønsket økt"
+      bilde="/images/playerhq/tek-video.jpg" bildePosisjon="50% 50%"
+      overlinje={`Ønsket økt · sendt ${data.sendt}`}
+      tittel={tittel}
+    />
+    <SkraFlyt lav>
+    <div className="phn-k-smal">
     <div className="phn-k-bekreftet-topp">
       <span className={`phn-k-hake${data.status === "APPROVED" ? "" : " phn-bm-venter"}`} aria-hidden>
         {data.status === "APPROVED" ? <Check className="phn-ikon" /> : venter ? <Clock className="phn-ikon" /> : <X className="phn-ikon" />}
       </span>
-      <div><div className="phn-dato">Ønsket økt · sendt {data.sendt}</div><h1 className="phn-tittel">{tittel}</h1></div>
       <span className={`phn-pille ${s.pille}`}>{s.tekst}</span>
     </div>
     <div className="phn-kort">
@@ -85,5 +97,5 @@ export function PH21OnsketBekreftet({ data }: { data: PH21OnsketData }) {
       <Link href="/portal/coach?tab=ønske" className="phn-knapp pri">Til meldingene</Link>
       <Link href="/portal" className="phn-knapp sek">Til I dag</Link>
     </div>
-  </div></div>;
+  </div></SkraFlyt></div>;
 }
