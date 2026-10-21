@@ -23,6 +23,10 @@ import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-stats.css";
 import "@/styles/playerhq-ny-statsdybde.css";
 import "@/styles/playerhq-ny-statsresten.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke4-skra.css";
 
 const DAG = new Intl.DateTimeFormat("nb-NO", { timeZone: "Europe/Oslo", weekday: "long", day: "numeric", month: "short" });
 
@@ -91,13 +95,18 @@ export function PH17LoggOkt({ iDag, lagre }: { iDag: string; lagre?: (body: Reco
   }
 
   return (
-    <div className="phn">
-      <TmTilbake href="/portal/planlegge" tekst="Plan" />
+    <div className="phn phn-skra">
+    <SkraTopp
+      lav
+      etikett="Logg økt"
+      bilde="/images/playerhq/spill-bane.jpg" bildePosisjon="50% 50%"
+      overlinje="Økt ført i etterkant"
+      tittel="Logg økt"
+      handling={<span className="skra-topp-rad"><span className="skra-tilbake"><TmTilbake href="/portal/planlegge" tekst="Plan" /></span></span>}
+    />
+    <SkraFlyt lav>
       <div className="phn-sr-smal">
-        <div className="phn-topp">
-          <div><div className="phn-dato">Økt ført i etterkant</div><h1 className="phn-tittel">Logg økt</h1></div>
-          <p className="phn-forklar">For trening som ikke lå i planen. Den teller i total treningstid, men ikke mot planen.</p>
-        </div>
+        <p className="phn-forklar">For trening som ikke lå i planen. Den teller i total treningstid, men ikke mot planen.</p>
 
         {lagret ? (
           <section className="phn-lagret" role="status">
@@ -159,6 +168,7 @@ export function PH17LoggOkt({ iDag, lagre }: { iDag: string; lagre?: (body: Reco
           </form>
         )}
       </div>
+    </SkraFlyt>
     </div>
   );
 }

@@ -28,6 +28,10 @@ import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-stats.css";
 import "@/styles/playerhq-ny-statsdybde.css";
 import "@/styles/playerhq-ny-tester.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke4-skra.css";
 
 export type PH14Maaling = {
   id: string;
@@ -71,18 +75,17 @@ export function PH14Test({ data }: { data: PH14TestData }) {
     && m.slice(0, -1).every((x) => (data.lavereErBedre ? siste.verdi < x.verdi : siste.verdi > x.verdi));
 
   return (
-    <div className="phn">
-      <header className="phn-res-hode phn-inn">
-        <div>
-          <Link className="phn-res-tilbake" href="/portal/tren/tester"><ChevronLeft className="phn-ikon" aria-hidden />Stats · Tester</Link>
-          <span className="phn-dato">{data.lagret ? "Alle slag registrert · lagret" : `Stats · Tester · ${data.omraade}`}</span>
-          <h1 className="phn-tittel">{data.navn}</h1>
-          {siste && <p className="phn-forklar">{[siste.dato, fortTekst(siste)].join(" · ")}</p>}
-        </div>
-        <div className="phn-knapper">
-          <Link className="phn-knapp pri" href="/portal/tren/tester">Ferdig</Link>
-        </div>
-      </header>
+    <div className="phn phn-skra">
+    <SkraTopp
+      lav
+      etikett="Test"
+      bilde="/images/playerhq/stats-topp.jpg" bildePosisjon="50% 50%"
+      overlinje={data.lagret ? "Alle slag registrert · lagret" : `Stats · Tester · ${data.omraade}`}
+      tittel={data.navn}
+      ingress={siste ? [siste.dato, fortTekst(siste)].join(" · ") : undefined}
+      handling={<span className="skra-topp-rad"><span className="skra-tilbake"><Link className="phn-res-tilbake" href="/portal/tren/tester"><ChevronLeft className="phn-ikon" aria-hidden />Stats · Tester</Link></span><Link className="phn-knapp pri skra-topp-knapp" href="/portal/tren/tester">Ferdig</Link></span>}
+    />
+    <SkraFlyt lav>
 
       {siste && (
         <dl className="phn-res-tall phn-inn">
@@ -224,6 +227,7 @@ export function PH14Test({ data }: { data: PH14TestData }) {
           <section className="phn-kort"><ResultatKontekst /></section>
         </div>
       )}
+    </SkraFlyt>
     </div>
   );
 }

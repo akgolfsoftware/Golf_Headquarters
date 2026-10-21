@@ -19,6 +19,10 @@ import { ChevronLeft, Lock, MessageSquare } from "lucide-react";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-kommunikasjon.css";
 import "@/styles/playerhq-ny-booking-meldinger.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke4-skra.css";
 
 export type PH23CoachTjeneste = { id: string; navn: string; varighetMin: number; beskrivelse: string | null; pris: string };
 
@@ -52,14 +56,16 @@ export function PH23Coach({ data }: { data: PH23CoachData }) {
     ? `${BOOK}?service=${encodeURIComponent(valgt)}&coachId=${encodeURIComponent(data.coachId)}`
     : `${BOOK}?coachId=${encodeURIComponent(data.coachId)}`;
 
-  return <div className="phn">
-    <div className="phn-bm-topp">
-      <Link href="/portal/booking" className="phn-k-tilbake"><ChevronLeft className="phn-ikon" aria-hidden />Bookinger</Link>
-      <div className="phn-bm-coach-hode">
-        <span className="phn-k-avatar phn-bm-avatar-stor" aria-hidden>{data.initialer || "—"}</span>
-        <div><div className="phn-dato">Coach</div><h1 className="phn-tittel">{data.navn}</h1></div>
-      </div>
-    </div>
+  return <div className="phn phn-skra">
+    <SkraTopp
+      lav
+      etikett="Coach"
+      bilde="/images/playerhq/tek-video.jpg" bildePosisjon="50% 50%"
+      overlinje="Coach"
+      tittel={data.navn}
+      handling={<span className="skra-topp-rad"><span className="skra-tilbake"><Link href="/portal/booking" className="phn-k-tilbake"><ChevronLeft className="phn-ikon" aria-hidden />Bookinger</Link></span></span>}
+    />
+    <SkraFlyt lav>
     <div className="phn-bm-grid">
       <div>
         <section className="phn-kort" aria-label="Dere sammen">
@@ -99,5 +105,5 @@ export function PH23Coach({ data }: { data: PH23CoachData }) {
         </div>
       </aside>
     </div>
-  </div>;
+  </SkraFlyt></div>;
 }

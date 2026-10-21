@@ -28,6 +28,10 @@ import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-stats.css";
 import "@/styles/playerhq-ny-statsdybde.css";
 import "@/styles/playerhq-ny-statsresten-test.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke4-skra.css";
 
 type Pyramide = "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN";
 type Enhet = "antall" | "prosent" | "tid_sek" | "distanse_m" | "score" | "sett";
@@ -133,11 +137,18 @@ export function PH14EgenTest({ rolle, coachNavn, gruppeNavn, startSteg = 1, star
   }
 
   return (
-    <div className="phn phn-nt">
+    <div className="phn phn-nt phn-skra">
+    <SkraTopp
+      lav
+      etikett="Egen test"
+      bilde="/images/playerhq/stats-topp.jpg" bildePosisjon="50% 50%"
+      overlinje="Tester · lag din egen"
+      tittel="Egen test"
+      handling={<span className="skra-topp-rad"><span className="skra-tilbake"><TmTilbake href="/portal/tren/tester" tekst="Tester" /></span></span>}
+    />
+    <SkraFlyt lav>
       <div className="phn-nt-smal">
-        <TmTilbake href="/portal/tren/tester" tekst="Tester" />
         <div className="phn-nt-topp" ref={toppRef}>
-          <div><div className="phn-dato">Tester · lag din egen</div><h1 className="phn-tittel">Egen test</h1></div>
           <div className="phn-nt-stegtopp">
             <small>Steg {steg} av 5 · {STEG_NAVN[steg - 1]}</small>
             <div className="phn-nt-spor" role="progressbar" aria-valuemin={1} aria-valuemax={5} aria-valuenow={steg} aria-label="Fremdrift">
@@ -274,6 +285,7 @@ export function PH14EgenTest({ rolle, coachNavn, gruppeNavn, startSteg = 1, star
         </div>
       </div>
 
+    </SkraFlyt>
       <dialog ref={avbrytRef} className="phn-sd-dialog" aria-labelledby="ph14egen-avbryt">
         <div className="phn-ark-kropp">
           <h2 id="ph14egen-avbryt" style={{ margin: 0, font: "600 19px/1.25 var(--phn-sans)" }}>Forkaste testen?</h2>

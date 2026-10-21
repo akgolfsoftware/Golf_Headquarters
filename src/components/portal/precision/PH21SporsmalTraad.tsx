@@ -17,6 +17,10 @@ import { useRouter } from "next/navigation";
 import { ChevronLeft, Send } from "lucide-react";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-kommunikasjon.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke4-skra.css";
 
 export type PH21SporsmalTraadData = {
   id: string;
@@ -59,15 +63,20 @@ export function PH21SporsmalTraad({ data, svarAction, tilbakeHref }: {
     });
   };
 
-  return <div className="phn">
+  return <div className="phn phn-skra">
+    <SkraTopp
+      lav
+      etikett="Spørsmål"
+      bilde="/images/playerhq/tek-video.jpg" bildePosisjon="50% 50%"
+      overlinje={`Spørsmål · stilt ${data.stiltTid}`}
+      tittel={data.tittel}
+      handling={<span className="skra-topp-rad"><span className="skra-tilbake"><Link href={tilbakeHref} className="phn-k-tilbake"><ChevronLeft className="phn-ikon" aria-hidden />Spørsmål</Link></span></span>}
+    />
+    <SkraFlyt lav>
     <div className="phn-k-smal">
-      <div className="phn-k-topp">
-        <Link href={tilbakeHref} className="phn-k-tilbake"><ChevronLeft className="phn-ikon" aria-hidden />Spørsmål</Link>
-        <div><div className="phn-dato">Spørsmål · stilt {data.stiltTid}</div><h1 className="phn-tittel">{data.tittel}</h1></div>
-        <div className="phn-k-status-linje">
-          <span className={`phn-pille ${data.besvart ? "ok" : "vent"}`}>{data.besvart ? "Besvart" : "Venter på svar"}</span>
-          {data.besvartTid && <span className="phn-k-kildetekst">Besvart {data.besvartTid}</span>}
-        </div>
+      <div className="phn-k-status-linje">
+        <span className={`phn-pille ${data.besvart ? "ok" : "vent"}`}>{data.besvart ? "Besvart" : "Venter på svar"}</span>
+        {data.besvartTid && <span className="phn-k-kildetekst">Besvart {data.besvartTid}</span>}
       </div>
       <section className="phn-k-traad" aria-label="Spørsmål og svar">
         <div className="phn-k-bobler">
@@ -89,5 +98,5 @@ export function PH21SporsmalTraad({ data, svarAction, tilbakeHref }: {
         {feil && <p className="phn-k-feil" role="alert">{feil}</p>}
       </section>
     </div>
-  </div>;
+  </SkraFlyt></div>;
 }

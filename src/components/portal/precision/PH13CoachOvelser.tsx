@@ -18,6 +18,10 @@ import { ChevronLeft } from "lucide-react";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-kommunikasjon.css";
 import "@/styles/playerhq-ny-booking-meldinger.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke4-skra.css";
 
 export type CoachAkse = "fys" | "tek" | "slag" | "spill" | "turn";
 
@@ -66,11 +70,16 @@ export function PH13CoachOvelser({ data }: { data: PH13CoachOvelserData }) {
   const iPlanen = data.ovelser.filter((o) => o.iPlanen).length;
   const fra = data.coachFornavn ?? "coachen";
 
-  return <div className="phn">
-    <div className="phn-bm-topp">
-      <Link href="/portal/drills" className="phn-k-tilbake"><ChevronLeft className="phn-ikon" aria-hidden />Øvelsesbank</Link>
-      <div><div className="phn-dato">Øvelsesbank · fra coach</div><h1 className="phn-tittel">Øvelser fra {fra}</h1></div>
-    </div>
+  return <div className="phn phn-skra">
+    <SkraTopp
+      lav
+      etikett="Øvelser fra coach"
+      bilde="/images/playerhq/tek-video.jpg" bildePosisjon="50% 50%"
+      overlinje="Øvelsesbank · fra coach"
+      tittel={`Øvelser fra ${fra}`}
+      handling={<span className="skra-topp-rad"><span className="skra-tilbake"><Link href="/portal/drills" className="phn-k-tilbake"><ChevronLeft className="phn-ikon" aria-hidden />Øvelsesbank</Link></span></span>}
+    />
+    <SkraFlyt lav>
     {data.ovelser.length === 0
       ? <section className="phn-kort" style={{ background: "var(--phn-sand-100)" }}>
           <b className="phn-bm-undertittel">Ingen øvelser fra coach ennå</b>
@@ -91,5 +100,5 @@ export function PH13CoachOvelser({ data }: { data: PH13CoachOvelserData }) {
           <div className="phn-bm-ov-liste">{synlige.map((o) => <Kort key={o.key} o={o} />)}</div>
           <Link href="/portal/drills" className="phn-knapp sek" style={{ justifySelf: "start" }}>Til Øvelsesbanken</Link>
         </>}
-  </div>;
+  </SkraFlyt></div>;
 }
