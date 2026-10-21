@@ -7,7 +7,8 @@ import { saveTnTestSomCoach } from "@/app/team-norway/tn-testforing-actions";
 import { tnFormat, tnRowError, tnScore, tnValidate, type TnValues, type TnResult } from "@/lib/portal-tester/tn-scoring";
 import { GATE_POENG_VALG } from "@/lib/portal-tester/tn-catalog";
 import type { TnProtocol } from "@/lib/portal-tester/tn-catalog";
-import { TnKnapp, TnKort, TnPille, TnInput } from "./core";
+import { TnKnapp, TnKort, TnInput } from "./core";
+import { TnSkraKort, TnSkraTopp } from "./tn-skra-topp";
 import styles from "./tn-kontroller.module.css";
 import { TN } from "@/lib/v2/team-norway";
 import type { TnTestdagDeltakerDetalj } from "@/lib/domain/tn-arbeidsflate";
@@ -151,21 +152,21 @@ export function TnTestdagScorecard({ deltaker, protocol: p, testDagId }: { delta
     setRaw((v) => ({ ...v, [String(i + 1)]: { ...v[String(i + 1)], [gate.key]: verdi } }));
   };
 
-  const statusPilleTone = deltaker.status === "DONE" ? "green" : deltaker.status === "PENDING" ? "amber" : "nøytral";
   const statusEtikett = deltaker.status === "PENDING" ? "I kø" : deltaker.status === "DONE" ? "Ført" : deltaker.status === "SKIPPED" ? "Hoppet over" : "Ikke møtt";
 
   return (
-    <section style={{ display: "flex", flexDirection: "column", gap: 18, color: TN.navy900, fontFamily: TN.font.body }}>
+    <>
+      <TnSkraTopp
+        lav
+        bilde="putting-green"
+        etikett={`Testføring for ${deltaker.spillerNavn}`}
+        overlinje={`${p.name} · ${deltaker.testDagTitle} · ${statusEtikett}`}
+        tittel={deltaker.spillerNavn}
+        ingress={gate && deltaker.status === "PENDING" ? `${gate.poeng ? "Trykk 4, 1 eller 0 etter hvert slag." : `Trykk ${gate.valg.map((v) => v.tekst).join(" eller ")} etter hvert slag.`} Testen teller bare når alle ${p.rows.length} er ført.` : undefined}
+      />
+      <TnSkraKort lav>
       {/* Også øverst — coachen skal ikke måtte skrolle forbi 25 forsøksfelt for å komme tilbake til køen. */}
       <Link href={`/team-norway/fellestesting?dag=${testDagId}`} style={{ display: "inline-flex", alignItems: "center", minHeight: 44, alignSelf: "flex-start", color: TN.navy600, fontSize: 14, fontWeight: 700, textDecoration: "underline", textUnderlineOffset: 4 }}>Tilbake til køen</Link>
-      <header style={{ display: "grid", gap: 4 }}>
-        <span style={{ fontFamily: TN.font.mono, fontSize: 12, lineHeight: 1.3, letterSpacing: "0.12em", textTransform: "uppercase", color: TN.ink500 }}>{p.name} · {deltaker.testDagTitle}</span>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-          <h1 style={{ margin: 0, fontFamily: TN.font.display, fontWeight: 400, fontSize: "clamp(30px, 3vw, 38px)", lineHeight: 1.12, letterSpacing: "0.03em", color: TN.navy900, overflowWrap: "anywhere" }}>{deltaker.spillerNavn}</h1>
-          <TnPille tone={statusPilleTone}>{statusEtikett}</TnPille>
-        </div>
-        {gate && deltaker.status === "PENDING" ? <p style={{ margin: "4px 0 0", fontSize: 15.5, lineHeight: 1.6, color: TN.ink700, maxWidth: "52ch" }}>{gate.poeng ? "Trykk 4, 1 eller 0 etter hvert slag." : `Trykk ${gate.valg.map((v) => v.tekst).join(" eller ")} etter hvert slag.`} Testen teller bare når alle {p.rows.length} er ført.</p> : null}
-      </header>
 
       {deltaker.utkastFeil && <p role="alert" style={{ margin: 0, color: TN.status.redText, fontSize: TN.text.sm }}>{deltaker.utkastFeil}</p>}
 
@@ -326,6 +327,7 @@ export function TnTestdagScorecard({ deltaker, protocol: p, testDagId }: { delta
           <Link href={`/team-norway/fellestesting/${deltaker.nestePendingDeltakerId}`} style={{ display: "inline-flex", alignItems: "center", minHeight: 44, color: TN.navy600, fontSize: 14, fontWeight: 700 }}>Neste i køen →</Link>
         ) : <span />}
       </nav>
-    </section>
+      </TnSkraKort>
+    </>
   );
 }
