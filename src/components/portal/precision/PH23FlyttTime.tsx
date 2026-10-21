@@ -15,10 +15,13 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, ChevronLeft } from "lucide-react";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
 import { rescheduleBooking } from "@/app/portal/meg/bookinger/actions";
 import { slotNokkel, type PH23SlotDetalj } from "@/lib/portal-booking/ph23-booking-data";
 import "@/styles/playerhq-ny.css";
+import "@/styles/playerhq-ny-idag.css";
 import "@/styles/playerhq-ny-kommunikasjon.css";
+import "@/styles/playerhq-ny-lister-skra.css";
 
 export type PH23FlyttTimeData = {
   bookingId: string;
@@ -58,12 +61,18 @@ export function PH23FlyttTime({ data, tilbakeHref }: { data: PH23FlyttTimeData; 
     });
   };
 
-  return <div className="phn">
-    <div className="phn-k-smal">
-      <div className="phn-k-topp">
-        <Link href={tilbakeHref} className="phn-k-tilbake"><ChevronLeft className="phn-ikon" aria-hidden />Bookingen</Link>
-        <div><div className="phn-dato">Booking · flytt time</div><h1 className="phn-tittel">Flytt {data.tjeneste}</h1></div>
-      </div>
+  return <div className="phn phn-skra">
+    <SkraTopp
+      lav
+      etikett="Flytt time"
+      bilde="/images/playerhq/slag-simulator.jpg" bildePosisjon="50% 50%"
+      overlinje="Booking · flytt time"
+      tittel={`Flytt ${data.tjeneste}`}
+      handling={<span className="skra-tilbake"><Link href={tilbakeHref} className="phn-k-tilbake"><ChevronLeft className="phn-ikon" aria-hidden />Bookingen</Link></span>}
+    />
+    <SkraFlyt lav>
+    <div className="phn-k-skra-grid">
+      <div>
       <p className="phn-forklar">Ledige tider hos {coachFornavn}. Du ser bare tider {coachFornavn} har åpnet for booking, og kan flytte fram til {data.avbestillingTimer} timer før timen.</p>
 
       <section className="phn-seksjon">
@@ -84,7 +93,8 @@ export function PH23FlyttTime({ data, tilbakeHref }: { data: PH23FlyttTimeData; 
           {tider.map((t) => <button key={t} type="button" aria-pressed={kl === t} onClick={() => setKl(t)}>{t}</button>)}
         </div> : <p className="phn-forklar">Ingen ledige tider denne dagen. Velg en annen dag.</p>}
       </section>}
-
+      </div>
+      <div>
       <div className="phn-k-fra-til">
         <div className="phn-okt phn-k-mini gml" style={{ background: "var(--phn-g800)" }}><div className="phn-okt-tekst"><span className="phn-k-okt-tid">{data.naaKl}</span><span className="phn-navn">{data.naaDag}</span></div></div>
         <ArrowRight className="phn-ikon phn-k-pil" aria-label="blir" />
@@ -95,6 +105,8 @@ export function PH23FlyttTime({ data, tilbakeHref }: { data: PH23FlyttTimeData; 
       <div className="phn-k-festet">
         <button type="button" className="phn-knapp pri phn-k-stor" disabled={!valgt || pending} onClick={flytt}>{pending ? "Flytter …" : "Flytt til ny tid"}</button>
       </div>
+      </div>
     </div>
+    </SkraFlyt>
   </div>;
 }
