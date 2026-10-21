@@ -1,10 +1,12 @@
 "use client";
 
 import { useId, useRef, useState, type FormEvent } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
 
+import { TnLogo } from "@/components/team-norway/core";
 import { createClient } from "@/lib/supabase/client";
 import styles from "./tn-innlogging.module.css";
 
@@ -46,15 +48,21 @@ export function TnInnlogging({ retursti }: { retursti: string }) {
 
   return (
     <main className={styles.side}>
-      <header className={styles.skinne}>
-        <span className={styles.ordmerke}>TEAM NORWAY GOLF</span>
-      </header>
+      <section className={styles.topp}>
+        <div className={styles.kant} aria-hidden="true" />
+        <div className={styles.foto} aria-hidden="true">
+          <Image src="/team-norway/bilder/spiller-ved-vannet.jpg" alt="" fill priority sizes="100vw" />
+        </div>
+        <div className={styles.toppInnhold}>
+          <TnLogo hoyde={48} prioritet paaMork />
+        </div>
+      </section>
       <div className={styles.innhold}>
-        <section className={styles.hero} aria-labelledby={`${id}-tittel`}>
-          <h1 id={`${id}-tittel`}>Logg inn</h1>
-          <p>Bruk AK Golf-kontoen din. Rollen på kontoen avgjør hva du ser.</p>
-        </section>
         <form onSubmit={send} className={styles.kort} aria-busy={opptatt} aria-labelledby={`${id}-tittel`}>
+          <div className={styles.kortHode}>
+            <h1 id={`${id}-tittel`}>Logg inn</h1>
+            <p>Bruk AK Golf-kontoen din. Rollen på kontoen avgjør hva du ser.</p>
+          </div>
           {harFeil && (
             <p id={`${id}-feil`} role="alert" className={styles.feil}>
               {status === "nettfeil"
