@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { medTnSpillerData } from "@/lib/domain/tn-arbeidsflate";
 import { byggPlanvisning } from "@/lib/turneringsplan/data";
-import { TnShell, TnSpillerFaner, tnRolleNavn } from "@/components/team-norway/tn-shell";
+import { TnIupTopp } from "@/components/team-norway/tn-iup-topp";
+import { TnShell, tnRolleNavn } from "@/components/team-norway/tn-shell";
 import { Turneringsplanlegger } from "@/components/turneringsplan/Turneringsplanlegger";
 
 export const dynamic = "force-dynamic";
@@ -21,8 +22,9 @@ export default async function TurneringsplanPage({ params }: { params: Promise<{
 
   return (
     <TnShell aktiv="spillere" brukerNavn={bruker.name ?? "Ukjent"} rolle={tnRolleNavn(tilgang.kontekst.rolle)} groupId={tilgang.kontekst.gruppe.id} visTrenerflater={!tilgang.kontekst.erSpiller} kanAdministrere={tilgang.kontekst.kanAdministrere} tilbake={{ href: "/team-norway/spillere", label: "Spillere" }}>
-      <TnSpillerFaner spillerId={spillerId} spillerNavn={tilgang.spillerNavn} aktiv="turneringsplan" kanAdministrere={!tilgang.kontekst.erSpiller} kompakt />
+      <TnIupTopp spillerId={spillerId} spillerNavn={tilgang.spillerNavn} aktiv="turneringsplan" kanAdministrere={!tilgang.kontekst.erSpiller} overlinje={`IUP · ${tilgang.spillerNavn}`} tittel="Turneringsplan">
       <Turneringsplanlegger visning={visning} rolle={tilgang.kontekst.erSpiller ? "spiller" : "tn"} />
+    </TnIupTopp>
     </TnShell>
   );
 }
