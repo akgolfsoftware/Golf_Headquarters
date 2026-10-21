@@ -9,6 +9,7 @@
 import Link from "next/link";
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from "react";
 import { ChevronLeft } from "lucide-react";
+import { SkraTopp } from "@/components/precision/skra/Skra";
 
 export type KnappVariant = "pri" | "sek" | "rust" | "spok";
 const kl = (v: KnappVariant, stor?: boolean, ekstra?: string) => ["knapp", v, stor && "stor", ekstra].filter(Boolean).join(" ");
@@ -38,16 +39,35 @@ export function Avatar({ navn, liten, stor, lys }: { navn: string; liten?: boole
   return <span className={["avatar", liten && "liten", stor && "stor", lys && "lys"].filter(Boolean).join(" ")} aria-hidden>{initialer(navn)}</span>;
 }
 
-/** Sidehodet: liten dato-/kontekstlinje, stor tittel, valgfri ingress og handlinger til høyre. */
-export function Topp({ dato, tittel, ingress, handlinger, tilbake }: {
-  dato?: ReactNode; tittel: ReactNode; ingress?: ReactNode; handlinger?: ReactNode; tilbake?: { href: string; tekst: string };
+/** Toppbildene fra public/images/playerhq. Siden velger bilde etter tittelen, så naboer i menyen får ulike bilder. */
+const TOPPBILDER = ["slag-simulator", "slag-utslag", "tek-video", "slag-putting", "stats-topp", "spill-bane", "naerspill-wedge", "turn-tee"] as const;
+function toppBilde(nokkel: string) {
+  let h = 0;
+  for (const c of nokkel) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+  return `/images/playerhq/${TOPPBILDER[h % TOPPBILDER.length]}.jpg`;
+}
+
+/**
+ * Sidehodet i Skrå-drakten (type 4–6 i skjermtypene, 21.10.2026): lav topp med bilde, kontekstlinje, tittel og handlinger.
+ * Siden etter toppen ligger litt over kanten (agencyos-ny.css §Skrå-topp). `bilde` overstyrer valget.
+ */
+export function Topp({ dato, tittel, ingress, handlinger, tilbake, bilde }: {
+  dato?: ReactNode; tittel: ReactNode; ingress?: ReactNode; handlinger?: ReactNode; tilbake?: { href: string; tekst: string }; bilde?: string;
 }) {
-  return <div className="topp">
-    {tilbake && <Link href={tilbake.href} className="ag-tilbake"><ChevronLeft className="ikon" aria-hidden />{tilbake.tekst}</Link>}
-    <div className="topp-rad">
-      <div>{dato && <div className="dato">{dato}</div>}<h1 className="tittel">{tittel}</h1>{ingress && <p className="ingress">{ingress}</p>}</div>
-      {handlinger && <div className="knapper">{handlinger}</div>}
-    </div>
+  const nokkel = typeof tittel === "string" ? tittel : typeof dato === "string" ? dato : "AgencyOS";
+  return <div className="agn-topp-lav">
+    <SkraTopp
+      lav
+      bilde={bilde ?? toppBilde(nokkel)}
+      bildePosisjon="50% 45%"
+      overlinje={dato}
+      tittel={tittel}
+      ingress={ingress}
+      handling={tilbake || handlinger ? <div className="agn-topp-handl">
+        {tilbake && <Link href={tilbake.href} className="ag-tilbake"><ChevronLeft className="ikon" aria-hidden />{tilbake.tekst}</Link>}
+        {handlinger && <div className="knapper">{handlinger}</div>}
+      </div> : undefined}
+    />
   </div>;
 }
 

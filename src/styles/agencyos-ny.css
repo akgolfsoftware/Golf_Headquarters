@@ -336,3 +336,15 @@ a.agn-neste:active { transform: scale(.97); }
 @media (min-width: 900px) {
   .agn .pa-side { padding: var(--r4) 40px 96px; }
 }
+
+/* Skrå-topp: lav topp med bilde på alle AgencyOS-sider som bruker Topp. Toppen går ut til kantene, siden under ligger over kanten. */
+.agn-topp-lav { --skra-ut-top: var(--r5); --skra-ut-x: var(--r4); margin-bottom: -16px; }
+.agn-topp-lav + * { position: relative; z-index: 1; margin-top: -8px; }
+.agn-s:has(> .agn-topp-lav) { background: var(--ak-flate); }
+.agn-topp-lav .agn-topp-handl { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.agn-topp-lav .ag-tilbake { color: #fff; }
+.agn-topp-lav .knapper { display: flex; flex-wrap: wrap; gap: 8px; }
+.agn-topp-lav .knapp.sek { background: rgba(255, 255, 255, .16); color: #fff; border-color: rgba(255, 255, 255, .34); }
+.agn-topp-lav .knapp.pri { background: #fff; color: var(--graphite-900); border-color: #fff; }
+@media (min-width: 900px) { .agn-topp-lav { --skra-ut-x: 40px; } }
+.agn-topp-lav .knapp, .agn-topp-lav .ag-tilbake { min-height: 48px; }
