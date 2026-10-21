@@ -19,19 +19,27 @@ import { BREAK_HELLING, BREAK_STIMP, breakTabell } from "@/lib/portal-drills/ove
 import { OvTilbake } from "./PH13Felles";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-ovelser.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke8-skra.css";
 
 export function PH13BreakTabell({ antallPutting }: { antallPutting: number }) {
   const [stimp, setStimp] = useState(10);
   const rader = breakTabell(stimp);
   return (
-    <div className="phn">
-      <OvTilbake href="/portal/drills" tekst="Øvelsesbank" />
+    <div className="phn phn-skra">
+    <SkraTopp
+      lav
+      etikett="Break-tabell"
+      bilde="/images/playerhq/slag-putting.jpg" bildePosisjon="50% 50%"
+      overlinje="Øvelsesbank · putting"
+      tittel="Break-tabell"
+      ingress="Hvor langt utenfor hullet du sikter, etter avstand og helling på greenen."
+      handling={<span className="skra-tilbake"><OvTilbake href="/portal/drills" tekst="Øvelsesbank" /></span>}
+    />
+    <SkraFlyt lav>
       <div className="phn-ov-smal phn-seksjon" style={{ gap: 32 }}>
-        <div className="phn-ov-topp">
-          <span className="phn-dato">Øvelsesbank · putting</span>
-          <h1 className="phn-tittel">Break-tabell</h1>
-          <p className="phn-ov-ingress">Hvor langt utenfor hullet du sikter, etter avstand og helling på greenen.</p>
-        </div>
         <div className="phn-felt"><span>Greenhastighet (Stimp)</span>
           <div className="phn-valg" role="group" aria-label="Greenhastighet">
             {BREAK_STIMP.map((s) => <button key={s.verdi} type="button" aria-pressed={stimp === s.verdi} onClick={() => setStimp(s.verdi)}>{s.navn}</button>)}
@@ -52,6 +60,7 @@ export function PH13BreakTabell({ antallPutting }: { antallPutting: number }) {
           <ChevronRight className="phn-ikon" aria-hidden />
         </Link>
       </div>
+    </SkraFlyt>
     </div>
   );
 }
