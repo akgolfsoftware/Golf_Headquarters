@@ -21,6 +21,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Check, ChevronLeft } from "lucide-react";
 import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { SkraFlyt, SkraKort, SkraTopp } from "@/components/precision/skra/Skra";
 import { lagreIupAction, finnIupAction, hentIupHistorikkAction } from "@/app/portal/mal/evaluering/actions";
 import { IUP_NIVAAER, IUP_VERSJONER, IUP_KATEGORIER, UTVIKLINGSSJEKK_SKALA, hentUtviklingssporsmal, lesIupBesvarelse, type IupBesvarelse } from "@/lib/iup/utviklingssjekk";
 import { IUP_FORDELINGSOMRAADER, hentSesongsporsmal, lesSesongevaluering, type IupSesongevaluering } from "@/lib/iup/sesongevaluering";
@@ -45,7 +46,7 @@ const er100 = (f: Record<string, number>) => Math.abs(sum(f) - 100) <= 1e-9;
 const AKSE_KLASSE: Record<string, string> = { FYS: "akse-fys", TEK: "akse-tek", SLAG: "akse-slag", SPILL: "akse-spill", TURN: "akse-turn" };
 const SESONG_STEG = ["Sesongen din", "Påstandene", "Tidsfordeling", "Forbedringspunkter"] as const;
 
-function Panel({ children }: { children: ReactNode }) { return <section className="pa-card pa-card--pad iup-panel">{children}</section>; }
+function Panel({ children }: { children: ReactNode }) { return <SkraKort className="iup-panel">{children}</SkraKort>; }
 function Felt({ navn, children }: { navn: string; children: ReactElement<{ id?: string }> }) {
   const id = useId();
   return <div className="iup-felt"><label htmlFor={id}>{navn}</label>{cloneElement(children, { id })}</div>;
@@ -61,16 +62,17 @@ export function PHIupEvaluering({ oversikt, historikk, nyType, uleste, startSteg
   const neste = oversikt.nesteSide;
   const tittel = nyType ? NAVN[nyType] : historikk ? `${NAVN[historikk.type] ?? "Evaluering"}${historikk.type === "SESONGEVALUERING" && siste?.status === "LEVERT" ? " levert" : ""}` : "Evaluering";
   return <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
-    <div className="phn phn-iup" data-od-id="playerhq-iup-evaluering">
-      <div className="smal">
-        <div className="topp">
-          <Link href="/portal/mal" className="tilbake"><ChevronLeft size={20} aria-hidden />Målsetning</Link>
-          <div>
-            <span className="iup-merke">IUP</span>
-            <h1 className="phn-tittel">{tittel}</h1>
-          </div>
-          <p className="phn-forklar">Her fyller du ut utviklingssjekk og sesongevaluering og finner tidligere svar.</p>
-        </div>
+    <div className="phn phn-iup phn-skra" data-od-id="playerhq-iup-evaluering">
+      <SkraTopp
+        lav
+        etikett="Evaluering"
+        bilde="/images/playerhq/stats-topp.jpg" bildePosisjon="50% 50%"
+        overlinje="IUP"
+        tittel={tittel}
+        ingress="Her fyller du ut utviklingssjekk og sesongevaluering og finner tidligere svar."
+        handling={<span className="skra-tilbake"><Link href="/portal/mal" className="tilbake"><ChevronLeft size={20} aria-hidden />Målsetning</Link></span>}
+      />
+      <SkraFlyt lav>
         {!oversikt.kanSvare && <Panel><p>Spørsmålssjekkene gjelder aktive spillere i WANG eller Team Norway. Tidligere besvarelser er fortsatt tilgjengelige for deg.</p></Panel>}
         {historikk ? <>
           {!siste?.innhold || !lagretValg?.success || siste.revisjon !== historikk.revisjon ? <Panel><p role="alert">Denne besvarelsen har et kilde- eller formatavvik. Den kan ikke redigeres før avviket er avklart.</p></Panel> :
@@ -96,7 +98,7 @@ export function PHIupEvaluering({ oversikt, historikk, nyType, uleste, startSteg
             {neste && <div className="phn-knapper"><Link className="phn-knapp sek" href={`/portal/mal/evaluering?${new URLSearchParams(neste)}`}>Eldre besvarelser</Link></div>}
           </section>
         </>}
-      </div>
+      </SkraFlyt>
     </div>
   </PlayerHQSkall>;
 }
@@ -289,7 +291,7 @@ export function IupSvarFelt({ svar, laast, onEndre, steg }: { svar: Svar; laast:
     const sporsmal = hentUtviklingssporsmal(svar.versjon, svar.niva);
     return <>
       <Panel><p>{Object.keys(svar.svar).length} av {sporsmal.length} besvart · skala 1–5</p><p>{UTVIKLINGSSJEKK_SKALA.map((s) => `${s.verdi}: ${s.tekst}`).join(" · ")}</p></Panel>
-      {IUP_KATEGORIER.map((kategori, index) => <details className="pa-card pa-card--pad iup-kategori" key={kategori} open={index === 0}>
+      {IUP_KATEGORIER.map((kategori, index) => <details className="phn-kort iup-kategori" key={kategori} open={index === 0}>
         <summary><strong>{kategori}</strong><span>{sporsmal.filter((s) => s.kategori === kategori && Object.hasOwn(svar.svar, s.id)).length} / {sporsmal.filter((s) => s.kategori === kategori).length}</span></summary>
         {sporsmal.filter((s) => s.kategori === kategori).map((s) => <Skala key={s.id} tekst={s.tekst} celle={s.celle} verdi={svar.svar[s.id]} maks={5} laast={laast} onVelg={(v) => onEndre({ ...svar, svar: byttTall(svar.svar, s.id, v) })} />)}
       </details>)}
