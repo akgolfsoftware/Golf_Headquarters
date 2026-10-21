@@ -1,0 +1,5 @@
+/* Pakke 7 (Stats i dybden): første rad under det skrå kuttet, full bredde på desktop. */
+.phn-skra .phn-to-kol, .phn-skra .phn-om-kart-grid { padding-top: 28px; }
+@container (min-width: 900px) {
+  .phn-skra .phn-to-kol, .phn-skra .phn-om-kart-grid { padding-top: 44px; margin-right: 52px; }
+}

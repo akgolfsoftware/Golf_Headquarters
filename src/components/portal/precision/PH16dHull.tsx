@@ -24,6 +24,10 @@ import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-stats.css";
 import "@/styles/playerhq-ny-statsdybde.css";
 import "@/styles/playerhq-ny-statsresten-omrade.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke7-skra.css";
 
 type Visning = "soner" | "hull";
 
@@ -43,18 +47,20 @@ export function PH16dHull({ data, start = "soner" }: { data: HullData; start?: V
   const harSg = data.soner.some((s) => s.v != null);
 
   return (
-    <div className="phn">
-      <TmTilbake href="/portal/analysere" tekst="Stats" />
-      <div className="phn-om-topp">
-        <div>
-          <div className="phn-dato">Stats{data.kategori ? ` · Kategori ${data.kategori}` : ""}</div>
-          <h1 className="phn-tittel">Hull</h1>
-        </div>
-        <div className="phn-valg" role="group" aria-label="Visning">
+    <div className="phn phn-skra">
+    <SkraTopp
+      lav
+      etikett="Stats"
+      bilde="/images/playerhq/spill-bane.jpg" bildePosisjon="50% 50%"
+      overlinje={<>Stats{data.kategori ? ` · Kategori ${data.kategori}` : ""}</>}
+      tittel={<>Hull</>}
+      handling={<span className="skra-tilbake"><TmTilbake href="/portal/analysere" tekst="Stats" /></span>}
+    />
+    <SkraFlyt lav>
+      <div className="phn-valg" role="group" aria-label="Visning">
           <button type="button" aria-pressed={visning === "soner"} onClick={() => setVisning("soner")}>Soner</button>
           <button type="button" aria-pressed={visning === "hull"} onClick={() => setVisning("hull")}>Hull for hull</button>
         </div>
-      </div>
 
       {visning === "soner" ? (
         <div className="phn-to-kol">
@@ -174,6 +180,7 @@ export function PH16dHull({ data, start = "soner" }: { data: HullData; start?: V
           </aside>
         </div>
       )}
+    </SkraFlyt>
     </div>
   );
 }
