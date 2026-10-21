@@ -5,7 +5,8 @@ import { hentSpillerpostTidslinje, medTnSpillerpostData } from "@/lib/domain/tn-
 import { hentTnGruppeForBruker } from "@/lib/domain/tn-tilgang";
 import { TN } from "@/lib/v2/team-norway";
 import { TnAvatarInitialer, TnPille } from "@/components/team-norway/core";
-import { TnShell, TnSidehode, TnSpillerFaner } from "@/components/team-norway/tn-shell";
+import { TnIupTopp } from "@/components/team-norway/tn-iup-topp";
+import { TnShell } from "@/components/team-norway/tn-shell";
 import { TnPostKomponer } from "@/components/team-norway/tn-post-komponer";
 import { TnPostTidslinje, type TnTidslinjePost } from "@/components/team-norway/tn-post-tidslinje";
 import { opprettSpillerpostAction } from "@/app/team-norway/tn-post-actions";
@@ -74,12 +75,7 @@ export default async function SpillerpostPage({ params }: { params: Promise<{ sp
       kanAdministrere={harTrenertilgang}
       tilbake={{ href: "/team-norway/spillere", label: "Spillere" }}
     >
-      <TnSidehode
-        overlinje={`IUP · ${spiller.name ?? "Ukjent"}`}
-        tittel="Post"
-        ingress="Poster til utøveren og foresatte, i én tidslinje med lesekvittering."
-      />
-      <TnSpillerFaner spillerId={spillerId} spillerNavn={spiller.name ?? "Ukjent"} aktiv="post" kanAdministrere={harTrenertilgang} kompakt />
+      <TnIupTopp spillerId={spillerId} spillerNavn={spiller.name ?? "Ukjent"} aktiv="post" kanAdministrere={harTrenertilgang} overlinje={`IUP · ${spiller.name ?? "Ukjent"}`} tittel="Post" ingress="Poster til utøveren og foresatte, i én tidslinje med lesekvittering.">
 
       <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "12px 14px", borderRadius: TN.radius.sm, background: TN.white, border: `1px solid ${TN.ink200}`, flexWrap: "wrap" }}>
         <span style={{ fontFamily: TN.font.body, fontWeight: 700, fontSize: 13, color: TN.ink500, flexShrink: 0 }}>Synlig for</span>
@@ -105,6 +101,7 @@ export default async function SpillerpostPage({ params }: { params: Promise<{ sp
       {erTrenerHer && <TnPostKomponer send={publiserSpillerpost} plassholder={`Skriv en post til ${spiller.name?.split(" ")[0] ?? "spilleren"} …`} />}
 
       <TnPostTidslinje poster={poster} kvitterVedVisning={!erTrenerHer} />
+    </TnIupTopp>
     </TnShell>
   );
 }
