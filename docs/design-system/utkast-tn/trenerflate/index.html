@@ -78,7 +78,7 @@ h1 { font-size: 26px; margin: 0 0 4px; text-wrap: balance; }
 .tabell td { padding: 8px; border-bottom: 1px solid var(--linje); vertical-align: top; }
 .tabell td.t { font-family: var(--f-tall); white-space: nowrap; }
 .tabell a { color: inherit; font-weight: 700; }
-.tabellboks { overflow-x: auto; min-width: 0; }
+.tabellboks { min-width: 0; }
 .mobliste { display: none; }
 .stripe { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
 .stripe div { border-top: 1.5px solid var(--blekk); padding-top: 6px; min-width: 0; }
@@ -100,7 +100,7 @@ h1 { font-size: 26px; margin: 0 0 4px; text-wrap: balance; }
   .helt { padding: 16px 16px 38px; }
   .helt h2 { font-size: 22px; }
   .hovedtall { font-size: 36px; }
-  .faner { padding: 0 16px; overflow-x: auto; flex-wrap: nowrap; scrollbar-width: none; }
+  .faner { padding: 0 16px; }
   .flate { padding: 14px 16px 22px; grid-template-columns: minmax(0, 1fr); gap: 12px; }
   .k12, .k8, .k6, .k4, .k3 { grid-column: span 1; }
   .stripe { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -118,7 +118,14 @@ h1 { font-size: 26px; margin: 0 0 4px; text-wrap: balance; }
 .vid h3 { margin: 0 0 8px; font-size: 15px; }
 .vid table { border-collapse: collapse; width: 100%; font-size: 13px; }
 .vid td, .vid th { text-align: left; border-bottom: 1px solid var(--linje); padding: 6px 8px; vertical-align: top; }
-.vidboks { overflow-x: auto; }
+.vidboks { min-width: 0; }
+@media (max-width: 600px) {
+  .vid table, .vid tbody, .vid tr, .vid td { display: block; width: auto; }
+  .vid tr:first-child { display: none; }
+  .vid tr { border-bottom: 1px solid var(--linje); padding: 6px 0; }
+  .vid td { border: 0; padding: 2px 0; }
+  .vid td + td::before { content: "→ "; }
+}
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 
@@ -229,11 +236,16 @@ turneringer: { navn: "IUP · Turneringer", notat: "Progresjon over tid. Hovedtal
       </svg>
       <span class="kilde">Kilde: NGF og GolfBox via AK Golf HQ (public_player_entries), bare brutto, hentet 20.10.2026.</span></div>
     <div class="kort k4"><h3>Sesong for sesong</h3><div class="rad"><span>2026</span><span class="tall">73,4 · 14 starter</span></div><div class="rad"><span>2025</span><span class="tall">75,1 · 17 starter</span></div><div class="rad"><span>2024</span><span class="tall">76,8 · 11 starter</span></div><div class="rad"><span>Beste plass 2026</span><span class="tall">2</span></div></div>
-    <div class="kort k12"><div class="tabellboks"><table class="tabell"><thead><tr><th>Dato</th><th>Turnering</th><th>Runder</th><th>Til par</th><th>Plass</th><th>WAGR-poeng</th></tr></thead><tbody>
+    <div class="kort k12"><div class="tabellboks pc-tabell"><table class="tabell"><thead><tr><th>Dato</th><th>Turnering</th><th>Runder</th><th>Til par</th><th>Plass</th><th>WAGR-poeng</th></tr></thead><tbody>
       <tr><td class="t">12.10.26</td><td>Srixon Tour 6</td><td class="t">2</td><td class="t">+1</td><td class="t">2</td><td class="t">—</td></tr>
       <tr><td class="t">21.09.26</td><td>Titleist Junior Open</td><td class="t">3</td><td class="t">+4</td><td class="t">T9</td><td class="t">14,2</td></tr>
       <tr><td class="t">30.08.26</td><td>Junior-NM</td><td class="t">3</td><td class="t">+7</td><td class="t">T15</td><td class="t">8,1</td></tr>
-    </tbody></table></div></div>
+    </tbody></table></div>
+      <div class="mobliste">
+        <div class="rad"><span><b>Srixon Tour 6</b><br><span class="svak">12.10.26 · 2 runder · WAGR-poeng —</span></span><span class="tall">+1 · 2</span></div>
+        <div class="rad"><span><b>Titleist Junior Open</b><br><span class="svak">21.09.26 · 3 runder · WAGR-poeng 14,2</span></span><span class="tall">+4 · T9</span></div>
+        <div class="rad"><span><b>Junior-NM</b><br><span class="svak">30.08.26 · 3 runder · WAGR-poeng 8,1</span></span><span class="tall">+7 · T15</span></div>
+      </div></div>
   </div>`) },
 
 utendeling: { navn: "Spiller uten deling", notat: "Treneren ser navn, klubb og offentlig WAGR-plass. Alle IUP-fanene viser samme lås. Ingen tester, trening, plan eller poster. Knappen sender ikke noe til spilleren; den viser hvordan spilleren deler, så treneren kan si det muntlig eller i en gruppepost.",
