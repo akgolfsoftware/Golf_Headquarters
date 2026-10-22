@@ -77,7 +77,7 @@ export function AG04MalRediger({ mal, testMottaker }: AG04MalProps) {
 
   return <AG04Underside tilbake={{ href: "/admin/kommunikasjon?fane=maler", tekst: "E-postmaler" }} tittel={name || "Ny mal"}
     ingress="Felles maler for coachene. Aktive bookinge-poster sendes ved tilhørende hendelser. Endringer i emne og tekst må lagres før de brukes.">
-    <style>{".ag04-chip{min-height:48px}@media (min-width:1025px){.ag04-chip{min-height:36px}}"}</style>
+    <style>{".ag04-chip{min-height:44px}@media (min-width:1025px){.ag04-chip{min-height:36px}}"}</style>
     <div>{status}</div>
     {melding && <div role="status" aria-live="polite"><InlineVarsel tone={melding.type}>{melding.tekst}</InlineVarsel></div>}
     <Kolonner mal="repeat(auto-fit, minmax(min(100%, 340px), 1fr))">
