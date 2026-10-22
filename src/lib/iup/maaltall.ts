@@ -5,7 +5,9 @@
  * K1 er august–oktober, K2 november–januar, K3 februar–april og K4 mai–juli. Året regnes ut først
  * når alle fire kvartaler er målt. Tall appen ikke har grunnlag for, er null («—»), aldri et anslag:
  * ranking, PEI, slaglengde og innspill 100–150 og 151–200 m (appen deler innspill i 75–125 og
- * 125–175 m) er ikke koblet ennå. Bare brutto score.
+ * 125–175 m) er ikke koblet ennå. Bare brutto score. Turneringstallene (snitt, beste, verste,
+ * konkurranser) kommer fra de offentlige resultatene med samme regel som brutto snitt ellers i HQ
+ * (brutto-snitt.ts); egne runder er treningsrunder og teller ikke der.
  */
 
 export type MaaltallGruppe = "Ranking" | "Score" | "Strokes Gained" | "Putting" | "PEI" | "Slaglengde og retning" | "Spillstatistikk" | "Aktivitet" | "Treningstid";
@@ -23,10 +25,10 @@ const IKKE = "Ikke koblet ennå";
 export const MAALTALL: readonly MaaltallDef[] = [
   { id: "ranking-wagr", gruppe: "Ranking", navn: "Ranking WAGR", kilde: IKKE, enhet: "plass" },
   { id: "ranking-ngf", gruppe: "Ranking", navn: "NGF juniorranking", kilde: IKKE, enhet: "plass" },
-  { id: "snitt-turnering", gruppe: "Score", navn: "Snitt brutto i turnering", kilde: "Auto · runder merket turnering", enhet: "slag" },
+  { id: "snitt-turnering", gruppe: "Score", navn: "Snitt brutto i turnering", kilde: "Auto · turneringsresultater", enhet: "slag" },
   { id: "snitt-utenfor", gruppe: "Score", navn: "Snitt brutto utenfor turnering", kilde: "Auto · egne runder", enhet: "slag" },
-  { id: "beste-turnering", gruppe: "Score", navn: "Beste turneringsscore", kilde: "Auto · runder merket turnering", enhet: "slag" },
-  { id: "verste-turnering", gruppe: "Score", navn: "Verste turneringsscore", kilde: "Auto · runder merket turnering", enhet: "slag" },
+  { id: "beste-turnering", gruppe: "Score", navn: "Beste turneringsscore", kilde: "Auto · turneringsresultater", enhet: "slag" },
+  { id: "verste-turnering", gruppe: "Score", navn: "Verste turneringsscore", kilde: "Auto · turneringsresultater", enhet: "slag" },
   { id: "sg-totalt", gruppe: "Strokes Gained", navn: "SG totalt", kilde: "Auto · egne runder", enhet: "sg" },
   { id: "sg-utslag", gruppe: "Strokes Gained", navn: "SG utslag", kilde: "Auto · egne runder", enhet: "sg" },
   { id: "sg-innspill", gruppe: "Strokes Gained", navn: "SG innspill totalt", kilde: "Auto · egne runder", enhet: "sg" },
@@ -52,8 +54,8 @@ export const MAALTALL: readonly MaaltallDef[] = [
   { id: "fairwaytreff", gruppe: "Spillstatistikk", navn: "Fairwaytreff (FT)", kilde: "Auto · egne runder", enhet: "prosent" },
   { id: "gir", gruppe: "Spillstatistikk", navn: "GIR", kilde: "Auto · egne runder", enhet: "prosent" },
   { id: "scrambling", gruppe: "Spillstatistikk", navn: "Scrambling", kilde: "Auto · egne runder", enhet: "prosent" },
-  { id: "konkurranser", gruppe: "Aktivitet", navn: "Konkurranser", kilde: "Auto · runder merket turnering", enhet: "antall" },
-  { id: "konkurranserunder", gruppe: "Aktivitet", navn: "Konkurranserunder", kilde: "Auto · runder merket turnering", enhet: "antall" },
+  { id: "konkurranser", gruppe: "Aktivitet", navn: "Konkurranser", kilde: "Auto · turneringsresultater", enhet: "antall" },
+  { id: "konkurranserunder", gruppe: "Aktivitet", navn: "Konkurranserunder", kilde: "Auto · turneringsresultater", enhet: "antall" },
   { id: "treningsrunder-9", gruppe: "Aktivitet", navn: "Treningsrunder 9 hull", kilde: "Auto · egne runder", enhet: "antall" },
   { id: "treningsrunder-18", gruppe: "Aktivitet", navn: "Treningsrunder 18 hull", kilde: "Auto · egne runder", enhet: "antall" },
   { id: "treningstid-golf", gruppe: "Treningstid", navn: "Golftreningstid", kilde: "Auto · gjennomførte økter", enhet: "timer" },
@@ -86,6 +88,8 @@ export type MaaltallRunde = {
   hull: MaaltallHull[];
 };
 export type MaaltallOkt = { dato: string; fys: boolean; minutter: number };
+/** Én brutto turneringsrunde fra de offentlige resultatene (bruttoRunder i brutto-snitt.ts). */
+export type MaaltallTurneringsrunde = { dato: string; score: number; konkurranseId: string };
 
 const snitt = (v: (number | null)[]) => { const t = v.filter((x): x is number => x != null); return t.length ? t.reduce((a, b) => a + b, 0) / t.length : null; };
 const andel = (treff: number, av: number) => (av > 0 ? (treff / av) * 100 : null);
@@ -93,19 +97,21 @@ const PUTT: Record<string, [number, number]> = {
   "putt-0-3": [0, 3], "putt-3-5": [3, 5], "putt-5-10": [5, 10], "putt-10-15": [10, 15], "putt-15-25": [15, 25], "putt-25-40": [25, 40], "putt-40": [40, Infinity],
 };
 
-/** Tallene for ett tidsrom. Brutto: score er ekte slag. 18-hullsnitt bare av runder med 18 hull. */
-export function beregnPeriode(runder: readonly MaaltallRunde[], okter: readonly MaaltallOkt[]): Record<string, number | null> {
-  const turn = runder.filter((r) => r.turnering);
-  const turn18 = turn.filter((r) => r.hull.length === 18);
+/**
+ * Tallene for ett tidsrom. Brutto: score er ekte slag. Turneringstallene kommer fra `turneringsrunder`;
+ * egne runder merket turnering teller bare i SG og spillstatistikk. Treningssnitt bare av runder med 18 hull.
+ */
+export function beregnPeriode(runder: readonly MaaltallRunde[], okter: readonly MaaltallOkt[], turneringsrunder: readonly MaaltallTurneringsrunde[] = []): Record<string, number | null> {
+  const turn = turneringsrunder;
   const ovrige = runder.filter((r) => !r.turnering);
   const hull = runder.flatMap((r) => r.hull);
   const ut: Record<string, number | null> = {};
   for (const m of MAALTALL) ut[m.id] = null;
 
-  ut["snitt-turnering"] = snitt(turn18.map((r) => r.score));
+  ut["snitt-turnering"] = snitt(turn.map((r) => r.score));
   ut["snitt-utenfor"] = snitt(ovrige.filter((r) => r.hull.length === 18).map((r) => r.score));
-  ut["beste-turnering"] = turn18.length ? Math.min(...turn18.map((r) => r.score)) : null;
-  ut["verste-turnering"] = turn18.length ? Math.max(...turn18.map((r) => r.score)) : null;
+  ut["beste-turnering"] = turn.length ? Math.min(...turn.map((r) => r.score)) : null;
+  ut["verste-turnering"] = turn.length ? Math.max(...turn.map((r) => r.score)) : null;
   ut["sg-totalt"] = snitt(runder.map((r) => r.sgTotal));
   ut["sg-utslag"] = snitt(runder.map((r) => r.sgOtt));
   ut["sg-innspill"] = snitt(runder.map((r) => r.sgApp));
@@ -121,7 +127,7 @@ export function beregnPeriode(runder: readonly MaaltallRunde[], okter: readonly 
   ut.gir = andel(gir.filter((h) => h.gir).length, gir.length);
   const bom = gir.filter((h) => !h.gir);
   ut.scrambling = andel(bom.filter((h) => h.strokes <= h.par).length, bom.length);
-  ut.konkurranser = new Set(turn.map((r) => r.konkurranseId ?? r.dato)).size;
+  ut.konkurranser = new Set(turn.map((r) => r.konkurranseId)).size;
   ut.konkurranserunder = turn.length;
   ut["treningsrunder-9"] = ovrige.filter((r) => r.hull.length === 9).length;
   ut["treningsrunder-18"] = ovrige.filter((r) => r.hull.length === 18).length;
@@ -144,19 +150,22 @@ export type MaaltallRad = MaaltallDef & {
  */
 export function byggMaaltall(input: {
   sesong: Sesong; idag: string; runder: readonly MaaltallRunde[]; okter: readonly MaaltallOkt[]; mal: ReadonlyMap<string, string>;
+  turneringsrunder?: readonly MaaltallTurneringsrunde[];
 }): MaaltallRad[] {
   const { sesong, idag } = input;
   const i = (fra: string, til: string) => ({
     runder: input.runder.filter((r) => r.dato >= fra && r.dato < til),
     okter: input.okter.filter((o) => o.dato >= fra && o.dato < til),
+    turneringsrunder: (input.turneringsrunder ?? []).filter((t) => t.dato >= fra && t.dato < til),
   });
   const kv = sesong.kvartaler.map(([fra, til]) => {
     if (fra > idag) return null;
     const d = i(fra, til);
-    if (d.runder.length === 0 && d.okter.length === 0) return null;
-    return beregnPeriode(d.runder, d.okter);
+    if (d.runder.length === 0 && d.okter.length === 0 && d.turneringsrunder.length === 0) return null;
+    return beregnPeriode(d.runder, d.okter, d.turneringsrunder);
   });
-  const helt = kv.every(Boolean) ? beregnPeriode(i(sesong.start, sesong.slutt).runder, i(sesong.start, sesong.slutt).okter) : null;
+  const hele = i(sesong.start, sesong.slutt);
+  const helt = kv.every(Boolean) ? beregnPeriode(hele.runder, hele.okter, hele.turneringsrunder) : null;
   return MAALTALL.map((m) => {
     const kvartaler = kv.map((k) => k?.[m.id] ?? null);
     return { ...m, kvartaler, aar: kvartaler.every((v) => v != null) ? helt?.[m.id] ?? null : null, mal: input.mal.get(m.id) ?? null };
