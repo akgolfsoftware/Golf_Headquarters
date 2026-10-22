@@ -80,3 +80,10 @@ Tester, WAGR-visningene Turneringer og Sesong · Fag og administrasjon (sju fane
 rulling, ingen node utenfor rammen, ingen konsollfeil.
 
 Plan, kartlegging og hvilke skjermer kodeøkta kan bygge etter nå: [tn-designloft-plan-2026-10-22.md](../../../planer/tn-designloft-plan-2026-10-22.md).
+
+## 7. Utkast 3 (22.10.2026): testøkt, TrackMan-kobling og testvisning
+
+Wireframes: [utkast-3.html](utkast-3.html) (privat artifact: https://claude.ai/artifact/TAhfpQJPqeKiwp2zTxxKft). Tolv skjermer:
+testøkt med én spiller (start, ett slag om gangen, gate med store knapper, uten nett og pause, ferdig), TrackMan-import med
+kobling til testslag (kobling, slag som ikke passer, Club Speed) og testvisning (PEI med spredning, gate med port og sone, putt
+med avstandsbånd, uten TrackMan). Hva kodeøkta må bygge og datamodelltilleggene: planfila §6.
