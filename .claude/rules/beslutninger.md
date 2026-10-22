@@ -4,6 +4,21 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## KLUBB OG FØDSELSÅR VISES OGSÅ FOR TEAM NORWAY-SPILLERE SOM IKKE HAR DELT (Anders 22.10.2026, bindende)
+
+Anders 22.10, etter pakke d (#1605): «Beslutning er ja». Svar på punkt 3 i §SPILLERLISTEN I TEAM NORWAY VISER DE ÅPNE TALLENE, om klubb og fødselsår skal stå for spillere som ikke har delt, slik wireframen viser.
+
+- **Treneren ser navn, klubb, fødselsår og offentlig WAGR-plass** for alle aktive spillere i TN-gruppa, også de som ikke har delt. Det gjelder låst IUP (`/team-norway/spiller/[id]`) og spillerlisten (`/team-norway/spillere`).
+- **Fødselsår, ikke fødselsdato.** Alder regnet fra datoen vises ikke uten deling. Mangler klubb eller fødselsdato, står feltet ikke.
+- Alt annet fra PlayerHQ (plan, trening, tester, poster, HCP, skole) krever fortsatt delingssamtykke.
+
+**Overstyrer:** punkt 3 i §SPILLERLISTEN I TEAM NORWAY VISER DE ÅPNE TALLENE («bare navn og WAGR-plass»).
+
+**Arbeidet dette utløser:**
+
+1. **Låst IUP:** `hentTnIupLaast` (`src/lib/domain/tn-iup-oversikt.ts`) leser `homeClub` og fødselsåret, og `TnIupLaastVisning` viser «Klubb · født ÅÅÅÅ» under navnet. Gjort i samme PR, låst med test i `tn-spiller-oversikt.test.ts`.
+2. **Spillerlisten (pakke c):** radene for spillere som ikke har delt får klubb og fødselsår, ved siden av WAGR-plassen. Ferdig når testen i pakke c låser at en spiller uten deling vises med navn, klubb, fødselsår og WAGR-plass, men uten plan-, trenings- eller testtall.
+
 ## SPILLERLISTEN I TEAM NORWAY VISER DE ÅPNE TALLENE OGSÅ FOR SPILLERE SOM IKKE HAR DELT (Anders 22.10.2026, bindende)
 
 Anders 22.10, etter skjermbildene der Spillere bare viste «10 i gruppen deler ikke»: «Legg inn de åpne tallene». Svar på navnevalget før pakke c (spillerlisten).
@@ -19,7 +34,7 @@ Anders 22.10, etter skjermbildene der Spillere bare viste «10 i gruppen deler i
 
 1. **Spillerlisten (pakke c):** `/team-norway/spillere` lister alle aktive medlemmer i TN-gruppa med navn, WAGR-plass og delingsmerke, etter wireframen. WAGR-plassen hentes via `users.publicPlayerId` → `public_players."wagrId"` → WAGR-tabellene fra #1594. Ferdig når listen er målt i 390, 1280 og 1920 px uten sidelengs rulling, og en test låser at en spiller uten deling vises med navn og WAGR-plass, men uten plan-, trenings- eller testtall.
 2. **Låst IUP:** `/team-norway/spiller/[id]` for en spiller uten deling viser låsen med navn og WAGR-plass, ikke 404. Ferdig når testen fra #1595 fortsatt er grønn og den nye låsen er låst med test.
-3. **Uavklart:** om klubb og fødselsår også skal stå for spillere som ikke har delt (wireframen viser dem). Til Anders har svart: bare navn og WAGR-plass.
+3. ~~**Uavklart:** om klubb og fødselsår også skal stå for spillere som ikke har delt.~~ Avgjort 22.10: ja (§KLUBB OG FØDSELSÅR VISES OGSÅ FOR TEAM NORWAY-SPILLERE SOM IKKE HAR DELT).
 4. **Uavklart:** de fleste TN-medlemmer er ikke koblet til en offentlig spiller (`publicPlayerId` tom). Da vises «—». Koblingen hører til punkt 2 i §TURNERINGSPLANLEGGEREN MED WAGR-ANSLAG.
 
 ## TEAM NORWAY ER BARE FOR TRENERE, SPILLERE BRUKER BARE PLAYERHQ, OG REFERANSE BYGGES MED WAGR FØRST (Anders 21.10.2026, bindende)

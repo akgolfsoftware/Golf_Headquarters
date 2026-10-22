@@ -23,11 +23,11 @@ async function hentWagrPlass(spillerId: string): Promise<TnWagrPlass | null> {
   return rad ? { plass: rad.rank, dato: rad.wagrDate } : null;
 }
 
-export type TnIupLaast = { kontekst: TnArbeidskontekst; navn: string; wagr: TnWagrPlass | null };
+export type TnIupLaast = { kontekst: TnArbeidskontekst; navn: string; klubb: string | null; fodselsaar: number | null; wagr: TnWagrPlass | null };
 
 /**
  * Låst IUP: treneren er i Team Norway-gruppa, spilleren er aktivt medlem der, men har ikke delt.
- * Gir bare navn og offentlig WAGR-plass (beslutningen 22.10, punkt 2 og 3), aldri noe fra PlayerHQ.
+ * Gir bare navn, klubb, fødselsår og offentlig WAGR-plass (beslutningene 22.10), aldri noe annet fra PlayerHQ.
  * Null når treneren ikke er trener i gruppa eller spilleren ikke er medlem (da blir det 404).
  */
 export async function hentTnIupLaast(bruker: TnBruker, spillerId: string): Promise<TnIupLaast | null> {
@@ -35,10 +35,16 @@ export async function hentTnIupLaast(bruker: TnBruker, spillerId: string): Promi
   if (!kontekst || kontekst.erSpiller || !erTnPersonligDataLeser(kontekst, bruker)) return null;
   const medlem = await prisma.groupMember.findFirst({
     where: { groupId: kontekst.gruppe.id, userId: spillerId, ...aktivtSpillerMedlemskapWhere(), user: { deletedAt: null, anonymisertAt: null } },
-    select: { user: { select: { name: true } } },
+    select: { user: { select: { name: true, homeClub: true, dateOfBirth: true } } },
   });
   if (!medlem) return null;
-  return { kontekst, navn: medlem.user.name ?? "Ukjent", wagr: await hentWagrPlass(spillerId) };
+  return {
+    kontekst,
+    navn: medlem.user.name ?? "Ukjent",
+    klubb: medlem.user.homeClub,
+    fodselsaar: medlem.user.dateOfBirth ? medlem.user.dateOfBirth.getUTCFullYear() : null,
+    wagr: await hentWagrPlass(spillerId),
+  };
 }
 
 export type TnIupTurnering = { navn: string; dato: Date; merke: string };
