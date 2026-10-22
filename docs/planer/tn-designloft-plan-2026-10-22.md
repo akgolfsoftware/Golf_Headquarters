@@ -93,7 +93,7 @@ Tverrgående svakheter:
 Samlinger og testing › Samlinger, Månedsplan, Fellestesting, Gruppeanalyse, WANG-tester · Turneringer ›
 Turneringer, Live Watch, Uttak, Rangliste · Referanse › Sammenlign, Søk, Planlegger, Norsk golf, HCP Norge,
 Tester · Fag og administrasjon › Årsplan, Testprotokoller, Fagapparat, Lisens og status, Trenere og tilgang,
-Inviter spiller, Data Golf · Referanse › WAGR, visningene Turneringer og Sesong · PlayerHQ › «Se hva Team Norway ser» · Tom, laster og feil (med låsen som gjelder alle åtte IUP-fanene). IUP › Turneringer står i utkast 1.
+Inviter spiller, Data Golf · Referanse › WAGR, visningene Turneringer og Sesong · PlayerHQ › «Se hva Team Norway ser» · Tom, laster og feil (med lite data og låsen som gjelder alle åtte IUP-fanene). IUP › Turneringer står i utkast 1.
 
 **Mangler fortsatt (steg 10):** Hjem › Gruppeposter og Dokumenter, Spillere › Skoler og College og USA,
 og undersidene (én samling, én turnering, én testprotokoll, én test, én teknisk oppgave, scorekort for føring).
@@ -114,3 +114,119 @@ Sammenlign, Søk og Tester; WAGR-visningene Turneringer og Sesong; PlayerHQ › 
 
 Avgjort av Anders 22.10 (registreres i beslutningene av kodeøkta): PlayerHQ-lenken går til «Se hva Team Norway ser»,
 og «beste» tas bort i Referanse › Tester. Utkast 2 er tegnet slik: Referanse › Tester viser bare median og antall.
+
+## 5. Datakart og sammenheng (22.10.2026)
+
+Lest fra koden på `origin/main` 22.10. «Deling» betyr navngitt deling til treneren (`medTnSpillerData`,
+`src/lib/domain/tn-arbeidsflate.ts:659` → `navngittTrenerHarTilgang`, `src/lib/deling/navngitt.ts:171`).
+**Deling er ett nivå i Team Norway: alt eller ingenting.** Gruppenivåene «Tester og resultater» og «Komplett profil»
+fra PlayerHQ leses ikke av noen TN-skjerm. Wireframene er rettet til dette (se §5.3).
+
+### 5.1 Felt per fane
+
+**IUP › Oversikt**
+
+| Felt | Kilde | Fører | Deling |
+|---|---|---|---|
+| WAGR-plass | `wagr_ref_players.rank` via `public_players.wagrId`; `hentWagrPlass` (`tn-iup-oversikt.ts:18`) | Pipeline (ukejobb) | Nei, offentlig |
+| NGF juniorranking | finnes ikke («—») | – | – |
+| Brutto snitt | `dashboard.player_profile_for_user` → `aggregerRangliste` (`tn-rangliste.ts:12`), inneværende år i Oslo-tid, nettoklasser fjernet | Pipeline | Ja |
+| Kategori A–K | finnes ikke i TN («—»); finnes i PlayerHQ (`hentSpillerAkKategori`, `spiller-kategori.ts:65`) | Beregnet | Ja |
+| Haster | `byggIupHaster` (`tn-iup-oversikt-regler.ts:40`): avslåtte Workbench-forslag 14 dager, prioriterte tester under minsteantall, lisens/helseattest innen 30 dager | Blandet | Ja |
+| Siste tester | `TestResult` `tn-v3-*`; `hentTnSpillerTester` (`tn-arbeidsflate.ts:867`), tre nyeste | Spiller eller trener | Ja |
+| Neste turneringer | `TournamentEntry` PLANNED/CLAIMED/CONFIRMED, tre neste med dato | Spiller | Ja |
+| Trening fire uker | `WorkbenchSession`; `summerAksefordeling` (`tn-aksefordeling.ts:16`), rullerende 28 døgn | Spiller (trener foreslår) | Ja |
+| Poster og lesekvittering | `TnPost`, `TnPostLesekvittering`; `hentSpillerpostTidslinje` (`tn-post.ts:359`) | Trener | Ja |
+
+**IUP › Turneringsplan** (`byggPlanvisning`, `src/lib/turneringsplan/data.ts:118`)
+
+| Felt | Kilde | Fører | Deling |
+|---|---|---|---|
+| Planlagte starter | `TournamentEntry` + `WagrPlanEvent` | Spiller | Ja |
+| Nivå og topp 10-sjanse | `merkelapp`/`sjanser` (`wagr-modell.ts`), `WagrPlayerStrength` og `WagrModelRun`; sesong fast 2027 | Pipeline, ESTIMAT | Ja |
+| WAGR-plass og poengsnitt i toppen | `WagrPlayerStrength.rank`/`pointsAvg` (modellkjøringen, ikke `wagr_ref`) | Pipeline | Ja |
+| Trenerforslag | `PlanAction` `TOURNAMENT_PLAN_PROPOSAL`, bare PENDING; `foreslaaTurnering` | Trener, spiller godtar | Ja |
+
+**IUP › Ranking:** WAGR-plass per uke og endring finnes ikke i HQ (`wagr_ref_results.rankBefore/rankAfter` finnes, men leses ikke).
+Poengsnitt finnes i `wagr_ref_players.pointsAvg`. NGF juniorranking finnes ikke.
+
+**IUP › Turneringer:** til-par per turnering finnes ikke i TN-visning (`motPar` regnes i `turneringsresultat.ts:32`). Plass og runder:
+`hentTnSpillerProfil` (`tn-arbeidsflate.ts:1386`), bare inneværende år. Sesongsnitt: SQL `snitt_score` i
+`dashboard.player_profile_for_user` (regelen ligger ikke i repoet). WAGR-poeng per turnering: `wagr_ref_results.points`, leses ikke.
+
+**IUP › Trening:** gjennomført mot planlagt og akser som Oversikt. «Logget i etterkant» og «lagt inn mot fordelt» finnes ikke
+(nærmest: `GroupPeriodBlock.axisMinutes` i Månedsplan).
+
+**IUP › Tester** (`tn-spiller-tester-visning.tsx`)
+
+| Felt | Kilde | Fører | Deling |
+|---|---|---|---|
+| «X av N» | `PRIORITERTE`/`fremdrift` (`portal-tester/testbatteri.ts:54,73`), minsteantall 1/2/2/2/4, alle gyldige forsøk | – | Ja |
+| Siste resultat | `hentTnSpillerTester` og `hentTnSpillerOvrigeTester` | Spiller eller trener | Ja |
+| Egenført / Kontrollert | `TestResult.recordedById` (`tn-arbeidsflate.ts:986`), vises bare i detaljkurven | Trener = Kontrollert | Ja |
+| Nivå A–K | finnes ikke («—») | – | – |
+
+**IUP › Teknisk plan** (`tn-teknisk-plan.ts`): oppgaver, P-posisjon og reps fra `TechnicalPlan` → `PositionTask`. Læringssteg ligger i
+`PositionTask.lFase`, men leses ikke. Kvalitetssjekk, før og nå-bilder og trenerforslag finnes ikke (datamodelltilleggene i
+§POSISJONSNAVN 27.09, punkt 2).
+
+**IUP › Fireukerssjekk:** levert dato, nivå og svar fra `IupBesvarelse` (`lesLeverteIupForProfil`, `iup/trener-profil-lesing.ts:25`),
+ført av spilleren. Prosessmål og målsetninger finnes bare i PlayerHQ (`Goal`, `fireukerssjekk-data.ts:56`). Trenerkommentar finnes ikke.
+
+**Referanse**
+
+| Kort | Kilde | Status |
+|---|---|---|
+| WAGR leaderboard | `wagr_ref_*`; `hentWagrReferanse` (`tn-referanse-wagr.ts:13`); endring mot årsslutt | Finnes |
+| Graf, Turneringer, Sesong | `wagr_ref_players.yearStats`, `wagr_ref_results.power/rankBefore/rankAfter` | Data finnes, leses ikke |
+| Sammenlign, Søk | `alle_norske_sok`/`alle_norske_profil` (RPC i basen) | Ikke bygget |
+| Planlegger | `WagrReferencePlan` | Modell finnes, leses ikke |
+| Norsk golf, HCP Norge | – | Finnes ikke i basen |
+| Tester | `hentTnGruppeanalyseResultat` (`tn-arbeidsflate.ts:1069`): hver spillers **beste** resultat noensinne, også WANG-elever, ingen grense på 5 | Må endres |
+
+**PlayerHQ › «Se hva Team Norway ser»:** finnes ikke. `/portal/meg/deling/innsyn` er en side for trenere og viser bare leverte
+utviklingssjekker.
+
+### 5.2 Sammenheng: samme tall på flere skjermer
+
+- **Test →** Tester (siste resultat, «X av N») · Oversikt (siste tester, Haster «mangler 1») · Fireukerssjekk (nyeste tester) ·
+  Gruppeanalyse og Referanse › Tester (samlet). Ett resultat, samme verdi og dato overalt.
+- **Turneringsresultat →** Turneringer (til-par, plass) · Oversikt og Rangliste (brutto snitt) · Uttak (kriterium 1) · Ranking (WAGR etter
+  turneringen) · Turneringsplan (WAGR-plass og sjanser).
+- **Trenings­økt →** Trening (uke, akser, etterlevelse) · Oversikt (fire uker) · Spillere og Hjem («Trenger deg», gruppas trening).
+- **WAGR-plass →** Oversikt · Spillere · Ranking · Turneringsplan · Referanse · uten-deling-låsen.
+
+### 5.3 Avvik
+
+| # | Avvik | Hvor | Forslag | Hvem |
+|---|---|---|---|---|
+| A1 | **Personvern:** `hentTnTekniskPlaner`/`Detalj` og `hentTnEvalueringGrunnlag` leser med global `prisma`, utenfor delingslåsen | `tn-teknisk-plan.ts`, `tn-evaluering.ts:40` | Les via `tx` fra `medTnSpillerData`, med test | Kode, haster |
+| A2 | TN-trener skriver rett i spillerens tekniske plan (`tnLoggRep`, `tnOpprettOppgave`) | `tn-teknisk-plan.ts:202,240` | Bli forslag spilleren godtar (§KODEGJENNOMGANGEN 06.10) | Kode |
+| A3 | WAGR-plass har tre kilder: `wagr_ref_players` (Oversikt, Spillere), `WagrPlayerStrength` (Turneringsplan), `WagrSnapshot` (AgencyOS) | se 5.1 | `wagr_ref_players` med uke overalt i TN; modellen bare for sjanser | Kode |
+| A4 | Brutto snitt har fem definisjoner (Oversikt/Rangliste, Profil 365 dager med treningsrunder, SQL-sesong, IUP-måltall, A–K) | `tn-arbeidsflate.ts:1385`, `profil-kobling/komplett.ts:78`, `maaltall.ts:97`, `spiller-kategori.ts:48` | Én: turneringsrunder i kalenderåret, Oslo-tid, bare brutto (spørsmål 3) | Kode |
+| A5 | Etterlevelse har tre definisjoner (PlayerHQ `etterlevelse.ts:32`, IUP `tn-aksefordeling.ts:16`, TN gruppetrening `tn-trenger-deg.ts:65`) | se over | Samme som PlayerHQ (§KARTLEGGINGSØKT FJERNES punkt 4) | Kode |
+| A6 | Turneringsresultater fra to kilder: `/turneringer` leser `Tournament.results`, IUP og Rangliste leser offentlige resultater | `lesTnTurneringer` `:189` | `public_player_entries` overalt (§PIPELINES ER ENESTE KILDE) | Kode |
+| A7 | Kategori vises «—» i TN, men PlayerHQ har A–K; `WagrSnapshot.ngfCategory` er A–I | `tn-spillerprofil-visning.tsx:255` | Les `hentSpillerAkKategori`; samme tall som PlayerHQ | Kode |
+| A8 | Avslåtte turneringsforslag vises aldri i Haster (leser bare Workbench-forslag) | `tn-iup-oversikt.ts:77` | Ta med `TOURNAMENT_PLAN_PROPOSAL` | Kode |
+| A9 | Neste turneringer: Oversikt utelater oppføringer uten dato, Turneringsplan tar dem med | `data.ts:172` | Lik regel; uten dato vises «Dato —» nederst | Kode |
+| A10 | Testantall: Profil teller alle `TestResult`, også ugyldige; Tester og Haster teller gyldige | `komplett.ts:88` | Gyldige overalt | Kode |
+| A11 | Referanse › Tester bruker beste resultat, tar med WANG-elever og har ingen grense på 5 | `tn-arbeidsflate.ts:1069` | Median av siste gyldige resultat siste 12 mnd, bare TN-spillere, «—» under 5 (spørsmål 2) | Kode, wireframe rettet |
+| A12 | Delingsteksten i PlayerHQ sier «foreløpig leverte utviklingssjekker», mens TN leser tester, trening, planer og lisens med samme deling | `navngitt-deling.tsx:165` | Teksten sier det TN faktisk ser; «Se hva Team Norway ser» bygges for spilleren | Kode |
+| A13 | Wireframene viste to delingsnivåer («Tester og resultater», «Komplett profil»); koden har ett | utkast 1 og 2 | Rettet: «Delt / Venter på svar / Ikke delt» (spørsmål 1) | Wireframe, rettet |
+| A14 | Wireframene: vannrett aksebånd sto TURN først, Putt 1–3 m «—» på Oversikt men 7/10 på Tester, poengsnitt lik WAGR-plassen, dager til fireukerssjekk feil, målsetning 2027 mot tall fra 2026 | utkast 1 og 2 | Rettet: FYS først i vannrette bånd, like tall, riktig periode | Wireframe, rettet |
+
+Felt som wireframene viser, men som ikke finnes i koden ennå (bygges etter beslutningene, ikke avvik): NGF juniorranking («—»),
+WAGR per uke, til-par per turnering, logget i etterkant, lagt inn mot fordelt, kvalitetssjekk, før og nå-bilder, trenerkommentar.
+
+**«Se hva Team Norway ser» mot trenerens IUP:** samme åtte faner, samme stripe (WAGR, NGF junior, brutto snitt, kategori) og
+samme tall i Oversikt. Ingen knapper: «Foreslå endring», «Skriv post» og «Før teknikktest» er borte; eneste lenke er
+«Endre deling i Meg › Deling». Listen «Hvem ser dette» erstatter velgeren mellom delingsnivåer.
+
+### 5.4 Spørsmål til Anders (anbefalingen er brukt i wireframene)
+
+1. **Ett delingsnivå i Team Norway?** Koden gir treneren alt eller ingenting. Anbefaling: behold ett nivå. Det er enklere å forklare
+   for spiller og foresatte, og det er slik tilgangen faktisk virker i dag.
+2. **Referanse › Tester: hva er medianen av?** Anbefaling: hver spillers siste gyldige resultat de siste 12 månedene, bare Team
+   Norway-spillere, «—» under 5. Beste resultat noensinne gir et for pent bilde, og WANG-elevene har eget samtykke.
+3. **Én definisjon av brutto snitt?** Anbefaling: turneringsrunder i kalenderåret, Oslo-tid, bare brutto, likt i IUP, Rangliste,
+   Uttak og PlayerHQ. Treningsrunder vises som egen linje, ikke i snittet.
