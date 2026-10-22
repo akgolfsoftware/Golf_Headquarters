@@ -69,7 +69,7 @@ Sidekartet står i wireframes under «Meny og sidekart». Gamle adresser som sen
 ## 5. Uavklart (til Anders)
 
 Står i registeret, punkt 1–4: spillere i `/team-norway`, hvor PlayerHQ-lenken går, barnevern i Referanse
-(HCP Norge og Norsk golf viser navngitte juniorer), og om «beste» per test skal bort.
+(HCP Norge og Norsk golf viser navngitte juniorer), og om «beste» per test skal bort. Avgjort 22.10: PlayerHQ-lenken går til «Se hva Team Norway ser», og «beste» tas bort i Referanse › Tester.
 
 ## 6. Utkast 2 (22.10.2026): de resterende skjermene
 

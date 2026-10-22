@@ -112,6 +112,5 @@ Sammenlign, Søk og Tester; WAGR-visningene Turneringer og Sesong; PlayerHQ › 
 3. **Live Watch:** automatisk oppdatering hvert minutt, eller knappen «Oppdater»? Anbefaling: knappen, så radene
    ikke flytter seg mens treneren leser.
 
-Funksjonsplanens to spørsmål (hvor PlayerHQ-lenken går, og om «beste» per test skal bort) stilles av hovedøkta og
-gjentas ikke her. Utkast 2 er tegnet etter anbefalingene: lenken går til «Se hva Team Norway ser», og Referanse ›
-Tester viser bare median og antall.
+Avgjort av Anders 22.10 (registreres i beslutningene av kodeøkta): PlayerHQ-lenken går til «Se hva Team Norway ser»,
+og «beste» tas bort i Referanse › Tester. Utkast 2 er tegnet slik: Referanse › Tester viser bare median og antall.
