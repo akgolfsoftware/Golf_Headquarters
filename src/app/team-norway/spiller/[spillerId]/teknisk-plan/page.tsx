@@ -29,7 +29,7 @@ export default async function TeamNorwaySpillerTekniskPlanPage({ params }: { par
   if (!spillerNavn) notFound();
   krevFullForEgenTekniskPlan(bruker, spillerId);
 
-  const planer = await medTnSpillerData(bruker, spillerId, () => hentTnTekniskPlaner(spillerId));
+  const planer = await medTnSpillerData(bruker, spillerId, (tx) => hentTnTekniskPlaner(tx, spillerId));
   if (!planer) notFound();
   return <TnTekniskPlanerVisning brukerNavn={bruker.name ?? "Ukjent"} kontekst={{ erSpiller: kontekst.erSpiller, erTrener: kontekst.erTrener, kanAdministrere: kontekst.kanAdministrere, gruppeId: kontekst.gruppeId }} spillerId={spillerId} spillerNavn={spillerNavn} planer={planer} />;
 }

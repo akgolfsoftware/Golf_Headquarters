@@ -31,7 +31,7 @@ export default async function TeamNorwaySpillerEvalueringPage({ params }: { para
   krevFullForEgenTekniskPlan(bruker, spillerId);
 
   const [grunnlag, iup] = await Promise.all([
-    medTnSpillerData(bruker, spillerId, () => hentTnEvalueringGrunnlag(spillerId)),
+    medTnSpillerData(bruker, spillerId, (tx) => hentTnEvalueringGrunnlag(tx, spillerId)),
     hentTnSpillerIup(bruker, spillerId),
   ]);
   if (!grunnlag) notFound();

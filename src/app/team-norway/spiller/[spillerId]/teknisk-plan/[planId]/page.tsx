@@ -56,7 +56,7 @@ export default async function TeamNorwaySpillerTekniskPlanDetaljPage({
   if (!spillerNavn) notFound();
   krevFullForEgenTekniskPlan(bruker, spillerId);
 
-  const plan = await medTnSpillerData(bruker, spillerId, () => hentTnTekniskPlanDetalj(spillerId, planId));
+  const plan = await medTnSpillerData(bruker, spillerId, (tx) => hentTnTekniskPlanDetalj(tx, spillerId, planId));
   if (!plan) notFound();
 
   async function loggRep(form: FormData) {
