@@ -76,7 +76,7 @@ Tverrgående svakheter:
 
 | # | Steg | Ferdig når |
 |---|---|---|
-| 1 | **Utkast 2 sett av Anders** (port 7, eller Claude på hans vegne etter nattregelen): de 31 skjermene i `utkast-2.html`. | Anders har sagt ja, eller rettelsene er tegnet inn. |
+| 1 | **Utkast 2 sett av Anders** (port 7, eller Claude på hans vegne etter nattregelen): de 31 skjermene i `utkast-2.html`. | Anders har sagt ja, eller rettelsene er tegnet inn. **Gjort: godkjent av Anders 22.10.** |
 | 2 | **Se dagens skjermer i nettleser** med demotrener i 390, 1280 og 1920, og legg skjermbilder ved registeret. | Hver rad i tabellen over har skjermbilde, og påstandene om 390 (særlig Månedsplan) er bekreftet eller rettet. |
 | 3 | **Felles tilstander:** én tom-, laster- og feilkomponent for TN etter «Tom, laster og feil» i utkast 2, og `loading.tsx` per hovedpunkt. | Alle seks hovedpunkter har egen laster i skjermens form, og et søk etter skjermer uten tom-tilstand gir 0. |
 | 4 | **IUP-fanene** (kodeøkta, én PR per fane): Turneringer, Ranking, Trening, Tester med «X av N», Teknisk plan, Fireukerssjekk, Turneringsplan. | Alle åtte fanene finnes, gamle adresser sender videre, og hver fane er målt i 390/1280/1920 uten sidelengs rulling. |
