@@ -2,7 +2,8 @@ import "server-only";
 
 import { prisma } from "@/lib/prisma";
 import { aktivtSpillerMedlemskapWhere } from "@/lib/domain/grupper";
-import { erTnPersonligDataLeser, hentTnArbeidskontekst, medTnSpillerData, type TnArbeidskontekst, type TnBruker } from "./tn-arbeidsflate";
+import { erTnPersonligDataLeser, hentTnArbeidskontekst, hentTnSpillerTilgang, medTnSpillerData, type TnArbeidskontekst, type TnBruker } from "./tn-arbeidsflate";
+import { plassVedAarsslutt } from "./tn-referanse-wagr-regler";
 import { tilWagrId } from "./tn-iup-oversikt-regler";
 
 export * from "./tn-iup-oversikt-regler";
@@ -91,4 +92,42 @@ export async function hentTnIupDelt(bruker: TnBruker, spillerId: string, naa = n
   });
   if (!data) return null;
   return { ...data, wagr: await hentWagrPlass(spillerId) };
+}
+
+export type TnIupRankingPunkt = { navn: string; dato: Date | null; aar: number; uke: number | null; plassering: string | null; plassFoer: number | null; plassEtter: number | null };
+export type TnIupRanking = {
+  wagr: { plass: number | null; bestePlass: number | null; snittPoeng: number | null; seire: number | null; aarsslutt: { aar: number; plass: number | null }[]; dato: Date } | null;
+  /** WAGR-resultatene med plass før og etter, eldst først. */
+  historikk: TnIupRankingPunkt[];
+};
+
+/**
+ * IUP › Ranking. WAGR er offentlig, men leses bare når treneren har deling (samme lås som de andre fanene).
+ * NGF-juniorranking finnes ikke i appen og vises «—» av skjermen. Null uten deling.
+ */
+export async function hentTnIupRanking(bruker: TnBruker, spillerId: string): Promise<TnIupRanking | null> {
+  if (!(await hentTnSpillerTilgang(bruker, spillerId))) return null;
+  const u = await prisma.user.findUnique({ where: { id: spillerId }, select: { publicPlayer: { select: { wagrId: true } } } });
+  const wagrId = tilWagrId(u?.publicPlayer?.wagrId);
+  if (wagrId === null) return { wagr: null, historikk: [] };
+  const rad = await prisma.wagrRefPlayer.findUnique({
+    where: { wagrPlayerId: wagrId },
+    select: {
+      rank: true, bestRank: true, pointsAvg: true, wins: true, yearEndRanks: true, wagrDate: true,
+      results: { orderBy: [{ year: "asc" }, { week: "asc" }, { date: "asc" }], select: { name: true, date: true, year: true, week: true, finish: true, rankBefore: true, rankAfter: true } },
+    },
+  });
+  if (!rad) return { wagr: null, historikk: [] };
+  const iAar = rad.wagrDate.getUTCFullYear();
+  return {
+    wagr: {
+      plass: rad.rank,
+      bestePlass: rad.bestRank,
+      snittPoeng: rad.pointsAvg,
+      seire: rad.wins,
+      aarsslutt: [iAar - 1, iAar - 2].map((aar) => ({ aar, plass: plassVedAarsslutt(rad.yearEndRanks, aar) })),
+      dato: rad.wagrDate,
+    },
+    historikk: rad.results.map((r) => ({ navn: r.name, dato: r.date, aar: r.year, uke: r.week, plassering: r.finish, plassFoer: r.rankBefore, plassEtter: r.rankAfter })),
+  };
 }

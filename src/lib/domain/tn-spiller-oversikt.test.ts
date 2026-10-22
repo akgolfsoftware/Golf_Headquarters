@@ -781,3 +781,25 @@ test("låst IUP: ingen lås for spillere utenfor gruppa eller for andre enn tren
   assert.equal(await hentTnIupLaast({ id: "spoofed-coach-gruppe", role: "PLAYER", name: "Spoofed" }, "player-a"), null);
   assert.equal(await hentTnIupLaast({ id: "player-b", role: "PLAYER", name: "Spiller B" }, "player-a"), null);
 });
+
+// Pakke e: de nye IUP-fanene Ranking og Trening leser ingenting uten deling.
+test("trener uten deling får verken ranking- eller treningsfanens data", async () => {
+  const { hentTnSpillerTrening } = await import("./tn-arbeidsflate");
+  const { hentTnIupRanking } = await import("./tn-iup-oversikt");
+  profilDelt = false;
+  for (const trener of [{ id: "coach-1", role: "COACH" as const, name: "Coach" }, { id: "assistent-1", role: "COACH" as const, name: "Hjelpetrener" }]) {
+    assert.equal(await hentTnSpillerTrening(trener, "player-a"), null);
+    assert.equal(await hentTnIupRanking(trener, "player-a"), null);
+  }
+});
+
+test("alle IUP-fanene viser låsen uten deling i stedet for 404", async () => {
+  const { readFileSync } = await import("node:fs");
+  for (const side of ["ranking", "turneringer", "trening", "tester", "turneringsplan", "teknisk-plan", "evaluering", "tester/[testId]"]) {
+    const kilde = readFileSync(new URL(`../../app/team-norway/spiller/[spillerId]/${side}/page.tsx`, import.meta.url), "utf8");
+    assert.match(kilde, /hentTnSpillerTilgang/, side);
+    assert.match(kilde, /<TnIupLaastSkjerm[^>]*aktiv="/, side);
+  }
+  const oversikt = readFileSync(new URL("../../components/team-norway/skjermer/tn-spillerprofil-skjerm.tsx", import.meta.url), "utf8");
+  assert.match(oversikt, /<TnIupLaastSkjerm[^>]*aktiv="oversikt"/);
+});

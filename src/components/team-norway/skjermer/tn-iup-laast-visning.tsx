@@ -1,7 +1,7 @@
 import type { TnArbeidskontekst } from "@/lib/domain/tn-arbeidsflate";
 import type { TnWagrPlass } from "@/lib/domain/tn-iup-oversikt";
 import { TN } from "@/lib/v2/team-norway";
-import { TnShell, tnRolleNavn } from "../tn-shell";
+import { TnShell, TnSpillerFaner, tnRolleNavn, type TnSpillerFane } from "../tn-shell";
 import { TnFlate, TnFotnote, TnListerad, TnRutenett } from "../tn-flate";
 import { TnSkraKort, TnSkraTopp } from "../tn-skra-topp";
 import { datoLang } from "./felles";
@@ -13,19 +13,22 @@ import { TnIupStripe } from "./tn-spillerprofil-visning";
  * WAGR-plass, klubb og fødselsår (beslutningen 22.10); ingen tester, trening, plan eller poster.
  * Ingen knapp sender noe til spilleren.
  *
- * Avvik:
- *   - Fanene er ikke med: de andre IUP-fanene gir fortsatt 404 uten deling til pakke e gir dem samme lås.
- *   - «Kopier forklaringen» er ikke med; teksten kan merkes og kopieres.
+ * Alle IUP-fanene viser denne låsen uten deling (wireframes §2), med fanen treneren åpnet markert.
+ *
+ * Avvik: «Kopier forklaringen» er ikke med; teksten kan merkes og kopieres.
  */
 /** Overskriftene står inne i kortene, så ingen tekst ligger over den skrå kanten. */
 const OVERSKRIFT = { margin: 0, fontFamily: TN.font.display, fontSize: 20, lineHeight: 1.25, color: TN.navy900 } as const;
 
-export function TnIupLaastVisning({ brukerNavn, kontekst, navn, klubb, fodselsaar, wagr, aar }: { brukerNavn: string | null; kontekst: TnArbeidskontekst; navn: string; klubb: string | null; fodselsaar: number | null; wagr: TnWagrPlass | null; aar: number }) {
+export function TnIupLaastVisning({ brukerNavn, kontekst, spillerId, aktiv, navn, klubb, fodselsaar, wagr, aar }: { brukerNavn: string | null; kontekst: TnArbeidskontekst; spillerId: string; aktiv: TnSpillerFane; navn: string; klubb: string | null; fodselsaar: number | null; wagr: TnWagrPlass | null; aar: number }) {
   const fornavn = navn.split(" ")[0] || navn;
   return (
     <TnShell aktiv="spillere" brukerNavn={brukerNavn ?? "Ukjent"} rolle={tnRolleNavn(kontekst.rolle)} groupId={kontekst.gruppe.id} visTrenerflater kanAdministrere={kontekst.kanAdministrere} tilbake={{ href: "/team-norway/spillere", label: "Spillere" }}>
       <TnSkraTopp bilde="tee-hand" etikett={`IUP for ${navn}`} overlinje="IUP · Spillere" tittel={navn} ingress={[klubb, fodselsaar ? `født ${fodselsaar}` : null].filter(Boolean).join(" · ") || undefined} hoyre={<TnIupStripe wagr={wagr} bruttoSnitt={null} aar={aar} />} />
       <TnSkraKort>
+        <TnFlate>
+          <TnSpillerFaner spillerId={spillerId} aktiv={aktiv} />
+        </TnFlate>
         <TnRutenett min={320}>
           <section style={{ display: "grid", gap: 12, alignContent: "start" }}>
             <TnFlate style={{ display: "grid", gap: 12 }}>

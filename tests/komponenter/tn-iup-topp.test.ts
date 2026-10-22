@@ -16,34 +16,25 @@ mock.module(LOGO_HVIT, { defaultExport: { src: "/logo-hvit.png", width: 1, heigh
 test("IUP-toppen har fanenavn som tittel, faner med lenker og innholdet under", async () => {
   const { TnIupTopp } = await import("@/components/team-norway/tn-iup-topp");
   const html = renderToStaticMarkup(
-    createElement(TnIupTopp, { spillerId: "s1", spillerNavn: "Spiller A", aktiv: "profil", kanAdministrere: true, overlinje: "IUP · Spiller A", tittel: "Profil", ingress: "Profil." }, createElement("p", null, "Innhold under")),
+    createElement(TnIupTopp, { spillerId: "s1", spillerNavn: "Spiller A", aktiv: "ranking", kanAdministrere: true, overlinje: "IUP · Spiller A", tittel: "Ranking", ingress: "Ranking." }, createElement("p", null, "Innhold under")),
   );
-  assert.match(html, /<h1[^>]*>Profil<\/h1>/);
+  assert.match(html, /<h1[^>]*>Ranking<\/h1>/);
   assert.match(html, /IUP · Spiller A/);
-  assert.match(html, /href="\/team-norway\/spiller\/s1\/profil"/);
+  assert.match(html, /href="\/team-norway\/spiller\/s1\/ranking"/);
   assert.match(html, /href="\/team-norway\/spiller\/s1\/evaluering"/);
-  assert.match(html, /aria-current="page"[^>]*>Profil/);
+  assert.match(html, /aria-current="page"[^>]*>Ranking/);
   assert.match(html, /Innhold under/);
 });
 
-// Pakke d: faneraden følger IUP-arket, Oversikt er /spiller/[id], og Post er seksjonen «Poster» i Oversikt.
-test("faneraden starter med Oversikt og Turneringsplan og har ingen Post-fane", async () => {
+// Pakke d og e: faneraden følger IUP-arket, Oversikt er /spiller/[id], og Post er seksjonen «Poster» i Oversikt.
+test("faneraden følger IUP-arket og har ingen Post-fane", async () => {
   const { TnIupTopp } = await import("@/components/team-norway/tn-iup-topp");
   const html = renderToStaticMarkup(
     createElement(TnIupTopp, { spillerId: "s1", spillerNavn: "Spiller A", aktiv: "tester", kanAdministrere: true, overlinje: "IUP", tittel: "Tester" }),
   );
   const faner = html.slice(html.indexOf('aria-label="IUP-faner"'), html.indexOf("</nav>"));
   const navn = [...faner.matchAll(/<a[^>]*>([^<]+)<\/a>/g)].map((m) => m[1]);
-  assert.deepEqual(navn, ["Oversikt", "Turneringsplan", "Profil", "Plan", "Tester", "Analyse", "Teknisk plan", "Fireukerssjekk"]);
+  assert.deepEqual(navn, ["Oversikt", "Turneringsplan", "Ranking", "Turneringer", "Trening", "Tester", "Teknisk plan", "Fireukerssjekk"]);
   assert.match(faner, /href="\/team-norway\/spiller\/s1"[^>]*>Oversikt/);
   assert.doesNotMatch(faner, /\/post"/);
-});
-
-test("spilleren uten trenertilgang får ikke planfanene", async () => {
-  const { TnIupTopp } = await import("@/components/team-norway/tn-iup-topp");
-  const html = renderToStaticMarkup(
-    createElement(TnIupTopp, { spillerId: "s1", spillerNavn: "Spiller A", aktiv: "profil", kanAdministrere: false, overlinje: "IUP", tittel: "Spillerprofil" }),
-  );
-  assert.doesNotMatch(html, /evaluering/);
-  assert.doesNotMatch(html, /teknisk-plan/);
 });

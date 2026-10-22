@@ -132,6 +132,9 @@ export default async function TeamNorwayWorkbenchPage({ searchParams }: Props) {
 
   const sp = await searchParams;
   const spillerParam = sp.spiller && z.string().min(1).max(64).safeParse(sp.spiller).success ? sp.spiller : undefined;
+  // Gammel IUP-fane «Plan» (wireframes §3): bare ?spiller= sender til IUP › Trening. Med visning, dato,
+  // økt eller feil er det forslagsflaten treneren åpnet fra Trening, og den blir her.
+  if (spillerParam && !sp.visning && !sp.dato && !sp.okt && !sp.feil) redirect(`/team-norway/spiller/${encodeURIComponent(spillerParam)}/trening`);
   const spillerId = spillerParam && kontekst.spillere.some((s) => s.id === spillerParam) ? spillerParam : undefined;
   const visning = parseVisning(sp.visning, !!spillerId);
   const idag = osloIdag();
@@ -346,7 +349,7 @@ export default async function TeamNorwayWorkbenchPage({ searchParams }: Props) {
         <TnSpillerFaner
           spillerId={spillerId}
           spillerNavn={kontekst.spillere.find((s) => s.id === spillerId)?.navn ?? spillerId}
-          aktiv="workbench"
+          aktiv="trening"
           kanAdministrere={!kontekst.erSpiller}
         />
       )}

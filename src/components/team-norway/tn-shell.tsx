@@ -273,36 +273,30 @@ export function TnLenke({ href, children, fremhevet = false }: { href: string; c
   );
 }
 
-export type TnSpillerFane = "post" | "oversikt" | "profil" | "tester" | "analyse" | "workbench" | "teknisk-plan" | "evaluering" | "turneringsplan";
+export type TnSpillerFane = "post" | "oversikt" | "turneringsplan" | "ranking" | "turneringer" | "trening" | "tester" | "teknisk-plan" | "evaluering";
 
 /**
  * IUP-hodet for alle spillerscopede TN-ruter (Anders 15.10.2026: spillerprofilen
- * heter IUP i Team Norway). Rund avatar, overlinje som begynner med «IUP»,
- * navnet som tittel, og fanene i fast rekkefølge med rød strek under aktiv fane.
- * Fanen som i koden heter «evaluering», heter Fireukerssjekk.
- * Rekkefølgen følger IUP-arket (wireframes docs/design-system/utkast-tn/trenerflate, §2):
+ * heter IUP i Team Norway). Fanene står i IUP-arkets rekkefølge
+ * (wireframes docs/design-system/utkast-tn/trenerflate, §2):
  * Oversikt · Turneringsplan · Ranking · Turneringer · Trening · Tester · Teknisk plan · Fireukerssjekk.
- * Til Ranking, Turneringer og Trening er bygget (pakke e), står dagens Profil og Plan på plassen
- * til fanen som erstatter dem, og Analyse ved Tester. Post er seksjonen «Poster» i Oversikt.
+ * Fanen som i koden heter «evaluering», heter Fireukerssjekk. Post er seksjonen «Poster» i Oversikt;
+ * gamle Profil, Analyse og Plan sender videre til Oversikt, Tester › Utvikling og Trening.
+ * Uten deling viser alle fanene samme lås (TnIupLaastSkjerm).
  *
- * `kanAdministrere` betyr her LESETILGANG til planfanene (COACH/ASSISTANT/ADMIN,
- * dvs. `!erSpiller`), ikke skrivetilgang. De underliggende rutene har egen skrivevakt.
+ * `kanAdministrere` er beholdt for kallerne; flaten er bare for trenere (§TEAM NORWAY ER BARE FOR TRENERE).
  */
-export function TnSpillerFaner({ spillerId, kanAdministrere, aktiv }: { spillerId: string; spillerNavn?: string; aktiv: TnSpillerFane; kanAdministrere: boolean }) {
+export function TnSpillerFaner({ spillerId, aktiv }: { spillerId: string; spillerNavn?: string; aktiv: TnSpillerFane; kanAdministrere?: boolean }) {
   const s = `/team-norway/spiller/${spillerId}`;
   const faner: { id: TnSpillerFane; label: string; href: string }[] = [
     { id: "oversikt", label: "Oversikt", href: s },
     { id: "turneringsplan", label: "Turneringsplan", href: `${s}/turneringsplan` },
-    { id: "profil", label: "Profil", href: `${s}/profil` },
-    ...(kanAdministrere ? [{ id: "workbench" as const, label: "Plan", href: `/team-norway/workbench?spiller=${spillerId}` }] : []),
+    { id: "ranking", label: "Ranking", href: `${s}/ranking` },
+    { id: "turneringer", label: "Turneringer", href: `${s}/turneringer` },
+    { id: "trening", label: "Trening", href: `${s}/trening` },
     { id: "tester", label: "Tester", href: `${s}/tester` },
-    { id: "analyse", label: "Analyse", href: `${s}/analyse` },
-    ...(kanAdministrere
-      ? [
-          { id: "teknisk-plan" as const, label: "Teknisk plan", href: `${s}/teknisk-plan` },
-          { id: "evaluering" as const, label: "Fireukerssjekk", href: `${s}/evaluering` },
-        ]
-      : []),
+    { id: "teknisk-plan", label: "Teknisk plan", href: `${s}/teknisk-plan` },
+    { id: "evaluering", label: "Fireukerssjekk", href: `${s}/evaluering` },
   ];
   const nav = (
     <nav aria-label="IUP-faner" style={{ display: "flex", flexWrap: "wrap", borderBottom: `1px solid ${TN.ink200}` }}>

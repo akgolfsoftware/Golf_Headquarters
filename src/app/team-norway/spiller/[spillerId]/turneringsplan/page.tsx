@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { hentTnSpillerTilgang } from "@/lib/domain/tn-arbeidsflate";
+import { TnIupLaastSkjerm } from "@/components/team-norway/skjermer/tn-iup-laast-skjerm";
 import { medTnSpillerData } from "@/lib/domain/tn-arbeidsflate";
 import { byggPlanvisning } from "@/lib/turneringsplan/data";
 import { TnIupTopp } from "@/components/team-norway/tn-iup-topp";
@@ -16,6 +18,7 @@ export const dynamic = "force-dynamic";
 export default async function TurneringsplanPage({ params }: { params: Promise<{ spillerId: string }> }) {
   const { spillerId } = await params;
   const bruker = await requirePortalUser({ tillatDemo: true, kreverTilgang: "TALENT" });
+  if (!(await hentTnSpillerTilgang(bruker, spillerId))) return <TnIupLaastSkjerm bruker={bruker} spillerId={spillerId} aktiv="turneringsplan" />;
   const data = await medTnSpillerData(bruker, spillerId, async (tx, tilgang) => ({ tilgang, visning: await byggPlanvisning(tx, spillerId) }));
   if (!data?.visning) notFound();
   const { tilgang, visning } = data;
