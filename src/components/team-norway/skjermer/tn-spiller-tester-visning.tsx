@@ -108,11 +108,11 @@ export function TnSpillerTesterVisning({ brukerNavn, spillerId, tilgang, tnRader
       <TnSkraKort>
         <TnFlate>
           <TnSpillerFaner spillerId={spillerId} spillerNavn={tilgang.spillerNavn} aktiv="tester" kanAdministrere={!tilgang.kontekst.erSpiller} />
-          <p style={{ margin: "8px 0 0", display: "flex", flexWrap: "wrap", gap: "4px 20px", alignItems: "center" }}>
-            {kanStarteTest ? <TrackmanImportModal variant="secondary" label="Importer fra TrackMan" onBehalfOfUserId={spillerId} /> : null}
+          <div style={{ margin: "8px 0 0", display: "flex", flexWrap: "wrap", gap: "4px 20px", alignItems: "center" }}>
+            {kanStarteTest ? <TrackmanImportModal variant="secondary" label="Importer fra TrackMan" onBehalfOfUserId={spillerId} triggerStyle={{ minHeight: 44, display: "inline-flex", alignItems: "center", padding: "0 16px" }} /> : null}
             {kanStarteTest ? <Link href={`/team-norway/spiller/${spillerId}/testokt`} style={{ display: "inline-flex", alignItems: "center", minHeight: 44, padding: "0 18px", borderRadius: 999, background: TN.navy900, color: TN.white, fontWeight: 700, fontSize: 14, textDecoration: "none" }}>Start test</Link> : null}
             <TnTekstlenke href={`/team-norway/spiller/${spillerId}/tester?visning=utvikling`}>Utvikling per protokoll</TnTekstlenke>
-          </p>
+          </div>
         </TnFlate>
 
         {BATTERI_DELER.map((del) => (

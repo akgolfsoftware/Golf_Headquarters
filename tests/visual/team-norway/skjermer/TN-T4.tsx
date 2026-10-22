@@ -49,7 +49,7 @@ const referanse: TnReferanseTesterData = {
 };
 
 export const tilstander = {
-  tester: <TnSpillerTesterVisning brukerNavn="Trener 1" spillerId="b" tilgang={tilgang} tnRader={tnRader} ovrige={ovrige} />,
+  tester: <TnSpillerTesterVisning brukerNavn="Trener 1" spillerId="b" tilgang={tilgang} tnRader={tnRader} ovrige={ovrige} kanStarteTest />,
   "tester-tom": <TnSpillerTesterVisning brukerNavn="Trener 1" spillerId="b" tilgang={tilgang} tnRader={[]} ovrige={null} />,
   referanse: <TnReferansenivaerVisning brukerNavn="Trener 1" visDataGolf={false} data={referanse} />,
   "referanse-ingen-delt": <TnReferansenivaerVisning brukerNavn="Trener 1" visDataGolf={false} data={{ ...referanse, spillere: [] }} />,

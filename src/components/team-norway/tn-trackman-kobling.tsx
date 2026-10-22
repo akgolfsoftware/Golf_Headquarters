@@ -68,7 +68,7 @@ export function TnTrackManKobling({ spillerId, protocol, okter, ctx }: { spiller
     <section className="phn-kort" aria-label="TrackMan">
       <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 16px", justifyContent: "space-between", alignItems: "center" }}>
         <h2 style={{ margin: 0 }}>TrackMan</h2>
-        <TrackmanImportModal variant="secondary" label="Importer fra TrackMan" onBehalfOfUserId={spillerId} onImportert={setOktId} />
+        <TrackmanImportModal variant="secondary" label="Importer fra TrackMan" onBehalfOfUserId={spillerId} onImportert={setOktId} triggerStyle={{ minHeight: 44, display: "inline-flex", alignItems: "center", padding: "0 16px" }} />
       </div>
       {!okter.length ? (
         <p className="phn-forklar">Ingen TrackMan-økter for spilleren ennå. Importer fila, så foreslår appen hvilke slag som hører til testen.</p>
