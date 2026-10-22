@@ -35,7 +35,7 @@ const statusKlasse = { VENTER: "noy", AKTIV: "ok", UTLOPT: "noy", TRUKKET: "noy"
 const dato = (s: string) => new Intl.DateTimeFormat("nb-NO", { day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Oslo" }).format(new Date(s));
 const erTn = (navn: string) => /team norway/i.test(navn);
 
-export function NavngittDeling({ initial, erTrener = false, skra = false }: { initial: Oversikt; erTrener?: boolean; skra?: boolean }) {
+export function NavngittDeling({ initial, erTrener = false, skra = false, ekstra }: { initial: Oversikt; erTrener?: boolean; skra?: boolean; ekstra?: ReactNode }) {
   const [oversikt, setOversikt] = useState(initial);
   const [grupperad, setGruppe] = useState(initial.grupper[0]?.id ?? "");
   const [epost, setEpost] = useState("");
@@ -137,6 +137,7 @@ export function NavngittDeling({ initial, erTrener = false, skra = false }: { in
           <span style={{ fontSize: 14.5 }}>{NAVNGITT_PROFIL_TEKST.forklaring}</span>
           <ul>{NAVNGITT_PROFIL_TEKST.punkter.map((p) => <li key={p}>{p}</li>)}</ul>
         </div>
+        {ekstra}
 
         <div className="phn-meldinger" aria-live="polite">
           {feil && <p className="feilboks" role="alert">{feil}</p>}
