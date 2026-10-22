@@ -24,6 +24,7 @@ import {
 } from "@/app/portal/(fullscreen)/tren/tester/[testId]/gjennomfor/actions";
 import { usePaToast } from "@/components/precision/pa-toast";
 import { LiveInnhold, LiveTittelrad } from "@/components/portal/live/LiveTittelrad";
+import "@/styles/precision-athletics.css";
 import "@/styles/playerhq-ny-idag.css";
 import "@/styles/playerhq-ny-lister-skra.css";
 
@@ -194,7 +195,7 @@ export function PH15TestGjennomfor({
 
   return (
     <div
-      className="phn phn-skra"
+      className="pa-root phn phn-skra"
       data-theme="light"
       style={{
         minHeight: "100dvh",
