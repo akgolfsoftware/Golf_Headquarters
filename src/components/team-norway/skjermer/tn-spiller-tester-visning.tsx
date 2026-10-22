@@ -81,7 +81,7 @@ const ENDRING: Record<NonNullable<Rad["endring"]>, { tekst: string; farge: strin
   lik: { tekst: "Uendret", farge: TN.ink700 },
 };
 
-export function TnSpillerTesterVisning({ brukerNavn, spillerId, tilgang, tnRader, ovrige }: { brukerNavn: string; spillerId: string; tilgang: TnSpillerTilgang; tnRader: TnSpillerTestRad[]; ovrige: TnSpillerOvrigeTester | null }) {
+export function TnSpillerTesterVisning({ brukerNavn, spillerId, tilgang, tnRader, ovrige, kanStarteTest = false }: { brukerNavn: string; spillerId: string; tilgang: TnSpillerTilgang; tnRader: TnSpillerTestRad[]; ovrige: TnSpillerOvrigeTester | null; /** Trener (gruppe-rolle COACH) eller ADMIN: «Start test» fører til testøkta. */ kanStarteTest?: boolean }) {
   const { rader, utenfor } = byggBatterirader(spillerId, tnRader, ovrige);
   const tatt = rader.filter((r) => r.antall > 0).length;
   const prioritertNaadd = PRIORITERTE.filter((p) => (rader.find((r) => r.test.id === p.id)?.antall ?? 0) >= (p.minst ?? 0)).length;
@@ -107,7 +107,10 @@ export function TnSpillerTesterVisning({ brukerNavn, spillerId, tilgang, tnRader
       <TnSkraKort>
         <TnFlate>
           <TnSpillerFaner spillerId={spillerId} spillerNavn={tilgang.spillerNavn} aktiv="tester" kanAdministrere={!tilgang.kontekst.erSpiller} />
-          <p style={{ margin: "8px 0 0" }}><TnTekstlenke href={`/team-norway/spiller/${spillerId}/tester?visning=utvikling`}>Utvikling per protokoll</TnTekstlenke></p>
+          <p style={{ margin: "8px 0 0", display: "flex", flexWrap: "wrap", gap: "4px 20px", alignItems: "center" }}>
+            {kanStarteTest ? <Link href={`/team-norway/spiller/${spillerId}/testokt`} style={{ display: "inline-flex", alignItems: "center", minHeight: 44, padding: "0 18px", borderRadius: 999, background: TN.navy900, color: "#fff", fontWeight: 700, fontSize: 14, textDecoration: "none" }}>Start test</Link> : null}
+            <TnTekstlenke href={`/team-norway/spiller/${spillerId}/tester?visning=utvikling`}>Utvikling per protokoll</TnTekstlenke>
+          </p>
         </TnFlate>
 
         {BATTERI_DELER.map((del) => (

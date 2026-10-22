@@ -29,5 +29,6 @@ export default async function SpillerTesterPage({ params, searchParams }: { para
     hentTnSpillerOvrigeTester(bruker, spillerId),
   ]);
   if (!data) notFound();
-  return <TnSpillerTesterVisning brukerNavn={bruker.name ?? "Ukjent"} spillerId={spillerId} tilgang={data.tilgang} tnRader={data.rader} ovrige={ovrige} />;
+  const kanStarteTest = !data.tilgang.kontekst.erSpiller && (bruker.role === "ADMIN" || data.tilgang.kontekst.rolle === "COACH");
+  return <TnSpillerTesterVisning brukerNavn={bruker.name ?? "Ukjent"} spillerId={spillerId} tilgang={data.tilgang} tnRader={data.rader} ovrige={ovrige} kanStarteTest={kanStarteTest} />;
 }

@@ -29,7 +29,7 @@ import { tnReadRaw, type TnRaw } from "@/lib/portal-tester/tn-draft";
 import { useTnDraft, type TnInitial } from "@/lib/portal-tester/use-tn-draft";
 import { tnDefinitionId } from "@/lib/portal-tester/tn-integration";
 import { GATE_POENG_VALG } from "@/lib/portal-tester/tn-catalog";
-import type { TnSaveInput } from "@/lib/portal-tester/tn-session";
+import type { TnSaveInput, TnSaveResult } from "@/lib/portal-tester/tn-session";
 import { GenerellInn, GenerellListe, GenerellTopp, erGenerell } from "./PH15TnGenerell";
 import { saveTnTest } from "@/app/portal/tren/tester/team-norway/actions";
 import "@/styles/playerhq-ny.css";
@@ -61,6 +61,11 @@ type Props = {
   kontekst?: string;
   /** Innhold under testen, f.eks. øvelsesforslag etter et lagret resultat. */
   etter?: React.ReactNode;
+  /**
+   * Trenerens testøkt i Team Norway (utkast 3, 22.10): egen lagring for spilleren, egen tilbakelenke og egne
+   * knapper når testen er lukket. Uten disse er skjermen spillerens egen, som før. Bilde per slag vises ikke for trener.
+   */
+  trener?: { lagre: (input: TnSaveInput) => Promise<TnSaveResult>; tilbake: { href: string; tekst: string }; etterLukket: React.ReactNode };
 };
 
 /** Gate-testene med poeng (Nærspill, Wedge, VISA): Bom 0 · Gjennom porten 1 · I sonen 4 (beslutninger.md §TESTBATTERIET, punkt 6). */
@@ -83,7 +88,9 @@ const tall = (v: number, d = 1) => (Math.round(v * 10 ** d) / 10 ** d).toLocaleS
 
 export function PH15TnTest(props: Props) {
   const { protocol: p, initial, savedResult, localSessionId, testDayParticipantId } = props;
-  const save = useCallback((input: TnSaveInput) => saveTnTest({ ...input, ...(testDayParticipantId ? { testDayParticipantId } : {}) }), [testDayParticipantId]);
+  const trenerLagre = props.trener?.lagre;
+  const save = useCallback((input: TnSaveInput) => trenerLagre ? trenerLagre(input) : saveTnTest({ ...input, ...(testDayParticipantId ? { testDayParticipantId } : {}) }), [testDayParticipantId, trenerLagre]);
+  const tilbake = props.trener?.tilbake ?? { href: "/portal/tren/tester", tekst: "Tester" };
   const draft = useTnDraft(p, initial, save, localSessionId);
   const router = useRouter();
   const type = ph15TnType(p) ?? "gate";
@@ -114,7 +121,7 @@ export function PH15TnTest(props: Props) {
   async function avbryt() {
     avbrytRef.current?.close();
     await draft.flush("abort");
-    router.push("/portal/tren/tester");
+    router.push(tilbake.href);
   }
   function lastNed() {
     const blob = new Blob([JSON.stringify({ test: p.id, version: tnVersion(p), raw: draft.raw, notes: draft.notes }, null, 2)], { type: "application/json" });
@@ -132,7 +139,7 @@ export function PH15TnTest(props: Props) {
         overlinje={props.kontekst ?? `Stats · Tester · ${akse.o}`}
         tittel={p.name}
         handling={<>
-          <TmTilbake href="/portal/tren/tester" tekst="Tester" />
+          <TmTilbake href={tilbake.href} tekst={tilbake.tekst} />
           {!closed && <button type="button" className="phn-knapp sek" disabled={laast} onClick={() => avbrytRef.current?.showModal()} aria-haspopup="dialog">Avslutt</button>}
         </>}
       />
@@ -144,7 +151,7 @@ export function PH15TnTest(props: Props) {
           {draft.blocked ? (
             <div className="phn-knapper">
               <button type="button" className="phn-knapp sek" onClick={lastNed}>Last ned registreringene</button>
-              <a className="phn-knapp sek" href={`?session=${draft.sessionId}`}>Åpne lagret versjon</a>
+              {!props.trener && <a className="phn-knapp sek" href={`?session=${draft.sessionId}`}>Åpne lagret versjon</a>}
             </div>
           ) : <div className="phn-knapper"><button type="button" className="phn-knapp sek" onClick={() => void draft.flush()}>Prøv lagring igjen</button></div>}
         </div>
@@ -191,7 +198,8 @@ export function PH15TnTest(props: Props) {
               <button type="button" className="phn-knapp sek" disabled={laast} onClick={() => avbrytRef.current?.showModal()} aria-haspopup="dialog">Avbryt testen</button>
             </>
           )}
-          {closed && (
+          {closed && props.trener && <div className="phn-knapper">{props.trener.etterLukket}</div>}
+          {closed && !props.trener && (
             <div className="phn-knapper">
               {draft.status === "COMPLETED" && <Link className="phn-knapp pri" href={`/portal/tren/tester/${tnDefinitionId(p)}?lagret=1`}>Se testen</Link>}
               <Link className="phn-knapp sek" href="/portal/tren/tester">Alle tester</Link>
@@ -200,7 +208,7 @@ export function PH15TnTest(props: Props) {
         </div>
       </div>
 
-      {!closed && <Foto sessionId={draft.sessionId} forsok={foto} klar={draft.ready && draft.revision >= 1} revisjon={draft.revision} />}
+      {!closed && !props.trener && <Foto sessionId={draft.sessionId} forsok={foto} klar={draft.ready && draft.revision >= 1} revisjon={draft.revision} />}
 
       <details className="phn-kort dempet">
         <summary className="phn-etikett" style={{ cursor: "pointer", minHeight: 44, display: "flex", alignItems: "center" }}>Kilde og registreringsregler</summary>
