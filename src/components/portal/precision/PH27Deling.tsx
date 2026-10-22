@@ -6,7 +6,8 @@
  * Fasit: docs/design-system/utkast-playerhq/meg.html (utkast 1, skjermene «PH-27 Deling» og
  * «Deling under 16»). Stil: src/styles/playerhq-ny-meg.css.
  *
- * Samtykket per organisasjon har to nivåer som før (TnSamtykkeSide): «Tester og resultater» og
+ * Team Norway har ett nivå (beslutning 22.10, #1614): ingen brytere, bare navngitt deling av hele IUP-en.
+ * For andre organisasjoner har samtykket to nivåer som før (TnSamtykkeSide): «Tester og resultater» og
  * «Komplett profil». Samme server-handlinger og samme kaskade: Komplett profil løfter testene med
  * seg, og av på testene slår alt av. Under 16 kan spilleren trekke, men ikke slå på selv.
  *
@@ -134,11 +135,17 @@ export function PH27Deling({ data, settSamtykke, ekstra }: { data: PH27Data; set
                 <span><b>{o.navn}</b><span className="phn-kilde">Trenerne i gruppa di</span></span>
                 <span className="gruppe-merke"><Users size={14} aria-hidden />Gruppe</span>
               </div>
-              <div className="boks">
+              {erTn(o.navn) ? (
+                // Team Norway har ett delingsnivå (beslutning 22.10, #1614): treneren ser hele IUP-en når du deler med en navngitt trener.
+                <div className="boks" style={{ display: "grid", gap: 4, padding: "12px 14px" }}>
+                  <p className="phn-forklar">Team Norway-trenerne ser hele IUP-en din når du deler med en navngitt trener. Uten deling ser de bare navn, klubb, fødselsår og WAGR-plass.</p>
+                  <Link className="phn-lenke" href="/portal/meg/deling">Del med en Team Norway-trener</Link>
+                </div>
+              ) : <div className="boks">
                 <Bryter paa={o.testerOgResultater} tittel="Tester og resultater" kilde="Testresultater, turneringer og statistikk" laast={pending || (data.krevesForesatt && !o.testerOgResultater)} onChange={(v) => endre(o.gruppeId, "testerOgResultater", v)} />
                 <Bryter paa={o.komplettProfil} tittel="Komplett profil" kilde="I tillegg plan, TrackMan, analyse og fremgang" laast={pending || (data.krevesForesatt && !o.komplettProfil)} onChange={(v) => endre(o.gruppeId, "komplettProfil", v)} />
-              </div>
-              {data.krevesForesatt && <p className="phn-kilde">Under 16 år: forelderen godkjenner deling i foreldreportalen. Å trekke tilbake kan du alltid gjøre selv.</p>}
+              </div>}
+              {data.krevesForesatt && !erTn(o.navn) && <p className="phn-kilde">Under 16 år: forelderen godkjenner deling i foreldreportalen. Å trekke tilbake kan du alltid gjøre selv.</p>}
               {paa && <div className="phn-knapper"><button type="button" className="phn-knapp sek" disabled={pending} onClick={() => { setTrekk(o); dialog.current?.showModal(); }}>Trekk tilgang</button></div>}
             </article>;
           })}
@@ -163,8 +170,11 @@ export function PH27Deling({ data, settSamtykke, ekstra }: { data: PH27Data; set
         <div className="innsyn-alt">
           <b>Det treneren ser</b>
           <ul>
-            <li><b>Tester og resultater:</b> testresultater, turneringer og rundestatistikk</li>
-            <li><b>Komplett profil:</b> i tillegg treningsplan og økter, TrackMan, analyse og fremgang</li>
+            {(orgs.length === 0 || orgs.some((o) => !erTn(o.navn))) && <>
+              <li><b>Tester og resultater:</b> testresultater, turneringer og rundestatistikk</li>
+              <li><b>Komplett profil:</b> i tillegg treningsplan og økter, TrackMan, analyse og fremgang</li>
+            </>}
+            {orgs.some((o) => erTn(o.navn)) && <li><b>Team Norway:</b> hele IUP-en når du deler med en navngitt trener, ellers bare navn, klubb, fødselsår og WAGR-plass</li>}
           </ul>
         </div>
         {data.navngitte.length > 0 && <section className="phn-seksjon" aria-labelledby="del-navngitt">

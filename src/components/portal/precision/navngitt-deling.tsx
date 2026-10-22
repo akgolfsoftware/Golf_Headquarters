@@ -163,7 +163,7 @@ export function NavngittDeling({ initial, erTrener = false, skra = false, ekstra
                 <input type="email" autoComplete="off" placeholder={`navn@${gruppe?.domene ?? "wang.no"}`} value={epost} disabled={pending} onChange={(e) => setEpost(e.target.value)} required maxLength={254} />
                 <span className="hjelp">Bruk adressen på @{gruppe?.domene} som treneren logger inn med.</span>
               </label>
-              <p className="phn-kilde">Dette innsynet viser foreløpig leverte utviklingssjekker og sesongevalueringer. Øvrige profildeler er ikke tilgjengelige her ennå.</p>
+              <p className="phn-kilde">{gruppe?.domene === "golfforbundet.no" ? "Team Norway-treneren ser hele IUP-en din: oversikt, turneringsplan, ranking, turneringer, trening, tester, teknisk plan og fireukerssjekk. Det finnes ikke noe lavere nivå." : "Dette innsynet viser foreløpig leverte utviklingssjekker og sesongevalueringer. Øvrige profildeler er ikke tilgjengelige her ennå."}</p>
               <label className="avkryss"><input type="checkbox" checked={godkjent} disabled={pending} onChange={(e) => setGodkjent(e.target.checked)} /><span>Jeg har lest omfanget og godkjenner delingen med denne treneren.</span></label>
               <button type="submit" className="phn-knapp pri stor" disabled={pending || !godkjent}>{pending ? "Oppretter …" : "Opprett delingslenke"}</button>
             </form>}
