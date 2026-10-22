@@ -168,7 +168,7 @@ h1 { font-size: 26px; margin: 0 0 4px; text-wrap: balance; }
 
 <div class="side">
   <h1>Team Norway trenerflate · utkast 2</h1>
-  <p class="ingress">De resterende skjermene: IUP-fanene, Referanse, Samlinger og testing, Turneringer og Fag og administrasjon, pluss tom, laster og feil. Svart-hvitt og syntetiske navn, som utkast 1. Hver skjerm i 1280 og 390 px. På 1920 px får kortene flere kolonner, aldri bredere linjer.</p>
+  <p class="ingress">De resterende skjermene: IUP-fanene, Referanse, Samlinger og testing, Turneringer og Fag og administrasjon, «Se hva Team Norway ser» i PlayerHQ, pluss tom, laster og feil. Funksjonene følger funksjonsplanen 22.10. Svart-hvitt og syntetiske navn, som utkast 1. Hver skjerm i 1280 og 390 px. På 1920 px får kortene flere kolonner, aldri bredere linjer.</p>
   <div class="gruppevelger" id="velger"></div>
   <div id="visning"></div>
 </div>
@@ -429,6 +429,40 @@ datagolf: { gruppe: "Fag og administrasjon", navn: "Data Golf", notat: "Bare ADM
     ${kort(6, "Spiller mot proff", `<div class="felt">Velg spiller</div>${kilde("Powered by Data Golf. Vises bare for ADMIN; aldri utad.")}`)}
   </div>`) },
 
+refWagrVis: { gruppe: "Referanse", navn: "WAGR · Turneringer og Sesong", notat: "De to visningene i WAGR som ikke står i utkast 1. Turneringer: alle WAGR-turneringer spillerne har spilt, med Power, poeng og plass før og etter. Sesong: én prikk per turnering per spiller; størrelse er poeng, fylt prikk er seier (ingen farge i wireframe).",
+  html: () => SKALL("Referanse", "Referanse", `${helt("Referanse · WAGR uke 43", `${ht("444", "turneringer spilt av norske herrer i 2026")}`)}${FANER(REF_F, "WAGR")}
+  <div class="flate">
+    ${kort(12, "", `<div class="filtre"><span class="chip">Junior Norden</span><span class="chip">Amatør Norden</span><span class="chip paa">Norge</span><span class="seksjonsnavn" style="align-self:center;margin-left:8px">Visning</span><span class="chip">Leaderboard</span><span class="chip paa">Turneringer</span><span class="chip">Sesong</span></div>`)}
+    ${kort(12, "Turneringer", tabell(["Turnering","Dato","Spiller","Power","Plass","WAGR før → etter"], [["Lytham Trophy","05.05","Spiller A Nordvik","812","4","61 → 48"],["Titleist Junior Open","21.09","Mathias Berg","402","T4","196 → 188"],["Junior-NM","30.08","Henrik Aas","288","T6","331 → 326"]]))}
+    ${kort(12, "Sesong 2026", `<div class="rad"><span>Spiller A Nordvik</span><span class="prikker"><i></i><i class="paa"></i><i></i><i></i><i></i><i></i></span></div><div class="rad"><span>Mathias Berg</span><span class="prikker"><i></i><i></i><i></i><i></i></span></div><div class="rad"><span>Henrik Aas</span><span class="prikker"><i></i><i></i><i></i></span></div>${kilde(WAGR + " Fylt prikk: seier.")}`)}
+  </div>`) },
+
+/* ---------------- PlayerHQ ---------------- */
+seHvaTn: { gruppe: "PlayerHQ", navn: "Se hva Team Norway ser", notat: "Spillerens egen side i PlayerHQ (Meg › Deling › Se hva Team Norway ser), bare for spillere i en Team Norway-gruppe. Spilleren ser sin IUP med de samme åtte fanene som treneren, men uten knapper. Velgeren øverst viser hva hver trener ser på sitt delingsnivå. Endring av deling skjer i Meg › Deling, ikke her. PlayerHQ-skallet (Precision, Skrå-drakten), ikke Team Norway-skallet.",
+  html: () => `
+<div class="app">
+  <nav class="meny" aria-label="PlayerHQ">
+    <div class="logo"><i></i>AK Golf PlayerHQ</div>
+    ${["I dag","Plan","Stats","Meg"].map(m => `<div class="mp${m==="Meg"?" aktiv":""}">${m}</div>`).join("")}
+    <div class="fot"><div class="avatar" style="background:#444;color:#fff;border-color:#fff">SH</div><div><b>Sigrid Holm</b><span>Spiller</span></div></div>
+  </nav>
+  <div class="topp"><span>‹ Deling</span>Se hva TN ser<span>SH</span></div>
+  <div class="innhold">
+  ${helt("Meg › Deling › Team Norway", `<h2>Slik ser Team Norway IUP-en din</h2>${ht("2", "trenere har tilgang")}`)}
+  <div class="flate">
+    ${kort(12, "Se som", `<div class="filtre"><span class="chip paa">Eva Lie · Komplett profil</span><span class="chip">Per Dal · Tester og resultater</span></div><span class="svak">Per Dal ser bare Oversikt, Ranking, Turneringer og Tester. De andre fanene viser låsen.</span><span class="lenke">Endre deling i Meg › Deling</span>`)}
+  </div>
+  ${FANER(IUP_F, "Oversikt")}
+  <div class="flate">
+    ${kort(12, "", `<div class="stripe"><div><b>412</b><span>WAGR-plass</span></div><div><b>—</b><span>NGF juniorranking</span></div><div><b>73,4</b><span>brutto snitt 2026</span></div><div><b>C</b><span>kategori</span></div></div>`)}
+    ${kort(4, "Siste tester", `${rad("Driver Basic", "42 p · 14.10")}${rad("Inspill Basic", "38 p · 02.10")}${rad("Putt 1–3 m", "—")}`)}
+    ${kort(4, "Neste turneringer", `${rad("Srixon Tour finale", "01.11")}${rad("Spanish Junior Open", "14.02")}`)}
+    ${kort(4, "Poster fra Team Norway", `${rad("Plan for vinterperioden", "16.10")}`)}
+    ${kort(12, "", kilde("Visningen er bare til å lese. Forslag fra treneren kommer i Innboks, der du godtar eller avviser."))}
+  </div>
+  </div>
+</div>` },
+
 /* ---------------- Tilstander ---------------- */
 tilstander: { gruppe: "Tilstander", navn: "Tom, laster og feil", notat: "Samme fire tilstander på alle skjermer, i samme kort som innholdet. Tom sier hva som mangler og hva treneren kan gjøre. Laster: grå streker i kortets form, ingen spinner over hele siden. Feil: hva som skjedde og «Prøv igjen». Manglende tall er alltid «—».",
   html: () => SKALL("Spillere", "IUP", `${IUP_TOPP("Tester")}${FANER(IUP_F, "Tester")}
@@ -436,13 +470,13 @@ tilstander: { gruppe: "Tilstander", navn: "Tom, laster og feil", notat: "Samme f
     <div class="tilstand k6"><b>Tom</b><span>Sigrid har ikke tatt noen tester ennå.</span><span class="svak">Første fellestesting er 08.11 på Høstsamling Oslo.</span><span class="knapp kontur">Se testdagen</span></div>
     <div class="tilstand k6"><b>Laster</b><div class="skjelett" style="width:70%"></div><div class="skjelett"></div><div class="skjelett" style="width:85%"></div><div class="skjelett" style="width:60%"></div></div>
     <div class="tilstand feil k6"><b>Feil</b><span>Testene kunne ikke hentes akkurat nå. Ingenting er slettet.</span><span class="knapp">Prøv igjen</span></div>
-    <div class="lås k6"><b>Ikke delt</b><span>Sigrid deler «Tester og resultater», ikke «Komplett profil». Teknisk plan og Trening vises når hun deler mer.</span></div>
+    <div class="lås k6"><b>Ikke delt (samme lås på alle åtte IUP-fanene)</b><span>Sigrid deler «Tester og resultater», ikke «Komplett profil». Teknisk plan og Trening vises når hun deler mer. Uten deling i det hele tatt: navn, klubb, fødselsår og WAGR-plass, som i utkast 1. Aldri feilsiden «finnes ikke».</span></div>
   </div>`) },
 };
 
 const visning = document.getElementById("visning");
 const velger = document.getElementById("velger");
-const GRUPPER = ["IUP", "Samlinger og testing", "Turneringer", "Referanse", "Fag og administrasjon", "Tilstander"];
+const GRUPPER = ["IUP", "Samlinger og testing", "Turneringer", "Referanse", "Fag og administrasjon", "PlayerHQ", "Tilstander"];
 const knapper = [];
 GRUPPER.forEach(g => {
   const rad = document.createElement("div"); rad.className = "gruppe"; rad.setAttribute("role", "group"); rad.setAttribute("aria-label", g);

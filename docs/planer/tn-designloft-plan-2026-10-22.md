@@ -10,6 +10,7 @@ Denne planen rører ikke `src/`. Koden bygges av kodeøkta («tn-kode-ferdig») 
 
 - Utkast 1 (meny, hjem, profil, spillere, IUP Oversikt og Turneringer, uten deling, Referanse › WAGR):
   [index.html](../design-system/utkast-tn/trenerflate/index.html), https://claude.ai/artifact/DJHq9dKNNs8iCoyHZDptbF
+- Funksjonsgrunnlag: Team Norway funksjonsplan 22.10, https://claude.ai/artifact/1i2fcpao7BW2m7UvF9dcPf. Planen og utkast 2 sier det samme som den om menyen, de åtte IUP-fanene og PlayerHQ-koblingen.
 - Utkast 2 (resten): [utkast-2.html](../design-system/utkast-tn/trenerflate/utkast-2.html), https://claude.ai/artifact/EvAKJdcygRpfMSKUPjGw1Y
 
 ## 1. Kartlegging
@@ -75,7 +76,7 @@ Tverrgående svakheter:
 
 | # | Steg | Ferdig når |
 |---|---|---|
-| 1 | **Utkast 2 sett av Anders** (port 7, eller Claude på hans vegne etter nattregelen): de 29 skjermene i `utkast-2.html`. | Anders har sagt ja, eller rettelsene er tegnet inn. |
+| 1 | **Utkast 2 sett av Anders** (port 7, eller Claude på hans vegne etter nattregelen): de 31 skjermene i `utkast-2.html`. | Anders har sagt ja, eller rettelsene er tegnet inn. |
 | 2 | **Se dagens skjermer i nettleser** med demotrener i 390, 1280 og 1920, og legg skjermbilder ved registeret. | Hver rad i tabellen over har skjermbilde, og påstandene om 390 (særlig Månedsplan) er bekreftet eller rettet. |
 | 3 | **Felles tilstander:** én tom-, laster- og feilkomponent for TN etter «Tom, laster og feil» i utkast 2, og `loading.tsx` per hovedpunkt. | Alle seks hovedpunkter har egen laster i skjermens form, og et søk etter skjermer uten tom-tilstand gir 0. |
 | 4 | **IUP-fanene** (kodeøkta, én PR per fane): Turneringer, Ranking, Trening, Tester med «X av N», Teknisk plan, Fireukerssjekk, Turneringsplan. | Alle åtte fanene finnes, gamle adresser sender videre, og hver fane er målt i 390/1280/1920 uten sidelengs rulling. |
@@ -88,18 +89,18 @@ Tverrgående svakheter:
 
 ## 3. Wireframes: hva finnes, hva mangler
 
-**Utkast 2 dekker (29):** IUP › Turneringsplan, Ranking, Trening, Tester, Teknisk plan, Fireukerssjekk ·
+**Utkast 2 dekker (31):** IUP › Turneringsplan, Ranking, Trening, Tester, Teknisk plan, Fireukerssjekk ·
 Samlinger og testing › Samlinger, Månedsplan, Fellestesting, Gruppeanalyse, WANG-tester · Turneringer ›
 Turneringer, Live Watch, Uttak, Rangliste · Referanse › Sammenlign, Søk, Planlegger, Norsk golf, HCP Norge,
 Tester · Fag og administrasjon › Årsplan, Testprotokoller, Fagapparat, Lisens og status, Trenere og tilgang,
-Inviter spiller, Data Golf · Tom, laster og feil. IUP › Turneringer står i utkast 1.
+Inviter spiller, Data Golf · Referanse › WAGR, visningene Turneringer og Sesong · PlayerHQ › «Se hva Team Norway ser» · Tom, laster og feil (med låsen som gjelder alle åtte IUP-fanene). IUP › Turneringer står i utkast 1.
 
 **Mangler fortsatt (steg 10):** Hjem › Gruppeposter og Dokumenter, Spillere › Skoler og College og USA,
 og undersidene (én samling, én turnering, én testprotokoll, én test, én teknisk oppgave, scorekort for føring).
 
 **Kodeøkta kan bygge etter nå** (data finnes i HQ): IUP › Tester, Teknisk plan, Fireukerssjekk, Trening,
 Turneringer, Turneringsplan; alle i Samlinger og testing, Turneringer og Fag og administrasjon; Referanse ›
-Sammenlign, Søk og Tester. **Venter på data:** IUP › Ranking (WAGR per uke er i basen fra 22.10, NGF-junior
+Sammenlign, Søk og Tester; WAGR-visningene Turneringer og Sesong; PlayerHQ › «Se hva Team Norway ser». **Venter på data:** IUP › Ranking (WAGR per uke er i basen fra 22.10, NGF-junior
 «—»), Referanse › Planlegger, Norsk golf og HCP Norge (pipelines må skrive til basen først).
 
 ## 4. Åpne spørsmål til Anders
@@ -110,3 +111,7 @@ Sammenlign, Søk og Tester. **Venter på data:** IUP › Ranking (WAGR per uke e
    Anbefaling: ja, som en post til spilleren (samme lesekvittering som gruppeposter), ikke et eget felt.
 3. **Live Watch:** automatisk oppdatering hvert minutt, eller knappen «Oppdater»? Anbefaling: knappen, så radene
    ikke flytter seg mens treneren leser.
+
+Funksjonsplanens to spørsmål (hvor PlayerHQ-lenken går, og om «beste» per test skal bort) stilles av hovedøkta og
+gjentas ikke her. Utkast 2 er tegnet etter anbefalingene: lenken går til «Se hva Team Norway ser», og Referanse ›
+Tester viser bare median og antall.

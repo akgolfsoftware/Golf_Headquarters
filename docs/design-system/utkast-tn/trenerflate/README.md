@@ -74,9 +74,9 @@ Står i registeret, punkt 1–4: spillere i `/team-norway`, hvor PlayerHQ-lenken
 ## 6. Utkast 2 (22.10.2026): de resterende skjermene
 
 Wireframes: [utkast-2.html](utkast-2.html) (privat artifact: https://claude.ai/artifact/EvAKJdcygRpfMSKUPjGw1Y). Samme stil som
-utkast 1. 29 skjermer: IUP › Turneringsplan, Ranking, Trening, Tester, Teknisk plan, Fireukerssjekk · Samlinger og
+utkast 1. 31 skjermer: IUP › Turneringsplan, Ranking, Trening, Tester, Teknisk plan, Fireukerssjekk · Samlinger og
 testing (fem faner) · Turneringer (fire faner) · Referanse › Sammenlign, Søk, Planlegger, Norsk golf, HCP Norge,
-Tester · Fag og administrasjon (sju faner) · Tom, laster og feil. Målt 22.10 i 390, 1280 og 1920 px: ingen sidelengs
+Tester, WAGR-visningene Turneringer og Sesong · Fag og administrasjon (sju faner) · PlayerHQ › «Se hva Team Norway ser» · Tom, laster og feil. Funksjonene følger funksjonsplanen 22.10 (https://claude.ai/artifact/1i2fcpao7BW2m7UvF9dcPf). Målt 22.10 i 390, 1280 og 1920 px: ingen sidelengs
 rulling, ingen node utenfor rammen, ingen konsollfeil.
 
 Plan, kartlegging og hvilke skjermer kodeøkta kan bygge etter nå: [tn-designloft-plan-2026-10-22.md](../../../planer/tn-designloft-plan-2026-10-22.md).
