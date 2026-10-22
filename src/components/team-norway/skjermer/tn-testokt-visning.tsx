@@ -19,7 +19,7 @@ import { TnHeltTekst } from "../tn-stall";
  *   - Tidsanslaget («ca. 35 min») står ikke; det finnes ikke en målt tid per test.
  */
 
-const knapp = { display: "inline-flex", alignItems: "center", justifyContent: "center", minHeight: 48, padding: "0 20px", borderRadius: 999, background: TN.navy900, color: "#fff", fontWeight: 700, fontSize: 15, border: 0, textDecoration: "none", cursor: "pointer" } as const;
+const knapp = { display: "inline-flex", alignItems: "center", justifyContent: "center", minHeight: 48, padding: "0 20px", borderRadius: 999, background: TN.navy900, color: TN.white, fontWeight: 700, fontSize: 15, border: 0, textDecoration: "none", cursor: "pointer" } as const;
 
 function Valgrad({ v }: { v: TestoktValg }) {
   return (
@@ -66,7 +66,7 @@ export function TnTestoktStartVisning({ brukerNavn, spillerId, tilgang, utvalg, 
           <TnRutenett min={320}>
             <TnFlate>
               <TnFlatehode tittel={`Velg tester for ${fornavn}`} />
-              {feil ? <p role="alert" style={{ margin: "0 0 8px", color: "#96241C", fontWeight: 700 }}>{feil}</p> : null}
+              {feil ? <p role="alert" style={{ margin: "0 0 8px", color: TN.status.redText, fontWeight: 700 }}>{feil}</p> : null}
               <Del tittel="Mangler forsøk (prioritert)" valg={utvalg.mangler} />
               <Del tittel="Teknikk" valg={utvalg.teknikk} />
               <Del tittel="Golfslag" valg={utvalg.golfslag} />

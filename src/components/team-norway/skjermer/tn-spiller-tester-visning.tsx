@@ -108,7 +108,7 @@ export function TnSpillerTesterVisning({ brukerNavn, spillerId, tilgang, tnRader
         <TnFlate>
           <TnSpillerFaner spillerId={spillerId} spillerNavn={tilgang.spillerNavn} aktiv="tester" kanAdministrere={!tilgang.kontekst.erSpiller} />
           <p style={{ margin: "8px 0 0", display: "flex", flexWrap: "wrap", gap: "4px 20px", alignItems: "center" }}>
-            {kanStarteTest ? <Link href={`/team-norway/spiller/${spillerId}/testokt`} style={{ display: "inline-flex", alignItems: "center", minHeight: 44, padding: "0 18px", borderRadius: 999, background: TN.navy900, color: "#fff", fontWeight: 700, fontSize: 14, textDecoration: "none" }}>Start test</Link> : null}
+            {kanStarteTest ? <Link href={`/team-norway/spiller/${spillerId}/testokt`} style={{ display: "inline-flex", alignItems: "center", minHeight: 44, padding: "0 18px", borderRadius: 999, background: TN.navy900, color: TN.white, fontWeight: 700, fontSize: 14, textDecoration: "none" }}>Start test</Link> : null}
             <TnTekstlenke href={`/team-norway/spiller/${spillerId}/tester?visning=utvikling`}>Utvikling per protokoll</TnTekstlenke>
           </p>
         </TnFlate>
