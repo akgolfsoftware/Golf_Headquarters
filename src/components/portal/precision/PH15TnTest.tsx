@@ -36,7 +36,7 @@ import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-stats.css";
 import "@/styles/playerhq-ny-statsdybde.css";
 import "@/styles/playerhq-ny-tester.css";
-import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import { LiveInnhold, LiveTittelrad } from "@/components/portal/live/LiveTittelrad";
 import "@/styles/playerhq-ny-idag.css";
 import "@/styles/playerhq-ny-lister-skra.css";
 import "@/styles/playerhq-ny-pakke11-skra.css";
@@ -127,15 +127,16 @@ export function PH15TnTest(props: Props) {
 
   return (
     <div className="phn phn-skra">
-      <SkraTopp
-        lav
+      <LiveTittelrad
         etikett="Test"
-        bilde="/images/playerhq/stats-topp.jpg" bildePosisjon="50% 50%"
         overlinje={props.kontekst ?? `Stats · Tester · ${akse.o}`}
         tittel={p.name}
-        handling={<span className="skra-tilbake"><TmTilbake href="/portal/tren/tester" tekst="Tester" /></span>}
+        handling={<>
+          <TmTilbake href="/portal/tren/tester" tekst="Tester" />
+          {!closed && <button type="button" className="phn-knapp sek" disabled={laast} onClick={() => avbrytRef.current?.showModal()} aria-haspopup="dialog">Avslutt</button>}
+        </>}
       />
-      <SkraFlyt lav>
+      <LiveInnhold>
       {p.blocked && <p className="phn-sd-varsel" role="note">{p.blocked} Slagene kan lagres som utkast.</p>}
       {draft.error && (
         <div className="phn-sd-varsel" role="alert">
@@ -222,7 +223,7 @@ export function PH15TnTest(props: Props) {
           </div>
         </div>
       </dialog>
-      </SkraFlyt>
+      </LiveInnhold>
     </div>
   );
 }
