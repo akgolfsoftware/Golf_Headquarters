@@ -57,7 +57,13 @@ summary.gruppe:focus-visible { outline: 3px solid var(--tn-navy-400); outline-of
 summary.gruppe svg { transition: transform var(--tn-duration-fast) var(--tn-ease-out); }
 .menygruppe[open] > summary.gruppe svg { transform: rotate(90deg); }
 .gruppePunkter { display: grid; gap: 2px; padding-bottom: 6px; }
-@media (prefers-reduced-motion: reduce) { summary.gruppe svg { transition: none; } }
+/* Gruppa som åpnes, glir punktene inn ovenfra (Skrå-drakten: respons straks man trykker). */
+.menygruppe[open] > .gruppePunkter { animation: gruppeInn var(--tn-duration-base) var(--tn-ease-out); }
+@keyframes gruppeInn { from { opacity: 0; transform: translateY(-4px); } }
+@media (prefers-reduced-motion: reduce) {
+  summary.gruppe svg { transition: none; }
+  .menygruppe[open] > .gruppePunkter { animation: none; }
+}
 .lenke {
   position: relative;
   display: flex;
@@ -162,7 +168,12 @@ summary.gruppe svg { transition: transform var(--tn-duration-fast) var(--tn-ease
   padding: 8px 0 20px;
   display: flex;
   flex-direction: column;
+  animation: arkInn var(--tn-duration-sheet) var(--tn-ease-sheet);
 }
+/* Arket glir opp fra bunnmenyen og ned igjen samme vei. */
+.ark[data-tilstand="lukker"] { animation: arkUt var(--tn-duration-base) var(--tn-ease-out) forwards; pointer-events: none; }
+@keyframes arkInn { from { opacity: 0; transform: translateY(24px); } }
+@keyframes arkUt { to { opacity: 0; transform: translateY(24px); } }
 .arkTopp { display: flex; align-items: center; justify-content: space-between; padding: 0 8px 0 20px; }
 .arkTittel { font-family: var(--tn-font-display); font-weight: 500; font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--tn-rail-on); }
 .ikonknapp {
@@ -178,6 +189,7 @@ summary.gruppe svg { transition: transform var(--tn-duration-fast) var(--tn-ease
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .ark, .ark[data-tilstand="lukker"] { animation: none; }
   .lenke, .bunnvalg { transition: none; }
   .lenke:active, .bunnvalg:active { transform: none; }
 }
