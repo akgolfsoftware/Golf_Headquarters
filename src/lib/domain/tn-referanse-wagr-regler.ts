@@ -120,3 +120,67 @@ export function fellesTurneringer(perSpiller: number[][]): number {
   const [forste, ...resten] = perSpiller.map((l) => new Set(l));
   return [...forste!].filter((id) => resten.every((s) => s.has(id))).length;
 }
+
+export type WagrVisning = "leaderboard" | "turneringer" | "sesong";
+
+/** Visningsvalget i adressen (`?visning=`). Ukjent eller manglende verdi gir leaderboard. */
+export function parseWagrVisning(verdi: string | string[] | undefined): WagrVisning {
+  const v = Array.isArray(verdi) ? verdi[0] : verdi;
+  return v === "turneringer" || v === "sesong" ? v : "leaderboard";
+}
+
+export type WagrResultatInn = {
+  wagrId: number;
+  spillerNavn: string;
+  eventId: number;
+  navn: string;
+  dato: Date | null;
+  finish: string | null;
+  power: number | null;
+  points: number | null;
+  rankBefore: number | null;
+  rankAfter: number | null;
+};
+
+/** Seier i WAGR: plassering «1» (eller «W»). Delt førsteplass («T1») regnes ikke som seier. */
+export function erWagrSeier(finish: string | null): boolean {
+  return finish != null && /^(1|w)$/i.test(finish.trim());
+}
+
+/** Alle turneringene spillerne har spilt, nyeste først (uten dato sist). Ved lik dato: turneringsnavn, så spiller. */
+export function byggWagrTurneringer(resultater: WagrResultatInn[]): WagrResultatInn[] {
+  return [...resultater].sort(
+    (a, b) =>
+      (b.dato?.getTime() ?? -Infinity) - (a.dato?.getTime() ?? -Infinity) ||
+      a.navn.localeCompare(b.navn, "nb") ||
+      a.spillerNavn.localeCompare(b.spillerNavn, "nb"),
+  );
+}
+
+/** Antall ulike turneringer (WAGR-turnerings-ID) i resultatene. */
+export function antallWagrTurneringer(resultater: WagrResultatInn[]): number {
+  return new Set(resultater.map((r) => r.eventId)).size;
+}
+
+export type WagrSesongPrikk = { eventId: number; navn: string; dato: Date | null; finish: string | null; points: number | null; seier: boolean };
+export type WagrSesongRad = { wagrId: number; navn: string; prikker: WagrSesongPrikk[]; seire: number };
+
+/**
+ * Sesongen: én rad per spiller i den rekkefølgen spillerne er gitt (leaderboard-rekkefølge), med én prikk per
+ * turnering, eldst først. Spillere uten turneringer er med og får en tom rad.
+ */
+export function byggWagrSesong(spillere: { wagrId: number; navn: string }[], resultater: WagrResultatInn[]): WagrSesongRad[] {
+  return spillere.map((s) => {
+    const prikker = resultater
+      .filter((r) => r.wagrId === s.wagrId)
+      .map((r) => ({ eventId: r.eventId, navn: r.navn, dato: r.dato, finish: r.finish, points: r.points, seier: erWagrSeier(r.finish) }))
+      .sort((a, b) => (a.dato?.getTime() ?? Infinity) - (b.dato?.getTime() ?? Infinity) || a.navn.localeCompare(b.navn, "nb"));
+    return { wagrId: s.wagrId, navn: s.navn, prikker, seire: prikker.filter((p) => p.seier).length };
+  });
+}
+
+/** Prikkstørrelse i piksler etter poeng: 10 px for færrest, 24 px for flest poeng. Uten poeng: 10 px. */
+export function wagrPrikkStorrelse(poeng: number | null, maks: number): number {
+  if (poeng == null || poeng <= 0 || maks <= 0) return 10;
+  return Math.round(10 + 14 * Math.min(1, poeng / maks));
+}

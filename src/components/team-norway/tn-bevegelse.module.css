@@ -1,0 +1,14 @@
+/*
+ * Kortene glir inn ved første visning (planen tn-designloft 22.10, steg 9). Brukes av TnFlate og TnKort.
+ * Samme bevegelse som kortene på Hjem (tn-skra.module.css «stig»), med TN-tidene. Kortene etter
+ * hverandre i samme beholder kommer litt forskjøvet, aldri mer enn 240 ms. «Reduser bevegelse»: alt står stille.
+ */
+.innkomst { animation: inn var(--tn-duration-slow) var(--tn-ease-out) both; }
+.innkomst:nth-child(2) { animation-delay: 40ms; }
+.innkomst:nth-child(3) { animation-delay: 80ms; }
+.innkomst:nth-child(4) { animation-delay: 120ms; }
+.innkomst:nth-child(5) { animation-delay: 160ms; }
+.innkomst:nth-child(6) { animation-delay: 200ms; }
+.innkomst:nth-child(n + 7) { animation-delay: 240ms; }
+@keyframes inn { from { opacity: 0; transform: translateY(10px); } }
+@media (prefers-reduced-motion: reduce) { .innkomst { animation: none; } }

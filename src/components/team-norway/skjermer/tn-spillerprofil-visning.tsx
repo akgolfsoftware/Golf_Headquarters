@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 
 import type { TnArbeidskontekst, hentTnSpillerAksefordeling, hentTnSpillerIup, hentTnSpillerLisens, hentTnSpillerProfil, hentTnSpillerstatuser, hentTnSpillerTester } from "@/lib/domain/tn-arbeidsflate";
 import { formaterHcp } from "@/lib/domain/hcp";
+import { akKategoriFraTall, type AkKategori } from "@/lib/domain/ak-kategori";
 import { byggIupHaster } from "@/lib/domain/tn-iup-oversikt-regler";
 import type { TnIupDelt, TnWagrPlass } from "@/lib/domain/tn-iup-oversikt";
 import { alderFraFodselsdato } from "@/lib/forelder";
@@ -24,7 +25,7 @@ import { ER_COLLEGE, datoKort, datoLang, periode } from "./felles";
  * turneringer, trening siste fire uker og poster, deretter status og årets turneringer.
  *
  * Avvik:
- *   - NGF-juniorranking og kategori A–K har ingen datakilde i appen og står med strek.
+ *   - NGF-juniorranking har ingen datakilde i appen og står med strek. Kategori A–K regnes som i PlayerHQ (`akKategoriFraTall`).
  *   - WAGR-plassen krever koblingen `public_players."wagrId"`; de fleste spillere er ikke koblet ennå.
  *   - Klasse (J1, Damer) finnes ikke i spillerdataene; toppen viser alder, klubb og fødselsår.
  *   - Status og årets turneringer står under wireframens seksjoner til fanene Turneringer og Trening finnes (pakke e).
@@ -133,7 +134,7 @@ export function TnSpillerprofilVisning({
             </TnHeltKnapper>
           ) : undefined
         }
-        hoyre={<TnIupStripe wagr={wagr} bruttoSnitt={profil.aaret?.bruttoSnitt ?? null} aar={aar} />}
+        hoyre={<TnIupStripe wagr={wagr} bruttoSnitt={profil.aaret?.bruttoSnitt ?? null} aar={aar} kategori={akKategoriFraTall({ snitt: profil.aaret?.bruttoSnitt ?? null, hcp: profil.hcp })} />}
       />
       <TnSkraKort>
       <TnFlate style={{ display: "grid", gap: 12 }}>
@@ -143,7 +144,7 @@ export function TnSpillerprofilVisning({
           <TnPille>{erCollege ? "College" : "Skole"}: {profil.skole ?? "ikke registrert"}</TnPille>
           <TnPille>HCP {formaterHcp(profil.hcp)}</TnPille>
         </div>
-        <TnFotnote>{wagr ? `WAGR-plass: World Amateur Golf Ranking (WAGR), The R&A, ${datoLang(wagr.dato)}.` : "WAGR-plass mangler: spilleren er ikke koblet til WAGR ennå."} NGF-juniorranking og kategori finnes ikke i appen ennå.</TnFotnote>
+        <TnFotnote>{wagr ? `WAGR-plass: World Amateur Golf Ranking (WAGR), The R&A, ${datoLang(wagr.dato)}.` : "WAGR-plass mangler: spilleren er ikke koblet til WAGR ennå."} NGF-juniorranking finnes ikke i appen ennå. Kategori A–K: brutto snitt i turnering, ellers HCP.</TnFotnote>
       </TnFlate>
       {erTrener && kontekst.kanAdministrere && profil.erTnMedlem ? <TnKnapperekke><TnAvsluttSpiller spillerId={spillerId} navn={profil.navn} /></TnKnapperekke> : null}
 
@@ -176,7 +177,7 @@ export function TnSpillerprofilVisning({
           </TnFlatehode>
           <TnFlate style={{ paddingBlock: 4 }}>
             {!delt ? <TnMangler>Turneringsplanen er ikke delt med Team Norway.</TnMangler> : delt.nesteTurneringer.length === 0 ? <TnMangler>Ingen kommende turneringer i planen.</TnMangler> : null}
-            {delt?.nesteTurneringer.map((t, i) => <TnListerad key={`${t.navn}-${i}`} tittel={t.navn} tekst={t.merke} hoyre={tall(datoKort(t.dato))} />)}
+            {delt?.nesteTurneringer.map((t, i) => <TnListerad key={`${t.navn}-${i}`} tittel={t.navn} tekst={t.merke} hoyre={tall(t.dato ? datoKort(t.dato) : "Dato —")} />)}
           </TnFlate>
         </section>
 
@@ -245,14 +246,14 @@ export function TnSpillerprofilVisning({
 }
 
 /** Tallstripen i IUP-toppen: WAGR-plass, NGF-juniorranking, brutto snitt og kategori. Manglende tall er «—». */
-export function TnIupStripe({ wagr, bruttoSnitt, aar }: { wagr: TnWagrPlass | null; bruttoSnitt: number | null; aar: number }) {
+export function TnIupStripe({ wagr, bruttoSnitt, aar, kategori = null }: { wagr: TnWagrPlass | null; bruttoSnitt: number | null; aar: number; kategori?: AkKategori | null }) {
   return (
     <TnHeltTellere
       tall={[
         { verdi: wagr?.plass != null ? heltall.format(wagr.plass) : "—", tekst: "WAGR-plass" },
         { verdi: "—", tekst: "NGF juniorranking" },
         { verdi: bruttoSnitt != null ? snitt.format(bruttoSnitt) : "—", tekst: `brutto snitt ${aar}` },
-        { verdi: "—", tekst: "kategori" },
+        { verdi: kategori ?? "—", tekst: "kategori" },
       ]}
     />
   );

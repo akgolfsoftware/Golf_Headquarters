@@ -14,7 +14,9 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Check, Trash2, UserPlus } from "lucide-react";
 import { Knapp, KnappLenke, Meta, Tidslinje } from "@/components/precision/pa";
-import { Ark, Dialogboks, SideHode } from "@/components/precision/pa-a4";
+import { Ark, Dialogboks } from "@/components/precision/pa-a4";
+import { Knapp as SkraKnapp, KnappLenke as SkraKnappLenke, Topp } from "@/components/admin/agencyos-ny/ny";
+import "@/styles/agencyos-ny-spiller360.css";
 import { Dempet, Etikett, Liste, Rad, Seksjon } from "@/components/precision/pa-spiller360";
 import { lagreSpiller, settValgtCoach, slettSpiller } from "@/app/admin/(legacy)/spillere/[id]/rediger/actions";
 import { inviterForelderForSpiller } from "@/app/admin/(legacy)/spillere/[id]/profil/actions";
@@ -130,9 +132,10 @@ function SlettSpiller({ spillerId, navn }: { spillerId: string; navn: string }) 
 export function AG08Rediger({ data }: { data: AG08RedigerData }) {
   const tilbake = `/admin/spillere/${data.spillerId}`;
   return (
-    <div className="a8-side">
-      <SideHode kicker={`Stall · Spiller 360 · ${data.spillerNavn}`} title="Rediger profil" sub="Alle endringer logges med navn og tid."
-        actions={<><KnappLenke variant="ghost" href={tilbake}>Avbryt</KnappLenke><Knapp type="submit" form="rediger-form" icon={Check} iconName="check">Lagre</Knapp></>} />
+    <div className="agn-s">
+      <Topp tilbake={{ href: tilbake, tekst: "Spiller 360" }} dato={`Stall · Spiller 360 · ${data.spillerNavn}`} tittel="Rediger profil" ingress="Alle endringer logges med navn og tid."
+        handlinger={<><SkraKnappLenke href={tilbake}>Avbryt</SkraKnappLenke><SkraKnapp type="submit" form="rediger-form">Lagre</SkraKnapp></>} />
+      <div className="a2-under">
       <form id="rediger-form" action={lagreSpiller} className="a8-to">
         <input type="hidden" name="id" value={data.spillerId} />
         <div className="a8-stabel">
@@ -184,6 +187,7 @@ export function AG08Rediger({ data }: { data: AG08RedigerData }) {
       <div className="a8-knapper" style={{ justifyContent: "flex-end" }}>
         <KnappLenke variant="ghost" href={tilbake}>Avbryt</KnappLenke>
         <Knapp type="submit" form="rediger-form" icon={Check} iconName="check">Lagre endringer</Knapp>
+      </div>
       </div>
     </div>
   );

@@ -74,6 +74,8 @@ type Props = {
    * Når tom: bruker server-action default (innlogget user).
    */
   onBehalfOfUserId?: string;
+  /** Kalles etter vellykket import, f.eks. for å vise den nye økta i testøkta. */
+  onImportert?: (sessionId: string) => void;
 };
 
 const KILDER: Array<{
@@ -136,6 +138,7 @@ export function TrackmanImportModal({
   className,
   triggerStyle,
   onBehalfOfUserId,
+  onImportert,
 }: Props) {
   const router = useRouter();
   const toast = useToast();
@@ -154,6 +157,8 @@ export function TrackmanImportModal({
   const [environment, setEnvironment] =
     useState<TrackManEnvironment>("SIMULATOR_INDOOR");
   const [targetLineStatus, setTargetLineStatus] = useState<TrackManTargetLineStatus>("UNKNOWN");
+  // TEK eller SLAG er påkrevd ved import (Anders 22.10.2026). Ingen forhåndsvalg: brukeren må velge.
+  const [akse, setAkse] = useState<"TEK" | "SLAG" | null>(null);
   const [targetDistance, setTargetDistance] = useState("");
   const [preferredTaskId, setPreferredTaskId] = useState<string>("");
   const [matchTasks, setMatchTasks] = useState<Array<{ id: string; label: string }>>([]);
@@ -309,6 +314,10 @@ export function TrackmanImportModal({
       return;
     }
     if (steg === 2) {
+      if (!akse) {
+        setFeil("Velg om økta var TEK eller SLAG.");
+        return;
+      }
       if (targetDistance.trim() && (!(Number(targetDistance) > 0) || Number(targetDistance) > 1000)) {
         setFeil("Målavstand må være mellom 0 og 1000 meter.");
         return;
@@ -350,6 +359,7 @@ export function TrackmanImportModal({
     startTransition(async () => {
       try {
         if (!kilde) throw new Error("Velg kilde først.");
+        if (!akse) throw new Error("Velg om økta var TEK eller SLAG.");
         const content =
           kilde === "csv"
             ? byggTrackManCsvMedValgteSlag(csvContent, valgt)
@@ -363,6 +373,7 @@ export function TrackmanImportModal({
             kilde === "photo" ? shots.filter((_, i) => valgt.has(i)) : undefined,
           recordedAt,
           environment,
+          akse,
           targetLineStatus,
           targetDistanceM: targetDistance.trim() ? Number(targetDistance) : null,
           forceImport,
@@ -381,6 +392,7 @@ export function TrackmanImportModal({
           `${result.shotCount} slag · ${result.matchedCount} matchet til teknisk plan · ${result.goalsUpdated} TM-mål oppdatert`,
         );
         lukk();
+        if (result.sessionIds[0]) onImportert?.(result.sessionIds[0]);
         router.refresh();
       } catch (err) {
         setFeil(err instanceof Error ? err.message : "Kunne ikke importere.");
@@ -469,6 +481,8 @@ export function TrackmanImportModal({
               setRecordedAt={setRecordedAt}
               environment={environment}
               setEnvironment={setEnvironment}
+              akse={akse}
+              setAkse={setAkse}
               targetLineStatus={targetLineStatus}
               setTargetLineStatus={setTargetLineStatus}
               targetDistance={targetDistance}
@@ -621,6 +635,8 @@ function Steg2({
   setRecordedAt,
   environment,
   setEnvironment,
+  akse,
+  setAkse,
   targetLineStatus,
   setTargetLineStatus,
   targetDistance,
@@ -638,6 +654,8 @@ function Steg2({
   setRecordedAt: (s: string) => void;
   environment: TrackManEnvironment;
   setEnvironment: (e: TrackManEnvironment) => void;
+  akse: "TEK" | "SLAG" | null;
+  setAkse: (a: "TEK" | "SLAG") => void;
   targetLineStatus: TrackManTargetLineStatus;
   setTargetLineStatus: (status: TrackManTargetLineStatus) => void;
   targetDistance: string;
@@ -665,6 +683,20 @@ function Steg2({
             ? "Last opp HTML-rapporten fra Multi Group Report."
             : "Last opp et bilde av TrackMan-skjermen. AI leser av tallene — HEIC/HEIF støttes ikke, bruk JPG eller PNG."}
       </p>
+
+      <fieldset className="block">
+        <legend className="mb-1 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+          Hva var økta? (påkrevd)
+        </legend>
+        <div className="flex flex-wrap gap-2">
+          {(["TEK", "SLAG"] as const).map((a) => (
+            <label key={a} className={`inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-md border px-4 text-sm font-semibold ${akse === a ? "border-foreground bg-foreground text-background" : "border-input bg-card text-foreground"}`}>
+              <input type="radio" name="tm-akse" value={a} checked={akse === a} onChange={() => setAkse(a)} className="sr-only" required />
+              {a === "TEK" ? "TEK · Teknikk" : "SLAG · Golfslag"}
+            </label>
+          ))}
+        </div>
+      </fieldset>
 
       <label className="block">
         <span className="mb-1 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">

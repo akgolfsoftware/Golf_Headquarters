@@ -1,19 +1,20 @@
-/* AG-04 Innboks, designløftet 20.10.2026. Fasit: canvaset «AgencyOS nøkkelskjermer»,
-   tavlene Innboks (PC, to ruter), Innboks-mobil (lista) og Innboks-sak-mobil (åpen sak).
-   PC fra 900 px: liste 440 px til venstre, valgt sak til høyre. Mobil: lista, og saken
-   som egen flate med «← Innboks». Rust bare på «Haster». Gjelder bare inni .agn-s.ibx. */
+/* AG-04 Innboks i Skrå-drakten (bølge 1, docs/design-system/utkast-skra/komponist/bolge-1.html §1).
+   Toppen og kortene er byggeklossene i src/components/precision/skra/. Denne fila har bare det som er
+   eget for Innboks: brikker, lista og saken i hvert sitt kort (side om side fra 900 px), radene og saken.
+   Mobil: lista, og saken åpner over med «← Innboks». Rust bare på «Haster». Gjelder bare inni .agn-s.ibx-skra. */
 
-.agn-s.ibx { gap: 0; padding: 0 0 calc(104px + env(safe-area-inset-bottom)); }
 .agn-s .meta { font: 500 11px/1.25 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--graphite-600); }
 .agn-s .num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
 
-.agn-s .ibx-liste { display: grid; gap: 14px; align-content: start; padding: 18px 16px 0; min-width: 0; }
-.agn-s .ibx-topp { display: grid; gap: 6px; }
-.agn-s .ibx-topp-rad { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
-.agn-s .ibx-topp h1 { font: 700 34px/1 var(--sans); letter-spacing: -.035em; }
-.agn-s .ibx-topp-rad .num { font-size: 14px; color: var(--graphite-800); white-space: nowrap; }
-.agn-s .ibx-filter > button { min-height: 36px; font-size: 13px; }
-.agn-s .ibx-filter > button b { font-size: 11px; opacity: .75; }
+.agn-s.ibx-skra .ibx-flyt { gap: 16px; }
+.agn-s.ibx-skra .ibx-helt-plass { display: grid; gap: 10px; min-width: 0; }
+.agn-s.ibx-skra .ibx-filter > button { min-height: 44px; font-size: 13px; background: var(--white); }
+.agn-s.ibx-skra .ibx-filter > button[aria-pressed="true"] { background: var(--graphite-900); color: var(--white); }
+.agn-s.ibx-skra .ibx-filter > button b { font-size: 11px; opacity: .75; }
+.agn-s.ibx-skra .under-filter > * { min-height: 44px; }
+.agn-s.ibx-skra .ibx-delt { display: grid; gap: 16px; align-items: start; min-width: 0; }
+.agn-s.ibx-skra .ibx-liste, .agn-s.ibx-skra .ibx-rute, .agn-s.ibx-skra .ibx-hel { display: grid; gap: 14px; align-content: start; min-width: 0; }
+.agn-s.ibx-skra .ibx-rute { scroll-margin-top: 72px; }
 
 /* Gruppene Haster · I dag · Tidligere */
 .agn-s .ibx-grupper { display: grid; }
@@ -39,14 +40,11 @@
 .agn-s .ibx-rad-tekst > span:first-child { flex: 1; font-size: 13px; color: var(--graphite-800); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .agn-s .ibx-utkast-pille { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 999px; background: var(--sand-150); font: 600 11px/1 var(--sans); white-space: nowrap; flex: none; }
 @media (hover: hover) and (pointer: fine) { .agn-s .ibx-rad:not([aria-pressed="true"]):hover { background: var(--sand-100); } }
-.agn-s .ibx-tom { margin: 24px 0; font-size: 15px; color: var(--graphite-800); }
 .agn-s .ibx-leads { display: grid; gap: 8px; }
 .agn-s .ibx-hint { padding-top: 8px; }
 
 /* Den åpne saken */
-.agn-s .ibx-rute { display: none; min-width: 0; }
-.agn-s .ibx-ingen { margin: 48px 36px; font-size: 15px; color: var(--graphite-800); }
-.agn-s .ibx-sak { display: grid; gap: 20px; align-content: start; padding: 8px 16px 0; min-width: 0; }
+.agn-s .ibx-sak { display: grid; gap: 20px; align-content: start; min-width: 0; }
 .agn-s .ibx-sak-topp { display: grid; gap: 10px; }
 .agn-s .ibx-sak-tittel { display: grid; gap: 6px; }
 .agn-s .ibx-sak-tittel .meta { color: var(--graphite-800); }
@@ -70,25 +68,24 @@
 .agn-s .ibx-utkast-knapper .knapp.stor { width: auto; flex: 1; min-width: 140px; }
 .agn-s .ibx-utkast-knapper .knapp.sek { border-color: var(--sand-300); font-weight: 500; }
 
-/* Mobil: lista eller saken, aldri begge */
+/* Mobil: lista eller saken, aldri begge. Toppen blir stående; saken legger seg rett under. */
+.agn-s.ibx-skra .ibx-rute { display: none; }
 @media (max-width: 899px) {
-  .agn-s.ibx[data-mobil-aapen] .ibx-liste { display: none; }
-  .agn-s.ibx[data-mobil-aapen] .ibx-rute { display: block; }
-  .agn-s .ibx-utkast-knapper { position: sticky; bottom: 0; margin: 0 -18px -18px; padding: 12px 18px 18px; background: var(--white); border-top: 1px solid var(--sand-300); border-radius: 0 0 12px 12px; }
+  .agn-s.ibx-skra[data-mobil-aapen] :is(.ibx-helt-plass, .ibx-flyt > [role="alert"], .ibx-filter, .under-filter, .ibx-liste) { display: none; }
+  .agn-s.ibx-skra[data-mobil-aapen] .ibx-rute { display: grid; }
+  .agn-s.ibx-skra .ibx-utkast-knapper { position: sticky; bottom: 0; margin: 0 -18px -18px; padding: 12px 18px 18px; background: var(--white); border-top: 1px solid var(--sand-300); border-radius: 0 0 12px 12px; }
 }
 
 @media (min-width: 900px) {
-  .agn-s.ibx:not(.hel) { grid-template-columns: 440px minmax(0, 1fr); align-items: stretch; min-height: 100dvh; }
-  .agn-s.ibx .ibx-liste { padding: 28px 0 24px; border-right: 1px solid var(--sand-300); }
-  .agn-s.ibx.hel .ibx-liste { padding: 28px 40px 24px; border-right: 0; }
-  .agn-s.ibx .ibx-liste > :not(.ibx-grupper):not(.ibx-gruppe) { margin-inline: 24px; }
-  .agn-s.ibx.hel .ibx-liste > * { margin-inline: 0; }
-  .agn-s .ibx-topp h1 { font-size: 40px; }
-  .agn-s .ibx-gruppe-topp { padding-inline: 24px; }
-  .agn-s .ibx-rad { padding: 12px 24px; }
-  .agn-s .ibx-rute { display: block; }
-  .agn-s.ibx .ibx-tilbake { display: none; }
-  .agn-s .ibx-sak { padding: 28px 36px 32px; }
-  .agn-s .ibx-sak-topp { grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 16px; }
-  .agn-s .ibx-sak-tittel h2 { font-size: 28px; line-height: 1.15; }
+  .agn-s.ibx-skra .ibx-delt { grid-template-columns: minmax(320px, 2fr) minmax(0, 3fr); }
+  .agn-s.ibx-skra .ibx-rute { display: grid; }
+  .agn-s.ibx-skra .ibx-tilbake { display: none; }
+  .agn-s.ibx-skra .ibx-sak-topp { grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 16px; }
+  .agn-s.ibx-skra .ibx-sak-tittel h2 { font-size: 26px; line-height: 1.15; }
 }
+
+/* Undersidene (AG04Underside): tilbakelenken i den lave toppen */
+.agn-s.ibx-skra .ibx-tilbake-topp { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; color: inherit; text-decoration: none; }
+.agn-s.ibx-skra .ibx-tilbake-topp .ikon { width: 16px; height: 16px; }
+.agn-s.ibx-skra .ibx-tilbake-topp:hover { color: #fff; }
+.agn-s.ibx-skra .ibx-tilbake-topp:focus-visible { outline: 2px solid #fff; outline-offset: 2px; border-radius: 4px; }

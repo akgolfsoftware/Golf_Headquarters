@@ -103,17 +103,18 @@ export function byggProfilVisning(profil: KomplettProfil): ProfilVisning {
       harTeamNorway: profil.tester.some((t) => t.erTeamNorway),
     },
     runder: {
-      tom: ru.antall === 0 ? "Ingen runder delt med trener." : null,
-      tall: ru.antall === 0 ? [] : [
+      tom: ru.antall === 0 && ru.bruttoSnitt.turnering.runder === 0 ? "Ingen runder delt med trener." : null,
+      tall: ru.antall === 0 && ru.bruttoSnitt.turnering.runder === 0 ? [] : [
         { etikett: "Runder", verdi: String(ru.antall) },
-        { etikett: "Snitt brutto", verdi: dec(ru.snittScore) },
+        { etikett: `Brutto snitt turnering ${ru.aar}`, verdi: dec(ru.bruttoSnitt.turnering.snitt) },
+        { etikett: `Treningsrunder ${ru.aar}`, verdi: dec(ru.bruttoSnitt.trening.snitt) },
         { etikett: "SG totalt", verdi: signert(ru.sgTotal, 2) },
         { etikett: "SG utslag", verdi: signert(ru.sgOtt, 2) },
         { etikett: "SG innspill", verdi: signert(ru.sgApp, 2) },
         { etikett: "SG nærspill", verdi: signert(ru.sgArg, 2) },
         { etikett: "SG putting", verdi: signert(ru.sgPutt, 2) },
       ],
-      merknad: "Siste 12 måneder. Bare runder spilleren har delt med trener; runder merket «Bare deg» er ikke med.",
+      merknad: `Brutto snitt: turneringsrunder i ${ru.aar}, bare brutto; treningsrunder (18 hull) står for seg og teller ikke. SG: siste 12 måneder. Bare runder spilleren har delt med trener; runder merket «Bare deg» er ikke med.`,
     },
     iup: !profil.iup
       ? { tom: "Spilleren har ikke IUP. Den gjelder aktive WANG- og Team Norway-spillere.", levert: [], maaltall: null }

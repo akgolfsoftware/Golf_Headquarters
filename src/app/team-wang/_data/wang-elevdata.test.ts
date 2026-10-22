@@ -71,6 +71,7 @@ function fakeTx() {
     goal: { findMany: async () => { kall.push("goal"); return [{ id: "mal-1", title: "Rutine før slag" }]; } },
     user: { findUnique: async () => { kall.push("user"); return { hcp: 4.2 }; } },
     round: { findMany: async () => { kall.push("round"); return []; } },
+    $queryRaw: async () => { kall.push("profil"); return []; },
   };
   return { tx: tx as never, kall };
 }

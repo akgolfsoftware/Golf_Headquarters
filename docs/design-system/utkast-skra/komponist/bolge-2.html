@@ -1,0 +1,358 @@
+<title>Skrå bølge 2</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Svart-hvite plasseringsskisser for bølge 2 (Workbench og live for coach, Grupper og Tester, PlayerHQ-resten).
+   Hver skjerm: mobil 390 og PC 1280 side om side, og ett svarfelt. Svarene samles i én melding nederst. */
+:root{--bg:#EFEEEB;--ark:#FFFFFF;--fg:#141413;--dim:#6E6D69;--strek:#C9C7C1;--flate:#E3E1DC;--topp:#8C8A85;--helt:#2B2B29;--hvit:#FFFFFF;
+--sans:"IBM Plex Sans",system-ui,sans-serif;--mono:"IBM Plex Mono",ui-monospace,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#151514;--ark:#1E1E1C;--fg:#ECEAE5;--dim:#9B9993;--strek:#3A3936;--flate:#2A2927;--topp:#5E5C58;--helt:#D9D7D1;--hvit:#151514;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#151514;--ark:#1E1E1C;--fg:#ECEAE5;--dim:#9B9993;--strek:#3A3936;--flate:#2A2927;--topp:#5E5C58;--helt:#D9D7D1;--hvit:#151514;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:15px;line-height:1.45}
+.wrap{max-width:1240px;margin:0 auto;padding-block:28px 80px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:28px}
+h1{font-size:28px;margin:0;text-wrap:balance}
+h2{font-size:20px;margin:0;text-wrap:balance}
+h3{font-size:15px;margin:0}
+p{margin:0;max-width:68ch}
+.dim{color:var(--dim)}
+code{font-family:var(--mono);font-size:12.5px;overflow-wrap:anywhere}
+.intro{display:grid;gap:10px}
+.regler{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;color:var(--dim)}
+.regler b{color:var(--fg);font-weight:500}
+section.skjerm{background:var(--ark);border:1px solid var(--strek);border-radius:16px;padding:20px;display:grid;gap:16px}
+.hode{display:grid;gap:4px}
+.innhold{margin:0;padding-left:18px;font-size:14px;display:grid;gap:2px;max-width:80ch}
+.rammer{display:grid;grid-template-columns:minmax(0,200px) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:760px){.rammer{grid-template-columns:minmax(0,1fr)}.mob{max-width:240px}}
+.etik{font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.04em;margin-bottom:6px}
+/* Rammen: selve skissen */
+.r{background:var(--flate);border:1.5px solid var(--fg);border-radius:10px;overflow:hidden;font-size:9px;line-height:1.3;color:var(--fg)}
+.mob .r{aspect-ratio:390/760}
+.pc .r{display:grid;grid-template-columns:13% minmax(0,1fr);min-height:0}
+.meny{background:var(--ark);border-right:1px solid var(--strek);padding:8px 6px;display:grid;gap:4px;align-content:start}
+.meny i{display:block;height:6px;border-radius:3px;background:var(--strek)}
+.meny i.paa{background:var(--fg)}
+.meny .gr{font-family:var(--mono);font-size:7px;color:var(--dim);margin-top:4px}
+.side{min-width:0;padding-bottom:14px}
+.topp{background:var(--topp);clip-path:polygon(0 0,100% 0,100% calc(100% - 14px),0 100%);padding:10px 10px 26px;color:var(--hvit);display:grid;gap:5px}
+.topp.lav{padding-bottom:22px}
+.topp.flat{background:var(--helt)}
+.tittelrad{background:var(--ark);border-bottom:1px solid var(--strek);padding:8px 10px;display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center}
+.tittelrad .t{font-size:12px;font-weight:600;flex:1;min-width:0}
+.tittelrad .klokke{font-family:var(--mono);font-size:11px;font-weight:600}
+.sidefelt{display:grid;grid-template-columns:minmax(0,1fr) 30%;gap:6px;align-items:start}
+.mob .sidefelt{grid-template-columns:minmax(0,1fr)}
+.uke{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px}
+.uke div{background:var(--ark);border:1px solid var(--strek);border-radius:4px;min-height:60px;padding:2px;display:grid;gap:2px;align-content:start}
+.uke b{font-size:7px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.mob .grid3{grid-template-columns:minmax(0,1fr)}
+.topp .t{font-size:13px;font-weight:600}
+.topp .o{font-family:var(--mono);font-size:7.5px;opacity:.85}
+.topp .tall{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
+.mob .topp .tall{grid-template-columns:repeat(2,minmax(0,1fr))}
+.topp .tall span{border:1px solid currentColor;border-radius:5px;padding:3px;font-family:var(--mono);font-size:7.5px}
+.topp .tall b{display:block;font-size:11px}
+.topp .knapp{justify-self:start}
+/* Første kort starter under den skrå kanten, aldri over bildet (Anders 22.10). */
+.flyt{margin-top:8px;padding:0 8px;display:grid;gap:6px}
+.to{display:grid;grid-template-columns:1.55fr 1fr;gap:6px;align-items:start}
+.tre{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.lista-detalj{display:grid;grid-template-columns:1fr 1.2fr;gap:6px;align-items:start}
+.mob .to,.mob .tre,.mob .lista-detalj{grid-template-columns:minmax(0,1fr)}
+.k{background:var(--ark);border:1px solid var(--strek);border-radius:7px;padding:6px;display:grid;gap:4px;min-width:0}
+.k .kt{font-weight:600;font-size:9px}
+.k .l{height:5px;border-radius:2px;background:var(--strek)}
+.k .l.k2{width:70%}.k .l.k3{width:45%}
+.k .rad{display:flex;gap:4px;align-items:center;border-top:1px solid var(--strek);padding-top:4px;min-width:0}
+.k .rad .av{width:10px;height:10px;border-radius:50%;background:var(--strek);flex:none}
+.k .rad .tx{flex:1;min-width:0;height:5px;border-radius:2px;background:var(--strek)}
+.k .rad .pl{font-family:var(--mono);font-size:7px;border:1px solid var(--fg);border-radius:8px;padding:0 4px;white-space:nowrap}
+.helt{background:var(--helt);color:var(--hvit);border-radius:8px;padding:8px;display:grid;gap:4px}
+.helt .kt{font-weight:600;font-size:10px}
+.knapp{display:inline-block;border:1px solid currentColor;border-radius:5px;padding:2px 6px;font-size:7.5px;font-weight:500}
+.knapp.fylt{background:var(--fg);color:var(--ark);border-color:var(--fg)}
+.helt .knapp.fylt{background:var(--hvit);color:var(--helt);border-color:var(--hvit)}
+.brikker{display:flex;flex-wrap:wrap;gap:3px}
+.brikker span{border:1px solid var(--fg);border-radius:8px;padding:0 5px;font-size:7.5px;background:var(--ark)}
+.brikker span.paa{background:var(--fg);color:var(--ark)}
+.kal{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px}
+.kal div{background:var(--ark);border:1px solid var(--strek);border-radius:4px;min-height:70px;padding:3px;display:grid;gap:3px;align-content:start}
+.kal b{font-size:7.5px}
+.blokk{height:14px;border-radius:3px;background:var(--strek)}
+.blokk.h{height:22px}
+.notat{font-size:8px;color:var(--dim);font-style:italic}
+/* Mønsterrader */
+.monster{display:grid;gap:10px}
+.mrad{display:grid;grid-template-columns:120px minmax(0,1fr);gap:14px;align-items:start;border-top:1px solid var(--strek);padding-top:12px}
+@media (max-width:560px){.mrad{grid-template-columns:minmax(0,1fr)}.mrad .r{max-width:160px}}
+.mrad .r{aspect-ratio:390/520}
+.mrad ul{margin:4px 0 0;padding-left:18px;font-size:13.5px}
+/* Svar */
+.svar{display:grid;gap:6px}
+.svar label{font-size:13px;font-weight:500}
+.valg{display:flex;flex-wrap:wrap;gap:8px}
+.valg label{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--strek);border-radius:999px;padding:8px 14px;min-height:44px;cursor:pointer;font-weight:400;background:var(--bg)}
+.valg input{accent-color:var(--fg)}
+textarea{width:100%;min-height:64px;font:inherit;font-size:14px;color:var(--fg);background:var(--bg);border:1px solid var(--strek);border-radius:10px;padding:10px}
+textarea:focus-visible,.valg label:focus-within,button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
+.spm{display:grid;gap:14px}
+.sp{display:grid;gap:6px;border-top:1px solid var(--strek);padding-top:12px}
+.anb{font-size:14px}
+.anb b{font-weight:600}
+.send{position:sticky;bottom:0;background:var(--ark);border:1px solid var(--strek);border-radius:16px;padding:16px;display:grid;gap:10px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+button{font:inherit;font-weight:600;background:var(--fg);color:var(--ark);border:0;border-radius:10px;min-height:48px;padding:0 20px;cursor:pointer;justify-self:start}
+#svartekst{min-height:110px;font-family:var(--mono);font-size:12.5px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<div class="wrap">
+  <header class="intro">
+    <h1>Bølge 2: Workbench og live for coach, Grupper og Tester, og resten av PlayerHQ</h1>
+    <p>Svart-hvite skisser av hvor ting står. Innholdet er det du allerede har godkjent i utkastene for AgencyOS. Ingen nye funksjoner. Utseendet blir som i bølge 1, som nå er ferdig bygget.</p>
+    <div class="regler">
+      <span><b>Grå skrå flate</b> = toppbildet</span>
+      <span><b>Mørk skrå flate</b> = lav topp uten bilde</span>
+      <span><b>Mørkt kort</b> = hovedkortet (det som gjelder nå)</span>
+      <span><b>Hvite kort</b> = vanlige kort</span>
+      <span><b>Øverste kort</b> starter under den skrå kanten</span>
+    </div>
+    <p class="dim">Svar nederst. Kryss «Ja» på det som er riktig og skriv bare der noe skal rettes. Trykk «Kopier svaret» og lim det inn i chatten.</p>
+  </header>
+
+  <!-- ===================== A4 WORKBENCH ===================== -->
+  <section class="skjerm" id="workbench">
+    <div class="hode">
+      <h2>1. Workbench for coach</h2>
+      <code>/admin/workbench/[playerId]</code> <code>/admin/grupper/[id]/workbench</code>
+      <ul class="innhold">
+        <li>Lav topp uten bilde, fordi arbeidsflaten trenger plassen. Toppen viser hvem planen gjelder, og velgeren for gruppe og spiller med søk, Forrige og Neste.</li>
+        <li>Ingen hovedkort.</li>
+        <li>Nivåene År · Periode · Måned · Uke · Økt · Målsetninger som brikker.</li>
+        <li>PC: uka med sju dager over bredden, og sidefeltet til høyre: øvelsesbank (pyramiden først), øktmaler, fysisk program, turneringer og målsetninger.</li>
+        <li>Mobil: dagrad med alle sju dager, øktene som liste, og snarveiene bak «Mer».</li>
+      </ul>
+    </div>
+    <div class="rammer">
+      <div class="mob"><div class="etik">MOBIL 390</div>
+        <div class="r"><div class="side">
+          <div class="topp lav flat"><div class="o">WORKBENCH · SPILLER</div><div class="t">Øyvind Rohjan · uke 43</div><span><span class="knapp">‹ Forrige</span> <span class="knapp">Neste ›</span></span></div>
+          <div class="flyt">
+            <div class="brikker"><span>År</span><span>Periode</span><span>Måned</span><span class="paa">Uke</span><span>Økt</span><span>Mål</span></div>
+            <div class="brikker"><span>Ma</span><span class="paa">Ti</span><span>On</span><span>To</span><span>Fr</span><span>Lø</span><span>Sø</span></div>
+            <div class="k"><div class="kt">Tirsdag</div><i class="blokk h"></i><i class="blokk"></i></div>
+            <div class="k"><div class="kt">Uka lagt inn mot fordelt</div><div class="l"></div><div class="l k2"></div></div>
+            <span class="knapp" style="justify-self:start">Mer</span>
+          </div></div></div>
+      </div>
+      <div class="pc"><div class="etik">PC 1280</div>
+        <div class="r"><div class="meny"><i></i><div class="gr">DAGLIG</div><i></i><i></i><i></i><div class="gr">SPILLERE</div><i></i><i class="paa"></i><i></i><i></i><div class="gr">DRIFT</div><i></i><i></i><i></i></div>
+          <div class="side">
+            <div class="topp lav flat"><div class="o">WORKBENCH · SPILLER</div><div class="t">Øyvind Rohjan · uke 43</div><span><span class="knapp">Søk spiller eller gruppe</span> <span class="knapp">‹ Forrige</span> <span class="knapp">Neste ›</span></span></div>
+            <div class="flyt">
+              <div class="brikker"><span>År</span><span>Periode</span><span>Måned</span><span class="paa">Uke</span><span>Økt</span><span>Målsetninger</span><span>Dupliser uke</span><span>Coachnotat</span></div>
+              <div class="sidefelt">
+                <div class="k"><div class="uke"><div><b>Man</b><i class="blokk h"></i></div><div><b>Tir</b><i class="blokk"></i><i class="blokk"></i></div><div><b>Ons</b></div><div><b>Tor</b><i class="blokk h"></i></div><div><b>Fre</b><i class="blokk"></i></div><div><b>Lør</b></div><div><b>Søn</b></div></div><div class="notat">Dra en akse ut og slipp på klokkeslett. Gruppeøkter arves; tilpasning merkes «Egen».</div></div>
+                <div style="display:grid;gap:6px"><div class="k"><div class="kt">Øvelsesbank</div><div class="brikker"><span>TURN</span><span>SPILL</span><span>SLAG</span><span>TEK</span><span>FYS</span></div><div class="l"></div><div class="l k2"></div></div><div class="k"><div class="kt">Øktmaler</div><div class="l k3"></div></div><div class="k"><div class="kt">Fysisk program · Turneringer</div><div class="l k2"></div></div></div>
+              </div>
+            </div></div></div>
+      </div>
+    </div>
+    <div class="svar"><div class="valg"><label><input type="radio" name="s-wb" value="Ja"> Ja</label><label><input type="radio" name="s-wb" value="Rett dette"> Rett dette</label></div>
+      <textarea id="t-wb" aria-label="Hva skal rettes i Workbench" placeholder="Hva skal rettes (bare hvis noe)"></textarea></div>
+  </section>
+
+  <!-- ===================== A4 LIVE ===================== -->
+  <section class="skjerm" id="live">
+    <div class="hode">
+      <h2>2. Live coachingøkt</h2>
+      <code>/admin/agencyos/live/[sessionId]</code>
+      <ul class="innhold">
+        <li>Ingen topp, alltid lys, som live-økta i PlayerHQ (din beslutning 22.10). En lys tittelrad med spillerens navn, klokka, «Opptak pågår» og Avslutt øverst.</li>
+        <li>Kortene: Spilleren (kategori, HCP, siste runde, målsetninger) · Teknisk plan · Video og bilder · Opptak og notater · Hjemmelekse.</li>
+        <li>Uten samtykke til opptak er opptak sperret, med forklaring.</li>
+        <li>PC: to kolonner. Mobil: én kolonne, klokka og Avslutt alltid øverst.</li>
+      </ul>
+    </div>
+    <div class="rammer">
+      <div class="mob"><div class="etik">MOBIL 390</div>
+        <div class="r"><div class="side">
+          <div class="tittelrad"><span class="t">Øyvind Rohjan</span><span class="klokke">24:10</span><span class="knapp">Avslutt</span></div>
+          <div class="flyt" style="margin-top:8px">
+            <div class="brikker"><span class="paa">Opptak pågår</span></div>
+            <div class="k"><div class="kt">Spilleren</div><div class="l"></div><div class="l k2"></div></div>
+            <div class="k"><div class="kt">Teknisk plan</div><div class="l"></div><div class="l k3"></div></div>
+            <div class="k"><div class="kt">Video og bilder</div><i class="blokk h"></i></div>
+            <div class="k"><div class="kt">Opptak og notater</div><div class="l"></div></div>
+            <div class="k"><div class="kt">Hjemmelekse</div><span class="knapp fylt" style="justify-self:start">Legg i planen</span></div>
+          </div></div></div>
+      </div>
+      <div class="pc"><div class="etik">PC 1280</div>
+        <div class="r"><div class="meny"><i></i><div class="gr">DAGLIG</div><i></i><i></i><i class="paa"></i><div class="gr">SPILLERE</div><i></i><i></i><i></i><i></i><div class="gr">DRIFT</div><i></i><i></i><i></i></div>
+          <div class="side">
+            <div class="tittelrad"><span class="t">Live · Øyvind Rohjan · TEK · Studio 1</span><span class="brikker"><span class="paa">Opptak pågår</span></span><span class="klokke">24:10 av 60:00</span><span class="knapp">Avslutt</span></div>
+            <div class="flyt" style="margin-top:8px">
+              <div class="to">
+                <div style="display:grid;gap:6px"><div class="k"><div class="kt">Teknisk plan · P1.0–P10.0</div><div class="l"></div><div class="l k2"></div><div class="l"></div></div><div class="k"><div class="kt">Video og bilder</div><div class="kal"><div><i class="blokk h"></i></div><div><i class="blokk h"></i></div><div><i class="blokk h"></i></div><div><i class="blokk h"></i></div></div></div></div>
+                <div style="display:grid;gap:6px"><div class="k"><div class="kt">Spilleren</div><div class="l"></div><div class="l k3"></div></div><div class="k"><div class="kt">Opptak og notater</div><div class="l"></div><div class="l k2"></div></div><div class="k"><div class="kt">Hjemmelekse</div><span class="knapp fylt" style="justify-self:start">Legg i planen</span></div></div>
+              </div>
+            </div></div></div>
+      </div>
+    </div>
+    <div class="svar"><div class="valg"><label><input type="radio" name="s-live" value="Ja"> Ja</label><label><input type="radio" name="s-live" value="Rett dette"> Rett dette</label></div>
+      <textarea id="t-live" aria-label="Hva skal rettes i Live coachingøkt" placeholder="Hva skal rettes (bare hvis noe)"></textarea></div>
+  </section>
+
+  <!-- ===================== A5 GRUPPER ===================== -->
+  <section class="skjerm" id="grupper">
+    <div class="hode">
+      <h2>3. Grupper og én gruppe</h2>
+      <code>/admin/grupper</code> <code>/admin/grupper/[id]</code>
+      <ul class="innhold">
+        <li><b>Grupper:</b> topp med bilde (putting) og fire tall: Grupper, Spillere i grupper, Uten gruppe, Neste samling. Hovedkort: neste samling eller testdag. Gruppene som kort, tre i bredden på PC. «Legg spillere i grupper» som knapp.</li>
+        <li><b>Én gruppe:</b> lav topp med bilde og gruppens navn. Fanene Medlemmer · Faste tider · Årsplan · Analyse · Skoledata · Workbench bryter over linjer. Tildel test og TrackMan-økt til gruppa.</li>
+      </ul>
+    </div>
+    <div class="rammer">
+      <div class="mob"><div class="etik">MOBIL 390 · GRUPPER</div>
+        <div class="r"><div class="side">
+          <div class="topp"><div class="o">SPILLERE</div><div class="t">Grupper</div>
+            <div class="tall"><span><b>6</b>Grupper</span><span><b>38</b>I grupper</span><span><b>4</b>Uten gruppe</span><span><b>—</b>Neste samling</span></div></div>
+          <div class="flyt">
+            <div class="helt"><div class="kt">Testdag tor 29.10 · WANG Toppidrett</div><span><span class="knapp fylt">Åpne testdagen</span></span></div>
+            <div class="k"><div class="kt">WANG Toppidrett</div><div class="l k2"></div></div>
+            <div class="k"><div class="kt">GFGK Junior Utvikling</div><div class="l k2"></div></div>
+            <div class="k"><div class="kt">AK Golf Academy</div><div class="l k3"></div></div>
+          </div></div></div>
+      </div>
+      <div class="pc"><div class="etik">PC 1280 · ÉN GRUPPE</div>
+        <div class="r"><div class="meny"><i></i><div class="gr">DAGLIG</div><i></i><i></i><i></i><div class="gr">SPILLERE</div><i></i><i></i><i class="paa"></i><i></i><div class="gr">DRIFT</div><i></i><i></i><i></i></div>
+          <div class="side">
+            <div class="topp lav"><div class="o">‹ GRUPPER</div><div class="t">WANG Toppidrett</div><span><span class="knapp">Tildel test</span> <span class="knapp">Tildel TrackMan-økt</span></span></div>
+            <div class="flyt">
+              <div class="brikker"><span class="paa">Medlemmer</span><span>Faste tider</span><span>Årsplan</span><span>Analyse</span><span>Skoledata</span><span>Workbench</span></div>
+              <div class="to">
+                <div class="k"><div class="kt">Medlemmer · 11</div><div class="rad"><i class="av"></i><i class="tx"></i><span class="pl">Coach</span></div><div class="rad"><i class="av"></i><i class="tx"></i></div><div class="rad"><i class="av"></i><i class="tx"></i></div><div class="rad"><i class="av"></i><i class="tx"></i></div><div class="rad"><i class="av"></i><i class="tx"></i></div></div>
+                <div style="display:grid;gap:6px"><div class="k"><div class="kt">Faste tider</div><div class="l k2"></div><div class="l k3"></div></div><div class="k"><div class="kt">Neste samling</div><div class="l k2"></div></div></div>
+              </div>
+            </div></div></div>
+      </div>
+    </div>
+    <div class="svar"><div class="valg"><label><input type="radio" name="s-gr" value="Ja"> Ja</label><label><input type="radio" name="s-gr" value="Rett dette"> Rett dette</label></div>
+      <textarea id="t-gr" aria-label="Hva skal rettes i Grupper" placeholder="Hva skal rettes (bare hvis noe)"></textarea></div>
+  </section>
+
+  <!-- ===================== A5 TESTER ===================== -->
+  <section class="skjerm" id="tester">
+    <div class="hode">
+      <h2>4. Tester og testdag</h2>
+      <code>/admin/tester</code> <code>/admin/tester/testdag/[eventId]</code>
+      <ul class="innhold">
+        <li><b>Tester:</b> topp med bilde (wedge) og fire tall: Tester denne måneden, Til kontroll, Neste testdag, Tildelt. Hovedkort: neste testdag med «Start testdag».</li>
+        <li>Batteriet i tre deler i fast rekkefølge: Golfslag · Teknikk · Fysisk. Siste resultater. Tildel test.</li>
+        <li><b>Testdag:</b> lav topp med bilde. Deltakerne som liste, og registrering til høyre på PC. Trener fører bare teknikk- og PEI-tester, resten fører spilleren selv. Panelet «Til kontroll» viser egenførte resultater som venter.</li>
+      </ul>
+    </div>
+    <div class="rammer">
+      <div class="mob"><div class="etik">MOBIL 390 · TESTER</div>
+        <div class="r"><div class="side">
+          <div class="topp"><div class="o">SPILLERE</div><div class="t">Tester</div>
+            <div class="tall"><span><b>14</b>Denne mnd</span><span><b>3</b>Til kontroll</span><span><b>29.10</b>Testdag</span><span><b>6</b>Tildelt</span></div></div>
+          <div class="flyt">
+            <div class="helt"><div class="kt">Testdag tor 29.10 · 11 deltakere</div><span><span class="knapp fylt">Start testdag</span></span></div>
+            <div class="brikker"><span class="paa">Golfslag</span><span>Teknikk</span><span>Fysisk</span></div>
+            <div class="k"><div class="kt">Siste resultater</div><div class="rad"><i class="av"></i><i class="tx"></i><span class="pl">Egenført</span></div><div class="rad"><i class="av"></i><i class="tx"></i><span class="pl">Kontrollert</span></div></div>
+          </div></div></div>
+      </div>
+      <div class="pc"><div class="etik">PC 1280 · TESTDAG</div>
+        <div class="r"><div class="meny"><i></i><div class="gr">DAGLIG</div><i></i><i></i><i></i><div class="gr">SPILLERE</div><i></i><i></i><i></i><i class="paa"></i><div class="gr">DRIFT</div><i></i><i></i><i></i></div>
+          <div class="side">
+            <div class="topp lav"><div class="o">‹ TESTER</div><div class="t">Testdag 29.10 · WANG Toppidrett</div></div>
+            <div class="flyt">
+              <div class="lista-detalj">
+                <div class="k"><div class="kt">Deltakere · 11</div><div class="rad"><i class="av"></i><i class="tx"></i><span class="pl">2 av 4</span></div><div class="rad"><i class="av"></i><i class="tx"></i></div><div class="rad"><i class="av"></i><i class="tx"></i></div><div class="rad"><i class="av"></i><i class="tx"></i></div><div class="rad"><i class="av"></i><i class="tx"></i></div></div>
+                <div style="display:grid;gap:6px"><div class="k"><div class="kt">Registrer · Wedge Gate</div><div class="l"></div><div class="l k2"></div><span class="knapp fylt" style="justify-self:start">Lagre</span><div class="notat">Bare teknikk og PEI føres av trener.</div></div><div class="k"><div class="kt">Til kontroll · 3</div><div class="l k2"></div></div></div>
+              </div>
+            </div></div></div>
+      </div>
+    </div>
+    <div class="svar"><div class="valg"><label><input type="radio" name="s-test" value="Ja"> Ja</label><label><input type="radio" name="s-test" value="Rett dette"> Rett dette</label></div>
+      <textarea id="t-test" aria-label="Hva skal rettes i Tester" placeholder="Hva skal rettes (bare hvis noe)"></textarea></div>
+  </section>
+
+  <!-- ===================== MØNSTRE ===================== -->
+  <section class="skjerm" id="monstre">
+    <div class="hode">
+      <h2>5. Undersider som følger et mønster du har godkjent</h2>
+      <p class="dim">Disse tegnes ikke hver for seg. Samme mønster som undersidene i bølge 1: lav topp med bilde, tilbakelenke og innholdet i hvite kort.</p>
+    </div>
+    <div class="monster">
+      <div class="mrad">
+        <div class="r"><div class="side"><div class="topp lav"><div class="o">‹ GRUPPE</div><div class="t">Detalj</div></div><div class="flyt"><div class="k"><div class="l"></div><div class="l k2"></div></div><div class="k"><div class="l k3"></div><div class="l"></div></div></div></div></div>
+        <div><h3>Detalj</h3><ul>
+          <li><code>/admin/grupper/[id]/analyse</code> Gruppeanalyse (nivå, datadekning, belastning)</li>
+          <li><code>/admin/grupper/[id]/arsplan</code> og <code>…/arsplan/skoledata</code> Gruppas årsplan og skoledata</li>
+          <li><code>/admin/grupper/[id]/timeplan</code> Faste tider</li>
+          <li><code>/admin/gjennomfore/okter/[id]</code> Øktark etter live: sammendrag som utkast, hjemmelekse, TrackMan, filer</li>
+        </ul></div>
+      </div>
+      <div class="mrad">
+        <div class="r"><div class="side"><div class="topp lav"><div class="o">‹ TESTER</div><div class="t">Skjema</div></div><div class="flyt"><div class="k"><div class="l"></div><div class="l k2"></div><div class="l"></div></div><span class="knapp fylt" style="justify-self:start">Lagre</span></div></div></div>
+        <div><h3>Skjema</h3><ul>
+          <li><code>/admin/tester/registrer/[deltakerId]</code> Registrer test for én deltaker</li>
+        </ul></div>
+      </div>
+      <div class="mrad">
+        <div class="r"><div class="side"><div class="topp lav"><div class="o">PLAN</div><div class="t">Liste</div></div><div class="flyt"><div class="k"><div class="rad"><i class="av"></i><i class="tx"></i></div><div class="rad"><i class="av"></i><i class="tx"></i></div><div class="rad"><i class="av"></i><i class="tx"></i></div></div></div></div></div>
+        <div><h3>Liste</h3><ul>
+          <li><code>/admin/tester/testdag</code> Alle testdager</li>
+          <li><code>/admin/agencyos/ak-stigen</code> AK-stigen: fire trinn, med Knøtt og WANG ved siden av</li>
+          <li><code>/portal/samlinger</code> (PlayerHQ) Invitasjoner til samlinger</li>
+          <li><code>/portal/analysere/datagolf/stasjon</code> (PlayerHQ, bare for deg) Data Golf-stasjonen, samme oppsett som TrackMan-sidene</li>
+        </ul></div>
+      </div>
+    </div>
+    <div class="svar"><div class="valg"><label><input type="radio" name="s-mon" value="Ja"> Ja</label><label><input type="radio" name="s-mon" value="Rett dette"> Rett dette</label></div>
+      <textarea id="t-mon" aria-label="Hva skal rettes i mønstrene" placeholder="Hva skal rettes (bare hvis noe)"></textarea></div>
+  </section>
+
+  <!-- ===================== SPØRSMÅL ===================== -->
+  <section class="skjerm" id="sporsmal">
+    <div class="hode"><h2>6. Ett spørsmål, med min anbefaling</h2></div>
+    <div class="spm">
+      <div class="sp">
+        <h3>Live-tavla (<code>/admin/agencyos/live</code>) viser alle økter som pågår. Skal den ha topp?</h3>
+        <p class="anb"><b>Anbefaling: lav topp uten bilde, som Workbench.</b> Tavla er en oversikt du ser på mens økter pågår, ikke selve live-økta. Den trenger plassen, men ikke å se ut som en arbeidsflate uten tittel.</p>
+        <div class="valg"><label><input type="radio" name="q1" value="Følg anbefalingen"> Følg anbefalingen</label><label><input type="radio" name="q1" value="Ingen topp, som live-økta"> Ingen topp, som live-økta</label></div>
+        <textarea id="q1t" aria-label="Kommentar om live-tavla" placeholder="Kommentar (valgfritt)"></textarea>
+      </div>
+    </div>
+  </section>
+
+  <section class="send" aria-label="Send svaret">
+    <button type="button" id="kopier">Kopier svaret</button>
+    <textarea id="svartekst" aria-label="Svaret ditt, klart til å limes inn" readonly placeholder="Svaret ditt kommer her når du trykker «Kopier svaret»."></textarea>
+    <p class="dim" id="status" role="status"></p>
+  </section>
+</div>
+
+<script>
+(function () {
+  function valgt(navn) { var el = document.querySelector('input[name="' + navn + '"]:checked'); return el ? el.value : "ikke svart"; }
+  function tekst(id) { var el = document.getElementById(id); return el && el.value.trim() ? " – " + el.value.trim() : ""; }
+  var skjermer = [["Workbench", "s-wb", "t-wb"], ["Live coachingøkt", "s-live", "t-live"], ["Grupper", "s-gr", "t-gr"], ["Tester", "s-test", "t-test"], ["Mønstrene", "s-mon", "t-mon"]];
+  function lag() {
+    var l = ["Bølge 2, svar:"];
+    skjermer.forEach(function (s) { l.push(s[0] + ": " + valgt(s[1]) + tekst(s[2])); });
+    l.push("Live-tavla: " + valgt("q1") + tekst("q1t"));
+    return l.join("\n");
+  }
+  var ut = document.getElementById("svartekst"), st = document.getElementById("status");
+  document.getElementById("kopier").addEventListener("click", function () {
+    var t = lag(); ut.value = t;
+    try {
+      navigator.clipboard.writeText(t).then(function () { st.textContent = "Kopiert. Lim det inn i chatten."; }, function () { ut.select(); st.textContent = "Marker teksten over og kopier den."; });
+    } catch (e) { ut.select(); st.textContent = "Marker teksten over og kopier den."; }
+  });
+})();
+</script>

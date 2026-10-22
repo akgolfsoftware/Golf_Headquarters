@@ -76,7 +76,7 @@ Tverrgående svakheter:
 
 | # | Steg | Ferdig når |
 |---|---|---|
-| 1 | **Utkast 2 sett av Anders** (port 7, eller Claude på hans vegne etter nattregelen): de 31 skjermene i `utkast-2.html`. | Anders har sagt ja, eller rettelsene er tegnet inn. |
+| 1 | **Utkast 2 sett av Anders** (port 7, eller Claude på hans vegne etter nattregelen): de 31 skjermene i `utkast-2.html`. | Anders har sagt ja, eller rettelsene er tegnet inn. **Gjort: godkjent av Anders 22.10.** |
 | 2 | **Se dagens skjermer i nettleser** med demotrener i 390, 1280 og 1920, og legg skjermbilder ved registeret. | Hver rad i tabellen over har skjermbilde, og påstandene om 390 (særlig Månedsplan) er bekreftet eller rettet. |
 | 3 | **Felles tilstander:** én tom-, laster- og feilkomponent for TN etter «Tom, laster og feil» i utkast 2, og `loading.tsx` per hovedpunkt. | Alle seks hovedpunkter har egen laster i skjermens form, og et søk etter skjermer uten tom-tilstand gir 0. |
 | 4 | **IUP-fanene** (kodeøkta, én PR per fane): Turneringer, Ranking, Trening, Tester med «X av N», Teknisk plan, Fireukerssjekk, Turneringsplan. | Alle åtte fanene finnes, gamle adresser sender videre, og hver fane er målt i 390/1280/1920 uten sidelengs rulling. |
@@ -113,7 +113,7 @@ Sammenlign, Søk og Tester; WAGR-visningene Turneringer og Sesong; PlayerHQ › 
    ikke flytter seg mens treneren leser.
 
 Avgjort av Anders 22.10 (registreres i beslutningene av kodeøkta): PlayerHQ-lenken går til «Se hva Team Norway ser»,
-og «beste» tas bort i Referanse › Tester. Utkast 2 er tegnet slik: Referanse › Tester viser bare median og antall.
+og «beste» tas bort i Referanse › Tester. Utkast 2 er tegnet slik; se også svarene i §5.4.
 
 ## 5. Datakart og sammenheng (22.10.2026)
 
@@ -203,17 +203,29 @@ utviklingssjekker.
 | A1 | **Personvern:** `hentTnTekniskPlaner`/`Detalj` og `hentTnEvalueringGrunnlag` leser med global `prisma`, utenfor delingslåsen | `tn-teknisk-plan.ts`, `tn-evaluering.ts:40` | Les via `tx` fra `medTnSpillerData`, med test | Kode, haster |
 | A2 | TN-trener skriver rett i spillerens tekniske plan (`tnLoggRep`, `tnOpprettOppgave`) | `tn-teknisk-plan.ts:202,240` | Bli forslag spilleren godtar (§KODEGJENNOMGANGEN 06.10) | Kode |
 | A3 | WAGR-plass har tre kilder: `wagr_ref_players` (Oversikt, Spillere), `WagrPlayerStrength` (Turneringsplan), `WagrSnapshot` (AgencyOS) | se 5.1 | `wagr_ref_players` med uke overalt i TN; modellen bare for sjanser | Kode |
-| A4 | Brutto snitt har fem definisjoner (Oversikt/Rangliste, Profil 365 dager med treningsrunder, SQL-sesong, IUP-måltall, A–K) | `tn-arbeidsflate.ts:1385`, `profil-kobling/komplett.ts:78`, `maaltall.ts:97`, `spiller-kategori.ts:48` | Én: turneringsrunder i kalenderåret, Oslo-tid, bare brutto (spørsmål 3) | Kode |
+| A4 | Brutto snitt har fem definisjoner (Oversikt/Rangliste, Profil 365 dager med treningsrunder, SQL-sesong, IUP-måltall, A–K) | `tn-arbeidsflate.ts:1385`, `profil-kobling/komplett.ts:78`, `maaltall.ts:97`, `spiller-kategori.ts:48` | Én: turneringsrunder, bare brutto, uten treningsrunder (svar 3) | Kode |
 | A5 | Etterlevelse har tre definisjoner (PlayerHQ `etterlevelse.ts:32`, IUP `tn-aksefordeling.ts:16`, TN gruppetrening `tn-trenger-deg.ts:65`) | se over | Samme som PlayerHQ (§KARTLEGGINGSØKT FJERNES punkt 4) | Kode |
 | A6 | Turneringsresultater fra to kilder: `/turneringer` leser `Tournament.results`, IUP og Rangliste leser offentlige resultater | `lesTnTurneringer` `:189` | `public_player_entries` overalt (§PIPELINES ER ENESTE KILDE) | Kode |
 | A7 | Kategori vises «—» i TN, men PlayerHQ har A–K; `WagrSnapshot.ngfCategory` er A–I | `tn-spillerprofil-visning.tsx:255` | Les `hentSpillerAkKategori`; samme tall som PlayerHQ | Kode |
 | A8 | Avslåtte turneringsforslag vises aldri i Haster (leser bare Workbench-forslag) | `tn-iup-oversikt.ts:77` | Ta med `TOURNAMENT_PLAN_PROPOSAL` | Kode |
 | A9 | Neste turneringer: Oversikt utelater oppføringer uten dato, Turneringsplan tar dem med | `data.ts:172` | Lik regel; uten dato vises «Dato —» nederst | Kode |
 | A10 | Testantall: Profil teller alle `TestResult`, også ugyldige; Tester og Haster teller gyldige | `komplett.ts:88` | Gyldige overalt | Kode |
-| A11 | Referanse › Tester bruker beste resultat, tar med WANG-elever og har ingen grense på 5 | `tn-arbeidsflate.ts:1069` | Median av siste gyldige resultat siste 12 mnd, bare TN-spillere, «—» under 5 (spørsmål 2) | Kode, wireframe rettet |
+| A11 | Referanse › Tester bruker hver spillers beste resultat og tar med WANG-elever | `tn-arbeidsflate.ts:1069` | Median og antall for alle TN-spillere; navn og alle forsøk bare for dem som har delt; WANG-elever under WANG-tester (svar 2) | Kode, wireframe rettet |
 | A12 | Delingsteksten i PlayerHQ sier «foreløpig leverte utviklingssjekker», mens TN leser tester, trening, planer og lisens med samme deling | `navngitt-deling.tsx:165` | Teksten sier det TN faktisk ser; «Se hva Team Norway ser» bygges for spilleren | Kode |
-| A13 | Wireframene viste to delingsnivåer («Tester og resultater», «Komplett profil»); koden har ett | utkast 1 og 2 | Rettet: «Delt / Venter på svar / Ikke delt» (spørsmål 1) | Wireframe, rettet |
+| A13 | Wireframene viste to delingsnivåer («Tester og resultater», «Komplett profil»); koden har ett | utkast 1 og 2 | Rettet: «Delt / Venter på svar / Ikke delt» (svar 1) | Wireframe, rettet |
 | A14 | Wireframene: vannrett aksebånd sto TURN først, Putt 1–3 m «—» på Oversikt men 7/10 på Tester, poengsnitt lik WAGR-plassen, dager til fireukerssjekk feil, målsetning 2027 mot tall fra 2026 | utkast 1 og 2 | Rettet: FYS først i vannrette bånd, like tall, riktig periode | Wireframe, rettet |
+
+**Status per avvik (pakke 2, «like tall på tvers», 22.10):**
+
+- **A1** allerede rettet i #1620. **A4** allerede rettet i #1635 (én utregning av brutto snitt). **A11** allerede rettet i #1625. **A12** allerede rettet i #1639 («Se hva Team Norway ser»). **A13, A14** rettet i wireframene.
+- **A2 står.** Krever at tekniske oppgaver og reps fra treneren lagres som forslag (ny tabell eller felt for forslag og et svar-flyt for spilleren). Datamodelltillegg krever eget ja, og pakke 2 har ingen skjemaendringer.
+- **A3 rettet i denne pakken.** `hentWagrPlassForSpiller` (`src/lib/domain/tn-wagr-plass.ts`) leser `wagr_ref_players`; Oversikt, Låst IUP og bildetoppen i Turneringsplan bruker den. `WagrPlayerStrength` gir nå bare sjanser og anslag. `WagrSnapshot` (AgencyOS) er utenfor TN og røres ikke. Test: `tn-wagr-plass.test.ts`.
+- **A5 rettet i denne pakken.** IUP › Trening, pyramiden i IUP-oversikten og TN-hjem («gruppas trening», `tn-trenger-deg.ts`) regner nå som PlayerHQ (`etterlevelse.ts`): minutter, 28 dager til nå, bare økter som har passert slutt, bare økter spilleren selv ser (ingen utkast, avlyste eller skjulte). «Trenger deg» (under 70 % to uker på rad) er uendret AgencyOS-regel på hele uker. Tester: `tn-trenger-deg.test.ts`, `tn-aksefordeling.test.ts`.
+- **A6 står.** `/turneringer` leser `Tournament.results`; IUP og Rangliste leser `public_player_entries`. Å bytte kilden krever kobling mellom `Tournament` (kalender og påmelding) og de offentlige turneringene, og er en egen pakke. Kalenderen og påmeldingene blir i `Tournament`, resultatene skal over.
+- **A7 rettet i denne pakken.** Kategori A–K i IUP-stripen (Team Norway og «Se hva Team Norway ser») regnes med `akKategoriFraTall`: brutto snitt i turnering, ellers HCP, som `hentSpillerAkKategori` i PlayerHQ. Låst IUP (uten deling) viser fortsatt «—». Test: `ak-kategori.test.ts`.
+- **A8 rettet i denne pakken.** Haster leser nå også avslåtte `TOURNAMENT_PLAN_PROPOSAL` (`TN_FORSLAG_TYPER`). Test i `tn-iup-oversikt-regler.test.ts`.
+- **A9 rettet i denne pakken.** Oversikt tar med turneringer uten dato («Dato —», nederst) og velger dato som Turneringsplan (`velgNesteTurneringer`). Test i `tn-iup-oversikt-regler.test.ts`.
+- **A10 rettet i denne pakken.** Profilen (`byggKomplettProfil`) teller bare gyldige Team Norway-forsøk, via `tnValiderRader` (flyttet til `tn-test-validering.ts` og delt med Tester). Test: `tn-test-validering.test.ts`.
 
 Felt som wireframene viser, men som ikke finnes i koden ennå (bygges etter beslutningene, ikke avvik): NGF juniorranking («—»),
 WAGR per uke, til-par per turnering, logget i etterkant, lagt inn mot fordelt, kvalitetssjekk, før og nå-bilder, trenerkommentar.
@@ -222,16 +234,21 @@ WAGR per uke, til-par per turnering, logget i etterkant, lagt inn mot fordelt, k
 samme tall i Oversikt. Ingen knapper: «Foreslå endring», «Skriv post» og «Før teknikktest» er borte; eneste lenke er
 «Endre deling i Meg › Deling». Listen «Hvem ser dette» erstatter velgeren mellom delingsnivåer.
 
-### 5.4 Spørsmål til Anders: avgjort 22.10 (ja til alle tre, `.claude/rules/beslutninger.md` §TEAM NORWAY: DELING ER ALT ELLER INGENTING)
+### 5.4 Svar fra Anders 22.10
 
-1. **Ett delingsnivå i Team Norway?** Koden gir treneren alt eller ingenting. Anbefaling: behold ett nivå. Det er enklere å forklare
-   for spiller og foresatte, og det er slik tilgangen faktisk virker i dag.
-2. **Referanse › Tester: hva er medianen av?** Anbefaling: hver spillers siste gyldige resultat de siste 12 månedene, bare Team
-   Norway-spillere, «—» under 5. Beste resultat noensinne gir et for pent bilde, og WANG-elevene har eget samtykke.
-3. **Én definisjon av brutto snitt?** Anbefaling: turneringsrunder i kalenderåret, Oslo-tid, bare brutto, likt i IUP, Rangliste,
-   Uttak og PlayerHQ. Treningsrunder vises som egen linje, ikke i snittet.
+1. **Deling:** «Alt skal deles.» Ett nivå: når spilleren deler, ser treneren alt. Wireframene viser Delt / Venter på svar / Ikke delt.
+2. **Referanse › Tester:** «Spillerens testresultater. Men Team Norway har komplett oversikt over alle spillere og alle tester som er
+   gjort.» Presisert samme dag: «Komplett testoversikt med navn for alle som har delt. Spillere som ikke har delt teller bare i
+   median og antall, uten navn.» Referanse › Tester viser median og antall per test for alle TN-spillere, og en navnetabell med alle
+   forsøk bare for dem som har delt. Ingen tidsgrense og ingen «beste»-kolonne. Wireframen er tegnet om (utkast 2, Referanse › Tester).
+3. **Brutto snitt:** «Alle turneringer er brutto resultat.» Brutto snitt er turneringsrunder, bare brutto, likt i IUP, Rangliste,
+   Uttak og PlayerHQ. Treningsrunder er ikke med.
+
+Beslutningen står i #1614 (`.claude/rules/beslutninger.md` §TEAM NORWAY: DELING ER ALT ELLER INGENTING).
 
 ## 6. Utkast 3: testøkt, TrackMan-kobling og testvisning (22.10.2026)
+
+Status: **Godkjent av Anders 22.10** (port 7: «Godkjent», etter å ha sett import og kobling, statistikk, tendens, TrackMan mot spill, tilstander og testvisningen).
 
 Bestilt av Anders 22.10: «tegne testøkta med spiller, TrackMan-importen med kobling til testslag, og testvisningen med
 spredningsplott og slagdata, som utkast 3.» Wireframes: [utkast-3.html](../design-system/utkast-tn/trenerflate/utkast-3.html),
@@ -250,7 +267,7 @@ https://claude.ai/artifact/TAhfpQJPqeKiwp2zTxxKft. 17 skjermer i fire grupper, m
 4. **TrackMan-import for trener** i TN (og AgencyOS): knapp i IUP › Tester og i testøkta, som kaller `importTrackMan` med
    `onBehalfOfUserId`. Krever deling.
 5. **Kobling testslag ↔ TrackMan-slag.** Forslaget går i rekkefølge, med riktig kølle; treneren bekrefter alle eller bytter
-   ett og ett. Carry og Side fylles inn fra TrackMan, og slaget merkes «TM». Tilstandene: passer ikke (mer enn 15 m fra målet),
+   ett og ett. Carry og Side fylles inn fra TrackMan, og slaget merkes «TM». Tilstandene: passer ikke (mer enn 15 m fra målet, 30 m i Driver Basic),
    for få slag (resten føres for hånd), feil kølle (hoppes over).
 6. **Club Speed i Fysisk:** beste av de fem første driverslagene i fila, som treneren bekrefter.
 7. **Testvisning:** hovedtall per test (PEI eller poeng, «1 av 2» på prioriterte), spredningsplott mot målet for PEI-testene
@@ -277,7 +294,7 @@ stats fra treningsrunder og turneringsrunder.» Tegnet som gruppa «TrackMan-sta
 |---|---|---|---|
 | Statistikk per kølle | snitt, median, min, maks, standardavvik for 17 parametere | `TrackManShot` (`clubSpeed`, `ballSpeed`, `smashFactor`, `attackAngle`, `clubPath`, `faceAngle`, `faceToPath`, `dynamicLoft`, `launchAngle`, `launchDirection`, `spinRate`, `spinAxis`, `carryDistance`, `totalDistance`, `side`, `apexHeight`, `landAngle`), gruppert på `club` | Feltene finnes. Snitt per økt finnes i `oppsummerOkt` (`trackman/okt-oppsummering.ts:46`); standardavvik bare for Ball Speed i `club-trend-aggregator.ts:27`. **Median, min/maks og standardavvik per parameter finnes ikke** |
 | Ytterpunkt åpner slaget | slag-id per min/maks | `TrackManShot.id`, `outlier` | Feltet `outlier` finnes; kobling fra ytterpunkt til slag finnes ikke |
-| Andel i målvindu | % slag innenfor vindu per parameter | – | **Finnes ikke** (vinduene: spørsmål 4) |
+| Andel i målvindu | % slag innenfor vindu per parameter | – | **Finnes ikke** (standardvinduer og egne mål, §6.3) |
 | Treffpunkt-sky | `strikePatternX/Y` | `computeStrikePattern` (`sg-hub/strike-pattern.ts:46`) | Finnes |
 | Gapping | carry-snitt og spredning per kølle | `buildYardageRows` (`sg-hub/yardage-calc.ts:98`) | Finnes for carry; spredning per kølle finnes ikke |
 | Tendens over tid | snitt og spredning per økt for valgt parameter og kølle | `getClubTrend`/`detectDrift` (`sg-hub/drift-detection.ts:88`) | Finnes bare for Club Path, Face Angle og Total; **andre parametere og spredningsbånd finnes ikke** |
@@ -289,15 +306,24 @@ Krever deling (alt eller ingenting). Bygges som visningene «Statistikk», «Ten
 «Statistikk» rett etter TrackMan-importen. Nytt i koden: én modul som regner snitt, median, min, maks, standardavvik og andel i
 målvindu per parameter og kølle, med «for få slag» under 5.
 
-### 6.3 Spørsmål til Anders (wireframene følger anbefalingen)
+### 6.3 Avgjort 22.10 (`.claude/rules/beslutninger.md` §TRACKMAN I TEAM NORWAY-TESTENE, #1629)
 
-1. **Import fra TrackMan Report-lenke?** I dag leser appen CSV, rapportfil og bilde, ikke lenken fra TrackMan. Anbefaling: ja,
-   legg til lenke-import. Det er det treneren har på telefonen etter økta, og det sparer et steg med nedlasting. Wireframen viser
-   «Report-lenke» som et tredje valg.
-2. **Grensen for «passer ikke»:** anbefaling 15 m fra målet for wedge- og inspilltester og 30 m for Driver Basic. Slagene merkes,
-   og treneren kan koble dem likevel.
-3. **Club Speed:** beste av de fem første driverslagene, eller beste av alle driverslag i fila? Anbefaling: de fem første, som i
-   testprotokollen, så tallet ikke blir høyere bare fordi spilleren slo flere slag.
-4. **Målvinduene for «andel i målvindu»:** anbefaling Face to Path ±2°, Club Path ±2°, Face Angle ±2°, Smash Factor ≥ 1,35 for
-   jern og ≥ 1,45 for driver, Attack Angle −5 til −3° for jern og 0 til +4° for driver, Carry og Side ±5 m for jern og ±15 m for
-   driver. Treneren kan endre vinduet per spiller. Wireframen bruker disse.
+Anders sa ja til anbefalingene og slo sammen svarene («Begge»):
+
+1. **Report-lenke:** importen tar Report-lenke i tillegg til fil og bilde.
+2. **«Passer ikke»:** mer enn 15 m fra målet i wedge- og inspilltestene, 30 m i Driver Basic. Slaget merkes og kobles ikke;
+   treneren kan koble det likevel.
+3. **TEK eller SLAG** er påkrevd ved import, og statistikken kan filtreres på aksen. **Club Speed** er beste av de fem første
+   driverslagene.
+4. **Mål og vinduer:** standardvinduene gjelder (Face to Path, Club Path og Face Angle ±2°, Smash Factor ≥ 1,35 jern og ≥ 1,45
+   driver, Attack Angle −5 til −3° jern og 0 til +4° driver, Carry og Side ±5 m jern og ±15 m driver). Trener og spiller kan sette
+   egne mål og vinduer per parameter og kølle; hver endring viser hvem og når.
+
+Utkast 3 er tegnet slik.
+
+### 6.4 Datamodelltillegg fra svarene (additivt via `db execute`)
+
+- `TrackManSession.akse` (`TEK` | `SLAG`), påkrevd ved ny import. Gamle økter uten akse vises som «—» og kan merkes i etterkant.
+- `TrackManMaal` (`spillerId`, `kolle`, `parameter`, `maal`, `vinduMin`, `vinduMax`, `settAvId`, `settAt`), unik på spiller,
+  kølle og parameter. Spiller og trener kan skrive; endringer logges med hvem og når.
+- Import fra Report-lenke: ny parser ved siden av `parse-csv.ts`, `parse-html-report.ts` og `parse-photo.ts`.

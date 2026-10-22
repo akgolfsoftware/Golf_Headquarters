@@ -53,7 +53,8 @@ const stubbePlugin = {
     // «use server»-moduler: behold eksportnavnene, bytt innholdet med ufarlige stubber.
     b.onLoad({ filter: /\.(ts|tsx)$/ }, ({ path }) => {
       const src = readFileSync(path, "utf8");
-      if (!/^\s*["']use server["']/.test(src)) return undefined;
+      // Direktivet kan stå etter en innledende kommentar.
+      if (!/^\s*["']use server["']/.test(src.replace(/^(\s*(\/\*[\s\S]*?\*\/|\/\/[^\n]*))*/, ""))) return undefined;
       const navn = [...src.matchAll(/export\s+(?:async\s+)?(?:function|const)\s+([\p{L}\p{N}_$]+)/gu)].map((m) => m[1]);
       return { loader: "js", contents: navn.map((n) => `export async function ${n}(){return {ok:true}}`).join("\n") };
     });
@@ -137,7 +138,8 @@ try {
             while (p && p !== document.body) { const o = getComputedStyle(p).overflowX; if (o === "hidden" || o === "clip") { const pr = p.getBoundingClientRect(); if (pr.right <= vw + 0.5 && pr.left >= -0.5) { klippet = true; break; } } p = p.parentElement; }
             if (!klippet && el.closest(".pa-sr") == null) utenfor.push(`${el.tagName.toLowerCase()}.${String(el.className).slice(0, 40)} (${Math.round(r.left)}–${Math.round(r.right)})`);
           }
-          if (el.matches("a[href],button,[role=button],input,select,textarea,[role=tab]") && el.closest(".pa-sr") == null && (r.height < min || r.width < min)) {
+          if (el.matches("a[href],button,[role=button],input,select,textarea,[role=tab]") && el.closest(".pa-sr") == null && (r.height < min - 0.5 || r.width < min - 0.5)) {
+            // Halv piksel slingringsmonn: et kort som glir inn, gir 43,999 px på en knapp som er 44 px.
             // Tekstlenker inne i løpende tekst er unntatt; alt annet skal ha 44 px.
             // En avkrysning inni en <label> treffes på hele etiketten; mål etiketten i stedet.
             const etikett = el.matches("input[type=checkbox],input[type=radio]") ? el.closest("label") : null;

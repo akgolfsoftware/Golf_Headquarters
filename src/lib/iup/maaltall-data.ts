@@ -4,7 +4,10 @@ import { prisma } from "@/lib/prisma";
 import { requireSpillerActionUser } from "@/lib/auth/action-guards";
 import { OSLO_YMD_FMT } from "@/lib/jarvis/dagen";
 import { aktivIupTilknytningWhere, iupSynligForSpillerWhere } from "./tilknytning";
-import { MAALTALL, byggMaaltall, sesongFor, type MaaltallRad, type MaaltallRunde, type Sesong } from "./maaltall";
+import { bruttoRunder } from "@/lib/domain/brutto-snitt";
+import { hentSpillerprofil } from "@/lib/profil-kobling/data";
+import { tilTurneringer } from "@/lib/profil-kobling/til-turneringer";
+import { MAALTALL, byggMaaltall, sesongFor, type MaaltallRad, type MaaltallRunde, type MaaltallTurneringsrunde, type Sesong } from "./maaltall";
 
 export type IupMaaltallData = { sesong: Sesong; org: string; rader: MaaltallRad[] };
 
@@ -33,7 +36,7 @@ export async function hentIupMaaltall(): Promise<IupMaaltallData | null> {
  */
 export async function hentIupMaaltallForSpiller(
   spillerId: string,
-  db: Pick<Prisma.TransactionClient, "user" | "round" | "workbenchSession" | "iupMaaltallMal"> = prisma,
+  db: Pick<Prisma.TransactionClient, "$queryRaw" | "user" | "round" | "workbenchSession" | "iupMaaltallMal"> = prisma,
   { kunDelteRunder = false }: { kunDelteRunder?: boolean } = {},
 ): Promise<IupMaaltallData | null> {
   const eier = await db.user.findFirst({
@@ -44,7 +47,7 @@ export async function hentIupMaaltallForSpiller(
   const idag = OSLO_YMD_FMT.format(new Date());
   const sesong = sesongFor(idag);
   const fra = new Date(`${sesong.start}T00:00:00Z`), til = new Date(`${sesong.slutt}T00:00:00Z`);
-  const [runder, okter, mal] = await Promise.all([
+  const [runder, okter, mal, profil] = await Promise.all([
     db.round.findMany({
       where: { userId: eier.id, playedAt: { gte: fra, lt: til }, playStatus: "COMPLETED", ...(kunDelteRunder ? { sharedWithCoach: true } : {}) },
       select: {
@@ -57,7 +60,10 @@ export async function hentIupMaaltallForSpiller(
       select: { date: true, pyramid: true, actualMinutes: true, durationMinutes: true },
     }),
     db.iupMaaltallMal.findMany({ where: { userId: eier.id, sesong: sesong.navn }, select: { maaltall: true, verdi: true } }),
+    hentSpillerprofil(eier.id, {}, db),
   ]);
+  const turneringsrunder: MaaltallTurneringsrunde[] = tilTurneringer(profil?.turneringer ?? []).flatMap((t) =>
+    bruttoRunder([t.resultat]).map((score) => ({ dato: OSLO_YMD_FMT.format(t.start), score, konkurranseId: t.id })));
   const runderUt: MaaltallRunde[] = runder.map((r) => ({
     dato: OSLO_YMD_FMT.format(r.playedAt), score: r.score, turnering: r.roundType === "turnering", konkurranseId: r.tournamentEntryId,
     sgTotal: r.sgTotal, sgOtt: r.sgOtt, sgApp: r.sgApp, sgArg: r.sgArg, sgPutt: r.sgPutt, hull: r.holeScores,
@@ -66,7 +72,7 @@ export async function hentIupMaaltallForSpiller(
     sesong,
     org: orgNavn(eier.groupMemberships.map((m) => m.group)),
     rader: byggMaaltall({
-      sesong, idag, runder: runderUt,
+      sesong, idag, runder: runderUt, turneringsrunder,
       okter: okter.map((o) => ({ dato: iso(o.date), fys: o.pyramid === "FYS", minutter: o.actualMinutes ?? o.durationMinutes })),
       mal: new Map(mal.map((m) => [m.maaltall, m.verdi])),
     }),

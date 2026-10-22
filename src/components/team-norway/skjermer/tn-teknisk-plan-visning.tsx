@@ -6,6 +6,7 @@ import { TN } from "@/lib/v2/team-norway";
 import { TnShell, TnSeksjon, TnSpillerFaner } from "../tn-shell";
 import { TnFlate } from "../tn-flate";
 import { TnSkraKort, TnSkraTopp } from "../tn-skra-topp";
+import { TnTomtilstand } from "../tn-tilstand";
 import { TnHeltTall, TnHeltTekst, TnHeltTellere } from "../tn-stall";
 import { TnKort, TnPille, TnKnapp } from "../core";
 
@@ -85,13 +86,13 @@ export function TnTekniskPlanVisning({ brukerNavn, kontekst, spillerId, spillerN
       )}
 
       {plan.posisjoner.length === 0 ? (
-        <TnKort><p style={{ margin: 0, color: TN.ink700 }}>Ingen P-posisjoner lagt til i denne planen ennå.</p></TnKort>
+        <TnTomtilstand tittel="Ingen P-posisjoner ennå" tekst="Planen har ingen P-posisjoner ennå. De vises her når de er lagt inn." />
       ) : (
         plan.posisjoner.map((pos) => (
           <TnSeksjon key={pos.id} tittel={`${pos.pNummer} · ${pos.navn}`}>
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {pos.oppgaver.length === 0 ? (
-                <TnKort><p style={{ margin: 0, color: TN.ink700, fontSize: TN.text.sm }}>Ingen oppgaver under denne posisjonen.</p></TnKort>
+                <TnTomtilstand tittel="Ingen oppgaver" tekst="Ingen oppgaver under denne posisjonen ennå." />
               ) : pos.oppgaver.map((t) => (
                 <TnKort key={t.id}>
                   <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
@@ -260,7 +261,7 @@ export function TnTekniskPlanerVisning({ brukerNavn, kontekst, spillerId, spille
           </p>
         </TnKort>
       ) : planer.length === 0 ? (
-        <TnKort><p style={{ margin: 0, color: TN.ink700 }}>Ingen teknisk plan opprettet for {spillerNavn} ennå.</p></TnKort>
+        <TnTomtilstand tittel="Ingen teknisk plan ennå" tekst={`${spillerNavn} har ingen teknisk plan ennå. Den vises her når den er laget.`} />
       ) : (
         <TnSeksjon tittel="Planer">
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>

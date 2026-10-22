@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useId, type ComponentProps, type CSSProperties, type ReactNode } from "react";
 import { TN } from "@/lib/v2/team-norway";
 import styles from "./tn-kontroller.module.css";
+import bevegelse from "./tn-bevegelse.module.css";
 import type { TnIkonNavn } from "./tn-ikon";
 import teamNorwayLogo from "../../../designsystem/team-norway/assets/logo/team-norway-golf.png";
 import teamNorwayLogoHvit from "../../../designsystem/team-norway/assets/logo/team-norway-golf-knockout-white.png";
@@ -67,6 +68,7 @@ export function TnKort({
 }) {
   return (
     <div
+      className={bevegelse.innkomst}
       style={{
         background: TN.surfaceCard,
         borderRadius: TN.radius.xl,

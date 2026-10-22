@@ -1,0 +1,12 @@
+/* Data Golf-stasjonen i Skrå-drakten. Kortet kommer fra SkraKort. */
+.phn-skra .phn-dg-tekst { margin: 0 0 12px; color: var(--ak-g600); font-size: 15px; line-height: 1.55; }
+.phn-skra .phn-dg-liste { display: grid; gap: 10px; }
+.phn-skra .phn-dg-rad { display: grid; gap: 8px; padding: 14px; border-radius: 14px; background: var(--ak-flate); min-width: 0; }
+.phn-skra .phn-dg-rad > b { color: var(--ak-g900); font-size: 15px; }
+.phn-skra .phn-dg-rad dl { margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 16px; }
+.phn-skra .phn-dg-rad dt { font-size: 11px; letter-spacing: .04em; text-transform: uppercase; color: var(--ak-g600); overflow-wrap: anywhere; }
+.phn-skra .phn-dg-rad dd { margin: 2px 0 0; font-family: var(--font-mono, ui-monospace, monospace); font-size: 15px; font-weight: 600; color: var(--ak-g900); font-variant-numeric: tabular-nums; }
+.phn-skra .phn-dg-kilde { margin: 12px 0; font-size: 12px; color: var(--ak-g600); }
+.phn-skra .phn-dg-start { min-height: 48px; }
+@container (min-width: 700px) { .phn-skra .phn-dg-rad dl { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@container (min-width: 900px) { .phn-skra .phn-dg-liste, .phn-skra .phn-dg-tekst, .phn-skra .phn-dg-kilde, .phn-skra .phn-dg-start { margin-right: 52px; } .phn-skra .phn-dg-tekst, .phn-skra .phn-dg-kilde { margin-bottom: 12px; } }

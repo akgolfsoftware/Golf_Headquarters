@@ -1,0 +1,123 @@
+/*
+ * AgencyOS pakke A5 i Skrå-drakten (bølge 2, 22.10.2026): Grupper (AG-16), én gruppe og undersidene,
+ * Tester (AG-15), testdagen, registrering og AK-stigen.
+ * Skisse: docs/design-system/utkast-skra/komponist/bolge-2.html §3–§5. Toppen, tallene, hovedkortet og
+ * de hvite kortene er felles byggeklosser (src/components/precision/skra/). Her står bare flaten,
+ * knappene i toppen og hvite kort rundt innholdet som fra før lå rett på flaten.
+ */
+
+/* ---------- Oversiktene (Grupper og Tester): topp med fire tall ---------- */
+.agn-hoved:has(.agn-a5-skra) { position: relative; background: var(--ak-flate); }
+.agn-a5-skra { --skra-ut-top: var(--r5); --skra-ut-x: var(--r4); container-type: inline-size; background: var(--ak-flate); gap: 0; padding-bottom: calc(120px + env(safe-area-inset-bottom)); }
+@media (min-width: 900px) {
+  .agn-a5-skra { --skra-ut-top: var(--r4); --skra-ut-x: 40px; padding-bottom: 120px; }
+}
+@media (min-width: 1024px) {
+  .agn-hoved:has(.agn-a5-skra) .agn-pc-topp { position: absolute; top: 0; right: 0; z-index: 5; }
+  .agn-hoved:has(.agn-a5-skra) .agn-pc-topp .agn-ikonknapp { background: rgba(255, 255, 255, .92); box-shadow: var(--ak-skygge-sm); }
+}
+@container (min-width: 900px) {
+  /* Stripe til hurtigknappen på PC: den står 24 px fra høyre kant og er 56 px bred. */
+  .agn-a5-skra .a5-flyt { margin-right: 52px; }
+}
+
+/* Knappene i toppen: hvit hovedknapp mot bildet, sekundær i glass. */
+.agn-a5-skra .a5-topp-knapper { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 8px; }
+.agn-a5-skra .a5-topp-knapper .knapp { min-height: 48px; }
+.agn-a5-skra .a5-topp-knapper .knapp.pri { background: #fff; color: var(--ak-g900); border-color: #fff; }
+.agn-a5-skra .a5-topp-knapper .knapp.sek { background: rgba(255, 255, 255, .12); color: #fff; border-color: rgba(255, 255, 255, .28); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+.agn-a5-skra .a5-topp-knapper .knapp.sek:hover { background: rgba(255, 255, 255, .2); }
+.agn-a5-skra .a5-topp-knapper .knapp:focus-visible { outline-color: #fff; }
+
+.agn-a5-skra .a5-flyt { min-width: 0; }
+.agn-a5-skra .a5-sek-topp { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.agn-a5-skra .a5-sek-topp h2 { margin: 0; font: 600 17px/1.25 var(--sans); letter-spacing: -.01em; }
+
+/* ---------- Grupper ---------- */
+.agn-a5-skra .trinn-kort { background: var(--ak-sunket); border-radius: var(--ak-r-stat); }
+.agn-a5-skra .trinn-kort.tomt { background: transparent; }
+.agn-a5-skra .a5-gruppene { display: grid; gap: var(--r3); min-width: 0; scroll-margin-top: calc(var(--ak-topbar-h, 0px) + 16px); }
+.agn-a5-skra .a5-kortrutenett { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); min-width: 0; }
+.agn-a5-skra .a5-gruppekort {
+  display: grid; gap: 8px; align-content: start; min-width: 0; min-height: 48px; padding: 18px;
+  border-radius: var(--ak-r-skra-kort); background: var(--ak-hvit); box-shadow: var(--ak-skygge-md);
+  color: inherit; text-decoration: none;
+  transition: transform var(--ak-t-base) var(--ak-ut), box-shadow var(--ak-t-base) var(--ak-ut);
+}
+.agn-a5-skra a.a5-gruppekort:active { transform: scale(.99); }
+.agn-a5-skra .a5-gruppekort.ikke-opprettet { background: transparent; box-shadow: none; border: 1px dashed var(--graphite-500); }
+.agn-a5-skra .a5-gk-topp { display: flex; justify-content: space-between; align-items: baseline; gap: var(--r2); min-width: 0; }
+.agn-a5-skra .a5-gk-topp b.n { font: 600 17px/1.25 var(--sans); overflow-wrap: anywhere; min-width: 0; }
+.agn-a5-skra .a5-gk-topp .tall { font: 600 22px/1 var(--mono); }
+@media (hover: hover) and (pointer: fine) { .agn-a5-skra a.a5-gruppekort:hover { transform: translateY(-2px); box-shadow: var(--ak-skygge-lg); } }
+@container (min-width: 600px) { .agn-a5-skra .a5-kortrutenett { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@container (min-width: 900px) { .agn-a5-skra .a5-kortrutenett { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; } }
+
+/* ---------- Tester ---------- */
+.agn-a5-skra .a5-gruppevalg { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.agn-a5-skra .a5-batteri { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); }
+.agn-a5-skra .a5-del { display: grid; gap: 6px; align-content: start; padding: 14px; border-radius: var(--ak-r-stat); background: var(--ak-sunket); min-width: 0; }
+.agn-a5-skra .a5-del h3 { margin: 0; display: flex; align-items: center; gap: 8px; font: 600 15px/1.2 var(--sans); }
+.agn-a5-skra .a5-del h3 i { width: 10px; height: 10px; border-radius: 50%; background: var(--graphite-900); }
+.agn-a5-skra .a5-del.del-golfslag h3 i { background: var(--slag); }
+.agn-a5-skra .a5-del.del-teknikk h3 i { background: var(--tek); }
+.agn-a5-skra .a5-del.del-fysisk h3 i { background: var(--fys); }
+.agn-a5-skra .a5-del ol { margin: 0; padding-left: 20px; display: grid; gap: 2px; font-size: 14px; }
+.agn-a5-skra .a5-del .kilde { font-size: 12.5px; }
+@container (min-width: 900px) { .agn-a5-skra .a5-batteri { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+/* Tabellen og listene fra designløftet ligger nå inni hvite kort: ingen egen ramme. */
+.agn-a5-skra .tst-seksjon { padding: 18px; border-radius: var(--ak-r-skra-kort); background: var(--ak-hvit); box-shadow: var(--ak-skygge-md); min-width: 0; }
+.agn-a5-skra .tst-to { gap: 20px; }
+.agn-a5-skra .tst-to > .tst-seksjon { align-self: start; }
+.agn-a5-skra .a5-faner .faner { border-bottom-color: var(--ak-strek); }
+@container (min-width: 900px) {
+  .agn-a5-skra .tst-seksjon { padding: 22px; }
+  .agn-a5-skra .tst-to { gap: 24px; }
+}
+
+/* ---------- Undersidene: lav topp, innholdet i hvite kort (skissen §5) ---------- */
+.agn-a5-under { padding-bottom: calc(120px + env(safe-area-inset-bottom)); }
+.agn-a5-under :is(.seksjon, .tdg-stasjon, .tdg-slag, .tdg-oppsummering, .a5-hvit),
+.agn-a5-under > .to-del .kort,
+.agn-a5-under > .kort {
+  padding: 18px; border: 0; border-radius: var(--ak-r-skra-kort); background: var(--ak-hvit); box-shadow: var(--ak-skygge-md); min-width: 0;
+}
+/* Kort inni et hvitt kort mister rammen, så det ikke blir kort i kort. */
+.agn-a5-under :is(.seksjon, .tdg-stasjon, .tdg-slag, .tdg-oppsummering, .a5-hvit) .kort { padding: 0; border: 0; background: transparent; box-shadow: none; }
+.agn-a5-under :is(.seksjon, .a5-hvit) .seksjon { padding: 0; box-shadow: none; border-radius: 0; }
+.agn-a5-under .teller { border: 0; border-radius: var(--ak-r-stat); background: var(--ak-hvit); box-shadow: var(--ak-skygge-sm); }
+.agn-a5-under .faner { border-bottom-color: var(--ak-strek); }
+.agn-a5-under .tdg-oppsummering { background: var(--ak-hvit); }
+@media (min-width: 900px) {
+  .agn-a5-under { padding-bottom: 120px; }
+  /* Stripe til hurtigknappen; toppen går fortsatt helt ut. */
+  .agn-a5-under > :not(.agn-topp-lav) { margin-right: 52px; }
+  .agn-a5-under :is(.seksjon, .tdg-stasjon, .tdg-slag, .tdg-oppsummering, .a5-hvit),
+  .agn-a5-under > .to-del .kort,
+  .agn-a5-under > .kort { padding: 22px; }
+  .agn-a5-under .tdg-oppsummering { top: calc(var(--ak-topbar-h, 0px) + 16px); }
+}
+
+/* ---------- Testdagen: deltakerne til venstre, registreringen og Til kontroll til høyre på PC ---------- */
+.agn-a5-under .a5-testdag { display: grid; gap: 20px; min-width: 0; align-items: start; }
+.agn-a5-under .a5-testdag-liste, .agn-a5-under .a5-testdag-side { display: grid; gap: 20px; min-width: 0; align-content: start; }
+.agn-a5-under .a5-testdag .tdg-stasjoner { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+.agn-a5-under .a5-testdag .tdg-linje[aria-current="true"] { border-radius: 10px; background: var(--ak-sunket); }
+.agn-a5-under .a5-velg-hint { display: none; }
+.agn-a5-under .a5-kontroll { display: grid; gap: 10px; }
+/* Mobil: registreringen står over lista når en spiller er valgt. */
+.agn-a5-under .a5-testdag-side { order: -1; }
+.agn-a5-under .a5-testdag-side:not(:has(.tdg-slag)) { order: 0; }
+@container (min-width: 900px) {
+  .agn-a5-under .a5-testdag { grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 24px; }
+  .agn-a5-under .a5-testdag-side { order: 0; position: sticky; top: calc(var(--ak-topbar-h, 0px) + 16px); }
+  .agn-a5-under .a5-velg-hint { display: grid; }
+}
+.agn-a5-under:has(.a5-testdag) { container-type: inline-size; }
+/* Mobil: årsplanens månedskalender trenger hele bredden for 44 px dagknapper. */
+@media (max-width: 599px) { .agn-a5-under .a5-hvit { padding: 10px; } }
+/* Valgt trinn i Gruppa er grafitt (Data Golf-flatens blå chip skal ikke lekke hit). */
+.agn-s.agn-a5-under .chips > a[aria-current="page"] { background: var(--graphite-900); border-color: var(--graphite-900); color: var(--white); }
+/* Kommende samlinger i Gruppa: datoen over tittelen, så tittelen får bredden. */
+.agn-a5-under .mer-rad:has(> .mono.kilde) { grid-template-columns: minmax(0, 1fr) auto; }
+.agn-a5-under .mer-rad > .mono.kilde { grid-column: 1 / -1; }

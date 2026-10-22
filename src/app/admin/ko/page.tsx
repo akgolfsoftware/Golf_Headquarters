@@ -12,7 +12,9 @@
  * mangler du capability, finnes fanen ikke.
  */
 
+import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { innboksHref } from "@/lib/admin/innboks/filter";
 import { canUser } from "@/lib/auth/effective-capabilities";
 import { Capability } from "@/lib/auth/cbac";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
@@ -49,6 +51,9 @@ export default async function KoPage({
 
   const faner = synligeFaner(harCapability);
   const aktiv = velgFane(onsket, faner);
+  // Godkjenninger er Innboks › Godkjenn (bølge 1, skissen §5 «Liste»): samme laster og handlinger.
+  // De andre køene (agent-kø, tester, dubletter, moderering) står her til de får sin egen pakke.
+  if (aktiv === "godkjenninger") redirect(innboksHref("godkjenn"));
 
   // Agent-kø og agent-godkjenning viser de samme PlanAction-sakene og er én fane i AG-02.
   const tilAg02Fane = (id: KoFaneId): keyof AG02Data => (id === "agentgodkjenn" ? "agentko" : id);

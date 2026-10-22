@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { TnSpillerOvrigeTester, TnSpillerTestRad, TnSpillerTilgang } from "@/lib/domain/tn-arbeidsflate";
 import { BATTERI_DELER, PRIORITERTE, TESTBATTERI, batteritestFor, fremdrift, type Batteritest } from "@/lib/portal-tester/testbatteri";
 import { TN } from "@/lib/v2/team-norway";
+import { TrackmanImportModal } from "@/components/shared/trackman-import-modal";
 import { TnPille } from "../core";
 import { TnDataTable } from "../tn-data-table";
 import { TnFlate, TnFlatehode, TnFotnote, TnTekstlenke } from "../tn-flate";
@@ -81,7 +82,7 @@ const ENDRING: Record<NonNullable<Rad["endring"]>, { tekst: string; farge: strin
   lik: { tekst: "Uendret", farge: TN.ink700 },
 };
 
-export function TnSpillerTesterVisning({ brukerNavn, spillerId, tilgang, tnRader, ovrige }: { brukerNavn: string; spillerId: string; tilgang: TnSpillerTilgang; tnRader: TnSpillerTestRad[]; ovrige: TnSpillerOvrigeTester | null }) {
+export function TnSpillerTesterVisning({ brukerNavn, spillerId, tilgang, tnRader, ovrige, kanStarteTest = false }: { brukerNavn: string; spillerId: string; tilgang: TnSpillerTilgang; tnRader: TnSpillerTestRad[]; ovrige: TnSpillerOvrigeTester | null; /** Trener (gruppe-rolle COACH) eller ADMIN: «Start test» fører til testøkta. */ kanStarteTest?: boolean }) {
   const { rader, utenfor } = byggBatterirader(spillerId, tnRader, ovrige);
   const tatt = rader.filter((r) => r.antall > 0).length;
   const prioritertNaadd = PRIORITERTE.filter((p) => (rader.find((r) => r.test.id === p.id)?.antall ?? 0) >= (p.minst ?? 0)).length;
@@ -107,7 +108,12 @@ export function TnSpillerTesterVisning({ brukerNavn, spillerId, tilgang, tnRader
       <TnSkraKort>
         <TnFlate>
           <TnSpillerFaner spillerId={spillerId} spillerNavn={tilgang.spillerNavn} aktiv="tester" kanAdministrere={!tilgang.kontekst.erSpiller} />
-          <p style={{ margin: "8px 0 0" }}><TnTekstlenke href={`/team-norway/spiller/${spillerId}/tester?visning=utvikling`}>Utvikling per protokoll</TnTekstlenke></p>
+          <div style={{ margin: "8px 0 0", display: "flex", flexWrap: "wrap", gap: "4px 20px", alignItems: "center" }}>
+            {kanStarteTest ? <TrackmanImportModal variant="secondary" label="Importer fra TrackMan" onBehalfOfUserId={spillerId} triggerStyle={{ minHeight: 44, display: "inline-flex", alignItems: "center", padding: "0 16px" }} /> : null}
+            {kanStarteTest ? <Link href={`/team-norway/spiller/${spillerId}/testokt`} style={{ display: "inline-flex", alignItems: "center", minHeight: 44, padding: "0 18px", borderRadius: 999, background: TN.navy900, color: TN.white, fontWeight: 700, fontSize: 14, textDecoration: "none" }}>Start test</Link> : null}
+            <TnTekstlenke href={`/team-norway/spiller/${spillerId}/tester?visning=utvikling`}>Utvikling per protokoll</TnTekstlenke>
+            <TnTekstlenke href={`/team-norway/spiller/${spillerId}/tester/trackman`}>TrackMan-statistikk</TnTekstlenke>
+          </div>
         </TnFlate>
 
         {BATTERI_DELER.map((del) => (

@@ -30,13 +30,22 @@
  * uka øverst (bookinger per dag og fordeling på betalingsmåte), og lista som rader med
  * når · kunde · tjeneste · coach · betaling · status på PC. Ny booking beholder de fire
  * stegene (avvik: tegningen viser ett skjema), med oppsummeringen ved siden av på PC.
+ *
+ * Skrå-drakten 22.10 (bølge 1, pakke A3, skissen https://claude.ai/artifact/NCP3fcTH2qNSYJtYVfWwNa §4):
+ * topp med bunkerbilde og fire tall (I dag · Denne uka · Avlyst · Venter på betaling), «Ny booking» som
+ * grafitt knapp i toppen og ingen hovedkort. På PC står lista til venstre og den valgte bookingen til
+ * høyre; på mobil åpner bookingen som egen side. Handlingene (Foreslå ny tid, Avlys) bor fortsatt på
+ * bookingens egen side: knappene i panelet åpner den med riktig dialog, så rust står bare i bekreftelsen.
+ * Avvik: «Avlyst» teller avlyste timer denne uka (mandag–søndag), og «Venter på betaling» alle
+ * bookinger som ikke er avlyst og står «Ikke betalt».
  */
 import Link from "next/link";
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
-import { Avatar, Knapp, Pille, Tom, Topp, Varsel, type PilleTone } from "@/components/admin/agencyos-ny/ny";
+import { SkraFlyt, SkraKort, SkraStat, SkraTopp } from "@/components/precision/skra/Skra";
+import { Avatar, Knapp, KnappLenke, Pille, Tom, Varsel, type PilleTone } from "@/components/admin/agencyos-ny/ny";
 import { BetalingsLenke } from "./BetalingsLenke";
 import { bookIKalender, type BookingValg } from "@/app/admin/kalender/booking-actions";
 import type { AG06Booking, AG06Tjeneste, AG06TjenesteValg } from "@/app/admin/bookinger/data";
@@ -45,6 +54,40 @@ import { opprettTjeneste, oppdaterTjeneste, settTjenesteAktiv, slettTjeneste, ty
 import { TJENESTE_KATEGORIER, kategoriNavn } from "@/lib/booking/tjeneste-kategori";
 import { ROMTYPER, romtypeNavn } from "@/lib/booking/rom-typer";
 import "@/styles/agencyos-ny-kalender.css";
+import "@/styles/agencyos-ny-kalender-skra.css";
+
+const BK_BILDE = "/images/playerhq/slag-bunker.jpg";
+const OSLO_ISO = new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Oslo" });
+const isoFraUtc = (ms: number) => new Date(ms).toISOString().slice(0, 10);
+
+/** ISO-ukenummer for en dag («YYYY-MM-DD»). */
+function isoUke(iso: string): number {
+  const [y, m, d] = iso.split("-").map(Number);
+  const dato = new Date(Date.UTC(y, m - 1, d));
+  const torsdag = new Date(dato.getTime() + (3 - ((dato.getUTCDay() + 6) % 7)) * 86_400_000);
+  const aarStart = Date.UTC(torsdag.getUTCFullYear(), 0, 1);
+  return Math.floor((torsdag.getTime() - aarStart) / 86_400_000 / 7) + 1;
+}
+
+/** Tallene i toppen: i dag og denne uka (mandag–søndag i Oslo), uten avlyste; avlyst denne uka; ikke betalt. */
+export function bookingTall(bookinger: readonly AG06Booking[], naaMs: number) {
+  const idag = OSLO_ISO.format(naaMs);
+  const [y, m, d] = idag.split("-").map(Number);
+  const ukedag = (new Date(Date.UTC(y, m - 1, d)).getUTCDay() + 6) % 7;
+  const mandag = isoFraUtc(Date.UTC(y, m - 1, d - ukedag));
+  const sondag = isoFraUtc(Date.UTC(y, m - 1, d - ukedag + 6));
+  const iUka = (b: AG06Booking) => b.datoIso >= mandag && b.datoIso <= sondag;
+  const aktive = bookinger.filter((b) => b.st !== "Avlyst");
+  return {
+    uke: isoUke(idag),
+    idag: aktive.filter((b) => b.datoIso === idag).length,
+    uka: aktive.filter(iUka).length,
+    avlyst: bookinger.filter((b) => b.st === "Avlyst" && iUka(b)).length,
+    venterBetaling: aktive.filter((b) => b.pay === "Ikke betalt").length,
+  };
+}
+
+const PC = "(min-width: 900px)";
 
 export const STATUS_TONE: Record<AG06Booking["st"], PilleTone> = { Venter: "vent", Bekreftet: "ok", Avlyst: "noy", Gjennomført: "noy", "No-show": "noy" };
 
@@ -89,15 +132,68 @@ export function grupperBookinger(bookinger: readonly AG06Booking[], naaMs: numbe
   return ut;
 }
 
-export function BookingRad({ b }: { b: AG06Booking }) {
-  return <Link href={`/admin/bookinger/${b.id}`} className="bk-rad bk-rad2">
+/** Betalingen slik lista og panelet viser den: måte og beløp. */
+function betalingTekst(b: AG06Booking): { maate: string; belop: string } {
+  return {
+    maate: b.pay === "Betalt" ? "Stripe" : b.pay,
+    belop: b.pay === "Betalt" ? kr(b.priceOre) : b.pay === "Klipp" ? "1 klipp" : b.pay === "Ikke betalt" ? `${kr(b.priceOre)} venter` : "",
+  };
+}
+
+/**
+ * Én booking i lista. Med `onVelg` velger et trykk på PC bookingen i panelet ved siden av,
+ * mens mobil (og ny fane) fortsatt åpner bookingens egen side.
+ */
+export function BookingRad({ b, valgt, onVelg }: { b: AG06Booking; valgt?: boolean; onVelg?: (id: string) => void }) {
+  const bet = betalingTekst(b);
+  return <Link href={`/admin/bookinger/${b.id}`} className={`bk-rad bk-rad2${valgt ? " valgt" : ""}`} aria-current={valgt ? "true" : undefined}
+    onClick={onVelg ? (e) => {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || !window.matchMedia(PC).matches) return;
+      e.preventDefault();
+      onVelg(b.id);
+    } : undefined}>
     <span className="d"><b>{b.dag}</b><span>{b.ukedag}</span></span>
     <span className="bk-hvem"><b className="n">{b.who}</b><span className="kilde">{b.guardian ? `${b.guardian} betaler` : `${b.t}–${b.slutt}`}</span></span>
     <span className="bk-tj">{b.svcNavn}<span className="kilde"> · {b.where}</span></span>
     <span className="bk-coach kilde">{b.coach ?? "—"}</span>
-    <span className="bk-bet"><b>{b.pay === "Betalt" ? "Stripe" : b.pay}</b><span className="kilde">{b.pay === "Betalt" ? kr(b.priceOre) : b.pay === "Klipp" ? "1 klipp" : b.pay === "Ikke betalt" ? `${kr(b.priceOre)} venter` : ""}</span></span>
+    <span className="bk-bet"><b>{bet.maate}</b><span className="kilde">{bet.belop}</span></span>
     <Pille tone={STATUS_TONE[b.st]}>{b.st === "Venter" ? "Venter på deg" : b.st}</Pille>
   </Link>;
+}
+
+/** PC: den valgte bookingen ved siden av lista. Handlingene åpner bookingens egen side med riktig dialog. */
+function BookingPanel({ b }: { b: AG06Booking | null }) {
+  if (!b) return <SkraKort tittel="Valgt booking" className="bk-panel"><p className="forklar">Velg en booking i lista.</p></SkraKort>;
+  const bet = betalingTekst(b);
+  const href = `/admin/bookinger/${b.id}`;
+  const fornavn = b.who.split(" ")[0];
+  const kanFlytte = b.kommende && b.harKonto && !b.forslag;
+  return <SkraKort tittel="Valgt booking" lenke={{ href, tekst: "Åpne" }} className="bk-panel">
+    <div className="bk-panel-hode">
+      <Pille tone={STATUS_TONE[b.st]}>{b.st === "Venter" ? "Venter på deg" : b.st}</Pille>
+      <span className="bk-panel-dato">{b.ukedag} {b.date}</span>
+      <span className="bk-panel-tid">{b.t}<small>–{b.slutt}</small></span>
+      <b className="bk-panel-hvem">{b.who}</b>
+    </div>
+    <ul className="oppsummering">
+      <li><span>Tjeneste</span><b>{b.svcNavn} · {b.min} min</b></li>
+      <li><span>Sted</span><b>{b.where}</b></li>
+      <li><span>Coach</span><b>{b.coach ?? "—"}</b></li>
+      <li><span>Betaling</span><b>{bet.belop ? `${bet.maate} · ${bet.belop}` : bet.maate}</b></li>
+      {b.guardian && <li><span>Kontakt</span><b>{b.guardian}</b></li>}
+      <li><span>Kilde</span><b>{b.src ?? "—"}</b></li>
+      <li><span>Bestilt</span><b>{b.at}</b></li>
+      {b.forslag && <li><span>Ny tid</span><b>{b.forslag} · venter på {fornavn}</b></li>}
+    </ul>
+    {b.note && <p className="forklar bk-panel-notat">{b.note}</p>}
+    <div className="knapper">
+      {b.st === "Venter" && <KnappLenke variant="pri" href={href}>Bekreft eller avvis</KnappLenke>}
+      {kanFlytte && <KnappLenke href={`${href}#ny-tid`}>Foreslå ny tid</KnappLenke>}
+      {b.kommende && <KnappLenke href={`${href}#avlys`}>Avlys</KnappLenke>}
+      {b.st !== "Venter" && !b.kommende && <KnappLenke href={href}>Åpne bookingen</KnappLenke>}
+    </div>
+    {b.kommende && <p className="kildetekst">Avlys åpner en bekreftelse. Når du avlyser, får {fornavn} alltid alt tilbake.</p>}
+  </SkraKort>;
 }
 
 function UkeOversikt({ bookinger, naaMs }: { bookinger: readonly AG06Booking[]; naaMs: number }) {
@@ -162,10 +258,13 @@ export function AG06Booking({ navn, bookinger, valg, tjenester, tjenesteValg, fa
     { id: "avlyst", navn: "Avlyst" },
   ];
   const rader = grupper[gruppe];
+  const [valgtId, setValgtId] = useState<string | null>(null);
+  const valgt = rader.find((b) => b.id === valgtId) ?? rader[0] ?? null;
+  const tall = useMemo(() => bookingTall(bookinger, naa), [bookinger, naa]);
 
   let body: React.ReactNode;
   if (fane === "bookinger") {
-    body = <>
+    const liste = <>
       <UkeOversikt bookinger={bookinger} naaMs={naa} />
       <div className="bk-filter" role="search" aria-label="Søk og filter">
         <label className="felt"><span className="etikett">Søk</span><input type="search" value={filter.sok} onChange={(e) => settF("sok", e.target.value)} placeholder="Navn, e-post eller telefon" autoComplete="off" /></label>
@@ -188,14 +287,17 @@ export function AG06Booking({ navn, bookinger, valg, tjenester, tjenesteValg, fa
           ? <Tom tittel="Ingen treff" tekst="Ingen bookinger i denne gruppen passer søket og filtrene." handling={<Knapp variant="sek" onClick={() => setFilter(TOMT_FILTER)}>Nullstill filter</Knapp>} />
           : <Tom tittel="Ingen bookinger her" tekst="Bookinger fra spillere, flexkunder og deg selv kommer hit." handling={<Knapp onClick={() => setFane("ny")}>Ny booking</Knapp>} />
         : <div className="bk-liste">
-          <div className="bk-hode bare-pc" aria-hidden><span>Når</span><span>Kunde</span><span>Tjeneste</span><span>Coach</span><span>Betaling</span><span>Status</span></div>
-          {rader.map((b) => <BookingRad key={b.id} b={b} />)}
+          {rader.map((b) => <BookingRad key={b.id} b={b} valgt={b.id === valgt?.id} onVelg={setValgtId} />)}
         </div>}
     </>;
+    body = <div className="bk-skra-delt">
+      <SkraKort className="bk-skra-liste" etikett="Bookinger">{liste}</SkraKort>
+      <div className="bk-skra-side">{rader.length > 0 && <BookingPanel b={valgt} />}</div>
+    </div>;
   } else if (fane === "ny") {
-    body = <NyBooking valg={valg} onOpprettet={() => { setMelding("Booket og bekreftet. Spilleren har fått beskjed."); setFane("bookinger"); setGruppe("kommende"); }} />;
+    body = <SkraKort etikett="Ny booking"><NyBooking valg={valg} onOpprettet={() => { setMelding("Booket og bekreftet. Spilleren har fått beskjed."); setFane("bookinger"); setGruppe("kommende"); }} /></SkraKort>;
   } else {
-    body = <TjenestePanel tjenester={tjenester} valg={tjenesteValg} />;
+    body = <SkraKort etikett="Tjenester og pris"><TjenestePanel tjenester={tjenester} valg={tjenesteValg} /></SkraKort>;
   }
 
   const FANER = [
@@ -206,15 +308,29 @@ export function AG06Booking({ navn, bookinger, valg, tjenester, tjenesteValg, fa
 
   return (
     <AgencyOSSkall navn={navn}>
-      <div className="agn-s">
-        <Topp dato="Drift · Booking" tittel="Booking"
+      <div className="agn-s agn-bk-skra">
+        <SkraTopp
+          etikett="Booking"
+          bilde={BK_BILDE}
+          bildePosisjon="50% 50%"
+          overlinje={`Drift · uke ${tall.uke}`}
+          tittel="Booking"
           ingress="Betalte bookinger bekreftes automatisk når tiden er ledig. Du bekrefter eller avviser bare bookinger uten betaling."
-          handlinger={fane !== "ny" ? <Knapp onClick={() => { setFane("ny"); setMelding(null); }}>Ny booking</Knapp> : undefined} />
-        <div className="valg" role="group" aria-label="Booking">
-          {FANER.map((f) => <button key={f.verdi} type="button" aria-pressed={fane === f.verdi} onClick={() => { setFane(f.verdi); setMelding(null); }}>{f.navn}</button>)}
-        </div>
-        {melding && <Varsel tone="ok">{melding}</Varsel>}
-        {body}
+          handling={fane !== "ny" ? <div className="knapper bk-skra-knapper"><Knapp onClick={() => { setFane("ny"); setMelding(null); }}>Ny booking</Knapp></div> : undefined}
+          tall={<>
+            <SkraStat verdi={tall.idag} etikett="I dag" />
+            <SkraStat verdi={tall.uka} etikett="Denne uka" />
+            <SkraStat verdi={tall.avlyst} etikett="Avlyst" ariaLabel={`Avlyst denne uka: ${tall.avlyst}`} />
+            <SkraStat verdi={tall.venterBetaling} etikett="Venter på betaling" />
+          </>}
+        />
+        <SkraFlyt className="bk-skra-flyt">
+          <div className="valg" role="group" aria-label="Booking">
+            {FANER.map((f) => <button key={f.verdi} type="button" aria-pressed={fane === f.verdi} onClick={() => { setFane(f.verdi); setMelding(null); }}>{f.navn}</button>)}
+          </div>
+          {melding && <Varsel tone="ok">{melding}</Varsel>}
+          {body}
+        </SkraFlyt>
       </div>
     </AgencyOSSkall>
   );

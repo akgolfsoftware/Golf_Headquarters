@@ -2,6 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
+import { SkraKort, SkraTom } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny.css";
+import "@/styles/playerhq-ny-samlinger.css";
 import { svarPaSamlingsinvitasjon, type hentMineSamlingsinvitasjoner } from "@/lib/workbench/samlingsinvitasjon-actions";
 
 type Invitasjon = Awaited<ReturnType<typeof hentMineSamlingsinvitasjoner>>[number];
@@ -28,12 +31,11 @@ export function SamlingsinvitasjonListe({ invitasjoner }: { invitasjoner: Invita
     });
   }
 
-  if (!invitasjoner.length) return <section style={panel}>
-    <h2 style={h2}>Ingen ubesvarte invitasjoner</h2>
-    <p style={p}>Nye samlingsprogrammer fra gruppene dine vises her.</p>
-  </section>;
+  if (!invitasjoner.length) return <SkraKort tittel="Ingen ubesvarte invitasjoner">
+    <SkraTom>Nye samlingsprogrammer fra gruppene dine vises her.</SkraTom>
+  </SkraKort>;
 
-  return <div style={{ display: "grid", gap: 16 }}>
+  return <div className="phn-sam-liste">
     {invitasjoner.map(({ id, program, konflikter }) => {
       const startAt = klokkeslett(program.samling.fra);
       const sluttAt = klokkeslett(program.samling.til);
@@ -41,52 +43,41 @@ export function SamlingsinvitasjonListe({ invitasjoner }: { invitasjoner: Invita
       const tilDato = datoKort(program.samling.til.slice(0, 10));
       const collisions = new Map<string, string[]>();
       for (const conflict of konflikter) collisions.set(conflict.sourceSessionId, [...(collisions.get(conflict.sourceSessionId) ?? []), conflict.tittel]);
-      return <article key={id} aria-busy={venter && valgt === id} style={panel}>
-        <header style={{ display: "grid", gap: 8 }}>
-          <p style={{ margin: 0, color: "var(--text-secondary)", font: "var(--type-label-s)" }}>
-            {program.samling.kind === "HELDAGSSAMLING" ? "HELDAGSSAMLING" : "SAMLING"} · {fraDato}{fraDato !== tilDato ? ` – ${tilDato}` : ""}
-          </p>
-          <h2 style={h2}>{program.samling.tittel}</h2>
-          <p style={p}>{startAt}–{sluttAt}{program.samling.sted ? ` · ${program.samling.sted}` : ""}</p>
-          {program.samling.beskrivelse ? <p style={{ ...p, marginTop: 0 }}>{program.samling.beskrivelse}</p> : null}
-          <p style={{ margin: 0, color: "var(--text-secondary)", font: "var(--type-body-s)" }}>{program.okter.length} planlagte økter</p>
-        </header>
+      const meta = `${program.samling.kind === "HELDAGSSAMLING" ? "Heldagssamling" : "Samling"} · ${fraDato}${fraDato !== tilDato ? ` – ${tilDato}` : ""}`;
+      return <SkraKort key={id} tittel={program.samling.tittel} meta={meta}>
+        <div className="phn-sam" aria-busy={venter && valgt === id}>
+          <p className="phn-sam-tekst">{startAt}–{sluttAt}{program.samling.sted ? ` · ${program.samling.sted}` : ""}</p>
+          {program.samling.beskrivelse ? <p className="phn-sam-tekst">{program.samling.beskrivelse}</p> : null}
+          <p className="phn-sam-liten">{program.okter.length} planlagte økter</p>
 
-        <div style={{ display: "grid", gap: 10, marginTop: 4 }}>
-          {program.okter.map(session => {
-            const treff = collisions.get(session.sourceSessionId) ?? [];
-            return <section key={session.sourceSessionId} style={oktKort}>
-              <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: 8 }}>
-                <strong style={{ color: "var(--text-primary)", font: "var(--type-heading-s)" }}>{session.title}</strong>
-                <span style={{ color: "var(--text-secondary)", font: "var(--type-label-s)", fontVariantNumeric: "tabular-nums" }}>{datoKort(session.date)} · {tid(session.startMinute)} · {session.durationMinutes} min</span>
-              </div>
-              <p style={{ ...p, margin: "5px 0 0" }}>{[session.maalsetning, session.location, session.skillArea, session.pressureLevel, session.pPosisjoner.join(", "), session.pyramid].filter(Boolean).join(" · ") || "Treningsøkt"}</p>
-              {session.drills.length ? <ul style={{ margin: "8px 0 0", paddingLeft: 20, color: "var(--text-secondary)", font: "var(--type-body-s)" }}>
-                {session.drills.map(drill => <li key={drill.id}>{drill.title}{drill.description ? ` — ${drill.description}` : ""}</li>)}
-              </ul> : null}
-              {treff.length ? <p role="status" style={warning}>Kollisjon med: {treff.join(", ")}</p> : null}
-            </section>;
-          })}
+          <div className="phn-sam-okter">
+            {program.okter.map(session => {
+              const treff = collisions.get(session.sourceSessionId) ?? [];
+              return <section key={session.sourceSessionId} className="phn-sam-okt">
+                <div className="phn-sam-okt-topp">
+                  <strong>{session.title}</strong>
+                  <span>{datoKort(session.date)} · {tid(session.startMinute)} · {session.durationMinutes} min</span>
+                </div>
+                <p className="phn-sam-tekst">{[session.maalsetning, session.location, session.skillArea, session.pressureLevel, session.pPosisjoner.join(", "), session.pyramid].filter(Boolean).join(" · ") || "Treningsøkt"}</p>
+                {session.drills.length ? <ul>
+                  {session.drills.map(drill => <li key={drill.id}>{drill.title}{drill.description ? ` — ${drill.description}` : ""}</li>)}
+                </ul> : null}
+                {treff.length ? <p role="status" className="phn-sam-kollisjon">Kollisjon med: {treff.join(", ")}</p> : null}
+              </section>;
+            })}
+          </div>
+          <p className="phn-sam-liten">
+            {collisions.size
+              ? "Se markerte kollisjoner før du svarer."
+              : "Ingen kalenderkollisjoner funnet."}
+          </p>
+          <div className="phn-sam-knapper">
+            <button type="button" disabled={venter} onClick={() => svar(id, "ACCEPTED")} className="phn-sam-pri">{venter && valgt === id ? "Lagrer …" : "Godta og legg i Workbench"}</button>
+            <button type="button" disabled={venter} onClick={() => svar(id, "REJECTED")} className="phn-sam-sek">Jeg deltar ikke</button>
+          </div>
         </div>
-        <p style={{ margin: 0, color: "var(--text-secondary)", font: "var(--type-body-s)" }}>
-          {collisions.size
-            ? "Se markerte kollisjoner før du svarer."
-            : "Ingen kalenderkollisjoner funnet."}
-        </p>
-        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", paddingTop: 4 }}>
-          <button type="button" disabled={venter} onClick={() => svar(id, "ACCEPTED")} style={primaryButton}>{venter && valgt === id ? "Lagrer …" : "Godta og legg i Workbench"}</button>
-          <button type="button" disabled={venter} onClick={() => svar(id, "REJECTED")} style={secondaryButton}>Jeg deltar ikke</button>
-        </div>
-      </article>;
+      </SkraKort>;
     })}
-    {melding ? <p role="status" style={{ ...p, fontWeight: 600 }}>{melding}</p> : null}
+    {melding ? <p role="status" className="phn-sam-melding">{melding}</p> : null}
   </div>;
 }
-
-const panel: React.CSSProperties = { display: "grid", gap: 14, padding: 20, border: "1px solid var(--border-default)", borderRadius: 12, background: "var(--surface-card)" };
-const oktKort: React.CSSProperties = { display: "grid", gap: 4, padding: 14, border: "1px solid var(--border-hairline)", borderRadius: 8, background: "var(--surface-subtle, var(--surface-card))", minWidth: 0 };
-const h2: React.CSSProperties = { margin: 0, color: "var(--text-primary)", font: "var(--type-heading-m)" };
-const p: React.CSSProperties = { margin: 0, color: "var(--text-secondary)", font: "var(--type-body-m)", lineHeight: 1.55, overflowWrap: "anywhere" };
-const warning: React.CSSProperties = { margin: "8px 0 0", padding: "8px 10px", borderInlineStart: "3px solid var(--border-default)", color: "var(--text-primary)", font: "var(--type-body-s)", background: "var(--surface-card)" };
-const primaryButton: React.CSSProperties = { minHeight: 44, padding: "0 16px", border: 0, borderRadius: 8, background: "#141413", color: "#fff", font: "var(--type-label-m)", cursor: "pointer" };
-const secondaryButton: React.CSSProperties = { minHeight: 44, padding: "0 16px", border: "1px solid var(--border-default)", borderRadius: 8, background: "transparent", color: "var(--text-primary)", font: "var(--type-label-m)", cursor: "pointer" };

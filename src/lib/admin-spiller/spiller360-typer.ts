@@ -33,6 +33,12 @@ export type S360Hode = {
   turneringOmDager: number | null;
   /** Aktiv i en WANG- eller Team Norway-gruppe: bare da finnes IUP-fanen (beslutninger 04.10). */
   iup: boolean;
+  /** Snitt av SG total på delte runder siste 30 dager. null uten runder med SG. */
+  sg30: { verdi: number | null; runder: number };
+  /** Neste planlagte økt fra nå (Workbench). */
+  nesteOkt: { tittel: string; dato: string; klokke: string; minutter: number; omDager: number } | null;
+  /** Aktiv treningsplan med sluttdato. */
+  planSlutt: { navn: string; dato: string; omDager: number } | null;
 };
 
 export type S360RailSpiller = { id: string; navn: string; sub: string };

@@ -9,13 +9,14 @@
  * UTC-midnatt (@db.Date).
  */
 import { UTENFOR_PLAN_TERSKEL } from "@/lib/agencyos/cockpit-tillegg-regler";
-import { TN_AKSE_NAVN, type TnAksenavn } from "./tn-aksefordeling";
+import { erForfaltEtterlevelseOkt, etterlevelse } from "./etterlevelse";
+import { TN_AKSE_NAVN, tnEtterlevelseOkt, type TnAksenavn } from "./tn-aksefordeling";
 
 export { UTENFOR_PLAN_TERSKEL };
 
 const DAG_MS = 86_400_000;
 
-export type TnTreningsokt = { dato: Date; minutter: number; status: string; pyramid: string };
+export type TnTreningsokt = { dato: Date; startMinutt: number; minutter: number; status: string; pyramid: string };
 export type TnUkeTall = { planlagtMin: number; gjortMin: number; pct: number | null };
 export type TnSpillerTrening = {
   /** Uka før forrige og forrige uke. */
@@ -26,7 +27,10 @@ export type TnSpillerTrening = {
   mestAkse: TnAksenavn | null;
   /** Under terskelen begge ukene. */
   underPlan: boolean;
-  /** De fire siste hele ukene: gjennomførte minutter per akse og totalt. */
+  /**
+   * Siste fire uker (28 dager til nå), regnet som i PlayerHQ (`etterlevelse.ts`): bare økter som har
+   * passert planlagt slutt. Gjennomførte minutter per akse, planlagt og gjennomført totalt.
+   */
   fireUker: { akseMin: Record<TnAksenavn, number>; planlagtMin: number; gjortMin: number };
 };
 
@@ -61,12 +65,14 @@ function ukeTall(okter: readonly TnTreningsokt[]): TnUkeTall {
 const tomAkser = (): Record<TnAksenavn, number> => ({ FYS: 0, TEK: 0, SLAG: 0, SPILL: 0, TURN: 0 });
 const somAkse = (p: string): TnAksenavn | null => TN_AKSE_NAVN.find((a) => a === p) ?? null;
 
-/** Vurderer én spiller. `mandag` er inneværende ukes mandag (tnDenneMandag). */
-export function vurderTnTrening(okter: readonly TnTreningsokt[], mandag: number): TnSpillerTrening {
+/**
+ * Vurderer én spiller. `mandag` er inneværende ukes mandag (tnDenneMandag). Ukene (Trenger deg)
+ * er de to siste hele ukene; `fireUker` er PlayerHQs fire uker: 28 dager til `naa`, bare forfalte økter.
+ */
+export function vurderTnTrening(okter: readonly TnTreningsokt[], mandag: number, naa: Date): TnSpillerTrening {
   const i = (o: TnTreningsokt, fra: number, til: number) => o.dato.getTime() >= mandag - fra * DAG_MS && o.dato.getTime() < mandag - til * DAG_MS;
   const ukeFor = okter.filter((o) => i(o, 14, 7));
   const forrige = okter.filter((o) => i(o, 7, 0));
-  const fire = okter.filter((o) => i(o, 28, 0));
   const uker: [TnUkeTall, TnUkeTall] = [ukeTall(ukeFor), ukeTall(forrige)];
 
   const toUkerAkse = tomAkser();
@@ -77,18 +83,19 @@ export function vurderTnTrening(okter: readonly TnTreningsokt[], mandag: number)
   const mest = TN_AKSE_NAVN.reduce<TnAksenavn | null>((best, a) => (toUkerAkse[a] > 0 && (best === null || toUkerAkse[a] > toUkerAkse[best]) ? a : best), null);
 
   const akseMin = tomAkser();
-  for (const o of fire) {
+  const fire = okter.filter((o) => o.status !== "DRAFT").map((o) => ({ o, e: tnEtterlevelseOkt(o) }));
+  for (const { o, e } of fire) {
     const a = somAkse(o.pyramid);
-    if (a && o.status === "COMPLETED" && o.minutter > 0) akseMin[a] += o.minutter;
+    if (a && o.status === "COMPLETED" && erForfaltEtterlevelseOkt(e, naa)) akseMin[a] += o.minutter;
   }
-  const fireTall = ukeTall(fire);
+  const fireTall = etterlevelse(fire.map((f) => f.e), naa);
 
   return {
     uker,
     toUker: ukeTall([...ukeFor, ...forrige]),
     mestAkse: mest,
     underPlan: uker[0].pct !== null && uker[1].pct !== null && uker[0].pct < UTENFOR_PLAN_TERSKEL && uker[1].pct < UTENFOR_PLAN_TERSKEL,
-    fireUker: { akseMin, planlagtMin: fireTall.planlagtMin, gjortMin: fireTall.gjortMin },
+    fireUker: { akseMin, planlagtMin: fireTall.planlagtMinutter, gjortMin: fireTall.gjennomfortMinutter },
   };
 }
 

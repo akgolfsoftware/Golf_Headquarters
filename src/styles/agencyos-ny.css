@@ -337,9 +337,9 @@ a.agn-neste:active { transform: scale(.97); }
   .agn .pa-side { padding: var(--r4) 40px 96px; }
 }
 
-/* Skrå-topp: lav topp med bilde på alle AgencyOS-sider som bruker Topp. Toppen går ut til kantene, siden under ligger over kanten. */
-.agn-topp-lav { --skra-ut-top: var(--r5); --skra-ut-x: var(--r4); margin-bottom: -16px; }
-.agn-topp-lav + * { position: relative; z-index: 1; margin-top: -8px; }
+/* Skrå-topp: lav topp med bilde på alle AgencyOS-sider som bruker Topp. Toppen går ut til kantene.
+   Siden under starter under den skrå kanten og dekker aldri bildet (Anders 22.10). */
+.agn-topp-lav { --skra-ut-top: var(--r5); --skra-ut-x: var(--r4); margin-bottom: 16px; }
 .agn-s:has(> .agn-topp-lav) { background: var(--ak-flate); }
 .agn-topp-lav .agn-topp-handl { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 .agn-topp-lav .ag-tilbake { color: #fff; }

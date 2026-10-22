@@ -12,6 +12,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { Topp } from "@/components/admin/agencyos-ny/ny";
 import { AG07SpillerNy } from "@/components/admin/precision/AG07SpillerNy";
+import "@/styles/agencyos-ny-spiller360.css";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Ny spiller · AgencyOS" };
@@ -24,7 +25,7 @@ export default async function SpillerNyPage() {
       <div className="agn-s">
         <Topp tilbake={{ href: "/admin/spillere", tekst: "Stall" }} dato="Stall · ny spiller" tittel="Ny spiller"
           ingress="Fire steg. Spilleren får invitasjon på e-post hvis du sender den nå." />
-        <AG07SpillerNy />
+        <div className="a2-under"><AG07SpillerNy /></div>
       </div>
     </AgencyOSSkall>
   );

@@ -2,28 +2,32 @@ import "server-only";
 
 import type { Prisma, UserRole } from "@/generated/prisma/client";
 import { aktivtSpillerMedlemskapWhere, aktivtAkGruppeMedlemskapWhere } from "@/lib/domain/grupper";
-import { tnFormat, tnScore, tnSameScore, tnRowError, type TnResult } from "@/lib/portal-tester/tn-scoring";
-import { TnResultSchema } from "@/lib/portal-tester/tn-scoring";
+import { tnFormat, tnRowError, type TnResult } from "@/lib/portal-tester/tn-scoring";
 import { TnSessionSchema } from "@/lib/portal-tester/tn-session";
 import { hentTnOversiktForBruker } from "@/lib/domain/tn-tilgang";
 import { erTnGruppeSlug, TN_DEMO_SLUG, WANG_DEMO_SLUG } from "@/lib/domain/demo-grupper";
 import { prisma } from "@/lib/prisma";
 import { medNavngittProfil, lesNavngitteProfiler } from "@/lib/deling/profil-lesing";
-import { TN_CATALOG, TN_POENG_VERSION, tnVersion, tnProtocol, type TnProtocol } from "@/lib/portal-tester/tn-catalog";
+import { TN_CATALOG, TN_POENG_VERSION, tnVersion, tnProtocol } from "@/lib/portal-tester/tn-catalog";
 import { tnFromDefinitionId, tnDefinitionId } from "@/lib/portal-tester/tn-integration";
+import { byggTestvisning, type Testvisning } from "@/lib/portal-tester/tn-testvisning";
 import { hentWangTestresultatSkolerForTeamNorway } from "@/lib/portal-tester/wang-resultat-tilgang";
 import { resolveTilgang, type TilgangsNivaa, type TilgangsKilde } from "@/lib/feature-flags";
 import { loadTesterScreen, type AxisGroup, type PlannedTest } from "@/lib/portal-tester/tester-data";
 import { parseProtocol, type ScorekortForsok } from "@/lib/portal-tester/protocol";
 import { parseForScoring, lavereErBedre, ScoringDetailsSchema } from "@/lib/portal-tester/test-scoring";
 import { testTilgangWhere } from "@/lib/portal-tester/test-tilgang";
+import { tnValiderRader, type TnRaRad } from "./tn-test-validering";
 import { aggregerRangliste } from "./tn-rangliste";
+import { osloAar, turneringerIAar } from "./brutto-snitt";
 import { lesTurneringsresultat } from "./turneringsresultat";
 import { hentSpillerprofil } from "@/lib/profil-kobling/data";
 import { tilTurneringer } from "@/lib/profil-kobling/til-turneringer";
 import { lesLeverteIupForProfil } from "@/lib/iup/trener-profil-lesing";
-import { summerAksefordeling } from "./tn-aksefordeling";
+import { summerAksefordeling, TN_SYNLIG_OKT_WHERE } from "./tn-aksefordeling";
 import { tnDenneMandag, vurderTnTrening, type TnSpillerTrening } from "./tn-trenger-deg";
+import { REFERANSE_VINDU_DAGER, referanseMedian, sistePerSpiller } from "./tn-referanse-tester-regler";
+import { TESTBATTERI, type Batteritest } from "@/lib/portal-tester/testbatteri";
 
 /**
  * Datalag for TN-00–TN-21.
@@ -247,10 +251,11 @@ async function lesTnTurneringer(tx: Prisma.TransactionClient, spillerId: string)
 
 /**
  * Starter, snittplassering og brutto snitt per spiller fra de offentlige
- * resultatene (public_player_entries/rounds, kanonisk kilde). Med `aar` telles
- * bare turneringer som startet det året (Oslo).
+ * resultatene (public_player_entries/rounds, kanonisk kilde). Bare turneringer
+ * som startet i `aar` (Oslo), som standard inneværende år: brutto snitt betyr
+ * det samme i Rangliste, Uttak, College og IUP (brutto-snitt.ts).
  */
-export async function hentTnRangliste(bruker: TnBruker, aar?: number) {
+export async function hentTnRangliste(bruker: TnBruker, aar: number = osloAar(new Date())) {
   return lesTnProfiler(bruker, async (tx, spillerId) => {
     const data = await lesTnRanglisteRad(tx, spillerId, aar);
     return data.rader[0] ?? null;
@@ -260,7 +265,7 @@ export async function hentTnRangliste(bruker: TnBruker, aar?: number) {
 async function lesTnRanglisteRad(
   tx: Prisma.TransactionClient,
   spillerId: string,
-  aar: number | undefined,
+  aar: number,
 ) {
   const rader = await lesTnSpillerRader(tx, spillerId);
   const spillerside = { rader };
@@ -268,18 +273,11 @@ async function lesTnRanglisteRad(
   // tilgangskontrollert av lesTnProfiler, og profilen inneholder aldri Data Golf.
   const medTall = await Promise.all(spillerside.rader.map(async (spiller) => {
     const profil = await hentSpillerprofil(spiller.id, {}, tx);
-    const resultater = tilTurneringer(profil?.turneringer ?? [])
-      .filter((t) => !aar || osloAar(t.start) === aar)
-      .map((t) => t.resultat);
+    const resultater = turneringerIAar(tilTurneringer(profil?.turneringer ?? []), aar).map((t) => t.resultat);
     const tall = aggregerRangliste(resultater);
     return { ...spiller, ...tall, bruttoScore: tall.bruttoSnitt, koblet: profil != null };
   }));
   return { rader: medTall };
-}
-
-const osloAarFormat = new Intl.DateTimeFormat("en-GB", { year: "numeric", timeZone: "Europe/Oslo" });
-function osloAar(dato: Date) {
-  return Number(osloAarFormat.format(dato));
 }
 
 /**
@@ -679,14 +677,14 @@ export async function hentTnSpillerTilgang(bruker: TnBruker, spillerId: string):
  * Spillerens trening per akse siste 28 dager (pyramiden i IUP-en). Leses bare
  * innenfor delingslåsen, som de andre personlige dataene.
  */
-export async function hentTnSpillerAksefordeling(bruker: TnBruker, spillerId: string) {
-  const fra = new Date(Date.now() - 28 * 864e5);
+export async function hentTnSpillerAksefordeling(bruker: TnBruker, spillerId: string, naa = new Date()) {
+  const fra = new Date(naa.getTime() - 29 * 864e5); // en dags margin: `date` er midnatt, regelen filtrerer på starttid
   return medTnSpillerData(bruker, spillerId, async (tx, tilgang) => {
     const okter = await tx.workbenchSession.findMany({
-      where: { playerId: tilgang.spillerId, date: { gte: fra, lte: new Date() } },
-      select: { pyramid: true, durationMinutes: true, status: true },
+      where: { playerId: tilgang.spillerId, date: { gte: fra, lte: naa }, ...TN_SYNLIG_OKT_WHERE },
+      select: { pyramid: true, durationMinutes: true, status: true, date: true, startMinute: true },
     });
-    return summerAksefordeling(okter);
+    return summerAksefordeling(okter.map((o) => ({ pyramid: o.pyramid, durationMinutes: o.durationMinutes, status: o.status, dato: o.date, startMinutt: o.startMinute })), naa);
   });
 }
 
@@ -701,13 +699,14 @@ export type TnGruppetreningRad = { spillerId: string; navn: string; klubb: strin
 export async function hentTnGruppetrening(bruker: TnBruker, naa = new Date()) {
   const mandag = tnDenneMandag(naa);
   const fra = new Date(mandag - 28 * 864e5);
-  const til = new Date(mandag);
+  // Til og med i dag: de fire ukene er 28 dager til nå (PlayerHQs regel); økter som ikke er forfalt, telles ikke.
+  const til = new Date(Date.UTC(naa.getUTCFullYear(), naa.getUTCMonth(), naa.getUTCDate()));
   return lesTnProfiler(bruker, async (tx, spillerId): Promise<TnGruppetreningRad | null> => {
     const [spiller, okter] = await Promise.all([
       tx.user.findFirst({ where: { id: spillerId, deletedAt: null }, select: { name: true, homeClub: true } }),
       tx.workbenchSession.findMany({
-        where: { playerId: spillerId, date: { gte: fra, lt: til } },
-        select: { date: true, durationMinutes: true, status: true, pyramid: true },
+        where: { playerId: spillerId, date: { gte: fra, lte: til }, ...TN_SYNLIG_OKT_WHERE },
+        select: { date: true, startMinute: true, durationMinutes: true, status: true, pyramid: true },
       }),
     ]);
     if (!spiller) return null;
@@ -715,7 +714,7 @@ export async function hentTnGruppetrening(bruker: TnBruker, naa = new Date()) {
       spillerId,
       navn: spiller.name,
       klubb: spiller.homeClub,
-      trening: vurderTnTrening(okter.map((o) => ({ dato: o.date, minutter: o.durationMinutes, status: o.status, pyramid: o.pyramid })), mandag),
+      trening: vurderTnTrening(okter.map((o) => ({ dato: o.date, startMinutt: o.startMinute, minutter: o.durationMinutes, status: o.status, pyramid: o.pyramid })), mandag, naa),
     };
   });
 }
@@ -766,74 +765,6 @@ export async function hentTnSpillerLisens(bruker: TnBruker, spillerId: string): 
       return { status: "feil" };
     }
   });
-}
-
-/**
- * Primær bedre-retning slik `tnScore` selv velger primærmetrikken — ALDRI
- * blindt `metrics[0]`. For 8-ball-protokoller er `metrics[0]` "Gjennomsnittlig
- * PEI" (lavere er bedre), men den faktiske primærscoren (`TnResult.score`,
- * altså tallet som faktisk sammenlignes/rangeres) er "Totalt antall poeng"
- * (HØYERE er bedre) — se `tnScore` i tn-scoring.ts. Returnerer `null` når
- * retningen ikke kan fastslås trygt (i stedet for å anta `true`).
- */
-function tnPrimaerRetning(protokoll: TnProtocol, metrics: TnResult["metrics"]): boolean | null {
-  if (protokoll.points8Ball) {
-    const poeng = metrics.find((m) => m.label === "Totalt antall poeng");
-    return poeng ? poeng.lowerIsBetter : null;
-  }
-  return metrics[0] ? metrics[0].lowerIsBetter : null;
-}
-
-type TnRaRad = { id: string; takenAt: Date; score: number; details: unknown };
-
-/**
- * Validerer HVER sammenlignet rad — ikke bare den nyeste — og reberegner
- * resultatet KANONISK fra de rå forsøksverdiene (`tnScore`) i stedet for å
- * stole på det som ble lagret (score, enhet OG retning kan i prinsippet
- * være feil/manipulert/fra en senere endret formel). En rad tas kun med
- * når (a) JSON-en parser som et gyldig `TnResult`, (b) er skrevet for
- * NØYAKTIG denne protokollen (`protocolId`) og den lagrede protokollversjonen,
- * (c) protokollen for radens EGET `count` faktisk finnes og har riktig
- * antall forsøksrader (variable-count-protokoller uten riktig antall er
- * ikke sammenlignbare), (d) `tnScore` kan beregnes fra de rå verdiene uten
- * feil, og (e) det reberegnede tallet OG enheten samsvarer med det som
- * faktisk står i `score`-kolonnen. Alt annet telles som "utelatt" og
- * forklares i UI — det skjuler ALDRI hele testen bare fordi én rad
- * (f.eks. den nyeste) er uforenlig.
- */
-function tnValiderRader<T extends TnRaRad>(rader: T[], protokoll: TnProtocol): { gyldige: (T & { parsed: TnResult; retning: boolean })[]; utelatt: number } {
-  const gyldige: (T & { parsed: TnResult; retning: boolean })[] = [];
-  let utelatt = 0;
-  for (const r of rader) {
-    const parsed = TnResultSchema.safeParse(r.details);
-    if (!parsed.success || parsed.data.protocolId !== protokoll.id || parsed.data.version !== tnVersion(protokoll)) {
-      utelatt += 1;
-      continue;
-    }
-    const forventetProtokoll = protokoll.variableCount ? tnProtocol(protokoll.id, parsed.data.count, parsed.data.version) : protokoll;
-    if (!forventetProtokoll || forventetProtokoll.rows.length !== parsed.data.count) {
-      utelatt += 1;
-      continue;
-    }
-    let kanonisk: TnResult;
-    try {
-      kanonisk = tnScore(forventetProtokoll, parsed.data.values);
-    } catch {
-      utelatt += 1;
-      continue;
-    }
-    if (!tnSameScore(kanonisk.score, r.score) || kanonisk.unit !== parsed.data.unit) {
-      utelatt += 1;
-      continue;
-    }
-    const retning = tnPrimaerRetning(forventetProtokoll, kanonisk.metrics);
-    if (retning === null) {
-      utelatt += 1;
-      continue;
-    }
-    gyldige.push({ ...r, parsed: parsed.data, retning });
-  }
-  return { gyldige, utelatt };
 }
 
 export type TnSpillerTestRad = {
@@ -942,6 +873,8 @@ export type TnSpillerTestDetalj = {
   historikk: TnSpillerTestResultRad[];
   antallUtelatt: number;
   sisteForsok: { label: string; verdi: string }[];
+  /** Siste gjennomføring som slag: spredningsplott, port og sone eller avstandsbånd (utkast 3, 22.10). */
+  visning: Testvisning;
 };
 
 /**
@@ -966,7 +899,7 @@ export async function hentTnSpillerTestDetalj(bruker: TnBruker, spillerId: strin
     if (gyldige.length === 0) {
       return {
         tilgang, testId, protokollNavn: protokollBase.name, lowerIsBetter: null,
-        besteScore: null, besteFormatert: null, historikk: [], antallUtelatt: utelatt, sisteForsok: [],
+        besteScore: null, besteFormatert: null, historikk: [], antallUtelatt: utelatt, sisteForsok: [], visning: { type: "annet" },
       };
     }
     const retning = gyldige[0].retning;
@@ -1004,10 +937,24 @@ export async function hentTnSpillerTestDetalj(bruker: TnBruker, spillerId: strin
           return { label: `Forsøk ${i + 1} · ${row.label}`, verdi: tekst };
         })
       : [];
+    // TrackMan-tallene for slagene treneren koblet (test_shot_trackman_links, via testøkta til siste resultat).
+    const sisteOkt = await tx.testSession.findFirst({ where: { testResultId: gyldige[0].id, userId: spillerId }, select: { id: true } });
+    const lenker = sisteOkt ? await tx.testShotTrackManLink.findMany({ where: { testSessionId: sisteOkt.id }, select: { forsokIndeks: true, trackManShotId: true, passerIkke: true } }) : [];
+    const tmSlag = lenker.length
+      ? await tx.trackManShot.findMany({
+          where: { id: { in: lenker.map((l) => l.trackManShotId) }, session: { userId: spillerId } },
+          select: { id: true, club: true, clubSpeed: true, ballSpeed: true, smashFactor: true, faceToPath: true, clubPath: true, attackAngle: true, spinRate: true },
+        })
+      : [];
+    const tmPerForsok = new Map(lenker.flatMap((l) => {
+      const t = tmSlag.find((x) => x.id === l.trackManShotId);
+      return t ? [[l.forsokIndeks, { tm: { ...t, club: t.club?.trim() ? t.club : null }, passerIkke: l.passerIkke }] as const] : [];
+    }));
+    const visning = protokoll ? byggTestvisning(protokoll, sisteGyldig.values, tmPerForsok) : { type: "annet" as const };
     return {
       tilgang, testId, protokollNavn: protokollBase.name, lowerIsBetter: retning,
       besteScore: beste, besteFormatert: tnFormat({ value: beste, unit: gyldige[0].parsed.unit }),
-      historikk, antallUtelatt: utelatt, sisteForsok,
+      historikk, antallUtelatt: utelatt, sisteForsok, visning,
     };
   });
 }
@@ -1164,6 +1111,77 @@ export async function hentTnGruppeanalyseResultat(bruker: TnBruker, params: { pr
   }
 
   return null;
+}
+
+export type TnReferanseTestCelle = { testId: string; formatert: string; dato: Date; antall: number };
+export type TnReferanseTesterData = {
+  kontekst: TnArbeidskontekst;
+  /** Median og antall per test for hele gruppa. `antall` er spillere med gyldig resultat siste 12 måneder. */
+  tester: { test: Batteritest; median: string | null; antall: number }[];
+  /** Bare spillere som har delt med treneren, med siste gyldige resultat per test (alle år). */
+  spillere: { spillerId: string; navn: string; celler: Record<string, TnReferanseTestCelle> }[];
+  /** Aktive spillere i gruppa; differansen mot `spillere` er de som ikke har delt. */
+  iGruppa: number;
+};
+
+/** Gyldige TN-resultater for testene i batteriet, med protokollen hver rad hører til. */
+function tnBatteriProtokoller(test: Batteritest) {
+  return test.protokoller.flatMap((id) => {
+    const p = tnProtocol(id);
+    return p && !p.blocked ? [{ protokoll: p, testId: tnDefinitionId(p) }] : [];
+  });
+}
+
+function tnGyldigeForTest<T extends TnRaRad & { testId: string }>(rader: T[], test: Batteritest) {
+  return tnBatteriProtokoller(test).flatMap(({ protokoll, testId }) => tnValiderRader(rader.filter((r) => r.testId === testId), protokoll).gyldige);
+}
+
+/**
+ * Referanse › Tester (Anders 22.10.2026): «Komplett testoversikt med navn for alle som har delt. Spillere som
+ * ikke har delt teller bare i median og antall, uten navn.» Medianen regnes av alle aktive spillere i
+ * Team Norway-gruppa (siste gyldige resultat siste 12 måneder, «—» under fem) og forlater denne funksjonen
+ * bare som tall. Spillerradene leses per spiller innenfor den navngitte delingen (lesNavngitteProfiler).
+ * WANG-elever er ikke med; de står under WANG-tester.
+ */
+export async function hentTnReferanseTester(bruker: TnBruker, naa = new Date()): Promise<TnReferanseTesterData | null> {
+  const kontekst = await hentTnArbeidskontekst(bruker);
+  if (!kontekst || kontekst.erSpiller || !erTnGruppeanalyseLeser(kontekst, bruker)) return null;
+  const testIder = TESTBATTERI.flatMap((t) => tnBatteriProtokoller(t).map((p) => p.testId));
+  const medlemmer = await prisma.groupMember.findMany({
+    where: { groupId: kontekst.gruppe.id, ...aktivtSpillerMedlemskapWhere(), user: { deletedAt: null, anonymisertAt: null } },
+    select: { userId: true },
+  });
+  const ider = [...new Set(medlemmer.map((m) => m.userId))];
+  const fra = new Date(naa.getTime() - REFERANSE_VINDU_DAGER * 864e5);
+  const gruppeRader = ider.length && testIder.length
+    ? await prisma.testResult.findMany({
+        where: { userId: { in: ider }, testId: { in: testIder }, takenAt: { gte: fra } },
+        select: { id: true, userId: true, testId: true, takenAt: true, score: true, details: true },
+      })
+    : [];
+  const tester = TESTBATTERI.map((test) => {
+    const siste = sistePerSpiller(tnGyldigeForTest(gruppeRader, test));
+    const median = referanseMedian(siste);
+    return { test, antall: siste.length, median: median ? tnFormat({ value: median.score, unit: median.parsed.unit }) : null };
+  });
+
+  const spillere = await lesNavngitteProfiler(bruker.id, kontekst.gruppe.id, async (tx, spillerId) => {
+    const spiller = await tx.user.findUnique({ where: { id: spillerId }, select: { name: true } });
+    if (!spiller) return null;
+    const rader = await tx.testResult.findMany({
+      where: { userId: spillerId, testId: { in: testIder } },
+      select: { id: true, userId: true, testId: true, takenAt: true, score: true, details: true },
+    });
+    const celler: Record<string, TnReferanseTestCelle> = {};
+    for (const test of TESTBATTERI) {
+      const gyldige = tnGyldigeForTest(rader, test);
+      const siste = sistePerSpiller(gyldige)[0];
+      if (siste) celler[test.id] = { testId: siste.testId, formatert: tnFormat({ value: siste.score, unit: siste.parsed.unit }), dato: siste.takenAt, antall: gyldige.length };
+    }
+    return { spillerId, navn: spiller.name ?? "Ukjent", celler };
+  });
+
+  return { kontekst, tester, spillere: spillere.sort((a, b) => a.navn.localeCompare(b.navn, "nb")), iGruppa: ider.length };
 }
 
 /**
@@ -1332,13 +1350,13 @@ export async function hentTnSpillerTrening(bruker: TnBruker, spillerId: string, 
   const mandag = tnDenneMandag(naa);
   return medTnSpillerData(bruker, spillerId, async (tx, tilgang) => {
     const okter = await tx.workbenchSession.findMany({
-      where: { playerId: tilgang.spillerId, date: { gte: new Date(mandag - 28 * 864e5), lt: new Date(mandag + 14 * 864e5) } },
+      where: { playerId: tilgang.spillerId, date: { gte: new Date(mandag - 28 * 864e5), lt: new Date(mandag + 14 * 864e5) }, ...TN_SYNLIG_OKT_WHERE },
       orderBy: [{ date: "asc" }, { startMinute: "asc" }],
       select: { id: true, date: true, startMinute: true, durationMinutes: true, title: true, pyramid: true, status: true },
     });
     const somOkt = (o: (typeof okter)[number]): TnSpillerOkt => ({ id: o.id, dato: o.date, startMinutt: o.startMinute, minutter: o.durationMinutes, tittel: o.title, akse: o.pyramid, status: o.status });
     return {
-      trening: vurderTnTrening(okter.filter((o) => o.date.getTime() < mandag).map((o) => ({ dato: o.date, minutter: o.durationMinutes, status: o.status, pyramid: o.pyramid })), mandag),
+      trening: vurderTnTrening(okter.map((o) => ({ dato: o.date, startMinutt: o.startMinute, minutter: o.durationMinutes, status: o.status, pyramid: o.pyramid })), mandag, naa),
       kommende: okter.filter((o) => o.date.getTime() >= mandag && o.status !== "DRAFT" && o.status !== "CANCELLED").map(somOkt),
       sistGjort: okter.filter((o) => o.status === "COMPLETED").reverse().slice(0, 5).map(somOkt),
     };
@@ -1406,7 +1424,7 @@ export async function hentTnSpillerProfil(bruker: TnBruker, spillerId: string, a
     const grunn = { navn: spiller.name ?? tilgang.spillerNavn, erTnMedlem: spiller.groupMemberships.length > 0, fodselsdato: spiller.dateOfBirth, klubb: spiller.homeClub, skole: spiller.school, hcp: spiller.hcp };
     const profil = await hentSpillerprofil(tilgang.spillerId, {}, tx);
     if (!profil) return { ...grunn, turneringer: null, aaret: null };
-    const iAaret = tilTurneringer(profil.turneringer).filter((t) => osloAar(t.start) === aar);
+    const iAaret = turneringerIAar(tilTurneringer(profil.turneringer), aar);
     const turneringer = iAaret.map((t) => {
       const tall = aggregerRangliste([t.resultat]);
       const resultat = lesTurneringsresultat(t.resultat);

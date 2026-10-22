@@ -25,10 +25,13 @@ export const hode: S360Hode = {
   snitt: { siste10: 75.8, forrige10: 77.4, antall: 14, kurve: [78, 77, 76, 79, 75, 76, 74, 75, 74, 74] },
   turneringOmDager: 4,
   iup: false,
+  sg30: { verdi: -0.4, runder: 3 },
+  nesteOkt: { tittel: "Innspill 50–100 m med TrackMan", dato: "30.09.2026", klokke: "16:30", minutter: 75, omDager: 1 },
+  planSlutt: { navn: "Høstblokk junior", dato: "05.10.2026", omDager: 6 },
 };
 /** WANG-spiller: IUP-fanen og IUP-samtale vises. */
 export const hodeWang: S360Hode = { ...hode, id: "u2", navn: "Sara Hauge", tilhorighet: "WANG · TEAM NORWAY", grupper: ["WANG Toppidrett"], iup: true, kreverDeg: hode.kreverDeg.slice(0, 1) };
-export const hodeTom: S360Hode = { ...hode, kategori: null, hcp: "—", etterlevelse: { pct: null, kilde: "WORKBENCH · 4 UKER · 29.09.2026" }, avtale: null, nesteTurnering: null, sisteBooking: null, kreverDeg: [], snitt: { siste10: null, forrige10: null, antall: 0, kurve: [] }, turneringOmDager: null };
+export const hodeTom: S360Hode = { ...hode, kategori: null, hcp: "—", etterlevelse: { pct: null, kilde: "WORKBENCH · 4 UKER · 29.09.2026" }, avtale: null, nesteTurnering: null, sisteBooking: null, kreverDeg: [], snitt: { siste10: null, forrige10: null, antall: 0, kurve: [] }, turneringOmDager: null, sg30: { verdi: null, runder: 0 }, nesteOkt: null, planSlutt: null };
 
 export const rail: S360RailSpiller[] = [
   { id: "u1", navn: "Eira Solvang", sub: "HCP 6,1 · Konkurransegruppe junior" },

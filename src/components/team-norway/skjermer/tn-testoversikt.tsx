@@ -3,7 +3,7 @@ import Link from "next/link";
 import { BATTERI_DELER, type Batteritest } from "@/lib/portal-tester/testbatteri";
 import { TN } from "@/lib/v2/team-norway";
 import { TnPille } from "../core";
-import { TnFlate, TnFlatehode, TnFotnote } from "../tn-flate";
+import { TnFlate, TnFlatehode, TnFotnote, TnMangler } from "../tn-flate";
 
 /**
  * T1 Testoversikt øverst på Fellestesting (Anders 20.10.2026: én inngang, ingen ny rute). Canvaset
@@ -36,6 +36,7 @@ export function TnTestoversikt({ rader, skoler, spillere }: { rader: TnTestovers
           <span key={k} style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><i aria-hidden="true" style={{ width: 12, height: 12, borderRadius: 3, background: RUTE[k].bak, boxShadow: `inset 0 0 0 1px ${TN.ink200}` }} />{k === "alle" ? "Alle på skolen har resultat" : k === "noen" ? "Noen" : "Ingen"}</span>
         ))}
       </div>
+      {spillere === 0 ? <TnMangler>Ingen spillere i gruppen ennå. Testoversikten fylles når spillerne er lagt inn og har tatt tester.</TnMangler> : null}
       {BATTERI_DELER.map((del) => (
         <section key={del} aria-label={del} style={{ display: "grid" }}>
           <h3 style={{ margin: "12px 0 4px", fontSize: 13, fontWeight: 700, color: TN.ink700 }}>{del}{del === "Fysisk" ? " · hver sjette uke i grunnperioden" : ""}</h3>

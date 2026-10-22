@@ -21,6 +21,9 @@ import { GfgkBootstrapButton, NyGruppeButton } from "./grupper-actions";
 import { GFGK_BOOTSTRAP_GRUPPER } from "@/lib/gfgk-junior/bootstrap";
 import { AK_STIGEN_TRINN, VED_SIDEN_AV_STIGEN } from "@/lib/agencyos/ak-stigen-data";
 import { lastEtterlevelsePerGruppe } from "@/lib/admin/analyse/gruppe-analyse";
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
+import { gruppeInnsynWhere } from "@/lib/workbench/group-scope";
+import type { AG16Helt } from "@/components/admin/precision/AG16Grupper";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Grupper · AgencyOS" };
@@ -81,7 +84,9 @@ export default async function V2GrupperPage() {
   const naaUkedag = osloUkedag(now);
   const naaMin = minutter(osloTid(now));
 
-  const grupper: GruppeV2[] = groups.map((g) => {
+  type ForsteSamling = { minTil: number; gruppe: string; dag: string; tid: string; tittel: string; sted: string | null; id: string };
+
+  const medNeste = groups.map((g): { gruppe: GruppeV2; neste: ForsteSamling | null } => {
     // Faste treningstider — sortert etter ukedag, deretter klokkeslett.
     const faste: (FastTid & { _ukedag: number; _min: number })[] = g.schedules
       .map((s) => {
@@ -116,17 +121,59 @@ export default async function V2GrupperPage() {
       : null;
 
     return {
-      id: g.id,
-      navn: g.name,
-      antallMedlemmer: g._count.members,
-      nesteOkt,
-      coachNavn: g.coach?.name ?? null,
-      etterlevelsePct: etterlevelse[g.id] ?? null,
-      faste: faste.map(({ _ukedag, _min, ...rest }) => rest),
+      neste: neste ? { minTil: minTilNeste, gruppe: g.name, dag: neste.dag, tid: neste.tid, tittel: neste.tittel, sted: neste.sted, id: g.id } : null,
+      gruppe: {
+        id: g.id,
+        navn: g.name,
+        antallMedlemmer: g._count.members,
+        nesteOkt,
+        coachNavn: g.coach?.name ?? null,
+        etterlevelsePct: etterlevelse[g.id] ?? null,
+        faste: faste.map(({ _ukedag, _min, ...rest }) => rest),
+      },
     };
   });
+  const grupper: GruppeV2[] = medNeste.map((m) => m.gruppe);
+  // Neste samling på tvers av gruppene (til tallet og hovedkortet i toppen).
+  const forst = medNeste.reduce<ForsteSamling | null>((best, m) => (m.neste && (!best || m.neste.minTil < best.minTil) ? m.neste : best), null);
 
   const data: GrupperData = { grupper };
+
+  // Spillere i grupper (ulike) og spillere coachen når som ikke står i noen aktiv gruppe.
+  const iGrupper = new Set(groups.flatMap((g) => g.members.map((m) => m.userId))).size;
+  const [utenGruppe, testdag] = await Promise.all([
+    prisma.user.count({ where: { AND: [coachScopedPlayerWhere(user), { role: "PLAYER", deletedAt: null }, { groupMemberships: { none: { endedAt: null } } }] } }),
+    prisma.testDayEvent.findFirst({
+      where: { scheduledAt: { gte: now }, status: { in: ["PLANNED", "ACTIVE"] }, organizer: gruppeInnsynWhere(user) },
+      orderBy: { scheduledAt: "asc" },
+      select: { id: true, title: true, location: true, scheduledAt: true, organizer: { select: { name: true } } },
+    }),
+  ]);
+
+  const samling = forst;
+  const samlingStart = samling ? new Date(now.getTime() + samling.minTil * 60_000) : null;
+  const OSLO_DAG = new Intl.DateTimeFormat("nb-NO", { weekday: "short", day: "2-digit", month: "2-digit", timeZone: "Europe/Oslo" });
+  let helt: AG16Helt | null = null;
+  if (testdag && (!samlingStart || testdag.scheduledAt <= samlingStart)) {
+    helt = {
+      overlinje: `Testdag · ${OSLO_DAG.format(testdag.scheduledAt)}`,
+      tid: osloTid(testdag.scheduledAt),
+      tittel: testdag.organizer.name,
+      meta: [testdag.title, testdag.location].filter(Boolean).join(" · "),
+      href: `/admin/tester/testdag/${testdag.id}`,
+      lenkeTekst: "Åpne testdagen",
+    };
+  } else if (samling && samlingStart) {
+    helt = {
+      overlinje: `Neste samling · ${OSLO_DAG.format(samlingStart)}`,
+      tid: samling.tid.split("–")[0],
+      tidEtter: samling.tid.includes("–") ? `til ${samling.tid.split("–")[1]}` : undefined,
+      tittel: samling.gruppe,
+      meta: [samling.tittel, samling.sted].filter(Boolean).join(" · "),
+      href: `/admin/grupper/${samling.id}`,
+      lenkeTekst: "Åpne gruppa",
+    };
+  }
 
   // gfgkjunior.no-bootstrap: vis engangsknappen til alle fire gruppene finnes.
   const gfgkNavn = new Set(GFGK_BOOTSTRAP_GRUPPER.map((g) => g.navn));
@@ -140,6 +187,8 @@ export default async function V2GrupperPage() {
         data={data}
         nyGruppeKnapp={<NyGruppeButton coaches={coaches} />}
         gfgkBootstrapKnapp={manglerGfgk ? <GfgkBootstrapButton /> : null}
+        tall={{ iGrupper, utenGruppe, nesteSamling: samling ? `${samling.dag} ${samling.tid.split("–")[0]}` : null }}
+        helt={helt}
         stigen={{ trinn: AK_STIGEN_TRINN.map((t) => ({ navn: t.navn, gruppeNavn: t.gruppeNavn })), vedSiden: VED_SIDEN_AV_STIGEN }}
       />
     </AgencyOSSkall>

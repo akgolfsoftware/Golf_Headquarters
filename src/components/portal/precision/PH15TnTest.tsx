@@ -29,14 +29,14 @@ import { tnReadRaw, type TnRaw } from "@/lib/portal-tester/tn-draft";
 import { useTnDraft, type TnInitial } from "@/lib/portal-tester/use-tn-draft";
 import { tnDefinitionId } from "@/lib/portal-tester/tn-integration";
 import { GATE_POENG_VALG } from "@/lib/portal-tester/tn-catalog";
-import type { TnSaveInput } from "@/lib/portal-tester/tn-session";
+import type { TnSaveInput, TnSaveResult } from "@/lib/portal-tester/tn-session";
 import { GenerellInn, GenerellListe, GenerellTopp, erGenerell } from "./PH15TnGenerell";
 import { saveTnTest } from "@/app/portal/tren/tester/team-norway/actions";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-stats.css";
 import "@/styles/playerhq-ny-statsdybde.css";
 import "@/styles/playerhq-ny-tester.css";
-import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import { LiveInnhold, LiveTittelrad } from "@/components/portal/live/LiveTittelrad";
 import "@/styles/playerhq-ny-idag.css";
 import "@/styles/playerhq-ny-lister-skra.css";
 import "@/styles/playerhq-ny-pakke11-skra.css";
@@ -61,6 +61,26 @@ type Props = {
   kontekst?: string;
   /** Innhold under testen, f.eks. øvelsesforslag etter et lagret resultat. */
   etter?: React.ReactNode;
+  /**
+   * Trenerens testøkt i Team Norway (utkast 3, 22.10): egen lagring for spilleren, egen tilbakelenke og egne
+   * knapper når testen er lukket. Uten disse er skjermen spillerens egen, som før. Bilde per slag vises ikke for trener.
+   */
+  trener?: {
+    lagre: (input: TnSaveInput) => Promise<TnSaveResult>;
+    tilbake: { href: string; tekst: string };
+    etterLukket: React.ReactNode;
+    /** Verktøy under testen, f.eks. TrackMan-koblingen. `fyll` skriver felt inn i utkastet per slag (0-basert). */
+    verktoy?: (ctx: TnTrenerVerktoy) => React.ReactNode;
+  };
+};
+
+export type TnTrenerVerktoy = {
+  sessionId: string;
+  /** 0 = ikke lagret på serveren ennå. */
+  revision: number;
+  raw: TnRaw;
+  laast: boolean;
+  fyll: (rader: Record<number, Record<string, string>>) => void;
 };
 
 /** Gate-testene med poeng (Nærspill, Wedge, VISA): Bom 0 · Gjennom porten 1 · I sonen 4 (beslutninger.md §TESTBATTERIET, punkt 6). */
@@ -83,7 +103,9 @@ const tall = (v: number, d = 1) => (Math.round(v * 10 ** d) / 10 ** d).toLocaleS
 
 export function PH15TnTest(props: Props) {
   const { protocol: p, initial, savedResult, localSessionId, testDayParticipantId } = props;
-  const save = useCallback((input: TnSaveInput) => saveTnTest({ ...input, ...(testDayParticipantId ? { testDayParticipantId } : {}) }), [testDayParticipantId]);
+  const trenerLagre = props.trener?.lagre;
+  const save = useCallback((input: TnSaveInput) => trenerLagre ? trenerLagre(input) : saveTnTest({ ...input, ...(testDayParticipantId ? { testDayParticipantId } : {}) }), [testDayParticipantId, trenerLagre]);
+  const tilbake = props.trener?.tilbake ?? { href: "/portal/tren/tester", tekst: "Tester" };
   const draft = useTnDraft(p, initial, save, localSessionId);
   const router = useRouter();
   const type = ph15TnType(p) ?? "gate";
@@ -114,7 +136,7 @@ export function PH15TnTest(props: Props) {
   async function avbryt() {
     avbrytRef.current?.close();
     await draft.flush("abort");
-    router.push("/portal/tren/tester");
+    router.push(tilbake.href);
   }
   function lastNed() {
     const blob = new Blob([JSON.stringify({ test: p.id, version: tnVersion(p), raw: draft.raw, notes: draft.notes }, null, 2)], { type: "application/json" });
@@ -122,20 +144,27 @@ export function PH15TnTest(props: Props) {
     a.href = url; a.download = `testutkast-${p.id}.json`; a.click(); URL.revokeObjectURL(url);
   }
 
+  function fyll(rader: Record<number, Record<string, string>>) {
+    const next: TnRaw = { ...draft.raw };
+    for (const [i, felt] of Object.entries(rader)) next[String(Number(i) + 1)] = { ...(next[String(Number(i) + 1)] ?? {}), ...felt };
+    draft.edit(next, draft.notes);
+  }
+
   const igjen = p.rows.length - antallFerdige;
   const foto = Math.min(n, p.rows.length - 1);
 
   return (
     <div className="phn phn-skra">
-      <SkraTopp
-        lav
+      <LiveTittelrad
         etikett="Test"
-        bilde="/images/playerhq/stats-topp.jpg" bildePosisjon="50% 50%"
         overlinje={props.kontekst ?? `Stats · Tester · ${akse.o}`}
         tittel={p.name}
-        handling={<span className="skra-tilbake"><TmTilbake href="/portal/tren/tester" tekst="Tester" /></span>}
+        handling={<>
+          <TmTilbake href={tilbake.href} tekst={tilbake.tekst} />
+          {!closed && <button type="button" className="phn-knapp sek" disabled={laast} onClick={() => avbrytRef.current?.showModal()} aria-haspopup="dialog">Avslutt</button>}
+        </>}
       />
-      <SkraFlyt lav>
+      <LiveInnhold>
       {p.blocked && <p className="phn-sd-varsel" role="note">{p.blocked} Slagene kan lagres som utkast.</p>}
       {draft.error && (
         <div className="phn-sd-varsel" role="alert">
@@ -143,7 +172,7 @@ export function PH15TnTest(props: Props) {
           {draft.blocked ? (
             <div className="phn-knapper">
               <button type="button" className="phn-knapp sek" onClick={lastNed}>Last ned registreringene</button>
-              <a className="phn-knapp sek" href={`?session=${draft.sessionId}`}>Åpne lagret versjon</a>
+              {!props.trener && <a className="phn-knapp sek" href={`?session=${draft.sessionId}`}>Åpne lagret versjon</a>}
             </div>
           ) : <div className="phn-knapper"><button type="button" className="phn-knapp sek" onClick={() => void draft.flush()}>Prøv lagring igjen</button></div>}
         </div>
@@ -190,7 +219,8 @@ export function PH15TnTest(props: Props) {
               <button type="button" className="phn-knapp sek" disabled={laast} onClick={() => avbrytRef.current?.showModal()} aria-haspopup="dialog">Avbryt testen</button>
             </>
           )}
-          {closed && (
+          {closed && props.trener && <div className="phn-knapper">{props.trener.etterLukket}</div>}
+          {closed && !props.trener && (
             <div className="phn-knapper">
               {draft.status === "COMPLETED" && <Link className="phn-knapp pri" href={`/portal/tren/tester/${tnDefinitionId(p)}?lagret=1`}>Se testen</Link>}
               <Link className="phn-knapp sek" href="/portal/tren/tester">Alle tester</Link>
@@ -199,7 +229,9 @@ export function PH15TnTest(props: Props) {
         </div>
       </div>
 
-      {!closed && <Foto sessionId={draft.sessionId} forsok={foto} klar={draft.ready && draft.revision >= 1} revisjon={draft.revision} />}
+      {!closed && props.trener?.verktoy?.({ sessionId: draft.sessionId, revision: draft.revision, raw: draft.raw, laast, fyll })}
+
+      {!closed && !props.trener && <Foto sessionId={draft.sessionId} forsok={foto} klar={draft.ready && draft.revision >= 1} revisjon={draft.revision} />}
 
       <details className="phn-kort dempet">
         <summary className="phn-etikett" style={{ cursor: "pointer", minHeight: 44, display: "flex", alignItems: "center" }}>Kilde og registreringsregler</summary>
@@ -222,7 +254,7 @@ export function PH15TnTest(props: Props) {
           </div>
         </div>
       </dialog>
-      </SkraFlyt>
+      </LiveInnhold>
     </div>
   );
 }

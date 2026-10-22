@@ -46,14 +46,14 @@ const oversikt: TesterOversiktSide = {
   grupper: [{ id: "g1", navn: "GFGK Junior Utvikling", antall: 8 }, { id: "g2", navn: "WANG Toppidrett", antall: 11 }],
   gruppeId: "g1",
   spillerValg: navnListe.map((navn, i) => ({ id: `p${i}`, navn })),
-  nesteTestdag: { dato: "29.10", ukedag: "torsdag", sted: "Mulligan", tittel: "Testdag", gruppe: "GFGK Junior Utvikling", deltakere: 8, dagerTil: 9 },
+  nesteTestdag: { dato: "29.10", ukedag: "torsdag", sted: "Mulligan", tittel: "Testdag", gruppe: "GFGK Junior Utvikling", deltakere: 8, dagerTil: 9, klokke: "16:00", eventId: "e1" },
 };
 const oversiktTom: TesterOversiktSide = { ...byggTesterOversikt([], [], now), grupper: [], gruppeId: null, spillerValg: [], nesteTestdag: null };
 
 const Vis = (d: AdminTesterV2Data = data, o: TesterOversiktSide | null = oversikt) => (
   <AdminRolleProvider erAdmin>
     <AgencyOSSkall navn="Test Coach">
-      <AG15Tester data={d} oversikt={o} />
+      <AG15Tester data={d} oversikt={o} maanedAntall={o?.nesteTestdag ? 14 : null} tildeltAntall={o?.nesteTestdag ? 6 : 0} />
     </AgencyOSSkall>
   </AdminRolleProvider>
 );
