@@ -4,7 +4,8 @@
  * mønster som bookinger/serier) — slett-knappen vises kun til eieren
  * eller ADMIN, håndhevet både i UI og i selve slettHendelse-actionen.
  *
- * Server component.
+ * Server component. Skrå-drakten 22.10 (bølge 1, pakke A3, skissen §5 «Detalj»): lav topp med
+ * banebildet fra Kalender, og notatet og slett-knappen i et hvitt kort.
  */
 
 import { notFound } from "next/navigation";
@@ -12,6 +13,8 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { Topp } from "@/components/admin/agencyos-ny/ny";
+import { SkraKort } from "@/components/precision/skra/Skra";
+import "@/styles/agencyos-ny-kalender-skra.css";
 
 import { SlettKnapp } from "./slett-knapp";
 
@@ -41,11 +44,13 @@ export default async function HendelseDetaljPage({ params }: { params: Promise<{
 
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
-      <div className="agn-s">
+      <div className="agn-s agn-kal-under">
         <Topp tilbake={{ href: "/admin/kalender", tekst: "Kalender" }} dato="Hendelse · blokkert tid" tittel={hendelse.title}
-          ingress={`${fmt(hendelse.startAt)} – ${fmt(hendelse.endAt)}`} />
-        {hendelse.notes && <p className="forklar smal">{hendelse.notes}</p>}
-        {kanSlette && <div className="knapper"><SlettKnapp id={hendelse.id} /></div>}
+          ingress={`${fmt(hendelse.startAt)} – ${fmt(hendelse.endAt)}`} bilde="/images/playerhq/green-25m.jpg" />
+        <SkraKort className="kal-under-kort" tittel="Hendelsen">
+          <p className="forklar">{hendelse.notes || "Ingen notat."}</p>
+          {kanSlette && <div className="knapper"><SlettKnapp id={hendelse.id} /></div>}
+        </SkraKort>
       </div>
     </AgencyOSSkall>
   );

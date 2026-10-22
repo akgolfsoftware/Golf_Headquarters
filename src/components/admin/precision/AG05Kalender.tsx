@@ -28,12 +28,23 @@
  * gjennomførte økter er lyse, tester har ramme, og på PC åpner en time seg som et kort
  * ved siden av timen med betalingsmåte, «Foreslå ny tid» og «Avlys» (begge på bookingen).
  * Mobil beholder arket nedenfra. Forslag til nye gruppeøkter står i Innboks, ikke her.
+ *
+ * Skrå-drakten 22.10 (bølge 1, pakke A3, skissen https://claude.ai/artifact/NCP3fcTH2qNSYJtYVfWwNa §3):
+ * AG05KalenderSide gir toppen med banebilde og fire tall, hovedkortet med neste økt i aksefargen,
+ * og visningene i ett hvitt kort over hele bredden. På mobil står Dag som liste per coach.
+ * Avvik:
+ *   - «Ledige plasser» og «Forslag til gruppeøkt» finnes ikke i dataene og står som «—».
+ *   - «Spillere i dag» telles på navnet i enkeltøktene og bookingene pluss antallet i gruppeøktene.
+ *     En spiller som både har enkeltøkt og gruppeøkt samme dag, telles to ganger.
+ *   - «Start live» finnes bare for bookinger (Øktarket starter live-økta). Workbench- og gruppeøkter
+ *     har bare «Åpne økt».
  */
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { Nedtrekk } from "@/components/precision/Nedtrekk";
+import { SkraFlyt, SkraHelt, SkraKort, SkraStat, SkraTopp } from "@/components/precision/skra/Skra";
 import { Knapp, KnappLenke, Nokkelverdier, Tom, Varsel } from "@/components/admin/agencyos-ny/ny";
 import {
   ALLE_LAG,
@@ -43,6 +54,7 @@ import {
   filtrerCoach,
   iCoachKolonne,
   synlige,
+  type KalenderAkse,
   type KalenderHendelse,
   type KalenderLag,
 } from "@/lib/domain/kalender-lag";
@@ -50,6 +62,128 @@ import type { KalenderLagUkeData } from "@/app/admin/kalender/lag/data";
 import type { KalenderAarData } from "@/app/admin/kalender/aar-data";
 import { flyttOktFraKalender, varsleOktFlyttet } from "@/app/admin/kalender/flytt-okt-actions";
 import "@/styles/agencyos-ny-kalender.css";
+import "@/styles/agencyos-ny-kalender-skra.css";
+
+const KAL_BILDE = "/images/playerhq/green-25m.jpg";
+/** Mørk aksefarge for hovedkortet (hvit tekst må leses). Ukjent akse: grafitt. Samme som Cockpit. */
+const HELT_FARGE: Record<KalenderAkse, string> = { fys: "var(--fys-ink)", tek: "var(--tek-ink)", slag: "var(--slag)", spill: "var(--spill-ink)", turn: "var(--turn)" };
+
+/** Tallene i toppen. `null` = finnes ikke i dataene, vises som «—». */
+export type AG05Tall = { okterIdag: number | null; spillereIdag: number | null; ledigePlasser: number | null; forslagGruppeokt: number | null };
+
+/** Hovedkortet: økta som pågår, ellers neste økt i dag for den som ser. */
+export type AG05Neste = {
+  pagar: boolean;
+  start: string;
+  slutt: string | null;
+  hvem: string;
+  meta: string;
+  akse: KalenderAkse | null;
+  liveHref: string | null;
+  aapneHref: string | null;
+};
+
+/** Bare økter med klokkeslett som binder en coach: bookinger og Workbench-/gruppeøkter, aldri maskert tid. */
+const erCoachetOkt = (e: KalenderHendelse) => !e.heldag && !e.opptatt && e.startMin != null && (e.lag === "BOOKING" || e.lag === "OEKTER");
+
+/** Tallene for dagen: økter og spillere (navn i enkeltøkter og bookinger, antall i gruppeøkter). */
+export function kalenderTallIdag(hendelser: readonly KalenderHendelse[], idagIso: string): Pick<AG05Tall, "okterIdag" | "spillereIdag"> {
+  const dagens = hendelser.filter((e) => e.dato === idagIso && erCoachetOkt(e));
+  const navn = new Set<string>();
+  let iGrupper = 0;
+  for (const e of dagens) {
+    if (e.gruppe) iGrupper += e.antallSpillere ?? 0;
+    else {
+      const hvem = e.lag === "BOOKING" ? e.tittel : e.undertekst;
+      if (hvem) navn.add(hvem.toLocaleLowerCase("nb-NO"));
+    }
+  }
+  return { okterIdag: dagens.length, spillereIdag: navn.size + iGrupper };
+}
+
+/**
+ * Neste økt for den som ser: økta som pågår, ellers den første som ikke er ferdig. Bare egne økter
+ * (coachId), så hovedkortet aldri viser en annen coachs time. Ingen igjen: null.
+ */
+export function nesteOkt(hendelser: readonly KalenderHendelse[], idagIso: string, naaMin: number, seerId: string): AG05Neste | null {
+  const egne = hendelser
+    .filter((e) => e.dato === idagIso && erCoachetOkt(e) && e.coachId === seerId && !e.gjennomfort)
+    .sort((a, b) => a.startMin! - b.startMin!);
+  const e = egne.find((x) => (x.sluttMin ?? x.startMin! + 30) > naaMin);
+  if (!e) return null;
+  const bookingId = e.lag === "BOOKING" && e.href?.startsWith("/admin/bookinger/") ? e.href.slice("/admin/bookinger/".length) : null;
+  // Booking og gruppeøkt: tittelen er spilleren eller gruppa. Enkeltøkt: tittelen er økta, spilleren står under.
+  const enkeltokt = e.lag === "OEKTER" && !e.gruppe;
+  return {
+    pagar: e.startMin! <= naaMin,
+    start: hhmm(e.startMin!),
+    slutt: e.sluttMin != null ? hhmm(e.sluttMin) : null,
+    hvem: enkeltokt ? (e.undertekst ?? e.tittel) : e.tittel,
+    meta: [enkeltokt ? e.tittel : e.undertekst, e.gruppe && e.antallSpillere != null ? `${e.antallSpillere} spillere` : null].filter(Boolean).join(" · "),
+    akse: e.akse ?? null,
+    liveHref: bookingId ? `/admin/gjennomfore/okter/${bookingId}` : null,
+    aapneHref: e.href ?? null,
+  };
+}
+
+const AKSE_LANG: Record<KalenderAkse, string> = { fys: "Fysisk", tek: "Teknisk", slag: "Golfslag", spill: "Spill", turn: "Turnering" };
+const tallTekst = (n: number | null) => (n == null ? "—" : n);
+
+/**
+ * Skallet for /admin/kalender i Skrå-drakten: topp med bilde og fire tall, hovedkortet med neste økt,
+ * og fanene med visningen i ett hvitt kort. Visningene selv er AG05Dag, AG05Uke, AG05Maned, AG05Aar,
+ * Stall-dag og Tilgjengelighet.
+ */
+export function AG05KalenderSide({ overlinje, tall, neste, faner, navigasjon, children }: {
+  overlinje: string;
+  tall: AG05Tall;
+  neste: AG05Neste | null;
+  faner: readonly { id: string; label: string; href: string; aktiv: boolean }[];
+  navigasjon?: React.ReactNode;
+  children: React.ReactNode;
+}) {
+  return <div className="agn-s agn-kal-skra">
+    <SkraTopp
+      etikett="Kalender"
+      bilde={KAL_BILDE}
+      bildePosisjon="50% 55%"
+      overlinje={overlinje}
+      tittel="Kalender"
+      handling={<div className="knapper kal-skra-knapper">
+        <KnappLenke variant="pri" href="/admin/bookinger?fane=ny">Ny booking</KnappLenke>
+        <KnappLenke href="/admin/kalender/hendelse/ny">Ny hendelse</KnappLenke>
+      </div>}
+      tall={<>
+        <SkraStat verdi={tallTekst(tall.okterIdag)} etikett="Økter i dag" href="/admin/kalender?fane=dag" />
+        <SkraStat verdi={tallTekst(tall.spillereIdag)} etikett="Spillere i dag" />
+        <SkraStat verdi={tallTekst(tall.ledigePlasser)} etikett="Ledige plasser" ariaLabel={tall.ledigePlasser == null ? "Ledige plasser: ikke regnet ut" : undefined} />
+        <SkraStat verdi={tallTekst(tall.forslagGruppeokt)} etikett="Forslag til gruppeøkt" href="/admin/innboks" ariaLabel={tall.forslagGruppeokt == null ? "Forslag til gruppeøkt: ikke regnet ut. Åpne Innboks" : undefined} />
+      </>}
+    />
+    <SkraFlyt className="kal-skra-flyt">
+      {neste && <SkraHelt
+        etikett={`${neste.pagar ? "Pågår nå" : "Neste økt"}: ${neste.hvem}`}
+        farge={neste.akse ? HELT_FARGE[neste.akse] : undefined}
+        overlinje={`${neste.pagar ? "Pågår nå" : "Neste økt i dag"}${neste.akse ? ` · ${AKSE_LANG[neste.akse]}` : ""}`}
+        tid={neste.start}
+        tidEtter={neste.slutt ? `–${neste.slutt}` : undefined}
+        tittel={neste.hvem}
+        meta={neste.meta || undefined}
+        handlinger={[
+          ...(neste.liveHref ? [{ tekst: "Start live", href: neste.liveHref }] : []),
+          ...(neste.aapneHref ? [{ tekst: "Åpne økt", href: neste.aapneHref, sekundaer: !!neste.liveHref }] : []),
+        ]}
+      />}
+      <SkraKort etikett="Kalender" className="kal-skra-kort">
+        <nav className="valg" aria-label="Visning">
+          {faner.map((f) => <Link key={f.id} href={f.href} aria-current={f.aktiv ? "page" : undefined}>{f.label}</Link>)}
+        </nav>
+        {navigasjon}
+        <div className="pa-root kal-innhold">{children}</div>
+      </SkraKort>
+    </SkraFlyt>
+  </div>;
+}
 
 const H0 = 6;
 const H1 = 22;
@@ -318,7 +452,21 @@ export function AG05Dag({ data, dagIso, startLag, erHeadCoach }: { data: Kalende
     {dagens.length === 0
       ? <Tom tittel="Ingen økter denne dagen" tekst="Bookinger, gruppeøkter og spillernes økter kommer hit." handling={<KnappLenke href="/admin/bookinger?fane=ny">Ny booking</KnappLenke>} />
       : <>
-        <div className="dagvis" style={{ ["--kol" as string]: Math.max(1, kolonner.length) }}>
+        {/* Mobil: dagen som liste per coach, aldri et rutenett som må rulles sidelengs. */}
+        <div className="kal-dagliste bare-mobil">
+          {kolonner.map((c) => {
+            const es = kolonneHendelser.filter((e) => e.coachId === c.id).sort((a, b) => (a.startMin ?? -1) - (b.startMin ?? -1));
+            return <section key={c.id} className="kal-coach" aria-label={c.navn}>
+              <h3><span className="avatar liten" aria-hidden>{initialer(c.navn)}</span>{c.navn}<span className="ant">{es.length || "—"}</span></h3>
+              {es.length === 0 ? <span className="kilde">Ingen økter</span> : es.map((e) => e.opptatt
+                ? <div key={e.id} className="u-okt opptatt"><b>{tid(e)}</b><span>Opptatt</span></div>
+                : <button key={e.id} type="button" className={`u-okt ${e.lag === "TESTER" ? "test" : fargeKlasse(e)}${erFerdig(e, data.idagIso) ? " ferdig" : ""}${e.kollidererMed?.length ? " kolliderer" : ""}`} onClick={() => setValgt({ ev: e, anker: null })}>
+                  <b>{tid(e)}</b><span>{e.tittel}{e.undertekst ? ` · ${e.undertekst}` : ""}{e.gruppe && e.antallSpillere != null ? ` · ${e.antallSpillere} spillere` : ""}</span>
+                </button>)}
+            </section>;
+          })}
+        </div>
+        <div className="dagvis bare-pc" style={{ ["--kol" as string]: Math.max(1, kolonner.length) }}>
           <span className="hd tom" />
           {kolonner.map((c) => <span key={c.id} className="hd"><span className="avatar liten" aria-hidden>{initialer(c.navn)}</span>{c.navn.split(" ")[0]}</span>)}
           <div className="timer">{Array.from({ length: H1 - H0 }, (_, i) => <span key={i}>{String(H0 + i).padStart(2, "0")}</span>)}</div>

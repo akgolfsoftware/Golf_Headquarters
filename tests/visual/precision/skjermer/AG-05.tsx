@@ -1,7 +1,7 @@
 /** Prøvefil for AG-05 Kalender. Syntetiske data, ingen ekte spillere. */
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
-import { Feil, KnappLenke, Laster, Topp } from "@/components/admin/agencyos-ny/ny";
-import { AG05Aar, AG05Dag, AG05Uke, AG05Maned, AG05Periode } from "@/components/admin/precision/AG05Kalender";
+import { Feil, Laster } from "@/components/admin/agencyos-ny/ny";
+import { AG05Aar, AG05Dag, AG05KalenderSide, AG05Uke, AG05Maned, AG05Periode, kalenderTallIdag, nesteOkt } from "@/components/admin/precision/AG05Kalender";
 import { AG05Tilg } from "@/components/admin/precision/AG05Tilg";
 import type { KalenderLagUkeData } from "@/app/admin/kalender/lag/data";
 import type { TilgData } from "@/app/admin/kalender/tilg-data";
@@ -69,22 +69,24 @@ const tilg: TilgData = {
 };
 
 const FANER = [
-  { href: "?fane=dag", navn: "Dag", aktiv: false },
-  { href: "?fane=uke", navn: "Uke", aktiv: true },
-  { href: "?fane=maned", navn: "Måned", aktiv: false },
-  { href: "?fane=ar", navn: "År", aktiv: false },
-  { href: "?fane=stall", navn: "Stall-dag", aktiv: false },
-  { href: "?fane=tilg", navn: "Tilgjengelighet", aktiv: false },
+  { id: "dag", href: "?fane=dag", label: "Dag", aktiv: false },
+  { id: "uke", href: "?fane=uke", label: "Uke", aktiv: true },
+  { id: "maned", href: "?fane=maned", label: "Måned", aktiv: false },
+  { id: "ar", href: "?fane=ar", label: "År", aktiv: false },
+  { id: "stall", href: "?fane=stall", label: "Stall-dag", aktiv: false },
+  { id: "tilg", href: "?fane=tilg", label: "Tilgjengelighet", aktiv: false },
 ];
 
-const Skjelett = ({ children, periode }: { children: React.ReactNode; periode: string }) => (
+const TALL = { ...kalenderTallIdag(ukeData.hendelser, ukeData.idagIso), ledigePlasser: null, forslagGruppeokt: null };
+/** Klokka 16:00 den syntetiske dagen: gruppeøkta 15:30 pågår ikke for c1, bookingen 17:00 er neste. */
+const NESTE = nesteOkt(ukeData.hendelser, ukeData.idagIso, 16 * 60, "c1");
+
+const Skjelett = ({ children, periode, utenNeste }: { children: React.ReactNode; periode: string; utenNeste?: boolean }) => (
   <AgencyOSSkall navn="Test Coach">
-    <div className="agn-s">
-      <Topp dato={`Alle coacher · ${periode}`} tittel="Kalender" handlinger={<><KnappLenke variant="pri" href="/admin/bookinger?fane=ny">Ny booking</KnappLenke><KnappLenke href="/admin/kalender/hendelse/ny">Ny hendelse</KnappLenke></>} />
-      <nav className="valg" aria-label="Visning">{FANER.map((f) => <a key={f.href} href={f.href} aria-current={f.aktiv ? "page" : undefined}>{f.navn}</a>)}</nav>
-      {periode !== "Tilgjengelighet" && <AG05Periode forrige="#" idag="#" neste="#" tekst={periode} />}
-      <div className="pa-root kal-innhold">{children}</div>
-    </div>
+    <AG05KalenderSide overlinje={`Alle coacher · ${periode}`} tall={TALL} neste={utenNeste ? null : NESTE} faner={FANER}
+      navigasjon={periode !== "Tilgjengelighet" ? <AG05Periode forrige="#" idag="#" neste="#" tekst={periode} /> : undefined}>
+      {children}
+    </AG05KalenderSide>
   </AgencyOSSkall>
 );
 
@@ -97,5 +99,5 @@ export const tilstander = {
   tilg: <Skjelett periode="Tilgjengelighet"><AG05Tilg data={tilg} /></Skjelett>,
   laster: <Skjelett periode={ukeData.periode}><Laster tekst="Henter kalenderen …" /></Skjelett>,
   feil: <Skjelett periode={ukeData.periode}><Feil tittel="Kalenderen kunne ikke hentes" tekst="Ingen hendelser er endret." /></Skjelett>,
-  tom: <Skjelett periode={ukeData.periode}><AG05Uke data={{ ...ukeData, hendelser: [] }} /></Skjelett>,
+  tom: <Skjelett periode={ukeData.periode} utenNeste><AG05Uke data={{ ...ukeData, hendelser: [] }} /></Skjelett>,
 };

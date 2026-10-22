@@ -5,12 +5,18 @@
  * - ADMIN ser alle aktive tjenester med coach-navn.
  * - COACH ser egne + felles (coachUserId null).
  * - Fasiliteter lastes per lokasjon (capacity i wizard).
+ *
+ * Skrå-drakten 22.10 (bølge 1, pakke A3, skissen §5 «Skjema»): AgencyOS-skallet med lav topp
+ * (bunkerbildet fra Booking) og veiviseren i et hvitt kort. Veiviseren selv er uendret.
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { NyBookingWizard } from "@/components/admin/bookinger/ny-booking-wizard";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
+import { Topp } from "@/components/admin/agencyos-ny/ny";
+import { SkraKort } from "@/components/precision/skra/Skra";
+import "@/styles/agencyos-ny-kalender-skra.css";
 import { policyBannerTexts } from "@/lib/booking/policy";
 
 export const dynamic = "force-dynamic";
@@ -117,42 +123,47 @@ export default async function NyBookingPage({
   });
 
   return (
-    <V2Shell bredde="kolonne" aktiv="bookinger" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <NyBookingWizard
-        spillere={spillere.map((s) => ({
-          id: s.id,
-          name: s.name ?? "Uten navn",
-          email: s.email,
-          homeClub: s.homeClub,
-        }))}
-        tjenester={tjenester.map((t) => ({
-          id: t.id,
-          name: t.name,
-          durationMin: t.durationMin,
-          priceOre: t.priceOre,
-          maxDeltakere: t.maxDeltakere,
-          coachUserId: t.coachUserId,
-          coachName: t.coach?.name ?? null,
-        }))}
-        lokasjoner={lokasjoner.map((l) => ({
-          id: l.id,
-          name: l.name,
-          address: l.address,
-          facilities: l.facilities.map((f) => ({
-            id: f.id,
-            name: f.name,
-            capacity: f.capacity,
-          })),
-        }))}
-        coacher={coacherMedScope}
-        viewerErAdmin={erAdmin}
-        viewerCoachId={user.id}
-        defaultCoachId={coachPrefill ?? (erAdmin ? undefined : user.id)}
-        groupId={groupId}
-        group={gruppe}
-        defaultStart={start}
-        policyHint={policy.cancel}
-      />
-    </V2Shell>
+    <AgencyOSSkall navn={user.name ?? "Coach"}>
+      <div className="agn-s agn-kal-under">
+        <Topp tilbake={{ href: "/admin/bookinger", tekst: "Booking" }} dato="Booking" tittel="Ny booking" bilde="/images/playerhq/slag-bunker.jpg" />
+        <SkraKort className="kal-under-kort" etikett="Ny booking">
+          <NyBookingWizard
+            spillere={spillere.map((s) => ({
+              id: s.id,
+              name: s.name ?? "Uten navn",
+              email: s.email,
+              homeClub: s.homeClub,
+            }))}
+            tjenester={tjenester.map((t) => ({
+              id: t.id,
+              name: t.name,
+              durationMin: t.durationMin,
+              priceOre: t.priceOre,
+              maxDeltakere: t.maxDeltakere,
+              coachUserId: t.coachUserId,
+              coachName: t.coach?.name ?? null,
+            }))}
+            lokasjoner={lokasjoner.map((l) => ({
+              id: l.id,
+              name: l.name,
+              address: l.address,
+              facilities: l.facilities.map((f) => ({
+                id: f.id,
+                name: f.name,
+                capacity: f.capacity,
+              })),
+            }))}
+            coacher={coacherMedScope}
+            viewerErAdmin={erAdmin}
+            viewerCoachId={user.id}
+            defaultCoachId={coachPrefill ?? (erAdmin ? undefined : user.id)}
+            groupId={groupId}
+            group={gruppe}
+            defaultStart={start}
+            policyHint={policy.cancel}
+          />
+        </SkraKort>
+      </div>
+    </AgencyOSSkall>
   );
 }
