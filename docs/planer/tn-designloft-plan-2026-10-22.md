@@ -235,7 +235,7 @@ samme tall i Oversikt. Ingen knapper: «Foreslå endring», «Skriv post» og «
 
 Bestilt av Anders 22.10: «tegne testøkta med spiller, TrackMan-importen med kobling til testslag, og testvisningen med
 spredningsplott og slagdata, som utkast 3.» Wireframes: [utkast-3.html](../design-system/utkast-tn/trenerflate/utkast-3.html),
-https://claude.ai/artifact/TAhfpQJPqeKiwp2zTxxKft. Tolv skjermer i tre grupper, målt i 390, 1280 og 1920 px uten sidelengs rulling og uten konsollfeil.
+https://claude.ai/artifact/TAhfpQJPqeKiwp2zTxxKft. 17 skjermer i fire grupper, målt i 390, 1280 og 1920 px uten sidelengs rulling og uten konsollfeil.
 
 ### 6.1 Hva kodeøkta må bygge
 
@@ -267,6 +267,28 @@ https://claude.ai/artifact/TAhfpQJPqeKiwp2zTxxKft. Tolv skjermer i tre grupper, 
   `TestResult`, så flere tester kan høre til ett løp uten testdag.
 - **Kølle per TrackMan-slag** finnes allerede i `TrackManShot`; mangler den, vises «—».
 
+### 6.2b TrackMan-statistikk og sammenheng med spill (tillegg fra Anders 22.10)
+
+Anders: «Fra Trackman slag rapport ønsker vi snitt, median og ytterpunkter på de ulike parametere (Clubpath, face angle, også
+videre). Og andre potensielle verdi full data og statistikk. Også mulighet til å sammen ligne Trackman data og tendsener til SG og
+stats fra treningsrunder og turneringsrunder.» Tegnet som gruppa «TrackMan-statistikk» i utkast 3 (fem skjermer).
+
+| Visning | Felt | Kilde | Status |
+|---|---|---|---|
+| Statistikk per kølle | snitt, median, min, maks, standardavvik for 17 parametere | `TrackManShot` (`clubSpeed`, `ballSpeed`, `smashFactor`, `attackAngle`, `clubPath`, `faceAngle`, `faceToPath`, `dynamicLoft`, `launchAngle`, `launchDirection`, `spinRate`, `spinAxis`, `carryDistance`, `totalDistance`, `side`, `apexHeight`, `landAngle`), gruppert på `club` | Feltene finnes. Snitt per økt finnes i `oppsummerOkt` (`trackman/okt-oppsummering.ts:46`); standardavvik bare for Ball Speed i `club-trend-aggregator.ts:27`. **Median, min/maks og standardavvik per parameter finnes ikke** |
+| Ytterpunkt åpner slaget | slag-id per min/maks | `TrackManShot.id`, `outlier` | Feltet `outlier` finnes; kobling fra ytterpunkt til slag finnes ikke |
+| Andel i målvindu | % slag innenfor vindu per parameter | – | **Finnes ikke** (vinduene: spørsmål 4) |
+| Treffpunkt-sky | `strikePatternX/Y` | `computeStrikePattern` (`sg-hub/strike-pattern.ts:46`) | Finnes |
+| Gapping | carry-snitt og spredning per kølle | `buildYardageRows` (`sg-hub/yardage-calc.ts:98`) | Finnes for carry; spredning per kølle finnes ikke |
+| Tendens over tid | snitt og spredning per økt for valgt parameter og kølle | `getClubTrend`/`detectDrift` (`sg-hub/drift-detection.ts:88`) | Finnes bare for Club Path, Face Angle og Total; **andre parametere og spredningsbånd finnes ikke** |
+| SG per kategori | tee, innspill, nærspill, putting | `Round.sgOtt/sgApp/sgArg/sgPutt` (registrerte runder); estimat fra snitt i `estimerSgFordelingFraSnitt` (`stats/sg-estimator.ts:183`) | Finnes; turneringsrunder uten slagdata får ESTIMAT |
+| Treningsrunder og turneringsrunder hver for seg | `Round.roundType` (`turnering`/`trening`, `null` = ukjent) og offentlige resultater | `maaltall-data.ts:51` | Finnes; umerkede runder (`null`) må enten spørres om eller holdes utenfor |
+| Greenhit og andre runde-stats | – | `Round`/`HoleScore` | Delvis; kartlegges når skjermen bygges |
+
+Krever deling (alt eller ingenting). Bygges som visningene «Statistikk», «Tendens» og «Sammenheng» i IUP › Tester, og
+«Statistikk» rett etter TrackMan-importen. Nytt i koden: én modul som regner snitt, median, min, maks, standardavvik og andel i
+målvindu per parameter og kølle, med «for få slag» under 5.
+
 ### 6.3 Spørsmål til Anders (wireframene følger anbefalingen)
 
 1. **Import fra TrackMan Report-lenke?** I dag leser appen CSV, rapportfil og bilde, ikke lenken fra TrackMan. Anbefaling: ja,
@@ -276,3 +298,6 @@ https://claude.ai/artifact/TAhfpQJPqeKiwp2zTxxKft. Tolv skjermer i tre grupper, 
    og treneren kan koble dem likevel.
 3. **Club Speed:** beste av de fem første driverslagene, eller beste av alle driverslag i fila? Anbefaling: de fem første, som i
    testprotokollen, så tallet ikke blir høyere bare fordi spilleren slo flere slag.
+4. **Målvinduene for «andel i målvindu»:** anbefaling Face to Path ±2°, Club Path ±2°, Face Angle ±2°, Smash Factor ≥ 1,35 for
+   jern og ≥ 1,45 for driver, Attack Angle −5 til −3° for jern og 0 til +4° for driver, Carry og Side ±5 m for jern og ±15 m for
+   driver. Treneren kan endre vinduet per spiller. Wireframen bruker disse.

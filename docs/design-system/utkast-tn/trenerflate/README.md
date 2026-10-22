@@ -83,7 +83,7 @@ Plan, kartlegging og hvilke skjermer kodeøkta kan bygge etter nå: [tn-designlo
 
 ## 7. Utkast 3 (22.10.2026): testøkt, TrackMan-kobling og testvisning
 
-Wireframes: [utkast-3.html](utkast-3.html) (privat artifact: https://claude.ai/artifact/TAhfpQJPqeKiwp2zTxxKft). Tolv skjermer:
+Wireframes: [utkast-3.html](utkast-3.html) (privat artifact: https://claude.ai/artifact/TAhfpQJPqeKiwp2zTxxKft). 17 skjermer:
 testøkt med én spiller (start, ett slag om gangen, gate med store knapper, uten nett og pause, ferdig), TrackMan-import med
-kobling til testslag (kobling, slag som ikke passer, Club Speed) og testvisning (PEI med spredning, gate med port og sone, putt
+kobling til testslag (kobling, slag som ikke passer, Club Speed), TrackMan-statistikk (per kølle, treffpunkt og gapping, tendens, TrackMan mot spill, tilstander) og testvisning (PEI med spredning, gate med port og sone, putt
 med avstandsbånd, uten TrackMan). Hva kodeøkta må bygge og datamodelltilleggene: planfila §6.
