@@ -138,7 +138,8 @@ try {
             while (p && p !== document.body) { const o = getComputedStyle(p).overflowX; if (o === "hidden" || o === "clip") { const pr = p.getBoundingClientRect(); if (pr.right <= vw + 0.5 && pr.left >= -0.5) { klippet = true; break; } } p = p.parentElement; }
             if (!klippet && el.closest(".pa-sr") == null) utenfor.push(`${el.tagName.toLowerCase()}.${String(el.className).slice(0, 40)} (${Math.round(r.left)}–${Math.round(r.right)})`);
           }
-          if (el.matches("a[href],button,[role=button],input,select,textarea,[role=tab]") && el.closest(".pa-sr") == null && (r.height < min || r.width < min)) {
+          if (el.matches("a[href],button,[role=button],input,select,textarea,[role=tab]") && el.closest(".pa-sr") == null && (r.height < min - 0.5 || r.width < min - 0.5)) {
+            // Halv piksel slingringsmonn: et kort som glir inn, gir 43,999 px på en knapp som er 44 px.
             // Tekstlenker inne i løpende tekst er unntatt; alt annet skal ha 44 px.
             // En avkrysning inni en <label> treffes på hele etiketten; mål etiketten i stedet.
             const etikett = el.matches("input[type=checkbox],input[type=radio]") ? el.closest("label") : null;

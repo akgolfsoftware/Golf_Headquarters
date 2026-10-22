@@ -1,12 +1,19 @@
 "use client";
 
 /**
- * AG-04 Innboks, designløftet 20.10.2026. Fasit: canvaset «AgencyOS
- * nøkkelskjermer» (https://claude.ai/artifact/SLdHBGbdK1hiJcep9e42Cy), tavlene
- * Innboks, Innboks-mobil og Innboks-sak-mobil, godkjent av Anders 20.10.
- * PC: lista (Haster · I dag · Tidligere) til venstre og valgt sak til høyre.
- * Mobil: lista, og saken som egen flate. Fanene Caddie-forslag og
- * Datakvalitet følger jarvis.html (AG-A08, AG-A05) i full bredde.
+ * AG-04 Innboks i Skrå-drakten (bølge 1, skissen https://claude.ai/artifact/NCP3fcTH2qNSYJtYVfWwNa,
+ * kilde docs/design-system/utkast-skra/komponist/bolge-1.html §1, godkjent av Anders 22.10.2026).
+ * Toppen: golfsimulatoren og fire tall (Haster · Fra spillere · E-post · Til godkjenning).
+ * Hovedkortet: saken som haster mest, ellers «Alt er håndtert». Under: filterbrikker, og lista
+ * (Haster · I dag · Tidligere) og den åpne saken i hvert sitt kort, side om side på PC.
+ * Mobil: lista, og saken åpner over (toppen blir, resten skjules til «← Innboks»).
+ * Fanene Caddie-forslag og Datakvalitet går i full bredde (AG-A08, AG-A05).
+ * Avvik fra skissen:
+ *   - Send · Rediger · Forkast i hovedkortet vises bare når saken har et utkast (e-post eller
+ *     Caddie). Spørsmål fra spillere har ikke Jarvis-utkast ennå, og oppfølgingssaker har ingen
+ *     tekst å sende: der står Svar og Åpne saken.
+ *   - «Forkast» på et e-postutkast åpner saken med utkastet lagt bort, som knappen i saken gjør.
+ *   - E-post-tallet er «—» for andre enn head coach (e-posten er bare for head coach).
  * «Uka hans hvis du sier ja» fra tegningen vises ikke ennå: ingen sak bærer
  * spillerens uke, og designet krever at den bare vises når data finnes.
  *
@@ -27,6 +34,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight, Check, Sparkles } from "lucide-react";
 import { Avatar, Feil, Knapp, KnappLenke, Laster, Nokkelverdier, Pille, Tom, Varsel } from "@/components/admin/agencyos-ny/ny";
+import { SkraFlyt, SkraHelt, SkraKort, SkraStat, SkraTom, SkraTopp, type SkraHandling } from "@/components/precision/skra/Skra";
 import {
   INNBOKS_FILTRE, OPPF_STATUSER, innboksHref, type InnboksFilterId, type OppfStatus,
 } from "@/lib/admin/innboks/filter";
@@ -48,6 +56,11 @@ import "@/styles/agencyos-ny-cockpit.css";
 import "@/styles/agencyos-ny-innboks.css";
 
 export type AG04Tilstand = "data" | "laster" | "feil";
+
+/** Hvordan saken åpnes fra hovedkortet: med tomt svarfelt, med utkastet forkastet, eller vanlig. */
+type SakModus = "svar" | "forkast" | null;
+
+const INNBOKS_BILDE = "/images/playerhq/slag-simulator.jpg";
 
 export type AG04Godkjenn = {
   venter: number;
@@ -134,14 +147,14 @@ function SakRad({ p, valgt, onVelg, dra }: { p: InnboksPost; valgt: boolean; onV
 }
 
 /* ---------- Den åpne saken ---------- */
-function SakDetalj({ p, onBorte, onFilter, onTilbake }: {
-  p: InnboksPost; onBorte: () => void; onFilter: (f: InnboksFilterId) => void; onTilbake: () => void;
+function SakDetalj({ p, modus = null, onBorte, onFilter, onTilbake }: {
+  p: InnboksPost; modus?: SakModus; onBorte: () => void; onFilter: (f: InnboksFilterId) => void; onTilbake: () => void;
 }) {
   const { pending, feil, kjor } = useHandling();
   const h = p.handling;
   const [txt, setTxt] = useState(p.utkast?.tekst ?? "");
-  const [forkastet, setForkastet] = useState(false);
-  const [svar, setSvar] = useState<string | null>(null);
+  const [forkastet, setForkastet] = useState(modus === "forkast");
+  const [svar, setSvar] = useState<string | null>(modus === "svar" ? "" : null);
   const [grunn, setGrunn] = useState<{ valg: "godkjenn" | "avvis" } | null>(null);
   const [grunnTekst, setGrunnTekst] = useState("");
   const [melding, setMelding] = useState<string | null>(null);
@@ -271,6 +284,48 @@ function SakDetalj({ p, onBorte, onFilter, onTilbake }: {
       </select>
     </label>}
   </article>;
+}
+
+/* ---------- Hovedkortet: saken som haster mest ---------- */
+const kort = (t: string, n = 140) => (t.length > n ? `${t.slice(0, n - 1).trimEnd()} …` : t);
+
+function HasterHelt({ poster, onApne, onBorte }: { poster: InnboksPost[]; onApne: (k: string, m: SakModus) => void; onBorte: (k: string) => void }) {
+  const { pending, feil, kjor } = useHandling();
+  // Haster mest: spørsmål fra spillere (ubesvart over 24 t) før oppfølgingssaker i Risiko, eldste først.
+  const p = poster.filter((x) => !x.lost && (x.haster || x.risiko))
+    .sort((a, b) => Number(b.haster) - Number(a.haster) || (b.alderTimer ?? -1) - (a.alderTimer ?? -1))[0] ?? null;
+
+  if (!p) return <div className="ibx-helt-plass"><SkraHelt etikett="Haster" overlinje="Haster" tid="0" tidEtter="saker" tittel="Alt er håndtert"
+    meta="Spørsmål fra spillere som er ubesvart i over 24 timer, og oppfølgingssaker i Risiko, kommer hit." /></div>;
+
+  const h = p.handling;
+  const utkast = p.utkast && (h.t === "epost" || h.t === "caddie") ? p.utkast : null;
+  const handlinger: SkraHandling[] = [];
+  if (utkast && h.t === "epost") handlinger.push({ tekst: pending ? "Sender …" : "Send", onClick: () => { if (!pending) kjor(async () => {
+    const r = await sendGodkjentSvar(h.id, utkast.tekst);
+    return r.sendtReelt ? { ok: true } : { ok: false, feil: r.melding };
+  }, () => onBorte(p.key)); } });
+  if (utkast && h.t === "caddie") handlinger.push({ tekst: pending ? "Sender …" : "Send", onClick: () => { if (!pending) kjor(() => godkjennCaddieDraft(h.id), () => onBorte(p.key)); } });
+  if (utkast) handlinger.push({ tekst: "Rediger", sekundaer: true, onClick: () => onApne(p.key, null) });
+  if (utkast && h.t === "caddie") handlinger.push({ tekst: "Forkast", sekundaer: true, onClick: () => { if (!pending) kjor(() => avvisProaktivtForslag(h.id), () => onBorte(p.key)); } });
+  else if (utkast) handlinger.push({ tekst: "Forkast", sekundaer: true, onClick: () => onApne(p.key, "forkast") });
+  if (!utkast && p.kanSvare) handlinger.push({ tekst: "Svar", onClick: () => onApne(p.key, "svar") });
+  if (!utkast) handlinger.push({ tekst: "Åpne saken", sekundaer: p.kanSvare, onClick: () => onApne(p.key, null) });
+
+  // Alderen i timer til og med 48 t, deretter i dager.
+  const timer = p.alderTimer == null ? null : Math.floor(p.alderTimer);
+  const dager = timer != null && timer > 48 ? Math.floor(timer / 24) : null;
+  const enhet = dager != null ? (dager === 1 ? "dag" : "dager") : timer === 1 ? "time" : "timer";
+  return <div className="ibx-helt-plass" aria-busy={pending || undefined}>
+    <SkraHelt etikett="Haster mest"
+      overlinje={`Haster · ${p.kind}`}
+      tid={timer == null ? "—" : dager ?? timer}
+      tidEtter={timer == null ? undefined : p.haster ? `${enhet} ubesvart` : enhet}
+      tittel={`${p.fra}: ${p.tittel}`}
+      meta={utkast ? `Utkast fra ${utkast.av}: «${kort(utkast.tekst)}» Ingenting sendes før du trykker Send.` : p.tekst ? kort(p.tekst) : undefined}
+      handlinger={handlinger} />
+    {feil && <Varsel tone="advarsel">{feil}</Varsel>}
+  </div>;
 }
 
 /* ---------- Godkjenn: køen i tall, lav risiko samlet, ukesrapport ---------- */
@@ -403,11 +458,12 @@ export function AG04Innboks(props: AG04Props) {
   // Valgt sak vises i høyre rute på PC. På mobil åpnes den først når coachen trykker (mobilAapen).
   const [valgt, setValgt] = useState<string | null>(startSak);
   const [mobilAapen, setMobilAapen] = useState(!!startSak);
+  const [modus, setModus] = useState<SakModus>(null);
   const [over, setOver] = useState<OppfStatus | null>(null);
   const flytt = useHandling();
 
   const velg = (neste: InnboksFilterId) => {
-    setF(neste); setO(null); setKilde(null); setVisLeads(false); setValgt(null); setMobilAapen(false);
+    setF(neste); setO(null); setKilde(null); setVisLeads(false); setValgt(null); setModus(null); setMobilAapen(false);
     try {
       const q = new URLSearchParams(window.location.search);
       q.delete("o");
@@ -428,11 +484,19 @@ export function AG04Innboks(props: AG04Props) {
   const kandidater = visLeads ? [] : [...liste, ...synligLost];
   const aapen = kandidater.find((p) => p.key === valgt) ?? (helBredde || (f === "godkjenn" && kilde === "rapport") ? null : liste[0] ?? null);
 
-  const velgSak = (k: string) => {
-    setValgt(k); setMobilAapen(true);
+  const velgSak = (k: string, m: SakModus = null) => {
+    setValgt(k); setModus(m); setMobilAapen(true);
     try { if (window.matchMedia("(max-width: 899px)").matches) window.scrollTo({ top: 0 }); } catch { /* bare bekvemmelighet */ }
   };
-  const fjern = (k: string) => { borteFra(k); setValgt(null); setMobilAapen(false); };
+  const fjern = (k: string) => { borteFra(k); setValgt(null); setModus(null); setMobilAapen(false); };
+  // Hovedkortet åpner saken i «Alle», så den alltid finnes i lista, og ruller ned til den på PC.
+  const aapneFraHelt = (k: string, m: SakModus) => {
+    if (f !== "alle") velg("alle");
+    velgSak(k, m);
+    try {
+      if (window.matchMedia("(min-width: 900px)").matches) requestAnimationFrame(() => document.querySelector(".ibx-rute")?.scrollIntoView({ block: "start", behavior: "smooth" }));
+    } catch { /* bare bekvemmelighet */ }
+  };
 
   const slipp = (st: OppfStatus) => (e: DragEvent) => {
     e.preventDefault(); setOver(null);
@@ -484,48 +548,63 @@ export function AG04Innboks(props: AG04Props) {
     : null;
 
   const hovedliste = leadListe ?? (liste.length === 0
-    ? <p className="ibx-tom">{f === "alle" ? "Alt er håndtert her." : tomTekst}{f === "alle" && <><br /><span className="kilde">{tomTekst}</span></>}</p>
+    ? <SkraTom>{f === "alle" ? <>Alt er håndtert her.<br /><span className="kilde">{tomTekst}</span></> : tomTekst}</SkraTom>
     : <div className="ibx-grupper">{grupperInnboks(liste).map((g) => <section key={g.navn} aria-label={g.navn} className="ibx-gruppe">
       <div className="ibx-gruppe-topp"><span className={g.navn === "Haster" ? "haster-pille" : "ibx-gruppe-navn"}>{g.navn}</span><span className="num">{g.poster.length}</span></div>
       <div role="list">{g.poster.map((p) => rad(p, visOppf))}</div>
     </section>)}</div>);
 
-  const topp = <header className="ibx-topp">
-    <span className="meta">{dagLabel} · haster først</span>
-    <div className="ibx-topp-rad"><h1>Innboks</h1><span className="num">{venterTotalt} {venterTotalt === 1 ? "sak" : "saker"}</span></div>
-  </header>;
+  const ingress = `${venterTotalt} ${venterTotalt === 1 ? "sak venter" : "saker venter"} · haster først`;
+  const topp = (medTall: boolean) => <SkraTopp etikett="Innboks" bilde={INNBOKS_BILDE} bildePosisjon="50% 40%" overlinje={dagLabel} tittel="Innboks"
+    ingress={medTall ? ingress : undefined}
+    tall={medTall ? <>
+      <SkraStat verdi={poster.filter((p) => !p.lost && (p.haster || p.risiko)).length} etikett="Haster" />
+      <SkraStat href={innboksHref("spillere")} verdi={tellFilter(poster, "spillere")} etikett="Fra spillere" />
+      <SkraStat href={harEpost ? innboksHref("epost") : undefined} verdi={harEpost ? tellFilter(poster, "epost") : "—"} etikett="E-post"
+        ariaLabel={harEpost ? undefined : "E-post: bare for head coach"} />
+      <SkraStat href={innboksHref("godkjenn")} verdi={tellFilter(poster, "godkjenn")} etikett="Til godkjenning" />
+    </> : undefined} />;
 
-  if (tilstand === "laster") return <div className="agn-s">{topp}<Laster tekst="Henter innboksen …" /></div>;
-  if (tilstand === "feil") return <div className="agn-s">{topp}<Feil tittel="Innboksen kunne ikke hentes" tekst="E-post og meldinger hentes på nytt når du prøver igjen. Ingenting er sendt." kode="FEIL · INNBOKS" /></div>;
+  if (tilstand === "laster") return <div className="agn-s agn-skra ibx-skra">{topp(false)}
+    <SkraFlyt><SkraKort><Laster tekst="Henter innboksen …" /></SkraKort></SkraFlyt>
+  </div>;
+  if (tilstand === "feil") return <div className="agn-s agn-skra ibx-skra">{topp(false)}
+    <SkraFlyt><SkraKort><Feil tittel="Innboksen kunne ikke hentes" tekst="E-post og meldinger hentes på nytt når du prøver igjen. Ingenting er sendt." kode="FEIL · INNBOKS" /></SkraKort></SkraFlyt>
+  </div>;
 
-  return <div className={`agn-s ibx${helBredde ? " hel" : ""}`} data-mobil-aapen={mobilAapen && aapen ? "" : undefined}>
-    <div className="ibx-liste">
-      {topp}
+  const listeTittel = INNBOKS_FILTRE.find((x) => x.id === f)?.label ?? "Saker";
+
+  return <div className={`agn-s agn-skra ibx-skra${helBredde ? " hel" : ""}`} data-mobil-aapen={mobilAapen && aapen ? "" : undefined}>
+    {topp(true)}
+    <SkraFlyt className="ibx-flyt">
+      <HasterHelt poster={poster} onApne={aapneFraHelt} onBorte={fjern} />
       <div role="group" aria-label="Vis" className="chips ibx-filter">
         {INNBOKS_FILTRE.map((x) => { const n = antall(x.id); return <button type="button" key={x.id} aria-pressed={f === x.id} onClick={() => velg(x.id)}>{x.label}{n ? <b>{n}</b> : null}</button>; })}
       </div>
       {underfilter}
       {flytt.feil && <Varsel tone="advarsel">{flytt.feil}</Varsel>}
-      {f === "caddie" ? <CaddieForslag poster={iFane.filter((p) => !p.lost)} onBorte={borteFra} />
-        : f === "datakvalitet" ? <Datakvalitet d={datakvalitet} />
-          : <>
-            {f === "godkjenn" && <GodkjennTopp g={godkjenn} visRapport={!kilde || kilde === "rapport"} />}
-            {!(f === "godkjenn" && kilde === "rapport") && hovedliste}
-            {f === "godkjenn" && <GodkjennBunn g={godkjenn} lost={lost} />}
-            {synligLost.length > 0 && !visLeads && <section aria-label="Løst" className="ibx-gruppe">
-              <div className="ibx-gruppe-topp"><span className="ibx-gruppe-navn">{f === "epost" && visSendt ? "Sendt og arkivert" : "Løst siste 7 dager"}</span><span className="num">{synligLost.length}</span></div>
-              <div role="list">{synligLost.map((p) => rad(p, false))}</div>
-            </section>}
-            {visOppf && <div className="sek-topp ibx-hint">
-              <span className="kilde">Dra en sak til Risiko, Følg med, Sjekk eller Løst · av {tallTekst(oppfolgingSpillere)} spillere totalt</span>
-              <Link className="lenke" href="/admin/oppsett">Justere regler</Link>
-            </div>}
-          </>}
-    </div>
-    {!helBredde && <div className="ibx-rute">
-      {aapen
-        ? <SakDetalj key={aapen.key} p={aapen} onBorte={() => fjern(aapen.key)} onFilter={velg} onTilbake={() => setMobilAapen(false)} />
-        : <p className="ibx-ingen">{visLeads ? "Leads besvares på e-post." : "Velg en sak i lista."}</p>}
-    </div>}
+      {f === "caddie" ? <div className="ibx-hel"><CaddieForslag poster={iFane.filter((p) => !p.lost)} onBorte={borteFra} /></div>
+        : f === "datakvalitet" ? <div className="ibx-hel"><Datakvalitet d={datakvalitet} /></div>
+          : <div className="ibx-delt">
+            <SkraKort className="ibx-liste" tittel={f === "alle" ? "Saker" : listeTittel} meta={`${liste.length} ${liste.length === 1 ? "sak" : "saker"}`}>
+              {f === "godkjenn" && <GodkjennTopp g={godkjenn} visRapport={!kilde || kilde === "rapport"} />}
+              {!(f === "godkjenn" && kilde === "rapport") && hovedliste}
+              {f === "godkjenn" && <GodkjennBunn g={godkjenn} lost={lost} />}
+              {synligLost.length > 0 && !visLeads && <section aria-label="Løst" className="ibx-gruppe">
+                <div className="ibx-gruppe-topp"><span className="ibx-gruppe-navn">{f === "epost" && visSendt ? "Sendt og arkivert" : "Løst siste 7 dager"}</span><span className="num">{synligLost.length}</span></div>
+                <div role="list">{synligLost.map((p) => rad(p, false))}</div>
+              </section>}
+              {visOppf && <div className="sek-topp ibx-hint">
+                <span className="kilde">Dra en sak til Risiko, Følg med, Sjekk eller Løst · av {tallTekst(oppfolgingSpillere)} spillere totalt</span>
+                <Link className="lenke" href="/admin/oppsett">Justere regler</Link>
+              </div>}
+            </SkraKort>
+            <SkraKort className="ibx-rute" etikett="Åpen sak">
+              {aapen
+                ? <SakDetalj key={`${aapen.key}:${modus ?? ""}`} p={aapen} modus={aapen.key === valgt ? modus : null} onBorte={() => fjern(aapen.key)} onFilter={velg} onTilbake={() => setMobilAapen(false)} />
+                : <SkraTom>{visLeads ? "Leads besvares på e-post." : "Velg en sak i lista."}</SkraTom>}
+            </SkraKort>
+          </div>}
+    </SkraFlyt>
   </div>;
 }
