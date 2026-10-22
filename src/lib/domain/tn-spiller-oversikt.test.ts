@@ -84,11 +84,14 @@ mock.module("@/lib/prisma", {
         count: async () => 0,
       },
       testResult: {
-        findMany: async ({ where, orderBy, take }: { where: { userId?: string; testId?: string | { startsWith: string }; id?: { in: string[] } }; orderBy?: { takenAt?: string; score?: string }; take?: number }) => {
+        findMany: async ({ where, orderBy, take }: { where: { userId?: string | { in: string[] }; testId?: string | { startsWith?: string; in?: string[] }; id?: { in: string[] }; takenAt?: { gte: Date } }; orderBy?: { takenAt?: string; score?: string }; take?: number }) => {
           let rows = resultater;
-          if (where.userId) rows = rows.filter((r) => r.userId === where.userId);
+          if (typeof where.userId === "string") rows = rows.filter((r) => r.userId === where.userId);
+          else if (where.userId) { const ider = where.userId.in; rows = rows.filter((r) => ider.includes(r.userId)); }
+          if (where.takenAt) { const fra = where.takenAt.gte; rows = rows.filter((r) => r.takenAt >= fra); }
           if (typeof where.testId === "string") { const testId = where.testId; rows = rows.filter((r) => r.testId === testId); }
-          else if (where.testId) { const prefiks = where.testId.startsWith; rows = rows.filter((r) => r.testId.startsWith(prefiks)); }
+          else if (where.testId?.in) { const ider = where.testId.in; rows = rows.filter((r) => ider.includes(r.testId)); }
+          else if (where.testId?.startsWith) { const prefiks = where.testId.startsWith; rows = rows.filter((r) => r.testId.startsWith(prefiks)); }
           if (where.id?.in) rows = rows.filter((r) => where.id!.in.includes(r.id));
           rows = [...rows].sort((a, b) => {
             if (orderBy?.takenAt) return orderBy.takenAt === "desc" ? b.takenAt.getTime() - a.takenAt.getTime() : a.takenAt.getTime() - b.takenAt.getTime();
@@ -802,4 +805,37 @@ test("alle IUP-fanene viser låsen uten deling i stedet for 404", async () => {
   }
   const oversikt = readFileSync(new URL("../../components/team-norway/skjermer/tn-spillerprofil-skjerm.tsx", import.meta.url), "utf8");
   assert.match(oversikt, /<TnIupLaastSkjerm[^>]*aktiv="oversikt"/);
+});
+
+// Anders 22.10: «Komplett testoversikt med navn for alle som har delt. Spillere som ikke har delt teller bare i
+// median og antall, uten navn.» Median av siste gyldige resultat, «—» under fem, ingen «beste».
+test("Referanse › Tester: spillere uten deling teller i median og antall, men får aldri navn eller egen rad", async () => {
+  const { hentTnReferanseTester } = await import("./tn-arbeidsflate");
+  const coach = { id: "coach-1", role: "COACH" as const, name: "Coach" };
+  const putt = ekteResultat("putt-1-3m", true);
+  const ider = ["player-a", "player-b", "player-c", "player-d", "player-e"];
+  medlemmer = [...medlemmer, ...ider.slice(2).map((userId) => ({ userId, role: "PLAYER", navn: `Navn ${userId}`, aktiv: true }))];
+  resultater = ider.map((userId, i) => ({ id: `r-${userId}`, userId, testId: "tn-v3-putt-1-3m", takenAt: new Date(Date.now() - (i + 1) * 864e5), score: putt.score, details: putt, recordedById: null }));
+
+  profilDelt = false;
+  const uten = await hentTnReferanseTester(coach);
+  assert.ok(uten);
+  const putting = uten!.tester.find((t) => t.test.id === "putt-1-3m")!;
+  assert.equal(putting.antall, 5);
+  assert.notEqual(putting.median, null);
+  assert.deepEqual(uten!.spillere, []);
+  assert.doesNotMatch(JSON.stringify(uten), /Navn player|Spiller A|player-[a-e]/);
+  assert.equal("beste" in putting, false);
+
+  resultater = resultater.slice(1);
+  assert.equal((await hentTnReferanseTester(coach))!.tester.find((t) => t.test.id === "putt-1-3m")!.median, null, "under fem gir «—»");
+
+  profilDelt = true;
+  const med = await hentTnReferanseTester(coach);
+  assert.ok(med!.spillere.some((s) => s.navn === "Spiller B" && s.celler["putt-1-3m"]));
+});
+
+test("Referanse › Tester er bare for trenere", async () => {
+  const { hentTnReferanseTester } = await import("./tn-arbeidsflate");
+  assert.equal(await hentTnReferanseTester({ id: "player-a", role: "PLAYER", name: "Spiller A" }), null);
 });

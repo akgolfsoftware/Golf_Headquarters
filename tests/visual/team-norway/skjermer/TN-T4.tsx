@@ -1,7 +1,7 @@
-/** Prøvefil for T4 Resultat per spiller (IUP › Tester) og T5 Referansenivåer i retning «Skrå» (canvaset, tavlene T4–T5). Syntetiske data. */
-import { TnReferansenivaerVisning, type TnReferanseRad } from "@/components/team-norway/skjermer/tn-referansenivaer-visning";
+/** Prøvefil for T4 Resultat per spiller (IUP › Tester) og Referanse › Tester (utkast 2). Syntetiske data. */
+import { TnReferansenivaerVisning } from "@/components/team-norway/skjermer/tn-referansenivaer-visning";
 import { TnSpillerTesterVisning } from "@/components/team-norway/skjermer/tn-spiller-tester-visning";
-import type { TnArbeidskontekst, TnSpillerOvrigeTester, TnSpillerTestRad, TnSpillerTilgang } from "@/lib/domain/tn-arbeidsflate";
+import type { TnArbeidskontekst, TnReferanseTesterData, TnSpillerOvrigeTester, TnSpillerTestRad, TnSpillerTilgang } from "@/lib/domain/tn-arbeidsflate";
 import { TESTBATTERI } from "@/lib/portal-tester/testbatteri";
 import { tnProtocol } from "@/lib/portal-tester/tn-catalog";
 import { tnDefinitionId } from "@/lib/portal-tester/tn-integration";
@@ -9,7 +9,7 @@ import { tnDefinitionId } from "@/lib/portal-tester/tn-integration";
 export const sti = "/team-norway/spiller/b/tester";
 
 const kontekst: TnArbeidskontekst = { gruppe: { id: "g1", name: "Landslag junior" }, rolle: "COACH", erSpiller: false, kanAdministrere: true };
-const tilgang: TnSpillerTilgang = { kontekst, spillerId: "b", spillerNavn: "Spiller B" };
+const tilgang: TnSpillerTilgang = { kontekst, spillerId: "b", spillerNavn: "Jørn Johnsen" };
 const d = (m: number, dag: number) => new Date(Date.UTC(2026, m - 1, dag, 9));
 
 const rad = (protokoll: string, navn: string, antall: number, siste: number, forrige: number | null, beste: number, tekst: (v: number) => string, lavere: boolean, dato: Date): TnSpillerTestRad => ({
@@ -37,14 +37,20 @@ const ovrige = {
   planlagt: [],
 } as unknown as TnSpillerOvrigeTester;
 
-const referanser: TnReferanseRad[] = TESTBATTERI.map((test, i) => ({
-  test, protokollId: test.protokoller[0] ?? null, antall: test.del === "Fysisk" ? 0 : 12,
-  median: test.del === "Fysisk" ? null : ["6,8 %", "5,9 %", "7,4 %", "6,2 %", "31 slag", "9,6 m", "8,1 %", null, "4 / 6 OK", "27 / 36 p", "7 / 10 OK", "24 / 36 p", "22 / 36 p", "38 cm"][i] ?? null,
-  beste: test.del === "Fysisk" ? null : ["3,9 %", "4,2 %", "5,6 %", "4,8 %", "28 slag", "7,9 m", "6,5 %", null, "6 / 6 OK", "33 / 36 p", "9 / 10 OK", "30 / 36 p", "29 / 36 p", "22 cm"][i] ?? null,
-}));
+const MEDIANER = ["6,8 %", "5,9 %", "7,4 %", "6,2 %", "31 slag", "9,6 m", "8,1 %", null, "4 / 6 OK", "27 / 36 p", "7 / 10 OK", "24 / 36 p", "22 / 36 p", "38 cm"];
+const referanse: TnReferanseTesterData = {
+  kontekst,
+  iGruppa: 14,
+  tester: TESTBATTERI.map((test, i) => ({ test, antall: test.del === "Fysisk" ? 0 : i === 7 ? 3 : 12, median: test.del === "Fysisk" ? null : MEDIANER[i] ?? null })),
+  spillere: [
+    { spillerId: "b", navn: "Jørn Johnsen", celler: { "driver-basic": { testId: "tn-v3-driver-220", formatert: "5,2 %", dato: new Date(Date.UTC(2026, 8, 14)), antall: 2 }, "wedge-gate": { testId: "tn-v3-wedge-gate", formatert: "29 / 36 p", dato: new Date(Date.UTC(2026, 8, 14)), antall: 3 } } },
+    { spillerId: "c", navn: "Spiller med et ganske langt navn", celler: {} },
+  ],
+};
 
 export const tilstander = {
   tester: <TnSpillerTesterVisning brukerNavn="Trener 1" spillerId="b" tilgang={tilgang} tnRader={tnRader} ovrige={ovrige} />,
   "tester-tom": <TnSpillerTesterVisning brukerNavn="Trener 1" spillerId="b" tilgang={tilgang} tnRader={[]} ovrige={null} />,
-  referanse: <TnReferansenivaerVisning brukerNavn="Trener 1" visDataGolf={false} kontekst={kontekst} rader={referanser} />,
+  referanse: <TnReferansenivaerVisning brukerNavn="Trener 1" visDataGolf={false} data={referanse} />,
+  "referanse-ingen-delt": <TnReferansenivaerVisning brukerNavn="Trener 1" visDataGolf={false} data={{ ...referanse, spillere: [] }} />,
 };

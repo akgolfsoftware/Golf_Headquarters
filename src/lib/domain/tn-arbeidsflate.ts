@@ -24,6 +24,8 @@ import { tilTurneringer } from "@/lib/profil-kobling/til-turneringer";
 import { lesLeverteIupForProfil } from "@/lib/iup/trener-profil-lesing";
 import { summerAksefordeling } from "./tn-aksefordeling";
 import { tnDenneMandag, vurderTnTrening, type TnSpillerTrening } from "./tn-trenger-deg";
+import { REFERANSE_VINDU_DAGER, referanseMedian, sistePerSpiller } from "./tn-referanse-tester-regler";
+import { TESTBATTERI, type Batteritest } from "@/lib/portal-tester/testbatteri";
 
 /**
  * Datalag for TN-00–TN-21.
@@ -1164,6 +1166,77 @@ export async function hentTnGruppeanalyseResultat(bruker: TnBruker, params: { pr
   }
 
   return null;
+}
+
+export type TnReferanseTestCelle = { testId: string; formatert: string; dato: Date; antall: number };
+export type TnReferanseTesterData = {
+  kontekst: TnArbeidskontekst;
+  /** Median og antall per test for hele gruppa. `antall` er spillere med gyldig resultat siste 12 måneder. */
+  tester: { test: Batteritest; median: string | null; antall: number }[];
+  /** Bare spillere som har delt med treneren, med siste gyldige resultat per test (alle år). */
+  spillere: { spillerId: string; navn: string; celler: Record<string, TnReferanseTestCelle> }[];
+  /** Aktive spillere i gruppa; differansen mot `spillere` er de som ikke har delt. */
+  iGruppa: number;
+};
+
+/** Gyldige TN-resultater for testene i batteriet, med protokollen hver rad hører til. */
+function tnBatteriProtokoller(test: Batteritest) {
+  return test.protokoller.flatMap((id) => {
+    const p = tnProtocol(id);
+    return p && !p.blocked ? [{ protokoll: p, testId: tnDefinitionId(p) }] : [];
+  });
+}
+
+function tnGyldigeForTest<T extends TnRaRad & { testId: string }>(rader: T[], test: Batteritest) {
+  return tnBatteriProtokoller(test).flatMap(({ protokoll, testId }) => tnValiderRader(rader.filter((r) => r.testId === testId), protokoll).gyldige);
+}
+
+/**
+ * Referanse › Tester (Anders 22.10.2026): «Komplett testoversikt med navn for alle som har delt. Spillere som
+ * ikke har delt teller bare i median og antall, uten navn.» Medianen regnes av alle aktive spillere i
+ * Team Norway-gruppa (siste gyldige resultat siste 12 måneder, «—» under fem) og forlater denne funksjonen
+ * bare som tall. Spillerradene leses per spiller innenfor den navngitte delingen (lesNavngitteProfiler).
+ * WANG-elever er ikke med; de står under WANG-tester.
+ */
+export async function hentTnReferanseTester(bruker: TnBruker, naa = new Date()): Promise<TnReferanseTesterData | null> {
+  const kontekst = await hentTnArbeidskontekst(bruker);
+  if (!kontekst || kontekst.erSpiller || !erTnGruppeanalyseLeser(kontekst, bruker)) return null;
+  const testIder = TESTBATTERI.flatMap((t) => tnBatteriProtokoller(t).map((p) => p.testId));
+  const medlemmer = await prisma.groupMember.findMany({
+    where: { groupId: kontekst.gruppe.id, ...aktivtSpillerMedlemskapWhere(), user: { deletedAt: null, anonymisertAt: null } },
+    select: { userId: true },
+  });
+  const ider = [...new Set(medlemmer.map((m) => m.userId))];
+  const fra = new Date(naa.getTime() - REFERANSE_VINDU_DAGER * 864e5);
+  const gruppeRader = ider.length && testIder.length
+    ? await prisma.testResult.findMany({
+        where: { userId: { in: ider }, testId: { in: testIder }, takenAt: { gte: fra } },
+        select: { id: true, userId: true, testId: true, takenAt: true, score: true, details: true },
+      })
+    : [];
+  const tester = TESTBATTERI.map((test) => {
+    const siste = sistePerSpiller(tnGyldigeForTest(gruppeRader, test));
+    const median = referanseMedian(siste);
+    return { test, antall: siste.length, median: median ? tnFormat({ value: median.score, unit: median.parsed.unit }) : null };
+  });
+
+  const spillere = await lesNavngitteProfiler(bruker.id, kontekst.gruppe.id, async (tx, spillerId) => {
+    const spiller = await tx.user.findUnique({ where: { id: spillerId }, select: { name: true } });
+    if (!spiller) return null;
+    const rader = await tx.testResult.findMany({
+      where: { userId: spillerId, testId: { in: testIder } },
+      select: { id: true, userId: true, testId: true, takenAt: true, score: true, details: true },
+    });
+    const celler: Record<string, TnReferanseTestCelle> = {};
+    for (const test of TESTBATTERI) {
+      const gyldige = tnGyldigeForTest(rader, test);
+      const siste = sistePerSpiller(gyldige)[0];
+      if (siste) celler[test.id] = { testId: siste.testId, formatert: tnFormat({ value: siste.score, unit: siste.parsed.unit }), dato: siste.takenAt, antall: gyldige.length };
+    }
+    return { spillerId, navn: spiller.name ?? "Ukjent", celler };
+  });
+
+  return { kontekst, tester, spillere: spillere.sort((a, b) => a.navn.localeCompare(b.navn, "nb")), iGruppa: ider.length };
 }
 
 /**
