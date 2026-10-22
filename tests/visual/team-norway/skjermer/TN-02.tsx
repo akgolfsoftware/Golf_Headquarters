@@ -18,7 +18,7 @@ const base: Props = {
   aar: 2026,
   naa,
   profil: {
-    navn: "Spiller B",
+    navn: "Jørn Johnsen",
     erTnMedlem: true,
     fodselsdato: d(2009, 4, 12),
     klubb: "Klubb 2",
@@ -32,7 +32,7 @@ const base: Props = {
     ],
   },
   tester: {
-    tilgang: { kontekst, spillerId: "s1", spillerNavn: "Spiller B" },
+    tilgang: { kontekst, spillerId: "s1", spillerNavn: "Jørn Johnsen" },
     rader: [
       { testId: "t1", protokollNavn: "Wedge Gate", antall: 3, antallUtelatt: 0, sisteScore: 29, sisteEnhet: "p", sisteFormatert: "29 p", sisteDato: d(2026, 9, 14), forrigeScore: 25, besteScore: 29, besteFormatert: "29 p", lowerIsBetter: false, sisteTestdagDeltakerId: null },
       { testId: "t2", protokollNavn: "Driver Basic", antall: 2, antallUtelatt: 0, sisteScore: 0.052, sisteEnhet: "PEI", sisteFormatert: "5,2 %", sisteDato: d(2026, 9, 14), forrigeScore: 0.061, besteScore: 0.052, besteFormatert: "5,2 %", lowerIsBetter: true, sisteTestdagDeltakerId: null },
@@ -62,5 +62,5 @@ const Vis = (p: Partial<Props>) => <TnSpillerprofilVisning {...base} {...p} />;
 export const tilstander = {
   data: <Vis />,
   "uten-data": <Vis akser={null} tester={null} delt={null} poster={[]} profil={{ ...base.profil, turneringer: null, aaret: null }} reg={null} />,
-  laast: <TnIupLaastVisning brukerNavn="Trener 1" kontekst={kontekst} spillerId="spiller-c" aktiv="oversikt" navn="Spiller C" klubb="Klubb 3" fodselsaar={2010} wagr={{ plass: 1240, dato: d(2026, 10, 19) }} aar={2026} />,
+  laast: <TnIupLaastVisning brukerNavn="Trener 1" kontekst={kontekst} spillerId="spiller-c" aktiv="oversikt" navn="Henrik Aas" klubb="Klubb 3" fodselsaar={2010} wagr={{ plass: 1240, dato: d(2026, 10, 19) }} aar={2026} />,
 };

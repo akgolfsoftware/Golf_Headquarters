@@ -45,7 +45,7 @@ const admin = createClient(krev("NEXT_PUBLIC_SUPABASE_URL"), krev("SUPABASE_SERV
   auth: { autoRefreshToken: false, persistSession: false },
 });
 
-type Spiller = { navn: string; hcp: number; klubb: string; skolear: string; fodt: string };
+type Spiller = { navn: string; /** Del før @ i e-posten når den ikke skal følge navnet. */ epost?: string; hcp: number; klubb: string; skolear: string; fodt: string };
 
 type Oppsett = {
   epostVar: string;
@@ -88,7 +88,8 @@ const OPPSETT: Oppsett[] = [
     gruppe: { slug: TN_DEMO_SLUG, navn: "Team Norway Golf (demo)", kind: "ekstern" },
     spillerDomene: "demo-tn.akgolf.test",
     spillere: [
-      { navn: "Mathias Demo", hcp: -1.2, klubb: "Demo Golfklubb", skolear: "VG3", fodt: "2007-02-11" },
+      // Demospilleren i Team Norway heter Jørn Johnsen (beslutning 22.10). Samme e-post som før, så kontoen beholdes og bare får nytt navn.
+      { navn: "Jørn Johnsen", epost: "mathias.demo", hcp: -1.2, klubb: "Demo Golfklubb", skolear: "VG3", fodt: "2007-02-11" },
       { navn: "Thea Demo", hcp: 0.6, klubb: "Øvingsbanen GK", skolear: "VG2", fodt: "2008-09-17" },
       { navn: "Henrik Demo", hcp: -0.4, klubb: "Demo Golfklubb", skolear: "Ferdig", fodt: "2005-04-03" },
       { navn: "Maja Demo", hcp: 1.1, klubb: "Øvingsbanen GK", skolear: "VG3", fodt: "2007-12-28" },
@@ -155,7 +156,7 @@ async function seed(o: Oppsett) {
   });
 
   for (const s of o.spillere) {
-    const spillerEpost = `${s.navn.toLowerCase().replace(/\s+/g, ".")}@${o.spillerDomene}`;
+    const spillerEpost = `${s.epost ?? s.navn.toLowerCase().replace(/\s+/g, ".")}@${o.spillerDomene}`;
     const spiller = await prisma.user.upsert({
       where: { email: spillerEpost },
       update: { name: s.navn, role: "PLAYER", hcp: s.hcp, homeClub: s.klubb, school: o.gruppe.navn, schoolYear: s.skolear, dateOfBirth: new Date(`${s.fodt}T00:00:00.000Z`) },
