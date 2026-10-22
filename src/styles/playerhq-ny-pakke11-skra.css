@@ -1,7 +1,4 @@
-/* Pakke 11 (Live-økt og tester): første rad under det skrå kuttet. */
+/* Pakke 11 (Live-økt og tester): luft over første rad. Live-skjermene har lys tittelrad uten topp (§SKRÅ-RESTEN, 22.10). */
 .phn-skra .phn-sd-varsel:first-child { margin-top: 28px; }
-.phn-skra .skra-topp-rad .lv-klokke { display: grid; justify-items: start; color: #fff; padding: 0 8px 0 0; }
-.phn-skra .skra-topp-rad .lv-klokke b { font: 600 28px/1 var(--phn-mono); }
-.phn-skra .skra-topp-rad .lv-klokke small { color: rgba(255, 255, 255, .8); }
 .phn-skra .lv-fremdrift { padding-top: 36px; }
 .phn-skra .lv-side { max-width: none; }

@@ -754,8 +754,31 @@ test("IUP-fanene med egne lesere låser med delingen før de leser", async () =>
     ["teknisk-plan/[planId]", "hentTnTekniskPlanDetalj"],
   ] as const) {
     const kilde = readFileSync(new URL(`../../app/team-norway/spiller/[spillerId]/${side}/page.tsx`, import.meta.url), "utf8");
-    assert.match(kilde, new RegExp(`medTnSpillerData\\(bruker, spillerId, \\(\\) => ${leser}\\(`), side);
+    assert.match(kilde, new RegExp(`medTnSpillerData\\(bruker, spillerId, \\(tx\\) => ${leser}\\(tx, `), side);
   }
+});
+
+// Avvik A1 (designplanen 22.10, §5.3): leserne må bruke transaksjonen fra låsen, aldri den globale klienten.
+test("teknisk plan og fireukerssjekk leser bare med transaksjonen fra delingslåsen", async () => {
+  const { readFileSync } = await import("node:fs");
+  const kropp = (fil: string, navn: string) => {
+    const kilde = readFileSync(new URL(fil, import.meta.url), "utf8");
+    const start = kilde.indexOf(`export async function ${navn}(`);
+    assert.ok(start >= 0, navn);
+    const slutt = kilde.indexOf("\nexport ", start + 1);
+    return kilde.slice(start, slutt < 0 ? undefined : slutt);
+  };
+  for (const [fil, navn] of [
+    ["./tn-teknisk-plan.ts", "hentTnTekniskPlaner"],
+    ["./tn-teknisk-plan.ts", "hentTnTekniskPlanDetalj"],
+    ["./tn-evaluering.ts", "hentTnEvalueringGrunnlag"],
+  ] as const) {
+    const k = kropp(fil, navn);
+    assert.match(k, /\(db: Prisma\.TransactionClient,/, navn);
+    assert.doesNotMatch(k, /\bprisma\./, `${navn} bruker den globale klienten`);
+  }
+  assert.match(kropp("./tn-evaluering.ts", "hentTnEvalueringGrunnlag"), /loadTesterScreen\([^)]*\}, db\)/);
+  assert.match(kropp("./tn-arbeidsflate.ts", "hentTnSpillerOvrigeTester"), /loadTesterScreen\(malSpiller, tx\)/);
 });
 
 // Beslutningen 22.10 (§SPILLERLISTEN I TEAM NORWAY VISER DE ÅPNE TALLENE, punkt 2): en spiller i gruppa

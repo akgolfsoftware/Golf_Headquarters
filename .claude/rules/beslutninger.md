@@ -4,6 +4,25 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## SKRÅ-RESTEN: IBM PLEX BEHOLDES, NYE TOPPBILDER FØR BØLGE 3, TEKST OG SKJEMA MAKS 720 PX, LIVE-ØKTENE MISTER TOPPEN (Anders 22.10.2026, bindende)
+
+Svar på de fem spørsmålene i skissen for bølge 1 (https://claude.ai/artifact/NCP3fcTH2qNSYJtYVfWwNa, `docs/design-system/utkast-skra/komponist/bolge-1.html`): «Følg anbefalingen» på skrift og toppbilder, «Ja, slett» på `PH04LiveBrief.tsx`, «720 px» på tekstbredde og «Ta toppen bort» på live-toppen.
+
+- **Overskriftene beholder IBM Plex.** Et eventuelt bytte tas som én egen endring når alt er i Skrå. Avgjør punkt 7 i §PLAYERHQ OG AGENCYOS FÅR SKRÅ-DRAKTEN.
+- **4–6 nye toppbilder før bølge 3** (Drift-sidene i AgencyOS), f.eks. fra Mulligan, styrkerommet og et coachingrom. Anders skaffer dem; de legges i `public/images/playerhq/`. Bølge 1 og 2 bruker de 11 bildene som finnes.
+- **Løpende tekst og skjemafelt er maks 720 px brede** på brede skjermer. Kortene fyller fortsatt hele bredden. Avgjør punkt 3 i §DESKTOP-SKJERMER BRUKER FULL BREDDE.
+- **Live-økta har ingen topp:** brief, aktiv, slagteller, oppsummering og testgjennomføring (lagt inn med lav topp i #1588) får en lys tittelrad uten bilde. Klokke og Avslutt står fortsatt øverst.
+- **`PH04LiveBrief.tsx` slettes.** Ingen side bruker den.
+
+**Overstyrer:** den lave toppen med bilde på live-skjermene fra #1588.
+
+**Arbeidet dette utløser:**
+
+1. **Slett `PH04LiveBrief.tsx`.** Gjort i samme PR.
+2. **Live uten topp:** `SessionBrief.tsx`, `PH05LiveAktiv.tsx`, `PH06Slagteller.tsx`, `PH07Oktoppsummering.tsx` og `PH15TestGjennomfor.tsx` bruker ikke `SkraTopp`. Ferdig når de fem er målt i 390, 1280 og 1920 px uten sidelengs rulling, og klokke og Avslutt er nåbare uten å rulle.
+3. **720 px tekst og skjema:** ny regel i byggeklossene eller sidestilene, så løpende tekst og skjemafelt stopper ved 720 px. Ferdig når et skjema og en tekstside er målt i 1920 px. Tas med i bølgene, ikke som egen pakke.
+4. **Toppbildene:** Anders sender 4–6 bilder før bølge 3 starter.
+
 ## TEAM NORWAY: DELING ER ALT ELLER INGENTING, MEDIAN AV SISTE RESULTAT, OG ÉN DEFINISJON AV BRUTTO SNITT (Anders 22.10.2026, bindende)
 
 Anders 22.10: «Ja til alle tre anbefalingene.» Svar på spørsmålene i §5.4 i `docs/planer/tn-designloft-plan-2026-10-22.md` (#1612). Samme dag avgjorde han at PlayerHQ-lenken går til «Se hva Team Norway ser», og at «beste» tas bort i Referanse › Tester.

@@ -229,10 +229,11 @@ test("tnOppdaterOppgave: gyldig eierskap kaller delt updateTaskBasics nøyaktig 
 test("hentTnTekniskPlanDetalj spør alltid med { id: planId, userId: spillerId } — aldri viewerens id", async () => {
   reset();
   const { hentTnTekniskPlanDetalj } = await modul();
-  const treff = await hentTnTekniskPlanDetalj("spiller-1", "plan-1");
+  const { prisma: db } = (await import("@/lib/prisma")) as unknown as { prisma: Parameters<typeof hentTnTekniskPlanDetalj>[0] };
+  const treff = await hentTnTekniskPlanDetalj(db, "spiller-1", "plan-1");
   assert.equal(treff?.navn, "Vårplan");
   assert.deepEqual(findFirstKall, [{ id: "plan-1", userId: "spiller-1" }]);
 
-  const feilSpiller = await hentTnTekniskPlanDetalj("en-annen-spiller", "plan-1");
+  const feilSpiller = await hentTnTekniskPlanDetalj(db, "en-annen-spiller", "plan-1");
   assert.equal(feilSpiller, null);
 });
