@@ -1,9 +1,14 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { PlayerHQSkall } from "@/components/precision/PlayerHQSkall";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import { getUnreadNotifications } from "@/app/portal/actions";
 import { hentMineSamlingsinvitasjoner } from "@/lib/workbench/samlingsinvitasjon-actions";
 import { SamlingsinvitasjonListe } from "./samlingsinvitasjon-liste";
+import "@/styles/playerhq-ny.css";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Samlinger · PlayerHQ" };
@@ -11,18 +16,26 @@ export const metadata = { title: "Samlinger · PlayerHQ" };
 export default async function SamlingsinvitasjonerPage() {
   const user = await requirePortalUser({ allow: ["PLAYER"] });
   if (user.role !== "PLAYER") redirect("/portal");
-  const invitasjoner = await hentMineSamlingsinvitasjoner();
+  const [invitasjoner, uleste] = await Promise.all([
+    hentMineSamlingsinvitasjoner(),
+    getUnreadNotifications(user.id, 1),
+  ]);
   return (
-    <V2Shell bredde="full" aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name ?? undefined}>
-      <main className="pa-root"><div className="pa-side" style={{ paddingBlock: 28 }}>
-        <header style={{ display: "flex", flexWrap: "wrap", alignItems: "end", justifyContent: "space-between", gap: 16, marginBottom: 22 }}>
-          <div><p style={{ margin: "0 0 6px", color: "var(--text-secondary)", font: "var(--type-label-s)" }}>PLAYERHQ · WORKBENCH</p>
-            <h1 style={{ margin: 0, color: "var(--text-primary)", font: "var(--type-heading-l)" }}>Invitasjoner til samlinger</h1>
-            <p style={{ margin: "8px 0 0", color: "var(--text-secondary)", font: "var(--type-body-m)" }}>Se hele programmet og sjekk kalenderkollisjoner før du svarer.</p></div>
-          <Link href="/portal/planlegge/workbench" style={{ minHeight: 44, display: "inline-flex", alignItems: "center", color: "var(--text-primary)", font: "var(--type-label-m)" }}>Åpne Workbench</Link>
-        </header>
-        <SamlingsinvitasjonListe invitasjoner={invitasjoner} />
-      </div></main>
-    </V2Shell>
+    <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste.count}>
+      <div className="phn phn-skra">
+        <SkraTopp
+          lav
+          etikett="Samlinger"
+          bilde="/images/playerhq/slag-putting.jpg" bildePosisjon="50% 50%"
+          overlinje="Plan · Workbench"
+          tittel="Invitasjoner til samlinger"
+          ingress="Se hele programmet og sjekk kalenderkollisjoner før du svarer."
+          handling={<Link className="phn-knapp pri skra-topp-knapp" href="/portal/planlegge/workbench">Åpne Workbench</Link>}
+        />
+        <SkraFlyt lav>
+          <SamlingsinvitasjonListe invitasjoner={invitasjoner} />
+        </SkraFlyt>
+      </div>
+    </PlayerHQSkall>
   );
 }
