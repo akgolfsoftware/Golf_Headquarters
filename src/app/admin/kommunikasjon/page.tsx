@@ -40,7 +40,8 @@
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
-import { Topp } from "@/components/admin/agencyos-ny/ny";
+import { SkraKort } from "@/components/precision/skra/Skra";
+import { AG04Underside } from "@/components/admin/precision/AG04Underside";
 import { AG04Maler } from "@/components/admin/precision/AG04Maler";
 import { velgKommunikasjonFane } from "@/lib/admin/kommunikasjon/faner";
 import { innboksHref, lesInnboksFilter } from "@/lib/admin/innboks/filter";
@@ -68,11 +69,10 @@ export default async function KommunikasjonPage({
   // Bare Maler står igjen: E-postmaler er en del av Oppsett (utkast-agencyos/resten.html).
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
-      <div className="agn-s">
-        <Topp tilbake={{ href: "/admin/oppsett?fane=mark", tekst: "Oppsett" }} dato="Oppsett · e-post" tittel="E-postmaler"
-          ingress="Malene Jarvis bruker når den lager utkast i Innboks. Ingenting sendes uten at du trykker Send." />
-        <AG04Maler data={await lastKommunikasjonMaler()} />
-      </div>
+      <AG04Underside tilbake={{ href: "/admin/oppsett?fane=mark", tekst: "Oppsett" }} tittel="E-postmaler"
+        ingress="Malene Jarvis bruker når den lager utkast i Innboks. Ingenting sendes uten at du trykker Send.">
+        <SkraKort className="ibx-liste" etikett="E-postmaler"><AG04Maler data={await lastKommunikasjonMaler()} /></SkraKort>
+      </AG04Underside>
     </AgencyOSSkall>
   );
 }

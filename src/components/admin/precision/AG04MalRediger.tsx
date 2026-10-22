@@ -10,12 +10,16 @@
  * og Slett nederst i kortet. Koden beholder i tillegg Send test, Aktiver mal, Arkiver og Aktiv-bryter, med de samme server-handlingene som før.
  * «Slett mal» finnes ikke som handling i appen (bare Arkiver) og er ikke laget.
  * Arkiver-bekreftelsen er rust (avslutter malen), som Avslutt-dialogene ellers.
+ * Skrå-drakten (bølge 1, skissen §5 «Skjema»): lav topp med tilbakelenke til E-postmaler,
+ * skjema og forhåndsvisning i hvite kort.
  */
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Archive, Check, Send, Star } from "lucide-react";
 import { Knapp, KnappLenke, Meta, StatusPille } from "@/components/precision/pa";
-import { Bryter, Dialogboks, Kort, Kolonner, Side, SideHode, Skjemafelt, Stabel, Tekstfelt } from "@/components/precision/pa-a4";
+import { Bryter, Dialogboks, Kolonner, Skjemafelt, Stabel, Tekstfelt } from "@/components/precision/pa-a4";
+import { SkraKort } from "@/components/precision/skra/Skra";
+import { AG04Underside } from "@/components/admin/precision/AG04Underside";
 import { InlineVarsel } from "@/components/precision/pa-a5";
 import { saveTemplate, sendTestEmail, setAsDefault, archiveTemplate } from "@/app/admin/(legacy)/email-templates/[id]/rediger/actions";
 import "@/styles/precision-a4.css";
@@ -71,18 +75,13 @@ export function AG04MalRediger({ mal, testMottaker }: AG04MalProps) {
   const status = endret ? <StatusPille tone="warn">Ulagrede endringer</StatusPille>
     : active ? <StatusPille tone="ok">Aktiv · lagret</StatusPille> : <StatusPille>Inaktiv · lagret</StatusPille>;
 
-  return <Side max={1040}>
-    <style>{".ag04-chip{min-height:44px}@media (min-width:1025px){.ag04-chip{min-height:36px}}"}</style>
-    <SideHode
-      kicker="Innboks · Rediger e-postmal"
-      title={name || "Ny mal"}
-      sub="Felles maler for coachene. Aktive bookinge-poster sendes ved tilhørende hendelser. Endringer i emne og tekst må lagres før de brukes."
-      actions={<KnappLenke href="/admin/kommunikasjon?fane=maler" variant="ghost">Tilbake til maler</KnappLenke>}
-    />
+  return <AG04Underside tilbake={{ href: "/admin/kommunikasjon?fane=maler", tekst: "E-postmaler" }} tittel={name || "Ny mal"}
+    ingress="Felles maler for coachene. Aktive bookinge-poster sendes ved tilhørende hendelser. Endringer i emne og tekst må lagres før de brukes.">
+    <style>{".ag04-chip{min-height:48px}@media (min-width:1025px){.ag04-chip{min-height:36px}}"}</style>
     <div>{status}</div>
     {melding && <div role="status" aria-live="polite"><InlineVarsel tone={melding.type}>{melding.tekst}</InlineVarsel></div>}
     <Kolonner mal="repeat(auto-fit, minmax(min(100%, 340px), 1fr))">
-      <Kort>
+      <SkraKort etikett="Malen">
         <Stabel gap={14}>
           <Skjemafelt label="Navn på mal" htmlFor="mal-navn"><Tekstfelt id="mal-navn" value={name} onChange={setName} placeholder="Bookingbekreftelse" /></Skjemafelt>
           <Skjemafelt htmlFor="mal-emne" label="Emne" hint="Kan inneholde felter i doble krøllparenteser."><Tekstfelt id="mal-emne" mono value={subject} onChange={setSubject} placeholder="Din time {{okt_dato}}" /></Skjemafelt>
@@ -104,8 +103,8 @@ export function AG04MalRediger({ mal, testMottaker }: AG04MalProps) {
           </div>
           <Meta style={{ overflowWrap: "anywhere" }}>{`/ADMIN/EMAIL-TEMPLATES/${mal.id.toUpperCase()}/REDIGER`}</Meta>
         </Stabel>
-      </Kort>
-      <Kort>
+      </SkraKort>
+      <SkraKort etikett="Forhåndsvisning">
         <Stabel gap={10}>
           <Meta>FORHÅNDSVISNING AV MALTEKST · EKSEMPELDATA</Meta>
           <div style={{ padding: 14, borderRadius: "var(--radius)", background: "var(--surface-flat)", border: "1px solid var(--border-hairline)", display: "flex", flexDirection: "column", gap: 8, minWidth: 0 }}>
@@ -120,11 +119,11 @@ export function AG04MalRediger({ mal, testMottaker }: AG04MalProps) {
           <p style={{ font: "var(--type-body-s)", margin: 0 }}>Send test bruker teksten du ser nå, også før lagring. Testen endrer ingen booking og aktiverer ikke malen.</p>
           <Meta style={{ overflowWrap: "anywhere" }}>TEST SENDES TIL {testMottaker.toUpperCase()}</Meta>
         </Stabel>
-      </Kort>
+      </SkraKort>
     </Kolonner>
     <Dialogboks open={arkiverApen} onClose={() => setArkiverApen(false)} title="Arkivere malen?"
       footer={<><Knapp variant="ghost" onClick={() => setArkiverApen(false)}>Avbryt</Knapp><Knapp variant="signal" onClick={arkiver}>Arkiver</Knapp></>}>
       <p style={{ margin: 0, font: "var(--type-body)" }}>Malen «{mal.name}» blir deaktivert, og tilhørende automatiske e-poster stoppes. Utkast som allerede er laget beholdes.</p>
     </Dialogboks>
-  </Side>;
+  </AG04Underside>;
 }
