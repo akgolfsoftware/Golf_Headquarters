@@ -51,3 +51,26 @@ describe("byggWagrLeaderboard", () => {
     assert.equal(utenPlass!.endring, null);
   });
 });
+
+it("parseWagrIder tar inntil fire unike, positive heltall", async () => {
+  const { parseWagrIder } = await import("./tn-referanse-wagr-regler");
+  assert.deepEqual(parseWagrIder(["3", "3", "x", "-1", "7", "8", "9", "10"]), [3, 7, 8, 9]);
+  assert.deepEqual(parseWagrIder("12"), [12]);
+  assert.deepEqual(parseWagrIder(undefined), []);
+});
+
+it("wagrAarForAar: årsslutt for tidligere år og plassen nå for i år, eldst først", async () => {
+  const { wagrAarForAar } = await import("./tn-referanse-wagr-regler");
+  const dato = new Date(Date.UTC(2026, 9, 19));
+  assert.deepEqual(wagrAarForAar({ "2025": 846, "2024": 2239, "2026": 1 }, 412, dato), [{ aar: 2024, plass: 2239 }, { aar: 2025, plass: 846 }, { aar: 2026, plass: 412 }]);
+  assert.deepEqual(wagrAarForAar(null, null, dato), []);
+});
+
+it("wagrAarsscore og fellesTurneringer", async () => {
+  const { wagrAarsscore, fellesTurneringer } = await import("./tn-referanse-wagr-regler");
+  assert.equal(wagrAarsscore({ "2026": { score: 72.1 } }, 2026), 72.1);
+  assert.equal(wagrAarsscore({ "2026": { score: null } }, 2026), null);
+  assert.equal(wagrAarsscore({}, 2026), null);
+  assert.equal(fellesTurneringer([[1, 2, 3], [2, 3, 4], [3, 2]]), 2);
+  assert.equal(fellesTurneringer([[1, 2]]), 0);
+});

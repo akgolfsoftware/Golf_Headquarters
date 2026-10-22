@@ -4,15 +4,25 @@ import { readFileSync } from "node:fs";
 
 import { TN_REFERANSESPILLERE_URL } from "./tn-referansespillere";
 
-// Til Referanse › WAGR er bygget i HQ, lenker menypunktet til teamnorwayref (Anders 21.10.2026).
-test("Referansespillere lenker til teamnorwayref", () => {
+// Teamnorwayref er fortsatt kilden for det som ikke er i basen (Norsk golf, HCP Norge).
+test("teamnorwayref-lenken peker til teamnorwayref", () => {
   assert.equal(TN_REFERANSESPILLERE_URL, "https://teamnorwayref.vercel.app");
 });
 
-test("Referansespillere står under Referanse i tnHovedmeny", () => {
+// Beslutningen 21.10, punkt 7: menypunktet peker til den nye Referanse-delen når den finnes.
+test("Referanse i menyen åpner sidene i HQ, ikke teamnorwayref", () => {
   const kilde = readFileSync(new URL("./tn-shell.tsx", import.meta.url), "utf8");
   const referanse = kilde.slice(kilde.indexOf('id: "referanse"'), kilde.indexOf('id: "fag"'));
-  assert.match(referanse, /label: "Referansespillere", href: TN_REFERANSESPILLERE_URL/);
+  const punkter = [...referanse.matchAll(/lenke\("([^"]+)", "([^"]+)"/g)].map((m) => [m[1], m[2]]);
+  assert.deepEqual(punkter, [
+    ["WAGR", "/team-norway/referanse"],
+    ["Sammenlign", "/team-norway/referanse/sammenlign"],
+    ["Søk", "/team-norway/referanse/sok"],
+    ["Norsk golf", "/team-norway/referanse/norsk-golf"],
+    ["HCP Norge", "/team-norway/referanse/hcp"],
+    ["Tester", "/team-norway/referanse/tester"],
+  ]);
+  assert.doesNotMatch(referanse, /TN_REFERANSESPILLERE_URL/);
 });
 
 // Anders 21.10.2026: seks hovedpunkter, og Team Norway er bare for trenere.
