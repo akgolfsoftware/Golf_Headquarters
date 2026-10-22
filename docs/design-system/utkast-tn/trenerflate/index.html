@@ -151,11 +151,11 @@ const SKALL = (aktiv, tittel, innhold) => `
 const IUP_FANER = (aktiv) => `<div class="faner">${["Oversikt","Turneringsplan","Ranking","Turneringer","Trening","Tester","Teknisk plan","Fireukerssjekk"].map(f => `<span class="fane${f===aktiv?" aktiv":""}">${f}</span>`).join("")}</div>`;
 
 const spillere = [
-  ["Sigrid Holm", "2006", "Damer", "Bærum GK", "J1", "Komplett profil", "412", "3", "Trenger deg"],
-  ["Mathias Berg", "2005", "Herrer", "Oslo GK", "Elite", "Komplett profil", "188", "—", "Følger planen"],
-  ["Ella Strand", "2007", "Damer", "Stavanger GK", "J1", "Tester og resultater", "905", "7", "Følger planen"],
+  ["Jørn Johnsen", "2006", "Herrer", "Bærum GK", "J1", "Delt", "412", "3", "Trenger deg"],
+  ["Mathias Berg", "2005", "Herrer", "Oslo GK", "Elite", "Delt", "188", "—", "Følger planen"],
+  ["Ella Strand", "2007", "Damer", "Stavanger GK", "J1", "Delt", "905", "7", "Følger planen"],
   ["Jonas Lunde", "2006", "Herrer", "Miklagard GK", "J1", "Ikke delt", "1 240", "—", "Ikke delt"],
-  ["Henrik Aas", "2005", "Herrer", "Trondheim GK", "Elite", "Komplett profil", "326", "—", "Trenger deg"],
+  ["Henrik Aas", "2005", "Herrer", "Trondheim GK", "Elite", "Delt", "326", "—", "Trenger deg"],
   ["Ingrid Vik", "2006", "Damer", "Kristiansand GK", "J1", "Venter på svar", "—", "12", "Ikke delt"],
 ];
 
@@ -166,7 +166,7 @@ hjem: { navn: "Trenerens hjem", notat: "Hovedtall: saker som venter. Rekkefølge
   <div class="faner"><span class="fane aktiv">I dag</span><span class="fane">Gruppeposter</span><span class="fane">Dokumenter</span></div>
   <div class="flate">
     <div class="kort k6"><h3>Saker som venter <a href="#">Alle</a></h3>
-      <div class="rad"><span><b>Sigrid Holm</b> godtok ikke forslaget til turneringsplan</span><span class="merke">Svar</span></div>
+      <div class="rad"><span><b>Jørn Johnsen</b> godtok ikke forslaget til turneringsplan</span><span class="merke">Svar</span></div>
       <div class="rad"><span><b>Henrik Aas</b> har levert fireukerssjekk</span><span class="merke">Les</span></div>
       <div class="rad"><span>Uttak Junior-NM: frist fredag 24.10</span><span class="merke">Frist</span></div>
       <div class="rad"><span>2 testresultater egenført, ikke kontrollert</span><span class="merke">Kontroller</span></div>
@@ -184,13 +184,13 @@ profil: { navn: "Trenerprofil", notat: "Nås fra navnet nederst i menyen (mobil:
   <div class="flate">
     <div class="kort k4"><h3>Kontakt <a href="#">Endre</a></h3><div class="rad"><span>E-post</span><span>eva.lie@golfforbundet.no</span></div><div class="rad"><span>Telefon</span><span class="tall">—</span></div><div class="rad"><span>Rolle</span><span>Trener</span></div><span class="kilde">E-posten må være @golfforbundet.no for at spillere kan dele med deg.</span></div>
     <div class="kort k8"><h3>Spillere som deler med deg</h3><div class="hovedtall" style="font-size:30px">11<small>av 14 i gruppa</small></div>
-      <div class="rad"><span><b>Sigrid Holm</b> · Team Norway Junior</span><span class="merke fylt">Komplett profil</span></div>
-      <div class="rad"><span><b>Mathias Berg</b> · Team Norway Elite</span><span class="merke fylt">Komplett profil</span></div>
-      <div class="rad"><span><b>Ella Strand</b> · Team Norway Junior</span><span class="merke">Tester og resultater</span></div>
+      <div class="rad"><span><b>Jørn Johnsen</b> · Team Norway Junior</span><span class="merke fylt">Delt</span></div>
+      <div class="rad"><span><b>Mathias Berg</b> · Team Norway Elite</span><span class="merke fylt">Delt</span></div>
+      <div class="rad"><span><b>Ella Strand</b> · Team Norway Junior</span><span class="merke fylt">Delt</span></div>
       <div class="rad"><span>3 har ikke delt</span><span class="lenke">Se hvem</span></div>
     </div>
     <div class="kort k4"><h3>Mine grupper</h3><div class="rad"><span>Team Norway Junior</span><span class="tall">9</span></div><div class="rad"><span>Team Norway Elite</span><span class="tall">5</span></div><span class="kilde">Gruppemedlemskap gir ikke innsyn alene. Spilleren deler selv.</span></div>
-    <div class="kort k8"><h3>Mine saker</h3><div class="rad"><span>Forslag til turneringsplan, Sigrid Holm</span><span class="merke strek">Venter på spilleren</span></div><div class="rad"><span>Forslag til teknisk plan, Henrik Aas</span><span class="merke">Godtatt 18.10</span></div><div class="rad"><span>Uttak Junior-NM, ansvarlig</span><span class="merke">Frist 24.10</span></div></div>
+    <div class="kort k8"><h3>Mine saker</h3><div class="rad"><span>Forslag til turneringsplan, Jørn Johnsen</span><span class="merke strek">Venter på spilleren</span></div><div class="rad"><span>Forslag til teknisk plan, Henrik Aas</span><span class="merke">Godtatt 18.10</span></div><div class="rad"><span>Uttak Junior-NM, ansvarlig</span><span class="merke">Frist 24.10</span></div></div>
   </div>`) },
 
 spillere: { navn: "Spillere", notat: "Hovedtall: spillere i gruppa. Søk og filter (gruppe, klasse, kjønn, delingsstatus) øverst. Trykk på navnet åpner IUP. Spillere som ikke har delt vises med navn og offentlig WAGR-plass, aldri med tester eller trening. Fanene Skoler, College og USA beholdes.",
@@ -199,32 +199,33 @@ spillere: { navn: "Spillere", notat: "Hovedtall: spillere i gruppa. Søk og filt
   <div class="faner"><span class="fane aktiv">Spillere</span><span class="fane">Skoler</span><span class="fane">College og USA</span></div>
   <div class="flate">
     <div class="kort k12"><div class="felt">Søk på navn eller klubb</div>
-      <div class="filtre"><span class="seksjonsnavn" style="align-self:center">Gruppe</span><span class="chip paa">Alle</span><span class="chip">Junior</span><span class="chip">Elite</span><span class="seksjonsnavn" style="align-self:center">Klasse</span><span class="chip">J1</span><span class="chip">Elite</span><span class="seksjonsnavn" style="align-self:center">Kjønn</span><span class="chip">Damer</span><span class="chip">Herrer</span><span class="seksjonsnavn" style="align-self:center">Deling</span><span class="chip">Komplett profil</span><span class="chip">Tester og resultater</span><span class="chip">Ikke delt</span></div>
+      <div class="filtre"><span class="seksjonsnavn" style="align-self:center">Gruppe</span><span class="chip paa">Alle</span><span class="chip">Junior</span><span class="chip">Elite</span><span class="seksjonsnavn" style="align-self:center">Klasse</span><span class="chip">J1</span><span class="chip">Elite</span><span class="seksjonsnavn" style="align-self:center">Kjønn</span><span class="chip">Damer</span><span class="chip">Herrer</span><span class="seksjonsnavn" style="align-self:center">Deling</span><span class="chip">Delt</span><span class="chip">Venter på svar</span><span class="chip">Ikke delt</span></div>
     </div>
     <div class="kort k12">
       <div class="tabellboks pc-tabell"><table class="tabell"><thead><tr><th>Navn</th><th>Født</th><th>Klasse</th><th>Klubb</th><th>WAGR</th><th>NGF junior</th><th>Deling</th><th>Status</th></tr></thead><tbody>
-      ${spillere.map(s => `<tr><td><a href="#">${s[0]}</a></td><td class="t">${s[1]}</td><td>${s[4]} · ${s[2]}</td><td>${s[3]}</td><td class="t">${s[6]}</td><td class="t">—</td><td><span class="merke${s[5]==="Komplett profil"?" fylt":s[5]==="Ikke delt"||s[5]==="Venter på svar"?" strek":""}">${s[5]}</span></td><td>${s[8]}</td></tr>`).join("")}
+      ${spillere.map(s => `<tr><td><a href="#">${s[0]}</a></td><td class="t">${s[1]}</td><td>${s[4]} · ${s[2]}</td><td>${s[3]}</td><td class="t">${s[6]}</td><td class="t">—</td><td><span class="merke${s[5]==="Delt"?" fylt":s[5]==="Ikke delt"||s[5]==="Venter på svar"?" strek":""}">${s[5]}</span></td><td>${s[8]}</td></tr>`).join("")}
       </tbody></table></div>
-      <div class="mobliste">${spillere.map(s => `<div class="rad"><span><b style="text-decoration:underline">${s[0]}</b><br><span class="svak">${s[4]} · ${s[3]} · WAGR <span class="tall">${s[6]}</span></span></span><span class="merke${s[5]==="Komplett profil"?" fylt":s[5]==="Ikke delt"||s[5]==="Venter på svar"?" strek":""}">${s[5]==="Tester og resultater"?"Tester":s[5]==="Komplett profil"?"Komplett":s[5]}</span></div>`).join("")}</div>
+      <div class="mobliste">${spillere.map(s => `<div class="rad"><span><b style="text-decoration:underline">${s[0]}</b><br><span class="svak">${s[4]} · ${s[3]} · WAGR <span class="tall">${s[6]}</span></span></span><span class="merke${s[5]==="Delt"?" fylt":s[5]==="Ikke delt"||s[5]==="Venter på svar"?" strek":""}">${s[5]}</span></div>`).join("")}</div>
       <span class="kilde">WAGR: World Amateur Golf Ranking (WAGR), The R&amp;A, uke 43. NGF-juniorranking finnes ikke i appen ennå og vises «—».</span>
     </div>
   </div>`) },
 
-iup: { navn: "Spillerprofil (IUP) · Oversikt", notat: "Topp: navn, klasse, klubb, WAGR-plass og NGF-juniorranking. Fanene følger IUP-arket fra Team Norway. Oversikt har én stripe med tall, så det som haster, så siste tester, neste turneringer, poster. Treneren foreslår; knappen sier «Foreslå endring», aldri «Endre». Fanene Teknisk plan og Fireukerssjekk krever «Komplett profil».",
+iup: { navn: "Spillerprofil (IUP) · Oversikt", notat: "Topp: navn, klasse, klubb, WAGR-plass og NGF-juniorranking. Fanene følger IUP-arket fra Team Norway. Oversikt har én stripe med tall, så det som haster, så siste tester, neste turneringer, poster. Treneren foreslår; knappen sier «Foreslå endring», aldri «Endre». Alle fanene krever at spilleren har delt med treneren (ett nivå: alt eller ingenting).",
   html: () => SKALL("Spillere", "IUP", `
-  <div class="helt"><span class="bildemerke">BANEBILDE</span><span class="overlinje">IUP · Spillere</span><div style="display:flex;gap:14px;align-items:center"><div class="avatar stor">SH</div><div><h2>Sigrid Holm</h2><div>J1 · Damer · Bærum GK · født 2006</div></div></div><div class="stripe" style="max-width:640px"><div><b>412</b><span>WAGR-plass</span></div><div><b>—</b><span>NGF juniorranking</span></div><div><b>73,4</b><span>brutto snitt 2026</span></div><div><b>C</b><span>kategori</span></div></div></div>
+  <div class="helt"><span class="bildemerke">BANEBILDE</span><span class="overlinje">IUP · Spillere</span><div style="display:flex;gap:14px;align-items:center"><div class="avatar stor">JJ</div><div><h2>Jørn Johnsen</h2><div>J1 · Herrer · Bærum GK · født 2006</div></div></div><div class="stripe" style="max-width:640px"><div><b>412</b><span>WAGR-plass</span></div><div><b>—</b><span>NGF juniorranking</span></div><div><b>73,4</b><span>brutto snitt 2026</span></div><div><b>C</b><span>kategori</span></div></div></div>
   ${IUP_FANER("Oversikt")}
   <div class="flate">
     <div class="kort k4"><h3>Haster</h3><div class="rad"><span>Forslag til turneringsplan avslått 19.10</span><span class="merke">Svar</span></div><div class="rad"><span>Wedge Variation: 1 av 2 tatt</span><span class="merke strek">Mangler 1</span></div><span class="knapp">Foreslå endring</span></div>
-    <div class="kort k4"><h3>Siste tester <a href="#">Tester</a></h3><div class="rad"><span>Driver Basic</span><span class="tall">42 p · 14.10</span></div><div class="rad"><span>Inspill Basic</span><span class="tall">38 p · 02.10</span></div><div class="rad"><span>Putt 1–3 m</span><span class="tall">— </span></div><span class="kilde">Egenført i PlayerHQ, kontrollert av trener der det står.</span></div>
+    <div class="kort k4"><h3>Siste tester <a href="#">Tester</a></h3><div class="rad"><span>Driver Basic</span><span class="tall">42 p · 14.10</span></div><div class="rad"><span>Wedge Gate</span><span class="tall">24 / 36 · 14.10</span></div><div class="rad"><span>Inspill Basic</span><span class="tall">38 p · 02.10</span></div><span class="kilde">Egenført i PlayerHQ, kontrollert av trener der det står.</span></div>
     <div class="kort k4"><h3>Neste turneringer <a href="#">Turneringsplan</a></h3><div class="rad"><span>Srixon Tour finale</span><span class="tall">01.11</span></div><div class="rad"><span>Spanish Junior Open</span><span class="tall">ESTIMAT topp 10: 22 %</span></div><span class="kilde">Kilde: World Amateur Golf Ranking (WAGR), The R&amp;A. Anslag er merket ESTIMAT.</span></div>
-    <div class="kort k8"><h3>Trening siste fire uker <a href="#">Trening</a></h3><div class="stripe"><div><b>18 t</b><span>gjennomført</span></div><div><b>81 %</b><span>av plan</span></div><div><b>24 %</b><span>TEK</span></div><div><b>—</b><span>TrackMan</span></div></div><div class="seksjonsnavn">Fordeling TURN · SPILL · SLAG · TEK · FYS</div><div style="display:flex;gap:4px;height:14px"><span style="flex:8;background:#222"></span><span style="flex:14;background:#555"></span><span style="flex:30;background:#888"></span><span style="flex:24;background:#AAA"></span><span style="flex:24;background:#CCC"></span></div></div>
-    <div class="kort k4"><h3>Poster til Sigrid <a href="#">Skriv post</a></h3><div class="rad"><span>Plan for vinterperioden</span><span class="tall">16.10</span></div><div class="rad"><span>Lest av spiller og foresatt</span><span class="tall">2 av 2</span></div></div>
+    <div class="kort k8"><h3>Trening siste fire uker <a href="#">Trening</a></h3><div class="stripe"><div><b>18 t</b><span>gjennomført</span></div><div><b>81 %</b><span>av plan</span></div><div><b>24 %</b><span>TEK</span></div><div><b>—</b><span>TrackMan</span></div></div><div class="seksjonsnavn">Fordeling FYS · TEK · SLAG · SPILL · TURN</div><div style="display:flex;gap:4px;height:14px"><span style="flex:24;background:#222"></span><span style="flex:24;background:#555"></span><span style="flex:30;background:#888"></span><span style="flex:14;background:#AAA"></span><span style="flex:8;background:#CCC"></span></div></div>
+    <div class="kort k4"><h3>Poster til Jørn <a href="#">Skriv post</a></h3><div class="rad"><span>Plan for vinterperioden</span><span class="tall">16.10</span></div><div class="rad"><span>Lest av spiller og foresatt</span><span class="tall">2 av 2</span></div></div>
+    <div class="kort k12"><span class="kilde">WAGR: wagr_ref, uke 43. Brutto snitt: turneringsrunder 2026 fra NGF og GolfBox, bare brutto. Kategori: samme A–K som i PlayerHQ. Trening: rullerende fire uker, samme regel som PlayerHQ.</span></div>
   </div>`) },
 
 turneringer: { navn: "IUP · Turneringer", notat: "Progresjon over tid. Hovedtall: brutto snitt i år mot i fjor. Graf over til-par per turnering, så tabell. Bare brutto. Kilde og dato under.",
   html: () => SKALL("Spillere", "IUP", `
-  <div class="helt"><span class="bildemerke">BANEBILDE</span><span class="overlinje">IUP · Sigrid Holm</span><div class="hovedtall">73,4<small>brutto snitt 2026 · 2025: 75,1</small></div></div>
+  <div class="helt"><span class="bildemerke">BANEBILDE</span><span class="overlinje">IUP · Jørn Johnsen</span><div class="hovedtall">73,4<small>brutto snitt 2026 · 2025: 75,1</small></div></div>
   ${IUP_FANER("Turneringer")}
   <div class="flate">
     <div class="kort k8"><h3>Til par per turnering, 2024–2026</h3>
