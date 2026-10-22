@@ -1,34 +1,36 @@
 "use client";
 
 /**
- * AG-08 Spiller 360, designløftet 20.10.2026. Fasit: canvaset «AgencyOS
- * nøkkelskjermer» (https://claude.ai/artifact/SLdHBGbdK1hiJcep9e42Cy), tavlene
- * Spiller360 og Spiller360-mobil (godkjent 20.10). Hode med navn og handlinger,
- * fire nøkkeltall, «Dette krever deg nå» som kort, og fanene (mobil: nedtrekk).
- * IUP-fanen vises bare for aktive WANG- og Team Norway-medlemmer.
+ * AG-08 Spiller 360 i Skrå-drakten (bølge 1, pakke A2; skissen
+ * https://claude.ai/artifact/NCP3fcTH2qNSYJtYVfWwNa seksjon 2, godkjent av Anders 22.10.2026).
+ * Kilde: docs/design-system/utkast-skra/komponist/bolge-1.html. Byggeklosser: src/components/precision/skra/.
  *
- * Spillerkort og «Dette krever deg nå» øverst, deretter fanene Plan · Stats ·
- * Teknisk plan · Tester · IUP · Samtaler · Talent. Fanene er lenker (?fane=),
- * så serveren henter bare data for fanen som er åpen. Talent og sammenligning
- * med stallen er bare for coach — hele /admin er coach og admin.
+ * Toppen: utslagsbildet, spillerens navn og fire tall (Kategori, HCP, Etterlevelse 4 uker, SG 30 dager).
+ * Hovedkortet «Dette krever deg nå» med Send melding · Åpne Workbench · Start live · IUP-samtale.
+ * Under: fanene Plan · Stats · Teknisk plan · Tester · IUP · Samtaler · Talent (bryter over to linjer,
+ * ingen sidelengs rulling), og på PC en høyre kolonne med neste økt, avtale, plan og turnering.
+ * Fanene er lenker (?fane=), så serveren henter bare data for fanen som er åpen. IUP-fanen og
+ * IUP-samtale vises bare for aktive WANG- og Team Norway-medlemmer. Talent er bare for coach,
+ * og hele /admin er coach og admin.
  *
- * Send melding bruker den eksisterende handlingen sendMeldingTilSpiller
- * (samme tilgangssjekk som stallens melding-knapp).
+ * Send melding bruker den eksisterende handlingen sendMeldingTilSpiller.
+ * Mangler et tall, står «—».
+ *
+ * Avvik:
+ *   - Snittkurven for brutto (forrige topp) står i Stats-fanen, ikke i toppen; skissen har fire andre tall.
+ *   - «Dette krever deg nå» teller forslag i Innboks og en plan som slutter innen 14 dager.
  */
 import Link from "next/link";
 import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
 import { ChevronLeft, X } from "lucide-react";
-import { Feil, Knapp, KnappLenke, Laster, Varsel } from "@/components/admin/agencyos-ny/ny";
-import { Avatar } from "@/components/admin/agencyos-ny/ny";
+import { Avatar, Feil, Knapp, Laster, Varsel } from "@/components/admin/agencyos-ny/ny";
+import { SkraFlyt, SkraHelt, SkraKort, SkraStat, SkraTom, SkraTopp, type SkraHandling } from "@/components/precision/skra/Skra";
 import { sendMeldingTilSpiller } from "@/app/admin/(legacy)/messages/actions";
-import { FANER, type S360Fane } from "@/lib/admin-spiller/spiller360-visning";
+import { FANER, sg, type S360Fane } from "@/lib/admin-spiller/spiller360-visning";
 import type { S360FaneData, S360Hode, S360RailSpiller } from "@/lib/admin-spiller/spiller360-typer";
 import { AG08Iup, AG08Plan, AG08Samtaler, AG08Talent, AG08Tp } from "./AG08Faner";
 import { AG08Stats } from "./AG08Stats";
 import { AG08Tester } from "./AG08Tester";
-import { Nedtrekk } from "@/components/precision/Nedtrekk";
-import { formaterTall } from "@/lib/format-tall";
 import "@/styles/agencyos-ny-stall.css";
 import "@/styles/agencyos-ny-spiller360.css";
 
@@ -68,106 +70,67 @@ function SendMelding({ spillerId, navn, onClose }: { spillerId: string; navn: st
   </div>;
 }
 
-const tall = (v: number | null) => formaterTall(v, 1, true);
+const SKRA_BILDE = "/images/playerhq/slag-utslag.jpg";
 
-/** Brutto siste 10 tellende runder som linje. Lavere score tegnes høyere. */
-function Kurve({ verdier }: { verdier: number[] }) {
-  if (verdier.length < 2) return null;
-  const min = Math.min(...verdier), maks = Math.max(...verdier), spenn = Math.max(1, maks - min);
-  const x = (i: number) => (i / (verdier.length - 1)) * 88;
-  const y = (v: number) => 4 + ((v - min) / spenn) * 24;
-  const r1 = (n: number) => Math.round(n * 10) / 10;
-  const pkt = verdier.map((v, i) => `${r1(x(i))},${r1(y(v))}`).join(" ");
-  return <svg className="s3-kurve" width="88" height="32" viewBox="0 0 88 32" role="img" aria-label={`Brutto siste ${verdier.length} runder: ${verdier.join(", ")}`}>
-    <polyline points={pkt} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
-    <circle cx={x(verdier.length - 1)} cy={y(verdier.at(-1)!)} r="3" fill="currentColor" />
-  </svg>;
-}
-
-function Hode({ h, onMelding, vis }: { h: S360Hode; onMelding: () => void; vis: string }) {
-  const alder = h.fodtAar ? new Date().getFullYear() - h.fodtAar : null;
-  const meta = [h.kategori ? `Kategori ${h.kategori}` : "Kategori —", `HCP ${h.hcp}`, alder != null ? `${alder} år` : null, ...h.grupper].filter(Boolean).join(" · ");
-  return <header className="s3-hode">
-    <div className="s3-hvem">
-      <Avatar navn={h.navn} stor />
-      <div className="s3-navn">
-        <span className="meta">{meta}</span>
-        <h1>{h.navn}</h1>
-        <span className="s3-under">{h.tilhorighet === "AK GOLF" ? "AK Golf" : "WANG · Team Norway"}{h.sisteBooking ? ` · siste booking ${h.sisteBooking.dato}, ${h.sisteBooking.tjeneste}` : ""}</span>
-      </div>
-    </div>
-    <div className="s3-handlinger">
-      <KnappLenke variant="pri" href={`/admin/workbench/${h.id}`}>Åpne Workbench</KnappLenke>
-      <Knapp variant="sek" onClick={onMelding}>Send melding</Knapp>
-      <KnappLenke href="/admin/agencyos/live">Start live</KnappLenke>
-      {h.iup && <KnappLenke href={`/admin/spillere/${h.id}?fane=iup${vis}`}>IUP-samtale</KnappLenke>}
-    </div>
-    <nav aria-label="Mer om spilleren" className="s3-lenker">
-      <Link href={`/admin/spillere/${h.id}/rediger`}>Rediger profil</Link>
-      <Link href={`/admin/spillere/${h.id}/profil-komplett`}>Komplett profil</Link>
-      <Link href={`/admin/spillere/${h.id}/turneringsplan`}>Turneringsplan</Link>
-      <Link href={`/admin/spillere/${h.id}/turnering-kobling`}>Turneringsprofil</Link>
-      <Link href={`/admin/tester/tildel/${h.id}`}>Tildel test</Link>
-    </nav>
-  </header>;
-}
-
-function Nokkeltall({ h, tom }: { h: S360Hode; tom: boolean }) {
-  const s = tom ? { siste10: null, forrige10: null, antall: 0, kurve: [] } : h.snitt;
-  const endring = s.siste10 != null && s.forrige10 != null ? s.siste10 - s.forrige10 : null;
-  const pct = tom ? null : h.etterlevelse.pct;
-  const t = tom ? null : h.nesteTurnering;
-  const dager = tom ? null : h.turneringOmDager;
-  return <section aria-label="Nøkkeltall" className="s3-kpi">
-    <div className="s3-k">
-      <span className="e">Snitt brutto, 10 runder</span>
-      <div className="s3-k-rad"><b className="t">{tall(s.siste10)}</b><Kurve verdier={s.kurve} /></div>
-      <span className="s">{endring == null ? (s.antall ? `${s.antall} tellende runder` : "Under 4 tellende runder") : endring === 0 ? "Som forrige 10" : `${endring < 0 ? "↓" : "↑"} ${tall(Math.abs(endring))} slag fra forrige 10`}</span>
-    </div>
-    <div className="s3-k">
-      <span className="e">HCP</span>
-      <b className="t">{h.hcp}</b>
-      <span className="s">{h.avtale ? `${h.avtale.verdi} · ${h.avtale.hint.toLocaleLowerCase("nb-NO")}` : "Ingen coachingavtale"}</span>
-    </div>
-    <div className="s3-k">
-      <span className="e">Mot plan, 4 uker</span>
-      <b className="t">{pct == null ? "—" : <>{pct}<small> %</small></>}</b>
-      <span className="s3-bar" role="img" aria-label={pct == null ? "Ingen forfalte økter" : `${pct} prosent av planlagt tid gjennomført`}><i style={{ width: `${Math.min(100, pct ?? 0)}%` }} /></span>
-      <span className="s">Gjennomført tid mot planlagt</span>
-    </div>
-    <div className="s3-k">
-      <span className="e">Neste turnering</span>
-      <b className="t">{t ? t.dato.slice(0, 5) : "—"}</b>
-      <span className="s">{t ? `${t.navn}${dager != null ? ` · ${dager === 0 ? "i dag" : dager === 1 ? "i morgen" : `om ${dager} dager`}` : ""}` : "Ingen påmelding"}</span>
-    </div>
-  </section>;
-}
-
-function KreverDeg({ h, tom }: { h: S360Hode; tom: boolean }) {
-  const saker = tom ? [] : h.kreverDeg.slice(0, 2);
-  if (!saker.length) return <p className="s3-ingen">Ingenting krever deg nå for {h.navn.split(" ")[0]}.</p>;
-  return <section aria-label="Dette krever deg nå" className="s3-krever">
-    {saker.map((s, i) => <Link key={s.id} href={`/admin/innboks?filter=godkjenn&sak=plan:${s.id}`} className={i === 0 ? "s3-krav forst" : "s3-krav"}>
-      <span className="e">Krever deg nå · Innboks</span>
-      <b>{s.tittel}</b>
-      <span className="s">{s.sub.toLocaleLowerCase("nb-NO")} · se saken →</span>
-    </Link>)}
-    {h.kreverDeg.length > 2 && <Link href="/admin/innboks?filter=godkjenn" className="s3-flere">{h.kreverDeg.length - 2} til i Innboks →</Link>}
-  </section>;
+/** Hovedkortet: det som krever coachen nå (forslag i Innboks, eller planen som snart slutter), med de fire handlingene. */
+function KreverDeg({ h, tom, vis, onMelding }: { h: S360Hode; tom: boolean; vis: string; onMelding: () => void }) {
+  const fornavn = h.navn.split(" ")[0];
+  const planSnart = !tom && h.planSlutt && h.planSlutt.omDager >= 0 && h.planSlutt.omDager <= 14 ? h.planSlutt : null;
+  const saker = tom ? [] : h.kreverDeg;
+  const antall = saker.length + (planSnart ? 1 : 0);
+  const tittel = saker[0]?.tittel
+    ?? (planSnart ? `Planen slutter ${planSnart.omDager === 0 ? "i dag" : planSnart.omDager === 1 ? "i morgen" : `om ${planSnart.omDager} dager`}` : `Ingenting krever deg nå for ${fornavn}`);
+  const meta = saker.length
+    ? <>{saker[0]!.sub.toLocaleLowerCase("nb-NO")} · <Link className="s3s-helt-lenke" href={`/admin/innboks?filter=godkjenn&sak=plan:${saker[0]!.id}`}>{saker.length > 1 ? `Se alle ${saker.length} i Innboks` : "Se saken i Innboks"}</Link></>
+    : planSnart ? `${planSnart.navn} · slutter ${planSnart.dato}` : "Ingen forslag venter og planen løper.";
+  const handlinger: SkraHandling[] = [
+    { tekst: "Send melding", onClick: onMelding },
+    { tekst: "Åpne Workbench", href: `/admin/workbench/${h.id}`, sekundaer: true },
+    { tekst: "Start live", href: "/admin/agencyos/live", sekundaer: true },
+    ...(h.iup ? [{ tekst: "IUP-samtale", href: `/admin/spillere/${h.id}?fane=iup${vis}`, sekundaer: true }] : []),
+  ];
+  return <SkraHelt etikett="Dette krever deg nå" overlinje="Dette krever deg nå" tid={antall} tidEtter={antall === 1 ? " sak" : " saker"} tittel={tittel} meta={meta} handlinger={handlinger} />;
 }
 
 function Faner({ h, fane, vis }: { h: S360Hode; fane: S360Fane; vis: string }) {
-  const router = useRouter();
   const faner = FANER.filter(([k]) => k !== "iup" || h.iup);
-  const href = (k: string) => `/admin/spillere/${h.id}?fane=${k}${vis}`;
-  return <>
-    <nav className="s3-faner" aria-label="Spiller 360">
-      {faner.map(([k, l]) => <Link key={k} href={href(k)} scroll={false} aria-current={k === fane ? "page" : undefined}>{l}{k === "talent" && <span className="meta">Bare coach</span>}</Link>)}
-    </nav>
-    <div className="s3-fane-velger">
-      <Nedtrekk etikett="Fane" bred valg={faner.map(([k, l]) => ({ verdi: k, navn: k === "talent" ? `${l} · bare coach` : l }))} verdi={fane} onVelg={(v) => router.push(href(v), { scroll: false })} />
-    </div>
-  </>;
+  return <nav className="s3s-faner" aria-label="Spiller 360">
+    {faner.map(([k, l]) => <Link key={k} href={`/admin/spillere/${h.id}?fane=${k}${vis}`} scroll={false} aria-current={k === fane ? "page" : undefined}>{l}{k === "talent" && <span className="meta">Bare coach</span>}</Link>)}
+  </nav>;
+}
+
+/** Høyre kolonne på PC, under fanen på mobil: neste økt, avtale, plan og turnering, og lenkene videre. */
+function Side({ h, tom }: { h: S360Hode; tom: boolean }) {
+  const okt = tom ? null : h.nesteOkt;
+  const plan = tom ? null : h.planSlutt;
+  const t = tom ? null : h.nesteTurnering;
+  const dager = tom ? null : h.turneringOmDager;
+  const naar = (n: number) => n === 0 ? "i dag" : n === 1 ? "i morgen" : `om ${n} dager`;
+  return <aside className="s3s-side" aria-label="Om spilleren">
+    <SkraKort tittel="Neste økt" lenke={{ href: `/admin/workbench/${h.id}`, tekst: "Workbench" }}>
+      {okt ? <div className="s3s-fakta"><b className="num">{okt.klokke}</b><span><b>{okt.tittel}</b><span>{okt.dato} · {naar(okt.omDager)} · {okt.minutter} min</span></span></div>
+        : <SkraTom>Ingen planlagte økter.</SkraTom>}
+    </SkraKort>
+    <SkraKort tittel="Avtale" meta={h.sisteBooking ? `Siste booking ${h.sisteBooking.dato}` : undefined}>
+      {h.avtale ? <div className="s3s-fakta enkel"><span><b>{h.avtale.verdi} igjen</b><span>{h.avtale.hint.toLocaleLowerCase("nb-NO")}</span></span></div>
+        : <SkraTom>Ingen coachingavtale.</SkraTom>}
+    </SkraKort>
+    <SkraKort tittel="Plan og turnering">
+      <dl className="s3s-dl">
+        <div><dt>Planen slutter</dt><dd>{plan ? <><b className="num">{plan.dato}</b><span>{plan.navn} · {plan.omDager < 0 ? "utløpt" : naar(plan.omDager)}</span></> : "—"}</dd></div>
+        <div><dt>Neste turnering</dt><dd>{t ? <><b className="num">{t.dato}</b><span>{t.navn}{dager != null ? ` · ${naar(dager)}` : ""}</span></> : "—"}</dd></div>
+      </dl>
+    </SkraKort>
+    <SkraKort tittel="Mer om spilleren" meta={h.grupper.length ? h.grupper.join(" · ") : undefined}>
+      <nav aria-label="Mer om spilleren" className="s3s-lenker">
+        <Link href={`/admin/spillere/${h.id}/rediger`}>Rediger profil</Link>
+        <Link href={`/admin/spillere/${h.id}/profil-komplett`}>Komplett profil</Link>
+        <Link href={`/admin/spillere/${h.id}/turneringsplan`}>Turneringsplan</Link>
+        <Link href={`/admin/spillere/${h.id}/turnering-kobling`}>Turneringsprofil</Link>
+        <Link href={`/admin/tester/tildel/${h.id}`}>Tildel test</Link>
+      </nav>
+    </SkraKort>
+  </aside>;
 }
 
 function Rail({ rail, aktivId, fane }: { rail: S360RailSpiller[]; aktivId: string; fane: S360Fane }) {
@@ -202,19 +165,42 @@ export function AG08Spiller360({ tilstand, hode, fane, faneData, rail, statsDel 
   if (tilstand === "laster") return <div className="agn-s">{tilbake}<Laster tekst="Henter spilleren …" hoyder={[220, 80, 320]} /></div>;
   if (tilstand === "feil" || !hode) return <div className="agn-s">{tilbake}<Feil tittel="Spilleren kunne ikke hentes" tekst="Ingen felt er endret. Prøv igjen." kode="FEIL · SPILLER 360" /></div>;
 
-  const side = <div className="s360-stabel s3">
-    <Hode h={hode} onMelding={() => setMelding(true)} vis={vis} />
-    <Nokkeltall h={hode} tom={tom} />
-    <KreverDeg h={hode} tom={tom} />
-    <Faner h={hode} fane={fane} vis={vis} />
-    <div role="region" aria-label={FANER.find(([k]) => k === fane)?.[1]} className="pa-root s360-fane">
-      {faneData ? <FaneInnhold d={faneData} tom={tom} spillerId={hode.id} statsDel={statsDel} /> : <p className="forklar">—</p>}
-    </div>
-  </div>;
+  const h = hode;
+  const alder = h.fodtAar ? new Date().getFullYear() - h.fodtAar : null;
+  const under = [h.tilhorighet === "AK GOLF" ? "AK Golf" : "WANG · Team Norway", alder != null ? `${alder} år` : null].filter(Boolean).join(" · ");
+  const pct = tom ? null : h.etterlevelse.pct;
+  const sg30 = tom ? null : h.sg30.verdi;
 
-  return <div className="agn-s">
-    {tilbake}
-    {rail ? <div className="s360-arbeid"><Rail rail={rail} aktivId={hode.id} fane={fane} />{side}</div> : side}
-    {melding && <SendMelding spillerId={hode.id} navn={hode.navn} onClose={() => setMelding(false)} />}
+  return <div className="agn-s s3s">
+    <SkraTopp
+      etikett="Spiller 360"
+      bilde={SKRA_BILDE}
+      bildePosisjon="50% 40%"
+      overlinje={<Link href="/admin/spillere" className="s3s-tilbake"><ChevronLeft className="ikon" aria-hidden />Stall · Spiller</Link>}
+      tittel={h.navn}
+      ingress={under}
+      tall={<>
+        <SkraStat verdi={tom || !h.kategori ? "—" : h.kategori} etikett="Kategori" />
+        <SkraStat verdi={tom ? "—" : h.hcp} etikett="HCP" />
+        <SkraStat verdi={pct == null ? "—" : pct} enhet={pct == null ? undefined : "%"} etikett="Etterlevelse 4 uker" />
+        <SkraStat verdi={sg(sg30)} etikett="SG 30 dager" ariaLabel={sg30 == null ? "SG siste 30 dager: ingen runder med SG" : `SG siste 30 dager: ${sg(sg30)}, ${h.sg30.runder} runder`} />
+      </>}
+    />
+    <SkraFlyt>
+      <KreverDeg h={h} tom={tom} vis={vis} onMelding={() => setMelding(true)} />
+      <div className="s3s-to">
+        <div className="s3s-hoved s3">
+          {rail && <Rail rail={rail} aktivId={h.id} fane={fane} />}
+          <SkraKort etikett="Faner">
+            <Faner h={h} fane={fane} vis={vis} />
+            <div role="region" aria-label={FANER.find(([k]) => k === fane)?.[1]} className="pa-root s360-fane">
+              {faneData ? <FaneInnhold d={faneData} tom={tom} spillerId={h.id} statsDel={statsDel} /> : <p className="forklar">—</p>}
+            </div>
+          </SkraKort>
+        </div>
+        <Side h={h} tom={tom} />
+      </div>
+    </SkraFlyt>
+    {melding && <SendMelding spillerId={h.id} navn={h.navn} onClose={() => setMelding(false)} />}
   </div>;
 }

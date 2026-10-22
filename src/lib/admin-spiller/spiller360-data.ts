@@ -93,7 +93,8 @@ export async function lastSpiller360Hode(viewer: Viewer, id: string): Promise<S3
   });
   if (!spiller) return null;
 
-  const [runder, okter, avtale, nesteTurnering, sisteBooking, forslag] = await Promise.all([
+  const idag = osloDagSomDbDato(naa);
+  const [runder, okter, avtale, nesteTurnering, sisteBooking, forslag, sgRunder, kommendeOkter, aktivPlan] = await Promise.all([
     prisma.round.findMany({
       where: { userId: id, sharedWithCoach: true },
       orderBy: { playedAt: "desc" },
@@ -121,7 +122,27 @@ export async function lastSpiller360Hode(viewer: Viewer, id: string): Promise<S3
       take: 5,
       select: { id: true, actionType: true, agentName: true, createdAt: true },
     }),
+    // SG siste 30 dager: snitt av sgTotal på runder spilleren har delt med coach.
+    prisma.round.findMany({
+      where: { userId: id, sharedWithCoach: true, sgTotal: { not: null }, playedAt: { gte: new Date(naa.getTime() - 30 * DAG) } },
+      select: { sgTotal: true },
+    }),
+    prisma.workbenchSession.findMany({
+      where: { playerId: id, date: { gte: idag }, status: { in: ["SCHEDULED", "PUBLISHED", "CHANGED_AFTER_PUBLISH"] }, isTemplate: false, hiddenByPlayer: false },
+      orderBy: [{ date: "asc" }, { startMinute: "asc" }],
+      take: 8,
+      select: { date: true, startMinute: true, title: true, durationMinutes: true },
+    }),
+    prisma.trainingPlan.findFirst({
+      where: { userId: id, isActive: true },
+      orderBy: { updatedAt: "desc" },
+      select: { name: true, endDate: true },
+    }),
   ]);
+
+  const naaMin = osloMinutt(naa);
+  const nesteOkt = kommendeOkter.find((o) => o.date.getTime() > idag.getTime() || o.startMinute >= naaMin) ?? null;
+  const sgVerdier = sgRunder.map((r) => r.sgTotal).filter((v): v is number => v != null);
 
   const rundeInn = runder.map((r) => ({ score: r.score, playedAt: r.playedAt, hull: hullFra(r._count.holeScores) }));
   const snitt = snittscore(rundeInn);
@@ -159,7 +180,24 @@ export async function lastSpiller360Hode(viewer: Viewer, id: string): Promise<S3
     snitt: { siste10: snitt.siste10, forrige10: snitt.forrige10, antall: snitt.antall, kurve },
     turneringOmDager: turnDato ? dagerMellom(naa, turnDato) : null,
     iup: wangTn,
+    sg30: { verdi: sgVerdier.length ? sgVerdier.reduce((a, v) => a + v, 0) / sgVerdier.length : null, runder: sgVerdier.length },
+    nesteOkt: nesteOkt
+      ? { tittel: nesteOkt.title, dato: dato(nesteOkt.date), klokke: klokke(nesteOkt.startMinute), minutter: nesteOkt.durationMinutes, omDager: dagerMellom(naa, nesteOkt.date) }
+      : null,
+    planSlutt: aktivPlan?.endDate
+      ? { navn: aktivPlan.name, dato: dato(aktivPlan.endDate), omDager: dagerMellom(naa, aktivPlan.endDate) }
+      : null,
   };
+}
+
+/** Minutter etter midnatt nå, i Oslo-tid. */
+function osloMinutt(d: Date): number {
+  const [t, m] = d.toLocaleTimeString("sv-SE", { timeZone: "Europe/Oslo", hour: "2-digit", minute: "2-digit" }).split(":").map(Number);
+  return (t ?? 0) * 60 + (m ?? 0);
+}
+
+function klokke(min: number): string {
+  return `${String(Math.floor(min / 60)).padStart(2, "0")}:${String(min % 60).padStart(2, "0")}`;
 }
 
 /** Hele dager fra i dag til datoen, i Oslo-tid. */
