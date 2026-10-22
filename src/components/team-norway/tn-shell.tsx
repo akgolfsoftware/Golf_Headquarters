@@ -121,7 +121,7 @@ export function tnHovedmeny({ aktiv, groupId, kanAdministrere, visDataGolf }: Me
         // (beslutninger.md §TEAM NORWAY ER BARE FOR TRENERE, punkt 4).
         lenke("Norsk golf", "/team-norway/referanse/norsk-golf", "referanse-norsk-golf", aktiv),
         lenke("HCP Norge", "/team-norway/referanse/hcp", "referanse-hcp", aktiv),
-        lenke("Referansenivåer", "/team-norway/referansenivaer", "referansenivaer", aktiv),
+        lenke("Tester", "/team-norway/referanse/tester", "referansenivaer", aktiv),
       ],
     },
     {

@@ -20,7 +20,7 @@ test("Referanse i menyen åpner sidene i HQ, ikke teamnorwayref", () => {
     ["Søk", "/team-norway/referanse/sok"],
     ["Norsk golf", "/team-norway/referanse/norsk-golf"],
     ["HCP Norge", "/team-norway/referanse/hcp"],
-    ["Referansenivåer", "/team-norway/referansenivaer"],
+    ["Tester", "/team-norway/referanse/tester"],
   ]);
   assert.doesNotMatch(referanse, /TN_REFERANSESPILLERE_URL/);
 });

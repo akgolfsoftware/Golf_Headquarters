@@ -1,6 +1,6 @@
-import { TnReferansenivaerSkjerm } from "@/components/team-norway/skjermer/tn-referansenivaer-skjerm";
+import { permanentRedirect } from "next/navigation";
 
-/** TN-18. Fasit: Claude Design «Team Norway App delivery» (bc3e41fc), skjerm TN-18. */
+/** Gammel adresse for Referansenivåer. Siden er Referanse › Tester (wireframes utkast-tn/trenerflate §3). */
 export default function Page() {
-  return <TnReferansenivaerSkjerm />;
+  permanentRedirect("/team-norway/referanse/tester");
 }

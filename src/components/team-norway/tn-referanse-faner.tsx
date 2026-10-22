@@ -7,7 +7,7 @@ export type TnReferanseFane = "wagr" | "sammenlign" | "sok" | "norsk-golf" | "hc
 /**
  * Fanene i Referanse (wireframes docs/design-system/utkast-tn/trenerflate, «Referanse»).
  * Planlegger er ikke med: den blir på teamnorwayref (beslutninger.md §REFERANSESPILLERE NORDEN, punkt 5).
- * Tester er dagens Referansenivåer.
+ * Tester er tidligere Referansenivåer (/team-norway/referansenivaer sender hit).
  */
 export function TnReferanseFaner({ aktiv }: { aktiv: TnReferanseFane }) {
   const faner: { id: TnReferanseFane; label: string; href: string }[] = [
@@ -16,7 +16,7 @@ export function TnReferanseFaner({ aktiv }: { aktiv: TnReferanseFane }) {
     { id: "sok", label: "Søk", href: "/team-norway/referanse/sok" },
     { id: "norsk-golf", label: "Norsk golf", href: "/team-norway/referanse/norsk-golf" },
     { id: "hcp", label: "HCP Norge", href: "/team-norway/referanse/hcp" },
-    { id: "tester", label: "Tester", href: "/team-norway/referansenivaer" },
+    { id: "tester", label: "Tester", href: "/team-norway/referanse/tester" },
   ];
   return (
     <nav aria-label="Referanse-faner" style={{ display: "flex", flexWrap: "wrap", borderBottom: `1px solid ${TN.ink200}` }}>
