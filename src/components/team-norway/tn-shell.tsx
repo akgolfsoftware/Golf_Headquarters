@@ -4,7 +4,6 @@ import type { ReactNode } from "react";
 import { TnKort, TnLogo, TnPille, type TnBunnValg, type TnMenyGruppe, type TnMenyLenke, type TnPilleTone } from "./core";
 import { initialer } from "./initialer";
 import { TnRailMobil } from "./rail-mobil";
-import { TN_REFERANSESPILLERE_URL } from "./tn-referansespillere";
 import { TnIkon } from "./tn-ikon";
 import s from "./tn-skall.module.css";
 import { TnSeksjonDS } from "./tn-skjerm";
@@ -37,6 +36,10 @@ export type TnAktivSide =
   | "protokoller"
   | "turneringer"
   | "referanse"
+  | "referanse-sammenlign"
+  | "referanse-sok"
+  | "referanse-norsk-golf"
+  | "referanse-hcp"
   | "referansenivaer"
   | "tilgang"
   | "inviter"
@@ -112,9 +115,12 @@ export function tnHovedmeny({ aktiv, groupId, kanAdministrere, visDataGolf }: Me
       ikon: "gruppe",
       punkter: [
         lenke("WAGR", "/team-norway/referanse", "referanse", aktiv),
-        // HCP Norge, Norsk golf, Sammenlign og Søk ligger fortsatt på teamnorwayref til de er bygget i HQ
+        lenke("Sammenlign", "/team-norway/referanse/sammenlign", "referanse-sammenlign", aktiv),
+        lenke("Søk", "/team-norway/referanse/sok", "referanse-sok", aktiv),
+        // Norsk golf og HCP Norge viser «—» og lenker til teamnorwayref til tallene er i basen
         // (beslutninger.md §TEAM NORWAY ER BARE FOR TRENERE, punkt 4).
-        { label: "Referansespillere", href: TN_REFERANSESPILLERE_URL, aktiv: false },
+        lenke("Norsk golf", "/team-norway/referanse/norsk-golf", "referanse-norsk-golf", aktiv),
+        lenke("HCP Norge", "/team-norway/referanse/hcp", "referanse-hcp", aktiv),
         lenke("Referansenivåer", "/team-norway/referansenivaer", "referansenivaer", aktiv),
       ],
     },

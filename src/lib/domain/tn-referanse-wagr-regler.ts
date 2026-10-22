@@ -35,6 +35,8 @@ export type WagrRefSpillerRad = {
   bestePlass: number | null;
   seire: number | null;
   sisteTurnering: { navn: string; dato: Date | null; plassering: string | null } | null;
+  /** WAGR-plass år for år, til grafen. */
+  aarForAar: WagrAarPunkt[];
 };
 
 /** Plass ved årsslutt for et gitt år, eller null. Pipelines skriver nøklene som tekst. */
@@ -65,7 +67,56 @@ export function byggWagrLeaderboard(medlemmer: WagrRefMedlem[], wagrDato: Date):
         bestePlass: m.bestePlass,
         seire: m.seire,
         sisteTurnering: m.sisteTurnering ? { navn: m.sisteTurnering.name, dato: m.sisteTurnering.date, plassering: m.sisteTurnering.finish } : null,
+        aarForAar: wagrAarForAar(m.aarsslutt, m.plass, wagrDato),
       };
     })
     .sort((a, b) => (a.plass ?? Number.MAX_SAFE_INTEGER) - (b.plass ?? Number.MAX_SAFE_INTEGER) || a.navn.localeCompare(b.navn, "nb"));
+}
+
+/** Inntil fire unike WAGR-ID-er fra adressen (`?id=1&id=2`). Alt annet ignoreres. */
+export function parseWagrIder(verdi: string | string[] | undefined, maks = 4): number[] {
+  const liste = Array.isArray(verdi) ? verdi : verdi ? [verdi] : [];
+  const ider: number[] = [];
+  for (const v of liste) {
+    const n = Number(v);
+    if (Number.isInteger(n) && n > 0 && !ider.includes(n)) ider.push(n);
+    if (ider.length === maks) break;
+  }
+  return ider;
+}
+
+export type WagrAarPunkt = { aar: number; plass: number };
+
+/**
+ * WAGR-plass år for år: plassen ved årsslutt (uke 52) for tidligere år, og plassen nå for rankinguka sitt år.
+ * Eldst først. År uten plass er ikke med.
+ */
+export function wagrAarForAar(aarsslutt: unknown, plassNaa: number | null, wagrDato: Date): WagrAarPunkt[] {
+  const iAar = wagrDato.getUTCFullYear();
+  const punkter: WagrAarPunkt[] = [];
+  if (aarsslutt && typeof aarsslutt === "object" && !Array.isArray(aarsslutt)) {
+    for (const nokkel of Object.keys(aarsslutt)) {
+      const aar = Number(nokkel);
+      const plass = plassVedAarsslutt(aarsslutt, aar);
+      if (Number.isInteger(aar) && aar < iAar && plass != null) punkter.push({ aar, plass });
+    }
+  }
+  if (plassNaa != null && plassNaa > 0) punkter.push({ aar: iAar, plass: plassNaa });
+  return punkter.sort((a, b) => a.aar - b.aar);
+}
+
+/** Snittscore for et år fra `yearStats` ({"2026": {score: 72.1, …}}). Null når tallet mangler. */
+export function wagrAarsscore(aarsstatistikk: unknown, aar: number): number | null {
+  if (!aarsstatistikk || typeof aarsstatistikk !== "object" || Array.isArray(aarsstatistikk)) return null;
+  const rad = (aarsstatistikk as Record<string, unknown>)[String(aar)];
+  if (!rad || typeof rad !== "object") return null;
+  const score = (rad as Record<string, unknown>).score;
+  return typeof score === "number" && Number.isFinite(score) && score > 0 ? score : null;
+}
+
+/** Antall turneringer (WAGR-turnerings-ID) som alle de valgte spillerne har spilt. */
+export function fellesTurneringer(perSpiller: number[][]): number {
+  if (perSpiller.length < 2) return 0;
+  const [forste, ...resten] = perSpiller.map((l) => new Set(l));
+  return [...forste!].filter((id) => resten.every((s) => s.has(id))).length;
 }
