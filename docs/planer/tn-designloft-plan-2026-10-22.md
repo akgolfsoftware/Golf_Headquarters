@@ -289,7 +289,7 @@ Krever deling (alt eller ingenting). Bygges som visningene «Statistikk», «Ten
 «Statistikk» rett etter TrackMan-importen. Nytt i koden: én modul som regner snitt, median, min, maks, standardavvik og andel i
 målvindu per parameter og kølle, med «for få slag» under 5.
 
-### 6.3 Spørsmål til Anders: avgjort 22.10 (ja til alle fire, `.claude/rules/beslutninger.md` §TRACKMAN I TEAM NORWAY-TESTENE)
+### 6.3 Spørsmål til Anders (wireframene følger anbefalingen)
 
 1. **Import fra TrackMan Report-lenke?** I dag leser appen CSV, rapportfil og bilde, ikke lenken fra TrackMan. Anbefaling: ja,
    legg til lenke-import. Det er det treneren har på telefonen etter økta, og det sparer et steg med nedlasting. Wireframen viser
