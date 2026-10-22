@@ -292,15 +292,23 @@ Krever deling (alt eller ingenting). Bygges som visningene «Statistikk», «Ten
 «Statistikk» rett etter TrackMan-importen. Nytt i koden: én modul som regner snitt, median, min, maks, standardavvik og andel i
 målvindu per parameter og kølle, med «for få slag» under 5.
 
-### 6.3 Spørsmål til Anders (wireframene følger anbefalingen)
+### 6.3 Svar fra Anders 22.10
 
-1. **Import fra TrackMan Report-lenke?** I dag leser appen CSV, rapportfil og bilde, ikke lenken fra TrackMan. Anbefaling: ja,
-   legg til lenke-import. Det er det treneren har på telefonen etter økta, og det sparer et steg med nedlasting. Wireframen viser
-   «Report-lenke» som et tredje valg.
-2. **Grensen for «passer ikke»:** anbefaling 15 m fra målet for wedge- og inspilltester og 30 m for Driver Basic. Slagene merkes,
-   og treneren kan koble dem likevel.
-3. **Club Speed:** beste av de fem første driverslagene, eller beste av alle driverslag i fila? Anbefaling: de fem første, som i
-   testprotokollen, så tallet ikke blir høyere bare fordi spilleren slo flere slag.
-4. **Målvinduene for «andel i målvindu»:** anbefaling Face to Path ±2°, Club Path ±2°, Face Angle ±2°, Smash Factor ≥ 1,35 for
-   jern og ≥ 1,45 for driver, Attack Angle −5 til −3° for jern og 0 til +4° for driver, Carry og Side ±5 m for jern og ±15 m for
-   driver. Treneren kan endre vinduet per spiller. Wireframen bruker disse.
+1. **Report-lenke:** «Ja.» Importen tar Report-lenke i tillegg til fil og bilde. Lenken er førstevalget i wireframen.
+2. **Grensen for «passer ikke»:** «Usikker.» Ikke avgjort. Til det er bestemt, merker appen bare slaget som ser ut som et mishit
+   (langt fra målet) og hopper aldri over noe selv; treneren kobler eller hopper over. Spørsmålet står åpent.
+3. **TEK eller SLAG:** «Trackman rapport må også spesifiseres om det er TEK eller SLAG.» Hver TrackMan-økt merkes TEK eller SLAG
+   ved importen (påkrevd), og statistikk, tendens og sammenheng kan filtreres på aksen. Club Speed følger anbefalingen (beste av
+   de fem første driverslagene) til Anders sier noe annet.
+4. **Mål og vinduer:** «Trener og spiller setter mål og vinduer for spiller.» Mål og vindu per parameter og kølle settes av
+   spilleren eller treneren, og hver endring viser hvem og når. Wireframen har kortet «Mål og vinduer for Jørn» under
+   statistikken.
+
+Beslutningen registreres i `beslutninger.md` av hovedøkta.
+
+### 6.4 Datamodelltillegg fra svarene (additivt via `db execute`)
+
+- `TrackManSession.akse` (`TEK` | `SLAG`), påkrevd ved ny import. Gamle økter uten akse vises som «—» og kan merkes i etterkant.
+- `TrackManMaal` (`spillerId`, `kolle`, `parameter`, `maal`, `vinduMin`, `vinduMax`, `settAvId`, `settAt`), unik på spiller,
+  kølle og parameter. Spiller og trener kan skrive; endringer logges med hvem og når.
+- Import fra Report-lenke: ny parser ved siden av `parse-csv.ts`, `parse-html-report.ts` og `parse-photo.ts`.

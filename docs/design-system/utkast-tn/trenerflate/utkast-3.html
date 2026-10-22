@@ -327,10 +327,10 @@ ferdig: { gruppe: "Testøkt", navn: "Ferdig med løpet", notat: "Oppsummering et
   </div>`) },
 
 /* ---------------- TrackMan ---------------- */
-tmKobling: { gruppe: "TrackMan", navn: "Import og kobling", notat: "Opplasting fra IUP › Tester eller midt i testøkta: CSV, rapportfil eller bilde (Report-lenke er spørsmål 1). Appen foreslår koblingen i rekkefølge: testslag 1 ↔ første TrackMan-slag med riktig kølle. Treneren bekrefter alle med ett trykk eller bytter ett og ett. Carry og side fylles inn; hvert testslag merkes «TM».",
+tmKobling: { gruppe: "TrackMan", navn: "Import og kobling", notat: "Opplasting fra IUP › Tester eller midt i testøkta: Report-lenke, CSV, rapportfil eller bilde (Report-lenke: ja, Anders 22.10). Før importen velger treneren om økta var TEK eller SLAG; det er påkrevd. Appen foreslår koblingen i rekkefølge: testslag 1 ↔ første TrackMan-slag med riktig kølle. Treneren bekrefter alle med ett trykk eller bytter ett og ett. Carry og side fylles inn; hvert testslag merkes «TM».",
   html: () => SKALL("Spillere", "TrackMan", `${IUP_TOPP("Tester")}${FANER(IUP_F, "Tester")}
   <div class="flate">
-    ${kort(4, "TrackMan-økt", `${ht("18", "slag funnet · 22.10 kl. 14:02")}${rad("Kølle", "PW, 52°, 56°")}${rad("Fil", "trackman-2210.csv")}<div class="filtre"><span class="chip paa">Fil</span><span class="chip">Bilde</span><span class="chip">Report-lenke</span></div>`)}
+    ${kort(4, "TrackMan-økt", `${ht("18", "slag funnet · 22.10 kl. 14:02")}${rad("Kølle", "PW, 52°, 56°")}${rad("Kilde", "Report-lenke")}<div class="filtre"><span class="chip paa">Report-lenke</span><span class="chip">Fil</span><span class="chip">Bilde</span></div><div class="seksjonsnavn">Hva var økta? (påkrevd)</div><div class="filtre"><span class="chip">TEK</span><span class="chip paa">SLAG</span></div>`)}
     ${kort(8, "Kobling til Wedge Variation", `
       <div class="kobling"><div><b>Testslag 1</b> · 40 m</div><span>↔</span><div class="tm">TM 1 · 52° · Carry 39,2 · Side 1,1 V</div></div>
       <div class="kobling"><div><b>Testslag 2</b> · 70 m</div><span>↔</span><div class="tm">TM 2 · PW · Carry 67,8 · Side 3,4 H</div></div>
@@ -343,7 +343,7 @@ tmKobling: { gruppe: "TrackMan", navn: "Import og kobling", notat: "Opplasting f
 tmFeil: { gruppe: "TrackMan", navn: "Slag som ikke passer", notat: "Tre tilstander. Slag som ikke passer: carry mer enn 15 m fra målet, merket og ikke koblet. For få slag: testen kan ikke lagres før resten føres for hånd. Feil kølle: driver i en wedgetest, foreslått hoppet over.",
   html: () => SKALL("Spillere", "TrackMan", `${IUP_TOPP("Tester")}${FANER(IUP_F, "Tester")}
   <div class="flate">
-    ${kort(6, "Passer ikke", `<div class="kobling"><div><b>Testslag 7</b> · 70 m</div><span>↔</span><div class="tm feil">TM 7 · PW · Carry 44,0 · 26 m fra målet</div></div><span>Ser ut som et mishit eller et prøveslag. Koble likevel, eller hopp over?</span><div style="display:flex;gap:8px;flex-wrap:wrap"><span class="knapp kontur">Koble likevel</span><span class="knapp kontur">Hopp over</span></div>`)}
+    ${kort(6, "Passer ikke", `<div class="kobling"><div><b>Testslag 7</b> · 70 m</div><span>↔</span><div class="tm feil">TM 7 · PW · Carry 44,0 · 26 m fra målet</div></div><span>Ser ut som et mishit eller et prøveslag. Grensen for «passer ikke» er ikke bestemt, så appen bare merker slaget; treneren avgjør.</span><div style="display:flex;gap:8px;flex-wrap:wrap"><span class="knapp kontur">Koble likevel</span><span class="knapp kontur">Hopp over</span></div>`)}
     ${kort(6, "For få slag", `${ht("15 av 18", "slag koblet")}<span>3 testslag mangler TrackMan-slag. Før dem for hånd, eller last opp en fil til.</span><span class="knapp kontur">Før resten for hånd</span>`)}
     ${kort(12, "Feil kølle", `<div class="kobling"><div><b>Testslag 9</b> · 55 m</div><span>↔</span><div class="tm feil">TM 9 · Driver · Carry 231,4</div></div><span>Driverslag i en wedgetest er hoppet over. Neste wedgeslag (TM 10) er foreslått i stedet.</span>${kilde("Køllen leses fra TrackMan-fila. Mangler den, vises «—» og treneren bekrefter.")}`)}
   </div>`) },
@@ -356,10 +356,10 @@ tmClub: { gruppe: "TrackMan", navn: "Club Speed fra fem driverslag", notat: "Fys
   </div>`) },
 
 /* ---------------- TrackMan-statistikk ---------------- */
-tmStat: { gruppe: "TrackMan-statistikk", navn: "Statistikk per kølle", notat: "IUP › Tester › TrackMan-økt › Statistikk (også rett etter importen). Velg kølle. Én rad per parameter: snitt · median · min · maks · spredning (standardavvik) og andel slag i målvinduet. Ytterpunktene er understreket; trykk åpner slaget. «—» når verdien mangler. Under 5 slag: «for få slag», ingen spredning.",
+tmStat: { gruppe: "TrackMan-statistikk", navn: "Statistikk per kølle", notat: "IUP › Tester › TrackMan-økt › Statistikk (også rett etter importen). Velg kølle og akse (TEK, SLAG eller begge). Én rad per parameter: snitt · median · min · maks · spredning (standardavvik) og andel slag i målvinduet. Ytterpunktene er understreket; trykk åpner slaget. «—» når verdien mangler. Under 5 slag: «for få slag», ingen spredning.",
   html: () => SKALL("Spillere", "TrackMan", `${IUP_TOPP("Tester › TrackMan 22.10")}${FANER(IUP_F, "Tester")}
   <div class="flate">
-    ${kort(12, "", `<div class="filtre"><span class="seksjonsnavn" style="align-self:center">Kølle</span><span class="chip paa">7-jern · 24 slag</span><span class="chip">Driver · 12</span><span class="chip">56° · 18</span><span class="chip">PW · 4 · for få slag</span><span class="seksjonsnavn" style="align-self:center">Visning</span><span class="chip paa">Statistikk</span><span class="chip">Tendens</span><span class="chip">Sammenheng</span></div>`)}
+    ${kort(12, "", `<div class="filtre"><span class="seksjonsnavn" style="align-self:center">Kølle</span><span class="chip paa">7-jern · 24 slag</span><span class="chip">Driver · 12</span><span class="chip">56° · 18</span><span class="chip">PW · 4 · for få slag</span><span class="seksjonsnavn" style="align-self:center">Akse</span><span class="chip paa">TEK og SLAG</span><span class="chip">TEK</span><span class="chip">SLAG</span><span class="seksjonsnavn" style="align-self:center">Visning</span><span class="chip paa">Statistikk</span><span class="chip">Tendens</span><span class="chip">Sammenheng</span></div>`)}
     ${kort(12, "7-jern · 24 slag", tabell(["Parameter","Snitt","Median","Min","Maks","Spredning","I målvindu"], [
       ["Club Speed","82,4 mph","82,6","<u>78,1</u>","<u>85,9</u>","1,9","—"],
       ["Ball Speed","113,0 mph","113,4","<u>104,2</u>","117,8","3,1","—"],
@@ -377,7 +377,8 @@ tmStat: { gruppe: "TrackMan-statistikk", navn: "Statistikk per kølle", notat: "
       ["Total","156,2 m","156,8","142,5","162,0","4,6","—"],
       ["Side","1,8 m H","1,5 H","6,2 V","<u>9,1 H</u>","3,4","79 % (±5 m)"],
       ["Apex","27,9 m","28,1","23,0","31,4","1,9","—"],
-      ["Land Angle","46,2°","46,4°","41,8°","49,9°","1,8","—"]], 1) + kilde("Kilde: TrackMan 22.10 kl. 14:02, 24 slag med 7-jern. Spredning = standardavvik. Understreket = ytterpunkt, trykk åpner slaget. Målvinduene er forslag (spørsmål 4)."))}
+      ["Land Angle","46,2°","46,4°","41,8°","49,9°","1,8","—"]], 1) + kilde("Kilde: TrackMan 22.10 kl. 14:02, 24 slag med 7-jern. Spredning = standardavvik. Understreket = ytterpunkt, trykk åpner slaget. Målvinduene er satt for Jørn (kortet under)."))}
+    ${kort(12, "Mål og vinduer for Jørn · 7-jern", tabell(["Parameter","Mål","Vindu","Satt av"], [["Face to Path","0,0°","±2°","Eva Lie (trener) · 20.10"],["Club Path","+1,0°","±2°","Eva Lie (trener) · 20.10"],["Attack Angle","−4,0°","−5 til −3°","Jørn Johnsen · 21.10"],["Carry","150 m","±5 m","Jørn Johnsen · 21.10"]], 1) + `<div style="display:flex;gap:8px;flex-wrap:wrap"><span class="knapp kontur">Endre mål og vinduer</span></div>` + kilde("Trener og spiller setter mål og vinduer for spilleren (Anders 22.10). Hver endring viser hvem og når."))}
   </div>`) },
 
 tmTreff: { gruppe: "TrackMan-statistikk", navn: "Treffpunkt og gapping", notat: "Treffpunkt-sky på køllebladet for valgt kølle (fra strikePatternX/Y), og gapping: carry-snitt og spredning per kølle i bagen, sortert fra lengst til kortest. «—» for køller uten nok slag.",
