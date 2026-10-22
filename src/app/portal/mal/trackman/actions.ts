@@ -388,7 +388,7 @@ export async function importTrackManHtml(
 }
 
 async function resolveTargetUserId(
-  user: { id: string; role: import("@/generated/prisma/client").UserRole },
+  user: { id: string; role: import("@/generated/prisma/client").UserRole; name: string | null },
   onBehalfOfUserId: string | undefined,
 ): Promise<{ id: string; viaTnDeling: boolean }> {
   if (!onBehalfOfUserId || onBehalfOfUserId === user.id) return { id: user.id, viaTnDeling: false };
