@@ -1,7 +1,7 @@
 import "server-only";
 
 import { prisma } from "@/lib/prisma";
-import { byggWagrLeaderboard, wagrAarForAar, wagrAarsscore, type WagrAarPunkt, type WagrRefGruppe, type WagrRefSpillerRad } from "./tn-referanse-wagr-regler";
+import { byggWagrLeaderboard, wagrAarForAar, wagrAarsscore, type WagrAarPunkt, type WagrRefGruppe, type WagrRefSpillerRad, type WagrResultatInn, type WagrVisning } from "./tn-referanse-wagr-regler";
 
 export * from "./tn-referanse-wagr-regler";
 
@@ -10,7 +10,7 @@ export * from "./tn-referanse-wagr-regler";
  * tabellene pipelines fyller hver mandag (wagr_ref_*, scripts/add-wagr-ref-tabeller-2026-10-21.ts).
  * Er tabellene tomme, gir den ingen grupper, og skjermen viser «—» med lenke til teamnorwayref.
  */
-export async function hentWagrReferanse(gruppeId: string | undefined): Promise<{ grupper: WagrRefGruppe[]; valgt: WagrRefGruppe | null; rader: WagrRefSpillerRad[] }> {
+export async function hentWagrReferanse(gruppeId: string | undefined, visning: WagrVisning = "leaderboard"): Promise<{ grupper: WagrRefGruppe[]; valgt: WagrRefGruppe | null; rader: WagrRefSpillerRad[]; resultater: WagrResultatInn[]; aar: number | null }> {
   const grupper: WagrRefGruppe[] = (
     await prisma.wagrRefGroup.findMany({
       orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
@@ -19,7 +19,7 @@ export async function hentWagrReferanse(gruppeId: string | undefined): Promise<{
   ).map((g) => ({ id: g.id, navn: g.name, tittel: g.title, utvalg: g.selection, kunAar: g.onlyYear, wagrDato: g.wagrDate }));
 
   const valgt = grupper.find((g) => g.id === gruppeId) ?? grupper[0] ?? null;
-  if (!valgt) return { grupper, valgt: null, rader: [] };
+  if (!valgt) return { grupper, valgt: null, rader: [], resultater: [], aar: null };
 
   const medlemmer = await prisma.wagrRefGroupMember.findMany({
     where: { groupId: valgt.id },
@@ -46,25 +46,46 @@ export async function hentWagrReferanse(gruppeId: string | undefined): Promise<{
     },
   });
 
-  return {
-    grupper,
-    valgt,
-    rader: byggWagrLeaderboard(
-      medlemmer.map((m) => ({
-        nivaa: m.level,
-        wagrId: m.player.wagrPlayerId,
-        navn: m.player.name,
-        land: m.player.country,
-        plass: m.player.rank,
-        snittPoeng: m.player.pointsAvg,
-        bestePlass: m.player.bestRank,
-        seire: m.player.wins,
-        aarsslutt: m.player.yearEndRanks,
-        sisteTurnering: m.player.results[0] ?? null,
-      })),
-      valgt.wagrDato,
-    ),
-  };
+  const rader = byggWagrLeaderboard(
+    medlemmer.map((m) => ({
+      nivaa: m.level,
+      wagrId: m.player.wagrPlayerId,
+      navn: m.player.name,
+      land: m.player.country,
+      plass: m.player.rank,
+      snittPoeng: m.player.pointsAvg,
+      bestePlass: m.player.bestRank,
+      seire: m.player.wins,
+      aarsslutt: m.player.yearEndRanks,
+      sisteTurnering: m.player.results[0] ?? null,
+    })),
+    valgt.wagrDato,
+  );
+
+  // Turneringer og Sesong: resultatene i året gruppa gjelder (gruppens år, ellers rankinguka sitt år).
+  const aar = valgt.kunAar ?? valgt.wagrDato.getUTCFullYear();
+  let resultater: WagrResultatInn[] = [];
+  if (visning !== "leaderboard" && rader.length > 0) {
+    const navnPerId = new Map(rader.map((r) => [r.wagrId, r.navn]));
+    const treff = await prisma.wagrRefResult.findMany({
+      where: { year: aar, wagrPlayerId: { in: rader.map((r) => r.wagrId) } },
+      select: { wagrPlayerId: true, wagrEventId: true, name: true, date: true, finish: true, power: true, points: true, rankBefore: true, rankAfter: true },
+    });
+    resultater = treff.map((t) => ({
+      wagrId: t.wagrPlayerId,
+      spillerNavn: navnPerId.get(t.wagrPlayerId) ?? "Ukjent spiller",
+      eventId: t.wagrEventId,
+      navn: t.name,
+      dato: t.date,
+      finish: t.finish,
+      power: t.power,
+      points: t.points,
+      rankBefore: t.rankBefore,
+      rankAfter: t.rankAfter,
+    }));
+  }
+
+  return { grupper, valgt, rader, resultater, aar };
 }
 
 export type WagrRefValg = { wagrId: number; navn: string; plass: number | null };
