@@ -4,6 +4,22 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## WAGR-REFERANSEN OPPDATERES HVER UKE, OG ALLE SPILLERE I REFERANSE VISES MED NAVN (Anders 22.10.2026, bindende)
+
+Anders 22.10, svar på de to åpne spørsmålene etter Referanse › WAGR (#1594, pipelines #124): «1. Ja» (fast ukentlig oppdatering av WAGR-tallene) og «2. Alle skal vise navn» (punkt 5 i §TEAM NORWAY ER BARE FOR TRENERE).
+
+- **WAGR-tabellene i HQ (`wagr_ref_*`) oppdateres av en fast ukentlig jobb i `ak-golf-pipelines`**, ikke for hånd. WAGR publiserer tirsdag, og `wagr-sync.yml` kjører onsdag 08:00 UTC; referansejobben kjører etter den, så tallene er fra siste rankinguke. «Mandag» i spørsmålet var Claudes ord, ikke WAGRs rytme.
+- Jobben skriver bare til basen. Den publiserer aldri teamnorwayref (Anders 21.10: produksjonssiden byttes først når han sier fra).
+- **Navngitte juniorprofiler: alle vises med navn**, også under 18 år, i HCP Norge (søket, juniorer fra 8 år) og Norsk golf (registeret), som på teamnorwayref i dag.
+- Navnene vises bare i `/team-norway/*`, altså bak trenerinnlogging (§TEAM NORWAY ER BARE FOR TRENERE). Aldri på åpne sider, i eksport eller i AI-prompter. §Data («vises aldri åpent») står derfor uendret.
+
+**Overstyrer:** punkt 5 (uavklart) og «aldri en celle som peker ut én junior» / «ingen navngitt spiller under 18 vises» i punkt 4 i §TEAM NORWAY ER BARE FOR TRENERE, og «HQ viser ingen ny liste» i §REFERANSESPILLERE NORDEN.
+
+**Arbeidet dette utløser:**
+
+1. **Ukentlig WAGR-referansejobb** (`ak-golf-pipelines`, ny `.github/workflows/wagr-ref.yml` eller et siste steg i `wagr-sync.yml`): henter ferske profiler fra WAGR (`python -m pipelines.wagr_profiler`), og skriver med `pipelines.wagr_profiler.skriv_ref_db --wagr-dato <rankinguka>`. Gruppekonfigen (`konfig-teamnorwayref.json`, i dag bare i lokal `.cache`) må ligge i repoet. Ferdig når én planlagt kjøring har skrevet til basen og `/team-norway/referanse` viser den nye rankinguka; feilet kjøring gir varsel i GitHub.
+2. **HCP Norge og Norsk golf med navn** (`/team-norway/referanse`, punkt 4 i §TEAM NORWAY ER BARE FOR TRENERE): søket og registeret viser navn for alle aldre. Datakilden (`hcp/statistikk.json`, `hcp/spillere.json` fra `pipelines.hcp_utvikling.bygg`) må inn i basen først, som WAGR. Kjør ak-personvern før bygging. Ferdig når tallene stemmer med teamnorwayref og en test låser at en spiller eller forelder aldri får navnelista.
+
 ## TEAM NORWAY ER BARE FOR TRENERE, SPILLERE BRUKER BARE PLAYERHQ, OG REFERANSE BYGGES MED WAGR FØRST (Anders 21.10.2026, bindende)
 
 Anders 21.10, etter funksjonsregisteret og wireframes for trenerflaten (`docs/planer/tn-trenerflate-register-2026-10-21.md`, https://claude.ai/artifact/DJHq9dKNNs8iCoyHZDptbF): «Team Norway er kun for coach. Alle spiller bruker kun PlayerHQ. Bygg WAGR og deretter de ulike nivå og spiller fordelingene.» Svar på uavklart 1 og 3 i registeret, og klarsignal til bygging etter wireframes (menyen i `docs/design-system/utkast-tn/trenerflate/README.md`).
@@ -11,7 +27,7 @@ Anders 21.10, etter funksjonsregisteret og wireframes for trenerflaten (`docs/pl
 - **`/team-norway/*` er bare for trenere** (gruppe-rolle COACH eller ASSISTANT i TN-gruppa) og ADMIN. En innlogget spiller eller forelder som åpner en TN-adresse, sendes til PlayerHQ (`/portal`). Ingen spillervisning i TN-flaten.
 - **Spilleren gjør alt i PlayerHQ:** turneringer, samlinger, lisens og deling. `/team-norway/turneringer/ny` sender til `/portal/tren/turneringer`.
 - **Referanse bygges i denne rekkefølgen:** (1) WAGR: leaderboard, graf, turneringer, sesong og Sammenlign; (2) nivå- og spillerfordelingene: HCP Norge (normkurve, klubber, regioner) og Norsk golf (nivå A–K, klubber, regioner, tourer).
-- **Fordelingene er samlede tall.** Navngitte juniorprofiler (HCP-søket og Norsk golf-registeret med navn under 18 år) er ikke avgjort, se punkt 5.
+- ~~**Fordelingene er samlede tall.** Navngitte juniorprofiler (HCP-søket og Norsk golf-registeret med navn under 18 år) er ikke avgjort, se punkt 5.~~ Overstyrt 22.10: alle vises med navn bak trenerinnlogging (§WAGR-REFERANSEN OPPDATERES HVER UKE).
 - Menyen og sidekartet i wireframes gjelder som byggefasit (seks hovedpunkter: Hjem · Spillere · Samlinger og testing · Turneringer · Referanse · Fag og administrasjon).
 
 **Overstyrer:** spillervisningen i dagens TN-sider (`erSpiller`-grenene i `src/components/team-norway/tn-shell.tsx`, `tnBunnmeny` for spillere, og sider som åpner for gruppe-rolle PLAYER), og «Til da vises «—» […] spillere ser egen rad» i Lisens og College. Uavklart 1 og 3 i registeret.
@@ -21,8 +37,8 @@ Anders 21.10, etter funksjonsregisteret og wireframes for trenerflaten (`docs/pl
 1. **(haster, personvern) Spillere ut av TN-flaten:** en sentral vakt (f.eks. i `hentTnArbeidskontekst` eller `src/lib/auth/team-norway-sperre.ts`) sender PLAYER og PARENT til `/portal`; `erSpiller`-grenene og spillermenyen i `tn-shell.tsx` fjernes. Ferdig når en test låser at en spiller i TN-gruppa ikke får TN-innhold på noen `/team-norway`-adresse.
 2. **Skall og meny** (pakke a): seks hovedpunkter med faner etter wireframes, Min profil fra navnet nederst. Ferdig når menyen er målt i 390, 1280 og 1920 px uten sidelengs rulling.
 3. **Referanse › WAGR** (`/team-norway/referanse`): leaderboard, graf, turneringer, sesong og Sammenlign, med «World Amateur Golf Ranking (WAGR), The R&A» og dato. Kolonnene kartlegges mot basen før første spørring. Ferdig når tallene er de samme som på teamnorwayref for samme uke.
-4. **Referanse › HCP Norge og Norsk golf** etter WAGR: samlede fordelinger (nivå, klubb, region, tour), aldri en celle som peker ut én junior. Ferdig når tallene stemmer med teamnorwayref og ingen navngitt spiller under 18 vises.
-5. **Uavklart:** navngitte juniorprofiler i HCP-søket og Norsk golf (teamnorwayref viser i dag navn fra 8 år bak felles passord). Bygges ikke før Anders har sagt ja.
+4. **Referanse › HCP Norge og Norsk golf** etter WAGR: fordelinger (nivå, klubb, region, tour) og navnesøk/register (overstyrt 22.10, se §WAGR-REFERANSEN OPPDATERES HVER UKE punkt 2). Ferdig når tallene stemmer med teamnorwayref.
+5. ~~**Uavklart:** navngitte juniorprofiler i HCP-søket og Norsk golf.~~ Avgjort 22.10: alle vises med navn (§WAGR-REFERANSEN OPPDATERES HVER UKE).
 6. **Uavklart:** hvor PlayerHQ-lenken går (punkt 8 i blokken under) og om «beste» per test skal bort i Referanse › Tester (uavklart 4 i registeret).
 
 **Status 21.10 (punkt 3):** Anders sa ja til at pipelines skriver WAGR-tallene til nye tabeller i HQ-basen. Tabellene `wagr_ref_*` er laget (`scripts/add-wagr-ref-tabeller-2026-10-21.ts`), og `/team-norway/referanse` viser leaderboardet, med «—» og lenke til teamnorwayref til pipelines har fylt dem. Hva pipelines skriver: `docs/planer/wagr-ref-tabeller-kontrakt-2026-10-21.md`. Gjenstår: pipelines-skrivingen, graf, Sammenlign og Søk.
@@ -46,7 +62,7 @@ Anders 21.10: den nye Team Norway-siden (teamnorwayref) «skal nå erstatte inte
 2. **Struktur og wireframes** i 390 og 1280 px: meny (høyst seks hovedpunkter), trenerhjem, trenerprofil, spillerliste, spillerprofil med alle faner, Referanse-delen, spiller uten deling. I `docs/design-system/utkast-tn/trenerflate/`. Ferdig når Anders har sagt ja (port 7).
 3. **Bygging i pakker:** skall og meny (`tn-shell.tsx`) · trenerprofil · spillerliste · spillerprofil, én PR per fane · Referanse-delen · videresendinger. Gjenbruk turneringsplanlegger, tester, teknisk plan og fireukerssjekk. Ferdig når ingen gammel `/team-norway`-adresse gir 404, og alle nye skjermer er målt i 390, 1280 og 1920 px uten sidelengs rulling.
 4. **(haster, personvern) Tilgangstest:** en trener uten delingssamtykke ser ikke spillerens IUP, tester eller trening (`hentTnSpillerTilgang`, `src/lib/domain/tn-arbeidsflate.ts`). Ferdig når testen låser det før spillerprofilen legges inn.
-5. **Referansetallene må inn i basen først (pipelines):** kartleggingen 21.10 viste at det meste teamnorwayref viser bare ligger i JSON-filer på maskinen (`.cache` i `ak-golf-pipelines`), ikke i basen: Power per turnering, WAGR-plass før turneringen, plass per uke og gruppelistene (Junior Norden og Amatør Norden er håndplukket). Pipelines skriver dem til basen i mandagsjobben, med tabellene lagt til additivt; deretter leser HQ dem. Ferdig når en lesespørring gir de samme tallene som teamnorwayref, og Referanse-delen i HQ viser dem med kilde og dato. Til da viser HQ «—» og lenker til teamnorwayref.
+5. **Referansetallene må inn i basen først (pipelines):** kartleggingen 21.10 viste at det meste teamnorwayref viser bare ligger i JSON-filer på maskinen (`.cache` i `ak-golf-pipelines`), ikke i basen: Power per turnering, WAGR-plass før turneringen, plass per uke og gruppelistene (Junior Norden og Amatør Norden er håndplukket). Pipelines skriver dem til basen i ukejobben (§WAGR-REFERANSEN OPPDATERES HVER UKE), med tabellene lagt til additivt; deretter leser HQ dem. Ferdig når en lesespørring gir de samme tallene som teamnorwayref, og Referanse-delen i HQ viser dem med kilde og dato. Til da viser HQ «—» og lenker til teamnorwayref.
 6. **PlayerHQ-lenken** på `/portal/meg/innstillinger/personvern/deling` (PH27Deling) og `/portal/meg/deling`. Ferdig når en test låser at bare Team Norway-spillere ser den.
 7. **Menypunktet «Referansespillere»** (`TN_REFERANSESPILLERE_URL`, `src/components/team-norway/tn-referansespillere.ts`) peker til den nye Referanse-delen når den finnes.
 8. **Uavklart:** hvor PlayerHQ-lenken skal gå, siden spilleren ikke kan åpne trenerdelen. Anbefaling: «Se hva Team Norway ser» (`/portal/meg/deling/innsyn`) og den åpne rankingdelen.
@@ -58,15 +74,15 @@ Anders 21.10, etter skissen https://teamnorwayref.vercel.app («Referansespiller
 
 - ~~**teamnorwayref.vercel.app eier leaderboard, graf og samlede tall**~~ og ~~**HQ får ingen egen referanseflate**~~ Overstyrt 21.10: trenerflaten med de samlede delene bygges i HQ (§TEAM NORWAY-TRENERFLATEN BYGGES I HQ). Til den er ferdig lenker menypunktet «Referansespillere» til teamnorwayref.vercel.app, som bygges i `ak-golf-pipelines` (`scripts/referansespillere_html.py`).
 - **Personopplysninger blir i HQ.** Testresultater og annet om enkeltspillere vises bare i HQ, bak innlogging; teamnorwayref lenker til HQ for slikt (f.eks. IUP og turneringsplan per spiller).
-- **Pipelines oppdaterer WAGR-plassene** (mandagsjobben), og teamnorwayref leser dem. Kilde og dato står ved tallene: «World Amateur Golf Ranking (WAGR), The R&A».
-- **Navn på alle spillere, også født 2008 eller senere,** gjelder på teamnorwayref fordi WAGR er offentlig. HQ viser ingen ny liste, så barnevernsregelen i §Data står uendret i HQ.
+- **Pipelines oppdaterer WAGR-plassene** (ukejobben `wagr-sync.yml`, onsdag), og teamnorwayref leser dem. Kilde og dato står ved tallene: «World Amateur Golf Ranking (WAGR), The R&A».
+- **Navn på alle spillere, også født 2008 eller senere,** gjelder på teamnorwayref fordi WAGR er offentlig. ~~HQ viser ingen ny liste~~ Overstyrt 22.10: HQ viser navn bak trenerinnlogging (§WAGR-REFERANSEN OPPDATERES HVER UKE); barnevernsregelen i §Data («aldri åpent») står uendret.
 - **Ikke avgjort her:** om Data Golf skal vises på teamnorwayref. Spørsmålet ligger hos Anders. I HQ gjelder fortsatt bare ADMIN (§DATA GOLF ER ANDERS' PRIVATE VERKTØY).
 
 **Overstyrer:** egen flate `/team-norway/referansespillere` i HQ (første svar 21.10, PR #1574 før retting), og unntaket fra barnevernsregelen i §Data for den flaten.
 
 **Arbeidet dette utløser:**
 
-1. **Pipelines (egen økt i `ak-golf-pipelines`):** (a) mandagsjobben `wagr-sync.yml` oppdaterer `dashboard.wagr_players` med plass nå, forrige uke og endring; (b) de fire manglende norske herrene tas med (35), så turneringer og seire 2026 (444 og 27) dekkes; (c) `rank_after` fylles for uke 52 i 2024 og 2025. Ferdig når en lesespørring mot `dashboard.wagr_players` viser snapshot nyere enn en uke og 35 norske herrer, og `rank_after` er satt for alle 35 i begge årene.
+1. **Pipelines (egen økt i `ak-golf-pipelines`):** (a) ukejobben `wagr-sync.yml` (onsdag) oppdaterer `dashboard.wagr_players` med plass nå, forrige uke og endring; (b) de fire manglende norske herrene tas med (35), så turneringer og seire 2026 (444 og 27) dekkes; (c) `rank_after` fylles for uke 52 i 2024 og 2025. Ferdig når en lesespørring mot `dashboard.wagr_players` viser snapshot nyere enn en uke og 35 norske herrer, og `rank_after` er satt for alle 35 i begge årene.
 2. **teamnorwayref bygger leaderboard og graf** fra pipelines' egne kilder (`pipelines/turneringsplan/hent.py`, `bygg.py`, `power_historikk.py`) etter `docs/plan-teamnorwayref-komplett.md` i `ak-golf-pipelines`. HQ kartlegger ikke kolonnene. Ferdig når teamnorwayref viser ekte tall med kilde og dato, og lenkene til enkeltspillere peker til HQ.
 3. **Menypunkt i HQ** (steg 10 i `docs/planer/team-norway-komplett-redesign-skra-2026-10-21.md`): «Referansespillere» som siste punkt under Spillere i `tnHovedmeny` (`src/components/team-norway/tn-shell.tsx`), som lenker til https://teamnorwayref.vercel.app. Venter ikke på punkt 1. Ferdig når punktet står i menyen i 390 og 1280 px uten sidelengs rulling, og en test låser lenkemålet.
 4. **Uavklart (teamnorwayref):** Junior, Amatør og andre land (Sammenlign, Søk alle norske, Søk HCP-juniorer) finnes ikke i basen; bare norske spillere er der. Avgjøres i teamnorwayref-planen.
