@@ -8,6 +8,7 @@ import { TnFlate } from "@/components/team-norway/tn-flate";
 import { TnSkraKort, TnSkraTopp } from "@/components/team-norway/tn-skra-topp";
 import { TnHeltTall, TnHeltTekst, TnHeltTellere } from "@/components/team-norway/tn-stall";
 import { TnUtviklingskurve } from "@/components/team-norway/tn-utviklingskurve";
+import { TnTestvisningSlag } from "@/components/team-norway/tn-testvisning";
 import { TN } from "@/lib/v2/team-norway";
 import type { TnSpillerTestDetalj, TnSpillerOvrigTestDetalj, TnSpillerTilgang } from "@/lib/domain/tn-arbeidsflate";
 import { formaterTall } from "@/lib/format-tall";
@@ -90,6 +91,8 @@ export function TnVisning({ spillerId, data, brukerNavn }: { spillerId: string; 
               </TnKort>
             </TnSeksjon>
           ) : null}
+
+          <TnTestvisningSlag visning={data.visning} navn={data.protokollNavn} />
 
           <TnSeksjon tittel="Siste gjennomføring — forsøk">
             <TnKort style={{ display: "flex", flexDirection: "column", gap: 0 }}>
