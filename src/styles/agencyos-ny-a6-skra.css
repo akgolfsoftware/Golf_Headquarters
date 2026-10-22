@@ -29,3 +29,14 @@
   .agn-a6 > .to-del .kort { padding: 22px; }
 }
 @media (max-width: 599px) { .agn-a6 .a6-hvit { padding: 10px; } }
+
+/*
+ * Luften mellom den skrå toppen og første kort er 16 px på mobil og 24 px på PC (beslutninger.md §ØVERSTE KORT).
+ * Flatene som bruker SkraTopp direkte setter `gap: 0` på rotelementet, men `.agn-s` (gap 32 px) vant på kaskaden,
+ * så det sto 32 px ekstra. Lav topp via `Topp` (.agn-topp-lav) hadde i tillegg 16 px bunnmarg. Begge rettes her.
+ */
+.agn-s:is(.agn-skra, .agn-a5-skra, .agn-kal-skra, .agn-bk-skra) { gap: 0; }
+:is(.agn-a6, .agn-a5-under) > .agn-topp-lav { margin-bottom: calc(16px - var(--r6)); }
+@media (min-width: 900px) {
+  :is(.agn-a6, .agn-a5-under) > .agn-topp-lav { margin-bottom: calc(24px - var(--r6)); }
+}
