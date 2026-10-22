@@ -1,4 +1,5 @@
 import type { TnArbeidskontekst, TnGruppetreningRad, TnSpillerRad } from "@/lib/domain/tn-arbeidsflate";
+import { WAGR_KILDE, type TnApenSpillerRad } from "@/lib/domain/tn-spillerliste-regler";
 import { summerTnGruppetrening, tnDenneMandag, tnUkenummer, UTENFOR_PLAN_TERSKEL } from "@/lib/domain/tn-trenger-deg";
 import { TN } from "@/lib/v2/team-norway";
 import { initialer } from "../initialer";
@@ -26,6 +27,7 @@ export function TnSpillerutviklingVisning({
   kontekst,
   visDataGolf,
   rader,
+  apne,
   trening: treningRader,
   antallSpillere,
   q,
@@ -35,6 +37,8 @@ export function TnSpillerutviklingVisning({
   kontekst: TnArbeidskontekst;
   visDataGolf: boolean;
   rader: TnSpillerRad[];
+  /** Alle spillere i gruppa med åpne tall; `null` når de ikke er hentet. */
+  apne: TnApenSpillerRad[] | null;
   trening: TnGruppetreningRad[] | null;
   antallSpillere: number | null;
   q: string;
@@ -46,6 +50,8 @@ export function TnSpillerutviklingVisning({
   const treningPer = new Map((trening?.rader ?? []).map((r) => [r.spillerId, r.trening]));
   const passer = (s: TnSpillerRad) => !q || `${s.navn} ${s.klubb ?? ""}`.toLowerCase().includes(q.toLowerCase());
 
+  const passerApen = (a: TnApenSpillerRad) => !q || a.navn.toLowerCase().includes(q.toLowerCase());
+
   type Rad = { s: TnSpillerRad; t: NonNullable<ReturnType<typeof treningPer.get>>; pct: number | null };
   const delt: Rad[] = data.rader.flatMap((s) => {
     const t = treningPer.get(s.id);
@@ -55,7 +61,9 @@ export function TnSpillerutviklingVisning({
   const folger = delt.filter((r) => !r.t.underPlan && r.pct !== null).sort((a, b) => (b.pct ?? 0) - (a.pct ?? 0));
   const utenPlan = delt.filter((r) => !r.t.underPlan && r.pct === null);
   // Alle i gruppa (fra samlingsdataene) minus dem treneren kan lese: spillere som ikke har delt, er ikke i radene.
-  const antallIkkeDelt = samlingsdata?.antallSpillere != null ? Math.max(0, samlingsdata.antallSpillere - data.rader.length) : null;
+  const ikkeDelt = (apne ?? []).filter((a) => !a.delt);
+  const antallIkkeDelt = apne ? ikkeDelt.length : samlingsdata?.antallSpillere != null ? Math.max(0, samlingsdata.antallSpillere - data.rader.length) : null;
+  const wagrDato = ikkeDelt.find((a) => a.wagrDato)?.wagrDato ?? null;
 
   const gruppe = summerTnGruppetrening(delt.map((r) => r.t));
   const gruppePct = gruppe.planlagtTimer > 0 ? Math.round((gruppe.gjortTimer / gruppe.planlagtTimer) * 100) : null;
@@ -136,10 +144,12 @@ export function TnSpillerutviklingVisning({
         </label>
       </form>
 
-      {data.rader.length === 0 ? (
+      {data.rader.length === 0 && ikkeDelt.length === 0 ? (
         <TnFlate><TnMangler>{antallIkkeDelt ? `Ingen spillere har delt med deg ennå. ${antallIkkeDelt} i gruppen deler ikke.` : "Ingen spillere i gruppen ennå. Spillerne vises her når de er lagt inn i Team Norway-gruppen."}</TnMangler></TnFlate>
       ) : (
         <>
+          {data.rader.length > 0 ? (
+          <>
           <TnBaand id="trenger" status={trenger.length > 0 ? "trenger" : undefined} tittel="Trenger deg" antall={trenger.filter((r) => passer(r.s)).length} kilde={`Under ${UTENFOR_PLAN_TERSKEL} % to uker på rad`}>
             <TnBaandListe>
               {trenger.filter((r) => passer(r.s)).map((r) => rad(r, "trenger"))}
@@ -156,9 +166,26 @@ export function TnSpillerutviklingVisning({
               <TnBaandListe>{utenPlan.filter((r) => passer(r.s)).map((r) => rad(r, "folgmed"))}</TnBaandListe>
             </TnBaand>
           ) : null}
+          </>
+          ) : null}
 
-          <TnBaand status="ikkedelt" tittel="Ikke delt" antall={antallIkkeDelt ?? 0} kilde="Treneren ser ingenting før spilleren deler">
-            <TnFotnote>Spilleren deler selv fra Meg i PlayerHQ. Under 16 år må en foresatt godkjenne.</TnFotnote>
+          <TnBaand status="ikkedelt" tittel="Ikke delt" antall={apne ? ikkeDelt.filter((a) => passerApen(a)).length : antallIkkeDelt ?? 0} kilde="Bare navn og offentlig WAGR-plass før spilleren deler">
+            {ikkeDelt.length > 0 ? (
+              <TnBaandListe>
+                {ikkeDelt.filter((a) => passerApen(a)).map((a) => (
+                  <TnSpillerrad
+                    key={a.id}
+                    status="ikkedelt"
+                    initialer={initialer(a.navn)}
+                    navn={a.navn}
+                    fakta="Ikke delt"
+                    verdi={a.wagrPlass ?? "—"}
+                    verdiTekst="WAGR-plass"
+                  />
+                ))}
+              </TnBaandListe>
+            ) : null}
+            <TnFotnote>Spilleren deler selv fra Meg i PlayerHQ. Under 16 år må en foresatt godkjenne.{wagrDato ? ` WAGR-plass: ${WAGR_KILDE}, ${datoKort(wagrDato)}` : ""}</TnFotnote>
           </TnBaand>
         </>
       )}

@@ -16,6 +16,7 @@ const S: [string, string, number, number, number][] = [
   ["Spiller A", "Skole A", 3.0, 80, 79], ["Spiller G", "Skole E", 3.4, 77, 78], ["Spiller I", "Skole C", 2.6, 76, 75],
 ];
 
+const ikkeDeltApne = [["Ida Moe", 412], ["Jonas Vik", null], ["Sara Dahl", 1088], ["Tobias Lund", 2210]].map(([navn, plass], i) => ({ id: `ikke-${i}`, navn: String(navn), wagrPlass: plass as number | null, wagrDato: plass ? new Date("2026-10-19T00:00:00Z") : null, delt: false }));
 const rader: TnSpillerRad[] = S.map(([navn, skole, hcp], i) => ({
   id: `s${i}`, navn, hcp, klubb: `Klubb ${i + 1}`, skole, skolear: null, status: "ACTIVE", tester: 3, sisteTest: null, sisteTestNavn: null,
   aktivPlan: "Grunnperiode", planStart: null, planSlutt: null, fodselsdato: null,
@@ -36,10 +37,10 @@ const trening: TnGruppetreningRad[] = S.map(([navn, , , toUker, fire], i) => {
 });
 
 const Vis = (p: Partial<Parameters<typeof TnSpillerutviklingVisning>[0]>) => (
-  <TnSpillerutviklingVisning brukerNavn="Trener 1" kontekst={kontekst} visDataGolf={false} rader={rader} trening={trening} antallSpillere={14} q="" naa={naa} {...p} />
+  <TnSpillerutviklingVisning brukerNavn="Trener 1" kontekst={kontekst} visDataGolf={false} rader={rader} apne={[...rader.map((r) => ({ id: r.id, navn: r.navn, wagrPlass: null, wagrDato: null, delt: true })), ...ikkeDeltApne]} trening={trening} antallSpillere={14} q="" naa={naa} {...p} />
 );
 
 export const tilstander = {
   data: <Vis />,
-  "ikke-delt": <Vis rader={[]} trening={null} />,
+  "ikke-delt": <Vis rader={[]} apne={ikkeDeltApne} trening={null} />,
 };
