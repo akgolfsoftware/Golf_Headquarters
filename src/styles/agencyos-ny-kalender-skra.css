@@ -32,6 +32,8 @@
 .agn-kal-skra .kal-skra-kort .valg { max-width: 100%; }
 .agn-kal-skra .kal-innhold { min-width: 0; }
 .agn-kal-skra .kal-innhold .kort.dempet { border-radius: var(--ak-r-stat); }
+/* Lagfilteret og gruppevalget i Booking: hele 44 px treffmål (fra 40 px), også når kortet glir inn. */
+.agn-kal-skra .kal-lag > button, .agn-bk-skra .chips > button { min-height: 44px; }
 
 /* Dag: liste per coach på mobil, rutenett med kolonne per coach på PC. */
 .agn-s .dagvis.bare-pc { display: none; }
@@ -80,15 +82,15 @@
 /* ---------- Undersider: én booking, ny booking og hendelse (skissen §5) ---------- */
 .agn-hoved:has(.agn-bk-detalj), .agn-hoved:has(.agn-kal-under) { background: var(--ak-flate); }
 .agn-bk-detalj, .agn-kal-under { padding-bottom: calc(120px + env(safe-area-inset-bottom)); }
-.agn-bk-detalj .booking-helt { box-shadow: none; background: var(--ak-sunket); border-radius: var(--ak-r-stat); }
-.agn-bk-detalj .bk-detalj .oppsummering, .agn-bk-detalj .bk-detalj .oppsummering li { border-color: var(--ak-strek); }
-.agn-bk-detalj .bk-handling { padding: 18px; border-radius: var(--ak-r-skra-kort); background: var(--ak-hvit); box-shadow: var(--ak-skygge-md); }
-.agn-bk-detalj .bk-handling.dempet { background: transparent; box-shadow: none; padding: 0; }
+.agn-s.agn-bk-detalj .booking-helt { box-shadow: none; background: var(--ak-sunket); border-radius: var(--ak-r-stat); }
+.agn-s.agn-bk-detalj .bk-detalj .oppsummering, .agn-bk-detalj .bk-detalj .oppsummering li { border-color: var(--ak-strek); }
+.agn-s.agn-bk-detalj .bk-handling { padding: 18px; border-radius: var(--ak-r-skra-kort); background: var(--ak-hvit); box-shadow: var(--ak-skygge-md); }
+.agn-s.agn-bk-detalj .bk-handling.dempet { background: transparent; box-shadow: none; padding: 0; }
 .agn-kal-under .kal-under-kort { max-width: 720px; }
 @media (min-width: 900px) {
   .agn-bk-detalj, .agn-kal-under { padding-bottom: 120px; }
-  .agn-bk-detalj .bk-detalj { margin-right: 52px; }
-  .agn-bk-detalj .bk-handling { padding: 22px; }
+  .agn-s.agn-bk-detalj .bk-detalj { margin-right: 52px; }
+  .agn-s.agn-bk-detalj .bk-handling { padding: 22px; }
 }
 
 /* Stripe til hurtigknappen på PC: den står 24 px fra høyre kant og er 56 px bred. */
