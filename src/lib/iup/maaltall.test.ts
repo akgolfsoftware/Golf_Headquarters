@@ -19,11 +19,13 @@ test("skoleåret går fra august, K1 august–oktober", () => {
   assert.equal(sesongFor("2026-07-31").navn, "2025/26");
 });
 
-test("score er brutto, snitt bare av 18 hull, og turnering skilles fra trening", () => {
+test("score er brutto, turneringstall fra resultatene, og egne runder teller som trening", () => {
   const t = beregnPeriode([
-    runde({ score: 74, turnering: true, konkurranseId: "a" }), runde({ score: 70, turnering: true, konkurranseId: "a" }),
+    runde({ score: 66, turnering: true, konkurranseId: "egen" }),
     runde({ score: 78, turnering: false }), runde({ score: 38, turnering: false, hull: hull(9) }),
-  ], []);
+  ], [], [
+    { dato: "2026-09-10", score: 74, konkurranseId: "a" }, { dato: "2026-09-11", score: 70, konkurranseId: "a" },
+  ]);
   assert.equal(t["snitt-turnering"], 72);
   assert.equal(t["beste-turnering"], 70);
   assert.equal(t["verste-turnering"], 74);

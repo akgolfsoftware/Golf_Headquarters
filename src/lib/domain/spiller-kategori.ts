@@ -1,14 +1,15 @@
 /**
  * Spiller A–K-kategori — snittscore-basert (kanonisk fra 2026-06-22).
  *
- * Primær kilde: snitt brutto score inneværende kalenderår.
- * Fallback: HCP → estimert snittscore (Broadie-tabell) når ingen runder i år.
+ * Primær kilde: brutto snitt i turnering inneværende kalenderår (Oslo), samme tall som IUP og
+ * Rangliste (brutto-snitt.ts). Treningsrunder teller ikke.
+ * Fallback: HCP → estimert snittscore (Broadie-tabell) når ingen turneringsrunder i år.
  *
  * Drill-filter, AI-plan og mestrings-økter bruker denne — ikke kategoriFraHcp.
  */
 
 import type { NgfKategori } from "@/generated/prisma/client";
-import { prisma } from "@/lib/prisma";
+import { hentBruttoSnitt } from "@/lib/domain/brutto-snitt-data";
 import {
   type AkKategori,
   kategoriFraSnittscore,
@@ -45,16 +46,9 @@ export function akTilNgfKategori(k: AkKategori): NgfKategori {
   return k as NgfKategori;
 }
 
-/** Snitt brutto score for runder spilt inneværende kalenderår. */
+/** Brutto snitt i turnering inneværende kalenderår (Oslo). Null uten turneringsrunder. */
 export async function hentSesongSnittscore(userId: string): Promise<number | null> {
-  const aar = new Date().getFullYear();
-  const sesongStart = new Date(aar, 0, 1);
-  const runder = await prisma.round.findMany({
-    where: { userId, playedAt: { gte: sesongStart } },
-    select: { score: true },
-  });
-  if (runder.length === 0) return null;
-  return runder.reduce((s, r) => s + r.score, 0) / runder.length;
+  return (await hentBruttoSnitt(userId)).turnering.snitt;
 }
 
 /**

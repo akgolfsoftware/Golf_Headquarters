@@ -16,7 +16,6 @@ import { prisma } from "@/lib/prisma";
 import {
   KandidaterSchema,
   KoblingsstatusSchema,
-  ProfilResultaterSchema,
   SpillerprofilSchema,
   type Kandidater,
   type KoblingsMetode,
@@ -25,6 +24,7 @@ import {
   type Spillerprofil,
 } from "./typer";
 import type { Oppslag } from "./regler";
+import { medFellesSesongsnitt } from "./sesonger";
 
 export class ForMangeOppslag extends Error {
   constructor() {
@@ -108,12 +108,12 @@ export async function hentKoblingsstatus(userId: string): Promise<Koblingsstatus
   return KoblingsstatusSchema.parse(rader[0]?.r);
 }
 
-/** null uten bekreftet kobling. Bare brukerens EGNE resultater. */
+/**
+ * null uten bekreftet kobling. Bare brukerens EGNE resultater. Leser hele profilen (samme kilde som
+ * trenerne ser), så sesongsnittet kan regnes fra turneringslista med den felles regelen.
+ */
 export async function hentProfilResultater(userId: string): Promise<ProfilResultater | null> {
-  const rader = await prisma.$queryRaw<{ r: unknown }[]>`
-    SELECT dashboard.profile_results(${userId}::text) AS r`;
-  const r = rader[0]?.r;
-  return r == null ? null : ProfilResultaterSchema.parse(r);
+  return hentSpillerprofil(userId);
 }
 
 /**
@@ -133,5 +133,5 @@ export async function hentSpillerprofil(
   const rader = await db.$queryRaw<{ r: unknown }[]>`
     SELECT dashboard.player_profile_for_user(${spillerUserId}::text, ${inkluderGolfId}::boolean) AS r`;
   const r = rader[0]?.r;
-  return r == null ? null : SpillerprofilSchema.parse(r);
+  return r == null ? null : medFellesSesongsnitt(SpillerprofilSchema.parse(r));
 }

@@ -13,6 +13,7 @@ import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { kategoriFraSnittscore } from "@/lib/domain/ak-kategori";
 import { avgScoreFromHcp } from "@/lib/stats/sg-estimator";
+import { hentBruttoSnitt } from "@/lib/domain/brutto-snitt-data";
 import { krevNavngittTrener, navngittTrenerHarTilgang } from "@/lib/deling/navngitt";
 import { PROFIL_TRANSAKSJON } from "@/lib/deling/profil-lesing";
 import { lesLeverteIupForProfil } from "@/lib/iup/trener-profil-lesing";
@@ -39,8 +40,8 @@ async function hentTrener(): Promise<Trener | null> {
 
 /**
  * HCP og kategori for én elev, bare når eleven har delt med treneren. Kategori følger
- * hentSpillerAkKategori: snitt brutto score i år, ellers HCP-estimat. Bare runder eleven
- * har delt med coach («Bare deg» teller ikke).
+ * hentSpillerAkKategori: brutto snitt i turnering i år (brutto-snitt.ts), ellers HCP-estimat.
+ * Treningsrunder teller ikke.
  */
 export async function lesDeltElevinfo(
   tx: Tx,
@@ -53,15 +54,12 @@ export async function lesDeltElevinfo(
   if (!trener || !(await harTilgang(tx, trener, elevId, gruppeId))) {
     return { delt: false, hcp: null, kategori: null };
   }
-  const [bruker, runder] = await Promise.all([
+  const [bruker, brutto] = await Promise.all([
     tx.user.findUnique({ where: { id: elevId }, select: { hcp: true } }),
-    tx.round.findMany({
-      where: { userId: elevId, sharedWithCoach: true, playStatus: "COMPLETED", playedAt: { gte: new Date(Date.UTC(aar, 0, 1)) } },
-      select: { score: true },
-    }),
+    hentBruttoSnitt(elevId, { aar, db: tx, kunDelteRunder: true }),
   ]);
   const hcp = bruker?.hcp ?? null;
-  const snitt = runder.length ? runder.reduce((s, r) => s + r.score, 0) / runder.length : hcp != null ? avgScoreFromHcp(hcp) : null;
+  const snitt = brutto.turnering.snitt ?? (hcp != null ? avgScoreFromHcp(hcp) : null);
   return { delt: true, hcp, kategori: snitt != null ? kategoriFraSnittscore(snitt).kategori : null };
 }
 

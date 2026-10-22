@@ -18,6 +18,8 @@ import "server-only";
 import { iupSynligForSpillerWhere } from "@/lib/iup/tilknytning";
 import { hentIupMaaltallForSpiller, type IupMaaltallData } from "@/lib/iup/maaltall-data";
 import { lesLeverteIupForProfil, type LevertIupProfilrad } from "@/lib/iup/trener-profil-lesing";
+import { hentBruttoSnitt } from "@/lib/domain/brutto-snitt-data";
+import { osloAar, type BruttoSnitt } from "@/lib/domain/brutto-snitt";
 import { hentSpillerprofil } from "./data";
 import { medSpillerTilgang, type Betrakter, type SpillerDb } from "./tilgang";
 import type { Spillerprofil } from "./typer";
@@ -36,7 +38,9 @@ export type TestSammendrag = {
 
 export type RundeSammendrag = {
   antall: number;
-  snittScore: number | null;
+  /** Brutto snitt i år (Oslo): turneringsrunder og treningsrunder hver for seg (brutto-snitt.ts). */
+  aar: number;
+  bruttoSnitt: BruttoSnitt;
   sgTotal: number | null;
   sgOtt: number | null;
   sgApp: number | null;
@@ -80,7 +84,7 @@ export async function byggKomplettProfil(
     db.round.aggregate({
       where: { userId: spillerId, sharedWithCoach: true, playStatus: "COMPLETED", playedAt: { gte: new Date(Date.now() - ETT_AAR_MS) } },
       _count: { _all: true },
-      _avg: { score: true, sgTotal: true, sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
+      _avg: { sgTotal: true, sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
     }),
     db.user.findFirst({ where: iupSynligForSpillerWhere(spillerId), select: { id: true } }),
   ]);
@@ -104,6 +108,9 @@ export async function byggKomplettProfil(
     });
   }
 
+  const aar = osloAar(new Date());
+  const bruttoSnitt = await hentBruttoSnitt(spillerId, { aar, db, profil: resultater, kunDelteRunder: true });
+
   const iup = harIup
     ? {
         levert: await lesLeverteIupForProfil(db, spillerId),
@@ -117,7 +124,8 @@ export async function byggKomplettProfil(
     tester: [...perTest.values()],
     runder: {
       antall: rundeAgg._count._all,
-      snittScore: rundeAgg._avg.score,
+      aar,
+      bruttoSnitt,
       sgTotal: rundeAgg._avg.sgTotal,
       sgOtt: rundeAgg._avg.sgOtt,
       sgApp: rundeAgg._avg.sgApp,

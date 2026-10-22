@@ -18,6 +18,7 @@ import { parseProtocol, type ScorekortForsok } from "@/lib/portal-tester/protoco
 import { parseForScoring, lavereErBedre, ScoringDetailsSchema } from "@/lib/portal-tester/test-scoring";
 import { testTilgangWhere } from "@/lib/portal-tester/test-tilgang";
 import { aggregerRangliste } from "./tn-rangliste";
+import { osloAar, turneringerIAar } from "./brutto-snitt";
 import { lesTurneringsresultat } from "./turneringsresultat";
 import { hentSpillerprofil } from "@/lib/profil-kobling/data";
 import { tilTurneringer } from "@/lib/profil-kobling/til-turneringer";
@@ -249,10 +250,11 @@ async function lesTnTurneringer(tx: Prisma.TransactionClient, spillerId: string)
 
 /**
  * Starter, snittplassering og brutto snitt per spiller fra de offentlige
- * resultatene (public_player_entries/rounds, kanonisk kilde). Med `aar` telles
- * bare turneringer som startet det året (Oslo).
+ * resultatene (public_player_entries/rounds, kanonisk kilde). Bare turneringer
+ * som startet i `aar` (Oslo), som standard inneværende år: brutto snitt betyr
+ * det samme i Rangliste, Uttak, College og IUP (brutto-snitt.ts).
  */
-export async function hentTnRangliste(bruker: TnBruker, aar?: number) {
+export async function hentTnRangliste(bruker: TnBruker, aar: number = osloAar(new Date())) {
   return lesTnProfiler(bruker, async (tx, spillerId) => {
     const data = await lesTnRanglisteRad(tx, spillerId, aar);
     return data.rader[0] ?? null;
@@ -262,7 +264,7 @@ export async function hentTnRangliste(bruker: TnBruker, aar?: number) {
 async function lesTnRanglisteRad(
   tx: Prisma.TransactionClient,
   spillerId: string,
-  aar: number | undefined,
+  aar: number,
 ) {
   const rader = await lesTnSpillerRader(tx, spillerId);
   const spillerside = { rader };
@@ -270,18 +272,11 @@ async function lesTnRanglisteRad(
   // tilgangskontrollert av lesTnProfiler, og profilen inneholder aldri Data Golf.
   const medTall = await Promise.all(spillerside.rader.map(async (spiller) => {
     const profil = await hentSpillerprofil(spiller.id, {}, tx);
-    const resultater = tilTurneringer(profil?.turneringer ?? [])
-      .filter((t) => !aar || osloAar(t.start) === aar)
-      .map((t) => t.resultat);
+    const resultater = turneringerIAar(tilTurneringer(profil?.turneringer ?? []), aar).map((t) => t.resultat);
     const tall = aggregerRangliste(resultater);
     return { ...spiller, ...tall, bruttoScore: tall.bruttoSnitt, koblet: profil != null };
   }));
   return { rader: medTall };
-}
-
-const osloAarFormat = new Intl.DateTimeFormat("en-GB", { year: "numeric", timeZone: "Europe/Oslo" });
-function osloAar(dato: Date) {
-  return Number(osloAarFormat.format(dato));
 }
 
 /**
@@ -1479,7 +1474,7 @@ export async function hentTnSpillerProfil(bruker: TnBruker, spillerId: string, a
     const grunn = { navn: spiller.name ?? tilgang.spillerNavn, erTnMedlem: spiller.groupMemberships.length > 0, fodselsdato: spiller.dateOfBirth, klubb: spiller.homeClub, skole: spiller.school, hcp: spiller.hcp };
     const profil = await hentSpillerprofil(tilgang.spillerId, {}, tx);
     if (!profil) return { ...grunn, turneringer: null, aaret: null };
-    const iAaret = tilTurneringer(profil.turneringer).filter((t) => osloAar(t.start) === aar);
+    const iAaret = turneringerIAar(tilTurneringer(profil.turneringer), aar);
     const turneringer = iAaret.map((t) => {
       const tall = aggregerRangliste([t.resultat]);
       const resultat = lesTurneringsresultat(t.resultat);

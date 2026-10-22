@@ -17,14 +17,15 @@ test("brutto snitt er per runde, ikke per turnering", () => {
   assert.equal(tall.snittplassering, 4);
 });
 
-test("påmeldt teller ikke som start, og nettoklasse gir ingen plassering", () => {
+test("påmeldt teller ikke som start, og nettoklasse gir verken plassering eller brutto snitt", () => {
   const tall = aggregerRangliste([
     { status: "REGISTERED", position: null, scoreToPar: null, totalScore: null, rounds: null, roundDetails: [] },
     { status: "FINISHED", position: 1, scoreToPar: 0, totalScore: 74, rounds: null, klasseNavn: "Herrer netto", roundDetails: [runde(1, 74)] },
   ]);
   assert.equal(tall.starter, 1);
   assert.equal(tall.snittplassering, null);
-  assert.equal(tall.bruttoSnitt, 74);
+  assert.equal(tall.runder, 0);
+  assert.equal(tall.bruttoSnitt, null);
 });
 
 test("spillere uten tall står nederst i alle sorteringer", () => {
