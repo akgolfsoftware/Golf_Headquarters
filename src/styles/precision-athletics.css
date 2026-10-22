@@ -123,7 +123,7 @@ color-scheme:dark;
 .pa-root{
 --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:20px;--space-6:24px;--space-8:32px;--space-10:40px;--space-12:48px;--space-16:64px;--space-20:80px;
 --radius:var(--ak-r-knapp);--radius-modal:12px;--radius-pill:var(--ak-r-pille);--radius-mark:0;--radius-inner:var(--ak-r-indre);
---shadow-card:none;
+--shadow-card:var(--ak-skygge-md);
 --shadow-raised:0 1px 2px rgba(20,20,19,.08);
 --shadow-pop:0 8px 24px rgba(20,20,19,.12),0 1px 2px rgba(20,20,19,.08);
 --shadow-modal:0 24px 64px rgba(20,20,19,.24);
@@ -188,7 +188,7 @@ color-scheme:dark;
 .pa-check input:checked+.pa-check__box{background:var(--primary);border-color:var(--primary)}
 .pa-check input:focus-visible+.pa-check__box{outline:2px solid var(--focus-ring);outline-offset:2px}
 
-.pa-card{background:var(--surface-card);border:1px solid var(--border-hairline);border-radius:var(--radius);box-shadow:var(--shadow-card);display:flex;flex-direction:column;min-width:0}
+.pa-card{background:var(--surface-card);border:1px solid var(--border-hairline);border-radius:var(--ak-r-kort);box-shadow:var(--shadow-card);display:flex;flex-direction:column;min-width:0}
 
 .pa-badge{display:inline-flex;align-items:center;gap:6px;height:22px;padding:0 9px;border-radius:var(--radius-pill);font:600 var(--fs-11)/1 var(--font-sans);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
 .pa-badge__dot{width:6px;height:6px;border-radius:999px;background:currentColor;flex:none}
