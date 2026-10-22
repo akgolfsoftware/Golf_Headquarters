@@ -23,6 +23,10 @@ import { formaterFortegn, formaterTall } from "@/lib/format-tall";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-iup.css";
 import "@/styles/playerhq-ny-gameplan.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke4-skra.css";
 
 export const PH20_SEGMENTER = [
   { key: "utslag", label: "Utslag" },
@@ -71,14 +75,16 @@ export function PH20Hull({ baneId, baneNavn, nr, par, lengde, segment, stats, ka
   );
 
   return (
-    <div className="phn phn-iup phn-gp" data-od-id="playerhq-gameplan-hull">
-      <div className="topp">
-        <Link href={`/portal/gameplan/${baneId}`} className="tilbake"><ChevronLeft size={20} aria-hidden />Banekart</Link>
-        <div>
-          <div className="phn-dato">{baneNavn} · gameplan</div>
-          <h1 className="phn-tittel">{tittel}</h1>
-        </div>
-      </div>
+    <div className="phn phn-iup phn-gp phn-skra" data-od-id="playerhq-gameplan-hull">
+      <SkraTopp
+        lav
+        etikett="Hull"
+        bilde="/images/playerhq/spill-bane.jpg" bildePosisjon="50% 60%"
+        overlinje={`${baneNavn} · gameplan`}
+        tittel={tittel}
+        handling={<span className="skra-topp-rad"><span className="skra-tilbake"><Link href={`/portal/gameplan/${baneId}`} className="tilbake"><ChevronLeft size={20} aria-hidden />Banekart</Link></span></span>}
+      />
+      <SkraFlyt lav>
 
       {segmenter}
 
@@ -129,6 +135,7 @@ export function PH20Hull({ baneId, baneNavn, nr, par, lengde, segment, stats, ka
           </div>
         </div>
       )}
+      </SkraFlyt>
     </div>
   );
 }
