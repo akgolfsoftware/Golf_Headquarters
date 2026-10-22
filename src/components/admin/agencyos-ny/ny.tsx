@@ -49,7 +49,7 @@ function toppBilde(nokkel: string) {
 
 /**
  * Sidehodet i Skrå-drakten (type 4–6 i skjermtypene, 21.10.2026): lav topp med bilde, kontekstlinje, tittel og handlinger.
- * Siden etter toppen ligger litt over kanten (agencyos-ny.css §Skrå-topp). `bilde` overstyrer valget.
+ * Siden etter toppen starter under den skrå kanten (agencyos-ny.css §Skrå-topp). `bilde` overstyrer valget.
  */
 export function Topp({ dato, tittel, ingress, handlinger, tilbake, bilde }: {
   dato?: ReactNode; tittel: ReactNode; ingress?: ReactNode; handlinger?: ReactNode; tilbake?: { href: string; tekst: string }; bilde?: string;
