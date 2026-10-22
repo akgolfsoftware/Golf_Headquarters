@@ -83,8 +83,8 @@
   --ak-font-sans: var(--font-ibm-plex-sans), "IBM Plex Sans", system-ui, sans-serif;
   --ak-font-mono: var(--font-ibm-plex-mono), "IBM Plex Mono", ui-monospace, monospace;
 
-  /* Hjørner. Låst 20.10.2026 (analysen, forslag 2): kort 12, knapp 8. */
-  --ak-r-kort: 12px;
+  /* Hjørner. Kort 18 (F3, Skrå-drakten 20.10.2026, overstyrer forslag 2 sin 12), knapp 8. */
+  --ak-r-kort: 18px;
   --ak-r-knapp: 8px;
   --ak-r-indre: 4px;
   --ak-r-pille: 999px;
@@ -100,7 +100,7 @@
   /* Skrå-drakten (beslutninger.md §PLAYERHQ OG AGENCYOS FÅR SKRÅ-DRAKTEN, 20.10.2026).
      Verdiene er hentet ordrett fra fasiten docs/design-system/utkast-skra/index.html.
      Brukes av src/components/precision/skra/ og skjermene som er portert til drakten.
-     --ak-r-kort (12) over står til alle skjermer er portert; Skrå-kort bruker --ak-r-skra-kort. */
+     --ak-r-kort er 18 etter F3; Skrå-kort bruker --ak-r-skra-kort (samme verdi). */
   --ak-flate: #efede8;
   --ak-sunket: #f6f4f0;
   --ak-strek: #e3dfd7;
