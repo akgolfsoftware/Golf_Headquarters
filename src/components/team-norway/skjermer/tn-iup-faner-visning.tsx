@@ -232,7 +232,7 @@ export function TnIupTreningVisning({ brukerNavn, kontekst, spillerId, spillerNa
       ]}
     >
       <TnFlate>
-        <TnFotnote>Gjennomført tid mot planlagt tid de fire siste hele ukene. Kilde: PlayerHQ, {datoLang(naa)}.</TnFotnote>
+        <TnFotnote>Gjennomført tid mot planlagt tid siste fire uker, bare økter som er ferdige. Kilde: PlayerHQ, {datoLang(naa)}.</TnFotnote>
       </TnFlate>
       <TnRutenett min={320}>
         <section style={kolonne}>

@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 
 import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
 import { LeverteIupProfil } from "@/components/iup/LeverteIupProfil";
+import { akKategoriFraTall } from "@/lib/domain/ak-kategori";
 import { TN_INNSYN_FANER, type TnInnsynFane } from "@/lib/deling/tn-innsyn-faner";
 import type { TnInnsyn } from "@/lib/deling/tn-innsyn-data";
 import "@/styles/playerhq-ny.css";
@@ -71,7 +72,7 @@ function Fane({ iup }: { iup: TnInnsyn }) {
               { verdi: delt?.wagr?.plass != null ? heltall.format(delt.wagr.plass) : "—", tekst: "WAGR-plass" },
               { verdi: "—", tekst: "NGF juniorranking" },
               { verdi: snitt, tekst: `brutto snitt ${aar}` },
-              { verdi: "—", tekst: "kategori" },
+              { verdi: akKategoriFraTall({ snitt: profil.aaret?.bruttoSnitt ?? null, hcp: profil.hcp }) ?? "—", tekst: "kategori" },
             ]} />
             <p className="phn-kilde">{delt?.wagr ? `WAGR ${lang.format(delt.wagr.dato)}. ` : ""}Brutto snitt: turneringsrunder {aar}, bare brutto.</p>
           </Kort>
@@ -79,7 +80,7 @@ function Fane({ iup }: { iup: TnInnsyn }) {
             {tester.length === 0 ? <Tom>Ingen registrerte tester ennå.</Tom> : tester.slice(0, 3).map((t) => <Rad key={t.testId} tittel={t.protokollNavn} hoyre={`${t.sisteFormatert ?? "—"} · ${dato(t.sisteDato)}`} />)}
           </Kort>
           <Kort tittel="Neste turneringer">
-            {!delt || delt.nesteTurneringer.length === 0 ? <Tom>Ingen turneringer i planen.</Tom> : delt.nesteTurneringer.map((t) => <Rad key={`${t.navn}-${t.dato.toISOString()}`} tittel={t.navn} tekst={t.merke} hoyre={dato(t.dato)} />)}
+            {!delt || delt.nesteTurneringer.length === 0 ? <Tom>Ingen turneringer i planen.</Tom> : delt.nesteTurneringer.map((t) => <Rad key={`${t.navn}-${t.dato?.toISOString() ?? "uten-dato"}`} tittel={t.navn} tekst={t.merke} hoyre={t.dato ? dato(t.dato) : "Dato —"} />)}
           </Kort>
           <Kort tittel="Poster fra Team Norway">
             {poster.length === 0 ? <Tom>Ingen poster ennå.</Tom> : poster.slice(0, 3).map((p) => <Rad key={p.id} tittel={p.tekst.split("\n")[0]} tekst={p.authorNavn} hoyre={dato(p.createdAt)} />)}
@@ -153,7 +154,7 @@ function Fane({ iup }: { iup: TnInnsyn }) {
               { verdi: tek != null ? `${tek} %` : "—", tekst: "TEK av gjennomført" },
               { verdi: data.trening.underPlan ? "Ja" : "Nei", tekst: "under 70 % to uker på rad" },
             ]} />
-            <p className="phn-kilde">Gjennomført tid mot planlagt tid de fire siste hele ukene. Kilde: PlayerHQ, {lang.format(iup.naa)}.</p>
+            <p className="phn-kilde">Gjennomført tid mot planlagt tid siste fire uker, bare økter som er ferdige. Kilde: PlayerHQ, {lang.format(iup.naa)}.</p>
           </Kort>
           <Kort tittel="Per akse siste fire uker">
             {(["FYS", "TEK", "SLAG", "SPILL", "TURN"] as const).map((a) => <Rad key={a} tittel={a} hoyre={timer(fire.akseMin[a])} />)}

@@ -11,6 +11,41 @@ export function tilWagrId(verdi: string | null | undefined): number | null {
   return Number.isInteger(n) && n > 0 ? n : null;
 }
 
+/**
+ * Forslag som kan bli avslått og skal vises i Haster: trenerforslag i Workbench og
+ * turneringsforslag i Turneringsplan (A8).
+ */
+export const TN_FORSLAG_TYPER = ["WORKBENCH_COACH_PROPOSAL", "TOURNAMENT_PLAN_PROPOSAL"] as const;
+
+export type TnIupTurnering = { navn: string; /** Null = ingen dato registrert; vises «Dato —» nederst. */ dato: Date | null; merke: string };
+
+export type TnPaameldingRad = {
+  entryStatus: string;
+  manualName: string | null;
+  manualDate: Date | null;
+  tournament: { name: string; startDate: Date } | null;
+  wagrPlanEvent: { name: string; startDate: Date } | null;
+};
+
+const PAAMELDING_STATUS: Record<string, string> = { PLANNED: "Planlagt", CLAIMED_REGISTERED: "Meldt på", CONFIRMED: "Bekreftet" };
+
+/**
+ * Neste turneringer i planen. Samme regel som Turneringsplan (A9): dato fra WAGR-turneringen, ellers
+ * kalenderturneringen, ellers egen oppføring; oppføringer uten dato tas med og står nederst («Dato —»);
+ * bare turneringer fra og med `iDag` (UTC-midnatt).
+ */
+export function velgNesteTurneringer(rader: readonly TnPaameldingRad[], iDag: Date, maks = 3): TnIupTurnering[] {
+  return rader
+    .map((p) => ({
+      navn: p.wagrPlanEvent?.name ?? p.tournament?.name ?? p.manualName ?? "Turnering",
+      dato: p.wagrPlanEvent?.startDate ?? p.tournament?.startDate ?? p.manualDate ?? null,
+      merke: PAAMELDING_STATUS[p.entryStatus] ?? p.entryStatus,
+    }))
+    .filter((t) => t.dato === null || t.dato.getTime() >= iDag.getTime())
+    .sort((a, b) => (a.dato?.getTime() ?? Infinity) - (b.dato?.getTime() ?? Infinity))
+    .slice(0, maks);
+}
+
 export type TnIupHasterRad = { tekst: string; merke: string };
 
 export type TnIupHasterInn = {

@@ -21,6 +21,8 @@
  * [min, max) — min INKLUSIV, max EKSKLUSIV. Dvs. snittscore 72 → C, 80 → G, 100 → K.
  */
 
+import { avgScoreFromHcp } from "@/lib/stats/sg-estimator";
+
 export type AkKategori =
   | "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K";
 
@@ -59,6 +61,17 @@ export function kategoriFraSnittscore(snittscore: number): AkBand {
   );
   // Dekkende tabell (−∞ … +∞) — band finnes alltid, men fall tilbake til K for sikkerhets skyld.
   return band ?? AK_BANDS[AK_BANDS.length - 1];
+}
+
+/**
+ * Spillerens A–K-kategori fra tallene som alt er lest: brutto snitt i turnering i år, ellers
+ * HCP omregnet til forventet snittscore. Null når begge mangler. Én regel for PlayerHQ
+ * (`hentSpillerAkKategori`) og Team Norway (IUP-stripen), så kategorien er lik overalt.
+ */
+export function akKategoriFraTall({ snitt, hcp }: { snitt: number | null; hcp: number | null }): AkKategori | null {
+  if (snitt != null) return kategoriFraSnittscore(snitt).kategori;
+  if (hcp != null) return kategoriFraSnittscore(avgScoreFromHcp(hcp)).kategori;
+  return null;
 }
 
 /** Neste nivå (ett bånd bedre / lavere score). null hvis allerede A (toppen). */

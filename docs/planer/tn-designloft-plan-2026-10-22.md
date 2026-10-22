@@ -215,6 +215,18 @@ utviklingssjekker.
 | A13 | Wireframene viste to delingsnivåer («Tester og resultater», «Komplett profil»); koden har ett | utkast 1 og 2 | Rettet: «Delt / Venter på svar / Ikke delt» (svar 1) | Wireframe, rettet |
 | A14 | Wireframene: vannrett aksebånd sto TURN først, Putt 1–3 m «—» på Oversikt men 7/10 på Tester, poengsnitt lik WAGR-plassen, dager til fireukerssjekk feil, målsetning 2027 mot tall fra 2026 | utkast 1 og 2 | Rettet: FYS først i vannrette bånd, like tall, riktig periode | Wireframe, rettet |
 
+**Status per avvik (pakke 2, «like tall på tvers», 22.10):**
+
+- **A1** allerede rettet i #1620. **A4** allerede rettet i #1635 (én utregning av brutto snitt). **A11** allerede rettet i #1625. **A12** allerede rettet i #1639 («Se hva Team Norway ser»). **A13, A14** rettet i wireframene.
+- **A2 står.** Krever at tekniske oppgaver og reps fra treneren lagres som forslag (ny tabell eller felt for forslag og et svar-flyt for spilleren). Datamodelltillegg krever eget ja, og pakke 2 har ingen skjemaendringer.
+- **A3 rettet i denne pakken.** `hentWagrPlassForSpiller` (`src/lib/domain/tn-wagr-plass.ts`) leser `wagr_ref_players`; Oversikt, Låst IUP og bildetoppen i Turneringsplan bruker den. `WagrPlayerStrength` gir nå bare sjanser og anslag. `WagrSnapshot` (AgencyOS) er utenfor TN og røres ikke. Test: `tn-wagr-plass.test.ts`.
+- **A5 rettet i denne pakken.** IUP › Trening, pyramiden i IUP-oversikten og TN-hjem («gruppas trening», `tn-trenger-deg.ts`) regner nå som PlayerHQ (`etterlevelse.ts`): minutter, 28 dager til nå, bare økter som har passert slutt, bare økter spilleren selv ser (ingen utkast, avlyste eller skjulte). «Trenger deg» (under 70 % to uker på rad) er uendret AgencyOS-regel på hele uker. Tester: `tn-trenger-deg.test.ts`, `tn-aksefordeling.test.ts`.
+- **A6 står.** `/turneringer` leser `Tournament.results`; IUP og Rangliste leser `public_player_entries`. Å bytte kilden krever kobling mellom `Tournament` (kalender og påmelding) og de offentlige turneringene, og er en egen pakke. Kalenderen og påmeldingene blir i `Tournament`, resultatene skal over.
+- **A7 rettet i denne pakken.** Kategori A–K i IUP-stripen (Team Norway og «Se hva Team Norway ser») regnes med `akKategoriFraTall`: brutto snitt i turnering, ellers HCP, som `hentSpillerAkKategori` i PlayerHQ. Låst IUP (uten deling) viser fortsatt «—». Test: `ak-kategori.test.ts`.
+- **A8 rettet i denne pakken.** Haster leser nå også avslåtte `TOURNAMENT_PLAN_PROPOSAL` (`TN_FORSLAG_TYPER`). Test i `tn-iup-oversikt-regler.test.ts`.
+- **A9 rettet i denne pakken.** Oversikt tar med turneringer uten dato («Dato —», nederst) og velger dato som Turneringsplan (`velgNesteTurneringer`). Test i `tn-iup-oversikt-regler.test.ts`.
+- **A10 rettet i denne pakken.** Profilen (`byggKomplettProfil`) teller bare gyldige Team Norway-forsøk, via `tnValiderRader` (flyttet til `tn-test-validering.ts` og delt med Tester). Test: `tn-test-validering.test.ts`.
+
 Felt som wireframene viser, men som ikke finnes i koden ennå (bygges etter beslutningene, ikke avvik): NGF juniorranking («—»),
 WAGR per uke, til-par per turnering, logget i etterkant, lagt inn mot fordelt, kvalitetssjekk, før og nå-bilder, trenerkommentar.
 

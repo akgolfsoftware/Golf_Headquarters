@@ -1,5 +1,7 @@
 import { before, beforeEach, mock, test } from "node:test";
 import assert from "node:assert/strict";
+import { tnProtocol } from "@/lib/portal-tester/tn-catalog";
+import { tnScore } from "@/lib/portal-tester/tn-scoring";
 
 // Kun fiktive personer.
 let profilKall: { golf?: boolean }[] = [];
@@ -15,12 +17,17 @@ mock.module("@/lib/profil-kobling/tilgang", { namedExports: { medSpillerTilgang:
 mock.module("@/lib/iup/trener-profil-lesing", { namedExports: { lesLeverteIupForProfil: async () => [{ id: "i1", type: "UTVIKLINGSSJEKK" }] } });
 mock.module("@/lib/iup/maaltall-data", { namedExports: { hentIupMaaltallForSpiller: async (_id: string, _db: unknown, o: { kunDelteRunder?: boolean }) => { maaltallKall.push({ kunDelte: o.kunDelteRunder }); return null; } } });
 
+// Ekte, reberegnbart Team Norway-resultat (A10: bare gyldige forsøk telles).
+const puttProtokoll = tnProtocol("putt-1-3m")!;
+const puttResultat = tnScore(puttProtokoll, Object.fromEntries(puttProtokoll.rows.map((_, i) => [String(i + 1), { strokes: 1 }])));
+
 const db = {
   user: { findFirst: async (a: { where: { id: string; groupMemberships?: unknown } }) => (a.where.groupMemberships ? (harIup ? { id: "u1" } : null) : { name: "Pia Egenes" }) },
   testResult: { findMany: async () => [
-    { testId: "tn-v3-driver", takenAt: new Date("2026-10-01"), score: 312, test: { name: "Driver", pyramidArea: "TEK" } },
-    { testId: "tn-v3-driver", takenAt: new Date("2026-09-01"), score: 300, test: { name: "Driver", pyramidArea: "TEK" } },
-    { testId: "t-putt", takenAt: new Date("2026-10-05"), score: 8, test: { name: "Putt 3 fot", pyramidArea: "SLAG" } },
+    { id: "r1", testId: "tn-v3-putt-1-3m", takenAt: new Date("2026-10-01"), score: puttResultat.score, details: puttResultat, test: { name: "Putt 1–3 m", pyramidArea: "SLAG" } },
+    { id: "r2", testId: "tn-v3-putt-1-3m", takenAt: new Date("2026-09-15"), score: puttResultat.score, details: puttResultat, test: { name: "Putt 1–3 m", pyramidArea: "SLAG" } },
+    { id: "r3", testId: "tn-v3-putt-1-3m", takenAt: new Date("2026-09-01"), score: 300, details: { ugyldig: true }, test: { name: "Putt 1–3 m", pyramidArea: "SLAG" } },
+    { id: "r4", testId: "t-putt", takenAt: new Date("2026-10-05"), score: 8, details: null, test: { name: "Putt 3 fot", pyramidArea: "SLAG" } },
   ] },
   round: {
     aggregate: async (a: { where: unknown }) => { rundeFilter = a.where; return { _count: { _all: 3 }, _avg: { sgTotal: 1.2, sgOtt: 0.1, sgApp: 0.5, sgArg: 0.3, sgPutt: 0.3 } }; },
@@ -45,9 +52,9 @@ test("runder merket «Bare deg» telles ikke, verken i statistikk eller IUP-mål
   assert.deepEqual(maaltallKall, [{ kunDelte: true }]);
 });
 
-test("Team Norway-tester vises uten score, og tester grupperes per test", async () => {
+test("Team Norway-tester vises uten score, grupperes per test og teller bare gyldige forsøk", async () => {
   const p = await bygg(db as never, "u1", { kanSeGolfId: false });
-  const tn = p.tester.find((t) => t.testId === "tn-v3-driver");
+  const tn = p.tester.find((t) => t.testId === "tn-v3-putt-1-3m");
   assert.equal(tn?.antall, 2);
   assert.equal(tn?.sisteScore, null);
   assert.equal(p.tester.find((t) => t.testId === "t-putt")?.sisteScore, 8);
