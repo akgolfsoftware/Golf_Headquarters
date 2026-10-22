@@ -210,7 +210,7 @@ utviklingssjekker.
 | A8 | Avslåtte turneringsforslag vises aldri i Haster (leser bare Workbench-forslag) | `tn-iup-oversikt.ts:77` | Ta med `TOURNAMENT_PLAN_PROPOSAL` | Kode |
 | A9 | Neste turneringer: Oversikt utelater oppføringer uten dato, Turneringsplan tar dem med | `data.ts:172` | Lik regel; uten dato vises «Dato —» nederst | Kode |
 | A10 | Testantall: Profil teller alle `TestResult`, også ugyldige; Tester og Haster teller gyldige | `komplett.ts:88` | Gyldige overalt | Kode |
-| A11 | Referanse › Tester bruker hver spillers beste resultat og tar med WANG-elever | `tn-arbeidsflate.ts:1069` | Komplett testoversikt med navn: median av hver spillers siste resultat per test, og alle forsøk per spiller; WANG-elever under WANG-tester (svar 2) | Kode, wireframe rettet |
+| A11 | Referanse › Tester bruker hver spillers beste resultat og tar med WANG-elever | `tn-arbeidsflate.ts:1069` | Median og antall for alle TN-spillere; navn og alle forsøk bare for dem som har delt; WANG-elever under WANG-tester (svar 2) | Kode, wireframe rettet |
 | A12 | Delingsteksten i PlayerHQ sier «foreløpig leverte utviklingssjekker», mens TN leser tester, trening, planer og lisens med samme deling | `navngitt-deling.tsx:165` | Teksten sier det TN faktisk ser; «Se hva Team Norway ser» bygges for spilleren | Kode |
 | A13 | Wireframene viste to delingsnivåer («Tester og resultater», «Komplett profil»); koden har ett | utkast 1 og 2 | Rettet: «Delt / Venter på svar / Ikke delt» (svar 1) | Wireframe, rettet |
 | A14 | Wireframene: vannrett aksebånd sto TURN først, Putt 1–3 m «—» på Oversikt men 7/10 på Tester, poengsnitt lik WAGR-plassen, dager til fireukerssjekk feil, målsetning 2027 mot tall fra 2026 | utkast 1 og 2 | Rettet: FYS først i vannrette bånd, like tall, riktig periode | Wireframe, rettet |
@@ -226,12 +226,13 @@ samme tall i Oversikt. Ingen knapper: «Foreslå endring», «Skriv post» og «
 
 1. **Deling:** «Alt skal deles.» Ett nivå: når spilleren deler, ser treneren alt. Wireframene viser Delt / Venter på svar / Ikke delt.
 2. **Referanse › Tester:** «Spillerens testresultater. Men Team Norway har komplett oversikt over alle spillere og alle tester som er
-   gjort.» Referanse › Tester er en komplett testoversikt med navn: median og antall per test for gruppa, og hver spillers resultater
-   med alle forsøk. Ingen tidsgrense og ingen «beste»-kolonne. Wireframen er tegnet om (utkast 2, Referanse › Tester).
+   gjort.» Presisert samme dag: «Komplett testoversikt med navn for alle som har delt. Spillere som ikke har delt teller bare i
+   median og antall, uten navn.» Referanse › Tester viser median og antall per test for alle TN-spillere, og en navnetabell med alle
+   forsøk bare for dem som har delt. Ingen tidsgrense og ingen «beste»-kolonne. Wireframen er tegnet om (utkast 2, Referanse › Tester).
 3. **Brutto snitt:** «Alle turneringer er brutto resultat.» Brutto snitt er turneringsrunder, bare brutto, likt i IUP, Rangliste,
    Uttak og PlayerHQ. Treningsrunder er ikke med.
 
-Beslutningen registreres i `beslutninger.md` av hovedøkta.
+Beslutningen står i #1614 (`.claude/rules/beslutninger.md` §TEAM NORWAY: DELING ER ALT ELLER INGENTING).
 
 ## 6. Utkast 3: testøkt, TrackMan-kobling og testvisning (22.10.2026)
 
