@@ -35,8 +35,8 @@ section.skjerm{background:var(--ark);border:1px solid var(--strek);border-radius
 .meny i.paa{background:var(--fg)}
 .meny .gr{font-family:var(--mono);font-size:7px;color:var(--dim);margin-top:4px}
 .side{min-width:0;padding-bottom:14px}
-.topp{background:var(--topp);clip-path:polygon(0 0,100% 0,100% 78%,0 100%);padding:10px 10px 22px;color:var(--hvit);display:grid;gap:5px}
-.topp.lav{padding-bottom:16px}
+.topp{background:var(--topp);clip-path:polygon(0 0,100% 0,100% calc(100% - 14px),0 100%);padding:10px 10px 26px;color:var(--hvit);display:grid;gap:5px}
+.topp.lav{padding-bottom:22px}
 .topp .t{font-size:13px;font-weight:600}
 .topp .o{font-family:var(--mono);font-size:7.5px;opacity:.85}
 .topp .tall{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
@@ -44,7 +44,8 @@ section.skjerm{background:var(--ark);border:1px solid var(--strek);border-radius
 .topp .tall span{border:1px solid currentColor;border-radius:5px;padding:3px;font-family:var(--mono);font-size:7.5px}
 .topp .tall b{display:block;font-size:11px}
 .topp .knapp{justify-self:start}
-.flyt{margin-top:-8px;padding:0 8px;display:grid;gap:6px}
+/* Første kort starter under den skrå kanten, aldri over bildet (Anders 22.10). */
+.flyt{margin-top:8px;padding:0 8px;display:grid;gap:6px}
 .to{display:grid;grid-template-columns:1.55fr 1fr;gap:6px;align-items:start}
 .tre{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
 .lista-detalj{display:grid;grid-template-columns:1fr 1.2fr;gap:6px;align-items:start}
@@ -104,6 +105,7 @@ button{font:inherit;font-weight:600;background:var(--fg);color:var(--ark);border
       <span><b>Mørkt kort</b> = hovedkortet (det som gjelder nå, i aksefargen, aldri bilde)</span>
       <span><b>Hvite kort</b> = vanlige kort med myk skygge</span>
       <span><b>PC</b> = full bredde ved siden av menyen</span>
+      <span><b>Øverste kort</b> starter under den skrå kanten og dekker aldri bildet</span>
     </div>
     <p class="dim">Svar nederst på siden. Du kan krysse «Ja» på alt og skrive bare der noe skal rettes. Trykk «Kopier svaret» og lim det inn i chatten.</p>
   </header>
