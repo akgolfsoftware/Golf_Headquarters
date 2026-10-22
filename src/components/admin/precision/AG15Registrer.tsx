@@ -9,20 +9,31 @@
  * spiller». Lagringen er saveTnTestSomCoach: serveren bestemmer spiller, protokoll
  * og antall slag, og sjekker at coachen er trener for gruppa og at testen er en
  * trener kan føre. Det coachen fører er kontrollert med en gang.
+ *
+ * Skrå-drakten 22.10 (bølge 2, pakke A5, skissen §5 «Skjema»): lav topp med wedgebildet og skjemaet
+ * i et hvitt kort. Skjemaet (RegistrerSkjema) brukes også til høyre i testdagen.
  */
 import { useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ChevronLeft } from "lucide-react";
+import { Topp } from "@/components/admin/agencyos-ny/ny";
 import { saveTnTestSomCoach } from "@/app/team-norway/tn-testforing-actions";
 import { tnFormat, tnScore, tnValidate, type TnValues } from "@/lib/portal-tester/tn-scoring";
 import { GATE_POENG_VALG, GATE_POENG_IDS } from "@/lib/portal-tester/tn-catalog";
 import type { RegistreringData } from "@/lib/admin/tester/testdag-data";
 import "@/styles/agencyos-ny-testdag.css";
+import "@/styles/agencyos-ny-a5-skra.css";
+
+/** Bildet i den lave toppen på testdagen og registreringen. */
+export const TEST_BILDE = "/images/playerhq/naerspill-wedge.jpg";
 
 const STATUS: Record<string, string> = { PENDING: "Venter", DONE: "Lagret", SKIPPED: "Hoppet over", ABSENT: "Ikke møtt" };
 
-export function AG15Registrer({ d }: { d: RegistreringData }) {
+/**
+ * Skjemaet for én spiller. Står alene på /admin/tester/registrer/[deltakerId] og til høyre i
+ * testdagen (`?deltaker=`). `nesteHref` bestemmer hvor «Lagre og ta neste spiller» går.
+ */
+export function RegistrerSkjema({ d, nesteHref, ferdigHref }: { d: RegistreringData; nesteHref: (id: string) => string; ferdigHref: string }) {
   const router = useRouter();
   const p = d.protokoll;
   const [values, setValues] = useState<TnValues>(d.utkast?.values ?? {});
@@ -32,7 +43,6 @@ export function AG15Registrer({ d }: { d: RegistreringData }) {
   const [melding, setMelding] = useState<string | null>(null);
   const [venter, start] = useTransition();
   const laast = d.status !== "PENDING" || !d.testdag.aktiv;
-  const tilbake = d.testdag.eventId ? `/admin/tester/testdag/${d.testdag.eventId}` : "/admin/tester";
 
   const sett = (rad: number, key: string, v: string | number | null) => {
     setMelding(null);
@@ -62,48 +72,51 @@ export function AG15Registrer({ d }: { d: RegistreringData }) {
     if (!r.ok) { setFeil(r.error); return; }
     setRevision(r.revision);
     if (intent === "draft") { setMelding("Utkastet er lagret."); return; }
-    router.push(d.nesteId ? `/admin/tester/registrer/${d.nesteId}` : tilbake);
+    router.push(d.nesteId ? nesteHref(d.nesteId) : ferdigHref);
     router.refresh();
   });
 
-  return <div className="agn-s tdg">
-    <Link href={tilbake} className="ag-tilbake"><ChevronLeft className="ikon" aria-hidden />{d.testdag.eventId ? "Testdagen" : "Tester"}</Link>
-    <header className="tdg-topp">
-      <span className="meta">Teknikk og PEI · {d.testdag.tittel}</span>
-      <h1>{p.name}</h1>
-      <p className="tdg-ingress">{p.rows.length} slag. Du fører Teknikk- og PEI-testene; det du fører er kontrollert med en gang.</p>
-    </header>
+  return <section aria-label={`Registrer ${p.name}`} className="tdg-slag">
+      <div className="tdg-sek-topp"><h2>{d.spiller}</h2><span className="num">{fort} / {p.rows.length} slag ført</span></div>
+      {resultat && <p className="tdg-sum num">{resultat}</p>}
+      {d.resultat && laast && <p className="tdg-sum num">Lagret: {d.resultat}</p>}
+      <ol className="tdg-rader">
+        {p.rows.map((rad, i) => <li key={i} className="tdg-slagrad">
+          <span className="tdg-slag-nr num">{i + 1}</span>
+          <span className="tdg-slag-tekst">{rad.label}</span>
+          <span className="tdg-felter">
+            {rad.fields.map((f) => f.choices
+              ? <span key={f.key} role="group" aria-label={`Slag ${i + 1}: ${f.label}`} className="tdg-knapper">
+                {f.choices.map((c) => <button key={c} type="button" disabled={laast} aria-pressed={values[String(i + 1)]?.[f.key] === c}
+                  onClick={() => sett(i, f.key, values[String(i + 1)]?.[f.key] === c ? null : c)}>{c}</button>)}
+              </span>
+              : <label key={f.key} className="tdg-tall"><span>{f.label}{f.unit ? ` (${f.unit})` : ""}</span>
+                <input type="text" inputMode="decimal" disabled={laast} value={values[String(i + 1)]?.[f.key] ?? ""}
+                  onChange={(e) => { const t = e.target.value.replace(",", "."); sett(i, f.key, t === "" ? null : Number.isFinite(Number(t)) ? Number(t) : null); }} /></label>)}
+          </span>
+        </li>)}
+      </ol>
+      <label className="tdg-felt"><span className="etikett">Notat (valgfritt)</span><textarea rows={2} maxLength={2000} disabled={laast} value={notes} onChange={(e) => setNotes(e.target.value)} /></label>
+      {feil && <p className="feiltekst" role="alert">{feil}</p>}
+      {melding && <p className="tdg-forklar" role="status">{melding}</p>}
+      {!laast && <div className="tdg-handlinger">
+        <button type="button" className="knapp pri stor" disabled={venter || !komplett} onClick={() => lagre("complete")}>{venter ? "Lagrer …" : d.nesteId ? "Lagre og ta neste spiller" : "Lagre"}</button>
+        <button type="button" className="knapp sek" disabled={venter} onClick={() => lagre("draft")}>Lagre utkast</button>
+      </div>}
+      {laast && <p className="tdg-forklar">{!d.testdag.aktiv ? "Testdagen er avsluttet." : `Status: ${STATUS[d.status]}.`}</p>}
+    </section>;
+}
+
+export function AG15Registrer({ d }: { d: RegistreringData }) {
+  const tilbake = d.testdag.eventId ? `/admin/tester/testdag/${d.testdag.eventId}` : "/admin/tester";
+  const p = d.protokoll;
+  return <div className="agn-s tdg agn-a5-under">
+    <Topp tilbake={{ href: tilbake, tekst: d.testdag.eventId ? "Testdagen" : "Tester" }} bilde={TEST_BILDE}
+      dato={`Teknikk og PEI · ${d.testdag.tittel}`} tittel={p.name}
+      ingress={`${p.rows.length} slag. Du fører Teknikk- og PEI-testene; det du fører er kontrollert med en gang.`} />
     <div className="tdg-to">
       <div className="tdg-skjema">
-        <section aria-label="Slagene" className="tdg-slag">
-          <div className="tdg-sek-topp"><h2>{d.spiller}</h2><span className="num">{fort} / {p.rows.length} slag ført</span></div>
-          {resultat && <p className="tdg-sum num">{resultat}</p>}
-          {d.resultat && laast && <p className="tdg-sum num">Lagret: {d.resultat}</p>}
-          <ol className="tdg-rader">
-            {p.rows.map((rad, i) => <li key={i} className="tdg-slagrad">
-              <span className="tdg-slag-nr num">{i + 1}</span>
-              <span className="tdg-slag-tekst">{rad.label}</span>
-              <span className="tdg-felter">
-                {rad.fields.map((f) => f.choices
-                  ? <span key={f.key} role="group" aria-label={`Slag ${i + 1}: ${f.label}`} className="tdg-knapper">
-                    {f.choices.map((c) => <button key={c} type="button" disabled={laast} aria-pressed={values[String(i + 1)]?.[f.key] === c}
-                      onClick={() => sett(i, f.key, values[String(i + 1)]?.[f.key] === c ? null : c)}>{c}</button>)}
-                  </span>
-                  : <label key={f.key} className="tdg-tall"><span>{f.label}{f.unit ? ` (${f.unit})` : ""}</span>
-                    <input type="text" inputMode="decimal" disabled={laast} value={values[String(i + 1)]?.[f.key] ?? ""}
-                      onChange={(e) => { const t = e.target.value.replace(",", "."); sett(i, f.key, t === "" ? null : Number.isFinite(Number(t)) ? Number(t) : null); }} /></label>)}
-              </span>
-            </li>)}
-          </ol>
-          <label className="tdg-felt"><span className="etikett">Notat (valgfritt)</span><textarea rows={2} maxLength={2000} disabled={laast} value={notes} onChange={(e) => setNotes(e.target.value)} /></label>
-          {feil && <p className="feiltekst" role="alert">{feil}</p>}
-          {melding && <p className="tdg-forklar" role="status">{melding}</p>}
-          {!laast && <div className="tdg-handlinger">
-            <button type="button" className="knapp pri stor" disabled={venter || !komplett} onClick={() => lagre("complete")}>{venter ? "Lagrer …" : d.nesteId ? "Lagre og ta neste spiller" : "Lagre"}</button>
-            <button type="button" className="knapp sek" disabled={venter} onClick={() => lagre("draft")}>Lagre utkast</button>
-          </div>}
-          {laast && <p className="tdg-forklar">{!d.testdag.aktiv ? "Testdagen er avsluttet." : `Status: ${STATUS[d.status]}.`}</p>}
-        </section>
+        <RegistrerSkjema d={d} nesteHref={(id) => `/admin/tester/registrer/${id}`} ferdigHref={tilbake} />
       </div>
       <aside className="tdg-oppsummering" aria-label="Spillere på stasjonen">
         <span className="meta">Spillere på stasjonen</span>

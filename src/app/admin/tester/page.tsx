@@ -23,6 +23,7 @@ import { prisma } from "@/lib/prisma";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { withTnAssignments } from "@/lib/portal-tester/tn-integration";
 import { lastTesterOversikt } from "@/lib/admin/tester/oversikt-data";
+import { startOfMonth } from "@/lib/uke-helpers";
 
 import type {
   AdminTesterV2Data,
@@ -59,7 +60,9 @@ export default async function V2AdminTesterPage({ searchParams }: { searchParams
   // Tildelte tester som ikke er tatt, og valgene i «Tildel test»-arket. Samme
   // coach-scoping og testkatalog som tildelTest selv håndhever.
   const scope = coachScopedPlayerWhere(user);
-  const [tildeltRaw, spillereRaw, testerRaw] = await Promise.all([
+  // Første dag i måneden i Oslo-tid (gotchas §Tid og datoer).
+  const maanedStart = startOfMonth(new Date());
+  const [tildeltRaw, spillereRaw, testerRaw, maanedAntall, tildeltAntall] = await Promise.all([
     prisma.testAssignment.findMany({
       where: { status: "OPEN", player: scope },
       orderBy: [{ dueDate: "asc" }, { createdAt: "desc" }],
@@ -74,6 +77,8 @@ export default async function V2AdminTesterPage({ searchParams }: { searchParams
         select: { id: true, name: true, description: true, pyramidArea: true, isCustom: true },
       })
       .catch(() => []),
+    prisma.testResult.count({ where: { user: scope, takenAt: { gte: maanedStart } } }),
+    prisma.testAssignment.count({ where: { status: "OPEN", player: scope } }),
   ]);
 
   const [{ paagaaende, resultater, antall30, antall7, d30 }, oversikt] = await Promise.all([
@@ -156,6 +161,8 @@ export default async function V2AdminTesterPage({ searchParams }: { searchParams
       <AG15Tester
         data={data}
         oversikt={oversikt}
+        maanedAntall={maanedAntall}
+        tildeltAntall={tildeltAntall}
         startFane={startFane}
         tildelSpillerId={tildel && spillereRaw.some((s) => s.id === tildel) ? tildel : null}
         tildelt={tildeltRaw.map((t) => ({

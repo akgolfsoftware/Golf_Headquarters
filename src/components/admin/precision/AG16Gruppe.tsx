@@ -7,11 +7,14 @@
  * Samme data og handlinger som før (GruppeDetaljV2Data og handlingene i
  * src/app/admin/grupper/[id]/gruppe-actions.tsx): legg til og fjern medlem,
  * trinnfilter, neste samlinger, rull ut mal og slett gruppe.
- * Fanene er egne adresser: Medlemmer · Faste tider · Skoledata · Stats (AG-A03).
+ * Fanene er egne adresser: Medlemmer · Faste tider · Årsplan · Analyse (AG-A03) · Skoledata · Workbench.
+ *
+ * Skrå-drakten 22.10 (bølge 2, pakke A5, skissen §3): lav topp med puttebildet og gruppens navn,
+ * fanene som bryter over linjer, og innholdet i hvite kort (to kolonner på PC).
  *
  * Avvik:
  *   - «Tildel TrackMan-økt» til gruppa har ingen handling i appen og er utelatt.
- *     «Tildel test» åpner AG-15 (tildeling per spiller).
+ *     «Tildel test» åpner AG-15 med gruppa valgt (tildeling per spiller).
  */
 import Link from "next/link";
 import type { ReactNode } from "react";
@@ -19,20 +22,25 @@ import { Avatar, KnappLenke, Nokkelverdier, Pille, Seksjon, Tom, Topp } from "@/
 import type { GruppeDetaljV2Actions, GruppeDetaljV2Data } from "@/lib/admin/grupper/typer";
 import { formaterTall } from "@/lib/format-tall";
 import "@/styles/agencyos-ny-mer.css";
+import "@/styles/agencyos-ny-a5-skra.css";
 
 const NB_DATO = new Intl.DateTimeFormat("nb-NO", { timeZone: "Europe/Oslo", weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 const fmtHcp = (h: number | null) => formaterTall(h, 1, true);
 
-export type GruppeFane = "medlemmer" | "tider" | "skoledata" | "stats" | "arsplan";
+export type GruppeFane = "medlemmer" | "tider" | "arsplan" | "stats" | "skoledata" | "workbench";
+
+/** Bildet i den lave toppen på gruppa og undersidene. */
+export const GRUPPE_BILDE = "/images/playerhq/slag-putting.jpg";
 
 /** Fanene i Gruppa. Hver er en egen adresse. */
 export function GruppeFanerNy({ groupId, aktiv }: { groupId: string; aktiv: GruppeFane }) {
   const faner: ReadonlyArray<[GruppeFane, string, string]> = [
     ["medlemmer", "Medlemmer", `/admin/grupper/${groupId}`],
     ["tider", "Faste tider", `/admin/grupper/${groupId}/timeplan`],
-    ["skoledata", "Skoledata", `/admin/grupper/${groupId}/arsplan/skoledata`],
-    ["stats", "Stats", `/admin/grupper/${groupId}/analyse`],
     ["arsplan", "Årsplan", `/admin/grupper/${groupId}/arsplan`],
+    ["stats", "Analyse", `/admin/grupper/${groupId}/analyse`],
+    ["skoledata", "Skoledata", `/admin/grupper/${groupId}/arsplan/skoledata`],
+    ["workbench", "Workbench", `/admin/grupper/${groupId}/workbench`],
   ];
   return <nav className="faner" aria-label="Gruppa">
     {faner.map(([id, label, href]) => <Link key={id} href={href} aria-current={aktiv === id ? "page" : undefined}>{label}</Link>)}
@@ -41,13 +49,14 @@ export function GruppeFanerNy({ groupId, aktiv }: { groupId: string; aktiv: Grup
 
 export function AG16Gruppe({ data, actions: A, ekstra }: { data: GruppeDetaljV2Data; actions: GruppeDetaljV2Actions; ekstra?: ReactNode }) {
   const rolle = (m: GruppeDetaljV2Data["medlemmer"][number]) => (m.erTrener ? "Coach" : m.erHjelpetrener ? "Assist Coach" : "Spiller");
-  return <div className="agn-s">
+  return <div className="agn-s agn-a5-under">
     <Topp tilbake={{ href: "/admin/grupper", tekst: "Grupper" }}
       dato={`Gruppe · ${data.type} · coach ${data.coachNavn ?? "ikke satt"}`}
       tittel={data.navn}
+      bilde={GRUPPE_BILDE}
       handlinger={<>
+        <KnappLenke variant="pri" href={`/admin/tester?gruppe=${encodeURIComponent(data.id)}&fane=tildelt`}>Tildel test</KnappLenke>
         <KnappLenke href={`/admin/grupper/${data.id}/workbench`}>Åpne gruppeplanen</KnappLenke>
-        <KnappLenke href={`/admin/grupper/${data.id}/arsplan`}>Årsplan</KnappLenke>
       </>} />
     <GruppeFanerNy groupId={data.id} aktiv="medlemmer" />
 
@@ -93,9 +102,6 @@ export function AG16Gruppe({ data, actions: A, ekstra }: { data: GruppeDetaljV2D
             </div>
             : <Tom tittel="Ingen samlinger planlagt" tekst="Legg inn en fast økt under Faste tider."
               handling={<KnappLenke href={`/admin/grupper/${data.id}/timeplan`}>Ny gruppetrening</KnappLenke>} />}
-        </Seksjon>
-        <Seksjon tittel="Tildel til gruppa">
-          <div className="knapper"><KnappLenke href="/admin/tester?fane=tildelt">Tildel test</KnappLenke></div>
         </Seksjon>
         {ekstra}
         <Seksjon tittel="Coach">

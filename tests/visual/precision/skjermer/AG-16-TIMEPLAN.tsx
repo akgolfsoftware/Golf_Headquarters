@@ -21,8 +21,8 @@ const data: GruppeTimeplanData = {
 const Skall = ({ tittel, aktiv, children }: { tittel: string; aktiv: "tider" | "skoledata"; children: React.ReactNode }) => (
   <AdminRolleProvider erAdmin>
     <AgencyOSSkall navn="Test Coach">
-      <div className="agn-s">
-        <Topp tilbake={{ href: "/admin/grupper/g1", tekst: "Gruppa" }} dato="Testgruppe Utvikling" tittel={tittel} />
+      <div className="agn-s agn-a5-under">
+        <Topp tilbake={{ href: "/admin/grupper/g1", tekst: "Gruppa" }} dato="Testgruppe Utvikling" tittel={tittel} bilde="/images/playerhq/slag-putting.jpg" />
         <GruppeFanerNy groupId="g1" aktiv={aktiv} />
         {children}
       </div>
@@ -32,5 +32,5 @@ const Skall = ({ tittel, aktiv, children }: { tittel: string; aktiv: "tider" | "
 
 export const tilstander = {
   timeplan: <Skall tittel="Timeplan" aktiv="tider"><AG16Timeplan data={data} onOpprett={async () => ({ ok: true as const })} onDupliser={async () => {}} /></Skall>,
-  skoledata: <Skall tittel="Legg inn skoledata" aktiv="skoledata"><SkoledataForm groupId="g1" /></Skall>,
+  skoledata: <Skall tittel="Legg inn skoledata" aktiv="skoledata"><div className="a5-hvit"><SkoledataForm groupId="g1" /></div></Skall>,
 };
