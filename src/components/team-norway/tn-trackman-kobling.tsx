@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { TrackmanImportModal } from "@/components/shared/trackman-import-modal";
 import type { TnTrenerVerktoy } from "@/components/portal/precision/PH15TnTest";
@@ -25,25 +25,25 @@ export function TnTrackManKobling({ spillerId, protocol, okter, ctx }: { spiller
   const okt = okter.find((o) => o.id === oktId) ?? null;
   const testslag = useMemo(() => protocol.rows.map((r, i) => ({ indeks: i, target: r.target ?? null })), [protocol]);
   const forslag = useMemo(() => (okt ? foreslaKobling(protocol.id, testslag, okt.slag) : null), [okt, protocol.id, testslag]);
-  const [valg, setValg] = useState<Record<number, string>>({});
-  const [ventende, setVentende] = useState<{ forsokIndeks: number; trackManShotId: string; passerIkke: boolean }[] | null>(null);
+  // Treneren endrer forslaget per økt. Uten endring gjelder forslaget: slag som passer, ellers tomt.
+  const [endret, setEndret] = useState<{ oktId: string; valg: Record<number, string> } | null>(null);
+  const valg = useMemo<Record<number, string>>(
+    () => endret?.oktId === oktId ? endret.valg : Object.fromEntries((forslag?.forslag ?? []).map((f) => [f.indeks, f.slag && !f.passerIkke ? f.slag.id : ""])),
+    [endret, oktId, forslag],
+  );
+  const setValg = (endre: (v: Record<number, string>) => Record<number, string>) => setEndret({ oktId, valg: endre(valg) });
+  const ventende = useRef<{ forsokIndeks: number; trackManShotId: string; passerIkke: boolean }[] | null>(null);
   const [melding, setMelding] = useState<string | null>(null);
-
-  // Nytt forslag når økta byttes: foreslåtte slag som passer, ellers tomt.
-  useEffect(() => {
-    if (!forslag) return;
-    setValg(Object.fromEntries(forslag.forslag.map((f) => [f.indeks, f.slag && !f.passerIkke ? f.slag.id : ""])));
-  }, [forslag]);
 
   // Koblingen lagres når testen finnes på serveren.
   useEffect(() => {
-    if (!ventende || ctx.revision < 1) return;
-    const liste = ventende;
-    setVentende(null);
+    const liste = ventende.current;
+    if (!liste || ctx.revision < 1) return;
+    ventende.current = null;
     void kobleTrackManTilTest({ spillerId, testSessionId: ctx.sessionId, koblinger: liste }).then((r) =>
       setMelding(r.ok ? `${r.antall} slag koblet til TrackMan (TM).` : r.error),
     );
-  }, [ventende, ctx.revision, ctx.sessionId, spillerId]);
+  }, [ctx.revision, ctx.sessionId, spillerId]);
 
   function bekreft() {
     if (!okt) return;
@@ -57,8 +57,8 @@ export function TnTrackManKobling({ spillerId, protocol, okter, ctx }: { spiller
       koblinger.push({ forsokIndeks: t.indeks, trackManShotId: s.id, passerIkke: d !== null && d > grenseFor(protocol.id) });
     }
     if (!koblinger.length) { setMelding("Ingen slag er valgt."); return; }
+    ventende.current = koblinger;
     ctx.fyll(rader);
-    setVentende(koblinger);
     setMelding(`Carry og Side er fylt inn for ${koblinger.length} slag. Koblingen lagres med testen.`);
   }
 
