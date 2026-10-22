@@ -8,6 +8,7 @@ import { TnPille } from "../core";
 import { TnFilterknapper, TnFlate, TnFlatehode, TnFotnote, TnHendelserad, TnInitialer, TnMangler, TnRutenett, TnTekstlenke } from "../tn-flate";
 import { TnHandlingLenke } from "../tn-handlinger";
 import { TnManuellTurnering } from "../tn-manuell-turnering";
+import { TnOppdaterKnapp } from "../tn-oppdater-knapp";
 import { TnShell, tnRolleNavn, type TnAktivSide } from "../tn-shell";
 import { TnSkraKort, TnSkraTopp } from "../tn-skra-topp";
 import { TnHeltKnapper, TnHeltTall, TnHeltTekst, TnHeltTellere } from "../tn-stall";
@@ -24,7 +25,8 @@ import d from "./tn-daglig.module.css";
  *   - Påmeldingsfrist, reise og overnatting har ingen datamodell. Turneringen viser reise og
  *     overnatting som «—» (beslutninger.md §DESIGNLØFTET, 20.10), lista sier det i fotnoten.
  *   - Score per runde og til par finnes ikke i turneringsdataene. Raden viser plass og total brutto.
- *   - Live-score hull for hull er ikke koblet. Live Watch viser siste registrerte plass og score.
+ *   - Live-score hull for hull er ikke koblet. Live Watch viser siste registrerte plass og score, med
+ *     «Oppdatert kl.» og en Oppdater-knapp (ingen automatisk oppdatering, designløftplanen §4 punkt 3).
  *   - «Legg inn turnering» vises bare for spillere: turneringen legges i spillerens egen plan.
  */
 
@@ -34,6 +36,7 @@ export type TnSpillernavn = Record<string, string>;
 
 const MND_KORT = ["jan", "feb", "mar", "apr", "mai", "jun", "jul", "aug", "sep", "okt", "nov", "des"] as const;
 const DAG_MS = 864e5;
+const klokkeslett = new Intl.DateTimeFormat("nb-NO", { hour: "2-digit", minute: "2-digit", hourCycle: "h23", timeZone: "Europe/Oslo" });
 const langDag = new Intl.DateTimeFormat("nb-NO", { weekday: "long", day: "numeric", month: "long", timeZone: "Europe/Oslo" });
 
 const flertall = (n: number, en: string, flere: string) => `${n} ${n === 1 ? en : flere}`;
@@ -286,7 +289,10 @@ export function TnLiveWatchVisning({ brukerNavn, visDataGolf, data, navn, naa }:
         venstre={
           <>
             <TnHeltTall verdi={antall} enhet={antall === 1 ? "spiller" : "spillere"}>i turnering nå</TnHeltTall>
-            <TnHeltTekst>Plass og score er siste registrerte resultat. Hull for hull hentes ikke ennå.</TnHeltTekst>
+            <TnHeltTekst>Plass og score er siste registrerte resultat. Hull for hull hentes ikke ennå. Oppdatert kl. {klokkeslett.format(naa)}.</TnHeltTekst>
+            <TnHeltKnapper>
+              <TnOppdaterKnapp />
+            </TnHeltKnapper>
           </>
         }
         hoyre={
