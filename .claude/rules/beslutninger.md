@@ -4,6 +4,22 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## DEMOSPILLEREN I TEAM NORWAY-SKJERMENE HETER JØRN JOHNSEN (Anders 22.10.2026, bindende)
+
+Anders 22.10: «Legg til regel i TN skjermer at demo spiller er Jørn Johnsen.»
+
+- **Spilleren som vises i Team Norway-skjermene heter Jørn Johnsen:** IUP-en som åpnes i wireframes, skjermprøver og skjermbilder til Anders, og første spiller i demogruppa «Team Norway Golf (demo)». Han er fiktiv.
+- Øvrige spillere i lister og tabeller beholder syntetiske navn.
+- Gjelder `/team-norway/*` og «Se hva Team Norway ser» i PlayerHQ. Demospilleren i AK Golf (Øyvind Rohjan) og i Precision-designet (Magnus Aasheim) er uendret.
+
+**Overstyrer:** ingenting. Navnet var ikke bestemt før («Spiller B», «Mathias Demo», «Mathias Berg» o.l.).
+
+**Arbeidet dette utløser:**
+
+1. **Wireframes:** hovedspilleren i `docs/design-system/utkast-tn/trenerflate/index.html` (utkast 1 og 2) heter Jørn Johnsen. Ferdig når IUP-skjermene og «Se hva Team Norway ser» viser navnet.
+2. **Skjermprøvene:** spilleren i `tests/visual/team-norway/skjermer/TN-02.tsx` og øvrige IUP-prøver heter Jørn Johnsen. Ferdig når et søk etter «Spiller B» og «Spiller C» i IUP-prøvene gir 0 treff.
+3. **Demodata:** første TN-spiller i `scripts/seed-demo-wang-tn-2026-10-15.ts` («Mathias Demo») blir Jørn Johnsen. Endringen gjelder bare demogruppa; ingen ekte spillerdata røres. Ferdig når demokontoen for Team Norway viser Jørn Johnsen i spillerlisten.
+
 ## KLUBB OG FØDSELSÅR VISES OGSÅ FOR TEAM NORWAY-SPILLERE SOM IKKE HAR DELT (Anders 22.10.2026, bindende)
 
 Anders 22.10, etter pakke d (#1605): «Beslutning er ja». Svar på punkt 3 i §SPILLERLISTEN I TEAM NORWAY VISER DE ÅPNE TALLENE, om klubb og fødselsår skal stå for spillere som ikke har delt, slik wireframen viser.
