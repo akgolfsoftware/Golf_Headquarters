@@ -2569,6 +2569,9 @@ model TrackManSession {
   environment      TrackManEnvironment?
   targetLineStatus String               @default("UNKNOWN") // UNKNOWN | CONFIRMED | NOT_ALIGNED (brukerbekreftet)
   targetDistanceM  Float? // valgfritt øktmål i meter; varierer målet per slag, bruk TrackManShot.targetDistanceM
+  // TEK eller SLAG, påkrevd ved ny import (Anders 22.10.2026, §TRACKMAN I TEAM NORWAY-TESTENE punkt 7).
+  // Gamle økter står uten og vises som «—». DDL: scripts/add-tn-trackman-2026-10-22.ts.
+  akse             String?
   createdAt        DateTime             @default(now())
 
   user  User           @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -6053,6 +6056,42 @@ model TechnicalPlanAudit {
 //
 // Disse driver auto-oppdatering av PositionTask.repsGjort* og
 // PositionTaskTmGoal.currentValue.
+/// Hvilket TrackMan-slag et testforsøk kom fra (Team Norway-testene, Anders 22.10.2026, §TRACKMAN I
+/// TEAM NORWAY-TESTENE punkt 2). Knyttet til testøkta, fordi koblingen gjøres mens testen pågår; resultatet
+/// finnes via TestSession.testResultId. `passerIkke`: slaget lå mer enn 15 m (30 m i Driver Basic) fra målet,
+/// og treneren koblet det likevel. Uten @relation (gotchas §Database), DDL: scripts/add-tn-trackman-2026-10-22.ts.
+model TestShotTrackManLink {
+  id             String   @id @default(cuid())
+  testSessionId  String
+  forsokIndeks   Int
+  trackManShotId String
+  passerIkke     Boolean  @default(false)
+  kobletAvId     String?
+  kobletAt       DateTime @default(now())
+
+  @@unique([testSessionId, forsokIndeks])
+  @@index([trackManShotId])
+  @@map("test_shot_trackman_links")
+}
+
+/// Egne mål og vinduer for «andel i målvindu» per spiller, kølle og parameter (Anders 22.10.2026). Uten rad
+/// gjelder standardvinduet i src/lib/trackman/statistikk.ts. Spiller og trener kan skrive; `settAvId`/`settAt`
+/// viser hvem og når. Uten @relation (gotchas §Database), DDL: scripts/add-tn-trackman-2026-10-22.ts.
+model TrackManMaal {
+  id        String   @id @default(cuid())
+  spillerId String
+  kolle     String
+  parameter String
+  maal      Float?
+  vinduMin  Float?
+  vinduMax  Float?
+  settAvId  String?
+  settAt    DateTime @default(now())
+
+  @@unique([spillerId, kolle, parameter])
+  @@map("trackman_maal")
+}
+
 model TrackManShot {
   id         String @id @default(cuid())
   sessionId  String

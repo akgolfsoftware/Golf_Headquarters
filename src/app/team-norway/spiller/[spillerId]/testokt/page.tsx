@@ -2,6 +2,7 @@ import { notFound, redirect } from "next/navigation";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentTnSpillerTester, medTnSpillerData } from "@/lib/domain/tn-arbeidsflate";
+import { hentTnTrackManOkter } from "@/lib/domain/tn-trackman";
 import { batteritestFor } from "@/lib/portal-tester/testbatteri";
 import { tnProtocol, tnVersion } from "@/lib/portal-tester/tn-catalog";
 import { tnComparableResult, tnDefinitionId } from "@/lib/portal-tester/tn-integration";
@@ -91,6 +92,12 @@ export default async function TestoktPage({ params, searchParams }: {
   const res = rad?.testResultId ? okter.resultater.find((r) => r.id === rad.testResultId) : undefined;
   const lagret = res ? tnComparableResult(res.testId, res.score, res.details) ?? undefined : undefined;
   const siste = steg === lop.length - 1;
+  const okterTm = (await hentTnTrackManOkter(bruker, spillerId)) ?? [];
+  const datoFmt = new Intl.DateTimeFormat("nb-NO", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Oslo" });
+  const trackManOkter = okterTm.map((o) => ({
+    id: o.id, dato: datoFmt.format(o.recordedAt), akse: o.akse,
+    slag: o.slag.map((x) => ({ id: x.id, shotNumber: x.shotNumber, club: x.club, carryDistance: x.carryDistance, side: x.side, clubSpeed: x.clubSpeed })),
+  }));
   return (
     <TnTestoktTest
       key={naa.sessionId}
@@ -103,6 +110,7 @@ export default async function TestoktPage({ params, searchParams }: {
       pauseHref={lopHref(lop.length)}
       nesteHref={lopHref(steg + 1)}
       nesteTekst={siste ? "Ferdig med løpet" : "Neste test"}
+      trackManOkter={trackManOkter}
     />
   );
 }

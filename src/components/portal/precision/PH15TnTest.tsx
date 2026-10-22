@@ -65,7 +65,22 @@ type Props = {
    * Trenerens testøkt i Team Norway (utkast 3, 22.10): egen lagring for spilleren, egen tilbakelenke og egne
    * knapper når testen er lukket. Uten disse er skjermen spillerens egen, som før. Bilde per slag vises ikke for trener.
    */
-  trener?: { lagre: (input: TnSaveInput) => Promise<TnSaveResult>; tilbake: { href: string; tekst: string }; etterLukket: React.ReactNode };
+  trener?: {
+    lagre: (input: TnSaveInput) => Promise<TnSaveResult>;
+    tilbake: { href: string; tekst: string };
+    etterLukket: React.ReactNode;
+    /** Verktøy under testen, f.eks. TrackMan-koblingen. `fyll` skriver felt inn i utkastet per slag (0-basert). */
+    verktoy?: (ctx: TnTrenerVerktoy) => React.ReactNode;
+  };
+};
+
+export type TnTrenerVerktoy = {
+  sessionId: string;
+  /** 0 = ikke lagret på serveren ennå. */
+  revision: number;
+  raw: TnRaw;
+  laast: boolean;
+  fyll: (rader: Record<number, Record<string, string>>) => void;
 };
 
 /** Gate-testene med poeng (Nærspill, Wedge, VISA): Bom 0 · Gjennom porten 1 · I sonen 4 (beslutninger.md §TESTBATTERIET, punkt 6). */
@@ -127,6 +142,12 @@ export function PH15TnTest(props: Props) {
     const blob = new Blob([JSON.stringify({ test: p.id, version: tnVersion(p), raw: draft.raw, notes: draft.notes }, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob); const a = document.createElement("a");
     a.href = url; a.download = `testutkast-${p.id}.json`; a.click(); URL.revokeObjectURL(url);
+  }
+
+  function fyll(rader: Record<number, Record<string, string>>) {
+    const next: TnRaw = { ...draft.raw };
+    for (const [i, felt] of Object.entries(rader)) next[String(Number(i) + 1)] = { ...(next[String(Number(i) + 1)] ?? {}), ...felt };
+    draft.edit(next, draft.notes);
   }
 
   const igjen = p.rows.length - antallFerdige;
@@ -207,6 +228,8 @@ export function PH15TnTest(props: Props) {
           )}
         </div>
       </div>
+
+      {!closed && props.trener?.verktoy?.({ sessionId: draft.sessionId, revision: draft.revision, raw: draft.raw, laast, fyll })}
 
       {!closed && !props.trener && <Foto sessionId={draft.sessionId} forsok={foto} klar={draft.ready && draft.revision >= 1} revisjon={draft.revision} />}
 
