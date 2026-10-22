@@ -36,6 +36,8 @@ import {
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-ovelser.css";
 import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import { TekniskPlanForslagKort } from "@/components/portal/precision/TekniskPlanForslagKort";
+import type { TekniskPlanForslagRad } from "@/lib/teknisk-plan/trener-forslag-les";
 import "@/styles/playerhq-ny-idag.css";
 import "@/styles/playerhq-ny-lister-skra.css";
 import "@/styles/playerhq-ny-pakke9-skra.css";
@@ -48,6 +50,8 @@ export type PHTP01Props = {
   okt: { href: string; label: string };
   /** Åpner registreringsarket ved første visning (skjermprøven). */
   startMedArk?: boolean;
+  /** Ubesvarte forslag fra Team Norway-treneren (A2). */
+  forslag?: TekniskPlanForslagRad[];
 };
 
 const MELDING_HREF = "/portal/coach/melding/ny";
@@ -67,7 +71,7 @@ function Hode({ plan }: { plan: TpPlan | null }) {
   );
 }
 
-export function PHTP01TekniskPlan({ plan, uleste, okt, startMedArk }: PHTP01Props) {
+export function PHTP01TekniskPlan({ plan, uleste, okt, startMedArk, forslag = [] }: PHTP01Props) {
   return (
     <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste}>
       {!plan
@@ -82,13 +86,13 @@ export function PHTP01TekniskPlan({ plan, uleste, okt, startMedArk }: PHTP01Prop
             </SkraFlyt>
           </div>
         : plan.status === "Utkast"
-          ? <Utkast plan={plan} />
-          : <Aktiv plan={plan} okt={okt} startMedArk={startMedArk} />}
+          ? <Utkast plan={plan} forslag={forslag} />
+          : <Aktiv plan={plan} okt={okt} startMedArk={startMedArk} forslag={forslag} />}
     </PlayerHQSkall>
   );
 }
 
-function Utkast({ plan }: { plan: TpPlan }) {
+function Utkast({ plan, forslag }: { plan: TpPlan; forslag: TekniskPlanForslagRad[] }) {
   const coach = plan.coach ?? "coachen";
   const p = [...new Set(plan.oppgaver.map((o) => o.hovedP))];
   return (
@@ -96,6 +100,7 @@ function Utkast({ plan }: { plan: TpPlan }) {
       <Hode plan={plan} />
       <SkraFlyt lav>
       <div className="phn-ov-smal phn-seksjon" style={{ gap: 32 }}>
+        <TekniskPlanForslagKort forslag={forslag} />
         <div className="phn-ov-utkast">
           <Pencil className="phn-ikon" aria-hidden />
           <span><b className="phn-ov-under">Utkast fra {coach}</b><span className="phn-forklar" style={{ display: "block" }}>{coach} jobber med planen. Du kan lese den nå. Du kan starte økter og registrere når planen er publisert.</span></span>
@@ -118,7 +123,7 @@ function Utkast({ plan }: { plan: TpPlan }) {
   );
 }
 
-function Aktiv({ plan, okt, startMedArk }: { plan: TpPlan; okt: PHTP01Props["okt"]; startMedArk?: boolean }) {
+function Aktiv({ plan, okt, startMedArk, forslag }: { plan: TpPlan; okt: PHTP01Props["okt"]; startMedArk?: boolean; forslag: TekniskPlanForslagRad[] }) {
   const hoved = plan.oppgaver.find((o) => plan.hovedfokus.includes(o.hovedP)) ?? plan.oppgaver[0] ?? null;
   const [valgtP, setValgtP] = useState(hoved?.hovedP ?? "P1.0");
   const [ark, setArk] = useState(!!startMedArk && plan.oppgaver.length > 0);
@@ -136,6 +141,7 @@ function Aktiv({ plan, okt, startMedArk }: { plan: TpPlan; okt: PHTP01Props["okt
     <div className="phn phn-skra">
       <Hode plan={plan} />
       <SkraFlyt lav>
+      <TekniskPlanForslagKort forslag={forslag} />
       {kvittering && <p className="phn-ov-status" role="status"><Check className="phn-ikon" aria-hidden /><span>{kvittering}</span></p>}
       <div className="phn-ov-tphelt">
         {/* eslint-disable-next-line @next/next/no-img-element -- statisk bilde fra public, ingen tekst oppå */}

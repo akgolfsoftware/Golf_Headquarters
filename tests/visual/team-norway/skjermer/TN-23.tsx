@@ -34,6 +34,7 @@ const plan: TnTekniskPlanDetalj = {
 
 export const tilstander = {
   planer: <TnTekniskPlanerVisning brukerNavn="Trener 1" kontekst={kontekst} spillerId="b" spillerNavn="Jørn Johnsen" planer={planer} />,
+  "plan-sendt": <TnTekniskPlanVisning brukerNavn="Trener 1" kontekst={kontekst} spillerId="b" spillerNavn="Jørn Johnsen" plan={plan} siste={[]} sendt handlinger={{ loggRep: ingen, opprettOppgave: ingen, oppdaterOppgave: ingen, slettOppgave: ingen }} />,
   "uten-planer": <TnTekniskPlanerVisning brukerNavn="Trener 1" kontekst={kontekst} spillerId="b" spillerNavn="Jørn Johnsen" planer={[]} />,
   plan: <TnTekniskPlanVisning brukerNavn="Trener 1" kontekst={kontekst} spillerId="b" spillerNavn="Jørn Johnsen" plan={plan} siste={[{ tid: "2026-10-18 17:40", hvem: "Trener 1", hva: "Logget reps" }]} handlinger={{ loggRep: ingen, opprettOppgave: ingen, oppdaterOppgave: ingen, slettOppgave: ingen }} />,
 };

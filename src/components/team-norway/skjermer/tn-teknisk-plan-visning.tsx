@@ -36,7 +36,7 @@ const TRACK_STATUS_LABEL: Record<string, string> = {
 };
 export const PYRAMIDER = ["FYS", "TEK", "SLAG", "SPILL", "TURN"] as const;
 
-export function TnTekniskPlanVisning({ brukerNavn, kontekst, spillerId, spillerNavn, plan, siste, feil, handlinger }: {
+export function TnTekniskPlanVisning({ brukerNavn, kontekst, spillerId, spillerNavn, plan, siste, feil, sendt, handlinger }: {
   brukerNavn: string;
   kontekst: TnTekniskPlanKontekst;
   spillerId: string;
@@ -44,6 +44,7 @@ export function TnTekniskPlanVisning({ brukerNavn, kontekst, spillerId, spillerN
   plan: TnTekniskPlanDetalj;
   siste: { tid: string; hvem: string; hva: string }[];
   feil?: string;
+  sendt?: boolean;
   handlinger: { loggRep: Handling; opprettOppgave: Handling; oppdaterOppgave: Handling; slettOppgave: Handling };
 }) {
   const oppgaver = plan.posisjoner.flatMap((pos) => pos.oppgaver);
@@ -81,6 +82,11 @@ export function TnTekniskPlanVisning({ brukerNavn, kontekst, spillerId, spillerN
       </TnFlate>
       <Link href={`/team-norway/spiller/${spillerId}/teknisk-plan`} style={{ color: TN.navy600, fontSize: 14, fontWeight: 700, minHeight: 44, display: "inline-flex", alignItems: "center", textDecoration: "underline", textUnderlineOffset: 4 }}>Alle planer</Link>
 
+      {sendt && !feil && (
+        <p role="status" style={{ margin: 0, padding: 12, borderRadius: TN.radius.md, background: TN.status.greenBg, color: TN.status.greenText, fontSize: TN.text.sm }}>
+          Forslaget er sendt til spilleren. Planen endres først når spilleren godtar.
+        </p>
+      )}
       {feil && (
         <p role="alert" style={{ margin: 0, padding: 12, borderRadius: TN.radius.md, background: TN.status.redBg, color: TN.status.redText, fontSize: TN.text.sm }}>{feil}</p>
       )}
@@ -126,14 +132,14 @@ export function TnTekniskPlanVisning({ brukerNavn, kontekst, spillerId, spillerN
                           Reps
                           <input type="number" name="antall" min={1} defaultValue={10} style={{ width: 76, minHeight: 44, borderRadius: TN.radius.md, border: `1px solid ${TN.ink500}`, padding: "0 8px", fontFamily: TN.font.mono }} />
                         </label>
-                        <TnKnapp type="submit" variant="sekundaer" size="sm">Logg</TnKnapp>
+                        <TnKnapp type="submit" variant="sekundaer" size="sm">Foreslå logging</TnKnapp>
                       </form>
                     )}
                   </div>
 
                   {kontekst.kanAdministrere && (
                     <details style={{ marginTop: 12 }}>
-                      <summary style={{ cursor: "pointer", fontSize: 14, color: TN.navy600, fontWeight: 700, minHeight: 44, display: "flex", alignItems: "center" }}>Rediger oppgave</summary>
+                      <summary style={{ cursor: "pointer", fontSize: 14, color: TN.navy600, fontWeight: 700, minHeight: 44, display: "flex", alignItems: "center" }}>Foreslå endring</summary>
                       <form action={handlinger.oppdaterOppgave} style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 10 }}>
                         <input type="hidden" name="taskId" value={t.id} />
                         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(140px,1fr))", gap: 8 }}>
@@ -152,12 +158,11 @@ export function TnTekniskPlanVisning({ brukerNavn, kontekst, spillerId, spillerN
                           <label style={feltLabelStil}>Mål lav hastighet<input type="number" name="repsMaalLav" min={0} defaultValue={t.repsMaalLav} style={feltInputStil} /></label>
                           <label style={feltLabelStil}>Mål automatikk<input type="number" name="repsMaalFull" min={0} defaultValue={t.repsMaalFull} style={feltInputStil} /></label>
                         </div>
-                        <div style={{ display: "flex", gap: 8 }}><TnKnapp type="submit" variant="sekundaer" size="sm">Lagre endringer</TnKnapp></div>
+                        <div style={{ display: "flex", gap: 8 }}><TnKnapp type="submit" variant="sekundaer" size="sm">Foreslå endring</TnKnapp></div>
                       </form>
                       <form action={handlinger.slettOppgave} style={{ display: "flex", gap: 6, alignItems: "flex-end", marginTop: 10 }}>
                         <input type="hidden" name="taskId" value={t.id} />
-                        <label style={feltLabelStil}>Skriv SLETT for å bekrefte<input type="text" name="bekreft" style={feltInputStil} /></label>
-                        <TnKnapp type="submit" variant="tekst" size="sm">Slett oppgave</TnKnapp>
+                        <TnKnapp type="submit" variant="tekst" size="sm">Foreslå å fjerne oppgaven</TnKnapp>
                       </form>
                     </details>
                   )}
@@ -169,7 +174,7 @@ export function TnTekniskPlanVisning({ brukerNavn, kontekst, spillerId, spillerN
       )}
 
       {kontekst.kanAdministrere && (
-        <TnSeksjon tittel="Ny oppgave">
+        <TnSeksjon tittel="Foreslå ny oppgave">
           <TnKort>
             <form action={handlinger.opprettOppgave} style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(160px,1fr))", gap: 10 }}>
@@ -193,7 +198,7 @@ export function TnTekniskPlanVisning({ brukerNavn, kontekst, spillerId, spillerN
                 <label style={feltLabelStil}>Mål lav hastighet<input type="number" name="repsMaalLav" min={0} defaultValue={0} style={feltInputStil} /></label>
                 <label style={feltLabelStil}>Mål automatikk<input type="number" name="repsMaalFull" min={0} defaultValue={0} style={feltInputStil} /></label>
               </div>
-              <div><TnKnapp type="submit" variant="primaer">Legg til oppgave</TnKnapp></div>
+              <div><TnKnapp type="submit" variant="primaer">Foreslå oppgave</TnKnapp></div>
             </form>
           </TnKort>
         </TnSeksjon>
