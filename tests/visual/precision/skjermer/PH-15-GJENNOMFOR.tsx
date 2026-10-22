@@ -18,4 +18,5 @@ export const tilstander = {
   start: <PH15TestGjennomfor {...felles} testNavn="Inspill Basic" sist={{ score: 6, dato: "03.10.2026" }} spec={avstand} gjenopptak={null} />,
   underveis: <PH15TestGjennomfor {...felles} testNavn="Inspill Basic" sist={null} spec={avstand} gjenopptak={{ sessionId: "s1", verdier: { 1: { avstand: "2,4" }, 2: { avstand: "5,1" }, 3: { avstand: "3,0" } } }} />,
   godkjent: <PH15TestGjennomfor {...felles} testNavn="Wedge Gate" sist={null} spec={godkjent} gjenopptak={null} />,
+  godkjentUnderveis: <PH15TestGjennomfor {...felles} testNavn="Wedge Gate" sist={null} spec={godkjent} gjenopptak={{ sessionId: "s2", verdier: { 1: { ok: true }, 2: { ok: false }, 3: { ok: true } } }} />,
 };
