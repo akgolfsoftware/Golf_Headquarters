@@ -20,6 +20,8 @@ import { hentIupMaaltallForSpiller, type IupMaaltallData } from "@/lib/iup/maalt
 import { lesLeverteIupForProfil, type LevertIupProfilrad } from "@/lib/iup/trener-profil-lesing";
 import { hentBruttoSnitt } from "@/lib/domain/brutto-snitt-data";
 import { osloAar, type BruttoSnitt } from "@/lib/domain/brutto-snitt";
+import { tnValiderRader } from "@/lib/domain/tn-test-validering";
+import { tnFromDefinitionId } from "@/lib/portal-tester/tn-integration";
 import { hentSpillerprofil } from "./data";
 import { medSpillerTilgang, type Betrakter, type SpillerDb } from "./tilgang";
 import type { Spillerprofil } from "./typer";
@@ -79,7 +81,7 @@ export async function byggKomplettProfil(
     db.testResult.findMany({
       where: { userId: spillerId },
       orderBy: { takenAt: "desc" },
-      select: { testId: true, takenAt: true, score: true, test: { select: { name: true, pyramidArea: true } } },
+      select: { id: true, testId: true, takenAt: true, score: true, details: true, test: { select: { name: true, pyramidArea: true } } },
     }),
     db.round.aggregate({
       where: { userId: spillerId, sharedWithCoach: true, playStatus: "COMPLETED", playedAt: { gte: new Date(Date.now() - ETT_AAR_MS) } },
@@ -89,22 +91,41 @@ export async function byggKomplettProfil(
     db.user.findFirst({ where: iupSynligForSpillerWhere(spillerId), select: { id: true } }),
   ]);
 
+  // Antall = gyldige forsøk (A10), som i Tester og Haster. Team Norway-forsøk som ikke lar seg
+  // reberegne fra de rå verdiene, telles ikke. Andre tester har ingen validering og telles som de er.
   const perTest = new Map<string, TestSammendrag>();
+  const tnPerTest = new Map<string, typeof testRader>();
   for (const r of testRader) {
+    if (r.testId.startsWith(TN_PREFIKS)) {
+      tnPerTest.set(r.testId, [...(tnPerTest.get(r.testId) ?? []), r]);
+      continue;
+    }
     const funnet = perTest.get(r.testId);
     if (funnet) {
       funnet.antall += 1;
       continue;
     }
-    const erTn = r.testId.startsWith(TN_PREFIKS);
     perTest.set(r.testId, {
       testId: r.testId,
       navn: r.test?.name ?? "Test",
       omraade: r.test?.pyramidArea ?? "SPILL",
       antall: 1,
       sisteDato: r.takenAt,
-      sisteScore: erTn ? null : r.score,
-      erTeamNorway: erTn,
+      sisteScore: r.score,
+      erTeamNorway: false,
+    });
+  }
+  for (const [testId, liste] of tnPerTest) {
+    const protokoll = tnFromDefinitionId(testId);
+    const gyldige = protokoll ? tnValiderRader(liste, protokoll).gyldige : [];
+    perTest.set(testId, {
+      testId,
+      navn: liste[0].test?.name ?? "Test",
+      omraade: liste[0].test?.pyramidArea ?? "SPILL",
+      antall: gyldige.length,
+      sisteDato: liste[0].takenAt,
+      sisteScore: null,
+      erTeamNorway: true,
     });
   }
 

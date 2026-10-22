@@ -12,6 +12,7 @@ import type { NgfKategori } from "@/generated/prisma/client";
 import { hentBruttoSnitt } from "@/lib/domain/brutto-snitt-data";
 import {
   type AkKategori,
+  akKategoriFraTall,
   kategoriFraSnittscore,
 } from "@/lib/domain/ak-kategori";
 import { avgScoreFromHcp } from "@/lib/stats/sg-estimator";
@@ -65,17 +66,7 @@ export async function hentSpillerAkKategori(
     return ngfKategoriTilAk(fraWagr as NgfKategori);
   }
 
-  const snitt = await hentSesongSnittscore(userId);
-  if (snitt != null) {
-    return kategoriFraSnittscore(snitt).kategori;
-  }
-
-  const hcp = opts?.hcp ?? null;
-  if (hcp != null) {
-    return kategoriFraSnittscore(avgScoreFromHcp(hcp)).kategori;
-  }
-
-  return null;
+  return akKategoriFraTall({ snitt: await hentSesongSnittscore(userId), hcp: opts?.hcp ?? null });
 }
 
 /**

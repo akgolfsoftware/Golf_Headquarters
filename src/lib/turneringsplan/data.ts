@@ -13,6 +13,7 @@ import {
   lagForslag, simulerSesong, stadiumFor, vurder,
   type Felt, type Kjonn, type Merke, type PlanTier, type Sesonganslag, type Tellende, type Vurdering, type WagrModell,
 } from "./wagr-modell";
+import { hentWagrPlassForSpiller } from "@/lib/domain/tn-wagr-plass";
 
 type Db = Prisma.TransactionClient;
 export const SESONG = 2027;
@@ -86,7 +87,7 @@ async function hentNivaa(db: Db, spillerId: string, runId: string) {
   return {
     navn: u.name ?? "Spiller", fodselsdato: u.dateOfBirth, fodselsaar: u.publicPlayer?.birthYear ?? null,
     styrke: s && s.theta != null ? {
-      wagrId, theta: s.theta, kj: (s.gender === "K" ? "K" : "M") as Kjonn, runder: s.rounds, rang: s.rank, snitt: s.pointsAvg,
+      wagrId, theta: s.theta, kj: (s.gender === "K" ? "K" : "M") as Kjonn, runder: s.rounds, snitt: s.pointsAvg,
       tellende: (tellende?.success ? tellende.data : []) as Tellende[],
     } : null,
   };
@@ -118,9 +119,11 @@ const feltAv = (raw: Prisma.JsonValue | null): Felt | null => { const f = FeltSc
 export async function byggPlanvisning(db: Db, spillerId: string, idag = new Date()): Promise<Planvisning | null> {
   const modell = await hentModell(db);
   const fra = iso(idag) > `${SESONG}-01-01` ? iso(idag) : `${SESONG}-01-01`;
-  const [nivaa, entries, forslagRader] = await Promise.all([
+  const [nivaa, wagrPlass, entries, forslagRader] = await Promise.all([
     modell ? hentNivaa(db, spillerId, modell.id) : db.user.findUnique({ where: { id: spillerId }, select: { name: true, dateOfBirth: true } })
       .then((u) => (u ? { navn: u.name ?? "Spiller", fodselsdato: u.dateOfBirth, fodselsaar: null, styrke: null } : null)),
+    // WAGR-plassen vises fra wagr_ref_players, som resten av Team Norway; modellen gir bare sjanser.
+    hentWagrPlassForSpiller(db, spillerId),
     db.tournamentEntry.findMany({
       where: { userId: spillerId, entryStatus: { in: ["PLANNED", "CLAIMED_REGISTERED", "CONFIRMED"] } },
       select: {
@@ -190,7 +193,7 @@ export async function byggPlanvisning(db: Db, spillerId: string, idag = new Date
   const stadium = modell && styrke ? stadiumFor(modell.modell, styrke.theta, styrke.kj) : null;
 
   return {
-    spiller: { id: spillerId, fornavn: fornavn ?? "", etternavn: rest.join(" "), rang: styrke?.rang ?? null, snitt: styrke?.snitt ?? null, runder: styrke?.runder ?? 0, harNivaa: Boolean(styrke) },
+    spiller: { id: spillerId, fornavn: fornavn ?? "", etternavn: rest.join(" "), rang: wagrPlass?.plass ?? null, snitt: styrke?.snitt ?? null, runder: styrke?.runder ?? 0, harNivaa: Boolean(styrke) },
     stadium: stadium ? { navn: stadium.navn, mal: stadium.mal } : null,
     katalog, plan, forslag, anslag, laget: modell?.builtAt ?? null, modellMangler: !modell,
   };

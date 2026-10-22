@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
-import { byggIupHaster, tilWagrId } from "./tn-iup-oversikt-regler";
+import { TN_FORSLAG_TYPER, byggIupHaster, tilWagrId, velgNesteTurneringer, type TnPaameldingRad } from "./tn-iup-oversikt-regler";
 
 const naa = new Date(Date.UTC(2026, 9, 22, 10));
 const tom = { tester: null, avslatteForslag: null, lisens: null, helseattestUtloper: null, naa };
@@ -58,5 +58,40 @@ describe("byggIupHaster", () => {
   it("melder utløpt helseattest og ignorerer en som varer lenge", () => {
     assert.deepEqual(byggIupHaster({ ...tom, helseattestUtloper: new Date(Date.UTC(2026, 9, 1)) }), [{ tekst: "Helseattesten er utløpt", merke: "Utløpt" }]);
     assert.deepEqual(byggIupHaster({ ...tom, helseattestUtloper: new Date(Date.UTC(2027, 5, 1)) }), []);
+  });
+});
+
+describe("A8: avslåtte turneringsforslag", () => {
+  it("Haster leser både trenerforslag i Workbench og turneringsforslag", () => {
+    assert.ok(TN_FORSLAG_TYPER.includes("WORKBENCH_COACH_PROPOSAL"));
+    assert.ok(TN_FORSLAG_TYPER.includes("TOURNAMENT_PLAN_PROPOSAL"));
+  });
+});
+
+describe("A9: neste turneringer, samme regel som Turneringsplan", () => {
+  const iDag = new Date(Date.UTC(2026, 9, 22));
+  const rad = (o: Partial<TnPaameldingRad>): TnPaameldingRad => ({ entryStatus: "PLANNED", manualName: null, manualDate: null, tournament: null, wagrPlanEvent: null, ...o });
+
+  it("tar med oppføringer uten dato, og setter dem nederst", () => {
+    const r = velgNesteTurneringer([
+      rad({ manualName: "Uten dato" }),
+      rad({ manualName: "Senere", manualDate: new Date(Date.UTC(2026, 10, 20)) }),
+      rad({ wagrPlanEvent: { name: "Tidligst", startDate: new Date(Date.UTC(2026, 9, 25)) } }),
+    ], iDag);
+    assert.deepEqual(r.map((t) => [t.navn, t.dato?.getUTCDate() ?? null]), [["Tidligst", 25], ["Senere", 20], ["Uten dato", null]]);
+  });
+  it("utelater turneringer som er over, og begrenser til tre", () => {
+    const d = (m: number, dag: number) => new Date(Date.UTC(2026, m, dag));
+    const r = velgNesteTurneringer([
+      rad({ manualName: "Over", manualDate: d(9, 1) }),
+      ...[1, 2, 3, 4].map((n) => rad({ manualName: `T${n}`, manualDate: d(10, n) })),
+    ], iDag);
+    assert.deepEqual(r.map((t) => t.navn), ["T1", "T2", "T3"]);
+  });
+  it("dato og navn følger WAGR-turneringen først, som i Turneringsplan", () => {
+    const [t] = velgNesteTurneringer([rad({ entryStatus: "CONFIRMED", tournament: { name: "Kalender", startDate: new Date(Date.UTC(2026, 10, 9)) }, wagrPlanEvent: { name: "WAGR", startDate: new Date(Date.UTC(2026, 10, 8)) } })], iDag);
+    assert.equal(t.navn, "WAGR");
+    assert.equal(t.dato?.getUTCDate(), 8);
+    assert.equal(t.merke, "Bekreftet");
   });
 });
