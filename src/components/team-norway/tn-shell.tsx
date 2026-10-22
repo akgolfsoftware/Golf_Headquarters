@@ -261,15 +261,8 @@ export function TnSeksjon({ tittel, forklaring, children }: { tittel: string; fo
   return <TnSeksjonDS tittel={tittel} forklaring={forklaring}>{children}</TnSeksjonDS>;
 }
 
-export function TnTomtilstand({ tittel, tekst, handling }: { tittel: string; tekst: string; handling?: ReactNode }) {
-  return (
-    <TnKort style={{ background: TN.ink50 }}>
-      <h2 style={{ margin: 0, color: TN.ink900, fontFamily: TN.font.body, fontSize: 15, fontWeight: 700, lineHeight: 1.3 }}>{tittel}</h2>
-      <p style={{ margin: "8px 0 0", maxWidth: 680, color: TN.ink700, fontSize: 14.5, lineHeight: 1.55 }}>{tekst}</p>
-      {handling ? <div style={{ marginTop: 16 }}>{handling}</div> : null}
-    </TnKort>
-  );
-}
+/** Én tom-tilstand for hele Team Norway: se tn-tilstand.tsx. */
+export { TnTomtilstand } from "./tn-tilstand";
 
 export function TnLenke({ href, children, fremhevet = false }: { href: string; children: ReactNode; fremhevet?: boolean }) {
   return (

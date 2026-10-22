@@ -1,10 +1,10 @@
-import { TnLaster, TnSkallSkjelett } from "@/components/team-norway/tn-tilstand";
+import { TnLasterSkjerm, TnSkallSkjelett } from "@/components/team-norway/tn-tilstand";
 
-/** Lastetilstand for Team Norway. Ren server-markup uten klientavhengighet. */
-export default function TeamNorwayLoading() {
+/** Hjem › I dag laster, i skjermens form. Ingen import fra en "use client"-modul (gotchas §Bygg og drift). */
+export default function TeamNorwayLaster() {
   return (
     <TnSkallSkjelett>
-      <TnLaster tekst="Henter Team Norway …" />
+      <TnLasterSkjerm form="hjem" tekst="Henter dagen i Team Norway …" />
     </TnSkallSkjelett>
   );
 }
