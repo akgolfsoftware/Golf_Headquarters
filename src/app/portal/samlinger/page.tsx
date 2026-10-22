@@ -14,7 +14,7 @@ export default async function SamlingsinvitasjonerPage() {
   const invitasjoner = await hentMineSamlingsinvitasjoner();
   return (
     <V2Shell bredde="full" aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name ?? undefined}>
-      <main className="pa-root"><div className="pa-side" style={{ maxWidth: 980, marginInline: "auto", paddingBlock: 28 }}>
+      <main className="pa-root"><div className="pa-side" style={{ paddingBlock: 28 }}>
         <header style={{ display: "flex", flexWrap: "wrap", alignItems: "end", justifyContent: "space-between", gap: 16, marginBottom: 22 }}>
           <div><p style={{ margin: "0 0 6px", color: "var(--text-secondary)", font: "var(--type-label-s)" }}>PLAYERHQ · WORKBENCH</p>
             <h1 style={{ margin: 0, color: "var(--text-primary)", font: "var(--type-heading-l)" }}>Invitasjoner til samlinger</h1>

@@ -77,7 +77,7 @@ export default async function TurneringKoblingPage({
 
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
-      <div className="a8-side" style={{ maxWidth: 820 }}>
+      <div className="a8-side">
         <SideHode
           kicker="Stall · Spiller 360 · Turneringsprofil"
           title={player.name}

@@ -2,7 +2,7 @@
  * Precision Athletics — Cockpit (AG-01). Egen fil for å unngå konflikt med
  * parallelle bolker. Speiler AG-cockpit.jsx (runde 25). Bare tokens fra .pa-root.
  */
-.pa-a6-side{padding:20px 16px 104px;display:flex;flex-direction:column;gap:16px;max-width:1360px;width:100%;box-sizing:border-box;margin:0 auto;min-width:0}
+.pa-a6-side{padding:20px 16px 104px;display:flex;flex-direction:column;gap:16px;width:100%;box-sizing:border-box;margin:0 auto;min-width:0}
 @media (min-width:600px){.pa-a6-side{padding:28px 24px 104px;gap:24px}}
 @media (min-width:1080px){.pa-a6-side{padding:32px 32px 104px}}
 

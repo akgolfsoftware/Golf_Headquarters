@@ -25,7 +25,7 @@ export default async function KomplettProfilPage({ params }: { params: Promise<{
 
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
-      <div className="a8-side" style={{ maxWidth: 980 }}>
+      <div className="a8-side">
         <SideHode
           kicker="Stall · Spiller 360 · Komplett profil"
           title={profil.navn}

@@ -3,7 +3,7 @@
  * AG-A08, AG-RD-02). Egen fil for å unngå konflikt med parallelle bolker.
  * Bare tokens fra .pa-root (precision-athletics.css). Ingen farger utenom tokenene.
  */
-.pa-a7-side{max-width:1040px}
+.pa-a7-side{max-width:none}
 
 .pa-a7-filter,.pa-a7-under{display:flex;flex-wrap:wrap;gap:8px;min-width:0}
 .pa-a7-under{padding-left:12px;border-left:2px solid var(--border-hairline);align-items:center}

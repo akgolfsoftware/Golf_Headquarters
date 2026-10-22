@@ -1,5 +1,5 @@
 /* Precision IUP-komplett, 02.10.2026. Felles farger/typografi fra pa-root. */
-.pa-root .iup-side{max-width:1100px;display:flex;flex-direction:column;gap:16px}
+.pa-root .iup-side{display:flex;flex-direction:column;gap:16px}
 .pa-root .iup-panel,.pa-root .iup-kategori{padding:16px}
 .pa-root .iup-panel,.pa-root .iup-skjema{display:flex;flex-direction:column;gap:16px}
 .pa-root .iup-panel h2{font:var(--type-title-s);margin:0}
