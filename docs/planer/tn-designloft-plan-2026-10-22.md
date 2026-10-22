@@ -113,7 +113,7 @@ Sammenlign, Søk og Tester; WAGR-visningene Turneringer og Sesong; PlayerHQ › 
    ikke flytter seg mens treneren leser.
 
 Avgjort av Anders 22.10 (registreres i beslutningene av kodeøkta): PlayerHQ-lenken går til «Se hva Team Norway ser»,
-og «beste» tas bort i Referanse › Tester. Utkast 2 er tegnet slik: Referanse › Tester viser bare median og antall.
+og «beste» tas bort i Referanse › Tester. Utkast 2 er tegnet slik; se også svarene i §5.4.
 
 ## 5. Datakart og sammenheng (22.10.2026)
 
@@ -203,16 +203,16 @@ utviklingssjekker.
 | A1 | **Personvern:** `hentTnTekniskPlaner`/`Detalj` og `hentTnEvalueringGrunnlag` leser med global `prisma`, utenfor delingslåsen | `tn-teknisk-plan.ts`, `tn-evaluering.ts:40` | Les via `tx` fra `medTnSpillerData`, med test | Kode, haster |
 | A2 | TN-trener skriver rett i spillerens tekniske plan (`tnLoggRep`, `tnOpprettOppgave`) | `tn-teknisk-plan.ts:202,240` | Bli forslag spilleren godtar (§KODEGJENNOMGANGEN 06.10) | Kode |
 | A3 | WAGR-plass har tre kilder: `wagr_ref_players` (Oversikt, Spillere), `WagrPlayerStrength` (Turneringsplan), `WagrSnapshot` (AgencyOS) | se 5.1 | `wagr_ref_players` med uke overalt i TN; modellen bare for sjanser | Kode |
-| A4 | Brutto snitt har fem definisjoner (Oversikt/Rangliste, Profil 365 dager med treningsrunder, SQL-sesong, IUP-måltall, A–K) | `tn-arbeidsflate.ts:1385`, `profil-kobling/komplett.ts:78`, `maaltall.ts:97`, `spiller-kategori.ts:48` | Én: turneringsrunder i kalenderåret, Oslo-tid, bare brutto (spørsmål 3) | Kode |
+| A4 | Brutto snitt har fem definisjoner (Oversikt/Rangliste, Profil 365 dager med treningsrunder, SQL-sesong, IUP-måltall, A–K) | `tn-arbeidsflate.ts:1385`, `profil-kobling/komplett.ts:78`, `maaltall.ts:97`, `spiller-kategori.ts:48` | Én: turneringsrunder, bare brutto, uten treningsrunder (svar 3) | Kode |
 | A5 | Etterlevelse har tre definisjoner (PlayerHQ `etterlevelse.ts:32`, IUP `tn-aksefordeling.ts:16`, TN gruppetrening `tn-trenger-deg.ts:65`) | se over | Samme som PlayerHQ (§KARTLEGGINGSØKT FJERNES punkt 4) | Kode |
 | A6 | Turneringsresultater fra to kilder: `/turneringer` leser `Tournament.results`, IUP og Rangliste leser offentlige resultater | `lesTnTurneringer` `:189` | `public_player_entries` overalt (§PIPELINES ER ENESTE KILDE) | Kode |
 | A7 | Kategori vises «—» i TN, men PlayerHQ har A–K; `WagrSnapshot.ngfCategory` er A–I | `tn-spillerprofil-visning.tsx:255` | Les `hentSpillerAkKategori`; samme tall som PlayerHQ | Kode |
 | A8 | Avslåtte turneringsforslag vises aldri i Haster (leser bare Workbench-forslag) | `tn-iup-oversikt.ts:77` | Ta med `TOURNAMENT_PLAN_PROPOSAL` | Kode |
 | A9 | Neste turneringer: Oversikt utelater oppføringer uten dato, Turneringsplan tar dem med | `data.ts:172` | Lik regel; uten dato vises «Dato —» nederst | Kode |
 | A10 | Testantall: Profil teller alle `TestResult`, også ugyldige; Tester og Haster teller gyldige | `komplett.ts:88` | Gyldige overalt | Kode |
-| A11 | Referanse › Tester bruker beste resultat, tar med WANG-elever og har ingen grense på 5 | `tn-arbeidsflate.ts:1069` | Median av siste gyldige resultat siste 12 mnd, bare TN-spillere, «—» under 5 (spørsmål 2) | Kode, wireframe rettet |
+| A11 | Referanse › Tester bruker hver spillers beste resultat og tar med WANG-elever | `tn-arbeidsflate.ts:1069` | Komplett testoversikt med navn: median av hver spillers siste resultat per test, og alle forsøk per spiller; WANG-elever under WANG-tester (svar 2) | Kode, wireframe rettet |
 | A12 | Delingsteksten i PlayerHQ sier «foreløpig leverte utviklingssjekker», mens TN leser tester, trening, planer og lisens med samme deling | `navngitt-deling.tsx:165` | Teksten sier det TN faktisk ser; «Se hva Team Norway ser» bygges for spilleren | Kode |
-| A13 | Wireframene viste to delingsnivåer («Tester og resultater», «Komplett profil»); koden har ett | utkast 1 og 2 | Rettet: «Delt / Venter på svar / Ikke delt» (spørsmål 1) | Wireframe, rettet |
+| A13 | Wireframene viste to delingsnivåer («Tester og resultater», «Komplett profil»); koden har ett | utkast 1 og 2 | Rettet: «Delt / Venter på svar / Ikke delt» (svar 1) | Wireframe, rettet |
 | A14 | Wireframene: vannrett aksebånd sto TURN først, Putt 1–3 m «—» på Oversikt men 7/10 på Tester, poengsnitt lik WAGR-plassen, dager til fireukerssjekk feil, målsetning 2027 mot tall fra 2026 | utkast 1 og 2 | Rettet: FYS først i vannrette bånd, like tall, riktig periode | Wireframe, rettet |
 
 Felt som wireframene viser, men som ikke finnes i koden ennå (bygges etter beslutningene, ikke avvik): NGF juniorranking («—»),
@@ -222,11 +222,13 @@ WAGR per uke, til-par per turnering, logget i etterkant, lagt inn mot fordelt, k
 samme tall i Oversikt. Ingen knapper: «Foreslå endring», «Skriv post» og «Før teknikktest» er borte; eneste lenke er
 «Endre deling i Meg › Deling». Listen «Hvem ser dette» erstatter velgeren mellom delingsnivåer.
 
-### 5.4 Spørsmål til Anders (anbefalingen er brukt i wireframene)
+### 5.4 Svar fra Anders 22.10
 
-1. **Ett delingsnivå i Team Norway?** Koden gir treneren alt eller ingenting. Anbefaling: behold ett nivå. Det er enklere å forklare
-   for spiller og foresatte, og det er slik tilgangen faktisk virker i dag.
-2. **Referanse › Tester: hva er medianen av?** Anbefaling: hver spillers siste gyldige resultat de siste 12 månedene, bare Team
-   Norway-spillere, «—» under 5. Beste resultat noensinne gir et for pent bilde, og WANG-elevene har eget samtykke.
-3. **Én definisjon av brutto snitt?** Anbefaling: turneringsrunder i kalenderåret, Oslo-tid, bare brutto, likt i IUP, Rangliste,
-   Uttak og PlayerHQ. Treningsrunder vises som egen linje, ikke i snittet.
+1. **Deling:** «Alt skal deles.» Ett nivå: når spilleren deler, ser treneren alt. Wireframene viser Delt / Venter på svar / Ikke delt.
+2. **Referanse › Tester:** «Spillerens testresultater. Men Team Norway har komplett oversikt over alle spillere og alle tester som er
+   gjort.» Referanse › Tester er en komplett testoversikt med navn: median og antall per test for gruppa, og hver spillers resultater
+   med alle forsøk. Ingen tidsgrense og ingen «beste»-kolonne. Wireframen er tegnet om (utkast 2, Referanse › Tester).
+3. **Brutto snitt:** «Alle turneringer er brutto resultat.» Brutto snitt er turneringsrunder, bare brutto, likt i IUP, Rangliste,
+   Uttak og PlayerHQ. Treningsrunder er ikke med.
+
+Beslutningen registreres i `beslutninger.md` av hovedøkta.
