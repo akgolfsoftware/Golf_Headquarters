@@ -20,7 +20,7 @@
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
-import { ArrowUp, BarChart3, Download, LockKeyhole, RotateCcw, Sparkles } from "lucide-react";
+import { ArrowUp, BarChart3, Download, RotateCcw, Sparkles } from "lucide-react";
 import type { Tier } from "@/generated/prisma/client";
 import {
   PH22_HURTIGSPORSMAL,
@@ -32,6 +32,10 @@ import {
 } from "@/lib/portal-caddie/ph22-caddie-data";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-kommunikasjon.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke4-skra.css";
 
 export interface PH22CaddieChatProps {
   tier: Tier;
@@ -203,19 +207,20 @@ export function PH22CaddieChat({
   const erTom = meldinger.length === 0;
   const laster = stateOverride === "laster";
 
-  return <div className="phn">
-    <div className="phn-k-topp">
-      <div className="phn-k-caddie-hode">
-        <CaddieMerke />
-        <div><div className="phn-dato">Caddie</div><h1 className="phn-tittel" style={{ margin: 0 }}>Spør Caddie</h1></div>
-      </div>
-      <p className="phn-k-personvern"><LockKeyhole className="phn-ikon" aria-hidden />
-        <span>Caddie ser tallene og planen din. Navnet ditt sendes ikke til AI, så ikke skriv navn på andre i spørsmålet. Alt Caddie foreslår er et utkast til du godkjenner det.</span></p>
-      <div className="phn-knapper">
-        <Link href="/portal/coach" className="phn-knapp sek">Skriv til {coachNavn}</Link>
-        <button type="button" className="phn-knapp sek" onClick={eksporterSamtale} disabled={erTom || laster}><Download className="phn-ikon" aria-hidden />Last ned samtalen</button>
-        <button type="button" className="phn-knapp sek" onClick={nullstillSamtale} disabled={erTom || laster}><RotateCcw className="phn-ikon" aria-hidden />Ny samtale</button>
-      </div>
+  return <div className="phn phn-skra">
+    <SkraTopp
+      lav
+      etikett="Caddie"
+      bilde="/images/playerhq/tek-video.jpg" bildePosisjon="50% 50%"
+      overlinje="Caddie"
+      tittel="Spør Caddie"
+      ingress="Caddie ser tallene og planen din. Navnet ditt sendes ikke til AI, så ikke skriv navn på andre i spørsmålet. Alt Caddie foreslår er et utkast til du godkjenner det."
+    />
+    <SkraFlyt lav>
+    <div className="phn-knapper" style={{ marginBottom: 12 }}>
+      <Link href="/portal/coach" className="phn-knapp sek">Skriv til {coachNavn}</Link>
+      <button type="button" className="phn-knapp sek" onClick={eksporterSamtale} disabled={erTom || laster}><Download className="phn-ikon" aria-hidden />Last ned samtalen</button>
+      <button type="button" className="phn-knapp sek" onClick={nullstillSamtale} disabled={erTom || laster}><RotateCcw className="phn-ikon" aria-hidden />Ny samtale</button>
     </div>
 
     <div className="phn-k-caddie-grid">
@@ -272,7 +277,7 @@ export function PH22CaddieChat({
       </aside>
     </div>
     {toastMelding && <div className="phn-k-toast" role="status">{toastMelding}</div>}
-  </div>;
+  </SkraFlyt></div>;
 }
 
 /** Utkast fra Caddie: Godkjenn · Avvis. Caddie endrer ikke planen selv. */
@@ -295,17 +300,13 @@ function PH22DraftBox({ draft, onAccept, onDrop }: { draft: PH22CaddieDraft; onA
 
 /** Sperre for Gratis: Caddie krever Full. */
 function PH22ProGate() {
-  return <div className="phn">
-    <div className="phn-k-topp">
-      <div className="phn-k-caddie-hode">
-        <CaddieMerke />
-        <div><div className="phn-dato">Caddie</div><h1 className="phn-tittel" style={{ margin: 0 }}>Spør Caddie</h1></div>
-      </div>
-    </div>
+  return <div className="phn phn-skra">
+    <SkraTopp lav etikett="Caddie" bilde="/images/playerhq/tek-video.jpg" bildePosisjon="50% 50%" overlinje="Caddie" tittel="Spør Caddie" />
+    <SkraFlyt lav>
     <section className="phn-kort" style={{ maxWidth: 640 }}>
       <b className="phn-k-undertittel">Caddie er med i Full</b>
       <p className="phn-forklar">Caddie leser planene, øktene og rundene dine, og hjelper deg med spørsmål og forslag til treningen.</p>
       <div className="phn-knapper"><Link href="/portal/meg/abonnement" className="phn-knapp pri">Se abonnement</Link></div>
     </section>
-  </div>;
+  </SkraFlyt></div>;
 }
