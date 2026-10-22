@@ -169,6 +169,8 @@ let hentTnSpillerOvrigeTester: typeof import("./tn-arbeidsflate").hentTnSpillerO
 let hentTnSpillerOvrigTestDetalj: typeof import("./tn-arbeidsflate").hentTnSpillerOvrigTestDetalj;
 let hentTnSpillerAktivePlaner: typeof import("./tn-arbeidsflate").hentTnSpillerAktivePlaner;
 let hentTnSpillerAnalyseHub: typeof import("./tn-arbeidsflate").hentTnSpillerAnalyseHub;
+let hentTnSpillerIup: typeof import("./tn-arbeidsflate").hentTnSpillerIup;
+let hentTnSpillerAksefordeling: typeof import("./tn-arbeidsflate").hentTnSpillerAksefordeling;
 before(async () => {
   const mod = await import("./tn-arbeidsflate");
   hentTnSpillerTilgang = mod.hentTnSpillerTilgang;
@@ -178,6 +180,8 @@ before(async () => {
   hentTnSpillerOvrigTestDetalj = mod.hentTnSpillerOvrigTestDetalj;
   hentTnSpillerAktivePlaner = mod.hentTnSpillerAktivePlaner;
   hentTnSpillerAnalyseHub = mod.hentTnSpillerAnalyseHub;
+  hentTnSpillerIup = mod.hentTnSpillerIup;
+  hentTnSpillerAksefordeling = mod.hentTnSpillerAksefordeling;
 });
 
 beforeEach(() => {
@@ -715,4 +719,30 @@ test("personlig TN-profil avvises uten navngitt deling, også etter tidligere op
   assert.equal(await hentTnSpillerTester(coach, "player-a"), null);
   assert.equal(await hentTnSpillerAktivePlaner(coach, "player-a"), null);
   assert.equal(await hentTnSpillerAnalyseHub(coach, "player-a"), null);
+});
+
+// Beslutningen 21.10 (§TEAM NORWAY-TRENERFLATEN BYGGES I HQ, punkt 4): en trener uten
+// delingssamtykke ser ikke spillerens IUP, tester eller trening.
+test("trener uten deling ser verken IUP, tester eller trening", async () => {
+  for (const trener of [
+    { id: "coach-1", role: "COACH" as const, name: "Coach" },
+    { id: "assistent-1", role: "COACH" as const, name: "Hjelpetrener" },
+  ]) {
+    profilDelt = false;
+    assert.equal(await hentTnSpillerIup(trener, "player-a"), null);
+    assert.equal(await hentTnSpillerTester(trener, "player-a"), null);
+    assert.equal(await hentTnSpillerAksefordeling(trener, "player-a"), null);
+  }
+});
+
+test("IUP-fanene med egne lesere låser med delingen før de leser", async () => {
+  const { readFileSync } = await import("node:fs");
+  for (const [side, leser] of [
+    ["evaluering", "hentTnEvalueringGrunnlag"],
+    ["teknisk-plan", "hentTnTekniskPlaner"],
+    ["teknisk-plan/[planId]", "hentTnTekniskPlanDetalj"],
+  ] as const) {
+    const kilde = readFileSync(new URL(`../../app/team-norway/spiller/[spillerId]/${side}/page.tsx`, import.meta.url), "utf8");
+    assert.match(kilde, new RegExp(`medTnSpillerData\\(bruker, spillerId, \\(\\) => ${leser}\\(`), side);
+  }
 });
