@@ -141,7 +141,7 @@ function Statistikk({ d }: { d: TnTrackManVisningData }) {
         <TnFlate>
           <TnFlatehode tittel={`Treffpunkt${d.kolle ? ` · ${d.kolle}` : ""}`} />
           {d.treffpunkt.n ? (
-            <svg viewBox="0 0 300 160" role="img" aria-label={`Treffpunkt på køllebladet: ${d.treffpunkt.tekst}`} style={{ width: "100%", maxWidth: 360, height: "auto", color: TN.navy900 }}>
+            <svg viewBox="0 0 300 160" role="img" aria-label={`Treffpunkt på køllebladet: ${d.treffpunkt.tekst}`} style={{ width: "min(100%, 360px)", height: "auto", color: TN.navy900 }}>
               <rect x={30} y={20} width={240} height={120} rx={24} fill="none" stroke="currentColor" strokeOpacity={0.4} />
               <line x1={150} y1={20} x2={150} y2={140} stroke="currentColor" strokeOpacity={0.15} />
               <line x1={30} y1={80} x2={270} y2={80} stroke="currentColor" strokeOpacity={0.15} />
