@@ -5,15 +5,14 @@
  */
 
 import { notFound } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { lesKomplettProfil } from "@/lib/profil-kobling/komplett";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
-import { KnappLenke } from "@/components/precision/pa";
-import { SideHode } from "@/components/precision/pa-a4";
+import { Topp } from "@/components/admin/agencyos-ny/ny";
 import { KomplettProfilAgencyOS } from "@/components/profil/KomplettProfilAgencyOS";
 import { byggProfilVisning } from "@/lib/profil-kobling/visning";
 import "@/styles/precision-a8.css";
+import "@/styles/agencyos-ny-spiller360.css";
 
 export const dynamic = "force-dynamic";
 
@@ -25,14 +24,12 @@ export default async function KomplettProfilPage({ params }: { params: Promise<{
 
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
-      <div className="a8-side">
-        <SideHode
-          kicker="Stall · Spiller 360 · Komplett profil"
-          title={profil.navn}
-          sub="Offisielle resultater, tester og IUP. Samme data som Team Norway og WANG ser."
-          actions={<KnappLenke variant="secondary" icon={ArrowLeft} iconName="arrow-left" href={`/admin/spillere/${id}`}>Spiller 360</KnappLenke>}
-        />
-        <KomplettProfilAgencyOS v={byggProfilVisning(profil)} />
+      <div className="agn-s">
+        <Topp tilbake={{ href: `/admin/spillere/${id}`, tekst: "Spiller 360" }} dato="Stall · Spiller 360 · Komplett profil" tittel={profil.navn}
+          ingress="Offisielle resultater, tester og IUP. Samme data som Team Norway og WANG ser." />
+        <div className="a2-under">
+          <KomplettProfilAgencyOS v={byggProfilVisning(profil)} />
+        </div>
       </div>
     </AgencyOSSkall>
   );

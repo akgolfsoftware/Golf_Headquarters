@@ -53,7 +53,8 @@ const stubbePlugin = {
     // «use server»-moduler: behold eksportnavnene, bytt innholdet med ufarlige stubber.
     b.onLoad({ filter: /\.(ts|tsx)$/ }, ({ path }) => {
       const src = readFileSync(path, "utf8");
-      if (!/^\s*["']use server["']/.test(src)) return undefined;
+      // Direktivet kan stå etter en innledende kommentar.
+      if (!/^\s*["']use server["']/.test(src.replace(/^(\s*(\/\*[\s\S]*?\*\/|\/\/[^\n]*))*/, ""))) return undefined;
       const navn = [...src.matchAll(/export\s+(?:async\s+)?(?:function|const)\s+([\p{L}\p{N}_$]+)/gu)].map((m) => m[1]);
       return { loader: "js", contents: navn.map((n) => `export async function ${n}(){return {ok:true}}`).join("\n") };
     });
