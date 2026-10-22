@@ -14,6 +14,7 @@ import { prisma } from "@/lib/prisma";
 import { hentTekniskPlan } from "@/lib/teknisk-plan/tp-last";
 import { planVisning } from "@/lib/teknisk-plan/tp-visning";
 import { loadNesteOkt } from "@/lib/portal/load-neste-okt";
+import { hentTekniskPlanForslag } from "@/lib/teknisk-plan/trener-forslag-les";
 import { PHTP01TekniskPlan } from "@/components/portal/precision/PHTP01TekniskPlan";
 
 export const dynamic = "force-dynamic";
@@ -33,11 +34,12 @@ export default async function TekniskPlanPage({ params }: { params: Promise<{ pl
     if (antallPlaner > 0) notFound();
   }
 
-  const neste = await loadNesteOkt(user.id, new Date());
+  const [neste, forslag] = await Promise.all([loadNesteOkt(user.id, new Date()), rad ? hentTekniskPlanForslag(user.id, planId) : Promise.resolve([])]);
   return (
     <PHTP01TekniskPlan
       plan={rad ? planVisning(rad) : null}
       uleste={uleste}
+      forslag={forslag}
       okt={{ href: neste.href, label: neste.okt ? "Start økt" : "Planlegg økt" }}
     />
   );

@@ -5,7 +5,8 @@ import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { harCoachLesetilgangTilSpiller, harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import type { TnBruker } from "@/lib/domain/tn-arbeidsflate";
-import { logReps, createTask, updateTaskBasics, deleteTask, type TaskInput } from "@/app/portal/tren/teknisk-plan/actions";
+import { medNavngittProfil } from "@/lib/deling/profil-lesing";
+import { TEKNISK_PLAN_FORSLAG_TYPE, TekniskPlanForslagSchema, type OppgaveFeltData, type TekniskPlanForslag } from "@/lib/teknisk-plan/trener-forslag";
 import type { TnWorkbenchKontekst } from "@/lib/domain/tn-workbench";
 
 /**
@@ -18,12 +19,13 @@ import type { TnWorkbenchKontekst } from "@/lib/domain/tn-workbench";
  * eierskapet i denne oppgaven): den delte `ensurePlanAccess`
  * (`src/lib/teknisk-plan/ensure-plan-access.ts`) gir ENHVER bruker med
  * platform-rolle COACH/ADMIN tilgang til en HVILKEN SOM HELST spillers plan.
- * Denne fila stoler derfor ALDRI på `ensurePlanAccess` alene — `tnLoggRep`
- * under gjør SIN EGEN fulle validering (TN-rolle COACH, roster, personlig
- * coach-scope, OG at oppgaven faktisk tilhører valgt plan/spiller) FØR den
- * kaller den delte `logReps`. Denne valideringen skjer i selve actionen —
- * IKKE bare som en side-vakt før et skjema vises — fordi et forfalsket
- * `taskId` i et innsendt skjema aldri går via siden i utgangspunktet.
+ * Denne fila stoler derfor ALDRI på `ensurePlanAccess` alene.
+ *
+ * A2 (beslutninger §KODEGJENNOMGANGEN 06.10): TN-treneren skriver aldri i planen. `tnForeslaa*` under
+ * validerer fullt (TN-rolle COACH, roster, personlig coach-scope, delingslås, og at oppgaven faktisk
+ * tilhører valgt plan/spiller) og lagrer bare et forslag spilleren godtar i PlayerHQ. Valideringen skjer i
+ * selve funksjonen — IKKE bare som en side-vakt — fordi et forfalsket `taskId` i et innsendt skjema aldri
+ * går via siden i utgangspunktet.
  */
 
 /**
@@ -197,13 +199,57 @@ export async function hentTnTekniskPlanDetalj(db: Prisma.TransactionClient, spil
 export type TnHandlingResultat = { ok: true } | { ok: false; feil: string };
 
 /**
- * Logg reps på én oppgave — FULL validering i selve actionen (ikke bare en
- * side-vakt): TN-rolle COACH/ADMIN, spilleren er et aktivt TN-medlem,
- * personlig coach-tilgang, OG oppgaven tilhører faktisk den planen/spilleren
- * kallet oppgir. Bruker samme `logReps` som PlayerHQ (ingen duplisert
- * skriveserverhandling), men kaller den ALDRI før alt dette er bekreftet her.
+ * A2: Team Norway-treneren FORESLÅR, spilleren bestemmer (§KODEGJENNOMGANGEN 06.10). Ingen funksjon her
+ * skriver i `PositionTask` eller `TechnicalPlan`; de lagrer et `PlanAction`-forslag som spilleren godtar eller
+ * avviser i PlayerHQ (`svarPaTekniskPlanForslag`). FULL validering skjer i selve funksjonen (ikke bare i en
+ * side-vakt): TN-rolle COACH/ADMIN, roster, personlig coach-tilgang, delingslåsen (`medNavngittProfil`), og at
+ * planen/oppgaven faktisk tilhører den spilleren kallet oppgir.
  */
-export async function tnLoggRep(
+async function lagreForslag(
+  bruker: TnBruker,
+  kontekst: TnWorkbenchKontekst,
+  spillerId: string,
+  forslag: TekniskPlanForslag,
+): Promise<TnHandlingResultat> {
+  const lagret = await medNavngittProfil(bruker.id, spillerId, kontekst.gruppeId, (tx) =>
+    tx.planAction.create({
+      data: {
+        userId: spillerId,
+        coachId: bruker.id,
+        planId: forslag.planId,
+        actionType: TEKNISK_PLAN_FORSLAG_TYPE,
+        suggestion: forslag satisfies Prisma.InputJsonObject,
+        status: "PENDING",
+        agentName: "TEAM_NORWAY_COACH",
+      },
+      select: { id: true },
+    }),
+  );
+  if (!lagret) return { ok: false, feil: "Spillerens deling er ikke aktiv." };
+  return { ok: true };
+}
+
+const IKKE_TILGANG = "Du har ikke tilgang til å foreslå endringer i denne spillerens tekniske plan.";
+
+/** Oppgavens tittel, eller en feil hvis den ikke tilhører planen/spilleren. Delt av forslag som peker på en eksisterende oppgave. */
+async function slaaOppOppgave(taskId: string, planId: string, spillerId: string): Promise<{ tittel: string } | { feil: string }> {
+  const task = await prisma.positionTask.findUnique({
+    where: { id: taskId },
+    select: { tittel: true, position: { select: { planId: true, plan: { select: { userId: true } } } } },
+  });
+  if (!task) return { feil: "Fant ikke oppgaven." };
+  if (task.position.planId !== planId) return { feil: "Oppgaven tilhører ikke den valgte planen." };
+  if (task.position.plan.userId !== spillerId) return { feil: "Oppgaven tilhører ikke valgt spiller." };
+  return { tittel: task.tittel };
+}
+
+async function planTilhorerSpiller(planId: string, spillerId: string): Promise<boolean> {
+  const plan = await prisma.technicalPlan.findFirst({ where: { id: planId, userId: spillerId }, select: { id: true } });
+  return plan !== null;
+}
+
+/** Foreslå repetisjoner på én oppgave. Spilleren godtar før de telles. */
+export async function tnForeslaaRep(
   bruker: TnBruker,
   kontekst: TnWorkbenchKontekst,
   spillerId: string,
@@ -212,112 +258,56 @@ export async function tnLoggRep(
   felt: "dry" | "lav" | "full",
   antall: number,
 ): Promise<TnHandlingResultat> {
-  if (!Number.isFinite(antall) || antall <= 0) return { ok: false, feil: "Ugyldig antall." };
-  if (!(await harTnTekniskPlanSkrivetilgang(bruker, kontekst, spillerId))) {
-    return { ok: false, feil: "Du har ikke skriverett til denne spillerens tekniske plan." };
-  }
-  const task = await prisma.positionTask.findUnique({
-    where: { id: taskId },
-    select: { position: { select: { planId: true, plan: { select: { userId: true } } } } },
-  });
-  if (!task) return { ok: false, feil: "Fant ikke oppgaven." };
-  if (task.position.planId !== planId) return { ok: false, feil: "Oppgaven tilhører ikke den valgte planen." };
-  if (task.position.plan.userId !== spillerId) return { ok: false, feil: "Oppgaven tilhører ikke valgt spiller." };
-
-  await logReps(taskId, { [felt]: antall });
-  return { ok: true };
+  if (!Number.isInteger(antall) || antall <= 0) return { ok: false, feil: "Ugyldig antall." };
+  if (!(await harTnTekniskPlanSkrivetilgang(bruker, kontekst, spillerId))) return { ok: false, feil: IKKE_TILGANG };
+  const oppgave = await slaaOppOppgave(taskId, planId, spillerId);
+  if ("feil" in oppgave) return { ok: false, feil: oppgave.feil };
+  return lagreForslag(bruker, kontekst, spillerId, { versjon: 1, kind: "REP_LOG", planId, taskId, taskTittel: oppgave.tittel, felt, antall });
 }
 
-/** Er `planId` faktisk `spillerId`s egen plan? Delt av alle oppgave-mutasjonene under. */
-async function planTilhorerSpiller(planId: string, spillerId: string): Promise<boolean> {
-  const plan = await prisma.technicalPlan.findFirst({ where: { id: planId, userId: spillerId }, select: { id: true } });
-  return plan !== null;
-}
-
-/**
- * Opprett en ny oppgave (og evt. ny P-posisjon) i spillerens plan — FULL
- * validering: TN-rolle COACH, roster, personlig coach-scope, OG at
- * `input.planId` faktisk er spillerens plan (den delte `createTask` sjekker
- * kun `ensurePlanAccess`, som ikke er en personlig-scope-sjekk — se
- * merknaden øverst i fila). Bruker samme `createTask` som PlayerHQ.
- */
-export async function tnOpprettOppgave(
+/** Foreslå en ny oppgave (og evt. ny P-posisjon). Planen endres først når spilleren godtar. */
+export async function tnForeslaaNyOppgave(
   bruker: TnBruker,
   kontekst: TnWorkbenchKontekst,
   spillerId: string,
-  input: TaskInput,
+  input: { planId: string; pNummer: string; pName: string; oppgave: OppgaveFeltData },
 ): Promise<TnHandlingResultat> {
-  if (!(await harTnTekniskPlanSkrivetilgang(bruker, kontekst, spillerId))) {
-    return { ok: false, feil: "Du har ikke skriverett til denne spillerens tekniske plan." };
-  }
-  if (!(await planTilhorerSpiller(input.planId, spillerId))) {
-    return { ok: false, feil: "Planen tilhører ikke valgt spiller." };
-  }
-  try {
-    await createTask(input);
-    return { ok: true };
-  } catch (e) {
-    return { ok: false, feil: e instanceof Error ? e.message : "Kunne ikke opprette oppgaven." };
-  }
+  if (!(await harTnTekniskPlanSkrivetilgang(bruker, kontekst, spillerId))) return { ok: false, feil: IKKE_TILGANG };
+  if (!(await planTilhorerSpiller(input.planId, spillerId))) return { ok: false, feil: "Planen tilhører ikke valgt spiller." };
+  const forslag = TekniskPlanForslagSchema.safeParse({ versjon: 1, kind: "TASK_ADD", ...input });
+  if (!forslag.success) return { ok: false, feil: "Kontroller feltene i oppgaven." };
+  return lagreForslag(bruker, kontekst, spillerId, forslag.data);
 }
 
-/** Slår opp oppgaven og verifiserer at den tilhører `planId`/`spillerId` (delt av oppdater/slett under). */
-async function oppgaveTilhorerPlanOgSpiller(taskId: string, planId: string, spillerId: string): Promise<TnHandlingResultat | null> {
-  const task = await prisma.positionTask.findUnique({
-    where: { id: taskId },
-    select: { position: { select: { planId: true, plan: { select: { userId: true } } } } },
-  });
-  if (!task) return { ok: false, feil: "Fant ikke oppgaven." };
-  if (task.position.planId !== planId) return { ok: false, feil: "Oppgaven tilhører ikke den valgte planen." };
-  if (task.position.plan.userId !== spillerId) return { ok: false, feil: "Oppgaven tilhører ikke valgt spiller." };
-  return null;
-}
-
-/** Rediger en eksisterende oppgave (tittel/mål m.m.) — samme fulle validering som opprettelse. */
-export async function tnOppdaterOppgave(
+/** Foreslå endring av en eksisterende oppgave. */
+export async function tnForeslaaEndreOppgave(
   bruker: TnBruker,
   kontekst: TnWorkbenchKontekst,
   spillerId: string,
   planId: string,
   taskId: string,
-  patch: Parameters<typeof updateTaskBasics>[1],
+  oppgave: OppgaveFeltData,
 ): Promise<TnHandlingResultat> {
-  if (!(await harTnTekniskPlanSkrivetilgang(bruker, kontekst, spillerId))) {
-    return { ok: false, feil: "Du har ikke skriverett til denne spillerens tekniske plan." };
-  }
-  const feil = await oppgaveTilhorerPlanOgSpiller(taskId, planId, spillerId);
-  if (feil) return feil;
-  try {
-    await updateTaskBasics(taskId, patch);
-    return { ok: true };
-  } catch (e) {
-    return { ok: false, feil: e instanceof Error ? e.message : "Kunne ikke oppdatere oppgaven." };
-  }
+  if (!(await harTnTekniskPlanSkrivetilgang(bruker, kontekst, spillerId))) return { ok: false, feil: IKKE_TILGANG };
+  const funnet = await slaaOppOppgave(taskId, planId, spillerId);
+  if ("feil" in funnet) return { ok: false, feil: funnet.feil };
+  const forslag = TekniskPlanForslagSchema.safeParse({ versjon: 1, kind: "TASK_UPDATE", planId, taskId, taskTittel: funnet.tittel, oppgave });
+  if (!forslag.success) return { ok: false, feil: "Kontroller feltene i oppgaven." };
+  return lagreForslag(bruker, kontekst, spillerId, forslag.data);
 }
 
-/** Slett en oppgave — krever skriftlig SLETT-bekreftelse i tillegg til full validering. */
-export async function tnSlettOppgave(
+/** Foreslå å fjerne en oppgave. Ingenting slettes før spilleren godtar. */
+export async function tnForeslaaSlettOppgave(
   bruker: TnBruker,
   kontekst: TnWorkbenchKontekst,
   spillerId: string,
   planId: string,
   taskId: string,
-  bekreftelse: string,
 ): Promise<TnHandlingResultat> {
-  if (bekreftelse.trim().toUpperCase() !== "SLETT") {
-    return { ok: false, feil: "Skriv SLETT for å bekrefte slettingen." };
-  }
-  if (!(await harTnTekniskPlanSkrivetilgang(bruker, kontekst, spillerId))) {
-    return { ok: false, feil: "Du har ikke skriverett til denne spillerens tekniske plan." };
-  }
-  const feil = await oppgaveTilhorerPlanOgSpiller(taskId, planId, spillerId);
-  if (feil) return feil;
-  try {
-    await deleteTask(taskId);
-    return { ok: true };
-  } catch (e) {
-    return { ok: false, feil: e instanceof Error ? e.message : "Kunne ikke slette oppgaven." };
-  }
+  if (!(await harTnTekniskPlanSkrivetilgang(bruker, kontekst, spillerId))) return { ok: false, feil: IKKE_TILGANG };
+  const funnet = await slaaOppOppgave(taskId, planId, spillerId);
+  if ("feil" in funnet) return { ok: false, feil: funnet.feil };
+  return lagreForslag(bruker, kontekst, spillerId, { versjon: 1, kind: "TASK_DELETE", planId, taskId, taskTittel: funnet.tittel });
 }
 
 /** Norske etiketter for `TechnicalPlanAudit.action` — samme historikkverdier som PlayerHQ, aldri rå kodenavn i UI. */

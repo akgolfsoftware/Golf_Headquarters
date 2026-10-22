@@ -8,10 +8,16 @@ import { tpPlan, tpPlanInn, tpTom } from "./_tp-data";
 export const sti = "/portal/planlegge";
 const okt = { href: "#", label: "Start økt torsdag kl. 15:30" };
 const utkast = planVisning({ ...tpPlanInn, status: "DRAFT" });
+const forslag = [
+  { id: "f1", trener: "Trener Ett", tekst: "Logge 10 repetisjoner (lav hastighet) på «Skaftet på linje med høyre underarm»", opprettet: "2026-10-22T10:00:00.000Z" },
+  { id: "f2", trener: "Trener Ett", tekst: "Legge til oppgaven «Hold vinkelen i høyre håndledd i nedsvingen» på P6.0 Kølle parallell i nedsving", opprettet: "2026-10-22T10:05:00.000Z" },
+];
 
 export const tilstander = {
   data: <PHTP01TekniskPlan plan={tpPlan} uleste={2} okt={okt} />,
   ark: <PHTP01TekniskPlan plan={tpPlan} uleste={2} okt={okt} startMedArk />,
+  forslag: <PHTP01TekniskPlan plan={tpPlan} uleste={2} okt={okt} forslag={forslag} />,
+  forslagUtkast: <PHTP01TekniskPlan plan={utkast} uleste={0} okt={okt} forslag={forslag} />,
   utkast: <PHTP01TekniskPlan plan={utkast} uleste={0} okt={okt} />,
   ingenOppgaver: <PHTP01TekniskPlan plan={tpTom} uleste={0} okt={{ href: "#", label: "Planlegg økt" }} />,
   tom: <PHTP01TekniskPlan plan={null} uleste={0} okt={okt} />,
