@@ -51,8 +51,11 @@ Sidekartet står i wireframes under «Meny og sidekart». Gamle adresser som sen
 | `/team-norway/workbench?spiller=[id]` | `/team-norway/spiller/[id]/trening` |
 | `/team-norway/referansenivaer` | `/team-norway/referanse/tester` |
 | `/team-norway/apparatet` | `/team-norway/fagapparat` (som i dag) |
-| `/team-norway/turneringer/ny` | PlayerHQ `/portal/tren/turneringer` (venter på svar) |
+| `/team-norway/turneringer/ny` | PlayerHQ `/portal/tren/turneringer` |
+| `/team-norway/spiller` (uten id) | `/team-norway/spillere` |
 | teamnorwayref.vercel.app | `/team-norway/referanse` (når Anders sier fra) |
+
+Alle videresendingene i HQ er bygget og låst i `src/app/team-norway/videresendinger.test.ts`.
 
 ## 4. Fordeling per skjerm (ett hovedtall)
 
