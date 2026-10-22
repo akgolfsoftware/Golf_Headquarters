@@ -16,7 +16,7 @@ export async function TnSpillerprofilSkjerm({ spillerId }: { spillerId: string }
     // Spiller i gruppa uten deling: låst IUP med navn og WAGR-plass. Alle andre: 404.
     const laast = await hentTnIupLaast(bruker, spillerId);
     if (!laast) notFound();
-    return <TnIupLaastVisning brukerNavn={bruker.name} kontekst={laast.kontekst} navn={laast.navn} wagr={laast.wagr} aar={aar} />;
+    return <TnIupLaastVisning brukerNavn={bruker.name} kontekst={laast.kontekst} navn={laast.navn} klubb={laast.klubb} fodselsaar={laast.fodselsaar} wagr={laast.wagr} aar={aar} />;
   }
   const { kontekst } = tilgang;
 

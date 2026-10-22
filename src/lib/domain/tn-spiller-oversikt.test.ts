@@ -77,7 +77,7 @@ mock.module("@/lib/prisma", {
       groupMember: {
         findFirst: async ({ where }: { where: { userId: string; role?: string } }) => {
           const m = medlemmer.find((x) => x.userId === where.userId && x.aktiv && (!where.role || x.role === where.role));
-          return m ? { role: m.role, user: { name: m.navn } } : null;
+          return m ? { role: m.role, user: { name: m.navn, homeClub: m.userId === "player-a" ? "Klubb A" : null, dateOfBirth: m.userId === "player-a" ? new Date(Date.UTC(2010, 4, 1)) : null } } : null;
         },
         findMany: async ({ where }: { where: { role?: string } }) =>
           medlemmer.filter((m) => m.aktiv && (!where.role || m.role === where.role)).map((m) => ({ userId: m.userId, user: { name: m.navn } })),
@@ -757,14 +757,16 @@ test("IUP-fanene med egne lesere låser med delingen før de leser", async () =>
 
 // Beslutningen 22.10 (§SPILLERLISTEN I TEAM NORWAY VISER DE ÅPNE TALLENE, punkt 2): en spiller i gruppa
 // uten deling gir låst IUP med navn og WAGR-plass, aldri 404 og aldri noe fra PlayerHQ.
-test("låst IUP: trener uten deling får bare navn og WAGR-plass", async () => {
+test("låst IUP: trener uten deling får bare navn, klubb, fødselsår og WAGR-plass", async () => {
   const { hentTnIupLaast, hentTnIupDelt } = await import("./tn-iup-oversikt");
   const coach = { id: "coach-1", role: "COACH" as const, name: "Coach" };
   profilDelt = false;
   const laast = await hentTnIupLaast(coach, "player-a");
   assert.ok(laast);
-  assert.deepEqual(Object.keys(laast).sort(), ["kontekst", "navn", "wagr"]);
+  assert.deepEqual(Object.keys(laast).sort(), ["fodselsaar", "klubb", "kontekst", "navn", "wagr"]);
   assert.equal(laast.navn, "Spiller A");
+  assert.equal(laast.klubb, "Klubb A");
+  assert.equal(laast.fodselsaar, 2010);
   assert.equal(laast.wagr?.plass, 412);
   assert.equal(await hentTnIupDelt(coach, "player-a"), null);
   wagrIder = {};

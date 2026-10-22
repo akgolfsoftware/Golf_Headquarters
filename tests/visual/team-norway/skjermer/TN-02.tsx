@@ -62,5 +62,5 @@ const Vis = (p: Partial<Props>) => <TnSpillerprofilVisning {...base} {...p} />;
 export const tilstander = {
   data: <Vis />,
   "uten-data": <Vis akser={null} tester={null} delt={null} poster={[]} profil={{ ...base.profil, turneringer: null, aaret: null }} reg={null} />,
-  laast: <TnIupLaastVisning brukerNavn="Trener 1" kontekst={kontekst} navn="Spiller C" wagr={{ plass: 1240, dato: d(2026, 10, 19) }} aar={2026} />,
+  laast: <TnIupLaastVisning brukerNavn="Trener 1" kontekst={kontekst} navn="Spiller C" klubb="Klubb 3" fodselsaar={2010} wagr={{ plass: 1240, dato: d(2026, 10, 19) }} aar={2026} />,
 };
