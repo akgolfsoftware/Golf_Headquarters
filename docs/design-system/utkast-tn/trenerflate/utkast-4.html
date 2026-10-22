@@ -1,0 +1,452 @@
+<title>TN trenerflate utkast 4</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Wireframe: svart-hvitt papir. Hver skjerm vises som to rammer (1280 og 390) med samme innhold; rammene bruker container queries. */
+:root {
+  --papir: #FFFFFF; --flate: #F3F3F3; --linje: #CFCFCF; --svak: #6B6B6B; --blekk: #111111; --mork: #2A2A2A;
+  --f-tekst: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --f-tall: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  color-scheme: light;
+}
+body { background: #E9E9E9; color: var(--blekk); font-family: var(--f-tekst); font-size: 14px; line-height: 1.45; }
+.side { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 24px 64px; max-width: 1760px; margin: 0 auto; }
+h1 { font-size: 26px; margin: 0 0 4px; text-wrap: balance; }
+.ingress { color: var(--svak); max-width: 68ch; margin: 0 0 16px; }
+.velger { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+.velger button { font: inherit; font-weight: 600; border: 1.5px solid var(--blekk); background: var(--papir); color: var(--blekk); padding: 7px 12px; border-radius: 999px; cursor: pointer; }
+.velger button[aria-pressed="true"] { background: var(--blekk); color: var(--papir); }
+.velger button:focus-visible, a:focus-visible { outline: 3px solid #000; outline-offset: 2px; }
+.skjermtittel { font-size: 18px; margin: 0 0 4px; }
+.notat { color: var(--svak); margin: 0 0 14px; max-width: 80ch; }
+.rammer { display: grid; grid-template-columns: minmax(0, 1fr) 390px; gap: 24px; align-items: start; }
+@media (max-width: 900px) { .rammer { grid-template-columns: minmax(0, 1fr); } }
+.rammeboks { min-width: 0; }
+.rammeetikett { font-family: var(--f-tall); font-size: 12px; color: var(--svak); margin-bottom: 6px; }
+.skalering { width: 100%; overflow: hidden; }
+.ramme { background: var(--papir); border: 1.5px solid var(--blekk); container-type: inline-size; transform-origin: 0 0; }
+.ramme.pc { width: 1280px; }
+.ramme.mob { width: 390px; max-width: 100%; }
+@media (max-width: 900px) { .rammeboks.mobboks { order: -1; } }
+
+/* ---------- Skall ---------- */
+.app { display: grid; grid-template-columns: 232px minmax(0, 1fr); min-height: 720px; }
+.meny { background: var(--mork); color: #fff; padding: 18px 14px; display: flex; flex-direction: column; gap: 4px; }
+.logo { font-weight: 700; letter-spacing: .02em; margin-bottom: 14px; display: flex; gap: 8px; align-items: center; }
+.logo i { width: 26px; height: 26px; border: 2px solid #fff; display: inline-block; }
+.mp { padding: 8px 10px; border-radius: 6px; font-weight: 500; display: flex; gap: 8px; align-items: center; color: #DDD; }
+.mp::before { content: ""; width: 14px; height: 14px; border: 1.5px solid currentColor; border-radius: 3px; flex: none; }
+.mp.aktiv { background: #fff; color: var(--blekk); font-weight: 700; }
+.meny .fot { margin-top: auto; border-top: 1px solid #555; padding-top: 12px; display: flex; gap: 8px; align-items: center; }
+.meny .fot b { display: block; color: #fff; }
+.meny .fot span { font-size: 12px; color: #BBB; }
+.meny .fot .lenke { font-size: 11px; text-decoration: underline; color: #fff; }
+.topp { display: none; }
+.innhold { min-width: 0; display: flex; flex-direction: column; }
+.helt { background: #D6D6D6; padding: 22px 28px 26px; position: relative; display: flex; flex-direction: column; gap: 6px; clip-path: polygon(0 0, 100% 0, 100% 82%, 0 100%); padding-bottom: 46px; }
+.helt .bildemerke { position: absolute; right: 12px; top: 10px; font-family: var(--f-tall); font-size: 10px; color: var(--svak); border: 1px dashed var(--svak); padding: 2px 6px; }
+.overlinje { font-size: 12px; color: var(--mork); text-transform: uppercase; letter-spacing: .06em; }
+.helt h2 { margin: 0; font-size: 28px; line-height: 1.15; text-wrap: balance; }
+.hovedtall { font-family: var(--f-tall); font-size: 44px; font-weight: 500; line-height: 1; }
+.hovedtall small { font-family: var(--f-tekst); font-size: 14px; font-weight: 500; margin-left: 8px; }
+.faner { display: flex; gap: 4px; flex-wrap: wrap; padding: 0 28px; margin-top: -14px; position: relative; }
+.fane { background: var(--papir); border: 1.5px solid var(--blekk); border-radius: 999px; padding: 5px 12px; font-weight: 600; font-size: 13px; white-space: nowrap; }
+.fane.aktiv { background: var(--blekk); color: var(--papir); }
+.flate { padding: 18px 28px 28px; display: grid; gap: 16px; grid-template-columns: repeat(12, minmax(0, 1fr)); align-content: start; }
+.kort { background: var(--papir); border: 1.5px solid var(--blekk); border-radius: 10px; padding: 14px 16px; min-width: 0; display: flex; flex-direction: column; gap: 8px; box-shadow: 3px 3px 0 var(--linje); }
+.kort h3 { margin: 0; font-size: 15px; display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.kort h3 a, .lenke { font-size: 12px; font-weight: 600; text-decoration: underline; color: inherit; }
+.k12 { grid-column: span 12; } .k8 { grid-column: span 8; } .k6 { grid-column: span 6; } .k4 { grid-column: span 4; } .k3 { grid-column: span 3; }
+.rad { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; padding: 6px 0; border-top: 1px solid var(--linje); min-width: 0; }
+.rad:first-of-type { border-top: 0; }
+.rad > span:first-child { min-width: 0; overflow-wrap: anywhere; }
+.tall { font-family: var(--f-tall); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.svak { color: var(--svak); }
+.merke { font-size: 11px; font-weight: 700; border: 1.5px solid var(--blekk); padding: 1px 6px; border-radius: 2px; white-space: nowrap; }
+.merke.fylt { background: var(--blekk); color: var(--papir); }
+.merke.strek { border-style: dashed; }
+.knapp { align-self: flex-start; font-weight: 700; font-size: 13px; background: var(--blekk); color: var(--papir); padding: 8px 14px; border-radius: 999px; }
+.knapp.kontur { background: var(--papir); color: var(--blekk); border: 1.5px solid var(--blekk); }
+.kilde { font-size: 11px; color: var(--svak); }
+.felt { border: 1.5px solid var(--blekk); border-radius: 8px; padding: 8px 10px; color: var(--svak); }
+.filtre { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border: 1.5px solid var(--blekk); border-radius: 999px; padding: 3px 10px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+.chip.paa { background: var(--blekk); color: var(--papir); }
+.tabell { width: 100%; border-collapse: collapse; font-size: 13px; }
+.tabell th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--svak); padding: 6px 8px; border-bottom: 1.5px solid var(--blekk); }
+.tabell td { padding: 8px; border-bottom: 1px solid var(--linje); vertical-align: top; }
+.tabell td.t { font-family: var(--f-tall); white-space: nowrap; }
+.tabell a { color: inherit; font-weight: 700; }
+.tabellboks { min-width: 0; }
+.mobliste { display: none; }
+.stripe { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.stripe div { border-top: 1.5px solid var(--blekk); padding-top: 6px; min-width: 0; }
+.stripe b { display: block; font-family: var(--f-tall); font-size: 20px; font-weight: 500; }
+.stripe span { font-size: 11px; color: var(--svak); }
+.graf { width: 100%; height: auto; display: block; }
+.avatar { width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--blekk); background: var(--flate); flex: none; display: grid; place-items: center; font-weight: 700; font-size: 13px; }
+.avatar.stor { width: 64px; height: 64px; font-size: 20px; }
+.lås { border: 1.5px dashed var(--blekk); border-radius: 10px; padding: 14px 16px; background: var(--flate); display: flex; flex-direction: column; gap: 8px; }
+.steg { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.seksjonsnavn { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--svak); font-weight: 700; }
+
+/* ---------- Mobil (rammen under 600 px) ---------- */
+@container (max-width: 600px) {
+  .app { display: block; min-height: 0; }
+  .meny { display: none; }
+  .topp { display: flex; background: var(--mork); color: #fff; padding: 12px 16px; align-items: center; justify-content: space-between; font-weight: 700; }
+  .topp span { font-size: 12px; border: 1.5px solid #fff; border-radius: 999px; padding: 3px 10px; }
+  .helt { padding: 16px 16px 38px; }
+  .helt h2 { font-size: 22px; }
+  .hovedtall { font-size: 36px; }
+  .faner { padding: 0 16px; }
+  .flate { padding: 14px 16px 22px; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .k12, .k8, .k6, .k4, .k3 { grid-column: span 1; }
+  .stripe { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pc-tabell { display: none; }
+  .mobliste { display: block; }
+}
+
+/* ---------- Sidekart ---------- */
+.kart { background: var(--papir); border: 1.5px solid var(--blekk); padding: 18px; display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.kart section { border: 1.5px solid var(--blekk); border-radius: 10px; padding: 12px 14px; min-width: 0; }
+.kart h3 { margin: 0 0 6px; font-size: 15px; }
+.kart ul { margin: 0; padding-left: 16px; display: grid; gap: 3px; }
+.kart code, .vid code { font-family: var(--f-tall); font-size: 11.5px; overflow-wrap: anywhere; }
+.vid { background: var(--papir); border: 1.5px solid var(--blekk); padding: 18px; margin-top: 16px; }
+.vid h3 { margin: 0 0 8px; font-size: 15px; }
+.vid table { border-collapse: collapse; width: 100%; font-size: 13px; }
+.vid td, .vid th { text-align: left; border-bottom: 1px solid var(--linje); padding: 6px 8px; vertical-align: top; }
+.vidboks { min-width: 0; }
+@media (max-width: 600px) {
+  .vid table, .vid tbody, .vid tr, .vid td { display: block; width: auto; }
+  .vid tr:first-child { display: none; }
+  .vid tr { border-bottom: 1px solid var(--linje); padding: 6px 0; }
+  .vid td { border: 0; padding: 2px 0; }
+  .vid td + td::before { content: "→ "; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+<style>
+/* Tillegg i utkast 2 */
+.gruppevelger { display: grid; gap: 10px; margin-bottom: 20px; }
+.gruppevelger .gruppe { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.gruppevelger .gruppe > span { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--svak); font-weight: 700; min-width: 150px; }
+.gruppevelger button { font: inherit; font-weight: 600; font-size: 13px; border: 1.5px solid var(--blekk); background: var(--papir); color: var(--blekk); padding: 5px 11px; border-radius: 999px; cursor: pointer; }
+.gruppevelger button[aria-pressed="true"] { background: var(--blekk); color: var(--papir); }
+.gruppevelger button:focus-visible { outline: 3px solid #000; outline-offset: 2px; }
+.underfaner { display: flex; flex-wrap: wrap; gap: 4px; }
+.underfaner span { font-size: 12px; font-weight: 600; padding: 3px 9px; border-bottom: 2px solid transparent; }
+.underfaner span.paa { border-bottom-color: var(--blekk); }
+.stolpe { display: flex; height: 14px; gap: 2px; }
+.stolpe span { display: block; }
+.uke { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+.uke div { border: 1px solid var(--linje); min-height: 64px; padding: 4px; font-size: 11px; min-width: 0; overflow-wrap: anywhere; }
+.uke div b { display: block; font-family: var(--f-tall); font-weight: 500; }
+.uke .blokk { background: var(--flate); border: 1.5px solid var(--blekk); border-radius: 3px; padding: 1px 4px; margin-top: 3px; font-size: 10.5px; }
+.periodebaand { display: flex; gap: 2px; }
+.periodebaand span { padding: 6px 6px; font-size: 11px; font-weight: 700; border: 1.5px solid var(--blekk); min-width: 0; overflow-wrap: anywhere; }
+.skjelett { background: var(--flate); border-radius: 4px; height: 12px; }
+.tilstand { border: 1.5px solid var(--blekk); border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.tilstand.feil { border-style: double; border-width: 4px; }
+.skala { display: flex; gap: 4px; flex-wrap: wrap; }
+.skala span { width: 30px; height: 30px; border: 1.5px solid var(--blekk); border-radius: 6px; display: grid; place-items: center; font-family: var(--f-tall); font-size: 12px; }
+.skala span.paa { background: var(--blekk); color: var(--papir); }
+.bilder { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.bilder div { aspect-ratio: 4 / 3; border: 1.5px dashed var(--svak); display: grid; place-items: center; font-family: var(--f-tall); font-size: 11px; color: var(--svak); }
+.prikker { display: flex; flex-wrap: wrap; gap: 3px; }
+.prikker i { width: 10px; height: 10px; border: 1.5px solid var(--blekk); border-radius: 50%; }
+.prikker i.paa { background: var(--blekk); }
+@container (max-width: 600px) {
+  .uke { grid-template-columns: minmax(0, 1fr); }
+  .uke div { min-height: 0; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+  .uke div.tom { display: none; }
+  .periodebaand { flex-wrap: wrap; }
+}
+</style>
+<style>
+/* Tillegg i utkast 3: testøkt, TrackMan-kobling og testvisning */
+.k5 { grid-column: span 5; } .k7 { grid-column: span 7; }
+.okt-topp { display: flex; background: var(--mork); color: #fff; padding: 12px 16px; align-items: center; justify-content: space-between; font-weight: 700; }
+.okt-topp span { font-size: 12px; border: 1.5px solid #fff; border-radius: 999px; padding: 3px 10px; }
+.tastatur { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.tastatur span { border: 1.5px solid var(--blekk); border-radius: 8px; padding: 12px 0; text-align: center; font-family: var(--f-tall); font-size: 18px; font-weight: 500; }
+.tastatur span.svak { color: var(--svak); font-family: var(--f-tekst); font-size: 13px; }
+.inntast { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.inntast div { border: 2px solid var(--blekk); border-radius: 8px; padding: 8px 10px; min-width: 0; }
+.inntast div.aktiv { box-shadow: inset 0 0 0 2px var(--blekk); }
+.inntast b { display: block; font-family: var(--f-tall); font-size: 26px; font-weight: 500; }
+.inntast span { font-size: 11px; color: var(--svak); }
+.resultat { border: 1.5px dashed var(--blekk); border-radius: 8px; padding: 10px 12px; display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: baseline; }
+.resultat b { font-family: var(--f-tall); font-size: 22px; font-weight: 500; }
+.storknapper { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.storknapper span { border: 2px solid var(--blekk); border-radius: 10px; padding: 18px 6px; text-align: center; font-weight: 700; min-width: 0; overflow-wrap: anywhere; }
+.storknapper span small { display: block; font-family: var(--f-tall); font-weight: 500; font-size: 12px; margin-top: 4px; }
+.fremdrift { display: flex; gap: 3px; }
+.fremdrift i { flex: 1; height: 6px; border: 1px solid var(--blekk); border-radius: 2px; }
+.fremdrift i.paa { background: var(--blekk); }
+.statuslinje { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; justify-content: space-between; border: 1.5px solid var(--blekk); border-radius: 8px; padding: 8px 12px; font-size: 13px; }
+.kobling { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 8px; align-items: center; padding: 8px 0; border-top: 1px solid var(--linje); }
+.kobling:first-of-type { border-top: 0; }
+.kobling > div { border: 1.5px solid var(--blekk); border-radius: 6px; padding: 6px 8px; font-size: 12px; min-width: 0; overflow-wrap: anywhere; }
+.kobling > div.tm { border-style: dashed; }
+.kobling > div.feil { border-width: 3px; }
+.kobling > span { font-family: var(--f-tall); font-size: 14px; }
+.velgliste { display: grid; gap: 6px; }
+.velgliste label { display: flex; gap: 8px; align-items: center; border: 1.5px solid var(--blekk); border-radius: 8px; padding: 8px 10px; font-weight: 600; min-width: 0; }
+.velgliste label i { width: 16px; height: 16px; border: 1.5px solid var(--blekk); border-radius: 3px; flex: none; }
+.velgliste label i.paa { background: var(--blekk); }
+.velgliste label small { margin-left: auto; font-weight: 500; color: var(--svak); font-size: 12px; white-space: nowrap; }
+.tm-merke { font-size: 10px; font-weight: 700; border: 1.5px dashed var(--blekk); border-radius: 2px; padding: 0 4px; white-space: nowrap; }
+.panel { border: 2px solid var(--blekk); border-radius: 10px; padding: 12px 14px; display: grid; gap: 4px; background: var(--papir); }
+.tmtall { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px 12px; }
+.tmtall div { min-width: 0; border-top: 1px solid var(--linje); padding-top: 4px; }
+.tmtall b { display: block; font-family: var(--f-tall); font-weight: 500; font-size: 15px; }
+.tmtall span { font-size: 10.5px; color: var(--svak); }
+@container (max-width: 600px) {
+  .k5, .k7 { grid-column: span 1; }
+  .tmtall { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .kobling { grid-template-columns: minmax(0, 1fr); }
+  .kobling > span { display: none; }
+}
+</style>
+
+<div class="side">
+  <h1>Team Norway trenerflate · utkast 4</h1>
+  <p class="ingress">Resten av skjermene (steg 10): Hjem › Gruppeposter og Dokumenter, Spillere › Skoler og College og USA, undersidene (samling, turnering, testprotokoll, test, teknisk oppgave, scorekort) og tom/lite data. Svart-hvitt og syntetiske navn, som utkast 1–3. Hver skjerm i 1280 og 390 px.</p>
+  <div class="gruppevelger" id="velger"></div>
+  <div id="visning"></div>
+</div>
+
+<script>
+const SKALL = (aktiv, tittel, innhold) => `
+<div class="app">
+  <nav class="meny" aria-label="Hovedmeny">
+    <div class="logo"><i></i>Team Norway Golf</div>
+    ${["Hjem","Spillere","Samlinger og testing","Turneringer","Referanse","Fag og administrasjon"].map(m => `<div class="mp${m===aktiv?" aktiv":""}">${m}</div>`).join("")}
+    <div class="fot"><div class="avatar" style="background:#444;color:#fff;border-color:#fff">EL</div><div><b>Eva Lie</b><span>Trener · Team Norway</span><br><span class="lenke">Min profil</span></div></div>
+  </nav>
+  <div class="topp"><span>Meny</span>${tittel}<span>EL</span></div>
+  <div class="innhold">${innhold}</div>
+</div>`;
+/* Testøkta tar hele skjermen: ingen meny, bare topplinje med Pause. */
+const OKT = (tittel, innhold) => `
+<div class="app" style="grid-template-columns:minmax(0,1fr);align-content:start">
+  <div class="okt-topp"><span>Pause</span>${tittel}<span>Jørn J.</span></div>
+  <div class="innhold">${innhold}</div>
+</div>`;
+const FANER = (liste, aktiv) => `<div class="faner">${liste.map(f => `<span class="fane${f===aktiv?" aktiv":""}">${f}</span>`).join("")}</div>`;
+const IUP_F = ["Oversikt","Turneringsplan","Ranking","Turneringer","Trening","Tester","Teknisk plan","Fireukerssjekk"];
+const helt = (over, innhold) => `<div class="helt"><span class="bildemerke">BANEBILDE</span><span class="overlinje">${over}</span>${innhold}</div>`;
+const ht = (tall, tekst) => `<div class="hovedtall">${tall}<small>${tekst}</small></div>`;
+const IUP_TOPP = (fane) => helt(`IUP · ${fane}`, `<div style="display:flex;gap:14px;align-items:center"><div class="avatar stor">JJ</div><div><h2>Jørn Johnsen</h2><div>J1 · Herrer · Bærum GK · født 2006</div></div></div>`);
+const kort = (span, tittel, body, lenke) => `<div class="kort k${span}">${tittel ? `<h3>${tittel}${lenke ? ` <a href="#">${lenke}</a>` : ""}</h3>` : ""}${body}</div>`;
+const rad = (a, b) => `<div class="rad"><span>${a}</span><span class="tall">${b}</span></div>`;
+const radM = (a, m, kl = "") => `<div class="rad"><span>${a}</span><span class="merke ${kl}">${m}</span></div>`;
+const kilde = (t) => `<span class="kilde">${t}</span>`;
+const fremdrift = (n, av) => `<div class="fremdrift">${Array.from({length: av}, (_, i) => `<i class="${i < n ? "paa" : ""}"></i>`).join("")}</div>`;
+const TASTATUR = `<div class="tastatur">${["1","2","3","4","5","6","7","8","9",",","0","⌫"].map(t => `<span>${t}</span>`).join("")}<span class="svak">V / H</span><span class="svak">Angre siste</span><span style="background:#111;color:#fff;font-family:var(--f-tekst);font-size:14px;font-weight:700">Lagre slag</span></div>`;
+
+/* Spredningsplott: mål i midten, ringer for 5 og 10 m, prikker = slag. Fylt = Kontrollert, åpen = Egenført. */
+function spredning(slag, markert) {
+  const sx = 200, sy = 150, k = 9;
+  return `<svg class="graf" viewBox="0 0 400 300" role="img" aria-label="Spredning rundt målet">
+    <g fill="none" stroke="#CFCFCF"><circle cx="${sx}" cy="${sy}" r="${5*k}"/><circle cx="${sx}" cy="${sy}" r="${10*k}"/><circle cx="${sx}" cy="${sy}" r="${15*k}"/><line x1="${sx}" y1="10" x2="${sx}" y2="290"/><line x1="40" y1="${sy}" x2="360" y2="${sy}"/></g>
+    <g font-family="IBM Plex Mono, monospace" font-size="10" fill="#6B6B6B"><text x="${sx+4}" y="${sy-5*k-3}">5 m</text><text x="${sx+4}" y="${sy-10*k-3}">10 m</text><text x="${sx+4}" y="22">lengre</text><text x="${sx+4}" y="286">kortere</text><text x="44" y="${sy-4}">venstre</text><text x="318" y="${sy-4}">høyre</text></g>
+    <g stroke="#111" stroke-width="2"><line x1="${sx-6}" y1="${sy}" x2="${sx+6}" y2="${sy}"/><line x1="${sx}" y1="${sy-6}" x2="${sx}" y2="${sy+6}"/></g>
+    ${slag.map(([side, lengde, fylt], i) => `<circle cx="${sx + side*k}" cy="${sy - lengde*k}" r="${i===markert?8:5}" fill="${fylt?"#111":"#fff"}" stroke="#111" stroke-width="${i===markert?3:1.5}"/>`).join("")}
+  </svg>`;
+}
+const DRIVER = [[-3.1,4.2,1],[1.5,-2.0,1],[6.0,1.1,1],[-0.8,0.6,1],[2.4,-5.3,1],[-7.2,-1.5,0],[0.9,3.0,0]];
+/* Kurve over tid: fylt prikk Kontrollert, åpen Egenført. */
+function kurve(punkter, etikett) {
+  const x0 = 50, x1 = 600, y0 = 20, y1 = 160, n = punkter.length;
+  const xs = punkter.map((_, i) => x0 + i * (x1 - x0) / (n - 1));
+  const min = Math.min(...punkter.map(p => p[0])), max = Math.max(...punkter.map(p => p[0]));
+  const ys = punkter.map(p => y1 - (p[0] - min) / (max - min || 1) * (y1 - y0));
+  return `<svg class="graf" viewBox="0 0 640 190" role="img" aria-label="${etikett}">
+    <g stroke="#CFCFCF"><line x1="${x0}" y1="${y0}" x2="${x1}" y2="${y0}"/><line x1="${x0}" y1="${y1}" x2="${x1}" y2="${y1}"/></g>
+    <g font-family="IBM Plex Mono, monospace" font-size="11" fill="#6B6B6B"><text x="4" y="${y0+4}">${String(max).replace(".", ",")}</text><text x="4" y="${y1+4}">${String(min).replace(".", ",")}</text>${punkter.map((p, i) => `<text x="${xs[i]-14}" y="182">${p[2]}</text>`).join("")}</g>
+    <polyline fill="none" stroke="#111" stroke-width="2" points="${xs.map((x, i) => `${x},${ys[i]}`).join(" ")}"/>
+    ${xs.map((x, i) => `<circle cx="${x}" cy="${ys[i]}" r="5" fill="${punkter[i][1]?"#111":"#fff"}" stroke="#111" stroke-width="1.5"/>`).join("")}
+  </svg><div class="filtre"><span class="chip">● Kontrollert</span><span class="chip">○ Egenført</span></div>`;
+}
+/* Tabell som blir kortrader på mobil: første kolonne er navnet, resten står under. */
+function tabell(hoder, rader, hoyre = hoder.length - 1) {
+  const pc = `<div class="tabellboks pc-tabell"><table class="tabell"><thead><tr>${hoder.map(h => `<th>${h}</th>`).join("")}</tr></thead><tbody>${rader.map(r => `<tr>${r.map((c, i) => `<td${i>0 && /^[−+\d—.,% ]/.test(String(c)) ? ' class="t"' : ""}>${i===0 ? `<a href="#">${c}</a>` : c}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+  const mob = `<div class="mobliste">${rader.map(r => `<div class="rad"><span><b>${r[0]}</b><br><span class="svak">${r.slice(1).filter((_, i) => i + 1 !== hoyre).map((c, i) => c).join(" · ")}</span></span><span class="tall">${r[hoyre]}</span></div>`).join("")}</div>`;
+  return pc + mob;
+}
+const TM_TALL = (v) => `<div class="tmtall">${v.map(([n, t]) => `<div><b>${t}</b><span>${n}</span></div>`).join("")}</div>`;
+
+const HJEM_F = ["I dag","Gruppeposter","Dokumenter"];
+const SPILLERE_F = ["Spillere","Skoler","College og USA"];
+const SAML_F = ["Samlinger","Månedsplan","Fellestesting","Gruppeanalyse","WANG-tester"];
+const TURN_F = ["Turneringer","Live Watch","Uttak","Rangliste"];
+const FAG_F = ["Årsplan","Testprotokoller","Fagapparat","Lisens og status","Trenere og tilgang","Inviter spiller","Data Golf"];
+const TILBAKE = (t) => `<a class="lenke" href="#" style="margin-bottom:2px">← ${t}</a>`;
+const innlegg = (navn, rolle, tid, tekst, lest, totalt, vedlegg, endret) => `<div class="kort k12">
+  <div style="display:flex;gap:10px;align-items:center"><div class="avatar">${navn.split(" ").map(x => x[0]).join("")}</div><div style="min-width:0"><b>${navn}</b> <span class="merke strek">${rolle}</span><br><span class="svak">${tid}${endret ? " · endret" : ""}</span></div></div>
+  <div>${tekst}</div>
+  ${vedlegg ? `<div class="filtre">${vedlegg.map(v => `<span class="chip">${v}</span>`).join("")}</div>` : ""}
+  <div class="statuslinje"><span>Lest av <b class="tall">${lest} av ${totalt}</b></span><span class="lenke">Send påminnelse</span></div>
+  ${fremdrift(lest, totalt)}
+</div>`;
+const dok = (navn, kat, info, fra) => `<div class="rad"><span><b>${navn}</b><br><span class="svak">${kat} · ${info}${fra ? " · Fra innlegg" : ""}</span></span><span class="tall">${fra ? "—" : "åpnet av 9 av 12"}</span></div>`;
+
+const S = {
+/* ---------------- Hjem ---------------- */
+poster: { gruppe: "Hjem", navn: "Gruppeposter", notat: "Beskjeder fra trenerteamet til hele gruppa, med lesekvittering. Hovedtall: poster siste 30 dager. Treneren skriver øverst (maks 2000 tegn, vedlegg som PDF, XLSX, JPG, PNG, WEBP, maks 50 MB). Mottaker er alltid hele gruppa. Spillere og foresatte ser andelen som har lest, ikke navnene. Forfatteren kan endre; forfatteren og trener kan slette; endret innlegg merkes «endret». «Send påminnelse» er et varsel i appen, én gang per innlegg, bare til dem som ikke har lest.",
+  html: () => SKALL("Hjem", "Gruppeposter", `${helt("Hjem · Gruppeposter", `<h2>Team Norway Junior</h2>${ht("7", "poster siste 30 dager")}`)}${FANER(HJEM_F, "Gruppeposter")}
+  <div class="flate">
+    ${kort(12, "Ny post", `<div class="felt" style="min-height:64px">Skriv til hele gruppa</div><div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><span class="knapp">Send til gruppa</span><span class="knapp kontur">Legg ved fil</span><span class="kilde">0 av 2000 tegn · mottaker: 12 spillere</span></div>`)}
+    ${innlegg("Eva Lie", "Trener", "I dag 09:12", "Samling Sotogrande: avreise fra Gardermoen torsdag 06:40. Pass og EU-kort i håndbagasjen. Pakkeliste ligger under Dokumenter.", 8, 12, ["pakkeliste-sotogrande.pdf"], false)}
+    ${innlegg("Kari Dahl", "Assist Coach", "Mandag 18:40", "Testdag 14. november flyttes til hall B. Samme tidspunkt.", 11, 12, null, true)}
+    <div class="k12"><span class="lenke">Eldre poster</span></div>
+  </div>`) },
+
+dokumenter: { gruppe: "Hjem", navn: "Dokumenter", notat: "Gruppas filer på ett sted. Hovedtall: antall dokumenter. Kategorifilter. Vedlegg fra innlegg står under Alle, merket «Fra innlegg» (ingen kategori). Trenere ser hvor mange som har åpnet filen. Den som lastet opp, og trenere, kan slette. «Last opp» åpner et ark: velg fil, kategori, tittel.",
+  html: () => SKALL("Hjem", "Dokumenter", `${helt("Hjem · Dokumenter", `<h2>Team Norway Junior</h2>${ht("14", "dokumenter")}`)}${FANER(HJEM_F, "Dokumenter")}
+  <div class="flate">
+    ${kort(12, "", `<div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center"><div class="filtre"><span class="chip paa">Alle · 14</span><span class="chip">Reise · 4</span><span class="chip">Samlingsprogram · 5</span><span class="chip">Avtaler · 3</span><span class="chip">Annet · 2</span></div><span class="knapp">Last opp</span></div>`)}
+    ${kort(8, "Alle dokumenter", `${dok("pakkeliste-sotogrande.pdf","Reise","PDF · 0,2 MB · Eva Lie · 22.10",true)}${dok("samlingsprogram-uke-47.xlsx","Samlingsprogram","XLSX · 0,4 MB · Eva Lie · 20.10")}${dok("reiseforsikring-2026.pdf","Avtaler","PDF · 1,1 MB · Kari Dahl · 14.10")}${dok("kart-anlegg-sotogrande.png","Reise","PNG · 2,8 MB · Eva Lie · 12.10")}<span class="lenke">Vis flere</span>`)}
+    ${kort(4, "Last opp", `<div class="felt">Velg fil</div><div class="filtre"><span class="chip paa">Reise</span><span class="chip">Samlingsprogram</span><span class="chip">Avtaler</span></div><div class="felt">Tittel</div><span class="knapp">Last opp</span>${kilde("PDF, XLSX, JPG, PNG og WEBP, maks 50 MB. DOCX godtas ikke.")}`)}
+  </div>`) },
+
+/* ---------------- Spillere ---------------- */
+skoler: { gruppe: "Spillere", navn: "Skoler", notat: "Skoleoversikt over TN-spillerne. Hovedtall: antall skoler. Skoler med færre enn tre spillere slås sammen til én rad uten navn, så ingen mindreårig kan pekes ut av skolen alene; spillerne finnes under Spillere. Tallene øverst er trinnene slik de står i profilene (skoletype er ikke eget felt). WANG-skolene lenker til WANG-tester.",
+  html: () => SKALL("Spillere", "Skoler", `${helt("Spillere · Skoler", `<h2>Skoler og trinn</h2>${ht("6", "skoler")}`)}${FANER(SPILLERE_F, "Skoler")}
+  <div class="flate">
+    ${kort(12, "", `<div class="stripe"><div><b>9</b><span>Vg1</span></div><div><b>7</b><span>Vg2</span></div><div><b>6</b><span>Vg3</span></div><div><b>3</b><span>Høyere utdanning</span></div></div>`)}
+    ${kort(8, "Skoleoversikt", tabell(["Skole","Spillere","Trinn","Gj.sn. oppmøte"], [["WANG Toppidrett Fredrikstad","6","Vg1–Vg3","94 %"],["Wang Toppidrett Oslo","5","Vg1–Vg3","91 %"],["Wang Toppidrett Bergen","4","Vg2–Vg3","—"],["Kristiansand katedralskole","3","Vg1","—"],["Andre skoler (færre enn tre per skole)","7","Ulike","—"]], 1))}
+    ${kort(4, "WANG-skolene", `${rad("Testresultater fra WANG","delt")}${rad("Sist oppdatert","20.10")}<span class="lenke">Åpne WANG-tester</span>${kilde("Kilde: spillerprofilene og WANG-skolenes delte testresultater.")}`)}
+  </div>`) },
+
+college: { gruppe: "Spillere", navn: "College og USA", notat: "Utøvere på college, med statusmarkør per spiller. Hovedtall: utøvere på college. Kortet viser skole og skoleår fra spillerprofilen og brutto snitt fra registrerte starter; konferanse, klasse, WAGR og siste college-resultat er ikke registrert og vises «—». Kommende samlinger vises, men hvem som kan stille, står ikke før det kan registreres. Treneren registrerer college, status og start per spiller. Resultathistorikk har sidevelger (Forrige, Neste).",
+  html: () => SKALL("Spillere", "College og USA", `${helt("Spillere · College og USA", `<h2>College-gruppen</h2>${ht("5", "utøvere på college")}`)}${FANER(SPILLERE_F, "College og USA")}
+  <div class="flate">
+    ${kort(8, "Utøvere på college", `${rad("<b>Spiller A</b><br><span class='svak'>Univ. Eksempel · 2. år</span>", "<span class='merke fylt'>I sesong</span> 72,4")}${rad("<b>Spiller B</b><br><span class='svak'>Univ. Prøve · 1. år</span>", "<span class='merke'>Utenfor sesong</span> 73,9")}${rad("<b>Spiller C</b><br><span class='svak'>Univ. Eksempel · 3. år</span>", "<span class='merke strek'>Ikke registrert</span> —")}<span class="lenke">Registrer college for en spiller</span>`)}
+    ${kort(4, "Kommende samlinger", `${rad("Samling Sotogrande","20.–27.11")}${rad("Testdag","14.11")}${kilde("Hvem som kan stille, vises ikke før det registreres.")}`)}
+    ${kort(12, "Resultathistorikk", tabell(["Turnering","Spiller","Plass","Score"], [["Eksempel Invitational","Spiller A","T4","−3"],["Prøve Classic","Spiller B","T18","+2"]], 3) + `<div style="display:flex;gap:8px"><span class="knapp kontur">Forrige</span><span class="knapp kontur">Neste</span></div>`)}
+  </div>`) },
+
+/* ---------------- Undersider ---------------- */
+samling: { gruppe: "Undersider", navn: "Én samling", notat: "/samlinger/[id]. Åpnes fra «Åpne samlingen» i Samlinger. Hovedtall: dager til samlingen (nedtelling), eller «pågår» / «avsluttet». Programmet per dag, deltakere, testdag (hvis satt), og månedsplanens uker som samlingen ligger i. Treneren med publiseringstilgang kan publisere programmet til spillerne. Tilbake går til Samlinger.",
+  html: () => SKALL("Samlinger og testing", "Samling", `${helt("Samlinger › Sotogrande", `<h2>Samling Sotogrande</h2>${ht("29", "dager til samlingen · 20.–27.11")}`)}${FANER(SAML_F, "Samlinger")}
+  <div class="flate">
+    <div class="k12">${TILBAKE("Samlinger")}</div>
+    ${kort(8, "Programmet", `<div class="seksjonsnavn">Fredag 21.11</div>${rad("08:00 Oppvarming og mobilitet","FYS")}${rad("09:30 Banespill 9 hull","SPILL")}${rad("14:00 Wedge Gate og Wedge Variation","TEK")}<div class="seksjonsnavn">Lørdag 22.11</div>${rad("08:30 Putting 1–3 m","SLAG")}${rad("13:00 Fellestesting","Testdag")}<div style="display:flex;gap:8px;flex-wrap:wrap"><span class="knapp">Publiser til spillerne</span><span class="knapp kontur">Rediger</span></div>`)}
+    ${kort(4, "Deltakere", `${ht("11", "av 12 påmeldt")}${radM("Spiller A","Bekreftet","fylt")}${radM("Spiller B","Bekreftet","fylt")}${radM("Spiller C","Venter","strek")}<span class="lenke">Se alle 12</span>`)}
+    ${kort(12, "Månedsplanen i perioden", `<div class="periodebaand"><span style="flex:1">Uke 47 · grunn</span><span style="flex:1;background:var(--flate)">Uke 48 · samling</span><span style="flex:1">Uke 49 · grunn</span></div>${kilde("Fra månedsplanen. Endres der.")}`)}
+  </div>`) },
+
+turnering: { gruppe: "Undersider", navn: "Én turnering", notat: "/turneringer/[id]. Hovedtall: antall TN-spillere påmeldt (eller beste plassering når turneringen er ferdig). Turneringen med sted, dato, tour og frist. TN-spillere i feltet med plassering, og hull for hull når runder er registrert. «Ikke koblet til» vises når turneringen ikke er koblet til en kilde. Live Watch-lenke mens den pågår. Ingen plasseringer: «Ingen plasseringer er registrert ennå».",
+  html: () => SKALL("Turneringer", "Turnering", `${helt("Turneringer › Eksempel Open", `<h2>Eksempel Open</h2>${ht("4", "TN-spillere i feltet · pågår")}`)}${FANER(TURN_F, "Turneringer")}
+  <div class="flate">
+    <div class="k12">${TILBAKE("Turneringer")}</div>
+    ${kort(4, "Turneringen", `${rad("Sted","Eksempel GK")}${rad("Dato","23.–25.10")}${rad("Tour","Nordic Junior")}${rad("Påmeldingsfrist","passert")}${radM("Status","Pågår","fylt")}<span class="lenke">Åpne Live Watch</span>${kilde("Kilde: turneringskalender, oppdatert 22.10 kl. 18:00.")}`)}
+    ${kort(8, "TN-spillere i feltet", tabell(["Spiller","Runde 1","Runde 2","Plass","Til par"], [["Spiller A","70","—","T3","−2"],["Spiller B","73","—","T21","+1"],["Spiller C","76","—","T48","+4"],["Spiller D","71","—","T9","−1"]], 4))}
+    ${kort(12, "Hull for hull", `<div class="periodebaand">${Array.from({length: 9}, (_, i) => `<span style="flex:1;text-align:center">${i + 1}<br>${["4","3","5","4","4","3","5","4","4"][i]}</span>`).join("")}</div>${kilde("Spiller A · runde 1 · hull 1–9. Velg spiller og runde over.")}`)}
+  </div>`) },
+
+protokoll: { gruppe: "Undersider", navn: "Én testprotokoll", notat: "/protokoller/[id]. Hovedtall: antall slag i protokollen. Hva som føres (slag, lengde, poeng), hvem som fører (trener eller spiller), status (Klar eller Utkast) og bruk i fellestesting. Kilden er «Team Norway Golf – Tester». Protokollen kan ikke redigeres her.",
+  html: () => SKALL("Fag og administrasjon", "Protokoll", `${helt("Testprotokoller › Wedge Gate", `<h2>Wedge Gate</h2>${ht("9", "slag · 40 / 50 / 60 m")}`)}${FANER(FAG_F, "Testprotokoller")}
+  <div class="flate">
+    <div class="k12">${TILBAKE("Testprotokoller")}</div>
+    ${kort(6, "Dette føres", `${rad("Bom","0 p")}${rad("Gjennom porten","1 p")}${rad("Porten og sonen","4 p")}${rad("Maks","36 poeng")}${rad("Fører","Trener (Kontrollert)")}${radM("Status","Klar","fylt")}${radM("Prioritert test","Nei")}`)}
+    ${kort(6, "Slag og lengde", `${rad("Slag 1–3","40 m")}${rad("Slag 4–6","50 m")}${rad("Slag 7–9","60 m")}${kilde("Kilde: Team Norway Golf – Tester, scorekort Teknikktester.")}`)}
+    ${kort(12, "Bruk i fellestesting", `<span>Brukt på 2 testdager i år.</span><span class="lenke">Se fellestesting</span>`)}
+  </div>`) },
+
+test: { gruppe: "Undersider", navn: "Én test for en spiller", notat: "/spiller/[id]/tester/[testId]. Testvisningen fra utkast 3 (spredning, kurve, slagpanel) er uendret; denne skjermen viser sidens ramme og tilstandene. Hovedtall: siste resultat. Uten deling vises låsen som på alle IUP-faner. Test utenfor batteriet vises i «øvrig»-visning med resultatlista.",
+  html: () => SKALL("Spillere", "Wedge Variation", `${IUP_TOPP("Tester › Wedge Variation")}${FANER(IUP_F, "Tester")}
+  <div class="flate">
+    <div class="k12">${TILBAKE("Tester")}</div>
+    ${kort(4, "Siste forsøk 22.10", `${ht("5,1 %", "PEI · 18 slag")}${radM("Prioritert","2 av 2","fylt")}${radM("Ført av","Kontrollert","fylt")}`)}
+    ${kort(8, "Spredning, 18 slag", spredning([[-3.1,4.2,1],[1.5,-2.0,1],[6.0,1.1,1],[-0.8,0.6,1],[2.4,-5.3,1],[-7.2,-1.5,1]], 2))}
+    ${kort(12, "Forsøk over tid", kurve([[6.4,1],[5.9,0],[5.6,1],[5.1,1]], "PEI over fire forsøk"))}
+  </div>`) },
+
+oppgave: { gruppe: "Undersider", navn: "Én teknisk oppgave", notat: "/spiller/[id]/teknisk-plan/[planId]. Planen med oppgaver. Hovedtall: oppgaver ferdig av totalt. Treneren foreslår: «Foreslå ny oppgave» og «Foreslå endring» (aldri «Endre» eller «Slett»); forslaget ligger som utkast til spilleren godtar. Rep-tellere: Uten ball, Lav hastighet, Automatikk, med mål per teller. Siste hendelser viser hvem som gjorde hva.",
+  html: () => SKALL("Spillere", "Teknisk plan", `${IUP_TOPP("Teknisk plan › Wedge-teknikk høst")}${FANER(IUP_F, "Teknisk plan")}
+  <div class="flate">
+    <div class="k12">${TILBAKE("Alle planer")}</div>
+    ${kort(4, "Wedge-teknikk høst", `${ht("2 av 5", "oppgaver ferdig")}${rad("Område","Wedge 30–60 m")}${rad("Køller","PW, 52°, 56°")}<span class="knapp kontur">Foreslå ny oppgave</span>`)}
+    ${kort(8, "Oppgave: Lav bunn i nedsving", `${rad("P-posisjon","P7.0 Treffpunktet")}${rad("Uten ball","40 av 50 reps")}${rad("Lav hastighet","22 av 40 reps")}${rad("Automatikk","0 av 30 reps")}${fremdrift(4, 8)}<div style="display:flex;gap:8px;flex-wrap:wrap"><span class="knapp kontur">Foreslå endring</span></div>${kilde("Forslaget ligger som utkast til Jørn godtar eller avslår.")}`)}
+    ${kort(12, "Siste hendelser", `${rad("Jørn loggførte 12 reps · Lav hastighet","I dag 07:58")}${rad("Eva foreslo mål Automatikk 30","Mandag 18:02")}${rad("Jørn godtok forslaget","Mandag 20:14")}`)}
+  </div>`) },
+
+scorekort: { gruppe: "Undersider", navn: "Scorekort for føring", notat: "Føring av én test på testdag (fra fellestesting-køen). Én spiller om gangen: ført så langt, resultat og valgfritt notat. «Lagre utkast / pause», «Angre siste», «Avslutt ufullstendig» (gir ikke resultat), «Neste i køen». Alle forsøk og valgfrie felt kan åpnes. Laget for telefon; PC viser slaglista ved siden av.",
+  html: () => OKT("Driver Gate", `
+  <div class="flate">
+    ${kort(12, "", `<div class="statuslinje"><b>Spiller C · 2 av 8 i køen</b><span>Slag 4 av 6 · 4 OK</span></div>${fremdrift(3, 6)}`)}
+    ${kort(7, "Slag 4", `<div class="storknapper" style="grid-template-columns:repeat(2,minmax(0,1fr))"><span>Bom<small>0</small></span><span>OK<small>1</small></span></div><div class="filtre"><span class="chip">Angre siste</span><span class="chip">Alle forsøk og valgfrie felt</span></div><div class="felt">Notat · valgfritt</div>`)}
+    ${kort(5, "Ført så langt", `${rad("Slag 1","OK")}${rad("Slag 2","OK")}${rad("Slag 3","Bom")}<div class="resultat"><span>Resultat så langt</span><b>2 / 3 OK</b></div><div style="display:flex;gap:8px;flex-wrap:wrap"><span class="knapp kontur">Lagre utkast / pause</span><span class="knapp kontur">Avslutt ufullstendig</span></div>`)}
+    ${kort(12, "", `<span class="knapp">Neste i køen →</span> <span class="lenke">Tilbake til køen</span>`)}
+  </div>`) },
+
+/* ---------------- Tom og lite data ---------------- */
+tomPoster: { gruppe: "Tom og lite data", navn: "Gruppeposter uten innlegg", notat: "Ingen innlegg ennå. Treneren får skrivefeltet og teksten «Ingen innlegg ennå». Spiller og foresatt får samme tomtilstand uten skrivefelt.",
+  html: () => SKALL("Hjem", "Gruppeposter", `${helt("Hjem · Gruppeposter", `<h2>Team Norway Junior</h2>${ht("0", "poster siste 30 dager")}`)}${FANER(HJEM_F, "Gruppeposter")}
+  <div class="flate">
+    ${kort(12, "Ny post", `<div class="felt" style="min-height:64px">Skriv til hele gruppa</div><span class="knapp">Send til gruppa</span>`)}
+    <div class="k12 tilstand"><b>Ingen innlegg ennå</b><span class="svak">Skriv første post til gruppa. Spillerne får varsel i appen.</span></div>
+  </div>`) },
+
+tomDok: { gruppe: "Tom og lite data", navn: "Dokumenter uten filer", notat: "Ingen dokumenter. Treneren får «Last opp» som eneste handling; tom kategori sier hvilken kategori som er tom.",
+  html: () => SKALL("Hjem", "Dokumenter", `${helt("Hjem · Dokumenter", `<h2>Team Norway Junior</h2>${ht("0", "dokumenter")}`)}${FANER(HJEM_F, "Dokumenter")}
+  <div class="flate">
+    <div class="k12 tilstand"><b>Ingen dokumenter ennå</b><span class="svak">Last opp pakkelister, samlingsprogram og avtaler. PDF, XLSX, JPG, PNG og WEBP, maks 50 MB.</span><span class="knapp">Last opp</span></div>
+  </div>`) },
+
+liteSkoler: { gruppe: "Tom og lite data", navn: "Skoler med lite data", notat: "Under tre spillere per skole: alle slås sammen til én rad uten navn. Hovedtall viser «1 gruppe».",
+  html: () => SKALL("Spillere", "Skoler", `${helt("Spillere · Skoler", `<h2>Skoler og trinn</h2>${ht("1", "gruppe (færre enn tre per skole)")}`)}${FANER(SPILLERE_F, "Skoler")}
+  <div class="flate">
+    ${kort(12, "Skoleoversikt", `${rad("Andre skoler","5 spillere")}${kilde("Skoler med færre enn tre spillere vises ikke med navn. Spillerne finnes under Spillere.")}`)}
+  </div>`) },
+
+tomCollege: { gruppe: "Tom og lite data", navn: "College uten registrerte", notat: "«Ingen spillere er registrert med college ennå.» Treneren får «Registrer college for en spiller». Kommende samlinger: «Ingen kommende samlinger er registrert.»",
+  html: () => SKALL("Spillere", "College og USA", `${helt("Spillere · College og USA", `<h2>College-gruppen</h2>${ht("0", "utøvere på college")}`)}${FANER(SPILLERE_F, "College og USA")}
+  <div class="flate">
+    <div class="k8 tilstand"><b>Ingen spillere er registrert med college ennå</b><span class="svak">Registrer college, status og start per spiller.</span><span class="knapp">Registrer college</span></div>
+    <div class="k4 tilstand"><b>Kommende samlinger</b><span class="svak">Ingen kommende samlinger er registrert.</span></div>
+  </div>`) },
+};
+
+
+const visning = document.getElementById("visning");
+const velger = document.getElementById("velger");
+const GRUPPER = ["Hjem", "Spillere", "Undersider", "Tom og lite data"];
+const knapper = [];
+GRUPPER.forEach(g => {
+  const rad = document.createElement("div"); rad.className = "gruppe"; rad.setAttribute("role", "group"); rad.setAttribute("aria-label", g);
+  const lbl = document.createElement("span"); lbl.textContent = g; rad.appendChild(lbl);
+  Object.entries(S).filter(([, v]) => v.gruppe === g).forEach(([id, v]) => {
+    const b = document.createElement("button"); b.type = "button"; b.textContent = v.navn; b.dataset.id = id;
+    b.addEventListener("click", () => { tegn(id); try { history.replaceState(null, "", "#" + id); } catch (e) {} });
+    rad.appendChild(b); knapper.push(b);
+  });
+  velger.appendChild(rad);
+});
+function tegn(id) {
+  knapper.forEach(b => b.setAttribute("aria-pressed", b.dataset.id === id ? "true" : "false"));
+  const s = S[id]; const h = s.html();
+  visning.innerHTML = `<h2 class="skjermtittel">${s.gruppe} › ${s.navn}</h2><p class="notat">${s.notat}</p>
+  <div class="rammer"><div class="rammeboks"><div class="rammeetikett">1280 px (skalert)</div><div class="skalering"><div class="ramme pc">${h}</div></div></div>
+  <div class="rammeboks mobboks"><div class="rammeetikett">390 px</div><div class="ramme mob">${h}</div></div></div>`;
+  tilpass();
+}
+function tilpass() {
+  document.querySelectorAll(".skalering").forEach(boks => {
+    const r = boks.querySelector(".ramme");
+    const skala = Math.min(1, boks.clientWidth / 1280);
+    r.style.transform = `scale(${skala})`;
+    boks.style.height = (r.offsetHeight * skala) + "px";
+  });
+}
+window.addEventListener("resize", tilpass);
+window.addEventListener("hashchange", () => { const id = location.hash.slice(1); if (S[id]) tegn(id); });
+const start = (location.hash || "").slice(1);
+tegn(S[start] ? start : "poster");
+</script>

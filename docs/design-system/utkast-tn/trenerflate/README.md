@@ -94,3 +94,14 @@ Wireframes: [utkast-3.html](utkast-3.html) (privat artifact: https://claude.ai/a
 testøkt med én spiller (start, ett slag om gangen, gate med store knapper, uten nett og pause, ferdig), TrackMan-import med
 kobling til testslag (kobling, slag som ikke passer, Club Speed), TrackMan-statistikk (per kølle, treffpunkt og gapping, tendens, TrackMan mot spill, tilstander) og testvisning (PEI med spredning, gate med port og sone, putt
 med avstandsbånd, uten TrackMan). Hva kodeøkta må bygge og datamodelltilleggene: planfila §6.
+
+## 8. Utkast 4 (22.10.2026): resten av skjermene (steg 10)
+
+Status: **Venter på Anders** (port 7).
+
+Wireframes: [utkast-4.html](utkast-4.html). 14 skjermer, 390 og 1280 px, svart-hvitt med syntetiske navn:
+Hjem › Gruppeposter og Dokumenter · Spillere › Skoler og College og USA · undersidene (én samling, én turnering, én
+testprotokoll, én test, én teknisk oppgave, scorekort for føring) · tom og lite data (Gruppeposter, Dokumenter, Skoler,
+College). Feltene er hentet fra de bygde skjermene i `src/components/team-norway/skjermer`. Ett hovedtall i bildetoppen
+per skjerm; treneren foreslår i teknisk plan («Foreslå», aldri «Endre»). Målt i 390, 1280 og 1920 px: ingen sidelengs
+rulling, ingen konsollfeil. Planfila: [steg 10](../../../planer/tn-designloft-plan-2026-10-22.md).
