@@ -7,10 +7,10 @@ export const sti = "/team-norway/spiller/s1/ranking";
 
 const kontekst: TnArbeidskontekst = { gruppe: { id: "g1", name: "Landslag junior" }, rolle: "COACH", erSpiller: false, kanAdministrere: true };
 const d = (y: number, m: number, dag: number) => new Date(Date.UTC(y, m - 1, dag, 10));
-const felles = { brukerNavn: "Trener 1", kontekst, spillerId: "s1", spillerNavn: "Spiller B" };
+const felles = { brukerNavn: "Trener 1", kontekst, spillerId: "s1", spillerNavn: "Jørn Johnsen" };
 
 const profil = (aar: number, snitt: number | null, turneringer: TnSpillerProfil["turneringer"]): TnSpillerProfil => ({
-  navn: "Spiller B", erTnMedlem: true, fodselsdato: d(2009, 4, 12), klubb: "Klubb 2", skole: null, hcp: -0.8,
+  navn: "Jørn Johnsen", erTnMedlem: true, fodselsdato: d(2009, 4, 12), klubb: "Klubb 2", skole: null, hcp: -0.8,
   turneringer, aaret: turneringer ? { runder: turneringer.reduce((s, t) => s + t.runder, 0), bruttoSnitt: snitt } : null,
 });
 const iAar = profil(2026, 72.4, [
@@ -56,5 +56,5 @@ export const tilstander = {
   "turneringer-tom": <TnIupTurneringerVisning {...felles} aar={2026} iAar={profil(2026, null, null)} iFjor={null} />,
   trening: <TnIupTreningVisning {...felles} naa={d(2026, 10, 22)} data={trening} planer={[{ id: "p1", navn: "Vinterplan 2026/27", status: "ACTIVE", startDato: d(2026, 10, 1), sluttDato: d(2027, 3, 31) }]} />,
   "trening-tom": <TnIupTreningVisning {...felles} naa={d(2026, 10, 22)} data={tomTrening} planer={null} />,
-  "laast-trening": <TnIupLaastVisning brukerNavn="Trener 1" kontekst={kontekst} spillerId="s3" aktiv="trening" navn="Spiller C" klubb="Klubb 3" fodselsaar={2010} wagr={null} aar={2026} />,
+  "laast-trening": <TnIupLaastVisning brukerNavn="Trener 1" kontekst={kontekst} spillerId="s3" aktiv="trening" navn="Henrik Aas" klubb="Klubb 3" fodselsaar={2010} wagr={null} aar={2026} />,
 };
