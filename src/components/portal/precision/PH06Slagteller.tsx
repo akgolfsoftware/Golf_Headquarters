@@ -21,7 +21,7 @@ import {
   beregnProsent,
 } from "@/lib/portal-live/ph04-07-data";
 import "@/styles/precision-athletics.css";
-import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import { LiveInnhold, LiveTittelrad } from "@/components/portal/live/LiveTittelrad";
 import "@/styles/playerhq-ny-idag.css";
 import "@/styles/playerhq-ny-lister-skra.css";
 import "@/styles/playerhq-ny-pakke11-skra.css";
@@ -83,21 +83,20 @@ export function PH06Slagteller({
       data-theme="light"
       style={{
         minHeight: "100dvh",
+        boxSizing: "border-box",
         background: "var(--surface-page)",
         color: "var(--text-primary)",
         display: "flex",
         flexDirection: "column",
       }}
     >
-      <SkraTopp
-        lav
+      <LiveTittelrad
         etikett="Slagteller"
-        bilde="/images/playerhq/slag-simulator.jpg" bildePosisjon="50% 50%"
         overlinje={`Live-økt · øvelse ${data.drillIndex + 1} av ${data.totalDrills}`}
         tittel="Slagteller"
-        handling={<span className="skra-topp-rad"><button type="button" className="phn-knapp sek skra-topp-knapp" onClick={() => setEndOpen(true)}>Avslutt</button></span>}
+        handling={<button type="button" className="phn-knapp sek" onClick={() => setEndOpen(true)}>Avslutt</button>}
       />
-      <SkraFlyt lav>
+      <LiveInnhold>
 
       {/* Hovedinnhold */}
       <main
@@ -333,7 +332,7 @@ export function PH06Slagteller({
           )}
         </div>
       </main>
-      </SkraFlyt>
+      </LiveInnhold>
 
       {/* Toast-melding */}
       {toastText && (

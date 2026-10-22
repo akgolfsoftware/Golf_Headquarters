@@ -1,6 +1,7 @@
 import "server-only";
 
 import { redirect } from "next/navigation";
+import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { harCoachLesetilgangTilSpiller, harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import type { TnBruker } from "@/lib/domain/tn-arbeidsflate";
@@ -76,9 +77,12 @@ async function harTnTekniskPlanSkrivetilgang(bruker: TnBruker, kontekst: TnWorkb
   return harCoachTilgangTilSpiller({ id: bruker.id, role: bruker.role }, spillerId);
 }
 
-/** Planoversikt for én spiller — kun rader som faktisk tilhører spillerId. */
-export async function hentTnTekniskPlaner(spillerId: string): Promise<TnTekniskPlanRad[]> {
-  const planer = await prisma.technicalPlan.findMany({
+/**
+ * Planoversikt for én spiller — kun rader som faktisk tilhører spillerId. `db` er transaksjonen fra
+ * `medTnSpillerData`, så planen bare leses innenfor delingslåsen.
+ */
+export async function hentTnTekniskPlaner(db: Prisma.TransactionClient, spillerId: string): Promise<TnTekniskPlanRad[]> {
+  const planer = await db.technicalPlan.findMany({
     where: { userId: spillerId },
     orderBy: { createdAt: "desc" },
     select: {
@@ -140,9 +144,9 @@ export type TnTekniskPlanDetalj = {
   siste: { action: string; createdAt: Date; actorNavn: string }[];
 };
 
-/** Plandetalj — `where: { id, userId: spillerId }` (aldri viewerens id). */
-export async function hentTnTekniskPlanDetalj(spillerId: string, planId: string): Promise<TnTekniskPlanDetalj | null> {
-  const plan = await prisma.technicalPlan.findFirst({
+/** Plandetalj — `where: { id, userId: spillerId }` (aldri viewerens id). Leses med `db` fra delingslåsen. */
+export async function hentTnTekniskPlanDetalj(db: Prisma.TransactionClient, spillerId: string, planId: string): Promise<TnTekniskPlanDetalj | null> {
+  const plan = await db.technicalPlan.findFirst({
     where: { id: planId, userId: spillerId },
     include: {
       positions: {

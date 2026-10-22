@@ -222,7 +222,7 @@ WAGR per uke, til-par per turnering, logget i etterkant, lagt inn mot fordelt, k
 samme tall i Oversikt. Ingen knapper: «Foreslå endring», «Skriv post» og «Før teknikktest» er borte; eneste lenke er
 «Endre deling i Meg › Deling». Listen «Hvem ser dette» erstatter velgeren mellom delingsnivåer.
 
-### 5.4 Spørsmål til Anders (anbefalingen er brukt i wireframene)
+### 5.4 Spørsmål til Anders: avgjort 22.10 (ja til alle tre, `.claude/rules/beslutninger.md` §TEAM NORWAY: DELING ER ALT ELLER INGENTING)
 
 1. **Ett delingsnivå i Team Norway?** Koden gir treneren alt eller ingenting. Anbefaling: behold ett nivå. Det er enklere å forklare
    for spiller og foresatte, og det er slik tilgangen faktisk virker i dag.
@@ -230,3 +230,74 @@ samme tall i Oversikt. Ingen knapper: «Foreslå endring», «Skriv post» og «
    Norway-spillere, «—» under 5. Beste resultat noensinne gir et for pent bilde, og WANG-elevene har eget samtykke.
 3. **Én definisjon av brutto snitt?** Anbefaling: turneringsrunder i kalenderåret, Oslo-tid, bare brutto, likt i IUP, Rangliste,
    Uttak og PlayerHQ. Treningsrunder vises som egen linje, ikke i snittet.
+
+## 6. Utkast 3: testøkt, TrackMan-kobling og testvisning (22.10.2026)
+
+Bestilt av Anders 22.10: «tegne testøkta med spiller, TrackMan-importen med kobling til testslag, og testvisningen med
+spredningsplott og slagdata, som utkast 3.» Wireframes: [utkast-3.html](../design-system/utkast-tn/trenerflate/utkast-3.html),
+https://claude.ai/artifact/TAhfpQJPqeKiwp2zTxxKft. 17 skjermer i fire grupper, målt i 390, 1280 og 1920 px uten sidelengs rulling og uten konsollfeil.
+
+### 6.1 Hva kodeøkta må bygge
+
+1. **Testøkt uten testdag.** «Start test» fra IUP › Tester og fra en samling: én spiller, flere tester i ett løp. I dag krever
+   `saveTnTestSomCoach` en aktiv testdag og tar én test per testdag; testdagen blir bare rammen når hele gruppa tester. Bare
+   tester treneren kan føre (`trenerKanFore`) kan velges; resten vises grå med «Spilleren fører i PlayerHQ».
+2. **Ett slag om gangen** for carry og side, med talltastatur, avstand fra hullet og PEI rett etter slaget, «Angre siste» og
+   fremdrift «Test 2 av 4 · slag 3 av 5». Gjenbruk mønsteret fra `PH15TnTest`/`PH15TnGenerell` i stedet for feltlista i
+   `tn-testdag-scorecard.tsx`. Gate-testene beholder de store knappene (0/1/4 poeng; OK/Bom for Driver Gate og Putt Gate).
+3. **Uten nett og pause:** utkast lagres på telefonen per slag (gjenbruk `use-tn-draft.ts`) og sendes når nettet er tilbake.
+   En test teller fortsatt bare når alle slag er ført.
+4. **TrackMan-import for trener** i TN (og AgencyOS): knapp i IUP › Tester og i testøkta, som kaller `importTrackMan` med
+   `onBehalfOfUserId`. Krever deling.
+5. **Kobling testslag ↔ TrackMan-slag.** Forslaget går i rekkefølge, med riktig kølle; treneren bekrefter alle eller bytter
+   ett og ett. Carry og Side fylles inn fra TrackMan, og slaget merkes «TM». Tilstandene: passer ikke (mer enn 15 m fra målet),
+   for få slag (resten føres for hånd), feil kølle (hoppes over).
+6. **Club Speed i Fysisk:** beste av de fem første driverslagene i fila, som treneren bekrefter.
+7. **Testvisning:** hovedtall per test (PEI eller poeng, «1 av 2» på prioriterte), spredningsplott mot målet for PEI-testene
+   (`DispersionMap` finnes bare for TrackMan-økter og kan gjenbrukes), port og sone for gate-testene, avstandsbånd for putt,
+   panel med TrackMan-tallene per slag, og kurve over tid med fylt prikk for Kontrollert og åpen for Egenført. Uten TrackMan
+   viser panelet bare Carry og Side og «—» for resten.
+
+### 6.2 Datamodelltillegg (additivt via `db execute`, gotchas §Database)
+
+- **Kobling testslag → TrackMan-slag:** ny tabell `TestShotTrackManLink` (`testResultId`, `forsokIndeks`, `trackManShotId`,
+  `kobletAvId`, `kobletAt`, unik på `testResultId` + `forsokIndeks`), eller valgfritt felt `trackManShotId` per forsøk hvis
+  forsøkene allerede ligger i egen tabell. Kolonnene kartlegges mot `TestResult` før skriptet skrives.
+- **Testøkt:** `TestSession` (`spillerId`, `trenerId`, `samlingId` valgfri, `startetAt`, `avsluttetAt`, `status`) med kobling fra
+  `TestResult`, så flere tester kan høre til ett løp uten testdag.
+- **Kølle per TrackMan-slag** finnes allerede i `TrackManShot`; mangler den, vises «—».
+
+### 6.2b TrackMan-statistikk og sammenheng med spill (tillegg fra Anders 22.10)
+
+Anders: «Fra Trackman slag rapport ønsker vi snitt, median og ytterpunkter på de ulike parametere (Clubpath, face angle, også
+videre). Og andre potensielle verdi full data og statistikk. Også mulighet til å sammen ligne Trackman data og tendsener til SG og
+stats fra treningsrunder og turneringsrunder.» Tegnet som gruppa «TrackMan-statistikk» i utkast 3 (fem skjermer).
+
+| Visning | Felt | Kilde | Status |
+|---|---|---|---|
+| Statistikk per kølle | snitt, median, min, maks, standardavvik for 17 parametere | `TrackManShot` (`clubSpeed`, `ballSpeed`, `smashFactor`, `attackAngle`, `clubPath`, `faceAngle`, `faceToPath`, `dynamicLoft`, `launchAngle`, `launchDirection`, `spinRate`, `spinAxis`, `carryDistance`, `totalDistance`, `side`, `apexHeight`, `landAngle`), gruppert på `club` | Feltene finnes. Snitt per økt finnes i `oppsummerOkt` (`trackman/okt-oppsummering.ts:46`); standardavvik bare for Ball Speed i `club-trend-aggregator.ts:27`. **Median, min/maks og standardavvik per parameter finnes ikke** |
+| Ytterpunkt åpner slaget | slag-id per min/maks | `TrackManShot.id`, `outlier` | Feltet `outlier` finnes; kobling fra ytterpunkt til slag finnes ikke |
+| Andel i målvindu | % slag innenfor vindu per parameter | – | **Finnes ikke** (vinduene: spørsmål 4) |
+| Treffpunkt-sky | `strikePatternX/Y` | `computeStrikePattern` (`sg-hub/strike-pattern.ts:46`) | Finnes |
+| Gapping | carry-snitt og spredning per kølle | `buildYardageRows` (`sg-hub/yardage-calc.ts:98`) | Finnes for carry; spredning per kølle finnes ikke |
+| Tendens over tid | snitt og spredning per økt for valgt parameter og kølle | `getClubTrend`/`detectDrift` (`sg-hub/drift-detection.ts:88`) | Finnes bare for Club Path, Face Angle og Total; **andre parametere og spredningsbånd finnes ikke** |
+| SG per kategori | tee, innspill, nærspill, putting | `Round.sgOtt/sgApp/sgArg/sgPutt` (registrerte runder); estimat fra snitt i `estimerSgFordelingFraSnitt` (`stats/sg-estimator.ts:183`) | Finnes; turneringsrunder uten slagdata får ESTIMAT |
+| Treningsrunder og turneringsrunder hver for seg | `Round.roundType` (`turnering`/`trening`, `null` = ukjent) og offentlige resultater | `maaltall-data.ts:51` | Finnes; umerkede runder (`null`) må enten spørres om eller holdes utenfor |
+| Greenhit og andre runde-stats | – | `Round`/`HoleScore` | Delvis; kartlegges når skjermen bygges |
+
+Krever deling (alt eller ingenting). Bygges som visningene «Statistikk», «Tendens» og «Sammenheng» i IUP › Tester, og
+«Statistikk» rett etter TrackMan-importen. Nytt i koden: én modul som regner snitt, median, min, maks, standardavvik og andel i
+målvindu per parameter og kølle, med «for få slag» under 5.
+
+### 6.3 Spørsmål til Anders (wireframene følger anbefalingen)
+
+1. **Import fra TrackMan Report-lenke?** I dag leser appen CSV, rapportfil og bilde, ikke lenken fra TrackMan. Anbefaling: ja,
+   legg til lenke-import. Det er det treneren har på telefonen etter økta, og det sparer et steg med nedlasting. Wireframen viser
+   «Report-lenke» som et tredje valg.
+2. **Grensen for «passer ikke»:** anbefaling 15 m fra målet for wedge- og inspilltester og 30 m for Driver Basic. Slagene merkes,
+   og treneren kan koble dem likevel.
+3. **Club Speed:** beste av de fem første driverslagene, eller beste av alle driverslag i fila? Anbefaling: de fem første, som i
+   testprotokollen, så tallet ikke blir høyere bare fordi spilleren slo flere slag.
+4. **Målvinduene for «andel i målvindu»:** anbefaling Face to Path ±2°, Club Path ±2°, Face Angle ±2°, Smash Factor ≥ 1,35 for
+   jern og ≥ 1,45 for driver, Attack Angle −5 til −3° for jern og 0 til +4° for driver, Carry og Side ±5 m for jern og ±15 m for
+   driver. Treneren kan endre vinduet per spiller. Wireframen bruker disse.

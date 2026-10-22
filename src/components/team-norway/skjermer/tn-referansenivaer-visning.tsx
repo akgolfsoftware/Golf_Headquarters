@@ -5,6 +5,7 @@ import { BATTERI_DELER, type Batteritest } from "@/lib/portal-tester/testbatteri
 import { TN } from "@/lib/v2/team-norway";
 import { TnPille } from "../core";
 import { TnFlate, TnFlatehode, TnFotnote } from "../tn-flate";
+import { TnReferanseFaner } from "../tn-referanse-faner";
 import { TnShell, tnRolleNavn } from "../tn-shell";
 import { TnSkraKort, TnSkraTopp } from "../tn-skra-topp";
 import { TnHeltTall, TnHeltTekst, TnHeltTellere } from "../tn-stall";
@@ -45,6 +46,9 @@ export function TnReferansenivaerVisning({ brukerNavn, visDataGolf, kontekst, ra
         hoyre={<TnHeltTellere tall={[{ verdi: medTall, tekst: `av ${rader.length} med gruppetall` }, { verdi: "—", tekst: "kategori A–K" }, { verdi: rader.filter((r) => r.test.minst != null).length, tekst: "prioriterte" }]} />}
       />
       <TnSkraKort>
+        <TnFlate>
+          <TnReferanseFaner aktiv="tester" />
+        </TnFlate>
         {BATTERI_DELER.map((del) => (
           <TnFlate key={del} style={{ display: "grid", gap: 4 }}>
             <TnFlatehode tittel={del} merknad={del === "Fysisk" ? "Ingen protokoll i katalogen ennå" : "Median og beste i gruppa"} />

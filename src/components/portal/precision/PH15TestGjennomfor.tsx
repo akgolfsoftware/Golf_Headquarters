@@ -23,7 +23,7 @@ import {
   avbrytTestSession,
 } from "@/app/portal/(fullscreen)/tren/tester/[testId]/gjennomfor/actions";
 import { usePaToast } from "@/components/precision/pa-toast";
-import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import { LiveInnhold, LiveTittelrad } from "@/components/portal/live/LiveTittelrad";
 import "@/styles/playerhq-ny-idag.css";
 import "@/styles/playerhq-ny-lister-skra.css";
 
@@ -206,19 +206,19 @@ export function PH15TestGjennomfor({
         justifyContent: "space-between",
         padding: "0 0 calc(24px + env(safe-area-inset-bottom))",
         boxSizing: "border-box",
+        // Skjermen har ingen sidepadding, så tittelraden skal ikke trekkes ut.
+        ...({ "--skra-ut-top": "0px", "--skra-ut-x": "0px" } as React.CSSProperties),
       }}
     >
       <div>
-      <SkraTopp
-        lav
+      <LiveTittelrad
         etikett="Test"
-        bilde="/images/playerhq/stats-topp.jpg" bildePosisjon="50% 50%"
         overlinje={`Test · ${testNavn} · ${N} slag`}
         tittel={testNavn}
         ingress={`${omraade} · ${N} slag mot flagg · innenfor ${LIM} m teller${sist ? ` · forrige ${sist.score} av ${N}` : ""}`}
-        handling={<span className="skra-topp-rad"><button type="button" className="phn-knapp sek skra-topp-knapp" onClick={() => setEndOpen(true)}>Avslutt</button></span>}
+        handling={<button type="button" className="phn-knapp sek" onClick={() => setEndOpen(true)}>Avslutt</button>}
       />
-      <SkraFlyt lav>
+      <LiveInnhold>
       <div style={{ maxWidth: "none", width: "100%", margin: 0, padding: "44px 16px 0", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: 16 }}>
         {/* Toast */}
         {paToast.el}
@@ -504,7 +504,7 @@ export function PH15TestGjennomfor({
         )}
       </div>
 
-      </SkraFlyt>
+      </LiveInnhold>
       </div>
 
       {/* Bunn-aksjon (fast i bunn) */}

@@ -5,6 +5,8 @@ import { WAGR_KILDE, type WagrRefGruppe, type WagrRefSpillerRad } from "@/lib/do
 import { TN } from "@/lib/v2/team-norway";
 import { TnPille } from "../core";
 import { TnFlate, TnFlatehode, TnFotnote } from "../tn-flate";
+import { TnPlassgraf } from "../tn-plassgraf";
+import { TnReferanseFaner } from "../tn-referanse-faner";
 import { TN_REFERANSESPILLERE_URL } from "../tn-referansespillere";
 import { TnShell, tnRolleNavn } from "../tn-shell";
 import { TnSkraKort, TnSkraTopp } from "../tn-skra-topp";
@@ -15,8 +17,10 @@ import { TnHeltTall, TnHeltTekst, TnHeltTellere } from "../tn-stall";
  * Gruppevalg og leaderboard med WAGR-plass, endring siden forrige årsslutt, snitt poeng, seire og siste
  * turnering. Ingen tabell som ruller sidelengs: hver spiller er en rad som bryter om på smal skjerm.
  *
- * Avvik fra wireframen, bygges i egne PR-er: graf, Sammenlign og Søk. Til pipelines har fylt tabellene,
- * viser skjermen «—» og lenker til teamnorwayref.
+ * Grafen viser WAGR-plass år for år for de tre beste i gruppa; Sammenlign og Søk er egne faner.
+ * Til pipelines har fylt tabellene, viser skjermen «—» og lenker til teamnorwayref.
+ *
+ * Avvik: visningene «Turneringer» og «Sesong» fra wireframen er ikke med; turneringene per spiller står i Sammenlign.
  */
 
 const datoFormat = new Intl.DateTimeFormat("nb-NO", { day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Oslo" });
@@ -114,6 +118,9 @@ export function TnReferanseWagrVisning({
         }
       />
       <TnSkraKort>
+        <TnFlate>
+          <TnReferanseFaner aktiv="wagr" />
+        </TnFlate>
         {grupper.length > 1 ? (
           <nav aria-label="Velg gruppe" style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
             {grupper.map((g) => {
@@ -164,9 +171,19 @@ export function TnReferanseWagrVisning({
           )}
         </TnFlate>
 
+        {medPlass.length > 0 ? (
+          <TnFlate style={{ display: "grid", gap: 8 }}>
+            <TnFlatehode tittel="WAGR-plass år for år" merknad="De tre beste i gruppa" />
+            <TnPlassgraf serier={medPlass.slice(0, 3).map((r) => ({ navn: r.navn, punkter: r.aarForAar }))} etikett={`WAGR-plass år for år for ${medPlass.slice(0, 3).map((r) => r.navn).join(", ")}`} />
+            <Link href={`/team-norway/referanse/sammenlign?${medPlass.slice(0, 3).map((r) => `id=${r.wagrId}`).join("&")}`} style={{ fontSize: 14.5, fontWeight: 600, color: TN.navy900, minHeight: 44, display: "inline-flex", alignItems: "center" }}>
+              Sammenlign spillerne
+            </Link>
+          </TnFlate>
+        ) : null}
+
         <TnFotnote>
           {valgt?.utvalg ? `${valgt.utvalg} ` : ""}
-          Endringen er plasser siden årsslutt {ifjor ?? "i fjor"}. Kilde: {WAGR_KILDE}{dato ? `, rankinguka ${dato}` : ""}. Grafen, Sammenlign og Søk kommer.
+          Endringen er plasser siden årsslutt {ifjor ?? "i fjor"}. WAGR-plass for tidligere år er plassen i uke 52. Kilde: {WAGR_KILDE}{dato ? `, rankinguka ${dato}` : ""}.
         </TnFotnote>
       </TnSkraKort>
     </TnShell>

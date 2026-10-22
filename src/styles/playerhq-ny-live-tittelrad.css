@@ -1,0 +1,28 @@
+/* Lys tittelrad for live-skjermene (LiveTittelrad). Alltid lyst (§LIVE-ØKTENE ER ALLTID LYSE). */
+.lv-tittelrad {
+  position: sticky; top: 0; z-index: 20;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px;
+  /* Helt ut til kantene, som Skrå-toppen gjorde: skjermen setter --skra-ut-top og --skra-ut-x lik sin padding. */
+  margin: calc(-1 * var(--skra-ut-top, 0px)) calc(-1 * var(--skra-ut-x, 0px)) 0;
+  padding: 12px 16px; min-width: 0;
+  background: var(--ak-hvit, #fff); color: var(--ak-g900);
+  border-bottom: 1px solid var(--ak-sand-150);
+}
+/* Aktiv økt (.phn-lv) har ingen sidepadding, så raden trekkes ikke ut der. */
+.phn.phn-lv { --skra-ut-top: 0px; --skra-ut-x: 0px; }
+.lv-tittelrad-tekst { display: grid; gap: 2px; min-width: 0; flex: 1 1 220px; }
+.lv-tittelrad-overlinje { font: 500 11px/1.4 var(--ak-font-mono); letter-spacing: .07em; text-transform: uppercase; color: var(--ak-g600); overflow-wrap: anywhere; }
+.lv-tittelrad-tittel { margin: 0; font: 600 20px/1.2 var(--ak-font-sans); letter-spacing: -.01em; overflow-wrap: anywhere; }
+.lv-tittelrad-ingress { margin: 2px 0 0; font: 400 14px/1.4 var(--ak-font-sans); color: var(--ak-g800); overflow-wrap: anywhere; }
+.lv-tittelrad-handling { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; min-width: 0; }
+.lv-tittelrad-handling .lv-klokke { display: grid; justify-items: end; padding: 0; }
+.lv-tittelrad-handling .lv-klokke b { font: 600 24px/1 var(--ak-font-mono); font-variant-numeric: tabular-nums; }
+.lv-tittelrad-handling .lv-klokke small { font: 500 11px/1.4 var(--ak-font-mono); color: var(--ak-g600); }
+
+.lv-innhold { display: grid; gap: 20px; min-width: 0; }
+
+@media (min-width: 900px) {
+  .lv-tittelrad { padding: 14px 40px; }
+  .lv-tittelrad-tittel { font-size: 24px; }
+  .lv-innhold { gap: 24px; }
+}

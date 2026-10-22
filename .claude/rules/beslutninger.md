@@ -20,6 +20,42 @@ Anders 22.10, etter skissen for bølge 1 i AgencyOS: «Sørg for at øverste car
 2. **Skissen for bølge 1** er rettet. Gjort.
 3. **Skjermer med egen overlapp** (f.eks. `turneringsplan.css` `.kortflate`, som har egen fasit) sjekkes når pakken deres tas.
 
+## SKRÅ-RESTEN: IBM PLEX BEHOLDES, NYE TOPPBILDER FØR BØLGE 3, TEKST OG SKJEMA MAKS 720 PX, LIVE-ØKTENE MISTER TOPPEN (Anders 22.10.2026, bindende)
+
+Svar på de fem spørsmålene i skissen for bølge 1 (https://claude.ai/artifact/NCP3fcTH2qNSYJtYVfWwNa, `docs/design-system/utkast-skra/komponist/bolge-1.html`): «Følg anbefalingen» på skrift og toppbilder, «Ja, slett» på `PH04LiveBrief.tsx`, «720 px» på tekstbredde og «Ta toppen bort» på live-toppen.
+
+- **Overskriftene beholder IBM Plex.** Et eventuelt bytte tas som én egen endring når alt er i Skrå. Avgjør punkt 7 i §PLAYERHQ OG AGENCYOS FÅR SKRÅ-DRAKTEN.
+- **4–6 nye toppbilder før bølge 3** (Drift-sidene i AgencyOS), f.eks. fra Mulligan, styrkerommet og et coachingrom. Anders skaffer dem; de legges i `public/images/playerhq/`. Bølge 1 og 2 bruker de 11 bildene som finnes.
+- **Løpende tekst og skjemafelt er maks 720 px brede** på brede skjermer. Kortene fyller fortsatt hele bredden. Avgjør punkt 3 i §DESKTOP-SKJERMER BRUKER FULL BREDDE.
+- **Live-økta har ingen topp:** brief, aktiv, slagteller, oppsummering og testgjennomføring (lagt inn med lav topp i #1588) får en lys tittelrad uten bilde. Klokke og Avslutt står fortsatt øverst.
+- **`PH04LiveBrief.tsx` slettes.** Ingen side bruker den.
+
+**Overstyrer:** den lave toppen med bilde på live-skjermene fra #1588.
+
+**Arbeidet dette utløser:**
+
+1. **Slett `PH04LiveBrief.tsx`.** Gjort i samme PR.
+2. **Live uten topp:** `SessionBrief.tsx`, `PH05LiveAktiv.tsx`, `PH06Slagteller.tsx`, `PH07Oktoppsummering.tsx` og `PH15TestGjennomfor.tsx` bruker ikke `SkraTopp`. Ferdig når de fem er målt i 390, 1280 og 1920 px uten sidelengs rulling, og klokke og Avslutt er nåbare uten å rulle.
+3. **720 px tekst og skjema:** ny regel i byggeklossene eller sidestilene, så løpende tekst og skjemafelt stopper ved 720 px. Ferdig når et skjema og en tekstside er målt i 1920 px. Tas med i bølgene, ikke som egen pakke.
+4. **Toppbildene:** Anders sender 4–6 bilder før bølge 3 starter.
+
+## TEAM NORWAY: DELING ER ALT ELLER INGENTING, MEDIAN AV SISTE RESULTAT, OG ÉN DEFINISJON AV BRUTTO SNITT (Anders 22.10.2026, bindende)
+
+Anders 22.10: «Ja til alle tre anbefalingene.» Svar på spørsmålene i §5.4 i `docs/planer/tn-designloft-plan-2026-10-22.md` (#1612). Samme dag avgjorde han at PlayerHQ-lenken går til «Se hva Team Norway ser», og at «beste» tas bort i Referanse › Tester.
+
+- **Deling med Team Norway er ett nivå:** treneren ser hele IUP-en eller bare det åpne (navn, klubb, fødselsår, WAGR-plass). Status vises som Delt · Venter på svar · Ikke delt. Slik virker tilgangen i dag (`navngittTrenerHarTilgang`, `src/lib/deling/navngitt.ts`).
+- **Referanse › Tester er en komplett testoversikt** (Anders 22.10: «Komplett testoversikt med navn for alle som har delt. Spillere som ikke har delt teller bare i median og antall, uten navn.»). Øverst median og antall per test for gruppa: median av hver spillers siste gyldige resultat de siste 12 månedene, bare Team Norway-spillere (ikke WANG-elever), «—» under fem. Under: hver spiller som har delt, med navn og siste resultat per test; trykk åpner alle forsøk. Spillere som ikke har delt teller bare i median og antall. Ingen «beste».
+- **Brutto snitt betyr det samme overalt:** turneringsrunder i kalenderåret (Oslo-tid), bare brutto, likt i IUP, Rangliste, Uttak og PlayerHQ. Treningsrunder vises på egen linje og teller ikke i snittet.
+
+**Overstyrer:** de to delingsnivåene («Tester og resultater», «Komplett profil») i wireframes utkast 1 for Team Norway, «beste» i `/team-norway/referansenivaer`, og de ulike utregningene av brutto snitt (avvik A4 i planfila).
+
+**Arbeidet dette utløser:**
+
+1. **(haster, personvern) Teknisk plan og fireukerssjekk bak delingen:** begge leses i dag utenom delingssperren (avvik i planfila §5). Ferdig når en test låser at en trener uten deling verken ser teknisk plan eller fireukerssjekk.
+2. **Én funksjon for brutto snitt:** de fem utregningene (`tn-arbeidsflate.ts`, `profil-kobling/komplett.ts`, `iup/maaltall.ts`, `spiller-kategori.ts`, SQL-sesongen) samles i én, med treningsrunder som eget tall. Ferdig når en test låser at samme spiller får samme snitt i IUP, Rangliste, Uttak og PlayerHQ.
+3. **Referanse › Tester:** utregningen i `tn-arbeidsflate.ts` (i dag beste resultat, med WANG-elever, uten grense) byttes til median av siste resultat i 12 måneder, bare TN-spillere, «—» under fem. Under kommer tabellen spiller × test med navn, bare for spillere som har delt. Siden flyttes fra `/team-norway/referansenivaer` til Referanse › Tester. Ferdig når en test låser grensen på fem, at «beste» ikke finnes, og at en spiller som ikke har delt aldri står med navn eller egen rad.
+4. **Ett nivå i PlayerHQ:** delingen med en Team Norway-trener tilbyr ikke valg av nivå, og teksten sier at treneren ser hele IUP-en. Ferdig når delingssidene ikke viser «Tester og resultater» som valg for Team Norway.
+
 ## DEMOSPILLEREN I TEAM NORWAY-SKJERMENE HETER JØRN JOHNSEN (Anders 22.10.2026, bindende)
 
 Anders 22.10: «Legg til regel i TN skjermer at demo spiller er Jørn Johnsen.»
