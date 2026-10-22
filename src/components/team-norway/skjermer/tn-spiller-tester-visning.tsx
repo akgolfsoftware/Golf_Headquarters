@@ -5,7 +5,7 @@ import { BATTERI_DELER, PRIORITERTE, TESTBATTERI, batteritestFor, fremdrift, typ
 import { TN } from "@/lib/v2/team-norway";
 import { TnPille } from "../core";
 import { TnDataTable } from "../tn-data-table";
-import { TnFlate, TnFlatehode, TnFotnote } from "../tn-flate";
+import { TnFlate, TnFlatehode, TnFotnote, TnTekstlenke } from "../tn-flate";
 import { TnShell, TnSeksjon, TnSpillerFaner, tnRolleNavn } from "../tn-shell";
 import { TnSkraKort, TnSkraTopp } from "../tn-skra-topp";
 import { TnHeltTall, TnHeltTekst, TnHeltTellere } from "../tn-stall";
@@ -107,6 +107,7 @@ export function TnSpillerTesterVisning({ brukerNavn, spillerId, tilgang, tnRader
       <TnSkraKort>
         <TnFlate>
           <TnSpillerFaner spillerId={spillerId} spillerNavn={tilgang.spillerNavn} aktiv="tester" kanAdministrere={!tilgang.kontekst.erSpiller} />
+          <p style={{ margin: "8px 0 0" }}><TnTekstlenke href={`/team-norway/spiller/${spillerId}/tester?visning=utvikling`}>Utvikling per protokoll</TnTekstlenke></p>
         </TnFlate>
 
         {BATTERI_DELER.map((del) => (

@@ -2,10 +2,10 @@ import { notFound } from "next/navigation";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentTnSpillerAksefordeling, hentTnSpillerIup, hentTnSpillerLisens, hentTnSpillerProfil, hentTnSpillerstatuser, hentTnSpillerTester, hentTnSpillerTilgang } from "@/lib/domain/tn-arbeidsflate";
-import { hentTnIupDelt, hentTnIupLaast } from "@/lib/domain/tn-iup-oversikt";
+import { hentTnIupDelt } from "@/lib/domain/tn-iup-oversikt";
 import { hentSpillerpostTidslinje } from "@/lib/domain/tn-post";
 import { osloDag } from "./felles";
-import { TnIupLaastVisning } from "./tn-iup-laast-visning";
+import { TnIupLaastSkjerm } from "./tn-iup-laast-skjerm";
 import { TnSpillerprofilVisning } from "./tn-spillerprofil-visning";
 
 export async function TnSpillerprofilSkjerm({ spillerId }: { spillerId: string }) {
@@ -14,9 +14,7 @@ export async function TnSpillerprofilSkjerm({ spillerId }: { spillerId: string }
   const tilgang = await hentTnSpillerTilgang(bruker, spillerId);
   if (!tilgang) {
     // Spiller i gruppa uten deling: låst IUP med navn og WAGR-plass. Alle andre: 404.
-    const laast = await hentTnIupLaast(bruker, spillerId);
-    if (!laast) notFound();
-    return <TnIupLaastVisning brukerNavn={bruker.name} kontekst={laast.kontekst} navn={laast.navn} klubb={laast.klubb} fodselsaar={laast.fodselsaar} wagr={laast.wagr} aar={aar} />;
+    return <TnIupLaastSkjerm bruker={bruker} spillerId={spillerId} aktiv="oversikt" />;
   }
   const { kontekst } = tilgang;
 

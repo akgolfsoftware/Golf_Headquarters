@@ -1321,6 +1321,30 @@ export async function hentTnSpillerAktivePlaner(bruker: TnBruker, spillerId: str
   });
 }
 
+export type TnSpillerOkt = { id: string; dato: Date; startMinutt: number; minutter: number; tittel: string; akse: string; status: string };
+export type TnSpillerTreningFane = { trening: TnSpillerTrening; kommende: TnSpillerOkt[]; sistGjort: TnSpillerOkt[] };
+
+/**
+ * IUP › Trening: de fire siste hele ukene (samme regel som «Trenger deg»), øktene denne og neste uke,
+ * og de siste gjennomførte øktene. Leses innenfor delingslåsen.
+ */
+export async function hentTnSpillerTrening(bruker: TnBruker, spillerId: string, naa = new Date()): Promise<TnSpillerTreningFane | null> {
+  const mandag = tnDenneMandag(naa);
+  return medTnSpillerData(bruker, spillerId, async (tx, tilgang) => {
+    const okter = await tx.workbenchSession.findMany({
+      where: { playerId: tilgang.spillerId, date: { gte: new Date(mandag - 28 * 864e5), lt: new Date(mandag + 14 * 864e5) } },
+      orderBy: [{ date: "asc" }, { startMinute: "asc" }],
+      select: { id: true, date: true, startMinute: true, durationMinutes: true, title: true, pyramid: true, status: true },
+    });
+    const somOkt = (o: (typeof okter)[number]): TnSpillerOkt => ({ id: o.id, dato: o.date, startMinutt: o.startMinute, minutter: o.durationMinutes, tittel: o.title, akse: o.pyramid, status: o.status });
+    return {
+      trening: vurderTnTrening(okter.filter((o) => o.date.getTime() < mandag).map((o) => ({ dato: o.date, minutter: o.durationMinutes, status: o.status, pyramid: o.pyramid })), mandag),
+      kommende: okter.filter((o) => o.date.getTime() >= mandag && o.status !== "DRAFT" && o.status !== "CANCELLED").map(somOkt),
+      sistGjort: okter.filter((o) => o.status === "COMPLETED").reverse().slice(0, 5).map(somOkt),
+    };
+  });
+}
+
 export type TnSpillerAnalyseHub = {
   sgAkser: { id: string; etikett: string; tekst: string; verdi: number | null }[];
   trackman: { klubb: string; datoKort: string; setning: string; meta: string } | null;

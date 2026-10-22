@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { hentTnSpillerTestDetalj, hentTnSpillerOvrigTestDetalj } from "@/lib/domain/tn-arbeidsflate";
+import { hentTnSpillerTestDetalj, hentTnSpillerOvrigTestDetalj, hentTnSpillerTilgang } from "@/lib/domain/tn-arbeidsflate";
+import { TnIupLaastSkjerm } from "@/components/team-norway/skjermer/tn-iup-laast-skjerm";
 import { TnVisning, TnOvrigVisning } from "./visning";
 
 /**
@@ -21,6 +22,9 @@ export default async function SpillerTestDetaljPage({ params }: { params: Promis
   if (data) return <TnVisning spillerId={spillerId} data={data} brukerNavn={bruker.name ?? "Ukjent"} />;
 
   const ovrig = await hentTnSpillerOvrigTestDetalj(bruker, spillerId, testId);
-  if (!ovrig) notFound();
+  if (!ovrig) {
+    if (!(await hentTnSpillerTilgang(bruker, spillerId))) return <TnIupLaastSkjerm bruker={bruker} spillerId={spillerId} aktiv="tester" />;
+    notFound();
+  }
   return <TnOvrigVisning spillerId={spillerId} data={ovrig} brukerNavn={bruker.name ?? "Ukjent"} />;
 }
