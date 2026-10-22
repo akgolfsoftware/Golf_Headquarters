@@ -87,8 +87,8 @@ function Samtale({ conversationId }: { conversationId: string }) {
 
 export function AG19Jarvis({ conversationId, data }: { conversationId: string | null; data: AG19Data }) {
   const feilet = data.runs.filter((r) => r.st === "Feilet").length;
-  return <div className="agn-s">
-    <Topp dato="Fra hurtigknappen" tittel="Jarvis" />
+  return <div className="agn-s agn-a6">
+    <Topp flat dato="Fra hurtigknappen" tittel="Jarvis" />
     <div className="jarvis-grid">
       <div>
         {conversationId

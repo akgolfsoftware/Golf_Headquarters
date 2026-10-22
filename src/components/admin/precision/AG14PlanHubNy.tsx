@@ -79,7 +79,7 @@ export function AG14PlanHubNy({ data, startFane = "ukemaler" }: { data: PlanhubD
   const nyOvelse = () => { setLagret(null); setArk({ ovelse: null }); };
   const u = data.uke;
 
-  return <div className="agn-s">
+  return <div className="agn-s agn-a6">
     <div className="topp">
       <Link href="/admin/agencyos" className="ag-tilbake"><ChevronRight className="ikon" aria-hidden style={{ transform: "rotate(180deg)" }} />Cockpit</Link>
       <div className="topp-rad">

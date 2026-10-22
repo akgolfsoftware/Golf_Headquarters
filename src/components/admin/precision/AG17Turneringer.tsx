@@ -85,10 +85,10 @@ export function AG17Turneringer({ tilstand = "data", data = TOM_DATA, startFane 
     />
   );
 
-  if (tilstand === "laster") return <div className="agn-s">{topp}<Laster tekst="Henter turneringer …" /></div>;
+  if (tilstand === "laster") return <div className="agn-s agn-a6">{topp}<Laster tekst="Henter turneringer …" /></div>;
   if (tilstand === "feil") {
     return (
-      <div className="agn-s">
+      <div className="agn-s agn-a6">
         {topp}
         <Feil tittel="Turneringene kunne ikke hentes" tekst="Prøv igjen om litt." kode="TURNERINGER" onProv={() => window.location.reload()} />
       </div>
@@ -189,7 +189,7 @@ export function AG17Turneringer({ tilstand = "data", data = TOM_DATA, startFane 
   }
 
   return (
-    <div className="agn-s" data-testid="ag17-turneringer">
+    <div className="agn-s agn-a6" data-testid="ag17-turneringer">
       {topp}
 
       <div className="teller-rad">

@@ -39,7 +39,7 @@ export function AGTP02ForOgNaaNy({ tilstand, spiller, planId, oppgaver, valgtId 
   const video = safeUrl(t?.videoUrl);
   const bilde = safeUrl(t?.bildeUrl);
   const tilbake = { href: `/admin/spillere/${spiller.id}/plan/${planId}`, tekst: "Teknisk plan" };
-  return <div className="agn-s">
+  return <div className="agn-s agn-a6">
     <Topp tilbake={tilbake} dato={t ? `${spiller.navn} · ${t.p} ${t.posisjon}` : `${spiller.navn} · teknisk plan`} tittel="Før og nå" />
     {tilstand === "laster" ? <Laster tekst="Henter bildene …" hoyder={[44, 360]} />
       : tilstand === "feil" ? <Feil tittel="Bildene kunne ikke hentes" tekst="Ingen bilder er slettet. Prøv igjen." kode="FEIL · MEDIA" />

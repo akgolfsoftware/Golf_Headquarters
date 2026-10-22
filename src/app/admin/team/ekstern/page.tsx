@@ -52,7 +52,7 @@ export default async function AdminEksternLeserPage() {
 
   return (
     <AgencyOSSkall navn={user.name ?? "Admin"}>
-      <div className="agn-s">
+      <div className="agn-s agn-a6">
         <Topp tilbake={{ href: "/admin/oppsett?fane=team", tekst: "Oppsett" }} dato="Oppsett · team og tilgang" tittel="Eksterne lesere"
           ingress="Eksterne lesere ser bare det spilleren selv har delt. Gruppemedlemskap alene gir ikke innsyn." />
         <EksterneLesere grupper={grupper} lesere={lesere} />

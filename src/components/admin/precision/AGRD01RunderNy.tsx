@@ -66,7 +66,7 @@ export function AGRD01RunderNy({ tilstand, data }: { tilstand: "data" | "tom" | 
   const full = antall("full");
   const utenSg = data.runder.filter((r) => r.grunnlag !== "Slag for slag").length;
 
-  return <div className="agn-s">
+  return <div className="agn-s agn-a6">
     <Topp dato="Stall · runder" tittel="Runder" />
     {tilstand === "laster" ? <Laster tekst="Henter rundene …" hoyder={[44, 72, 72, 72]} />
       : tilstand === "feil" ? <Feil tittel="Rundene kunne ikke hentes" tekst="Ingen runder er endret. Prøv igjen." kode="FEIL · RUNDER" />
