@@ -4,6 +4,24 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## SPILLERLISTEN I TEAM NORWAY VISER DE ÅPNE TALLENE OGSÅ FOR SPILLERE SOM IKKE HAR DELT (Anders 22.10.2026, bindende)
+
+Anders 22.10, etter skjermbildene der Spillere bare viste «10 i gruppen deler ikke»: «Legg inn de åpne tallene». Svar på navnevalget før pakke c (spillerlisten).
+
+- **Alle spillere i TN-gruppa står i spillerlisten med navn og offentlig WAGR-plass**, også de som ikke har delt. Mangler WAGR-plass, vises «—».
+- **Spillere som ikke har delt får merket «Ikke delt»** (eller «Venter på svar»), som i wireframen `docs/design-system/utkast-tn/trenerflate/index.html`. Trykk på navnet åpner låst IUP med navn, WAGR-plass og hvordan spilleren deler.
+- **Bare åpne tall:** WAGR med kilde «World Amateur Golf Ranking (WAGR), The R&A» og dato. Plan, trening, tester og annet fra PlayerHQ krever fortsatt delingssamtykke (§TEAM NORWAY-TRENERFLATEN BYGGES I HQ).
+- Gjelder alle aldre bak trenerinnloggingen, fordi WAGR er offentlig (samme grunn som 21.10).
+
+**Overstyrer:** ingenting i reglene. Endrer dagens visning i `src/components/team-norway/skjermer/tn-spillerutvikling-visning.tsx`, som bare viser antallet som ikke deler.
+
+**Arbeidet dette utløser:**
+
+1. **Spillerlisten (pakke c):** `/team-norway/spillere` lister alle aktive medlemmer i TN-gruppa med navn, WAGR-plass og delingsmerke, etter wireframen. WAGR-plassen hentes via `users.publicPlayerId` → `public_players."wagrId"` → WAGR-tabellene fra #1594. Ferdig når listen er målt i 390, 1280 og 1920 px uten sidelengs rulling, og en test låser at en spiller uten deling vises med navn og WAGR-plass, men uten plan-, trenings- eller testtall.
+2. **Låst IUP:** `/team-norway/spiller/[id]` for en spiller uten deling viser låsen med navn og WAGR-plass, ikke 404. Ferdig når testen fra #1595 fortsatt er grønn og den nye låsen er låst med test.
+3. **Uavklart:** om klubb og fødselsår også skal stå for spillere som ikke har delt (wireframen viser dem). Til Anders har svart: bare navn og WAGR-plass.
+4. **Uavklart:** de fleste TN-medlemmer er ikke koblet til en offentlig spiller (`publicPlayerId` tom). Da vises «—». Koblingen hører til punkt 2 i §TURNERINGSPLANLEGGEREN MED WAGR-ANSLAG.
+
 ## TEAM NORWAY ER BARE FOR TRENERE, SPILLERE BRUKER BARE PLAYERHQ, OG REFERANSE BYGGES MED WAGR FØRST (Anders 21.10.2026, bindende)
 
 Anders 21.10, etter funksjonsregisteret og wireframes for trenerflaten (`docs/planer/tn-trenerflate-register-2026-10-21.md`, https://claude.ai/artifact/DJHq9dKNNs8iCoyHZDptbF): «Team Norway er kun for coach. Alle spiller bruker kun PlayerHQ. Bygg WAGR og deretter de ulike nivå og spiller fordelingene.» Svar på uavklart 1 og 3 i registeret, og klarsignal til bygging etter wireframes (menyen i `docs/design-system/utkast-tn/trenerflate/README.md`).
