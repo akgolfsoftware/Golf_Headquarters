@@ -37,7 +37,8 @@ const SERVER_ONLY = /^(server-only|@\/lib\/prisma|@\/lib\/auth\/.*|next\/headers
 const stubbePlugin = {
   name: "prove-grenser",
   setup(b) {
-    b.onResolve({ filter: SERVER_ONLY }, ({ path }) => ({ path, namespace: "stub-tom" }));
+    // minor og cbac er rene moduler (ingen database) og brukes som de er.
+    b.onResolve({ filter: SERVER_ONLY }, ({ path }) => (/^@\/lib\/auth\/(minor|cbac)$/.test(path) ? undefined : { path, namespace: "stub-tom" }));
     b.onLoad({ filter: /.*/, namespace: "stub-tom" }, () => ({ loader: "js", contents: "export const prisma=new Proxy({},{get(){throw new Error('Ingen database i prøven')}});export default {};export const cookies=()=>({get(){}});export const headers=()=>new Map();export const revalidatePath=()=>{};export const revalidateTag=()=>{};" }));
     b.onResolve({ filter: /^next\/(link|navigation|image|dynamic)$/ }, ({ path }) => ({ path, namespace: "next-stub" }));
     b.onLoad({ filter: /.*/, namespace: "next-stub" }, ({ path }) => ({
