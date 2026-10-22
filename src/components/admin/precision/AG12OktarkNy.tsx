@@ -18,15 +18,21 @@
  *   - Hjemmelekse i planen: ingen kobling fra økta til en økt i Workbench.
  *   - Filer fra økta: bare opptaket er registrert.
  *   - Avlys er rust i dialogen (en dialog er egen flate, §SLETTEDIALOG KAN VÆRE RUST).
+ *
+ * Skrå-drakten (bølge 2, pakke A4, skissen https://claude.ai/artifact/781SDnPSrEGK7Kc6uy4K77 seksjon 5,
+ * godkjent av Anders 22.10.2026): lav topp med bilde og tilbakelenke (Topp), innholdet i hvite kort:
+ * økta med handlingene, sammendrag som utkast, hjemmelekse, øvelser, TrackMan og filer.
  */
 import Link from "next/link";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { ChevronLeft, Lock, Mic, Sparkles } from "lucide-react";
-import { Pille } from "@/components/admin/agencyos-ny/ny";
+import { Lock, Mic, Sparkles } from "lucide-react";
+import { Pille, Topp } from "@/components/admin/agencyos-ny/ny";
+import { SkraKort } from "@/components/precision/skra/Skra";
 import { kansellerBooking, startOkt } from "@/app/admin/gjennomfore/okter/[id]/actions";
 import type { OktarkData, OktarkStatus } from "./AG12Oktark";
 import "@/styles/agencyos-ny-live.css";
+import "@/styles/agencyos-ny-a4-skra.css";
 
 const STATUS: Record<OktarkStatus, { tekst: string; tone: "noy" | "feil" | "ok" }> = {
   PLANLAGT: { tekst: "Planlagt", tone: "noy" }, AKTIV: { tekst: "Pågår nå", tone: "feil" }, GJENNOMFORT: { tekst: "Gjennomført", tone: "ok" },
@@ -50,14 +56,10 @@ export function AG12OktarkNy({ data }: { data: OktarkData }) {
   const startLive = () => { setFeil(null); setHandling("start"); start(async () => { const r = await startOkt(data.bookingId); if (r.ok && r.sessionId) router.push(`/admin/agencyos/live/${r.sessionId}`); else setFeil(r.error ?? "Kunne ikke starte økta. Prøv igjen."); }); };
   const bekreftAvlys = () => { setFeil(null); setHandling("avlys"); start(async () => { const r = await kansellerBooking(data.bookingId); if (r.ok) { setAvlysApen(false); router.refresh(); } else setFeil(r.error ?? "Avlysningen feilet. Prøv igjen."); }); };
 
-  return <div className="agn-s">
-    <Link href="/admin/kalender" className="ag-tilbake"><ChevronLeft className="ikon" aria-hidden />Kalender</Link>
-    <div className="topp">
-      <div className="topp-rad">
-        <div><div className="dato">{data.spillerNavn} · {data.dateLabel} · {data.startTime}–{data.endTime}</div><h1 className="tittel">Øktark</h1></div>
-        {sammendrag ? <Pille tone="vent">Utkast · ikke sendt</Pille> : <Pille tone={s.tone}>{s.tekst}</Pille>}
-      </div>
-      <p className="kilde">{okt?.tittel ?? "Coaching"}{data.facilityLabel ? ` · ${data.facilityLabel}` : ""} · {data.durationMin} min{data.spillerMeta ? ` · ${data.spillerMeta}` : ""}</p>
+  return <div className="agn-s a4">
+    <Topp bilde="/images/playerhq/tek-video.jpg" tilbake={{ href: "/admin/kalender", tekst: "Kalender" }} dato={`${data.dateLabel} · ${data.startTime}–${data.endTime}`} tittel="Øktark" ingress={data.spillerNavn} />
+    <SkraKort tittel={okt?.tittel ?? "Coaching"} meta={sammendrag ? <Pille tone="vent">Utkast · ikke sendt</Pille> : <Pille tone={s.tone}>{s.tekst}</Pille>}>
+      <p className="kilde">{[data.facilityLabel, `${data.durationMin} min`, data.spillerMeta].filter(Boolean).join(" · ")}</p>
       <div className="knapper">
         {data.status !== "GJENNOMFORT" && <button type="button" className="knapp pri" onClick={startLive} disabled={venter}>{venter && handling === "start" ? "Starter …" : data.status === "AKTIV" ? "Åpne live-økta" : "Start økt"}</button>}
         {data.status === "GJENNOMFORT" && liveHref && <Link href={liveHref} className="knapp sek">Åpne live-økta</Link>}
@@ -65,12 +67,11 @@ export function AG12OktarkNy({ data }: { data: OktarkData }) {
         {data.status !== "GJENNOMFORT" && <button type="button" className="knapp spok" onClick={() => setAvlysApen(true)} disabled={venter}>Avlys</button>}
       </div>
       {feil && <div className="varsel advarsel" role="alert"><b className="undertittel">Handlingen feilet</b><p className="forklar">{feil}</p></div>}
-    </div>
+    </SkraKort>
 
     <div className="to-del">
       <div>
-        <section className="seksjon" aria-label="Sammendrag">
-          <div className="sek-topp"><h2>Sammendrag</h2></div>
+        <SkraKort tittel="Sammendrag">
           {sammendrag ? <>
             <div className="utkast-ark">
               <span className="hode"><Sparkles className="ikon" aria-hidden />Utkast fra opptaket</span>
@@ -81,33 +82,29 @@ export function AG12OktarkNy({ data }: { data: OktarkData }) {
             <p className="kilde">Sending til spilleren kommer. Til da sender du et fokuspunkt som melding i live-økta.</p>
           </> : <div className="kort dempet"><b className="undertittel">Ingen sammendrag ennå</b><p className="forklar">{okt ? "Sammendraget lages av opptaket når økta er ferdig behandlet." : "Bookingen er ikke koblet til en økt ennå. Start økta for å koble den."}</p>{liveHref && <div className="knapper"><Link href={liveHref} className="knapp sek">Åpne live-økta</Link></div>}</div>}
           {okt?.coachBrief && <div className="kort dempet"><b className="undertittel">Fokuspunkt sendt til {data.fornavn}</b><p className="forklar">{okt.coachBrief}</p></div>}
-        </section>
-        <section className="seksjon" aria-label="Hjemmelekse">
-          <div className="sek-topp"><h2>Hjemmelekse</h2><Pille tone="noy">Ikke lagt i planen</Pille></div>
+        </SkraKort>
+        <SkraKort tittel="Hjemmelekse" meta={<Pille tone="noy">Ikke lagt i planen</Pille>}>
           <p className="forklar">Ingen hjemmelekse er lagt i planen fra denne økta. Legg den inn som økt i Workbench.</p>
-        </section>
+        </SkraKort>
       </div>
       <div>
-        <section className="seksjon" aria-label="Øvelser i økta">
-          <div className="sek-topp"><h2>Øvelser i økta</h2><span className="kilde">{okt && okt.driller.length ? `${logget} av ${okt.driller.length} logget` : "—"}</span></div>
+        <SkraKort tittel="Øvelser i økta" meta={okt && okt.driller.length ? `${logget} av ${okt.driller.length} logget` : "—"}>
           {!okt || okt.driller.length === 0 ? <p className="kilde">{okt ? "Ingen øvelser i økta." : "Bookingen er ikke koblet til en økt ennå."}</p>
             : <div className="liste">{okt.driller.map((d) => <div key={d.id}><span className={`akse-prikk a-${AKSER.includes(d.pyramide) ? d.pyramide.toLowerCase() : "noy"}`} aria-hidden /><span><b>{d.navn}</b><span className="kilde">{d.varighetMin} min</span></span>{d.logget ? <Pille tone="ok">Logget</Pille> : <Pille tone="noy">Ikke logget</Pille>}</div>)}</div>}
           {okt?.malsetning && <p className="kilde">Målsetning · {okt.malsetning}</p>}
           {okt?.coachRating != null && <p className="kilde">Din vurdering · {okt.coachRating}/5</p>}
-        </section>
-        <section className="seksjon" aria-label="TrackMan fra økta">
-          <div className="sek-topp"><h2>TrackMan fra økta</h2><span className="kilde">—</span></div>
+        </SkraKort>
+        <SkraKort tittel="TrackMan fra økta" meta="—">
           <div className="tm-tabell">
             <div className="tm-rad hode"><span>Parameter</span><span style={{ textAlign: "right" }}>Start</span><span style={{ textAlign: "right" }}>Slutt</span></div>
             <div className="tm-rad"><span>Ingen TrackMan-data knyttet til økta</span><span className="v">—</span><span className="v">—</span></div>
           </div>
-        </section>
-        <section className="seksjon" aria-label="Filer fra økta">
-          <div className="sek-topp"><h2>Filer fra økta</h2><span className="kilde">{okt?.opptak ? "1" : "—"}</span></div>
+        </SkraKort>
+        <SkraKort tittel="Filer fra økta" meta={okt?.opptak ? "1" : "—"}>
           {okt?.opptak
             ? <div className="filer"><div className="fil"><span className="ikonboks"><Mic className="ikon" aria-hidden /></span><span><b>Opptak</b><span className="kilde">{varighet(okt.opptak.durationSec)} · {OPPTAK_STATUS[okt.opptak.status] ?? okt.opptak.status}{okt.opptak.harAvskrift ? " · avskrift klar" : ""} · bare for deg</span></span><Pille tone="noy">Deles ikke</Pille></div></div>
             : <p className="kilde">Ingen opptak knyttet til økta.</p>}
-        </section>
+        </SkraKort>
       </div>
     </div>
 

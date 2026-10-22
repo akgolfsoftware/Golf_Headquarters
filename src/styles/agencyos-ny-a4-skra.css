@@ -1,0 +1,108 @@
+/*
+ * AgencyOS bølge 2, pakke A4 i Skrå-drakten: Workbench (coach og gruppe), Live coachingøkt,
+ * live-tavla og Øktark etter live. Skissen https://claude.ai/artifact/781SDnPSrEGK7Kc6uy4K77
+ * (docs/design-system/utkast-skra/komponist/bolge-2.html seksjon 1, 2, 5 og 6), godkjent av Anders 22.10.2026.
+ * Toppen og kortene er byggeklossene i src/components/precision/skra/; her står bare rammen rundt dem.
+ * Primærknappen er grafitt; rust bare som signal (Live-pillen). Aldri sidelengs rulling.
+ */
+
+/* ── Rammen: lys flate under hvite kort ── */
+.agn-s.a4 { background: var(--ak-flate); gap: 20px; padding-bottom: calc(120px + env(safe-area-inset-bottom)); }
+@media (min-width: 900px) { .agn-s.a4 { gap: 24px; padding-bottom: 120px; } }
+.agn-s.a4 > .agn-topp-lav { margin-bottom: 0; }
+
+/* Lav topp uten bilde: flat grafitt (SkraTopp uten `bilde`). Velgeren står på mørk bunn. */
+.agn-s.a4 .a4-velger .valg { background: rgba(255, 255, 255, .14); }
+.agn-s.a4 .a4-velger .valg > button, .agn-s.a4 .a4-velger .valg > a { color: #fff; min-height: 48px; }
+.agn-s.a4 .a4-velger .valg > [aria-pressed="true"] { background: #fff; color: var(--graphite-900); }
+.agn-s.a4 .a4-velger .valg > button:disabled { opacity: .5; cursor: default; }
+.agn-s.a4 .a4-velger .knapp:disabled { opacity: .45; cursor: default; }
+
+/* Hvite kort: agencyos-ny sine `.kort` og sidefeltet får Skrå-kortets form på den lyse flaten. */
+.agn-s.a4 .kort:not(.dempet), .agn-s.a4 .sidefelt details, .agn-s.a4 .rad-lenke {
+  border: 0; border-radius: var(--ak-r-skra-kort); background: var(--ak-hvit); box-shadow: var(--ak-skygge-md);
+}
+.agn-s.a4 .kort:not(.dempet) { padding: 18px; }
+.agn-s.a4 .kort.dempet { border-radius: 14px; }
+
+/* Nivåer, uke og snarveier under toppen */
+.agn-s.a4 .a4-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; min-width: 0; }
+.agn-s.a4 .a4-nav .nivaer { background: var(--ak-hvit); box-shadow: var(--ak-skygge-sm, var(--ak-skygge-md)); }
+.agn-s.a4 .a4-uke-valg { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.agn-s.a4 .a4-snarveier-pc { display: none; flex-basis: 100%; }
+.agn-s.a4 .a4-mer { flex-basis: 100%; }
+.agn-s.a4 .a4-mer > summary { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px; border-radius: 8px; background: var(--ak-hvit); box-shadow: var(--ak-skygge-md); font: 600 14px/1 var(--sans); cursor: pointer; list-style: none; }
+.agn-s.a4 .a4-mer > summary::-webkit-details-marker { display: none; }
+.agn-s.a4 .a4-mer[open] > summary { margin-bottom: 10px; }
+.agn-s.a4 .a4-lenkeknapp { border: 0; background: transparent; padding: 0; min-height: 44px; font: inherit; cursor: pointer; text-align: left; color: var(--graphite-900); text-decoration: underline; text-underline-offset: 3px; justify-self: start; }
+
+/* Uka: på mobil en dagrad med alle sju dager og øktene for valgt dag som liste */
+.agn-s.a4 .a4-uke { gap: 14px; }
+.agn-s.a4 .a4-dagrad { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; }
+.agn-s.a4 .a4-dagrad > button { position: relative; display: grid; justify-items: center; align-content: center; gap: 2px; min-height: 52px; padding: 4px 0; border: 1px solid var(--sand-300); border-radius: 10px; background: var(--ak-hvit); color: var(--graphite-900); cursor: pointer; font: inherit; }
+.agn-s.a4 .a4-dagrad > button b { font: 600 13px/1 var(--sans); }
+.agn-s.a4 .a4-dagrad > button span { font: 500 11.5px/1 var(--mono); color: var(--graphite-600); }
+.agn-s.a4 .a4-dagrad > button i { position: absolute; bottom: 5px; width: 5px; height: 5px; border-radius: 50%; background: var(--graphite-900); }
+.agn-s.a4 .a4-dagrad > button.idag { border: 2px solid var(--graphite-900); }
+.agn-s.a4 .a4-dagrad > button[aria-pressed="true"] { background: var(--graphite-900); border-color: var(--graphite-900); color: #fff; }
+.agn-s.a4 .a4-dagrad > button[aria-pressed="true"] span { color: rgba(255, 255, 255, .75); }
+.agn-s.a4 .a4-dagrad > button[aria-pressed="true"] i { background: #fff; }
+.agn-s.a4 .ukegrid .wb-dag:not([data-valgt]) { display: none; }
+.agn-s.a4 .ukegrid .wb-dag { border: 0; padding: 0; }
+.agn-s.a4 .ukegrid .wb-dag.idag { border: 0; }
+.agn-s.a4 .a4-dag-pc { display: none; }
+
+.agn-s.a4 .a4-medlemmer { display: grid; }
+
+@media (min-width: 900px) {
+  .agn-s.a4 .a4-snarveier-pc { display: flex; }
+  .agn-s.a4 .a4-mer { display: none; }
+  .agn-s.a4 .a4-dagrad { display: none; }
+  .agn-s.a4 .ukegrid .wb-dag:not([data-valgt]) { display: grid; }
+  .agn-s.a4 .ukegrid .wb-dag { border: 1px solid var(--sand-300); padding: 10px; }
+  .agn-s.a4 .ukegrid .wb-dag.idag { border: 2px solid var(--graphite-900); }
+  .agn-s.a4 .a4-dag-pc { display: inline; }
+  .agn-s.a4 .a4-dag-mob { display: none; }
+  .agn-s.a4 .kort:not(.dempet) { padding: 22px; }
+  /* Uka over bredden ved siden av sidefeltet: smalere dager, tekst brytes mellom ord, ikke midt i dem. */
+  .agn-s.a4 .wb { grid-template-columns: minmax(0, 1fr) 260px; gap: 20px; }
+  .agn-s.a4 .a4-uke { padding: 16px; }
+  .agn-s.a4 .ukegrid { gap: 4px; }
+  .agn-s.a4 .ukegrid .wb-dag { padding: 6px; }
+  .agn-s.a4 .wb-dag h3 { flex-wrap: wrap; gap: 0 4px; }
+  .agn-s.a4 .wb-okt { padding: 6px 7px; }
+  .agn-s.a4 .wb-okt b { overflow-wrap: break-word; hyphens: auto; font-size: 13px; }
+  .agn-s.a4 .wb-okt span { overflow-wrap: break-word; hyphens: auto; }
+  .agn-s.a4 .slipp { font-size: 12px; padding: 0 2px; }
+}
+
+.agn-s.a4 .wb-dag h3 .a4-dag-pc, .agn-s.a4 .wb-dag h3 .a4-dag-mob { font: inherit; color: inherit; }
+
+/* ── Live coachingøkt: ingen topp, alltid lys. Tittelraden (LiveTittelrad) står fast under menylinja på mobil. ── */
+.agn-s.a4-live { --skra-ut-top: var(--r5); --skra-ut-x: var(--r4); }
+.agn-s.a4-live .lv-tittelrad { top: var(--ak-topbar-h, 0px); }
+.agn-s.a4-live .valg > [aria-selected="true"] { background: var(--graphite-900); color: var(--white); }
+.agn-s.a4-live .valg { background: var(--ak-hvit); box-shadow: var(--ak-skygge-md); }
+.agn-s.a4 .live-pille.stille { background: var(--sand-150); color: var(--graphite-900); }
+.agn-s.a4 .live-pille.stille i { background: var(--graphite-900); }
+.agn-s.a4 .a4-delt { display: grid; gap: 10px; padding-top: 14px; border-top: 1px solid var(--sand-300); }
+.agn-s.a4 .a4-undertittel { font: 600 15px/1.3 var(--sans); }
+.agn-s.a4 .to-del { gap: 20px; }
+.agn-s.a4 .to-del > div { gap: 20px; }
+@media (min-width: 900px) {
+  .agn-s.a4-live { --skra-ut-top: var(--r4); --skra-ut-x: 40px; }
+  .agn-s.a4-live .lv-tittelrad { top: 0; }
+  .agn-s.a4 .to-del { gap: 24px; }
+  .agn-s.a4 .to-del > div { gap: 24px; }
+}
+
+/* ── Live-tavla: lav topp uten bilde, økter som pågår og som kommer i dag i hvite kort ── */
+.agn-s.a4 .a4-tavle { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 12px; }
+.agn-s.a4 .a4-tavle-okt { display: grid; gap: 10px; padding: 14px; border-radius: 14px; background: var(--sand-100); color: inherit; text-decoration: none; min-height: 44px; }
+.agn-s.a4 .a4-tavle-okt .rad { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: center; }
+.agn-s.a4 .a4-tavle-okt b { display: block; font: 600 15px/1.3 var(--sans); overflow-wrap: anywhere; }
+.agn-s.a4 .a4-tavle-okt .igjen { font: 600 26px/1 var(--mono); }
+.agn-s.a4 .a4-tavle-okt .igjen small { font: 400 13px/1 var(--sans); color: var(--graphite-600); margin-left: 4px; }
+.agn-s.a4 .a4-tavle-okt .stolpe { height: 6px; border-radius: 3px; background: var(--sand-300); overflow: hidden; display: block; }
+.agn-s.a4 .a4-tavle-okt .stolpe i { display: block; height: 100%; background: var(--graphite-900); }
+@media (hover: hover) and (pointer: fine) { .agn-s.a4 .a4-tavle-okt:hover { background: var(--sand-150); } }
