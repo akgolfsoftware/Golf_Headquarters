@@ -5,7 +5,7 @@ import type { TnSpillerTilgang } from "@/lib/domain/tn-arbeidsflate";
 import { TN } from "@/lib/v2/team-norway";
 import { lagreTrackManMaal } from "@/app/team-norway/tn-trackman-actions";
 import { TnFilterknapper, TnFlate, TnFlatehode, TnFotnote, TnRutenett } from "../tn-flate";
-import { TnShell, TnSpillerFaner, tnRolleNavn } from "../tn-shell";
+import { TnShell, TnSpillerFaner, TnTomtilstand, tnRolleNavn } from "../tn-shell";
 import { TnSkraKort, TnSkraTopp } from "../tn-skra-topp";
 import { TnHeltTekst } from "../tn-stall";
 
@@ -263,10 +263,7 @@ export function TnTrackManVisning({ d }: { d: TnTrackManVisningData }) {
           ) : null}
         </TnFlate>
         {!d.okter.length ? (
-          <TnFlate>
-            <TnFlatehode tittel="Ingen TrackMan-økter ennå" />
-            <p style={{ margin: 0, color: TN.textSecondary, maxWidth: "60ch" }}>Når en TrackMan-fil er importert for spilleren, vises statistikken her. Importen gjøres fra IUP › Tester eller midt i testøkta.</p>
-          </TnFlate>
+          <TnTomtilstand tittel="Ingen TrackMan-økter ennå" tekst="Når en TrackMan-fil er importert for spilleren, vises statistikken her. Importen gjøres fra IUP › Tester eller midt i testøkta." />
         ) : d.visning === "tendens" ? <Tendens d={d} /> : d.visning === "sammenheng" ? <Sammenheng d={d} /> : <Statistikk d={d} />}
       </TnSkraKort>
     </TnShell>
