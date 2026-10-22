@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useId, useRef, useState } from "react";
 import { TnLogo, type TnBunnValg, type TnMenyGruppe } from "./core";
 import { initialer } from "./initialer";
@@ -56,10 +57,10 @@ export function TnRailMobil({ grupper, bunn, brukerNavn, rolle, orgNavn, orgUnde
               ))}
             </div>
           ))}
-          <div className={s.bruker}>
+          <Link href="/team-norway/profil" className={s.bruker} aria-label={`Min profil, ${brukerNavn}`} onClick={() => setMer(false)}>
             <span className={s.avatar} aria-hidden="true">{initialer(brukerNavn)}</span>
             <span><span className={s.brukerNavn}>{brukerNavn}</span><span className={s.brukerRolle}>{rolle}</span></span>
-          </div>
+          </Link>
         </nav>
       ) : null}
 

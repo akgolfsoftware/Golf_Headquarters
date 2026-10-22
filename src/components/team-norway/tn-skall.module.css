@@ -78,7 +78,9 @@ summary.gruppe svg { transition: transform var(--tn-duration-fast) var(--tn-ease
 .lenke[aria-current="page"] { background: var(--tn-rail-active); color: var(--tn-rail-on); font-weight: 700; }
 .lenke[aria-current="page"]::before { content: ""; position: absolute; left: 0; top: 10px; bottom: 10px; width: 3px; border-radius: var(--tn-radius-pill); background: var(--tn-rail-marker); }
 .lenke:focus-visible, .bunnvalg:focus-visible, .ikonknapp:focus-visible { outline: 3px solid var(--tn-navy-400); outline-offset: -3px; }
-.bruker { margin-top: auto; padding: 16px 20px 4px; display: flex; align-items: center; gap: 12px; }
+.bruker { margin-top: auto; padding: 16px 20px 4px; display: flex; align-items: center; gap: 12px; min-height: 44px; text-decoration: none; }
+.bruker:hover .brukerNavn { text-decoration: underline; text-underline-offset: 4px; }
+.bruker:focus-visible { outline: 2px solid var(--tn-rail-on); outline-offset: -2px; }
 .brukerNavn { display: block; font-size: 14px; line-height: 1.2; font-weight: 700; color: var(--tn-rail-on); overflow-wrap: anywhere; }
 .brukerRolle { display: block; font-size: 12.5px; line-height: 1.2; color: var(--tn-rail-muted); }
 .avatar {
