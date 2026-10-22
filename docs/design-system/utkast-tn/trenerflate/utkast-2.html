@@ -194,7 +194,7 @@ const FAG_F = ["Årsplan","Testprotokoller","Fagapparat","Lisens og status","Tre
 
 const helt = (over, innhold) => `<div class="helt"><span class="bildemerke">BANEBILDE</span><span class="overlinje">${over}</span>${innhold}</div>`;
 const ht = (tall, tekst) => `<div class="hovedtall">${tall}<small>${tekst}</small></div>`;
-const IUP_TOPP = (fane) => helt(`IUP · ${fane}`, `<div style="display:flex;gap:14px;align-items:center"><div class="avatar stor">SH</div><div><h2>Sigrid Holm</h2><div>J1 · Damer · Bærum GK · født 2006</div></div></div>`);
+const IUP_TOPP = (fane) => helt(`IUP · ${fane}`, `<div style="display:flex;gap:14px;align-items:center"><div class="avatar stor">JJ</div><div><h2>Jørn Johnsen</h2><div>J1 · Herrer · Bærum GK · født 2006</div></div></div>`);
 const kort = (span, tittel, body, lenke) => `<div class="kort k${span}">${tittel ? `<h3>${tittel}${lenke ? ` <a href="#">${lenke}</a>` : ""}</h3>` : ""}${body}</div>`;
 const rad = (a, b) => `<div class="rad"><span>${a}</span><span class="tall">${b}</span></div>`;
 const radM = (a, m, kl = "") => `<div class="rad"><span>${a}</span><span class="merke ${kl}">${m}</span></div>`;
@@ -210,14 +210,14 @@ const akseStolpe = (v) => `<div class="seksjonsnavn">TURN · SPILL · SLAG · TE
 
 const S = {
 /* ---------------- IUP ---------------- */
-iupTplan: { gruppe: "IUP", navn: "Turneringsplan", notat: "Planleggeren med WAGR-anslag (Skrå, 20.10). Hovedtall: planlagte starter i sesongen. Treneren foreslår; forslaget lagres separat og vises som «Venter på Sigrid» til hun godtar. Anslag merkes ESTIMAT. GolfBox-score og Data Golf brukes ikke her.",
+iupTplan: { gruppe: "IUP", navn: "Turneringsplan", notat: "Planleggeren med WAGR-anslag (Skrå, 20.10). Hovedtall: planlagte starter i sesongen. Treneren foreslår; forslaget lagres separat og vises som «Venter på Jørn» til han godtar. Anslag merkes ESTIMAT. GolfBox-score og Data Golf brukes ikke her.",
   html: () => SKALL("Spillere", "IUP", `${IUP_TOPP("Turneringsplan")}${FANER(IUP_F, "Turneringsplan")}
   <div class="flate">
     ${kort(4, "Sesong 2027", `${ht("11", "planlagte starter")}<div class="stripe" style="grid-template-columns:repeat(2,minmax(0,1fr))"><div><b>3</b><span>A-turneringer</span></div><div><b>412</b><span>WAGR-plass nå</span></div></div><span class="knapp">Foreslå endring</span>${kilde(WAGR)}`)}
     ${kort(8, "Nivåblanding", `<div class="stripe"><div><b>3</b><span>Kan vinne</span></div><div><b>5</b><span>Topp 10</span></div><div><b>3</b><span>Lære</span></div><div><b>—</b><span>mål fra coach</span></div></div><div class="stolpe"><span style="flex:3;background:#222"></span><span style="flex:5;background:#777"></span><span style="flex:3;background:#BBB"></span></div>${kilde("ESTIMAT: grensene «Kan vinne» (15 %) og «Topp 10» (40 %) er utkast fra pipelines.")}`)}
     ${kort(12, "Turneringene", tabell(["Turnering","Dato","Nivå","Topp 10","Status"], [
       ["Srixon Tour finale","01.11","Kan vinne","ESTIMAT 41 %","Lagt inn"],
-      ["Spanish Junior Open","14.02","Topp 10","ESTIMAT 22 %","Venter på Sigrid"],
+      ["Spanish Junior Open","14.02","Topp 10","ESTIMAT 22 %","Venter på Jørn"],
       ["Junior Orange Bowl","28.12","Lære","ESTIMAT 6 %","Foreslått av deg"],
       ["Junior-NM","27.08","Kan vinne","ESTIMAT 38 %","Lagt inn"]]))}
   </div>`) },
@@ -257,7 +257,7 @@ iupTeknisk: { gruppe: "IUP", navn: "Teknisk plan", notat: "Oppgaver med P-posisj
     ${kort(4, "Plan høst 2026", `${ht("3", "aktive oppgaver")}${rad("Publisert", "02.10")}${rad("Reps denne uka", "340 / 500")}<span class="knapp">Foreslå oppgave</span>`)}
     ${kort(8, "P6.0 · Kølle parallell i nedsving", `<div class="filtre"><span class="chip paa">Lav hastighet 50 %</span><span class="chip">Automatikk 100 %</span></div>${rad("Rep-mål steget", "180 / 300")}${rad("Kvalitetssjekk (vises bare)", "4 av 5 OK")}<div class="bilder"><div>FØR · 12.08</div><div>NÅ · 14.10</div></div>`)}
     ${kort(6, "P1.0 · Adresse / Oppstilling", `${rad("Steg", "Uten ball")}${rad("Rep-mål", "120 / 120")}${radM("Status", "Klar for neste steg")}`)}
-    ${kort(6, "P4.0 · Toppen av baksvingen", `${rad("Steg", "Lav hastighet 25 %")}${rad("Rep-mål", "40 / 200")}${radM("Forslag fra Eva Lie", "Venter på Sigrid", "strek")}`)}
+    ${kort(6, "P4.0 · Toppen av baksvingen", `${rad("Steg", "Lav hastighet 25 %")}${rad("Rep-mål", "40 / 200")}${radM("Forslag fra Eva Lie", "Venter på Jørn", "strek")}`)}
   </div>`) },
 
 iupFire: { gruppe: "IUP", navn: "Fireukerssjekk", notat: "Spilleren leverer i PlayerHQ; treneren leser og kommenterer. Hovedtall: neste sjekk (dager). Prosessmål, målsetninger og utviklingssjekkens spørsmål på spillerens nivå (Junior: 41). Sesongevaluering uka før uke 43.",
@@ -267,7 +267,7 @@ iupFire: { gruppe: "IUP", navn: "Fireukerssjekk", notat: "Spilleren leverer i Pl
     ${kort(8, "Prosessmål", `${radM("Fast pre-shot rutine på alle slag", "4 av 5")}${radM("Logge alle økter samme dag", "3 av 5")}${radM("Wedge-økt 2 ganger i uka", "5 av 5", "fylt")}`)}
     ${kort(6, "Målsetninger", `${rad("Brutto snitt under 73 i 2027", "73,4")}${rad("WAGR topp 300", "412")}${kilde("Fremdrift fra ekte data. Kilde: HQ-resultater og WAGR.")}`)}
     ${kort(6, "Utviklingssjekk, endring fra forrige", `${rad("Teknisk forståelse", "4 → 4")}${rad("Konkurranseforberedelse", "3 → 4")}${rad("Restitusjon og søvn", "3 → 2")}<span class="lenke">Alle 41 spørsmål</span>`)}
-    ${kort(12, "Kommentar til Sigrid", `<div class="felt" style="min-height:60px">Skriv kommentar</div><span class="knapp">Send kommentar</span>`)}
+    ${kort(12, "Kommentar til Jørn", `<div class="felt" style="min-height:60px">Skriv kommentar</div><span class="knapp">Send kommentar</span>`)}
   </div>`) },
 
 /* ---------------- Samlinger og testing ---------------- */
@@ -288,7 +288,7 @@ fellestesting: { gruppe: "Samlinger og testing", navn: "Fellestesting", notat: "
   html: () => SKALL("Samlinger og testing", "Fellestesting", `${helt("Testdag · Høstsamling Oslo · 08.11", `${ht("9 av 14", "har tatt minstekravet")}`)}${FANER(SAM_F, "Fellestesting")}
   <div class="flate">
     ${kort(4, "Minstekrav per klasse", `${rad("Elite", "5 tester")}${rad("J1", "4 tester")}${rad("J2", "3 tester")}<span class="knapp">Start føring</span>`)}
-    ${kort(8, "Deltakere", tabell(["Spiller","Klasse","Tatt","Status"], [["Sigrid Holm","J1","4 av 4","Ferdig"],["Mathias Berg","Elite","3 av 5","Pågår"],["Ella Strand","J1","0 av 4","Ikke startet"]]))}
+    ${kort(8, "Deltakere", tabell(["Spiller","Klasse","Tatt","Status"], [["Jørn Johnsen","J1","4 av 4","Ferdig"],["Mathias Berg","Elite","3 av 5","Pågår"],["Ella Strand","J1","0 av 4","Ikke startet"]]))}
     ${kort(12, "Per skole", `${rad("WANG Oslo", "6 spillere · median Wedge Gate 22")}${rad("NTG Bærum", "4 spillere · median Wedge Gate 20")}${rad("Andre skoler (slått sammen)", "4 spillere")}`)}
   </div>`) },
 
@@ -296,7 +296,7 @@ gruppeanalyse: { gruppe: "Samlinger og testing", navn: "Gruppeanalyse", notat: "
   html: () => SKALL("Samlinger og testing", "Gruppeanalyse", `${helt("Gruppeanalyse", `${ht("22", "median Wedge Gate · 12 spillere")}`)}${FANER(SAM_F, "Gruppeanalyse")}
   <div class="flate">
     ${kort(12, "", `<div class="filtre"><span class="seksjonsnavn" style="align-self:center">Test</span><span class="chip paa">Wedge Gate</span><span class="chip">Driver Basic</span><span class="chip">Putt 1–3 m</span><span class="seksjonsnavn" style="align-self:center">Testdag</span><span class="chip">08.11 Oslo</span><span class="chip paa">Siste resultat</span></div>`)}
-    ${kort(12, "Rangert", tabell(["Spiller","Klasse","Dato","Poeng"], [["Mathias Berg","Elite","14.10","31 / 36"],["Sigrid Holm","J1","14.10","24 / 36"],["Henrik Aas","Elite","02.10","22 / 36"]]) + kilde("2 spillere har ikke delt tester og telles bare i medianen."))}
+    ${kort(12, "Rangert", tabell(["Spiller","Klasse","Dato","Poeng"], [["Mathias Berg","Elite","14.10","31 / 36"],["Jørn Johnsen","J1","14.10","24 / 36"],["Henrik Aas","Elite","02.10","22 / 36"]]) + kilde("2 spillere har ikke delt tester og telles bare i medianen."))}
   </div>`) },
 
 wangtester: { gruppe: "Samlinger og testing", navn: "WANG-tester", notat: "WANG-elevers testresultater (opptaksavtalen). Hovedtall: elever med samtykke. Uten gyldig samtykke: «Ingen tilgang», aldri tom liste.",
@@ -317,21 +317,21 @@ livewatch: { gruppe: "Turneringer", navn: "Live Watch", notat: "Turneringer som 
   html: () => SKALL("Turneringer", "Live Watch", `${helt("Live · oppdatert 14:32", `${ht("5", "TN-spillere på banen")}`)}${FANER(TUR_F, "Live Watch")}
   <div class="flate">
     ${kort(6, "Titleist Junior Open · runde 2", `${rad("Mathias Berg", "−3 · T4 · hull 14")}${rad("Ella Strand", "+2 · T18 · hull 11")}${rad("Henrik Aas", "E · T9 · ferdig")}<span class="knapp kontur">Oppdater</span>`)}
-    ${kort(6, "Srixon Tour 7 · runde 1", `${rad("Sigrid Holm", "+1 · T6 · hull 9")}${rad("Ingrid Vik", "+4 · T21 · hull 7")}${kilde("Kilde: GolfBox via pipelines. Bare brutto.")}`)}
+    ${kort(6, "Srixon Tour 7 · runde 1", `${rad("Jørn Johnsen", "+1 · T6 · hull 9")}${rad("Ingrid Vik", "+4 · T21 · hull 7")}${kilde("Kilde: GolfBox via pipelines. Bare brutto.")}`)}
   </div>`) },
 
 uttak: { gruppe: "Turneringer", navn: "Uttak", notat: "Tre uttakskriterier; kriterium 3 «Prosess og adferd» vurderes 1–5 av treneren. Hovedtall: dager til frist. Treneren forbereder; uttaket er sportssjefens beslutning.",
   html: () => SKALL("Turneringer", "Uttak", `${helt("Uttak · Junior-NM lag", `${ht("2", "dager til frist · 4 plasser")}`)}${FANER(TUR_F, "Uttak")}
   <div class="flate">
     ${kort(4, "Kriteriene", `${rad("1 Resultater 2026", "brutto snitt")}${rad("2 Ranking", "WAGR")}${rad("3 Prosess og adferd", "1–5")}`)}
-    ${kort(8, "Kandidater", tabell(["Spiller","Snitt","WAGR","Prosess"], [["Mathias Berg","72,1","188","5"],["Henrik Aas","72,9","326","4"],["Sigrid Holm","73,4","412","—"]]))}
-    ${kort(12, "Prosess og adferd · Sigrid Holm", `<div class="skala"><span>1</span><span>2</span><span>3</span><span class="paa">4</span><span>5</span></div><span class="knapp">Lagre vurdering</span>`)}
+    ${kort(8, "Kandidater", tabell(["Spiller","Snitt","WAGR","Prosess"], [["Mathias Berg","72,1","188","5"],["Henrik Aas","72,9","326","4"],["Jørn Johnsen","73,4","412","—"]]))}
+    ${kort(12, "Prosess og adferd · Jørn Johnsen", `<div class="skala"><span>1</span><span>2</span><span>3</span><span class="paa">4</span><span>5</span></div><span class="knapp">Lagre vurdering</span>`)}
   </div>`) },
 
 rangliste: { gruppe: "Turneringer", navn: "Rangliste", notat: "TN-gruppas spillere i år: starter, snittplass, brutto snitt. Hovedtall: beste brutto snitt. Bare brutto, fra HQ-resultatene.",
   html: () => SKALL("Turneringer", "Rangliste", `${helt("Rangliste 2026", `${ht("72,1", "beste brutto snitt · Mathias Berg")}`)}${FANER(TUR_F, "Rangliste")}
   <div class="flate">
-    ${kort(12, "", `<div class="filtre"><span class="chip paa">Alle</span><span class="chip">Damer</span><span class="chip">Herrer</span></div>` + tabell(["Spiller","Starter","Snittplass","Brutto snitt"], [["Mathias Berg","15","6,2","72,1"],["Henrik Aas","13","8,0","72,9"],["Sigrid Holm","14","5,1","73,4"]]) + kilde("Kilde: NGF og GolfBox via AK Golf HQ, bare brutto, 20.10.2026."))}
+    ${kort(12, "", `<div class="filtre"><span class="chip paa">Alle</span><span class="chip">Damer</span><span class="chip">Herrer</span></div>` + tabell(["Spiller","Starter","Snittplass","Brutto snitt"], [["Mathias Berg","15","6,2","72,1"],["Henrik Aas","13","8,0","72,9"],["Jørn Johnsen","14","5,1","73,4"]]) + kilde("Kilde: NGF og GolfBox via AK Golf HQ, bare brutto, 20.10.2026."))}
   </div>`) },
 
 /* ---------------- Referanse ---------------- */
@@ -405,7 +405,7 @@ fagapparat: { gruppe: "Fag og administrasjon", navn: "Fagapparat", notat: "Fagte
 lisens: { gruppe: "Fag og administrasjon", navn: "Lisens og status", notat: "Lisens, helseattest og antidoping per spiller i år. Hovedtall: spillere med alt i orden. Manglende vises som merke med ord, aldri bare farge.",
   html: () => SKALL("Fag og administrasjon", "Lisens og status", `${helt("Lisens og status 2026", `${ht("11 av 14", "har alt i orden")}`)}${FANER(FAG_F, "Lisens og status")}
   <div class="flate">
-    ${kort(12, "", tabell(["Spiller","Lisens","Helseattest","Antidoping"], [["Sigrid Holm","OK","OK","OK"],["Jonas Lunde","OK","Mangler","OK"],["Ingrid Vik","Mangler","—","Mangler"]]))}
+    ${kort(12, "", tabell(["Spiller","Lisens","Helseattest","Antidoping"], [["Jørn Johnsen","OK","OK","OK"],["Jonas Lunde","OK","Mangler","OK"],["Ingrid Vik","Mangler","—","Mangler"]]))}
   </div>`) },
 
 tilgang: { gruppe: "Fag og administrasjon", navn: "Trenere og tilgang", notat: "Bare sportssjef. Legg til, endre rolle, avslutt. Hovedtall: trenere med tilgang. Avslutt bekreftes i dialog (rust i bygget).",
@@ -444,9 +444,9 @@ seHvaTn: { gruppe: "PlayerHQ", navn: "Se hva Team Norway ser", notat: "Spilleren
   <nav class="meny" aria-label="PlayerHQ">
     <div class="logo"><i></i>AK Golf PlayerHQ</div>
     ${["I dag","Plan","Stats","Meg"].map(m => `<div class="mp${m==="Meg"?" aktiv":""}">${m}</div>`).join("")}
-    <div class="fot"><div class="avatar" style="background:#444;color:#fff;border-color:#fff">SH</div><div><b>Sigrid Holm</b><span>Spiller</span></div></div>
+    <div class="fot"><div class="avatar" style="background:#444;color:#fff;border-color:#fff">JJ</div><div><b>Jørn Johnsen</b><span>Spiller</span></div></div>
   </nav>
-  <div class="topp"><span>‹ Deling</span>Se hva TN ser<span>SH</span></div>
+  <div class="topp"><span>‹ Deling</span>Se hva TN ser<span>JJ</span></div>
   <div class="innhold">
   ${helt("Meg › Deling › Team Norway", `<h2>Slik ser Team Norway IUP-en din</h2>${ht("2", "trenere har tilgang")}`)}
   <div class="flate">
@@ -467,10 +467,10 @@ seHvaTn: { gruppe: "PlayerHQ", navn: "Se hva Team Norway ser", notat: "Spilleren
 tilstander: { gruppe: "Tilstander", navn: "Tom, laster og feil", notat: "Samme fire tilstander på alle skjermer, i samme kort som innholdet. Tom sier hva som mangler og hva treneren kan gjøre. Laster: grå streker i kortets form, ingen spinner over hele siden. Feil: hva som skjedde og «Prøv igjen». Manglende tall er alltid «—».",
   html: () => SKALL("Spillere", "IUP", `${IUP_TOPP("Tester")}${FANER(IUP_F, "Tester")}
   <div class="flate">
-    <div class="tilstand k6"><b>Tom</b><span>Sigrid har ikke tatt noen tester ennå.</span><span class="svak">Første fellestesting er 08.11 på Høstsamling Oslo.</span><span class="knapp kontur">Se testdagen</span></div>
+    <div class="tilstand k6"><b>Tom</b><span>Jørn har ikke tatt noen tester ennå.</span><span class="svak">Første fellestesting er 08.11 på Høstsamling Oslo.</span><span class="knapp kontur">Se testdagen</span></div>
     <div class="tilstand k6"><b>Laster</b><div class="skjelett" style="width:70%"></div><div class="skjelett"></div><div class="skjelett" style="width:85%"></div><div class="skjelett" style="width:60%"></div></div>
     <div class="tilstand feil k6"><b>Feil</b><span>Testene kunne ikke hentes akkurat nå. Ingenting er slettet.</span><span class="knapp">Prøv igjen</span></div>
-    <div class="lås k6"><b>Ikke delt (samme lås på alle åtte IUP-fanene)</b><span>Sigrid deler «Tester og resultater», ikke «Komplett profil». Teknisk plan og Trening vises når hun deler mer. Uten deling i det hele tatt: navn, klubb, fødselsår og WAGR-plass, som i utkast 1. Aldri feilsiden «finnes ikke».</span></div>
+    <div class="lås k6"><b>Ikke delt (samme lås på alle åtte IUP-fanene)</b><span>Jørn deler «Tester og resultater», ikke «Komplett profil». Teknisk plan og Trening vises når han deler mer. Uten deling i det hele tatt: navn, klubb, fødselsår og WAGR-plass, som i utkast 1. Aldri feilsiden «finnes ikke».</span></div>
   </div>`) },
 };
 
