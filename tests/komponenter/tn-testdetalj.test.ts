@@ -68,7 +68,7 @@ test("TnVisning krasjer IKKE når alle rader er utelatt, og viser en synlig fork
     data: {
       tilgang: TILGANG, testId: "tn-v3-putt-1-3m", protokollNavn: "Putt 1–3 m",
       lowerIsBetter: null, besteScore: null, besteFormatert: null,
-      historikk: [], antallUtelatt: 3, sisteForsok: [],
+      historikk: [], antallUtelatt: 3, sisteForsok: [], visning: { type: "annet" },
     },
   }));
   assert.ok(html.includes("Ingen gyldige resultater ennå"), html);
@@ -82,7 +82,7 @@ test("TnVisning: lowerIsBetter=null rendres ALDRI som «Høyere er bedre»", () 
     data: {
       tilgang: TILGANG, testId: "tn-v3-putt-1-3m", protokollNavn: "Putt 1–3 m",
       lowerIsBetter: null, besteScore: null, besteFormatert: null,
-      historikk: [], antallUtelatt: 1, sisteForsok: [],
+      historikk: [], antallUtelatt: 1, sisteForsok: [], visning: { type: "annet" },
     },
   }));
   assert.ok(!html.includes("Høyere tall er bedre"), html);
@@ -97,7 +97,7 @@ test("TnVisning: med gyldige rader vises normalt, ingen krasj, riktig retning", 
       tilgang: TILGANG, testId: "tn-v3-putt-1-3m", protokollNavn: "Putt 1–3 m",
       lowerIsBetter: true, besteScore: 40, besteFormatert: "40 slag",
       historikk: [{ id: "r1", takenAt: new Date("2026-09-10"), score: 40, unit: "slag", formatert: "40 slag", recordedByCoach: false, testdagDeltakerId: null }],
-      antallUtelatt: 0, sisteForsok: [{ label: "Forsøk 1", verdi: "strokes: 2" }],
+      antallUtelatt: 0, sisteForsok: [{ label: "Forsøk 1", verdi: "strokes: 2" }], visning: { type: "annet" },
     },
   }));
   assert.ok(html.includes("Lavere tall er bedre"), html);

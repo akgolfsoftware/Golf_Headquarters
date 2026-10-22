@@ -105,6 +105,10 @@ mock.module("@/lib/prisma", {
         findMany: async ({ where }: { where: { resultId: { in: string[] } } }) =>
           deltakerKoblinger.filter((k) => where.resultId.in.includes(k.resultId)),
       },
+      // TrackMan-koblingen (22.10): ingen testøkt og ingen koblede slag i disse testene.
+      testSession: { findFirst: async () => null },
+      testShotTrackManLink: { findMany: async () => [] },
+      trackManShot: { findMany: async () => [] },
       testDefinition: {
         findUnique: async ({ where }: { where: { id: string } }) => testDefinisjoner[where.id] ?? null,
         findFirst: async ({ where }: { where: { id: string } }) => testDefinisjoner[where.id] ?? null,
