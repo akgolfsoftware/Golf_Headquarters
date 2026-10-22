@@ -19,7 +19,7 @@
 /* Valgt filter eller trinn er grafitt (Data Golf-flatens blå chip skal ikke lekke hit). */
 .agn-s.agn-a6 .chips > a[aria-current="page"] { background: var(--graphite-900); border-color: var(--graphite-900); color: var(--white); }
 /* Løpende tekst og skjemafelt maks 720 px (beslutninger.md §SKRÅ-RESTEN); kortene fyller bredden. */
-.agn-a6 :is(form, .forklar) { max-width: 720px; }
+.agn-a6 :is(form, .forklar) { max-width: var(--ak-tekst-maks); }
 @media (min-width: 900px) {
   .agn-a6 { padding-bottom: 120px; }
   /* Stripe til hurtigknappen; toppen går fortsatt helt ut. */

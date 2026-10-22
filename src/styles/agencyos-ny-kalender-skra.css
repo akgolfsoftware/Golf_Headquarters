@@ -86,7 +86,7 @@
 .agn-s.agn-bk-detalj .bk-detalj .oppsummering, .agn-bk-detalj .bk-detalj .oppsummering li { border-color: var(--ak-strek); }
 .agn-s.agn-bk-detalj .bk-handling { padding: 18px; border-radius: var(--ak-r-skra-kort); background: var(--ak-hvit); box-shadow: var(--ak-skygge-md); }
 .agn-s.agn-bk-detalj .bk-handling.dempet { background: transparent; box-shadow: none; padding: 0; }
-.agn-kal-under .kal-under-kort { max-width: 720px; }
+.agn-kal-under .kal-under-kort { max-width: var(--ak-tekst-maks); }
 @media (min-width: 900px) {
   .agn-bk-detalj, .agn-kal-under { padding-bottom: 120px; }
   .agn-s.agn-bk-detalj .bk-detalj { margin-right: 52px; }

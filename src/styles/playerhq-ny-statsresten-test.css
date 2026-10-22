@@ -4,7 +4,7 @@
  * Grunnstil i playerhq-ny.css. Alt her er avgrenset til .phn-nt.
  */
 
-.phn-nt .phn-nt-smal { display: grid; gap: 24px; align-content: start; width: 100%; max-width: 720px; justify-self: center; }
+.phn-nt .phn-nt-smal { display: grid; gap: 24px; align-content: start; width: 100%; max-width: var(--ak-tekst-maks); justify-self: center; }
 .phn-nt .phn-nt-topp { display: grid; gap: 12px; }
 
 /* Stegtopp */

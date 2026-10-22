@@ -14,6 +14,10 @@
  * Semantiske navn (--surface-*, --text-*, --primary, --signal …) bor fortsatt i
  * .pa-root, fordi nattemaet overstyrer dem der.
  */
+/* Løpende tekst og skjemafelt er aldri bredere enn dette på brede skjermer; kortene fyller bredden
+   (beslutninger.md §SKRÅ-RESTEN, Anders 22.10.2026). Bruk var(--ak-tekst-maks), aldri et tall. */
+:root { --ak-tekst-maks: 720px; }
+
 :root {
   /* Sand (bakgrunner) og hvit */
   --ak-sand-100: #faf8f3;
