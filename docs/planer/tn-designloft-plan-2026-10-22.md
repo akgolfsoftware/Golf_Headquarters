@@ -253,7 +253,7 @@ https://claude.ai/artifact/TAhfpQJPqeKiwp2zTxxKft. 17 skjermer i fire grupper, m
 4. **TrackMan-import for trener** i TN (og AgencyOS): knapp i IUP › Tester og i testøkta, som kaller `importTrackMan` med
    `onBehalfOfUserId`. Krever deling.
 5. **Kobling testslag ↔ TrackMan-slag.** Forslaget går i rekkefølge, med riktig kølle; treneren bekrefter alle eller bytter
-   ett og ett. Carry og Side fylles inn fra TrackMan, og slaget merkes «TM». Tilstandene: passer ikke (mer enn 15 m fra målet),
+   ett og ett. Carry og Side fylles inn fra TrackMan, og slaget merkes «TM». Tilstandene: passer ikke (mer enn 15 m fra målet, 30 m i Driver Basic),
    for få slag (resten føres for hånd), feil kølle (hoppes over).
 6. **Club Speed i Fysisk:** beste av de fem første driverslagene i fila, som treneren bekrefter.
 7. **Testvisning:** hovedtall per test (PEI eller poeng, «1 av 2» på prioriterte), spredningsplott mot målet for PEI-testene
@@ -280,7 +280,7 @@ stats fra treningsrunder og turneringsrunder.» Tegnet som gruppa «TrackMan-sta
 |---|---|---|---|
 | Statistikk per kølle | snitt, median, min, maks, standardavvik for 17 parametere | `TrackManShot` (`clubSpeed`, `ballSpeed`, `smashFactor`, `attackAngle`, `clubPath`, `faceAngle`, `faceToPath`, `dynamicLoft`, `launchAngle`, `launchDirection`, `spinRate`, `spinAxis`, `carryDistance`, `totalDistance`, `side`, `apexHeight`, `landAngle`), gruppert på `club` | Feltene finnes. Snitt per økt finnes i `oppsummerOkt` (`trackman/okt-oppsummering.ts:46`); standardavvik bare for Ball Speed i `club-trend-aggregator.ts:27`. **Median, min/maks og standardavvik per parameter finnes ikke** |
 | Ytterpunkt åpner slaget | slag-id per min/maks | `TrackManShot.id`, `outlier` | Feltet `outlier` finnes; kobling fra ytterpunkt til slag finnes ikke |
-| Andel i målvindu | % slag innenfor vindu per parameter | – | **Finnes ikke** (vinduene: spørsmål 4) |
+| Andel i målvindu | % slag innenfor vindu per parameter | – | **Finnes ikke** (standardvinduer og egne mål, §6.3) |
 | Treffpunkt-sky | `strikePatternX/Y` | `computeStrikePattern` (`sg-hub/strike-pattern.ts:46`) | Finnes |
 | Gapping | carry-snitt og spredning per kølle | `buildYardageRows` (`sg-hub/yardage-calc.ts:98`) | Finnes for carry; spredning per kølle finnes ikke |
 | Tendens over tid | snitt og spredning per økt for valgt parameter og kølle | `getClubTrend`/`detectDrift` (`sg-hub/drift-detection.ts:88`) | Finnes bare for Club Path, Face Angle og Total; **andre parametere og spredningsbånd finnes ikke** |
@@ -292,19 +292,20 @@ Krever deling (alt eller ingenting). Bygges som visningene «Statistikk», «Ten
 «Statistikk» rett etter TrackMan-importen. Nytt i koden: én modul som regner snitt, median, min, maks, standardavvik og andel i
 målvindu per parameter og kølle, med «for få slag» under 5.
 
-### 6.3 Svar fra Anders 22.10
+### 6.3 Avgjort 22.10 (`.claude/rules/beslutninger.md` §TRACKMAN I TEAM NORWAY-TESTENE, #1629)
 
-1. **Report-lenke:** «Ja.» Importen tar Report-lenke i tillegg til fil og bilde. Lenken er førstevalget i wireframen.
-2. **Grensen for «passer ikke»:** «Usikker.» Ikke avgjort. Til det er bestemt, merker appen bare slaget som ser ut som et mishit
-   (langt fra målet) og hopper aldri over noe selv; treneren kobler eller hopper over. Spørsmålet står åpent.
-3. **TEK eller SLAG:** «Trackman rapport må også spesifiseres om det er TEK eller SLAG.» Hver TrackMan-økt merkes TEK eller SLAG
-   ved importen (påkrevd), og statistikk, tendens og sammenheng kan filtreres på aksen. Club Speed følger anbefalingen (beste av
-   de fem første driverslagene) til Anders sier noe annet.
-4. **Mål og vinduer:** «Trener og spiller setter mål og vinduer for spiller.» Mål og vindu per parameter og kølle settes av
-   spilleren eller treneren, og hver endring viser hvem og når. Wireframen har kortet «Mål og vinduer for Jørn» under
-   statistikken.
+Anders sa ja til anbefalingene og slo sammen svarene («Begge»):
 
-Beslutningen registreres i `beslutninger.md` av hovedøkta.
+1. **Report-lenke:** importen tar Report-lenke i tillegg til fil og bilde.
+2. **«Passer ikke»:** mer enn 15 m fra målet i wedge- og inspilltestene, 30 m i Driver Basic. Slaget merkes og kobles ikke;
+   treneren kan koble det likevel.
+3. **TEK eller SLAG** er påkrevd ved import, og statistikken kan filtreres på aksen. **Club Speed** er beste av de fem første
+   driverslagene.
+4. **Mål og vinduer:** standardvinduene gjelder (Face to Path, Club Path og Face Angle ±2°, Smash Factor ≥ 1,35 jern og ≥ 1,45
+   driver, Attack Angle −5 til −3° jern og 0 til +4° driver, Carry og Side ±5 m jern og ±15 m driver). Trener og spiller kan sette
+   egne mål og vinduer per parameter og kølle; hver endring viser hvem og når.
+
+Utkast 3 er tegnet slik.
 
 ### 6.4 Datamodelltillegg fra svarene (additivt via `db execute`)
 
