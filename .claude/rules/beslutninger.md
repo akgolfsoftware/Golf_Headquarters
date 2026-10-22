@@ -4,6 +4,22 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## ØVERSTE KORT STARTER UNDER DEN SKRÅ TOPPEN, OG DEKKER ALDRI BILDET (Anders 22.10.2026, bindende)
+
+Anders 22.10, etter skissen for bølge 1 i AgencyOS: «Sørg for at øverste card ikke dekker eller blir dekket av skrå headingen.»
+
+- **Første kort under en Skrå-topp starter under den skrå kanten**, med luft (16 px på mobil, 24 px på PC). Det ligger aldri over bildet, og toppen ligger aldri over kortet.
+- Gjelder alle skjermer som bruker `SkraTopp`/`SkraFlyt` og AgencyOS-toppen (`Topp` i `agencyos-ny/ny.tsx`), i PlayerHQ og AgencyOS.
+- Tittel og tall i toppen står fortsatt fri av kuttet.
+
+**Overstyrer:** «lyse kort som ligger over kanten» i §PLAYERHQ OG AGENCYOS FÅR SKRÅ-DRAKTEN (20.10) og «Første rad ligger over den skrå kanten» i `src/components/precision/skra/`. Team Norway (`TnSkraTopp`) er ikke berørt.
+
+**Arbeidet dette utløser:**
+
+1. **Byggeklossen og AgencyOS-toppen:** `skra.module.css` (`.flyt`, `.flytLav`, bunnpolstring i `.innhold`) og `agencyos-ny.css` (`.agn-topp-lav`) uten negativ marg. Gjort i samme PR. Ferdig når I dag, Cockpit, Stall og en AgencyOS-underside er målt i 390, 1280 og 1920 px uten overlapp og uten sidelengs rulling.
+2. **Skissen for bølge 1** er rettet. Gjort.
+3. **Skjermer med egen overlapp** (f.eks. `turneringsplan.css` `.kortflate`, som har egen fasit) sjekkes når pakken deres tas.
+
 ## DEMOSPILLEREN I TEAM NORWAY-SKJERMENE HETER JØRN JOHNSEN (Anders 22.10.2026, bindende)
 
 Anders 22.10: «Legg til regel i TN skjermer at demo spiller er Jørn Johnsen.»
