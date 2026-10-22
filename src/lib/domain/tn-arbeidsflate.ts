@@ -1211,7 +1211,7 @@ export async function hentTnSpillerOvrigeTester(bruker: TnBruker, spillerId: str
     const malSpiller = await tx.user.findUnique({ where: { id: spillerId }, select: { id: true, name: true, hcp: true, tier: true } });
     if (!malSpiller) return null;
     const [skjerm, apneTildelinger] = await Promise.all([
-      loadTesterScreen(malSpiller),
+      loadTesterScreen(malSpiller, tx),
       tx.testAssignment.findMany({
         where: { playerId: spillerId, status: "OPEN", testId: { not: { startsWith: "tn-v3-" } }, test: testTilgangWhere(spillerId) },
         orderBy: { createdAt: "desc" },

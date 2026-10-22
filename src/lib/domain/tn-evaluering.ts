@@ -1,6 +1,6 @@
 import "server-only";
 
-import { prisma } from "@/lib/prisma";
+import type { Prisma } from "@/generated/prisma/client";
 import { loadTesterScreen, type TestRow } from "@/lib/portal-tester/tester-data";
 import { hentTnTekniskPlaner, type TnTekniskPlanRad } from "@/lib/domain/tn-teknisk-plan";
 
@@ -37,13 +37,14 @@ export type TnEvalueringGrunnlag = {
   tester: TestRow[];
 };
 
-export async function hentTnEvalueringGrunnlag(spillerId: string): Promise<TnEvalueringGrunnlag> {
-  const spiller = await prisma.user.findUnique({ where: { id: spillerId }, select: { name: true, hcp: true, tier: true } });
+/** Leses med `db` fra `medTnSpillerData`, så alt skjer innenfor delingslåsen. */
+export async function hentTnEvalueringGrunnlag(db: Prisma.TransactionClient, spillerId: string): Promise<TnEvalueringGrunnlag> {
+  const spiller = await db.user.findUnique({ where: { id: spillerId }, select: { name: true, hcp: true, tier: true } });
 
   const [planer, testerScreen] = await Promise.all([
-    hentTnTekniskPlaner(spillerId),
+    hentTnTekniskPlaner(db, spillerId),
     spiller
-      ? loadTesterScreen({ id: spillerId, name: spiller.name, hcp: spiller.hcp, tier: spiller.tier })
+      ? loadTesterScreen({ id: spillerId, name: spiller.name, hcp: spiller.hcp, tier: spiller.tier }, db)
       : null,
   ]);
 
@@ -56,7 +57,7 @@ export async function hentTnEvalueringGrunnlag(spillerId: string): Promise<TnEva
 
   let nesteTiltak: TnEvalueringNesteTiltak | null = null;
   if (aktivPlan) {
-    const apenOppgave = await prisma.positionTask.findFirst({
+    const apenOppgave = await db.positionTask.findFirst({
       where: { position: { planId: aktivPlan.id }, status: { in: ["PENDING", "ACTIVE"] } },
       orderBy: [{ position: { sortOrder: "asc" } }, { sortOrder: "asc" }],
       select: { id: true, tittel: true, position: { select: { pNummer: true, navn: true } } },
