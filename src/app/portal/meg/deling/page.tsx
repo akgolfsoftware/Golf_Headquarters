@@ -16,9 +16,10 @@ export default async function TrenerdelingPage({ searchParams }: { searchParams:
   // Leseren kontrollerer eierskap/godkjent foreldrerelasjon uavhengig av sidens rolleport.
   const oversikt = await hentEgenTrenerdeling({ spillerId: p.data.barn ?? bruker.id });
   if (!oversikt) notFound();
-  const side = <NavngittDeling initial={oversikt} erTrener={bruker.role === "COACH" || bruker.role === "ADMIN"} />;
+  const medSkall = bruker.role === "PLAYER" && !oversikt.foresattVisning;
+  const side = <NavngittDeling initial={oversikt} erTrener={bruker.role === "COACH" || bruker.role === "ADMIN"} skra={medSkall} />;
   // Spilleren får PlayerHQ-skallet; foresatt (?barn=) og trener ser siden uten spillerens meny.
-  return bruker.role === "PLAYER" && !oversikt.foresattVisning
+  return medSkall
     ? <PlayerHQSkall innboksHref="/portal/varsler" uleste={0}>{side}</PlayerHQSkall>
     : side;
 }

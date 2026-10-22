@@ -3,7 +3,8 @@
 /**
  * PlayerHQ · Meg · Deling · Del med trener (/portal/meg/deling) i nytt design.
  * Fasit: docs/design-system/utkast-playerhq/meg.html, skjermen «PH-27 Deling» og arket «Del med trener».
- * Stil: src/styles/playerhq-ny.css og playerhq-ny-meg.css (samme flate som PH27Deling).
+ * Stil: src/styles/playerhq-ny.css og playerhq-ny-meg.css (samme flate som PH27Deling). Skrå-drakten (R7): SkraTopp og SkraFlyt som PH27Deling,
+ * bare når siden vises i PlayerHQSkall (`skra`); trener og foresatt uten spillermeny beholder den enkle toppen.
  *
  * Funksjonene er de samme som før (Precision 7d7c2994, deling-navngitt): velg miljø, trenerens e-post
  * med domenesjekk, samtykketekst, aktiv avkrysning, lenke som vises én gang, trekk tilbake og eldre delinger.
@@ -13,7 +14,7 @@
  *   - Miljøvalget står med, fordi en spiller kan være i både WANG og Team Norway.
  *   - «Venter på deg» (forespørsel fra trener) finnes ikke i datamodellen og vises ikke.
  */
-import { useRef, useState, useTransition } from "react";
+import { useRef, useState, useTransition, type ReactNode } from "react";
 import Link from "next/link";
 import { ChevronLeft, Link2 } from "lucide-react";
 import { initialer } from "@/lib/portal/initialer";
@@ -22,6 +23,10 @@ import type { hentEgenTrenerdeling } from "@/lib/deling/navngitt";
 import { opprettNavngittDelingAction, trekkNavngittDelingAction, hentNavngittDelingAction } from "@/app/portal/meg/deling/actions";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-meg.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke5-skra.css";
 
 type Oversikt = NonNullable<Awaited<ReturnType<typeof hentEgenTrenerdeling>>>;
 type Rad = Oversikt["invitasjoner"][number];
@@ -30,7 +35,7 @@ const statusKlasse = { VENTER: "noy", AKTIV: "ok", UTLOPT: "noy", TRUKKET: "noy"
 const dato = (s: string) => new Intl.DateTimeFormat("nb-NO", { day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Oslo" }).format(new Date(s));
 const erTn = (navn: string) => /team norway/i.test(navn);
 
-export function NavngittDeling({ initial, erTrener = false }: { initial: Oversikt; erTrener?: boolean }) {
+export function NavngittDeling({ initial, erTrener = false, skra = false }: { initial: Oversikt; erTrener?: boolean; skra?: boolean }) {
   const [oversikt, setOversikt] = useState(initial);
   const [grupperad, setGruppe] = useState(initial.grupper[0]?.id ?? "");
   const [epost, setEpost] = useState("");
@@ -99,16 +104,27 @@ export function NavngittDeling({ initial, erTrener = false }: { initial: Oversik
     </div>}
   </article>;
 
-  return <div className="phn phn-meg"><div className="side">
-    <div className="topp">
-      <Link className="tilbake" href={oversikt.foresattVisning ? "/forelder/samtykke" : "/portal/meg/innstillinger/personvern/deling"}>
-        <ChevronLeft size={18} aria-hidden />{oversikt.foresattVisning ? "Foreldresamtykke" : "Deling"}
-      </Link>
+  const tilbakeHref = oversikt.foresattVisning ? "/forelder/samtykke" : "/portal/meg/innstillinger/personvern/deling";
+  const tilbakeTekst = oversikt.foresattVisning ? "Foreldresamtykke" : "Deling";
+  const overlinje = oversikt.foresattVisning ? `Foresatt for ${oversikt.spiller.name}` : "Meg · deling";
+
+  return <div className={skra ? "phn phn-meg phn-skra" : "phn phn-meg"}>
+    {skra && <SkraTopp
+      lav
+      etikett="Plan"
+      bilde="/images/playerhq/tek-video.jpg" bildePosisjon="50% 50%"
+      overlinje={overlinje}
+      tittel="Del med trener"
+      handling={<span className="skra-tilbake"><Link className="tilbake" href={tilbakeHref}><ChevronLeft size={18} aria-hidden />{tilbakeTekst}</Link></span>}
+    />}
+    <Flyt skra={skra}><div className="side">
+    {!skra && <div className="topp">
+      <Link className="tilbake" href={tilbakeHref}><ChevronLeft size={18} aria-hidden />{tilbakeTekst}</Link>
       <div>
-        <div className="phn-dato">{oversikt.foresattVisning ? `Foresatt for ${oversikt.spiller.name}` : "Meg · deling"}</div>
+        <div className="phn-dato">{overlinje}</div>
         <h1 className="phn-tittel">Del med trener</h1>
       </div>
-    </div>
+    </div>}
 
     <div className="to-del">
       <div>
@@ -185,5 +201,8 @@ export function NavngittDeling({ initial, erTrener = false }: { initial: Oversik
         </div>
       </div>
     </dialog>
-  </div></div>;
+  </div></Flyt>
+  </div>;
 }
+
+const Flyt = ({ skra, children }: { skra: boolean; children: ReactNode }) => skra ? <SkraFlyt lav>{children}</SkraFlyt> : <>{children}</>;
