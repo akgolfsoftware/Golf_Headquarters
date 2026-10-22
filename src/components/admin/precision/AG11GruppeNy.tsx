@@ -23,18 +23,24 @@
  *     kommer fra denne gruppa i samme tidsrom.
  *   - Uke, Økt og Målsetninger for gruppa finnes ikke; nivåene lenker til
  *     medlemmer, timeplan og skoledata.
+ *
+ * Skrå-drakten (bølge 2, pakke A4, skissen https://claude.ai/artifact/781SDnPSrEGK7Kc6uy4K77
+ * seksjon 1, godkjent av Anders 22.10.2026): lav topp uten bilde med gruppa, velgeren (Spiller · Gruppe,
+ * Velg gruppe, Forrige, Neste). Ingen hovedkort. Nivåene som brikker, innholdet i hvite kort.
  */
 import Link from "next/link";
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronLeft, ChevronRight, Layers } from "lucide-react";
 import { Avatar, Pille } from "@/components/admin/agencyos-ny/ny";
+import { SkraKort, SkraTopp } from "@/components/precision/skra/Skra";
 import { VelgerArk } from "./AG11Ark";
 import { PERIODE_KLASSE, PERIODE_NAVN, PeriodeArk, type PeriodeArkPeriode } from "./AG11PeriodeArk";
 import type { PeriodeInput } from "@/lib/workbench/perioder";
 import type { RullUtHoppet } from "@/lib/workbench/gruppe-periode-actions";
 import { formaterVarighet } from "@/lib/format-tall";
 import "@/styles/agencyos-ny-workbench.css";
+import "@/styles/agencyos-ny-a4-skra.css";
 
 export type GruppeMedlem = { id: string; navn: string; /** Perioder medlemmet har utenom gruppas, f.eks. «Egen Spesialperiode fra uke 2». */ egen: string | null };
 
@@ -86,44 +92,49 @@ export function AG11GruppeNy({ gruppe, grupper, perioder, medlemmer, faste, kanR
     router.refresh();
   });
 
-  return <div className="agn-s">
-    <div className="topp">
-      <div className="velgerlinje">
-        <div className="rad">
+  return <div className="agn-s a4">
+    <div className="agn-topp-lav">
+      <SkraTopp
+        lav
+        etikett="Workbench"
+        overlinje={`Workbench · Gruppe · ${gruppe.medlemmer} ${gruppe.medlemmer === 1 ? "medlem" : "medlemmer"}`}
+        tittel={gruppe.navn}
+        ingress={forste && siste ? `Gruppas årsplan · ${mndAar(forste, true)} – ${mndAar(siste)}` : "Gruppas årsplan"}
+        handling={<div className="agn-topp-handl a4-velger">
           <div className="valg" role="group" aria-label="Plan for">
-            <Link href="/admin/planlegge" aria-current={undefined}>Spiller</Link>
+            <Link href="/admin/planlegge">Spiller</Link>
             <button type="button" aria-pressed="true">Gruppe</button>
           </div>
-          <div className="hvem"><Avatar navn={gruppe.navn} liten /><b>{gruppe.navn}</b><button type="button" className="sok" onClick={() => setVelger(true)} aria-label="Velg gruppe">Velg gruppe</button></div>
-          <span className="pil"><button type="button" aria-label="Forrige gruppe" disabled={grupper.length < 2} onClick={() => til(-1)}><ChevronLeft className="ikon" aria-hidden /></button><button type="button" aria-label="Neste gruppe" disabled={grupper.length < 2} onClick={() => til(1)}><ChevronRight className="ikon" aria-hidden /></button></span>
-        </div>
-      </div>
-      <div className="topp-rad">
-        <div><div className="dato">Gruppas årsplan · {gruppe.medlemmer} {gruppe.medlemmer === 1 ? "medlem" : "medlemmer"}</div><h1 className="tittel">{forste && siste ? `${mndAar(forste, true)} – ${mndAar(siste)}` : "Årsplan"}</h1></div>
-        {onRullUt && <button type="button" className="knapp pri" disabled={!kanRulleUt || trening.length === 0 || ruller} title={!kanRulleUt ? "Bare gruppens eier kan rulle ut" : undefined} onClick={() => setRullBekreft(true)}>Rull ut til medlemmene</button>}
-      </div>
+          <button type="button" className="knapp sek" onClick={() => setVelger(true)} aria-label="Velg gruppe">Velg gruppe</button>
+          <button type="button" className="knapp sek" aria-label="Forrige gruppe" disabled={grupper.length < 2} onClick={() => til(-1)}><ChevronLeft className="ikon" aria-hidden />Forrige</button>
+          <button type="button" className="knapp sek" aria-label="Neste gruppe" disabled={grupper.length < 2} onClick={() => til(1)}>Neste<ChevronRight className="ikon" aria-hidden /></button>
+        </div>}
+      />
+    </div>
+
+    <div className="a4-nav">
       <div className="nivaer" role="group" aria-label="Nivå">
         <button type="button" aria-pressed="true">År</button>
         <Link href={`/admin/grupper/${id}`}>Medlemmer</Link>
         <Link href={`/admin/grupper/${id}/timeplan`}>Timeplan</Link>
         <Link href={`/admin/grupper/${id}/arsplan/skoledata`}>Skoledata</Link>
       </div>
+      {onRullUt && <div className="a4-uke-valg"><button type="button" className="knapp pri" disabled={!kanRulleUt || trening.length === 0 || ruller} title={!kanRulleUt ? "Bare gruppens eier kan rulle ut" : undefined} onClick={() => setRullBekreft(true)}>Rull ut til medlemmene</button></div>}
     </div>
 
     {rullResultat && <div className="varsel ok" role="status"><b className="undertittel">Utrulling</b><p className="forklar">{rullResultat}</p></div>}
 
-    <section className="kort" aria-label="Året">
+    <SkraKort etikett="Året">
       <div className="hoved"><strong>{timerIAaret > 0 ? formaterVarighet(Math.round(timerIAaret)) : "—"}</strong><span className="forklar">planlagt per medlem i året, fra timene per uke i periodene</span></div>
       {sortert.length > 0 && totDager > 0 && <div className="periodebaand" role="img" aria-label={`Periodene i årsplanen: ${sortert.map((p) => `${PERIODE_NAVN[p.type]} ${kort(p.startDate)}–${kort(p.endDate)}`).join(", ")}`}>
         {sortert.map((p) => <span key={p.id} className={PERIODE_KLASSE[p.type]} style={{ flex: `${dager(p.startDate, p.endDate)} 1 0` }}>{dager(p.startDate, p.endDate) / totDager > 0.08 ? PERIODE_NAVN[p.type] : ""}</span>)}
       </div>}
       {sortert.length === 0 && <p className="forklar">Ingen perioder lagt inn ennå. Periodene i grafitt og grått viser gruppas år; aksefargene brukes bare på økter.</p>}
-    </section>
+    </SkraKort>
 
     <div className="to-del">
       <div>
-        <section className="seksjon" aria-label="Perioder">
-          <div className="sek-topp"><h2>Perioder</h2><button type="button" className="knapp sek" onClick={() => setArk({ periode: null })}>Ny periode</button></div>
+        <SkraKort tittel="Perioder" meta={<button type="button" className="knapp sek" onClick={() => setArk({ periode: null })}>Ny periode</button>}>
           {sortert.length === 0
             ? <div className="kort dempet"><b className="undertittel">Ingen perioder</b><p className="forklar">Legg inn Grunnperiode, Spesialperiode og Turneringsperiode med timer per akse. Medlemmene arver dem når du ruller ut.</p></div>
             : <div className="periodeliste">{sortert.map((p) => <button key={p.id} type="button" className="periode" onClick={() => setArk({ periode: p })}>
@@ -132,21 +143,19 @@ export function AG11GruppeNy({ gruppe, grupper, perioder, medlemmer, faste, kanR
                 {AKSER.filter((a) => (p.axisMinutes?.[a] ?? 0) > 0).map((a) => <u key={a} className={a.toLowerCase()} style={{ flex: p.axisMinutes?.[a] ?? 0 }} />)}
               </span>}
             </button>)}</div>}
-        </section>
-        <section className="seksjon" aria-label="Faste gruppetider">
-          <div className="sek-topp"><h2>Faste gruppetider</h2><Link className="lenke" href={`/admin/grupper/${id}/timeplan`}>Rediger timeplan</Link></div>
+        </SkraKort>
+        <SkraKort tittel="Faste gruppetider" lenke={{ href: `/admin/grupper/${id}/timeplan`, tekst: "Rediger timeplan" }}>
           {faste.length === 0 ? <p className="kilde">Ingen faste tider registrert.</p> : <div className="liste">{faste.map((f) => <div key={f.id}><span className="ikonboks"><Layers className="ikon" aria-hidden /></span><span><b>{f.dag} {f.tid}</b>{f.sted && <span className="kilde">{f.sted}</span>}</span><span /></div>)}</div>}
-        </section>
+        </SkraKort>
       </div>
       <div>
-        <section className="seksjon" aria-label="Medlemmene">
-          <div className="sek-topp"><h2>Medlemmene</h2><span className="kilde">{egne > 0 ? `${egne} med egne perioder` : "Alle følger gruppa"}</span></div>
+        <SkraKort tittel="Medlemmene" meta={egne > 0 ? `${egne} med egne perioder` : "Alle følger gruppa"}>
           {medlemmer.length === 0 ? <div className="kort dempet"><b className="undertittel">Ingen medlemmer</b><p className="forklar">Legg til spillere i gruppa, så kan årsplanen rulles ut til dem.</p></div>
-            : <div className="kort" style={{ gap: 0, paddingTop: 4, paddingBottom: 4 }}>
+            : <div className="a4-medlemmer">
               {medlemmer.map((m) => <div key={m.id} className="medlem"><Avatar navn={m.navn} liten /><span>{m.navn}{m.egen && <span className="kilde" style={{ display: "block" }}>{m.egen}</span>}</span>{m.egen ? <Pille tone="vent">Egen</Pille> : <Pille tone="ok">Følger gruppa</Pille>}</div>)}
             </div>}
-        </section>
-        <div className="kort dempet"><b className="undertittel">Slik virker utrullingen</b><p className="forklar">Medlemmene får periodene og timene per akse fra og med denne uka. Perioder et medlem alt har i samme tidsrom fra en annen plan, blir stående og rapporteres. Uker som er gått, endres aldri.</p></div>
+        </SkraKort>
+        <SkraKort tittel="Slik virker utrullingen"><p className="forklar">Medlemmene får periodene og timene per akse fra og med denne uka. Perioder et medlem alt har i samme tidsrom fra en annen plan, blir stående og rapporteres. Uker som er gått, endres aldri.</p></SkraKort>
       </div>
     </div>
 
