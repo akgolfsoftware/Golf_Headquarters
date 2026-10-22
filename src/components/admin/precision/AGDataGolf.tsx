@@ -52,8 +52,8 @@ function ProffListe({ rader }: { rader: readonly DgProffRad[] }) {
 
 /* DG-01 Oversikt */
 export function DG01Oversikt({ d }: { d: { antallProffer: number; kildedato: Date | null; sistSynk: Date | null; feiletSynk: number; endepunkter: number; norske: DgProffRad[]; forsinket: boolean } }) {
-  return <div className="agn-s">
-    <Topp dato="Drift · Data Golf · bare admin" tittel="Data Golf" ingress="Proffenes målte og modellerte tall, til å sette spillerens gap og trening i sammenheng." />
+  return <div className="agn-s agn-a6">
+    <Topp flat dato="Drift · Data Golf · bare admin" tittel="Data Golf" ingress="Proffenes målte og modellerte tall, til å sette spillerens gap og trening i sammenheng." />
     <DgFaner aktiv="oversikt" />
     {d.antallProffer === 0
       ? <Tom tittel="Ingen synk ennå" tekst="Data Golf-tallene hentes ukentlig. Når første synk er gjort, vises de her." />
@@ -83,8 +83,8 @@ export function DG01Oversikt({ d }: { d: { antallProffer: number; kildedato: Dat
 /* DG-02 Proffkatalog */
 export function DG02Katalog({ rader, turer, valg, totalt, sidenr, sider }: { rader: DgProffRad[]; turer: string[]; valg: { sok?: string; tour?: string; norskForst?: boolean }; totalt: number; sidenr: number; sider: number }) {
   const lenke = (nr: number) => katalogLenke("/admin/datagolf/proffer", { sok: valg.sok, tour: valg.tour, norske: valg.norskForst ? "1" : undefined }, nr);
-  return <div className="agn-s">
-    <Topp dato="Data Golf" tittel="Proffer" />
+  return <div className="agn-s agn-a6">
+    <Topp flat dato="Data Golf" tittel="Proffer" />
     <DgFaner aktiv="katalog" />
     <form className="dg-filter" action="/admin/datagolf/proffer">
       <div className="felt"><label htmlFor="dg-sok">Søk</label><input id="dg-sok" name="sok" type="search" defaultValue={valg.sok ?? ""} placeholder="Navn" /></div>
@@ -112,8 +112,8 @@ const BAND: Record<string, string> = { innspill50: "50–100 yds", innspill100: 
 /* DG-03 Proffprofil */
 export function DG03Proff({ tak, sesonger }: { tak: Tak; sesonger: Sesong[] }) {
   const felt: ReadonlyArray<[string, number | null, string]> = [["Utslag", tak.sgOtt, "a-tek"], ["Innspill", tak.sgApp, "a-slag"], ["Nærspill", tak.sgArg, "a-spill"], ["Putting", tak.sgPutt, "a-fys"]];
-  return <div className="agn-s">
-    <Topp tilbake={{ href: "/admin/datagolf/proffer", tekst: "Proffer" }} dato={[tak.country, tak.primaryTour?.toUpperCase(), `kildedato ${dato(tak.asOf)}`].filter(Boolean).join(" · ")} tittel={tak.name} />
+  return <div className="agn-s agn-a6">
+    <Topp flat tilbake={{ href: "/admin/datagolf/proffer", tekst: "Proffer" }} dato={[tak.country, tak.primaryTour?.toUpperCase(), `kildedato ${dato(tak.asOf)}`].filter(Boolean).join(" · ")} tittel={tak.name} />
     <div className="to-del bred-v">
       <div>
         <section className="kort" aria-label="Strokes Gained">
@@ -152,8 +152,8 @@ export function DG04Topplister({ kategorier, aktiv, tour, aar, aarValg, turValg,
   rader: { dgId: number; navn: string; land: string | null; runder: number | null; verdi: number | null }[]; oppdatert: Date | null;
 }) {
   const lenke = (k: string, t = tour, a = aar) => `/admin/datagolf/topplister?kategori=${k}&tour=${t}&aar=${a}`;
-  return <div className="agn-s">
-    <Topp dato="Data Golf" tittel="Topplister" />
+  return <div className="agn-s agn-a6">
+    <Topp flat dato="Data Golf" tittel="Topplister" />
     <DgFaner aktiv="topplister" />
     <div className="chips" role="group" aria-label="Kategori">{kategorier.map((k) => <Link key={k.id} href={lenke(k.id)} aria-current={k.id === aktiv ? "page" : undefined}>{k.label}</Link>)}</div>
     <div className="chips" role="group" aria-label="Tour og år">
@@ -180,8 +180,8 @@ export function DG08Norske({ spillere, kommende }: {
   kommende: { id: string; name: string; startDate: Date; tour: string | null }[];
 }) {
   const tilPar = (n: number | null) => (n == null ? "—" : n === 0 ? "E" : n > 0 ? `+${n}` : `−${Math.abs(n)}`);
-  return <div className="agn-s">
-    <Topp dato="Data Golf" tittel="Norske proffer" />
+  return <div className="agn-s agn-a6">
+    <Topp flat dato="Data Golf" tittel="Norske proffer" />
     <DgFaner aktiv="norske" />
     <div className="to-del bred-v">
       <Seksjon tittel="Siste resultater" kilde="Målt, brutto">
@@ -205,8 +205,8 @@ export function DG08Norske({ spillere, kommende }: {
 
 /* DG-09 Kilde og dekning */
 export function DG09Kilde({ rader }: { rader: { endepunkt: string; rader: number | null; status: number | null; feil: string | null; sist: Date | null }[] }) {
-  return <div className="agn-s">
-    <Topp dato="Data Golf" tittel="Kilde og dekning" ingress="Hva som hentes, når, og hvor mange rader. Modellprognoser og odds hentes ikke og vises ikke." />
+  return <div className="agn-s agn-a6">
+    <Topp flat dato="Data Golf" tittel="Kilde og dekning" ingress="Hva som hentes, når, og hvor mange rader. Modellprognoser og odds hentes ikke og vises ikke." />
     <DgFaner aktiv="kilde" />
     {rader.length === 0 ? <Tom tittel="Ingen synk registrert" tekst="Synkstatus skrives når pipelines henter fra Data Golf." /> :
       <div className="kort rader">

@@ -30,13 +30,13 @@ export const OKONOMI_TJENESTER = ["Coaching privat", "Grupper", "GFGK-avtalen", 
 const kr = (v: number | null) => (v == null ? "—" : fmtKrNb(v).replace(/\s*kr$/i, ""));
 
 export function AG20Okonomi({ tilstand, data }: AG20Props) {
-  const topp = <Topp dato="Mer · bare head coach" tittel="Økonomi" ingress="Kroner leses fra Tripletex og Stripe. Ingenting anslås." />;
-  if (tilstand === "laster") return <div className="agn-s">{topp}<Laster tekst="Leser Tripletex-eksporten …" /></div>;
-  if (tilstand === "feil") return <div className="agn-s">{topp}<Feil tittel="Tripletex-eksporten kunne ikke leses" tekst="Ingen tall er endret. Prøv igjen." kode="TRIPLETEX" /></div>;
-  if (tilstand === "tom") return <div className="agn-s">{topp}<Tom tittel="Ingen tall ennå" tekst="Økonomitallene hentes fra Tripletex og budsjettet. Tall anslås aldri." /></div>;
+  const topp = <Topp flat dato="Mer · bare head coach" tittel="Økonomi" ingress="Kroner leses fra Tripletex og Stripe. Ingenting anslås." />;
+  if (tilstand === "laster") return <div className="agn-s agn-a6">{topp}<Laster tekst="Leser Tripletex-eksporten …" /></div>;
+  if (tilstand === "feil") return <div className="agn-s agn-a6">{topp}<Feil tittel="Tripletex-eksporten kunne ikke leses" tekst="Ingen tall er endret. Prøv igjen." kode="TRIPLETEX" /></div>;
+  if (tilstand === "tom") return <div className="agn-s agn-a6">{topp}<Tom tittel="Ingen tall ennå" tekst="Økonomitallene hentes fra Tripletex og budsjettet. Tall anslås aldri." /></div>;
 
   const avvik = ytdAvvik(data.ytd.budsjettKr, data.ytd.resultatKr);
-  return <div className="agn-s">
+  return <div className="agn-s agn-a6">
     {topp}
     {!data.tripletexKonfigurert && <Varsel tone="advarsel" tittel="Tripletex er ikke koblet">Regnskapstallet mangler til integrasjonen er satt opp.</Varsel>}
     <div className="to-del bred-v">

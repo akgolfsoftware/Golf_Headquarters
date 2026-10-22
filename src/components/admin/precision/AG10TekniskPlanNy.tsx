@@ -104,7 +104,7 @@ export function AG10TekniskPlanNy({ coachNavn, spiller, plan, planAktiv, skjema 
   });
 
   return <AgencyOSSkall navn={coachNavn}>
-    <div className="agn-s">
+    <div className="agn-s agn-a6">
       <div className="topp">
         <Link href={`/admin/spillere/${spiller.id}`} className="ag-tilbake"><ChevronLeft className="ikon" aria-hidden />{spiller.navn}</Link>
         <div className="topp-rad">

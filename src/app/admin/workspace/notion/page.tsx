@@ -43,7 +43,7 @@ export default async function WorkspaceNotionPage({
 
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
-      <div className="agn-s">
+      <div className="agn-s agn-a6">
         <Topp tilbake={{ href: "/admin/oppsett?fane=integr", tekst: "Oppsett" }} dato="Oppsett · integrasjoner" tittel="Notion"
           ingress="Oppgaver og prosjekter kommer bare fra Notion. Her ser du hvilke databaser som er koblet, og siste synk." />
         <NotionTilkobling data={data} />

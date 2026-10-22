@@ -86,9 +86,9 @@ export function AG18TrackManVideo({ tilstand = "data", data = TOM_DATA, startFan
 
   const topp = <Topp dato="Spillere · TrackMan" tittel="TrackMan og video" ingress={INGRESS} handlinger={fane !== "opptak" ? <Knapp variant="sek" onClick={() => setFane("opptak")}>Nytt opptak</Knapp> : undefined} />;
 
-  if (tilstand === "laster") return <div className="agn-s">{topp}<Laster tekst="Henter TrackMan-økter …" /></div>;
+  if (tilstand === "laster") return <div className="agn-s agn-a6">{topp}<Laster tekst="Henter TrackMan-økter …" /></div>;
   if (tilstand === "feil") {
-    return <div className="agn-s">{topp}<Feil tittel="TrackMan-øktene kunne ikke hentes" tekst="Prøv igjen om litt." kode="TRACKMAN" onProv={() => window.location.reload()} /></div>;
+    return <div className="agn-s agn-a6">{topp}<Feil tittel="TrackMan-øktene kunne ikke hentes" tekst="Prøv igjen om litt." kode="TRACKMAN" onProv={() => window.location.reload()} /></div>;
   }
 
   const navn: Record<FaneId, string> = {
@@ -143,7 +143,7 @@ export function AG18TrackManVideo({ tilstand = "data", data = TOM_DATA, startFan
   );
 
   return (
-    <div className="agn-s" data-testid="ag18-trackman-video">
+    <div className="agn-s agn-a6" data-testid="ag18-trackman-video">
       {topp}
 
       <div className="teller-rad">

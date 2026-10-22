@@ -33,7 +33,7 @@ export function AG10Oversikt({ coachNavn, rader }: { coachNavn: string; rader: O
   const oppgaver = rader.reduce((s, r) => s + r.oppgaver, 0);
   const gjort = rader.reduce((s, r) => s + r.gjort, 0);
   return <AgencyOSSkall navn={coachNavn}>
-    <div className="agn-s">
+    <div className="agn-s agn-a6">
       <Topp dato="Plan · teknisk plan" tittel="Teknisk plan"
         ingress="Oppgaver per posisjon P1.0–P10.0 for hver spiller i stallen. Åpne en spiller for å se og endre planen."
         handlinger={<KnappLenke href="/admin/plan">Plan</KnappLenke>} />

@@ -89,7 +89,7 @@ export function AG14MalDetalj({ template }: { template: PlanMalDetalj }) {
   const { minAlder: fra, maxAlder: til } = template;
   const alder = fra != null && til != null ? `${fra}–${til} år` : fra != null ? `Fra ${fra} år` : til != null ? `Til ${til} år` : "Alle aldre";
 
-  return <div className="agn-s">
+  return <div className="agn-s agn-a6">
     <Topp tilbake={{ href: "/admin/plan?fane=ukemaler", tekst: "Plan-hub" }}
       dato={`Planmal · ${template.varighetUker <= 1 ? "ukemal" : "program"} · kategori ${template.kategori} · ${LPHASE_LABEL[template.lPhase]}`}
       tittel={template.name}

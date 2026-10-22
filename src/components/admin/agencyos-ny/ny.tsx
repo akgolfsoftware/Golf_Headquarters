@@ -10,6 +10,7 @@ import Link from "next/link";
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from "react";
 import { ChevronLeft } from "lucide-react";
 import { SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/agencyos-ny-a6-skra.css";
 
 export type KnappVariant = "pri" | "sek" | "rust" | "spok";
 const kl = (v: KnappVariant, stor?: boolean, ekstra?: string) => ["knapp", v, stor && "stor", ekstra].filter(Boolean).join(" ");
@@ -51,14 +52,15 @@ function toppBilde(nokkel: string) {
  * Sidehodet i Skrå-drakten (type 4–6 i skjermtypene, 21.10.2026): lav topp med bilde, kontekstlinje, tittel og handlinger.
  * Siden etter toppen starter under den skrå kanten (agencyos-ny.css §Skrå-topp). `bilde` overstyrer valget.
  */
-export function Topp({ dato, tittel, ingress, handlinger, tilbake, bilde }: {
+export function Topp({ dato, tittel, ingress, handlinger, tilbake, bilde, flat }: {
   dato?: ReactNode; tittel: ReactNode; ingress?: ReactNode; handlinger?: ReactNode; tilbake?: { href: string; tekst: string }; bilde?: string;
+  /** Flat mørk topp uten bilde (Økonomi, Data Golf, Jarvis; bølge 3). */ flat?: boolean;
 }) {
   const nokkel = typeof tittel === "string" ? tittel : typeof dato === "string" ? dato : "AgencyOS";
   return <div className="agn-topp-lav">
     <SkraTopp
       lav
-      bilde={bilde ?? toppBilde(nokkel)}
+      bilde={flat ? undefined : bilde ?? toppBilde(nokkel)}
       bildePosisjon="50% 45%"
       overlinje={dato}
       tittel={tittel}

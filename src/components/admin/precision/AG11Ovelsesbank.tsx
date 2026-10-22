@@ -39,7 +39,7 @@ export function AG11Ovelsesbank({ ovelser }: { ovelser: OvelseVisning[] }) {
   const presser = useMemo(() => verdierI(ovelser, "press"), [ovelser]);
   const sett = (p: Partial<OvFilter>) => setF((x) => ({ ...x, ...p }));
 
-  return <div className="agn-s">
+  return <div className="agn-s agn-a6">
     <Topp dato="Workbench · øvelsesbank" tittel="Øvelsesbank" ingress="Alle øvelser du har tilgang til. Coachen får samme bank som spilleren."
       handlinger={<><Knapp variant="pri" onClick={() => { setLagret(null); setArk(true); }}><Plus className="ikon" aria-hidden style={{ width: 16, height: 16 }} />Ny øvelse</Knapp><KnappLenke variant="sek" href="/admin/plan">Til Plan-hub</KnappLenke></>} />
     {lagret && <Varsel tone="ok" tittel={lagret.tittel}><span className="mono">{lagret.kode}</span></Varsel>}

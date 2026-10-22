@@ -50,8 +50,8 @@ export function AG21Oppgaver({ tilstand = "data", data = TOM_DATA, startFane = "
   const [aktivFane, setAktivFane] = useState<FaneId>(FANER.includes(startFane as FaneId) ? (startFane as FaneId) : "mine");
   const topp = <Topp dato="Daglig · fra Notion" tittel="Oppgaver" ingress={INGRESS} />;
 
-  if (tilstand === "laster") return <div className="agn-s" data-testid="ag21-laster">{topp}<Laster tekst="Henter oppgaver …" /></div>;
-  if (tilstand === "feil") return <div className="agn-s" data-testid="ag21-feil">{topp}<Feil tittel="Oppgavene kunne ikke hentes" tekst="Prøv igjen om litt." kode="OPPGAVER" /></div>;
+  if (tilstand === "laster") return <div className="agn-s agn-a6" data-testid="ag21-laster">{topp}<Laster tekst="Henter oppgaver …" /></div>;
+  if (tilstand === "feil") return <div className="agn-s agn-a6" data-testid="ag21-feil">{topp}<Feil tittel="Oppgavene kunne ikke hentes" tekst="Prøv igjen om litt." kode="OPPGAVER" /></div>;
 
   const mine = tilstand === "tom" ? [] : data.mine;
   const prosjekter = tilstand === "tom" ? [] : data.projects;
@@ -74,7 +74,7 @@ export function AG21Oppgaver({ tilstand = "data", data = TOM_DATA, startFane = "
   );
 
   return (
-    <div className="agn-s" data-testid="ag21-oppgaver">
+    <div className="agn-s agn-a6" data-testid="ag21-oppgaver">
       {topp}
 
       <div className="teller-rad">

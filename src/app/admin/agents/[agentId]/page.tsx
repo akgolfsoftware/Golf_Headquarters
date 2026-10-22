@@ -325,8 +325,8 @@ export default async function AgentDetaljPage({
 
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
-      <div className="agn-s">
-        <Topp tilbake={{ href: "/admin/jarvis", tekst: "Jarvis" }} dato={`Jarvis · agent · ${data.trigger}`} tittel={data.navn} />
+      <div className="agn-s agn-a6">
+        <Topp flat tilbake={{ href: "/admin/jarvis", tekst: "Jarvis" }} dato={`Jarvis · agent · ${data.trigger}`} tittel={data.navn} />
         <AG19AgentDetalj data={data} />
       </div>
     </AgencyOSSkall>

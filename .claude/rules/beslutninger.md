@@ -20,6 +20,18 @@ Anders 22.10, etter skissen for bølge 1 i AgencyOS: «Sørg for at øverste car
 2. **Skissen for bølge 1** er rettet. Gjort.
 3. **Skjermer med egen overlapp** (f.eks. `turneringsplan.css` `.kortflate`, som har egen fasit) sjekkes når pakken deres tas.
 
+## BØLGE 3 I AGENCYOS BYGGES NÅ MED EKSISTERENDE BILDER, OG ØKONOMI OG DATA GOLF HAR FLAT TOPP (Anders 22.10.2026, bindende)
+
+Anders 22.10, etter skissen `docs/design-system/utkast-skra/komponist/bolge-3.html` (https://claude.ai/artifact/P6v1JmmgNHf9YVtM86EF5y): «Ja» på alle fem skjermer og mønstrene, og «Følg anbefalingen» på begge spørsmålene.
+
+- **Bølge 3 bygges nå** med de 11 bildene som finnes. De 4–6 nye toppbildene byttes inn med ett grep når Anders sender dem (`public/images/playerhq/`).
+- **Økonomi og Data Golf har flat mørk topp uten bilde.** Underfanene i Data Golf har samme topp. «Powered by Data Golf» står i toppen.
+- Plan og teknisk plan, Oppsett, Drift-listene og de eldre sidene har lav topp med bilde. Jarvis har flat topp. `/admin/mer` røres ikke.
+
+**Overstyrer:** punkt 4 i §SKRÅ-RESTEN («4–6 nye toppbilder før bølge 3»), for byggestart.
+
+**Arbeidet dette utløser:** pakkene A6a (8 sider), A6b (11) og A6c (19), én PR hver, egen stilfil, byggeklossene uendret. Ferdig når hver side er målt i 390, 1280 og 1920 px uten sidelengs rulling.
+
 ## SKRÅ-RESTEN: IBM PLEX BEHOLDES, NYE TOPPBILDER FØR BØLGE 3, TEKST OG SKJEMA MAKS 720 PX, LIVE-ØKTENE MISTER TOPPEN (Anders 22.10.2026, bindende)
 
 Svar på de fem spørsmålene i skissen for bølge 1 (https://claude.ai/artifact/NCP3fcTH2qNSYJtYVfWwNa, `docs/design-system/utkast-skra/komponist/bolge-1.html`): «Følg anbefalingen» på skrift og toppbilder, «Ja, slett» på `PH04LiveBrief.tsx`, «720 px» på tekstbredde og «Ta toppen bort» på live-toppen.
