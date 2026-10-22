@@ -1,0 +1,478 @@
+<title>TN trenerflate utkast 2</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Wireframe: svart-hvitt papir. Hver skjerm vises som to rammer (1280 og 390) med samme innhold; rammene bruker container queries. */
+:root {
+  --papir: #FFFFFF; --flate: #F3F3F3; --linje: #CFCFCF; --svak: #6B6B6B; --blekk: #111111; --mork: #2A2A2A;
+  --f-tekst: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --f-tall: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  color-scheme: light;
+}
+body { background: #E9E9E9; color: var(--blekk); font-family: var(--f-tekst); font-size: 14px; line-height: 1.45; }
+.side { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 24px 64px; max-width: 1760px; margin: 0 auto; }
+h1 { font-size: 26px; margin: 0 0 4px; text-wrap: balance; }
+.ingress { color: var(--svak); max-width: 68ch; margin: 0 0 16px; }
+.velger { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+.velger button { font: inherit; font-weight: 600; border: 1.5px solid var(--blekk); background: var(--papir); color: var(--blekk); padding: 7px 12px; border-radius: 999px; cursor: pointer; }
+.velger button[aria-pressed="true"] { background: var(--blekk); color: var(--papir); }
+.velger button:focus-visible, a:focus-visible { outline: 3px solid #000; outline-offset: 2px; }
+.skjermtittel { font-size: 18px; margin: 0 0 4px; }
+.notat { color: var(--svak); margin: 0 0 14px; max-width: 80ch; }
+.rammer { display: grid; grid-template-columns: minmax(0, 1fr) 390px; gap: 24px; align-items: start; }
+@media (max-width: 900px) { .rammer { grid-template-columns: minmax(0, 1fr); } }
+.rammeboks { min-width: 0; }
+.rammeetikett { font-family: var(--f-tall); font-size: 12px; color: var(--svak); margin-bottom: 6px; }
+.skalering { width: 100%; overflow: hidden; }
+.ramme { background: var(--papir); border: 1.5px solid var(--blekk); container-type: inline-size; transform-origin: 0 0; }
+.ramme.pc { width: 1280px; }
+.ramme.mob { width: 390px; max-width: 100%; }
+@media (max-width: 900px) { .rammeboks.mobboks { order: -1; } }
+
+/* ---------- Skall ---------- */
+.app { display: grid; grid-template-columns: 232px minmax(0, 1fr); min-height: 720px; }
+.meny { background: var(--mork); color: #fff; padding: 18px 14px; display: flex; flex-direction: column; gap: 4px; }
+.logo { font-weight: 700; letter-spacing: .02em; margin-bottom: 14px; display: flex; gap: 8px; align-items: center; }
+.logo i { width: 26px; height: 26px; border: 2px solid #fff; display: inline-block; }
+.mp { padding: 8px 10px; border-radius: 6px; font-weight: 500; display: flex; gap: 8px; align-items: center; color: #DDD; }
+.mp::before { content: ""; width: 14px; height: 14px; border: 1.5px solid currentColor; border-radius: 3px; flex: none; }
+.mp.aktiv { background: #fff; color: var(--blekk); font-weight: 700; }
+.meny .fot { margin-top: auto; border-top: 1px solid #555; padding-top: 12px; display: flex; gap: 8px; align-items: center; }
+.meny .fot b { display: block; color: #fff; }
+.meny .fot span { font-size: 12px; color: #BBB; }
+.meny .fot .lenke { font-size: 11px; text-decoration: underline; color: #fff; }
+.topp { display: none; }
+.innhold { min-width: 0; display: flex; flex-direction: column; }
+.helt { background: #D6D6D6; padding: 22px 28px 26px; position: relative; display: flex; flex-direction: column; gap: 6px; clip-path: polygon(0 0, 100% 0, 100% 82%, 0 100%); padding-bottom: 46px; }
+.helt .bildemerke { position: absolute; right: 12px; top: 10px; font-family: var(--f-tall); font-size: 10px; color: var(--svak); border: 1px dashed var(--svak); padding: 2px 6px; }
+.overlinje { font-size: 12px; color: var(--mork); text-transform: uppercase; letter-spacing: .06em; }
+.helt h2 { margin: 0; font-size: 28px; line-height: 1.15; text-wrap: balance; }
+.hovedtall { font-family: var(--f-tall); font-size: 44px; font-weight: 500; line-height: 1; }
+.hovedtall small { font-family: var(--f-tekst); font-size: 14px; font-weight: 500; margin-left: 8px; }
+.faner { display: flex; gap: 4px; flex-wrap: wrap; padding: 0 28px; margin-top: -14px; position: relative; }
+.fane { background: var(--papir); border: 1.5px solid var(--blekk); border-radius: 999px; padding: 5px 12px; font-weight: 600; font-size: 13px; white-space: nowrap; }
+.fane.aktiv { background: var(--blekk); color: var(--papir); }
+.flate { padding: 18px 28px 28px; display: grid; gap: 16px; grid-template-columns: repeat(12, minmax(0, 1fr)); align-content: start; }
+.kort { background: var(--papir); border: 1.5px solid var(--blekk); border-radius: 10px; padding: 14px 16px; min-width: 0; display: flex; flex-direction: column; gap: 8px; box-shadow: 3px 3px 0 var(--linje); }
+.kort h3 { margin: 0; font-size: 15px; display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.kort h3 a, .lenke { font-size: 12px; font-weight: 600; text-decoration: underline; color: inherit; }
+.k12 { grid-column: span 12; } .k8 { grid-column: span 8; } .k6 { grid-column: span 6; } .k4 { grid-column: span 4; } .k3 { grid-column: span 3; }
+.rad { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; padding: 6px 0; border-top: 1px solid var(--linje); min-width: 0; }
+.rad:first-of-type { border-top: 0; }
+.rad > span:first-child { min-width: 0; overflow-wrap: anywhere; }
+.tall { font-family: var(--f-tall); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.svak { color: var(--svak); }
+.merke { font-size: 11px; font-weight: 700; border: 1.5px solid var(--blekk); padding: 1px 6px; border-radius: 2px; white-space: nowrap; }
+.merke.fylt { background: var(--blekk); color: var(--papir); }
+.merke.strek { border-style: dashed; }
+.knapp { align-self: flex-start; font-weight: 700; font-size: 13px; background: var(--blekk); color: var(--papir); padding: 8px 14px; border-radius: 999px; }
+.knapp.kontur { background: var(--papir); color: var(--blekk); border: 1.5px solid var(--blekk); }
+.kilde { font-size: 11px; color: var(--svak); }
+.felt { border: 1.5px solid var(--blekk); border-radius: 8px; padding: 8px 10px; color: var(--svak); }
+.filtre { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border: 1.5px solid var(--blekk); border-radius: 999px; padding: 3px 10px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+.chip.paa { background: var(--blekk); color: var(--papir); }
+.tabell { width: 100%; border-collapse: collapse; font-size: 13px; }
+.tabell th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--svak); padding: 6px 8px; border-bottom: 1.5px solid var(--blekk); }
+.tabell td { padding: 8px; border-bottom: 1px solid var(--linje); vertical-align: top; }
+.tabell td.t { font-family: var(--f-tall); white-space: nowrap; }
+.tabell a { color: inherit; font-weight: 700; }
+.tabellboks { min-width: 0; }
+.mobliste { display: none; }
+.stripe { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.stripe div { border-top: 1.5px solid var(--blekk); padding-top: 6px; min-width: 0; }
+.stripe b { display: block; font-family: var(--f-tall); font-size: 20px; font-weight: 500; }
+.stripe span { font-size: 11px; color: var(--svak); }
+.graf { width: 100%; height: auto; display: block; }
+.avatar { width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--blekk); background: var(--flate); flex: none; display: grid; place-items: center; font-weight: 700; font-size: 13px; }
+.avatar.stor { width: 64px; height: 64px; font-size: 20px; }
+.lås { border: 1.5px dashed var(--blekk); border-radius: 10px; padding: 14px 16px; background: var(--flate); display: flex; flex-direction: column; gap: 8px; }
+.steg { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.seksjonsnavn { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--svak); font-weight: 700; }
+
+/* ---------- Mobil (rammen under 600 px) ---------- */
+@container (max-width: 600px) {
+  .app { display: block; min-height: 0; }
+  .meny { display: none; }
+  .topp { display: flex; background: var(--mork); color: #fff; padding: 12px 16px; align-items: center; justify-content: space-between; font-weight: 700; }
+  .topp span { font-size: 12px; border: 1.5px solid #fff; border-radius: 999px; padding: 3px 10px; }
+  .helt { padding: 16px 16px 38px; }
+  .helt h2 { font-size: 22px; }
+  .hovedtall { font-size: 36px; }
+  .faner { padding: 0 16px; }
+  .flate { padding: 14px 16px 22px; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .k12, .k8, .k6, .k4, .k3 { grid-column: span 1; }
+  .stripe { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pc-tabell { display: none; }
+  .mobliste { display: block; }
+}
+
+/* ---------- Sidekart ---------- */
+.kart { background: var(--papir); border: 1.5px solid var(--blekk); padding: 18px; display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.kart section { border: 1.5px solid var(--blekk); border-radius: 10px; padding: 12px 14px; min-width: 0; }
+.kart h3 { margin: 0 0 6px; font-size: 15px; }
+.kart ul { margin: 0; padding-left: 16px; display: grid; gap: 3px; }
+.kart code, .vid code { font-family: var(--f-tall); font-size: 11.5px; overflow-wrap: anywhere; }
+.vid { background: var(--papir); border: 1.5px solid var(--blekk); padding: 18px; margin-top: 16px; }
+.vid h3 { margin: 0 0 8px; font-size: 15px; }
+.vid table { border-collapse: collapse; width: 100%; font-size: 13px; }
+.vid td, .vid th { text-align: left; border-bottom: 1px solid var(--linje); padding: 6px 8px; vertical-align: top; }
+.vidboks { min-width: 0; }
+@media (max-width: 600px) {
+  .vid table, .vid tbody, .vid tr, .vid td { display: block; width: auto; }
+  .vid tr:first-child { display: none; }
+  .vid tr { border-bottom: 1px solid var(--linje); padding: 6px 0; }
+  .vid td { border: 0; padding: 2px 0; }
+  .vid td + td::before { content: "→ "; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+<style>
+/* Tillegg i utkast 2 */
+.gruppevelger { display: grid; gap: 10px; margin-bottom: 20px; }
+.gruppevelger .gruppe { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.gruppevelger .gruppe > span { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--svak); font-weight: 700; min-width: 150px; }
+.gruppevelger button { font: inherit; font-weight: 600; font-size: 13px; border: 1.5px solid var(--blekk); background: var(--papir); color: var(--blekk); padding: 5px 11px; border-radius: 999px; cursor: pointer; }
+.gruppevelger button[aria-pressed="true"] { background: var(--blekk); color: var(--papir); }
+.gruppevelger button:focus-visible { outline: 3px solid #000; outline-offset: 2px; }
+.underfaner { display: flex; flex-wrap: wrap; gap: 4px; }
+.underfaner span { font-size: 12px; font-weight: 600; padding: 3px 9px; border-bottom: 2px solid transparent; }
+.underfaner span.paa { border-bottom-color: var(--blekk); }
+.stolpe { display: flex; height: 14px; gap: 2px; }
+.stolpe span { display: block; }
+.uke { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+.uke div { border: 1px solid var(--linje); min-height: 64px; padding: 4px; font-size: 11px; min-width: 0; overflow-wrap: anywhere; }
+.uke div b { display: block; font-family: var(--f-tall); font-weight: 500; }
+.uke .blokk { background: var(--flate); border: 1.5px solid var(--blekk); border-radius: 3px; padding: 1px 4px; margin-top: 3px; font-size: 10.5px; }
+.periodebaand { display: flex; gap: 2px; }
+.periodebaand span { padding: 6px 6px; font-size: 11px; font-weight: 700; border: 1.5px solid var(--blekk); min-width: 0; overflow-wrap: anywhere; }
+.skjelett { background: var(--flate); border-radius: 4px; height: 12px; }
+.tilstand { border: 1.5px solid var(--blekk); border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.tilstand.feil { border-style: double; border-width: 4px; }
+.skala { display: flex; gap: 4px; flex-wrap: wrap; }
+.skala span { width: 30px; height: 30px; border: 1.5px solid var(--blekk); border-radius: 6px; display: grid; place-items: center; font-family: var(--f-tall); font-size: 12px; }
+.skala span.paa { background: var(--blekk); color: var(--papir); }
+.bilder { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.bilder div { aspect-ratio: 4 / 3; border: 1.5px dashed var(--svak); display: grid; place-items: center; font-family: var(--f-tall); font-size: 11px; color: var(--svak); }
+.prikker { display: flex; flex-wrap: wrap; gap: 3px; }
+.prikker i { width: 10px; height: 10px; border: 1.5px solid var(--blekk); border-radius: 50%; }
+.prikker i.paa { background: var(--blekk); }
+@container (max-width: 600px) {
+  .uke { grid-template-columns: minmax(0, 1fr); }
+  .uke div { min-height: 0; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+  .uke div.tom { display: none; }
+  .periodebaand { flex-wrap: wrap; }
+}
+</style>
+
+<div class="side">
+  <h1>Team Norway trenerflate · utkast 2</h1>
+  <p class="ingress">De resterende skjermene: IUP-fanene, Referanse, Samlinger og testing, Turneringer og Fag og administrasjon, pluss tom, laster og feil. Svart-hvitt og syntetiske navn, som utkast 1. Hver skjerm i 1280 og 390 px. På 1920 px får kortene flere kolonner, aldri bredere linjer.</p>
+  <div class="gruppevelger" id="velger"></div>
+  <div id="visning"></div>
+</div>
+
+<script>
+const SKALL = (aktiv, tittel, innhold) => `
+<div class="app">
+  <nav class="meny" aria-label="Hovedmeny">
+    <div class="logo"><i></i>Team Norway Golf</div>
+    ${["Hjem","Spillere","Samlinger og testing","Turneringer","Referanse","Fag og administrasjon"].map(m => `<div class="mp${m===aktiv?" aktiv":""}">${m}</div>`).join("")}
+    <div class="fot"><div class="avatar" style="background:#444;color:#fff;border-color:#fff">EL</div><div><b>Eva Lie</b><span>Trener · Team Norway</span><br><span class="lenke">Min profil</span></div></div>
+  </nav>
+  <div class="topp"><span>Meny</span>${tittel}<span>EL</span></div>
+  <div class="innhold">${innhold}</div>
+</div>`;
+
+const FANER = (liste, aktiv) => `<div class="faner">${liste.map(f => `<span class="fane${f===aktiv?" aktiv":""}">${f}</span>`).join("")}</div>`;
+const IUP_F = ["Oversikt","Turneringsplan","Ranking","Turneringer","Trening","Tester","Teknisk plan","Fireukerssjekk"];
+const SAM_F = ["Samlinger","Månedsplan","Fellestesting","Gruppeanalyse","WANG-tester"];
+const TUR_F = ["Turneringer","Live Watch","Uttak","Rangliste"];
+const REF_F = ["WAGR","Sammenlign","Søk","Planlegger","Norsk golf","HCP Norge","Tester"];
+const FAG_F = ["Årsplan","Testprotokoller","Fagapparat","Lisens og status","Trenere og tilgang","Inviter spiller","Data Golf"];
+
+const helt = (over, innhold) => `<div class="helt"><span class="bildemerke">BANEBILDE</span><span class="overlinje">${over}</span>${innhold}</div>`;
+const ht = (tall, tekst) => `<div class="hovedtall">${tall}<small>${tekst}</small></div>`;
+const IUP_TOPP = (fane) => helt(`IUP · ${fane}`, `<div style="display:flex;gap:14px;align-items:center"><div class="avatar stor">SH</div><div><h2>Sigrid Holm</h2><div>J1 · Damer · Bærum GK · født 2006</div></div></div>`);
+const kort = (span, tittel, body, lenke) => `<div class="kort k${span}">${tittel ? `<h3>${tittel}${lenke ? ` <a href="#">${lenke}</a>` : ""}</h3>` : ""}${body}</div>`;
+const rad = (a, b) => `<div class="rad"><span>${a}</span><span class="tall">${b}</span></div>`;
+const radM = (a, m, kl = "") => `<div class="rad"><span>${a}</span><span class="merke ${kl}">${m}</span></div>`;
+const kilde = (t) => `<span class="kilde">${t}</span>`;
+const WAGR = "Kilde: World Amateur Golf Ranking (WAGR), The R&amp;A, uke 43.";
+/* Tabell som blir kortrader på mobil: første kolonne er navnet, resten står under. */
+function tabell(hoder, rader, hoyre = hoder.length - 1) {
+  const pc = `<div class="tabellboks pc-tabell"><table class="tabell"><thead><tr>${hoder.map(h => `<th>${h}</th>`).join("")}</tr></thead><tbody>${rader.map(r => `<tr>${r.map((c, i) => `<td${i>0 && /^[−+\d—.,% ]/.test(String(c)) ? ' class="t"' : ""}>${i===0 ? `<a href="#">${c}</a>` : c}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+  const mob = `<div class="mobliste">${rader.map(r => `<div class="rad"><span><b>${r[0]}</b><br><span class="svak">${r.slice(1).filter((_, i) => i + 1 !== hoyre).map((c, i) => c).join(" · ")}</span></span><span class="tall">${r[hoyre]}</span></div>`).join("")}</div>`;
+  return pc + mob;
+}
+const akseStolpe = (v) => `<div class="seksjonsnavn">TURN · SPILL · SLAG · TEK · FYS</div><div class="stolpe">${v.map((x, i) => `<span style="flex:${x};background:${["#222","#555","#888","#AAA","#CCC"][i]}"></span>`).join("")}</div>`;
+
+const S = {
+/* ---------------- IUP ---------------- */
+iupTplan: { gruppe: "IUP", navn: "Turneringsplan", notat: "Planleggeren med WAGR-anslag (Skrå, 20.10). Hovedtall: planlagte starter i sesongen. Treneren foreslår; forslaget lagres separat og vises som «Venter på Sigrid» til hun godtar. Anslag merkes ESTIMAT. GolfBox-score og Data Golf brukes ikke her.",
+  html: () => SKALL("Spillere", "IUP", `${IUP_TOPP("Turneringsplan")}${FANER(IUP_F, "Turneringsplan")}
+  <div class="flate">
+    ${kort(4, "Sesong 2027", `${ht("11", "planlagte starter")}<div class="stripe" style="grid-template-columns:repeat(2,minmax(0,1fr))"><div><b>3</b><span>A-turneringer</span></div><div><b>412</b><span>WAGR-plass nå</span></div></div><span class="knapp">Foreslå endring</span>${kilde(WAGR)}`)}
+    ${kort(8, "Nivåblanding", `<div class="stripe"><div><b>3</b><span>Kan vinne</span></div><div><b>5</b><span>Topp 10</span></div><div><b>3</b><span>Lære</span></div><div><b>—</b><span>mål fra coach</span></div></div><div class="stolpe"><span style="flex:3;background:#222"></span><span style="flex:5;background:#777"></span><span style="flex:3;background:#BBB"></span></div>${kilde("ESTIMAT: grensene «Kan vinne» (15 %) og «Topp 10» (40 %) er utkast fra pipelines.")}`)}
+    ${kort(12, "Turneringene", tabell(["Turnering","Dato","Nivå","Topp 10","Status"], [
+      ["Srixon Tour finale","01.11","Kan vinne","ESTIMAT 41 %","Lagt inn"],
+      ["Spanish Junior Open","14.02","Topp 10","ESTIMAT 22 %","Venter på Sigrid"],
+      ["Junior Orange Bowl","28.12","Lære","ESTIMAT 6 %","Foreslått av deg"],
+      ["Junior-NM","27.08","Kan vinne","ESTIMAT 38 %","Lagt inn"]]))}
+  </div>`) },
+
+iupRanking: { gruppe: "IUP", navn: "Ranking", notat: "WAGR-plass over tid og NGF-juniorranking. Hovedtall: WAGR-plass nå med endring siste uke. NGF-juniorranking finnes ikke i appen og vises «—». WAGR-plassen er offentlig og vises også uten deling.",
+  html: () => SKALL("Spillere", "IUP", `${IUP_TOPP("Ranking")}${FANER(IUP_F, "Ranking")}
+  <div class="flate">
+    ${kort(4, "WAGR nå", `${ht("412", "▲ 18 siste uke")}${rad("Uke 52, 2025", "530")}${rad("Uke 52, 2024", "1 102")}${rad("NGF juniorranking", "—")}${kilde(WAGR)}`)}
+    ${kort(8, "WAGR-plass siste 52 uker", `<svg class="graf" viewBox="0 0 640 180" role="img" aria-label="WAGR-plass bedres fra 600 til 412"><g stroke="#CFCFCF"><line x1="40" y1="20" x2="630" y2="20"/><line x1="40" y1="90" x2="630" y2="90"/><line x1="40" y1="160" x2="630" y2="160"/></g><g font-family="IBM Plex Mono, monospace" font-size="11" fill="#6B6B6B"><text x="4" y="24">300</text><text x="4" y="94">450</text><text x="4" y="164">600</text></g><polyline fill="none" stroke="#111" stroke-width="2" points="50,150 120,148 190,140 260,128 330,120 400,104 470,92 540,74 620,64"/></svg>${kilde("Lavere er bedre. Plass per uke fra WAGR-tabellene i basen.")}`)}
+    ${kort(12, "Uke for uke", tabell(["Uke","WAGR-plass","Endring","Poeng snitt"], [["Uke 43","412","▲ 18","412,3"],["Uke 42","430","▲ 4","405,1"],["Uke 41","434","▼ 2","404,8"]]))}
+  </div>`) },
+
+iupTrening: { gruppe: "IUP", navn: "Trening", notat: "Spillerens plan og gjennomført trening (krever Komplett profil). Hovedtall: gjennomført tid mot plan siste fire uker (etterlevelse). Logget i etterkant teller i totalen, ikke mot plan. Treneren foreslår endring; åpner ikke Workbench direkte.",
+  html: () => SKALL("Spillere", "IUP", `${IUP_TOPP("Trening")}${FANER(IUP_F, "Trening")}
+  <div class="flate">
+    ${kort(4, "Siste fire uker", `${ht("81 %", "av planlagt tid")}${rad("Gjennomført", "18 t 20 min")}${rad("Planlagt", "22 t 40 min")}${rad("Logget i etterkant", "1 t 30 min")}${kilde("Etterlevelse: gjennomført mot planlagt tid, økter med passert sluttid.")}`)}
+    ${kort(8, "Fordeling per akse", `${akseStolpe([8,14,30,24,24])}<div class="stripe" style="grid-template-columns:repeat(5,minmax(0,1fr))"><div><b>1 t 30</b><span>TURN</span></div><div><b>2 t 30</b><span>SPILL</span></div><div><b>5 t 30</b><span>SLAG</span></div><div><b>4 t 20</b><span>TEK</span></div><div><b>4 t 30</b><span>FYS</span></div></div>`)}
+    ${kort(8, "Denne uka (uke 43)", `<div class="uke"><div><b>Man</b><span class="blokk">TEK 60</span></div><div><b>Tir</b><span class="blokk">FYS 45</span><span class="blokk">SLAG 60</span></div><div><b>Ons</b><span class="blokk">SPILL 90</span></div><div class="tom"><b>Tor</b></div><div><b>Fre</b><span class="blokk">TEK 60</span></div><div><b>Lør</b><span class="blokk">TURN 240</span></div><div class="tom"><b>Søn</b></div></div>`, "Hele planen")}
+    ${kort(4, "Perioden", `${radM("Spesialperiode", "uke 40–47")}${rad("Lagt inn mot fordelt", "9 t / 10 t")}<span class="knapp kontur">Foreslå endring</span>`)}
+  </div>`) },
+
+iupTester: { gruppe: "IUP", navn: "Tester", notat: "Testbatteriet i tre deler: Golfslag (8), Teknikk (6), Fysisk (5). Hovedtall: prioriterte tester tatt (minsteantall). Visningen «Utvikling» erstatter den gamle analyse-fanen. Treneren fører bare teknikk- og PEI-tester; resten er Egenført til treneren merker Kontrollert.",
+  html: () => SKALL("Spillere", "IUP", `${IUP_TOPP("Tester")}${FANER(IUP_F, "Tester")}
+  <div class="flate">
+    ${kort(4, "Prioriterte tester", `${ht("7 av 11", "minsteantall tatt")}${rad("Driver Basic", "1 av 1")}${rad("Inspill Basic", "2 av 2")}${rad("Wedge Variation", "1 av 2")}${rad("8-balls variation", "1 av 2")}${rad("Putt 1–3 m", "2 av 4")}`)}
+    ${kort(8, "", `<div class="filtre"><span class="chip paa">Siste resultat</span><span class="chip">Utvikling</span></div>
+      <div class="seksjonsnavn">Golfslag</div>${radM("Driver Basic · 42 p · 14.10", "Kontrollert", "fylt")}${radM("Inspill Basic · 38 p · 02.10", "Egenført")}${radM("Putt 1–3 m · 7 / 10 · 30.09", "Egenført")}${rad("9 hull lengde", "—")}
+      <div class="seksjonsnavn">Teknikk</div>${radM("Wedge Gate · 24 / 36 · 14.10", "Kontrollert", "fylt")}${radM("Driver Gate · 4 / 6 OK · 02.10", "Kontrollert", "fylt")}${rad("VISA Express", "—")}
+      <div class="seksjonsnavn">Fysisk</div>${radM("Club Speed · 96 mph · 06.10", "Egenført")}${rad("Lengdehopp", "—")}
+      <span class="lenke">Vis alle 19</span>`)}
+    ${kort(12, "", `<div style="display:flex;gap:8px;flex-wrap:wrap"><span class="knapp">Før teknikktest</span><span class="knapp kontur">Merk kontrollert</span></div>${kilde("Nivå A–K og landslagsnivå per klasse vises når tallene er vedtatt; til da «—».")}`)}
+  </div>`) },
+
+iupTeknisk: { gruppe: "IUP", navn: "Teknisk plan", notat: "Oppgaver med P-posisjon, læringssteg og rep-mål. Hovedtall: aktive oppgaver. Kvalitetssjekken vises bare og sperrer aldri. Før og nå-bildene står side om side. Treneren foreslår ny oppgave; spilleren godtar.",
+  html: () => SKALL("Spillere", "IUP", `${IUP_TOPP("Teknisk plan")}${FANER(IUP_F, "Teknisk plan")}
+  <div class="flate">
+    ${kort(4, "Plan høst 2026", `${ht("3", "aktive oppgaver")}${rad("Publisert", "02.10")}${rad("Reps denne uka", "340 / 500")}<span class="knapp">Foreslå oppgave</span>`)}
+    ${kort(8, "P6.0 · Kølle parallell i nedsving", `<div class="filtre"><span class="chip paa">Lav hastighet 50 %</span><span class="chip">Automatikk 100 %</span></div>${rad("Rep-mål steget", "180 / 300")}${rad("Kvalitetssjekk (vises bare)", "4 av 5 OK")}<div class="bilder"><div>FØR · 12.08</div><div>NÅ · 14.10</div></div>`)}
+    ${kort(6, "P1.0 · Adresse / Oppstilling", `${rad("Steg", "Uten ball")}${rad("Rep-mål", "120 / 120")}${radM("Status", "Klar for neste steg")}`)}
+    ${kort(6, "P4.0 · Toppen av baksvingen", `${rad("Steg", "Lav hastighet 25 %")}${rad("Rep-mål", "40 / 200")}${radM("Forslag fra Eva Lie", "Venter på Sigrid", "strek")}`)}
+  </div>`) },
+
+iupFire: { gruppe: "IUP", navn: "Fireukerssjekk", notat: "Spilleren leverer i PlayerHQ; treneren leser og kommenterer. Hovedtall: neste sjekk (dager). Prosessmål, målsetninger og utviklingssjekkens spørsmål på spillerens nivå (Junior: 41). Sesongevaluering uka før uke 43.",
+  html: () => SKALL("Spillere", "IUP", `${IUP_TOPP("Fireukerssjekk")}${FANER(IUP_F, "Fireukerssjekk")}
+  <div class="flate">
+    ${kort(4, "Siste sjekk", `${ht("9", "dager til neste")}${rad("Levert", "13.10")}${rad("Nivå", "Junior · 41 spørsmål")}${radM("Din kommentar", "Mangler", "strek")}`)}
+    ${kort(8, "Prosessmål", `${radM("Fast pre-shot rutine på alle slag", "4 av 5")}${radM("Logge alle økter samme dag", "3 av 5")}${radM("Wedge-økt 2 ganger i uka", "5 av 5", "fylt")}`)}
+    ${kort(6, "Målsetninger", `${rad("Brutto snitt under 73 i 2027", "73,4")}${rad("WAGR topp 300", "412")}${kilde("Fremdrift fra ekte data. Kilde: HQ-resultater og WAGR.")}`)}
+    ${kort(6, "Utviklingssjekk, endring fra forrige", `${rad("Teknisk forståelse", "4 → 4")}${rad("Konkurranseforberedelse", "3 → 4")}${rad("Restitusjon og søvn", "3 → 2")}<span class="lenke">Alle 41 spørsmål</span>`)}
+    ${kort(12, "Kommentar til Sigrid", `<div class="felt" style="min-height:60px">Skriv kommentar</div><span class="knapp">Send kommentar</span>`)}
+  </div>`) },
+
+/* ---------------- Samlinger og testing ---------------- */
+samlinger: { gruppe: "Samlinger og testing", navn: "Samlinger", notat: "Årshjul og terminliste. Hovedtall: dager til neste samling. Desktop: årshjulet som bånd over måneder, liste under. Mobil: bare liste. Reise og overnatting vises «—» til etter lansering.",
+  html: () => SKALL("Samlinger og testing", "Samlinger", `${helt("Samlinger og testing", `<h2>Høstsamling Oslo</h2>${ht("17", "dager til neste samling")}`)}${FANER(SAM_F, "Samlinger")}
+  <div class="flate">
+    ${kort(12, "Sesongen 2026/27", `<div class="periodebaand"><span style="flex:3">Grunnperiode</span><span style="flex:2">Spesialperiode</span><span style="flex:4">Turneringsperiode</span><span style="flex:1">Evaluering</span></div><div class="prikker"><i class="paa"></i><i class="paa"></i><i></i><i></i><i></i><i></i></div>${kilde("Prikk: samling. Fylt: gjennomført.")}`)}
+    ${kort(12, "Terminliste", tabell(["Samling","Dato","Sted","Påmeldt","Testdager"], [["Høstsamling Oslo","07.–09.11","Oslo GK","14 av 16","2"],["Vintersamling Spania","04.–11.01","La Manga","—","1"],["Vårsamling","20.–22.03","Larvik GK","—","1"]]))}
+  </div>`) },
+
+manedsplan: { gruppe: "Samlinger og testing", navn: "Månedsplan", notat: "Måneden med gruppeøkter, perioder, samlinger og turneringer. Hovedtall: gruppeøkter i måneden. Desktop: kalender med sju kolonner. Mobil: bare dager med innhold, som liste.",
+  html: () => SKALL("Samlinger og testing", "Månedsplan", `${helt("November 2026", `${ht("12", "gruppeøkter · 1 samling · 2 turneringer")}`)}${FANER(SAM_F, "Månedsplan")}
+  <div class="flate">
+    ${kort(12, "Uke 45 <span class='svak'>‹ forrige · neste ›</span>", `<div class="uke"><div><b>Man 3</b><span class="blokk">Gruppeøkt TEK</span></div><div class="tom"><b>Tir 4</b></div><div><b>Ons 5</b><span class="blokk">Gruppeøkt FYS</span></div><div class="tom"><b>Tor 6</b></div><div><b>Fre 7</b><span class="blokk">Samling Oslo</span></div><div><b>Lør 8</b><span class="blokk">Samling · testdag</span></div><div><b>Søn 9</b><span class="blokk">Samling</span></div></div><div class="filtre"><span class="chip paa">Måned</span><span class="chip">Liste</span></div>`)}
+  </div>`) },
+
+fellestesting: { gruppe: "Samlinger og testing", navn: "Fellestesting", notat: "Testdagene på samlingene. Hovedtall: deltakere som har tatt minstekravet. Skoler med under tre spillere slås sammen. Treneren fører teknikk- og PEI-tester på scorekortet.",
+  html: () => SKALL("Samlinger og testing", "Fellestesting", `${helt("Testdag · Høstsamling Oslo · 08.11", `${ht("9 av 14", "har tatt minstekravet")}`)}${FANER(SAM_F, "Fellestesting")}
+  <div class="flate">
+    ${kort(4, "Minstekrav per klasse", `${rad("Elite", "5 tester")}${rad("J1", "4 tester")}${rad("J2", "3 tester")}<span class="knapp">Start føring</span>`)}
+    ${kort(8, "Deltakere", tabell(["Spiller","Klasse","Tatt","Status"], [["Sigrid Holm","J1","4 av 4","Ferdig"],["Mathias Berg","Elite","3 av 5","Pågår"],["Ella Strand","J1","0 av 4","Ikke startet"]]))}
+    ${kort(12, "Per skole", `${rad("WANG Oslo", "6 spillere · median Wedge Gate 22")}${rad("NTG Bærum", "4 spillere · median Wedge Gate 20")}${rad("Andre skoler (slått sammen)", "4 spillere")}`)}
+  </div>`) },
+
+gruppeanalyse: { gruppe: "Samlinger og testing", navn: "Gruppeanalyse", notat: "Velg test eller testdag; rangert liste. Hovedtall: median for gruppa. Bare spillere som deler tester vises med navn; resten telles.",
+  html: () => SKALL("Samlinger og testing", "Gruppeanalyse", `${helt("Gruppeanalyse", `${ht("22", "median Wedge Gate · 12 spillere")}`)}${FANER(SAM_F, "Gruppeanalyse")}
+  <div class="flate">
+    ${kort(12, "", `<div class="filtre"><span class="seksjonsnavn" style="align-self:center">Test</span><span class="chip paa">Wedge Gate</span><span class="chip">Driver Basic</span><span class="chip">Putt 1–3 m</span><span class="seksjonsnavn" style="align-self:center">Testdag</span><span class="chip">08.11 Oslo</span><span class="chip paa">Siste resultat</span></div>`)}
+    ${kort(12, "Rangert", tabell(["Spiller","Klasse","Dato","Poeng"], [["Mathias Berg","Elite","14.10","31 / 36"],["Sigrid Holm","J1","14.10","24 / 36"],["Henrik Aas","Elite","02.10","22 / 36"]]) + kilde("2 spillere har ikke delt tester og telles bare i medianen."))}
+  </div>`) },
+
+wangtester: { gruppe: "Samlinger og testing", navn: "WANG-tester", notat: "WANG-elevers testresultater (opptaksavtalen). Hovedtall: elever med samtykke. Uten gyldig samtykke: «Ingen tilgang», aldri tom liste.",
+  html: () => SKALL("Samlinger og testing", "WANG-tester", `${helt("WANG Toppidrett", `${ht("38", "elever med testsamtykke · 4 skoler")}`)}${FANER(SAM_F, "WANG-tester")}
+  <div class="flate">
+    ${kort(12, "", `<div class="filtre"><span class="chip paa">Alle skoler</span><span class="chip">WANG Oslo</span><span class="chip">WANG Fredrikstad</span><span class="chip">Siste 90 dager</span></div>`)}
+    ${kort(12, "Resultater", tabell(["Elev","Skole","Test","Dato","Resultat"], [["Elev A Strand","WANG Fredrikstad","Driver Basic","10.10","36 p"],["Elev B Dahl","WANG Oslo","Putt 1–3 m","09.10","8 / 10"]]) + kilde("Side 1 av 3 · 50 per side"))}
+  </div>`) },
+
+/* ---------------- Turneringer ---------------- */
+turneringer: { gruppe: "Turneringer", navn: "Turneringer", notat: "Kommende og fullførte turneringer med TN-spillere. Hovedtall: turneringer med TN-spillere de neste 30 dagene. Påmeldingsfrist først.",
+  html: () => SKALL("Turneringer", "Turneringer", `${helt("Turneringer", `${ht("4", "turneringer de neste 30 dagene")}`)}${FANER(TUR_F, "Turneringer")}
+  <div class="flate">
+    ${kort(12, "", `<div class="filtre"><span class="chip paa">Kommende</span><span class="chip">Fullførte</span><span class="chip">Bare A-turneringer</span></div>` + tabell(["Turnering","Dato","Sted","TN-spillere","Frist"], [["Srixon Tour finale","01.11","Hvaler","6","Stengt"],["Spanish Junior Open","14.02","Madrid","2","20.01"],["Junior Orange Bowl","28.12","Miami","1","01.12"]]))}
+  </div>`) },
+
+livewatch: { gruppe: "Turneringer", navn: "Live Watch", notat: "Turneringer som pågår nå. Hovedtall: TN-spillere på banen. Ingen automatisk oppdatering som flytter rader mens treneren leser; «Oppdater» viser tidspunkt.",
+  html: () => SKALL("Turneringer", "Live Watch", `${helt("Live · oppdatert 14:32", `${ht("5", "TN-spillere på banen")}`)}${FANER(TUR_F, "Live Watch")}
+  <div class="flate">
+    ${kort(6, "Titleist Junior Open · runde 2", `${rad("Mathias Berg", "−3 · T4 · hull 14")}${rad("Ella Strand", "+2 · T18 · hull 11")}${rad("Henrik Aas", "E · T9 · ferdig")}<span class="knapp kontur">Oppdater</span>`)}
+    ${kort(6, "Srixon Tour 7 · runde 1", `${rad("Sigrid Holm", "+1 · T6 · hull 9")}${rad("Ingrid Vik", "+4 · T21 · hull 7")}${kilde("Kilde: GolfBox via pipelines. Bare brutto.")}`)}
+  </div>`) },
+
+uttak: { gruppe: "Turneringer", navn: "Uttak", notat: "Tre uttakskriterier; kriterium 3 «Prosess og adferd» vurderes 1–5 av treneren. Hovedtall: dager til frist. Treneren forbereder; uttaket er sportssjefens beslutning.",
+  html: () => SKALL("Turneringer", "Uttak", `${helt("Uttak · Junior-NM lag", `${ht("2", "dager til frist · 4 plasser")}`)}${FANER(TUR_F, "Uttak")}
+  <div class="flate">
+    ${kort(4, "Kriteriene", `${rad("1 Resultater 2026", "brutto snitt")}${rad("2 Ranking", "WAGR")}${rad("3 Prosess og adferd", "1–5")}`)}
+    ${kort(8, "Kandidater", tabell(["Spiller","Snitt","WAGR","Prosess"], [["Mathias Berg","72,1","188","5"],["Henrik Aas","72,9","326","4"],["Sigrid Holm","73,4","412","—"]]))}
+    ${kort(12, "Prosess og adferd · Sigrid Holm", `<div class="skala"><span>1</span><span>2</span><span>3</span><span class="paa">4</span><span>5</span></div><span class="knapp">Lagre vurdering</span>`)}
+  </div>`) },
+
+rangliste: { gruppe: "Turneringer", navn: "Rangliste", notat: "TN-gruppas spillere i år: starter, snittplass, brutto snitt. Hovedtall: beste brutto snitt. Bare brutto, fra HQ-resultatene.",
+  html: () => SKALL("Turneringer", "Rangliste", `${helt("Rangliste 2026", `${ht("72,1", "beste brutto snitt · Mathias Berg")}`)}${FANER(TUR_F, "Rangliste")}
+  <div class="flate">
+    ${kort(12, "", `<div class="filtre"><span class="chip paa">Alle</span><span class="chip">Damer</span><span class="chip">Herrer</span></div>` + tabell(["Spiller","Starter","Snittplass","Brutto snitt"], [["Mathias Berg","15","6,2","72,1"],["Henrik Aas","13","8,0","72,9"],["Sigrid Holm","14","5,1","73,4"]]) + kilde("Kilde: NGF og GolfBox via AK Golf HQ, bare brutto, 20.10.2026."))}
+  </div>`) },
+
+/* ---------------- Referanse ---------------- */
+refSammenlign: { gruppe: "Referanse", navn: "Sammenlign", notat: "To spillere side om side: WAGR, score, poeng, felles turneringer. Hovedtall: forskjell i WAGR-plass. Fra teamnorwayref B2.",
+  html: () => SKALL("Referanse", "Referanse", `${helt("Referanse · Sammenlign", `${ht("138", "plasser mellom dem på WAGR")}`)}${FANER(REF_F, "Sammenlign")}
+  <div class="flate">
+    ${kort(6, "", `<div class="felt">Spiller 1: Mathias Berg</div><div class="felt">Spiller 2: Henrik Aas</div>`)}
+    ${kort(6, "Side om side", `${rad("WAGR", "188 · 326")}${rad("Poeng snitt", "602,4 · 488,1")}${rad("Brutto snitt 2026", "72,1 · 72,9")}${rad("Felles turneringer", "6")}${rad("Foran i felles", "4 · 2")}`)}
+    ${kort(12, "Felles turneringer", tabell(["Turnering","Dato","Mathias","Henrik"], [["Titleist Junior Open","21.09","T4","T9"],["Junior-NM","30.08","2","T6"]]) + kilde(WAGR))}
+  </div>`) },
+
+refSok: { gruppe: "Referanse", navn: "Søk", notat: "Søk i alle norske spillere med resultater. Hovedtall: treff. Maks 50 treff. Navn for alle aldre bak trenerinnloggingen følger beslutningen 22.10 (PR #1602); til den er i main vises bare født 2005 og eldre.",
+  html: () => SKALL("Referanse", "Referanse", `${helt("Referanse · Søk", `${ht("23", "treff på «berg»")}`)}${FANER(REF_F, "Søk")}
+  <div class="flate">
+    ${kort(12, "", `<div class="felt">berg</div><div class="filtre"><span class="chip">Klubb</span><span class="chip">Fødselsår</span><span class="chip">Tour</span><span class="chip">Kjønn</span></div>`)}
+    ${kort(12, "Treff", tabell(["Navn","Født","Klubb","Starter 2026","Brutto snitt"], [["Mathias Berg","2005","Oslo GK","15","72,1"],["Spiller D Berg","2003","Borre GK","9","74,8"],["Spiller E Bergli","2001","Stiklestad GK","4","77,2"]]) + kilde("Kilde: AK Golf HQ, resultater fra NGF, GolfBox-tourene og Junior Tour, bare brutto."))}
+  </div>`) },
+
+refPlanlegger: { gruppe: "Referanse", navn: "Planlegger", notat: "Turneringsplan 2027 for WAGR-spillere uten HQ-konto. Spillere med HQ-konto planlegges i IUP › Turneringsplan; raden lenker dit. Alle anslag merkes ESTIMAT.",
+  html: () => SKALL("Referanse", "Referanse", `${helt("Referanse · Planlegger 2027", `${ht("35", "norske herrer kan planlegges")}`)}${FANER(REF_F, "Planlegger")}
+  <div class="flate">
+    ${kort(4, "Spiller", `<div class="felt">Spiller A Nordvik</div>${rad("WAGR nå", "48")}${radM("HQ-konto", "Nei", "strek")}`)}
+    ${kort(8, "Forslag 2027", tabell(["Turnering","Dato","Topp 10","Forventet plass"], [["Lytham Trophy","05.05","ESTIMAT 44 %","9"],["Brabazon Trophy","16.06","ESTIMAT 31 %","14"],["European Amateur","24.06","ESTIMAT 12 %","28"]]) + `<span class="knapp">Lagre plan</span>` + kilde(WAGR + " Anslag: pipelines, Power-historikk."))}
+  </div>`) },
+
+refNorsk: { gruppe: "Referanse", navn: "Norsk golf", notat: "Samlede tall først: nivå A–K, klubber, regioner, tourer. Hovedtall: aktive spillere med brutto-resultat i år. Navn i spillerlista følger beslutningen 22.10 (PR #1602). Ingen celle som peker ut én junior i klubb- og regionvisningene.",
+  html: () => SKALL("Referanse", "Referanse", `${helt("Referanse · Norsk golf 2026", `${ht("4 812", "spillere med brutto-resultat i år")}`)}${FANER(REF_F, "Norsk golf")}
+  <div class="flate">
+    ${kort(12, "", `<div class="underfaner"><span class="paa">Spillere</span><span>Klubber</span><span>Regioner</span><span>Tourer</span></div><div class="filtre"><span class="chip">Tour</span><span class="chip">År</span><span class="chip">Kjønn</span><span class="chip">Alder</span><span class="chip">Region</span></div>`)}
+    ${kort(4, "Nivå A–K", `${rad("A", "41")}${rad("B", "118")}${rad("C", "402")}${rad("D–F", "1 640")}${rad("G–K", "2 611")}${kilde("Nivåtallene er ikke vedtatt; fordelingen er merket ESTIMAT.")}`)}
+    ${kort(8, "Spillere", tabell(["Navn","Klubb","Starter","Snitt","Justert"], [["Spiller F Lund","Oslo GK","18","71,4","70,9"],["Spiller G Ruud","Bærum GK","12","72,0","71,8"]]) + kilde("Kilde: NGF og GolfBox via pipelines (norsk_golf), bare brutto, 20.10.2026."))}
+  </div>`) },
+
+refHcp: { gruppe: "Referanse", navn: "HCP Norge", notat: "Normkurve og forventet fremgang for juniorer 8–18 år, klubbeffekt og søk. Hovedtall: juniorer i grunnlaget. Datakilden (Excel-uttaket) må inn i basen før skjermen bygges. Navn i søket følger beslutningen 22.10 (PR #1602).",
+  html: () => SKALL("Referanse", "Referanse", `${helt("Referanse · HCP Norge", `${ht("9 340", "juniorer i grunnlaget")}`)}${FANER(REF_F, "HCP Norge")}
+  <div class="flate">
+    ${kort(12, "", `<div class="underfaner"><span class="paa">Oversikt</span><span>Klubber</span><span>Regioner</span><span>Søk</span></div>`)}
+    ${kort(8, "Normkurve: HCP etter alder", `<svg class="graf" viewBox="0 0 640 200" role="img" aria-label="Median HCP synker med alder"><g stroke="#CFCFCF"><line x1="40" y1="20" x2="630" y2="20"/><line x1="40" y1="100" x2="630" y2="100"/><line x1="40" y1="180" x2="630" y2="180"/></g><g font-family="IBM Plex Mono, monospace" font-size="11" fill="#6B6B6B"><text x="10" y="24">54</text><text x="10" y="104">27</text><text x="16" y="184">0</text><text x="50" y="198">8 år</text><text x="590" y="198">18 år</text></g><polyline fill="none" stroke="#111" stroke-width="2" points="60,30 160,60 260,95 360,120 460,140 560,152 620,158"/><polyline fill="none" stroke="#888" stroke-width="2" stroke-dasharray="6 4" points="60,50 160,90 260,125 360,148 460,162 560,170 620,174"/></svg><div class="filtre"><span class="chip">— median</span><span class="chip">- - beste 10 %</span></div>`)}
+    ${kort(4, "Klubbeffekt", `${rad("Største positive", "+2,1 slag")}${rad("Klubber i grunnlaget", "142")}${kilde("Kilde: NGF «Grunndata for Utviklingskurven», uttak 2026.")}`)}
+  </div>`) },
+
+refTester: { gruppe: "Referanse", navn: "Tester", notat: "Median og antall per test, uten navn. Aldri «beste». Celler med under 5 resultater vises «—». Erstatter /referansenivaer.",
+  html: () => SKALL("Referanse", "Referanse", `${helt("Referanse · Tester", `${ht("1 284", "testresultater i grunnlaget")}`)}${FANER(REF_F, "Tester")}
+  <div class="flate">
+    ${kort(12, "", `<div class="filtre"><span class="chip paa">Golfslag</span><span class="chip">Teknikk</span><span class="chip">Fysisk</span><span class="seksjonsnavn" style="align-self:center">Klasse</span><span class="chip paa">Alle</span><span class="chip">Elite</span><span class="chip">J1</span></div>` + tabell(["Test","Median","Antall"], [["Driver Basic","38 p","212"],["Inspill Basic","34 p","198"],["9 hull lengde","—","3"]]) + kilde("Bare spillere som har delt tester. Ingen celle under 5."))}
+  </div>`) },
+
+/* ---------------- Fag og administrasjon ---------------- */
+arsplan: { gruppe: "Fag og administrasjon", navn: "Årsplan", notat: "Gruppas årsplan (Workbench). Perioder i bånd, uke for uke under. Hovedtall: uker igjen av perioden. Endring i gruppeplanen oppdaterer medlemmenes arvede uker, ikke det spilleren har merket «Egen».",
+  html: () => SKALL("Fag og administrasjon", "Årsplan", `${helt("Årsplan 2026/27 · Team Norway Junior", `${ht("5", "uker igjen av Spesialperiode")}`)}${FANER(FAG_F, "Årsplan")}
+  <div class="flate">
+    ${kort(12, "Periodene", `<div class="periodebaand"><span style="flex:1">Ferie</span><span style="flex:4">Grunnperiode</span><span style="flex:3">Spesialperiode</span><span style="flex:5">Turneringsperiode</span><span style="flex:1">Evaluering</span><span style="flex:1">Restitusjon</span></div><span class="knapp kontur">Endre periode</span>`)}
+    ${kort(8, "Uke 43, fordelt fra perioden", `${akseStolpe([5,15,30,30,20])}${rad("Lagt inn mot fordelt", "8 t / 10 t")}<span class="lenke">Åpne uka</span>`)}
+    ${kort(4, "Medlemmer", `${rad("Følger gruppeplanen", "11")}${rad("Har «Egen» uke", "3")}`)}
+  </div>`) },
+
+protokoller: { gruppe: "Fag og administrasjon", navn: "Testprotokoller", notat: "De 19 testene i tre deler, med oppsett, slag og poeng. Hovedtall: tester i batteriet. Trykk åpner protokollen på egen side.",
+  html: () => SKALL("Fag og administrasjon", "Testprotokoller", `${helt("Testprotokoller", `${ht("19", "tester i tre deler")}`)}${FANER(FAG_F, "Testprotokoller")}
+  <div class="flate">
+    ${kort(4, "Golfslag", `${rad("Driver Basic", "Prioritert")}${rad("Inspill Basic", "Prioritert")}${rad("Wedge Variation", "Prioritert")}${rad("8-balls variation", "Prioritert")}${rad("Putt 1–3 m", "Prioritert")}<span class="lenke">+ 3 til</span>`)}
+    ${kort(4, "Teknikk", `${rad("Driver Gate", "X / 6 OK")}${rad("Wedge Gate", "40/50/60 m · maks 36")}${rad("Putt Gate", "X / 10 OK")}${rad("Nærspill Gate", "maks 36")}${rad("VISA Express", "maks 36")}${rad("Putt Speed 1 × 5", "")}`)}
+    ${kort(4, "Fysisk", `${rad("Benkpress", "kg")}${rad("Markløft trapbar", "kg")}${rad("Lengdehopp", "cm")}${rad("Rotasjonskast", "m")}${rad("Club Speed", "mph")}`)}
+  </div>`) },
+
+fagapparat: { gruppe: "Fag og administrasjon", navn: "Fagapparat", notat: "Fagteamet med rolle og kontakt. Hovedtall: aktive trenere. E-post vises for sportssjef.",
+  html: () => SKALL("Fag og administrasjon", "Fagapparat", `${helt("Fagapparat", `${ht("6", "aktive trenere")}`)}${FANER(FAG_F, "Fagapparat")}
+  <div class="flate">
+    ${["Eva Lie|Trener · Junior","Ola Brekke|Sportssjef","Kari Nes|Fysisk trener","Per Dal|Trener · Elite"].map(x => { const [n, r] = x.split("|"); return kort(3, "", `<div style="display:flex;gap:10px;align-items:center"><div class="avatar">${n.split(" ").map(s=>s[0]).join("")}</div><div><b>${n}</b><div class="svak">${r}</div></div></div>`); }).join("")}
+  </div>`) },
+
+lisens: { gruppe: "Fag og administrasjon", navn: "Lisens og status", notat: "Lisens, helseattest og antidoping per spiller i år. Hovedtall: spillere med alt i orden. Manglende vises som merke med ord, aldri bare farge.",
+  html: () => SKALL("Fag og administrasjon", "Lisens og status", `${helt("Lisens og status 2026", `${ht("11 av 14", "har alt i orden")}`)}${FANER(FAG_F, "Lisens og status")}
+  <div class="flate">
+    ${kort(12, "", tabell(["Spiller","Lisens","Helseattest","Antidoping"], [["Sigrid Holm","OK","OK","OK"],["Jonas Lunde","OK","Mangler","OK"],["Ingrid Vik","Mangler","—","Mangler"]]))}
+  </div>`) },
+
+tilgang: { gruppe: "Fag og administrasjon", navn: "Trenere og tilgang", notat: "Bare sportssjef. Legg til, endre rolle, avslutt. Hovedtall: trenere med tilgang. Avslutt bekreftes i dialog (rust i bygget).",
+  html: () => SKALL("Fag og administrasjon", "Trenere og tilgang", `${helt("Trenere og tilgang · bare sportssjef", `${ht("6", "trenere med tilgang")}`)}${FANER(FAG_F, "Trenere og tilgang")}
+  <div class="flate">
+    ${kort(4, "Legg til trener", `<div class="felt">E-post (@golfforbundet.no)</div><div class="filtre"><span class="chip paa">Trener</span><span class="chip">Assistent</span></div><span class="knapp">Legg til</span>`)}
+    ${kort(8, "Trenere", tabell(["Navn","Rolle","Gruppe","Fra"], [["Eva Lie","Trener","Junior","03.2025"],["Per Dal","Trener","Elite","01.2024"],["Kari Nes","Assistent","Begge","08.2026"]]))}
+  </div>`) },
+
+inviter: { gruppe: "Fag og administrasjon", navn: "Inviter spiller", notat: "Bare sportssjef. Inviter til TN-gruppa og følg status. Hovedtall: invitasjoner som venter. Ingen e-post sendes fra wireframe-teksten; invitasjonen går fra HQ når sportssjef trykker.",
+  html: () => SKALL("Fag og administrasjon", "Inviter spiller", `${helt("Inviter spiller", `${ht("3", "invitasjoner venter på svar")}`)}${FANER(FAG_F, "Inviter spiller")}
+  <div class="flate">
+    ${kort(4, "Ny invitasjon", `<div class="felt">Spillerens e-post</div><div class="filtre"><span class="chip paa">Junior</span><span class="chip">Elite</span></div><span class="knapp">Inviter</span>`)}
+    ${kort(8, "Status", tabell(["Spiller","Gruppe","Sendt","Status"], [["Ingrid Vik","Junior","12.10","Venter"],["Spiller H Moe","Elite","02.10","Godtatt"]]))}
+  </div>`) },
+
+datagolf: { gruppe: "Fag og administrasjon", navn: "Data Golf", notat: "Bare ADMIN (Anders). Vises ikke i menyen for andre. «Powered by Data Golf» der tallene står. Ingen eksport.",
+  html: () => SKALL("Fag og administrasjon", "Data Golf", `${helt("Data Golf · bare ADMIN", `${ht("+1,8", "SG total · beste norske proff siste 12 mnd")}`)}${FANER(FAG_F, "Data Golf")}
+  <div class="flate">
+    ${kort(6, "Norske på tour", `${rad("Proff A", "+1,8")}${rad("Proff B", "+0,9")}${rad("Proff C", "+0,4")}`)}
+    ${kort(6, "Spiller mot proff", `<div class="felt">Velg spiller</div>${kilde("Powered by Data Golf. Vises bare for ADMIN; aldri utad.")}`)}
+  </div>`) },
+
+/* ---------------- Tilstander ---------------- */
+tilstander: { gruppe: "Tilstander", navn: "Tom, laster og feil", notat: "Samme fire tilstander på alle skjermer, i samme kort som innholdet. Tom sier hva som mangler og hva treneren kan gjøre. Laster: grå streker i kortets form, ingen spinner over hele siden. Feil: hva som skjedde og «Prøv igjen». Manglende tall er alltid «—».",
+  html: () => SKALL("Spillere", "IUP", `${IUP_TOPP("Tester")}${FANER(IUP_F, "Tester")}
+  <div class="flate">
+    <div class="tilstand k6"><b>Tom</b><span>Sigrid har ikke tatt noen tester ennå.</span><span class="svak">Første fellestesting er 08.11 på Høstsamling Oslo.</span><span class="knapp kontur">Se testdagen</span></div>
+    <div class="tilstand k6"><b>Laster</b><div class="skjelett" style="width:70%"></div><div class="skjelett"></div><div class="skjelett" style="width:85%"></div><div class="skjelett" style="width:60%"></div></div>
+    <div class="tilstand feil k6"><b>Feil</b><span>Testene kunne ikke hentes akkurat nå. Ingenting er slettet.</span><span class="knapp">Prøv igjen</span></div>
+    <div class="lås k6"><b>Ikke delt</b><span>Sigrid deler «Tester og resultater», ikke «Komplett profil». Teknisk plan og Trening vises når hun deler mer.</span></div>
+  </div>`) },
+};
+
+const visning = document.getElementById("visning");
+const velger = document.getElementById("velger");
+const GRUPPER = ["IUP", "Samlinger og testing", "Turneringer", "Referanse", "Fag og administrasjon", "Tilstander"];
+const knapper = [];
+GRUPPER.forEach(g => {
+  const rad = document.createElement("div"); rad.className = "gruppe"; rad.setAttribute("role", "group"); rad.setAttribute("aria-label", g);
+  const lbl = document.createElement("span"); lbl.textContent = g; rad.appendChild(lbl);
+  Object.entries(S).filter(([, v]) => v.gruppe === g).forEach(([id, v]) => {
+    const b = document.createElement("button"); b.type = "button"; b.textContent = v.navn; b.dataset.id = id;
+    b.addEventListener("click", () => { tegn(id); try { history.replaceState(null, "", "#" + id); } catch (e) {} });
+    rad.appendChild(b); knapper.push(b);
+  });
+  velger.appendChild(rad);
+});
+
+function tegn(id) {
+  knapper.forEach(b => b.setAttribute("aria-pressed", b.dataset.id === id ? "true" : "false"));
+  const s = S[id]; const h = s.html();
+  visning.innerHTML = `<h2 class="skjermtittel">${s.gruppe} › ${s.navn}</h2><p class="notat">${s.notat}</p>
+  <div class="rammer"><div class="rammeboks"><div class="rammeetikett">1280 px (skalert)</div><div class="skalering"><div class="ramme pc">${h}</div></div></div>
+  <div class="rammeboks mobboks"><div class="rammeetikett">390 px</div><div class="ramme mob">${h}</div></div></div>`;
+  tilpass();
+}
+function tilpass() {
+  document.querySelectorAll(".skalering").forEach(boks => {
+    const r = boks.querySelector(".ramme");
+    const skala = Math.min(1, boks.clientWidth / 1280);
+    r.style.transform = `scale(${skala})`;
+    boks.style.height = (r.offsetHeight * skala) + "px";
+  });
+}
+window.addEventListener("resize", tilpass);
+window.addEventListener("hashchange", () => { const id = location.hash.slice(1); if (S[id]) tegn(id); });
+const start = (location.hash || "").slice(1);
+tegn(S[start] ? start : "iupTplan");
+</script>

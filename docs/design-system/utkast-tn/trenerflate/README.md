@@ -4,7 +4,7 @@ Etappe 2 i [prompt-tn-trenerflate-2026-10-21.md](../../../planer/prompt-tn-trene
 Beslutning: `.claude/rules/beslutninger.md` §TEAM NORWAY-TRENERFLATEN BYGGES I HQ ETTER TEAMNORWAYREF.
 Registeret med én rad per side: [tn-trenerflate-register-2026-10-21.md](../../../planer/tn-trenerflate-register-2026-10-21.md).
 
-Status: **klarsignal til bygging 21.10** (§TEAM NORWAY ER BARE FOR TRENERE).
+Status: **klarsignal til bygging 21.10** (§TEAM NORWAY ER BARE FOR TRENERE). Utkast 2 (22.10, §6) venter på port 7.
 
 Wireframes: [index.html](index.html) (privat artifact: https://claude.ai/artifact/DJHq9dKNNs8iCoyHZDptbF), svart-hvitt, syntetiske spillere og trenere. Hver skjerm i 1280 og 390 px med
 samme innhold. Målt 21.10 i 390, 1280 og 1920 px: ingen sidelengs rulling, ingen konsollfeil.
@@ -70,3 +70,13 @@ Sidekartet står i wireframes under «Meny og sidekart». Gamle adresser som sen
 
 Står i registeret, punkt 1–4: spillere i `/team-norway`, hvor PlayerHQ-lenken går, barnevern i Referanse
 (HCP Norge og Norsk golf viser navngitte juniorer), og om «beste» per test skal bort.
+
+## 6. Utkast 2 (22.10.2026): de resterende skjermene
+
+Wireframes: [utkast-2.html](utkast-2.html) (privat artifact: https://claude.ai/artifact/EvAKJdcygRpfMSKUPjGw1Y). Samme stil som
+utkast 1. 29 skjermer: IUP › Turneringsplan, Ranking, Trening, Tester, Teknisk plan, Fireukerssjekk · Samlinger og
+testing (fem faner) · Turneringer (fire faner) · Referanse › Sammenlign, Søk, Planlegger, Norsk golf, HCP Norge,
+Tester · Fag og administrasjon (sju faner) · Tom, laster og feil. Målt 22.10 i 390, 1280 og 1920 px: ingen sidelengs
+rulling, ingen node utenfor rammen, ingen konsollfeil.
+
+Plan, kartlegging og hvilke skjermer kodeøkta kan bygge etter nå: [tn-designloft-plan-2026-10-22.md](../../../planer/tn-designloft-plan-2026-10-22.md).
