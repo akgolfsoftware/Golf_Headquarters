@@ -20,8 +20,7 @@ export { TnSpillerutviklingVisning };
  *   - Formkurve, snittscore og prioriterte tester per rad (tegningen) er ikke med ennå: radene
  *     leses fra treningen spilleren har delt, ikke fra turneringsrunder og tester.
  *   - «Ikke delt» viser navn og offentlig WAGR-plass (Anders 22.10.2026). Plan, trening, tester,
- *     klubb og HCP krever fortsatt deling (delingslåsen). Radene er ikke lenker før den låste
- *     IUP-en finnes (neste pakke).
+ *     klubb og HCP krever fortsatt deling (delingslåsen). Raden åpner den låste IUP-en (#1605).
  *   - Spillere som deler, men ikke har planlagt tid siste fire uker, står i et eget
  *     bånd «Uten plan» i stedet for å regnes som at de følger planen.
  *   - Søket ligger i adressen (?q=) og virker uten JavaScript.

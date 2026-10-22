@@ -175,6 +175,7 @@ export function TnSpillerutviklingVisning({
                 {ikkeDelt.filter((a) => passerApen(a)).map((a) => (
                   <TnSpillerrad
                     key={a.id}
+                    href={`/team-norway/spiller/${a.id}/oversikt`}
                     status="ikkedelt"
                     initialer={initialer(a.navn)}
                     navn={a.navn}
