@@ -639,7 +639,7 @@ export type TnSpillerTilgang = {
  * brukeren. Gruppemedlemskap alene er ikke nok; plattformrollen må også
  * faktisk være COACH (eller platform-ADMIN, som fortsatt må ha navngitt deling).
  */
-function erTnPersonligDataLeser(kontekst: TnArbeidskontekst, bruker: TnBruker): boolean {
+export function erTnPersonligDataLeser(kontekst: TnArbeidskontekst, bruker: TnBruker): boolean {
   if (bruker.role === "ADMIN") return true;
   return bruker.role === "COACH" && (kontekst.rolle === "COACH" || kontekst.rolle === "ASSISTANT");
 }
