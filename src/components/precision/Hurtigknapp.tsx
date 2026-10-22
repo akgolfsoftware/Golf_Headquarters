@@ -13,6 +13,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState, type PointerEvent } from "react";
 import { Plus, type LucideIcon } from "lucide-react";
 import { Ikon } from "./pa";
+import { skjultVedRulling } from "./hurtigknapp-rulling";
 
 export type Hurtighandling = { id: string; label: string; icon: LucideIcon; iconName: string; href: string };
 
@@ -36,6 +37,7 @@ export function Hurtigknapp({ app, handlinger, bunn = 0 }: { app: "aos" | "phq";
   const [pos, setPos] = useState<Pos | null>(null);
   const [open, setOpen] = useState(false);
   const [drag, setDrag] = useState(false);
+  const [skjult, setSkjult] = useState(false);
   const st = useRef<{ sx: number; sy: number; ox: number; oy: number } | null>(null);
   const moved = useRef(false);
   const btn = useRef<HTMLButtonElement>(null);
@@ -58,6 +60,25 @@ export function Hurtigknapp({ app, handlinger, bunn = 0 }: { app: "aos" | "phq";
     window.addEventListener("resize", r);
     return () => { cancelAnimationFrame(start); window.removeEventListener("resize", r); };
   }, [key, bunn]);
+
+  useEffect(() => {
+    // Mobil: knappen glir ut av veien mens brukeren ruller nedover, og kommer tilbake ved opp-rulling eller stillstand.
+    const sist = new Map<EventTarget, number>();
+    sist.set(document, window.scrollY);
+    let tid: ReturnType<typeof setTimeout> | undefined;
+    const rull = (e: Event) => {
+      if (document.documentElement.clientWidth >= 900) return;
+      const el = e.target;
+      const y = el instanceof Element ? el.scrollTop : window.scrollY;
+      const forrige = sist.get(el as EventTarget) ?? y;
+      sist.set(el as EventTarget, y);
+      setSkjult((s) => skjultVedRulling(forrige, y, s));
+      clearTimeout(tid);
+      tid = setTimeout(() => setSkjult(false), 700);
+    };
+    document.addEventListener("scroll", rull, { capture: true, passive: true });
+    return () => { document.removeEventListener("scroll", rull, true); clearTimeout(tid); };
+  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -96,6 +117,7 @@ export function Hurtigknapp({ app, handlinger, bunn = 0 }: { app: "aos" | "phq";
   };
   const click = () => { if (moved.current) { moved.current = false; return; } setOpen((o) => !o); };
 
+  const rolig = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const [W, H] = vp();
   const mh = handlinger.length * 52 + 16;
   const hoyre = pos.x + MENU_W > W - EDGE;
@@ -104,7 +126,7 @@ export function Hurtigknapp({ app, handlinger, bunn = 0 }: { app: "aos" | "phq";
   return <>
     <button ref={btn} type="button" aria-label="Hurtighandlinger" aria-haspopup="menu" aria-expanded={open} data-fab={app}
       onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={up} onClick={click}
-      style={{ position: "fixed", zIndex: 120, left: pos.x, top: pos.y, width: SIZE, height: SIZE, borderRadius: "var(--radius)", border: "none", background: "var(--primary)", color: "var(--text-on-primary)", display: "grid", placeItems: "center", cursor: drag ? "grabbing" : "pointer", touchAction: "none", boxShadow: drag ? "var(--shadow-modal)" : "var(--shadow-card)", transition: drag ? "none" : "box-shadow 160ms var(--ease-out)" }}>
+      style={{ position: "fixed", zIndex: 120, left: pos.x, top: pos.y, opacity: skjult && !open && !drag ? 0 : 1, pointerEvents: skjult && !open && !drag ? "none" : "auto", transform: skjult && !open && !drag ? "scale(.8)" : "none", width: SIZE, height: SIZE, borderRadius: "var(--radius)", border: "none", background: "var(--primary)", color: "var(--text-on-primary)", display: "grid", placeItems: "center", cursor: drag ? "grabbing" : "pointer", touchAction: "none", boxShadow: drag ? "var(--shadow-modal)" : "var(--shadow-card)", transition: drag || rolig ? "none" : "box-shadow 160ms var(--ease-out), opacity 160ms var(--ease-out), transform 160ms var(--ease-out)" }}>
       <span style={{ display: "inline-flex", transform: open ? "rotate(45deg)" : "none", transition: "transform 160ms var(--ease-out)" }}><Ikon icon={Plus} size={24} name="plus" /></span>
     </button>
     {open && <div ref={menu} role="menu" aria-label="Hurtighandlinger"
