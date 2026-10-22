@@ -6,7 +6,7 @@ Anders 21.10: pipelines lagrer WAGR-tallene i nye tabeller i HQ-basen
 `scripts/add-wagr-ref-tabeller-2026-10-21.ts` (kjørt 21.10, RLS på alle fire).
 Referanse › WAGR (`/team-norway/referanse`) leser dem og viser «—» til de er fylt.
 
-Pipelines (`ak-golf-pipelines`, ukejobben etter `wagr-sync.yml` på onsdag, beslutninger.md §WAGR-REFERANSEN OPPDATERES HVER UKE) skriver fra de samme kildene som
+Pipelines (`ak-golf-pipelines`, ukejobben `wagr-ref.yml` torsdag 06:00 UTC, beslutninger.md §WAGR-REFERANSEN OPPDATERES HVER UKE) skriver fra de samme kildene som
 teamnorwayref (`pipelines/wagr_profiler`, konfig `konfig-teamnorwayref.json`).
 Ingen kolonner legges til fra pipelines-siden.
 

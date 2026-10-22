@@ -8,7 +8,7 @@ Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved kon
 
 Anders 22.10, svar på de to åpne spørsmålene etter Referanse › WAGR (#1594, pipelines #124): «1. Ja» (fast ukentlig oppdatering av WAGR-tallene) og «2. Alle skal vise navn» (punkt 5 i §TEAM NORWAY ER BARE FOR TRENERE).
 
-- **WAGR-tabellene i HQ (`wagr_ref_*`) oppdateres av en fast ukentlig jobb i `ak-golf-pipelines`**, ikke for hånd. WAGR publiserer tirsdag, og `wagr-sync.yml` kjører onsdag 08:00 UTC; referansejobben kjører etter den, så tallene er fra siste rankinguke. «Mandag» i spørsmålet var Claudes ord, ikke WAGRs rytme.
+- **WAGR-tabellene i HQ (`wagr_ref_*`) oppdateres av en fast ukentlig jobb i `ak-golf-pipelines`**, ikke for hånd. Jobben er `wagr-ref.yml` (pipelines #125–#127) og kjører torsdag 06:00 UTC, når ukas rangering er ute. WAGRs API oppgir ikke rangeringsdatoen, så tallene merkes med datoen de ble hentet. «Mandag» i spørsmålet var Claudes ord, ikke WAGRs rytme.
 - Jobben skriver bare til basen. Den publiserer aldri teamnorwayref (Anders 21.10: produksjonssiden byttes først når han sier fra).
 - **Navngitte juniorprofiler: alle vises med navn**, også under 18 år, i HCP Norge (søket, juniorer fra 8 år) og Norsk golf (registeret), som på teamnorwayref i dag.
 - Navnene vises bare i `/team-norway/*`, altså bak trenerinnlogging (§TEAM NORWAY ER BARE FOR TRENERE). Aldri på åpne sider, i eksport eller i AI-prompter. §Data («vises aldri åpent») står derfor uendret.
@@ -17,7 +17,7 @@ Anders 22.10, svar på de to åpne spørsmålene etter Referanse › WAGR (#1594
 
 **Arbeidet dette utløser:**
 
-1. **Ukentlig WAGR-referansejobb** (`ak-golf-pipelines`, ny `.github/workflows/wagr-ref.yml` eller et siste steg i `wagr-sync.yml`): henter ferske profiler fra WAGR (`python -m pipelines.wagr_profiler`), og skriver med `pipelines.wagr_profiler.skriv_ref_db --wagr-dato <rankinguka>`. Gruppekonfigen (`konfig-teamnorwayref.json`, i dag bare i lokal `.cache`) må ligge i repoet. Ferdig når én planlagt kjøring har skrevet til basen og `/team-norway/referanse` viser den nye rankinguka; feilet kjøring gir varsel i GitHub.
+1. **Ukentlig WAGR-referansejobb:** bygget i pipelines (`pipelines/wagr_profiler/ukejobb.py`, gruppelista i `ref_grupper.json`, `.github/workflows/wagr-ref.yml`). Feiler én profil, skrives ingenting. Ferdig når én planlagt torsdagskjøring har skrevet til basen og `/team-norway/referanse` viser den nye datoen.
 2. **HCP Norge og Norsk golf med navn** (`/team-norway/referanse`, punkt 4 i §TEAM NORWAY ER BARE FOR TRENERE): søket og registeret viser navn for alle aldre. Datakilden (`hcp/statistikk.json`, `hcp/spillere.json` fra `pipelines.hcp_utvikling.bygg`) må inn i basen først, som WAGR. Kjør ak-personvern før bygging. Ferdig når tallene stemmer med teamnorwayref og en test låser at en spiller eller forelder aldri får navnelista.
 
 ## TEAM NORWAY ER BARE FOR TRENERE, SPILLERE BRUKER BARE PLAYERHQ, OG REFERANSE BYGGES MED WAGR FØRST (Anders 21.10.2026, bindende)
