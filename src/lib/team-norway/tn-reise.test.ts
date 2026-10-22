@@ -18,7 +18,7 @@ test("reisen holder samme gruppe- og spiller-id gjennom poster og dokumenter", (
   assert.equal(TN_REISE[0]?.href, "/team-norway");
   assert.equal(tnGruppeHref("gruppe-tn"), "/team-norway/gruppe-tn");
   assert.equal(tnDokumenterHref("gruppe-tn"), "/team-norway/gruppe-tn/dokumenter");
-  assert.equal(tnSpillerpostHref("spiller-a"), "/team-norway/spiller/spiller-a");
+  assert.equal(tnSpillerpostHref("spiller-a"), "/team-norway/spiller/spiller-a/post");
   assert.equal(tnTestforingHref("putt-1-3m"), "/portal/tren/tester/team-norway?test=putt-1-3m");
   assert.deepEqual(
     TN_REISE.map((steg) => steg.steg),

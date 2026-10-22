@@ -17,6 +17,10 @@ import { ChevronLeft, MapPin } from "lucide-react";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-iup.css";
 import "@/styles/playerhq-ny-gameplan.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke4-skra.css";
 
 export type PH20BaneHull = { nr: number; par: number | null; lengde: number | null; slag: number };
 
@@ -32,14 +36,16 @@ export type PH20BaneProps = {
 export function PH20Bane({ baneId, navn, parSum, hull, kart }: PH20BaneProps) {
   const harHull = hull.length > 0;
   return (
-    <div className="phn phn-iup phn-gp" data-od-id="playerhq-gameplan-banekart">
-      <div className="topp">
-        <Link href="/portal/gameplan" className="tilbake"><ChevronLeft size={20} aria-hidden />Gameplan</Link>
-        <div>
-          <div className="phn-dato">Plan · gameplan · banekart</div>
-          <h1 className="phn-tittel">{navn}</h1>
-        </div>
-      </div>
+    <div className="phn phn-iup phn-gp phn-skra" data-od-id="playerhq-gameplan-banekart">
+      <SkraTopp
+        lav
+        etikett="Banekart"
+        bilde="/images/playerhq/spill-bane.jpg" bildePosisjon="50% 60%"
+        overlinje="Plan · gameplan · banekart"
+        tittel={navn}
+        handling={<span className="skra-topp-rad"><span className="skra-tilbake"><Link href="/portal/gameplan" className="tilbake"><ChevronLeft size={20} aria-hidden />Gameplan</Link></span></span>}
+      />
+      <SkraFlyt lav>
 
       <p className="phg-merknad">
         <MapPin className="phn-ikon" aria-hidden />
@@ -70,6 +76,7 @@ export function PH20Bane({ baneId, navn, parSum, hull, kart }: PH20BaneProps) {
           </section>
         )}
       </section>
+      </SkraFlyt>
     </div>
   );
 }

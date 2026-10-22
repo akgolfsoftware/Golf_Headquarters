@@ -110,9 +110,14 @@ mock.module("@/lib/prisma", {
         findFirst: async ({where}:{where:{id:string}}) => { const m = medlemmer.find(x=>x.userId===where.id && x.aktiv); return m ? {name:m.navn} : null; },
         findUnique: async ({ where }: { where: { id: string } }) => {
           const m = medlemmer.find((x) => x.userId === where.id);
-          return m ? { id: m.userId, name: m.navn, hcp: null, tier: "GRATIS" } : null;
+          return m ? { id: m.userId, name: m.navn, hcp: null, tier: "GRATIS", publicPlayer: wagrIder[m.userId] ? { wagrId: wagrIder[m.userId] } : null } : null;
         },
       },
+      wagrRefPlayer: {
+        findUnique: async ({ where }: { where: { wagrPlayerId: number } }) => wagrPlasser[where.wagrPlayerId] ?? null,
+      },
+      tournamentEntry: { findMany: async () => [] },
+      planAction: { findMany: async () => [] },
       testAssignment: {
         findMany: async ({ where }: { where: { playerId: string; status: string; testId?: { not: { startsWith: string } } } }) => {
           const prefiks = where.testId?.not.startsWith;
@@ -130,6 +135,8 @@ mock.module("@/lib/prisma", {
 });
 
 let profilDelt = true;
+let wagrIder: Record<string, string> = { "player-a": "4711" };
+const wagrPlasser: Record<number, { rank: number; wagrDate: Date }> = { 4711: { rank: 412, wagrDate: new Date(Date.UTC(2026, 9, 19)) } };
 mock.module("@/lib/deling/profil-lesing", { namedExports: {
   medNavngittProfil: async (_bruker: string, spillerId: string, _gruppe: string, les: (tx: unknown) => Promise<unknown>) => {
     if (!profilDelt || !medlemmer.some(m=>m.userId===spillerId && m.aktiv && m.role==="PLAYER")) return null;
@@ -169,6 +176,8 @@ let hentTnSpillerOvrigeTester: typeof import("./tn-arbeidsflate").hentTnSpillerO
 let hentTnSpillerOvrigTestDetalj: typeof import("./tn-arbeidsflate").hentTnSpillerOvrigTestDetalj;
 let hentTnSpillerAktivePlaner: typeof import("./tn-arbeidsflate").hentTnSpillerAktivePlaner;
 let hentTnSpillerAnalyseHub: typeof import("./tn-arbeidsflate").hentTnSpillerAnalyseHub;
+let hentTnSpillerIup: typeof import("./tn-arbeidsflate").hentTnSpillerIup;
+let hentTnSpillerAksefordeling: typeof import("./tn-arbeidsflate").hentTnSpillerAksefordeling;
 before(async () => {
   const mod = await import("./tn-arbeidsflate");
   hentTnSpillerTilgang = mod.hentTnSpillerTilgang;
@@ -178,10 +187,13 @@ before(async () => {
   hentTnSpillerOvrigTestDetalj = mod.hentTnSpillerOvrigTestDetalj;
   hentTnSpillerAktivePlaner = mod.hentTnSpillerAktivePlaner;
   hentTnSpillerAnalyseHub = mod.hentTnSpillerAnalyseHub;
+  hentTnSpillerIup = mod.hentTnSpillerIup;
+  hentTnSpillerAksefordeling = mod.hentTnSpillerAksefordeling;
 });
 
 beforeEach(() => {
   profilDelt = true;
+  wagrIder = { "player-a": "4711" };
   medlemmer = [
     { userId: "coach-1", role: "COACH", navn: "Coach", aktiv: true },
     { userId: "assistent-1", role: "ASSISTANT", navn: "Hjelpetrener", aktiv: true },
@@ -715,4 +727,55 @@ test("personlig TN-profil avvises uten navngitt deling, også etter tidligere op
   assert.equal(await hentTnSpillerTester(coach, "player-a"), null);
   assert.equal(await hentTnSpillerAktivePlaner(coach, "player-a"), null);
   assert.equal(await hentTnSpillerAnalyseHub(coach, "player-a"), null);
+});
+
+// Beslutningen 21.10 (§TEAM NORWAY-TRENERFLATEN BYGGES I HQ, punkt 4): en trener uten
+// delingssamtykke ser ikke spillerens IUP, tester eller trening.
+test("trener uten deling ser verken IUP, tester eller trening", async () => {
+  for (const trener of [
+    { id: "coach-1", role: "COACH" as const, name: "Coach" },
+    { id: "assistent-1", role: "COACH" as const, name: "Hjelpetrener" },
+  ]) {
+    profilDelt = false;
+    assert.equal(await hentTnSpillerIup(trener, "player-a"), null);
+    assert.equal(await hentTnSpillerTester(trener, "player-a"), null);
+    assert.equal(await hentTnSpillerAksefordeling(trener, "player-a"), null);
+  }
+});
+
+test("IUP-fanene med egne lesere låser med delingen før de leser", async () => {
+  const { readFileSync } = await import("node:fs");
+  for (const [side, leser] of [
+    ["evaluering", "hentTnEvalueringGrunnlag"],
+    ["teknisk-plan", "hentTnTekniskPlaner"],
+    ["teknisk-plan/[planId]", "hentTnTekniskPlanDetalj"],
+  ] as const) {
+    const kilde = readFileSync(new URL(`../../app/team-norway/spiller/[spillerId]/${side}/page.tsx`, import.meta.url), "utf8");
+    assert.match(kilde, new RegExp(`medTnSpillerData\\(bruker, spillerId, \\(\\) => ${leser}\\(`), side);
+  }
+});
+
+// Beslutningen 22.10 (§SPILLERLISTEN I TEAM NORWAY VISER DE ÅPNE TALLENE, punkt 2): en spiller i gruppa
+// uten deling gir låst IUP med navn og WAGR-plass, aldri 404 og aldri noe fra PlayerHQ.
+test("låst IUP: trener uten deling får bare navn og WAGR-plass", async () => {
+  const { hentTnIupLaast, hentTnIupDelt } = await import("./tn-iup-oversikt");
+  const coach = { id: "coach-1", role: "COACH" as const, name: "Coach" };
+  profilDelt = false;
+  const laast = await hentTnIupLaast(coach, "player-a");
+  assert.ok(laast);
+  assert.deepEqual(Object.keys(laast).sort(), ["kontekst", "navn", "wagr"]);
+  assert.equal(laast.navn, "Spiller A");
+  assert.equal(laast.wagr?.plass, 412);
+  assert.equal(await hentTnIupDelt(coach, "player-a"), null);
+  wagrIder = {};
+  assert.equal((await hentTnIupLaast(coach, "player-a"))?.wagr, null);
+});
+
+test("låst IUP: ingen lås for spillere utenfor gruppa eller for andre enn trenere", async () => {
+  const { hentTnIupLaast } = await import("./tn-iup-oversikt");
+  profilDelt = false;
+  assert.equal(await hentTnIupLaast({ id: "coach-1", role: "COACH", name: "Coach" }, "player-utmeldt"), null);
+  assert.equal(await hentTnIupLaast({ id: "coach-1", role: "COACH", name: "Coach" }, "ukjent"), null);
+  assert.equal(await hentTnIupLaast({ id: "spoofed-coach-gruppe", role: "PLAYER", name: "Spoofed" }, "player-a"), null);
+  assert.equal(await hentTnIupLaast({ id: "player-b", role: "PLAYER", name: "Spiller B" }, "player-a"), null);
 });

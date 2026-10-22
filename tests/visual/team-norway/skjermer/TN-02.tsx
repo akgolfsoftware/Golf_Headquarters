@@ -1,8 +1,9 @@
-/** Prøvefil for TN-02 IUP › Oversikt i retning «Skrå» (canvaset «Team Norway nøkkelskjermer», tavle 3). Syntetisk spiller. */
+/** Prøvefil for TN-02 IUP › Oversikt (pakke d, wireframes utkast-tn/trenerflate) og låst IUP uten deling. Syntetisk spiller. */
+import { TnIupLaastVisning } from "@/components/team-norway/skjermer/tn-iup-laast-visning";
 import { TnSpillerprofilVisning } from "@/components/team-norway/skjermer/tn-spillerprofil-visning";
 import type { TnArbeidskontekst } from "@/lib/domain/tn-arbeidsflate";
 
-export const sti = "/team-norway/spiller/s1/oversikt";
+export const sti = "/team-norway/spiller/s1";
 
 type Props = Parameters<typeof TnSpillerprofilVisning>[0];
 
@@ -42,11 +43,24 @@ const base: Props = {
   reg: { spillerId: "s1", lisensStatus: "BETALT", lisensBetaltDato: d(2026, 1, 8), helseattestUtloper: d(2027, 1, 31), antidopingSignert: d(2026, 2, 2) },
   iup: [],
   akser: { gjennomfort: { FYS: 11, TEK: 12, SLAG: 14, SPILL: 9, TURN: 2 }, planlagtTimer: 53, gjennomfortTimer: 48 },
+  delt: {
+    wagr: { plass: 412, dato: d(2026, 10, 19) },
+    nesteTurneringer: [
+      { navn: "Srixon Tour finale", dato: d(2026, 11, 1), merke: "Bekreftet" },
+      { navn: "Spanish Junior Open", dato: d(2027, 2, 14), merke: "Planlagt" },
+    ],
+    avslatteForslag: [{ avslatt: d(2026, 10, 19) }],
+  },
+  poster: [
+    { id: "p1", tekst: "Plan for vinterperioden\nVi starter med to TEK-økter i uka.", authorNavn: "Trener 1", createdAt: d(2026, 10, 16), kvittering: { totalt: 2, apnet: 2 } },
+    { id: "p2", tekst: "Pakkeliste høstsamling", authorNavn: "Trener 2", createdAt: d(2026, 10, 2), kvittering: { totalt: 2, apnet: 1 } },
+  ],
 };
 
 const Vis = (p: Partial<Props>) => <TnSpillerprofilVisning {...base} {...p} />;
 
 export const tilstander = {
   data: <Vis />,
-  "ikke-delt": <Vis akser={null} tester={null} profil={{ ...base.profil, turneringer: null, aaret: null }} reg={null} />,
+  "uten-data": <Vis akser={null} tester={null} delt={null} poster={[]} profil={{ ...base.profil, turneringer: null, aaret: null }} reg={null} />,
+  laast: <TnIupLaastVisning brukerNavn="Trener 1" kontekst={kontekst} navn="Spiller C" wagr={{ plass: 1240, dato: d(2026, 10, 19) }} aar={2026} />,
 };

@@ -46,7 +46,8 @@ export type TnAktivSide =
   | "apparatet"
   | "analyse"
   | "datagolf"
-  | "workbench";
+  | "workbench"
+  | "profil";
 
 function lenke(label: string, href: string, id: TnAktivSide, aktiv: TnAktivSide): TnMenyLenke {
   return { label, href, aktiv: aktiv === id };
@@ -228,10 +229,10 @@ function TnRail({ grupper, bruker, orgNavn, orgUndertittel }: { grupper: TnMenyG
           </div>
         </details>
       ))}
-      <div className={s.bruker}>
+      <Link href="/team-norway/profil" className={s.bruker} aria-label={`Min profil, ${bruker.navn}`}>
         <span className={s.avatar} aria-hidden="true">{initialer(bruker.navn)}</span>
         <span><span className={s.brukerNavn}>{bruker.navn}</span><span className={s.brukerRolle}>{bruker.rolle}</span></span>
-      </div>
+      </Link>
     </nav>
   );
 }
@@ -279,28 +280,30 @@ export type TnSpillerFane = "post" | "oversikt" | "profil" | "tester" | "analyse
  * heter IUP i Team Norway). Rund avatar, overlinje som begynner med «IUP»,
  * navnet som tittel, og fanene i fast rekkefølge med rød strek under aktiv fane.
  * Fanen som i koden heter «evaluering», heter Fireukerssjekk.
- * Fasit: docs/design-system/utkast-tn/spillere.html (pakke 3).
+ * Rekkefølgen følger IUP-arket (wireframes docs/design-system/utkast-tn/trenerflate, §2):
+ * Oversikt · Turneringsplan · Ranking · Turneringer · Trening · Tester · Teknisk plan · Fireukerssjekk.
+ * Til Ranking, Turneringer og Trening er bygget (pakke e), står dagens Profil og Plan på plassen
+ * til fanen som erstatter dem, og Analyse ved Tester. Post er seksjonen «Poster» i Oversikt.
  *
  * `kanAdministrere` betyr her LESETILGANG til planfanene (COACH/ASSISTANT/ADMIN,
  * dvs. `!erSpiller`), ikke skrivetilgang. De underliggende rutene har egen skrivevakt.
  */
 export function TnSpillerFaner({ spillerId, kanAdministrere, aktiv }: { spillerId: string; spillerNavn?: string; aktiv: TnSpillerFane; kanAdministrere: boolean }) {
-  const kjernefaner: { id: TnSpillerFane; label: string; href: string }[] = [
-    { id: "oversikt", label: "Oversikt", href: `/team-norway/spiller/${spillerId}/oversikt` },
-    { id: "profil", label: "Profil", href: `/team-norway/spiller/${spillerId}/profil` },
-    { id: "post", label: "Post", href: `/team-norway/spiller/${spillerId}` },
-    { id: "tester", label: "Tester", href: `/team-norway/spiller/${spillerId}/tester` },
-    { id: "analyse", label: "Analyse", href: `/team-norway/spiller/${spillerId}/analyse` },
-    { id: "turneringsplan", label: "Turneringsplan", href: `/team-norway/spiller/${spillerId}/turneringsplan` },
+  const s = `/team-norway/spiller/${spillerId}`;
+  const faner: { id: TnSpillerFane; label: string; href: string }[] = [
+    { id: "oversikt", label: "Oversikt", href: s },
+    { id: "turneringsplan", label: "Turneringsplan", href: `${s}/turneringsplan` },
+    { id: "profil", label: "Profil", href: `${s}/profil` },
+    ...(kanAdministrere ? [{ id: "workbench" as const, label: "Plan", href: `/team-norway/workbench?spiller=${spillerId}` }] : []),
+    { id: "tester", label: "Tester", href: `${s}/tester` },
+    { id: "analyse", label: "Analyse", href: `${s}/analyse` },
+    ...(kanAdministrere
+      ? [
+          { id: "teknisk-plan" as const, label: "Teknisk plan", href: `${s}/teknisk-plan` },
+          { id: "evaluering" as const, label: "Fireukerssjekk", href: `${s}/evaluering` },
+        ]
+      : []),
   ];
-  const planfaner: { id: TnSpillerFane; label: string; href: string }[] = kanAdministrere
-    ? [
-        { id: "workbench", label: "Plan", href: `/team-norway/workbench?spiller=${spillerId}` },
-        { id: "teknisk-plan", label: "Teknisk plan", href: `/team-norway/spiller/${spillerId}/teknisk-plan` },
-        { id: "evaluering", label: "Fireukerssjekk", href: `/team-norway/spiller/${spillerId}/evaluering` },
-      ]
-    : [];
-  const faner = [...kjernefaner, ...planfaner];
   const nav = (
     <nav aria-label="IUP-faner" style={{ display: "flex", flexWrap: "wrap", borderBottom: `1px solid ${TN.ink200}` }}>
       {faner.map((f) => (

@@ -1,7 +1,7 @@
-import { TnSpillerprofilSkjerm } from "@/components/team-norway/skjermer/tn-spillerprofil-skjerm";
+import { redirect } from "next/navigation";
 
-/** TN-02. Fasit: Claude Design «Team Norway App delivery» (bc3e41fc), skjerm TN-02. */
-export default async function SpillerOversiktPage({ params }: { params: Promise<{ spillerId: string }> }) {
+/** Gammel adresse for IUP › Oversikt. Oversikt er nå /team-norway/spiller/[id] (wireframes §3). */
+export default async function SpillerOversiktVideresending({ params }: { params: Promise<{ spillerId: string }> }) {
   const { spillerId } = await params;
-  return <TnSpillerprofilSkjerm spillerId={spillerId} />;
+  redirect(`/team-norway/spiller/${spillerId}`);
 }
