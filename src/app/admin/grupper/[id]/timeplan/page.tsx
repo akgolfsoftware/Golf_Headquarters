@@ -11,7 +11,8 @@ import { aktivtTrenerMedlemskapWhere } from "@/lib/domain/grupper";
 import { prisma } from "@/lib/prisma";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { Topp } from "@/components/admin/agencyos-ny/ny";
-import { GruppeFanerNy } from "@/components/admin/precision/AG16Gruppe";
+import { GRUPPE_BILDE, GruppeFanerNy } from "@/components/admin/precision/AG16Gruppe";
+import "@/styles/agencyos-ny-a5-skra.css";
 import { AG16Timeplan, type GruppeTimeplanData } from "@/components/admin/precision/AG16Timeplan";
 import { opprettGruppeTrening, dupliserGruppeTime } from "../actions";
 import { osloLokalTilDato } from "@/lib/admin/gruppe-tid";
@@ -111,8 +112,8 @@ export default async function GruppeTimeplanPage({
 
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
-      <div className="agn-s">
-        <Topp tilbake={{ href: `/admin/grupper/${id}`, tekst: "Gruppa" }} dato={`${gruppe.name} · faste tider`} tittel="Faste tider"
+      <div className="agn-s agn-a5-under">
+        <Topp tilbake={{ href: `/admin/grupper/${id}`, tekst: "Gruppa" }} dato={`${gruppe.name} · faste tider`} tittel="Faste tider" bilde={GRUPPE_BILDE}
           ingress="Faste økter og samlinger for gruppa. Medlemmene får dem i planen." />
         <GruppeFanerNy groupId={id} aktiv="tider" />
         <AG16Timeplan data={data} onOpprett={opprettAction} onDupliser={dupliserAction} />

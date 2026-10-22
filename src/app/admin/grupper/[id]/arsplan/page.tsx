@@ -15,7 +15,8 @@ import { prisma } from "@/lib/prisma";
 import { gruppeInnsynWhere } from "@/lib/workbench/group-scope";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { KnappLenke, Tom, Topp } from "@/components/admin/agencyos-ny/ny";
-import { GruppeFanerNy } from "@/components/admin/precision/AG16Gruppe";
+import { GRUPPE_BILDE, GruppeFanerNy } from "@/components/admin/precision/AG16Gruppe";
+import "@/styles/agencyos-ny-a5-skra.css";
 import { hentGruppeKalenderData } from "@/lib/gruppe-kalender/hent-data";
 import { AG16Arsplan } from "@/components/admin/precision/AG16Arsplan";
 
@@ -42,12 +43,12 @@ export default async function GruppeArsplanPage({
 
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
-      <div className="agn-s">
-        <Topp tilbake={{ href: `/admin/grupper/${id}`, tekst: "Gruppa" }} dato={`${gruppe.name} · årsplan`} tittel="Årsplan"
+      <div className="agn-s agn-a5-under">
+        <Topp tilbake={{ href: `/admin/grupper/${id}`, tekst: "Gruppa" }} dato={`${gruppe.name} · årsplan`} tittel="Årsplan" bilde={GRUPPE_BILDE}
           handlinger={<KnappLenke href={`${basePath}/skoledata`}>Legg inn skoledata</KnappLenke>} />
         <GruppeFanerNy groupId={id} aktiv="arsplan" />
         {data ? (
-          <AG16Arsplan groupId={id} data={data} trinn={trinn ?? null} />
+          <div className="a5-hvit"><AG16Arsplan groupId={id} data={data} trinn={trinn ?? null} /></div>
         ) : (
           <Tom tittel="Ingen kalenderdata" tekst={`«${gruppe.name}» mangler faste treningstider eller perioder i systemet.`}
             handling={<KnappLenke href={`/admin/grupper/${id}/timeplan`}>Legg inn faste tider</KnappLenke>} />

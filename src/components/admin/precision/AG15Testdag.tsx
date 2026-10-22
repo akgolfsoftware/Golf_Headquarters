@@ -7,16 +7,27 @@
  * Planlegg: gruppe, dato, tid, sted og testene (bare de en trener fører: Teknikk og
  * PEI). «Legg inn testdagen» lager én stasjon per test med alle aktive spillere i
  * gruppa. Ingen e-post sendes. Testdagen: stasjonene med spillerne og status.
+ *
+ * Skrå-drakten 22.10 (bølge 2, pakke A5, skissen §4): lav topp med wedgebildet. Testdagen har
+ * deltakerne som liste og registreringen til høyre på PC (`?deltaker=`, samme skjema og samme
+ * lagring som /admin/tester/registrer), og «Til kontroll» med egenførte resultater i gruppa.
+ *
+ * Avvik: /admin/tester/testdag er planleggingsskjemaet. Appen har ingen liste over alle testdager.
  */
 import { useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ChevronLeft } from "lucide-react";
+import { Topp } from "@/components/admin/agencyos-ny/ny";
 import { Nedtrekk } from "@/components/precision/Nedtrekk";
+import { Kontroller } from "./AG15Oversikt";
+import { RegistrerSkjema, TEST_BILDE } from "./AG15Registrer";
+import type { TesterOversiktSide } from "@/lib/admin/tester/oversikt-data";
 import { planleggTestdag } from "@/app/admin/tester/testdag-actions";
-import type { StasjonsTest, TestdagVisning } from "@/lib/admin/tester/testdag-data";
+import type { RegistreringData, StasjonsTest, TestdagVisning } from "@/lib/admin/tester/testdag-data";
 import { BATTERI_DELER } from "@/lib/portal-tester/testbatteri";
 import "@/styles/agencyos-ny-testdag.css";
+import "@/styles/agencyos-ny-tester.css";
+import "@/styles/agencyos-ny-a5-skra.css";
 
 export function AG15Planlegg({ grupper, tester, startGruppe = null, idag }: {
   grupper: { id: string; navn: string; antall: number }[];
@@ -46,14 +57,11 @@ export function AG15Planlegg({ grupper, tester, startGruppe = null, idag }: {
     router.push(`/admin/tester/testdag/${r.eventId}`);
   });
 
-  return <div className="agn-s tdg">
-    <Link href="/admin/tester" className="ag-tilbake"><ChevronLeft className="ikon" aria-hidden />Tester</Link>
-    <header className="tdg-topp">
-      <h1>Planlegg testdag</h1>
-      <p className="tdg-ingress">Testdagen legges inn i Tester for gruppa. Ingen e-post sendes.</p>
-    </header>
-    {!grupper.length ? <p className="tdg-dempet">Du er ikke trener for noen gruppe ennå.</p> : <div className="tdg-to">
-      <div className="tdg-skjema">
+  return <div className="agn-s tdg agn-a5-under">
+    <Topp tilbake={{ href: "/admin/tester", tekst: "Tester" }} bilde={TEST_BILDE} dato="Tester · testdag" tittel="Planlegg testdag"
+      ingress="Testdagen legges inn i Tester for gruppa. Ingen e-post sendes." />
+    {!grupper.length ? <section className="seksjon" aria-label="Planlegg testdag"><p className="tdg-dempet">Du er ikke trener for noen gruppe ennå.</p></section> : <div className="tdg-to">
+      <div className="tdg-skjema a5-hvit">
         <div className="tdg-felt"><span className="etikett">Gruppe</span>
           <Nedtrekk etikett="Gruppe" bred valg={grupper.map((x) => ({ verdi: x.id, navn: x.navn, antall: String(x.antall) }))} verdi={gruppe} onVelg={setGruppe} /></div>
         <div className="tdg-rad">
@@ -87,26 +95,57 @@ export function AG15Planlegg({ grupper, tester, startGruppe = null, idag }: {
 
 const STATUS: Record<string, string> = { PENDING: "Venter", DONE: "Lagret", SKIPPED: "Hoppet over", ABSENT: "Ikke møtt" };
 
-export function AG15TestdagVis({ d }: { d: TestdagVisning }) {
+type TilKontroll = TesterOversiktSide["tilKontroll"][number];
+
+export function AG15TestdagVis({ d, valgt = null, tilKontroll = [] }: {
+  d: TestdagVisning;
+  /** Spilleren som registreres nå (`?deltaker=`), vist til høyre på PC og øverst på mobil. */
+  valgt?: RegistreringData | null;
+  /** Egenførte resultater i gruppa som venter på kontroll. */
+  tilKontroll?: readonly TilKontroll[];
+}) {
   const ferdig = d.stasjoner.reduce((a, s) => a + s.deltakere.filter((x) => x.status === "DONE").length, 0);
   const alle = d.stasjoner.reduce((a, s) => a + s.deltakere.length, 0);
-  return <div className="agn-s tdg">
-    <Link href="/admin/tester" className="ag-tilbake"><ChevronLeft className="ikon" aria-hidden />Tester</Link>
-    <header className="tdg-topp">
-      <span className="meta">{d.gruppe} · {d.dato} · {d.klokke}{d.sted ? ` · ${d.sted}` : ""}</span>
-      <h1>{d.tittel}</h1>
-      <p className="tdg-ingress num">{ferdig} av {alle} registreringer lagret</p>
-    </header>
-    <div className="tdg-stasjoner">
-      {d.stasjoner.map((s, i) => <section key={s.id} aria-label={s.navn} className="tdg-stasjon">
-        <div className="tdg-sek-topp"><h2>{s.navn}</h2><span className="meta">Stasjon {i + 1}</span></div>
-        <div className="tdg-liste">
-          {s.deltakere.map((x) => <Link key={x.id} href={`/admin/tester/registrer/${x.id}`} className="tdg-linje">
-            <b>{x.spiller}</b>
-            <span className="num">{x.status === "DONE" ? x.resultat ?? "Lagret" : STATUS[x.status]}</span>
-          </Link>)}
+  const her = `/admin/tester/testdag/${d.id}`;
+  return <div className="agn-s tdg agn-a5-under">
+    <Topp tilbake={{ href: "/admin/tester", tekst: "Tester" }} bilde={TEST_BILDE}
+      dato={`${d.gruppe} · ${d.dato} · ${d.klokke}${d.sted ? ` · ${d.sted}` : ""}`} tittel={d.tittel}
+      ingress={`${ferdig} av ${alle} registreringer lagret`} />
+    <div className="a5-testdag">
+      <div className="a5-testdag-liste">
+        {d.stasjoner.length === 0 ? <section className="seksjon" aria-label="Deltakere"><p className="tdg-dempet">Testdagen har ingen stasjoner.</p></section> : null}
+        <div className="tdg-stasjoner">
+          {d.stasjoner.map((s, i) => <section key={s.id} aria-label={s.navn} className="tdg-stasjon">
+            <div className="tdg-sek-topp"><h2>{s.navn}</h2><span className="meta">Stasjon {i + 1} · {s.deltakere.length} deltakere</span></div>
+            <div className="tdg-liste">
+              {s.deltakere.map((x) => <Link key={x.id} href={`${her}?deltaker=${encodeURIComponent(x.id)}`} aria-current={valgt?.deltakerId === x.id ? "true" : undefined} className="tdg-linje">
+                <b>{x.spiller}</b>
+                <span className="num">{x.status === "DONE" ? x.resultat ?? "Lagret" : STATUS[x.status]}</span>
+              </Link>)}
+            </div>
+          </section>)}
         </div>
-      </section>)}
+      </div>
+      <div className="a5-testdag-side">
+        {valgt
+          ? <RegistrerSkjema key={valgt.deltakerId} d={valgt} nesteHref={(id) => `${her}?deltaker=${encodeURIComponent(id)}`} ferdigHref={her} />
+          : <section className="seksjon a5-velg-hint" aria-label="Registrer">
+            <h2 className="undertittel">Registrer</h2>
+            <p className="forklar">Velg en spiller i lista for å føre testen. Bare teknikk- og PEI-tester føres av trener; resten fører spilleren selv.</p>
+          </section>}
+        <section id="til-kontroll" className="seksjon a5-kontroll" aria-label="Til kontroll">
+          <div className="tdg-sek-topp"><h2>Til kontroll <span className="num">{tilKontroll.length}</span></h2></div>
+          {tilKontroll.length === 0
+            ? <p className="tdg-dempet">Ingen egenførte tester i gruppa venter på deg.</p>
+            : <div className="tst-liste">
+              {tilKontroll.slice(0, 8).map((k) => <div key={k.id} className="tst-linje">
+                <Link href={`/admin/spillere/${k.spillerId}?fane=test`}><b>{k.spillerNavn} · {k.test}</b><span className="num">Egenført {k.dato} · {k.resultat}</span></Link>
+                <Kontroller id={k.id} />
+              </div>)}
+            </div>}
+          {tilKontroll.length > 8 && <Link href={`/admin/tester?gruppe=${encodeURIComponent(d.gruppeId)}#til-kontroll`} className="lenke">Se alle {tilKontroll.length} i Tester</Link>}
+        </section>
+      </div>
     </div>
   </div>;
 }

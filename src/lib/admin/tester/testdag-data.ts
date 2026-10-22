@@ -46,6 +46,7 @@ export type TestdagVisning = {
   dato: string;
   klokke: string;
   gruppe: string;
+  gruppeId: string;
   stasjoner: {
     id: string; navn: string; status: string;
     deltakere: { id: string; spiller: string; status: "PENDING" | "DONE" | "SKIPPED" | "ABSENT"; resultat: string | null }[];
@@ -57,7 +58,7 @@ export async function lastTestdag(viewer: Viewer, eventId: string): Promise<Test
   const ev = await prisma.testDayEvent.findFirst({
     where: { id: eventId, organizer: editableGroupWhere(viewer) },
     select: {
-      id: true, title: true, location: true, scheduledAt: true, organizer: { select: { name: true } },
+      id: true, title: true, location: true, scheduledAt: true, organizerGroupId: true, organizer: { select: { name: true } },
       stations: {
         orderBy: { createdAt: "asc" },
         select: {
@@ -69,7 +70,7 @@ export async function lastTestdag(viewer: Viewer, eventId: string): Promise<Test
   });
   if (!ev) return null;
   return {
-    id: ev.id, tittel: ev.title, sted: ev.location, dato: dato(ev.scheduledAt), klokke: tid(ev.scheduledAt), gruppe: ev.organizer.name,
+    id: ev.id, tittel: ev.title, sted: ev.location, dato: dato(ev.scheduledAt), klokke: tid(ev.scheduledAt), gruppe: ev.organizer.name, gruppeId: ev.organizerGroupId,
     stasjoner: ev.stations.map((s) => ({
       id: s.id, navn: s.testDefinition.name, status: s.status,
       deltakere: s.participants.map((p) => {
