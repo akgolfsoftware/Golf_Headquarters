@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
+import { tnTrenerKanSkriveFor } from "@/lib/domain/tn-trener-skriv";
 import { prisma } from "@/lib/prisma";
 import { triggerTrackManAgent } from "@/lib/agents/triggers";
 import {
@@ -63,6 +64,8 @@ export type ImportTrackManInput = {
   targetLineStatus?: TrackManTargetLineStatus;
   targetDistanceM?: number | null;
   onBehalfOfUserId?: string;
+  /** TEK eller SLAG. Påkrevd ved ny import (Anders 22.10.2026, §TRACKMAN I TEAM NORWAY-TESTENE punkt 7). */
+  akse?: "TEK" | "SLAG";
   preferredTaskId?: string;
   /** 0-baserte indekser for valgte slag (steg 3 i modal). Uten = alle. */
   selectedIndices?: number[];
@@ -89,7 +92,9 @@ export async function parseTrackManPhotoForPreview(
 /** Oppgaver i aktiv teknisk plan — til manuell match i import-modal. */
 export async function listMatchTasksForImport(onBehalfOfUserId?: string) {
   const user = await requireConsentingUser();
-  const targetUserId = await resolveTargetUserId(user, onBehalfOfUserId);
+  const { id: targetUserId, viaTnDeling } = await resolveTargetUserId(user, onBehalfOfUserId);
+  // En Team Norway-trener skriver aldri i spillerens tekniske plan (D-05), så ingen oppgaver å velge.
+  if (viaTnDeling) return [] as Array<{ id: string; label: string }>;
   const plan = await loadMatchPlan(targetUserId);
   if (!plan) return [] as Array<{ id: string; label: string }>;
   return plan.tasks.map((t) => ({
@@ -113,7 +118,8 @@ export async function importTrackMan(
   input: ImportTrackManInput,
 ): Promise<ImportTrackManResult> {
   const user = await requireConsentingUser();
-  const targetUserId = await resolveTargetUserId(user, input.onBehalfOfUserId);
+  if (input.akse !== "TEK" && input.akse !== "SLAG") throw new Error("Velg om økta var TEK eller SLAG.");
+  const { id: targetUserId, viaTnDeling } = await resolveTargetUserId(user, input.onBehalfOfUserId);
   const recordedAt = new Date(input.recordedAt);
   if (!Number.isFinite(recordedAt.getTime())) throw new Error("Ugyldig dato for TrackMan-økt.");
   const targetSetup = TargetSetupSchema.parse({
@@ -217,7 +223,8 @@ export async function importTrackMan(
     }
   }
 
-  const plan = await loadMatchPlan(targetUserId);
+  // Team Norway-treneren importerer bare slagene: ingen kobling til teknisk plan og ingen TM-mål (D-05).
+  const plan = viaTnDeling ? null : await loadMatchPlan(targetUserId);
 
   const created = await prisma.trackManSession.create({
     data: {
@@ -229,6 +236,7 @@ export async function importTrackMan(
       environment: input.environment,
       targetLineStatus: targetSetup.targetLineStatus,
       targetDistanceM: targetSetup.targetDistanceM ?? null,
+      akse: input.akse,
     },
   });
 
@@ -304,11 +312,12 @@ export async function importTrackMan(
     goalsUpdated += await updateTmGoalsFromSessionAggregate(taskId, taskShots);
   }
 
-  await triggerTrackManAgent(targetUserId);
+  if (!viaTnDeling) await triggerTrackManAgent(targetUserId);
 
   revalidatePath("/portal/mal/trackman");
   revalidatePath("/portal/planlegge/workbench");
   revalidatePath("/portal/tren/teknisk-plan");
+  if (viaTnDeling) revalidatePath(`/team-norway/spiller/${targetUserId}/tester`);
   if (targetUserId !== user.id) {
     revalidatePath(`/admin/spillere/${targetUserId}`);
     revalidatePath(`/admin/spillere/${targetUserId}/workbench`);
@@ -331,6 +340,7 @@ export type TrackManCsvInput = {
   targetLineStatus?: TrackManTargetLineStatus;
   targetDistanceM?: number | null;
   onBehalfOfUserId?: string;
+  akse?: "TEK" | "SLAG";
   preferredTaskId?: string;
 };
 
@@ -345,6 +355,7 @@ export async function importTrackManCsv(
     targetLineStatus: input.targetLineStatus,
     targetDistanceM: input.targetDistanceM,
     onBehalfOfUserId: input.onBehalfOfUserId,
+    akse: input.akse,
     preferredTaskId: input.preferredTaskId,
   });
 }
@@ -356,6 +367,7 @@ export type TrackManHtmlInput = {
   targetLineStatus?: TrackManTargetLineStatus;
   targetDistanceM?: number | null;
   onBehalfOfUserId?: string;
+  akse?: "TEK" | "SLAG";
   preferredTaskId?: string;
 };
 
@@ -370,6 +382,7 @@ export async function importTrackManHtml(
     targetLineStatus: input.targetLineStatus,
     targetDistanceM: input.targetDistanceM,
     onBehalfOfUserId: input.onBehalfOfUserId,
+    akse: input.akse,
     preferredTaskId: input.preferredTaskId,
   });
 }
@@ -377,8 +390,8 @@ export async function importTrackManHtml(
 async function resolveTargetUserId(
   user: { id: string; role: import("@/generated/prisma/client").UserRole },
   onBehalfOfUserId: string | undefined,
-): Promise<string> {
-  if (!onBehalfOfUserId || onBehalfOfUserId === user.id) return user.id;
+): Promise<{ id: string; viaTnDeling: boolean }> {
+  if (!onBehalfOfUserId || onBehalfOfUserId === user.id) return { id: user.id, viaTnDeling: false };
   if (user.role !== "COACH" && user.role !== "ADMIN") {
     throw new Error("Kun coach kan importere på vegne av spiller.");
   }
@@ -389,8 +402,10 @@ async function resolveTargetUserId(
     where: { AND: [coachScopedPlayerWhere(user), { id: onBehalfOfUserId }] },
     select: { id: true },
   });
-  if (!target) throw new Error("Spiller ikke funnet.");
-  return target.id;
+  if (target) return { id: target.id, viaTnDeling: false };
+  // Team Norway-trener: bare for en spiller som har delt med treneren (§TRACKMAN I TEAM NORWAY-TESTENE punkt 3).
+  if (await tnTrenerKanSkriveFor(user, onBehalfOfUserId)) return { id: onBehalfOfUserId, viaTnDeling: true };
+  throw new Error("Spiller ikke funnet.");
 }
 
 function avg(arr: (number | null)[]): number | null {

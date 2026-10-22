@@ -121,3 +121,54 @@ export async function saveTnTestForSpiller(input: unknown): Promise<TnSaveResult
     return { ok: false, retryable: true, error: "Kunne ikke lagre. Slagene er lagret på telefonen. Prøv igjen." };
   }
 }
+
+const KoblingSchema = z.object({
+  spillerId: z.string().min(1).max(200),
+  testSessionId: z.string().uuid(),
+  koblinger: z.array(z.object({ forsokIndeks: z.number().int().min(0).max(199), trackManShotId: z.string().min(1).max(200), passerIkke: z.boolean() })).min(1).max(200),
+});
+
+export type TnKoblingResultat = { ok: true; antall: number } | { ok: false; error: string };
+
+/**
+ * Lagrer hvilket TrackMan-slag hvert testforsøk kom fra (§TRACKMAN I TEAM NORWAY-TESTENE punkt 2). Carry og Side
+ * fylles i selve utkastet og lagres med `saveTnTestForSpiller`; her lagres bare koblingen. Samme tilgang som
+ * føringen, og TrackMan-slaget må høre til spilleren. Testen må være lagret minst én gang og ikke avsluttet.
+ */
+export async function kobleTrackManTilTest(input: unknown): Promise<TnKoblingResultat> {
+  const trener = await requirePortalUser({ tillatDemo: true, allow: ["COACH", "ADMIN"] });
+  const parsed = KoblingSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: "Ugyldig kobling." };
+  const data = parsed.data;
+  const kontekst = await hentTnArbeidskontekst(trener);
+  if (!kontekst || kontekst.erSpiller || (trener.role !== "ADMIN" && kontekst.rolle !== "COACH")) {
+    return { ok: false, error: "Du er ikke trener i Team Norway og kan ikke koble slag." };
+  }
+  try {
+    const antall = await medTnSpillerData(trener, data.spillerId, async (tx) => {
+      const okt = await tx.testSession.findUnique({ where: { id: data.testSessionId }, select: { userId: true, status: true, scoringData: true } });
+      if (!okt || okt.userId !== data.spillerId) throw new Avvist("Lagre minst ett slag i testen før slagene kobles.");
+      if (okt.status !== "IN_PROGRESS") throw new Avvist("Testen er avsluttet. Koblingen kan ikke endres.");
+      const state = TnSessionSchema.safeParse(okt.scoringData);
+      if (!state.success || !trenerKanFore({ protokollId: state.data.protocolId })) throw new Avvist("Denne testen fører spilleren selv i PlayerHQ.");
+      if (data.koblinger.some((k) => k.forsokIndeks >= state.data.count)) throw new Avvist("Testen har ikke så mange slag.");
+      const ider = [...new Set(data.koblinger.map((k) => k.trackManShotId))];
+      if (ider.length !== data.koblinger.length) throw new Avvist("Ett TrackMan-slag kan bare kobles til ett testslag.");
+      const egne = await tx.trackManShot.count({ where: { id: { in: ider }, session: { userId: data.spillerId } } });
+      if (egne !== ider.length) throw new Avvist("TrackMan-slaget hører ikke til spilleren.");
+      for (const k of data.koblinger) {
+        await tx.testShotTrackManLink.upsert({
+          where: { testSessionId_forsokIndeks: { testSessionId: data.testSessionId, forsokIndeks: k.forsokIndeks } },
+          create: { testSessionId: data.testSessionId, forsokIndeks: k.forsokIndeks, trackManShotId: k.trackManShotId, passerIkke: k.passerIkke, kobletAvId: trener.id },
+          update: { trackManShotId: k.trackManShotId, passerIkke: k.passerIkke, kobletAvId: trener.id, kobletAt: new Date() },
+        });
+      }
+      return data.koblinger.length;
+    });
+    if (antall === null) return { ok: false, error: "Spilleren har ikke delt med deg. Slagene kan ikke kobles." };
+    return { ok: true, antall };
+  } catch (e) {
+    if (e instanceof Avvist) return { ok: false, error: e.message };
+    return { ok: false, error: "Kunne ikke lagre koblingen. Prøv igjen." };
+  }
+}
