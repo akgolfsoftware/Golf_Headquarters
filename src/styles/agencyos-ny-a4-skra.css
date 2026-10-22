@@ -75,10 +75,7 @@
   .agn-s.a4 .wb-okt span { overflow-wrap: break-word; hyphens: auto; }
   .agn-s.a4 .slipp { font-size: 12px; padding: 0 2px; }
 }
-@media (min-width: 1440px) {
-  .agn-s.a4 .wb { grid-template-columns: minmax(0, 1fr) 320px; gap: 24px; }
-  .agn-s.a4 .ukegrid .wb-dag { padding: 10px; }
-}
+
 .agn-s.a4 .wb-dag h3 .a4-dag-pc, .agn-s.a4 .wb-dag h3 .a4-dag-mob { font: inherit; color: inherit; }
 
 /* ── Live coachingøkt: ingen topp, alltid lys. Tittelraden (LiveTittelrad) står fast under menylinja på mobil. ── */
