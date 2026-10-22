@@ -51,6 +51,11 @@ export async function hentTnTrackManMaal(bruker: TnBruker, spillerId: string): P
   });
 }
 
+/** «TrackMan mot spill» ser seks måneder tilbake. */
+export function tnSammenhengFra(naa = new Date()): Date {
+  return new Date(naa.getTime() - 183 * 864e5);
+}
+
 export type TnRundeSg = { playedAt: Date; type: "turnering" | "trening"; sgOtt: number | null; sgApp: number | null; sgArg: number | null; sgPutt: number | null };
 
 /**

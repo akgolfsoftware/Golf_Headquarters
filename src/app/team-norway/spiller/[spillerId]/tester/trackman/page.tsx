@@ -1,6 +1,6 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentTnSpillerTilgang } from "@/lib/domain/tn-arbeidsflate";
-import { hentTnRunderSg, hentTnTrackManMaal, hentTnTrackManOkter, type TnRundeSg, type TnTrackManSlag } from "@/lib/domain/tn-trackman";
+import { hentTnRunderSg, hentTnTrackManMaal, tnSammenhengFra, hentTnTrackManOkter, type TnRundeSg, type TnTrackManSlag } from "@/lib/domain/tn-trackman";
 import { tnTrenerKanSkriveFor } from "@/lib/domain/tn-trener-skriv";
 import { clubSpeedFraTrackMan } from "@/lib/trackman/test-kobling";
 import {
@@ -39,7 +39,7 @@ export default async function TrackManStatistikkPage({ params, searchParams }: {
   const bruker = await requirePortalUser({ tillatDemo: true, kreverTilgang: "TALENT" });
   const tilgang = await hentTnSpillerTilgang(bruker, spillerId);
   if (!tilgang) return <TnIupLaastSkjerm bruker={bruker} spillerId={spillerId} aktiv="tester" />;
-  const seksMnd = new Date(Date.now() - 183 * 864e5);
+  const seksMnd = tnSammenhengFra();
   const [okter, maal, runderSg, kanTrener] = await Promise.all([
     hentTnTrackManOkter(bruker, spillerId, 40),
     hentTnTrackManMaal(bruker, spillerId),
