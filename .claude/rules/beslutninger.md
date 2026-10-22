@@ -4,6 +4,23 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## TEAM NORWAY: DELING ER ALT ELLER INGENTING, MEDIAN AV SISTE RESULTAT, OG ÉN DEFINISJON AV BRUTTO SNITT (Anders 22.10.2026, bindende)
+
+Anders 22.10: «Ja til alle tre anbefalingene.» Svar på spørsmålene i §5.4 i `docs/planer/tn-designloft-plan-2026-10-22.md` (#1612). Samme dag avgjorde han at PlayerHQ-lenken går til «Se hva Team Norway ser», og at «beste» tas bort i Referanse › Tester.
+
+- **Deling med Team Norway er ett nivå:** treneren ser hele IUP-en eller bare det åpne (navn, klubb, fødselsår, WAGR-plass). Status vises som Delt · Venter på svar · Ikke delt. Slik virker tilgangen i dag (`navngittTrenerHarTilgang`, `src/lib/deling/navngitt.ts`).
+- **Referanse › Tester:** median av hver spillers siste gyldige resultat de siste 12 månedene, bare Team Norway-spillere (ikke WANG-elever). Har færre enn fem tatt testen, vises «—». Ingen «beste».
+- **Brutto snitt betyr det samme overalt:** turneringsrunder i kalenderåret (Oslo-tid), bare brutto, likt i IUP, Rangliste, Uttak og PlayerHQ. Treningsrunder vises på egen linje og teller ikke i snittet.
+
+**Overstyrer:** de to delingsnivåene («Tester og resultater», «Komplett profil») i wireframes utkast 1 for Team Norway, «beste» i `/team-norway/referansenivaer`, og de ulike utregningene av brutto snitt (avvik A4 i planfila).
+
+**Arbeidet dette utløser:**
+
+1. **(haster, personvern) Teknisk plan og fireukerssjekk bak delingen:** begge leses i dag utenom delingssperren (avvik i planfila §5). Ferdig når en test låser at en trener uten deling verken ser teknisk plan eller fireukerssjekk.
+2. **Én funksjon for brutto snitt:** de fem utregningene (`tn-arbeidsflate.ts`, `profil-kobling/komplett.ts`, `iup/maaltall.ts`, `spiller-kategori.ts`, SQL-sesongen) samles i én, med treningsrunder som eget tall. Ferdig når en test låser at samme spiller får samme snitt i IUP, Rangliste, Uttak og PlayerHQ.
+3. **Referanse › Tester:** utregningen i `tn-arbeidsflate.ts` (i dag beste resultat, med WANG-elever, uten grense) byttes til median av siste resultat i 12 måneder, bare TN-spillere, «—» under fem. Siden flyttes fra `/team-norway/referansenivaer` til Referanse › Tester. Ferdig når en test låser grensen på fem og at «beste» ikke finnes.
+4. **Ett nivå i PlayerHQ:** delingen med en Team Norway-trener tilbyr ikke valg av nivå, og teksten sier at treneren ser hele IUP-en. Ferdig når delingssidene ikke viser «Tester og resultater» som valg for Team Norway.
+
 ## DEMOSPILLEREN I TEAM NORWAY-SKJERMENE HETER JØRN JOHNSEN (Anders 22.10.2026, bindende)
 
 Anders 22.10: «Legg til regel i TN skjermer at demo spiller er Jørn Johnsen.»

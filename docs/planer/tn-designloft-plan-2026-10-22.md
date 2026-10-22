@@ -222,7 +222,7 @@ WAGR per uke, til-par per turnering, logget i etterkant, lagt inn mot fordelt, k
 samme tall i Oversikt. Ingen knapper: «Foreslå endring», «Skriv post» og «Før teknikktest» er borte; eneste lenke er
 «Endre deling i Meg › Deling». Listen «Hvem ser dette» erstatter velgeren mellom delingsnivåer.
 
-### 5.4 Spørsmål til Anders (anbefalingen er brukt i wireframene)
+### 5.4 Spørsmål til Anders: avgjort 22.10 (ja til alle tre, `.claude/rules/beslutninger.md` §TEAM NORWAY: DELING ER ALT ELLER INGENTING)
 
 1. **Ett delingsnivå i Team Norway?** Koden gir treneren alt eller ingenting. Anbefaling: behold ett nivå. Det er enklere å forklare
    for spiller og foresatte, og det er slik tilgangen faktisk virker i dag.
