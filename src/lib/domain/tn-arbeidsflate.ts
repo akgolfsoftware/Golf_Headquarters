@@ -11,6 +11,7 @@ import { prisma } from "@/lib/prisma";
 import { medNavngittProfil, lesNavngitteProfiler } from "@/lib/deling/profil-lesing";
 import { TN_CATALOG, TN_POENG_VERSION, tnVersion, tnProtocol, type TnProtocol } from "@/lib/portal-tester/tn-catalog";
 import { tnFromDefinitionId, tnDefinitionId } from "@/lib/portal-tester/tn-integration";
+import { byggTestvisning, type Testvisning } from "@/lib/portal-tester/tn-testvisning";
 import { hentWangTestresultatSkolerForTeamNorway } from "@/lib/portal-tester/wang-resultat-tilgang";
 import { resolveTilgang, type TilgangsNivaa, type TilgangsKilde } from "@/lib/feature-flags";
 import { loadTesterScreen, type AxisGroup, type PlannedTest } from "@/lib/portal-tester/tester-data";
@@ -939,6 +940,8 @@ export type TnSpillerTestDetalj = {
   historikk: TnSpillerTestResultRad[];
   antallUtelatt: number;
   sisteForsok: { label: string; verdi: string }[];
+  /** Siste gjennomføring som slag: spredningsplott, port og sone eller avstandsbånd (utkast 3, 22.10). */
+  visning: Testvisning;
 };
 
 /**
@@ -963,7 +966,7 @@ export async function hentTnSpillerTestDetalj(bruker: TnBruker, spillerId: strin
     if (gyldige.length === 0) {
       return {
         tilgang, testId, protokollNavn: protokollBase.name, lowerIsBetter: null,
-        besteScore: null, besteFormatert: null, historikk: [], antallUtelatt: utelatt, sisteForsok: [],
+        besteScore: null, besteFormatert: null, historikk: [], antallUtelatt: utelatt, sisteForsok: [], visning: { type: "annet" },
       };
     }
     const retning = gyldige[0].retning;
@@ -1001,10 +1004,24 @@ export async function hentTnSpillerTestDetalj(bruker: TnBruker, spillerId: strin
           return { label: `Forsøk ${i + 1} · ${row.label}`, verdi: tekst };
         })
       : [];
+    // TrackMan-tallene for slagene treneren koblet (test_shot_trackman_links, via testøkta til siste resultat).
+    const sisteOkt = await tx.testSession.findFirst({ where: { testResultId: gyldige[0].id, userId: spillerId }, select: { id: true } });
+    const lenker = sisteOkt ? await tx.testShotTrackManLink.findMany({ where: { testSessionId: sisteOkt.id }, select: { forsokIndeks: true, trackManShotId: true, passerIkke: true } }) : [];
+    const tmSlag = lenker.length
+      ? await tx.trackManShot.findMany({
+          where: { id: { in: lenker.map((l) => l.trackManShotId) }, session: { userId: spillerId } },
+          select: { id: true, club: true, clubSpeed: true, ballSpeed: true, smashFactor: true, faceToPath: true, clubPath: true, attackAngle: true, spinRate: true },
+        })
+      : [];
+    const tmPerForsok = new Map(lenker.flatMap((l) => {
+      const t = tmSlag.find((x) => x.id === l.trackManShotId);
+      return t ? [[l.forsokIndeks, { tm: { ...t, club: t.club?.trim() ? t.club : null }, passerIkke: l.passerIkke }] as const] : [];
+    }));
+    const visning = protokoll ? byggTestvisning(protokoll, sisteGyldig.values, tmPerForsok) : { type: "annet" as const };
     return {
       tilgang, testId, protokollNavn: protokollBase.name, lowerIsBetter: retning,
       besteScore: beste, besteFormatert: tnFormat({ value: beste, unit: gyldige[0].parsed.unit }),
-      historikk, antallUtelatt: utelatt, sisteForsok,
+      historikk, antallUtelatt: utelatt, sisteForsok, visning,
     };
   });
 }
