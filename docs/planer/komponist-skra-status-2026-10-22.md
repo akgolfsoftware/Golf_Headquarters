@@ -1,44 +1,44 @@
 # Skrå i PlayerHQ og AgencyOS: statustavle
 
-Laget 22.10.2026 av komponist-økta. Oppskriften per pakke står i
+Laget 22.10.2026 av komponist-økta. Sist oppdatert 22.10 etter bølge 1. Oppskriften per pakke står i
 `skra-drakt-playerhq-agencyos-plan-2026-10-20.md` §2, PlayerHQ-restene i
 `playerhq-resterende-skjermer-skra-2026-10-21.md`.
 
 Tavla som side: https://claude.ai/artifact/4MpWXCU3KEBbaARpvDccad
-Skisse bølge 1: https://claude.ai/artifact/NCP3fcTH2qNSYJtYVfWwNa (kilde `docs/design-system/utkast-skra/komponist/bolge-1.html`)
+Skisse bølge 1 (godkjent og bygget): https://claude.ai/artifact/NCP3fcTH2qNSYJtYVfWwNa (kilde `docs/design-system/utkast-skra/komponist/bolge-1.html`)
+Skisse bølge 2 (venter på Anders): https://claude.ai/artifact/781SDnPSrEGK7Kc6uy4K77 (kilde `docs/design-system/utkast-skra/komponist/bolge-2.html`)
 
 ## Slik er tavla laget
 
-- Alle `page.tsx` under `src/app/portal` og `src/app/admin` (374). Sider som bare sender videre er tatt ut (188). Igjen: 186 sider, 114 i PlayerHQ og 72 i AgencyOS.
+- Alle `page.tsx` under `src/app/portal` og `src/app/admin`. Sider som bare sender videre er tatt ut. Igjen 22.10 etter bølge 1: 187 sider, 115 i PlayerHQ og 72 i AgencyOS.
 - **Bruker Skrå** er sjekket i koden, gjennom alt siden importerer (ikke bare om fila selv importerer `SkraTopp`):
   - **ja:** siden når `SkraFlyt`, altså Skrå-innhold under toppen.
   - **bare topp:** siden har Skrå-toppen (oftest via `Topp` i `src/components/admin/agencyos-ny/ny.tsx`, #1559), men innholdet under er fortsatt gamle kort.
   - **nei:** ingen Skrå.
+  - Pakker som er levert av en byggeøkt føres etter PR-en, ikke etter kodesjekken: undersider kan ha Skrå-kort gjennom stilen uten å bruke `SkraFlyt`.
 - Målt og sett av Anders føres inn per pakke når den er lagt inn. «—» betyr ikke gjort ennå.
 
 ## Sammendrag
 
 | Område | Sider | ja | bare topp | nei |
 |---|---|---|---|---|
-| PlayerHQ (`/portal`) | 114 | 111 | 0 | 3 |
-| AgencyOS (`/admin`) | 72 | 2 | 59 | 11 |
+| PlayerHQ (`/portal`) | 115 | 112 (6 av dem live uten topp) | 0 | 3 (1 er ferdig som den er) |
+| AgencyOS (`/admin`) | 72 | 17 (6 med PR åpen) | 49 | 6 |
 
-**PlayerHQ er nesten ferdig.** Igjen: `/portal/samlinger` (gammelt skall), `/portal/analysere/datagolf/stasjon` (bare ADMIN) og `/portal/runde/live` (fullskjerm, alltid lys, skal ikke ha topp).
+**PlayerHQ:** igjen er `/portal/samlinger` og `/portal/analysere/datagolf/stasjon` (bølge 2). `/portal/runde/live` er fullskjerm, alltid lys og uten topp, og er ferdig som den er. Live-skjermene og Team Norway-testen er uten topp (#1623, #1631).
 
-**AgencyOS er hovedjobben.** Alle sider unntatt Cockpit og Stall har bare fått toppen. Innholdet under er ikke portert.
-
-**Avvik å avklare:** de fem live-skjermene i PlayerHQ (#1588) fikk lav Skrå-topp med bilde, mens planen sier at live-økta ikke skal ha topp. Ligger hos Anders.
+**AgencyOS:** bølge 1 er levert: Innboks (#1634), Spiller 360 (#1632) og Kalender og Booking (#1637, auto-merge på). Kortene starter under den skrå toppen (#1619).
 
 ## Pakker og rekkefølge
 
 | Bølge | Pakke | Sider | Status |
 |---|---|---|---|
-| 1 | A1 Innboks | 4 | skisse |
-| 1 | A2 Stall og Spiller 360 | 6 (+ Stall ferdig) | skisse |
-| 1 | A3 Kalender og Booking | 6 | skisse |
-| 2 | R10 PlayerHQ-rest | 2 | venter |
-| 2 | A4 Workbench og live (lav topp uten bilde; live uten topp) | 5 | venter |
-| 2 | A5 Grupper og Tester | 11 | venter |
+| 1 | A1 Innboks | 4 | lagt inn #1634 |
+| 1 | A2 Stall og Spiller 360 | 6 (+ Stall ferdig) | lagt inn #1632 |
+| 1 | A3 Kalender og Booking | 6 | PR #1637, auto-merge |
+| 2 | R10 PlayerHQ-rest | 2 | skisse |
+| 2 | A4 Workbench og live (lav topp uten bilde; live uten topp) | 5 | skisse |
+| 2 | A5 Grupper og Tester | 11 | skisse |
 | 3 | A6a Plan og teknisk plan | 8 | venter |
 | 3 | A6b Drift og oppsett (Økonomi bare head coach) | 11 | venter |
 | 3 | A6c Data Golf (bare ADMIN), Jarvis og eldre sider | 19 | venter |
@@ -54,22 +54,22 @@ Sjekket 22.10: `claude/skra-mer-liv` (I dag og Cockpit, ikke i main), `claude/fe
 | Rute | Pakke | Bruker Skrå | PR | Målt 390/1280/1920 | Sett av Anders |
 |---|---|---|---|---|---|
 | `/admin/agencyos` | A0 Cockpit | ja | #1554 | — | — |
-| `/admin/email-templates/[id]/rediger` | A1 Innboks | nei | — | — | — |
-| `/admin/innboks` | A1 Innboks | bare topp | — | — | — |
-| `/admin/ko` | A1 Innboks | bare topp | — | — | — |
-| `/admin/kommunikasjon` | A1 Innboks | bare topp | — | — | — |
+| `/admin/email-templates/[id]/rediger` | A1 Innboks | ja | #1634 | — | — |
+| `/admin/innboks` | A1 Innboks | ja | #1634 | — | — |
+| `/admin/ko` | A1 Innboks | ja | #1634 | — | — |
+| `/admin/kommunikasjon` | A1 Innboks | ja | #1634 | — | — |
 | `/admin/spillere` | A2 Stall og Spiller 360 | ja | #1561 | — | — |
-| `/admin/spillere/[id]` | A2 Stall og Spiller 360 | bare topp | — | — | — |
-| `/admin/spillere/[id]/profil-komplett` | A2 Stall og Spiller 360 | nei | — | — | — |
-| `/admin/spillere/[id]/rediger` | A2 Stall og Spiller 360 | nei | — | — | — |
-| `/admin/spillere/[id]/turnering-kobling` | A2 Stall og Spiller 360 | nei | — | — | — |
-| `/admin/spillere/ny` | A2 Stall og Spiller 360 | bare topp | — | — | — |
-| `/admin/bookinger` | A3 Kalender og Booking | bare topp | — | — | — |
-| `/admin/bookinger/[id]` | A3 Kalender og Booking | bare topp | — | — | — |
-| `/admin/bookinger/ny` | A3 Kalender og Booking | nei | — | — | — |
-| `/admin/kalender` | A3 Kalender og Booking | bare topp | — | — | — |
-| `/admin/kalender/hendelse/[id]` | A3 Kalender og Booking | bare topp | — | — | — |
-| `/admin/kalender/hendelse/ny` | A3 Kalender og Booking | bare topp | — | — | — |
+| `/admin/spillere/[id]` | A2 Stall og Spiller 360 | ja | #1632 | — | — |
+| `/admin/spillere/[id]/profil-komplett` | A2 Stall og Spiller 360 | ja | #1632 | — | — |
+| `/admin/spillere/[id]/rediger` | A2 Stall og Spiller 360 | ja | #1632 | — | — |
+| `/admin/spillere/[id]/turnering-kobling` | A2 Stall og Spiller 360 | ja | #1632 | — | — |
+| `/admin/spillere/ny` | A2 Stall og Spiller 360 | ja | #1632 | — | — |
+| `/admin/bookinger` | A3 Kalender og Booking | ja (PR åpen) | #1637 | — | — |
+| `/admin/bookinger/[id]` | A3 Kalender og Booking | ja (PR åpen) | #1637 | — | — |
+| `/admin/bookinger/ny` | A3 Kalender og Booking | ja (PR åpen) | #1637 | — | — |
+| `/admin/kalender` | A3 Kalender og Booking | ja (PR åpen) | #1637 | — | — |
+| `/admin/kalender/hendelse/[id]` | A3 Kalender og Booking | ja (PR åpen) | #1637 | — | — |
+| `/admin/kalender/hendelse/ny` | A3 Kalender og Booking | ja (PR åpen) | #1637 | — | — |
 | `/admin/agencyos/live` | A4 Workbench og live | nei | — | — | — |
 | `/admin/agencyos/live/[sessionId]` | A4 Workbench og live | bare topp | — | — | — |
 | `/admin/gjennomfore/okter/[id]` | A4 Workbench og live | bare topp | — | — | — |
@@ -183,6 +183,7 @@ Sjekket 22.10: `claude/skra-mer-liv` (I dag og Cockpit, ikke i main), `claude/fe
 | `/portal/meg/bookinger/reschedule/[bookingId]` | P/R ferdig | ja | — | — | — |
 | `/portal/meg/deling` | P/R ferdig | ja | — | — | — |
 | `/portal/meg/deling/innsyn` | P/R ferdig | ja | — | — | — |
+| `/portal/meg/deling/team-norway` | P/R ferdig | ja | — | — | — |
 | `/portal/meg/foreldre` | P/R ferdig | ja | — | — | — |
 | `/portal/meg/help` | P/R ferdig | ja | — | — | — |
 | `/portal/meg/help/artikkel/[slug]` | P/R ferdig | ja | — | — | — |
@@ -222,7 +223,6 @@ Sjekket 22.10: `claude/skra-mer-liv` (I dag og Cockpit, ikke i main), `claude/fe
 | `/portal/tren/tester/[testId]` | P/R ferdig | ja | — | — | — |
 | `/portal/tren/tester/ny` | P/R ferdig | ja | — | — | — |
 | `/portal/tren/tester/ny/egen` | P/R ferdig | ja | — | — | — |
-| `/portal/tren/tester/team-norway` | P/R ferdig | ja | — | — | — |
 | `/portal/tren/turneringer` | P/R ferdig | ja | — | — | — |
 | `/portal/tren/turneringer/[id]` | P/R ferdig | ja | — | — | — |
 | `/portal/tren/wb/[sessionId]` | P/R ferdig | ja | — | — | — |
@@ -232,10 +232,11 @@ Sjekket 22.10: `claude/skra-mer-liv` (I dag og Cockpit, ikke i main), `claude/fe
 | `/portal/utfordringer/[id]` | P/R ferdig | ja | — | — | — |
 | `/portal/utfordringer/ny` | P/R ferdig | ja | — | — | — |
 | `/portal/varsler` | P/R ferdig | ja | — | — | — |
-| `/portal/live/[sessionId]/active` | P11 Live (avvik: har topp) | ja | #1588 | — | — |
-| `/portal/live/[sessionId]/brief` | P11 Live (avvik: har topp) | ja | #1588 | — | — |
-| `/portal/live/[sessionId]/summary` | P11 Live (avvik: har topp) | ja | #1588 | — | — |
-| `/portal/live/[sessionId]/tapper` | P11 Live (avvik: har topp) | ja | #1588 | — | — |
-| `/portal/tren/tester/[testId]/gjennomfor` | P11 Live (avvik: har topp) | ja | #1588 | — | — |
+| `/portal/live/[sessionId]/active` | P11 Live (uten topp) | ja (uten topp) | #1623 | — | — |
+| `/portal/live/[sessionId]/brief` | P11 Live (uten topp) | ja (uten topp) | #1623 | — | — |
+| `/portal/live/[sessionId]/summary` | P11 Live (uten topp) | ja (uten topp) | #1623 | — | — |
+| `/portal/live/[sessionId]/tapper` | P11 Live (uten topp) | ja (uten topp) | #1623 | — | — |
+| `/portal/tren/tester/[testId]/gjennomfor` | P11 Live (uten topp) | ja (uten topp) | #1623 | — | — |
+| `/portal/tren/tester/team-norway` | P11 Live (uten topp) | ja (uten topp) | #1623 | — | — |
 | `/portal/analysere/datagolf/stasjon` | R10 PlayerHQ-rest | nei | — | — | — |
 | `/portal/samlinger` | R10 PlayerHQ-rest | nei | — | — | — |
