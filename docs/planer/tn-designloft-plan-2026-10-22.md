@@ -236,6 +236,8 @@ Beslutningen står i #1614 (`.claude/rules/beslutninger.md` §TEAM NORWAY: DELIN
 
 ## 6. Utkast 3: testøkt, TrackMan-kobling og testvisning (22.10.2026)
 
+Status: **Godkjent av Anders 22.10** (port 7: «Godkjent», etter å ha sett import og kobling, statistikk, tendens, TrackMan mot spill, tilstander og testvisningen).
+
 Bestilt av Anders 22.10: «tegne testøkta med spiller, TrackMan-importen med kobling til testslag, og testvisningen med
 spredningsplott og slagdata, som utkast 3.» Wireframes: [utkast-3.html](../design-system/utkast-tn/trenerflate/utkast-3.html),
 https://claude.ai/artifact/TAhfpQJPqeKiwp2zTxxKft. 17 skjermer i fire grupper, målt i 390, 1280 og 1920 px uten sidelengs rulling og uten konsollfeil.
