@@ -4,7 +4,7 @@ import type { TnArbeidskontekst } from "@/lib/domain/tn-arbeidsflate";
 import { WAGR_KILDE, type WagrRefGruppe, type WagrRefSpillerRad } from "@/lib/domain/tn-referanse-wagr-regler";
 import { TN } from "@/lib/v2/team-norway";
 import { TnPille } from "../core";
-import { TnFlate, TnFlatehode, TnFotnote } from "../tn-flate";
+import { TnFlate, TnFlatehode, TnFotnote, TnMangler } from "../tn-flate";
 import { TnPlassgraf } from "../tn-plassgraf";
 import { TnReferanseFaner } from "../tn-referanse-faner";
 import { TN_REFERANSESPILLERE_URL } from "../tn-referansespillere";
@@ -161,9 +161,7 @@ export function TnReferanseWagrVisning({
             </ol>
           ) : (
             <div style={{ display: "grid", gap: 8, padding: "8px 0" }}>
-              <p style={{ margin: 0, fontSize: 14.5, color: TN.ink700 }}>
-                {valgt ? "Ingen spillere i denne gruppa ennå." : "WAGR-tallene er ikke lagt inn i HQ ennå. De kommer med mandagsjobben."}
-              </p>
+              <TnMangler>{valgt ? "Ingen spillere i denne gruppa ennå." : "WAGR-tallene er ikke lagt inn i HQ ennå. De kommer med mandagsjobben."}</TnMangler>
               <a href={TN_REFERANSESPILLERE_URL} target="_blank" rel="noopener noreferrer" style={{ fontSize: 14.5, fontWeight: 600, color: TN.navy900, minHeight: 44, display: "inline-flex", alignItems: "center" }}>
                 Se referansespillerne på teamnorwayref
               </a>

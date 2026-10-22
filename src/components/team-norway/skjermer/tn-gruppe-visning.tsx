@@ -4,6 +4,7 @@ import { TnShell } from "../tn-shell";
 import { TnFilterknapper, TnFlate, TnFotnote, TnRutenett } from "../tn-flate";
 import { TnHandlingLenke } from "../tn-handlinger";
 import { TnSkraKort, TnSkraTopp } from "../tn-skra-topp";
+import { TnTomtilstand } from "../tn-tilstand";
 import { TnHeltKnapper, TnHeltTall, TnHeltTekst, TnHeltTellere } from "../tn-stall";
 import { TnDokumentSkjema, TnInnleggKort, TnInnleggSkjema, type TnInnlegg } from "../tn-gruppe-klient";
 import { TnSlettDokument } from "../tn-redigering-skjema";
@@ -74,12 +75,12 @@ export function TnGruppeposterVisning({ brukerNavn, rolleEtikett, groupId, harTr
           ))}
 
           {innlegg.length === 0 ? (
-            <TnFlate style={{ gridColumn: "1 / -1", background: TN.ink50 }}>
-              <div style={{ fontSize: 15, fontWeight: 700, color: TN.ink900 }}>Ingen innlegg ennå</div>
-              <p style={{ fontSize: 14.5, lineHeight: 1.55, color: TN.ink700, margin: "8px 0 0", maxWidth: "60ch" }}>
-                {erTrener ? "Skriv det første innlegget til gruppen i feltet over. Du ser hvem som har lest det her." : "Trenerteamet har ikke skrevet noe til gruppen ennå."}
-              </p>
-            </TnFlate>
+            <div style={{ gridColumn: "1 / -1", minWidth: 0 }}>
+              <TnTomtilstand
+                tittel="Ingen innlegg ennå"
+                tekst={erTrener ? "Skriv det første innlegget til gruppen i feltet over. Du ser hvem som har lest det her." : "Trenerteamet har ikke skrevet noe til gruppen ennå."}
+              />
+            </div>
           ) : null}
 
           {under18 > 0 ? <div style={{ gridColumn: "1 / -1" }}><TnFotnote>Mindreårige står med fornavn og forbokstav i lesekvitteringen. Fullt navn finnes bare i spillerprofilen.</TnFotnote></div> : null}
@@ -169,16 +170,17 @@ export function TnDokumenterVisning({ brukerNavn, brukerId, rolleEtikett, groupI
                 </div>
               ))}
               {liste.length === 0 ? (
-                <div style={{ padding: "12px 0" }}>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: TN.ink900 }}>{dokumenter.length === 0 ? "Ingen dokumenter" : "Ingen treff"}</div>
-                  <p style={{ fontSize: 14.5, lineHeight: 1.55, color: TN.ink700, margin: "8px 0 0", maxWidth: "60ch" }}>
-                    {dokumenter.length > 0
-                      ? "Ingen dokumenter i denne kategorien."
+                <TnTomtilstand
+                  innfelt
+                  tittel={dokumenter.length === 0 ? "Ingen dokumenter" : "Ingen treff"}
+                  tekst={
+                    dokumenter.length > 0
+                      ? "Ingen dokumenter i denne kategorien. Velg Alle for å se resten."
                       : erTrener
                         ? "Last opp sesongplan, uttakskriterier og reiseinfo, så finner spillerne alt på ett sted."
-                        : "Trenerteamet har ikke delt noen dokumenter ennå."}
-                  </p>
-                </div>
+                        : "Trenerteamet har ikke delt noen dokumenter ennå."
+                  }
+                />
               ) : null}
             </section>
           </TnFlate>

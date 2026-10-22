@@ -31,3 +31,27 @@
   .overKanten { margin-top: -100px; }
 }
 .lasterKort { display: grid; gap: 12px; padding: 16px 18px 18px; border-radius: var(--tn-radius-xl); background: var(--tn-white); box-shadow: var(--tn-shadow-md); }
+
+/* Tom tilstand inne i et kort som finnes fra før. */
+.innfelt { display: grid; gap: 8px; justify-items: start; padding: 8px 0; }
+
+/* Laster i skjermens form (TnLasterSkjerm). */
+.lasterTekst { color: var(--tn-white); }
+.strek {
+  display: block;
+  height: 12px;
+  background: linear-gradient(90deg, var(--tn-ink-100) 0%, var(--tn-ink-50) 50%, var(--tn-ink-100) 100%);
+  background-size: 200% 100%;
+  border-radius: var(--tn-radius-pill);
+  animation: skjelett 1.4s linear infinite;
+}
+.sirkel { flex: none; width: 36px; height: 36px; border-radius: var(--tn-radius-round); background: var(--tn-ink-100); }
+.rad { display: flex; align-items: center; gap: 12px; padding: 6px 0; }
+.radLinjer { display: grid; gap: 8px; flex: 1; min-width: 0; }
+.rutenett { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); }
+.rutenettHjem { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); }
+.rutenettHjem > :first-child { grid-row: span 2; }
+.stripe { display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr)); }
+.faner { display: flex; flex-wrap: wrap; gap: 16px; }
+.faner .strek { width: 72px; }
+@media (prefers-reduced-motion: reduce) { .strek { animation: none; } }

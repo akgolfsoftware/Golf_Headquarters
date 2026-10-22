@@ -1,10 +1,10 @@
-import { TnLaster, TnSkallSkjelett } from "@/components/team-norway/tn-tilstand";
+import { TnLasterSkjerm, TnSkallSkjelett } from "@/components/team-norway/tn-tilstand";
 
-/** Gruppeposter laster. Ingen import fra "use client" (gotchas: loading.tsx uten klient-JS). */
+/** Hjem › Gruppeposter laster, i skjermens form. Ingen import fra en "use client"-modul (gotchas §Bygg og drift). */
 export default function GruppepostLaster() {
   return (
     <TnSkallSkjelett>
-      <TnLaster tekst="Henter gruppens poster …" />
+      <TnLasterSkjerm form="liste" tekst="Henter gruppens poster …" />
     </TnSkallSkjelett>
   );
 }
