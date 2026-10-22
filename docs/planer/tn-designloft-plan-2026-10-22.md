@@ -85,7 +85,7 @@ Tverrgående svakheter:
 | 7 | **Referanse resten**, etter at dataene er i basen (registeret B2–B13, beslutningen punkt 5): Sammenlign og Søk først (data finnes), så Planlegger, Norsk golf, HCP Norge. Referanse › Tester uten «beste». | Tallene er de samme som på teamnorwayref for samme uke, med kilde og dato. |
 | 8 | **Full bredde rydding:** fjern de fire `maxWidth` i TN-skjermene, unntatt løpende tekst og dialoger. | Et søk etter `maxWidth` i `src/components/team-norway/skjermer` treffer bare tekst og dialoger, og skjermene er målt i 1920. |
 | 9 | **Bevegelse:** kort glir inn ved første visning, faner bytter uten hopp, med TN-tidene og `prefers-reduced-motion`. | Bevegelsen er lik på alle hovedpunkter og slås av med «reduser bevegelse». |
-| 10 | **Hjem-fanene og Spillere-fanene** som mangler wireframe (Gruppeposter, Dokumenter, Skoler, College og USA): tegnes i utkast 3 når 1–6 er gjort. | Utkast 3 finnes og er målt. |
+| 10 | **Hjem-fanene og Spillere-fanene** som mangler wireframe (Gruppeposter, Dokumenter, Skoler, College og USA): tegnes i utkast 4 (`utkast-tn/trenerflate/utkast-4.html`, 14 skjermer, målt 22.10; venter på Anders, port 7). | Utkast 4 er godkjent, og skjermene er bygget etter det. |
 
 ## 3. Wireframes: hva finnes, hva mangler
 
