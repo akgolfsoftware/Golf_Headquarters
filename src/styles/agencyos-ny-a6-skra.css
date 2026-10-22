@@ -19,7 +19,7 @@
 /* Valgt filter eller trinn er grafitt (Data Golf-flatens blå chip skal ikke lekke hit). */
 .agn-s.agn-a6 .chips > a[aria-current="page"] { background: var(--graphite-900); border-color: var(--graphite-900); color: var(--white); }
 /* Løpende tekst og skjemafelt maks 720 px (beslutninger.md §SKRÅ-RESTEN); kortene fyller bredden. */
-.agn-a6 :is(form, .forklar) { max-width: 720px; }
+.agn-a6 :is(form, .forklar) { max-width: var(--ak-tekst-maks); }
 @media (min-width: 900px) {
   .agn-a6 { padding-bottom: 120px; }
   /* Stripe til hurtigknappen; toppen går fortsatt helt ut. */
@@ -29,3 +29,14 @@
   .agn-a6 > .to-del .kort { padding: 22px; }
 }
 @media (max-width: 599px) { .agn-a6 .a6-hvit { padding: 10px; } }
+
+/*
+ * Luften mellom den skrå toppen og første kort er 16 px på mobil og 24 px på PC (beslutninger.md §ØVERSTE KORT).
+ * Flatene som bruker SkraTopp direkte setter `gap: 0` på rotelementet, men `.agn-s` (gap 32 px) vant på kaskaden,
+ * så det sto 32 px ekstra. Lav topp via `Topp` (.agn-topp-lav) hadde i tillegg 16 px bunnmarg. Begge rettes her.
+ */
+.agn-s:is(.agn-skra, .agn-a5-skra, .agn-kal-skra, .agn-bk-skra) { gap: 0; }
+:is(.agn-a6, .agn-a5-under) > .agn-topp-lav { margin-bottom: calc(16px - var(--r6)); }
+@media (min-width: 900px) {
+  :is(.agn-a6, .agn-a5-under) > .agn-topp-lav { margin-bottom: calc(24px - var(--r6)); }
+}

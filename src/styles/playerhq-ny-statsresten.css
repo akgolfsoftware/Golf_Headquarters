@@ -18,7 +18,7 @@
 .phn .phn-sr-runder { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 4px 14px; padding-top: 8px; border-top: 1px solid var(--phn-sand-300); font: 500 13px/1.4 var(--phn-mono); color: var(--phn-g800); }
 
 /* Felles for skjemaene */
-.phn .phn-sr-smal { display: grid; gap: 20px; width: 100%; max-width: 720px; }
+.phn .phn-sr-smal { display: grid; gap: 20px; width: 100%; max-width: var(--ak-tekst-maks); }
 .phn .phn-sr-skjema { display: grid; gap: 20px; }
 .phn .phn-sr-festet { position: sticky; bottom: calc(var(--tabbar-h, 64px) + env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px)); z-index: 4; display: grid; gap: 6px; padding: 12px 0 8px; background: linear-gradient(transparent, var(--phn-hvit) 30%); }
 .phn .phn-sr-stor { min-height: 52px; width: 100%; font-size: 15px; }

@@ -1,12 +1,13 @@
 # Skrå i PlayerHQ og AgencyOS: statustavle
 
-Laget 22.10.2026 av komponist-økta. Sist oppdatert 22.10 etter bølge 1. Oppskriften per pakke står i
+Laget 22.10.2026 av komponist-økta. Sist oppdatert 23.10 etter bølge 3. Oppskriften per pakke står i
 `skra-drakt-playerhq-agencyos-plan-2026-10-20.md` §2, PlayerHQ-restene i
 `playerhq-resterende-skjermer-skra-2026-10-21.md`.
 
 Tavla som side: https://claude.ai/artifact/4MpWXCU3KEBbaARpvDccad
 Skisse bølge 1 (godkjent og bygget): https://claude.ai/artifact/NCP3fcTH2qNSYJtYVfWwNa (kilde `docs/design-system/utkast-skra/komponist/bolge-1.html`)
-Skisse bølge 2 (venter på Anders): https://claude.ai/artifact/781SDnPSrEGK7Kc6uy4K77 (kilde `docs/design-system/utkast-skra/komponist/bolge-2.html`)
+Skisse bølge 2 (godkjent og bygget): https://claude.ai/artifact/781SDnPSrEGK7Kc6uy4K77 (kilde `docs/design-system/utkast-skra/komponist/bolge-2.html`)
+Skisse bølge 3 (godkjent 22.10 og bygget i #1652, #1654): https://claude.ai/artifact/P6v1JmmgNHf9YVtM86EF5y (kilde `docs/design-system/utkast-skra/komponist/bolge-3.html`)
 
 ## Slik er tavla laget
 
@@ -240,3 +241,13 @@ Sjekket 22.10: `claude/skra-mer-liv` (I dag og Cockpit, ikke i main), `claude/fe
 | `/portal/tren/tester/team-norway` | P11 Live (uten topp) | ja (uten topp) | #1623 | — | — |
 | `/portal/analysere/datagolf/stasjon` | R10 PlayerHQ-rest | nei | — | — | — |
 | `/portal/samlinger` | R10 PlayerHQ-rest | nei | — | — | — |
+
+
+## Status 23.10 etter bølge 3
+
+- **Bygget:** alle 38 sider i A6a, A6b og A6c har Skrå-toppen og hvite kort (stilen `agencyos-ny-a6-skra.css`, klassen `agn-a6`). Økonomi, Data Golf og Jarvis har flat mørk topp. Plan-hub og teknisk plan hadde egen topp og er byttet til `Topp` (#1654).
+- **Målt i 390, 1280 og 1920 px uten avvik** (sidelengs rulling, noder utenfor rammen, konsollfeil): AG-10, 11, 14, 17, 18, 19, 20, 21, 22, 23, 24, DG, RD-01, TP-01, TP-02 og `AG-A6-REST` (eksterne lesere, inviter, Notion, ny turnering, agent, fellesmelding). Prøvene bruker syntetiske data.
+- **Ett avvik som ikke er rettet:** TrackMan-plottet (`/admin/trackman/[sessionId]`, `TrackManSessionDetail`) har for små treffmål (1σ/2σ-knapper 37×22 px, slagprikker 11–24 px). Komponenten er eldre og ikke endret av Skrå. Ingen sidelengs rulling.
+- **Luften under den skrå toppen** var 50–58 px i stedet for 16/24: `gap: 0` på rotelementet tapte mot `.agn-s` (32 px). Rettet for Cockpit, Innboks, Kalender, Grupper, Tester og bølge 3. Nå 16–19 px på mobil og 24–27 px på PC (målt).
+- **Felles tekstbredde:** `--ak-tekst-maks` (720 px) i `ak-tokens.css`, brukt i AgencyOS og PlayerHQ, låst i `src/styles/tekst-maks.test.ts`.
+- **Ikke gjort:** (1) ingen side er sett mot ekte data (port 7). (2) Hovedtall i toppen på Plan-hub: tallene i skissen («utløper snart», «venter på coach») finnes ikke i dagens data, og lav topp har ikke tallrad. Uke-tallene står i ingressen. (3) Hurtigknappen: rettet 23.10. Den glir ut ved ned-rulling på mobil (under 900 px) og kommer tilbake ved opp-rulling eller etter 0,7 s stillstand (`hurtigknapp-rulling.ts`, låst med test). (4) Nye toppbilder fra Anders. (5) Artifact-siden for tavla må oppdateres for hånd; skriptet ligger ikke i repoet.

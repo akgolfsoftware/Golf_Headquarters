@@ -19,9 +19,9 @@
 import Link from "next/link";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { ChevronLeft, Copy, Plus, Send } from "lucide-react";
+import { Copy, Plus, Send } from "lucide-react";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
-import { Pille } from "@/components/admin/agencyos-ny/ny";
+import { Pille, Topp } from "@/components/admin/agencyos-ny/ny";
 import { publiserTekniskPlan, dupliserTekniskPlan } from "@/app/admin/spillere/[id]/plan/[planId]/plan-actions";
 import { TP_POSISJONER, type TpOppgave, type TpPlan, type TpTmRad } from "@/lib/teknisk-plan/tp-visning";
 import { formaterTall } from "@/lib/format-tall";
@@ -105,20 +105,15 @@ export function AG10TekniskPlanNy({ coachNavn, spiller, plan, planAktiv, skjema 
 
   return <AgencyOSSkall navn={coachNavn}>
     <div className="agn-s agn-a6">
-      <div className="topp">
-        <Link href={`/admin/spillere/${spiller.id}`} className="ag-tilbake"><ChevronLeft className="ikon" aria-hidden />{spiller.navn}</Link>
-        <div className="topp-rad">
-          <div><div className="dato">{spiller.navn} · teknisk plan</div><h1 className="tittel">{plan.navn}</h1></div>
+      <Topp tilbake={{ href: `/admin/spillere/${spiller.id}`, tekst: spiller.navn }} dato={`${spiller.navn} · teknisk plan`} tittel={plan.navn}
+        handlinger={<>
           <Pille tone={plan.statusTone === "ok" ? "ok" : plan.statusTone === "warn" ? "vent" : "noy"}>{plan.status}</Pille>
-        </div>
-        <div className="knapper">
           <Link className="knapp pri" href={`${planHref}?oppgave=ny`}><Plus className="ikon" aria-hidden style={{ width: 16, height: 16 }} />Ny oppgave</Link>
           {!planAktiv && <button type="button" className="knapp sek" disabled={pending} onClick={() => kjor(() => publiserTekniskPlan(plan.id), "Planen ble ikke publisert.")}><Send className="ikon" aria-hidden style={{ width: 16, height: 16 }} />Publiser</button>}
           <button type="button" className="knapp spok" disabled={pending} onClick={() => kjor(() => dupliserTekniskPlan(plan.id), "Planen ble ikke kopiert.")}><Copy className="ikon" aria-hidden style={{ width: 16, height: 16 }} />Dupliser</button>
           <Link className="knapp spok" href={`${planHref}/for-og-na`}>Før og nå</Link>
-        </div>
+        </>} />
         {feil && <div className="varsel advarsel" role="alert"><p className="forklar">{feil}</p></div>}
-      </div>
 
       {plan.oppgaver.length === 0
         ? <div className="kort dempet"><b className="undertittel">Ingen oppgaver i planen ennå</b><p className="forklar">Start med posisjonen dere jobber mest med. Legg til én oppgave med ett teknisk fokus. Spilleren ser planen når du publiserer.</p><div className="knapper"><Link className="knapp pri" href={`${planHref}?oppgave=ny`}>Ny oppgave</Link></div></div>
