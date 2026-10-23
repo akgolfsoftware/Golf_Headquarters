@@ -4,6 +4,25 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## WORKBENCH-UKA ER EN KALENDER 05–22 I HALVTIMER MED DRA OG SLIPP, LIK FOR COACH OG SPILLER (Anders 23.10.2026, bindende)
+
+Anders 23.10, under skjelettet for Workbench: «Workbench skal ha komplett kalender fra 05:00 til 22:00 med 30 min intervaller. Den skal være Notion Calendar inspirert. Med komplette drag av drop funksjoner.» Man skal kunne lage standardøkter, favorittøvelser og treningsdager (med flere økter), som ligger i sidemenyen og dras inn på en dag. Og: «spiller skal ha samme workbench, bare ikke valg av grupper og spillere og evnen til å planlegge for grupper og andre».
+
+- **Uka i Workbench er en kalender** fra 05:00 til 22:00 med rader på 30 minutter, etter mønster fra Notion Calendar: tidsakse, rad for hele dagen (periode), Nå-strek og visningene Dag · Uke · Måned. Mobil viser én dag om gangen.
+- **Biblioteket i sidemenyen** har tre grupper, hver med «+ Ny»: **Treningsdager** (flere økter samlet), **Standardøkter** og **Favorittøvelser**.
+- **Dra og slipp:** fra biblioteket til en tid (fester seg til nærmeste halvtime) · flytt innen dagen og mellom dager · endre lengden i nederste kant i halvtimer · en treningsdag legger alle øktene sine med samme tider · en favorittøvelse sluppet på en økt legges i økta, på tom tid blir den en ny økt · Alt (⌥) kopierer · Angre i 10 sekunder. På mobil åpnes biblioteket som ark, og man holder inne og drar.
+- **Samme Workbench for spiller og coach.** Bare coachen har «Planlegger for» (velge spiller eller gruppe) og kan planlegge for grupper og andre spillere. Spilleren planlegger bare for seg selv; økter coachen har lagt inn er merket «Coach», og coachen får beskjed når spilleren endrer dem.
+- Uendret: lagt inn mot fordelt per akse over kalenderen, fordelingen kommer fra perioden, og Workbench stopper ingenting (§PLANNIVÅENE HENGER SAMMEN, 14.10). Pyramiden velges først (28.09).
+
+**Overstyrer:** Ukeverkstedet slik det er tegnet i dag (kolonner uten tidsakse) for coach, og uke-nivået i spillerens Workbench (§SPILLERENS WORKBENCH FÅR NIVÅENE, 14.10). De andre flatene og nivåene står.
+
+**Arbeidet dette utløser:**
+
+1. **Skjelettet:** tegnet i Claude Design (siden «AgencyOS · Workbench · variantene», tavlene WK-* og WKS-*). Gjort.
+2. **Kalenderen i koden:** én felles komponent for uka med halvtimesrader 05–22, brukt av `/admin/workbench/[playerId]` og spillerens Workbench. Ferdig når en test låser at en økt sluppet 16:10 lagres 16:00, og at lengden endres i steg på 30 minutter.
+3. **Biblioteket:** standardøkter og favorittøvelser per bruker, og treningsdager med flere økter og tider. Datamodell additivt via `db execute` (gotchas §Database) hvis den ikke finnes. Ferdig når en treningsdag sluppet på en dag lager alle øktene med riktige tider, låst med test.
+4. **Roller:** «Planlegger for» og gruppeplanlegging vises bare for coach. Ferdig når en test låser at en spiller ikke kan lagre en økt for en annen spiller eller en gruppe.
+
 ## TURNERINGSPLANLEGGEREN FRA TEAM NORWAY ER MASTER FOR ALLE BRUKERE, OG STÅR I SPILLERPROFILEN (Anders 23.10.2026, bindende)
 
 Anders 23.10, under skjelettet for Spiller 360: «i spiller profil så må vi ha turneringsplanlegger som vi har laget i Team Norway skjermene også. Dette skal være master turneringsplanelegger for alle brukeren».
