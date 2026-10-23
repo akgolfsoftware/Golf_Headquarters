@@ -24,7 +24,7 @@ Bygger på [registeret](tn-trenerflate-register-2026-10-21.md), [wireframes](../
 
 1. **Gjort:** HCP skjult (#1662).
 2. **Datalag for referanseplan:** egen lesing for en WAGR-spiller uten HQ-bruker (`byggPlanvisning` krever i dag en HQ-bruker via `public_players."wagrId"`), og skriving til `wagr_reference_plans`. Ferdig når samme spiller gir samme sjanser som i spillerens egen plan.
-3. **Referanse › Planlegger i Team Norway:** ny fane, bygger på `Turneringsplanlegger` med en egen handlingsflate for referanseplanen (dagens handlinger er knyttet til spillerens egne påmeldinger). Treneren foreslår; planen deles mellom trenerne.
+3. **Referanse › Planlegger i Team Norway:** ny fane, bygger på `Turneringsplanlegger` med en egen handlingsflate for referanseplanen (dagens handlinger er knyttet til spillerens egne påmeldinger). Trenerne endrer direkte for spillere uten HQ-konto, med logg over hvem som endret; planen deles mellom trenerne. Får spilleren konto, gjelder forslagsregelen (Anders 23.10, beslutninger.md §REFERANSE › PLANLEGGER).
 4. **Planlegger i AgencyOS:** samme referanseplan for coach, og lenke fra Spiller 360.
 5. **PlayerHQ:** bare egen plan (bekreftet 23.10). Gjennomgang mot Skrå og «Se hva Team Norway ser».
 6. **Videresendinger og steg 10** (Gruppeposter, Dokumenter, Skoler, College) etter ja til utkast 4.
