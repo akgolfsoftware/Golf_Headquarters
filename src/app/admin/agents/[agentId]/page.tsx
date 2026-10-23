@@ -7,6 +7,7 @@
  * FeedbackForm (tommel opp/ned per kjøring) er ikke montert her, som før.
  */
 
+import { hentAkTreningsobservasjoner } from "@/lib/deling/ak-treningsobservasjon";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { notFound } from "next/navigation";
 import { requireCapability } from "@/lib/auth/requireCapability";
@@ -122,35 +123,41 @@ export default async function AgentDetaljPage({
   const tretti_dager_siden = new Date();
   tretti_dager_siden.setDate(tretti_dager_siden.getDate() - 30);
 
-  const [sisteKjoring, kjoringerVindu, planActions, pendingCount, acceptedCount, rejectedCount, eldstePending] =
-    await Promise.all([
-      prisma.agentRun.findFirst({ where: { agentName: { in: alleNavn } }, orderBy: { createdAt: "desc" } }),
-      prisma.agentRun.findMany({
-        where: { agentName: { in: alleNavn }, createdAt: { gte: tretti_dager_siden } },
-        orderBy: { createdAt: "desc" },
-        take: 30,
-      }),
-      prisma.planAction.findMany({
-        where: { agentName: { in: alleNavn } },
-        orderBy: { createdAt: "desc" },
-        take: 10,
-        include: { user: { select: { id: true, name: true } } },
-      }),
-      prisma.planAction.count({ where: { agentName: { in: alleNavn }, status: "PENDING" } }),
-      prisma.planAction.count({ where: { agentName: { in: alleNavn }, status: "ACCEPTED" } }),
-      prisma.planAction.count({ where: { agentName: { in: alleNavn }, status: "REJECTED" } }),
-      prisma.planAction.findFirst({
-        where: { agentName: { in: alleNavn }, status: "PENDING" },
-        orderBy: { createdAt: "asc" },
-        select: { createdAt: true },
-      }),
-    ]);
+  const treningsobservasjon = agentId === "training-gap";
+  // Rå output/feil fra historiske batchkjøringer kan inneholde andre spilleres
+  // opplysninger. Her vises bare teknisk kjørestatus for treningsgap-agenten.
+  const runSelect = treningsobservasjon
+    ? { id: true, status: true, createdAt: true, duration: true }
+    : undefined;
+  const [sisteRad, kjoringsRader, forslagData] = await Promise.all([
+    prisma.agentRun.findFirst({ where: { agentName: { in: alleNavn } }, orderBy: { createdAt: "desc" }, select: runSelect }),
+    prisma.agentRun.findMany({ where: { agentName: { in: alleNavn }, createdAt: { gte: tretti_dager_siden } },
+      orderBy: { createdAt: "desc" }, take: 30, select: runSelect }),
+    treningsobservasjon ? hentAkTreningsobservasjoner(user) : (async () => {
+      const [planActions, pendingCount, acceptedCount, rejectedCount, eldstePending] = await Promise.all([
+        prisma.planAction.findMany({ where: { agentName: { in: alleNavn } }, orderBy: { createdAt: "desc" }, take: 10,
+          include: { user: { select: { id: true, name: true } } } }),
+        prisma.planAction.count({ where: { agentName: { in: alleNavn }, status: "PENDING" } }),
+        prisma.planAction.count({ where: { agentName: { in: alleNavn }, status: "ACCEPTED" } }),
+        prisma.planAction.count({ where: { agentName: { in: alleNavn }, status: "REJECTED" } }),
+        prisma.planAction.findFirst({ where: { agentName: { in: alleNavn }, status: "PENDING" }, orderBy: { createdAt: "asc" }, select: { createdAt: true } }),
+      ]);
+      return { planActions, pendingCount, acceptedCount, rejectedCount, eldstePending };
+    })(),
+  ]);
+  const skjermKjoring = (r: (typeof kjoringsRader)[number]) => ({ ...r,
+    output: "output" in r ? r.output : null,
+    error: "error" in r && typeof r.error === "string" ? r.error : r.status === "ERROR" ? "Kjøringen feilet." : null,
+  });
+  const sisteKjoring = sisteRad ? skjermKjoring(sisteRad) : null;
+  const kjoringerVindu = kjoringsRader.map(skjermKjoring);
+  const { planActions, pendingCount, acceptedCount, rejectedCount, eldstePending } = forslagData;
 
   // Steg for agent-team-kjøringer (KommandoAgentStep). Ingen av de 13
   // registrerte agentene skriver disse i dag — AgentRun har ingen kobling
   // til KommandoAgentRun i schema — men oppslaget gjøres ærlig i tilfelle
   // det legges til senere, i stedet for å anta at det aldri skjer.
-  const kommandoSteg = sisteKjoring
+  const kommandoSteg = sisteKjoring && !treningsobservasjon
     ? await prisma.kommandoAgentStep.findMany({
         where: { runId: sisteKjoring.id },
         orderBy: { orderIndex: "asc" },
@@ -241,7 +248,7 @@ export default async function AgentDetaljPage({
         steg: [
           {
             rolle: "kjøring",
-            tekst: ok ? (lagSnippet(output) ?? "Fullført uten forslag.") : (sisteKjoring.error ?? "Feilet."),
+            tekst: ok ? (lagSnippet(output) ?? (treningsobservasjon ? "Kjøring fullført. Forslagslisten viser bare dine tilgjengelige observasjoner." : "Fullført uten forslag.")) : (sisteKjoring.error ?? "Feilet."),
             ok,
           },
         ],

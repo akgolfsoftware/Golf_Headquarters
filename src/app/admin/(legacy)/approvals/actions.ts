@@ -4,6 +4,8 @@
  * Server actions for /admin/approvals/[id] — detalj-visningen.
  */
 
+import { z } from "zod";
+import { erAkTreningsobservasjon, behandleAkTreningsobservasjon } from "@/lib/deling/ak-treningsobservasjon";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
@@ -43,6 +45,17 @@ export async function approveRequestDetailed(
   comment?: string,
 ) {
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  actionId = z.string().trim().min(1).max(200).parse(actionId);
+  const metadata = await prisma.planAction.findUnique({ where: { id: actionId }, select: { agentName: true, actionType: true } });
+  if (metadata && erAkTreningsobservasjon(metadata)) {
+    await behandleAkTreningsobservasjon(user, actionId, "ACCEPTED", comment);
+    revalidatePath("/admin/godkjenninger");
+    revalidatePath(`/admin/godkjenninger/${actionId}`);
+    revalidatePath("/admin/agents/training-gap");
+    revalidatePath("/portal/agent-pipeline");
+    redirect("/admin/godkjenninger");
+  }
+
 
   const action = await prisma.planAction.findUnique({
     where: { id: actionId, ...coachScopeWhere(user) },
@@ -65,6 +78,7 @@ export async function approveRequestDetailed(
   await acceptAndApplyPlanAction(
     actionId,
     suggestion as Record<string, unknown> | undefined,
+    user.id,
   );
 
   revalidatePath("/admin/godkjenninger");
@@ -94,13 +108,14 @@ export async function batchApproveSelected(ids: string[]) {
       ...coachScopeWhere(user),
     },
     orderBy: { createdAt: "asc" },
+    select: { id: true, actionType: true },
   });
 
   let godkjent = 0;
   let feilet = 0;
   for (const action of pending) {
     try {
-      const resultat = await acceptAndApplyPlanAction(action.id);
+      const resultat = await acceptAndApplyPlanAction(action.id, undefined, user.id);
       if (resultat.status === "ACCEPTED") godkjent++;
     } catch {
       feilet++;
@@ -117,13 +132,14 @@ export async function batchApproveLowRisk() {
   const pending = await prisma.planAction.findMany({
     where: { status: "PENDING", ...coachScopeWhere(user) },
     orderBy: { createdAt: "asc" },
+    select: { id: true, actionType: true },
   });
 
   let godkjent = 0;
   for (const action of pending) {
     if (!LOW_RISK_ACTION_TYPES.has(action.actionType)) continue;
     try {
-      const resultat = await acceptAndApplyPlanAction(action.id);
+      const resultat = await acceptAndApplyPlanAction(action.id, undefined, user.id);
       if (resultat.status === "ACCEPTED") godkjent++;
     } catch {
       // Hopp over enkeltfeil — coach kan håndtere manuelt
@@ -136,6 +152,20 @@ export async function batchApproveLowRisk() {
 
 export async function declineRequestDetailed(actionId: string, reason: string) {
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const begrunnelse = z.string().trim().min(3).max(500).safeParse(reason);
+  if (!begrunnelse.success) throw new Error("begrunnelse-påkrevd");
+  reason = begrunnelse.data;
+  actionId = z.string().trim().min(1).max(200).parse(actionId);
+  const metadata = await prisma.planAction.findUnique({ where: { id: actionId }, select: { agentName: true, actionType: true } });
+  if (metadata && erAkTreningsobservasjon(metadata)) {
+    await behandleAkTreningsobservasjon(user, actionId, "REJECTED", reason);
+    revalidatePath("/admin/godkjenninger");
+    revalidatePath(`/admin/godkjenninger/${actionId}`);
+    revalidatePath("/admin/agents/training-gap");
+    revalidatePath("/portal/agent-pipeline");
+    redirect("/admin/godkjenninger");
+  }
+
   if (!reason || reason.trim().length < 3) {
     throw new Error("begrunnelse-påkrevd");
   }
@@ -167,6 +197,17 @@ export async function declineRequestDetailed(actionId: string, reason: string) {
 
 export async function requestMoreInfo(actionId: string, question: string) {
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  actionId = z.string().trim().min(1).max(200).parse(actionId);
+  const metadata = await prisma.planAction.findUnique({ where: { id: actionId }, select: { agentName: true, actionType: true } });
+  if (metadata && erAkTreningsobservasjon(metadata)) {
+    await behandleAkTreningsobservasjon(user, actionId, "QUESTION", question);
+    revalidatePath("/admin/godkjenninger");
+    revalidatePath(`/admin/godkjenninger/${actionId}`);
+    revalidatePath("/admin/agents/training-gap");
+    revalidatePath("/portal/agent-pipeline");
+    return;
+  }
+
   if (!question || question.trim().length < 3) {
     throw new Error("spørsmål-påkrevd");
   }

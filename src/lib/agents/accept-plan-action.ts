@@ -1,3 +1,4 @@
+import { erAkTreningsobservasjon, behandleAkTreningsobservasjon } from "@/lib/deling/ak-treningsobservasjon";
 import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import {
@@ -35,9 +36,17 @@ export async function acceptAndApplyPlanAction(
   coachNoteSuggestion?: Record<string, unknown>,
   decidedById?: string,
 ): Promise<AcceptPlanActionResult> {
-  const action = await prisma.planAction.findUnique({
-    where: { id: actionId },
+  const metadata = await prisma.planAction.findUnique({
+    where: { id: actionId }, select: { actionType: true, agentName: true },
   });
+  if (!metadata) throw new Error("not-found");
+  if (erAkTreningsobservasjon(metadata)) {
+    if (!decidedById || coachNoteSuggestion) throw new Error("forbidden");
+    const viewer = await prisma.user.findFirst({ where: { id: decidedById, deletedAt: null }, select: { id: true, role: true } });
+    if (!viewer) throw new Error("forbidden");
+    return behandleAkTreningsobservasjon(viewer, actionId, "ACCEPTED");
+  }
+  const action = await prisma.planAction.findUnique({ where: { id: actionId } });
   if (!action) throw new Error("not-found");
   if (action.status !== "PENDING") {
     return {

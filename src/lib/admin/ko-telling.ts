@@ -11,6 +11,7 @@
  *   - SessionRequest:  PENDING + coach-scope + spiller-scope
  */
 
+import { hentAkTreningsobservasjoner, UTEN_AK_TRENINGSOBSERVASJON } from "@/lib/deling/ak-treningsobservasjon";
 import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
@@ -36,6 +37,7 @@ export function planActionKoWhere(viewer: {
   const userFilter: Prisma.UserWhereInput =
     viewer.role === "ADMIN" ? { OR: [spillerScope, { role: "ADMIN" }] } : spillerScope;
   return {
+    ...UTEN_AK_TRENINGSOBSERVASJON,
     status: "PENDING",
     actionType: { not: "WORKBENCH_GATHERING_INVITE" },
     OR: [{ coachId: viewer.id }, { coachId: null }],
@@ -46,10 +48,11 @@ export function planActionKoWhere(viewer: {
 export async function koTelling(
   coachUserId: string,
   viewerRole: string = "COACH",
+  observasjoner?: { pendingCount: number },
 ): Promise<KoTelling> {
   const spillerScope = coachScopedPlayerWhere({ id: coachUserId, role: viewerRole });
 
-  const [planActions, caddieDrafts, sessionRequests] = await Promise.all([
+  const [eldrePlanActions, caddieDrafts, sessionRequests, treningsobservasjoner] = await Promise.all([
     prisma.planAction.count({
       where: planActionKoWhere({ id: coachUserId, role: viewerRole }),
     }),
@@ -63,7 +66,9 @@ export async function koTelling(
         },
       })
       .catch(() => 0),
+    observasjoner ?? hentAkTreningsobservasjoner({ id: coachUserId, role: viewerRole }, { maksRader: 0 }),
   ]);
+  const planActions = eldrePlanActions + treningsobservasjoner.pendingCount;
   return {
     planActions,
     caddieDrafts,

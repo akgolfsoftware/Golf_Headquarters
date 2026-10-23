@@ -10,6 +10,7 @@
  * e-postutkast bor i innboks-epost-flaten med egen godkjenning der.
  */
 
+import { hentAkTreningsobservasjoner, UTEN_AK_TRENINGSOBSERVASJON } from "@/lib/deling/ak-treningsobservasjon";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { handlingstypeLabel } from "@/lib/labels/handlingstyper";
 import { prisma } from "@/lib/prisma";
@@ -69,8 +70,9 @@ export async function lastGodkjenninger(
   const spillerScope = coachScopedPlayerWhere(user);
   const syvDagerSiden = syvDagerSidenGrense();
 
+  const observasjoner = await hentAkTreningsobservasjoner(user, { maksRader, status: "PENDING" });
   const [
-    actions,
+    eldreActions,
     caddieDrafts,
     sessionRequests,
     ko,
@@ -109,7 +111,7 @@ export async function lastGodkjenninger(
       select: { id: true, userId: true, reason: true, preferredDate: true, preferredTime: true, createdAt: true, user: { select: { name: true } } },
     }).catch(() => []),
     // FUNN 4: kanonisk kø-telling — samme tall i hodet som på innboks/varsler.
-    koTelling(user.id, user.role),
+    koTelling(user.id, user.role, observasjoner),
     // Lav risiko telles i basen, ikke blant de lastede radene.
     prisma.planAction.count({
       where: { ...planActionKoWhere(user), actionType: { in: [...LOW_RISK_ACTION_TYPES] } },
@@ -122,10 +124,10 @@ export async function lastGodkjenninger(
     }),
     // Køen i tall (høyrekolonne) — «Godkjent 7 dg»/«N avvist», ærlig telt per kilde.
     prisma.planAction.count({
-      where: { status: "ACCEPTED", actionType: { not: "WORKBENCH_GATHERING_INVITE" }, decidedAt: { gte: syvDagerSiden }, OR: [{ coachId: user.id }, { coachId: null }], user: spillerScope },
+      where: { ...UTEN_AK_TRENINGSOBSERVASJON, status: "ACCEPTED", actionType: { not: "WORKBENCH_GATHERING_INVITE" }, decidedAt: { gte: syvDagerSiden }, OR: [{ coachId: user.id }, { coachId: null }], user: spillerScope },
     }),
     prisma.planAction.count({
-      where: { status: "REJECTED", actionType: { not: "WORKBENCH_GATHERING_INVITE" }, decidedAt: { gte: syvDagerSiden }, OR: [{ coachId: user.id }, { coachId: null }], user: spillerScope },
+      where: { ...UTEN_AK_TRENINGSOBSERVASJON, status: "REJECTED", actionType: { not: "WORKBENCH_GATHERING_INVITE" }, decidedAt: { gte: syvDagerSiden }, OR: [{ coachId: user.id }, { coachId: null }], user: spillerScope },
     }),
     prisma.caddieDraft.count({ where: caddieDraftAvgjortWhere(user.id, "APPROVED", syvDagerSiden) }),
     prisma.caddieDraft.count({ where: caddieDraftAvgjortWhere(user.id, "REJECTED", syvDagerSiden) }),
@@ -140,6 +142,8 @@ export async function lastGodkjenninger(
       })
       .catch(() => 0),
   ]);
+  const actions = [...eldreActions, ...observasjoner.planActions.map(a => ({ ...a, plan: null }))]
+    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime() || b.id.localeCompare(a.id)).slice(0, maksRader);
   // CaddieDraft.userId er EIEREN som kan godkjenne. Spilleren utkastet
   // gjelder vises fra toolInput når den finnes.
   const draftSpillerId = (toolInput: unknown): string | null => {
@@ -267,6 +271,7 @@ export async function lastGodkjenninger(
   // Løst: nylig godkjente sjekkpunkter (ETTER → FØR-tråd).
   const lostRader = await prisma.planAction.findMany({
     where: {
+      ...UTEN_AK_TRENINGSOBSERVASJON,
       status: "ACCEPTED",
       sjekkpunkt: { not: null },
       user: spillerScope,
@@ -291,6 +296,7 @@ export async function lastGodkjenninger(
 
   // Køen i tall — «Eldste»: ærlig eldste rad i køen (ikke bare PlanAction).
   const eldsteKandidat = [
+    ...(observasjoner.eldstePending ? [{ createdAt: observasjoner.eldstePending.createdAt, who: observasjoner.eldstePending.user.name ?? "Spiller" }] : []),
     ...(eldstePlanAction ? [{ createdAt: eldstePlanAction.createdAt, who: eldstePlanAction.user.name ?? "Spiller" }] : []),
     ...caddieDrafts.map((d) => ({
       createdAt: d.createdAt,
@@ -313,8 +319,8 @@ export async function lastGodkjenninger(
     lostSjekkpunkter,
     kilder: { agent: ko.planActions, caddie: ko.caddieDrafts, forespørsel: ko.sessionRequests },
     eldste: eldsteKandidat ? { dagerLabel: dagerSidenLabel(eldsteKandidat.createdAt), who: eldsteKandidat.who } : null,
-    godkjent7Dager: planGodkjent7d + caddieGodkjent7d + sessionGodkjent7d,
-    avvist7Dager: planAvvist7d + caddieAvvist7d + sessionAvvist7d,
+    godkjent7Dager: planGodkjent7d + observasjoner.accepted7d + caddieGodkjent7d + sessionGodkjent7d,
+    avvist7Dager: planAvvist7d + observasjoner.rejected7d + caddieAvvist7d + sessionAvvist7d,
   };
 
   return data;

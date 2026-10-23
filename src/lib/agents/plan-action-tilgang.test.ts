@@ -25,7 +25,7 @@ test("spiller, tildelt coach med tilgang og admin kan behandle forslaget", () =>
   );
   assert.equal(
     kanBehandlePlanAction({
-      viewerId: "admin",
+      viewerId: "tildelt-coach",
       viewerRole: "ADMIN",
       ...action,
       harSpillerTilgang: true,
@@ -69,4 +69,9 @@ test("admin avvises for selvbetjent spiller (uten stall-tilgang)", () => {
     kanBehandlePlanAction({ viewerId: "admin", viewerRole: "ADMIN", ...action, harSpillerTilgang: false }),
     false,
   );
+});
+
+
+test("ADMIN kan ikke overta en annen navngitt mottakers forslag", () => {
+  assert.equal(kanBehandlePlanAction({viewerId:"admin",viewerRole:"ADMIN",...action,harSpillerTilgang:true}),false);
 });

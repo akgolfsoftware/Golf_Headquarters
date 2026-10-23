@@ -4,8 +4,7 @@
  * tre handlinger), og (2) ekte per-coach eierskap på PlanAction — en COACH
  * uten tilgang til spilleren (`harCoachTilgangTilSpiller`), eller der
  * `coachId` peker på en ANNEN coach, skal avvises selv om hen er COACH.
- * ADMIN er unntatt eierskapssjekken (line 18 i actions.ts) og skal derfor
- * kunne godta/avvise uavhengig av coachId/tilgang. `markerVarselLest`
+ * ADMIN må også ha tilgang og respektere en navngitt mottaker. `markerVarselLest`
  * skoper sin `updateMany` til `userId: user.id` — testen verifiserer at en
  * annen brukers notifikasjon aldri røres.
  */
@@ -36,6 +35,7 @@ const notifications: Record<string, { id: string; userId: string; readAt: Date |
 let coachensSpillere = new Set(["spiller-a"]);
 
 let acceptKall: string[] = [];
+let spor: unknown[] = [];
 let planActionUpdates: Array<{ where: unknown; data: unknown }> = [];
 let notificationUpdates: Array<{ where: unknown; data: unknown }> = [];
 
@@ -43,6 +43,7 @@ function nullstill() {
   bruker = { id: "coach-a", role: "COACH", name: "Coach A" };
   coachensSpillere = new Set(["spiller-a"]);
   acceptKall = [];
+  spor = [];
   planActionUpdates = [];
   notificationUpdates = [];
   planActions["pa-1"].status = "PENDING";
@@ -77,6 +78,7 @@ mock.module("@/lib/agents/accept-plan-action", {
 const prismaMock: Record<string, unknown> = {};
 mock.module("@/lib/prisma", { namedExports: { prisma: prismaMock } });
 Object.assign(prismaMock, {
+  agentRun: { create: async ({ data }: { data: unknown }) => { spor.push(data); } },
   planAction: {
     findUnique: async ({ where }: { where: { id: string } }) => planActions[where.id] ?? null,
     updateMany: async (input: { where: unknown; data: unknown }) => {
@@ -136,13 +138,28 @@ test("godtaPlanAction kjører executor for COACH med tilgang og riktig coachId",
   assert.deepEqual(acceptKall, ["pa-1"]);
 });
 
-test("godtaPlanAction lar ADMIN godta uavhengig av coachId/tilgang", async () => {
+test("godtaPlanAction avviser ADMIN uten spillerrett eller med annen mottaker", async () => {
   bruker = { id: "admin-a", role: "ADMIN", name: "Admin A" };
-  coachensSpillere = new Set(); // ADMIN skal ikke rammes av dette
   const { godtaPlanAction } = await actions();
-  const svar = await godtaPlanAction("pa-annen-coach");
-  assert.equal(svar.ok, true);
-  assert.deepEqual(acceptKall, ["pa-annen-coach"]);
+  coachensSpillere = new Set();
+  await assert.rejects(() => godtaPlanAction("pa-uten-coach"), /forbidden/);
+  coachensSpillere = new Set(["spiller-b"]);
+  await assert.rejects(() => godtaPlanAction("pa-annen-coach"), /forbidden/);
+  assert.equal(acceptKall.length, 0);
+});
+
+test("ADMIN med riktig mottaker og spillerrett kan behandle eldre ordinært forslag", async () => {
+  bruker = { id: "coach-a", role: "ADMIN", name: "Admin A" };
+  const { godtaPlanAction } = await actions();
+  assert.deepEqual(await godtaPlanAction("pa-1"), { ok: true });
+  assert.deepEqual(acceptKall, ["pa-1"]);
+});
+
+test("manglende eller allerede avgjort forslag kjører aldri executor", async () => {
+  const { godtaPlanAction } = await actions();
+  await assert.rejects(() => godtaPlanAction("ukjent"), /not-found/);
+  assert.deepEqual(await godtaPlanAction("pa-avgjort"), { ok: true });
+  assert.equal(acceptKall.length, 0);
 });
 
 test("avvisPlanAction avviser PLAYER uten å endre status", async () => {
@@ -172,6 +189,8 @@ test("avvisPlanAction setter REJECTED for COACH med tilgang", async () => {
   assert.equal(svar.ok, true);
   assert.equal(planActionUpdates.length, 1);
   assert.equal((planActionUpdates[0]?.data as { status: string }).status, "REJECTED");
+  assert.equal((planActionUpdates[0]?.data as { decidedById: string }).decidedById, "coach-a");
+  assert.equal(spor.length, 1);
 });
 
 test("avvisPlanAction gjør ingen skriving når handlingen ikke lenger er PENDING", async () => {

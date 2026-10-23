@@ -260,3 +260,10 @@ Rolle, nødvendige dataoppslag og godkjent databasehandling ligger i samme trans
 Bakgrunnsagenten bruker eksisterende coachingprofildeling til én konkret aktiv AK-gruppe og gruppens ansvarlige trener. Gruppens ID, delingsformål/-versjon og faktisk coachId følger ny observasjon i eksisterende PlanAction, sammen med runde-ID-er og metodegrunnlag. Ingen navn, kontaktfelt, helse eller innloggingshistorikk leses til denne analysen. Ingen nye tabeller, samtykkevalg eller oppbevaringstider. Ingen skymodell eller ekstern utsending.
 
 Fersk kontroll og profilbehandling skjer i samme låste transaksjon; trekk stopper neste oppdrag. Eldre lagrede køelementer/historikk forsvinner ikke automatisk, og full tilbakekalling/leserkontroll i alle køer gjenstår før utrulling. Oppdrag uten ansvarlig trener, aktuell deling eller riktig gruppe avvises. Nye og gamle treningsgap-forslag endrer ikke økter ved godkjenning. Eksisterende eksport-/slettehull og juridiske avklaringer består.
+
+
+### C1: kø og beslutninger for treningsobservasjoner (23.10.2026)
+
+Ny lesing av treningsgap i samlekøen og agentdetaljen bruker aktuell deling til samme gruppe og ansvarlig trener, også for ADMIN. Historiske kjøringers rå output/feil leses ikke på treningsgap-detaljsiden. Beslutninger gjenbruker `PlanAction.decidedAt`, `decidedById`, `decisionNote`/`rejectReason` og eksisterende `AgentRun` med ID/type/utfall; kommentar lagres ikke i AgentRun-output. Et uttrykkelig spørsmål fra trener gjenbruker `Notification` i appen. Alle disse skriver under den samme ferske tilgangskontrollen og transaksjonen. Ingen nye tabeller eller oppbevaringstider.
+
+Spilleren beholder egne observasjoner uten å dele med treneren; slettet konto gir ingen behandling. Gamle observasjoner oppgraderes ikke til ny gruppedeling. Andre kø-/agentformål, tidligere levert historikk og eksisterende hull i eksport/sletting må fortsatt håndteres separat. Ingen helse-, lyd-, økonomi- eller læringsrett er lagt til. Dette er teknisk avgrensning, ikke juridisk sluttgodkjenning. Kun syntetiske lokale tester; ingen ekte varsler eller eksterne utsendinger utført.

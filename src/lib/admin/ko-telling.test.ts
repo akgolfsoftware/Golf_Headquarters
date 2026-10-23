@@ -9,6 +9,7 @@ mock.module("@/lib/auth/coached", {
 mock.module("@/lib/prisma", {
   namedExports: {
     prisma: {
+      group: { findMany: async () => [] },
       planAction: { count: async ({ where }: { where: unknown }) => { lastPlanActionWhere = where; return 2; } },
       caddieDraft: {
         count: async ({ where }: { where: unknown }) => {
@@ -36,4 +37,14 @@ test("Caddie-telling bruker eier, også for ADMIN", async () => {
   assert.deepEqual((lastPlanActionWhere as { actionType: unknown }).actionType, { not: "WORKBENCH_GATHERING_INVITE" });
   assert.deepEqual(lastCaddieWhere, { status: "PENDING", userId: "coach-1" });
   assert.equal(coach.caddieDrafts, 1);
+});
+
+
+test("egen delingskontroll telles i tillegg, uten å åpne den gamle køen", async () => {
+  const resultat = await koTelling("admin", "ADMIN", { pendingCount: 4 });
+  assert.equal(resultat.planActions, 6);
+  assert.equal(resultat.totalt, 10);
+  assert.deepEqual((lastPlanActionWhere as { NOT: unknown }).NOT, {
+    OR: [{ agentName: "training-gap" }, { actionType: { in: ["COACH_REVIEW", "TRAINING_GAP"] } }],
+  });
 });

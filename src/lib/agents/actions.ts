@@ -1,5 +1,7 @@
 "use server";
 
+import { z } from "zod";
+import { erAkTreningsobservasjon, behandleAkTreningsobservasjon } from "@/lib/deling/ak-treningsobservasjon";
 import { revalidatePath } from "next/cache";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
@@ -31,15 +33,21 @@ async function assertPlanActionAccess(
 export async function acceptPlanAction(actionId: string) {
   const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
 
+  actionId = z.string().trim().min(1).max(200).parse(actionId);
   const action = await prisma.planAction.findUnique({
     where: { id: actionId },
+    select: { id: true, userId: true, coachId: true, actionType: true, agentName: true, status: true },
   });
   if (!action) throw new Error("not-found");
-  await assertPlanActionAccess(user, action);
-  if (action.status !== "PENDING") return;
+  if (erAkTreningsobservasjon(action)) {
+    await behandleAkTreningsobservasjon(user, actionId, "ACCEPTED");
+  } else {
+    await assertPlanActionAccess(user, action);
+    if (action.status !== "PENDING") return;
+    await acceptAndApplyPlanAction(actionId, undefined, user.id);
+  }
 
-  await acceptAndApplyPlanAction(actionId, undefined, user.id);
-
+  revalidatePath("/admin/agents/training-gap");
   revalidatePath("/portal");
   revalidatePath("/portal/agent-pipeline");
   revalidatePath("/admin/godkjenninger");
@@ -55,37 +63,44 @@ export async function acceptPlanAction(actionId: string) {
 export async function rejectPlanAction(actionId: string, reason?: string) {
   const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
 
+  actionId = z.string().trim().min(1).max(200).parse(actionId);
   const action = await prisma.planAction.findUnique({
     where: { id: actionId },
+    select: { id: true, userId: true, coachId: true, actionType: true, agentName: true, status: true },
   });
   if (!action) throw new Error("not-found");
-  await assertPlanActionAccess(user, action);
-  if (action.status !== "PENDING") return;
+  if (erAkTreningsobservasjon(action)) {
+    await behandleAkTreningsobservasjon(user, actionId, "REJECTED", reason);
+  } else {
+    await assertPlanActionAccess(user, action);
+    if (action.status !== "PENDING") return;
 
-  // Grunn er valgfri men verdifull eval-data — trimmes og caps til 500 tegn.
-  const rejectReason =
-    typeof reason === "string" && reason.trim().length > 0
-      ? reason.trim().slice(0, 500)
-      : undefined;
+    // Grunn er valgfri men verdifull eval-data — trimmes og caps til 500 tegn.
+    const rejectReason =
+      typeof reason === "string" && reason.trim().length > 0
+        ? reason.trim().slice(0, 500)
+        : undefined;
 
-  const rejected = await prisma.planAction.updateMany({
-    where: { id: actionId, status: "PENDING" },
-    data: {
-      status: "REJECTED",
-      decidedAt: new Date(),
-      decidedById: user.id,
-      ...(rejectReason ? { rejectReason } : {}),
-    },
-  });
-  if (rejected.count !== 1) return;
-  await prisma.agentRun.create({
-    data: planActionAvvisSpor({
-      actionId,
-      actionType: action.actionType,
-      userId: action.userId,
-    }),
-  });
+    const rejected = await prisma.planAction.updateMany({
+      where: { id: actionId, status: "PENDING" },
+      data: {
+        status: "REJECTED",
+        decidedAt: new Date(),
+        decidedById: user.id,
+        ...(rejectReason ? { rejectReason } : {}),
+      },
+    });
+    if (rejected.count !== 1) return;
+    await prisma.agentRun.create({
+      data: planActionAvvisSpor({
+        actionId,
+        actionType: action.actionType,
+        userId: action.userId,
+      }),
+    });
+  }
 
+  revalidatePath("/admin/agents/training-gap");
   revalidatePath("/portal");
   revalidatePath("/portal/agent-pipeline");
   revalidatePath("/admin/godkjenninger");
