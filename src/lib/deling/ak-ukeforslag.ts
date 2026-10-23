@@ -36,6 +36,11 @@ export async function behandleAkUkeforslag(viewer: { id: string; role: string },
   const r = routing.data;
   const jobb = { gruppeId: r.deling.gruppeId, coachId: viewer.id };
   const resultat = await brukMedSammeAkProfilBevis(jobb, r.userId, r.deling, async (tx, scope) => {
+    // Same order as generation: sharing -> owned plan -> action. Otherwise a
+    // renewal can hold the plan while approval holds the action (deadlock).
+    const plan = await tx.$queryRaw<Array<{ id: string }>>`SELECT id FROM training_plans
+      WHERE id = ${r.planId} AND "userId" = ${r.userId} AND "createdById" = ${viewer.id} FOR UPDATE`;
+    if (plan.length !== 1) throw Error("forbidden");
     await tx.$queryRaw`SELECT id FROM plan_actions WHERE id = ${key} FOR UPDATE`;
     const action = await tx.planAction.findFirst({ where: { id: key, userId: r.userId, coachId: viewer.id,
       planId: r.planId, actionType: "WEEKLY_PROPOSAL", agentName: "weekly-plan-proposals", user: scope },

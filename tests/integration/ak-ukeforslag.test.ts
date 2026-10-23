@@ -328,6 +328,7 @@ test("Ukeforslag: atomisk plan, V2 og beslutningsspor", async t => {
     });
 
 
+    const { akUkeforslagSchema } = await import('../../src/lib/deling/ak-ukeforslag-format');
     const { genererAkUkeforslag: generer } = await import('../../src/lib/deling/ak-ukeforslag-generering');
     const utkast=async()=>{
       const rev=await sql.query(`SELECT xmin::text AS version FROM exercise_definitions WHERE id='drill'`);
@@ -473,6 +474,103 @@ test("Ukeforslag: atomisk plan, V2 og beslutningsspor", async t => {
       const before=await db.planAction.findFirstOrThrow();
       assert.equal((await generer(jobb,'p','2026-10-26',async()=>({...candidate,tittel:'Et annet syntetisk forslag'}))).status,'FINNES');
       assert.deepEqual(await db.planAction.findFirstOrThrow(),before);
+    });
+    await t.test('renewal closes stale basis without changing old evidence, comments or training',async()=>{
+      await reset();const old=await opprett();
+      await db.planAction.update({where:{id:old.id},data:{decisionNote:'Syntetisk spørsmål',decidedById:viewer.id}});
+      await sql.query(`UPDATE training_plans SET "isActive"=true WHERE id='plan'`);
+      const fresh=await generer(jobb,'p','2026-10-26',utkast);
+      assert.equal(fresh.status,'OPPRETTET');assert.ok('id' in fresh);assert.notEqual(fresh.id,old.id);
+      assert.equal('erstattetAntall' in fresh && fresh.erstattetAntall,1);
+      const saved=await db.planAction.findUniqueOrThrow({where:{id:old.id}});
+      assert.equal(saved.status,'SUPERSEDED');assert.deepEqual(saved.suggestion,old.suggestion);
+      assert.equal(saved.decisionNote,'Syntetisk spørsmål');assert.equal(saved.decidedById,viewer.id);assert.equal(saved.decidedAt,null);
+      assert.equal((await behandle(viewer,old.id,'ACCEPTED')).status,'UNCHANGED');
+      const queue=await les(viewer,{status:'PENDING'});assert.equal(queue.pendingCount,1);assert.equal(queue.planActions[0].id,fresh.id);
+      assert.equal(queue.rejectedCount,0);assert.equal(queue.acceptedCount,0);assert.deepEqual(await counts(),empty);
+      assert.equal((await les(viewer)).planActions.find(r=>r.id===old.id)?.status,'SUPERSEDED');
+      const { eksporterEgneAkUkeforslag } = await import('../../src/lib/deling/ak-ukeforslag-personvern');
+      assert.equal((await eksporterEgneAkUkeforslag('p')).mottatt.find(r=>r.id===old.id)?.status,'SUPERSEDED');
+      assert.equal((await behandle(viewer,fresh.id,'ACCEPTED')).applied,true);
+    });
+    await t.test('revised exercises renew the proposal even with the same weekly data proof',async()=>{
+      await reset();const old=await opprett();
+      await sql.query(`UPDATE exercise_definitions SET name=name WHERE id='drill'`);
+      const fresh=await generer(jobb,'p','2026-10-26',utkast);assert.equal(fresh.status,'OPPRETTET');
+      assert.ok('id' in fresh);assert.equal((await db.planAction.findUniqueOrThrow({where:{id:old.id}})).status,'SUPERSEDED');
+      assert.deepEqual(await counts(),empty);assert.equal((await behandle(viewer,fresh.id,'ACCEPTED')).applied,true);
+    });
+    await t.test('processing and malformed candidates stop renewal without closing any history',async()=>{
+      for(const state of ['PROCESSING','MALFORMED']) {
+        await reset();const old=await opprett();
+        await db.planAction.update({where:{id:old.id},data:state==='PROCESSING'?{status:'PROCESSING'}:
+          {suggestion:{...old.suggestion as object,sessions:[]}}});
+        await sql.query(`UPDATE training_plans SET "isActive"=true WHERE id='plan'`);
+        assert.equal((await generer(jobb,'p','2026-10-26',utkast)).status,state==='PROCESSING'?'BEHANDLES':'KREVER_GJENNOMGANG');
+        assert.equal(await db.planAction.count(),1);
+        assert.equal((await db.planAction.findUniqueOrThrow({where:{id:old.id}})).status,state==='PROCESSING'?'PROCESSING':'PENDING');
+        assert.deepEqual(await counts(),empty);
+      }
+    });
+    await t.test('failed replacement insert rolls back the old status; retry creates one replacement',async()=>{
+      await reset();const old=await opprett();await sql.query(`UPDATE training_plans SET "isActive"=true WHERE id='plan'`);
+      await sql.query(`CREATE OR REPLACE FUNCTION fail_write() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'synthetic rollback'; END $$;
+        CREATE TRIGGER fail_renewal BEFORE INSERT ON plan_actions FOR EACH ROW EXECUTE FUNCTION fail_write();`);
+      try{await assert.rejects(generer(jobb,'p','2026-10-26',utkast));}
+      finally{await sql.query('DROP TRIGGER fail_renewal ON plan_actions');}
+      assert.equal((await db.planAction.findUniqueOrThrow({where:{id:old.id}})).status,'PENDING');
+      assert.equal(await db.planAction.count(),1);assert.deepEqual(await counts(),empty);
+      assert.equal((await generer(jobb,'p','2026-10-26',utkast)).status,'OPPRETTET');
+      assert.equal(await db.planAction.count({where:{status:'PENDING'}}),1);
+    });
+    await t.test('concurrent renewal creates one replacement and closes every stale pending duplicate',async()=>{
+      await reset();await opprett();await opprett();await sql.query(`UPDATE training_plans SET "isActive"=true WHERE id='plan'`);
+      const results=await Promise.all([generer(jobb,'p','2026-10-26',utkast),generer(jobb,'p','2026-10-26',utkast)]);
+      assert.deepEqual(results.map(r=>r.status).sort(),['FINNES','OPPRETTET']);
+      assert.equal(await db.planAction.count({where:{status:'PENDING'}}),1);
+      assert.equal(await db.planAction.count({where:{status:'SUPERSEDED'}}),2);assert.deepEqual(await counts(),empty);
+    });
+    await t.test('an existing current draft remains unchanged while stale duplicates are closed',async()=>{
+      await reset();const old=await opprett();await sql.query(`UPDATE training_plans SET "isActive"=true WHERE id='plan'`);
+      const current=await opprett();const result=await generer(jobb,'p','2026-10-26',utkast);
+      assert.deepEqual(result,{status:'FINNES',id:current.id});assert.equal(await db.planAction.count(),2);
+      assert.equal((await db.planAction.findUniqueOrThrow({where:{id:old.id}})).status,'SUPERSEDED');
+      assert.deepEqual((await db.planAction.findUniqueOrThrow({where:{id:current.id}})).suggestion,current.suggestion);
+      assert.equal((await les(viewer)).pendingCount,1);assert.deepEqual(await counts(),empty);
+    });
+    await t.test('renewal never closes other weeks, recipients or historical sharing grants',async()=>{
+      await reset();const previous=await opprett();await valg(false);await valg(true);
+      const other=await opprett();await db.planAction.update({where:{id:other.id},data:{coachId:'coach-b'}});
+      const later=await opprett();const parsed=akUkeforslagSchema.parse(later.suggestion);
+      await db.planAction.update({where:{id:later.id},data:{suggestion:{...parsed,databevis:{...parsed.databevis,uke:'2026-11-02'}}}});
+      const fresh=await generer(jobb,'p','2026-10-26',utkast);assert.equal(fresh.status,'OPPRETTET');
+      for(const row of [previous,other,later]) assert.equal((await db.planAction.findUniqueOrThrow({where:{id:row.id}})).status,'PENDING');
+      assert.equal(await db.planAction.count({where:{status:'SUPERSEDED'}}),0);assert.deepEqual(await counts(),empty);
+    });
+    await t.test('approval and renewal use plan before action so waiting on an action cannot deadlock',async()=>{
+      await reset();const old=await opprett();await sql.query(`UPDATE training_plans SET "isActive"=true WHERE id='plan'`);
+      await sql.query('BEGIN');await sql.query('SELECT id FROM plan_actions WHERE id=$1 FOR UPDATE',[old.id]);
+      const approved=behandle(viewer,old.id,'ACCEPTED');const denied=assert.rejects(approved,/utdatert-ukegrunnlag/);
+      let blocked=false;
+      try {
+        for(let i=0;i<100;i++) {
+          const lock=await admin.query(`SELECT 1 FROM pg_stat_activity WHERE application_name=$1 AND wait_event_type='Lock' AND query LIKE '%plan_actions%' AND query LIKE '%FOR UPDATE%'`,[schema]);
+          if(lock.rowCount){blocked=true;break;}await new Promise(r=>setTimeout(r,10));
+        }
+        assert.equal(blocked,true);
+        await assert.rejects(admin.query(`SELECT id FROM "${schema}".training_plans WHERE id='plan' FOR UPDATE NOWAIT`),{code:'55P03'});
+        const renewed=generer(jobb,'p','2026-10-26',utkast);
+        // Attach rejection immediately; assert its outcome after releasing the lock.
+        const result=renewed.then(value=>({value}),error=>({error}));
+        let generatorBlocked=false;
+        for(let i=0;i<100;i++) {
+          const lock=await admin.query(`SELECT 1 FROM pg_stat_activity WHERE application_name=$1 AND wait_event_type='Lock'`,[schema]);
+          if((lock.rowCount??0)>=2){generatorBlocked=true;break;}await new Promise(r=>setTimeout(r,10));
+        }
+        await sql.query('COMMIT');await denied;assert.equal(generatorBlocked,true);
+        assert.equal(blocked,true);const outcome=await result;assert.ok('value' in outcome);
+        assert.equal(outcome.value.status,'OPPRETTET');assert.deepEqual(await counts(),empty);
+      } finally {await sql.query('ROLLBACK');}
     });
     await t.test('wrong coach or missing sharing never invokes the planner',async()=>{
       await reset();let called=0;const build=async()=>{called++;return utkast();};

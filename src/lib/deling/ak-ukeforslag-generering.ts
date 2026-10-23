@@ -1,4 +1,6 @@
 import "server-only";
+import { Prisma } from "@/generated/prisma/client";
+import { canonicalJson } from "@/lib/agents/canonical-json";
 import type { AkGruppeoppdrag } from "./ak-gruppeoppdrag";
 import { hentAkUkegrunnlag, brukSammeAkUkegrunnlag, type AkUkegrunnlag } from "./ak-ukegrunnlag";
 import { akUkeutkastSchema, akUkeforslagSchema } from "./ak-ukeforslag-format";
@@ -31,23 +33,62 @@ export async function genererAkUkeforslag(jobb: AkGruppeoppdrag, spillerId: unkn
     async (tx, ferskt) => {
       // Same checks at creation and approval, including locked exercise versions.
       await kontrollerAkUkeforslag(tx, forslag, ferskt);
-      // Target-plan lock serializes simultaneous generators, including different
-      // group assignments for the same plan. Never replace/upgrade an old row.
-      const eksisterende = await tx.planAction.findFirst({ where: {
+      // Every weekly decision also locks the plan before its action row. Lock
+      // only the same recipient, grant and week; never revive an old grant.
+      const ko = {
         userId: grunnlag.deling.spillerId, coachId: grunnlag.deling.coachId, planId: grunnlag.planId,
         agentName: "weekly-plan-proposals", actionType: "WEEKLY_PROPOSAL",
         status: { in: ["PENDING", "PROCESSING"] }, AND: [
           { suggestion: { path: ["deling"], equals: grunnlag.deling } },
           { suggestion: { path: ["databevis", "uke"], equals: grunnlag.databevis.uke } },
         ],
-      }, select: { id: true } });
-      if (eksisterende) return { status: "FINNES" as const, id: eksisterende.id };
+      } satisfies Prisma.PlanActionWhereInput;
+      const kandidater = await tx.planAction.findMany({ where: ko, select: { id: true } });
+      if (kandidater.length) await tx.$queryRaw`SELECT id FROM plan_actions
+        WHERE id IN (${Prisma.join(kandidater.map(r => r.id))}) ORDER BY id FOR UPDATE`;
+      // Re-read after waiting: another authorized decision may have finished.
+      const eksisterende = await tx.planAction.findMany({ where: ko,
+        orderBy: [{ createdAt: "asc" }, { id: "asc" }], select: { id: true, status: true, suggestion: true } });
+      if (eksisterende.some(r => r.status === "PROCESSING")) return { status: "BEHANDLES" as const };
+      const utdaterte: string[] = [];
+      let gjeldendeId: string | undefined;
+      for (const rad of eksisterende) {
+        const parsed = akUkeforslagSchema.safeParse(rad.suggestion);
+        if (!parsed.success || parsed.data.databevis.planId !== grunnlag.planId) {
+          return { status: "KREVER_GJENNOMGANG" as const };
+        }
+        const gammelt = parsed.data;
+        let utdatert = canonicalJson(gammelt.databevis) !== canonicalJson(grunnlag.databevis);
+        if (!utdatert) {
+          // Exercise revisions are separate from the weekly data fingerprint.
+          // A deleted or revised exercise also requires a genuinely new draft.
+          const drills = gammelt.sessions.flatMap(s => s.drills);
+          const ids = [...new Set(drills.map(d => d.exerciseId))].sort();
+          const revisjoner = await tx.$queryRaw<Array<{ id: string; revisjon: string }>>`
+            SELECT id, xmin::text AS revisjon FROM exercise_definitions
+            WHERE id IN (${Prisma.join(ids)}) ORDER BY id FOR SHARE`;
+          utdatert = drills.some(d => revisjoner.find(r => r.id === d.exerciseId)?.revisjon !== d.exerciseRevisjon);
+        }
+        if (utdatert) utdaterte.push(rad.id);
+        else {
+          // Never deduplicate to a well-shaped but invalid historical draft.
+          await kontrollerAkUkeforslag(tx, gammelt, ferskt);
+          gjeldendeId ??= rad.id;
+        }
+      }
+      // SUPERSEDED is a system transition, not a coach rejection/approval.
+      // Keep original body, evidence, comments and decision attribution intact.
+      // Closing rows and creating their replacement commit or roll back together.
+      if (utdaterte.length) await tx.planAction.updateMany({
+        where: { ...ko, id: { in: utdaterte }, status: "PENDING" }, data: { status: "SUPERSEDED" },
+      });
+      if (gjeldendeId) return { status: "FINNES" as const, id: gjeldendeId };
       const action = await tx.planAction.create({ data: {
         userId: grunnlag.deling.spillerId, coachId: grunnlag.deling.coachId, planId: grunnlag.planId,
         agentName: "weekly-plan-proposals", actionType: "WEEKLY_PROPOSAL", status: "PENDING",
         suggestion: forslag,
       }, select: { id: true } });
-      return { status: "OPPRETTET" as const, id: action.id };
+      return { status: "OPPRETTET" as const, id: action.id, erstattetAntall: utdaterte.length };
     });
   return lagret?.verdi ?? { status: "UTDATERT" as const };
 }
