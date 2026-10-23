@@ -15,20 +15,38 @@ let historikk: { id: string } | null;
 let kall: Array<{ metode: string; arg: unknown }>;
 let skriv: Arg[];
 let audit: Arg[];
+let aktorTilgjengelig = true;
+let aktorRolle: string | null = null;
+let laasFeil = false;
+let tilgangForsvant = false;
+let laasteMedlemmer: Array<{ id: string; userId: string }>;
+const medlemsIder = () => laasteMedlemmer.map(m => m.id);
 const ja = (userId = "spiller-a", groupId = "gruppe-a", gitt = true) => ({ userId,
   scope: AK_ANALYSE_SCOPE, mottakerGruppeId: groupId, mottakerUserId: null,
   tekstVersjon: AK_ANALYSE_VERSJON, gitt, gittAvRolle: "SELV", createdAt: new Date("2026-01-01"),
 });
 const tx = {
   $queryRaw: async (sql: TemplateStringsArray, ...param: unknown[]) => {
-    const tid = sql.join("").includes("clock_timestamp()");
-    kall.push({ metode: tid ? "databasetid" : "lås", arg: [sql.join("?"), ...param] });
-    return tid ? [{ naa: databaseTid }] : [];
+    const tekst = sql.join("");
+    const metode = tekst.includes("clock_timestamp()") ? "databasetid" :
+      tekst.includes("group_members") ? "medlemslås" : tekst.includes("FROM groups") ? "gruppelås" :
+      tekst.includes("FROM users") ? "brukerlås" : tekst.includes("parent_relations") ? "forelderlås" : "lås";
+    kall.push({ metode, arg: [sql.join("?"), ...param] });
+    if (laasFeil && metode === "medlemslås") throw Error("Syntetisk låsefeil");
+    return metode === "databasetid" ? [{ naa: databaseTid }] : metode === "medlemslås" ? laasteMedlemmer :
+      metode === "gruppelås" ? (gruppe ? [gruppe] : []) : metode === "forelderlås" ? (relasjon ? [relasjon] : []) :
+      metode === "brukerlås" ? ["spiller-a", "spiller-b", "coach", "forelder"].map(id => ({ id })) : [];
   },
-  group: { findFirst: async (arg: Arg) => { kall.push({ metode: "gruppe", arg }); return gruppe; } },
+  group: { findFirst: async (arg: Arg) => { kall.push({ metode: "gruppe", arg }); return tilgangForsvant && kall.some(k => k.metode === "brukerlås") ? null : gruppe; } },
   user: {
     findMany: async (arg: Arg) => { kall.push({ metode: "medlemmer", arg }); return medlemmer; },
-    findFirst: async () => spiller,
+    findFirst: async (arg: { where: { id: string }; select: { role?: boolean } }) => {
+      if (arg.select.role) {
+        kall.push({ metode: "aktør", arg });
+        return aktorTilgjengelig ? { role: aktorRolle ?? (arg.where.id === "forelder" ? "PARENT" : arg.where.id === "spiller-a" ? "PLAYER" : bruker.role) } : null;
+      }
+      return spiller;
+    },
   },
   delingsSamtykke: {
     findMany: async (arg: Arg) => { kall.push({ metode: "samtykke", arg }); return rader; },
@@ -60,6 +78,8 @@ beforeEach(() => {
   medlemmer = [{ ...voksen, id: "spiller-a" }, { ...voksen, id: "spiller-b" }];
   rader = []; relasjon = { id: "relasjon" }; historikk = { id: "tidligere-valg" };
   kall = []; skriv = []; audit = [];
+  aktorTilgjengelig = true; aktorRolle = null; laasFeil = false; tilgangForsvant = false;
+  laasteMedlemmer = [ { id: "medlem-a", userId: "spiller-a" }, { id: "medlem-b", userId: "spiller-b" }, { id: "medlem-coach", userId: "coach" } ];
 });
 
 test("ADMIN kan ikke lese trening uten samtykke; medlemskap og sletting filtreres på serveren", async () => {
@@ -68,10 +88,10 @@ test("ADMIN kan ikke lese trening uten samtykke; medlemskap og sletting filtrere
   assert.equal(result.etterlevelsePct, null);
   assert.equal(kall.some(k => k.metode === "trening"), false);
   assert.deepEqual(kall.find(k => k.metode === "medlemmer")?.arg, {
-    where: { role: "PLAYER", deletedAt: null, groupMemberships: { some: { groupId: "gruppe-a", role: "PLAYER", endedAt: null } } },
+    where: { id: { in: laasteMedlemmer.map(m => m.userId) }, role: "PLAYER", deletedAt: null, groupMemberships: { some: { id: { in: medlemsIder() }, groupId: "gruppe-a", role: "PLAYER", endedAt: null } } },
     select: { id: true, dateOfBirth: true, requiresGuardianConsent: true },
   });
-  const g = kall.find(k => k.metode === "gruppe")?.arg as { where: Arg };
+  const g = kall.findLast(k => k.metode === "gruppe")?.arg as { where: Arg };
   assert.deepEqual(g.where, { id: "gruppe-a", managedByAkGolf: true, arkivertAt: null });
 });
 test("gruppeanalyse leser bare samtykkede spillere og publiserbart treningsgrunnlag, aldri notater", async () => {
@@ -104,8 +124,8 @@ test("ingen trening når gruppen er ekstern/arkivert/utilgjengelig eller medlems
 test("COACH må være ansvarlig eller aktiv trener/assistent i gruppen; andre roller avslås", async () => {
   bruker.role = "COACH";
   await medAkGruppeanalyse("gruppe-a", async () => []);
-  const g = kall.find(k => k.metode === "gruppe")?.arg as { where: Arg };
-  assert.deepEqual(g.where.OR, [{ coachId: "coach" }, { members: { some: { userId: "coach", endedAt: null, role: { in: ["COACH", "ASSISTANT"] } } } }]);
+  const g = kall.findLast(k => k.metode === "gruppe")?.arg as { where: Arg };
+  assert.deepEqual(g.where.OR, [{ coachId: "coach" }, { members: { some: { id: { in: medlemsIder() }, userId: "coach", endedAt: null, role: { in: ["COACH", "ASSISTANT"] } } } }]);
   bruker.role = "PLAYER"; kall = [];
   assert.equal(await medAkGruppeanalyse("gruppe-a", async () => []), null);
   assert.deepEqual(kall, []);
@@ -128,7 +148,7 @@ test("eget ja lagres med gjeldende tekst, selv-aktør, tidspunkt etter lås og r
   assert.equal(skriv[0].gittAvRolle, "SELV"); assert.equal(skriv[0].gittAvUserId, selv.id);
   assert.equal(skriv[0].scope, AK_ANALYSE_SCOPE); assert.equal(skriv[0].tekstVersjon, AK_ANALYSE_VERSJON);
   assert.equal(skriv[0].mottakerUserId, null); assert.deepEqual(skriv[0].createdAt, databaseTid);
-  assert.equal(kall[1].metode, "databasetid");
+  assert.ok(kall.findIndex(k => k.metode === "databasetid") > kall.findIndex(k => k.metode === "brukerlås"));
   assert.equal(kall[0].metode, "lås");
 });
 test("ADMIN kan ikke samtykke for andre; feil tekstversjon/ekstra felt avvises uten skriving", async () => {
@@ -147,8 +167,8 @@ test("barn/ukjent alder kan trekke selv, men ikke gi; forelder krever godkjent r
   relasjon = { id: "relasjon" };
   assert.equal((await settAkAnalyseValg(forelder, selv.id, input(true))).ok, true);
   assert.equal(skriv[1].gittAvRolle, "FORESATT");
-  assert.deepEqual((kall.find(k => k.metode === "forelder")?.arg as { where: Arg }).where,
-    { parentId: forelder.id, childId: selv.id, approved: true });
+  assert.deepEqual((kall.findLast(k => k.metode === "forelder")?.arg as { where: Arg }).where,
+    { id: { in: ["relasjon"] }, parentId: forelder.id, childId: selv.id, approved: true });
 });
 test("forelder kan ikke endre voksen spillers valg", async () => {
   for (const gitt of [true, false]) assert.equal((await settAkAnalyseValg({ id: "forelder", role: "PARENT" }, selv.id, input(gitt))).ok, false);
@@ -170,4 +190,64 @@ test("gammelt foresattflagg etter 16 gir aldri falsk bekreftelse på forelderens
   }
   assert.deepEqual(skriv, []);
   assert.equal((await settAkAnalyseValg(selv, selv.id, input(false))).ok, true);
+});
+
+
+test("gruppe, medlemskap og konto er låst før tids-/tilgangskontroll og trening", async () => {
+  rader = [ja()];
+  await lastEnGruppeAnalyse("gruppe-a");
+  assert.deepEqual(kall.slice(0, 6).map(k => k.metode), ["lås", "gruppe", "gruppelås", "medlemslås", "brukerlås", "databasetid"]);
+  assert.ok(kall.findIndex(k => k.metode === "trening") > kall.findIndex(k => k.metode === "samtykke"));
+});
+test("nye medlemmer etter låseuttrekket kan ikke snike seg inn i dette oppslaget", async () => {
+  laasteMedlemmer = [];
+  await medAkGruppeanalyse("gruppe-a", async () => []);
+  const q = kall.find(k => k.metode === "medlemmer")?.arg as { where: { id: unknown; groupMemberships: { some: { id: unknown } } } };
+  assert.deepEqual(q.where.id, { in: [] });
+  assert.deepEqual(q.where.groupMemberships.some.id, { in: [] });
+});
+test("konto utilgjengelig etter låsen gir verken analyse eller nytt samtykke", async () => {
+  aktorTilgjengelig = false; rader = [ja()];
+  assert.equal(await medAkGruppeanalyse("gruppe-a", async () => { throw Error("Må ikke lese"); }), null);
+  assert.equal((await settAkAnalyseValg(selv, selv.id, input(true))).ok, false);
+  assert.deepEqual(skriv, []);
+});
+test("forelderrelasjonen er låst før myndighet og tidspunkt brukes", async () => {
+  spiller = { ...voksen, dateOfBirth: new Date("2014-01-01"), requiresGuardianConsent: true };
+  assert.equal((await settAkAnalyseValg({ id: "forelder", role: "PARENT" }, selv.id, input(true))).ok, true);
+  const metoder = kall.map(k => k.metode);
+  assert.ok(metoder.indexOf("forelderlås") < metoder.indexOf("databasetid"));
+  assert.ok(metoder.indexOf("databasetid") < metoder.lastIndexOf("forelder"));
+});
+test("låsefeil avslutter uten å lese trening eller lagre valg", async () => {
+  laasFeil = true; rader = [ja()];
+  await assert.rejects(() => medAkGruppeanalyse("gruppe-a", async () => { throw Error("Må ikke lese"); }), /Syntetisk låsefeil/);
+  await assert.rejects(() => settAkAnalyseValg(selv, selv.id, input(true)), /Syntetisk låsefeil/);
+  assert.equal(kall.some(k => k.metode === "trening"), false);
+  assert.deepEqual(skriv, []);
+});
+
+
+test("en gammel ADMIN-økt gir ikke analyse etter at kontorollen er endret", async () => {
+  aktorRolle = "PLAYER"; rader = [ja()];
+  assert.equal(await medAkGruppeanalyse("gruppe-a", async () => { throw Error("Må ikke lese"); }), null);
+  assert.equal(kall.some(k => k.metode === "samtykke"), false);
+});
+
+
+test("manglende tilgang avslås før gruppens medlems- og kontorader låses", async () => {
+  gruppe = null;
+  assert.equal(await medAkGruppeanalyse("gruppe-a", async () => { throw Error("Må ikke lese"); }), null);
+  assert.equal((await settAkAnalyseValg(selv, selv.id, input(true))).ok, false);
+  assert.equal(kall.some(k => ["medlemslås", "brukerlås"].includes(k.metode)), false);
+  gruppe = { id: "gruppe-a" }; relasjon = null;
+  assert.equal((await settAkAnalyseValg({ id: "forelder", role: "PARENT" }, selv.id, input(true))).ok, false);
+  assert.equal(kall.some(k => ["medlemslås", "brukerlås"].includes(k.metode)), false);
+});
+test("en bestått tidlig port erstatter aldri endelig kontroll etter lås", async () => {
+  tilgangForsvant = true; rader = [ja()];
+  assert.equal(await medAkGruppeanalyse("gruppe-a", async () => { throw Error("Må ikke lese"); }), null);
+  kall = [];
+  assert.equal((await settAkAnalyseValg(selv, selv.id, input(true))).ok, false);
+  assert.deepEqual(skriv, []);
 });

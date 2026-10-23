@@ -209,3 +209,8 @@ Dette er ikke ferdigstillelse av all AK-deling: øvrige spillerprofiler, planred
 ### Gjenbruk av historisk maleffekt — C2, 23.10.2026
 
 Malbygger, Workbench, planhub og maldetalj leser ikke lenger `PlanTemplate.effectivenessAvg` til anbefalinger eller klientdata. Planhub leser heller ikke antall knyttede `PlanEffectiveness`-rader. Historiske databaseverdier og individuelle evalueringer bevares; ingen migrasjon eller sletting kjøres. Brukstall i maloversikten er fortsatt popularitet, ikke en påstand om treningseffekt. Dette stenger disse leserne, men er ikke dokumentasjon på at alle eldre funksjoner i appen er ferdig kontrollert. Ingen ny deling eller felles læring er aktivert.
+
+
+### AK-gruppeanalyse ved samtidige tilgangsendringer — 23.10.2026
+
+Gruppeanalysen og nytt analyse-ja låser nå de eksisterende gruppe-, medlemskaps- og kontoradene mens grunnlaget kontrolleres. Forelderens handling låser aktuelle forelderrelasjoner. Vanlige endringer som utmelding, arkivering, kontosletting eller tilbakekalling av foreldermyndighet kan dermed ikke fullføres mellom denne kontrollen og behandlingen i transaksjonen. Bare faktisk låste medlemskap/relasjoner brukes. Tidspunkt og aktørens aktuelle rolle kontrolleres etter lås. Ingen nye datafelt eller samtykkeoppgraderinger. Andre AgencyOS-lesere, kapabilitetsadministrasjon og automatisk fjerning av allerede viste resultater omfattes ikke av denne endringen.

@@ -8,19 +8,17 @@ import { Capability } from "@/lib/auth/cbac";
 import { maaHaForesattSamtykke } from "@/lib/auth/minor";
 import { AK_ANALYSE_SCOPE, AK_ANALYSE_VERSJON, delerAkAnalyse, forelderKanEndreAkAnalyse } from "./ak-analyse-regler";
 
+import { laas, databasetid, laasGruppemedlemskap, laasBrukere, laasForesattRelasjon } from "./ak-analyse-laas";
+
 const idSchema = z.string().trim().min(1).max(200);
 type Tx = Prisma.TransactionClient;
 const txValg = { maxWait: 10_000, timeout: 20_000 };
 const radSelect = { scope: true, mottakerGruppeId: true, mottakerUserId: true, gitt: true,
   gittAvRolle: true, tekstVersjon: true, createdAt: true } as const;
 
-/** Samme gruppelås ved lesing og trekk. Ingen langvarig tillatelse caches. */
-async function laas(tx: Tx, gruppeId: string) {
-  await tx.$queryRaw`SELECT pg_advisory_xact_lock(hashtext('ak-gruppeanalyse'), hashtext(${gruppeId}))::text`;
-  // clock_timestamp, ikke transaksjonens now(): denne kan ha ventet på låsen.
-  // Samme databaseklokke ved gi/trekk/lesing, uavhengig av appserverens klokke.
-  const [tid] = await tx.$queryRaw<Array<{ naa: Date }>>`SELECT clock_timestamp() AS naa`;
-  return tid.naa;
+async function aktivAktor(tx: Tx, aktor: { id: string; role: string }) {
+  const rad = await tx.user.findFirst({ where: { id: aktor.id, deletedAt: null }, select: { role: true } });
+  return rad?.role === aktor.role;
 }
 
 /** Kilden til analyse-ID-er er serveren, aldri en spillerliste fra klienten. */
@@ -29,15 +27,27 @@ export async function medAkGruppeanalyse<T>(gruppeId: string, les: (tx: Tx, spil
   const bruker = await requireCapability(Capability.MANAGE_GROUPS);
   if (bruker.role !== "ADMIN" && bruker.role !== "COACH") return null;
   return prisma.$transaction(async tx => {
-    const naa = await laas(tx, gruppeId);
-    const gruppe = await tx.group.findFirst({ where: { id: gruppeId, managedByAkGolf: true, arkivertAt: null,
+    await laas(tx, gruppeId);
+    // Avvis utenforstående før medlemsrader hentes/låses. Dette er bare en
+    // tidlig port; den avgjørende kontrollen gjentas mot låste rader nedenfor.
+    if (!await tx.group.findFirst({ where: { id: gruppeId, managedByAkGolf: true, arkivertAt: null,
       ...(bruker.role === "ADMIN" ? {} : { OR: [{ coachId: bruker.id }, { members: { some: {
         userId: bruker.id, endedAt: null, role: { in: ["COACH", "ASSISTANT"] },
       } } }] }),
+    }, select: { id: true } })) return null;
+    const medlemskap = await laasGruppemedlemskap(tx, gruppeId);
+    const kontoer = await laasBrukere(tx, [...medlemskap.map(m => m.userId), bruker.id]);
+    if (!kontoer.some(k => k.id === bruker.id)) return null;
+    const naa = await databasetid(tx);
+    if (!await aktivAktor(tx, bruker)) return null;
+    const gruppe = await tx.group.findFirst({ where: { id: gruppeId, managedByAkGolf: true, arkivertAt: null,
+      ...(bruker.role === "ADMIN" ? {} : { OR: [{ coachId: bruker.id }, { members: { some: {
+        id: { in: medlemskap.map(m => m.id) }, userId: bruker.id, endedAt: null, role: { in: ["COACH", "ASSISTANT"] },
+      } } }] }),
     }, select: { id: true } });
     if (!gruppe) return null;
-    const spillere = await tx.user.findMany({ where: { role: "PLAYER", deletedAt: null,
-      groupMemberships: { some: { groupId: gruppeId, role: "PLAYER", endedAt: null } },
+    const spillere = await tx.user.findMany({ where: { id: { in: medlemskap.map(m => m.userId) }, role: "PLAYER", deletedAt: null,
+      groupMemberships: { some: { id: { in: medlemskap.map(m => m.id) }, groupId: gruppeId, role: "PLAYER", endedAt: null } },
     }, select: { id: true, dateOfBirth: true, requiresGuardianConsent: true } });
     if (!spillere.length) return les(tx, []);
     const rader = await tx.delingsSamtykke.findMany({ where: { userId: { in: spillere.map(s => s.id) },
@@ -78,8 +88,24 @@ export async function settAkAnalyseValg(aktor: { id: string; role: string }, spi
   const parsed = akAnalyseSvarSchema.safeParse(input);
   if (!parsed.success || !idSchema.safeParse(spillerId).success) return { ok: false, feil: "Valget er utdatert eller ugyldig. Last siden på nytt." };
   const { gruppeId, gitt } = parsed.data;
+  if (aktor.id === spillerId ? !["PLAYER", "COACH", "ADMIN"].includes(aktor.role) : aktor.role !== "PARENT") {
+    return { ok: false, feil: "Du kan ikke endre dette valget for spilleren." };
+  }
   return prisma.$transaction(async tx => {
-    const naa = await laas(tx, gruppeId);
+    await laas(tx, gruppeId);
+    if (aktor.id !== spillerId && !await tx.parentRelation.findFirst({
+      where: { parentId: aktor.id, childId: spillerId, approved: true }, select: { id: true },
+    })) return { ok: false as const, feil: "Du kan ikke endre dette valget for spilleren." };
+    if (gitt && !await tx.group.findFirst({ where: { id: gruppeId, managedByAkGolf: true, arkivertAt: null,
+      members: { some: { userId: spillerId, role: "PLAYER", endedAt: null } },
+    }, select: { id: true } })) return { ok: false as const, feil: "Du må være aktivt medlem av en AK Golf-gruppe for å dele med den." };
+    // Trekk skal virke også etter utmelding/arkivering; bare nytt ja trenger gruppen.
+    const medlemskap = gitt ? await laasGruppemedlemskap(tx, gruppeId) : [];
+    const kontoer = await laasBrukere(tx, [spillerId, aktor.id]);
+    if (![spillerId, aktor.id].every(id => kontoer.some(k => k.id === id))) return { ok: false as const, feil: "Kontoen er ikke tilgjengelig." };
+    const relasjoner = aktor.id !== spillerId ? await laasForesattRelasjon(tx, aktor.id, spillerId) : [];
+    const naa = await databasetid(tx);
+    if (!await aktivAktor(tx, aktor)) return { ok: false as const, feil: "Kontoen har ikke tilgang til dette valget." };
     const spiller = await tx.user.findFirst({ where: { id: spillerId, deletedAt: null },
       select: { dateOfBirth: true, requiresGuardianConsent: true } });
     if (!spiller) return { ok: false as const, feil: "Spilleren er ikke tilgjengelig." };
@@ -87,14 +113,14 @@ export async function settAkAnalyseValg(aktor: { id: string; role: string }, spi
     const selv = aktor.id === spillerId && ["PLAYER", "COACH", "ADMIN"].includes(aktor.role);
     if (!selv) {
       if (aktor.role !== "PARENT" || !forelderKanEndreAkAnalyse(kreverForesatt, spiller.dateOfBirth, naa) || !await tx.parentRelation.findFirst({
-        where: { parentId: aktor.id, childId: spillerId, approved: true }, select: { id: true },
+        where: { id: { in: relasjoner.map(r => r.id) }, parentId: aktor.id, childId: spillerId, approved: true }, select: { id: true },
       })) return { ok: false as const, feil: "Du kan ikke endre dette valget for spilleren." };
     } else if (gitt && kreverForesatt) {
       return { ok: false as const, feil: "En godkjent forelder må gi tillatelsen. Du kan alltid trekke delingen selv." };
     }
     if (gitt) {
       const gruppe = await tx.group.findFirst({ where: { id: gruppeId, managedByAkGolf: true, arkivertAt: null,
-        members: { some: { userId: spillerId, role: "PLAYER", endedAt: null } },
+        members: { some: { id: { in: medlemskap.map(m => m.id) }, userId: spillerId, role: "PLAYER", endedAt: null } },
       }, select: { id: true } });
       if (!gruppe) return { ok: false as const, feil: "Du må være aktivt medlem av en AK Golf-gruppe for å dele med den." };
     }
