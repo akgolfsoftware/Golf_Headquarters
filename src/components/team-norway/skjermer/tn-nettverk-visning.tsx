@@ -76,7 +76,7 @@ export function TnSkolerVisning({ brukerNavn, visDataGolf, data }: { brukerNavn:
   return (
     <Ramme aktiv="skoler" brukerNavn={brukerNavn} kontekst={data.kontekst} visDataGolf={visDataGolf}>
       <TnSkraTopp
-        bilde="spiller-ved-vannet"
+        bilde="ngf-baller"
         etikett="Skoleoversikt"
         overlinje={`${data.kontekst.gruppe.name} · fra spillerprofilene`}
         tittel="Skoleoversikt"

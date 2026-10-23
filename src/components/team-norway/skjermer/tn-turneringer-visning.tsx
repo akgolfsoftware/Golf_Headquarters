@@ -278,7 +278,7 @@ export function TnLiveWatchVisning({ brukerNavn, visDataGolf, data, navn, naa }:
   return (
     <Ramme aktiv="live-watch" brukerNavn={brukerNavn} kontekst={data.kontekst} visDataGolf={visDataGolf}>
       <TnSkraTopp
-        bilde="spiller-ved-vannet"
+        bilde="ngf-baller"
         etikett="Live Watch"
         overlinje={langDag.format(naa)}
         tittel="Live Watch"

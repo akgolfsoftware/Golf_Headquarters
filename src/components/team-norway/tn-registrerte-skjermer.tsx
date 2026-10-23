@@ -54,7 +54,7 @@ export async function TnRegistrertSkjerm({ skjerm }: { skjerm: Skjerm }) {
   if (skjerm === "inviter") {
     const kontekst = await hentTnArbeidskontekst(bruker);
     if (!kontekst?.kanAdministrere) notFound();
-    return <Chrome aktiv="inviter" brukerNavn={brukerNavn} kontekst={kontekst}><TnSkraTopp bilde="spiller-ved-vannet" etikett="Inviter spiller" overlinje={`Administrasjon · ${kontekst.gruppe.name}`} tittel="Inviter spiller" ingress="Inviter spillere til Team Norway og følg status for hver invitasjon." /><TnSkraKort><TnKort><TnInviterSpiller groupId={kontekst.gruppe.id} /></TnKort></TnSkraKort></Chrome>;
+    return <Chrome aktiv="inviter" brukerNavn={brukerNavn} kontekst={kontekst}><TnSkraTopp bilde="ngf-baller" etikett="Inviter spiller" overlinje={`Administrasjon · ${kontekst.gruppe.name}`} tittel="Inviter spiller" ingress="Inviter spillere til Team Norway og følg status for hver invitasjon." /><TnSkraKort><TnKort><TnInviterSpiller groupId={kontekst.gruppe.id} /></TnKort></TnSkraKort></Chrome>;
   }
 
   notFound();

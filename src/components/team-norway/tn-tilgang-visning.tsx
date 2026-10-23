@@ -53,7 +53,7 @@ export function TnTilgangVisning({ brukerNavn, gruppeId, gruppeNavn, rader, valg
   return (
     <TnShell aktiv="tilgang" brukerNavn={brukerNavn} rolle="Trener" groupId={gruppeId} visTrenerflater kanAdministrere>
       <TnSkraTopp
-        bilde="spiller-ved-vannet"
+        bilde="ngf-baller"
         etikett="Trenere og tilgang"
         overlinje={`Administrasjon · ${gruppeNavn}`}
         tittel="Trenere og tilgang"

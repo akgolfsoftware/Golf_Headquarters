@@ -93,7 +93,7 @@ export function TnSpillerutviklingVisning({
   return (
     <TnShell aktiv="spillere" brukerNavn={brukerNavn ?? "Ukjent"} rolle={tnRolleNavn(kontekst.rolle)} groupId={kontekst.gruppe.id} visTrenerflater={!kontekst.erSpiller} kanAdministrere={kontekst.kanAdministrere} visDataGolf={!kontekst.erSpiller && visDataGolf}>
       <TnSkraTopp
-        bilde="spiller-ved-vannet"
+        bilde="ngf-baller"
         etikett="Spillere"
         overlinje={`${data.kontekst.gruppe.name} · uke ${tnUkenummer(mandag)}`}
         tittel="Spillere"

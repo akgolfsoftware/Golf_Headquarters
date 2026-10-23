@@ -169,7 +169,7 @@ export async function TnOversiktSkjerm() {
       <div className={k.hjem}>
         <div className={k.topp}>
           <div className={k.foto}>
-            <Image src="/team-norway/bilder/spiller-ved-vannet.jpg" alt="" fill priority sizes="100vw" />
+            <Image src="/team-norway/bilder/ngf-baller.jpg" alt="" fill priority sizes="100vw" />
           </div>
         </div>
         <section className={k.toppInnhold} aria-label="Oversikt">

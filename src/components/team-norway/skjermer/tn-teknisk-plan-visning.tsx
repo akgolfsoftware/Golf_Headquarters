@@ -61,7 +61,7 @@ export function TnTekniskPlanVisning({ brukerNavn, kontekst, spillerId, spillerN
       tilbake={{ href: `/team-norway/spiller/${spillerId}/teknisk-plan`, label: "Teknisk plan" }}
     >
       <TnSkraTopp
-        bilde="spiller-ved-vannet"
+        bilde="ngf-baller"
         etikett={plan.navn}
         overlinje={`IUP · ${spillerNavn} · Teknisk plan`}
         tittel={plan.navn}
@@ -234,7 +234,7 @@ export function TnTekniskPlanerVisning({ brukerNavn, kontekst, spillerId, spille
       tilbake={{ href: "/team-norway/spillere", label: "Spillere" }}
     >
       <TnSkraTopp
-        bilde="spiller-ved-vannet"
+        bilde="ngf-baller"
         etikett={`Teknisk plan for ${spillerNavn}`}
         overlinje={`IUP · ${spillerNavn}`}
         tittel="Teknisk plan"
