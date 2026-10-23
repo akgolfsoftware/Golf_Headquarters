@@ -15,7 +15,6 @@ export function TnReferanseFaner({ aktiv }: { aktiv: TnReferanseFane }) {
     { id: "sammenlign", label: "Sammenlign", href: "/team-norway/referanse/sammenlign" },
     { id: "sok", label: "Søk", href: "/team-norway/referanse/sok" },
     { id: "norsk-golf", label: "Norsk golf", href: "/team-norway/referanse/norsk-golf" },
-    { id: "hcp", label: "HCP Norge", href: "/team-norway/referanse/hcp" },
     { id: "tester", label: "Tester", href: "/team-norway/referanse/tester" },
   ];
   return (

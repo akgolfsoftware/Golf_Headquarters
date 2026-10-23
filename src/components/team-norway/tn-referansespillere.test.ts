@@ -10,6 +10,7 @@ test("teamnorwayref-lenken peker til teamnorwayref", () => {
 });
 
 // Beslutningen 21.10, punkt 7: menypunktet peker til den nye Referanse-delen når den finnes.
+// HCP Norge er utsatt (Anders 23.10.2026) og står ikke i menyen eller fanene.
 test("Referanse i menyen åpner sidene i HQ, ikke teamnorwayref", () => {
   const kilde = readFileSync(new URL("./tn-shell.tsx", import.meta.url), "utf8");
   const referanse = kilde.slice(kilde.indexOf('id: "referanse"'), kilde.indexOf('id: "fag"'));
@@ -19,7 +20,6 @@ test("Referanse i menyen åpner sidene i HQ, ikke teamnorwayref", () => {
     ["Sammenlign", "/team-norway/referanse/sammenlign"],
     ["Søk", "/team-norway/referanse/sok"],
     ["Norsk golf", "/team-norway/referanse/norsk-golf"],
-    ["HCP Norge", "/team-norway/referanse/hcp"],
     ["Tester", "/team-norway/referanse/tester"],
   ]);
   assert.doesNotMatch(referanse, /TN_REFERANSESPILLERE_URL/);
