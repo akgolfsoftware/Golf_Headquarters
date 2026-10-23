@@ -4,6 +4,120 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## LIVE-ØKTA HAR ÉN SKJERM: /ACTIVE PÅ WORKBENCHSESSION (Anders 23.10.2026, bindende)
+
+Anders 23.10: «Vi kjører på dine anbefalinger.» Svar på punkt 1 i `docs/beslutningsgrunnlag/uavklart-etter-revisjon-2026-10-23.md` (revisjonen av `50e52dd`).
+
+- **`/portal/live/[id]/active` på `WorkbenchSession` er den eneste live-skjermen** for en treningsøkt. Slagtelleren er et verktøy inne i den, ikke en egen inngang.
+- `/tapper`, øktarket (`/portal/tren/wb/[sessionId]`) og `WorkbenchLive` sender videre dit eller lenker dit.
+- Oppsummeringen og trenerens oppfølging leser øvelsesloggen (`WorkbenchDrillLog`), samme logg som `/active` skriver.
+
+**Overstyrer:** ingenting i reglene. Retter at «Fortsett» på I dag går til `/tapper` (`session-hrefs.ts:61-62`) mens hurtigstart og Plan går til `/active` (`live-route.ts:56`).
+
+**Arbeidet dette utløser:**
+
+1. **Én adresse:** alle «Start» og «Fortsett» for en Workbench-økt går til `/active` (I dag `idag-visning.ts`, Plan, hurtigstart, øktarket). Ferdig når en test låser at alle fire gir samme adresse.
+2. **`/tapper` sender videre** til `/active` for Workbench-økter; slagtelleren åpnes derfra. Ferdig når direkte besøk havner på `/active`.
+3. **Oppsummeringen** (`loadPH07SummaryData`, `src/lib/portal-live/load-ph04-07.ts:327`) leser `WorkbenchDrillLog`, ikke bare `SessionBallLog`. Ferdig når en test viser at en økt logget på `/active` gir utfylt oppsummering.
+4. **Trenerens oppfølging** leser samme logg. Ferdig når treneren ser de samme øvelsene som spilleren logget.
+5. **`WorkbenchLive`** (`src/app/portal/planlegge/workbench/page.tsx:136`) lenker til `/active` i stedet for å være egen loggeflate. Ferdig når den ikke har egne skriveknapper.
+6. **Gamle økt-tabeller:** live-flyten skriver ikke nye rader til `TrainingPlanSession` eller `TrainingSessionV2` (OW-3). Ferdig når et søk ikke finner nye `create`/`upsert` mot dem fra live-flyten.
+
+## WANG-TRENEREN SER NAVN OG KLASSE UTEN DELING, ALT ANNET KREVER DELING (Anders 23.10.2026, bindende)
+
+Anders 23.10: «Vi kjører på dine anbefalinger.» Svar på punkt 2 i `docs/beslutningsgrunnlag/uavklart-etter-revisjon-2026-10-23.md`.
+
+- **WANG-treneren ser navn og klasse for alle elever i gruppa**, også dem som ikke har delt, i Elever, søket, Meldinger, Samtykke og Konkurranse › Per elev. Samme linje som Team Norway (22.10).
+- **HCP, kategori, plan, tester og alt annet krever deling** (§KODEGJENNOMGANGEN 06.10 uendret).
+
+**Overstyrer:** ingenting. Presiserer «Gruppemedlemskap alene gir verken innsyn eller skriverett» (06.10) for navn og klasse i WANG.
+
+**Arbeidet dette utløser:**
+
+1. **(haster, personvern) Test** som låser at en elev uten deling bare viser navn og klasse i de fem visningene (`hentWangGruppe`, `hentWangElevdata`, `src/components/wang/`). Ferdig når testen feiler hvis HCP, kategori, plan eller tester lekker.
+2. **Behandlingsregisteret** får en linje om at WANG-trenere ser navn og klasse uten deling. Ferdig når linja står der.
+
+Krever ellers ingen kodeendring — bekrefter dagens tilstand (`WangElever.tsx:167`).
+
+## TEAM NORWAY: FELLESTESTING OG GRUPPEANALYSE FØLGER DELINGSLÅSEN (Anders 23.10.2026, bindende)
+
+Anders 23.10: «Vi kjører på dine anbefalinger.» Svar på punkt 3 i `docs/beslutningsgrunnlag/uavklart-etter-revisjon-2026-10-23.md`.
+
+- **På testdagen kan treneren føre resultat for alle deltakere med navn**, men bare i føringen av den aktuelle testdagen.
+- **Gruppeanalysen følger regelen for Referanse › Tester (22.10):** median av siste resultat, ingen «beste», «—» under fem. Spillere som ikke har delt teller bare i median og antall, uten navn.
+- **WANG-elever er med bare når samtykke til Team Norway finnes.**
+
+**Overstyrer:** ingenting i reglene. Utvider §TEAM NORWAY: DELING ER ALT ELLER INGENTING (22.10) fra Referanse › Tester til Fellestesting og Gruppeanalyse.
+
+**Arbeidet dette utløser:**
+
+1. **(haster, personvern) Fellestesting bak sperren:** `hentTnTestdager`, `hentTnTestdag` og `hentTnTestdagDeltaker` (`src/lib/domain/tn-arbeidsflate.ts:437-640`) viser navn bare i føringsskjermen. Ferdig når en test låser at en spiller uten deling ikke står med navn utenfor føringen.
+2. **Gruppeanalysen** (`hentTnGruppeanalyseResultat`, `:1016`) regner median av siste resultat også i testdagsmodus (`:1021-1052`). Ferdig når «beste» ikke finnes i `tn-arbeidsflate.ts`.
+3. **Grensen på fem:** «—» under fem. Ferdig når en test låser grensen.
+4. **WANG-elever:** `hentWangTestresultatSkolerForTeamNorway` tar bare med elever med samtykke. Ferdig når en test viser at en elev uten samtykke ikke telles.
+
+## WANG-SKOLEPLATTFORMEN /TEAM-WANG/APP FLYTTES UT AV AK GOLF HQ (Anders 23.10.2026, bindende)
+
+Anders 23.10: «Vi kjører på dine anbefalinger.» Svar på punkt 4 i `docs/beslutningsgrunnlag/uavklart-etter-revisjon-2026-10-23.md`.
+
+- **`/team-wang/app/*` (9 sider, egen Supabase, ti roller med elev, foresatt og helsevarsler) flyttes til eget repo.**
+- **WANG-trenerflatene i HQ blir der de er:** `/team-wang/coach`, `/team-wang/skjermer`, `/wang` og fellessiden `/team-wang`.
+
+**Overstyrer:** Anders' muntlige linje 30.08 om at de ulenkede `/team-wang/*`-flatene skal inn i appen, for `/team-wang/app/*`. Avgjør punkt 4 (b) i §WANG OG TEAM NORWAY FÅR EGNE INNLOGGINGSADRESSER og punkt 2 i §TEAM NORWAY OG WANG FÅR INGEN EGNE LANDINGSSIDER.
+
+**Arbeidet dette utløser:**
+
+1. **Kontroll av basen:** lesespørring mot WANG-databasen (bare antall og om profilene er merket syntetiske, ingen persondata). Ferdig når det står i PR-en om basen er ekte eller syntetisk.
+2. **Flytting:** `src/app/team-wang/app/*` og `src/lib/wang-supabase/*` til eget repo. Ferdig når HQ bygger uten dem og `/team-wang/app` sender videre til `/wang`.
+3. **Nøkler:** `NEXT_PUBLIC_WANG_SUPABASE_*` og `WANG_SUPABASE_SERVICE_ROLE_KEY` ut av HQ-oppsettet på Vercel. Ferdig når de ikke står der.
+
+## I DAG VISER BRUTTO SNITT FOR ÅRET, STATS VISER FORM SISTE 10 (Anders 23.10.2026, bindende)
+
+Anders 23.10: «Vi kjører på dine anbefalinger.» Svar på punkt 5 i `docs/beslutningsgrunnlag/uavklart-etter-revisjon-2026-10-23.md`. Hva brutto snitt betyr, er avgjort 22.10.
+
+- **I dag viser «Brutto snitt 2026»** fra den felles funksjonen (`beregnBruttoSnitt`, `src/lib/domain/brutto-snitt.ts`), og ingen andre snitt.
+- **Stats-tallet heter «Form siste 10 runder (18 hull)».** Ordet «snitt» alene brukes ikke på det.
+- **Treningsrunder står på egen linje** og teller ikke i snittet (22.10 uendret).
+
+**Overstyrer:** ingenting. Gjennomfører punkt 2 i §TEAM NORWAY: DELING ER ALT ELLER INGENTING (22.10) for I dag og Spiller 360.
+
+**Arbeidet dette utløser:**
+
+1. **I dag** (`src/app/portal/actions.ts:529-561`) bytter til den felles funksjonen. Ferdig når filen ikke regner eget snitt.
+2. **Stats** (`src/lib/portal-analyse/ph16-stats-data.ts`) får navnet «Form siste 10 runder (18 hull)». Ferdig når skjermteksten er byttet.
+3. **Spiller 360** (`snittscore`, `src/lib/admin-spiller/spiller360-visning.ts:111`) bytter til den felles funksjonen for brutto snitt. Ferdig når en test låser samme snitt i Spiller 360, IUP og PlayerHQ.
+4. **Skjelett-skissen «I dag» A+C** i Claude Design sier «Brutto snitt 2026». Ferdig når teksten er byttet.
+
+## /ADMIN/OPPGAVER OG /ADMIN/INNSIKT FJERNES (Anders 23.10.2026, bindende)
+
+Anders 23.10: «Vi kjører på dine anbefalinger.» Svar på punkt 6 i `docs/beslutningsgrunnlag/uavklart-etter-revisjon-2026-10-23.md`.
+
+- **`/admin/oppgaver` sender til Cockpit, `/admin/innsikt` til spillerlista.** Begge sidene viser i dag bare tom tilstand.
+- Oppgaver vises fra Notion i Cockpit; talent i Spiller 360.
+
+**Overstyrer:** AG-21 Oppgaver og AG-22 Innsikt og talent i §LANSERING 05.10: SEKS AG-SKJERMER BEHOLDES (04.10).
+
+**Arbeidet dette utløser:**
+
+1. **Videresending:** `src/app/admin/oppgaver/page.tsx` og `src/app/admin/innsikt/page.tsx` sender videre. Ferdig når et besøk havner på Cockpit eller spillerlista.
+2. **Lenken i Caddie-hubben** (`AG19CaddieHub.tsx:216`) går til Cockpit. Ferdig når et søk ikke finner `/admin/oppgaver` som lenke.
+3. **`docs/MASTER-SKJERMPLAN.md`** merker AG-21 og AG-22 utgått. Ferdig når radene er oppdatert.
+
+## REFERANSE › PLANLEGGER: TRENERNE ENDRER DIREKTE FOR SPILLERE UTEN KONTO (Anders 23.10.2026, bindende)
+
+Anders 23.10: «Vi kjører på dine anbefalinger.» Svar på punkt 7 i `docs/beslutningsgrunnlag/uavklart-etter-revisjon-2026-10-23.md`.
+
+- **Team Norway-trenerne endrer referanseplanen direkte** for WAGR-spillere uten HQ-konto, med logg over hvem som endret hva og når.
+- **Når spilleren får HQ-konto**, gjelder forslagsregelen: treneren foreslår, spilleren godtar (§KODEGJENNOMGANGEN 06.10).
+
+**Overstyrer:** «Treneren foreslår» i `docs/planer/tn-referanse-og-planlegger-i-tre-flater-2026-10-23.md` punkt 3, for spillere uten konto.
+
+**Arbeidet dette utløser:**
+
+1. **Planfila** rettes til «direkte endring for spillere uten konto». Gjort i samme PR. Skjermteksten i `Turneringsplanlegger.tsx:30` sier allerede dette.
+2. **Endringslogg** på referanseplanen med trenernavn og tid. Ferdig når en endring vises slik.
+3. **Overgang ved ny konto:** referanseplanen kobles til spilleren, og forslagsregelen gjelder. Ferdig når en test viser at en spiller med konto får forslag, ikke direkte endring.
+
 ## ØVERSTE KORT STARTER UNDER DEN SKRÅ TOPPEN, OG DEKKER ALDRI BILDET (Anders 22.10.2026, bindende)
 
 Anders 22.10, etter skissen for bølge 1 i AgencyOS: «Sørg for at øverste card ikke dekker eller blir dekket av skrå headingen.»
@@ -418,7 +532,7 @@ Anders 18.10: «Logg inn via akgolf.no … www.akgolf.no/wang og www.akgolf.no/t
 1. **Innloggingsadressene og proxy-stengingen** bygget i #1412 (`src/app/wang`, `src/app/teamnorway`, `src/lib/auth/team-norway-sperre.ts`, `src/proxy.ts`). Ferdig når PR-en er i main.
 2. **Port 7:** Anders ser `/wang` og `/teamnorway` i 390 og 1280 px. Ikke målt i nettleser ennå.
 3. **Rydding:** trenerflatene under `/team-wang/coach` og `/team-wang/skjermer` peker fortsatt på `/team-wang/logg-inn?next=…` i `redirectTo` og i `wang-reise.ts`; det fungerer via videresendingen, men en runde ekstra. Pek rett på `/wang`.
-4. **Åpent, ikke avgjort:** (a) `/wang` og `/teamnorway` er ikke unntatt vedlikeholdsmodus (`src/lib/vedlikehold.ts`), som den gamle WANG-innloggingen heller ikke var; skal de være åpne mens vedlikehold står på? (b) `/team-wang/app/logg-inn` (skoleplattform-varianten) har fortsatt egen side; skal den også til `/wang`? (c) Skal rangeringen åpnes igjen offentlig, og i så fall hvor?
+4. **Åpent, ikke avgjort:** (a) `/wang` og `/teamnorway` er ikke unntatt vedlikeholdsmodus (`src/lib/vedlikehold.ts`), som den gamle WANG-innloggingen heller ikke var; skal de være åpne mens vedlikehold står på? (b) ~~`/team-wang/app/logg-inn` (skoleplattform-varianten) har fortsatt egen side; skal den også til `/wang`?~~ Avgjort 23.10: skoleplattformen flyttes ut, og adressen sender til `/wang`. (c) Skal rangeringen åpnes igjen offentlig, og i så fall hvor?
 5. **Domenet:** `www.akgolf.no/wang` og `/teamnorway` virker først når akgolf.no flyttes fra Acuity til appen (§AKGOLF.NO FLYTTES IKKE FØR HELE NETTSIDEN ER GODKJENT). Til da: `akgolf-hq.vercel.app/wang` og `/teamnorway`.
 
 ## TEAM NORWAY OG WANG FÅR INGEN EGNE LANDINGSSIDER, OG INNLOGGING SKJER FRA AKGOLF (Anders 18.10.2026, bindende)
@@ -435,7 +549,7 @@ Anders 18.10: «Vi trenger ikke landing sider for disse. Innlogging gjøre fra a
 **Arbeidet dette utløser:**
 
 1. **Markedssidene starter nå**, uavhengig av TN og WANG, sammen med BK-02/03 og e-postene EP-01–06. Ferdig når kartlegging og plan er lagt fram for Anders.
-2. **Avgjort samme dag:** WANG og Team Norway får egne innloggingsadresser, `/wang` og `/teamnorway`, med felles konto (se blokken over). Skoleplattform-varianten `/team-wang/app/logg-inn` er fortsatt uavklart.
+2. **Avgjort samme dag:** WANG og Team Norway får egne innloggingsadresser, `/wang` og `/teamnorway`, med felles konto (se blokken over). ~~Skoleplattform-varianten `/team-wang/app/logg-inn` er fortsatt uavklart.~~ Avgjort 23.10: skoleplattformen flyttes ut av HQ (§WANG-SKOLEPLATTFORMEN /TEAM-WANG/APP FLYTTES UT).
 
 Anders 18.10: «Det er viktig at alle Wang skjermene bruker Wang bilder fra Wang toppidrett design systemet.»
 
@@ -1029,9 +1143,9 @@ Bestilling 04.10 med design-handoff i `docs/design-handoff/` (porteringskø `reg
 Anders 04.10 kl. 23: «De skal med. Så tar vi det heller bort igjen.» Og bestilling om at PlayerHQ,
 AgencyOS, markedssidene og innloggingen skal være lanseringsklare med riktig design 05.10.
 
-- **AG-02 Kø, AG-17 Turneringer, AG-18 TrackMan og video, AG-21 Oppgaver, AG-22 Innsikt og talent
+- **AG-02 Kø, AG-17 Turneringer, AG-18 TrackMan og video, ~~AG-21 Oppgaver, AG-22 Innsikt og talent~~
   og AG-24 Drift beholdes** som egne skjermer i Precision, selv om IA 28.09 sa at de utgår. De kan
-  fjernes senere. PH-26 Utenfor banen er fortsatt utgått og sender til Meg.
+  fjernes senere. AG-21 og AG-22 overstyrt 23.10: fjernes (§/ADMIN/OPPGAVER OG /ADMIN/INNSIKT FJERNES). PH-26 Utenfor banen er fortsatt utgått og sender til Meg.
 - **Markedssidene får Precision Athletics** (Anders 04.10: «Bytt til Precision»). Det finnes ingen
   tegninger for dem, så de bygges med Precision-komponentene og blir kandidater til Anders har sett dem.
 - **Lansering** betyr at hovedveiene virker og følger designet, og at ingen side krasjer, ruller sidelengs
