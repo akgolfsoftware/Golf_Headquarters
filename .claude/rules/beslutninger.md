@@ -4,6 +4,28 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## BIBLIOTEKET I WORKBENCH ER LIKT FOR ALLE, DET BRUKERNE LAGER DELES TIL APP, OG KATEGORI A–K GJELDER I ALLE LEDD (Anders 23.10.2026, bindende)
+
+Anders 23.10: «I workbench for både spiller og coach (AK, WANG, Team Norway) så skal alle kunne velge drill / øvelse / test / tekniske oppgave fra side menyen. Skal man opprette en ny … så kan man gjøre dette manuelt ved + tegn … Tid er alltid estimat tid … Når en spiller oppretter drill, øvelse, test så blir den automatisk delt med databasen. Når man skal filtrere … så kan man velge mellom ALLE – APP – COACH. Både spillere og coacher deler til appen. Dette godkjennes i onboarding.» Planen for runde 3 ble «Godkjent med din anbefaling», og om nivåene: «AK kategoriene har i alle ledd. Kjør anbefaling.»
+
+- **Én sidemeny for alle** (spiller og coach i AK Golf, WANG og Team Norway) med tre typer: **Øvelse · Test · Teknisk oppgave**. «Drill» er øvelse (ordboka). Fanene: Anbefalt · Øvelser · Tester · Tekniske oppgaver · Økter · Dager.
+- **«+» lager ny** med alle påkrevde felter. **Tid er alltid estimert** og vises «ca. X min».
+- **Det brukerne lager, deles til App med en gang**, merket «Spiller» eller «Coach», aldri med navn. Samtykket gis i et eget steg i oppstarten; under 16 godkjenner forelder. «Ikke nå» gjør at bare spilleren og coachen ser det. Trekkes samtykket, blir det som er delt liggende uten navn.
+- **Filteret Kilde: Alle · App · Coach.** App = AK Golfs bibliotek og alt brukere har delt; Coach = fra din coach. Ditt eget ligger under Favoritter og Sist brukt. I tillegg søk, område (de 19), akse, P-posisjon, tid og «Mulig her» (fasilitet).
+- **Coach og AK Golf kan skjule noe fra App** uten å slette det hos den som laget det.
+- **Teknisk oppgave deles som mal**, uten spillerens video før og etter.
+- **Innhold i biblioteket er ikke spillerdata:** WANG- og Team Norway-trenere ser fortsatt bare spillerdata spilleren har delt.
+- **Kategori A–K gjelder i alle ledd:** AK Golf, WANG og Team Norway. Team Norway viser i tillegg landslagsnivå per klasse når tallene finnes.
+
+**Overstyrer:** ingenting. Utvider §WORKBENCH FÅR SØK I ALLE ØVELSER (16.10) med test og teknisk oppgave, Kilde-filteret og deling til App.
+
+**Arbeidet dette utløser:**
+
+1. **Skjelettet:** tegnet i Claude Design (siden «AgencyOS · Workbench · Runde 3», tavlene R3-*). Gjort.
+2. **Datamodell for deling:** kilde (App/Coach/Spiller), skjult fra App, og samtykke til deling per bruker. Additivt via `db execute` (gotchas §Database). Ferdig når en test låser at delt innhold aldri viser hvem som laget det, og at «Ikke nå» holder innholdet privat.
+3. **Sidemenyen i koden** for spiller og coach med de tre typene, Kilde-filteret og søk. Ferdig når samme komponent brukes i `/admin/workbench/[playerId]`, spillerens Workbench, `/team-wang` og `/team-norway`.
+4. **Samtykkesteget i oppstarten** for spiller (forelder under 16) og coach. Ferdig når en test låser at en 14-åring ikke deler uten forelders ja.
+
 ## TRACKMAN-ØKTER HENTES FRA DELINGSLENKEN, OG GOLFSLAG-ØKTER FÅR MÅL-CARRY TASTET INN (Anders 23.10.2026, bindende)
 
 Anders 23.10, med lenken tm-short.me/A87u7ds: «Hent ut data fra Trackman link på denne måten. Her ønsker jeg komplett data oversikt for økten. Teknisk økt så er det Trackman data som er hovedfokus i den visuelle fremvisningen. Golfslag økt så er det PEI som er hovedfokus.» Og: «Hvis man har en slag økt så taster man inn hvor langt man skal slå carry manuelt i appen også regner du den ut etterpå.» Svarte «ja» på å bygge hentingen inn i appen.
