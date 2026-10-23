@@ -4,6 +4,29 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## TEAM NORWAY: KOMPLETT IUP, GRUPPE-WORKBENCH, TESTVERKTØY OG TRENERROM, BAK EGEN INNLOGGING (Anders 23.10.2026, bindende)
+
+Anders 23.10, 22:48–22:59: «Team Norway-skjermene skal ha komplette spillerprofiler med IUP. Med Workbench, så du ser hva spilleren har av årsplan, periodisering, trening og lignende. Turneringsplan fra planleggeren, både med WAGR-turneringer og andre turneringer. De skal ha oversikt over testing fra WANG-skolene […] Komplett testbatteri […] Verktøy der de kan opprette flere tester […] spilleroppfølging med chatfunksjoner, internskjermer mellom coacher med dokumenter og deling. […] planlegge samlinger og testdager gjennom Workbench-funksjonen for gruppe. De skal kunne ha ulike grupper.» «Alle handikapskjermene som vi lagde her om dagen, skal ikke være med.» «AK Golf HQ skal ikke kunne se alle Team Norway-skjermene uten å logge inn på de faktiske Team Norway-skjermene.» «WANG-elever og Team Norway-spillere har da PlayerHQ-profil. Spillerprofil har da automatisk turneringsresultat fra AK Golf pipeline […] all turneringshistorikk […] legger seg automatisk i profilen.»
+
+- **Menyen har seks hovedpunkter:** Hjem · Spillere · Grupper · Testing · Turneringer og ranking · Trenerrom.
+- **Spillerprofilen (IUP) er komplett:** Oversikt · Workbench (årsplan, perioder, uker og økter) · Turneringsplan · Trening · Tester · Teknisk plan · Fireukerssjekk · Chat. Treneren leser og foreslår, og spilleren bestemmer (§KODEGJENNOMGANGEN 06.10). Det er samme komponent som Spiller 360 i AgencyOS (§SPILLER OG COACH SER SAMME SKJERM).
+- **Profilen er spillerens PlayerHQ-profil.** WANG-elever og Team Norway-spillere har PlayerHQ. Turneringshistorikken kommer automatisk fra AK Golf-pipelines, hele historikken bakover (§PIPELINES ER ENESTE KILDE FOR TURNERINGSRESULTATER). Ingen manuell føring av resultater.
+- **Turneringsplanen** er planleggeren (§TURNERINGSPLANLEGGEREN … ER MASTER), med WAGR-turneringer og andre turneringer, per spiller og per gruppe.
+- **Grupper:** treneren har flere grupper. Gruppe-Workbench planlegger samlinger og testdager. Samlingspunkt, fellestesting og månedsplan er del av den.
+- **Testing:** komplett testbatteri (§TESTBATTERIET), verktøy for å lage nye tester, føring på testdagen, gruppeanalyse, og oversikt over WANG-skolene (skole → elever → resultater). Navn og innsyn følger §TEAM NORWAY: FELLESTESTING OG GRUPPEANALYSE FØLGER DELINGSLÅSEN (23.10): elever med samtykke vises med navn, de andre telles i median og antall uten navn.
+- **Trenerrom:** chat mellom coacher, dokumenter og deling, trenerkatalog, tilgang og invitasjon.
+- **Handikapskjermene er ute:** Referanse › HCP Norge (normkurve, klubber, regioner) og HCP-søket. WAGR og Norsk golf (nivå A–K) står, under Turneringer og ranking.
+- **Egen innlogging, ingen gjennomgang fra AK Golf HQ:** `/team-norway/*` åpnes bare via Team Norway-innloggingen med trenerrolle i en Team Norway-gruppe, også for ADMIN. AgencyOS har ingen lenke, menypunkt eller visning av Team Norway-data.
+
+**Overstyrer:** ADMIN-tilgangen til `/team-norway/*` i §TEAM NORWAY ER BARE FOR TRENERE (21.10). Referanse › HCP Norge og navngitte juniorprofiler (punkt 4 og 5 der) bygges ikke. Menyen i wireframes 21.10 (Hjem · Spillere · Samlinger og testing · Turneringer · Referanse · Fag og administrasjon) erstattes av menyen over.
+
+**Arbeidet dette utløser:**
+
+1. **Skjelettet:** eget lerret «AK Golf HQ · Team Norway» i 390 og 1280 px, med innlogging som første skjerm. Ferdig når hver skjerm er kontrollert av en uavhengig agent og Anders har sett lerretet.
+2. **(haster, personvern) Tilgangsvakt:** ADMIN uten Team Norway-trenerrolle sendes til Team Norway-innloggingen fra hver `/team-norway`-adresse. Ferdig når en test låser det.
+3. **HCP Norge og HCP-søket ut av menyen og rutene**, med videresending til Turneringer og ranking.
+4. **Skjermregisteret** (`docs/design-system/skjermregister.*`, `designsystem/team-norway/handover/SKJERMREGISTER.md`) oppdateres i egen PR etter den nye menyen.
+
 ## FORELDEREN SER ALT SPILLEREN SER (Anders 23.10.2026, bindende)
 
 Spørsmål: «Hva skal en forelder kunne se?» (pakke 4 viste bare «Inviter», fordi innsynet ikke var bestemt.) Anders 23.10, 22:39: «Alt».
