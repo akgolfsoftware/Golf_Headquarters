@@ -1,7 +1,7 @@
 import "server-only";
 import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
-import { akProfilGruppeWhere, medAkProfiler } from "./ak-profil-lesing";
+import { akProfilGruppeWhere, medAkProfiler, type AkProfilGrunnlag } from "./ak-profil-lesing";
 
 export type AkGruppeoppdrag = { gruppeId: string; coachId: string };
 
@@ -15,19 +15,20 @@ export async function hentAkGruppeoppdrag(): Promise<AkGruppeoppdrag[]> {
 
 /** Oppdraget får bare gruppens ansvarlige trener, med fersk deling under lås. */
 export async function medAkGruppeoppdrag<T>(oppdrag: AkGruppeoppdrag,
-  jobb: (tx: Prisma.TransactionClient, scope: Prisma.UserWhereInput) => Promise<T>,
+  jobb: (tx: Prisma.TransactionClient, scope: Prisma.UserWhereInput, grunnlag: readonly AkProfilGrunnlag[]) => Promise<T>,
+  medGrunnlag = false,
 ): Promise<T | null> {
   if (typeof oppdrag.coachId !== "string" || !oppdrag.coachId.trim() ||
       typeof oppdrag.gruppeId !== "string" || !oppdrag.gruppeId.trim()) return null;
   const aktor = await prisma.user.findFirst({ where: { id: oppdrag.coachId, deletedAt: null,
     role: { in: ["ADMIN", "COACH"] } }, select: { id: true, role: true } });
   if (!aktor) return null;
-  return medAkProfiler(aktor, async (tx, scope) => {
+  return medAkProfiler(aktor, async (tx, scope, grunnlag) => {
     // Eierskifte etter ruting må ikke sende data til forrige trener. Gruppe og
     // aktør er allerede låst; ADMIN kan heller ikke bruke andre gruppers ja.
     const gruppe = await tx.group.findFirst({ where: { ...akProfilGruppeWhere(),
       id: oppdrag.gruppeId, coachId: aktor.id }, select: { id: true } });
     if (!gruppe) return null;
-    return jobb(tx, scope);
-  }, "handling", { gruppeId: oppdrag.gruppeId });
+    return jobb(tx, scope, grunnlag);
+  }, "handling", { gruppeId: oppdrag.gruppeId, medGrunnlag });
 }

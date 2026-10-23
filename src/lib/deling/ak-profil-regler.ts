@@ -19,19 +19,23 @@ export type AkProfilKrav = {
 };
 
 /** Nyeste gjeldende hendelse avgjør; feil versjon/aktør og lik tid feiler lukket. */
-export function delerAkProfil(rader: readonly AkProfilRad[], krav: AkProfilKrav): boolean {
+export function gyldigAkProfilRad<T extends AkProfilRad>(rader: readonly T[], krav: AkProfilKrav): T | null {
   const fyller16 = sekstenaarsdag(krav.dateOfBirth);
   const aktuelle = rader.filter(r => r.scope === AK_PROFIL_SCOPE && r.mottakerGruppeId === krav.gruppeId && r.mottakerUserId === null)
     // D-69: foreldre kan ikke endre valget etter 16-årsdagen.
     .filter(r => !(r.gittAvRolle === "FORESATT" && fyller16 && r.createdAt >= fyller16));
-  if (!aktuelle.length || aktuelle.some(r => !Number.isFinite(r.createdAt.getTime()) || r.createdAt > krav.naa)) return false;
+  if (!aktuelle.length || aktuelle.some(r => !Number.isFinite(r.createdAt.getTime()) || r.createdAt > krav.naa)) return null;
   const tid = Math.max(...aktuelle.map(r => r.createdAt.getTime()));
   const nyeste = aktuelle.filter(r => r.createdAt.getTime() === tid);
-  if (nyeste.length !== 1) return false;
+  if (nyeste.length !== 1) return null;
   const rad = nyeste[0];
-  if (!rad.gitt || rad.tekstVersjon !== AK_PROFIL_VERSJON) return false;
+  if (!rad.gitt || rad.tekstVersjon !== AK_PROFIL_VERSJON) return null;
   if (rad.gittAvRolle === "SELV") {
-    return rad.gittAvUserId === krav.spillerId && fyller16 !== null && rad.createdAt >= fyller16 && !maaHaForesattSamtykke(krav, krav.naa);
+    return rad.gittAvUserId === krav.spillerId && fyller16 !== null && rad.createdAt >= fyller16 && !maaHaForesattSamtykke(krav, krav.naa) ? rad : null;
   }
-  return rad.gittAvRolle === "FORESATT" && krav.foresattIder.includes(rad.gittAvUserId);
+  return rad.gittAvRolle === "FORESATT" && krav.foresattIder.includes(rad.gittAvUserId) ? rad : null;
+}
+
+export function delerAkProfil(rader: readonly AkProfilRad[], krav: AkProfilKrav): boolean {
+  return gyldigAkProfilRad(rader, krav) !== null;
 }
