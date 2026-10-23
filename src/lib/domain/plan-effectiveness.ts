@@ -1,103 +1,34 @@
-/**
- * Plan-effektivitet: måler hvor godt en plan-mal (PlanTemplate) faktisk virker.
- *
- * Bruker PlanEffectiveness-snapshots — pre-/post-målinger som lagres når en
- * spiller fullfører en plan basert på malen. Vi aggregerer hcpDelta på tvers
- * av alle brukere og beregner snitt.
- *
- * Signifikans: krever ≥ 5 brukere og snittendring større enn ±0,3 HCP.
- */
-
-import { prisma } from "@/lib/prisma";
-
-// ---------------------------------------------------------------------------
-// Typer
-// ---------------------------------------------------------------------------
-
+/** Beskrivende planhistorikk, aldri dokumentasjon på årsakseffekt. */
 export type PlanEffektivitet = {
-  /** Antall brukere som har fullført en plan basert på denne malen */
   antallBrukere: number;
-  /** Gjennomsnittlig HCP-endring (post − pre). Negativ = forbedring. */
-  gjennomsnittligHcpEndring: number;
-  /** True hvis utvalget er stort nok og effekten er målbar */
-  signifikant: boolean;
+  antallMedMaaling: number;
+  gjennomsnittligHcpEndring: number | null;
+  /** Bakoverkompatibelt felt. Ingen statistisk signifikanstest er utført. */
+  signifikant: false;
 };
-
-// ---------------------------------------------------------------------------
-// Konstanter
-// ---------------------------------------------------------------------------
-
-const MIN_UTVALG = 5;
-const SIGNIFIKANS_TERSKEL = 0.3;
-
 const TOMT_RESULTAT: PlanEffektivitet = {
-  antallBrukere: 0,
-  gjennomsnittligHcpEndring: 0,
-  signifikant: false,
+  antallBrukere: 0, antallMedMaaling: 0, gjennomsnittligHcpEndring: null, signifikant: false,
 };
+export type PlanEffektivitetRaa = { hcpDelta: number | null; userId: string };
 
-/** Rådata-rad — eksponert for testing. */
-export type PlanEffektivitetRaa = {
-  hcpDelta: number | null;
-  userId: string;
-};
-
-// ---------------------------------------------------------------------------
-// Eksporterte funksjoner
-// ---------------------------------------------------------------------------
-
-/**
- * Ren aggregeringsfunksjon — eksponert separat fra Prisma-spørringen så den
- * kan testes uten databasekobling.
- */
-export function aggregerPlanEffektivitet(
-  rader: ReadonlyArray<PlanEffektivitetRaa>,
-): PlanEffektivitet {
-  if (rader.length === 0) return { ...TOMT_RESULTAT };
-
-  const unikeBrukere = new Set(rader.map((r) => r.userId));
-  const deltas = rader
-    .map((r) => r.hcpDelta)
-    .filter((d): d is number => d !== null && Number.isFinite(d));
-
-  if (deltas.length === 0) {
-    return {
-      antallBrukere: unikeBrukere.size,
-      gjennomsnittligHcpEndring: 0,
-      signifikant: false,
-    };
+/** Hver spiller vekter likt; flere registreringer gir ikke mer stemmevekt. */
+export function aggregerPlanEffektivitet(rader: ReadonlyArray<PlanEffektivitetRaa>): PlanEffektivitet {
+  const perSpiller = new Map<string, number[]>();
+  for (const r of rader) {
+    if (r.hcpDelta === null || !Number.isFinite(r.hcpDelta)) continue;
+    perSpiller.set(r.userId, [...(perSpiller.get(r.userId) ?? []), r.hcpDelta]);
   }
-
-  const sum = deltas.reduce((acc, d) => acc + d, 0);
-  const snitt = sum / deltas.length;
-  const snittAvrundet = Math.round(snitt * 100) / 100;
-
-  const signifikant =
-    unikeBrukere.size >= MIN_UTVALG &&
-    Math.abs(snittAvrundet) >= SIGNIFIKANS_TERSKEL;
-
+  const snitt = [...perSpiller.values()].map(xs => xs.reduce((a, b) => a + b, 0) / xs.length);
   return {
-    antallBrukere: unikeBrukere.size,
-    gjennomsnittligHcpEndring: snittAvrundet,
-    signifikant,
+    antallBrukere: new Set(rader.map(r => r.userId)).size,
+    antallMedMaaling: perSpiller.size,
+    gjennomsnittligHcpEndring: snitt.length ? Math.round(snitt.reduce((a, b) => a + b, 0) / snitt.length * 100) / 100 : null,
+    signifikant: false,
   };
 }
 
-/**
- * Beregner effektivitet for en gitt plan-mal.
- *
- * @param planId — `PlanTemplate.id` å beregne for
- * @returns aggregert effektivitet, eller tomt resultat hvis ingen data
- */
-export async function beregnPlanEffektivitet(
-  planId: string,
-): Promise<PlanEffektivitet> {
-  if (!planId) return { ...TOMT_RESULTAT };
-
-  const effekter = await prisma.planEffectiveness.findMany({
-    where: { templateId: planId },
-    select: { hcpDelta: true, userId: true },
-  });
-
-  return aggregerPlanEffektivitet(effekter);
+/** Felles læring er sperret inntil formål, samtykke og uttrekk er innført.
+ * Et template-ID alene er ikke hjemmel til å lese alle spilleres historikk. */
+export async function beregnPlanEffektivitet(_planId: string): Promise<PlanEffektivitet> {
+  return { ...TOMT_RESULTAT };
 }

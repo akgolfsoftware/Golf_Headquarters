@@ -2,9 +2,14 @@ import assert from "node:assert/strict";
 import { before, beforeEach, mock, test } from "node:test";
 
 type Row = Record<string, unknown>;
+const aktivGruppe = (coachId: string): Row[] => [{
+  role: "PLAYER", endedAt: null,
+  group: { coachId, managedByAkGolf: true, arkivertAt: null, program: null, slug: null, members: [] },
+}];
 const players: Row[] = [
-  { id: "own", name: "Kari Testperson", email: "kari@example.test", role: "PLAYER", deletedAt: null, enrollmentsAsPlayer: [{ endedAt: null, program: "ACADEMY", coachId: "coach-a" }], groupMemberships: [], trainingPlans: [], hcp: 4 },
-  { id: "other", name: "Kari Uvedkommende", role: "PLAYER", deletedAt: null, enrollmentsAsPlayer: [{ endedAt: null, program: "ACADEMY", coachId: "coach-b" }], groupMemberships: [] },
+  { id: "own", name: "Kari Testperson", email: "kari@example.test", role: "PLAYER", deletedAt: null, enrollmentsAsPlayer: [{ endedAt: null, program: "ACADEMY", coachId: "coach-a" }], groupMemberships: aktivGruppe("coach-a"), trainingPlans: [], hcp: 4 },
+  { id: "other", name: "Kari Uvedkommende", role: "PLAYER", deletedAt: null, enrollmentsAsPlayer: [{ endedAt: null, program: "ACADEMY", coachId: "coach-b" }], groupMemberships: aktivGruppe("coach-b") },
+  { id: "enrollment-only", name: "Kari Programkunde", role: "PLAYER", deletedAt: null, enrollmentsAsPlayer: [{ endedAt: null, program: "AK_ACADEMY", coachId: "coach-a" }], groupMemberships: [] },
   { id: "self", name: "Kari Selvbetjent", role: "PLAYER", deletedAt: null, enrollmentsAsPlayer: [{ endedAt: null, program: "PLATFORM_ONLY", coachId: "coach-a" }], groupMemberships: [] },
   { id: "deleted", name: "Kari Slettet", role: "PLAYER", deletedAt: new Date(), enrollmentsAsPlayer: [{ endedAt: null, program: "ACADEMY", coachId: "coach-a" }], groupMemberships: [] },
 ];
@@ -16,6 +21,7 @@ function matches(row: Row, where: Row): boolean {
       const filter = value as Row;
       if ("some" in filter) return ((row[key] ?? []) as Row[]).some((part) => matches(part, filter.some as Row));
       if ("in" in filter) return (filter.in as unknown[]).includes(row[key]);
+      if ("notIn" in filter) return !(filter.notIn as unknown[]).includes(row[key]);
       if ("not" in filter) return row[key] !== filter.not;
       if ("contains" in filter) return String(row[key] ?? "").toLowerCase().includes(String(filter.contains).toLowerCase());
       return matches((row[key] ?? {}) as Row, filter);
@@ -66,7 +72,7 @@ test("uvedkommende direkte ID-oppslag stoppes før detaljdata leses", async () =
   assert.equal(dataReads, 0);
   assert.equal(completed(await tools.getRound.execute!({ roundId: "round-other" }, options)).ok, false);
 });
-test("ADMIN får alle coachede, men ikke selvbetjente; PLAYER/ukjent rolle får ingen", async () => {
+test("ADMIN får bare aktive AK-gruppemedlemmer; PLAYER/ukjent rolle får ingen", async () => {
   const admin = buildReadTools({ id: "admin", role: "ADMIN" });
   const result = completed(await admin.searchPlayers.execute!({ query: "Kari", limit: 10 }, options));
   assert(result.ok); assert.deepEqual(result.data.players.map((p) => p.id), ["own", "other"]);
@@ -87,4 +93,15 @@ test("DB-feil gir aldri åpen tilgang eller rå feilmelding med persondata", asy
   const result = completed(await buildReadTools(coach).getPlayerStats.execute!({ playerId: "own", period: "30d" }, options));
   assert.equal(result.ok, false); assert.equal(dataReads, 0);
   assert(!JSON.stringify(result).includes("Kari")); assert(!JSON.stringify(result).includes("@"));
+});
+
+test("programtilknytning alene avvises i Caddie, også for ADMIN", async () => {
+  for (const viewer of [coach, { id: "admin", role: "ADMIN" }]) {
+    const tools = buildReadTools(viewer);
+    assert.equal(completed(await tools.getPlayer.execute!({ id: "enrollment-only" }, options)).ok, false);
+    assert.equal(completed(await tools.getPlayerSessions.execute!({ playerId: "enrollment-only", limit: 10 }, options)).ok, false);
+    assert.equal(completed(await tools.getPlayerStats.execute!({ playerId: "enrollment-only", period: "30d" }, options)).ok, false);
+    assert.equal(completed(await tools.getPlayerLatestSession.execute!({ playerId: "enrollment-only" }, options)).ok, false);
+  }
+  assert.equal(dataReads, 0);
 });

@@ -51,7 +51,7 @@ export async function runTreningsdataEkspert(
       select: { id: true },
     });
     const coachId = await resolveCoachIdForPlayer(userId);
-    const forklaring = `Trening på ${negativ.sgArea} korrelerer negativt (r=${negativ.r?.toFixed(2) ?? "?"}). Vurder omfang eller fokus før mer volum.`;
+    const forklaring = `Trening på ${negativ.sgArea} korrelerer negativt (r=${negativ.r?.toFixed(2) ?? "?"}). Dette er en observasjon, ikke en årsaksforklaring. Kontroller datadekning og treningsforhold før et tiltak velges.`;
 
     const created = await prisma.planAction.create({
       data: {

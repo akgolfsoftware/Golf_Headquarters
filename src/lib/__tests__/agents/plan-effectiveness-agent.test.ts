@@ -22,7 +22,7 @@ type Rad = {
   id: string;
   userId: string;
   planId: string;
-  completionRate: number;
+  completionRate: number | null;
   sgTotalDelta: number | null;
   computedAt: Date;
   plan: { id: string; name: string; userId: string; isActive: boolean };
@@ -38,7 +38,7 @@ type PlanActionCreateArgs = {
     agentName: string;
     suggestion: {
       forklaring: string;
-      signalSnapshot: { completionRate: number; sgTotalDelta: number | null };
+      signalSnapshot: { completionRate: number | null; sgTotalDelta: number | null };
     };
   };
 };
@@ -126,7 +126,7 @@ test("runPlanEffectivenessAgent — hovedløp og duplikatsperre", async (t) => {
   assert.equal(data.userId, "user-1");
   assert.equal(data.coachId, "coach-1");
   assert.equal(data.planId, "plan-1");
-  assert.equal(data.actionType, "PYRAMID_ADJUST");
+  assert.equal(data.actionType, "COACH_REVIEW");
   assert.equal(data.agentName, "plan-effectiveness-agent");
   assert.match(data.suggestion.forklaring, /Uke 12 plan/);
   assert.match(data.suggestion.forklaring, /30 %/);
@@ -175,4 +175,9 @@ test("runPlanEffectivenessAgent — hovedløp og duplikatsperre", async (t) => {
     "signal.create skal IKKE kalles når raden hoppes over pga. duplikatsperre",
   );
   assert.equal(varsleCalls.length, 1, "coach skal ikke varsles på nytt");
+  existingPlanAction = null;
+  rader = [{ ...rader[0], completionRate: null, sgTotalDelta: null }];
+  const missing = await runPlanEffectivenessAgent();
+  assert.equal(missing.planActionsWritten, 0, "ukjent gjennomføring er ikke lav gjennomføring");
+  assert.equal(createCalls.length, 1);
 });

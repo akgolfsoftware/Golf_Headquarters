@@ -14,6 +14,7 @@ export const HANDLINGSTYPE_LABEL: Record<string, string> = {
   SESSION_SWAP: "Bytt økt",
   INTENSITY_ADJUST: "Juster intensitet",
   FOCUS_CHANGE: "Endre fokus",
+    COACH_REVIEW: "Faglig vurdering",
   PERIOD_SWITCH: "Bytt periode",
   DRILL_SWAP: "Bytt drill",
   REST_DAY_ADD: "Hviledag",

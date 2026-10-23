@@ -3,7 +3,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { resolveDrillPakke } from "./plan-action-executor";
-import { aggregateSg } from "@/lib/sg";
+import { SG_ANALYSE_SELECT, sgSammenligningsnokkel, sgSnapshot, MIN_SG_RUNDER } from "@/lib/ai-plan/analyse-grunnlag";
 import {
   runWeaknessSkill,
   SG_TO_PYRAMID,
@@ -23,11 +23,19 @@ export async function runRoundAgent(userId: string): Promise<AgentResult> {
     const tretti = new Date();
     tretti.setDate(tretti.getDate() - 30);
 
-    const runder = await prisma.round.findMany({
-      where: { userId, playedAt: { gte: tretti } },
+    const alleRunder = await prisma.round.findMany({
+      where: { userId, playedAt: { gte: tretti, lte: new Date() }, playStatus: "COMPLETED", partialSave: false },
+      select: SG_ANALYSE_SELECT,
+      orderBy: [{ playedAt: "desc" }, { id: "desc" }],
     });
 
-    const sg = aggregateSg(runder);
+    const siste = alleRunder.find(r => sgSammenligningsnokkel(r) !== null);
+    const key = siste ? sgSammenligningsnokkel(siste) : null;
+    const runder = key ? alleRunder.filter(r => sgSammenligningsnokkel(r) === key) : [];
+    if (runder.length < MIN_SG_RUNDER) return { signalsWritten: 0, planActionsWritten: 0 };
+    const snapshot = sgSnapshot(runder);
+    const sg = { total: snapshot.sgTotal, ott: snapshot.sgOtt, app: snapshot.sgApp,
+      arg: snapshot.sgArg, putt: snapshot.sgPutt, rundeAntall: runder.length };
     const computedAt = new Date();
 
     type Skrivbar = { kind: string; value: number };
@@ -52,35 +60,24 @@ export async function runRoundAgent(userId: string): Promise<AgentResult> {
 
     let planActionsWritten = 0;
     const sgSnitt = {
-      OTT: sg.ott ?? 0,
-      APP: sg.app ?? 0,
-      ARG: sg.arg ?? 0,
-      PUTT: sg.putt ?? 0,
+      OTT: sg.ott,
+      APP: sg.app,
+      ARG: sg.arg,
+      PUTT: sg.putt,
     };
     const plan = await prisma.trainingPlan.findFirst({
       where: { userId, isActive: true },
       select: { id: true },
     });
 
-    const ukeSiden = new Date();
-    ukeSiden.setDate(ukeSiden.getDate() - 7);
-    const pyramidSessions = plan
-      ? (
-          await prisma.trainingPlanSession.findMany({
-            where: {
-              planId: plan.id,
-              status: "COMPLETED",
-              scheduledAt: { gte: ukeSiden },
-            },
-            select: { pyramidArea: true, durationMin: true },
-          })
-        ).map((s) => ({
-          pyramidArea: s.pyramidArea,
-          durationMin: s.durationMin,
-        }))
-      : [];
-
-    const weakness = runWeaknessSkill({ sgSnitt, pyramidSessions });
+    // En sammenligning av svakeste område krever dekning i alle fire.
+    if (Object.values(sgSnitt).some(v => v === null || !Number.isFinite(v)) ||
+      runder.some(r => [r.sgOtt, r.sgApp, r.sgArg, r.sgPutt].some(v => v === null || !Number.isFinite(v)))) {
+      return { signalsWritten: signals.length, planActionsWritten: 0 };
+    }
+    const weakness = runWeaknessSkill({
+      sgSnitt: { OTT: sg.ott!, APP: sg.app!, ARG: sg.arg!, PUTT: sg.putt! }, pyramidSessions: [],
+    });
 
     if (weakness.sgValue < SG_TERSKEL) {
       const eksisterende = await prisma.planAction.findFirst({

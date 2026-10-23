@@ -1,9 +1,9 @@
 /**
  * Mindreårig-helper for GDPR art. 8 (P17).
  *
- * Norsk lov: 16 år er aldersgrensen for å samtykke selv til behandling
- * av persondata. Under 16 år krever foreldresamtykke. Grensen byttes
- * ikke automatisk til 13.
+ * Produktets gjeldende grense er 16 år. Under denne grensen kreves
+ * foresatt etter appens regler. Dette er ikke en påstand om en generell
+ * norsk lovgrense for alle behandlingsformål. Grensen endres ikke her.
  *
  * Brukes:
  *  - Ved onboarding: hvis dateOfBirth < 16 år → sett requiresGuardianConsent
@@ -12,7 +12,7 @@
  *  - Helse- og delingssamtykke: samme 16-årsregel, strengeste signal vinner
  */
 
-/** Norsk art. 8-grense. Ikke endre til 13 uten ny beslutning. */
+/** Produktets foresattgrense. Rettsgrunnlag må vurderes separat per formål. */
 export const GDPR_SAMTYKKE_ALDER = 16;
 
 export type SamtykkeGiver = {

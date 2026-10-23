@@ -8,7 +8,7 @@
 
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { computeDelta, type PlanContext } from "@/lib/agents/plan-action-executor";
+import { computeDelta, coachReviewSchema, type PlanContext } from "@/lib/agents/plan-action-executor";
 
 /** Handlingstyper som ikke tåler å ligge og vente. */
 export function erHasterHandling(actionType: string): boolean {
@@ -55,6 +55,10 @@ export async function buildDiffPreview(
   userId: string,
   planId: string | null,
 ): Promise<string | null> {
+  if (actionType === "COACH_REVIEW") {
+    const s = coachReviewSchema.safeParse(suggestion);
+    return s.success ? `Gjennomgå observasjonen. Godkjenning endrer ingen økter. ${s.data.forklaring}` : null;
+  }
   // B2: churn-melding er ikke en plan-endring — forhåndsvis meldingsutkastet.
   if (actionType === "CHURN_MESSAGE") {
     const m = z

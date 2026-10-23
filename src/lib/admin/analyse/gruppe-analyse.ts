@@ -14,7 +14,7 @@
  * og ingen rangering: gruppeanalysen viser snitt (utkast-agencyos/mer.html).
  */
 
-import { prisma } from "@/lib/prisma";
+import { summerTreningsvolum, type Treningsvolum } from "@/lib/workbench/treningsvolum";
 import { osloDagSomDbDato } from "@/lib/portal/ph01-data";
 import { adherencePct, oktCompliance } from "@/lib/workbench/compliance";
 import type { SessionStatus } from "@/generated/prisma/client";
@@ -27,6 +27,8 @@ export type Akse = (typeof AKSER)[number];
 export type OktInn = { userId: string; scheduledAt: Date; durationMin: number; status: SessionStatus; akse: string };
 
 export type EnGruppeAnalyse = {
+  /** Registrert tid og dekning, adskilt fra planens ferdigmeldingsprosent. */
+  treningsvolum?: Treningsvolum;
   uker: number;
   antallSpillere: number;
   etterlevelsePct: number | null;
@@ -82,19 +84,29 @@ export function byggEnGruppeAnalyse(spillerIds: readonly string[], okter: readon
   };
 }
 
-/** `spillerIds` må allerede være avgrenset av siden (aktive spillermedlemmer i en gruppe coachen har innsyn i). */
-export async function lastEnGruppeAnalyse(spillerIds: readonly string[], now = new Date()): Promise<EnGruppeAnalyse> {
-  const idag = osloDagSomDbDato(now);
-  const fra = new Date(idag.getTime() - ETTERLEVELSE_UKER * 7 * DAG_MS);
-  const okter = spillerIds.length === 0 ? [] : await prisma.workbenchSession.findMany({
-    where: { playerId: { in: [...spillerIds] }, date: { gte: fra, lte: idag }, status: { not: "DRAFT" }, isTemplate: false },
-    select: { playerId: true, date: true, startMinute: true, durationMinutes: true, status: true, pyramid: true },
+/** Tilgang og treningslesing kontrolleres samlet, også for ADMIN. */
+export async function lastEnGruppeAnalyse(gruppeId: string, now = new Date()): Promise<EnGruppeAnalyse> {
+  const { medAkGruppeanalyse } = await import("@/lib/deling/ak-gruppeanalyse");
+  const analyse = await medAkGruppeanalyse(gruppeId, async (tx, spillerIds) => {
+    const idag = osloDagSomDbDato(now);
+    const fra = new Date(idag.getTime() - ETTERLEVELSE_UKER * 7 * DAG_MS);
+    const okter = spillerIds.length === 0 ? [] : await tx.workbenchSession.findMany({
+      where: { playerId: { in: spillerIds }, date: { gte: fra, lte: idag }, status: { not: "DRAFT" },
+        isTemplate: false, hiddenByPlayer: false, needsPlayerApproval: false,
+        OR: [{ approvalStatus: null }, { approvalStatus: { notIn: ["PENDING", "REJECTED"] } }],
+      },
+      select: { id: true, playerId: true, date: true, startMinute: true, durationMinutes: true, actualMinutes: true,
+        status: true, pyramid: true, isTemplate: true, hiddenByPlayer: true, needsPlayerApproval: true,
+        approvalStatus: true, updatedAt: true, migrertFraTrainingPlanSessionId: true },
+    });
+    return { ...byggEnGruppeAnalyse(spillerIds, okter.map(oktFraWorkbench), now),
+      treningsvolum: summerTreningsvolum(okter, { fraDato: fra, tilDato: new Date(idag.getTime() + DAG_MS), naa: now }) };
   });
-  return byggEnGruppeAnalyse(spillerIds, okter.map(oktFraWorkbench), now);
+  return analyse ?? byggEnGruppeAnalyse([], [], now);
 }
 
 /**
- * Etterlevelse siste fire uker per gruppe, i én spørring (Grupper-lista, AG-16).
+ * Ren beregning av etterlevelse siste fire uker per gruppe (Grupper-lista, AG-16).
  * Samme regel som gruppeanalysen: gjennomført mot planlagt, bare forfalte økter; «null» når det mangler.
  */
 export function byggEtterlevelsePerGruppe(
@@ -106,16 +118,13 @@ export function byggEtterlevelsePerGruppe(
 }
 
 export async function lastEtterlevelsePerGruppe(
-  grupper: ReadonlyArray<{ id: string; spillerIds: readonly string[] }>,
+  grupper: ReadonlyArray<{ id: string }>,
   now = new Date(),
 ): Promise<Record<string, number | null>> {
-  const alle = [...new Set(grupper.flatMap((g) => g.spillerIds))];
-  if (alle.length === 0) return byggEtterlevelsePerGruppe(grupper, [], now);
-  const idag = osloDagSomDbDato(now);
-  const fra = new Date(idag.getTime() - ETTERLEVELSE_UKER * 7 * DAG_MS);
-  const okter = await prisma.workbenchSession.findMany({
-    where: { playerId: { in: alle }, date: { gte: fra, lte: idag }, status: { not: "DRAFT" }, isTemplate: false },
-    select: { playerId: true, date: true, startMinute: true, durationMinutes: true, status: true, pyramid: true },
-  });
-  return byggEtterlevelsePerGruppe(grupper, okter.map(oktFraWorkbench), now);
+  const resultat: Record<string, number | null> = {};
+  // Én gruppelås om gangen. Samtykke i A gjenbrukes aldri i B.
+  for (const id of new Set(grupper.map(g => g.id))) {
+    resultat[id] = (await lastEnGruppeAnalyse(id, now)).etterlevelsePct;
+  }
+  return resultat;
 }

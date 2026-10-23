@@ -101,7 +101,7 @@ export type DelingSamtykkeRad = {
 };
 
 export type SamtykkeKrav = {
-  scope: DelingScope | WangDelingsomfang;
+  scope: DelingScope | WangDelingsomfang | "AK_GOLF_GRUPPEANALYSE";
   mottakerGruppeId: string;
   /** Under 16 (User.requiresGuardianConsent): bare FORESATT kan gi. */
   kreverForesatt: boolean;

@@ -24,11 +24,11 @@ import {
 test("tomt input → tomt resultat", () => {
   const res = aggregerPlanEffektivitet([]);
   assert.equal(res.antallBrukere, 0);
-  assert.equal(res.gjennomsnittligHcpEndring, 0);
+  assert.equal(res.gjennomsnittligHcpEndring, null);
   assert.equal(res.signifikant, false);
 });
 
-test("alle hcpDelta null → 0 snitt, ikke signifikant", () => {
+test("alle hcpDelta null → ukjent snitt, ikke signifikant", () => {
   const rader: PlanEffektivitetRaa[] = [
     { hcpDelta: null, userId: "u1" },
     { hcpDelta: null, userId: "u2" },
@@ -36,11 +36,11 @@ test("alle hcpDelta null → 0 snitt, ikke signifikant", () => {
   ];
   const res = aggregerPlanEffektivitet(rader);
   assert.equal(res.antallBrukere, 3);
-  assert.equal(res.gjennomsnittligHcpEndring, 0);
+  assert.equal(res.gjennomsnittligHcpEndring, null);
   assert.equal(res.signifikant, false);
 });
 
-test("5 brukere med snitt -0,8 → signifikant", () => {
+test("5 brukere med snitt -0,8 er beskrivende, ikke signifikans", () => {
   const rader: PlanEffektivitetRaa[] = [
     { hcpDelta: -1.0, userId: "u1" },
     { hcpDelta: -0.5, userId: "u2" },
@@ -51,7 +51,7 @@ test("5 brukere med snitt -0,8 → signifikant", () => {
   const res = aggregerPlanEffektivitet(rader);
   assert.equal(res.antallBrukere, 5);
   assert.equal(res.gjennomsnittligHcpEndring, -0.8);
-  assert.equal(res.signifikant, true);
+  assert.equal(res.signifikant, false);
 });
 
 test("kun 3 brukere → ikke signifikant selv med stor effekt", () => {
@@ -76,7 +76,7 @@ test("5+ brukere men liten effekt (< 0,3) → ikke signifikant", () => {
   ];
   const res = aggregerPlanEffektivitet(rader);
   assert.equal(res.antallBrukere, 5);
-  assert.ok(Math.abs(res.gjennomsnittligHcpEndring) < 0.3);
+  assert.ok(Math.abs(res.gjennomsnittligHcpEndring!) < 0.3);
   assert.equal(res.signifikant, false);
 });
 
@@ -97,6 +97,17 @@ test("samme bruker flere ganger → telles kun én gang i antallBrukere", () => 
 test("beregnPlanEffektivitet: tom planId → tomt resultat uten DB-kall", async () => {
   const res = await beregnPlanEffektivitet("");
   assert.equal(res.antallBrukere, 0);
-  assert.equal(res.gjennomsnittligHcpEndring, 0);
+  assert.equal(res.gjennomsnittligHcpEndring, null);
   assert.equal(res.signifikant, false);
+});
+
+test("hver spiller vekter likt og ukjente målinger telles separat", () => {
+  const r = aggregerPlanEffektivitet([{ userId: "a", hcpDelta: -2 }, { userId: "a", hcpDelta: -2 },
+    { userId: "b", hcpDelta: 0 }, { userId: "c", hcpDelta: null }]);
+  assert.equal(r.antallBrukere, 3);
+  assert.equal(r.antallMedMaaling, 2);
+  assert.equal(r.gjennomsnittligHcpEndring, -1);
+});
+test("template alene gir ingen lesing på tvers av spillere", async () => {
+  assert.equal((await beregnPlanEffektivitet("template-a")).antallBrukere, 0);
 });

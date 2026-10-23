@@ -28,10 +28,10 @@ export function AGA03Gruppeanalyse({ groupId, navn, analyse }: { groupId: string
   const forLite = analyse.antallSpillere === 0 || analyse.etterlevelsePct == null;
   return <div className="agn-s agn-a5-under">
     <Topp tilbake={{ href: `/admin/grupper/${groupId}`, tekst: navn }} bilde={GRUPPE_BILDE}
-      dato={`${navn} · ${analyse.antallSpillere} spillere · siste ${analyse.uker} uker`} tittel="Gruppeanalyse" />
+      dato={`${navn} · ${analyse.antallSpillere} spillere som deler · siste ${analyse.uker} uker`} tittel="Gruppeanalyse" />
     <GruppeFanerNy groupId={groupId} aktiv="stats" />
     {forLite
-      ? <Tom tittel="For lite data" tekst="Gruppeanalysen kommer når spillerne i gruppa har forfalte økter i Workbench de siste fire ukene." />
+      ? <Tom tittel="For lite data" tekst="Analysen krever aktiv deling med AK Golf og forfalte økter i Workbench de siste fire ukene. Spillere uten deling er ikke med i tallene." />
       : <>
       <div className="teller-rad ga-tellere">
         <div className="teller"><span className="e">Gjennomført mot planlagt</span><b className="t">{pst(analyse.etterlevelsePct)}</b><span className="s">snitt for gruppa, {analyse.uker} uker</span></div>
@@ -68,7 +68,7 @@ export function AGA03Gruppeanalyse({ groupId, navn, analyse }: { groupId: string
             </div>
             <p className="forklar">{medData} av {analyse.antallSpillere} har økter i planen som er forfalt. Ingen navn i denne visningen.</p>
           </section>
-          <p className="kilde">Gruppeanalysen viser snitt. Den rangerer ikke spillerne.</p>
+          <p className="kilde">Tallene gjelder bare aktive medlemmer som deler treningsgrunnlaget med AK Golf i denne gruppen. De er ikke en rangering eller en anonymisert læringssamling.</p>
         </div>
       </div></>}
   </div>;

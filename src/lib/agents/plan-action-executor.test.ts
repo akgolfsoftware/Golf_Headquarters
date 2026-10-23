@@ -65,3 +65,13 @@ test("computeDelta DRILL_SWAP endrer drill på session", () => {
   assert.equal(delta.sessionsToModify[0].sessionId, "s1");
   assert.equal(delta.sessionsToModify[0].replaceDrillExerciseId, "ex-new");
 });
+
+
+test("faglig vurdering endrer aldri treningsplanen", () => {
+  const d = computeDelta("COACH_REVIEW", { forklaring: "Testresultatet må vurderes", skillArea: "PUTTING", omrade: "TEK" }, baseCtx);
+  assert.deepEqual(d.sessionsToAdd, []);
+  assert.deepEqual(d.sessionsToRemove, []);
+  assert.deepEqual(d.sessionsToModify, []);
+  assert.match(d.summary, /Testresultatet må vurderes/);
+  assert.throws(() => computeDelta("COACH_REVIEW", {}, baseCtx));
+});

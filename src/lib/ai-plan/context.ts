@@ -1,3 +1,5 @@
+import { summerTreningsvolum, type Treningsvolum } from "@/lib/workbench/treningsvolum";
+import { osloDagSomDbDato } from "@/lib/portal/ph01-data";
 // Kontekst-bygger for AI-plan-generering. Henter spillerens profil, siste
 // planer, øktlogger, signaler, mål, WAGR-snapshot, NGF-kategori, aktiv L-fase,
 // relevante drills (filtrert på spillerens nivå) og forrige PlanEffectiveness.
@@ -84,7 +86,7 @@ export type PlanTemplateData = {
 export type ForrigeEffektivitet = {
   planId: string;
   templateId: string | null;
-  completionRate: number;
+  completionRate: number | null;
   sgTotalDelta: number | null;
   sgOttDelta: number | null;
   sgAppDelta: number | null;
@@ -155,6 +157,8 @@ export type SpillerKontekst = {
   forrigeEffektivitet: ForrigeEffektivitet | null;
   /** Loggført treningsvolum per uke (siste 8 uker), per SG-område. */
   treningsVolum: UkeVolum[];
+  /** Faktisk registrert Workbench-tid, ikke gamle SG-logger eller planlagt tid. */
+  treningsgrunnlag?: Treningsvolum;
   /** Korrelasjon mellom treningsvolum og SG neste uke, per SG-område. */
   korrelasjon: KorrelasjonsResultat[];
   /**
@@ -318,7 +322,7 @@ async function hentForrigeEffektivitet(
   userId: string,
 ): Promise<ForrigeEffektivitet | null> {
   const eff = await prisma.planEffectiveness.findFirst({
-    where: { userId },
+    where: { userId, postSnapshot: { path: ["analyseVersjon"], equals: "2026-10-23.1" } },
     orderBy: { createdAt: "desc" },
     select: {
       planId: true,
@@ -341,7 +345,7 @@ async function hentForrigeEffektivitet(
   return {
     planId: eff.planId,
     templateId: eff.templateId,
-    completionRate: eff.completionRate ?? eff.complianceRate ?? 0,
+    completionRate: eff.completionRate ?? eff.complianceRate ?? null,
     sgTotalDelta: eff.sgTotalDelta,
     sgOttDelta: eff.sgOttDelta,
     sgAppDelta: eff.sgAppDelta,
@@ -360,12 +364,11 @@ export async function hentTemplate(
   kategori: NgfKategori,
   lPhase: LPhase,
 ): Promise<PlanTemplateData | null> {
-  // Foretrekk approved templates, fall ev. tilbake til uapprovde.
+  // Bare faglig godkjente maler. Historisk felles effekt er ikke validert læring.
   const template = await prisma.planTemplate.findFirst({
-    where: { kategori, lPhase },
+    where: { kategori, lPhase, approved: true },
     orderBy: [
       { approved: "desc" },
-      { effectivenessAvg: "desc" },
       { usageCount: "desc" },
     ],
     select: {
@@ -515,6 +518,16 @@ export async function byggSpillerKontekst(
   // Ledige luker de neste 14 dagene. Planen skal legges i timer spilleren
   // faktisk har — ikke oppå skole, gruppetrening, fravær eller egne avtaler.
   const naa = new Date();
+  const idag = osloDagSomDbDato(naa);
+  const fraDato = new Date(idag.getTime() - 28 * 86400000);
+  const tilDato = new Date(idag.getTime() + 86400000);
+  const wbOkter = await prisma.workbenchSession.findMany({
+    where: { playerId: userId, date: { gte: fraDato, lt: tilDato } },
+    select: { id: true, date: true, startMinute: true, pyramid: true, durationMinutes: true,
+      actualMinutes: true, status: true, isTemplate: true, hiddenByPlayer: true, needsPlayerApproval: true,
+      approvalStatus: true, updatedAt: true, migrertFraTrainingPlanSessionId: true },
+  });
+  const treningsgrunnlag = summerTreningsvolum(wbOkter, { fraDato, tilDato, naa });
   const omToUker = new Date(naa.getTime() + 14 * 24 * 60 * 60 * 1000);
   const luker = await finnLedigeLuker(userId, naa, omToUker);
   const ledigeLuker: LedigLukeKontekst[] = luker.map((l) => ({
@@ -588,6 +601,7 @@ export async function byggSpillerKontekst(
     tilgjengeligeDrills: drills,
     forrigeEffektivitet,
     treningsVolum,
+    treningsgrunnlag,
     korrelasjon,
     ledigeLuker,
     treningPreferanser: (() => {

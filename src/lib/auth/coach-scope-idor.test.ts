@@ -89,23 +89,20 @@ test("booking: ADMIN har tomt filter (ser alt)", () => {
   assert.deepEqual(coachBookingScope(staff("admin-1", "ADMIN")), {});
 });
 
-test("coachScopedPlayerWhere: COACH har deletedAt null + coachId-filter", () => {
+test("coachScopedPlayerWhere: mottakerrollen er knyttet til spillerens samme gruppe", () => {
   const w = coachScopedPlayerWhere({ id: "c1", role: "COACH" });
   assert.equal(w.deletedAt, null);
   assert.equal(w.role, "PLAYER");
-  const enr = (w.OR ?? []).find((g) => "enrollmentsAsPlayer" in g) as {
-    enrollmentsAsPlayer: { some: { coachId: string } };
-  };
-  assert.equal(enr.enrollmentsAsPlayer.some.coachId, "c1");
+  const gruppe = w.groupMemberships?.some?.group;
+  assert.ok(gruppe);
+  assert.deepEqual(gruppe.OR, [
+    { coachId: "c1" },
+    { members: { some: { userId: "c1", role: { in: ["COACH", "ASSISTANT"] }, endedAt: null } } },
+  ]);
 });
 
-test("coachScopedPlayerWhere: ADMIN har ikke coachId-filter (ser alle coachede)", () => {
+test("coachScopedPlayerWhere: ADMIN er fortsatt låst til aktiv AK-gruppe", () => {
   const w = coachScopedPlayerWhere({ id: "admin-1", role: "ADMIN" });
-  assert.equal(w.role, "PLAYER");
-  assert.equal(w.deletedAt, null);
-  const enr = (w.OR ?? []).find((g) => "enrollmentsAsPlayer" in g) as {
-    enrollmentsAsPlayer: { some: { coachId?: string } };
-  };
-  // ADMIN scope = coachedPlayerWhere — ingen coachId-lås
-  assert.equal(enr.enrollmentsAsPlayer.some.coachId, undefined);
+  assert.equal(w.groupMemberships?.some?.group?.managedByAkGolf, true);
+  assert.equal(w.groupMemberships?.some?.group?.arkivertAt, null);
 });

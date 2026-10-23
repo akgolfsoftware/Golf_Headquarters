@@ -29,7 +29,10 @@ export default async function PlanTemplateDetailPage({
 
   const template = await prisma.planTemplate.findUnique({
     where: { id },
-    include: {
+    select: {
+      id: true, name: true, description: true, kategori: true, lPhase: true,
+      varighetUker: true, ukentligOktAntall: true, disciplinFordeling: true,
+      minAlder: true, maxAlder: true, approved: true, usageCount: true,
       sessions: {
         orderBy: [{ ukeNr: "asc" }, { dagNr: "asc" }],
       },
@@ -88,7 +91,6 @@ export default async function PlanTemplateDetailPage({
     maxAlder: template.maxAlder,
     approved: template.approved,
     usageCount: template.usageCount,
-    effectivenessAvg: template.effectivenessAvg,
     sessions,
   };
 

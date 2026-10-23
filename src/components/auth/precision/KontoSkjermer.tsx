@@ -225,6 +225,7 @@ export function Registrering({
 
   async function medGoogle() {
     setFeil(null);
+    if (!vilkar) return setFeil("Du må godta vilkårene for å opprette konto.");
     setLaster(true);
     const { error } = await google(oppstart);
     if (error) {

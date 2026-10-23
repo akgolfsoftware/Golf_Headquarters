@@ -157,6 +157,7 @@ export async function exportUserData(): Promise<{
       swingVideos,
       // T8: delingssamtykker (Team Norway/WANG) — hele historikken, append-only.
       delingsSamtykker,
+      kontoAvtaleAksepter,
       iupBesvarelser,
       weekPlans,
       trenerDelingsInvitasjoner,
@@ -194,6 +195,7 @@ export async function exportUserData(): Promise<{
       prisma.trainingLog.findMany({ where: { userId: user.id } }),
       prisma.playerSwingVideo.findMany({ where: { userId: user.id } }),
       prisma.delingsSamtykke.findMany({ where: { userId: user.id } }),
+      prisma.kontoAvtaleAksept.findMany({ where: { userId: user.id }, orderBy: { createdAt: "asc" } }),
       prisma.iupBesvarelse.findMany({ where: { userId: user.id }, include: { revisjoner: { orderBy: { revisjon: "asc" } } } }),
       // WeekPlan har ingen User-relasjon: alle år/uker avgrenses eksplisitt til eieren.
       prisma.weekPlan.findMany({ where: { playerId: user.id } }),
@@ -297,6 +299,7 @@ export async function exportUserData(): Promise<{
       trainingLogs,
       swingVideos,
       delingsSamtykker,
+      kontoAvtaleAksepter,
       iupBesvarelser,
       weekPlans,
       trenerDelingsInvitasjoner,

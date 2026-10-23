@@ -64,7 +64,7 @@ export function AG16Gruppe({ data, actions: A, ekstra }: { data: GruppeDetaljV2D
       <div className="teller"><span className="e">Medlemmer</span><b className="t">{data.antallMedlemmer}</b><span className="s">{data.antallHjelpetrenere} assist coach</span></div>
       <div className="teller"><span className="e">Snitt-HCP</span><b className="t">{data.snittHcp}</b></div>
       <div className="teller"><span className="e">Runder · 90 d</span><b className="t">{data.totalRunder}</b></div>
-      <div className="teller"><span className="e">Mot plan</span><b className="t">{data.etterlevelsePct == null ? "—" : `${data.etterlevelsePct} %`}</b><span className="s">siste fire uker</span></div>
+      <div className="teller"><span className="e">Mot plan</span><b className="t">{data.etterlevelsePct == null ? "—" : `${data.etterlevelsePct} %`}</b><span className="s">delte økter, siste fire uker</span></div>
     </div>
 
     <div className="to-del bred-v">

@@ -23,10 +23,10 @@ export default async function GruppeanalysePage({ params }: { params: Promise<{ 
         ? { OR: [{ coachId: user.id }, { members: { some: { userId: user.id, role: { in: ["COACH", "ASSISTANT"] }, endedAt: null } } }] }
         : {}),
     },
-    select: { id: true, name: true, members: { where: { endedAt: null, role: "PLAYER" }, select: { userId: true } } },
+    select: { id: true, name: true },
   });
   if (!gruppe) notFound();
-  const analyse = await lastEnGruppeAnalyse(gruppe.members.map((m) => m.userId));
+  const analyse = await lastEnGruppeAnalyse(gruppe.id);
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
       <AGA03Gruppeanalyse groupId={gruppe.id} navn={gruppe.name} analyse={analyse} />

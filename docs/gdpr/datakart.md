@@ -183,3 +183,50 @@ Trenerens delingsoversikt viser bare navn og miljø for aksepterte, fortsatt gyl
 Booking lagrer betalingsmåte og foreslått start/slutt med coach-ID. Feltene følger eksisterende bookingeksport. Avvisning oppretter et knyttet InnboksEpost-utkast med kontaktopplysninger og begrunnelse; ingenting sendes av avvisningshandlingen. Avvisning og utkast lagres i samme transaksjon. Tilgangen til selve bookingen avgrenses til riktig coach/admin.
 
 Knyttede innboksutkast følger nå spillerens bookingeksport. Anonymisering vasker kontakt, emne, fritekst og utkast før den eksterne ryddekjeden kobler booking fra brukeren; booking- og betalingshistorikken beholdes. Gjestenes eksisterende retention-/slettespørsmål gjelder fortsatt som beskrevet over. Dette arbeidet legger ikke til noen automatisk utsending ved avvisning.
+
+### Individuell coachanalyse — tillegg 23.10.2026
+
+Planevalueringens nye metodeversjon lagrer datadekning og kildeversjon i eksisterende `PlanEffectiveness.preSnapshot/postSnapshot`, samt gjennomført øktantall og kjent faktisk tid i eksisterende felt. Nåværende HCP kopieres ikke som historisk startverdi. Manglende data er null. Ingen ny tabell eller nye identitetsfelt er innført. Eksisterende kobling til bruker og eksisterende eksport-/slettemekanismer må også omfatte disse feltene før samlet rettighetsdekning hevdes.
+
+Den individuelle beregningen oppdaterer ikke lenger felles template-effekt på tvers av spillere. Dette er en avgrensning av de berørte funksjonene, ikke bevis på at alle eldre læringsfunksjoner i appen er stengt. Se [gjennomføringsplanen](../planer/coachintelligens-gjennomforing-2026-10-23.md). Ingen nye samtykker eller nye formål er aktivert i denne leveransen.
+
+
+### AK Golf-gruppeanalyse — C1, 23.10.2026
+
+Eksisterende `DelingsSamtykke` får formålet `AK_GOLF_GRUPPEANALYSE`, tekstversjon `2026-10-23.1`. Det lagres spiller-ID, mottakergruppe, ja/nei, aktør-ID/-rolle, tidspunkt og tekstversjon. Ingen ny tabell. Teksten vises fra `src/lib/deling/ak-analyse-regler.ts`. Gamle profil-, WANG-, TN- og navngitte delinger blir ikke tolket som dette valget. Ingen tillatelser gis automatisk.
+
+Spilleren velger under Meg → Innstillinger → Personvern → Deling. Godkjent foresatt har samme valg i barnets delingsside når produktets foresattregel krever det. Barn kan alltid trekke eget valg. Nytt ja krever aktivt spillermedlemskap i en aktiv AK-administrert gruppe; eksisterende valg kan trekkes etter utmelding. Rollen ADMIN gir ikke rett til å samtykke for andre.
+
+Bare gruppeanalysen og dens etterlevelsesfelt i gruppeliste/-detalj bruker dette nye formålet. Leseren krever ansvarlig/aktiv gruppetrener eller ADMIN, aktiv AK-gruppe, aktivt spillermedlemskap, ikke-slettet spiller og gyldig ja i akkurat denne gruppen. ADMIN omgår ikke samtykket. Øktlesingen tar bare dato, område, status, planlagt/faktisk varighet og nødvendige kvalitetsfelt; utkast, maler, skjulte økter og uavklarte/avslåtte forslag er utelatt. Ingen notater, helse, meldinger, lyd eller navn inngår i analyseresultatet. Resultatet er ikke dermed anonymt; små grupper kan være gjenkjennelige, og det brukes bare i beskyttet gruppevisning, aldri som felles læringsgrunnlag.
+
+Lesing og dette formålets samtykkeendringer bruker samme transaksjonslås per gruppe. Nye oppslag etter fullført trekk ekskluderer spilleren. Allerede viste resultater forsvinner ikke fra andre nettlesere automatisk. Medlemskaps-, rolle- og sletteflytene bruker ikke denne låsen; denne leveransen hevder ikke samtidig serialisering av alle tilgangsendringer.
+
+Historikken følger eksisterende dataeksport (`exportUserData`, alle brukerens delingsrader). Revisjonsloggen får handling, interne ID-er og tekstversjon; ingen fritekst eller treningsverdier. Samtykkehistorikkens eksisterende oppbevarings-/sletteavklaring er fortsatt åpen; ingen endelig oppbevaringstid innføres her. Slettede brukere faller ut av analysen via `deletedAt`. Ingen produksjonsdata er slettet eller skrevet som del av utviklingstesten.
+
+Dette er ikke ferdigstillelse av all AK-deling: øvrige spillerprofiler, planredigering, eksport, agentkø/minne og felles læring må avgrenses i videre C1/C2-arbeid. Kontoaksept og skolens rettsgrunnlag er egne formål. Denne teksten dokumenterer funksjonen, ikke juridisk sluttgodkjenning.
+
+
+### Gjenbruk av historisk maleffekt — C2, 23.10.2026
+
+Malbygger, Workbench, planhub og maldetalj leser ikke lenger `PlanTemplate.effectivenessAvg` til anbefalinger eller klientdata. Planhub leser heller ikke antall knyttede `PlanEffectiveness`-rader. Historiske databaseverdier og individuelle evalueringer bevares; ingen migrasjon eller sletting kjøres. Brukstall i maloversikten er fortsatt popularitet, ikke en påstand om treningseffekt. Dette stenger disse leserne, men er ikke dokumentasjon på at alle eldre funksjoner i appen er ferdig kontrollert. Ingen ny deling eller felles læring er aktivert.
+
+
+### AK-gruppeanalyse ved samtidige tilgangsendringer — 23.10.2026
+
+Gruppeanalysen og nytt analyse-ja låser nå de eksisterende gruppe-, medlemskaps- og kontoradene mens grunnlaget kontrolleres. Forelderens handling låser aktuelle forelderrelasjoner. Vanlige endringer som utmelding, arkivering, kontosletting eller tilbakekalling av foreldermyndighet kan dermed ikke fullføres mellom denne kontrollen og behandlingen i transaksjonen. Bare faktisk låste medlemskap/relasjoner brukes. Tidspunkt og aktørens aktuelle rolle kontrolleres etter lås. Ingen nye datafelt eller samtykkeoppgraderinger. Andre AgencyOS-lesere, kapabilitetsadministrasjon og automatisk fjerning av allerede viste resultater omfattes ikke av denne endringen.
+
+
+### C2: kontoavtaleaksept — teknisk grunnlag 23.10.2026
+
+`konto_avtale_aksepter` lagrer intern bruker-ID, pakkeversjon, SHA-256-kontrollsum, full frosset dokumentpakke/bekreftelsesordlyd og databasetid. Ingen IP, brukeragent eller kopi av kontaktdata. Dette dokumenterer egen vilkårsaksept og lest personvern, ikke et samtykke til deling eller felles læring. Egen eksport via `exportUserData` inkluderer rader filtrert på innlogget eier. Direkte klienttilgang er stengt med RLS uten klientpolicy og tilbakekalte privilegier.
+
+Nye versjoner gir nye rader; UPDATE avvises i databasen. DELETE er tillatt for kontrollert kontosletting; FK til User har Cascade, prøvd mot egne lokale testkontoer. **AVKLAR:** nødvendig oppbevaring, eventuell bevisbevaring og håndtering ved dagens myke sletting/anonymisering. Det finnes ingen ny automatisk opprydding, og ingen ekte historikk er slettet. Kontoregistrering og læringsvalg må ikke beskrives som ett samtykke i det eksisterende samtykkeregisteret.
+
+Ingen godkjent dokumentpakke er aktiv. Handlingen er ikke koblet til brukergrensesnitt eller fullføringsvakt. Foresatt-/skoleflyt og juridisk dokumentkontroll gjenstår. Migrasjon er kun utført i isolert lokal testdatabase; hosted schema og produksjon er uendret. Før en fremtidig apputrulling må tabellen etableres, siden egeneksport leser den.
+
+
+### C1 medlems- og mottakerfilter (23.10.2026)
+
+Felles AgencyOS-kandidatfiltre krever aktivt PLAYER-medlemskap i aktiv AK-administrert gruppe; COACH må være ansvarlig eller aktiv trener/assistent i samme gruppe, assistent kan bare lese. ADMIN omgår ikke gruppekravet. Enrollment alene og WANG/TN-gruppemedlemskap gir ikke denne generelle profiltilgangen. Eksisterende navngitt organisasjonsdeling består separat. Uttrykkelig AK-profildeling for alle profilhandlinger gjenstår; et ja til gruppeanalyse er ikke et ja til full profil. Ingen ny persondatalagring eller automatisk samtykkeoppgradering.
+
+Spillerens eget coachingtilbud og manuell booking beholder egne formålsgrenser. Bookinglisten og opprettelsen bruker samme regel, med avvisning av slettede kontoer og andre treneres enrollment-kunder. Disse reglene er ikke tillatelse til treningsprofil, helse eller felles læring. Faktiske relasjonsfiltre er prøvd mot lokal Postgres med syntetiske data; dette dokumenterer teknisk avgrensning, ikke juridisk sluttestatus.

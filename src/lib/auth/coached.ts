@@ -1,152 +1,80 @@
 import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
-import {
-  aktivtSpillerMedlemskapWhere,
-  aktivtTrenerMedlemskapWhere,
-  ikkeOrgGruppeWhere,
-} from "@/lib/domain/grupper";
+import { aktivtSpillerMedlemskapWhere, aktivtTrenerMedlemskapWhere, ikkeOrgGruppeWhere } from "@/lib/domain/grupper";
+import { coachingRelasjonWhere } from "./coaching-relasjon";
 
 /**
- * Tilgangsskillet selvbetjent vs. coachet (I0 — LÅST forretningsregel,
- * NORDSTJERNE.md): en spiller med kun PlayerHQ-abonnement og uten
- * Academy-tilhørighet er SELVBETJENT — ingen coachrelasjon, usynlig i hele
- * AgencyOS (stall, cockpit, køer, motor-batch).
- *
- * Definisjonen er forankret i datamodellen: PlayerProgram.PLATFORM_ONLY er
- * eksplisitt dokumentert i schema.prisma som «Selvbetjent — ingen
- * coachrelasjon (GDPR-skille)». Coachet = aktiv PlayerEnrollment
- * (endedAt null) i et annet program enn PLATFORM_ONLY, ELLER medlemskap i en
- * AK-gruppe (GroupMember).
- *
- * Dette er den ENESTE lovlige porten for spiller-synlighet i AgencyOS-loadere
- * (prosjektregel) — nye loadere skal bruke `coachedPlayerWhere()`, aldri
- * bygge sitt eget filter.
- *
- * Bevisst UNNTAK (dokumentert i NORDSTJERNE/plan): manuell booking-wizard
- * (lead-/prøvetime-flyt) — å booke en time for en ny kunde er business-flyt,
- * ikke innsyn i treningsdata.
+ * C1: AgencyOS krever aktivt PLAYER-medlemskap i en aktiv AK-administrert
+ * coachinggruppe. Enrollment alene gir ikke profilinnsyn. WANG/TN-innsyn
+ * har egne delingsporter, også for ADMIN; disse gruppene er aldri en snarvei.
+ * Dette er medlems-/mottakerporten. Uttrykkelig AK-profildeling er fortsatt
+ * et eget gjenstående C1-krav og må ikke utledes av gruppeanalyse-ja.
  */
+function aktivAgencyGruppeWhere(): Prisma.GroupWhereInput {
+  return { managedByAkGolf: true, arkivertAt: null, ...ikkeOrgGruppeWhere() };
+}
 
-/** Prisma-where-fragment: kun coachede spillere. Kombineres med AND. */
+/** Kandidatutvalg for AgencyOS. Gir ikke i seg selv delingssamtykke. */
 export function coachedPlayerWhere(): Prisma.UserWhereInput {
   return {
-    role: "PLAYER",
-    // Myk-slettede spillere skal ALDRI vises i AgencyOS (oppdaget 2026-07-13:
-    // demo-opprydding etterlot slettede i «Trenger deg nå») — filteret bor
-    // her i porten så alle flater arver det.
-    deletedAt: null,
-    OR: [
-      {
-        enrollmentsAsPlayer: {
-          some: { endedAt: null, program: { not: "PLATFORM_ONLY" } },
-        },
-      },
-      // Kun AKTIVE spiller-medlemskap (endedAt null) — utmeldte spillere skal
-      // ut av AgencyOS samme øyeblikk som de meldes ut (soft-end, plan G1).
-      { groupMemberships: { some: aktivtSpillerMedlemskapWhere() } },
-    ],
+    role: "PLAYER", deletedAt: null,
+    groupMemberships: { some: { ...aktivtSpillerMedlemskapWhere(), group: aktivAgencyGruppeWhere() } },
   };
 }
 
-/** Er spilleren coachet (synlig for AgencyOS)? */
+/**
+ * Klassifiserer eksisterende coachingtilbud for spillerens egen tjeneste.
+ * IKKE en trenerautorisasjon. Bevarer betalt/avtalt tilbud uten gruppemedlemskap.
+ * Profilhandlinger må i tillegg bruke harCoachTilgangTilSpiller eller leseporten.
+ */
 export async function erCoachetSpiller(userId: string): Promise<boolean> {
   const treff = await prisma.user.findFirst({
-    where: { id: userId, ...coachedPlayerWhere() },
+    where: { id: userId, ...coachingRelasjonWhere() },
     select: { id: true },
   });
   return treff != null;
 }
 
-/**
- * Coach-scoping (Anders 2026-07-13) — LESE-scope for lister og innsyn. Tre
- * lovlige veier inn (OR-grenene under):
- *   1. Aktiv PlayerEnrollment med coachId = coachen.
- *   2. Aktivt spiller-medlemskap i en gruppe coachen eier (Group.coachId).
- *   3. (G5) Aktivt spiller-medlemskap i en AK-gruppe der coachen selv er
- *      aktivt COACH- eller ASSISTANT-medlem. Gjelder IKKE organisasjonsgrupper
- *      (WANG/Team Norway): der gir medlemskap ingen innsyn (D-04). En
- *      organisasjonstrener ser en spiller bare via uttrykkelig deling, se
- *      `harCoachLesetilgangTilSpiller`.
- * ADMIN ser alle coachede spillere.
- *
- * Skriving i en enkelt spillers data og plan går ALDRI via gren 3 (D-25):
- * bruk `harCoachTilgangTilSpiller` / `assertCoachTilgangTilSpiller`, som bare
- * slipper gjennom gren 1 og 2 (`coachSkrivbarPlayerWhere`).
- */
-export function coachScopedPlayerWhere(viewer: {
-  id: string;
-  role: string;
-}): Prisma.UserWhereInput {
+function gruppeScope(viewer: { id: string; role: string }, les: boolean): Prisma.UserWhereInput {
+  if (!viewer.id) return { id: { in: [] } };
   if (viewer.role === "ADMIN") return coachedPlayerWhere();
   if (viewer.role !== "COACH") return { id: { in: [] } };
-  const skrivbar = coachSkrivbarPlayerWhere(viewer);
+  const gruppe = aktivAgencyGruppeWhere();
   return {
-    ...skrivbar,
-    OR: [
-      ...(skrivbar.OR as Prisma.UserWhereInput[]),
-      {
-        groupMemberships: {
-          some: {
-            ...aktivtSpillerMedlemskapWhere(),
-            group: { ...ikkeOrgGruppeWhere(), members: { some: aktivtTrenerMedlemskapWhere(viewer.id) } },
-          },
-        },
+    role: "PLAYER", deletedAt: null,
+    groupMemberships: { some: {
+      ...aktivtSpillerMedlemskapWhere(),
+      // Begge roller må gjelde DEN SAMME gruppen. En annen aktiv gruppe eller
+      // enrollment hos coachen kan ikke redde et avsluttet/feil medlemskap her.
+      group: {
+        ...gruppe,
+        OR: [
+          { coachId: viewer.id },
+          { members: { some: les
+            ? aktivtTrenerMedlemskapWhere(viewer.id)
+            : { userId: viewer.id, role: "COACH", endedAt: null } } },
+        ],
       },
-    ],
+    } },
   };
 }
 
-/**
- * SKRIVE-scope: egen AK-coach. Aktiv enrollment hos coachen, spiller-medlemskap
- * i en gruppe coachen eier, eller spiller-medlemskap i en AK-gruppe der coachen
- * er aktivt COACH-medlem (Anders 14.10.2026, overstyrer D-25). Assistent-
- * medlemskap gir bare lesing. Organisasjonstrenere (WANG/TN) skriver aldri i
- * spillerens plan; de sender forslag (D-05, D-49).
- */
-export function coachSkrivbarPlayerWhere(viewer: {
-  id: string;
-  role: string;
-}): Prisma.UserWhereInput {
-  if (viewer.role === "ADMIN") return coachedPlayerWhere();
-  if (viewer.role !== "COACH") return { id: { in: [] } };
-  return {
-    role: "PLAYER",
-    // Samme soft-delete-port som coachedPlayerWhere — myk-slettede skal aldri
-    // dukke opp i stall, tilgangssjekker eller AI for COACH.
-    deletedAt: null,
-    OR: [
-      {
-        enrollmentsAsPlayer: {
-          some: { endedAt: null, program: { not: "PLATFORM_ONLY" }, coachId: viewer.id },
-        },
-      },
-      {
-        groupMemberships: {
-          some: { ...aktivtSpillerMedlemskapWhere(), group: { coachId: viewer.id, ...ikkeOrgGruppeWhere() } },
-        },
-      },
-      // Anders 14.10.2026: COACH-medlem i en AK-gruppe (GFGK m.fl.) skriver i
-      // medlemmenes plan. Gjelder aldri WANG/Team Norway (ikkeOrgGruppeWhere).
-      {
-        groupMemberships: {
-          some: {
-            ...aktivtSpillerMedlemskapWhere(),
-            group: {
-              ...ikkeOrgGruppeWhere(),
-              members: { some: { userId: viewer.id, role: "COACH", endedAt: null } },
-            },
-          },
-        },
-      },
-    ],
-  };
+/** Lesing: ansvarlig trener, aktiv COACH eller aktiv ASSISTANT i samme AK-gruppe. */
+export function coachScopedPlayerWhere(viewer: { id: string; role: string }): Prisma.UserWhereInput {
+  return gruppeScope(viewer, true);
+}
+
+/** Skriving: ansvarlig trener eller aktiv COACH. ASSISTANT er fortsatt bare leser. */
+export function coachSkrivbarPlayerWhere(viewer: { id: string; role: string }): Prisma.UserWhereInput {
+  return gruppeScope(viewer, false);
 }
 
 /**
  * SKRIVETILGANG: kan coachen/adminen endre denne spillerens data og plan?
  * Server-actions som tar en spiller-id MÅ kalle denne før skriving — rolle-
  * sjekk alene er ikke nok (en coach skal ikke kunne endre en annen coachs
- * spillere via id-parameteren). Trener-medlemskap i en gruppe teller ikke.
+ * spillere via id-parameteren). Bare ansvarlig trener eller aktiv COACH i
+ * samme aktive AK-gruppe kan skrive; ASSISTANT kan ikke.
  * For ren lesing: `harCoachLesetilgangTilSpiller`.
  */
 export async function harCoachTilgangTilSpiller(

@@ -140,15 +140,18 @@ function walk(dir, acc = []) {
   return acc;
 }
 
-/** Filer under src/ endret mot origin/main, eller null hvis git/origin/main ikke er tilgjengelig. */
+/** Også nye, ustagede filer kontrolleres før commit. null betyr manglende Git/origin/main. */
 export function endredeMotOriginMain(rot) {
   try {
-    const ut = execFileSync("git", ["diff", "--name-only", "origin/main", "--", "src"], {
+    const valg = {
       cwd: rot,
       encoding: "utf8",
       stdio: ["ignore", "pipe", "ignore"],
-    });
-    return new Set(ut.split("\n").filter(Boolean));
+    };
+    const endrede = execFileSync("git", ["diff", "--name-only", "-z", "origin/main", "--", "src"], valg);
+    const nye = execFileSync("git", ["ls-files", "--others", "--exclude-standard", "-z", "--", "src"], valg);
+    // NUL-separator bevarer mellomrom, norske tegn og linjeskift i Git-filnavn.
+    return new Set([...endrede.split("\0"), ...nye.split("\0")].filter(Boolean));
   } catch {
     return null;
   }

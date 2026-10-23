@@ -27,6 +27,7 @@ import {
   type OktDag,
 } from "@/lib/ai-plan/schema";
 import type {
+  Prisma,
   LPhase,
   NgfKategori,
   PyramidArea,
@@ -75,7 +76,6 @@ export type MalAnbefaling = {
   ukentligOktAntall: number;
   disciplinFordeling: Record<string, number>;
   usageCount: number;
-  effectivenessAvg: number | null;
 };
 
 export type AnbefalingerResultat = {
@@ -279,28 +279,24 @@ export async function anbefalMalCore(
     if (aktiv) lPhase = aktiv;
   }
 
+  // Bruk er popularitet, ikke dokumentert effekt. Gamle effekttall skal
+  // verken rangere maler eller følge med til klienten. Ingen utkast anbefales.
+  const select = {
+    id: true, name: true, description: true, kategori: true, lPhase: true,
+    varighetUker: true, ukentligOktAntall: true, disciplinFordeling: true, usageCount: true,
+  } as const satisfies Prisma.PlanTemplateSelect;
+  const orderBy = [{ usageCount: "desc" }, { name: "asc" }, { id: "asc" }] satisfies Prisma.PlanTemplateOrderByWithRelationInput[];
   const [primary, andre] = await Promise.all([
     prisma.planTemplate.findFirst({
-      where: { kategori, lPhase },
-      orderBy: [
-        { approved: "desc" },
-        { effectivenessAvg: "desc" },
-        { usageCount: "desc" },
-      ],
+      where: { kategori, lPhase, approved: true }, select, orderBy,
     }),
     prisma.planTemplate.findMany({
-      where: { kategori },
-      orderBy: [
-        { approved: "desc" },
-        { effectivenessAvg: "desc" },
-        { usageCount: "desc" },
-      ],
-      take: 5,
+      where: { kategori, approved: true }, select, orderBy, take: 5,
     }),
   ]);
 
   const mapTemplate = (
-    t: NonNullable<Awaited<ReturnType<typeof prisma.planTemplate.findFirst>>>,
+    t: Prisma.PlanTemplateGetPayload<{ select: typeof select }>,
   ): MalAnbefaling => ({
     templateId: t.id,
     navn: t.name,
@@ -311,7 +307,6 @@ export async function anbefalMalCore(
     ukentligOktAntall: t.ukentligOktAntall,
     disciplinFordeling: parseDisciplinFordeling(t.disciplinFordeling),
     usageCount: t.usageCount,
-    effectivenessAvg: t.effectivenessAvg,
   });
 
   return {

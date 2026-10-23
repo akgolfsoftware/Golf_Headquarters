@@ -1,11 +1,15 @@
 /**
  * Kjernelogikken i scripts/check-fasit-sitering.mjs (fase 1 økt 5, 05.09.2026):
  * siteringsparser, utgått-liste fra SCREEN-INDEX, Rigg/Avvik-lesing og
- * vurderingen som avgjør feil vs. rapport. Filsystem og git er holdt utenfor —
- * det er vurderFil/kjoer som gjør I/O, og de får alt som argumenter her.
+ * vurderingen som avgjør feil vs. rapport. Git-regresjonen bruker et isolert,
+ * midlertidig repo uten nettverk, hooks eller prosjektets spillerdata.
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
 import {
   finnTrainLockSiteringer,
   finnPaperSiteringer,
@@ -15,6 +19,7 @@ import {
   lesRiggLabels,
   vurderFil,
   FASIT_LINJE,
+  endredeMotOriginMain,
 } from "../../../scripts/check-fasit-sitering.mjs";
 
 const FASIT = new Set([
@@ -25,6 +30,37 @@ const FASIT = new Set([
 ]);
 const UTGAATT = new Set(["P-05 iPhone Agenda.dc.html"]);
 const RIGG = new Set(["PH-01 I dag"]);
+
+test("før commit kontrolleres ustagede nye skjermer på samme måte som staged og endrede filer", (t) => {
+  const rot = mkdtempSync(path.join(tmpdir(), "hq-fasit-git-"));
+  t.after(() => rmSync(rot, { recursive: true, force: true }));
+  const git = (...args: string[]) => execFileSync("git", [
+    "-c", "core.hooksPath=/dev/null", "-c", "commit.gpgsign=false",
+    "-c", "user.name=Test", "-c", "user.email=test@example.invalid", ...args,
+  ], { cwd: rot, stdio: "pipe" });
+  git("init", "--quiet");
+  mkdirSync(path.join(rot, "src"));
+  const kilde = " * Fasit: docs/design-system/utkast-playerhq/meg.html\n * Avvik: ugyldig format";
+  writeFileSync(path.join(rot, "src/gammel.tsx"), kilde);
+  writeFileSync(path.join(rot, "src/endret.tsx"), kilde);
+  writeFileSync(path.join(rot, ".gitignore"), "src/ignorert.tsx\n");
+  git("add", ".");
+  git("commit", "--quiet", "-m", "test baseline");
+  git("update-ref", "refs/remotes/origin/main", "HEAD");
+
+  writeFileSync(path.join(rot, "src/endret.tsx"), `${kilde}\nendring`);
+  writeFileSync(path.join(rot, "src/staged.tsx"), kilde);
+  git("add", "src/staged.tsx");
+  const nySti = "src/ny æøå\nmed mellomrom.tsx";
+  writeFileSync(path.join(rot, nySti), kilde);
+  writeFileSync(path.join(rot, "src/ignorert.tsx"), kilde);
+  writeFileSync(path.join(rot, "utenfor.tsx"), kilde);
+
+  const endrede = endredeMotOriginMain(rot);
+  assert.deepEqual(endrede, new Set(["src/endret.tsx", "src/staged.tsx", nySti]));
+  const v = vurderFil({ sti: nySti, kilde, fasitFiler: FASIT, utgaatte: UTGAATT, riggLabels: RIGG, endret: endrede!.has(nySti) });
+  assert.equal(v.feil.length, 1, "nytt samtykkekort med feil Avvik-format skal stoppes før git add");
+});
 
 test("finner sitering med full sti og bare filnavn i backticks", () => {
   const kilde = [

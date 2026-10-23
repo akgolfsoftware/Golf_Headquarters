@@ -52,8 +52,6 @@ export type WorkbenchPlanTemplate = {
   varighetUker: number;
   usageCount: number;
   sessionCount: number;
-  /** Snitt SG-Total-delta fra PlanEffectiveness. null = ingen effekt-data ennå. */
-  effectivenessAvg: number | null;
 };
 
 export type WorkbenchGroupSlot = {
@@ -491,7 +489,6 @@ export async function loadWorkbenchData(
         lPhase: true,
         varighetUker: true,
         usageCount: true,
-        effectivenessAvg: true,
         _count: { select: { sessions: true } },
         sessions: {
           take: 16,
@@ -593,7 +590,6 @@ export async function loadWorkbenchData(
     varighetUker: t.varighetUker,
     usageCount: t.usageCount,
     sessionCount: t._count.sessions,
-    effectivenessAvg: t.effectivenessAvg ?? null,
   }));
 
   // G3: (1) undertrykk gruppeslots der en plan-økt fra SAMME gruppe alt ligger

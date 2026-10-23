@@ -8,7 +8,7 @@ import { varsleNyBooking } from "@/lib/booking/varsle-ny-booking";
 import { requireCoachActionUser } from "@/lib/auth/action-guards";
 import { prisma } from "@/lib/prisma";
 import { coachBookingScope } from "@/lib/auth/booking-scope";
-import { erCoachetSpiller, harCoachTilgangTilSpiller } from "@/lib/auth/coached";
+import { harBookingTilgangTilSpiller } from "@/lib/auth/booking-spiller-scope";
 import { audit } from "@/lib/audit";
 import { logError } from "@/lib/error-tracking";
 import { kanBrukeCredits } from "@/lib/booking/credits-tilgang";
@@ -96,8 +96,8 @@ export async function opprettOktPaaTid(
   if (!spiller) throw new Error("Spiller finnes ikke");
   if (spiller.role !== "PLAYER") throw new Error("Valgt bruker er ikke en spiller");
   // Coach-scope: en coachet spiller kan bare bookes av egen coach (head coach ser alt).
-  // Bevisst unntak (coached.ts): leads/ikke-coachede spillere kan bookes av alle coacher.
-  if ((await erCoachetSpiller(spiller.id)) && !(await harCoachTilgangTilSpiller(aktor, spiller.id))) {
+  // Eget bookingformål: leads/egne kunder gir ingen tilgang til treningsprofilen.
+  if (!(await harBookingTilgangTilSpiller(aktor, spiller.id))) {
     throw new Error("Du har ikke tilgang til denne spilleren");
   }
   if (!serviceType) throw new Error("Tjeneste finnes ikke");

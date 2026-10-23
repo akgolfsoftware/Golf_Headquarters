@@ -8,6 +8,7 @@
 // av plan-generatoren til å pakke kontekst + PlanTemplate + coach-instruks
 // inn i én bruker-melding.
 
+import { coachingRamme, COACHING_KONTEKSTER } from "./coaching-kontekst";
 import type {
   PlanTemplateData,
   SpillerKontekst,
@@ -83,6 +84,12 @@ function byggRundeLinjer(sisteRunder: SystemPromptInput["sisteRunder"]): string 
 }
 
 export function bygCoachSystemPrompt(input: SystemPromptInput): string {
+  const fagligeRammer = [
+    `Faglige rammer ${coachingRamme([]).versjon}:`,
+    ...coachingRamme([]).regler.map(r => `- ${r}`),
+    "Velg bare målgruppe når oppdragets godkjente kontekst bekrefter den. Ikke utled medlemskap fra alder, handicap eller abonnement.",
+    ...Object.values(COACHING_KONTEKSTER).map(k => `${k.navn}: ${k.fokus} ${k.hensyn.join(" ")}`),
+  ].join("\n");
   const profil = byggProfilLinjer(input);
   const planLinjer = byggPlanLinjer(input.aktivePlaner);
   const rundeLinjer = byggRundeLinjer(input.sisteRunder);
@@ -115,6 +122,8 @@ ${planLinjer}
 Siste 5 runder:
 ${rundeLinjer}
 
+${fagligeRammer}
+
 Retningslinjer:
 - Gi konkrete råd basert på spillerens data, ikke generiske golf-tips
 - Ved spørsmål om "hva bør jeg trene": foreslå spesifikke drills knyttet til pyramide-områder
@@ -143,6 +152,8 @@ ${rundeLinjer}
 
 Siste tester:
 ${testLinjer ?? "Ingen tester."}
+
+${fagligeRammer}
 
 Retningslinjer:
 - Gi konkrete observasjoner basert på dataene

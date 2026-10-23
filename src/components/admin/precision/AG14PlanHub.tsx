@@ -10,7 +10,7 @@
  *
  * Det hubben og mal-lista (/admin/plan/maler) gjorde før, er med: uke-linja
  * med spillere, økter og udekket, «Åpne uka i Workbench», lenke til teknisk
- * plan, alle maler med status- og periodefilter, uke for uke, bruk og effekt,
+ * plan, alle maler med status- og periodefilter, uke for uke, bruk,
  * og lenker til mal-detalj, redigering, ny mal og utrulling.
  *
  * Avvik fra tegningen, med grunn:
@@ -27,7 +27,7 @@ import { AkseMerke, Knapp, KnappLenke, Meta, StatusPille, TomTilstand } from "@/
 import { Faner, SegmentFilter, SideHode } from "@/components/precision/pa-a4";
 import { Aksebar, Hendelseskort, Seksjon, Varsel, type PaAkse } from "@/components/precision/pa-planhub";
 import { LPHASE_LABEL } from "@/lib/labels/taxonomy";
-import { formaterFortegn, formaterTall } from "@/lib/format-tall";
+import { formaterTall } from "@/lib/format-tall";
 import { formelForOvelse, mengdeForOvelse, metaForOvelse } from "@/lib/agencyos/planhub-ovelse";
 import type { PlanhubData, PlanhubFane, PlanhubMal, PlanhubOvelse } from "@/lib/agencyos/planhub-typer";
 import { AG14Ovelseark } from "./AG14Ovelseark";
@@ -35,12 +35,6 @@ import { AG14Ovelseark } from "./AG14Ovelseark";
 const ak = (a: string) => a.toLowerCase() as PaAkse;
 const pl = (n: number, en: string, flere: string) => `${n} ${n === 1 ? en : flere}`;
 const timer = (min: number) => formaterTall(min / 60, 1, true);
-
-/** Snitt SG-Total-endring for spillere som fullførte malen (PlanEffectiveness). */
-function Effekt({ m }: { m: PlanhubMal }) {
-  if (m.effektAntall === 0 || m.effektAvg == null) return null;
-  return <Meta>SG-TOTAL {formaterFortegn(m.effektAvg, 2)} · {pl(m.effektAntall, "FULLFØRT PLAN", "FULLFØRTE PLANER")}</Meta>;
-}
 
 function MalKort({ m }: { m: PlanhubMal }) {
   const totalMin = m.minutter.reduce((a, x) => a + x.verdi, 0);
@@ -58,7 +52,6 @@ function MalKort({ m }: { m: PlanhubMal }) {
       : <Meta>INGEN FORDELING LAGT INN</Meta>}
     <div className="a10-knapperad">
       <StatusPille tone={m.godkjent ? "ok" : "neutral"}>{m.godkjent ? "Godkjent" : "Utkast"}</StatusPille>
-      <Effekt m={m} />
     </div>
     <MalHandlinger m={m} />
   </div>;
@@ -85,7 +78,6 @@ function ProgramKort({ m }: { m: PlanhubMal }) {
     <Meta>{m.varighetUker} UKER · {m.ukentligOktAntall} ØKTER/UKE · KATEGORI {m.kategori} · {LPHASE_LABEL[m.fase].toUpperCase()}</Meta>
     <div className="a10-knapperad" style={{ paddingTop: 4 }}>
       <StatusPille tone={m.godkjent ? "ok" : "neutral"}>{m.godkjent ? "Godkjent" : "Utkast"}</StatusPille>
-      <Effekt m={m} />
     </div>
     <div className="a10-stabel a10-stabel--tett" style={{ paddingTop: 4 }}>
       <span className="kicker">Uke for uke</span>

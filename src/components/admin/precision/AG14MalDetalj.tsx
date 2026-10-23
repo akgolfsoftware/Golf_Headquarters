@@ -3,12 +3,14 @@
 /**
  * Planmal-detalj (/admin/plan-templates/[id]) i Precision Athletics, under
  * Plan-hub (AG-14). Samme data og samme handlinger som før: duplicateTemplate,
- * archiveTemplate/unarchiveTemplate, lenke til editoren og effekt-historikken.
+ * archiveTemplate/unarchiveTemplate, lenke til editoren.
  *
  * Bølge 2 (20.10.2026): sidehode, nøkkeltall, uke-program og fordeling i AgencyOS-språket (canvas «Mal · detalj»).
  * Endret: uke-programmet brytes nå per uke i stedet for et 640 px bredt
  * rutenett som krevde sidelengs rulling. CS-mål på øvelsene vises ikke
  * (CS-skalaen er utgått); verdien ligger urørt i malen.
+ * C2: gammel SG-sum blir ikke en effektkarakter. Historikklenken pekte
+ * bare tilbake til mallisten; individuelle evalueringer og lagrede tall bevares.
  */
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
@@ -19,7 +21,6 @@ import type { LPhase, NgfKategori, PyramidArea, SessionEnvironment, SkillArea } 
 import { archiveTemplate, duplicateTemplate, unarchiveTemplate } from "@/app/admin/(legacy)/plan-templates/actions";
 import { DAG_LABEL, ENV_LABEL, KATEGORI_LABEL, SKILL_LABEL, type DisciplinFordeling, type DrillEntry } from "@/components/admin/plan-templates/shared";
 import { LPHASE_LABEL } from "@/lib/labels/taxonomy";
-import { formaterFortegn, formaterTall } from "@/lib/format-tall";
 import { UkeRutenett, akseAv } from "./AG14MalFelles";
 import "@/styles/agencyos-ny-mer.css";
 
@@ -51,7 +52,6 @@ export type PlanMalDetalj = {
   maxAlder: number | null;
   approved: boolean;
   usageCount: number;
-  effectivenessAvg: number | null;
   sessions: PlanMalOkt[];
 };
 
@@ -84,8 +84,6 @@ export function AG14MalDetalj({ template }: { template: PlanMalDetalj }) {
     });
   }
 
-  // Effektivitet 1–5: SG-Total-delta omregnet til en enkel skala (uendret regel).
-  const rating = template.effectivenessAvg != null ? Math.min(5, Math.max(1, 3 + template.effectivenessAvg)) : null;
   const { minAlder: fra, maxAlder: til } = template;
   const alder = fra != null && til != null ? `${fra}–${til} år` : fra != null ? `Fra ${fra} år` : til != null ? `Til ${til} år` : "Alle aldre";
 
@@ -98,7 +96,6 @@ export function AG14MalDetalj({ template }: { template: PlanMalDetalj }) {
         <KnappLenke variant="pri" href={`/admin/plan-templates/${template.id}/rediger`}>Rediger struktur</KnappLenke>
         <Knapp variant="sek" onClick={dupliser} disabled={venter}>Dupliser</Knapp>
         <Knapp variant="sek" onClick={arkiver} disabled={venter}>{template.approved ? "Arkiver" : "Gjenåpne"}</Knapp>
-        <KnappLenke variant="sek" href={`/admin/plan-templates/${template.id}/effectiveness`}>Se effekt-historikk</KnappLenke>
       </>} />
     <div className="chips-lite"><Pille tone={template.approved ? "ok" : "noy"}>{template.approved ? "Godkjent" : "Utkast"}</Pille>
       <span className="kilde">{template.varighetUker} uker · {template.ukentligOktAntall} økter per uke</span></div>
@@ -107,7 +104,7 @@ export function AG14MalDetalj({ template }: { template: PlanMalDetalj }) {
     <div className="teller-rad">
       <div className="teller"><span className="e">Antall økter</span><b className="t">{template.sessions.length}</b><span className="s">{template.varighetUker} uker</span></div>
       <div className="teller"><span className="e">Brukt</span><b className="t">{template.usageCount}</b><span className="s">{template.usageCount === 1 ? "gang" : "ganger"}</span></div>
-      <div className="teller"><span className="e">Effektivitet</span><b className="t">{rating != null ? `${formaterTall(rating, 1, true)}/5` : "—"}</b><span className="s">SG-Total-delta {formaterFortegn(template.effectivenessAvg, 1)}</span></div>
+      <div className="teller"><span className="e">Dokumentert effekt</span><b className="t">—</b><span className="s">Grunnlaget er ikke godkjent</span></div>
       <div className="teller"><span className="e">Alder</span><b className="t" style={{ fontSize: 22 }}>{alder.replace(" år", "")}</b><span className="s">{KATEGORI_LABEL[template.kategori]}</span></div>
     </div>
 

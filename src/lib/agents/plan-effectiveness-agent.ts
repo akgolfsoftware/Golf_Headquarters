@@ -17,10 +17,9 @@ export async function runPlanEffectivenessAgent(): Promise<AgentResult> {
     seksti.setDate(seksti.getDate() - 60);
 
     const rader = await prisma.planEffectiveness.findMany({
-      where: { computedAt: { gte: seksti } },
+      where: { computedAt: { gte: seksti }, postSnapshot: { path: ["analyseVersjon"], equals: "2026-10-23.1" } },
       include: {
         plan: { select: { id: true, name: true, userId: true, isActive: true } },
-        user: { select: { name: true } },
       },
       orderBy: { computedAt: "desc" },
       take: 50,
@@ -32,8 +31,8 @@ export async function runPlanEffectivenessAgent(): Promise<AgentResult> {
     for (const row of rader) {
       if (!row.plan || !row.plan.isActive) continue;
 
-      const rate = row.complianceRate ?? row.completionRate ?? 0;
-      const lavCompletion = rate < COMPLETION_TERSKEL;
+      const rate = row.complianceRate ?? row.completionRate ?? null;
+      const lavCompletion = rate !== null && Number.isFinite(rate) && rate >= 0 && rate < COMPLETION_TERSKEL;
       const negativSg =
         row.sgTotalDelta != null && row.sgTotalDelta < SG_DELTA_TERSKEL;
       if (!lavCompletion && !negativSg) continue;
@@ -51,7 +50,7 @@ export async function runPlanEffectivenessAgent(): Promise<AgentResult> {
 
       const coachId = await resolveCoachIdForPlayer(row.userId);
       const forklaring = lavCompletion
-        ? `Plan «${row.plan.name}»: bare ${Math.round(rate * 100)} % økter fullført — vurder revisjon.`
+        ? `Plan «${row.plan.name}»: bare ${Math.round((rate ?? 0) * 100)} % økter fullført — vurder revisjon.`
         : `Plan «${row.plan.name}»: SG-total ${row.sgTotalDelta?.toFixed(2)} etter plan — vurder justering.`;
 
       const dato = (row.computedAt ?? row.createdAt).toISOString();
@@ -60,7 +59,7 @@ export async function runPlanEffectivenessAgent(): Promise<AgentResult> {
           userId: row.userId,
           coachId,
           planId: row.planId,
-          actionType: "PYRAMID_ADJUST",
+          actionType: "COACH_REVIEW",
           agentName: AGENT_NAME,
           suggestion: {
             forklaring,
@@ -77,7 +76,7 @@ export async function runPlanEffectivenessAgent(): Promise<AgentResult> {
               : `sgTotalDelta under terskel ${SG_DELTA_TERSKEL}`,
             terskel: lavCompletion ? COMPLETION_TERSKEL : SG_DELTA_TERSKEL,
             maaltVerdi: lavCompletion
-              ? rate
+              ? (rate ?? undefined)
               : (row.sgTotalDelta ?? undefined),
           }),
         },
@@ -87,7 +86,7 @@ export async function runPlanEffectivenessAgent(): Promise<AgentResult> {
       await varsleVedPlanAction({
         userId: row.userId,
         agentName: AGENT_NAME,
-        actionType: "PYRAMID_ADJUST",
+        actionType: "COACH_REVIEW",
         forklaring,
         planActionId: created.id,
       });
