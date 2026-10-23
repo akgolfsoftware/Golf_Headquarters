@@ -189,3 +189,18 @@ Knyttede innboksutkast følger nå spillerens bookingeksport. Anonymisering vask
 Planevalueringens nye metodeversjon lagrer datadekning og kildeversjon i eksisterende `PlanEffectiveness.preSnapshot/postSnapshot`, samt gjennomført øktantall og kjent faktisk tid i eksisterende felt. Nåværende HCP kopieres ikke som historisk startverdi. Manglende data er null. Ingen ny tabell eller nye identitetsfelt er innført. Eksisterende kobling til bruker og eksisterende eksport-/slettemekanismer må også omfatte disse feltene før samlet rettighetsdekning hevdes.
 
 Den individuelle beregningen oppdaterer ikke lenger felles template-effekt på tvers av spillere. Dette er en avgrensning av de berørte funksjonene, ikke bevis på at alle eldre læringsfunksjoner i appen er stengt. Se [gjennomføringsplanen](../planer/coachintelligens-gjennomforing-2026-10-23.md). Ingen nye samtykker eller nye formål er aktivert i denne leveransen.
+
+
+### AK Golf-gruppeanalyse — C1, 23.10.2026
+
+Eksisterende `DelingsSamtykke` får formålet `AK_GOLF_GRUPPEANALYSE`, tekstversjon `2026-10-23.1`. Det lagres spiller-ID, mottakergruppe, ja/nei, aktør-ID/-rolle, tidspunkt og tekstversjon. Ingen ny tabell. Teksten vises fra `src/lib/deling/ak-analyse-regler.ts`. Gamle profil-, WANG-, TN- og navngitte delinger blir ikke tolket som dette valget. Ingen tillatelser gis automatisk.
+
+Spilleren velger under Meg → Innstillinger → Personvern → Deling. Godkjent foresatt har samme valg i barnets delingsside når produktets foresattregel krever det. Barn kan alltid trekke eget valg. Nytt ja krever aktivt spillermedlemskap i en aktiv AK-administrert gruppe; eksisterende valg kan trekkes etter utmelding. Rollen ADMIN gir ikke rett til å samtykke for andre.
+
+Bare gruppeanalysen og dens etterlevelsesfelt i gruppeliste/-detalj bruker dette nye formålet. Leseren krever ansvarlig/aktiv gruppetrener eller ADMIN, aktiv AK-gruppe, aktivt spillermedlemskap, ikke-slettet spiller og gyldig ja i akkurat denne gruppen. ADMIN omgår ikke samtykket. Øktlesingen tar bare dato, område, status, planlagt/faktisk varighet og nødvendige kvalitetsfelt; utkast, maler, skjulte økter og uavklarte/avslåtte forslag er utelatt. Ingen notater, helse, meldinger, lyd eller navn inngår i analyseresultatet. Resultatet er ikke dermed anonymt; små grupper kan være gjenkjennelige, og det brukes bare i beskyttet gruppevisning, aldri som felles læringsgrunnlag.
+
+Lesing og dette formålets samtykkeendringer bruker samme transaksjonslås per gruppe. Nye oppslag etter fullført trekk ekskluderer spilleren. Allerede viste resultater forsvinner ikke fra andre nettlesere automatisk. Medlemskaps-, rolle- og sletteflytene bruker ikke denne låsen; denne leveransen hevder ikke samtidig serialisering av alle tilgangsendringer.
+
+Historikken følger eksisterende dataeksport (`exportUserData`, alle brukerens delingsrader). Revisjonsloggen får handling, interne ID-er og tekstversjon; ingen fritekst eller treningsverdier. Samtykkehistorikkens eksisterende oppbevarings-/sletteavklaring er fortsatt åpen; ingen endelig oppbevaringstid innføres her. Slettede brukere faller ut av analysen via `deletedAt`. Ingen produksjonsdata er slettet eller skrevet som del av utviklingstesten.
+
+Dette er ikke ferdigstillelse av all AK-deling: øvrige spillerprofiler, planredigering, eksport, agentkø/minne og felles læring må avgrenses i videre C1/C2-arbeid. Kontoaksept og skolens rettsgrunnlag er egne formål. Denne teksten dokumenterer funksjonen, ikke juridisk sluttgodkjenning.

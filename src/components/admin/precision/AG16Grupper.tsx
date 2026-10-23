@@ -48,9 +48,9 @@ const faste = (g: GruppeV2) => (g.faste.length === 0 ? "Ingen faste tider" : g.f
 const tallTekst = (n: number | null | undefined) => (n == null ? "—" : String(n));
 
 function MotPlan({ pct }: { pct: number | null | undefined }) {
-  return <span className="mot-plan">
+  return <span className="mot-plan" title="Bare aktive medlemmer som deler treningsgrunnlaget med AK Golf i denne gruppen">
     <span className="mot-tekst"><span>Mot plan, 4 uker</span><b className="num">{pst(pct)}</b></span>
-    <span className="mot-spor" role="img" aria-label={pct == null ? "Ingen forfalte økter" : `${pct} prosent`}><i style={{ width: `${Math.min(100, Math.max(0, pct ?? 0))}%` }} /></span>
+    <span className="mot-spor" role="img" aria-label={pct == null ? "Ingen delte forfalte økter" : `${pct} prosent`}><i style={{ width: `${Math.min(100, Math.max(0, pct ?? 0))}%` }} /></span>
   </span>;
 }
 

@@ -80,7 +80,7 @@ export default async function V2GrupperPage() {
   });
 
   const now = new Date();
-  const etterlevelse = await lastEtterlevelsePerGruppe(groups.map((g) => ({ id: g.id, spillerIds: g.members.map((m) => m.userId) })), now);
+  const etterlevelse = await lastEtterlevelsePerGruppe(groups.map((g) => ({ id: g.id })), now);
   const naaUkedag = osloUkedag(now);
   const naaMin = minutter(osloTid(now));
 

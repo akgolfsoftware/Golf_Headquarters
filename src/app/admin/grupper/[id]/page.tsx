@@ -165,7 +165,7 @@ export default async function GruppeDetaljPage({
     select: { id: true, name: true, varighetUker: true, _count: { select: { sessions: true } } },
   });
 
-  const analyse = await lastEnGruppeAnalyse(gruppe.members.filter((m) => m.role === "PLAYER").map((m) => m.userId));
+  const analyse = await lastEnGruppeAnalyse(gruppe.id);
 
   const data: GruppeDetaljV2Data = {
     id: gruppe.id,

@@ -15,6 +15,8 @@ import { FO05Deling, type FO05Organisasjon } from "@/components/forelder/FO05Del
 import "@/styles/flater-ny-forelder-booking.css";
 import { settDelingsSamtykkeForBarn } from "@/app/forelder/samtykke/actions";
 import { hentWangTestdeling } from "@/lib/portal-tester/wang-resultat-tilgang";
+import { hentAkAnalyseValg } from "@/lib/deling/ak-gruppeanalyse";
+import { AkAnalyseDeling } from "@/components/portal/precision/AkAnalyseDeling";
 import { WangTestforesporsel } from "@/components/portal/precision/WangTestforesporsel";
 
 export const dynamic = "force-dynamic";
@@ -30,6 +32,7 @@ export default async function ForelderDelingPage({ params }: { params: Promise<{
   if (!relasjon) notFound();
   const barn = relasjon.child;
 
+  const akAnalyse = await hentAkAnalyseValg(childId);
   const grupper = await grupperMedEksterneLesereForSpiller(childId);
   const wangTestdeling = await hentWangTestdeling(childId);
   const wangPlandeling = await hentWangTestdeling(childId, "TRENINGSPLAN");
@@ -69,6 +72,7 @@ export default async function ForelderDelingPage({ params }: { params: Promise<{
             <p className="fob-note">Trenere {fornavn} har sendt delingslenke til. En trener ser plan, økter, runder, tester, målsetninger, helse og meldinger, og kan bare foreslå endringer.</p>
             <Link href={`/portal/meg/deling?barn=${encodeURIComponent(childId)}`} className="fob-lenke">Navngitt trenerdeling for {fornavn}</Link>
           </div>
+          {akAnalyse.map(valg => <AkAnalyseDeling key={valg.gruppeId} valg={valg} childId={childId} />)}
           <FO05Deling organisasjoner={organisasjoner} settSamtykke={settSamtykke} barnFornavn={fornavn} />
           {wangTestdeling.map((d) => <WangTestforesporsel key={d.gruppeId} {...d} modus={{ type: "foresatt", childId, barnNavn: barn.name }} />)}
           {wangPlandeling.map((d) => (

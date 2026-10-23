@@ -13,6 +13,8 @@ import { forelderFrist, venterPaaForelder } from "@/lib/auth/minor";
 import { grupperMedEksterneLesereForSpiller, hentDelingsStatus } from "@/lib/deling/samtykke";
 import { hentEgenTrenerdeling } from "@/lib/deling/navngitt";
 import { hentTnSpillergrupper } from "@/lib/deling/team-norway-spiller";
+import { hentAkAnalyseValg } from "@/lib/deling/ak-gruppeanalyse";
+import { AkAnalyseDeling } from "@/components/portal/precision/AkAnalyseDeling";
 import { TnInnsynLenke } from "@/components/portal/precision/TnInnsynLenke";
 import { hentWangTestdeling } from "@/lib/portal-tester/wang-resultat-tilgang";
 import { WangTestforesporsel } from "@/components/portal/precision/WangTestforesporsel";
@@ -31,7 +33,7 @@ export default async function DelingPage() {
   const krevesForesatt = maaHaForesattSamtykke(user);
   const na = new Date();
 
-  const [grupper, wangTestdeling, wangPlandeling, enrollment, foreldre, navngitt, tnGrupper] = await Promise.all([
+  const [grupper, wangTestdeling, wangPlandeling, enrollment, foreldre, navngitt, tnGrupper, akAnalyse] = await Promise.all([
     grupperMedEksterneLesereForSpiller(user.id),
     hentWangTestdeling(user.id),
     hentWangTestdeling(user.id, "TRENINGSPLAN"),
@@ -43,6 +45,7 @@ export default async function DelingPage() {
     prisma.parentRelation.count({ where: { childId: user.id } }),
     hentEgenTrenerdeling().catch(() => null),
     hentTnSpillergrupper(user.id),
+    hentAkAnalyseValg(user.id),
   ]);
   const status = await hentDelingsStatus(user.id, grupper.map((g) => g.id));
   const kart = new Map(status.map((s) => [s.gruppeId, s]));
@@ -80,6 +83,7 @@ export default async function DelingPage() {
         ekstra={
           <>
             <TnInnsynLenke tnGrupper={tnGrupper} />
+            {akAnalyse.map(valg => <AkAnalyseDeling key={valg.gruppeId} valg={valg} />)}
             {wangTestdeling.length > 0 ? (
               <>
                 {wangTestdeling.map((d) => <WangTestforesporsel key={d.gruppeId} {...d} modus={{ type: "spiller" }} />)}

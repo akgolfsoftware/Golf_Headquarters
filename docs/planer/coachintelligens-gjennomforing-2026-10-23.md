@@ -26,7 +26,7 @@ Korrelasjonen er fortsatt en beskrivende analyse av SG-merkede TrainingLog-rader
 | Pakke | Nåstatus | Resterende ferdigkrav |
 |---|---|---|
 | C0 | Intern telling kjørt; Workbench/test/SG-kilder avstemt i kode | Dekning per faktisk tillatt kontekst; koblede plan/test/turneringsforløp; skille demo fra ekte uten å eksportere profiler |
-| C1 | Eksisterende kanoniske slugs kontrollert; målgrupper definert | Verifisere faktiske identiteter for Aspirant/College og Mini-endringen; uttrykkelig AK-deling i alle eksisterende lesere; beholde Basis/Junior Academy-historikk |
+| C1 | Målgrupper definert; eksplisitt AK-deling bygget for gruppeanalyse, gruppeliste og gruppedetalj | Verifisere faktiske identiteter for Aspirant/College og Mini-endringen; uttrykkelig AK-deling i alle eksisterende lesere; beholde Basis/Junior Academy-historikk |
 | C2 | Google-krysset rettet; felles læring stengt i de berørte malfunksjonene | Versjonert serverregister for avtaleaksept og frivillig læring; foresatt/skoleflyt; tilbakekalling gjennom kø/minne/uttrekk; korrekte avtaler og juridisk sluttkontroll |
 | C3 | Beregninger og agenttolkning rettet i denne diffen | Visning av datadekning i alle berørte flater; samme tilgangsgrense for alle lesere; ekte ende-til-ende-prøve uten utvidet databehandling |
 | C4 | Versjonert kontekstregister og promptrettinger, syntetiske prøver | Anders sine begrunnede coachingeksempler; faglig kontroll av Masterbrain/skills; låst prøvebibliotek og målt modellkvalitet |
@@ -49,3 +49,27 @@ Før en juridisk tekst kan erklæres endelig, må faktisk leverandør-/databehan
 ## Verifikasjon
 
 Målrettede tester: 27 tester av analysegrunnlag, protokollretning, nullverdier, ISO-årsskifte, spillervekting, skriveflyt og kontekstregister bestod i første samlede kjøring. Egen Google-registreringstest bestod med prosjektets Node 24. Første komplette kildetestkjøring: 5 593 av 5 594 bestod. Registertesten avdekket at en ren hjelpefunksjon lå i agentmappen; funksjonen ble flyttet til testbiblioteket, og alle seks målrettede trend-/registertester bestod etterpå. Full `npm run verify` kjøres på nytt før commit. Endelig kontroll- og CI-status registreres i pull request og sesjonslogg etter faktisk kjøring.
+
+
+## Neste leveranse: C1 — delingsstyrt gruppeanalyse
+
+- `medAkGruppeanalyse` finner tillatte spillere på serveren. Gruppe-ID kan gis av ruten, spillerliste kan ikke gis av klienten. Aktiv AK-gruppe, trenerrolle, medlemskap, ikke-slettet konto og eget gyldig samtykke kreves også ved ADMIN-lesing.
+- Eksisterende delingshistorikk får et smalt formål: `AK_GOLF_GRUPPEANALYSE`. Ingen gamle ja oppgraderes. Spilleren og godkjent foresatt velger i sine eksisterende delingssider. Avslag/feil vises uten å endre lokal status som om lagring lyktes. Tilbaketrekking virker etter utmelding.
+- Samtykke og lesing serialiseres med en transaksjonslås per gruppe. Tidspunkt kommer fra databaseklokken etter låsen, ikke fra ventestart eller appserverens klokke. Ingen cache av tillatelsen. Andre medlemskaps-/rolleendringer bruker foreløpig ikke samme lås.
+- Bare tillatte spilleres Workbench-økter leses, og utkast/skjulte/mal-/uavklarte økter filtreres. Beregningens periode og eksisterende etterlevelsesdefinisjon bevares. Gruppevisningen forklarer at datagrunnlaget gjelder delende medlemmer.
+- Gjeldende delingstekst avgrenser mot helse, meldinger, notater, opptak og felles modellæring. Valget gjelder egne registrerte økter også utenfor gruppetreningen, uttrykkelig beskrevet for spilleren.
+
+### Kontroll og sikkerhetsbevis for C1-delen
+
+1. Server-handlingene henter aktør fra innloggingen. Skrivemodulen sjekker eget eierskap eller godkjent forelderrelasjon, alder og aktivt medlemskap. ADMIN kan ikke gi ja for andre. Gruppeanalysens serverleser har ingen ADMIN-samtykkebypass. Negative tester dekker feil gruppe, tilbakekalling, utenforstående, avsluttet medlemskap og barn.
+2. Ingen navn, kontaktdata eller fritekst leses til analyseresultatet. Ingen sky-modell kalles. Testdata er syntetiske. Det er ikke påstått at de beskyttede små gruppesummene er anonyme. Revisjonsspor ligger i eksisterende database; ikke i applikasjonsloggen/Git.
+3. Foresattgrensen beholdes som produktregel; barn kan trekke selv. Gjeldende versjon kreves ved nytt ja. Ny historikk følger eksisterende egeneksport. Slette-/oppbevaringsavklaring for samtykkehistorikk er dokumentert i datakartet og gjenstår; det gis ingen ny juridisk sluttestatus.
+
+Første målrettede kjøring: 21 kildetester og 4 komponenttester bestod etter at testmodulene var avgrenset fra Next-klientimporter. SQL-låsen er syntakskontrollert i `BEGIN READ ONLY` mot separat lokal test-Postgres, med rollback og uten lesing av spillerdata. Fullkontroll, nettleserprøve og CI dokumenteres med faktisk resultat i PR/sesjonslogg. Skjermen er ikke visuelt sluttgodkjent av Anders.
+
+### Videre arbeid etter denne delen
+
+Samme tilgangskrav må omfatte resterende profiler og lesere i AgencyOS (`coachedPlayerWhere` med kallere), med tester for privat voksen, AK-gruppe, annen WANG-skole og Team Norway. Bevar eksisterende særskilte skoledelinger; unngå at et analyse-ja feilaktig gir komplett profil. Deretter serverregistrert kontoaksept og frivillig læringsvalg med separat foresatt-/skoleflyt, tilbakekalling gjennom kø/minne og rettighetsprøving. C0–C7 er fortsatt uferdig. Ingen utrulling av felles læring før tillatt datagrunnlag og anonymisering er kontrollert.
+
+
+Oppfølgende grensekontroll: et gammelt foresattflagg etter 16-årsdagen gir ikke forelder rett til å endre det nye valget, slik at et trekk aldri bekreftes uten effekt. 21 nye målrettede kildetester og 4 komponenttester består. Lokal nettleserprøve av det faktiske kortet med syntetiske server-svar består: gi/trekk, ventetilstand, avslag, unntak og foresatt-ruting. Skjermbilder på 390/1280 px i lyst/mørkt viser ingen horisontal overflyt. Dette er isolert komponentprøving med appens farge-/stilfiler og lokal reservefont, ikke full innlogget brukerreise eller designgodkjenning. Lokal rigg og skjermbilder er ignorert under `_archive/coach-c1-qa-20261023/`.
