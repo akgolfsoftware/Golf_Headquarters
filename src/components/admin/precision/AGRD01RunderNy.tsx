@@ -16,6 +16,8 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Avatar, Feil, Laster, Seksjon, Tom, Topp } from "@/components/admin/agencyos-ny/ny";
 import { desimal, sg, tilPar } from "@/lib/admin-spiller/spiller360-visning";
+import { bygUtvikling } from "@/lib/admin/runde-utvikling";
+import { RundeUtvikling } from "@/components/admin/precision/RundeUtvikling";
 import "@/styles/agencyos-ny-teknisk.css";
 
 export type RundeRad = {
@@ -63,6 +65,9 @@ export function AGRD01RunderNy({ tilstand, data }: { tilstand: "data" | "tom" | 
     const q = sok.trim().toLowerCase();
     return forSpiller.filter((r) => (kval === "alle" || KVAL[r.grunnlag] === kval) && (!q || r.spiller.toLowerCase().includes(q) || r.bane.toLowerCase().includes(q)));
   }, [forSpiller, kval, sok]);
+  // Kurve gir bare mening for én spiller: «Hele stallen» blander ulike nivåer.
+  const utvikling = useMemo(() => (spillere.length === 1 || spiller ? bygUtvikling(forSpiller) : null), [forSpiller, spillere.length, spiller]);
+  const utviklingSpiller = forSpiller[0]?.spiller ?? "";
   const full = antall("full");
   const utenSg = data.runder.filter((r) => r.grunnlag !== "Slag for slag").length;
 
@@ -80,6 +85,7 @@ export function AGRD01RunderNy({ tilstand, data }: { tilstand: "data" | "tom" | 
           {(Object.keys(KVAL_NAVN) as Kval[]).map((k) => <button key={k} type="button" aria-pressed={kval === k} onClick={() => setKval(k)}>{KVAL_NAVN[k]} <b>{antall(k)}</b></button>)}
         </div>
         <div className="felt"><label htmlFor="rd-sok">Søk etter spiller eller bane</label><input id="rd-sok" type="search" value={sok} onChange={(e) => setSok(e.target.value)} placeholder="Navn eller bane" /></div>
+        {utvikling && <RundeUtvikling u={utvikling} spiller={utviklingSpiller} />}
         <div className="to-del bred-v">
           <Seksjon tittel={`Runder · ${rader.length}`} kilde={`Nyeste ${data.vist} av ${data.total}`}>
             {rader.length === 0 ? <p className="kilde">Ingen runder med dette filteret.</p>
