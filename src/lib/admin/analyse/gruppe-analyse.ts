@@ -14,6 +14,7 @@
  * og ingen rangering: gruppeanalysen viser snitt (utkast-agencyos/mer.html).
  */
 
+import { summerTreningsvolum, type Treningsvolum } from "@/lib/workbench/treningsvolum";
 import { prisma } from "@/lib/prisma";
 import { osloDagSomDbDato } from "@/lib/portal/ph01-data";
 import { adherencePct, oktCompliance } from "@/lib/workbench/compliance";
@@ -27,6 +28,8 @@ export type Akse = (typeof AKSER)[number];
 export type OktInn = { userId: string; scheduledAt: Date; durationMin: number; status: SessionStatus; akse: string };
 
 export type EnGruppeAnalyse = {
+  /** Registrert tid og dekning, adskilt fra planens ferdigmeldingsprosent. */
+  treningsvolum?: Treningsvolum;
   uker: number;
   antallSpillere: number;
   etterlevelsePct: number | null;
@@ -88,9 +91,10 @@ export async function lastEnGruppeAnalyse(spillerIds: readonly string[], now = n
   const fra = new Date(idag.getTime() - ETTERLEVELSE_UKER * 7 * DAG_MS);
   const okter = spillerIds.length === 0 ? [] : await prisma.workbenchSession.findMany({
     where: { playerId: { in: [...spillerIds] }, date: { gte: fra, lte: idag }, status: { not: "DRAFT" }, isTemplate: false },
-    select: { playerId: true, date: true, startMinute: true, durationMinutes: true, status: true, pyramid: true },
+    select: { id: true, playerId: true, date: true, startMinute: true, durationMinutes: true, actualMinutes: true, status: true, pyramid: true, isTemplate: true, hiddenByPlayer: true, needsPlayerApproval: true, approvalStatus: true, updatedAt: true, migrertFraTrainingPlanSessionId: true },
   });
-  return byggEnGruppeAnalyse(spillerIds, okter.map(oktFraWorkbench), now);
+  return { ...byggEnGruppeAnalyse(spillerIds, okter.map(oktFraWorkbench), now),
+    treningsvolum: summerTreningsvolum(okter, { fraDato: fra, tilDato: new Date(idag.getTime() + DAG_MS), naa: now }) };
 }
 
 /**
@@ -115,7 +119,7 @@ export async function lastEtterlevelsePerGruppe(
   const fra = new Date(idag.getTime() - ETTERLEVELSE_UKER * 7 * DAG_MS);
   const okter = await prisma.workbenchSession.findMany({
     where: { playerId: { in: alle }, date: { gte: fra, lte: idag }, status: { not: "DRAFT" }, isTemplate: false },
-    select: { playerId: true, date: true, startMinute: true, durationMinutes: true, status: true, pyramid: true },
+    select: { id: true, playerId: true, date: true, startMinute: true, durationMinutes: true, actualMinutes: true, status: true, pyramid: true, isTemplate: true, hiddenByPlayer: true, needsPlayerApproval: true, approvalStatus: true, updatedAt: true, migrertFraTrainingPlanSessionId: true },
   });
   return byggEtterlevelsePerGruppe(grupper, okter.map(oktFraWorkbench), now);
 }

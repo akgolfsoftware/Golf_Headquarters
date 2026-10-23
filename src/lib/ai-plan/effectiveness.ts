@@ -1,64 +1,13 @@
-// Effektivitets-tracking for AI-genererte planer.
-//
-// Etter en plan er fullført regner vi ut pre/post SG-deltas og completion-rate,
-// og lagrer dette i PlanEffectiveness. AI-en bruker så denne historikken til
-// å vurdere hvilke templates som faktisk virker for hvilke spillere.
-//
-// Snitt-vinduet for SG-data er definert som de 5 rundene umiddelbart før plan-
-// start og de 5 rundene etter plan-slutt (eller dagens dato hvis planen ikke
-// har endDate). Bruker null hvis utvalget er for lite.
+// Individuelle observasjoner før og etter en avsluttet planperiode.
+// Sammenligner fem runder på samme målegrunnlag innen 180 dager på hver side.
+// Manglende sluttdato eller utilstrekkelige målinger gir ingen effektpåstand.
+// Dette beviser ikke årsak og oppdaterer aldri felles malstatistikk.
 
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@/generated/prisma/client";
 
-const SG_VINDU_RUNDER = 5;
-
-type RoundSg = {
-  sgTotal: number | null;
-  sgOtt: number | null;
-  sgApp: number | null;
-  sgArg: number | null;
-  sgPutt: number | null;
-};
-
-type SgSnapshot = {
-  sgTotal: number | null;
-  sgOtt: number | null;
-  sgApp: number | null;
-  sgArg: number | null;
-  sgPutt: number | null;
-  antallRunder: number;
-};
-
-function snittSg(rounds: RoundSg[]): SgSnapshot {
-  if (rounds.length === 0) {
-    return {
-      sgTotal: null,
-      sgOtt: null,
-      sgApp: null,
-      sgArg: null,
-      sgPutt: null,
-      antallRunder: 0,
-    };
-  }
-
-  function snitt(key: keyof RoundSg): number | null {
-    const verdier = rounds
-      .map((r) => r[key])
-      .filter((v): v is number => v !== null);
-    if (verdier.length === 0) return null;
-    return verdier.reduce((sum, v) => sum + v, 0) / verdier.length;
-  }
-
-  return {
-    sgTotal: snitt("sgTotal"),
-    sgOtt: snitt("sgOtt"),
-    sgApp: snitt("sgApp"),
-    sgArg: snitt("sgArg"),
-    sgPutt: snitt("sgPutt"),
-    antallRunder: rounds.length,
-  };
-}
+import { SG_ANALYSE_SELECT, sgSnapshot, sammenlignbareSgRunder } from "./analyse-grunnlag";
+import { summerTreningsvolum } from "@/lib/workbench/treningsvolum";
 
 function delta(post: number | null, pre: number | null): number | null {
   if (post === null || pre === null) return null;
@@ -70,10 +19,10 @@ export type ComputeEffectivenessResultat = Awaited<
 >;
 
 /**
- * Beregner og lagrer PlanEffectiveness for én fullført treningsplan.
+ * Beregner og lagrer PlanEffectiveness for én avsluttet planperiode.
  *
- * Idempotent: hvis det allerede finnes en rad for planId, oppdateres den.
- * Returnerer null hvis planen ikke finnes.
+ * Oppdaterer bare egen metodeversjon for samme plan og spiller.
+ * Returnerer null hvis planen mangler eller perioden ikke er avsluttet.
  */
 export async function computeEffectiveness(
   planId: string,
@@ -90,77 +39,34 @@ export async function computeEffectiveness(
   });
   if (!plan) return null;
 
-  // 1) Total antall økter + antall fullførte
-  const sessions = await prisma.trainingPlanSession.findMany({
-    where: { planId },
-    select: {
-      id: true,
-      log: { select: { completedAt: true } },
-    },
+  const now = new Date();
+  // En pågående plan har ikke et ettervindu ennå.
+  if (!plan.endDate || plan.endDate > now || plan.endDate <= plan.startDate) return null;
+  const sessions = await prisma.workbenchSession.findMany({
+    where: { playerId: plan.userId, planId },
+    select: { id: true, date: true, startMinute: true, pyramid: true, durationMinutes: true,
+      actualMinutes: true, status: true, isTemplate: true, hiddenByPlayer: true, needsPlayerApproval: true,
+      approvalStatus: true, updatedAt: true, migrertFraTrainingPlanSessionId: true },
   });
-  const total = sessions.length;
-  const fullforte = sessions.filter(
-    (s) => s.log && s.log.completedAt !== null,
-  ).length;
-  const completionRate = total > 0 ? fullforte / total : 0;
-
-  // 2) SG-data før og etter
-  const preCutoff = plan.startDate;
-  const postFra = plan.endDate ?? new Date();
-
+  const volum = summerTreningsvolum(sessions, { fraDato: plan.startDate, tilDato: plan.endDate, naa: now }).total;
+  const completionRate = volum.planlagteOkter > 0 ? volum.gjennomforteOkter / volum.planlagteOkter : null;
   const [preRounds, postRounds] = await Promise.all([
     prisma.round.findMany({
-      where: { userId: plan.userId, playedAt: { lt: preCutoff } },
-      orderBy: { playedAt: "desc" },
-      take: SG_VINDU_RUNDER,
-      select: {
-        sgTotal: true,
-        sgOtt: true,
-        sgApp: true,
-        sgArg: true,
-        sgPutt: true,
-      },
+      where: { userId: plan.userId, playedAt: { gte: new Date(plan.startDate.getTime() - 180 * 86400000), lt: plan.startDate }, playStatus: "COMPLETED", partialSave: false },
+      orderBy: [{ playedAt: "desc" }, { id: "desc" }], take: 100, select: SG_ANALYSE_SELECT,
     }),
     prisma.round.findMany({
-      where: { userId: plan.userId, playedAt: { gte: postFra } },
-      orderBy: { playedAt: "asc" },
-      take: SG_VINDU_RUNDER,
-      select: {
-        sgTotal: true,
-        sgOtt: true,
-        sgApp: true,
-        sgArg: true,
-        sgPutt: true,
-      },
+      where: { userId: plan.userId, playedAt: { gte: plan.endDate, lte: new Date(Math.min(now.getTime(), plan.endDate.getTime() + 180 * 86400000)) }, playStatus: "COMPLETED", partialSave: false },
+      orderBy: [{ playedAt: "asc" }, { id: "asc" }], take: 100, select: SG_ANALYSE_SELECT,
     }),
   ]);
-
-  const preSnapshot = snittSg(preRounds);
-  const postSnapshot = snittSg(postRounds);
-
-  // 3) Hent HCP + kategori for snapshot-kontekst (best-effort)
-  const [user, wagr] = await Promise.all([
-    prisma.user.findUnique({
-      where: { id: plan.userId },
-      select: { hcp: true },
-    }),
-    prisma.wagrSnapshot.findUnique({
-      where: { userId: plan.userId },
-      select: { ngfCategory: true },
-    }),
-  ]);
-
-  const preSnapshotJson = {
-    ...preSnapshot,
-    hcp: user?.hcp ?? null,
-    kategori: wagr?.ngfCategory ?? null,
-  } satisfies Prisma.InputJsonValue;
-
-  const postSnapshotJson = {
-    ...postSnapshot,
-    hcp: user?.hcp ?? null,
-    kategori: wagr?.ngfCategory ?? null,
-  } satisfies Prisma.InputJsonValue;
+  const sammenlignbare = sammenlignbareSgRunder(preRounds, postRounds);
+  const preSnapshot = sgSnapshot(sammenlignbare.pre);
+  const postSnapshot = sgSnapshot(sammenlignbare.post);
+  // Dagens HCP/kategori er ikke historiske start- og sluttmålinger.
+  const preSnapshotJson = { ...preSnapshot, hcp: null, kategori: null, referanse: sammenlignbare.key } satisfies Prisma.InputJsonValue;
+  const postSnapshotJson = { ...postSnapshot, hcp: null, kategori: null, referanse: sammenlignbare.key,
+    treningsvolum: volum } satisfies Prisma.InputJsonValue;
 
   // 4) Templat-id: hentes fra AiPlanGeneration.contextJson._templateId
   let templateId: string | null = null;
@@ -176,14 +82,16 @@ export async function computeEffectiveness(
     }
   }
 
-  // 5) Upsert basert på planId
-  const existing = await prisma.planEffectiveness.findFirst({
-    where: { planId },
+  // Serialiser denne skriveren per plan; bevar andre metodeversjoner.
+  const rad = await prisma.$transaction(async (tx) => {
+    await tx.$queryRaw`SELECT id FROM training_plans WHERE id = ${planId} FOR UPDATE`;
+    const existing = await tx.planEffectiveness.findFirst({
+    where: { planId, userId: plan.userId, postSnapshot: { path: ["analyseVersjon"], equals: "2026-10-23.1" } },
     select: { id: true },
   });
 
-  const rad = existing
-    ? await prisma.planEffectiveness.update({
+  return existing
+    ? await tx.planEffectiveness.update({
         where: { id: existing.id },
         data: {
           templateId,
@@ -195,10 +103,15 @@ export async function computeEffectiveness(
           sgArgDelta: delta(postSnapshot.sgArg, preSnapshot.sgArg),
           sgPuttDelta: delta(postSnapshot.sgPutt, preSnapshot.sgPutt),
           completionRate,
+          complianceRate: completionRate,
+          plannedSessions: volum.planlagteOkter,
+          completedSessions: volum.gjennomforteOkter,
+          totalTimeMinutes: volum.ukjentOkter === 0 && volum.legacyAnslagOkter === 0 ? volum.faktiskMinutter : null,
+          hcpDelta: null,
           computedAt: new Date(),
         },
       })
-    : await prisma.planEffectiveness.create({
+    : await tx.planEffectiveness.create({
         data: {
           planId,
           userId: plan.userId,
@@ -211,23 +124,18 @@ export async function computeEffectiveness(
           sgArgDelta: delta(postSnapshot.sgArg, preSnapshot.sgArg),
           sgPuttDelta: delta(postSnapshot.sgPutt, preSnapshot.sgPutt),
           completionRate,
+          complianceRate: completionRate,
+          plannedSessions: volum.planlagteOkter,
+          completedSessions: volum.gjennomforteOkter,
+          totalTimeMinutes: volum.ukjentOkter === 0 && volum.legacyAnslagOkter === 0 ? volum.faktiskMinutter : null,
+          hcpDelta: null,
         },
       });
 
-  // 6) Oppdater effectivenessAvg på PlanTemplate hvis vi har templateId
-  if (templateId && rad.sgTotalDelta !== null) {
-    const agg = await prisma.planEffectiveness.aggregate({
-      where: { templateId, sgTotalDelta: { not: null } },
-      _avg: { sgTotalDelta: true },
-    });
-    if (agg._avg.sgTotalDelta !== null) {
-      await prisma.planTemplate.update({
-        where: { id: templateId },
-        data: { effectivenessAvg: agg._avg.sgTotalDelta },
-      });
-    }
-  }
+  });
 
+  // Ingen automatisk oppdatering av felles malstatistikk. Individuell
+  // tjeneste og frivillig læring på tvers er forskjellige behandlingsformål.
   return rad;
 }
 
@@ -238,7 +146,7 @@ export async function getLatestEffectiveness(
   userId: string,
 ): Promise<ComputeEffectivenessResultat | null> {
   return prisma.planEffectiveness.findFirst({
-    where: { userId },
+    where: { userId, postSnapshot: { path: ["analyseVersjon"], equals: "2026-10-23.1" } },
     orderBy: { computedAt: "desc" },
   });
 }

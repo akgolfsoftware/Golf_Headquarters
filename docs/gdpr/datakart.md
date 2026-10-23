@@ -183,3 +183,9 @@ Trenerens delingsoversikt viser bare navn og miljø for aksepterte, fortsatt gyl
 Booking lagrer betalingsmåte og foreslått start/slutt med coach-ID. Feltene følger eksisterende bookingeksport. Avvisning oppretter et knyttet InnboksEpost-utkast med kontaktopplysninger og begrunnelse; ingenting sendes av avvisningshandlingen. Avvisning og utkast lagres i samme transaksjon. Tilgangen til selve bookingen avgrenses til riktig coach/admin.
 
 Knyttede innboksutkast følger nå spillerens bookingeksport. Anonymisering vasker kontakt, emne, fritekst og utkast før den eksterne ryddekjeden kobler booking fra brukeren; booking- og betalingshistorikken beholdes. Gjestenes eksisterende retention-/slettespørsmål gjelder fortsatt som beskrevet over. Dette arbeidet legger ikke til noen automatisk utsending ved avvisning.
+
+### Individuell coachanalyse — tillegg 23.10.2026
+
+Planevalueringens nye metodeversjon lagrer datadekning og kildeversjon i eksisterende `PlanEffectiveness.preSnapshot/postSnapshot`, samt gjennomført øktantall og kjent faktisk tid i eksisterende felt. Nåværende HCP kopieres ikke som historisk startverdi. Manglende data er null. Ingen ny tabell eller nye identitetsfelt er innført. Eksisterende kobling til bruker og eksisterende eksport-/slettemekanismer må også omfatte disse feltene før samlet rettighetsdekning hevdes.
+
+Den individuelle beregningen oppdaterer ikke lenger felles template-effekt på tvers av spillere. Dette er en avgrensning av de berørte funksjonene, ikke bevis på at alle eldre læringsfunksjoner i appen er stengt. Se [gjennomføringsplanen](../planer/coachintelligens-gjennomforing-2026-10-23.md). Ingen nye samtykker eller nye formål er aktivert i denne leveransen.

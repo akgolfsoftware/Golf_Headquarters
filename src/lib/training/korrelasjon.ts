@@ -1,3 +1,4 @@
+import { SG_ANALYSE_SELECT, sgSammenligningsnokkel } from "@/lib/ai-plan/analyse-grunnlag";
 import type { SgCategory } from "@/generated/prisma/client";
 import type { UkeVolum } from "./volum";
 
@@ -19,12 +20,16 @@ export interface KorrelasjonsResultat {
   r: number | null;
   datapunkter: number;
   tolkning: "positiv" | "negativ" | "ingen" | "for_lite_data";
+  /** Beskrivende sammenheng; ikke bevis for at treningen forårsaket endringen. */
+  evidens: "observasjon";
+  kilde: "training-log-sg";
+  begrensning: string;
 }
 
 /** Pearson r mellom to like lange serier. Returnerer null ved < 2 par. */
 export function beregnPearson(x: number[], y: number[]): number | null {
   const n = x.length;
-  if (n < 2 || n !== y.length) return null;
+  if (n < 2 || n !== y.length || ![...x, ...y].every(Number.isFinite)) return null;
 
   const meanX = x.reduce((a, b) => a + b, 0) / n;
   const meanY = y.reduce((a, b) => a + b, 0) / n;
@@ -44,24 +49,28 @@ export function beregnPearson(x: number[], y: number[]): number | null {
   return teller / Math.sqrt(ssX * ssY);
 }
 
-/** Finner neste ISO-uke-streng. Handterer uke 52->01 og 53->01. */
-function nesteIsoUke(uke: string): string {
-  const [yearStr, wStr] = uke.split("-W");
-  const year = parseInt(yearStr, 10);
-  const w = parseInt(wStr, 10);
-  // ISO-ar har 52 eller 53 uker - 28. des er alltid i siste ISO-uke av aret
-  const dec28 = new Date(year, 11, 28);
-  const lastWeek = Math.ceil(
-    ((dec28.getTime() - new Date(Date.UTC(year, 0, 1)).getTime()) / 86400000 + 1) / 7,
-  );
-  if (w >= lastWeek) {
-    return `${year + 1}-W01`;
-  }
-  return `${year}-W${String(w + 1).padStart(2, "0")}`;
+/** ISO-året følger torsdagen i uken. UTC gjør årsskiftet tidssoneuavhengig. */
+function nesteIsoUke(uke: string): string | null {
+  const match = /^(\d{4})-W(\d{2})$/.exec(uke);
+  if (!match) return null;
+  const year = Number(match[1]), week = Number(match[2]);
+  if (week < 1 || week > 53) return null;
+  const jan4 = new Date(Date.UTC(year, 0, 4));
+  const monday = new Date(jan4.getTime() + ((week - 1) * 7 - ((jan4.getUTCDay() + 6) % 7)) * 86400000);
+  const format = (date: Date) => {
+    const thursday = new Date(date);
+    thursday.setUTCDate(thursday.getUTCDate() + 4 - (thursday.getUTCDay() || 7));
+    const y = thursday.getUTCFullYear();
+    const w = Math.ceil(((thursday.getTime() - Date.UTC(y, 0, 1)) / 86400000 + 1) / 7);
+    return `${y}-W${String(w).padStart(2, "0")}`;
+  };
+  if (format(monday) !== uke) return null;
+  return format(new Date(monday.getTime() + 7 * 86400000));
 }
 
 /**
- * Kobler treningsuke N til SG-snitt uke N+1 per SG-omrade.
+ * Kobler treningsuke N til SG-endring (N+1 minus N) per område.
+ * Krever begge målinger; manglende grunnlinje er ikke null SG.
  */
 export function koblTreningOgSg(
   treningUker: UkeVolum[],
@@ -76,12 +85,14 @@ export function koblTreningOgSg(
   for (const t of treningUker) {
     const neste = nesteIsoUke(t.uke);
     const sgNeste = sgMap.get(`${neste}::${t.sgArea}`);
-    if (sgNeste !== undefined) {
+    const sgNaa = sgMap.get(`${t.uke}::${t.sgArea}`);
+    if (neste && sgNeste !== undefined && sgNaa !== undefined &&
+      [sgNeste, sgNaa, t.minutter].every(Number.isFinite) && t.minutter >= 0) {
       par.push({
         uke: t.uke,
         sgArea: t.sgArea,
         minutterTreningsuke: t.minutter,
-        sgEndringNesteUke: sgNeste,
+        sgEndringNesteUke: sgNeste - sgNaa,
       });
     }
   }
@@ -108,18 +119,24 @@ export async function beregnKorrelasjon(
   const medSg = treningLogger.filter((l): l is typeof l & { sgArea: NonNullable<typeof l.sgArea> } => l.sgArea != null);
   const treningUker = aggregerVolumPerUke(medSg, uker + 1, now);
 
-  const runder = await prisma.round.findMany({
+  const alleRunder = await prisma.round.findMany({
     where: {
       userId,
-      playedAt: { gte: grense },
+      playedAt: { gte: grense, lte: now },
+      playStatus: "COMPLETED",
+      partialSave: false,
       sgTotal: { not: null },
     },
-    select: { playedAt: true, sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
+    select: SG_ANALYSE_SELECT,
     orderBy: { playedAt: "asc" },
   });
 
+  const siste = [...alleRunder].reverse().find(r => sgSammenligningsnokkel(r) !== null);
+  const key = siste ? sgSammenligningsnokkel(siste) : null;
+  const runder = key ? alleRunder.filter(r => sgSammenligningsnokkel(r) === key) : [];
+
   function isoUkeNummer(dato: Date): string {
-    const d = new Date(Date.UTC(dato.getFullYear(), dato.getMonth(), dato.getDate()));
+    const d = new Date(Date.UTC(dato.getUTCFullYear(), dato.getUTCMonth(), dato.getUTCDate()));
     const dag = d.getUTCDay() || 7;
     d.setUTCDate(d.getUTCDate() + 4 - dag);
     const year = d.getUTCFullYear();
@@ -179,6 +196,7 @@ export async function beregnKorrelasjon(
       tolkning = "ingen";
     }
 
-    return { sgArea: omraade, r, datapunkter: par.length, tolkning };
+    return { sgArea: omraade, r, datapunkter: par.length, tolkning, evidens: "observasjon", kilde: "training-log-sg",
+      begrensning: "Bare SG-merkede treningslogger. Uregistrert trening er ukjent. Beskrivende sammenheng, ikke årsakseffekt eller grunnlag for automatisk volumendring." };
   });
 }

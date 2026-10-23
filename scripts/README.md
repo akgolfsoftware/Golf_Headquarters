@@ -37,3 +37,7 @@
 ## Repo og maskinbytte
 
 `npm run repo:status -- --fetch --label macbook-air` (eller `mac-mini`) lager en JSON-rapport over denne klonen og registrerte worktrees. Uten `--fetch` er kommandoen helt lokal og referanser kan være utdaterte. Ingen checkout, commit, reset, stash, prune eller sletting utføres. Filinnhold, ignorerte filer og remote-URL med mulige credentials skrives ikke ut. Se [Git-arbeidsflyten](../docs/vedlikehold/git-arbeidsflyt.md). Kontroller verktøyet med `npm run test:repo-status`.
+
+### Intern datadekning for coachanalyse
+
+`coach-datadekning.ts` teller eksisterende kilder i en skrivebeskyttet transaksjon. Krever eksplisitt `COACH_EXPECTED_PROJECT` og absolutt rapportsti. Bruk en eksisterende miljøfil med Node `--env-file`, ikke kopiering mellom arbeidskopier. Rapporten skal ligge utenfor Git og er intern; små tellinger skjermes med intervaller. Ingen rå profiler, navn eller frie gruppenavn hentes. Se [gjennomføringsplan](../docs/planer/coachintelligens-gjennomforing-2026-10-23.md).

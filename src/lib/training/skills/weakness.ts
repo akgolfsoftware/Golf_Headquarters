@@ -41,7 +41,7 @@ export function runWeaknessSkill(input: WeaknessInput): WeaknessOutput {
   );
 
   const pyramid = runPyramidSkill({ sessions: parsed.pyramidSessions });
-  const undertrent = pyramid.primaryGap !== null;
+  const undertrent = parsed.pyramidSessions.length > 0 && pyramid.primaryGap !== null;
 
   const anbefaling = undertrent && pyramid.primaryGap
     ? `Øk ${pyramid.primaryGap.omrade}-volum — ${SG_LABEL[primarySgArea]} er svakeste SG-område.`
@@ -51,7 +51,7 @@ export function runWeaknessSkill(input: WeaknessInput): WeaknessOutput {
     primarySgArea,
     sgValue: parsed.sgSnitt[primarySgArea],
     undertrent,
-    pyramidGap: pyramid.primaryGap?.omrade ?? null,
+    pyramidGap: undertrent ? pyramid.primaryGap?.omrade ?? null : null,
     anbefaling,
   };
 }

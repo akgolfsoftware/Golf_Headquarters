@@ -19,6 +19,8 @@ import {
 import { deleteV2ForPlanSession, syncV2FromPlanSessionId } from "@/lib/workbench/v2-sync";
 import { sjekkpunktFraSuggestion } from "@/lib/recording/fangst-suggestion";
 
+export const coachReviewSchema = z.object({ forklaring: z.string().min(1).max(2000) });
+
 const churnMessageSchema = z.object({
   tittel: z.string().optional(),
   forklaring: z.string().optional(),
@@ -188,6 +190,10 @@ export function computeDelta(
   };
 
   switch (actionType) {
+    case "COACH_REVIEW": {
+      const s = coachReviewSchema.parse(suggestion);
+      return { ...empty, summary: `Faglig vurdering: ${s.forklaring}` };
+    }
     case "PYRAMID_ADJUST": {
       const s = pyramidAdjustSchema.parse(suggestion);
       const slot = nesteLedigeSlot(ctx.futureSessions);
@@ -707,6 +713,13 @@ export async function executePlanAction(actionId: string): Promise<ExecuteResult
       sessionsRemoved: 0,
       sessionsModified: 0,
     };
+  }
+
+  // En observasjon gir aldri en automatisk økt-/volumendring ved godkjenning.
+  if (action.actionType === "COACH_REVIEW") {
+    const s = coachReviewSchema.parse(action.suggestion);
+    return { applied: true, summary: `Vurdering gjennomgått: ${s.forklaring}`,
+      sessionsAdded: 0, sessionsRemoved: 0, sessionsModified: 0 };
   }
 
   // B4: PAYMENT_FOLLOWUP er en kvittering på MANUELL oppfølging — godkjenning

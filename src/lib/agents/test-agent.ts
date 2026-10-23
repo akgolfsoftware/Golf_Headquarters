@@ -2,7 +2,7 @@
 // skriver Signal og evt. PlanAction ved >15 % forbedring eller >10 % tilbakegang.
 
 import { prisma } from "@/lib/prisma";
-import { resolveDrillPakke } from "./plan-action-executor";
+import { beregnTestTrend } from "@/lib/portal-tester/test-trend";
 import { resolveCoachIdForPlayer } from "@/lib/workbench/v2-sync";
 import { runAgent, type AgentResult } from "./agent-runner";
 import { varsleVedPlanAction } from "./notify-plan-action";
@@ -19,7 +19,7 @@ export async function runTestAgent(userId: string): Promise<AgentResult> {
     const resultater = await prisma.testResult.findMany({
       where: { userId },
       orderBy: { takenAt: "desc" },
-      include: { test: { select: { id: true, name: true } } },
+      include: { test: { select: { id: true, name: true, protocol: true } } },
     });
 
     if (resultater.length === 0) {
@@ -50,11 +50,9 @@ export async function runTestAgent(userId: string): Promise<AgentResult> {
     for (const [testId, rad] of perTest.entries()) {
       const siste = rad[0];
       const tidligere = rad.slice(1, 4);
-      if (tidligere.length === 0) continue;
-      const snitt =
-        tidligere.reduce((s, r) => s + r.score, 0) / tidligere.length;
-      const delta = siste.score - snitt;
-      const relativ = snitt !== 0 ? delta / Math.abs(snitt) : 0;
+      const trend = beregnTestTrend(siste, tidligere, siste.test.protocol);
+      if (!trend) continue;
+      const { snitt, delta, relativ } = trend;
 
       signaler.push({
         kind: "TEST_TREND",
@@ -64,19 +62,21 @@ export async function runTestAgent(userId: string): Promise<AgentResult> {
           testNavn: siste.test.name,
           latest: siste.score,
           baseline: snitt,
+          lavereErBedre: trend.lavereErBedre,
+          antall: trend.antall,
+          evidens: "observasjon",
         },
       });
 
       if (
-        relativ >= FORBEDRING_TERSKEL ||
-        relativ <= TILBAKE_TERSKEL
+        relativ !== null && (relativ >= FORBEDRING_TERSKEL ||
+        relativ <= TILBAKE_TERSKEL)
       ) {
         const plan = await prisma.trainingPlan.findFirst({
           where: { userId, isActive: true },
           select: { id: true },
         });
-        const actionType =
-          relativ >= FORBEDRING_TERSKEL ? "FOCUS_CHANGE" : "PYRAMID_ADJUST";
+        const actionType = "COACH_REVIEW";
         const eksisterende = await prisma.planAction.findFirst({
           where: {
             userId,
@@ -87,19 +87,10 @@ export async function runTestAgent(userId: string): Promise<AgentResult> {
         });
         if (!eksisterende) {
           const coachId = await resolveCoachIdForPlayer(userId);
-          // C4: forhåndsberegn drill-pakken så coachen ser den i køen.
-          const drillPakke = await resolveDrillPakke(
-            null,
-            relativ <= TILBAKE_TERSKEL ? "TEK" : "SLAG",
-          );
-          const forklaring =
-            relativ >= FORBEDRING_TERSKEL
-              ? `${siste.test.name} forbedret ${Math.round(relativ * 100)} % — vurder å flytte fokus.`
-              : `${siste.test.name} tilbake ${Math.round(Math.abs(relativ) * 100)} % — øk TEK-volum.`;
-          const forklaringMedDriller =
-            drillPakke.length > 0
-              ? `${forklaring} Foreslåtte driller: ${drillPakke.map((d) => d.navn).join(", ")}.`
-              : forklaring;
+          // Testendring alene sier ikke hvilken treningsakse eller øvelse som bør endres.
+          const forklaring = relativ >= FORBEDRING_TERSKEL
+            ? `${siste.test.name} forbedret ${Math.round(relativ * 100)} % — vurder utviklingen opp mot spill på banen.`
+            : `${siste.test.name} tilbake ${Math.round(Math.abs(relativ) * 100)} % — kontroller testforhold og vurder årsaken før planen endres.`;
           const created = await prisma.planAction.create({
             data: {
               userId,
@@ -108,12 +99,11 @@ export async function runTestAgent(userId: string): Promise<AgentResult> {
               actionType,
               agentName: AGENT_NAME,
               suggestion: {
-                drillPakke,
+                drillPakke: [],
                 testId,
                 testNavn: siste.test.name,
                 trend: relativ,
-                omrade: relativ <= TILBAKE_TERSKEL ? "TEK" : "SLAG",
-                forklaring: forklaringMedDriller,
+                forklaring,
                 signalSnapshot: {
                   kind: "TEST_DELTA",
                   value: delta,
