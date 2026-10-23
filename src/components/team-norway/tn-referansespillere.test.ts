@@ -19,6 +19,7 @@ test("Referanse i menyen åpner sidene i HQ, ikke teamnorwayref", () => {
     ["WAGR", "/team-norway/referanse"],
     ["Sammenlign", "/team-norway/referanse/sammenlign"],
     ["Søk", "/team-norway/referanse/sok"],
+    ["Planlegger", "/team-norway/referanse/planlegger"],
     ["Norsk golf", "/team-norway/referanse/norsk-golf"],
     ["Tester", "/team-norway/referanse/tester"],
   ]);

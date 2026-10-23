@@ -11,6 +11,7 @@ import { Schibsted_Grotesk } from "next/font/google";
 import {
   fjernFraPlan, foreslaaTurnering, fyllMedForslag, leggTilIPlan, settPrioritet, svarPaTurneringsforslag, trekkForslag,
 } from "@/lib/turneringsplan/actions";
+import { fjernFraReferanseplan, fyllReferanseplan, leggTilIReferanseplan } from "@/lib/turneringsplan/referanse-actions";
 import type { ForslagRad, KatalogRad, PlanRad, Planvisning } from "@/lib/turneringsplan/data";
 import type { Merke, PlanTier } from "@/lib/turneringsplan/wagr-modell";
 import { formaterProsent, formaterTall } from "@/lib/format-tall";
@@ -18,7 +19,7 @@ import "@/styles/turneringsplan.css";
 
 const font = Schibsted_Grotesk({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], display: "swap" });
 
-export type PlanRolle = "spiller" | "coach" | "tn";
+export type PlanRolle = "spiller" | "coach" | "tn" | "referanse";
 type Fane = "plan" | "kalender" | "finn" | "om";
 
 const KILDE = "Kilde: World Amateur Golf Ranking (WAGR), The R&A";
@@ -26,6 +27,7 @@ const ROLLE: Record<PlanRolle, { navn: string; tekst: string }> = {
   spiller: { navn: "Spiller", tekst: "Du lager og endrer planen selv. Coachen og Team Norway ser det du har delt." },
   coach: { navn: "AK Golf-coach", tekst: "Du endrer planen direkte. Spilleren får beskjed og kan angre." },
   tn: { navn: "Team Norway", tekst: "Du foreslår endringer. Ingenting endres før spilleren godtar forslaget." },
+  referanse: { navn: "Referanse", tekst: "Planen er delt mellom trenerne i Team Norway. Du endrer direkte, og spilleren har ingen konto i HQ." },
 };
 const MERKE: Record<Merke, { tekst: string; klasse: string; kal: string; farge: string }> = {
   PRESTASJON: { tekst: "Kan vinne", klasse: "m-gronn", kal: "k-vinn", farge: "var(--gronn)" },
@@ -121,7 +123,9 @@ export function Turneringsplanlegger({ visning, rolle, bilde = "/team-norway/bil
       window.setTimeout(() => setMelding(null), 3600);
     });
   }
-  const leggTil = (id: string) => kjor(() => leggTilIPlan({ spillerId, wagrPlanEventId: id }), id);
+  const ref = rolle === "referanse";
+  const wagrPlayerId = Number(visning.spiller.id);
+  const leggTil = (id: string) => kjor(() => (ref ? leggTilIReferanseplan({ wagrPlayerId, wagrPlanEventId: id }) : leggTilIPlan({ spillerId, wagrPlanEventId: id })), id);
   const foreslaa = (id: string, handling: "ADD" | "REMOVE") => kjor(() => foreslaaTurnering({ spillerId: visning.spiller.id, handling, wagrPlanEventId: id }));
 
   const a = visning.anslag;
@@ -173,10 +177,10 @@ export function Turneringsplanlegger({ visning, rolle, bilde = "/team-norway/bil
             <div className="kolonne">
               <PlanKort visning={visning} rolle={rolle} ny={ny} foreslatt={foreslatt} venter={venter}
                 onPrio={(e, t) => kjor(() => settPrioritet({ spillerId, entryId: e, tier: t }))}
-                onFjern={(e) => kjor(() => fjernFraPlan({ spillerId, entryId: e }))}
+                onFjern={(e) => kjor(() => (ref ? fjernFraReferanseplan({ wagrPlayerId, entryId: e }) : fjernFraPlan({ spillerId, entryId: e })))}
                 onForeslaaFjern={(id) => foreslaa(id, "REMOVE")}
                 onFinn={() => setFane("finn")}
-                onFyll={() => kjor(() => fyllMedForslag({ spillerId }))} />
+                onFyll={() => kjor(() => (ref ? fyllReferanseplan({ wagrPlayerId }) : fyllMedForslag({ spillerId })))} />
               <Kalender plan={visning.plan} i={6} />
             </div>
             <div className="kolonne">
@@ -221,7 +225,7 @@ function PlanKort({ visning, rolle, ny, foreslatt, venter, onPrio, onFjern, onFo
     <article className="kort stig" style={vars({ "--i": 2 })}>
       <div className="kortHode"><h2>Plan 2027</h2><span className="forklaring">{visning.plan.length} turneringer{visning.stadium ? ` · nivå: ${visning.stadium.navn.toLowerCase()}` : ""}</span></div>
       <div className="tabell-ramme plan-ramme"><div className="plan turneringer">
-        <div className="t-hode"><span>Dato</span><span>Turnering</span><span className="h">Power</span><span className="h">Seier</span><span className="h">Topp 10</span><span className="h">Poeng</span><span>Prioritet</span><span className="skjult">Handling</span></div>
+        <div className="t-hode"><span>Dato</span><span>Turnering</span><span className="h">Power</span><span className="h">Seier</span><span className="h">Topp 10</span><span className="h">Poeng</span><span>{rolle === "referanse" ? "" : "Prioritet"}</span><span className="skjult">Handling</span></div>
         {visning.plan.length === 0 ? <p className="tomt">Planen er tom. {kanEndre ? "Legg til turneringer eller lag et forslag." : "Spilleren har ikke lagt inn turneringer ennå."}</p> : null}
         {visning.plan.map((p, i) => {
           const mndAv = (d: string | null) => (d ? d.slice(0, 7) : "");
@@ -248,7 +252,7 @@ function PlanKort({ visning, rolle, ny, foreslatt, venter, onPrio, onFjern, onFo
                 <span className="tall">{v ? pst(v.p10) : "—"}</span>
                 <span className="tall">{v ? nf(v.poeng, 1) : "—"}</span>
                 <div className="prio">
-                  {kanEndre ? (
+                  {rolle === "referanse" ? null : kanEndre ? (
                     <div className="velger liten" role="group" aria-label={`Prioritet for ${p.navn}`}>
                       {(["A", "B", "C"] as PlanTier[]).map((t) => (
                         <button key={t} type="button" className="velg" aria-pressed={p.tier === t} disabled={venter} onClick={() => onPrio(p.entryId, t)}>{t}</button>

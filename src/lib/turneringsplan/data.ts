@@ -14,8 +14,10 @@ import {
   type Felt, type Kjonn, type Merke, type PlanTier, type Sesonganslag, type Tellende, type Vurdering, type WagrModell,
 } from "./wagr-modell";
 import { hentWagrPlassForSpiller } from "@/lib/domain/tn-wagr-plass";
+import { referanseEventIder } from "./referanse-regler";
 
 type Db = Prisma.TransactionClient;
+type WagrPlanEventRad = Prisma.WagrPlanEventGetPayload<Record<string, never>>;
 export const SESONG = 2027;
 const SLUTT = `${SESONG}-12-26`;
 const REGIONER = new Set(["Europe", "North America"]);
@@ -75,22 +77,40 @@ async function hentModell(db: Db) {
   return m.success ? { id: run.id, builtAt: iso(run.builtAt), modell: m.data as WagrModell } : null;
 }
 
+type Nivaa = {
+  navn: string; fodselsdato: Date | null; fodselsaar: number | null;
+  styrke: { wagrId: number; theta: number; kj: Kjonn; runder: number; snitt: number | null; tellende: Tellende[] } | null;
+};
+
+async function hentStyrke(db: Db, runId: string, wagrId: number): Promise<Nivaa["styrke"]> {
+  const s = await db.wagrPlayerStrength.findUnique({ where: { modelRunId_wagrPlayerId: { modelRunId: runId, wagrPlayerId: wagrId } } });
+  if (!s || s.theta == null) return null;
+  const tellende = TellendeSchema.safeParse(s.counting);
+  return {
+    wagrId, theta: s.theta, kj: (s.gender === "K" ? "K" : "M") as Kjonn, runder: s.rounds, snitt: s.pointsAvg,
+    tellende: (tellende.success ? tellende.data : []) as Tellende[],
+  };
+}
+
 /** Spillerens nivå: koblet via public_players."wagrId". Null når spilleren ikke er koblet. */
-async function hentNivaa(db: Db, spillerId: string, runId: string) {
+async function hentNivaa(db: Db, spillerId: string, runId: string): Promise<Nivaa | null> {
   const u = await db.user.findUnique({ where: { id: spillerId }, select: { name: true, dateOfBirth: true, publicPlayer: { select: { wagrId: true, birthYear: true } } } });
   if (!u) return null;
   const wagrId = Number(u.publicPlayer?.wagrId);
-  const s = Number.isInteger(wagrId) && wagrId > 0
-    ? await db.wagrPlayerStrength.findUnique({ where: { modelRunId_wagrPlayerId: { modelRunId: runId, wagrPlayerId: wagrId } } })
-    : null;
-  const tellende = s ? TellendeSchema.safeParse(s.counting) : null;
   return {
     navn: u.name ?? "Spiller", fodselsdato: u.dateOfBirth, fodselsaar: u.publicPlayer?.birthYear ?? null,
-    styrke: s && s.theta != null ? {
-      wagrId, theta: s.theta, kj: (s.gender === "K" ? "K" : "M") as Kjonn, runder: s.rounds, snitt: s.pointsAvg,
-      tellende: (tellende?.success ? tellende.data : []) as Tellende[],
-    } : null,
+    styrke: Number.isInteger(wagrId) && wagrId > 0 ? await hentStyrke(db, runId, wagrId) : null,
   };
+}
+
+/** Nivået til en WAGR-referansespiller uten HQ-bruker: navn fra `wagr_ref_players`, fødselsår via `public_players`. */
+async function hentReferanseNivaa(db: Db, wagrPlayerId: number, runId: string | null): Promise<Nivaa | null> {
+  const [ref, pp] = await Promise.all([
+    db.wagrRefPlayer.findUnique({ where: { wagrPlayerId }, select: { name: true } }),
+    db.publicPlayer.findUnique({ where: { wagrId: String(wagrPlayerId) }, select: { birthYear: true } }),
+  ]);
+  if (!ref) return null;
+  return { navn: ref.name, fodselsdato: null, fodselsaar: pp?.birthYear ?? null, styrke: runId ? await hentStyrke(db, runId, wagrPlayerId) : null };
 }
 
 // Sjanser for hele katalogen tar noen hundre millisekunder; samme kjøring og spiller gir samme tall.
@@ -115,27 +135,74 @@ async function hentKatalog(db: Db, fra: string) {
 }
 const feltAv = (raw: Prisma.JsonValue | null): Felt | null => { const f = FeltSchema.safeParse(raw); return f.success ? f.data : null; };
 
+type EntryRad = {
+  id: string; planTier: string | null; entryStatus: string; manualName: string | null; manualDate: Date | null;
+  wagrPlanEventId: string | null; tournament: { id: string; name: string; startDate: Date } | null; wagrPlanEvent: WagrPlanEventRad | null;
+};
+type ForslagKilde = { id: string; suggestion: Prisma.JsonValue; createdAt: Date; coach: { name: string | null } | null };
+/** Det som skiller en spillers egen plan fra en referanseplan: hvem, nivå, plass, rader og forslag. */
+type Kilde = {
+  id: string;
+  nivaa: (runId: string | null) => Promise<Nivaa | null>;
+  wagrPlass: () => Promise<{ plass: number | null } | null>;
+  entries: () => Promise<EntryRad[]>;
+  forslag: () => Promise<ForslagKilde[]>;
+};
+
 /** Bygger hele visningen for én spiller. `db` må komme fra tilgangsporten. */
 export async function byggPlanvisning(db: Db, spillerId: string, idag = new Date()): Promise<Planvisning | null> {
-  const modell = await hentModell(db);
-  const fra = iso(idag) > `${SESONG}-01-01` ? iso(idag) : `${SESONG}-01-01`;
-  const [nivaa, wagrPlass, entries, forslagRader] = await Promise.all([
-    modell ? hentNivaa(db, spillerId, modell.id) : db.user.findUnique({ where: { id: spillerId }, select: { name: true, dateOfBirth: true } })
-      .then((u) => (u ? { navn: u.name ?? "Spiller", fodselsdato: u.dateOfBirth, fodselsaar: null, styrke: null } : null)),
+  return byggFra(db, {
+    id: spillerId,
+    nivaa: (runId) => runId
+      ? hentNivaa(db, spillerId, runId)
+      : db.user.findUnique({ where: { id: spillerId }, select: { name: true, dateOfBirth: true } })
+        .then((u) => (u ? { navn: u.name ?? "Spiller", fodselsdato: u.dateOfBirth, fodselsaar: null, styrke: null } : null)),
     // WAGR-plassen vises fra wagr_ref_players, som resten av Team Norway; modellen gir bare sjanser.
-    hentWagrPlassForSpiller(db, spillerId),
-    db.tournamentEntry.findMany({
+    wagrPlass: () => hentWagrPlassForSpiller(db, spillerId),
+    entries: () => db.tournamentEntry.findMany({
       where: { userId: spillerId, entryStatus: { in: ["PLANNED", "CLAIMED_REGISTERED", "CONFIRMED"] } },
       select: {
         id: true, planTier: true, entryStatus: true, manualName: true, manualDate: true, wagrPlanEventId: true,
         tournament: { select: { id: true, name: true, startDate: true } }, wagrPlanEvent: true,
       },
     }),
-    db.planAction.findMany({
+    forslag: () => db.planAction.findMany({
       where: { userId: spillerId, actionType: FORSLAG_TYPE, status: "PENDING" },
       orderBy: { createdAt: "desc" }, take: 40,
       select: { id: true, suggestion: true, createdAt: true, coach: { select: { name: true } } },
     }),
+  }, idag);
+}
+
+/**
+ * Referanseplanen for en WAGR-spiller uten HQ-bruker (`wagr_reference_plans`, delt mellom trenerne).
+ * Raden lagrer bare WAGR-turnerings-ID-er, så prioritet og forslag finnes ikke her. Tilgangen er sjekket av kalleren.
+ */
+export async function byggReferansePlanvisning(db: Db, wagrPlayerId: number, idag = new Date()): Promise<Planvisning | null> {
+  return byggFra(db, {
+    id: String(wagrPlayerId),
+    nivaa: (runId) => hentReferanseNivaa(db, wagrPlayerId, runId),
+    wagrPlass: () => db.wagrRefPlayer.findUnique({ where: { wagrPlayerId }, select: { rank: true } }).then((r) => (r ? { plass: r.rank } : null)),
+    entries: async () => {
+      const rad = await db.wagrReferencePlan.findUnique({ where: { wagrPlayerId_season: { wagrPlayerId, season: SESONG } }, select: { events: true } });
+      const ider = referanseEventIder(rad?.events);
+      if (!ider.length) return [];
+      const eventer = await db.wagrPlanEvent.findMany({ where: { season: SESONG, wagrEventId: { in: ider } } });
+      return eventer.map((e) => ({
+        id: `ref:${e.wagrEventId}`, planTier: "B", entryStatus: "PLANNED", manualName: e.name, manualDate: null,
+        wagrPlanEventId: e.id, tournament: null, wagrPlanEvent: e,
+      }));
+    },
+    forslag: async () => [],
+  }, idag);
+}
+
+async function byggFra(db: Db, kilde: Kilde, idag: Date): Promise<Planvisning | null> {
+  const spillerId = kilde.id;
+  const modell = await hentModell(db);
+  const fra = iso(idag) > `${SESONG}-01-01` ? iso(idag) : `${SESONG}-01-01`;
+  const [nivaa, wagrPlass, entries, forslagRader] = await Promise.all([
+    kilde.nivaa(modell?.id ?? null), kilde.wagrPlass(), kilde.entries(), kilde.forslag(),
   ]);
   if (!nivaa) return null;
   const [fornavn, ...rest] = nivaa.navn.trim().split(/\s+/);
@@ -201,7 +268,10 @@ export async function byggPlanvisning(db: Db, spillerId: string, idag = new Date
 
 /** Forslag til plan for spilleren: de WAGR-turneringene som ikke alt står i planen. */
 export async function forslagTilPlan(db: Db, spillerId: string): Promise<{ id: string; tier: PlanTier }[]> {
-  const v = await byggPlanvisning(db, spillerId);
+  return forslagFraVisning(await byggPlanvisning(db, spillerId));
+}
+
+export function forslagFraVisning(v: Planvisning | null): { id: string; tier: PlanTier }[] {
   if (!v || !v.stadium) return [];
   const iPlan = new Set(v.plan.flatMap((p) => (p.rad ? [p.rad.id] : [])));
   const kand = v.katalog.filter((k) => k.v && !iPlan.has(k.id))
