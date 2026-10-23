@@ -73,3 +73,9 @@ Samme tilgangskrav må omfatte resterende profiler og lesere i AgencyOS (`coache
 
 
 Oppfølgende grensekontroll: et gammelt foresattflagg etter 16-årsdagen gir ikke forelder rett til å endre det nye valget, slik at et trekk aldri bekreftes uten effekt. 21 nye målrettede kildetester og 4 komponenttester består. Lokal nettleserprøve av det faktiske kortet med syntetiske server-svar består: gi/trekk, ventetilstand, avslag, unntak og foresatt-ruting. Skjermbilder på 390/1280 px i lyst/mørkt viser ingen horisontal overflyt. Dette er isolert komponentprøving med appens farge-/stilfiler og lokal reservefont, ikke full innlogget brukerreise eller designgodkjenning. Lokal rigg og skjermbilder er ignorert under `_archive/coach-c1-qa-20261023/`.
+
+### Oppfølging av GitHub-kontrollen
+
+Commit `554d4e2d9` bestod lokal fullkontroll (5 615 kildetester og 245 komponenttester) og Vercel-forhåndsvisning, men [GitHub-kjøring 39894052416](https://github.com/akgolfsoftware/Golf_Headquarters/actions/runs/39894052416) feilet på formatet i samtykkekortets `Avvik`-kommentar. Den lokale kontrollen hadde oversett den nye filen fordi den ennå ikke var lagt til i Git. Dette var en reell forskjell mellom lokal kontroll og CI, ikke en bestått CI-kjøring.
+
+Kommentaren følger nå kontrollens eksisterende format. Fasit-kontrollen inkluderer også nye, ikke-ignorerte filer under `src/` før `git add`, med NUL-separator for filnavn. Kontrollreglene og designautoriteten er uendret. En regresjonstest i et isolert Git-repo gjenskaper feilen og kontrollerer samtidig endrede, staged, ignorerte og uvedkommende filer. Alle 13 målrettede tester og fasit-kontrollen består. Fullkontroll og ny CI registreres først etter faktisk fullføring i PR og sesjonslogg. Denne rettingen endrer verken samtykke, spillerdata eller skjermens oppførsel.

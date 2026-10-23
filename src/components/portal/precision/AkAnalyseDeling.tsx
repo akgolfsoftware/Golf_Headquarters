@@ -2,7 +2,8 @@
 
 /**
  * Fasit: docs/design-system/utkast-playerhq/meg.html, PH-27 Deling.
- * Avvik: eget formål for gruppeanalyse bruker eksisterende samtykkekort og Knapp.
+ * Avvik:
+ *   - Eget formål for gruppeanalyse bruker eksisterende samtykkekort og Knapp.
  * Dette kortet endrer bare treningsgrunnlaget i gruppeanalysen, ikke annen trenerdeling.
  */
 import { useState, useTransition } from "react";
