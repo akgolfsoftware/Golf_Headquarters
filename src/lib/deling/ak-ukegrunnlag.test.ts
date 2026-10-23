@@ -14,7 +14,7 @@ const job = { gruppeId: "g", coachId: "c" };
 const week = "2026-10-26";
 beforeEach(() => {
   allowed = true; read = 0; writes = 0;
-  row = { fasiliteter: [], hcp: 12, preferanser: { okterPerUke: 4, dager: [1, 3] }, planer: [{ id: "plan", revisjon: "1", coachId: "c", fra: "2026-01-01", til: null }],
+  row = { nivaKildeGyldig: true, nivaTurneringer: [], koblingsVersjoner: null, fasiliteter: [], hcp: 12, preferanser: { okterPerUke: 4, dager: [1, 3] }, planer: [{ id: "plan", revisjon: "1", coachId: "c", fra: "2026-01-01", til: null }],
     sesonger: [{ id: "season", revisjon: "1" }],
     perioder: [{ id: "period", revisjon: "1", fase: "GRUNN", gruppeId: "g", budsjett: { TEK: 3 }, minutter: null, letteMinutter: null }],
     sg: [{ id: "sg", revisjon: "1", verdi: -1, omrade: "PUTT" }], turnering: null, fullforte: 2,

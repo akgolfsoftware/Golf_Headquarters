@@ -5,7 +5,7 @@ import { randomUUID } from "node:crypto";
 import { mock, test } from "node:test";
 import { Client } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "../../src/generated/prisma/client";
+import { Prisma, PrismaClient } from "../../src/generated/prisma/client";
 import { AK_PROFIL_VERSJON } from "../../src/lib/deling/ak-profil-regler";
 const connection = process.env.COACH_LOCK_TEST_DATABASE_URL;
 if (!connection) throw Error("Eksplisitt lokal COACH_LOCK_TEST_DATABASE_URL kreves");
@@ -16,6 +16,12 @@ if (target.hostname !== "127.0.0.1" || target.port !== "55922" || target.pathnam
 const schema = `ukegrunnlag_test_${randomUUID().replaceAll("-", "")}`;
 const options = `-c search_path=${schema}`;
 const db = new PrismaClient({ adapter: new PrismaPg({ connectionString: connection, options }, { schema }) });
+// Same SQL projection/locks as production; only the upstream namespace is
+// replaced by a controlled stand-in in this random local synthetic schema.
+mock.module("../../src/lib/profil-kobling/niva-kilde", { namedExports: {
+  nivaProfilFunksjon: Prisma.raw(`"${schema}".player_profile_for_user`),
+  nivaKoblinger: Prisma.raw(`"${schema}".profile_links`),
+} });
 mock.module("../../src/lib/prisma", { namedExports: { prisma: db } });
 
 test("Ukegrunnlag: tilgang og planendringer gjennom ekte SQL", async t => {
@@ -73,6 +79,7 @@ test("Ukegrunnlag: tilgang og planendringer gjennom ekte SQL", async t => {
         ('outside','private','COMPLETED','2026-10-22');
       INSERT INTO signals VALUES ('sg','p','SG_AREA',-1,'{"area":"PUTT"}','2026-10-22');`);
     await sql.query(await readFile(new URL('../fixtures/coach-week-facilities.sql',import.meta.url),'utf8'));
+    await sql.query(await readFile(new URL('../fixtures/coach-week-level.sql',import.meta.url),'utf8'));
     const { hentAkUkegrunnlag: hent, brukSammeAkUkegrunnlag: bruk } = await import('../../src/lib/deling/ak-ukegrunnlag');
     const { settAkProfilValg: sett } = await import('../../src/lib/deling/ak-profil-valg');
     const jobb = { gruppeId: 'a', coachId: 'coach-a' };
@@ -96,6 +103,65 @@ test("Ukegrunnlag: tilgang og planendringer gjennom ekte SQL", async t => {
       assert.deepEqual(await skriv(basis),{verdi:true});
       assert.ok(!JSON.stringify(basis.modell).includes('coach-a'));
       assert.ok(!JSON.stringify(basis.modell).includes('1984'));
+    });
+    const aar=Number(new Intl.DateTimeFormat('en-GB',{year:'numeric',timeZone:'Europe/Oslo'}).format(new Date()));
+    const resultat=(scores:number[],year=aar,klasse='G19')=>({start_date:`${year}-06-01`,year,klasse,plassering:1,
+      total_score:scores.reduce((a,b)=>a+b,0),runder:scores.map((score,i)=>({runde:i+1,score})),
+      turnering:'Syntetisk privat turneringsnavn',tournament_id:987654});
+    const profil={person:{name:'Syntetisk privat profilnavn',birth_year:2009},golf_id:['syntetisk-medlemsnummer'],
+      turneringer:[resultat([72,76]),resultat([40],aar,'G19N'),resultat([95],aar-1)]};
+    const kilde=async()=>{
+      await sql.query(`INSERT INTO profile_links (hq_user_id,status) VALUES ('p','confirmed')`);
+      await sql.query(`INSERT INTO profile_niva_fixture VALUES ('p',$1)`,[JSON.stringify(profil)]);
+    };
+    const ryddNiva=async()=>{await sql.query(`DELETE FROM profile_links; DELETE FROM profile_niva_fixture; UPDATE users SET hcp=NULL WHERE id='p'`);};
+    await t.test('confirmed gross results drive A–K; identity and raw scores never enter model fields',async()=>{
+      await kilde();await sql.query(`UPDATE users SET hcp=30 WHERE id='p'`);
+      try {
+        const basis=await les();assert.ok(basis);
+        assert.deepEqual(basis.niva,{kategori:'D',kilde:'BRUTTO_TURNERING',aar,runder:2,bruttoSnitt:74,hcp:30});
+        assert.equal(basis.modell.category,'D');assert.equal(basis.modell.categorySource,'BRUTTO_TURNERING');
+        for(const privateValue of ['Syntetisk privat profilnavn','syntetisk-medlemsnummer','Syntetisk privat turneringsnavn','987654']) {
+          assert.ok(!JSON.stringify(basis).includes(privateValue));
+        }
+        assert.ok(!JSON.stringify(basis.modell).includes('bruttoSnitt'));
+        assert.ok(!JSON.stringify(basis.modell).includes('hcp'));
+      } finally {await ryddNiva();}
+    });
+    await t.test('unconfirmed and other player results cannot replace explicitly labelled HCP estimate',async()=>{
+      await sql.query(`INSERT INTO profile_links (hq_user_id,status) VALUES ('p','pending'),('private','confirmed'); UPDATE users SET hcp=12 WHERE id='p'`);
+      await sql.query(`INSERT INTO profile_niva_fixture VALUES ('p',$1),('private',$1)`,[JSON.stringify(profil)]);
+      try {
+        const basis=await les();assert.ok(basis);assert.equal(basis.niva.kilde,'HCP_ESTIMAT');
+        assert.equal(basis.niva.bruttoSnitt,null);assert.equal(basis.niva.runder,0);
+        await sql.query(`UPDATE users SET hcp=NULL WHERE id='p'`);
+        assert.equal((await les())?.niva.kilde,'UKJENT');
+      } finally {await ryddNiva();}
+    });
+    await t.test('changed result content and revoked/reconfirmed links invalidate previous basis',async()=>{
+      await kilde();
+      try {
+        let basis=await les();assert.ok(basis);
+        await sql.query(`UPDATE profile_niva_fixture SET profile=$1 WHERE user_id='p'`,[JSON.stringify({...profil,turneringer:[resultat([80])]})]);
+        assert.equal(await skriv(basis),null);basis=await les();assert.ok(basis);
+        await sql.query(`UPDATE profile_links SET status='revoked' WHERE hq_user_id='p'`);
+        assert.equal(await skriv(basis),null);
+        await sql.query(`UPDATE profile_links SET status='confirmed' WHERE hq_user_id='p'`);
+        assert.equal(await skriv(basis),null);assert.ok(await les());
+      } finally {await ryddNiva();}
+    });
+    await t.test('malformed or unavailable source stops instead of silently falling back to HCP',async()=>{
+      await kilde();await sql.query(`UPDATE users SET hcp=12 WHERE id='p'`);
+      try {
+        for(const malformed of [{turneringer:[{year:aar}]},{turneringer:[['start_date','year','klasse','plassering','total_score','runder']]},{turneringer:[{...resultat([72]),runder:[{runde:1}]}]},
+          {turneringer:[{...resultat([72]),runder:[{runde:1,score:'72'}]}]}]) {
+          await sql.query(`UPDATE profile_niva_fixture SET profile=$1 WHERE user_id='p'`,[JSON.stringify(malformed)]);
+          assert.equal(await les(),null);
+        }
+        await sql.query(`ALTER FUNCTION player_profile_for_user(text,boolean) RENAME TO unavailable_profile`);
+        try {await assert.rejects(les());}
+        finally {await sql.query(`ALTER FUNCTION unavailable_profile(text,boolean) RENAME TO player_profile_for_user`);}
+      } finally {await ryddNiva();}
     });
     await t.test('facility additions, edits, restoration and deletion invalidate the captured state',async()=>{
       let basis=await les();assert.ok(basis);assert.deepEqual(basis.fasiliteter,[]);

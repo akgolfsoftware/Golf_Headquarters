@@ -321,3 +321,10 @@ Eksisterende anonymisering sletter ukeforslagsrader for kontoen som spiller/mott
 ### C1 ukeforslag: fasilitetskontroll uten nye modellfelt (23.10.2026)
 
 `ak-ukegrunnlag` velger nå egne `PlayerFacility.id`, radversjon og enum-validerte `capabilities` innen samme uttrykkelig delte AK-profil. Fasilitetsnavn, notater og radarmerke velges ikke. Kun kapabiliteter per sted inngår i lokalt kontrollgrunnlag; ID/versjon brukes i eksisterende databevisets fingeravtrykk. Ingen rå fasilitetskopi eller nye felt i PlanAction, modellargument, kontoeksport eller logg. Opprettelse/godkjenning validerer øvelsens eksisterende strukturerte krav mot ett registrert sted. Endret fasilitet gjør gammelt grunnlag utdatert. Ingen ny aktivering, samtykkeutvidelse eller juridisk sluttavklaring. Lengde-/miljø-/nivå- og øvrig fagkontroll gjenstår.
+
+
+### C1 ukeforslag: nivå fra bekreftet profilkilde (24.10.2026)
+
+Ukeforslagets serverlesing gjenbruker `dashboard.player_profile_for_user(userId,false)` etter eksisterende låst AK-profildeling. Funksjonen bearbeider eksisterende profil i databasen, mens HQ-spørringen bare returnerer dato/år, klasse, plassering, total og rundenummer/bruttoscore nødvendig for felles nivåberegning. Personnavn, medlemsnummer, turneringsnavn, sted og øvrige profilfelt returneres ikke. Egne profilkoblingers ID/radversjon inngår kun som kontrollsum. Nivåets brutto snitt/rundeantall/handicap holdes i internt kontrollgrunnlag; planleggeren får kategori og fast kildeetikett, aldri rundeliste eller rå profil. Ingen faktisk skyforespørsel er aktivert.
+
+Resultatinnhold, Oslo-år og koblingsversjoner inngår i eksisterende databevisets fingeravtrykk. Ingen ny resultatkopi, persondatatabell, forslagsfelt, logg eller oppbevaringstid opprettes. Dette er ikke dokumentasjon på anonymitet. Kildeavvik stopper behandlingen; gamle bevis oppgraderes ikke. Kontoeksport/anonymisering av ukeforslag beholder forrige avgrensning, og originale resultater/profilkoblinger følger den eksisterende kildens rettighetsflyt. Ingen juridisk utvidelse av samtykke eller bakgrunnsformål.

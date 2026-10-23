@@ -5,7 +5,7 @@ import { randomUUID } from "node:crypto";
 import { mock, test } from "node:test";
 import { Client } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "../../src/generated/prisma/client";
+import { Prisma, PrismaClient } from "../../src/generated/prisma/client";
 import { AK_PROFIL_VERSJON } from "../../src/lib/deling/ak-profil-regler";
 const connection = process.env.COACH_LOCK_TEST_DATABASE_URL;
 if (!connection) throw Error("Eksplisitt lokal COACH_LOCK_TEST_DATABASE_URL kreves");
@@ -16,6 +16,12 @@ if (target.hostname !== "127.0.0.1" || target.port !== "55922" || target.pathnam
 const schema = `ukegodkjenning_test_${randomUUID().replaceAll("-", "")}`;
 const options = `-c search_path=${schema} -c application_name=${schema}`;
 const db = new PrismaClient({ adapter: new PrismaPg({ connectionString: connection, options }, { schema }) });
+// Same SQL projection/locks as production; only the upstream namespace is
+// replaced by a controlled stand-in in this random local synthetic schema.
+mock.module("../../src/lib/profil-kobling/niva-kilde", { namedExports: {
+  nivaProfilFunksjon: Prisma.raw(`"${schema}".player_profile_for_user`),
+  nivaKoblinger: Prisma.raw(`"${schema}".profile_links`),
+} });
 mock.module("../../src/lib/prisma", { namedExports: { prisma: db } });
 let entryViewer={id:'coach-a',role:'COACH'};
 mock.module("../../src/lib/auth/requirePortalUser",{namedExports:{requirePortalUser:async()=>entryViewer}});
@@ -84,6 +90,7 @@ test("Ukeforslag: atomisk plan, V2 og beslutningsspor", async t => {
       VALUES ('drill','Syntetisk putting','TEK','SYSTEM',ARRAY['GRUNN']::"LPhase"[],now());
       UPDATE period_blocks SET "weeklySessionBudget"='{"TEK":1}' WHERE id='period';`);
     await sql.query(await readFile(new URL('../fixtures/coach-week-facilities.sql',import.meta.url),'utf8'));
+    await sql.query(await readFile(new URL('../fixtures/coach-week-level.sql',import.meta.url),'utf8'));
     const { hentAkUkegrunnlag } = await import('../../src/lib/deling/ak-ukegrunnlag');
     const { behandleAkUkeforslag: behandle } = await import('../../src/lib/deling/ak-ukeforslag');
     const { settAkProfilValg: sett } = await import('../../src/lib/deling/ak-profil-valg');
@@ -330,7 +337,7 @@ test("Ukeforslag: atomisk plan, V2 og beslutningsspor", async t => {
     await t.test('generator captures server evidence, passes only model fields and requires explicit approval',async()=>{
       await reset();const candidate=await utkast();
       const r=await generer(jobb,'p','2026-10-26',async input=>{
-        assert.deepEqual(Object.keys(input).sort(),['category','context','signals']);
+        assert.deepEqual(Object.keys(input).sort(),['category','categorySource','context','signals']);
         assert.deepEqual(Object.keys(input.context).sort(),['completedSessions','daysUntilTournament','sgWeaknesses']);
         assert.deepEqual(Object.keys(input.signals).sort(),['aktivFase','foretrukneDager','okterPerUke']);
         input.signals.aktivFase='TURNERING'; // cannot change the captured DB basis
@@ -396,6 +403,60 @@ test("Ukeforslag: atomisk plan, V2 og beslutningsspor", async t => {
       } finally {await sql.query('COMMIT');}
       try {await denied;assert.equal(blocked,true);assert.deepEqual(await counts(),empty);}
       finally {await reset();await sql.query(`DELETE FROM player_facilities`);}
+    });
+    const aar=Number(new Intl.DateTimeFormat('en-GB',{year:'numeric',timeZone:'Europe/Oslo'}).format(new Date()));
+    const nivaProfil=(score:number)=>({person:{name:'Syntetisk privat profilnavn'},turneringer:[{
+      start_date:`${aar}-06-01`,year:aar,klasse:'G19',plassering:1,total_score:score,runder:[{runde:1,score}]}]});
+    const settNiva=async(score:number)=>{
+      await sql.query(`INSERT INTO profile_niva_fixture VALUES ('p',$1) ON CONFLICT(user_id) DO UPDATE SET profile=excluded.profile`,[JSON.stringify(nivaProfil(score))]);
+    };
+    const ryddNiva=async()=>{
+      await reset();await sql.query(`DELETE FROM profile_links; DELETE FROM profile_niva_fixture;
+        UPDATE exercise_definitions SET "minKategori"=NULL,"maxKategori"=NULL,"minHcp"=NULL,"maxHcp"=NULL WHERE id='drill'`);
+    };
+    await t.test('generation and approval both enforce declared level; unknown is not guessed',async()=>{
+      await reset();await sql.query(`UPDATE exercise_definitions SET "minKategori"='D',"maxKategori"='D' WHERE id='drill'`);
+      try {
+        await assert.rejects(generer(jobb,'p','2026-10-26',utkast),/ovelse-passer-ikke-spillerniva/);
+        let action=await opprett();await assert.rejects(behandle(viewer,action.id,'ACCEPTED'),/ovelse-passer-ikke-spillerniva/);
+        assert.deepEqual(await counts(),empty);await reset();
+        await sql.query(`INSERT INTO profile_links(hq_user_id,status) VALUES ('p','confirmed')`);await settNiva(70);
+        await assert.rejects(generer(jobb,'p','2026-10-26',utkast),/ovelse-passer-ikke-spillerniva/);
+        await settNiva(74);
+        const result=await generer(jobb,'p','2026-10-26',async input=>{
+          assert.equal(input.category,'D');assert.equal(input.categorySource,'BRUTTO_TURNERING');
+          assert.ok(!JSON.stringify(input).includes('Syntetisk privat'));return utkast();
+        });
+        assert.equal(result.status,'OPPRETTET');assert.ok('id' in result);
+        assert.equal((await behandle(viewer,result.id,'ACCEPTED')).applied,true);
+        await reset();await sql.query(`UPDATE exercise_definitions SET "minHcp"=0 WHERE id='drill'`);
+        action=await opprett();await assert.rejects(behandle(viewer,action.id,'ACCEPTED'),/ovelse-passer-ikke-spillerniva/);
+        assert.deepEqual(await counts(),empty);
+      } finally {await ryddNiva();}
+    });
+    await t.test('new results during planning and before approval invalidate the captured level',async()=>{
+      await reset();await sql.query(`INSERT INTO profile_links(hq_user_id,status) VALUES ('p','confirmed')`);await settNiva(74);
+      try {
+        const result=await generer(jobb,'p','2026-10-26',async()=>{await settNiva(80);return utkast();});
+        assert.equal(result.status,'UTDATERT');assert.equal(await db.planAction.count(),0);
+        const action=await opprett();await settNiva(74);
+        await assert.rejects(behandle(viewer,action.id,'ACCEPTED'),/utdatert-ukegrunnlag/);assert.deepEqual(await counts(),empty);
+      } finally {await ryddNiva();}
+    });
+    await t.test('profile retraction committed while approval waits is checked after the lock',async()=>{
+      await reset();await sql.query(`INSERT INTO profile_links(hq_user_id,status) VALUES ('p','confirmed')`);await settNiva(74);
+      const action=await opprett();await sql.query('BEGIN');
+      await sql.query(`UPDATE profile_links SET status='revoked' WHERE hq_user_id='p'`);
+      const pending=behandle(viewer,action.id,'ACCEPTED');const denied=assert.rejects(pending,/utdatert-ukegrunnlag/);
+      let blocked=false;
+      try {
+        for(let i=0;i<100;i++) {
+          const lock=await admin.query(`SELECT 1 FROM pg_stat_activity WHERE application_name=$1 AND wait_event_type='Lock' AND query LIKE '%profile_links%' AND query LIKE '%FOR SHARE%'`,[schema]);
+          if(lock.rowCount){blocked=true;break;}await new Promise(r=>setTimeout(r,10));
+        }
+      } finally {await sql.query('COMMIT');}
+      try {await denied;assert.equal(blocked,true);assert.deepEqual(await counts(),empty);}
+      finally {await ryddNiva();}
     });
     await t.test('mutable caller routing cannot change the captured recipient',async()=>{
       await reset();const candidate=await utkast();const request={...jobb};

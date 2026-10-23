@@ -1,6 +1,7 @@
 import "server-only";
 import { z } from "zod";
 import { Prisma, LPhase } from "@/generated/prisma/client";
+import { ovelseMatcherAkNiva } from "./ak-spillerniva";
 import type { AkUkegrunnlag } from "./ak-ukegrunnlag";
 import type { AkUkeforslag } from "./ak-ukeforslag-format";
 
@@ -33,12 +34,13 @@ export async function kontrollerAkUkeforslag(tx: Prisma.TransactionClient, forsl
     SELECT id, xmin::text AS revisjon FROM exercise_definitions WHERE id IN (${Prisma.join(ids)}) ORDER BY id FOR SHARE`;
   const drills = await tx.exerciseDefinition.findMany({ where: { id: { in: ids }, OR: [
     { source: "SYSTEM" }, { source: "COACH", createdBy: forslag.deling.coachId },
-  ] }, select: { id: true, pyramidArea: true, lPhases: true, fasilitetKrav: true } });
+  ] }, select: { id: true, pyramidArea: true, lPhases: true, fasilitetKrav: true, minKategori: true, maxKategori: true, minHcp: true, maxHcp: true } });
   for (const s of sortert) {
     for (const d of s.drills) {
       const exercise = drills.find(e => e.id === d.exerciseId);
       if (!exercise || revisjoner.find(r => r.id === d.exerciseId)?.revisjon !== d.exerciseRevisjon || exercise.pyramidArea !== s.pyramidArea ||
         (exercise.lPhases.length && !exercise.lPhases.includes(fase.data))) throw Error("ugyldig-ukeovelse");
+      if (!ovelseMatcherAkNiva(exercise, grunnlag.niva)) throw Error("ovelse-passer-ikke-spillerniva");
       // A single recorded place must cover every structured requirement of
       // this exercise. Never combine unrelated places or trust old true defaults.
       // Empty requirements mean no special requirements in ExerciseDefinition;

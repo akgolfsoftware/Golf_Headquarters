@@ -2,7 +2,9 @@ import "server-only";
 import { createHash } from "node:crypto";
 import { z } from "zod";
 import { DrillFasilitet, type Prisma } from "@/generated/prisma/client";
-import { kategoriFraHcp } from "@/lib/ai-plan/context";
+import { osloAar } from "@/lib/domain/brutto-snitt";
+import { akNivaTurneringerSchema, beregnAkSpillerniva, type AkSpillerniva } from "./ak-spillerniva";
+import { nivaProfilFunksjon, nivaKoblinger } from "@/lib/profil-kobling/niva-kilde";
 import { canonicalJson } from "@/lib/agents/canonical-json";
 import { parseSessionBudget } from "@/lib/workbench/perioder";
 import type { AkGruppeoppdrag } from "./ak-gruppeoppdrag";
@@ -17,6 +19,7 @@ const periode = z.object({ id, revisjon: revision, fase: z.string(), gruppeId: i
   budsjett: z.unknown(), minutter: z.unknown(), letteMinutter: z.unknown() });
 const rad = z.object({
   hcp: z.number().nullable(), preferanser: z.unknown(),
+  nivaKildeGyldig: z.literal(true), nivaTurneringer: akNivaTurneringerSchema, koblingsVersjoner: z.string().nullable(),
   fasiliteter: z.array(z.object({ id, revisjon: revision, capabilities: z.array(z.enum(DrillFasilitet)) })),
   planer: z.array(z.object({ id, revisjon: revision, coachId: id.nullable(), fra: z.string(), til: z.string().nullable() })).max(2),
   sesonger: z.array(z.object({ id, revisjon: revision })).max(2),
@@ -39,10 +42,12 @@ type UkeData = {
   harManedsEllerUkevalg: boolean;
   /** Local validation only; never part of the model payload. No names/notes. */
   fasiliteter: Array<{ capabilities: DrillFasilitet[] }>;
+  niva: AkSpillerniva;
   modell: {
     context: { daysUntilTournament: number | null; completedSessions: number; sgWeaknesses: string[] };
     signals: { aktivFase: string | null; okterPerUke: number | null; foretrukneDager: number[] };
-    category: ReturnType<typeof kategoriFraHcp> | null;
+    category: AkSpillerniva["kategori"];
+    categorySource: AkSpillerniva["kilde"];
   };
 };
 export const akUkeDatabevisSchema = z.object({ versjon: z.literal(1), uke: uke, planId: id,
@@ -60,7 +65,9 @@ async function les(tx: Tx, spillerWhere: Prisma.UserWhereInput, jobb: AkGruppeop
   const slutt = new Date(start.getTime() + 7 * 86_400_000);
   const fra = new Date(start.getTime() - 14 * 86_400_000);
   const rader = await tx.$queryRaw<unknown[]>`
-    WITH planer AS (
+    WITH profil AS MATERIALIZED (
+      SELECT ${nivaProfilFunksjon}(${spiller.id}::text, false) AS data
+    ), planer AS (
       SELECT p.id, p.xmin::text AS revisjon, p."createdById" AS "coachId", p."startDate" AS fra, p."endDate" AS til
       FROM training_plans p WHERE p."userId" = ${spiller.id} AND p."isActive" = true
       ORDER BY p.id LIMIT 2
@@ -91,6 +98,24 @@ async function les(tx: Tx, spillerWhere: Prisma.UserWhereInput, jobb: AkGruppeop
     )
     SELECT u.hcp, jsonb_build_object('okterPerUke',u.preferences #> '{trening,okterPerUke}',
       'dager',u.preferences #> '{trening,dager}') AS preferanser,
+      (SELECT CASE WHEN p.data IS NULL THEN
+          (SELECT count(*) = 0 FROM ${nivaKoblinger} l WHERE l.hq_user_id = u.id AND l.status = 'confirmed')
+        ELSE (SELECT count(*) = 1 FROM ${nivaKoblinger} l WHERE l.hq_user_id = u.id AND l.status = 'confirmed')
+          AND jsonb_typeof(p.data->'turneringer') = 'array'
+          AND NOT EXISTS (SELECT 1 FROM jsonb_array_elements(p.data->'turneringer') t
+            WHERE jsonb_typeof(t) <> 'object' OR NOT (t ?& ARRAY['start_date','year','klasse','plassering','total_score','runder'])
+              OR EXISTS (SELECT 1 FROM jsonb_array_elements(NULLIF(t->'runder','null'::jsonb)) r
+                WHERE jsonb_typeof(r) <> 'object' OR NOT (r ?& ARRAY['runde','score']))) END
+        FROM profil p) AS "nivaKildeGyldig",
+      (SELECT md5(string_agg(l.id::text || ':' || l.xmin::text, ',' ORDER BY l.id))
+        FROM ${nivaKoblinger} l WHERE l.hq_user_id = u.id) AS "koblingsVersjoner",
+      (SELECT COALESCE(jsonb_agg(jsonb_build_object(
+        'start_date',t->'start_date','year',t->'year','klasse',t->'klasse',
+        'plassering',t->'plassering','total_score',t->'total_score',
+        'runder',CASE WHEN t->'runder' = 'null'::jsonb THEN NULL ELSE
+          (SELECT COALESCE(jsonb_agg(jsonb_build_object('runde',r->'runde','score',r->'score') ORDER BY r->'runde'),'[]')
+            FROM jsonb_array_elements(t->'runder') r) END
+      ) ORDER BY t::text), '[]') FROM profil p, jsonb_array_elements(p.data->'turneringer') t) AS "nivaTurneringer",
       COALESCE((SELECT jsonb_agg(jsonb_build_object('id',f.id,'revisjon',f.xmin::text,
         'capabilities',f.capabilities) ORDER BY f.id) FROM player_facilities f WHERE f."userId" = u.id), '[]') AS fasiliteter,
       COALESCE((SELECT jsonb_agg(p ORDER BY p.id) FROM planer p), '[]') AS planer,
@@ -125,13 +150,13 @@ async function les(tx: Tx, spillerWhere: Prisma.UserWhereInput, jobb: AkGruppeop
   const aktiv = data.perioder[0] ?? null;
   if (aktiv?.gruppeId && aktiv.gruppeId !== jobb.gruppeId) return null;
   const prefs = preferanser.parse(data.preferanser);
-  const hcp = z.number().min(-10).max(54).safeParse(data.hcp);
+  const niva = beregnAkSpillerniva(data.nivaTurneringer, data.hcp, osloAar(new Date()));
   const dato = data.turnering ? new Date(data.turnering.dato) : null;
   if (dato && !Number.isFinite(dato.getTime())) return null;
   const verdi: UkeData = {
     planId: data.planer[0].id, periodeId: aktiv?.id ?? null, budsjett: parseSessionBudget(aktiv?.budsjett),
     harManedsEllerUkevalg: data.manedVersjoner !== null || data.ukeVersjoner !== null,
-    fasiliteter: data.fasiliteter.map(f => ({ capabilities: f.capabilities })),
+    fasiliteter: data.fasiliteter.map(f => ({ capabilities: f.capabilities })), niva,
     modell: {
       context: { daysUntilTournament: dato ? Math.ceil((dato.getTime() - start.getTime()) / 86_400_000) : null,
         completedSessions: data.fullforte,
@@ -140,11 +165,11 @@ async function les(tx: Tx, spillerWhere: Prisma.UserWhereInput, jobb: AkGruppeop
           return omrade.success && s.verdi !== null && Number.isFinite(s.verdi) && s.verdi < 0 ? [omrade.data] : [];
         }))] },
       signals: { aktivFase: aktiv?.fase ?? null, okterPerUke: prefs.okterPerUke, foretrukneDager: prefs.dager },
-      category: hcp.success ? kategoriFraHcp(hcp.data) : null,
+      category: niva.kategori, categorySource: niva.kilde,
     },
   };
   return { verdi, databevis: { versjon: 1 as const, uke: ukeStart, planId: verdi.planId,
-    fingeravtrykk: createHash('sha256').update(canonicalJson([1, ukeStart, data])).digest('hex') } };
+    fingeravtrykk: createHash('sha256').update(canonicalJson([1, ukeStart, niva.aar, data])).digest('hex') } };
 }
 
 /** Server-only capture. No model call, queue record or purpose activation. */
@@ -193,6 +218,9 @@ export async function laasOgLesSammeAkUkegrunnlag(tx: Tx, scope: Prisma.UserWher
     // and persistence. An added facility only broadens options; the fresh
     // snapshot below still detects additions committed before that read.
     await tx.$queryRaw`SELECT id FROM player_facilities WHERE "userId" = ${spiller.id} ORDER BY id FOR SHARE`;
+    // A revoked/reconfirmed profile link is a new revision, even if the scores
+    // are identical. Existing links cannot change while this decision commits.
+    await tx.$queryRaw`SELECT id FROM ${nivaKoblinger} WHERE hq_user_id = ${spiller.id} ORDER BY id FOR SHARE`;
     // READ COMMITTED deliberately: changes committed while waiting for a lock
     // must be visible to this new statement, including a just-revoked sharing row.
     const ferskt = await les(tx, scope, jobb, forventet.uke);
