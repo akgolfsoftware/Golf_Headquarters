@@ -7,11 +7,16 @@ type Resultat = Awaited<ReturnType<Leser["hentAkTreningsobservasjoner"]>>;
 const viewer = { id: "synthetic-coach", role: "ADMIN" as const, name: "Syntetisk trener" };
 const spillerScope = { id: "synthetic-player" };
 let tillatt = true;
+let forventetRolle = "ADMIN";
+let lesefeil = false;
 let antall = 1;
 let finnKall: Prisma.PlanActionFindManyArgs[] = [];
 let telleKall: Prisma.PlanActionCountArgs[] = [];
 let gruppeKall: Prisma.PlanActionGroupByArgs[] = [];
 let foresporselKall: Prisma.SessionRequestFindManyArgs[] = [];
+let foresporselTelleKall: Prisma.SessionRequestCountArgs[] = [];
+let caddieTelleKall: Prisma.CaddieDraftCountArgs[] = [];
+let kommandoKall: Prisma.KommandoAgentRunCountArgs[] = [];
 let leseKall: Parameters<Leser["hentAkTreningsobservasjoner"]>[1][] = [];
 let uten: Prisma.PlanActionWhereInput;
 let begrens: Leser["begrensForslagsliste"];
@@ -24,18 +29,21 @@ mock.module("@/lib/prisma", { namedExports: { prisma: {
     count: async (args: Prisma.PlanActionCountArgs) => { telleKall.push(args); return 0; },
     groupBy: async (args: Prisma.PlanActionGroupByArgs) => { gruppeKall.push(args); return []; },
   },
-  sessionRequest: { findMany: async (args: Prisma.SessionRequestFindManyArgs) => { foresporselKall.push(args); return []; } },
+  sessionRequest: { count: async (args: Prisma.SessionRequestCountArgs) => { foresporselTelleKall.push(args); return 3; }, findMany: async (args: Prisma.SessionRequestFindManyArgs) => { foresporselKall.push(args); return []; } },
   user: { findMany: tom, count: async () => 0 },
-  booking: { findMany: tom }, caddieDraft: { findMany: tom }, notification: { findMany: tom },
+  booking: { findMany: tom }, caddieDraft: { findMany: tom, count: async (args: Prisma.CaddieDraftCountArgs) => { caddieTelleKall.push(args); return 2; } }, notification: { findMany: tom },
   appFeedback: { findMany: tom }, sak: { findMany: tom }, oppgaveCache: { findMany: tom }, subscription: { findMany: tom },
   round: { aggregate: async () => ({ _avg: { sgTotal: null } }) },
   trainingPlanSession: { groupBy: tom }, signal: { count: async () => 0 },
+  kommandoAgentRun: { count: async (args: Prisma.KommandoAgentRunCountArgs) => { kommandoKall.push(args); return args.where?.status === "running" ? 1 : 0; } },
   agentRun: { findMany: tom, count: async () => 0, findFirst: async () => null },
 } } });
 
 let workbench: typeof import("./workbench-oppgaver");
 let agenticos: typeof import("./last-agenticos");
 let brief: typeof import("./daily-brief-data");
+let dispatch: typeof import("./ai-dispatch-data");
+let kanoniskKo: typeof import("@/lib/admin/ko-telling");
 let innboks: typeof import("@/lib/admin/innboks-saker");
 before(async () => {
   const ekte = await import("@/lib/deling/ak-treningsobservasjon");
@@ -44,7 +52,8 @@ before(async () => {
   mock.module("@/lib/deling/ak-treningsobservasjon", { namedExports: {
     ...ekte,
     hentAkTreningsobservasjoner: async (aktor: typeof viewer, valg: Parameters<Leser["hentAkTreningsobservasjoner"]>[1] = {}): Promise<Resultat> => {
-      assert.equal(aktor.id, viewer.id); assert.equal(aktor.role, viewer.role);
+      assert.equal(aktor.id, viewer.id); assert.equal(aktor.role, forventetRolle);
+      if (lesefeil) throw new Error("synthetic-sharing-unavailable");
       leseKall.push(valg);
       const historikk = Array.isArray(valg.status);
       const rader = Array.from({ length: tillatt ? antall : 0 }, (_, i) => ({
@@ -64,8 +73,10 @@ before(async () => {
   agenticos = await import("./last-agenticos");
   brief = await import("./daily-brief-data");
   innboks = await import("@/lib/admin/innboks-saker");
+  dispatch = await import("./ai-dispatch-data");
+  kanoniskKo = await import("@/lib/admin/ko-telling");
 });
-beforeEach(() => { tillatt = true; antall = 1; finnKall = []; telleKall = []; gruppeKall = []; foresporselKall = []; leseKall = []; });
+beforeEach(() => { tillatt = true; forventetRolle = "ADMIN"; lesefeil = false; antall = 1; finnKall = []; telleKall = []; gruppeKall = []; foresporselKall = []; foresporselTelleKall = []; caddieTelleKall = []; kommandoKall = []; leseKall = []; });
 
 function kontrollerEldreLesere() {
   for (const args of [...finnKall, ...telleKall, ...gruppeKall]) assert.deepEqual(args.where?.NOT, uten.NOT);
@@ -135,4 +146,47 @@ test("blandede kilder begrenses samlet og bruker stabil rekkefølge ved samme ti
   assert.deepEqual(begrens([gammel, nyere, lik], 2).map(r => r.id), ["c", "b"]);
   assert.deepEqual(begrens([nyere, lik, gammel], 2, true).map(r => r.id), ["a", "b"]);
   assert.deepEqual(begrens([gammel], 0), []);
+});
+
+
+test("AI-dispatch teller samme tillatte saker som køen, også for ADMIN og etter trekk", async () => {
+  antall = 4;
+  const resultat = await dispatch.loadAiDispatch(viewer);
+  const ko = await kanoniskKo.koTelling(viewer.id, viewer.role);
+  assert.equal(resultat.tellinger.planActions, ko.planActions);
+  assert.equal(resultat.tellinger.planActions, 4);
+  assert.equal(resultat.tellinger.caddieDrafts, ko.caddieDrafts);
+  assert.equal(resultat.tellinger.sessionRequests, ko.sessionRequests);
+  assert.equal(resultat.tellinger.agentRunsRunning, 1);
+  kontrollerEldreLesere();
+  assert.deepEqual(telleKall[0].where?.OR, [{ coachId: viewer.id }, { coachId: null }]);
+  assert.deepEqual(foresporselTelleKall[0].where, { status: "PENDING", OR: [{ coachId: viewer.id }, { coachId: null }], user: spillerScope });
+  assert.deepEqual(caddieTelleKall[0].where, { status: "PENDING", userId: viewer.id });
+  assert.ok(kommandoKall.every(k => k.where?.userId === viewer.id));
+  assert.ok(leseKall.every(k => k?.maksRader === 0));
+  tillatt = false;
+  const etter = await dispatch.loadAiDispatch(viewer);
+  assert.equal(etter.tellinger.planActions, 0);
+  assert.equal(etter.rader.some(r => r.id === "plan-actions"), false);
+  assert.equal(etter.tellinger.sessionRequests, 3);
+  assert.equal(etter.tellinger.caddieDrafts, 2);
+});
+
+
+test("AI-dispatch beholder COACH-rollen og egne kjøringer uten å åpne Caddie-adminvisningen", async () => {
+  forventetRolle = "COACH";
+  const resultat = await dispatch.loadAiDispatch({ ...viewer, role: "COACH" });
+  assert.equal(resultat.tellinger.planActions, 1);
+  assert.equal(resultat.tellinger.caddieDrafts, 0);
+  assert.equal(resultat.tellinger.sessionRequests, 3);
+  assert.deepEqual(telleKall[0].where?.user, spillerScope);
+  assert.deepEqual(telleKall[0].where?.OR, [{ coachId: viewer.id }, { coachId: null }]);
+  kontrollerEldreLesere();
+});
+
+test("AI-dispatch avviser ved feil i fersk delingskontroll, uten global reservetelling", async () => {
+  lesefeil = true;
+  await assert.rejects(() => dispatch.loadAiDispatch(viewer), /synthetic-sharing-unavailable/);
+  assert.equal(telleKall.length, 1);
+  kontrollerEldreLesere();
 });

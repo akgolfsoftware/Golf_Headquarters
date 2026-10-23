@@ -4,7 +4,7 @@
 
 import "server-only";
 import { prisma } from "@/lib/prisma";
-import { coachScopedPlayerWhere } from "@/lib/auth/coached";
+import { koTelling } from "@/lib/admin/ko-telling";
 import type { UserRole } from "@/generated/prisma/client";
 import {
   byggAiDispatch,
@@ -30,50 +30,29 @@ export async function loadAiDispatch(
   viewer: LoadAiDispatchOpts,
 ): Promise<AiDispatchData> {
   const isAdmin = viewer.role === "ADMIN";
-  const playerScope = coachScopedPlayerWhere(viewer);
-
-  const planActionWhere = isAdmin
-    ? { status: "PENDING" as const }
-    : {
-        status: "PENDING" as const,
-        OR: [{ coachId: viewer.id }, { user: playerScope }],
-      };
-
-  const sessionWhere = isAdmin
-    ? { status: "PENDING" as const }
-    : {
-        status: "PENDING" as const,
-        OR: [{ coachId: viewer.id }, { user: playerScope }],
-      };
-
   const siden24t = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
-  const [planActions, caddieDrafts, sessionRequests, agentRunsRunning, agentRunsFailed] =
-    await Promise.all([
-      prisma.planAction.count({ where: planActionWhere }),
-      isAdmin
-        ? prisma.caddieDraft.count({
-            where: { status: "PENDING", userId: viewer.id },
-          })
-        : Promise.resolve(0),
-      prisma.sessionRequest.count({ where: sessionWhere }),
-      prisma.kommandoAgentRun.count({
-        where: { userId: viewer.id, status: "running" },
-      }),
-      prisma.kommandoAgentRun.count({
-        where: {
-          userId: viewer.id,
-          status: "failed",
-          createdAt: { gte: siden24t },
-        },
-      }),
-    ]);
+  // Samme mottaker, spillerutvalg og ferske observasjonsdeling som køen
+  // brukeren åpner. ADMIN har ingen separat global reservevei.
+  const [ko, agentRunsRunning, agentRunsFailed] = await Promise.all([
+    koTelling(viewer.id, viewer.role),
+    prisma.kommandoAgentRun.count({
+      where: { userId: viewer.id, status: "running" },
+    }),
+    prisma.kommandoAgentRun.count({
+      where: {
+        userId: viewer.id,
+        status: "failed",
+        createdAt: { gte: siden24t },
+      },
+    }),
+  ]);
 
   return byggAiDispatch({
     isAdmin,
-    planActions,
-    caddieDrafts,
-    sessionRequests,
+    planActions: ko.planActions,
+    caddieDrafts: isAdmin ? ko.caddieDrafts : 0,
+    sessionRequests: ko.sessionRequests,
     agentRunsRunning,
     agentRunsFailed,
     innboksNye: viewer.innboksNye ?? 0,
