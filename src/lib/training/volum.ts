@@ -1,4 +1,4 @@
-import type { SgCategory } from "@/generated/prisma/client";
+import type { Prisma, SgCategory } from "@/generated/prisma/client";
 import { tilNaivVeggklokke } from "@/lib/google-calendar-tid";
 
 export interface TrainingLogInput {
@@ -69,11 +69,12 @@ export async function hentTreningsVolum(
   userId: string,
   uker: number = 8,
   now: Date = new Date(),
+  db?: Pick<Prisma.TransactionClient, "trainingLog">,
 ): Promise<UkeVolum[]> {
-  const { prisma } = await import("../prisma");
+  const klient = db ?? (await import("../prisma")).prisma;
   const { fra, til } = volumVindu(uker, now);
 
-  const logger = await prisma.trainingLog.findMany({
+  const logger = await klient.trainingLog.findMany({
     where: { userId, date: { gte: fra, lt: til } },
     select: { date: true, sgArea: true, minutes: true },
     orderBy: { date: "asc" },

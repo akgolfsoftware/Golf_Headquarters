@@ -25,12 +25,15 @@ export function akProfilGruppeWhere(viewer?: Viewer, modus: Modus = "les"): Pris
 }
 
 /** Tilgang og selve datalesingen er samme transaksjon. Ingen ID-liste caches utenfor. */
-export async function medAkProfiler<T>(viewer: Viewer, les: (tx: Tx, scope: Prisma.UserWhereInput) => Promise<T>, modus: Modus = "les"): Promise<T | null> {
+export async function medAkProfiler<T>(viewer: Viewer, les: (tx: Tx, scope: Prisma.UserWhereInput) => Promise<T>, modus: Modus = "les", avgrensning?: { gruppeId: string }): Promise<T | null> {
   if (!viewer.id || !["ADMIN", "COACH"].includes(viewer.role)) return null;
+  if (avgrensning && (typeof avgrensning.gruppeId !== "string" || !avgrensning.gruppeId.trim())) return null;
   return prisma.$transaction(async tx => {
     const aktorWhere = { id: viewer.id, deletedAt: null, role: viewer.role as "ADMIN" | "COACH" };
     if (!await tx.user.findFirst({ where: aktorWhere, select: { id: true } })) return null;
-    const kandidater = await tx.group.findMany({ where: akProfilGruppeWhere(viewer, modus), select: { id: true }, orderBy: { id: "asc" } });
+    const kandidater = await tx.group.findMany({ where: { ...akProfilGruppeWhere(viewer, modus),
+      ...(avgrensning ? { id: avgrensning.gruppeId } : {}),
+    }, select: { id: true }, orderBy: { id: "asc" } });
     const medlemskap: Array<{ id: string; userId: string }> = [];
     // Globalt sortert låserekkefølge. Samme gruppelås som gi/trekk; vanlige
     // medlems-/rolle-/arkiveringsskrivere blokkeres av de delte radlåsene.

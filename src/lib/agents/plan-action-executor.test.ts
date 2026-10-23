@@ -36,7 +36,7 @@ test("computeDelta PYRAMID_ADJUST legger til økt", () => {
   assert.equal(delta.sessionsToAdd[0].pyramidArea, "FYS");
 });
 
-test("computeDelta TRAINING_GAP mapper SG til skillArea", () => {
+test("eldre TRAINING_GAP gir faglig gjennomgang uten automatisk 75-minuttersøkt", () => {
   const delta = computeDelta(
     "TRAINING_GAP",
     {
@@ -45,9 +45,10 @@ test("computeDelta TRAINING_GAP mapper SG til skillArea", () => {
     },
     baseCtx,
   );
-  assert.equal(delta.sessionsToAdd.length, 1);
-  assert.equal(delta.sessionsToAdd[0].skillArea, "PUTTING");
-  assert.equal(delta.sessionsToAdd[0].pyramidArea, "SLAG");
+  assert.equal(delta.sessionsToAdd.length, 0);
+  assert.equal(delta.sessionsToRemove.length, 0);
+  assert.equal(delta.sessionsToModify.length, 0);
+  assert.match(delta.summary, /Ingen automatisk/);
 });
 
 test("computeDelta WEEK_SHIFT flytter planlagte økter", () => {

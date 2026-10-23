@@ -2,15 +2,12 @@ import { z } from "zod";
 import type {
   LPhase,
   PyramidArea,
-  SgCategory,
   SkillArea,
 } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { PYR_LABEL } from "@/lib/pyramide";
 import {
   runDrillSelectionSkill,
-  SG_TO_PYRAMID,
-  SG_TO_SKILL,
 } from "@/lib/training/skills";
 import {
   allocationForPeriod,
@@ -215,26 +212,8 @@ export function computeDelta(
     }
     case "TRAINING_GAP": {
       const s = trainingGapSchema.parse(suggestion);
-      const skillArea = SG_TO_SKILL[s.svakestOmraade as SgCategory];
-      const pyramidArea = SG_TO_PYRAMID[s.svakestOmraade as SgCategory];
-      const slot = nesteLedigeSlot(ctx.futureSessions);
-      return {
-        sessionsToAdd: [
-          {
-            title: `Gap-trening: ${s.svakestLabel ?? skillArea}`,
-            pyramidArea,
-            skillArea,
-            durationMin: 75,
-            scheduledAt: slot,
-            drillExerciseIds: [],
-          },
-        ],
-        sessionsToRemove: [],
-        sessionsToModify: [],
-        summary:
-          s.forklaring ??
-          `Øker fokus på ${s.svakestOmraade} etter treningsgap-analyse`,
-      };
+      return { sessionsToAdd: [], sessionsToRemove: [], sessionsToModify: [],
+        summary: `Faglig gjennomgang: ${s.forklaring ?? s.svakestLabel ?? s.svakestOmraade}. Ingen automatisk øktendring.` };
     }
     case "FOCUS_CHANGE": {
       const s = focusChangeSchema.parse(suggestion);
@@ -719,6 +698,13 @@ export async function executePlanAction(actionId: string): Promise<ExecuteResult
   if (action.actionType === "COACH_REVIEW") {
     const s = coachReviewSchema.parse(action.suggestion);
     return { applied: true, summary: `Vurdering gjennomgått: ${s.forklaring}`,
+      sessionsAdded: 0, sessionsRemoved: 0, sessionsModified: 0 };
+  }
+
+  // Eldre treningsgap-forslag er også observasjoner, aldri en fast 75-minuttersdose.
+  if (action.actionType === "TRAINING_GAP") {
+    const s = trainingGapSchema.parse(action.suggestion);
+    return { applied: true, summary: `Vurdering gjennomgått: ${s.forklaring ?? s.svakestLabel ?? s.svakestOmraade}`,
       sessionsAdded: 0, sessionsRemoved: 0, sessionsModified: 0 };
   }
 

@@ -253,3 +253,10 @@ Dette gir ikke leserett til private notater, meldingshistorikk, helse eller lyd 
 Bookingforslag og utførelse bruker nå eksisterende manuelle bookingregel med fersk kontorolle; COACH blir ikke oppgradert til ADMIN. Egen kunde-/leadrett er formålsavgrenset og gir ikke coachingprofil eller helseinnsyn. Fakturaforslag og utførelse krever aktuell ADMIN. E-postadresse er fjernet fra fakturaforslagets oppslag. Ingen nye datafelt eller oppbevaringstider.
 
 Rolle, nødvendige dataoppslag og godkjent databasehandling ligger i samme transaksjon; booking og appvarsel rulles samlet tilbake ved feil. Fakturastatus er låst under vurdering, og betalt/refundert rad gir ingen påminnelse. Dette utvider ikke behandlingsgrunnlag eller konkret utsendingstillatelse, og innebærer ikke juridisk godkjenning av purring. Tidligere eksport-/slettehull består. Ingen ekte varsler, betalinger, hosted databaseendringer eller felles læring er utført/aktivert; kun syntetiske lokale prøver.
+
+
+### C1: treningsgap-agentens gruppestyrte observasjoner (23.10.2026)
+
+Bakgrunnsagenten bruker eksisterende coachingprofildeling til én konkret aktiv AK-gruppe og gruppens ansvarlige trener. Gruppens ID, delingsformål/-versjon og faktisk coachId følger ny observasjon i eksisterende PlanAction, sammen med runde-ID-er og metodegrunnlag. Ingen navn, kontaktfelt, helse eller innloggingshistorikk leses til denne analysen. Ingen nye tabeller, samtykkevalg eller oppbevaringstider. Ingen skymodell eller ekstern utsending.
+
+Fersk kontroll og profilbehandling skjer i samme låste transaksjon; trekk stopper neste oppdrag. Eldre lagrede køelementer/historikk forsvinner ikke automatisk, og full tilbakekalling/leserkontroll i alle køer gjenstår før utrulling. Oppdrag uten ansvarlig trener, aktuell deling eller riktig gruppe avvises. Nye og gamle treningsgap-forslag endrer ikke økter ved godkjenning. Eksisterende eksport-/slettehull og juridiske avklaringer består.
