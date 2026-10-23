@@ -28,7 +28,7 @@ import { useRouter } from "next/navigation";
 import { Plus } from "lucide-react";
 import { Pille, Topp } from "@/components/admin/agencyos-ny/ny";
 import { LPHASE_LABEL } from "@/lib/labels/taxonomy";
-import { formaterFortegn, formaterTall } from "@/lib/format-tall";
+import { formaterTall } from "@/lib/format-tall";
 import { formelForOvelse, mengdeForOvelse, metaForOvelse } from "@/lib/agencyos/planhub-ovelse";
 import type { PlanhubData, PlanhubFane, PlanhubMal, PlanhubOvelse } from "@/lib/agencyos/planhub-typer";
 import type { PyramideKode } from "@/lib/domain/ak-formel-v2";
@@ -55,7 +55,7 @@ function MalKort({ m, type }: { m: PlanhubMal; type: "Ukemal" | "Program" }) {
     <div className="sek-topp" style={{ gap: 6 }}><b>{m.navn}</b><Pille tone={m.godkjent ? "ok" : "noy"}>{m.godkjent ? "Godkjent" : "Utkast"}</Pille></div>
     <span className="kilde">{type} · kategori {m.kategori} · {LPHASE_LABEL[m.fase]}{type === "Program" ? ` · ${m.varighetUker} uker · ${m.ukentligOktAntall} økter/uke` : ` · ${pl(m.oktAntall, "økt", "økter")}${totalMin > 0 ? ` · ${timer(totalMin)} t` : ""}`}</span>
     <Stablet m={m} />
-    <span className="kilde">Brukt {m.usageCount} {m.usageCount === 1 ? "gang" : "ganger"}{m.effektAntall > 0 && m.effektAvg != null ? ` · SG-total ${formaterFortegn(m.effektAvg, 2)} etter ${pl(m.effektAntall, "fullført plan", "fullførte planer")}` : ""}</span>
+    <span className="kilde">Brukt {m.usageCount} {m.usageCount === 1 ? "gang" : "ganger"}</span>
     {m.beskrivelse && <p className="forklar">{m.beskrivelse}</p>}
     <div className="knapper">
       <Link className="knapp sek" href={`/admin/plan-templates/${m.id}`}>Åpne</Link>

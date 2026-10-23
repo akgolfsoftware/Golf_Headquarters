@@ -19,7 +19,7 @@ const okter = [
 
 const detalj: PlanMalDetalj = {
   id: "m1", name: "Prøveprogram to uker", description: "Oppdiktet mal for skjermprøven.", kategori: "E", lPhase: "GRUNN", varighetUker: 2, ukentligOktAntall: 3,
-  fordeling, anbefaltFordeling: { FYS: 0.15, TEK: 0.25, SLAG: 0.25, SPILL: 0.2, TURN: 0.15 }, minAlder: 13, maxAlder: null, approved: true, usageCount: 7, effectivenessAvg: 0.4,
+  fordeling, anbefaltFordeling: { FYS: 0.15, TEK: 0.25, SLAG: 0.25, SPILL: 0.2, TURN: 0.15 }, minAlder: 13, maxAlder: null, approved: true, usageCount: 7,
   sessions: okter.map((o) => ({ ...o, drills: o.drills.map((d) => ({ ...d, exerciseName: "Prøveøvelse" })) })),
 };
 
@@ -39,7 +39,7 @@ const Skall = ({ children }: { children: React.ReactNode }) => (
 
 export const tilstander = {
   data: <Skall><AG14MalDetalj template={detalj} /></Skall>,
-  tom: <Skall><AG14MalDetalj template={{ ...detalj, approved: false, usageCount: 0, effectivenessAvg: null, description: null, sessions: [] }} /></Skall>,
+  tom: <Skall><AG14MalDetalj template={{ ...detalj, approved: false, usageCount: 0, description: null, sessions: [] }} /></Skall>,
   ny: <Skall><AG14MalNy /></Skall>,
   rediger: <Skall><AG14MalRediger template={rediger} drillOptions={drillValg} /></Skall>,
   "rediger-tom": <Skall><AG14MalRediger template={{ ...rediger, sessions: [], varighetUker: 1 }} drillOptions={[]} /></Skall>,

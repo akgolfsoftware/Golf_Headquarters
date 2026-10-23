@@ -204,3 +204,8 @@ Lesing og dette formålets samtykkeendringer bruker samme transaksjonslås per g
 Historikken følger eksisterende dataeksport (`exportUserData`, alle brukerens delingsrader). Revisjonsloggen får handling, interne ID-er og tekstversjon; ingen fritekst eller treningsverdier. Samtykkehistorikkens eksisterende oppbevarings-/sletteavklaring er fortsatt åpen; ingen endelig oppbevaringstid innføres her. Slettede brukere faller ut av analysen via `deletedAt`. Ingen produksjonsdata er slettet eller skrevet som del av utviklingstesten.
 
 Dette er ikke ferdigstillelse av all AK-deling: øvrige spillerprofiler, planredigering, eksport, agentkø/minne og felles læring må avgrenses i videre C1/C2-arbeid. Kontoaksept og skolens rettsgrunnlag er egne formål. Denne teksten dokumenterer funksjonen, ikke juridisk sluttgodkjenning.
+
+
+### Gjenbruk av historisk maleffekt — C2, 23.10.2026
+
+Malbygger, Workbench, planhub og maldetalj leser ikke lenger `PlanTemplate.effectivenessAvg` til anbefalinger eller klientdata. Planhub leser heller ikke antall knyttede `PlanEffectiveness`-rader. Historiske databaseverdier og individuelle evalueringer bevares; ingen migrasjon eller sletting kjøres. Brukstall i maloversikten er fortsatt popularitet, ikke en påstand om treningseffekt. Dette stenger disse leserne, men er ikke dokumentasjon på at alle eldre funksjoner i appen er ferdig kontrollert. Ingen ny deling eller felles læring er aktivert.

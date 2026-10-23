@@ -10,14 +10,14 @@ export const sti = "/admin/plan";
 
 const mal = (over: Partial<PlanhubMal>): PlanhubMal => ({
   id: "m1", navn: "Prøvemal", beskrivelse: null, kategori: "E", fase: "GRUNN", varighetUker: 1, ukentligOktAntall: 5,
-  usageCount: 0, oktAntall: 0, godkjent: false, fordeling: [], minutter: [], ukeOversikt: [], effektAvg: null, effektAntall: 0, ...over,
+  usageCount: 0, oktAntall: 0, godkjent: false, fordeling: [], minutter: [], ukeOversikt: [], ...over,
 });
 
 const data: PlanhubData = {
   uke: { nr: 40, spillere: 12, okter: 31, udekket: 2 },
   workbenchHref: "/admin/workbench/p1?uke=2026-09-28",
   ukemaler: [
-    mal({ id: "u1", navn: "Grunnuke nærspill", usageCount: 14, oktAntall: 5, godkjent: true, minutter: [{ akse: "SLAG", verdi: 180 }, { akse: "TEK", verdi: 120 }, { akse: "FYS", verdi: 60 }], fordeling: [{ akse: "SLAG", verdi: 50 }, { akse: "TEK", verdi: 30 }, { akse: "FYS", verdi: 20 }], effektAvg: 0.42, effektAntall: 3 }),
+    mal({ id: "u1", navn: "Grunnuke nærspill", usageCount: 14, oktAntall: 5, godkjent: true, minutter: [{ akse: "SLAG", verdi: 180 }, { akse: "TEK", verdi: 120 }, { akse: "FYS", verdi: 60 }], fordeling: [{ akse: "SLAG", verdi: 50 }, { akse: "TEK", verdi: 30 }, { akse: "FYS", verdi: 20 }] }),
     mal({ id: "u2", navn: "Turneringsuke med et svært langt navn som må brytes over flere linjer", kategori: "B", fase: "TURNERING", usageCount: 2, oktAntall: 4, minutter: [{ akse: "TURN", verdi: 270 }, { akse: "SPILL", verdi: 120 }] }),
     mal({ id: "u3", navn: "Tom ukemal", fase: "SPESIAL", fordeling: [{ akse: "TEK", verdi: 40 }, { akse: "SLAG", verdi: 60 }] }),
   ],

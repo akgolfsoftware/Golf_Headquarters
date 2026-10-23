@@ -6,7 +6,7 @@
  * - Uke-linja telles fra WorkbenchSession for coachens spillere i inneværende
  *   Oslo-uke (samme regel som før: «udekket» = aktiv spiller uten økt i uka).
  * - Ukemaler og program er PlanTemplate (≤ 1 uke / flere uker), med samme felt
- *   som mal-lista hadde: fordeling (zod-validert), uke-for-uke, bruk og effekt.
+ *   som mal-lista hadde: fordeling (zod-validert), uke-for-uke og bruk. Udokumentert felles effekt hentes ikke.
  * - Standardøkter er OktMal: coachens egne og de globale.
  * - Øvelser er ExerciseDefinition coachen ser i øvelsessøket ellers
  *   (`ovelse-sok.ts`): systemøvelser, egne og de som er delt med plattformen.
@@ -97,9 +97,8 @@ export async function hentPlanhub(user: Bruker): Promise<PlanhubData> {
         usageCount: true,
         disciplinFordeling: true,
         approved: true,
-        effectivenessAvg: true,
         sessions: { select: { ukeNr: true, pyramidArea: true, varighetMin: true } },
-        _count: { select: { sessions: true, effectiveness: true } },
+        _count: { select: { sessions: true } },
       },
     }),
     prisma.oktMal.findMany({
@@ -143,8 +142,6 @@ export async function hentPlanhub(user: Bruker): Promise<PlanhubData> {
     fordeling: tilFordeling(m.disciplinFordeling),
     minutter: tilMinutter(m.sessions),
     ukeOversikt: bygUkeOversikt(m.sessions, m.varighetUker).map((b) => ({ fraUke: b.fraUke, tilUke: b.tilUke, akse: b.omrade, oktAntall: b.oktAntall })),
-    effektAvg: m.effectivenessAvg,
-    effektAntall: m._count.effectiveness,
   });
 
   return {

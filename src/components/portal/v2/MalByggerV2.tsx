@@ -729,19 +729,6 @@ function MalKortV2(props: {
             </strong>{" "}
             ganger
           </span>
-          {mal.effectivenessAvg !== null && (
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
-              Snitt-effekt:{" "}
-              <strong style={{ fontFamily: TL.font.mono, fontWeight: 700, color: TL.fill, fontVariantNumeric: "tabular-nums" }}>
-                {mal.effectivenessAvg >= 0 ? "+" : ""}
-                {mal.effectivenessAvg.toFixed(2)}
-              </strong>{" "}
-              SG-Total
-              <span onClick={(e) => e.stopPropagation()} style={{ display: "inline-flex" }}>
-                <HjelpTips k="sgTotal" size={12} />
-              </span>
-            </span>
-          )}
         </div>
       </Kort>
     </div>

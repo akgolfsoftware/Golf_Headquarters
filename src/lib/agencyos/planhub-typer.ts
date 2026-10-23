@@ -30,9 +30,6 @@ export type PlanhubMal = {
   /** Planlagte minutter per akse fra øktene i malen. Tom = ingen økter. */
   minutter: PlanhubAksetall[];
   ukeOversikt: PlanhubUkeblokk[];
-  /** Snitt SG-Total-delta fra PlanEffectiveness; null = ingen målinger. */
-  effektAvg: number | null;
-  effektAntall: number;
 };
 
 /** En OktMal (standardøkt). */
