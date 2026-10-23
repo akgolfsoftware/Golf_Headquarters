@@ -4,6 +4,32 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## WORKBENCH HAR TO VISNINGER: PLANLEGGE OG GJENNOMFØRE, OG TEKNISK PLAN HAR P1.0–P10.0 MED OPPGAVER OG BIOMEKANISK ANALYSE (Anders 23.10.2026, bindende)
+
+Anders 23.10, under skjelettet for Workbench: «Jeg ønsker å kunne ha ulike workbench visninger som valg mulighet. En visning som er optimalisert for planlegging. En visning som er optimalisert for oversikt og gjennomføring.» Og om analysearket «Biomekanisk Analyse – TrackMan 3D / Swing Catalyst»: «Denne skal også ligge under tekniskplan.» Samme dag: Workbench skal vise årsplan, periodisering, månedsplan, ukeplan, øktplaner med øvelser og teknisk plan komplett.
+
+- **Bryteren Planlegge | Gjennomføre** står øverst i Workbench, for coach og spiller.
+- **Planlegge:** nivåene År · Periode · Måned · Uke · Dag og Teknisk plan. Uke er kalenderen 05–22 med dra og slipp (§WORKBENCH-UKA ER EN KALENDER).
+- **Gjennomføre:** uka økt for økt med status (gjort, neste, igjen), loggført tid, belastning og fokus 1–10 (fysisk: «Hvor tungt» 1–10) og spillerens notat; neste økt med «Start økt» (spiller) eller «Åpne live» (coach); gjennomført mot planen per akse og tid mot plan over to uker. Coachen gir tilbakemelding på et notat rett fra lista.
+- **Teknisk plan** har fanene Oppgaver · Biomekanisk analyse · TrackMan-mål. Biomekanisk analyse har feltene og målområdene fra analysearket: TrackMan (10 verdier), TrackMan 3D i P1–P2, P4–P5 og P7, kinematisk sekvens, Swing Catalyst (dynamisk start, moment arm, rekkefølge, timing og peak) og kommentar. Verdier utenfor målet merkes. Analysene lagres med dato og kan sammenlignes. E-post fra arket vises ikke i appen.
+
+- **Teknisk plan · Oppgaver** (Anders 23.10, samme økt): P1.0–P10.0 vises som nedtrekk. Hver posisjon kan ha oppgaver med **tittel, beskrivelse, bilde eller video før og etter, og reps i tre trinn: Uten ball · Lav hastighet · Auto** (logget mot mål). Oppgavene dras i rekkefølge innen samme posisjon; øverst er viktigst.
+- **Reps fra live-økta oppdaterer teknisk plan automatisk:** reps spilleren fører på en øvelse som hører til en teknisk oppgave, legges til oppgaven med en gang (for eksempel 200 reps lav hastighet).
+- **3D og Ground force er tester** (Biomekanisk analyse), ikke egne faner. En måling kan kobles til en teknisk oppgave og vises på oppgaven med verdi og mål.
+
+**Overstyrer:** ingenting. Utvider §WORKBENCH-UKA ER EN KALENDER.
+
+**Arbeidet dette utløser:**
+
+1. **Skjelettet:** tegnet i Claude Design (siden «AgencyOS · Workbench · variantene», tavlene WK-*, WKS-*, WP-* og WG-*). Gjort.
+2. **Bryteren** i Workbench for coach og spiller, og valget huskes per bruker. Ferdig når begge visningene åpner samme uke for samme spiller.
+3. **Gjennomføre** leser samme logg som live-økta (`WorkbenchDrillLog`, §LIVE-ØKTA HAR ÉN SKJERM). Ferdig når en økt logget på `/active` vises som gjort med belastning og fokus.
+4. **Biomekanisk analyse:** datamodell for en analyse per spiller og dato med feltene fra arket og målområdene som konstanter. Additivt via `db execute` (gotchas §Database). Ferdig når en analyse kan lagres, verdier utenfor målet merkes, og en test låser målområdene mot arket.
+5. **Teknisk oppgave i datamodellen:** P-posisjon, rekkefølge innen posisjonen, tittel, beskrivelse, før- og etter-media, og mål og logget for de tre rep-trinnene. Ferdig når en test låser at rekkefølgen bare endres innen samme posisjon.
+6. **Reps fra live-økta:** når spilleren logger reps på en øvelse koblet til en oppgave i `/active`, øker oppgavens logget i samme transaksjon. Ferdig når en test viser at 200 reps lav hastighet i live-økta gir +200 på oppgaven.
+7. **Kobling test–oppgave:** en måling i biomekanisk analyse kan kobles til én eller flere oppgaver. Ferdig når koblingen vises begge veier.
+8. **Kilden til arket** ligger i `docs/design-system/utkast-playerhq/kilder/biomekanisk-analyse.png`. Gjort i samme PR.
+
 ## WORKBENCH-UKA ER EN KALENDER 05–22 I HALVTIMER MED DRA OG SLIPP, LIK FOR COACH OG SPILLER (Anders 23.10.2026, bindende)
 
 Anders 23.10, under skjelettet for Workbench: «Workbench skal ha komplett kalender fra 05:00 til 22:00 med 30 min intervaller. Den skal være Notion Calendar inspirert. Med komplette drag av drop funksjoner.» Man skal kunne lage standardøkter, favorittøvelser og treningsdager (med flere økter), som ligger i sidemenyen og dras inn på en dag. Og: «spiller skal ha samme workbench, bare ikke valg av grupper og spillere og evnen til å planlegge for grupper og andre».
