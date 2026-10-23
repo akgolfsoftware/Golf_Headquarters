@@ -4,6 +4,28 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## TRACKMAN I TEAM NORWAY-TESTENE: REPORT-LENKE, GRENSER FOR «PASSER IKKE», CLUB SPEED OG MÅLVINDUER (Anders 22.10.2026, bindende)
+
+Anders 22.10: «Ja til alle fire TrackMan-anbefalingene», og i designøkta samme dag: «Trackman rapport må også spesifiseres om det er TEK eller SLAG» og «Trener og spiller setter mål og vinduer for spiller». Da svarene sprikte, valgte han å slå dem sammen («Begge»). Svar på §6.3 i `docs/planer/tn-designloft-plan-2026-10-22.md`, etter utkast 3 (`docs/design-system/utkast-tn/trenerflate/utkast-3.html`, #1622): testøkt med spiller, TrackMan koblet til testslag, TrackMan-statistikk og testvisning.
+
+- **Import fra TrackMan Report-lenke** kommer i tillegg til CSV, rapportfil og bilde. Treneren kan importere for en spiller som har delt.
+- **«Passer ikke»:** et TrackMan-slag som lander mer enn 15 m fra målet i wedge- og inspilltestene, eller mer enn 30 m i Driver Basic, merkes. Treneren kan koble det likevel.
+- **Club Speed i Fysisk** er beste av de fem første driverslagene i fila, som i testprotokollen.
+- **Hver TrackMan-økt merkes TEK eller SLAG** når den importeres. Valget er påkrevd.
+- **Målvinduer for «andel i målvindu»:** Face to Path, Club Path og Face Angle ±2° · Smash Factor ≥ 1,35 jern og ≥ 1,45 driver · Attack Angle −5 til −3° jern og 0 til +4° driver · Carry og Side ±5 m jern og ±15 m driver. Dette er standarden. Trener og spiller kan sette egne mål og vinduer for spilleren, per parameter og kølle.
+- Uendret: treneren fører bare teknikktestene og PEI-testene (`trenerKanFore`), innsyn krever deling, og TrackMan mot Strokes Gained er sammenstilling, ikke årsak.
+
+**Overstyrer:** ingenting. Verdiene var ikke bestemt før.
+
+**Arbeidet dette utløser** (byggelista står i planfila §6):
+
+1. **Testøkt uten testdag:** treneren kjører flere tester med én spiller i ett løp, med ett slag om gangen og utkast lagret på telefonen (`use-tn-draft.ts`). I dag krever `saveTnTestSomCoach` en aktiv testdag. Ferdig når en test låser at en trener kan føre Driver Basic for én spiller som har delt, uten testdag, og ikke for en som ikke har delt.
+2. **Kobling testslag → TrackMan-slag:** additivt felt (via `db execute`, gotchas §Database) som lagrer hvilket `TrackManShot` et testforsøk kom fra. Grensene 15/30 m merker slag som ikke passer. Ferdig når en test låser at carry og side fylles fra slaget, og at et slag 31 m fra målet i Driver Basic merkes.
+3. **TrackMan-import for trener:** knapp i IUP › Tester som bruker `onBehalfOfUserId` i `importTrackMan` (`src/app/portal/mal/trackman/actions.ts`). Ferdig når en trener kan importere for en spiller som har delt, og avvises for en som ikke har delt, låst med test.
+4. **Report-lenke-import:** ny leser ved siden av `parse-csv.ts` og `parse-html-report.ts`. Ferdig når en lagret prøverapport gir samme slag som HTML-fila. Uavklart: hva lenken faktisk gir tilgang til (innlogging, format). Undersøkes før bygging.
+5. **Club Speed fra TrackMan:** beste av de fem første driverslagene fyller Club Speed i Fysisk. Ferdig når en test låser at slag nummer seks ikke teller.
+6. **Statistikk og målvinduer:** snitt, median, min, maks og spredning per parameter og kølle, og andel i målvindu med vinduene over som standard. Trener og spiller kan sette egne mål per spiller, parameter og kølle (additiv tabell, f.eks. `TrackManMaal`, planfila §6.4). Ferdig når en test låser standardvinduene og at «for få slag» vises under 5 slag.
+7. **TEK eller SLAG ved import:** additivt felt `TrackManSession.akse` (planfila §6.4), påkrevd i importen for spiller og trener. Ferdig når en test låser at import uten TEK eller SLAG avvises.
 ## ØVERSTE KORT STARTER UNDER DEN SKRÅ TOPPEN, OG DEKKER ALDRI BILDET (Anders 22.10.2026, bindende)
 
 Anders 22.10, etter skissen for bølge 1 i AgencyOS: «Sørg for at øverste card ikke dekker eller blir dekket av skrå headingen.»
