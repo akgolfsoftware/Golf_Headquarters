@@ -4,6 +4,37 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## SPILLER OG COACH SER SAMME SKJERM, OG SKJERMLISTA SLÅS SAMMEN FØR VI BYGGER (Anders 23.10.2026, bindende)
+
+Anders 23.10, 20:43: «Før vi bygger: se hvordan vi potensielt skal slå sammen funksjoner og skjermer.» Forslaget med elleve sammenslåinger ble svart med «Forslag ovenfor er godkjent» (20:46).
+
+- **Grunnregel:** spiller og coach ser samme skjerm. Coachen får i tillegg velgere og redigering, ikke en egen skjerm.
+- **Live-økt er én skjerm** for golf, fysisk, test og coachens live-økt. Bare telleren endrer seg: reps per drill, vekt og serier, testresultat, eller opptak med samtykke. PH-05, PH-06, PH-15 og AG-13 blir én.
+- **Økta er én side** før og etter: øktark, før start og etter økt (PH-03, PH-04 og PH-07). Coachens øktark etter live (AG-12) er samme side med «Godkjenn sammendrag».
+- **Teknisk plan er én skjerm:** PH-TP-01, AG-10, AG-TP-01 (oppgaveskjema som panel) og AG-TP-02 (Før og nå som fane).
+- **Biblioteket er ett:** øvelsesbanken (PH-13), plan-hub med maler og øvelser (AG-14) og sidefeltet i Workbench er samme bibliotek. På egen side vises det i full størrelse.
+- **Booking** har én flyt for spiller og coach.
+- **Fysisk treningsplan og turneringer er paneler i Workbench**, ikke egne skjermer (AG-WB-FYS, AG-WB-TURN). Periode- og månedsskjema er paneler på sitt nivå.
+- **Runde:** «velg nivå» og «oppsett» er én startskjerm. Etterregistrering og rediger runde er samme scorekort. «Runde gjennomført» er rundesiden i Stats › Snittscore. «SG hittil» er et ark i live-runden.
+- **SG og statistikk kan tastes inn manuelt fra UpGame i alle kategorier** (Anders 23.10, 20:46: «SG og stats kan også fylles inn fra UpGame. Men manuelt inntasting på alle kategoriene»). Gjelder SG for utslag, innspill, nærspill og putting, med sumkontroll mot total, og rundestatistikken. Kilden merkes «UpGame (manuelt)». Slag for slag og rask score står ved siden av.
+- **Velg treningsplan og «Opprett årsplan»** er én veileder, der første steg er å velge standardplan (PH-12 og PH-11-NY).
+- **Abonnement og Deling** er seksjoner i Meg (PH-25 og PH-27).
+- **AgencyOS-analyse:**
+  - Rundeanalyse, manglende SG-grunnlag og datakvalitet er én skjerm, «Runder», med fanen «Kvalitet» (AG-RD-01, AG-RD-02 og AG-A05).
+  - Gruppeanalyse (AG-A03) flyttes til Grupper.
+  - Plan mot faktisk (AG-A04) flyttes til Spiller 360.
+  - Tiltaksverksted (AG-A06) og Caddie-forslag (AG-A08) er «Forslag» i coachens innboks.
+- **Fireukerssjekk og sesongevaluering** er ett skjema med to moduser (PH-IUP-01 og PH-IUP-02). IUP-måltall er en fane i Målsetninger.
+- **Disse forblir egne skjermer:** Caddie, Jarvis, Gameplan med spredningsverktøyet, Data Golf, Økonomi, Oppsett og Kalender.
+
+**Overstyrer:** egne skjermrader for de sammenslåtte radene i `docs/design-handoff/regler/skjermliste.md`. Radene står, merket med hvilken skjerm de er slått inn i. Utvider §LIVE-ØKTA HAR ÉN SKJERM (23.10) med test og coach, og PH-RD-06 med UpGame-kilden.
+
+**Arbeidet dette utløser:**
+
+1. **Skjelettet** tegnes etter den sammenslåtte lista i Claude Design (sidene «PlayerHQ · Trening · alle skjermer», «Workbench · Fysisk treningsplan» og «AgencyOS · resten»). Ferdig når hver sammenslått skjerm har spiller- og coachvariant på samme tavle.
+2. **Koden:** én komponent per sammenslått skjerm, med rolle som parameter. Gamle adresser videresender. Ferdig når ingen sammenslått skjerm har to separate sidekomponenter.
+3. **UpGame manuelt:** felter for SG i alle fire kategorier og total, med sumkontroll, og for rundestatistikken, på scorekortet. Ferdig når en test låser at sumavvik varsles, og at kilden lagres som «UpGame (manuelt)».
+
 ## BIBLIOTEKET I WORKBENCH ER LIKT FOR ALLE, DET BRUKERNE LAGER DELES TIL APP, OG KATEGORI A–K GJELDER I ALLE LEDD (Anders 23.10.2026, bindende)
 
 Anders 23.10: «I workbench for både spiller og coach (AK, WANG, Team Norway) så skal alle kunne velge drill / øvelse / test / tekniske oppgave fra side menyen. Skal man opprette en ny … så kan man gjøre dette manuelt ved + tegn … Tid er alltid estimat tid … Når en spiller oppretter drill, øvelse, test så blir den automatisk delt med databasen. Når man skal filtrere … så kan man velge mellom ALLE – APP – COACH. Både spillere og coacher deler til appen. Dette godkjennes i onboarding.» Planen for runde 3 ble «Godkjent med din anbefaling», og om nivåene: «AK kategoriene har i alle ledd. Kjør anbefaling.»
