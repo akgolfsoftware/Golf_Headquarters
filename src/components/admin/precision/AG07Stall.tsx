@@ -27,6 +27,7 @@ import { Avatar, HasterPille, Knapp, KnappLenke, Tom, Topp, Varsel } from "@/com
 import { SkraFlyt, SkraKort } from "@/components/precision/skra/Skra";
 import { Nedtrekk } from "@/components/precision/Nedtrekk";
 import type { StallBaandRad } from "@/lib/admin/stall-precision-data";
+import { STALL_SORTERING, sorterHcp, sorterNavn, type StallSortering } from "@/lib/admin/stall-sortering";
 import { fmtSg } from "@/lib/v2/format";
 import { sendMeldingTilSpiller } from "@/app/admin/(legacy)/messages/actions";
 import "@/styles/agencyos-ny-stall.css";
@@ -159,6 +160,7 @@ export function AG07Stall({ tilstand = "data", total, iDag, trenerNaa, heleStall
   const [grp, setGrp] = useState<string>("alle");
   const [mat, setMat] = useState<"alle" | Matrise>("alle");
   const [melding, setMelding] = useState<StallBaandRad | null>(null);
+  const [sorter, setSorter] = useState<StallSortering>("trenger");
 
   const innlogget = useMemo(() => heleStallen.filter((r) => !r.neverLoggedIn), [heleStallen]);
   const venter = useMemo(() => heleStallen.filter((r) => r.neverLoggedIn), [heleStallen]);
@@ -170,7 +172,11 @@ export function AG07Stall({ tilstand = "data", total, iDag, trenerNaa, heleStall
     const s = q.trim().toLowerCase();
     return (!s || r.name.toLowerCase().includes(s) || gruppeNavn(r).toLowerCase().includes(s)) && (grp === "alle" || (r.group ?? "").toUpperCase() === grp.toUpperCase());
   };
-  const etterSok = sortert.filter(sokFilter);
+  const iValgtRekkefolge = useMemo(
+    () => (sorter === "navn" ? sorterNavn(sortert) : sorter === "hcp" ? sorterHcp(sortert) : sortert),
+    [sortert, sorter],
+  );
+  const etterSok = iValgtRekkefolge.filter(sokFilter);
   const vist = mat === "alle" ? etterSok : etterSok.filter((r) => MATRISE[r.status] === mat);
   const venterVist = venter.filter(sokFilter);
 
@@ -221,7 +227,7 @@ export function AG07Stall({ tilstand = "data", total, iDag, trenerNaa, heleStall
         </SkraKort>
       </div>
       <div>
-        <SkraKort tittel="Hele stallen" meta="Sortert etter hvem som trenger deg">
+        <SkraKort tittel="Hele stallen" meta={`Sortert etter ${STALL_SORTERING.find((s) => s.id === sorter)?.label.toLowerCase()}`}>
           <div className="matrise" role="group" aria-label="Stall-matrise">
             {MATRISE_VALG.map((v) => <button key={v.id} type="button" className={KLASSE[v.id]} aria-pressed={mat === v.id} onClick={() => setMat(mat === v.id ? "alle" : v.id)}>
               <b>{etterSok.filter((r) => MATRISE[r.status] === v.id).length}</b><span>{v.label}</span></button>)}
@@ -231,6 +237,9 @@ export function AG07Stall({ tilstand = "data", total, iDag, trenerNaa, heleStall
           </div>
           <div className="valg-rad">
             <Nedtrekk etikett="Vis" valg={nyttGruppeFilter.map((g) => ({ verdi: g.id, navn: g.label }))} verdi={grp} onVelg={setGrp} />
+          </div>
+          <div className="chips" role="group" aria-label="Sorter spillere">
+            {STALL_SORTERING.map((s) => <button key={s.id} type="button" aria-pressed={sorter === s.id} onClick={() => setSorter(s.id)}>{s.label}</button>)}
           </div>
           {vist.length === 0
             ? <Tom tittel="Ingen treff" tekst="Ingen spillere passer søket og filteret." handling={<Knapp variant="sek" onClick={() => { setQ(""); setGrp("alle"); setMat("alle"); }}>Nullstill</Knapp>} />

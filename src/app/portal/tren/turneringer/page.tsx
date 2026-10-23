@@ -44,7 +44,7 @@ export default async function TurneringerPage({ searchParams }: { searchParams: 
     return (
       <PlayerHQSkall innboksHref="/portal/varsler" uleste={uleste.count}>
         {svar?.data ? <Turneringsplanlegger visning={svar.data} rolle="spiller" /> : null}
-        <p style={{ padding: "0 16px 32px", maxWidth: 1240, margin: "0 auto", fontSize: 14 }}>
+        <p style={{ padding: "0 16px 32px", maxWidth: "60ch", fontSize: 14 }}>
           <Link href="/portal/tren/turneringer?vis=golfbox">Norske turneringer og påmelding i GolfBox-kalenderen</Link>
         </p>
       </PlayerHQSkall>

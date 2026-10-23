@@ -3,7 +3,7 @@
 /**
  * PH-03 Øktark for en Workbench-økt i nytt design (pakke 2 Treningsøkta), `/portal/tren/wb/[sessionId]`.
  * Fasit: docs/design-system/utkast-playerhq/treningsokt.html, skjerm «okt», og «ferdig» for vurderingen.
- * Stil: src/styles/playerhq-ny-okt.css. Alltid lyst tema (Anders 14.10).
+ * Stil: src/styles/playerhq-ny-okt.css. Alltid lyst tema (Anders 14.10). Skrå-drakten (R5): SkraTopp med bildet, som PH03Oktark.
  *
  * Start, hopp over, fullfør med belastning og faktisk tid, og lenken til Live og oppsummeringen
  * kaller de samme wb-actions som før. Fullfør spør om Belastning og Fokus (golføkt) eller
@@ -12,7 +12,7 @@
  * Avvik:
  *   - «Hopp over» med årsak er ikke med: Workbench-økta har ikke noe felt for årsak.
  *   - «Hvorfor den ligger i uka» med prosessmål vises bare som coachens begrunnelse; koblingen til prosessmål finnes ikke.
- *   - Bildet er per akse (oktBilde), ikke per økt.
+ *   - Bildet er per akse (oktBilde), ikke per økt. Det ligger nå i SkraTopp, ikke i heroen.
  */
 
 import { useState, useTransition } from "react";
@@ -20,6 +20,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Check, ChevronLeft, Play, SkipForward } from "lucide-react";
 import { Ikon } from "@/components/precision/pa";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
 import { EtterOktaVurdering } from "@/components/portal/precision/EtterOktaVurdering";
 import { formaterVarighet } from "@/lib/format-tall";
 import { oktBilde } from "@/lib/portal/okt-bilde";
@@ -30,7 +31,9 @@ import type { WorkbenchSession } from "@/lib/domain/workbench/types";
 import { startSession, completeSessionWithEffort, skipSession } from "@/lib/workbench/wb-actions";
 import { lagreVurderingEtterOkt } from "@/lib/workbench/wb-session-life-actions";
 import "@/styles/playerhq-ny.css";
+import "@/styles/playerhq-ny-idag.css";
 import "@/styles/playerhq-ny-okt.css";
+import "@/styles/playerhq-ny-lister-skra.css";
 
 const dagFmt = new Intl.DateTimeFormat("nb-NO", { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" });
 const dagTekst = (iso: string) => { const t = dagFmt.format(new Date(`${iso}T00:00:00Z`)); return t.charAt(0).toUpperCase() + t.slice(1); };
@@ -85,13 +88,18 @@ export function PH03WbOktark({ session: initial }: { session: WorkbenchSession }
   if (session.actualMinutes != null && session.status === "COMPLETED") rader.push(["Gjennomført tid", formaterVarighet(session.actualMinutes)]);
   const hvorfor = session.rationale?.trim() || session.notes?.trim() || null;
 
-  return <div className="phn phn-okt" data-od-id="playerhq-wb-oktark"><div className="smal">
-    <Link href="/portal" className="phn-knapp sek" style={{ justifySelf: "start" }}><Ikon icon={ChevronLeft} size={20} name="chevron-left" />I dag</Link>
-    <div className="hode-okt"><span className="phn-dato">{dagTekst(session.date)} · {session.location?.trim() || "—"}</span></div>
+  return <div className="phn phn-okt phn-skra" data-od-id="playerhq-wb-oktark">
+    <SkraTopp
+      lav
+      etikett="Økt"
+      bilde={bilde.src} bildePosisjon={bilde.posisjon}
+      overlinje={`${dagTekst(session.date)} · ${session.location?.trim() || "—"}`}
+      tittel={session.title}
+      handling={<span className="skra-tilbake"><Link href="/portal" className="tilbake"><Ikon icon={ChevronLeft} size={20} name="chevron-left" />I dag</Link></span>}
+    />
+    <SkraFlyt lav><div className="smal">
 
     <div className={`okt-hero fylt-${akse}`}>
-      {/* eslint-disable-next-line @next/next/no-img-element -- statisk bilde fra public, ingen tekst oppå */}
-      <img src={bilde.src} alt="" width={1400} height={933} style={{ objectPosition: bilde.posisjon }} />
       <div className="tekst">
         <div className="okt-rad"><span className="okt-tid">{fra}{til && <small>–{til}</small>}</span><span className="akse-merke"><i />{session.pyramid}</span></div>
         <span className="navn">{session.title}</span>
@@ -155,5 +163,5 @@ export function PH03WbOktark({ session: initial }: { session: WorkbenchSession }
       <Link href="/portal" className="phn-knapp sek stor">Til I dag</Link>
     </div>}
 
-  </div></div>;
+  </div></SkraFlyt></div>;
 }

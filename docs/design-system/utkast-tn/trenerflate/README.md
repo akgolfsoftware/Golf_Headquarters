@@ -4,7 +4,7 @@ Etappe 2 i [prompt-tn-trenerflate-2026-10-21.md](../../../planer/prompt-tn-trene
 Beslutning: `.claude/rules/beslutninger.md` §TEAM NORWAY-TRENERFLATEN BYGGES I HQ ETTER TEAMNORWAYREF.
 Registeret med én rad per side: [tn-trenerflate-register-2026-10-21.md](../../../planer/tn-trenerflate-register-2026-10-21.md).
 
-Status: **klarsignal til bygging 21.10** (§TEAM NORWAY ER BARE FOR TRENERE).
+Status: **klarsignal til bygging 21.10** (§TEAM NORWAY ER BARE FOR TRENERE). Utkast 2 (§6) og utkast 3 (§7) er godkjent av Anders 22.10 (port 7).
 
 Wireframes: [index.html](index.html) (privat artifact: https://claude.ai/artifact/DJHq9dKNNs8iCoyHZDptbF), svart-hvitt, syntetiske spillere og trenere. Hver skjerm i 1280 og 390 px med
 samme innhold. Målt 21.10 i 390, 1280 og 1920 px: ingen sidelengs rulling, ingen konsollfeil.
@@ -51,8 +51,11 @@ Sidekartet står i wireframes under «Meny og sidekart». Gamle adresser som sen
 | `/team-norway/workbench?spiller=[id]` | `/team-norway/spiller/[id]/trening` |
 | `/team-norway/referansenivaer` | `/team-norway/referanse/tester` |
 | `/team-norway/apparatet` | `/team-norway/fagapparat` (som i dag) |
-| `/team-norway/turneringer/ny` | PlayerHQ `/portal/tren/turneringer` (venter på svar) |
+| `/team-norway/turneringer/ny` | PlayerHQ `/portal/tren/turneringer` |
+| `/team-norway/spiller` (uten id) | `/team-norway/spillere` |
 | teamnorwayref.vercel.app | `/team-norway/referanse` (når Anders sier fra) |
+
+Alle videresendingene i HQ er bygget og låst i `src/app/team-norway/videresendinger.test.ts`.
 
 ## 4. Fordeling per skjerm (ett hovedtall)
 
@@ -69,4 +72,36 @@ Sidekartet står i wireframes under «Meny og sidekart». Gamle adresser som sen
 ## 5. Uavklart (til Anders)
 
 Står i registeret, punkt 1–4: spillere i `/team-norway`, hvor PlayerHQ-lenken går, barnevern i Referanse
-(HCP Norge og Norsk golf viser navngitte juniorer), og om «beste» per test skal bort.
+(HCP Norge og Norsk golf viser navngitte juniorer), og om «beste» per test skal bort. Avgjort 22.10: PlayerHQ-lenken går til «Se hva Team Norway ser», og «beste» tas bort i Referanse › Tester.
+
+## 6. Utkast 2 (22.10.2026): de resterende skjermene
+
+Status: **Godkjent av Anders 22.10** (port 7: «Godkjent»).
+
+Wireframes: [utkast-2.html](utkast-2.html) (privat artifact: https://claude.ai/artifact/EvAKJdcygRpfMSKUPjGw1Y). Samme stil som
+utkast 1. 31 skjermer: IUP › Turneringsplan, Ranking, Trening, Tester, Teknisk plan, Fireukerssjekk · Samlinger og
+testing (fem faner) · Turneringer (fire faner) · Referanse › Sammenlign, Søk, Planlegger, Norsk golf, HCP Norge,
+Tester, WAGR-visningene Turneringer og Sesong · Fag og administrasjon (sju faner) · PlayerHQ › «Se hva Team Norway ser» · Tom, laster og feil. Funksjonene følger funksjonsplanen 22.10 (https://claude.ai/artifact/1i2fcpao7BW2m7UvF9dcPf). Målt 22.10 i 390, 1280 og 1920 px: ingen sidelengs
+rulling, ingen node utenfor rammen, ingen konsollfeil.
+
+Plan, kartlegging og hvilke skjermer kodeøkta kan bygge etter nå: [tn-designloft-plan-2026-10-22.md](../../../planer/tn-designloft-plan-2026-10-22.md).
+
+## 7. Utkast 3 (22.10.2026): testøkt, TrackMan-kobling og testvisning
+
+Status: **Godkjent av Anders 22.10** (port 7: «Godkjent», etter å ha sett import og kobling, statistikk, tendens, TrackMan mot spill, tilstander og testvisningen).
+
+Wireframes: [utkast-3.html](utkast-3.html) (privat artifact: https://claude.ai/artifact/TAhfpQJPqeKiwp2zTxxKft). 17 skjermer:
+testøkt med én spiller (start, ett slag om gangen, gate med store knapper, uten nett og pause, ferdig), TrackMan-import med
+kobling til testslag (kobling, slag som ikke passer, Club Speed), TrackMan-statistikk (per kølle, treffpunkt og gapping, tendens, TrackMan mot spill, tilstander) og testvisning (PEI med spredning, gate med port og sone, putt
+med avstandsbånd, uten TrackMan). Hva kodeøkta må bygge og datamodelltilleggene: planfila §6.
+
+## 8. Utkast 4 (22.10.2026): resten av skjermene (steg 10)
+
+Status: **Venter på Anders** (port 7).
+
+Wireframes: [utkast-4.html](utkast-4.html). 14 skjermer, 390 og 1280 px, svart-hvitt med syntetiske navn:
+Hjem › Gruppeposter og Dokumenter · Spillere › Skoler og College og USA · undersidene (én samling, én turnering, én
+testprotokoll, én test, én teknisk oppgave, scorekort for føring) · tom og lite data (Gruppeposter, Dokumenter, Skoler,
+College). Feltene er hentet fra de bygde skjermene i `src/components/team-norway/skjermer`. Ett hovedtall i bildetoppen
+per skjerm; treneren foreslår i teknisk plan («Foreslå», aldri «Endre»). Målt i 390, 1280 og 1920 px: ingen sidelengs
+rulling, ingen konsollfeil. Planfila: [steg 10](../../../planer/tn-designloft-plan-2026-10-22.md).

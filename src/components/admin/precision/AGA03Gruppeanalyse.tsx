@@ -5,17 +5,20 @@
  * Snitt for gruppa: gjennomført tid mot planlagt (siste 4 uker, forfalte økter),
  * per akse, og datadekning uten navn. Rangerer aldri spillerne.
  *
+ * Skrå-drakten 22.10 (bølge 2, pakke A5, skissen §5): lav topp med bilde og innholdet i hvite kort.
+ *
  * Avvik:
  *   - «Nivå» (snittscore og kategori for gruppa) og «Belastning» (snitt «hvor tungt»)
  *     har ingen spørring på gruppenivå ennå og er utelatt, ikke anslått.
  *   - Datadekning bygger på økter i Workbench, ikke runder.
  */
 import { Topp, Tom } from "@/components/admin/agencyos-ny/ny";
-import { GruppeFanerNy } from "@/components/admin/precision/AG16Gruppe";
+import { GRUPPE_BILDE, GruppeFanerNy } from "@/components/admin/precision/AG16Gruppe";
 import type { EnGruppeAnalyse } from "@/lib/admin/analyse/gruppe-analyse";
 import { formaterTall } from "@/lib/format-tall";
 import "@/styles/agencyos-ny-mer.css";
 import "@/styles/agencyos-ny-gruppe-resten.css";
+import "@/styles/agencyos-ny-a5-skra.css";
 
 const pst = (p: number | null) => (p == null ? "—" : `${p} %`);
 const timer = (min: number) => `${formaterTall(min / 60, 1)} t`;
@@ -23,8 +26,8 @@ const timer = (min: number) => `${formaterTall(min / 60, 1)} t`;
 export function AGA03Gruppeanalyse({ groupId, navn, analyse }: { groupId: string; navn: string; analyse: EnGruppeAnalyse }) {
   const medData = analyse.dekning.filter(Boolean).length;
   const forLite = analyse.antallSpillere === 0 || analyse.etterlevelsePct == null;
-  return <div className="agn-s">
-    <Topp tilbake={{ href: `/admin/grupper/${groupId}`, tekst: navn }}
+  return <div className="agn-s agn-a5-under">
+    <Topp tilbake={{ href: `/admin/grupper/${groupId}`, tekst: navn }} bilde={GRUPPE_BILDE}
       dato={`${navn} · ${analyse.antallSpillere} spillere · siste ${analyse.uker} uker`} tittel="Gruppeanalyse" />
     <GruppeFanerNy groupId={groupId} aktiv="stats" />
     {forLite

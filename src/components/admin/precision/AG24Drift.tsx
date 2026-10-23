@@ -92,10 +92,10 @@ export function AG24Drift({ tilstand = "data", data = TOM_DATA, startFane = "gdp
   const topp = <Topp dato="Drift · bare admin" tittel="Drift" ingress={TOPP_INGRESS} />;
 
   if (tilstand === "laster") {
-    return <div className="agn-s" data-testid="ag24-laster">{topp}<Laster tekst="Henter driftsdata …" /></div>;
+    return <div className="agn-s agn-a6" data-testid="ag24-laster">{topp}<Laster tekst="Henter driftsdata …" /></div>;
   }
   if (tilstand === "feil") {
-    return <div className="agn-s" data-testid="ag24-feil">{topp}<Feil tittel="Driftsdata kunne ikke hentes" tekst="Ingen data er slettet eller endret." kode="DRIFT" /></div>;
+    return <div className="agn-s agn-a6" data-testid="ag24-feil">{topp}<Feil tittel="Driftsdata kunne ikke hentes" tekst="Ingen data er slettet eller endret." kode="DRIFT" /></div>;
   }
 
   const venterAntall = foresporsler.filter((g) => g.st === "Venter").length;
@@ -139,7 +139,7 @@ export function AG24Drift({ tilstand = "data", data = TOM_DATA, startFane = "gdp
   const feilValgt = feil.find((f) => f.id === valgtFeil) ?? feil[0];
 
   return (
-    <div className="agn-s" data-testid="ag24-drift">
+    <div className="agn-s agn-a6" data-testid="ag24-drift">
       {topp}
 
       <div className="teller-rad">

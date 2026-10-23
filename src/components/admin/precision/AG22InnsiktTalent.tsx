@@ -177,8 +177,8 @@ export function AG22InnsiktTalent({ tilstand = "data", data = TOM_DATA, startFan
   const [valgteSpillere, setValgteSpillere] = useState<string[]>(() => data.players.slice(0, 2).map((p) => p.id));
   const topp = <Topp dato="Spillere · bare coach" tittel="Innsikt og talent" ingress={INGRESS} />;
 
-  if (tilstand === "laster") return <div className="agn-s" data-testid="ag22-laster">{topp}<Laster tekst="Henter talentprofiler …" /></div>;
-  if (tilstand === "feil") return <div className="agn-s" data-testid="ag22-feil">{topp}<Feil tittel="Talentdata kunne ikke hentes" tekst="Ingen profiler er endret. Prøv igjen." kode="FEIL 503 · TALENT" /></div>;
+  if (tilstand === "laster") return <div className="agn-s agn-a6" data-testid="ag22-laster">{topp}<Laster tekst="Henter talentprofiler …" /></div>;
+  if (tilstand === "feil") return <div className="agn-s agn-a6" data-testid="ag22-feil">{topp}<Feil tittel="Talentdata kunne ikke hentes" tekst="Ingen profiler er endret. Prøv igjen." kode="FEIL 503 · TALENT" /></div>;
 
   // Personvernregel: born != null && (born < 2008 || consent)
   const synligeSpillere = tilstand === "tom" ? [] : filtrerSynligeTalenter(data.players);
@@ -192,7 +192,7 @@ export function AG22InnsiktTalent({ tilstand = "data", data = TOM_DATA, startFan
   const peerSnitt = Math.round(data.peer.v.reduce((a, b) => a + b, 0) / (data.peer.v.length || 1));
 
   return (
-    <div className="agn-s" data-testid="ag22-innsikt-talent">
+    <div className="agn-s agn-a6" data-testid="ag22-innsikt-talent">
       {topp}
 
       <div className="teller-rad">

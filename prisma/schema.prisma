@@ -2569,6 +2569,9 @@ model TrackManSession {
   environment      TrackManEnvironment?
   targetLineStatus String               @default("UNKNOWN") // UNKNOWN | CONFIRMED | NOT_ALIGNED (brukerbekreftet)
   targetDistanceM  Float? // valgfritt øktmål i meter; varierer målet per slag, bruk TrackManShot.targetDistanceM
+  // TEK eller SLAG, påkrevd ved ny import (Anders 22.10.2026, §TRACKMAN I TEAM NORWAY-TESTENE punkt 7).
+  // Gamle økter står uten og vises som «—». DDL: scripts/add-tn-trackman-2026-10-22.ts.
+  akse             String?
   createdAt        DateTime             @default(now())
 
   user  User           @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -6053,6 +6056,42 @@ model TechnicalPlanAudit {
 //
 // Disse driver auto-oppdatering av PositionTask.repsGjort* og
 // PositionTaskTmGoal.currentValue.
+/// Hvilket TrackMan-slag et testforsøk kom fra (Team Norway-testene, Anders 22.10.2026, §TRACKMAN I
+/// TEAM NORWAY-TESTENE punkt 2). Knyttet til testøkta, fordi koblingen gjøres mens testen pågår; resultatet
+/// finnes via TestSession.testResultId. `passerIkke`: slaget lå mer enn 15 m (30 m i Driver Basic) fra målet,
+/// og treneren koblet det likevel. Uten @relation (gotchas §Database), DDL: scripts/add-tn-trackman-2026-10-22.ts.
+model TestShotTrackManLink {
+  id             String   @id @default(cuid())
+  testSessionId  String
+  forsokIndeks   Int
+  trackManShotId String
+  passerIkke     Boolean  @default(false)
+  kobletAvId     String?
+  kobletAt       DateTime @default(now())
+
+  @@unique([testSessionId, forsokIndeks])
+  @@index([trackManShotId])
+  @@map("test_shot_trackman_links")
+}
+
+/// Egne mål og vinduer for «andel i målvindu» per spiller, kølle og parameter (Anders 22.10.2026). Uten rad
+/// gjelder standardvinduet i src/lib/trackman/statistikk.ts. Spiller og trener kan skrive; `settAvId`/`settAt`
+/// viser hvem og når. Uten @relation (gotchas §Database), DDL: scripts/add-tn-trackman-2026-10-22.ts.
+model TrackManMaal {
+  id        String   @id @default(cuid())
+  spillerId String
+  kolle     String
+  parameter String
+  maal      Float?
+  vinduMin  Float?
+  vinduMax  Float?
+  settAvId  String?
+  settAt    DateTime @default(now())
+
+  @@unique([spillerId, kolle, parameter])
+  @@map("trackman_maal")
+}
+
 model TrackManShot {
   id         String @id @default(cuid())
   sessionId  String
@@ -7772,4 +7811,99 @@ model WagrReferencePlan {
 
   @@unique([wagrPlayerId, season])
   @@map("wagr_reference_plans")
+}
+
+// Referanse › WAGR i Team Norway-trenerflaten (Anders 21.10.2026, beslutninger.md
+// §TEAM NORWAY-TRENERFLATEN BYGGES I HQ, punkt 5). Pipelines (ak-golf-pipelines,
+// mandagsjobben) skriver radene; HQ eier skjemaet og leser. Samme tall som
+// teamnorwayref: gruppene, plass, Power per turnering og plass før og etter.
+// Kilde vises alltid: «World Amateur Golf Ranking (WAGR), The R&A».
+model WagrRefGroup {
+  // «junior», «amator», «norge»
+  id        String   @id
+  name      String
+  title     String?
+  // Hvordan spillerne er valgt ut, vist under tabellen
+  selection String?
+  // «herrer» eller «damer»; null = begge
+  gender    String?
+  // Bare turneringene i dette året (Amatør: 2026); null = alle år
+  onlyYear  Int?
+  sortOrder Int      @default(0)
+  // Rankinguka tallene gjelder
+  wagrDate  DateTime @db.Date
+  updatedAt DateTime @default(now()) @updatedAt
+
+  members WagrRefGroupMember[]
+
+  @@map("wagr_ref_groups")
+}
+
+model WagrRefGroupMember {
+  groupId      String
+  wagrPlayerId Int
+  // WAGR-nivået spilleren står for (Amatør: 25, 50 … 1000); null ellers
+  level        Int?
+  sortOrder    Int    @default(0)
+
+  group  WagrRefGroup  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  player WagrRefPlayer @relation(fields: [wagrPlayerId], references: [wagrPlayerId], onDelete: Cascade)
+
+  @@id([groupId, wagrPlayerId])
+  @@index([wagrPlayerId])
+  @@map("wagr_ref_group_members")
+}
+
+model WagrRefPlayer {
+  wagrPlayerId Int      @id
+  name         String
+  country      String
+  gender       String?
+  rank         Int?
+  pointsAvg    Float?
+  divisor      Float?
+  bestRank     Int?
+  wins         Int?
+  // Plass ved årsslutt: {"2024": 2239, "2025": 846}
+  yearEndRanks Json     @default("{}")
+  // Per år: {score, plass, plass_median, power, poeng, antall, med_score}
+  yearStats    Json     @default("{}")
+  wagrDate     DateTime @db.Date
+  updatedAt    DateTime @default(now()) @updatedAt
+
+  groups  WagrRefGroupMember[]
+  results WagrRefResult[]
+
+  @@map("wagr_ref_players")
+}
+
+model WagrRefResult {
+  id           String    @id @default(cuid())
+  wagrPlayerId Int
+  wagrEventId  Int
+  name         String
+  year         Int
+  // WAGR-uka resultatet teller i
+  week         Int?
+  date         DateTime? @db.Date
+  country      String?
+  city         String?
+  // Plassering som WAGR skriver den («T9», «Participant»)
+  finish       String?
+  power        Float?
+  points       Float?
+  eventType    String?
+  format       String?
+  // Score per runde
+  rounds       Json      @default("[]")
+  fieldSize    Int?
+  // WAGR-plass uka før og uka etter turneringen
+  rankBefore   Int?
+  rankAfter    Int?
+
+  player WagrRefPlayer @relation(fields: [wagrPlayerId], references: [wagrPlayerId], onDelete: Cascade)
+
+  @@unique([wagrPlayerId, wagrEventId])
+  @@index([wagrPlayerId, year])
+  @@map("wagr_ref_results")
 }

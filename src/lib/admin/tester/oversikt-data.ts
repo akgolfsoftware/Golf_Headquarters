@@ -14,7 +14,7 @@ const AAR_MS = 365 * 86_400_000;
 const DAG_MS = 86_400_000;
 
 export type TesterGruppe = { id: string; navn: string; antall: number };
-export type NesteTestdag = { dato: string; ukedag: string; sted: string | null; tittel: string; gruppe: string; deltakere: number; dagerTil: number };
+export type NesteTestdag = { dato: string; ukedag: string; sted: string | null; tittel: string; gruppe: string; deltakere: number; dagerTil: number; klokke?: string; eventId?: string | null };
 
 export type TesterOversiktSide = TesterOversiktData & {
   grupper: TesterGruppe[];
@@ -54,7 +54,7 @@ export async function lastTesterOversikt(viewer: { id: string; role: string }, g
     prisma.testDay.findFirst({
       where: { scheduledAt: { gte: new Date(osloDag(now)) }, status: { in: ["PLANNED", "ACTIVE"] }, group: gruppeId ? { id: gruppeId } : gruppeInnsynWhere(viewer) },
       orderBy: { scheduledAt: "asc" },
-      select: { scheduledAt: true, location: true, title: true, group: { select: { name: true } }, _count: { select: { participants: true } } },
+      select: { scheduledAt: true, location: true, title: true, eventId: true, group: { select: { name: true } }, _count: { select: { participants: true } } },
     }),
   ]);
 
@@ -72,6 +72,8 @@ export async function lastTesterOversikt(viewer: { id: string; role: string }, g
     ukedag: new Intl.DateTimeFormat("nb-NO", { weekday: "long", timeZone: "Europe/Oslo" }).format(testdag.scheduledAt),
     sted: testdag.location, tittel: testdag.title, gruppe: testdag.group.name, deltakere: testdag._count.participants,
     dagerTil: Math.round((osloDag(testdag.scheduledAt) - osloDag(now)) / DAG_MS),
+    klokke: new Intl.DateTimeFormat("nb-NO", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Oslo" }).format(testdag.scheduledAt),
+    eventId: testdag.eventId,
   } : null;
 
   return { ...data, grupper, gruppeId, spillerValg: spillere.map((s) => ({ id: s.id, navn: s.name ?? "Uten navn" })), nesteTestdag };

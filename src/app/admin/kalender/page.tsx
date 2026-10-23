@@ -11,16 +11,16 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
-import Link from "next/link";
-import { KnappLenke, Topp } from "@/components/admin/agencyos-ny/ny";
-import { AG05Aar, AG05Dag, AG05Uke, AG05Maned, AG05Periode } from "@/components/admin/precision/AG05Kalender";
+import {
+  AG05Aar, AG05Dag, AG05KalenderSide, AG05Uke, AG05Maned, AG05Periode, kalenderTallIdag, nesteOkt, type AG05Tall,
+} from "@/components/admin/precision/AG05Kalender";
 import { AG05Tilg } from "@/components/admin/precision/AG05Tilg";
 import { AG05GoogleSynk } from "@/components/admin/precision/AG05GoogleSynk";
 import { StallDagV2, StallDagFeil } from "@/components/workbench/StallDagV2";
 import { TL_SCOPE } from "@/components/workbench/wb-tl-scope";
 import { loadStallDag } from "@/lib/workbench/wb-actions";
 import { erKalenderLag, type KalenderLag } from "@/lib/domain/kalender-lag";
-import { hentKalenderLagManed, hentKalenderLagUke } from "./lag/data";
+import { hentKalenderLagManed, hentKalenderLagUke, type KalenderLagUkeData } from "./lag/data";
 import { hentTilgjengelighet } from "./tilg-data";
 import { hentGoogleSynk } from "./google-synk-data";
 import { hentKalenderAar } from "./aar-data";
@@ -47,6 +47,12 @@ function osloIdag(): string {
   return new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Oslo" }).format(new Date());
 }
 
+/** Minutter siden midnatt i Oslo, for hvilken økt som pågår eller er neste. */
+function osloMinutt(): number {
+  const deler = new Intl.DateTimeFormat("nb-NO", { timeZone: "Europe/Oslo", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(new Date());
+  return Number(deler.find((d) => d.type === "hour")?.value) * 60 + Number(deler.find((d) => d.type === "minute")?.value);
+}
+
 export default async function AgencyKalenderPage({ searchParams }: { searchParams: SearchParams }) {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
   const sp = await searchParams;
@@ -57,6 +63,7 @@ export default async function AgencyKalenderPage({ searchParams }: { searchParam
   let innhold: React.ReactNode;
   let periode = "";
   let navigasjon: React.ReactNode = null;
+  let idagFraVisning: KalenderLagUkeData | null = null;
 
   if (fane === "stall") {
     const idag = osloIdag();
@@ -84,6 +91,9 @@ export default async function AgencyKalenderPage({ searchParams }: { searchParam
     innhold = <AG05Maned data={data} startLag={startLag} />;
   } else {
     const data = await hentKalenderLagUke(sp.uke, { lag: startLag, visning: fane, dato: sp.dato, seer });
+    // Uka som vises inneholder i dag: tallene i toppen kan regnes av samme data. Lagfilteret i
+    // adressen (`lag=`) styrer bare hva som er valgt i visningen, ikke hva som hentes.
+    if (data.dager.includes(data.idagIso)) idagFraVisning = data;
     if (fane === "dag") {
       const dato = sp.dato && data.dager.includes(sp.dato) ? sp.dato : data.dager.includes(data.idagIso) ? data.idagIso : data.dager[0];
       periode = new Intl.DateTimeFormat("nb-NO", { weekday: "long", day: "numeric", month: "short", timeZone: "UTC" }).format(new Date(`${dato}T12:00:00Z`));
@@ -97,20 +107,23 @@ export default async function AgencyKalenderPage({ searchParams }: { searchParam
     }
   }
 
+  // Tallene og hovedkortet gjelder alltid i dag, uansett hvilken fane og periode som vises.
+  const idagIso = osloIdag();
+  const idagData = idagFraVisning ?? (await hentKalenderLagUke(undefined, { visning: "dag", dato: idagIso, seer }));
+  const tall: AG05Tall = { ...kalenderTallIdag(idagData.hendelser, idagIso), ledigePlasser: null, forslagGruppeokt: null };
+  const neste = nesteOkt(idagData.hendelser, idagIso, osloMinutt(), user.id);
+
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
-      <div className="agn-s">
-        <Topp dato={seer.erHeadCoach ? `Alle coacher · ${periode}` : `${user.name ?? "Coach"} · Assist Coach`} tittel="Kalender"
-          handlinger={<>
-            <KnappLenke variant="pri" href="/admin/bookinger?fane=ny">Ny booking</KnappLenke>
-            <KnappLenke href="/admin/kalender/hendelse/ny">Ny hendelse</KnappLenke>
-          </>} />
-        <nav className="valg" aria-label="Visning">
-          {KALENDER_FANER.map((f) => <Link key={f.id} href={kalenderHref(f.id)} aria-current={f.id === fane ? "page" : undefined}>{f.label}</Link>)}
-        </nav>
-        {navigasjon}
-        <div className="pa-root kal-innhold">{innhold}</div>
-      </div>
+      <AG05KalenderSide
+        overlinje={seer.erHeadCoach ? `Alle coacher · ${periode}` : `${user.name ?? "Coach"} · Assist Coach`}
+        tall={tall}
+        neste={neste}
+        faner={KALENDER_FANER.map((f) => ({ id: f.id, label: f.label, href: kalenderHref(f.id), aktiv: f.id === fane }))}
+        navigasjon={navigasjon}
+      >
+        {innhold}
+      </AG05KalenderSide>
     </AgencyOSSkall>
   );
 }

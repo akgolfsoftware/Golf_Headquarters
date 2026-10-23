@@ -1,56 +1,13 @@
-/* AG-08 Spiller 360, designløftet 20.10.2026. Fasit: canvaset «AgencyOS nøkkelskjermer»,
-   tavlene Spiller360 og Spiller360-mobil. Gjelder bare inni .agn-s .s3.
-   Farge betyr akse. Rust brukes ikke her. */
+/* AG-08 Spiller 360. Fanene følger designløftet 20.10.2026 (canvaset «AgencyOS nøkkelskjermer»);
+   toppen, hovedkortet og rammen er Skrå-drakten (bølge 1, pakke A2, 22.10.2026, nederst i fila).
+   Fanestilene gjelder inni .agn-s .s3. Farge betyr akse. Rust brukes ikke her. */
 
 .agn-s .meta { font: 500 11px/1.25 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--graphite-600); }
 .agn-s .num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
 .agn-s .s3 { gap: 22px; }
 
-/* Hode */
-.agn-s .s3-hode { display: grid; gap: 14px; }
-.agn-s .s3-hvem { display: flex; gap: 14px; align-items: center; }
-.agn-s .s3-hvem .avatar { background: var(--graphite-900); color: var(--white); }
-.agn-s .s3-navn { display: grid; gap: 6px; }
-.agn-s .s3-navn .meta { color: var(--graphite-800); overflow-wrap: anywhere; }
-.agn-s .s3-navn h1 { font: 700 30px/1.05 var(--sans); letter-spacing: -.035em; overflow-wrap: anywhere; }
-.agn-s .s3-under { font-size: 14px; color: var(--graphite-800); }
-.agn-s .s3-handlinger { display: flex; flex-wrap: wrap; gap: 8px; }
-.agn-s .s3-handlinger .knapp.sek { border-color: var(--sand-300); font-weight: 500; }
-.agn-s .s3-lenker { display: flex; flex-wrap: wrap; column-gap: 16px; }
-.agn-s .s3-lenker a { min-height: 44px; display: inline-flex; align-items: center; font-size: 14px; color: var(--graphite-800); text-underline-offset: 3px; }
-
-/* Nøkkeltall */
-.agn-s .s3-kpi { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--graphite-900); border-bottom: 1px solid var(--sand-300); }
-.agn-s .s3-k { display: grid; gap: 8px; align-content: start; padding: 14px 12px 14px 0; }
-.agn-s .s3-k:nth-child(2n) { padding-left: 12px; border-left: 1px solid var(--sand-300); }
-.agn-s .s3-k:nth-child(n + 3) { border-top: 1px solid var(--sand-300); }
-.agn-s .s3-k .e { font-size: 13px; color: var(--graphite-800); }
-.agn-s .s3-k .t { font: 600 30px/1 var(--mono); letter-spacing: -.03em; }
-.agn-s .s3-k .t small { font-size: 16px; }
-.agn-s .s3-k .s { font-size: 13px; color: var(--graphite-800); overflow-wrap: anywhere; }
-.agn-s .s3-k-rad { display: flex; align-items: flex-end; justify-content: space-between; gap: 8px; }
-.agn-s .s3-kurve { color: var(--graphite-900); flex: none; }
 .agn-s .s3-bar { display: block; height: 6px; background: var(--sand-150); }
 .agn-s .s3-bar i { display: block; height: 100%; background: var(--graphite-900); }
-
-/* Dette krever deg nå */
-.agn-s .s3-krever { display: grid; gap: 12px; }
-.agn-s .s3-krav { display: grid; gap: 6px; padding: 14px 16px; border-radius: 12px; background: #faf8f3; color: var(--graphite-900); text-decoration: none; transition: scale 150ms var(--ut); }
-.agn-s .s3-krav:active { scale: .99; }
-.agn-s .s3-krav.forst { background: var(--graphite-900); color: var(--white); }
-.agn-s .s3-krav .e { font-size: 12px; color: var(--graphite-800); }
-.agn-s .s3-krav.forst .e { color: #c9c4ba; }
-.agn-s .s3-krav b { font: 600 16px/1.3 var(--sans); overflow-wrap: anywhere; }
-.agn-s .s3-krav .s { font-size: 13px; color: var(--graphite-800); }
-.agn-s .s3-krav.forst .s { color: #ddd9d1; }
-.agn-s .s3-flere { font-size: 14px; color: var(--graphite-900); min-height: 44px; display: inline-flex; align-items: center; }
-.agn-s .s3-ingen { font-size: 14px; color: var(--graphite-800); }
-
-/* Faner: PC understrek, mobil nedtrekk */
-.agn-s .s3-faner { display: none; flex-wrap: wrap; border-bottom: 1px solid var(--sand-300); }
-.agn-s .s3-faner a { min-height: 44px; display: inline-flex; align-items: center; gap: 6px; padding: 0 14px; font-size: 14px; color: var(--graphite-800); text-decoration: none; }
-.agn-s .s3-faner a[aria-current="page"] { color: var(--graphite-900); font-weight: 600; box-shadow: inset 0 -2px 0 var(--graphite-900); }
-.agn-s .s3-faner .meta { font-size: 10px; }
 
 /* Plan-fanen */
 .agn-s .s3-plan, .agn-s .s3-hoved, .agn-s .s3-side { display: grid; gap: 26px; align-content: start; }
@@ -97,24 +54,6 @@
 }
 
 @media (min-width: 900px) {
-  .agn-s .s3-hode { grid-template-columns: minmax(0, 1fr) auto; align-items: end; column-gap: 24px; }
-  .agn-s .s3-hvem { gap: 18px; }
-  .agn-s .s3-hvem .avatar { width: 72px; height: 72px; font-size: 24px; }
-  .agn-s .s3-navn h1 { font-size: 44px; line-height: 1; }
-  .agn-s .s3-handlinger { justify-content: flex-end; }
-  .agn-s .s3-handlinger .knapp.pri { order: 2; }
-  .agn-s .s3-lenker { grid-column: 1 / -1; }
-  .agn-s .s3-kpi { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  .agn-s .s3-k { padding: 14px 20px; border-top: 0 !important; }
-  .agn-s .s3-k:first-child { padding-left: 0; }
-  .agn-s .s3-k:last-child { padding-right: 0; }
-  .agn-s .s3-k + .s3-k { border-left: 1px solid var(--sand-300); }
-  .agn-s .s3-k .t { font-size: 36px; }
-  .agn-s .s3-krever { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .agn-s .s3-flere { grid-column: 1 / -1; }
-  .agn-s .s3-faner { display: flex; }
-  .agn-s .s3-fane-velger { display: none; }
-  .agn-s .s3-plan { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 32px; align-items: start; }
   .agn-s .s3-uke { gap: 4px; }
   .agn-s .s3-okt { min-height: 72px; }
 }
@@ -152,3 +91,55 @@
 @media (min-width: 900px) {
   .agn-s .s3-stats-topp { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 32px; align-items: start; }
 }
+
+/* ── Skrå-drakten (bølge 1, pakke A2, 22.10.2026) ──
+   Skissen: docs/design-system/utkast-skra/komponist/bolge-1.html seksjon 2. Toppen, hovedkortet og kortene
+   er byggeklossene i src/components/precision/skra/; her står bare rammen rundt dem. */
+.agn-s.s3s { --skra-ut-top: var(--r5); --skra-ut-x: var(--r4); container-type: inline-size; background: var(--ak-flate); gap: 0; }
+@media (min-width: 900px) { .agn-s.s3s { --skra-ut-top: var(--r4); --skra-ut-x: 40px; } }
+.agn-s .s3s-tilbake { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; color: inherit; text-decoration: none; }
+.agn-s .s3s-helt-lenke { display: inline-flex; align-items: center; min-height: 44px; color: #fff; text-underline-offset: 3px; }
+
+.agn-s .s3s-to { display: grid; gap: 20px; min-width: 0; }
+.agn-s .s3s-hoved, .agn-s .s3s-side { display: grid; gap: 20px; align-content: start; min-width: 0; }
+.agn-s .s3s-hoved > section { container-type: inline-size; }
+
+/* Fanene bryter over flere linjer; aldri sidelengs rulling. */
+.agn-s .s3s-faner { display: flex; flex-wrap: wrap; gap: 4px 2px; margin: -4px 0 4px; border-bottom: 1px solid var(--sand-300); }
+.agn-s .s3s-faner a { min-height: 44px; display: inline-flex; align-items: center; gap: 6px; padding: 0 12px; font-size: 14px; color: var(--graphite-800); text-decoration: none; }
+.agn-s .s3s-faner a[aria-current="page"] { color: var(--graphite-900); font-weight: 600; box-shadow: inset 0 -2px 0 var(--graphite-900); }
+.agn-s .s3s-faner .meta { font-size: 10px; }
+
+/* Plan- og øvrige faner: én kolonne inni kortet, to når kortet selv er bredt nok. */
+.agn-s .s3s-hoved .s3-plan, .agn-s .s3s-hoved .s360-fane .a8-to { grid-template-columns: minmax(0, 1fr); gap: 26px; }
+@container (min-width: 760px) {
+  .agn-s .s3s-hoved .s3-plan { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 32px; align-items: start; }
+  .agn-s .s3s-hoved .s360-fane .a8-to { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); }
+}
+
+/* Sidekolonnen */
+.agn-s .s3s-fakta { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: baseline; }
+.agn-s .s3s-fakta.enkel { grid-template-columns: minmax(0, 1fr); }
+.agn-s .s3s-fakta > b { font: 600 22px/1 var(--mono); letter-spacing: -.02em; }
+.agn-s .s3s-fakta > span { display: grid; gap: 2px; min-width: 0; }
+.agn-s .s3s-fakta > span > b { font: 600 15px/1.3 var(--sans); overflow-wrap: anywhere; }
+.agn-s .s3s-fakta > span > span { font-size: 13px; color: var(--graphite-800); overflow-wrap: anywhere; }
+.agn-s .s3s-dl { display: grid; margin: 0; }
+.agn-s .s3s-dl > div { display: grid; gap: 4px; padding: 10px 0; border-top: 1px solid var(--sand-300); }
+.agn-s .s3s-dl > div:first-child { border-top: 0; padding-top: 0; }
+.agn-s .s3s-dl dt { font-size: 13px; color: var(--graphite-800); }
+.agn-s .s3s-dl dd { display: grid; gap: 2px; margin: 0; min-width: 0; }
+.agn-s .s3s-dl dd b { font: 600 17px/1.2 var(--mono); }
+.agn-s .s3s-dl dd span { font-size: 13px; color: var(--graphite-800); overflow-wrap: anywhere; }
+.agn-s .s3s-lenker { display: flex; flex-wrap: wrap; column-gap: 16px; }
+.agn-s .s3s-lenker a { min-height: 44px; display: inline-flex; align-items: center; font-size: 14px; color: var(--graphite-900); text-underline-offset: 3px; }
+
+@container (min-width: 900px) {
+  .agn-s .s3s-to { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+  .agn-s .s3s-hoved, .agn-s .s3s-side { gap: 24px; }
+}
+
+/* Undersidene (ny, rediger, komplett profil, turneringsprofil): lav Skrå-topp, innholdet i hvite kort. */
+.agn-s .a2-under { display: grid; gap: 20px; min-width: 0; }
+.agn-s .a2-under .pa-card, .agn-s .a2-under .kort { border: 0; border-radius: var(--ak-r-skra-kort); background: var(--ak-hvit); box-shadow: var(--ak-skygge-md); padding: 18px; }
+@media (min-width: 900px) { .agn-s .a2-under { gap: 24px; } .agn-s .a2-under .pa-card, .agn-s .a2-under .kort { padding: 22px; } }

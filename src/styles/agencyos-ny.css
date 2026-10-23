@@ -302,7 +302,7 @@ a.agn-neste:active { transform: scale(.97); }
   .agn-s .to-del { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--r6); align-items: start; }
   .agn-s .to-del.bred-v { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); }
   .agn-s .tre-del { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--r5); align-items: start; }
-  .agn-s .smal { max-width: 720px; }
+  .agn-s .smal { max-width: var(--ak-tekst-maks); }
 }
 
 /* Mer: innganger til Booking, Grupper, Tester, Økonomi (bare head coach) og Oppsett */
@@ -337,9 +337,9 @@ a.agn-neste:active { transform: scale(.97); }
   .agn .pa-side { padding: var(--r4) 40px 96px; }
 }
 
-/* Skrå-topp: lav topp med bilde på alle AgencyOS-sider som bruker Topp. Toppen går ut til kantene, siden under ligger over kanten. */
-.agn-topp-lav { --skra-ut-top: var(--r5); --skra-ut-x: var(--r4); margin-bottom: -16px; }
-.agn-topp-lav + * { position: relative; z-index: 1; margin-top: -8px; }
+/* Skrå-topp: lav topp med bilde på alle AgencyOS-sider som bruker Topp. Toppen går ut til kantene.
+   Siden under starter under den skrå kanten og dekker aldri bildet (Anders 22.10). */
+.agn-topp-lav { --skra-ut-top: var(--r5); --skra-ut-x: var(--r4); margin-bottom: 16px; }
 .agn-s:has(> .agn-topp-lav) { background: var(--ak-flate); }
 .agn-topp-lav .agn-topp-handl { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 .agn-topp-lav .ag-tilbake { color: #fff; }

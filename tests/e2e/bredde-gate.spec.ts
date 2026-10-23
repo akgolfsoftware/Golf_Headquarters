@@ -77,7 +77,7 @@ const TEAM_NORWAY = [
   { navn: "TN Skoleoversikt", url: "/team-norway/skoler" },
   { navn: "TN Testprotokoller", url: "/team-norway/protokoller" },
   { navn: "TN Turneringer", url: "/team-norway/turneringer" },
-  { navn: "TN Referansenivåer", url: "/team-norway/referansenivaer" },
+  { navn: "TN Referanse › Tester", url: "/team-norway/referanse/tester" },
   { navn: "TN Trenere og tilgang", url: "/team-norway/tilgang" },
   { navn: "TN Inviter spiller", url: "/team-norway/inviter" },
   { navn: "TN Trenerkatalog", url: "/team-norway/apparatet" },

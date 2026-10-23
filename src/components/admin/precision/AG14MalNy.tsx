@@ -52,7 +52,7 @@ export function AG14MalNy() {
     });
   }
 
-  return <div className="agn-s">
+  return <div className="agn-s agn-a6">
     <Topp tilbake={{ href: "/admin/plan?fane=ukemaler", tekst: "Plan-hub" }} dato="Plan · ny mal" tittel="Ny planmal"
       ingress="Fyll inn metadata og opprett. Du legger inn økter uke for uke etterpå." />
     <Seksjon tittel="Metadata">

@@ -2,8 +2,8 @@
 name: ak-hq-design
 description: "Planlegg, tegn og vurder AK Golf HQs brukerreiser, komponenter, wireframes og responsive UI, og klargjør en sammenhengende designoverlevering. Bruk ved designarbeid i PlayerHQ, AgencyOS, booking, marked, forelder og øvrige flater i dette prosjektet."
 metadata:
-  version: "7"
-  reviewed: "2026-10-02"
+  version: "8"
+  reviewed: "2026-10-21"
   short-description: "Samlet designarbeid for hele AK Golf HQ"
 ---
 
@@ -13,10 +13,15 @@ Utvikle et presist og lett forståelig golfprodukt. Arbeid fra faktiske brukerop
 
 ## Utgangspunkt og kildeorden
 
-- Anders' siste bestilling styrer. **Claude Design-prosjektet «AK Golf Precision Athletics» (`7d7c2994`) er designsystemet for AK Golf HQ fra 26.09.2026** ([beslutninger.md](../../rules/beslutninger.md) §PRECISION ATHLETICS). Grafitt primærknapp, rust kun som signal, lyst tema som standard og nattema ute. Les [den styrende beslutningen](../../../docs/design-system/design-autoritet.md) først. Systemvalget er ikke en åpen kandidat.
+- Anders' siste bestilling styrer. **Claude Design-prosjektet «AK Golf Precision Athletics» (`7d7c2994`) er designsystemet for AK Golf HQ fra 26.09.2026** ([beslutninger.md](../../rules/beslutninger.md) §PRECISION ATHLETICS). Grafitt primærknapp, rust kun som signal og lyst tema overalt, også i Live-økt og slagregistrering ute (§LIVE-ØKTENE ER ALLTID LYSE, 14.10). Les [den styrende beslutningen](../../../docs/design-system/design-autoritet.md) først. Systemvalget er ikke en åpen kandidat.
 - Train-lock og Paper er utgående. Bruk dem bare som historikk og funksjonsinventar, aldri som visuell kilde eller skjult standard. Ikke spør Anders på nytt om de skal gjelde.
 - Viderefør siste faktiske versjon i «AK Golf Precision Athletics» og bevar nyere rettinger. «App design» (`830e7bce`) finnes ikke lenger. Historiske designpakker, ZIP-instrukser og skill-eksempler er ikke nye valg. En konkret skjermvariant er et forslag inntil Anders velger den for bygging.
 - Team Norway har sitt eget visuelle designspråk for `/team-norway/*`-skjermer: Claude Design-prosjektet «Team Norway App» (Anders 22.09.2026, [beslutninger.md](../../rules/beslutninger.md) §TEAM NORWAY-APPEN BYTTER DESIGNSPRÅK). Fra 19.10.2026 er retning «Skrå» fasit (§TEAM NORWAY-APPEN FÅR RETNING «SKRÅ», `docs/design-system/utkast-tn/nye-veier.html`): banebilde kuttet 4° med rød kant, myke kort med radius og navy-skygger. Navy sidemeny på PC, Schibsted Grotesk og rød `#D70232` (§TEAM NORWAY-APPEN BEHOLDER NAVY SIDEMENY, 20.10). Claw-valget 13.09 er historikk. Valget omfatter hele profilen, ikke bare aksentfargen.
+- **PlayerHQ og AgencyOS får Skrå-drakten fra teamnorwayref, tilpasset AK Golf** (Anders 20.10, §PLAYERHQ OG AGENCYOS FÅR SKRÅ-DRAKTEN). Fasit er `docs/design-system/utkast-skra/index.html`: ekte banebilde øverst med skråkutt, lyse kort over kanten, lysegrå flate under hvite kort med lagdelte myke skygger, hjørner 18 px på kort og 14 px på statkort, store tette tall og ett hovedtall per flate. Grafitt-toner i bildetoppen (ikke navy), IBM Plex Sans og Mono, farge betyr akse, rust bare signal, grafitt primærknapp, AK Golfs egne bilder (`public/images/playerhq/`). Knapp og pille beholder 8 px. «Ingen skygge på kort» og 12 px kort-hjørner er overstyrt.
+- **Bevegelse i Skrå:** respons straks man trykker, ark og menyer glir inn og ut samme vei, og alt følger `prefers-reduced-motion`. Bruk prosjektets fartskurver (f.eks. `--tn-ease-*` i Team Norway), aldri ease-in på grensesnitt.
+- **Full bredde på desktop** (Anders 21.10, §DESKTOP-SKJERMER BRUKER FULL BREDDE): innholdet fyller vinduet ved siden av menyen, uten smal sentrert kolonne. Brede flater får flere kolonner, ikke lengre linjer. Unntak: dialoger og ark (maks 560 px) og løpende tekst (ca. 46–60 tegn per linje). Mål i 390, 1280 og 1920 px uten sidelengs rulling.
+- **Team Norway er bare for trenere** (Anders 21.10, §TEAM NORWAY ER BARE FOR TRENERE): `/team-norway/*` tegnes bare for trenere og ADMIN, med seks hovedpunkter (Hjem · Spillere · Samlinger og testing · Turneringer · Referanse · Fag og administrasjon). Spilleren gjør alt i PlayerHQ. Spillerprofilen heter IUP. Wireframes: `docs/design-system/utkast-tn/trenerflate/`.
+- **Pyramiden tegnes med FYS nederst** (Anders 19.10): ovenfra TURN · SPILL · SLAG · TEK · FYS (`PYR_TOPP_TIL_BUNN`, `sorterPyramideOvenfra` i `src/lib/pyramide.ts`). Lister, bånd og tabeller har FYS først som før.
 - I repoet: les `AGENTS.md`, `docs/platform/AGENT-BRIEF.md` og aktuell `designsystem/README.md`. **[Treningsplanlegging og språk](../../../docs/treningsplanlegging.md) er eneste master for synlig språk i alt designarbeid:** ordvalg, menynavn, statuser, meldinger, tall, enheter og treningsbegreper. `docs/ordbok.md` er bare en peker, og `docs/ordbok.json` er avledet data. Eldre designfiler, lokale ordlister og eksempler kan ikke overstyre masteren. Den styrer språk og fag, mens gjeldende designautoritet styrer utseendet.
 - I Claude Design: bruk en tilgjengelig kopi av den samme masteren, for eksempel `guidelines/treningsplanlegging-master.md` i Precision-prosjektet. Bekreft hvilken kildeversjon som faktisk er tilgjengelig. Dersom masteren mangler i et annet designprosjekt, merk uavklarte ord i stedet for å gjette. Team Norway og WANG beholder sine egne visuelle systemer, men deler AK Golfs golf- og treningsbegreper.
 - I Claude Design eller annet miljø uten repo: bruk det vedlagte inventaret og konteksten nedenfor. Si hva du kan se. Et eksportert filinventar beviser ikke tilgang, ferdig kode eller funksjon.

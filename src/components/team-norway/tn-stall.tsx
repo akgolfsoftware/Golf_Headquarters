@@ -56,7 +56,7 @@ export function TnHeltKnapper({ children }: { children: ReactNode }) {
   return <div className={s.heltKnapper}>{children}</div>;
 }
 
-/** Tre små tall under en hårstrek i helteflaten. */
+/** Små tall på én rad under en hårstrek i helteflaten (tre som regel, fire i IUP-toppen). */
 export function TnHeltTellere({ tall }: { tall: { verdi: ReactNode; tekst: string }[] }) {
   return (
     <div className={s.tellere}>

@@ -23,6 +23,8 @@ const Vis = (t: AG16Tilstand, d: GrupperData = data) => (
         data={d}
         nyGruppeKnapp={<button type="button" className="pa-btn pa-btn--secondary">Ny gruppe</button>}
         gfgkBootstrapKnapp={null}
+        tall={t === "tom" ? { iGrupper: 0, utenGruppe: null, nesteSamling: null } : { iGrupper: 18, utenGruppe: 4, nesteSamling: "Tor 16:00" }}
+        helt={t === "tom" ? null : { overlinje: "Testdag · tor. 29.10", tid: "16:00", tittel: "GFGK Junior Utvikling", meta: "Testdag · Mulligan", href: "/admin/tester/testdag/e1", lenkeTekst: "Åpne testdagen" }}
         stigen={{
           trinn: [
             { navn: "Mini", gruppeNavn: "GFGK Junior Mini U10" },

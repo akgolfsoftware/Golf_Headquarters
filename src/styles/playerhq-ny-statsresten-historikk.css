@@ -59,6 +59,6 @@
 .phn .phn-pl-midt { text-align: center; }
 
 @container (min-width: 900px) {
-  .phn .phn-hist { max-width: 820px; }
+  .phn .phn-hist { max-width: none; }
   .phn .phn-pl-putter { grid-template-columns: repeat(10, minmax(0, 1fr)); }
 }

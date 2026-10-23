@@ -102,7 +102,7 @@ export default async function TurneringDetalj({
 
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
-      <div className="agn-s">
+      <div className="agn-s agn-a6">
         <Topp tilbake={{ href: "/admin/turnering", tekst: "Turneringer" }}
           dato={`Turnering · ${tournament.format}`}
           tittel={tournament.name}

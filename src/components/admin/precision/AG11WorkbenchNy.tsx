@@ -24,15 +24,21 @@
  *   - «Bruk mal på spiller» åpner malene i Plan; appen har ingen handling som
  *     legger en mal rett inn i uka herfra.
  *   - Bildene på øvelsene og fylte øktkort med bilde er ikke i datamodellen.
+ *
+ * Skrå-drakten (bølge 2, pakke A4, skissen https://claude.ai/artifact/781SDnPSrEGK7Kc6uy4K77
+ * seksjon 1, godkjent av Anders 22.10.2026; kilde docs/design-system/utkast-skra/komponist/bolge-2.html):
+ * lav topp uten bilde (flat grafitt) med hvem planen gjelder og velgeren (Spiller · Gruppe, søk, Forrige,
+ * Neste). Ingen hovedkort. Under: nivåene som brikker, uka og sidefeltet i hvite kort. Mobil: dagrad med
+ * alle sju dager og øktene for valgt dag som liste; snarveiene ligger bak «Mer». Stil: agencyos-ny-a4-skra.css.
  */
 import Link from "next/link";
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { ChevronLeft, ChevronRight, ChevronRight as Pil, Copy, FileText, Search, StickyNote, Trophy } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronRight as Pil, Copy, FileText, MoreHorizontal, Search, StickyNote, Trophy } from "lucide-react";
 import { toast } from "sonner";
 import { useUkeMotor } from "@/components/workbench/useUkeMotor";
 import { osloIdag } from "@/components/workbench/WeekGrid";
-import { Avatar } from "@/components/admin/agencyos-ny/ny";
+import { SkraKort, SkraTopp } from "@/components/precision/skra/Skra";
 import { NyOktArk, OktArk, OvelseArk, PubliserArk, VelgerArk, kildeMerke, klokke, type NyOktUtkast } from "./AG11Ark";
 import { PERIODE_KLASSE, PERIODE_NAVN, PeriodeArk, type PeriodeArkPeriode } from "./AG11PeriodeArk";
 import { formatMinutes } from "@/lib/domain/workbench/labels";
@@ -45,6 +51,7 @@ import { coachDuplicateSession, coachDuplicateWeek, coachLagreNotat, coachLagreP
 import type { PeriodeInput } from "@/lib/workbench/perioder";
 import { formaterVarighet } from "@/lib/format-tall";
 import "@/styles/agencyos-ny-workbench.css";
+import "@/styles/agencyos-ny-a4-skra.css";
 
 export type AG11NyProps = {
   playerId: string;
@@ -68,6 +75,8 @@ export type AG11NyProps = {
 const AKSER: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
 const AKSE_KL: Record<PyramidArea, string> = { FYS: "f", TEK: "t", SLAG: "s", SPILL: "p", TURN: "u" };
 const DAGNAVN = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];
+const DAG_KORT = ["Ma", "Ti", "On", "To", "Fr", "Lø", "Sø"];
+const DAG_LANG = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"];
 const HENDELSER = new Set(["TESTUKE", "TRENINGSSAMLING", "HELDAGSSAMLING"]);
 const ddmm = (iso: string) => `${iso.slice(8, 10)}.${iso.slice(5, 7)}`;
 const kort = (iso: string) => new Intl.DateTimeFormat("nb-NO", { timeZone: "Europe/Oslo", day: "numeric", month: "short" }).format(new Date(`${iso}T12:00:00Z`)).replace(".", "");
@@ -116,6 +125,7 @@ export function AG11WorkbenchNy({ playerId, spillerNavn, uke, kilder, roster, gr
   const [notatApent, setNotatApent] = useState(false);
   const [notatTekst, setNotatTekst] = useState("");
   const [lokaleNotater, setLokaleNotater] = useState(notater);
+  const [valgtDag, setValgtDag] = useState(() => uke.days.some((d) => d.date === osloIdag()) ? osloIdag() : uke.days[0]?.date ?? "");
   const [venter, start] = useTransition();
 
   const apenOkt = useMemo(() => alleOkter.find((s) => s.id === apenOktId) ?? null, [alleOkter, apenOktId]);
@@ -172,24 +182,34 @@ export function AG11WorkbenchNy({ playerId, spillerNavn, uke, kilder, roster, gr
   const lagrePeriode = (input: PeriodeInput, id?: string) => coachLagrePeriode(playerId, input, id);
   const slettPeriode = (id: string) => coachSlettPeriode(playerId, id);
 
-  const topp = <div className="topp">
-    <div className="velgerlinje">
-      <div className="rad">
+  const topp = <div className="agn-topp-lav">
+    <SkraTopp
+      lav
+      etikett="Workbench"
+      overlinje="Workbench · Spiller"
+      tittel={`${spillerNavn} · uke ${ukeNr}`}
+      ingress={periodeNaa(perioder, week.weekStart)}
+      handling={<div className="agn-topp-handl a4-velger">
         <div className="valg" role="group" aria-label="Plan for">
           <button type="button" aria-pressed="true">Spiller</button>
           <button type="button" aria-pressed="false" onClick={() => (grupper.length === 1 ? router.push(`/admin/grupper/${grupper[0].id}/workbench`) : setVelger("gruppe"))} disabled={grupper.length === 0}>Gruppe</button>
         </div>
-        <div className="hvem"><Avatar navn={spillerNavn} liten /><b>{spillerNavn}</b><button type="button" className="sok" onClick={() => setVelger("spiller")} aria-label="Søk etter spiller"><Search className="ikon" aria-hidden style={{ width: 16, height: 16, verticalAlign: -3, marginRight: 6 }} />Søk</button></div>
-        <span className="pil"><button type="button" aria-label="Forrige spiller" disabled={roster.length < 2} onClick={() => bytt(-1)}><ChevronLeft className="ikon" aria-hidden /></button><button type="button" aria-label="Neste spiller" disabled={roster.length < 2} onClick={() => bytt(1)}><ChevronRight className="ikon" aria-hidden /></button></span>
-      </div>
-    </div>
-    <div className="topp-rad">
-      <div><div className="dato">{periodeNaa(perioder, week.weekStart)}</div><h1 className="tittel">Uke {ukeNr}</h1></div>
-      <div className="knapper">
-        <span className="pil"><button type="button" aria-label="Forrige uke" onClick={() => gaaUke(-1)}><ChevronLeft className="ikon" aria-hidden /></button><button type="button" aria-label="Neste uke" onClick={() => gaaUke(1)}><ChevronRight className="ikon" aria-hidden /></button></span>
-        {utkast.length > 0 && <button type="button" className="knapp pri" onClick={() => setPubliser(true)}>Publiser {utkast.length} {utkast.length === 1 ? "utkast" : "utkast"}</button>}
-      </div>
-    </div>
+        <button type="button" className="knapp sek" onClick={() => setVelger("spiller")} aria-label="Søk etter spiller"><Search className="ikon" aria-hidden />Søk spiller</button>
+        <button type="button" className="knapp sek" aria-label="Forrige spiller" disabled={roster.length < 2} onClick={() => bytt(-1)}><ChevronLeft className="ikon" aria-hidden />Forrige</button>
+        <button type="button" className="knapp sek" aria-label="Neste spiller" disabled={roster.length < 2} onClick={() => bytt(1)}>Neste<ChevronRight className="ikon" aria-hidden /></button>
+      </div>}
+    />
+  </div>;
+
+  const snarveier = <>
+    <button type="button" disabled={venter || alleOkter.length === 0} onClick={dupliserUke}><Copy className="ikon" aria-hidden />Dupliser uke</button>
+    <button type="button" disabled={venter || alleOkter.length === 0} onClick={() => setDupliserVelg(true)}>Dupliser økt</button>
+    <Link href="/admin/plan?fane=ukemaler">Bruk mal på spiller</Link>
+    <button type="button" aria-pressed={notatApent} onClick={() => setNotatApent((v) => !v)}><StickyNote className="ikon" aria-hidden />Coachnotat</button>
+    <Link href={`/admin/spillere/${playerId}/plan`}><FileText className="ikon" aria-hidden />Søk i tekniske oppgaver</Link>
+  </>;
+
+  const navigasjon = <div className="a4-nav">
     <div className="nivaer" role="group" aria-label="Nivå">
       <Link href={url("aar", { aar: String(aar) })}>År</Link>
       <button type="button" aria-pressed={niva === "periode"} onClick={() => setNiva(niva === "periode" ? "uke" : "periode")}>Periode</button>
@@ -198,16 +218,18 @@ export function AG11WorkbenchNy({ playerId, spillerNavn, uke, kilder, roster, gr
       <button type="button" aria-pressed={false} disabled={alleOkter.length === 0} onClick={() => setApenOktId(apenOkt?.id ?? alleOkter[0]?.id ?? null)}>Økt</button>
       <button type="button" aria-pressed={niva === "mal"} onClick={() => setNiva(niva === "mal" ? "uke" : "mal")}>Målsetninger</button>
     </div>
-    <div className="snarveier">
-      <button type="button" disabled={venter || alleOkter.length === 0} onClick={dupliserUke}><Copy className="ikon" aria-hidden />Dupliser uke</button>
-      <button type="button" disabled={venter || alleOkter.length === 0} onClick={() => setDupliserVelg(true)}>Dupliser økt</button>
-      <Link href="/admin/plan?fane=ukemaler">Bruk mal på spiller</Link>
-      <button type="button" aria-pressed={notatApent} onClick={() => setNotatApent((v) => !v)}><StickyNote className="ikon" aria-hidden />Coachnotat</button>
-      <Link href={`/admin/spillere/${playerId}/plan`}><FileText className="ikon" aria-hidden />Søk i tekniske oppgaver</Link>
+    <div className="a4-uke-valg">
+      <span className="pil"><button type="button" aria-label="Forrige uke" onClick={() => gaaUke(-1)}><ChevronLeft className="ikon" aria-hidden /></button><button type="button" aria-label="Neste uke" onClick={() => gaaUke(1)}><ChevronRight className="ikon" aria-hidden /></button></span>
+      {utkast.length > 0 && <button type="button" className="knapp pri" onClick={() => setPubliser(true)}>Publiser {utkast.length} utkast</button>}
     </div>
+    <div className="snarveier a4-snarveier-pc">{snarveier}</div>
+    <details className="a4-mer">
+      <summary><MoreHorizontal className="ikon" aria-hidden />Mer</summary>
+      <div className="snarveier">{snarveier}</div>
+    </details>
   </div>;
 
-  const akserader = <section className="kort" aria-label="Lagt inn mot fordelt">
+  const akserader = <section className="kort" aria-label="Uka lagt inn mot fordelt">
     <div className="hoved"><strong>{sumLagt > 0 ? formaterVarighet(sumLagt) : "—"}</strong><span className="forklar">{fordelt ? `lagt inn av ${formaterVarighet(sumFordelt)} fordelt fra perioden` : "lagt inn · ingen timer fordelt fra perioden ennå"}</span></div>
     <div className="akserader">
       {AKSER.map((a) => {
@@ -231,13 +253,20 @@ export function AG11WorkbenchNy({ playerId, spillerNavn, uke, kilder, roster, gr
     <span className="kilde">Spilleren ser aldri coachnotatene.</span>
   </div>;
 
+  const dagrad = <div className="a4-dagrad" role="group" aria-label="Velg dag">
+    {week.days.map((d, i) => <button key={d.date} type="button" aria-pressed={valgtDag === d.date} aria-label={`${DAG_LANG[i]} ${ddmm(d.date)}${d.sessions.length ? `, ${d.sessions.length} ${d.sessions.length === 1 ? "økt" : "økter"}` : ""}`}
+      className={d.date === idag ? "idag" : undefined} onClick={() => setValgtDag(d.date)}>
+      <b>{DAG_KORT[i]}</b><span>{ddmm(d.date).slice(0, 2)}</span>{d.sessions.length > 0 && <i aria-hidden />}
+    </button>)}
+  </div>;
+
   const ukegrid = <div className="ukegrid" role="list" aria-label="Uka">
     {week.days.map((d, i) => {
       const dato = d.date;
       const erIdag = dato === idag;
-      return <div key={dato} role="listitem" className={`wb-dag${erIdag ? " idag" : ""}`} data-over={over === dato ? "" : undefined}
+      return <div key={dato} role="listitem" className={`wb-dag${erIdag ? " idag" : ""}`} data-over={over === dato ? "" : undefined} data-valgt={valgtDag === dato ? "" : undefined}
         onDragOver={(e) => { if (dra) { e.preventDefault(); setOver(dato); } }} onDragLeave={() => setOver((o) => (o === dato ? null : o))} onDrop={(e) => { e.preventDefault(); slippPaa(dato); }}>
-        <h3>{DAGNAVN[i]}<span>{ddmm(dato)}</span></h3>
+        <h3><span className="a4-dag-pc">{DAGNAVN[i]}</span><span className="a4-dag-mob">{DAG_LANG[i]}</span><span>{ddmm(dato)}</span></h3>
         {d.lockedBlocks.map((b) => <span key={b.id} className="wb-opptatt">{klokke(b.startMinute)} {b.title}</span>)}
         {d.sessions.map((s) => {
           const merke = kildeMerke(s);
@@ -253,21 +282,19 @@ export function AG11WorkbenchNy({ playerId, spillerNavn, uke, kilder, roster, gr
     })}
   </div>;
 
-  const perioderPanel = <section className="seksjon" aria-label="Perioder">
-    <div className="sek-topp"><h2>Perioder {aar}</h2><button type="button" className="knapp sek" onClick={() => setPeriodeArk({ periode: null })}>Ny periode</button></div>
+  const perioderPanel = <SkraKort tittel={`Perioder ${aar}`} etikett="Perioder" meta={<button type="button" className="knapp sek" onClick={() => setPeriodeArk({ periode: null })}>Ny periode</button>}>
     {treningsperioder.length === 0
       ? <div className="kort dempet"><b className="undertittel">Ingen perioder i {aar}</b><p className="forklar">En periode fordeler timer per akse på ukene. Legg inn den første, så får ukene timene herfra.</p></div>
       : <div className="periodeliste">{treningsperioder.map((p) => <button key={p.id} type="button" className="periode" onClick={() => setPeriodeArk({ periode: { id: p.id, type: p.type, startDate: p.startDate, endDate: p.endDate, focus: p.focus, notat: p.notat, axisMinutes: p.axisMinutes, axisMinutesLight: p.axisMinutesLight, fraGruppe: p.fraGruppe } })}>
         <i className={PERIODE_KLASSE[p.type]} aria-hidden /><span><b>{PERIODE_NAVN[p.type]}{p.focus ? ` · ${p.focus}` : ""}</b><span className="kilde">{kort(p.startDate)}–{kort(p.endDate)} · {p.axisMinutes ? `${formaterVarighet(AKSER.reduce((s, a) => s + (p.axisMinutes?.[a] ?? 0), 0))} per uke` : "ingen timer fordelt"}{p.fraGruppe ? " · Fra gruppa" : ""}</span></span><Pil className="ikon" aria-hidden />
       </button>)}</div>}
     <Link className="lenke" href={url("periode", { aar: String(aar) })}>Fordeling og uker i perioden</Link>
-  </section>;
+  </SkraKort>;
 
-  const malPanel = <section className="seksjon" aria-label="Målsetninger">
-    <div className="sek-topp"><h2>Målsetninger</h2><Link className="lenke" href={url("mal")}>Alle målsetninger</Link></div>
+  const malPanel = <SkraKort tittel="Målsetninger" lenke={{ href: url("mal"), tekst: "Alle målsetninger" }}>
     {goals.length === 0 ? <div className="kort dempet"><b className="undertittel">Ingen målsetninger</b><p className="forklar">Spilleren har ikke lagt inn målsetninger ennå.</p></div>
       : <div className="liste">{goals.map((g) => <div key={g.id}><span className="ikonboks"><Trophy className="ikon" aria-hidden /></span><span><b>{g.title}</b><span className="kilde">{g.typeLabel}{g.targetDate ? ` · innen ${kort(g.targetDate)}` : ""} · {g.fremdrift.hasData ? g.fremdrift.detail : "ingen data ennå"}</span></span><span className="mono">{g.fremdrift.hasData ? `${g.fremdrift.pct} %` : "—"}</span></div>)}</div>}
-  </section>;
+  </SkraKort>;
 
   const sidefelt = <aside className="sidefelt">
     <details open>
@@ -286,23 +313,26 @@ export function AG11WorkbenchNy({ playerId, spillerNavn, uke, kilder, roster, gr
     <details><summary>Fysisk program <small>{blokk ? blokk.title : "—"}</small></summary><div className="inni"><p className="forklar">{blokk ? `${blokk.weeks.length} uker · ${blokk.weeks.reduce((s, w) => s + w.sessions.length, 0)} økter` : "Ingen fysisk plan ennå."}</p><Link className="lenke" href={`/admin/workbench/${playerId}?pille=fys`}>Åpne fysisk plan</Link></div></details>
     <details><summary>Øktmaler <small>{maler.length}</small></summary><div className="inni"><p className="forklar">{maler.length ? maler.slice(0, 4).map((m) => m.title).join(" · ") : "Ingen maler i banken."}</p><Link className="lenke" href="/admin/plan?fane=ukemaler">Alle maler</Link></div></details>
     <details><summary>Turneringer <small>{nesteTurn ? kort(nesteTurn.startDate) : "—"}</small></summary><div className="inni"><p className="forklar">{nesteTurn ? `${nesteTurn.title} · ${kort(nesteTurn.startDate)}–${kort(nesteTurn.endDate)}` : "Ingen turneringsplan ennå."}</p><Link className="lenke" href={`/admin/workbench/${playerId}?pille=turn`}>Åpne turneringer</Link></div></details>
+    <details><summary>Målsetninger <small>{goals.length || "—"}</small></summary><div className="inni"><p className="forklar">{goals.length ? goals.slice(0, 3).map((g) => g.title).join(" · ") : "Ingen målsetninger ennå."}</p><button type="button" className="lenke a4-lenkeknapp" onClick={() => setNiva("mal")}>Vis målsetningene</button></div></details>
     <Link className="rad-lenke" href={`/admin/spillere/${playerId}/plan`}><b>Teknisk plan</b><Pil className="ikon" aria-hidden /></Link>
   </aside>;
 
-  return <div className="agn-s">
+  return <div className="agn-s a4">
     {topp}
+    {navigasjon}
     {motor.feil && <div className="varsel advarsel" role="alert"><b className="undertittel">Noe gikk galt</b><p className="forklar">{motor.feil}</p></div>}
     {niva === "periode" && perioderPanel}
     {niva === "mal" && malPanel}
     <div className="wb">
       <div className="seksjon" style={{ gap: "var(--r5)" }}>
-        {akserader}
         {coachnotat}
-        <section className="seksjon" aria-label="Legg inn økt">
+        <section className="kort a4-uke" aria-label="Uka">
+          {dagrad}
           <div className="drakker" role="group" aria-label="Legg inn økt">{AKSER.map((a) => <button key={a} type="button" className={ak(a)} aria-pressed={akse === a} draggable onDragStart={() => setDra({ type: "akse", akse: a })} onDragEnd={() => { setDra(null); setOver(null); }} onClick={() => setAkse(akse === a ? null : a)}>{a}</button>)}</div>
-          <p className="kilde">Dra en akse inn på en dag. Eller trykk aksen, så dagen.</p>
+          <p className="kilde">Dra en akse inn på en dag. Eller trykk aksen, så dagen. Gruppeøkter arves; tilpasning merkes «Egen».</p>
+          {ukegrid}
         </section>
-        {ukegrid}
+        {akserader}
       </div>
       {sidefelt}
     </div>

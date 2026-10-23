@@ -210,7 +210,7 @@
   --tn-space-11: 128px;
   --tn-gutter-card: 28px;
   --tn-gutter-section: 64px;
-  --tn-max-content: 1160px;
+  --tn-max-content: none;
 
   /* ── Typografi — Schibsted Grotesk (overskrifter og tekst), IBM Plex Mono
          (alt som måles: tall, etiketter, tidsstempler). rem, ikke px.

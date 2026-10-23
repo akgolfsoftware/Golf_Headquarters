@@ -74,7 +74,7 @@ export default async function AdminTrackmanSessionPage({ params }: Props) {
 
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
-      <div className="agn-s">
+      <div className="agn-s agn-a6">
         <Topp
           tilbake={{ href: "/admin/trackman", tekst: "TrackMan og video" }}
           dato={`TrackMan · ${datoTekst} · ${kilde}`}

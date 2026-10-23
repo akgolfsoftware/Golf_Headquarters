@@ -72,12 +72,12 @@ export function AG23Oppsett({ tilstand = "data", data = TOM_DATA, startFane = "t
   const [fane, setFane] = useState<Fane>(tilFane(startFane));
   const topp = <Topp dato="Mer · oppsett" tittel="Oppsett" ingress="Profil, team, tilgang, varsler og integrasjoner." />;
 
-  if (tilstand === "laster") return <div className="agn-s" data-testid="ag23-laster">{topp}<Laster tekst="Henter oppsett …" /></div>;
-  if (tilstand === "feil") return <div className="agn-s" data-testid="ag23-feil">{topp}<Feil tittel="Oppsettet kunne ikke hentes" tekst="Ingen innstillinger er endret. Prøv igjen." kode="OPPSETT" /></div>;
+  if (tilstand === "laster") return <div className="agn-s agn-a6" data-testid="ag23-laster">{topp}<Laster tekst="Henter oppsett …" /></div>;
+  if (tilstand === "feil") return <div className="agn-s agn-a6" data-testid="ag23-feil">{topp}<Feil tittel="Oppsettet kunne ikke hentes" tekst="Ingen innstillinger er endret. Prøv igjen." kode="OPPSETT" /></div>;
 
   const team = tilstand === "tom" ? [] : data.team;
 
-  return <div className="agn-s" data-testid="ag23-oppsett">
+  return <div className="agn-s agn-a6" data-testid="ag23-oppsett">
     {topp}
     <div className="faner" role="group" aria-label="Del">
       {FANER.map(([id, label]) => <button key={id} type="button" aria-pressed={fane === id} onClick={() => setFane(id)}>{label}</button>)}

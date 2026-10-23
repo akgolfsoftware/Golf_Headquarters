@@ -22,7 +22,7 @@ export default async function NyTurneringPage() {
 
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
-      <div className="agn-s">
+      <div className="agn-s agn-a6">
         <Topp tilbake={{ href: "/admin/turnering", tekst: "Turneringer" }} dato="Turneringer · ny" tittel="Ny turnering"
           ingress="Fem steg. Detaljene kan endres fra turneringssiden etterpå." />
         <AG17TurneringNy courses={courses} />

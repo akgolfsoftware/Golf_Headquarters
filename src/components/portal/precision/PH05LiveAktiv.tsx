@@ -33,7 +33,7 @@ import { STORAGE_BUCKETS } from "@/lib/storage/buckets";
 import "@/styles/precision-athletics.css";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-okt.css";
-import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import { LiveInnhold, LiveTittelrad } from "@/components/portal/live/LiveTittelrad";
 import "@/styles/playerhq-ny-idag.css";
 import "@/styles/playerhq-ny-lister-skra.css";
 import "@/styles/playerhq-ny-pakke11-skra.css";
@@ -223,18 +223,16 @@ export function PH05LiveAktiv({ data, onFinish }: PH05LiveAktivProps) {
   const merker = lagMerker(activeDrill.code);
   const naesteTekst = isLast ? "Fullfør økta" : `Neste: ${neste?.name ?? ""}`;
   return <div className="pa-root phn phn-okt phn-lv phn-skra" data-theme="light" data-od-id="playerhq-live-aktiv" style={{ minHeight: "100dvh" }}>
-    <SkraTopp
-      lav
+    <LiveTittelrad
       etikett="Live-økt"
-      bilde="/images/playerhq/slag-simulator.jpg" bildePosisjon="50% 50%"
       overlinje={`Live-økt · ${pause ? "på pause" : "pågår"}`}
       tittel={data.title}
-      handling={<span className="skra-topp-rad">
+      handling={<>
         <span className="lv-klokke" aria-label={`Tid ${formatClock(seconds)}`}><b>{formatClock(seconds)}</b><small>av {formatClock(data.totalMinutes * 60)}</small></span>
-        <button type="button" className="phn-knapp sek skra-topp-knapp" onClick={() => setEndOpen(true)}>Avslutt</button>
-      </span>}
+        <button type="button" className="phn-knapp sek" onClick={() => setEndOpen(true)}>Avslutt</button>
+      </>}
     />
-    <SkraFlyt lav>
+    <LiveInnhold>
 
     {empty ? <div className="lv-side"><section className="phn-kort dempet"><b className="undertittel">Ingen øvelser i økten</b><p className="phn-forklar">Økten har ingen øvelser å registrere. Du kan avslutte og lagre den.</p></section>
       <div className="lv-bunn"><button type="button" className="phn-knapp pri stor" onClick={() => setEndOpen(true)}>Avslutt økten</button></div></div> : <>
@@ -313,7 +311,7 @@ export function PH05LiveAktiv({ data, onFinish }: PH05LiveAktivProps) {
       </div>
     </>}
 
-    </SkraFlyt>
+    </LiveInnhold>
     {endOpen && <div className="pa-scrim" onClick={() => setEndOpen(false)}>
       <div className="pa-dialog" role="dialog" aria-modal="true" aria-label="Avslutte økta?" style={{ maxWidth: 440 }} onClick={(e) => e.stopPropagation()}>
         <div className="pa-dialog__head"><div className="pa-dialog__title">Avslutte økta?</div></div>

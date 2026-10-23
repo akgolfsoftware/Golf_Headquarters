@@ -1,0 +1,42 @@
+/*
+ * AgencyOS pakke A6 i Skrå-drakten (bølge 3, 22.10.2026): Plan og teknisk plan, Oppsett og drift,
+ * Økonomi, Data Golf, Jarvis, TrackMan, turneringer og de eldre sidene.
+ * Skisse: docs/design-system/utkast-skra/komponist/bolge-3.html. Toppen er den lave Skrå-toppen
+ * (`Topp` i agencyos-ny/ny.tsx; `flat` for Økonomi, Data Golf og Jarvis). Her står bare hvite kort
+ * rundt innholdet som fra før lå rett på flaten, og tekstbredden. Klassen `agn-a6` ligger på rotelementet.
+ */
+.agn-a6 { padding-bottom: calc(120px + env(safe-area-inset-bottom)); }
+.agn-a6 :is(.seksjon, .a6-hvit),
+.agn-a6 > .kort,
+.agn-a6 > .to-del .kort {
+  padding: 18px; border: 0; border-radius: var(--ak-r-skra-kort); background: var(--ak-hvit); box-shadow: var(--ak-skygge-md); min-width: 0;
+}
+/* Kort inni et hvitt kort mister rammen, så det ikke blir kort i kort. */
+.agn-a6 :is(.seksjon, .a6-hvit) .kort { padding: 0; border: 0; background: transparent; box-shadow: none; }
+.agn-a6 :is(.seksjon, .a6-hvit) .seksjon { padding: 0; box-shadow: none; border-radius: 0; background: transparent; }
+.agn-a6 .teller { border: 0; border-radius: var(--ak-r-stat); background: var(--ak-hvit); box-shadow: var(--ak-skygge-sm); }
+.agn-a6 .faner { border-bottom-color: var(--ak-strek); }
+/* Valgt filter eller trinn er grafitt (Data Golf-flatens blå chip skal ikke lekke hit). */
+.agn-s.agn-a6 .chips > a[aria-current="page"] { background: var(--graphite-900); border-color: var(--graphite-900); color: var(--white); }
+/* Løpende tekst og skjemafelt maks 720 px (beslutninger.md §SKRÅ-RESTEN); kortene fyller bredden. */
+.agn-a6 :is(form, .forklar) { max-width: var(--ak-tekst-maks); }
+@media (min-width: 900px) {
+  .agn-a6 { padding-bottom: 120px; }
+  /* Stripe til hurtigknappen; toppen går fortsatt helt ut. */
+  .agn-a6 > :not(.agn-topp-lav) { margin-right: 52px; }
+  .agn-a6 :is(.seksjon, .a6-hvit),
+  .agn-a6 > .kort,
+  .agn-a6 > .to-del .kort { padding: 22px; }
+}
+@media (max-width: 599px) { .agn-a6 .a6-hvit { padding: 10px; } }
+
+/*
+ * Luften mellom den skrå toppen og første kort er 16 px på mobil og 24 px på PC (beslutninger.md §ØVERSTE KORT).
+ * Flatene som bruker SkraTopp direkte setter `gap: 0` på rotelementet, men `.agn-s` (gap 32 px) vant på kaskaden,
+ * så det sto 32 px ekstra. Lav topp via `Topp` (.agn-topp-lav) hadde i tillegg 16 px bunnmarg. Begge rettes her.
+ */
+.agn-s:is(.agn-skra, .agn-a5-skra, .agn-kal-skra, .agn-bk-skra) { gap: 0; }
+:is(.agn-a6, .agn-a5-under) > .agn-topp-lav { margin-bottom: calc(16px - var(--r6)); }
+@media (min-width: 900px) {
+  :is(.agn-a6, .agn-a5-under) > .agn-topp-lav { margin-bottom: calc(24px - var(--r6)); }
+}

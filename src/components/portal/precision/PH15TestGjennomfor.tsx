@@ -23,7 +23,8 @@ import {
   avbrytTestSession,
 } from "@/app/portal/(fullscreen)/tren/tester/[testId]/gjennomfor/actions";
 import { usePaToast } from "@/components/precision/pa-toast";
-import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import { LiveInnhold, LiveTittelrad } from "@/components/portal/live/LiveTittelrad";
+import "@/styles/precision-athletics.css";
 import "@/styles/playerhq-ny-idag.css";
 import "@/styles/playerhq-ny-lister-skra.css";
 
@@ -90,6 +91,8 @@ export function PH15TestGjennomfor({
   const done = res.length >= N;
   const inside = stats.antallInnenforGrense;
   const avg = stats.snittVerdi;
+  // Godkjent/Bom-tester har ingen meter og ingen grense; tekstene sier godkjent i stedet.
+  const erGodkjent = oppsett.modus === "hit_miss";
 
   const showToast = (t: string) => paToast.vis(t);
 
@@ -169,7 +172,9 @@ export function PH15TestGjennomfor({
         } else {
           setSaved(true);
           showToast(
-            `Resultatet er lagret: ${inside} av ${N} innenfor ${LIM} m · Snitt ${formaterNorskDesimal(avg)} ${oppsett.enhet}`,
+            erGodkjent
+              ? `Resultatet er lagret: ${inside} av ${N} godkjent`
+              : `Resultatet er lagret: ${inside} av ${N} innenfor ${LIM} m · Snitt ${formaterNorskDesimal(avg)} ${oppsett.enhet}`,
           );
         }
       } catch {
@@ -194,7 +199,7 @@ export function PH15TestGjennomfor({
 
   return (
     <div
-      className="phn phn-skra"
+      className="pa-root phn phn-skra"
       data-theme="light"
       style={{
         minHeight: "100dvh",
@@ -206,19 +211,19 @@ export function PH15TestGjennomfor({
         justifyContent: "space-between",
         padding: "0 0 calc(24px + env(safe-area-inset-bottom))",
         boxSizing: "border-box",
+        // Skjermen har ingen sidepadding, så tittelraden skal ikke trekkes ut.
+        ...({ "--skra-ut-top": "0px", "--skra-ut-x": "0px" } as React.CSSProperties),
       }}
     >
       <div>
-      <SkraTopp
-        lav
+      <LiveTittelrad
         etikett="Test"
-        bilde="/images/playerhq/stats-topp.jpg" bildePosisjon="50% 50%"
         overlinje={`Test · ${testNavn} · ${N} slag`}
         tittel={testNavn}
-        ingress={`${omraade} · ${N} slag mot flagg · innenfor ${LIM} m teller${sist ? ` · forrige ${sist.score} av ${N}` : ""}`}
-        handling={<span className="skra-topp-rad"><button type="button" className="phn-knapp sek skra-topp-knapp" onClick={() => setEndOpen(true)}>Avslutt</button></span>}
+        ingress={`${omraade} · ${N} slag ${erGodkjent ? "· godkjente slag teller" : `mot flagg · innenfor ${LIM} m teller`}${sist ? ` · forrige ${sist.score} av ${N}` : ""}`}
+        handling={<button type="button" className="phn-knapp sek" onClick={() => setEndOpen(true)}>Avslutt</button>}
       />
-      <SkraFlyt lav>
+      <LiveInnhold>
       <div style={{ maxWidth: "none", width: "100%", margin: 0, padding: "44px 16px 0", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: 16 }}>
         {/* Toast */}
         {paToast.el}
@@ -253,7 +258,7 @@ export function PH15TestGjennomfor({
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 12 }}>
             <div>
               <div style={{ font: "500 10px/1.2 var(--font-mono)", color: "var(--text-muted)", letterSpacing: "0.05em", textTransform: "uppercase" }}>
-                Innenfor {LIM} m
+                {erGodkjent ? "Godkjent" : `Innenfor ${LIM} m`}
               </div>
               <div style={{ font: "600 24px/1.2 var(--font-mono)", color: "var(--text-primary)", marginTop: 4 }}>
                 {res.length ? `${inside} av ${res.length}` : "—"}
@@ -261,10 +266,12 @@ export function PH15TestGjennomfor({
             </div>
             <div>
               <div style={{ font: "500 10px/1.2 var(--font-mono)", color: "var(--text-muted)", letterSpacing: "0.05em", textTransform: "uppercase" }}>
-                Snitt
+                {erGodkjent ? "Bom" : "Snitt"}
               </div>
               <div style={{ font: "600 24px/1.2 var(--font-mono)", color: "var(--text-primary)", marginTop: 4 }}>
-                {avg == null ? "—" : `${formaterNorskDesimal(avg)} ${oppsett.enhet}`}
+                {erGodkjent
+                  ? res.length ? `${res.length - inside} av ${res.length}` : "—"
+                  : avg == null ? "—" : `${formaterNorskDesimal(avg)} ${oppsett.enhet}`}
               </div>
             </div>
             <div>
@@ -296,7 +303,7 @@ export function PH15TestGjennomfor({
               Scorekort
             </span>
             <span style={{ font: "500 10px/1 var(--font-mono)", letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--text-muted)" }}>
-              METER FRA FLAGGET
+              {erGodkjent ? "GODKJENT ELLER BOM" : "METER FRA FLAGGET"}
             </span>
           </div>
 
@@ -317,7 +324,7 @@ export function PH15TestGjennomfor({
                 <div
                   role="listitem"
                   key={i}
-                  aria-label={`Slag ${i + 1}${v != null ? ` ${formaterNorskDesimal(typeof v === "number" ? v : null)} meter` : " ikke slått"}`}
+                  aria-label={`Slag ${i + 1}${v == null ? " ikke slått" : typeof v === "boolean" ? (v ? " godkjent" : " bom") : ` ${formaterNorskDesimal(v)} meter`}`}
                   style={{
                     height: 64,
                     borderRadius: 8,
@@ -350,7 +357,7 @@ export function PH15TestGjennomfor({
           </div>
 
           <div style={{ font: "500 9px/1.2 var(--font-mono)", color: "var(--text-muted)", letterSpacing: "0.04em", textTransform: "uppercase", padding: "0 2px" }}>
-            UNDERSTREKET = INNENFOR {LIM} M
+            {erGodkjent ? "UNDERSTREKET = GODKJENT" : `UNDERSTREKET = INNENFOR ${LIM} M`}
           </div>
         </div>
 
@@ -359,7 +366,7 @@ export function PH15TestGjennomfor({
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <span style={{ font: "500 12px/1 var(--font-sans)", color: "var(--text-secondary)" }}>
-                Meter fra flagget · slag {res.length + 1}
+                {erGodkjent ? `Slag ${res.length + 1}` : `Meter fra flagget · slag ${res.length + 1}`}
               </span>
               {res.length > 0 && (
                 <button
@@ -489,7 +496,7 @@ export function PH15TestGjennomfor({
               Resultat
             </span>
             <div style={{ font: "600 28px/1.2 var(--font-sans)", color: "var(--text-primary)" }}>
-              {inside} av {N} innenfor {LIM} m
+              {erGodkjent ? `${inside} av ${N} godkjent` : `${inside} av ${N} innenfor ${LIM} m`}
             </div>
             <div style={{ font: "500 11px/1.4 var(--font-mono)", color: "var(--text-muted)", letterSpacing: "0.04em", textTransform: "uppercase" }}>
               {sist
@@ -504,12 +511,13 @@ export function PH15TestGjennomfor({
         )}
       </div>
 
-      </SkraFlyt>
+      </LiveInnhold>
       </div>
 
       {/* Bunn-aksjon (fast i bunn) */}
       <div style={{ maxWidth: "none", width: "100%", margin: "24px 0 0", padding: "0 16px", boxSizing: "border-box" }}>
-        {!done ? (
+        {/* Godkjent/Bom føres med knappene over; hovedknappen ville ført et tall. */}
+        {!done ? erGodkjent ? null : (
           <button
             type="button"
             onClick={() => handleRegSlag()}

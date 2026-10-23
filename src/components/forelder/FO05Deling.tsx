@@ -99,6 +99,11 @@ export function FO05Deling({ organisasjoner, settSamtykke, barnFornavn }: {
               <strong>{org.navn}</strong>
               <StatusPille tone={deles.length > 0 ? "ok" : "neutral"}>{deles.length > 0 ? "Deler nå" : "Deler ikke"}</StatusPille>
             </div>
+            {/team norway/i.test(org.navn) ? (
+              // Team Norway har ett delingsnivå (beslutning 22.10, #1614): treneren ser hele IUP-en ved navngitt deling.
+              <p>Team Norway-trenerne ser hele IUP-en til {barnFornavn} når dere deler med en navngitt trener. Uten deling ser de bare navn, klubb, fødselsår og WAGR-plass.</p>
+            ) : (
+              <>
             <div className="fob-bryter">
               <div><b>Tester og resultater</b><small>Testresultater, turneringer og statistikk.</small></div>
               <button type="button" role="switch" className="fob-bryter-knapp" aria-checked={org.testerOgResultater} aria-label={`Tester og resultater, ${org.navn}`} disabled={pending} onClick={() => endre(org.gruppeId, "testerOgResultater", !org.testerOgResultater)}><i><span /></i></button>
@@ -117,6 +122,8 @@ export function FO05Deling({ organisasjoner, settSamtykke, barnFornavn }: {
                 <ul data-av="true">{delesIkke.length > 0 ? delesIkke.map((d) => <li key={d}>{d}</li>) : <li>Ingenting</li>}</ul>
               </div>
             </div>
+              </>
+            )}
             {deles.length > 0 && (
               <button type="button" className="pa-btn pa-btn--secondary" disabled={pending} onClick={() => endre(org.gruppeId, "testerOgResultater", false)} style={{ alignSelf: "flex-start" }}>
                 Trekk tilbake all deling

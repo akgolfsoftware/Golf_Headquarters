@@ -31,7 +31,7 @@ import {
 import "@/styles/precision-athletics.css";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-okt.css";
-import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import { LiveInnhold, LiveTittelrad } from "@/components/portal/live/LiveTittelrad";
 import "@/styles/playerhq-ny-idag.css";
 import "@/styles/playerhq-ny-lister-skra.css";
 
@@ -79,15 +79,13 @@ export function PH07Oktoppsummering({
 
   const plan = data.axes.reduce((a, x) => a + x.plannedMin, 0);
   return <div className="pa-root phn phn-okt phn-skra" data-theme="light" data-od-id="playerhq-live-summary" style={{ minHeight: "100dvh" }}>
-    <SkraTopp
-      lav
+    <LiveTittelrad
       etikett="Etter økten"
-      bilde="/images/playerhq/slag-simulator.jpg" bildePosisjon="50% 50%"
       overlinje={<>Etter økten · {data.dateStr} · {data.timeRangeStr}</>}
       tittel={<>{empty ? "Ingen slag registrert" : data.title}</>}
-      handling={<span className="skra-topp-rad"><Link href={onCloseHref} className="phn-knapp sek skra-topp-knapp" aria-label="Lukk oppsummering"><X size={18} />Lukk</Link></span>}
+      handling={<Link href={onCloseHref} className="phn-knapp sek" aria-label="Lukk oppsummering"><X size={18} />Lukk</Link>}
     />
-    <SkraFlyt lav><div className="smal">
+    <LiveInnhold><div className="smal">
 
       <section className="phn-kort" aria-label="Gjennomført tid">
         <div className="okt-rad"><span className="phn-dato">Gjennomført</span>{!empty && <span className="phn-pille ok"><Check size={14} />Gjennomført</span>}</div>
@@ -135,5 +133,5 @@ export function PH07Oktoppsummering({
         </> : <button type="button" className="phn-knapp pri stor" onClick={handleSave} disabled={isSaving}>{isSaving ? "Lagrer …" : "Lagre økten"}</button>}
       </div>
     </div>
-  </SkraFlyt></div>;
+  </LiveInnhold></div>;
 }

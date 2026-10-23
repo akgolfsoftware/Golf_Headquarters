@@ -33,6 +33,10 @@ import {
 import { PHIupFeil } from "@/components/portal/precision/PHIupTilstand";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-iup.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke4-skra.css";
 
 export type PH20Props = {
   tilstand?: "data" | "tom" | "feil";
@@ -94,10 +98,14 @@ export function PH20Gameplan({ tilstand = "data", courses, defaultCourseId, star
   const harHull = Boolean(bane && bane.holes.length > 0);
   const gaaTil = (i: number | null) => { setHull(i); window.scrollTo({ top: 0 }); };
 
-  const topp = (tilbake: React.ReactNode, dato: string, tittel: string) => <div className="topp">
-    {tilbake}
-    <div><div className="phn-dato">{dato}</div><h1 className="phn-tittel">{tittel}</h1></div>
-  </div>;
+  const topp = (tilbake: React.ReactNode, dato: string, tittel: string) => <SkraTopp
+    lav
+    etikett="Gameplan"
+    bilde="/images/playerhq/spill-bane.jpg" bildePosisjon="50% 60%"
+    overlinje={dato}
+    tittel={tittel}
+    handling={<span className="skra-topp-rad"><span className="skra-tilbake">{tilbake}</span></span>}
+  />;
   const banner = <div className="eksempel-banner"><Info size={18} aria-hidden /><span>Banekartet er eksempeldata. Lengder, hindre og kølle-lengder er ikke målt ennå.</span></div>;
 
   if (!tom && harHull && hull != null && bane.holes[hull]) {
@@ -106,9 +114,10 @@ export function PH20Gameplan({ tilstand = "data", courses, defaultCourseId, star
     const valgt = picks[hull] || recommended;
     const spec = TEE_CLUBS[valgt] ?? { carry: h.len, hw: 6, ry: 6 };
     const trygt = h.par !== 3 && recommended !== "Driver";
-    return <div className="phn phn-iup" data-od-id="playerhq-gameplan-hull">
+    return <div className="phn phn-iup phn-skra" data-od-id="playerhq-gameplan-hull">
       {topp(<button type="button" className="tilbake" style={{ border: 0, background: "none", cursor: "pointer" }} onClick={() => gaaTil(null)}><ChevronLeft size={20} aria-hidden />Gameplan</button>,
         `${bane.name} · ${bane.tee}`, `Hull ${hull + 1} · par ${h.par} · ${h.len} m`)}
+      <SkraFlyt lav>
       {banner}
       <div className="to-del">
         <div>
@@ -143,11 +152,13 @@ export function PH20Gameplan({ tilstand = "data", courses, defaultCourseId, star
           </div>
         </div>
       </div>
+      </SkraFlyt>
     </div>;
   }
 
-  return <div className="phn phn-iup" data-od-id="playerhq-gameplan">
+  return <div className="phn phn-iup phn-skra" data-od-id="playerhq-gameplan">
     {topp(<Link href="/portal/planlegge" className="tilbake"><ChevronLeft size={20} aria-hidden />Plan</Link>, "Plan · gameplan", "Gameplan")}
+    <SkraFlyt lav>
     {tom ? <section className="phn-kort" aria-label="Ingen bane">
       <h2 style={{ margin: 0, font: "600 18px/1.25 var(--phn-sans)" }}>Ingen bane valgt</h2>
       <p className="phn-forklar">Når en bane er lagt inn, får du en plan for hvert hull her.</p>
@@ -179,5 +190,6 @@ export function PH20Gameplan({ tilstand = "data", courses, defaultCourseId, star
         })}</div> : <p className="phn-forklar">Hullene på {bane.name} er ikke lagt inn ennå.</p>}
       </section>
     </>}
+    </SkraFlyt>
   </div>;
 }

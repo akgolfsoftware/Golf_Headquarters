@@ -3,7 +3,7 @@
  * AG-RD-01 Rundeanalyse og AG-TP-02 Før og nå. Egen fil for å unngå konflikt
  * med parallelle bolker. Bare tokens fra .pa-root (precision-athletics.css).
  */
-.a8-side{display:flex;flex-direction:column;gap:16px;min-width:0;width:100%;max-width:1440px;margin:0 auto;padding:16px 16px 96px;box-sizing:border-box}
+.a8-side{display:flex;flex-direction:column;gap:16px;min-width:0;width:100%;margin:0 auto;padding:16px 16px 96px;box-sizing:border-box}
 @media (min-width:1024px){.a8-side{padding:24px 32px 96px}}
 
 .a8-to{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;min-width:0;align-items:start}

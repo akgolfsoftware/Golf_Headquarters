@@ -5,10 +5,10 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentTnWorkbenchKontekst } from "@/lib/domain/tn-workbench";
 import {
   hentTnTekniskPlanDetalj,
-  tnLoggRep,
-  tnOpprettOppgave,
-  tnOppdaterOppgave,
-  tnSlettOppgave,
+  tnForeslaaRep,
+  tnForeslaaNyOppgave,
+  tnForeslaaEndreOppgave,
+  tnForeslaaSlettOppgave,
   TN_AUDIT_ACTION_LABEL,
   krevFullForEgenTekniskPlan,
 } from "@/lib/domain/tn-teknisk-plan";
@@ -18,7 +18,21 @@ import { PYRAMIDER, TnTekniskPlanVisning } from "@/components/team-norway/skjerm
 export const dynamic = "force-dynamic";
 
 function href(spillerId: string, planId: string, feil?: string) {
-  return `/team-norway/spiller/${spillerId}/teknisk-plan/${planId}${feil ? `?feil=${encodeURIComponent(feil)}` : ""}`;
+  const base = `/team-norway/spiller/${spillerId}/teknisk-plan/${planId}`;
+  return feil ? `${base}?feil=${encodeURIComponent(feil)}` : `${base}?sendt=1`;
+}
+
+function oppgaveFraSkjema(form: FormData) {
+  return {
+    tittel: String(form.get("tittel") ?? ""),
+    beskrivelse: String(form.get("beskrivelse") ?? "").trim() || null,
+    pyramide: String(form.get("pyramide") ?? "TEK") as (typeof PYRAMIDER)[number],
+    omraade: String(form.get("omraade") ?? ""),
+    koller: parseKoller(String(form.get("koller") ?? "")),
+    repsMaalDry: Number(form.get("repsMaalDry") ?? 0),
+    repsMaalLav: Number(form.get("repsMaalLav") ?? 0),
+    repsMaalFull: Number(form.get("repsMaalFull") ?? 0),
+  };
 }
 
 function parseKoller(raw: string): string[] {
@@ -30,8 +44,8 @@ function parseKoller(raw: string): string[] {
  * canvaset «Team Norway nøkkelskjermer», tavle C2): bildetopp med planen som tittel og oppgaver ferdig
  * som hovedtall. Den tredje rep-telleren heter Automatikk (masteren), ikke «Full fart».
  *
- * Alle mutasjoner (`tnLoggRep`/`tnOpprettOppgave`/`tnOppdaterOppgave`/
- * `tnSlettOppgave` i `src/lib/domain/tn-teknisk-plan.ts`) gjør FULL
+ * Ingen handling her skriver i planen: treneren FORESLÅR (`tnForeslaaRep`/`tnForeslaaNyOppgave`/
+ * `tnForeslaaEndreOppgave`/`tnForeslaaSlettOppgave` i `src/lib/domain/tn-teknisk-plan.ts`) gjør FULL
  * validering inne i selve actionen — TN-rolle COACH, roster, personlig
  * coach-tilgang, OG at oppgaven/planen faktisk tilhører valgt spiller — ikke
  * bare en side-vakt før skjemaet vises. Se sikkerhetsmerknaden der.
@@ -41,10 +55,10 @@ export default async function TeamNorwaySpillerTekniskPlanDetaljPage({
   searchParams,
 }: {
   params: Promise<{ spillerId: string; planId: string }>;
-  searchParams: Promise<{ feil?: string }>;
+  searchParams: Promise<{ feil?: string; sendt?: string }>;
 }) {
   const { spillerId, planId } = await params;
-  const { feil } = await searchParams;
+  const { feil, sendt } = await searchParams;
   const bruker = await requirePortalUser({ tillatDemo: true, kreverTilgang: "INGEN" });
   const kontekst = await hentTnWorkbenchKontekst(bruker);
   if (!kontekst) notFound();
@@ -56,7 +70,7 @@ export default async function TeamNorwaySpillerTekniskPlanDetaljPage({
   if (!spillerNavn) notFound();
   krevFullForEgenTekniskPlan(bruker, spillerId);
 
-  const plan = await medTnSpillerData(bruker, spillerId, () => hentTnTekniskPlanDetalj(spillerId, planId));
+  const plan = await medTnSpillerData(bruker, spillerId, (tx) => hentTnTekniskPlanDetalj(tx, spillerId, planId));
   if (!plan) notFound();
 
   async function loggRep(form: FormData) {
@@ -68,7 +82,7 @@ export default async function TeamNorwaySpillerTekniskPlanDetaljPage({
     const felt = String(form.get("felt") ?? "");
     const antall = Number(form.get("antall") ?? 0);
     if (!taskId || !["dry", "lav", "full"].includes(felt)) return;
-    const svar = await tnLoggRep(ferskBruker, ferskKontekst, spillerId, planId, taskId, felt as "dry" | "lav" | "full", antall);
+    const svar = await tnForeslaaRep(ferskBruker, ferskKontekst, spillerId, planId, taskId, felt as "dry" | "lav" | "full", antall);
     redirect(href(spillerId, planId, svar.ok ? undefined : svar.feil));
   }
 
@@ -80,18 +94,11 @@ export default async function TeamNorwaySpillerTekniskPlanDetaljPage({
     const pNummer = String(form.get("pNummer") ?? "");
     const posisjon = P_POSITIONS.find((p) => p.num === pNummer);
     if (!posisjon) { redirect(href(spillerId, planId, "Ukjent P-posisjon.")); return; }
-    const svar = await tnOpprettOppgave(ferskBruker, ferskKontekst, spillerId, {
+    const svar = await tnForeslaaNyOppgave(ferskBruker, ferskKontekst, spillerId, {
       planId,
       pNummer: posisjon.num,
       pName: posisjon.name,
-      tittel: String(form.get("tittel") ?? ""),
-      beskrivelse: String(form.get("beskrivelse") ?? "") || undefined,
-      pyramide: String(form.get("pyramide") ?? "TEK") as (typeof PYRAMIDER)[number],
-      omraade: String(form.get("omraade") ?? ""),
-      koller: parseKoller(String(form.get("koller") ?? "")),
-      repsMaalDry: Number(form.get("repsMaalDry") ?? 0),
-      repsMaalLav: Number(form.get("repsMaalLav") ?? 0),
-      repsMaalFull: Number(form.get("repsMaalFull") ?? 0),
+      oppgave: oppgaveFraSkjema(form),
     });
     redirect(href(spillerId, planId, svar.ok ? undefined : svar.feil));
   }
@@ -103,16 +110,7 @@ export default async function TeamNorwaySpillerTekniskPlanDetaljPage({
     if (!ferskKontekst) return;
     const taskId = String(form.get("taskId") ?? "");
     if (!taskId) return;
-    const svar = await tnOppdaterOppgave(ferskBruker, ferskKontekst, spillerId, planId, taskId, {
-      tittel: String(form.get("tittel") ?? ""),
-      beskrivelse: String(form.get("beskrivelse") ?? "") || undefined,
-      pyramide: String(form.get("pyramide") ?? "TEK") as (typeof PYRAMIDER)[number],
-      omraade: String(form.get("omraade") ?? ""),
-      koller: parseKoller(String(form.get("koller") ?? "")),
-      repsMaalDry: Number(form.get("repsMaalDry") ?? 0),
-      repsMaalLav: Number(form.get("repsMaalLav") ?? 0),
-      repsMaalFull: Number(form.get("repsMaalFull") ?? 0),
-    });
+    const svar = await tnForeslaaEndreOppgave(ferskBruker, ferskKontekst, spillerId, planId, taskId, oppgaveFraSkjema(form));
     redirect(href(spillerId, planId, svar.ok ? undefined : svar.feil));
   }
 
@@ -122,9 +120,8 @@ export default async function TeamNorwaySpillerTekniskPlanDetaljPage({
     const ferskKontekst = await hentTnWorkbenchKontekst(ferskBruker);
     if (!ferskKontekst) return;
     const taskId = String(form.get("taskId") ?? "");
-    const bekreft = String(form.get("bekreft") ?? "");
     if (!taskId) return;
-    const svar = await tnSlettOppgave(ferskBruker, ferskKontekst, spillerId, planId, taskId, bekreft);
+    const svar = await tnForeslaaSlettOppgave(ferskBruker, ferskKontekst, spillerId, planId, taskId);
     redirect(href(spillerId, planId, svar.ok ? undefined : svar.feil));
   }
 
@@ -138,6 +135,7 @@ export default async function TeamNorwaySpillerTekniskPlanDetaljPage({
       plan={plan}
       siste={siste}
       feil={feil}
+      sendt={sendt === "1"}
       handlinger={{ loggRep, opprettOppgave, oppdaterOppgave, slettOppgave }}
     />
   );

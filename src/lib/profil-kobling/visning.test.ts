@@ -8,7 +8,8 @@ const tur = (id: number, dato: string, klasse: string, plass: number, total: num
   tournament_id: id, turnering: `Testcup ${id}`, start_date: dato, year: Number(dato.slice(0, 4)), kilde, series: null, klasse,
   plassering: plass, total_score: total, to_par: par, runder: [{ runde: 1, score: 72, til_par: 0, mot_felt: null }, { runde: 2, score: total - 72, til_par: par, mot_felt: null }],
 });
-const tomRunder = { antall: 0, snittScore: null, sgTotal: null, sgOtt: null, sgApp: null, sgArg: null, sgPutt: null };
+const tomSnitt = { turnering: { runder: 0, snitt: null }, trening: { runder: 0, snitt: null } };
+const tomRunder = { antall: 0, aar: 2026, bruttoSnitt: tomSnitt, sgTotal: null, sgOtt: null, sgApp: null, sgArg: null, sgPutt: null };
 const profil = (over: Partial<KomplettProfil> = {}): KomplettProfil => ({
   relasjon: "AK_COACH", navn: "Pia Egenes",
   resultater: { person: { name: "Pia Egenes", birth_year: 2009 }, sesonger: [], monster: [], runder: [], turneringer: [
@@ -53,9 +54,11 @@ describe("byggProfilVisning", () => {
     assert.ok(v.iup.levert[0].advarsel);
   });
   it("runder med fortegn på SG", () => {
-    const v = byggProfilVisning(profil({ runder: { antall: 12, snittScore: 74.6, sgTotal: 1.24, sgOtt: -0.11, sgApp: null, sgArg: 0, sgPutt: 0.3 } }));
+    const v = byggProfilVisning(profil({ runder: { antall: 12, aar: 2026, bruttoSnitt: { turnering: { runder: 4, snitt: 74.6 }, trening: { runder: 0, snitt: null } }, sgTotal: 1.24, sgOtt: -0.11, sgApp: null, sgArg: 0, sgPutt: 0.3 } }));
     assert.equal(v.runder.tall.find((t) => t.etikett === "SG totalt")?.verdi, "+1,24");
     assert.equal(v.runder.tall.find((t) => t.etikett === "SG utslag")?.verdi, "-0,11");
     assert.equal(v.runder.tall.find((t) => t.etikett === "SG innspill")?.verdi, "—");
+    assert.equal(v.runder.tall.find((t) => t.etikett === "Brutto snitt turnering 2026")?.verdi, "74,6");
+    assert.equal(v.runder.tall.find((t) => t.etikett === "Treningsrunder 2026")?.verdi, "—");
   });
 });

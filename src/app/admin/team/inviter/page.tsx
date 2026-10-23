@@ -17,7 +17,7 @@ export default async function V2AdminInviterCoachPage() {
 
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
-      <div className="agn-s">
+      <div className="agn-s agn-a6">
         <Topp tilbake={{ href: "/admin/oppsett?fane=team", tekst: "Oppsett" }} dato="Oppsett · team og tilgang" tittel="Inviter coach" />
         <AG23InviterCoach kanTildeleTilganger={user.role === "ADMIN"} />
       </div>

@@ -41,10 +41,10 @@ const data: GruppeKalenderData = {
 const Vis = (g: GruppeKalenderData | null) => (
   <AdminRolleProvider erAdmin>
     <AgencyOSSkall navn="Test Coach">
-      <div className="agn-s">
-        <Topp tilbake={{ href: "/admin/grupper/g1", tekst: "Gruppa" }} dato="Testgruppe Utvikling · årsplan" tittel="Årsplan" />
+      <div className="agn-s agn-a5-under">
+        <Topp tilbake={{ href: "/admin/grupper/g1", tekst: "Gruppa" }} dato="Testgruppe Utvikling · årsplan" tittel="Årsplan" bilde="/images/playerhq/slag-putting.jpg" />
         <GruppeFanerNy groupId="g1" aktiv="arsplan" />
-        {g ? <AG16Arsplan groupId="g1" data={g} trinn={null} /> : null}
+        {g ? <div className="a5-hvit"><AG16Arsplan groupId="g1" data={g} trinn={null} /></div> : null}
       </div>
     </AgencyOSSkall>
   </AdminRolleProvider>

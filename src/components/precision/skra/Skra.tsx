@@ -13,7 +13,7 @@ import s from "./skra.module.css";
  *
  * - SkraTopp: ekte AK Golf-bilde i grafitt øverst, kuttet nedover mot høyre, med tittel og tall i glass.
  * - SkraStat: ett tall i glass (lenke når `href` er satt). Mangler tallet, sendes «—».
- * - SkraFlyt: innholdet under toppen. Første rad ligger over den skrå kanten.
+ * - SkraFlyt: innholdet under toppen. Første rad starter under den skrå kanten, aldri over bildet.
  * - SkraKort: hvitt kort med skygge, tittel og valgfri lenke eller meta.
  * - SkraTom: tom tilstand inni et kort.
  * - SkraHelt: hovedkortet over begge kolonnene, fylt i aksefargen (det som gjelder nå). Uten bilde.

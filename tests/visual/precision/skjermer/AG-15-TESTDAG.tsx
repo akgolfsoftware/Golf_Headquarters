@@ -19,7 +19,7 @@ const grupper = [{ id: "g1", navn: "GFGK Junior Utvikling", antall: 8 }, { id: "
 
 const spillere = ["Henrik Aas", "Emma Berg", "Mats Lie", "Ida Strand"];
 const vis: TestdagVisning = {
-  id: "e1", tittel: "Testdag · GFGK Junior Utvikling", sted: "Mulligan", dato: "torsdag 29. oktober", klokke: "16:00", gruppe: "GFGK Junior Utvikling",
+  id: "e1", tittel: "Testdag · GFGK Junior Utvikling", sted: "Mulligan", dato: "torsdag 29. oktober", klokke: "16:00", gruppe: "GFGK Junior Utvikling", gruppeId: "g1",
   stasjoner: ["Nærspill Gate", "Putt Gate", "Wedge Variation"].map((navn, s) => ({
     id: `s${s}`, navn, status: "ACTIVE",
     deltakere: spillere.map((spiller, i) => ({ id: `d${s}${i}`, spiller, status: i < s ? "DONE" as const : "PENDING" as const, resultat: i < s ? "24 / 36 p" : null })),
@@ -40,6 +40,10 @@ export const tilstander = {
   data: Skall(<AG15Planlegg grupper={grupper} tester={tester} idag="2026-10-20" />),
   tom: Skall(<AG15Planlegg grupper={[]} tester={tester} idag="2026-10-20" />),
   testdag: Skall(<AG15TestdagVis d={vis} />),
+  registrerer: Skall(<AG15TestdagVis d={vis} valgt={reg} tilKontroll={[
+    { id: "k1", spillerId: "p1", spillerNavn: "Emma Berg", test: "Putt 1–3 m", dato: "21.10", resultat: "14 / 20" },
+    { id: "k2", spillerId: "p2", spillerNavn: "Mats Lie med et langt etternavn som må brytes", test: "9 hull lengde", dato: "19.10", resultat: "31 p" },
+  ]} />),
   registrer: Skall(<AG15Registrer d={reg} />),
   ferdig: Skall(<AG15Registrer d={{ ...reg, status: "DONE", resultat: "21 / 36 p", utkast: null }} />),
 };

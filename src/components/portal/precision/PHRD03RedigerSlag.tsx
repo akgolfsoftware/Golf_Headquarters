@@ -40,6 +40,10 @@ import { formaterTall } from "@/lib/format-tall";
 import { Tilbake } from "./PHRunderFelles";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-runder.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke4-skra.css";
 
 export type SlagData = {
   id?: string;
@@ -333,16 +337,17 @@ export function PHRD03RedigerSlag({ roundId, baneNavn, dato, eksisterendeSlag, b
     ? { tee: { lat: geo.teeLat, lng: geo.teeLng }, green: { lat: geo.greenLat, lng: geo.greenLng } } : null;
 
   return (
-    <div className="phn" data-od-id="playerhq-runde-rediger-slag">
-      <div className="phr-hode-rad">
-        <Tilbake href={`/portal/mal/runder/${roundId}`} tekst="Runden" />
-        <button type="button" className="phn-knapp sek" onClick={() => setImportAapen(true)}><Upload className="phn-ikon" aria-hidden />Importer fra UpGame</button>
-      </div>
-      <div className="phr-topp">
-        <div className="phn-dato">Rediger slag · {baneNavn} · {dato}</div>
-        <h1 className="phn-tittel">Rediger slag</h1>
-        <p className="phr-ingress">Rett enkeltslag på en lagret runde. Ny runde føres i <Link href="/portal/runde/live">Slag for slag</Link>.</p>
-      </div>
+    <div className="phn phn-skra" data-od-id="playerhq-runde-rediger-slag">
+      <SkraTopp
+        lav
+        etikett="Rediger slag"
+        bilde="/images/playerhq/spill-bane.jpg" bildePosisjon="50% 50%"
+        overlinje={`Rediger slag · ${baneNavn} · ${dato}`}
+        tittel="Rediger slag"
+        ingress="Rett enkeltslag på en lagret runde."
+        handling={<span className="skra-topp-rad"><span className="skra-tilbake"><Tilbake href={`/portal/mal/runder/${roundId}`} tekst="Runden" /></span><button type="button" className="phn-knapp pri skra-topp-knapp" onClick={() => setImportAapen(true)}><Upload className="phn-ikon" aria-hidden />Importer fra UpGame</button></span>}
+      />
+      <SkraFlyt lav>
 
       <div className="phr-hullhode">
         <div className="phr-hode-tekst">{baneNavn} · hull {aktivtHull} av 18</div>
@@ -463,6 +468,8 @@ export function PHRD03RedigerSlag({ roundId, baneNavn, dato, eksisterendeSlag, b
 
       {slettes && <SlettArk slag={slettes} pending={pending} onJa={() => slett(slettes)} onLukk={() => setSlettes(null)} />}
       {importAapen && <ImportArk roundId={roundId} onLukk={() => setImportAapen(false)} />}
+      <p className="phr-ingress">Ny runde føres i <Link href="/portal/runde/live">Slag for slag</Link>.</p>
+      </SkraFlyt>
     </div>
   );
 }

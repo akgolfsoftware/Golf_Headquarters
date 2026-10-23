@@ -25,8 +25,8 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ChevronRight, Plus } from "lucide-react";
-import { Pille } from "@/components/admin/agencyos-ny/ny";
+import { Plus } from "lucide-react";
+import { Pille, Topp } from "@/components/admin/agencyos-ny/ny";
 import { LPHASE_LABEL } from "@/lib/labels/taxonomy";
 import { formaterFortegn, formaterTall } from "@/lib/format-tall";
 import { formelForOvelse, mengdeForOvelse, metaForOvelse } from "@/lib/agencyos/planhub-ovelse";
@@ -79,15 +79,10 @@ export function AG14PlanHubNy({ data, startFane = "ukemaler" }: { data: PlanhubD
   const nyOvelse = () => { setLagret(null); setArk({ ovelse: null }); };
   const u = data.uke;
 
-  return <div className="agn-s">
-    <div className="topp">
-      <Link href="/admin/agencyos" className="ag-tilbake"><ChevronRight className="ikon" aria-hidden style={{ transform: "rotate(180deg)" }} />Cockpit</Link>
-      <div className="topp-rad">
-        <div><div className="dato">Workbench · maler og øvelser</div><h1 className="tittel">Plan-hub</h1><p className="ingress">Ukemaler, program og standardøkter, så det går raskere å lage nye planer. Øvelsene bor i øvelsesbanken.</p></div>
-        <div className="knapper"><Link className="knapp sek" href={data.workbenchHref}>Åpne uka i Workbench</Link><Link className="knapp pri" href="/admin/plan-templates/ny"><Plus className="ikon" aria-hidden style={{ width: 16, height: 16 }} />Ny mal</Link></div>
-      </div>
-      <p className="kilde">Uke {u.nr}: {pl(u.spillere, "spiller", "spillere")} · {pl(u.okter, "økt", "økter")} · {u.udekket} uten økt i uka.</p>
-    </div>
+  return <div className="agn-s agn-a6">
+    <Topp tilbake={{ href: "/admin/agencyos", tekst: "Cockpit" }} dato="Workbench · maler og øvelser" tittel="Plan-hub"
+      ingress={<>Ukemaler, program og standardøkter, så det går raskere å lage nye planer. Øvelsene bor i øvelsesbanken.<br />Uke {u.nr}: {pl(u.spillere, "spiller", "spillere")} · {pl(u.okter, "økt", "økter")} · {u.udekket} uten økt i uka.</>}
+      handlinger={<><Link className="knapp sek" href={data.workbenchHref}>Åpne uka i Workbench</Link><Link className="knapp pri" href="/admin/plan-templates/ny"><Plus className="ikon" aria-hidden style={{ width: 16, height: 16 }} />Ny mal</Link></>} />
     {lagret && <div className="varsel ok" role="status"><b className="undertittel">{lagret.tittel}</b><p className="forklar mono">{lagret.kode}</p></div>}
     <div className="faner" role="group" aria-label="Del">
       {(Object.keys(FANE_NAVN) as PlanhubFane[]).map((f) => <button key={f} type="button" aria-pressed={fane === f} onClick={() => velgFane(f)}>{FANE_NAVN[f]}<span className="fane-ant">{antall[f] || "—"}</span></button>)}

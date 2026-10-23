@@ -14,6 +14,8 @@ let logRepsKall: { taskId: string; reps: Record<string, number> }[] = [];
 let createTaskKall: { planId: string }[] = [];
 let updateTaskKall: { taskId: string; patch: unknown }[] = [];
 let deleteTaskKall: string[] = [];
+let forslagLagret: { userId: string; coachId: string; status: string; actionType: string; suggestion: unknown }[] = [];
+let delingAktiv = true;
 let taskRad: { id: string; positionId: string; planId: string; planUserId: string } | null = {
   id: "task-1",
   positionId: "pos-1",
@@ -50,6 +52,21 @@ mock.module("@/app/portal/tren/teknisk-plan/actions", {
     },
   },
 });
+mock.module("@/lib/deling/profil-lesing", {
+  namedExports: {
+    medNavngittProfil: async (_brukerId: string, _spillerId: string, _gruppeId: string, les: (tx: unknown) => Promise<unknown>) => {
+      if (!delingAktiv) return null;
+      return les({
+        planAction: {
+          create: async ({ data }: { data: (typeof forslagLagret)[number] }) => {
+            forslagLagret.push(data);
+            return { id: "forslag-1" };
+          },
+        },
+      });
+    },
+  },
+});
 mock.module("@/lib/prisma", {
   namedExports: {
     prisma: {
@@ -64,7 +81,7 @@ mock.module("@/lib/prisma", {
       positionTask: {
         findUnique: async ({ where }: { where: { id: string } }) =>
           taskRad && taskRad.id === where.id
-            ? { position: { planId: taskRad.planId, plan: { userId: taskRad.planUserId } } }
+            ? { tittel: "Adresse-drill", position: { planId: taskRad.planId, plan: { userId: taskRad.planUserId } } }
             : null,
       },
     },
@@ -78,6 +95,8 @@ function reset() {
   createTaskKall = [];
   updateTaskKall = [];
   deleteTaskKall = [];
+  forslagLagret = [];
+  delingAktiv = true;
   taskRad = { id: "task-1", positionId: "pos-1", planId: "plan-1", planUserId: "spiller-1" };
 }
 reset();
@@ -134,105 +153,137 @@ test("harTnTekniskPlanLesetilgang: spiller utenfor TN-rosteret avvises selv med 
   assert.equal(res, false);
 });
 
-test("tnLoggRep: TN-ASSISTANT (kanAdministrere=false) avvises FØR task/plan slås opp", async () => {
-  reset();
-  const { tnLoggRep } = await modul();
-  const svar = await tnLoggRep(coach, { ...tnKontekstBase, kanAdministrere: false }, "spiller-1", "plan-1", "task-1", "dry", 10);
-  assert.equal(svar.ok, false);
+const oppgaveInput = { tittel: "Ny oppgave", beskrivelse: null, pyramide: "TEK" as const, omraade: "Adresse", koller: [], repsMaalDry: 0, repsMaalLav: 0, repsMaalFull: 0 };
+const nyOppgave = (planId = "plan-1") => ({ planId, pNummer: "P1.0", pName: "Adresse", oppgave: oppgaveInput });
+
+function ingenDirekteSkriving() {
   assert.equal(logRepsKall.length, 0);
+  assert.equal(createTaskKall.length, 0);
+  assert.equal(updateTaskKall.length, 0);
+  assert.equal(deleteTaskKall.length, 0);
+}
+
+test("tnForeslaaRep: TN-ASSISTANT (kanAdministrere=false) avvises FØR task/plan slås opp, og ingenting lagres", async () => {
+  reset();
+  const { tnForeslaaRep } = await modul();
+  const svar = await tnForeslaaRep(coach, { ...tnKontekstBase, kanAdministrere: false }, "spiller-1", "plan-1", "task-1", "dry", 10);
+  assert.equal(svar.ok, false);
+  assert.equal(forslagLagret.length, 0);
+  ingenDirekteSkriving();
 });
 
-test("tnLoggRep: forfalsket taskId som tilhører en ANNEN spiller avvises, logReps kalles aldri", async () => {
+test("tnForeslaaRep: forfalsket taskId som tilhører en ANNEN spiller avvises", async () => {
   reset();
   taskRad = { id: "task-1", positionId: "pos-1", planId: "plan-1", planUserId: "en-annen-spiller" };
-  const { tnLoggRep } = await modul();
-  const svar = await tnLoggRep(coach, tnKontekstBase, "spiller-1", "plan-1", "task-1", "dry", 10);
+  const { tnForeslaaRep } = await modul();
+  const svar = await tnForeslaaRep(coach, tnKontekstBase, "spiller-1", "plan-1", "task-1", "dry", 10);
   assert.equal(svar.ok, false);
-  assert.equal(logRepsKall.length, 0);
+  assert.equal(forslagLagret.length, 0);
 });
 
-test("tnLoggRep: taskId som tilhører riktig spiller, men FEIL plan-id oppgitt, avvises", async () => {
+test("tnForeslaaRep: oppgave i FEIL plan avvises", async () => {
   reset();
   taskRad = { id: "task-1", positionId: "pos-1", planId: "en-annen-plan", planUserId: "spiller-1" };
-  const { tnLoggRep } = await modul();
-  const svar = await tnLoggRep(coach, tnKontekstBase, "spiller-1", "plan-1", "task-1", "dry", 10);
+  const { tnForeslaaRep } = await modul();
+  const svar = await tnForeslaaRep(coach, tnKontekstBase, "spiller-1", "plan-1", "task-1", "dry", 10);
   assert.equal(svar.ok, false);
-  assert.equal(logRepsKall.length, 0);
+  assert.equal(forslagLagret.length, 0);
 });
 
-test("tnLoggRep: gyldig TN-COACH, riktig spiller/plan/oppgave — kaller delt logReps nøyaktig én gang", async () => {
+test("tnForeslaaRep: gyldig TN-COACH lagrer ett PENDING-forslag til spilleren og skriver aldri i planen", async () => {
   reset();
-  const { tnLoggRep } = await modul();
-  const svar = await tnLoggRep(coach, tnKontekstBase, "spiller-1", "plan-1", "task-1", "full", 12);
+  const { tnForeslaaRep } = await modul();
+  const svar = await tnForeslaaRep(coach, tnKontekstBase, "spiller-1", "plan-1", "task-1", "full", 12);
   assert.equal(svar.ok, true);
-  assert.deepEqual(logRepsKall, [{ taskId: "task-1", reps: { full: 12 } }]);
+  assert.equal(forslagLagret.length, 1);
+  const data = forslagLagret[0];
+  assert.equal(data.userId, "spiller-1");
+  assert.equal(data.coachId, "coach-1");
+  assert.equal(data.status, "PENDING");
+  assert.equal(data.actionType, "TECH_PLAN_COACH_PROPOSAL");
+  assert.deepEqual(data.suggestion, { versjon: 1, kind: "REP_LOG", planId: "plan-1", taskId: "task-1", taskTittel: "Adresse-drill", felt: "full", antall: 12 });
+  ingenDirekteSkriving();
 });
 
-test("tnOpprettOppgave: TN-ASSISTANT avvises FØR planeierskap sjekkes", async () => {
+test("delingslåsen: uten aktiv deling lagres ingenting, for alle fire forslagstyper", async () => {
   reset();
-  const { tnOpprettOppgave } = await modul();
-  const input = { planId: "plan-1", pNummer: "P1.0", pName: "Adresse", tittel: "Ny oppgave", pyramide: "TEK" as const, omraade: "Adresse", koller: [], repsMaalDry: 0, repsMaalLav: 0, repsMaalFull: 0 };
-  const svar = await tnOpprettOppgave(coach, { ...tnKontekstBase, kanAdministrere: false }, "spiller-1", input);
+  delingAktiv = false;
+  const { tnForeslaaRep, tnForeslaaNyOppgave, tnForeslaaEndreOppgave, tnForeslaaSlettOppgave } = await modul();
+  const resultater = [
+    await tnForeslaaRep(coach, tnKontekstBase, "spiller-1", "plan-1", "task-1", "dry", 5),
+    await tnForeslaaNyOppgave(coach, tnKontekstBase, "spiller-1", nyOppgave()),
+    await tnForeslaaEndreOppgave(coach, tnKontekstBase, "spiller-1", "plan-1", "task-1", oppgaveInput),
+    await tnForeslaaSlettOppgave(coach, tnKontekstBase, "spiller-1", "plan-1", "task-1"),
+  ];
+  assert.deepEqual(resultater.map((r) => r.ok), [false, false, false, false]);
+  assert.equal(forslagLagret.length, 0);
+  ingenDirekteSkriving();
+});
+
+test("tnForeslaaNyOppgave: TN-ASSISTANT avvises FØR planeierskap sjekkes", async () => {
+  reset();
+  const { tnForeslaaNyOppgave } = await modul();
+  const svar = await tnForeslaaNyOppgave(coach, { ...tnKontekstBase, kanAdministrere: false }, "spiller-1", nyOppgave());
   assert.equal(svar.ok, false);
-  assert.equal(createTaskKall.length, 0);
+  assert.equal(forslagLagret.length, 0);
 });
 
-test("tnOpprettOppgave: planId som IKKE tilhører valgt spiller avvises", async () => {
+test("tnForeslaaNyOppgave: planId som IKKE tilhører valgt spiller avvises", async () => {
   reset();
-  const { tnOpprettOppgave } = await modul();
-  const input = { planId: "en-annen-plan", pNummer: "P1.0", pName: "Adresse", tittel: "Ny oppgave", pyramide: "TEK" as const, omraade: "Adresse", koller: [], repsMaalDry: 0, repsMaalLav: 0, repsMaalFull: 0 };
-  const svar = await tnOpprettOppgave(coach, tnKontekstBase, "spiller-1", input);
+  const { tnForeslaaNyOppgave } = await modul();
+  const svar = await tnForeslaaNyOppgave(coach, tnKontekstBase, "spiller-1", nyOppgave("en-annen-plan"));
   assert.equal(svar.ok, false);
-  assert.equal(createTaskKall.length, 0);
+  assert.equal(forslagLagret.length, 0);
 });
 
-test("tnOpprettOppgave: gyldig TN-COACH og egen plan lykkes", async () => {
+test("tnForeslaaNyOppgave: gyldig forslag lagres, createTask kalles aldri", async () => {
   reset();
-  const { tnOpprettOppgave } = await modul();
-  const input = { planId: "plan-1", pNummer: "P1.0", pName: "Adresse", tittel: "Ny oppgave", pyramide: "TEK" as const, omraade: "Adresse", koller: [], repsMaalDry: 0, repsMaalLav: 0, repsMaalFull: 0 };
-  const svar = await tnOpprettOppgave(coach, tnKontekstBase, "spiller-1", input);
+  const { tnForeslaaNyOppgave } = await modul();
+  const svar = await tnForeslaaNyOppgave(coach, tnKontekstBase, "spiller-1", nyOppgave());
   assert.equal(svar.ok, true);
-  assert.deepEqual(createTaskKall, [{ planId: "plan-1" }]);
+  assert.equal((forslagLagret[0].suggestion as { kind: string }).kind, "TASK_ADD");
+  ingenDirekteSkriving();
 });
 
-test("tnOppdaterOppgave/tnSlettOppgave: forfalsket taskId for ANNEN spiller avvises, ingen kall til delte actions", async () => {
+test("tnForeslaaEndreOppgave/tnForeslaaSlettOppgave: forfalsket taskId for ANNEN spiller avvises", async () => {
   reset();
   taskRad = { id: "task-1", positionId: "pos-1", planId: "plan-1", planUserId: "en-annen-spiller" };
-  const { tnOppdaterOppgave, tnSlettOppgave } = await modul();
-  const oppdater = await tnOppdaterOppgave(coach, tnKontekstBase, "spiller-1", "plan-1", "task-1", { tittel: "X" });
-  assert.equal(oppdater.ok, false);
-  assert.equal(updateTaskKall.length, 0);
-  const slett = await tnSlettOppgave(coach, tnKontekstBase, "spiller-1", "plan-1", "task-1", "SLETT");
-  assert.equal(slett.ok, false);
-  assert.equal(deleteTaskKall.length, 0);
+  const { tnForeslaaEndreOppgave, tnForeslaaSlettOppgave } = await modul();
+  assert.equal((await tnForeslaaEndreOppgave(coach, tnKontekstBase, "spiller-1", "plan-1", "task-1", oppgaveInput)).ok, false);
+  assert.equal((await tnForeslaaSlettOppgave(coach, tnKontekstBase, "spiller-1", "plan-1", "task-1")).ok, false);
+  assert.equal(forslagLagret.length, 0);
 });
 
-test("tnSlettOppgave: krever SLETT-bekreftelse selv med gyldig eierskap", async () => {
+test("tnForeslaaEndreOppgave og tnForeslaaSlettOppgave: gyldig eierskap lagrer forslag og rører aldri oppgaven", async () => {
   reset();
-  const { tnSlettOppgave } = await modul();
-  const utenBekreftelse = await tnSlettOppgave(coach, tnKontekstBase, "spiller-1", "plan-1", "task-1", "");
-  assert.equal(utenBekreftelse.ok, false);
-  assert.equal(deleteTaskKall.length, 0);
-  const medBekreftelse = await tnSlettOppgave(coach, tnKontekstBase, "spiller-1", "plan-1", "task-1", "slett");
-  assert.equal(medBekreftelse.ok, true);
-  assert.deepEqual(deleteTaskKall, ["task-1"]);
+  const { tnForeslaaEndreOppgave, tnForeslaaSlettOppgave } = await modul();
+  assert.equal((await tnForeslaaEndreOppgave(coach, tnKontekstBase, "spiller-1", "plan-1", "task-1", { ...oppgaveInput, tittel: "Oppdatert tittel" })).ok, true);
+  assert.equal((await tnForeslaaSlettOppgave(coach, tnKontekstBase, "spiller-1", "plan-1", "task-1")).ok, true);
+  assert.deepEqual(forslagLagret.map((f) => (f.suggestion as { kind: string }).kind), ["TASK_UPDATE", "TASK_DELETE"]);
+  ingenDirekteSkriving();
 });
 
-test("tnOppdaterOppgave: gyldig eierskap kaller delt updateTaskBasics nøyaktig én gang", async () => {
+test("tnForeslaaEndreOppgave: ugyldig innhold (tom tittel) lagres ikke", async () => {
   reset();
-  const { tnOppdaterOppgave } = await modul();
-  const svar = await tnOppdaterOppgave(coach, tnKontekstBase, "spiller-1", "plan-1", "task-1", { tittel: "Oppdatert tittel" });
-  assert.equal(svar.ok, true);
-  assert.deepEqual(updateTaskKall, [{ taskId: "task-1", patch: { tittel: "Oppdatert tittel" } }]);
+  const { tnForeslaaEndreOppgave } = await modul();
+  const svar = await tnForeslaaEndreOppgave(coach, tnKontekstBase, "spiller-1", "plan-1", "task-1", { ...oppgaveInput, tittel: "  " });
+  assert.equal(svar.ok, false);
+  assert.equal(forslagLagret.length, 0);
+});
+
+test("de gamle skrivefunksjonene finnes ikke lenger: TN-treneren kan ikke skrive direkte", async () => {
+  const m = (await modul()) as Record<string, unknown>;
+  for (const navn of ["tnLoggRep", "tnOpprettOppgave", "tnOppdaterOppgave", "tnSlettOppgave"]) assert.equal(m[navn], undefined, navn);
 });
 
 test("hentTnTekniskPlanDetalj spør alltid med { id: planId, userId: spillerId } — aldri viewerens id", async () => {
   reset();
   const { hentTnTekniskPlanDetalj } = await modul();
-  const treff = await hentTnTekniskPlanDetalj("spiller-1", "plan-1");
+  const { prisma: db } = (await import("@/lib/prisma")) as unknown as { prisma: Parameters<typeof hentTnTekniskPlanDetalj>[0] };
+  const treff = await hentTnTekniskPlanDetalj(db, "spiller-1", "plan-1");
   assert.equal(treff?.navn, "Vårplan");
   assert.deepEqual(findFirstKall, [{ id: "plan-1", userId: "spiller-1" }]);
 
-  const feilSpiller = await hentTnTekniskPlanDetalj("en-annen-spiller", "plan-1");
+  const feilSpiller = await hentTnTekniskPlanDetalj(db, "en-annen-spiller", "plan-1");
   assert.equal(feilSpiller, null);
 });

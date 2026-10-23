@@ -37,7 +37,7 @@
 .tpl [data-tall],.tpl .stat b,.tpl .utvikling b,.tpl .reise-rad b,.tpl td,.tpl .t-tall span,.tpl .diagram text{font-variant-numeric:tabular-nums lining-nums}
 .tpl .skjult{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .tpl .gutter{padding-left:var(--gutter-v);padding-right:var(--gutter-h)}
-.tpl .bredde{max-width:1240px;margin-inline:auto}
+.tpl .bredde{margin-inline:auto}
 .tpl .topplinje{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--navy)}
 .tpl .topplinje .bredde{display:flex;align-items:center;gap:8px 24px;min-height:60px}
 .tpl .topplinje img{height:34px;width:auto;display:block;flex:none}

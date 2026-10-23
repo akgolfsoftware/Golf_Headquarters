@@ -27,6 +27,10 @@ import { nyeHull, summerHull, MIN_SLAG, MAX_SLAG, type HullVerdi } from "@/compo
 import { SkMerke, Tilbake, tilParTekst } from "./PHRunderFelles";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-runder.css";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
+import "@/styles/playerhq-ny-idag.css";
+import "@/styles/playerhq-ny-lister-skra.css";
+import "@/styles/playerhq-ny-pakke4-skra.css";
 
 const MAX_PUTTER = 10;
 
@@ -144,13 +148,17 @@ export function PHRD09RedigerHull({ roundId, baneNavn, dato, coursePar, initial 
   }
 
   return (
-    <div className="phn" data-od-id="playerhq-runde-rediger-hull">
-      <Tilbake href={`/portal/mal/runder/${roundId}`} tekst="Runden" />
-      <div className="phr-topp">
-        <div className="phn-dato">Rediger runde · {baneNavn} · {dato}</div>
-        <h1 className="phn-tittel">Rediger hull for hull</h1>
-        <p className="phr-ingress">{harHull ? "Trykk på et hull i scorekortet for å rette det." : "Runden er lagret uten hulldata. Hvor mange hull spilte du?"}</p>
-      </div>
+    <div className="phn phn-skra" data-od-id="playerhq-runde-rediger-hull">
+      <SkraTopp
+        lav
+        etikett="Rediger hull"
+        bilde="/images/playerhq/spill-bane.jpg" bildePosisjon="50% 50%"
+        overlinje={`Rediger runde · ${baneNavn} · ${dato}`}
+        tittel="Rediger hull for hull"
+        ingress={harHull ? "Trykk på et hull i scorekortet for å rette det." : "Runden er lagret uten hulldata. Hvor mange hull spilte du?"}
+        handling={<span className="skra-topp-rad"><span className="skra-tilbake"><Tilbake href={`/portal/mal/runder/${roundId}`} tekst="Runden" /></span></span>}
+      />
+      <SkraFlyt lav>
 
       {!harHull ? (
         <section className="phn-kort" aria-label="Antall hull">
@@ -250,6 +258,7 @@ export function PHRD09RedigerHull({ roundId, baneNavn, dato, coursePar, initial 
       {bekreftelse && (
         <BekreftArk tekst={bekreftelse.tekst} pending={pending} onJa={() => lagre(bekreftelse.token)} onLukk={() => setBekreftelse(null)} />
       )}
+      </SkraFlyt>
     </div>
   );
 }

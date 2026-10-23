@@ -1,0 +1,20 @@
+/* Samlinger (invitasjoner) i Skrå-drakten. Kortene kommer fra SkraKort; her står bare innholdet i dem. */
+.phn-skra .phn-sam-liste { display: grid; gap: 20px; }
+.phn-skra .phn-sam { display: grid; gap: 12px; min-width: 0; }
+.phn-skra .phn-sam-tekst { margin: 0; color: var(--ak-g600, #5a5a55); font-size: 15px; line-height: 1.55; overflow-wrap: anywhere; }
+.phn-skra .phn-sam-liten { margin: 0; color: var(--ak-g600, #5a5a55); font-size: 13px; }
+.phn-skra .phn-sam-okter { display: grid; gap: 10px; }
+@container (min-width: 900px) { .phn-skra .phn-sam-okter { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.phn-skra .phn-sam-okt { display: grid; gap: 6px; padding: 14px; border-radius: var(--ak-r-skra-kort-liten, 14px); background: var(--ak-flate, #f3f1ec); min-width: 0; }
+.phn-skra .phn-sam-okt-topp { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; min-width: 0; }
+.phn-skra .phn-sam-okt-topp strong { color: var(--ak-g900, #141413); font-size: 15px; }
+.phn-skra .phn-sam-okt-topp span { color: var(--ak-g600, #5a5a55); font-size: 13px; font-variant-numeric: tabular-nums; }
+.phn-skra .phn-sam-okt ul { margin: 0; padding-left: 20px; color: var(--ak-g600, #5a5a55); font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
+.phn-skra .phn-sam-kollisjon { margin: 4px 0 0; padding: 8px 10px; border-inline-start: 3px solid var(--ak-g900, #141413); background: #fff; color: var(--ak-g900, #141413); font-size: 13px; }
+.phn-skra .phn-sam-knapper { display: flex; flex-wrap: wrap; gap: 10px; padding-top: 4px; }
+.phn-skra .phn-sam-pri, .phn-skra .phn-sam-sek { min-height: 48px; padding: 0 18px; border-radius: 8px; font: inherit; font-weight: 600; cursor: pointer; }
+.phn-skra .phn-sam-pri { border: 0; background: var(--ak-g900, #141413); color: #fff; }
+.phn-skra .phn-sam-sek { border: 1px solid var(--ak-g900, #141413); background: transparent; color: var(--ak-g900, #141413); }
+.phn-skra .phn-sam-pri:disabled, .phn-skra .phn-sam-sek:disabled { opacity: .6; cursor: default; }
+.phn-skra .phn-sam-melding { margin: 0; font-weight: 600; color: var(--ak-g900, #141413); }
+@container (min-width: 900px) { .phn-skra .phn-sam-liste { margin-right: 52px; } }

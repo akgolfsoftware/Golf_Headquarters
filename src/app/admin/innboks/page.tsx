@@ -126,6 +126,8 @@ export default async function InnboksPage({
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"} uleste={apneSaker(poster)} haster={innboksHaster(poster)}>
       <AG04Innboks
+        // Tallene i toppen lenker til en fane: ny adresse starter fanen på nytt.
+        key={`${filter}:${forste(sp.o) ?? ""}:${forste(sp.vis) ?? ""}:${forste(sp.sak) ?? ""}`}
         tilstand="data"
         poster={poster}
         startFilter={filter}

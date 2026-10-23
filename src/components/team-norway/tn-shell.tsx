@@ -4,7 +4,6 @@ import type { ReactNode } from "react";
 import { TnKort, TnLogo, TnPille, type TnBunnValg, type TnMenyGruppe, type TnMenyLenke, type TnPilleTone } from "./core";
 import { initialer } from "./initialer";
 import { TnRailMobil } from "./rail-mobil";
-import { TN_REFERANSESPILLERE_URL } from "./tn-referansespillere";
 import { TnIkon } from "./tn-ikon";
 import s from "./tn-skall.module.css";
 import { TnSeksjonDS } from "./tn-skjerm";
@@ -36,6 +35,11 @@ export type TnAktivSide =
   | "dokumenter"
   | "protokoller"
   | "turneringer"
+  | "referanse"
+  | "referanse-sammenlign"
+  | "referanse-sok"
+  | "referanse-norsk-golf"
+  | "referanse-hcp"
   | "referansenivaer"
   | "tilgang"
   | "inviter"
@@ -110,9 +114,14 @@ export function tnHovedmeny({ aktiv, groupId, kanAdministrere, visDataGolf }: Me
       label: "Referanse",
       ikon: "gruppe",
       punkter: [
-        // Til Referanse › WAGR er bygget i HQ, åpner punktet teamnorwayref (beslutninger.md §TEAM NORWAY ER BARE FOR TRENERE, punkt 3).
-        { label: "Referansespillere", href: TN_REFERANSESPILLERE_URL, aktiv: false },
-        lenke("Referansenivåer", "/team-norway/referansenivaer", "referansenivaer", aktiv),
+        lenke("WAGR", "/team-norway/referanse", "referanse", aktiv),
+        lenke("Sammenlign", "/team-norway/referanse/sammenlign", "referanse-sammenlign", aktiv),
+        lenke("Søk", "/team-norway/referanse/sok", "referanse-sok", aktiv),
+        // Norsk golf og HCP Norge viser «—» og lenker til teamnorwayref til tallene er i basen
+        // (beslutninger.md §TEAM NORWAY ER BARE FOR TRENERE, punkt 4).
+        lenke("Norsk golf", "/team-norway/referanse/norsk-golf", "referanse-norsk-golf", aktiv),
+        lenke("HCP Norge", "/team-norway/referanse/hcp", "referanse-hcp", aktiv),
+        lenke("Tester", "/team-norway/referanse/tester", "referansenivaer", aktiv),
       ],
     },
     {
@@ -252,15 +261,8 @@ export function TnSeksjon({ tittel, forklaring, children }: { tittel: string; fo
   return <TnSeksjonDS tittel={tittel} forklaring={forklaring}>{children}</TnSeksjonDS>;
 }
 
-export function TnTomtilstand({ tittel, tekst, handling }: { tittel: string; tekst: string; handling?: ReactNode }) {
-  return (
-    <TnKort style={{ background: TN.ink50 }}>
-      <h2 style={{ margin: 0, color: TN.ink900, fontFamily: TN.font.body, fontSize: 15, fontWeight: 700, lineHeight: 1.3 }}>{tittel}</h2>
-      <p style={{ margin: "8px 0 0", maxWidth: 680, color: TN.ink700, fontSize: 14.5, lineHeight: 1.55 }}>{tekst}</p>
-      {handling ? <div style={{ marginTop: 16 }}>{handling}</div> : null}
-    </TnKort>
-  );
-}
+/** Én tom-tilstand for hele Team Norway: se tn-tilstand.tsx. */
+export { TnTomtilstand } from "./tn-tilstand";
 
 export function TnLenke({ href, children, fremhevet = false }: { href: string; children: ReactNode; fremhevet?: boolean }) {
   return (
@@ -270,35 +272,31 @@ export function TnLenke({ href, children, fremhevet = false }: { href: string; c
   );
 }
 
-export type TnSpillerFane = "post" | "oversikt" | "profil" | "tester" | "analyse" | "workbench" | "teknisk-plan" | "evaluering" | "turneringsplan";
+export type TnSpillerFane = "post" | "oversikt" | "turneringsplan" | "ranking" | "turneringer" | "trening" | "tester" | "teknisk-plan" | "evaluering";
 
 /**
  * IUP-hodet for alle spillerscopede TN-ruter (Anders 15.10.2026: spillerprofilen
- * heter IUP i Team Norway). Rund avatar, overlinje som begynner med «IUP»,
- * navnet som tittel, og fanene i fast rekkefølge med rød strek under aktiv fane.
- * Fanen som i koden heter «evaluering», heter Fireukerssjekk.
- * Fasit: docs/design-system/utkast-tn/spillere.html (pakke 3).
+ * heter IUP i Team Norway). Fanene står i IUP-arkets rekkefølge
+ * (wireframes docs/design-system/utkast-tn/trenerflate, §2):
+ * Oversikt · Turneringsplan · Ranking · Turneringer · Trening · Tester · Teknisk plan · Fireukerssjekk.
+ * Fanen som i koden heter «evaluering», heter Fireukerssjekk. Post er seksjonen «Poster» i Oversikt;
+ * gamle Profil, Analyse og Plan sender videre til Oversikt, Tester › Utvikling og Trening.
+ * Uten deling viser alle fanene samme lås (TnIupLaastSkjerm).
  *
- * `kanAdministrere` betyr her LESETILGANG til planfanene (COACH/ASSISTANT/ADMIN,
- * dvs. `!erSpiller`), ikke skrivetilgang. De underliggende rutene har egen skrivevakt.
+ * `kanAdministrere` er beholdt for kallerne; flaten er bare for trenere (§TEAM NORWAY ER BARE FOR TRENERE).
  */
-export function TnSpillerFaner({ spillerId, kanAdministrere, aktiv }: { spillerId: string; spillerNavn?: string; aktiv: TnSpillerFane; kanAdministrere: boolean }) {
-  const kjernefaner: { id: TnSpillerFane; label: string; href: string }[] = [
-    { id: "oversikt", label: "Oversikt", href: `/team-norway/spiller/${spillerId}/oversikt` },
-    { id: "profil", label: "Profil", href: `/team-norway/spiller/${spillerId}/profil` },
-    { id: "post", label: "Post", href: `/team-norway/spiller/${spillerId}` },
-    { id: "tester", label: "Tester", href: `/team-norway/spiller/${spillerId}/tester` },
-    { id: "analyse", label: "Analyse", href: `/team-norway/spiller/${spillerId}/analyse` },
-    { id: "turneringsplan", label: "Turneringsplan", href: `/team-norway/spiller/${spillerId}/turneringsplan` },
+export function TnSpillerFaner({ spillerId, aktiv }: { spillerId: string; spillerNavn?: string; aktiv: TnSpillerFane; kanAdministrere?: boolean }) {
+  const s = `/team-norway/spiller/${spillerId}`;
+  const faner: { id: TnSpillerFane; label: string; href: string }[] = [
+    { id: "oversikt", label: "Oversikt", href: s },
+    { id: "turneringsplan", label: "Turneringsplan", href: `${s}/turneringsplan` },
+    { id: "ranking", label: "Ranking", href: `${s}/ranking` },
+    { id: "turneringer", label: "Turneringer", href: `${s}/turneringer` },
+    { id: "trening", label: "Trening", href: `${s}/trening` },
+    { id: "tester", label: "Tester", href: `${s}/tester` },
+    { id: "teknisk-plan", label: "Teknisk plan", href: `${s}/teknisk-plan` },
+    { id: "evaluering", label: "Fireukerssjekk", href: `${s}/evaluering` },
   ];
-  const planfaner: { id: TnSpillerFane; label: string; href: string }[] = kanAdministrere
-    ? [
-        { id: "workbench", label: "Plan", href: `/team-norway/workbench?spiller=${spillerId}` },
-        { id: "teknisk-plan", label: "Teknisk plan", href: `/team-norway/spiller/${spillerId}/teknisk-plan` },
-        { id: "evaluering", label: "Fireukerssjekk", href: `/team-norway/spiller/${spillerId}/evaluering` },
-      ]
-    : [];
-  const faner = [...kjernefaner, ...planfaner];
   const nav = (
     <nav aria-label="IUP-faner" style={{ display: "flex", flexWrap: "wrap", borderBottom: `1px solid ${TN.ink200}` }}>
       {faner.map((f) => (

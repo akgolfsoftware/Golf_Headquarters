@@ -23,11 +23,15 @@
  * (Venter på deg · Foreslå ny tid · Avlys timen · Etter timen). Lenkene #ny-tid og
  * #avlys fra Kalender åpner riktig dialog. Betalingsmåten vises, men endres ikke her:
  * appen har ingen handling for å bytte betalingsmåte på en lagret booking.
+ *
+ * Skrå-drakten 22.10 (bølge 1, pakke A3, skissen §5 «Detalj»): lav topp med bunkerbildet, timen og
+ * notatet i et hvitt kort, og handlingene i hvite kort ved siden av på PC.
  */
 import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
 import { Knapp, KnappLenke, Pille, Topp, Varsel, type PilleTone } from "@/components/admin/agencyos-ny/ny";
+import { SkraKort } from "@/components/precision/skra/Skra";
 import { bekreftBooking } from "@/app/admin/(legacy)/bookinger/actions";
 import { avlysBookingSomCoach, avvisBookingMedBegrunnelse } from "@/app/admin/bookinger/actions";
 import { foreslaaNyBookingtid, trekkTilbakeForslag } from "@/app/admin/kalender/flytt-actions";
@@ -36,6 +40,7 @@ import { BetalingsLenke } from "./BetalingsLenke";
 import { lagreNotat, merkGjennomfort, merkNoShow } from "@/app/admin/bookinger/oppfolging-actions";
 import { overstyrNoShow } from "@/app/admin/bookinger/no-show-overstyr-actions";
 import "@/styles/agencyos-ny-kalender.css";
+import "@/styles/agencyos-ny-kalender-skra.css";
 
 export type AG06BookingenData = {
   id: string;
@@ -126,12 +131,12 @@ export function AG06Bookingen({ navn, b }: { navn: string; b: AG06BookingenData 
   const st = STATUS[b.status];
   return (
     <AgencyOSSkall navn={navn}>
-      <div className="agn-s">
-        <Topp tilbake={{ href: "/admin/bookinger", tekst: "Booking" }} dato="Booking" tittel={`${b.hvem} · ${b.tjeneste}`} />
+      <div className="agn-s agn-bk-detalj">
+        <Topp tilbake={{ href: "/admin/bookinger", tekst: "Booking" }} dato="Booking" tittel={`${b.hvem} · ${b.tjeneste}`} bilde="/images/playerhq/slag-bunker.jpg" />
         {feil && <Varsel tone="advarsel">{feil}</Varsel>}
         {melding && !feil && <Varsel tone="ok">{melding}</Varsel>}
         <div className="bk-detalj">
-          <div className="bk-detalj-hoved">
+          <SkraKort className="bk-detalj-hoved" etikett="Timen">
             <div className="booking-helt">
               <Pille tone={st.tone}>{st.tekst}</Pille>
               <span style={{ font: "600 15px/1.2 var(--sans)" }}>{b.datoLang}</span>
@@ -152,7 +157,7 @@ export function AG06Bookingen({ navn, b }: { navn: string; b: AG06BookingenData 
                 <textarea rows={3} maxLength={2000} value={notat} onChange={(e) => setNotat(e.target.value)} /></label>
               <div className="knapper"><Knapp type="submit" variant="sek" disabled={pending || notat === (b.notat ?? "")}>Lagre notatet</Knapp></div>
             </form>
-          </div>
+          </SkraKort>
 
           <div className="bk-detalj-side">
             {b.status === "PENDING" && <section className="bk-handling" aria-label="Venter på deg">

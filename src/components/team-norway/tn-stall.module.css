@@ -41,7 +41,7 @@
 .forklaringLys i { width: 10px; height: 10px; flex: none; }
 .forklaringLys b { font-family: var(--tn-font-mono); font-weight: 500; font-size: 13px; }
 
-.tellere { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; border-top: 1px solid var(--tn-navy-700); padding-top: 12px; }
+.tellere { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 8px; border-top: 1px solid var(--tn-navy-700); padding-top: 12px; }
 .tellere div { display: grid; gap: 4px; align-content: start; }
 .tellere b { font-family: var(--tn-font-mono); font-weight: 500; font-size: 24px; line-height: 1; color: var(--tn-white); }
 .tellere span { font-size: 13px; line-height: 1.3; color: var(--tn-rail-text); overflow-wrap: anywhere; }

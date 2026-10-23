@@ -1,5 +1,5 @@
 /* SG-hub for coach i PlayerHQ (PHSgHubCoach.tsx). Bygger på playerhq-ny.css. Ingen sidelengs rulling. */
-.phn .phn-sg-side { display: grid; gap: 24px; width: 100%; max-width: 960px; margin: 0 auto; min-width: 0; }
+.phn .phn-sg-side { display: grid; gap: 24px; width: 100%; margin: 0 auto; min-width: 0; }
 .phn .phn-sg-tilbake { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; margin: -8px 0 -12px -2px; font: 500 15px/1 var(--phn-sans); color: var(--phn-g900); text-decoration: none; justify-self: start; }
 .phn .phn-sg-tall { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap: 12px; }
 .phn .phn-sg-tall .phn-kort { gap: 8px; }

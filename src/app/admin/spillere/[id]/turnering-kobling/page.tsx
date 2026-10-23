@@ -15,11 +15,10 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { calculateAge } from "@/lib/auth/minor";
 import { hentKoblingsstatus } from "@/lib/profil-kobling/data";
-import { ArrowLeft } from "lucide-react";
 import { AgencyOSSkall } from "@/components/precision/AgencyOSSkall";
-import { KnappLenke } from "@/components/precision/pa";
-import { SideHode } from "@/components/precision/pa-a4";
+import { Topp } from "@/components/admin/agencyos-ny/ny";
 import "@/styles/precision-a8.css";
+import "@/styles/agencyos-ny-spiller360.css";
 
 import { foreslaPublicPlayers } from "./actions";
 import { TurneringKoblingKlient } from "./kobling-klient";
@@ -77,13 +76,10 @@ export default async function TurneringKoblingPage({
 
   return (
     <AgencyOSSkall navn={user.name ?? "Coach"}>
-      <div className="a8-side" style={{ maxWidth: 820 }}>
-        <SideHode
-          kicker="Stall · Spiller 360 · Turneringsprofil"
-          title={player.name}
-          sub="Resultatprofilen er kilden til offisielle resultater for alle miljøer. Den eldre koblingen lenger ned brukes fortsatt av noen få verktøy og erstatter ikke resultatprofilen."
-          actions={<KnappLenke variant="secondary" icon={ArrowLeft} iconName="arrow-left" href={`/admin/spillere/${player.id}`}>Spiller 360</KnappLenke>}
-        />
+      <div className="agn-s">
+        <Topp tilbake={{ href: `/admin/spillere/${player.id}`, tekst: "Spiller 360" }} dato="Stall · Spiller 360 · Turneringsprofil" tittel={player.name}
+          ingress="Resultatprofilen er kilden til offisielle resultater for alle miljøer. Den eldre koblingen lenger ned brukes fortsatt av noen få verktøy og erstatter ikke resultatprofilen." />
+        <div className="a2-under">
         <ResultatprofilKlient
           spillerId={player.id}
           spillerNavn={player.name}
@@ -96,6 +92,7 @@ export default async function TurneringKoblingPage({
           current={current}
           initialForslag={forslag.filter((f) => !current || f.id !== current.id)}
         />
+        </div>
       </div>
     </AgencyOSSkall>
   );

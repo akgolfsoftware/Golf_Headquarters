@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 
 import { TN } from "@/lib/v2/team-norway";
+import b from "./tn-bevegelse.module.css";
 
 /**
  * Byggeklosser for Team Norway-skjermene.
@@ -27,7 +28,7 @@ const etikettStil: CSSProperties = {
 /** Kort: hvit flate med myke hjørner og lagdelt navy-skygge. */
 export function TnFlate({ children, style }: { children: ReactNode; style?: CSSProperties }) {
   return (
-    <section style={{ background: TN.surfaceCard, borderRadius: TN.radius.xl, boxShadow: TN.shadow.md, padding: "18px 20px 20px", minWidth: 0, ...style }}>
+    <section className={b.innkomst} style={{ background: TN.surfaceCard, borderRadius: TN.radius.xl, boxShadow: TN.shadow.md, padding: "18px 20px 20px", minWidth: 0, ...style }}>
       {children}
     </section>
   );

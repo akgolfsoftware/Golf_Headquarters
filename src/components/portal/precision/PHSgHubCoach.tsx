@@ -27,17 +27,23 @@ import type { SmashCurveResult } from "@/lib/sg-hub/smash-curve";
 import type { ClubFitReport, FitMetric, FitStatus } from "@/lib/sg-hub/equipment-fit";
 import { formaterTall } from "@/lib/format-tall";
 import { setSgHubMode } from "@/app/portal/(legacy)/mal/sg-hub/mode-action";
+import { SkraFlyt, SkraTopp } from "@/components/precision/skra/Skra";
 import "@/styles/playerhq-ny.css";
 import "@/styles/playerhq-ny-sghub.css";
 
 function Topp({ tilbake, tilbakeTekst, dato, tittel, kilde, hoyre }: { tilbake: string; tilbakeTekst: string; dato: string; tittel: string; kilde?: string; hoyre?: ReactNode }) {
-  return <div className="phn-topp">
-    <Link className="phn-sg-tilbake" href={tilbake}><ChevronLeft size={18} aria-hidden />{tilbakeTekst}</Link>
-    <div className="phn-topp-rad">
-      <div><div className="phn-dato">{dato}</div><h1 className="phn-tittel">{tittel}</h1>{kilde && <p className="phn-kilde">{kilde}</p>}</div>
+  return <SkraTopp
+    lav
+    etikett={tittel}
+    bilde="/images/playerhq/stats-topp.jpg" bildePosisjon="50% 50%"
+    overlinje={dato}
+    tittel={tittel}
+    ingress={kilde}
+    handling={<span className="skra-topp-rad">
+      <span className="skra-tilbake"><Link className="phn-sg-tilbake" href={tilbake}><ChevronLeft size={18} aria-hidden />{tilbakeTekst}</Link></span>
       {hoyre}
-    </div>
-  </div>;
+    </span>}
+  />;
 }
 
 /* ---------- Spilleroversikt ---------- */
@@ -45,9 +51,8 @@ function Topp({ tilbake, tilbakeTekst, dato, tittel, kilde, hoyre }: { tilbake: 
 export type PHSgHubCoachSpillerData = { spillerNavn: string; antallOkter: number; tierLabel: string; klubber: string[]; baseHref: string };
 
 export function PHSgHubCoachSpiller({ data }: { data: PHSgHubCoachSpillerData }) {
-  return <div className="phn phn-sg"><div className="phn-sg-side">
-    <Topp tilbake="/portal/mal/sg-hub" tilbakeTekst="SG-hub" dato="SG-hub · coach" tittel={data.spillerNavn}
-      kilde="Alle innsikter og data tilhører spilleren." />
+  return <div className="phn phn-sg phn-skra"><Topp tilbake="/portal/mal/sg-hub" tilbakeTekst="SG-hub" dato="SG-hub · coach" tittel={data.spillerNavn}
+      kilde="Alle innsikter og data tilhører spilleren." /><SkraFlyt lav>
     <div className="phn-sg-tall">
       <div className="phn-kort"><span className="phn-dato">TrackMan-økter</span><strong className="phn-sg-verdi">{data.antallOkter}</strong></div>
       <div className="phn-kort"><span className="phn-dato">Køller registrert</span><strong className="phn-sg-verdi">{data.klubber.length}</strong></div>
@@ -63,7 +68,7 @@ export function PHSgHubCoachSpiller({ data }: { data: PHSgHubCoachSpillerData })
       <span className="phn-sg-rad"><Wrench size={18} aria-hidden /><span><b>Equipment Fit</b><span className="phn-kilde">Helsesjekk per kølle på launch, spin og smash.</span></span></span>
       <ChevronRight className="phn-ikon" size={18} aria-hidden />
     </Link>
-  </div></div>;
+  </SkraFlyt></div>;
 }
 
 /* ---------- Per kølle ---------- */
@@ -92,14 +97,12 @@ function ModusVelger({ advanced }: { advanced: boolean }) {
 
 export function PHSgHubCoachKolle({ data, backHref }: { data: PHSgHubCoachKolleData | { tom: true; spillerNavn: string; kolle: string }; backHref: string }) {
   if ("tom" in data) {
-    return <div className="phn phn-sg"><div className="phn-sg-side">
-      <Topp tilbake={backHref} tilbakeTekst={data.spillerNavn} dato={`SG-hub · ${data.spillerNavn}`} tittel={data.kolle} />
+    return <div className="phn phn-sg phn-skra"><Topp tilbake={backHref} tilbakeTekst={data.spillerNavn} dato={`SG-hub · ${data.spillerNavn}`} tittel={data.kolle} /><SkraFlyt lav>
       <div className="phn-kort" style={{ background: "var(--phn-sand-100)" }}><b>Ingen data for {data.kolle}</b><p className="phn-forklar">Ingen TrackMan-slag registrert for {data.kolle} hos {data.spillerNavn}.</p></div>
-    </div></div>;
+    </SkraFlyt></div>;
   }
-  return <div className="phn phn-sg"><div className="phn-sg-side">
-    <Topp tilbake={backHref} tilbakeTekst={data.spillerNavn} dato={`SG-hub · ${data.spillerNavn} · per kølle`} tittel={data.kolle}
-      kilde={`${data.antallSlag} slag · ${data.antallOkter} ${data.antallOkter === 1 ? "økt" : "økter"} · TrackMan`} hoyre={<ModusVelger advanced={data.advanced} />} />
+  return <div className="phn phn-sg phn-skra"><Topp tilbake={backHref} tilbakeTekst={data.spillerNavn} dato={`SG-hub · ${data.spillerNavn} · per kølle`} tittel={data.kolle}
+      kilde={`${data.antallSlag} slag · ${data.antallOkter} ${data.antallOkter === 1 ? "økt" : "økter"} · TrackMan`} hoyre={<ModusVelger advanced={data.advanced} />} /><SkraFlyt lav>
 
     <div className="phn-sg-tall">
       <div className="phn-kort"><span className="phn-dato">D-Plane</span><strong className="phn-sg-ord">{data.dplaneLabel}</strong><span className="phn-kilde">{data.dplaneKonsistensPct} % konsistens</span></div>
@@ -133,7 +136,7 @@ export function PHSgHubCoachKolle({ data, backHref }: { data: PHSgHubCoachKolleD
         </li>)}
       </ol>
     </section>}
-  </div></div>;
+  </SkraFlyt></div>;
 }
 
 /* ---------- Equipment Fit ---------- */
@@ -156,9 +159,8 @@ function Metrikk({ m }: { m: FitMetric }) {
 }
 
 export function PHSgHubCoachUtstyr({ backHref, spillerNavn, reports }: { backHref: string; spillerNavn: string; reports: ClubFitReport[] }) {
-  return <div className="phn phn-sg"><div className="phn-sg-side">
-    <Topp tilbake={backHref} tilbakeTekst={spillerNavn} dato={`SG-hub · ${spillerNavn}`} tittel="Equipment Fit"
-      kilde="Launch, spin og smash sjekkes mot target-vinduer per kølletype. Avvik kan tyde på feil køllevalg, oppsett eller ball, og er ofte raskere å rette enn teknikk." />
+  return <div className="phn phn-sg phn-skra"><Topp tilbake={backHref} tilbakeTekst={spillerNavn} dato={`SG-hub · ${spillerNavn}`} tittel="Equipment Fit"
+      kilde="Launch, spin og smash sjekkes mot target-vinduer per kølletype. Avvik kan tyde på feil køllevalg, oppsett eller ball, og er ofte raskere å rette enn teknikk." /><SkraFlyt lav>
     {reports.length === 0
       ? <div className="phn-kort" style={{ background: "var(--phn-sand-100)" }}><b>Ingen TrackMan-data ennå</b><p className="phn-forklar">Helsesjekken kommer når {spillerNavn} har importert en TrackMan-økt.</p></div>
       : <div className="phn-sg-fit">{reports.map((r) => <section key={r.clubId} className="phn-kort" aria-label={r.clubId}>
@@ -169,5 +171,5 @@ export function PHSgHubCoachUtstyr({ backHref, spillerNavn, reports }: { backHre
           {r.metrics.length === 0 ? <p className="phn-kilde">Ingen target-vinduer for denne køllen.</p> : <ul className="phn-sg-metrikk">{r.metrics.map((m, i) => <Metrikk key={i} m={m} />)}</ul>}
           <p className="phn-kilde">Basert på {r.shotCount} slag</p>
         </section>)}</div>}
-  </div></div>;
+  </SkraFlyt></div>;
 }

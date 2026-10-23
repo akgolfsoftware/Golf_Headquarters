@@ -16,7 +16,7 @@ import { testTilgangWhere } from "@/lib/portal-tester/test-tilgang";
 import { parseForScoring, type ScoringKind } from "@/lib/portal-tester/test-scoring";
 import { formaterTestVerdi, formaterTestDelta } from "@/lib/portal-tester/format-verdi";
 import { hubGruppeForNavn, type HubGruppe } from "@/lib/portal-tester/hub-gruppe";
-import type { PyramidArea, TestSessionStatus } from "@/generated/prisma/client";
+import type { Prisma, PyramidArea, TestSessionStatus } from "@/generated/prisma/client";
 
 export type Axis = "fys" | "tek" | "slag" | "spill" | "turn";
 
@@ -154,27 +154,31 @@ export function deriveLowerIsBetter(scoringRule: string): boolean {
 
 const AXIS_REKKEFOLGE: Axis[] = ["fys", "tek", "slag", "spill", "turn"];
 
+/**
+ * `db` er transaksjonen fra en tilgangslås (f.eks. `medTnSpillerData`) når en trener leser en spillers tester,
+ * slik at lesingen skjer innenfor samme sjekk. Spillerens egen side bruker standardklienten.
+ */
 export async function loadTesterScreen(user: {
   id: string;
   name: string | null;
   hcp: number | null;
   tier: string;
-}): Promise<TesterScreenData> {
+}, db: Prisma.TransactionClient = prisma): Promise<TesterScreenData> {
   const now = new Date();
 
   const [definitions, results, sessions, tildelinger] = await Promise.all([
     // Spillerens test-univers: standard + egne + delt med akademi/coach-godkjent.
-    prisma.testDefinition.findMany({
+    db.testDefinition.findMany({
       where: testTilgangWhere(user.id),
       select: { id: true, name: true, pyramidArea: true, scoringRule: true, protocol: true },
       orderBy: { name: "asc" },
     }),
-    prisma.testResult.findMany({
+    db.testResult.findMany({
       where: { userId: user.id },
       select: { id: true, testId: true, score: true, takenAt: true, recordedById: true },
       orderBy: { takenAt: "asc" },
     }),
-    prisma.testSession.findMany({
+    db.testSession.findMany({
       where: { userId: user.id, status: { in: ["IN_PROGRESS"] } },
       select: {
         id: true,
@@ -189,7 +193,7 @@ export async function loadTesterScreen(user: {
     // TE-01 hub: FORFALL/PLANLAGT-caps — TestAssignment.dueDate satt av coach.
     // Nyeste åpne tildeling per test vinner (createdAt desc, samme spørring
     // som «Én ting nå» brukte før, kun uten take:1).
-    prisma.testAssignment.findMany({
+    db.testAssignment.findMany({
       where: { playerId: user.id, status: "OPEN" },
       orderBy: { createdAt: "desc" },
       select: { testId: true, dueDate: true },

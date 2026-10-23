@@ -165,7 +165,7 @@ export function AG14MalRediger({ template, drillOptions }: { template: RedigerMa
 
   const planlagte = varighetUker * meta.ukentligOktAntall;
 
-  return <div className="agn-s">
+  return <div className="agn-s agn-a6">
     <Topp tilbake={{ href: `/admin/plan-templates/${template.id}`, tekst: "Mal-detalj" }} dato="Planmal · rediger" tittel={template.name}
       ingress="Innstillingene lagres med «Lagre innstillinger». En økt lagres når du lagrer den i økt-arket."
       handlinger={<Pille tone={isPending ? "vent" : "noy"}>{isPending ? "Lagrer …" : `${drillOptions.length} øvelser i banken`}</Pille>} />

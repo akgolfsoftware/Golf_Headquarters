@@ -1,10 +1,10 @@
-import { TnLaster, TnSkallSkjelett } from "@/components/team-norway/tn-tilstand";
+import { TnLasterSkjerm, TnSkallSkjelett } from "@/components/team-norway/tn-tilstand";
 
-/** Trenere og tilgang laster. Ingen import fra en "use client"-modul. */
+/** Fag og administrasjon › Trenere og tilgang laster, i skjermens form. Ingen import fra en "use client"-modul (gotchas §Bygg og drift). */
 export default function TilgangLaster() {
   return (
     <TnSkallSkjelett>
-      <TnLaster tekst="Henter tilganger per gruppe …" />
+      <TnLasterSkjerm form="tabell" tekst="Henter tilganger per gruppe …" />
     </TnSkallSkjelett>
   );
 }

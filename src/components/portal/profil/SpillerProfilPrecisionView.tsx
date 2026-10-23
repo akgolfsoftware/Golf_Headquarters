@@ -76,7 +76,7 @@ export function SpillerProfilPrecisionView({
   };
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 space-y-6">
+    <div className="px-4 py-8 sm:px-6 space-y-6">
       {/* Profil-header */}
       <div className="rounded-2xl border border-[#DDD9D1] bg-white p-6 shadow-sm">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
