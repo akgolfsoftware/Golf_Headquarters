@@ -5,6 +5,7 @@ import {
   aktivtTrenerMedlemskapWhere,
   ikkeOrgGruppeWhere,
 } from "@/lib/domain/grupper";
+import { ikkeDemoBrukerWhere } from "@/lib/domain/demo-bruker";
 
 /**
  * Tilgangsskillet selvbetjent vs. coachet (I0 — LÅST forretningsregel,
@@ -35,6 +36,8 @@ export function coachedPlayerWhere(): Prisma.UserWhereInput {
     // demo-opprydding etterlot slettede i «Trenger deg nå») — filteret bor
     // her i porten så alle flater arver det.
     deletedAt: null,
+    // Demo- og testkontoer vises aldri i AgencyOS (Anders 23.10.2026).
+    ...ikkeDemoBrukerWhere(),
     OR: [
       {
         enrollmentsAsPlayer: {
@@ -114,6 +117,7 @@ export function coachSkrivbarPlayerWhere(viewer: {
     // Samme soft-delete-port som coachedPlayerWhere — myk-slettede skal aldri
     // dukke opp i stall, tilgangssjekker eller AI for COACH.
     deletedAt: null,
+    ...ikkeDemoBrukerWhere(),
     OR: [
       {
         enrollmentsAsPlayer: {

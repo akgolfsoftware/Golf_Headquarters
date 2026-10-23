@@ -6,17 +6,20 @@ const players: Row[] = [
   { id: "own", name: "Kari Testperson", email: "kari@example.test", role: "PLAYER", deletedAt: null, enrollmentsAsPlayer: [{ endedAt: null, program: "ACADEMY", coachId: "coach-a" }], groupMemberships: [], trainingPlans: [], hcp: 4 },
   { id: "other", name: "Kari Uvedkommende", role: "PLAYER", deletedAt: null, enrollmentsAsPlayer: [{ endedAt: null, program: "ACADEMY", coachId: "coach-b" }], groupMemberships: [] },
   { id: "self", name: "Kari Selvbetjent", role: "PLAYER", deletedAt: null, enrollmentsAsPlayer: [{ endedAt: null, program: "PLATFORM_ONLY", coachId: "coach-a" }], groupMemberships: [] },
+  { id: "demo", name: "Kari Demo", email: "kari-demo@stall.akgolf.test", role: "PLAYER", deletedAt: null, enrollmentsAsPlayer: [{ endedAt: null, program: "ACADEMY", coachId: "coach-a" }], groupMemberships: [] },
   { id: "deleted", name: "Kari Slettet", role: "PLAYER", deletedAt: new Date(), enrollmentsAsPlayer: [{ endedAt: null, program: "ACADEMY", coachId: "coach-a" }], groupMemberships: [] },
 ];
 function matches(row: Row, where: Row): boolean {
   return Object.entries(where).every(([key, value]) => {
     if (key === "AND") return (value as Row[]).every((part) => matches(row, part));
     if (key === "OR") return (value as Row[]).some((part) => matches(row, part));
+    if (key === "NOT") return !(value as Row[]).some((part) => matches(row, part));
     if (value && typeof value === "object" && !(value instanceof Date)) {
       const filter = value as Row;
       if ("some" in filter) return ((row[key] ?? []) as Row[]).some((part) => matches(part, filter.some as Row));
       if ("in" in filter) return (filter.in as unknown[]).includes(row[key]);
       if ("not" in filter) return row[key] !== filter.not;
+      if ("endsWith" in filter) return String(row[key] ?? "").toLowerCase().endsWith(String(filter.endsWith).toLowerCase());
       if ("contains" in filter) return String(row[key] ?? "").toLowerCase().includes(String(filter.contains).toLowerCase());
       return matches((row[key] ?? {}) as Row, filter);
     }
