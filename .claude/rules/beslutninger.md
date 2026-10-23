@@ -4,6 +4,21 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## FORELDEREN SER ALT SPILLEREN SER (Anders 23.10.2026, bindende)
+
+Spørsmål: «Hva skal en forelder kunne se?» (pakke 4 viste bare «Inviter», fordi innsynet ikke var bestemt.) Anders 23.10, 22:39: «Alt».
+
+- **En koblet forelder har fullt lesetilgang** til alt spilleren selv ser i PlayerHQ: plan, økter, runder, Stats, tester, teknisk plan, meldinger med coach, helse og abonnement.
+- **Forelderen leser, men endrer ikke spillerens plan, økter eller meldinger.** Godkjenning av samtykker under 16 (§KODEGJENNOMGANGEN 06.10) og betaling står som før.
+- **Innsynet varer etter 16 år** til spilleren selv fjerner forelderen (§KODEGJENNOMGANGEN 06.10). Spilleren ser alltid hvilke foreldre som har tilgang, under Meg › Deling.
+
+**Overstyrer:** ingenting. Fyller ut forelderens innsyn, som ikke var bestemt.
+
+**Arbeidet dette utløser:**
+
+1. **Skjelettet:** Meg › Deling (KK04) viser forelderen med «Ser alt» og «Fjern». Forelderportalen tegnes som PlayerHQ i lesemodus.
+2. **Koden:** forelderrollen får lesetilgang til spillerens data gjennom samme eiersjekk som spilleren, uten skriverett. Ferdig når en test låser at en forelder leser alt og ikke kan endre plan, økt eller melding.
+
 ## SPILLER OG COACH SER SAMME SKJERM, OG SKJERMLISTA SLÅS SAMMEN FØR VI BYGGER (Anders 23.10.2026, bindende)
 
 Anders 23.10, 20:43: «Før vi bygger: se hvordan vi potensielt skal slå sammen funksjoner og skjermer.» Forslaget med elleve sammenslåinger ble svart med «Forslag ovenfor er godkjent» (20:46).
