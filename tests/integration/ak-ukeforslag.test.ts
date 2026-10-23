@@ -319,6 +319,105 @@ test("Ukeforslag: atomisk plan, V2 og beslutningsspor", async t => {
       await valg(false);assert.equal((await hentAkDeltePlanforslag(viewer)).pendingCount,0);await valg(true);
     });
 
+
+    const { genererAkUkeforslag: generer } = await import('../../src/lib/deling/ak-ukeforslag-generering');
+    const utkast=async()=>{
+      const rev=await sql.query(`SELECT xmin::text AS version FROM exercise_definitions WHERE id='drill'`);
+      return {tittel:'Syntetisk uke',forklaring:'Syntetisk konkret plan',sessions:[{title:'Syntetisk økt',pyramidArea:'TEK',
+        scheduledAt:'2026-10-27T16:00:00Z',durationMin:30,drills:[{exerciseId:'drill',exerciseRevisjon:rev.rows[0].version,minutter:30}]}]};
+    };
+    await t.test('generator captures server evidence, passes only model fields and requires explicit approval',async()=>{
+      await reset();const candidate=await utkast();
+      const r=await generer(jobb,'p','2026-10-26',async input=>{
+        assert.deepEqual(Object.keys(input).sort(),['category','context','signals']);
+        assert.deepEqual(Object.keys(input.context).sort(),['completedSessions','daysUntilTournament','sgWeaknesses']);
+        assert.deepEqual(Object.keys(input.signals).sort(),['aktivFase','foretrukneDager','okterPerUke']);
+        input.signals.aktivFase='TURNERING'; // cannot change the captured DB basis
+        return candidate;
+      });
+      assert.equal(r.status,'OPPRETTET');assert.ok('id' in r);
+      const action=await db.planAction.findUniqueOrThrow({where:{id:r.id}});
+      assert.equal(action.userId,'p');assert.equal(action.coachId,'coach-a');assert.equal(action.planId,'plan');
+      assert.deepEqual(await counts(),empty);
+      assert.equal((await les(viewer)).pendingCount,1);
+      assert.equal((await behandle(viewer,r.id,'ACCEPTED')).applied,true);
+      assert.equal((await counts()).plan,1);
+    });
+    await t.test('mutable caller routing cannot change the captured recipient',async()=>{
+      await reset();const candidate=await utkast();const request={...jobb};
+      const r=await generer(request,'p','2026-10-26',async()=>{request.coachId='coach-b';request.gruppeId='b';return candidate;});
+      assert.equal(r.status,'OPPRETTET');
+      const saved=await db.planAction.findFirstOrThrow();assert.equal(saved.coachId,'coach-a');
+      const body=JSON.parse(JSON.stringify(saved.suggestion));assert.equal(body.deling.gruppeId,'a');
+    });
+    await t.test('simultaneous generators create one pending proposal; retry does not upgrade it',async()=>{
+      await reset();const candidate=await utkast();
+      const results=await Promise.all([generer(jobb,'p','2026-10-26',async()=>candidate),generer(jobb,'p','2026-10-26',async()=>candidate)]);
+      assert.deepEqual(results.map(r=>r.status).sort(),['FINNES','OPPRETTET']);
+      assert.equal(await db.planAction.count(),1);
+      const before=await db.planAction.findFirstOrThrow();
+      assert.equal((await generer(jobb,'p','2026-10-26',async()=>({...candidate,tittel:'Et annet syntetisk forslag'}))).status,'FINNES');
+      assert.deepEqual(await db.planAction.findFirstOrThrow(),before);
+    });
+    await t.test('wrong coach or missing sharing never invokes the planner',async()=>{
+      await reset();let called=0;const build=async()=>{called++;return utkast();};
+      assert.equal((await generer({gruppeId:'a',coachId:'coach-b'},'p','2026-10-26',build)).status,'INGEN_GRUNNLAG');
+      await valg(false);
+      assert.equal((await generer(jobb,'p','2026-10-26',build)).status,'INGEN_GRUNNLAG');
+      assert.equal(called,0);assert.equal(await db.planAction.count(),0);await valg(true);
+    });
+    await t.test('revoke and new yes during planner work invalidates captured evidence without holding locks',async()=>{
+      await reset();const candidate=await utkast();
+      const r=await generer(jobb,'p','2026-10-26',async()=>{await valg(false);await valg(true);return candidate;});
+      assert.equal(r.status,'UTDATERT');assert.equal(await db.planAction.count(),0);
+    });
+    await t.test('plan edit during planner work is rejected even after restoring the same budget',async()=>{
+      await reset();const candidate=await utkast();
+      const r=await generer(jobb,'p','2026-10-26',async()=>{
+        await sql.query(`UPDATE period_blocks SET "weeklySessionBudget"='{"TEK":2}' WHERE id='period'`);
+        await sql.query(`UPDATE period_blocks SET "weeklySessionBudget"='{"TEK":1}' WHERE id='period'`);return candidate;
+      });
+      assert.equal(r.status,'UTDATERT');assert.equal(await db.planAction.count(),0);
+    });
+    await t.test('exercise edit during planner work rejects the old exercise version',async()=>{
+      await reset();const candidate=await utkast();
+      await assert.rejects(generer(jobb,'p','2026-10-26',async()=>{
+        await sql.query(`UPDATE exercise_definitions SET name='Endret syntetisk øvelse' WHERE id='drill'`);return candidate;
+      }),/ugyldig-ukeovelse/);
+      assert.equal(await db.planAction.count(),0);
+    });
+    await t.test('server evidence cannot be supplied by planner; null and thrown errors create no fallback',async()=>{
+      await reset();const candidate=await utkast();
+      await assert.rejects(generer(jobb,'p','2026-10-26',async()=>({...candidate,deling:{}})));
+      assert.equal((await generer(jobb,'p','2026-10-26',async()=>null)).status,'INGEN_UTKAST');
+      await assert.rejects(generer(jobb,'p','2026-10-26',async()=>{throw Error('synthetic planner failure');}),/synthetic/);
+      assert.equal(await db.planAction.count(),0);
+    });
+    await t.test('monthly and weekly overrides stop before planner work',async()=>{
+      await reset();let called=0;const build=async()=>{called++;return utkast();};
+      await sql.query(`INSERT INTO month_plans VALUES ('override','p',2026,10)`);
+      assert.equal((await generer(jobb,'p','2026-10-26',build)).status,'INGEN_GRUNNLAG');
+      await sql.query(`DELETE FROM month_plans WHERE id='override'; INSERT INTO week_plans VALUES ('override','p',2026,44)`);
+      assert.equal((await generer(jobb,'p','2026-10-26',build)).status,'INGEN_GRUNNLAG');
+      await sql.query(`DELETE FROM week_plans WHERE id='override'`);assert.equal(called,0);
+    });
+    await t.test('generator rejects mismatched budget and schedule before persistence',async()=>{
+      await reset();const candidate=await utkast();
+      await assert.rejects(generer(jobb,'p','2026-10-26',async()=>({...candidate,sessions:[candidate.sessions[0],
+        {...candidate.sessions[0],scheduledAt:'2026-10-28T16:00:00Z'}]})),/ukebudsjett-avviker/);
+      await assert.rejects(generer(jobb,'p','2026-10-26',async()=>({...candidate,sessions:[
+        {...candidate.sessions[0],scheduledAt:'2026-11-02T16:00:00Z'}]})),/ugyldig-uketid/);
+      assert.equal(await db.planAction.count(),0);
+    });
+    await t.test('queue write failure rolls back; no sessions or audit are created',async()=>{
+      await reset();const candidate=await utkast();
+      await sql.query(`CREATE FUNCTION fail_queue() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'synthetic queue failure'; END $$;
+        CREATE TRIGGER fail_queue BEFORE INSERT ON plan_actions FOR EACH ROW EXECUTE FUNCTION fail_queue()`);
+      try{await assert.rejects(generer(jobb,'p','2026-10-26',async()=>candidate));}
+      finally{await sql.query('DROP TRIGGER fail_queue ON plan_actions; DROP FUNCTION fail_queue()');}
+      assert.equal(await db.planAction.count(),0);assert.deepEqual(await counts(),empty);
+    });
+
   } finally {
     await db.$disconnect(); await sql.end(); await admin.query(`DROP SCHEMA "${schema}" CASCADE`); await admin.end();
   }
