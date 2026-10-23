@@ -14,7 +14,7 @@ const job = { gruppeId: "g", coachId: "c" };
 const week = "2026-10-26";
 beforeEach(() => {
   allowed = true; read = 0; writes = 0;
-  row = { hcp: 12, preferanser: { okterPerUke: 4, dager: [1, 3] }, planer: [{ id: "plan", revisjon: "1", coachId: "c", fra: "2026-01-01", til: null }],
+  row = { fasiliteter: [], hcp: 12, preferanser: { okterPerUke: 4, dager: [1, 3] }, planer: [{ id: "plan", revisjon: "1", coachId: "c", fra: "2026-01-01", til: null }],
     sesonger: [{ id: "season", revisjon: "1" }],
     perioder: [{ id: "period", revisjon: "1", fase: "GRUNN", gruppeId: "g", budsjett: { TEK: 3 }, minutter: null, letteMinutter: null }],
     sg: [{ id: "sg", revisjon: "1", verdi: -1, omrade: "PUTT" }], turnering: null, fullforte: 2,
@@ -80,4 +80,23 @@ test("malformed server data proof is denied before reading weekly data", async (
     assert.equal(await brukSammeAkUkegrunnlag(job, "p", proof, value, async () => ++writes), null);
   }
   assert.equal(read, 0); assert.equal(writes, 0);
+});
+
+
+test("facility facts stay local and each recorded revision binds the snapshot", async () => {
+  row.fasiliteter = [{ id: "private-facility", revisjon: "1", capabilities: ["RADAR", "DRIVING_RANGE"], name: "Private name", notes: "Private notes" }];
+  const { hentAkUkegrunnlag, brukSammeAkUkegrunnlag } = await import("./ak-ukegrunnlag");
+  const captured = await hentAkUkegrunnlag(job, "p", week); assert.ok(captured);
+  assert.deepEqual(captured.fasiliteter, [{ capabilities: ["RADAR", "DRIVING_RANGE"] }]);
+  for (const word of ["private-facility", "Private name", "Private notes"]) assert.ok(!JSON.stringify(captured).includes(word));
+  assert.ok(!JSON.stringify(captured.modell).includes("RADAR"));
+  row.fasiliteter = [{ id: "private-facility", revisjon: "2", capabilities: ["RADAR", "DRIVING_RANGE"] }];
+  assert.equal(await brukSammeAkUkegrunnlag(job, "p", proof, captured.databevis, async () => ++writes), null);
+  assert.equal(writes, 0);
+});
+
+test("unknown capability is not treated as verified equipment", async () => {
+  row.fasiliteter = [{ id: "f", revisjon: "1", capabilities: ["ARBITRARY_TEXT"] }];
+  const { hentAkUkegrunnlag } = await import("./ak-ukegrunnlag");
+  assert.equal(await hentAkUkegrunnlag(job, "p", week), null);
 });

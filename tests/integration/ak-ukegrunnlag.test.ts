@@ -1,4 +1,5 @@
 /** Faktisk registrering, oppslag og samtidighet mot egen lokal testbase. */
+import { readFile } from "node:fs/promises";
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import { mock, test } from "node:test";
@@ -71,6 +72,7 @@ test("Ukegrunnlag: tilgang og planendringer gjennom ekte SQL", async t => {
       INSERT INTO training_sessions_v2 VALUES ('done','p','COMPLETED','2026-10-22'),('planned','p','PLANNED','2026-10-23'),
         ('outside','private','COMPLETED','2026-10-22');
       INSERT INTO signals VALUES ('sg','p','SG_AREA',-1,'{"area":"PUTT"}','2026-10-22');`);
+    await sql.query(await readFile(new URL('../fixtures/coach-week-facilities.sql',import.meta.url),'utf8'));
     const { hentAkUkegrunnlag: hent, brukSammeAkUkegrunnlag: bruk } = await import('../../src/lib/deling/ak-ukegrunnlag');
     const { settAkProfilValg: sett } = await import('../../src/lib/deling/ak-profil-valg');
     const jobb = { gruppeId: 'a', coachId: 'coach-a' };
@@ -94,6 +96,22 @@ test("Ukegrunnlag: tilgang og planendringer gjennom ekte SQL", async t => {
       assert.deepEqual(await skriv(basis),{verdi:true});
       assert.ok(!JSON.stringify(basis.modell).includes('coach-a'));
       assert.ok(!JSON.stringify(basis.modell).includes('1984'));
+    });
+    await t.test('facility additions, edits, restoration and deletion invalidate the captured state',async()=>{
+      let basis=await les();assert.ok(basis);assert.deepEqual(basis.fasiliteter,[]);
+      await sql.query(`INSERT INTO player_facilities (id,"userId",name,capabilities) VALUES ('f','p','Syntetisk sted',ARRAY['RADAR'])`);
+      assert.equal(await skriv(basis),null);basis=await les();assert.ok(basis);
+      assert.deepEqual(basis.fasiliteter,[{capabilities:['RADAR']}]);
+      await sql.query(`UPDATE player_facilities SET capabilities=ARRAY['BUNKER'] WHERE id='f'`);
+      assert.equal(await skriv(basis),null);
+      await sql.query(`UPDATE player_facilities SET capabilities=ARRAY['RADAR'] WHERE id='f'`);
+      assert.equal(await skriv(basis),null);basis=await les();assert.ok(basis);
+      await sql.query(`DELETE FROM player_facilities WHERE id='f'`);assert.equal(await skriv(basis),null);
+    });
+    await t.test('other player facilities neither enter the basis nor invalidate it',async()=>{
+      const basis=await les();assert.ok(basis);
+      await sql.query(`INSERT INTO player_facilities (id,"userId",name,capabilities) VALUES ('outside-f','private','Syntetisk privat sted',ARRAY['RADAR','BUNKER'])`);
+      assert.deepEqual((await les())?.fasiliteter,[]);assert.deepEqual(await skriv(basis),{verdi:true});
     });
     await t.test('edited and restored budget is still a new row version',async()=>{
       const basis=await les();assert.ok(basis);

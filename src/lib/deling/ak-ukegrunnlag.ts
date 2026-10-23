@@ -1,7 +1,7 @@
 import "server-only";
 import { createHash } from "node:crypto";
 import { z } from "zod";
-import type { Prisma } from "@/generated/prisma/client";
+import { DrillFasilitet, type Prisma } from "@/generated/prisma/client";
 import { kategoriFraHcp } from "@/lib/ai-plan/context";
 import { canonicalJson } from "@/lib/agents/canonical-json";
 import { parseSessionBudget } from "@/lib/workbench/perioder";
@@ -17,6 +17,7 @@ const periode = z.object({ id, revisjon: revision, fase: z.string(), gruppeId: i
   budsjett: z.unknown(), minutter: z.unknown(), letteMinutter: z.unknown() });
 const rad = z.object({
   hcp: z.number().nullable(), preferanser: z.unknown(),
+  fasiliteter: z.array(z.object({ id, revisjon: revision, capabilities: z.array(z.enum(DrillFasilitet)) })),
   planer: z.array(z.object({ id, revisjon: revision, coachId: id.nullable(), fra: z.string(), til: z.string().nullable() })).max(2),
   sesonger: z.array(z.object({ id, revisjon: revision })).max(2),
   perioder: z.array(periode).max(2),
@@ -36,6 +37,8 @@ type UkeData = {
   periodeId: string | null;
   budsjett: ReturnType<typeof parseSessionBudget>;
   harManedsEllerUkevalg: boolean;
+  /** Local validation only; never part of the model payload. No names/notes. */
+  fasiliteter: Array<{ capabilities: DrillFasilitet[] }>;
   modell: {
     context: { daysUntilTournament: number | null; completedSessions: number; sgWeaknesses: string[] };
     signals: { aktivFase: string | null; okterPerUke: number | null; foretrukneDager: number[] };
@@ -88,6 +91,8 @@ async function les(tx: Tx, spillerWhere: Prisma.UserWhereInput, jobb: AkGruppeop
     )
     SELECT u.hcp, jsonb_build_object('okterPerUke',u.preferences #> '{trening,okterPerUke}',
       'dager',u.preferences #> '{trening,dager}') AS preferanser,
+      COALESCE((SELECT jsonb_agg(jsonb_build_object('id',f.id,'revisjon',f.xmin::text,
+        'capabilities',f.capabilities) ORDER BY f.id) FROM player_facilities f WHERE f."userId" = u.id), '[]') AS fasiliteter,
       COALESCE((SELECT jsonb_agg(p ORDER BY p.id) FROM planer p), '[]') AS planer,
       COALESCE((SELECT jsonb_agg(s ORDER BY s.id) FROM sesonger s), '[]') AS sesonger,
       COALESCE((SELECT jsonb_agg(p ORDER BY p.id) FROM perioder p), '[]') AS perioder,
@@ -126,6 +131,7 @@ async function les(tx: Tx, spillerWhere: Prisma.UserWhereInput, jobb: AkGruppeop
   const verdi: UkeData = {
     planId: data.planer[0].id, periodeId: aktiv?.id ?? null, budsjett: parseSessionBudget(aktiv?.budsjett),
     harManedsEllerUkevalg: data.manedVersjoner !== null || data.ukeVersjoner !== null,
+    fasiliteter: data.fasiliteter.map(f => ({ capabilities: f.capabilities })),
     modell: {
       context: { daysUntilTournament: dato ? Math.ceil((dato.getTime() - start.getTime()) / 86_400_000) : null,
         completedSessions: data.fullforte,
@@ -183,6 +189,10 @@ export async function laasOgLesSammeAkUkegrunnlag(tx: Tx, scope: Prisma.UserWher
     const slutt = new Date(start.getTime() + 7 * 86_400_000);
     await tx.$queryRaw`SELECT id FROM training_plan_sessions WHERE "planId" = ${forventet.planId}
       AND "scheduledAt" >= ${start} AND "scheduledAt" < ${slutt} ORDER BY id FOR UPDATE`;
+    // Protect the concrete facilities against edits/deletion during validation
+    // and persistence. An added facility only broadens options; the fresh
+    // snapshot below still detects additions committed before that read.
+    await tx.$queryRaw`SELECT id FROM player_facilities WHERE "userId" = ${spiller.id} ORDER BY id FOR SHARE`;
     // READ COMMITTED deliberately: changes committed while waiting for a lock
     // must be visible to this new statement, including a just-revoked sharing row.
     const ferskt = await les(tx, scope, jobb, forventet.uke);

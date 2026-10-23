@@ -83,6 +83,7 @@ test("Ukeforslag: atomisk plan, V2 og beslutningsspor", async t => {
     await sql.query(`INSERT INTO exercise_definitions (id,name,"pyramidArea",source,"lPhases","updatedAt")
       VALUES ('drill','Syntetisk putting','TEK','SYSTEM',ARRAY['GRUNN']::"LPhase"[],now());
       UPDATE period_blocks SET "weeklySessionBudget"='{"TEK":1}' WHERE id='period';`);
+    await sql.query(await readFile(new URL('../fixtures/coach-week-facilities.sql',import.meta.url),'utf8'));
     const { hentAkUkegrunnlag } = await import('../../src/lib/deling/ak-ukegrunnlag');
     const { behandleAkUkeforslag: behandle } = await import('../../src/lib/deling/ak-ukeforslag');
     const { settAkProfilValg: sett } = await import('../../src/lib/deling/ak-profil-valg');
@@ -342,6 +343,59 @@ test("Ukeforslag: atomisk plan, V2 og beslutningsspor", async t => {
       assert.equal((await les(viewer)).pendingCount,1);
       assert.equal((await behandle(viewer,r.id,'ACCEPTED')).applied,true);
       assert.equal((await counts()).plan,1);
+    });
+    await t.test('generation and approval require all exercise capabilities at one player facility',async()=>{
+      await reset();
+      await sql.query(`UPDATE exercise_definitions SET "fasilitetKrav"=ARRAY['RADAR','DRIVING_RANGE']::"DrillFasilitet"[] WHERE id='drill'`);
+      try {
+        // Neither a missing profile, somebody else's place nor a union of places is evidence.
+        const candidate=await utkast();
+        await assert.rejects(generer(jobb,'p','2026-10-26',async()=>candidate),/mangler-ovelsesfasilitet/);
+        await sql.query(`INSERT INTO player_facilities (id,"userId",name,notes,capabilities) VALUES
+          ('foreign-f','private','Syntetisk annet sted','Syntetisk privat tekst',ARRAY['RADAR','DRIVING_RANGE']),
+          ('f1','p','Syntetisk sted 1',NULL,ARRAY['RADAR']),('f2','p','Syntetisk sted 2',NULL,ARRAY['DRIVING_RANGE'])`);
+        await assert.rejects(generer(jobb,'p','2026-10-26',async()=>candidate),/mangler-ovelsesfasilitet/);
+        const action=await opprett();
+        await assert.rejects(behandle(viewer,action.id,'ACCEPTED'),/mangler-ovelsesfasilitet/);
+        assert.deepEqual(await counts(),empty);
+        assert.equal((await db.planAction.findUniqueOrThrow({where:{id:action.id}})).status,'PENDING');
+        await reset();
+        await sql.query(`UPDATE player_facilities SET capabilities=ARRAY['RADAR','DRIVING_RANGE'] WHERE id='f1'`);
+        const result=await generer(jobb,'p','2026-10-26',async()=>candidate);
+        assert.equal(result.status,'OPPRETTET');assert.ok('id' in result);
+        assert.equal((await behandle(viewer,result.id,'ACCEPTED')).applied,true);
+      } finally {
+        await reset();await sql.query(`DELETE FROM player_facilities; UPDATE exercise_definitions SET "fasilitetKrav"=ARRAY[]::"DrillFasilitet"[] WHERE id='drill'`);
+      }
+    });
+    await t.test('facility change during planning or before approval makes the old proposal unusable',async()=>{
+      await reset();
+      await sql.query(`INSERT INTO player_facilities (id,"userId",name,capabilities) VALUES ('f','p','Syntetisk sted',ARRAY['RADAR'])`);
+      try {
+        const candidate=await utkast();
+        const generated=await generer(jobb,'p','2026-10-26',async()=>{
+          await sql.query(`UPDATE player_facilities SET capabilities=ARRAY['BUNKER'] WHERE id='f'`);return candidate;
+        });
+        assert.equal(generated.status,'UTDATERT');assert.equal(await db.planAction.count(),0);
+        const action=await opprett();await sql.query(`DELETE FROM player_facilities WHERE id='f'`);
+        await assert.rejects(behandle(viewer,action.id,'ACCEPTED'),/utdatert-ukegrunnlag/);assert.deepEqual(await counts(),empty);
+      } finally {await reset();await sql.query(`DELETE FROM player_facilities`);}
+    });
+    await t.test('facility edit committed while approval waits is checked after the lock',async()=>{
+      await reset();await sql.query(`INSERT INTO player_facilities (id,"userId",name,capabilities) VALUES ('f','p','Syntetisk sted',ARRAY['RADAR'])`);
+      const action=await opprett();await sql.query('BEGIN');
+      await sql.query(`UPDATE player_facilities SET capabilities=ARRAY['BUNKER'] WHERE id='f'`);
+      const pending=behandle(viewer,action.id,'ACCEPTED');
+      const denied=assert.rejects(pending,/utdatert-ukegrunnlag/);
+      let blocked=false;
+      try {
+        for(let i=0;i<100;i++) {
+          const lock=await admin.query(`SELECT 1 FROM pg_stat_activity WHERE application_name=$1 AND wait_event_type='Lock' AND query LIKE '%player_facilities%' AND query LIKE '%FOR SHARE%'`,[schema]);
+          if(lock.rowCount){blocked=true;break;}await new Promise(r=>setTimeout(r,10));
+        }
+      } finally {await sql.query('COMMIT');}
+      try {await denied;assert.equal(blocked,true);assert.deepEqual(await counts(),empty);}
+      finally {await reset();await sql.query(`DELETE FROM player_facilities`);}
     });
     await t.test('mutable caller routing cannot change the captured recipient',async()=>{
       await reset();const candidate=await utkast();const request={...jobb};

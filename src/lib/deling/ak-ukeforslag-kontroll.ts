@@ -33,12 +33,20 @@ export async function kontrollerAkUkeforslag(tx: Prisma.TransactionClient, forsl
     SELECT id, xmin::text AS revisjon FROM exercise_definitions WHERE id IN (${Prisma.join(ids)}) ORDER BY id FOR SHARE`;
   const drills = await tx.exerciseDefinition.findMany({ where: { id: { in: ids }, OR: [
     { source: "SYSTEM" }, { source: "COACH", createdBy: forslag.deling.coachId },
-  ] }, select: { id: true, pyramidArea: true, lPhases: true } });
+  ] }, select: { id: true, pyramidArea: true, lPhases: true, fasilitetKrav: true } });
   for (const s of sortert) {
     for (const d of s.drills) {
       const exercise = drills.find(e => e.id === d.exerciseId);
       if (!exercise || revisjoner.find(r => r.id === d.exerciseId)?.revisjon !== d.exerciseRevisjon || exercise.pyramidArea !== s.pyramidArea ||
         (exercise.lPhases.length && !exercise.lPhases.includes(fase.data))) throw Error("ugyldig-ukeovelse");
+      // A single recorded place must cover every structured requirement of
+      // this exercise. Never combine unrelated places or trust old true defaults.
+      // Empty requirements mean no special requirements in ExerciseDefinition;
+      // this does not certify distance, environment, opening hours or suitability.
+      if (exercise.fasilitetKrav.length && !grunnlag.fasiliteter.some(f =>
+        exercise.fasilitetKrav.every(krav => f.capabilities.includes(krav)))) {
+        throw Error("mangler-ovelsesfasilitet");
+      }
     }
   }
   return { sortert, fase: fase.data };
