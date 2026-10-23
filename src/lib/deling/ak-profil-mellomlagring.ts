@@ -5,11 +5,11 @@ import { medAkGruppeoppdrag, type AkGruppeoppdrag } from "./ak-gruppeoppdrag";
 import { AK_PROFIL_SCOPE, AK_PROFIL_VERSJON } from "./ak-profil-regler";
 
 const id = z.string().min(1).max(200).refine(value => value === value.trim());
-const bevisSchema = z.object({
+export const akProfilBevisSchema = z.object({
   versjon: z.literal(1), scope: z.literal(AK_PROFIL_SCOPE), tekstVersjon: z.literal(AK_PROFIL_VERSJON),
   spillerId: id, gruppeId: id, coachId: id, fingeravtrykk: z.string().regex(/^[a-f0-9]{64}$/),
 }).strict();
-export type AkProfilBevis = z.infer<typeof bevisSchema>;
+export type AkProfilBevis = z.infer<typeof akProfilBevisSchema>;
 type Tx = Prisma.TransactionClient;
 
 /**
@@ -45,7 +45,7 @@ export async function brukMedSammeAkProfilBevis<T>(oppdrag: AkGruppeoppdrag, spi
   lagretBevis: unknown, bruk: (tx: Tx, spillerWhere: Prisma.UserWhereInput) => Promise<T>,
 ): Promise<{ verdi: T } | null> {
   const spiller = id.safeParse(spillerId);
-  const forventet = bevisSchema.safeParse(lagretBevis);
+  const forventet = akProfilBevisSchema.safeParse(lagretBevis);
   if (!spiller.success || !forventet.success || forventet.data.spillerId !== spiller.data ||
     forventet.data.gruppeId !== oppdrag.gruppeId || forventet.data.coachId !== oppdrag.coachId) return null;
   return medAkGruppeoppdrag(oppdrag, async (tx, scope, grunnlag) => {

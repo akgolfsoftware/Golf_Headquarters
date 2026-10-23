@@ -1,6 +1,7 @@
 "use server";
 
 import { z } from "zod";
+import { erAkUkeforslag, behandleAkUkeforslag } from "@/lib/deling/ak-ukeforslag";
 import { erAkTreningsobservasjon, behandleAkTreningsobservasjon } from "@/lib/deling/ak-treningsobservasjon";
 import { revalidatePath } from "next/cache";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
@@ -39,7 +40,9 @@ export async function acceptPlanAction(actionId: string) {
     select: { id: true, userId: true, coachId: true, actionType: true, agentName: true, status: true },
   });
   if (!action) throw new Error("not-found");
-  if (erAkTreningsobservasjon(action)) {
+  if (erAkUkeforslag(action)) {
+    await behandleAkUkeforslag(user, actionId, "ACCEPTED");
+  } else if (erAkTreningsobservasjon(action)) {
     await behandleAkTreningsobservasjon(user, actionId, "ACCEPTED");
   } else {
     await assertPlanActionAccess(user, action);
@@ -69,7 +72,9 @@ export async function rejectPlanAction(actionId: string, reason?: string) {
     select: { id: true, userId: true, coachId: true, actionType: true, agentName: true, status: true },
   });
   if (!action) throw new Error("not-found");
-  if (erAkTreningsobservasjon(action)) {
+  if (erAkUkeforslag(action)) {
+    await behandleAkUkeforslag(user, actionId, "REJECTED", reason);
+  } else if (erAkTreningsobservasjon(action)) {
     await behandleAkTreningsobservasjon(user, actionId, "REJECTED", reason);
   } else {
     await assertPlanActionAccess(user, action);

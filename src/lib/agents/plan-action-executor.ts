@@ -681,6 +681,10 @@ export async function executePlanAction(actionId: string): Promise<ExecuteResult
     where: { id: actionId },
   });
   if (!action) throw new Error("not-found");
+  // Weekly proposals require the scoped atomic handler, even for old PROCESSING rows.
+  if (action.actionType === "WEEKLY_PROPOSAL" || action.agentName === "weekly-plan-proposals") {
+    throw new Error("ukeforslag-krever-delt-godkjenning");
+  }
   // acceptAndApplyPlanAction tar et atomisk krav før executor kalles. Direkte
   // kjøring av en PENDING-handling er ikke tillatt, fordi to kall da kan
   // utføre samme sideeffekt.

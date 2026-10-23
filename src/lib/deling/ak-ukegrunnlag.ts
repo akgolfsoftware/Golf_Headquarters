@@ -42,9 +42,9 @@ type UkeData = {
     category: ReturnType<typeof kategoriFraHcp> | null;
   };
 };
-const dataBevis = z.object({ versjon: z.literal(1), uke: uke, planId: id,
+export const akUkeDatabevisSchema = z.object({ versjon: z.literal(1), uke: uke, planId: id,
   fingeravtrykk: z.string().regex(/^[a-f0-9]{64}$/) }).strict();
-export type AkUkegrunnlag = UkeData & { deling: AkProfilBevis; databevis: z.infer<typeof dataBevis> };
+export type AkUkegrunnlag = UkeData & { deling: AkProfilBevis; databevis: z.infer<typeof akUkeDatabevisSchema> };
 
 /** Only called after the sharing locks and fresh access check. One SQL statement
  * selects a consistent, minimal snapshot, without names, notes or health fields.
@@ -159,23 +159,33 @@ export async function hentAkUkegrunnlag(jobb: AkGruppeoppdrag, spillerId: unknow
 export async function brukSammeAkUkegrunnlag<T>(jobb: AkGruppeoppdrag, spillerId: unknown,
   deling: unknown, lagretDatabevis: unknown, bruk: (tx: Tx, data: UkeData) => Promise<T>,
 ): Promise<{ verdi: T } | null> {
-  const forventet = dataBevis.safeParse(lagretDatabevis);
+  const forventet = akUkeDatabevisSchema.safeParse(lagretDatabevis);
   if (!forventet.success) return null;
   const resultat = await brukMedSammeAkProfilBevis(jobb, spillerId, deling, async (tx, scope) => {
+    const data = await laasOgLesSammeAkUkegrunnlag(tx, scope, jobb, forventet.data);
+    return data ? { verdi: await bruk(tx, data) } : null;
+  });
+  return resultat?.verdi ?? null;
+}
+
+
+/** Internal composition inside an already authorized sharing transaction.
+ * Never call without fresh, locked profile access; scope comes from that guard.
+ */
+export async function laasOgLesSammeAkUkegrunnlag(tx: Tx, scope: Prisma.UserWhereInput,
+  jobb: AkGruppeoppdrag, forventet: z.infer<typeof akUkeDatabevisSchema>) {
     const spiller = await tx.user.findFirst({ where: scope, select: { id: true } });
     if (!spiller) return null;
     const laast = await tx.$queryRaw<Array<{ id: string }>>`
-      SELECT id FROM training_plans WHERE id = ${forventet.data.planId} AND "userId" = ${spiller.id} FOR UPDATE`;
+      SELECT id FROM training_plans WHERE id = ${forventet.planId} AND "userId" = ${spiller.id} FOR UPDATE`;
     if (laast.length !== 1) return null;
-    const start = new Date(`${forventet.data.uke}T00:00:00Z`);
+    const start = new Date(`${forventet.uke}T00:00:00Z`);
     const slutt = new Date(start.getTime() + 7 * 86_400_000);
-    await tx.$queryRaw`SELECT id FROM training_plan_sessions WHERE "planId" = ${forventet.data.planId}
+    await tx.$queryRaw`SELECT id FROM training_plan_sessions WHERE "planId" = ${forventet.planId}
       AND "scheduledAt" >= ${start} AND "scheduledAt" < ${slutt} ORDER BY id FOR UPDATE`;
     // READ COMMITTED deliberately: changes committed while waiting for a lock
     // must be visible to this new statement, including a just-revoked sharing row.
-    const ferskt = await les(tx, scope, jobb, forventet.data.uke);
-    if (!ferskt || canonicalJson(ferskt.databevis) !== canonicalJson(forventet.data)) return null;
-    return { verdi: await bruk(tx, ferskt.verdi) };
-  });
-  return resultat?.verdi ?? null;
+    const ferskt = await les(tx, scope, jobb, forventet.uke);
+    if (!ferskt || canonicalJson(ferskt.databevis) !== canonicalJson(forventet)) return null;
+    return ferskt.verdi;
 }

@@ -1,3 +1,4 @@
+import { erAkUkeforslag, behandleAkUkeforslag } from "@/lib/deling/ak-ukeforslag";
 import { erAkTreningsobservasjon, behandleAkTreningsobservasjon } from "@/lib/deling/ak-treningsobservasjon";
 import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
@@ -40,6 +41,12 @@ export async function acceptAndApplyPlanAction(
     where: { id: actionId }, select: { actionType: true, agentName: true },
   });
   if (!metadata) throw new Error("not-found");
+  if (erAkUkeforslag(metadata)) {
+    if (!decidedById || coachNoteSuggestion) throw new Error("forbidden");
+    const viewer = await prisma.user.findFirst({ where: { id: decidedById, deletedAt: null }, select: { id: true, role: true } });
+    if (!viewer) throw new Error("forbidden");
+    return behandleAkUkeforslag(viewer, actionId, "ACCEPTED");
+  }
   if (erAkTreningsobservasjon(metadata)) {
     if (!decidedById || coachNoteSuggestion) throw new Error("forbidden");
     const viewer = await prisma.user.findFirst({ where: { id: decidedById, deletedAt: null }, select: { id: true, role: true } });

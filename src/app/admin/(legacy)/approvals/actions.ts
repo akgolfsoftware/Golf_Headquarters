@@ -5,6 +5,7 @@
  */
 
 import { z } from "zod";
+import { erAkUkeforslag, behandleAkUkeforslag } from "@/lib/deling/ak-ukeforslag";
 import { erAkTreningsobservasjon, behandleAkTreningsobservasjon } from "@/lib/deling/ak-treningsobservasjon";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -47,8 +48,9 @@ export async function approveRequestDetailed(
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   actionId = z.string().trim().min(1).max(200).parse(actionId);
   const metadata = await prisma.planAction.findUnique({ where: { id: actionId }, select: { agentName: true, actionType: true } });
-  if (metadata && erAkTreningsobservasjon(metadata)) {
-    await behandleAkTreningsobservasjon(user, actionId, "ACCEPTED", comment);
+  if (metadata && (erAkUkeforslag(metadata) || erAkTreningsobservasjon(metadata))) {
+    if (erAkUkeforslag(metadata)) await behandleAkUkeforslag(user, actionId, "ACCEPTED", comment);
+    else await behandleAkTreningsobservasjon(user, actionId, "ACCEPTED", comment);
     revalidatePath("/admin/godkjenninger");
     revalidatePath(`/admin/godkjenninger/${actionId}`);
     revalidatePath("/admin/agents/training-gap");
@@ -157,8 +159,9 @@ export async function declineRequestDetailed(actionId: string, reason: string) {
   reason = begrunnelse.data;
   actionId = z.string().trim().min(1).max(200).parse(actionId);
   const metadata = await prisma.planAction.findUnique({ where: { id: actionId }, select: { agentName: true, actionType: true } });
-  if (metadata && erAkTreningsobservasjon(metadata)) {
-    await behandleAkTreningsobservasjon(user, actionId, "REJECTED", reason);
+  if (metadata && (erAkUkeforslag(metadata) || erAkTreningsobservasjon(metadata))) {
+    if (erAkUkeforslag(metadata)) await behandleAkUkeforslag(user, actionId, "REJECTED", reason);
+    else await behandleAkTreningsobservasjon(user, actionId, "REJECTED", reason);
     revalidatePath("/admin/godkjenninger");
     revalidatePath(`/admin/godkjenninger/${actionId}`);
     revalidatePath("/admin/agents/training-gap");
@@ -199,8 +202,9 @@ export async function requestMoreInfo(actionId: string, question: string) {
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   actionId = z.string().trim().min(1).max(200).parse(actionId);
   const metadata = await prisma.planAction.findUnique({ where: { id: actionId }, select: { agentName: true, actionType: true } });
-  if (metadata && erAkTreningsobservasjon(metadata)) {
-    await behandleAkTreningsobservasjon(user, actionId, "QUESTION", question);
+  if (metadata && (erAkUkeforslag(metadata) || erAkTreningsobservasjon(metadata))) {
+    if (erAkUkeforslag(metadata)) await behandleAkUkeforslag(user, actionId, "QUESTION", question);
+    else await behandleAkTreningsobservasjon(user, actionId, "QUESTION", question);
     revalidatePath("/admin/godkjenninger");
     revalidatePath(`/admin/godkjenninger/${actionId}`);
     revalidatePath("/admin/agents/training-gap");
