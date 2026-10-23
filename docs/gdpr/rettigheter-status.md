@@ -20,6 +20,12 @@ Anonymiseringen vasker disse modellenes fritekst, oppholdssted, Live-JSON og ugj
 
 44 målrettede tester og tre prøver mot separat lokal database er grønne. Eksterne tjenester ble erstattet av testdobler; ingen ekte Auth-/Storage-/Stripe-sletting ble utført. Dette lukker de navngitte modellgapene, men bekrefter ikke komplett fileksport, `SessionBallLog`, foresatteksport eller samtlige historiske modeller. Den eldre juli-listen nedenfor er historikk.
 
+## Oppfølging 23. oktober 2026 — kontoavtale
+
+Egeneksporten inkluderer `kontoAvtaleAksepter`, avgrenset til innlogget bruker, med versjon, dokumenttekst, bekreftelsesordlyd, kontrollsum og tidspunkt. Lesefeil avviser eksporten i stedet for å gi en ufullstendig suksesskvittering. Kontoaksepten er ikke et delings-/læringssamtykke. Fysisk kontosletting kaskaderer disse radene; dette er prøvd i isolert Postgres. Dagens myke sletting/anonymisering og eventuell oppbevaring av avtalespor er fortsatt uavklart.
+
+Registeret er ikke aktivert: godkjent dokumentpakke, tilkoblet skjerm/fullføringsvakt og foresatt-/skoleflyt mangler. Ingen gammel aksept er oppgradert. Den nye tabellen finnes bare i lokal SQL-prøve, ikke bekreftet i hosted database; den må etableres før denne versjonen av appen kan publiseres. Vercel-byggestoppet gjelder.
+
 ## 1. Innsyn og dataportabilitet (art. 15 + 20)
 
 **WANG-tillegg 14.10.2026:** Den separate WANG-databasen, `wang_external_access` og de

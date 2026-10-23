@@ -709,6 +709,7 @@ model User {
 
   // Samtykker til helsedata fra treningsklokke (GDPR art. 9-2 a)
   helseSamtykker HelseSamtykke[]
+  kontoAvtaleAksepter KontoAvtaleAksept[]
 
   // Talent-modul (M13) — kun for spillere i talent-tracking
   talentTracking TalentTracking?
@@ -7906,4 +7907,20 @@ model WagrRefResult {
   @@unique([wagrPlayerId, wagrEventId])
   @@index([wagrPlayerId, year])
   @@map("wagr_ref_results")
+}
+
+/// C2: egen kontoaksept, aldri delings- eller læringssamtykke. Ingen backfill.
+/// Nye versjoner gir nye rader. UPDATE er sperret av databasetrigger.
+/// Egen eksport inkluderer historikken; fysisk kontosletting kaskaderer.
+model KontoAvtaleAksept {
+  id             String   @id @default(cuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pakkeVersjon   String
+  dokumentHash   String
+  dokumenter     Json
+  createdAt      DateTime @default(now()) @db.Timestamptz(3)
+
+  @@unique([userId, pakkeVersjon], map: "konto_avtale_aksepter_bruker_versjon_key")
+  @@map("konto_avtale_aksepter")
 }

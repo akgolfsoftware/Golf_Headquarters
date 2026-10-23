@@ -20,7 +20,7 @@ const kilder = [
   "testResult", "testSession", "testSessionPhoto", "trackManSession", "payment", "notification", "healthEntry",
   "equipmentBag", "caddieMessage", "coachNote", "coachingSession",
   "sessionRecording", "leave", "talentTracking", "document", "trainingLog",
-  "playerSwingVideo", "delingsSamtykke", "iupBesvarelse", "weekPlan", "trenerDelingsInvitasjon",
+  "playerSwingVideo", "delingsSamtykke", "kontoAvtaleAksept", "iupBesvarelse", "weekPlan", "trenerDelingsInvitasjon",
   "workbenchSession", "workbenchPhysicalBlock", "workbenchPhysicalLog", "workbenchTournamentPlan", "workbenchPlanConflict", "playerBusyBlock",
   "planAction",
 ];
@@ -29,6 +29,7 @@ const prismaMock = Object.fromEntries(kilder.map((kilde) => [kilde, {
     lesinger.push({ kilde, where });
     if (feilkilde === kilde) throw new Error("Syntetisk lesefeil");
     if (kilde === "weekPlan") return ukeplaner.filter(p => p.playerId === (where as { playerId: string }).playerId);
+    if (kilde === "kontoAvtaleAksept") return [{ id: "aksept-test", pakkeVersjon: "syntetisk-1", dokumenter: { vilkar: "Syntetisk tekst" } }];
     if (kilde === "document") return [{ url: "private/test-document", title: "Testdokument" }];
     if (kilde === "sessionRecording") return [{ id: "opptak-test", audioUrl: "private/test-audio" }];
     if (kilde === "playerSwingVideo") return [{ id: "video-test", storagePath: "private/test-video" }];
@@ -165,6 +166,7 @@ test("vellykket eksport beholder datakilder og filreferanser, avgrenset til innl
   assert.deepEqual(resultat.data?.workbench, { sessions: [], physicalBlocks: [], physicalLogs: [], tournamentPlans: [], conflicts: [], calendarEvents: [] });
   assert.deepEqual(resultat.data?.trenerforslag, [{ id: "forslag-test", actionType: "WORKBENCH_COACH_PROPOSAL", suggestion: { begrunnelse: "Syntetisk" }, status: "PENDING" }]);
   assert.deepEqual(resultat.data?.trenerforslagSkrevet, [{ id: "skrevet-test", organisasjon: "WANG", handling: "ADD", begrunnelse: "Syntetisk trenerbegrunnelse", status: "PENDING", opprettet: "2026-10-02T10:00:00.000Z" }]);
+  assert.deepEqual(resultat.data?.kontoAvtaleAksepter, [{ id: "aksept-test", pakkeVersjon: "syntetisk-1", dokumenter: { vilkar: "Syntetisk tekst" } }]);
   assert.equal((resultat.data?.samlingsinvitasjoner as unknown[])?.length, 1);
   assert.equal((resultat.data?.samlingsinvitasjonerSkrevet as unknown[])?.length, 1);
   assert.doesNotMatch(JSON.stringify(resultat.data?.samlingsinvitasjonerSkrevet), /playerId|recipientId|userId/);

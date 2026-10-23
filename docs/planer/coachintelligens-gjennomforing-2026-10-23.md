@@ -27,7 +27,7 @@ Korrelasjonen er fortsatt en beskrivende analyse av SG-merkede TrainingLog-rader
 |---|---|---|
 | C0 | Intern telling kjørt; Workbench/test/SG-kilder avstemt i kode | Dekning per faktisk tillatt kontekst; koblede plan/test/turneringsforløp; skille demo fra ekte uten å eksportere profiler |
 | C1 | Målgrupper definert; eksplisitt AK-deling bygget for gruppeanalyse, gruppeliste og gruppedetalj | Verifisere faktiske identiteter for Aspirant/College og Mini-endringen; uttrykkelig AK-deling i alle eksisterende lesere; beholde Basis/Junior Academy-historikk |
-| C2 | Google-krysset rettet; felles læring stengt i de berørte malfunksjonene | Versjonert serverregister for avtaleaksept og frivillig læring; foresatt/skoleflyt; tilbakekalling gjennom kø/minne/uttrekk; korrekte avtaler og juridisk sluttkontroll |
+| C2 | Google-krysset rettet; felles læring stengt i berørte malfunksjoner; serverregister for egen kontoaksept bygget, ikke aktivert | Godkjent dokumentpakke og tilkoblet brukerreise; separat frivillig læringsvalg; foresatt/skoleflyt; tilbakekalling gjennom kø/minne/uttrekk; korrekte avtaler og juridisk sluttkontroll |
 | C3 | Beregninger og agenttolkning rettet i denne diffen | Visning av datadekning i alle berørte flater; samme tilgangsgrense for alle lesere; ekte ende-til-ende-prøve uten utvidet databehandling |
 | C4 | Versjonert kontekstregister og promptrettinger, syntetiske prøver | Anders sine begrunnede coachingeksempler; faglig kontroll av Masterbrain/skills; låst prøvebibliotek og målt modellkvalitet |
 | C5 | Ikke aktivert | Selvbetjent voksen og én samtykkende AK-gruppe gjennom hele brukerreisen etter C1/C2 |
@@ -105,3 +105,20 @@ Prøving: målrettede tester kontrollerer rekkefølge, nye medlemmer utenfor det
 Sikkerhetsgjennomgang: 1) Ingen ny tillatelse eller lesevei; eksisterende tilgang får beskyttelse mot samtidige endringer. 2) Kun nødvendige interne ID-er låses, ikke navn eller fritekst; prøvene er syntetiske. 3) Foresattmyndighet og alder kontrolleres etter lås, gamle valg endres ikke. Ingen juridisk sluttgodkjenning eller felles læring.
 
 Publiseringsføring 23.10 kl. 07.10: Anders har stoppet nye Vercel-bygg/publiseringer. Kode, lokale tester og GitHub CI fortsetter. Ingen ny Vercel-preview skal startes eller kreves for denne leveransen; eldre grønne previews er ikke bevis for ny HEAD.
+
+
+## C2: versjonert serverregister for egen kontoaksept — ikke aktivert
+
+Ny `KontoAvtaleAksept` bevarer aktørens egen konto-ID, dokumentpakkens versjon, kontrollsum, full dokumenttekst og bekreftelsesordlyd samt databasetidspunkt. Vilkårsgodkjenning og bekreftelse på lest personvernerklæring er eksplisitte, separate sannhetsverdier. Registeret gir ingen deling, foresattgodkjenning eller tillatelse til felles læring. `User.preferences` og gamle avkrysninger brukes ikke som bevis og migreres ikke.
+
+Server-handlingen henter egen identitet fra innloggingen. Lagringen kontrollerer fersk PLAYER-rolle, ikke-slettet konto, fødselsdato og eksisterende foresattkrav etter radlås. Ukjent alder, barn og kontoer med foresattkrav kan ikke bruke denne egenflyten. Dette viderefører produktets grense og er ikke en juridisk konklusjon om avtaleevne. Foresatt- og skoleflyten er fortsatt uferdig.
+
+Dobbeltklikk og samtidige forsøk gir én rad per konto og pakkeversjon. Første tidspunkt bevares. Endret tekst med samme versjonsnummer avvises; ny versjon lager ny rad. Databasetrigger stanser UPDATE også utenom appkoden. RLS og tilbakekalte klientprivilegier stenger direkte klienttilgang; appens servervakt avgrenser egen eksport. Fysisk kontosletting kaskaderer kvitteringene. Oppbevaring ved myk sletting/anonymisering må fortsatt avklares, se datakartet.
+
+**Aktiveringsstatus:** `hentGjeldendeKontoAvtale()` returnerer `null`. Offentlige vilkår og personvern er fortsatt utkast, med blant annet eldre abonnementstekst. De er ikke kopiert inn som godkjent pakke. Ingen skjerm er koblet til den nye handlingen, og ingen eksisterende konto sperres eller får nye samtykker. Endelig dokumentpakke, visning av nøyaktig samme tekst, eksplisitt bekreftelse, serverkrav ved fullføring og feil-/gjenopptakshåndtering må kobles samlet før aktivering. Samtykke til frivillig læring skal være et annet valg, av som standard, og aldri utledes fra kontoaksept.
+
+Migrasjonen `20261023083000_konto_avtale_aksepter` er kun prøvd mot isolert lokal Postgres. Ingen hosted skjemaendring er gjort. Den additive tabellen må etableres og kontrolleres før en fremtidig apputrulling, fordi egeneksporten nå leser tabellen. Vercel-byggestoppet gjelder fortsatt.
+
+Målrettet prøve: katalogen avviser ugodkjente pakker; klient-ID, egen tekst, gamle flagg, feil versjon og læringsfelt avvises. Aktørkontroll, idempotens, innsyn og feil uten innhold/lekkasje er prøvd med syntetiske data. Faktisk SQL-migrasjon og registerfunksjon er prøvd med ti samtidige forsøk, nye versjoner, omskrivingsforsøk, feil roller/aldre, RLS og fysisk sletting av egne testkontoer. Første SQL-prøve avdekket manglende `UserRole` i det minimale testskjemaet; prøveriggen er rettet, ikke produksjonsreglene. Fullkontroll og CI føres etter faktisk fullføring i PR og sesjonsminnet.
+
+Sikkerhetsgjennomgang: (1) Bare serverens innloggede identitet kan registreres; ADMIN får ingen stedfortredende rett. (2) Ingen IP, nettleser, navn, e-post eller persondata til modell/logg; bare interne konto-ID-er og offentlig dokumentinnhold lagres. (3) Barn/foresatt behandles ikke som voksne; ingen gammel aksept oppgraderes. Egen eksport inkluderer kvitteringene, fysisk sletting er prøvd, annen oppbevaring er eksplisitt uavklart. Dette er teknisk grunnlag, ikke juridisk godkjenning eller ferdig C2.

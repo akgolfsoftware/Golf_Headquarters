@@ -214,3 +214,12 @@ Malbygger, Workbench, planhub og maldetalj leser ikke lenger `PlanTemplate.effec
 ### AK-gruppeanalyse ved samtidige tilgangsendringer — 23.10.2026
 
 Gruppeanalysen og nytt analyse-ja låser nå de eksisterende gruppe-, medlemskaps- og kontoradene mens grunnlaget kontrolleres. Forelderens handling låser aktuelle forelderrelasjoner. Vanlige endringer som utmelding, arkivering, kontosletting eller tilbakekalling av foreldermyndighet kan dermed ikke fullføres mellom denne kontrollen og behandlingen i transaksjonen. Bare faktisk låste medlemskap/relasjoner brukes. Tidspunkt og aktørens aktuelle rolle kontrolleres etter lås. Ingen nye datafelt eller samtykkeoppgraderinger. Andre AgencyOS-lesere, kapabilitetsadministrasjon og automatisk fjerning av allerede viste resultater omfattes ikke av denne endringen.
+
+
+### C2: kontoavtaleaksept — teknisk grunnlag 23.10.2026
+
+`konto_avtale_aksepter` lagrer intern bruker-ID, pakkeversjon, SHA-256-kontrollsum, full frosset dokumentpakke/bekreftelsesordlyd og databasetid. Ingen IP, brukeragent eller kopi av kontaktdata. Dette dokumenterer egen vilkårsaksept og lest personvern, ikke et samtykke til deling eller felles læring. Egen eksport via `exportUserData` inkluderer rader filtrert på innlogget eier. Direkte klienttilgang er stengt med RLS uten klientpolicy og tilbakekalte privilegier.
+
+Nye versjoner gir nye rader; UPDATE avvises i databasen. DELETE er tillatt for kontrollert kontosletting; FK til User har Cascade, prøvd mot egne lokale testkontoer. **AVKLAR:** nødvendig oppbevaring, eventuell bevisbevaring og håndtering ved dagens myke sletting/anonymisering. Det finnes ingen ny automatisk opprydding, og ingen ekte historikk er slettet. Kontoregistrering og læringsvalg må ikke beskrives som ett samtykke i det eksisterende samtykkeregisteret.
+
+Ingen godkjent dokumentpakke er aktiv. Handlingen er ikke koblet til brukergrensesnitt eller fullføringsvakt. Foresatt-/skoleflyt og juridisk dokumentkontroll gjenstår. Migrasjon er kun utført i isolert lokal testdatabase; hosted schema og produksjon er uendret. Før en fremtidig apputrulling må tabellen etableres, siden egeneksport leser den.
