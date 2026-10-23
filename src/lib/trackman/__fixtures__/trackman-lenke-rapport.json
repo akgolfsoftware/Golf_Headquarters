@@ -1,0 +1,420 @@
+{
+ "Kind": "multiGroupReport",
+ "Id": "fixture",
+ "StrokeGroups": [
+  {
+   "Date": "2026-03-04",
+   "Club": "4Iron",
+   "Ball": "Premium",
+   "Player": {
+    "Id": "00000000-0000-0000-0000-000000000000",
+    "Name": "Testspiller",
+    "Gender": "Male"
+   },
+   "Strokes": [
+    {
+     "Id": "5bb61884-7610-4843-b83b-5ec3e94ac0df",
+     "Time": "2026-03-04T17:56:17.151591+00:00",
+     "Club": "4Iron",
+     "Measurement": {
+      "Id": "5bb61884-7610-4843-b83b-5ec3e94ac0df",
+      "Time": "2026-03-04T17:56:17.151591+00:00",
+      "Kind": "Measurement",
+      "TeePosition": [
+       2.156932375,
+       -0.1643944363,
+       -0.06861885461
+      ],
+      "PlayerDexterity": "Right",
+      "DynamicLie": 66.1,
+      "ImpactOffset": -0.0006,
+      "ImpactHeight": 0.0101,
+      "AttackAngle": -0.8,
+      "LaunchDirection": -4.31,
+      "BallSpeed": 35.3585,
+      "BallSpeedDifference": 0.28257641137849276,
+      "ClubPath": 1.8,
+      "ClubSpeed": 26.871,
+      "DynamicLoft": 29.1,
+      "FaceAngle": -6.151,
+      "FaceToPath": -7.951,
+      "LaunchAngle": 23.082,
+      "SmashFactor": 1.3159,
+      "SmashIndex": 1.0080561360177602,
+      "SpinAxis": -12.717,
+      "SpinLoft": 30.877,
+      "SpinRate": 4893.62,
+      "SpinRateDifference": 571.8676301679069,
+      "SpinIndex": 1.1323230905499857,
+      "SwingDirection": 1.349,
+      "SwingPlane": 63.178,
+      "SwingRadius": 0.944,
+      "DPlaneTilt": -13.739,
+      "LowPointDistance": 0.01,
+      "LowPointHeight": 0.0,
+      "LowPointSide": 0.0,
+      "MaxHeight": 14.243,
+      "Carry": 89.188,
+      "Total": 100.921,
+      "CarrySide": -12.713,
+      "TotalSide": -14.984,
+      "LandingAngle": 38.437381,
+      "HangTime": 4.111556,
+      "LastData": 2.053,
+      "Curve": -6.042,
+      "ReducedAccuracy": [],
+      "InvalidNoTarget": []
+     },
+     "MeasurementDetails": {
+      "ClubClassification": {
+       "ClassifiedClubType": "Wedge"
+      },
+      "ImpactLocation": {
+       "ClubConfiguration": {
+        "StaticLoft": 0.9424777961
+       }
+      }
+     }
+    },
+    {
+     "Id": "0d17651b-a1f3-4bd6-b0c7-b7e28815b88b",
+     "Time": "2026-03-04T17:57:31.311093+00:00",
+     "Club": "4Iron",
+     "Measurement": {
+      "Id": "0d17651b-a1f3-4bd6-b0c7-b7e28815b88b",
+      "Time": "2026-03-04T17:57:31.311093+00:00",
+      "Kind": "Measurement",
+      "TeePosition": [
+       2.234103641,
+       -0.1653430129,
+       -0.06339644744
+      ],
+      "PlayerDexterity": "Right",
+      "DynamicLie": 68.1,
+      "ImpactOffset": -0.0111,
+      "ImpactHeight": 0.0118,
+      "AttackAngle": -1.2,
+      "LaunchDirection": -3.572,
+      "BallSpeed": 34.346,
+      "BallSpeedDifference": -0.4268040715783883,
+      "ClubPath": 2.6,
+      "ClubSpeed": 26.635,
+      "DynamicLoft": 28.586,
+      "FaceAngle": -5.466,
+      "FaceToPath": -8.066,
+      "LaunchAngle": 22.401,
+      "SmashFactor": 1.2895,
+      "SmashIndex": 0.98772592308921,
+      "SpinAxis": -12.794,
+      "SpinLoft": 30.896,
+      "SpinRate": 4886.73,
+      "SpinRateDifference": 600.5587839772802,
+      "SpinIndex": 1.1401154442296308,
+      "SwingDirection": 2.027,
+      "SwingPlane": 70.392,
+      "SwingRadius": 0.913,
+      "DPlaneTilt": -13.892,
+      "LowPointDistance": 0.017,
+      "LowPointHeight": 0.0,
+      "LowPointSide": 0.001,
+      "MaxHeight": 12.737,
+      "Carry": 84.555,
+      "Total": 97.028,
+      "CarrySide": -10.698,
+      "TotalSide": -12.906,
+      "LandingAngle": 36.641691,
+      "HangTime": 3.895131,
+      "LastData": 1.955,
+      "Curve": -5.452,
+      "ReducedAccuracy": [],
+      "InvalidNoTarget": []
+     },
+     "MeasurementDetails": {
+      "ClubClassification": {
+       "ClassifiedClubType": "Wedge"
+      },
+      "ImpactLocation": {
+       "ClubConfiguration": {
+        "StaticLoft": 0.9424777961
+       }
+      }
+     }
+    },
+    {
+     "Id": "62ef67fd-38f0-4185-ab0d-eac2857bc9c0",
+     "Time": "2026-03-04T17:58:49.445717+00:00",
+     "Club": "4Iron",
+     "Measurement": {
+      "Id": "62ef67fd-38f0-4185-ab0d-eac2857bc9c0",
+      "Time": "2026-03-04T17:58:49.445717+00:00",
+      "Kind": "Measurement",
+      "TeePosition": [
+       2.245007895,
+       -0.1716190335,
+       -0.05912689236
+      ],
+      "PlayerDexterity": "Right",
+      "DynamicLie": 64.5,
+      "ImpactOffset": -0.0156,
+      "ImpactHeight": -0.0069,
+      "AttackAngle": -0.2,
+      "LaunchDirection": -10.129,
+      "BallSpeed": 31.2557,
+      "BallSpeedDifference": -4.8637618019230935,
+      "ClubPath": -0.2,
+      "ClubSpeed": 26.535,
+      "DynamicLoft": 23.048,
+      "FaceAngle": -13.2,
+      "FaceToPath": -13.0,
+      "LaunchAngle": 17.947,
+      "SmashFactor": 1.1779,
+      "SmashIndex": 0.8653423512067909,
+      "SpinAxis": -24.559,
+      "SpinLoft": 26.41,
+      "SpinRate": 4050.0,
+      "SwingDirection": -0.594,
+      "SwingPlane": 61.905,
+      "SwingRadius": 0.938,
+      "DPlaneTilt": -27.367,
+      "LowPointDistance": -0.002,
+      "LowPointHeight": 0.0,
+      "LowPointSide": 0.0,
+      "MaxHeight": 6.76,
+      "Carry": 65.379,
+      "Total": 84.837,
+      "CarrySide": -16.953,
+      "TotalSide": -23.51,
+      "LandingAngle": 25.957314,
+      "HangTime": 2.834649,
+      "LastData": 2.062,
+      "Curve": -5.584,
+      "ReducedAccuracy": [
+       "SpinRate"
+      ],
+      "InvalidNoTarget": []
+     },
+     "MeasurementDetails": {
+      "ClubClassification": {
+       "ClassifiedClubType": "ShortIron"
+      },
+      "ImpactLocation": {
+       "ClubConfiguration": {
+        "StaticLoft": 0.6806784083
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "Date": "2026-03-04",
+   "Club": "PitchingWedge",
+   "Ball": "Premium",
+   "Player": {
+    "Id": "00000000-0000-0000-0000-000000000000",
+    "Name": "Testspiller",
+    "Gender": "Male"
+   },
+   "Strokes": [
+    {
+     "Id": "f6740c23-4fed-4ac3-a527-adb7b167104c",
+     "Time": "2026-03-04T17:52:31.811622+00:00",
+     "Club": "PitchingWedge",
+     "Measurement": {
+      "Id": "f6740c23-4fed-4ac3-a527-adb7b167104c",
+      "Time": "2026-03-04T17:52:31.811622+00:00",
+      "Kind": "Measurement",
+      "TeePosition": [
+       2.166427619,
+       -0.1664717337,
+       -0.0631110915
+      ],
+      "PlayerDexterity": "Right",
+      "DynamicLie": 63.4,
+      "ImpactOffset": 0.0092,
+      "ImpactHeight": 0.0016,
+      "AttackAngle": -5.0,
+      "LaunchDirection": -2.157,
+      "BallSpeed": 38.0479,
+      "BallSpeedDifference": -0.8789651291916485,
+      "ClubPath": 1.4,
+      "ClubSpeed": 31.665,
+      "DynamicLoft": 32.748,
+      "FaceAngle": -3.45,
+      "FaceToPath": -4.85,
+      "LaunchAngle": 24.184,
+      "SmashFactor": 1.2016,
+      "SmashIndex": 0.9774200895377905,
+      "SpinAxis": -6.166,
+      "SpinLoft": 38.03,
+      "SpinRate": 7270.0,
+      "SwingDirection": -1.037,
+      "SwingPlane": 63.96,
+      "SwingRadius": 0.991,
+      "DPlaneTilt": -6.615,
+      "LowPointDistance": 0.1,
+      "LowPointHeight": -0.004,
+      "LowPointSide": 0.0,
+      "MaxHeight": 18.861,
+      "Carry": 96.586,
+      "Total": 101.935,
+      "CarrySide": -7.705,
+      "TotalSide": -8.273,
+      "LandingAngle": 45.112779,
+      "HangTime": 4.715172,
+      "LastData": 2.214,
+      "Curve": -4.076,
+      "ReducedAccuracy": [
+       "SpinRate"
+      ],
+      "InvalidNoTarget": []
+     },
+     "MeasurementDetails": {
+      "ClubClassification": {
+       "ClassifiedClubType": "Wedge"
+      },
+      "ImpactLocation": {
+       "ClubConfiguration": {
+        "StaticLoft": 0.8203047484
+       }
+      }
+     }
+    },
+    {
+     "Id": "9d27e685-f382-408e-b862-2ff003f53d39",
+     "Time": "2026-03-04T17:53:04.002416+00:00",
+     "Club": "PitchingWedge",
+     "Measurement": {
+      "Id": "9d27e685-f382-408e-b862-2ff003f53d39",
+      "Time": "2026-03-04T17:53:04.002416+00:00",
+      "Kind": "Measurement",
+      "TeePosition": [
+       2.205084182,
+       -0.169868926,
+       -0.0593701839
+      ],
+      "PlayerDexterity": "Right",
+      "DynamicLie": 64.9,
+      "ImpactOffset": -0.0046,
+      "ImpactHeight": 0.0016,
+      "AttackAngle": -3.4,
+      "LaunchDirection": -0.25,
+      "BallSpeed": 37.844,
+      "BallSpeedDifference": -0.6770469371751631,
+      "ClubPath": 1.6,
+      "ClubSpeed": 31.076,
+      "DynamicLoft": 33.723,
+      "FaceAngle": -0.888,
+      "FaceToPath": -2.488,
+      "LaunchAngle": 25.576,
+      "SmashFactor": 1.2178,
+      "SmashIndex": 0.9824239736194249,
+      "SpinAxis": -3.175,
+      "SpinLoft": 37.324,
+      "SpinRate": 6844.2,
+      "SpinRateDifference": -115.85213818044811,
+      "SpinIndex": 0.9833547025395222,
+      "SwingDirection": -0.078,
+      "SwingPlane": 64.928,
+      "SwingRadius": 0.981,
+      "DPlaneTilt": -3.369,
+      "LowPointDistance": 0.069,
+      "LowPointHeight": -0.002,
+      "LowPointSide": 0.001,
+      "MaxHeight": 19.898,
+      "Carry": 96.54,
+      "Total": 101.942,
+      "CarrySide": -2.506,
+      "TotalSide": -2.715,
+      "LandingAngle": 46.38018,
+      "HangTime": 4.796227,
+      "LastData": 2.163,
+      "Curve": -2.085,
+      "ReducedAccuracy": [],
+      "InvalidNoTarget": []
+     },
+     "MeasurementDetails": {
+      "ClubClassification": {
+       "ClassifiedClubType": "Wedge"
+      },
+      "ImpactLocation": {
+       "ClubConfiguration": {
+        "StaticLoft": 0.8203047484
+       }
+      }
+     }
+    },
+    {
+     "Id": "382ecb46-b23e-4672-84b1-652f9dffa0b8",
+     "Time": "2026-03-04T17:53:38.079861+00:00",
+     "Club": "PitchingWedge",
+     "Measurement": {
+      "Id": "382ecb46-b23e-4672-84b1-652f9dffa0b8",
+      "Time": "2026-03-04T17:53:38.079861+00:00",
+      "Kind": "Measurement",
+      "TeePosition": [
+       2.139630341,
+       -0.1620510985,
+       -0.07110423227
+      ],
+      "PlayerDexterity": "Right",
+      "DynamicLie": 64.7,
+      "ImpactOffset": 0.0186,
+      "ImpactHeight": 0.0068,
+      "AttackAngle": -0.6,
+      "LaunchDirection": -1.403,
+      "BallSpeed": 33.9072,
+      "BallSpeedDifference": -7.6364044359573455,
+      "ClubPath": 4.6,
+      "ClubSpeed": 32.155,
+      "DynamicLoft": 32.567,
+      "FaceAngle": -4.147,
+      "FaceToPath": -8.747,
+      "LaunchAngle": 23.413,
+      "SmashFactor": 1.0545,
+      "SmashIndex": 0.8161833923744038,
+      "SpinAxis": -12.07,
+      "SpinLoft": 34.318,
+      "SpinRate": 7100.0,
+      "SwingDirection": 4.256,
+      "SwingPlane": 70.996,
+      "SwingRadius": 0.947,
+      "DPlaneTilt": -13.01,
+      "LowPointDistance": 0.014,
+      "LowPointHeight": 0.0,
+      "LowPointSide": 0.001,
+      "MaxHeight": 13.622,
+      "Carry": 81.208,
+      "Total": 88.447,
+      "CarrySide": -7.524,
+      "TotalSide": -8.55,
+      "LandingAngle": 39.91395,
+      "HangTime": 4.006679,
+      "LastData": 2.05,
+      "Curve": -5.542,
+      "ReducedAccuracy": [
+       "SpinRate"
+      ],
+      "InvalidNoTarget": []
+     },
+     "MeasurementDetails": {
+      "ClubClassification": {
+       "ClassifiedClubType": "Wedge"
+      },
+      "ImpactLocation": {
+       "ClubConfiguration": {
+        "StaticLoft": 0.8203047484
+       }
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "User": {
+  "Id": "fjernes"
+ },
+ "Client": {
+  "Name": "fjernes"
+ }
+}

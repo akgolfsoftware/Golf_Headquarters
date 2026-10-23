@@ -1,6 +1,6 @@
 {
   "$schema": "ordbok-lag-3",
-  "versjon": "2026-10-19",
+  "versjon": "2026-10-23",
   "kilder": {
     "master": "docs/treningsplanlegging.md",
     "schema": "prisma/schema.prisma",
@@ -218,13 +218,15 @@
       "PENDING",
       "CONFIRMED",
       "CANCELLED",
-      "COMPLETED"
+      "COMPLETED",
+      "NO_SHOW"
     ],
     "BookingPaymentMethod": [
       "STRIPE",
       "KLIPP",
       "FAKTURA",
-      "GRATIS"
+      "GRATIS",
+      "GAVEKORT"
     ],
     "SessionStatus": [
       "PLANNED",
