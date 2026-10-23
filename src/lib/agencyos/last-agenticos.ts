@@ -3,7 +3,7 @@
  * Ærlige tomrom — ingen oppdiktede kjørende runs eller runtime-helse.
  */
 
-import { hentAkTreningsobservasjoner, UTEN_AK_TRENINGSOBSERVASJON, begrensForslagsliste } from "@/lib/deling/ak-treningsobservasjon";
+import { hentAkDeltePlanforslag, UTEN_AK_DELTE_PLANFORSLAG, begrensForslagsliste } from "@/lib/deling/ak-delte-planforslag";
 import { prisma } from "@/lib/prisma";
 import { planActionKoWhere } from "@/lib/admin/ko-telling";
 import {
@@ -150,7 +150,7 @@ export async function lastAgenticosCockpit(user: Viewer): Promise<AgenticosCockp
     }),
     prisma.planAction.count({ where: planActionKoWhere(user) }),
     prisma.planAction.count({
-      where: { ...UTEN_AK_TRENINGSOBSERVASJON, status: "ACCEPTED", decidedAt: { gte: idag }, decidedById: user.id },
+      where: { ...UTEN_AK_DELTE_PLANFORSLAG, status: "ACCEPTED", decidedAt: { gte: idag }, decidedById: user.id },
     }),
     prisma.signal.count({ where: { computedAt: { gte: sju } } }),
     prisma.agentRun.findMany({
@@ -160,7 +160,7 @@ export async function lastAgenticosCockpit(user: Viewer): Promise<AgenticosCockp
       take: 12,
     }),
     prisma.agentRun.count({ where: { createdAt: { gte: idag } } }),
-    hentAkTreningsobservasjoner(user, { status: "PENDING", maksRader: 1, godkjentAvViewerSiden: idag }),
+    hentAkDeltePlanforslag(user, { status: "PENDING", maksRader: 1, godkjentAvViewerSiden: idag }),
   ]);
 
   const godkjentIDag = eldreGodkjentIDag + observasjoner.godkjentAvViewer;
@@ -221,7 +221,7 @@ export async function lastAgenticosKo(user: Viewer): Promise<AgenticosKoData> {
     include: { user: { select: { name: true } } },
     orderBy: [{ createdAt: "desc" }, { id: "desc" }],
     take: 20,
-  }), hentAkTreningsobservasjoner(user, { status: "PENDING", maksRader: 20 })]);
+  }), hentAkDeltePlanforslag(user, { status: "PENDING", maksRader: 20 })]);
   const pending = begrensForslagsliste([...eldrePending, ...observasjoner.planActions], 20);
   const idag = startOfLocalDay();
   const sju = new Date(idag);
@@ -283,9 +283,9 @@ export async function lastAgenticosGodkjenn(user: Viewer): Promise<AgenticosGodk
       take: 12,
     }),
     prisma.planAction.count({
-      where: { ...UTEN_AK_TRENINGSOBSERVASJON, status: "ACCEPTED", decidedAt: { gte: idag }, decidedById: user.id },
+      where: { ...UTEN_AK_DELTE_PLANFORSLAG, status: "ACCEPTED", decidedAt: { gte: idag }, decidedById: user.id },
     }),
-    hentAkTreningsobservasjoner(user, { status: "PENDING", maksRader: 12, godkjentAvViewerSiden: idag }),
+    hentAkDeltePlanforslag(user, { status: "PENDING", maksRader: 12, godkjentAvViewerSiden: idag }),
   ]);
   const pending = begrensForslagsliste([...eldrePending, ...observasjoner.planActions], 12);
   const godkjentIDag = eldreGodkjentIDag + observasjoner.godkjentAvViewer;
@@ -356,7 +356,7 @@ export async function lastAgenticosProjects(): Promise<AgenticosProjectsData> {
 export async function lastAgenticosGodkjennCount(user: Viewer): Promise<number> {
   const [eldre, observasjoner] = await Promise.all([
     prisma.planAction.count({ where: planActionKoWhere(user) }),
-    hentAkTreningsobservasjoner(user, { maksRader: 0 }),
+    hentAkDeltePlanforslag(user, { maksRader: 0 }),
   ]);
   return eldre + observasjoner.pendingCount;
 }

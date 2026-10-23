@@ -8,6 +8,8 @@ import { handlingstypeLabel } from "@/lib/labels/handlingstyper";
  * FeedbackForm (tommel opp/ned per kjøring) er ikke montert her, som før.
  */
 
+import { UTEN_AK_DELTE_PLANFORSLAG } from "@/lib/deling/ak-delte-planforslag";
+import { hentAkUkeforslag } from "@/lib/deling/ak-ukeforslag-lesing";
 import { hentAkTreningsobservasjoner } from "@/lib/deling/ak-treningsobservasjon";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { notFound } from "next/navigation";
@@ -125,23 +127,24 @@ export default async function AgentDetaljPage({
   tretti_dager_siden.setDate(tretti_dager_siden.getDate() - 30);
 
   const treningsobservasjon = agentId === "training-gap";
+  const delingsstyrt = treningsobservasjon || agentId === "weekly-plan-proposals";
   // Rå output/feil fra historiske batchkjøringer kan inneholde andre spilleres
-  // opplysninger. Her vises bare teknisk kjørestatus for treningsgap-agenten.
-  const runSelect = treningsobservasjon
+  // opplysninger. Her vises bare teknisk kjørestatus for delingsstyrte treningsagenter.
+  const runSelect = delingsstyrt
     ? { id: true, status: true, createdAt: true, duration: true }
     : undefined;
   const [sisteRad, kjoringsRader, forslagData] = await Promise.all([
     prisma.agentRun.findFirst({ where: { agentName: { in: alleNavn } }, orderBy: { createdAt: "desc" }, select: runSelect }),
     prisma.agentRun.findMany({ where: { agentName: { in: alleNavn }, createdAt: { gte: tretti_dager_siden } },
       orderBy: { createdAt: "desc" }, take: 30, select: runSelect }),
-    treningsobservasjon ? hentAkTreningsobservasjoner(user) : (async () => {
+    delingsstyrt ? (treningsobservasjon ? hentAkTreningsobservasjoner(user) : hentAkUkeforslag(user)) : (async () => {
       const [planActions, pendingCount, acceptedCount, rejectedCount, eldstePending] = await Promise.all([
-        prisma.planAction.findMany({ where: { agentName: { in: alleNavn } }, orderBy: { createdAt: "desc" }, take: 10,
+        prisma.planAction.findMany({ where: { ...UTEN_AK_DELTE_PLANFORSLAG, agentName: { in: alleNavn } }, orderBy: { createdAt: "desc" }, take: 10,
           include: { user: { select: { id: true, name: true } } } }),
-        prisma.planAction.count({ where: { agentName: { in: alleNavn }, status: "PENDING" } }),
-        prisma.planAction.count({ where: { agentName: { in: alleNavn }, status: "ACCEPTED" } }),
-        prisma.planAction.count({ where: { agentName: { in: alleNavn }, status: "REJECTED" } }),
-        prisma.planAction.findFirst({ where: { agentName: { in: alleNavn }, status: "PENDING" }, orderBy: { createdAt: "asc" }, select: { createdAt: true } }),
+        prisma.planAction.count({ where: { ...UTEN_AK_DELTE_PLANFORSLAG, agentName: { in: alleNavn }, status: "PENDING" } }),
+        prisma.planAction.count({ where: { ...UTEN_AK_DELTE_PLANFORSLAG, agentName: { in: alleNavn }, status: "ACCEPTED" } }),
+        prisma.planAction.count({ where: { ...UTEN_AK_DELTE_PLANFORSLAG, agentName: { in: alleNavn }, status: "REJECTED" } }),
+        prisma.planAction.findFirst({ where: { ...UTEN_AK_DELTE_PLANFORSLAG, agentName: { in: alleNavn }, status: "PENDING" }, orderBy: { createdAt: "asc" }, select: { createdAt: true } }),
       ]);
       return { planActions, pendingCount, acceptedCount, rejectedCount, eldstePending };
     })(),
@@ -158,7 +161,7 @@ export default async function AgentDetaljPage({
   // registrerte agentene skriver disse i dag — AgentRun har ingen kobling
   // til KommandoAgentRun i schema — men oppslaget gjøres ærlig i tilfelle
   // det legges til senere, i stedet for å anta at det aldri skjer.
-  const kommandoSteg = sisteKjoring && !treningsobservasjon
+  const kommandoSteg = sisteKjoring && !delingsstyrt
     ? await prisma.kommandoAgentStep.findMany({
         where: { runId: sisteKjoring.id },
         orderBy: { orderIndex: "asc" },
@@ -249,7 +252,7 @@ export default async function AgentDetaljPage({
         steg: [
           {
             rolle: "kjøring",
-            tekst: ok ? (lagSnippet(output) ?? (treningsobservasjon ? "Kjøring fullført. Forslagslisten viser bare dine tilgjengelige observasjoner." : "Fullført uten forslag.")) : (sisteKjoring.error ?? "Feilet."),
+            tekst: ok ? (lagSnippet(output) ?? (delingsstyrt ? "Kjøring fullført. Forslagslisten viser bare dine tilgjengelige forslag." : "Fullført uten forslag.")) : (sisteKjoring.error ?? "Feilet."),
             ok,
           },
         ],

@@ -2,14 +2,15 @@ import assert from "node:assert/strict";
 import { before, beforeEach, mock, test } from "node:test";
 import type { Prisma } from "@/generated/prisma/client";
 
-type Leser = typeof import("@/lib/deling/ak-treningsobservasjon");
-type Resultat = Awaited<ReturnType<Leser["hentAkTreningsobservasjoner"]>>;
+type Leser = typeof import("@/lib/deling/ak-delte-planforslag");
+type Resultat = Awaited<ReturnType<Leser["hentAkDeltePlanforslag"]>>;
 const viewer = { id: "synthetic-coach", role: "ADMIN" as const, name: "Syntetisk trener" };
 const spillerScope = { id: "synthetic-player" };
 let tillatt = true;
 let forventetRolle = "ADMIN";
 let lesefeil = false;
 let antall = 1;
+let ukeforslag = false;
 let finnKall: Prisma.PlanActionFindManyArgs[] = [];
 let telleKall: Prisma.PlanActionCountArgs[] = [];
 let gruppeKall: Prisma.PlanActionGroupByArgs[] = [];
@@ -17,7 +18,7 @@ let foresporselKall: Prisma.SessionRequestFindManyArgs[] = [];
 let foresporselTelleKall: Prisma.SessionRequestCountArgs[] = [];
 let caddieTelleKall: Prisma.CaddieDraftCountArgs[] = [];
 let kommandoKall: Prisma.KommandoAgentRunCountArgs[] = [];
-let leseKall: Parameters<Leser["hentAkTreningsobservasjoner"]>[1][] = [];
+let leseKall: Parameters<Leser["hentAkDeltePlanforslag"]>[1][] = [];
 let uten: Prisma.PlanActionWhereInput;
 let begrens: Leser["begrensForslagsliste"];
 
@@ -25,6 +26,7 @@ mock.module("@/lib/auth/coached", { namedExports: { coachScopedPlayerWhere: () =
 const tom = async () => [];
 mock.module("@/lib/prisma", { namedExports: { prisma: {
   planAction: {
+    findFirst: async () => null,
     findMany: async (args: Prisma.PlanActionFindManyArgs) => { finnKall.push(args); return []; },
     count: async (args: Prisma.PlanActionCountArgs) => { telleKall.push(args); return 0; },
     groupBy: async (args: Prisma.PlanActionGroupByArgs) => { gruppeKall.push(args); return []; },
@@ -46,19 +48,19 @@ let dispatch: typeof import("./ai-dispatch-data");
 let kanoniskKo: typeof import("@/lib/admin/ko-telling");
 let innboks: typeof import("@/lib/admin/innboks-saker");
 before(async () => {
-  const ekte = await import("@/lib/deling/ak-treningsobservasjon");
-  uten = ekte.UTEN_AK_TRENINGSOBSERVASJON;
+  const ekte = await import("@/lib/deling/ak-delte-planforslag");
+  uten = ekte.UTEN_AK_DELTE_PLANFORSLAG;
   begrens = ekte.begrensForslagsliste;
-  mock.module("@/lib/deling/ak-treningsobservasjon", { namedExports: {
+  mock.module("@/lib/deling/ak-delte-planforslag", { namedExports: {
     ...ekte,
-    hentAkTreningsobservasjoner: async (aktor: typeof viewer, valg: Parameters<Leser["hentAkTreningsobservasjoner"]>[1] = {}): Promise<Resultat> => {
+    hentAkDeltePlanforslag: async (aktor: typeof viewer, valg: Parameters<Leser["hentAkDeltePlanforslag"]>[1] = {}): Promise<Resultat> => {
       assert.equal(aktor.id, viewer.id); assert.equal(aktor.role, forventetRolle);
       if (lesefeil) throw new Error("synthetic-sharing-unavailable");
       leseKall.push(valg);
       const historikk = Array.isArray(valg.status);
       const rader = Array.from({ length: tillatt ? antall : 0 }, (_, i) => ({
         id: `${historikk ? "done" : "pending"}-${i}`, userId: spillerScope.id, planId: null, provenance: null,
-        actionType: "COACH_REVIEW", agentName: "training-gap", status: historikk ? "ACCEPTED" : "PENDING",
+        actionType: ukeforslag ? "WEEKLY_PROPOSAL" : "COACH_REVIEW", agentName: ukeforslag ? "weekly-plan-proposals" : "training-gap", status: historikk ? "ACCEPTED" : "PENDING",
         createdAt: new Date(Date.now() - (antall - i) * 60000), updatedAt: new Date(), sjekkpunkt: null,
         suggestion: { forklaring: "Syntetisk observasjon" }, user: { id: spillerScope.id, name: "Syntetisk spiller" },
       }));
@@ -76,7 +78,7 @@ before(async () => {
   dispatch = await import("./ai-dispatch-data");
   kanoniskKo = await import("@/lib/admin/ko-telling");
 });
-beforeEach(() => { tillatt = true; forventetRolle = "ADMIN"; lesefeil = false; antall = 1; finnKall = []; telleKall = []; gruppeKall = []; foresporselKall = []; foresporselTelleKall = []; caddieTelleKall = []; kommandoKall = []; leseKall = []; });
+beforeEach(() => { ukeforslag = false; tillatt = true; forventetRolle = "ADMIN"; lesefeil = false; antall = 1; finnKall = []; telleKall = []; gruppeKall = []; foresporselKall = []; foresporselTelleKall = []; caddieTelleKall = []; kommandoKall = []; leseKall = []; });
 
 function kontrollerEldreLesere() {
   for (const args of [...finnKall, ...telleKall, ...gruppeKall]) assert.deepEqual(args.where?.NOT, uten.NOT);
@@ -189,4 +191,21 @@ test("AI-dispatch avviser ved feil i fersk delingskontroll, uten global reservet
   await assert.rejects(() => dispatch.loadAiDispatch(viewer), /synthetic-sharing-unavailable/);
   assert.equal(telleKall.length, 1);
   kontrollerEldreLesere();
+});
+
+
+test("ukeforslag følger samme oversikter og teller uten påstand om utsending", async () => {
+  ukeforslag = true;
+  const inbox = await innboks.loadInnboksSaker(viewer);
+  assert.equal(inbox.saker.find(s=>!s.lost)?.primaer?.label,"Godkjenn");
+  assert.equal(inbox.saker.find(s=>s.lost)?.sub,"Økter lagt til i treningsplanen.");
+  assert.equal((await dispatch.loadAiDispatch(viewer)).tellinger.planActions,1);
+  assert.equal((await workbench.loadWorkbenchOppgaver(viewer)).oppgaver.length,1);
+  assert.equal((await agenticos.lastAgenticosCockpit(viewer)).venterPaDeg,1);
+  const { lastGodkjenninger } = await import("@/lib/admin/ko/last-godkjenninger");
+  const queue=await lastGodkjenninger(viewer,{medUkesrapport:false});
+  assert.ok(queue.rows.some(r=>r.id==="pending-0"));
+  kontrollerEldreLesere();
+  tillatt=false;
+  assert.equal((await lastGodkjenninger(viewer,{medUkesrapport:false})).rows.length,0);
 });

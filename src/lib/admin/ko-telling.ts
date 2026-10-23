@@ -11,7 +11,7 @@
  *   - SessionRequest:  PENDING + coach-scope + spiller-scope
  */
 
-import { hentAkTreningsobservasjoner, UTEN_AK_TRENINGSOBSERVASJON } from "@/lib/deling/ak-treningsobservasjon";
+import { hentAkDeltePlanforslag, UTEN_AK_DELTE_PLANFORSLAG } from "@/lib/deling/ak-delte-planforslag";
 import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
@@ -37,7 +37,7 @@ export function planActionKoWhere(viewer: {
   const userFilter: Prisma.UserWhereInput =
     viewer.role === "ADMIN" ? { OR: [spillerScope, { role: "ADMIN" }] } : spillerScope;
   return {
-    ...UTEN_AK_TRENINGSOBSERVASJON,
+    ...UTEN_AK_DELTE_PLANFORSLAG,
     status: "PENDING",
     actionType: { not: "WORKBENCH_GATHERING_INVITE" },
     OR: [{ coachId: viewer.id }, { coachId: null }],
@@ -66,7 +66,7 @@ export async function koTelling(
         },
       })
       .catch(() => 0),
-    observasjoner ?? hentAkTreningsobservasjoner({ id: coachUserId, role: viewerRole }, { maksRader: 0 }),
+    observasjoner ?? hentAkDeltePlanforslag({ id: coachUserId, role: viewerRole }, { maksRader: 0 }),
   ]);
   const planActions = eldrePlanActions + treningsobservasjoner.pendingCount;
   return {

@@ -240,6 +240,85 @@ test("Ukeforslag: atomisk plan, V2 og beslutningsspor", async t => {
       await assert.rejects(behandle(viewer,action.id,'ACCEPTED'),/ugyldig-ukeovelse/);assert.deepEqual(await counts(),empty);
     });
 
+
+    const { hentAkUkeforslag: les } = await import('../../src/lib/deling/ak-ukeforslag-lesing');
+    await t.test('reading returns only the authorized display payload and consistent totals',async()=>{
+      await reset();const action=await opprett();const r=await les(viewer);
+      assert.equal(r.pendingCount,1);assert.deepEqual(r.planActions.map(a=>a.id),[action.id]);
+      const json=JSON.stringify(r);for(const key of ['fingeravtrykk','databevis','tekstVersjon','exerciseRevisjon','deling']) assert.equal(json.includes(key),false);
+      const count=await les(viewer,{maksRader:0});assert.equal(count.pendingCount,1);assert.deepEqual(count.planActions,[]);
+      assert.ok(count.eldstePending);assert.deepEqual(await counts(),empty);
+    });
+    await t.test('old formats, wrong routing, malformed bodies and foreign plans never count',async()=>{
+      await reset();const action=await opprett();
+      const variants=[{suggestion:{}},{coachId:'coach-b'},{agentName:'other'},
+        {suggestion:{...JSON.parse(JSON.stringify(action.suggestion)),extra:'malformed'}},
+        {suggestion:{...JSON.parse(JSON.stringify(action.suggestion)),databevis:{versjon:1,uke:'2026-10-26',planId:'other',fingeravtrykk:'a'.repeat(64)}}}];
+      for(const change of variants){await db.planAction.update({where:{id:action.id},data:change});assert.equal((await les(viewer)).pendingCount,0);
+        await db.planAction.update({where:{id:action.id},data:{coachId:viewer.id,agentName:'weekly-plan-proposals',suggestion:action.suggestion!}});}
+      await sql.query(`UPDATE training_plans SET "createdById"='coach-b' WHERE id='plan'`);
+      assert.equal((await les(viewer)).pendingCount,0);
+      await sql.query(`UPDATE training_plans SET "createdById"='coach-a' WHERE id='plan'`);
+    });
+    await t.test('no global ADMIN view or stale role; responsible ADMIN follows the same grant',async()=>{
+      await reset();await opprett();
+      for(const wrong of [{id:'coach-b',role:'COACH'},{id:'admin',role:'ADMIN'},{id:'assistant',role:'COACH'},{id:'p',role:'PLAYER'}]) assert.equal((await les(wrong)).pendingCount,0);
+      await sql.query(`UPDATE users SET role='ADMIN' WHERE id='coach-a'`);
+      await reset();await opprett();assert.equal((await les({...viewer,role:'ADMIN'})).pendingCount,1);
+      await sql.query(`UPDATE users SET role='PLAYER' WHERE id='coach-a'`);assert.equal((await les({...viewer,role:'ADMIN'})).pendingCount,0);
+      await sql.query(`UPDATE users SET role='COACH' WHERE id='coach-a'`);
+    });
+    await t.test('retraction and a subsequent new yes cannot revive an old queue item',async()=>{
+      await reset();await opprett();await valg(false);assert.equal((await les(viewer)).pendingCount,0);
+      await valg(true);assert.equal((await les(viewer)).pendingCount,0);
+      const fresh=await opprett();assert.deepEqual((await les(viewer)).planActions.map(a=>a.id),[fresh.id]);
+      await sql.query(`UPDATE group_members SET "endedAt"=now() WHERE id='pa'`);assert.equal((await les(viewer)).pendingCount,0);
+      await sql.query(`UPDATE group_members SET "endedAt"=NULL WHERE id='pa'`);assert.equal((await les(viewer)).pendingCount,0);
+    });
+    await t.test('accepted history remains visible after its own training write but not after revoked sharing',async()=>{
+      await reset();const action=await opprett();const since=new Date(Date.now()-60000);
+      await behandle(viewer,action.id,'ACCEPTED');
+      const r=await les(viewer,{status:['ACCEPTED'],godkjentAvViewerSiden:since});
+      assert.equal(r.pendingCount,0);assert.equal(r.acceptedCount,1);assert.equal(r.accepted7d,1);assert.equal(r.godkjentAvViewer,1);assert.equal(r.planActions.length,1);
+      assert.equal((await les(viewer,{status:'PENDING'})).planActions.length,0);
+      assert.equal((await les(viewer,{status:['ACCEPTED'],endretSiden:new Date(Date.now()+60000)})).planActions.length,0);
+      await valg(false);assert.equal((await les(viewer)).acceptedCount,0);await valg(true);
+    });
+    await t.test('paging counts all valid rows and selects oldest/newest after validation',async()=>{
+      await reset();const basis=await opprett();await db.planAction.delete({where:{id:basis.id}});
+      const rows=Array.from({length:205},(_,i)=>({id:`page-${String(i).padStart(3,'0')}`,userId:'p',coachId:'coach-a',planId:'plan',agentName:'weekly-plan-proposals',actionType:'WEEKLY_PROPOSAL',status:'PENDING',
+        createdAt:new Date(Date.now()-(205-i)*60000),suggestion:i<102?{...JSON.parse(JSON.stringify(basis.suggestion)),extra:'malformed'}:basis.suggestion!}));
+      await db.planAction.createMany({data:rows});
+      const r=await les(viewer,{maksRader:2,rekkefolge:'eldst'});assert.equal(r.pendingCount,103);assert.deepEqual(r.planActions.map(a=>a.id),['page-102','page-103']);
+      assert.equal(r.eldstePending?.createdAt.getTime(),rows[102].createdAt.getTime());
+      assert.deepEqual((await les(viewer,{maksRader:2})).planActions.map(a=>a.id),['page-204','page-203']);
+    });
+    await t.test('retraction committed while reader waits for group lock is visible after waiting',async()=>{
+      await reset();await opprett();await sql.query('BEGIN');
+      await sql.query(`SELECT pg_advisory_xact_lock(hashtext('ak-gruppeanalyse'),hashtext('a'))`);
+      const pending=les(viewer);let blocked=false;
+      try {
+        for(let i=0;i<100;i++){const lock=await admin.query(`SELECT 1 FROM pg_stat_activity WHERE application_name=$1 AND wait_event_type='Lock' AND query LIKE '%pg_advisory_xact_lock%'`,[schema]);
+          if(lock.rowCount){blocked=true;break;}await new Promise(r=>setTimeout(r,10));}
+        assert.equal(blocked,true);await sql.query(`UPDATE delings_samtykker SET gitt=false WHERE "userId"='p' AND "mottakerGruppeId"='a'`);
+      } finally {await sql.query('COMMIT');}
+      assert.equal((await pending).pendingCount,0);await valg(true);
+    });
+    await t.test('combined reader merges authorized families without counting legacy weekly proposals',async()=>{
+      await reset();const action=await opprett();
+      await db.planAction.create({data:{userId:'p',agentName:'weekly-plan-proposals',actionType:'WEEKLY_PROPOSAL',status:'PENDING',suggestion:{forklaring:'Gammelt syntetisk forslag'}}});
+      const { hentAkDeltePlanforslag }=await import('../../src/lib/deling/ak-delte-planforslag');
+      const r=await hentAkDeltePlanforslag(viewer);assert.equal(r.pendingCount,1);assert.deepEqual(r.planActions.map(a=>a.id),[action.id]);
+      const older=new Date(Date.now()-60000);
+      const observation=await db.planAction.create({data:{userId:'p',coachId:viewer.id,agentName:'training-gap',actionType:'COACH_REVIEW',status:'PENDING',createdAt:older,
+        suggestion:{forklaring:'Syntetisk observasjon',deling:{gruppeId:'a',scope:'AK_GOLF_COACHINGPROFIL',tekstVersjon:AK_PROFIL_VERSJON}}}});
+      const mixed=await hentAkDeltePlanforslag(viewer,{maksRader:1,rekkefolge:'eldst'});assert.equal(mixed.pendingCount,2);
+      assert.deepEqual(mixed.planActions.map(a=>a.id),[observation.id]);assert.equal(mixed.eldstePending?.createdAt.getTime(),older.getTime());
+      assert.deepEqual((await hentAkDeltePlanforslag(viewer,{maksRader:1})).planActions.map(a=>a.id),[action.id]);
+      assert.equal((await hentAkDeltePlanforslag(viewer,{maksRader:0})).pendingCount,2);
+      await valg(false);assert.equal((await hentAkDeltePlanforslag(viewer)).pendingCount,0);await valg(true);
+    });
+
   } finally {
     await db.$disconnect(); await sql.end(); await admin.query(`DROP SCHEMA "${schema}" CASCADE`); await admin.end();
   }

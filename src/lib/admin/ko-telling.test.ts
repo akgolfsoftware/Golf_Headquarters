@@ -45,6 +45,6 @@ test("egen delingskontroll telles i tillegg, uten å åpne den gamle køen", asy
   assert.equal(resultat.planActions, 6);
   assert.equal(resultat.totalt, 10);
   assert.deepEqual((lastPlanActionWhere as { NOT: unknown }).NOT, {
-    OR: [{ agentName: "training-gap" }, { actionType: { in: ["COACH_REVIEW", "TRAINING_GAP"] } }],
+    OR: [{ agentName: { in: ["training-gap", "weekly-plan-proposals"] } }, { actionType: { in: ["COACH_REVIEW", "TRAINING_GAP", "WEEKLY_PROPOSAL"] } }],
   });
 });

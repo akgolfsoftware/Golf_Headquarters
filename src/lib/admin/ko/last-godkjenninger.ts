@@ -10,7 +10,7 @@
  * e-postutkast bor i innboks-epost-flaten med egen godkjenning der.
  */
 
-import { hentAkTreningsobservasjoner, UTEN_AK_TRENINGSOBSERVASJON } from "@/lib/deling/ak-treningsobservasjon";
+import { hentAkDeltePlanforslag, UTEN_AK_DELTE_PLANFORSLAG } from "@/lib/deling/ak-delte-planforslag";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { handlingstypeLabel } from "@/lib/labels/handlingstyper";
 import { prisma } from "@/lib/prisma";
@@ -70,7 +70,7 @@ export async function lastGodkjenninger(
   const spillerScope = coachScopedPlayerWhere(user);
   const syvDagerSiden = syvDagerSidenGrense();
 
-  const observasjoner = await hentAkTreningsobservasjoner(user, { maksRader, status: "PENDING" });
+  const observasjoner = await hentAkDeltePlanforslag(user, { maksRader, status: "PENDING" });
   const [
     eldreActions,
     caddieDrafts,
@@ -124,10 +124,10 @@ export async function lastGodkjenninger(
     }),
     // Køen i tall (høyrekolonne) — «Godkjent 7 dg»/«N avvist», ærlig telt per kilde.
     prisma.planAction.count({
-      where: { ...UTEN_AK_TRENINGSOBSERVASJON, status: "ACCEPTED", actionType: { not: "WORKBENCH_GATHERING_INVITE" }, decidedAt: { gte: syvDagerSiden }, OR: [{ coachId: user.id }, { coachId: null }], user: spillerScope },
+      where: { ...UTEN_AK_DELTE_PLANFORSLAG, status: "ACCEPTED", actionType: { not: "WORKBENCH_GATHERING_INVITE" }, decidedAt: { gte: syvDagerSiden }, OR: [{ coachId: user.id }, { coachId: null }], user: spillerScope },
     }),
     prisma.planAction.count({
-      where: { ...UTEN_AK_TRENINGSOBSERVASJON, status: "REJECTED", actionType: { not: "WORKBENCH_GATHERING_INVITE" }, decidedAt: { gte: syvDagerSiden }, OR: [{ coachId: user.id }, { coachId: null }], user: spillerScope },
+      where: { ...UTEN_AK_DELTE_PLANFORSLAG, status: "REJECTED", actionType: { not: "WORKBENCH_GATHERING_INVITE" }, decidedAt: { gte: syvDagerSiden }, OR: [{ coachId: user.id }, { coachId: null }], user: spillerScope },
     }),
     prisma.caddieDraft.count({ where: caddieDraftAvgjortWhere(user.id, "APPROVED", syvDagerSiden) }),
     prisma.caddieDraft.count({ where: caddieDraftAvgjortWhere(user.id, "REJECTED", syvDagerSiden) }),
@@ -271,7 +271,7 @@ export async function lastGodkjenninger(
   // Løst: nylig godkjente sjekkpunkter (ETTER → FØR-tråd).
   const lostRader = await prisma.planAction.findMany({
     where: {
-      ...UTEN_AK_TRENINGSOBSERVASJON,
+      ...UTEN_AK_DELTE_PLANFORSLAG,
       status: "ACCEPTED",
       sjekkpunkt: { not: null },
       user: spillerScope,

@@ -12,7 +12,7 @@
  * fersk profildeling til ansvarlig trener i den konkrete AK-gruppen.
  */
 
-import { hentAkTreningsobservasjoner, UTEN_AK_TRENINGSOBSERVASJON, begrensForslagsliste } from "@/lib/deling/ak-treningsobservasjon";
+import { hentAkDeltePlanforslag, UTEN_AK_DELTE_PLANFORSLAG, begrensForslagsliste } from "@/lib/deling/ak-delte-planforslag";
 import { prisma } from "@/lib/prisma";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { handlingstypeLabel } from "@/lib/labels/handlingstyper";
@@ -62,7 +62,7 @@ export async function loadWorkbenchOppgaver(coach: {
 
   const [eldreActions, requests, observasjoner] = await Promise.all([
     prisma.planAction.findMany({
-      where: { ...UTEN_AK_TRENINGSOBSERVASJON, status: "PENDING", OR: [{ coachId: coach.id }, { coachId: null }], user: spillerScope },
+      where: { ...UTEN_AK_DELTE_PLANFORSLAG, status: "PENDING", OR: [{ coachId: coach.id }, { coachId: null }], user: spillerScope },
       orderBy: [{ createdAt: "asc" }, { id: "asc" }],
       select: {
         id: true,
@@ -86,7 +86,7 @@ export async function loadWorkbenchOppgaver(coach: {
       },
       take: 50,
     }),
-    hentAkTreningsobservasjoner(coach, { status: "PENDING", maksRader: 50, rekkefolge: "eldst" }),
+    hentAkDeltePlanforslag(coach, { status: "PENDING", maksRader: 50, rekkefolge: "eldst" }),
   ]);
   const actions = begrensForslagsliste([...eldreActions, ...observasjoner.planActions], 50, true);
 

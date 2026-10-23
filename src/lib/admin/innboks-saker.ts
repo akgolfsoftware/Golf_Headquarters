@@ -21,7 +21,7 @@
  * null og vises som «ikke oppgitt» — de fabrikeres aldri.
  */
 
-import { hentAkTreningsobservasjoner, UTEN_AK_TRENINGSOBSERVASJON, begrensForslagsliste } from "@/lib/deling/ak-treningsobservasjon";
+import { hentAkDeltePlanforslag, UTEN_AK_DELTE_PLANFORSLAG, begrensForslagsliste } from "@/lib/deling/ak-delte-planforslag";
 import { prisma } from "@/lib/prisma";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { handlingstypeLabel } from "@/lib/labels/handlingstyper";
@@ -183,7 +183,7 @@ export async function loadInnboksSaker(user: {
       prisma.planAction.findMany({
         where: {
           status: "PENDING",
-          ...UTEN_AK_TRENINGSOBSERVASJON,
+          ...UTEN_AK_DELTE_PLANFORSLAG,
           actionType: { not: "WORKBENCH_GATHERING_INVITE" },
           OR: [{ coachId: user.id }, { coachId: null }],
           user: spillerScope,
@@ -237,7 +237,7 @@ export async function loadInnboksSaker(user: {
       prisma.planAction.findMany({
         where: {
           status: { in: ["ACCEPTED", "REJECTED"] },
-          ...UTEN_AK_TRENINGSOBSERVASJON,
+          ...UTEN_AK_DELTE_PLANFORSLAG,
           actionType: { not: "WORKBENCH_GATHERING_INVITE" },
           user: spillerScope,
           updatedAt: { gte: lostGrense },
@@ -253,8 +253,8 @@ export async function loadInnboksSaker(user: {
           user: { select: { name: true } },
         },
       }),
-      hentAkTreningsobservasjoner(user, { status: "PENDING", maksRader: 40 }),
-      hentAkTreningsobservasjoner(user, { status: ["ACCEPTED", "REJECTED"], maksRader: 12, endretSiden: lostGrense, rekkefolge: "endret" }),
+      hentAkDeltePlanforslag(user, { status: "PENDING", maksRader: 40 }),
+      hentAkDeltePlanforslag(user, { status: ["ACCEPTED", "REJECTED"], maksRader: 12, endretSiden: lostGrense, rekkefolge: "endret" }),
     ]);
   const actions = begrensForslagsliste([...eldreActions, ...observasjoner.planActions.map(a => ({ ...a, plan: null }))], 40);
   const losteActions = [...eldreLosteActions, ...losteObservasjoner.planActions]
@@ -345,7 +345,7 @@ export async function loadInnboksSaker(user: {
       grunnlag,
       href: `/admin/godkjenninger#${a.id}`,
       hrefTekst: "Åpne i godkjenninger",
-      primaer: { label: a.actionType === "COACH_REVIEW" ? "Godkjenn" : "Godkjenn og send", slag: "godkjenn" },
+      primaer: { label: ["COACH_REVIEW", "WEEKLY_PROPOSAL"].includes(a.actionType) ? "Godkjenn" : "Godkjenn og send", slag: "godkjenn" },
       sekundaer: { label: "Avvis", slag: "avvis", krevGrunn: true },
     });
   }
@@ -556,7 +556,7 @@ export async function loadInnboksSaker(user: {
       kilde: "planAction",
       type: "forslag",
       tittel: handlingstypeLabel(a.actionType),
-      sub: a.sjekkpunkt?.trim() || (godkjent ? (a.actionType === "COACH_REVIEW" ? "Vurdering godkjent. Ingen trening endret." : "Godkjent og sendt.") : "Avvist. Ingenting ble sendt."),
+      sub: a.sjekkpunkt?.trim() || (godkjent ? (a.actionType === "COACH_REVIEW" ? "Vurdering godkjent. Ingen trening endret." : a.actionType === "WEEKLY_PROPOSAL" ? "Økter lagt til i treningsplanen." : "Godkjent og sendt.") : "Avvist. Ingenting ble sendt."),
       hvem: a.user.name ?? "Spiller",
       frist: narTekst(a.updatedAt, now),
       snart: false,

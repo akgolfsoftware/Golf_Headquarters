@@ -18,7 +18,7 @@ import { can, Capability } from "@/lib/auth/cbac";
 import type { UserRole } from "@/generated/prisma/client";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { z } from "zod";
-import { hentAkTreningsobservasjoner, UTEN_AK_TRENINGSOBSERVASJON, begrensForslagsliste } from "@/lib/deling/ak-treningsobservasjon";
+import { hentAkDeltePlanforslag, UTEN_AK_DELTE_PLANFORSLAG, begrensForslagsliste } from "@/lib/deling/ak-delte-planforslag";
 import { prisma } from "@/lib/prisma";
 import type {
   CockpitData,
@@ -224,7 +224,7 @@ export async function loadDailyBrief(coach: {
     }),
     prisma.planAction.findMany({
       where: {
-        ...UTEN_AK_TRENINGSOBSERVASJON,
+        ...UTEN_AK_DELTE_PLANFORSLAG,
         status: "PENDING",
         OR: [{ coachId: coach.id }, { coachId: null }],
         user: coachScopedPlayerWhere(coach),
@@ -277,7 +277,7 @@ export async function loadDailyBrief(coach: {
     // Én groupBy erstatter to counts: total PENDING + hvor mange som er ESCALATION.
     prisma.planAction.groupBy({
       by: ["actionType"],
-      where: { ...UTEN_AK_TRENINGSOBSERVASJON, status: "PENDING", OR: [{ coachId: coach.id }, { coachId: null }], user: coachScopedPlayerWhere(coach) },
+      where: { ...UTEN_AK_DELTE_PLANFORSLAG, status: "PENDING", OR: [{ coachId: coach.id }, { coachId: null }], user: coachScopedPlayerWhere(coach) },
       _count: { _all: true },
     }),
     // Én spørring erstatter to counts: aktive PRO-abo totalt + nye siste 30 d
@@ -309,7 +309,7 @@ export async function loadDailyBrief(coach: {
       orderBy: { createdAt: "desc" },
       select: { output: true },
     }),
-    hentAkTreningsobservasjoner(coach, { status: "PENDING", maksRader: 8 }),
+    hentAkDeltePlanforslag(coach, { status: "PENDING", maksRader: 8 }),
   ]);
   const pendingActions = begrensForslagsliste([...eldrePendingActions, ...observasjoner.planActions], 8);
 
