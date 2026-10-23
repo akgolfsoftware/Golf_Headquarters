@@ -117,10 +117,10 @@ export function tnHovedmeny({ aktiv, groupId, kanAdministrere, visDataGolf }: Me
         lenke("WAGR", "/team-norway/referanse", "referanse", aktiv),
         lenke("Sammenlign", "/team-norway/referanse/sammenlign", "referanse-sammenlign", aktiv),
         lenke("Søk", "/team-norway/referanse/sok", "referanse-sok", aktiv),
-        // Norsk golf og HCP Norge viser «—» og lenker til teamnorwayref til tallene er i basen
+        // Norsk golf viser «—» og lenker til teamnorwayref til tallene er i basen
         // (beslutninger.md §TEAM NORWAY ER BARE FOR TRENERE, punkt 4).
         lenke("Norsk golf", "/team-norway/referanse/norsk-golf", "referanse-norsk-golf", aktiv),
-        lenke("HCP Norge", "/team-norway/referanse/hcp", "referanse-hcp", aktiv),
+        // HCP Norge er utsatt (Anders 23.10.2026): siden finnes, men står ikke i menyen.
         lenke("Tester", "/team-norway/referanse/tester", "referansenivaer", aktiv),
       ],
     },
