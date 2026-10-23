@@ -2,10 +2,13 @@
 // Tar et godkjent tool-forslag og utfører faktisk handling — eller logger
 // intent som Notification for MVP når faktisk integrasjon ikke er på plass.
 //
-// Designet som ren server-side helper. Auth gjøres i route-laget,
-// ikke her. Alle feil kastes som vanlige Error med norsk melding.
+// Server-helper: innlogging og konkret godkjenning kontrolleres i route-laget.
+// Profilhandlinger kontrollerer i tillegg fersk aktør, rolle og deling her.
+// Alle feil kastes som vanlige Error med norsk melding.
 
 import { z } from "zod";
+import type { Prisma } from "@/generated/prisma/client";
+import { medAkProfilHandling } from "@/lib/deling/ak-profil-handling";
 import { sjekkKollisjon, erKollisjonsfeil, kollisjonsmelding } from "@/lib/booking/kollisjonsvern";
 import { prisma } from "@/lib/prisma";
 import { assertCoachTilgangTilSpiller } from "@/lib/auth/coached";
@@ -82,16 +85,34 @@ export async function executeApprovedTool(
   toolInput: Record<string, unknown>,
   adminUserId: string,
 ): Promise<ExecutorResult> {
-  // Et lagret forslag gir ikke evig innsyn: medlemskap/coachrelasjon kan
-  // være avsluttet etter at modellen foreslo handlingen.
-  const playerId = toolInput.playerId ?? toolInput.spillerId;
-  if (typeof playerId === "string") {
-    await assertCoachTilgangTilSpiller({ id: adminUserId, role: "ADMIN" }, playerId);
+  if (["draftPlayerMessage", "draftPlayerNote", "draftPlanAdjustment", "reengageInactivePlayer"].includes(toolName)) {
+    const playerId = toolName === "reengageInactivePlayer" ? toolInput.spillerId : toolInput.playerId;
+    if (typeof adminUserId !== "string" || !adminUserId.trim()) {
+      throw new Error("Du har ikke tilgang til denne spilleren.");
+    }
+    // Dashboardet tillater også COACH. Ikke oppgrader rollen til ADMIN:
+    // bruk faktisk kontorolle og kontroller den igjen etter lås i leseporten.
+    const aktor = await prisma.user.findFirst({ where: { id: adminUserId, deletedAt: null,
+      role: { in: ["ADMIN", "COACH"] } }, select: { id: true, role: true } });
+    if (!aktor) throw new Error("Du har ikke tilgang til denne spilleren.");
+    return medAkProfilHandling(aktor, playerId,
+      tx => executeApprovedToolWithDb(toolName, toolInput, adminUserId, tx));
   }
+  // Booking/faktura har separate eksisterende administrative porter.
+  if (typeof toolInput.playerId === "string") {
+    await assertCoachTilgangTilSpiller({ id: adminUserId, role: "ADMIN" }, toolInput.playerId);
+  }
+  return executeApprovedToolWithDb(toolName, toolInput, adminUserId, prisma);
+}
+
+type ExecutorDb = Pick<Prisma.TransactionClient, "user" | "notification" | "payment" | "serviceType" | "location">;
+async function executeApprovedToolWithDb(
+  toolName: string, toolInput: Record<string, unknown>, adminUserId: string, db: ExecutorDb,
+): Promise<ExecutorResult> {
   switch (toolName) {
     case "draftPlayerMessage": {
       const input = parseOrThrow(messageSchema, toolInput, toolName);
-      const notification = await prisma.notification.create({
+      const notification = await db.notification.create({
         data: {
           userId: input.playerId,
           type: "MESSAGE",
@@ -109,15 +130,15 @@ export async function executeApprovedTool(
     case "draftBookingProposal": {
       const input = parseOrThrow(bookingSchema, toolInput, toolName);
       const [service, location, player] = await Promise.all([
-        prisma.serviceType.findUnique({
+        db.serviceType.findUnique({
           where: { slug: input.serviceTypeSlug },
           select: { id: true, durationMin: true, priceOre: true, name: true, coachUserId: true },
         }),
-        prisma.location.findUnique({
+        db.location.findUnique({
           where: { id: input.locationId },
           select: { id: true, name: true },
         }),
-        prisma.user.findUnique({
+        db.user.findUnique({
           where: { id: input.playerId },
           select: { id: true, name: true },
         }),
@@ -166,7 +187,7 @@ export async function executeApprovedTool(
       }
 
       // Send notifikasjon til spilleren om at en booking er foreslått
-      await prisma.notification.create({
+      await db.notification.create({
         data: {
           userId: input.playerId,
           type: "BOOKING",
@@ -185,7 +206,7 @@ export async function executeApprovedTool(
 
     case "draftInvoiceReminder": {
       const input = parseOrThrow(invoiceReminderSchema, toolInput, toolName);
-      const invoice = await prisma.payment.findUnique({
+      const invoice = await db.payment.findUnique({
         where: { id: input.invoiceId },
         select: {
           id: true,
@@ -226,7 +247,7 @@ export async function executeApprovedTool(
           `Vennligst gjør opp ved første anledning. Ta kontakt om du har spørsmål.\n\n` +
           `Med vennlig hilsen\nAK Golf Academy`;
 
-      const notification = await prisma.notification.create({
+      const notification = await db.notification.create({
         data: {
           userId: invoice.userId,
           type: "INVOICE_REMINDER",
@@ -245,7 +266,7 @@ export async function executeApprovedTool(
 
     case "draftPlayerNote": {
       const input = parseOrThrow(playerNoteSchema, toolInput, toolName);
-      const player = await prisma.user.findUnique({
+      const player = await db.user.findUnique({
         where: { id: input.playerId },
         select: { id: true },
       });
@@ -254,7 +275,7 @@ export async function executeApprovedTool(
       // MVP: Lagre som Notification med type=NOTE — egen Note-modell kommer
       // i senere fase. Body inneholder selve notatet, audit gjøres via
       // adminUserId i CaddieMessage-loggen i route-laget.
-      const notification = await prisma.notification.create({
+      const notification = await db.notification.create({
         data: {
           userId: input.playerId,
           type: "NOTE",
@@ -272,7 +293,7 @@ export async function executeApprovedTool(
 
     case "draftPlanAdjustment": {
       const input = parseOrThrow(planAdjustmentSchema, toolInput, toolName);
-      const player = await prisma.user.findUnique({
+      const player = await db.user.findUnique({
         where: { id: input.playerId },
         select: { id: true },
       });
@@ -280,7 +301,7 @@ export async function executeApprovedTool(
 
       // MVP: Logg intent som Notification — faktisk plan-redigering kommer
       // i AgencyOS-fase. adminUserId persisteres via CaddieMessage-audit.
-      const notification = await prisma.notification.create({
+      const notification = await db.notification.create({
         data: {
           userId: input.playerId,
           type: "PLAN_ADJUSTMENT_PENDING",
@@ -302,7 +323,7 @@ export async function executeApprovedTool(
       const input = parseOrThrow(reengageSchema, toolInput, toolName);
       // Re-validering mot nå-tilstand: spilleren må fortsatt finnes og ikke
       // være slettet.
-      const player = await prisma.user.findUnique({
+      const player = await db.user.findUnique({
         where: { id: input.spillerId },
         select: { id: true, deletedAt: true },
       });
@@ -316,7 +337,7 @@ export async function executeApprovedTool(
       }
 
       // Samme mønster som draftPlayerMessage: in-app-melding, ikke e-post.
-      const notification = await prisma.notification.create({
+      const notification = await db.notification.create({
         data: {
           userId: input.spillerId,
           type: "MESSAGE",

@@ -24,7 +24,7 @@ test("AK-profildeling: faktisk gi, trekk, innsyn og samtidighetsvern", async t =
   try {
     await sql.query(`CREATE TYPE "UserRole" AS ENUM ('PLAYER', 'COACH', 'ADMIN', 'PARENT');
       CREATE TYPE "PlayerProgram" AS ENUM ('AK_ACADEMY', 'WANG_TOPPIDRETT', 'WANG_UNG');
-      CREATE TABLE users (id text PRIMARY KEY, role "UserRole" NOT NULL DEFAULT 'PLAYER', "deletedAt" timestamptz,
+      CREATE TABLE users (id text PRIMARY KEY, name text DEFAULT 'Syntetisk spiller', role "UserRole" NOT NULL DEFAULT 'PLAYER', "deletedAt" timestamptz,
         "dateOfBirth" timestamptz DEFAULT '1984-01-01', "requiresGuardianConsent" boolean NOT NULL DEFAULT false);
       CREATE TABLE groups (id text PRIMARY KEY, name text NOT NULL, "coachId" text, "managedByAkGolf" boolean NOT NULL DEFAULT true,
         "arkivertAt" timestamptz, program "PlayerProgram", slug text);
@@ -35,6 +35,8 @@ test("AK-profildeling: faktisk gi, trekk, innsyn og samtidighetsvern", async t =
         "mottakerGruppeId" text NOT NULL, "mottakerUserId" text, gitt boolean NOT NULL, "tekstVersjon" text NOT NULL,
         "gittAvUserId" text NOT NULL, "gittAvRolle" text NOT NULL, "createdAt" timestamptz NOT NULL DEFAULT now());
       CREATE TABLE audit_logs (id text PRIMARY KEY, "actorId" text, action text NOT NULL, target text, metadata jsonb, "createdAt" timestamptz NOT NULL DEFAULT now());
+      CREATE TABLE notifications (id text PRIMARY KEY, "userId" text REFERENCES users(id), type text NOT NULL, title text NOT NULL,
+        body text, link text, "readAt" timestamptz, "groupKey" text, count integer NOT NULL DEFAULT 1, "createdAt" timestamptz DEFAULT now());
       INSERT INTO users (id, role) VALUES ('coach-a','COACH'), ('coach-b','COACH'), ('assistant','COACH'), ('admin','ADMIN'), ('parent','PARENT');
       INSERT INTO users (id) VALUES ('p'), ('child'), ('private');
       UPDATE users SET "dateOfBirth" = '2013-01-01' WHERE id = 'child';
@@ -49,6 +51,9 @@ test("AK-profildeling: faktisk gi, trekk, innsyn og samtidighetsvern", async t =
       INSERT INTO parent_relations VALUES ('parent-child','parent','child',true);`);
     const { medAkProfiler } = await import('../../src/lib/deling/ak-profil-lesing');
     const { settAkProfilValg, hentAkProfilValg } = await import('../../src/lib/deling/ak-profil-valg');
+    const { medAkProfilHandling } = await import('../../src/lib/deling/ak-profil-handling');
+    const { buildWriteTools } = await import('../../src/lib/caddie/tools/write');
+    const { executeApprovedTool } = await import('../../src/lib/caddie/approval-executor');
     const a = { id: 'coach-a', role: 'COACH' }, b = { id: 'coach-b', role: 'COACH' };
     const adminViewer = { id: 'admin', role: 'ADMIN' };
     const selv = { id: 'p', role: 'PLAYER' }, barn = { id: 'child', role: 'PLAYER' }, parent = { id: 'parent', role: 'PARENT' };
@@ -165,6 +170,71 @@ test("AK-profildeling: faktisk gi, trekk, innsyn og samtidighetsvern", async t =
       await assert.rejects(medAkProfiler(a, async () => { throw Error('syntetisk lesefeil'); }), /syntetisk lesefeil/);
       assert.deepEqual(await settAkProfilValg(selv, 'p', svar(true)), { ok: true });
       assert.deepEqual(await les(a), ['p']);
+      await settAkProfilValg(selv, 'p', svar(false));
+    });
+    await t.test('handlingsrett må gjelde samme delende gruppe, assistentens leserett er utilstrekkelig', async () => {
+      await settAkProfilValg(selv, 'p', svar(true));
+      const assistant = { id: 'assistant', role: 'COACH' };
+      assert.deepEqual(await les(assistant), ['p']);
+      await assert.rejects(medAkProfilHandling(assistant, 'p', async () => true), /ikke tilgang/);
+      await sql.query(`INSERT INTO group_members (id,"groupId","userId",role) VALUES ('assistant-b','b','assistant','COACH')`);
+      await assert.rejects(medAkProfilHandling(assistant, 'p', async () => true), /ikke tilgang/);
+      await settAkProfilValg(selv, 'p', svar(true, 'b'));
+      assert.equal(await medAkProfilHandling(assistant, 'p', async () => true), true);
+      await settAkProfilValg(selv, 'p', svar(false, 'b'));
+    });
+    await t.test('ekte forslagsverktøy gir bare utkast; trekk stopper både nytt forslag og gammelt godkjent utkast', async () => {
+      const tools = buildWriteTools(adminViewer);
+      const input = { playerId: 'p', subject: 'Syntetisk golf', body: 'Syntetisk trening' };
+      const options = { toolCallId: 'syntetisk-kall', messages: [] };
+      const draft = await tools.draftPlayerMessage.execute!(input, options);
+      assert.equal(JSON.stringify(draft).includes('"needsApproval":true'), true);
+      assert.equal(await db.notification.count(), 0);
+      await settAkProfilValg(selv, 'p', svar(false));
+      const denied = await tools.draftPlayerMessage.execute!(input, options);
+      assert.equal(JSON.stringify(denied).includes('"ok":false'), true);
+      for (const [tool, args] of [
+        ['draftPlayerMessage', input], ['draftPlayerNote', { playerId: 'p', note: 'Syntetisk notat' }],
+        ['draftPlanAdjustment', { playerId: 'p', change: 'Syntetisk justering' }],
+        ['reengageInactivePlayer', { spillerId: 'p', foreslattMelding: 'Syntetisk oppfølging' }],
+      ] as const) await assert.rejects(executeApprovedTool(tool, args, 'admin'), /ikke tilgang/);
+      assert.equal(await db.notification.count(), 0);
+      await settAkProfilValg(selv, 'p', svar(true));
+      const result = await executeApprovedTool('draftPlayerMessage', input, 'admin');
+      assert.equal(result.status, 'queued');
+      assert.equal(await db.notification.count(), 1);
+      await sql.query(`UPDATE users SET role='PLAYER' WHERE id='admin'`);
+      await assert.rejects(executeApprovedTool('draftPlayerMessage', input, 'admin'), /ikke tilgang/);
+      await sql.query(`UPDATE users SET role='ADMIN' WHERE id='admin'`);
+      assert.equal(await db.notification.count(), 1);
+      // Samme executor brukes av COACH-dashboardet og ADMIN-chatten.
+      await executeApprovedTool('draftPlayerMessage', input, 'coach-a');
+      assert.equal(await db.notification.count(), 2);
+      for (const actorId of ['coach-b', 'assistant', 'parent', 'p']) {
+        await assert.rejects(executeApprovedTool('draftPlayerMessage', input, actorId), /ikke tilgang/);
+      }
+      assert.equal(await db.notification.count(), 2);
+    });
+    await t.test('trekk venter på pågående DB-handling; neste handling avvises og feilet handling rulles tilbake', async () => {
+      const klar = Promise.withResolvers<void>(), slipp = Promise.withResolvers<void>();
+      const handling = medAkProfilHandling(adminViewer, 'p', async tx => {
+        await tx.notification.create({ data: { userId: 'p', type: 'NOTE', title: 'Syntetisk' } });
+        klar.resolve(); await slipp.promise; return true;
+      });
+      void handling.catch(klar.reject); await klar.promise;
+      let ferdig = false;
+      const trekk = settAkProfilValg(selv, 'p', svar(false)).then(r => { ferdig = true; return r; });
+      try { await new Promise(r => setTimeout(r, 120)); assert.equal(ferdig, false); }
+      finally { slipp.resolve(); }
+      assert.equal(await handling, true); assert.deepEqual(await trekk, { ok: true });
+      await assert.rejects(medAkProfilHandling(adminViewer, 'p', async () => true), /ikke tilgang/);
+      await settAkProfilValg(selv, 'p', svar(true));
+      const count = await db.notification.count();
+      await assert.rejects(medAkProfilHandling(adminViewer, 'p', async tx => {
+        await tx.notification.create({ data: { userId: 'p', type: 'NOTE', title: 'Syntetisk feil' } });
+        throw Error('syntetisk rollback');
+      }), /syntetisk rollback/);
+      assert.equal(await db.notification.count(), count);
       await settAkProfilValg(selv, 'p', svar(false));
     });
     await t.test('nye ja oppgraderer aldri gammel analysehistorikk og audit inneholder ikke profilinnhold', async () => {

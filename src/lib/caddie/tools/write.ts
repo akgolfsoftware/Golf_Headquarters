@@ -2,7 +2,10 @@
 // IKKE faktisk skriving til DB her. Alle tools returnerer `needsApproval: true`
 // med et preview-objekt som frontend kan vise og deretter ev. utføre.
 
-import { tool } from "ai";
+import { tool, type Tool } from "ai";
+import type { Prisma } from "@/generated/prisma/client";
+import { medAkProfilHandling } from "@/lib/deling/ak-profil-handling";
+import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import {
@@ -14,7 +17,9 @@ import {
   type DraftPlayerNoteProposal,
 } from "../types";
 
-export const WRITE_TOOLS = {
+type DraftDb = Pick<Prisma.TransactionClient, "user" | "payment" | "serviceType" | "location">;
+function draftDefinitions(db: DraftDb) {
+  return {
   draftPlayerMessage: tool({
     description:
       "Foreslå en e-postmelding til en spiller. Sender IKKE — krever Anders' godkjenning før utsendelse.",
@@ -29,9 +34,9 @@ export const WRITE_TOOLS = {
       body,
     }): Promise<DraftMessageProposal | ReturnType<typeof toolError>> => {
       try {
-        const player = await prisma.user.findUnique({
+        const player = await db.user.findUnique({
           where: { id: playerId },
-          select: { id: true, name: true, email: true },
+          select: { id: true, name: true },
         });
         if (!player) {
           return toolError(
@@ -45,7 +50,7 @@ export const WRITE_TOOLS = {
           playerId,
           subject,
           body,
-          previewText: `Send "${subject}" til ${player.name} <${player.email}>?`,
+          previewText: `Send "${subject}" til ${player.name}?`,
         };
       } catch {
         return toolError(
@@ -75,15 +80,15 @@ export const WRITE_TOOLS = {
     }): Promise<DraftBookingProposal | ReturnType<typeof toolError>> => {
       try {
         const [player, service, location] = await Promise.all([
-          prisma.user.findUnique({
+          db.user.findUnique({
             where: { id: playerId },
             select: { id: true, name: true },
           }),
-          prisma.serviceType.findUnique({
+          db.serviceType.findUnique({
             where: { slug: serviceTypeSlug },
             select: { id: true, name: true, durationMin: true, priceOre: true },
           }),
-          prisma.location.findUnique({
+          db.location.findUnique({
             where: { id: locationId },
             select: { id: true, name: true },
           }),
@@ -142,7 +147,7 @@ export const WRITE_TOOLS = {
       invoiceId,
     }): Promise<DraftInvoiceReminderProposal | ReturnType<typeof toolError>> => {
       try {
-        const invoice = await prisma.payment.findUnique({
+        const invoice = await db.payment.findUnique({
           where: { id: invoiceId },
           select: {
             id: true,
@@ -201,7 +206,7 @@ export const WRITE_TOOLS = {
       note,
     }): Promise<DraftPlayerNoteProposal | ReturnType<typeof toolError>> => {
       try {
-        const player = await prisma.user.findUnique({
+        const player = await db.user.findUnique({
           where: { id: playerId },
           select: { id: true, name: true },
         });
@@ -242,7 +247,7 @@ export const WRITE_TOOLS = {
       reason,
     }): Promise<DraftPlanAdjustmentProposal | ReturnType<typeof toolError>> => {
       try {
-        const player = await prisma.user.findUnique({
+        const player = await db.user.findUnique({
           where: { id: playerId },
           select: { id: true, name: true },
         });
@@ -270,3 +275,45 @@ export const WRITE_TOOLS = {
     },
   }),
 } as const;
+
+}
+
+/** Alle eksekverbare eksportveier har samme port; rå definisjoner er private. */
+type SecuredDraftTools = Record<keyof ReturnType<typeof draftDefinitions>, Tool>;
+export function buildWriteTools(viewer: { id: string; role: string }): SecuredDraftTools {
+  const definitions = draftDefinitions(prisma);
+  return Object.fromEntries(Object.entries(definitions).map(([name, definition]) => [name, {
+    ...definition,
+    execute: async (input: Record<string, unknown>, options: Parameters<NonNullable<typeof definition.execute>>[1]) => {
+      const denied = () => toolError("Ressursen er ikke tilgjengelig", "Fant ingen tilgjengelig ressurs.");
+      if (!viewer.id || !["ADMIN", "COACH"].includes(viewer.role)) return denied();
+      if (!(definition.inputSchema instanceof z.ZodType)) return denied();
+      const parsed = definition.inputSchema.safeParse(input);
+      if (!parsed.success) return denied();
+      const args = z.record(z.string(), z.unknown()).safeParse(parsed.data);
+      if (!args.success) return denied();
+      const playerId = args.data.playerId;
+      const execute = (db: DraftDb) => {
+        const selected = draftDefinitions(db)[name as keyof typeof definitions];
+        const run = selected.execute as (args: Record<string, unknown>, opts: typeof options) => Promise<unknown>;
+        return run(args.data, options);
+      };
+      try {
+        if (["draftPlayerMessage", "draftPlayerNote", "draftPlanAdjustment"].includes(name)) {
+          return await medAkProfilHandling(viewer, playerId, tx => execute(tx));
+        }
+        // Booking/faktura beholder egne eksisterende administrative regler.
+        // Coachingprofildeling brukes ikke som hjemmel for disse formålene.
+        if (name === "draftBookingProposal") {
+          if (typeof playerId !== "string" || !await harCoachTilgangTilSpiller(viewer, playerId)) return denied();
+          return await execute(prisma);
+        }
+        if (name === "draftInvoiceReminder" && viewer.role === "ADMIN") return await execute(prisma);
+        return denied();
+      } catch { return denied(); }
+    },
+  }])) as SecuredDraftTools; // Nøklene kommer kun fra den lukkede definisjonen.
+}
+
+/** Kun form/navnelister uten bruker; execute avviser alltid. */
+export const WRITE_TOOLS = buildWriteTools({ id: "", role: "ADMIN" });

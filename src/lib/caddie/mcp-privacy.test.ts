@@ -10,6 +10,7 @@ let requestedId: unknown;
 let keyRole = "ADMIN";
 mock.module("@/lib/prisma", { namedExports: { prisma: {
   user: {
+    findUnique: async ({ where }: { where: { id: string } }) => where.id === player.id ? player : null,
     findMany: async () => { if (fail) throw new Error("Kari kari@example.test"); return [player]; },
     findFirst: async ({ where }: { where: { AND?: Array<{ id?: string }> } }) => {
       requestedId = where.AND?.find((part) => typeof part.id === "string")?.id;
@@ -95,4 +96,17 @@ test("lagret MCP-referanse gir ikke tilgang etter at profildeling er trukket", a
   assert.equal(requestedId, null);
   assert.equal(profilKall, 2);
   assert(!JSON.stringify(result).includes("Kari"));
+});
+
+test("MCP lager anonymisert coachingforslag, men samme referanse stoppes etter trekk", async () => {
+  const search = await call("proposal-admin", "searchPlayers", { query: "Kari", limit: 10 });
+  const alias = data(search).data.players[0].id;
+  const input = { playerId: alias, note: "Syntetisk golfnotat" };
+  const draft = await call("proposal-admin", "draftPlayerNote", input);
+  assert.match(JSON.stringify(data(draft)), /"needsApproval":true/);
+  for (const pii of ["Kari", "Testperson", "@", "synthetic-player"]) assert(!JSON.stringify(draft).includes(pii));
+  deler = false;
+  const denied = await call("proposal-admin", "draftPlayerNote", input);
+  assert.equal(data(denied).ok, false);
+  assert.equal(profilKall, 3);
 });
