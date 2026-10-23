@@ -2,11 +2,12 @@ import Link from "next/link";
 
 import { TN } from "@/lib/v2/team-norway";
 
-export type TnReferanseFane = "wagr" | "sammenlign" | "sok" | "norsk-golf" | "hcp" | "tester";
+export type TnReferanseFane = "wagr" | "sammenlign" | "sok" | "planlegger" | "norsk-golf" | "hcp" | "tester";
 
 /**
  * Fanene i Referanse (wireframes docs/design-system/utkast-tn/trenerflate, «Referanse»).
- * Planlegger er ikke med: den blir på teamnorwayref (beslutninger.md §REFERANSESPILLERE NORDEN, punkt 5).
+ * Planlegger er turneringsplanen for WAGR-spillere uten HQ-konto (beslutninger.md §TEAM NORWAY-TRENERFLATEN BYGGES I HQ).
+ * HCP Norge er utsatt og står ikke her (Anders 23.10.2026).
  * Tester er tidligere Referansenivåer (/team-norway/referansenivaer sender hit).
  */
 export function TnReferanseFaner({ aktiv }: { aktiv: TnReferanseFane }) {
@@ -14,6 +15,7 @@ export function TnReferanseFaner({ aktiv }: { aktiv: TnReferanseFane }) {
     { id: "wagr", label: "WAGR", href: "/team-norway/referanse" },
     { id: "sammenlign", label: "Sammenlign", href: "/team-norway/referanse/sammenlign" },
     { id: "sok", label: "Søk", href: "/team-norway/referanse/sok" },
+    { id: "planlegger", label: "Planlegger", href: "/team-norway/referanse/planlegger" },
     { id: "norsk-golf", label: "Norsk golf", href: "/team-norway/referanse/norsk-golf" },
     { id: "tester", label: "Tester", href: "/team-norway/referanse/tester" },
   ];
