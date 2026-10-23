@@ -51,7 +51,7 @@ export function TnInnlogging({ retursti }: { retursti: string }) {
       <section className={styles.topp}>
         <div className={styles.kant} aria-hidden="true" />
         <div className={styles.foto} aria-hidden="true">
-          <Image src="/team-norway/bilder/spiller-ved-vannet.jpg" alt="" fill priority sizes="100vw" />
+          <Image src="/team-norway/bilder/ngf-baller.jpg" alt="" fill priority sizes="100vw" />
         </div>
         <div className={styles.toppInnhold}>
           <TnLogo hoyde={48} prioritet paaMork />

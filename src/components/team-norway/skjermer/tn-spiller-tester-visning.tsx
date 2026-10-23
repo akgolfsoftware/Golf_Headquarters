@@ -92,7 +92,7 @@ export function TnSpillerTesterVisning({ brukerNavn, spillerId, tilgang, tnRader
   return (
     <TnShell aktiv="spillere" brukerNavn={brukerNavn} rolle={tnRolleNavn(tilgang.kontekst.rolle)} groupId={tilgang.kontekst.gruppe.id} visTrenerflater={!tilgang.kontekst.erSpiller} kanAdministrere={tilgang.kontekst.kanAdministrere} tilbake={{ href: "/team-norway/spillere", label: "Spillere" }}>
       <TnSkraTopp
-        bilde="spiller-ved-vannet"
+        bilde="ngf-baller"
         etikett={`Tester for ${tilgang.spillerNavn}`}
         overlinje={`IUP · ${tilgang.spillerNavn} · Tester`}
         tittel="Tester"

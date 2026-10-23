@@ -64,7 +64,7 @@ function Velger({ side, v }: { side: DgSpillerSide; v: DgSpillerVisning }) {
 function Hode({ side, v, tittel, ingress, faner }: { side: DgSpillerSide; v: DgSpillerVisning; tittel: string; ingress: string; faner: ReactNode }) {
   return (
     <>
-      <TnSkraTopp bilde="spiller-ved-vannet" etikett={tittel} overlinje={`Analyse · Data Golf · bare ADMIN${v.spiller && v.proff ? ` · ${v.spiller.navn} mot ${v.proff.navn}` : ""}`} tittel={tittel} ingress={ingress} />
+      <TnSkraTopp bilde="ngf-baller" etikett={tittel} overlinje={`Analyse · Data Golf · bare ADMIN${v.spiller && v.proff ? ` · ${v.spiller.navn} mot ${v.proff.navn}` : ""}`} tittel={tittel} ingress={ingress} />
       <TnSkraKort>
         <TnFlate style={{ display: "grid", gap: 12 }}>
           {faner}

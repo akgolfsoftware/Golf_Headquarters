@@ -47,7 +47,7 @@ export function TnRanglisteVisning({
   return (
     <TnShell aktiv="rangliste" brukerNavn={brukerNavn ?? "Ukjent"} rolle={tnRolleNavn(data.kontekst.rolle)} groupId={data.kontekst.gruppe.id} visTrenerflater={!data.kontekst.erSpiller} kanAdministrere={data.kontekst.kanAdministrere} visDataGolf={!data.kontekst.erSpiller && visDataGolf}>
       <TnSkraTopp
-        bilde="spiller-ved-vannet"
+        bilde="ngf-baller"
         etikett="Rangliste"
         overlinje={`Resultatgrunnlag · sesongen ${aar}`}
         tittel="Rangliste"

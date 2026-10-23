@@ -87,7 +87,7 @@ export function TnUttakVisning({
   return (
     <TnShell aktiv="uttak" brukerNavn={brukerNavn ?? "Ukjent"} rolle={tnRolleNavn(data.kontekst.rolle)} groupId={data.kontekst.gruppe.id} visTrenerflater={!data.kontekst.erSpiller} kanAdministrere={data.kontekst.kanAdministrere} visDataGolf={!data.kontekst.erSpiller && visDataGolf}>
       <TnSkraTopp
-        bilde="spiller-ved-vannet"
+        bilde="ngf-baller"
         etikett="Uttak og kriterier"
         overlinje={helt ? `Uttak · ${helt.arrangement}` : `Uttakskriterier · sesong ${idag.aar}`}
         tittel="Uttak og kriterier"

@@ -92,7 +92,7 @@ export function TnSamlingerVisning({
   return (
     <TnShell aktiv="samlinger" brukerNavn={brukerNavn ?? "Ukjent"} rolle={tnRolleNavn(data.kontekst.rolle)} groupId={data.kontekst.gruppe.id} visTrenerflater={!data.kontekst.erSpiller} kanAdministrere={data.kontekst.kanAdministrere} visDataGolf={!data.kontekst.erSpiller && visDataGolf}>
       <TnSkraTopp
-        bilde="spiller-ved-vannet"
+        bilde="ngf-baller"
         etikett="Samlinger og terminliste"
         overlinje={`Sesong ${aar} · ${data.kontekst.gruppe.name}`}
         tittel="Samlinger"

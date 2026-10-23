@@ -249,7 +249,7 @@ export function TnTrackManVisning({ d }: { d: TnTrackManVisningData }) {
   const t = d.tilgang;
   return (
     <TnShell aktiv="spillere" brukerNavn={d.brukerNavn} rolle={tnRolleNavn(t.kontekst.rolle)} groupId={t.kontekst.gruppe.id} visTrenerflater={!t.kontekst.erSpiller} kanAdministrere={t.kontekst.kanAdministrere} tilbake={{ href: `/team-norway/spiller/${d.spillerId}/tester`, label: "Tester" }}>
-      <TnSkraTopp bilde="spiller-ved-vannet" lav etikett={`TrackMan for ${t.spillerNavn}`} overlinje={`IUP · ${t.spillerNavn} · Tester`} tittel="TrackMan" venstre={<TnHeltTekst>Snitt, median, ytterpunkter og spredning per kølle, og hvordan tallene utvikler seg.</TnHeltTekst>} />
+      <TnSkraTopp bilde="ngf-baller" lav etikett={`TrackMan for ${t.spillerNavn}`} overlinje={`IUP · ${t.spillerNavn} · Tester`} tittel="TrackMan" venstre={<TnHeltTekst>Snitt, median, ytterpunkter og spredning per kølle, og hvordan tallene utvikler seg.</TnHeltTekst>} />
       <TnSkraKort lav>
         <TnFlate style={{ display: "grid", gap: 8 }}>
           <TnSpillerFaner spillerId={d.spillerId} spillerNavn={t.spillerNavn} aktiv="tester" kanAdministrere={!t.kontekst.erSpiller} />

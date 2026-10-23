@@ -56,7 +56,7 @@ export function TnTestoktStartVisning({ brukerNavn, spillerId, tilgang, utvalg, 
   const fornavn = tilgang.spillerNavn.split(" ")[0] ?? tilgang.spillerNavn;
   return (
     <Skall brukerNavn={brukerNavn} tilgang={tilgang} spillerId={spillerId}>
-      <TnSkraTopp bilde="spiller-ved-vannet" lav etikett={`Start test for ${tilgang.spillerNavn}`} overlinje={`IUP · ${tilgang.spillerNavn} · Tester`} tittel="Start test"
+      <TnSkraTopp bilde="ngf-baller" lav etikett={`Start test for ${tilgang.spillerNavn}`} overlinje={`IUP · ${tilgang.spillerNavn} · Tester`} tittel="Start test"
         venstre={<TnHeltTekst>Velg testene og kjør dem i ett løp, ett slag om gangen. Testdag trengs bare når hele gruppa tester.</TnHeltTekst>} />
       <TnSkraKort lav>
         <TnFlate>
@@ -97,7 +97,7 @@ export function TnTestoktFerdigVisning({ brukerNavn, spillerId, tilgang, tester 
   const fullfort = tester.filter((t) => t.status === "COMPLETED").length;
   return (
     <Skall brukerNavn={brukerNavn} tilgang={tilgang} spillerId={spillerId}>
-      <TnSkraTopp bilde="spiller-ved-vannet" lav etikett="Testøkt ferdig" overlinje={`Testøkt · ${tilgang.spillerNavn}`} tittel={`${fullfort} av ${tester.length} tester fullført`} />
+      <TnSkraTopp bilde="ngf-baller" lav etikett="Testøkt ferdig" overlinje={`Testøkt · ${tilgang.spillerNavn}`} tittel={`${fullfort} av ${tester.length} tester fullført`} />
       <TnSkraKort lav>
         <TnFlate>
           <TnFlatehode tittel="Resultater" />

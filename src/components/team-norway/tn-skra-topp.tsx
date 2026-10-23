@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import s from "./tn-skra-topp.module.css";
 
 /** Bildene fra Team Norway Golf-merket (public/team-norway/bilder). */
-export type TnToppBilde = "spiller-ved-vannet" | "putting-green" | "tee-hand";
+export type TnToppBilde = "ngf-baller" | "putting-green" | "tee-hand";
 
 /**
  * Skrå-toppen for underskjermene: bilde i navy toner, kuttet nedover mot høyre med rød kant.

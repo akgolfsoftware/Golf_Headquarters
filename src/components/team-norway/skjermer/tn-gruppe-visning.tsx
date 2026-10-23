@@ -123,7 +123,7 @@ export function TnDokumenterVisning({ brukerNavn, brukerId, rolleEtikett, groupI
   return (
     <TnShell aktiv="dokumenter" brukerNavn={brukerNavn} rolle={rolleEtikett} groupId={groupId} visTrenerflater={harTrenertilgang} kanAdministrere={harTrenertilgang}>
       <TnSkraTopp
-        bilde="spiller-ved-vannet"
+        bilde="ngf-baller"
         etikett="Dokumenter"
         overlinje={`${gruppeNavn} · Gruppe`}
         tittel="Dokumenter"

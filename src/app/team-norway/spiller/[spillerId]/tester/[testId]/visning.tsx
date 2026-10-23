@@ -37,7 +37,7 @@ function retningIngress(lowerIsBetter: boolean | null, emne: string): string {
 function Ramme({ spillerId, tilgang, brukerNavn, overlinje, tittel, ingress, venstre, hoyre, children }: { spillerId: string; tilgang: TnSpillerTilgang; brukerNavn: string; overlinje: string; tittel: string; ingress: string; venstre?: ReactNode; hoyre?: ReactNode; children: ReactNode }) {
   return (
     <TnShell aktiv="spillere" brukerNavn={brukerNavn} rolle={tnRolleNavn(tilgang.kontekst.rolle)} groupId={tilgang.kontekst.gruppe.id} visTrenerflater={!tilgang.kontekst.erSpiller} kanAdministrere={tilgang.kontekst.kanAdministrere} tilbake={{ href: `/team-norway/spiller/${spillerId}/tester`, label: "Tester" }}>
-      <TnSkraTopp bilde="spiller-ved-vannet" etikett={tittel} overlinje={overlinje} tittel={tittel} ingress={ingress} venstre={venstre} hoyre={hoyre} />
+      <TnSkraTopp bilde="ngf-baller" etikett={tittel} overlinje={overlinje} tittel={tittel} ingress={ingress} venstre={venstre} hoyre={hoyre} />
       <TnSkraKort>
         <TnFlate>
           <TnSpillerFaner spillerId={spillerId} spillerNavn={tilgang.spillerNavn} aktiv="tester" kanAdministrere={!tilgang.kontekst.erSpiller} />
