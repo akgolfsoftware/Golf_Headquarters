@@ -153,3 +153,9 @@ Kilde: `src/components/marketing/v2/MarkedPersonvernV2.tsx` (live på `/personve
 ## Øktmål og treukerssyklus 2. oktober 2026
 
 Ny øvelsesmålsetning ligger i eksisterende rå drill-JSON og følger eierens økteksport. Anonymisering fjerner hele `mal`-objektet og nuller øktformål/sted/mål. Treukerssyklusmetadata følger eksisterende ukeplaneksport og fjernes ved anonymisering. Tall og validerte koder beholdes. De avgrensede eier-/idempotensprøvene er grønne; dette lukker ikke de øvrige fil-/ballogg-/foresattehullene ovenfor.
+
+## Oppfølging 23. oktober 2026 — ukeforslag
+
+Kontoeksporten inkluderer egne ukeforslag og egne registrerte trenerhandlinger. Egen spillerhistorikk kan eksporteres etter delingstrekk; treneren får bare egne registrerte handlingsfelt, ikke andres trening. Interne bevis/radversjoner utelates. Gamle eller feilbundne forslag markeres for manuell gjennomgang; dette er ikke komplett automatisk utlevering av ukjente formater. Nye spørsmål får registrert avsender; gamle forfatterløse kommentarer tilskrives ingen i etterkant.
+
+Konto-anonymisering dekker nå hele ukeforslagsfamilien ved spiller-/trenerbinding, også feilformede agent/type-kombinasjoner. Egne beslutningskommentarer og aktørreferanse fjernes fra andre spilleres forslag uten å fjerne deres treningsinnhold. Operasjonene deler eksisterende profiltransaksjon; feil stopper ekstern sletting/ferdigmarkering. Tørrkjøring og gjenforsøk er bevart. Kun lokal syntetisk prøving; ingen ekte kontoer eller eksterne tjenester er endret. Andre agentmodeller/logger, varsler, foresattflyt og juridisk oppbevaring er fortsatt separate kontrollpunkter.

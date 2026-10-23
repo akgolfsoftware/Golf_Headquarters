@@ -9,6 +9,7 @@ let externalErrors: string[] = [];
 let markedComplete = false;
 let kontoFinnes = true;
 let workbenchFeiler = false;
+let ukebeslutningFeiler = false;
 let eksterneSlettinger = 0;
 let ukeplaner: { id: string; playerId: string; customNotes: string | null; planningDetails: unknown; repetitionTargets: unknown; plannedHoursFys: number; repTargetDry: number }[] = [];
 const ukeplanLesinger: { playerId: string }[] = [];
@@ -72,8 +73,16 @@ mock.module("@/lib/prisma", { namedExports: { prisma: {
     writes.push("trenerdeling"); return { count: 1 };
   } },
   planAction: { deleteMany: async ({ where }: { where: { OR: Array<{ userId?: string; coachId?: string }>; actionType: { in: string[] } } }) => {
+    if ('AND' in where) {
+      assert.deepEqual(where, { AND: [{ OR: [{ actionType: "WEEKLY_PROPOSAL" }, { agentName: "weekly-plan-proposals" }] },
+        { OR: [{ userId: "synthetic" }, { coachId: "synthetic" }] }] });
+      writes.push("ukeforslag"); return { count: 1 };
+    }
     assert.deepEqual(where, { actionType: { in: ["WORKBENCH_COACH_PROPOSAL", "WORKBENCH_GATHERING_INVITE"] }, OR: [{ userId: "synthetic" }, { coachId: "synthetic" }] });
     writes.push("trenerforslag"); return { count: 1 };
+  }, updateMany: async ({where,data}: {where: unknown;data: unknown}) => {
+    assert.deepEqual(where,{decidedById:"synthetic",OR:[{actionType:"WEEKLY_PROPOSAL"},{agentName:"weekly-plan-proposals"}]});
+    assert.deepEqual(data,{decidedById:null,decisionNote:null,rejectReason:null});writes.push("ukebeslutning");if(ukebeslutningFeiler)throw Error("syntetisk ukebeslutningfeil");return {count:1};
   } },
   $transaction: async (calls: Promise<unknown>[]) => Promise.all(calls),
 } } });
@@ -96,7 +105,7 @@ mock.module("./slett-eksterne-data", { namedExports: {
 } });
 test.beforeEach(() => {
   writes = []; externalErrors = []; markedComplete = false; kontoFinnes = true;
-  workbenchFeiler = false; eksterneSlettinger = 0;
+  workbenchFeiler = false; ukebeslutningFeiler=false; eksterneSlettinger = 0;
   ukeplaner = []; ukeplanLesinger.length = 0; ukeplanSkrivinger.length = 0;
 });
 
@@ -123,6 +132,8 @@ test("ekstern feil markerer ikke kontoen ferdig før vellykket gjenforsøk", asy
   assert.ok(writes.includes("iup"));
   assert.ok(writes.includes("trenerdeling"));
   assert.ok(writes.includes("trenerforslag"));
+  assert.ok(writes.includes("ukeforslag"));
+  assert.ok(writes.includes("ukebeslutning"));
   assert.ok(writes.includes("workbench"));
 });
 
@@ -176,4 +187,11 @@ test("tørrkjøring og manglende konto verken leser eller vasker ukeplaner", asy
   const result = await anonymiserBruker("synthetic");
   assert.equal(result.brukerFantes, false); assert.equal(result.vasket.ukeplaner, 0);
   assert.equal(ukeplanLesinger.length, 0); assert.equal(ukeplanSkrivinger.length, 0);
+});
+
+test("feil ved ukeforslagsvask stopper ekstern sletting og ferdigmarkering",async()=>{
+  ukebeslutningFeiler=true;const {anonymiserBruker}=await import("./anonymiser-bruker");
+  await assert.rejects(anonymiserBruker("synthetic"),/ukebeslutningfeil/);
+  assert.equal(markedComplete,false);assert.equal(eksterneSlettinger,0);
+  ukebeslutningFeiler=false;await anonymiserBruker("synthetic");assert.equal(markedComplete,true);
 });

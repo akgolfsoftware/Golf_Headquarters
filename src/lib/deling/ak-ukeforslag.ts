@@ -46,7 +46,7 @@ export async function behandleAkUkeforslag(viewer: { id: string; role: string },
     if (action.status !== "PENDING") return { status: "UNCHANGED" as const, applied: false };
     const forslag = parsed.data;
     if (valg === "QUESTION") {
-      await tx.planAction.update({ where: { id: key }, data: { decisionNote: note } });
+      await tx.planAction.update({ where: { id: key }, data: { decisionNote: note, decidedById: viewer.id } });
       await tx.notification.create({ data: { userId: r.userId, type: "approval_question",
         title: "Coach trenger mer info", body: note!, link: "/portal/agent-pipeline" } });
       return { status: "UNCHANGED" as const, applied: false };

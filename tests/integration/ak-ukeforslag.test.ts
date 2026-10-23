@@ -418,6 +418,77 @@ test("Ukeforslag: atomisk plan, V2 og beslutningsspor", async t => {
       assert.equal(await db.planAction.count(),0);assert.deepEqual(await counts(),empty);
     });
 
+
+    const { eksporterEgneAkUkeforslag: eksporter, akUkeforslagForAnonymisering: slettWhere,
+      akUkebeslutningerForAnonymisering: beslutningWhere } = await import('../../src/lib/deling/ak-ukeforslag-personvern');
+    const anonymiserForslag=(konto:string)=>db.$transaction([
+      db.planAction.deleteMany({where:slettWhere(konto)}),
+      db.planAction.updateMany({where:beslutningWhere(konto),data:{decidedById:null,decisionNote:null,rejectReason:null}}),
+    ]);
+    await t.test('own export includes proposal and decision without internal evidence after sharing withdrawal',async()=>{
+      await reset();const action=await opprett();await behandle(viewer,action.id,'REJECTED','Syntetisk beslutning');
+      await valg(false);const data=await eksporter('p');assert.equal(data.mottatt.length,1);
+      assert.equal(data.mottatt[0].innholdStatus,'INKLUDERT');assert.equal(data.mottatt[0].forslag?.uke,'2026-10-26');
+      assert.equal(data.mottatt[0].avvisningsgrunn,'Syntetisk beslutning');
+      assert.doesNotMatch(JSON.stringify(data),/fingeravtrykk|exerciseRevisjon|tekstVersjon|coach-a|gruppeId|databevis/);
+      assert.equal((await eksporter('private')).mottatt.length,0);await valg(true);
+    });
+    await t.test('coach own decisions never read or export the player proposal',async()=>{
+      await reset();const action=await opprett();await behandle(viewer,action.id,'REJECTED','Min syntetiske kommentar');
+      const data=await eksporter('coach-a');assert.equal(data.mottatt.length,0);assert.equal(data.egneHandlinger.length,1);
+      assert.equal(data.egneHandlinger[0].avvisningsgrunn,'Min syntetiske kommentar');
+      assert.doesNotMatch(JSON.stringify(data),/Syntetisk putting|sessions|drill|spillerId|coachId|planId/);
+      assert.equal((await eksporter('coach-b')).egneHandlinger.length,0);
+    });
+    await t.test('explicit question attributes its own comment without deciding or exposing player content',async()=>{
+      await reset();const action=await opprett();await behandle(viewer,action.id,'QUESTION','Syntetisk spørsmål');
+      const row=await db.planAction.findUniqueOrThrow({where:{id:action.id}});
+      assert.equal(row.status,'PENDING');assert.equal(row.decidedAt,null);assert.equal(row.decidedById,'coach-a');
+      const data=await eksporter('coach-a');assert.equal(data.egneHandlinger[0].beslutningskommentar,'Syntetisk spørsmål');
+      assert.doesNotMatch(JSON.stringify(data.egneHandlinger),/sessions|Syntetisk putting|spillerId/);
+    });
+    await t.test('malformed and misbound own rows are visible as review items without raw historical payload',async()=>{
+      await reset();const action=await opprett();
+      await db.planAction.create({data:{userId:'p',agentName:'weekly-plan-proposals',actionType:'OTHER',suggestion:{raw:'SKJULT_SYNTETISK_PAYLOAD'}}});
+      const source=JSON.parse(JSON.stringify(action.suggestion));source.deling.spillerId='private';
+      await db.planAction.update({where:{id:action.id},data:{suggestion:source}});
+      const data=await eksporter('p');assert.equal(data.mottatt.length,2);
+      assert.ok(data.mottatt.every(r=>r.innholdStatus==='KREVER_MANUELL_GJENNOMGANG'&&r.forslag===null));
+      assert.doesNotMatch(JSON.stringify(data),/SKJULT_SYNTETISK_PAYLOAD|Syntetisk putting|private/);
+    });
+    await t.test('account cleanup deletes own weekly family including legacy rows, retaining unrelated accounts and agents',async()=>{
+      await reset();await opprett();
+      await db.planAction.createMany({data:[
+        {id:'old-week',userId:'p',agentName:'weekly-plan-proposals',actionType:'OTHER',suggestion:{raw:'synthetic'}},
+        {id:'different-agent',userId:'p',agentName:'training-gap',actionType:'COACH_REVIEW',suggestion:{}},
+        {id:'other-account',userId:'private',agentName:'weekly-plan-proposals',actionType:'WEEKLY_PROPOSAL',suggestion:{}},
+      ]});
+      await anonymiserForslag('p');assert.deepEqual((await db.planAction.findMany({orderBy:{id:'asc'},select:{id:true}})).map(r=>r.id),['different-agent','other-account']);
+      await anonymiserForslag('p');assert.equal(await db.planAction.count(),2);
+    });
+    await t.test('coach cleanup removes assigned proposals and only its own decision fields on other proposals',async()=>{
+      await reset();await opprett();
+      await db.planAction.createMany({data:[
+        {id:'actor-only',userId:'private',coachId:'coach-b',decidedById:'coach-a',decisionNote:'Egen kommentar',rejectReason:'Egen grunn',agentName:'weekly-plan-proposals',actionType:'WEEKLY_PROPOSAL',suggestion:{keep:'other-player-content'}},
+        {id:'unrelated',userId:'private',coachId:'coach-b',decidedById:'coach-b',decisionNote:'Annen kommentar',agentName:'weekly-plan-proposals',actionType:'WEEKLY_PROPOSAL',suggestion:{}},
+      ]});
+      await anonymiserForslag('coach-a');assert.equal(await db.planAction.count(),2);
+      const actor=await db.planAction.findUniqueOrThrow({where:{id:'actor-only'}});
+      assert.equal(actor.decidedById,null);assert.equal(actor.decisionNote,null);assert.equal(actor.rejectReason,null);
+      assert.deepEqual(actor.suggestion,{keep:'other-player-content'});
+      assert.equal((await db.planAction.findUniqueOrThrow({where:{id:'unrelated'}})).decisionNote,'Annen kommentar');
+    });
+    await t.test('weekly cleanup is atomic with actor-field cleanup and can be retried',async()=>{
+      await reset();await opprett();
+      await db.planAction.create({data:{id:'actor-fail',userId:'private',coachId:'coach-b',decidedById:'coach-a',decisionNote:'Behold ved feil',agentName:'weekly-plan-proposals',actionType:'WEEKLY_PROPOSAL',suggestion:{}}});
+      await sql.query(`CREATE FUNCTION fail_rights() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'synthetic cleanup failure'; END $$;
+        CREATE TRIGGER fail_rights BEFORE UPDATE ON plan_actions FOR EACH ROW EXECUTE FUNCTION fail_rights()`);
+      try{await assert.rejects(anonymiserForslag('coach-a'));assert.equal(await db.planAction.count(),2);}
+      finally{await sql.query('DROP TRIGGER fail_rights ON plan_actions; DROP FUNCTION fail_rights()');}
+      await anonymiserForslag('coach-a');assert.equal(await db.planAction.count(),1);
+      assert.equal((await db.planAction.findUniqueOrThrow({where:{id:'actor-fail'}})).decisionNote,null);
+    });
+
   } finally {
     await db.$disconnect(); await sql.end(); await admin.query(`DROP SCHEMA "${schema}" CASCADE`); await admin.end();
   }

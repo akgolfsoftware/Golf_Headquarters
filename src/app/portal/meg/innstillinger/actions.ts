@@ -1,5 +1,6 @@
 "use server";
 
+import { eksporterEgneAkUkeforslag } from "@/lib/deling/ak-ukeforslag-personvern";
 import { eksporterWorkbenchData } from "@/lib/workbench/workbench-personvern";
 
 import { z } from "zod";
@@ -166,6 +167,7 @@ export async function exportUserData(): Promise<{
       trenerforslagSkrevet,
       samlingsinvitasjoner,
       samlingsinvitasjonerSkrevet,
+      ukeforslag,
     ] = await Promise.all([
       prisma.goal.findMany({ where: { userId: user.id } }),
       prisma.round.findMany({
@@ -226,6 +228,7 @@ export async function exportUserData(): Promise<{
         orderBy: { createdAt: "asc" },
         select: { id: true, suggestion: true, status: true, createdAt: true },
       }),
+      eksporterEgneAkUkeforslag(user.id),
     ]);
 
     // En trener får sine egne begrunnelser, ikke øktdata fra andre spillerprofiler.
@@ -308,6 +311,7 @@ export async function exportUserData(): Promise<{
       trenerforslagSkrevet: trenerforslagSkrevetEksport,
       samlingsinvitasjoner: samlingsinvitasjonerEksport,
       samlingsinvitasjonerSkrevet: samlingsinvitasjonerSkrevetEksport,
+      ukeforslag,
       _storageFiler: storageFiler,
       _note:
         "Dette er en eksport av datakildene som er listet i denne filen fra AK Golf HQ per dato. " +

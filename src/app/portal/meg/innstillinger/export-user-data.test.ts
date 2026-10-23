@@ -9,6 +9,7 @@ let venterPaSamtykke = false;
 let feilkilde: string | null = null;
 let epostFeiler = false;
 let profilMangler = false;
+let ukeforslagFeiler = false;
 let ukeplaner: { id: string; playerId: string; isoYear: number; weekNumber: number; planningDetails: unknown }[] = [];
 let lesinger: Array<{ kilde: string; where: unknown }> = [];
 let eposter: unknown[] = [];
@@ -25,7 +26,7 @@ const kilder = [
   "planAction",
 ];
 const prismaMock = Object.fromEntries(kilder.map((kilde) => [kilde, {
-  findMany: async ({ where }: { where: unknown }) => {
+  findMany: async ({ where, select }: { where: unknown; select?: Record<string, boolean> }) => {
     lesinger.push({ kilde, where });
     if (feilkilde === kilde) throw new Error("Syntetisk lesefeil");
     if (kilde === "weekPlan") return ukeplaner.filter(p => p.playerId === (where as { playerId: string }).playerId);
@@ -33,6 +34,12 @@ const prismaMock = Object.fromEntries(kilder.map((kilde) => [kilde, {
     if (kilde === "document") return [{ url: "private/test-document", title: "Testdokument" }];
     if (kilde === "sessionRecording") return [{ id: "opptak-test", audioUrl: "private/test-audio" }];
     if (kilde === "playerSwingVideo") return [{ id: "video-test", storagePath: "private/test-video" }];
+    if (kilde === "planAction" && "OR" in (where as object)) {
+      if ("decidedById" in (where as object)) {
+        assert.equal(select?.suggestion,undefined);assert.equal(select?.userId,undefined);assert.equal(select?.provenance,undefined);
+      }
+      if (ukeforslagFeiler) throw Error("syntetisk ukeforslagfeil");return [];
+    }
     if (kilde === "planAction" && (where as { actionType?: string }).actionType === "WORKBENCH_GATHERING_INVITE") return [{
       id: "samling-test", suggestion: {
         versjon: 1, samling: { id: "samling-syntetisk", groupId: "gruppe-syntetisk", tittel: "Syntetisk samling", beskrivelse: null, sted: "Testbane",
@@ -93,6 +100,7 @@ test.beforeEach(() => {
   feilkilde = null;
   epostFeiler = false;
   profilMangler = false;
+  ukeforslagFeiler = false;
   ukeplaner = [];
   lesinger = [];
   eposter = [];
@@ -140,8 +148,12 @@ test("vellykket eksport beholder datakilder og filreferanser, avgrenset til innl
   const { exportUserData } = await import("./actions");
   const resultat = await exportUserData();
   assert.equal(resultat.ok, true);
-  assert.equal(lesinger.length, kilder.length + 4);
+  assert.equal(lesinger.length, kilder.length + 6);
   for (const { kilde, where } of lesinger) {
+    if (kilde === "planAction" && "OR" in (where as object)) {
+      const key = "decidedById" in (where as object) ? "decidedById" : "userId";
+      assert.deepEqual(where,{[key]:bruker.id,OR:[{actionType:"WEEKLY_PROPOSAL"},{agentName:"weekly-plan-proposals"}]});continue;
+    }
     if (kilde === "planAction") {
       const query = where as { userId?: string; coachId?: string; actionType: string };
       assert.deepEqual(where, "coachId" in (where as object)
@@ -167,6 +179,7 @@ test("vellykket eksport beholder datakilder og filreferanser, avgrenset til innl
   assert.deepEqual(resultat.data?.trenerforslag, [{ id: "forslag-test", actionType: "WORKBENCH_COACH_PROPOSAL", suggestion: { begrunnelse: "Syntetisk" }, status: "PENDING" }]);
   assert.deepEqual(resultat.data?.trenerforslagSkrevet, [{ id: "skrevet-test", organisasjon: "WANG", handling: "ADD", begrunnelse: "Syntetisk trenerbegrunnelse", status: "PENDING", opprettet: "2026-10-02T10:00:00.000Z" }]);
   assert.deepEqual(resultat.data?.kontoAvtaleAksepter, [{ id: "aksept-test", pakkeVersjon: "syntetisk-1", dokumenter: { vilkar: "Syntetisk tekst" } }]);
+  assert.deepEqual((resultat.data?.ukeforslag as {mottatt:unknown[]}).mottatt,[]);
   assert.equal((resultat.data?.samlingsinvitasjoner as unknown[])?.length, 1);
   assert.equal((resultat.data?.samlingsinvitasjonerSkrevet as unknown[])?.length, 1);
   assert.doesNotMatch(JSON.stringify(resultat.data?.samlingsinvitasjonerSkrevet), /playerId|recipientId|userId/);
@@ -204,4 +217,10 @@ test("eksport inkluderer alle eierens ukeplanår og ny JSON; annen eier utelates
   assert.equal(eposter.length, 1, "bare den eksisterende syntetiske e-postmocken brukes");
   assert.doesNotMatch(JSON.stringify(eposter), /Syntetisk anlegg|Syntetisk fokus|skal ikke eksporteres/);
   assert.doesNotMatch(JSON.stringify(revisjoner), /Syntetisk anlegg|Syntetisk fokus/);
+});
+
+test("feil i ny ukeforslagskilde gir ikke ufullstendig eksport eller kvittering",async()=>{
+  ukeforslagFeiler=true;const {exportUserData}=await import("./actions");
+  const result=await exportUserData();assert.equal(result.ok,false);assert.equal(result.data,undefined);
+  assert.equal(eposter.length,0);assert.equal(revisjoner.length,0);
 });

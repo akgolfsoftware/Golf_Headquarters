@@ -16,6 +16,7 @@
  * veiene aldri kan komme i utakt.
  */
 import "server-only";
+import { akUkeforslagForAnonymisering, akUkebeslutningerForAnonymisering } from "@/lib/deling/ak-ukeforslag-personvern";
 import { anonymiserTnTestdata } from "@/lib/portal-tester/tn-personvern";
 import { prisma } from "@/lib/prisma";
 // Prisma brukes både som type (UserUpdateInput) og verdi (DbNull) — derfor
@@ -109,6 +110,7 @@ export async function anonymiserBruker(
       dryRun: true,
       plan: [
         "ville anonymisere Prisma-bruker + fritekst",
+        "ville fjerne egne/mottatte ukeforslag og egne beslutningskommentarer",
         "ville vaske ukeplanenes notat, oppholdssted og frie fokusfelt",
         "ville vaske Workbench-økter, fysisk trening, turneringer og plankonflikter",
         "ville vaske notater og ukjent JSON i egne Team Norway-testregistreringer",
@@ -248,6 +250,11 @@ export async function anonymiserBruker(
     prisma.planAction.deleteMany({ where: {
       actionType: { in: ["WORKBENCH_COACH_PROPOSAL", "WORKBENCH_GATHERING_INVITE"] }, OR: [{ userId }, { coachId: userId }],
     } }),
+    // Whole weekly family, including historical malformed rows. Keep other
+    // players' unrelated proposals, but remove this account's decision fields.
+    prisma.planAction.deleteMany({ where: akUkeforslagForAnonymisering(userId) }),
+    prisma.planAction.updateMany({ where: akUkebeslutningerForAnonymisering(userId),
+      data: { decidedById: null, decisionNote: null, rejectReason: null } }),
     // Invitasjoner inneholder mottakerens e-post. Fjernes også når trener/foresatt slettes.
     prisma.trenerDelingsInvitasjon.deleteMany({ where: { OR: [
       { userId }, { gittAvUserId: userId }, { acceptedByUserId: userId },
