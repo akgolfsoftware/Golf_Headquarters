@@ -4,6 +4,25 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## TRACKMAN-ØKTER HENTES FRA DELINGSLENKEN, OG GOLFSLAG-ØKTER FÅR MÅL-CARRY TASTET INN (Anders 23.10.2026, bindende)
+
+Anders 23.10, med lenken tm-short.me/A87u7ds: «Hent ut data fra Trackman link på denne måten. Her ønsker jeg komplett data oversikt for økten. Teknisk økt så er det Trackman data som er hovedfokus i den visuelle fremvisningen. Golfslag økt så er det PEI som er hovedfokus.» Og: «Hvis man har en slag økt så taster man inn hvor langt man skal slå carry manuelt i appen også regner du den ut etterpå.» Svarte «ja» på å bygge hentingen inn i appen.
+
+- **Lenke fra TrackMan er en egen kilde i TrackMan-importen**, ved siden av CSV, HTML og foto. Appen henter alle slag og alle tall fra TrackMans åpne rapport på serveren. Bare `tm-short.me` og TrackMans rapportside godtas.
+- **Spillernavn og konto-id fra TrackMan lagres aldri.** Rapporten lagres uten dem.
+- **TrackMan merker kølla feil iblant** (eksempel: 16 slag «4-jern» med 54° loft). Appen varsler, og spilleren sjekker kølla.
+- **Golfslag-økt (SLAG):** spilleren taster inn mål-carry, felles eller per kølle. PEI = avstand fra målet / mål, regnet etter importen. Uten mål vises PEI som «—».
+- **Visningen etter økta:** TEK viser TrackMan først (bladet mot banen, treff på bladet, lavpunkt, ballbanen, alle tall); SLAG viser PEI først (spredning rundt målet, PEI per slag og per kølle, «hvorfor bommen»). Fasit: Claude Design-lerretet, siden «Workbench · TrackMan-økt (ekte data)».
+
+**Overstyrer:** ingenting.
+
+**Arbeidet dette utløser:**
+
+1. **Hentingen og mål-carry per kølle i importen** (`src/lib/trackman/lenke.ts`, `importTrackMan` format `lenke`, `targetsByClub`). Gjort i samme PR, låst med `lenke.test.ts`.
+2. **Mål per slag** (avstandsstige) i steg 3 av importen. Ferdig når et slag kan få eget mål og PEI regnes med det.
+3. **Øktvisningen** for TEK og SLAG etter lerretet, inkludert ballbanen fra rapporten. Ferdig når en importert lenke-økt viser begge i 390 og 1280 px.
+4. **Uavklart:** om spredningsverktøyet på flyfoto (flagg, kanter, sikker linje, spredning; artifact «Spredning på hullet») skal inn i appen, og hvor bildene av hullene kommer fra.
+
 ## WORKBENCH HAR TO VISNINGER: PLANLEGGE OG GJENNOMFØRE, OG TEKNISK PLAN HAR P1.0–P10.0 MED OPPGAVER OG BIOMEKANISK ANALYSE (Anders 23.10.2026, bindende)
 
 Anders 23.10, under skjelettet for Workbench: «Jeg ønsker å kunne ha ulike workbench visninger som valg mulighet. En visning som er optimalisert for planlegging. En visning som er optimalisert for oversikt og gjennomføring.» Og om analysearket «Biomekanisk Analyse – TrackMan 3D / Swing Catalyst»: «Denne skal også ligge under tekniskplan.» Samme dag: Workbench skal vise årsplan, periodisering, månedsplan, ukeplan, øktplaner med øvelser og teknisk plan komplett.

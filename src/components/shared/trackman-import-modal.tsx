@@ -4,8 +4,8 @@
  * TrackmanImportModal — gjenbrukbar 4-stegs modal for TrackMan-import.
  *
  * Intern steg-flyt (ingen sidenavigasjon):
- *   1. Velg kilde (CSV-fil / HTML-rapport / TrackMan-konto / API)
- *   2. Velg fil + dato/miljø + parse preview
+ *   1. Velg kilde (lenke fra TrackMan / CSV-fil / HTML-rapport / foto)
+ *   2. Lim inn lenke eller velg fil + dato/miljø + preview, og mål-carry per kølle for golfslag
  *   3. Velg hvilke slag/grupper å importere
  *   4. Bekreft + lagre
  *
@@ -31,9 +31,11 @@ import {
   ChevronRight,
   FileText,
   FileCode,
+  Link2,
   X,
 } from "lucide-react";
 import {
+  hentTrackManLenkeForhandsvisning,
   importTrackMan,
   listMatchTasksForImport,
   parseTrackManPhotoForPreview,
@@ -52,7 +54,7 @@ import { trackManShotsForPreview } from "@/lib/trackman/preview";
 import { useToast } from "@/components/shared/toast-provider";
 
 type Steg = 1 | 2 | 3 | 4;
-type Kilde = "csv" | "html" | "photo";
+type Kilde = "lenke" | "csv" | "html" | "photo";
 
 type Props = {
   /**
@@ -85,6 +87,13 @@ const KILDER: Array<{
   icon: typeof FileText;
   ready: boolean;
 }> = [
+  {
+    id: "lenke",
+    title: "Lenke fra TrackMan",
+    desc: "Lim inn delingslenken (tm-short.me). Alle slag og alle tall hentes.",
+    icon: Link2,
+    ready: true,
+  },
   {
     id: "csv",
     title: "CSV-fil",
@@ -166,6 +175,12 @@ export function TrackmanImportModal({
   const [filename, setFilename] = useState<string | null>(null);
   const [csvContent, setCsvContent] = useState("");
   const [htmlContent, setHtmlContent] = useState("");
+  // Lenke-kilden: rapporten hentes på serveren; importen henter den på nytt fra lenken.
+  const [lenke, setLenke] = useState("");
+  const [lenkeHentet, setLenkeHentet] = useState("");
+  const [varsler, setVarsler] = useState<string[]>([]);
+  // Mål-carry per kølle (m), tastet inn for golfslag-økt. PEI regnes ut fra dette etter importen.
+  const [malPerKolle, setMalPerKolle] = useState<Record<string, string>>({});
 
   // Steg 3 — råslag beholdes for import; tabellen viser canonical preview.
   const [shots, setShots] = useState<TrackManShot[]>([]);
@@ -193,6 +208,10 @@ export function TrackmanImportModal({
     setFilename(null);
     setCsvContent("");
     setHtmlContent("");
+    setLenke("");
+    setLenkeHentet("");
+    setVarsler([]);
+    setMalPerKolle({});
     setShots([]);
     setValgt(new Set());
     setEnvironment("SIMULATOR_INDOOR");
@@ -207,6 +226,34 @@ export function TrackmanImportModal({
   function lukk() {
     setOpen(false);
     setTimeout(reset, 200);
+  }
+
+  async function hentLenke() {
+    setFeil(null);
+    setShots([]);
+    setValgt(new Set());
+    setVarsler([]);
+    setPhotoBusy(true);
+    try {
+      const result = await hentTrackManLenkeForhandsvisning(lenke);
+      if (!result.ok) {
+        setFeil(result.error);
+        return;
+      }
+      setShots(result.shots);
+      setValgt(new Set(result.shots.map((_, i) => i)));
+      setVarsler(result.varsler);
+      setLenkeHentet(lenke);
+      if (result.startetAt) {
+        setRecordedAt(
+          new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Oslo" }).format(new Date(result.startetAt)),
+        );
+      }
+    } catch {
+      setFeil("Kunne ikke hente fra TrackMan. Prøv igjen om litt.");
+    } finally {
+      setPhotoBusy(false);
+    }
   }
 
   async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
@@ -334,6 +381,14 @@ export function TrackmanImportModal({
         setFeil("Last opp et bilde med lesbare tall først.");
         return;
       }
+      if (kilde === "lenke" && (shots.length === 0 || lenkeHentet !== lenke)) {
+        setFeil("Lim inn lenken og trykk «Hent» først.");
+        return;
+      }
+      if (Object.values(malPerKolle).some((v) => v.trim() && (!(Number(v.replace(",", ".")) > 0) || Number(v.replace(",", ".")) > 1000))) {
+        setFeil("Mål-carry må være mellom 0 og 1000 meter.");
+        return;
+      }
       setSteg(3);
       return;
     }
@@ -365,7 +420,14 @@ export function TrackmanImportModal({
             ? byggTrackManCsvMedValgteSlag(csvContent, valgt)
             : kilde === "html"
               ? htmlContent
-              : "";
+              : kilde === "lenke"
+                ? lenkeHentet
+                : "";
+        const targetsByClub = Object.fromEntries(
+          Object.entries(malPerKolle)
+            .filter(([, v]) => v.trim())
+            .map(([k, v]) => [k, Number(v.replace(",", "."))]),
+        );
         const result = await importTrackMan({
           format: kilde,
           content,
@@ -376,11 +438,12 @@ export function TrackmanImportModal({
           akse,
           targetLineStatus,
           targetDistanceM: targetDistance.trim() ? Number(targetDistance) : null,
+          targetsByClub,
           forceImport,
           preferredTaskId: preferredTaskId || undefined,
-          // CSV filtreres allerede i content; HTML trenger indekser mot full parse
+          // CSV filtreres allerede i content; HTML og lenke trenger indekser mot full henting
           selectedIndices:
-            kilde === "html" ? [...valgt].sort((a, b) => a - b) : undefined,
+            kilde === "html" || kilde === "lenke" ? [...valgt].sort((a, b) => a - b) : undefined,
           ...(onBehalfOfUserId ? { onBehalfOfUserId } : {}),
         });
         if (result.needsConfirm) {
@@ -494,6 +557,13 @@ export function TrackmanImportModal({
               setPreferredTaskId={setPreferredTaskId}
               matchTasks={matchTasks}
               photoBusy={photoBusy}
+              lenke={lenke}
+              setLenke={setLenke}
+              onHentLenke={hentLenke}
+              varsler={varsler}
+              koller={[...new Set(shots.map((x) => x.club?.trim() || "Ukjent"))]}
+              malPerKolle={malPerKolle}
+              setMalPerKolle={setMalPerKolle}
             />
           )}
           {steg === 3 && (
@@ -648,6 +718,13 @@ function Steg2({
   setPreferredTaskId,
   matchTasks,
   photoBusy,
+  lenke,
+  setLenke,
+  onHentLenke,
+  varsler,
+  koller,
+  malPerKolle,
+  setMalPerKolle,
 }: {
   kilde: Kilde | null;
   recordedAt: string;
@@ -667,6 +744,13 @@ function Steg2({
   setPreferredTaskId: (s: string) => void;
   matchTasks: Array<{ id: string; label: string }>;
   photoBusy: boolean;
+  lenke: string;
+  setLenke: (s: string) => void;
+  onHentLenke: () => void;
+  varsler: string[];
+  koller: string[];
+  malPerKolle: Record<string, string>;
+  setMalPerKolle: (m: Record<string, string>) => void;
 }) {
   const accept =
     kilde === "csv"
@@ -677,7 +761,9 @@ function Steg2({
   return (
     <div className="space-y-4">
       <p className="text-sm text-muted-foreground">
-        {kilde === "csv"
+        {kilde === "lenke"
+          ? "Lim inn delingslenken fra TrackMan. Alle slag og alle tall hentes rett fra TrackMan."
+          : kilde === "csv"
           ? "Last opp CSV eksportert fra TrackMan-appen. Vi parser hver rad som ett slag."
           : kilde === "html"
             ? "Last opp HTML-rapporten fra Multi Group Report."
@@ -764,33 +850,104 @@ function Steg2({
         </select>
       </label>
 
-      <label className="block">
-        <span className="mb-1 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          Fil
-        </span>
-        <input
-          type="file"
-          accept={accept}
-          onChange={onFile}
-          required
-          className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm file:mr-4 file:rounded-md file:border-0 file:bg-secondary file:px-4 file:py-1.5 file:text-xs file:font-medium file:text-secondary-foreground"
-        />
-        {filename && (
-          <span className="mt-1 block text-xs text-muted-foreground">
-            Valgt: {filename}
-            {photoBusy ? (
-              <span className="text-foreground"> · Leser og analyserer…</span>
-            ) : (
-              shotsCount > 0 && (
-                <span className="text-foreground">
-                  {" "}
-                  · {shotsCount} slag {kilde === "photo" ? "lest" : "parset"}
-                </span>
-              )
-            )}
+      {kilde === "lenke" ? (
+        <div className="block">
+          <label htmlFor="tm-lenke" className="mb-1 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+            Lenke fra TrackMan
+          </label>
+          <div className="flex gap-2">
+            <input
+              id="tm-lenke"
+              type="url"
+              inputMode="url"
+              autoComplete="off"
+              value={lenke}
+              onChange={(e) => setLenke(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  onHentLenke();
+                }
+              }}
+              placeholder="https://tm-short.me/…"
+              className="min-w-0 flex-1 rounded-md border border-input bg-card px-3 py-2 text-sm text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+            />
+            <button
+              type="button"
+              onClick={onHentLenke}
+              disabled={photoBusy || !lenke.trim()}
+              className="inline-flex min-h-11 shrink-0 items-center rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground transition-transform active:scale-[0.97] disabled:opacity-60"
+            >
+              {photoBusy ? "Henter…" : "Hent"}
+            </button>
+          </div>
+          {shotsCount > 0 && !photoBusy && (
+            <span className="mt-1 block text-xs text-foreground">{shotsCount} slag hentet fra TrackMan</span>
+          )}
+          {varsler.map((v) => (
+            <p key={v} className="mt-2 flex items-start gap-2 rounded-md border border-dashed border-border px-3 py-2 text-xs text-foreground">
+              <AlertTriangle size={14} strokeWidth={1.75} className="mt-0.5 shrink-0" />
+              <span>{v}</span>
+            </p>
+          ))}
+        </div>
+      ) : (
+        <label className="block">
+          <span className="mb-1 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+            Fil
           </span>
-        )}
-      </label>
+          <input
+            type="file"
+            accept={accept}
+            onChange={onFile}
+            required
+            className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm file:mr-4 file:rounded-md file:border-0 file:bg-secondary file:px-4 file:py-1.5 file:text-xs file:font-medium file:text-secondary-foreground"
+          />
+          {filename && (
+            <span className="mt-1 block text-xs text-muted-foreground">
+              Valgt: {filename}
+              {photoBusy ? (
+                <span className="text-foreground"> · Leser og analyserer…</span>
+              ) : (
+                shotsCount > 0 && (
+                  <span className="text-foreground">
+                    {" "}
+                    · {shotsCount} slag {kilde === "photo" ? "lest" : "parset"}
+                  </span>
+                )
+              )}
+            </span>
+          )}
+        </label>
+      )}
+
+      {akse === "SLAG" && koller.length > 0 && (
+        <fieldset className="block">
+          <legend className="mb-1 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+            Hvor langt skulle du slå? (m carry per kølle)
+          </legend>
+          <p className="mb-2 text-xs text-muted-foreground">
+            TrackMan lagrer ikke mål. PEI regnes ut fra målet du taster inn. Tom kølle bruker felles målavstand.
+          </p>
+          <div className="grid gap-2 sm:grid-cols-2">
+            {koller.map((k) => (
+              <label key={k} className="flex min-w-0 items-center gap-2 rounded-md border border-input bg-card px-3 py-1">
+                <span className="min-w-0 flex-1 truncate text-sm font-medium text-foreground">{k}</span>
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  value={malPerKolle[k] ?? ""}
+                  onChange={(e) => setMalPerKolle({ ...malPerKolle, [k]: e.target.value })}
+                  placeholder="—"
+                  aria-label={`Mål-carry for ${k} i meter`}
+                  className="w-20 rounded-md border-0 bg-transparent py-2 text-right text-sm tabular-nums text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                />
+                <span className="text-xs text-muted-foreground">m</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+      )}
 
       {matchTasks.length > 0 && (
         <label className="block">

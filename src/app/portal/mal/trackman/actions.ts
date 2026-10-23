@@ -15,6 +15,7 @@ import {
 import { updateTmGoalsFromSessionAggregate } from "@/lib/teknisk-plan/update-tm-goals";
 import { parseTrackManCsv, type TrackManShot } from "@/lib/trackman/parse-csv";
 import { parseTrackManHtmlReport } from "@/lib/trackman/parse-html-report";
+import { hentOktFraLenke, TrackManLenkeFeil } from "@/lib/trackman/lenke";
 import {
   parseTrackManPhoto,
   type TrackManPhotoMediaType,
@@ -29,6 +30,8 @@ import type { Prisma } from "@/generated/prisma/client";
 
 export type { TrackManEnvironment };
 
+const TargetsByClubSchema = z.record(z.string().min(1).max(40), z.number().finite().positive().max(1000));
+
 const TargetSetupSchema = z.object({
   targetLineStatus: z.enum(["UNKNOWN", "CONFIRMED", "NOT_ALIGNED"]).default("UNKNOWN"),
   targetDistanceM: z.number().finite().positive().max(1000).nullish(),
@@ -41,7 +44,7 @@ export type ImportTrackManResult = {
   shotCount: number;
   matchedCount: number;
   goalsUpdated: number;
-  source: "csv-import" | "html-import" | "photo-import";
+  source: "csv-import" | "html-import" | "photo-import" | "lenke-import";
   /** Satt når vi stoppet pga lignende økt — kall på nytt med forceImport. */
   needsConfirm?: boolean;
   similarSessionId?: string;
@@ -49,8 +52,8 @@ export type ImportTrackManResult = {
 };
 
 export type ImportTrackManInput = {
-  format: "csv" | "html" | "photo";
-  /** CSV/HTML: rå filtekst. Foto: ubrukt (se photoShots). */
+  format: "csv" | "html" | "photo" | "lenke";
+  /** CSV/HTML: rå filtekst. Lenke: TrackMan-lenken. Foto: ubrukt (se photoShots). */
   content: string;
   /**
    * Kun for format "photo": slagene AI-vision allerede leste av i steg 2/3
@@ -63,6 +66,11 @@ export type ImportTrackManInput = {
   environment: TrackManEnvironment;
   targetLineStatus?: TrackManTargetLineStatus;
   targetDistanceM?: number | null;
+  /**
+   * Mål-carry per kølle i meter, tastet inn av spilleren (Anders 23.10.2026: «taster man inn hvor langt man skal
+   * slå carry manuelt i appen, også regner du den ut etterpå»). Gjelder slag uten eget mål fra kilden.
+   */
+  targetsByClub?: Record<string, number>;
   onBehalfOfUserId?: string;
   /** TEK eller SLAG. Påkrevd ved ny import (Anders 22.10.2026, §TRACKMAN I TEAM NORWAY-TESTENE punkt 7). */
   akse?: "TEK" | "SLAG";
@@ -87,6 +95,25 @@ export async function parseTrackManPhotoForPreview(
 ) {
   await requireConsentingUser();
   return parseTrackManPhoto(base64, mediaType);
+}
+
+/**
+ * Steg 2 for lenke-kilden: henter økta fra TrackMan-lenken på serveren og viser slagene før import.
+ * Importen henter rapporten på nytt fra lenken, så det som lagres kommer fra TrackMan, ikke fra nettleseren.
+ */
+export async function hentTrackManLenkeForhandsvisning(lenke: string): Promise<
+  | { ok: true; shots: TrackManShot[]; startetAt: string | null; sluttetAt: string | null; varsler: string[] }
+  | { ok: false; error: string }
+> {
+  await requireConsentingUser();
+  try {
+    const tekst = z.string().trim().min(1).max(500).safeParse(lenke);
+    if (!tekst.success) return { ok: false, error: "Lim inn hele lenken fra TrackMan." };
+    const okt = await hentOktFraLenke(tekst.data);
+    return { ok: true, shots: okt.slag, startetAt: okt.startetAt, sluttetAt: okt.sluttetAt, varsler: okt.varsler };
+  } catch (err) {
+    return { ok: false, error: err instanceof TrackManLenkeFeil ? err.message : "Kunne ikke hente fra TrackMan. Prøv igjen om litt." };
+  }
 }
 
 /** Oppgaver i aktiv teknisk plan — til manuell match i import-modal. */
@@ -133,9 +160,20 @@ export async function importTrackMan(
 
   let shots: CanonicalShot[];
   let rawJson: Prisma.InputJsonValue;
-  let source: "csv-import" | "html-import" | "photo-import";
+  let source: ImportTrackManResult["source"];
+  const targetsByClub = TargetsByClubSchema.parse(input.targetsByClub ?? {});
 
-  if (input.format === "photo") {
+  if (input.format === "lenke") {
+    let okt;
+    try {
+      okt = await hentOktFraLenke(z.string().trim().min(1).max(500).parse(input.content));
+    } catch (err) {
+      throw new Error(err instanceof TrackManLenkeFeil ? err.message : "Kunne ikke hente fra TrackMan. Prøv igjen om litt.");
+    }
+    shots = csvShotsToCanonical(okt.slag);
+    rawJson = okt.rapport as Prisma.InputJsonValue;
+    source = "lenke-import";
+  } else if (input.format === "photo") {
     const photoShots = input.photoShots ?? [];
     if (photoShots.length === 0) {
       throw new Error("Ingen slag lest fra bildet. Prøv på nytt.");
@@ -291,7 +329,7 @@ export async function importTrackMan(
       launchDirection: shot.launchDirectionDeg,
       spinRate: shot.spinRateRpm,
       side: shot.sideMeters,
-      targetDistanceM: shot.targetDistanceM ?? targetSetup.targetDistanceM ?? null,
+      targetDistanceM: shot.targetDistanceM ?? targetsByClub[shot.club] ?? targetSetup.targetDistanceM ?? null,
       faceToPath: shot.faceToPath,
       clubPath: shot.clubPath,
       faceAngle: shot.faceAngle,
