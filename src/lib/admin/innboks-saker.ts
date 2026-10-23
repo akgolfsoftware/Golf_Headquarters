@@ -21,6 +21,7 @@
  * null og vises som «ikke oppgitt» — de fabrikeres aldri.
  */
 
+import { hentAkTreningsobservasjoner, UTEN_AK_TRENINGSOBSERVASJON, begrensForslagsliste } from "@/lib/deling/ak-treningsobservasjon";
 import { prisma } from "@/lib/prisma";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { handlingstypeLabel } from "@/lib/labels/handlingstyper";
@@ -177,11 +178,12 @@ export async function loadInnboksSaker(user: {
   const spillerScope = coachScopedPlayerWhere(user);
   const lostGrense = new Date(now.getTime() - 7 * DAG);
 
-  const [actions, caddieDrafts, sessionRequests, varsler, feedback, losteActions] =
+  const [eldreActions, caddieDrafts, sessionRequests, varsler, feedback, eldreLosteActions, observasjoner, losteObservasjoner] =
     await Promise.all([
       prisma.planAction.findMany({
         where: {
           status: "PENDING",
+          ...UTEN_AK_TRENINGSOBSERVASJON,
           actionType: { not: "WORKBENCH_GATHERING_INVITE" },
           OR: [{ coachId: user.id }, { coachId: null }],
           user: spillerScope,
@@ -190,7 +192,7 @@ export async function loadInnboksSaker(user: {
           user: { select: { id: true, name: true } },
           plan: { select: { id: true, name: true } },
         },
-        orderBy: { createdAt: "desc" },
+        orderBy: [{ createdAt: "desc" }, { id: "desc" }],
         take: 40,
       }),
       prisma.caddieDraft.findMany({
@@ -235,11 +237,12 @@ export async function loadInnboksSaker(user: {
       prisma.planAction.findMany({
         where: {
           status: { in: ["ACCEPTED", "REJECTED"] },
+          ...UTEN_AK_TRENINGSOBSERVASJON,
           actionType: { not: "WORKBENCH_GATHERING_INVITE" },
           user: spillerScope,
           updatedAt: { gte: lostGrense },
         },
-        orderBy: { updatedAt: "desc" },
+        orderBy: [{ updatedAt: "desc" }, { id: "desc" }],
         take: 12,
         select: {
           id: true,
@@ -250,7 +253,12 @@ export async function loadInnboksSaker(user: {
           user: { select: { name: true } },
         },
       }),
+      hentAkTreningsobservasjoner(user, { status: "PENDING", maksRader: 40 }),
+      hentAkTreningsobservasjoner(user, { status: ["ACCEPTED", "REJECTED"], maksRader: 12, endretSiden: lostGrense, rekkefolge: "endret" }),
     ]);
+  const actions = begrensForslagsliste([...eldreActions, ...observasjoner.planActions.map(a => ({ ...a, plan: null }))], 40);
+  const losteActions = [...eldreLosteActions, ...losteObservasjoner.planActions]
+    .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime() || b.id.localeCompare(a.id)).slice(0, 12);
 
   // CaddieDraft.userId er EIEREN som kan godkjenne. Spilleren utkastet
   // gjelder vises fra toolInput når den finnes.
@@ -337,7 +345,7 @@ export async function loadInnboksSaker(user: {
       grunnlag,
       href: `/admin/godkjenninger#${a.id}`,
       hrefTekst: "Åpne i godkjenninger",
-      primaer: { label: "Godkjenn og send", slag: "godkjenn" },
+      primaer: { label: a.actionType === "COACH_REVIEW" ? "Godkjenn" : "Godkjenn og send", slag: "godkjenn" },
       sekundaer: { label: "Avvis", slag: "avvis", krevGrunn: true },
     });
   }
@@ -548,7 +556,7 @@ export async function loadInnboksSaker(user: {
       kilde: "planAction",
       type: "forslag",
       tittel: handlingstypeLabel(a.actionType),
-      sub: a.sjekkpunkt?.trim() || (godkjent ? "Godkjent og sendt." : "Avvist. Ingenting ble sendt."),
+      sub: a.sjekkpunkt?.trim() || (godkjent ? (a.actionType === "COACH_REVIEW" ? "Vurdering godkjent. Ingen trening endret." : "Godkjent og sendt.") : "Avvist. Ingenting ble sendt."),
       hvem: a.user.name ?? "Spiller",
       frist: narTekst(a.updatedAt, now),
       snart: false,

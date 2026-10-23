@@ -3,6 +3,10 @@
  * Henter ekte Prisma-data og mapper til CockpitData (serialiserbar —
  * ikoner som navn, rik tekst som segmenter; krysser server→client-grensen).
  *
+ * Avvik:
+ *   - Dataleser, ikke skjermkomponent: delingskontroll prøves i observasjonslesere.test.ts.
+ *   - Ingen visuell sluttgodkjenning mot Precision Athletics inngår i denne endringen.
+ *
  * KPI-kilder:
  *   - Aktive spillere: User(PLAYER) m/ innlogging siste 30 d
  *   - Økter i dag: Booking (CONFIRMED/PENDING) i dag
@@ -14,6 +18,7 @@ import { can, Capability } from "@/lib/auth/cbac";
 import type { UserRole } from "@/generated/prisma/client";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { z } from "zod";
+import { hentAkTreningsobservasjoner, UTEN_AK_TRENINGSOBSERVASJON, begrensForslagsliste } from "@/lib/deling/ak-treningsobservasjon";
 import { prisma } from "@/lib/prisma";
 import type {
   CockpitData,
@@ -162,7 +167,7 @@ export async function loadDailyBrief(coach: {
     aktiveSpillereCount,
     nyeSpillereCount,
     notifs,
-    pendingActions,
+    eldrePendingActions,
     sessionReqs,
     oppgaver,
     inaktiveSpillere,
@@ -171,6 +176,7 @@ export async function loadDailyBrief(coach: {
     stallSgAgg,
     planStatusGrupper,
     latestDailyBriefRun,
+    observasjoner,
   ] = await Promise.all([
     prisma.booking.findMany({
       where: {
@@ -218,11 +224,12 @@ export async function loadDailyBrief(coach: {
     }),
     prisma.planAction.findMany({
       where: {
+        ...UTEN_AK_TRENINGSOBSERVASJON,
         status: "PENDING",
         OR: [{ coachId: coach.id }, { coachId: null }],
         user: coachScopedPlayerWhere(coach),
       },
-      orderBy: { createdAt: "desc" },
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
       take: 8,
       select: {
         id: true,
@@ -270,7 +277,7 @@ export async function loadDailyBrief(coach: {
     // Én groupBy erstatter to counts: total PENDING + hvor mange som er ESCALATION.
     prisma.planAction.groupBy({
       by: ["actionType"],
-      where: { status: "PENDING" },
+      where: { ...UTEN_AK_TRENINGSOBSERVASJON, status: "PENDING", OR: [{ coachId: coach.id }, { coachId: null }], user: coachScopedPlayerWhere(coach) },
       _count: { _all: true },
     }),
     // Én spørring erstatter to counts: aktive PRO-abo totalt + nye siste 30 d
@@ -302,10 +309,12 @@ export async function loadDailyBrief(coach: {
       orderBy: { createdAt: "desc" },
       select: { output: true },
     }),
+    hentAkTreningsobservasjoner(coach, { status: "PENDING", maksRader: 8 }),
   ]);
+  const pendingActions = begrensForslagsliste([...eldrePendingActions, ...observasjoner.planActions], 8);
 
-  // Avledede tellere fra de sammenslåtte spørringene (samme verdier som før).
-  const pendingApprovalsCount = planActionGrupper.reduce((sum, g) => sum + g._count._all, 0);
+  // Observasjoner telles gjennom samme delingsport som de viste forslagene.
+  const pendingApprovalsCount = planActionGrupper.reduce((sum, g) => sum + g._count._all, 0) + observasjoner.pendingCount;
   const hasterApprovalsCount =
     planActionGrupper.find((g) => g.actionType === "ESCALATION")?._count._all ?? 0;
   const proAboCount = proAbos.length;

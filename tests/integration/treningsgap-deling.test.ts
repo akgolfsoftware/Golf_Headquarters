@@ -156,9 +156,50 @@ test("Treningsgap: faktisk gruppedeling, mottaker og observasjon under lås", as
       assert.equal((await les({id:'admin',role:'ADMIN'})).planActions.length,0);
       assert.equal((await les({id:'coach-b',role:'COACH'})).pendingCount,0);
       await valg('a',false); await valg('b',true);
-      assert.deepEqual(await les(coach),{planActions:[],pendingCount:0,acceptedCount:0,rejectedCount:0,accepted7d:0,rejected7d:0,eldstePending:null});
+      assert.deepEqual(await les(coach),{planActions:[],pendingCount:0,acceptedCount:0,rejectedCount:0,accepted7d:0,rejected7d:0,godkjentAvViewer:0,eldstePending:null});
       await assert.rejects(()=>beslutning(coach,rad.id,'ACCEPTED'),/forbidden/);
       assert.equal((await db.planAction.findUniqueOrThrow({where:{id:rad.id}})).status,'PENDING');
+    });
+    await t.test('sekundærlister beholder vindu, sortering, grense og fersk historikkdeling', async () => {
+      const rad = await ny();
+      const start = new Date('2026-01-01T00:00:00Z');
+      await db.planAction.update({ where: { id: rad.id }, data: { createdAt: start, updatedAt: start } });
+      for (const [id, createdAt, updatedAt, status, decidedById] of [
+        ['synthetic-new', '2026-01-03', '2026-01-03', 'PENDING', null],
+        ['synthetic-done', '2025-12-30', '2026-01-05', 'ACCEPTED', coach.id],
+        ['synthetic-other-actor', '2025-12-30', '2026-01-04', 'ACCEPTED', 'p'],
+        ['synthetic-old', '2025-12-30', '2025-12-31', 'REJECTED', coach.id],
+      ] as const) {
+        await db.planAction.create({ data: { userId: rad.userId, coachId: rad.coachId, agentName: rad.agentName, actionType: rad.actionType, suggestion: rad.suggestion!, id, createdAt: new Date(createdAt), updatedAt: new Date(updatedAt),
+          status, decidedAt: new Date(updatedAt), decidedById } });
+      }
+      assert.deepEqual((await les(coach, { status: 'PENDING', maksRader: 1, rekkefolge: 'eldst' })).planActions.map(r => r.id), [rad.id]);
+      assert.deepEqual((await les(coach, { status: 'PENDING', maksRader: 1 })).planActions.map(r => r.id), ['synthetic-new']);
+      const historikk = { status: ['ACCEPTED', 'REJECTED'] as const, maksRader: 1, endretSiden: start, rekkefolge: 'endret' as const, godkjentAvViewerSiden: start };
+      const lest = await les(coach, historikk);
+      assert.deepEqual(lest.planActions.map(r => r.id), ['synthetic-done']);
+      assert.equal(lest.godkjentAvViewer, 1); assert.equal(lest.pendingCount, 2);
+      assert.equal((await les(coach, { ...historikk, maksRader: 0 })).planActions.length, 0);
+      assert.deepEqual((await les(coach, { ...historikk, maksRader: 12 })).planActions.map(r => r.id), ['synthetic-done', 'synthetic-other-actor']);
+      await valg('a', false);
+      const trukket = await les(coach, historikk);
+      assert.deepEqual(trukket.planActions, []); assert.equal(trukket.godkjentAvViewer, 0); assert.equal(trukket.pendingCount, 0);
+    });
+    await t.test('flere ansvarlige grupper sorteres samlet, hver med eget ja', async () => {
+      const rad = await ny();
+      await sql.query(`UPDATE groups SET "coachId"='coach-a' WHERE id='b'`);
+      try {
+        await valg('b', true);
+        const gruppeB = { userId: rad.userId, coachId: rad.coachId, agentName: rad.agentName, actionType: rad.actionType, id: 'synthetic-group-b', createdAt: new Date(rad.createdAt.getTime() + 60000),
+          suggestion: { forklaring: 'Syntetisk B', deling: { gruppeId: 'b', scope: 'AK_GOLF_COACHINGPROFIL', tekstVersjon: AK_PROFIL_VERSJON } } };
+        await db.planAction.create({ data: gruppeB });
+        const lest = await les(coach, { status: 'PENDING', maksRader: 1 });
+        assert.equal(lest.pendingCount, 2); assert.equal(lest.planActions[0].id, gruppeB.id);
+        assert.equal((await les(coach, { status: 'PENDING', maksRader: 1, rekkefolge: 'eldst' })).planActions[0].id, rad.id);
+        await valg('b', false);
+        const trukket = await les(coach, { status: 'PENDING', maksRader: 1 });
+        assert.equal(trukket.pendingCount, 1); assert.equal(trukket.planActions[0].id, rad.id);
+      } finally { await sql.query(`UPDATE groups SET "coachId"='coach-b' WHERE id='b'`); }
     });
     await t.test('ADMIN, feil mottaker, ukjent ID, gammel versjon og annen agent gir ingen beslutning',async()=>{
       const rad=await ny();

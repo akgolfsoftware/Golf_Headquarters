@@ -1,3 +1,4 @@
+import { handlingstypeLabel } from "@/lib/labels/handlingstyper";
 /**
  * AgencyOS Agent-detalj i nytt design (AG19AgentDetalj, 19.10.2026).
  * Auth/Prisma-loader bevart; visningen erstatter AgenticosRamme +
@@ -262,7 +263,7 @@ export default async function AgentDetaljPage({
     const tone: "warn" | "up" | "info" = a.status === "PENDING" ? "warn" : a.status === "ACCEPTED" ? "up" : "info";
     return {
       id: a.id,
-      actionTypeLabel: ACTION_LABEL[a.actionType] ?? a.actionType,
+      actionTypeLabel: ACTION_LABEL[a.actionType] ?? handlingstypeLabel(a.actionType),
       statusLabel:
         a.status === "PENDING"
           ? "Venter"

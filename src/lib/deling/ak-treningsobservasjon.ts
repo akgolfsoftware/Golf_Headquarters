@@ -34,41 +34,64 @@ export const UTEN_AK_TRENINGSOBSERVASJON: Prisma.PlanActionWhereInput = {
   NOT: { OR: [{ agentName: "training-gap" }, { actionType: { in: ["COACH_REVIEW", "TRAINING_GAP"] } }] },
 };
 
-const lesSelect = { id: true, userId: true, planId: true, provenance: true, actionType: true, status: true, createdAt: true, suggestion: true,
+const lesSelect = { id: true, userId: true, planId: true, provenance: true, actionType: true, status: true, createdAt: true, updatedAt: true, agentName: true, sjekkpunkt: true, suggestion: true,
   user: { select: { id: true, name: true } } } as const;
 type LestForslag = Prisma.PlanActionGetPayload<{ select: typeof lesSelect }>;
 
+type Lesevalg = {
+  maksRader?: number;
+  status?: "PENDING" | readonly ("ACCEPTED" | "REJECTED")[];
+  endretSiden?: Date;
+  rekkefolge?: "eldst" | "endret";
+  godkjentAvViewerSiden?: Date;
+};
+
+/** Begrens først etter sammenslåing, med stabil rekkefølge ved like tidspunkt. */
+export function begrensForslagsliste<T extends { id: string; createdAt: Date }>(rader: T[], maks: number, eldst = false): T[] {
+  return rader.sort((a, b) => (eldst ? 1 : -1) * (a.createdAt.getTime() - b.createdAt.getTime() || a.id.localeCompare(b.id))).slice(0, maks);
+}
+
 /** Listen, alle tellere og eldste forslag har samme mottaker- og delingsfilter. */
-export async function hentAkTreningsobservasjoner(viewer: Viewer, valg: { maksRader?: number; status?: "PENDING" } = {}) {
+export async function hentAkTreningsobservasjoner(viewer: Viewer, valg: Lesevalg = {}) {
   const maksRader = Math.min(60, Math.max(0, valg.maksRader ?? 10));
   const syvDagerSiden = new Date(Date.now() - 7 * 86_400_000);
   const resultat = { planActions: [] as LestForslag[], pendingCount: 0, acceptedCount: 0, rejectedCount: 0,
-    accepted7d: 0, rejected7d: 0, eldstePending: null as { createdAt: Date; user: { name: string | null } } | null };
+    accepted7d: 0, rejected7d: 0, godkjentAvViewer: 0, eldstePending: null as { createdAt: Date; user: { name: string | null } } | null };
   if (!["COACH", "ADMIN"].includes(viewer.role)) return resultat;
   const grupper = await prisma.group.findMany({ where: { ...akProfilGruppeWhere(), coachId: viewer.id }, select: { id: true }, orderBy: { id: "asc" } });
   for (const gruppe of grupper) {
     const lest = await medAkProfiler(viewer, async (tx, scope) => {
       if (!await tx.group.findFirst({ where: { id: gruppe.id, coachId: viewer.id }, select: { id: true } })) return null;
       const where = forslagWhere(viewer, gruppe.id, scope);
-      const [planActions, pendingCount, acceptedCount, rejectedCount, eldstePending, accepted7d, rejected7d] = await Promise.all([
-        tx.planAction.findMany({ where: { ...where, ...(valg.status ? { status: valg.status } : {}) }, select: lesSelect, orderBy: [{ createdAt: "desc" }, { id: "desc" }], take: maksRader }),
+      const [planActions, pendingCount, acceptedCount, rejectedCount, eldstePending, accepted7d, rejected7d, godkjentAvViewer] = await Promise.all([
+        tx.planAction.findMany({ where: { ...where,
+          ...(valg.status ? { status: typeof valg.status === "string" ? valg.status : { in: [...valg.status] } } : {}),
+          ...(valg.endretSiden ? { updatedAt: { gte: valg.endretSiden } } : {}),
+        }, select: lesSelect,
+          orderBy: valg.rekkefolge === "endret" ? [{ updatedAt: "desc" }, { id: "desc" }]
+            : [{ createdAt: valg.rekkefolge === "eldst" ? "asc" : "desc" }, { id: valg.rekkefolge === "eldst" ? "asc" : "desc" }],
+          take: maksRader }),
         tx.planAction.count({ where: { ...where, status: "PENDING" } }),
         tx.planAction.count({ where: { ...where, status: "ACCEPTED" } }),
         tx.planAction.count({ where: { ...where, status: "REJECTED" } }),
         tx.planAction.findFirst({ where: { ...where, status: "PENDING" }, select: { createdAt: true, user: { select: { name: true } } }, orderBy: { createdAt: "asc" } }),
         tx.planAction.count({ where: { ...where, status: "ACCEPTED", decidedAt: { gte: syvDagerSiden } } }),
         tx.planAction.count({ where: { ...where, status: "REJECTED", decidedAt: { gte: syvDagerSiden } } }),
+        valg.godkjentAvViewerSiden ? tx.planAction.count({ where: { ...where, status: "ACCEPTED",
+          decidedAt: { gte: valg.godkjentAvViewerSiden }, decidedById: viewer.id } }) : 0,
       ]);
-      return { planActions, pendingCount, acceptedCount, rejectedCount, eldstePending, accepted7d, rejected7d };
+      return { planActions, pendingCount, acceptedCount, rejectedCount, eldstePending, accepted7d, rejected7d, godkjentAvViewer };
     }, "handling", { gruppeId: gruppe.id });
     if (!lest) continue;
     resultat.planActions.push(...lest.planActions);
+    resultat.godkjentAvViewer += lest.godkjentAvViewer;
     resultat.accepted7d += lest.accepted7d; resultat.rejected7d += lest.rejected7d;
     resultat.pendingCount += lest.pendingCount; resultat.acceptedCount += lest.acceptedCount; resultat.rejectedCount += lest.rejectedCount;
     if (lest.eldstePending && (!resultat.eldstePending || lest.eldstePending.createdAt < resultat.eldstePending.createdAt)) resultat.eldstePending = lest.eldstePending;
   }
-  resultat.planActions.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime() || b.id.localeCompare(a.id));
-  resultat.planActions = resultat.planActions.slice(0, maksRader);
+  resultat.planActions = valg.rekkefolge === "endret"
+    ? resultat.planActions.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime() || b.id.localeCompare(a.id)).slice(0, maksRader)
+    : begrensForslagsliste(resultat.planActions, maksRader, valg.rekkefolge === "eldst");
   return resultat;
 }
 

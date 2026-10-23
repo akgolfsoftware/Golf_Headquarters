@@ -3,6 +3,7 @@
  * Ærlige tomrom — ingen oppdiktede kjørende runs eller runtime-helse.
  */
 
+import { hentAkTreningsobservasjoner, UTEN_AK_TRENINGSOBSERVASJON, begrensForslagsliste } from "@/lib/deling/ak-treningsobservasjon";
 import { prisma } from "@/lib/prisma";
 import { planActionKoWhere } from "@/lib/admin/ko-telling";
 import {
@@ -140,27 +141,30 @@ export async function lastAgenticosCockpit(user: Viewer): Promise<AgenticosCockp
   sju.setDate(sju.getDate() - 7);
   const ettDogn = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
-  const [pending, pendingCount, godkjentIDag, signaler7d, sisteFeil, kjoringerIdag] = await Promise.all([
+  const [eldrePending, pendingCount, eldreGodkjentIDag, signaler7d, sisteFeil, kjoringerIdag, observasjoner] = await Promise.all([
     prisma.planAction.findMany({
       where: planActionKoWhere(user),
       include: { user: { select: { name: true } } },
-      orderBy: { createdAt: "desc" },
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
       take: 1,
     }),
     prisma.planAction.count({ where: planActionKoWhere(user) }),
     prisma.planAction.count({
-      where: { status: "ACCEPTED", decidedAt: { gte: idag }, decidedById: user.id },
+      where: { ...UTEN_AK_TRENINGSOBSERVASJON, status: "ACCEPTED", decidedAt: { gte: idag }, decidedById: user.id },
     }),
     prisma.signal.count({ where: { computedAt: { gte: sju } } }),
     prisma.agentRun.findMany({
       where: { status: "ERROR", createdAt: { gte: ettDogn } },
+      select: { agentName: true },
       orderBy: { createdAt: "desc" },
       take: 12,
     }),
     prisma.agentRun.count({ where: { createdAt: { gte: idag } } }),
+    hentAkTreningsobservasjoner(user, { status: "PENDING", maksRader: 1, godkjentAvViewerSiden: idag }),
   ]);
 
-  const forste = pending[0];
+  const godkjentIDag = eldreGodkjentIDag + observasjoner.godkjentAvViewer;
+  const forste = begrensForslagsliste([...eldrePending, ...observasjoner.planActions], 1)[0];
   let neste: AgenticosNeste | null = null;
   if (forste) {
     const slug = kanoniskSlug(forste.agentName);
@@ -201,7 +205,7 @@ export async function lastAgenticosCockpit(user: Viewer): Promise<AgenticosCockp
   return {
     naTekst: agenticosNaTekst(),
     neste,
-    venterPaDeg: pendingCount,
+    venterPaDeg: pendingCount + observasjoner.pendingCount,
     klarCount: MANUELLE_AGENTER.length,
     pagarCount: 0,
     researchCount: signaler7d,
@@ -212,12 +216,13 @@ export async function lastAgenticosCockpit(user: Viewer): Promise<AgenticosCockp
 }
 
 export async function lastAgenticosKo(user: Viewer): Promise<AgenticosKoData> {
-  const pending = await prisma.planAction.findMany({
+  const [eldrePending, observasjoner] = await Promise.all([prisma.planAction.findMany({
     where: planActionKoWhere(user),
     include: { user: { select: { name: true } } },
-    orderBy: { createdAt: "desc" },
+    orderBy: [{ createdAt: "desc" }, { id: "desc" }],
     take: 20,
-  });
+  }), hentAkTreningsobservasjoner(user, { status: "PENDING", maksRader: 20 })]);
+  const pending = begrensForslagsliste([...eldrePending, ...observasjoner.planActions], 20);
   const idag = startOfLocalDay();
   const sju = new Date(idag);
   sju.setDate(sju.getDate() - 7);
@@ -270,17 +275,20 @@ export async function lastAgenticosKo(user: Viewer): Promise<AgenticosKoData> {
 
 export async function lastAgenticosGodkjenn(user: Viewer): Promise<AgenticosGodkjennData> {
   const idag = startOfLocalDay();
-  const [pending, godkjentIDag] = await Promise.all([
+  const [eldrePending, eldreGodkjentIDag, observasjoner] = await Promise.all([
     prisma.planAction.findMany({
       where: planActionKoWhere(user),
       include: { user: { select: { name: true } } },
-      orderBy: { createdAt: "desc" },
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
       take: 12,
     }),
     prisma.planAction.count({
-      where: { status: "ACCEPTED", decidedAt: { gte: idag }, decidedById: user.id },
+      where: { ...UTEN_AK_TRENINGSOBSERVASJON, status: "ACCEPTED", decidedAt: { gte: idag }, decidedById: user.id },
     }),
+    hentAkTreningsobservasjoner(user, { status: "PENDING", maksRader: 12, godkjentAvViewerSiden: idag }),
   ]);
+  const pending = begrensForslagsliste([...eldrePending, ...observasjoner.planActions], 12);
+  const godkjentIDag = eldreGodkjentIDag + observasjoner.godkjentAvViewer;
 
   const rader: AgenticosGodkjennRad[] = [];
   for (const a of pending) {
@@ -346,7 +354,11 @@ export async function lastAgenticosProjects(): Promise<AgenticosProjectsData> {
 }
 
 export async function lastAgenticosGodkjennCount(user: Viewer): Promise<number> {
-  return prisma.planAction.count({ where: planActionKoWhere(user) });
+  const [eldre, observasjoner] = await Promise.all([
+    prisma.planAction.count({ where: planActionKoWhere(user) }),
+    hentAkTreningsobservasjoner(user, { maksRader: 0 }),
+  ]);
+  return eldre + observasjoner.pendingCount;
 }
 
 export async function lastAgenticosRuntimeLinje(): Promise<string> {

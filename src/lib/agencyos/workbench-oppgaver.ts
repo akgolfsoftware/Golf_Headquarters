@@ -8,9 +8,11 @@
  * fabrikerte tall. Full ukeplanlegging (dra-og-slipp, mål-spor) henvises til
  * desktop-Workbench per flate-skille-regelen.
  *
- * I0: KUN coachede spillere er synlige (coachScopedPlayerWhere).
+ * I0: Eldre saker bruker coachScopedPlayerWhere; treningsobservasjoner krever
+ * fersk profildeling til ansvarlig trener i den konkrete AK-gruppen.
  */
 
+import { hentAkTreningsobservasjoner, UTEN_AK_TRENINGSOBSERVASJON, begrensForslagsliste } from "@/lib/deling/ak-treningsobservasjon";
 import { prisma } from "@/lib/prisma";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { handlingstypeLabel } from "@/lib/labels/handlingstyper";
@@ -56,18 +58,12 @@ export async function loadWorkbenchOppgaver(coach: {
 }): Promise<WorkbenchOppgaverData> {
   const now = new Date();
 
-  // Coachens scope — brukes til å filtrere begge kildene defensivt.
-  const scopede = await prisma.user.findMany({
-    where: coachScopedPlayerWhere({ id: coach.id, role: coach.role }),
-    select: { id: true },
-    take: 500,
-  });
-  const iScope = new Set(scopede.map((s) => s.id));
+  const spillerScope = coachScopedPlayerWhere(coach);
 
-  const [actions, requests] = await Promise.all([
+  const [eldreActions, requests, observasjoner] = await Promise.all([
     prisma.planAction.findMany({
-      where: { status: "PENDING" },
-      orderBy: { createdAt: "asc" },
+      where: { ...UTEN_AK_TRENINGSOBSERVASJON, status: "PENDING", OR: [{ coachId: coach.id }, { coachId: null }], user: spillerScope },
+      orderBy: [{ createdAt: "asc" }, { id: "asc" }],
       select: {
         id: true,
         actionType: true,
@@ -77,8 +73,8 @@ export async function loadWorkbenchOppgaver(coach: {
       take: 50,
     }),
     prisma.sessionRequest.findMany({
-      where: { status: "PENDING", OR: [{ coachId: coach.id }, { coachId: null }] },
-      orderBy: { createdAt: "asc" },
+      where: { status: "PENDING", OR: [{ coachId: coach.id }, { coachId: null }], user: spillerScope },
+      orderBy: [{ createdAt: "asc" }, { id: "asc" }],
       select: {
         id: true,
         userId: true,
@@ -90,12 +86,13 @@ export async function loadWorkbenchOppgaver(coach: {
       },
       take: 50,
     }),
+    hentAkTreningsobservasjoner(coach, { status: "PENDING", maksRader: 50, rekkefolge: "eldst" }),
   ]);
+  const actions = begrensForslagsliste([...eldreActions, ...observasjoner.planActions], 50, true);
 
   const oppgaver: WorkbenchOppgave[] = [];
 
   for (const a of actions) {
-    if (!iScope.has(a.user.id)) continue;
     oppgaver.push({
       id: `pa-${a.id}`,
       kind: "godkjenn",
@@ -108,7 +105,6 @@ export async function loadWorkbenchOppgaver(coach: {
   }
 
   for (const r of requests) {
-    if (!iScope.has(r.userId)) continue;
     const naar = r.preferredDate
       ? new Intl.DateTimeFormat("nb-NO", {
           weekday: "long",
