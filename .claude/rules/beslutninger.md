@@ -4,6 +4,24 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## TURNERINGSPLANLEGGEREN FRA TEAM NORWAY ER MASTER FOR ALLE BRUKERE, OG STÅR I SPILLERPROFILEN (Anders 23.10.2026, bindende)
+
+Anders 23.10, under skjelettet for Spiller 360: «i spiller profil så må vi ha turneringsplanlegger som vi har laget i Team Norway skjermene også. Dette skal være master turneringsplanelegger for alle brukeren».
+
+- **Én turneringsplanlegger for alle:** den fra Team Norway-skjermene (`Turneringsplanlegger.tsx`) er master. Innholdet er likt for spiller, AK-coach og Team Norway-trener: WAGR nå og anslag, blandingen Kan vinne · Topp 10 · Læring, året uke for uke og lista med Power, Seier, Topp 10 og Poeng.
+- **Spillerprofilen har den som egen fane:** Spiller 360 i AgencyOS får fanen «Turneringsplan» (rekkefølge Plan · Turneringsplan · Stats · Teknisk plan · Tester · Samtaler · Talent), og IUP i Team Norway beholder sin.
+- **Bare rettighetene skiller** (uendret): spilleren og AK-coachen endrer direkte, spilleren får beskjed og kan angre; Team Norway-treneren foreslår, og endrer direkte med logg for spillere uten konto (§REFERANSE › PLANLEGGER, 23.10).
+- Ingen egen turneringsplanlegger bygges i noen flate.
+
+**Overstyrer:** ingenting. Bekrefter at komponenten i `docs/planer/tn-referanse-og-planlegger-i-tre-flater-2026-10-23.md` §1 er master, og legger fanen inn i Spiller 360.
+
+**Arbeidet dette utløser:**
+
+1. **Skjelettet:** fanen «Turneringsplan» er tegnet i Spiller 360 i Claude Design (siden «AgencyOS · Spiller 360 · variantene»). Gjort.
+2. **Spiller 360 i koden:** fanen «Turneringsplan» i spillerprofilen åpner `Turneringsplanlegger` med rolle `coach` (i dag egen adresse `/admin/spillere/[id]/turneringsplan`). Ferdig når fanen står i Spiller 360 og en test låser at coach-rollen endrer direkte.
+3. **PlayerHQ:** spilleren når samme planlegger fra Plan (`/portal/tren/turneringer`, rolle `spiller`). Ferdig når Plan lenker dit og ingen annen turneringsplanvisning finnes i PlayerHQ.
+4. **Ingen kopier:** et søk etter egne turneringsplan-komponenter utenfor `src/components/turneringsplan/` gir 0 treff.
+
 ## LIVE-ØKTA HAR ÉN SKJERM: /ACTIVE PÅ WORKBENCHSESSION (Anders 23.10.2026, bindende)
 
 Anders 23.10: «Vi kjører på dine anbefalinger.» Svar på punkt 1 i `docs/beslutningsgrunnlag/uavklart-etter-revisjon-2026-10-23.md` (revisjonen av `50e52dd`).
