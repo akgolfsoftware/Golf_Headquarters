@@ -14,6 +14,8 @@ import { grupperMedEksterneLesereForSpiller, hentDelingsStatus } from "@/lib/del
 import { hentEgenTrenerdeling } from "@/lib/deling/navngitt";
 import { hentTnSpillergrupper } from "@/lib/deling/team-norway-spiller";
 import { hentAkAnalyseValg } from "@/lib/deling/ak-gruppeanalyse";
+import { hentAkProfilValg } from "@/lib/deling/ak-profil-valg";
+import { AkProfilDeling } from "@/components/portal/precision/AkProfilDeling";
 import { AkAnalyseDeling } from "@/components/portal/precision/AkAnalyseDeling";
 import { TnInnsynLenke } from "@/components/portal/precision/TnInnsynLenke";
 import { hentWangTestdeling } from "@/lib/portal-tester/wang-resultat-tilgang";
@@ -33,7 +35,7 @@ export default async function DelingPage() {
   const krevesForesatt = maaHaForesattSamtykke(user);
   const na = new Date();
 
-  const [grupper, wangTestdeling, wangPlandeling, enrollment, foreldre, navngitt, tnGrupper, akAnalyse] = await Promise.all([
+  const [grupper, wangTestdeling, wangPlandeling, enrollment, foreldre, navngitt, tnGrupper, akAnalyse, akProfil] = await Promise.all([
     grupperMedEksterneLesereForSpiller(user.id),
     hentWangTestdeling(user.id),
     hentWangTestdeling(user.id, "TRENINGSPLAN"),
@@ -46,6 +48,7 @@ export default async function DelingPage() {
     hentEgenTrenerdeling().catch(() => null),
     hentTnSpillergrupper(user.id),
     hentAkAnalyseValg(user.id),
+    hentAkProfilValg(user.id),
   ]);
   const status = await hentDelingsStatus(user.id, grupper.map((g) => g.id));
   const kart = new Map(status.map((s) => [s.gruppeId, s]));
@@ -83,6 +86,7 @@ export default async function DelingPage() {
         ekstra={
           <>
             <TnInnsynLenke tnGrupper={tnGrupper} />
+            {akProfil.map(valg => <AkProfilDeling key={valg.gruppeId} valg={valg} />)}
             {akAnalyse.map(valg => <AkAnalyseDeling key={valg.gruppeId} valg={valg} />)}
             {wangTestdeling.length > 0 ? (
               <>

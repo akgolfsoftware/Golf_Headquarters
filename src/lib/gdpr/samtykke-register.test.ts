@@ -31,7 +31,7 @@ test("helse og deling er append-only; lyd oppdaterer én rad", () => {
 });
 
 test("registeret oppgir lagringssted for hvert formål", () => {
-  assert.equal(SAMTYKKE_REGISTER.length, 4);
+  assert.equal(SAMTYKKE_REGISTER.length, 5);
   for (const rad of SAMTYKKE_REGISTER) {
     assert.ok(rad.lagringssted.length > 0, rad.id);
     assert.ok(rad.deling.length > 0, rad.id);

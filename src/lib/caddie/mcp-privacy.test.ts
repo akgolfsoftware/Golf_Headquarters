@@ -4,13 +4,15 @@ import { before, beforeEach, mock, test } from "node:test";
 const player = { id: "synthetic-player", name: "Kari Testperson", email: "kari@example.test", phone: "99887766", hcp: 4.2,
   homeClub: "ukjentida", trainingPlans: [{ id: "synthetic-plan", name: "ukjentper", status: "ACTIVE" }] };
 let fail = false;
+let deler = true;
+let profilKall = 0;
 let requestedId: unknown;
 let keyRole = "ADMIN";
 mock.module("@/lib/prisma", { namedExports: { prisma: {
   user: {
     findMany: async () => { if (fail) throw new Error("Kari kari@example.test"); return [player]; },
     findFirst: async ({ where }: { where: { AND?: Array<{ id?: string }> } }) => {
-      requestedId = where.AND?.find((part) => part.id)?.id;
+      requestedId = where.AND?.find((part) => typeof part.id === "string")?.id;
       return requestedId === player.id ? player : null;
     },
   },
@@ -19,13 +21,23 @@ mock.module("@/lib/prisma", { namedExports: { prisma: {
     update: async () => ({}),
   },
 } } });
+// Autorisasjonsmotoren prøves med faktisk SQL i ak-profildeling.test.ts.
+// Her prøves grensen mellom fersk leserett og MCPs gjenbrukbare referanser.
+mock.module("@/lib/deling/ak-profil-lesing", { namedExports: {
+  medAkProfiler: async (_viewer: unknown, les: (tx: object, scope: object) => Promise<unknown>) => {
+    profilKall++;
+    if (!deler) return null;
+    const { prisma } = await import("@/lib/prisma");
+    return les(prisma, { id: { in: [player.id] } });
+  },
+} });
 let dispatch: typeof import("@/lib/mcp/dispatcher").dispatchMcpMethod;
 let authenticate: typeof import("@/lib/mcp/auth").authenticateMcpRequest;
 before(async () => {
   ({ dispatchMcpMethod: dispatch } = await import("@/lib/mcp/dispatcher"));
   ({ authenticateMcpRequest: authenticate } = await import("@/lib/mcp/auth"));
 });
-beforeEach(() => { fail = false; requestedId = null; keyRole = "ADMIN"; });
+beforeEach(() => { fail = false; deler = true; profilKall = 0; requestedId = null; keyRole = "ADMIN"; });
 async function call(viewer: string, name: string, args: object, role = "ADMIN") {
   const result = await dispatch("request", "tools/call", { name, arguments: args }, false, { id: viewer, role });
   assert.equal(result.kind, "response");
@@ -72,4 +84,15 @@ test("utløpte MCP-referanser virker ikke etter at kartet er fornyet", async () 
     const result = await call("expiring-admin", "getPlayer", { id: alias });
     assert.equal(data(result).ok, false); assert.notEqual(requestedId, player.id);
   } finally { clock.mock.restore(); }
+});
+
+test("lagret MCP-referanse gir ikke tilgang etter at profildeling er trukket", async () => {
+  const search = await call("withdraw-admin", "searchPlayers", { query: "Kari", limit: 10 });
+  const alias = data(search).data.players[0].id;
+  deler = false;
+  const result = await call("withdraw-admin", "getPlayer", { id: alias });
+  assert.equal(data(result).ok, false);
+  assert.equal(requestedId, null);
+  assert.equal(profilKall, 2);
+  assert(!JSON.stringify(result).includes("Kari"));
 });

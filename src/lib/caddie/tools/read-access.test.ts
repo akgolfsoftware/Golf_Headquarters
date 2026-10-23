@@ -31,21 +31,35 @@ function matches(row: Row, where: Row): boolean {
 }
 let fail = false;
 let dataReads = 0;
+let deler = true;
+let profilKall = 0;
+const selects: Row[] = [];
 const user = {
-  findFirst: async ({ where }: { where: Row }) => { if (fail) throw new Error("Kari kari@example.test"); return players.find((p) => matches(p, where)) ?? null; },
-  findMany: async ({ where }: { where: Row }) => { if (fail) throw new Error("Kari kari@example.test"); return players.filter((p) => matches(p, where)); },
+  findFirst: async ({ where, select }: { where: Row; select: Row }) => { selects.push(select); if (fail) throw new Error("Kari kari@example.test"); return players.find((p) => matches(p, where)) ?? null; },
+  findMany: async ({ where, select }: { where: Row; select: Row }) => { selects.push(select); if (fail) throw new Error("Kari kari@example.test"); return players.filter((p) => matches(p, where)); },
 };
-const read = async () => { dataReads++; return []; };
-mock.module("@/lib/prisma", { namedExports: { prisma: { user,
-  trainingPlanSession: { findMany: read, findFirst: async () => { dataReads++; return { id: "session", pyramidArea: "TEK" }; }, count: async () => 1 },
+const read = async ({ select }: { select?: Row } = {}) => { if (select) selects.push(select); dataReads++; return []; };
+const profilTx = { user,
+  trainingPlanSession: { findMany: read, findFirst: async ({ select }: { select: Row }) => { selects.push(select); dataReads++; return { id: "session", pyramidArea: "TEK" }; }, count: async () => 1 },
   testResult: { count: async () => 1 },
-  round: { findMany: read, aggregate: async () => ({ _avg: { score: 74 } }), findFirst: async ({ where }: { where: Row }) => {
-    dataReads++; return matches({ id: "round-other", user: players[1] }, where) ? { score: 74 } : null;
+  round: { findMany: read, aggregate: async () => ({ _avg: { score: 74 } }), findFirst: async ({ where, select }: { where: Row; select: Row }) => {
+    selects.push(select); dataReads++; return matches({ id: "round-other", user: players[1] }, where) ? { score: 74 } : null;
   } }, booking: { findMany: read }, payment: { findMany: read }, subscription: { findMany: read },
-} } });
+};
+mock.module("@/lib/prisma", { namedExports: { prisma: { ...profilTx, user: {
+  findFirst() { throw Error("Profil skal leses i transaksjonen"); }, findMany() { throw Error("Profil skal leses i transaksjonen"); },
+} } } });
+mock.module("@/lib/deling/ak-profil-lesing", { namedExports: {
+  medAkProfiler: async (viewer: { id: string; role: string }, les: (tx: typeof profilTx, scope: Row) => Promise<unknown>) => {
+    profilKall++;
+    if (fail) throw Error("Syntetisk låsefeil");
+    if (!["ADMIN", "COACH"].includes(viewer.role)) return null;
+    return les(profilTx, { id: { in: deler ? viewer.role === "ADMIN" ? ["own", "other"] : ["own"] : [] }, deletedAt: null });
+  },
+} });
 let buildReadTools: typeof import("./read").buildReadTools;
 before(async () => { ({ buildReadTools } = await import("./read")); });
-beforeEach(() => { dataReads = 0; fail = false; });
+beforeEach(() => { dataReads = 0; fail = false; deler = true; profilKall = 0; selects.length = 0; });
 const coach = { id: "coach-a", role: "COACH" };
 const options = { toolCallId: "t", messages: [] };
 function completed<T>(result: T | AsyncIterable<T>): T {
@@ -78,7 +92,7 @@ test("ADMIN får bare aktive AK-gruppemedlemmer; PLAYER/ukjent rolle får ingen"
   assert(result.ok); assert.deepEqual(result.data.players.map((p) => p.id), ["own", "other"]);
   for (const role of ["PLAYER", "PARENT", "UNKNOWN"]) {
     const result = completed(await buildReadTools({ id: "viewer", role }).searchPlayers.execute!({ query: "", limit: 10 }, options));
-    assert(result.ok); assert.equal(result.data.count, 0);
+    assert.equal(result.ok, false);
   }
 });
 test("globale kunde-/økonomiverktøy krever ADMIN også når de kalles direkte", async () => {
@@ -104,4 +118,35 @@ test("programtilknytning alene avvises i Caddie, også for ADMIN", async () => {
     assert.equal(completed(await tools.getPlayerLatestSession.execute!({ playerId: "enrollment-only" }, options)).ok, false);
   }
   assert.equal(dataReads, 0);
+});
+
+test("alle seks profilverktøy sjekker ny tillatelse på hvert kall i samme samtale", async () => {
+  const tools = buildReadTools({ id: "admin", role: "ADMIN" });
+  assert(completed(await tools.getPlayer.execute!({ id: "own" }, options)).ok);
+  deler = false;
+  assert.equal(completed(await tools.getPlayer.execute!({ id: "own" }, options)).ok, false);
+  assert.equal(completed(await tools.getPlayerSessions.execute!({ playerId: "own", limit: 10 }, options)).ok, false);
+  assert.equal(completed(await tools.getPlayerStats.execute!({ playerId: "own", period: "30d" }, options)).ok, false);
+  assert.equal(completed(await tools.getPlayerLatestSession.execute!({ playerId: "own" }, options)).ok, false);
+  assert.equal(dataReads, 0);
+  assert.equal(completed(await tools.getRound.execute!({ roundId: "round-other" }, options)).ok, false);
+  const sok = completed(await tools.searchPlayers.execute!({ query: "Kari", limit: 10 }, options));
+  assert(sok.ok); assert.equal(sok.data.count, 0);
+  assert.equal(profilKall, 7);
+  assert.equal(selects.some(s => "lastLoginAt" in s || "tier" in s || "createdAt" in s), false);
+});
+
+test("profilverktøy velger ikke helse, fritekstnotater eller kontostatus", async () => {
+  const tools = buildReadTools({ id: "admin", role: "ADMIN" });
+  await tools.searchPlayers.execute!({ query: "Kari", limit: 10 }, options);
+  await tools.getPlayer.execute!({ id: "own" }, options);
+  await tools.getPlayerSessions.execute!({ playerId: "own", limit: 10 }, options);
+  await tools.getPlayerStats.execute!({ playerId: "own", period: "30d" }, options);
+  await tools.getPlayerLatestSession.execute!({ playerId: "own" }, options);
+  await tools.getRound.execute!({ roundId: "round-other" }, options);
+  const felter = JSON.stringify(selects);
+  for (const felt of ["notes", "coachFeedback", "rationale", "health", "wellbeing", "lastLoginAt", "tier", "email", "phone"]) {
+    assert(!felter.includes(`"${felt}":`), felt);
+  }
+  assert.equal(profilKall, 6);
 });

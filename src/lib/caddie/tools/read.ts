@@ -2,7 +2,8 @@
 // Spør Prisma og returnerer strukturerte data.
 // Feil håndteres med try/catch og returneres som ToolErrorResponse.
 
-import { coachScopedPlayerWhere } from "@/lib/auth/coached";
+import type { Prisma } from "@/generated/prisma/client";
+import { medAkProfiler } from "@/lib/deling/ak-profil-lesing";
 import { tool } from "ai";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
@@ -22,22 +23,18 @@ function periodToSince(period: "30d" | "90d" | "season"): Date {
 }
 
 // Bygges per innlogget viewer (coach-scoping: COACH ser kun egne spillere,
-// ADMIN ser alle coachede). Begge inngangene (Caddie-chat og MCP-endepunktet)
+// ADMIN trenger også egen profildeling). Begge inngangene (Caddie-chat og MCP-endepunktet)
 // er ADMIN-begrenset. Ressursfilteret gjelder likevel hvert enkelt oppslag;
 // et navnesøk eller en direkte ID må aldri utvide spillerutvalget.
 export const buildReadTools = (viewer: { id: string; role: string }) => {
-  // Ukjente roller må aldri arve helperens ADMIN-gren.
-  const scope = viewer.id && (viewer.role === "ADMIN" || viewer.role === "COACH")
-    ? coachScopedPlayerWhere(viewer)
-    : { id: { in: [] } };
-  const hasPlayer = async (id: string) => Boolean(await prisma.user.findFirst({
+  const hasPlayer = async (tx: Prisma.TransactionClient, scope: Prisma.UserWhereInput, id: string) => Boolean(await tx.user.findFirst({
     where: { AND: [scope, { id }] }, select: { id: true },
   }));
   const denied = () => toolError("Ikke tilgjengelig", "Fant ingen tilgjengelig spiller eller ressurs.");
   return ({
   searchPlayers: tool({
     description:
-      "Søk etter spillere via navn, e-post eller et pseudonym/søketoken (delvis match). Returnerer referanse, pseudonym, HCP og tier. " +
+      "Søk etter spillere via navn, e-post eller et pseudonym/søketoken (delvis match). Returnerer referanse, pseudonym og HCP. " +
       "Referanser er lokale og midlertidige. Kjør et nytt søk hvis et senere oppslag ikke finner ressursen. Kontaktinfo sendes ikke tilbake.",
     inputSchema: z.object({
       query: z.string().describe("Navn eller e-post (delvis match, case-insensitive)"),
@@ -45,23 +42,24 @@ export const buildReadTools = (viewer: { id: string; role: string }) => {
     }),
     execute: async ({ query, limit }) => {
       try {
-        const players = await prisma.user.findMany({
-          where: {
-            AND: [scope, { OR: [
-              { name: { contains: query, mode: "insensitive" } },
-              { email: { contains: query, mode: "insensitive" } },
-            ] }],
-          },
-          select: {
-            id: true,
-            name: true,
-            hcp: true,
-            tier: true,
-          },
-          take: limit,
-          orderBy: { name: "asc" },
-        });
-        return { ok: true as const, data: { count: players.length, players } };
+        return (await medAkProfiler(viewer, async (tx, scope) => {
+          const players = await tx.user.findMany({
+            where: {
+              AND: [scope, { OR: [
+                { name: { contains: query, mode: "insensitive" } },
+                { email: { contains: query, mode: "insensitive" } },
+              ] }],
+            },
+            select: {
+              id: true,
+              name: true,
+              hcp: true,
+            },
+            take: limit,
+            orderBy: { name: "asc" },
+          });
+          return { ok: true as const, data: { count: players.length, players } };
+        })) ?? denied();
       } catch {
         return toolError(
           "searchPlayers feilet",
@@ -73,7 +71,7 @@ export const buildReadTools = (viewer: { id: string; role: string }) => {
 
   getPlayer: tool({
     description:
-      "Hent full profil for én spiller: HCP, tier, plan-status og siste login. " +
+      "Hent delt coachingprofil for én spiller: HCP, erfaring, ambisjon, klubb og plan-status. " +
       "(Kontaktinfo og abonnement/Stripe-detaljer er bevisst utelatt — ikke nødvendig for " +
       "coaching-resonnement, og skal ikke sendes til AI-modellen. Bruk getActiveSubscriptions " +
       "hvis abonnementsstatus faktisk trengs.)",
@@ -82,40 +80,38 @@ export const buildReadTools = (viewer: { id: string; role: string }) => {
     }),
     execute: async ({ id }) => {
       try {
-        const player = await prisma.user.findFirst({
-          where: { AND: [scope, { id }] },
-          select: {
-            id: true,
-            name: true,
-            role: true,
-            tier: true,
-            hcp: true,
-            playingYears: true,
-            ambition: true,
-            homeClub: true,
-            lastLoginAt: true,
-            createdAt: true,
-            trainingPlans: {
-              where: { isActive: true },
-              select: {
-                id: true,
-                name: true,
-                status: true,
-                startDate: true,
-                endDate: true,
+        return (await medAkProfiler(viewer, async (tx, scope) => {
+          const player = await tx.user.findFirst({
+            where: { AND: [scope, { id }] },
+            select: {
+              id: true,
+              name: true,
+              hcp: true,
+              playingYears: true,
+              ambition: true,
+              homeClub: true,
+              trainingPlans: {
+                where: { isActive: true },
+                select: {
+                  id: true,
+                  name: true,
+                  status: true,
+                  startDate: true,
+                  endDate: true,
+                },
+                take: 5,
+                orderBy: { updatedAt: "desc" },
               },
-              take: 5,
-              orderBy: { updatedAt: "desc" },
             },
-          },
-        });
-        if (!player) {
-          return toolError(
-            "Spilleren er ikke tilgjengelig",
-            "Fant ingen spiller med denne IDen.",
-          );
-        }
-        return { ok: true as const, data: player };
+          });
+          if (!player) {
+            return toolError(
+              "Spilleren er ikke tilgjengelig",
+              "Fant ingen spiller med denne IDen.",
+            );
+          }
+          return { ok: true as const, data: player };
+        })) ?? denied();
       } catch {
         return toolError(
           "getPlayer feilet",
@@ -136,32 +132,34 @@ export const buildReadTools = (viewer: { id: string; role: string }) => {
     }),
     execute: async ({ playerId, from, to, limit }) => {
       try {
-        if (!(await hasPlayer(playerId))) return denied();
-        const fromDate = from ? new Date(from) : undefined;
-        const toDate = to ? new Date(to) : undefined;
-        const sessions = await prisma.trainingPlanSession.findMany({
-          where: {
-            plan: { userId: playerId, user: scope },
-            scheduledAt: {
-              ...(fromDate ? { gte: fromDate } : {}),
-              ...(toDate ? { lte: toDate } : {}),
+        return (await medAkProfiler(viewer, async (tx, scope) => {
+          if (!(await hasPlayer(tx, scope, playerId))) return denied();
+          const fromDate = from ? new Date(from) : undefined;
+          const toDate = to ? new Date(to) : undefined;
+          const sessions = await tx.trainingPlanSession.findMany({
+            where: {
+              plan: { userId: playerId, user: scope },
+              scheduledAt: {
+                ...(fromDate ? { gte: fromDate } : {}),
+                ...(toDate ? { lte: toDate } : {}),
+              },
             },
-          },
-          select: {
-            id: true,
-            scheduledAt: true,
-            durationMin: true,
-            title: true,
-            pyramidArea: true,
-            skillArea: true,
-            environment: true,
-            status: true,
-            plan: { select: { id: true, name: true } },
-          },
-          orderBy: { scheduledAt: "desc" },
-          take: limit,
-        });
-        return { ok: true as const, data: { count: sessions.length, sessions } };
+            select: {
+              id: true,
+              scheduledAt: true,
+              durationMin: true,
+              title: true,
+              pyramidArea: true,
+              skillArea: true,
+              environment: true,
+              status: true,
+              plan: { select: { id: true, name: true } },
+            },
+            orderBy: { scheduledAt: "desc" },
+            take: limit,
+          });
+          return { ok: true as const, data: { count: sessions.length, sessions } };
+        })) ?? denied();
       } catch {
         return toolError(
           "getPlayerSessions feilet",
@@ -180,57 +178,59 @@ export const buildReadTools = (viewer: { id: string; role: string }) => {
     }),
     execute: async ({ playerId, period }) => {
       try {
-        if (!(await hasPlayer(playerId))) return denied();
-        const since = periodToSince(period);
-        const [rounds, testCount, sessionCount, sgAgg] = await Promise.all([
-          prisma.round.findMany({
-            where: { userId: playerId, user: scope, playedAt: { gte: since } },
-            select: {
-              id: true,
-              playedAt: true,
-              score: true,
-              sgTotal: true,
-              sgOtt: true,
-              sgApp: true,
-              sgArg: true,
-              sgPutt: true,
+        return (await medAkProfiler(viewer, async (tx, scope) => {
+          if (!(await hasPlayer(tx, scope, playerId))) return denied();
+          const since = periodToSince(period);
+          const [rounds, testCount, sessionCount, sgAgg] = await Promise.all([
+            tx.round.findMany({
+              where: { userId: playerId, user: scope, playedAt: { gte: since } },
+              select: {
+                id: true,
+                playedAt: true,
+                score: true,
+                sgTotal: true,
+                sgOtt: true,
+                sgApp: true,
+                sgArg: true,
+                sgPutt: true,
+              },
+              orderBy: { playedAt: "desc" },
+            }),
+            tx.testResult.count({
+              where: { userId: playerId, user: scope, takenAt: { gte: since } },
+            }),
+            tx.trainingPlanSession.count({
+              where: {
+                plan: { userId: playerId, user: scope },
+                scheduledAt: { gte: since },
+                status: "COMPLETED",
+              },
+            }),
+            tx.round.aggregate({
+              where: { userId: playerId, user: scope, playedAt: { gte: since } },
+              _avg: {
+                sgTotal: true,
+                sgOtt: true,
+                sgApp: true,
+                sgArg: true,
+                sgPutt: true,
+                score: true,
+              },
+            }),
+          ]);
+          return {
+            ok: true as const,
+            data: {
+              period,
+              since: since.toISOString(),
+              roundCount: rounds.length,
+              testCount,
+              completedSessionCount: sessionCount,
+              averages: sgAgg._avg,
+              recentRounds: rounds.slice(0, 10),
             },
-            orderBy: { playedAt: "desc" },
-          }),
-          prisma.testResult.count({
-            where: { userId: playerId, user: scope, takenAt: { gte: since } },
-          }),
-          prisma.trainingPlanSession.count({
-            where: {
-              plan: { userId: playerId, user: scope },
-              scheduledAt: { gte: since },
-              status: "COMPLETED",
-            },
-          }),
-          prisma.round.aggregate({
-            where: { userId: playerId, user: scope, playedAt: { gte: since } },
-            _avg: {
-              sgTotal: true,
-              sgOtt: true,
-              sgApp: true,
-              sgArg: true,
-              sgPutt: true,
-              score: true,
-            },
-          }),
-        ]);
-        return {
-          ok: true as const,
-          data: {
-            period,
-            since: since.toISOString(),
-            roundCount: rounds.length,
-            testCount,
-            completedSessionCount: sessionCount,
-            averages: sgAgg._avg,
-            recentRounds: rounds.slice(0, 10),
-          },
-        };
+          };
+        })) ?? denied();
       } catch {
         return toolError(
           "getPlayerStats feilet",
@@ -339,45 +339,46 @@ export const buildReadTools = (viewer: { id: string; role: string }) => {
     }),
     execute: async ({ roundId }) => {
       try {
-        const round = await prisma.round.findFirst({
-          where: { id: roundId, user: scope },
-          select: {
-            id: true,
-            playedAt: true,
-            score: true,
-            notes: true,
-            sgTotal: true,
-            sgOtt: true,
-            sgApp: true,
-            sgArg: true,
-            sgPutt: true,
-            sgTee: true,
-            sgApp200: true,
-            sgApp150: true,
-            sgApp100: true,
-            sgApp50: true,
-            sgChip: true,
-            sgPitch: true,
-            sgLob: true,
-            sgBunker: true,
-            sgPutt0_3: true,
-            sgPutt3_5: true,
-            sgPutt5_10: true,
-            sgPutt10_15: true,
-            sgPutt15_25: true,
-            sgPutt25_40: true,
-            sgPutt40plus: true,
-            user: { select: { id: true, name: true } },
-            course: { select: { id: true, name: true, par: true, rating: true, slope: true } },
-          },
-        });
-        if (!round) {
-          return toolError(
-            "Runden er ikke tilgjengelig",
-            "Fant ingen runde med denne IDen.",
-          );
-        }
-        return { ok: true as const, data: round };
+        return (await medAkProfiler(viewer, async (tx, scope) => {
+          const round = await tx.round.findFirst({
+            where: { id: roundId, user: scope },
+            select: {
+              id: true,
+              playedAt: true,
+              score: true,
+              sgTotal: true,
+              sgOtt: true,
+              sgApp: true,
+              sgArg: true,
+              sgPutt: true,
+              sgTee: true,
+              sgApp200: true,
+              sgApp150: true,
+              sgApp100: true,
+              sgApp50: true,
+              sgChip: true,
+              sgPitch: true,
+              sgLob: true,
+              sgBunker: true,
+              sgPutt0_3: true,
+              sgPutt3_5: true,
+              sgPutt5_10: true,
+              sgPutt10_15: true,
+              sgPutt15_25: true,
+              sgPutt25_40: true,
+              sgPutt40plus: true,
+              user: { select: { id: true, name: true } },
+              course: { select: { id: true, name: true, par: true, rating: true, slope: true } },
+            },
+          });
+          if (!round) {
+            return toolError(
+              "Runden er ikke tilgjengelig",
+              "Fant ingen runde med denne IDen.",
+            );
+          }
+          return { ok: true as const, data: round };
+        })) ?? denied();
       } catch {
         return toolError(
           "getRound feilet",
@@ -470,43 +471,42 @@ export const buildReadTools = (viewer: { id: string; role: string }) => {
     }),
     execute: async ({ playerId, pyramidArea }) => {
       try {
-        if (!(await hasPlayer(playerId))) return denied();
-        const session = await prisma.trainingPlanSession.findFirst({
-          where: {
-            plan: { userId: playerId, user: scope },
-            ...(pyramidArea ? { pyramidArea } : {}),
-          },
-          select: {
-            id: true,
-            scheduledAt: true,
-            durationMin: true,
-            title: true,
-            rationale: true,
-            pyramidArea: true,
-            skillArea: true,
-            environment: true,
-            status: true,
-            plan: { select: { id: true, name: true } },
-            log: {
-              select: {
-                startedAt: true,
-                completedAt: true,
-                csAchieved: true,
-                rating: true,
-                notes: true,
-                coachFeedback: true,
+        return (await medAkProfiler(viewer, async (tx, scope) => {
+          if (!(await hasPlayer(tx, scope, playerId))) return denied();
+          const session = await tx.trainingPlanSession.findFirst({
+            where: {
+              plan: { userId: playerId, user: scope },
+              ...(pyramidArea ? { pyramidArea } : {}),
+            },
+            select: {
+              id: true,
+              scheduledAt: true,
+              durationMin: true,
+              title: true,
+              pyramidArea: true,
+              skillArea: true,
+              environment: true,
+              status: true,
+              plan: { select: { id: true, name: true } },
+              log: {
+                select: {
+                  startedAt: true,
+                  completedAt: true,
+                  csAchieved: true,
+                  rating: true,
+                },
               },
             },
-          },
-          orderBy: { scheduledAt: "desc" },
-        });
-        if (!session) {
-          return toolError(
-            "Ingen tilgjengelig økt",
-            "Fant ingen økter for denne spilleren.",
-          );
-        }
-        return { ok: true as const, data: session };
+            orderBy: { scheduledAt: "desc" },
+          });
+          if (!session) {
+            return toolError(
+              "Ingen tilgjengelig økt",
+              "Fant ingen økter for denne spilleren.",
+            );
+          }
+          return { ok: true as const, data: session };
+        })) ?? denied();
       } catch {
         return toolError(
           "getPlayerLatestSession feilet",

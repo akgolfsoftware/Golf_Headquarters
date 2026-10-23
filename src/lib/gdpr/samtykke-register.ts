@@ -14,6 +14,8 @@ import {
 } from "@/lib/health/samtykke-regler";
 import { LYD_SAMTYKKE_ORDLYD_VERSJON } from "@/lib/recording/lyd-samtykke-ordlyd";
 
+import { AK_PROFIL_SCOPE, AK_PROFIL_VERSJON } from "@/lib/deling/ak-profil-regler";
+
 export const SAMTYKKE_ALDER = GDPR_SAMTYKKE_ALDER;
 
 export type SamtykkeHistorikk = "append-only" | "oppdater-rad" | "felt-på-bruker";
@@ -31,6 +33,14 @@ export type SamtykkeFormaal = {
 };
 
 export const SAMTYKKE_REGISTER: readonly SamtykkeFormaal[] = [
+  {
+    id: AK_PROFIL_SCOPE,
+    formaal: "Coachingprofil i AK Golfs Caddie, per aktiv mottakergruppe",
+    opplysningstype: "Identitet, handicap, erfaring, ambisjon, klubb, plan, økter, tester og rundestatistikk",
+    alder: SAMTYKKE_ALDER, roller: ["SELV", "FORESATT"],
+    deling: "Aktiv AK-gruppe og ansvarlig trener/hjelpetrener/administrator; helse, private notater, meldinger, opptak og økonomi er utenfor",
+    lagringssted: "delings_samtykker", historikk: "append-only", tekstVersjon: AK_PROFIL_VERSJON,
+  },
   {
     id: "konto-foresatt",
     formaal: "Behandle konto for spiller under 16 år",
