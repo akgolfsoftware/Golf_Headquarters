@@ -174,28 +174,45 @@ export async function generateWeekSuggestions(
     ]);
 
     const hcp = z.number().min(-10).max(54).safeParse(user?.hcp);
-    const userPrompt = buildWeekPrompt(ctx, signaler, hcp.success ? kategoriFraHcp(hcp.data) : null);
+    return await generateWeekSuggestionsFromContext(ctx, signaler, hcp.success ? kategoriFraHcp(hcp.data) : null);
+  } catch {
+    return unavailableSuggestions();
+  }
+}
 
+/** No database reads. Call only after scoped capture has released its locks.
+ * Raw values still pass the same allowlist; no caller-supplied prompt is accepted.
+ * This function does not itself authorize access or a background purpose.
+ */
+export async function generateWeekSuggestionsFromContext(
+  context: unknown, signals: unknown, category: unknown,
+): Promise<{ suggestions: WeekSuggestion[]; usedAi: boolean }> {
+  if (!process.env.ANTHROPIC_API_KEY) return { suggestions: fallbackSuggestions(), usedAi: false };
+  try {
     const { object } = await generateObject({
       model: anthropicProvider()(WEEK_SUGGEST_MODEL),
       schema: SuggestionsSchema,
       system:
         "Du er AK Golf sin AI-coach. Du lager pragmatiske, gjennomførbare treningsuker for golfspillere. Du svarer alltid på norsk bokmål og bruker korte, konkrete økt-titler.",
-      prompt: userPrompt,
+      prompt: buildWeekPrompt(context, signals, category),
       maxRetries: 1,
     });
 
     return { suggestions: object.suggestions, usedAi: true };
   } catch {
-    // Provider errors may contain the request/response. Never persist them or player IDs.
-    try {
-      await logError({
-        context: "ai-plan.generateWeekSuggestions",
-        error: new Error("WEEK_SUGGEST_UNAVAILABLE"),
-      });
-    } catch {
-      // Logging failure must not bypass the explicit non-AI fallback result.
-    }
-    return { suggestions: fallbackSuggestions(), usedAi: false };
+    return unavailableSuggestions();
   }
+}
+
+async function unavailableSuggestions() {
+  // Provider errors may contain the request/response. Never persist them or player IDs.
+  try {
+    await logError({
+      context: "ai-plan.generateWeekSuggestions",
+      error: new Error("WEEK_SUGGEST_UNAVAILABLE"),
+    });
+  } catch {
+    // Logging failure must not bypass the explicit non-AI fallback result.
+  }
+  return { suggestions: fallbackSuggestions(), usedAi: false };
 }

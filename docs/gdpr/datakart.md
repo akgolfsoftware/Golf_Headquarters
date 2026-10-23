@@ -283,3 +283,10 @@ Dette begrenser dataflyten, men fastslår ikke juridisk anonymitet eller behandl
 ### Internt bevis for uendret profildeling (23.10.2026)
 
 `ak-profil-mellomlagring` kan returnere spiller-/gruppe-/trener-ID, formål/tekstversjon og en kontrollsum av gjeldende delingshendelse, medlemskap, konto-/grupperadversjoner og nødvendig foresattgrunnlag. Kontrollsummen produseres bare ved eksplisitt bruk av den nye serverfunksjonen; ekstra felter sendes ikke til modell eller klient. Det er ingen ny tabell, lagring, API eller aktiv bakgrunnsjobb i denne leveransen. Fremtidig lagring på PlanAction må beskrives i den leveransen. Kontrollsummen er intern tilgangsmetadata, ikke anonymt analysegrunnlag eller selvstendig tillatelse. Sammenligning skjer sammen med fersk autorisasjon under lås; et nytt ja oppgraderer ikke et tidligere bevis. Ingen utvidelse av samtykkeformål, juridisk avklaring eller felles læring. Prøvet bare i lokal syntetisk database.
+
+
+### Ukeforslag: minimert servergrunnlag (23.10.2026)
+
+`ak-ukegrunnlag` leser kun etter eksisterende AK-profildeling og konkret ansvarlig trener. Internt underlag omfatter plan-/periodeidentitet, versjoner, øktbudsjett, kontrollerte treningspreferanser, SG-område, antall fullførte V2-økter og kommende turneringstid. Ingen navn, fritekstnotater, helse, motivasjonstekst eller hele brukerpreferanser velges. Interne delings-/databevis er kontrollmetadata; de sendes ikke til modell. Ny modellinngang gjenbruker eksisterende enum-/tallfilter og gjør ingen egne databaseoppslag.
+
+Denne leveransen har ingen ny varig tabell, kølagring, eksport eller ny formålsaktivering. Snapshot holdes i serverminne; fremtidig lagring i PlanAction må følge rettighets-/sletteflyten og dokumenteres ved integrasjon. Tekniske filtre er ikke dokumentasjon på juridisk anonymitet eller dekning av bakgrunnsformål. Måned-/ukeoverstyring er registrert, ikke faglig tolket. Bare de valgte ukedataenes versjoner sammenlignes; dette er ikke en totalversjon av spillerprofilen. Ukeforslagsjobben/køen er fortsatt ikke koblet til denne nye adgangen.

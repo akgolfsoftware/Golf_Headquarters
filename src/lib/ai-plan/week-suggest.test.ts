@@ -12,7 +12,7 @@ const oldKey = process.env.ANTHROPIC_API_KEY;
 const suggestions = ["konservativ", "standard", "aggressiv"].map(variant => ({ variant, totalSessions: 3, focusBlend: "Putting og innspill", sessions: [0, 2, 4].map(day => ({ day, title: "Putting", pyramidArea: "TEK", durationMin: 45 })) }));
 mock.module("@/lib/prisma", {
   namedExports: { prisma: {
-    user: { findUnique: async () => ({ name: PRIVATE, hcp: 12 }) },
+    user: { findUnique: async (query: unknown) => { queries.push(query); return { name: PRIVATE, hcp: 12 }; } },
     tournamentEntry: { findFirst: async (query: unknown) => {
       queries.push(query);
       return { manualName: PRIVATE, manualDate: new Date("2026-09-30T00:00:00Z"), tournament: { name: PRIVATE, startDate: new Date("2026-09-30T00:00:00Z") } };
@@ -91,4 +91,26 @@ test("missing model key makes no model or contextual database call", async () =>
   const { generateWeekSuggestions } = await import("./week-suggest");
   assert.equal((await generateWeekSuggestions("synthetic-player-id", new Date("2026-09-28"))).usedAi, false);
   assert.equal(sent.length, 0); assert.equal(queries.length, 0); assert.equal(errors.length, 0);
+});
+
+
+test("scoped context entry performs no database lookup and revalidates raw fields", async () => {
+  const { generateWeekSuggestionsFromContext } = await import("./week-suggest");
+  const result = await generateWeekSuggestionsFromContext(
+    { daysUntilTournament: 8, completedSessions: 2, sgWeaknesses: ["APP", PRIVATE], name: PRIVATE },
+    { aktivFase: "GRUNN", fokus: { label: PRIVATE }, foretrukneDager: [1, 3], playerId: PRIVATE }, "C",
+  );
+  assert.equal(result.usedAi, true);
+  assert.equal(queries.length, 0);
+  assert.equal(sent.length, 1);
+  assert.ok(!sent[0].prompt.includes(PRIVATE));
+  assert.match(sent[0].prompt, /Innspill/);
+});
+
+test("scoped context entry preserves explicit fallback on model failure", async () => {
+  failModel = true;
+  const { generateWeekSuggestionsFromContext } = await import("./week-suggest");
+  assert.equal((await generateWeekSuggestionsFromContext({}, {}, null)).usedAi, false);
+  assert.equal(queries.length, 0);
+  assert.equal(errors[0].error.message, "WEEK_SUGGEST_UNAVAILABLE");
 });
