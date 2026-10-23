@@ -24,7 +24,7 @@ Koden ligger i dette prosjektet. Ikke kopier eksterne agentkataloger inn i repoe
 
 ## Skjermarbeid
 
-Bruk den prosjektspesifikke skillen [AK HQ Design](.claude/skills/ak-hq-design/SKILL.md) ved brukerreiser, komponenter, wireframes, UI og designoverlevering. [Gjeldende designautoritet](docs/design-system/design-autoritet.md) styrer system og retning. Skillen samler arbeidsmåte og kvalitetskrav; konkrete skjermvarianter kan fortsatt velges før bygging uten at systemvalget åpnes på nytt. Startpakken og hovedprompten nås fra [designarbeidet](docs/design-system/ak-hq-designarbeid.md).
+Bruk den prosjektspesifikke skillen [AK HQ Design](.claude/skills/ak-hq-design/SKILL.md) ved brukerreiser, komponenter, wireframes, UI og designoverlevering. [Gjeldende designautoritet](docs/design-system/design-autoritet.md) styrer system og retning. Skillen samler arbeidsmåte og kvalitetskrav; konkrete skjermvarianter kan fortsatt velges før bygging uten at systemvalget åpnes på nytt. Startpakken og hovedprompten nås fra [designarbeidet](docs/design-system/ak-hq-designarbeid.md). Regler for diagrammer, sortering, datoer og bevegelse: [designregler-data-og-lister.md](docs/design-system/designregler-data-og-lister.md).
 
 I alt designarbeid er [treningsplanlegging og språk](docs/treningsplanlegging.md) eneste master for synlig ordlyd, begreper, menynavn, statuser, meldinger, tall og enheter. `docs/ordbok.md` peker dit, og `docs/ordbok.json` er avledet. Kontroller tekst mot masteren før designoverlevering; eldre designfiler og lokale ordlister kan ikke overstyre den. Dette gjelder også Team Norway og WANG når de bruker felles golf- og treningsbegreper.
 
