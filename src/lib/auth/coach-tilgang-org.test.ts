@@ -34,7 +34,7 @@ mock.module("@/lib/deling/profil-lesing", {
   },
 });
 
-/** Finnes gren 3 (trener-medlemskap) i where-treet? Da er det lese-scopet. */
+/** Finnes aktivt trener-medlemskap i where-treet? Gjelder lese- og skrivefilteret. */
 function harMedlemskapsgren(where: Where): boolean {
   return JSON.stringify(where).includes("\"members\"");
 }
@@ -73,7 +73,7 @@ test("trukket deling (invitasjon finnes, men samtykket gjelder ikke lenger): ing
   assert.equal(await harCoachLesetilgangTilSpiller(orgTrener, "spiller-1"), false);
 });
 
-test("egen AK-coach (enrollment eller eid gruppe): leser og skriver som før, uten delingsoppslag", async () => {
+test("AK-coach med treff i medlemsporten: bruker ikke organisasjonsdeling", async () => {
   nullstill();
   finnSpiller = () => true;
   const { harCoachLesetilgangTilSpiller, harCoachTilgangTilSpiller } = await import("./coached");

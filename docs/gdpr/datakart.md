@@ -223,3 +223,10 @@ Gruppeanalysen og nytt analyse-ja låser nå de eksisterende gruppe-, medlemskap
 Nye versjoner gir nye rader; UPDATE avvises i databasen. DELETE er tillatt for kontrollert kontosletting; FK til User har Cascade, prøvd mot egne lokale testkontoer. **AVKLAR:** nødvendig oppbevaring, eventuell bevisbevaring og håndtering ved dagens myke sletting/anonymisering. Det finnes ingen ny automatisk opprydding, og ingen ekte historikk er slettet. Kontoregistrering og læringsvalg må ikke beskrives som ett samtykke i det eksisterende samtykkeregisteret.
 
 Ingen godkjent dokumentpakke er aktiv. Handlingen er ikke koblet til brukergrensesnitt eller fullføringsvakt. Foresatt-/skoleflyt og juridisk dokumentkontroll gjenstår. Migrasjon er kun utført i isolert lokal testdatabase; hosted schema og produksjon er uendret. Før en fremtidig apputrulling må tabellen etableres, siden egeneksport leser den.
+
+
+### C1 medlems- og mottakerfilter (23.10.2026)
+
+Felles AgencyOS-kandidatfiltre krever aktivt PLAYER-medlemskap i aktiv AK-administrert gruppe; COACH må være ansvarlig eller aktiv trener/assistent i samme gruppe, assistent kan bare lese. ADMIN omgår ikke gruppekravet. Enrollment alene og WANG/TN-gruppemedlemskap gir ikke denne generelle profiltilgangen. Eksisterende navngitt organisasjonsdeling består separat. Uttrykkelig AK-profildeling for alle profilhandlinger gjenstår; et ja til gruppeanalyse er ikke et ja til full profil. Ingen ny persondatalagring eller automatisk samtykkeoppgradering.
+
+Spillerens eget coachingtilbud og manuell booking beholder egne formålsgrenser. Bookinglisten og opprettelsen bruker samme regel, med avvisning av slettede kontoer og andre treneres enrollment-kunder. Disse reglene er ikke tillatelse til treningsprofil, helse eller felles læring. Faktiske relasjonsfiltre er prøvd mot lokal Postgres med syntetiske data; dette dokumenterer teknisk avgrensning, ikke juridisk sluttestatus.

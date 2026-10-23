@@ -94,10 +94,9 @@ mock.module("@/lib/auth/action-guards", {
 });
 let coachetSpillere = new Set<string>();
 let stallTilgang = new Set<string>();
-mock.module("@/lib/auth/coached", {
+mock.module("@/lib/auth/booking-spiller-scope", {
   namedExports: {
-    erCoachetSpiller: async (id: string) => coachetSpillere.has(id),
-    harCoachTilgangTilSpiller: async (_v: unknown, id: string) => stallTilgang.has(id),
+    harBookingTilgangTilSpiller: async (_v: unknown, id: string) => !coachetSpillere.has(id) || stallTilgang.has(id),
   },
 });
 mock.module("@/lib/booking/kollisjonsvern", {
@@ -346,6 +345,10 @@ test("opprettOktPaaTid: coachet spiller utenfor stallen avvises, lead (ikke coac
   };
   coachetSpillere = new Set(["spiller-a"]);
   await assert.rejects(() => a.opprettOktPaaTid(input), /ikke tilgang/);
+  assert.equal(bookingCreates.length, 0);
+  assert.equal(pushBookingKall.length, 0);
+  assert.equal(varsleKall.length, 0);
+  assert.equal(klippTrekk.length, 0);
   stallTilgang = new Set(["spiller-a"]);
   await a.opprettOktPaaTid(input);
 });

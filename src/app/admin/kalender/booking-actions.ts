@@ -10,7 +10,7 @@
 
 import { requireCoachActionUser } from "@/lib/auth/action-guards";
 import { prisma } from "@/lib/prisma";
-import { coachScopedPlayerWhere, coachedPlayerWhere } from "@/lib/auth/coached";
+import { bookingSpillerWhere } from "@/lib/auth/booking-spiller-scope";
 import { opprettOktPaaTid } from "@/app/admin/(legacy)/calendar/actions";
 import { coachBookingScope } from "@/lib/auth/booking-scope";
 import { lagBetalingslenke } from "@/lib/booking/coach-betalingslenke";
@@ -56,7 +56,7 @@ export async function hentBookingValg(): Promise<BookingValg> {
     }),
     prisma.user.findMany({
       // Ikke-coachede (leads) kan bookes av alle; coachede bare av egen coach (head coach: alle).
-      where: { role: "PLAYER", OR: [{ NOT: coachedPlayerWhere() }, coachScopedPlayerWhere(aktor)] },
+      where: bookingSpillerWhere(aktor),
       select: { id: true, name: true, email: true },
       orderBy: { name: "asc" },
       take: 500,
