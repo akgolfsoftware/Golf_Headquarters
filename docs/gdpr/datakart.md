@@ -271,3 +271,10 @@ Spilleren beholder egne observasjoner uten å dele med treneren; slettet konto g
 
 ### 23.10.2026: observasjoner i sekundærvisninger
 Innboksens ventende/løste saker, morgenbriefens direkte forslagsliste/-teller, mobiloppgaver og AgenticOS sine observasjonslister/tellinger bruker samme låste, aktuelle coachingprofildeling til konkret gruppe og ansvarlig trener. Historikk og dagens beslutningsteller mister innsyn ved neste lesing etter trekk. Ingen nye lagringsfelter, oppbevaring, eksport eller læringsformål. Dette omfatter ikke gammel lagret brief-output eller øvrige agenters dataformål. Detaljer og kontrollstatus: [gjennomføringsplanen](../planer/coachintelligens-gjennomforing-2026-10-23.md).
+
+
+### Ukeforslag: kontrollert modellgrunnlag (23.10.2026)
+
+`ai-plan/week-suggest` bygger modelltekst gjennom `week-prompt`: bare kontrollerte SG-kategorier, treningsfase, ukedager, begrensede antall/etterlevelse, grovt turneringsintervall og eksisterende standardkategori. Ingen navn, turneringsnavn, eksakte datoer, bruker-ID, rå HCP, coachfritekst eller vilkårlig signaltekst. V2-telling gjelder fullførte økter og beskrives ikke som samlet treningsbelastning. Manglende data er ukjent. Feilloggen får bare fast feilkode, ingen rå leverandørfeil eller spiller-ID. Ingen nye lagringsfelt; eksisterende PlanAction- og ErrorLog-lagring består. Generisk reserveprogram lagres ikke som personlig ukeforslag fra bakgrunnsjobben.
+
+Dette begrenser dataflyten, men fastslår ikke juridisk anonymitet eller behandlingsgrunnlag. Gruppemottaker, formålsavgrenset uthenting og fersk delingskontroll gjennom hele ukeforslagets lagring/lesing/godkjenning er fortsatt uferdig. Ingen ny delingsrett eller aktivering av felles læring. Prøvet med syntetiske data og lokal falsk modelltransport, ikke ekte skyforespørsler.

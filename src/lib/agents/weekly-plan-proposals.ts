@@ -92,8 +92,9 @@ async function weeklyPlanProposalsKjerne(): Promise<WeeklyPlanProposalsResultat>
         continue;
       }
 
-      const { suggestions } = await generateWeekSuggestions(spiller.id, weekStart);
-      if (suggestions.length === 0) {
+      const { suggestions, usedAi } = await generateWeekSuggestions(spiller.id, weekStart);
+      // A generic reserve template is not a personal recommendation.
+      if (usedAi !== true || suggestions.length === 0) {
         hoppet++;
         continue;
       }

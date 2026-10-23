@@ -12,19 +12,11 @@ import { prisma } from "@/lib/prisma";
 import { anthropicProvider } from "@/lib/ai/client";
 import { kategoriFraHcp } from "@/lib/ai-plan/context";
 import { hentPlayerSignals } from "@/lib/plan-engine/load-signals";
-import {
-  STANDARD_PYRAMIDE,
-  STANDARD_OKT_ANTALL,
-  type FaseMedOktAntall,
-} from "@/lib/plan-engine/standard-fordeling";
-import { SG_FOKUS_LABEL } from "@/lib/workbench/fokus";
+import { buildWeekPrompt } from "./week-prompt";
 import { logError } from "@/lib/error-tracking";
 
 // Haiku er billig + raskt for korte plan-forslag (gyldig id mot api.anthropic.com).
 const WEEK_SUGGEST_MODEL = "claude-haiku-4-5-20251001" as const;
-
-// dagNr 1–7 (man=1) → norsk kortnavn, for prompt-tekst.
-const UKEDAG_NAVN = ["man", "tir", "ons", "tor", "fre", "lør", "søn"];
 
 const PyramidArea = z.enum(["FYS", "TEK", "SLAG", "SPILL", "TURN"]);
 
@@ -48,12 +40,10 @@ const SuggestionsSchema = z.object({
 
 export type WeekSuggestion = z.infer<typeof VariantSchema>;
 
-// Ingen navn: spillerens navn sendes aldri til Anthropic (beslutninger.md §SKJERMENE … RUNDE 8, punkt 3).
 type PlayerContext = {
-  currentPeriod?: string;
-  nextTournament?: { name: string; daysUntil: number } | null;
-  sgWeaknesses?: string[];
-  recentLoadDays?: number;
+  daysUntilTournament: number | null;
+  sgWeaknesses: unknown[];
+  completedSessions: number;
 };
 
 function fallbackSuggestions(): WeekSuggestion[] {
@@ -113,22 +103,20 @@ async function loadPlayerContext(userId: string, weekStart: Date): Promise<Playe
     },
     orderBy: [{ tournament: { startDate: "asc" } }, { manualDate: "asc" }],
     select: {
-      manualName: true,
       manualDate: true,
-      tournament: { select: { name: true, startDate: true } },
+      tournament: { select: { startDate: true } },
     },
   });
 
-  let nextTournament: PlayerContext["nextTournament"] = null;
+  let daysUntilTournament: number | null = null;
   if (nextEntry) {
-    const name = nextEntry.tournament?.name ?? nextEntry.manualName ?? "Turnering";
     const startDate = nextEntry.tournament?.startDate ?? nextEntry.manualDate;
     if (startDate) {
       const daysUntil = Math.max(
         0,
         Math.ceil((startDate.getTime() - weekStart.getTime()) / (1000 * 60 * 60 * 24)),
       );
-      nextTournament = { name, daysUntil };
+      daysUntilTournament = daysUntil;
     }
   }
 
@@ -140,94 +128,27 @@ async function loadPlayerContext(userId: string, weekStart: Date): Promise<Playe
     select: { payload: true, value: true },
   });
   const sgWeaknesses = sgSignals
-    .filter((s) => typeof s.value === "number" && s.value < 0)
+    .filter((s) => typeof s.value === "number" && Number.isFinite(s.value) && s.value < 0)
     .map((s) => {
-      const payload = s.payload as { area?: string } | null;
-      return payload?.area ?? "ukjent område";
+      const payload = z.object({ area: z.unknown() }).safeParse(s.payload);
+      return payload.success ? payload.data.area : null;
     });
 
-  // Treningsbelastning siste 14 dager — antall økter.
+  // Registrerte fullførte V2-økter, ikke dager eller samlet treningsbelastning.
   const since = new Date(weekStart.getTime() - 14 * 24 * 60 * 60 * 1000);
-  const recentLoadDays = await prisma.trainingSessionV2.count({
+  const completedSessions = await prisma.trainingSessionV2.count({
     where: {
       studentId: userId,
       startTime: { gte: since, lt: weekStart },
-      status: { in: ["COMPLETED", "IN_PROGRESS"] },
+      status: "COMPLETED",
     },
   });
 
   return {
-    nextTournament,
+    daysUntilTournament,
     sgWeaknesses,
-    recentLoadDays,
+    completedSessions,
   };
-}
-
-/**
- * Standardplan-anker: spillerens kategori (HCP-basert — låst valg inntil
- * drill-retag er avgjort) gir pyramidefordeling + øktantall fra
- * standard-fordeling.ts, så variantene ankres i AK-metodikken i stedet for
- * å flyte fritt.
- */
-async function standardAnker(userId: string, aktivFase: string | null): Promise<string[]> {
-  const user = await prisma.user.findUnique({ where: { id: userId }, select: { hcp: true } });
-  const kategori = kategoriFraHcp(user?.hcp ?? null);
-  if (!kategori) return [];
-  const pyr = STANDARD_PYRAMIDE[kategori];
-  // Restitusjon har ikke standardtall: spiller og coach setter antall økter selv.
-  const okter =
-    aktivFase === "RESTITUSJON"
-      ? null
-      : (STANDARD_OKT_ANTALL[kategori][(aktivFase ?? "GRUNN") as FaseMedOktAntall] ??
-        STANDARD_OKT_ANTALL[kategori].GRUNN);
-  return [
-    `Standardplan-anker for spillerens nivå (kategori ${kategori}): ` +
-      `FYS ${pyr.FYS} % · TEK ${pyr.TEK} % · SLAG ${pyr.SLAG} % · SPILL ${pyr.SPILL} % · TURN ${pyr.TURN} %, ` +
-      (okter === null
-        ? "antall økter per uke er satt av spiller og coach, ikke av standarden. "
-        : `normalt ${okter} økter/uke. `) +
-      `«standard»-varianten skal ligge nær dette; ` +
-      `«konservativ» litt under, «aggressiv» litt over.`,
-  ];
-}
-
-function buildPrompt(ctx: PlayerContext, weekStart: Date, ekstra: string[]): string {
-  const lines: string[] = [];
-  lines.push(`Uke som starter: ${weekStart.toISOString().slice(0, 10)} (mandag)`);
-  if (ctx.nextTournament) {
-    lines.push(
-      `Neste turnering: ${ctx.nextTournament.name} om ${ctx.nextTournament.daysUntil} dager`,
-    );
-  } else {
-    lines.push("Neste turnering: ingen planlagt nær fremtid");
-  }
-  if (ctx.sgWeaknesses && ctx.sgWeaknesses.length > 0) {
-    lines.push(`SG-svakheter (negativ trend): ${ctx.sgWeaknesses.join(", ")}`);
-  } else {
-    lines.push("SG-svakheter: ingen tydelige svakheter registrert");
-  }
-  lines.push(`Treningsbelastning siste 14 dager: ${ctx.recentLoadDays ?? 0} fullførte økter`);
-  lines.push(...ekstra);
-  lines.push("");
-  lines.push(
-    "Lag tre varianter (konservativ, standard, aggressiv) for kommende uke.",
-  );
-  lines.push(
-    "Hver variant skal ha 5–7 økter fordelt over uken (0=mandag, 6=søndag).",
-  );
-  lines.push(
-    "Bruk pyramidområdene: FYS (fysisk), TEK (teknikk), SLAG (slagtrening), SPILL (banespill), TURN (turneringssimulering).",
-  );
-  lines.push(
-    "Prioriter SG-svakheter (TEK/SLAG/SPILL) når relevant, og bygg taper hvis turneringen er nær (< 7 dager).",
-  );
-  lines.push(
-    "focusBlend er en kort tekst med prosent-fordeling (eksempel: 'TEK 40 % · SLAG 30 % · SPILL 30 %').",
-  );
-  lines.push(
-    "Titler i norsk klarspråk uten fagkoder. Skriv «nærspill», aldri «kort spill». Minst én putting-økt per uke.",
-  );
-  return lines.join("\n");
 }
 
 /**
@@ -246,37 +167,14 @@ export async function generateWeekSuggestions(
   }
 
   try {
-    const [ctx, signaler] = await Promise.all([
+    const [ctx, signaler, user] = await Promise.all([
       loadPlayerContext(userId, weekStart),
       hentPlayerSignals(userId, weekStart),
+      prisma.user.findUnique({ where: { id: userId }, select: { hcp: true } }),
     ]);
 
-    const ekstra: string[] = [];
-    if (signaler.fokus) {
-      const kilde = signaler.fokus.kilde === "coach" ? "coachens periodefokus" : "svakeste SG-område";
-      const label = signaler.fokus.kategori
-        ? SG_FOKUS_LABEL[signaler.fokus.kategori]
-        : signaler.fokus.label;
-      ekstra.push(`Fokusområde (${kilde}): ${label} — vekt dette i alle varianter.`);
-    }
-    if (signaler.aktivFase) {
-      ekstra.push(`Aktiv treningsperiode: ${signaler.aktivFase}.`);
-    }
-    if (signaler.adherencePct != null && signaler.adherencePct < 75) {
-      ekstra.push(
-        `Plan-etterlevelse siste 4 uker: ${signaler.adherencePct} % — gjør variantene overkommelige (heller færre økter som blir gjennomført).`,
-      );
-    }
-    if (signaler.okterPerUke != null) {
-      ekstra.push(`Spilleren ønsker ~${signaler.okterPerUke} økter/uke (fra onboarding).`);
-    }
-    if (signaler.foretrukneDager && signaler.foretrukneDager.length > 0) {
-      const navn = signaler.foretrukneDager.map((d) => UKEDAG_NAVN[d - 1]).join(", ");
-      ekstra.push(`Foretrukne treningsdager: ${navn}.`);
-    }
-    ekstra.push(...(await standardAnker(userId, signaler.aktivFase)));
-
-    const userPrompt = buildPrompt(ctx, weekStart, ekstra);
+    const hcp = z.number().min(-10).max(54).safeParse(user?.hcp);
+    const userPrompt = buildWeekPrompt(ctx, signaler, hcp.success ? kategoriFraHcp(hcp.data) : null);
 
     const { object } = await generateObject({
       model: anthropicProvider()(WEEK_SUGGEST_MODEL),
@@ -288,12 +186,16 @@ export async function generateWeekSuggestions(
     });
 
     return { suggestions: object.suggestions, usedAi: true };
-  } catch (error) {
-    await logError({
-      context: "ai-plan.generateWeekSuggestions",
-      error,
-      meta: { userId },
-    });
+  } catch {
+    // Provider errors may contain the request/response. Never persist them or player IDs.
+    try {
+      await logError({
+        context: "ai-plan.generateWeekSuggestions",
+        error: new Error("WEEK_SUGGEST_UNAVAILABLE"),
+      });
+    } catch {
+      // Logging failure must not bypass the explicit non-AI fallback result.
+    }
     return { suggestions: fallbackSuggestions(), usedAi: false };
   }
 }
