@@ -5,7 +5,7 @@
 import { tool, type Tool } from "ai";
 import type { Prisma } from "@/generated/prisma/client";
 import { medAkProfilHandling } from "@/lib/deling/ak-profil-handling";
-import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
+import { medCaddieAdministrasjon } from "../administrativ-tilgang";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import {
@@ -157,7 +157,7 @@ function draftDefinitions(db: DraftDb) {
             type: true,
             description: true,
             createdAt: true,
-            user: { select: { id: true, name: true, email: true } },
+            user: { select: { id: true, name: true } },
           },
         });
         if (!invoice) {
@@ -305,10 +305,11 @@ export function buildWriteTools(viewer: { id: string; role: string }): SecuredDr
         // Booking/faktura beholder egne eksisterende administrative regler.
         // Coachingprofildeling brukes ikke som hjemmel for disse formålene.
         if (name === "draftBookingProposal") {
-          if (typeof playerId !== "string" || !await harCoachTilgangTilSpiller(viewer, playerId)) return denied();
-          return await execute(prisma);
+          return await medCaddieAdministrasjon(viewer.id, { type: "booking", id: playerId }, execute);
         }
-        if (name === "draftInvoiceReminder" && viewer.role === "ADMIN") return await execute(prisma);
+        if (name === "draftInvoiceReminder" && viewer.role === "ADMIN") {
+          return await medCaddieAdministrasjon(viewer.id, { type: "faktura", id: args.data.invoiceId }, execute);
+        }
         return denied();
       } catch { return denied(); }
     },

@@ -3,7 +3,7 @@ import { before, beforeEach, mock, test } from "node:test";
 
 let aktivDeling = true;
 let actorRole = "ADMIN";
-let aktivMedlemsrelasjon = true;
+let administrativTilgang = true;
 let failLock = false;
 let writes = 0;
 let handlingKall = 0;
@@ -18,9 +18,15 @@ const tx = {
 mock.module("@/lib/prisma", { namedExports: { prisma: {
   user: { findFirst: async ({ where }: { where: { id?: string } }) => where.id === "admin"
     ? ["ADMIN", "COACH"].includes(actorRole) ? { id: "admin", role: actorRole } : null
-    : aktivMedlemsrelasjon ? { id: "synthetic-player" } : null },
+    : administrativTilgang ? { id: "synthetic-player" } : null },
   notification: { create: async () => { throw Error("Profilhandling må bruke transaksjonen"); } },
 } } });
+mock.module("@/lib/caddie/administrativ-tilgang", { namedExports: {
+  medCaddieAdministrasjon: async (_id: string, _ressurs: unknown, run: (tx: object) => Promise<unknown>) => {
+    if (!administrativTilgang) throw Error("Du har ikke tilgang til denne ressursen.");
+    return run(tx);
+  },
+} });
 // Faktiske medlems-/samtykkelåser prøves separat i ak-profildeling.test.ts.
 mock.module("@/lib/deling/ak-profil-lesing", { namedExports: {
   medAkProfiler: async (viewer: { id: string; role: string }, run: (tx: object, scope: object) => Promise<unknown>, modus: string) => {
@@ -31,7 +37,7 @@ mock.module("@/lib/deling/ak-profil-lesing", { namedExports: {
 } });
 let execute: typeof import("./approval-executor").executeApprovedTool;
 before(async () => { ({ executeApprovedTool: execute } = await import("./approval-executor")); });
-beforeEach(() => { actorRole = "ADMIN"; aktivDeling = true; aktivMedlemsrelasjon = true; failLock = false; writes = 0; handlingKall = 0; scopeRead = null; });
+beforeEach(() => { actorRole = "ADMIN"; aktivDeling = true; administrativTilgang = true; failLock = false; writes = 0; handlingKall = 0; scopeRead = null; });
 const inputs = [
   ["draftPlayerMessage", { playerId: "synthetic-player", subject: "Golf", body: "Tren carry" }],
   ["draftPlayerNote", { playerId: "synthetic-player", note: "Golfnotat" }],
@@ -57,8 +63,8 @@ test("ugyldig spiller-ID eller låsefeil gir ingen reservehandling", async () =>
   await assert.rejects(execute("draftPlayerNote", inputs[1][1], "admin"), /låsefeil/);
   assert.equal(writes, 0);
 });
-test("booking bruker fortsatt den separate medlemsporten", async () => {
-  aktivMedlemsrelasjon = false;
+test("booking bruker separat administrativ port", async () => {
+  administrativTilgang = false;
   await assert.rejects(execute("draftBookingProposal", { playerId: "synthetic-player" }, "admin"), /ikke tilgang/);
   assert.equal(handlingKall, 0); assert.equal(writes, 0);
 });

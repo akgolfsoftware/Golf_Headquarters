@@ -11,7 +11,7 @@ import type { Prisma } from "@/generated/prisma/client";
 import { medAkProfilHandling } from "@/lib/deling/ak-profil-handling";
 import { sjekkKollisjon, erKollisjonsfeil, kollisjonsmelding } from "@/lib/booking/kollisjonsvern";
 import { prisma } from "@/lib/prisma";
-import { assertCoachTilgangTilSpiller } from "@/lib/auth/coached";
+import { medCaddieAdministrasjon } from "./administrativ-tilgang";
 
 // ---------- Input-skjemaer ----------
 
@@ -98,14 +98,17 @@ export async function executeApprovedTool(
     return medAkProfilHandling(aktor, playerId,
       tx => executeApprovedToolWithDb(toolName, toolInput, adminUserId, tx));
   }
-  // Booking/faktura har separate eksisterende administrative porter.
-  if (typeof toolInput.playerId === "string") {
-    await assertCoachTilgangTilSpiller({ id: adminUserId, role: "ADMIN" }, toolInput.playerId);
+  if (toolName === "draftBookingProposal" || toolName === "draftInvoiceReminder") {
+    const ressurs = toolName === "draftBookingProposal"
+      ? { type: "booking" as const, id: toolInput.playerId }
+      : { type: "faktura" as const, id: toolInput.invoiceId };
+    return medCaddieAdministrasjon(adminUserId, ressurs,
+      tx => executeApprovedToolWithDb(toolName, toolInput, adminUserId, tx));
   }
-  return executeApprovedToolWithDb(toolName, toolInput, adminUserId, prisma);
+  throw new Error("Ukjent handling.");
 }
 
-type ExecutorDb = Pick<Prisma.TransactionClient, "user" | "notification" | "payment" | "serviceType" | "location">;
+type ExecutorDb = Prisma.TransactionClient;
 async function executeApprovedToolWithDb(
   toolName: string, toolInput: Record<string, unknown>, adminUserId: string, db: ExecutorDb,
 ): Promise<ExecutorResult> {
@@ -156,28 +159,26 @@ async function executeApprovedToolWithDb(
       let booking: { id: string; status: string };
       try {
         // Kollisjonsvern (A-pakken): sjekk + opprettelse i samme transaksjon.
-        booking = await prisma.$transaction(async (tx) => {
-          const vern = await sjekkKollisjon(tx, {
-            coachId: service.coachUserId ?? null,
+        const vern = await sjekkKollisjon(db, {
+          coachId: service.coachUserId ?? null,
+          serviceTypeId: service.id,
+          startAt: start,
+          endAt: end,
+        });
+        booking = await db.booking.create({
+          data: {
+            plassNr: vern.plassNr,
+            userId: input.playerId,
             serviceTypeId: service.id,
+            locationId: location.id,
             startAt: start,
             endAt: end,
-          });
-          return tx.booking.create({
-            data: {
-              plassNr: vern.plassNr,
-              userId: input.playerId,
-              serviceTypeId: service.id,
-              locationId: location.id,
-              startAt: start,
-              endAt: end,
-              status: "PENDING",
-              notes: input.notes ?? null,
-              priceOre: service.priceOre,
-              coachId: service.coachUserId ?? null,
-            },
-            select: { id: true, status: true },
-          });
+            status: "PENDING",
+            notes: input.notes ?? null,
+            priceOre: service.priceOre,
+            coachId: service.coachUserId ?? null,
+          },
+          select: { id: true, status: true },
         });
       } catch (e) {
         if (erKollisjonsfeil(e)) {

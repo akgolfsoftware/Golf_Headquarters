@@ -10,14 +10,18 @@ const selectFields: unknown[] = [];
 const tx = { user: { findUnique: async (query: { select: unknown }) => {
   selectFields.push(query.select); return { id: "synthetic-player", name: "Syntetisk spiller" };
 } } };
-mock.module("@/lib/prisma", { namedExports: { prisma: {
+const adminDb = {
   user: { findUnique: async () => { lokaleLesinger++; return { id: "synthetic-player", name: "Syntetisk" }; } },
   serviceType: { findUnique: async () => ({ id: "service", name: "Golf" }) },
   location: { findUnique: async () => ({ id: "location", name: "Bane" }) },
   payment: { findUnique: async () => ({ id: "invoice", amountOre: 100, currency: "nok", user: { name: "Syntetisk" } }) },
-} } });
-mock.module("@/lib/auth/coached", { namedExports: {
-  harCoachTilgangTilSpiller: async () => { bookingKall++; return true; },
+};
+mock.module("@/lib/prisma", { namedExports: { prisma: adminDb } });
+mock.module("@/lib/caddie/administrativ-tilgang", { namedExports: {
+  medCaddieAdministrasjon: async (_id: string, ressurs: { type: string }, run: (tx: object) => Promise<unknown>) => {
+    if (ressurs.type === "booking") bookingKall++;
+    return run(adminDb);
+  },
 } });
 mock.module("@/lib/deling/ak-profil-handling", { namedExports: {
   medAkProfilHandling: async (_viewer: unknown, _id: unknown, run: (tx: object) => Promise<unknown>) => {
