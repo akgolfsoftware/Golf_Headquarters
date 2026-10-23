@@ -3,13 +3,12 @@
 Bestilt av Anders 23.10: «bygg neste skjermer», HCP-skjermene utsettes, og planlegger-skjermene fra Team Norway skal også finnes i PlayerHQ og AgencyOS.
 Bygger på [registeret](tn-trenerflate-register-2026-10-21.md), [wireframes](../design-system/utkast-tn/trenerflate/README.md) og beslutningene 21.10 i `.claude/rules/beslutninger.md`.
 
-## 1. Hvor vi står (verifisert mot koden 23.10)
+## 1. Hvor vi står (rettet 23.10 etter å ha lest main; første versjon bygde på gammel status)
 
-- Ferdig: skall og meny (pakke a), Min profil (pakke b), bildene byttet (PR 1660).
-- Turneringsplanleggeren finnes allerede i alle tre flater som én felles komponent (`src/components/turneringsplan/Turneringsplanlegger.tsx`, roller `spiller`, `coach`, `tn`): PlayerHQ `/portal/tren/turneringer`, AgencyOS `/admin/spillere/[id]/turneringsplan`, Team Norway `/team-norway/spiller/[spillerId]/turneringsplan`.
-- Finnes ikke ennå: `/team-norway/referanse/*` (WAGR, Sammenlign, Søk, Planlegger, Norsk golf, Tester), spillerfanene Ranking, Turneringer og Trening, og tilstanden «spiller uten deling».
-- Planleggeren for referansespillere (WAGR-spillere uten HQ-konto) finnes bare på teamnorwayref. Tabellen `wagr_reference_plans` (`WagrReferencePlan`) ligger i basen og er den delte lagringen.
-- HCP Norge: utsatt (Anders 23.10). Menypunktet skjules til videre.
+- Allerede i main: Referanse-delen med WAGR, graf, turneringer, sesong, Sammenlign, Søk, Norsk golf og Tester (#1594, #1616, #1643), spillerfanene Ranking, Turneringer og Trening, og personverntester for TN-tilgang.
+- HCP Norge: utsatt og skjult i meny og faner (Anders 23.10, #1662). Siden finnes, men er ikke lenket.
+- Turneringsplanleggeren finnes i alle tre flater som én komponent (`Turneringsplanlegger.tsx`, roller `spiller`, `coach`, `tn`): PlayerHQ `/portal/tren/turneringer`, AgencyOS `/admin/spillere/[id]/turneringsplan`, Team Norway `/team-norway/spiller/[spillerId]/turneringsplan`.
+- Mangler: Referanse › Planlegger (plan for WAGR-spillere uten HQ-konto, lagret i `wagr_reference_plans`) i Team Norway og AgencyOS.
 
 ## 2. Hva «planlegger i alle tre flater» betyr
 
@@ -21,20 +20,16 @@ Bygger på [registeret](tn-trenerflate-register-2026-10-21.md), [wireframes](../
 
 **Avvik som må avgjøres:** 28.09 bestemte du at spilleren ikke ser sammenligning mot andre spillere, og 21.10 at Team Norway bare er for trenere. En Referanse-planlegger med navngitte spillere i PlayerHQ strider mot begge. Anbefaling: PlayerHQ beholder egen plan (med nivåanslag uten navn), og referanse-planleggeren går i Team Norway og AgencyOS.
 
-## 3. Plan (10 steg, én PR per steg med auto-merge når verify og CI er grønne)
+## 3. Plan (rettet)
 
-1. **Kartlegg WAGR-kolonnene mot basen** (`wagr_snapshots`, `wagr_player_strengths`, `wagr_model_runs`, `wagr_reference_plans`) og skriv ett felles datalag. Ferdig når en lesespørring gir samme tall som teamnorwayref for samme uke.
-2. **Personvern først:** test som låser at en spiller i TN-gruppa ikke får TN-innhold, og at en trener uten delingssamtykke ikke ser IUP, tester eller trening. Ferdig når begge testene er grønne.
-3. **Referanse-skall** `/team-norway/referanse` med faner WAGR · Sammenlign · Søk · Planlegger · Norsk golf · Tester (HCP skjult). Ferdig når menyen er målt i 390, 1280 og 1920 px uten sidelengs rulling.
-4. **Referanse › WAGR:** leaderboard, graf, turneringer og sesong, med kilde «World Amateur Golf Ranking (WAGR), The R&A» og dato.
-5. **Referanse › Sammenlign og Søk** (alle norske, født 2005 eller tidligere, bare brutto).
-6. **Referanse › Planlegger** i Team Norway: bygger på `Turneringsplanlegger` og `wagr_reference_plans`. Treneren foreslår; planen lagres delt.
-7. **Planlegger i AgencyOS:** samme Referanse-planlegger for coach og lenke fra Spiller 360. Ferdig når coachen kan åpne, endre og lagre en referanseplan.
-8. **Planlegger i PlayerHQ:** gjennomgang av `/portal/tren/turneringer` mot Skrå-designet, og «Se hva Team Norway ser» (`/portal/meg/deling/innsyn`) når spilleren er i en TN-gruppe. Ingen navngitte andre spillere.
-9. **Spillerprofil (IUP):** fanene Ranking, Turneringer og Trening, og tilstanden «spiller uten deling» i stedet for 404.
-10. **Norsk golf (bare samlede tall: nivå, klubb, region, tour) og videresendinger** for gamle adresser. Steg 10 i det gamle redesignet (Gruppeposter, Dokumenter, Skoler, College) bygges etter ditt ja til utkast 4.
+1. **Gjort:** HCP skjult (#1662).
+2. **Datalag for referanseplan:** egen lesing for en WAGR-spiller uten HQ-bruker (`byggPlanvisning` krever i dag en HQ-bruker via `public_players."wagrId"`), og skriving til `wagr_reference_plans`. Ferdig når samme spiller gir samme sjanser som i spillerens egen plan.
+3. **Referanse › Planlegger i Team Norway:** ny fane, bygger på `Turneringsplanlegger` med en egen handlingsflate for referanseplanen (dagens handlinger er knyttet til spillerens egne påmeldinger). Treneren foreslår; planen deles mellom trenerne.
+4. **Planlegger i AgencyOS:** samme referanseplan for coach, og lenke fra Spiller 360.
+5. **PlayerHQ:** bare egen plan (bekreftet 23.10). Gjennomgang mot Skrå og «Se hva Team Norway ser».
+6. **Videresendinger og steg 10** (Gruppeposter, Dokumenter, Skoler, College) etter ja til utkast 4.
 
-Rekkefølge: 1–2 først, deretter 3–9 i rekkefølge, 10 sist. Ingen to steg rører samme filer samtidig.
+Hvert steg er én PR med auto-merge når verify og CI er grønne.
 
 ## 4. Rammer og risiko
 
@@ -45,6 +40,6 @@ Rekkefølge: 1–2 først, deretter 3–9 i rekkefølge, 10 sist. Ingen to steg 
 
 ## 5. Uavklart
 
-1. PlayerHQ: bare egen plan (anbefalt), eller også referanse-planlegger (strider mot 28.09)?
+1. ~~PlayerHQ~~ Avgjort 23.10: bare egen plan.
 2. Hvordan skal innloggede skjermer måles lokalt?
 3. Utkast 4 (steg 10 i det gamle redesignet): ja eller nei?
