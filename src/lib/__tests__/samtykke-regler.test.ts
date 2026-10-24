@@ -320,3 +320,10 @@ test("manuell-teksten opplyser at en AI-modell leser dataene, uten navn", () => 
   assert.match(tekst, /AI/i);
   assert.match(tekst, /uten navnet ditt/i);
 });
+
+ test("tilbaketrekking vinner ved samme millisekund uavhengig av rekkefølge", () => {
+  const ja: SamtykkeRad = { type: "MANUELL_HELSE", gitt: true, tekstVersjon: HELSE_SAMTYKKE_VERSJON, createdAt: NAA };
+  const nei = { ...ja, gitt: false };
+  for (const rader of [[ja, nei], [nei, ja]]) assert.equal(beregnSamtykkeStatus(rader).manuell, false);
+  assert.equal(beregnSamtykkeStatus([nei, { ...ja, createdAt: new Date(NAA.getTime() + 1) }]).manuell, true);
+});

@@ -84,13 +84,13 @@ mock.module("next/navigation", { namedExports: {
   redirect: () => { throw Error("unexpected navigation"); }, notFound: () => { throw Error("unexpected not found"); },
 } });
 mock.module("@/lib/prisma", { namedExports: { prisma: new Proxy({}, { get() { throw Error("global database forbidden"); } }) } });
-mock.module("@/lib/deling/ak-profil-lesing", { namedExports: { medAkProfiler: async (actor: Parameters<Port>[0], read: Parameters<Port>[1]) => {
+mock.module("@/lib/deling/ak-profil-lesing", { namedExports: { medAkProfiler: async (actor: Parameters<Port>[0], read: Parameters<Port>[1], _mode: Parameters<Port>[2], options: Parameters<Port>[3]) => {
   assert.deepEqual(actor, viewer);
   if (failure === "sharing") throw Error("synthetic-sharing-failure");
   if (denied) return null;
   inside = true;
   try { return await read(tx as unknown as Prisma.TransactionClient, scope() as Prisma.UserWhereInput,
-    allowed ? [{ spillerId: id, gruppeId: "synthetic-ak-group", fingeravtrykk: "synthetic" }] : []); }
+    allowed && options?.medGrunnlag ? [{ spillerId: id, gruppeId: "synthetic-ak-group", fingeravtrykk: "synthetic" }] : []); }
   finally { inside = false; }
 } } });
 mock.module("@/lib/portal/etterlevelse-data", { namedExports: {

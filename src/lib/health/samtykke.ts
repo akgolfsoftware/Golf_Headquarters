@@ -14,8 +14,10 @@
 
 import "server-only";
 
+import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
+import { databasetid } from "@/lib/deling/ak-analyse-laas";
 import {
   HELSE_SAMTYKKE_VERSJON,
   beregnSamtykkeStatus,
@@ -40,8 +42,8 @@ export class ManglerHelseSamtykke extends Error {
  * skrur samtykket av eller på) og lar `beregnSamtykkeStatus` avgjøre hva som
  * gjelder nå.
  */
-export async function hentSamtykkeStatus(userId: string): Promise<SamtykkeStatus> {
-  const rader = await prisma.helseSamtykke.findMany({
+export async function hentSamtykkeStatus(userId: string, db: Pick<Prisma.TransactionClient, "helseSamtykke"> = prisma): Promise<SamtykkeStatus> {
+  const rader = await db.helseSamtykke.findMany({
     where: { userId },
     select: { type: true, gitt: true, tekstVersjon: true, createdAt: true },
   });
@@ -151,24 +153,31 @@ export async function registrerHelseSamtykke(input: {
 }): Promise<void> {
   const { userId, type, gitt, gittAvUserId, gittAvRolle } = input;
 
-  const bruker = await prisma.user.findUnique({
-    where: { id: userId },
-    select: { requiresGuardianConsent: true, dateOfBirth: true },
-  });
-  if (!bruker) throw new Error("Spilleren finnes ikke");
+  // Konflikter med profilleserens FOR SHARE, også når historikken er tom.
+  // NO KEY UPDATE lar fremmednøkler ta KEY SHARE uten unødvendig låsekonflikt.
+  await prisma.$transaction(async tx => {
+    await tx.$queryRaw`SELECT id FROM users WHERE id = ${userId} FOR NO KEY UPDATE`;
+    const bruker = await tx.user.findUnique({
+      where: { id: userId },
+      select: { requiresGuardianConsent: true, dateOfBirth: true },
+    });
+    if (!bruker) throw new Error("Spilleren finnes ikke");
 
-  const feil = validerSamtykkeHandling({ bruker, rolle: gittAvRolle, gitt });
-  if (feil) throw new Error(feil);
+    const feil = validerSamtykkeHandling({ bruker, rolle: gittAvRolle, gitt });
+    if (feil) throw new Error(feil);
 
-  await prisma.helseSamtykke.create({
-    data: {
-      userId,
-      type,
-      gitt,
-      tekstVersjon: HELSE_SAMTYKKE_VERSJON,
-      gittAvUserId,
-      gittAvRolle,
-    },
+    const createdAt = await databasetid(tx); // Etter låseventing, ikke transaksjonens starttid.
+    await tx.helseSamtykke.create({
+      data: {
+        userId,
+        type,
+        gitt,
+        tekstVersjon: HELSE_SAMTYKKE_VERSJON,
+        createdAt,
+        gittAvUserId,
+        gittAvRolle,
+      },
+    });
   });
 
   await audit({

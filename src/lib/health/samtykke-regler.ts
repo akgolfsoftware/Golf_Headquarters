@@ -193,7 +193,9 @@ export function beregnSamtykkeStatus(rader: SamtykkeRad[]): SamtykkeStatus {
   const nyeste = new Map<string, SamtykkeRad>();
   for (const rad of rader) {
     const forrige = nyeste.get(rad.type);
-    if (!forrige || rad.createdAt.getTime() > forrige.createdAt.getTime()) {
+    // Prisma returnerer millisekunder: ved lik tid vinner trekk, aldri et tilfeldig ja.
+    if (!forrige || rad.createdAt.getTime() > forrige.createdAt.getTime()
+      || (rad.createdAt.getTime() === forrige.createdAt.getTime() && !rad.gitt)) {
       nyeste.set(rad.type, rad);
     }
   }

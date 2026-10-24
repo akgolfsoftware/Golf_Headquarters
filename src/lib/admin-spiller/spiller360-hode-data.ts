@@ -23,7 +23,7 @@ function hullFra(n: number): number {
 /* ───────────────────────── Hode (alltid) ───────────────────────── */
 
 export async function lastSpiller360Hode(viewer: Viewer, id: string): Promise<S360Hode | null> {
-  return medAkProfiler(viewer, (tx, scope, grunnlag) => hentDeltHode(tx, scope, grunnlag, viewer, id));
+  return medAkProfiler(viewer, (tx, scope, grunnlag) => hentDeltHode(tx, scope, grunnlag, viewer, id), "les", { medGrunnlag: true });
 }
 
 async function hentDeltHode(

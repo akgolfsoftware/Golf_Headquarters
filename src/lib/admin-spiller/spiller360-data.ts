@@ -16,8 +16,6 @@ import "server-only";
 import { medAkProfiler } from "@/lib/deling/ak-profil-lesing";
 import { prisma } from "@/lib/prisma";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
-import { hentSamtykkeStatus } from "@/lib/health/samtykke";
-import { innsynsNivaaFra, maskerLeave } from "@/lib/health/leave-innsyn";
 import { beregnGoalProgressListe } from "@/lib/portal/goals/progress";
 import { hentTreningsVolum } from "@/lib/training/volum";
 import { summerTreningsvolum } from "@/lib/workbench/treningsvolum";
@@ -37,7 +35,7 @@ import { tnFormat } from "@/lib/portal-tester/tn-scoring";
 import { formaterLagretTestResultat } from "@/lib/portal-tester/resultat-visning";
 import { workbenchUrl } from "@/lib/workbench/visning-url";
 import { loadSpillerDashboardEkstra } from "@/lib/admin-spiller/spiller-dashboard-data";
-import { lastSpillerOversiktForViewer } from "@/lib/admin-spiller/spiller-oversikt-data";
+import { lastSpiller360Plan } from "./spiller360-plan-data";
 import { hentTekniskPlan } from "@/lib/teknisk-plan/tp-last";
 import { planVisning } from "@/lib/teknisk-plan/tp-visning";
 import { velgPlan } from "@/lib/teknisk-plan/tp-oversikt";
@@ -49,7 +47,7 @@ import {
   tellendeRunder, tilPar, type S360Fane,
 } from "./spiller360-visning";
 import type {
-  S360FaneData, S360Iup, S360Plan, S360Samtaler, S360Stats, S360Talent, S360Tester, S360Tp,
+  S360FaneData, S360Iup, S360Samtaler, S360Stats, S360Talent, S360Tester, S360Tp,
 } from "./spiller360-typer";
 
 type Viewer = { id: string; role: string };
@@ -71,72 +69,6 @@ function dagLabel(d: Date): string {
 }
 
 export { lastSpiller360Hode, lastSpiller360Rail } from "./spiller360-hode-data";
-
-/* ───────────────────────────── Plan ───────────────────────────── */
-
-async function lastPlan(viewer: Viewer, id: string): Promise<S360Plan> {
-  const naa = new Date();
-  const idag = osloDagSomDbDato(naa);
-  const mandag = new Date(idag.getTime() - ((idag.getUTCDay() + 6) % 7) * DAG);
-  const sondag = new Date(mandag.getTime() + 6 * DAG);
-
-  const [okter, oversikt, ekstra, aktivPlan, forslag, samtykke, leaves] = await Promise.all([
-    prisma.workbenchSession.findMany({
-      where: { playerId: id, date: { gte: mandag, lte: sondag }, status: { not: "DRAFT" }, isTemplate: false },
-      orderBy: [{ date: "asc" }, { startMinute: "asc" }],
-      select: { id: true, date: true, title: true, pyramid: true, durationMinutes: true, status: true },
-    }),
-    lastSpillerOversiktForViewer(viewer, id),
-    loadSpillerDashboardEkstra(id),
-    prisma.trainingPlan.findFirst({
-      where: { userId: id, isActive: true },
-      orderBy: { updatedAt: "desc" },
-      select: { name: true, startDate: true, endDate: true, sessions: { select: { status: true } } },
-    }),
-    prisma.planAction.findFirst({ where: { userId: id, status: "PENDING" }, orderBy: { createdAt: "desc" }, select: { createdAt: true } }),
-    hentSamtykkeStatus(id),
-    prisma.leave.findMany({ where: { userId: id }, orderBy: { startAt: "desc" }, take: 10 }),
-  ]);
-
-  const innsyn = innsynsNivaaFra(samtykke);
-  const naaPeriode = ekstra.sesong?.perioder.find((p) => p.startDate <= naa && p.endDate >= naa) ?? null;
-  const nestePeriode = ekstra.sesong?.perioder.find((p) => p.startDate > naa) ?? null;
-
-  return {
-    ukeLabel: `Uke ${ukenummer(mandag)}`,
-    uke: okter.map((o) => ({ id: o.id, dag: dagLabel(o.date), tittel: o.title, akse: akseFra(o.pyramid), minutter: o.durationMinutes, status: o.status })),
-    iDag: oversikt?.iDag ?? [],
-    naa: oversikt?.naa ? { tittel: oversikt.naa.tittel, tidspunkt: oversikt.naa.tidspunktLabel, sted: oversikt.naa.sted } : null,
-    aktivPlan: aktivPlan
-      ? {
-          navn: aktivPlan.name,
-          periode: `${dato(aktivPlan.startDate)}–${aktivPlan.endDate ? dato(aktivPlan.endDate) : "åpen"}`,
-          okter: `${aktivPlan.sessions.filter((s) => s.status === "COMPLETED").length} av ${aktivPlan.sessions.length}`,
-          venter: forslag ? `Forslag ${dato(forslag.createdAt)}` : null,
-        }
-      : null,
-    sesong: ekstra.sesong
-      ? {
-          navn: `${ekstra.sesong.year}${ekstra.sesong.name ? ` · ${ekstra.sesong.name}` : ""}`,
-          naa: naaPeriode ? { navn: naaPeriode.focus ?? naaPeriode.lPhase, til: dato(naaPeriode.endDate) } : null,
-          neste: nestePeriode ? { navn: nestePeriode.focus ?? nestePeriode.lPhase, fra: dato(nestePeriode.startDate) } : null,
-        }
-      : null,
-    kommende: oversikt?.nesteTurneringer.map((t) => ({ navn: t.navn, dato: t.datoLabel })) ?? [],
-    resultater: ekstra.turneringsResultater.map((t) => ({ navn: t.navn, dato: dato(t.dato), plassering: t.position, score: t.score })),
-    permisjoner: leaves.map((rad) => {
-      const l = maskerLeave(rad, innsyn);
-      return {
-        id: rad.id,
-        aarsak: l.reason,
-        fra: dato(l.startAt),
-        til: l.endAt ? dato(l.endAt) : "pågår",
-        beskrivelse: l.description ?? (l.skjult ? "Ikke delt av spilleren" : "—"),
-        status: l.returnedAt ? "Avsluttet" : l.endAt ? "Planlagt slutt" : "Pågående",
-      };
-    }),
-  };
-}
 
 /* ───────────────────────────── Stats ───────────────────────────── */
 
@@ -512,6 +444,10 @@ async function lastTalent(id: string, db: Prisma.TransactionClient): Promise<S36
 /* ───────────────────────────── Samlet ───────────────────────────── */
 
 export async function lastSpiller360Fane(viewer: Viewer, id: string, fane: S360Fane): Promise<S360FaneData | null> {
+  if (fane === "plan") {
+    const data = await lastSpiller360Plan(viewer, id);
+    return data ? { fane, data } : null;
+  }
   // Disse to fanene har full transaksjonsbundet kjede. Et tidligere godkjent
   // hode er ikke tilstrekkelig: direkte fanekall må kontrollere delingen på nytt.
   if (fane === "tp" || fane === "talent") {
@@ -521,10 +457,9 @@ export async function lastSpiller360Fane(viewer: Viewer, id: string, fane: S360F
       return fane === "tp" ? { fane, data: await lastTp(id, tx) } : { fane, data: await lastTalent(id, tx) };
     });
   }
-  // Plan/Stats/Tester/IUP/Samtaler har fortsatt egne eldre underlesere.
+  // Stats/Tester/IUP/Samtaler har fortsatt egne eldre underlesere.
   // De må konverteres samlet før hele Spiller 360 kan regnes som sikret.
   switch (fane) {
-    case "plan": return { fane, data: await lastPlan(viewer, id) };
     case "stats": return { fane, data: await lastStats(viewer, id) };
     case "test": {
       const d = await lastTester(viewer, id);

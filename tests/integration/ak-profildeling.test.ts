@@ -78,6 +78,40 @@ test("AK-profildeling: faktisk gi, trekk, innsyn og samtidighetsvern", async t =
       assert.deepEqual(valg.map(v => v.gruppeId), ['a', 'b']);
       assert.equal(valg.find(v => v.gruppeId === 'a')?.deler, true);
     });
+    await t.test('gruppegrunnlag kan bestilles for hele stallen uten å inkludere andre mottakere', async () => {
+      for (const viewer of [a, adminViewer]) {
+        const grunnlag = await medAkProfiler(viewer, async (_tx, _scope, g) => g, 'les', { medGrunnlag: true });
+        assert.deepEqual(grunnlag?.map(g => [g.spillerId, g.gruppeId]), [['p', 'a']]);
+        assert.match(grunnlag![0].fingeravtrykk, /^[a-f0-9]{64}$/);
+      }
+      assert.equal(await medAkProfiler(a, async () => true, 'les', { gruppeId: '', medGrunnlag: true }), null);
+    });
+    await t.test('helsetrekk venter på profillesing; neste lesing mister detaljinnsyn', async () => {
+      await sql.query(`CREATE TABLE helse_samtykker (id text PRIMARY KEY, "userId" text REFERENCES users(id),
+        type text NOT NULL, gitt boolean NOT NULL, "tekstVersjon" text NOT NULL,
+        "gittAvUserId" text NOT NULL, "gittAvRolle" text NOT NULL, "createdAt" timestamptz NOT NULL DEFAULT now())`);
+      const { registrerHelseSamtykke, hentSamtykkeStatus } = await import('../../src/lib/health/samtykke');
+      const valg = { userId: 'p', gittAvUserId: 'p', gittAvRolle: 'SELV' as const };
+      await registrerHelseSamtykke({ ...valg, type: 'MANUELL_HELSE', gitt: true });
+      await registrerHelseSamtykke({ ...valg, type: 'COACH_INNSYN', gitt: true });
+      await registrerHelseSamtykke({ ...valg, type: 'COACH_DETALJ', gitt: true });
+      const klar = Promise.withResolvers<void>(), slipp = Promise.withResolvers<void>();
+      const lesing = medAkProfiler(a, async tx => {
+        const status = await hentSamtykkeStatus('p', tx);
+        klar.resolve(); await slipp.promise;
+        return status.coachDetalj;
+      });
+      void lesing.catch(klar.reject); await klar.promise;
+      let ferdig = false;
+      const trekk = registrerHelseSamtykke({ ...valg, type: 'COACH_DETALJ', gitt: false }).then(() => { ferdig = true; });
+      try { await new Promise(r => setTimeout(r, 120)); assert.equal(ferdig, false); }
+      finally { slipp.resolve(); }
+      assert.equal(await lesing, true); await trekk;
+      assert.equal(await medAkProfiler(a, async tx => (await hentSamtykkeStatus('p', tx)).coachDetalj), false);
+      assert.equal(await db.helseSamtykke.count(), 4, 'gammel historikk beholdes');
+      await assert.rejects(registrerHelseSamtykke({ ...valg, userId: 'child', type: 'COACH_INNSYN', gitt: true }), /foresatt/);
+      assert.equal(await db.helseSamtykke.count(), 4, 'nektet barns samtykke rulles tilbake');
+    });
     await t.test('ADMIN, feil forelder, klientidentitet og gammel versjon kan ikke gi på vegne av andre', async () => {
       const antall = await db.delingsSamtykke.count();
       assert.equal((await settAkProfilValg(adminViewer, 'p', svar(true))).ok, false);
@@ -241,7 +275,7 @@ test("AK-profildeling: faktisk gi, trekk, innsyn og samtidighetsvern", async t =
       assert.equal(await db.delingsSamtykke.count({ where: { scope: 'AK_GOLF_GRUPPEANALYSE', gitt: true } }), 1);
       const audits = await db.auditLog.findMany();
       assert.ok(audits.length > 0);
-      assert.equal(audits.every(a => a.action.startsWith('deling.ak-profil.')), true);
+      assert.equal(audits.every(a => a.action.startsWith('deling.ak-profil.') || a.action.startsWith('helse.samtykke.')), true);
       assert.equal(JSON.stringify(audits).includes('Syntetisk'), false);
     });
   } finally {
