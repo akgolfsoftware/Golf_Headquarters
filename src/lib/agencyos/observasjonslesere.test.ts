@@ -6,6 +6,7 @@ type Leser = typeof import("@/lib/deling/ak-delte-planforslag");
 type Resultat = Awaited<ReturnType<Leser["hentAkDeltePlanforslag"]>>;
 const viewer = { id: "synthetic-coach", role: "ADMIN" as const, name: "Syntetisk trener" };
 const spillerScope = { id: "synthetic-player" };
+let historiskeBriefLesinger = 0;
 let tillatt = true;
 let forventetRolle = "ADMIN";
 let lesefeil = false;
@@ -38,7 +39,7 @@ mock.module("@/lib/prisma", { namedExports: { prisma: {
   round: { aggregate: async () => ({ _avg: { sgTotal: null } }) },
   trainingPlanSession: { groupBy: tom }, signal: { count: async () => 0 },
   kommandoAgentRun: { count: async (args: Prisma.KommandoAgentRunCountArgs) => { kommandoKall.push(args); return args.where?.status === "running" ? 1 : 0; } },
-  agentRun: { findMany: tom, count: async () => 0, findFirst: async () => null },
+  agentRun: { findMany: tom, count: async () => 0, findFirst: async () => { historiskeBriefLesinger++; return { output: { briefs: [{ coachId: viewer.id, brief: "synthetic-private-old-brief" }] } }; } },
 } } });
 
 let workbench: typeof import("./workbench-oppgaver");
@@ -78,7 +79,7 @@ before(async () => {
   dispatch = await import("./ai-dispatch-data");
   kanoniskKo = await import("@/lib/admin/ko-telling");
 });
-beforeEach(() => { ukeforslag = false; tillatt = true; forventetRolle = "ADMIN"; lesefeil = false; antall = 1; finnKall = []; telleKall = []; gruppeKall = []; foresporselKall = []; foresporselTelleKall = []; caddieTelleKall = []; kommandoKall = []; leseKall = []; });
+beforeEach(() => { historiskeBriefLesinger = 0; ukeforslag = false; tillatt = true; forventetRolle = "ADMIN"; lesefeil = false; antall = 1; finnKall = []; telleKall = []; gruppeKall = []; foresporselKall = []; foresporselTelleKall = []; caddieTelleKall = []; kommandoKall = []; leseKall = []; });
 
 function kontrollerEldreLesere() {
   for (const args of [...finnKall, ...telleKall, ...gruppeKall]) assert.deepEqual(args.where?.NOT, uten.NOT);
@@ -209,3 +210,22 @@ test("ukeforslag følger samme oversikter og teller uten påstand om utsending",
   tillatt=false;
   assert.equal((await lastGodkjenninger(viewer,{medUkesrapport:false})).rows.length,0);
 });
+
+for (const role of ["ADMIN", "COACH"] as const) {
+  test(`briefstatus bruker fersk deling uten historisk tekst for ${role}`, async () => {
+    forventetRolle = role;
+    antall = 12;
+    const aktor = { ...viewer, role };
+    assert.equal((await brief.loadDailyBrief(aktor)).aiContext, "12 delte forslag venter på vurdering.");
+    antall = 1;
+    assert.equal((await brief.loadDailyBrief(aktor)).aiContext, "1 delt forslag venter på vurdering.");
+    tillatt = false;
+    const etter = await brief.loadDailyBrief(aktor);
+    assert.equal(etter.aiBrief, null);
+    assert.equal(etter.aiContext, "ingen økter i dag — rom for planlegging.");
+    assert.ok(!JSON.stringify(etter).includes("synthetic-private-old-brief"));
+    lesefeil = true;
+    await assert.rejects(brief.loadDailyBrief(aktor), /synthetic-sharing-unavailable/);
+    assert.equal(historiskeBriefLesinger, 0);
+  });
+}

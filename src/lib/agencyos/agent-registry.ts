@@ -289,11 +289,12 @@ export const AGENT_INFO: Record<string, AgentInfo> = {
   // ── Rapportering og briefer ──────────────────────────────────────────
   "daily-brief": {
     navn: "Daily Brief",
-    trigger: "Cron daglig 05:30",
+    trigger: "Ikke aktivert",
     beskrivelse:
-      "Genererer morgenbrief per coach (økter, flagg, neste turnering). Varsler coach + Anders på Telegram ved hastefunn (severity 4+).",
+      "Dagsbrief-jobben venter på godkjent datagrunnlag. Cockpit viser fersk status for tilgjengelige forslag.",
     langBeskrivelse:
-      "Genererer morgenbrief per coach (dagens økter, flagg, neste turnering) og varsler coach + Anders på Telegram ved hastefunn (severity 4+).",
+      "Den gamle dagsbrief-jobben er stanset før spillerlesing, modellbruk og varsling. Cockpit henter forslagsstatus med gjeldende deling. Historiske kjøringer viser bare teknisk status.",
+    status: "planlagt",
   },
   maanedsrapport: {
     navn: "Månedsrapport",

@@ -36,7 +36,7 @@ export async function hentAgenticosBro(): Promise<AgenticosBroStatus> {
       prisma.agentRun.findFirst({
         where: ikkeJarvis,
         orderBy: { createdAt: "desc" },
-        select: { agentName: true, status: true, createdAt: true, error: true },
+        select: { agentName: true, status: true, createdAt: true },
       }),
       prisma.agentRun.count({
         where: { status: "ERROR", createdAt: { gte: siden }, ...ikkeJarvis },
@@ -53,7 +53,7 @@ export async function hentAgenticosBro(): Promise<AgenticosBroStatus> {
             agentName: siste.agentName,
             status: siste.status,
             createdAt: siste.createdAt.toISOString(),
-            error: siste.error,
+            error: siste.status === "ERROR" ? "Kjøringen feilet." : null,
           }
         : null,
       feiledeSisteDognet: feilet,

@@ -45,16 +45,7 @@ const ACTION_LABEL: Record<string, string> = {
 };
 
 function lagSnippet(meta: Record<string, unknown> | null): string | null {
-  if (!meta) return null;
-
-  if (Array.isArray(meta.briefs)) {
-    const n = meta.briefs.length;
-    const varsler = typeof meta.varsler === "number" ? meta.varsler : 0;
-    const first = meta.briefs[0] as { brief?: string } | undefined;
-    const preview =
-      typeof first?.brief === "string" ? ` — ${first.brief.replace(/\s+/g, " ").slice(0, 180)}` : "";
-    return `${n} brief${n === 1 ? "" : "er"} · ${varsler} varsel${varsler === 1 ? "" : "er"}${preview}`;
-  }
+  if (!meta || "briefs" in meta) return null;
 
   if (typeof meta.svakesteLabel === "string" && Array.isArray(meta.driller)) {
     const n = meta.driller.length;
@@ -130,14 +121,16 @@ export default async function AgentDetaljPage({
   const delingsstyrt = treningsobservasjon || agentId === "weekly-plan-proposals";
   // Rå output/feil fra historiske batchkjøringer kan inneholde andre spilleres
   // opplysninger. Her vises bare teknisk kjørestatus for delingsstyrte treningsagenter.
-  const runSelect = delingsstyrt
+  const dagbrief = agentId === "daily-brief";
+  const bareKjorestatus = delingsstyrt || dagbrief;
+  const runSelect = bareKjorestatus
     ? { id: true, status: true, createdAt: true, duration: true }
     : undefined;
   const [sisteRad, kjoringsRader, forslagData] = await Promise.all([
     prisma.agentRun.findFirst({ where: { agentName: { in: alleNavn } }, orderBy: { createdAt: "desc" }, select: runSelect }),
     prisma.agentRun.findMany({ where: { agentName: { in: alleNavn }, createdAt: { gte: tretti_dager_siden } },
       orderBy: { createdAt: "desc" }, take: 30, select: runSelect }),
-    delingsstyrt ? (treningsobservasjon ? hentAkTreningsobservasjoner(user) : hentAkUkeforslag(user)) : (async () => {
+    dagbrief ? { planActions: [], pendingCount: 0, acceptedCount: 0, rejectedCount: 0, eldstePending: null } : delingsstyrt ? (treningsobservasjon ? hentAkTreningsobservasjoner(user) : hentAkUkeforslag(user)) : (async () => {
       const [planActions, pendingCount, acceptedCount, rejectedCount, eldstePending] = await Promise.all([
         prisma.planAction.findMany({ where: { ...UTEN_AK_DELTE_PLANFORSLAG, agentName: { in: alleNavn } }, orderBy: { createdAt: "desc" }, take: 10,
           include: { user: { select: { id: true, name: true } } } }),
@@ -161,7 +154,7 @@ export default async function AgentDetaljPage({
   // registrerte agentene skriver disse i dag — AgentRun har ingen kobling
   // til KommandoAgentRun i schema — men oppslaget gjøres ærlig i tilfelle
   // det legges til senere, i stedet for å anta at det aldri skjer.
-  const kommandoSteg = sisteKjoring && !delingsstyrt
+  const kommandoSteg = sisteKjoring && !bareKjorestatus
     ? await prisma.kommandoAgentStep.findMany({
         where: { runId: sisteKjoring.id },
         orderBy: { orderIndex: "asc" },
@@ -252,7 +245,7 @@ export default async function AgentDetaljPage({
         steg: [
           {
             rolle: "kjøring",
-            tekst: ok ? (lagSnippet(output) ?? (delingsstyrt ? "Kjøring fullført. Forslagslisten viser bare dine tilgjengelige forslag." : "Fullført uten forslag.")) : (sisteKjoring.error ?? "Feilet."),
+            tekst: ok ? (lagSnippet(output) ?? (dagbrief ? "Historisk kjørestatus. Briefinnhold vises ikke." : delingsstyrt ? "Kjøring fullført. Forslagslisten viser bare dine tilgjengelige forslag." : "Fullført uten forslag.")) : (sisteKjoring.error ?? "Feilet."),
             ok,
           },
         ],
@@ -299,7 +292,7 @@ export default async function AgentDetaljPage({
   if (tilstand === "feilet" && sisteKjoring) {
     const forrigeOk = kjoringerVindu.find((k) => k.status === "OK" && k.id !== sisteKjoring.id);
     const sidenTekst = forrigeOk
-      ? `Forrige vellykkede kjøring var ${forrigeOk.createdAt.toLocaleDateString("nb-NO", NB_DATO)} — forslagene derfra står fortsatt i køen`
+      ? dagbrief ? "Historisk kjørestatus. Briefinnhold vises ikke." : `Forrige vellykkede kjøring var ${forrigeOk.createdAt.toLocaleDateString("nb-NO", NB_DATO)} — forslagene derfra står fortsatt i køen`
       : "Ingen vellykket kjøring i vinduet";
     feil = {
       naarTekst: `${sisteKjoring.createdAt.toLocaleString("nb-NO", NB_KORT)} etter ${fmtVarighet(sisteKjoring.duration)}`,

@@ -175,7 +175,6 @@ export async function loadDailyBrief(coach: {
     proAbos,
     stallSgAgg,
     planStatusGrupper,
-    latestDailyBriefRun,
     observasjoner,
   ] = await Promise.all([
     prisma.booking.findMany({
@@ -304,11 +303,6 @@ export async function loadDailyBrief(coach: {
       where: { scheduledAt: { gte: tretti, lte: now } },
       _count: { _all: true },
     }),
-    prisma.agentRun.findFirst({
-      where: { agentName: "daily-brief", status: "OK" },
-      orderBy: { createdAt: "desc" },
-      select: { output: true },
-    }),
     hentAkDeltePlanforslag(coach, { status: "PENDING", maksRader: 8 }),
   ]);
   const pendingActions = begrensForslagsliste([...eldrePendingActions, ...observasjoner.planActions], 8);
@@ -341,16 +335,12 @@ export async function loadDailyBrief(coach: {
     (b) => minutesSinceMidnight(b.startAt) <= nowMin && minutesSinceMidnight(b.endAt) > nowMin,
   );
   const nesteBk = dagensBookinger.find((b) => minutesSinceMidnight(b.startAt) > nowMin);
-  const coachBriefFromRun = (() => {
-    const out = latestDailyBriefRun?.output;
-    if (!out || typeof out !== "object" || !("briefs" in out)) return null;
-    const briefs = (out as { briefs?: Array<{ coachId: string; brief: string }> }).briefs;
-    const mine = briefs?.find((b) => b.coachId === coach.id);
-    return mine?.brief?.trim() || null;
-  })();
-
+  // Aldri gjenbruk lagret brieftekst: deling kan ha blitt trukket siden kjøringen.
+  const ferskForslagsstatus = observasjoner.pendingCount > 0
+    ? `${observasjoner.pendingCount} ${observasjoner.pendingCount === 1 ? "delt forslag venter" : "delte forslag venter"} på vurdering.`
+    : null;
   const aiContext =
-    coachBriefFromRun ??
+    ferskForslagsstatus ??
     (aktivBk
       ? `${firstName(aktivBk.user?.name)} er i økt nå.`
       : nesteBk
@@ -619,7 +609,7 @@ export async function loadDailyBrief(coach: {
     coachAvatarUrl: coach.avatarUrl ?? null,
     dagensVerdiKr,
     aiContext,
-    aiBrief: coachBriefFromRun,
+    aiBrief: null,
     liveLabel: `${DAGER[now.getDay()].toUpperCase()} ${now.getDate()} ${MND_KORT[now.getMonth()].toUpperCase()} · ${hhmm(now)}`,
     timelineDateLabel: `${DAGER_KORT[now.getDay()]} ${now.getDate()} ${MND_KORT[now.getMonth()].toUpperCase()} · ${dagensBookinger.length} ${oktOrd}`,
     now: nowMin,

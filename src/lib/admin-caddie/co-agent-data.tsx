@@ -256,6 +256,7 @@ export async function loadCoAgent(coach: {
     }),
     prisma.agentRun.findMany({
       where: { createdAt: { gte: sepDager } },
+      select: { id: true, agentName: true, status: true, createdAt: true },
       orderBy: { createdAt: "desc" },
     }),
     prisma.agentRun.findMany({
@@ -343,13 +344,13 @@ export async function loadCoAgent(coach: {
   // Aggreger kjøringer per agent fra siste 7 d (volum/siste) + 30 d (treff).
   type Agg = {
     runs7d: number;
-    last?: { createdAt: Date; status: string; output: unknown; userId: string | null };
+    last?: { createdAt: Date; status: string };
   };
   const byAgent = new Map<string, Agg>();
   for (const r of runs7d) {
     const a = byAgent.get(r.agentName) ?? { runs7d: 0 };
     a.runs7d += 1;
-    if (!a.last) a.last = { createdAt: r.createdAt, status: r.status, output: r.output, userId: r.userId };
+    if (!a.last) a.last = { createdAt: r.createdAt, status: r.status };
     byAgent.set(r.agentName, a);
   }
   // Treffsikkerhet (30 d): andel OK-kjøringer per agent.
