@@ -10,7 +10,7 @@ import { tilDatoKolonne, SPILLER_SYNLIGE_STATUSER } from "@/lib/workbench/wb-map
 import { translateMiljo } from "./translate-taxonomy";
 import { v2DbSessionHref } from "./session-hrefs";
 import type { TodaySession } from "@/app/portal/actions";
-import type { PracticeType, PyramidArea } from "@/generated/prisma/client";
+import type { PracticeType, PyramidArea, Prisma } from "@/generated/prisma/client";
 
 const AXIS: Record<PracticeType, PyramidArea> = {
   BLOKK: "TEK", RANDOM: "SLAG", KONKURRANSE: "TURN", SPILL_TEST: "SPILL",
@@ -21,14 +21,22 @@ const AXIS: Record<PracticeType, PyramidArea> = {
  * Mirrors, publication and visibility match I dag/Plan for all three models.
  */
 export const loadVisibleSessionRange = cache(async (playerId: string, startISO: string, endISO: string): Promise<TodaySession[]> => {
+  return loadVisibleSessionRangeWithDb(prisma, playerId, startISO, endISO);
+});
+
+/** Ukachet intern leser. Kalleren må holde tilgangskontrollen og alle
+ * underoppslag i samme transaksjon ved lesing av en delt profil. */
+export async function loadVisibleSessionRangeWithDb(
+  db: Prisma.TransactionClient, playerId: string, startISO: string, endISO: string,
+): Promise<TodaySession[]> {
   const start = new Date(startISO), end = new Date(endISO);
   const endDate = tilDatoKolonne(OSLO_YMD_FMT.format(end));
   const endIsOsloMidnight = end.getTime() === osloInstant(
     endDate.getUTCFullYear(), endDate.getUTCMonth() + 1, endDate.getUTCDate(), 0, 0,
   ).getTime();
-  const visibility = await visibleV2Where(playerId);
+  const visibility = await visibleV2Where(playerId, db);
   const [v2, wb, legacy] = await Promise.all([
-    prisma.trainingSessionV2.findMany({
+    db.trainingSessionV2.findMany({
       where: { ...visibility, startTime: { gte: start, lt: end } },
       orderBy: { startTime: "asc" },
       select: {
@@ -37,7 +45,7 @@ export const loadVisibleSessionRange = cache(async (playerId: string, startISO: 
         drills: { select: { id: true, name: true, durationMinutes: true }, orderBy: { sortOrder: "asc" } },
       },
     }),
-    prisma.workbenchSession.findMany({
+    db.workbenchSession.findMany({
       where: {
         playerId,
         // Workbench stores a calendar date without time. Read both boundary
@@ -50,7 +58,7 @@ export const loadVisibleSessionRange = cache(async (playerId: string, startISO: 
       },
       include: { drills: { orderBy: { sortOrder: "asc" } } },
     }),
-    loadLegacyPlanWeekSessions(playerId, start, end),
+    loadLegacyPlanWeekSessions(playerId, start, end, db),
   ]);
   return [
     ...v2.map((s): TodaySession => ({
@@ -64,4 +72,4 @@ export const loadVisibleSessionRange = cache(async (playerId: string, startISO: 
     ...wb.map(workbenchWeekSession), ...legacy,
   ].filter(session => session.startTime >= start && session.startTime < end)
     .sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
-});
+}

@@ -1,12 +1,13 @@
 import "server-only";
+import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { GENERERT_FRA } from "@/lib/workbench/v2-drill-mirror";
 import { planWeekSession } from "./plan-week";
 
 /** Kalles etter spillerens tilgangskontroll i getWeekOverview. Kun lesing:
  * gamle, godtatte planøkter vises uten å opprette eller synkronisere økter. */
-export async function loadLegacyPlanWeekSessions(playerId: string, start: Date, end: Date) {
-  const rows = await prisma.trainingPlanSession.findMany({
+export async function loadLegacyPlanWeekSessions(playerId: string, start: Date, end: Date, db: Prisma.TransactionClient = prisma) {
+  const rows = await db.trainingPlanSession.findMany({
     where: {
       plan: { userId: playerId, isActive: true, status: { in: ["ACCEPTED", "ACTIVE", "PAUSED"] } },
       scheduledAt: { gte: start, lt: end },
@@ -24,7 +25,7 @@ export async function loadLegacyPlanWeekSessions(playerId: string, start: Date, 
   if (rows.length === 0) return [];
   // Et flyttet eller avlyst V2-speil skal aldri gjenopplive originalen i
   // den gamle uken. Derfor ingen dato-/statusfilter på dette oppslaget.
-  const mirrors = await prisma.trainingSessionV2.findMany({
+  const mirrors = await db.trainingSessionV2.findMany({
     where: { studentId: playerId, generertFra: GENERERT_FRA, generertFraId: { in: rows.map((s) => s.id) } },
     select: { generertFraId: true },
   });

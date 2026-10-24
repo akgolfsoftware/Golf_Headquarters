@@ -1,7 +1,7 @@
 import "server-only";
-import { loadVisibleSessionRange } from "./visible-session-range";
+import { loadVisibleSessionRange, loadVisibleSessionRangeWithDb } from "./visible-session-range";
 import { etterlevelse, etterlevelseFra } from "@/lib/domain/etterlevelse";
-import type { PyramidArea } from "@/generated/prisma/client";
+import type { PyramidArea, Prisma } from "@/generated/prisma/client";
 import type { TodaySession } from "@/app/portal/actions";
 
 /** Intern leser etter kallerens spiller-/coach-/foresattvakt. Samme
@@ -35,10 +35,23 @@ export async function hentEtterlevelse(userId: string, now = new Date()) {
 
 /** Avgrens samtidige databaseoppslag for en tilgangsfiltrert stall. */
 export async function hentStallEtterlevelse(playerIds: readonly string[], now: Date) {
-  const result = new Map<string, Awaited<ReturnType<typeof hentEtterlevelseMedAkser>>>();
+  return samleStallEtterlevelse(playerIds, id => hentEtterlevelseMedAkser(id, now));
+}
+
+/** Bare fra delingskontrollert transaksjon; ingen gjenbruk av request-cache. */
+export async function hentStallEtterlevelseITransaksjon(db: Prisma.TransactionClient, playerIds: readonly string[], now: Date) {
+  return samleStallEtterlevelse(playerIds, async id => etterlevelseMedAkser(
+    await loadVisibleSessionRangeWithDb(db, id, etterlevelseFra(now).toISOString(), now.toISOString()), now,
+  ));
+}
+
+async function samleStallEtterlevelse(
+  playerIds: readonly string[], les: (id: string) => Promise<ReturnType<typeof etterlevelseMedAkser>>,
+) {
+  const result = new Map<string, ReturnType<typeof etterlevelseMedAkser>>();
   for (let i = 0; i < playerIds.length; i += 8) {
     await Promise.all(playerIds.slice(i, i + 8).map(async id => {
-      result.set(id, await hentEtterlevelseMedAkser(id, now));
+      result.set(id, await les(id));
     }));
   }
   return result;

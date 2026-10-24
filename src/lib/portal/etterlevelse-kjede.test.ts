@@ -24,13 +24,19 @@ const prisma = new Proxy({
 }, { get(target, key) { return Reflect.get(target, key) ?? emptyModel; } });
 mock.module("next/navigation", { namedExports: { redirect: () => { throw new Error("redirect"); }, notFound: () => { throw new Error("not found"); } } });
 mock.module("@/lib/prisma", { namedExports: { prisma } });
-mock.module("@/lib/portal/visible-session-range", { namedExports: {
-  loadVisibleSessionRange: async (id: string, startISO: string, endISO: string) => {
+const readRange = async (id: string, startISO: string, endISO: string) => {
     const start = new Date(startISO), end = new Date(endISO);
     rangeCalls.push({ id, start, end });
     assert.equal(id, "player-test", "aldri les en fremmed spiller etter scope-filteret");
     return visible.filter(s => s.startTime >= start && s.startTime < end);
-  },
+  };
+mock.module("@/lib/portal/visible-session-range", { namedExports: {
+  loadVisibleSessionRange: readRange,
+  loadVisibleSessionRangeWithDb: async (_db: unknown, ...args: Parameters<typeof readRange>) => readRange(...args),
+} });
+mock.module("@/lib/deling/ak-profil-lesing", { namedExports: {
+  medAkProfiler: async (_viewer: unknown, read: (db: unknown, scope: unknown) => unknown) =>
+    read(prisma, { id: { in: playerAllowed ? [player.id] : [] } }),
 } });
 mock.module("@/lib/admin/ukesrapport-deling", { namedExports: {
   hentSisteDeling: async () => ({ ukeStart: startOfWeek(new Date(NOW.getTime() - 7 * DAY)), deltAt: NOW, coachId: "coach-test" }),

@@ -9,9 +9,10 @@
  * (aldri oppdiktede verdier i UI).
  */
 
-import { prisma } from "@/lib/prisma";
-import type { Tier, PyramidArea } from "@/generated/prisma/client";
-import { hentStallEtterlevelse } from "@/lib/portal/etterlevelse-data";
+import "server-only";
+import { medAkProfiler } from "@/lib/deling/ak-profil-lesing";
+import type { Tier, PyramidArea, Prisma } from "@/generated/prisma/client";
+import { hentStallEtterlevelseITransaksjon } from "@/lib/portal/etterlevelse-data";
 import { erOktGjennomfort } from "@/lib/workbench/compliance";
 import { stallenPlayerWhere } from "./stallen-scope";
 import { stallStatus } from "./stall-status";
@@ -179,6 +180,18 @@ export async function loadStallen(
 ): Promise<StallenData> {
   const now = new Date();
 
+  return await medAkProfiler(coach, (tx, scope) => loadDeltStallen(tx, scope, coach, params, now)) ?? {
+    rows: [], total: 0, counts: { all: 0, WANG: 0, GFGK: 0, AKA: 0 },
+    bakPlan: 0, inaktive: 0, hoursDelta: 0, weekNo: isoWeek(now),
+  };
+}
+
+/** Hele lesekjeden ligger innenfor de ferske medlems-/delingslåsene.
+ * Søket snevrer inn delingsgrunnlaget; det kan aldri utvide innsynet. */
+async function loadDeltStallen(
+  tx: Prisma.TransactionClient, scope: Prisma.UserWhereInput,
+  coach: { id: string; role: string }, params: StallenParams, now: Date,
+): Promise<StallenData> {
   // Tidsvinduer
   const ukeStart = new Date(now);
   ukeStart.setHours(0, 0, 0, 0);
@@ -195,9 +208,9 @@ export async function loadStallen(
   const fjortenFrem = new Date(now);
   fjortenFrem.setDate(fjortenFrem.getDate() + 14);
 
-  const where = stallenPlayerWhere(coach, params.q);
+  const where: Prisma.UserWhereInput = { AND: [scope, stallenPlayerWhere(coach, params.q)] };
 
-  const players = await prisma.user.findMany({
+  const players = await tx.user.findMany({
     where,
     select: {
       id: true,
@@ -265,7 +278,7 @@ export async function loadStallen(
     take: 400,
   });
 
-  const etterlevelser = await hentStallEtterlevelse(players.map(p => p.id), now);
+  const etterlevelser = await hentStallEtterlevelseITransaksjon(tx, players.map(p => p.id), now);
   const rows: StallenRow[] = players.map((p) => {
     const days = p.lastLoginAt
       ? Math.floor((now.getTime() - p.lastLoginAt.getTime()) / 86_400_000)
