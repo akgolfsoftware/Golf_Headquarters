@@ -1,10 +1,12 @@
 import assert from "node:assert/strict";
 import { before, beforeEach, mock, test, type TestContext } from "node:test";
 import type { TreningsvolumOkt } from "./treningsvolum";
+import type { Prisma } from "@/generated/prisma/client";
 
 let rader: TreningsvolumOkt[] = [];
 const sporringer: { gte: Date; lt: Date }[] = [];
-mock.module("@/lib/prisma", { namedExports: { prisma: {
+const db = {
+  $queryRaw: async () => [],
   workbenchSession: { findMany: async ({ where, select }: {
     where: { playerId: string; date: { gte: Date; lt: Date } };
     select: Record<string, boolean>;
@@ -19,7 +21,27 @@ mock.module("@/lib/prisma", { namedExports: { prisma: {
     groupMemberships: [], childRelations: [], goals: [], primaryCoachId: null }) },
   technicalPlan: { findMany: async () => [] },
   testResult: { findMany: async () => [] },
+  group: { findUniqueOrThrow: async () => ({ name: "Syntetisk skole", program: "WANG_TOPPIDRETT" }) },
+  wagrSnapshot: { findUnique: async () => null },
+  seasonPlan: { findFirst: async () => null },
+};
+mock.module("@/lib/prisma", { namedExports: { prisma: db } });
+mock.module("@/lib/deling/ak-profil-lesing", { namedExports: { medAkProfiler: async (
+  viewer: { id: string }, les: (tx: unknown, scope: Prisma.UserWhereInput) => Promise<unknown>,
+) => {
+  assert.equal(viewer.id, "syntetisk-coach");
+  return les(db, { id: "syntetisk-spiller" });
 } } });
+mock.module("@/lib/deling/navngitt", { namedExports: {
+  krevNavngittTrener: async () => ({ id: "syntetisk-coach", epost: "syntetisk@wang.no" }),
+  navngittTrenerHarTilgang: async (tx: unknown, trener: { id: string }, spillerId: string, gruppeId: string) => {
+    assert.equal(tx, db);
+    assert.equal(trener.id, "syntetisk-coach");
+    assert.equal(spillerId, "syntetisk-spiller");
+    assert.equal(gruppeId, "syntetisk-skole");
+    return true;
+  },
+} });
 mock.module("@/lib/auth/coached", { namedExports: { coachScopedPlayerWhere: () => ({ primaryCoachId: "syntetisk-coach" }) } });
 mock.module("@/lib/portal/ph01-data", { namedExports: { osloDagSomDbDato: () => new Date("2026-10-02T00:00:00Z") } });
 mock.module("@/lib/training/volum", { namedExports: { hentTreningsVolum: async () => [] } });
@@ -76,7 +98,7 @@ function okt(patch: Partial<TreningsvolumOkt> = {}): TreningsvolumOkt {
 async function beggeFaner() {
   const viewer = { id: "syntetisk-coach", role: "COACH" };
   const stats = await lastFane(viewer, "syntetisk-spiller", "stats");
-  const iup = await lastFane(viewer, "syntetisk-spiller", "iup");
+  const iup = await lastFane(viewer, "syntetisk-spiller", "iup", "syntetisk-skole");
   assert.equal(stats?.fane, "stats");
   assert.equal(iup?.fane, "iup");
   if (stats?.fane !== "stats" || iup?.fane !== "iup") throw new Error("Manglende fane");

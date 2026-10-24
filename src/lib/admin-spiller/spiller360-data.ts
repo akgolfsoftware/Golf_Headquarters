@@ -5,7 +5,7 @@
  * erstatter (/admin/spillere/[id], /analyse, /tester, /plan):
  * `coachScopedPlayerWhere` for spilleren, samtykke-maskert fravær
  * (`innsynsNivaaFra`), `loadMinGolf`, `loadAnalyticsWorkbenchData`,
- * `loadSpillerTesterData`, `loadTestFollowup`, `loadSpillerDashboardEkstra`,
+ * `loadSpillerTesterData`, `loadTestFollowup`,
  * `lastSpillerOversiktForViewer`, `hentTekniskPlan`. Ingen nye tabeller, ingen
  * skriving. Hver fane henter bare sine egne data.
  *
@@ -16,7 +16,6 @@ import "server-only";
 import { medAkProfiler } from "@/lib/deling/ak-profil-lesing";
 import { prisma } from "@/lib/prisma";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
-import { beregnGoalProgressListe } from "@/lib/portal/goals/progress";
 import { hentTreningsVolum } from "@/lib/training/volum";
 import { summerTreningsvolum } from "@/lib/workbench/treningsvolum";
 import { beregnKorrelasjon } from "@/lib/training/korrelasjon";
@@ -32,23 +31,20 @@ import { ovelsesNavn } from "@/lib/portal-tester/test-anbefaling";
 import { tnHistorikkRader } from "@/lib/portal-tester/tn-historikk";
 import { tnProtocol } from "@/lib/portal-tester/tn-catalog";
 import { tnFormat } from "@/lib/portal-tester/tn-scoring";
-import { formaterLagretTestResultat } from "@/lib/portal-tester/resultat-visning";
 import { workbenchUrl } from "@/lib/workbench/visning-url";
-import { loadSpillerDashboardEkstra } from "@/lib/admin-spiller/spiller-dashboard-data";
 import { lastSpiller360Plan } from "./spiller360-plan-data";
+import { lastSpiller360Iup } from "./spiller360-iup-data";
+import { lastSpiller360Teknisk as lastTp } from "./spiller360-teknisk-data";
 import { lastSpiller360Samtaler } from "./spiller360-samtaler-data";
-import { hentTekniskPlan } from "@/lib/teknisk-plan/tp-last";
-import { planVisning } from "@/lib/teknisk-plan/tp-visning";
-import { velgPlan } from "@/lib/teknisk-plan/tp-oversikt";
 import { osloDagSomDbDato } from "@/lib/portal/ph01-data";
 import { ukenummer } from "@/lib/uke-helpers";
 import type { SgCategory, Prisma } from "@/generated/prisma/client";
 import {
-  akseFra, dato, datagrunnlag, desimal, erWangEllerTn, kortDato, sg, snittscore,
+  dato, datagrunnlag, desimal, kortDato, sg, snittscore,
   tellendeRunder, tilPar, type S360Fane,
 } from "./spiller360-visning";
 import type {
-  S360FaneData, S360Iup, S360Stats, S360Talent, S360Tester, S360Tp,
+  S360FaneData, S360Stats, S360Talent, S360Tester,
 } from "./spiller360-typer";
 
 type Viewer = { id: string; role: string };
@@ -61,13 +57,6 @@ const VOLUM_SELECT = {
   actualMinutes: true, status: true, updatedAt: true, migrertFraTrainingPlanSessionId: true,
   isTemplate: true, hiddenByPlayer: true, needsPlayerApproval: true, approvalStatus: true,
 } as const;
-const UKEDAG = new Intl.DateTimeFormat("nb-NO", { weekday: "short", timeZone: "UTC" });
-const DAG_MND = new Intl.DateTimeFormat("nb-NO", { day: "2-digit", month: "2-digit", timeZone: "UTC" });
-
-function dagLabel(d: Date): string {
-  const u = UKEDAG.format(d).replace(".", "");
-  return `${u.charAt(0).toUpperCase()}${u.slice(1, 3)} ${DAG_MND.format(d)}`;
-}
 
 export { lastSpiller360Hode, lastSpiller360Rail } from "./spiller360-hode-data";
 
@@ -222,26 +211,6 @@ async function lastStats(viewer: Viewer, id: string): Promise<S360Stats> {
   };
 }
 
-/* ─────────────────────────── Teknisk plan ─────────────────────────── */
-
-async function lastTp(id: string, db: Prisma.TransactionClient = prisma): Promise<S360Tp> {
-  const planer = await db.technicalPlan.findMany({
-    where: { userId: id },
-    orderBy: { updatedAt: "desc" },
-    select: { id: true, navn: true, status: true, startDato: true, sluttDato: true, updatedAt: true },
-  });
-  const valgt = velgPlan(planer);
-  const rad = valgt ? await hentTekniskPlan({ id: valgt.id, userId: id }, db) : null;
-  const STATUS: Record<string, string> = { DRAFT: "Utkast", ACTIVE: "Aktiv", ARCHIVED: "Arkivert" };
-  return {
-    planer: planer.map((p) => ({
-      id: p.id, navn: p.navn, status: STATUS[p.status] ?? p.status,
-      periode: `${dato(p.startDato)}–${p.sluttDato ? dato(p.sluttDato) : "åpen"}`, oppdatert: dato(p.updatedAt),
-    })),
-    aktiv: rad ? planVisning(rad, { loggAntall: 5 }) : null,
-    aktivId: rad?.id ?? null,
-  };
-}
 
 /* ───────────────────────────── Tester ───────────────────────────── */
 
@@ -292,98 +261,6 @@ async function lastTester(viewer: Viewer, id: string): Promise<S360Tester | null
   };
 }
 
-/* ───────────────────────────── IUP ───────────────────────────── */
-
-async function lastIup(viewer: Viewer, id: string): Promise<S360Iup | null> {
-  const naa = new Date();
-  const idag = osloDagSomDbDato(naa);
-  const mandag = new Date(idag.getTime() - ((idag.getUTCDay() + 6) % 7) * DAG);
-  const spiller = await prisma.user.findFirst({
-    where: { AND: [coachScopedPlayerWhere(viewer), { id, role: "PLAYER" }] },
-    select: {
-      name: true, email: true, phone: true, hcp: true, dateOfBirth: true, homeClub: true, school: true, playingYears: true, ambition: true, primaryCoachId: true,
-      groupMemberships: { where: { endedAt: null }, select: { group: { select: { name: true, program: true } } } },
-      childRelations: { select: { id: true, relationship: true, parent: { select: { name: true, phone: true, email: true } } } },
-      goals: { where: { status: "ACTIVE" }, orderBy: { createdAt: "desc" }, take: 12 },
-    },
-  });
-  if (!spiller) return null;
-
-  const [ekstra, coach, uke, fireUker, tp, tester] = await Promise.all([
-    loadSpillerDashboardEkstra(id),
-    spiller.primaryCoachId ? prisma.user.findUnique({ where: { id: spiller.primaryCoachId }, select: { name: true } }) : Promise.resolve(null),
-    prisma.workbenchSession.findMany({
-      where: { playerId: id, date: { gte: mandag, lt: new Date(mandag.getTime() + 7 * DAG) }, status: { not: "DRAFT" }, isTemplate: false },
-      orderBy: [{ date: "asc" }, { startMinute: "asc" }],
-      select: { date: true, title: true, pyramid: true, durationMinutes: true },
-    }),
-    prisma.workbenchSession.findMany({
-      where: { playerId: id, date: { gte: new Date(idag.getTime() - 28 * DAG), lt: new Date(idag.getTime() + DAG) }, status: { notIn: ["DRAFT", "CANCELLED"] }, isTemplate: false },
-      select: VOLUM_SELECT,
-    }),
-    lastTp(id),
-    prisma.testResult.findMany({
-      where: { userId: id },
-      orderBy: { takenAt: "desc" },
-      take: 12,
-      select: { id: true, testId: true, details: true, score: true, takenAt: true, test: { select: { name: true, protocol: true } } },
-    }),
-  ]);
-
-  const grupper = spiller.groupMemberships.map((m) => m.group.name);
-  const ak = !erWangEllerTn(spiller.groupMemberships.map((m) => m.group.program), grupper);
-  const fremdrift = await beregnGoalProgressListe(spiller.goals, { hcp: spiller.hcp });
-  const maal = spiller.goals.map((g, index) => {
-    const p = fremdrift[index];
-    return { id: g.id, kategori: g.category, tittel: g.title, frist: g.targetDate ? dato(g.targetDate) : null, pct: p.hasData ? p.pct : null };
-  });
-  const fireUkersVolum = summerTreningsvolum(fireUker, {
-    fraDato: new Date(idag.getTime() - 28 * DAG), tilDato: new Date(idag.getTime() + DAG), naa,
-  });
-  const timer = fireUkersVolum.akser.flatMap((r) => r.faktiskMinutter === null ? [] : [{
-    akse: r.akse, timer: Math.round(r.faktiskMinutter / 6) / 10,
-  }]);
-
-  return {
-    ak,
-    person: {
-      navn: spiller.name ?? "Spiller",
-      fodt: spiller.dateOfBirth ? dato(spiller.dateOfBirth) : null,
-      klubb: spiller.homeClub, skole: spiller.school, hovedcoach: coach?.name ?? null,
-      telefon: spiller.phone, epost: spiller.email,
-      spilteAar: spiller.playingYears ? `${spiller.playingYears} år` : null,
-      ambisjon: spiller.ambition, grupper,
-    },
-    foreldre: spiller.childRelations.map((c) => ({ id: c.id, navn: c.parent.name ?? "—", relasjon: ({ FATHER: "Far", MOTHER: "Mor", GUARDIAN: "Verge / annen foresatt" } as Record<string, string>)[c.relationship] ?? c.relationship, kontakt: c.parent.phone ?? c.parent.email ?? null })),
-    ranking: [
-      { navn: "WAGR", verdi: ekstra.wagr ? `${ekstra.wagr.rank}. plass` : null, kilde: ekstra.wagr ? "WAGR · SISTE SNAPSHOT" : "WAGR · IKKE RANGERT" },
-      { navn: "NGF juniorranking", verdi: null, kilde: "NGF · FINNES IKKE I APPEN ENNÅ" },
-    ],
-    resultatmaal: maal.filter((m) => m.kategori === "OUTCOME"),
-    prosessmaal: maal.filter((m) => m.kategori !== "OUTCOME"),
-    perioder: (ekstra.sesong?.perioder ?? []).map((p) => ({
-      navn: p.focus ?? p.lPhase,
-      uker: `Uke ${ukenummer(p.startDate)}–${ukenummer(p.endDate)}`,
-      timer: p.weeklyVolMin != null || p.weeklyVolMax != null ? `${p.weeklyVolMin ?? "—"}–${p.weeklyVolMax ?? "—"} min/uke` : "—",
-    })),
-    turneringer: ekstra.turneringsResultater.map((t) => ({
-      navn: t.navn, dato: dato(t.dato),
-      resultat: [t.score != null ? String(t.score) : null, t.position != null ? `${t.position}. plass` : null].filter(Boolean).join(" · ") || "—",
-    })),
-    uke: uke.map((o) => ({ dag: dagLabel(o.date), tittel: o.title, meta: `${(akseFra(o.pyramid) ?? "—").toString().toUpperCase()} · ${o.durationMinutes} min` })),
-    trening: fireUkersVolum.total.planlagteOkter
-      ? {
-          gjennomfort: fireUkersVolum.total.gjennomforteOkter, planlagt: fireUkersVolum.total.planlagteOkter,
-          timer, volumMetadata: fireUkersVolum,
-          kilde: `WORKBENCH · 4 UKER · FAKTISK REGISTRERT · ${fireUkersVolum.total.ukjentOkter} UKJENT · ${dato(naa)}`,
-        }
-      : null,
-    tester: tester.map((t) => ({ navn: t.test.name, verdi: formaterLagretTestResultat({ ...t, protocol: t.test.protocol }), kilde: `TEST · ${dato(t.takenAt)}` })),
-    teknikk: tp.aktiv?.oppgaver.map((o) => ({ p: o.pNummer, tittel: o.tittel, status: o.status })) ?? [],
-    teknikkKilde: tp.aktiv ? `TEKNISK PLAN · ${tp.aktiv.coach ?? "—"} · ${tp.aktiv.sistRegistrert}`.toUpperCase() : null,
-    fys: ekstra.fysTester.map((t) => ({ navn: t.navn, verdi: desimal(t.score), kilde: `FYS-TEST · ${dato(t.takenAt)}` })),
-  };
-}
 
 /* ───────────────────────────── Talent ───────────────────────────── */
 
@@ -422,7 +299,7 @@ async function lastTalent(id: string, db: Prisma.TransactionClient): Promise<S36
 
 /* ───────────────────────────── Samlet ───────────────────────────── */
 
-export async function lastSpiller360Fane(viewer: Viewer, id: string, fane: S360Fane): Promise<S360FaneData | null> {
+export async function lastSpiller360Fane(viewer: Viewer, id: string, fane: S360Fane, iupGruppeId?: string): Promise<S360FaneData | null> {
   if (fane === "plan") {
     const data = await lastSpiller360Plan(viewer, id);
     return data ? { fane, data } : null;
@@ -440,7 +317,7 @@ export async function lastSpiller360Fane(viewer: Viewer, id: string, fane: S360F
       return fane === "tp" ? { fane, data: await lastTp(id, tx) } : { fane, data: await lastTalent(id, tx) };
     });
   }
-  // Stats/Tester/IUP har fortsatt egne eldre underlesere.
+  // Stats/Tester har fortsatt egne eldre underlesere.
   // De må konverteres samlet før hele Spiller 360 kan regnes som sikret.
   switch (fane) {
     case "stats": return { fane, data: await lastStats(viewer, id) };
@@ -449,7 +326,7 @@ export async function lastSpiller360Fane(viewer: Viewer, id: string, fane: S360F
       return d ? { fane, data: d } : null;
     }
     case "iup": {
-      const d = await lastIup(viewer, id);
+      const d = await lastSpiller360Iup(viewer, id, iupGruppeId);
       return d ? { fane, data: d } : null;
     }
   }

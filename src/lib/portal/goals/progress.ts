@@ -6,7 +6,7 @@
 // visningslaget skal vise "ingen data ennå", ikke en fabrikkert 0 %.
 
 import { prisma } from "@/lib/prisma";
-import type { Goal } from "@/generated/prisma/client";
+import type { Goal, Prisma } from "@/generated/prisma/client";
 import { PYR_LABEL } from "@/lib/pyramide";
 import { lesSgMaal, SG_OMRADE_NAVN } from "@/lib/domain/maal-fremdrift";
 import { hentSgSnittPerOmrade } from "@/lib/portal/sg-omrade-snitt";
@@ -78,14 +78,14 @@ function progressHcp(goal: GoalForProgress, hcp: number | null): GoalProgress {
   return { pct, status: statusFromPct(pct), hasData: true, value: hcp, detail };
 }
 
-async function progressRoundsPerMonth(goal: GoalForProgress, now: Date): Promise<GoalProgress> {
+async function progressRoundsPerMonth(goal: GoalForProgress, now: Date, db: Prisma.TransactionClient): Promise<GoalProgress> {
   const target = goal.targetValue ?? 1;
   const windowStart = daysAgo(now, ROUNDS_WINDOW_DAYS);
-  const count = await prisma.round.count({
+  const count = await db.round.count({
     where: { userId: goal.userId, playedAt: { gte: windowStart } },
   });
   if (count === 0) {
-    const noenGang = await prisma.round.findFirst({
+    const noenGang = await db.round.findFirst({
       where: { userId: goal.userId },
       select: { id: true },
     });
@@ -101,7 +101,7 @@ async function progressRoundsPerMonth(goal: GoalForProgress, now: Date): Promise
   };
 }
 
-async function progressSessionFrequency(goal: GoalForProgress, now: Date): Promise<GoalProgress> {
+async function progressSessionFrequency(goal: GoalForProgress, now: Date, db: Prisma.TransactionClient): Promise<GoalProgress> {
   if (!goal.linkedPyramidArea) return ingenData("Ingen treningskategori valgt");
 
   const target = goal.targetValue ?? 1;
@@ -113,7 +113,7 @@ async function progressSessionFrequency(goal: GoalForProgress, now: Date): Promi
   };
 
   const [v2, wb, planLogger] = await Promise.all([
-    prisma.trainingSessionV2.findMany({
+    db.trainingSessionV2.findMany({
       where: {
         studentId: goal.userId,
         status: "COMPLETED",
@@ -122,7 +122,7 @@ async function progressSessionFrequency(goal: GoalForProgress, now: Date): Promi
       },
       select: { id: true, generertFraId: true },
     }),
-    prisma.workbenchSession.findMany({
+    db.workbenchSession.findMany({
       where: {
         playerId: goal.userId,
         status: "COMPLETED",
@@ -131,7 +131,7 @@ async function progressSessionFrequency(goal: GoalForProgress, now: Date): Promi
       },
       select: { id: true },
     }),
-    prisma.trainingPlanSessionLog.findMany({
+    db.trainingPlanSessionLog.findMany({
       where: { completedAt: { gte: windowStart }, session: sessionFilter },
       select: { sessionId: true },
     }),
@@ -149,7 +149,7 @@ async function progressSessionFrequency(goal: GoalForProgress, now: Date): Promi
   ]);
 
   if (count === 0) {
-    const noenGang = await prisma.trainingPlanSessionLog.findFirst({
+    const noenGang = await db.trainingPlanSessionLog.findFirst({
       where: { completedAt: { not: null }, session: sessionFilter },
       select: { id: true },
     });
@@ -208,7 +208,7 @@ async function progressSgArea(
   };
 }
 
-async function progressTestScore(goal: GoalForProgress): Promise<GoalProgress> {
+async function progressTestScore(goal: GoalForProgress, db: Prisma.TransactionClient): Promise<GoalProgress> {
   if (!goal.linkedTestId) return ingenData("Ingen test valgt");
 
   // Goal stores a bare numeric target; its editor still labels it as points.
@@ -218,7 +218,7 @@ async function progressTestScore(goal: GoalForProgress): Promise<GoalProgress> {
     return ingenData("Følg resultatet i testhistorikken. Automatisk målfremdrift for denne testen er ikke avklart.");
   }
 
-  const latest = await prisma.testResult.findFirst({
+  const latest = await db.testResult.findFirst({
     where: { userId: goal.userId, testId: goal.linkedTestId },
     orderBy: { takenAt: "desc" },
     select: { score: true, test: { select: { protocol: true } } },
@@ -268,8 +268,9 @@ async function progressTestScore(goal: GoalForProgress): Promise<GoalProgress> {
 export async function beregnGoalProgress(
   goal: GoalForProgress,
   ctx: GoalProgressContext,
+  db?: Prisma.TransactionClient,
 ): Promise<GoalProgress> {
-  return beregnMedSgKilde(goal, ctx, hentSgSnittPerOmrade);
+  return beregnMedSgKilde(goal, ctx, userId => hentSgSnittPerOmrade(userId, db), db ?? prisma);
 }
 
 /** Samme resultater og rekkefølge som enkeltberegningen. SG-grunnlaget
@@ -277,35 +278,37 @@ export async function beregnGoalProgress(
 export async function beregnGoalProgressListe(
   goals: readonly GoalForProgress[],
   ctx: GoalProgressContext,
+  db?: Prisma.TransactionClient,
 ): Promise<GoalProgress[]> {
   const reads = new Map<string, ReturnType<typeof hentSgSnittPerOmrade>>();
   const loadSg: typeof hentSgSnittPerOmrade = (userId) => {
     let read = reads.get(userId);
     if (!read) {
-      read = hentSgSnittPerOmrade(userId);
+      read = hentSgSnittPerOmrade(userId, db);
       reads.set(userId, read);
     }
     return read;
   };
   const context = { ...ctx, now: ctx.now ?? new Date() };
-  return Promise.all(goals.map((goal) => beregnMedSgKilde(goal, context, loadSg)));
+  return Promise.all(goals.map((goal) => beregnMedSgKilde(goal, context, loadSg, db ?? prisma)));
 }
 
 async function beregnMedSgKilde(
   goal: GoalForProgress,
   ctx: GoalProgressContext,
   loadSg: typeof hentSgSnittPerOmrade,
+  db: Prisma.TransactionClient,
 ): Promise<GoalProgress> {
   const now = ctx.now ?? new Date();
   switch (goal.type) {
     case "HCP_TARGET":
       return progressHcp(goal, ctx.hcp);
     case "ROUNDS_PER_MONTH":
-      return progressRoundsPerMonth(goal, now);
+      return progressRoundsPerMonth(goal, now, db);
     case "SESSION_FREQUENCY":
-      return progressSessionFrequency(goal, now);
+      return progressSessionFrequency(goal, now, db);
     case "TEST_SCORE":
-      return progressTestScore(goal);
+      return progressTestScore(goal, db);
     case "SG_AREA":
       return progressSgArea(goal, loadSg);
     default:

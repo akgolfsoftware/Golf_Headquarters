@@ -16,6 +16,7 @@ const schema = `profil_test_${randomUUID().replaceAll("-", "")}`;
 const options = `-c search_path=${schema}`;
 const db = new PrismaClient({ adapter: new PrismaPg({ connectionString: connection, options }, { schema }) });
 mock.module("../../src/lib/prisma", { namedExports: { prisma: db } });
+mock.module("next/navigation", { namedExports: { redirect() { throw Error("navigation"); }, notFound() { throw Error("not found"); } } });
 
 test("AK-profildeling: faktisk gi, trekk, innsyn og samtidighetsvern", async t => {
   const admin = new Client({ connectionString: connection });
@@ -161,6 +162,70 @@ test("AK-profildeling: faktisk gi, trekk, innsyn og samtidighetsvern", async t =
       assert.equal(await lastSpiller360Samtaler(adminViewer, 'p'), null);
       await settAkProfilValg(selv, 'p', svar(true));
       assert.equal((await lastSpiller360Samtaler(a, 'p'))?.notat?.tekst, 'Eget syntetisk notat');
+    });
+    await t.test('IUP krever både AK-ja og navngitt skoleja, og holder medlemskapet under lesingen', async () => {
+      await sql.query(`ALTER TABLE users ADD COLUMN email text NOT NULL DEFAULT 'synthetic@example.test', ADD COLUMN "anonymisertAt" timestamptz;
+        UPDATE users SET email='synthetic@wang.no' WHERE id='coach-a';
+        UPDATE users SET email='synthetic-admin@wang.no' WHERE id='admin';
+        CREATE TABLE trener_delings_invitasjoner (id text PRIMARY KEY, "userId" text, "mottakerGruppeId" text,
+          "mottakerEpost" text, "acceptedByUserId" text, "acceptedAt" timestamptz, "revokedAt" timestamptz);
+        INSERT INTO group_members (id, "groupId", "userId", role) VALUES ('coach-school','wang','coach-a','COACH'), ('admin-school','wang','admin','COACH');`);
+      const { harSpiller360IupTilgang } = await import('../../src/lib/admin-spiller/spiller360-iup-tilgang');
+      const { NAVNGITT_PROFIL_SCOPE, NAVNGITT_PROFIL_TEKST_VERSJON } = await import('../../src/lib/deling/navngitt-regler');
+      const read = (viewer = a, groupId = 'wang') => medAkProfiler(viewer, async (tx, scope) => {
+        if (!(await tx.user.findFirst({ where: { AND: [scope, { id: 'p' }] }, select: { id: true } }))) return false;
+        return harSpiller360IupTilgang(tx, { id: viewer.id, epost: viewer.id === 'admin' ? 'synthetic-admin@wang.no' : 'synthetic@wang.no' }, 'p', groupId);
+      });
+      assert.equal(await read(), false, 'AK-ja og skolemedlemskap er ikke navngitt ja');
+      for (const viewer of [a, adminViewer]) {
+        await sql.query(`INSERT INTO trener_delings_invitasjoner VALUES ($1,'p','wang',$3,$2,now(),NULL)`, [`named-${viewer.id}`, viewer.id, viewer.id === 'admin' ? 'synthetic-admin@wang.no' : 'synthetic@wang.no']);
+        await db.delingsSamtykke.create({ data: { id: `named-${viewer.id}`, userId: 'p', scope: NAVNGITT_PROFIL_SCOPE,
+          mottakerGruppeId: 'wang', mottakerUserId: viewer.id, gitt: true, tekstVersjon: NAVNGITT_PROFIL_TEKST_VERSJON,
+          gittAvUserId: 'p', gittAvRolle: 'SELV' } });
+        assert.equal(await read(viewer), true);
+        assert.equal(await read(viewer, 'tn'), false, 'WANG-ja gir ikke TN-rett');
+        assert.equal(await read(viewer, 'a'), false, 'AK-gruppe er ikke skolemiljø');
+      }
+      const klar = Promise.withResolvers<void>(), slipp = Promise.withResolvers<void>();
+      const lesing = medAkProfiler(a, async tx => {
+        assert.equal(await harSpiller360IupTilgang(tx, { id: a.id, epost: 'synthetic@wang.no' }, 'p', 'wang'), true);
+        klar.resolve(); await slipp.promise;
+      });
+      void lesing.catch(klar.reject); await klar.promise;
+      try {
+        for (const endring of [
+          `UPDATE groups SET "arkivertAt"=now() WHERE id='wang'`,
+          `UPDATE group_members SET "endedAt"=now() WHERE id IN ('pw','coach-school')`,
+          `SELECT pg_advisory_xact_lock(hashtextextended('trenerdeling:p', 0))`,
+        ]) {
+          await sql.query('BEGIN'); await sql.query("SET LOCAL lock_timeout='150ms'");
+          try { await assert.rejects(sql.query(endring), /lock timeout/); }
+          finally { await sql.query('ROLLBACK'); }
+        }
+      } finally { slipp.resolve(); await lesing; }
+      await sql.query(`UPDATE group_members SET "endedAt"=now() WHERE id='pw'`);
+      assert.equal(await read(), false); await sql.query(`UPDATE group_members SET "endedAt"=NULL WHERE id='pw'`);
+      await settAkProfilValg(selv, 'p', svar(false)); assert.equal(await read(), false);
+      await settAkProfilValg(selv, 'p', svar(true)); assert.equal(await read(), true);
+      await db.delingsSamtykke.create({ data: { userId: 'p', scope: NAVNGITT_PROFIL_SCOPE,
+        mottakerGruppeId: 'wang', mottakerUserId: a.id, gitt: false, tekstVersjon: NAVNGITT_PROFIL_TEKST_VERSJON,
+        gittAvUserId: 'p', gittAvRolle: 'SELV' } });
+      assert.equal(await read(), false); assert.equal(await read(adminViewer), true);
+      // TN kan ha et eget, navngitt ja fra en WANG-elev uten aktivt TN-medlemskap.
+      await sql.query(`UPDATE users SET email='synthetic@golfforbundet.no' WHERE id='coach-b';
+        INSERT INTO group_members (id,"groupId","userId",role) VALUES ('coach-tn','tn','coach-b','COACH');
+        UPDATE group_members SET "endedAt"=now() WHERE id='pt';
+        INSERT INTO trener_delings_invitasjoner VALUES ('named-tn','p','tn','synthetic@golfforbundet.no','coach-b',now(),NULL)`);
+      await db.delingsSamtykke.create({ data: { id: 'named-tn', userId: 'p', scope: NAVNGITT_PROFIL_SCOPE,
+        mottakerGruppeId: 'tn', mottakerUserId: b.id, gitt: true, tekstVersjon: NAVNGITT_PROFIL_TEKST_VERSJON,
+        gittAvUserId: 'p', gittAvRolle: 'SELV' } });
+      await settAkProfilValg(selv, 'p', svar(true, 'b'));
+      assert.equal(await medAkProfiler(b, tx => harSpiller360IupTilgang(tx,
+        { id: b.id, epost: 'synthetic@golfforbundet.no' }, 'p', 'tn')), true);
+      assert.equal(await medAkProfiler(b, tx => harSpiller360IupTilgang(tx,
+        { id: b.id, epost: 'synthetic@golfforbundet.no' }, 'p', 'wang')), false);
+      await settAkProfilValg(selv, 'p', svar(false, 'b'));
+      await sql.query(`UPDATE group_members SET "endedAt"=NULL WHERE id='pt'`);
     });
     await t.test('ADMIN, feil forelder, klientidentitet og gammel versjon kan ikke gi på vegne av andre', async () => {
       const antall = await db.delingsSamtykke.count();
