@@ -4,6 +4,22 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## SPILLERUTVIKLING: ÉN FLATE FOR IUP, TESTHISTORIKK OG ANALYSE (Anders 24.10.2026, bindende)
+
+Anders 24.10: «Se på optimalisering av IUP. Se på optimalisering av kartlegging og analyse av alle tester pr spiller.» Anbefalingen (én felles «Spillerutvikling»-flate) ble godkjent med «Ok» 24.10, 16:47, med standardvalgene under.
+
+- **Fem faner, lik struktur overalt:** Oversikt · Plan (Workbench, Turneringsplan, Trening og Teknisk plan som seksjoner) · Tester · Sjekk (Fireukerssjekk, Sesongevaluering, IUP-måltall) · Samtale (Chat, IUP-samtale, notater). Samme flate i PlayerHQ (spiller), AgencyOS Spiller 360, Team Norway og WANG; spiller og coach ser samme skjerm, coach med trenerhandlinger.
+- **Tester:** alle 19 i ett batteri (8 golfslag, 6 teknikk, 5 fysiske). Trykk på en test åpner testdetalj: alle forsøk, trendlinje, mål for testen, neste testdato, «Legg i plan», kilde og hvem som førte (Egenført/Kontrollert). TrackMan, UpGame (manuelt) og Data Golf vises som kilde per resultat.
+- **Hovedtall:** «3 av 5 prioriterte tester», med «7 av 11 forsøk» under. Samme regnemåte i alle flater.
+- **Sammenligning:** treneren ser gruppemedian uten rangering, og først når minst 5 har resultat. Spilleren ser egen trend og egen kategori, ikke «du mot gruppa».
+- **Organisasjonslag:** struktur er lik, ordforråd og referanse er org-spesifikke: AK Golf bruker A–K, Team Norway bruker IUP-arkets begreper, WANG bruker egne konsepter og Udir-kompetansemål. AK Golf-konseptet lekker ikke inn i Team Norway eller WANG.
+- **Uavklart og vises som «—»:** FYS-formel, A–K-grenser («X slag til neste kategori»), normer, referanseverdier, landslagsnivå, plan-etterlevelse og antall spørsmål i Fireukerssjekk (41 eller 43). PEI-prosent er ikke avklart som begrep og vises ikke før det er bekreftet. Ingen oppfunne tall.
+- **Demotall:** PlayerHQ (pakke 4) er fasit for Øyvinds tall; AgencyOS følger. Demodagen er fredag 23.10 i alle lerreter.
+- **Opphever:** unntaket i regler.md 25 (åtte IUP-faner) gjelder ikke lenger for Spillerutvikling. Egne faner for Teknisk plan, Trening, Turneringsplan, Spiller 360-fanene (Stats, Samtaler) og fysisk test som eget sted utgår.
+- **Åpent:** Talent (egen funksjon i Spiller 360?) er uavklart og har ingen tavle. Inngang fra Stats › Tester er bare nevnt i notat, siden hovedlerretet er fullt.
+- **Tegnet i Claude Design:** Team Norway (side Spillere), WANG (side Elever), AgencyOS pakke 1 (side «AgencyOS · Spillerutvikling (Spiller 360)») og PlayerHQ pakke 4 (side «PlayerHQ · Spillerutvikling»). Hver kontrollert av uavhengig agent. Hovedlerretet har bare pekernotater.
+- **Koden:** én komponent per flate-del med organisasjon og rolle som parameter (jf. §TRENERFLATEN BYGGES ÉN GANG). Ikke startet.
+
 ## TRENERFLATEN BYGGES ÉN GANG: SJU FELLES SKJERMER FOR AGENCYOS, WANG OG TEAM NORWAY (Anders 24.10.2026, bindende)
 
 Anders 23.10, 22:59: «Se nærmere på hvordan Team Norway og Wang skjermene kan optimaliseres.» Forslaget om sju felles skjermer ble svart med «Ok for Wang og team norway» (24.10, 10:22).
