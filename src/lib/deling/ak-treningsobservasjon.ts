@@ -125,7 +125,7 @@ export async function behandleAkTreningsobservasjon(viewer: Viewer, actionId: un
       await tx.planAction.update({ where: { id: action.id }, data: { decisionNote: note } });
       await tx.notification.create({ data: { userId: action.userId, type: "approval_question", title: "Coach trenger mer info",
         body: note!.slice(0, 280), link: "/portal/agent-pipeline" } });
-      return { status: "UNCHANGED" as const, applied: false };
+      return { status: "UNCHANGED" as const, applied: false, questionRecorded: true as const };
     }
     await tx.planAction.update({ where: { id: action.id }, data: { status: valg, decidedAt: new Date(), decidedById: viewer.id,
       ...(valg === "REJECTED" ? { rejectReason: note } : { decisionNote: note }) } });

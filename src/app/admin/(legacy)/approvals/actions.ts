@@ -5,6 +5,7 @@
  */
 
 import { z } from "zod";
+import { krevRegistrertAkBeslutning } from "@/lib/deling/ak-beslutningskvittering";
 import { erAkUkeforslag, behandleAkUkeforslag } from "@/lib/deling/ak-ukeforslag";
 import { erAkTreningsobservasjon, behandleAkTreningsobservasjon } from "@/lib/deling/ak-treningsobservasjon";
 import { revalidatePath } from "next/cache";
@@ -49,8 +50,8 @@ export async function approveRequestDetailed(
   actionId = z.string().trim().min(1).max(200).parse(actionId);
   const metadata = await prisma.planAction.findUnique({ where: { id: actionId }, select: { agentName: true, actionType: true } });
   if (metadata && (erAkUkeforslag(metadata) || erAkTreningsobservasjon(metadata))) {
-    if (erAkUkeforslag(metadata)) await behandleAkUkeforslag(user, actionId, "ACCEPTED", comment);
-    else await behandleAkTreningsobservasjon(user, actionId, "ACCEPTED", comment);
+    if (erAkUkeforslag(metadata)) krevRegistrertAkBeslutning(await behandleAkUkeforslag(user, actionId, "ACCEPTED", comment), "ACCEPTED");
+    else krevRegistrertAkBeslutning(await behandleAkTreningsobservasjon(user, actionId, "ACCEPTED", comment), "ACCEPTED");
     revalidatePath("/admin/godkjenninger");
     revalidatePath(`/admin/godkjenninger/${actionId}`);
     revalidatePath("/admin/agents/training-gap");
@@ -160,8 +161,8 @@ export async function declineRequestDetailed(actionId: string, reason: string) {
   actionId = z.string().trim().min(1).max(200).parse(actionId);
   const metadata = await prisma.planAction.findUnique({ where: { id: actionId }, select: { agentName: true, actionType: true } });
   if (metadata && (erAkUkeforslag(metadata) || erAkTreningsobservasjon(metadata))) {
-    if (erAkUkeforslag(metadata)) await behandleAkUkeforslag(user, actionId, "REJECTED", reason);
-    else await behandleAkTreningsobservasjon(user, actionId, "REJECTED", reason);
+    if (erAkUkeforslag(metadata)) krevRegistrertAkBeslutning(await behandleAkUkeforslag(user, actionId, "REJECTED", reason), "REJECTED");
+    else krevRegistrertAkBeslutning(await behandleAkTreningsobservasjon(user, actionId, "REJECTED", reason), "REJECTED");
     revalidatePath("/admin/godkjenninger");
     revalidatePath(`/admin/godkjenninger/${actionId}`);
     revalidatePath("/admin/agents/training-gap");
@@ -203,8 +204,8 @@ export async function requestMoreInfo(actionId: string, question: string) {
   actionId = z.string().trim().min(1).max(200).parse(actionId);
   const metadata = await prisma.planAction.findUnique({ where: { id: actionId }, select: { agentName: true, actionType: true } });
   if (metadata && (erAkUkeforslag(metadata) || erAkTreningsobservasjon(metadata))) {
-    if (erAkUkeforslag(metadata)) await behandleAkUkeforslag(user, actionId, "QUESTION", question);
-    else await behandleAkTreningsobservasjon(user, actionId, "QUESTION", question);
+    if (erAkUkeforslag(metadata)) krevRegistrertAkBeslutning(await behandleAkUkeforslag(user, actionId, "QUESTION", question), "QUESTION");
+    else krevRegistrertAkBeslutning(await behandleAkTreningsobservasjon(user, actionId, "QUESTION", question), "QUESTION");
     revalidatePath("/admin/godkjenninger");
     revalidatePath(`/admin/godkjenninger/${actionId}`);
     revalidatePath("/admin/agents/training-gap");

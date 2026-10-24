@@ -269,6 +269,28 @@ test("Treningsgap: faktisk gruppedeling, mottaker og observasjon under lås", as
       await valg('a',true);await godtaPlanAction(rad.id);
       assert.equal((await db.planAction.findUniqueOrThrow({where:{id:rad.id}})).status,'ACCEPTED');
     });
+    await t.test('observation entries reject no-op receipts without overwriting history or creating notifications',async()=>{
+      viewer=coach;
+      for(const status of ['ACCEPTED','REJECTED','SUPERSEDED','PROCESSING']) {
+        const rad=await ny();await db.planAction.update({where:{id:rad.id},data:{status}});
+        const before=await db.planAction.findUniqueOrThrow({where:{id:rad.id}});
+        for(const call of [()=>acceptPlanAction(rad.id),()=>rejectPlanAction(rad.id),()=>godtaPlanAction(rad.id),
+          ()=>avvisPlanAction(rad.id),()=>approveRequestDetailed(rad.id,'Ny kommentar'),
+          ()=>declineRequestDetailed(rad.id,'Ikke nå'),()=>requestMoreInfo(rad.id,'Et nytt spørsmål')]) {
+          await assert.rejects(call,/allerede behandlet eller erstattet/);
+        }
+        assert.deepEqual(await db.planAction.findUniqueOrThrow({where:{id:rad.id}}),before);
+        assert.equal(await db.agentRun.count(),0);assert.equal(await db.notification.count(),0);
+      }
+    });
+    await t.test('observation question receipt records the action without deciding or changing training',async()=>{
+      const rad=await ny();viewer=coach;
+      try {
+        assert.deepEqual(await beslutning(coach,rad.id,'QUESTION','Syntetisk spørsmål'),{status:'UNCHANGED',applied:false,questionRecorded:true});
+        assert.equal((await db.planAction.findUniqueOrThrow({where:{id:rad.id}})).status,'PENDING');
+        assert.equal(await db.notification.count(),1);assert.equal(await db.agentRun.count(),0);
+      } finally {await db.notification.deleteMany();}
+    });
     await t.test('forespørsel er kun internt varsel og trekk blokkerer gjentakelse',async()=>{
       const rad=await ny();viewer=coach;
       await requestMoreInfo(rad.id,'Hvilken økt gjelder dette?');

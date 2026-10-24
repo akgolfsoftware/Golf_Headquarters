@@ -1,6 +1,7 @@
 "use server";
 
 import { z } from "zod";
+import { krevRegistrertAkBeslutning } from "@/lib/deling/ak-beslutningskvittering";
 import { erAkUkeforslag, behandleAkUkeforslag } from "@/lib/deling/ak-ukeforslag";
 import { erAkTreningsobservasjon, behandleAkTreningsobservasjon } from "@/lib/deling/ak-treningsobservasjon";
 import { revalidatePath } from "next/cache";
@@ -41,9 +42,9 @@ export async function acceptPlanAction(actionId: string) {
   });
   if (!action) throw new Error("not-found");
   if (erAkUkeforslag(action)) {
-    await behandleAkUkeforslag(user, actionId, "ACCEPTED");
+    krevRegistrertAkBeslutning(await behandleAkUkeforslag(user, actionId, "ACCEPTED"), "ACCEPTED");
   } else if (erAkTreningsobservasjon(action)) {
-    await behandleAkTreningsobservasjon(user, actionId, "ACCEPTED");
+    krevRegistrertAkBeslutning(await behandleAkTreningsobservasjon(user, actionId, "ACCEPTED"), "ACCEPTED");
   } else {
     await assertPlanActionAccess(user, action);
     if (action.status !== "PENDING") return;
@@ -73,9 +74,9 @@ export async function rejectPlanAction(actionId: string, reason?: string) {
   });
   if (!action) throw new Error("not-found");
   if (erAkUkeforslag(action)) {
-    await behandleAkUkeforslag(user, actionId, "REJECTED", reason);
+    krevRegistrertAkBeslutning(await behandleAkUkeforslag(user, actionId, "REJECTED", reason), "REJECTED");
   } else if (erAkTreningsobservasjon(action)) {
-    await behandleAkTreningsobservasjon(user, actionId, "REJECTED", reason);
+    krevRegistrertAkBeslutning(await behandleAkTreningsobservasjon(user, actionId, "REJECTED", reason), "REJECTED");
   } else {
     await assertPlanActionAccess(user, action);
     if (action.status !== "PENDING") return;

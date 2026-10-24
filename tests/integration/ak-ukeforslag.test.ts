@@ -197,6 +197,41 @@ test("Ukeforslag: atomisk plan, V2 og beslutningsspor", async t => {
       }
       assert.deepEqual(await counts(),empty);assert.equal(await db.notification.count(),0);await valg(true);
     });
+    await t.test('interactive entries cannot report success for an already decided, replaced or processing week',async()=>{
+      const {acceptPlanAction,rejectPlanAction}=await import('../../src/lib/agents/actions');
+      const {godtaPlanAction,avvisPlanAction}=await import('../../src/app/admin/varsler/actions');
+      const {approveRequestDetailed,declineRequestDetailed,requestMoreInfo}=await import('../../src/app/admin/(legacy)/approvals/actions');
+      for(const status of ['ACCEPTED','REJECTED','SUPERSEDED','PROCESSING']) {
+        await reset();const action=await opprett();await db.planAction.update({where:{id:action.id},data:{status}});
+        const before=await db.planAction.findUniqueOrThrow({where:{id:action.id}});
+        for(const call of [()=>acceptPlanAction(action.id),()=>rejectPlanAction(action.id),()=>godtaPlanAction(action.id),
+          ()=>avvisPlanAction(action.id),()=>approveRequestDetailed(action.id,'Ny kommentar'),
+          ()=>declineRequestDetailed(action.id,'Ikke nå'),()=>requestMoreInfo(action.id,'Et nytt spørsmål')]) {
+          await assert.rejects(call,/allerede behandlet eller erstattet/);
+        }
+        assert.deepEqual(await db.planAction.findUniqueOrThrow({where:{id:action.id}}),before);
+        assert.equal(await db.notification.count(),0);assert.deepEqual(await counts(),empty);
+        assert.equal((await behandle(viewer,action.id,'ACCEPTED')).status,'UNCHANGED');
+      }
+    });
+    await t.test('concurrent interactive approvals give one success and one unchanged error',async()=>{
+      await reset();const action=await opprett();
+      const {acceptPlanAction}=await import('../../src/lib/agents/actions');
+      const {godtaPlanAction}=await import('../../src/app/admin/varsler/actions');
+      const results=await Promise.allSettled([acceptPlanAction(action.id),godtaPlanAction(action.id)]);
+      assert.equal(results.filter(r=>r.status==='fulfilled').length,1);
+      const failed=results.find(r=>r.status==='rejected');assert.ok(failed && failed.status==='rejected');
+      assert.match(String(failed.reason),/allerede behandlet eller erstattet/);
+      assert.deepEqual(await counts(),{plan:1,drills:1,v2:1,v2drills:1,spor:1});
+    });
+    await t.test('recorded weekly question has a distinct receipt while the proposal remains pending',async()=>{
+      await reset();const action=await opprett();
+      assert.deepEqual(await behandle(viewer,action.id,'QUESTION','Syntetisk spørsmål'),{status:'UNCHANGED',applied:false,questionRecorded:true});
+      assert.equal((await db.planAction.findUniqueOrThrow({where:{id:action.id}})).status,'PENDING');
+      assert.equal(await db.notification.count(),1);assert.deepEqual(await counts(),empty);
+      const {requestMoreInfo}=await import('../../src/app/admin/(legacy)/approvals/actions');
+      await requestMoreInfo(action.id,'Et annet uttrykkelig spørsmål');assert.equal(await db.notification.count(),2);
+    });
     await t.test('legacy detailed approval uses atomic path and records note without replacing evidence',async()=>{
       await reset();const action=await opprett();
       const {approveRequestDetailed}=await import('../../src/app/admin/(legacy)/approvals/actions');

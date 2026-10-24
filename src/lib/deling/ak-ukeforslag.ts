@@ -54,7 +54,7 @@ export async function behandleAkUkeforslag(viewer: { id: string; role: string },
       await tx.planAction.update({ where: { id: key }, data: { decisionNote: note, decidedById: viewer.id } });
       await tx.notification.create({ data: { userId: r.userId, type: "approval_question",
         title: "Coach trenger mer info", body: note!, link: "/portal/agent-pipeline" } });
-      return { status: "UNCHANGED" as const, applied: false };
+      return { status: "UNCHANGED" as const, applied: false, questionRecorded: true as const };
     }
     let antall = 0;
     if (valg === "ACCEPTED") {
