@@ -4,5 +4,9 @@ CREATE TABLE player_facilities (
   "userId" text NOT NULL REFERENCES users(id),
   name text NOT NULL,
   notes text,
+  type text,
+  "isIndoor" boolean NOT NULL DEFAULT false,
+  "rangeLengdeM" integer,
+  "maksPuttLengdeM" double precision,
   capabilities text[] NOT NULL DEFAULT ARRAY[]::text[]
 );

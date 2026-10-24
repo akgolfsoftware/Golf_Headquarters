@@ -405,6 +405,55 @@ test("Ukeforslag: atomisk plan, V2 og beslutningsspor", async t => {
       try {await denied;assert.equal(blocked,true);assert.deepEqual(await counts(),empty);}
       finally {await reset();await sql.query(`DELETE FROM player_facilities`);}
     });
+    await t.test('measured facilities stay local and invalid measurements cannot create a basis',async()=>{
+      await reset();
+      await sql.query(`INSERT INTO player_facilities (id,"userId",name,notes,capabilities,type,"isIndoor","rangeLengdeM","maksPuttLengdeM")
+        VALUES ('f','p','Syntetisk privat sted','Syntetisk privat notat',ARRAY['PUTTING_GREEN_LANG'],'HJEMME',true,200,12)`);
+      try {
+        const { hentAkUkegrunnlag: hent }=await import('../../src/lib/deling/ak-ukegrunnlag');
+        const basis=await hent(jobb,'p','2026-10-26');assert.ok(basis);
+        assert.deepEqual(basis.fasiliteter,[{capabilities:['PUTTING_GREEN_LANG'],type:'HJEMME',isIndoor:true,rangeLengdeM:200,maksPuttLengdeM:12}]);
+        for(const text of ['Syntetisk privat sted','Syntetisk privat notat']) assert.ok(!JSON.stringify(basis).includes(text));
+        for(const field of ['capabilities','type','isIndoor','rangeLengdeM','maksPuttLengdeM']) assert.ok(!Object.hasOwn(basis.modell,field));
+        assert.ok(!JSON.stringify(basis.modell).includes('HJEMME'));
+        await sql.query(`UPDATE player_facilities SET "maksPuttLengdeM"=-1 WHERE id='f'`);
+        assert.equal(await hent(jobb,'p','2026-10-26'),null);
+        await sql.query(`UPDATE player_facilities SET "maksPuttLengdeM"=NULL WHERE id='f'`);
+        assert.equal((await hent(jobb,'p','2026-10-26'))?.fasiliteter[0].maksPuttLengdeM,null);
+      } finally {await reset();await sql.query(`DELETE FROM player_facilities`);}
+    });
+    await t.test('measurement and environment changes invalidate generation and acceptance without replacing proof',async()=>{
+      await reset();await sql.query(`INSERT INTO player_facilities (id,"userId",name,capabilities,type,"maksPuttLengdeM")
+        VALUES ('f','p','Syntetisk sted',ARRAY['RADAR'],'KLUBBANLEGG',15)`);
+      try {
+        const candidate=await utkast();
+        const generated=await generer(jobb,'p','2026-10-26',async()=>{
+          await sql.query(`UPDATE player_facilities SET "maksPuttLengdeM"=5 WHERE id='f'`);return candidate;
+        });
+        assert.equal(generated.status,'UTDATERT');assert.equal(await db.planAction.count(),0);
+        const action=await opprett();
+        await sql.query(`UPDATE player_facilities SET type='SIMULATOR',"isIndoor"=true WHERE id='f'`);
+        await assert.rejects(behandle(viewer,action.id,'ACCEPTED'),/utdatert-ukegrunnlag/);
+        assert.deepEqual(await counts(),empty);
+      } finally {await reset();await sql.query(`DELETE FROM player_facilities`);}
+    });
+    await t.test('measured length changed under a held facility lock is reread before approval',async()=>{
+      await reset();await sql.query(`INSERT INTO player_facilities (id,"userId",name,capabilities,"maksPuttLengdeM")
+        VALUES ('f','p','Syntetisk sted',ARRAY['RADAR'],20)`);
+      const action=await opprett();await sql.query('BEGIN');
+      await sql.query(`UPDATE player_facilities SET "maksPuttLengdeM"=2 WHERE id='f'`);
+      const denied=assert.rejects(behandle(viewer,action.id,'ACCEPTED'),/utdatert-ukegrunnlag/);
+      let blocked=false;
+      try {
+        for(let i=0;i<100;i++) {
+          const lock=await admin.query(`SELECT 1 FROM pg_stat_activity WHERE application_name=$1 AND wait_event_type='Lock'
+            AND query LIKE '%player_facilities%' AND query LIKE '%FOR SHARE%'`,[schema]);
+          if(lock.rowCount){blocked=true;break;}await new Promise(r=>setTimeout(r,10));
+        }
+      } finally {await sql.query('COMMIT');}
+      try {await denied;assert.equal(blocked,true);assert.deepEqual(await counts(),empty);}
+      finally {await reset();await sql.query(`DELETE FROM player_facilities`);}
+    });
     const aar=Number(new Intl.DateTimeFormat('en-GB',{year:'numeric',timeZone:'Europe/Oslo'}).format(new Date()));
     const nivaProfil=(score:number)=>({person:{name:'Syntetisk privat profilnavn'},turneringer:[{
       start_date:`${aar}-06-01`,year:aar,klasse:'G19',plassering:1,total_score:score,runder:[{runde:1,score}]}]});

@@ -167,7 +167,7 @@ test("Ukegrunnlag: tilgang og planendringer gjennom ekte SQL", async t => {
       let basis=await les();assert.ok(basis);assert.deepEqual(basis.fasiliteter,[]);
       await sql.query(`INSERT INTO player_facilities (id,"userId",name,capabilities) VALUES ('f','p','Syntetisk sted',ARRAY['RADAR'])`);
       assert.equal(await skriv(basis),null);basis=await les();assert.ok(basis);
-      assert.deepEqual(basis.fasiliteter,[{capabilities:['RADAR']}]);
+      assert.deepEqual(basis.fasiliteter,[{capabilities:['RADAR'],type:null,isIndoor:false,rangeLengdeM:null,maksPuttLengdeM:null}]);
       await sql.query(`UPDATE player_facilities SET capabilities=ARRAY['BUNKER'] WHERE id='f'`);
       assert.equal(await skriv(basis),null);
       await sql.query(`UPDATE player_facilities SET capabilities=ARRAY['RADAR'] WHERE id='f'`);

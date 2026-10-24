@@ -1,7 +1,8 @@
 import "server-only";
 import { createHash } from "node:crypto";
 import { z } from "zod";
-import { DrillFasilitet, type Prisma } from "@/generated/prisma/client";
+import { type Prisma } from "@/generated/prisma/client";
+import { akFasilitetSchema, type AkFasilitet } from "./ak-bankfasilitet";
 import { osloAar } from "@/lib/domain/brutto-snitt";
 import { akNivaTurneringerSchema, beregnAkSpillerniva, type AkSpillerniva } from "./ak-spillerniva";
 import { nivaProfilFunksjon, nivaKoblinger } from "@/lib/profil-kobling/niva-kilde";
@@ -20,7 +21,7 @@ const periode = z.object({ id, revisjon: revision, fase: z.string(), gruppeId: i
 const rad = z.object({
   hcp: z.number().nullable(), preferanser: z.unknown(),
   nivaKildeGyldig: z.literal(true), nivaTurneringer: akNivaTurneringerSchema, koblingsVersjoner: z.string().nullable(),
-  fasiliteter: z.array(z.object({ id, revisjon: revision, capabilities: z.array(z.enum(DrillFasilitet)) })),
+  fasiliteter: z.array(akFasilitetSchema.extend({ id, revisjon: revision })),
   planer: z.array(z.object({ id, revisjon: revision, coachId: id.nullable(), fra: z.string(), til: z.string().nullable() })).max(2),
   sesonger: z.array(z.object({ id, revisjon: revision })).max(2),
   perioder: z.array(periode).max(2),
@@ -41,7 +42,7 @@ type UkeData = {
   budsjett: ReturnType<typeof parseSessionBudget>;
   harManedsEllerUkevalg: boolean;
   /** Local validation only; never part of the model payload. No names/notes. */
-  fasiliteter: Array<{ capabilities: DrillFasilitet[] }>;
+  fasiliteter: AkFasilitet[];
   niva: AkSpillerniva;
   modell: {
     context: { daysUntilTournament: number | null; completedSessions: number; sgWeaknesses: string[] };
@@ -117,7 +118,9 @@ async function les(tx: Tx, spillerWhere: Prisma.UserWhereInput, jobb: AkGruppeop
             FROM jsonb_array_elements(t->'runder') r) END
       ) ORDER BY t::text), '[]') FROM profil p, jsonb_array_elements(p.data->'turneringer') t) AS "nivaTurneringer",
       COALESCE((SELECT jsonb_agg(jsonb_build_object('id',f.id,'revisjon',f.xmin::text,
-        'capabilities',f.capabilities) ORDER BY f.id) FROM player_facilities f WHERE f."userId" = u.id), '[]') AS fasiliteter,
+        'capabilities',f.capabilities,'type',f.type,'isIndoor',f."isIndoor",
+        'rangeLengdeM',f."rangeLengdeM",'maksPuttLengdeM',f."maksPuttLengdeM")
+        ORDER BY f.id) FROM player_facilities f WHERE f."userId" = u.id), '[]') AS fasiliteter,
       COALESCE((SELECT jsonb_agg(p ORDER BY p.id) FROM planer p), '[]') AS planer,
       COALESCE((SELECT jsonb_agg(s ORDER BY s.id) FROM sesonger s), '[]') AS sesonger,
       COALESCE((SELECT jsonb_agg(p ORDER BY p.id) FROM perioder p), '[]') AS perioder,
@@ -156,7 +159,7 @@ async function les(tx: Tx, spillerWhere: Prisma.UserWhereInput, jobb: AkGruppeop
   const verdi: UkeData = {
     planId: data.planer[0].id, periodeId: aktiv?.id ?? null, budsjett: parseSessionBudget(aktiv?.budsjett),
     harManedsEllerUkevalg: data.manedVersjoner !== null || data.ukeVersjoner !== null,
-    fasiliteter: data.fasiliteter.map(f => ({ capabilities: f.capabilities })), niva,
+    fasiliteter: data.fasiliteter.map(f => akFasilitetSchema.parse(f)), niva,
     modell: {
       context: { daysUntilTournament: dato ? Math.ceil((dato.getTime() - start.getTime()) / 86_400_000) : null,
         completedSessions: data.fullforte,

@@ -338,3 +338,8 @@ Den interne fornyelsen kan sette samme delingsbevis/uke/plan/mottakers utdaterte
 ### Godkjentbankkobling 24.10.2026
 
 Skrivefri intern serverleser verifiserer referanse og innhold i SYSTEM/PLATFORM-øvelser etter eksisterende gjeldende AK-profildeling. Den returnerer kun øvelses-ID/radversjon og bank-ID/kildehash, med serverinternt delingsbevis. Coach-notater velges ikke; ingen nye spillerfelt leses eller lagres. En separat ren funksjon beskriver en eventuell bankkopi i eksisterende parametersJson, inklusive godkjent faginnhold og kildefingeravtrykk. Den foretar ingen import eller lagring. Ingen nye persondatatabeller, modellkall eller samtykkeformål. Reelle produksjonskoblinger og en samlet rettighets-/aktiveringsreise er ikke sluttkontrollert.
+
+
+### Målte fasilitetskrav 24.10.2026
+
+Det delingsbeskyttede ukekontrollgrunnlaget inkluderer nå egne PlayerFacility.type, isIndoor, rangeLengdeM og maksPuttLengdeM. Navn/notater/radarmerke leses ikke. Feltene er serverinterne, ikke del av modellargumentet. Eksisterende fingeravtrykk omfatter dem og radversjonen; råmål lagres ikke i PlanAction, logger eller nye tabeller. Ugyldige mål stopper grunnlaget, null bevares som ukjent. Den rene bankfasilitetskontrollen returnerer faste årsakskoder per sted og har ingen nettverk-/lagringsfunksjon. Ingen samtykkeutvidelse, aktiv bakgrunnskjøring, ny oppbevaringstid eller juridisk sluttavklaring. Kildedata følger eksisterende konto-/fasilitetsrettigheter; forslagenes egeneksport/anonymisering er uendret. Samlet bankkvalifisering og produksjonsreise gjenstår.

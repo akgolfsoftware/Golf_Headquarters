@@ -84,13 +84,15 @@ test("malformed server data proof is denied before reading weekly data", async (
 
 
 test("facility facts stay local and each recorded revision binds the snapshot", async () => {
-  row.fasiliteter = [{ id: "private-facility", revisjon: "1", capabilities: ["RADAR", "DRIVING_RANGE"], name: "Private name", notes: "Private notes" }];
+  const maal = { type: "KLUBBANLEGG", isIndoor: false, rangeLengdeM: 200, maksPuttLengdeM: 12 };
+  row.fasiliteter = [{ id: "private-facility", revisjon: "1", capabilities: ["RADAR", "DRIVING_RANGE"], ...maal, name: "Private name", notes: "Private notes" }];
   const { hentAkUkegrunnlag, brukSammeAkUkegrunnlag } = await import("./ak-ukegrunnlag");
   const captured = await hentAkUkegrunnlag(job, "p", week); assert.ok(captured);
-  assert.deepEqual(captured.fasiliteter, [{ capabilities: ["RADAR", "DRIVING_RANGE"] }]);
+  assert.deepEqual(captured.fasiliteter, [{ capabilities: ["RADAR", "DRIVING_RANGE"], ...maal }]);
+  for (const field of Object.keys(maal)) assert.ok(!JSON.stringify(captured.modell).includes(field));
   for (const word of ["private-facility", "Private name", "Private notes"]) assert.ok(!JSON.stringify(captured).includes(word));
   assert.ok(!JSON.stringify(captured.modell).includes("RADAR"));
-  row.fasiliteter = [{ id: "private-facility", revisjon: "2", capabilities: ["RADAR", "DRIVING_RANGE"] }];
+  row.fasiliteter = [{ id: "private-facility", revisjon: "2", ...maal, capabilities: ["RADAR", "DRIVING_RANGE"] }];
   assert.equal(await brukSammeAkUkegrunnlag(job, "p", proof, captured.databevis, async () => ++writes), null);
   assert.equal(writes, 0);
 });
