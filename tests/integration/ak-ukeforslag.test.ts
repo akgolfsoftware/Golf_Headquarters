@@ -829,6 +829,93 @@ test("Ukeforslag: atomisk plan, V2 og beslutningsspor", async t => {
       assert.equal(blocked,true);assert.deepEqual((await pending)?.verdi,[]);assert.deepEqual(await counts(),empty);
     });
 
+
+    const { hentAkUkekandidater: hentKandidater, brukSammeAkUkekandidater: brukKandidater } = await import('../../src/lib/deling/ak-ukekandidater');
+    const kandidater=()=>hentKandidater(jobb,'p','2026-10-26');
+    const kandidatStart=async()=>{await resetBank();await db.exerciseDefinition.create({data:{...bankData,id:'bank-copy'}});};
+    let brukt=0;
+    const brukKandidat=(bevis:unknown)=>brukKandidater(jobb,'p',bevis,async tx=>{
+      brukt++;return tx.exerciseDefinition.count({where:{id:'bank-copy'}});
+    });
+    await t.test('candidate observations combine only verified copies with current player inputs and no source text',async()=>{
+      await kandidatStart();const r=await kandidater();assert.ok(r);assert.equal(r.kandidater.length,1);
+      const k=r.kandidater[0];assert.equal(k.bankId,bankkopi.bankId);
+      assert.equal(k.periode.type,'GRUNN');assert.equal(k.periode.ovelsesSamsvar,'IKKE_VURDERT');
+      assert.equal(k.fagligVurdering,'GJENSTAR');assert.equal(k.fasilitetsstatus,'INGEN_REGISTRERTE_STEDER');
+      for(const field of ['name','description','godkjentInnhold','bruttoSnitt','hcp','runder','maksPuttLengdeM','notes']) {
+        assert.ok(!JSON.stringify(r.kandidater).includes(`"${field}"`));
+      }
+      assert.deepEqual(await brukKandidat(r.bevis),{verdi:1});assert.deepEqual(await counts(),empty);
+    });
+    await t.test('candidate evidence rejects invalid proofs, wrong scope and retraction followed by new consent',async()=>{
+      await kandidatStart();const r=await kandidater();assert.ok(r);const before=brukt;
+      for(const bevis of [null,{}, {...r.bevis,kandidatFingeravtrykk:'bad'}, {...r.bevis,versjon:2}]) assert.equal(await brukKandidat(bevis),null);
+      for(const target of [{gruppeId:'a',coachId:'admin'},{gruppeId:'a',coachId:'coach-b'},
+        {gruppeId:'wang',coachId:'coach-a'},{gruppeId:'tn',coachId:'coach-a'}]) {
+        assert.equal(await hentKandidater(target,'p','2026-10-26'),null);
+        assert.equal(await brukKandidater(target,'p',r.bevis,async()=>++brukt),null);
+      }
+      assert.equal(await hentKandidater(jobb,'private','2026-10-26'),null);
+      await valg(false);assert.equal(await kandidater(),null);assert.equal(await brukKandidat(r.bevis),null);
+      await valg(true);assert.equal(await brukKandidat(r.bevis),null);assert.equal(brukt,before);
+      assert.ok(await kandidater());
+    });
+    await t.test('candidate evidence covers changed current bank, changed row versions and ambiguous copies',async()=>{
+      await kandidatStart();let r=await kandidater();assert.ok(r);const before=brukt;
+      bankKilde=bankOriginal.filter(k=>k.id!==bankkopi.bankId);assert.equal(await brukKandidat(r.bevis),null);
+      bankKilde=structuredClone(bankOriginal);
+      await db.exerciseDefinition.update({where:{id:'bank-copy'},data:{description:bankData.description}});
+      assert.equal(await brukKandidat(r.bevis),null);r=await kandidater();assert.ok(r);
+      await db.exerciseDefinition.create({data:{...bankData,id:'bank-copy-2'}});
+      assert.equal(await brukKandidat(r.bevis),null);assert.deepEqual((await kandidater())?.kandidater,[]);
+      await db.exerciseDefinition.deleteMany({where:{id:{startsWith:'bank-copy'}}});
+      r=await kandidater();assert.ok(r);assert.deepEqual(r.kandidater,[]);
+      await db.exerciseDefinition.create({data:{...bankData,id:'bank-copy'}});
+      assert.equal(await brukKandidat(r.bevis),null);assert.equal(brukt,before);
+    });
+    await t.test('candidate evidence detects changed own measurements and level but excludes other player facilities',async()=>{
+      await kandidatStart();const r=await kandidater();assert.ok(r);const before=brukt;
+      try {
+        await sql.query(`INSERT INTO player_facilities (id,"userId",name,"maksPuttLengdeM") VALUES ('outside-candidate','private','Syntetisk privat sted',40)`);
+        assert.deepEqual(await brukKandidat(r.bevis),{verdi:1});
+        await sql.query(`INSERT INTO player_facilities (id,"userId",name,"maksPuttLengdeM") VALUES ('candidate-f','p','Syntetisk eget sted',12)`);
+        assert.equal(await brukKandidat(r.bevis),null);
+        const fresh=await kandidater();assert.ok(fresh);
+        await sql.query(`UPDATE users SET hcp=11 WHERE id='p'`);
+        assert.equal(await brukKandidat(fresh.bevis),null);assert.equal(brukt,before+1);
+      } finally {await sql.query(`DELETE FROM player_facilities;UPDATE users SET hcp=NULL WHERE id='p'`);}
+    });
+    await t.test('bank source changed while candidate use waits is read after the lock',async()=>{
+      await kandidatStart();const r=await kandidater();assert.ok(r);const before=brukt;
+      await sql.query('BEGIN');await sql.query(`SELECT id FROM exercise_definitions WHERE id='bank-copy' FOR UPDATE`);
+      const pending=brukKandidat(r.bevis);let blocked=false;
+      try {
+        for(let i=0;i<100;i++) {
+          const lock=await admin.query(`SELECT 1 FROM pg_stat_activity WHERE application_name=$1 AND wait_event_type='Lock'
+            AND query LIKE '%exercise_definitions%' AND query LIKE '%FOR SHARE%'`,[schema]);
+          if(lock.rowCount){blocked=true;break;}await new Promise(r=>setTimeout(r,10));
+        }
+        bankKilde=bankOriginal.filter(k=>k.id!==bankkopi.bankId);
+      } finally {await sql.query('COMMIT');}
+      assert.equal(blocked,true);assert.equal(await pending,null);assert.equal(brukt,before);
+      bankKilde=structuredClone(bankOriginal);
+    });
+    await t.test('weekly inputs changed during bank wait are rechecked before candidate callback',async()=>{
+      await kandidatStart();const r=await kandidater();assert.ok(r);const before=brukt;
+      await sql.query('BEGIN');await sql.query(`SELECT id FROM exercise_definitions WHERE id='bank-copy' FOR UPDATE`);
+      const pending=brukKandidat(r.bevis);let blocked=false;
+      try {
+        for(let i=0;i<100;i++) {
+          const lock=await admin.query(`SELECT 1 FROM pg_stat_activity WHERE application_name=$1 AND wait_event_type='Lock'
+            AND query LIKE '%exercise_definitions%' AND query LIKE '%FOR SHARE%'`,[schema]);
+          if(lock.rowCount){blocked=true;break;}await new Promise(r=>setTimeout(r,10));
+        }
+        await sql.query(`UPDATE signals SET value=-77 WHERE id='sg'`);
+      } finally {await sql.query('COMMIT');}
+      try {assert.equal(blocked,true);assert.equal(await pending,null);assert.equal(brukt,before);}
+      finally {await sql.query(`UPDATE signals SET value=-1 WHERE id='sg'`);}
+    });
+
   } finally {
     await db.$disconnect(); await sql.end(); await admin.query(`DROP SCHEMA "${schema}" CASCADE`); await admin.end();
   }

@@ -343,3 +343,8 @@ Skrivefri intern serverleser verifiserer referanse og innhold i SYSTEM/PLATFORM-
 ### Målte fasilitetskrav 24.10.2026
 
 Det delingsbeskyttede ukekontrollgrunnlaget inkluderer nå egne PlayerFacility.type, isIndoor, rangeLengdeM og maksPuttLengdeM. Navn/notater/radarmerke leses ikke. Feltene er serverinterne, ikke del av modellargumentet. Eksisterende fingeravtrykk omfatter dem og radversjonen; råmål lagres ikke i PlanAction, logger eller nye tabeller. Ugyldige mål stopper grunnlaget, null bevares som ukjent. Den rene bankfasilitetskontrollen returnerer faste årsakskoder per sted og har ingen nettverk-/lagringsfunksjon. Ingen samtykkeutvidelse, aktiv bakgrunnskjøring, ny oppbevaringstid eller juridisk sluttavklaring. Kildedata følger eksisterende konto-/fasilitetsrettigheter; forslagenes egeneksport/anonymisering er uendret. Samlet bankkvalifisering og produksjonsreise gjenstår.
+
+
+### Samlet kandidatgrunnlag 24.10.2026
+
+Intern leser kombinerer bare allerede autoriserte ukedata med verifiserte, entydige bankkopier. Kandidater returnerer koblings-ID/radversjon/kildehash og faste observasjoner om nivåspenn/kilde, registrert periodetype, ukebudsjett og anlegg per indeks. Ingen navn, råscore, handicap, anleggsmål eller kildefritekst i denne projeksjonen; IDs/bevis er serverinterne og er ikke anonymitetsbevis. Versjonert kontrollsum binder kandidatene til eksisterende delings- og ukedatabevis. Bruk krever ferske kontroller i samme transaksjon. Ingen ny lagringstabell, logg, modellargument, samtykkeformål, oppbevaringstid eller aktiv bakgrunnsjobb. Rettighetsflyt for kilde og eksisterende forslag er uendret; samlet produksjons-/rettighetsreise og juridisk avklaring gjenstår.
