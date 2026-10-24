@@ -43,7 +43,7 @@ import { grupperInnboks } from "@/lib/admin/innboks/grupper";
 import type { DatakvalitetData } from "@/lib/admin/innboks/last-datakvalitet";
 import type { AdminUkesrapportKort } from "@/lib/admin/ko/typer";
 import { avgjorInnboksSak } from "@/app/admin/innboks/actions";
-import { acceptPlanAction, rejectPlanAction } from "@/lib/agents/actions";
+import { acceptPlanActionMedKvittering, rejectPlanActionMedKvittering } from "@/lib/agents/actions";
 import { avvisProaktivtForslag, godkjennCaddieDraft } from "@/app/admin/agencyos/caddie/dashbord/actions";
 // Navnerom-import: måleverktøyets stubb for «use server»-moduler kjenner bare ASCII-navn.
 import * as foresporsel from "@/app/admin/(legacy)/foresporsler/actions";
@@ -120,8 +120,12 @@ function useHandling(): { pending: boolean; feil: string | null; kjor: Kjor; set
     setFeil(null);
     try {
       const res = await fn();
-      const r = res as { ok?: boolean; feil?: string; error?: string } | undefined;
-      if (r && r.ok === false) { setFeil(r.feil ?? r.error ?? "Handlingen gikk ikke gjennom."); return; }
+      const r = res as { ok?: boolean; feil?: string; error?: string; oppdater?: boolean } | undefined;
+      if (r && r.ok === false) {
+        setFeil(r.feil ?? r.error ?? "Handlingen gikk ikke gjennom.");
+        if (r.oppdater === true) router.refresh();
+        return;
+      }
       etter?.();
       router.refresh();
     } catch (e) {
@@ -183,7 +187,7 @@ function SakDetalj({ p, modus = null, onBorte, onFilter, onTilbake }: {
   function bekreftGrunn() {
     if (!grunn) return;
     const g = grunnTekst.trim() || undefined;
-    if (h.t === "plan") kjor(() => rejectPlanAction(h.id, g), onBorte);
+    if (h.t === "plan") kjor(() => rejectPlanActionMedKvittering(h.id, g), onBorte);
     else if (h.t === "sak") avgjorSak(grunn.valg, g);
   }
 
@@ -259,7 +263,7 @@ function SakDetalj({ p, modus = null, onBorte, onFilter, onTilbake }: {
 
     <div className="knapper">
       {h.t === "plan" && !grunn && !p.lost && <>
-        <Knapp disabled={pending} onClick={() => kjor(() => acceptPlanAction(h.id), onBorte)}>Godkjenn</Knapp>
+        <Knapp disabled={pending} onClick={() => kjor(() => acceptPlanActionMedKvittering(h.id), onBorte)}>Godkjenn</Knapp>
         <Knapp variant="sek" disabled={pending} onClick={() => setGrunn({ valg: "avvis" })}>Avvis</Knapp>
       </>}
       {h.t === "foresporsel" && <>

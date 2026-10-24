@@ -214,6 +214,23 @@ test("Ukeforslag: atomisk plan, V2 og beslutningsspor", async t => {
         assert.equal((await behandle(viewer,action.id,'ACCEPTED')).status,'UNCHANGED');
       }
     });
+    await t.test('structured weekly receipts keep denied access private and record only one concurrent approval',async()=>{
+      await reset();let action=await opprett();
+      const {acceptPlanActionMedKvittering,rejectPlanActionMedKvittering}=await import('../../src/lib/agents/actions');
+      await valg(false);
+      await assert.rejects(()=>acceptPlanActionMedKvittering(action.id),/forbidden/);
+      await assert.rejects(()=>rejectPlanActionMedKvittering(action.id),/forbidden/);
+      assert.deepEqual(await counts(),empty);await valg(true);
+      // A new grant must not revive the old proposal's captured sharing proof.
+      await assert.rejects(()=>acceptPlanActionMedKvittering(action.id),/forbidden/);
+      await reset();action=await opprett();
+      const results=await Promise.all([acceptPlanActionMedKvittering(action.id),acceptPlanActionMedKvittering(action.id)]);
+      assert.equal(results.filter(r=>r.ok).length,1);
+      const unchanged=results.find(r=>!r.ok);assert.ok(unchanged && !unchanged.ok);
+      assert.equal(unchanged.kode,'ALLEREDE_BEHANDLET');assert.equal(unchanged.oppdater,true);
+      assert.deepEqual(await rejectPlanActionMedKvittering(action.id),unchanged);
+      assert.deepEqual(await counts(),{plan:1,drills:1,v2:1,v2drills:1,spor:1});
+    });
     await t.test('concurrent interactive approvals give one success and one unchanged error',async()=>{
       await reset();const action=await opprett();
       const {acceptPlanAction}=await import('../../src/lib/agents/actions');

@@ -283,6 +283,18 @@ test("Treningsgap: faktisk gruppedeling, mottaker og observasjon under lås", as
         assert.equal(await db.agentRun.count(),0);assert.equal(await db.notification.count(),0);
       }
     });
+    await t.test('structured observation receipt returns a known no-op only after sharing checks',async()=>{
+      const rad=await ny();viewer=coach;
+      const {acceptPlanActionMedKvittering,rejectPlanActionMedKvittering}=await import('../../src/lib/agents/actions');
+      assert.deepEqual(await rejectPlanActionMedKvittering(rad.id),{ok:true});
+      const before=await db.planAction.findUniqueOrThrow({where:{id:rad.id}});
+      const receipt=await acceptPlanActionMedKvittering(rad.id);
+      assert.ok(!receipt.ok);assert.equal(receipt.kode,'ALLEREDE_BEHANDLET');
+      assert.deepEqual(await db.planAction.findUniqueOrThrow({where:{id:rad.id}}),before);
+      await valg('a',false);
+      await assert.rejects(()=>acceptPlanActionMedKvittering(rad.id),/forbidden/);
+      await valg('a',true);
+    });
     await t.test('observation question receipt records the action without deciding or changing training',async()=>{
       const rad=await ny();viewer=coach;
       try {

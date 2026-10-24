@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { krevRegistrertAkBeslutning } from "./ak-beslutningskvittering";
+import { AkBeslutningAlleredeBehandlet, medAkBeslutningskvittering, krevRegistrertAkBeslutning } from "./ak-beslutningskvittering";
 
 test("only a matching recorded decision can produce an interactive success", () => {
   for (const valg of ["ACCEPTED", "REJECTED"] as const) {
@@ -16,5 +16,21 @@ test("question receipt distinguishes recorded question from a no-op without deci
   for (const result of [{ status: "UNCHANGED" }, { status: "UNCHANGED", questionRecorded: false },
     { status: "ACCEPTED", questionRecorded: true }, { status: "REJECTED" }]) {
     assert.throws(() => krevRegistrertAkBeslutning(result, "QUESTION"), /allerede behandlet eller erstattet/);
+  }
+});
+
+
+test("client receipt serializes only the known no-op and never arbitrary error details", async () => {
+  assert.deepEqual(await medAkBeslutningskvittering(async () => {}), { ok: true });
+  const receipt = await medAkBeslutningskvittering(async () => {
+    krevRegistrertAkBeslutning({ status: "UNCHANGED" }, "ACCEPTED");
+  });
+  assert.deepEqual(JSON.parse(JSON.stringify(receipt)), {
+    ok: false, kode: "ALLEREDE_BEHANDLET",
+    feil: "Forslaget er allerede behandlet eller erstattet. Oppdater oversikten før du prøver igjen.", oppdater: true,
+  });
+  for (const error of [new Error("forbidden"), new Error("synthetic private database detail"),
+    new Error(new AkBeslutningAlleredeBehandlet().message)]) {
+    await assert.rejects(medAkBeslutningskvittering(async () => { throw error; }), e => e === error);
   }
 });

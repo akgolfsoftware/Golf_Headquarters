@@ -1,7 +1,7 @@
 "use server";
 
 import { z } from "zod";
-import { krevRegistrertAkBeslutning } from "@/lib/deling/ak-beslutningskvittering";
+import { krevRegistrertAkBeslutning, medAkBeslutningskvittering } from "@/lib/deling/ak-beslutningskvittering";
 import { erAkUkeforslag, behandleAkUkeforslag } from "@/lib/deling/ak-ukeforslag";
 import { erAkTreningsobservasjon, behandleAkTreningsobservasjon } from "@/lib/deling/ak-treningsobservasjon";
 import { revalidatePath } from "next/cache";
@@ -11,6 +11,15 @@ import { prisma } from "@/lib/prisma";
 import { acceptAndApplyPlanAction } from "./accept-plan-action";
 import { planActionAvvisSpor } from "./plan-action-spor";
 import { kanBehandlePlanAction } from "./plan-action-tilgang";
+
+/** Client receipt for the known AK no-op; original guards and writes are reused. */
+export async function acceptPlanActionMedKvittering(actionId: string) {
+  return medAkBeslutningskvittering(() => acceptPlanAction(actionId));
+}
+
+export async function rejectPlanActionMedKvittering(actionId: string, reason?: string) {
+  return medAkBeslutningskvittering(() => rejectPlanAction(actionId, reason));
+}
 
 /** Spiller eier egen action; coach/admin kun for coachede spillere (+ coachId-match). */
 async function assertPlanActionAccess(

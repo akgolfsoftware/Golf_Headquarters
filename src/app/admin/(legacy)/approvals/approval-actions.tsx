@@ -1,10 +1,10 @@
 "use client";
 
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Check, X } from "lucide-react";
-import { acceptPlanAction, rejectPlanAction } from "@/lib/agents/actions";
+import { acceptPlanActionMedKvittering, rejectPlanActionMedKvittering } from "@/lib/agents/actions";
 import { agBtnClass } from "@/components/admin/agencyos/ui";
 
 export function ApprovalActions({
@@ -18,17 +18,30 @@ export function ApprovalActions({
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
+  const [feil, setFeil] = useState<string | null>(null);
 
   function handle(godkjenn: boolean) {
     startTransition(async () => {
-      if (godkjenn) await acceptPlanAction(actionId);
-      else await rejectPlanAction(actionId);
-      router.refresh();
+      setFeil(null);
+      try {
+        const resultat = godkjenn
+          ? await acceptPlanActionMedKvittering(actionId)
+          : await rejectPlanActionMedKvittering(actionId);
+        if (!resultat.ok) {
+          setFeil(resultat.feil);
+          if (resultat.oppdater) router.refresh();
+          return;
+        }
+        router.refresh();
+      } catch {
+        setFeil("Handlingen kunne ikke bekreftes. Oppdater oversikten før du prøver igjen.");
+      }
     });
   }
 
   return (
     <div className="mt-[14px] flex flex-wrap gap-2">
+      {feil && <p role="alert" className="w-full text-sm">{feil}</p>}
       <button
         type="button"
         onClick={() => handle(true)}
