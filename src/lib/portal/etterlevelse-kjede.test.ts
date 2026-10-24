@@ -35,8 +35,8 @@ mock.module("@/lib/portal/visible-session-range", { namedExports: {
   loadVisibleSessionRangeWithDb: async (_db: unknown, ...args: Parameters<typeof readRange>) => readRange(...args),
 } });
 mock.module("@/lib/deling/ak-profil-lesing", { namedExports: {
-  medAkProfiler: async (_viewer: unknown, read: (db: unknown, scope: unknown) => unknown) =>
-    read(prisma, { id: { in: playerAllowed ? [player.id] : [] } }),
+  medAkProfiler: async (_viewer: unknown, read: (db: unknown, scope: unknown, grunnlag: unknown[]) => unknown) =>
+    read(prisma, { id: { in: playerAllowed ? [player.id] : [] } }, []),
 } });
 mock.module("@/lib/admin/ukesrapport-deling", { namedExports: {
   hentSisteDeling: async () => ({ ukeStart: startOfWeek(new Date(NOW.getTime() - 7 * DAY)), deltAt: NOW, coachId: "coach-test" }),

@@ -39,6 +39,6 @@ const TP_INCLUDE = {
 
 export type TpPlanRad = Prisma.TechnicalPlanGetPayload<{ include: typeof TP_INCLUDE }>;
 
-export async function hentTekniskPlan(hvor: { id: string; userId: string }): Promise<TpPlanRad | null> {
-  return prisma.technicalPlan.findFirst({ where: hvor, include: TP_INCLUDE });
+export async function hentTekniskPlan(hvor: { id: string; userId: string }, db: Prisma.TransactionClient = prisma): Promise<TpPlanRad | null> {
+  return db.technicalPlan.findFirst({ where: hvor, include: TP_INCLUDE });
 }

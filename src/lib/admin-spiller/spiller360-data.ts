@@ -13,6 +13,7 @@
  * utviklingssjekk, Kategori C-linja i talentradaren, standardplan-effekt).
  */
 import "server-only";
+import { medAkProfiler } from "@/lib/deling/ak-profil-lesing";
 import { prisma } from "@/lib/prisma";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { hentSamtykkeStatus } from "@/lib/health/samtykke";
@@ -35,22 +36,20 @@ import { tnProtocol } from "@/lib/portal-tester/tn-catalog";
 import { tnFormat } from "@/lib/portal-tester/tn-scoring";
 import { formaterLagretTestResultat } from "@/lib/portal-tester/resultat-visning";
 import { workbenchUrl } from "@/lib/workbench/visning-url";
-import { hentEtterlevelse } from "@/lib/portal/etterlevelse-data";
 import { loadSpillerDashboardEkstra } from "@/lib/admin-spiller/spiller-dashboard-data";
 import { lastSpillerOversiktForViewer } from "@/lib/admin-spiller/spiller-oversikt-data";
-import { lastSpillerArbeidsvisning } from "@/lib/admin-spiller/spiller-arbeidsvisning-data";
 import { hentTekniskPlan } from "@/lib/teknisk-plan/tp-last";
 import { planVisning } from "@/lib/teknisk-plan/tp-visning";
 import { velgPlan } from "@/lib/teknisk-plan/tp-oversikt";
 import { osloDagSomDbDato } from "@/lib/portal/ph01-data";
 import { ukenummer } from "@/lib/uke-helpers";
-import type { SgCategory } from "@/generated/prisma/client";
+import type { SgCategory, Prisma } from "@/generated/prisma/client";
 import {
-  akseFra, dato, datagrunnlag, desimal, erWangEllerTn, hcp, kortDato, sg, snittscore,
+  akseFra, dato, datagrunnlag, desimal, erWangEllerTn, kortDato, sg, snittscore,
   tellendeRunder, tilPar, type S360Fane,
 } from "./spiller360-visning";
 import type {
-  S360FaneData, S360Hode, S360Iup, S360Plan, S360RailSpiller, S360Samtaler, S360Stats, S360Talent, S360Tester, S360Tp,
+  S360FaneData, S360Iup, S360Plan, S360Samtaler, S360Stats, S360Talent, S360Tester, S360Tp,
 } from "./spiller360-typer";
 
 type Viewer = { id: string; role: string };
@@ -71,147 +70,7 @@ function dagLabel(d: Date): string {
   return `${u.charAt(0).toUpperCase()}${u.slice(1, 3)} ${DAG_MND.format(d)}`;
 }
 
-function alderAar(d: Date | null): number | null {
-  return d ? d.getUTCFullYear() : null;
-}
-
-/** Hullantall fra hullkortet; 0 = bare totalscore. */
-function hullFra(n: number): number {
-  return n;
-}
-
-/* ───────────────────────── Hode (alltid) ───────────────────────── */
-
-export async function lastSpiller360Hode(viewer: Viewer, id: string): Promise<S360Hode | null> {
-  const naa = new Date();
-  const spiller = await prisma.user.findFirst({
-    where: { AND: [coachScopedPlayerWhere(viewer), { id, role: "PLAYER" }] },
-    select: {
-      id: true, name: true, avatarUrl: true, hcp: true, dateOfBirth: true,
-      groupMemberships: { where: { endedAt: null }, orderBy: { joinedAt: "asc" }, select: { group: { select: { name: true, program: true } } } },
-    },
-  });
-  if (!spiller) return null;
-
-  const idag = osloDagSomDbDato(naa);
-  const [runder, okter, avtale, nesteTurnering, sisteBooking, forslag, sgRunder, kommendeOkter, aktivPlan] = await Promise.all([
-    prisma.round.findMany({
-      where: { userId: id, sharedWithCoach: true },
-      orderBy: { playedAt: "desc" },
-      take: 20,
-      select: { score: true, playedAt: true, _count: { select: { holeScores: true } } },
-    }),
-    hentEtterlevelse(id, naa),
-    prisma.subscription.findFirst({
-      where: { userId: id, kind: "COACHING", status: { in: ["ACTIVE", "TRIALING"] } },
-      select: { plan: true, monthlyCredits: true, creditsRemaining: true, currentPeriodEnd: true },
-    }),
-    prisma.tournamentEntry.findFirst({
-      where: { userId: id, withdrawnAt: null, OR: [{ tournament: { startDate: { gte: naa } } }, { manualDate: { gte: naa } }] },
-      orderBy: [{ tournament: { startDate: "asc" } }, { manualDate: "asc" }],
-      select: { manualName: true, manualDate: true, tournament: { select: { name: true, startDate: true } } },
-    }),
-    prisma.booking.findFirst({
-      where: { userId: id, startAt: { lt: naa } },
-      orderBy: { startAt: "desc" },
-      select: { startAt: true, serviceType: { select: { name: true } } },
-    }),
-    prisma.planAction.findMany({
-      where: { userId: id, status: "PENDING" },
-      orderBy: { createdAt: "desc" },
-      take: 5,
-      select: { id: true, actionType: true, agentName: true, createdAt: true },
-    }),
-    // SG siste 30 dager: snitt av sgTotal på runder spilleren har delt med coach.
-    prisma.round.findMany({
-      where: { userId: id, sharedWithCoach: true, sgTotal: { not: null }, playedAt: { gte: new Date(naa.getTime() - 30 * DAG) } },
-      select: { sgTotal: true },
-    }),
-    prisma.workbenchSession.findMany({
-      where: { playerId: id, date: { gte: idag }, status: { in: ["SCHEDULED", "PUBLISHED", "CHANGED_AFTER_PUBLISH"] }, isTemplate: false, hiddenByPlayer: false },
-      orderBy: [{ date: "asc" }, { startMinute: "asc" }],
-      take: 8,
-      select: { date: true, startMinute: true, title: true, durationMinutes: true },
-    }),
-    prisma.trainingPlan.findFirst({
-      where: { userId: id, isActive: true },
-      orderBy: { updatedAt: "desc" },
-      select: { name: true, endDate: true },
-    }),
-  ]);
-
-  const naaMin = osloMinutt(naa);
-  const nesteOkt = kommendeOkter.find((o) => o.date.getTime() > idag.getTime() || o.startMinute >= naaMin) ?? null;
-  const sgVerdier = sgRunder.map((r) => r.sgTotal).filter((v): v is number => v != null);
-
-  const rundeInn = runder.map((r) => ({ score: r.score, playedAt: r.playedAt, hull: hullFra(r._count.holeScores) }));
-  const snitt = snittscore(rundeInn);
-  const kurve = tellendeRunder(rundeInn).slice(0, 10).map((r) => r.score).reverse();
-  const grupper = spiller.groupMemberships.map((m) => m.group.name);
-  const wangTn = erWangEllerTn(spiller.groupMemberships.map((m) => m.group.program), grupper);
-  const pct = okter.pct;
-  const turnDato = nesteTurnering?.tournament?.startDate ?? nesteTurnering?.manualDate ?? null;
-
-  return {
-    id: spiller.id,
-    navn: spiller.name ?? "Spiller",
-    avatarUrl: spiller.avatarUrl,
-    grupper,
-    kategori: snitt.kategori,
-    hcp: hcp(spiller.hcp),
-    fodtAar: alderAar(spiller.dateOfBirth),
-    tilhorighet: wangTn ? "WANG · TEAM NORWAY" : "AK GOLF",
-    etterlevelse: { pct, kilde: `SYNLIGE ØKTER · 4 UKER · ${dato(naa)}` },
-    avtale: avtale
-      ? {
-          verdi: `${avtale.creditsRemaining} av ${avtale.monthlyCredits} klipp`,
-          hint: [avtale.plan, avtale.currentPeriodEnd ? `FORNYES ${dato(avtale.currentPeriodEnd)}` : null].filter(Boolean).join(" · ").toUpperCase(),
-        }
-      : null,
-    nesteTurnering: nesteTurnering
-      ? { navn: nesteTurnering.tournament?.name ?? nesteTurnering.manualName ?? "Turnering", dato: dato(turnDato) }
-      : null,
-    sisteBooking: sisteBooking ? { dato: dato(sisteBooking.startAt), tjeneste: sisteBooking.serviceType?.name ?? "—" } : null,
-    kreverDeg: forslag.map((f) => ({
-      id: f.id,
-      tittel: `Forslag til godkjenning · ${f.actionType.toLowerCase().replace(/_/g, " ")}`,
-      sub: `${f.agentName} · ${dato(f.createdAt)}`.toUpperCase(),
-    })),
-    snitt: { siste10: snitt.siste10, forrige10: snitt.forrige10, antall: snitt.antall, kurve },
-    turneringOmDager: turnDato ? dagerMellom(naa, turnDato) : null,
-    iup: wangTn,
-    sg30: { verdi: sgVerdier.length ? sgVerdier.reduce((a, v) => a + v, 0) / sgVerdier.length : null, runder: sgVerdier.length },
-    nesteOkt: nesteOkt
-      ? { tittel: nesteOkt.title, dato: dato(nesteOkt.date), klokke: klokke(nesteOkt.startMinute), minutter: nesteOkt.durationMinutes, omDager: dagerMellom(naa, nesteOkt.date) }
-      : null,
-    planSlutt: aktivPlan?.endDate
-      ? { navn: aktivPlan.name, dato: dato(aktivPlan.endDate), omDager: dagerMellom(naa, aktivPlan.endDate) }
-      : null,
-  };
-}
-
-/** Minutter etter midnatt nå, i Oslo-tid. */
-function osloMinutt(d: Date): number {
-  const [t, m] = d.toLocaleTimeString("sv-SE", { timeZone: "Europe/Oslo", hour: "2-digit", minute: "2-digit" }).split(":").map(Number);
-  return (t ?? 0) * 60 + (m ?? 0);
-}
-
-function klokke(min: number): string {
-  return `${String(Math.floor(min / 60)).padStart(2, "0")}:${String(min % 60).padStart(2, "0")}`;
-}
-
-/** Hele dager fra i dag til datoen, i Oslo-tid. */
-function dagerMellom(fra: Date, til: Date): number {
-  const dag = (d: Date) => Date.parse(`${d.toLocaleDateString("sv-SE", { timeZone: "Europe/Oslo" })}T00:00:00Z`);
-  return Math.round((dag(til) - dag(fra)) / DAG);
-}
-
-/* ─────────────────────── Arbeidsvisning (?vis=360) ─────────────────────── */
-
-export async function lastSpiller360Rail(viewer: Viewer, id: string): Promise<S360RailSpiller[]> {
-  const a = await lastSpillerArbeidsvisning(viewer, id);
-  return (a?.rail ?? []).map((r) => ({ id: r.id, navn: r.navn, sub: [r.hcpLabel !== "—" ? `HCP ${r.hcpLabel}` : null, r.subLabel || null].filter(Boolean).join(" · ") }));
-}
+export { lastSpiller360Hode, lastSpiller360Rail } from "./spiller360-hode-data";
 
 /* ───────────────────────────── Plan ───────────────────────────── */
 
@@ -432,14 +291,14 @@ async function lastStats(viewer: Viewer, id: string): Promise<S360Stats> {
 
 /* ─────────────────────────── Teknisk plan ─────────────────────────── */
 
-async function lastTp(id: string): Promise<S360Tp> {
-  const planer = await prisma.technicalPlan.findMany({
+async function lastTp(id: string, db: Prisma.TransactionClient = prisma): Promise<S360Tp> {
+  const planer = await db.technicalPlan.findMany({
     where: { userId: id },
     orderBy: { updatedAt: "desc" },
     select: { id: true, navn: true, status: true, startDato: true, sluttDato: true, updatedAt: true },
   });
   const valgt = velgPlan(planer);
-  const rad = valgt ? await hentTekniskPlan({ id: valgt.id, userId: id }) : null;
+  const rad = valgt ? await hentTekniskPlan({ id: valgt.id, userId: id }, db) : null;
   const STATUS: Record<string, string> = { DRAFT: "Utkast", ACTIVE: "Aktiv", ARCHIVED: "Arkivert" };
   return {
     planer: planer.map((p) => ({
@@ -619,10 +478,10 @@ async function lastSamtaler(id: string): Promise<S360Samtaler> {
 
 type Dna = { fysisk?: number; teknikk?: number; taktikk?: number; mental?: number; motivasjon?: number };
 
-async function lastTalent(id: string): Promise<S360Talent> {
+async function lastTalent(id: string, db: Prisma.TransactionClient): Promise<S360Talent> {
   const [t, bruker] = await Promise.all([
-    prisma.talentTracking.findUnique({ where: { userId: id } }),
-    prisma.user.findUnique({ where: { id }, select: { preferences: true } }),
+    db.talentTracking.findUnique({ where: { userId: id } }),
+    db.user.findUnique({ where: { id }, select: { preferences: true } }),
   ]);
   const akser = (v: Dna) => {
     const rad = [["Fysisk", v.fysisk], ["Teknikk", v.teknikk], ["Taktikk", v.taktikk], ["Mental", v.mental], ["Motivasjon", v.motivasjon]] as const;
@@ -653,10 +512,20 @@ async function lastTalent(id: string): Promise<S360Talent> {
 /* ───────────────────────────── Samlet ───────────────────────────── */
 
 export async function lastSpiller360Fane(viewer: Viewer, id: string, fane: S360Fane): Promise<S360FaneData | null> {
+  // Disse to fanene har full transaksjonsbundet kjede. Et tidligere godkjent
+  // hode er ikke tilstrekkelig: direkte fanekall må kontrollere delingen på nytt.
+  if (fane === "tp" || fane === "talent") {
+    return medAkProfiler(viewer, async (tx, scope): Promise<S360FaneData | null> => {
+      const spiller = await tx.user.findFirst({ where: { AND: [scope, { id }] }, select: { id: true } });
+      if (!spiller) return null;
+      return fane === "tp" ? { fane, data: await lastTp(id, tx) } : { fane, data: await lastTalent(id, tx) };
+    });
+  }
+  // Plan/Stats/Tester/IUP/Samtaler har fortsatt egne eldre underlesere.
+  // De må konverteres samlet før hele Spiller 360 kan regnes som sikret.
   switch (fane) {
     case "plan": return { fane, data: await lastPlan(viewer, id) };
     case "stats": return { fane, data: await lastStats(viewer, id) };
-    case "tp": return { fane, data: await lastTp(id) };
     case "test": {
       const d = await lastTester(viewer, id);
       return d ? { fane, data: d } : null;
@@ -666,6 +535,5 @@ export async function lastSpiller360Fane(viewer: Viewer, id: string, fane: S360F
       return d ? { fane, data: d } : null;
     }
     case "samtaler": return { fane, data: await lastSamtaler(id) };
-    case "talent": return { fane, data: await lastTalent(id) };
   }
 }
