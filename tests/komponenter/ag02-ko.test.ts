@@ -31,8 +31,16 @@ const spion = (navn: string, svar: unknown = undefined) => async (...args: unkno
   kall.push({ navn, args });
   return svar;
 };
+let fullforPlan: (() => void) | undefined;
+const planSpion = (navn: string) => async (id: string) => {
+  kall.push({ navn, args: [id] });
+  if (id === "utdatert") return { ok: false, kode: "ALLEREDE_BEHANDLET", feil: "Forslaget er allerede behandlet eller erstattet.", oppdater: true };
+  if (id === "nettfeil") throw Error("synthetic private server detail");
+  if (id === "vent") await new Promise<void>(resolve => { fullforPlan = resolve; });
+  return { ok: true };
+};
 mock.module("@/lib/agents/actions", {
-  namedExports: { acceptPlanAction: spion("acceptPlanAction"), rejectPlanAction: spion("rejectPlanAction") },
+  namedExports: { acceptPlanActionMedKvittering: planSpion("acceptPlanActionMedKvittering"), rejectPlanActionMedKvittering: planSpion("rejectPlanActionMedKvittering") },
 });
 mock.module("@/app/admin/agencyos/caddie/dashbord/actions", {
   namedExports: {
@@ -129,7 +137,31 @@ describe("AG02Ko (Kø)", async () => {
     kall.length = 0;
     const res = await utforKoHandling({ type: "plan-godkjenn", id: "pa-1" });
     assert.deepEqual(res, { ok: true });
-    assert.deepEqual(kall, [{ navn: "acceptPlanAction", args: ["pa-1"] }]);
+    assert.deepEqual(kall, [{ navn: "acceptPlanActionMedKvittering", args: ["pa-1"] }]);
+  });
+
+  test("kjent no-op beholder kvittering og oppfrisking for både godkjenning og avvisning", async () => {
+    for (const type of ["plan-godkjenn", "plan-avvis"] as const) {
+      assert.deepEqual(await utforKoHandling({ type, id: "utdatert" }), {
+        ok: false, kode: "ALLEREDE_BEHANDLET", feil: "Forslaget er allerede behandlet eller erstattet.", oppdater: true,
+      });
+    }
+  });
+
+  test("ukjent feil viser ikke rå servertekst eller påstand om manglende lagring", async () => {
+    for (const type of ["plan-godkjenn", "plan-avvis"] as const) {
+      const result = await utforKoHandling({ type, id: "nettfeil" });
+      assert.deepEqual(result, { ok: false, feil: "Handlingen kunne ikke bekreftes. Oppdater oversikten før du prøver igjen." });
+      assert.doesNotMatch(JSON.stringify(result), /private|ikke lagret|Ingenting er lagret/);
+    }
+  });
+
+  test("køen får ingen suksess før planbeslutningens svar er mottatt", async () => {
+    let ferdig = false;
+    const pending = utforKoHandling({ type: "plan-godkjenn", id: "vent" }).then(result => { ferdig = true; return result; });
+    await Promise.resolve(); assert.equal(ferdig, false);
+    assert.ok(fullforPlan); fullforPlan();
+    assert.deepEqual(await pending, { ok: true });
   });
 
   test("Slå sammen kaller mergeTurneringer med manuell som kilde og kanonisk som mål", async () => {
@@ -143,7 +175,7 @@ describe("AG02Ko (Kø)", async () => {
     const merge = await utforKoHandling({ type: "dublett-slaa-sammen", kildeId: "a", malId: "feiler" });
     assert.deepEqual(merge, { ok: false, feil: "Mål er en dublett" });
     const gdpr = await utforKoHandling({ type: "moderering-gdpr-utfor", id: "m1" });
-    assert.deepEqual(gdpr, { ok: false, feil: "Saken er ikke godkjent" });
+    assert.deepEqual(gdpr, { ok: false, feil: "Handlingen kunne ikke bekreftes. Oppdater oversikten før du prøver igjen." });
   });
 
   test("hver kilde i godkjenninger og de andre fanene treffer sin action", async () => {
@@ -157,7 +189,7 @@ describe("AG02Ko (Kø)", async () => {
     await utforKoHandling({ type: "plan-avvis", id: "p2" });
     assert.deepEqual(
       kall.map((k) => k.navn),
-      ["godkjennCaddieDraft", "markerSomPlanlagt", "godkjennForslag", "avvisForslag", "godkjennSak", "avvisSak", "rejectPlanAction"],
+      ["godkjennCaddieDraft", "markerSomPlanlagt", "godkjennForslag", "avvisForslag", "godkjennSak", "avvisSak", "rejectPlanActionMedKvittering"],
     );
   });
 

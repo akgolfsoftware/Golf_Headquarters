@@ -1,9 +1,9 @@
 /**
  * AG-02 Kø — kobling fra knapp til server action.
  *
- * Hver handling i køen kaller den SAMME server actionen som de gamle
+ * Hver handling i køen gjenbruker serverhandlingen som de gamle
  * kø-komponentene brukte før portingen til Precision Athletics (PR #1173):
- *   - PlanAction (agent):      acceptPlanAction / rejectPlanAction
+ *   - PlanAction (agent):      acceptPlanActionMedKvittering / rejectPlanActionMedKvittering
  *     (AdminGodkjenningerV2, AdminAgenticosGodkjenn)
  *   - Caddie-utkast:           godkjennCaddieDraft / avvisProaktivtForslag
  *     (AdminGodkjenningerV2)
@@ -19,7 +19,7 @@
  * skjermen viser suksess først når serveren har svart ok, og feil ellers.
  */
 
-import { acceptPlanAction, rejectPlanAction } from "@/lib/agents/actions";
+import { acceptPlanActionMedKvittering, rejectPlanActionMedKvittering } from "@/lib/agents/actions";
 import { avvisProaktivtForslag, godkjennCaddieDraft } from "@/app/admin/agencyos/caddie/dashbord/actions";
 import { avslaaForespørsel, markerSomPlanlagt } from "@/app/admin/(legacy)/foresporsler/actions";
 import { avvisForslag, godkjennForslag } from "@/app/admin/tester/foreslatte/actions";
@@ -40,22 +40,20 @@ export type KoHandling =
   | { type: "moderering-avvis"; id: string }
   | { type: "moderering-gdpr-utfor"; id: string };
 
-export type KoResultat = { ok: true; meta?: string } | { ok: false; feil: string };
+export type KoResultat = { ok: true; meta?: string } | { ok: false; feil: string; oppdater?: boolean };
 
-const FALLBACK_FEIL = "Handlingen ble ikke lagret. Prøv igjen.";
+export const KO_UKJENT_UTFALL = "Handlingen kunne ikke bekreftes. Oppdater oversikten før du prøver igjen.";
 
 export async function utforKoHandling(h: KoHandling): Promise<KoResultat> {
   try {
     switch (h.type) {
       case "plan-godkjenn":
-        await acceptPlanAction(h.id);
-        return { ok: true };
+        return await acceptPlanActionMedKvittering(h.id);
       case "plan-avvis":
-        await rejectPlanAction(h.id);
-        return { ok: true };
+        return await rejectPlanActionMedKvittering(h.id);
       case "caddie-send": {
         const res = await godkjennCaddieDraft(h.id);
-        return res.ok ? { ok: true } : { ok: false, feil: res.summary || FALLBACK_FEIL };
+        return res.ok ? { ok: true } : { ok: false, feil: res.summary || KO_UKJENT_UTFALL };
       }
       case "caddie-forkast": {
         const res = await avvisProaktivtForslag(h.id);
@@ -92,7 +90,7 @@ export async function utforKoHandling(h: KoHandling): Promise<KoResultat> {
         await utforGdprSletting(h.id);
         return { ok: true };
     }
-  } catch (err) {
-    return { ok: false, feil: err instanceof Error && err.message ? err.message : FALLBACK_FEIL };
+  } catch {
+    return { ok: false, feil: KO_UKJENT_UTFALL };
   }
 }

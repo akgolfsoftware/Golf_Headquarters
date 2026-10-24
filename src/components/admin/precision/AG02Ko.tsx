@@ -10,7 +10,7 @@ import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Feil, Knapp, KnappLenke, Laster, Nokkelverdier, Pille, Seksjon, Tom, Topp, Varsel } from "@/components/admin/agencyos-ny/ny";
 import type { Akse } from "@/components/precision/pa";
-import { utforKoHandling, type KoHandling, type KoResultat } from "./ag02-handlinger";
+import { KO_UKJENT_UTFALL, utforKoHandling, type KoHandling, type KoResultat } from "./ag02-handlinger";
 import "@/styles/agencyos-ny-mer.css";
 import "@/styles/agencyos-ny-ko.css";
 
@@ -219,9 +219,16 @@ export function AG02Ko({
   const kjor = (id: string, handling: KoHandling, melding: string) => {
     setVarselTekst(null);
     startTransition(async () => {
-      const res = await utfor(handling);
+      let res: KoResultat;
+      try {
+        res = await utfor(handling);
+      } catch {
+        setVarselTekst({ tittel: KO_UKJENT_UTFALL, feil: true });
+        return;
+      }
       if (!res.ok) {
-        setVarselTekst({ tittel: res.feil, meta: "Ingenting er lagret", feil: true });
+        setVarselTekst({ tittel: res.feil, feil: true });
+        if (res.oppdater === true) router.refresh();
         return;
       }
       setBehandlede((prev) => ({ ...prev, [id]: melding }));
