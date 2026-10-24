@@ -236,28 +236,24 @@ export function AG08Samtaler({ d, tom }: { d: S360Samtaler; tom: boolean }) {
   return (
     <div className="a8-to">
       <div className="a8-stabel">
-        <Seksjon k="Samtaler" meta="MELDINGER · LIVE-ØKTER · COACH-AI">
-          {tom || !d.traader.length ? <Dempet>Ingen samtaler ennå.</Dempet> : (
+        <Seksjon k="Samtaler" meta="DINE DIREKTE SAMTALER">
+          {tom || !d.traader.length ? <Dempet>Ingen direkte samtaler mellom deg og spilleren.</Dempet> : (
             <Liste>{d.traader.map((t) => <Rad key={t.id}><Etikett a={t.type} sub={`SIST ${t.sist}`} /><Verdi>{t.antall} meld.</Verdi></Rad>)}</Liste>
           )}
         </Seksjon>
-        <Seksjon k="Coachvurdering" meta={d.notat ? `${d.notat.coach} · ${d.notat.dato}`.toUpperCase() : "—"}>
-          {d.notat ? <p className="a8-tekst">{d.notat.tekst}</p> : <Dempet>Ingen vurdering skrevet.</Dempet>}
+        <Seksjon k="Ditt siste notat" meta={d.notat ? `${d.notat.coach} · ${d.notat.dato}`.toUpperCase() : "—"}>
+          {d.notat ? <p className="a8-tekst">{d.notat.tekst}</p> : <Dempet>Du har ikke skrevet et notat.</Dempet>}
         </Seksjon>
       </div>
       <div className="a8-stabel">
-        <Seksjon k="Videoer" meta={`${d.videoer.length} SISTE`}>
-          {tom || !d.videoer.length ? <Dempet>Ingen videoer.</Dempet> : (
+        <Seksjon k="Dine videoer" meta={`${d.videoer.length} SISTE`}>
+          {tom || !d.videoer.length ? <Dempet>Ingen ferdige videoer lagt inn av deg.</Dempet> : (
             <Liste>{d.videoer.map((v) => <Rad key={v.id}><Etikett a={v.tittel} sub={`${v.kilde} · ${v.dato}`.toUpperCase()} /><span /></Rad>)}</Liste>
           )}
           <div><KnappLenke size="sm" variant="ghost" href="/admin/videoer">Alle videoer</KnappLenke></div>
         </Seksjon>
-        <Seksjon k="Caddie" meta="BARE COACH SER DETTE">
-          <Liste>
-            <Rad><Etikett a="Samtaler med Caddie" sub={d.caddie.sist ? `SIST ${d.caddie.sist}` : "—"} /><Verdi>{d.caddie.antall}</Verdi></Rad>
-            <Rad><Etikett a="Siste samtale" /><Verdi>{d.caddie.sisteTittel ?? "—"}</Verdi></Rad>
-          </Liste>
-          <Meta>NAVN TAS UT FØR TEKSTEN SENDES TIL AI.</Meta>
+        <Seksjon k="Caddie" meta="PRIVAT FOR SPILLEREN">
+          <Dempet>Spillerens private AI-samtaler vises ikke her. Profildeling gir ikke tilgang til disse samtalene.</Dempet>
         </Seksjon>
       </div>
     </div>

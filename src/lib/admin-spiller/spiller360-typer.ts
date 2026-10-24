@@ -162,7 +162,6 @@ export type S360Samtaler = {
   traader: { id: string; type: string; antall: number; sist: string }[];
   notat: { tekst: string; coach: string; dato: string } | null;
   videoer: { id: string; tittel: string; dato: string; kilde: string }[];
-  caddie: { antall: number; sisteTittel: string | null; sist: string | null };
 };
 
 export type S360Talent = {

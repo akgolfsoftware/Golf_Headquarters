@@ -155,10 +155,9 @@ export const iupAk: S360Iup = { ...iup, ak: true };
 export const iupTom: S360Iup = { ...iup, foreldre: [], resultatmaal: [], prosessmaal: [], perioder: [], turneringer: [], uke: [], trening: null, tester: [], teknikk: [], teknikkKilde: null, fys: [] };
 
 export const samtaler: S360Samtaler = {
-  traader: [{ id: "c1", type: "Meldinger", antall: 14, sist: "28.09.2026" }, { id: "c2", type: "Live-økt", antall: 6, sist: "24.09.2026" }],
+  traader: [{ id: "c1", type: "Meldinger", antall: 14, sist: "28.09.2026" }],
   notat: { tekst: "Jobber godt med tempo. Følg opp putting 3–6 fot før turneringen.", coach: "Jonas Brekke", dato: "26.09.2026" },
   videoer: [{ id: "v1", tittel: "Driver bakfra", dato: "20.09.2026", kilde: "Coach" }],
-  caddie: { antall: 3, sisteTittel: "Plan før turnering", sist: "27.09.2026" },
 };
 
 export const talent: S360Talent = {

@@ -112,6 +112,56 @@ test("AK-profildeling: faktisk gi, trekk, innsyn og samtidighetsvern", async t =
       await assert.rejects(registrerHelseSamtykke({ ...valg, userId: 'child', type: 'COACH_INNSYN', gitt: true }), /foresatt/);
       assert.equal(await db.helseSamtykke.count(), 4, 'nektet barns samtykke rulles tilbake');
     });
+    await t.test('Samtaler leser bare egne direkte tråder, notater og ferdige videoer, også for ADMIN', async () => {
+      await sql.query(`CREATE TABLE coaching_sessions (id text PRIMARY KEY, "userId" text, "coachId" text,
+        kind text, messages jsonb, "updatedAt" timestamptz DEFAULT '2026-01-01');
+        CREATE TABLE coach_notes (id text PRIMARY KEY, "playerId" text, "coachId" text, content text,
+          "isPrivate" boolean, "updatedAt" timestamptz DEFAULT '2026-01-01');
+        CREATE TABLE session_videos (id text PRIMARY KEY, "playerId" text, "coachId" text,
+          title text, status text, "createdAt" timestamptz DEFAULT '2026-01-01');
+        INSERT INTO coaching_sessions (id, "userId", "coachId", kind, messages) VALUES
+          ('a-direct','p','coach-a','DIRECT','[{"content":"syntetisk hemmelig tekst"},{}]'),
+          ('admin-direct','p','admin','DIRECT','[{}]'),
+          ('b-direct','p','coach-b','DIRECT','[{}]'),
+          ('a-ai','p','coach-a','AI','[{}]'), ('admin-ai','p','admin','AI','[{}]'),
+          ('a-live','p','coach-a','LIVE','[{}]'), ('admin-live','p','admin','LIVE','[{}]'),
+          ('other-player','private','coach-a','DIRECT','[{}]'),
+          ('a-malformed','p','coach-a','DIRECT','{}');
+        INSERT INTO coach_notes (id, "playerId", "coachId", content, "isPrivate", "updatedAt") VALUES
+          ('a-note','p','coach-a','Eget syntetisk notat',true,'2026-01-01'),
+          ('admin-note','p','admin','Eget administratornotat',true,'2026-01-01'),
+          ('b-note','p','coach-b','Andre treneres notat',false,'2026-02-01'),
+          ('b-private','p','coach-b','Andre treneres private notat',true,'2026-03-01'),
+          ('private-note','private','coach-a','Annen spiller',true,'2026-04-01');
+        INSERT INTO session_videos (id, "playerId", "coachId", title, status) VALUES
+          ('a-video','p','coach-a','Egen video','READY'),
+          ('admin-video','p','admin','Egen adminvideo','READY'),
+          ('b-video','p','coach-b','Annen trener','READY'),
+          ('a-failed','p','coach-a','Feilet','FAILED'),
+          ('admin-pending','p','admin','Behandles','PROCESSING'),
+          ('private-video','private','coach-a','Annen spiller','READY');`);
+      // Private Caddie-/spilleropptakstabeller finnes ikke: et overskuddsoppslag ville feilet.
+      const { lastSpiller360Samtaler } = await import('../../src/lib/admin-spiller/spiller360-samtaler-data');
+      const trener = await lastSpiller360Samtaler(a, 'p');
+      assert.deepEqual(trener?.traader.map(v => [v.id, v.antall]), [['a-direct', 2], ['a-malformed', 0]]);
+      assert.equal(trener?.notat?.tekst, 'Eget syntetisk notat');
+      assert.deepEqual(trener?.videoer.map(v => v.id), ['a-video']);
+      const administrator = await lastSpiller360Samtaler(adminViewer, 'p');
+      assert.deepEqual(administrator?.traader.map(v => [v.id, v.antall]), [['admin-direct', 1]]);
+      assert.equal(administrator?.notat?.tekst, 'Eget administratornotat');
+      assert.deepEqual(administrator?.videoer.map(v => v.id), ['admin-video']);
+      assert.deepEqual(Object.keys(trener!).sort(), ['notat', 'traader', 'videoer']);
+      assert.ok(!JSON.stringify(trener).includes('syntetisk hemmelig tekst'));
+      assert.deepEqual(await lastSpiller360Samtaler({ id: 'assistant', role: 'COACH' }, 'p'),
+        { traader: [], notat: null, videoer: [] });
+      assert.equal(await lastSpiller360Samtaler(b, 'p'), null);
+      assert.equal(await lastSpiller360Samtaler(a, 'private'), null);
+      await settAkProfilValg(selv, 'p', svar(false));
+      assert.equal(await lastSpiller360Samtaler(a, 'p'), null);
+      assert.equal(await lastSpiller360Samtaler(adminViewer, 'p'), null);
+      await settAkProfilValg(selv, 'p', svar(true));
+      assert.equal((await lastSpiller360Samtaler(a, 'p'))?.notat?.tekst, 'Eget syntetisk notat');
+    });
     await t.test('ADMIN, feil forelder, klientidentitet og gammel versjon kan ikke gi på vegne av andre', async () => {
       const antall = await db.delingsSamtykke.count();
       assert.equal((await settAkProfilValg(adminViewer, 'p', svar(true))).ok, false);

@@ -36,6 +36,7 @@ import { formaterLagretTestResultat } from "@/lib/portal-tester/resultat-visning
 import { workbenchUrl } from "@/lib/workbench/visning-url";
 import { loadSpillerDashboardEkstra } from "@/lib/admin-spiller/spiller-dashboard-data";
 import { lastSpiller360Plan } from "./spiller360-plan-data";
+import { lastSpiller360Samtaler } from "./spiller360-samtaler-data";
 import { hentTekniskPlan } from "@/lib/teknisk-plan/tp-last";
 import { planVisning } from "@/lib/teknisk-plan/tp-visning";
 import { velgPlan } from "@/lib/teknisk-plan/tp-oversikt";
@@ -47,7 +48,7 @@ import {
   tellendeRunder, tilPar, type S360Fane,
 } from "./spiller360-visning";
 import type {
-  S360FaneData, S360Iup, S360Samtaler, S360Stats, S360Talent, S360Tester, S360Tp,
+  S360FaneData, S360Iup, S360Stats, S360Talent, S360Tester, S360Tp,
 } from "./spiller360-typer";
 
 type Viewer = { id: string; role: string };
@@ -384,28 +385,6 @@ async function lastIup(viewer: Viewer, id: string): Promise<S360Iup | null> {
   };
 }
 
-/* ─────────────────────────── Samtaler ─────────────────────────── */
-
-async function lastSamtaler(id: string): Promise<S360Samtaler> {
-  const [traader, notat, ekstra] = await Promise.all([
-    prisma.coachingSession.findMany({
-      where: { userId: id },
-      orderBy: { updatedAt: "desc" },
-      take: 12,
-      select: { id: true, kind: true, messages: true, updatedAt: true },
-    }),
-    prisma.coachNote.findFirst({ where: { playerId: id }, orderBy: { updatedAt: "desc" }, select: { content: true, updatedAt: true, coach: { select: { name: true } } } }),
-    loadSpillerDashboardEkstra(id),
-  ]);
-  const TYPE: Record<string, string> = { DIRECT: "Meldinger", LIVE: "Live-økt", AI: "Coach-AI" };
-  return {
-    traader: traader.map((t) => ({ id: t.id, type: TYPE[t.kind] ?? t.kind, antall: Array.isArray(t.messages) ? t.messages.length : 0, sist: dato(t.updatedAt) })),
-    notat: notat ? { tekst: notat.content, coach: notat.coach.name ?? "—", dato: dato(notat.updatedAt) } : null,
-    videoer: ekstra.videoer.map((v, i) => ({ id: `${i}`, tittel: v.title, dato: dato(v.createdAt), kilde: v.kilde === "coach" ? "Coach" : "Spiller" })),
-    caddie: { antall: ekstra.caddie.antall, sisteTittel: ekstra.caddie.sisteTittel, sist: ekstra.caddie.sisteAt ? dato(ekstra.caddie.sisteAt) : null },
-  };
-}
-
 /* ───────────────────────────── Talent ───────────────────────────── */
 
 type Dna = { fysisk?: number; teknikk?: number; taktikk?: number; mental?: number; motivasjon?: number };
@@ -448,6 +427,10 @@ export async function lastSpiller360Fane(viewer: Viewer, id: string, fane: S360F
     const data = await lastSpiller360Plan(viewer, id);
     return data ? { fane, data } : null;
   }
+  if (fane === "samtaler") {
+    const data = await lastSpiller360Samtaler(viewer, id);
+    return data ? { fane, data } : null;
+  }
   // Disse to fanene har full transaksjonsbundet kjede. Et tidligere godkjent
   // hode er ikke tilstrekkelig: direkte fanekall må kontrollere delingen på nytt.
   if (fane === "tp" || fane === "talent") {
@@ -457,7 +440,7 @@ export async function lastSpiller360Fane(viewer: Viewer, id: string, fane: S360F
       return fane === "tp" ? { fane, data: await lastTp(id, tx) } : { fane, data: await lastTalent(id, tx) };
     });
   }
-  // Stats/Tester/IUP/Samtaler har fortsatt egne eldre underlesere.
+  // Stats/Tester/IUP har fortsatt egne eldre underlesere.
   // De må konverteres samlet før hele Spiller 360 kan regnes som sikret.
   switch (fane) {
     case "stats": return { fane, data: await lastStats(viewer, id) };
@@ -469,6 +452,5 @@ export async function lastSpiller360Fane(viewer: Viewer, id: string, fane: S360F
       const d = await lastIup(viewer, id);
       return d ? { fane, data: d } : null;
     }
-    case "samtaler": return { fane, data: await lastSamtaler(id) };
   }
 }
