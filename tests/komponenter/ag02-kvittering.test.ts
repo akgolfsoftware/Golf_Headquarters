@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { before, beforeEach, mock, test } from "node:test";
 import * as React from "react";
 import { nodes, text } from "./_flate-tre";
+import { AkUkeforslagKanIkkeGodkjennes, medAkBeslutningskvittering } from "@/lib/deling/ak-beslutningskvittering";
 import type { KoResultat } from "@/components/admin/precision/ag02-handlinger";
 
 const slots: unknown[] = [];
@@ -63,4 +64,18 @@ test("only a confirmed success removes the proposal and refreshes", async () => 
   resolve({ ok: true }); await pending;
   assert.equal(button("Godkjenn"), undefined);
   assert.match(text(render()), /Forslaget er godkjent/); assert.equal(refresh, 1);
+});
+
+
+test("all known weekly blockers remain visible without a false success or removal", async () => {
+  for (const grunn of ["utdatert-ukegrunnlag", "utdatert-bankgrunnlag", "utdatert-faglig-vurdering", "maneds-ukevalg-ikke-stottet"] as const) {
+    const receipt = await medAkBeslutningskvittering(async () => { throw new AkUkeforslagKanIkkeGodkjennes(grunn); });
+    assert.ok(!receipt.ok);
+    run = async () => receipt;
+    await click("Godkjenn");
+    assert.ok(button("Godkjenn")); assert.ok(button("Avvis"));
+    assert.ok(text(render()).includes(receipt.feil));
+    assert.doesNotMatch(text(render()), /Forslaget er godkjent|Ingenting er lagret/);
+  }
+  assert.equal(refresh, 4);
 });

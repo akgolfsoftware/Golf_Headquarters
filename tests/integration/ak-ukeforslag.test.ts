@@ -155,14 +155,28 @@ test("Ukeforslag: atomisk plan, V2 og beslutningsspor", async t => {
       await reset();const action=await opprett();await valg(false);await assert.rejects(behandle(viewer,action.id,'ACCEPTED'),/forbidden/);
       await valg(true);await assert.rejects(behandle(viewer,action.id,'ACCEPTED'),/forbidden/);assert.deepEqual(await counts(),empty);
     });
-    await t.test('changed basis and unsupported month override stop approval; old advice must be renewed',async()=>{
+    await t.test('changed weekly basis, advice and unsupported choices have safe receipts without writes',async()=>{
+      const {acceptPlanActionMedKvittering}=await import('../../src/lib/agents/actions');
+      const check=async(actionId:string,kode:string)=>{
+        const before=await db.planAction.findUniqueOrThrow({where:{id:actionId}});
+        const receipt=await acceptPlanActionMedKvittering(actionId);
+        assert.ok(!receipt.ok);assert.equal(receipt.kode,kode);assert.equal(receipt.oppdater,true);
+        assert.deepEqual(await db.planAction.findUniqueOrThrow({where:{id:actionId}}),before);
+        assert.deepEqual(await counts(),empty);assert.equal(await db.notification.count(),0);
+        entryViewer={id:'admin',role:'ADMIN'};
+        try { await assert.rejects(acceptPlanActionMedKvittering(actionId),/forbidden/); }
+        finally {entryViewer=viewer;}
+      };
       await reset();let action=await opprett();
       await sql.query(`UPDATE period_blocks SET "weeklySessionBudget"='{"TEK":2}' WHERE id='period'`);
-      await assert.rejects(behandle(viewer,action.id,'ACCEPTED'),/utdatert/);
-      action=await opprett();await assert.rejects(behandle(viewer,action.id,'ACCEPTED'),/utdatert-faglig-vurdering/);
+      await check(action.id,'UKEGRUNNLAG_ENDRET');
+      action=await opprett();await check(action.id,'FAGLIG_VURDERING_ENDRET');
       await sql.query(`UPDATE period_blocks SET "weeklySessionBudget"='{"TEK":1}' WHERE id='period'; INSERT INTO month_plans VALUES ('month','p',2026,10);`);
-      action=await opprett();await assert.rejects(behandle(viewer,action.id,'ACCEPTED'),/utdatert/);
-      await sql.query(`DELETE FROM month_plans`);assert.deepEqual(await counts(),empty);
+      try {action=await opprett();await check(action.id,'PLANVALG_KREVER_GJENNOMGANG');}
+      finally {await sql.query(`DELETE FROM month_plans`);}
+      await valg(false);await assert.rejects(acceptPlanActionMedKvittering(action.id),/forbidden/);
+      await valg(true);await assert.rejects(acceptPlanActionMedKvittering(action.id),/forbidden/);
+      assert.deepEqual(await counts(),empty);
     });
     await t.test('wrong exercise ownership or area cannot fall back to a random drill',async()=>{
       for(const update of [`source='COACH',"createdBy"='coach-b'`,`"pyramidArea"='FYS'`,`"lPhases"=ARRAY['TURNERING']::"LPhase"[]`]) {
@@ -1076,6 +1090,13 @@ test("Ukeforslag: atomisk plan, V2 og beslutningsspor", async t => {
       await kandidatStart();const result=await genererBank(jobb,'p','2026-10-26',bankUtkast);assert.ok('id' in result);
       await assert.rejects(behandle({id:'admin',role:'ADMIN'},result.id,'ACCEPTED'),/forbidden/);
       bankKilde=[];await assert.rejects(behandle(viewer,result.id,'ACCEPTED'),/utdatert-bankgrunnlag/);
+      const {acceptPlanActionMedKvittering}=await import('../../src/lib/agents/actions');
+      const before=await db.planAction.findUniqueOrThrow({where:{id:result.id}});
+      assert.ok(result.id);
+      const receipt=await acceptPlanActionMedKvittering(result.id);
+      assert.ok(!receipt.ok);assert.equal(receipt.kode,'BANKGRUNNLAG_ENDRET');assert.equal(receipt.oppdater,true);
+      assert.deepEqual(await db.planAction.findUniqueOrThrow({where:{id:result.id}}),before);
+      assert.equal(await db.notification.count(),0);
       assert.deepEqual(await counts(),empty);
       assert.equal((await behandle(viewer,result.id,'REJECTED')).status,'REJECTED');
       await kandidatStart();const next=await genererBank(jobb,'p','2026-10-26',bankUtkast);assert.ok('id' in next);

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { AkBeslutningAlleredeBehandlet, medAkBeslutningskvittering, krevRegistrertAkBeslutning } from "./ak-beslutningskvittering";
+import { AkUkeforslagKanIkkeGodkjennes, AkBeslutningAlleredeBehandlet, medAkBeslutningskvittering, krevRegistrertAkBeslutning } from "./ak-beslutningskvittering";
 
 test("only a matching recorded decision can produce an interactive success", () => {
   for (const valg of ["ACCEPTED", "REJECTED"] as const) {
@@ -32,5 +32,27 @@ test("client receipt serializes only the known no-op and never arbitrary error d
   for (const error of [new Error("forbidden"), new Error("synthetic private database detail"),
     new Error(new AkBeslutningAlleredeBehandlet().message)]) {
     await assert.rejects(medAkBeslutningskvittering(async () => { throw error; }), e => e === error);
+  }
+});
+
+
+test("known proposal blockers produce fixed receipts without serializing exception details", async () => {
+  const cases = [
+    ["utdatert-ukegrunnlag", "UKEGRUNNLAG_ENDRET"],
+    ["utdatert-bankgrunnlag", "BANKGRUNNLAG_ENDRET"],
+    ["utdatert-faglig-vurdering", "FAGLIG_VURDERING_ENDRET"],
+    ["maneds-ukevalg-ikke-stottet", "PLANVALG_KREVER_GJENNOMGANG"],
+  ] as const;
+  for (const [grunn, kode] of cases) {
+    const error = new AkUkeforslagKanIkkeGodkjennes(grunn);
+    error.message = "synthetic private detail";
+    const result = await medAkBeslutningskvittering(async () => { throw error; });
+    assert.equal(result.ok, false); assert.ok(!result.ok);
+    assert.equal(result.kode, kode); assert.equal(result.oppdater, true);
+    assert.doesNotMatch(JSON.stringify(result), /private detail|stack|spillerId|Ingenting er lagret/);
+    assert.match(result.feil, /på nytt|gjennomgås/);
+    for (const impostor of [new Error(grunn), { grunn, message: grunn }]) {
+      await assert.rejects(medAkBeslutningskvittering(async () => { throw impostor; }), e => e === impostor);
+    }
   }
 });

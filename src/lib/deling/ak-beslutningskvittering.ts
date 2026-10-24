@@ -4,11 +4,24 @@ export class AkBeslutningAlleredeBehandlet extends Error {
   constructor() { super(ALLEREDE_BEHANDLET); }
 }
 
+const GRUNNLAGSUTFALL = {
+  "utdatert-ukegrunnlag": { kode: "UKEGRUNNLAG_ENDRET", feil: "Ukegrunnlaget er endret. Forslaget må vurderes på nytt før det kan godkjennes." },
+  "utdatert-bankgrunnlag": { kode: "BANKGRUNNLAG_ENDRET", feil: "Øvelsesbanken er endret. Forslaget må vurderes på nytt før det kan godkjennes." },
+  "utdatert-faglig-vurdering": { kode: "FAGLIG_VURDERING_ENDRET", feil: "Den faglige vurderingen er endret. Forslaget må vurderes på nytt før det kan godkjennes." },
+  "maneds-ukevalg-ikke-stottet": { kode: "PLANVALG_KREVER_GJENNOMGANG", feil: "Dette forslaget støtter ikke egne måneds- eller ukevalg. Planen må gjennomgås før videre behandling." },
+} as const;
+
+/** Raised only inside the authorized weekly-proposal transaction. Plain errors
+ * with similar messages must never be translated into a public receipt. */
+export class AkUkeforslagKanIkkeGodkjennes extends Error {
+  constructor(readonly grunn: keyof typeof GRUNNLAGSUTFALL) { super(grunn); }
+}
+
 export type AkBeslutningskvittering =
   | { ok: true }
-  | { ok: false; kode: "ALLEREDE_BEHANDLET"; feil: string; oppdater: true };
+  | { ok: false; kode: "ALLEREDE_BEHANDLET" | (typeof GRUNNLAGSUTFALL)[keyof typeof GRUNNLAGSUTFALL]["kode"]; feil: string; oppdater: true };
 
-/** Only translate this known receipt failure after the original access checks.
+/** Only translate known receipt failures after the original access checks.
  * Never serialize arbitrary errors, database details or denied access.
  */
 export async function medAkBeslutningskvittering(handling: () => Promise<void>): Promise<AkBeslutningskvittering> {
@@ -16,6 +29,10 @@ export async function medAkBeslutningskvittering(handling: () => Promise<void>):
     await handling();
     return { ok: true };
   } catch (error) {
+    if (error instanceof AkUkeforslagKanIkkeGodkjennes) {
+      const utfall = GRUNNLAGSUTFALL[error.grunn];
+      return { ok: false, kode: utfall.kode, feil: utfall.feil, oppdater: true };
+    }
     if (!(error instanceof AkBeslutningAlleredeBehandlet)) throw error;
     return { ok: false, kode: "ALLEREDE_BEHANDLET", feil: ALLEREDE_BEHANDLET, oppdater: true };
   }

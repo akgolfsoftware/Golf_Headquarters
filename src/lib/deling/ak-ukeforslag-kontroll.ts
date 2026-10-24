@@ -1,5 +1,6 @@
 import "server-only";
 import { z } from "zod";
+import { AkUkeforslagKanIkkeGodkjennes } from "./ak-beslutningskvittering";
 import { Prisma, LPhase } from "@/generated/prisma/client";
 import { ovelseMatcherAkNiva } from "./ak-spillerniva";
 import type { AkUkegrunnlag } from "./ak-ukegrunnlag";
@@ -14,7 +15,7 @@ export async function kontrollerAkUkeforslag(tx: Prisma.TransactionClient, forsl
   const omrade = z.enum(["FYS", "TEK", "SLAG", "SPILL", "TURN"]);
   // Month/week choices are not yet interpreted by this planner; do not ignore
   // a more specific user plan. This is a missing adapter, not a training rule.
-  if (grunnlag.harManedsEllerUkevalg) throw Error("utdatert-ukegrunnlag");
+  if (grunnlag.harManedsEllerUkevalg) throw new AkUkeforslagKanIkkeGodkjennes("maneds-ukevalg-ikke-stottet");
   const fagligeRad: AkUkerad = [];
   const fase = z.enum(LPhase).safeParse(grunnlag.modell.signals.aktivFase);
   if (!fase.success) fagligeRad.push({ kode: "PERIODE_MANGLER" });
@@ -38,7 +39,7 @@ export async function kontrollerAkUkeforslag(tx: Prisma.TransactionClient, forsl
     }
   }
   const bank = forslag.versjon === 2 ? await lesAkUkekandidatgrunnlag(tx, grunnlag) : null;
-  if (forslag.versjon === 2 && bank?.fingeravtrykk !== forslag.bankFingeravtrykk) throw Error("utdatert-bankgrunnlag");
+  if (forslag.versjon === 2 && bank?.fingeravtrykk !== forslag.bankFingeravtrykk) throw new AkUkeforslagKanIkkeGodkjennes("utdatert-bankgrunnlag");
   const ids = [...new Set(sortert.flatMap(s => s.drills.map(d => d.exerciseId)))].sort();
   const revisjoner = await tx.$queryRaw<Array<{ id: string; revisjon: string }>>`
     SELECT id, xmin::text AS revisjon FROM exercise_definitions WHERE id IN (${Prisma.join(ids)}) ORDER BY id FOR SHARE`;
