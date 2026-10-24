@@ -6,6 +6,7 @@ import { medAkGruppeoppdrag } from "./ak-gruppeoppdrag";
 import { AK_PROFIL_SCOPE, AK_PROFIL_VERSJON } from "./ak-profil-regler";
 import { akUkeforslagSchema } from "./ak-ukeforslag";
 import type { hentAkTreningsobservasjoner } from "./ak-treningsobservasjon";
+import { forklaringMedAkUkerad } from "./ak-ukeforslag-rad";
 
 type Leser = typeof hentAkTreningsobservasjoner;
 export type ForslagsLesevalg = NonNullable<Parameters<Leser>[1]>;
@@ -77,7 +78,7 @@ export async function hentAkUkeforslag(viewer: Parameters<Leser>[0], valg: Forsl
             resultat.planActions.push({ id: r.id, userId: r.userId, planId: r.planId, actionType: r.actionType,
               status: r.status, createdAt: r.createdAt, updatedAt: r.updatedAt, agentName: r.agentName,
               sjekkpunkt: r.sjekkpunkt, user: r.user, provenance: null,
-              suggestion: { tittel, forklaring, sessions: sessions.map(s => ({ title: s.title, pyramidArea: s.pyramidArea,
+              suggestion: { tittel, forklaring: forklaringMedAkUkerad(forklaring, parsed.data.fagligeRad), sessions: sessions.map(s => ({ title: s.title, pyramidArea: s.pyramidArea,
                 scheduledAt: s.scheduledAt, durationMin: s.durationMin,
                 drills: s.drills.map(d => ({ exerciseId: d.exerciseId, minutter: d.minutter })) })) } });
           }

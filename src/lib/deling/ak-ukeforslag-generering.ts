@@ -17,8 +17,7 @@ export async function genererAkUkeforslag(jobb: AkGruppeoppdrag, spillerId: unkn
   utform: (modell: AkUkegrunnlag["modell"]) => Promise<unknown>,
 ) {
   const grunnlag = await hentAkUkegrunnlag(jobb, spillerId, uke);
-  if (!grunnlag || grunnlag.harManedsEllerUkevalg || !grunnlag.budsjett ||
-    !grunnlag.modell.signals.aktivFase) return { status: "INGEN_GRUNNLAG" as const };
+  if (!grunnlag || grunnlag.harManedsEllerUkevalg) return { status: "INGEN_GRUNNLAG" as const };
 
   // Capture ends before asynchronous planner/model work; never hold DB locks
   // across network calls. Clone so a planner cannot mutate the captured basis.
@@ -32,7 +31,7 @@ export async function genererAkUkeforslag(jobb: AkGruppeoppdrag, spillerId: unkn
   const lagret = await brukSammeAkUkegrunnlag(oppdrag, grunnlag.deling.spillerId, grunnlag.deling, grunnlag.databevis,
     async (tx, ferskt) => {
       // Same checks at creation and approval, including locked exercise versions.
-      await kontrollerAkUkeforslag(tx, forslag, ferskt);
+      forslag.fagligeRad = (await kontrollerAkUkeforslag(tx, forslag, ferskt)).fagligeRad;
       // Every weekly decision also locks the plan before its action row. Lock
       // only the same recipient, grant and week; never revive an old grant.
       const ko = {
@@ -72,8 +71,9 @@ export async function genererAkUkeforslag(jobb: AkGruppeoppdrag, spillerId: unkn
         if (utdatert) utdaterte.push(rad.id);
         else {
           // Never deduplicate to a well-shaped but invalid historical draft.
-          await kontrollerAkUkeforslag(tx, gammelt, ferskt);
-          gjeldendeId ??= rad.id;
+          const kontroll = await kontrollerAkUkeforslag(tx, gammelt, ferskt);
+          if (canonicalJson(gammelt.fagligeRad ?? []) !== canonicalJson(kontroll.fagligeRad)) utdaterte.push(rad.id);
+          else gjeldendeId ??= rad.id;
         }
       }
       // SUPERSEDED is a system transition, not a coach rejection/approval.

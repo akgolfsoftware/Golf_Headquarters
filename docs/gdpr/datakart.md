@@ -348,3 +348,9 @@ Det delingsbeskyttede ukekontrollgrunnlaget inkluderer nå egne PlayerFacility.t
 ### Samlet kandidatgrunnlag 24.10.2026
 
 Intern leser kombinerer bare allerede autoriserte ukedata med verifiserte, entydige bankkopier. Kandidater returnerer koblings-ID/radversjon/kildehash og faste observasjoner om nivåspenn/kilde, registrert periodetype, ukebudsjett og anlegg per indeks. Ingen navn, råscore, handicap, anleggsmål eller kildefritekst i denne projeksjonen; IDs/bevis er serverinterne og er ikke anonymitetsbevis. Versjonert kontrollsum binder kandidatene til eksisterende delings- og ukedatabevis. Bruk krever ferske kontroller i samme transaksjon. Ingen ny lagringstabell, logg, modellargument, samtykkeformål, oppbevaringstid eller aktiv bakgrunnsjobb. Rettighetsflyt for kilde og eksisterende forslag er uendret; samlet produksjons-/rettighetsreise og juridisk avklaring gjenstår.
+
+### Veiledende råd i ukeforslag (24.10.2026)
+
+Nye interne ukeforslag lagrer serverberegnede `fagligeRad` i eksisterende PlanAction.suggestion: avgrenset rådskode, eventuelt område, øktindeks og allerede brukt øvelsesreferanse. Ingen råscore, handicap, anleggsnavn eller fritekst fra profilen kopieres. Rådene er likevel personopplysninger knyttet til ukeforslagets spiller; de er ikke et anonymt datasett. Planlegger-/modellargumentet er uendret. Planleggeren kan ikke sende inn betrodde råd.
+
+Autoriserte lesinger viser faste norske tekster i forklaringen. Egen kontoeksport tar med faste rådtekster uten rå bevis/øvelsesversjoner. Eksisterende kontoanonymisering sletter hele spillerens forslag, også rådfeltet. Ingen ny lagringsplass, oppbevaringstid, automatisk sletting, læring eller formålsutvidelse. Beslutning sammenligner ferskt beregnede råd med lagret innhold; eldre forslag oppgraderes ikke i det skjulte. Faglige avvik er veiledende, mens tilgang og uttrykkelig deling fortsatt håndheves. Produksjonsaktivering og juridisk sluttavklaring gjenstår.

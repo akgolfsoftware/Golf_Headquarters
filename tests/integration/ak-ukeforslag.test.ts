@@ -150,11 +150,11 @@ test("Ukeforslag: atomisk plan, V2 og beslutningsspor", async t => {
       await reset();const action=await opprett();await valg(false);await assert.rejects(behandle(viewer,action.id,'ACCEPTED'),/forbidden/);
       await valg(true);await assert.rejects(behandle(viewer,action.id,'ACCEPTED'),/forbidden/);assert.deepEqual(await counts(),empty);
     });
-    await t.test('changed plan basis, month override and wrong budget stop approval',async()=>{
+    await t.test('changed basis and unsupported month override stop approval; old advice must be renewed',async()=>{
       await reset();let action=await opprett();
       await sql.query(`UPDATE period_blocks SET "weeklySessionBudget"='{"TEK":2}' WHERE id='period'`);
       await assert.rejects(behandle(viewer,action.id,'ACCEPTED'),/utdatert/);
-      action=await opprett();await assert.rejects(behandle(viewer,action.id,'ACCEPTED'),/ukebudsjett/);
+      action=await opprett();await assert.rejects(behandle(viewer,action.id,'ACCEPTED'),/utdatert-faglig-vurdering/);
       await sql.query(`UPDATE period_blocks SET "weeklySessionBudget"='{"TEK":1}' WHERE id='period'; INSERT INTO month_plans VALUES ('month','p',2026,10);`);
       action=await opprett();await assert.rejects(behandle(viewer,action.id,'ACCEPTED'),/utdatert/);
       await sql.query(`DELETE FROM month_plans`);assert.deepEqual(await counts(),empty);
@@ -352,25 +352,28 @@ test("Ukeforslag: atomisk plan, V2 og beslutningsspor", async t => {
       assert.equal((await behandle(viewer,r.id,'ACCEPTED')).applied,true);
       assert.equal((await counts()).plan,1);
     });
-    await t.test('generation and approval require all exercise capabilities at one player facility',async()=>{
+    await t.test('facility uncertainty is stored advice, never combined across places or hidden on approval',async()=>{
       await reset();
       await sql.query(`UPDATE exercise_definitions SET "fasilitetKrav"=ARRAY['RADAR','DRIVING_RANGE']::"DrillFasilitet"[] WHERE id='drill'`);
       try {
-        // Neither a missing profile, somebody else's place nor a union of places is evidence.
         const candidate=await utkast();
-        await assert.rejects(generer(jobb,'p','2026-10-26',async()=>candidate),/mangler-ovelsesfasilitet/);
-        await sql.query(`INSERT INTO player_facilities (id,"userId",name,notes,capabilities) VALUES
-          ('foreign-f','private','Syntetisk annet sted','Syntetisk privat tekst',ARRAY['RADAR','DRIVING_RANGE']),
-          ('f1','p','Syntetisk sted 1',NULL,ARRAY['RADAR']),('f2','p','Syntetisk sted 2',NULL,ARRAY['DRIVING_RANGE'])`);
-        await assert.rejects(generer(jobb,'p','2026-10-26',async()=>candidate),/mangler-ovelsesfasilitet/);
-        const action=await opprett();
-        await assert.rejects(behandle(viewer,action.id,'ACCEPTED'),/mangler-ovelsesfasilitet/);
-        assert.deepEqual(await counts(),empty);
-        assert.equal((await db.planAction.findUniqueOrThrow({where:{id:action.id}})).status,'PENDING');
-        await reset();
+        for(const withPlaces of [false,true]) {
+          if(withPlaces) await sql.query(`INSERT INTO player_facilities (id,"userId",name,notes,capabilities) VALUES
+            ('foreign-f','private','Syntetisk annet sted','Syntetisk privat tekst',ARRAY['RADAR','DRIVING_RANGE']),
+            ('f1','p','Syntetisk sted 1',NULL,ARRAY['RADAR']),('f2','p','Syntetisk sted 2',NULL,ARRAY['DRIVING_RANGE'])`);
+          const result=await generer(jobb,'p','2026-10-26',async()=>candidate);assert.ok('id' in result);
+          const body=JSON.parse(JSON.stringify((await db.planAction.findUniqueOrThrow({where:{id:result.id}})).suggestion));
+          assert.deepEqual(body.fagligeRad,[{kode:'FASILITET_IKKE_BEKREFTET',oktIndeks:0,exerciseId:'drill'}]);
+          assert.deepEqual(await counts(),empty);
+          assert.equal((await behandle(viewer,result.id,'ACCEPTED')).applied,true);await reset();
+        }
+        const legacy=await opprett();
+        await assert.rejects(behandle(viewer,legacy.id,'ACCEPTED'),/utdatert-faglig-vurdering/);
+        assert.deepEqual(await counts(),empty);await reset();
         await sql.query(`UPDATE player_facilities SET capabilities=ARRAY['RADAR','DRIVING_RANGE'] WHERE id='f1'`);
-        const result=await generer(jobb,'p','2026-10-26',async()=>candidate);
-        assert.equal(result.status,'OPPRETTET');assert.ok('id' in result);
+        const result=await generer(jobb,'p','2026-10-26',async()=>candidate);assert.ok('id' in result);
+        const body=JSON.parse(JSON.stringify((await db.planAction.findUniqueOrThrow({where:{id:result.id}})).suggestion));
+        assert.deepEqual(body.fagligeRad,[]);
         assert.equal((await behandle(viewer,result.id,'ACCEPTED')).applied,true);
       } finally {
         await reset();await sql.query(`DELETE FROM player_facilities; UPDATE exercise_definitions SET "fasilitetKrav"=ARRAY[]::"DrillFasilitet"[] WHERE id='drill'`);
@@ -464,23 +467,25 @@ test("Ukeforslag: atomisk plan, V2 og beslutningsspor", async t => {
       await reset();await sql.query(`DELETE FROM profile_links; DELETE FROM profile_niva_fixture;
         UPDATE exercise_definitions SET "minKategori"=NULL,"maxKategori"=NULL,"minHcp"=NULL,"maxHcp"=NULL WHERE id='drill'`);
     };
-    await t.test('generation and approval both enforce declared level; unknown is not guessed',async()=>{
+    await t.test('unknown or differing exercise level is visible advice and explicit approval remains possible',async()=>{
       await reset();await sql.query(`UPDATE exercise_definitions SET "minKategori"='D',"maxKategori"='D' WHERE id='drill'`);
       try {
-        await assert.rejects(generer(jobb,'p','2026-10-26',utkast),/ovelse-passer-ikke-spillerniva/);
-        let action=await opprett();await assert.rejects(behandle(viewer,action.id,'ACCEPTED'),/ovelse-passer-ikke-spillerniva/);
-        assert.deepEqual(await counts(),empty);await reset();
-        await sql.query(`INSERT INTO profile_links(hq_user_id,status) VALUES ('p','confirmed')`);await settNiva(70);
-        await assert.rejects(generer(jobb,'p','2026-10-26',utkast),/ovelse-passer-ikke-spillerniva/);
+        for(const score of [null,70]) {
+          if(score!==null) {await sql.query(`INSERT INTO profile_links(hq_user_id,status) VALUES ('p','confirmed')`);await settNiva(score);}
+          const result=await generer(jobb,'p','2026-10-26',utkast);assert.ok('id' in result);
+          const body=JSON.parse(JSON.stringify((await db.planAction.findUniqueOrThrow({where:{id:result.id}})).suggestion));
+          assert.deepEqual(body.fagligeRad,[{kode:'OVELSESNIVA_BOR_VURDERES',oktIndeks:0,exerciseId:'drill'}]);
+          assert.deepEqual(await counts(),empty);
+          assert.equal((await behandle(viewer,result.id,'ACCEPTED')).applied,true);await reset();
+        }
         await settNiva(74);
         const result=await generer(jobb,'p','2026-10-26',async input=>{
           assert.equal(input.category,'D');assert.equal(input.categorySource,'BRUTTO_TURNERING');
           assert.ok(!JSON.stringify(input).includes('Syntetisk privat'));return utkast();
-        });
-        assert.equal(result.status,'OPPRETTET');assert.ok('id' in result);
+        });assert.ok('id' in result);
         assert.equal((await behandle(viewer,result.id,'ACCEPTED')).applied,true);
         await reset();await sql.query(`UPDATE exercise_definitions SET "minHcp"=0 WHERE id='drill'`);
-        action=await opprett();await assert.rejects(behandle(viewer,action.id,'ACCEPTED'),/ovelse-passer-ikke-spillerniva/);
+        const action=await opprett();await assert.rejects(behandle(viewer,action.id,'ACCEPTED'),/utdatert-faglig-vurdering/);
         assert.deepEqual(await counts(),empty);
       } finally {await ryddNiva();}
     });
@@ -663,13 +668,51 @@ test("Ukeforslag: atomisk plan, V2 og beslutningsspor", async t => {
       assert.equal((await generer(jobb,'p','2026-10-26',build)).status,'INGEN_GRUNNLAG');
       await sql.query(`DELETE FROM week_plans WHERE id='override'`);assert.equal(called,0);
     });
-    await t.test('generator rejects mismatched budget and schedule before persistence',async()=>{
+    await t.test('budget deviations are advisory while dates outside the requested week are invalid',async()=>{
       await reset();const candidate=await utkast();
-      await assert.rejects(generer(jobb,'p','2026-10-26',async()=>({...candidate,sessions:[candidate.sessions[0],
-        {...candidate.sessions[0],scheduledAt:'2026-10-28T16:00:00Z'}]})),/ukebudsjett-avviker/);
+      const result=await generer(jobb,'p','2026-10-26',async()=>({...candidate,sessions:[candidate.sessions[0],
+        {...candidate.sessions[0],scheduledAt:'2026-10-28T16:00:00Z'}]}));assert.ok('id' in result);
+      const body=JSON.parse(JSON.stringify((await db.planAction.findUniqueOrThrow({where:{id:result.id}})).suggestion));
+      assert.deepEqual(body.fagligeRad,[{kode:'UKESBUDSJETT_AVVIKER',omrade:'TEK'}]);
+      assert.deepEqual(await counts(),empty);
+      assert.equal((await behandle(viewer,result.id,'ACCEPTED')).applied,true);
+      assert.equal((await counts()).plan,2);await reset();
       await assert.rejects(generer(jobb,'p','2026-10-26',async()=>({...candidate,sessions:[
         {...candidate.sessions[0],scheduledAt:'2026-11-02T16:00:00Z'}]})),/ugyldig-uketid/);
       assert.equal(await db.planAction.count(),0);
+    });
+    await t.test('missing period and budget produce advice and nullable period; retired phase tags do not veto',async()=>{
+      await reset();
+      await sql.query(`UPDATE period_blocks SET "endDate"='2026-10-25',"weeklySessionBudget"=NULL;
+        UPDATE exercise_definitions SET "lPhases"=ARRAY['TURNERING']::"LPhase"[] WHERE id='drill'`);
+      try {
+        const result=await generer(jobb,'p','2026-10-26',utkast);assert.ok('id' in result);
+        const body=JSON.parse(JSON.stringify((await db.planAction.findUniqueOrThrow({where:{id:result.id}})).suggestion));
+        assert.deepEqual(body.fagligeRad,[{kode:'PERIODE_MANGLER'},{kode:'UKESBUDSJETT_MANGLER'}]);
+        assert.equal((await behandle(viewer,result.id,'ACCEPTED')).applied,true);
+        assert.equal((await db.trainingPlanSession.findFirstOrThrow()).lPhase,null);await reset();
+        await sql.query(`UPDATE period_blocks SET "endDate"='2026-11-30',"lPhase"='GRUNN',"weeklySessionBudget"='{"TEK":1}' `);
+        const fresh=await generer(jobb,'p','2026-10-26',utkast);assert.ok('id' in fresh);
+        assert.equal((await behandle(viewer,fresh.id,'ACCEPTED')).applied,true);
+      } finally {await reset();await sql.query(`UPDATE period_blocks SET "endDate"='2026-11-30',"lPhase"='GRUNN',"weeklySessionBudget"='{"TEK":1}' ;
+        UPDATE exercise_definitions SET "lPhases"=ARRAY['GRUNN']::"LPhase"[] WHERE id='drill'`);}
+    });
+    await t.test('missing or altered stored advice requires a new proposal and preserves the old body',async()=>{
+      await reset();await sql.query(`UPDATE period_blocks SET "weeklySessionBudget"='{"TEK":2}'`);
+      try {
+        for(const advice of [undefined,[],[{kode:'PERIODE_MANGLER'}]]) {
+          const old=await opprett();const body=JSON.parse(JSON.stringify(old.suggestion));
+          if(advice!==undefined) body.fagligeRad=advice;
+          await db.planAction.update({where:{id:old.id},data:{suggestion:body}});
+          await assert.rejects(behandle(viewer,old.id,'ACCEPTED'),/utdatert-faglig-vurdering/);
+          assert.deepEqual(await counts(),empty);
+          const fresh=await generer(jobb,'p','2026-10-26',utkast);assert.ok('id' in fresh);assert.notEqual(fresh.id,old.id);
+          assert.equal('erstattetAntall' in fresh && fresh.erstattetAntall,1);
+          const saved=await db.planAction.findUniqueOrThrow({where:{id:old.id}});
+          assert.equal(saved.status,'SUPERSEDED');assert.deepEqual(saved.suggestion,body);
+          assert.equal((await behandle(viewer,fresh.id,'ACCEPTED')).applied,true);await reset();
+        }
+      } finally {await reset();await sql.query(`UPDATE period_blocks SET "weeklySessionBudget"='{"TEK":1}'`);}
     });
     await t.test('queue write failure rolls back; no sessions or audit are created',async()=>{
       await reset();const candidate=await utkast();
@@ -687,6 +730,18 @@ test("Ukeforslag: atomisk plan, V2 og beslutningsspor", async t => {
       db.planAction.deleteMany({where:slettWhere(konto)}),
       db.planAction.updateMany({where:beslutningWhere(konto),data:{decidedById:null,decisionNote:null,rejectReason:null}}),
     ]);
+    await t.test('advice reaches the shared read projection and own export without raw levels or proof',async()=>{
+      await reset();await sql.query(`UPDATE period_blocks SET "weeklySessionBudget"='{"TEK":2}'`);
+      try {
+        const result=await generer(jobb,'p','2026-10-26',utkast);assert.ok('id' in result);
+        const read=await les(viewer);
+        assert.match(JSON.stringify(read.planActions),/Faglige råd – veiledende/);
+        assert.match(JSON.stringify(read.planActions),/avviker fra registrert øktbudsjett/);
+        const own=await eksporter('p');
+        assert.deepEqual(own.mottatt[0].forslag?.fagligeRad,['TEK: Antall foreslåtte økter avviker fra registrert øktbudsjett.']);
+        assert.doesNotMatch(JSON.stringify(own),/fingeravtrykk|exerciseRevisjon|databevis|minHcp|råscore/);
+      } finally {await reset();await sql.query(`UPDATE period_blocks SET "weeklySessionBudget"='{"TEK":1}'`);}
+    });
     await t.test('own export includes proposal and decision without internal evidence after sharing withdrawal',async()=>{
       await reset();const action=await opprett();await behandle(viewer,action.id,'REJECTED','Syntetisk beslutning');
       await valg(false);const data=await eksporter('p');assert.equal(data.mottatt.length,1);

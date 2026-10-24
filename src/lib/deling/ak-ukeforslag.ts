@@ -60,7 +60,11 @@ export async function behandleAkUkeforslag(viewer: { id: string; role: string },
     if (valg === "ACCEPTED") {
       const grunnlag = await laasOgLesSammeAkUkegrunnlag(tx, scope, jobb, forslag.databevis);
       if (!grunnlag) throw Error("utdatert-ukegrunnlag");
-      const { sortert, fase } = await kontrollerAkUkeforslag(tx, forslag, grunnlag);
+      const { sortert, fase, fagligeRad } = await kontrollerAkUkeforslag(tx, forslag, grunnlag);
+      // Advice may be accepted, but must belong to this captured proposal.
+      // Legacy rows with newly surfaced advice need a fresh proposal, not an
+      // invisible upgrade while the coach is deciding on the old content.
+      if (canonicalJson(forslag.fagligeRad ?? []) !== canonicalJson(fagligeRad)) throw Error("utdatert-faglig-vurdering");
       for (const s of sortert) {
         const session = await tx.trainingPlanSession.create({ data: { planId: r.planId, title: s.title,
           scheduledAt: new Date(s.scheduledAt), durationMin: s.durationMin, pyramidArea: s.pyramidArea,

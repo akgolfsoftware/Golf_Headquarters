@@ -4,15 +4,19 @@ import { Prisma, LPhase } from "@/generated/prisma/client";
 import { ovelseMatcherAkNiva } from "./ak-spillerniva";
 import type { AkUkegrunnlag } from "./ak-ukegrunnlag";
 import type { AkUkeforslag } from "./ak-ukeforslag-format";
+import type { AkUkerad } from "./ak-ukeforslag-rad";
 
 /** DB-only validation inside the existing locked sharing/plan transaction.
  * These are structural rules, not complete sporting suitability or a calendar check. */
 export async function kontrollerAkUkeforslag(tx: Prisma.TransactionClient, forslag: AkUkeforslag,
   grunnlag: Omit<AkUkegrunnlag, "deling" | "databevis">) {
   const omrade = z.enum(["FYS", "TEK", "SLAG", "SPILL", "TURN"]);
-  if (grunnlag.harManedsEllerUkevalg || !grunnlag.budsjett) throw Error("utdatert-ukegrunnlag");
+  // Month/week choices are not yet interpreted by this planner; do not ignore
+  // a more specific user plan. This is a missing adapter, not a training rule.
+  if (grunnlag.harManedsEllerUkevalg) throw Error("utdatert-ukegrunnlag");
+  const fagligeRad: AkUkerad = [];
   const fase = z.enum(LPhase).safeParse(grunnlag.modell.signals.aktivFase);
-  if (!fase.success) throw Error("mangler-periodegrunnlag");
+  if (!fase.success) fagligeRad.push({ kode: "PERIODE_MANGLER" });
   const start = new Date(`${forslag.databevis.uke}T00:00:00Z`);
   const slutt = new Date(start.getTime() + 7 * 86_400_000);
   if (await tx.trainingPlanSession.count({ where: { planId: forslag.databevis.planId, scheduledAt: { gte: start, lt: slutt } } })) {
@@ -26,30 +30,36 @@ export async function kontrollerAkUkeforslag(tx: Prisma.TransactionClient, forsl
     if (tid < forrigeSlutt || tid < start.getTime() || end > slutt.getTime()) throw Error("ugyldig-uketid");
     forrigeSlutt = end;
   }
-  for (const area of omrade.options) {
-    if (sortert.filter(s => s.pyramidArea === area).length !== (grunnlag.budsjett[area] ?? 0)) throw Error("ukebudsjett-avviker");
+  if (!grunnlag.budsjett) fagligeRad.push({ kode: "UKESBUDSJETT_MANGLER" });
+  else for (const area of omrade.options) {
+    if (sortert.filter(s => s.pyramidArea === area).length !== (grunnlag.budsjett[area] ?? 0)) {
+      fagligeRad.push({ kode: "UKESBUDSJETT_AVVIKER", omrade: area });
+    }
   }
   const ids = [...new Set(sortert.flatMap(s => s.drills.map(d => d.exerciseId)))].sort();
   const revisjoner = await tx.$queryRaw<Array<{ id: string; revisjon: string }>>`
     SELECT id, xmin::text AS revisjon FROM exercise_definitions WHERE id IN (${Prisma.join(ids)}) ORDER BY id FOR SHARE`;
   const drills = await tx.exerciseDefinition.findMany({ where: { id: { in: ids }, OR: [
     { source: "SYSTEM" }, { source: "COACH", createdBy: forslag.deling.coachId },
-  ] }, select: { id: true, pyramidArea: true, lPhases: true, fasilitetKrav: true, minKategori: true, maxKategori: true, minHcp: true, maxHcp: true } });
+  ] }, select: { id: true, pyramidArea: true, fasilitetKrav: true, minKategori: true, maxKategori: true, minHcp: true, maxHcp: true } });
   for (const s of sortert) {
     for (const d of s.drills) {
       const exercise = drills.find(e => e.id === d.exerciseId);
-      if (!exercise || revisjoner.find(r => r.id === d.exerciseId)?.revisjon !== d.exerciseRevisjon || exercise.pyramidArea !== s.pyramidArea ||
-        (exercise.lPhases.length && !exercise.lPhases.includes(fase.data))) throw Error("ugyldig-ukeovelse");
-      if (!ovelseMatcherAkNiva(exercise, grunnlag.niva)) throw Error("ovelse-passer-ikke-spillerniva");
+      if (!exercise || revisjoner.find(r => r.id === d.exerciseId)?.revisjon !== d.exerciseRevisjon || exercise.pyramidArea !== s.pyramidArea) {
+        throw Error("ugyldig-ukeovelse");
+      }
+      // Retired exercise lPhases are not a source of new period prescriptions.
+      const sted = { oktIndeks: forslag.sessions.indexOf(s), exerciseId: d.exerciseId };
+      if (!ovelseMatcherAkNiva(exercise, grunnlag.niva)) fagligeRad.push({ kode: "OVELSESNIVA_BOR_VURDERES", ...sted });
       // A single recorded place must cover every structured requirement of
       // this exercise. Never combine unrelated places or trust old true defaults.
       // Empty requirements mean no special requirements in ExerciseDefinition;
       // this does not certify distance, environment, opening hours or suitability.
       if (exercise.fasilitetKrav.length && !grunnlag.fasiliteter.some(f =>
         exercise.fasilitetKrav.every(krav => f.capabilities.includes(krav)))) {
-        throw Error("mangler-ovelsesfasilitet");
+        fagligeRad.push({ kode: "FASILITET_IKKE_BEKREFTET", ...sted });
       }
     }
   }
-  return { sortert, fase: fase.data };
+  return { sortert, fase: fase.success ? fase.data : null, fagligeRad };
 }

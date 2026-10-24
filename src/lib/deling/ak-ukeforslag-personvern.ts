@@ -3,6 +3,7 @@ import { z } from "zod";
 import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { akUkeforslagSchema } from "./ak-ukeforslag-format";
+import { akUkeradTekst } from "./ak-ukeforslag-rad";
 
 const id = z.string().trim().min(1).max(200);
 // Include malformed/legacy combinations too, not only the new valid format.
@@ -32,6 +33,7 @@ export async function eksporterEgneAkUkeforslag(kontoId: string) {
         innholdStatus: data ? "INKLUDERT" : "KREVER_MANUELL_GJENNOMGANG",
         // Never silently omit an unreadable row or export unvalidated historical JSON.
         forslag: data ? { uke: data.databevis.uke, tittel: data.tittel, forklaring: data.forklaring,
+          fagligeRad: akUkeradTekst(data.fagligeRad ?? []),
           sessions: data.sessions.map(s => ({ title: s.title, pyramidArea: s.pyramidArea,
             scheduledAt: s.scheduledAt, durationMin: s.durationMin,
             drills: s.drills.map(d => ({ exerciseId: d.exerciseId, minutter: d.minutter })) })) } : null,
