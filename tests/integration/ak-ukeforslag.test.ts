@@ -702,6 +702,84 @@ test("Ukeforslag: atomisk plan, V2 og beslutningsspor", async t => {
       assert.equal((await db.planAction.findUniqueOrThrow({where:{id:'actor-fail'}})).decisionNote,null);
     });
 
+    const bankModul = await import('../../src/lib/masterbrain/drill-bank');
+    const bankOriginal = bankModul.hentGodkjenteOvelsesbankElementer();
+    let bankKilde = structuredClone(bankOriginal);
+    mock.module('../../src/lib/masterbrain/drill-bank',{namedExports:{...bankModul,hentGodkjenteOvelsesbankElementer:()=>bankKilde}});
+    const { byggAkBankkopi } = await import('../../src/lib/deling/ak-bankkobling-format');
+    const { hentAkBankkoblinger: lesBank } = await import('../../src/lib/deling/ak-bankkobling-lesing');
+    const bankkopi = byggAkBankkopi(bankOriginal[0]);
+    const bankData = {...bankkopi.data,csTargetByKategori:Prisma.DbNull};
+    const resetBank=async()=>{await reset();await db.exerciseDefinition.deleteMany({where:{id:{startsWith:'bank-copy'}}});bankKilde=structuredClone(bankOriginal);};
+    await t.test('bank reader requires an explicit verified reference, not a matching exercise name',async()=>{
+      await resetBank();await db.exerciseDefinition.create({data:{...bankData,id:'bank-copy',parametersJson:Prisma.DbNull}});
+      assert.deepEqual((await lesBank(jobb,'p'))?.verdi,[]);
+      await db.exerciseDefinition.update({where:{id:'bank-copy'},data:bankData});
+      const result=await lesBank(jobb,'p');assert.equal(result?.verdi.length,1);assert.equal(result?.bevis.spillerId,'p');
+      assert.deepEqual(Object.keys(result!.verdi[0]).sort(),['bankFingeravtrykk','bankId','exerciseId','exerciseRevisjon']);
+      assert.equal(result!.verdi[0].bankId,bankkopi.bankId);assert.match(result!.verdi[0].exerciseRevisjon,/^\d+$/);
+      assert.deepEqual(await counts(),empty);
+    });
+    await t.test('bank reference cannot certify altered instructions, requirements or local overrides',async()=>{
+      await resetBank();await db.exerciseDefinition.create({data:{...bankData,id:'bank-copy'}});
+      const changes: Prisma.ExerciseDefinitionUpdateInput[] = [
+        {name:'Syntetisk annet navn'},{description:'Syntetisk endret instruksjon med samme referanse'},
+        {fasilitetKrav:[]},{minKategori:'B'},{durationMin:20},{coachNotes:'Syntetisk privat instruks'},
+        {videoUrl:'https://example.invalid/other'}, {lPhases:['GRUNN']},
+        {parametersJson:{...bankData.parametersJson,extraInstruction:'Syntetisk tillegg'}},
+      ];
+      for(const data of changes) {
+        await db.exerciseDefinition.update({where:{id:'bank-copy'},data});
+        assert.deepEqual((await lesBank(jobb,'p'))?.verdi,[]);
+        await db.exerciseDefinition.update({where:{id:'bank-copy'},data:bankData});
+      }
+      assert.equal((await lesBank(jobb,'p'))?.verdi.length,1);assert.deepEqual(await counts(),empty);
+    });
+    await t.test('bank reader excludes private and coach/player copies even with identical approved content',async()=>{
+      await resetBank();await db.exerciseDefinition.create({data:{...bankData,id:'bank-copy'}});
+      for(const data of [{visibility:'PRIVATE' as const},{source:'COACH' as const,createdBy:'coach-a'},
+        {source:'PLAYER' as const,createdBy:'p'},{createdBy:'coach-b'}]) {
+        await db.exerciseDefinition.update({where:{id:'bank-copy'},data});
+        assert.deepEqual((await lesBank(jobb,'p'))?.verdi,[]);
+        await db.exerciseDefinition.update({where:{id:'bank-copy'},data:bankData});
+      }
+    });
+    await t.test('duplicate verified database copies are ambiguous, never selected by order',async()=>{
+      await resetBank();await db.exerciseDefinition.create({data:{...bankData,id:'bank-copy'}});
+      await db.exerciseDefinition.create({data:{...bankData,id:'bank-copy-2'}});
+      assert.deepEqual((await lesBank(jobb,'p'))?.verdi,[]);
+      await db.exerciseDefinition.delete({where:{id:'bank-copy-2'}});
+      assert.equal((await lesBank(jobb,'p'))?.verdi.length,1);
+    });
+    await t.test('changed, withdrawn or invalid source cannot be hidden behind a stored source hash',async()=>{
+      await resetBank();await db.exerciseDefinition.create({data:{...bankData,id:'bank-copy'}});
+      bankKilde=bankOriginal.filter(r=>r.id!==bankkopi.bankId);assert.deepEqual((await lesBank(jobb,'p'))?.verdi,[]);
+      bankKilde=bankOriginal.map(r=>r.id===bankkopi.bankId?{...r,beskrivelse:'Syntetisk endret godkjent instruksjon'}:r);
+      assert.deepEqual((await lesBank(jobb,'p'))?.verdi,[]);
+      bankKilde=[...bankOriginal,bankOriginal[0]];await assert.rejects(lesBank(jobb,'p'),/tvetydig/);
+      bankKilde=bankOriginal.map(r=>r.id===bankkopi.bankId?{...r,status:'KANDIDAT'}:r);await assert.rejects(lesBank(jobb,'p'));
+      bankKilde=structuredClone(bankOriginal);assert.equal((await lesBank(jobb,'p'))?.verdi.length,1);
+    });
+    await t.test('bank reader still requires current group, recipient and explicit sharing for ADMIN',async()=>{
+      await resetBank();await db.exerciseDefinition.create({data:{...bankData,id:'bank-copy'}});
+      for(const target of [{gruppeId:'a',coachId:'admin'},{gruppeId:'a',coachId:'coach-b'},
+        {gruppeId:'wang',coachId:'coach-a'},{gruppeId:'tn',coachId:'coach-a'}]) assert.equal(await lesBank(target,'p'),null);
+      await valg(false);assert.equal(await lesBank(jobb,'p'),null);await valg(true);
+      assert.equal((await lesBank(jobb,'p'))?.verdi.length,1);
+    });
+    await t.test('bank copy edited while reader waits is rechecked after its row lock',async()=>{
+      await resetBank();await db.exerciseDefinition.create({data:{...bankData,id:'bank-copy'}});
+      await sql.query('BEGIN');await sql.query(`UPDATE exercise_definitions SET description='Syntetisk endret instruksjon' WHERE id='bank-copy'`);
+      const pending=lesBank(jobb,'p');let blocked=false;
+      try {
+        for(let i=0;i<100;i++) {
+          const lock=await admin.query(`SELECT 1 FROM pg_stat_activity WHERE application_name=$1 AND wait_event_type='Lock' AND query LIKE '%exercise_definitions%' AND query LIKE '%FOR SHARE%'`,[schema]);
+          if(lock.rowCount){blocked=true;break;}await new Promise(r=>setTimeout(r,10));
+        }
+      } finally {await sql.query('COMMIT');}
+      assert.equal(blocked,true);assert.deepEqual((await pending)?.verdi,[]);assert.deepEqual(await counts(),empty);
+    });
+
   } finally {
     await db.$disconnect(); await sql.end(); await admin.query(`DROP SCHEMA "${schema}" CASCADE`); await admin.end();
   }

@@ -333,3 +333,8 @@ Resultatinnhold, Oslo-år og koblingsversjoner inngår i eksisterende databevise
 ### Ukeforslag: fornyelse 24.10.2026
 
 Den interne fornyelsen kan sette samme delingsbevis/uke/plan/mottakers utdaterte PENDING-rad til `SUPERSEDED` samtidig med et gyldig nytt forslag, eller når et gyldig ferskt forslag allerede finnes. Originalt forslag, databevis, kommentarer og aktørreferanser beholdes; ingen ny persondatakilde eller lagringstabell. Systemovergangen registreres gjennom status/updatedAt, ikke som menneskelig beslutning. Egeneksport og eksisterende familieavgrensede anonymisering inkluderer også denne statusen. Ingen ny oppbevaringsregel, produksjonskjøring eller aktivering av læring. Egen visning av fornyelseshistorikk og full juridisk avklaring gjenstår.
+
+
+### Godkjentbankkobling 24.10.2026
+
+Skrivefri intern serverleser verifiserer referanse og innhold i SYSTEM/PLATFORM-øvelser etter eksisterende gjeldende AK-profildeling. Den returnerer kun øvelses-ID/radversjon og bank-ID/kildehash, med serverinternt delingsbevis. Coach-notater velges ikke; ingen nye spillerfelt leses eller lagres. En separat ren funksjon beskriver en eventuell bankkopi i eksisterende parametersJson, inklusive godkjent faginnhold og kildefingeravtrykk. Den foretar ingen import eller lagring. Ingen nye persondatatabeller, modellkall eller samtykkeformål. Reelle produksjonskoblinger og en samlet rettighets-/aktiveringsreise er ikke sluttkontrollert.
