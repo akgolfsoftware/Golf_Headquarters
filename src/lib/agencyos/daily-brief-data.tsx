@@ -14,6 +14,7 @@
  *   - MRR: aktive PRO-abonnement × 299 kr (kanonisk formel, jf. /admin/agencyos/okonomi)
  */
 
+import { hentCockpitProfilnokkel } from "./cockpit-profildata";
 import { can, Capability } from "@/lib/auth/cbac";
 import type { UserRole } from "@/generated/prisma/client";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
@@ -144,7 +145,7 @@ export async function loadDailyBrief(coach: {
   id: string;
   name: string | null;
   avatarUrl?: string | null;
-  // Kreves for coach-scoping: COACH ser kun egne spillere, ADMIN ser alle coachede.
+  // Profilnøkkeltall krever fersk deling også for ADMIN; booking har eget formål.
   role: UserRole;
 }): Promise<CockpitData> {
   const now = new Date();
@@ -157,25 +158,19 @@ export async function loadDailyBrief(coach: {
 
   const tretti = new Date(now);
   tretti.setDate(tretti.getDate() - 30);
-  const femDager = new Date(now);
-  femDager.setDate(femDager.getDate() - 5);
   const toDognSiden = new Date(now);
   toDognSiden.setHours(toDognSiden.getHours() - 48);
 
   const [
     dagensBookinger,
-    aktiveSpillereCount,
-    nyeSpillereCount,
     notifs,
     eldrePendingActions,
     sessionReqs,
     oppgaver,
-    inaktiveSpillere,
     planActionGrupper,
     proAbos,
-    stallSgAgg,
-    planStatusGrupper,
     observasjoner,
+    profil,
   ] = await Promise.all([
     prisma.booking.findMany({
       where: {
@@ -205,8 +200,6 @@ export async function loadDailyBrief(coach: {
         facility: { select: { name: true } },
       },
     }),
-    prisma.user.count({ where: { AND: [coachScopedPlayerWhere(coach), { lastLoginAt: { gte: tretti } }] } }),
-    prisma.user.count({ where: { AND: [coachScopedPlayerWhere(coach), { createdAt: { gte: tretti } }] } }),
     prisma.notification.findMany({
       where: { userId: coach.id },
       orderBy: { createdAt: "desc" },
@@ -265,14 +258,6 @@ export async function loadDailyBrief(coach: {
         notionLastEdited: true,
       },
     }),
-    // Fokus: spillere med REELL inaktivitet (har logget inn før, men falt av).
-    // Brukere uten lastLoginAt er stubs/aldri-aktiverte — støy, ikke frafall.
-    prisma.user.findMany({
-      where: { AND: [coachScopedPlayerWhere(coach), { lastLoginAt: { lt: femDager } }] },
-      select: { id: true, name: true, homeClub: true, lastLoginAt: true, phone: true },
-      orderBy: { lastLoginAt: "asc" },
-      take: 4,
-    }),
     // Én groupBy erstatter to counts: total PENDING + hvor mange som er ESCALATION.
     prisma.planAction.groupBy({
       by: ["actionType"],
@@ -287,24 +272,10 @@ export async function loadDailyBrief(coach: {
       // Kun count/MRR-formål — hard tak for store klubber
       take: 5000,
     }),
-    // STALL-SG: snitt sgTotal for coachede spillere siste 30 d (scope, ikke hele DB).
-    prisma.round.aggregate({
-      _avg: { sgTotal: true },
-      where: {
-        playedAt: { gte: tretti },
-        sgTotal: { not: null },
-        user: coachScopedPlayerWhere(coach),
-      },
-    }),
-    // PLAN-ETTERLEVELSE: planlagte vs fullførte plan-økter siste 30 d (forfalt i vinduet).
-    // Én groupBy på status erstatter to counts.
-    prisma.trainingPlanSession.groupBy({
-      by: ["status"],
-      where: { scheduledAt: { gte: tretti, lte: now } },
-      _count: { _all: true },
-    }),
     hentAkDeltePlanforslag(coach, { status: "PENDING", maksRader: 8 }),
+    hentCockpitProfilnokkel(coach, now),
   ]);
+  const { aktiveSpillereCount, nyeSpillereCount, inaktiveSpillere, stallSgAgg, planStatusGrupper } = profil;
   const pendingActions = begrensForslagsliste([...eldrePendingActions, ...observasjoner.planActions], 8);
 
   // Observasjoner telles gjennom samme delingsport som de viste forslagene.

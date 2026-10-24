@@ -7,6 +7,8 @@ type Resultat = Awaited<ReturnType<Leser["hentAkDeltePlanforslag"]>>;
 const viewer = { id: "synthetic-coach", role: "ADMIN" as const, name: "Syntetisk trener" };
 const spillerScope = { id: "synthetic-player" };
 let historiskeBriefLesinger = 0;
+let profilKunViaPort = false;
+const profilReserve = () => { if (profilKunViaPort) throw Error("unexpected unscoped profile read"); };
 let tillatt = true;
 let forventetRolle = "ADMIN";
 let lesefeil = false;
@@ -33,14 +35,23 @@ mock.module("@/lib/prisma", { namedExports: { prisma: {
     groupBy: async (args: Prisma.PlanActionGroupByArgs) => { gruppeKall.push(args); return []; },
   },
   sessionRequest: { count: async (args: Prisma.SessionRequestCountArgs) => { foresporselTelleKall.push(args); return 3; }, findMany: async (args: Prisma.SessionRequestFindManyArgs) => { foresporselKall.push(args); return []; } },
-  user: { findMany: tom, count: async () => 0 },
+  user: { findMany: async () => { profilReserve(); return []; }, count: async () => { profilReserve(); return 0; } },
   booking: { findMany: tom }, caddieDraft: { findMany: tom, count: async (args: Prisma.CaddieDraftCountArgs) => { caddieTelleKall.push(args); return 2; } }, notification: { findMany: tom },
   appFeedback: { findMany: tom }, sak: { findMany: tom }, oppgaveCache: { findMany: tom }, subscription: { findMany: tom },
-  round: { aggregate: async () => ({ _avg: { sgTotal: null } }) },
-  trainingPlanSession: { groupBy: tom }, signal: { count: async () => 0 },
+  round: { aggregate: async () => { profilReserve(); return { _avg: { sgTotal: null } }; } },
+  trainingPlanSession: { groupBy: async () => { profilReserve(); return []; } }, signal: { count: async () => 0 },
   kommandoAgentRun: { count: async (args: Prisma.KommandoAgentRunCountArgs) => { kommandoKall.push(args); return args.where?.status === "running" ? 1 : 0; } },
   agentRun: { findMany: tom, count: async () => 0, findFirst: async () => { historiskeBriefLesinger++; return { output: { briefs: [{ coachId: viewer.id, brief: "synthetic-private-old-brief" }] } }; } },
 } } });
+
+mock.module("./cockpit-profildata", { namedExports: { hentCockpitProfilnokkel: async () => ({
+  aktiveSpillereCount: profilKunViaPort && tillatt ? 2 : 0,
+  nyeSpillereCount: profilKunViaPort && tillatt ? 1 : 0, inaktiveSpillere: [],
+  stallSgAgg: { _avg: { sgTotal: profilKunViaPort && tillatt ? 2 : null } },
+  planStatusGrupper: profilKunViaPort && tillatt ? [
+    { status: "PLANNED", _count: { _all: 1 } }, { status: "COMPLETED", _count: { _all: 1 } },
+  ] : [],
+}) } });
 
 let workbench: typeof import("./workbench-oppgaver");
 let agenticos: typeof import("./last-agenticos");
@@ -79,7 +90,7 @@ before(async () => {
   dispatch = await import("./ai-dispatch-data");
   kanoniskKo = await import("@/lib/admin/ko-telling");
 });
-beforeEach(() => { historiskeBriefLesinger = 0; ukeforslag = false; tillatt = true; forventetRolle = "ADMIN"; lesefeil = false; antall = 1; finnKall = []; telleKall = []; gruppeKall = []; foresporselKall = []; foresporselTelleKall = []; caddieTelleKall = []; kommandoKall = []; leseKall = []; });
+beforeEach(() => { profilKunViaPort = false; historiskeBriefLesinger = 0; ukeforslag = false; tillatt = true; forventetRolle = "ADMIN"; lesefeil = false; antall = 1; finnKall = []; telleKall = []; gruppeKall = []; foresporselKall = []; foresporselTelleKall = []; caddieTelleKall = []; kommandoKall = []; leseKall = []; });
 
 function kontrollerEldreLesere() {
   for (const args of [...finnKall, ...telleKall, ...gruppeKall]) assert.deepEqual(args.where?.NOT, uten.NOT);
@@ -229,3 +240,17 @@ for (const role of ["ADMIN", "COACH"] as const) {
     assert.equal(historiskeBriefLesinger, 0);
   });
 }
+
+test("brief kobler bare delingskontrollerte profilnøkkeltall til skjermdata", async () => {
+  profilKunViaPort = true;
+  const data = await brief.loadDailyBrief(viewer);
+  assert.equal(data.activePlayersCount, 2);
+  assert.equal(data.kpis.find(k => k.label === "AKTIVE SPILLERE")?.value, "2");
+  assert.equal(data.stallSgKpi, "+2");
+  assert.equal(data.planAdherenceKpi, "50 %");
+  tillatt = false;
+  const etter = await brief.loadDailyBrief(viewer);
+  assert.equal(etter.activePlayersCount, 0);
+  assert.equal(etter.stallSgKpi, "—");
+  assert.equal(etter.planAdherenceKpi, "—");
+});

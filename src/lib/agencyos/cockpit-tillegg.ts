@@ -3,7 +3,7 @@
  * leverer: «Følger ikke planen» og «Turneringer denne uka».
  *
  * Bare lesing av eksisterende felt, i coachens spillerskop
- * (coachScopedPlayerWhere). Ingen nye tabeller, ingen skjemaendring.
+ * med fersk AK-profildeling i samme transaksjon. Ingen nye tabeller, ingen skjemaendring.
  *
  * Etterlevelse per uke (tre siste hele uker og denne) og stallens uke leses fra
  * de samme øktene.
@@ -16,8 +16,7 @@
  */
 import "server-only";
 
-import { prisma } from "@/lib/prisma";
-import { coachScopedPlayerWhere } from "@/lib/auth/coached";
+import { medAkProfiler } from "@/lib/deling/ak-profil-lesing";
 import { startOfWeek, endOfWeek, ukenummer } from "@/lib/uke-helpers";
 import type { UserRole } from "@/generated/prisma/client";
 import { velgUtenforPlan, dagerMellom, etterlevelsePerUke, stallensUke, type CockpitTillegg, type CockpitTurnering } from "./cockpit-tillegg-regler";
@@ -34,38 +33,40 @@ export async function lastCockpitTillegg(coach: { id: string; role: UserRole }):
   const ukeFor = new Date(denneUka.getTime() - 14 * DAG_MS);
   // Etterlevelse i Cockpit: de tre siste hele ukene og denne uka.
   const fireUkerSiden = new Date(denneUka.getTime() - 21 * DAG_MS);
-  const scope = coachScopedPlayerWhere(coach);
-
-  const [okter, entries] = await Promise.all([
-    prisma.trainingPlanSession.findMany({
-      where: { scheduledAt: { gte: fireUkerSiden, lt: ukeSlutt }, plan: { user: scope } },
-      select: {
-        scheduledAt: true,
-        durationMin: true,
-        status: true,
-        plan: { select: { userId: true, user: { select: { name: true } } } },
-      },
-    }),
-    prisma.tournamentEntry.findMany({
-      where: {
-        entryStatus: { not: "WITHDRAWN" },
-        user: scope,
-        OR: [
-          { tournament: { startDate: { gte: denneUka, lt: ukeSlutt } } },
-          { tournament: { endDate: { gte: denneUka, lt: ukeSlutt } } },
-          { tournamentId: null, manualDate: { gte: denneUka, lt: ukeSlutt } },
-        ],
-      },
-      select: {
-        id: true,
-        manualName: true,
-        manualDate: true,
-        user: { select: { name: true } },
-        tournament: { select: { name: true, startDate: true, location: true, course: { select: { name: true } } } },
-      },
-      take: 20,
-    }),
-  ]);
+  const lest = await medAkProfiler(coach, async (tx, scope) => {
+    const [okter, entries] = await Promise.all([
+      tx.trainingPlanSession.findMany({
+        where: { scheduledAt: { gte: fireUkerSiden, lt: ukeSlutt }, plan: { user: scope } },
+        select: {
+          scheduledAt: true,
+          durationMin: true,
+          status: true,
+          plan: { select: { userId: true, user: { select: { name: true } } } },
+        },
+      }),
+      tx.tournamentEntry.findMany({
+        where: {
+          entryStatus: { not: "WITHDRAWN" },
+          user: scope,
+          OR: [
+            { tournament: { startDate: { gte: denneUka, lt: ukeSlutt } } },
+            { tournament: { endDate: { gte: denneUka, lt: ukeSlutt } } },
+            { tournamentId: null, manualDate: { gte: denneUka, lt: ukeSlutt } },
+          ],
+        },
+        select: {
+          id: true,
+          manualName: true,
+          manualDate: true,
+          user: { select: { name: true } },
+          tournament: { select: { name: true, startDate: true, location: true, course: { select: { name: true } } } },
+        },
+        take: 20,
+      }),
+    ]);
+    return { okter, entries };
+  });
+  const { okter, entries } = lest ?? { okter: [], entries: [] };
 
   const alle = okter.map((o) => ({
     userId: o.plan.userId,
