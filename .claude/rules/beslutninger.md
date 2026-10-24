@@ -4,6 +4,35 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## TRENERFLATEN BYGGES ÉN GANG: SJU FELLES SKJERMER FOR AGENCYOS, WANG OG TEAM NORWAY (Anders 24.10.2026, bindende)
+
+Anders 23.10, 22:59: «Se nærmere på hvordan Team Norway og Wang skjermene kan optimaliseres.» Forslaget om sju felles skjermer ble svart med «Ok for Wang og team norway» (24.10, 10:22).
+
+- **Sju felles skjermer**, bygget én gang og brukt i AgencyOS, WANG og Team Norway med hver sin innlogging, sitt utseende, sine ord og sin delingslås:
+  1. Hjem (Team Norway: Hjem · WANG: I dag, med morgenoppmøte)
+  2. Spillerprofil (IUP), som også er AgencyOS Spiller 360 og WANG elev-ark og IUP (B8, C5)
+  3. Gruppe-Workbench (Team Norway: Grupper · WANG: Trening), med samlinger, testdager, årsplan, perioder, måned og uke
+  4. Testing (Team Norway: Testing · WANG: Tester), med testbatteri, testverktøy, føring på testdagen, protokoller og gruppeanalyse
+  5. Turneringer (Team Norway: Turneringer og ranking · WANG: Konkurranse), med planleggeren og historikk fra pipelines
+  6. Meldinger og trenerrom (Team Norway: Trenerrom · WANG: Meldinger), med chat med spiller, gruppeposter, post til én spiller, dokumenter og deling mellom trenere
+  7. Administrasjon (Team Norway: under Trenerrom · WANG: Administrasjon for sportssjef), med trenere, roller, invitasjon og samtykke
+- **Bare én organisasjon:**
+  - Team Norway: WAGR-ranking, Norsk golf (A–K), oversikt over WANG-skolene, og uttak og college som filtre.
+  - WANG: treningsoversikt med morgenoppmøte (WANG-42), og under Administrasjon › Skole: plasser, koordinering, rekruttering, timeplan og prøveplan.
+- **Ut:**
+  - WANG skoleplattform `/team-wang/app` (vedtatt 23.10).
+  - WANGs elev- og foresattflater: skolefanen, statistikkskinnet og ukessammendraget for foresatte. Ukessammendraget blir en melding i PlayerHQ, og foreldremøtet blir en samling i gruppe-Workbench.
+  - Handikapskjermene i Team Norway.
+  - 16 Team Norway-adresser uten tegning blir faner i de felles skjermene.
+
+**Overstyrer:** egne skjermrader per organisasjon i `designsystem/wang/SKJERMREGISTER.md` og `designsystem/team-norway/handover/SKJERMREGISTER.md` for de sammenslåtte funksjonene. WANG-menyen fra 27.09 (I dag · Trening · Tester · Konkurranse · Meldinger · Elever + Administrasjon) står, med innholdet over.
+
+**Arbeidet dette utløser:**
+
+1. **Skjelettet:** to lerreter, «AK Golf HQ · Team Norway» og «AK Golf HQ · WANG», med samme skjelett og egen innloggingsskjerm, i 390 og 1280 px. Ferdig når de er kontrollert av en uavhengig agent og Anders har sett dem.
+2. **Koden:** én komponent per felles skjerm, med organisasjon og rolle som parameter. Ferdig når ingen felles funksjon har egne sidekomponenter per organisasjon.
+3. **Registrene** oppdateres i egen PR etter den nye strukturen.
+
 ## TEAM NORWAY: KOMPLETT IUP, GRUPPE-WORKBENCH, TESTVERKTØY OG TRENERROM, BAK EGEN INNLOGGING (Anders 23.10.2026, bindende)
 
 Anders 23.10, 22:48–22:59: «Team Norway-skjermene skal ha komplette spillerprofiler med IUP. Med Workbench, så du ser hva spilleren har av årsplan, periodisering, trening og lignende. Turneringsplan fra planleggeren, både med WAGR-turneringer og andre turneringer. De skal ha oversikt over testing fra WANG-skolene […] Komplett testbatteri […] Verktøy der de kan opprette flere tester […] spilleroppfølging med chatfunksjoner, internskjermer mellom coacher med dokumenter og deling. […] planlegge samlinger og testdager gjennom Workbench-funksjonen for gruppe. De skal kunne ha ulike grupper.» «Alle handikapskjermene som vi lagde her om dagen, skal ikke være med.» «AK Golf HQ skal ikke kunne se alle Team Norway-skjermene uten å logge inn på de faktiske Team Norway-skjermene.» «WANG-elever og Team Norway-spillere har da PlayerHQ-profil. Spillerprofil har da automatisk turneringsresultat fra AK Golf pipeline […] all turneringshistorikk […] legger seg automatisk i profilen.»
