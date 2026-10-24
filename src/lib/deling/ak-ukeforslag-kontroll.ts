@@ -4,6 +4,7 @@ import { Prisma, LPhase } from "@/generated/prisma/client";
 import { ovelseMatcherAkNiva } from "./ak-spillerniva";
 import type { AkUkegrunnlag } from "./ak-ukegrunnlag";
 import type { AkUkeforslag } from "./ak-ukeforslag-format";
+import { lesAkUkekandidatgrunnlag } from "./ak-ukekandidater";
 import type { AkUkerad } from "./ak-ukeforslag-rad";
 
 /** DB-only validation inside the existing locked sharing/plan transaction.
@@ -36,6 +37,8 @@ export async function kontrollerAkUkeforslag(tx: Prisma.TransactionClient, forsl
       fagligeRad.push({ kode: "UKESBUDSJETT_AVVIKER", omrade: area });
     }
   }
+  const bank = forslag.versjon === 2 ? await lesAkUkekandidatgrunnlag(tx, grunnlag) : null;
+  if (forslag.versjon === 2 && bank?.fingeravtrykk !== forslag.bankFingeravtrykk) throw Error("utdatert-bankgrunnlag");
   const ids = [...new Set(sortert.flatMap(s => s.drills.map(d => d.exerciseId)))].sort();
   const revisjoner = await tx.$queryRaw<Array<{ id: string; revisjon: string }>>`
     SELECT id, xmin::text AS revisjon FROM exercise_definitions WHERE id IN (${Prisma.join(ids)}) ORDER BY id FOR SHARE`;
@@ -50,6 +53,12 @@ export async function kontrollerAkUkeforslag(tx: Prisma.TransactionClient, forsl
       }
       // Retired exercise lPhases are not a source of new period prescriptions.
       const sted = { oktIndeks: forslag.sessions.indexOf(s), exerciseId: d.exerciseId };
+      if (bank) {
+        const kandidat = bank.kandidater.find(k => k.exerciseId === d.exerciseId && k.exerciseRevisjon === d.exerciseRevisjon);
+        if (!kandidat) throw Error("ovelse-utenfor-verifisert-bank");
+        fagligeRad.push({ kode: "FAGLIG_VURDERING_GJENSTAR", ...sted });
+        if (kandidat.fasilitetsstatus !== "KRAV_OPPFYLT_VED_ETT_STED") fagligeRad.push({ kode: "BANKFASILITET_BOR_VURDERES", ...sted });
+      }
       if (!ovelseMatcherAkNiva(exercise, grunnlag.niva)) fagligeRad.push({ kode: "OVELSESNIVA_BOR_VURDERES", ...sted });
       // A single recorded place must cover every structured requirement of
       // this exercise. Never combine unrelated places or trust old true defaults.

@@ -91,6 +91,11 @@ test("Ukeforslag: atomisk plan, V2 og beslutningsspor", async t => {
       UPDATE period_blocks SET "weeklySessionBudget"='{"TEK":1}' WHERE id='period';`);
     await sql.query(await readFile(new URL('../fixtures/coach-week-facilities.sql',import.meta.url),'utf8'));
     await sql.query(await readFile(new URL('../fixtures/coach-week-level.sql',import.meta.url),'utf8'));
+    const bankModul = await import('../../src/lib/masterbrain/drill-bank');
+    const bankOriginal = bankModul.hentGodkjenteOvelsesbankElementer();
+    let bankKilde = structuredClone(bankOriginal);
+    mock.module('../../src/lib/masterbrain/drill-bank',{namedExports:{...bankModul,hentGodkjenteOvelsesbankElementer:()=>bankKilde}});
+
     const { hentAkUkegrunnlag } = await import('../../src/lib/deling/ak-ukegrunnlag');
     const { behandleAkUkeforslag: behandle } = await import('../../src/lib/deling/ak-ukeforslag');
     const { settAkProfilValg: sett } = await import('../../src/lib/deling/ak-profil-valg');
@@ -806,10 +811,6 @@ test("Ukeforslag: atomisk plan, V2 og beslutningsspor", async t => {
       assert.equal((await db.planAction.findUniqueOrThrow({where:{id:'actor-fail'}})).decisionNote,null);
     });
 
-    const bankModul = await import('../../src/lib/masterbrain/drill-bank');
-    const bankOriginal = bankModul.hentGodkjenteOvelsesbankElementer();
-    let bankKilde = structuredClone(bankOriginal);
-    mock.module('../../src/lib/masterbrain/drill-bank',{namedExports:{...bankModul,hentGodkjenteOvelsesbankElementer:()=>bankKilde}});
     const { byggAkBankkopi } = await import('../../src/lib/deling/ak-bankkobling-format');
     const { hentAkBankkoblinger: lesBank } = await import('../../src/lib/deling/ak-bankkobling-lesing');
     const bankkopi = byggAkBankkopi(bankOriginal[0]);
@@ -968,6 +969,120 @@ test("Ukeforslag: atomisk plan, V2 og beslutningsspor", async t => {
         await sql.query(`UPDATE signals SET value=-77 WHERE id='sg'`);
       } finally {await sql.query('COMMIT');}
       try {assert.equal(blocked,true);assert.equal(await pending,null);assert.equal(brukt,before);}
+      finally {await sql.query(`UPDATE signals SET value=-1 WHERE id='sg'`);}
+    });
+
+    const { genererAkBankukeforslag: genererBank } = await import('../../src/lib/deling/ak-ukeforslag-generering');
+    const bankUtkast=async()=>{
+      const template=await utkast();const r=await sql.query(`SELECT xmin::text AS revision FROM exercise_definitions WHERE id='bank-copy'`);
+      return {...template,sessions:[{...template.sessions[0],pyramidArea:bankData.pyramidArea,
+        drills:[{exerciseId:'bank-copy',exerciseRevisjon:r.rows[0].revision,minutter:30}]}]};
+    };
+    await t.test('bank-backed proposal stores server evidence and advisory requirements; acceptance is explicit',async()=>{
+      await kandidatStart();
+      const result=await genererBank(jobb,'p','2026-10-26',async(model,rows)=>{
+        assert.deepEqual(Object.keys(model).sort(),['category','categorySource','context','signals']);
+        assert.equal(rows[0].exerciseId,'bank-copy');
+        assert.doesNotMatch(JSON.stringify(rows),/Syntetisk spiller|description|bruttoSnitt|maksPuttLengdeM/);
+        rows[0].exerciseId='mutated-local-argument';return bankUtkast();
+      });assert.ok('id' in result);
+      const stored=await db.planAction.findUniqueOrThrow({where:{id:result.id}});
+      const body=akUkeforslagSchema.parse(stored.suggestion);assert.equal(body.versjon,2);
+      assert.ok(body.fagligeRad?.some(r=>r.kode==='BANKFASILITET_BOR_VURDERES'));
+      assert.ok(body.fagligeRad?.some(r=>r.kode==='FAGLIG_VURDERING_GJENSTAR'));
+      assert.deepEqual(await counts(),empty);
+      assert.doesNotMatch(JSON.stringify((await les(viewer)).planActions),/bankFingeravtrykk|kandidatFingeravtrykk/);
+      assert.doesNotMatch(JSON.stringify(await eksporter('p')),/bankFingeravtrykk|kandidatFingeravtrykk/);
+      assert.match(JSON.stringify(await eksporter('p')),/Bankkilden er kontrollert/);
+      assert.equal((await behandle(viewer,result.id,'ACCEPTED')).applied,true);
+      assert.deepEqual(await counts(),{plan:1,drills:1,v2:1,v2drills:1,spor:1});
+    });
+    await t.test('empty bank and forbidden group never invoke the bank planner',async()=>{
+      await resetBank();let called=0;const build=async()=>{called++;return bankUtkast();};
+      assert.equal((await genererBank(jobb,'p','2026-10-26',build)).status,'INGEN_BANKKANDIDATER');
+      for(const target of [{gruppeId:'a',coachId:'admin'},{gruppeId:'wang',coachId:'coach-a'},{gruppeId:'tn',coachId:'coach-a'}]) {
+        assert.equal((await genererBank(target,'p','2026-10-26',build)).status,'INGEN_GRUNNLAG');
+      }
+      assert.equal(called,0);assert.equal(await db.planAction.count(),0);
+    });
+    await t.test('bank planner cannot choose unverified copies or inject trusted evidence',async()=>{
+      await kandidatStart();
+      await assert.rejects(genererBank(jobb,'p','2026-10-26',utkast),/ovelse-utenfor-verifisert-bank/);
+      for(const extra of [{bankFingeravtrykk:'a'.repeat(64)},{fagligeRad:[]},{versjon:1}]) {
+        await assert.rejects(genererBank(jobb,'p','2026-10-26',async()=>({...await bankUtkast(),...extra})));
+      }
+      assert.equal(await db.planAction.count(),0);assert.deepEqual(await counts(),empty);
+    });
+    await t.test('bank changes during planning prevent persistence, including identical row rewrites',async()=>{
+      for(const change of [async()=>{bankKilde=[];},async()=>{await db.exerciseDefinition.update({where:{id:'bank-copy'},data:bankData});}]) {
+        await kandidatStart();const draft=await bankUtkast();
+        await assert.rejects(genererBank(jobb,'p','2026-10-26',async()=>{await change();return draft;}),/utdatert-bankgrunnlag/);
+        assert.equal(await db.planAction.count(),0);assert.deepEqual(await counts(),empty);
+      }
+    });
+    await t.test('bank-bound approval requires unchanged source and sharing; rejection still works after bank removal',async()=>{
+      await kandidatStart();const result=await genererBank(jobb,'p','2026-10-26',bankUtkast);assert.ok('id' in result);
+      await assert.rejects(behandle({id:'admin',role:'ADMIN'},result.id,'ACCEPTED'),/forbidden/);
+      bankKilde=[];await assert.rejects(behandle(viewer,result.id,'ACCEPTED'),/utdatert-bankgrunnlag/);
+      assert.deepEqual(await counts(),empty);
+      assert.equal((await behandle(viewer,result.id,'REJECTED')).status,'REJECTED');
+      await kandidatStart();const next=await genererBank(jobb,'p','2026-10-26',bankUtkast);assert.ok('id' in next);
+      await valg(false);await valg(true);await assert.rejects(behandle(viewer,next.id,'ACCEPTED'),/forbidden/);
+      assert.deepEqual(await counts(),empty);
+    });
+    await t.test('bank renewal preserves old content, deduplicates fresh version and cannot downgrade to legacy',async()=>{
+      await kandidatStart();const legacy=await opprett();
+      const first=await genererBank(jobb,'p','2026-10-26',bankUtkast);assert.ok('id' in first);
+      assert.equal((await db.planAction.findUniqueOrThrow({where:{id:legacy.id}})).status,'SUPERSEDED');
+      assert.deepEqual((await db.planAction.findUniqueOrThrow({where:{id:legacy.id}})).suggestion,legacy.suggestion);
+      assert.equal((await generer(jobb,'p','2026-10-26',utkast)).status,'KREVER_GJENNOMGANG');
+      assert.equal((await genererBank(jobb,'p','2026-10-26',bankUtkast)).status,'FINNES');
+      const old=await db.planAction.findUniqueOrThrow({where:{id:first.id}});
+      await db.exerciseDefinition.update({where:{id:'bank-copy'},data:bankData});
+      const fresh=await genererBank(jobb,'p','2026-10-26',bankUtkast);assert.ok('id' in fresh);assert.notEqual(fresh.id,first.id);
+      const saved=await db.planAction.findUniqueOrThrow({where:{id:first.id}});
+      assert.equal(saved.status,'SUPERSEDED');assert.deepEqual(saved.suggestion,old.suggestion);
+      assert.deepEqual(await counts(),empty);
+    });
+    await t.test('concurrent bank generation deduplicates and failed approval rolls back before retry',async()=>{
+      await kandidatStart();
+      const results=await Promise.all([genererBank(jobb,'p','2026-10-26',bankUtkast),genererBank(jobb,'p','2026-10-26',bankUtkast)]);
+      assert.deepEqual(results.map(r=>r.status).sort(),['FINNES','OPPRETTET']);assert.equal(await db.planAction.count(),1);
+      const saved=await db.planAction.findFirstOrThrow();
+      await sql.query(`CREATE OR REPLACE FUNCTION fail_write() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'synthetic rollback'; END $$;
+        CREATE TRIGGER fail_bank BEFORE INSERT ON training_drills_v2 FOR EACH ROW EXECUTE FUNCTION fail_write()`);
+      try {await assert.rejects(behandle(viewer,saved.id,'ACCEPTED'));}
+      finally {await sql.query('DROP TRIGGER fail_bank ON training_drills_v2');}
+      assert.deepEqual(await counts(),empty);assert.equal((await db.planAction.findUniqueOrThrow({where:{id:saved.id}})).status,'PENDING');
+      assert.equal((await behandle(viewer,saved.id,'ACCEPTED')).applied,true);
+      assert.equal((await behandle(viewer,saved.id,'ACCEPTED')).status,'UNCHANGED');
+      assert.deepEqual(await counts(),{plan:1,drills:1,v2:1,v2drills:1,spor:1});
+    });
+    await t.test('bank approval rechecks source after waiting on exercise locks',async()=>{
+      await kandidatStart();const result=await genererBank(jobb,'p','2026-10-26',bankUtkast);assert.ok('id' in result);
+      await sql.query('BEGIN');await sql.query(`SELECT id FROM exercise_definitions WHERE id='bank-copy' FOR UPDATE`);
+      const pending=behandle(viewer,result.id,'ACCEPTED');const denied=assert.rejects(pending,/utdatert-bankgrunnlag/);let blocked=false;
+      try {
+        for(let i=0;i<100;i++) {
+          const lock=await admin.query(`SELECT 1 FROM pg_stat_activity WHERE application_name=$1 AND wait_event_type='Lock' AND query LIKE '%exercise_definitions%' AND query LIKE '%FOR SHARE%'`,[schema]);
+          if(lock.rowCount){blocked=true;break;}await new Promise(r=>setTimeout(r,10));
+        }
+        bankKilde=[];
+      } finally {await sql.query('COMMIT');}
+      await denied;assert.equal(blocked,true);assert.deepEqual(await counts(),empty);
+    });
+    await t.test('bank approval rechecks unlocked weekly signals after a bank lock wait',async()=>{
+      await kandidatStart();const result=await genererBank(jobb,'p','2026-10-26',bankUtkast);assert.ok('id' in result);
+      await sql.query('BEGIN');await sql.query(`SELECT id FROM exercise_definitions WHERE id='bank-copy' FOR UPDATE`);
+      const pending=behandle(viewer,result.id,'ACCEPTED');const denied=assert.rejects(pending,/utdatert-ukegrunnlag/);let blocked=false;
+      try {
+        for(let i=0;i<100;i++) {
+          const lock=await admin.query(`SELECT 1 FROM pg_stat_activity WHERE application_name=$1 AND wait_event_type='Lock' AND query LIKE '%exercise_definitions%' AND query LIKE '%FOR SHARE%'`,[schema]);
+          if(lock.rowCount){blocked=true;break;}await new Promise(r=>setTimeout(r,10));
+        }
+        await sql.query(`UPDATE signals SET value=-2 WHERE id='sg'`);
+      } finally {await sql.query('COMMIT');}
+      try {await denied;assert.equal(blocked,true);assert.deepEqual(await counts(),empty);}
       finally {await sql.query(`UPDATE signals SET value=-1 WHERE id='sg'`);}
     });
 

@@ -17,6 +17,12 @@ test("weekly proposal contract requires explicit evidence and matching drill dur
     tittel:"Syntetisk uke",forklaring:"Syntetisk forklaring",sessions:[{title:"Syntetisk økt",pyramidArea:"TEK",
       scheduledAt:"2026-10-27T16:00:00Z",durationMin:30,drills:[{exerciseId:"drill",exerciseRevisjon:"1",minutter:30}]}]};
   assert.equal(akUkeforslagSchema.safeParse(valid).success,true);
+  const bank = { ...valid, versjon: 2, bankFingeravtrykk: "c".repeat(64), fagligeRad: [] };
+  assert.equal(akUkeforslagSchema.safeParse(bank).success, true);
+  for (const invalid of [{ ...valid, versjon: 2 }, { ...bank, bankFingeravtrykk: undefined },
+    { ...bank, fagligeRad: undefined }, { ...bank, versjon: 1 }]) {
+    assert.equal(akUkeforslagSchema.safeParse(invalid).success, false);
+  }
   for(const invalid of [{...valid,deling:null},{...valid,versjon:0},{...valid,coachLog:[]},
     {...valid,sessions:[{...valid.sessions[0],durationMin:45}]},
     {...valid,sessions:[{...valid.sessions[0],drills:[]}]},

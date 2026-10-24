@@ -12,7 +12,7 @@ const okt = z.object({ title: z.string().trim().min(3).max(80), pyramidArea: omr
     minutter: z.number().int().min(1).max(360) }).strict()).min(1).max(12),
 }).strict().refine(s => s.drills.reduce((sum, d) => sum + d.minutter, 0) === s.durationMin,
   "Øvelsenes varighet må stemme med økten");
-export const akUkeforslagSchema = z.object({ versjon: z.literal(1),
+const felles = z.object({
   deling: akProfilBevisSchema, databevis: akUkeDatabevisSchema,
   tittel: z.string().trim().min(3).max(120), forklaring: z.string().trim().min(3).max(2000),
   sessions: z.array(okt).min(1).max(21),
@@ -21,5 +21,9 @@ export const akUkeforslagSchema = z.object({ versjon: z.literal(1),
   fagligeRad: akUkeradSchema.optional(),
 }).strict();
 
-export const akUkeutkastSchema = akUkeforslagSchema.omit({ versjon: true, deling: true, databevis: true, fagligeRad: true });
+export const akUkeforslagSchema = z.discriminatedUnion("versjon", [
+  felles.extend({ versjon: z.literal(1) }),
+  felles.extend({ versjon: z.literal(2), bankFingeravtrykk: z.string().regex(/^[a-f0-9]{64}$/), fagligeRad: akUkeradSchema }),
+]);
+export const akUkeutkastSchema = felles.omit({ deling: true, databevis: true, fagligeRad: true });
 export type AkUkeforslag = z.infer<typeof akUkeforslagSchema>;

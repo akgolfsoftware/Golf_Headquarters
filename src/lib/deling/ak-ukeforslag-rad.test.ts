@@ -31,3 +31,11 @@ test("planner cannot supply its own trusted advice", () => {
   assert.equal(akUkeutkastSchema.safeParse(draft).success, true);
   assert.equal(akUkeutkastSchema.safeParse({ ...draft, fagligeRad: [] }).success, false);
 });
+
+
+test("advice capacity covers all allowed sessions and exercises while rejecting unbounded payloads", () => {
+  const max = 21 * 12 * 4 + 7;
+  const advice = Array.from({ length: max }, () => ({ kode: "FAGLIG_VURDERING_GJENSTAR", oktIndeks: 20, exerciseId: "synthetic" }));
+  assert.equal(akUkeradSchema.safeParse(advice).success, true);
+  assert.equal(akUkeradSchema.safeParse([...advice, advice[0]]).success, false);
+});

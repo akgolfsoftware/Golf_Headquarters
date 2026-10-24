@@ -2,29 +2,49 @@ import "server-only";
 import { Prisma } from "@/generated/prisma/client";
 import { canonicalJson } from "@/lib/agents/canonical-json";
 import type { AkGruppeoppdrag } from "./ak-gruppeoppdrag";
-import { hentAkUkegrunnlag, brukSammeAkUkegrunnlag, type AkUkegrunnlag } from "./ak-ukegrunnlag";
+import { hentAkUkegrunnlag, brukSammeAkUkegrunnlag, laasOgLesSammeAkUkegrunnlag, type AkUkegrunnlag } from "./ak-ukegrunnlag";
 import { akUkeutkastSchema, akUkeforslagSchema } from "./ak-ukeforslag-format";
+import { hentAkUkekandidater, type AkUkekandidater } from "./ak-ukekandidater";
 import { kontrollerAkUkeforslag } from "./ak-ukeforslag-kontroll";
 
 /** Internal server orchestration, not an action or a cron activation. The planner
  * must supply concrete, qualified exercises, revisions, minutes and times. There
  * is deliberately no default time, arbitrary exercise or generic fallback.
- * Only the allowlisted model context is passed to the callback; IDs, evidence
- * and profile text remain here. A future model adapter must not bypass its own
- * prompt allowlist or the still outstanding purpose/qualification checks.
- */
-export async function genererAkUkeforslag(jobb: AkGruppeoppdrag, spillerId: unknown, uke: unknown,
-  utform: (modell: AkUkegrunnlag["modell"]) => Promise<unknown>,
+ * The legacy callback receives only allowlisted model context; IDs, evidence
+ * and profile text are not model input. A future model adapter must preserve
+ * this boundary and the outstanding purpose/qualification checks.
+ *
+ * Legacy internal v1 producer retained for existing callers/tests; inactive.
+ * New bank-backed integration must use genererAkBankukeforslag below. */
+export function genererAkUkeforslag(jobb: AkGruppeoppdrag, spillerId: unknown, uke: unknown,
+  utform: (modell: AkUkegrunnlag["modell"]) => Promise<unknown>) {
+  return generer(jobb, spillerId, uke, utform, false);
+}
+
+/** Trusted server planner only. Candidate IDs/proofs are not cloud prompt input.
+ * No actual model adapter, import, cron or automatic decision is activated. */
+export function genererAkBankukeforslag(jobb: AkGruppeoppdrag, spillerId: unknown, uke: unknown,
+  utform: (modell: AkUkegrunnlag["modell"], kandidater: AkUkekandidater) => Promise<unknown>) {
+  return generer(jobb, spillerId, uke, utform, true);
+}
+
+async function generer(jobb: AkGruppeoppdrag, spillerId: unknown, uke: unknown,
+  utform: (modell: AkUkegrunnlag["modell"], kandidater: AkUkekandidater) => Promise<unknown>, bankbundet: boolean,
 ) {
   const grunnlag = await hentAkUkegrunnlag(jobb, spillerId, uke);
   if (!grunnlag || grunnlag.harManedsEllerUkevalg) return { status: "INGEN_GRUNNLAG" as const };
 
+  const bank = bankbundet ? await hentAkUkekandidater(jobb, spillerId, uke) : null;
+  if (bankbundet && (!bank || canonicalJson(bank.bevis.deling) !== canonicalJson(grunnlag.deling) ||
+    canonicalJson(bank.bevis.databevis) !== canonicalJson(grunnlag.databevis))) return { status: "UTDATERT" as const };
+  if (bank && !bank.kandidater.length) return { status: "INGEN_BANKKANDIDATER" as const };
+
   // Capture ends before asynchronous planner/model work; never hold DB locks
   // across network calls. Clone so a planner cannot mutate the captured basis.
-  const raw = await utform(structuredClone(grunnlag.modell));
+  const raw = await utform(structuredClone(grunnlag.modell), structuredClone(bank?.kandidater ?? []));
   if (raw === null) return { status: "INGEN_UTKAST" as const };
   const utkast = akUkeutkastSchema.parse(raw);
-  const forslag = akUkeforslagSchema.parse({ ...utkast, versjon: 1,
+  const forslag = akUkeforslagSchema.parse({ ...utkast, ...(bank ? { versjon: 2, bankFingeravtrykk: bank.bevis.kandidatFingeravtrykk, fagligeRad: [] } : { versjon: 1 }),
     deling: grunnlag.deling, databevis: grunnlag.databevis });
 
   const oppdrag = { gruppeId: grunnlag.deling.gruppeId, coachId: grunnlag.deling.coachId };
@@ -32,6 +52,9 @@ export async function genererAkUkeforslag(jobb: AkGruppeoppdrag, spillerId: unkn
     async (tx, ferskt) => {
       // Same checks at creation and approval, including locked exercise versions.
       forslag.fagligeRad = (await kontrollerAkUkeforslag(tx, forslag, ferskt)).fagligeRad;
+      if (!await laasOgLesSammeAkUkegrunnlag(tx, { id: grunnlag.deling.spillerId }, oppdrag, grunnlag.databevis)) {
+        throw Error("utdatert-ukegrunnlag");
+      }
       // Every weekly decision also locks the plan before its action row. Lock
       // only the same recipient, grant and week; never revive an old grant.
       const ko = {
@@ -57,6 +80,11 @@ export async function genererAkUkeforslag(jobb: AkGruppeoppdrag, spillerId: unkn
           return { status: "KREVER_GJENNOMGANG" as const };
         }
         const gammelt = parsed.data;
+        // A legacy producer must never replace or reuse a bank-bound contract.
+        if (!bankbundet && gammelt.versjon === 2) return { status: "KREVER_GJENNOMGANG" as const };
+        if (bankbundet && (gammelt.versjon !== 2 || gammelt.bankFingeravtrykk !== bank?.bevis.kandidatFingeravtrykk)) {
+          utdaterte.push(rad.id); continue;
+        }
         let utdatert = canonicalJson(gammelt.databevis) !== canonicalJson(grunnlag.databevis);
         if (!utdatert) {
           // Exercise revisions are separate from the weekly data fingerprint.
@@ -76,6 +104,11 @@ export async function genererAkUkeforslag(jobb: AkGruppeoppdrag, spillerId: unkn
           else gjeldendeId ??= rad.id;
         }
       }
+      // The historical-proposal checks can also wait on source rows. Keep the
+      // final weekly comparison after those waits and before any queue write.
+      if (!await laasOgLesSammeAkUkegrunnlag(tx, { id: grunnlag.deling.spillerId }, oppdrag, grunnlag.databevis)) {
+        throw Error("utdatert-ukegrunnlag");
+      }
       // SUPERSEDED is a system transition, not a coach rejection/approval.
       // Keep original body, evidence, comments and decision attribution intact.
       // Closing rows and creating their replacement commit or roll back together.
@@ -86,7 +119,7 @@ export async function genererAkUkeforslag(jobb: AkGruppeoppdrag, spillerId: unkn
       const action = await tx.planAction.create({ data: {
         userId: grunnlag.deling.spillerId, coachId: grunnlag.deling.coachId, planId: grunnlag.planId,
         agentName: "weekly-plan-proposals", actionType: "WEEKLY_PROPOSAL", status: "PENDING",
-        suggestion: forslag,
+        suggestion: akUkeforslagSchema.parse(forslag),
       }, select: { id: true } });
       return { status: "OPPRETTET" as const, id: action.id, erstattetAntall: utdaterte.length };
     });
