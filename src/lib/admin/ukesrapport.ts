@@ -10,10 +10,11 @@
  * aldri kan bygge på ulike definisjoner av gjennomført.
  */
 
+import "server-only";
 import type { Prisma } from "@/generated/prisma/client";
 
-import { hentStallEtterlevelse } from "@/lib/portal/etterlevelse-data";
-import { prisma } from "@/lib/prisma";
+import { hentStallEtterlevelseITransaksjon } from "@/lib/portal/etterlevelse-data";
+import { medAkProfiler } from "@/lib/deling/ak-profil-lesing";
 import { startOfWeek, ukenummer } from "@/lib/uke-helpers";
 import {
   etterlevelseTekst,
@@ -41,13 +42,20 @@ const DATO_FMT = new Intl.DateTimeFormat("nb-NO", {
  * en tom stall skal ikke gi et kort med nuller i.
  */
 export async function hentUkesrapport(
-  spillerWhere: Prisma.UserWhereInput,
+  viewer: { id: string; role: string },
   now = new Date(),
+): Promise<AdminUkesrapportKort | null> {
+  return medAkProfiler(viewer, (tx, scope) => hentDeltUkesrapport(tx, scope, now));
+}
+
+/** Spillerutvalg, økter og testfrister leses før delingslåsene slippes. */
+async function hentDeltUkesrapport(
+  tx: Prisma.TransactionClient, spillerWhere: Prisma.UserWhereInput, now: Date,
 ): Promise<AdminUkesrapportKort | null> {
   const ukeStart = startOfWeek(now);
   const om14dager = new Date(now.getTime() + 14 * 86_400_000);
 
-  const spillere = await prisma.user.findMany({
+  const spillere = await tx.user.findMany({
     where: spillerWhere,
     select: { id: true },
   });
@@ -56,8 +64,8 @@ export async function hentUkesrapport(
   const ider = spillere.map((s) => s.id);
 
   const [okter, forfall] = await Promise.all([
-    hentStallEtterlevelse(ider, now),
-    prisma.testAssignment.findMany({
+    hentStallEtterlevelseITransaksjon(tx, ider, now),
+    tx.testAssignment.findMany({
       where: {
         playerId: { in: ider },
         status: "OPEN",

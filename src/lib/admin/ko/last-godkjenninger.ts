@@ -309,7 +309,7 @@ export async function lastGodkjenninger(
   );
 
   // D3: ukesrapporten er et leseelement i køen — den leses, ikke godkjennes.
-  const ukesrapport = valg.medUkesrapport === false ? null : await hentUkesrapport(spillerScope);
+  const ukesrapport = valg.medUkesrapport === false ? null : await hentUkesrapport(user);
 
   const data: AdminGodkjenningerV2Data = {
     rows: alleRows,

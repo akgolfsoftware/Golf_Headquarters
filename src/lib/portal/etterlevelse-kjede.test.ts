@@ -72,7 +72,7 @@ test("spiller, foresatt, coach, stall, analyse, Workbench og planmotor viser sam
   assert.equal(digest.loggetMinutter, 90);
   assert.equal(digest.planlagtMinutter, 180);
   assert.equal((await hentForelderUkerapport("parent-test", player.id))?.etterlevelseTekst, "50 %");
-  assert.equal((await hentUkesrapport({ id: player.id }, NOW))?.tall.find(x => x.key === "etterlevelse")?.verdi, "50 %");
+  assert.equal((await hentUkesrapport(viewer, NOW))?.tall.find(x => x.key === "etterlevelse")?.verdi, "50 %");
   const compliance = await loadComplianceData({ viewer, now: NOW, windowDays: 365, periodLabel: "Gammelt filter", selectedPlayerId: "foreign-test" });
   assert.equal(compliance.windowDays, 28, "gammel URL kan ikke endre produktregelen");
   assert.equal(compliance.selectedPlayerId, player.id);

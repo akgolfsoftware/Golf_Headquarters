@@ -6,6 +6,10 @@ type Leser = typeof import("@/lib/deling/ak-delte-planforslag");
 type Resultat = Awaited<ReturnType<Leser["hentAkDeltePlanforslag"]>>;
 const viewer = { id: "synthetic-coach", role: "ADMIN" as const, name: "Syntetisk trener" };
 const spillerScope = { id: "synthetic-player" };
+const ukesrapportAktorer: { id: string; role: string }[] = [];
+mock.module("@/lib/admin/ukesrapport", { namedExports: {
+  hentUkesrapport: async (actor: { id: string; role: string }) => { ukesrapportAktorer.push(actor); return null; },
+} });
 let historiskeBriefLesinger = 0;
 let profilKunViaPort = false;
 const profilReserve = () => { if (profilKunViaPort) throw Error("unexpected unscoped profile read"); };
@@ -254,3 +258,17 @@ test("brief kobler bare delingskontrollerte profilnøkkeltall til skjermdata", a
   assert.equal(etter.stallSgKpi, "—");
   assert.equal(etter.planAdherenceKpi, "—");
 });
+
+
+for (const role of ["ADMIN", "COACH"] as const) {
+  test(`godkjenningskø sender aktøren til ukesrapportens delingskontroll for ${role}`, async () => {
+    forventetRolle = role;
+    const actor = { ...viewer, role };
+    const { lastGodkjenninger } = await import("@/lib/admin/ko/last-godkjenninger");
+    ukesrapportAktorer.length = 0;
+    await lastGodkjenninger(actor);
+    assert.deepEqual(ukesrapportAktorer, [actor]);
+    await lastGodkjenninger(actor, { medUkesrapport: false });
+    assert.equal(ukesrapportAktorer.length, 1, "Cockpit skal fortsatt kunne velge bort rapporten");
+  });
+}
